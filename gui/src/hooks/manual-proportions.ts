@@ -64,7 +64,7 @@ export interface BoneState {
   type: BoneType.Single;
   bone: SkeletonBone;
   value: number;
-  label: string;
+  currentLabel: string;
 }
 
 export interface GroupState {
@@ -77,7 +77,7 @@ export interface GroupState {
     value: number;
   }[];
   value: number;
-  label: string;
+  currentLabel: string;
   index?: number;
   parentLabel: string;
 }
@@ -87,6 +87,7 @@ function reducer(state: ProportionState, action: ProportionChange): ProportionSt
     case ProportionChangeType.Bone: {
       return {
         ...action,
+        currentLabel: action.label,
         type: BoneType.Single,
       };
     }
@@ -94,6 +95,7 @@ function reducer(state: ProportionState, action: ProportionChange): ProportionSt
     case ProportionChangeType.Group: {
       return {
         ...action,
+        currentLabel: action.label,
         type: BoneType.Group,
       };
     }
@@ -114,7 +116,7 @@ function reducer(state: ProportionState, action: ProportionChange): ProportionSt
 
     case ProportionChangeType.Ratio: {
       if (state.type === BoneType.Single || state.index === undefined) {
-        throw new Error(`Unexpected increase of bone ${state.label}`);
+        throw new Error(`Unexpected increase of bone ${state.currentLabel}`);
       }
 
       const newState: GroupState = JSON.parse(JSON.stringify(state));
@@ -197,16 +199,16 @@ export const INVALID_BONE: BoneState = {
   type: BoneType.Single,
   bone: SkeletonBone.NONE,
   value: 0,
-  label: 'invalid-bone',
+  currentLabel: 'invalid-bone',
 };
 
-export function useManualProportions(): [
-  Label[],
-  boolean,
-  ProportionState,
-  (change: ProportionChange) => void,
-  (ratio: boolean) => void
-] {
+export function useManualProportions(): {
+  bodyParts: Label[];
+  ratioMode: boolean;
+  state: ProportionState;
+  dispatch: (change: ProportionChange) => void;
+  setRatioMode: (ratio: boolean) => void;
+} {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [config, setConfig] = useState<Omit<SkeletonConfigResponseT, 'pack'> | null>(
     null
@@ -283,6 +285,7 @@ export function useManualProportions(): [
   useLayoutEffect(() => {
     dispatch({
       ...INVALID_BONE,
+      label: INVALID_BONE.currentLabel,
       type: ProportionChangeType.Bone,
     });
   }, [ratio]);
@@ -320,7 +323,7 @@ export function useManualProportions(): [
       const part = bodyParts.find(
         (it) =>
           it.type === LabelType.Group &&
-          (it.label === state.label || it.label === state.parentLabel)
+          (it.label === state.currentLabel || it.label === state.parentLabel)
       ) as GroupLabel | undefined;
 
       // Check if we found the group we were looking for
@@ -350,7 +353,7 @@ export function useManualProportions(): [
     setConfig(conf);
   }, [state]);
 
-  return [bodyParts, ratio, state, dispatch, setRatio];
+  return { bodyParts, ratioMode: ratio, state, dispatch, setRatioMode: setRatio };
 }
 
 function roundedStep(value: number, step: number, add: boolean): number {
