@@ -3,7 +3,6 @@ package dev.slimevr.autobone
 import dev.slimevr.VRServer
 import dev.slimevr.autobone.AutoBone.AutoBoneResults
 import dev.slimevr.autobone.AutoBone.Companion.loadDir
-import dev.slimevr.autobone.AutoBone.Epoch
 import dev.slimevr.autobone.errors.AutoBoneException
 import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.poseframeformat.PoseRecorder
@@ -16,7 +15,6 @@ import io.eiren.util.logging.LogManager
 import org.apache.commons.lang3.tuple.Pair
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.locks.ReentrantLock
-import java.util.function.Consumer
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
 
@@ -69,9 +67,9 @@ class AutoBoneHandler(private val server: VRServer) {
 	@Throws(AutoBoneException::class)
 	private fun processFrames(frames: PoseFrames): AutoBoneResults {
 		return autoBone
-			.processFrames(
-				frames
-			) { epoch: Epoch? -> listeners.forEach(Consumer { listener: AutoBoneListener -> listener.onAutoBoneEpoch(epoch!!) }) }
+			.processFrames(frames) { epoch ->
+				listeners.forEach { listener -> listener.onAutoBoneEpoch(epoch) }
+			}
 	}
 
 	fun startProcessByType(processType: AutoBoneProcessType?): Boolean {
@@ -132,7 +130,7 @@ class AutoBoneHandler(private val server: VRServer) {
 					)
 					autoBone.saveRecording(frames)
 				}
-				listeners.forEach(Consumer { listener: AutoBoneListener -> listener.onAutoBoneRecordingEnd(frames) })
+				listeners.forEach { listener: AutoBoneListener -> listener.onAutoBoneRecordingEnd(frames) }
 				announceProcessStatus(
 					AutoBoneProcessType.RECORD,
 					"Done recording!",
@@ -370,7 +368,7 @@ class AutoBoneHandler(private val server: VRServer) {
 						")"
 				)
 			// #endregion
-			listeners.forEach(Consumer { listener: AutoBoneListener -> listener.onAutoBoneEnd(autoBone.offsets) })
+			listeners.forEach { listener: AutoBoneListener -> listener.onAutoBoneEnd(autoBone.offsets) }
 			announceProcessStatus(
 				AutoBoneProcessType.PROCESS,
 				"Done processing!",

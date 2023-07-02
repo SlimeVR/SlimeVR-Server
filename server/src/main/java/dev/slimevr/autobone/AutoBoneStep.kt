@@ -12,7 +12,7 @@ class AutoBoneStep(
 	val targetHmdHeight: Float,
 	val targetFullHeight: Float,
 	val frames: PoseFrames,
-	val epochCallback: Consumer<AutoBone.Epoch?>?,
+	val epochCallback: Consumer<AutoBone.Epoch>?,
 	serverConfig: ConfigManager,
 	var curEpoch: Int = 0,
 	var curAdjustRate: Float = 0f,

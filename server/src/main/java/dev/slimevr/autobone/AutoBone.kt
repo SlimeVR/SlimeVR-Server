@@ -241,7 +241,7 @@ class AutoBone(server: VRServer) {
 	fun processFrames(
 		frames: PoseFrames,
 		config: AutoBoneConfig = globalConfig,
-		epochCallback: Consumer<Epoch?>? = null,
+		epochCallback: Consumer<Epoch>? = null,
 	): AutoBoneResults {
 		// Load current values for adjustable configs
 		loadConfigValues()
