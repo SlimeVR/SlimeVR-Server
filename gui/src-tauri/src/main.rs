@@ -9,6 +9,7 @@ use std::time::Duration;
 use std::time::Instant;
 
 use clap::Parser;
+use color_eyre::Result;
 use state::WindowState;
 use tauri::api::process::{Command, CommandChild};
 use tauri::Manager;
@@ -38,7 +39,22 @@ fn update_window_state(
 	Ok(())
 }
 
-fn main() {
+#[tauri::command]
+fn logging(msg: String) {
+	log::info!(target: "webview", "[webview] {}", msg)
+}
+
+#[tauri::command]
+fn erroring(msg: String) {
+	log::error!(target: "webview", "[webview] {}", msg)
+}
+
+#[tauri::command]
+fn warning(msg: String) {
+	log::warn!(target: "webview", "[webview] {}", msg)
+}
+
+fn main() -> Result<()> {
 	// Make an error dialog box when panicking
 	panic::set_hook(Box::new(|panic_info| {
 		println!("{}", panic_info);
@@ -46,14 +62,28 @@ fn main() {
 	}));
 
 	let cli = Cli::parse();
+	let tauri_context = tauri::generate_context!();
 
 	// Set up loggers and global handlers
-	{
-		if std::env::var_os("RUST_LOG").is_none() {
-			std::env::set_var("RUST_LOG", "info")
-		}
-		pretty_env_logger::init();
-	}
+	let _logger = {
+		use flexi_logger::{
+			Age, Cleanup, Criterion, Duplicate, FileSpec, Logger, Naming, WriteMode,
+		};
+		use tauri::api::path::app_log_dir;
+
+		Logger::try_with_env_or_str("info")?
+			.log_to_file(FileSpec::default().directory(
+				app_log_dir(tauri_context.config()).expect("We need a log dir"),
+			))
+			.rotate(
+				Criterion::Age(Age::Day),
+				Naming::Timestamps,
+				Cleanup::KeepLogFiles(2),
+			)
+			.duplicate_to_stderr(Duplicate::All)
+			.write_mode(WriteMode::BufferAndFlush)
+			.start()?
+	};
 
 	// Ensure child processes die when spawned on windows
 	// and then check for WebView2's existence
@@ -106,7 +136,7 @@ fn main() {
 			.or_else(|| valid_java_paths().first().map(|x| x.0.to_owned()));
 		let Some(java_bin) = java_bin else {
 			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
-			return;
+			return Ok(());
 		};
 
 		log::info!("Using Java binary: {:?}", java_bin);
@@ -124,7 +154,12 @@ fn main() {
 
 	let exit_flag_terminated = exit_flag.clone();
 	let build_result = tauri::Builder::default()
-		.invoke_handler(tauri::generate_handler![update_window_state])
+		.invoke_handler(tauri::generate_handler![
+			update_window_state,
+			logging,
+			erroring,
+			warning
+		])
 		.setup(move |app| {
 			let window_state =
 				WindowState::open_state(app.path_resolver().app_config_dir().unwrap())
@@ -190,7 +225,7 @@ fn main() {
 			WindowEvent::Resized(_) => std::thread::sleep(std::time::Duration::from_nanos(1)),
 			_ => (),
 		})
-		.build(tauri::generate_context!());
+		.build(tauri_context);
 	match build_result {
 		Ok(app) => {
 			app.run(move |app_handle, event| match event {
@@ -246,4 +281,6 @@ fn main() {
 			show_error(&error.to_string());
 		}
 	}
+
+	Ok(())
 }

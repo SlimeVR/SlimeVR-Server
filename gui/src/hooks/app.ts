@@ -24,6 +24,7 @@ import { playSoundOnResetStarted } from '../sounds/sounds';
 import { useConfig } from './config';
 import { useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
+import { log } from './logging';
 
 export interface FlatDeviceTracker {
   device?: DeviceDataT;
@@ -104,7 +105,7 @@ export function useProvideAppContext(): AppContext {
         }
       }
     } catch (error) {
-      console.log(error);
+      log(error);
     }
   });
 

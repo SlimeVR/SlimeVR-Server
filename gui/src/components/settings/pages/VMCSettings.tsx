@@ -20,6 +20,7 @@ import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '../SettingsPageLayout';
+import { error } from '../../../hooks/logging';
 
 interface VMCSettingsForm {
   vmc: {
@@ -287,7 +288,7 @@ async function parseVRMFile(vrm: File): Promise<string | null> {
   let cursor = 0;
   const magicBytes = headerView.getUint32(cursor, true);
   if (magicBytes !== magic`glTF`) {
-    console.error(
+    error(
       `.vrm file starts with ${magicBytes.toString(
         16
       )} instead of ${magic`glTF`.toString(16)}`
@@ -298,7 +299,7 @@ async function parseVRMFile(vrm: File): Promise<string | null> {
 
   const versionNumber = headerView.getUint32(cursor, true);
   if (versionNumber !== 2) {
-    console.error('unsupported glTF version');
+    error('unsupported glTF version');
     return null;
   }
   cursor += 4;
@@ -310,7 +311,7 @@ async function parseVRMFile(vrm: File): Promise<string | null> {
   cursor += 4;
   const jsonMagicBytes = headerView.getUint32(cursor, true);
   if (jsonMagicBytes !== magic`JSON`) {
-    console.error(
+    error(
       `first chunk contains ${jsonMagicBytes.toString(
         16
       )} instead of ${magic`JSON`.toString(16)}`

@@ -17,6 +17,7 @@ import { BodyDisplay } from '../../commons/BodyDisplay';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import classNames from 'classnames';
 import { useBreakpoint } from '../../../hooks/breakpoint';
+import { log } from '../../../hooks/logging';
 
 export function ResetTutorialPage() {
   const { isMobile } = useBreakpoint('mobile');
@@ -82,7 +83,7 @@ export function ResetTutorialPage() {
     RpcMessage.ResetResponse,
     ({ status, resetType }: ResetResponseT) => {
       if (status !== ResetStatus.STARTED) return;
-      console.log(status);
+      log(status);
       if (resetType === RESET_TYPE_ORDER[curIndex]) {
         setCurIndex(curIndex + 1);
       }

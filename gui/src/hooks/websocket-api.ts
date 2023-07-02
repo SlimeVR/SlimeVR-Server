@@ -13,6 +13,7 @@ import {
 
 import { Builder, ByteBuffer } from 'flatbuffers';
 import { useInterval } from './timeout';
+import { log } from './logging';
 
 export interface WebSocketApi {
   isConnected: boolean;
@@ -48,7 +49,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
 
   useInterval(() => {
     if (webSocketRef.current && !isConnected) {
-      console.log('Attempting to reconnect');
+      log('Attempting to reconnect');
       reconnect();
     }
   }, 3000);
