@@ -47,10 +47,8 @@ export function WidgetsComponent() {
       <div className="grid grid-cols-2 gap-2 w-full [&>*:nth-child(odd):last-of-type]:col-span-full">
         <ResetButton type={ResetType.Yaw} variant="big"></ResetButton>
         <ResetButton type={ResetType.Full} variant="big"></ResetButton>
-        {config?.debug && (
-          <ResetButton type={ResetType.Mounting} variant="big"></ResetButton>
-        )}
-        {config?.debug && <ClearMountingButton></ClearMountingButton>}
+        <ResetButton type={ResetType.Mounting} variant="big"></ResetButton>
+        <ClearMountingButton></ClearMountingButton>
         <BVHButton></BVHButton>
         <TrackingPauseButton></TrackingPauseButton>
         {driftCompensationEnabled && (
@@ -60,7 +58,7 @@ export function WidgetsComponent() {
       <div className="w-full">
         <OverlayWidget></OverlayWidget>
       </div>
-      <div className="w-full flex flex-col min-h-[12%] max-h-[33%] gap-3 overflow-y-auto mb-2">
+      <div className="w-full flex flex-col gap-3 mb-2">
         {unprioritizedStatuses.map((status) => (
           <Localized
             id={`status_system-${StatusData[status.dataType]}`}
