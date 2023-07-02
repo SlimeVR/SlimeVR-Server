@@ -34,8 +34,9 @@ public class HumanSkeleton {
 	protected final TransformNode headNode = new TransformNode(BoneType.HEAD, false);
 	protected final TransformNode trackerHeadNode = new TransformNode(BoneType.HEAD_TRACKER, false);
 	protected final TransformNode neckNode = new TransformNode(BoneType.NECK, false);
-	protected final TransformNode chestNode = new TransformNode(BoneType.CHEST, false);
+	protected final TransformNode upperChestNode = new TransformNode(BoneType.CHEST, false);
 	protected final TransformNode trackerChestNode = new TransformNode(BoneType.CHEST_TRACKER, false);
+	protected final TransformNode chestNode = new TransformNode(BoneType.CHEST, false);
 	protected final TransformNode waistNode = new TransformNode(BoneType.WAIST, false);
 	protected final TransformNode hipNode = new TransformNode(BoneType.HIP, false);
 	protected final TransformNode trackerHipNode = new TransformNode(BoneType.HIP_TRACKER, false);
@@ -89,6 +90,7 @@ public class HumanSkeleton {
 	// #region Tracker Input
 	protected Tracker headTracker;
 	protected Tracker neckTracker;
+	protected Tracker upperChestTracker;
 	protected Tracker chestTracker;
 	protected Tracker waistTracker;
 	protected Tracker hipTracker;
@@ -205,7 +207,8 @@ public class HumanSkeleton {
 		// #region Assemble skeleton from head to hip
 		hmdNode.attachChild(headNode);
 		headNode.attachChild(neckNode);
-		neckNode.attachChild(chestNode);
+		neckNode.attachChild(upperChestNode);
+		upperChestNode.attachChild(chestNode);
 		chestNode.attachChild(waistNode);
 		waistNode.attachChild(hipNode);
 		// #endregion
@@ -390,6 +393,11 @@ public class HumanSkeleton {
 				trackers,
 				TrackerPosition.NECK
 			);
+		upperChestTracker = TrackerUtils
+			.getNonInternalTrackerForBodyPosition(
+				trackers,
+				TrackerPosition.UPPER_CHEST
+			);
 		chestTracker = TrackerUtils
 			.getNonInternalTrackerForBodyPosition(
 				trackers,
@@ -477,7 +485,10 @@ public class HumanSkeleton {
 			);
 
 		// Check for specific conditions and store them in booleans.
-		hasSpineTracker = chestTracker != null || waistTracker != null || hipTracker != null;
+		hasSpineTracker = upperChestTracker != null
+			|| chestTracker != null
+			|| waistTracker != null
+			|| hipTracker != null;
 		hasKneeTrackers = leftUpperLegTracker != null && rightUpperLegTracker != null;
 		hasLeftLegTracker = leftUpperLegTracker != null
 			|| leftLowerLegTracker != null
@@ -501,7 +512,7 @@ public class HumanSkeleton {
 	protected void setComputedTracker(Tracker tracker) {
 		switch (tracker.getTrackerPosition()) {
 			case HEAD -> computedHeadTracker = tracker;
-			case CHEST -> computedChestTracker = tracker;
+			case UPPER_CHEST -> computedChestTracker = tracker;
 			case HIP -> computedHipTracker = tracker;
 			case LEFT_UPPER_LEG -> computedLeftKneeTracker = tracker;
 			case LEFT_FOOT -> computedLeftFootTracker = tracker;
@@ -597,7 +608,12 @@ public class HumanSkeleton {
 				headRot = neckTracker.getRotation();
 			} else if (hasSpineTracker) {
 				headRot = TrackerUtils
-					.getFirstAvailableTracker(chestTracker, waistTracker, hipTracker)
+					.getFirstAvailableTracker(
+						upperChestTracker,
+						chestTracker,
+						waistTracker,
+						hipTracker
+					)
 					.getRotation();
 			}
 
@@ -613,19 +629,28 @@ public class HumanSkeleton {
 
 		// Spine
 		if (hasSpineTracker) {
+			// Upper chest
 			Quaternion torsoRot = TrackerUtils
-				.getFirstAvailableTracker(chestTracker, waistTracker, hipTracker)
+				.getFirstAvailableTracker(upperChestTracker, chestTracker, waistTracker, hipTracker)
 				.getRotation();
 			neckNode.getLocalTransform().setRotation(torsoRot);
 			trackerChestNode.getLocalTransform().setRotation(torsoRot);
 
+			// Chest
 			torsoRot = TrackerUtils
-				.getFirstAvailableTracker(waistTracker, chestTracker, hipTracker)
+				.getFirstAvailableTracker(chestTracker, upperChestTracker, waistTracker, hipTracker)
+				.getRotation();
+			upperChestNode.getLocalTransform().setRotation(torsoRot);
+
+			// Waist
+			torsoRot = TrackerUtils
+				.getFirstAvailableTracker(waistTracker, chestTracker, upperChestTracker, hipTracker)
 				.getRotation();
 			chestNode.getLocalTransform().setRotation(torsoRot);
 
+			// Hip
 			torsoRot = TrackerUtils
-				.getFirstAvailableTracker(hipTracker, waistTracker, chestTracker)
+				.getFirstAvailableTracker(hipTracker, waistTracker, chestTracker, upperChestTracker)
 				.getRotation();
 			waistNode.getLocalTransform().setRotation(torsoRot);
 			hipNode.getLocalTransform().setRotation(torsoRot);
@@ -636,6 +661,7 @@ public class HumanSkeleton {
 
 			neckNode.getLocalTransform().setRotation(yawQuat);
 			trackerChestNode.getLocalTransform().setRotation(yawQuat);
+			upperChestNode.getLocalTransform().setRotation(yawQuat);
 			chestNode.getLocalTransform().setRotation(yawQuat);
 			waistNode.getLocalTransform().setRotation(yawQuat);
 			hipNode.getLocalTransform().setRotation(yawQuat);
@@ -736,10 +762,12 @@ public class HumanSkeleton {
 			// Tries to guess missing lower spine trackers by interpolating
 			// rotations
 			if (waistTracker == null) {
-				if (chestTracker != null && hipTracker != null) {
+				if ((upperChestTracker != null || chestTracker != null) && hipTracker != null) {
 					// Calculates waist from chest + hip
 					var hipRot = hipTracker.getRotation();
-					var chestRot = chestTracker.getRotation();
+					var chestRot = TrackerUtils
+						.getFirstAvailableTracker(upperChestTracker, chestTracker)
+						.getRotation();
 
 					// Get the rotation relative to where we expect the hip to
 					// be
@@ -751,11 +779,13 @@ public class HumanSkeleton {
 					chestRot = chestRot.interpQ(hipRot, waistFromChestHipAveraging);
 
 					chestNode.getLocalTransform().setRotation(chestRot);
-				} else if (chestTracker != null && hasKneeTrackers) {
+				} else if ((upperChestTracker != null || chestTracker != null) && hasKneeTrackers) {
 					// Calculates waist from chest + legs
 					var leftHipRot = leftHipNode.getLocalTransform().getRotation();
 					var rightHipRot = rightHipNode.getLocalTransform().getRotation();
-					var chestRot = chestTracker.getRotation();
+					var chestRot = TrackerUtils
+						.getFirstAvailableTracker(upperChestTracker, chestTracker)
+						.getRotation();
 
 					// Get the rotation relative to where we expect the
 					// upper legs to be
@@ -802,11 +832,13 @@ public class HumanSkeleton {
 					waistNode.getLocalTransform().setRotation(waistRot);
 					hipNode.getLocalTransform().setRotation(waistRot);
 					trackerHipNode.getLocalTransform().setRotation(waistRot);
-				} else if (chestTracker != null) {
+				} else if (upperChestTracker != null || chestTracker != null) {
 					// Calculates hip from chest + legs
 					var leftHipRot = leftHipNode.getLocalTransform().getRotation();
 					var rightHipRot = rightHipNode.getLocalTransform().getRotation();
-					var chestRot = chestTracker.getRotation();
+					var chestRot = TrackerUtils
+						.getFirstAvailableTracker(upperChestTracker, chestTracker)
+						.getRotation();
 
 					// Get the rotation relative to where we expect the
 					// upper legs to be
@@ -1125,8 +1157,9 @@ public class HumanSkeleton {
 				}
 			}
 			case NECK -> neckNode.getLocalTransform().setTranslation(offset);
-			case CHEST -> chestNode.getLocalTransform().setTranslation(offset);
+			case UPPER_CHEST -> upperChestNode.getLocalTransform().setTranslation(offset);
 			case CHEST_TRACKER -> trackerChestNode.getLocalTransform().setTranslation(offset);
+			case CHEST -> chestNode.getLocalTransform().setTranslation(offset);
 			case WAIST -> waistNode.getLocalTransform().setTranslation(offset);
 			case HIP -> hipNode.getLocalTransform().setTranslation(offset);
 			case HIP_TRACKER -> trackerHipNode.getLocalTransform().setTranslation(offset);
@@ -1223,8 +1256,9 @@ public class HumanSkeleton {
 			case HMD, HEAD -> headNode;
 			case HEAD_TRACKER -> trackerHeadNode;
 			case NECK -> neckNode;
-			case CHEST -> chestNode;
+			case UPPER_CHEST -> upperChestNode;
 			case CHEST_TRACKER -> trackerChestNode;
+			case CHEST -> chestNode;
 			case WAIST -> waistNode;
 			case HIP -> hipNode;
 			case HIP_TRACKER -> trackerHipNode;
@@ -1283,8 +1317,9 @@ public class HumanSkeleton {
 			headNode,
 			trackerHeadNode,
 			neckNode,
-			chestNode,
+			upperChestNode,
 			trackerChestNode,
+			chestNode,
 			waistNode,
 			hipNode,
 			trackerHipNode,

@@ -1,15 +1,15 @@
 package dev.slimevr.tracking.processor.skeleton;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.setup.TapSetupHandler;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
 import solarxr_protocol.rpc.ResetType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -211,7 +211,9 @@ public class TapDetectionManager {
 	// on which one is available
 	// if none are available, returns null
 	private Tracker getTrackerToWatchYawReset() {
-		if (skeleton.chestTracker != null)
+		if (skeleton.upperChestTracker != null)
+			return skeleton.upperChestTracker;
+		else if (skeleton.chestTracker != null)
 			return skeleton.chestTracker;
 		else if (skeleton.hipTracker != null)
 			return skeleton.hipTracker;

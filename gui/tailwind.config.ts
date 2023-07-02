@@ -230,6 +230,9 @@ const config = {
         'trans-flag': `linear-gradient(135deg, ${colors['trans-blue'][800]} 40%, ${colors['trans-blue'][700]} 40% 70%, ${colors['trans-blue'][600]} 70% 100%)`,
       },
     },
+    data: {
+      checked: 'checked=true'
+    }
   },
   plugins: [
     forms,
@@ -250,6 +253,9 @@ const config = {
         '.text-standard-bold': textConfig(rem(12), 700),
       });
     }),
+    plugin(function({ addVariant }) {
+      addVariant('checked-hover', ['&:hover', '&[data-checked=true]'])
+    })
   ],
 } satisfies Config
 
