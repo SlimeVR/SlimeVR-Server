@@ -8,7 +8,7 @@
     "@fontsource/poppins": "^4.5.8",
     "@formatjs/intl-localematcher": "^0.2.32",
     "@react-three/fiber": "^8.10.0",
-    "@tauri-apps/api": "^1.4.0",
+    "@tauri-apps/api": "^1.2.3",
     "@vitejs/plugin-react": "^3.0.0",
     "browserslist": "^4.18.1",
     "classnames": "^2.3.1",
@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.0",
-    "@tauri-apps/cli": "^1.4.0",
+    "@tauri-apps/cli": "^1.2.3",
     "@types/file-saver": "^2.0.5",
     "@types/react": "18.0.25",
     "@types/react-dom": "^18.0.5",

@@ -1,4 +1,3 @@
-#![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
 use std::panic;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
