@@ -273,6 +273,8 @@ public class VRServer extends Thread {
 	public void trackerUpdated(Tracker tracker) {
 		queueTask(() -> {
 			humanPoseManager.trackerUpdated(tracker);
+			updateSkeletonModel();
+			refreshTrackersDriftCompensationEnabled();
 			this.getConfigManager().getVrConfig().writeTrackerConfig(tracker);
 			this.getConfigManager().saveConfig();
 		});
@@ -337,6 +339,8 @@ public class VRServer extends Thread {
 	@VRServerThread
 	private void trackerAdded(Tracker tracker) {
 		humanPoseManager.trackerAdded(tracker);
+		updateSkeletonModel();
+		refreshTrackersDriftCompensationEnabled();
 	}
 
 	@ThreadSecure
@@ -503,6 +507,14 @@ public class VRServer extends Thread {
 		for (Tracker t : getAllTrackers()) {
 			if (t.isImu()) {
 				t.getResetsHandler().clearDriftCompensation();
+			}
+		}
+	}
+
+	public void refreshTrackersDriftCompensationEnabled() {
+		for (Tracker t : getAllTrackers()) {
+			if (t.isImu()) {
+				t.getResetsHandler().refreshDriftCompensationEnabled();
 			}
 		}
 	}
