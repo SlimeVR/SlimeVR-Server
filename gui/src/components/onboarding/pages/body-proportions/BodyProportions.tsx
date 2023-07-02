@@ -46,16 +46,16 @@ export function BodyProportions({
     useManualProportions();
   const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
-  const cmFormat = Intl.NumberFormat(currentLocales, {
+  const cmFormat = new Intl.NumberFormat(currentLocales, {
     style: 'unit',
     unit: 'centimeter',
     maximumFractionDigits: 1,
   });
-  const configFormat = Intl.NumberFormat(currentLocales, {
+  const configFormat = new Intl.NumberFormat(currentLocales, {
     signDisplay: 'always',
     maximumFractionDigits: 1,
   });
-  const percentageFormat = Intl.NumberFormat(currentLocales, {
+  const percentageFormat = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
     maximumFractionDigits: 1,
   });

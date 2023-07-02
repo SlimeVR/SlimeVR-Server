@@ -8,12 +8,13 @@ import {
 import { useWebsocketAPI } from '../../../../../hooks/websocket-api';
 import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useForm } from 'react-hook-form';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { NumberSelector } from '../../../../commons/NumberSelector';
 import { DEFAULT_HEIGHT, MIN_HEIGHT } from '../ProportionsChoose';
 import { useLocaleConfig } from '../../../../../i18n/config';
+import { useCountdown } from '../../../../../hooks/countdown';
 
 interface HeightForm {
   height: number;
@@ -30,17 +31,21 @@ export function CheckHeight({
   variant: 'onboarding' | 'alone';
 }) {
   const { l10n } = useLocalization();
-  const [hmdDiff, setHmdDiff] = useState(0);
-  const { control, handleSubmit, setValue, watch } = useForm<HeightForm>({
-    defaultValues: { hmdHeight: 0, height: DEFAULT_HEIGHT },
-  });
-  const watchHeight = watch('height', DEFAULT_HEIGHT);
+  const { control, handleSubmit, setValue } = useForm<HeightForm>();
+  const [fetchedHeight, setFetchedHeight] = useState(false);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { timer, isCounting, startCountdown } = useCountdown({
+    duration: 3,
+    onCountdownEnd: () => {
+      setFetchedHeight(true);
+      sendRPCPacket(RpcMessage.HeightRequest, new HeightRequestT());
+    },
+  });
   const { currentLocales } = useLocaleConfig();
 
   const mFormat = useMemo(
     () =>
-      Intl.NumberFormat(currentLocales, {
+      new Intl.NumberFormat(currentLocales, {
         style: 'unit',
         unit: 'meter',
         maximumFractionDigits: 2,
@@ -48,25 +53,24 @@ export function CheckHeight({
     [currentLocales]
   );
 
-  useEffect(() => setValue('hmdHeight', watchHeight - hmdDiff), [watchHeight]);
+  const sFormat = useMemo(
+    () => new Intl.RelativeTimeFormat(currentLocales, { style: 'short' }),
+    [currentLocales]
+  );
 
   useRPCPacket(
     RpcMessage.HeightResponse,
     ({ hmdHeight, estimatedFullHeight }: HeightResponseT) => {
       setValue('height', estimatedFullHeight || DEFAULT_HEIGHT);
-      setHmdDiff(estimatedFullHeight - hmdHeight);
+      setValue('hmdHeight', hmdHeight);
     }
   );
-
-  useEffect(() => {
-    sendRPCPacket(RpcMessage.HeightRequest, new HeightRequestT());
-  }, []);
 
   const onSubmit = (values: HeightForm) => {
     const changeSettings = new ChangeSettingsRequestT();
     const autobone = new AutoBoneSettingsT();
     autobone.targetFullHeight = values.height;
-    autobone.targetHmdHeight = values.height - hmdDiff;
+    autobone.targetHmdHeight = values.hmdHeight;
     changeSettings.autoBoneSettings = autobone;
 
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, changeSettings);
@@ -88,6 +92,27 @@ export function CheckHeight({
                 'onboarding-automatic_proportions-check_height-description'
               )}
             </Typography>
+            <Localized
+              id="onboarding-automatic_proportions-check_height-calculation_warning"
+              elems={{ u: <span className="underline"></span> }}
+            >
+              <Typography color="secondary" bold>
+                Press the button to get your height!
+              </Typography>
+            </Localized>
+
+            <Button
+              variant="primary"
+              className="mt-2"
+              onClick={startCountdown}
+              disabled={isCounting}
+            >
+              {isCounting
+                ? sFormat.format(timer, 'second')
+                : l10n.getString(
+                    'onboarding-automatic_proportions-check_height-fetch_height'
+                  )}
+            </Button>
           </div>
           <form className="flex flex-col self-center items-center justify-center">
             <NumberSelector
@@ -96,7 +121,13 @@ export function CheckHeight({
               label={l10n.getString(
                 'onboarding-automatic_proportions-check_height-height'
               )}
-              valueLabelFormat={(value) => mFormat.format(value)}
+              valueLabelFormat={(value) =>
+                isNaN(value)
+                  ? l10n.getString(
+                      'onboarding-automatic_proportions-check_height-unknown'
+                    )
+                  : mFormat.format(value)
+              }
               min={MIN_HEIGHT}
               max={4}
               step={0.01}
@@ -107,7 +138,13 @@ export function CheckHeight({
               label={l10n.getString(
                 'onboarding-automatic_proportions-check_height-hmd_height'
               )}
-              valueLabelFormat={(value) => mFormat.format(value)}
+              valueLabelFormat={(value) =>
+                isNaN(value)
+                  ? l10n.getString(
+                      'onboarding-automatic_proportions-check_height-unknown'
+                    )
+                  : mFormat.format(value)
+              }
               min={MIN_HEIGHT}
               max={4}
               step={0.01}
@@ -123,7 +160,11 @@ export function CheckHeight({
           >
             {l10n.getString('onboarding-automatic_proportions-prev_step')}
           </Button>
-          <Button variant="primary" onClick={handleSubmit(onSubmit)}>
+          <Button
+            variant="primary"
+            onClick={handleSubmit(onSubmit)}
+            disabled={!fetchedHeight}
+          >
             {l10n.getString(
               'onboarding-automatic_proportions-check_height-next_step'
             )}

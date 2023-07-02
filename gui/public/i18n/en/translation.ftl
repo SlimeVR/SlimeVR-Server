@@ -731,7 +731,14 @@ onboarding-automatic_proportions-requirements-description =
 onboarding-automatic_proportions-requirements-next = I have read the requirements
 onboarding-automatic_proportions-check_height-title = Check your height
 onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the HMD's height as an approximation of your actual height, but it's better to check if they are right yourself!
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = Please press the button while standing <u>upright</u> to calculate your height. You have 3 seconds after you press the button!
+onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Unknown
+# Shows an element below it
 onboarding-automatic_proportions-check_height-height = Your height is
+# Shows an element below it
 onboarding-automatic_proportions-check_height-hmd_height = And HMD height is
 onboarding-automatic_proportions-check_height-next_step = They are fine
 onboarding-automatic_proportions-start_recording-title = Get ready to move
