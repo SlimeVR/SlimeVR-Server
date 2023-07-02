@@ -15,9 +15,11 @@ export function LangSelector({
   const { changeLocales } = useContext(LangContext);
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { control, watch, handleSubmit } = useForm<{ lang: string }>({
-    defaultValues: { lang: config?.lang || 'en' },
-  });
+  const { control, watch, handleSubmit, getValues } = useForm<{ lang: string }>(
+    {
+      defaultValues: { lang: config?.lang || 'en' },
+    }
+  );
 
   const languagesItems = useMemo(
     () => langs.map(({ key, name }) => ({ label: name, value: key })),
@@ -37,6 +39,7 @@ export function LangSelector({
   return (
     <Dropdown
       control={control}
+      getValues={getValues}
       name="lang"
       placeholder={l10n.getString(
         'settings-general-interface-lang-placeholder'
