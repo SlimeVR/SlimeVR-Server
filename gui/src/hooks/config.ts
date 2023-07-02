@@ -2,7 +2,7 @@ import { BaseDirectory, readTextFile } from '@tauri-apps/api/fs';
 
 import { createContext, useContext, useRef, useState } from 'react';
 import { DeveloperModeWidgetForm } from '../components/widgets/DeveloperModeWidget';
-import { log } from './logging';
+import { log } from '../utils/logging';
 
 export interface WindowConfig {
   width: number;

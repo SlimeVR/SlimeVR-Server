@@ -11,7 +11,7 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { useLocalization } from '@fluent/react';
-import { log } from './logging';
+import { log } from '../utils/logging';
 
 export interface AutoboneContext {
   hasRecording: boolean;
@@ -88,11 +88,7 @@ export function useProvideAutobone(): AutoboneContext {
         }
 
         if (data.completed) {
-          log(
-            'Process ',
-            AutoBoneProcessType[data.processType],
-            ' has completed'
-          );
+          log('Process ', AutoBoneProcessType[data.processType], ' has completed');
 
           switch (data.processType) {
             case AutoBoneProcessType.RECORD:

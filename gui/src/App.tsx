@@ -50,7 +50,7 @@ import { open } from '@tauri-apps/api/shell';
 import semver from 'semver';
 import { useBreakpoint } from './hooks/breakpoint';
 import { VRModePage } from './components/vr-mode/VRModePage';
-import { error, log } from './hooks/logging';
+import { error, log } from './utils/logging';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');

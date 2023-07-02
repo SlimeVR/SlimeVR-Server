@@ -15,12 +15,12 @@ import { FileInput } from '../../commons/FileInput';
 import { VMCIcon } from '../../commons/icon/VMCIcon';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
-import { magic } from '../../utils/formatting';
+import { magic } from '../../../utils/formatting';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '../SettingsPageLayout';
-import { error } from '../../../hooks/logging';
+import { error } from '../../../utils/logging';
 
 interface VMCSettingsForm {
   vmc: {

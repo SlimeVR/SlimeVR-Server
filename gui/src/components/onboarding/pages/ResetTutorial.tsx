@@ -17,7 +17,7 @@ import { BodyDisplay } from '../../commons/BodyDisplay';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import classNames from 'classnames';
 import { useBreakpoint } from '../../../hooks/breakpoint';
-import { log } from '../../../hooks/logging';
+import { log } from '../../../utils/logging';
 
 export function ResetTutorialPage() {
   const { isMobile } = useBreakpoint('mobile');

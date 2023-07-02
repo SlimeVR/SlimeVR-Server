@@ -6,7 +6,7 @@ import { Typography } from './commons/Typography';
 import { open } from '@tauri-apps/api/shell';
 import semver from 'semver';
 import { GH_REPO, VersionContext } from '../App';
-import { error } from '../hooks/logging';
+import { error } from '../utils/logging';
 
 export function VersionUpdateModal() {
   const { l10n } = useLocalization();

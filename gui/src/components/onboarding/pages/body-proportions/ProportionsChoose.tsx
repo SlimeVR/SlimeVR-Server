@@ -14,7 +14,7 @@ import saveAs from 'file-saver';
 import { save } from '@tauri-apps/api/dialog';
 import { writeTextFile } from '@tauri-apps/api/fs';
 import { useIsTauri } from '../../../../hooks/breakpoint';
-import { error } from '../../../../hooks/logging';
+import { error } from '../../../../utils/logging';
 
 export function ProportionsChoose() {
   const isTauri = useIsTauri();
