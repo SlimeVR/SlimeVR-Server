@@ -66,8 +66,8 @@ export function ManualProportionsPage() {
     <>
       <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center overflow-y-auto relative">
         <div className="flex flex-col w-full h-full xs:max-w-5xl xs:justify-center">
-          <div className="flex gap-8 justify-center">
-            <div className="flex flex-col w-full xs:max-w-2xl gap-3 items-center">
+          <div className="flex gap-8 justify-center h-full xs:items-center">
+            <div className="flex flex-col w-full xs:max-w-2xl gap-3 items-center mobile:justify-around">
               <div className="flex flex-col">
                 <Typography variant="main-title">
                   {l10n.getString('onboarding-manual_proportions-title')}
@@ -92,19 +92,20 @@ export function ManualProportionsPage() {
                   </div>
                 )}
               </div>
-
-              <BodyProportions
-                precise={precise}
-                type={ratio ? 'ratio' : 'linear'}
-                variant={state.alonePage ? 'alone' : 'onboarding'}
-              ></BodyProportions>
+              <div className="w-full px-2">
+                <BodyProportions
+                  precise={precise}
+                  type={ratio ? 'ratio' : 'linear'}
+                  variant={state.alonePage ? 'alone' : 'onboarding'}
+                ></BodyProportions>
+              </div>
             </div>
             <div className="flex-col flex-grow gap-3 rounded-xl fill-background-50 items-center hidden md:flex">
               <PersonFrontIcon width={200}></PersonFrontIcon>
             </div>
           </div>
           {!isMobile && (
-            <div className="flex gap-3 mt-5 mx-4">
+            <div className="flex gap-3 my-5 mx-4 justify-between">
               <ButtonsControl></ButtonsControl>
             </div>
           )}
