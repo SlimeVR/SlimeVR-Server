@@ -10,7 +10,7 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.*
 
-private const val DRIFT_COOLDOWN_MS = 30000L
+private const val DRIFT_COOLDOWN_MS = 50000L
 
 /**
  * Class taking care of full reset, yaw reset, mounting reset,
