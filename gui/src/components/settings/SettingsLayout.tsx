@@ -38,7 +38,7 @@ export function SettingSelectorMobile() {
       },
     ];
 
-  const { control, watch, handleSubmit, setValue } = useForm<{
+  const { control, watch, handleSubmit, setValue, getValues } = useForm<{
     link: string;
   }>({
     defaultValues: { link: links[0].value.url },
@@ -65,6 +65,7 @@ export function SettingSelectorMobile() {
     <div className="fixed top-12 z-50 px-4 w-full">
       <Dropdown
         control={control}
+        getValues={getValues}
         display="block"
         items={links.map(({ label, value: { url: value } }) => ({
           label,
