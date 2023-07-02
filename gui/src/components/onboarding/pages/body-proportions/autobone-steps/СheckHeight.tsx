@@ -17,6 +17,7 @@ import { useLocaleConfig } from '../../../../../i18n/config';
 
 interface HeightForm {
   height: number;
+  hmdHeight: number;
 }
 
 export function CheckHeight({
@@ -30,7 +31,10 @@ export function CheckHeight({
 }) {
   const { l10n } = useLocalization();
   const [hmdDiff, setHmdDiff] = useState(0);
-  const { control, handleSubmit, setValue } = useForm<HeightForm>();
+  const { control, handleSubmit, setValue, watch } = useForm<HeightForm>({
+    defaultValues: { hmdHeight: 0, height: DEFAULT_HEIGHT },
+  });
+  const watchHeight = watch('height', DEFAULT_HEIGHT);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
 
@@ -42,6 +46,11 @@ export function CheckHeight({
         maximumFractionDigits: 2,
       }),
     [currentLocales]
+  );
+
+  useEffect(
+    () => setValue('hmdHeight', watchHeight - hmdDiff),
+    [watchHeight]
   );
 
   useRPCPacket(
@@ -83,7 +92,7 @@ export function CheckHeight({
               )}
             </Typography>
           </div>
-          <form className="flex self-center items-center justify-center">
+          <form className="flex flex-col self-center items-center justify-center">
             <NumberSelector
               control={control}
               name="height"
@@ -94,6 +103,18 @@ export function CheckHeight({
               min={MIN_HEIGHT}
               max={4}
               step={0.01}
+            />
+            <NumberSelector
+              control={control}
+              name="hmdHeight"
+              label={l10n.getString(
+                'onboarding-automatic_proportions-check_height-hmd_height'
+              )}
+              valueLabelFormat={(value) => mFormat.format(value)}
+              min={MIN_HEIGHT}
+              max={4}
+              step={0.01}
+              disabled={true}
             />
           </form>
         </div>

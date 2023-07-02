@@ -10,6 +10,7 @@ export function NumberSelector({
   min,
   max,
   step,
+  disabled = false
 }: {
   label: string;
   valueLabelFormat?: (value: number) => string;
@@ -18,6 +19,7 @@ export function NumberSelector({
   min: number;
   max: number;
   step: number | ((value: number, add: boolean) => number);
+  disabled?: boolean
 }) {
   const stepFn =
     typeof step === 'function'
@@ -38,7 +40,7 @@ export function NumberSelector({
                 variant="tertiary"
                 rounded
                 onClick={() => onChange(stepFn(value, false))}
-                disabled={stepFn(value, false) < min}
+                disabled={stepFn(value, false) < min || disabled}
               >
                 -
               </Button>
@@ -51,7 +53,7 @@ export function NumberSelector({
                 variant="tertiary"
                 rounded
                 onClick={() => onChange(stepFn(value, true))}
-                disabled={stepFn(value, true) > max}
+                disabled={stepFn(value, true) > max || disabled}
               >
                 +
               </Button>
