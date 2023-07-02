@@ -42,9 +42,9 @@ class AutoBoneHandler(private val server: VRServer) {
 	private fun announceProcessStatus(
 		processType: AutoBoneProcessType,
 		message: String? = null,
-		current: Long = 0L,
-		total: Long = 0L,
-		eta: Float = 0f,
+		current: Long = -1L,
+		total: Long = -1L,
+		eta: Float = -1f,
 		completed: Boolean = false,
 		success: Boolean = true,
 	) {
