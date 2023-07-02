@@ -302,7 +302,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		timeEnd = buf.timeOfFrame
 
 		// calculate the velocity
-		comVelocity = comPosStart.minus(comPosEnd).div((timeStart - timeEnd) / LegTweakBuffer.NS_CONVERT)
+		comVelocity = comPosEnd.minus(comPosStart).div((timeEnd - timeStart) / LegTweakBuffer.NS_CONVERT)
 
 		// if the feet have been the reference for a short amount of time nullify any upwards acceleration to prevent flying away
 		if (footFrames < WARMUP_FRAMES) {
