@@ -37,7 +37,7 @@ export function StartRecording({
               )}
             </Typography>
           </div>
-          <ol className="list-decimal">
+          <ol className="list-decimal mobile:px-4">
             <>
               {l10n
                 .getString('onboarding-automatic_proportions-recording-steps')
@@ -54,7 +54,7 @@ export function StartRecording({
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-3 mobile:justify-between">
           <Button
             variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
             onClick={prevStep}

@@ -1,7 +1,7 @@
 package dev.slimevr.autobone.errors
 
 import com.jme3.math.FastMath
-import dev.slimevr.autobone.AutoBoneTrainingStep
+import dev.slimevr.autobone.AutoBoneStep
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter
 import dev.slimevr.autobone.errors.proportions.RangeProportionLimiter
 import dev.slimevr.tracking.processor.HumanPoseManager
@@ -10,10 +10,10 @@ import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 // The distance from average human proportions
 class BodyProportionError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
-	override fun getStepError(trainingStep: AutoBoneTrainingStep): Float {
+	override fun getStepError(trainingStep: AutoBoneStep): Float {
 		return getBodyProportionError(
-			trainingStep.humanPoseManager1,
-			trainingStep.currentHeight
+			trainingStep.skeleton1,
+			trainingStep.currentHmdHeight
 		)
 	}
 
@@ -39,7 +39,8 @@ class BodyProportionError : IAutoBoneError {
 		// Full Height: 1.58 / 0.936 = 1.688034
 		// Neck: 0.1 / 1.688034 = 0.059241
 		// Torso: 0.56 / 1.688034 = 0.331747
-		// Chest: 0.32 / 1.688034 = 0.18957
+		// Upper Chest: 0.16 / 1.688034 = 0.094784
+		// Chest: 0.16 / 1.688034 = 0.094784
 		// Waist: (0.56 - 0.32 - 0.04) / 1.688034 = 0.118481
 		// Hip: 0.04 / 1.688034 = 0.023696
 		// Hip Width: 0.26 / 1.688034 = 0.154025
@@ -63,10 +64,17 @@ class BodyProportionError : IAutoBoneError {
 				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.NECK) },
 				0.0015f
 			),
-			// Chest
-			// Experimental: 0.189
+			// Upper Chest
+			// Experimental: 0.0945
 			RangeProportionLimiter(
-				0.189f,
+				0.0945f,
+				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.UPPER_CHEST) },
+				0.02f
+			),
+			// Chest
+			// Experimental: 0.0945
+			RangeProportionLimiter(
+				0.0945f,
 				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.CHEST) },
 				0.02f
 			),
@@ -114,12 +122,13 @@ class BodyProportionError : IAutoBoneError {
 			return when (offset) {
 				SkeletonConfigOffsets.HEAD -> proportionLimits[0]
 				SkeletonConfigOffsets.NECK -> proportionLimits[1]
-				SkeletonConfigOffsets.CHEST -> proportionLimits[2]
-				SkeletonConfigOffsets.WAIST -> proportionLimits[3]
-				SkeletonConfigOffsets.HIP -> proportionLimits[4]
-				SkeletonConfigOffsets.HIPS_WIDTH -> proportionLimits[5]
-				SkeletonConfigOffsets.UPPER_LEG -> proportionLimits[6]
-				SkeletonConfigOffsets.LOWER_LEG -> proportionLimits[7]
+				SkeletonConfigOffsets.UPPER_CHEST -> proportionLimits[2]
+				SkeletonConfigOffsets.CHEST -> proportionLimits[3]
+				SkeletonConfigOffsets.WAIST -> proportionLimits[4]
+				SkeletonConfigOffsets.HIP -> proportionLimits[5]
+				SkeletonConfigOffsets.HIPS_WIDTH -> proportionLimits[6]
+				SkeletonConfigOffsets.UPPER_LEG -> proportionLimits[7]
+				SkeletonConfigOffsets.LOWER_LEG -> proportionLimits[8]
 				else -> null
 			}
 		}

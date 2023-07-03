@@ -14,6 +14,7 @@ import { SlimeVRIcon } from './icon/SlimeVRIcon';
 import { UpperArmIcon } from './icon/UpperArmIcon';
 import { UpperLegIcon } from './icon/UpperLegIcon';
 import { WaistIcon } from './icon/WaistIcon';
+import { UpperChestIcon } from './icon/UpperChestIcon';
 
 // All body parts that are right or left, are by default left!
 export const mapPart: Record<
@@ -26,6 +27,9 @@ export const mapPart: Record<
     currentLocales: string[];
   }) => JSX.Element
 > = {
+  [BodyPart.UPPER_CHEST]: ({ width }) => (
+    <UpperChestIcon width={width}></UpperChestIcon>
+  ),
   [BodyPart.CHEST]: ({ width }) => <ChestIcon width={width}></ChestIcon>,
   [BodyPart.HEAD]: ({ width }) => <HeadsetIcon width={width}></HeadsetIcon>,
   [BodyPart.HIP]: ({ width }) => <HipIcon width={width}></HipIcon>,

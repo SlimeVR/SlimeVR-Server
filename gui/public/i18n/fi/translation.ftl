@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Oikea käsi
 body_part-RIGHT_UPPER_LEG = Oikea reisi
 body_part-RIGHT_LOWER_LEG = Oikea nilkka
 body_part-RIGHT_FOOT = Oikea jalkaterä
-body_part-RIGHT_CONTROLLER = Oikea ohjain
 body_part-CHEST = Rinta
 body_part-WAIST = Vyötärö
 body_part-HIP = Lonkka
@@ -41,19 +40,20 @@ body_part-LEFT_HAND = Vasen käsi
 body_part-LEFT_UPPER_LEG = Vasen reisi
 body_part-LEFT_LOWER_LEG = Vasen nilkka
 body_part-LEFT_FOOT = Vasen jalkaterä
-body_part-LEFT_CONTROLLER = Vasen ohjain
 
 ## Proportions
 
 skeleton_bone-NONE = Ei mikään
 skeleton_bone-HEAD = Pään säätö
 skeleton_bone-NECK = Kaulan pituus
+skeleton_bone-torso_group = Vartalon pituus
 skeleton_bone-CHEST = Rinnan pituus
 skeleton_bone-CHEST_OFFSET = Rinnan keskitys
 skeleton_bone-WAIST = Vyötärön pituus
 skeleton_bone-HIP = Lonkan pituus
 skeleton_bone-HIP_OFFSET = Lonkan keskitys
 skeleton_bone-HIPS_WIDTH = Lonkan leveys
+skeleton_bone-leg_group = Jalan pituus
 skeleton_bone-UPPER_LEG = Yläjalan pituus
 skeleton_bone-LOWER_LEG = Säären pituus
 skeleton_bone-FOOT_LENGTH = Jalkaterän pituus
@@ -61,18 +61,19 @@ skeleton_bone-FOOT_SHIFT = Jalkaterän säätö
 skeleton_bone-SKELETON_OFFSET = Luurangon keskitys
 skeleton_bone-SHOULDERS_DISTANCE = Olkapäiden etäisyys
 skeleton_bone-SHOULDERS_WIDTH = Olkapäiden leveys
+skeleton_bone-arm_group = Käsivarren pituus
 skeleton_bone-UPPER_ARM = Olkavarren pituus
 skeleton_bone-LOWER_ARM = Kyynärvarren pituus
-skeleton_bone-CONTROLLER_Y = Ohjaimen Etäisyys Y
-skeleton_bone-CONTROLLER_Z = Ohjaimen Etäisyys Z
+skeleton_bone-HAND_Y = Käden Etäisyys Y
+skeleton_bone-HAND_Z = Käden Etäisyys Z
 skeleton_bone-ELBOW_OFFSET = Kyynärpään keskitys
 
 ## Tracker reset buttons
 
 reset-reset_all = Nollaa kaikki mittasuhteet
-reset-full = Nollaa
+reset-full = Täysinollaus
 reset-mounting = Nollaa Asennus
-reset-quick = Pikanollaus
+reset-yaw = Nollaa Kallistuma
 
 ## Serial detection stuff
 
@@ -160,6 +161,8 @@ tracker-infos-manufacturer = Valmistaja
 tracker-infos-display_name = Näyttönimi
 tracker-infos-custom_name = Mukautettu Nimi
 tracker-infos-url = Jäljittimen URL
+tracker-infos-version = Laiteohjelmiston Versio
+tracker-infos-hardware_rev = Laitteston Tarkistus
 
 ## Tracker settings
 
@@ -276,8 +279,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Käytä
 ## FK/Tracking settings
 
 settings-general-fk_settings = Jäljityksen asetukset
-settings-general-fk_settings-leg_tweak = Jalkojen säätöjä
-settings-general-fk_settings-leg_tweak-description = Floor-clip voi vähentää tai jopa täysin estää jalan läpikulkua lattiasta, mutta voi aiheuttaa ongelmia kun olet polvillasi. Skating-correction ehkäisee luistelumaista liikettä, mutta voi heikentää tiettyjen liikekuvioiden tarkkuutta.
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -287,7 +288,14 @@ settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
+settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
+settings-general-fk_settings-leg_tweak-foot_plant = Foot plant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction vahvuus
+settings-general-fk_settings-leg_tweak-skating_correction-description = Skating correction helpottaa jalkojen luistelua, mutta voi heikentää tarkkuutta tietyissä liikekuvioissa. Kun otat käyttöön, muista tehdä täysi nollaus ja kalibroida uudelleen pelissä.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Floor clip voi vähentää tai korjata jalan kulun lattian läpi. Kun otat käyttöön, muista tehdä täysi nollaus ja kalibroida uudelleen pelissä.
+settings-general-fk_settings-leg_tweak-toe_snap-description = Toe snap yrittää arvata varpaiden asennon jos jalkaterän jäljitintä ei ole käytössä.
+settings-general-fk_settings-leg_tweak-foot_plant-description = Foot plant asettaa jalkateräsi yhdensuuntaisesti maan kanssa kosketuksessa.
+settings-general-fk_settings-leg_fk = Jalkojen jäljitys
 settings-general-fk_settings-arm_fk = Käsivarsien jäljitys
 settings-general-fk_settings-arm_fk-description = Muuta tapaa, jolla käsivarsia jäljitetään.
 settings-general-fk_settings-arm_fk-force_arms = Pakota kädet HMD:ltä
@@ -312,12 +320,12 @@ settings-general-gesture_control-taps =
         [one] 1 napautus
        *[other] { $amount } napautusta
     }
-settings-general-gesture_control-quickResetEnabled = Ota käyttöön pikanollaus napautus
-settings-general-gesture_control-quickResetDelay = Pikanollaus viive
-settings-general-gesture_control-quickResetTaps = Napautuksia pikanollaukseen
-settings-general-gesture_control-resetEnabled = Ota käyttöön nollaus napautus
-settings-general-gesture_control-resetDelay = Nollaus viive
-settings-general-gesture_control-resetTaps = Napautuksia nollaukseen
+settings-general-gesture_control-yawResetEnabled = Ota käyttöön kallistumanollaus napautus
+settings-general-gesture_control-yawResetDelay = Kallistumanollaus viive
+settings-general-gesture_control-yawResetTaps = Napautuksia kallistumanollaukseen.
+settings-general-gesture_control-fullResetEnabled = Ota käyttöön täysinollaus napautus
+settings-general-gesture_control-fullResetDelay = Täysinollaus viive
+settings-general-gesture_control-fullResetTaps = Napautuksia täysinollaukseen
 settings-general-gesture_control-mountingResetEnabled = Ota käyttöön asennusnollaus napautus
 settings-general-gesture_control-mountingResetDelay = Asennusnollaus viive
 settings-general-gesture_control-mountingResetTaps = Napautuksia asennusnollaukseen
@@ -331,6 +339,11 @@ settings-general-interface-dev_mode-label = Kehittäjätila
 settings-general-interface-serial_detection = Sarjalaitteen tunnistus
 settings-general-interface-serial_detection-description = Tämä vaihtoehto näyttää ponnahdusikkunan aina, kun liität uuden sarjalaitteen, joka voi olla jäljitin. Se auttaa parantamaan jäljittimen asennusprosessia.
 settings-general-interface-serial_detection-label = Sarjalaitteen tunnistus
+settings-general-interface-feedback_sound = Palaute ääni
+settings-general-interface-feedback_sound-description = Tämä asetus toistaa äänen nollauksen tapahtuessa.
+settings-general-interface-feedback_sound-label = Palaute ääni
+settings-general-interface-feedback_sound-volume = Palaute äänen voimakkuus
+settings-general-interface-theme = Väri teema
 settings-general-interface-lang = Valitse kieli
 settings-general-interface-lang-description = Vaihda oletuskieli, jota haluat käyttää.
 settings-general-interface-lang-placeholder = Valitse käytettävä kieli
@@ -405,10 +418,40 @@ settings-osc-vrchat-network-address-placeholder = VRChat IP-osoite
 settings-osc-vrchat-network-trackers = Jäljittimet
 settings-osc-vrchat-network-trackers-description = Vaihda tiettyjen jäljittimien lähettäminen OSC:n kautta.
 settings-osc-vrchat-network-trackers-chest = Rinta
-settings-osc-vrchat-network-trackers-waist = Vyötärö
 settings-osc-vrchat-network-trackers-knees = Polvet
 settings-osc-vrchat-network-trackers-feet = Jalat
 settings-osc-vrchat-network-trackers-elbows = Kyynärpäät
+
+## VMC OSC settings
+
+settings-osc-vmc = Virtual Motion Capture
+# This cares about multilines
+settings-osc-vmc-description =
+    Muuta VMC (Virtual Motion Capture) -protokollan asetuksia
+        lähettääksesi ja vastaanottaaksesi SlimeVR:n luutietoja muihin sovelluksiin.
+settings-osc-vmc-enable = Käytä
+settings-osc-vmc-enable-description = Vaihda tietojen lähettäminen ja vastaanottaminen.
+settings-osc-vmc-enable-label = Käytä
+settings-osc-vmc-network = Verkkoportit
+settings-osc-vmc-network-description = Aseta portit tietojen kuunteluun ja lähettämiseen VMC:n kautta
+settings-osc-vmc-network-port_in =
+    .label = Portti sisään
+    .placeholder = Portti sisään (oletus: 39540)
+settings-osc-vmc-network-port_out =
+    .label = Portti ulos
+    .placeholder = Portti ulos (oletus: 39539)
+settings-osc-vmc-network-address = Verkon osoite
+settings-osc-vmc-network-address-description = Määritä osoite, johon tietoja lähetetään VMC:n kautta
+settings-osc-vmc-network-address-placeholder = IPV4-osoite
+settings-osc-vmc-vrm = VRM-malli
+settings-osc-vmc-vrm-description = Lataa VRM-malli salliaksesi pääankkurin ja mahdollistaaksesi paremman yhteensopivuuden muiden sovellusten kanssa
+settings-osc-vmc-vrm-model_unloaded = Mallia ei ole ladattu
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] Malli ladattu: { $name }
+       *[other] Nimetön malli ladattu
+    }
+settings-osc-vmc-anchor_hip = Ankkuri lantiolla
 
 ## Setup/onboarding menu
 
@@ -442,10 +485,6 @@ onboarding-reset_tutorial-description = Tämä ominaisuus ei ole valmis, paina v
 ## Setup start
 
 onboarding-home = Tervetuloa SlimeVR:ään
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    Tuomme kaikille
-    täysikehojäljityksen
 onboarding-home-start = Mennään asentamaan!
 
 ## Enter VR part of setup
@@ -471,10 +510,19 @@ onboarding-connect_tracker-description-p1 = Yhdistä vain kaikki, joita ei ole v
 ## Tracker assignment setup
 
 
+## Tracker assignment warnings
+
+
+## Tracker mounting method choose
+
+
 ## Tracker manual mounting setup
 
 
 ## Tracker automatic mounting setup
+
+
+## Tracker proportions method choose
 
 
 ## Tracker manual proportions setup

@@ -48,7 +48,8 @@ public class LegTweaks {
 	// hyperparameters (COM calculation)
 	// mass percentages of the body
 	private static final float HEAD_MASS = 0.082f;
-	private static final float CHEST_MASS = 0.25f;
+	private static final float UPPER_CHEST_MASS = 0.125f;
+	private static final float CHEST_MASS = 0.125f;
 	private static final float WAIST_MASS = 0.209f;
 	private static final float THIGH_MASS = 0.128f;
 	private static final float CALF_MASS = 0.0535f;
@@ -61,6 +62,8 @@ public class LegTweaks {
 	private static final float MAXIMUM_CORRECTION_ANGLE_DELTA = 0.7f;
 	private static final float MAXIMUM_TOE_DOWN_ANGLE = 0.8f;
 	private static final float TOE_SNAP_COOLDOWN = 3.0f;
+	private static final float MIN_DISTANCE_FOR_PLANT = 0.025f;
+	private static final float MAX_DISTANCE_FOR_PLANT = 0.075f;
 
 	// hyperparameters (misc)
 	static final float NEARLY_ZERO = 0.001f;
@@ -78,6 +81,7 @@ public class LegTweaks {
 	private boolean initialized = true;
 	private boolean enabled = true; // master switch
 	private boolean floorclipEnabled = false;
+	private boolean alwaysUseFloorclip = false;
 	private boolean skatingCorrectionEnabled = false;
 	private boolean toeSnapEnabled = false;
 	private boolean footPlantEnabled = false;
@@ -251,6 +255,7 @@ public class LegTweaks {
 		LegTweaks.updateHyperParameters(config.getCorrectionStrength());
 
 		floorclipEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP);
+		alwaysUseFloorclip = config.getAlwaysUseFloorclip();
 		skatingCorrectionEnabled = skeleton.humanPoseManager
 			.getToggle(SkeletonConfigToggles.SKATING_CORRECTION);
 		toeSnapEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP);
@@ -329,12 +334,6 @@ public class LegTweaks {
 		// update the foot length
 		footLength = skeleton.leftFootNode.getLocalTransform().getTranslation().len();
 
-		// if not enabled, do nothing and return false
-		if (!enabled) {
-			bufferInvalid = true;
-			return false;
-		}
-
 		// if the user is standing start checking for a good time to enable leg
 		// tweaks
 		active = isStanding();
@@ -356,7 +355,7 @@ public class LegTweaks {
 
 			// if the system is active, populate the buffer with corrected floor
 			// clip feet positions
-			if (active && isStanding()) {
+			if (active) {
 				correctClipping();
 				bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 				bufferHead.setRightFootPositionCorrected(rightFootPosition);
@@ -414,9 +413,14 @@ public class LegTweaks {
 
 	// tweak the position of the legs based on data from the last frames
 	public void tweakLegs() {
+		// If user doesn't have knees or legtweaks is disabled,
+		// don't spend time doing calculations!
+		if ((!skeleton.hasKneeTrackers && !alwaysUseFloorclip) || !enabled)
+			return;
+
 		// update the class with the latest data from the skeleton
-		// if false is returned something indicated that the legs should not be
-		// tweaked
+		// if false is returned something indicated that the legs should not
+		// be tweaked
 		if (!preUpdate())
 			return;
 
@@ -432,7 +436,8 @@ public class LegTweaks {
 		if (skatingCorrectionEnabled)
 			correctSkating();
 
-		// determine if either leg is in a position to activate or deactivate
+		// determine if either leg is in a position to activate or
+		// deactivate
 		// (use the buffer to get the positions before corrections)
 		float leftFootDif = FastMath
 			.abs(
@@ -510,8 +515,8 @@ public class LegTweaks {
 
 	// returns true if the foot is clipped and false if it is not
 	public boolean isClipped(float leftOffset, float rightOffset) {
-		return (leftFootPosition.getY() < floorLevel + leftOffset
-			|| rightFootPosition.getY() < floorLevel + rightOffset);
+		return (leftFootPosition.getY() < floorLevel + (leftOffset * footLength)
+			|| rightFootPosition.getY() < floorLevel + (rightOffset * footLength));
 	}
 
 	// corrects the foot position to be above the floor level that is calculated
@@ -523,8 +528,8 @@ public class LegTweaks {
 		float rightOffset = getRightFootOffset();
 		float avgOffset = 0;
 
-		// if there is no clipping, or clipping is not enabled, return false
-		if (!isClipped(leftOffset, rightOffset) || !enabled)
+		// if there is no clipping, return
+		if (!isClipped(leftOffset, rightOffset))
 			return;
 
 		// move the feet to their new positions
@@ -810,9 +815,9 @@ public class LegTweaks {
 		if (bufferHead == null || bufferHead.getParent() == null)
 			return;
 
-		// if there is a foot tracker for a foot don't correct it
-		if (skeleton.leftFootTracker != null || skeleton.rightFootTracker != null)
-			return;
+		// boolean for if there is a foot tracker
+		boolean leftFootTracker = skeleton.leftFootTracker != null;
+		boolean rightFootTracker = skeleton.rightFootTracker != null;
 
 		// get the foot positions
 		Quaternion leftFootRotation = bufferHead.getLeftFootRotation();
@@ -837,6 +842,12 @@ public class LegTweaks {
 			weightL = getFootPlantWeight(leftFootPosition);
 			weightR = getFootPlantWeight(rightFootPosition);
 
+			// if foot trackers exist add to the weights
+			if (leftFootTracker)
+				weightL *= getRotationalDistanceToPlant(leftFootRotation);
+			if (rightFootTracker)
+				weightR *= getRotationalDistanceToPlant(rightFootRotation);
+
 			// perform the correction
 			leftFootRotation = (leftFootRotation
 				.interpR(
@@ -853,7 +864,7 @@ public class LegTweaks {
 
 		// corrects rotations when the foot is in the air by rotating the foot
 		// down so that the toes are touching
-		if (toeSnapEnabled) {
+		if (toeSnapEnabled && !(leftFootTracker && rightFootTracker)) {
 			// this correction step has its own weight vars
 			float weightL;
 			float weightR;
@@ -876,16 +887,20 @@ public class LegTweaks {
 			}
 
 			// then slerp the rotation to the new rotation based on the weight
-			leftFootRotation = leftFootRotation
-				.interpR(
-					replacePitch(leftFootRotation, -angleL),
-					weightL * masterWeightL
-				);
-			rightFootRotation = rightFootRotation
-				.interpR(
-					replacePitch(rightFootRotation, -angleR),
-					weightR * masterWeightR
-				);
+			if (leftFootTracker) {
+				leftFootRotation = leftFootRotation
+					.interpR(
+						replacePitch(leftFootRotation, -angleL),
+						weightL * masterWeightL
+					);
+			}
+			if (rightFootTracker) {
+				rightFootRotation = rightFootRotation
+					.interpR(
+						replacePitch(rightFootRotation, -angleR),
+						weightR * masterWeightR
+					);
+			}
 
 			// update state variables regarding toe snap
 			if (leftFootPosition.getY() - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
@@ -908,7 +923,7 @@ public class LegTweaks {
 		bufferHead.setLeftFootRotationCorrected(leftFootRotation);
 		bufferHead.setRightFootRotationCorrected(rightFootRotation);
 
-		// Set the corrected rotations in the skeleton
+		// update the skeleton
 		skeleton.computedLeftFootTracker.setRotation(leftFootRotation);
 		skeleton.computedRightFootTracker.setRotation(rightFootRotation);
 	}
@@ -959,6 +974,19 @@ public class LegTweaks {
 		return FastMath.clamp(weight, 0.0f, 1.0f);
 	}
 
+	// returns the amount to slerp for foot plant when foot trackers are active
+	private float getRotationalDistanceToPlant(Quaternion footRot) {
+		Quaternion footRotYaw = isolateYaw(footRot);
+		float angle = footRot.angleToR(footRotYaw);
+		angle = (float) (angle / (2 * Math.PI));
+
+		angle = FastMath.clamp(angle, MIN_DISTANCE_FOR_PLANT, MAX_DISTANCE_FOR_PLANT);
+
+		return 1
+			- ((angle - MIN_DISTANCE_FOR_PLANT)
+				/ (MAX_DISTANCE_FOR_PLANT - MIN_DISTANCE_FOR_PLANT));
+	}
+
 	// returns true if it is likely the user is standing
 	public boolean isStanding() {
 		// if the hip is below the vertical cutoff, user is not standing
@@ -967,7 +995,10 @@ public class LegTweaks {
 			- (hipToFloorDist * STANDING_CUTOFF_VERTICAL);
 
 		if (hipPosition.getY() < cutoff) {
-			currentDisengagementOffset = (1 - hipPosition.getY() / cutoff)
+			currentDisengagementOffset = (1
+				- ((floorLevel - hipPosition.getY())
+					/
+					(floorLevel - cutoff)))
 				* MAX_DISENGAGEMENT_OFFSET;
 
 			return false;
@@ -1066,6 +1097,7 @@ public class LegTweaks {
 		// compute the center of mass of smaller body parts and then sum them up
 		// with their respective weights
 		Vector3 head = skeleton.headNode.getWorldTransform().getTranslation();
+		Vector3 upperChest = skeleton.upperChestNode.getWorldTransform().getTranslation();
 		Vector3 chest = skeleton.chestNode.getWorldTransform().getTranslation();
 		Vector3 hip = skeleton.hipNode.getWorldTransform().getTranslation();
 		Vector3 leftCalf = getCenterOfJoint(skeleton.leftAnkleNode, skeleton.leftKneeNode);
@@ -1073,6 +1105,7 @@ public class LegTweaks {
 		Vector3 leftThigh = getCenterOfJoint(skeleton.leftKneeNode, skeleton.leftHipNode);
 		Vector3 rightThigh = getCenterOfJoint(skeleton.rightKneeNode, skeleton.rightHipNode);
 		centerOfMass = centerOfMass.plus(head.times(HEAD_MASS));
+		centerOfMass = centerOfMass.plus(upperChest.times(UPPER_CHEST_MASS));
 		centerOfMass = centerOfMass.plus(chest.times(CHEST_MASS));
 		centerOfMass = centerOfMass.plus(hip.times(WAIST_MASS));
 		centerOfMass = centerOfMass.plus(leftCalf.times(CALF_MASS));
@@ -1100,9 +1133,9 @@ public class LegTweaks {
 			centerOfMass = centerOfMass.plus(rightForearm.times(FOREARM_MASS));
 		} else {
 			// if the arms are not available put them slightly in front
-			// of the chest.
+			// of the upper chest.
 			Vector3 chestUnitVector = computeUnitVector(
-				skeleton.chestNode.getWorldTransform().getRotation()
+				skeleton.upperChestNode.getWorldTransform().getRotation()
 			);
 			Vector3 armLocation = chest.plus(chestUnitVector.times(DEFAULT_ARM_DISTANCE));
 			centerOfMass = centerOfMass.plus(armLocation.times(UPPER_ARM_MASS * 2.0f));

@@ -164,6 +164,8 @@ public class ProvisioningHandler implements SerialListener {
 
 	@Override
 	public void onNewSerialDevice(SerialPort port) {
+		if (!isRunning)
+			return;
 		this.initSerial(this.preferredPort);
 	}
 

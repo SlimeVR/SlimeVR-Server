@@ -5,7 +5,7 @@ import dev.slimevr.tracking.trackers.Tracker;
 import java.util.LinkedList;
 
 
-// class that monitors the acceleration of the waist, hip, or chest trackers to detect taps
+// class that monitors the acceleration of the waist, hip, chest or upper chest trackers to detect taps
 // and use this to trigger a varaity of resets (if your wondering why no single tap class exists, it's because
 // to many false positives)
 public class TapDetection {
@@ -175,6 +175,13 @@ public class TapDetection {
 	// you need two or more trackers for this feature to be reliable)
 	private boolean isUserStatic(Tracker trackerToExclude) {
 		int num = 0;
+		if (
+			skeleton.upperChestTracker != null
+				&& !skeleton.upperChestTracker.equals(trackerToExclude)
+		) {
+			if (skeleton.upperChestTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
+				num++;
+		}
 		if (skeleton.chestTracker != null && !skeleton.chestTracker.equals(trackerToExclude)) {
 			if (skeleton.chestTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
 				num++;

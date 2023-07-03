@@ -12,9 +12,9 @@ plugins {
 	kotlin("jvm") version "1.8.21"
 	kotlin("plugin.serialization") version "1.8.21"
 	application
-	id("com.github.johnrengelman.shadow") version "7.1.2"
+	id("com.github.johnrengelman.shadow") version "8.1.1"
 	id("com.diffplug.spotless") version "6.12.0"
-	id("com.github.gmazzo.buildconfig") version "3.1.0"
+	id("com.github.gmazzo.buildconfig") version "4.0.4"
 }
 
 kotlin {
@@ -66,14 +66,14 @@ dependencies {
 	// This dependency is used internally,
 	// and not exposed to consumers on their own compile classpath.
 	implementation("com.google.flatbuffers:flatbuffers-java:22.10.26")
-	implementation("commons-cli:commons-cli:1.3.1")
-	implementation("com.fasterxml.jackson.core:jackson-databind:2.12.7.1")
-	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.3")
+	implementation("commons-cli:commons-cli:1.5.0")
+	implementation("com.fasterxml.jackson.core:jackson-databind:2.15.1")
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.1")
 
 	implementation("com.github.jonpeterson:jackson-module-model-versioning:1.2.2")
 	implementation("org.apache.commons:commons-math3:3.6.1")
 	implementation("org.apache.commons:commons-lang3:3.12.0")
-	implementation("org.apache.commons:commons-collections4:4.1")
+	implementation("org.apache.commons:commons-collections4:4.4")
 
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
@@ -82,8 +82,7 @@ dependencies {
 	implementation("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
-
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 	implementation("it.unimi.dsi:fastutil:8.5.12")
 
 	testImplementation(kotlin("test"))
@@ -97,6 +96,13 @@ tasks.test {
 }
 
 tasks.shadowJar {
+	minimize {
+		exclude(dependency("com.fazecast:jSerialComm:.*"))
+		exclude(dependency("net.java.dev.jna:.*:.*"))
+		exclude(dependency("com.google.flatbuffers:flatbuffers-java:.*"))
+
+		exclude(project(":solarxr-protocol"))
+	}
 	archiveBaseName.set("slimevr")
 	archiveClassifier.set("")
 	archiveVersion.set("")
@@ -157,7 +163,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 // 			"max_line_length" to 88,
 			"ktlint_experimental" to "enabled",
 			"ij_kotlin_packages_to_use_import_on_demand" to
-				"java.util.*,kotlin.math.*,dev.slimevr.autobone.errors.*,io.github.axisangles.ktmath.*",
+				"java.util.*,kotlin.math.*,dev.slimevr.autobone.errors.*,io.github.axisangles.ktmath.*,kotlinx.atomicfu.*",
 			"ij_kotlin_allow_trailing_comma" to true
 		)
 	val ktlintVersion = "0.47.1"
@@ -182,4 +188,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 	}
 }
 
-tasks.getByName("run", JavaExec::class) { standardInput = System.`in` }
+tasks.getByName("run", JavaExec::class) {
+	standardInput = System.`in`
+	args = listOf("run")
+}

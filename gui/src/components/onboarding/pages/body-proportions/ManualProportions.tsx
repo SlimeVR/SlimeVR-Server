@@ -8,15 +8,46 @@ import { PersonFrontIcon } from '../../../commons/PersonFrontIcon';
 import { Typography } from '../../../commons/Typography';
 import { BodyProportions } from './BodyProportions';
 import { useLocalization } from '@fluent/react';
-import { useEffect, useMemo, useState } from 'react';
-import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
-import { SkipSetupButton } from '../../SkipSetupButton';
+import { useEffect, useMemo } from 'react';
+import { useBreakpoint } from '../../../../hooks/breakpoint';
+
+export function ButtonsControl() {
+  const { l10n } = useLocalization();
+  const { state } = useOnboarding();
+  const { sendRPCPacket } = useWebsocketAPI();
+
+  const resetAll = () => {
+    sendRPCPacket(
+      RpcMessage.SkeletonResetAllRequest,
+      new SkeletonResetAllRequestT()
+    );
+  };
+
+  return (
+    <>
+      <Button
+        variant="secondary"
+        state={{ alonePage: state.alonePage }}
+        to="/onboarding/body-proportions/choose"
+      >
+        {l10n.getString('onboarding-previous_step')}
+      </Button>
+      <Button variant="secondary" onClick={resetAll}>
+        {l10n.getString('reset-reset_all')}
+      </Button>
+      {!state.alonePage && (
+        <Button variant="primary" className="ml-auto" to="/onboarding/done">
+          {l10n.getString('onboarding-continue')}
+        </Button>
+      )}
+    </>
+  );
+}
 
 export function ManualProportionsPage() {
+  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
-  const { applyProgress, skipSetup, state } = useOnboarding();
-  const { sendRPCPacket } = useWebsocketAPI();
-  const [skipWarning, setSkipWarning] = useState(false);
+  const { applyProgress, state } = useOnboarding();
 
   applyProgress(0.9);
 
@@ -27,28 +58,16 @@ export function ManualProportionsPage() {
   });
   const { precise, ratio } = watch();
 
-  const resetAll = () => {
-    sendRPCPacket(
-      RpcMessage.SkeletonResetAllRequest,
-      new SkeletonResetAllRequestT()
-    );
-  };
-
   useEffect(() => {
     localStorage.setItem('ratioMode', ratio.toString());
   }, [ratio]);
 
   return (
     <>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
-        <SkipSetupButton
-          visible={!state.alonePage}
-          modalVisible={skipWarning}
-          onClick={() => setSkipWarning(true)}
-        ></SkipSetupButton>
-        <div className="flex flex-col w-full h-full max-w-5xl justify-center">
-          <div className="flex gap-8 justify-center">
-            <div className="flex flex-col w-full max-w-2xl gap-3 items-center">
+      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center overflow-y-auto relative">
+        <div className="flex flex-col w-full h-full xs:max-w-5xl xs:justify-center">
+          <div className="flex gap-8 justify-center h-full xs:items-center">
+            <div className="flex flex-col w-full xs:max-w-2xl gap-3 items-center mobile:justify-around">
               <div className="flex flex-col">
                 <Typography variant="main-title">
                   {l10n.getString('onboarding-manual_proportions-title')}
@@ -67,49 +86,31 @@ export function ManualProportionsPage() {
                   name="precise"
                   variant="toggle"
                 ></CheckBox>
+                {isMobile && (
+                  <div className="flex gap-3 justify-between">
+                    <ButtonsControl></ButtonsControl>
+                  </div>
+                )}
               </div>
-              <BodyProportions
-                precise={precise}
-                type={ratio ? 'ratio' : 'linear'}
-                variant={state.alonePage ? 'alone' : 'onboarding'}
-              ></BodyProportions>
+              <div className="w-full px-2">
+                <BodyProportions
+                  precise={precise}
+                  type={ratio ? 'ratio' : 'linear'}
+                  variant={state.alonePage ? 'alone' : 'onboarding'}
+                ></BodyProportions>
+              </div>
             </div>
             <div className="flex-col flex-grow gap-3 rounded-xl fill-background-50 items-center hidden md:flex">
               <PersonFrontIcon width={200}></PersonFrontIcon>
             </div>
           </div>
-          <div className="flex gap-3 mt-5">
-            <Button
-              variant="secondary"
-              state={{ alonePage: state.alonePage }}
-              to="/onboarding/body-proportions/choose"
-            >
-              {l10n.getString('onboarding-previous_step')}
-            </Button>
-            <Button variant="secondary" onClick={resetAll}>
-              {l10n.getString('reset-reset_all')}
-            </Button>
-            {!state.alonePage && (
-              <Button
-                variant="primary"
-                className="ml-auto"
-                to="/onboarding/done"
-              >
-                {l10n.getString('onboarding-continue')}
-              </Button>
-            )}
-          </div>
-        </div>
-        <div className="w-full py-4 flex flex-row">
-          <div className="flex flex-grow gap-3"></div>
-          <div className="flex gap-3"></div>
+          {!isMobile && (
+            <div className="flex gap-3 my-5 mx-4 justify-between">
+              <ButtonsControl></ButtonsControl>
+            </div>
+          )}
         </div>
       </div>
-      <SkipSetupWarningModal
-        accept={skipSetup}
-        onClose={() => setSkipWarning(false)}
-        isOpen={skipWarning}
-      ></SkipSetupWarningModal>
     </>
   );
 }

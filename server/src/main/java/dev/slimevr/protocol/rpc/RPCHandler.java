@@ -14,17 +14,18 @@ import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler;
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler;
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler;
 import dev.slimevr.protocol.rpc.setup.RPCTapSetupHandler;
+import dev.slimevr.protocol.rpc.setup.RPCUtil;
+import dev.slimevr.protocol.rpc.status.RPCStatusHandler;
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
+import dev.slimevr.tracking.trackers.TrackerUtils;
 import io.eiren.util.logging.LogManager;
 import io.github.axisangles.ktmath.Quaternion;
 import solarxr_protocol.MessageBundle;
 import solarxr_protocol.datatypes.TransactionId;
 import solarxr_protocol.rpc.*;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.EnumMap;
 import java.util.Map.Entry;
 import java.util.function.BiConsumer;
@@ -48,6 +49,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		new RPCProvisioningHandler(this, api);
 		new RPCSettingsHandler(this, api);
 		new RPCTapSetupHandler(this, api);
+		new RPCStatusHandler(this, api);
 
 		registerPacketListener(RpcMessage.ResetRequest, this::onResetRequest);
 		registerPacketListener(RpcMessage.AssignTrackerRequest, this::onAssignTrackerRequest);
@@ -83,6 +85,10 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 		registerPacketListener(RpcMessage.LegTweaksTmpClear, this::onLegTweaksTmpClear);
 
+		registerPacketListener(RpcMessage.StatusSystemRequest, this::onStatusSystemRequest);
+
+		registerPacketListener(RpcMessage.SetPauseTrackingRequest, this::onSetPauseTrackingRequest);
+
 		this.api.server.getAutoBoneHandler().addListener(this);
 	}
 
@@ -92,16 +98,12 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 	) {
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-		try {
-			String localIp = InetAddress.getLocalHost().getHostAddress();
-			int response = ServerInfosResponse
-				.createServerInfosResponse(fbb, fbb.createString(localIp));
-			int outbound = this.createRPCMessage(fbb, RpcMessage.ServerInfosResponse, response);
-			fbb.finish(outbound);
-			conn.send(fbb.dataBuffer());
-		} catch (UnknownHostException e) {
-			throw new RuntimeException(e);
-		}
+		String localIp = RPCUtil.getLocalIp();
+		int response = ServerInfosResponse
+			.createServerInfosResponse(fbb, fbb.createString(localIp));
+		int outbound = this.createRPCMessage(fbb, RpcMessage.ServerInfosResponse, response);
+		fbb.finish(outbound);
+		conn.send(fbb.dataBuffer());
 	}
 
 	private void onOverlayDisplayModeRequest(
@@ -223,7 +225,16 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		if (tracker == null)
 			return;
 
+
 		TrackerPosition pos = TrackerPosition.getByBodyPart(req.bodyPosition());
+		Tracker previousTracker = pos != null
+			? TrackerUtils
+				.getNonInternalTrackerForBodyPosition(this.api.server.getAllTrackers(), pos)
+			: null;
+		if (previousTracker != null) {
+			previousTracker.setTrackerPosition(null);
+			this.api.server.trackerUpdated(previousTracker);
+		}
 		tracker.setTrackerPosition(pos);
 
 		if (req.mountingOrientation() != null) {
@@ -444,10 +455,37 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			);
 	}
 
-
 	@Override
 	public void onAutoBoneEnd(EnumMap<SkeletonConfigOffsets, Float> configValues) {
 		// Do nothing, the last epoch from "onAutoBoneEpoch" should be all
 		// that's needed
+	}
+
+	public void onStatusSystemRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		StatusSystemRequest req = (StatusSystemRequest) messageHeader
+			.message(new StatusSystemRequest());
+		if (req == null)
+			return;
+
+		var statuses = this.api.server.getStatusSystem().getStatuses();
+
+		FlatBufferBuilder fbb = new FlatBufferBuilder(
+			statuses.length * RPCStatusHandler.STATUS_EXPECTED_SIZE
+		);
+		var response = new StatusSystemResponseT();
+		response.setCurrentStatuses(statuses);
+		int offset = StatusSystemResponse.pack(fbb, response);
+		int outbound = this.createRPCMessage(fbb, RpcMessage.StatusSystemResponse, offset);
+		fbb.finish(outbound);
+		conn.send(fbb.dataBuffer());
+	}
+
+	public void onSetPauseTrackingRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		SetPauseTrackingRequest req = (SetPauseTrackingRequest) messageHeader
+			.message(new SetPauseTrackingRequest());
+		if (req == null)
+			return;
+
+		this.api.server.humanPoseManager.setPauseTracking(req.pauseTracking());
 	}
 }

@@ -1,5 +1,4 @@
 import { useLocalization } from '@fluent/react';
-import { useState } from 'react';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import {
   AutoboneContextC,
@@ -16,16 +15,13 @@ import { PutTrackersOnStep } from './autobone-steps/PutTrackersOn';
 import { Recording } from './autobone-steps/Recording';
 import { StartRecording } from './autobone-steps/StartRecording';
 import { VerifyResultsStep } from './autobone-steps/VerifyResults';
-import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
-import { SkipSetupButton } from '../../SkipSetupButton';
 import { useCountdown } from '../../../../hooks/countdown';
 
 export function AutomaticProportionsPage() {
   const { l10n } = useLocalization();
-  const { applyProgress, skipSetup, state } = useOnboarding();
+  const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
   const context = useProvideAutobone();
-  const [skipWarning, setSkipWarning] = useState(false);
   const { isCounting, startCountdown, timer } = useCountdown({
     onCountdownEnd: () => {
       sendRPCPacket(
@@ -39,13 +35,8 @@ export function AutomaticProportionsPage() {
 
   return (
     <AutoboneContextC.Provider value={context}>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
-        <SkipSetupButton
-          visible={!state.alonePage}
-          modalVisible={skipWarning}
-          onClick={() => setSkipWarning(true)}
-        ></SkipSetupButton>
-        <div className="flex flex-col w-full h-full justify-center max-w-3xl gap-5">
+      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center overflow-y-auto overflow-x-hidden relative px-4 pb-4">
+        <div className="flex flex-col w-full xs:h-full xs:justify-center max-w-3xl gap-5">
           <div className="flex flex-col max-w-lg gap-3">
             <Typography variant="main-title">
               {l10n.getString('onboarding-automatic_proportions-title')}
@@ -70,28 +61,21 @@ export function AutomaticProportionsPage() {
             ></StepperSlider>
           </div>
         </div>
-        <div className="w-full pb-4 flex flex-row">
-          <div className="flex flex-grow gap-3">
-            <Button
-              variant="secondary"
-              onClick={startCountdown}
-              disabled={isCounting}
-            >
-              <div className="relative">
-                <div className="opacity-0 h-0">
-                  {l10n.getString('reset-reset_all')}
-                </div>
-                {!isCounting ? l10n.getString('reset-reset_all') : timer}
+        <div className="w-full pb-4 flex flex-grow flex-row mobile:justify-center">
+          <Button
+            variant="secondary"
+            onClick={startCountdown}
+            disabled={isCounting}
+          >
+            <div className="relative">
+              <div className="opacity-0 h-0">
+                {l10n.getString('reset-reset_all')}
               </div>
-            </Button>
-          </div>
+              {!isCounting ? l10n.getString('reset-reset_all') : timer}
+            </div>
+          </Button>
         </div>
       </div>
-      <SkipSetupWarningModal
-        accept={skipSetup}
-        onClose={() => setSkipWarning(false)}
-        isOpen={skipWarning}
-      ></SkipSetupWarningModal>
     </AutoboneContextC.Provider>
   );
 }

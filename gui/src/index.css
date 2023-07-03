@@ -5,8 +5,8 @@
 body {
   font-variant-numeric: tabular-nums;
   font-family: 'poppins', sans-serif, 'Twemoji Chromium', emoji;
-  height: 100vh;
   width: 100vw;
+  height: 100vh;
   user-select: none;
   background: theme('colors.background.20');
 
@@ -252,6 +252,17 @@ body {
 
 #root {
   height: 100%;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 ::-webkit-scrollbar {

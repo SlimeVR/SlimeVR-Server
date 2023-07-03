@@ -13,7 +13,10 @@ object TrackerUtils {
 		allTrackers: List<Tracker>,
 		position: TrackerPosition,
 	): Tracker? = allTrackers.firstOrNull {
-		it.trackerPosition === position && !it.isInternal && it.status != TrackerStatus.DISCONNECTED && it.status != TrackerStatus.ERROR
+		it.trackerPosition === position &&
+			!it.isInternal &&
+			it.status != TrackerStatus.DISCONNECTED &&
+			it.status != TrackerStatus.ERROR
 	}
 
 	/**
@@ -40,4 +43,18 @@ object TrackerUtils {
 		secondTracker: Tracker?,
 		thirdTracker: Tracker?,
 	): Tracker? = firstTracker ?: (secondTracker ?: thirdTracker)
+
+	/**
+	 * Returns the first tracker that isn't null out of the 4 trackers passed as
+	 * arguments.
+	 *
+	 * @return The first non-null tracker or null
+	 */
+	@JvmStatic
+	fun getFirstAvailableTracker(
+		firstTracker: Tracker?,
+		secondTracker: Tracker?,
+		thirdTracker: Tracker?,
+		fourthTracker: Tracker?,
+	): Tracker? = firstTracker ?: (secondTracker ?: (thirdTracker ?: fourthTracker))
 }
