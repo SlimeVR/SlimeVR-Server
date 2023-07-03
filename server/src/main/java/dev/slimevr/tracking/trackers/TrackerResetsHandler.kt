@@ -100,10 +100,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Takes a rotation and adjusts it to mounting
 	 */
 	fun getMountingAdjustedRotationFrom(rotation: Quaternion): Quaternion {
-		if (mountRotFix == Quaternion.IDENTITY) {
-			return rotation * mountingOrientation
-		}
-		return rotation * mountRotFix
+		return rotation * mountingOrientation * mountRotFix
 	}
 
 	/**
