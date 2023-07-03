@@ -44,6 +44,7 @@ class AutoBone(server: VRServer) {
 	val heightOffsets = FastList(
 		arrayOf(
 			BoneType.NECK,
+			BoneType.UPPER_CHEST,
 			BoneType.CHEST,
 			BoneType.WAIST,
 			BoneType.HIP,
