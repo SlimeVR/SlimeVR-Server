@@ -242,13 +242,13 @@ fn main() {
 			// I should log this anyways, don't want to dig a grave by not logging the error.
 			log::error!("CreateWebview error {}", error);
 
-			use tauri::api::dialog::{
-				blocking::MessageDialogBuilder, MessageDialogButtons, MessageDialogKind,
-			};
+			use rfd::{MessageButtons, MessageDialog, MessageLevel};
 
-			let confirm = MessageDialogBuilder::new("SlimeVR", "You seem to have a faulty installation of WebView2. You can check a guide on how to fix that in the docs!")
-				.buttons(MessageDialogButtons::OkCancel)
-				.kind(MessageDialogKind::Error)
+			let confirm = MessageDialog::new()
+				.set_title("SlimeVR")
+				.set_description("You seem to have a faulty installation of WebView2. You can check a guide on how to fix that in the docs!")
+				.set_buttons(MessageButtons::OkCancel)
+				.set_level(MessageLevel::Error)
 				.show();
 			if confirm {
 				open::that("https://docs.slimevr.dev/common-issues.html#webview2-is-missing--slimevr-gui-crashes-immediately--panicked-at--webview2error").unwrap();
