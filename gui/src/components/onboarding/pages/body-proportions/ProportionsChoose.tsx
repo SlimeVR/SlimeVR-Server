@@ -11,8 +11,8 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
 import saveAs from 'file-saver';
-import { save } from '@tauri-apps/api/dialog';
-import { writeTextFile } from '@tauri-apps/api/fs';
+import { save } from '@tauri-apps/plugin-dialog';
+import { writeTextFile } from '@tauri-apps/plugin-fs';
 import { useIsTauri } from '../../../../hooks/breakpoint';
 
 export function ProportionsChoose() {

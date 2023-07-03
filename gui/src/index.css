@@ -10,7 +10,7 @@ body {
   user-select: none;
   background: theme('colors.background.20');
 
-  /* Scrollbar for firefox */
+  /*Scrollbar for firefox */
   scrollbar-color: theme('colors.background.50') theme('colors.background.60');
   scrollbar-width: thin;
 }
@@ -19,6 +19,7 @@ body {
   body {
     font-family: 'poppins', sans-serif, 'Twemoji Webkit', emoji;
   }
+
   body.linux {
     font-family: 'poppins', sans-serif, emoji;
   }

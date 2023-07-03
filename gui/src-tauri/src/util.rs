@@ -93,20 +93,17 @@ pub fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> 
 #[cfg(desktop)]
 pub fn show_error(text: &str) -> bool {
 	use rand::{seq::SliceRandom, thread_rng};
-	use tauri::api::dialog::{
-		blocking::MessageDialogBuilder, MessageDialogButtons, MessageDialogKind,
-	};
+	use rfd::{MessageButtons, MessageDialog, MessageLevel};
 
-	MessageDialogBuilder::new(
-		format!(
+	MessageDialog::new()
+		.set_title(&format!(
 			"SlimeVR GUI crashed - {}",
 			POSSIBLE_TITLES.choose(&mut thread_rng()).unwrap()
-		),
-		text,
-	)
-	.buttons(MessageDialogButtons::Ok)
-	.kind(MessageDialogKind::Error)
-	.show()
+		))
+		.set_description(text)
+		.set_buttons(MessageButtons::Ok)
+		.set_level(MessageLevel::Error)
+		.show()
 }
 
 #[cfg(mobile)]

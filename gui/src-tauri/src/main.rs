@@ -10,10 +10,10 @@ use std::time::Instant;
 
 use clap::Parser;
 use state::WindowState;
-use tauri::api::process::{Command, CommandChild};
 use tauri::Manager;
 use tauri::RunEvent;
 use tauri::WindowEvent;
+use tauri_plugin_shell::process::CommandChild;
 
 use crate::util::{
 	get_launch_path, show_error, valid_java_paths, Cli, JAVA_BIN, MINIMUM_JAVA_VERSION,
@@ -75,13 +75,13 @@ fn main() {
 		if !webview2_exists() {
 			// This makes a dialog appear which let's you press Ok or Cancel
 			// If you press Ok it will open the SlimeVR installer documentation
-			use tauri::api::dialog::{
-				blocking::MessageDialogBuilder, MessageDialogButtons, MessageDialogKind,
-			};
+			use rfd::{MessageButtons, MessageDialog, MessageLevel};
 
-			let confirm = MessageDialogBuilder::new("SlimeVR", "Couldn't find WebView2 installed. You can install it with the SlimeVR installer")
-				.buttons(MessageDialogButtons::OkCancel)
-				.kind(MessageDialogKind::Error)
+			let confirm = MessageDialog::new()
+				.set_title("SlimeVR")
+				.set_description("Couldn't find WebView2 installed. You can install it with the SlimeVR installer")
+				.set_buttons(MessageButtons::OkCancel)
+				.set_level(MessageLevel::Error)
 				.show();
 			if confirm {
 				open::that("https://docs.slimevr.dev/server-setup/installing-and-connecting.html#install-the-latest-slimevr-installer").unwrap();
@@ -92,10 +92,11 @@ fn main() {
 
 	// Spawn server process
 	let exit_flag = Arc::new(AtomicBool::new(false));
-	let mut backend: Option<CommandChild> = None;
+	let backend = Arc::new(Mutex::new(Option::<CommandChild>::None));
+	let backend_termination = backend.clone();
 	let run_path = get_launch_path(cli);
 
-	let stdout_recv = if let Some(p) = run_path {
+	let server_info = if let Some(p) = run_path {
 		log::info!("Server found on path: {}", p.to_str().unwrap());
 
 		// Check if any Java already installed is compatible
@@ -110,13 +111,7 @@ fn main() {
 		};
 
 		log::info!("Using Java binary: {:?}", java_bin);
-		let (recv, child) = Command::new(java_bin.to_str().unwrap())
-			.current_dir(p)
-			.args(["-Xmx512M", "-jar", "slimevr.jar", "run"])
-			.spawn()
-			.expect("Unable to start the server jar");
-		backend = Some(child);
-		Some(recv)
+		Some((java_bin, p))
 	} else {
 		log::warn!("No server found. We will not start the server.");
 		None
@@ -124,10 +119,15 @@ fn main() {
 
 	let exit_flag_terminated = exit_flag.clone();
 	let build_result = tauri::Builder::default()
+		.plugin(tauri_plugin_dialog::init())
+		.plugin(tauri_plugin_fs::init())
+		.plugin(tauri_plugin_os::init())
+		.plugin(tauri_plugin_shell::init())
+		.plugin(tauri_plugin_window::init())
 		.invoke_handler(tauri::generate_handler![update_window_state])
 		.setup(move |app| {
 			let window_state =
-				WindowState::open_state(app.path_resolver().app_config_dir().unwrap())
+				WindowState::open_state(app.path().app_config_dir().unwrap())
 					.unwrap_or_default();
 
 			let window = tauri::WindowBuilder::new(
@@ -150,12 +150,25 @@ fn main() {
 
 			app.manage(Mutex::new(window_state));
 
-			if let Some(mut recv) = stdout_recv {
+			if let Some((java_bin, p)) = server_info {
 				let app_handle = app.app_handle();
 				tauri::async_runtime::spawn(async move {
-					use tauri::api::process::CommandEvent;
+					use tauri_plugin_shell::{process::CommandEvent, ShellExt};
 
-					while let Some(cmd_event) = recv.recv().await {
+					let (mut rx, child) = app_handle
+						.shell()
+						.command(java_bin.to_str().unwrap())
+						.current_dir(p)
+						.args(["-Xmx512M", "-jar", "slimevr.jar", "run"])
+						.spawn()
+						.expect("Unable to start the server jar");
+
+					{
+						let mut lock = backend.lock().unwrap();
+						*lock = Some(child)
+					}
+
+					while let Some(cmd_event) = rx.recv().await {
 						let emit_me = match cmd_event {
 							CommandEvent::Stderr(s) => ("stderr", s),
 							CommandEvent::Stdout(s) => ("stdout", s),
@@ -164,7 +177,7 @@ fn main() {
 								exit_flag_terminated.store(true, Ordering::Relaxed);
 								("terminated", format!("{s:?}").into_bytes())
 							}
-							_ => ("other", vec!()),
+							_ => ("other", vec![]),
 						};
 						app_handle
 							.emit_all("server-status", emit_me)
@@ -197,19 +210,19 @@ fn main() {
 				RunEvent::ExitRequested { .. } => {
 					let window_state = app_handle.state::<Mutex<WindowState>>();
 					let lock = window_state.lock().unwrap();
-					let config_dir =
-						app_handle.path_resolver().app_config_dir().unwrap();
+					let config_dir = app_handle.path().app_config_dir().unwrap();
 					let window_state_res = lock.save_state(config_dir);
 					match window_state_res {
 						Ok(()) => log::info!("saved window state"),
 						Err(e) => log::error!("failed to save window state: {}", e),
 					}
 
-					let Some(ref mut child) = backend else { return };
+					let mut lock = backend_termination.lock().unwrap();
+					let Some(ref mut child) = *lock else { return };
 					let write_result = child.write(b"exit\n");
 					match write_result {
 						Ok(()) => log::info!("send exit to backend"),
-						Err(_) => log::info!("fail to send exit to backend"),
+						Err(_) => log::error!("fail to send exit to backend"),
 					}
 					let ten_seconds = Duration::from_secs(10);
 					let start_time = Instant::now();
