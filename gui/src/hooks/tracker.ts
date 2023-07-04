@@ -28,7 +28,7 @@ export function useTrackers() {
       useMemo(
         () =>
           trackers.filter(
-            ({ tracker }) => tracker.status !== TrackerStatus.DISCONNECTED
+            ({ tracker }) => tracker.status !== TrackerStatus.DISCONNECTED && tracker.info?.isImu
           ),
         [trackers]
       ),
