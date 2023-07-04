@@ -45,8 +45,8 @@ class Tracker @JvmOverloads constructor(
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = 0
 	private var rotation = Quaternion.IDENTITY
+	private var acceleration = Vector3.NULL
 	var position = Vector3.NULL
-	var acceleration = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
 	var batteryVoltage: Float? = null
@@ -265,6 +265,18 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
+	 * Gets the adjusted tracker acceleration after mounting corrections.
+	 */
+	fun getAcceleration(): Vector3 {
+		var vec = acceleration
+		if (needsReset) {
+			vec = resetsHandler.getMountingAdjustedRotationFrom(rotation).sandwich(vec)
+		}
+
+		return vec
+	}
+
+	/**
 	 * Gets the identity-adjusted tracker rotation after some corrections
 	 * (filtering, identity reset and identity mounting).
 	 * This is used for debugging/visualizing tracker data
@@ -299,6 +311,13 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun setRotation(rotation: Quaternion) {
 		this.rotation = rotation
+	}
+
+	/**
+	 * Sets the raw (unadjusted) acceleration of the tracker.
+	 */
+	fun setAcceleration(vec: Vector3) {
+		this.acceleration = vec
 	}
 
 	fun isImu(): Boolean {
