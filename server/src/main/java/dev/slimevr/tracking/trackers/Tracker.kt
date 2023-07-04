@@ -63,7 +63,9 @@ class Tracker @JvmOverloads constructor(
 	var statusResetRecently = false
 	private var alreadyInitialized = false
 	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) {
-			_, _, new ->
+			_, old, new ->
+		if (old == new) return@observable
+
 		if (!new.reset) {
 			if (alreadyInitialized) {
 				statusResetRecently = true
@@ -82,7 +84,9 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) {
-			_, _, _ ->
+			_, old, new ->
+		if (old == new) return@observable
+
 		if (!isInternal) {
 			checkReportRequireReset()
 		}
@@ -199,7 +203,9 @@ class Tracker @JvmOverloads constructor(
 				resetsHandler.allowDriftCompensation = it
 			}
 		}
-		if (!isInternal && !(!isImu() && (trackerPosition == TrackerPosition.LEFT_HAND || trackerPosition == TrackerPosition.RIGHT_HAND))) {
+		if (!isInternal &&
+			!(!isImu() && (trackerPosition == TrackerPosition.LEFT_HAND || trackerPosition == TrackerPosition.RIGHT_HAND))
+		) {
 			checkReportRequireReset()
 		}
 	}
