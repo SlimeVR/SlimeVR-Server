@@ -6,7 +6,12 @@ import { BodyInteractions } from '../commons/BodyInteractions';
 import { TrackerPartCard } from '../tracker/TrackerPartCard';
 import { BodyPartError } from './pages/trackers-assign/TrackerAssignment';
 
-export const SPINE_PARTS = [BodyPart.HIP, BodyPart.CHEST, BodyPart.WAIST];
+export const SPINE_PARTS = [
+  BodyPart.UPPER_CHEST,
+  BodyPart.CHEST,
+  BodyPart.WAIST,
+  BodyPart.HIP,
+];
 export const ASSIGNMENT_RULES: Partial<
   Record<BodyPart, (BodyPart | BodyPart[])[]>
 > = {
@@ -26,6 +31,8 @@ export const ASSIGNMENT_RULES: Partial<
   [BodyPart.RIGHT_UPPER_LEG]: [SPINE_PARTS],
   [BodyPart.HIP]: [BodyPart.CHEST],
   [BodyPart.WAIST]: [BodyPart.CHEST],
+  // TODO chest OR upperChest.
+  //  Also don't warn if no legs.
 };
 
 export function BodyAssignment({
@@ -177,6 +184,17 @@ export function BodyAssignment({
         }
         rightControls={
           <div className="flex flex-col justify-between h-full">
+            {advanced && (
+              <TrackerPartCard
+                onlyAssigned={onlyAssigned}
+                roleError={rolesWithErrors[BodyPart.UPPER_CHEST]?.label}
+                td={trackerPartGrouped[BodyPart.UPPER_CHEST]}
+                role={BodyPart.UPPER_CHEST}
+                onClick={() => onRoleSelected(BodyPart.UPPER_CHEST)}
+                direction="left"
+              />
+            )}
+
             <TrackerPartCard
               onlyAssigned={onlyAssigned}
               roleError={rolesWithErrors[BodyPart.CHEST]?.label}

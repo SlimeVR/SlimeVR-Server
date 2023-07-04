@@ -144,7 +144,7 @@ public class HumanPoseManager {
 					VRServer.getNextLocalTrackerId(),
 					"human://CHEST",
 					"Computed chest",
-					TrackerPosition.CHEST,
+					TrackerPosition.UPPER_CHEST,
 					null,
 					true,
 					true,

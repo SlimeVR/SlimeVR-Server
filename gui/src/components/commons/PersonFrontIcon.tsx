@@ -18,6 +18,13 @@ export function PersonFrontIcon({ width }: { width?: number }) {
       <circle
         className="body-part-circle"
         cx="82"
+        cy="114"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[BodyPart.UPPER_CHEST]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="82"
         cy="130"
         r={CIRCLE_RADIUS}
         id={BodyPart[BodyPart.CHEST]}
