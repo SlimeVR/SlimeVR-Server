@@ -18,13 +18,5 @@
     "@typescript-eslint/parser": "^5.59.6",
     "husky": "^8.0.2",
     "typescript": "^5.0.4"
-  },
-  "dependencies": {
-    "@tauri-apps/plugin-app": "github:tauri-apps/tauri-plugin-app#v2",
-    "@tauri-apps/plugin-dialog": "github:tauri-apps/tauri-plugin-dialog#v2",
-    "@tauri-apps/plugin-fs": "github:tauri-apps/tauri-plugin-fs#v2",
-    "@tauri-apps/plugin-os": "github:tauri-apps/tauri-plugin-os#v2",
-    "@tauri-apps/plugin-shell": "github:tauri-apps/tauri-plugin-shell#v2",
-    "@tauri-apps/plugin-window": "github:tauri-apps/tauri-plugin-window#v2"
   }
 }
