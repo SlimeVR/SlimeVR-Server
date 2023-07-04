@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -12,6 +9,9 @@
 
 websocket-connecting = מתחבר לשרת
 websocket-connection_lost = החיבור לשרת אבד. מנסה להתחבר מחדש
+
+## Update notification
+
 
 ## Tips
 
@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = יד ימין
 body_part-RIGHT_UPPER_LEG = ירך ימין
 body_part-RIGHT_LOWER_LEG = קרסול ימין
 body_part-RIGHT_FOOT = רגל ימין
-body_part-RIGHT_CONTROLLER = בקר ימני
 body_part-CHEST = חזה
 body_part-WAIST = מותניים
 body_part-HIP = ירך
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = יד שמאל
 body_part-LEFT_UPPER_LEG = ירך שמאל
 body_part-LEFT_LOWER_LEG = קרסול שמאל
 body_part-LEFT_FOOT = רגל שמאל
-body_part-LEFT_CONTROLLER = בקר שמאלי
 
 ## Proportions
 
@@ -58,15 +56,12 @@ skeleton_bone-SHOULDERS_DISTANCE = מרחק כתפיים
 skeleton_bone-SHOULDERS_WIDTH = רוחב כתפיים
 skeleton_bone-UPPER_ARM = אורך זרוע עליונה
 skeleton_bone-LOWER_ARM = אורך זרוע תחתונה
-skeleton_bone-CONTROLLER_Y = מרחק בקר ציר Y
-skeleton_bone-CONTROLLER_Z = מרחק בקר ציר Z
 
 ## Tracker reset buttons
 
 reset-reset_all = איפוס כל הפרופורציות
 reset-full = איפוס
 reset-mounting = איפוס הרכבה
-reset-quick = איפוס מהיר
 
 ## Serial detection stuff
 
@@ -87,10 +82,13 @@ navbar-mounting = כיול ההרכבה
 navbar-onboarding = אשף ההגדרה
 navbar-settings = הגדרות
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = הקלטת BVH
 bvh-recording = מקליט...
+
+## Tracking pause
+
 
 ## Widget: Overlay settings
 
@@ -256,6 +254,13 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = שימ�
 
 ## OSC VRChat settings
 
+settings-osc-vrchat-network-trackers-chest = חזה
+settings-osc-vrchat-network-trackers-knees = ברכיים
+settings-osc-vrchat-network-trackers-feet = רגל
+settings-osc-vrchat-network-trackers-elbows = מרפקים
+
+## VMC OSC settings
+
 
 ## Setup/onboarding menu
 
@@ -278,10 +283,19 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = שימ�
 ## Tracker connection setup
 
 
+## Tracker calibration tutorial
+
+
+## Tracker assignment tutorial
+
+
 ## Tracker assignment setup
 
 
 ## Tracker assignment warnings
+
+
+## Tracker mounting method choose
 
 
 ## Tracker manual mounting setup
@@ -290,12 +304,14 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = שימ�
 ## Tracker automatic mounting setup
 
 
+## Tracker proportions method choose
+
+
 ## Tracker manual proportions setup
 
 
 ## Tracker automatic proportions setup
 
-onboarding-automatic_proportions-recording-steps-4 = זוז במקום עד שהספירה תסתיים
 onboarding-automatic_proportions-recording-processing = מעבד את התוצאה
 onboarding-automatic_proportions-verify_results-title = אמת את התוצאות
 onboarding-automatic_proportions-verify_results-description = אנא בדוק את התוצאות, האם התוצאות נראות נכון?
@@ -309,3 +325,6 @@ onboarding-automatic_proportions-done-description = תהליך כיול פרופ
 ## Home
 
 home-no_trackers = לא זוהו או הוקצו חיישנים
+
+## Status system
+
