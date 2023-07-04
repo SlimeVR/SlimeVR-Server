@@ -82,7 +82,7 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) {
-		_, _, _ ->
+			_, _, _ ->
 		if (!isInternal) {
 			checkReportRequireReset()
 		}
@@ -110,7 +110,9 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	private fun checkReportRequireReset() {
-		if (needsReset && trackerPosition != null && lastResetStatus == 0u && !status.reset && (isImu() || !statusResetRecently)) {
+		if (needsReset && trackerPosition != null && lastResetStatus == 0u &&
+			!status.reset && (isImu() || !statusResetRecently)
+		) {
 			reportRequireReset()
 		} else if (lastResetStatus != 0u && (trackerPosition == null || status.reset)) {
 			vrServer.statusSystem.removeStatus(lastResetStatus)
