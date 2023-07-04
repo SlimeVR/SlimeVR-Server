@@ -59,7 +59,7 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * If the tracker has gotten disconnected after it was initialized first time
 	 */
-	var disconnectedRecently = false
+	var statusResetRecently = false
 	private var alreadyInitialized = false
 	var status = TrackerStatus.DISCONNECTED
 		set(value) {
@@ -67,10 +67,10 @@ class Tracker @JvmOverloads constructor(
 
 			field = value
 
-			if (field == TrackerStatus.DISCONNECTED && alreadyInitialized) {
-				disconnectedRecently = true
-			}
-			if (field.sendData) {
+			if (!field.reset) {
+				if (alreadyInitialized) {
+					statusResetRecently = true
+				}
 				alreadyInitialized = true
 			}
 			if (!isInternal) {
@@ -116,9 +116,9 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	private fun checkReportRequireReset() {
-		if (needsReset && trackerPosition != null && lastResetStatus == 0u && status.sendData) {
+		if (needsReset && trackerPosition != null && lastResetStatus == 0u && !status.reset && (isImu() || !statusResetRecently)) {
 			reportRequireReset()
-		} else if (lastResetStatus != 0u && (trackerPosition == null || !status.sendData)) {
+		} else if (lastResetStatus != 0u && (trackerPosition == null || status.reset)) {
 			vrServer.statusSystem.removeStatus(lastResetStatus)
 			lastResetStatus = 0u
 		}
@@ -202,6 +202,9 @@ class Tracker @JvmOverloads constructor(
 			config.allowDriftCompensation?.let {
 				resetsHandler.allowDriftCompensation = it
 			}
+		}
+		if (!isInternal && !(!isImu() && (trackerPosition == TrackerPosition.LEFT_HAND || trackerPosition == TrackerPosition.RIGHT_HAND))) {
+			checkReportRequireReset()
 		}
 	}
 
