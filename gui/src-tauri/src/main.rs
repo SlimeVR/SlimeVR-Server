@@ -170,14 +170,18 @@ fn main() {
 
 					while let Some(cmd_event) = rx.recv().await {
 						let emit_me = match cmd_event {
-							CommandEvent::Stderr(s) => ("stderr", s),
-							CommandEvent::Stdout(s) => ("stdout", s),
-							CommandEvent::Error(s) => ("error", s.into_bytes()),
+							CommandEvent::Stderr(v) => {
+								("stderr", String::from_utf8(v).unwrap_or_default())
+							}
+							CommandEvent::Stdout(v) => {
+								("stdout", String::from_utf8(v).unwrap_or_default())
+							}
+							CommandEvent::Error(s) => ("error", s),
 							CommandEvent::Terminated(s) => {
 								exit_flag_terminated.store(true, Ordering::Relaxed);
-								("terminated", format!("{s:?}").into_bytes())
+								("terminated", format!("{s:?}"))
 							}
-							_ => ("other", vec![]),
+							_ => ("other", "".to_string()),
 						};
 						app_handle
 							.emit_all("server-status", emit_me)
