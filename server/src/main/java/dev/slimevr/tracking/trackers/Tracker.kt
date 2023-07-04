@@ -13,6 +13,7 @@ import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
+import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2000L
 
@@ -61,38 +62,31 @@ class Tracker @JvmOverloads constructor(
 	 */
 	var statusResetRecently = false
 	private var alreadyInitialized = false
-	var status = TrackerStatus.DISCONNECTED
-		set(value) {
-			if (field == value) return
-
-			field = value
-
-			if (!field.reset) {
-				if (alreadyInitialized) {
-					statusResetRecently = true
-				}
-				alreadyInitialized = true
+	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) {
+			_, _, new ->
+		if (!new.reset) {
+			if (alreadyInitialized) {
+				statusResetRecently = true
 			}
-			if (!isInternal) {
-				// If the status of a non-internal tracker has changed, inform
-				// the VRServer to recreate the skeleton, as it may need to
-				// assign or un-assign the tracker to a body part
-				vrServer.updateSkeletonModel()
-
-				checkReportErrorStatus()
-				checkReportRequireReset()
-			}
+			alreadyInitialized = true
 		}
+		if (!isInternal) {
+			// If the status of a non-internal tracker has changed, inform
+			// the VRServer to recreate the skeleton, as it may need to
+			// assign or un-assign the tracker to a body part
+			vrServer.updateSkeletonModel()
 
-	var trackerPosition = trackerPosition
-		set(value) {
-			if (field == value) return
-			field = value
-
-			if (!isInternal) {
-				checkReportRequireReset()
-			}
+			checkReportErrorStatus()
+			checkReportRequireReset()
 		}
+	}
+
+	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) {
+		_, _, _ ->
+		if (!isInternal) {
+			checkReportRequireReset()
+		}
+	}
 
 	// Computed value to simplify availability checks
 	val hasAdjustedRotation = hasRotation && (allowFiltering || needsReset)
