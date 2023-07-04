@@ -11,7 +11,7 @@ public enum BoneType {
 	HEAD(BodyPart.HEAD),
 	HEAD_TRACKER(),
 	NECK(BodyPart.NECK),
-	UPPER_CHEST(BodyPart.CHEST),
+	UPPER_CHEST(BodyPart.UPPER_CHEST),
 	CHEST_TRACKER,
 	CHEST(BodyPart.CHEST),
 	WAIST(BodyPart.WAIST),
