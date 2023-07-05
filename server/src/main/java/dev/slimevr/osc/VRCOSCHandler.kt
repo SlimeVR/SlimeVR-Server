@@ -15,6 +15,7 @@ import dev.slimevr.platform.SteamVRBridge
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
+import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerStatus
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
@@ -200,10 +201,8 @@ class VRCOSCHandler(
 
 		// Send OSC data
 		if (oscSender != null && oscSender!!.isConnected) {
-			var id = 0
 			for (i in computedTrackers.indices) {
 				if (trackersEnabled[i]) {
-					id++
 					// Send regular trackers' positions
 					val (x, y, z) = computedTrackers[i].position
 					oscArgs.clear()
@@ -211,7 +210,7 @@ class VRCOSCHandler(
 					oscArgs.add(y)
 					oscArgs.add(-z)
 					oscMessage = OSCMessage(
-						"/tracking/trackers/$id/position",
+						"/tracking/trackers/${VRCOSCTrackersId.valueOf(computedTrackers[i].trackerPosition?.trackerRole.toString()).id}/position",
 						oscArgs
 					)
 					try {
@@ -258,7 +257,7 @@ class VRCOSCHandler(
 					oscArgs.add(y2 * FastMath.RAD_TO_DEG)
 					oscArgs.add(z2 * FastMath.RAD_TO_DEG)
 					oscMessage = OSCMessage(
-						"/tracking/trackers/$id/rotation",
+						"/tracking/trackers/${VRCOSCTrackersId.valueOf(computedTrackers[i].trackerPosition?.trackerRole.toString()).id}/rotation",
 						oscArgs
 					)
 					try {
@@ -340,5 +339,20 @@ class VRCOSCHandler(
 
 	override fun getPortIn(): Int {
 		return lastPortIn
+	}
+
+	enum class VRCOSCTrackersId (val id: Int){
+		// The order doesn't matter and changing it
+		// won't break anything except make debugging harder
+		// between different versions. They just need to range from 1-8
+		// The names match the ones in TrackerRole.kt
+		WAIST(1),
+		LEFT_FOOT(2),
+		RIGHT_FOOT(3),
+		LEFT_KNEE(4),
+		RIGHT_KNEE(5),
+		CHEST(6),
+		LEFT_ELBOW(7),
+		RIGHT_ELBOW(8);
 	}
 }
