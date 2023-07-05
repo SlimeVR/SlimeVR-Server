@@ -26,10 +26,9 @@ import { Typography } from '../../../commons/Typography';
 import { ASSIGNMENT_RULES, BodyAssignment } from '../../BodyAssignment';
 import { NeckWarningModal } from '../../NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
-import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
-import { SkipSetupButton } from '../../SkipSetupButton';
 import { useConfig } from '../../../../hooks/config';
 import { playTapSetupSound } from '../../../../sounds/sounds';
+import { useBreakpoint } from '../../../../hooks/breakpoint';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -44,9 +43,10 @@ interface FlatDeviceTrackerDummy {
 }
 
 export function TrackersAssignPage() {
+  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { useAssignedTrackers, trackers } = useTrackers();
-  const { applyProgress, skipSetup, state } = useOnboarding();
+  const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const { control, watch } = useForm<{ advanced: boolean }>({
@@ -55,7 +55,6 @@ export function TrackersAssignPage() {
   const { advanced } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
-  const [skipWarning, setSkipWarning] = useState(false);
 
   const { config } = useConfig();
   const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
@@ -191,6 +190,9 @@ export function TrackersAssignPage() {
       assignreq.bodyPosition = role;
       assignreq.mountingOrientation = rotation;
       assignreq.trackerId = trackerId;
+      assignreq.allowDriftCompensation =
+        tracker?.tracker?.info?.allowDriftCompensation ?? true;
+
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     };
 
@@ -250,13 +252,6 @@ export function TrackersAssignPage() {
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}
       ></NeckWarningModal>
-      <div className="relative mx-4 top-4">
-        <SkipSetupButton
-          visible={!state.alonePage}
-          modalVisible={skipWarning}
-          onClick={() => setSkipWarning(true)}
-        ></SkipSetupButton>
-      </div>
       <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
         <div className="flex flex-col w-full overflow-y-auto px-4 xs:items-center">
           <div className="flex mobile:flex-col md:gap-8 mobile:gap-4 mobile:pb-4">
@@ -314,7 +309,7 @@ export function TrackersAssignPage() {
             </div>
             <div className="flex flex-col rounded-xl fill-background-50">
               <BodyAssignment
-                width={150}
+                width={isMobile ? 150 : undefined}
                 onlyAssigned={false}
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
@@ -325,11 +320,6 @@ export function TrackersAssignPage() {
           </div>
         </div>
       </div>
-      <SkipSetupWarningModal
-        accept={skipSetup}
-        onClose={() => setSkipWarning(false)}
-        isOpen={skipWarning}
-      ></SkipSetupWarningModal>
     </>
   );
 }

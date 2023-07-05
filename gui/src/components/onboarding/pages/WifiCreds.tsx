@@ -4,19 +4,15 @@ import { useWifiForm } from '../../../hooks/wifi-form';
 import { Button } from '../../commons/Button';
 import { Input } from '../../commons/Input';
 import { Typography } from '../../commons/Typography';
-import { useState } from 'react';
-import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
-import { SkipSetupButton } from '../SkipSetupButton';
 import classNames from 'classnames';
 import { useTrackers } from '../../../hooks/tracker';
 import { useBnoExists } from '../../../hooks/imu-logic';
 
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
-  const { applyProgress, skipSetup, state } = useOnboarding();
+  const { applyProgress, state } = useOnboarding();
   const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm();
   const { useConnectedTrackers } = useTrackers();
-  const [skipWarning, setSkipWarning] = useState(false);
   const connectedTrackers = useConnectedTrackers();
 
   applyProgress(0.2);
@@ -29,11 +25,6 @@ export function WifiCredsPage() {
       onSubmit={handleSubmit(submitWifiCreds)}
     >
       <div className="flex flex-col w-full h-full xs:justify-center items-center relative ">
-        <SkipSetupButton
-          visible={true}
-          modalVisible={skipWarning}
-          onClick={() => setSkipWarning(true)}
-        ></SkipSetupButton>
         <div className="flex mobile:flex-col xs:gap-10 px-4">
           <div className="flex flex-col max-w-sm">
             <Typography variant="main-title">
@@ -117,11 +108,6 @@ export function WifiCredsPage() {
           </div>
         </div>
       </div>
-      <SkipSetupWarningModal
-        accept={skipSetup}
-        onClose={() => setSkipWarning(false)}
-        isOpen={skipWarning}
-      ></SkipSetupWarningModal>
     </form>
   );
 }

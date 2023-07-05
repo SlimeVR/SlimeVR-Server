@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -16,7 +13,7 @@ websocket-connection_lost = 與伺服器的連線已中斷，正在嘗試重新�
 ## Update notification
 
 version_update-title = 有可用的新版本：{ $version }
-version_update-description = 按下「更新」將為您下載 SlimeVR 安裝程式。
+version_update-description = 按下「{ version_update-update }」將為您下載 SlimeVR 安裝程式。
 version_update-update = 更新
 version_update-close = 關閉
 
@@ -39,6 +36,7 @@ body_part-RIGHT_HAND = 右手
 body_part-RIGHT_UPPER_LEG = 右大腿
 body_part-RIGHT_LOWER_LEG = 右小腿
 body_part-RIGHT_FOOT = 右腳
+body_part-UPPER_CHEST = 上胸
 body_part-CHEST = 胸部
 body_part-WAIST = 腰部
 body_part-HIP = 臀部
@@ -56,8 +54,9 @@ skeleton_bone-NONE = 無
 skeleton_bone-HEAD = 頭部偏移
 skeleton_bone-NECK = 頸部長度
 skeleton_bone-torso_group = 軀幹長度
-skeleton_bone-CHEST = 胸部長度
+skeleton_bone-UPPER_CHEST = 上胸長度
 skeleton_bone-CHEST_OFFSET = 胸部偏移
+skeleton_bone-CHEST = 胸部長度
 skeleton_bone-WAIST = 腰部長度
 skeleton_bone-HIP = 臀部長度
 skeleton_bone-HIP_OFFSET = 臀部偏移
@@ -103,10 +102,15 @@ navbar-mounting = 配戴校正
 navbar-onboarding = 快速設定
 navbar-settings = 詳細設定
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = 錄製 BVH 檔案
 bvh-recording = 錄製中…
+
+## Tracking pause
+
+tracking-unpaused = 暫停追蹤
+tracking-paused = 解除暫停追蹤
 
 ## Widget: Overlay settings
 
@@ -228,6 +232,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part }右大腿？
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part }右小腿？
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part }右腳？
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part }右控制器？
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part }上胸？
 tracker_selection_menu-CHEST = { -tracker_selection-part }胸部？
 tracker_selection_menu-WAIST = { -tracker_selection-part }腰部？
 tracker_selection_menu-HIP = { -tracker_selection-part }臀部？
@@ -522,7 +527,26 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = 返回到配戴校正
 onboarding-reset_tutorial = 重置教學
-onboarding-reset_tutorial-description = 此功能尚未開發完成，請點選繼續即可。
+onboarding-reset_tutorial-explanation = 當您使用追蹤器時追蹤器可能會跑位，原因來自於慣性測量單元 (IMU) 產生了左右飄移，或是您移動了追蹤器的實體位置。您有幾種方法來修正這個問題。
+onboarding-reset_tutorial-skip = 跳過本步驟
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    對所標記之追蹤器敲擊 { $taps } 次即可觸發左右偏擺重置。
+    
+    追蹤器將會調整與頭戴顯示器所面對的方向一致。
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    對所標記之追蹤器敲擊 { $taps } 次即可觸發完整重置。
+    
+    做此校正時必須站直，觸發 3 秒後（可修改）才會真正進行重置。
+    追蹤器的定位與旋轉將會被完全重置，應該可以解決大多數的問題。
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    對所標記之追蹤器敲擊 { $taps } 次即可觸發配戴重置。
+    
+    配戴校正能對追蹤器實際的配戴方式進行調整，因此若您不小心移動到追蹤器，或是大幅度的變更配戴方向，這個功能會有所幫助。
+    
+    做此校正時需要進行滑雪姿勢，如自動配戴校正的畫面所示。在觸發 3 秒後（可修改）才會真正進行重置。
 
 ## Setup start
 
@@ -574,12 +598,22 @@ onboarding-connect_tracker-next = 所有的追蹤器都連接好了
 
 onboarding-calibration_tutorial = IMU 校正教學
 onboarding-calibration_tutorial-subtitle = 進行這項操作可以有效減少追蹤器發生飄移的機會
-onboarding-calibration_tutorial-description = 每次在打開追蹤器的開關時，需要將追蹤器放置在平面一會兒來進行自動校正。您也可以透過按下“校正”按鈕來進行手動校正，<b>校正過程中請勿移動追蹤器</b>。
+onboarding-calibration_tutorial-description = 每次在打開追蹤器的開關時，需要將追蹤器放置在平面一會兒來進行自動校正。您也可以透過按下「{ onboarding-calibration_tutorial-calibrate }」按鈕來進行手動校正，<b>校正過程中請勿移動追蹤器</b>。
 onboarding-calibration_tutorial-calibrate = 追蹤器已經放置在桌上了
 onboarding-calibration_tutorial-status-waiting = 正在等待您完成動作
 onboarding-calibration_tutorial-status-calibrating = 校正中
 onboarding-calibration_tutorial-status-success = 很好，校正完成了！
 onboarding-calibration_tutorial-status-error = 追蹤器移動了
+
+## Tracker assignment tutorial
+
+onboarding-assignment_tutorial = 戴上 Slime 追蹤器前的準備事項
+onboarding-assignment_tutorial-first_step = 1. 若有標示身體部位的貼紙，可在您所要分配使用的追蹤器上貼上。
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = 貼紙
+onboarding-assignment_tutorial-second_step = 2. 將綁帶有魔鬼氈（魔術貼）的一面，依照下圖所示的方向穿過追蹤器：
+onboarding-assignment_tutorial-second_step-continuation = 延伸追蹤器應照下圖所示：
+onboarding-assignment_tutorial-done = 我把貼紙跟綁帶都弄上了
 
 ## Tracker assignment setup
 
@@ -664,13 +698,15 @@ onboarding-assign_trackers-warning-WAIST =
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = 要使用哪一種配戴校正方式？
+# Multiline text
+onboarding-choose_mounting-description = 配戴校正可以校正追蹤器放在身上的位置。
 onboarding-choose_mounting-auto_mounting = 自動配戴校正
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = 推薦使用
+onboarding-choose_mounting-auto_mounting-label = 實驗功能
 onboarding-choose_mounting-auto_mounting-description = 本選項會透過兩個身體姿勢，判斷所有追蹤器的配戴方位
 onboarding-choose_mounting-manual_mounting = 手動配戴校正
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = 如果你清楚你要做什麼的話
+onboarding-choose_mounting-manual_mounting-label = 推薦使用
 onboarding-choose_mounting-manual_mounting-description = 本選項可以讓你選擇每個追蹤器的配戴方位
 
 ## Tracker manual mounting setup
@@ -691,7 +727,7 @@ onboarding-automatic_mounting-next = 下一步
 onboarding-automatic_mounting-prev_step = 上一步
 onboarding-automatic_mounting-done-title = 配戴方向已校正。
 onboarding-automatic_mounting-done-description = 你的配戴方向校準完成！
-onboarding-automatic_mounting-done-restart = 返回以開始
+onboarding-automatic_mounting-done-restart = 再試一次
 onboarding-automatic_mounting-mounting_reset-title = 配戴重置
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 雙腿彎曲以滑雪的姿勢蹲下，上身向前傾斜，手臂彎曲。
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. 按下「配戴重置」按鈕並等待 3 秒鐘，追蹤器的配戴方向將被重置。
@@ -705,6 +741,10 @@ onboarding-automatic_mounting-put_trackers_on-next = 我所有的追蹤器都戴
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = 要使用哪一種軀幹比例的校正方式？
+# Multiline string
+onboarding-choose_proportions-description =
+    軀幹比例用於取得身體各個部位的長短，為計算追蹤器的位置而有所必要。
+    當您的軀幹比例與設定的比例有差異時，追蹤精確度會變差，您可能會注意到出現腳滑溜冰的情形，或者你的身體與你的虛擬角色對不太上。
 onboarding-choose_proportions-auto_proportions = 自動軀幹比例校正
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = 推薦使用
@@ -713,6 +753,8 @@ onboarding-choose_proportions-manual_proportions = 手動軀幹比例校正
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = 適合進行微調
 onboarding-choose_proportions-manual_proportions-description = 本選項可以讓你直接修改軀幹比例的設定值
+onboarding-choose_proportions-export = 匯出軀幹比例
+onboarding-choose_proportions-file_type = 軀幹比例描述檔
 
 ## Tracker manual proportions setup
 
@@ -740,7 +782,7 @@ onboarding-automatic_proportions-requirements-description =
     你需要穿戴上追蹤器與頭戴顯示器。
     你的追蹤器與頭戴顯示器都已經連接到 SlimeVR 伺服器。
     你的追蹤器與頭戴顯示器在 SlimeVR 伺服器中運作正常。
-    你的頭戴顯示器會回報定位資料給 SlimeVR 伺服器（通常為執行 SteamVR 並透過 SlimeVR 的 SteamVR 附加元件來連接 SlimeVR）。
+    你的頭戴顯示器會回報定位資料給 SlimeVR 伺服器（通常為執行 SteamVR 並透過 SlimeVR 的 SteamVR 驅動程式來連接 SlimeVR）。
 onboarding-automatic_proportions-requirements-next = 我已閱讀使用需求
 onboarding-automatic_proportions-start_recording-title = 準備擺動作囉
 onboarding-automatic_proportions-start_recording-description = 我們現在要記錄一些特定的姿勢和動作，將會在下一個畫面中提示。當按鈕被按下時，準備好開始！
@@ -750,12 +792,12 @@ onboarding-automatic_proportions-recording-description-p0 = 正在錄製中…�
 onboarding-automatic_proportions-recording-description-p1 = 請做出以下動作:
 # Each line of text is a different list item
 onboarding-automatic_proportions-recording-steps =
-    站直，頭部繞圈轉動。
-    腰部向前伸，腿部彎曲，呈半蹲姿勢後，頭部轉動向左看，再向右看。
-    上身向左（逆時針）扭動後，向前頃，使右半身朝向地面。
-    上身向右（順時針）扭動後，向前頃，使左半身朝向地面。
-    以圓形軌跡扭動臀部，如同使用呼拉圈的姿勢。
-    若還有剩餘時間，可以重複進行以上動作。
+    挺直身子站好，然後活動脖子，使頭部沿逆時針或順時針方向繞一圈；
+    上半身前傾然後屈膝半蹲，保持住這個姿勢不動，然後轉頭看向左邊，再轉頭看向右邊；
+    站直身體，沿逆時針方向扭腰，使你的上半身朝向左前方，然後彎下腰，使上半身傾向左前方的地面；
+    站直身體，沿順時針方向扭腰，使你的上半身朝向右前方，然後彎下腰，使上半身傾向右前方的地面；
+    扭扭腰轉圈圈，就如同你在轉呼啦圈一樣！
+    如果進度條還沒走完，可以重複以上動作直到錄製結束。
 onboarding-automatic_proportions-recording-processing = 正在處理結果
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer = 剩餘 { $time } 秒
@@ -771,3 +813,13 @@ onboarding-automatic_proportions-done-description = 你的身體比例校正已�
 ## Home
 
 home-no_trackers = 未偵測到或未分配追蹤器
+
+## Status system
+
+status_system-StatusTrackerReset = 建議執行完全重置，因為有至少一個追蹤器尚未調整
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] 尚未連接 SlimeVR 資料迴送程式
+       *[other] 尚未透過 SlimeVR 驅動程式連接到 SteamVR
+    }
+status_system-StatusTrackerError = { $trackerName } 追蹤器發生錯誤

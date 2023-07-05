@@ -31,6 +31,7 @@ body_part-RIGHT_HAND = Right hand
 body_part-RIGHT_UPPER_LEG = Right thigh
 body_part-RIGHT_LOWER_LEG = Right ankle
 body_part-RIGHT_FOOT = Right foot
+body_part-UPPER_CHEST = Upper chest
 body_part-CHEST = Chest
 body_part-WAIST = Waist
 body_part-HIP = Hip
@@ -47,8 +48,9 @@ skeleton_bone-NONE = None
 skeleton_bone-HEAD = Head Shift
 skeleton_bone-NECK = Neck Length
 skeleton_bone-torso_group = Torso length
-skeleton_bone-CHEST = Chest Length
+skeleton_bone-UPPER_CHEST = Upper Chest Length
 skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-CHEST = Chest Length
 skeleton_bone-WAIST = Waist Length
 skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP_OFFSET = Hip Offset
@@ -207,6 +209,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } upper chest?
 tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
 tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
 tracker_selection_menu-HIP = { -tracker_selection-part } hip?
@@ -491,7 +494,7 @@ onboarding-wifi_creds-password =
 ## Mounting setup
 onboarding-reset_tutorial-back = Go Back to Mounting calibration
 onboarding-reset_tutorial = Reset tutorial
-onboarding-reset_tutorial-description = While you use your trackers they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
+onboarding-reset_tutorial-explanation = While you use your trackers they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
 onboarding-reset_tutorial-skip = Skip step
 # Cares about multiline
 onboarding-reset_tutorial-0 = Tap { $taps } times the highlighted tracker for triggering yaw reset.
@@ -649,11 +652,11 @@ onboarding-choose_mounting = What mounting calibration method to use?
 onboarding-choose_mounting-description = Mounting orientation corrects for the placement of trackers on your body.
 onboarding-choose_mounting-auto_mounting = Automatic mounting
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = Recommended
+onboarding-choose_mounting-auto_mounting-label = Experimental
 onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting directions for all of your trackers from 2 poses
 onboarding-choose_mounting-manual_mounting = Manual mounting
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = If you know what you are doing
+onboarding-choose_mounting-manual_mounting-label = Recommended
 onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting direction manually for each tracker
 
 
@@ -697,7 +700,7 @@ onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
-onboarding-choose_proportions-save = Save proportions
+onboarding-choose_proportions-export = Export proportions
 onboarding-choose_proportions-file_type = Body proportions file
 
 ## Tracker manual proportions setup

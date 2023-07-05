@@ -3,8 +3,6 @@ import { useOnboarding } from '../../../hooks/onboarding';
 import { Button } from '../../commons/Button';
 import { Typography } from '../../commons/Typography';
 import { useState, useMemo, useEffect } from 'react';
-import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
-import { SkipSetupButton } from '../SkipSetupButton';
 import {
   BodyPart,
   ResetResponseT,
@@ -23,8 +21,7 @@ import { useBreakpoint } from '../../../hooks/breakpoint';
 export function ResetTutorialPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
-  const { applyProgress, skipSetup } = useOnboarding();
-  const [skipWarning, setSkipWarning] = useState(false);
+  const { applyProgress } = useOnboarding();
   const { useAssignedTrackers } = useTrackers();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [curIndex, setCurIndex] = useState(0);
@@ -122,18 +119,13 @@ export function ResetTutorialPage() {
 
   return (
     <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative overflow-y-auto">
-      <SkipSetupButton
-        visible={true}
-        modalVisible={skipWarning}
-        onClick={() => setSkipWarning(true)}
-      ></SkipSetupButton>
       <div className="flex xs:flex-row mobile:flex-col w-full h-full xs:justify-center xs:px-20 mobile:px-4 gap-8 self-center">
         <div className="flex flex-col gap-3 xs:w-96 self-center">
           <Typography variant="main-title">
             {l10n.getString('onboarding-reset_tutorial')}
           </Typography>
           <Typography color="secondary">
-            {l10n.getString('onboarding-reset_tutorial-description')}
+            {l10n.getString('onboarding-reset_tutorial-explanation')}
           </Typography>
           <div className="flex">
             <Button variant="secondary" to="/onboarding/mounting/choose">
@@ -197,16 +189,16 @@ export function ResetTutorialPage() {
           </div>
         </div>
       </div>
-      <SkipSetupWarningModal
-        accept={skipSetup}
-        onClose={() => setSkipWarning(false)}
-        isOpen={skipWarning}
-      ></SkipSetupWarningModal>
     </div>
   );
 }
 
-export const TORSO_PARTS = [BodyPart.CHEST, BodyPart.WAIST, BodyPart.HIP];
+export const TORSO_PARTS = [
+  BodyPart.UPPER_CHEST,
+  BodyPart.CHEST,
+  BodyPart.WAIST,
+  BodyPart.HIP,
+];
 export const LEFT_LEG_PARTS = [
   BodyPart.LEFT_UPPER_LEG,
   BodyPart.LEFT_LOWER_LEG,

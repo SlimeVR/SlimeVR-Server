@@ -48,7 +48,8 @@ public class LegTweaks {
 	// hyperparameters (COM calculation)
 	// mass percentages of the body
 	private static final float HEAD_MASS = 0.082f;
-	private static final float CHEST_MASS = 0.25f;
+	private static final float UPPER_CHEST_MASS = 0.125f;
+	private static final float CHEST_MASS = 0.125f;
 	private static final float WAIST_MASS = 0.209f;
 	private static final float THIGH_MASS = 0.128f;
 	private static final float CALF_MASS = 0.0535f;
@@ -354,7 +355,7 @@ public class LegTweaks {
 
 			// if the system is active, populate the buffer with corrected floor
 			// clip feet positions
-			if (active && isStanding()) {
+			if (active) {
 				correctClipping();
 				bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 				bufferHead.setRightFootPositionCorrected(rightFootPosition);
@@ -514,8 +515,8 @@ public class LegTweaks {
 
 	// returns true if the foot is clipped and false if it is not
 	public boolean isClipped(float leftOffset, float rightOffset) {
-		return (leftFootPosition.getY() < floorLevel + leftOffset
-			|| rightFootPosition.getY() < floorLevel + rightOffset);
+		return (leftFootPosition.getY() < floorLevel + (leftOffset * footLength)
+			|| rightFootPosition.getY() < floorLevel + (rightOffset * footLength));
 	}
 
 	// corrects the foot position to be above the floor level that is calculated
@@ -994,7 +995,10 @@ public class LegTweaks {
 			- (hipToFloorDist * STANDING_CUTOFF_VERTICAL);
 
 		if (hipPosition.getY() < cutoff) {
-			currentDisengagementOffset = (1 - hipPosition.getY() / cutoff)
+			currentDisengagementOffset = (1
+				- ((floorLevel - hipPosition.getY())
+					/
+					(floorLevel - cutoff)))
 				* MAX_DISENGAGEMENT_OFFSET;
 
 			return false;
@@ -1093,6 +1097,7 @@ public class LegTweaks {
 		// compute the center of mass of smaller body parts and then sum them up
 		// with their respective weights
 		Vector3 head = skeleton.headNode.getWorldTransform().getTranslation();
+		Vector3 upperChest = skeleton.upperChestNode.getWorldTransform().getTranslation();
 		Vector3 chest = skeleton.chestNode.getWorldTransform().getTranslation();
 		Vector3 hip = skeleton.hipNode.getWorldTransform().getTranslation();
 		Vector3 leftCalf = getCenterOfJoint(skeleton.leftAnkleNode, skeleton.leftKneeNode);
@@ -1100,6 +1105,7 @@ public class LegTweaks {
 		Vector3 leftThigh = getCenterOfJoint(skeleton.leftKneeNode, skeleton.leftHipNode);
 		Vector3 rightThigh = getCenterOfJoint(skeleton.rightKneeNode, skeleton.rightHipNode);
 		centerOfMass = centerOfMass.plus(head.times(HEAD_MASS));
+		centerOfMass = centerOfMass.plus(upperChest.times(UPPER_CHEST_MASS));
 		centerOfMass = centerOfMass.plus(chest.times(CHEST_MASS));
 		centerOfMass = centerOfMass.plus(hip.times(WAIST_MASS));
 		centerOfMass = centerOfMass.plus(leftCalf.times(CALF_MASS));
@@ -1127,9 +1133,9 @@ public class LegTweaks {
 			centerOfMass = centerOfMass.plus(rightForearm.times(FOREARM_MASS));
 		} else {
 			// if the arms are not available put them slightly in front
-			// of the chest.
+			// of the upper chest.
 			Vector3 chestUnitVector = computeUnitVector(
-				skeleton.chestNode.getWorldTransform().getRotation()
+				skeleton.upperChestNode.getWorldTransform().getRotation()
 			);
 			Vector3 armLocation = chest.plus(chestUnitVector.times(DEFAULT_ARM_DISTANCE));
 			centerOfMass = centerOfMass.plus(armLocation.times(UPPER_ARM_MASS * 2.0f));

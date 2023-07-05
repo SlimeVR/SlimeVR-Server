@@ -1,6 +1,11 @@
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
-import { Control, Controller } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  UseFormGetValues,
+  useWatch,
+} from 'react-hook-form';
 import { a11yClick } from '../utils/a11y';
 
 export interface DropdownItem {
@@ -17,6 +22,7 @@ export function Dropdown({
   display = 'fit',
   placeholder,
   control,
+  getValues,
   name,
   items = [],
 }: {
@@ -26,12 +32,28 @@ export function Dropdown({
   display?: 'fit' | 'block';
   placeholder: string;
   control: Control<any>;
+  getValues: UseFormGetValues<any>;
   name: string;
   items: DropdownItem[];
 }) {
+  const itemRefs: Record<string, HTMLLIElement> = {};
   const [isOpen, setOpen] = useState(false);
+  const formValue = {
+    ...{ value: useWatch({ control, name }) as string },
+    ...{ value: getValues(name) as string },
+  };
   useEffect(() => {
     if (!isOpen) return;
+
+    const curItem = itemRefs[formValue.value];
+    const dropdownParent = curItem
+      ? (curItem.closest('.dropdown-scroll') as HTMLElement | null)
+      : null;
+    if (curItem && dropdownParent) {
+      dropdownParent.scroll({
+        top: curItem.offsetTop - dropdownParent.offsetHeight / 2,
+      });
+    }
 
     function onWheelEvent() {
       if (isOpen && !document.querySelector('div.dropdown-scroll:hover')) {
@@ -55,9 +77,9 @@ export function Dropdown({
       const isInDropdownScroll = document
         .querySelector('div.dropdown-scroll')
         ?.contains(event.target as HTMLDivElement);
-      const isInDropdown = document
-        .querySelector('div.dropdown')
-        ?.contains(event.target as HTMLDivElement);
+      const isInDropdown = !!(event.target as HTMLDivElement).closest(
+        '.dropdown'
+      );
       if (isOpen && !isInDropdownScroll && !isInDropdown) {
         setOpen(false);
       }
@@ -139,7 +161,7 @@ export function Dropdown({
               <div
                 className={classNames(
                   'absolute z-10 rounded shadow min-w-max max-h-[50vh]',
-                  'overflow-y-auto dropdown-scroll',
+                  'overflow-y-auto dropdown-scroll overflow-x-hidden',
                   display === 'fit' && 'w-fit',
                   display === 'block' && 'w-full',
                   direction === 'up' && 'bottom-[45px]',
@@ -151,21 +173,19 @@ export function Dropdown({
                   alignment === 'left' && 'left-0'
                 )}
               >
-                <ul className="py-1 text-sm flex flex-col ">
+                <ul className="py-1 text-sm flex flex-col">
                   {items.map((item) => (
                     <li
                       className={classNames(
-                        'py-2 px-4 min-w-max cursor-pointer pr-2',
+                        'py-2 px-4 min-w-max cursor-pointer',
                         variant == 'primary' &&
-                          'hover:bg-background-50 text-background-20 hover:text-background-10',
+                          'checked-hover:bg-background-50 text-background-20 ' +
+                            'checked-hover:text-background-10',
                         variant == 'secondary' &&
-                          'hover:bg-background-60 text-background-20 hover:text-background-10',
+                          'checked-hover:bg-background-60 text-background-20 ' +
+                            'checked-hover:text-background-10',
                         variant == 'tertiary' &&
-                          value !== item.value &&
-                          'bg-accent-background-30 hover:bg-accent-background-20',
-                        variant == 'tertiary' &&
-                          value === item.value &&
-                          'bg-accent-background-20'
+                          'bg-accent-background-30 checked-hover:bg-accent-background-20'
                       )}
                       onClick={() => {
                         onChange(item.value);
@@ -176,8 +196,10 @@ export function Dropdown({
                         onChange(item.value);
                         setOpen(false);
                       }}
+                      ref={(ref) => (ref ? (itemRefs[item.value] = ref) : {})}
                       key={item.value}
                       tabIndex={0}
+                      data-checked={item.value === value}
                     >
                       {item.label}
                     </li>

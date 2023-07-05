@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -13,11 +10,19 @@
 websocket-connecting = جاري التوصيل بالسيرفر
 websocket-connection_lost = انقطع الاتصال بالسيرفر. يتم إعادة التوصيل...
 
+## Update notification
+
+version_update-title = نسخة جديدة متوفرة: { $version }
+version_update-description = سيؤدي النقر على "{ version_update-update }" إلى تنزيل مثبت SlimeVR نيابة عنك.
+version_update-update = تحديث
+version_update-close = أغلق
+
 ## Tips
 
 tips-find_tracker = لست متأكد من أجهزة التعقب؟ قم بتحريك الجهاز لتحديد العنصر المناسب.
 tips-do_not_move_heels = يرجى عدم تحريك كاحليك أثناء التسجيل!
 tips-file_select = اسحب الملفات وأفلتها لاستخدامها أو <u> تصفح </ u>
+tips-tap_setup = يمكنك النقر ببطء مرتين على جهاز التعقب لاختياره بدلاً من تحديده من القائمة.
 
 ## Body parts
 
@@ -31,6 +36,7 @@ body_part-RIGHT_HAND = اليد اليمنى
 body_part-RIGHT_UPPER_LEG = الفخذ الأيمن
 body_part-RIGHT_LOWER_LEG = الكاحل الأيمن
 body_part-RIGHT_FOOT = القدم اليمنى
+body_part-UPPER_CHEST = أعلى الصدر
 body_part-CHEST = الصدر
 body_part-WAIST = الخصر
 body_part-HIP = الورك
@@ -48,8 +54,9 @@ skeleton_bone-NONE = غير محدد
 skeleton_bone-HEAD = إمالة الرأس
 skeleton_bone-NECK = طول العنق
 skeleton_bone-torso_group = طول الجذع
-skeleton_bone-CHEST = طول الصدر
+skeleton_bone-UPPER_CHEST = طول أعلى الصدر
 skeleton_bone-CHEST_OFFSET = درجة تشريد الصدر
+skeleton_bone-CHEST = طول الصدر
 skeleton_bone-WAIST = طول الخصر
 skeleton_bone-HIP = طول الورك
 skeleton_bone-HIP_OFFSET = درجة تشريد الورك
@@ -95,10 +102,15 @@ navbar-mounting = معايرة التركيب
 navbar-onboarding = معالج الإعداد
 navbar-settings = الإعدادات
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = سجل بي في ايتش
 bvh-recording = تسجيل...
+
+## Tracking pause
+
+tracking-unpaused = إيقاف التعقب مؤقتا
+tracking-paused = إلغاء الإيقاف التعقب
 
 ## Widget: Overlay settings
 
@@ -165,6 +177,9 @@ tracker-infos-custom_name = اسم مخصص
 tracker-infos-url = عنوان URL لجهاز التعقب
 tracker-infos-version = إصدار البرنامج الثابت
 tracker-infos-hardware_rev = مراجعة الأجهزة
+tracker-infos-hardware_identifier = معرف الجهاز
+tracker-infos-imu = مستشعر IMU
+tracker-infos-board_type = اللوحة الرئيسية
 
 ## Tracker settings
 
@@ -217,6 +232,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } الفخذ 
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } الكاحل الأيمن؟
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } القدم اليمنى؟
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } وحدة التحكم اليمنى؟
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } أعلى الصدر؟
 tracker_selection_menu-CHEST = { -tracker_selection-part } الصدر؟
 tracker_selection_menu-WAIST = { -tracker_selection-part } الخصر؟
 tracker_selection_menu-HIP = { -tracker_selection-part } الورك؟
@@ -518,7 +534,26 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = العودة إلى معايرة التركيب
 onboarding-reset_tutorial = إعادة البرنامج التعليمي
-onboarding-reset_tutorial-description = هذه الميزة لم تنته بعد، فقط اضغط على متابعة
+onboarding-reset_tutorial-explanation = أثناء استخدام أجهزة التعقب، قد تخرج عن المحاذاة بسبب انحراف IMU ، أو لأنك ربما تكون قد نقلتها جسديا. لديك عدة طرق لإصلاح هذا.
+onboarding-reset_tutorial-skip = تخطى الخطوة
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    اضغط على جهاز التعقب  المحدد { $taps } مرات لتشغيل إعادة ضبط الانعراج.
+    
+    سيؤدي ذلك إلى جعل أجهزة التعقب تواجه نفس اتجاه HMD الخاص بك.
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    اضغط على جهاز التعقب المحدد { $taps } مرات لتشغيل إعادة تعيين كاملة.
+    
+    يجب أن تكون واقفًا (i-pose). هناك تأخير لمدة 3 ثوان (قابل للتكوين) قبل إعادة التعيين بالكامل.
+    هذا يعيد تعيين موضع ودوران جميع جهاز التعقب. يجب أن يحل معظم المشاكل.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    اضغط على المتتبع المحدد { $taps } مرات لتشغيل إعادة تعيين متصاعد.
+    
+    يساعد إعادة التعيين المتصاعد في تحديد كيفية وضع أجهزة التعقب عليك بالفعل. لذلك إذا قمت بنقلهم عن طريق الخطأ وغيرت كيفية توجيههم بمقدار كبير ، فسيساعد ذلك.
+    
+    يجب أن تكون في وضع تزلج كما هو موضح في معالج "التثبيت التلقائي" ولديك تأخير لمدة 3 ثوانٍ (قابل للتكوين) قبل أن يتم تشغيله.
 
 ## Setup start
 
@@ -570,6 +605,27 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } أجهزة تعقب متصلة
     }
 onboarding-connect_tracker-next = لقد قمت بتوصيل جميع أجهزة التعقب
+
+## Tracker calibration tutorial
+
+onboarding-calibration_tutorial = برنامج تعليم معايرة IMU
+onboarding-calibration_tutorial-subtitle = سوف يساعد هذا في تقليل الانجراف التعقب!
+onboarding-calibration_tutorial-description = كل مرة تقوم بتشغيل أجهزة التعقب، يجب أن تستريح للحظة على سطح مستوٍ للمعايرة. لنفعل الشيء نفسه بالنقر فوق الزر "{ onboarding-calibration_tutorial-calibrate }" ، <b>لا تحركها!</b>
+onboarding-calibration_tutorial-calibrate = وضعت أجهزة التعقب على الطاولة
+onboarding-calibration_tutorial-status-waiting = بانتظارك
+onboarding-calibration_tutorial-status-calibrating = جاري المعايرة
+onboarding-calibration_tutorial-status-success = رائع!
+onboarding-calibration_tutorial-status-error = تم نقل جهاز التعقب
+
+## Tracker assignment tutorial
+
+onboarding-assignment_tutorial = كيفية تحضير جهاز تعقب Slime قبل وضعه
+onboarding-assignment_tutorial-first_step = 1. ضع ملصق جزء الجسم (إذا كان لديك واحد) على جهاز التعقب وفقا لاختيارك
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = ملصق
+onboarding-assignment_tutorial-second_step = 2. قم بتوصيل الشريط بجهاز التعقب الخاص بك ، مع الحفاظ على جانب الخطاف والحلقة من وجه الشريط في الاتجاه التالي:
+onboarding-assignment_tutorial-second_step-continuation = يجب أن يكون جانب الخطاف والحلقة للامتداد في هذا الاتجاه:
+onboarding-assignment_tutorial-done = وضعت الملصقات والأشرطة!
 
 ## Tracker assignment setup
 
@@ -662,13 +718,15 @@ onboarding-assign_trackers-warning-WAIST =
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = ما طريقة معايرة التركيب المستخدمة؟
+# Multiline text
+onboarding-choose_mounting-description = اتجاه التركيب يصحح وضع أجهزة التعقب على جسمك.
 onboarding-choose_mounting-auto_mounting = التركيب التلقائي
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = الموصى به
+onboarding-choose_mounting-auto_mounting-label = تجريبي
 onboarding-choose_mounting-auto_mounting-description = سيكتشف هذا تلقائيًا اتجاهات التركيب لجميع أجهزة التعقب من وضعين
 onboarding-choose_mounting-manual_mounting = التركيب اليدوي
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = إذا كنت تعلم ماذا تفعل
+onboarding-choose_mounting-manual_mounting-label = المستحسن
 onboarding-choose_mounting-manual_mounting-description = سيسمح لك باختيار اتجاه التثبيت يدويًا لكل جهاز تعقب
 
 ## Tracker manual mounting setup
@@ -703,6 +761,10 @@ onboarding-automatic_mounting-put_trackers_on-next = ارتديت جميع أج�
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = ما هي طريقة معايرة النسب التي يجب استخدامها؟
+# Multiline string
+onboarding-choose_proportions-description =
+    تستخدم نسب الجسم لمعرفة قياسات جسمك. هم مطلوبون لحساب مواقع أجهزة التعقب.
+    عندما لا تتطابق نسب جسمك مع تلك المحفوظة ، ستكون دقة التتبع لديك أسوأ وستلاحظ أشياء مثل التزلج أو الانزلاق ، أو أن جسمك لا يتطابق مع الصورة الرمزية بشكل جيد.
 onboarding-choose_proportions-auto_proportions = النسب التلقائية
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = الموصى به
@@ -711,6 +773,8 @@ onboarding-choose_proportions-manual_proportions = النسب اليدوية
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = للمسات الصغيرة
 onboarding-choose_proportions-manual_proportions-description = سيسمح لك بتعديل النسب يدويًا عن طريق تعديلها مباشرة
+onboarding-choose_proportions-export = تصدير النسب
+onboarding-choose_proportions-file_type = ملف نسب الجسم
 
 ## Tracker manual proportions setup
 
@@ -777,3 +841,13 @@ onboarding-automatic_proportions-done-description = اكتملت معايرة ن
 ## Home
 
 home-no_trackers = لم يتم الكشف أو تعيين عن أي جهاز تعقب
+
+## Status system
+
+status_system-StatusTrackerReset = يوصى بإجراء إعادة تعيين كاملة نظرًا لعدم تعديل واحد أو أكثر من أجهزة التعقب.
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] حاليًا غير متصل بتطبيق SlimeVR Feeder.
+       *[other] حاليًا غير متصل بـ SteamVR عبر برنامج تشغيل SlimeVR.
+    }
+status_system-StatusTrackerError = يحتوي جهاز التعقب { $trackerName } على خطأ.

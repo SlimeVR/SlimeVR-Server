@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -39,6 +36,7 @@ body_part-RIGHT_HAND = Prawa Dłoń
 body_part-RIGHT_UPPER_LEG = Prawe Udo
 body_part-RIGHT_LOWER_LEG = Prawe Podudzie
 body_part-RIGHT_FOOT = Prawa Stopa
+body_part-UPPER_CHEST = Górna część klatki piersiowej
 body_part-CHEST = Klatka Piersiowa
 body_part-WAIST = Talia
 body_part-HIP = Biodra
@@ -56,8 +54,9 @@ skeleton_bone-NONE = Brak
 skeleton_bone-HEAD = Przesunięcie Głowy
 skeleton_bone-NECK = Długość Szyi
 skeleton_bone-torso_group = Długość torsu
-skeleton_bone-CHEST = Długość Klatki Piersiowej
+skeleton_bone-UPPER_CHEST = Górna długość klatki piersiowej
 skeleton_bone-CHEST_OFFSET = Przesunięcie Klatki Piersiowej
+skeleton_bone-CHEST = Długość Klatki Piersiowej
 skeleton_bone-WAIST = Długość Talii
 skeleton_bone-HIP = Długość Bioder
 skeleton_bone-HIP_OFFSET = Przesunięcie Bioder
@@ -103,10 +102,15 @@ navbar-mounting = Kalibracja Pozycji
 navbar-onboarding = Wstępna Konfiguracja
 navbar-settings = Ustawienia
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = Nagraj BVH
 bvh-recording = Nagrywam...
+
+## Tracking pause
+
+tracking-unpaused = Wstrzymaj śledzenie
+tracking-paused = Wznów śledzenie
 
 ## Widget: Overlay settings
 
@@ -228,6 +232,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } prawe udo?
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } prawa kostka?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } prawa stopa?
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } prawy kontroler?
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } górnej części klatki piersiowej?
 tracker_selection_menu-CHEST = { -tracker_selection-part } klatka piersiowa?
 tracker_selection_menu-WAIST = { -tracker_selection-part } talia?
 tracker_selection_menu-HIP = { -tracker_selection-part } biodro?
@@ -527,7 +532,26 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = Powrót do Konfiguracji Położenia trackerów
 onboarding-reset_tutorial = Zresetuj poradnik
-onboarding-reset_tutorial-description = Ta funkcja jeszcze nie jest skończona.
+onboarding-reset_tutorial-explanation = Podczas korzystania z trackerów mogą się one rozregulować z powodu dryfu odchylenia IMU lub z powodu fizycznego przeniesienia ich. Możesz to naprawić na kilka sposobów.
+onboarding-reset_tutorial-skip = Pomiń krok
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    Stuknij { $taps } razy podświetlony tracker, aby uruchomić reset odchylenia.
+    
+    Spowoduje to, że trackery będą skierowane w tym samym kierunku, co Twój HMD.
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    Stuknij { $taps } razy podświetlony tracker, aby wywołać pełny reset.
+    
+    Musisz stać, aby to zrobić (i-pozycja). Istnieje 3-sekundowe opóźnienie (konfigurowalne), zanim to nastąpi.
+    Spowoduje to całkowite zresetowanie pozycji i rotacji wszystkich trackerów. Powinien rozwiązać większość problemów.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    Stuknij { $taps } razy podświetlony tracker, aby uruchomić reset montażu.
+    
+    Resetowanie montażu pomaga w tym, w jaki sposób trackery są faktycznie zakładane na ciebie, więc jeśli przypadkowo je przeniosłeś i zmieniłeś ich orientację o dużą ilość, to pomoże.
+    
+    Musisz być w pozie, jakbyś jechał na nartach, tak jak jest to pokazane w kreatorze automatycznego montażu, i masz 3-sekundowe opóźnienie (konfigurowalne), zanim zostanie uruchomione.
 
 ## Setup start
 
@@ -588,6 +612,16 @@ onboarding-calibration_tutorial-status-waiting = Czekam na Ciebie
 onboarding-calibration_tutorial-status-calibrating = Kalibracja
 onboarding-calibration_tutorial-status-success = Nieźle!
 onboarding-calibration_tutorial-status-error = Tracker został przeniesiony
+
+## Tracker assignment tutorial
+
+onboarding-assignment_tutorial = Jak przygotować Slime Tracker przed założeniem
+onboarding-assignment_tutorial-first_step = 1. Umieść naklejkę z częścią ciała (jeśli ją posiadasz) na trackerze według własnego uznania
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = Naklejka
+onboarding-assignment_tutorial-second_step = 2. Przymocuj pasek do trackera, utrzymując stronę paska z haczykiem i pętelką w następującej orientacji:
+onboarding-assignment_tutorial-second_step-continuation = Strona z haczykiem i pętelką dla przedłużenia powinna być w tej orientacji:
+onboarding-assignment_tutorial-done = Umieszczam naklejki i paski!
 
 ## Tracker assignment setup
 
@@ -678,13 +712,15 @@ onboarding-assign_trackers-warning-WAIST =
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = Jakiej metody kalibracji montażu użyć?
+# Multiline text
+onboarding-choose_mounting-description = Orientacja montażu koryguje umieszczenie trackerów na ciele.
 onboarding-choose_mounting-auto_mounting = Automatyczne mocowanie
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = Zalecana
+onboarding-choose_mounting-auto_mounting-label = Eksperymentalny
 onboarding-choose_mounting-auto_mounting-description = To automatycznie wykryje kierunki montażu dla wszystkich twoich trackerów z 2 pozycji
 onboarding-choose_mounting-manual_mounting = Montaż ręczny
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = Jeśli wiesz, co robisz
+onboarding-choose_mounting-manual_mounting-label = Zalecany
 onboarding-choose_mounting-manual_mounting-description = Umożliwi to ręczne wybranie kierunku montażu dla każdego trackera
 
 ## Tracker manual mounting setup
@@ -719,6 +755,10 @@ onboarding-automatic_mounting-put_trackers_on-next = Mam wszystkie trackery zał
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = Jakiej metody kalibracji proporcji użyć?
+# Multiline string
+onboarding-choose_proportions-description =
+    Proporcje ciała służą do poznania wymiarów twojego ciała. Są wymagane do obliczenia pozycji trackerów.
+    Kiedy proporcje twojego ciała nie odpowiadają zapisanym, precyzja śledzenia będzie gorsza i zauważysz takie rzeczy, jak jazda na łyżwach lub ślizganie się, lub twoje ciało nie pasuje dobrze do twojego awatara.
 onboarding-choose_proportions-auto_proportions = Proporcje automatyczne
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Zalecana
@@ -727,6 +767,8 @@ onboarding-choose_proportions-manual_proportions = Ręczne proporcje
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Drobne detale
 onboarding-choose_proportions-manual_proportions-description = Umożliwi to ręczne dostosowanie proporcji poprzez ich bezpośrednią modyfikację
+onboarding-choose_proportions-export = Eksportuj proporcje
+onboarding-choose_proportions-file_type = Proporcje ciała
 
 ## Tracker manual proportions setup
 
@@ -791,3 +833,13 @@ onboarding-automatic_proportions-done-description = Twoja kalibracja ciała zost
 ## Home
 
 home-no_trackers = Nie wykryto trackerów
+
+## Status system
+
+status_system-StatusTrackerReset = Zaleca się wykonanie pełnego resetu, ponieważ jeden lub więcej trackerów nie jest wyregulowanych.
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] Nie można połączyć się z aplikacją SlimeVR Feeder.
+       *[other] Nie można połączyć się ze SteamVR przez sterownik SlimeVR.
+    }
+status_system-StatusTrackerError = Moduł śledzący { $trackerName } ma błąd.

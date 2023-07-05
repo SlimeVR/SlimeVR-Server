@@ -1,7 +1,7 @@
 package dev.slimevr.autobone.errors
 
 import com.jme3.math.FastMath
-import dev.slimevr.autobone.AutoBoneTrainingStep
+import dev.slimevr.autobone.AutoBoneStep
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
@@ -9,10 +9,10 @@ import dev.slimevr.tracking.trackers.TrackerRole
 // The offset between the height both feet at one instant and over time
 class FootHeightOffsetError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
-	override fun getStepError(trainingStep: AutoBoneTrainingStep): Float {
+	override fun getStepError(trainingStep: AutoBoneStep): Float {
 		return getSlideError(
-			trainingStep.humanPoseManager1.skeleton,
-			trainingStep.humanPoseManager2.skeleton
+			trainingStep.skeleton1.skeleton,
+			trainingStep.skeleton2.skeleton
 		)
 	}
 

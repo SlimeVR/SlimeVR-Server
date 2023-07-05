@@ -59,7 +59,7 @@ class PlayerTracker(val trackerFrames: TrackerFrames, val tracker: Tracker, priv
 
 		val acceleration = frame.tryGetAcceleration()
 		if (acceleration != null) {
-			tracker.acceleration = acceleration
+			tracker.setAcceleration(acceleration)
 		}
 	}
 }
