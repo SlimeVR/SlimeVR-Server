@@ -15,7 +15,6 @@ import dev.slimevr.platform.SteamVRBridge
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
-import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerStatus
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
@@ -194,6 +193,26 @@ class VRCOSCHandler(
 			)
 			vrcHmd.dataTick()
 		}
+
+		// TODO : https://docs.vrchat.com/docs/osc-trackers
+		// /tracking/trackers/1/position
+		// /tracking/trackers/1/rotation
+		// /tracking/trackers/2/position
+		// /tracking/trackers/2/rotation
+		// /tracking/trackers/3/position
+		// /tracking/trackers/3/rotation
+		// /tracking/trackers/4/position
+		// /tracking/trackers/4/rotation
+		// /tracking/trackers/5/position
+		// /tracking/trackers/5/rotation
+		// /tracking/trackers/6/position
+		// /tracking/trackers/6/rotation
+		// /tracking/trackers/7/position
+		// /tracking/trackers/7/rotation
+		// /tracking/trackers/8/position
+		// /tracking/trackers/8/rotation
+		// /tracking/trackers/head/position
+		// /tracking/trackers/head/rotation
 	}
 
 	override fun update() {
@@ -341,7 +360,7 @@ class VRCOSCHandler(
 		return lastPortIn
 	}
 
-	enum class VRCOSCTrackersId (val id: Int){
+	enum class VRCOSCTrackersId(val id: Int) {
 		// The order doesn't matter and changing it
 		// won't break anything except make debugging harder
 		// between different versions. They just need to range from 1-8
@@ -353,6 +372,6 @@ class VRCOSCHandler(
 		RIGHT_KNEE(5),
 		CHEST(6),
 		LEFT_ELBOW(7),
-		RIGHT_ELBOW(8);
+		RIGHT_ELBOW(8),
 	}
 }
