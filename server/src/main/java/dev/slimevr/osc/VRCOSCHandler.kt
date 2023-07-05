@@ -23,6 +23,7 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import java.io.IOException
 import java.net.InetAddress
+import java.util.*
 
 /**
  * VRChat OSCTracker documentation: https://docs.vrchat.com/docs/osc-trackers
@@ -37,30 +38,17 @@ class VRCOSCHandler(
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
 	private var oscMessage: OSCMessage? = null
-	private val vrcHmd: Tracker
+	private lateinit var vrcHmd: Tracker
 	private val oscArgs = FastList<Float?>(3)
-	private val trackersEnabled: BooleanArray
+	private val trackersEnabled: BooleanArray = BooleanArray(computedTrackers.size)
 	private var lastPortIn = 0
 	private var lastPortOut = 0
 	private var lastAddress: InetAddress? = null
 	private var timeAtLastError: Long = 0
+	private var receivingInitialized = false
+	private val timer = Timer()
 
 	init {
-		vrcHmd = Tracker(
-			null,
-			VRServer.getNextLocalTrackerId(),
-			"VRC HMD",
-			"VRC HMD",
-			TrackerPosition.HEAD,
-			null,
-			true,
-			false,
-			false,
-			false,
-			true,
-			true
-		)
-		trackersEnabled = BooleanArray(computedTrackers.size)
 		refreshSettings(false)
 	}
 
@@ -119,7 +107,8 @@ class VRCOSCHandler(
 					"/avatar/parameters/Upright"
 				)
 				oscReceiver!!.dispatcher.addListener(selector, listener)
-				oscReceiver!!.startListening()
+				// Delay so we can actually detect if SteamVR is running
+				scheduleStartListening(1000)
 			}
 
 			// Instantiate the OSC sender
@@ -157,8 +146,38 @@ class VRCOSCHandler(
 		if (refreshRouterSettings && server.oscRouter != null) server.oscRouter.refreshSettings(false)
 	}
 
-	fun handleReceivedMessage(event: OSCMessageEvent) {
+	private fun scheduleStartListening(delay: Long) {
+		val resetTask: TimerTask = object : TimerTask() {
+			override fun run() {
+				oscReceiver!!.startListening()
+			}
+		}
+		timer.schedule(resetTask, delay)
+	}
+
+	private fun handleReceivedMessage(event: OSCMessageEvent) {
 		if (steamvrBridge != null && !steamvrBridge.isConnected) {
+			if (!receivingInitialized) {
+				val vrcDevice = server.deviceManager.createDevice("VRChat OSC", null, "VRChat")
+				server.deviceManager.addDevice(vrcDevice)
+				vrcHmd = Tracker(
+					device = vrcDevice,
+					id = VRServer.getNextLocalTrackerId(),
+					name = "VRC HMD",
+					displayName = "VRC HMD",
+					trackerPosition = TrackerPosition.HEAD,
+					trackerNum = 0,
+					hasPosition = true,
+					userEditable = false,
+					isComputed = true,
+					usesTimeout = true
+				)
+				vrcDevice.trackers[0] = vrcHmd
+				server.registerTracker(vrcHmd)
+
+				receivingInitialized = true
+			}
+
 			// Sets HMD status to OK
 			vrcHmd.status = TrackerStatus.OK
 
