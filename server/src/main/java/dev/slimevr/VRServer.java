@@ -337,6 +337,9 @@ public class VRServer extends Thread {
 	@VRServerThread
 	private void trackerAdded(Tracker tracker) {
 		humanPoseManager.trackerAdded(tracker);
+		if(tracker.isComputed() && !tracker.getName().equals("HMD")){
+			vmcHandler.addComputedTracker(tracker);
+		}
 	}
 
 	@ThreadSecure

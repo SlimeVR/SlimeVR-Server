@@ -198,7 +198,7 @@ public abstract class ProtobufBridge implements Bridge {
 			remoteTrackersBySerial.put(tracker.getName(), tracker);
 		}
 		synchronized (remoteTrackersByTrackerId) {
-			remoteTrackersByTrackerId.put(tracker.getId(), tracker);
+			remoteTrackersByTrackerId.put(tracker.getTrackerNum(), tracker);
 		}
 		if (trackerAdded.getTrackerRole() == TrackerRole.HMD.getId()) {
 			hmdTracker = tracker;

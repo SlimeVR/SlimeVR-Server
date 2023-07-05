@@ -39,6 +39,7 @@ public class VMCHandler implements OSCHandler {
 	private final VMCConfig config;
 	private final VRServer server;
 	private final HumanPoseManager humanPoseManager;
+	private final List<Tracker> computedTrackers = new FastList<>();
 	private final FastList<Object> oscArgs = new FastList<>();
 	private final long startTime;
 	private final Map<String, Tracker> byTrackerNameTracker = new HashMap<>();
@@ -449,19 +450,18 @@ public class VMCHandler implements OSCHandler {
 					}
 				}
 
-				// TODO don't loop every loop
-				for (Tracker tracker : server.getAllTrackers()) {
-					if (tracker.getHasPosition()) {
+				for (Tracker tracker : computedTrackers) {
+					if (tracker.getStatus() != TrackerStatus.DISCONNECTED) {
 						oscArgs.clear();
-						// TODO guh
+
 						String name = tracker.getName();
-						if (tracker.getDevice() != null)
-							name = tracker.getDevice().getFirmwareVersion();
 						oscArgs.add(name);
+
 						addTransformToArgs(
 							tracker.getPosition(),
 							tracker.getRotation()
 						);
+
 						String address;
 						TrackerPosition role = tracker.getTrackerPosition();
 						if (role == TrackerPosition.HEAD) {
@@ -509,6 +509,15 @@ public class VMCHandler implements OSCHandler {
 	 */
 	public void alignVMCTracking(Quaternion reference) {
 		yawOffset = reference.project(Vector3.Companion.getPOS_Y()).unit();
+	}
+
+	/**
+	 * Add a computed tracker to the list of trackers to send.
+	 *
+	 * @param computedTracker the computed tracker
+	 */
+	public void addComputedTracker(Tracker computedTracker) {
+		computedTrackers.add(computedTracker);
 	}
 
 	private void addTransformToArgs(Vector3 pos, Quaternion rot) {

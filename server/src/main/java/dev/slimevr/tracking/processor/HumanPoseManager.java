@@ -308,6 +308,8 @@ public class HumanPoseManager {
 					true
 				)
 			);
+
+		connectComputedHumanPoseTrackers();
 	}
 
 	public void loadFromConfig(ConfigManager configManager) {
@@ -346,12 +348,20 @@ public class HumanPoseManager {
 		loadFromConfig(server.getConfigManager());
 		for (Consumer<HumanSkeleton> sc : onSkeletonUpdated)
 			sc.accept(skeleton);
+
+		connectComputedHumanPoseTrackers();
 	}
 
 	@VRServerThread
 	private void disconnectComputedHumanPoseTrackers() {
 		for (Tracker t : computedTrackers) {
 			t.setStatus(TrackerStatus.DISCONNECTED);
+		}
+	}
+
+	private void connectComputedHumanPoseTrackers() {
+		for (Tracker t : computedTrackers) {
+			t.setStatus(TrackerStatus.OK);
 		}
 	}
 
