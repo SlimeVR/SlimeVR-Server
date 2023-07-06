@@ -50,15 +50,10 @@ public class LegTweaks {
 
 	/**
 	 * Averaged male/female body masses per segment for the average person
-	 * Forearm and Hand: 2.24
-	 * Upper Arm: 2.63
-	 * Leg And Foot: 6.20
-	 * Thigh: 11.22
-	 * Head and Trunk total: 55.45
-	 * Head: 8.27
-	 * Thorax / mid-point of upper chest to chest: 18.7
-	 * Abdomen / mid-point of chest to waist: 13.2
-	 * Pelvis / mip-point of waist to hip: 15.3
+	 * Forearm and Hand: 2.24 Upper Arm: 2.63 Leg And Foot: 6.20 Thigh: 11.22
+	 * Head and Trunk total: 55.45 Head: 8.27 Thorax / mid-point of upper chest
+	 * to chest: 18.7 Abdomen / mid-point of chest to waist: 13.2 Pelvis /
+	 * mip-point of waist to hip: 15.3
 	 */
 
 	private static final float HEAD_MASS = 0.0827f;
