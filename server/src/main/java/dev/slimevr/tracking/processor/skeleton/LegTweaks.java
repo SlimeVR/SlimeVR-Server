@@ -1106,8 +1106,8 @@ public class LegTweaks {
 		// compute the center of mass of smaller body parts and then sum them up
 		// with their respective weights
 		Vector3 head = skeleton.headNode.getWorldTransform().getTranslation();
-		Vector3 thorax = skeleton.chestNode.getWorldTransform().getTranslation();
-		Vector3 abdomen = getCenterOfJoint(skeleton.chestNode, skeleton.waistNode);
+		Vector3 thorax = getCenterOfJoint(skeleton.chestNode, skeleton.upperChestNode);
+		Vector3 abdomen = skeleton.waistNode.getWorldTransform().getTranslation();
 		Vector3 pelvis = skeleton.hipNode.getWorldTransform().getTranslation();
 		Vector3 leftCalf = getCenterOfJoint(skeleton.leftAnkleNode, skeleton.leftKneeNode);
 		Vector3 rightCalf = getCenterOfJoint(skeleton.rightAnkleNode, skeleton.rightKneeNode);
