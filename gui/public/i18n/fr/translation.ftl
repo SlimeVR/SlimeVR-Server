@@ -527,25 +527,25 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = Retourner à l'alignement des capteurs
 onboarding-reset_tutorial = Didacticiel de réinitialisation
-onboarding-reset_tutorial-description = Cette fonctionnalité n'est pas encore terminée, appuyez simplement sur continuer
+onboarding-reset_tutorial-explanation = Pendant que vous utilisez vos capteurs, ils peuvent se désaligner à cause de la dérive horizontale du IMU, ou parce que vous les avez déplacés physiquement. Vous avez plusieurs façons de résoudre ce problème.
 onboarding-reset_tutorial-skip = Sauter l'étape
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour effectuer une réinitialisation horizontale.
-
+    
     Cela orientera les capteurs dans la même direction que votre casque VR.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour effectuer une réinitialisation complète.
-
+    
     Vous devrez restez en position « i » (droit debout, bras le long du corps). Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
     Cela réinitialise complètement la position et la rotation de tout vos capteurs, ce qui devrait corriger la plupart des problèmes.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour réinitialiser l'alignement des capteurs.
-
+    
     La réinitialisation de l'alignement des capteurs aide à définir la façon dont ces derniers sont portés sur vous. Cela aidera si vous en avez déplacé un sur vous accidentellement.
-
+    
     Accroupissez-vous dans une position de « ski » comme affiché sur l'assistant d'alignement des capteurs. Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
 
 ## Setup start
