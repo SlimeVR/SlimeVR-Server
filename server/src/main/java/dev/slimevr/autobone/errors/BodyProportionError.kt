@@ -69,14 +69,14 @@ class BodyProportionError : IAutoBoneError {
 			RangeProportionLimiter(
 				0.0945f,
 				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.UPPER_CHEST) },
-				0.02f
+				0.01f
 			),
 			// Chest
 			// Experimental: 0.0945
 			RangeProportionLimiter(
 				0.0945f,
 				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.CHEST) },
-				0.02f
+				0.01f
 			),
 			// Waist
 			// Experimental: 0.118

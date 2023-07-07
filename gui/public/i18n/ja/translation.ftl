@@ -12,6 +12,8 @@ websocket-connection_lost = サーバーへの接続が失われました。再�
 
 ## Update notification
 
+version_update-title = 新しいバージョンが利用可能です：{ $version }
+version_update-description = { version_update-update }をクリックすると、SlimeVRインストーラーがダウンロードされます。
 version_update-update = アップデート
 version_update-close = 閉じる
 
@@ -19,6 +21,8 @@ version_update-close = 閉じる
 
 tips-find_tracker = どのトラッカーがどれだかわからない？トラッカーを振ると、該当する項目がハイライトされます。
 tips-do_not_move_heels = レコーディング中にかかとが動かないように注意しましょう！
+tips-file_select = 使用するファイルをドラッグ&ドロップするか、 <u>参照</u>します。
+tips-tap_setup = 追跡装置をゆっくり2回軽くタップして選択することができます、メニューから選ぶ必要はありません
 
 ## Body parts
 
@@ -48,12 +52,14 @@ body_part-LEFT_FOOT = 左足先
 skeleton_bone-NONE = 無し
 skeleton_bone-HEAD = ヘッドシフト
 skeleton_bone-NECK = 首長さ
-skeleton_bone-CHEST = 胸囲
+skeleton_bone-torso_group = 胴体の長さ
 skeleton_bone-CHEST_OFFSET = 胸オフセット
+skeleton_bone-CHEST = 胸囲
 skeleton_bone-WAIST = ウエスト長さ
 skeleton_bone-HIP = ヒップ長さ
 skeleton_bone-HIP_OFFSET = ヒップオフセット
 skeleton_bone-HIPS_WIDTH = ヒップ幅
+skeleton_bone-leg_group = 股下の長さ
 skeleton_bone-UPPER_LEG = 膝長さ
 skeleton_bone-LOWER_LEG = 足長さ
 skeleton_bone-FOOT_LENGTH = 足先長さ
@@ -61,8 +67,11 @@ skeleton_bone-FOOT_SHIFT = 足先シフト
 skeleton_bone-SKELETON_OFFSET = スケルトンオフセット
 skeleton_bone-SHOULDERS_DISTANCE = 肩の距離
 skeleton_bone-SHOULDERS_WIDTH = 肩幅
+skeleton_bone-arm_group = 腕の長さ
 skeleton_bone-UPPER_ARM = 上腕長さ
 skeleton_bone-LOWER_ARM = 前腕長さ
+skeleton_bone-HAND_Y = 手の距離 Y
+skeleton_bone-HAND_Z = 手の距離Z
 skeleton_bone-ELBOW_OFFSET = 肘オフセット
 
 ## Tracker reset buttons
@@ -98,6 +107,8 @@ bvh-recording = レコーディング中...
 
 ## Tracking pause
 
+tracking-unpaused = トラッキング停止
+tracking-paused = トラッキング再開
 
 ## Widget: Overlay settings
 
@@ -107,6 +118,7 @@ widget-overlay-is_mirrored_label = オーバーレイをミラーとして表示
 
 ## Widget: Drift compensation
 
+widget-drift_compensation-clear = ドリフト補正をクリアする
 
 ## Widget: Developer settings
 
@@ -161,7 +173,11 @@ tracker-infos-manufacturer = メーカ－
 tracker-infos-display_name = 表示名
 tracker-infos-custom_name = カスタム名称
 tracker-infos-url = トラッカーURL
+tracker-infos-version = ファームウェアバージョン
 tracker-infos-hardware_rev = ハードウエアのリビジョン
+tracker-infos-hardware_identifier = ハードウェアID
+tracker-infos-imu = 慣性計測センサー
+tracker-infos-board_type = メインボード
 
 ## Tracker settings
 
@@ -228,6 +244,9 @@ tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part(body-part: "�
 tracker_selection_menu-unassigned = 未割り当てのトラッカー
 tracker_selection_menu-assigned = 割り当て済みのトラッカー
 tracker_selection_menu-dont_assign = 割り当てない
+# This line cares about multilines.
+# <b>text</b> means that the text should be bold.
+tracker_selection_menu-neck_warning = <b>警告：</b>首のトラッカーを締め付けすぎると、頭部の血液循環に危険が生じる可能性があります！
 tracker_selection_menu-neck_warning-done = リスクを理解しています
 tracker_selection_menu-neck_warning-cancel = キャンセル
 
@@ -245,6 +264,7 @@ settings-sidebar-fk_settings = FK設定
 settings-sidebar-gesture_control = ジェスチャーコントロール
 settings-sidebar-interface = インターフェース
 settings-sidebar-osc_router = OSCルーター
+settings-sidebar-osc_trackers = VRChatOSCトラッカー
 settings-sidebar-utils = ユーティリティ
 settings-sidebar-serial = シリアルコンソール
 
@@ -304,6 +324,7 @@ settings-general-fk_settings-leg_tweak-floor_clip = フロアクリップ
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = スケーティング補正
 settings-general-fk_settings-leg_tweak-skating_correction-amount = スケーティング補正の強さ
+settings-general-fk_settings-leg_fk = 足のトラッキング
 settings-general-fk_settings-arm_fk = アームトラッキング
 settings-general-fk_settings-arm_fk-description = 腕の追従方法を変更する。
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
@@ -350,6 +371,7 @@ settings-general-interface-serial_detection-label = シリアルデバイスの�
 settings-general-interface-feedback_sound = フィードバック音
 settings-general-interface-feedback_sound-label = フィードバック音
 settings-general-interface-feedback_sound-volume = フィードバック音量
+settings-general-interface-theme = カラーテーマ
 settings-general-interface-lang = 言語を選択
 settings-general-interface-lang-description = 使用したいデフォルトの言語を変更する
 settings-general-interface-lang-placeholder = 使用する言語を選択する
@@ -419,6 +441,7 @@ settings-osc-vrchat-network-address-placeholder = VRChatのIPアドレス
 settings-osc-vrchat-network-trackers = トラッカー
 settings-osc-vrchat-network-trackers-description = データの送受信を切り替える。
 settings-osc-vrchat-network-trackers-chest = 胸
+settings-osc-vrchat-network-trackers-hip = 腰
 settings-osc-vrchat-network-trackers-knees = 膝
 settings-osc-vrchat-network-trackers-feet = 足
 settings-osc-vrchat-network-trackers-elbows = 肘
@@ -429,6 +452,12 @@ settings-osc-vmc = バーチャルモーションキャプチャ
 settings-osc-vmc-enable = 有効
 settings-osc-vmc-enable-label = 有効
 settings-osc-vmc-network = ネットワークポート
+settings-osc-vmc-network-port_in =
+    .label = ポートイン
+    .placeholder = ポートイン（デフォルト：３９５４０）
+settings-osc-vmc-network-port_out =
+    .label = ポートアウト
+    .placeholder = ポートアウト（デフォルト：３９５３９）
 settings-osc-vmc-network-address = ネットワークアドレス
 settings-osc-vmc-network-address-placeholder = IPV4アドレス
 settings-osc-vmc-vrm = VRMモデル
@@ -438,6 +467,8 @@ settings-osc-vmc-vrm = VRMモデル
 onboarding-skip = 設定をスキップする
 onboarding-continue = 続ける
 onboarding-wip = 実行中
+onboarding-setup_warning-skip = セットアップをスキップする
+onboarding-setup_warning-cancel = セットアップを続行する
 
 ## Wi-Fi setup
 
@@ -460,7 +491,7 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = マウントキャリブレーションに戻る
 onboarding-reset_tutorial = リセットチュートリアル
-onboarding-reset_tutorial-description = この機能は終了していません。続けるを押してください。
+onboarding-reset_tutorial-skip = ステップをスキップする
 
 ## Setup start
 
@@ -488,7 +519,12 @@ onboarding-connect_tracker-description-p0 = さあ、楽しい部分に移りま
 onboarding-connect_tracker-description-p1 = まだ接続されていないトラッカーたちをUSBポートを通して接続するだけです。
 onboarding-connect_tracker-issue-serial = 接続に問題があります！
 onboarding-connect_tracker-usb = USBトラッカー
+onboarding-connect_tracker-connection_status-none = トラッカーを探しています
 onboarding-connect_tracker-connection_status-connecting = Wi-Fiの認証情報を送信中
+onboarding-connect_tracker-connection_status-looking_for_server = サーバーを探しています
+onboarding-connect_tracker-connection_status-connection_error = Wi-Fiに接続できません
+onboarding-connect_tracker-connection_status-could_not_find_server = サーバーが見つかりません
+onboarding-connect_tracker-connection_status-done = サーバーに接続されました
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -504,10 +540,14 @@ onboarding-connect_tracker-next = すべてのトラッカーを接続しまし�
 
 ## Tracker calibration tutorial
 
+onboarding-calibration_tutorial = IMU校正チュートリアル
+onboarding-calibration_tutorial-subtitle = これにより、センサーのドリフトを減らすことが役立ちます
 onboarding-calibration_tutorial-status-calibrating = 校正中
 
 ## Tracker assignment tutorial
 
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = ステッカー
 
 ## Tracker assignment setup
 
@@ -530,8 +570,6 @@ onboarding-assign_trackers-next = すべてのトラッカーを割り当てま�
 
 ## Tracker mounting method choose
 
-# Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = おすすめされた
 
 ## Tracker manual mounting setup
 
@@ -614,3 +652,10 @@ home-no_trackers = トラッカーを検出できません。もしくは割り�
 
 ## Status system
 
+status_system-StatusTrackerReset = 一つ以上のトラッカーが調整されていないため、完全なリセットを実行することをお勧めします
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] SlimeVR Feederアプリに接続されていません
+       *[other] SlimeVRドライバ経由でSteamVRに接続されていません
+    }
+status_system-StatusTrackerError = { $trackerName } トラッカーにエラーが発生しています
