@@ -117,7 +117,7 @@ data class TrackerFrame(
 
 			val rotation: Quaternion? = if (tracker.hasRotation) tracker.getRotation() else null
 			val position: Vector3? = if (tracker.hasPosition) tracker.position else null
-			val acceleration: Vector3? = if (tracker.hasAcceleration) tracker.acceleration else null
+			val acceleration: Vector3? = if (tracker.hasAcceleration) tracker.getAcceleration() else null
 
 			var rawRotation: Quaternion? = if (tracker.hasAdjustedRotation) tracker.getRawRotation() else null
 			// If the rawRotation is the same as rotation, there's no point in saving it, set it back to null

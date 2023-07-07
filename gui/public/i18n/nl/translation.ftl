@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -103,10 +100,15 @@ navbar-mounting = Bevestigings- kalibratie
 navbar-onboarding = Setupgids
 navbar-settings = Instellingen
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = BVH opnemen
 bvh-recording = Opname bezig...
+
+## Tracking pause
+
+tracking-unpaused = Pauzeer tracking
+tracking-paused = Herneem tracking
 
 ## Widget: Overlay settings
 
@@ -521,7 +523,7 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = Ga terug naar de bevestigingskalibratie
 onboarding-reset_tutorial = Reset tutorial
-onboarding-reset_tutorial-description = Deze stap is nog niet afgewerkt, druk gewoon op doorgaan.
+onboarding-reset_tutorial-skip = Stap overslaan
 
 ## Setup start
 
@@ -580,6 +582,9 @@ onboarding-calibration_tutorial-status-waiting = Ik wacht op jou
 onboarding-calibration_tutorial-status-calibrating = Kalibreren
 onboarding-calibration_tutorial-status-success = Aardig!
 onboarding-calibration_tutorial-status-error = De tracker werd verplaatst
+
+## Tracker assignment tutorial
+
 
 ## Tracker assignment setup
 
@@ -670,11 +675,11 @@ onboarding-assign_trackers-warning-WAIST =
 onboarding-choose_mounting = Welke montagekalibratiemethode moet worden gebruikt?
 onboarding-choose_mounting-auto_mounting = Automatische bevestiging
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = Aanbevolen
+onboarding-choose_mounting-auto_mounting-label = Experimenteel
 onboarding-choose_mounting-auto_mounting-description = Dit detecteert automatisch de montagerichtingen voor al uw trackers door middel van 2 poses
 onboarding-choose_mounting-manual_mounting = Handmatige bevestiging
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = Als je weet wat je doet
+onboarding-choose_mounting-manual_mounting-label = Aanbevolen
 onboarding-choose_mounting-manual_mounting-description = Hiermee kunt u de montagerichting handmatig kiezen voor elke tracker
 
 ## Tracker manual mounting setup
@@ -779,3 +784,6 @@ onboarding-automatic_proportions-done-description = Je kalibratie voor lichaamsv
 ## Home
 
 home-no_trackers = Geen trackers gedetecteerd of toegewezen
+
+## Status system
+
