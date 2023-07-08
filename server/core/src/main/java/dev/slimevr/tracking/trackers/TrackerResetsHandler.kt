@@ -193,7 +193,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		// Let's just remove the status if you do yaw reset if the tracker was
 		// disconnected and then connected back
 		if (this.tracker.lastResetStatus != 0u && this.tracker.statusResetRecently) {
-			vrServer.statusSystem.removeStatus(this.tracker.lastResetStatus)
+			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
 			this.tracker.statusResetRecently = false
 			this.tracker.lastResetStatus = 0u
 		}
