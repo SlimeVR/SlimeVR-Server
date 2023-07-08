@@ -27,6 +27,7 @@ import java.nio.file.Paths
 import javax.swing.JOptionPane
 import kotlin.concurrent.thread
 import kotlin.io.path.Path
+import kotlin.io.path.exists
 import kotlin.io.path.pathString
 import kotlin.system.exitProcess
 
@@ -224,10 +225,14 @@ fun provideFeederBridge(
 const val CONFIG_FILENAME = "vrconfig.yml"
 fun resolveConfig(): String {
 	// If config folder exists, then save config on relative path
-	if (Files.exists(Path("config/"))) {
+	if (Path("config/").exists()) {
 		return CONFIG_FILENAME
 	}
 
-	val configDir = OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER) ?: return CONFIG_FILENAME
-	return configDir.resolve(CONFIG_FILENAME).pathString
+	val configFile = OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(CONFIG_FILENAME) ?: return CONFIG_FILENAME
+	if (!configFile.exists() && Path(CONFIG_FILENAME).exists()) {
+		LogManager.info("Moved local config file to appdata folder")
+		Files.move(Path(CONFIG_FILENAME), configFile)
+	}
+	return configFile.pathString
 }
