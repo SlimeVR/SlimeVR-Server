@@ -76,7 +76,7 @@ class Tracker @JvmOverloads constructor(
 			// If the status of a non-internal tracker has changed, inform
 			// the VRServer to recreate the skeleton, as it may need to
 			// assign or un-assign the tracker to a body part
-			vrServer.updateSkeletonModel()
+			VRServer.instance.updateSkeletonModel()
 
 			checkReportErrorStatus()
 			checkReportRequireReset()
@@ -119,7 +119,7 @@ class Tracker @JvmOverloads constructor(
 		) {
 			reportRequireReset()
 		} else if (lastResetStatus != 0u && (trackerPosition == null || status.reset)) {
-			vrServer.statusSystem.removeStatus(lastResetStatus)
+			VRServer.instance.statusSystem.removeStatus(lastResetStatus)
 			lastResetStatus = 0u
 		}
 	}
