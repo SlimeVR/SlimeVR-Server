@@ -14,10 +14,10 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-		mavenLocal()
-//		maven {
-//			url = uri("https://oss.sonatype.org/content/repositories/snapshots")
-//		}
+//		mavenLocal()
+		maven {
+			url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+		}
     }
 
 	val robovmVersion: String by settings
