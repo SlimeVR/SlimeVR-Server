@@ -40,6 +40,8 @@ typealias SteamBridgeProvider = (
 	computedTrackers: List<Tracker>,
 ) -> SteamVRBridge?
 
+const val SLIMEVR_IDENTIFIER = "dev.slimevr.SlimeVR"
+
 class VRServer constructor(
 	driverBridgeProvider: SteamBridgeProvider = { _: VRServer, _: Tracker, _: List<Tracker> -> null },
 	feederBridgeProvider: (VRServer) -> SteamVRBridge? = { _: VRServer -> null },
