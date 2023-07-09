@@ -319,7 +319,11 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		// lower than the lowest level and has a battery voltage (owoTrack
 		// devices do not).
 		for (Tracker batteryTracker : batteryTrackers) {
-			if (batteryTracker != null && batteryTracker.getBatteryLevel() != null) {
+			if (
+				batteryTracker != null
+					&& batteryTracker.getBatteryLevel() != null
+					&& batteryTracker.getBatteryLevel() < lowestLevel
+			) {
 				lowestLevel = batteryTracker.getBatteryLevel();
 
 				if (batteryTracker.getBatteryVoltage() != null) {
