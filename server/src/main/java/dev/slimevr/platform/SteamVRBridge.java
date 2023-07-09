@@ -156,9 +156,10 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 
 		List<Tracker> batteryTrackers = new FastList<>();
 
-		// Given what the role is of localTracker, the tracker positions that
-		// make up that role are set to primaryTracker, secondaryTracker, and
-		// tertiaryTracker respectively.
+		// batteryTrackers is filled with trackers that would give battery data
+		// for the SteamVR tracker according to its role. Warning: the line
+		// below could return a null tracker, so there must be a null check
+		// when accessing batteryTrackers' data.
 		batteryTrackers
 			.add(
 				TrackerUtils
@@ -314,16 +315,14 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		// If the battery level of the tracker is lower than lowestLevel, then
 		// the battery level of the tracker position becomes lowestLevel.
 		// Tracker voltage is set if the tracker position has a battery level
-		// lower than lowest level and has a battery voltage (owoTrack devices
-		// do not).
-		if (batteryTrackers.size() > 0) {
-			for (Tracker batteryTracker : batteryTrackers) {
-				if (batteryTracker != null && batteryTracker.getBatteryLevel() != null) {
-					lowestLevel = batteryTracker.getBatteryLevel();
+		// lower than the lowest level and has a battery voltage (owoTrack
+		// devices do not).
+		for (Tracker batteryTracker : batteryTrackers) {
+			if (batteryTracker != null && batteryTracker.getBatteryLevel() != null) {
+				lowestLevel = batteryTracker.getBatteryLevel();
 
-					if (batteryTracker.getBatteryVoltage() != null) {
-						trackerVoltage = batteryTracker.getBatteryVoltage();
-					}
+				if (batteryTracker.getBatteryVoltage() != null) {
+					trackerVoltage = batteryTracker.getBatteryVoltage();
 				}
 			}
 		}
