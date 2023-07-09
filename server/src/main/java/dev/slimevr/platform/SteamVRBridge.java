@@ -157,9 +157,9 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		List<Tracker> batteryTrackers = new FastList<>();
 
 		// batteryTrackers is filled with trackers that would give battery data
-		// for the SteamVR tracker according to its role. Warning: the line
-		// below could return a null tracker, so there must be a null check
-		// when accessing batteryTrackers' data.
+		// for the SteamVR tracker according to its role. Warning: trackers
+		// inside batteryTrackers could be null, so there must be a null check
+		// when accessing its data.
 		batteryTrackers
 			.add(
 				TrackerUtils
@@ -170,6 +170,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			);
 		switch (role) {
 			case WAIST -> {
+				// Add waist because the first tracker is hip
 				batteryTrackers
 					.add(
 						TrackerUtils
@@ -200,7 +201,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				}
 			}
 			case CHEST -> {
-				// Get chest because primary is upperChest
+				// Add chest because the firs tracker is upperChest
 				batteryTrackers
 					.add(
 						TrackerUtils
@@ -217,7 +218,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 							TrackerUtils
 								.getNonInternalTrackerForBodyPosition(
 									allTrackers,
-									TrackerPosition.HIP
+									TrackerPosition.WAIST
 								)
 						);
 					batteryTrackers
@@ -225,7 +226,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 							TrackerUtils
 								.getNonInternalTrackerForBodyPosition(
 									allTrackers,
-									TrackerPosition.WAIST
+									TrackerPosition.HIP
 								)
 						);
 				}
