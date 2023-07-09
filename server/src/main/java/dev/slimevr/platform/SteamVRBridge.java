@@ -201,7 +201,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				}
 			}
 			case CHEST -> {
-				// Add chest because the firs tracker is upperChest
+				// Add chest because the first tracker is upperChest
 				batteryTrackers
 					.add(
 						TrackerUtils
