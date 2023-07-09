@@ -156,6 +156,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		Tracker primaryTracker = null;
 		Tracker secondaryTracker = null;
 		Tracker tertiaryTracker = null;
+		Tracker fourthTracker = null;
 
 		// Given what the role is of localTracker, the tracker positions that
 		// make up that role are set to primaryTracker, secondaryTracker, and
@@ -166,7 +167,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				TrackerPosition.getByTrackerRole(role)
 			);
 		switch (role) {
-			case WAIST:
+			case WAIST -> {
 				secondaryTracker = TrackerUtils
 					.getNonInternalTrackerForBodyPosition(
 						allTrackers,
@@ -178,27 +179,38 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 					tertiaryTracker = TrackerUtils
 						.getNonInternalTrackerForBodyPosition(
 							allTrackers,
+							TrackerPosition.CHEST
+						);
+					fourthTracker = TrackerUtils
+						.getNonInternalTrackerForBodyPosition(
+							allTrackers,
 							TrackerPosition.UPPER_CHEST
 						);
 				}
-				break;
-			case CHEST:
+			}
+			case CHEST -> {
+				// Get chest because primary is upperChest
+				secondaryTracker = TrackerUtils
+					.getNonInternalTrackerForBodyPosition(
+						allTrackers,
+						TrackerPosition.CHEST
+					);
 				// When the waist SteamVR tracking point is disabled, aggregate
 				// waist and hip battery level with the chest.
 				if (!(config.getBridgeTrackerRole(TrackerRole.WAIST, true))) {
-					secondaryTracker = TrackerUtils
+					tertiaryTracker = TrackerUtils
 						.getNonInternalTrackerForBodyPosition(
 							allTrackers,
 							TrackerPosition.HIP
 						);
-					tertiaryTracker = TrackerUtils
+					fourthTracker = TrackerUtils
 						.getNonInternalTrackerForBodyPosition(
 							allTrackers,
 							TrackerPosition.WAIST
 						);
 				}
-				break;
-			case LEFT_FOOT:
+			}
+			case LEFT_FOOT -> {
 				secondaryTracker = TrackerUtils
 					.getNonInternalTrackerForBodyPosition(
 						allTrackers,
@@ -213,8 +225,8 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 							TrackerPosition.LEFT_UPPER_LEG
 						);
 				}
-				break;
-			case RIGHT_FOOT:
+			}
+			case RIGHT_FOOT -> {
 				secondaryTracker = TrackerUtils
 					.getNonInternalTrackerForBodyPosition(
 						allTrackers,
@@ -229,8 +241,8 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 							TrackerPosition.RIGHT_UPPER_LEG
 						);
 				}
-				break;
-			case LEFT_ELBOW:
+			}
+			case LEFT_ELBOW -> {
 				secondaryTracker = TrackerUtils
 					.getNonInternalTrackerForBodyPosition(
 						allTrackers,
@@ -241,8 +253,8 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 						allTrackers,
 						TrackerPosition.LEFT_SHOULDER
 					);
-				break;
-			case RIGHT_ELBOW:
+			}
+			case RIGHT_ELBOW -> {
 				secondaryTracker = TrackerUtils
 					.getNonInternalTrackerForBodyPosition(
 						allTrackers,
@@ -253,7 +265,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 						allTrackers,
 						TrackerPosition.RIGHT_SHOULDER
 					);
-				break;
+			}
 		}
 
 		// If the battery level of the tracker is lower than lowestLevel, then
@@ -261,6 +273,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		// Tracker voltage is set if the tracker position has a battery level
 		// lower than lowest level and has a battery voltage (owoTrack devices
 		// do not).
+		// TODO this is such ugly code I hate it, we should use a list -Erimel
 		if (
 			(primaryTracker != null) && (primaryTracker.getBatteryLevel() != null)
 		) {
@@ -290,6 +303,17 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 
 			if (tertiaryTracker.getBatteryVoltage() != null) {
 				trackerVoltage = tertiaryTracker.getBatteryVoltage();
+			}
+		}
+		if (
+			(fourthTracker != null)
+				&& (fourthTracker.getBatteryLevel() != null)
+				&& (fourthTracker.getBatteryLevel() < lowestLevel)
+		) {
+			lowestLevel = fourthTracker.getBatteryLevel();
+
+			if (fourthTracker.getBatteryVoltage() != null) {
+				trackerVoltage = fourthTracker.getBatteryVoltage();
 			}
 		}
 
