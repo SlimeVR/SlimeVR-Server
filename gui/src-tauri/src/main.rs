@@ -41,17 +41,17 @@ fn update_window_state(
 
 #[tauri::command]
 fn logging(msg: String) {
-	log::info!(target: "webview", "[webview] {}", msg)
+	log::info!(target: "webview", "{}", msg)
 }
 
 #[tauri::command]
 fn erroring(msg: String) {
-	log::error!(target: "webview", "[webview] {}", msg)
+	log::error!(target: "webview", "{}", msg)
 }
 
 #[tauri::command]
 fn warning(msg: String) {
-	log::warn!(target: "webview", "[webview] {}", msg)
+	log::warn!(target: "webview", "{}", msg)
 }
 
 fn main() -> Result<()> {
@@ -59,8 +59,8 @@ fn main() -> Result<()> {
 	let hook = panic::take_hook();
 	// Make an error dialog box when panicking
 	panic::set_hook(Box::new(move |panic_info| {
-		hook(panic_info);
 		show_error(&panic_info.to_string());
+		hook(panic_info);
 	}));
 
 	let cli = Cli::parse();
@@ -77,6 +77,8 @@ fn main() -> Result<()> {
 			.log_to_file(FileSpec::default().directory(
 				app_log_dir(tauri_context.config()).expect("We need a log dir"),
 			))
+			.format_for_files(util::logger_format)
+			.format_for_stderr(util::logger_format)
 			.rotate(
 				Criterion::Age(Age::Day),
 				Naming::Timestamps,
