@@ -1,6 +1,7 @@
 package dev.slimevr.osc
 
 import com.illposed.osc.MessageSelector
+import com.illposed.osc.OSCBundle
 import com.illposed.osc.OSCMessage
 import com.illposed.osc.OSCMessageEvent
 import com.illposed.osc.OSCMessageListener
@@ -254,6 +255,9 @@ class VRCOSCHandler(
 
 		// Send OSC data
 		if (oscSender != null && oscSender!!.isConnected) {
+			// Create new bundle
+			val bundle = OSCBundle()
+
 			for (i in computedTrackers.indices) {
 				if (trackersEnabled[i]) {
 					// Send regular trackers' positions
@@ -262,33 +266,12 @@ class VRCOSCHandler(
 					oscArgs.add(x)
 					oscArgs.add(y)
 					oscArgs.add(-z)
-					oscMessage = OSCMessage(
-						"/tracking/trackers/${VRCOSCTrackersId.valueOf(computedTrackers[i].trackerPosition?.trackerRole.toString()).id}/position",
-						oscArgs
+					bundle.addPacket(
+						OSCMessage(
+							"/tracking/trackers/${getVRCOSCTrackersId(computedTrackers[i].trackerPosition)}/position",
+							oscArgs.clone()
+						)
 					)
-					try {
-						oscSender!!.send(oscMessage)
-					} catch (e: IOException) {
-						// Avoid spamming AsynchronousCloseException too many
-						// times per second
-						if (currentTime - timeAtLastError > 100) {
-							timeAtLastError = System.currentTimeMillis()
-							LogManager
-								.warning(
-									"[VRCOSCHandler] Error sending OSC message to VRChat: " +
-										e
-								)
-						}
-					} catch (e: OSCSerializeException) {
-						if (currentTime - timeAtLastError > 100) {
-							timeAtLastError = System.currentTimeMillis()
-							LogManager
-								.warning(
-									"[VRCOSCHandler] Error sending OSC message to VRChat: " +
-										e
-								)
-						}
-					}
 
 					// Send regular trackers' rotations
 					val (w, x1, y1, z1) = computedTrackers[i].getRotation()
@@ -309,17 +292,12 @@ class VRCOSCHandler(
 					oscArgs.add(x2 * FastMath.RAD_TO_DEG)
 					oscArgs.add(y2 * FastMath.RAD_TO_DEG)
 					oscArgs.add(z2 * FastMath.RAD_TO_DEG)
-					oscMessage = OSCMessage(
-						"/tracking/trackers/${VRCOSCTrackersId.valueOf(computedTrackers[i].trackerPosition?.trackerRole.toString()).id}/rotation",
-						oscArgs
+					bundle.addPacket(
+						OSCMessage(
+							"/tracking/trackers/${getVRCOSCTrackersId(computedTrackers[i].trackerPosition)}/rotation",
+							oscArgs.clone()
+						)
 					)
-					try {
-						oscSender!!.send(oscMessage)
-					} catch (_: IOException) {
-						// Don't do anything.
-						// Previous code already logs the exception.
-					} catch (_: OSCSerializeException) {
-					}
 				}
 				if (computedTrackers[i].trackerPosition === TrackerPosition.HEAD) {
 					// Send HMD position
@@ -328,17 +306,36 @@ class VRCOSCHandler(
 					oscArgs.add(x)
 					oscArgs.add(y)
 					oscArgs.add(-z)
-					oscMessage = OSCMessage(
-						"/tracking/trackers/head/position",
-						oscArgs
+					bundle.addPacket(
+						OSCMessage(
+							"/tracking/trackers/head/position",
+							oscArgs.clone()
+						)
 					)
-					try {
-						oscSender!!.send(oscMessage)
-					} catch (_: IOException) {
-						// Don't do anything.
-						// Previous code already logs the exception.
-					} catch (_: OSCSerializeException) {
-					}
+				}
+			}
+
+			try {
+				oscSender!!.send(bundle)
+			} catch (e: IOException) {
+				// Avoid spamming AsynchronousCloseException too many
+				// times per second
+				if (currentTime - timeAtLastError > 100) {
+					timeAtLastError = System.currentTimeMillis()
+					LogManager
+						.warning(
+							"[VRCOSCHandler] Error sending OSC message to VRChat: " +
+								e
+						)
+				}
+			} catch (e: OSCSerializeException) {
+				if (currentTime - timeAtLastError > 100) {
+					timeAtLastError = System.currentTimeMillis()
+					LogManager
+						.warning(
+							"[VRCOSCHandler] Error sending OSC message to VRChat: " +
+								e
+						)
 				}
 			}
 		}
@@ -394,18 +391,20 @@ class VRCOSCHandler(
 		return lastPortIn
 	}
 
-	enum class VRCOSCTrackersId(val id: Int) {
+	fun getVRCOSCTrackersId(trackerPosition: TrackerPosition?): Int {
 		// The order doesn't matter and changing it
 		// won't break anything except make debugging harder
 		// between different versions. They just need to range from 1-8
-		// The names match the ones in TrackerRole.kt
-		WAIST(1),
-		LEFT_FOOT(2),
-		RIGHT_FOOT(3),
-		LEFT_KNEE(4),
-		RIGHT_KNEE(5),
-		CHEST(6),
-		LEFT_ELBOW(7),
-		RIGHT_ELBOW(8),
+		return when (trackerPosition) {
+			TrackerPosition.HIP -> 1
+			TrackerPosition.LEFT_FOOT -> 2
+			TrackerPosition.RIGHT_FOOT -> 3
+			TrackerPosition.LEFT_UPPER_LEG -> 4
+			TrackerPosition.RIGHT_UPPER_LEG -> 5
+			TrackerPosition.UPPER_CHEST -> 6
+			TrackerPosition.LEFT_UPPER_ARM -> 7
+			TrackerPosition.RIGHT_UPPER_ARM -> 8
+			else -> -1
+		}
 	}
 }
