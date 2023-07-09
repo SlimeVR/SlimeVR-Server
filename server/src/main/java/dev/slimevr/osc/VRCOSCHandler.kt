@@ -13,6 +13,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.platform.SteamVRBridge
 import dev.slimevr.tracking.processor.HumanPoseManager
+import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
@@ -38,14 +39,14 @@ class VRCOSCHandler(
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
 	private var oscMessage: OSCMessage? = null
-	private lateinit var vrcHmd: Tracker
+	private var tracker: Tracker? = null
+	private var oscTrackersDevice: Device? = null
 	private val oscArgs = FastList<Float?>(3)
 	private val trackersEnabled: BooleanArray = BooleanArray(computedTrackers.size)
 	private var lastPortIn = 0
 	private var lastPortOut = 0
 	private var lastAddress: InetAddress? = null
 	private var timeAtLastError: Long = 0
-	private var receivingInitialized = false
 	private val timer = Timer()
 
 	init {
@@ -100,13 +101,17 @@ class VRCOSCHandler(
 					)
 			}
 
-			// Starts listening for the Upright parameter from VRC
+			// Starts listening for VRC or OSCTrackers messages
 			if (oscReceiver != null) {
 				val listener = OSCMessageListener { event: OSCMessageEvent -> handleReceivedMessage(event) }
-				val selector: MessageSelector = OSCPatternAddressMessageSelector(
+				val vrcSelector: MessageSelector = OSCPatternAddressMessageSelector(
 					"/avatar/parameters/Upright"
 				)
-				oscReceiver!!.dispatcher.addListener(selector, listener)
+				val trackersSelector: MessageSelector = OSCPatternAddressMessageSelector(
+					"/tracking/trackers/*"
+				)
+				oscReceiver!!.dispatcher.addListener(vrcSelector, listener)
+				oscReceiver!!.dispatcher.addListener(trackersSelector, listener)
 				// Delay so we can actually detect if SteamVR is running
 				scheduleStartListening(1000)
 			}
@@ -156,63 +161,92 @@ class VRCOSCHandler(
 	}
 
 	private fun handleReceivedMessage(event: OSCMessageEvent) {
-		if (steamvrBridge != null && !steamvrBridge.isConnected) {
-			if (!receivingInitialized) {
-				val vrcDevice = server.deviceManager.createDevice("VRChat OSC", null, "VRChat")
-				server.deviceManager.addDevice(vrcDevice)
-				vrcHmd = Tracker(
-					device = vrcDevice,
+		if (event.message.address.equals("/avatar/parameters/Upright")) {
+			// Receiving HMD data from VRChat
+			if (steamvrBridge != null && !steamvrBridge.isConnected) {
+				if (tracker == null) {
+					val vrcDevice = server.deviceManager.createDevice("VRChat OSC", null, "VRChat")
+					server.deviceManager.addDevice(vrcDevice)
+					tracker = Tracker(
+						device = vrcDevice,
+						id = VRServer.getNextLocalTrackerId(),
+						name = "VRC HMD",
+						displayName = "VRC HMD",
+						trackerPosition = TrackerPosition.HEAD,
+						trackerNum = 0,
+						hasPosition = true,
+						userEditable = false,
+						isComputed = true,
+						usesTimeout = true
+					)
+					vrcDevice.trackers[0] = tracker!!
+					server.registerTracker(tracker)
+				}
+
+				// Sets HMD status to OK
+				tracker!!.status = TrackerStatus.OK
+
+				// Sets the HMD y position to
+				// the vrc Upright parameter (0-1) * the user's height
+				tracker!!
+					.position = Vector3(
+					0f,
+					event
+						.message
+						.arguments[0] as Float * humanPoseManager.userHeightFromConfig,
+					0f
+				)
+				tracker!!.dataTick()
+			}
+		} else {
+			// Receiving OSC Trackers data
+
+			// /tracking/trackers/?/position x, y, z
+			// /tracking/trackers/?/rotation x, y, z
+			val trackerId = 1 // TODO 1-8
+
+			// /tracking/trackers/head/position
+			// /tracking/trackers/head/rotation
+			// TODO : https://docs.vrchat.com/docs/osc-trackers#receiving-head-data
+
+			if (oscTrackersDevice == null) {
+				// Instantiate OSC Trackers device
+				oscTrackersDevice = server.deviceManager.createDevice("OSC Tracker", null, "OSC Trackers")
+				server.deviceManager.addDevice(oscTrackersDevice!!)
+			}
+			if (oscTrackersDevice!!.trackers[trackerId] == null) {
+				tracker = Tracker(
+					device = oscTrackersDevice,
 					id = VRServer.getNextLocalTrackerId(),
-					name = "VRC HMD",
-					displayName = "VRC HMD",
-					trackerPosition = TrackerPosition.HEAD,
-					trackerNum = 0,
+					name = "OSC Tracker #$trackerId",
+					displayName = "OSC Tracker #$trackerId",
+					trackerNum = trackerId,
+					trackerPosition = null,
+					hasRotation = true,
 					hasPosition = true,
 					userEditable = false,
 					isComputed = true,
+					needsReset = true,
 					usesTimeout = true
 				)
-				vrcDevice.trackers[0] = vrcHmd
-				server.registerTracker(vrcHmd)
-
-				receivingInitialized = true
+				oscTrackersDevice!!.trackers[trackerId] = tracker!!
+				server.registerTracker(tracker)
 			}
 
-			// Sets HMD status to OK
-			vrcHmd.status = TrackerStatus.OK
+			// Sets the tracker status to OK
+			oscTrackersDevice!!.trackers[trackerId]!!.status = TrackerStatus.OK
 
-			// Sets the HMD y position to
-			// the vrc Upright parameter (0-1) * the user's height
-			vrcHmd
-				.position = Vector3(
-				0f,
-				event
-					.message
-					.arguments[0] as Float * humanPoseManager.userHeightFromConfig,
-				0f
-			)
-			vrcHmd.dataTick()
+			// TODO
+			// oscTrackersDevice!!.trackers[trackerId]!!
+			// 	.position = Vector3(
+			// 	0f,
+			// 	event
+			// 		.message
+			// 		.arguments[0] as Float * humanPoseManager.userHeightFromConfig,
+			// 	0f
+			// )
+			oscTrackersDevice!!.trackers[trackerId]!!.dataTick()
 		}
-
-		// TODO : https://docs.vrchat.com/docs/osc-trackers
-		// /tracking/trackers/1/position
-		// /tracking/trackers/1/rotation
-		// /tracking/trackers/2/position
-		// /tracking/trackers/2/rotation
-		// /tracking/trackers/3/position
-		// /tracking/trackers/3/rotation
-		// /tracking/trackers/4/position
-		// /tracking/trackers/4/rotation
-		// /tracking/trackers/5/position
-		// /tracking/trackers/5/rotation
-		// /tracking/trackers/6/position
-		// /tracking/trackers/6/rotation
-		// /tracking/trackers/7/position
-		// /tracking/trackers/7/rotation
-		// /tracking/trackers/8/position
-		// /tracking/trackers/8/rotation
-		// /tracking/trackers/head/position
-		// /tracking/trackers/head/rotation
 	}
 
 	override fun update() {
