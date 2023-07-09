@@ -47,14 +47,14 @@ public class LegTweaks {
 
 	// hyperparameters (COM calculation)
 	// mass percentages of the body
-	private static final float HEAD_MASS = 0.082f;
-	private static final float UPPER_CHEST_MASS = 0.125f;
-	private static final float CHEST_MASS = 0.125f;
-	private static final float WAIST_MASS = 0.209f;
-	private static final float THIGH_MASS = 0.128f;
-	private static final float CALF_MASS = 0.0535f;
-	private static final float UPPER_ARM_MASS = 0.031f;
-	private static final float FOREARM_MASS = 0.017f;
+	private static final float HEAD_MASS = 0.0827f;
+	private static final float THORAX_MASS = 0.1870f;
+	private static final float ABDOMEN_MASS = 0.1320f;
+	private static final float PELVIS_MASS = 0.1530f;
+	private static final float THIGH_MASS = 0.1122f;
+	private static final float LEG_AND_FOOT_MASS = 0.0620f;
+	private static final float UPPER_ARM_MASS = 0.0263f;
+	private static final float FOREARM_AND_HAND_MASS = 0.0224f;
 
 	// hyperparameters (rotation correction)
 	private static final float ROTATION_CORRECTION_VERTICAL = 0.1f;
@@ -1109,19 +1109,19 @@ public class LegTweaks {
 		// compute the center of mass of smaller body parts and then sum them up
 		// with their respective weights
 		Vector3 head = skeleton.headNode.getWorldTransform().getTranslation();
-		Vector3 upperChest = skeleton.upperChestNode.getWorldTransform().getTranslation();
-		Vector3 chest = skeleton.chestNode.getWorldTransform().getTranslation();
-		Vector3 hip = skeleton.hipNode.getWorldTransform().getTranslation();
+		Vector3 thorax = getCenterOfJoint(skeleton.chestNode, skeleton.upperChestNode);
+		Vector3 abdomen = skeleton.waistNode.getWorldTransform().getTranslation();
+		Vector3 pelvis = skeleton.hipNode.getWorldTransform().getTranslation();
 		Vector3 leftCalf = getCenterOfJoint(skeleton.leftAnkleNode, skeleton.leftKneeNode);
 		Vector3 rightCalf = getCenterOfJoint(skeleton.rightAnkleNode, skeleton.rightKneeNode);
 		Vector3 leftThigh = getCenterOfJoint(skeleton.leftKneeNode, skeleton.leftHipNode);
 		Vector3 rightThigh = getCenterOfJoint(skeleton.rightKneeNode, skeleton.rightHipNode);
 		centerOfMass = centerOfMass.plus(head.times(HEAD_MASS));
-		centerOfMass = centerOfMass.plus(upperChest.times(UPPER_CHEST_MASS));
-		centerOfMass = centerOfMass.plus(chest.times(CHEST_MASS));
-		centerOfMass = centerOfMass.plus(hip.times(WAIST_MASS));
-		centerOfMass = centerOfMass.plus(leftCalf.times(CALF_MASS));
-		centerOfMass = centerOfMass.plus(rightCalf.times(CALF_MASS));
+		centerOfMass = centerOfMass.plus(thorax.times(THORAX_MASS));
+		centerOfMass = centerOfMass.plus(abdomen.times(ABDOMEN_MASS));
+		centerOfMass = centerOfMass.plus(pelvis.times(PELVIS_MASS));
+		centerOfMass = centerOfMass.plus(leftCalf.times(LEG_AND_FOOT_MASS));
+		centerOfMass = centerOfMass.plus(rightCalf.times(LEG_AND_FOOT_MASS));
 		centerOfMass = centerOfMass.plus(leftThigh.times(THIGH_MASS));
 		centerOfMass = centerOfMass.plus(rightThigh.times(THIGH_MASS));
 
@@ -1141,17 +1141,17 @@ public class LegTweaks {
 			);
 			centerOfMass = centerOfMass.plus(leftUpperArm.times(UPPER_ARM_MASS));
 			centerOfMass = centerOfMass.plus(rightUpperArm.times(UPPER_ARM_MASS));
-			centerOfMass = centerOfMass.plus(leftForearm.times(FOREARM_MASS));
-			centerOfMass = centerOfMass.plus(rightForearm.times(FOREARM_MASS));
+			centerOfMass = centerOfMass.plus(leftForearm.times(FOREARM_AND_HAND_MASS));
+			centerOfMass = centerOfMass.plus(rightForearm.times(FOREARM_AND_HAND_MASS));
 		} else {
 			// if the arms are not available put them slightly in front
 			// of the upper chest.
 			Vector3 chestUnitVector = computeUnitVector(
 				skeleton.upperChestNode.getWorldTransform().getRotation()
 			);
-			Vector3 armLocation = chest.plus(chestUnitVector.times(DEFAULT_ARM_DISTANCE));
+			Vector3 armLocation = abdomen.plus(chestUnitVector.times(DEFAULT_ARM_DISTANCE));
 			centerOfMass = centerOfMass.plus(armLocation.times(UPPER_ARM_MASS * 2.0f));
-			centerOfMass = centerOfMass.plus(armLocation.times(FOREARM_MASS * 2.0f));
+			centerOfMass = centerOfMass.plus(armLocation.times(FOREARM_AND_HAND_MASS * 2.0f));
 		}
 
 		// finally translate in to tracker space

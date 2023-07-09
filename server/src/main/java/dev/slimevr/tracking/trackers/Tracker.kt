@@ -13,6 +13,7 @@ import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
+import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2000L
 
@@ -59,40 +60,37 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * If the tracker has gotten disconnected after it was initialized first time
 	 */
-	var disconnectedRecently = false
+	var statusResetRecently = false
 	private var alreadyInitialized = false
-	var status = TrackerStatus.DISCONNECTED
-		set(value) {
-			if (field == value) return
+	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) {
+			_, old, new ->
+		if (old == new) return@observable
 
-			field = value
-
-			if (field == TrackerStatus.DISCONNECTED && alreadyInitialized) {
-				disconnectedRecently = true
+		if (!new.reset) {
+			if (alreadyInitialized) {
+				statusResetRecently = true
 			}
-			if (field.sendData) {
-				alreadyInitialized = true
-			}
-			if (!isInternal) {
-				// If the status of a non-internal tracker has changed, inform
-				// the VRServer to recreate the skeleton, as it may need to
-				// assign or un-assign the tracker to a body part
-				vrServer.updateSkeletonModel()
-
-				checkReportErrorStatus()
-				checkReportRequireReset()
-			}
+			alreadyInitialized = true
 		}
+		if (!isInternal) {
+			// If the status of a non-internal tracker has changed, inform
+			// the VRServer to recreate the skeleton, as it may need to
+			// assign or un-assign the tracker to a body part
+			vrServer.updateSkeletonModel()
 
-	var trackerPosition = trackerPosition
-		set(value) {
-			if (field == value) return
-			field = value
-
-			if (!isInternal) {
-				checkReportRequireReset()
-			}
+			checkReportErrorStatus()
+			checkReportRequireReset()
 		}
+	}
+
+	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) {
+			_, old, new ->
+		if (old == new) return@observable
+
+		if (!isInternal) {
+			checkReportRequireReset()
+		}
+	}
 
 	// Computed value to simplify availability checks
 	val hasAdjustedRotation = hasRotation && (allowFiltering || needsReset)
@@ -116,9 +114,11 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	private fun checkReportRequireReset() {
-		if (needsReset && trackerPosition != null && lastResetStatus == 0u && status.sendData) {
+		if (needsReset && trackerPosition != null && lastResetStatus == 0u &&
+			!status.reset && (isImu() || !statusResetRecently)
+		) {
 			reportRequireReset()
-		} else if (lastResetStatus != 0u && (trackerPosition == null || !status.sendData)) {
+		} else if (lastResetStatus != 0u && (trackerPosition == null || status.reset)) {
 			vrServer.statusSystem.removeStatus(lastResetStatus)
 			lastResetStatus = 0u
 		}
@@ -202,6 +202,11 @@ class Tracker @JvmOverloads constructor(
 			config.allowDriftCompensation?.let {
 				resetsHandler.allowDriftCompensation = it
 			}
+		}
+		if (!isInternal &&
+			!(!isImu() && (trackerPosition == TrackerPosition.LEFT_HAND || trackerPosition == TrackerPosition.RIGHT_HAND))
+		) {
+			checkReportRequireReset()
 		}
 	}
 

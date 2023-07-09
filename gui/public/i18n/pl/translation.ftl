@@ -36,6 +36,7 @@ body_part-RIGHT_HAND = Prawa Dłoń
 body_part-RIGHT_UPPER_LEG = Prawe Udo
 body_part-RIGHT_LOWER_LEG = Prawe Podudzie
 body_part-RIGHT_FOOT = Prawa Stopa
+body_part-UPPER_CHEST = Górna część klatki piersiowej
 body_part-CHEST = Klatka Piersiowa
 body_part-WAIST = Talia
 body_part-HIP = Biodra
@@ -53,8 +54,9 @@ skeleton_bone-NONE = Brak
 skeleton_bone-HEAD = Przesunięcie Głowy
 skeleton_bone-NECK = Długość Szyi
 skeleton_bone-torso_group = Długość torsu
-skeleton_bone-CHEST = Długość Klatki Piersiowej
+skeleton_bone-UPPER_CHEST = Górna długość klatki piersiowej
 skeleton_bone-CHEST_OFFSET = Przesunięcie Klatki Piersiowej
+skeleton_bone-CHEST = Długość Klatki Piersiowej
 skeleton_bone-WAIST = Długość Talii
 skeleton_bone-HIP = Długość Bioder
 skeleton_bone-HIP_OFFSET = Przesunięcie Bioder
@@ -230,6 +232,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } prawe udo?
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } prawa kostka?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } prawa stopa?
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } prawy kontroler?
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } górnej części klatki piersiowej?
 tracker_selection_menu-CHEST = { -tracker_selection-part } klatka piersiowa?
 tracker_selection_menu-WAIST = { -tracker_selection-part } talia?
 tracker_selection_menu-HIP = { -tracker_selection-part } biodro?
@@ -529,7 +532,7 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = Powrót do Konfiguracji Położenia trackerów
 onboarding-reset_tutorial = Zresetuj poradnik
-onboarding-reset_tutorial-description = Ta funkcja jeszcze nie jest skończona.
+onboarding-reset_tutorial-explanation = Podczas korzystania z trackerów mogą się one rozregulować z powodu dryfu odchylenia IMU lub z powodu fizycznego przeniesienia ich. Możesz to naprawić na kilka sposobów.
 onboarding-reset_tutorial-skip = Pomiń krok
 # Cares about multiline
 onboarding-reset_tutorial-0 =
@@ -713,11 +716,11 @@ onboarding-choose_mounting = Jakiej metody kalibracji montażu użyć?
 onboarding-choose_mounting-description = Orientacja montażu koryguje umieszczenie trackerów na ciele.
 onboarding-choose_mounting-auto_mounting = Automatyczne mocowanie
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = Zalecana
+onboarding-choose_mounting-auto_mounting-label = Eksperymentalny
 onboarding-choose_mounting-auto_mounting-description = To automatycznie wykryje kierunki montażu dla wszystkich twoich trackerów z 2 pozycji
 onboarding-choose_mounting-manual_mounting = Montaż ręczny
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = Jeśli wiesz, co robisz
+onboarding-choose_mounting-manual_mounting-label = Zalecany
 onboarding-choose_mounting-manual_mounting-description = Umożliwi to ręczne wybranie kierunku montażu dla każdego trackera
 
 ## Tracker manual mounting setup
@@ -764,7 +767,7 @@ onboarding-choose_proportions-manual_proportions = Ręczne proporcje
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Drobne detale
 onboarding-choose_proportions-manual_proportions-description = Umożliwi to ręczne dostosowanie proporcji poprzez ich bezpośrednią modyfikację
-onboarding-choose_proportions-save = Zachowaj proporcje
+onboarding-choose_proportions-export = Eksportuj proporcje
 onboarding-choose_proportions-file_type = Proporcje ciała
 
 ## Tracker manual proportions setup

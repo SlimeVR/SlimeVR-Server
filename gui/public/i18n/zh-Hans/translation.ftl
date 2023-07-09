@@ -13,7 +13,7 @@ websocket-connection_lost = 与服务器的连接丢失，正在尝试重新连�
 ## Update notification
 
 version_update-title = 新版本可用：{ $version }
-version_update-description = 点击“更新”将为您下载SlimeVR安装程序。
+version_update-description = 点击“{ version_update-update }”将为您下载 SlimeVR 安装程序。
 version_update-update = 更新
 version_update-close = 关闭
 
@@ -53,8 +53,8 @@ skeleton_bone-NONE = 无
 skeleton_bone-HEAD = 头部偏移
 skeleton_bone-NECK = 颈部长度
 skeleton_bone-torso_group = 躯干长度
-skeleton_bone-CHEST = 胸部长度
 skeleton_bone-CHEST_OFFSET = 胸部偏移
+skeleton_bone-CHEST = 胸部长度
 skeleton_bone-WAIST = 腰部长度
 skeleton_bone-HIP = 髋部长度
 skeleton_bone-HIP_OFFSET = 髋部偏移
@@ -526,25 +526,25 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = 返回到佩戴校准
 onboarding-reset_tutorial = 重置教程
-onboarding-reset_tutorial-explanation = 跟踪器在使用时可能会由于IMU的偏航漂移而失准，或者可能因为您对它们进行了物理上的移动。您有几种方法来解决这个问题。
+onboarding-reset_tutorial-explanation = 追踪器在使用时可能会由于IMU的航向角漂移或是因为您移动了它们而失准。您有几种方法来解决这个问题。
 onboarding-reset_tutorial-skip = 跳过步骤
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     敲击 { $taps } 次高亮显示的追踪器以触发航向轴重置。
-
+    
     这将使追踪器朝向与您的头显相同的方向。
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     敲击 { $taps } 次高亮显示的追踪器以触发完整重置。
-
+    
     此功能需要你站直（i-pose）后使用。 在重置实际发生前有 3 秒延迟（可配置）。
     这将完全重置所有追踪器的位置和旋转，应该能解决大多数问题。
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     敲击 { $taps } 次高亮显示的追踪器以触发佩戴重置。
-
+    
     佩戴重置能对追踪器实际的配戴方式进行调整，所以如果你不小心移动了追踪器并将它们的佩戴方向改变了很多，这个功能将有所帮助。
-
+    
     你需要摆出一个像滑雪那样的姿势，就像在运行自动设置佩戴向导时做的那样，在重置实际发生前有 3 秒延迟（可配置）。
 
 ## Setup start
@@ -597,7 +597,7 @@ onboarding-connect_tracker-next = 所有的追踪器都连接好了
 
 onboarding-calibration_tutorial = IMU校准教程
 onboarding-calibration_tutorial-subtitle = 这将有助于减少追踪器漂移！
-onboarding-calibration_tutorial-description = 每次开启追踪器时，它们都需要在平坦的表面上放置片刻以进行自校准。你可以通过点击“校准”按钮来手动校准， <b>校准过程中不要移动它们！</b>
+onboarding-calibration_tutorial-description = 每次开启追踪器时，它们都需要在平坦的表面上放置片刻以进行自校准。你也可以通过点击“{ onboarding-calibration_tutorial-calibrate }”按钮来手动校准， <b>校准过程中不要移动追踪器！</b>
 onboarding-calibration_tutorial-calibrate = 我已经把追踪器放在桌子上了
 onboarding-calibration_tutorial-status-waiting = 等待你的操作
 onboarding-calibration_tutorial-status-calibrating = 校准中
@@ -701,11 +701,11 @@ onboarding-choose_mounting = 使用哪种方法校准佩戴朝向？
 onboarding-choose_mounting-description = 佩戴方向校准用于确定您身上的追踪器的朝向。
 onboarding-choose_mounting-auto_mounting = 自动设置佩戴方向
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = 推荐
+onboarding-choose_mounting-auto_mounting-label = 实验功能
 onboarding-choose_mounting-auto_mounting-description = 这将需要你做2个动作以自动检测所有追踪器的佩戴方向
 onboarding-choose_mounting-manual_mounting = 手动设置佩戴方向
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = 如果你清楚自己在做什么
+onboarding-choose_mounting-manual_mounting-label = 推荐
 onboarding-choose_mounting-manual_mounting-description = 这将需要你手动选择每个追踪器的佩戴方向
 
 ## Tracker manual mounting setup
@@ -726,7 +726,7 @@ onboarding-automatic_mounting-next = 下一步
 onboarding-automatic_mounting-prev_step = 上一步
 onboarding-automatic_mounting-done-title = 佩戴方向已校准。
 onboarding-automatic_mounting-done-description = 你的佩戴方向校准完成！
-onboarding-automatic_mounting-done-restart = 返回以开始
+onboarding-automatic_mounting-done-restart = 再试一次
 onboarding-automatic_mounting-mounting_reset-title = 佩戴重置
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 双腿弯曲以滑雪的姿势蹲下，上身向前倾斜，手臂弯曲。
 onboarding-automatic_mounting-mounting_reset-step-1 = 按下佩戴重置按钮并等待 3 秒钟，然后追踪器的佩戴方向将被重置。
@@ -752,7 +752,7 @@ onboarding-choose_proportions-manual_proportions = 手动调整身体比例
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = 用于精细调整
 onboarding-choose_proportions-manual_proportions-description = 这将需要你手动修改以调整你的身体比例
-onboarding-choose_proportions-save = 储存身体比例到文件
+onboarding-choose_proportions-export = 导出身体比例
 onboarding-choose_proportions-file_type = 身体比例文件
 
 ## Tracker manual proportions setup

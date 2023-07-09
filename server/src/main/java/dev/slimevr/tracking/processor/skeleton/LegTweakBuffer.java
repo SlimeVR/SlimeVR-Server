@@ -86,10 +86,9 @@ public class LegTweakBuffer {
 	// hyperparameters
 	public static final float SKATING_DISTANCE_CUTOFF = 0.5f;
 	static float SKATING_VELOCITY_THRESHOLD = 2.4f;
-	static float SKATING_ACCELERATION_THRESHOLD = 0.7f;
+	static float SKATING_ACCELERATION_THRESHOLD = 0.8f;
 	private static final float SKATING_ROTVELOCITY_THRESHOLD = 4.5f;
 	private static final float SKATING_LOCK_ENGAGE_PERCENT = 0.85f;
-	private static final float SKATING_ACCELERATION_Y_USE_PERCENT = 0.25f;
 	private static final float FLOOR_DISTANCE_CUTOFF = 0.125f;
 	private static final float SIX_TRACKER_TOLERANCE = -0.10f;
 	private static final Vector3 FORCE_VECTOR_TO_PRESSURE = new Vector3(0.25f, 1.0f, 0.25f);
@@ -580,17 +579,9 @@ public class LegTweakBuffer {
 	// compute the acceleration magnitude of the feet from the acceleration
 	// given by the imus (exclude y)
 	private void computeAccelerationMagnitude() {
-		leftFootAccelerationMagnitude = new Vector3(
-			leftFootAcceleration.getX(),
-			leftFootAcceleration.getY() * SKATING_ACCELERATION_Y_USE_PERCENT,
-			leftFootAcceleration.getZ()
-		).len();
+		leftFootAccelerationMagnitude = leftFootAcceleration.len();
 
-		rightFootAccelerationMagnitude = new Vector3(
-			rightFootAcceleration.getX(),
-			rightFootAcceleration.getY() * SKATING_ACCELERATION_Y_USE_PERCENT,
-			rightFootAcceleration.getZ()
-		).len();
+		rightFootAccelerationMagnitude = rightFootAcceleration.len();
 	}
 
 	// compute the velocity and acceleration of the center of mass
