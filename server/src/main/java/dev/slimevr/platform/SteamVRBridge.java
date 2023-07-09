@@ -9,6 +9,7 @@ import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
 import dev.slimevr.config.BridgeConfig;
 import dev.slimevr.tracking.trackers.*;
 import dev.slimevr.util.ann.VRServerThread;
+import io.eiren.util.collections.FastList;
 import solarxr_protocol.rpc.StatusData;
 import solarxr_protocol.rpc.StatusDataUnion;
 import solarxr_protocol.rpc.StatusSteamVRDisconnectedT;
@@ -153,117 +154,159 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		List<Tracker> allTrackers = Main.getVrServer().getAllTrackers();
 		TrackerRole role = localTracker.getTrackerPosition().getTrackerRole();
 
-		Tracker primaryTracker = null;
-		Tracker secondaryTracker = null;
-		Tracker tertiaryTracker = null;
-		Tracker fourthTracker = null;
+		List<Tracker> batteryTrackers = new FastList<>();
 
 		// Given what the role is of localTracker, the tracker positions that
 		// make up that role are set to primaryTracker, secondaryTracker, and
 		// tertiaryTracker respectively.
-		primaryTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
-				allTrackers,
-				TrackerPosition.getByTrackerRole(role)
+		batteryTrackers
+			.add(
+				TrackerUtils
+					.getNonInternalTrackerForBodyPosition(
+						allTrackers,
+						TrackerPosition.getByTrackerRole(role)
+					)
 			);
 		switch (role) {
 			case WAIST -> {
-				secondaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
-						allTrackers,
-						TrackerPosition.WAIST
+				batteryTrackers
+					.add(
+						TrackerUtils
+							.getNonInternalTrackerForBodyPosition(
+								allTrackers,
+								TrackerPosition.WAIST
+							)
 					);
 				// When the chest SteamVR tracking point is disabled, aggregate
 				// its battery level alongside waist and hip.
 				if (!(config.getBridgeTrackerRole(TrackerRole.CHEST, true))) {
-					tertiaryTracker = TrackerUtils
-						.getNonInternalTrackerForBodyPosition(
-							allTrackers,
-							TrackerPosition.CHEST
+					batteryTrackers
+						.add(
+							TrackerUtils
+								.getNonInternalTrackerForBodyPosition(
+									allTrackers,
+									TrackerPosition.CHEST
+								)
 						);
-					fourthTracker = TrackerUtils
-						.getNonInternalTrackerForBodyPosition(
-							allTrackers,
-							TrackerPosition.UPPER_CHEST
+					batteryTrackers
+						.add(
+							TrackerUtils
+								.getNonInternalTrackerForBodyPosition(
+									allTrackers,
+									TrackerPosition.UPPER_CHEST
+								)
 						);
 				}
 			}
 			case CHEST -> {
 				// Get chest because primary is upperChest
-				secondaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
-						allTrackers,
-						TrackerPosition.CHEST
+				batteryTrackers
+					.add(
+						TrackerUtils
+							.getNonInternalTrackerForBodyPosition(
+								allTrackers,
+								TrackerPosition.CHEST
+							)
 					);
 				// When the waist SteamVR tracking point is disabled, aggregate
 				// waist and hip battery level with the chest.
 				if (!(config.getBridgeTrackerRole(TrackerRole.WAIST, true))) {
-					tertiaryTracker = TrackerUtils
-						.getNonInternalTrackerForBodyPosition(
-							allTrackers,
-							TrackerPosition.HIP
+					batteryTrackers
+						.add(
+							TrackerUtils
+								.getNonInternalTrackerForBodyPosition(
+									allTrackers,
+									TrackerPosition.HIP
+								)
 						);
-					fourthTracker = TrackerUtils
-						.getNonInternalTrackerForBodyPosition(
-							allTrackers,
-							TrackerPosition.WAIST
+					batteryTrackers
+						.add(
+							TrackerUtils
+								.getNonInternalTrackerForBodyPosition(
+									allTrackers,
+									TrackerPosition.WAIST
+								)
 						);
 				}
 			}
 			case LEFT_FOOT -> {
-				secondaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
-						allTrackers,
-						TrackerPosition.LEFT_LOWER_LEG
+				batteryTrackers
+					.add(
+						TrackerUtils
+							.getNonInternalTrackerForBodyPosition(
+								allTrackers,
+								TrackerPosition.LEFT_LOWER_LEG
+							)
 					);
 				// When the left knee SteamVR tracking point is disabled,
 				// aggregate its battery level with left ankle and left foot.
 				if (!(config.getBridgeTrackerRole(TrackerRole.LEFT_KNEE, true))) {
-					tertiaryTracker = TrackerUtils
-						.getNonInternalTrackerForBodyPosition(
-							allTrackers,
-							TrackerPosition.LEFT_UPPER_LEG
+					batteryTrackers
+						.add(
+							TrackerUtils
+								.getNonInternalTrackerForBodyPosition(
+									allTrackers,
+									TrackerPosition.LEFT_UPPER_LEG
+								)
 						);
 				}
 			}
 			case RIGHT_FOOT -> {
-				secondaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
-						allTrackers,
-						TrackerPosition.RIGHT_LOWER_LEG
+				batteryTrackers
+					.add(
+						TrackerUtils
+							.getNonInternalTrackerForBodyPosition(
+								allTrackers,
+								TrackerPosition.RIGHT_LOWER_LEG
+							)
 					);
 				// When the right knee SteamVR tracking point is disabled,
 				// aggregate its battery level with right ankle and right foot.
 				if (!(config.getBridgeTrackerRole(TrackerRole.RIGHT_KNEE, true))) {
-					tertiaryTracker = TrackerUtils
-						.getNonInternalTrackerForBodyPosition(
-							allTrackers,
-							TrackerPosition.RIGHT_UPPER_LEG
+					batteryTrackers
+						.add(
+							TrackerUtils
+								.getNonInternalTrackerForBodyPosition(
+									allTrackers,
+									TrackerPosition.RIGHT_UPPER_LEG
+								)
 						);
 				}
 			}
 			case LEFT_ELBOW -> {
-				secondaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
-						allTrackers,
-						TrackerPosition.LEFT_LOWER_ARM
+				batteryTrackers
+					.add(
+						TrackerUtils
+							.getNonInternalTrackerForBodyPosition(
+								allTrackers,
+								TrackerPosition.LEFT_LOWER_ARM
+							)
 					);
-				tertiaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
-						allTrackers,
-						TrackerPosition.LEFT_SHOULDER
+				batteryTrackers
+					.add(
+						TrackerUtils
+							.getNonInternalTrackerForBodyPosition(
+								allTrackers,
+								TrackerPosition.LEFT_SHOULDER
+							)
 					);
 			}
 			case RIGHT_ELBOW -> {
-				secondaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
-						allTrackers,
-						TrackerPosition.RIGHT_LOWER_ARM
+				batteryTrackers
+					.add(
+						TrackerUtils
+							.getNonInternalTrackerForBodyPosition(
+								allTrackers,
+								TrackerPosition.RIGHT_LOWER_ARM
+							)
 					);
-				tertiaryTracker = TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
-						allTrackers,
-						TrackerPosition.RIGHT_SHOULDER
+				batteryTrackers
+					.add(
+						TrackerUtils
+							.getNonInternalTrackerForBodyPosition(
+								allTrackers,
+								TrackerPosition.RIGHT_SHOULDER
+							)
 					);
 			}
 		}
@@ -273,47 +316,15 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		// Tracker voltage is set if the tracker position has a battery level
 		// lower than lowest level and has a battery voltage (owoTrack devices
 		// do not).
-		// TODO this is such ugly code I hate it, we should use a list -Erimel
-		if (
-			(primaryTracker != null) && (primaryTracker.getBatteryLevel() != null)
-		) {
-			lowestLevel = primaryTracker.getBatteryLevel();
+		if (batteryTrackers.size() > 0) {
+			for (Tracker batteryTracker : batteryTrackers) {
+				if (batteryTracker != null && batteryTracker.getBatteryLevel() != null) {
+					lowestLevel = batteryTracker.getBatteryLevel();
 
-			if (primaryTracker.getBatteryVoltage() != null) {
-				trackerVoltage = primaryTracker.getBatteryVoltage();
-			}
-		}
-		if (
-			(secondaryTracker != null)
-				&& (secondaryTracker.getBatteryLevel() != null)
-				&& (secondaryTracker.getBatteryLevel() < lowestLevel)
-		) {
-			lowestLevel = secondaryTracker.getBatteryLevel();
-
-			if (secondaryTracker.getBatteryVoltage() != null) {
-				trackerVoltage = secondaryTracker.getBatteryVoltage();
-			}
-		}
-		if (
-			(tertiaryTracker != null)
-				&& (tertiaryTracker.getBatteryLevel() != null)
-				&& (tertiaryTracker.getBatteryLevel() < lowestLevel)
-		) {
-			lowestLevel = tertiaryTracker.getBatteryLevel();
-
-			if (tertiaryTracker.getBatteryVoltage() != null) {
-				trackerVoltage = tertiaryTracker.getBatteryVoltage();
-			}
-		}
-		if (
-			(fourthTracker != null)
-				&& (fourthTracker.getBatteryLevel() != null)
-				&& (fourthTracker.getBatteryLevel() < lowestLevel)
-		) {
-			lowestLevel = fourthTracker.getBatteryLevel();
-
-			if (fourthTracker.getBatteryVoltage() != null) {
-				trackerVoltage = fourthTracker.getBatteryVoltage();
+					if (batteryTracker.getBatteryVoltage() != null) {
+						trackerVoltage = batteryTracker.getBatteryVoltage();
+					}
+				}
 			}
 		}
 
