@@ -706,8 +706,7 @@ public class HumanPoseManager {
 		for (Tracker tracker : server.getAllTrackers()) {
 			if (
 				tracker.isImu()
-					&&
-					tracker.getNeedsReset()
+					&& tracker.getNeedsReset()
 					&& tracker.getResetsHandler().getLastResetQuaternion() != null
 			) {
 				if (!trackersDriftText.isEmpty()) {
