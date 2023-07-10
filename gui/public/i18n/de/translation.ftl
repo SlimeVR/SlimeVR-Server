@@ -61,7 +61,7 @@ skeleton_bone-HIP_OFFSET = Hüftversatz
 skeleton_bone-HIPS_WIDTH = Hüftbreite
 skeleton_bone-leg_group = Beinlänge
 skeleton_bone-UPPER_LEG = Linker Oberschenkellänge
-skeleton_bone-LOWER_LEG = Linker Unterschenkellänge
+skeleton_bone-LOWER_LEG = Unterschenkellänge
 skeleton_bone-FOOT_LENGTH = Fußlänge
 skeleton_bone-FOOT_SHIFT = Fußverschiebung
 skeleton_bone-SKELETON_OFFSET = Skelettversatz
@@ -328,10 +328,10 @@ settings-general-fk_settings-leg_tweak-skating_correction = Rutschkorrektur
 settings-general-fk_settings-leg_tweak-toe_snap = Zehenausrichtung
 settings-general-fk_settings-leg_tweak-foot_plant = Fußkorrektur
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Rutschkorrekturstärke
-settings-general-fk_settings-leg_tweak-skating_correction-description = Die Rutschkorrektur korrigiert das Wegrutschen des Fußes, kann aber die Genauigkeit bestimmter Bewegungsmuster verringern. Wenn du dies aktivierst, stellen sicher, dass du im Spiel dein Tracking vollständig zurücksetzt und neu kalibrierst.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Bodenclip kann das Clipping durch den Boden reduzieren oder sogar eliminieren. Wenn du dies aktivierst, stelle sicher, dass du im Spiel dein Tracking vollständig zurücksetzt und neu kalibrierst.
-settings-general-fk_settings-leg_tweak-toe_snap-description = Zehen-Ausrichtung versucht, die Rotation deiner Füße zu erraten, wenn keine Fuß-Tracker verwendet werden.
-settings-general-fk_settings-leg_tweak-foot_plant-description = Fußkorrektur richtet deine Füße parallel zum Boden aus, wenn sie den Boden berühren.
+settings-general-fk_settings-leg_tweak-skating_correction-description = Die Rutschkorrektur korrigiert das Wegrutschen des Fußes, kann aber die Genauigkeit bestimmter Bewegungsmuster verringern. Wenn Sie dies aktivieren, stellen Sie sicher, dass Sie im Spiel Ihr Tracking vollständig zurücksetzten und neu kalibrieren.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Bodenclip kann das Clipping durch den Boden reduzieren oder sogar eliminieren. Wenn Sie dies aktivieren, stellen Sie sicher, dass Sie im Spiel Ihr Tracking vollständig zurücksetzten und neu kalibrieren.
+settings-general-fk_settings-leg_tweak-toe_snap-description = Zehen-Ausrichtung versucht, die Rotation Ihrer Füße zu erraten, wenn keine Fuß-Tracker verwendet werden.
+settings-general-fk_settings-leg_tweak-foot_plant-description = Fußkorrektur richtet Ihre Füße parallel zum Boden aus, wenn sie den Boden berühren.
 settings-general-fk_settings-leg_fk = Beintracking
 settings-general-fk_settings-arm_fk = Arm-Tracking
 settings-general-fk_settings-arm_fk-description = Ändern Sie die Art und Weise, wie die Arme berechnet werden.
@@ -364,7 +364,7 @@ settings-general-gesture_control-fullResetEnabled = Vollständiger Reset durch A
 settings-general-gesture_control-fullResetDelay = Verzögerung für einen vollständigen Reset
 settings-general-gesture_control-fullResetTaps = Antipp-Anzahl für einen vollständigen Reset
 settings-general-gesture_control-mountingResetEnabled = Antippen für Befestigungs-Reset
-settings-general-gesture_control-mountingResetDelay = Befestigungs-Reset-Verzügerung
+settings-general-gesture_control-mountingResetDelay = Befestigungs-Reset-Verzögerung
 settings-general-gesture_control-mountingResetTaps = Anzahl für Befestigungs-Reset
 
 ## Interface settings
@@ -522,7 +522,7 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = Zurück zur Trackerausrichtung
 onboarding-reset_tutorial = Tutorial neustarten
-onboarding-reset_tutorial-description = Diese Funktion ist noch nicht fertig, drücken Sie einfach auf Fortsetzen
+onboarding-reset_tutorial-explanation = Während Sie Ihre Tracker verwenden, können sie aufgrund der IMU-Gierdrift oder weil Sie sie physisch bewegt haben, aus der Ausrichtung geraten. Sie haben mehrere Möglichkeiten, dies zu beheben.
 onboarding-reset_tutorial-skip = Schritt überspringen
 # Cares about multiline
 onboarding-reset_tutorial-0 =
@@ -694,11 +694,11 @@ onboarding-choose_mounting = Welche Kalibrierungsmethode ist zu verwenden?
 onboarding-choose_mounting-description = Die Montageausrichtung korrigiert die Platzierung von Trackern am Körper.
 onboarding-choose_mounting-auto_mounting = Befestigung automatisch ermitteln
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = Empfohlen
-onboarding-choose_mounting-auto_mounting-description = Dadurch werden die Befestigungsausrichtungen für alle deine Tracker automatisch aus 2 Posen erkannt
+onboarding-choose_mounting-auto_mounting-label = Experimentell
+onboarding-choose_mounting-auto_mounting-description = Dadurch werden die Befestigungsausrichtungen für alle Ihrer Tracker automatisch aus 2 Posen erkannt
 onboarding-choose_mounting-manual_mounting = Manuelle Befestigungsposition
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = Wenn du weißt, was du tust
+onboarding-choose_mounting-manual_mounting-label = Empfohlen
 onboarding-choose_mounting-manual_mounting-description = Auf diese Weise können Sie die Montagerichtung für jeden Tracker manuell auswählen
 
 ## Tracker manual mounting setup
@@ -720,7 +720,7 @@ onboarding-automatic_mounting-prev_step = Vorheriger Schritt
 onboarding-automatic_mounting-done-title = Tracker Rotation kalibriert.
 onboarding-automatic_mounting-done-description = Ihre Rotations-Kalibrierung ist abgeschlossen!
 onboarding-automatic_mounting-done-restart = Zurück zum Start
-onboarding-automatic_mounting-mounting_reset-title = Drehungs-Reset
+onboarding-automatic_mounting-mounting_reset-title = Befestigungs-Reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Beugen Sie sich in die "Skifahren"-Pose mit gebeugten Beinen, geneigtem Oberkörper und gebeugten Armen.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Drücken Sie die Schaltfläche "Befestigungs-Reset" und warten Sie 3 Sekunden, bevor die Drehungen der Tracker gesetzt werden.
 onboarding-automatic_mounting-preparation-title = Vorbereitung
@@ -739,7 +739,7 @@ onboarding-choose_proportions-auto_proportions-subtitle = Empfohlen
 onboarding-choose_proportions-auto_proportions-description = Dadurch werden Ihre Proportionen erraten, indem Stichproben Ihrer Bewegungen verrechnet werden
 onboarding-choose_proportions-manual_proportions = Manuelle Körperproportionen
 onboarding-choose_proportions-manual_proportions-description = Auf diese Weise können Sie Ihre Proportionen manuell anpassen, indem Sie diese direkt ändern
-onboarding-choose_proportions-save = Proportionen speichern
+onboarding-choose_proportions-export = Proportionen exportieren
 onboarding-choose_proportions-file_type = Körperproportions-Datei
 
 ## Tracker manual proportions setup

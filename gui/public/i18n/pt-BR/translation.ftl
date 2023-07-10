@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -13,10 +10,19 @@
 websocket-connecting = Conectando ao servidor
 websocket-connection_lost = Conexão perdida com o servidor. Reconectando...
 
+## Update notification
+
+version_update-title = Nova versão disponível: { $version }
+version_update-description = Ao clicar em "{ version_update-update }" irá baixar o instalador do SlimeVR para você.
+version_update-update = Atualizar
+version_update-close = Fechar
+
 ## Tips
 
 tips-find_tracker = Não tem certeza qual tracker é qual? Balance o tracker e ele destacará o item correspondente.
 tips-do_not_move_heels = Tenha certeza de não mexer seus calcanhares durante a gravação!
+tips-file_select = Arraste e solte arquivos para usar, ou <u>pesquise</u>.
+tips-tap_setup = Pode tocar lentamente 2 vezes no seu tracker para o escolher em vez de o selecionar no menu.
 
 ## Body parts
 
@@ -70,7 +76,6 @@ skeleton_bone-ELBOW_OFFSET = Compensação do Cotovelo
 reset-reset_all = Redefinir todas as proporções
 reset-full = Reset
 reset-mounting = Reset de Posição
-reset-quick = Reset Rápido
 
 ## Serial detection stuff
 
@@ -91,10 +96,13 @@ navbar-mounting = Calibragem de Posição
 navbar-onboarding = Assistente de Configuração
 navbar-settings = Opções
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = Gravar BVH
 bvh-recording = Gravando...
+
+## Tracking pause
+
 
 ## Widget: Overlay settings
 
@@ -297,8 +305,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use at�
 ## FK/Tracking settings
 
 settings-general-fk_settings = Opções de Tracker
-settings-general-fk_settings-leg_tweak = Ajustes de perna
-settings-general-fk_settings-leg_tweak-description = Atravessar o chão pode reduzir ou até eliminar o clipping(atravessar) com o chão porém pode causar problemas quando ajoelhado. Correção de Deslize corrige o ice skating(deslize dos trackers no chão), porém pode diminuir a precisão de certos padrões de movimento.
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -333,12 +339,6 @@ settings-general-gesture_control-taps =
         [one] 1 tap
        *[other] { $amount } taps
     }
-settings-general-gesture_control-quickResetEnabled = Ativar toque para reset rápido
-settings-general-gesture_control-quickResetDelay = Delay do reset rápido
-settings-general-gesture_control-quickResetTaps = Toques para o reset rápido
-settings-general-gesture_control-resetEnabled = Ativar toque para reset
-settings-general-gesture_control-resetDelay = Delay do reset
-settings-general-gesture_control-resetTaps = Toques para o reset
 settings-general-gesture_control-mountingResetEnabled = Toques para o reset de posição
 settings-general-gesture_control-mountingResetDelay = Delay do reset de posição
 settings-general-gesture_control-mountingResetTaps = Toques para o reset de posição
@@ -426,10 +426,12 @@ settings-osc-vrchat-network-address-placeholder = Endereço de ip do VRChat
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Ligar ou desligar o envio e recepção de dados.
 settings-osc-vrchat-network-trackers-chest = Peito
-settings-osc-vrchat-network-trackers-waist = Cintura
 settings-osc-vrchat-network-trackers-knees = Joelhos
 settings-osc-vrchat-network-trackers-feet = Pés
 settings-osc-vrchat-network-trackers-elbows = Cotovelos
+
+## VMC OSC settings
+
 
 ## Setup/onboarding menu
 
@@ -463,10 +465,6 @@ onboarding-reset_tutorial-description = Esse recurso não está concluído, apen
 ## Setup start
 
 onboarding-home = Bem vindo ao SlimeVR
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    Trazendo full-body tracking
-    para todos
 onboarding-home-start = Vamos configurar!
 
 ## Enter VR part of setup
@@ -510,6 +508,12 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } trackers
     } connected
 onboarding-connect_tracker-next = Eu conectei todos os meus trackers
+
+## Tracker calibration tutorial
+
+
+## Tracker assignment tutorial
+
 
 ## Tracker assignment setup
 
@@ -595,6 +599,9 @@ onboarding-assign_trackers-warning-WAIST =
        *[unknown] Cintura está atribuído, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
     }
 
+## Tracker mounting method choose
+
+
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = Voltar para entrar no VR
@@ -624,6 +631,9 @@ onboarding-automatic_mounting-put_trackers_on-title = Coloque seus trackers
 onboarding-automatic_mounting-put_trackers_on-description = Para calibrar as rotações de posicionamento, usaremos os trackers que você atribuiu. Coloque todos os seus trackers, você pode ver qual é qual na figura na direita.
 onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trackers
 
+## Tracker proportions method choose
+
+
 ## Tracker manual proportions setup
 
 onboarding-manual_proportions-back = Voltar para o tutorial de reset
@@ -641,22 +651,14 @@ onboarding-automatic_proportions-prev_step = Passo anterior
 onboarding-automatic_proportions-put_trackers_on-title = Coloque seus trackers
 onboarding-automatic_proportions-put_trackers_on-description = Para calibrar suas proporções, usaremos os trackers que você atribuiu. Coloque todos os seus trackers, você pode ver quais são quais na figura à direita.
 onboarding-automatic_proportions-put_trackers_on-next = Coloquei todos os meus trackers
-onboarding-automatic_proportions-preparation-title = Preparação
-onboarding-automatic_proportions-preparation-description = Coloque uma cadeira diretamente atrás de você dentro da sua área de jogo(Play space). Esteja preparado para sentar durante a configuração de autobone.
-onboarding-automatic_proportions-preparation-next = Estou em frente a uma cadeira
 onboarding-automatic_proportions-start_recording-title = Esteja preparado para se mexer
 onboarding-automatic_proportions-start_recording-description = Começaremos a gravar algumas poses e movimentos específicos. Estes serão solicitados na próxima tela. Esteja preparado para começar quando o botão for pressionado!
 onboarding-automatic_proportions-start_recording-next = Começar Gravação
 onboarding-automatic_proportions-recording-title = GRAVAR
 onboarding-automatic_proportions-recording-description-p0 = Gravação em progresso...
 onboarding-automatic_proportions-recording-description-p1 = Faça os movimentos apresentados abaixo:
-onboarding-automatic_proportions-recording-steps-0 = Dobre os joelhos algumas vezes.
-onboarding-automatic_proportions-recording-steps-1 = Sente-se na cadeira e se levante.
-onboarding-automatic_proportions-recording-steps-2 = Gire seu tronco para esquerda, e incline para direita.
-onboarding-automatic_proportions-recording-steps-3 = Gire seu tronco para direita, e incline para esquerda.
-onboarding-automatic_proportions-recording-steps-4 = Mexa-se até o tempo terminar.
 onboarding-automatic_proportions-recording-processing = Processando o resultado
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] 1 second left
@@ -674,3 +676,6 @@ onboarding-automatic_proportions-done-description = Sua calibragem de proporçã
 ## Home
 
 home-no_trackers = Nenhum tracker detectado ou atribuído
+
+## Status system
+
