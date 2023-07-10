@@ -23,6 +23,7 @@ import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import dev.slimevr.tracking.trackers.DeviceManager;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
+import dev.slimevr.tracking.trackers.TrackerUtils;
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.websocketapi.WebSocketVRBridge;
@@ -354,6 +355,10 @@ public class VRServer extends Thread {
 	@ThreadSafe
 	public void updateSkeletonModel() {
 		queueTask(humanPoseManager::updateSkeletonModelFromServer);
+		vrcOSCHandler
+			.setHeadTracker(
+				TrackerUtils.getNonInternalTrackerForBodyPosition(trackers, TrackerPosition.HEAD)
+			);
 	}
 
 	public void resetTrackersFull(String resetSourceName) {

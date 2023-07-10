@@ -41,7 +41,8 @@ class VRCOSCHandler(
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
 	private var oscMessage: OSCMessage? = null
-	private var tracker: Tracker? = null
+	private var vrcHmd: Tracker? = null
+	private var headTracker: Tracker? = null
 	private var oscTrackersDevice: Device? = null
 	private val oscArgs = FastList<Float?>(3)
 	private val trackersEnabled: BooleanArray = BooleanArray(computedTrackers.size)
@@ -175,10 +176,10 @@ class VRCOSCHandler(
 		if (event.message.address.equals("/avatar/parameters/Upright")) {
 			// Receiving HMD data from VRChat
 			if (listenSteamVR && steamvrBridge != null && !steamvrBridge.isConnected) {
-				if (tracker == null) {
+				if (vrcHmd == null) {
 					val vrcDevice = server.deviceManager.createDevice("VRChat OSC", null, "VRChat")
 					server.deviceManager.addDevice(vrcDevice)
-					tracker = Tracker(
+					vrcHmd = Tracker(
 						device = vrcDevice,
 						id = VRServer.getNextLocalTrackerId(),
 						name = "VRC HMD",
@@ -190,16 +191,16 @@ class VRCOSCHandler(
 						isComputed = true,
 						usesTimeout = true
 					)
-					vrcDevice.trackers[0] = tracker!!
-					server.registerTracker(tracker)
+					vrcDevice.trackers[0] = vrcHmd!!
+					server.registerTracker(vrcHmd)
 				}
 
 				// Sets HMD status to OK
-				tracker!!.status = TrackerStatus.OK
+				vrcHmd!!.status = TrackerStatus.OK
 
 				// Sets the HMD y position to
 				// the vrc Upright parameter (0-1) * the user's height
-				tracker!!
+				vrcHmd!!
 					.position = Vector3(
 					0f,
 					event
@@ -207,7 +208,7 @@ class VRCOSCHandler(
 						.arguments[0] as Float * humanPoseManager.userHeightFromConfig,
 					0f
 				)
-				tracker!!.dataTick()
+				vrcHmd!!.dataTick()
 			}
 		} else {
 			// Receiving OSC Trackers data
@@ -229,14 +230,23 @@ class VRCOSCHandler(
 					)
 				} else {
 					// Rotation offset
-					val eulerAngles = EulerAngles(EulerOrder.YXZ, event.message.arguments[0] as Float, event.message.arguments[1] as Float, event.message.arguments[2] as Float)
-					receivingRotationOffset = eulerAngles.toQuaternion()
+					// TODO slerp?
+					val (w, x, y, z) = EulerAngles(EulerOrder.YXZ, event.message.arguments[0] as Float * FastMath.DEG_TO_RAD, event.message.arguments[1] as Float * FastMath.DEG_TO_RAD, event.message.arguments[2] as Float * FastMath.DEG_TO_RAD).toQuaternion()
+					val rot = Quaternion(w, -x, -y, z)
+					receivingRotationOffset = if (headTracker != null) {
+						headTracker!!.getRotation().project(
+							Vector3.POS_Y
+						).unit() * rot
+					} else {
+						rot
+					}
 				}
 			} else {
 				// Trackers data (1-8)
 				val trackerId = trackerStringValue[0].digitToInt()
+				var tracker = oscTrackersDevice!!.trackers[trackerId]
 
-				if (oscTrackersDevice!!.trackers[trackerId] == null) {
+				if (tracker == null) {
 					tracker = Tracker(
 						device = oscTrackersDevice,
 						id = VRServer.getNextLocalTrackerId(),
@@ -246,33 +256,33 @@ class VRCOSCHandler(
 						trackerPosition = null,
 						hasRotation = true,
 						hasPosition = true,
-						userEditable = false,
+						userEditable = true,
 						isComputed = true,
 						needsReset = true,
 						usesTimeout = true
 					)
-					oscTrackersDevice!!.trackers[trackerId] = tracker!!
+					oscTrackersDevice!!.trackers[trackerId] = tracker
 					server.registerTracker(tracker)
 				}
 
 				// Sets the tracker status to OK
-				oscTrackersDevice!!.trackers[trackerId]!!.status = TrackerStatus.OK
+				tracker.status = TrackerStatus.OK
 
 				if (event.message.address.toString() == "/tracking/trackers/$trackerId/position") {
-					// Set position TODO
-					oscTrackersDevice!!.trackers[trackerId]!!
+					// TODO test
+					tracker
 						.position = (
-						Vector3(
-							event.message.arguments[0] as Float,
-							event.message.arguments[1] as Float,
-							-(event.message.arguments[2] as Float)
-						) + receivingPositionOffset
+						receivingPositionOffset +
+							Vector3(
+								event.message.arguments[0] as Float,
+								event.message.arguments[1] as Float,
+								-(event.message.arguments[2] as Float)
+							)
 						)
 				} else {
-					// Set rotation TODO
-					val eulerAngles = EulerAngles(EulerOrder.YXZ, event.message.arguments[0] as Float, event.message.arguments[1] as Float, event.message.arguments[2] as Float)
-					oscTrackersDevice!!.trackers[trackerId]!!
-						.setRotation(eulerAngles.toQuaternion() * receivingRotationOffset)
+					val (w, x, y, z) = EulerAngles(EulerOrder.YXZ, event.message.arguments[0] as Float * FastMath.DEG_TO_RAD, event.message.arguments[1] as Float * FastMath.DEG_TO_RAD, event.message.arguments[2] as Float * FastMath.DEG_TO_RAD).toQuaternion()
+					val rot = Quaternion(w, -x, -y, z)
+					tracker.setRotation(receivingRotationOffset * rot)
 				}
 
 				oscTrackersDevice!!.trackers[trackerId]!!.dataTick()
@@ -371,6 +381,27 @@ class VRCOSCHandler(
 		}
 	}
 
+	private fun getVRCOSCTrackersId(trackerPosition: TrackerPosition?): Int {
+		// The order doesn't matter and changing it
+		// won't break anything except make debugging harder
+		// between different versions. They just need to range from 1-8
+		return when (trackerPosition) {
+			TrackerPosition.HIP -> 1
+			TrackerPosition.LEFT_FOOT -> 2
+			TrackerPosition.RIGHT_FOOT -> 3
+			TrackerPosition.LEFT_UPPER_LEG -> 4
+			TrackerPosition.RIGHT_UPPER_LEG -> 5
+			TrackerPosition.UPPER_CHEST -> 6
+			TrackerPosition.LEFT_UPPER_ARM -> 7
+			TrackerPosition.RIGHT_UPPER_ARM -> 8
+			else -> -1
+		}
+	}
+
+	fun setHeadTracker(headTracker: Tracker?) {
+		this.headTracker = headTracker
+	}
+
 	/**
 	 * Sends the expected HMD rotation upon reset to align the trackers in VRC
 	 */
@@ -419,22 +450,5 @@ class VRCOSCHandler(
 
 	override fun getPortIn(): Int {
 		return lastPortIn
-	}
-
-	fun getVRCOSCTrackersId(trackerPosition: TrackerPosition?): Int {
-		// The order doesn't matter and changing it
-		// won't break anything except make debugging harder
-		// between different versions. They just need to range from 1-8
-		return when (trackerPosition) {
-			TrackerPosition.HIP -> 1
-			TrackerPosition.LEFT_FOOT -> 2
-			TrackerPosition.RIGHT_FOOT -> 3
-			TrackerPosition.LEFT_UPPER_LEG -> 4
-			TrackerPosition.RIGHT_UPPER_LEG -> 5
-			TrackerPosition.UPPER_CHEST -> 6
-			TrackerPosition.LEFT_UPPER_ARM -> 7
-			TrackerPosition.RIGHT_UPPER_ARM -> 8
-			else -> -1
-		}
 	}
 }
