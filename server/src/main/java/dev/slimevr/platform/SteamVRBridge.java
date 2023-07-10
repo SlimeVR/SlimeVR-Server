@@ -328,6 +328,8 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 
 				if (batteryTracker.getBatteryVoltage() != null) {
 					trackerVoltage = batteryTracker.getBatteryVoltage();
+				} else {
+					trackerVoltage = 0;
 				}
 			}
 		}
