@@ -47,6 +47,3 @@ color-eyre = "0.6"
 [target.'cfg(windows)'.dependencies]
 win32job = "1"
 winreg = "0.50"
-
-[profile.release]
-lto = true
