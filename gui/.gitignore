@@ -27,4 +27,4 @@ yarn-error.log*
 
 # vite
 /dist
-stats.html
+/stats.html
