@@ -21,6 +21,7 @@ import { Typography } from '../../commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from '../../commons/BaseModal';
 import { WarningBox } from '../../commons/TipBox';
+import { useBreakpoint } from '../../../hooks/breakpoint';
 
 export interface SerialForm {
   port: string;
@@ -32,8 +33,8 @@ export function Serial() {
     layoutWidth,
     ref: consoleRef,
   } = useLayout<HTMLDivElement>();
+  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
-
   const { state } = useLocation();
 
   const toolbarRef = useRef<HTMLDivElement>(null);
@@ -50,9 +51,10 @@ export function Serial() {
 
   const [tryFactoryReset, setTryFactoryReset] = useState(false);
 
-  const { control, watch, handleSubmit, reset } = useForm<SerialForm>({
-    defaultValues: { port: 'Auto' },
-  });
+  const { control, watch, handleSubmit, reset, getValues } =
+    useForm<SerialForm>({
+      defaultValues: { port: 'Auto' },
+    });
 
   const { port } = watch();
 
@@ -203,7 +205,7 @@ export function Serial() {
             ref={consoleRef}
             className="overflow-x-auto overflow-y-auto"
             style={{
-              height: layoutHeight - height - 30,
+              height: layoutHeight - height - 30 - (isMobile ? 88 : 0),
               width: layoutWidth - 24,
             }}
           >
@@ -217,7 +219,7 @@ export function Serial() {
           </div>
           <div className="" ref={toolbarRef}>
             <div className="border-t-2 pt-2  border-background-60 border-solid m-2 gap-2 flex flex-row">
-              <div className="flex flex-grow gap-2">
+              <div className="flex flex-grow gap-2 mobile:grid mobile:grid-cols-2  mobile:grid-rows-2">
                 <Button variant="quaternary" onClick={reboot}>
                   {l10n.getString('settings-serial-reboot')}
                 </Button>
@@ -230,19 +232,36 @@ export function Serial() {
                 <Button variant="quaternary" onClick={getInfos}>
                   {l10n.getString('settings-serial-get_infos')}
                 </Button>
+                {isMobile && (
+                  <Dropdown
+                    control={control}
+                    getValues={getValues}
+                    name="port"
+                    display="block"
+                    placeholder={l10n.getString(
+                      'settings-serial-serial_select'
+                    )}
+                    items={serialDevices.map((device) => ({
+                      label: device.name?.toString() || 'error',
+                      value: device.port?.toString() || 'error',
+                    }))}
+                  ></Dropdown>
+                )}
               </div>
 
-              <div className="flex justify-end">
+              {!isMobile && (
                 <Dropdown
                   control={control}
+                  getValues={getValues}
                   name="port"
+                  display="fit"
                   placeholder={l10n.getString('settings-serial-serial_select')}
                   items={serialDevices.map((device) => ({
                     label: device.name?.toString() || 'error',
                     value: device.port?.toString() || 'error',
                   }))}
                 ></Dropdown>
-              </div>
+              )}
             </div>
           </div>
         </div>

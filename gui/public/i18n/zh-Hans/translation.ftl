@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -13,11 +10,19 @@
 websocket-connecting = 正在连接到服务器
 websocket-connection_lost = 与服务器的连接丢失，正在尝试重新连接...
 
+## Update notification
+
+version_update-title = 新版本可用：{ $version }
+version_update-description = 点击“{ version_update-update }”将为您下载 SlimeVR 安装程序。
+version_update-update = 更新
+version_update-close = 关闭
+
 ## Tips
 
 tips-find_tracker = 不确定哪个追踪器是哪个？在现实中摇动一个追踪器，对应的那个将在屏幕上高亮显示。
 tips-do_not_move_heels = 确保你的脚跟在录制的时候不会发生移动!
 tips-file_select = 拖放文档或 <u>浏览文档</u> 以使用
+tips-tap_setup = 你可以缓慢地敲击2次追踪器来选中它，而不是从菜单中选取。
 
 ## Body parts
 
@@ -48,8 +53,8 @@ skeleton_bone-NONE = 无
 skeleton_bone-HEAD = 头部偏移
 skeleton_bone-NECK = 颈部长度
 skeleton_bone-torso_group = 躯干长度
-skeleton_bone-CHEST = 胸部长度
 skeleton_bone-CHEST_OFFSET = 胸部偏移
+skeleton_bone-CHEST = 胸部长度
 skeleton_bone-WAIST = 腰部长度
 skeleton_bone-HIP = 髋部长度
 skeleton_bone-HIP_OFFSET = 髋部偏移
@@ -95,10 +100,15 @@ navbar-mounting = 佩戴校准
 navbar-onboarding = 向导
 navbar-settings = 设置
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = 录制 BVH 文件
 bvh-recording = 录制中...
+
+## Tracking pause
+
+tracking-unpaused = 暂停追踪
+tracking-paused = 解除暂停追踪
 
 ## Widget: Overlay settings
 
@@ -126,6 +136,7 @@ widget-developer_mode-more_info = 显示更多信息
 widget-imu_visualizer = 旋转
 widget-imu_visualizer-rotation_raw = 原始旋转
 widget-imu_visualizer-rotation_preview = 预览
+widget-imu_visualizer-rotation_hide = 隐藏
 
 ## Tracker status
 
@@ -164,6 +175,9 @@ tracker-infos-custom_name = 自定义名称
 tracker-infos-url = 追踪器地址
 tracker-infos-version = 固件版本
 tracker-infos-hardware_rev = 硬件版本
+tracker-infos-hardware_identifier = 硬件ID
+tracker-infos-imu = IMU型号
+tracker-infos-board_type = 主板型号
 
 ## Tracker settings
 
@@ -252,6 +266,7 @@ settings-sidebar-fk_settings = FK 设置
 settings-sidebar-gesture_control = 手势控制
 settings-sidebar-interface = 交互界面
 settings-sidebar-osc_router = OSC 路由
+settings-sidebar-osc_trackers = VRChat OSC 追踪器
 settings-sidebar-utils = 工具
 settings-sidebar-serial = 串口控制台
 
@@ -318,9 +333,9 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制可�
 settings-general-fk_settings-leg_tweak-toe_snap-description = 脚趾着地可以在没有脚部追踪器的情况下尝试猜测脚部的俯仰。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 脚掌着地会在脚与地面接触时保持脚掌与地板平行。
 settings-general-fk_settings-leg_fk = 腿部追踪
-settings-general-fk_settings-arm_fk = 手臂 FK
-settings-general-fk_settings-arm_fk-description = 更改手臂的追踪方式。
-settings-general-fk_settings-arm_fk-force_arms = 强制从头显获得数据
+settings-general-fk_settings-arm_fk = 手臂追踪
+settings-general-fk_settings-arm_fk-description = 即使有手臂位置数据可用，也强制使用头显的数据追踪手臂。
+settings-general-fk_settings-arm_fk-force_arms = 强制使用头显数据追踪手臂
 settings-general-fk_settings-skeleton_settings = 骨架设置
 settings-general-fk_settings-skeleton_settings-description = 打开或关闭骨架设置。建议保持这些设置不变。
 settings-general-fk_settings-skeleton_settings-extended_spine = 脊柱延伸
@@ -364,6 +379,7 @@ settings-general-interface-feedback_sound = 声音反馈
 settings-general-interface-feedback_sound-description = 开启此选项会在触发重置时发出提示音
 settings-general-interface-feedback_sound-label = 声音反馈
 settings-general-interface-feedback_sound-volume = 提示音音量
+settings-general-interface-theme = 主题颜色
 settings-general-interface-lang = 选择语言
 settings-general-interface-lang-description = 更改要使用的默认语言
 settings-general-interface-lang-placeholder = 选择要使用的语言
@@ -381,8 +397,8 @@ settings-serial-factory_reset = 恢复出厂设置
 # This cares about multilines
 # <b>text</b> means that the text should be bold
 settings-serial-factory_reset-warning =
-    <b>警告：</b> 这会将跟踪器重置为出厂设置。
-    这意味着Wi-Fi凭据和校准数据 <b>都将丢失！</b>
+    <b>警告：</b> 这会将追踪器重置为出厂设置。
+    这意味着 Wi-Fi 凭据和校准数据 <b>都将丢失！</b>
 settings-serial-factory_reset-warning-ok = 我已知晓
 settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-get_infos = 获取信息
@@ -438,7 +454,7 @@ settings-osc-vrchat-network-address-placeholder = VRChat IP 地址
 settings-osc-vrchat-network-trackers = 追踪器
 settings-osc-vrchat-network-trackers-description = 切换数据的发送和接收
 settings-osc-vrchat-network-trackers-chest = 胸部
-settings-osc-vrchat-network-trackers-waist = 腰部
+settings-osc-vrchat-network-trackers-hip = 髋部
 settings-osc-vrchat-network-trackers-knees = 膝盖
 settings-osc-vrchat-network-trackers-feet = 脚部
 settings-osc-vrchat-network-trackers-elbows = 肘部
@@ -510,15 +526,30 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = 返回到佩戴校准
 onboarding-reset_tutorial = 重置教程
-onboarding-reset_tutorial-description = 此功能尚未开发完成，请继续就好
+onboarding-reset_tutorial-explanation = 追踪器在使用时可能会由于IMU的航向角漂移或是因为您移动了它们而失准。您有几种方法来解决这个问题。
+onboarding-reset_tutorial-skip = 跳过步骤
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    敲击 { $taps } 次高亮显示的追踪器以触发航向轴重置。
+    
+    这将使追踪器朝向与您的头显相同的方向。
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    敲击 { $taps } 次高亮显示的追踪器以触发完整重置。
+    
+    此功能需要你站直（i-pose）后使用。 在重置实际发生前有 3 秒延迟（可配置）。
+    这将完全重置所有追踪器的位置和旋转，应该能解决大多数问题。
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    敲击 { $taps } 次高亮显示的追踪器以触发佩戴重置。
+    
+    佩戴重置能对追踪器实际的配戴方式进行调整，所以如果你不小心移动了追踪器并将它们的佩戴方向改变了很多，这个功能将有所帮助。
+    
+    你需要摆出一个像滑雪那样的姿势，就像在运行自动设置佩戴向导时做的那样，在重置实际发生前有 3 秒延迟（可配置）。
 
 ## Setup start
 
 onboarding-home = 欢迎来到 SlimeVR
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    将全身追踪
-    带给每一个人
 onboarding-home-start = 我准备好了！
 
 ## Enter VR part of setup
@@ -561,6 +592,27 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } 个追踪器已连接
     }
 onboarding-connect_tracker-next = 所有的追踪器都连接好了
+
+## Tracker calibration tutorial
+
+onboarding-calibration_tutorial = IMU校准教程
+onboarding-calibration_tutorial-subtitle = 这将有助于减少追踪器漂移！
+onboarding-calibration_tutorial-description = 每次开启追踪器时，它们都需要在平坦的表面上放置片刻以进行自校准。你也可以通过点击“{ onboarding-calibration_tutorial-calibrate }”按钮来手动校准， <b>校准过程中不要移动追踪器！</b>
+onboarding-calibration_tutorial-calibrate = 我已经把追踪器放在桌子上了
+onboarding-calibration_tutorial-status-waiting = 等待你的操作
+onboarding-calibration_tutorial-status-calibrating = 校准中
+onboarding-calibration_tutorial-status-success = 很好！
+onboarding-calibration_tutorial-status-error = 追踪器被移动！
+
+## Tracker assignment tutorial
+
+onboarding-assignment_tutorial = 在佩戴 Slime 追踪器之前的准备工作
+onboarding-assignment_tutorial-first_step = 1. 根据您分配的情况在追踪器上粘贴标识身体部位的贴纸（如果有）
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = 贴纸
+onboarding-assignment_tutorial-second_step = 2. 将绑带与追踪器连接，调整绑带的粘扣朝向到如下图所示（如果有）：
+onboarding-assignment_tutorial-second_step-continuation = 扩展追踪器的粘扣朝向：
+onboarding-assignment_tutorial-done = 我把贴纸和绑带都弄好了！
 
 ## Tracker assignment setup
 
@@ -642,12 +694,26 @@ onboarding-assign_trackers-warning-WAIST =
        *[unknown] 腰部 已分配，但您还需要分配 未知未分配身体部位！
     }
 
+## Tracker mounting method choose
+
+onboarding-choose_mounting = 使用哪种方法校准佩戴朝向？
+# Multiline text
+onboarding-choose_mounting-description = 佩戴方向校准用于确定您身上的追踪器的朝向。
+onboarding-choose_mounting-auto_mounting = 自动设置佩戴方向
+# Italized text
+onboarding-choose_mounting-auto_mounting-label = 实验功能
+onboarding-choose_mounting-auto_mounting-description = 这将需要你做2个动作以自动检测所有追踪器的佩戴方向
+onboarding-choose_mounting-manual_mounting = 手动设置佩戴方向
+# Italized text
+onboarding-choose_mounting-manual_mounting-label = 推荐
+onboarding-choose_mounting-manual_mounting-description = 这将需要你手动选择每个追踪器的佩戴方向
+
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = 返回到进入 VR
 onboarding-manual_mounting = 手动佩戴
 onboarding-manual_mounting-description = 单击每个追踪器并选择它们的佩戴方式
-onboarding-manual_mounting-auto_mounting = 自动佩戴
+onboarding-manual_mounting-auto_mounting = 自动设置佩戴方向
 onboarding-manual_mounting-next = 下一步
 
 ## Tracker automatic mounting setup
@@ -660,7 +726,7 @@ onboarding-automatic_mounting-next = 下一步
 onboarding-automatic_mounting-prev_step = 上一步
 onboarding-automatic_mounting-done-title = 佩戴方向已校准。
 onboarding-automatic_mounting-done-description = 你的佩戴方向校准完成！
-onboarding-automatic_mounting-done-restart = 返回以开始
+onboarding-automatic_mounting-done-restart = 再试一次
 onboarding-automatic_mounting-mounting_reset-title = 佩戴重置
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 双腿弯曲以滑雪的姿势蹲下，上身向前倾斜，手臂弯曲。
 onboarding-automatic_mounting-mounting_reset-step-1 = 按下佩戴重置按钮并等待 3 秒钟，然后追踪器的佩戴方向将被重置。
@@ -670,6 +736,24 @@ onboarding-automatic_mounting-preparation-step-1 = 按下“复位”按钮，�
 onboarding-automatic_mounting-put_trackers_on-title = 穿戴好追踪器
 onboarding-automatic_mounting-put_trackers_on-description = 为了校准佩戴方向，我们将使用你刚才分配的追踪器。戴上你所有的追踪器，你可以在右边的图中看到哪个追踪器对应哪个。
 onboarding-automatic_mounting-put_trackers_on-next = 所有的追踪器都已开启！
+
+## Tracker proportions method choose
+
+onboarding-choose_proportions = 使用哪种方法校准身体比例？
+# Multiline string
+onboarding-choose_proportions-description =
+    身体比例校准用于了解您身体的测量值。它们被需要用于计算追踪器的位置。
+    当你的身体比例与保存的不匹配时，你的追踪精度会变差，而且你会注意到诸如脚滑溜冰、不正常的滑动等情况，或者是你的身体与你的虚拟形象对不上。
+onboarding-choose_proportions-auto_proportions = 自动调整身体比例
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = 推荐
+onboarding-choose_proportions-auto_proportions-description = 这将录制你的运动样本并通过AI来猜测你的身体比例
+onboarding-choose_proportions-manual_proportions = 手动调整身体比例
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = 用于精细调整
+onboarding-choose_proportions-manual_proportions-description = 这将需要你手动修改以调整你的身体比例
+onboarding-choose_proportions-export = 导出身体比例
+onboarding-choose_proportions-file_type = 身体比例文件
 
 ## Tracker manual proportions setup
 
@@ -707,12 +791,12 @@ onboarding-automatic_proportions-recording-description-p0 = 录制中...
 onboarding-automatic_proportions-recording-description-p1 = 依次做出以下动作:
 # Each line of text is a different list item
 onboarding-automatic_proportions-recording-steps =
-    站直，用头部在头顶画圈。 
-    向前弯腰并做半蹲姿势，然后向左摇头，之后向右。
-    上半身向左（逆时针）扭动后，向前倾，使右半侧身体朝向地面。
-    上半身向右（顺时针）扭动后，向前倾，使左半侧身体朝向地面。
-    像在摇呼啦圈一样，以圆形轨迹扭动髋部。
-    如还有时间剩余，可以重复进行以上动作。
+    挺直身子站好，然后活动脖子，使头部沿逆时针或顺时针方向绕一圈；
+    上半身前倾然后屈膝半蹲，保持住这个姿势不动，然后转头看向左边，再转头看向右边；
+    站直身体，沿逆时针方向扭腰，使你的上半身朝向左前方，然后弯下腰，使上半身倾向左前方的地面；
+    站直身体，沿顺时针方向扭腰，使你的上半身朝向右前方，然后弯下腰，使上半身倾向右前方的地面；
+    扭扭腰转圈圈，就如同你在转呼啦圈一样!
+    如果进度条还没走完，可以重复以上动作直到录制结束。
 onboarding-automatic_proportions-recording-processing = 正在处理结果
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer = 剩余{ $time }秒
@@ -728,3 +812,13 @@ onboarding-automatic_proportions-done-description = 你的身体比例校准已�
 ## Home
 
 home-no_trackers = 未检测到或未分配追踪器
+
+## Status system
+
+status_system-StatusTrackerReset = 建议执行完整重置，因为有至少一个追踪器未被调整。
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] 尚未连接到 SlimeVR Feeder App
+       *[other] 尚未通过 SlimeVR 驱动程序连接到 SteamVR
+    }
+status_system-StatusTrackerError = { $trackerName } 追踪器发生错误

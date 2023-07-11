@@ -7,6 +7,13 @@ import dev.slimevr.vrServer
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.DeviceIdT
+import solarxr_protocol.datatypes.TrackerIdT
+import solarxr_protocol.rpc.StatusData
+import solarxr_protocol.rpc.StatusDataUnion
+import solarxr_protocol.rpc.StatusTrackerErrorT
+import solarxr_protocol.rpc.StatusTrackerResetT
+import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2000L
 
@@ -19,7 +26,7 @@ class Tracker @JvmOverloads constructor(
 	val id: Int, // VRServer.nextLocalTrackerId
 	val name: String, // unique, for config
 	val displayName: String = "Tracker #$id", // default display GUI name
-	var trackerPosition: TrackerPosition?,
+	trackerPosition: TrackerPosition?,
 	/**
 	 * It's like the ID, but it should be local to the device if it has one
 	 */
@@ -39,8 +46,8 @@ class Tracker @JvmOverloads constructor(
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = 0
 	private var rotation = Quaternion.IDENTITY
+	private var acceleration = Vector3.NULL
 	var position = Vector3.NULL
-	var acceleration = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
 	var batteryVoltage: Float? = null
@@ -50,18 +57,40 @@ class Tracker @JvmOverloads constructor(
 	var temperature: Float? = null
 	var customName: String? = null
 
-	var status = TrackerStatus.DISCONNECTED
-		set(value) {
-			if (field != value) {
-				field = value
-				if (!isInternal) {
-					// If the status of a non-internal tracker has changed, inform
-					// the VRServer to recreate the skeleton, as it may need to
-					// assign or un-assign the tracker to a body part
-					vrServer.updateSkeletonModel()
-				}
+	/**
+	 * If the tracker has gotten disconnected after it was initialized first time
+	 */
+	var statusResetRecently = false
+	private var alreadyInitialized = false
+	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) {
+			_, old, new ->
+		if (old == new) return@observable
+
+		if (!new.reset) {
+			if (alreadyInitialized) {
+				statusResetRecently = true
 			}
+			alreadyInitialized = true
 		}
+		if (!isInternal) {
+			// If the status of a non-internal tracker has changed, inform
+			// the VRServer to recreate the skeleton, as it may need to
+			// assign or un-assign the tracker to a body part
+			vrServer.updateSkeletonModel()
+
+			checkReportErrorStatus()
+			checkReportRequireReset()
+		}
+	}
+
+	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) {
+			_, old, new ->
+		if (old == new) return@observable
+
+		if (!isInternal) {
+			checkReportRequireReset()
+		}
+	}
 
 	// Computed value to simplify availability checks
 	val hasAdjustedRotation = hasRotation && (allowFiltering || needsReset)
@@ -82,6 +111,73 @@ class Tracker @JvmOverloads constructor(
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
+	}
+
+	private fun checkReportRequireReset() {
+		if (needsReset && trackerPosition != null && lastResetStatus == 0u &&
+			!status.reset && (isImu() || !statusResetRecently)
+		) {
+			reportRequireReset()
+		} else if (lastResetStatus != 0u && (trackerPosition == null || status.reset)) {
+			vrServer.statusSystem.removeStatus(lastResetStatus)
+			lastResetStatus = 0u
+		}
+	}
+
+	/**
+	 * If 0 then it's null
+	 */
+	var lastResetStatus = 0u
+	private fun reportRequireReset() {
+		require(lastResetStatus == 0u) {
+			"lastResetStatus must be 0u, but was $lastResetStatus"
+		}
+
+		val tempTrackerNum = this.trackerNum
+		val statusMsg = StatusTrackerResetT().apply {
+			trackerId = TrackerIdT().apply {
+				if (device != null) {
+					deviceId = DeviceIdT().apply { id = device.id }
+				}
+				trackerNum = tempTrackerNum
+			}
+		}
+		val status = StatusDataUnion().apply {
+			type = StatusData.StatusTrackerReset
+			value = statusMsg
+		}
+		lastResetStatus = vrServer.statusSystem.addStatus(status, true)
+	}
+
+	private fun checkReportErrorStatus() {
+		if (status == TrackerStatus.ERROR && lastErrorStatus == 0u) {
+			reportErrorStatus()
+		} else if (lastErrorStatus != 0u && status != TrackerStatus.ERROR) {
+			vrServer.statusSystem.removeStatus(lastErrorStatus)
+			lastErrorStatus = 0u
+		}
+	}
+
+	var lastErrorStatus = 0u
+	private fun reportErrorStatus() {
+		require(lastErrorStatus == 0u) {
+			"lastResetStatus must be 0u, but was $lastErrorStatus"
+		}
+
+		val tempTrackerNum = this.trackerNum
+		val statusMsg = StatusTrackerErrorT().apply {
+			trackerId = TrackerIdT().apply {
+				if (device != null) {
+					deviceId = DeviceIdT().apply { id = device.id }
+				}
+				trackerNum = tempTrackerNum
+			}
+		}
+		val status = StatusDataUnion().apply {
+			type = StatusData.StatusTrackerError
+			value = statusMsg
+		}
+		lastErrorStatus = vrServer.statusSystem.addStatus(status, true)
 	}
 
 	/**
@@ -106,6 +202,11 @@ class Tracker @JvmOverloads constructor(
 			config.allowDriftCompensation?.let {
 				resetsHandler.allowDriftCompensation = it
 			}
+		}
+		if (!isInternal &&
+			!(!isImu() && (trackerPosition == TrackerPosition.LEFT_HAND || trackerPosition == TrackerPosition.RIGHT_HAND))
+		) {
+			checkReportRequireReset()
 		}
 	}
 
@@ -169,6 +270,18 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
+	 * Gets the adjusted tracker acceleration after mounting corrections.
+	 */
+	fun getAcceleration(): Vector3 {
+		var vec = acceleration
+		if (needsReset) {
+			vec = resetsHandler.getMountingAdjustedRotationFrom(rotation).sandwich(vec)
+		}
+
+		return vec
+	}
+
+	/**
 	 * Gets the identity-adjusted tracker rotation after some corrections
 	 * (filtering, identity reset and identity mounting).
 	 * This is used for debugging/visualizing tracker data
@@ -203,6 +316,13 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun setRotation(rotation: Quaternion) {
 		this.rotation = rotation
+	}
+
+	/**
+	 * Sets the raw (unadjusted) acceleration of the tracker.
+	 */
+	fun setAcceleration(vec: Vector3) {
+		this.acceleration = vec
 	}
 
 	fun isImu(): Boolean {

@@ -1,25 +1,25 @@
 package dev.slimevr.autobone.errors
 
-import dev.slimevr.autobone.AutoBoneTrainingStep
+import dev.slimevr.autobone.AutoBoneStep
 import dev.slimevr.poseframeformat.trackerdata.TrackerFrames
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 
 // The distance of any points to the corresponding absolute position
 class PositionError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
-	override fun getStepError(trainingStep: AutoBoneTrainingStep): Float {
-		val trackers = trainingStep.trainingFrames.frameHolders
+	override fun getStepError(trainingStep: AutoBoneStep): Float {
+		val trackers = trainingStep.frames.frameHolders
 		return (
 			(
 				getPositionError(
 					trackers,
 					trainingStep.cursor1,
-					trainingStep.humanPoseManager1.skeleton
+					trainingStep.skeleton1.skeleton
 				) +
 					getPositionError(
 						trackers,
 						trainingStep.cursor2,
-						trainingStep.humanPoseManager2.skeleton
+						trainingStep.skeleton2.skeleton
 					)
 				) /
 				2f

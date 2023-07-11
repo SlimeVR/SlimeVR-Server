@@ -5,8 +5,8 @@
 body {
   font-variant-numeric: tabular-nums;
   font-family: 'poppins', sans-serif, 'Twemoji Chromium', emoji;
-  height: 100vh;
   width: 100vw;
+  height: 100vh;
   user-select: none;
   background: theme('colors.background.20');
 
@@ -97,8 +97,175 @@ body {
   --default-color: 29, 29, 29;
 }
 
+:root[data-theme='slime-green'] {
+  --background-10: 255, 255, 255;
+  --background-20: 107, 206, 107;
+  --background-30: 68, 193, 69;
+  --background-40: 46, 139, 49;
+  --background-50: 27, 82, 28;
+  --background-60: 20, 60, 20;
+  --background-70: 13, 39, 13;
+  --background-80: 7, 20, 7;
+  --background-90: 2, 6, 2;
+
+  --accent-background-10: 104, 205, 105;
+  --accent-background-20: 57, 171, 58;
+  --accent-background-30: 41, 122, 41;
+  --accent-background-40: 36, 108, 36;
+  --accent-background-50: 19, 57, 19;
+
+  --success: 80, 232, 151;
+  --warning: 216, 205, 55;
+  --critical: 223, 109, 140;
+  --special: 54, 161, 54;
+  --window-icon-stroke: 129, 213, 130;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='slime-yellow'] {
+  --background-10: 255, 255, 255;
+  --background-20: 206, 204, 107;
+  --background-30: 193, 191, 68;
+  --background-40: 139, 137, 46;
+  --background-50: 82, 82, 27;
+  --background-60: 60, 60, 20;
+  --background-70: 39, 39, 13;
+  --background-80: 20, 20, 7;
+  --background-90: 6, 6, 2;
+
+  --accent-background-10: 205, 203, 104;
+  --accent-background-20: 171, 169, 57;
+  --accent-background-30: 122, 121, 41;
+  --accent-background-40: 108, 107, 36;
+  --accent-background-50: 57, 57, 19;
+
+  --success: 80, 232, 151;
+  --warning: 216, 205, 55;
+  --critical: 223, 109, 140;
+  --special: 161, 160, 54;
+  --window-icon-stroke: 213, 212, 129;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='slime-orange'] {
+  --background-10: 255, 255, 255;
+  --background-20: 206, 145, 107;
+  --background-30: 193, 116, 68;
+  --background-40: 139, 82, 46;
+  --background-50: 82, 49, 27;
+  --background-60: 60, 35, 20;
+  --background-70: 39, 23, 13;
+  --background-80: 20, 12, 7;
+  --background-90: 6, 4, 2;
+
+  --accent-background-10: 205, 143, 104;
+  --accent-background-20: 171, 101, 57;
+  --accent-background-30: 122, 72, 41;
+  --accent-background-40: 108, 64, 36;
+  --accent-background-50: 57, 34, 19;
+
+  --success: 80, 232, 151;
+  --warning: 216, 205, 55;
+  --critical: 223, 109, 140;
+  --special: 161, 95, 54;
+  --window-icon-stroke: 213, 162, 129;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='slime-red'] {
+  --background-10: 255, 255, 255;
+  --background-20: 206, 107, 107;
+  --background-30: 193, 68, 68;
+  --background-40: 139, 46, 46;
+  --background-50: 82, 27, 27;
+  --background-60: 60, 20, 20;
+  --background-70: 39, 13, 13;
+  --background-80: 20, 7, 7;
+  --background-90: 6, 2, 2;
+
+  --accent-background-10: 205, 104, 104;
+  --accent-background-20: 171, 57, 57;
+  --accent-background-30: 122, 41, 41;
+  --accent-background-40: 108, 36, 36;
+  --accent-background-50: 57, 19, 19;
+
+  --success: 80, 232, 151;
+  --warning: 216, 205, 55;
+  --critical: 223, 109, 140;
+  --special: 161, 54, 54;
+  --window-icon-stroke: 213, 129, 129;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='dark'] {
+  --background-10: 255, 255, 255;
+  --background-20: 158, 158, 158;
+  --background-30: 133, 133, 133;
+  --background-40: 94, 94, 94;
+  --background-50: 58, 58, 58;
+  --background-60: 42, 42, 42;
+  --background-70: 28, 28, 28;
+  --background-80: 14, 14, 14;
+  --background-90: 4, 4, 4;
+
+  --accent-background-10: 158, 158, 158;
+  --accent-background-20: 121, 121, 121;
+  --accent-background-30: 85, 85, 85;
+  --accent-background-40: 76, 76, 76;
+  --accent-background-50: 39, 39, 39;
+
+  --success: 80, 232, 151;
+  --warning: 216, 205, 55;
+  --critical: 223, 109, 140;
+  --special: 121, 121, 121;
+  --window-icon-stroke: 172, 172, 172;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='light'] {
+  --background-10: 0, 0, 0;
+  --background-20: 97, 97, 97;
+  --background-30: 122, 122, 122;
+  --background-40: 161, 161, 161;
+  --background-50: 197, 197, 197;
+  --background-60: 213, 213, 213;
+  --background-70: 227, 227, 227;
+  --background-80: 241, 241, 241;
+  --background-90: 251, 251, 251;
+
+  --accent-background-10: 97, 97, 97;
+  --accent-background-20: 134, 134, 134;
+  --accent-background-30: 170, 170, 170;
+  --accent-background-40: 179, 179, 179;
+  --accent-background-50: 216, 216, 216;
+
+  --success: 0, 100, 43;
+  --warning: 100, 94, 0;
+  --critical: 100, 4, 33;
+  --special: 134, 134, 134;
+  --window-icon-stroke: 83, 83, 83;
+
+  --default-color: 0, 0, 0;
+}
+
 #root {
   height: 100%;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 ::-webkit-scrollbar {

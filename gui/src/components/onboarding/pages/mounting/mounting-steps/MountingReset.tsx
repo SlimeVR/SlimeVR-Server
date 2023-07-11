@@ -3,6 +3,7 @@ import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
 import { ResetButton } from '../../../../home/ResetButton';
 import { useLocalization } from '@fluent/react';
+import { useBreakpoint } from '../../../../../hooks/breakpoint';
 
 export function MountingResetStep({
   nextStep,
@@ -13,6 +14,7 @@ export function MountingResetStep({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
+  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
 
   return (
@@ -38,7 +40,17 @@ export function MountingResetStep({
           </div>
         </div>
 
-        <div className="flex gap-3">
+        {isMobile && (
+          <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
+            <img
+              src="/images/mounting-reset-pose.png"
+              width={125}
+              alt="mounting reset ski pose"
+            />
+          </div>
+        )}
+
+        <div className="flex gap-3 mobile:justify-between">
           <Button
             variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
             onClick={prevStep}
@@ -52,13 +64,15 @@ export function MountingResetStep({
           ></ResetButton>
         </div>
       </div>
-      <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
-        <img
-          src="/images/mounting-reset-pose.png"
-          width={125}
-          alt="mounting reset ski pose"
-        />
-      </div>
+      {!isMobile && (
+        <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
+          <img
+            src="/images/mounting-reset-pose.png"
+            width={125}
+            alt="mounting reset ski pose"
+          />
+        </div>
+      )}
     </>
   );
 }

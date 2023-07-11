@@ -20,8 +20,8 @@ import { ProgressBar } from '../../commons/ProgressBar';
 import { TipBox } from '../../commons/TipBox';
 import { Typography } from '../../commons/Typography';
 import { TrackerCard } from '../../tracker/TrackerCard';
-import { SkipSetupWarningModal } from '../SkipSetupWarningModal';
-import { SkipSetupButton } from '../SkipSetupButton';
+import { useBnoExists } from '../../../hooks/imu-logic';
+import { useBreakpoint } from '../../../hooks/breakpoint';
 
 const BOTTOM_HEIGHT = 80;
 
@@ -56,19 +56,21 @@ const statusProgressMap = {
 };
 
 export function ConnectTrackersPage() {
+  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { layoutHeight, ref } = useLayout<HTMLDivElement>();
-  const { trackers, useConnectedTrackers } = useTrackers();
-  const { applyProgress, state, skipSetup } = useOnboarding();
+  const { useConnectedTrackers } = useTrackers();
+  const { applyProgress, state } = useOnboarding();
   const navigate = useNavigate();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [provisioningStatus, setProvisioningStatus] =
     useState<WifiProvisioningStatus>(WifiProvisioningStatus.NONE);
-  const [skipWarning, setSkipWarning] = useState(false);
 
   applyProgress(0.4);
 
   const connectedTrackers = useConnectedTrackers();
+
+  const bnoExists = useBnoExists(connectedTrackers);
 
   useEffect(() => {
     if (!state.wifi) {
@@ -125,14 +127,9 @@ export function ConnectTrackersPage() {
   }, [provisioningStatus]);
 
   return (
-    <div className="flex flex-col items-center relative">
-      <SkipSetupButton
-        visible={!state.alonePage}
-        modalVisible={skipWarning}
-        onClick={() => setSkipWarning(true)}
-      ></SkipSetupButton>
-      <div className="flex gap-10 w-full max-w-7xl ">
-        <div className="flex flex-col w-full max-w-sm">
+    <div className="flex flex-col h-full items-center px-4 pb-4">
+      <div className="flex gap-10 mobile:flex-col w-full xs:max-w-7xl">
+        <div className="flex flex-col w-full xs:max-w-sm">
           <Typography variant="main-title">
             {l10n.getString('onboarding-connect_tracker-title')}
           </Typography>
@@ -209,14 +206,20 @@ export function ConnectTrackersPage() {
             </Button>
             <Button
               variant="primary"
-              to={state.alonePage ? '/' : '/onboarding/trackers-assign'}
+              to={
+                state.alonePage
+                  ? '/'
+                  : bnoExists
+                  ? '/onboarding/calibration-tutorial'
+                  : '/onboarding/assign-tutorial'
+              }
               className="ml-auto"
             >
               {l10n.getString('onboarding-connect_tracker-next')}
             </Button>
           </div>
         </div>
-        <div className="flex flex-col flex-grow">
+        <div className="flex flex-col xs:flex-grow">
           <Typography color="secondary" bold>
             {l10n.getString('onboarding-connect_tracker-connected_trackers', {
               amount: connectedTrackers.length,
@@ -224,20 +227,24 @@ export function ConnectTrackersPage() {
           </Typography>
 
           <div
-            className="flex-grow overflow-y-scroll"
+            className="overflow-y-scroll mt-2"
             ref={ref}
-            style={{ height: layoutHeight - BOTTOM_HEIGHT }}
+            style={
+              isMobile && state.alonePage
+                ? { height: layoutHeight - BOTTOM_HEIGHT }
+                : { height: layoutHeight }
+            }
           >
-            <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-2 mx-3 pt-3">
+            <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-2 pr-1">
               {Array.from({
                 ...connectedTrackers,
-                length: Math.max(trackers.length, 20),
+                length: Math.max(connectedTrackers.length, 1),
               }).map((tracker, index) => (
                 <div key={index}>
                   {!tracker && (
                     <div
                       className={classNames(
-                        'rounded-xl  h-16',
+                        'rounded-xl h-16 animate-pulse',
                         state.alonePage
                           ? 'bg-background-80'
                           : 'bg-background-70'
@@ -257,11 +264,6 @@ export function ConnectTrackersPage() {
           </div>
         </div>
       </div>
-      <SkipSetupWarningModal
-        accept={skipSetup}
-        onClose={() => setSkipWarning(false)}
-        isOpen={skipWarning}
-      ></SkipSetupWarningModal>
     </div>
   );
 }

@@ -25,6 +25,10 @@ export const langs = [
     key: 'cs',
   },
   {
+    name: '🇩🇰 Dansk',
+    key: 'da',
+  },
+  {
     name: '🇩🇪 Deutsch',
     key: 'de',
   },
@@ -61,7 +65,7 @@ export const langs = [
     key: 'ko',
   },
   {
-    name: '🇳🇴  Norsk bokmål',
+    name: '🇳🇴 Norsk bokmål',
     key: 'nb-NO',
   },
   {
@@ -79,6 +83,10 @@ export const langs = [
   {
     name: '🇷🇺 Русский',
     key: 'ru',
+  },
+  {
+    name: '🇺🇦 Українська',
+    key: 'uk',
   },
   {
     name: '🇻🇳 Tiếng Việt',

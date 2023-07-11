@@ -1,6 +1,11 @@
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
-import { Control, Controller } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  UseFormGetValues,
+  useWatch,
+} from 'react-hook-form';
 import { a11yClick } from '../utils/a11y';
 
 export interface DropdownItem {
@@ -14,22 +19,41 @@ export function Dropdown({
   direction = 'up',
   variant = 'primary',
   alignment = 'right',
+  display = 'fit',
   placeholder,
   control,
+  getValues,
   name,
   items = [],
 }: {
   direction?: DropdownDirection;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'tertiary';
   alignment?: 'right' | 'left';
+  display?: 'fit' | 'block';
   placeholder: string;
   control: Control<any>;
+  getValues: UseFormGetValues<any>;
   name: string;
   items: DropdownItem[];
 }) {
+  const itemRefs: Record<string, HTMLLIElement> = {};
   const [isOpen, setOpen] = useState(false);
+  const formValue = {
+    ...{ value: useWatch({ control, name }) as string },
+    ...{ value: getValues(name) as string },
+  };
   useEffect(() => {
     if (!isOpen) return;
+
+    const curItem = itemRefs[formValue.value];
+    const dropdownParent = curItem
+      ? (curItem.closest('.dropdown-scroll') as HTMLElement | null)
+      : null;
+    if (curItem && dropdownParent) {
+      dropdownParent.scroll({
+        top: curItem.offsetTop - dropdownParent.offsetHeight / 2,
+      });
+    }
 
     function onWheelEvent() {
       if (isOpen && !document.querySelector('div.dropdown-scroll:hover')) {
@@ -37,10 +61,39 @@ export function Dropdown({
       }
     }
 
-    document.addEventListener('wheel', onWheelEvent, { passive: true });
+    function onTouchEvent(event: TouchEvent) {
+      // Check if we touch scroll outside of the dropdown
+      if (
+        isOpen &&
+        !document
+          .querySelector('div.dropdown-scroll')
+          ?.contains(event.target as HTMLDivElement)
+      ) {
+        setOpen(false);
+      }
+    }
 
+    function onClick(event: MouseEvent) {
+      const isInDropdownScroll = document
+        .querySelector('div.dropdown-scroll')
+        ?.contains(event.target as HTMLDivElement);
+      const isInDropdown = !!(event.target as HTMLDivElement).closest(
+        '.dropdown'
+      );
+      if (isOpen && !isInDropdownScroll && !isInDropdown) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener('click', onClick, false);
+    document.addEventListener('touchmove', onTouchEvent, false);
     // TS doesn't let me specify { passive: true }, but I believe it will work anyways
-    return () => document.removeEventListener('wheel', onWheelEvent);
+    document.addEventListener('wheel', onWheelEvent, { passive: true });
+    return () => {
+      document.removeEventListener('wheel', onWheelEvent);
+      document.removeEventListener('click', onClick);
+      document.removeEventListener('touchmove', onTouchEvent);
+    };
   }, [isOpen]);
 
   return (
@@ -55,15 +108,23 @@ export function Dropdown({
               onClick={() => setOpen(false)}
             ></div>
           )}
-          <div className="relative w-fit">
+          <div
+            className={classNames(
+              'relative',
+              display === 'fit' && 'w-fit',
+              display === 'block' && 'w-full'
+            )}
+          >
             <div
               className={classNames(
-                'min-h-[35px] text-background-10 px-5 py-2.5 rounded-md focus:ring-4 text-center',
+                'min-h-[35px] text-background-10 px-5 py-2.5 rounded-md focus:ring-4 text-center dropdown',
                 'flex cursor-pointer',
                 variant == 'primary' &&
                   'bg-background-60 hover:bg-background-50',
                 variant == 'secondary' &&
-                  'bg-background-70 hover:bg-background-60'
+                  'bg-background-70 hover:bg-background-60',
+                variant == 'tertiary' &&
+                  'bg-accent-background-30 hover:bg-accent-background-20'
               )}
               onClick={() => setOpen((open) => !open)}
               onKeyDown={(ev) => a11yClick(ev) && setOpen((open) => !open)}
@@ -100,22 +161,31 @@ export function Dropdown({
               <div
                 className={classNames(
                   'absolute z-10 rounded shadow min-w-max max-h-[50vh]',
-                  'overflow-y-auto dropdown-scroll',
+                  'overflow-y-auto dropdown-scroll overflow-x-hidden',
+                  display === 'fit' && 'w-fit',
+                  display === 'block' && 'w-full',
                   direction === 'up' && 'bottom-[45px]',
                   direction === 'down' && 'top-[45px]',
                   variant == 'primary' && 'bg-background-60',
                   variant == 'secondary' && 'bg-background-70',
+                  variant == 'tertiary' && 'bg-accent-background-30',
                   alignment === 'right' && 'right-0',
                   alignment === 'left' && 'left-0'
                 )}
               >
-                <ul className="py-1 text-sm text-background-20 flex flex-col pr-2">
+                <ul className="py-1 text-sm flex flex-col">
                   {items.map((item) => (
                     <li
                       className={classNames(
-                        'py-2 px-4 hover:text-background-10 min-w-max cursor-pointer',
-                        variant == 'primary' && 'hover:bg-background-50',
-                        variant == 'secondary' && 'hover:bg-background-60'
+                        'py-2 px-4 min-w-max cursor-pointer',
+                        variant == 'primary' &&
+                          'checked-hover:bg-background-50 text-background-20 ' +
+                            'checked-hover:text-background-10',
+                        variant == 'secondary' &&
+                          'checked-hover:bg-background-60 text-background-20 ' +
+                            'checked-hover:text-background-10',
+                        variant == 'tertiary' &&
+                          'bg-accent-background-30 checked-hover:bg-accent-background-20'
                       )}
                       onClick={() => {
                         onChange(item.value);
@@ -126,8 +196,10 @@ export function Dropdown({
                         onChange(item.value);
                         setOpen(false);
                       }}
+                      ref={(ref) => (ref ? (itemRefs[item.value] = ref) : {})}
                       key={item.value}
                       tabIndex={0}
+                      data-checked={item.value === value}
                     >
                       {item.label}
                     </li>

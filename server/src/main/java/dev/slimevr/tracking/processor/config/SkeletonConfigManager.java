@@ -35,7 +35,7 @@ public class SkeletonConfigManager {
 
 	protected final boolean autoUpdateOffsets;
 	protected HumanPoseManager humanPoseManager;
-	protected float userHeight;
+	protected float userHeight = calculateUserHeight();
 	static final float FLOOR_OFFSET = 0.05f;
 
 	public SkeletonConfigManager(boolean autoUpdateOffsets) {
@@ -107,12 +107,7 @@ public class SkeletonConfigManager {
 		}
 
 		// Re-calculate user height
-		userHeight = getOffset(SkeletonConfigOffsets.NECK)
-			+ getOffset(SkeletonConfigOffsets.CHEST)
-			+ getOffset(SkeletonConfigOffsets.WAIST)
-			+ getOffset(SkeletonConfigOffsets.HIP)
-			+ getOffset(SkeletonConfigOffsets.UPPER_LEG)
-			+ getOffset(SkeletonConfigOffsets.LOWER_LEG);
+		userHeight = calculateUserHeight();
 	}
 
 	public void setOffset(SkeletonConfigOffsets config, Float newValue) {
@@ -126,6 +121,16 @@ public class SkeletonConfigManager {
 
 		Float val = configOffsets.get(config);
 		return val != null ? val : config.defaultValue;
+	}
+
+	private float calculateUserHeight() {
+		return getOffset(SkeletonConfigOffsets.NECK)
+			+ getOffset(SkeletonConfigOffsets.UPPER_CHEST)
+			+ getOffset(SkeletonConfigOffsets.CHEST)
+			+ getOffset(SkeletonConfigOffsets.WAIST)
+			+ getOffset(SkeletonConfigOffsets.HIP)
+			+ getOffset(SkeletonConfigOffsets.UPPER_LEG)
+			+ getOffset(SkeletonConfigOffsets.LOWER_LEG);
 	}
 
 	public float getUserHeightFromOffsets() {
@@ -204,14 +209,21 @@ public class SkeletonConfigManager {
 		switch (nodeOffset) {
 			case HEAD -> setNodeOffset(nodeOffset, 0, 0, getOffset(SkeletonConfigOffsets.HEAD));
 			case NECK -> setNodeOffset(nodeOffset, 0, -getOffset(SkeletonConfigOffsets.NECK), 0);
-			case CHEST -> setNodeOffset(nodeOffset, 0, -getOffset(SkeletonConfigOffsets.CHEST), 0);
+			case UPPER_CHEST -> setNodeOffset(
+				nodeOffset,
+				0,
+				-getOffset(SkeletonConfigOffsets.UPPER_CHEST),
+				0
+			);
 			case CHEST_TRACKER -> setNodeOffset(
 				nodeOffset,
 				0,
 				-getOffset(SkeletonConfigOffsets.CHEST_OFFSET)
+					- getOffset(SkeletonConfigOffsets.UPPER_CHEST)
 					- getOffset(SkeletonConfigOffsets.CHEST),
 				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
 			);
+			case CHEST -> setNodeOffset(nodeOffset, 0, -getOffset(SkeletonConfigOffsets.CHEST), 0);
 			case WAIST -> setNodeOffset(nodeOffset, 0, -getOffset(SkeletonConfigOffsets.WAIST), 0);
 			case HIP -> setNodeOffset(nodeOffset, 0, -getOffset(SkeletonConfigOffsets.HIP), 0);
 			case HIP_TRACKER -> setNodeOffset(
@@ -419,7 +431,7 @@ public class SkeletonConfigManager {
 		}
 
 		switch (config) {
-			case CHEST, WAIST, HIP, UPPER_LEG, LOWER_LEG -> {
+			case UPPER_CHEST, CHEST, WAIST, HIP, UPPER_LEG, LOWER_LEG -> {
 				float height = humanPoseManager.getHmdHeight()
 					/ BodyProportionError.eyeHeightToHeightRatio;
 				if (height > 0.5f) { // Reset only if floor level seems right,

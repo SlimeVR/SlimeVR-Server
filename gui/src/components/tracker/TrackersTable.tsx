@@ -16,6 +16,10 @@ import { formatVector3 } from '../utils/formatting';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
+import {
+  trackerStatusRelated,
+  useStatusContext,
+} from '../../hooks/status-system';
 
 enum DisplayColumn {
   NAME,
@@ -105,6 +109,7 @@ export function RowContainer({
   onClick,
   onMouseOver,
   onMouseOut,
+  warning,
 }: {
   children: ReactNode;
   rounded?: 'left' | 'right' | 'none';
@@ -113,6 +118,7 @@ export function RowContainer({
   onClick?: MouseEventHandler<HTMLDivElement>;
   onMouseOver?: MouseEventHandler<HTMLDivElement>;
   onMouseOut?: MouseEventHandler<HTMLDivElement>;
+  warning: boolean;
 }) {
   const { useVelocity } = useTracker(tracker);
 
@@ -140,7 +146,10 @@ export function RowContainer({
           'h-[50px]  flex flex-col justify-center px-3',
           rounded === 'left' && 'rounded-l-lg',
           rounded === 'right' && 'rounded-r-lg',
-          hover ? 'bg-background-50 cursor-pointer' : 'bg-background-60'
+          hover ? 'bg-background-50 cursor-pointer' : 'bg-background-60',
+          warning && 'border-status-warning border-solid border-t-2 border-b-2',
+          rounded === 'left' && warning && 'border-l-2',
+          rounded === 'right' && warning && 'border-r-2'
         )}
       >
         {children}
@@ -159,6 +168,7 @@ export function TrackersTable({
   const { l10n } = useLocalization();
   const [hoverTracker, setHoverTracker] = useState<TrackerIdT | null>(null);
   const { config } = useConfig();
+  const { statuses } = useStatusContext();
 
   const trackerEqual = (id: TrackerIdT | null) =>
     id?.trackerNum == hoverTracker?.trackerNum &&
@@ -230,6 +240,9 @@ export function TrackersTable({
             hover={trackerEqual(data.tracker.trackerId)}
             onMouseOver={() => setHoverTracker(data.tracker.trackerId)}
             onMouseOut={() => setHoverTracker(null)}
+            warning={Object.values(statuses).some((status) =>
+              trackerStatusRelated(data.tracker, status)
+            )}
           >
             {row(data) || <></>}
           </RowContainer>
