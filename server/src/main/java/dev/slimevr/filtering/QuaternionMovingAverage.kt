@@ -1,6 +1,5 @@
 package dev.slimevr.filtering
 
-import com.jme3.system.NanoTimer
 import dev.slimevr.vrServer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
@@ -22,13 +21,12 @@ class QuaternionMovingAverage(
 	initialRotation: Quaternion,
 ) {
 	var filteredQuaternion = IDENTITY
-	var timeMSAtLastUpdate = System.currentTimeMillis()
 	private var smoothFactor = 0f
 	private var predictFactor = 0f
 	private lateinit var rotBuffer: CircularArrayList<Quaternion>
 	private var latestQuaternion = IDENTITY
 	private var smoothingQuaternion = IDENTITY
-	private var fpsTimer: NanoTimer? = null
+	private val fpsTimer = vrServer.fpsTimer
 	private var smoothingCounter = 0
 
 	init {
@@ -39,7 +37,7 @@ class QuaternionMovingAverage(
 		if (type === TrackerFilters.SMOOTHING) {
 			// lower smoothFactor = more smoothing
 			smoothFactor = SMOOTH_MULTIPLIER * (1 - Math.min(amount, 1f)) + SMOOTH_MIN
-			// Totally a hack for VRCOSCHandler.kt
+			// Totally a hack
 			if (amount > 1) {
 				smoothFactor /= amount
 			}
@@ -58,12 +56,6 @@ class QuaternionMovingAverage(
 	// since it runs between 850hz to 900hz in practice.
 	@Synchronized
 	fun update() {
-		timeMSAtLastUpdate = System.currentTimeMillis()
-
-		if (fpsTimer == null) {
-			fpsTimer = vrServer.fpsTimer
-		}
-
 		if (type === TrackerFilters.PREDICTION) {
 			if (rotBuffer.size > 0) {
 				var quatBuf = latestQuaternion

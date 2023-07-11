@@ -10,16 +10,16 @@ import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector
 import com.illposed.osc.transport.OSCPortIn
 import com.illposed.osc.transport.OSCPortOut
 import com.jme3.math.FastMath
+import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
 import dev.slimevr.config.VRCOSCConfig
-import dev.slimevr.filtering.QuaternionMovingAverage
-import dev.slimevr.filtering.TrackerFilters
 import dev.slimevr.platform.SteamVRBridge
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
+import dev.slimevr.vrServer
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.EulerAngles
@@ -29,6 +29,8 @@ import io.github.axisangles.ktmath.Vector3
 import java.io.IOException
 import java.net.InetAddress
 import java.util.*
+
+private const val OFFSET_SLERP_FACTOR = 0.5f // Guessed from eyeing VRChat
 
 /**
  * VRChat OSCTracker documentation: https://docs.vrchat.com/docs/osc-trackers
@@ -57,8 +59,10 @@ class VRCOSCHandler(
 	private var receivingPositionOffset = Vector3.NULL
 	private var postReceivingPositionOffset = Vector3.NULL
 	private var receivingRotationOffset = Quaternion.IDENTITY
+	private var receivingRotationOffsetGoal = Quaternion.IDENTITY
 	private val postReceivingOffset = EulerAngles(EulerOrder.YXZ, 0f, FastMath.PI, 0f).toQuaternion()
-	private val rotationOffsetSmoothing = QuaternionMovingAverage(TrackerFilters.SMOOTHING, 2f, Quaternion.IDENTITY)
+	private var timeAtLastReceivedRotationOffset = System.currentTimeMillis()
+	private var fpsTimer: NanoTimer? = null
 
 	init {
 		refreshSettings(false)
@@ -243,22 +247,21 @@ class VRCOSCHandler(
 					} else {
 						// Rotation offset
 						val (w, x, y, z) = EulerAngles(EulerOrder.YXZ, event.message.arguments[0] as Float * FastMath.DEG_TO_RAD, event.message.arguments[1] as Float * FastMath.DEG_TO_RAD, event.message.arguments[2] as Float * FastMath.DEG_TO_RAD).toQuaternion()
-						var rot = Quaternion(w, -x, -y, z).inv()
+						receivingRotationOffsetGoal = Quaternion(w, -x, -y, z).inv()
 
-						rot = if (slimeHead != null && slimeHead.hasRotation) {
-							slimeHead.getRotation().project(Vector3.POS_Y).unit() * rot
+						receivingRotationOffsetGoal = if (slimeHead != null && slimeHead.hasRotation) {
+							slimeHead.getRotation().project(Vector3.POS_Y).unit() * receivingRotationOffsetGoal
 						} else {
-							rot
+							receivingRotationOffsetGoal
 						}
 
-						val timeAtLastUpdate = rotationOffsetSmoothing.timeMSAtLastUpdate
-						rotationOffsetSmoothing.addQuaternion(rot)
-						rotationOffsetSmoothing.update()
-						receivingRotationOffset = if (System.currentTimeMillis() - timeAtLastUpdate > 300) {
-							rot // If greater than 300ms, snap to rotation
-						} else {
-							rotationOffsetSmoothing.filteredQuaternion // Use smoothed rotation
+						// If greater than 300ms, snap to rotation
+						if (System.currentTimeMillis() - timeAtLastReceivedRotationOffset > 300) {
+							receivingRotationOffset = receivingRotationOffsetGoal
 						}
+
+						// Update time variable
+						timeAtLastReceivedRotationOffset = System.currentTimeMillis()
 					}
 				} else {
 					// Trackers data (1-8)
@@ -308,7 +311,17 @@ class VRCOSCHandler(
 	}
 
 	override fun update() {
+		// Update current time
 		val currentTime = System.currentTimeMillis().toFloat()
+
+		// Gets timer from vrServer
+		if (fpsTimer == null) {
+			fpsTimer = vrServer.fpsTimer
+		}
+		// Update received trackers' offset rotation slerp
+		if (receivingRotationOffset != receivingRotationOffsetGoal) {
+			receivingRotationOffset = receivingRotationOffset.interpR(receivingRotationOffsetGoal, OFFSET_SLERP_FACTOR * (fpsTimer?.timePerFrame ?: 1f))
+		}
 
 		// Send OSC data
 		if (oscSender != null && oscSender!!.isConnected) {
