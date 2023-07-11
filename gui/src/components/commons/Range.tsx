@@ -28,7 +28,7 @@ export function Range({
             type="range"
             className=" text-background-10 border-accent-background-30"
             style={{
-              width: 'calc(88% - 0.5vw)'
+              width: 'calc(88% - 0.5vw)',
             }}
             name={name}
             ref={ref}
