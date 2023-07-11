@@ -61,7 +61,7 @@ body {
   font-family: 'OpenDyslexic';
   src: url('/fonts/OpenDyslexic-Bold-Italic.woff') format('woff');
   font-weight: bold;
-  font-style: italic
+  font-style: italic;
 }
 
 :root {

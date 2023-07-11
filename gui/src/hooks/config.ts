@@ -64,15 +64,18 @@ export function useConfigProvider(): ConfigContext {
     }
 
     if (config.dyslexiaFont !== undefined) {
-      if(config.dyslexiaFont) {
+      if (config.dyslexiaFont) {
         document.documentElement.style.setProperty('--font-name', 'OpenDyslexic');
       } else {
-        document.documentElement.style.removeProperty('--font-name')
+        document.documentElement.style.removeProperty('--font-name');
       }
     }
 
     if (config.textSize !== undefined) {
-      document.documentElement.style.setProperty('--font-size', `${config.textSize}rem`)
+      document.documentElement.style.setProperty(
+        '--font-size',
+        `${config.textSize}rem`
+      );
     }
 
     if (!debounceTimer.current) {
@@ -108,11 +111,14 @@ export function useConfigProvider(): ConfigContext {
         const loadedConfig = fallbackToDefaults(JSON.parse(json));
         set(loadedConfig);
         document.documentElement.dataset.theme = loadedConfig.theme;
-        document.documentElement.style.setProperty('--font-size', `${loadedConfig.textSize}rem`)
-        if(loadedConfig.dyslexiaFont) {
+        document.documentElement.style.setProperty(
+          '--font-size',
+          `${loadedConfig.textSize}rem`
+        );
+        if (loadedConfig.dyslexiaFont) {
           document.documentElement.style.setProperty('--font-name', 'OpenDyslexic');
         } else {
-          document.documentElement.style.removeProperty('--font-name')
+          document.documentElement.style.removeProperty('--font-name');
         }
         setLoading(false);
         return loadedConfig;
