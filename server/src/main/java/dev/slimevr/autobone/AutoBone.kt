@@ -31,6 +31,7 @@ class AutoBone(server: VRServer) {
 		arrayOf(
 			BoneType.HEAD,
 			BoneType.NECK,
+			BoneType.UPPER_CHEST,
 			BoneType.CHEST,
 			BoneType.WAIST,
 			BoneType.HIP, // This now works when using body proportion error! It's not the
@@ -43,6 +44,7 @@ class AutoBone(server: VRServer) {
 	val heightOffsets = FastList(
 		arrayOf(
 			BoneType.NECK,
+			BoneType.UPPER_CHEST,
 			BoneType.CHEST,
 			BoneType.WAIST,
 			BoneType.HIP,
@@ -86,6 +88,7 @@ class AutoBone(server: VRServer) {
 		return when (bone) {
 			BoneType.HEAD -> getOffset.apply(SkeletonConfigOffsets.HEAD)
 			BoneType.NECK -> getOffset.apply(SkeletonConfigOffsets.NECK)
+			BoneType.UPPER_CHEST -> getOffset.apply(SkeletonConfigOffsets.UPPER_CHEST)
 			BoneType.CHEST -> getOffset.apply(SkeletonConfigOffsets.CHEST)
 			BoneType.WAIST -> getOffset.apply(SkeletonConfigOffsets.WAIST)
 			BoneType.HIP -> getOffset.apply(SkeletonConfigOffsets.HIP)
@@ -172,9 +175,14 @@ class AutoBone(server: VRServer) {
 			if (neckOffset != null) {
 				configConsumer.accept(SkeletonConfigOffsets.NECK, neckOffset)
 			}
+			val upperChestOffset = offsets[BoneType.UPPER_CHEST]
 			val chestOffset = offsets[BoneType.CHEST]
 			val waistOffset = offsets[BoneType.WAIST]
 			val hipOffset = offsets[BoneType.HIP]
+			if (upperChestOffset != null) {
+				configConsumer
+					.accept(SkeletonConfigOffsets.UPPER_CHEST, upperChestOffset)
+			}
 			if (chestOffset != null) {
 				configConsumer
 					.accept(SkeletonConfigOffsets.CHEST, chestOffset)

@@ -110,6 +110,13 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	/**
+	 * Takes a rotation and adjusts it to mounting
+	 */
+	fun getMountingAdjustedRotationFrom(rotation: Quaternion): Quaternion {
+		return rotation * mountingOrientation * mountRotFix
+	}
+
+	/**
 	 * Converts raw or filtered rotation into reference- and
 	 * mounting-reset-adjusted by applying quaternions produced after
 	 * full reset, yaw rest and mounting reset
@@ -198,9 +205,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Let's just remove the status if you do yaw reset if the tracker was
 		// disconnected and then connected back
-		if (this.tracker.lastResetStatus != 0u && this.tracker.disconnectedRecently) {
+		if (this.tracker.lastResetStatus != 0u && this.tracker.statusResetRecently) {
 			vrServer.statusSystem.removeStatus(this.tracker.lastResetStatus)
-			this.tracker.disconnectedRecently = false
+			this.tracker.statusResetRecently = false
 			this.tracker.lastResetStatus = 0u
 		}
 	}

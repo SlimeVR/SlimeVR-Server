@@ -193,7 +193,12 @@ export function ResetTutorialPage() {
   );
 }
 
-export const TORSO_PARTS = [BodyPart.CHEST, BodyPart.WAIST, BodyPart.HIP];
+export const TORSO_PARTS = [
+  BodyPart.UPPER_CHEST,
+  BodyPart.CHEST,
+  BodyPart.WAIST,
+  BodyPart.HIP,
+];
 export const LEFT_LEG_PARTS = [
   BodyPart.LEFT_UPPER_LEG,
   BodyPart.LEFT_LOWER_LEG,
