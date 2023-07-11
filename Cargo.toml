@@ -14,3 +14,4 @@ repository = "https://github.com/SlimeVR/SlimeVR-Server"
 
 [profile.release]
 lto = true
+strip = "debuginfo" # Only affects Unix binaries with DWARF

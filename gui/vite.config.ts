@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig, PluginOption } from 'vite';
 import { execSync } from 'child_process';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 const commitHash = execSync('git rev-parse --verify --short HEAD').toString().trim();
 const versionTag = execSync('git --no-pager tag --points-at HEAD').toString().trim();
@@ -32,7 +33,7 @@ export default defineConfig({
     __VERSION_TAG__: JSON.stringify(versionTag),
     __GIT_CLEAN__: gitClean,
   },
-  plugins: [react(), i18nHotReload()],
+  plugins: [react(), i18nHotReload(), visualizer() as PluginOption],
   build: {
     target: 'es2020',
     emptyOutDir: true,
