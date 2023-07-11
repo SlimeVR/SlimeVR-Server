@@ -130,7 +130,7 @@ export function Dropdown({
               onKeyDown={(ev) => a11yClick(ev) && setOpen((open) => !open)}
               tabIndex={0}
             >
-              <div className="flex-grow">
+              <div className="flex-grow text-standard">
                 {items.find((i) => i.value == value)?.label || placeholder}
               </div>
               <div

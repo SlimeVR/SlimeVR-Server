@@ -19,6 +19,8 @@ export interface Config {
   feedbackSound: boolean;
   feedbackSoundVolume: number;
   theme: string;
+  textSize: number;
+  dyslexiaFont: boolean;
 }
 
 export interface ConfigContext {
@@ -28,13 +30,16 @@ export interface ConfigContext {
   loadConfig: () => Promise<Config | null>;
 }
 
-const defaultConfig: Partial<Config> = {
+export const defaultConfig = {
   lang: 'en',
+  debug: false,
   doneOnboarding: false,
   watchNewDevices: true,
   feedbackSound: true,
   feedbackSoundVolume: 0.5,
   theme: 'slime',
+  textSize: 12,
+  dyslexiaFont: false,
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {
@@ -54,8 +59,20 @@ export function useConfigProvider(): ConfigContext {
         }
       : null;
     set(newConfig as Config);
-    if ('theme' in config) {
+    if (config.theme !== undefined) {
       document.documentElement.dataset.theme = config.theme;
+    }
+
+    if (config.dyslexiaFont !== undefined) {
+      if(config.dyslexiaFont) {
+        document.documentElement.style.setProperty('--font-name', 'OpenDyslexic');
+      } else {
+        document.documentElement.style.removeProperty('--font-name')
+      }
+    }
+
+    if (config.textSize !== undefined) {
+      document.documentElement.style.setProperty('--font-size', `${config.textSize}rem`)
     }
 
     if (!debounceTimer.current) {
@@ -91,6 +108,12 @@ export function useConfigProvider(): ConfigContext {
         const loadedConfig = fallbackToDefaults(JSON.parse(json));
         set(loadedConfig);
         document.documentElement.dataset.theme = loadedConfig.theme;
+        document.documentElement.style.setProperty('--font-size', `${loadedConfig.textSize}rem`)
+        if(loadedConfig.dyslexiaFont) {
+          document.documentElement.style.setProperty('--font-name', 'OpenDyslexic');
+        } else {
+          document.documentElement.style.removeProperty('--font-name')
+        }
         setLoading(false);
         return loadedConfig;
       } catch (e) {

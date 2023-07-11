@@ -70,11 +70,11 @@ export function SettingsSidebar() {
           {l10n.getString('settings-sidebar-interface')}
         </Typography>
         <div className="flex flex-col gap-2">
-          <SettingsLink to="/settings/interface" scrollTo="appearance">
-            {l10n.getString('settings-sidebar-appearance')}
-          </SettingsLink>
           <SettingsLink to="/settings/interface" scrollTo="notifications">
             {l10n.getString('settings-sidebar-notifications')}
+          </SettingsLink>
+          <SettingsLink to="/settings/interface" scrollTo="appearance">
+            {l10n.getString('settings-sidebar-appearance')}
           </SettingsLink>
         </div>
         <div className="flex flex-col gap-3">

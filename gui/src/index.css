@@ -4,7 +4,7 @@
 
 body {
   font-variant-numeric: tabular-nums;
-  font-family: 'poppins', sans-serif, 'Twemoji Chromium', emoji;
+  font-family: var(--font-name), sans-serif, 'Twemoji Chromium', emoji;
   width: 100vw;
   height: 100vh;
   user-select: none;
@@ -19,11 +19,11 @@ body {
 
 @media (-webkit-animation) {
   body {
-    font-family: 'poppins', sans-serif, 'Twemoji Webkit', emoji;
+    font-family: var(--font-name), sans-serif, 'Twemoji Webkit', emoji;
   }
 
   body.linux {
-    font-family: 'poppins', sans-serif, emoji;
+    font-family: var(--font-name), sans-serif, emoji;
   }
 }
 
@@ -37,6 +37,31 @@ body {
   font-family: 'Twemoji Chromium';
   src: url('/fonts/twemoji-glyf_colr_1.ttf') format('truetype');
   font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Regular.woff') format('woff');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Italic.woff') format('woff');
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Bold.woff') format('woff');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Bold-Italic.woff') format('woff');
+  font-weight: bold;
+  font-style: italic
 }
 
 :root {
@@ -77,6 +102,8 @@ body {
   --font-size-vr: calc(var(--font-size) * 1.16);
   /* 100.08% bigger */
   --font-size-title: calc(var(--font-size) * 2.08);
+
+  --font-name: 'poppins';
 }
 
 :root[data-theme='trans'] {
@@ -272,8 +299,10 @@ body {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 ::-webkit-scrollbar {

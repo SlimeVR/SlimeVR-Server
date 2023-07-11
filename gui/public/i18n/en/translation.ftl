@@ -345,8 +345,7 @@ settings-general-gesture_control-mountingResetEnabled = Enable tap to reset moun
 settings-general-gesture_control-mountingResetDelay = Mounting reset delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 
-## Interface settings
-settings-general-interface = Interface
+## Appearance settings
 settings-interface-appearance = Appearance
 settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
@@ -355,6 +354,12 @@ settings-general-interface-theme = Color theme
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language you want to use.
 settings-general-interface-lang-placeholder = Select the language to use
+# Keep the font name untranslated
+settings-interface-appearance-dyslexia_font = OpenDyslexic font
+settings-interface-appearance-dyslexia_font-description = This changes the font to the OpenDyslexic font
+settings-interface-appearance-dyslexia_font-label = OpenDyslexic font
+settings-interface-appearance-font_size = Base font scaling
+settings-interface-appearance-font_size-description = This affects the font size of the whole GUI excepting this settings window
 
 ## Notification settings
 settings-interface-notifications = Notifications
