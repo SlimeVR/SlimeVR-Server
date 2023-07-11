@@ -144,7 +144,7 @@ public class HumanPoseManager {
 					VRServer.getNextLocalTrackerId(),
 					"human://CHEST",
 					"Computed chest",
-					TrackerPosition.CHEST,
+					TrackerPosition.UPPER_CHEST,
 					null,
 					true,
 					true,
@@ -705,7 +705,8 @@ public class HumanPoseManager {
 		StringBuilder trackersDriftText = new StringBuilder();
 		for (Tracker tracker : server.getAllTrackers()) {
 			if (
-				tracker.getNeedsReset()
+				tracker.isImu()
+					&& tracker.getNeedsReset()
 					&& tracker.getResetsHandler().getLastResetQuaternion() != null
 			) {
 				if (!trackersDriftText.isEmpty()) {

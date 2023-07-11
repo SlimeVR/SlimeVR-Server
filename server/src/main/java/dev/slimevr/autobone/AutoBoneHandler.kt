@@ -85,9 +85,7 @@ class AutoBoneHandler(private val server: VRServer) {
 	private fun processFrames(frames: PoseFrames): AutoBoneResults {
 		return autoBone
 			.processFrames(
-				frames,
-				autoBone.config.calcInitError,
-				autoBone.config.targetHeight
+				frames
 			) { epoch: Epoch? -> listeners.forEach(Consumer { listener: AutoBoneListener -> listener.onAutoBoneEpoch(epoch!!) }) }
 	}
 
@@ -120,8 +118,8 @@ class AutoBoneHandler(private val server: VRServer) {
 				announceProcessStatus(AutoBoneProcessType.RECORD, "Recording...")
 
 				// 1000 samples at 20 ms per sample is 20 seconds
-				val sampleCount = autoBone.config.sampleCount
-				val sampleRate = autoBone.config.sampleRateMs
+				val sampleCount = autoBone.globalConfig.sampleCount
+				val sampleRate = autoBone.globalConfig.sampleRateMs
 				val framesFuture = poseRecorder
 					.startFrameRecording(
 						sampleCount,
@@ -140,7 +138,7 @@ class AutoBoneHandler(private val server: VRServer) {
 				// Save a recurring recording for users to send as debug info
 				announceProcessStatus(AutoBoneProcessType.RECORD, "Saving recording...")
 				autoBone.saveRecording(frames, "LastABRecording.pfr")
-				if (autoBone.config.saveRecordings) {
+				if (autoBone.globalConfig.saveRecordings) {
 					announceProcessStatus(
 						AutoBoneProcessType.RECORD,
 						"Saving recording (from config option)..."
@@ -323,13 +321,15 @@ class AutoBoneHandler(private val server: VRServer) {
 				skeletonConfigManagerBuffer.setOffsets(autoBoneResults.configValues)
 				val neckLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.NECK)
+				val upperChestLength = skeletonConfigManagerBuffer
+					.getOffset(SkeletonConfigOffsets.UPPER_CHEST)
 				val chestLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.CHEST)
 				val waistLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.WAIST)
 				val hipLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.HIP)
-				val torsoLength = chestLength + waistLength + hipLength
+				val torsoLength = upperChestLength + chestLength + waistLength + hipLength
 				val hipWidth = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.HIPS_WIDTH)
 				val legLength = (
@@ -341,7 +341,7 @@ class AutoBoneHandler(private val server: VRServer) {
 				val lowerLegLength = skeletonConfigManagerBuffer
 					.getOffset(SkeletonConfigOffsets.LOWER_LEG)
 				val neckTorso = neckLength / torsoLength
-				val chestTorso = chestLength / torsoLength
+				val chestTorso = (upperChestLength + chestLength) / torsoLength
 				val torsoWaist = hipWidth / torsoLength
 				val legTorso = legLength / torsoLength
 				val legBody = legLength / (torsoLength + neckLength)

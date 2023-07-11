@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -13,11 +10,19 @@
 websocket-connecting = Подключение к серверу
 websocket-connection_lost = Потеряно соединение с сервером.  Переподключение...
 
+## Update notification
+
+version_update-title = Доступна новая версия: { $version }
+version_update-description = Нажав «{ version_update-update }», вы загрузите установщик SlimeVR.
+version_update-update = Обновить
+version_update-close = Закрыть
+
 ## Tips
 
 tips-find_tracker = Не уверены, какой это трекер? Встряхните его, и трекер выделится в списке.
 tips-do_not_move_heels = Убедитесь, что ваши пятки не двигаются во время записи!
 tips-file_select = Выберите или перетащите файлы для использования <u>выбрать</u>.
+tips-tap_setup = Вы можете медленно нажать 2 раза на свой трекер, чтобы выбрать его, вместо того чтобы выбирать его из меню.
 
 ## Body parts
 
@@ -95,10 +100,15 @@ navbar-mounting = Калибровка крепления
 navbar-onboarding = Мастер настройки
 navbar-settings = Настройки
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = Запись BVH
 bvh-recording = Запись...
+
+## Tracking pause
+
+tracking-unpaused = Приостановить отслеживание
+tracking-paused = Возобновить отслеживание
 
 ## Widget: Overlay settings
 
@@ -126,6 +136,7 @@ widget-developer_mode-more_info = Дополнительная информац�
 widget-imu_visualizer = Вращение
 widget-imu_visualizer-rotation_raw = RAW
 widget-imu_visualizer-rotation_preview = Предпросмотр
+widget-imu_visualizer-rotation_hide = Скрыть
 
 ## Tracker status
 
@@ -164,6 +175,9 @@ tracker-infos-custom_name = Свое имя
 tracker-infos-url = URL трекера
 tracker-infos-version = Версия прошивки
 tracker-infos-hardware_rev = Ревизия устройства
+tracker-infos-hardware_identifier = ID оборудования
+tracker-infos-imu = Датчик IMU
+tracker-infos-board_type = Основная плата
 
 ## Tracker settings
 
@@ -176,7 +190,7 @@ tracker-settings-mounting_section = Положение крепления
 tracker-settings-mounting_section-description = Где прикреплен трекер?
 tracker-settings-mounting_section-edit = Изменить прикрепление
 tracker-settings-drift_compensation_section = Разрешить компенсацию дрифта
-tracker-settings-drift_compensation_section-description = Должен ли этот трекер компенсировать свой дрифт, когда включена компенсация дрифта?
+tracker-settings-drift_compensation_section-description = Должен ли этот трекер компенсировать свой дрифт?
 tracker-settings-drift_compensation_section-edit = Разрешить компенсацию дрифта
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
@@ -252,6 +266,7 @@ settings-sidebar-fk_settings = Настройки трекеров
 settings-sidebar-gesture_control = Настройки жестов
 settings-sidebar-interface = Интерфейс
 settings-sidebar-osc_router = OSC роутер
+settings-sidebar-osc_trackers = VRChat OSC Трекеры
 settings-sidebar-utils = Утилиты
 settings-sidebar-serial = Консоль
 
@@ -442,6 +457,7 @@ settings-osc-vrchat-network-address-placeholder = VRChat ip адрес
 settings-osc-vrchat-network-trackers = Трекеры
 settings-osc-vrchat-network-trackers-description = Переключите отправку определенных трекеров через OSC.
 settings-osc-vrchat-network-trackers-chest = Грудь
+settings-osc-vrchat-network-trackers-hip = Таз
 settings-osc-vrchat-network-trackers-knees = Колени
 settings-osc-vrchat-network-trackers-feet = Ступни
 settings-osc-vrchat-network-trackers-elbows = Локти
@@ -490,6 +506,7 @@ onboarding-setup_warning =
     <b>Предупреждение.</b> Для правильного отслеживания требуется первоначальная настройка,
     это необходимо, если вы впервые используете SlimeVR.
 onboarding-setup_warning-skip = Пропустить настройку
+onboarding-setup_warning-cancel = Продолжить настройку
 
 ## Wi-Fi setup
 
@@ -512,7 +529,26 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = Вернуться к калибровке крепления
 onboarding-reset_tutorial = Сбросить туториал
-onboarding-reset_tutorial-description = Эта функция не завершена, просто нажмите продолжить
+onboarding-reset_tutorial-explanation = Пока вы пользуетесь своими трекерами, они могут не выровняться из-за дрейфа IMU при рыскании или из-за того, что вы, возможно, переместили их физически. У вас есть несколько способов исправить это.
+onboarding-reset_tutorial-skip = Пропустить шаг
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    Коснитесь { $taps } раз выделенного трекера, чтобы активировать сброс рыскания.
+    
+    Это заставит трекеры смотреть в том же направлении, что и ваш HMD.
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    Нажмите { $taps } раз выделенный трекер, чтобы запустить полный сброс.
+    
+    Вы должны стоять для этого в (i-позе). Существует задержка в 3 секунды (настраиваемая), прежде чем сброс произойдет.
+    Это полностью сбрасывает положение и вращение всех ваших трекеров. Это должно исправить большинство проблем.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    Нажмите { $taps } несколько раз на выделенный трекер, чтобы активировать сброс настроек.
+    
+    Сброс монтажа помогает узнать, как на самом деле на вас надеты трекеры, поэтому, если вы случайно переместили их и сильно изменили их ориентацию, это поможет.
+    
+    Вы должны быть в позе, как будто вы катаетесь на лыжах, как показано в мастере автоматического монтажа, и у вас есть 3-секундная задержка (настраиваемая) перед тем, как она сработает.
 
 ## Setup start
 
@@ -562,6 +598,27 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } подключённых трекеров
     }
 onboarding-connect_tracker-next = Я подключил все трекеры!
+
+## Tracker calibration tutorial
+
+onboarding-calibration_tutorial = Учебное пособие по калибровке IMU
+onboarding-calibration_tutorial-subtitle = Это поможет уменьшить дрифт трекера!
+onboarding-calibration_tutorial-description = Каждый раз, когда вы включаете трекеры, они должны на мгновение отдохнуть на плоской поверхности для калибровки. Давайте сделаем то же самое, нажав кнопку «{ onboarding-calibration_tutorial-calibrate }», <b>не перемещайте их!</b>
+onboarding-calibration_tutorial-calibrate = Я положил свои трекеры на стол
+onboarding-calibration_tutorial-status-waiting = Ждем вас
+onboarding-calibration_tutorial-status-calibrating = Калибровка
+onboarding-calibration_tutorial-status-success = Хорошо!
+onboarding-calibration_tutorial-status-error = Трекер был перемещен
+
+## Tracker assignment tutorial
+
+onboarding-assignment_tutorial = Как подготовить Slime Трекер перед тем, как надеть его
+onboarding-assignment_tutorial-first_step = 1. Наклейте стикер с частью тела (если он у вас есть) на трекер по вашему выбору.
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = Стикер
+onboarding-assignment_tutorial-second_step = 2. Прикрепите ремешок к вашему трекеру, придерживая лицевую сторону ремешка со стороны крючка и петли в следующем положении:
+onboarding-assignment_tutorial-second_step-continuation = Сторона крючка и петли для удлинителя должна быть в этой ориентации:
+onboarding-assignment_tutorial-done = Я наклеил стикеры и ремешки!
 
 ## Tracker assignment setup
 
@@ -651,6 +708,17 @@ onboarding-assign_trackers-warning-WAIST =
 
 ## Tracker mounting method choose
 
+onboarding-choose_mounting = Какой метод калибровки монтажа использовать?
+# Multiline text
+onboarding-choose_mounting-description = Ориентация крепления корректирует размещение трекеров на вашем теле.
+onboarding-choose_mounting-auto_mounting = Автоматическая привязка
+# Italized text
+onboarding-choose_mounting-auto_mounting-label = Экспериментальный
+onboarding-choose_mounting-auto_mounting-description = Это автоматически определит направления монтажа для всех ваших трекеров из 2 поз
+onboarding-choose_mounting-manual_mounting = Ручная привязка
+# Italized text
+onboarding-choose_mounting-manual_mounting-label = Рекомендованный
+onboarding-choose_mounting-manual_mounting-description = Это позволит вам выбрать направление монтажа вручную для каждого трекера
 
 ## Tracker manual mounting setup
 
@@ -683,6 +751,21 @@ onboarding-automatic_mounting-put_trackers_on-next = Я включил и над
 
 ## Tracker proportions method choose
 
+onboarding-choose_proportions = Какой метод калибровки пропорций использовать?
+# Multiline string
+onboarding-choose_proportions-description =
+    Пропорции тела используются для определения размеров вашего тела. Они необходимы для расчета местоположения трекеров.
+    Если пропорции вашего тела не соответствуют сохраненным, точность отслеживания будет хуже, и вы заметите такие вещи, как катание на коньках или скольжение, или ваше тело не совсем соответствует вашему аватару.
+onboarding-choose_proportions-auto_proportions = Автоматическая привязка
+# Italized text
+onboarding-choose_proportions-auto_proportions-subtitle = Рекомендуется
+onboarding-choose_proportions-auto_proportions-description = Это позволит угадать ваши пропорции, записав образец ваших движений и передав его через алгоритм.
+onboarding-choose_proportions-manual_proportions = Ручные пропорции
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = Для небольших штрихов
+onboarding-choose_proportions-manual_proportions-description = Это позволит вам настроить пропорции вручную, изменив их напрямую.
+onboarding-choose_proportions-export = Экспорт пропорций
+onboarding-choose_proportions-file_type = Файл пропорций тела
 
 ## Tracker manual proportions setup
 
@@ -702,12 +785,30 @@ onboarding-automatic_proportions-prev_step = Предыдущий шаг
 onboarding-automatic_proportions-put_trackers_on-title = Наденьте ваши трекеры
 onboarding-automatic_proportions-put_trackers_on-description = Чтобы откалибровать ваши пропорции, мы собираемся использовать трекеры, которые вы только что назначили. Включите все свои трекеры, вы можете увидеть, какие из них какие на рисунке справа.
 onboarding-automatic_proportions-put_trackers_on-next = Я надел все свои трекеры
+onboarding-automatic_proportions-requirements-title = Требования
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-description =
+    У вас есть как минимум достаточно трекеров, чтобы отслеживать ваши ноги (обычно 5 трекеров).
+    У вас есть трекеры и гарнитура.
+    Вы носите трекеры и гарнитуру.
+    Ваши трекеры и гарнитура подключены к серверу SlimeVR.
+    Ваши трекеры и гарнитура правильно работают на сервере SlimeVR.
+    Ваша гарнитура передает данные о местоположении на сервер SlimeVR (обычно это означает, что SteamVR запущен и подключен к SlimeVR с помощью драйвера SlimeVR SteamVR).
+onboarding-automatic_proportions-requirements-next = Я прочитал требования
 onboarding-automatic_proportions-start_recording-title = Будьте готовы к движению
 onboarding-automatic_proportions-start_recording-description = Теперь мы собираемся записать некоторые конкретные позы и движения. Они будут запрошены на следующем экране. Будьте готовы начать, когда кнопка будет нажата!
 onboarding-automatic_proportions-start_recording-next = Начать запись
 onboarding-automatic_proportions-recording-title = Запись
 onboarding-automatic_proportions-recording-description-p0 = Запись в процессе...
 onboarding-automatic_proportions-recording-description-p1 = Сделайте эти движения:
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    Стоя прямо, покрутите головой по кругу.
+    Наклоните спину вперед и присядьте на корточки. Сидя на корточках, посмотрите налево, затем направо.
+    Поверните верхнюю часть туловища влево (против часовой стрелки), затем наклонитесь к земле.
+    Поверните верхнюю часть туловища вправо (по часовой стрелке), затем наклонитесь к земле.
+    Вращайте бедрами круговыми движениями, как будто вы используете хула-хуп.
+    Если на запись осталось время, вы можете повторять эти действия до тех пор, пока она не будет завершена.
 onboarding-automatic_proportions-recording-processing = Обработка результата...
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
@@ -729,3 +830,13 @@ onboarding-automatic_proportions-done-description = Калибровка про�
 ## Home
 
 home-no_trackers = Трекеры не обнаружены и не привязаны
+
+## Status system
+
+status_system-StatusTrackerReset = Рекомендуется выполнить полный сброс, так как один или несколько трекеров не настроены.
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] В настоящее время не подключен к приложению SlimeVR Feeder.
+       *[other] В настоящее время не подключен к SteamVR через драйвер SlimeVR.
+    }
+status_system-StatusTrackerError = В трекере { $trackerName } обнаружена ошибка.
