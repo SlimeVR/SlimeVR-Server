@@ -99,8 +99,6 @@ public class TapDetection {
 		float[] listval = { trackerToWatch.getAcceleration().len(), time };
 		accelList.add(listval);
 
-		System.out.println(taps);
-
 		// remove old values from the list (if they are too old)
 		while (time - accelList.getFirst()[1] > CLUMP_TIME_NS) {
 			accelList.removeFirst();
@@ -145,7 +143,7 @@ public class TapDetection {
 
 		// clear taps once the detection time is exceeded
 		if (time - detectionTime > timeWindowNS) {
-			taps = 0;
+			tapTimes.clear();
 		}
 
 	}
