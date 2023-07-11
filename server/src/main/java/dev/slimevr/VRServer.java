@@ -71,13 +71,11 @@ public class VRServer extends Thread {
 	private final ResetHandler resetHandler;
 	private final StatusSystem statusSystem = new StatusSystem();
 
-	/**
-	 * This function is used by VRWorkout, do not remove!
-	 */
 	public VRServer() {
 		this("vrconfig.yml");
 	}
 
+	// configPath is used by VRWorkout, do not remove!
 	public VRServer(String configPath) {
 		// UwU
 		super("VRServer");
