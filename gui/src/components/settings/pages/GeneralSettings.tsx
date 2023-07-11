@@ -19,13 +19,10 @@ import { useConfig } from '../../../hooks/config';
 import { useWebsocketAPI } from '../../../hooks/websocket-api';
 import { useLocaleConfig } from '../../../i18n/config';
 import { CheckBox } from '../../commons/Checkbox';
-import { SquaresIcon } from '../../commons/icon/SquaresIcon';
 import { SteamIcon } from '../../commons/icon/SteamIcon';
 import { WrenchIcon } from '../../commons/icon/WrenchIcons';
-import { LangSelector } from '../../commons/LangSelector';
 import { NumberSelector } from '../../commons/NumberSelector';
 import { Radio } from '../../commons/Radio';
-import { ThemeSelector } from '../../commons/ThemeSelector';
 import { Typography } from '../../commons/Typography';
 import {
   SettingsPageLayout,
@@ -75,13 +72,6 @@ interface SettingsForm {
   legTweaks: {
     correctionStrength: number;
   };
-  interface: {
-    devmode: boolean;
-    watchNewDevices: boolean;
-    feedbackSound: boolean;
-    feedbackSoundVolume: number;
-    theme: string;
-  };
 }
 
 const defaultValues = {
@@ -122,18 +112,11 @@ const defaultValues = {
     mountingResetTaps: 3,
   },
   legTweaks: { correctionStrength: 0.3 },
-  interface: {
-    devmode: false,
-    watchNewDevices: true,
-    feedbackSound: true,
-    feedbackSoundVolume: 0.5,
-    theme: 'slime',
-  },
 };
 
 export function GeneralSettings() {
   const { l10n } = useLocalization();
-  const { config, setConfig } = useConfig();
+  const { config } = useConfig();
   // const { state } = useLocation();
   const { currentLocales } = useLocaleConfig();
   // const pageRef = useRef<HTMLFormElement | null>(null);
@@ -207,14 +190,6 @@ export function GeneralSettings() {
     settings.driftCompensation = driftCompensation;
 
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
-
-    setConfig({
-      debug: values.interface.devmode,
-      watchNewDevices: values.interface.watchNewDevices,
-      feedbackSound: values.interface.feedbackSound,
-      feedbackSoundVolume: values.interface.feedbackSoundVolume,
-      theme: values.interface.theme,
-    });
   };
 
   useEffect(() => {
@@ -227,15 +202,7 @@ export function GeneralSettings() {
   }, []);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    const formData: DefaultValues<SettingsForm> = {
-      interface: {
-        devmode: config?.debug,
-        watchNewDevices: config?.watchNewDevices,
-        feedbackSound: config?.feedbackSound,
-        feedbackSoundVolume: config?.feedbackSoundVolume,
-        theme: config?.theme,
-      },
-    };
+    const formData: DefaultValues<SettingsForm> = {};
 
     if (settings.filtering) {
       formData.filtering = settings.filtering;
@@ -842,162 +809,6 @@ export function GeneralSettings() {
                 max={10}
                 step={1}
               />
-            </div>
-          </>
-        </SettingsPagePaneLayout>
-
-        <SettingsPagePaneLayout
-          icon={<SquaresIcon></SquaresIcon>}
-          id="interface"
-        >
-          <>
-            <Typography variant="main-title">
-              {l10n.getString('settings-general-interface')}
-            </Typography>
-
-            <Typography bold>
-              {l10n.getString('settings-general-interface-dev_mode')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-interface-dev_mode-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="interface.devmode"
-                label={l10n.getString(
-                  'settings-general-interface-dev_mode-label'
-                )}
-              />
-            </div>
-
-            <Typography bold>
-              {l10n.getString('settings-general-interface-serial_detection')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-interface-serial_detection-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="interface.watchNewDevices"
-                label={l10n.getString(
-                  'settings-general-interface-serial_detection-label'
-                )}
-              />
-            </div>
-
-            <Typography bold>
-              {l10n.getString('settings-general-interface-feedback_sound')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-interface-feedback_sound-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="interface.feedbackSound"
-                label={l10n.getString(
-                  'settings-general-interface-feedback_sound-label'
-                )}
-              />
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <NumberSelector
-                control={control}
-                name="interface.feedbackSoundVolume"
-                label={l10n.getString(
-                  'settings-general-interface-feedback_sound-volume'
-                )}
-                valueLabelFormat={(value) => percentageFormat.format(value)}
-                min={0.1}
-                max={1.0}
-                step={0.1}
-              />
-            </div>
-            <div className="pb-4">
-              <Typography bold>
-                {l10n.getString('settings-general-interface-theme')}
-              </Typography>
-              <div className="flex flex-wrap gap-3 pt-2">
-                <ThemeSelector
-                  control={control}
-                  name="interface.theme"
-                  value={'slime'}
-                  colors="!bg-slime"
-                ></ThemeSelector>
-                <ThemeSelector
-                  control={control}
-                  name="interface.theme"
-                  value={'slime-green'}
-                  colors="!bg-slime-green"
-                ></ThemeSelector>
-                <ThemeSelector
-                  control={control}
-                  name="interface.theme"
-                  value={'slime-yellow'}
-                  colors="!bg-slime-yellow"
-                ></ThemeSelector>
-                <ThemeSelector
-                  control={control}
-                  name="interface.theme"
-                  value={'slime-orange'}
-                  colors="!bg-slime-orange"
-                ></ThemeSelector>
-                <ThemeSelector
-                  control={control}
-                  name="interface.theme"
-                  value={'slime-red'}
-                  colors="!bg-slime-red"
-                ></ThemeSelector>
-                <ThemeSelector
-                  control={control}
-                  name="interface.theme"
-                  value={'dark'}
-                  colors="!bg-dark"
-                ></ThemeSelector>
-                <ThemeSelector
-                  control={control}
-                  name="interface.theme"
-                  value={'light'}
-                  colors="!bg-light"
-                ></ThemeSelector>
-                <ThemeSelector
-                  control={control}
-                  name="interface.theme"
-                  value={'trans'}
-                  colors="!bg-trans-flag"
-                ></ThemeSelector>
-              </div>
-            </div>
-            <Typography bold>
-              {l10n.getString('settings-general-interface-lang')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString('settings-general-interface-lang-description')}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <LangSelector alignment="left" />
             </div>
           </>
         </SettingsPagePaneLayout>

@@ -50,6 +50,7 @@ import { open } from '@tauri-apps/api/shell';
 import semver from 'semver';
 import { useBreakpoint } from './hooks/breakpoint';
 import { VRModePage } from './components/vr-mode/VRModePage';
+import { InterfaceSettings } from './components/settings/pages/InterfaceSettings';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -103,6 +104,7 @@ function Layout() {
           <Route path="osc/router" element={<OSCRouterSettings />} />
           <Route path="osc/vrchat" element={<VRCOSCSettings />} />
           <Route path="osc/vmc" element={<VMCSettings />} />
+          <Route path="interface" element={<InterfaceSettings />} />
         </Route>
         <Route
           path="/onboarding"

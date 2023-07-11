@@ -63,33 +63,43 @@ export function SettingsSidebar() {
           <SettingsLink to="/settings/trackers" scrollTo="gestureControl">
             {l10n.getString('settings-sidebar-gesture_control')}
           </SettingsLink>
-          <SettingsLink to="/settings/trackers" scrollTo="interface">
-            {l10n.getString('settings-sidebar-interface')}
-          </SettingsLink>
-        </div>
-      </div>
-      <div className="flex flex-col gap-3">
-        <Typography variant="section-title">OSC</Typography>
-        <div className="flex flex-col gap-2">
-          <SettingsLink to="/settings/osc/router" scrollTo="router">
-            {l10n.getString('settings-sidebar-osc_router')}
-          </SettingsLink>
-          <SettingsLink to="/settings/osc/vrchat" scrollTo="vrchat">
-            {l10n.getString('settings-sidebar-osc_trackers')}
-          </SettingsLink>
-          <SettingsLink to="/settings/osc/vmc" scrollTo="vmc">
-            VMC
-          </SettingsLink>
         </div>
       </div>
       <div className="flex flex-col gap-3">
         <Typography variant="section-title">
-          {l10n.getString('settings-sidebar-utils')}
+          {l10n.getString('settings-sidebar-interface')}
         </Typography>
         <div className="flex flex-col gap-2">
-          <SettingsLink to="/settings/serial">
-            {l10n.getString('settings-sidebar-serial')}
+          <SettingsLink to="/settings/interface" scrollTo="appearance">
+            {l10n.getString('settings-sidebar-appearance')}
           </SettingsLink>
+          <SettingsLink to="/settings/interface" scrollTo="notifications">
+            {l10n.getString('settings-sidebar-notifications')}
+          </SettingsLink>
+        </div>
+        <div className="flex flex-col gap-3">
+          <Typography variant="section-title">OSC</Typography>
+          <div className="flex flex-col gap-2">
+            <SettingsLink to="/settings/osc/router" scrollTo="router">
+              {l10n.getString('settings-sidebar-osc_router')}
+            </SettingsLink>
+            <SettingsLink to="/settings/osc/vrchat" scrollTo="vrchat">
+              {l10n.getString('settings-sidebar-osc_trackers')}
+            </SettingsLink>
+            <SettingsLink to="/settings/osc/vmc" scrollTo="vmc">
+              VMC
+            </SettingsLink>
+          </div>
+        </div>
+        <div className="flex flex-col gap-3">
+          <Typography variant="section-title">
+            {l10n.getString('settings-sidebar-utils')}
+          </Typography>
+          <div className="flex flex-col gap-2">
+            <SettingsLink to="/settings/serial">
+              {l10n.getString('settings-sidebar-serial')}
+            </SettingsLink>
+          </div>
         </div>
       </div>
     </div>

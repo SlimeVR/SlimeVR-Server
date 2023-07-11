@@ -69,6 +69,14 @@ body {
   --window-icon-stroke: 192, 161, 216;
 
   --default-color: 255, 255, 255;
+
+  /* Default font size */
+  --font-size: 12rem;
+  --font-size-standard: var(--font-size);
+  /* 16% bigger */
+  --font-size-vr: calc(var(--font-size) * 1.16);
+  /* 100.08% bigger */
+  --font-size-title: calc(var(--font-size) * 2.08);
 }
 
 :root[data-theme='trans'] {
