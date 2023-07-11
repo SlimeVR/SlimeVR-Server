@@ -25,7 +25,7 @@ public class TapDetection {
 	private static final float NEEDED_ACCEL_DELTA = 6.0f;
 	private static final float ALLOWED_BODY_ACCEL = 1.5f;
 	private static final float ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL;
-	private static final float CLUMP_TIME_NS = 0.15f * NS_CONVERTER;
+	private static final float CLUMP_TIME_NS = 0.08f * NS_CONVERTER;
 	private float timeWindowNS = 0.6f * NS_CONVERTER;
 
 	// state
@@ -99,6 +99,8 @@ public class TapDetection {
 		float[] listval = { trackerToWatch.getAcceleration().len(), time };
 		accelList.add(listval);
 
+		System.out.println(taps);
+
 		// remove old values from the list (if they are too old)
 		while (time - accelList.getFirst()[1] > CLUMP_TIME_NS) {
 			accelList.removeFirst();
@@ -114,7 +116,7 @@ public class TapDetection {
 		}
 
 		// if waiting for low accel
-		if (accelList.get(accelList.size() - 1)[0] < ALLOWED_BODY_ACCEL) {
+		if (getMaxAccel() < ALLOWED_BODY_ACCEL) {
 			waitForLowAccel = false;
 		}
 
@@ -141,6 +143,11 @@ public class TapDetection {
 			detectionTime = time;
 		}
 
+		// clear taps once the detection time is exceeded
+		if (time - detectionTime > timeWindowNS) {
+			taps = 0;
+		}
+
 	}
 
 	private float getAccelDelta() {
@@ -153,6 +160,16 @@ public class TapDetection {
 				min = val[0];
 		}
 		return max - min;
+	}
+
+	private float getMaxAccel() {
+		float max = 0.0f;
+		for (float[] val: accelList) {
+			if (val[0] > max) {
+				max = val[0];
+			}
+		}
+		return max;
 	}
 
 	// return the number of distinct tap events in tapTimes
