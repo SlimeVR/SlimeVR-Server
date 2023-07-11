@@ -162,7 +162,7 @@ public class TapDetection {
 
 	private float getMaxAccel() {
 		float max = 0.0f;
-		for (float[] val: accelList) {
+		for (float[] val : accelList) {
 			if (val[0] > max) {
 				max = val[0];
 			}
