@@ -255,7 +255,7 @@ export function InterfaceSettings() {
               <Dropdown
                 control={control}
                 getValues={getValues}
-                name="appearance.font"
+                name="appearance.fonts"
                 placeholder={l10n.getString(
                   'settings-interface-appearance-font-placeholder'
                 )}
