@@ -355,11 +355,13 @@ settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language you want to use.
 settings-general-interface-lang-placeholder = Select the language to use
 # Keep the font name untranslated
-settings-interface-appearance-dyslexia_font = OpenDyslexic font
-settings-interface-appearance-dyslexia_font-description = This changes the font to the OpenDyslexic font
-settings-interface-appearance-dyslexia_font-label = OpenDyslexic font
+settings-interface-appearance-font = GUI font
+settings-interface-appearance-font-description = This changes the font used by the interface
+settings-interface-appearance-font-placeholder = Default font
+settings-interface-appearance-font-os_font = OS font
+settings-interface-appearance-font-slime_font = Default font
 settings-interface-appearance-font_size = Base font scaling
-settings-interface-appearance-font_size-description = This affects the font size of the whole GUI excepting this settings window
+settings-interface-appearance-font_size-description = This affects the font size of the whole interface except this settings panel
 
 ## Notification settings
 settings-interface-notifications = Notifications

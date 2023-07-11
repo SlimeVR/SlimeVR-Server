@@ -20,7 +20,7 @@ export interface Config {
   feedbackSoundVolume: number;
   theme: string;
   textSize: number;
-  dyslexiaFont: boolean;
+  font: string;
 }
 
 export interface ConfigContext {
@@ -39,7 +39,7 @@ export const defaultConfig = {
   feedbackSoundVolume: 0.5,
   theme: 'slime',
   textSize: 12,
-  dyslexiaFont: false,
+  font: 'poppins',
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {
@@ -63,12 +63,8 @@ export function useConfigProvider(): ConfigContext {
       document.documentElement.dataset.theme = config.theme;
     }
 
-    if (config.dyslexiaFont !== undefined) {
-      if (config.dyslexiaFont) {
-        document.documentElement.style.setProperty('--font-name', 'OpenDyslexic');
-      } else {
-        document.documentElement.style.removeProperty('--font-name');
-      }
+    if (config.font !== undefined) {
+      document.documentElement.style.setProperty('--font-name', config.font);
     }
 
     if (config.textSize !== undefined) {
@@ -115,11 +111,7 @@ export function useConfigProvider(): ConfigContext {
           '--font-size',
           `${loadedConfig.textSize}rem`
         );
-        if (loadedConfig.dyslexiaFont) {
-          document.documentElement.style.setProperty('--font-name', 'OpenDyslexic');
-        } else {
-          document.documentElement.style.removeProperty('--font-name');
-        }
+        document.documentElement.style.setProperty('--font-name', loadedConfig.font);
         setLoading(false);
         return loadedConfig;
       } catch (e) {

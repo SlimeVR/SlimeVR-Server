@@ -26,7 +26,10 @@ export function Range({
         <label className="text-standard w-full text-center flex items-center flex-col">
           <input
             type="range"
-            className="w-[90%] text-background-10 border-accent-background-30"
+            className=" text-background-10 border-accent-background-30"
+            style={{
+              width: 'calc(88% - 0.5vw)'
+            }}
             name={name}
             ref={ref}
             value={value}

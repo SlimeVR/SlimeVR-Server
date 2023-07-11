@@ -15,13 +15,14 @@ import { useLocaleConfig } from '../../../i18n/config';
 import { LangSelector } from '../../commons/LangSelector';
 import { BellIcon } from '../../commons/icon/BellIcon';
 import { Range } from '../../commons/Range';
+import { Dropdown } from '../../commons/Dropdown';
 
 interface InterfaceSettingsForm {
   appearance: {
     devmode: boolean;
     theme: string;
     textSize: number;
-    dyslexiaFont: boolean;
+    font: string;
   };
   notifications: {
     watchNewDevices: boolean;
@@ -34,23 +35,24 @@ export function InterfaceSettings() {
   const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { control, watch, handleSubmit } = useForm<InterfaceSettingsForm>({
-    defaultValues: {
-      appearance: {
-        devmode: config?.debug ?? defaultConfig.debug,
-        theme: config?.theme ?? defaultConfig.theme,
-        textSize: config?.textSize ?? defaultConfig.textSize,
-        dyslexiaFont: config?.dyslexiaFont ?? defaultConfig.dyslexiaFont,
+  const { control, watch, handleSubmit, getValues } =
+    useForm<InterfaceSettingsForm>({
+      defaultValues: {
+        appearance: {
+          devmode: config?.debug ?? defaultConfig.debug,
+          theme: config?.theme ?? defaultConfig.theme,
+          textSize: config?.textSize ?? defaultConfig.textSize,
+          font: config?.font ?? defaultConfig.font,
+        },
+        notifications: {
+          watchNewDevices:
+            config?.watchNewDevices ?? defaultConfig.watchNewDevices,
+          feedbackSound: config?.feedbackSound ?? defaultConfig.feedbackSound,
+          feedbackSoundVolume:
+            config?.feedbackSoundVolume ?? defaultConfig.feedbackSoundVolume,
+        },
       },
-      notifications: {
-        watchNewDevices:
-          config?.watchNewDevices ?? defaultConfig.watchNewDevices,
-        feedbackSound: config?.feedbackSound ?? defaultConfig.feedbackSound,
-        feedbackSoundVolume:
-          config?.feedbackSoundVolume ?? defaultConfig.feedbackSoundVolume,
-      },
-    },
-  });
+    });
 
   const onSubmit = (values: InterfaceSettingsForm) => {
     setConfig({
@@ -59,7 +61,7 @@ export function InterfaceSettings() {
       feedbackSound: values.notifications.feedbackSound,
       feedbackSoundVolume: values.notifications.feedbackSoundVolume,
       theme: values.appearance.theme,
-      dyslexiaFont: values.appearance.dyslexiaFont,
+      font: values.appearance.font,
       textSize: values.appearance.textSize,
     });
   };
@@ -240,24 +242,51 @@ export function InterfaceSettings() {
             </div>
 
             <Typography bold>
-              {l10n.getString('settings-interface-appearance-dyslexia_font')}
+              {l10n.getString('settings-interface-appearance-font')}
             </Typography>
             <div className="flex flex-col pt-1 pb-2">
               <Typography color="secondary">
                 {l10n.getString(
-                  'settings-interface-appearance-dyslexia_font-description'
+                  'settings-interface-appearance-font-description'
                 )}
               </Typography>
             </div>
             <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
+              <Dropdown
                 control={control}
-                outlined
-                name="appearance.dyslexiaFont"
-                label={l10n.getString(
-                  'settings-interface-appearance-dyslexia_font-label'
+                getValues={getValues}
+                name="appearance.font"
+                placeholder={l10n.getString(
+                  'settings-interface-appearance-font-placeholder'
                 )}
+                items={[
+                  {
+                    label: l10n.getString(
+                      'settings-interface-appearance-font-slime_font'
+                    ),
+                    value: 'poppins',
+                    fontName: 'poppins',
+                  },
+                  {
+                    label: 'OpenDyslexic',
+                    value: 'OpenDyslexic',
+                    fontName: 'OpenDyslexic',
+                  },
+                  { label: 'Lexend', value: 'Lexend', fontName: 'Lexend' },
+                  { label: 'Ubuntu', value: 'Ubuntu', fontName: 'Ubuntu' },
+                  {
+                    label: 'Noto Sans (CJK)',
+                    value: 'Noto Sans CJK',
+                    fontName: 'Noto Sans CJK',
+                  },
+                  {
+                    label: l10n.getString(
+                      'settings-interface-appearance-font-os_font'
+                    ),
+                    value: 'ui-sans-serif',
+                  },
+                ]}
+                alignment="left"
               />
             </div>
 
@@ -276,14 +305,15 @@ export function InterfaceSettings() {
                 control={control}
                 name="appearance.textSize"
                 min={10}
-                max={16}
+                max={15}
                 step={1}
                 values={[
                   { value: 10, label: '10pt' },
                   { value: 11, label: '11pt' },
                   { value: 12, label: '12pt', defaultValue: true },
+                  { value: 13, label: '13pt' },
+                  { value: 14, label: '14pt' },
                   { value: 15, label: '15pt' },
-                  { value: 16, label: '16pt' },
                 ]}
               />
             </div>
