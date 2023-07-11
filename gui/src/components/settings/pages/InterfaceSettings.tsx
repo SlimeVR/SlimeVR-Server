@@ -22,7 +22,7 @@ interface InterfaceSettingsForm {
     devmode: boolean;
     theme: string;
     textSize: number;
-    font: string;
+    fonts: string;
   };
   notifications: {
     watchNewDevices: boolean;
@@ -42,7 +42,7 @@ export function InterfaceSettings() {
           devmode: config?.debug ?? defaultConfig.debug,
           theme: config?.theme ?? defaultConfig.theme,
           textSize: config?.textSize ?? defaultConfig.textSize,
-          font: config?.font ?? defaultConfig.font,
+          fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
         },
         notifications: {
           watchNewDevices:
@@ -61,7 +61,7 @@ export function InterfaceSettings() {
       feedbackSound: values.notifications.feedbackSound,
       feedbackSoundVolume: values.notifications.feedbackSoundVolume,
       theme: values.appearance.theme,
-      font: values.appearance.font,
+      fonts: values.appearance.fonts.split(','),
       textSize: values.appearance.textSize,
     });
   };
@@ -259,6 +259,7 @@ export function InterfaceSettings() {
                 placeholder={l10n.getString(
                   'settings-interface-appearance-font-placeholder'
                 )}
+                /* Supports multiple items by separating them with a comma */
                 items={[
                   {
                     label: l10n.getString(

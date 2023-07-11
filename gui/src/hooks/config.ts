@@ -20,7 +20,7 @@ export interface Config {
   feedbackSoundVolume: number;
   theme: string;
   textSize: number;
-  font: string;
+  fonts: string[];
 }
 
 export interface ConfigContext {
@@ -39,7 +39,7 @@ export const defaultConfig = {
   feedbackSoundVolume: 0.5,
   theme: 'slime',
   textSize: 12,
-  font: 'poppins',
+  fonts: ['poppins'],
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {
@@ -63,8 +63,11 @@ export function useConfigProvider(): ConfigContext {
       document.documentElement.dataset.theme = config.theme;
     }
 
-    if (config.font !== undefined) {
-      document.documentElement.style.setProperty('--font-name', config.font);
+    if (config.fonts !== undefined) {
+      document.documentElement.style.setProperty(
+        '--font-name',
+        config.fonts.map((x) => `"${x}"`).join(',')
+      );
     }
 
     if (config.textSize !== undefined) {
@@ -111,7 +114,10 @@ export function useConfigProvider(): ConfigContext {
           '--font-size',
           `${loadedConfig.textSize}rem`
         );
-        document.documentElement.style.setProperty('--font-name', loadedConfig.font);
+        document.documentElement.style.setProperty(
+          '--font-name',
+          loadedConfig.fonts.map((x) => `"${x}"`).join(',')
+        );
         setLoading(false);
         return loadedConfig;
       } catch (e) {
