@@ -23,9 +23,9 @@ public class TapDetection {
 	// hyperparameters
 	private static final float NS_CONVERTER = 1.0e9f;
 	private static final float NEEDED_ACCEL_DELTA = 6.0f;
-	private static final float ALLOWED_BODY_ACCEL = 1.5f;
+	private static final float ALLOWED_BODY_ACCEL = 2.5f;
 	private static final float ALLOWED_BODY_ACCEL_SQUARED = ALLOWED_BODY_ACCEL * ALLOWED_BODY_ACCEL;
-	private static final float CLUMP_TIME_NS = 0.08f * NS_CONVERTER;
+	private static final float CLUMP_TIME_NS = 0.06f * NS_CONVERTER;
 	private float timeWindowNS = 0.6f * NS_CONVERTER;
 
 	// state
@@ -135,17 +135,16 @@ public class TapDetection {
 
 		// get the amount of taps in the list
 		// and set the detection time
-		int newTaps = getTapEvents();
+		int newTaps = tapTimes.size();
 		if (newTaps > taps) {
 			taps = newTaps;
 			detectionTime = time;
 		}
 
-		// clear taps once the detection time is exceeded
 		if (time - detectionTime > timeWindowNS) {
 			tapTimes.clear();
+			taps = 0;
 		}
-
 	}
 
 	private float getAccelDelta() {
@@ -168,22 +167,6 @@ public class TapDetection {
 			}
 		}
 		return max;
-	}
-
-	// return the number of distinct tap events in tapTimes
-	private int getTapEvents() {
-		if (tapTimes.isEmpty())
-			return 0;
-
-		int tapEvents = 1;
-		float lastTapTime = tapTimes.getFirst();
-		for (Float tapTime : tapTimes) {
-			if (tapTime - lastTapTime > CLUMP_TIME_NS) {
-				tapEvents++;
-				lastTapTime = tapTime;
-			}
-		}
-		return tapEvents;
 	}
 
 	// returns true if the user is not imparting more than allowedBodyAccel of
