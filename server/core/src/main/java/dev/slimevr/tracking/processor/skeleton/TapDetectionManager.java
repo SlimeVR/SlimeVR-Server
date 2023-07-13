@@ -80,21 +80,6 @@ public class TapDetectionManager {
 			tapDetectors.add(tapDetector);
 		}
 
-		// since this config value is only modified by editing the config file,
-		// we can set it here
-		yawResetDetector
-			.setNumberTrackersOverThreshold(
-				config.getNumberTrackersOverThreshold()
-			);
-		fullResetDetector
-			.setNumberTrackersOverThreshold(
-				config.getNumberTrackersOverThreshold()
-			);
-		mountingResetDetector
-			.setNumberTrackersOverThreshold(
-				config.getNumberTrackersOverThreshold()
-			);
-
 		updateConfig();
 	}
 
@@ -111,6 +96,18 @@ public class TapDetectionManager {
 		yawResetDetector.setMaxTaps(yawResetTaps);
 		fullResetDetector.setMaxTaps(fullResetTaps);
 		mountingResetDetector.setMaxTaps(mountingResetTaps);
+		yawResetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
+		fullResetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
+		mountingResetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
 	}
 
 	public void update() {

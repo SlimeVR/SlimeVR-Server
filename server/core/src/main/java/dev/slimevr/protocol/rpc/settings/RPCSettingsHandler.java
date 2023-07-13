@@ -220,6 +220,14 @@ public class RPCSettingsHandler {
 					.setMountingResetEnabled(tapDetectionSettings.mountingResetEnabled());
 				tapDetectionConfig.setSetupMode(tapDetectionSettings.setupMode());
 
+				// set number of trackers that can have high accel before taps are rejected
+				if (tapDetectionSettings.hasNumberTrackersOverThreshold()) {
+					tapDetectionConfig
+						.setNumberTrackersOverThreshold(
+							tapDetectionSettings.numberTrackersOverThreshold()
+						);
+				}
+
 				// set tap detection delays
 				if (tapDetectionSettings.hasYawResetDelay()) {
 					tapDetectionConfig.setYawResetDelay(tapDetectionSettings.yawResetDelay());

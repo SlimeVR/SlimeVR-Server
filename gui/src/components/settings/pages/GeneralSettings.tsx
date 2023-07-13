@@ -72,6 +72,7 @@ interface SettingsForm {
     yawResetTaps: number;
     fullResetTaps: number;
     mountingResetTaps: number;
+    numberTrackersOverThreshold;
   };
   legTweaks: {
     correctionStrength: number;
@@ -122,6 +123,7 @@ const defaultValues = {
     yawResetTaps: 2,
     fullResetTaps: 3,
     mountingResetTaps: 3,
+    numberTrackersOverThreshold: 1,
   },
   legTweaks: { correctionStrength: 0.3 },
   interface: {
@@ -195,6 +197,7 @@ export function GeneralSettings() {
       values.tapDetection.mountingResetEnabled;
     tapDetection.mountingResetDelay = values.tapDetection.mountingResetDelay;
     tapDetection.mountingResetTaps = values.tapDetection.mountingResetTaps;
+    tapDetection.numberTrackersOverThreshold = values.tapDetection.numberTrackersOverThreshold;
     tapDetection.setupMode = false;
     settings.tapDetectionSettings = tapDetection;
 
@@ -294,6 +297,9 @@ export function GeneralSettings() {
         mountingResetTaps:
           settings.tapDetectionSettings.mountingResetTaps ||
           defaultValues.tapDetection.mountingResetTaps,
+        numberTrackersOverThreshold:
+          settings.tapDetectionSettings.numberTrackersOverThreshold ||
+          defaultValues.tapDetection.numberTrackersOverThreshold
       };
     }
 
@@ -869,6 +875,28 @@ export function GeneralSettings() {
                 step={1}
               />
             </div>
+            {config?.debug && (
+              <div className="grid sm:grid-cols-1 gap-2 pt-2">
+                <Typography bold>
+                  {l10n.getString('settings-general-gesture_control-numberTrackersOverThreshold')}
+                </Typography>
+                <Typography color="secondary">
+                  {l10n.getString('settings-general-gesture_control-numberTrackersOverThreshold-description')}
+                </Typography>
+                <NumberSelector
+                  control={control}
+                  name="tapDetection.numberTrackersOverThreshold"
+                  valueLabelFormat={(value) =>
+                    l10n.getString('settings-general-gesture_control-trackers', {
+                      amount: Math.round(value),
+                    })
+                  }
+                  min={1}
+                  max={20}
+                  step={1}
+                />
+              </div>
+            )}
           </>
         </SettingsPagePaneLayout>
 
