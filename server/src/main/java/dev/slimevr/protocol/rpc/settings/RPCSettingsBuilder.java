@@ -142,6 +142,7 @@ public class RPCSettingsBuilder {
 				tapDetectionConfig.getMountingResetDelay(),
 				tapDetectionConfig.getMountingResetEnabled(),
 				tapDetectionConfig.getMountingResetTaps(),
+				tapDetectionConfig.getNumberTrackersOverThreshold(),
 				tapDetectionConfig.getSetupMode()
 			);
 	}
@@ -183,7 +184,8 @@ public class RPCSettingsBuilder {
 				humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
 				humanPoseManager.getToggle(SkeletonConfigToggles.VIVE_EMULATION),
 				humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP),
-				humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT)
+				humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT),
+				false // not to self: remove this once mocap mode is merged
 			);
 		int ratiosOffset = ModelRatios
 			.createModelRatios(
