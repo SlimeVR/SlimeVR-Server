@@ -264,7 +264,7 @@ class VRServer constructor(
 	private fun trackerAdded(tracker: Tracker) {
 		humanPoseManager.trackerAdded(tracker)
 		if (tracker.isComputed && tracker.name != "HMD") {
-			vMCHandler.addComputedTracker(tracker);
+			vMCHandler.addComputedTracker(tracker)
 		}
 	}
 
