@@ -771,11 +771,18 @@ class AutoBone(server: VRServer) {
 	companion object {
 		const val AUTOBONE_FOLDER = "AutoBone Recordings"
 		const val LOADAUTOBONE_FOLDER = "Load AutoBone Recordings"
+
 		// FIXME: Won't work on iOS and Android, maybe fix resolveConfigDirectory more than this
-		val saveDir = File(OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(
-			AUTOBONE_FOLDER)?.toString() ?: AUTOBONE_FOLDER)
-		val loadDir = File(OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(
-			LOADAUTOBONE_FOLDER)?.toString() ?: LOADAUTOBONE_FOLDER)
+		val saveDir = File(
+			OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(
+				AUTOBONE_FOLDER
+			)?.toString() ?: AUTOBONE_FOLDER
+		)
+		val loadDir = File(
+			OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(
+				LOADAUTOBONE_FOLDER
+			)?.toString() ?: LOADAUTOBONE_FOLDER
+		)
 
 		// Mean square error function
 		private fun errorFunc(errorDeriv: Float): Float {
