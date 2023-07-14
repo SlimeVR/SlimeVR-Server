@@ -31,6 +31,7 @@ body_part-RIGHT_HAND = Right hand
 body_part-RIGHT_UPPER_LEG = Right thigh
 body_part-RIGHT_LOWER_LEG = Right ankle
 body_part-RIGHT_FOOT = Right foot
+body_part-UPPER_CHEST = Upper chest
 body_part-CHEST = Chest
 body_part-WAIST = Waist
 body_part-HIP = Hip
@@ -47,8 +48,9 @@ skeleton_bone-NONE = None
 skeleton_bone-HEAD = Head Shift
 skeleton_bone-NECK = Neck Length
 skeleton_bone-torso_group = Torso length
-skeleton_bone-CHEST = Chest Length
+skeleton_bone-UPPER_CHEST = Upper Chest Length
 skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-CHEST = Chest Length
 skeleton_bone-WAIST = Waist Length
 skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP_OFFSET = Hip Offset
@@ -107,6 +109,9 @@ widget-overlay-is_mirrored_label = Display Overlay as Mirror
 ## Widget: Drift compensation
 widget-drift_compensation-clear = Clear drift compensation
 
+## Widget: Clear Reset Mounting
+widget-clear_mounting = Clear reset mounting
+
 ## Widget: Developer settings
 widget-developer_mode = Developer Mode
 widget-developer_mode-high_contrast = High contrast
@@ -145,9 +150,15 @@ tracker-table-column-url = URL
 
 ## Tracker rotation
 tracker-rotation-front = Front
+tracker-rotation-front_left = Front-Left
+tracker-rotation-front_right = Front-Right
 tracker-rotation-left = Left
 tracker-rotation-right = Right
 tracker-rotation-back = Back
+tracker-rotation-back_left = Back-Left
+tracker-rotation-back_right = Back-Right
+tracker-rotation-custom = Custom
+tracker-rotation-overriden = (overriden by mounting reset)
 
 ## Tracker information
 tracker-infos-manufacturer = Manufacturer
@@ -207,6 +218,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } right thigh
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } right ankle?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } right foot?
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } right controller?
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } upper chest?
 tracker_selection_menu-CHEST = { -tracker_selection-part } chest?
 tracker_selection_menu-WAIST = { -tracker_selection-part } waist?
 tracker_selection_menu-HIP = { -tracker_selection-part } hip?
@@ -316,6 +328,10 @@ settings-general-fk_settings-skeleton_settings-description = Toggle skeleton set
 settings-general-fk_settings-skeleton_settings-extended_spine = Extended spine
 settings-general-fk_settings-skeleton_settings-extended_pelvis = Extended pelvis
 settings-general-fk_settings-skeleton_settings-extended_knees = Extended knee
+
+settings-general-fk_settings-self_localization-title = Mocap mode
+settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
+
 settings-general-fk_settings-vive_emulation-title = Vive emulation
 settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
 settings-general-fk_settings-vive_emulation-label = Enable Vive emulation

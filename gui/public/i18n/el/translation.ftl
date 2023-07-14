@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -12,6 +9,9 @@
 
 websocket-connecting = Σύνδεση με τον διακομιστή
 websocket-connection_lost = Η σύνδεση μεταξύ του διακομιστή χάθηκε. Προσπαθώντας να επανασυνδεθεί...
+
+## Update notification
+
 
 ## Tips
 
@@ -32,7 +32,7 @@ body_part-RIGHT_LOWER_LEG = Δεξιός αστράγαλος
 body_part-RIGHT_FOOT = Δεξί πόδι
 body_part-CHEST = Στήθος
 body_part-WAIST = Μέση
-body_part-HIP = γοφοί
+body_part-HIP = Γοφοί
 body_part-LEFT_SHOULDER = Αριστερός ώμος
 body_part-LEFT_UPPER_ARM = Αριστερό μπράτσο
 body_part-LEFT_LOWER_ARM = Αριστερό αγγόνας
@@ -68,7 +68,6 @@ skeleton_bone-ELBOW_OFFSET = Μετατόπιση αγκώνα
 reset-reset_all = Επαναφορά όλων των αναλογιών
 reset-full = Επαναφορά
 reset-mounting = Επαναφορά τοποθέτησης
-reset-quick = Γρήγορη επαναφορά
 
 ## Serial detection stuff
 
@@ -89,10 +88,13 @@ navbar-mounting = Βαθμονόμηση τοποθέτησης
 navbar-onboarding = Οδηγός εγκατάστασης
 navbar-settings = Ρυθμίσεις
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = Εγγραφή BVH
 bvh-recording = Γίνεται εγγραφή...
+
+## Tracking pause
+
 
 ## Widget: Overlay settings
 
@@ -191,7 +193,32 @@ body_assignment_menu-unassign_tracker = Μη εκχωρημένος ανιχνε
 
 ## Tracker assignment menu
 
+# A -translation_key (with a dash in the front) means that it's a label.
+# It can only be used in the translation file, it's nice for reusing names and that kind of stuff.
+#
+# We are using it here because english doesn't require changing the text in each case but
+# maybe your language does.
+-tracker_selection-part = Ποιος ιχνηλάτης πρέπει να αντιστοιχίσετε στο σας
 tracker_selection_menu-NONE = Ποιος ανιχνευτή θέλετε να είναι μη εκχωρημένος;
+tracker_selection_menu-HEAD = { -tracker_selection-part } κεφάλι;
+tracker_selection_menu-NECK = { -tracker_selection-part } λαιμός;
+tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } δεξιός ώμος;
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } δεξιό μπράτσο?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } δεξί αγγόνας?
+tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } δεξί χέρι?
+tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } δεξιός μηρός?
+tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } δεξιός αστράγαλος?
+tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } δεξί πόδι?
+tracker_selection_menu-CHEST = { -tracker_selection-part } στήθος?
+tracker_selection_menu-WAIST = { -tracker_selection-part } μέση?
+tracker_selection_menu-HIP = { -tracker_selection-part } γοφοί?
+tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } αριστερός ώμος?
+tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } αριστερό μπράτσο?
+tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } αριστερό αγγόνας?
+tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } αριστερό χέρι?
+tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } αριστερός μηρός?
+tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } αριστερός αστράγαλος?
+tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } αριστερό πόδι?
 
 ## Mounting menu
 
@@ -201,6 +228,11 @@ tracker_selection_menu-NONE = Ποιος ανιχνευτή θέλετε να ε
 
 ## SteamVR settings
 
+settings-general-steamvr = SteamVR
+settings-general-steamvr-trackers-waist = Μέση
+settings-general-steamvr-trackers-chest = Στήθος
+settings-general-steamvr-trackers-feet = Πόδια
+settings-general-steamvr-trackers-hands = Χέρια
 
 ## Tracker mechanics
 
@@ -221,6 +253,11 @@ tracker_selection_menu-NONE = Ποιος ανιχνευτή θέλετε να ε
 
 
 ## OSC VRChat settings
+
+settings-osc-vrchat-network-trackers-chest = Στήθος
+settings-osc-vrchat-network-trackers-feet = Πόδια
+
+## VMC OSC settings
 
 
 ## Setup/onboarding menu
@@ -244,16 +281,28 @@ tracker_selection_menu-NONE = Ποιος ανιχνευτή θέλετε να ε
 ## Tracker connection setup
 
 
+## Tracker calibration tutorial
+
+
+## Tracker assignment tutorial
+
+
 ## Tracker assignment setup
 
 
 ## Tracker assignment warnings
 
 
+## Tracker mounting method choose
+
+
 ## Tracker manual mounting setup
 
 
 ## Tracker automatic mounting setup
+
+
+## Tracker proportions method choose
 
 
 ## Tracker manual proportions setup
@@ -263,4 +312,7 @@ tracker_selection_menu-NONE = Ποιος ανιχνευτή θέλετε να ε
 
 
 ## Home
+
+
+## Status system
 
