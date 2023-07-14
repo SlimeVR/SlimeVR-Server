@@ -4,7 +4,7 @@
 
 body {
   font-variant-numeric: tabular-nums;
-  font-family: var(--font-name), sans-serif, 'Twemoji Chromium', emoji;
+  font-family: var(--font-name), 'Noto Sans CJK', sans-serif, 'Twemoji Chromium', emoji;
   width: 100vw;
   height: 100vh;
   user-select: none;
@@ -19,11 +19,11 @@ body {
 
 @media (-webkit-animation) {
   body {
-    font-family: var(--font-name), sans-serif, 'Twemoji Webkit', emoji;
+    font-family: var(--font-name), 'Noto Sans CJK', sans-serif, 'Twemoji Webkit', emoji;
   }
 
   body.linux {
-    font-family: var(--font-name), sans-serif, emoji;
+    font-family: var(--font-name), 'Noto Sans CJK', sans-serif, emoji;
   }
 }
 
