@@ -153,6 +153,9 @@ public class HumanSkeleton {
 	protected ViveEmulation viveEmulation = new ViveEmulation(this);
 	// #endregion
 
+	// #region self localization
+	protected Localizer localizer = new Localizer(this);
+
 	// #region Constructors
 	protected HumanSkeleton(
 		HumanPoseManager humanPoseManager
@@ -185,6 +188,7 @@ public class HumanSkeleton {
 			server.getAllTrackers()
 		);
 		legTweaks.setConfig(server.configManager.getVrConfig().getLegTweaks());
+		localizer.setEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION));
 	}
 
 	public HumanSkeleton(
@@ -564,6 +568,7 @@ public class HumanSkeleton {
 		if (!pauseTracking)
 			tweakLegPos();
 		viveEmulation.update();
+		localizer.update();
 	}
 	// #endregion
 
@@ -600,7 +605,8 @@ public class HumanSkeleton {
 				headRot = neckTracker.getRotation();
 			headNode.getLocalTransform().setRotation(headRot);
 		} else {
-			hmdNode.getLocalTransform().setTranslation(Vector3.Companion.getNULL());
+			if (!localizer.getEnabled())
+				hmdNode.getLocalTransform().setTranslation(Vector3.Companion.getNULL());
 
 			if (neckTracker != null) {
 				headRot = neckTracker.getRotation();
@@ -1121,6 +1127,7 @@ public class HumanSkeleton {
 			case VIVE_EMULATION -> viveEmulation.setEnabled(newValue);
 			case TOE_SNAP -> legTweaks.setToeSnapEnabled(newValue);
 			case FOOT_PLANT -> legTweaks.setFootPlantEnabled(newValue);
+			case SELF_LOCALIZATION -> localizer.setEnabled(newValue);
 		}
 	}
 
@@ -1442,6 +1449,8 @@ public class HumanSkeleton {
 		// of the computed trackers
 		this.legTweaks.resetFloorLevel();
 		this.legTweaks.resetBuffer();
+		this.localizer.reset();
+
 
 		LogManager.info(String.format("[HumanSkeleton] Reset: full (%s)", resetSourceName));
 	}
@@ -1527,6 +1536,7 @@ public class HumanSkeleton {
 			}
 		}
 		this.legTweaks.resetBuffer();
+		this.localizer.reset();
 
 		LogManager.info(String.format("[HumanSkeleton] Reset: mounting (%s)", resetSourceName));
 	}
