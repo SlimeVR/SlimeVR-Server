@@ -393,7 +393,7 @@ public class HumanSkeleton {
 				TrackerPosition.NECK
 			);
 		upperChestTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.UPPER_CHEST
 			);
