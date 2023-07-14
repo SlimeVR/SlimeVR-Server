@@ -761,6 +761,11 @@ public class HumanPoseManager {
 			skeleton.resetTrackersMounting(resetSourceName);
 	}
 
+	public void clearTrackersMounting(String resetSourceName) {
+		if (isSkeletonPresent())
+			skeleton.clearTrackersMounting(resetSourceName);
+	}
+
 	@ThreadSafe
 	public boolean[] getLegTweaksState() {
 		return skeleton.getLegTweaksState();

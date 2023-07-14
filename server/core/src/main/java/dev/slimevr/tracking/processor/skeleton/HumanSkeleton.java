@@ -1531,6 +1531,29 @@ public class HumanSkeleton {
 		LogManager.info(String.format("[HumanSkeleton] Reset: mounting (%s)", resetSourceName));
 	}
 
+	@VRServerThread
+	public void clearTrackersMounting(String resetSourceName) {
+		List<Tracker> trackersToReset = humanPoseManager.getTrackersToReset();
+
+		if (headTracker != null && headTracker.getNeedsMounting()) {
+			headTracker
+				.getResetsHandler()
+				.clearMounting();
+		}
+
+		for (Tracker tracker : trackersToReset) {
+			if (
+				tracker != null
+					&& tracker.getNeedsMounting()
+			) {
+				tracker.getResetsHandler().clearMounting();
+			}
+		}
+		this.legTweaks.resetBuffer();
+
+		LogManager.info("[HumanSkeleton] Clear: mounting (%s)".formatted(resetSourceName));
+	}
+
 	public void updateTapDetectionConfig() {
 		tapDetectionManager.updateConfig();
 	}
