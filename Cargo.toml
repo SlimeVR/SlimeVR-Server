@@ -13,5 +13,5 @@ rust-version = "1.65" # This version stabilized GATs and let-else
 repository = "https://github.com/SlimeVR/SlimeVR-Server"
 
 [profile.release]
-lto = true
+lto = "thin"
 strip = "debuginfo" # Only affects Unix binaries with DWARF
