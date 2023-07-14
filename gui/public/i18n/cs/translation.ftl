@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -12,6 +9,9 @@
 
 websocket-connecting = Připojování k serveru
 websocket-connection_lost = Ztráta spojení se serverem. Pokus o obnovení připojení...
+
+## Update notification
+
 
 ## Tips
 
@@ -30,7 +30,6 @@ body_part-RIGHT_HAND = Pravá ruka
 body_part-RIGHT_UPPER_LEG = Pravé stehno
 body_part-RIGHT_LOWER_LEG = Pravý kotník
 body_part-RIGHT_FOOT = Pravá noha
-body_part-RIGHT_CONTROLLER = Pravý ovladač
 body_part-CHEST = Hrudník
 body_part-WAIST = Pás
 body_part-HIP = Kyčel
@@ -41,7 +40,6 @@ body_part-LEFT_HAND = Levá ruka
 body_part-LEFT_UPPER_LEG = Levé stehno
 body_part-LEFT_LOWER_LEG = Levý kotník
 body_part-LEFT_FOOT = Levá noha
-body_part-LEFT_CONTROLLER = Levý ovladač
 
 ## Proportions
 
@@ -63,8 +61,6 @@ skeleton_bone-SHOULDERS_DISTANCE = Vzdálenost ramen
 skeleton_bone-SHOULDERS_WIDTH = Šířka ramen
 skeleton_bone-UPPER_ARM = Délka nadloktí
 skeleton_bone-LOWER_ARM = Délka podloktí
-skeleton_bone-CONTROLLER_Y = Vzdálenost ovladače Y
-skeleton_bone-CONTROLLER_Z = Vzdálenost ovladače Z
 skeleton_bone-ELBOW_OFFSET = Odsazení loktů
 
 ## Tracker reset buttons
@@ -72,7 +68,6 @@ skeleton_bone-ELBOW_OFFSET = Odsazení loktů
 reset-reset_all = Obnovení všech proporcí
 reset-full = Resetovat
 reset-mounting = Obnovit montáž
-reset-quick = Rychlý reset
 
 ## Serial detection stuff
 
@@ -93,10 +88,15 @@ navbar-mounting = Montážní kalibrace
 navbar-onboarding = Průvodce nastavením
 navbar-settings = Nastavení
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = Nahrávat BVH
 bvh-recording = Nahrávání...
+
+## Tracking pause
+
+tracking-unpaused = Pozastavit sledování
+tracking-paused = Pokračovat se sledováním
 
 ## Widget: Overlay settings
 
@@ -124,6 +124,7 @@ widget-developer_mode-more_info = Více informací
 widget-imu_visualizer = Rotace
 widget-imu_visualizer-rotation_raw = Nezpracované
 widget-imu_visualizer-rotation_preview = Náhled
+widget-imu_visualizer-rotation_hide = Skrýt
 
 ## Tracker status
 
@@ -160,6 +161,9 @@ tracker-infos-manufacturer = Výrobce
 tracker-infos-display_name = Zobrazovaný název
 tracker-infos-custom_name = Vlastní název
 tracker-infos-url = URL Trackeru
+tracker-infos-version = Verze firmwaru
+tracker-infos-hardware_rev = Revize hardwaru
+tracker-infos-board_type = Základní deska
 
 ## Tracker settings
 
@@ -297,8 +301,6 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = Použí
 ## FK/Tracking settings
 
 settings-general-fk_settings = Nastavení trackování
-settings-general-fk_settings-leg_tweak = Vyladění nohou
-settings-general-fk_settings-leg_tweak-description = Podlahovej-clip může snížit nebo dokonce eliminovat klipování s podlahou, ale může způsobit problémy, když klečíte na kolenou. Korekce-bruslení opravuje bruslení na ledě, avšak může snížit přesnost některých pohybových vzorců.
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -334,12 +336,6 @@ settings-general-gesture_control-taps =
         [few] { $amount } klepnutí
        *[other] { $amount } klepnutí
     }
-settings-general-gesture_control-quickResetEnabled = Povolit klepnutí pro rychlý resetování
-settings-general-gesture_control-quickResetDelay = Zpoždění rychlého resetu
-settings-general-gesture_control-quickResetTaps = Klepnutí pro rychlý reset
-settings-general-gesture_control-resetEnabled = Povolit klepnutí pro resetování
-settings-general-gesture_control-resetDelay = Zpoždění resetování
-settings-general-gesture_control-resetTaps = Klepnutí pro resetování
 settings-general-gesture_control-mountingResetEnabled = Povolit klepnutí pro resetování montáže
 settings-general-gesture_control-mountingResetDelay = Zpoždění resetování montáže
 settings-general-gesture_control-mountingResetTaps = Klepnutí pro resetování montáže
@@ -427,10 +423,13 @@ settings-osc-vrchat-network-address-placeholder = VRChat ip adresa
 settings-osc-vrchat-network-trackers = Trackery
 settings-osc-vrchat-network-trackers-description = Vypnuti a zapnutí odesílání konkrétních trackerů přes OSC.
 settings-osc-vrchat-network-trackers-chest = Hrudník
-settings-osc-vrchat-network-trackers-waist = Pás
+settings-osc-vrchat-network-trackers-hip = Kyčel
 settings-osc-vrchat-network-trackers-knees = Kolena
 settings-osc-vrchat-network-trackers-feet = Chodidla
 settings-osc-vrchat-network-trackers-elbows = Lokty
+
+## VMC OSC settings
+
 
 ## Setup/onboarding menu
 
@@ -459,15 +458,10 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = Zpět na kalibraci montáže
 onboarding-reset_tutorial = Obnovit tutoriál
-onboarding-reset_tutorial-description = Tato funkce není dokončena, stačí stisknout tlačítko pokračovat
 
 ## Setup start
 
 onboarding-home = Vítejte k SlimeVR
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    Přinášíme full-body tracking
-    pro každého
 onboarding-home-start = Pusťme se do toho!
 
 ## Enter VR part of setup
@@ -492,10 +486,7 @@ onboarding-connect_tracker-description-p1 = Všechny zatím nepřipojené jednod
 onboarding-connect_tracker-issue-serial = Mám potíže s připojením!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-connecting = Odesílání přihlašovacích údajů Wi-Fi
-onboarding-connect_tracker-connection_status-connected = Připojeno k Wi-Fi
-onboarding-connect_tracker-connection_status-error = Nelze se připojit k Wi-Fi
-onboarding-connect_tracker-connection_status-start_connecting = Hledání trackerů
-onboarding-connect_tracker-connection_status-handshake = Připojeno k Serveru
+onboarding-connect_tracker-connection_status-connection_error = Nelze se připojit k síti Wi-Fi
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -509,6 +500,13 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } připojených trackerů
     }
 onboarding-connect_tracker-next = Připojil jsem všechny své trackery
+
+## Tracker calibration tutorial
+
+onboarding-calibration_tutorial-status-success = Super!
+
+## Tracker assignment tutorial
+
 
 ## Tracker assignment setup
 
@@ -526,6 +524,12 @@ onboarding-assign_trackers-assigned =
     }
 onboarding-assign_trackers-advanced = Zobrazit pokročilá místa přiřazení
 onboarding-assign_trackers-next = Přiřadil jsem všechny trackery
+
+## Tracker assignment warnings
+
+
+## Tracker mounting method choose
+
 
 ## Tracker manual mounting setup
 
@@ -556,6 +560,9 @@ onboarding-automatic_mounting-put_trackers_on-title = Nasaďte si trackery
 onboarding-automatic_mounting-put_trackers_on-description = Pro kalibraci rotace montáže použijeme právě přiřazené trackery. Nasaďte všechny trackery, na obrázku vpravo vidíte, které jsou které.
 onboarding-automatic_mounting-put_trackers_on-next = Mám nasazené všechny trackery
 
+## Tracker proportions method choose
+
+
 ## Tracker manual proportions setup
 
 onboarding-manual_proportions-back = Zpět na Reset tutoriál
@@ -573,22 +580,14 @@ onboarding-automatic_proportions-prev_step = Předchozí krok
 onboarding-automatic_proportions-put_trackers_on-title = Nasaďte si trackery
 onboarding-automatic_proportions-put_trackers_on-description = Pro kalibraci proporcí použijeme trackery, které jste právě přiřadili. Nasaďte si trackery, na obrázku vpravo vidíte, která jsou která.
 onboarding-automatic_proportions-put_trackers_on-next = Mám nasazené všechny trackery
-onboarding-automatic_proportions-preparation-title = Příprava
-onboarding-automatic_proportions-preparation-description = Umístěte židli přímo za sebe do herního prostoru. Buďte připraveni se během nastavení autobonu posadit.
-onboarding-automatic_proportions-preparation-next = Jsem před židlí
 onboarding-automatic_proportions-start_recording-title = Připravte se hýbat
 onboarding-automatic_proportions-start_recording-description = Nyní budeme nahrávat některé konkrétní pózy a pohyby. Tyto se zobrazí na další obrazovce. Po stisknutí tlačítka buďte připraveni začít!
 onboarding-automatic_proportions-start_recording-next = Spustit nahrávání
 onboarding-automatic_proportions-recording-title = ZÁZN
 onboarding-automatic_proportions-recording-description-p0 = Probíhá nahrávání...
 onboarding-automatic_proportions-recording-description-p1 = Proveďte níže uvedené pohyby:
-onboarding-automatic_proportions-recording-steps-0 = Párkrát ohněte kolena.
-onboarding-automatic_proportions-recording-steps-1 = Posaďte se na židli a pak se postavte.
-onboarding-automatic_proportions-recording-steps-2 = Natočte horní část těla doleva a pak se ohněte doprava.
-onboarding-automatic_proportions-recording-steps-3 = Natočte horní část těla doprava a pak se ohněte doleva.
-onboarding-automatic_proportions-recording-steps-4 = Hýbejte se, dokud časovač neskončí.
 onboarding-automatic_proportions-recording-processing = Zpracování výsledku
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] Zbývá 1 sekunda
@@ -607,3 +606,6 @@ onboarding-automatic_proportions-done-description = Kalibrace proporcí vašeho 
 ## Home
 
 home-no_trackers = Nebyly zjištěny ani přiřazeny žádné trackery
+
+## Status system
+
