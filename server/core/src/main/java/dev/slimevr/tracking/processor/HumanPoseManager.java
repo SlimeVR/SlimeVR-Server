@@ -54,7 +54,7 @@ public class HumanPoseManager {
 		// This computes all node offsets, so the defaults don't need to be
 		// explicitly loaded into the skeleton (no need for
 		// `updateNodeOffsetsInSkeleton()`)
-		loadFromConfig(server.getConfigManager());
+		loadFromConfig(server.configManager);
 		for (Consumer<HumanSkeleton> sc : onSkeletonUpdated)
 			sc.accept(skeleton);
 	}
