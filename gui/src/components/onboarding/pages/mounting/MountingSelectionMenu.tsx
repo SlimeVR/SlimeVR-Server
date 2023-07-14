@@ -3,31 +3,155 @@ import { MouseEventHandler } from 'react';
 import ReactModal from 'react-modal';
 import { useElemSize, useLayout } from '../../../../hooks/layout';
 import { Button } from '../../../commons/Button';
-import { AnkleIcon } from '../../../commons/icon/AnkleIcon';
 import { Typography } from '../../../commons/Typography';
-import { rotationToQuatMap } from '../../../tracker/TrackerSettings';
 import { useLocalization } from '@fluent/react';
+import { FootIcon } from '../../../commons/icon/FootIcon';
+import { rotationToQuatMap } from '../../../../maths/quaternion';
+import { Quaternion } from 'three';
+import { SlimeUpIcon } from '../../../commons/icon/SlimeUpIcon';
+import { BodyPart } from 'solarxr-protocol';
+import { PawIcon } from '../../../commons/icon/PawIcon';
+import { useLocaleConfig } from '../../../../i18n/config';
 
-function MoutingOrientationCard({
-  orientation,
-  onClick,
+// All body parts that are right or left, are by default left!
+export const mapPart: Record<
+  BodyPart,
+  ({
+    width,
+    currentLocales,
+  }: {
+    width?: number;
+    currentLocales: string[];
+  }) => JSX.Element
+> = {
+  [BodyPart.CHEST]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.HEAD]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.HIP]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.LEFT_FOOT]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      ></PawIcon>
+    ) : (
+      <FootIcon width={width}></FootIcon>
+    ),
+  [BodyPart.LEFT_HAND]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.LEFT_LOWER_ARM]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.LEFT_LOWER_LEG]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      ></PawIcon>
+    ) : (
+      <FootIcon width={width}></FootIcon>
+    ),
+  [BodyPart.LEFT_SHOULDER]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.LEFT_UPPER_ARM]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.LEFT_UPPER_LEG]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      ></PawIcon>
+    ) : (
+      <FootIcon width={width}></FootIcon>
+    ),
+  [BodyPart.NECK]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.NONE]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.RIGHT_FOOT]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      ></PawIcon>
+    ) : (
+      <FootIcon width={width} flipped></FootIcon>
+    ),
+  [BodyPart.RIGHT_HAND]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.RIGHT_LOWER_ARM]: ({ width }) => (
+    <FootIcon width={width}></FootIcon>
+  ),
+  [BodyPart.RIGHT_LOWER_LEG]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      ></PawIcon>
+    ) : (
+      <FootIcon width={width} flipped></FootIcon>
+    ),
+  [BodyPart.RIGHT_SHOULDER]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.RIGHT_UPPER_ARM]: ({ width }) => (
+    <FootIcon width={width}></FootIcon>
+  ),
+  [BodyPart.RIGHT_UPPER_LEG]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      ></PawIcon>
+    ) : (
+      <FootIcon width={width} flipped></FootIcon>
+    ),
+  [BodyPart.WAIST]: ({ width }) => <FootIcon width={width}></FootIcon>,
+};
+
+export function MountingBodyPartIcon({
+  bodyPart = BodyPart.NONE,
+  width = 24,
 }: {
-  orientation: string;
-  onClick?: MouseEventHandler<HTMLDivElement>;
+  bodyPart?: BodyPart;
+  width?: number;
 }) {
-  // FIXME: Dont use AnkleIcon for this please
+  const { currentLocales } = useLocaleConfig();
+  return mapPart[bodyPart]({ width, currentLocales });
+}
+
+function PieSliceOfFeet({
+  onClick,
+  id,
+  d,
+  noText = false,
+  trackerTransform,
+  trackerWidth = 10,
+}: {
+  onClick?: MouseEventHandler<SVGGElement>;
+  id: string;
+  d: string;
+  noText?: boolean;
+  trackerTransform: string;
+  trackerWidth?: number;
+}) {
+  const { l10n } = useLocalization();
+
   return (
-    <div
+    <g
       onClick={onClick}
-      className="xs:h-32 mobile:h-20 bg-background-60 rounded-md flex justify-between p-4 hover:bg-background-50"
+      className={classNames('group fill-background-10 stroke-background-10')}
     >
-      <div className="flex flex-col justify-center">
-        <Typography variant="main-title">{orientation}</Typography>
-      </div>
-      <div className="flex flex-col justify-center fill-white">
-        <AnkleIcon width={58}></AnkleIcon>
-      </div>
-    </div>
+      <path
+        d={d}
+        className={classNames(
+          'fill-background-40 opacity-50 stroke-background-90',
+          'group-hover:fill-background-30 group-active:fill-background-20'
+        )}
+        transform="translate(125 125)"
+        id={id}
+      ></path>
+      <text dy="-5" strokeWidth="1">
+        <textPath xlinkHref={`#${id}`} startOffset="50%" textAnchor="middle">
+          {!noText ? l10n.getString(id) : ''}
+        </textPath>
+      </text>
+      <g
+        transform={trackerTransform}
+        className="fill-none stroke-none group-hover:fill-accent-background-20"
+      >
+        <SlimeUpIcon width={trackerWidth}></SlimeUpIcon>
+      </g>
+    </g>
   );
 }
 
@@ -35,10 +159,12 @@ export function MountingSelectionMenu({
   isOpen = true,
   onClose,
   onDirectionSelected,
+  bodyPart,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onDirectionSelected: (direction: number) => void;
+  onDirectionSelected: (direction: Quaternion) => void;
+  bodyPart?: BodyPart;
 }) {
   const { l10n } = useLocalization();
   const { ref: refTrackers, layoutHeight: trackersHeight } =
@@ -68,23 +194,82 @@ export function MountingSelectionMenu({
           ref={refTrackers}
           style={{ height: trackersHeight - optionsHeight }}
         >
-          <div className="grid xs:grid-cols-2 xs:grid-rows-2 mobile:grid-cols-1 gap-6 w-full">
-            <MoutingOrientationCard
-              orientation={l10n.getString('tracker-rotation-left')}
-              onClick={() => onDirectionSelected(rotationToQuatMap.LEFT)}
-            />
-            <MoutingOrientationCard
-              orientation={l10n.getString('tracker-rotation-right')}
-              onClick={() => onDirectionSelected(rotationToQuatMap.RIGHT)}
-            />
-            <MoutingOrientationCard
-              orientation={l10n.getString('tracker-rotation-front')}
-              onClick={() => onDirectionSelected(rotationToQuatMap.FRONT)}
-            />
-            <MoutingOrientationCard
-              orientation={l10n.getString('tracker-rotation-back')}
-              onClick={() => onDirectionSelected(rotationToQuatMap.BACK)}
-            />
+          <div className="flex justify-center items-center gap-6 w-full">
+            <svg
+              width="400"
+              viewBox="0 0 250 250"
+              className="fill-background-40"
+            >
+              <g transform="translate(80, 0)" className="fill-background-10">
+                <MountingBodyPartIcon width={100} bodyPart={bodyPart} />
+              </g>
+              <g strokeWidth="4" className="stroke-background-90">
+                <PieSliceOfFeet
+                  d="M0 0-89 44A99 99 0 0 1-89-44Z"
+                  onClick={() => onDirectionSelected(rotationToQuatMap.LEFT)}
+                  id="tracker-rotation-left"
+                  trackerTransform="translate(75, 0) scale(-1, 1)"
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  d="M0 0-89-44A99 99 0 0 1-44-89Z"
+                  onClick={() =>
+                    onDirectionSelected(rotationToQuatMap.FRONT_LEFT)
+                  }
+                  id="tracker-rotation_left_front"
+                  noText={true}
+                  trackerTransform="translate(-2, 175) rotate(-135)"
+                  trackerWidth={7}
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  onClick={() => onDirectionSelected(rotationToQuatMap.FRONT)}
+                  d="M0 0-44-89A99 99 0 0 1 44-89Z"
+                  id="tracker-rotation-front"
+                  trackerTransform="translate(0, 75) rotate(-90)"
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  d="M0 0 44-89A99 99 0 0 1 89-44Z"
+                  onClick={() =>
+                    onDirectionSelected(rotationToQuatMap.FRONT_RIGHT)
+                  }
+                  id="tracker-rotation-front_right"
+                  noText={true}
+                  trackerTransform="translate(73, 0) rotate(-45)"
+                  trackerWidth={7}
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  d="M0 0 89-44A99 99 0 0 1 89 44Z"
+                  onClick={() => onDirectionSelected(rotationToQuatMap.RIGHT)}
+                  id="tracker-rotation-right"
+                  trackerTransform="translate(175,0)"
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  d="M0 0 89 44A99 99 0 0 1 44 89Z"
+                  onClick={() =>
+                    onDirectionSelected(rotationToQuatMap.BACK_RIGHT)
+                  }
+                  id="tracker-rotation-back_right"
+                  noText={true}
+                  trackerTransform="translate(252, 75) rotate(45)"
+                  trackerWidth={7}
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  d="M0 0 44 89A99 99 0 0 1-44 89Z"
+                  onClick={() => onDirectionSelected(rotationToQuatMap.BACK)}
+                  id="tracker-rotation-back"
+                  trackerTransform="translate(250, 175) rotate(90)"
+                ></PieSliceOfFeet>
+                <PieSliceOfFeet
+                  d="M0 0-44 89A99 99 0 0 1-89 44Z"
+                  onClick={() =>
+                    onDirectionSelected(rotationToQuatMap.BACK_LEFT)
+                  }
+                  id="tracker-rotation-back_left"
+                  noText={true}
+                  trackerTransform="translate(177, 250) rotate(135)"
+                  trackerWidth={7}
+                ></PieSliceOfFeet>
+              </g>
+            </svg>
           </div>
         </div>
       </div>
