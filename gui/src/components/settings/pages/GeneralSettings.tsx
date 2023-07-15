@@ -197,7 +197,8 @@ export function GeneralSettings() {
       values.tapDetection.mountingResetEnabled;
     tapDetection.mountingResetDelay = values.tapDetection.mountingResetDelay;
     tapDetection.mountingResetTaps = values.tapDetection.mountingResetTaps;
-    tapDetection.numberTrackersOverThreshold = values.tapDetection.numberTrackersOverThreshold;
+    tapDetection.numberTrackersOverThreshold =
+      values.tapDetection.numberTrackersOverThreshold;
     tapDetection.setupMode = false;
     settings.tapDetectionSettings = tapDetection;
 
@@ -299,7 +300,7 @@ export function GeneralSettings() {
           defaultValues.tapDetection.mountingResetTaps,
         numberTrackersOverThreshold:
           settings.tapDetectionSettings.numberTrackersOverThreshold ||
-          defaultValues.tapDetection.numberTrackersOverThreshold
+          defaultValues.tapDetection.numberTrackersOverThreshold,
       };
     }
 
@@ -878,18 +879,25 @@ export function GeneralSettings() {
             {config?.debug && (
               <div className="grid sm:grid-cols-1 gap-2 pt-2">
                 <Typography bold>
-                  {l10n.getString('settings-general-gesture_control-numberTrackersOverThreshold')}
+                  {l10n.getString(
+                    'settings-general-gesture_control-numberTrackersOverThreshold'
+                  )}
                 </Typography>
                 <Typography color="secondary">
-                  {l10n.getString('settings-general-gesture_control-numberTrackersOverThreshold-description')}
+                  {l10n.getString(
+                    'settings-general-gesture_control-numberTrackersOverThreshold-description'
+                  )}
                 </Typography>
                 <NumberSelector
                   control={control}
                   name="tapDetection.numberTrackersOverThreshold"
                   valueLabelFormat={(value) =>
-                    l10n.getString('settings-general-gesture_control-trackers', {
-                      amount: Math.round(value),
-                    })
+                    l10n.getString(
+                      'settings-general-gesture_control-trackers',
+                      {
+                        amount: Math.round(value),
+                      }
+                    )
                   }
                   min={1}
                   max={20}
