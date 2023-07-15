@@ -52,7 +52,7 @@ jobs:
         with:
           submodules: recursive
       - name: Get tags
-        run: git fetch --tags origin
+        run: git fetch --tags origin --recurse-submodules=no
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
