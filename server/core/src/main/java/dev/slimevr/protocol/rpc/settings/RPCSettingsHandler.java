@@ -298,51 +298,41 @@ public class RPCSettingsHandler {
 			}
 
 			if (ratios != null) {
-				if (ratios.hasImputeWaistFromChestHip()) {
-					hpm
-						.setValue(
-							SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING,
-							ratios.imputeWaistFromChestHip()
-						);
-				}
-				if (ratios.hasImputeWaistFromChestLegs()) {
-					hpm
-						.setValue(
-							SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING,
-							ratios.imputeWaistFromChestLegs()
-						);
-				}
-				if (ratios.hasImputeHipFromChestLegs()) {
-					hpm
-						.setValue(
-							SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING,
-							ratios.imputeHipFromChestLegs()
-						);
-				}
-				if (ratios.hasImputeHipFromWaistLegs()) {
-					hpm
-						.setValue(
-							SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING,
-							ratios.imputeHipFromWaistLegs()
-						);
-				}
-				if (ratios.hasInterpHipLegs()) {
-					hpm.setValue(SkeletonConfigValues.HIP_LEGS_AVERAGING, ratios.interpHipLegs());
-				}
-				if (ratios.hasInterpKneeTrackerAnkle()) {
-					hpm
-						.setValue(
-							SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING,
-							ratios.interpKneeTrackerAnkle()
-						);
-				}
-				if (ratios.hasInterpKneeAnkle()) {
-					hpm
-						.setValue(
-							SkeletonConfigValues.KNEE_ANKLE_AVERAGING,
-							ratios.interpKneeAnkle()
-						);
-				}
+				hpm
+					.setValue(
+						SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING,
+						ratios.imputeWaistFromChestHip()
+					);
+				hpm
+					.setValue(
+						SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING,
+						ratios.imputeWaistFromChestLegs()
+					);
+				hpm
+					.setValue(
+						SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING,
+						ratios.imputeHipFromChestLegs()
+					);
+				hpm
+					.setValue(
+						SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING,
+						ratios.imputeHipFromWaistLegs()
+					);
+				hpm
+					.setValue(
+						SkeletonConfigValues.HIP_LEGS_AVERAGING,
+						ratios.interpHipLegs()
+					);
+				hpm
+					.setValue(
+						SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING,
+						ratios.interpKneeTrackerAnkle()
+					);
+				hpm
+					.setValue(
+						SkeletonConfigValues.KNEE_ANKLE_AVERAGING,
+						ratios.interpKneeAnkle()
+					);
 			}
 
 			if (legTweaks != null) {
