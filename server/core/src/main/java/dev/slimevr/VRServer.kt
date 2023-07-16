@@ -294,6 +294,10 @@ class VRServer constructor(
 		queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
 	}
 
+	fun clearTrackersMounting(resetSourceName: String?) {
+		queueTask { humanPoseManager.clearTrackersMounting(resetSourceName) }
+	}
+
 	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
 		val resetTask: TimerTask = object : TimerTask() {
 			override fun run() {

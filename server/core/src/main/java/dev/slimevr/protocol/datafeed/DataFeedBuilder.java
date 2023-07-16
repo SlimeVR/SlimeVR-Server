@@ -133,7 +133,9 @@ public class DataFeedBuilder {
 
 		if (tracker.getNeedsMounting()) {
 			Quaternion quaternion = tracker.getResetsHandler().getMountingOrientation();
+			Quaternion mountResetFix = tracker.getResetsHandler().getMountRotFix();
 			TrackerInfo.addMountingOrientation(fbb, createQuat(fbb, quaternion));
+			TrackerInfo.addMountingResetOrientation(fbb, createQuat(fbb, mountResetFix));
 		}
 
 		return TrackerInfo.endTrackerInfo(fbb);

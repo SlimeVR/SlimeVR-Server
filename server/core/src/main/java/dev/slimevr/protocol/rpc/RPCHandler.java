@@ -52,6 +52,10 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		new RPCStatusHandler(this, api);
 
 		registerPacketListener(RpcMessage.ResetRequest, this::onResetRequest);
+		registerPacketListener(
+			RpcMessage.ClearMountingResetRequest,
+			this::onClearMountingResetRequest
+		);
 		registerPacketListener(RpcMessage.AssignTrackerRequest, this::onAssignTrackerRequest);
 
 		registerPacketListener(
@@ -215,6 +219,18 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			this.api.server.resetTrackersMounting(resetSourceName);
 	}
 
+	public void onClearMountingResetRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		ClearMountingResetRequest req = (ClearMountingResetRequest) messageHeader
+			.message(new ClearMountingResetRequest());
+		if (req == null)
+			return;
+
+		this.api.server.clearTrackersMounting(resetSourceName);
+	}
+
 	public void onAssignTrackerRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 		AssignTrackerRequest req = (AssignTrackerRequest) messageHeader
 			.message(new AssignTrackerRequest());
@@ -229,7 +245,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		TrackerPosition pos = TrackerPosition.getByBodyPart(req.bodyPosition());
 		Tracker previousTracker = pos != null
 			? TrackerUtils
-				.getNonInternalTrackerForBodyPosition(this.api.server.getAllTrackers(), pos)
+				.getTrackerForSkeleton(this.api.server.getAllTrackers(), pos)
 			: null;
 		if (previousTracker != null) {
 			previousTracker.setTrackerPosition(null);

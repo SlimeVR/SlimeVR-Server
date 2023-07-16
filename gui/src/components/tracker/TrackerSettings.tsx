@@ -14,8 +14,10 @@ import { useDebouncedEffect } from '../../hooks/timeout';
 import { useTrackerFromId } from '../../hooks/tracker';
 import { useWebsocketAPI } from '../../hooks/websocket-api';
 import {
-  getYawInDegrees,
   MountingOrientationDegreesToQuatT,
+  QuaternionFromQuatT,
+  rotationToQuatMap,
+  similarQuaternions,
 } from '../../maths/quaternion';
 import { ArrowLink } from '../commons/ArrowLink';
 import { BodyPartIcon } from '../commons/BodyPartIcon';
@@ -28,20 +30,18 @@ import { MountingSelectionMenu } from '../onboarding/pages/mounting/MountingSele
 import { IMUVisualizerWidget } from '../widgets/IMUVisualizerWidget';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
+import { Quaternion } from 'three';
 
-export const rotationToQuatMap = {
-  FRONT: 180,
-  LEFT: 90,
-  RIGHT: -90,
-  BACK: 0,
-};
-
-const rotationsLabels = {
-  [rotationToQuatMap.BACK]: 'tracker-rotation-back',
-  [rotationToQuatMap.FRONT]: 'tracker-rotation-front',
-  [rotationToQuatMap.LEFT]: 'tracker-rotation-left',
-  [rotationToQuatMap.RIGHT]: 'tracker-rotation-right',
-};
+const rotationsLabels: [Quaternion, string][] = [
+  [rotationToQuatMap.BACK, 'tracker-rotation-back'],
+  [rotationToQuatMap.FRONT, 'tracker-rotation-front'],
+  [rotationToQuatMap.LEFT, 'tracker-rotation-left'],
+  [rotationToQuatMap.RIGHT, 'tracker-rotation-right'],
+  [rotationToQuatMap.BACK_LEFT, 'tracker-rotation-back_left'],
+  [rotationToQuatMap.BACK_RIGHT, 'tracker-rotation-back_right'],
+  [rotationToQuatMap.FRONT_LEFT, 'tracker-rotation-front_left'],
+  [rotationToQuatMap.FRONT_RIGHT, 'tracker-rotation-front_right'],
+];
 
 export function TrackerSettingsPage() {
   const { l10n } = useLocalization();
@@ -68,7 +68,7 @@ export function TrackerSettingsPage() {
 
   const tracker = useTrackerFromId(trackernum, deviceid);
 
-  const onDirectionSelected = (mountingOrientationDegrees: number) => {
+  const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
     if (!tracker) return;
 
     const assignreq = new AssignTrackerRequestT();
@@ -96,10 +96,8 @@ export function TrackerSettingsPage() {
     setSelectBodypart(false);
   };
 
-  const currRotationDegrees = useMemo(() => {
-    return tracker?.tracker.info?.mountingOrientation
-      ? getYawInDegrees(tracker?.tracker.info?.mountingOrientation)
-      : rotationToQuatMap.FRONT;
+  const currRotation = useMemo(() => {
+    return QuaternionFromQuatT(tracker?.tracker.info?.mountingOrientation);
   }, [tracker?.tracker.info?.mountingOrientation]);
 
   const updateTrackerSettings = () => {
@@ -112,8 +110,9 @@ export function TrackerSettingsPage() {
       return;
     const assignreq = new AssignTrackerRequestT();
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
-    assignreq.mountingOrientation =
-      MountingOrientationDegreesToQuatT(currRotationDegrees);
+    assignreq.mountingOrientation = currRotation
+      ? MountingOrientationDegreesToQuatT(currRotation)
+      : null;
 
     assignreq.displayName = trackerName;
     assignreq.trackerId = tracker?.tracker.trackerId;
@@ -161,6 +160,7 @@ export function TrackerSettingsPage() {
         onRoleSelected={onRoleSelected}
       ></SingleTrackerBodyAssignmentMenu>
       <MountingSelectionMenu
+        bodyPart={tracker?.tracker.info?.bodyPart}
         isOpen={selectRotation}
         onClose={() => setSelectRotation(false)}
         onDirectionSelected={onDirectionSelected}
@@ -169,7 +169,7 @@ export function TrackerSettingsPage() {
         <div className="flex flex-col w-full md:max-w-xs gap-2">
           {tracker && (
             <TrackerCard
-              bg={'bg-background-70'}
+              bg="bg-background-70"
               device={tracker?.device}
               tracker={tracker?.tracker}
               shakeHighlight={false}
@@ -333,11 +333,22 @@ export function TrackerSettingsPage() {
               </Typography>
               <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
                 <div className="flex gap-3 items-center">
-                  <BodyPartIcon
-                    bodyPart={tracker?.tracker.info?.bodyPart}
-                  ></BodyPartIcon>
+                  <BodyPartIcon bodyPart={BodyPart.NONE}></BodyPartIcon>
                   <Typography>
-                    {l10n.getString(rotationsLabels[currRotationDegrees])}
+                    {l10n.getString(
+                      (rotationsLabels.find((q) =>
+                        similarQuaternions(q[0], currRotation)
+                      ) || [])[1] || 'tracker-rotation-custom'
+                    ) +
+                      (tracker?.tracker.info?.mountingResetOrientation &&
+                      !similarQuaternions(
+                        QuaternionFromQuatT(
+                          tracker.tracker.info.mountingResetOrientation
+                        ),
+                        new Quaternion()
+                      )
+                        ? ` ${l10n.getString('tracker-rotation-overriden')}`
+                        : '')}
                   </Typography>
                 </div>
                 <div className="flex">
