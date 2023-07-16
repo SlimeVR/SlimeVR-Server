@@ -325,9 +325,9 @@ settings-general-fk_settings-arm_fk-description = Force arms to be tracked from 
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
 settings-general-fk_settings-skeleton_settings = Skeleton settings
 settings-general-fk_settings-skeleton_settings-description = Toggle skeleton settings on or off. It is recommended to leave these on.
-settings-general-fk_settings-skeleton_settings-extended_spine = Extended spine
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Extended pelvis
-settings-general-fk_settings-skeleton_settings-extended_knees = Extended knee
+settings-general-fk_settings-skeleton_settings-extended_spine_model = Extended spine model
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Extended pelvis model
+settings-general-fk_settings-skeleton_settings-extended_knees_model = Extended knee model
 
 settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
