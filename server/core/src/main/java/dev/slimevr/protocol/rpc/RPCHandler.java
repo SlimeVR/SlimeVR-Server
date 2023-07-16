@@ -239,7 +239,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 		TrackerPosition pos = TrackerPosition.getByBodyPart(req.bodyPosition());
 		Tracker previousTracker = pos != null
 			? TrackerUtils
-				.getNonInternalTrackerForBodyPosition(this.api.server.getAllTrackers(), pos)
+				.getTrackerForSkeleton(this.api.server.getAllTrackers(), pos)
 			: null;
 		if (previousTracker != null) {
 			previousTracker.setTrackerPosition(null);
