@@ -153,6 +153,9 @@ public class HumanSkeleton {
 	protected ViveEmulation viveEmulation = new ViveEmulation(this);
 	// #endregion
 
+	// #region self localization
+	protected Localizer localizer = new Localizer(this);
+
 	// #region Constructors
 	protected HumanSkeleton(
 		HumanPoseManager humanPoseManager
@@ -185,6 +188,7 @@ public class HumanSkeleton {
 			server.getAllTrackers()
 		);
 		legTweaks.setConfig(server.configManager.getVrConfig().getLegTweaks());
+		localizer.setEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION));
 	}
 
 	public HumanSkeleton(
@@ -382,104 +386,103 @@ public class HumanSkeleton {
 
 	// #region Set trackers inputs
 	public void setTrackersFromList(List<Tracker> trackers) {
-		// TODO prioritize IMU over Computed for head
 		headTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.HEAD
 			);
 		neckTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.NECK
 			);
 		upperChestTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.UPPER_CHEST
 			);
 		chestTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.CHEST
 			);
 		waistTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.WAIST
 			);
 		hipTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.HIP
 			);
 		leftUpperLegTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_UPPER_LEG
 			);
 		leftLowerLegTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_LOWER_LEG
 			);
 		leftFootTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_FOOT
 			);
 		rightUpperLegTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_UPPER_LEG
 			);
 		rightLowerLegTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_LOWER_LEG
 			);
 		rightFootTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_FOOT
 			);
 		leftLowerArmTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_LOWER_ARM
 			);
 		rightLowerArmTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_LOWER_ARM
 			);
 		leftUpperArmTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_UPPER_ARM
 			);
 		rightUpperArmTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_UPPER_ARM
 			);
 		leftHandTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_HAND
 			);
 		rightHandTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_HAND
 			);
 		leftShoulderTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.LEFT_SHOULDER
 			);
 		rightShoulderTracker = TrackerUtils
-			.getNonInternalTrackerForBodyPosition(
+			.getTrackerForSkeleton(
 				trackers,
 				TrackerPosition.RIGHT_SHOULDER
 			);
@@ -564,6 +567,7 @@ public class HumanSkeleton {
 		if (!pauseTracking)
 			tweakLegPos();
 		viveEmulation.update();
+		localizer.update();
 	}
 	// #endregion
 
@@ -600,7 +604,8 @@ public class HumanSkeleton {
 				headRot = neckTracker.getRotation();
 			headNode.getLocalTransform().setRotation(headRot);
 		} else {
-			hmdNode.getLocalTransform().setTranslation(Vector3.Companion.getNULL());
+			if (!localizer.getEnabled())
+				hmdNode.getLocalTransform().setTranslation(Vector3.Companion.getNULL());
 
 			if (neckTracker != null) {
 				headRot = neckTracker.getRotation();
@@ -1121,6 +1126,7 @@ public class HumanSkeleton {
 			case VIVE_EMULATION -> viveEmulation.setEnabled(newValue);
 			case TOE_SNAP -> legTweaks.setToeSnapEnabled(newValue);
 			case FOOT_PLANT -> legTweaks.setFootPlantEnabled(newValue);
+			case SELF_LOCALIZATION -> localizer.setEnabled(newValue);
 		}
 	}
 
@@ -1442,6 +1448,8 @@ public class HumanSkeleton {
 		// of the computed trackers
 		this.legTweaks.resetFloorLevel();
 		this.legTweaks.resetBuffer();
+		this.localizer.reset();
+
 
 		LogManager.info(String.format("[HumanSkeleton] Reset: full (%s)", resetSourceName));
 	}
@@ -1527,8 +1535,32 @@ public class HumanSkeleton {
 			}
 		}
 		this.legTweaks.resetBuffer();
+		this.localizer.reset();
 
 		LogManager.info(String.format("[HumanSkeleton] Reset: mounting (%s)", resetSourceName));
+	}
+
+	@VRServerThread
+	public void clearTrackersMounting(String resetSourceName) {
+		List<Tracker> trackersToReset = humanPoseManager.getTrackersToReset();
+
+		if (headTracker != null && headTracker.getNeedsMounting()) {
+			headTracker
+				.getResetsHandler()
+				.clearMounting();
+		}
+
+		for (Tracker tracker : trackersToReset) {
+			if (
+				tracker != null
+					&& tracker.getNeedsMounting()
+			) {
+				tracker.getResetsHandler().clearMounting();
+			}
+		}
+		this.legTweaks.resetBuffer();
+
+		LogManager.info("[HumanSkeleton] Clear: mounting (%s)".formatted(resetSourceName));
 	}
 
 	public void updateTapDetectionConfig() {
