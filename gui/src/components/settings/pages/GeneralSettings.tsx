@@ -61,6 +61,7 @@ interface SettingsForm {
     viveEmulation: boolean;
     toeSnap: boolean;
     footPlant: boolean;
+    selfLocalization: boolean;
   };
   ratios: {
     imputeWaistFromChestHip: number;
@@ -112,6 +113,7 @@ const defaultValues = {
     viveEmulation: false,
     toeSnap: false,
     flootPlant: true,
+    selfLocalization: false,
   },
   ratios: {
     imputeWaistFromChestHip: 0.3,
@@ -192,6 +194,7 @@ export function GeneralSettings() {
       toggles.viveEmulation = values.toggles.viveEmulation;
       toggles.toeSnap = values.toggles.toeSnap;
       toggles.footPlant = values.toggles.footPlant;
+      toggles.selfLocalization = values.toggles.selfLocalization;
       modelSettings.toggles = toggles;
     }
 
@@ -849,6 +852,29 @@ export function GeneralSettings() {
                     name="toggles.viveEmulation"
                     label={l10n.getString(
                       'settings-general-fk_settings-vive_emulation-label'
+                    )}
+                  />
+                </div>
+                <div className="flex flex-col pt-2 pb-3">
+                  <Typography bold>
+                    {l10n.getString(
+                      'settings-general-fk_settings-self_localization-title'
+                    )}
+                  </Typography>
+                  <Typography color="secondary">
+                    {l10n.getString(
+                      'settings-general-fk_settings-self_localization-description'
+                    )}
+                  </Typography>
+                </div>
+                <div className="grid sm:grid-cols-1 gap3 pb5">
+                  <CheckBox
+                    variant="toggle"
+                    outlined
+                    control={control}
+                    name="toggles.selfLocalization"
+                    label={l10n.getString(
+                      'settings-general-fk_settings-self_localization-title'
                     )}
                   />
                 </div>
