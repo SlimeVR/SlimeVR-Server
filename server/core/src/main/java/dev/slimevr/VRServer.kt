@@ -282,7 +282,7 @@ class VRServer constructor(
 	fun updateSkeletonModel() {
 		queueTask { humanPoseManager.updateSkeletonModelFromServer() }
 		vrcOSCHandler.setHeadTracker(
-			TrackerUtils.getNonInternalTrackerForBodyPosition(trackers, TrackerPosition.HEAD)
+			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD)
 		)
 	}
 
