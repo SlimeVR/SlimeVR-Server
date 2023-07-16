@@ -19,7 +19,7 @@ export function BigButton({
       {...props}
       type="button"
       className={classNames(
-        'flex flex-col justify-center rounded-md py-3 gap-1 px-3 cursor-pointer items-center ',
+        'flex flex-col justify-center rounded-md py-3 gap-1 px-3 cursor-pointer items-center',
         {
           'bg-background-60 hover:bg-background-60 cursor-not-allowed text-background-40 fill-background-40':
             disabled,
@@ -30,7 +30,7 @@ export function BigButton({
       )}
     >
       <div className="flex justify-around">{icon}</div>
-      <div className="flex text-default flex-grow">{text}</div>
+      <div className="flex text-default flex-grow items-center">{text}</div>
     </button>
   );
 }
