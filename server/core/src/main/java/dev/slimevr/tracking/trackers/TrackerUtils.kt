@@ -7,7 +7,7 @@ object TrackerUtils {
 	 * in allTrackers matching the position.
 	 * This won't return disconnected, errored or internal trackers.
 	 *
-	 * @return A tracker for use in the SlimeVR skeleton.
+	 * @return A tracker for use in the SlimeVR skeleton
 	 */
 	@JvmStatic
 	fun getTrackerForSkeleton(
