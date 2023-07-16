@@ -52,6 +52,10 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		new RPCStatusHandler(this, api);
 
 		registerPacketListener(RpcMessage.ResetRequest, this::onResetRequest);
+		registerPacketListener(
+			RpcMessage.ClearMountingResetRequest,
+			this::onClearMountingResetRequest
+		);
 		registerPacketListener(RpcMessage.AssignTrackerRequest, this::onAssignTrackerRequest);
 
 		registerPacketListener(
@@ -213,6 +217,18 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			this.api.server.resetTrackersFull(resetSourceName);
 		if (req.resetType() == ResetType.Mounting)
 			this.api.server.resetTrackersMounting(resetSourceName);
+	}
+
+	public void onClearMountingResetRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		ClearMountingResetRequest req = (ClearMountingResetRequest) messageHeader
+			.message(new ClearMountingResetRequest());
+		if (req == null)
+			return;
+
+		this.api.server.clearTrackersMounting(resetSourceName);
 	}
 
 	public void onAssignTrackerRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
