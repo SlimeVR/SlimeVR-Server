@@ -1,6 +1,16 @@
 import { Euler, Quaternion } from 'three';
 import { QuatT } from 'solarxr-protocol';
-import { DEG_TO_RAD } from './angle';
+
+export const rotationToQuatMap = {
+  FRONT: new Quaternion(0, 1, 0, 0),
+  FRONT_LEFT: new Quaternion(0, 0.924, 0, 0.383),
+  LEFT: new Quaternion(0, 0.707, 0, 0.707),
+  BACK_LEFT: new Quaternion(0, 0.383, 0, 0.924),
+  FRONT_RIGHT: new Quaternion(0, -0.924, 0, 0.383),
+  RIGHT: new Quaternion(0, -0.707, 0, 0.707),
+  BACK_RIGHT: new Quaternion(0, -0.383, 0, 0.924),
+  BACK: new Quaternion(0, 0, 0, 1),
+};
 
 export type QuatObject = { x: number; y: number; z: number; w: number };
 
@@ -17,12 +27,8 @@ export function QuaternionToQuatT(q: QuatObject) {
   return quat;
 }
 
-export function MountingOrientationDegreesToQuatT(mountingOrientationDegrees: number) {
-  return QuaternionToQuatT(
-    new Quaternion().setFromEuler(
-      new Euler(0, +mountingOrientationDegrees * DEG_TO_RAD, 0)
-    )
-  );
+export function MountingOrientationDegreesToQuatT(orientation: Quaternion) {
+  return QuaternionToQuatT(orientation);
 }
 
 const RAD_TO_DEG = 180 / Math.PI;
@@ -53,4 +59,16 @@ export function QuaternionToEulerDegrees(q?: QuatObject | null) {
 export function compareQuatT(a: QuatT | null, b: QuatT | null): boolean {
   if (!a || !b) return false;
   return a.w === b.w && a.x === b.x && a.y === b.y && a.z === b.z;
+}
+
+export function similarQuaternions(
+  a: Quaternion | null,
+  b: Quaternion | null,
+  tolerance = 1e-5
+): boolean {
+  if (!a || !b) return false;
+  const len = new Quaternion(b.x - a.x, b.y - a.y, b.z - a.z, b.w - a.w).lengthSq();
+  const squareSum = a.lengthSq() + b.lengthSq();
+
+  return len <= tolerance ** 2 * squareSum;
 }
