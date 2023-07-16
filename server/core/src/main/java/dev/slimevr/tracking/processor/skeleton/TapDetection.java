@@ -143,7 +143,6 @@ public class TapDetection {
 
 		if (time - detectionTime > timeWindowNS) {
 			tapTimes.clear();
-			taps = 0;
 		}
 	}
 
