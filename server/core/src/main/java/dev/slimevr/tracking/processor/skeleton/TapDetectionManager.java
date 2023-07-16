@@ -68,10 +68,6 @@ public class TapDetectionManager {
 		this.resetHandler = resetHandler;
 		this.tapSetupHandler = tapSetupHandler;
 
-		yawResetDetector = new TapDetection(skeleton, getTrackerToWatchYawReset());
-		fullResetDetector = new TapDetection(skeleton, getTrackerToWatchFullReset());
-		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
-
 		// a list of tap detectors for each tracker
 		tapDetectors = new ArrayList<>();
 		for (Tracker tracker : trackers) {
@@ -84,6 +80,15 @@ public class TapDetectionManager {
 	}
 
 	public void updateConfig() {
+		// check the skeleton for new trackers
+		yawResetDetector = new TapDetection(skeleton, getTrackerToWatchYawReset());
+		fullResetDetector = new TapDetection(skeleton, getTrackerToWatchFullReset());
+		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
+
+		if (this.config == null) {
+			return;
+		}
+
 		this.yawResetDelayNs = config.getYawResetDelay() * NS_CONVERTER;
 		this.fullResetDelayNs = config.getFullResetDelay() * NS_CONVERTER;
 		this.mountingResetDelayNs = config.getMountingResetDelay() * NS_CONVERTER;
