@@ -24,7 +24,7 @@ export function useTrackers() {
           trackers.filter(({ tracker }) => tracker.info?.bodyPart === BodyPart.NONE),
         [trackers]
       ),
-    useConnectedTrackers: () =>
+    useConnectedIMUTrackers: () =>
       useMemo(
         () =>
           trackers.filter(
