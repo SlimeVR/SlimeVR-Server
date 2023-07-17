@@ -385,7 +385,7 @@ public class HumanSkeleton {
 
 
 	// #region Set trackers inputs
-	protected void setTrackersFromList(List<Tracker> trackers) {
+	public void setTrackersFromList(List<Tracker> trackers) {
 		headTracker = TrackerUtils
 			.getTrackerForSkeleton(
 				trackers,
