@@ -505,6 +505,9 @@ public class HumanSkeleton {
 		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true);
 
+		// Refresh headShift
+		humanPoseManager.computeNodeOffset(BoneType.HEAD);
+
 		// Refresh node offsets for arms
 		computeDependentArmOffsets();
 
