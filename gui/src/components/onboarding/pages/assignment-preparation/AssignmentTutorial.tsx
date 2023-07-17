@@ -11,9 +11,9 @@ import { ExtensionArrow } from './ExtensionArrow';
 export function AssignmentTutorialPage() {
   const { l10n } = useLocalization();
   const { applyProgress } = useOnboarding();
-  const { useConnectedTrackers } = useTrackers();
-  const connectedTrackers = useConnectedTrackers();
-  const bnoExists = useBnoExists(connectedTrackers);
+  const { useConnectedIMUTrackers } = useTrackers();
+  const connectedIMUTrackers = useConnectedIMUTrackers();
+  const bnoExists = useBnoExists(connectedIMUTrackers);
 
   applyProgress(0.46);
 
