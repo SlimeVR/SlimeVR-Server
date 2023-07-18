@@ -1149,100 +1149,76 @@ public class HumanSkeleton {
 		}
 	}
 
-	public void updateNodeOffset(BoneType nodeOffset, Vector3 offset) {
-		if (nodeOffset == null) {
+	public void updateNodeOffset(BoneType bone, Vector3 transOffset) {
+		if (bone == null) {
 			return;
 		}
 
-		switch (nodeOffset) {
-			case HEAD -> {
+		// Compute bone rotation
+		Quaternion rotOffset = Quaternion.Companion.getIDENTITY();
+		if (transOffset.len() != 0) {
+			// rotOffset = Quaternion.Companion.fromRotationVector(transOffset);
+			// rotOffset = Quaternion.Companion.fromTo(transOffset.unit(),
+			// Vector3.Companion.getPOS_Y());
+		}
+
+		// Make translation offset go straight down
+		transOffset = new Vector3(0f, -transOffset.len(), 0f);
+
+		switch (bone) {
+			case HEAD, HMD -> {
 				if (headTracker != null && headTracker.getHasPosition()) {
-					headNode.getLocalTransform().setTranslation(offset);
+					headNode.getLocalTransform().setTranslation(transOffset);
 				} else {
 					headNode.getLocalTransform().setTranslation(Vector3.Companion.getNULL());
 				}
 			}
-			case NECK -> neckNode.getLocalTransform().setTranslation(offset);
-			case UPPER_CHEST -> upperChestNode.getLocalTransform().setTranslation(offset);
-			case CHEST_TRACKER -> trackerChestNode.getLocalTransform().setTranslation(offset);
-			case CHEST -> chestNode.getLocalTransform().setTranslation(offset);
-			case WAIST -> waistNode.getLocalTransform().setTranslation(offset);
-			case HIP -> hipNode.getLocalTransform().setTranslation(offset);
-			case HIP_TRACKER -> trackerHipNode.getLocalTransform().setTranslation(offset);
-			case LEFT_HIP -> leftHipNode.getLocalTransform().setTranslation(offset);
-			case RIGHT_HIP -> rightHipNode.getLocalTransform().setTranslation(offset);
-			case LEFT_UPPER_LEG -> leftKneeNode.getLocalTransform().setTranslation(offset);
-			case RIGHT_UPPER_LEG -> rightKneeNode.getLocalTransform().setTranslation(offset);
-			case LEFT_KNEE_TRACKER -> trackerLeftKneeNode
-				.getLocalTransform()
-				.setTranslation(offset);
-			case RIGHT_KNEE_TRACKER -> trackerRightKneeNode
-				.getLocalTransform()
-				.setTranslation(offset);
-			case LEFT_LOWER_LEG -> leftAnkleNode.getLocalTransform().setTranslation(offset);
-			case RIGHT_LOWER_LEG -> rightAnkleNode.getLocalTransform().setTranslation(offset);
-			case LEFT_FOOT -> leftFootNode.getLocalTransform().setTranslation(offset);
-			case RIGHT_FOOT -> rightFootNode.getLocalTransform().setTranslation(offset);
-			case LEFT_FOOT_TRACKER -> trackerLeftFootNode
-				.getLocalTransform()
-				.setTranslation(offset);
-			case RIGHT_FOOT_TRACKER -> trackerRightFootNode
-				.getLocalTransform()
-				.setTranslation(offset);
-			case LEFT_SHOULDER -> leftShoulderTailNode
-				.getLocalTransform()
-				.setTranslation(offset);
-			case RIGHT_SHOULDER -> rightShoulderTailNode
-				.getLocalTransform()
-				.setTranslation(offset);
 			case LEFT_UPPER_ARM -> {
 				if (!isTrackingLeftArmFromController()) {
-					leftElbowNode.getLocalTransform().setTranslation(offset);
+					leftElbowNode.getLocalTransform().setTranslation(transOffset);
 				}
 			}
 			case RIGHT_UPPER_ARM -> {
 				if (!isTrackingRightArmFromController()) {
-					rightElbowNode.getLocalTransform().setTranslation(offset);
+					rightElbowNode.getLocalTransform().setTranslation(transOffset);
 				}
 			}
 			case LEFT_LOWER_ARM -> {
 				if (isTrackingLeftArmFromController()) {
-					leftElbowNode.getLocalTransform().setTranslation(offset);
+					leftElbowNode.getLocalTransform().setTranslation(transOffset);
 				} else {
-					leftWristNode.getLocalTransform().setTranslation(offset.unaryMinus());
+					leftWristNode.getLocalTransform().setTranslation(transOffset.unaryMinus());
 				}
 			}
 			case RIGHT_LOWER_ARM -> {
 				if (isTrackingRightArmFromController()) {
-					rightElbowNode.getLocalTransform().setTranslation(offset);
+					rightElbowNode.getLocalTransform().setTranslation(transOffset);
 				} else {
-					rightWristNode.getLocalTransform().setTranslation(offset.unaryMinus());
+					rightWristNode.getLocalTransform().setTranslation(transOffset.unaryMinus());
 				}
 			}
-			case LEFT_ELBOW_TRACKER -> trackerLeftElbowNode
-				.getLocalTransform()
-				.setTranslation(offset);
-			case RIGHT_ELBOW_TRACKER -> trackerRightElbowNode
-				.getLocalTransform()
-				.setTranslation(offset);
 			case LEFT_HAND -> {
 				if (isTrackingLeftArmFromController()) {
-					leftWristNode.getLocalTransform().setTranslation(offset.unaryMinus());
+					leftWristNode.getLocalTransform().setTranslation(transOffset.unaryMinus());
 				} else {
-					leftHandNode.getLocalTransform().setTranslation(offset);
+					leftHandNode.getLocalTransform().setTranslation(transOffset);
 				}
 			}
 			case RIGHT_HAND -> {
 				if (isTrackingRightArmFromController()) {
-					rightWristNode.getLocalTransform().setTranslation(offset.unaryMinus());
+					rightWristNode.getLocalTransform().setTranslation(transOffset.unaryMinus());
 				} else {
-					rightHandNode.getLocalTransform().setTranslation(offset);
+					rightHandNode.getLocalTransform().setTranslation(transOffset);
 				}
+			}
+			default -> {
+				getTailNodeOfBone(bone).getLocalTransform().setTranslation(transOffset);
+				getTailNodeOfBone(bone).setRotationOffset(rotOffset);
 			}
 		}
 
-		for (BoneInfo bone : allBoneInfo) {
-			bone.updateLength();
+		for (BoneInfo boneInfo : allBoneInfo) {
+			boneInfo.updateLength();
 		}
 	}
 

@@ -593,15 +593,15 @@ public class HumanPoseManager {
 	}
 
 	/**
-	 * Update the given node with the given offset
+	 * Update the given bone with the given offset
 	 *
-	 * @param node the node to update
-	 * @param offset the new offset to apply to the node
+	 * @param bone the bone to update
+	 * @param offset the new offset to apply to the bone
 	 */
 	@ThreadSafe
-	public void updateNodeOffset(BoneType node, Vector3 offset) {
+	public void updateNodeOffset(BoneType bone, Vector3 offset) {
 		if (isSkeletonPresent())
-			skeleton.updateNodeOffset(node, offset);
+			skeleton.updateNodeOffset(bone, offset);
 	}
 
 	/**
