@@ -60,7 +60,7 @@ public enum SkeletonConfigOffsets {
 		8,
 		"hipsWidth",
 		0.26f,
-		new BoneType[] { BoneType.LEFT_HIP, BoneType.RIGHT_HIP}
+		new BoneType[] { BoneType.LEFT_HIP, BoneType.RIGHT_HIP }
 	),
 	UPPER_LEG(
 		9,

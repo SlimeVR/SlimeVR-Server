@@ -104,7 +104,8 @@ public class ViveEmulation {
 		// in this state the tracker will return to its original position
 		else if (flyingBack) {
 			if (
-				lastPosition.minus(skeleton.getComputedHipTracker().getPosition()).len() < NEARLY_ZERO
+				lastPosition.minus(skeleton.getComputedHipTracker().getPosition()).len()
+					< NEARLY_ZERO
 			) {
 				flyingBack = false;
 				ticksToFly = random.nextInt(CHANCE);
@@ -173,7 +174,8 @@ public class ViveEmulation {
 	// get the position to fly back to (initially overshoot the actualy waist
 	// position)
 	private Vector3 getOvershootPosition() {
-		return skeleton.getComputedHipTracker()
+		return skeleton
+			.getComputedHipTracker()
 			.getPosition()
 			.minus(
 				lastPosition
