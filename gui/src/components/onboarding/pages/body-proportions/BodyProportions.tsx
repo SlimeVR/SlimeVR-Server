@@ -6,7 +6,6 @@ import {
   useEffect,
   useRef,
   UIEvent,
-  MouseEvent,
   useMemo,
 } from 'react';
 import {
