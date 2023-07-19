@@ -14,6 +14,7 @@ import saveAs from 'file-saver';
 import { save } from '@tauri-apps/plugin-dialog';
 import { writeTextFile } from '@tauri-apps/plugin-fs';
 import { useIsTauri } from '../../../../hooks/breakpoint';
+import { error } from '../../../../utils/logging';
 
 export function ProportionsChoose() {
   const isTauri = useIsTauri();
@@ -42,7 +43,7 @@ export function ProportionsChoose() {
             path ? writeTextFile(path, JSON.stringify(data)) : undefined
           )
           .catch((err) => {
-            console.error(err);
+            error(err);
           });
       } else {
         saveAs(blob, 'body-proportions.json');

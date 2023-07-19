@@ -10,6 +10,7 @@ import {
   useContext,
 } from 'react';
 import { exists, readTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
+import { error } from '../utils/logging';
 
 export const defaultNS = 'translation';
 export const DEFAULT_LOCALE = 'en';
@@ -134,7 +135,7 @@ function verifyLocale(locale: string | null): string | null {
     new Intl.Locale(locale);
     return locale;
   } catch (e) {
-    console.error(e);
+    error(e);
     return null;
   }
 }
