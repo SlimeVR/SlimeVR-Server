@@ -17,6 +17,7 @@ import {
 import { useLocaleConfig } from '../../../../i18n/config';
 import { Typography } from '../../../commons/Typography';
 import { ArrowDownIcon, ArrowUpIcon } from '../../../commons/icon/ArrowIcons';
+import { useBreakpoint } from '../../../../hooks/breakpoint';
 
 function IncrementButton({
   children,
@@ -52,6 +53,7 @@ export function BodyProportions({
   const { bodyParts, dispatch, state, setRatioMode } = useManualProportions();
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
+  const tall = useBreakpoint('tall');
 
   const srcollerRef = useRef<HTMLDivElement | null>(null);
 
@@ -100,17 +102,30 @@ export function BodyProportions({
 
   const clickPart = (id: string) => (e: MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
-    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const snap = target.closest<HTMLDivElement>('.snap-start');
+    console.log(snap);
+    if (srcollerRef.current && snap) {
+      console.log(`${snap.offsetTop} - ${srcollerRef.current.offsetHeight}`)
+      srcollerRef.current.scroll({
+        top: snap.offsetTop - srcollerRef.current.offsetHeight,
+        behavior: 'smooth',
+      });
+    }
     selectNew(id);
   };
 
   const moveToIndex = (index: number, smooth = true) => {
     // We add one because of the offset placeholder
     const elem = srcollerRef.current?.childNodes[index + 1] as HTMLDivElement;
-    elem?.scrollIntoView({
-      behavior: smooth ? 'smooth' : 'auto',
-      block: 'center',
-    });
+    console.log(elem.offsetTop);
+    if (srcollerRef.current) {
+      const scrollBound = srcollerRef.current.getBoundingClientRect();
+      const elemBound = elem.getBoundingClientRect();
+      srcollerRef.current.scroll({
+        top: elemBound.top - scrollBound.height - elemBound.height,
+        behavior: smooth ? 'smooth' : 'auto',
+      });
+    }
 
     const id = elem.getAttribute('itemid');
     if (id) selectNew(id);
@@ -175,10 +190,14 @@ export function BodyProportions({
     );
 
     const moveId = (id: string, elem: HTMLDivElement) => {
-      elem?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
+      if (srcollerRef.current) {
+        const scrollBound = srcollerRef.current.getBoundingClientRect();
+        const elemBound = elem.getBoundingClientRect();
+        srcollerRef.current.scroll({
+          top: elemBound.top - scrollBound.height - elemBound.height,
+          behavior: 'smooth',
+        });
+      }
       selectNew(id);
     };
 
@@ -275,8 +294,9 @@ export function BodyProportions({
           <div
             ref={srcollerRef}
             onScroll={handleUIEvent}
-            className="h-60 flex-grow flex-col overflow-y-auto snap-y snap-mandatory snap-always no-scrollbar"
+            className="h-60 tall:h-[25rem] flex-grow flex-col overflow-y-auto snap-y snap-mandatory snap-always no-scrollbar"
           >
+            {tall.isTall && <div className="h-20 snap-start"></div>}
             <div className="h-20 snap-start "></div>
             {bodyParts.map((part) => {
               const { label, value: originalValue, type, ...props } = part;
@@ -320,7 +340,8 @@ export function BodyProportions({
                 </div>
               );
             })}
-            <div className="h-20 snap-start"></div>
+            <div className="h-20 snap-start "></div>
+            {tall.isTall && <div className="h-20 snap-start"></div>}
           </div>
           <div className="flex justify-center">
             <div
