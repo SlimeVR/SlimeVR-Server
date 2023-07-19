@@ -18,6 +18,7 @@ import { useLocaleConfig } from '../../../../i18n/config';
 import { Typography } from '../../../commons/Typography';
 import { ArrowDownIcon, ArrowUpIcon } from '../../../commons/icon/ArrowIcons';
 import { useBreakpoint } from '../../../../hooks/breakpoint';
+import { debounce } from '../../../../hooks/timeout';
 
 function IncrementButton({
   children,
@@ -55,7 +56,12 @@ export function BodyProportions({
   const { currentLocales } = useLocaleConfig();
   const tall = useBreakpoint('tall');
 
-  const srcollerRef = useRef<HTMLDivElement | null>(null);
+  const offsetItems = tall ? 2 : 1;
+  const itemsToDisplay = offsetItems * 2 + 1;
+  const itemHeight = 80;
+  const scrollHeight = itemHeight * itemsToDisplay;
+
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
 
   const cmFormat = Intl.NumberFormat(currentLocales, {
     style: 'unit',
@@ -80,42 +86,41 @@ export function BodyProportions({
   }, [type]);
 
   useEffect(() => {
-    if (srcollerRef.current && bodyParts.length > 0) {
-      moveToIndex(1);
+    if (scrollerRef.current && bodyParts.length > 0) {
+      selectId(bodyParts[offsetItems].label);
     }
-  }, [srcollerRef, bodyParts.length]);
+  }, [scrollerRef, bodyParts.length]);
 
   const handleUIEvent = (e: UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
-
-    const itemHeight = target.offsetHeight / (tall.isTall ? 5 : 3);
-
+    const itemHeight = target.offsetHeight / itemsToDisplay;
     const atSnappingPoint = target.scrollTop % itemHeight === 0;
-
     if (atSnappingPoint) {
       const index = target.scrollTop / itemHeight;
-      const elem = srcollerRef.current?.childNodes[index + 1] as HTMLDivElement;
+      const elem = scrollerRef.current?.childNodes[
+        index + offsetItems
+      ] as HTMLDivElement;
       const id = elem.getAttribute('itemid');
       if (id) selectNew(id);
     }
   };
 
-  const clickPart = (id: string) => (e: MouseEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLDivElement;
-    const snap = target.closest<HTMLDivElement>('.snap-start');
-    snap?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const moveToId = (id: string) => {
+    if (!scrollerRef.current) return;
+    const index = bodyParts.findIndex(({ label }) => label === id);
+    scrollerRef.current.scrollTo({
+      top: index * itemHeight,
+      behavior: 'smooth',
+    });
+  };
+
+  const clickPart = (id: string) => () => {
+    moveToId(id);
     selectNew(id);
   };
 
-  const moveToIndex = (index: number, smooth = true) => {
-    // We add one because of the offset placeholder
-    const elem = srcollerRef.current?.childNodes[index + 1] as HTMLDivElement;
-    elem?.scrollIntoView({
-      behavior: smooth ? 'smooth' : 'auto',
-      block: 'center',
-    });
-
-    const id = elem.getAttribute('itemid');
+  const selectId = (id: string) => {
+    moveToId(id);
     if (id) selectNew(id);
   };
 
@@ -173,15 +178,12 @@ export function BodyProportions({
   }, [state]);
 
   const move = (action: 'next' | 'prev') => {
-    const elem = srcollerRef.current?.querySelector(
+    const elem = scrollerRef.current?.querySelector(
       `div[itemid=${state.currentLabel}]`
     );
 
-    const moveId = (id: string, elem: HTMLDivElement) => {
-      elem?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
+    const moveId = (id: string) => {
+      moveToId(id);
       selectNew(id);
     };
 
@@ -189,14 +191,14 @@ export function BodyProportions({
       const prevElem = elem?.previousSibling as HTMLDivElement;
       const prevId = prevElem.getAttribute('itemid');
       if (!prevId) return;
-      moveId(prevId, prevElem);
+      moveId(prevId);
     }
 
     if (action === 'next') {
       const nextElem = elem?.nextSibling as HTMLDivElement;
       const nextId = nextElem.getAttribute('itemid');
       if (!nextId) return;
-      moveId(nextId, nextElem);
+      moveId(nextId);
     }
   };
 
@@ -267,7 +269,7 @@ export function BodyProportions({
               className={classNames(
                 'h-12 w-32 rounded-lg bg-background-60 flex flex-col justify-center',
                 'items-center fill-background-10',
-                srcollerRef?.current?.scrollTop ?? 0 > 0
+                scrollerRef?.current?.scrollTop ?? 0 > 0
                   ? 'opacity-100 active:bg-accent-background-30'
                   : 'opacity-50'
               )}
@@ -276,15 +278,21 @@ export function BodyProportions({
             </div>
           </div>
           <div
-            ref={srcollerRef}
-            onScroll={handleUIEvent}
+            ref={scrollerRef}
+            onScroll={debounce(handleUIEvent, 100)}
             className={classNames(
-              'h-60 tall:h-[25rem] flex-grow flex-col overflow-y-auto snap-y',
+              'flex-grow flex-col overflow-y-auto snap-y',
               'snap-mandatory snap-always no-scrollbar'
             )}
+            style={{ height: scrollHeight }}
           >
-            {tall.isTall && <div className="h-20 snap-start"></div>}
-            <div className="h-20 snap-start "></div>
+            {Array.from({ length: offsetItems }).map((_, index) => (
+              <div
+                className="snap-start"
+                style={{ height: itemHeight }}
+                key={index}
+              ></div>
+            ))}
             {bodyParts.map((part) => {
               const { label, value: originalValue, type, ...props } = part;
               const value =
@@ -299,7 +307,8 @@ export function BodyProportions({
                   key={label}
                   itemID={label}
                   onClick={clickPart(label)}
-                  className="snap-start h-20 flex-col flex justify-center"
+                  style={{ height: itemHeight }}
+                  className="snap-start flex-col flex justify-center"
                 >
                   <div
                     className={classNames(
@@ -327,8 +336,13 @@ export function BodyProportions({
                 </div>
               );
             })}
-            <div className="h-20 snap-start "></div>
-            {tall.isTall && <div className="h-20 snap-start"></div>}
+            {Array.from({ length: offsetItems }).map((_, index) => (
+              <div
+                className="h-20 snap-start"
+                style={{ height: itemHeight }}
+                key={index}
+              ></div>
+            ))}
           </div>
           <div className="flex justify-center">
             <div
@@ -336,9 +350,9 @@ export function BodyProportions({
               className={classNames(
                 'h-12 w-32 rounded-lg bg-background-60 flex flex-col justify-center',
                 'items-center fill-background-10',
-                srcollerRef?.current?.scrollTop !==
-                  (srcollerRef?.current?.scrollHeight ?? 0) -
-                    (srcollerRef?.current?.offsetHeight ?? 0)
+                scrollerRef?.current?.scrollTop !==
+                  (scrollerRef?.current?.scrollHeight ?? 0) -
+                    (scrollerRef?.current?.offsetHeight ?? 0)
                   ? 'opacity-100 active:bg-accent-background-30'
                   : 'opacity-50'
               )}
