@@ -1,7 +1,7 @@
 # Global code owner
 * @Eirenliel
 
-# Make Loucas and Uriel the owner of all GUI stuff
+# Make Loucas and Uriel the owners of all GUI stuff
 /gui/ @loucass003 @ImUrX
 /package-lock.json @loucass003 @ImUrX
 
