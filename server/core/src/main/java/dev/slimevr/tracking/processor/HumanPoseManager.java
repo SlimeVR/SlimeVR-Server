@@ -472,7 +472,7 @@ public class HumanPoseManager {
 	@ThreadSafe
 	public List<BoneInfo> getAllBoneInfo() {
 		if (isSkeletonPresent())
-			return skeleton.allBoneInfo;
+			return skeleton.getAllBoneInfo();
 		return null;
 	}
 
@@ -482,7 +482,7 @@ public class HumanPoseManager {
 	@ThreadSafe
 	public List<BoneInfo> getShareableBoneInfo() {
 		if (isSkeletonPresent())
-			return skeleton.shareableBoneInfo;
+			return skeleton.getShareableBoneInfo();
 		return null;
 	}
 
