@@ -21,12 +21,17 @@ import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
-import io.github.axisangles.ktmath.Quaternion.Companion.fromTo
 import io.github.axisangles.ktmath.Vector3
-import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
-import java.lang.IllegalArgumentException
+import solarxr_protocol.datatypes.BodyPart.LEFT_LOWER_ARM
+import solarxr_protocol.datatypes.BodyPart.LEFT_LOWER_LEG
+import solarxr_protocol.datatypes.BodyPart.LEFT_UPPER_ARM
+import solarxr_protocol.datatypes.BodyPart.LEFT_UPPER_LEG
+import solarxr_protocol.datatypes.BodyPart.RIGHT_LOWER_ARM
+import solarxr_protocol.datatypes.BodyPart.RIGHT_LOWER_LEG
+import solarxr_protocol.datatypes.BodyPart.RIGHT_UPPER_ARM
+import solarxr_protocol.datatypes.BodyPart.RIGHT_UPPER_LEG
 
 class HumanSkeleton(
 	val humanPoseManager: HumanPoseManager,
@@ -947,53 +952,88 @@ class HumanSkeleton(
 	}
 
 	// Skeleton Config bone lengths
-	fun updateNodeOffset(bone: BoneType, offset: Vector3) {
-		var transOffset = offset
-
-		when (bone) {
-			BoneType.HEAD, BoneType.HMD -> {
-				if (headTracker == null || !headTracker!!.hasPosition) {
-					transOffset = NULL
+	fun updateNodeOffset(nodeOffset: BoneType, offset: Vector3) {
+		when (nodeOffset) {
+			BoneType.HEAD -> {
+				if (headTracker != null && headTracker!!.hasPosition) {
+					headNode.localTransform.translation = offset
+				} else {
+					headNode.localTransform.translation = NULL
+				}
+			}
+			BoneType.NECK -> neckNode.localTransform.translation = offset
+			BoneType.UPPER_CHEST -> upperChestNode.localTransform.translation = offset
+			BoneType.CHEST_TRACKER -> trackerChestNode.localTransform.translation = offset
+			BoneType.CHEST -> chestNode.localTransform.translation = offset
+			BoneType.WAIST -> waistNode.localTransform.translation = offset
+			BoneType.HIP -> hipNode.localTransform.translation = offset
+			BoneType.HIP_TRACKER -> trackerHipNode.localTransform.translation = offset
+			BoneType.LEFT_TAIL_HIP -> leftHipTailNode.localTransform.translation = offset
+			BoneType.RIGHT_TAIL_HIP -> rightHipTailNode.localTransform.translation = offset
+			BoneType.LEFT_UPPER_LEG -> leftKneeNode.localTransform.translation = offset
+			BoneType.RIGHT_UPPER_LEG -> rightKneeNode.localTransform.translation = offset
+			BoneType.LEFT_KNEE_TRACKER -> trackerLeftKneeNode.localTransform.translation = offset
+			BoneType.RIGHT_KNEE_TRACKER -> trackerRightKneeNode.localTransform.translation = offset
+			BoneType.LEFT_LOWER_LEG -> leftAnkleNode.localTransform.translation = offset
+			BoneType.RIGHT_LOWER_LEG -> rightAnkleNode.localTransform.translation = offset
+			BoneType.LEFT_FOOT -> leftFootNode.localTransform.translation = offset
+			BoneType.RIGHT_FOOT -> rightFootNode.localTransform.translation = offset
+			BoneType.LEFT_FOOT_TRACKER -> trackerLeftFootNode.localTransform.translation = offset
+			BoneType.RIGHT_FOOT_TRACKER -> trackerRightFootNode.localTransform.translation = offset
+			BoneType.LEFT_SHOULDER -> leftShoulderTailNode.localTransform.translation = offset
+			BoneType.RIGHT_SHOULDER -> rightShoulderTailNode.localTransform.translation = offset
+			BoneType.LEFT_UPPER_ARM -> {
+				if (!isTrackingLeftArmFromController) {
+					leftElbowNode.localTransform.translation = offset
+				}
+			}
+			BoneType.RIGHT_UPPER_ARM -> {
+				if (!isTrackingRightArmFromController) {
+					rightElbowNode.localTransform.translation = offset
 				}
 			}
 			BoneType.LEFT_LOWER_ARM -> {
-				if (!isTrackingLeftArmFromController) {
-					transOffset = offset.unaryMinus()
+				if (isTrackingLeftArmFromController) {
+					leftElbowNode.localTransform.translation = offset
+				} else {
+					leftWristNode.localTransform.translation = offset.unaryMinus()
 				}
 			}
 			BoneType.RIGHT_LOWER_ARM -> {
-				if (!isTrackingRightArmFromController) {
-					transOffset = offset.unaryMinus()
+				if (isTrackingRightArmFromController) {
+					rightElbowNode.localTransform.translation = offset
+				} else {
+					rightWristNode.localTransform.translation = offset.unaryMinus()
 				}
 			}
+			BoneType.LEFT_ELBOW_TRACKER ->
+				trackerLeftElbowNode
+					.localTransform
+					.translation = offset
+
+			BoneType.RIGHT_ELBOW_TRACKER ->
+				trackerRightElbowNode
+					.localTransform
+					.translation = offset
 			BoneType.LEFT_HAND -> {
 				if (isTrackingLeftArmFromController) {
-					transOffset = offset.unaryMinus()
+					leftWristNode.localTransform.translation = offset.unaryMinus()
+				} else {
+					leftHandNode.localTransform.translation = offset
 				}
 			}
 			BoneType.RIGHT_HAND -> {
 				if (isTrackingRightArmFromController) {
-					transOffset = offset.unaryMinus()
+					rightWristNode.localTransform.translation = offset.unaryMinus()
+				} else {
+					rightHandNode.localTransform.translation = offset
 				}
 			}
-			else -> transOffset = offset
+			else -> throw IllegalArgumentException("Used unsupported offset in HumanSkeleton")
 		}
 
-		// Compute bone rotation
-		var rotOffset = IDENTITY
-		if (offset.len() != 0f) {
-			rotOffset = fromTo(NEG_Y, transOffset)
-				.unit()
-		}
-
-		// Make translation offset go straight down
-		transOffset = Vector3(0f, -transOffset.len(), 0f)
-
-		getTailNodeOfBone(bone)?.let { it.localTransform.translation = transOffset }
-		getTailNodeOfBone(bone)?.parent?.let { it.rotationOffset = rotOffset }
-
-		for (boneInfo in allBoneInfo) {
-			boneInfo.updateLength()
+		for (bone in allBoneInfo) {
+			bone.updateLength()
 		}
 	}
 

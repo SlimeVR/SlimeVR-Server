@@ -15,7 +15,6 @@ class TransformNode @JvmOverloads constructor(
 	val children: MutableList<TransformNode> = CopyOnWriteArrayList()
 	var parent: TransformNode? = null
 		private set
-	var rotationOffset = Quaternion.IDENTITY
 
 	fun attachChild(node: TransformNode) {
 		require(node.parent == null) { "The child node must not already have a parent" }
@@ -25,9 +24,6 @@ class TransformNode @JvmOverloads constructor(
 
 	@ThreadSafe
 	fun update() {
-		// Apply rotation offset
-		localTransform.rotation *= rotationOffset
-
 		// Call update on each frame because we have relatively few nodes
 		updateWorldTransforms()
 		for (node in children) {
