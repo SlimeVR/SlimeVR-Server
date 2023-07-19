@@ -23,17 +23,13 @@ export const useDebouncedEffect = (effect: () => void, deps: any[], delay: numbe
   }, [...(deps || []), delay]);
 };
 
-
-export const debounce = <F extends (...args: any) => any>(
-  func: F,
-  waitFor: number,
-) => {
-  let timeout = 0
+export const debounce = <F extends (...args: any) => any>(func: F, waitFor: number) => {
+  let timeout = 0;
 
   const debounced = (...args: any) => {
-    window.clearTimeout(timeout)
-    timeout = window.setTimeout(() => func(...args), waitFor)
-  }
+    window.clearTimeout(timeout);
+    timeout = window.setTimeout(() => func(...args), waitFor);
+  };
 
-  return debounced as (...args: Parameters<F>) => ReturnType<F>
-}
+  return debounced as (...args: Parameters<F>) => ReturnType<F>;
+};
