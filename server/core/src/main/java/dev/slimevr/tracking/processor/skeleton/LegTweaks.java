@@ -1131,11 +1131,11 @@ public class LegTweaks {
 		);
 		Vector3 leftThigh = getCenterOfJoint(
 			skeleton.getLeftKneeNode(),
-			skeleton.getLeftHipTailNode()
+			skeleton.getLeftHipNode()
 		);
 		Vector3 rightThigh = getCenterOfJoint(
 			skeleton.getRightKneeNode(),
-			skeleton.getRightHipTailNode()
+			skeleton.getRightHipNode()
 		);
 		centerOfMass = centerOfMass.plus(head.times(HEAD_MASS));
 		centerOfMass = centerOfMass.plus(thorax.times(THORAX_MASS));

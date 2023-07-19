@@ -24,14 +24,6 @@ import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
-import solarxr_protocol.datatypes.BodyPart.LEFT_LOWER_ARM
-import solarxr_protocol.datatypes.BodyPart.LEFT_LOWER_LEG
-import solarxr_protocol.datatypes.BodyPart.LEFT_UPPER_ARM
-import solarxr_protocol.datatypes.BodyPart.LEFT_UPPER_LEG
-import solarxr_protocol.datatypes.BodyPart.RIGHT_LOWER_ARM
-import solarxr_protocol.datatypes.BodyPart.RIGHT_LOWER_LEG
-import solarxr_protocol.datatypes.BodyPart.RIGHT_UPPER_ARM
-import solarxr_protocol.datatypes.BodyPart.RIGHT_UPPER_LEG
 
 class HumanSkeleton(
 	val humanPoseManager: HumanPoseManager,
@@ -49,15 +41,13 @@ class HumanSkeleton(
 	val trackerHipNode = TransformNode(BoneType.HIP_TRACKER, false)
 
 	// Lower body nodes (legs)
-	val leftHipHeadNode = TransformNode(BoneType.LEFT_HEAD_HIP, false)
-	val leftHipTailNode = TransformNode(BoneType.LEFT_TAIL_HIP, false)
+	val leftHipNode = TransformNode(BoneType.LEFT_HIP, false)
 	val leftKneeNode = TransformNode(BoneType.LEFT_UPPER_LEG, false)
 	val trackerLeftKneeNode = TransformNode(BoneType.LEFT_KNEE_TRACKER, false)
 	val leftAnkleNode = TransformNode(BoneType.LEFT_LOWER_LEG, false)
 	val leftFootNode = TransformNode(BoneType.LEFT_FOOT, false)
 	val trackerLeftFootNode = TransformNode(BoneType.LEFT_FOOT_TRACKER, false)
-	val rightHipHeadNode = TransformNode(BoneType.RIGHT_HEAD_HIP, false)
-	val rightHipTailNode = TransformNode(BoneType.RIGHT_TAIL_HIP, false)
+	val rightHipNode = TransformNode(BoneType.RIGHT_HIP, false)
 	val rightKneeNode = TransformNode(BoneType.RIGHT_UPPER_LEG, false)
 	val trackerRightKneeNode = TransformNode(BoneType.RIGHT_KNEE_TRACKER, false)
 	val rightAnkleNode = TransformNode(BoneType.RIGHT_LOWER_LEG, false)
@@ -204,12 +194,10 @@ class HumanSkeleton(
 		waistNode.attachChild(hipNode)
 
 		// Assemble skeleton from hips to feet
-		hipNode.attachChild(leftHipHeadNode)
-		hipNode.attachChild(rightHipHeadNode)
-		leftHipHeadNode.attachChild(leftHipTailNode)
-		rightHipHeadNode.attachChild(rightHipTailNode)
-		leftHipTailNode.attachChild(leftKneeNode)
-		rightHipTailNode.attachChild(rightKneeNode)
+		hipNode.attachChild(leftHipNode)
+		hipNode.attachChild(rightHipNode)
+		leftHipNode.attachChild(leftKneeNode)
+		rightHipNode.attachChild(rightKneeNode)
 		leftKneeNode.attachChild(leftAnkleNode)
 		rightKneeNode.attachChild(rightAnkleNode)
 		leftAnkleNode.attachChild(leftFootNode)
@@ -296,8 +284,7 @@ class HumanSkeleton(
 			if (hasLeftLegTracker || sendAllBones) {
 				if (sendAllBones) {
 					// don't send currently
-					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_HEAD_HIP))
-					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_TAIL_HIP))
+					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_HIP))
 				}
 				shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_UPPER_LEG))
 				shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_LOWER_LEG))
@@ -310,8 +297,7 @@ class HumanSkeleton(
 			if (hasRightLegTracker || sendAllBones) {
 				if (sendAllBones) {
 					// don't send currently
-					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_HEAD_HIP))
-					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_TAIL_HIP))
+					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_HIP))
 				}
 				shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_UPPER_LEG))
 				shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_LOWER_LEG))
@@ -573,7 +559,7 @@ class HumanSkeleton(
 			// Align with the upper leg's yaw
 			leftUpperLeg.project(POS_Y).unit()
 		}
-		leftHipTailNode.localTransform.rotation = leftUpperLeg
+		leftHipNode.localTransform.rotation = leftUpperLeg
 		trackerLeftKneeNode.localTransform.rotation = leftUpperLeg
 		leftKneeNode.localTransform.rotation = leftLowerLeg
 		if (leftFootTracker != null) {
@@ -587,7 +573,7 @@ class HumanSkeleton(
 		if (leftUpperLegTracker != null && leftLowerLegTracker != null && extendedKneeModel) {
 			// Averages the knee's rotation with the local ankle's
 			// pitch and roll and apply to the tracker node.
-			val leftHipRot = leftHipTailNode.localTransform.rotation
+			val leftHipRot = leftHipNode.localTransform.rotation
 			val leftKneeRot = leftKneeNode.localTransform.rotation
 			val extendedRot = extendedKneeYawRoll(leftHipRot, leftKneeRot)
 			trackerLeftKneeNode
@@ -610,7 +596,7 @@ class HumanSkeleton(
 			// Align with the upper leg's yaw
 			rightUpperLeg.project(POS_Y).unit()
 		}
-		rightHipTailNode.localTransform.rotation = rightUpperLeg
+		rightHipNode.localTransform.rotation = rightUpperLeg
 		trackerRightKneeNode.localTransform.rotation = rightUpperLeg
 		rightKneeNode.localTransform.rotation = rightLowerLeg
 		if (rightFootTracker != null) rightLowerLeg = rightFootTracker!!.getRotation()
@@ -622,7 +608,7 @@ class HumanSkeleton(
 		if (rightUpperLegTracker != null && rightLowerLegTracker != null && extendedKneeModel) {
 			// Averages the knee's rotation with the local ankle's
 			// pitch and roll and apply to the tracker node.
-			val rightHipRot = rightHipTailNode.localTransform.rotation
+			val rightHipRot = rightHipNode.localTransform.rotation
 			val rightKneeRot = rightKneeNode.localTransform.rotation
 			val extendedRot = extendedKneeYawRoll(rightHipRot, rightKneeRot)
 			trackerRightKneeNode
@@ -650,8 +636,8 @@ class HumanSkeleton(
 					chestNode.localTransform.rotation = chestRot
 				} else if ((upperChestTracker != null || chestTracker != null) && hasKneeTrackers) {
 					// Calculates waist from chest + legs
-					var leftHipRot = leftHipTailNode.localTransform.rotation
-					var rightHipRot = rightHipTailNode.localTransform.rotation
+					var leftHipRot = leftHipNode.localTransform.rotation
+					var rightHipRot = rightHipNode.localTransform.rotation
 					var chestRot = getFirstAvailableTracker(upperChestTracker, chestTracker)!!.getRotation()
 
 					// Get the rotation relative to where we expect the
@@ -672,8 +658,8 @@ class HumanSkeleton(
 			if (hipTracker == null && hasKneeTrackers) {
 				if (waistTracker != null) {
 					// Calculates hip from waist + legs
-					var leftHipRot = leftHipTailNode.localTransform.rotation
-					var rightHipRot = rightHipTailNode.localTransform.rotation
+					var leftHipRot = leftHipNode.localTransform.rotation
+					var rightHipRot = rightHipNode.localTransform.rotation
 					var waistRot = waistTracker!!.getRotation()
 
 					// Get the rotation relative to where we expect the
@@ -696,8 +682,8 @@ class HumanSkeleton(
 					trackerHipNode.localTransform.rotation = waistRot
 				} else if (upperChestTracker != null || chestTracker != null) {
 					// Calculates hip from chest + legs
-					var leftHipRot = leftHipTailNode.localTransform.rotation
-					var rightHipRot = rightHipTailNode.localTransform.rotation
+					var leftHipRot = leftHipNode.localTransform.rotation
+					var rightHipRot = rightHipNode.localTransform.rotation
 					var chestRot = getFirstAvailableTracker(upperChestTracker, chestTracker)!!.getRotation()
 
 					// Get the rotation relative to where we expect the upper legs to be
@@ -720,8 +706,8 @@ class HumanSkeleton(
 
 		// Extended pelvis
 		if (extendedPelvisModel && hasKneeTrackers && hipTracker == null) {
-			val leftHipRot = leftHipTailNode.localTransform.rotation
-			val rightHipRot = rightHipTailNode.localTransform.rotation
+			val leftHipRot = leftHipNode.localTransform.rotation
+			val rightHipRot = rightHipNode.localTransform.rotation
 			val hipRot = hipNode.localTransform.rotation
 			val extendedPelvisRot = extendedPelvisYawRoll(leftHipRot, rightHipRot, hipRot)
 			val slerp = hipRot.interpR(extendedPelvisRot, hipLegsAveraging)
@@ -729,8 +715,6 @@ class HumanSkeleton(
 			hipNode.localTransform.rotation = slerp
 			trackerHipNode.localTransform.rotation = slerp
 		}
-		leftHipHeadNode.localTransform.rotation = hipNode.localTransform.rotation
-		rightHipHeadNode.localTransform.rotation = hipNode.localTransform.rotation
 
 		// Left arm
 		if (isTrackingLeftArmFromController) { // From controller
@@ -968,8 +952,8 @@ class HumanSkeleton(
 			BoneType.WAIST -> waistNode.localTransform.translation = offset
 			BoneType.HIP -> hipNode.localTransform.translation = offset
 			BoneType.HIP_TRACKER -> trackerHipNode.localTransform.translation = offset
-			BoneType.LEFT_TAIL_HIP -> leftHipTailNode.localTransform.translation = offset
-			BoneType.RIGHT_TAIL_HIP -> rightHipTailNode.localTransform.translation = offset
+			BoneType.LEFT_HIP -> leftHipNode.localTransform.translation = offset
+			BoneType.RIGHT_HIP -> rightHipNode.localTransform.translation = offset
 			BoneType.LEFT_UPPER_LEG -> leftKneeNode.localTransform.translation = offset
 			BoneType.RIGHT_UPPER_LEG -> rightKneeNode.localTransform.translation = offset
 			BoneType.LEFT_KNEE_TRACKER -> trackerLeftKneeNode.localTransform.translation = offset
@@ -1058,10 +1042,8 @@ class HumanSkeleton(
 				BoneType.WAIST -> waistNode
 				BoneType.HIP -> hipNode
 				BoneType.HIP_TRACKER -> trackerHipNode
-				BoneType.LEFT_HEAD_HIP -> leftHipHeadNode
-				BoneType.RIGHT_HEAD_HIP -> rightHipHeadNode
-				BoneType.LEFT_TAIL_HIP -> leftHipTailNode
-				BoneType.RIGHT_TAIL_HIP -> rightHipTailNode
+				BoneType.LEFT_HIP -> leftHipNode
+				BoneType.RIGHT_HIP -> rightHipNode
 				BoneType.LEFT_UPPER_LEG -> leftKneeNode
 				BoneType.RIGHT_UPPER_LEG -> rightKneeNode
 				BoneType.RIGHT_KNEE_TRACKER -> trackerRightKneeNode
@@ -1107,15 +1089,13 @@ class HumanSkeleton(
 			waistNode,
 			hipNode,
 			trackerHipNode,
-			leftHipHeadNode,
-			leftHipTailNode,
+			leftHipNode,
 			leftKneeNode,
 			trackerLeftKneeNode,
 			leftAnkleNode,
 			leftFootNode,
 			trackerLeftFootNode,
-			rightHipHeadNode,
-			rightHipTailNode,
+			rightHipNode,
 			rightKneeNode,
 			trackerRightKneeNode,
 			rightAnkleNode,
