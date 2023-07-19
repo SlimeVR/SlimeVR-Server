@@ -1114,8 +1114,8 @@ public class LegTweaks {
 		Vector3 pelvis = skeleton.hipNode.getWorldTransform().getTranslation();
 		Vector3 leftCalf = getCenterOfJoint(skeleton.leftAnkleNode, skeleton.leftKneeNode);
 		Vector3 rightCalf = getCenterOfJoint(skeleton.rightAnkleNode, skeleton.rightKneeNode);
-		Vector3 leftThigh = getCenterOfJoint(skeleton.leftKneeNode, skeleton.leftHipNode);
-		Vector3 rightThigh = getCenterOfJoint(skeleton.rightKneeNode, skeleton.rightHipNode);
+		Vector3 leftThigh = getCenterOfJoint(skeleton.leftKneeNode, skeleton.leftHipTailNode);
+		Vector3 rightThigh = getCenterOfJoint(skeleton.rightKneeNode, skeleton.rightHipTailNode);
 		centerOfMass = centerOfMass.plus(head.times(HEAD_MASS));
 		centerOfMass = centerOfMass.plus(thorax.times(THORAX_MASS));
 		centerOfMass = centerOfMass.plus(abdomen.times(ABDOMEN_MASS));

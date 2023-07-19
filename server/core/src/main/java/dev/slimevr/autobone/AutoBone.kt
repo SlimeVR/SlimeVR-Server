@@ -36,7 +36,7 @@ class AutoBone(server: VRServer) {
 			BoneType.WAIST,
 			BoneType.HIP, // This now works when using body proportion error! It's not the
 			// best still, but it is somewhat functional
-			BoneType.LEFT_HIP,
+			BoneType.LEFT_TAIL_HIP,
 			BoneType.LEFT_UPPER_LEG,
 			BoneType.LEFT_LOWER_LEG
 		)
@@ -92,7 +92,7 @@ class AutoBone(server: VRServer) {
 			BoneType.CHEST -> getOffset.apply(SkeletonConfigOffsets.CHEST)
 			BoneType.WAIST -> getOffset.apply(SkeletonConfigOffsets.WAIST)
 			BoneType.HIP -> getOffset.apply(SkeletonConfigOffsets.HIP)
-			BoneType.LEFT_HIP, BoneType.RIGHT_HIP -> (
+			BoneType.LEFT_TAIL_HIP, BoneType.RIGHT_TAIL_HIP -> (
 				getOffset.apply(SkeletonConfigOffsets.HIPS_WIDTH) /
 					2f
 				)
@@ -138,7 +138,7 @@ class AutoBone(server: VRServer) {
 		rightSide: Boolean,
 	): Vector3 {
 		var node = when (node) {
-			BoneType.LEFT_HIP, BoneType.RIGHT_HIP -> if (rightSide) BoneType.RIGHT_HIP else BoneType.LEFT_HIP
+			BoneType.LEFT_TAIL_HIP, BoneType.RIGHT_TAIL_HIP -> if (rightSide) BoneType.RIGHT_TAIL_HIP else BoneType.LEFT_TAIL_HIP
 			BoneType.LEFT_UPPER_LEG, BoneType.RIGHT_UPPER_LEG ->
 				if (rightSide) BoneType.RIGHT_UPPER_LEG else BoneType.LEFT_UPPER_LEG
 			BoneType.LEFT_LOWER_LEG, BoneType.RIGHT_LOWER_LEG ->
@@ -193,9 +193,9 @@ class AutoBone(server: VRServer) {
 			if (hipOffset != null) {
 				configConsumer.accept(SkeletonConfigOffsets.HIP, hipOffset)
 			}
-			var hipWidthOffset = offsets[BoneType.LEFT_HIP]
+			var hipWidthOffset = offsets[BoneType.LEFT_TAIL_HIP]
 			if (hipWidthOffset == null) {
-				hipWidthOffset = offsets[BoneType.RIGHT_HIP]
+				hipWidthOffset = offsets[BoneType.RIGHT_TAIL_HIP]
 			}
 			if (hipWidthOffset != null) {
 				configConsumer

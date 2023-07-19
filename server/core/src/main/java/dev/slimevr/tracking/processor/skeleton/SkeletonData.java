@@ -31,13 +31,13 @@ public class SkeletonData {
 	protected final Joint hipJoint = new Joint(BoneType.HIP);
 	protected final Joint trackerHipJoint = new Joint(BoneType.HIP_TRACKER);
 	// #region Legs
-	protected final Joint leftHipJoint = new Joint(BoneType.LEFT_HIP);
+	protected final Joint leftHipJoint = new Joint(BoneType.LEFT_TAIL_HIP);
 	protected final Joint leftKneeJoint = new Joint(BoneType.LEFT_UPPER_LEG);
 	protected final Joint trackerLeftKneeJoint = new Joint(BoneType.LEFT_KNEE_TRACKER);
 	protected final Joint leftAnkleJoint = new Joint(BoneType.LEFT_LOWER_LEG);
 	protected final Joint leftFootJoint = new Joint(BoneType.LEFT_FOOT);
 	protected final Joint trackerLeftFootJoint = new Joint(BoneType.LEFT_FOOT_TRACKER);
-	protected final Joint rightHipJoint = new Joint(BoneType.RIGHT_HIP);
+	protected final Joint rightHipJoint = new Joint(BoneType.RIGHT_TAIL_HIP);
 	protected final Joint rightKneeJoint = new Joint(BoneType.RIGHT_UPPER_LEG);
 	protected final Joint trackerRightKneeJoint = new Joint(BoneType.RIGHT_KNEE_TRACKER);
 	protected final Joint rightAnkleJoint = new Joint(BoneType.RIGHT_LOWER_LEG);
@@ -80,8 +80,8 @@ public class SkeletonData {
 		// #endregion
 
 		// #region Assemble skeleton from hips to feet
-		hipJoint.attachJoint(leftHipJoint, BoneType.LEFT_HIP);
-		hipJoint.attachJoint(rightHipJoint, BoneType.RIGHT_HIP);
+		hipJoint.attachJoint(leftHipJoint, BoneType.LEFT_TAIL_HIP);
+		hipJoint.attachJoint(rightHipJoint, BoneType.RIGHT_TAIL_HIP);
 
 		leftHipJoint.attachJoint(leftKneeJoint, BoneType.LEFT_UPPER_LEG);
 		rightHipJoint.attachJoint(rightKneeJoint, BoneType.RIGHT_UPPER_LEG);
