@@ -71,12 +71,27 @@ fn main() -> Result<()> {
 		use flexi_logger::{
 			Age, Cleanup, Criterion, Duplicate, FileSpec, Logger, Naming, WriteMode,
 		};
-		use tauri::api::path::app_log_dir;
+		use tauri::path::Error;
+
+		// Based on https://docs.rs/tauri/2.0.0-alpha.10/src/tauri/path/desktop.rs.html#238-256
+		#[cfg(target_os = "macos")]
+		let path = dirs_next::home_dir().ok_or(Error::UnknownPath).map(|dir| {
+			dir.join("Library/Logs")
+				.join(&tauri_context.config().tauri.bundle.identifier)
+		});
+
+		#[cfg(not(target_os = "macos"))]
+		let path = dirs_next::data_local_dir()
+			.ok_or(Error::UnknownPath)
+			.map(|dir| {
+				dir.join(&tauri_context.config().tauri.bundle.identifier)
+					.join("logs")
+			});
 
 		Logger::try_with_env_or_str("info")?
-			.log_to_file(FileSpec::default().directory(
-				app_log_dir(tauri_context.config()).expect("We need a log dir"),
-			))
+			.log_to_file(
+				FileSpec::default().directory(path.expect("We need a log dir")),
+			)
 			.format_for_files(util::logger_format)
 			.format_for_stderr(util::logger_format)
 			.rotate(

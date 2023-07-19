@@ -2988,6 +2988,7 @@ dependencies = [
  "clap-verbosity-flag",
  "color-eyre",
  "const_format",
+ "dirs-next",
  "flexi_logger",
  "glob",
  "log",

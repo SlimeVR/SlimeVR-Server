@@ -10,7 +10,7 @@ use std::{
 
 use clap::Parser;
 use const_format::concatcp;
-use flexi_logger::{DeferredNow, style};
+use flexi_logger::{style, DeferredNow};
 use log::Record;
 use shadow_rs::shadow;
 use tempfile::Builder;
@@ -217,11 +217,11 @@ pub fn valid_java_paths() -> Vec<(OsString, i32)> {
 }
 
 pub fn logger_format(
-    w: &mut dyn std::io::Write,
-    _now: &mut DeferredNow,
-    record: &Record,
+	w: &mut dyn std::io::Write,
+	_now: &mut DeferredNow,
+	record: &Record,
 ) -> Result<(), std::io::Error> {
-    let level = record.level();
+	let level = record.level();
 	let module_path = record.module_path().unwrap_or("<unnamed>");
 	// optionally print target
 	let target = if module_path.starts_with(record.target()) {
@@ -229,11 +229,11 @@ pub fn logger_format(
 	} else {
 		format!(", {}", record.target())
 	};
-    write!(
-        w,
-        "{} [{}{target}] {}",
-        style(level).paint(level.to_string()),
-        record.module_path().unwrap_or("<unnamed>"),
-        style(level).paint(record.args().to_string())
-    )
+	write!(
+		w,
+		"{} [{}{target}] {}",
+		style(level).paint(level.to_string()),
+		record.module_path().unwrap_or("<unnamed>"),
+		style(level).paint(record.args().to_string())
+	)
 }
