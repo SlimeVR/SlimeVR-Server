@@ -12,12 +12,12 @@ export function WifiCredsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm();
-  const { useConnectedTrackers } = useTrackers();
-  const connectedTrackers = useConnectedTrackers();
+  const { useConnectedIMUTrackers } = useTrackers();
+  const connectedIMUTrackers = useConnectedIMUTrackers();
 
   applyProgress(0.2);
 
-  const bnoExists = useBnoExists(connectedTrackers);
+  const bnoExists = useBnoExists(connectedIMUTrackers);
 
   return (
     <form
