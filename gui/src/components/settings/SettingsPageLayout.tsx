@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { ReactNode, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useBreakpoint } from '../../hooks/breakpoint';
 
 export function SettingsPageLayout({
   children,
@@ -11,6 +12,7 @@ export function SettingsPageLayout({
 } & React.HTMLAttributes<HTMLDivElement>) {
   const pageRef = useRef<HTMLDivElement | null>(null);
   const { state } = useLocation();
+  const { isMobile } = useBreakpoint('mobile');
 
   useEffect(() => {
     const typedState: { scrollTo: string } = state;
@@ -27,8 +29,12 @@ export function SettingsPageLayout({
         '.overflow-y-auto'
       ) as HTMLElement | null;
       if (closestScroll) {
-        // The 45 is just enough padding for making the scroll look perfect
-        closestScroll.scroll({ top: elem.offsetTop - 45, behavior: 'smooth' });
+        // The 40 is just enough padding for making the scroll look perfect
+        const topPadding = isMobile ? 80 : 40;
+        closestScroll.scroll({
+          top: elem.offsetTop - topPadding,
+          behavior: 'smooth',
+        });
       }
     }
   }, [state]);
