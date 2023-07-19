@@ -30,7 +30,8 @@ serde_json = "1"
 serde = { version = "1", features = ["derive"] }
 tauri = { version = "1.4", features = ["devtools", "dialog", "dialog-save", "fs-all", "os-all", "path-all", "shell-execute", "shell-open", "window-close", "window-maximize", "window-minimize", "window-set-resizable", "window-set-size", "window-set-title", "window-start-dragging", "window-unmaximize", "window-unminimize"] }
 tauri-runtime = "0.14"
-pretty_env_logger = "0.5"
+flexi_logger = "0.25"
+log-panics = { version = "2", features = ["with-backtrace"] }
 log = "0.4"
 clap = { version = "4.0.29", features = ["derive"] }
 clap-verbosity-flag = "2"
@@ -38,7 +39,7 @@ rand = "0.8.5"
 tempfile = "3"
 which = "4.3"
 glob = "0.3"
-open = "4"
+open = "5"
 shadow-rs = { version = "0.23", default-features = false }
 const_format = "0.2.30"
 cfg-if = "1"
