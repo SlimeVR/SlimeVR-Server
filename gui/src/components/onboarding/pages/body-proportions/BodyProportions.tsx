@@ -93,7 +93,7 @@ export function BodyProportions({
     const atSnappingPoint = target.scrollTop % itemHeight === 0;
 
     if (atSnappingPoint) {
-      const index = (target.scrollTop + (tall.isTall ? itemHeight : 0)) / itemHeight;
+      const index = target.scrollTop / itemHeight;
       const elem = srcollerRef.current?.childNodes[index + 1] as HTMLDivElement;
       const id = elem.getAttribute('itemid');
       if (id) selectNew(id);
@@ -278,7 +278,10 @@ export function BodyProportions({
           <div
             ref={srcollerRef}
             onScroll={handleUIEvent}
-            className="h-60 tall:h-[25rem] flex-grow flex-col overflow-y-auto snap-y snap-mandatory snap-always no-scrollbar"
+            className={classNames(
+              'h-60 tall:h-[25rem] flex-grow flex-col overflow-y-auto snap-y',
+              'snap-mandatory snap-always no-scrollbar'
+            )}
           >
             {tall.isTall && <div className="h-20 snap-start"></div>}
             <div className="h-20 snap-start "></div>
