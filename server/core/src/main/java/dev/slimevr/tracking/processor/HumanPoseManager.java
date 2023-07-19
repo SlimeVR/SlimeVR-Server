@@ -411,7 +411,7 @@ public class HumanPoseManager {
 	@ThreadSafe
 	public TransformNode getRootNode() {
 		if (isSkeletonPresent())
-			return skeleton.getRootNode();
+			return skeleton.getHmdNode();
 		return null;
 	}
 
