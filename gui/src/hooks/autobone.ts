@@ -11,6 +11,7 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { useLocalization } from '@fluent/react';
+import { log } from '../utils/logging';
 
 export interface AutoboneContext {
   hasRecording: boolean;
@@ -79,7 +80,7 @@ export function useProvideAutobone(): AutoboneContext {
 
       if (data.processType) {
         if (data.message) {
-          console.log(AutoBoneProcessType[data.processType], ': ', data.message);
+          log(AutoBoneProcessType[data.processType], ': ', data.message);
         }
 
         if (data.total > 0 && data.current >= 0) {
@@ -87,11 +88,7 @@ export function useProvideAutobone(): AutoboneContext {
         }
 
         if (data.completed) {
-          console.log(
-            'Process ',
-            AutoBoneProcessType[data.processType],
-            ' has completed'
-          );
+          log('Process ', AutoBoneProcessType[data.processType], ' has completed');
 
           switch (data.processType) {
             case AutoBoneProcessType.RECORD:
@@ -121,7 +118,7 @@ export function useProvideAutobone(): AutoboneContext {
     setProgress(data.currentEpoch / data.totalEpochs);
 
     // Probably not necessary to show to the user
-    console.log(
+    log(
       'Epoch ',
       data.currentEpoch,
       '/',
