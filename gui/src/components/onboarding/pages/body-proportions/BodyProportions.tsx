@@ -95,12 +95,19 @@ export function BodyProportions({
     const target = e.target as HTMLDivElement;
     const itemHeight = target.offsetHeight / itemsToDisplay;
     const atSnappingPoint = target.scrollTop % itemHeight === 0;
+    const index = Math.round(target.scrollTop / itemHeight);
+    const elem = scrollerRef.current?.childNodes[
+      index + offsetItems
+    ] as HTMLDivElement;
+
+    elem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
     if (atSnappingPoint) {
-      const index = target.scrollTop / itemHeight;
       const elem = scrollerRef.current?.childNodes[
         index + offsetItems
       ] as HTMLDivElement;
       const id = elem.getAttribute('itemid');
+
       if (id) selectNew(id);
     }
   };
@@ -279,19 +286,15 @@ export function BodyProportions({
           </div>
           <div
             ref={scrollerRef}
-            onScroll={debounce(handleUIEvent, 100)}
+            onScroll={debounce(handleUIEvent, 150)} // Debounce at 150ms to match the animation speed and prevent snaping between two animations
             className={classNames(
-              'flex-grow flex-col overflow-y-auto snap-y',
-              'snap-mandatory snap-always no-scrollbar'
+              'flex-grow flex-col overflow-y-auto',
+              'no-scrollbar'
             )}
             style={{ height: scrollHeight }}
           >
             {Array.from({ length: offsetItems }).map((_, index) => (
-              <div
-                className="snap-start"
-                style={{ height: itemHeight }}
-                key={index}
-              ></div>
+              <div style={{ height: itemHeight }} key={index}></div>
             ))}
             {bodyParts.map((part) => {
               const { label, value: originalValue, type, ...props } = part;
@@ -308,7 +311,7 @@ export function BodyProportions({
                   itemID={label}
                   onClick={clickPart(label)}
                   style={{ height: itemHeight }}
-                  className="snap-start flex-col flex justify-center"
+                  className="flex-col flex justify-center"
                 >
                   <div
                     className={classNames(
@@ -338,7 +341,7 @@ export function BodyProportions({
             })}
             {Array.from({ length: offsetItems }).map((_, index) => (
               <div
-                className="h-20 snap-start"
+                className="h-20"
                 style={{ height: itemHeight }}
                 key={index}
               ></div>
