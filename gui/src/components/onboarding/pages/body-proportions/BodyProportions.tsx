@@ -88,12 +88,12 @@ export function BodyProportions({
   const handleUIEvent = (e: UIEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
 
-    const itemHeight = target.offsetHeight / 3;
+    const itemHeight = target.offsetHeight / (tall.isTall ? 5 : 3);
 
     const atSnappingPoint = target.scrollTop % itemHeight === 0;
 
     if (atSnappingPoint) {
-      const index = target.scrollTop / itemHeight;
+      const index = (target.scrollTop + (tall.isTall ? itemHeight : 0)) / itemHeight;
       const elem = srcollerRef.current?.childNodes[index + 1] as HTMLDivElement;
       const id = elem.getAttribute('itemid');
       if (id) selectNew(id);
@@ -103,29 +103,17 @@ export function BodyProportions({
   const clickPart = (id: string) => (e: MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
     const snap = target.closest<HTMLDivElement>('.snap-start');
-    console.log(snap);
-    if (srcollerRef.current && snap) {
-      console.log(`${snap.offsetTop} - ${srcollerRef.current.offsetHeight}`)
-      srcollerRef.current.scroll({
-        top: snap.offsetTop - srcollerRef.current.offsetHeight,
-        behavior: 'smooth',
-      });
-    }
+    snap?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     selectNew(id);
   };
 
   const moveToIndex = (index: number, smooth = true) => {
     // We add one because of the offset placeholder
     const elem = srcollerRef.current?.childNodes[index + 1] as HTMLDivElement;
-    console.log(elem.offsetTop);
-    if (srcollerRef.current) {
-      const scrollBound = srcollerRef.current.getBoundingClientRect();
-      const elemBound = elem.getBoundingClientRect();
-      srcollerRef.current.scroll({
-        top: elemBound.top - scrollBound.height - elemBound.height,
-        behavior: smooth ? 'smooth' : 'auto',
-      });
-    }
+    elem?.scrollIntoView({
+      behavior: smooth ? 'smooth' : 'auto',
+      block: 'center',
+    });
 
     const id = elem.getAttribute('itemid');
     if (id) selectNew(id);
@@ -190,14 +178,10 @@ export function BodyProportions({
     );
 
     const moveId = (id: string, elem: HTMLDivElement) => {
-      if (srcollerRef.current) {
-        const scrollBound = srcollerRef.current.getBoundingClientRect();
-        const elemBound = elem.getBoundingClientRect();
-        srcollerRef.current.scroll({
-          top: elemBound.top - scrollBound.height - elemBound.height,
-          behavior: 'smooth',
-        });
-      }
+      elem?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
       selectNew(id);
     };
 
