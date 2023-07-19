@@ -51,9 +51,11 @@ allprojects {
 
 dependencies {
 	implementation(project(":server:core"))
+	implementation(project(":solarxr-protocol"))
 
 	implementation("commons-cli:commons-cli:1.5.0")
 	implementation("org.apache.commons:commons-lang3:3.12.0")
+	implementation("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
 }
