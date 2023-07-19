@@ -54,9 +54,9 @@ export function BodyProportions({
   const { bodyParts, dispatch, state, setRatioMode } = useManualProportions();
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
-  const tall = useBreakpoint('tall');
+  const { isTall } = useBreakpoint('tall');
 
-  const offsetItems = tall ? 2 : 1;
+  const offsetItems = isTall ? 2 : 1;
   const itemsToDisplay = offsetItems * 2 + 1;
   const itemHeight = 80;
   const scrollHeight = itemHeight * itemsToDisplay;
