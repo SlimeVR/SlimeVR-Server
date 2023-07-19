@@ -29,7 +29,7 @@ class HumanSkeleton(
 	val humanPoseManager: HumanPoseManager,
 ) {
 	// Upper body nodes (torso)
-	val rootNode = TransformNode(BoneType.HMD, false)
+	val hmdNode = TransformNode(BoneType.HMD, false)
 	val headNode = TransformNode(BoneType.HEAD, false)
 	val trackerHeadNode = TransformNode(BoneType.HEAD_TRACKER, false)
 	val neckNode = TransformNode(BoneType.NECK, false)
@@ -186,7 +186,7 @@ class HumanSkeleton(
 	@ThreadSafe
 	fun assembleSkeleton() {
 		// Assemble skeleton from head to hip
-		rootNode.attachChild(headNode)
+		hmdNode.attachChild(headNode)
 		headNode.attachChild(neckNode)
 		neckNode.attachChild(upperChestNode)
 		upperChestNode.attachChild(chestNode)
@@ -462,7 +462,7 @@ class HumanSkeleton(
 	 */
 	@ThreadSafe
 	fun updateNodes() {
-		rootNode.update()
+		hmdNode.update()
 		if (isTrackingLeftArmFromController) {
 			leftHandNode.update()
 		}
@@ -485,14 +485,14 @@ class HumanSkeleton(
 		// HMD, head and neck
 		var headRot = IDENTITY
 		if (headTracker != null) {
-			if (headTracker!!.hasPosition) rootNode.localTransform.translation = headTracker!!.position
+			if (headTracker!!.hasPosition) hmdNode.localTransform.translation = headTracker!!.position
 			headRot = headTracker!!.getRotation()
-			rootNode.localTransform.rotation = headRot
+			hmdNode.localTransform.rotation = headRot
 			trackerHeadNode.localTransform.rotation = headRot
 			if (neckTracker != null) headRot = neckTracker!!.getRotation()
 			headNode.localTransform.rotation = headRot
 		} else {
-			if (!localizer.getEnabled()) rootNode.localTransform.translation = NULL
+			if (!localizer.getEnabled()) hmdNode.localTransform.translation = NULL
 			if (neckTracker != null) {
 				headRot = neckTracker!!.getRotation()
 			} else if (hasSpineTracker) {
@@ -503,7 +503,7 @@ class HumanSkeleton(
 					hipTracker
 				)!!.getRotation()
 			}
-			rootNode.localTransform.rotation = headRot
+			hmdNode.localTransform.rotation = headRot
 			trackerHeadNode.localTransform.rotation = headRot
 			headNode.localTransform.rotation = headRot
 		}
@@ -1079,7 +1079,7 @@ class HumanSkeleton(
 
 	val allNodes: Array<TransformNode>
 		get() = arrayOf(
-			rootNode,
+			hmdNode,
 			headNode,
 			trackerHeadNode,
 			neckNode,
