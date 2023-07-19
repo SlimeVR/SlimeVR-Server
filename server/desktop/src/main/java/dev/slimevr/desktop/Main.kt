@@ -5,9 +5,10 @@ package dev.slimevr.desktop
 import dev.slimevr.Keybinding
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
+import dev.slimevr.bridge.ISteamVRBridge
+import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
-import dev.slimevr.platform.SteamVRBridge
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.OperatingSystem
 import io.eiren.util.collections.FastList
@@ -140,7 +141,7 @@ fun provideSteamVRBridge(
 	server: VRServer,
 	hmdTracker: Tracker,
 	computedTrackers: List<Tracker>,
-): SteamVRBridge? {
+): ISteamVRBridge? {
 	val driverBridge: SteamVRBridge?
 	if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
 		// Create named pipe bridge for SteamVR driver
@@ -192,7 +193,7 @@ fun provideSteamVRBridge(
 
 fun provideFeederBridge(
 	server: VRServer,
-): SteamVRBridge? {
+): ISteamVRBridge? {
 	val feederBridge: SteamVRBridge?
 	if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
 		// Create named pipe bridge for SteamVR input
