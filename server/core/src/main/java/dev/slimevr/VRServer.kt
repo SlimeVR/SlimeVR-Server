@@ -21,6 +21,7 @@ import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.trackers.DeviceManager
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
+import dev.slimevr.tracking.trackers.TrackerUtils
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
 import dev.slimevr.util.ann.VRServerThread
 import dev.slimevr.websocketapi.WebSocketVRBridge
@@ -40,9 +41,12 @@ typealias SteamBridgeProvider = (
 	computedTrackers: List<Tracker>,
 ) -> ISteamVRBridge?
 
+const val SLIMEVR_IDENTIFIER = "dev.slimevr.SlimeVR"
+
 class VRServer @JvmOverloads constructor(
 	driverBridgeProvider: SteamBridgeProvider = { _: VRServer, _: Tracker, _: List<Tracker> -> null },
 	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _: VRServer -> null },
+	// configPath is used by VRWorkout, do not remove!
 	configPath: String,
 ) : Thread("VRServer") {
 	@JvmField
@@ -92,9 +96,6 @@ class VRServer @JvmOverloads constructor(
 	@JvmField
 	val statusSystem = StatusSystem()
 
-	/**
-	 * This function is used by VRWorkout, do not remove!
-	 */
 	init {
 		// UwU
 		configManager = ConfigManager(configPath)
@@ -210,6 +211,8 @@ class VRServer @JvmOverloads constructor(
 	fun trackerUpdated(tracker: Tracker?) {
 		queueTask {
 			humanPoseManager.trackerUpdated(tracker)
+			updateSkeletonModel()
+			refreshTrackersDriftCompensationEnabled()
 			configManager.vrConfig.writeTrackerConfig(tracker)
 			configManager.saveConfig()
 		}
@@ -263,6 +266,8 @@ class VRServer @JvmOverloads constructor(
 	@VRServerThread
 	private fun trackerAdded(tracker: Tracker) {
 		humanPoseManager.trackerAdded(tracker)
+		updateSkeletonModel()
+		refreshTrackersDriftCompensationEnabled()
 	}
 
 	@ThreadSecure
@@ -280,6 +285,9 @@ class VRServer @JvmOverloads constructor(
 	@ThreadSafe
 	fun updateSkeletonModel() {
 		queueTask { humanPoseManager.updateSkeletonModelFromServer() }
+		vrcOSCHandler.setHeadTracker(
+			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD)
+		)
 	}
 
 	fun resetTrackersFull(resetSourceName: String?) {
@@ -365,6 +373,14 @@ class VRServer @JvmOverloads constructor(
 		for (t in allTrackers) {
 			if (t.isImu()) {
 				t.resetsHandler.clearDriftCompensation()
+			}
+		}
+	}
+
+	fun refreshTrackersDriftCompensationEnabled() {
+		for (t in allTrackers) {
+			if (t.isImu()) {
+				t.resetsHandler.refreshDriftCompensationEnabled()
 			}
 		}
 	}

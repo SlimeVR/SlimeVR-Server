@@ -80,6 +80,11 @@ public class RPCSettingsHandler {
 					.createTapDetectionSettings(
 						fbb,
 						this.api.server.configManager.getVrConfig().getTapDetection()
+					),
+				RPCSettingsBuilder
+					.createAutoBoneSettings(
+						fbb,
+						this.api.server.configManager.getVrConfig().getAutoBone()
 					)
 			);
 		int outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
@@ -220,6 +225,15 @@ public class RPCSettingsHandler {
 					.setMountingResetEnabled(tapDetectionSettings.mountingResetEnabled());
 				tapDetectionConfig.setSetupMode(tapDetectionSettings.setupMode());
 
+				// set number of trackers that can have high accel before taps
+				// are rejected
+				if (tapDetectionSettings.hasNumberTrackersOverThreshold()) {
+					tapDetectionConfig
+						.setNumberTrackersOverThreshold(
+							tapDetectionSettings.numberTrackersOverThreshold()
+						);
+				}
+
 				// set tap detection delays
 				if (tapDetectionSettings.hasYawResetDelay()) {
 					tapDetectionConfig.setYawResetDelay(tapDetectionSettings.yawResetDelay());
@@ -351,6 +365,15 @@ public class RPCSettingsHandler {
 
 			hpm.saveConfig();
 
+		}
+
+		var autoBoneSettings = req.autoBoneSettings();
+		if (autoBoneSettings != null) {
+			AutoBoneConfig autoBoneConfig = this.api.server.configManager
+				.getVrConfig()
+				.getAutoBone();
+
+			RPCSettingsBuilder.readAutoBoneSettings(autoBoneSettings, autoBoneConfig);
 		}
 
 		this.api.server.configManager.saveConfig();

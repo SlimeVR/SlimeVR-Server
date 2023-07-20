@@ -60,7 +60,7 @@ export function BodyProportions({
     unit: 'centimeter',
     maximumFractionDigits: 1,
   });
-  const percentageFormat = Intl.NumberFormat(currentLocales, {
+  const percentageFormat = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
     maximumFractionDigits: 1,
   });

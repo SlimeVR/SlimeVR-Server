@@ -36,7 +36,7 @@ export function HomePage() {
         ></div>
         <img
           className="absolute"
-          src="/images/slime-girl.png"
+          src="/images/slime-girl.webp"
           style={{
             width: '35%',
             maxWidth: 800,
@@ -46,7 +46,7 @@ export function HomePage() {
         />
         <img
           className="absolute"
-          src="/images/slimes.png"
+          src="/images/slimes.webp"
           style={{
             width: '35%',
             maxWidth: 800,

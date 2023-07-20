@@ -258,6 +258,8 @@ settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = VRChat OSC Trackers
 settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
+settings-sidebar-appearance = Appearance
+settings-sidebar-notifications = Notifications
 
 ## SteamVR settings
 settings-general-steamvr = SteamVR
@@ -325,9 +327,9 @@ settings-general-fk_settings-arm_fk-description = Force arms to be tracked from 
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
 settings-general-fk_settings-skeleton_settings-toggles = Skeleton toggles
 settings-general-fk_settings-skeleton_settings-description = Toggle skeleton settings on or off. It is recommended to leave these on.
-settings-general-fk_settings-skeleton_settings-extended_spine = Extended spine
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Extended pelvis
-settings-general-fk_settings-skeleton_settings-extended_knees = Extended knee
+settings-general-fk_settings-skeleton_settings-extended_spine_model = Extended spine model
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Extended pelvis model
+settings-general-fk_settings-skeleton_settings-extended_knees_model = Extended knee model
 settings-general-fk_settings-skeleton_settings-ratios = Skeleton ratios
 settings-general-fk_settings-skeleton_settings-ratios-description = Change the values of skeleton settings. You may need to adjust your proportions after changing these.
 settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Impute waist from chest to hip
@@ -347,12 +349,18 @@ settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control
 settings-general-gesture_control-subtitle = Tap based resets
-settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Yaw Reset, the tracker highest up on your left leg is used for Full Reset, and the tracker highest up on your right leg is used for Mounting Reset. It should be mentioned that taps must happen within 0.6 seconds to be registered.
+settings-general-gesture_control-description = Allows for resets to be triggered by tapping a tracker. The tracker highest up on your torso is used for Yaw Reset, the tracker highest up on your left leg is used for Full Reset, and the tracker highest up on your right leg is used for Mounting Reset. Taps must occur within the time limit of 0.3 seconds times the number of taps to be recognized.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps = { $amount ->
     [one] 1 tap
     *[other] { $amount } taps
+}
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers = { $amount ->
+    [one] 1 tracker
+    *[other] { $amount } trackers
 }
 settings-general-gesture_control-yawResetEnabled = Enable tap to yaw reset
 settings-general-gesture_control-yawResetDelay = Yaw reset delay
@@ -363,12 +371,30 @@ settings-general-gesture_control-fullResetTaps = Taps for full reset
 settings-general-gesture_control-mountingResetEnabled = Enable tap to reset mounting
 settings-general-gesture_control-mountingResetDelay = Mounting reset delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = Trackers over threshold
+settings-general-gesture_control-numberTrackersOverThreshold-description = Increase this value if tap detection is not working. Do not increase it above what is needed to make tap detection work this will cause false positives
 
-## Interface settings
-settings-general-interface = Interface
+## Appearance settings
+settings-interface-appearance = Appearance
 settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
+settings-general-interface-theme = Color theme
+settings-general-interface-lang = Select language
+settings-general-interface-lang-description = Change the default language you want to use.
+settings-general-interface-lang-placeholder = Select the language to use
+# Keep the font name untranslated
+settings-interface-appearance-font = GUI font
+settings-interface-appearance-font-description = This changes the font used by the interface
+settings-interface-appearance-font-placeholder = Default font
+settings-interface-appearance-font-os_font = OS font
+settings-interface-appearance-font-slime_font = Default font
+settings-interface-appearance-font_size = Base font scaling
+settings-interface-appearance-font_size-description = This affects the font size of the whole interface except this settings panel
+
+## Notification settings
+settings-interface-notifications = Notifications
 settings-general-interface-serial_detection = Serial device detection
 settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker.
 settings-general-interface-serial_detection-label = Serial device detection
@@ -376,10 +402,6 @@ settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered
 settings-general-interface-feedback_sound-label = Feedback sound
 settings-general-interface-feedback_sound-volume = Feedback sound volume
-settings-general-interface-theme = Color theme
-settings-general-interface-lang = Select language
-settings-general-interface-lang-description = Change the default language you want to use.
-settings-general-interface-lang-placeholder = Select the language to use
 
 ## Serial settings
 settings-serial = Serial Console
@@ -716,7 +738,10 @@ onboarding-choose_proportions-description = Body proportions are used to know th
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
-onboarding-choose_proportions-auto_proportions-description = This will guess your proportions by recording a sample of your movements and passing it through an algorithm
+onboarding-choose_proportions-auto_proportions-descriptionv2 =
+    This will guess your proportions by recording a sample of your movements and passing it through an algorithm.
+
+    <b>It requires having your HMD connected to SlimeVR!</b>
 onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
@@ -750,6 +775,18 @@ onboarding-automatic_proportions-requirements-description =
     Your trackers and headset are working properly within the SlimeVR server.
     Your headset is reporting positional data to the SlimeVR server (this generally means having SteamVR running and connected to SlimeVR using SlimeVR's SteamVR driver).
 onboarding-automatic_proportions-requirements-next = I have read the requirements
+onboarding-automatic_proportions-check_height-title = Check your height
+onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the HMD's height as an approximation of your actual height, but it's better to check if they are right yourself!
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = Please press the button while standing <u>upright</u> to calculate your height. You have 3 seconds after you press the button!
+onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Unknown
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height = Your height is
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height = And HMD height is
+onboarding-automatic_proportions-check_height-next_step = They are fine
 onboarding-automatic_proportions-start_recording-title = Get ready to move
 onboarding-automatic_proportions-start_recording-description = We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!
 onboarding-automatic_proportions-start_recording-next = Start Recording
@@ -778,6 +815,10 @@ onboarding-automatic_proportions-verify_results-redo = Redo recording
 onboarding-automatic_proportions-verify_results-confirm = They're correct
 onboarding-automatic_proportions-done-title = Body measured and saved.
 onboarding-automatic_proportions-done-description = Your body proportions' calibration is complete!
+onboarding-automatic_proportions-error_modal =
+    <b>Warning:</b> An error was found while estimating proportions!
+    Please <docs>check the docs</docs> or join our <discord>Discord</discord> for help ^_^
+onboarding-automatic_proportions-error_modal-confirm = Understood!
 
 ## Home
 home-no_trackers = No trackers detected or assigned
