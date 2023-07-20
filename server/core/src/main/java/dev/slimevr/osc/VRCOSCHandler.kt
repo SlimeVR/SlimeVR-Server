@@ -393,20 +393,12 @@ class VRCOSCHandler(
 				// times per second
 				if (currentTime - timeAtLastError > 100) {
 					timeAtLastError = System.currentTimeMillis()
-					LogManager
-						.warning(
-							"[VRCOSCHandler] Error sending OSC message to VRChat: " +
-								e
-						)
+					LogManager.warning("[VRCOSCHandler] Error sending OSC message to VRChat: $e")
 				}
 			} catch (e: OSCSerializeException) {
 				if (currentTime - timeAtLastError > 100) {
 					timeAtLastError = System.currentTimeMillis()
-					LogManager
-						.warning(
-							"[VRCOSCHandler] Error sending OSC message to VRChat: " +
-								e
-						)
+					LogManager.warning("[VRCOSCHandler] Error sending OSC message to VRChat: $e")
 				}
 			}
 		}
