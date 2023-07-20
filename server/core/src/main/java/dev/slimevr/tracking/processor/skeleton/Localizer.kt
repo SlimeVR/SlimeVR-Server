@@ -228,8 +228,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	// get the sitting travel (emulates hip lock)
 	private fun getSittingTravel(): Vector3 {
-		var hip = Vector3.NULL
-		skeleton.computedHipTracker?.let { hip = it.position }
+		val hip = skeleton.computedHipTracker?.position ?: Vector3.NULL
 
 		// get the distance to move the waist to the target waist
 		val dist: Vector3 = hip.minus(targetHip)
@@ -414,8 +413,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	// update the hmd position and rotation
 	private fun updateSkeletonPos(travel: Vector3) {
-		var rot = Quaternion.IDENTITY
-		skeleton.headTracker?.let { rot = it.getRotation() }
+		val rot = skeleton.headTracker?.getRotation() ?: Quaternion.IDENTITY
 		val temp = skeleton.hmdNode.localTransform.translation.minus(travel)
 
 		skeleton.hmdNode.localTransform.translation = temp
