@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { ReactNode, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LoaderIcon } from './icon/LoaderIcon';
+import { LoaderIcon, SlimeState } from './icon/LoaderIcon';
 
 function ButtonContent({
   loading,
@@ -29,7 +29,7 @@ function ButtonContent({
       </div>
       {loading && (
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center fill-background-10">
-          <LoaderIcon youSpinMeRightRoundBabyRightRound></LoaderIcon>
+          <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
         </div>
       )}
     </>
