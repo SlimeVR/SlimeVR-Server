@@ -5,21 +5,22 @@ import io.github.axisangles.ktmath.Vector3
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
- * Represents a bone composed of 2 joints/nodes (TransformNode)
+ * Represents a bone composed of 2 joints: headNode and tailNode.
  */
 class Bone(val boneType: BoneType) {
-	val headNode = TransformNode(false)
-	val tailNode = TransformNode(false)
+	private val headNode = TransformNode(false)
+	private val tailNode = TransformNode(false)
 	var parent: Bone? = null
 		private set
 	val children: MutableList<Bone> = CopyOnWriteArrayList()
+	var rotationOffset = Quaternion.IDENTITY // TODO
 
 	init {
 		headNode.attachChild(tailNode)
 	}
 
 	/**
-	 * Attach another bone as a child of this
+	 * Attach another bone as a child of this.
 	 */
 	fun attachChild(bone: Bone) {
 		// Attach bone
@@ -32,7 +33,7 @@ class Bone(val boneType: BoneType) {
 	}
 
 	/**
-	 * Detach this bone from its parent and children
+	 * Detach this bone from its parent and children.
 	 */
 	fun detachWithChildren() {
 		// Detach bones
@@ -55,35 +56,55 @@ class Bone(val boneType: BoneType) {
 		headNode.update()
 	}
 
+	/**
+	 * Returns the world-aligned rotation of the bone
+	 */
 	fun getGlobalRotation(): Quaternion {
 		return headNode.worldTransform.rotation
 	}
 
-	fun getLocalRotation(): Quaternion {
-		return headNode.localTransform.rotation
-	}
-
-	fun getGlobalPosition(): Vector3 { // TODO remove one
-		return headNode.worldTransform.translation
-	}
-
-	fun getLocalPosition(): Vector3 { // TODO remove one
-		return headNode.localTransform.translation
-	}
-
+	/**
+	 * Sets the world-aligned rotation of the bone
+	 */
 	fun setGlobalRotation(rotation: Quaternion) {
 		headNode.worldTransform.rotation = rotation
 	}
 
+	/**
+	 * Returns the rotation of the bone relative to its parent
+	 */
+	fun getLocalRotation(): Quaternion {
+		return headNode.localTransform.rotation
+	}
+
+	/**
+	 * Sets the rotation of the bone relative to its parent
+	 */
 	fun setLocalRotation(rotation: Quaternion) {
 		headNode.localTransform.rotation = rotation
 	}
 
-	fun setGlobalPosition(position: Vector3) { // TODO remove one
-		headNode.worldTransform.translation = position
+	/**
+	 * Returns the global position of the head of the bone
+	 */
+	fun getPosition(): Vector3 {
+		return headNode.worldTransform.translation
 	}
 
-	fun setLocalPosition(position: Vector3) { // TODO remove one
+	/**
+	 * Returns the global position of the tail of the bone
+	 */
+	fun getTailPosition(): Vector3 {
+		return tailNode.worldTransform.translation
+	}
+
+	/**
+	 * Sets the global position of the head of the bone.
+	 * Note: cannot set the global position of bones with parents,
+	 * consider changing the bone's length instead.
+	 */
+	fun setPosition(position: Vector3) {
+		require(parent == null) { "Cannot set the position of a child bone." }
 		headNode.localTransform.translation = position
 	}
 

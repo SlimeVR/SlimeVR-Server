@@ -354,11 +354,11 @@ class HumanSkeleton(
 		updateComputedTrackers()
 
 		// Don't run post-processing if the tracking is paused
-		if (!pauseTracking) {
-			legTweaks.tweakLegs()
-			viveEmulation.update()
-			localizer.update()
-		}
+		if (pauseTracking) return
+
+		legTweaks.tweakLegs()
+		viveEmulation.update()
+		localizer.update()
 	}
 
 	/**
@@ -375,56 +375,64 @@ class HumanSkeleton(
 	 * Update all the bones' transforms from trackers
 	 */
 	private fun updateTransforms() {
+		// Update head bones
 		updateHeadTransforms()
-		if (!pauseTracking) {
-			updateSpineTransforms()
-			updateLegTransforms(
-				leftUpperLegBone,
-				leftKneeTrackerBone,
-				leftLowerLegBone,
-				leftFootBone,
-				leftFootTrackerBone,
-				leftUpperLegTracker,
-				leftLowerLegTracker,
-				leftFootTracker
-			)
-			updateLegTransforms(
-				rightUpperLegBone,
-				rightKneeTrackerBone,
-				rightLowerLegBone,
-				rightFootBone,
-				rightFootTrackerBone,
-				rightUpperLegTracker,
-				rightLowerLegTracker,
-				rightFootTracker
-			)
-			updateArmTransforms(
-				isTrackingLeftArmFromController,
-				leftShoulderBone,
-				leftUpperArmBone,
-				leftElbowTrackerBone,
-				leftLowerArmBone,
-				leftHandBone,
-				leftHandTrackerBone,
-				leftShoulderTracker,
-				leftUpperArmTracker,
-				leftLowerArmTracker,
-				leftHandTracker
-			)
-			updateArmTransforms(
-				isTrackingRightArmFromController,
-				rightShoulderBone,
-				rightUpperArmBone,
-				rightElbowTrackerBone,
-				rightLowerArmBone,
-				rightHandBone,
-				rightHandTrackerBone,
-				rightShoulderTracker,
-				rightUpperArmTracker,
-				rightLowerArmTracker,
-				rightHandTracker
-			)
-		}
+
+		// Stop at head (for the body to follow) if tracking is paused
+		if (pauseTracking) return
+
+		// Update spine bones
+		updateSpineTransforms()
+		// Update left leg bones
+		updateLegTransforms(
+			leftUpperLegBone,
+			leftKneeTrackerBone,
+			leftLowerLegBone,
+			leftFootBone,
+			leftFootTrackerBone,
+			leftUpperLegTracker,
+			leftLowerLegTracker,
+			leftFootTracker
+		)
+		// Update right leg bones
+		updateLegTransforms(
+			rightUpperLegBone,
+			rightKneeTrackerBone,
+			rightLowerLegBone,
+			rightFootBone,
+			rightFootTrackerBone,
+			rightUpperLegTracker,
+			rightLowerLegTracker,
+			rightFootTracker
+		)
+		// Update left arm bones
+		updateArmTransforms(
+			isTrackingLeftArmFromController,
+			leftShoulderBone,
+			leftUpperArmBone,
+			leftElbowTrackerBone,
+			leftLowerArmBone,
+			leftHandBone,
+			leftHandTrackerBone,
+			leftShoulderTracker,
+			leftUpperArmTracker,
+			leftLowerArmTracker,
+			leftHandTracker
+		)
+		// Update right arm bones
+		updateArmTransforms(
+			isTrackingRightArmFromController,
+			rightShoulderBone,
+			rightUpperArmBone,
+			rightElbowTrackerBone,
+			rightLowerArmBone,
+			rightHandBone,
+			rightHandTrackerBone,
+			rightShoulderTracker,
+			rightUpperArmTracker,
+			rightLowerArmTracker,
+			rightHandTracker
+		)
 	}
 
 	/**
@@ -434,7 +442,7 @@ class HumanSkeleton(
 		var headRot = IDENTITY
 		headTracker?.let { head ->
 			// Set head position
-			if (head.hasPosition) headBone.setLocalPosition(head.position)
+			if (head.hasPosition) headBone.setPosition(head.position)
 
 			// Get head rotation
 			headRot = head.getRotation()
@@ -450,7 +458,7 @@ class HumanSkeleton(
 			neckBone.setLocalRotation(headRot)
 		} ?: run {
 			// Set head position
-			if (!localizer.getEnabled()) headBone.setLocalPosition(NULL)
+			if (!localizer.getEnabled()) headBone.setPosition(NULL)
 
 			// Get neck or spine rotation (else is identity)
 			getFirstAvailableTracker(
@@ -694,7 +702,7 @@ class HumanSkeleton(
 		if (isTrackingFromController) { // From controller
 			// Set hand rotation and position from tracker
 			handTracker?.let {
-				handBone.setLocalPosition(it.position)
+				handBone.setPosition(it.position)
 				handBone.setLocalRotation(it.getRotation())
 			}
 
@@ -797,37 +805,37 @@ class HumanSkeleton(
 	// Update the output trackers
 	private fun updateComputedTrackers() {
 		computedHeadTracker?.let {
-			it.position = headTrackerBone.getGlobalPosition()
+			it.position = headTrackerBone.getPosition()
 			it.setRotation(headTrackerBone.getGlobalRotation())
 			it.dataTick()
 		}
 
 		computedChestTracker?.let {
-			it.position = chestTrackerBone.getGlobalPosition()
+			it.position = chestTrackerBone.getPosition()
 			it.setRotation(chestTrackerBone.getGlobalRotation())
 			it.dataTick()
 		}
 
 		computedHipTracker?.let {
-			it.position = hipTrackerBone.getGlobalPosition()
+			it.position = hipTrackerBone.getPosition()
 			it.setRotation(hipTrackerBone.getGlobalRotation())
 			it.dataTick()
 		}
 
 		computedLeftKneeTracker?.let {
-			it.position = leftKneeTrackerBone.getGlobalPosition()
+			it.position = leftKneeTrackerBone.getPosition()
 			it.setRotation(leftKneeTrackerBone.getGlobalRotation())
 			it.dataTick()
 		}
 
 		computedRightKneeTracker?.let {
-			it.position = rightKneeTrackerBone.getGlobalPosition()
+			it.position = rightKneeTrackerBone.getPosition()
 			it.setRotation(rightKneeTrackerBone.getGlobalRotation())
 			it.dataTick()
 		}
 
 		computedLeftFootTracker?.let {
-			it.position = leftFootTrackerBone.getGlobalPosition()
+			it.position = leftFootTrackerBone.getPosition()
 			var rot = leftFootTrackerBone.getGlobalRotation()
 			if (hasLeftFootTracker) rot *= FORWARD_QUATERNION
 			it.setRotation(leftFootTrackerBone.getGlobalRotation())
@@ -835,7 +843,7 @@ class HumanSkeleton(
 		}
 
 		computedRightFootTracker?.let {
-			it.position = rightFootTrackerBone.getGlobalPosition()
+			it.position = rightFootTrackerBone.getPosition()
 			var rot = rightFootTrackerBone.getGlobalRotation()
 			if (hasLeftFootTracker) rot *= FORWARD_QUATERNION
 			it.setRotation(rightFootTrackerBone.getGlobalRotation())
@@ -843,25 +851,25 @@ class HumanSkeleton(
 		}
 
 		computedLeftElbowTracker?.let {
-			it.position = leftElbowTrackerBone.getGlobalPosition()
+			it.position = leftElbowTrackerBone.getPosition()
 			it.setRotation(leftElbowTrackerBone.getGlobalRotation())
 			it.dataTick()
 		}
 
 		computedRightElbowTracker?.let {
-			it.position = rightElbowTrackerBone.getGlobalPosition()
+			it.position = rightElbowTrackerBone.getPosition()
 			it.setRotation(rightElbowTrackerBone.getGlobalRotation())
 			it.dataTick()
 		}
 
 		computedLeftHandTracker?.let {
-			it.position = leftHandTrackerBone.getGlobalPosition()
+			it.position = leftHandTrackerBone.getPosition()
 			it.setRotation(leftHandTrackerBone.getGlobalRotation())
 			it.dataTick()
 		}
 
 		computedRightHandTracker?.let {
-			it.position = rightHandTrackerBone.getGlobalPosition()
+			it.position = rightHandTrackerBone.getPosition()
 			it.setRotation(rightHandTrackerBone.getGlobalRotation())
 			it.dataTick()
 		}
@@ -906,10 +914,10 @@ class HumanSkeleton(
 	}
 
 	// Skeleton Config bone lengths
-	fun updateNodeOffset(bone: BoneType, offset: Vector3) {
+	fun updateNodeOffset(boneType: BoneType, offset: Vector3) {
 		var transOffset = offset
 
-		when (bone) {
+		when (boneType) {
 			BoneType.HEAD -> {
 				if (headTracker == null || !(headTracker!!.hasPosition && headTracker!!.hasRotation)) {
 					transOffset = NULL
@@ -945,10 +953,14 @@ class HumanSkeleton(
 				.unit()
 		}
 
+		// Get the bone
+		val bone = getBone(boneType)
+
 		// Update bone length
-		getBone(bone).length = transOffset.len()
-		// Set bone rotation offset TODO
-		getBone(bone).headNode.rotationOffset = rotOffset
+		bone.length = transOffset.len()
+
+		// Set bone rotation offset
+		bone.rotationOffset = rotOffset
 	}
 
 	private fun computeDependentArmOffsets() {
@@ -1018,8 +1030,20 @@ class HumanSkeleton(
 			leftKneeTrackerBone,
 			rightKneeTrackerBone,
 			leftFootTrackerBone,
-			rightFootTrackerBone
-		) // .copyInto(armBones) todo omg
+			rightFootTrackerBone,
+			leftShoulderBone,
+			rightShoulderBone,
+			leftUpperArmBone,
+			rightUpperArmBone,
+			leftLowerArmBone,
+			rightLowerArmBone,
+			leftHandBone,
+			rightHandBone,
+			leftElbowTrackerBone,
+			rightElbowTrackerBone,
+			leftHandTrackerBone,
+			rightHandTrackerBone
+		)
 
 	private val armBones: Array<Bone>
 		get() = arrayOf(

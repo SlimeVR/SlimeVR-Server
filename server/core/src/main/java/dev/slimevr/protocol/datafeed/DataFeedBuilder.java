@@ -363,7 +363,7 @@ public class DataFeedBuilder {
 		for (var i = 0; i < bones.size(); ++i) {
 			var bi = bones.get(i);
 
-			var headPosG = bi.getGlobalPosition();
+			var headPosG = bi.getPosition();
 			var rotG = bi.getGlobalRotation();
 			var length = bi.getLength();
 

@@ -7,6 +7,7 @@ import com.illposed.osc.transport.OSCPortOut;
 import dev.slimevr.VRServer;
 import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.config.VMCConfig;
+import dev.slimevr.tracking.processor.Bone;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.processor.TransformNode;
@@ -369,19 +370,17 @@ public class VMCHandler implements OSCHandler {
 							)
 						);
 
-					for (UnityBone bone : UnityBone.values()) {
-						// Get tailNode for bone
-						TransformNode tailNode = humanPoseManager
-							.getTailNodeOfBone(
-								bone.getBoneType()
-							);
-						// Update unity hierarchy from bone's global rotation
-						if (tailNode != null && tailNode.getParent() != null)
+					for (UnityBone unityBone : UnityBone.getEntries()) {
+						BoneType boneType = unityBone.getBoneType();
+						if (boneType != null) {
+							// Get SlimeVR bone
+							Bone bone = humanPoseManager.getBone(boneType);
+
+							// Update unity hierarchy from bone's global
+							// rotation
 							outputUnityArmature
-								.setGlobalRotationForBone(
-									bone,
-									tailNode.getParent().getWorldTransform().getRotation()
-								);
+								.setGlobalRotationForBone(unityBone, bone.getGlobalRotation());
+						}
 					}
 					if (!anchorHip) {
 						// Anchor from head
@@ -400,9 +399,8 @@ public class VMCHandler implements OSCHandler {
 									.getTranslation()
 							)).times(0.5f);
 						Vector3 scaledHead = humanPoseManager
-							.getTailNodeOfBone(BoneType.HEAD)
-							.getWorldTransform()
-							.getTranslation()
+							.getBone(BoneType.HEAD)
+							.getTailPosition()
 							.times(
 								vrmHeight
 									/ (humanPoseManager.getUserHeightFromConfig()

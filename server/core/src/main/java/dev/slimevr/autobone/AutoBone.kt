@@ -137,7 +137,7 @@ class AutoBone(server: VRServer) {
 		node: BoneType,
 		rightSide: Boolean,
 	): Vector3 {
-		var node = when (node) {
+		val boneType = when (node) {
 			BoneType.LEFT_HIP, BoneType.RIGHT_HIP -> if (rightSide) BoneType.RIGHT_HIP else BoneType.LEFT_HIP
 			BoneType.LEFT_UPPER_LEG, BoneType.RIGHT_UPPER_LEG ->
 				if (rightSide) BoneType.RIGHT_UPPER_LEG else BoneType.LEFT_UPPER_LEG
@@ -145,8 +145,8 @@ class AutoBone(server: VRServer) {
 				if (rightSide) BoneType.RIGHT_LOWER_LEG else BoneType.LEFT_LOWER_LEG
 			else -> node
 		}
-		val relevantTransform = skeleton.getTailNodeOfBone(node)
-		return (relevantTransform.worldTransform.translation - relevantTransform.parent!!.worldTransform.translation).unit()
+		val relevantTransform = skeleton.getBone(boneType)
+		return (relevantTransform.getTailPosition() - relevantTransform.getPosition()).unit() // TODO omg does this work
 	}
 
 	fun getDotProductDiff(
