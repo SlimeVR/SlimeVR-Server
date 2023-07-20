@@ -1,6 +1,7 @@
 package dev.slimevr.autobone
 
 import com.jme3.math.FastMath
+import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
 import dev.slimevr.autobone.errors.*
 import dev.slimevr.config.AutoBoneConfig
@@ -10,6 +11,7 @@ import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import dev.slimevr.tracking.trackers.TrackerRole
+import io.eiren.util.OperatingSystem
 import io.eiren.util.StringUtils
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
@@ -659,8 +661,20 @@ class AutoBone(server: VRServer) {
 	}
 
 	companion object {
-		val saveDir = File("AutoBone Recordings")
-		val loadDir = File("Load AutoBone Recordings")
+		const val AUTOBONE_FOLDER = "AutoBone Recordings"
+		const val LOADAUTOBONE_FOLDER = "Load AutoBone Recordings"
+
+		// FIXME: Won't work on iOS and Android, maybe fix resolveConfigDirectory more than this
+		val saveDir = File(
+			OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(
+				AUTOBONE_FOLDER
+			)?.toString() ?: AUTOBONE_FOLDER
+		)
+		val loadDir = File(
+			OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(
+				LOADAUTOBONE_FOLDER
+			)?.toString() ?: LOADAUTOBONE_FOLDER
+		)
 
 		// Mean square error function
 		private fun errorFunc(errorDeriv: Float): Float {
