@@ -1,10 +1,7 @@
-package dev.slimevr.platform;
+package dev.slimevr.desktop.platform;
 
 import dev.slimevr.VRServer;
-import dev.slimevr.bridge.ProtobufBridge;
-import dev.slimevr.bridge.ProtobufMessages;
-import dev.slimevr.bridge.ProtobufMessages.Battery;
-import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
+import dev.slimevr.desktop.platform.ProtobufMessages.*;
 import dev.slimevr.config.BridgeConfig;
 import dev.slimevr.tracking.trackers.*;
 import dev.slimevr.util.ann.VRServerThread;
@@ -400,6 +397,4 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			.addStatusInt(status, false);
 
 	}
-
-	public abstract boolean isConnected();
 }

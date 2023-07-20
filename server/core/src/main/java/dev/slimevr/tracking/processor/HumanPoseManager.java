@@ -11,7 +11,6 @@ import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
 import dev.slimevr.tracking.trackers.TrackerRole;
-import dev.slimevr.tracking.trackers.TrackerStatus;
 import dev.slimevr.util.ann.VRServerThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
@@ -50,7 +49,14 @@ public class HumanPoseManager {
 	 */
 	public HumanPoseManager(VRServer server) {
 		this();
+		skeleton = new HumanSkeleton(this, server);
 		this.server = server;
+		// This computes all node offsets, so the defaults don't need to be
+		// explicitly loaded into the skeleton (no need for
+		// `updateNodeOffsetsInSkeleton()`)
+		loadFromConfig(server.configManager);
+		for (Consumer<HumanSkeleton> sc : onSkeletonUpdated)
+			sc.accept(skeleton);
 	}
 
 	/**
@@ -318,45 +324,7 @@ public class HumanPoseManager {
 
 	@VRServerThread
 	public void updateSkeletonModelFromServer() {
-		disconnectComputedHumanPoseTrackers();
-
-		// Make a new skeleton and store the old state
-		HumanSkeleton oldSkeleton = skeleton;
-		skeleton = new HumanSkeleton(this, server);
-
-		// Transfer the state of the old skeleton to the new one
-		if (oldSkeleton != null) {
-			skeleton.setPauseTracking(oldSkeleton.getPauseTracking());
-
-			// If paused, copy the pose to the new skeleton so it doesn't reset
-			// to t-pose each time
-			if (oldSkeleton.getPauseTracking()) {
-				TransformNode[] oldNodes = oldSkeleton.getAllNodes();
-				TransformNode[] newNodes = skeleton.getAllNodes();
-
-				for (int i = 0; i < newNodes.length; i++) {
-					newNodes[i]
-						.getLocalTransform()
-						.setRotation(oldNodes[i].getLocalTransform().getRotation());
-				}
-			}
-		}
-
-		// This recomputes all node offsets, so the defaults don't need to be
-		// explicitly loaded into the skeleton (no need for
-		// `updateNodeOffsetsInSkeleton()`)
-		loadFromConfig(server.configManager);
-		for (Consumer<HumanSkeleton> sc : onSkeletonUpdated)
-			sc.accept(skeleton);
-
-		connectComputedHumanPoseTrackers();
-	}
-
-	@VRServerThread
-	private void disconnectComputedHumanPoseTrackers() {
-		for (Tracker t : computedTrackers) {
-			t.setStatus(TrackerStatus.DISCONNECTED);
-		}
+		skeleton.setTrackersFromList(server.getAllTrackers());
 	}
 
 	private void connectComputedHumanPoseTrackers() {
