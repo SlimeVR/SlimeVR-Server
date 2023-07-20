@@ -12,7 +12,7 @@ import { useConfig } from '../../hooks/config';
 import { useTracker } from '../../hooks/tracker';
 import { BodyPartIcon } from '../commons/BodyPartIcon';
 import { Typography } from '../commons/Typography';
-import { formatVector3 } from '../utils/formatting';
+import { formatVector3 } from '../../utils/formatting';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
