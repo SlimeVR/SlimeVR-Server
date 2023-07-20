@@ -109,6 +109,9 @@ widget-overlay-is_mirrored_label = Display Overlay as Mirror
 ## Widget: Drift compensation
 widget-drift_compensation-clear = Clear drift compensation
 
+## Widget: Clear Reset Mounting
+widget-clear_mounting = Clear reset mounting
+
 ## Widget: Developer settings
 widget-developer_mode = Developer Mode
 widget-developer_mode-high_contrast = High contrast
@@ -147,9 +150,15 @@ tracker-table-column-url = URL
 
 ## Tracker rotation
 tracker-rotation-front = Front
+tracker-rotation-front_left = Front-Left
+tracker-rotation-front_right = Front-Right
 tracker-rotation-left = Left
 tracker-rotation-right = Right
 tracker-rotation-back = Back
+tracker-rotation-back_left = Back-Left
+tracker-rotation-back_right = Back-Right
+tracker-rotation-custom = Custom
+tracker-rotation-overriden = (overriden by mounting reset)
 
 ## Tracker information
 tracker-infos-manufacturer = Manufacturer
@@ -319,6 +328,10 @@ settings-general-fk_settings-skeleton_settings-description = Toggle skeleton set
 settings-general-fk_settings-skeleton_settings-extended_spine = Extended spine
 settings-general-fk_settings-skeleton_settings-extended_pelvis = Extended pelvis
 settings-general-fk_settings-skeleton_settings-extended_knees = Extended knee
+
+settings-general-fk_settings-self_localization-title = Mocap mode
+settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
+
 settings-general-fk_settings-vive_emulation-title = Vive emulation
 settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
 settings-general-fk_settings-vive_emulation-label = Enable Vive emulation

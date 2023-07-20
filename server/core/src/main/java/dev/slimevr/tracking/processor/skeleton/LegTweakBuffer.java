@@ -28,13 +28,15 @@ public class LegTweakBuffer {
 	public static final int ANKLE_ACCEL = 4;
 
 	public static final float NS_CONVERT = 1.0e9f;
-	private static final Vector3 GRAVITY = new Vector3(0, -9.81f, 0);
-	private static final float GRAVITY_MAGNITUDE = GRAVITY.len();
+	static final Vector3 GRAVITY = new Vector3(0, -9.81f, 0);
+	static final float GRAVITY_MAGNITUDE = GRAVITY.len();
 	private static final int BUFFER_LEN = 10;
 
 	// states for the legs
 	private int leftLegState = STATE_UNKNOWN;
 	private int rightLegState = STATE_UNKNOWN;
+	private float leftLegNumericalState = 0;
+	private float rightLegNumericalState = 0;
 
 	// positions and rotations
 	private Vector3 leftFootPosition = Vector3.Companion.getNULL();
@@ -79,6 +81,7 @@ public class LegTweakBuffer {
 	private Vector3 centerOfMassAcceleration = Vector3.Companion.getNULL();
 	private float leftFloorLevel;
 	private float rightFloorLevel;
+	private boolean isStanding = false;
 
 	// hyperparameters
 	public static final float SKATING_DISTANCE_CUTOFF = 0.5f;
@@ -281,6 +284,14 @@ public class LegTweakBuffer {
 		this.rightLegState = rightLegState;
 	}
 
+	public float getLeftLegNumericalState() {
+		return leftLegNumericalState;
+	}
+
+	public float getRightLegNumericalState() {
+		return rightLegNumericalState;
+	}
+
 	public void setParent(LegTweakBuffer parent) {
 		this.parent = parent;
 	}
@@ -297,11 +308,11 @@ public class LegTweakBuffer {
 		this.rightFootAcceleration = rightFootAcceleration;
 	}
 
-	public Vector3 getLeftFootAcceleration(Vector3 vec) {
+	public Vector3 getLeftFootAcceleration() {
 		return leftFootAcceleration;
 	}
 
-	public Vector3 getRightFootAcceleration(Vector3 vec) {
+	public Vector3 getRightFootAcceleration() {
 		return rightFootAcceleration;
 	}
 
@@ -329,12 +340,20 @@ public class LegTweakBuffer {
 		return rightFloorLevel;
 	}
 
+	public boolean getIsStanding() {
+		return isStanding;
+	}
+
 	// returns 1 / delta time
 	public float getTimeDelta() {
 		if (parent == null)
 			return 0.0f;
 
 		return 1.0f / ((timeOfFrame - parent.timeOfFrame) / NS_CONVERT);
+	}
+
+	public long getTimeOfFrame() {
+		return timeOfFrame;
 	}
 
 	public void setDetectionMode(int mode) {
@@ -386,6 +405,8 @@ public class LegTweakBuffer {
 		// individual frame
 		leftLegState = checkStateLeft();
 		rightLegState = checkStateRight();
+
+		computeNumericalState();
 	}
 
 	// check if a locked foot should stay locked or be released
@@ -456,6 +477,42 @@ public class LegTweakBuffer {
 		}
 
 		return LOCKED;
+	}
+
+	// compute a numerical value representing how locked a foot is (bigger
+	// number == less locked)
+	private void computeNumericalState() {
+		leftLegNumericalState = computeNumericalStateLeft();
+		rightLegNumericalState = computeNumericalStateRight();
+	}
+
+	// returns the average percentage the real velocity and acceleration are of
+	// the scaled thresholds for velocity and acceleration
+	private float computeNumericalStateLeft() {
+		float timeStep = getTimeDelta();
+		float velocity = leftFootVelocityMagnitude * timeStep;
+		float acceleration = leftFootAccelerationMagnitude;
+
+		float velocityPercentage = velocity / (SKATING_VELOCITY_THRESHOLD * leftFootSensitivityVel);
+		float accelerationPercentage = acceleration
+			/ (SKATING_ACCELERATION_THRESHOLD * leftFootSensitivityAccel);
+
+		return (velocityPercentage + accelerationPercentage) * 0.5f;
+	}
+
+	// returns the average percentage the real velocity and acceleration are of
+	// the scaled thresholds for velocity and acceleration
+	private float computeNumericalStateRight() {
+		float timeStep = getTimeDelta();
+		float velocity = rightFootVelocityMagnitude * timeStep;
+		float acceleration = rightFootAccelerationMagnitude;
+
+		float velocityPercentage = velocity
+			/ (SKATING_VELOCITY_THRESHOLD * rightFootSensitivityVel);
+		float accelerationPercentage = acceleration
+			/ (SKATING_ACCELERATION_THRESHOLD * rightFootSensitivityAccel);
+
+		return (velocityPercentage + accelerationPercentage) * 0.5f;
 	}
 
 	// get the difference in feet position between the kinematic and corrected
@@ -715,8 +772,11 @@ public class LegTweakBuffer {
 		// see if the force vectors found a reasonable solution
 		// if they did not we assume there is another force acting on the com
 		// and fall back to a low pressure prediction
-		if (detectOutsideForces(leftFootForce, rightFootForce))
+		if (detectOutsideForces(leftFootForce, rightFootForce)) {
+			isStanding = false;
 			return FORCE_VECTOR_FALLBACK;
+		}
+		isStanding = true;
 
 		// set the pressure to the force on each foot times the force to
 		// pressure scalar
