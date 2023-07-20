@@ -453,10 +453,7 @@ public class VMCHandler implements OSCHandler {
 				}
 
 				for (Tracker tracker : computedTrackers) {
-					if (
-						tracker.getStatus() != TrackerStatus.DISCONNECTED
-							&& tracker.getStatus() != TrackerStatus.ERROR
-					) {
+					if (!tracker.getStatus().getReset()) {
 						oscArgs.clear();
 
 						String name = tracker.getName();
