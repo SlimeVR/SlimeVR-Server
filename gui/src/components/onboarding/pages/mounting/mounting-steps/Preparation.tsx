@@ -40,7 +40,7 @@ export function PreparationStep({
         {isMobile && (
           <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
             <img
-              src="/images/reset-pose.png"
+              src="/images/reset-pose.webp"
               width={100}
               alt="Reset position"
             />
@@ -62,7 +62,7 @@ export function PreparationStep({
       </div>
       {!isMobile && (
         <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
-          <img src="/images/reset-pose.png" width={90} alt="Reset position" />
+          <img src="/images/reset-pose.webp" width={90} alt="Reset position" />
         </div>
       )}
     </div>

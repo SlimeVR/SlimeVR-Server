@@ -177,6 +177,7 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
 
     const bundles = lazilyParsedBundles(fetchedMessages);
     localStorage.setItem('i18nextLng', currentLocale);
+    document.documentElement.lang = currentLocale;
     setL10n(new ReactLocalization(bundles));
   }
 

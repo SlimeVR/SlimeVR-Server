@@ -23,7 +23,7 @@ jobs:
         with:
           submodules: recursive
       - name: Get tags
-        run: git fetch --tags origin
+        run: git fetch --tags origin --recurse-submodules=no
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -52,7 +52,7 @@ jobs:
         with:
           submodules: recursive
       - name: Get tags
-        run: git fetch --tags origin
+        run: git fetch --tags origin --recurse-submodules=no
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -268,7 +268,7 @@ jobs:
           mkdir SlimeVR
           cp gui/src-tauri/icons/icon.ico ./SlimeVR/run.ico
           cp server/desktop/build/libs/slimevr.jar ./SlimeVR/slimevr.jar
-          cp server/desktop/resources/* ./SlimeVR/
+          cp server/core/resources/* ./SlimeVR/
           cp target/release/slimevr.exe ./SlimeVR/
           7z a -tzip SlimeVR-win64.zip ./SlimeVR/
 
