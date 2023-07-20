@@ -30,7 +30,7 @@
       "deb": {
         "depends": ["openjdk-17-jre-headless"],
         "files": {
-          "/usr/share/slimevr/slimevr.jar": "../../server/build/libs/slimevr.jar"
+          "/usr/share/slimevr/slimevr.jar": "../../server/desktop/build/libs/slimevr.jar"
         }
       },
       "appimage": {

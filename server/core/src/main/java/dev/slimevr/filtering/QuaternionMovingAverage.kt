@@ -1,6 +1,5 @@
 package dev.slimevr.filtering
 
-import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
@@ -21,13 +20,13 @@ class QuaternionMovingAverage(
 	var amount: Float,
 	initialRotation: Quaternion,
 ) {
+	var filteredQuaternion = IDENTITY
 	private var smoothFactor = 0f
 	private var predictFactor = 0f
 	private lateinit var rotBuffer: CircularArrayList<Quaternion>
 	private var latestQuaternion = IDENTITY
 	private var smoothingQuaternion = IDENTITY
-	var filteredQuaternion = IDENTITY
-	private val fpsTimer: NanoTimer = VRServer.instance.fpsTimer
+	private val fpsTimer = VRServer.instance.fpsTimer
 	private var smoothingCounter = 0
 
 	init {
@@ -37,7 +36,11 @@ class QuaternionMovingAverage(
 		amount = Math.max(amount, 0f)
 		if (type === TrackerFilters.SMOOTHING) {
 			// lower smoothFactor = more smoothing
-			smoothFactor = SMOOTH_MULTIPLIER * (1 - amount) + SMOOTH_MIN
+			smoothFactor = SMOOTH_MULTIPLIER * (1 - Math.min(amount, 1f)) + SMOOTH_MIN
+			// Totally a hack
+			if (amount > 1) {
+				smoothFactor /= amount
+			}
 		}
 		if (type === TrackerFilters.PREDICTION) {
 			// higher predictFactor = more prediction
@@ -62,13 +65,13 @@ class QuaternionMovingAverage(
 
 				// Slerps the target rotation to that predicted rotation by
 				// a certain factor.
-				filteredQuaternion = filteredQuaternion.interpR(quatBuf, predictFactor * fpsTimer.timePerFrame)
+				filteredQuaternion = filteredQuaternion.interpR(quatBuf, predictFactor * (fpsTimer?.timePerFrame ?: 1f))
 			}
 		}
 		if (type === TrackerFilters.SMOOTHING) {
 			// Calculate the slerp factor and limit it to 1 max
 			smoothingCounter++
-			val amt = (smoothFactor * fpsTimer.timePerFrame * smoothingCounter).coerceAtMost(1f)
+			val amt = (smoothFactor * (fpsTimer?.timePerFrame ?: 1f) * smoothingCounter).coerceAtMost(1f)
 
 			// Smooth towards the target rotation
 			filteredQuaternion = smoothingQuaternion.interpR(latestQuaternion, amt)
