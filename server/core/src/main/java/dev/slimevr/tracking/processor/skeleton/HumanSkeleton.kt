@@ -291,6 +291,9 @@ class HumanSkeleton(
 
 		// Refresh node offsets for arms
 		computeDependentArmOffsets()
+
+		// Update tap detection's trackers
+		tapDetectionManager.updateConfig()
 	}
 
 	/**
