@@ -10,6 +10,7 @@ export function NumberSelector({
   min,
   max,
   step,
+  disabled = false,
 }: {
   label: string;
   valueLabelFormat?: (value: number) => string;
@@ -18,6 +19,7 @@ export function NumberSelector({
   min: number;
   max: number;
   step: number | ((value: number, add: boolean) => number);
+  disabled?: boolean;
 }) {
   const stepFn =
     typeof step === 'function'
@@ -38,12 +40,12 @@ export function NumberSelector({
                 variant="tertiary"
                 rounded
                 onClick={() => onChange(stepFn(value, false))}
-                disabled={stepFn(value, false) < min}
+                disabled={stepFn(value, false) < min || disabled}
               >
                 -
               </Button>
             </div>
-            <div className="flex flex-grow justify-center items-center w-10">
+            <div className="flex flex-grow justify-center items-center w-10 text-standard">
               {valueLabelFormat ? valueLabelFormat(value) : value}
             </div>
             <div className="flex">
@@ -51,7 +53,7 @@ export function NumberSelector({
                 variant="tertiary"
                 rounded
                 onClick={() => onChange(stepFn(value, true))}
-                disabled={stepFn(value, true) > max}
+                disabled={stepFn(value, true) > max || disabled}
               >
                 +
               </Button>

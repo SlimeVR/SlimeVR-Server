@@ -68,10 +68,6 @@ public class TapDetectionManager {
 		this.resetHandler = resetHandler;
 		this.tapSetupHandler = tapSetupHandler;
 
-		yawResetDetector = new TapDetection(skeleton, getTrackerToWatchYawReset());
-		fullResetDetector = new TapDetection(skeleton, getTrackerToWatchFullReset());
-		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
-
 		// a list of tap detectors for each tracker
 		tapDetectors = new ArrayList<>();
 		for (Tracker tracker : trackers) {
@@ -80,25 +76,19 @@ public class TapDetectionManager {
 			tapDetectors.add(tapDetector);
 		}
 
-		// since this config value is only modified by editing the config file,
-		// we can set it here
-		yawResetDetector
-			.setNumberTrackersOverThreshold(
-				config.getNumberTrackersOverThreshold()
-			);
-		fullResetDetector
-			.setNumberTrackersOverThreshold(
-				config.getNumberTrackersOverThreshold()
-			);
-		mountingResetDetector
-			.setNumberTrackersOverThreshold(
-				config.getNumberTrackersOverThreshold()
-			);
-
 		updateConfig();
 	}
 
 	public void updateConfig() {
+		// check the skeleton for new trackers
+		yawResetDetector = new TapDetection(skeleton, getTrackerToWatchYawReset());
+		fullResetDetector = new TapDetection(skeleton, getTrackerToWatchFullReset());
+		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
+
+		if (this.config == null) {
+			return;
+		}
+
 		this.yawResetDelayNs = config.getYawResetDelay() * NS_CONVERTER;
 		this.fullResetDelayNs = config.getFullResetDelay() * NS_CONVERTER;
 		this.mountingResetDelayNs = config.getMountingResetDelay() * NS_CONVERTER;
@@ -111,6 +101,18 @@ public class TapDetectionManager {
 		yawResetDetector.setMaxTaps(yawResetTaps);
 		fullResetDetector.setMaxTaps(fullResetTaps);
 		mountingResetDetector.setMaxTaps(mountingResetTaps);
+		yawResetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
+		fullResetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
+		mountingResetDetector
+			.setNumberTrackersOverThreshold(
+				config.getNumberTrackersOverThreshold()
+			);
 	}
 
 	public void update() {
