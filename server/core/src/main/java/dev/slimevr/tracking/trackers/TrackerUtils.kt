@@ -34,8 +34,7 @@ object TrackerUtils {
 	): Tracker? = allTrackers.firstOrNull {
 		it.trackerPosition === position &&
 			!it.isInternal &&
-			it.status != TrackerStatus.DISCONNECTED &&
-			it.status != TrackerStatus.ERROR
+			!it.status.reset
 	}
 
 	/**
@@ -51,8 +50,7 @@ object TrackerUtils {
 		it.trackerPosition === position &&
 			!it.isComputed &&
 			!it.isInternal &&
-			it.status != TrackerStatus.DISCONNECTED &&
-			it.status != TrackerStatus.ERROR
+			!it.status.reset
 	}
 
 	/**
@@ -69,8 +67,7 @@ object TrackerUtils {
 		it.trackerPosition === position &&
 			!it.isImu() &&
 			!it.isInternal &&
-			it.status != TrackerStatus.DISCONNECTED &&
-			it.status != TrackerStatus.ERROR
+			!it.status.reset
 	}
 
 	/**
