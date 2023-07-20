@@ -200,12 +200,17 @@ export function GeneralSettings() {
 
     if (values.ratios) {
       const ratios = new ModelRatiosT();
-      ratios.imputeWaistFromChestHip = values.ratios.imputeWaistFromChestHip;
-      ratios.imputeWaistFromChestLegs = values.ratios.imputeWaistFromChestLegs;
-      ratios.imputeHipFromChestLegs = values.ratios.imputeHipFromChestLegs;
-      ratios.imputeHipFromWaistLegs = values.ratios.imputeHipFromWaistLegs;
-      ratios.interpHipLegs = values.ratios.interpHipLegs;
-      ratios.interpKneeTrackerAnkle = values.ratios.interpKneeTrackerAnkle;
+      ratios.imputeWaistFromChestHip =
+        values.ratios.imputeWaistFromChestHip || -1;
+      ratios.imputeWaistFromChestLegs =
+        values.ratios.imputeWaistFromChestLegs || -1;
+      ratios.imputeHipFromChestLegs =
+        values.ratios.imputeHipFromChestLegs || -1;
+      ratios.imputeHipFromWaistLegs =
+        values.ratios.imputeHipFromWaistLegs || -1;
+      ratios.interpHipLegs = values.ratios.interpHipLegs || -1;
+      ratios.interpKneeTrackerAnkle =
+        values.ratios.interpKneeTrackerAnkle || -1;
       modelSettings.ratios = ratios;
     }
 
