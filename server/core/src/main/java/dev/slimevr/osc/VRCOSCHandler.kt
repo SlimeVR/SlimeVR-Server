@@ -12,8 +12,8 @@ import com.illposed.osc.transport.OSCPortOut
 import com.jme3.math.FastMath
 import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
+import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.VRCOSCConfig
-import dev.slimevr.platform.SteamVRBridge
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
@@ -38,7 +38,7 @@ private const val OFFSET_SLERP_FACTOR = 0.5f // Guessed from eyeing VRChat
 class VRCOSCHandler(
 	private val server: VRServer,
 	private val humanPoseManager: HumanPoseManager,
-	private val steamvrBridge: SteamVRBridge?,
+	private val steamvrBridge: ISteamVRBridge?,
 	private val config: VRCOSCConfig,
 	private val computedTrackers: List<Tracker>,
 ) : OSCHandler {
@@ -186,7 +186,7 @@ class VRCOSCHandler(
 		if (listenTrackers) {
 			if (event.message.address.equals("/avatar/parameters/Upright")) {
 				// Receiving HMD data from VRChat
-				if (steamvrBridge != null && !steamvrBridge.isConnected) {
+				if (steamvrBridge != null && !steamvrBridge.isConnected()) {
 					if (vrcHmd == null) {
 						val vrcDevice = server.deviceManager.createDevice("VRChat OSC", null, "VRChat")
 						server.deviceManager.addDevice(vrcDevice)
