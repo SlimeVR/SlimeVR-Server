@@ -1,16 +1,17 @@
 package dev.slimevr.autobone
 
 import com.jme3.math.FastMath
+import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
 import dev.slimevr.autobone.errors.*
 import dev.slimevr.config.AutoBoneConfig
 import dev.slimevr.poseframeformat.PoseFrameIO
 import dev.slimevr.poseframeformat.PoseFrames
-import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import dev.slimevr.tracking.trackers.TrackerRole
+import io.eiren.util.OperatingSystem
 import io.eiren.util.StringUtils
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
@@ -18,45 +19,43 @@ import io.github.axisangles.ktmath.Vector3
 import org.apache.commons.lang3.tuple.Pair
 import java.io.File
 import java.util.*
-import java.util.function.BiConsumer
 import java.util.function.Consumer
 import java.util.function.Function
 
 class AutoBone(server: VRServer) {
-	// This is filled by reloadConfigValues()
-	val offsets = EnumMap<BoneType, Float>(
-		BoneType::class.java
+	// This is filled by loadConfigValues()
+	val offsets = EnumMap<SkeletonConfigOffsets, Float>(
+		SkeletonConfigOffsets::class.java
 	)
 	val adjustOffsets = FastList(
 		arrayOf(
-			BoneType.HEAD,
-			BoneType.NECK,
-			BoneType.UPPER_CHEST,
-			BoneType.CHEST,
-			BoneType.WAIST,
-			BoneType.HIP, // This now works when using body proportion error! It's not the
+			SkeletonConfigOffsets.HEAD,
+			SkeletonConfigOffsets.NECK,
+			SkeletonConfigOffsets.UPPER_CHEST,
+			SkeletonConfigOffsets.CHEST,
+			SkeletonConfigOffsets.WAIST,
+			SkeletonConfigOffsets.HIP, // This now works when using body proportion error! It's not the
 			// best still, but it is somewhat functional
-			BoneType.LEFT_HIP,
-			BoneType.LEFT_UPPER_LEG,
-			BoneType.LEFT_LOWER_LEG
+			SkeletonConfigOffsets.HIPS_WIDTH,
+			SkeletonConfigOffsets.UPPER_LEG,
+			SkeletonConfigOffsets.LOWER_LEG
 		)
 	)
-	val heightOffsets = FastList(
-		arrayOf(
-			BoneType.NECK,
-			BoneType.UPPER_CHEST,
-			BoneType.CHEST,
-			BoneType.WAIST,
-			BoneType.HIP,
-			BoneType.LEFT_UPPER_LEG,
-			BoneType.RIGHT_UPPER_LEG,
-			BoneType.LEFT_LOWER_LEG,
-			BoneType.RIGHT_LOWER_LEG
-		)
+	val heightOffsetDefaults = EnumMap<SkeletonConfigOffsets, Float>(
+		SkeletonConfigOffsets::class.java
 	)
 
-	val legacyConfigs = EnumMap<SkeletonConfigOffsets, Float>(
-		SkeletonConfigOffsets::class.java
+	// This is filled by loadConfigValues()
+	val heightOffsets = FastList(
+		arrayOf(
+			SkeletonConfigOffsets.NECK,
+			SkeletonConfigOffsets.UPPER_CHEST,
+			SkeletonConfigOffsets.CHEST,
+			SkeletonConfigOffsets.WAIST,
+			SkeletonConfigOffsets.HIP,
+			SkeletonConfigOffsets.UPPER_LEG,
+			SkeletonConfigOffsets.LOWER_LEG
+		)
 	)
 
 	private val server: VRServer
@@ -81,34 +80,6 @@ class AutoBone(server: VRServer) {
 		loadConfigValues()
 	}
 
-	fun computeBoneOffset(
-		bone: BoneType,
-		getOffset: Function<SkeletonConfigOffsets, Float>,
-	): Float {
-		return when (bone) {
-			BoneType.HEAD -> getOffset.apply(SkeletonConfigOffsets.HEAD)
-			BoneType.NECK -> getOffset.apply(SkeletonConfigOffsets.NECK)
-			BoneType.UPPER_CHEST -> getOffset.apply(SkeletonConfigOffsets.UPPER_CHEST)
-			BoneType.CHEST -> getOffset.apply(SkeletonConfigOffsets.CHEST)
-			BoneType.WAIST -> getOffset.apply(SkeletonConfigOffsets.WAIST)
-			BoneType.HIP -> getOffset.apply(SkeletonConfigOffsets.HIP)
-			BoneType.LEFT_HIP, BoneType.RIGHT_HIP -> (
-				getOffset.apply(SkeletonConfigOffsets.HIPS_WIDTH) /
-					2f
-				)
-
-			BoneType.LEFT_UPPER_LEG, BoneType.RIGHT_UPPER_LEG ->
-				getOffset
-					.apply(SkeletonConfigOffsets.UPPER_LEG)
-
-			BoneType.LEFT_LOWER_LEG, BoneType.RIGHT_LOWER_LEG ->
-				getOffset
-					.apply(SkeletonConfigOffsets.LOWER_LEG)
-
-			else -> -1f
-		}
-	}
-
 	private fun loadConfigValues() {
 		// Remove all previous values
 		offsets.clear()
@@ -125,143 +96,83 @@ class AutoBone(server: VRServer) {
 				}
 			}
 		for (bone in adjustOffsets) {
-			val offset = computeBoneOffset(bone, getOffset)
+			val offset = getOffset.apply(bone)
 			if (offset > 0f) {
 				offsets[bone] = offset
+			}
+		}
+		for (bone in heightOffsets) {
+			val offset = getOffset.apply(bone)
+			if (offset > 0f) {
+				heightOffsetDefaults[bone] = offset
 			}
 		}
 	}
 
 	fun getBoneDirection(
 		skeleton: HumanPoseManager,
-		node: BoneType,
+		configOffset: SkeletonConfigOffsets,
 		rightSide: Boolean,
 	): Vector3 {
-		val boneType = when (node) {
-			BoneType.LEFT_HIP, BoneType.RIGHT_HIP -> if (rightSide) BoneType.RIGHT_HIP else BoneType.LEFT_HIP
-			BoneType.LEFT_UPPER_LEG, BoneType.RIGHT_UPPER_LEG ->
-				if (rightSide) BoneType.RIGHT_UPPER_LEG else BoneType.LEFT_UPPER_LEG
-			BoneType.LEFT_LOWER_LEG, BoneType.RIGHT_LOWER_LEG ->
-				if (rightSide) BoneType.RIGHT_LOWER_LEG else BoneType.LEFT_LOWER_LEG
-			else -> node
+		// IMPORTANT: This assumption for acquiring BoneType only works if
+		// SkeletonConfigOffsets is set up to only affect one BoneType, make sure no
+		// changes to SkeletonConfigOffsets goes against this assumption, please!
+		val boneType = when (configOffset) {
+			SkeletonConfigOffsets.HIPS_WIDTH, SkeletonConfigOffsets.SHOULDERS_WIDTH,
+			SkeletonConfigOffsets.SHOULDERS_DISTANCE, SkeletonConfigOffsets.UPPER_ARM,
+			SkeletonConfigOffsets.LOWER_ARM, SkeletonConfigOffsets.UPPER_LEG,
+			SkeletonConfigOffsets.LOWER_LEG, SkeletonConfigOffsets.FOOT_LENGTH,
+			->
+				if (rightSide) configOffset.affectedOffsets[1] else configOffset.affectedOffsets[0]
+			else -> configOffset.affectedOffsets[0]
 		}
-		val relevantTransform = skeleton.getBone(boneType)
-		return (relevantTransform.getTailPosition() - relevantTransform.getPosition()).unit() // TODO omg does this work
+		val relevantTransform = skeleton.getTailNodeOfBone(boneType)
+		return (
+			relevantTransform.worldTransform.translation -
+				relevantTransform.parent!!.worldTransform.translation
+			).unit()
 	}
 
 	fun getDotProductDiff(
 		skeleton1: HumanPoseManager,
 		skeleton2: HumanPoseManager,
-		node: BoneType,
+		configOffset: SkeletonConfigOffsets,
 		rightSide: Boolean,
 		offset: Vector3,
 	): Float {
 		val normalizedOffset = offset.unit()
-		val dot1 = normalizedOffset.dot(getBoneDirection(skeleton1, node, rightSide))
-		val dot2 = normalizedOffset.dot(getBoneDirection(skeleton2, node, rightSide))
+		val dot1 = normalizedOffset.dot(getBoneDirection(skeleton1, configOffset, rightSide))
+		val dot2 = normalizedOffset.dot(getBoneDirection(skeleton2, configOffset, rightSide))
 		return dot2 - dot1
 	}
 
 	fun applyConfig(
-		configConsumer: BiConsumer<SkeletonConfigOffsets, Float>,
-		offsets: Map<BoneType, Float> = this.offsets,
-	): Boolean {
-		return try {
-			val headOffset = offsets[BoneType.HEAD]
-			if (headOffset != null) {
-				configConsumer.accept(SkeletonConfigOffsets.HEAD, headOffset)
-			}
-			val neckOffset = offsets[BoneType.NECK]
-			if (neckOffset != null) {
-				configConsumer.accept(SkeletonConfigOffsets.NECK, neckOffset)
-			}
-			val upperChestOffset = offsets[BoneType.UPPER_CHEST]
-			val chestOffset = offsets[BoneType.CHEST]
-			val waistOffset = offsets[BoneType.WAIST]
-			val hipOffset = offsets[BoneType.HIP]
-			if (upperChestOffset != null) {
-				configConsumer
-					.accept(SkeletonConfigOffsets.UPPER_CHEST, upperChestOffset)
-			}
-			if (chestOffset != null) {
-				configConsumer
-					.accept(SkeletonConfigOffsets.CHEST, chestOffset)
-			}
-			if (waistOffset != null) {
-				configConsumer.accept(SkeletonConfigOffsets.WAIST, waistOffset)
-			}
-			if (hipOffset != null) {
-				configConsumer.accept(SkeletonConfigOffsets.HIP, hipOffset)
-			}
-			var hipWidthOffset = offsets[BoneType.LEFT_HIP]
-			if (hipWidthOffset == null) {
-				hipWidthOffset = offsets[BoneType.RIGHT_HIP]
-			}
-			if (hipWidthOffset != null) {
-				configConsumer
-					.accept(SkeletonConfigOffsets.HIPS_WIDTH, hipWidthOffset * 2f)
-			}
-			var upperLegOffset = offsets[BoneType.LEFT_UPPER_LEG]
-			if (upperLegOffset == null) {
-				upperLegOffset = offsets[BoneType.RIGHT_UPPER_LEG]
-			}
-			var lowerLegOffset = offsets[BoneType.LEFT_LOWER_LEG]
-			if (lowerLegOffset == null) {
-				lowerLegOffset = offsets[BoneType.RIGHT_LOWER_LEG]
-			}
-			if (upperLegOffset != null) {
-				configConsumer
-					.accept(SkeletonConfigOffsets.UPPER_LEG, upperLegOffset)
-			}
-			if (lowerLegOffset != null) {
-				configConsumer.accept(SkeletonConfigOffsets.LOWER_LEG, lowerLegOffset)
-			}
-			true
-		} catch (e: Exception) {
-			false
-		}
-	}
-
-	fun applyConfig(
-		skeletonConfig: MutableMap<SkeletonConfigOffsets, Float>,
-		offsets: Map<BoneType, Float> = this.offsets,
-	): Boolean {
-		return applyConfig({ key: SkeletonConfigOffsets, value: Float -> skeletonConfig[key] = value }, offsets)
-	}
-
-	fun applyConfig(
 		humanPoseManager: HumanPoseManager,
-		offsets: Map<BoneType, Float> = this.offsets,
-	): Boolean {
-		return applyConfig({ key: SkeletonConfigOffsets?, newLength: Float? ->
-			humanPoseManager.setOffset(
-				key,
-				newLength
-			)
-		}, offsets)
+		offsets: Map<SkeletonConfigOffsets, Float> = this.offsets,
+	) {
+		for ((offset, value) in offsets) {
+			humanPoseManager.setOffset(offset, value)
+		}
 	}
 
 	@JvmOverloads
 	fun applyAndSaveConfig(humanPoseManager: HumanPoseManager? = this.server.humanPoseManager): Boolean {
 		if (humanPoseManager == null) return false
-		if (!applyConfig(humanPoseManager)) return false
+		applyConfig(humanPoseManager)
 		humanPoseManager.saveConfig()
 		server.configManager.saveConfig()
 		LogManager.info("[AutoBone] Configured skeleton bone lengths")
 		return true
 	}
 
-	fun getConfig(config: BoneType): Float? {
-		return offsets[config]
-	}
-
 	fun <T> sumSelectConfigs(
 		selection: List<T>,
-		configs: Function<T, Float?>,
+		configs: Map<T, Float>,
+		configsAlt: Map<T, Float>? = null,
 	): Float {
 		var sum = 0f
 		for (config in selection) {
-			val length = configs.apply(config)
+			val length = configs[config] ?: configsAlt?.get(config)
 			if (length != null) {
 				sum += length
 			}
@@ -269,27 +180,17 @@ class AutoBone(server: VRServer) {
 		return sum
 	}
 
-	fun <T> sumSelectConfigs(
-		selection: List<T>,
-		configs: Map<T, Float>,
-	): Float {
-		return sumSelectConfigs(selection) { key: T -> configs[key] }
+	fun calcHeight(): Float {
+		return sumSelectConfigs(heightOffsets, offsets, heightOffsetDefaults)
 	}
 
-	fun sumSelectConfigs(
-		selection: List<SkeletonConfigOffsets>,
-		humanPoseManager: HumanPoseManager,
-	): Float {
-		return sumSelectConfigs(selection) { key: SkeletonConfigOffsets? -> humanPoseManager.getOffset(key) }
-	}
-
-	fun getLengthSum(configs: Map<BoneType, Float>): Float {
+	fun getLengthSum(configs: Map<SkeletonConfigOffsets, Float>): Float {
 		return getLengthSum(configs, null)
 	}
 
 	fun getLengthSum(
-		configs: Map<BoneType, Float>,
-		configsAlt: Map<BoneType, Float>?,
+		configs: Map<SkeletonConfigOffsets, Float>,
+		configsAlt: Map<SkeletonConfigOffsets, Float>?,
 	): Float {
 		var length = 0f
 		if (configsAlt != null) {
@@ -325,7 +226,7 @@ class AutoBone(server: VRServer) {
 			// Otherwise if there is no skeleton available, attempt to get the
 			// max HMD height from the recording
 			val hmdHeight = frames.maxHmdHeight
-			if (hmdHeight <= 0.50f) {
+			if (hmdHeight <= 0.4f) {
 				LogManager
 					.warning(
 						"[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): $hmdHeight"
@@ -344,7 +245,7 @@ class AutoBone(server: VRServer) {
 	fun processFrames(
 		frames: PoseFrames,
 		config: AutoBoneConfig = globalConfig,
-		epochCallback: Consumer<Epoch?>? = null,
+		epochCallback: Consumer<Epoch>? = null,
 	): AutoBoneResults {
 		// Load current values for adjustable configs
 		loadConfigValues()
@@ -368,7 +269,6 @@ class AutoBone(server: VRServer) {
 			targetHmdHeight = targetHmdHeight,
 			targetFullHeight = targetFullHeight,
 			frames = frames,
-			intermediateOffsets = EnumMap(offsets),
 			epochCallback = epochCallback,
 			serverConfig = server.configManager
 		)
@@ -385,7 +285,7 @@ class AutoBone(server: VRServer) {
 			internalEpoch(trainingStep)
 		}
 
-		val finalHeight = sumSelectConfigs(heightOffsets, offsets)
+		val finalHeight = calcHeight()
 		LogManager
 			.info(
 				"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, New height: $finalHeight"
@@ -395,7 +295,7 @@ class AutoBone(server: VRServer) {
 			finalHeight,
 			trainingStep.targetHmdHeight,
 			trainingStep.errorStats,
-			legacyConfigs
+			offsets
 		)
 	}
 
@@ -473,20 +373,16 @@ class AutoBone(server: VRServer) {
 				)
 		}
 
-		// Convert current adjusted config to the legacy config format for the epoch
-		// callback, then call it
-		applyConfig(legacyConfigs)
-		trainingStep.epochCallback?.accept(Epoch(epoch + 1, config.numEpochs, errorStats, legacyConfigs))
+		trainingStep.epochCallback?.accept(Epoch(epoch + 1, config.numEpochs, errorStats, offsets))
 	}
 
 	private fun internalIter(trainingStep: AutoBoneStep) {
 		// Pull frequently used variables out of trainingStep to reduce call length
 		val skeleton1 = trainingStep.skeleton1
 		val skeleton2 = trainingStep.skeleton2
-		val intermediateOffsets = trainingStep.intermediateOffsets
 
 		val totalLength = getLengthSum(offsets)
-		val curHeight = sumSelectConfigs(heightOffsets, offsets)
+		val curHeight = calcHeight()
 		trainingStep.currentHmdHeight = curHeight
 
 		val errorDeriv = getErrorDeriv(trainingStep)
@@ -526,13 +422,10 @@ class AutoBone(server: VRServer) {
 			.getComputedTracker(TrackerRole.RIGHT_FOOT).position -
 			skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position
 
-		// Load the current offsets into the working offsets holder
-		intermediateOffsets.putAll(offsets)
-
 		for (entry in offsets.entries) {
 			// Skip adjustment if the epoch is before starting (for
-			// logging only)
-			if (trainingStep.curEpoch < 0) {
+			// logging only) or if there are no BoneTypes for this value
+			if (trainingStep.curEpoch < 0 || entry.key.affectedOffsets.isEmpty()) {
 				break
 			}
 			val originalLength = entry.value
@@ -569,9 +462,8 @@ class AutoBone(server: VRServer) {
 			}
 
 			// Apply new offset length
-			intermediateOffsets[entry.key] = newLength
-			applyConfig(skeleton1, intermediateOffsets)
-			applyConfig(skeleton2, intermediateOffsets)
+			skeleton1.setOffset(entry.key, newLength)
+			skeleton2.setOffset(entry.key, newLength)
 
 			// Update the skeleton poses for the new offset length
 			skeleton1.update()
@@ -585,9 +477,8 @@ class AutoBone(server: VRServer) {
 
 			// Reset the length to minimize bias in other variables,
 			// it's applied later
-			intermediateOffsets[entry.key] = originalLength
-			applyConfig(skeleton1, intermediateOffsets)
-			applyConfig(skeleton2, intermediateOffsets)
+			skeleton1.setOffset(entry.key, originalLength)
+			skeleton2.setOffset(entry.key, originalLength)
 		}
 
 		if (trainingStep.config.scaleEachStep) {
@@ -597,12 +488,15 @@ class AutoBone(server: VRServer) {
 	}
 
 	private fun scaleToTargetHeight(trainingStep: AutoBoneStep) {
-		val stepHeight = sumSelectConfigs(heightOffsets, offsets)
+		// Recalculate the height and update it in the AutoBoneStep
+		val stepHeight = calcHeight()
+		trainingStep.currentHmdHeight = stepHeight
+
 		if (stepHeight > 0f) {
 			val stepHeightDiff = trainingStep.targetHmdHeight - stepHeight
 			for (entry in offsets.entries) {
 				// Only height variables
-				if (entry.key == BoneType.NECK ||
+				if (entry.key == SkeletonConfigOffsets.NECK ||
 					!heightOffsets.contains(entry.key)
 				) {
 					continue
@@ -669,12 +563,12 @@ class AutoBone(server: VRServer) {
 	val lengthsString: String
 		get() {
 			val configInfo = StringBuilder()
-			offsets.forEach { (key: BoneType, value: Float) ->
+			offsets.forEach { (key: SkeletonConfigOffsets, value: Float) ->
 				if (configInfo.isNotEmpty()) {
 					configInfo.append(", ")
 				}
 				configInfo
-					.append(key.toString())
+					.append(key.configKey)
 					.append(": ")
 					.append(StringUtils.prettyNumber(value * 100f, 2))
 			}
@@ -767,8 +661,20 @@ class AutoBone(server: VRServer) {
 	}
 
 	companion object {
-		val saveDir = File("AutoBone Recordings")
-		val loadDir = File("Load AutoBone Recordings")
+		const val AUTOBONE_FOLDER = "AutoBone Recordings"
+		const val LOADAUTOBONE_FOLDER = "Load AutoBone Recordings"
+
+		// FIXME: Won't work on iOS and Android, maybe fix resolveConfigDirectory more than this
+		val saveDir = File(
+			OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(
+				AUTOBONE_FOLDER
+			)?.toString() ?: AUTOBONE_FOLDER
+		)
+		val loadDir = File(
+			OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(
+				LOADAUTOBONE_FOLDER
+			)?.toString() ?: LOADAUTOBONE_FOLDER
+		)
 
 		// Mean square error function
 		private fun errorFunc(errorDeriv: Float): Float {

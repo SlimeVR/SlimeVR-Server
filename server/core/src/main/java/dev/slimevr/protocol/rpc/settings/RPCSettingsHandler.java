@@ -1,12 +1,12 @@
 package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import dev.slimevr.bridge.ISteamVRBridge;
 import dev.slimevr.config.*;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.osc.OSCRouter;
 import dev.slimevr.osc.VMCHandler;
 import dev.slimevr.osc.VRCOSCHandler;
-import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.rpc.RPCHandler;
@@ -39,7 +39,7 @@ public class RPCSettingsHandler {
 	public void onSettingsRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-		SteamVRBridge bridge = this.api.server.getVRBridge(SteamVRBridge.class);
+		ISteamVRBridge bridge = this.api.server.getVRBridge(ISteamVRBridge.class);
 
 		int settings = SettingsResponse
 			.createSettingsResponse(
@@ -80,6 +80,11 @@ public class RPCSettingsHandler {
 					.createTapDetectionSettings(
 						fbb,
 						this.api.server.configManager.getVrConfig().getTapDetection()
+					),
+				RPCSettingsBuilder
+					.createAutoBoneSettings(
+						fbb,
+						this.api.server.configManager.getVrConfig().getAutoBone()
 					)
 			);
 		int outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
@@ -94,8 +99,8 @@ public class RPCSettingsHandler {
 			return;
 
 		if (req.steamVrTrackers() != null) {
-			SteamVRBridge bridge = this.api.server
-				.getVRBridge(SteamVRBridge.class);
+			ISteamVRBridge bridge = this.api.server
+				.getVRBridge(ISteamVRBridge.class);
 
 			if (bridge != null) {
 				bridge.changeShareSettings(TrackerRole.WAIST, req.steamVrTrackers().waist());
@@ -219,6 +224,15 @@ public class RPCSettingsHandler {
 				tapDetectionConfig
 					.setMountingResetEnabled(tapDetectionSettings.mountingResetEnabled());
 				tapDetectionConfig.setSetupMode(tapDetectionSettings.setupMode());
+
+				// set number of trackers that can have high accel before taps
+				// are rejected
+				if (tapDetectionSettings.hasNumberTrackersOverThreshold()) {
+					tapDetectionConfig
+						.setNumberTrackersOverThreshold(
+							tapDetectionSettings.numberTrackersOverThreshold()
+						);
+				}
 
 				// set tap detection delays
 				if (tapDetectionSettings.hasYawResetDelay()) {
@@ -347,6 +361,15 @@ public class RPCSettingsHandler {
 
 			hpm.saveConfig();
 
+		}
+
+		var autoBoneSettings = req.autoBoneSettings();
+		if (autoBoneSettings != null) {
+			AutoBoneConfig autoBoneConfig = this.api.server.configManager
+				.getVrConfig()
+				.getAutoBone();
+
+			RPCSettingsBuilder.readAutoBoneSettings(autoBoneSettings, autoBoneConfig);
 		}
 
 		this.api.server.configManager.saveConfig();

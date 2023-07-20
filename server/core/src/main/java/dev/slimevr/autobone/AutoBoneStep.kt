@@ -4,9 +4,7 @@ import dev.slimevr.config.AutoBoneConfig
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.poseframeformat.player.TrackerFramesPlayer
-import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
-import java.util.*
 import java.util.function.Consumer
 
 class AutoBoneStep(
@@ -14,8 +12,7 @@ class AutoBoneStep(
 	val targetHmdHeight: Float,
 	val targetFullHeight: Float,
 	val frames: PoseFrames,
-	val intermediateOffsets: EnumMap<BoneType, Float>,
-	val epochCallback: Consumer<AutoBone.Epoch?>?,
+	val epochCallback: Consumer<AutoBone.Epoch>?,
 	serverConfig: ConfigManager,
 	var curEpoch: Int = 0,
 	var curAdjustRate: Float = 0f,
@@ -23,6 +20,8 @@ class AutoBoneStep(
 	var cursor2: Int = 0,
 	var currentHmdHeight: Float = 0f,
 ) {
+
+	val eyeHeightToHeightRatio: Float = targetHmdHeight / targetFullHeight
 
 	val maxFrameCount = frames.maxFrameCount
 
