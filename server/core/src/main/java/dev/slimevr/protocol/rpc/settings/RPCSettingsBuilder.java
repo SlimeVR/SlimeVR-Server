@@ -142,7 +142,8 @@ public class RPCSettingsBuilder {
 				tapDetectionConfig.getMountingResetDelay(),
 				tapDetectionConfig.getMountingResetEnabled(),
 				tapDetectionConfig.getMountingResetTaps(),
-				tapDetectionConfig.getSetupMode()
+				tapDetectionConfig.getSetupMode(),
+				tapDetectionConfig.getNumberTrackersOverThreshold()
 			);
 	}
 
@@ -202,5 +203,127 @@ public class RPCSettingsBuilder {
 				legTweaksConfig.getCorrectionStrength()
 			);
 		return ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset, legTweaksOffset);
+	}
+
+	public static int createAutoBoneSettings(FlatBufferBuilder fbb, AutoBoneConfig autoBoneConfig) {
+		return AutoBoneSettings
+			.createAutoBoneSettings(
+				fbb,
+				autoBoneConfig.getCursorIncrement(),
+				autoBoneConfig.getMinDataDistance(),
+				autoBoneConfig.getMaxDataDistance(),
+				autoBoneConfig.getNumEpochs(),
+				autoBoneConfig.getPrintEveryNumEpochs(),
+				autoBoneConfig.getInitialAdjustRate(),
+				autoBoneConfig.getAdjustRateDecay(),
+				autoBoneConfig.getSlideErrorFactor(),
+				autoBoneConfig.getOffsetSlideErrorFactor(),
+				autoBoneConfig.getFootHeightOffsetErrorFactor(),
+				autoBoneConfig.getBodyProportionErrorFactor(),
+				autoBoneConfig.getHeightErrorFactor(),
+				autoBoneConfig.getPositionErrorFactor(),
+				autoBoneConfig.getPositionOffsetErrorFactor(),
+				autoBoneConfig.getCalcInitError(),
+				autoBoneConfig.getTargetHmdHeight(),
+				autoBoneConfig.getTargetFullHeight(),
+				autoBoneConfig.getRandomizeFrameOrder(),
+				autoBoneConfig.getScaleEachStep(),
+				autoBoneConfig.getSampleCount(),
+				autoBoneConfig.getSampleRateMs(),
+				autoBoneConfig.getSaveRecordings(),
+				autoBoneConfig.getUseSkeletonHeight(),
+				autoBoneConfig.getRandSeed()
+			);
+	}
+
+
+	/**
+	 * Writes values from AutoBoneSettings to an AutoBoneConfig.
+	 *
+	 * @param autoBoneSettings The settings to read from.
+	 * @param autoBoneConfig The config to write to.
+	 * @return The autoBoneConfig parameter.
+	 */
+	public static AutoBoneConfig readAutoBoneSettings(
+		AutoBoneSettings autoBoneSettings,
+		AutoBoneConfig autoBoneConfig
+	) {
+		if (autoBoneSettings.hasCursorIncrement()) {
+			autoBoneConfig.setCursorIncrement(autoBoneSettings.cursorIncrement());
+		}
+		if (autoBoneSettings.hasMinDataDistance()) {
+			autoBoneConfig.setMinDataDistance(autoBoneSettings.minDataDistance());
+		}
+		if (autoBoneSettings.hasMaxDataDistance()) {
+			autoBoneConfig.setMaxDataDistance(autoBoneSettings.maxDataDistance());
+		}
+		if (autoBoneSettings.hasNumEpochs()) {
+			autoBoneConfig.setNumEpochs(autoBoneSettings.numEpochs());
+		}
+		if (autoBoneSettings.hasPrintEveryNumEpochs()) {
+			autoBoneConfig.setPrintEveryNumEpochs(autoBoneSettings.printEveryNumEpochs());
+		}
+		if (autoBoneSettings.hasInitialAdjustRate()) {
+			autoBoneConfig.setInitialAdjustRate(autoBoneSettings.initialAdjustRate());
+		}
+		if (autoBoneSettings.hasAdjustRateDecay()) {
+			autoBoneConfig.setAdjustRateDecay(autoBoneSettings.adjustRateDecay());
+		}
+		if (autoBoneSettings.hasSlideErrorFactor()) {
+			autoBoneConfig.setSlideErrorFactor(autoBoneSettings.slideErrorFactor());
+		}
+		if (autoBoneSettings.hasOffsetSlideErrorFactor()) {
+			autoBoneConfig.setOffsetSlideErrorFactor(autoBoneSettings.offsetSlideErrorFactor());
+		}
+		if (autoBoneSettings.hasFootHeightOffsetErrorFactor()) {
+			autoBoneConfig
+				.setFootHeightOffsetErrorFactor(autoBoneSettings.footHeightOffsetErrorFactor());
+		}
+		if (autoBoneSettings.hasBodyProportionErrorFactor()) {
+			autoBoneConfig
+				.setBodyProportionErrorFactor(autoBoneSettings.bodyProportionErrorFactor());
+		}
+		if (autoBoneSettings.hasHeightErrorFactor()) {
+			autoBoneConfig.setHeightErrorFactor(autoBoneSettings.heightErrorFactor());
+		}
+		if (autoBoneSettings.hasPositionErrorFactor()) {
+			autoBoneConfig.setPositionErrorFactor(autoBoneSettings.positionErrorFactor());
+		}
+		if (autoBoneSettings.hasPositionOffsetErrorFactor()) {
+			autoBoneConfig
+				.setPositionOffsetErrorFactor(autoBoneSettings.positionOffsetErrorFactor());
+		}
+		if (autoBoneSettings.hasCalcInitError()) {
+			autoBoneConfig.setCalcInitError(autoBoneSettings.calcInitError());
+		}
+		if (autoBoneSettings.hasTargetHmdHeight()) {
+			autoBoneConfig.setTargetHmdHeight(autoBoneSettings.targetHmdHeight());
+		}
+		if (autoBoneSettings.hasTargetFullHeight()) {
+			autoBoneConfig.setTargetFullHeight(autoBoneSettings.targetFullHeight());
+		}
+		if (autoBoneSettings.hasRandomizeFrameOrder()) {
+			autoBoneConfig.setRandomizeFrameOrder(autoBoneSettings.randomizeFrameOrder());
+		}
+		if (autoBoneSettings.hasScaleEachStep()) {
+			autoBoneConfig.setScaleEachStep(autoBoneSettings.scaleEachStep());
+		}
+		if (autoBoneSettings.hasSampleCount()) {
+			autoBoneConfig.setSampleCount(autoBoneSettings.sampleCount());
+		}
+		if (autoBoneSettings.hasSampleRateMs()) {
+			autoBoneConfig.setSampleRateMs(autoBoneSettings.sampleRateMs());
+		}
+		if (autoBoneSettings.hasSaveRecordings()) {
+			autoBoneConfig.setSaveRecordings(autoBoneSettings.saveRecordings());
+		}
+		if (autoBoneSettings.hasUseSkeletonHeight()) {
+			autoBoneConfig.setUseSkeletonHeight(autoBoneSettings.useSkeletonHeight());
+		}
+		if (autoBoneSettings.hasRandSeed()) {
+			autoBoneConfig.setRandSeed(autoBoneSettings.randSeed());
+		}
+
+		return autoBoneConfig;
 	}
 }

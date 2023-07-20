@@ -1,14 +1,12 @@
 package dev.slimevr.protocol.rpc;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import dev.slimevr.autobone.AutoBone.Epoch;
-import dev.slimevr.autobone.AutoBoneListener;
-import dev.slimevr.autobone.AutoBoneProcessType;
+import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.config.OverlayConfig;
-import dev.slimevr.poseframeformat.PoseFrames;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.ProtocolHandler;
+import dev.slimevr.protocol.rpc.autobone.RPCAutoBoneHandler;
 import dev.slimevr.protocol.rpc.reset.RPCResetHandler;
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler;
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler;
@@ -26,13 +24,10 @@ import solarxr_protocol.MessageBundle;
 import solarxr_protocol.datatypes.TransactionId;
 import solarxr_protocol.rpc.*;
 
-import java.util.EnumMap;
-import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
 
-public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
-	implements AutoBoneListener {
+public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 
 	private static final String resetSourceName = "WebSocketAPI";
 
@@ -50,6 +45,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		new RPCSettingsHandler(this, api);
 		new RPCTapSetupHandler(this, api);
 		new RPCStatusHandler(this, api);
+		new RPCAutoBoneHandler(this, api);
 
 		registerPacketListener(RpcMessage.ResetRequest, this::onResetRequest);
 		registerPacketListener(
@@ -72,8 +68,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			this::onChangeSkeletonConfigRequest
 		);
 
-		registerPacketListener(RpcMessage.AutoBoneProcessRequest, this::onAutoBoneProcessRequest);
-
 		registerPacketListener(
 			RpcMessage.OverlayDisplayModeChangeRequest,
 			this::onOverlayDisplayModeChangeRequest
@@ -93,7 +87,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 
 		registerPacketListener(RpcMessage.SetPauseTrackingRequest, this::onSetPauseTrackingRequest);
 
-		this.api.server.autoBoneHandler.addListener(this);
+		registerPacketListener(RpcMessage.HeightRequest, this::onHeightRequest);
 	}
 
 	private void onServerInfosRequest(
@@ -360,122 +354,6 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 		return RpcMessage.names.length;
 	}
 
-	public void onAutoBoneProcessRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
-		AutoBoneProcessRequest req = (AutoBoneProcessRequest) messageHeader
-			.message(new AutoBoneProcessRequest());
-		if (req == null || conn.getContext().useAutoBone())
-			return;
-
-		conn.getContext().setUseAutoBone(true);
-		this.api.server.autoBoneHandler
-			.startProcessByType(AutoBoneProcessType.Companion.getById(req.processType()));
-	}
-
-	@Override
-	public void onAutoBoneProcessStatus(
-		AutoBoneProcessType processType,
-		String message,
-		long current,
-		long total,
-		boolean completed,
-		boolean success
-	) {
-		this.api
-			.getAPIServers()
-			.forEach(
-				(server) -> server
-					.getAPIConnections()
-					.filter(conn -> conn.getContext().useAutoBone())
-					.forEach((conn) -> {
-						FlatBufferBuilder fbb = new FlatBufferBuilder(32);
-
-						Integer messageOffset = message != null ? fbb.createString(message) : null;
-
-						AutoBoneProcessStatusResponse.startAutoBoneProcessStatusResponse(fbb);
-						AutoBoneProcessStatusResponse.addProcessType(fbb, processType.getId());
-						if (messageOffset != null)
-							AutoBoneProcessStatusResponse.addMessage(fbb, messageOffset);
-						if (total > 0 && current >= 0) {
-							AutoBoneProcessStatusResponse.addCurrent(fbb, current);
-							AutoBoneProcessStatusResponse.addTotal(fbb, total);
-						}
-						AutoBoneProcessStatusResponse.addCompleted(fbb, completed);
-						AutoBoneProcessStatusResponse.addSuccess(fbb, success);
-						int update = AutoBoneProcessStatusResponse
-							.endAutoBoneProcessStatusResponse(fbb);
-						int outbound = this
-							.createRPCMessage(
-								fbb,
-								RpcMessage.AutoBoneProcessStatusResponse,
-								update
-							);
-						fbb.finish(outbound);
-
-						conn.send(fbb.dataBuffer());
-						if (completed) {
-							conn.getContext().setUseAutoBone(false);
-						}
-					})
-			);
-	}
-
-	@Override
-	public void onAutoBoneRecordingEnd(PoseFrames recording) {
-		// Do nothing, this is broadcasted by "onAutoBoneProcessStatus" uwu
-	}
-
-	@Override
-	public void onAutoBoneEpoch(Epoch epoch) {
-		this.api
-			.getAPIServers()
-			.forEach(
-				(server) -> server
-					.getAPIConnections()
-					.filter(conn -> conn.getContext().useAutoBone())
-					.forEach((conn) -> {
-						FlatBufferBuilder fbb = new FlatBufferBuilder(32);
-
-						int[] skeletonPartOffsets = new int[epoch.getConfigValues().size()];
-						int i = 0;
-						for (
-							Entry<SkeletonConfigOffsets, Float> skeletonConfig : epoch
-								.getConfigValues()
-								.entrySet()
-						) {
-							skeletonPartOffsets[i++] = SkeletonPart
-								.createSkeletonPart(
-									fbb,
-									skeletonConfig.getKey().id,
-									skeletonConfig.getValue()
-								);
-						}
-
-						int skeletonPartsOffset = AutoBoneEpochResponse
-							.createAdjustedSkeletonPartsVector(fbb, skeletonPartOffsets);
-
-						int update = AutoBoneEpochResponse
-							.createAutoBoneEpochResponse(
-								fbb,
-								epoch.getEpoch(),
-								epoch.getTotalEpochs(),
-								epoch.getEpochError().getMean(),
-								skeletonPartsOffset
-							);
-						int outbound = this
-							.createRPCMessage(fbb, RpcMessage.AutoBoneEpochResponse, update);
-						fbb.finish(outbound);
-
-						conn.send(fbb.dataBuffer());
-					})
-			);
-	}
-
-	@Override
-	public void onAutoBoneEnd(EnumMap<SkeletonConfigOffsets, Float> configValues) {
-		// Do nothing, the last epoch from "onAutoBoneEpoch" should be all
-		// that's needed
-	}
-
 	public void onStatusSystemRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 		StatusSystemRequest req = (StatusSystemRequest) messageHeader
 			.message(new StatusSystemRequest());
@@ -502,5 +380,19 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader>
 			return;
 
 		this.api.server.humanPoseManager.setPauseTracking(req.pauseTracking());
+	}
+
+	public void onHeightRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
+		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+
+		float hmdHeight = this.api.server.humanPoseManager.getHmdHeight();
+		int response = HeightResponse
+			.createHeightResponse(
+				fbb,
+				hmdHeight,
+				hmdHeight / BodyProportionError.eyeHeightToHeightRatio
+			);
+		fbb.finish(createRPCMessage(fbb, RpcMessage.HeightResponse, response));
+		conn.send(fbb.dataBuffer());
 	}
 }

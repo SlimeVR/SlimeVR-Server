@@ -87,7 +87,7 @@ export function MountingChoose() {
                     <img
                       onMouseEnter={() => setAnimated(() => true)}
                       onAnimationEnd={() => setAnimated(() => false)}
-                      src="/images/boxslime.png"
+                      src="/images/boxslime.webp"
                       className={classNames(
                         'absolute w-[100px] -right-2 -top-10',
                         animated && 'animate-[bounce_1s_1]'

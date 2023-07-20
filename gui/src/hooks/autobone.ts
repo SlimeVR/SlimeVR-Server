@@ -1,23 +1,30 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 import {
+  AutoBoneApplyRequestT,
   AutoBoneEpochResponseT,
   AutoBoneProcessRequestT,
   AutoBoneProcessStatusResponseT,
   AutoBoneProcessType,
   RpcMessage,
   SkeletonBone,
-  SkeletonConfigRequestT,
   SkeletonPartT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { useLocalization } from '@fluent/react';
 import { log } from '../utils/logging';
 
+export enum ProcessStatus {
+  PENDING,
+  FULFILLED,
+  REJECTED,
+}
+
 export interface AutoboneContext {
-  hasRecording: boolean;
-  hasCalibration: boolean;
+  hasRecording: ProcessStatus;
+  hasCalibration: ProcessStatus;
   progress: number;
   bodyParts: { bone: SkeletonBone; label: string; value: number }[] | null;
+  eta: number;
   startRecording: () => void;
   startProcessing: () => void;
   applyProcessing: () => void;
@@ -26,9 +33,10 @@ export interface AutoboneContext {
 export function useProvideAutobone(): AutoboneContext {
   const { l10n } = useLocalization();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const [hasRecording, setHasRecording] = useState(false);
-  const [hasCalibration, setHasCalibration] = useState(false);
+  const [hasRecording, setHasRecording] = useState(ProcessStatus.PENDING);
+  const [hasCalibration, setHasCalibration] = useState(ProcessStatus.PENDING);
   const [progress, setProgress] = useState(0);
+  const [eta, setEta] = useState(-1);
   const [skeletonParts, setSkeletonParts] = useState<SkeletonPartT[] | null>(null);
 
   const bodyParts = useMemo(() => {
@@ -48,6 +56,7 @@ export function useProvideAutobone(): AutoboneContext {
     // }
 
     setProgress(0);
+    setEta(-1);
 
     const processRequest = new AutoBoneProcessRequestT();
     processRequest.processType = processType;
@@ -56,19 +65,19 @@ export function useProvideAutobone(): AutoboneContext {
   };
 
   const startRecording = () => {
-    setHasCalibration(false);
-    setHasRecording(false);
+    setHasCalibration(ProcessStatus.PENDING);
+    setHasRecording(ProcessStatus.PENDING);
     setSkeletonParts(null);
     startProcess(AutoBoneProcessType.RECORD);
   };
 
   const startProcessing = () => {
-    setHasCalibration(false);
+    setHasCalibration(ProcessStatus.PENDING);
     startProcess(AutoBoneProcessType.PROCESS);
   };
 
   const applyProcessing = () => {
-    startProcess(AutoBoneProcessType.APPLY);
+    sendRPCPacket(RpcMessage.AutoBoneApplyRequest, new AutoBoneApplyRequestT());
   };
 
   useRPCPacket(
@@ -79,35 +88,36 @@ export function useProvideAutobone(): AutoboneContext {
       }
 
       if (data.processType) {
-        if (data.message) {
-          log(AutoBoneProcessType[data.processType], ': ', data.message);
-        }
-
         if (data.total > 0 && data.current >= 0) {
           setProgress(data.current / data.total);
         }
 
+        setEta(data.eta);
+
         if (data.completed) {
-          log('Process ', AutoBoneProcessType[data.processType], ' has completed');
+          log(`Process ${AutoBoneProcessType[data.processType]} has completed`);
 
           switch (data.processType) {
             case AutoBoneProcessType.RECORD:
-              setHasRecording(data.success);
+              setHasRecording(
+                data.success ? ProcessStatus.FULFILLED : ProcessStatus.REJECTED
+              );
               startProcessing();
               break;
 
             case AutoBoneProcessType.PROCESS:
-              setHasCalibration(data.success);
-
-              break;
-
-            case AutoBoneProcessType.APPLY:
-              // Update skeleton config when applied
-              sendRPCPacket(
-                RpcMessage.SkeletonConfigRequest,
-                new SkeletonConfigRequestT()
+              setHasCalibration(
+                data.success ? ProcessStatus.FULFILLED : ProcessStatus.REJECTED
               );
               break;
+
+            // case AutoBoneProcessType.APPLY:
+            //   // Update skeleton config when applied
+            //   sendRPCPacket(
+            //     RpcMessage.SkeletonConfigRequest,
+            //     new SkeletonConfigRequestT()
+            //   );
+            //   break;
           }
         }
       }
@@ -135,6 +145,7 @@ export function useProvideAutobone(): AutoboneContext {
     hasCalibration,
     hasRecording,
     progress,
+    eta,
     bodyParts,
     startProcessing,
     startRecording,
