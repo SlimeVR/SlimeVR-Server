@@ -3,6 +3,7 @@
 package dev.slimevr.desktop
 
 import dev.slimevr.Keybinding
+import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.desktop.platform.SteamVRBridge
@@ -23,9 +24,13 @@ import java.io.File
 import java.io.IOException
 import java.lang.System
 import java.net.ServerSocket
+import java.nio.file.Files
 import java.nio.file.Paths
 import javax.swing.JOptionPane
 import kotlin.concurrent.thread
+import kotlin.io.path.Path
+import kotlin.io.path.exists
+import kotlin.io.path.pathString
 import kotlin.system.exitProcess
 
 val VERSION =
@@ -66,12 +71,14 @@ fun main(args: Array<String>) {
 		exitProcess(1)
 	}
 
-	val dir = File("").absoluteFile
+	val dir = OperatingSystem.resolveLogDirectory(SLIMEVR_IDENTIFIER)?.toFile()?.absoluteFile
+		?: File("").absoluteFile
 	try {
 		LogManager.initialize(dir)
 	} catch (e1: java.lang.Exception) {
 		e1.printStackTrace()
 	}
+	LogManager.info("Using log folder: $dir")
 	LogManager.info("Running version $VERSION")
 	if (!SystemUtils.isJavaVersionAtLeast(org.apache.commons.lang3.JavaVersion.JAVA_17)) {
 		LogManager.severe("SlimeVR start-up error! A minimum of Java 17 is required.")
@@ -108,11 +115,13 @@ fun main(args: Array<String>) {
 		return
 	}
 	try {
+    val configDir = resolveConfig()
+    LogManager.info("Using config dir: $configDir")
 		val vrServer = VRServer(
 			::provideSteamVRBridge,
 			::provideFeederBridge,
 			{ _ -> DesktopSerialHandler() },
-			"vrconfig.yml"
+			configDir
 		)
 		vrServer.start()
 		Keybinding(vrServer)
@@ -140,7 +149,7 @@ fun provideSteamVRBridge(
 	computedTrackers: List<Tracker>,
 ): ISteamVRBridge? {
 	val driverBridge: SteamVRBridge?
-	if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
+	if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
 		// Create named pipe bridge for SteamVR driver
 		driverBridge = WindowsNamedPipeBridge(
 			server,
@@ -150,7 +159,7 @@ fun provideSteamVRBridge(
 			"""\\.\pipe\SlimeVRDriver""",
 			computedTrackers
 		)
-	} else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
+	} else if (OperatingSystem.currentPlatform == OperatingSystem.LINUX) {
 		var linuxBridge: SteamVRBridge? = null
 		try {
 			linuxBridge = UnixSocketBridge(
@@ -158,7 +167,7 @@ fun provideSteamVRBridge(
 				hmdTracker,
 				"steamvr",
 				"SteamVR Driver Bridge",
-				Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRDriver")
+				Paths.get(OperatingSystem.tempDirectory, "SlimeVRDriver")
 					.toString(),
 				computedTrackers
 			)
@@ -192,7 +201,7 @@ fun provideFeederBridge(
 	server: VRServer,
 ): ISteamVRBridge? {
 	val feederBridge: SteamVRBridge?
-	if (OperatingSystem.getCurrentPlatform() == OperatingSystem.WINDOWS) {
+	if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
 		// Create named pipe bridge for SteamVR input
 		// TODO: how do we want to handle HMD input from the feeder app?
 		feederBridge = WindowsNamedPipeBridge(
@@ -203,13 +212,13 @@ fun provideFeederBridge(
 			"""\\.\pipe\SlimeVRInput""",
 			FastList()
 		)
-	} else if (OperatingSystem.getCurrentPlatform() == OperatingSystem.LINUX) {
+	} else if (OperatingSystem.currentPlatform == OperatingSystem.LINUX) {
 		feederBridge = UnixSocketBridge(
 			server,
 			null,
 			"steamvr_feeder",
 			"SteamVR Feeder Bridge",
-			Paths.get(OperatingSystem.getTempDirectory(), "SlimeVRInput")
+			Paths.get(OperatingSystem.tempDirectory, "SlimeVRInput")
 				.toString(),
 			FastList()
 		)
@@ -218,4 +227,19 @@ fun provideFeederBridge(
 	}
 
 	return feederBridge
+}
+
+const val CONFIG_FILENAME = "vrconfig.yml"
+fun resolveConfig(): String {
+	// If config folder exists, then save config on relative path
+	if (Path("config/").exists()) {
+		return CONFIG_FILENAME
+	}
+
+	val configFile = OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(CONFIG_FILENAME) ?: return CONFIG_FILENAME
+	if (!configFile.exists() && Path(CONFIG_FILENAME).exists()) {
+		LogManager.info("Moved local config file to appdata folder")
+		Files.move(Path(CONFIG_FILENAME), configFile)
+	}
+	return configFile.pathString
 }

@@ -42,6 +42,7 @@ export interface AppContext {
   trackers: FlatDeviceTracker[];
   dispatch: Dispatch<AppStateAction>;
   bones: BoneT[];
+  computedTrackers: FlatDeviceTracker[];
 }
 
 export function reducer(state: AppState, action: AppStateAction) {
@@ -89,6 +90,11 @@ export function useProvideAppContext(): AppContext {
     [state]
   );
 
+  const computedTrackers: FlatDeviceTracker[] = useMemo(
+    () => (state.datafeed?.syntheticTrackers || []).map((tracker) => ({ tracker })),
+    [state]
+  );
+
   const bones = useMemo(() => state.datafeed?.bones || [], [state]);
 
   useDataFeedPacket(DataFeedMessage.DataFeedUpdate, (packet: DataFeedUpdateT) => {
@@ -114,6 +120,7 @@ export function useProvideAppContext(): AppContext {
     trackers,
     dispatch,
     bones,
+    computedTrackers,
   };
 }
 
