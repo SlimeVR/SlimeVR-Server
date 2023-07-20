@@ -19,7 +19,9 @@ import java.net.NetworkInterface
 import java.net.SocketTimeoutException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.util.*
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import java.util.Random
 import java.util.function.Consumer
 
 /**
@@ -144,7 +146,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				connection,
 				VRServer.getNextLocalTrackerId(),
 				connection.name + "/" + trackerId,
-				"IMU Tracker #" + VRServer.currentLocalTrackerId,
+				"IMU Tracker " + MessageDigest.getInstance("SHA-256")
+					.digest(connection.hardwareIdentifier.toByteArray(StandardCharsets.UTF_8)).toString().subSequence(3, 8),
 				null,
 				trackerNum = trackerId,
 				hasRotation = true,
