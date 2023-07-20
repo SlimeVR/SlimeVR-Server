@@ -125,7 +125,7 @@ export function GeneralSettings() {
   const { currentLocales } = useLocaleConfig();
   // const pageRef = useRef<HTMLFormElement | null>(null);
 
-  const percentageFormat = Intl.NumberFormat(currentLocales, {
+  const percentageFormat = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
     maximumFractionDigits: 0,
   });

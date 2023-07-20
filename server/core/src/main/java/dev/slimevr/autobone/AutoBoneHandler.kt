@@ -3,7 +3,6 @@ package dev.slimevr.autobone
 import dev.slimevr.VRServer
 import dev.slimevr.autobone.AutoBone.AutoBoneResults
 import dev.slimevr.autobone.AutoBone.Companion.loadDir
-import dev.slimevr.autobone.AutoBone.Epoch
 import dev.slimevr.autobone.errors.AutoBoneException
 import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.poseframeformat.PoseRecorder
@@ -16,7 +15,6 @@ import io.eiren.util.logging.LogManager
 import org.apache.commons.lang3.tuple.Pair
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.locks.ReentrantLock
-import java.util.function.Consumer
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
 
@@ -38,44 +36,29 @@ class AutoBoneHandler(private val server: VRServer) {
 	}
 
 	fun removeListener(listener: AutoBoneListener) {
-		listeners.removeIf { l: AutoBoneListener -> listener === l }
+		listeners.removeIf { listener == it }
 	}
 
 	private fun announceProcessStatus(
 		processType: AutoBoneProcessType,
-		message: String?,
-		current: Long,
-		total: Long,
-		completed: Boolean,
-		success: Boolean,
-	) {
-		listeners
-			.forEach(
-				Consumer { listener: AutoBoneListener ->
-					listener
-						.onAutoBoneProcessStatus(
-							processType,
-							message,
-							current,
-							total,
-							completed,
-							success
-						)
-				}
-			)
-	}
-
-	private fun announceProcessStatus(
-		processType: AutoBoneProcessType,
-		message: String,
+		message: String? = null,
+		current: Long = -1L,
+		total: Long = -1L,
+		eta: Float = -1f,
 		completed: Boolean = false,
 		success: Boolean = true,
 	) {
-		announceProcessStatus(processType, message, 0, 0, completed, success)
-	}
-
-	private fun announceProcessStatus(processType: AutoBoneProcessType, current: Long, total: Long) {
-		announceProcessStatus(processType, null, current, total, completed = false, success = true)
+		listeners.forEach {
+			it.onAutoBoneProcessStatus(
+				processType,
+				message,
+				current,
+				total,
+				eta,
+				completed,
+				success
+			)
+		}
 	}
 
 	val lengthsString: String
@@ -84,17 +67,16 @@ class AutoBoneHandler(private val server: VRServer) {
 	@Throws(AutoBoneException::class)
 	private fun processFrames(frames: PoseFrames): AutoBoneResults {
 		return autoBone
-			.processFrames(
-				frames
-			) { epoch: Epoch? -> listeners.forEach(Consumer { listener: AutoBoneListener -> listener.onAutoBoneEpoch(epoch!!) }) }
+			.processFrames(frames) { epoch ->
+				listeners.forEach { listener -> listener.onAutoBoneEpoch(epoch) }
+			}
 	}
 
-	fun startProcessByType(processType: AutoBoneProcessType): Boolean {
+	fun startProcessByType(processType: AutoBoneProcessType?): Boolean {
 		when (processType) {
 			AutoBoneProcessType.RECORD -> startRecording()
 			AutoBoneProcessType.SAVE -> saveRecording()
 			AutoBoneProcessType.PROCESS -> processRecording()
-			AutoBoneProcessType.APPLY -> applyValues()
 			else -> {
 				return false
 			}
@@ -117,9 +99,12 @@ class AutoBoneHandler(private val server: VRServer) {
 			if (poseRecorder.isReadyToRecord) {
 				announceProcessStatus(AutoBoneProcessType.RECORD, "Recording...")
 
-				// 1000 samples at 20 ms per sample is 20 seconds
+				// ex. 1000 samples at 20 ms per sample is 20 seconds
 				val sampleCount = autoBone.globalConfig.sampleCount
 				val sampleRate = autoBone.globalConfig.sampleRateMs
+				// Calculate total time in seconds
+				val totalTime: Float = (sampleCount * sampleRate) / 1000f
+
 				val framesFuture = poseRecorder
 					.startFrameRecording(
 						sampleCount,
@@ -127,9 +112,9 @@ class AutoBoneHandler(private val server: VRServer) {
 					) { progress: RecordingProgress ->
 						announceProcessStatus(
 							AutoBoneProcessType.RECORD,
-							progress.frame.toLong(),
-							progress.totalFrames
-								.toLong()
+							current = progress.frame.toLong(),
+							total = progress.totalFrames.toLong(),
+							eta = totalTime - (progress.frame * totalTime / progress.totalFrames)
 						)
 					}
 				val frames = framesFuture.get()
@@ -145,7 +130,7 @@ class AutoBoneHandler(private val server: VRServer) {
 					)
 					autoBone.saveRecording(frames)
 				}
-				listeners.forEach(Consumer { listener: AutoBoneListener -> listener.onAutoBoneRecordingEnd(frames) })
+				listeners.forEach { listener: AutoBoneListener -> listener.onAutoBoneRecordingEnd(frames) }
 				announceProcessStatus(
 					AutoBoneProcessType.RECORD,
 					"Done recording!",
@@ -172,6 +157,18 @@ class AutoBoneHandler(private val server: VRServer) {
 			LogManager.severe("[AutoBone] Failed recording!", e)
 		} finally {
 			recordingThread = null
+		}
+	}
+
+	fun stopRecording() {
+		if (poseRecorder.isRecording) {
+			poseRecorder.stopFrameRecording()
+		}
+	}
+
+	fun cancelRecording() {
+		if (poseRecorder.isRecording) {
+			poseRecorder.cancelFrameRecording()
 		}
 	}
 
@@ -373,7 +370,7 @@ class AutoBoneHandler(private val server: VRServer) {
 						")"
 				)
 			// #endregion
-			listeners.forEach(Consumer { listener: AutoBoneListener -> listener.onAutoBoneEnd(autoBone.legacyConfigs) })
+			listeners.forEach { listener: AutoBoneListener -> listener.onAutoBoneEnd(autoBone.offsets) }
 			announceProcessStatus(
 				AutoBoneProcessType.PROCESS,
 				"Done processing!",
@@ -395,11 +392,5 @@ class AutoBoneHandler(private val server: VRServer) {
 
 	fun applyValues() {
 		autoBone.applyAndSaveConfig()
-		announceProcessStatus(
-			AutoBoneProcessType.APPLY,
-			"Adjusted values applied!",
-			completed = true,
-			success = true
-		)
 	}
 }

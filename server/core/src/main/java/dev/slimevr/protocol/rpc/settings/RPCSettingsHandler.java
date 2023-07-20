@@ -80,6 +80,11 @@ public class RPCSettingsHandler {
 					.createTapDetectionSettings(
 						fbb,
 						this.api.server.configManager.getVrConfig().getTapDetection()
+					),
+				RPCSettingsBuilder
+					.createAutoBoneSettings(
+						fbb,
+						this.api.server.configManager.getVrConfig().getAutoBone()
 					)
 			);
 		int outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
@@ -356,6 +361,15 @@ public class RPCSettingsHandler {
 
 			hpm.saveConfig();
 
+		}
+
+		var autoBoneSettings = req.autoBoneSettings();
+		if (autoBoneSettings != null) {
+			AutoBoneConfig autoBoneConfig = this.api.server.configManager
+				.getVrConfig()
+				.getAutoBone();
+
+			RPCSettingsBuilder.readAutoBoneSettings(autoBoneSettings, autoBoneConfig);
 		}
 
 		this.api.server.configManager.saveConfig();

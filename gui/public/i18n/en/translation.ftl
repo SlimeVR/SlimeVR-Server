@@ -730,7 +730,10 @@ onboarding-choose_proportions-description = Body proportions are used to know th
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
-onboarding-choose_proportions-auto_proportions-description = This will guess your proportions by recording a sample of your movements and passing it through an algorithm
+onboarding-choose_proportions-auto_proportions-descriptionv2 =
+    This will guess your proportions by recording a sample of your movements and passing it through an algorithm.
+
+    <b>It requires having your HMD connected to SlimeVR!</b>
 onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
@@ -764,6 +767,18 @@ onboarding-automatic_proportions-requirements-description =
     Your trackers and headset are working properly within the SlimeVR server.
     Your headset is reporting positional data to the SlimeVR server (this generally means having SteamVR running and connected to SlimeVR using SlimeVR's SteamVR driver).
 onboarding-automatic_proportions-requirements-next = I have read the requirements
+onboarding-automatic_proportions-check_height-title = Check your height
+onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the HMD's height as an approximation of your actual height, but it's better to check if they are right yourself!
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = Please press the button while standing <u>upright</u> to calculate your height. You have 3 seconds after you press the button!
+onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Unknown
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height = Your height is
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height = And HMD height is
+onboarding-automatic_proportions-check_height-next_step = They are fine
 onboarding-automatic_proportions-start_recording-title = Get ready to move
 onboarding-automatic_proportions-start_recording-description = We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!
 onboarding-automatic_proportions-start_recording-next = Start Recording
@@ -792,6 +807,10 @@ onboarding-automatic_proportions-verify_results-redo = Redo recording
 onboarding-automatic_proportions-verify_results-confirm = They're correct
 onboarding-automatic_proportions-done-title = Body measured and saved.
 onboarding-automatic_proportions-done-description = Your body proportions' calibration is complete!
+onboarding-automatic_proportions-error_modal =
+    <b>Warning:</b> An error was found while estimating proportions!
+    Please <docs>check the docs</docs> or join our <discord>Discord</discord> for help ^_^
+onboarding-automatic_proportions-error_modal-confirm = Understood!
 
 ## Home
 home-no_trackers = No trackers detected or assigned
