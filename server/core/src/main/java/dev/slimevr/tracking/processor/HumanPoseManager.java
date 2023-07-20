@@ -182,40 +182,6 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
-					"human://LEFT_FOOT",
-					"Computed left foot",
-					TrackerPosition.LEFT_FOOT,
-					null,
-					true,
-					true,
-					false,
-					false,
-					true,
-					true
-				)
-			);
-		computedTrackers
-			.add(
-				new Tracker(
-					null,
-					VRServer.getNextLocalTrackerId(),
-					"human://RIGHT_FOOT",
-					"Computed right foot",
-					TrackerPosition.RIGHT_FOOT,
-					null,
-					true,
-					true,
-					false,
-					false,
-					true,
-					true
-				)
-			);
-		computedTrackers
-			.add(
-				new Tracker(
-					null,
-					VRServer.getNextLocalTrackerId(),
 					"human://LEFT_KNEE",
 					"Computed left knee",
 					TrackerPosition.LEFT_UPPER_LEG,
@@ -236,6 +202,40 @@ public class HumanPoseManager {
 					"human://RIGHT_KNEE",
 					"Computed right knee",
 					TrackerPosition.RIGHT_UPPER_LEG,
+					null,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
+				)
+			);
+		computedTrackers
+			.add(
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"human://LEFT_FOOT",
+					"Computed left foot",
+					TrackerPosition.LEFT_FOOT,
+					null,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
+				)
+			);
+		computedTrackers
+			.add(
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"human://RIGHT_FOOT",
+					"Computed right foot",
+					TrackerPosition.RIGHT_FOOT,
 					null,
 					true,
 					true,
@@ -411,7 +411,7 @@ public class HumanPoseManager {
 	@ThreadSafe
 	public TransformNode getRootNode() {
 		if (isSkeletonPresent())
-			return skeleton.getHmdNode();
+			return skeleton.getHeadBone().getHeadNode();
 		return null;
 	}
 
@@ -424,7 +424,7 @@ public class HumanPoseManager {
 	@ThreadSafe
 	public TransformNode getTailNodeOfBone(BoneType bone) {
 		if (isSkeletonPresent())
-			return skeleton.getTailNodeOfBone(bone);
+			return skeleton.getBone(bone).getTailNode();
 		return null;
 	}
 
@@ -467,32 +467,12 @@ public class HumanPoseManager {
 	}
 
 	/**
-	 * @return All skeleton bones as BoneInfo
-	 */
-	@ThreadSafe
-	public List<BoneInfo> getAllBoneInfo() {
-		if (isSkeletonPresent())
-			return skeleton.getAllBoneInfo();
-		return null;
-	}
-
-	/**
 	 * @return All shareable bones as BoneInfo
 	 */
 	@ThreadSafe
-	public List<BoneInfo> getShareableBoneInfo() {
+	public List<Bone> getAllBones() {
 		if (isSkeletonPresent())
-			return skeleton.getShareableBoneInfo();
-		return null;
-	}
-
-	/**
-	 * @return The bone as BoneInfo for the given BoneType
-	 */
-	@ThreadSafe
-	public BoneInfo getBoneInfoForBoneType(BoneType boneType) {
-		if (isSkeletonPresent())
-			return skeleton.getBoneInfoForBoneType(boneType);
+			return List.of(skeleton.getAllBones());
 		return null;
 	}
 

@@ -6,19 +6,19 @@ import io.github.axisangles.ktmath.Transform
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.function.Consumer
 
-class TransformNode @JvmOverloads constructor(
-	var boneType: BoneType? = null,
-	val localRotation: Boolean = true,
-) {
+/**
+ * Represents a joint
+ */
+class TransformNode(val localRotation: Boolean) {
 	val localTransform = Transform()
 	val worldTransform = Transform()
-	val children: MutableList<TransformNode> = CopyOnWriteArrayList()
 	var parent: TransformNode? = null
 		private set
+	val children: MutableList<TransformNode> = CopyOnWriteArrayList()
 	var rotationOffset = Quaternion.IDENTITY
 
 	fun attachChild(node: TransformNode) {
-		require(node.parent == null) { "The child node must not already have a parent" }
+		require(node.parent == null) { "The child node must not already have a parent." }
 		children.add(node)
 		node.parent = this
 	}
@@ -54,7 +54,7 @@ class TransformNode @JvmOverloads constructor(
 		visitor.accept(this)
 	}
 
-	fun combineWithParentGlobalRotation(parent: Transform) {
+	private fun combineWithParentGlobalRotation(parent: Transform) {
 		worldTransform.scale = worldTransform.scale hadamard parent.scale
 		val scaledTranslation = worldTransform.translation hadamard parent.scale
 		worldTransform.translation = parent.rotation.sandwich(scaledTranslation) + parent.translation

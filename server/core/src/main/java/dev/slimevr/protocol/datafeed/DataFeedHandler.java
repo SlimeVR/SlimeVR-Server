@@ -93,7 +93,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 			.createBonesData(
 				fbb,
 				config.getBoneMask(),
-				h.getShareableBoneInfo()
+				h.getAllBones()
 			);
 
 		return DataFeedUpdate.createDataFeedUpdate(fbb, devicesOffset, trackersOffset, bonesOffset);

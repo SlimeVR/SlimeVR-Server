@@ -232,13 +232,13 @@ public class SkeletonConfigManager {
 				-getOffset(SkeletonConfigOffsets.HIP_OFFSET),
 				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
 			);
-			case LEFT_TAIL_HIP -> setNodeOffset(
+			case LEFT_HIP -> setNodeOffset(
 				nodeOffset,
 				-getOffset(SkeletonConfigOffsets.HIPS_WIDTH) / 2f,
 				0,
 				0
 			);
-			case RIGHT_TAIL_HIP -> setNodeOffset(
+			case RIGHT_HIP -> setNodeOffset(
 				nodeOffset,
 				getOffset(SkeletonConfigOffsets.HIPS_WIDTH) / 2f,
 				0,

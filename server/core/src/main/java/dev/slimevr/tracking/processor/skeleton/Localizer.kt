@@ -141,7 +141,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	// resets to the starting position
 	fun reset() {
-		skeleton.hmdNode.localTransform.translation = Vector3.NULL
+		skeleton.headBone.setLocalPosition(Vector3.NULL)
 
 		// reset the velocity
 		comVelocity = Vector3.NULL
@@ -414,9 +414,9 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	// update the hmd position and rotation
 	private fun updateSkeletonPos(travel: Vector3) {
 		val rot = skeleton.headTracker?.getRotation() ?: Quaternion.IDENTITY
-		val temp = skeleton.hmdNode.localTransform.translation.minus(travel)
+		val temp = skeleton.headBone.getLocalPosition() - travel
 
-		skeleton.hmdNode.localTransform.translation = temp
-		skeleton.hmdNode.localTransform.rotation = rot
+		skeleton.headBone.setLocalPosition(temp)
+		skeleton.headBone.setLocalRotation(rot)
 	}
 }

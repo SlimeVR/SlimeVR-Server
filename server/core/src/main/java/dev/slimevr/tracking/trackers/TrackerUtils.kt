@@ -93,4 +93,19 @@ object TrackerUtils {
 		thirdTracker: Tracker?,
 		fourthTracker: Tracker?,
 	): Tracker? = firstTracker ?: (secondTracker ?: (thirdTracker ?: fourthTracker))
+
+	/**
+	 * Returns the first tracker that isn't null out of the 5 trackers passed as
+	 * arguments.
+	 *
+	 * @return The first non-null tracker or null
+	 */
+	@JvmStatic
+	fun getFirstAvailableTracker(
+		firstTracker: Tracker?,
+		secondTracker: Tracker?,
+		thirdTracker: Tracker?,
+		fourthTracker: Tracker?,
+		fifthTracker: Tracker?,
+	): Tracker? = firstTracker ?: (secondTracker ?: (thirdTracker ?: (fourthTracker ?: fifthTracker)))
 }

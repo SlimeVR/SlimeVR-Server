@@ -33,9 +33,9 @@ public class StdBVHFileStream extends BVHFileStream {
 	}
 
 	private TransformNode getNodeFromHierarchy(TransformNode node, BoneType boneType) {
-		if (node.getBoneType() == boneType) {
-			return node;
-		}
+		// if (node.getBoneType() == boneType) {
+		// return node;
+		// } TODO omg
 
 		for (TransformNode child : node.getChildren()) {
 			TransformNode result = getNodeFromHierarchy(child, boneType);

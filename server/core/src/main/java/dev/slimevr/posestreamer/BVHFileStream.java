@@ -82,7 +82,7 @@ public class BVHFileStream extends PoseDataStream {
 	}
 
 	private TransformNodeWrapper wrapSkeleton(HumanSkeleton skeleton) {
-		TransformNodeWrapper wrapper = wrapSkeletonNodes(skeleton.getHmdNode());
+		TransformNodeWrapper wrapper = wrapSkeletonNodes(skeleton.getHeadBone().getHeadNode());
 
 		wrappedSkeleton = skeleton;
 		rootNode = wrapper;
@@ -127,7 +127,8 @@ public class BVHFileStream extends PoseDataStream {
 			writer.write(indentLevel + "End Site\n");
 		} else {
 			writer
-				.write((level > 0 ? indentLevel + "JOINT " : "ROOT ") + node.getBoneType() + "\n");
+				.write((level > 0 ? indentLevel + "JOINT " : "ROOT ") + "TODO bonetype" + "\n"); // TODO
+																									// omg
 		}
 		writer.write(indentLevel + "{\n");
 

@@ -1,7 +1,6 @@
 package dev.slimevr.protocol.datafeed;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import dev.slimevr.tracking.processor.BoneInfo;
 import dev.slimevr.tracking.trackers.Device;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.udp.UDPDevice;
@@ -354,19 +353,19 @@ public class DataFeedBuilder {
 	public static int createBonesData(
 		FlatBufferBuilder fbb,
 		boolean shouldSend,
-		List<BoneInfo> boneInfos
+		List<dev.slimevr.tracking.processor.Bone> bones
 	) {
 		if (!shouldSend) {
 			return 0;
 		}
 
-		var boneOffsets = new int[boneInfos.size()];
-		for (var i = 0; i < boneInfos.size(); ++i) {
-			var bi = boneInfos.get(i);
+		var boneOffsets = new int[bones.size()];
+		for (var i = 0; i < bones.size(); ++i) {
+			var bi = bones.get(i);
 
-			var headPosG = bi.headNode.getWorldTransform().getTranslation();
+			var headPosG = bi.getGlobalPosition();
 			var rotG = bi.getGlobalRotation();
-			var length = bi.length;
+			var length = bi.getLength();
 
 			Bone.startBone(fbb);
 
@@ -375,7 +374,7 @@ public class DataFeedBuilder {
 			var headPosGOffset = Vec3f
 				.createVec3f(fbb, headPosG.getX(), headPosG.getY(), headPosG.getZ());
 			Bone.addHeadPositionG(fbb, headPosGOffset);
-			Bone.addBodyPart(fbb, bi.boneType.bodyPart);
+			Bone.addBodyPart(fbb, bi.getBoneType().bodyPart);
 			Bone.addBoneLength(fbb, length);
 
 			boneOffsets[i] = Bone.endBone(fbb);

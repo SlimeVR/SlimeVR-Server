@@ -4,10 +4,9 @@ import solarxr_protocol.datatypes.BodyPart;
 
 
 /**
- * Keys for all bones in the skeleton.
+ * Keys for all the bones in the skeleton.
  */
 public enum BoneType {
-	HMD(),
 	HEAD(BodyPart.HEAD),
 	HEAD_TRACKER(),
 	NECK(BodyPart.NECK),
@@ -17,10 +16,8 @@ public enum BoneType {
 	WAIST(BodyPart.WAIST),
 	HIP(BodyPart.HIP),
 	HIP_TRACKER,
-	LEFT_HEAD_HIP,
-	RIGHT_HEAD_HIP,
-	LEFT_TAIL_HIP,
-	RIGHT_TAIL_HIP,
+	LEFT_HIP,
+	RIGHT_HIP,
 	LEFT_UPPER_LEG(BodyPart.LEFT_UPPER_LEG),
 	RIGHT_UPPER_LEG(BodyPart.RIGHT_UPPER_LEG),
 	LEFT_KNEE_TRACKER,
