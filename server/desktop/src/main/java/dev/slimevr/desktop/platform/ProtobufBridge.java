@@ -1,7 +1,9 @@
-package dev.slimevr.bridge;
+package dev.slimevr.desktop.platform;
 
 import dev.slimevr.VRServer;
-import dev.slimevr.bridge.ProtobufMessages.*;
+import dev.slimevr.bridge.BridgeThread;
+import dev.slimevr.bridge.ISteamVRBridge;
+import dev.slimevr.desktop.platform.ProtobufMessages.*;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerRole;
 import dev.slimevr.util.ann.VRServerThread;
@@ -20,7 +22,7 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
-public abstract class ProtobufBridge implements Bridge {
+public abstract class ProtobufBridge implements ISteamVRBridge {
 	private static final String resetSourceNamePrefix = "ProtobufBridge";
 
 	@VRServerThread

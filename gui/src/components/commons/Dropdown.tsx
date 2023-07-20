@@ -6,7 +6,7 @@ import {
   UseFormGetValues,
   useWatch,
 } from 'react-hook-form';
-import { a11yClick } from '../utils/a11y';
+import { a11yClick } from '../../utils/a11y';
 
 export interface DropdownItem {
   label: string;

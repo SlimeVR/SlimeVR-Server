@@ -6,8 +6,8 @@ import com.illposed.osc.transport.OSCPortIn;
 import com.illposed.osc.transport.OSCPortOut;
 import com.jme3.math.FastMath;
 import dev.slimevr.VRServer;
+import dev.slimevr.bridge.ISteamVRBridge;
 import dev.slimevr.config.VRCOSCConfig;
-import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
@@ -35,7 +35,7 @@ public class VRCOSCHandler implements OSCHandler {
 	private final VRCOSCConfig config;
 	private final VRServer server;
 	private final Tracker vrcHmd;
-	private final SteamVRBridge steamvrBridge;
+	private final ISteamVRBridge steamvrBridge;
 	private final HumanPoseManager humanPoseManager;
 	private final List<Tracker> computedTrackers;
 	private final FastList<Float> oscArgs = new FastList<>(3);
@@ -48,7 +48,7 @@ public class VRCOSCHandler implements OSCHandler {
 	public VRCOSCHandler(
 		VRServer server,
 		HumanPoseManager humanPoseManager,
-		SteamVRBridge steamvrBridge,
+		ISteamVRBridge steamvrBridge,
 		VRCOSCConfig oscConfig,
 		List<Tracker> computedTrackers
 	) {
@@ -177,8 +177,9 @@ public class VRCOSCHandler implements OSCHandler {
 			}
 		}
 
-		if (refreshRouterSettings && server.getOSCRouter() != null)
+		if (refreshRouterSettings) {
 			server.getOSCRouter().refreshSettings(false);
+		}
 	}
 
 	void handleReceivedMessage(OSCMessageEvent event) {
