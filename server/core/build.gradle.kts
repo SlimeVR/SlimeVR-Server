@@ -65,7 +65,6 @@ dependencies {
 
 	implementation("com.illposed.osc:javaosc-core:0.8")
 	implementation("com.fazecast:jSerialComm:2.+")
-	api("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")

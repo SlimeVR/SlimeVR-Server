@@ -3,9 +3,6 @@ import forms from '@tailwindcss/forms'
 import gradient from 'tailwind-gradient-mask-image'
 import type { Config } from 'tailwindcss'
 
-
-const rem = (pt: number) => `${pt / 16}rem`;
-
 const colors = {
   'blue-gray': {
     100: '#ffffff',
@@ -200,7 +197,7 @@ const config = {
         },
       },
       fontSize: {
-        DEFAULT: rem(12),
+        DEFAULT: 'calc(var(--font-size-standard) / 16)',
       },
       fontWeight: {
         DEFAULT: '500',
@@ -246,12 +243,12 @@ const config = {
       });
 
       addUtilities({
-        '.text-main-title': textConfig(rem(25), 700),
-        '.text-section-title': textConfig(rem(14), 700),
-        '.text-standard': textConfig(rem(12), 500),
-        '.text-vr-accesible': textConfig(rem(14), 500),
-        '.text-vr-accesible-bold': textConfig(rem(14), 700),
-        '.text-standard-bold': textConfig(rem(12), 700),
+        '.text-main-title': textConfig('calc(var(--font-size-title) / 16)', 700),
+        '.text-section-title': textConfig('calc(var(--font-size-vr) / 16)', 700),
+        '.text-standard': textConfig('calc(var(--font-size-standard) / 16)', 500),
+        '.text-vr-accesible': textConfig('calc(var(--font-size-vr) / 16)', 500),
+        '.text-vr-accesible-bold': textConfig('calc(var(--font-size-vr) / 16)', 700),
+        '.text-standard-bold': textConfig('calc(var(--font-size-standard) / 16)', 700),
       });
     }),
     plugin(function({ addVariant }) {
