@@ -1,12 +1,12 @@
 package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import dev.slimevr.bridge.ISteamVRBridge;
 import dev.slimevr.config.*;
 import dev.slimevr.filtering.TrackerFilters;
 import dev.slimevr.osc.OSCRouter;
 import dev.slimevr.osc.VMCHandler;
 import dev.slimevr.osc.VRCOSCHandler;
-import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.rpc.RPCHandler;
@@ -39,7 +39,7 @@ public class RPCSettingsHandler {
 	public void onSettingsRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
-		SteamVRBridge bridge = this.api.server.getVRBridge(SteamVRBridge.class);
+		ISteamVRBridge bridge = this.api.server.getVRBridge(ISteamVRBridge.class);
 
 		int settings = SettingsResponse
 			.createSettingsResponse(
@@ -94,8 +94,8 @@ public class RPCSettingsHandler {
 			return;
 
 		if (req.steamVrTrackers() != null) {
-			SteamVRBridge bridge = this.api.server
-				.getVRBridge(SteamVRBridge.class);
+			ISteamVRBridge bridge = this.api.server
+				.getVRBridge(ISteamVRBridge.class);
 
 			if (bridge != null) {
 				bridge.changeShareSettings(TrackerRole.WAIST, req.steamVrTrackers().waist());
@@ -294,6 +294,7 @@ public class RPCSettingsHandler {
 				hpm.setToggle(SkeletonConfigToggles.VIVE_EMULATION, toggles.viveEmulation());
 				hpm.setToggle(SkeletonConfigToggles.TOE_SNAP, toggles.toeSnap());
 				hpm.setToggle(SkeletonConfigToggles.FOOT_PLANT, toggles.footPlant());
+				hpm.setToggle(SkeletonConfigToggles.SELF_LOCALIZATION, toggles.selfLocalization());
 			}
 
 			if (ratios != null) {

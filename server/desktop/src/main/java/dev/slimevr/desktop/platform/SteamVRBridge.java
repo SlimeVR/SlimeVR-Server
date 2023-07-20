@@ -1,10 +1,7 @@
-package dev.slimevr.platform;
+package dev.slimevr.desktop.platform;
 
 import dev.slimevr.VRServer;
-import dev.slimevr.bridge.ProtobufBridge;
-import dev.slimevr.bridge.ProtobufMessages;
-import dev.slimevr.bridge.ProtobufMessages.Battery;
-import dev.slimevr.bridge.ProtobufMessages.ProtobufMessage;
+import dev.slimevr.desktop.platform.ProtobufMessages.*;
 import dev.slimevr.config.BridgeConfig;
 import dev.slimevr.tracking.trackers.*;
 import dev.slimevr.util.ann.VRServerThread;
@@ -160,7 +157,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		batteryTrackers
 			.add(
 				TrackerUtils
-					.getNonInternalTrackerForBodyPosition(
+					.getTrackerForSkeleton(
 						allTrackers,
 						TrackerPosition.getByTrackerRole(role)
 					)
@@ -171,7 +168,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				batteryTrackers
 					.add(
 						TrackerUtils
-							.getNonInternalTrackerForBodyPosition(
+							.getTrackerForSkeleton(
 								allTrackers,
 								TrackerPosition.WAIST
 							)
@@ -182,7 +179,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 					batteryTrackers
 						.add(
 							TrackerUtils
-								.getNonInternalTrackerForBodyPosition(
+								.getTrackerForSkeleton(
 									allTrackers,
 									TrackerPosition.CHEST
 								)
@@ -190,7 +187,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 					batteryTrackers
 						.add(
 							TrackerUtils
-								.getNonInternalTrackerForBodyPosition(
+								.getTrackerForSkeleton(
 									allTrackers,
 									TrackerPosition.UPPER_CHEST
 								)
@@ -202,7 +199,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				batteryTrackers
 					.add(
 						TrackerUtils
-							.getNonInternalTrackerForBodyPosition(
+							.getTrackerForSkeleton(
 								allTrackers,
 								TrackerPosition.CHEST
 							)
@@ -213,7 +210,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 					batteryTrackers
 						.add(
 							TrackerUtils
-								.getNonInternalTrackerForBodyPosition(
+								.getTrackerForSkeleton(
 									allTrackers,
 									TrackerPosition.WAIST
 								)
@@ -221,7 +218,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 					batteryTrackers
 						.add(
 							TrackerUtils
-								.getNonInternalTrackerForBodyPosition(
+								.getTrackerForSkeleton(
 									allTrackers,
 									TrackerPosition.HIP
 								)
@@ -232,7 +229,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				batteryTrackers
 					.add(
 						TrackerUtils
-							.getNonInternalTrackerForBodyPosition(
+							.getTrackerForSkeleton(
 								allTrackers,
 								TrackerPosition.LEFT_LOWER_LEG
 							)
@@ -243,7 +240,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 					batteryTrackers
 						.add(
 							TrackerUtils
-								.getNonInternalTrackerForBodyPosition(
+								.getTrackerForSkeleton(
 									allTrackers,
 									TrackerPosition.LEFT_UPPER_LEG
 								)
@@ -254,7 +251,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				batteryTrackers
 					.add(
 						TrackerUtils
-							.getNonInternalTrackerForBodyPosition(
+							.getTrackerForSkeleton(
 								allTrackers,
 								TrackerPosition.RIGHT_LOWER_LEG
 							)
@@ -265,7 +262,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 					batteryTrackers
 						.add(
 							TrackerUtils
-								.getNonInternalTrackerForBodyPosition(
+								.getTrackerForSkeleton(
 									allTrackers,
 									TrackerPosition.RIGHT_UPPER_LEG
 								)
@@ -276,7 +273,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				batteryTrackers
 					.add(
 						TrackerUtils
-							.getNonInternalTrackerForBodyPosition(
+							.getTrackerForSkeleton(
 								allTrackers,
 								TrackerPosition.LEFT_LOWER_ARM
 							)
@@ -284,7 +281,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				batteryTrackers
 					.add(
 						TrackerUtils
-							.getNonInternalTrackerForBodyPosition(
+							.getTrackerForSkeleton(
 								allTrackers,
 								TrackerPosition.LEFT_SHOULDER
 							)
@@ -294,7 +291,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				batteryTrackers
 					.add(
 						TrackerUtils
-							.getNonInternalTrackerForBodyPosition(
+							.getTrackerForSkeleton(
 								allTrackers,
 								TrackerPosition.RIGHT_LOWER_ARM
 							)
@@ -302,7 +299,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				batteryTrackers
 					.add(
 						TrackerUtils
-							.getNonInternalTrackerForBodyPosition(
+							.getTrackerForSkeleton(
 								allTrackers,
 								TrackerPosition.RIGHT_SHOULDER
 							)
@@ -402,6 +399,4 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			.addStatusInt(status, false);
 
 	}
-
-	public abstract boolean isConnected();
 }

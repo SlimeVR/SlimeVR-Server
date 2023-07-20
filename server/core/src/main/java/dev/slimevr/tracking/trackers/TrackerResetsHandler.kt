@@ -47,7 +47,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	// Reference adjustment quats
 	private var gyroFix = Quaternion.IDENTITY
 	private var attachmentFix = Quaternion.IDENTITY
-	private var mountRotFix = Quaternion.IDENTITY
+	var mountRotFix = Quaternion.IDENTITY
+		private set
 	private var yawFix = Quaternion.IDENTITY
 
 	// Zero-reference/identity adjustment quats for IMU debugging
