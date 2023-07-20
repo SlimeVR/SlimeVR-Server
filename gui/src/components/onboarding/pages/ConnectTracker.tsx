@@ -59,7 +59,7 @@ export function ConnectTrackersPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { layoutHeight, ref } = useLayout<HTMLDivElement>();
-  const { useConnectedTrackers } = useTrackers();
+  const { useConnectedIMUTrackers } = useTrackers();
   const { applyProgress, state } = useOnboarding();
   const navigate = useNavigate();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
@@ -68,9 +68,9 @@ export function ConnectTrackersPage() {
 
   applyProgress(0.4);
 
-  const connectedTrackers = useConnectedTrackers();
+  const connectedIMUTrackers = useConnectedIMUTrackers();
 
-  const bnoExists = useBnoExists(connectedTrackers);
+  const bnoExists = useBnoExists(connectedIMUTrackers);
 
   useEffect(() => {
     if (!state.wifi) {
@@ -222,7 +222,7 @@ export function ConnectTrackersPage() {
         <div className="flex flex-col xs:flex-grow">
           <Typography color="secondary" bold>
             {l10n.getString('onboarding-connect_tracker-connected_trackers', {
-              amount: connectedTrackers.length,
+              amount: connectedIMUTrackers.length,
             })}
           </Typography>
 
@@ -237,8 +237,8 @@ export function ConnectTrackersPage() {
           >
             <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-2 pr-1">
               {Array.from({
-                ...connectedTrackers,
-                length: Math.max(connectedTrackers.length, 1),
+                ...connectedIMUTrackers,
+                length: Math.max(connectedIMUTrackers.length, 1),
               }).map((tracker, index) => (
                 <div key={index}>
                   {!tracker && (
