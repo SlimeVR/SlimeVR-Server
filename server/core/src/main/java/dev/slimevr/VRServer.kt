@@ -3,12 +3,12 @@ package dev.slimevr
 import com.jme3.system.NanoTimer
 import dev.slimevr.autobone.AutoBoneHandler
 import dev.slimevr.bridge.Bridge
+import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.osc.OSCHandler
 import dev.slimevr.osc.OSCRouter
 import dev.slimevr.osc.VMCHandler
 import dev.slimevr.osc.VRCOSCHandler
-import dev.slimevr.platform.SteamVRBridge
 import dev.slimevr.posestreamer.BVHRecorder
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.reset.ResetHandler
@@ -39,14 +39,12 @@ typealias SteamBridgeProvider = (
 	server: VRServer,
 	hmdTracker: Tracker,
 	computedTrackers: List<Tracker>,
-) -> SteamVRBridge?
+) -> ISteamVRBridge?
 
-class VRServer constructor(
+class VRServer @JvmOverloads constructor(
 	driverBridgeProvider: SteamBridgeProvider = { _: VRServer, _: Tracker, _: List<Tracker> -> null },
-	feederBridgeProvider: (VRServer) -> SteamVRBridge? = { _: VRServer -> null },
-	/**
-	 * configPath is used by VRWorkout, do not remove!
-	 */
+	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _: VRServer -> null },
+	// configPath is used by VRWorkout, do not remove!
 	configPath: String,
 ) : Thread("VRServer") {
 	@JvmField
@@ -377,6 +375,9 @@ class VRServer constructor(
 		private val nextLocalTrackerId = AtomicInteger()
 		lateinit var instance: VRServer
 			private set
+
+		val instanceInitialized: Boolean
+			get() = ::instance.isInitialized
 
 		@JvmStatic
 		fun getNextLocalTrackerId(): Int {
