@@ -43,7 +43,7 @@ export function MountingResetStep({
         {isMobile && (
           <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
             <img
-              src="/images/mounting-reset-pose.png"
+              src="/images/mounting-reset-pose.webp"
               width={125}
               alt="mounting reset ski pose"
             />
@@ -67,7 +67,7 @@ export function MountingResetStep({
       {!isMobile && (
         <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
           <img
-            src="/images/mounting-reset-pose.png"
+            src="/images/mounting-reset-pose.webp"
             width={125}
             alt="mounting reset ski pose"
           />

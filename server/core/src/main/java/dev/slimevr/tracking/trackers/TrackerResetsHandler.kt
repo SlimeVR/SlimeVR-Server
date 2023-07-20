@@ -10,7 +10,7 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.*
 
-private const val DRIFT_COOLDOWN_MS = 30000L
+private const val DRIFT_COOLDOWN_MS = 50000L
 
 /**
  * Class taking care of full reset, yaw reset, mounting reset,
@@ -18,7 +18,6 @@ private const val DRIFT_COOLDOWN_MS = 30000L
  */
 class TrackerResetsHandler(val tracker: Tracker) {
 
-	private var compensateDrift = false
 	private var driftAmount = 0f
 	private var averagedDriftQuat = Quaternion.IDENTITY
 	private var rotationSinceReset = Quaternion.IDENTITY
@@ -27,6 +26,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var totalDriftTime: Long = 0
 	private var driftSince: Long = 0
 	private var timeAtLastReset: Long = 0
+	private var compensateDrift = false
+	private var driftCompensationEnabled = false
 	var allowDriftCompensation = false
 	var lastResetQuaternion: Quaternion? = null
 
@@ -62,10 +63,13 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		compensateDrift = config.enabled
 		driftAmount = config.amount
 		val maxResets = config.maxResets
+
 		if (compensateDrift && maxResets != driftQuats.capacity()) {
 			driftQuats = CircularArrayList<Quaternion>(maxResets)
 			driftTimes = CircularArrayList<Long>(maxResets)
 		}
+
+		refreshDriftCompensationEnabled()
 	}
 
 	/**
@@ -77,6 +81,15 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		totalDriftTime = 0L
 		driftQuats.clear()
 		driftTimes.clear()
+	}
+
+	/**
+	 * Checks for compensateDrift, allowDriftCompensation, and if
+	 * a computed head tracker exists.
+	 */
+	fun refreshDriftCompensationEnabled() {
+		driftCompensationEnabled = compensateDrift && allowDriftCompensation &&
+			TrackerUtils.getNonInternalNonImuTrackerForBodyPosition(VRServer.instance.allTrackers, TrackerPosition.HEAD) != null
 	}
 
 	/**
@@ -134,7 +147,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * and returns it
 	 */
 	private fun adjustToDrift(rotation: Quaternion): Quaternion {
-		if (compensateDrift && allowDriftCompensation && totalDriftTime > 0) {
+		if (driftCompensationEnabled && totalDriftTime > 0) {
 			return rotation
 				.interpR(
 					averagedDriftQuat * rotation,
@@ -302,7 +315,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * driftQuat and timeAtLastReset
 	 */
 	private fun calculateDrift(beforeQuat: Quaternion) {
-		if (compensateDrift && allowDriftCompensation) {
+		if (driftCompensationEnabled) {
 			val rotQuat = adjustToReference(tracker.getRawRotation())
 
 			if (driftSince > 0 && System.currentTimeMillis() - timeAtLastReset > DRIFT_COOLDOWN_MS) {

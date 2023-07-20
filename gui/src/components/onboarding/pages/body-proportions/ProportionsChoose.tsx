@@ -1,6 +1,6 @@
 import { useOnboarding } from '../../../../hooks/onboarding';
-import { useLocalization } from '@fluent/react';
-import { useState } from 'react';
+import { Localized, useLocalization } from '@fluent/react';
+import { useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { Typography } from '../../../commons/Typography';
 import { Button } from '../../../commons/Button';
@@ -14,6 +14,12 @@ import saveAs from 'file-saver';
 import { save } from '@tauri-apps/api/dialog';
 import { writeTextFile } from '@tauri-apps/api/fs';
 import { useIsTauri } from '../../../../hooks/breakpoint';
+import { useAppContext } from '../../../../hooks/app';
+import { error } from '../../../../utils/logging';
+
+export const MIN_HEIGHT = 0.4;
+export const MAX_HEIGHT = 4;
+export const DEFAULT_HEIGHT = 1.5;
 
 export function ProportionsChoose() {
   const isTauri = useIsTauri();
@@ -21,6 +27,26 @@ export function ProportionsChoose() {
   const { applyProgress, state } = useOnboarding();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [animated, setAnimated] = useState(false);
+  const { computedTrackers } = useAppContext();
+
+  const hmdTracker = useMemo(
+    () =>
+      computedTrackers.find(
+        (tracker) =>
+          tracker.tracker.trackerId?.trackerNum === 1 &&
+          tracker.tracker.trackerId.deviceId?.id === undefined
+      ),
+    [computedTrackers]
+  );
+
+  const beneathFloor = useMemo(
+    () =>
+      !(
+        hmdTracker?.tracker.position &&
+        hmdTracker.tracker.position.y >= MIN_HEIGHT
+      ),
+    [hmdTracker?.tracker.position?.y]
+  );
 
   useRPCPacket(
     RpcMessage.SkeletonConfigResponse,
@@ -42,7 +68,7 @@ export function ProportionsChoose() {
             path ? writeTextFile(path, JSON.stringify(data)) : undefined
           )
           .catch((err) => {
-            console.error(err);
+            error(err);
           });
       } else {
         saveAs(blob, 'body-proportions.json');
@@ -125,7 +151,7 @@ export function ProportionsChoose() {
                   <img
                     onMouseEnter={() => setAnimated(() => true)}
                     onAnimationEnd={() => setAnimated(() => false)}
-                    src="/images/slimetower.png"
+                    src="/images/slimetower.webp"
                     className={classNames(
                       'absolute w-[100px] -right-2 -top-24',
                       animated && 'animate-[bounce_1s_1]'
@@ -144,15 +170,23 @@ export function ProportionsChoose() {
                     </Typography>
                   </div>
                   <div>
-                    <Typography color="secondary">
-                      {l10n.getString(
-                        'onboarding-choose_proportions-auto_proportions-description'
-                      )}
-                    </Typography>
+                    <Localized
+                      id="onboarding-choose_proportions-auto_proportions-descriptionv2"
+                      elems={{ b: <b></b> }}
+                    >
+                      <Typography
+                        color="secondary"
+                        whitespace="whitespace-pre-line"
+                      >
+                        Description for autobone
+                      </Typography>
+                    </Localized>
                   </div>
                 </div>
                 <Button
                   variant="primary"
+                  // Check if we are in dev mode and just let it be used
+                  disabled={beneathFloor && import.meta.env.PROD}
                   to="/onboarding/body-proportions/auto"
                   className="self-start mt-auto"
                   state={{ alonePage: state.alonePage }}

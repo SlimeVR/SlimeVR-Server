@@ -3,12 +3,12 @@ package dev.slimevr
 import com.jme3.system.NanoTimer
 import dev.slimevr.autobone.AutoBoneHandler
 import dev.slimevr.bridge.Bridge
+import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.osc.OSCHandler
 import dev.slimevr.osc.OSCRouter
 import dev.slimevr.osc.VMCHandler
 import dev.slimevr.osc.VRCOSCHandler
-import dev.slimevr.platform.SteamVRBridge
 import dev.slimevr.posestreamer.BVHRecorder
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.reset.ResetHandler
@@ -21,6 +21,7 @@ import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.trackers.DeviceManager
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
+import dev.slimevr.tracking.trackers.TrackerUtils
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
 import dev.slimevr.util.ann.VRServerThread
 import dev.slimevr.websocketapi.WebSocketVRBridge
@@ -38,11 +39,14 @@ typealias SteamBridgeProvider = (
 	server: VRServer,
 	hmdTracker: Tracker,
 	computedTrackers: List<Tracker>,
-) -> SteamVRBridge?
+) -> ISteamVRBridge?
 
-class VRServer constructor(
+const val SLIMEVR_IDENTIFIER = "dev.slimevr.SlimeVR"
+
+class VRServer @JvmOverloads constructor(
 	driverBridgeProvider: SteamBridgeProvider = { _: VRServer, _: Tracker, _: List<Tracker> -> null },
-	feederBridgeProvider: (VRServer) -> SteamVRBridge? = { _: VRServer -> null },
+	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _: VRServer -> null },
+	// configPath is used by VRWorkout, do not remove!
 	configPath: String,
 ) : Thread("VRServer") {
 	@JvmField
@@ -92,9 +96,6 @@ class VRServer constructor(
 	@JvmField
 	val statusSystem = StatusSystem()
 
-	/**
-	 * This function is used by VRWorkout, do not remove!
-	 */
 	init {
 		// UwU
 		configManager = ConfigManager(configPath)
@@ -210,6 +211,8 @@ class VRServer constructor(
 	fun trackerUpdated(tracker: Tracker?) {
 		queueTask {
 			humanPoseManager.trackerUpdated(tracker)
+			updateSkeletonModel()
+			refreshTrackersDriftCompensationEnabled()
 			configManager.vrConfig.writeTrackerConfig(tracker)
 			configManager.saveConfig()
 		}
@@ -263,6 +266,8 @@ class VRServer constructor(
 	@VRServerThread
 	private fun trackerAdded(tracker: Tracker) {
 		humanPoseManager.trackerAdded(tracker)
+		updateSkeletonModel()
+		refreshTrackersDriftCompensationEnabled()
 	}
 
 	@ThreadSecure
@@ -280,6 +285,9 @@ class VRServer constructor(
 	@ThreadSafe
 	fun updateSkeletonModel() {
 		queueTask { humanPoseManager.updateSkeletonModelFromServer() }
+		vrcOSCHandler.setHeadTracker(
+			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD)
+		)
 	}
 
 	fun resetTrackersFull(resetSourceName: String?) {
@@ -369,10 +377,21 @@ class VRServer constructor(
 		}
 	}
 
+	fun refreshTrackersDriftCompensationEnabled() {
+		for (t in allTrackers) {
+			if (t.isImu()) {
+				t.resetsHandler.refreshDriftCompensationEnabled()
+			}
+		}
+	}
+
 	companion object {
 		private val nextLocalTrackerId = AtomicInteger()
 		lateinit var instance: VRServer
 			private set
+
+		val instanceInitialized: Boolean
+			get() = ::instance.isInitialized
 
 		@JvmStatic
 		fun getNextLocalTrackerId(): Int {

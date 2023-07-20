@@ -24,6 +24,7 @@ import { playSoundOnResetStarted } from '../sounds/sounds';
 import { useConfig } from './config';
 import { useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
+import { error } from '../utils/logging';
 
 export interface FlatDeviceTracker {
   device?: DeviceDataT;
@@ -41,6 +42,7 @@ export interface AppContext {
   trackers: FlatDeviceTracker[];
   dispatch: Dispatch<AppStateAction>;
   bones: BoneT[];
+  computedTrackers: FlatDeviceTracker[];
 }
 
 export function reducer(state: AppState, action: AppStateAction) {
@@ -88,6 +90,11 @@ export function useProvideAppContext(): AppContext {
     [state]
   );
 
+  const computedTrackers: FlatDeviceTracker[] = useMemo(
+    () => (state.datafeed?.syntheticTrackers || []).map((tracker) => ({ tracker })),
+    [state]
+  );
+
   const bones = useMemo(() => state.datafeed?.bones || [], [state]);
 
   useDataFeedPacket(DataFeedMessage.DataFeedUpdate, (packet: DataFeedUpdateT) => {
@@ -103,8 +110,8 @@ export function useProvideAppContext(): AppContext {
           break;
         }
       }
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      error(e);
     }
   });
 
@@ -113,6 +120,7 @@ export function useProvideAppContext(): AppContext {
     trackers,
     dispatch,
     bones,
+    computedTrackers,
   };
 }
 

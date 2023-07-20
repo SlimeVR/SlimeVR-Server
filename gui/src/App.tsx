@@ -50,10 +50,13 @@ import { open } from '@tauri-apps/api/shell';
 import semver from 'semver';
 import { useBreakpoint } from './hooks/breakpoint';
 import { VRModePage } from './components/vr-mode/VRModePage';
+import { InterfaceSettings } from './components/settings/pages/InterfaceSettings';
+import { error, log } from './utils/logging';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
-export const DOCS_SITE = 'https://docs.slimevr.dev/';
+export const DOCS_SITE = 'https://docs.slimevr.dev';
+export const SLIMEVR_DISCORD = 'https://discord.gg/slimevr';
 
 function Layout() {
   const { loading } = useConfig();
@@ -103,6 +106,7 @@ function Layout() {
           <Route path="osc/router" element={<OSCRouterSettings />} />
           <Route path="osc/vrchat" element={<VRCOSCSettings />} />
           <Route path="osc/vmc" element={<VMCSettings />} />
+          <Route path="interface" element={<InterfaceSettings />} />
         </Route>
         <Route
           path="/onboarding"
@@ -166,19 +170,19 @@ export default function App() {
         setUpdateFound(releases[0].tag_name);
       }
     }
-    fetchReleases().catch(() => console.error('failed to fetch releases'));
+    fetchReleases().catch(() => error('failed to fetch releases'));
   }, []);
 
   if (window.__TAURI_METADATA__) {
     useEffect(() => {
       os.type()
         .then((type) => document.body.classList.add(type.toLowerCase()))
-        .catch(console.error);
+        .catch(error);
 
       return () => {
         os.type()
           .then((type) => document.body.classList.remove(type.toLowerCase()))
-          .catch(console.error);
+          .catch(error);
       };
     }, []);
   }
@@ -192,6 +196,7 @@ export default function App() {
           if ('stderr' === eventType) {
             // This strange invocation is what lets us lose the line information in the console
             // See more here: https://stackoverflow.com/a/48994308
+            // These two are fine to keep with console.log, they are server logs
             setTimeout(
               console.log.bind(
                 console,
@@ -210,11 +215,11 @@ export default function App() {
               )
             );
           } else if (eventType === 'error') {
-            console.error('Error: %s', s);
+            error('Error: %s', s);
           } else if (eventType === 'terminated') {
-            console.error('Server Process Terminated: %s', s);
+            error('Server Process Terminated: %s', s);
           } else if (eventType === 'other') {
-            console.log('Other process event: %s', s);
+            log('Other process event: %s', s);
           }
         }
       );
