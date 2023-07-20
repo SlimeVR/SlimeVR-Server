@@ -391,6 +391,9 @@ class HumanSkeleton(
 
 		// Rebuild the bone list
 		resetBones()
+		
+		// Update tap detection's trackers
+		tapDetectionManager.updateConfig()
 	}
 
 	/**
