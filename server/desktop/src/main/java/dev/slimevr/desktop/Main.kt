@@ -115,8 +115,8 @@ fun main(args: Array<String>) {
 		return
 	}
 	try {
-    val configDir = resolveConfig()
-    LogManager.info("Using config dir: $configDir")
+		val configDir = resolveConfig()
+		LogManager.info("Using config dir: $configDir")
 		val vrServer = VRServer(
 			::provideSteamVRBridge,
 			::provideFeederBridge,
