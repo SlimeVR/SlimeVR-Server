@@ -11,6 +11,7 @@ import { a11yClick } from '../../utils/a11y';
 export interface DropdownItem {
   label: string;
   value: string;
+  fontName?: string;
 }
 
 export type DropdownDirection = 'up' | 'down';
@@ -130,7 +131,7 @@ export function Dropdown({
               onKeyDown={(ev) => a11yClick(ev) && setOpen((open) => !open)}
               tabIndex={0}
             >
-              <div className="flex-grow">
+              <div className="flex-grow text-standard">
                 {items.find((i) => i.value == value)?.label || placeholder}
               </div>
               <div
@@ -176,6 +177,7 @@ export function Dropdown({
                 <ul className="py-1 text-sm flex flex-col">
                   {items.map((item) => (
                     <li
+                      style={item.fontName ? { fontFamily: item.fontName } : {}}
                       className={classNames(
                         'py-2 px-4 min-w-max cursor-pointer',
                         variant == 'primary' &&

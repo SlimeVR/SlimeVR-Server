@@ -126,7 +126,7 @@ export function ProportionsChoose() {
                   <img
                     onMouseEnter={() => setAnimated(() => true)}
                     onAnimationEnd={() => setAnimated(() => false)}
-                    src="/images/slimetower.png"
+                    src="/images/slimetower.webp"
                     className={classNames(
                       'absolute w-[100px] -right-2 -top-24',
                       animated && 'animate-[bounce_1s_1]'

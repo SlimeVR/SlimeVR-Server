@@ -21,6 +21,10 @@ export function SettingSelectorMobile() {
         value: { url: '/settings/trackers', scrollTo: 'steamvr' },
       },
       {
+        label: l10n.getString('settings-sidebar-interface'),
+        value: { url: '/settings/interface', scrollTo: 'appearance' },
+      },
+      {
         label: l10n.getString('settings-sidebar-osc_router'),
         value: { url: '/settings/osc/router', scrollTo: 'router' },
       },

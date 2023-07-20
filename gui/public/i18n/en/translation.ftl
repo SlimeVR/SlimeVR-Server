@@ -258,6 +258,8 @@ settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = VRChat OSC Trackers
 settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
+settings-sidebar-appearance = Appearance
+settings-sidebar-notifications = Notifications
 
 ## SteamVR settings
 settings-general-steamvr = SteamVR
@@ -365,11 +367,26 @@ settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers over threshold
 settings-general-gesture_control-numberTrackersOverThreshold-description = Increase this value if tap detection is not working. Do not increase it above what is needed to make tap detection work this will cause false positives
 
-## Interface settings
-settings-general-interface = Interface
+## Appearance settings
+settings-interface-appearance = Appearance
 settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
+settings-general-interface-theme = Color theme
+settings-general-interface-lang = Select language
+settings-general-interface-lang-description = Change the default language you want to use.
+settings-general-interface-lang-placeholder = Select the language to use
+# Keep the font name untranslated
+settings-interface-appearance-font = GUI font
+settings-interface-appearance-font-description = This changes the font used by the interface
+settings-interface-appearance-font-placeholder = Default font
+settings-interface-appearance-font-os_font = OS font
+settings-interface-appearance-font-slime_font = Default font
+settings-interface-appearance-font_size = Base font scaling
+settings-interface-appearance-font_size-description = This affects the font size of the whole interface except this settings panel
+
+## Notification settings
+settings-interface-notifications = Notifications
 settings-general-interface-serial_detection = Serial device detection
 settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker.
 settings-general-interface-serial_detection-label = Serial device detection
@@ -377,10 +394,6 @@ settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered
 settings-general-interface-feedback_sound-label = Feedback sound
 settings-general-interface-feedback_sound-volume = Feedback sound volume
-settings-general-interface-theme = Color theme
-settings-general-interface-lang = Select language
-settings-general-interface-lang-description = Change the default language you want to use.
-settings-general-interface-lang-placeholder = Select the language to use
 
 ## Serial settings
 settings-serial = Serial Console
