@@ -15,6 +15,7 @@ import { save } from '@tauri-apps/api/dialog';
 import { writeTextFile } from '@tauri-apps/api/fs';
 import { useIsTauri } from '../../../../hooks/breakpoint';
 import { useAppContext } from '../../../../hooks/app';
+import { error } from '../../../../utils/logging';
 
 export const MIN_HEIGHT = 0.4;
 export const MAX_HEIGHT = 4;
@@ -67,7 +68,7 @@ export function ProportionsChoose() {
             path ? writeTextFile(path, JSON.stringify(data)) : undefined
           )
           .catch((err) => {
-            console.error(err);
+            error(err);
           });
       } else {
         saveAs(blob, 'body-proportions.json');

@@ -11,6 +11,7 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { useLocalization } from '@fluent/react';
+import { log } from '../utils/logging';
 
 export enum ProcessStatus {
   PENDING,
@@ -94,7 +95,7 @@ export function useProvideAutobone(): AutoboneContext {
         setEta(data.eta);
 
         if (data.completed) {
-          console.log(`Process ${AutoBoneProcessType[data.processType]} has completed`);
+          log(`Process ${AutoBoneProcessType[data.processType]} has completed`);
 
           switch (data.processType) {
             case AutoBoneProcessType.RECORD:
@@ -127,7 +128,7 @@ export function useProvideAutobone(): AutoboneContext {
     setProgress(data.currentEpoch / data.totalEpochs);
 
     // Probably not necessary to show to the user
-    console.log(
+    log(
       'Epoch ',
       data.currentEpoch,
       '/',

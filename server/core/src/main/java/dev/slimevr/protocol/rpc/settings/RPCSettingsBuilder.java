@@ -1,9 +1,9 @@
 package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import dev.slimevr.bridge.ISteamVRBridge;
 import dev.slimevr.config.*;
 import dev.slimevr.filtering.TrackerFilters;
-import dev.slimevr.platform.SteamVRBridge;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues;
@@ -146,7 +146,7 @@ public class RPCSettingsBuilder {
 			);
 	}
 
-	public static int createSteamVRSettings(FlatBufferBuilder fbb, SteamVRBridge bridge) {
+	public static int createSteamVRSettings(FlatBufferBuilder fbb, ISteamVRBridge bridge) {
 		int steamvrTrackerSettings = 0;
 		if (bridge != null) {
 			steamvrTrackerSettings = SteamVRTrackersSetting

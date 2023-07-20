@@ -1,22 +1,21 @@
-package dev.slimevr.bridge;
+package dev.slimevr.bridge
 
-import dev.slimevr.tracking.trackers.Tracker;
-import dev.slimevr.util.ann.VRServerThread;
-
+import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.TrackerRole
+import dev.slimevr.util.ann.VRServerThread
 
 /**
  * Bridge handles sending and receiving tracker data between SlimeVR and other
  * systems like VR APIs (SteamVR, OpenXR, etc), apps and protocols (VMC,
- * WebSocket, TIP). It can create and manage tracker received from the <b>remote
- * side</b> or send shared <b>local trackers</b> to the other side.
+ * WebSocket, TIP). It can create and manage tracker received from the **remote
+ * side** or send shared **local trackers** to the other side.
  */
-public interface Bridge {
+interface Bridge {
+	@VRServerThread
+	fun dataRead()
 
 	@VRServerThread
-	void dataRead();
-
-	@VRServerThread
-	void dataWrite();
+	fun dataWrite()
 
 	/**
 	 * Adds shared tracker to the bridge. Bridge should notify the other side of
@@ -26,7 +25,7 @@ public interface Bridge {
 	 * @param tracker
 	 */
 	@VRServerThread
-	void addSharedTracker(Tracker tracker);
+	fun addSharedTracker(tracker: Tracker?)
 
 	/**
 	 * Removes tracker from a bridge. If the other side supports tracker
@@ -37,8 +36,16 @@ public interface Bridge {
 	 * @param tracker
 	 */
 	@VRServerThread
-	void removeSharedTracker(Tracker tracker);
+	fun removeSharedTracker(tracker: Tracker?)
 
 	@VRServerThread
-	void startBridge();
+	fun startBridge()
+
+	fun isConnected(): Boolean
+}
+
+interface ISteamVRBridge : Bridge {
+	fun getShareSetting(role: TrackerRole): Boolean
+
+	fun changeShareSettings(role: TrackerRole, share: Boolean)
 }

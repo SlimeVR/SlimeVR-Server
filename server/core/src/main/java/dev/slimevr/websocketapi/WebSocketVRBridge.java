@@ -231,4 +231,9 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	public void startBridge() {
 		start();
 	}
+
+	@Override
+	public boolean isConnected() {
+		return super.getConnections().size() > 0;
+	}
 }

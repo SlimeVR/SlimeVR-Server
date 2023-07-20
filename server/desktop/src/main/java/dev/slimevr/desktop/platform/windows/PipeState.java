@@ -1,4 +1,4 @@
-package dev.slimevr.bridge;
+package dev.slimevr.desktop.platform.windows;
 
 public enum PipeState {
 	CREATED,
