@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useAutobone } from '../../../../../hooks/autobone';
+import { ProcessStatus, useAutobone } from '../../../../../hooks/autobone';
 import { Button } from '../../../../commons/Button';
 import { Typography } from '../../../../commons/Typography';
 import { useLocalization } from '@fluent/react';
@@ -69,13 +69,14 @@ export function VerifyResultsStep({
                   <Typography bold>{(value * 100).toFixed(2)} CM</Typography>
                 </div>
               ))}
-              {!hasCalibration && hasRecording && (
-                <Typography>
-                  {l10n.getString(
-                    'onboarding-automatic-proportions-verify-results-processing'
-                  )}
-                </Typography>
-              )}
+              {hasCalibration === ProcessStatus.PENDING &&
+                hasRecording === ProcessStatus.FULFILLED && (
+                  <Typography>
+                    {l10n.getString(
+                      'onboarding-automatic-proportions-verify-results-processing'
+                    )}
+                  </Typography>
+                )}
             </div>
           </div>
         </div>

@@ -513,6 +513,9 @@ public class HumanSkeleton {
 
 		// Rebuild the bone list
 		resetBones();
+
+		// Update tap detection's trackers
+		tapDetectionManager.updateConfig();
 	}
 
 	protected void setComputedTracker(Tracker tracker) {

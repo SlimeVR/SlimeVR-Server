@@ -20,8 +20,8 @@ class AutoBoneConfig {
 	var targetFullHeight = -1f
 	var randomizeFrameOrder = true
 	var scaleEachStep = true
-	var sampleCount = 1000
-	var sampleRateMs: Long = 20
+	var sampleCount = 1500
+	var sampleRateMs = 20L
 	var saveRecordings = false
 	var useSkeletonHeight = false
 	var randSeed = 4L

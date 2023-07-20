@@ -3,7 +3,7 @@ package dev.slimevr.autobone
 import dev.slimevr.autobone.AutoBone.Epoch
 import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
-import java.util.EnumMap
+import java.util.*
 
 interface AutoBoneListener {
 	fun onAutoBoneProcessStatus(
@@ -11,6 +11,7 @@ interface AutoBoneListener {
 		message: String?,
 		current: Long,
 		total: Long,
+		eta: Float,
 		completed: Boolean,
 		success: Boolean,
 	)
