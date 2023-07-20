@@ -268,7 +268,7 @@ jobs:
           mkdir SlimeVR
           cp gui/src-tauri/icons/icon.ico ./SlimeVR/run.ico
           cp server/desktop/build/libs/slimevr.jar ./SlimeVR/slimevr.jar
-          cp server/desktop/resources/* ./SlimeVR/
+          cp server/core/resources/* ./SlimeVR/
           cp target/release/slimevr.exe ./SlimeVR/
           7z a -tzip SlimeVR-win64.zip ./SlimeVR/
 
