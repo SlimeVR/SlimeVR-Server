@@ -302,45 +302,49 @@ public class RPCSettingsHandler {
 					hpm
 						.setValue(
 							SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING,
-							ratios.imputeWaistFromChestHip()
+							Math.max(0, ratios.imputeWaistFromChestHip())
 						);
 				}
 				if (ratios.hasImputeWaistFromChestLegs()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING,
-							ratios.imputeWaistFromChestLegs()
+							Math.max(0, ratios.imputeWaistFromChestLegs())
 						);
 				}
 				if (ratios.hasImputeHipFromChestLegs()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING,
-							ratios.imputeHipFromChestLegs()
+							Math.max(0, ratios.imputeHipFromChestLegs())
 						);
 				}
 				if (ratios.hasImputeHipFromWaistLegs()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING,
-							ratios.imputeHipFromWaistLegs()
+							Math.max(0, ratios.imputeHipFromWaistLegs())
 						);
 				}
 				if (ratios.hasInterpHipLegs()) {
-					hpm.setValue(SkeletonConfigValues.HIP_LEGS_AVERAGING, ratios.interpHipLegs());
+					hpm
+						.setValue(
+							SkeletonConfigValues.HIP_LEGS_AVERAGING,
+							Math.max(0, ratios.interpHipLegs())
+						);
 				}
 				if (ratios.hasInterpKneeTrackerAnkle()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING,
-							ratios.interpKneeTrackerAnkle()
+							Math.max(0, ratios.interpKneeTrackerAnkle())
 						);
 				}
 				if (ratios.hasInterpKneeAnkle()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.KNEE_ANKLE_AVERAGING,
-							ratios.interpKneeAnkle()
+							Math.max(0, ratios.interpKneeAnkle())
 						);
 				}
 			}
