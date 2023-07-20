@@ -643,7 +643,7 @@ export function GeneralSettings() {
                     control={control}
                     name="toggles.extendedSpine"
                     label={l10n.getString(
-                      'settings-general-fk_settings-skeleton_settings-extended_spine'
+                      'settings-general-fk_settings-skeleton_settings-extended_spine_model'
                     )}
                   />
                   <CheckBox
@@ -652,7 +652,7 @@ export function GeneralSettings() {
                     control={control}
                     name="toggles.extendedPelvis"
                     label={l10n.getString(
-                      'settings-general-fk_settings-skeleton_settings-extended_pelvis'
+                      'settings-general-fk_settings-skeleton_settings-extended_pelvis_model'
                     )}
                   />
                   <CheckBox
@@ -661,7 +661,7 @@ export function GeneralSettings() {
                     control={control}
                     name="toggles.extendedKnee"
                     label={l10n.getString(
-                      'settings-general-fk_settings-skeleton_settings-extended_knees'
+                      'settings-general-fk_settings-skeleton_settings-extended_knees_model'
                     )}
                   />
                 </div>
