@@ -10,7 +10,6 @@ import dev.slimevr.config.VMCConfig;
 import dev.slimevr.tracking.processor.Bone;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
-import dev.slimevr.tracking.processor.TransformNode;
 import dev.slimevr.tracking.trackers.Device;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
@@ -165,12 +164,26 @@ public class VMCHandler implements OSCHandler {
 			// Load VRM data
 			if (outputUnityArmature != null && config.getVrmJson() != null) {
 				VRMReader vrmReader = new VRMReader(config.getVrmJson());
-				for (UnityBone unityBone : UnityBone.values()) {
-					TransformNode node = outputUnityArmature.getHeadNodeOfBone(unityBone);
-					if (node != null)
-						node
-							.getLocalTransform()
-							.setTranslation(vrmReader.getOffsetForBone(unityBone));
+				for (UnityBone unityBone : UnityBone.getEntries()) {
+					Bone bone = outputUnityArmature.getBone(unityBone);
+					if (bone != null) {
+						// Get offset
+						Vector3 offset = vrmReader.getOffsetForBone(unityBone);
+
+						// Compute bone rotation
+						Quaternion rotOffset = Quaternion.Companion.getIDENTITY();
+						if (offset.len() != 0f) {
+							rotOffset = Quaternion.Companion
+								.fromTo(Vector3.Companion.getNEG_Y(), offset)
+								.unit();
+						}
+
+						// Update bone length
+						bone.setLength(offset.len());
+
+						// Set bone rotation offset
+						bone.setRotationOffset(rotOffset);
+					}
 				}
 				vrmHeight = vrmReader
 					.getOffsetForBone(UnityBone.HIPS)
@@ -189,7 +202,7 @@ public class VMCHandler implements OSCHandler {
 
 	private void handleReceivedMessage(OSCMessageEvent event) {
 		switch (event.getMessage().getAddress()) {
-			case "/VMC/Ext/Bone/Pos":
+			case "/VMC/Ext/Bone/Pos" -> {
 				// Is bone (rotation)
 				TrackerPosition trackerPosition = null;
 				UnityBone bone = UnityBone
@@ -216,10 +229,8 @@ public class VMCHandler implements OSCHandler {
 							)
 					);
 				}
-				break;
-			case "/VMC/Ext/Hmd/Pos":
-			case "/VMC/Ext/Con/Pos":
-			case "/VMC/Ext/Tra/Pos":
+			}
+			case "/VMC/Ext/Hmd/Pos", "/VMC/Ext/Con/Pos", "/VMC/Ext/Tra/Pos" ->
 				// Is tracker (position + rotation)
 				handleReceivedTracker(
 					"VMC-Tracker-" + event.getMessage().getArguments().get(0),
@@ -238,8 +249,7 @@ public class VMCHandler implements OSCHandler {
 					false,
 					null
 				);
-				break;
-			case "/VMC/Ext/Root/Pos":
+			case "/VMC/Ext/Root/Pos" -> {
 				// Is VMC tracking root (offsets all rotations)
 				if (inputUnityArmature != null) {
 					inputUnityArmature
@@ -257,7 +267,7 @@ public class VMCHandler implements OSCHandler {
 							)
 						);
 				}
-				break;
+			}
 		}
 	}
 
@@ -389,14 +399,12 @@ public class VMCHandler implements OSCHandler {
 						// and hip
 						// FIXME this way isn't perfect, but I give up - Erimel
 						Vector3 upperLegsAverage = (outputUnityArmature
-							.getHeadNodeOfBone(UnityBone.LEFT_UPPER_LEG)
-							.getWorldTransform()
-							.getTranslation()
+							.getBone(UnityBone.LEFT_UPPER_LEG)
+							.getPosition()
 							.plus(
 								outputUnityArmature
-									.getHeadNodeOfBone(UnityBone.RIGHT_UPPER_LEG)
-									.getWorldTransform()
-									.getTranslation()
+									.getBone(UnityBone.RIGHT_UPPER_LEG)
+									.getPosition()
 							)).times(0.5f);
 						Vector3 scaledHead = humanPoseManager
 							.getBone(BoneType.HEAD)
@@ -409,25 +417,20 @@ public class VMCHandler implements OSCHandler {
 						Vector3 pos = scaledHead
 							.minus(
 								(outputUnityArmature
-									.getHeadNodeOfBone(UnityBone.HEAD)
-									.getParent()
-									.getWorldTransform()
-									.getTranslation()
+									.getBone(UnityBone.HEAD)
+									.getTailPosition()
 									.minus(upperLegsAverage))
 							);
 
 
-						outputUnityArmature
-							.getHeadNodeOfBone(UnityBone.HIPS)
-							.getLocalTransform()
-							.setTranslation(pos);
+						outputUnityArmature.getBone(UnityBone.HIPS).setPosition(pos);
 					}
 
 					// Update Unity skeleton
 					outputUnityArmature.updateNodes();
 
 					// Add Unity humanoid bones transforms
-					for (UnityBone bone : UnityBone.values()) {
+					for (UnityBone bone : UnityBone.getEntries()) {
 						if (
 							!(humanPoseManager.isTrackingLeftArmFromController()
 								&& isLeftArmUnityBone(bone))

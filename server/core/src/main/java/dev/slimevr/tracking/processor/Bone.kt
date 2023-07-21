@@ -13,7 +13,11 @@ class Bone(val boneType: BoneType) {
 	var parent: Bone? = null
 		private set
 	val children: MutableList<Bone> = CopyOnWriteArrayList()
-	var rotationOffset = Quaternion.IDENTITY // TODO
+	var rotationOffset = Quaternion.IDENTITY
+		set(value) {
+			headNode.rotationOffset = value
+			field = value
+		}
 
 	init {
 		headNode.attachChild(tailNode)
@@ -45,6 +49,8 @@ class Bone(val boneType: BoneType) {
 		// Detach nodes
 		headNode.detachWithChildren()
 		tailNode.detachWithChildren()
+
+		// Reattach this bone
 		headNode.attachChild(tailNode)
 	}
 
@@ -64,13 +70,6 @@ class Bone(val boneType: BoneType) {
 	}
 
 	/**
-	 * Sets the world-aligned rotation of the bone
-	 */
-	fun setGlobalRotation(rotation: Quaternion) {
-		headNode.worldTransform.rotation = rotation
-	}
-
-	/**
 	 * Returns the rotation of the bone relative to its parent
 	 */
 	fun getLocalRotation(): Quaternion {
@@ -78,9 +77,9 @@ class Bone(val boneType: BoneType) {
 	}
 
 	/**
-	 * Sets the rotation of the bone relative to its parent
+	 * Sets the global rotation of the bone
 	 */
-	fun setLocalRotation(rotation: Quaternion) {
+	fun setRotation(rotation: Quaternion) {
 		headNode.localTransform.rotation = rotation
 	}
 

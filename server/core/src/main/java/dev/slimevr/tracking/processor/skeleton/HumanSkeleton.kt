@@ -451,14 +451,14 @@ class HumanSkeleton(
 			headRot = head.getRotation()
 
 			// Set head rotation
-			headBone.setLocalRotation(headRot)
-			headTrackerBone.setLocalRotation(headRot)
+			headBone.setRotation(headRot)
+			headTrackerBone.setRotation(headRot)
 
 			// Get neck rotation
 			neckTracker?.let { headRot = it.getRotation() }
 
 			// Set neck rotation
-			neckBone.setLocalRotation(headRot)
+			neckBone.setRotation(headRot)
 		} ?: run {
 			// Set head position
 			if (!localizer.getEnabled()) headBone.setPosition(NULL)
@@ -472,9 +472,9 @@ class HumanSkeleton(
 				hipTracker
 			)?.let { headRot = it.getRotation() }
 
-			headBone.setLocalRotation(headRot)
-			headTrackerBone.setLocalRotation(headRot)
-			neckBone.setLocalRotation(headRot)
+			headBone.setRotation(headRot)
+			headTrackerBone.setRotation(headRot)
+			neckBone.setRotation(headRot)
 		}
 	}
 
@@ -485,34 +485,34 @@ class HumanSkeleton(
 		if (hasSpineTracker) {
 			// Upper chest and chest tracker
 			getFirstAvailableTracker(upperChestTracker, chestTracker, waistTracker, hipTracker)?.let {
-				upperChestBone.setLocalRotation(it.getRotation())
-				chestTrackerBone.setLocalRotation(it.getRotation())
+				upperChestBone.setRotation(it.getRotation())
+				chestTrackerBone.setRotation(it.getRotation())
 			}
 
 			// Chest
 			getFirstAvailableTracker(chestTracker, upperChestTracker, waistTracker, hipTracker)?.let {
-				chestBone.setLocalRotation(it.getRotation())
+				chestBone.setRotation(it.getRotation())
 			}
 
 			// Waist
 			getFirstAvailableTracker(waistTracker, chestTracker, hipTracker, upperChestTracker)?.let {
-				waistBone.setLocalRotation(it.getRotation())
+				waistBone.setRotation(it.getRotation())
 			}
 
 			// Hip and hip tracker
 			getFirstAvailableTracker(hipTracker, waistTracker, chestTracker, upperChestTracker)?.let {
-				hipBone.setLocalRotation(it.getRotation())
-				hipTrackerBone.setLocalRotation(it.getRotation())
+				hipBone.setRotation(it.getRotation())
+				hipTrackerBone.setRotation(it.getRotation())
 			}
 		} else if (headTracker != null) {
 			// Align with neck's yaw
 			val yawRot = neckBone.getGlobalRotation().project(POS_Y).unit()
-			upperChestBone.setLocalRotation(yawRot)
-			chestTrackerBone.setLocalRotation(yawRot)
-			chestBone.setLocalRotation(yawRot)
-			waistBone.setLocalRotation(yawRot)
-			hipBone.setLocalRotation(yawRot)
-			hipTrackerBone.setLocalRotation(yawRot)
+			upperChestBone.setRotation(yawRot)
+			chestTrackerBone.setRotation(yawRot)
+			chestBone.setRotation(yawRot)
+			waistBone.setRotation(yawRot)
+			hipBone.setRotation(yawRot)
+			hipTrackerBone.setRotation(yawRot)
 		}
 
 		// Extended spine model
@@ -534,7 +534,7 @@ class HumanSkeleton(
 						chestRot = chestRot.interpQ(hipRot, waistFromChestHipAveraging)
 
 						// Set waist's rotation
-						waistBone.setLocalRotation(chestRot)
+						waistBone.setRotation(chestRot)
 					} ?: run {
 						if (hasKneeTrackers) {
 							// Calculates waist from chest + legs
@@ -555,7 +555,7 @@ class HumanSkeleton(
 							chestRot = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), waistFromChestLegsAveraging).unit()
 
 							// Set waist's rotation
-							waistBone.setLocalRotation(chestRot)
+							waistBone.setRotation(chestRot)
 						}
 					}
 				}
@@ -580,8 +580,8 @@ class HumanSkeleton(
 					waistRot = waistRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromWaistLegsAveraging).unit()
 
 					// Set hip rotation
-					hipBone.setLocalRotation(waistRot)
-					hipTrackerBone.setLocalRotation(waistRot)
+					hipBone.setRotation(waistRot)
+					hipTrackerBone.setRotation(waistRot)
 				} ?: run {
 					getFirstAvailableTracker(chestTracker, upperChestTracker)?.let {
 						// Calculates hip from chest + legs
@@ -602,8 +602,8 @@ class HumanSkeleton(
 						chestRot = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromChestLegsAveraging).unit()
 
 						// Set hip rotation
-						hipBone.setLocalRotation(chestRot)
-						hipTrackerBone.setLocalRotation(chestRot)
+						hipBone.setRotation(chestRot)
+						hipTrackerBone.setRotation(chestRot)
 					}
 				}
 			}
@@ -621,13 +621,13 @@ class HumanSkeleton(
 			val newHipRot = hipRot.interpR(extendedPelvisRot, hipLegsAveraging)
 
 			// Set new hip rotation
-			hipBone.setLocalRotation(newHipRot)
-			hipTrackerBone.setLocalRotation(newHipRot)
+			hipBone.setRotation(newHipRot)
+			hipTrackerBone.setRotation(newHipRot)
 		}
 
 		// Set left and right hip rotations to the hip's
-		leftHipBone.setLocalRotation(hipBone.getLocalRotation())
-		rightHipBone.setLocalRotation(hipBone.getLocalRotation())
+		leftHipBone.setRotation(hipBone.getLocalRotation())
+		rightHipBone.setRotation(hipBone.getLocalRotation())
 	}
 
 	/**
@@ -653,7 +653,8 @@ class HumanSkeleton(
 			legRot = hipBone.getLocalRotation().project(POS_Y).unit()
 		}
 		// Set upper leg rotation
-		upperLegBone.setLocalRotation(legRot)
+		upperLegBone.setRotation(legRot)
+		kneeTrackerBone.setRotation(legRot)
 
 		lowerLegTracker?.let {
 			// Get lower leg rotation
@@ -663,13 +664,15 @@ class HumanSkeleton(
 			legRot = legRot.project(POS_Y).unit()
 		}
 		// Set lower leg rotation
-		lowerLegBone.setLocalRotation(legRot)
+		lowerLegBone.setRotation(legRot)
 
 		// Get foot rotation
 		footTracker?.let { legRot = it.getRotation() }
 		// Set foot rotation
-		footBone.setLocalRotation(legRot)
-		footTrackerBone.setLocalRotation(legRot)
+		footBone.setRotation(legRot)
+		// Offset foot tracker rotation
+		if (footTracker != null) legRot *= FORWARD_QUATERNION
+		footTrackerBone.setRotation(legRot)
 
 		// Extended knee model
 		if (extendedKneeModel) {
@@ -680,7 +683,7 @@ class HumanSkeleton(
 					val upperRot = upper.getRotation()
 					val lowerRot = lower.getRotation()
 					val extendedRot = extendedKneeYawRoll(upperRot, lowerRot)
-					kneeTrackerBone.setLocalRotation(upperRot.interpR(extendedRot, kneeTrackerAnkleAveraging))
+					kneeTrackerBone.setRotation(upperRot.interpR(extendedRot, kneeTrackerAnkleAveraging))
 				}
 			}
 		}
@@ -706,48 +709,48 @@ class HumanSkeleton(
 			// Set hand rotation and position from tracker
 			handTracker?.let {
 				handBone.setPosition(it.position)
-				handBone.setLocalRotation(it.getRotation())
+				handBone.setRotation(it.getRotation())
 			}
 
 			// Get lower arm rotation
 			var armRot = getFirstAvailableTracker(lowerArmTracker, upperArmTracker)?.getRotation() ?: IDENTITY
 			// Set lower arm rotation
-			lowerArmBone.setLocalRotation(armRot)
+			lowerArmBone.setRotation(armRot)
 
 			// Get upper arm rotation
 			armRot = getFirstAvailableTracker(upperArmTracker, lowerArmTracker)?.getRotation() ?: IDENTITY
 			// Set elbow tracker rotation
-			elbowTrackerBone.setLocalRotation(armRot)
+			elbowTrackerBone.setRotation(armRot)
 		} else { // From HMD
 			// Get shoulder rotation
 			var armRot = shoulderTracker?.getRotation() ?: upperChestBone.getLocalRotation()
 			// Set shoulder rotation
-			shoulderBone.setLocalRotation(armRot)
+			shoulderBone.setRotation(armRot)
 
 			if (upperArmTracker != null || lowerArmTracker != null) {
 				// Get upper arm rotation
 				getFirstAvailableTracker(upperArmTracker, lowerArmTracker)?.let { armRot = it.getRotation() }
 				// Set upper arm and elbow tracker rotation
-				upperArmBone.setLocalRotation(armRot)
-				elbowTrackerBone.setLocalRotation(armRot)
+				upperArmBone.setRotation(armRot)
+				elbowTrackerBone.setRotation(armRot)
 
 				// Get lower arm rotation
 				getFirstAvailableTracker(lowerArmTracker, upperArmTracker)?.let { armRot = it.getRotation() }
 				// Set lower arm rotation
-				lowerArmBone.setLocalRotation(armRot)
+				lowerArmBone.setRotation(armRot)
 			} else {
 				// Fallback arm rotation as upper chest
 				armRot = upperChestBone.getLocalRotation()
-				upperArmBone.setLocalRotation(armRot)
-				elbowTrackerBone.setLocalRotation(armRot)
-				lowerArmBone.setLocalRotation(armRot)
+				upperArmBone.setRotation(armRot)
+				elbowTrackerBone.setRotation(armRot)
+				lowerArmBone.setRotation(armRot)
 			}
 
 			// Get hand rotation
 			handTracker?.let { armRot = it.getRotation() }
 			// Set hand, and hand tracker rotation
-			handBone.setLocalRotation(armRot)
-			handTrackerBone.setLocalRotation(armRot)
+			handBone.setRotation(armRot)
+			handTrackerBone.setRotation(armRot)
 		}
 	}
 
@@ -760,13 +763,9 @@ class HumanSkeleton(
 	 * @return the rotated Quaternion
 	 */
 	private fun extendedKneeYawRoll(knee: Quaternion, ankle: Quaternion): Quaternion {
-		// R = InverseKnee * Ankle
-		// C = Quaternion(R.w, -R.x, 0, 0)
-		// Knee = Knee * R * C
-		// normalize(Knee)
-		val r = knee.inv().times(ankle)
+		val r = knee.inv() * ankle
 		val c = Quaternion(r.w, -r.x, 0f, 0f)
-		return knee.times(r).times(c).unit()
+		return (knee * r * c).unit()
 	}
 
 	/**
@@ -800,9 +799,9 @@ class HumanSkeleton(
 		// C = Quaternion(R.w, -R.x, 0, 0)
 		// Pelvis = Hip * R * C
 		// normalize(Pelvis)
-		val r = hip.inv().times(leftKneeRot.plus(rightKneeRot))
+		val r = hip.inv() * (leftKneeRot + rightKneeRot)
 		val c = Quaternion(r.w, -r.x, 0f, 0f)
-		return hip.times(r).times(c).unit()
+		return (hip * r * c).unit()
 	}
 
 	// Update the output trackers
@@ -839,16 +838,12 @@ class HumanSkeleton(
 
 		computedLeftFootTracker?.let {
 			it.position = leftFootTrackerBone.getPosition()
-			var rot = leftFootTrackerBone.getGlobalRotation()
-			if (hasLeftFootTracker) rot *= FORWARD_QUATERNION
 			it.setRotation(leftFootTrackerBone.getGlobalRotation())
 			it.dataTick()
 		}
 
 		computedRightFootTracker?.let {
 			it.position = rightFootTrackerBone.getPosition()
-			var rot = rightFootTrackerBone.getGlobalRotation()
-			if (hasLeftFootTracker) rot *= FORWARD_QUATERNION
 			it.setRotation(rightFootTrackerBone.getGlobalRotation())
 			it.dataTick()
 		}
@@ -879,10 +874,7 @@ class HumanSkeleton(
 	}
 
 	// Skeleton Config toggles
-	fun updateToggleState(configToggle: SkeletonConfigToggles?, newValue: Boolean) {
-		if (configToggle == null) {
-			return
-		}
+	fun updateToggleState(configToggle: SkeletonConfigToggles, newValue: Boolean) {
 		when (configToggle) {
 			SkeletonConfigToggles.EXTENDED_SPINE_MODEL -> extendedSpineModel = newValue
 			SkeletonConfigToggles.EXTENDED_PELVIS_MODEL -> extendedPelvisModel = newValue
@@ -902,10 +894,7 @@ class HumanSkeleton(
 	}
 
 	// Skeleton Config ratios
-	fun updateValueState(configValue: SkeletonConfigValues?, newValue: Float) {
-		if (configValue == null) {
-			return
-		}
+	fun updateValueState(configValue: SkeletonConfigValues, newValue: Float) {
 		when (configValue) {
 			SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING -> waistFromChestHipAveraging = newValue
 			SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING -> waistFromChestLegsAveraging = newValue
@@ -952,8 +941,7 @@ class HumanSkeleton(
 		// Compute bone rotation
 		var rotOffset = IDENTITY
 		if (offset.len() != 0f) {
-			rotOffset = fromTo(NEG_Y, transOffset)
-				.unit()
+			rotOffset = fromTo(NEG_Y, transOffset).unit()
 		}
 
 		// Get the bone
@@ -1033,20 +1021,8 @@ class HumanSkeleton(
 			leftKneeTrackerBone,
 			rightKneeTrackerBone,
 			leftFootTrackerBone,
-			rightFootTrackerBone,
-			leftShoulderBone,
-			rightShoulderBone,
-			leftUpperArmBone,
-			rightUpperArmBone,
-			leftLowerArmBone,
-			rightLowerArmBone,
-			leftHandBone,
-			rightHandBone,
-			leftElbowTrackerBone,
-			rightElbowTrackerBone,
-			leftHandTrackerBone,
-			rightHandTrackerBone
-		)
+			rightFootTrackerBone
+		) + armBones
 
 	private val armBones: Array<Bone>
 		get() = arrayOf(
@@ -1065,7 +1041,7 @@ class HumanSkeleton(
 		)
 
 	val hmdHeight: Float
-		get() = if (headTracker != null && headTracker!!.hasPosition) headTracker!!.position.y else 0f
+		get() = headTracker?.position?.y ?: 0f
 	val isTrackingLeftArmFromController: Boolean
 		/**
 		 * Runs checks to know if we should (and are) performing the tracking of the
@@ -1085,27 +1061,26 @@ class HumanSkeleton(
 		 */
 		get() = rightHandTracker != null && rightHandTracker!!.hasPosition && !forceArmsFromHMD
 	val localTrackers: List<Tracker?>
-		get() = java.util.List
-			.of(
-				neckTracker,
-				chestTracker,
-				waistTracker,
-				hipTracker,
-				leftUpperLegTracker,
-				leftLowerLegTracker,
-				leftFootTracker,
-				rightUpperLegTracker,
-				rightLowerLegTracker,
-				rightFootTracker,
-				leftLowerArmTracker,
-				rightLowerArmTracker,
-				leftUpperArmTracker,
-				rightUpperArmTracker,
-				leftHandTracker,
-				rightHandTracker,
-				leftShoulderTracker,
-				rightShoulderTracker
-			)
+		get() = listOf(
+			neckTracker,
+			chestTracker,
+			waistTracker,
+			hipTracker,
+			leftUpperLegTracker,
+			leftLowerLegTracker,
+			leftFootTracker,
+			rightUpperLegTracker,
+			rightLowerLegTracker,
+			rightFootTracker,
+			leftLowerArmTracker,
+			rightLowerArmTracker,
+			leftUpperArmTracker,
+			rightUpperArmTracker,
+			leftHandTracker,
+			rightHandTracker,
+			leftShoulderTracker,
+			rightShoulderTracker
+		)
 
 	fun resetTrackersFull(resetSourceName: String?) {
 		val trackersToReset = humanPoseManager.getTrackersToReset()
@@ -1116,8 +1091,7 @@ class HumanSkeleton(
 			if (it.needsReset) {
 				it.resetsHandler.resetFull(referenceRotation)
 			} else {
-				referenceRotation =
-					it.getRotation()
+				referenceRotation = it.getRotation()
 			}
 		}
 		for (tracker in trackersToReset) {
@@ -1144,8 +1118,7 @@ class HumanSkeleton(
 			if (it.needsReset) {
 				it.resetsHandler.resetYaw(referenceRotation)
 			} else {
-				referenceRotation =
-					it.getRotation()
+				referenceRotation = it.getRotation()
 			}
 		}
 		for (tracker in trackersToReset) {
@@ -1229,7 +1202,9 @@ class HumanSkeleton(
 		legTweaks.updateConfig()
 	}
 
-	// Does not save to config
+	/**
+	 * Does not save to config
+	 */
 	fun setLegTweaksStateTemp(
 		skatingCorrection: Boolean,
 		floorClip: Boolean,
@@ -1242,7 +1217,9 @@ class HumanSkeleton(
 		legTweaks.footPlantEnabled = footPlant
 	}
 
-	// Resets to config values
+	/**
+	 * Resets to config values
+	 */
 	fun clearLegTweaksStateTemp(
 		skatingCorrection: Boolean,
 		floorClip: Boolean,
@@ -1274,7 +1251,9 @@ class HumanSkeleton(
 			return state
 		}
 
-	// master enable/disable of all leg tweaks (for Autobone)
+	/**
+	 * Master enable/disable of all leg tweaks (for Autobone)
+	 */
 	@VRServerThread
 	fun setLegTweaksEnabled(value: Boolean) {
 		legTweaks.enabled = value

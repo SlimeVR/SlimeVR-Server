@@ -417,6 +417,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		val temp = skeleton.headBone.getPosition() - travel
 
 		skeleton.headBone.setPosition(temp)
-		skeleton.headBone.setLocalRotation(rot)
+		skeleton.headBone.setRotation(rot)
 	}
 }

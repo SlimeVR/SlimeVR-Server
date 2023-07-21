@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.processor
 
 import io.eiren.util.ann.ThreadSafe
+import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Transform
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.function.Consumer
@@ -14,6 +15,7 @@ class TransformNode(val localRotation: Boolean) {
 	var parent: TransformNode? = null
 		private set
 	val children: MutableList<TransformNode> = CopyOnWriteArrayList()
+	var rotationOffset = Quaternion.IDENTITY
 
 	fun attachChild(node: TransformNode) {
 		require(node.parent == null) { "The child node must not already have a parent." }
@@ -23,6 +25,9 @@ class TransformNode(val localRotation: Boolean) {
 
 	@ThreadSafe
 	fun update() {
+		// Apply rotation offset
+		localTransform.rotation *= rotationOffset
+
 		// Call update on each frame because we have relatively few nodes
 		updateWorldTransforms()
 		for (node in children) {
