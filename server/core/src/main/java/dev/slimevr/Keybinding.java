@@ -24,7 +24,7 @@ public class Keybinding implements HotkeyListener {
 
 		this.config = server.configManager.getVrConfig().getKeybindings();
 
-		if (OperatingSystem.getCurrentPlatform() != OperatingSystem.WINDOWS) {
+		if (OperatingSystem.Companion.getCurrentPlatform() != OperatingSystem.WINDOWS) {
 			LogManager
 				.info(
 					"[Keybinding] Currently only supported on Windows. Keybindings will be disabled."

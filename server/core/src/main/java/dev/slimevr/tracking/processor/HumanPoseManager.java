@@ -339,12 +339,10 @@ public class HumanPoseManager {
 	// #region skeleton methods
 	@VRServerThread
 	public void trackerAdded(Tracker tracker) {
-		updateSkeletonModelFromServer();
 	}
 
 	@VRServerThread
 	public void trackerUpdated(Tracker tracker) {
-		updateSkeletonModelFromServer();
 	}
 
 	@VRServerThread
