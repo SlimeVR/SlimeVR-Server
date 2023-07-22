@@ -465,12 +465,12 @@ public class HumanPoseManager {
 	}
 
 	/**
-	 * @return All shareable bones as BoneInfo
+	 * @return All non-tracker bones
 	 */
 	@ThreadSafe
 	public List<Bone> getAllBones() {
 		if (isSkeletonPresent())
-			return List.of(skeleton.getAllBones());
+			return List.of(skeleton.getAllHumanBones());
 		return null;
 	}
 

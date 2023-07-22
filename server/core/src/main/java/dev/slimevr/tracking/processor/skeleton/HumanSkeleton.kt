@@ -198,11 +198,11 @@ class HumanSkeleton(
 		rightLowerLegBone.attachChild(rightFootBone)
 
 		// Attach tracker bones for tracker offsets
-		neckBone.attachChild(headTrackerBone) // TODO ?
-		neckBone.attachChild(chestTrackerBone)
+		neckBone.attachChild(headTrackerBone) // TODO omg
+		upperChestBone.attachChild(chestTrackerBone)
 		hipBone.attachChild(hipTrackerBone)
-		leftLowerLegBone.attachChild(leftKneeTrackerBone)
-		rightLowerLegBone.attachChild(rightKneeTrackerBone)
+		leftUpperLegBone.attachChild(leftKneeTrackerBone)
+		rightUpperLegBone.attachChild(rightKneeTrackerBone)
 		leftFootBone.attachChild(leftFootTrackerBone)
 		rightFootBone.attachChild(rightFootTrackerBone)
 
@@ -218,34 +218,38 @@ class HumanSkeleton(
 	@ThreadSafe
 	fun assembleSkeletonArms(reset: Boolean) {
 		if (reset) {
-			for (bone in armBones) {
+			for (bone in allArmBones) {
 				bone.detachWithChildren()
 			}
 		}
 
-		// Assemble skeleton arms
+		// Shoulders
 		neckBone.attachChild(leftShoulderBone)
 		neckBone.attachChild(rightShoulderBone)
+
+		// Upper arm
 		leftShoulderBone.attachChild(leftUpperArmBone)
 		rightShoulderBone.attachChild(rightUpperArmBone)
+
+		// Lower arm and hand
 		if (isTrackingLeftArmFromController) {
+			leftHandTrackerBone.attachChild(leftHandBone)
 			leftHandBone.attachChild(leftLowerArmBone)
+			leftLowerArmBone.attachChild(leftElbowTrackerBone)
 		} else {
 			leftUpperArmBone.attachChild(leftLowerArmBone)
+			leftUpperArmBone.attachChild(leftElbowTrackerBone)
 			leftLowerArmBone.attachChild(leftHandBone)
 		}
 		if (isTrackingRightArmFromController) {
+			rightHandTrackerBone.attachChild(rightHandBone)
 			rightHandBone.attachChild(rightLowerArmBone)
+			rightLowerArmBone.attachChild(rightElbowTrackerBone)
 		} else {
 			rightUpperArmBone.attachChild(rightLowerArmBone)
+			rightUpperArmBone.attachChild(rightElbowTrackerBone)
 			rightLowerArmBone.attachChild(rightHandBone)
 		}
-
-		// Attach tracker nodes for tracker offsets
-		leftLowerArmBone.attachChild(leftElbowTrackerBone)
-		rightLowerArmBone.attachChild(rightElbowTrackerBone)
-		leftHandBone.attachChild(leftHandTrackerBone)
-		rightHandBone.attachChild(rightHandTrackerBone)
 	}
 
 	/**
@@ -370,8 +374,8 @@ class HumanSkeleton(
 	@ThreadSafe
 	fun updateBones() {
 		headBone.update()
-		if (isTrackingLeftArmFromController) leftHandBone.update()
-		if (isTrackingRightArmFromController) rightHandBone.update()
+		if (isTrackingLeftArmFromController) leftHandTrackerBone.update()
+		if (isTrackingRightArmFromController) rightHandTrackerBone.update()
 	}
 
 	/**
@@ -670,8 +674,6 @@ class HumanSkeleton(
 		footTracker?.let { legRot = it.getRotation() }
 		// Set foot rotation
 		footBone.setRotation(legRot)
-		// Offset foot tracker rotation
-		if (footTracker != null) legRot *= FORWARD_QUATERNION
 		footTrackerBone.setRotation(legRot)
 
 		// Extended knee model
@@ -706,9 +708,11 @@ class HumanSkeleton(
 		handTracker: Tracker?,
 	) {
 		if (isTrackingFromController) { // From controller
+			// todo omg
 			// Set hand rotation and position from tracker
 			handTracker?.let {
-				handBone.setPosition(it.position)
+				handTrackerBone.setPosition(it.position)
+				handTrackerBone.setRotation(it.getRotation())
 				handBone.setRotation(it.getRotation())
 			}
 
@@ -806,69 +810,26 @@ class HumanSkeleton(
 
 	// Update the output trackers
 	private fun updateComputedTrackers() {
-		computedHeadTracker?.let {
-			it.position = headTrackerBone.getPosition()
-			it.setRotation(headTrackerBone.getGlobalRotation())
-			it.dataTick()
-		}
+		updateComputedTracker(computedHeadTracker, headTrackerBone, false)
+		updateComputedTracker(computedChestTracker, chestTrackerBone, false)
+		updateComputedTracker(computedHipTracker, hipTrackerBone, false)
+		updateComputedTracker(computedLeftKneeTracker, headTrackerBone, false)
+		updateComputedTracker(computedRightKneeTracker, rightKneeTrackerBone, false)
+		updateComputedTracker(computedLeftFootTracker, leftFootTrackerBone, hasLeftFootTracker)
+		updateComputedTracker(computedRightFootTracker, rightFootTrackerBone, hasRightFootTracker)
+		updateComputedTracker(computedLeftElbowTracker, leftElbowTrackerBone, false)
+		updateComputedTracker(computedRightElbowTracker, rightElbowTrackerBone, false)
+		updateComputedTracker(computedLeftHandTracker, leftHandTrackerBone, true)
+		updateComputedTracker(computedRightHandTracker, rightHandTrackerBone, true)
+	}
 
-		computedChestTracker?.let {
-			it.position = chestTrackerBone.getPosition()
-			it.setRotation(chestTrackerBone.getGlobalRotation())
-			it.dataTick()
-		}
-
-		computedHipTracker?.let {
-			it.position = hipTrackerBone.getPosition()
-			it.setRotation(hipTrackerBone.getGlobalRotation())
-			it.dataTick()
-		}
-
-		computedLeftKneeTracker?.let {
-			it.position = leftKneeTrackerBone.getPosition()
-			it.setRotation(leftKneeTrackerBone.getGlobalRotation())
-			it.dataTick()
-		}
-
-		computedRightKneeTracker?.let {
-			it.position = rightKneeTrackerBone.getPosition()
-			it.setRotation(rightKneeTrackerBone.getGlobalRotation())
-			it.dataTick()
-		}
-
-		computedLeftFootTracker?.let {
-			it.position = leftFootTrackerBone.getPosition()
-			it.setRotation(leftFootTrackerBone.getGlobalRotation())
-			it.dataTick()
-		}
-
-		computedRightFootTracker?.let {
-			it.position = rightFootTrackerBone.getPosition()
-			it.setRotation(rightFootTrackerBone.getGlobalRotation())
-			it.dataTick()
-		}
-
-		computedLeftElbowTracker?.let {
-			it.position = leftElbowTrackerBone.getPosition()
-			it.setRotation(leftElbowTrackerBone.getGlobalRotation())
-			it.dataTick()
-		}
-
-		computedRightElbowTracker?.let {
-			it.position = rightElbowTrackerBone.getPosition()
-			it.setRotation(rightElbowTrackerBone.getGlobalRotation())
-			it.dataTick()
-		}
-
-		computedLeftHandTracker?.let {
-			it.position = leftHandTrackerBone.getPosition()
-			it.setRotation(leftHandTrackerBone.getGlobalRotation())
-			it.dataTick()
-		}
-
-		computedRightHandTracker?.let {
-			it.position = rightHandTrackerBone.getPosition()
-			it.setRotation(rightHandTrackerBone.getGlobalRotation())
+	private fun updateComputedTracker(computedTracker: Tracker?, trackerBone: Bone, rotateUp: Boolean) {
+		computedTracker?.let {
+			it.position = trackerBone.getTailPosition()
+			it.setRotation(
+				trackerBone.getGlobalRotation() * trackerBone.rotationOffset.inv() *
+					(if (rotateUp) FORWARD_QUATERNION else IDENTITY)
+			)
 			it.dataTick()
 		}
 	}
@@ -950,15 +911,18 @@ class HumanSkeleton(
 		// Update bone length
 		bone.length = transOffset.len()
 
+		if (boneType == BoneType.CHEST_TRACKER) {
+			LogManager.debug(bone.length.toString())
+		}
 		// Set bone rotation offset
 		bone.rotationOffset = rotOffset
 	}
 
 	private fun computeDependentArmOffsets() {
-		humanPoseManager.computeNodeOffset(BoneType.LEFT_UPPER_ARM)
-		humanPoseManager.computeNodeOffset(BoneType.RIGHT_UPPER_ARM)
 		humanPoseManager.computeNodeOffset(BoneType.LEFT_LOWER_ARM)
 		humanPoseManager.computeNodeOffset(BoneType.RIGHT_LOWER_ARM)
+		humanPoseManager.computeNodeOffset(BoneType.LEFT_HAND)
+		humanPoseManager.computeNodeOffset(BoneType.RIGHT_HAND)
 	}
 
 	fun getBone(bone: BoneType): Bone {
@@ -999,7 +963,10 @@ class HumanSkeleton(
 		}
 	}
 
-	val allBones: Array<Bone>
+	/**
+	 * Returns an array of all the non-tracker bones.
+	 */
+	val allHumanBones: Array<Bone>
 		get() = arrayOf(
 			headBone,
 			neckBone,
@@ -1015,17 +982,6 @@ class HumanSkeleton(
 			rightLowerLegBone,
 			leftFootBone,
 			rightFootBone,
-			headTrackerBone,
-			chestTrackerBone,
-			hipTrackerBone,
-			leftKneeTrackerBone,
-			rightKneeTrackerBone,
-			leftFootTrackerBone,
-			rightFootTrackerBone
-		) + armBones
-
-	private val armBones: Array<Bone>
-		get() = arrayOf(
 			leftShoulderBone,
 			rightShoulderBone,
 			leftUpperArmBone,
@@ -1033,9 +989,24 @@ class HumanSkeleton(
 			leftLowerArmBone,
 			rightLowerArmBone,
 			leftHandBone,
-			rightHandBone,
+			rightHandBone
+		)
+
+	/**
+	 * Returns all the arm bones, tracker or not.
+	 */
+	private val allArmBones: Array<Bone>
+		get() = arrayOf(
+			leftShoulderBone,
+			rightShoulderBone,
+			leftUpperArmBone,
+			rightUpperArmBone,
 			leftElbowTrackerBone,
 			rightElbowTrackerBone,
+			leftLowerArmBone,
+			rightLowerArmBone,
+			leftHandBone,
+			rightHandBone,
 			leftHandTrackerBone,
 			rightHandTrackerBone
 		)

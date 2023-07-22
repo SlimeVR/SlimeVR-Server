@@ -219,7 +219,6 @@ public class SkeletonConfigManager {
 				nodeOffset,
 				0,
 				-getOffset(SkeletonConfigOffsets.CHEST_OFFSET)
-					- getOffset(SkeletonConfigOffsets.UPPER_CHEST)
 					- getOffset(SkeletonConfigOffsets.CHEST),
 				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
 			);

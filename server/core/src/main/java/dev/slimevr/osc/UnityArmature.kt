@@ -62,7 +62,7 @@ class UnityArmature(localRot: Boolean) {
 		rightLowerArmBone.attachChild(rightHandBone)
 	}
 
-	fun updateNodes() {
+	fun update() {
 		// Update the root node
 		hipsBone.update()
 	}

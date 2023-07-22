@@ -324,7 +324,7 @@ public class VMCHandler implements OSCHandler {
 			if (localRotation) {
 				// Instantiate unityHierarchy if not done
 				if (inputUnityArmature == null)
-					inputUnityArmature = new UnityArmature(true);
+					inputUnityArmature = new UnityArmature(true); // todo omg
 				inputUnityArmature.setLocalRotationForBone(unityBone, rotation);
 				rotation = inputUnityArmature.getGlobalRotationForBone(unityBone);
 				rotation = yawOffset.times(rotation);
@@ -339,7 +339,7 @@ public class VMCHandler implements OSCHandler {
 	public void update() {
 		// Update unity hierarchy
 		if (inputUnityArmature != null)
-			inputUnityArmature.updateNodes();
+			inputUnityArmature.update();
 
 		long currentTime = System.currentTimeMillis();
 		if (currentTime - timeAtLastSend > 3) { // 200hz to not crash VSF
@@ -427,7 +427,7 @@ public class VMCHandler implements OSCHandler {
 					}
 
 					// Update Unity skeleton
-					outputUnityArmature.updateNodes();
+					outputUnityArmature.update();
 
 					// Add Unity humanoid bones transforms
 					for (UnityBone bone : UnityBone.getEntries()) {

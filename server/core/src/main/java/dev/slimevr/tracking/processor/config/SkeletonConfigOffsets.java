@@ -92,7 +92,7 @@ public enum SkeletonConfigOffsets {
 		0.0f,
 		new BoneType[] { BoneType.CHEST_TRACKER, BoneType.HIP_TRACKER,
 			BoneType.LEFT_KNEE_TRACKER, BoneType.RIGHT_KNEE_TRACKER,
-			BoneType.LEFT_FOOT_TRACKER, BoneType.RIGHT_KNEE_TRACKER }
+			BoneType.LEFT_FOOT_TRACKER, BoneType.RIGHT_FOOT_TRACKER }
 	),
 	SHOULDERS_DISTANCE(
 		14,
