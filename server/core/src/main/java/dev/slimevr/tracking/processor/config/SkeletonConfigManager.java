@@ -294,7 +294,7 @@ public class SkeletonConfigManager {
 			case LEFT_LOWER_ARM, RIGHT_LOWER_ARM -> setNodeOffset(
 				nodeOffset,
 				0,
-				getOffset(SkeletonConfigOffsets.LOWER_ARM),
+				-getOffset(SkeletonConfigOffsets.LOWER_ARM),
 				0
 			);
 			case LEFT_HAND, RIGHT_HAND -> setNodeOffset(

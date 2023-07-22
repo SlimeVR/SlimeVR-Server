@@ -83,7 +83,7 @@ public class BVHFileStream extends PoseDataStream {
 
 	private TransformNodeWrapper wrapSkeleton(HumanSkeleton skeleton) {
 		TransformNodeWrapper wrapper = wrapSkeletonNodes(new TransformNode(false));
-		// wrapSkeletonNodes(skeleton.getHeadBone().getHeadNode()); // todo omg
+		// wrapSkeletonNodes(skeleton.getHeadBone()); // todo omg
 
 		wrappedSkeleton = skeleton;
 		rootNode = wrapper;

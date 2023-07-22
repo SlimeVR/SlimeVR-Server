@@ -63,6 +63,14 @@ class Bone(val boneType: BoneType) {
 	}
 
 	/**
+	 * Returns the world-aligned rotation of the bone,
+	 * without the rotationOffset applied.
+	 */
+	fun getGlobalRawRotation(): Quaternion {
+		return headNode.worldTransform.rotation * rotationOffset.inv()
+	}
+
+	/**
 	 * Returns the world-aligned rotation of the bone
 	 */
 	fun getGlobalRotation(): Quaternion {

@@ -1,35 +1,43 @@
 package dev.slimevr.osc
 
 import com.jme3.math.FastMath
-import dev.slimevr.tracking.processor.Bone
-import dev.slimevr.tracking.processor.BoneType
+import dev.slimevr.tracking.processor.TransformNode
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
+/**
+ * TODO make this class use Bone.kt
+ */
 class UnityArmature(localRot: Boolean) {
 
-	private val hipsBone = Bone(BoneType.HIP)
-	private val leftUpperLegBone = Bone(BoneType.LEFT_UPPER_LEG)
-	private val rightUpperLegBone = Bone(BoneType.RIGHT_UPPER_LEG)
-	private val leftLowerLegBone = Bone(BoneType.LEFT_LOWER_LEG)
-	private val rightLowerLegBone = Bone(BoneType.RIGHT_LOWER_LEG)
-	private val leftFootBone = Bone(BoneType.LEFT_FOOT)
-	private val rightFootBone = Bone(BoneType.RIGHT_FOOT)
-	private val spineBone = Bone(BoneType.WAIST)
-	private val chestBone = Bone(BoneType.CHEST)
-	private val upperChestBone = Bone(BoneType.CHEST)
-	private val neckBone = Bone(BoneType.NECK)
-	private val headBone = Bone(BoneType.HEAD)
-	private val leftShoulderBone = Bone(BoneType.LEFT_SHOULDER)
-	private val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER)
-	private val leftUpperArmBone = Bone(BoneType.LEFT_UPPER_ARM)
-	private val rightUpperArmBone = Bone(BoneType.RIGHT_UPPER_ARM)
-	private val leftLowerArmBone = Bone(BoneType.LEFT_LOWER_ARM)
-	private val rightLowerArmBone = Bone(BoneType.RIGHT_LOWER_ARM)
-	private val leftHandBone = Bone(BoneType.LEFT_HAND)
-	private val rightHandBone = Bone(BoneType.RIGHT_HAND)
+	private val headNode = TransformNode(localRotation = localRot)
+	private val neckTailNode = TransformNode(localRotation = localRot)
+	private val neckHeadNode = TransformNode(localRotation = localRot)
+	private val upperChestNode = TransformNode(localRotation = localRot)
+	private val chestNode = TransformNode(localRotation = localRot)
+	private val spineTailNode = TransformNode(localRotation = localRot)
+	private val spineHeadNode = TransformNode(localRotation = localRot)
+	private val hipsNode = TransformNode(localRotation = localRot)
+	private val leftHipNode = TransformNode(localRotation = localRot)
+	private val rightHipNode = TransformNode(localRotation = localRot)
+	private val leftKneeNode = TransformNode(localRotation = localRot)
+	private val leftAnkleNode = TransformNode(localRotation = localRot)
+	private val leftFootNode = TransformNode(localRotation = localRot)
+	private val rightKneeNode = TransformNode(localRotation = localRot)
+	private val rightAnkleNode = TransformNode(localRotation = localRot)
+	private val rightFootNode = TransformNode(localRotation = localRot)
+	private val leftShoulderHeadNode = TransformNode(localRotation = localRot)
+	private val rightShoulderHeadNode = TransformNode(localRotation = localRot)
+	private val leftShoulderTailNode = TransformNode(localRotation = localRot)
+	private val rightShoulderTailNode = TransformNode(localRotation = localRot)
+	private val leftElbowNode = TransformNode(localRotation = localRot)
+	private val rightElbowNode = TransformNode(localRotation = localRot)
+	private val leftWristNode = TransformNode(localRotation = localRot)
+	private val rightWristNode = TransformNode(localRotation = localRot)
+	private val leftHandNode = TransformNode(localRotation = localRot)
+	private val rightHandNode = TransformNode(localRotation = localRot)
 
 	private var rootPosition = Vector3.NULL
 	private var rootRotation = Quaternion.IDENTITY
@@ -37,34 +45,42 @@ class UnityArmature(localRot: Boolean) {
 	init {
 		// Attach nodes
 		// Spine
-		hipsBone.attachChild(spineBone)
-		spineBone.attachChild(chestBone)
-		chestBone.attachChild(upperChestBone)
-		upperChestBone.attachChild(neckBone)
-		neckBone.attachChild(headBone)
+		hipsNode.attachChild(spineHeadNode)
+		spineHeadNode.attachChild(spineTailNode)
+		spineTailNode.attachChild(chestNode)
+		chestNode.attachChild(upperChestNode)
+		upperChestNode.attachChild(neckHeadNode)
+		neckHeadNode.attachChild(neckTailNode)
+		neckTailNode.attachChild(headNode)
 
 		// Legs
-		hipsBone.attachChild(leftUpperLegBone)
-		hipsBone.attachChild(rightUpperLegBone)
-		leftUpperLegBone.attachChild(leftLowerLegBone)
-		rightUpperLegBone.attachChild(rightLowerLegBone)
-		leftLowerLegBone.attachChild(leftFootBone)
-		rightLowerLegBone.attachChild(rightFootBone)
+		hipsNode.attachChild(leftHipNode)
+		hipsNode.attachChild(rightHipNode)
+		leftHipNode.attachChild(leftKneeNode)
+		rightHipNode.attachChild(rightKneeNode)
+		leftKneeNode.attachChild(leftAnkleNode)
+		rightKneeNode.attachChild(rightAnkleNode)
+		leftAnkleNode.attachChild(leftFootNode)
+		rightAnkleNode.attachChild(rightFootNode)
 
 		// Arms
-		upperChestBone.attachChild(leftShoulderBone)
-		upperChestBone.attachChild(rightShoulderBone)
-		leftShoulderBone.attachChild(leftUpperArmBone)
-		rightShoulderBone.attachChild(rightUpperArmBone)
-		leftUpperArmBone.attachChild(leftLowerArmBone)
-		rightUpperArmBone.attachChild(rightLowerArmBone)
-		leftLowerArmBone.attachChild(leftHandBone)
-		rightLowerArmBone.attachChild(rightHandBone)
+		upperChestNode.attachChild(leftShoulderHeadNode)
+		upperChestNode.attachChild(rightShoulderHeadNode)
+		leftShoulderHeadNode.attachChild(leftShoulderTailNode)
+		rightShoulderHeadNode.attachChild(rightShoulderTailNode)
+		leftShoulderTailNode.attachChild(leftElbowNode)
+		rightShoulderTailNode.attachChild(rightElbowNode)
+		leftElbowNode.attachChild(leftWristNode)
+		rightElbowNode.attachChild(rightWristNode)
+		leftWristNode.attachChild(leftHandNode)
+		rightWristNode.attachChild(rightHandNode)
 	}
 
 	fun update() {
+		// Set the upper chest node's rotation to the chest's
+		upperChestNode.localTransform.rotation = chestNode.localTransform.rotation
 		// Update the root node
-		hipsBone.update()
+		hipsNode.update()
 	}
 
 	fun setRootPose(globalPos: Vector3, globalRot: Quaternion) {
@@ -73,44 +89,42 @@ class UnityArmature(localRot: Boolean) {
 	}
 
 	fun setGlobalRotationForBone(unityBone: UnityBone, globalRot: Quaternion) {
-		val bone = getBone(unityBone)
-		if (bone != null) {
-			val rot = when (unityBone) {
+		val node = getHeadNodeOfBone(unityBone)
+		if (node != null) {
+			node.localTransform.rotation = when (unityBone) {
 				UnityBone.LEFT_UPPER_ARM, UnityBone.LEFT_LOWER_ARM, UnityBone.LEFT_HAND -> globalRot * LEFT_SHOULDER_OFFSET
 				UnityBone.RIGHT_UPPER_ARM, UnityBone.RIGHT_LOWER_ARM, UnityBone.RIGHT_HAND -> globalRot * RIGHT_SHOULDER_OFFSET
 				else -> globalRot
 			}
-			bone.setRotation(rot)
 		}
 	}
 
 	fun setLocalRotationForBone(unityBone: UnityBone, localRot: Quaternion) {
-		val bone = getBone(unityBone)
-		if (bone != null) {
+		val node = getHeadNodeOfBone(unityBone)
+		if (node != null) {
 			if (unityBone === UnityBone.HIPS) {
-				bone.setRotation(localRot)
+				node.worldTransform.rotation = localRot
 			} else {
-				val rot = when (unityBone) {
+				node.localTransform.rotation = when (unityBone) {
 					UnityBone.LEFT_UPPER_ARM -> localRot * RIGHT_SHOULDER_OFFSET
 					UnityBone.RIGHT_UPPER_ARM -> localRot * LEFT_SHOULDER_OFFSET
 					else -> localRot
 				}
-				bone.setRotation(rot)
 			}
 		}
 	}
 
 	fun getGlobalTranslationForBone(unityBone: UnityBone): Vector3 {
-		val bone = getBone(unityBone)
-		return if (bone != null) {
+		val node = getHeadNodeOfBone(unityBone)
+		return if (node != null) {
 			if (unityBone === UnityBone.HIPS) {
 				val hipsAverage = (
-					leftUpperLegBone.getPosition() +
-						rightUpperLegBone.getPosition()
+					leftHipNode.worldTransform.translation +
+						rightHipNode.worldTransform.translation
 					) * 0.5f
-				bone.getPosition() * 2f - hipsAverage + rootPosition
+				node.worldTransform.translation * 2f - hipsAverage + rootPosition
 			} else {
-				bone.getPosition() + rootPosition
+				node.worldTransform.translation + rootPosition
 			}
 		} else {
 			Vector3.NULL
@@ -118,16 +132,16 @@ class UnityArmature(localRot: Boolean) {
 	}
 
 	fun getLocalTranslationForBone(unityBone: UnityBone): Vector3 {
-		val bone = getBone(unityBone)
-		return if (bone != null) {
+		val node = getHeadNodeOfBone(unityBone)
+		return if (node != null) {
 			if (unityBone === UnityBone.HIPS) {
 				val hipsAverage = (
-					leftUpperLegBone.getPosition() +
-						rightUpperLegBone.getPosition()
+					leftHipNode.worldTransform.translation +
+						rightHipNode.worldTransform.translation
 					) * 0.5f
-				bone.getPosition() * 2f - hipsAverage + rootPosition
+				node.worldTransform.translation * 2f - hipsAverage + rootPosition
 			} else {
-				bone.rotationOffset.toRotationVector() * bone.length
+				node.localTransform.translation
 			}
 		} else {
 			Vector3.NULL
@@ -135,52 +149,52 @@ class UnityArmature(localRot: Boolean) {
 	}
 
 	fun getGlobalRotationForBone(unityBone: UnityBone?): Quaternion {
-		val bone = getBone(unityBone)
-		return if (bone != null) {
-			bone.getGlobalRotation() * rootRotation
+		val node = getHeadNodeOfBone(unityBone)
+		return if (node != null) {
+			node.worldTransform.rotation * rootRotation
 		} else {
 			Quaternion.IDENTITY
 		}
 	}
 
 	fun getLocalRotationForBone(unityBone: UnityBone): Quaternion {
-		val bone = getBone(unityBone)
-		return if (bone != null) {
+		val node = getHeadNodeOfBone(unityBone)
+		return if (node != null) {
 			if (unityBone === UnityBone.HIPS) {
-				bone.getGlobalRotation() * rootRotation
+				node.worldTransform.rotation * rootRotation
 			} else {
-				(bone.parent?.getGlobalRotation()?.inv() ?: Quaternion.IDENTITY) * bone.getGlobalRotation()
+				node.parent!!.worldTransform.rotation.inv() * node.worldTransform.rotation
 			}
 		} else {
 			Quaternion.IDENTITY
 		}
 	}
 
-	fun getBone(unityBone: UnityBone?): Bone? {
+	fun getHeadNodeOfBone(unityBone: UnityBone?): TransformNode? {
 		return if (unityBone == null) {
 			null
 		} else {
 			when (unityBone) {
-				UnityBone.HIPS -> hipsBone
-				UnityBone.LEFT_UPPER_LEG -> leftUpperLegBone
-				UnityBone.RIGHT_UPPER_LEG -> rightUpperLegBone
-				UnityBone.LEFT_LOWER_LEG -> leftLowerLegBone
-				UnityBone.RIGHT_LOWER_LEG -> rightLowerLegBone
-				UnityBone.LEFT_FOOT -> leftFootBone
-				UnityBone.RIGHT_FOOT -> rightFootBone
-				UnityBone.SPINE -> spineBone
-				UnityBone.CHEST -> chestBone
-				UnityBone.UPPER_CHEST -> upperChestBone
-				UnityBone.NECK -> neckBone
-				UnityBone.HEAD -> headBone
-				UnityBone.LEFT_SHOULDER -> leftShoulderBone
-				UnityBone.RIGHT_SHOULDER -> rightShoulderBone
-				UnityBone.LEFT_UPPER_ARM -> leftUpperArmBone
-				UnityBone.RIGHT_UPPER_ARM -> rightUpperArmBone
-				UnityBone.LEFT_LOWER_ARM -> leftLowerArmBone
-				UnityBone.RIGHT_LOWER_ARM -> rightLowerArmBone
-				UnityBone.LEFT_HAND -> leftHandBone
-				UnityBone.RIGHT_HAND -> rightHandBone
+				UnityBone.HEAD -> neckTailNode
+				UnityBone.NECK -> neckHeadNode
+				UnityBone.UPPER_CHEST -> chestNode
+				UnityBone.CHEST -> spineTailNode
+				UnityBone.SPINE -> spineHeadNode
+				UnityBone.HIPS -> hipsNode
+				UnityBone.LEFT_UPPER_LEG -> leftHipNode
+				UnityBone.RIGHT_UPPER_LEG -> rightHipNode
+				UnityBone.LEFT_LOWER_LEG -> leftKneeNode
+				UnityBone.RIGHT_LOWER_LEG -> rightKneeNode
+				UnityBone.LEFT_FOOT -> leftAnkleNode
+				UnityBone.RIGHT_FOOT -> rightAnkleNode
+				UnityBone.LEFT_SHOULDER -> leftShoulderHeadNode
+				UnityBone.RIGHT_SHOULDER -> rightShoulderHeadNode
+				UnityBone.LEFT_UPPER_ARM -> leftShoulderTailNode
+				UnityBone.RIGHT_UPPER_ARM -> rightShoulderTailNode
+				UnityBone.LEFT_LOWER_ARM -> leftElbowNode
+				UnityBone.RIGHT_LOWER_ARM -> rightElbowNode
+				UnityBone.LEFT_HAND -> leftWristNode
+				UnityBone.RIGHT_HAND -> rightWristNode
 				else -> null
 			}
 		}

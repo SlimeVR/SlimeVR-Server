@@ -10,6 +10,7 @@ import dev.slimevr.config.VMCConfig;
 import dev.slimevr.tracking.processor.Bone;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.processor.TransformNode;
 import dev.slimevr.tracking.trackers.Device;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
@@ -165,25 +166,11 @@ public class VMCHandler implements OSCHandler {
 			if (outputUnityArmature != null && config.getVrmJson() != null) {
 				VRMReader vrmReader = new VRMReader(config.getVrmJson());
 				for (UnityBone unityBone : UnityBone.getEntries()) {
-					Bone bone = outputUnityArmature.getBone(unityBone);
-					if (bone != null) {
-						// Get offset
-						Vector3 offset = vrmReader.getOffsetForBone(unityBone);
-
-						// Compute bone rotation
-						Quaternion rotOffset = Quaternion.Companion.getIDENTITY();
-						if (offset.len() != 0f) {
-							rotOffset = Quaternion.Companion
-								.fromTo(Vector3.Companion.getNEG_Y(), offset)
-								.unit();
-						}
-
-						// Update bone length
-						bone.setLength(offset.len());
-
-						// Set bone rotation offset
-						bone.setRotationOffset(rotOffset);
-					}
+					TransformNode node = outputUnityArmature.getHeadNodeOfBone(unityBone);
+					if (node != null)
+						node
+							.getLocalTransform()
+							.setTranslation(vrmReader.getOffsetForBone(unityBone));
 				}
 				vrmHeight = vrmReader
 					.getOffsetForBone(UnityBone.HIPS)
@@ -324,7 +311,7 @@ public class VMCHandler implements OSCHandler {
 			if (localRotation) {
 				// Instantiate unityHierarchy if not done
 				if (inputUnityArmature == null)
-					inputUnityArmature = new UnityArmature(true); // todo omg
+					inputUnityArmature = new UnityArmature(true);
 				inputUnityArmature.setLocalRotationForBone(unityBone, rotation);
 				rotation = inputUnityArmature.getGlobalRotationForBone(unityBone);
 				rotation = yawOffset.times(rotation);
@@ -389,23 +376,26 @@ public class VMCHandler implements OSCHandler {
 							// Update unity hierarchy from bone's global
 							// rotation
 							outputUnityArmature
-								.setGlobalRotationForBone(unityBone, bone.getGlobalRotation());
+								.setGlobalRotationForBone(unityBone, bone.getGlobalRawRotation());
 						}
 					}
 					if (!anchorHip) {
 						// Anchor from head
 						// Gets the SlimeVR head position, scales it to the VRM,
-						// and subtracts the difference between the VRM's head
-						// and hip
+						// and subtracts the difference between the VRM's
+						// head and hip
 						// FIXME this way isn't perfect, but I give up - Erimel
 						Vector3 upperLegsAverage = (outputUnityArmature
-							.getBone(UnityBone.LEFT_UPPER_LEG)
-							.getPosition()
+							.getHeadNodeOfBone(UnityBone.LEFT_UPPER_LEG)
+							.getWorldTransform()
+							.getTranslation()
 							.plus(
 								outputUnityArmature
-									.getBone(UnityBone.RIGHT_UPPER_LEG)
-									.getPosition()
+									.getHeadNodeOfBone(UnityBone.RIGHT_UPPER_LEG)
+									.getWorldTransform()
+									.getTranslation()
 							)).times(0.5f);
+
 						Vector3 scaledHead = humanPoseManager
 							.getBone(BoneType.HEAD)
 							.getTailPosition()
@@ -414,16 +404,21 @@ public class VMCHandler implements OSCHandler {
 									/ (humanPoseManager.getUserHeightFromConfig()
 										* BodyProportionError.eyeHeightToHeightRatio)
 							);
+
 						Vector3 pos = scaledHead
 							.minus(
 								(outputUnityArmature
-									.getBone(UnityBone.HEAD)
-									.getTailPosition()
+									.getHeadNodeOfBone(UnityBone.HEAD)
+									.getParent()
+									.getWorldTransform()
+									.getTranslation()
 									.minus(upperLegsAverage))
 							);
 
-
-						outputUnityArmature.getBone(UnityBone.HIPS).setPosition(pos);
+						outputUnityArmature
+							.getHeadNodeOfBone(UnityBone.HIPS)
+							.getLocalTransform()
+							.setTranslation(pos);
 					}
 
 					// Update Unity skeleton

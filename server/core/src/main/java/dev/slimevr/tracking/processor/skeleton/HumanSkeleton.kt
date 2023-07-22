@@ -198,7 +198,7 @@ class HumanSkeleton(
 		rightLowerLegBone.attachChild(rightFootBone)
 
 		// Attach tracker bones for tracker offsets
-		neckBone.attachChild(headTrackerBone) // TODO omg
+		neckBone.attachChild(headTrackerBone)
 		upperChestBone.attachChild(chestTrackerBone)
 		hipBone.attachChild(hipTrackerBone)
 		leftUpperLegBone.attachChild(leftKneeTrackerBone)
@@ -240,6 +240,7 @@ class HumanSkeleton(
 			leftUpperArmBone.attachChild(leftLowerArmBone)
 			leftUpperArmBone.attachChild(leftElbowTrackerBone)
 			leftLowerArmBone.attachChild(leftHandBone)
+			leftHandBone.attachChild(leftHandTrackerBone)
 		}
 		if (isTrackingRightArmFromController) {
 			rightHandTrackerBone.attachChild(rightHandBone)
@@ -249,6 +250,7 @@ class HumanSkeleton(
 			rightUpperArmBone.attachChild(rightLowerArmBone)
 			rightUpperArmBone.attachChild(rightElbowTrackerBone)
 			rightLowerArmBone.attachChild(rightHandBone)
+			rightHandBone.attachChild(rightHandTrackerBone)
 		}
 	}
 
@@ -813,7 +815,7 @@ class HumanSkeleton(
 		updateComputedTracker(computedHeadTracker, headTrackerBone, false)
 		updateComputedTracker(computedChestTracker, chestTrackerBone, false)
 		updateComputedTracker(computedHipTracker, hipTrackerBone, false)
-		updateComputedTracker(computedLeftKneeTracker, headTrackerBone, false)
+		updateComputedTracker(computedLeftKneeTracker, leftKneeTrackerBone, false)
 		updateComputedTracker(computedRightKneeTracker, rightKneeTrackerBone, false)
 		updateComputedTracker(computedLeftFootTracker, leftFootTrackerBone, hasLeftFootTracker)
 		updateComputedTracker(computedRightFootTracker, rightFootTrackerBone, hasRightFootTracker)
@@ -827,7 +829,7 @@ class HumanSkeleton(
 		computedTracker?.let {
 			it.position = trackerBone.getTailPosition()
 			it.setRotation(
-				trackerBone.getGlobalRotation() * trackerBone.rotationOffset.inv() *
+				trackerBone.getGlobalRawRotation() *
 					(if (rotateUp) FORWARD_QUATERNION else IDENTITY)
 			)
 			it.dataTick()
@@ -877,23 +879,23 @@ class HumanSkeleton(
 				}
 			}
 			BoneType.LEFT_LOWER_ARM -> {
-				if (!isTrackingLeftArmFromController) {
-					transOffset = offset.unaryMinus()
+				if (isTrackingLeftArmFromController) {
+					transOffset = -offset
 				}
 			}
 			BoneType.RIGHT_LOWER_ARM -> {
-				if (!isTrackingRightArmFromController) {
-					transOffset = offset.unaryMinus()
+				if (isTrackingRightArmFromController) {
+					transOffset = -offset
 				}
 			}
 			BoneType.LEFT_HAND -> {
 				if (isTrackingLeftArmFromController) {
-					transOffset = offset.unaryMinus()
+					transOffset = -offset
 				}
 			}
 			BoneType.RIGHT_HAND -> {
 				if (isTrackingRightArmFromController) {
-					transOffset = offset.unaryMinus()
+					transOffset = -offset
 				}
 			}
 			else -> {}
@@ -901,7 +903,7 @@ class HumanSkeleton(
 
 		// Compute bone rotation
 		var rotOffset = IDENTITY
-		if (offset.len() != 0f) {
+		if (transOffset.len() > 0f) {
 			rotOffset = fromTo(NEG_Y, transOffset).unit()
 		}
 
@@ -911,9 +913,6 @@ class HumanSkeleton(
 		// Update bone length
 		bone.length = transOffset.len()
 
-		if (boneType == BoneType.CHEST_TRACKER) {
-			LogManager.debug(bone.length.toString())
-		}
 		// Set bone rotation offset
 		bone.rotationOffset = rotOffset
 	}
