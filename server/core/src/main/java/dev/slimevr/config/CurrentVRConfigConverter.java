@@ -225,16 +225,6 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 				}
 			}
 			if (version < 9) {
-				// Change default AutoBone recording length from 20 to 30
-				// seconds
-				ObjectNode autoBoneNode = (ObjectNode) modelData.get("autoBone");
-				if (autoBoneNode != null) {
-					JsonNode sampleCountNode = autoBoneNode.get("sampleCount");
-					if (sampleCountNode != null && sampleCountNode.intValue() == 1000) {
-						autoBoneNode.set("sampleCount", new IntNode(1500));
-					}
-				}
-
 				// split chest into 2 offsets
 				ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
 				if (skeletonNode != null) {
@@ -250,6 +240,17 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 									new FloatNode(chestNode.floatValue() / 2f)
 								);
 						}
+					}
+				}
+			}
+			if (version < 10) {
+				// Change default AutoBone recording length from 20 to 30
+				// seconds
+				ObjectNode autoBoneNode = (ObjectNode) modelData.get("autoBone");
+				if (autoBoneNode != null) {
+					JsonNode sampleCountNode = autoBoneNode.get("sampleCount");
+					if (sampleCountNode != null && sampleCountNode.intValue() == 1000) {
+						autoBoneNode.set("sampleCount", new IntNode(1500));
 					}
 				}
 			}
