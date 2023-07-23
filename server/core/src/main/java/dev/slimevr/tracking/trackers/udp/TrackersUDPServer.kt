@@ -400,6 +400,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				bb.rewind()
 				parser.write(bb, connection, packet)
 				socket.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
+				connection.firmwareFeatures = packet.firmwareFeatures
 			}
 
 			is UDPPacket200ProtocolChange -> {}

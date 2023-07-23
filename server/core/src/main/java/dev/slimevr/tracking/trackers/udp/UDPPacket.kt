@@ -321,25 +321,15 @@ data class UDPPacket21UserAction(var type: Int = 0) : UDPPacket(21) {
 }
 
 class UDPPacket22FeatureFlags(
-	// var trackerExampleFeature: Boolean = false
+	var firmwareFeatures: FirmwareFeatures = FirmwareFeatures(),
 ) :
 	UDPPacket(22) {
 	override fun readData(buf: ByteBuffer) {
-		// features supported by trackers
-		// val flags = buf.int
-		// trackerExampleFeature = (flags and FLAG_TRACKER_EXAMPLE_FEATURE) != 0
+		firmwareFeatures = FirmwareFeatures.from(buf, buf.remaining())
 	}
 
 	override fun writeData(buf: ByteBuffer) {
-		// features supported by the server
-		val flags: Int = FLAG_SERVER_PROTOCOL_BUNDLE_SUPPORT
-		buf.putInt(flags)
-	}
-
-	companion object {
-		const val FLAG_SERVER_PROTOCOL_BUNDLE_SUPPORT = 1 shl 1
-
-		// const val FLAG_TRACKER_EXAMPLE_FEATURE = 1 shl 2
+		buf.put(ServerFeatureFlags.getPacked())
 	}
 }
 
