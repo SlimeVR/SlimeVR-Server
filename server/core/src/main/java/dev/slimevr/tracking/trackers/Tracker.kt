@@ -98,6 +98,7 @@ class Tracker @JvmOverloads constructor(
 			// the VRServer to recreate the skeleton, as it may need to
 			// assign or un-assign the tracker to a body part
 			VRServer.instance.updateSkeletonModel()
+			VRServer.instance.refreshTrackersDriftCompensationEnabled()
 
 			checkReportErrorStatus()
 			checkReportRequireReset()
