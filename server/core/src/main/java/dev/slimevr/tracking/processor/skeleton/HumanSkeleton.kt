@@ -19,6 +19,7 @@ import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Quaternion.Companion.I
 import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
 import io.github.axisangles.ktmath.Quaternion.Companion.fromTo
 import io.github.axisangles.ktmath.Vector3
@@ -710,7 +711,6 @@ class HumanSkeleton(
 		handTracker: Tracker?,
 	) {
 		if (isTrackingFromController) { // From controller
-			// todo omg
 			// Set hand rotation and position from tracker
 			handTracker?.let {
 				handTrackerBone.setPosition(it.position)
@@ -872,39 +872,26 @@ class HumanSkeleton(
 	fun updateNodeOffset(boneType: BoneType, offset: Vector3) {
 		var transOffset = offset
 
-		when (boneType) {
-			BoneType.HEAD -> {
-				if (headTracker == null || !(headTracker!!.hasPosition && headTracker!!.hasRotation)) {
-					transOffset = NULL
-				}
-			}
-			BoneType.LEFT_LOWER_ARM -> {
-				if (isTrackingLeftArmFromController) {
-					transOffset = -offset
-				}
-			}
-			BoneType.RIGHT_LOWER_ARM -> {
-				if (isTrackingRightArmFromController) {
-					transOffset = -offset
-				}
-			}
-			BoneType.LEFT_HAND -> {
-				if (isTrackingLeftArmFromController) {
-					transOffset = -offset
-				}
-			}
-			BoneType.RIGHT_HAND -> {
-				if (isTrackingRightArmFromController) {
-					transOffset = -offset
-				}
-			}
-			else -> {}
+		// If no head position + rotation, headShift == 0
+		if (boneType == BoneType.HEAD && (headTracker == null || !(headTracker!!.hasPosition && headTracker!!.hasRotation))) {
+			transOffset = NULL
+		}
+		// If trackingArmFromController, reverse
+		if (((boneType == BoneType.LEFT_LOWER_ARM || boneType == BoneType.LEFT_HAND) && isTrackingLeftArmFromController) ||
+			(boneType == BoneType.RIGHT_LOWER_ARM || boneType == BoneType.RIGHT_HAND) && isTrackingRightArmFromController
+		) {
+			transOffset = -transOffset
 		}
 
 		// Compute bone rotation
-		var rotOffset = IDENTITY
-		if (transOffset.len() > 0f) {
-			rotOffset = fromTo(NEG_Y, transOffset).unit()
+		val rotOffset = if (transOffset.len() > 0f) {
+			if (transOffset.unit().y == 1f) {
+				I
+			} else {
+				fromTo(NEG_Y, transOffset)
+			}
+		} else {
+			IDENTITY
 		}
 
 		// Get the bone
