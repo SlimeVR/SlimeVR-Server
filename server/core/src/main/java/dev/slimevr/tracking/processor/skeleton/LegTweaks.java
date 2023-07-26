@@ -280,14 +280,14 @@ public class LegTweaks {
 
 	// update the hyperparameters with the config
 	public static void updateHyperParameters(float newStrength) {
-		LegTweakBuffer.SKATING_VELOCITY_THRESHOLD = getScaledHyperParameter(
+		LegTweakBuffer.Companion.setSkatingVelocityThreshold(getScaledHyperParameter(
 			newStrength,
-			LegTweakBuffer.SKATING_VELOCITY_THRESHOLD
-		);
-		LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD = getScaledHyperParameter(
+			LegTweakBuffer.Companion.getSkatingVelocityThreshold()
+		));
+		LegTweakBuffer.Companion.setSkatingAccelerationThreshold(getScaledHyperParameter(
 			newStrength,
-			LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD
-		);
+			LegTweakBuffer.Companion.getSkatingAccelerationThreshold()
+		));
 		currentCorrectionStrength = newStrength;
 	}
 
