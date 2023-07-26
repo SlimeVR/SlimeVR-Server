@@ -137,6 +137,13 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			)
 		}
 
+		// TODO find the root cause of this issue
+		if (finalTravel.y.isNaN()) {
+			println(finalTravel)
+			println(worldReference)
+			finalTravel = Vector3(finalTravel.x, 0.0f, finalTravel.z)
+		}
+
 		updateSkeletonPos(finalTravel)
 	}
 
@@ -422,8 +429,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		if (skeleton.headTracker != null) {
 			rot = skeleton.headTracker.getRotation()
 		}
-		val temp = skeleton.hmdNode.localTransform.translation.minus(travel)
 
+		val temp = skeleton.hmdNode.localTransform.translation.minus(travel)
 		skeleton.hmdNode.localTransform.translation = temp
 		skeleton.hmdNode.localTransform.rotation = rot
 	}
