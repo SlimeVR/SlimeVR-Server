@@ -13,7 +13,7 @@ import java.io.*;
 public class BVHFileStream extends PoseDataStream {
 	private static final int LONG_MAX_VALUE_DIGITS = Long.toString(Long.MAX_VALUE).length();
 
-	private BVHSettings bvhSettings = BVHSettings.DEFAULT;
+	private BVHSettings bvhSettings = BVHSettings.BLENDER;
 
 	private final BufferedWriter writer;
 	private long frameCount = 0;
