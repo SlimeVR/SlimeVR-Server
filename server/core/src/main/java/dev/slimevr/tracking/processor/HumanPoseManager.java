@@ -797,7 +797,7 @@ public class HumanPoseManager {
 
 	public void updateTapDetectionConfig() {
 		if (isSkeletonPresent())
-			skeleton.updateTapDetectionConfig(server.getAllTrackers());
+			skeleton.updateTapDetectionConfig();
 	}
 
 	public void updateLegTweaksConfig() {

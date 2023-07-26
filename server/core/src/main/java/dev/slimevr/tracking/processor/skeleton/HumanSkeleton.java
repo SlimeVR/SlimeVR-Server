@@ -1569,8 +1569,8 @@ public class HumanSkeleton {
 		LogManager.info("[HumanSkeleton] Clear: mounting (%s)".formatted(resetSourceName));
 	}
 
-	public void updateTapDetectionConfig(List<Tracker> trackers) {
-		tapDetectionManager.updateConfig(trackers);
+	public void updateTapDetectionConfig() {
+		tapDetectionManager.updateConfig(null);
 	}
 
 	public void updateLegTweaksConfig() {

@@ -77,11 +77,13 @@ public class TapDetectionManager {
 		fullResetDetector = new TapDetection(skeleton, getTrackerToWatchFullReset());
 		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
 
-		tapDetectors = new ArrayList<>();
-		for (Tracker tracker : trackers) {
-			TapDetection tapDetector = new TapDetection(skeleton, tracker);
-			tapDetector.setEnabled(true);
-			tapDetectors.add(tapDetector);
+		if (trackers != null) {
+			tapDetectors = new ArrayList<>();
+			for (Tracker tracker : trackers) {
+				TapDetection tapDetector = new TapDetection(skeleton, tracker);
+				tapDetector.setEnabled(true);
+				tapDetectors.add(tapDetector);
+			}
 		}
 
 		if (this.config == null) {
