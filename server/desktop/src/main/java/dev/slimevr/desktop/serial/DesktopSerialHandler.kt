@@ -30,7 +30,7 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 	private val getDevicesTimer = Timer("GetDevicesTimer")
 	private var currentPort: SerialPort? = null
 	private var watchingNewDevices = false
-	private var lastKnownPorts = setOf<SerialPort>()
+	private var lastKnownPorts = setOf<SerialPortWrapper>()
 
 	init {
 		startWatchingNewDevices()
@@ -71,15 +71,15 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 		listeners.add(channel)
 	}
 
-	override fun removeListener(l: SerialListener) {
-		listeners.removeIf { l === it }
+	override fun removeListener(channel: SerialListener) {
+		listeners.removeIf { channel === it }
 	}
 
 	@Synchronized
 	override fun openSerial(portLocation: String?, auto: Boolean): Boolean {
 		LogManager.info("[SerialHandler] Trying to open: $portLocation, auto: $auto")
 		val ports = SerialPort.getCommPorts()
-		lastKnownPorts = ports.toSet()
+		lastKnownPorts = ports.map { SerialPortWrapper(it) }.toSet()
 		val newPort: SerialPort? = ports.find {
 			return (!auto && it.portLocation == portLocation) ||
 				(auto && isKnownBoard(it.descriptivePortName))
@@ -246,9 +246,9 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 
 	private fun detectNewPorts() {
 		try {
-			val differences = knownPorts.asSequence().map { it.port } - lastKnownPorts
-			lastKnownPorts = SerialPort.getCommPorts().toSet()
-			differences.forEach { onNewDevice(it) }
+			val differences = knownPorts.asSequence() - lastKnownPorts
+			lastKnownPorts = SerialPort.getCommPorts().map { SerialPortWrapper(it) }.toSet()
+			differences.forEach { onNewDevice(it.port) }
 		} catch (e: Throwable) {
 			LogManager
 				.severe("[SerialHandler] Using serial ports is not supported on this platform", e)

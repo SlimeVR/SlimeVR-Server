@@ -1,5 +1,7 @@
 package dev.slimevr.serial
 
+import java.util.*
+
 abstract class SerialPort {
 	abstract val portLocation: String
 	abstract val descriptivePortName: String
@@ -9,6 +11,10 @@ abstract class SerialPort {
 
 		return this.portLocation == other.portLocation &&
 			this.descriptivePortName == other.descriptivePortName
+	}
+
+	override fun hashCode(): Int {
+		return Objects.hash(portLocation, descriptivePortName)
 	}
 }
 
