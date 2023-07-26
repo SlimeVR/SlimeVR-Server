@@ -515,7 +515,7 @@ public class HumanSkeleton {
 		resetBones();
 
 		// Update tap detection's trackers
-		tapDetectionManager.updateConfig();
+		tapDetectionManager.updateConfig(trackers);
 	}
 
 	protected void setComputedTracker(Tracker tracker) {
@@ -1569,8 +1569,8 @@ public class HumanSkeleton {
 		LogManager.info("[HumanSkeleton] Clear: mounting (%s)".formatted(resetSourceName));
 	}
 
-	public void updateTapDetectionConfig() {
-		tapDetectionManager.updateConfig();
+	public void updateTapDetectionConfig(List<Tracker> trackers) {
+		tapDetectionManager.updateConfig(trackers);
 	}
 
 	public void updateLegTweaksConfig() {
