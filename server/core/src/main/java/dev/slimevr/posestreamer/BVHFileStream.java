@@ -1,10 +1,9 @@
 package dev.slimevr.posestreamer;
 
 import com.jme3.math.FastMath;
-import dev.slimevr.tracking.processor.TransformNode;
+import dev.slimevr.tracking.processor.Bone;
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import io.github.axisangles.ktmath.Quaternion;
-import io.github.axisangles.ktmath.Transform;
 import io.github.axisangles.ktmath.Vector3;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,9 +20,6 @@ public class BVHFileStream extends PoseDataStream {
 	private long frameCountOffset;
 
 	private float[] angleBuf = new float[3];
-
-	private HumanSkeleton wrappedSkeleton;
-	private TransformNodeWrapper rootNode;
 
 	public BVHFileStream(OutputStream outputStream) {
 		super(outputStream);
@@ -70,53 +66,26 @@ public class BVHFileStream extends PoseDataStream {
 		return bufferCount > 0 ? frameString + StringUtils.repeat(' ', bufferCount) : frameString;
 	}
 
-	private TransformNodeWrapper wrapSkeletonIfNew(HumanSkeleton skeleton) {
-		TransformNodeWrapper wrapper = rootNode;
-
-		// If the wrapped skeleton is missing or the skeleton is updated
-		if (wrapper == null || skeleton != wrappedSkeleton) {
-			wrapper = wrapSkeleton(skeleton);
-		}
-
-		return wrapper;
+	private boolean isEndBone(Bone bone) {
+		return bone == null || (!bvhSettings.shouldWriteEndNodes() && bone.getChildren().isEmpty());
 	}
 
-	private TransformNodeWrapper wrapSkeleton(HumanSkeleton skeleton) {
-		TransformNodeWrapper wrapper = wrapSkeletonNodes(new TransformNode(false));
-		// wrapSkeletonNodes(skeleton.getHeadBone()); // todo omg
-
-		wrappedSkeleton = skeleton;
-		rootNode = wrapper;
-
-		return wrapper;
+	private void writeBoneHierarchy(Bone bone) throws IOException {
+		writeBoneHierarchy(bone, 0);
 	}
 
-	protected TransformNodeWrapper wrapSkeletonNodes(TransformNode rootNode) {
-		return TransformNodeWrapper.wrapFullHierarchy(rootNode);
-	}
+	private void writeBoneHierarchy(Bone bone, int level) throws IOException {
+		// Treat null as bone. This allows for simply writing empty end bones
+		boolean isEndBone = isEndBone(bone);
 
-	private boolean isEndNode(TransformNodeWrapper node) {
-		return node == null || (!bvhSettings.shouldWriteEndNodes() && node.children.isEmpty());
-	}
-
-	private void writeNodeHierarchy(TransformNodeWrapper node) throws IOException {
-		writeNodeHierarchy(node, 0);
-	}
-
-	private void writeNodeHierarchy(TransformNodeWrapper node, int level) throws IOException {
-		// Treat null as an end node, this allows for simply writing empty end
-		// nodes
-		boolean isEndNode = isEndNode(node);
-
-		// Don't write end sites at populated nodes, most BVH parsers don't like
-		// this
+		// Don't write end sites at populated bones, BVH parsers don't like that
 		// Ex case caught: `joint{ joint{ end }, end, end }` outputs `joint{ end
 		// }` instead
 		// Ex case let through: `joint{ end }`
-		boolean isSingleChild = node == null
-			|| node.getParent() == null
-			|| node.getParent().children.size() <= 1;
-		if (isEndNode && !isSingleChild) {
+		boolean isSingleChild = bone == null
+			|| bone.getParent() == null
+			|| bone.getParent().getChildren().size() <= 1;
+		if (isEndBone && !isSingleChild) {
 			return;
 		}
 
@@ -124,29 +93,26 @@ public class BVHFileStream extends PoseDataStream {
 		String nextIndentLevel = indentLevel + "\t";
 
 		// Handle ends
-		if (isEndNode) {
+		if (isEndBone) {
 			writer.write(indentLevel + "End Site\n");
 		} else {
 			writer
-				.write((level > 0 ? indentLevel + "JOINT " : "ROOT ") + "TODO bonetype" + "\n");
-			// todo omg
+				.write((level > 0 ? indentLevel + "JOINT " : "ROOT ") + bone.getBoneType() + "\n");
 		}
 		writer.write(indentLevel + "{\n");
 
 		// Ignore the root offset and original root offset
-		if (level > 0 && node != null && node.wrappedNode.getParent() != null) {
-			Vector3 offset = node.localTransform.getTranslation();
-			float reverseMultiplier = node.hasReversedHierarchy() ? -1 : 1;
-			float offsetScale = bvhSettings.getOffsetScale() * reverseMultiplier;
+		if (level > 0 && bone != null && bone.getParent() != null) {
+			float offsetScale = bvhSettings.getOffsetScale();
 			writer
 				.write(
 					nextIndentLevel
 						+ "OFFSET "
-						+ offset.getX() * offsetScale
+						+ 0
 						+ " "
-						+ offset.getY() * offsetScale
+						+ -bone.getParent().getLength() * offsetScale
 						+ " "
-						+ offset.getZ() * offsetScale
+						+ 0
 						+ "\n"
 				);
 		} else {
@@ -154,7 +120,7 @@ public class BVHFileStream extends PoseDataStream {
 		}
 
 		// Handle ends
-		if (!isEndNode) {
+		if (!isEndBone) {
 			// Only give position for root
 			if (level > 0) {
 				writer.write(nextIndentLevel + "CHANNELS 3 Zrotation Xrotation Yrotation\n");
@@ -166,14 +132,14 @@ public class BVHFileStream extends PoseDataStream {
 					);
 			}
 
-			// If the node has children
-			if (!node.children.isEmpty()) {
-				for (TransformNodeWrapper childNode : node.children) {
-					writeNodeHierarchy(childNode, level + 1);
+			// If the bone has children
+			if (!bone.getChildren().isEmpty()) {
+				for (Bone childBone : bone.getChildren()) {
+					writeBoneHierarchy(childBone, level + 1);
 				}
 			} else {
-				// Write an empty end node
-				writeNodeHierarchy(null, level + 1);
+				// Write an empty end bone
+				writeBoneHierarchy(null, level + 1);
 			}
 		}
 
@@ -190,7 +156,7 @@ public class BVHFileStream extends PoseDataStream {
 		}
 
 		writer.write("HIERARCHY\n");
-		writeNodeHierarchy(wrapSkeletonIfNew(skeleton));
+		writeBoneHierarchy(skeleton.getHeadBone());
 
 		writer.write("MOTION\n");
 		writer.write("Frames: ");
@@ -243,19 +209,9 @@ public class BVHFileStream extends PoseDataStream {
 		return angles;
 	}
 
-	private void writeNodeHierarchyRotation(TransformNodeWrapper node, Quaternion inverseRootRot)
+	private void writeBoneHierarchyRotation(Bone bone, Quaternion inverseRootRot)
 		throws IOException {
-		Transform transform = node.worldTransform;
-
-		/*
-		 * if (node.hasReversedHierarchy()) { for (TransformNodeWrapper
-		 * childNode : node.children) { // If the hierarchy is fully reversed,
-		 * set the rotation for the upper bone if
-		 * (childNode.hasReversedHierarchy()) { transform =
-		 * childNode.worldTransform; break; } } }
-		 */
-
-		Quaternion rot = transform.getRotation();
+		Quaternion rot = bone.getGlobalRotation();
 
 		// Adjust to local rotation
 		if (inverseRootRot != null) {
@@ -278,17 +234,17 @@ public class BVHFileStream extends PoseDataStream {
 			);
 
 		// Get inverse rotation for child local rotations
-		if (!node.children.isEmpty()) {
-			Quaternion inverseRot = transform.getRotation().inv();
-			for (TransformNodeWrapper childNode : node.children) {
-				if (isEndNode(childNode)) {
-					// If it's an end node, skip
+		if (!bone.getChildren().isEmpty()) {
+			Quaternion inverseRot = bone.getGlobalRotation().inv();
+			for (Bone childBode : bone.getChildren()) {
+				if (isEndBone(childBode)) {
+					// If it's an end bone, skip
 					continue;
 				}
 
 				// Add spacing
 				writer.write(" ");
-				writeNodeHierarchyRotation(childNode, inverseRot);
+				writeBoneHierarchyRotation(childBode, inverseRot);
 			}
 		}
 	}
@@ -299,9 +255,9 @@ public class BVHFileStream extends PoseDataStream {
 			throw new NullPointerException("skeleton must not be null");
 		}
 
-		TransformNodeWrapper rootNode = wrapSkeletonIfNew(skeleton);
+		Bone rootBone = skeleton.getHeadBone();
 
-		Vector3 rootPos = rootNode.worldTransform.getTranslation();
+		Vector3 rootPos = rootBone.getPosition();
 
 		// Write root position
 		float positionScale = bvhSettings.getPositionScale();
@@ -314,7 +270,7 @@ public class BVHFileStream extends PoseDataStream {
 					+ rootPos.getZ() * positionScale
 					+ " "
 			);
-		writeNodeHierarchyRotation(rootNode, null);
+		writeBoneHierarchyRotation(rootBone, null);
 
 		writer.newLine();
 
