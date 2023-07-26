@@ -908,14 +908,14 @@ public class LegTweaks {
 			}
 
 			// then slerp the rotation to the new rotation based on the weight
-			if (leftFootTracker) {
+			if (!leftFootTracker) {
 				leftFootRotation = leftFootRotation
 					.interpR(
 						replacePitch(leftFootRotation, -angleL),
 						weightL * masterWeightL
 					);
 			}
-			if (rightFootTracker) {
+			if (!rightFootTracker) {
 				rightFootRotation = rightFootRotation
 					.interpR(
 						replacePitch(rightFootRotation, -angleR),
@@ -927,14 +927,14 @@ public class LegTweaks {
 			if (leftFootPosition.getY() - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
 				leftToeTouched = false;
 				leftToeAngle = weightL;
-			} else if (leftFootPosition.getY() - floorLevel < 0.0f) {
+			} else if (leftFootPosition.getY() - floorLevel <= 0.0f) {
 				leftToeTouched = true;
 				leftToeAngle = 1.0f;
 			}
 			if (rightFootPosition.getY() - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
 				rightToeTouched = false;
 				rightToeAngle = weightR;
-			} else if (rightFootPosition.getY() - floorLevel < 0.0f) {
+			} else if (rightFootPosition.getY() - floorLevel <= 0.0f) {
 				rightToeTouched = true;
 				rightToeAngle = 1.0f;
 			}
