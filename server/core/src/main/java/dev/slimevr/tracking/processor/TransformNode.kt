@@ -15,7 +15,6 @@ class TransformNode(val localRotation: Boolean) {
 	var parent: TransformNode? = null
 		private set
 	val children: MutableList<TransformNode> = CopyOnWriteArrayList()
-	var rotationOffset = Quaternion.IDENTITY
 
 	fun attachChild(node: TransformNode) {
 		require(node.parent == null) { "The child node must not already have a parent." }
@@ -25,11 +24,10 @@ class TransformNode(val localRotation: Boolean) {
 
 	@ThreadSafe
 	fun update() {
-		// Apply rotation offset
-		localTransform.rotation *= rotationOffset
-
-		// Call update on each frame because we have relatively few nodes
+		// Update transform
 		updateWorldTransforms()
+
+		// Update children
 		for (node in children) {
 			node.update()
 		}

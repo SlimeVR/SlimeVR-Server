@@ -385,15 +385,15 @@ class HumanSkeleton(
 	 * Update all the bones' transforms from trackers
 	 */
 	private fun updateTransforms() {
-		// Update head bones
+		// Head
 		updateHeadTransforms()
 
 		// Stop at head (for the body to follow) if tracking is paused
 		if (pauseTracking) return
 
-		// Update spine bones
+		// Spine
 		updateSpineTransforms()
-		// Update left leg bones
+		// Left leg
 		updateLegTransforms(
 			leftUpperLegBone,
 			leftKneeTrackerBone,
@@ -404,7 +404,7 @@ class HumanSkeleton(
 			leftLowerLegTracker,
 			leftFootTracker
 		)
-		// Update right leg bones
+		// Right leg
 		updateLegTransforms(
 			rightUpperLegBone,
 			rightKneeTrackerBone,
@@ -415,7 +415,7 @@ class HumanSkeleton(
 			rightLowerLegTracker,
 			rightFootTracker
 		)
-		// Update left arm bones
+		// Left arm
 		updateArmTransforms(
 			isTrackingLeftArmFromController,
 			leftShoulderBone,
@@ -429,7 +429,7 @@ class HumanSkeleton(
 			leftLowerArmTracker,
 			leftHandTracker
 		)
-		// Update right arm bones
+		// Right arm
 		updateArmTransforms(
 			isTrackingRightArmFromController,
 			rightShoulderBone,
@@ -812,26 +812,23 @@ class HumanSkeleton(
 
 	// Update the output trackers
 	private fun updateComputedTrackers() {
-		updateComputedTracker(computedHeadTracker, headTrackerBone, false)
-		updateComputedTracker(computedChestTracker, chestTrackerBone, false)
-		updateComputedTracker(computedHipTracker, hipTrackerBone, false)
-		updateComputedTracker(computedLeftKneeTracker, leftKneeTrackerBone, false)
-		updateComputedTracker(computedRightKneeTracker, rightKneeTrackerBone, false)
-		updateComputedTracker(computedLeftFootTracker, leftFootTrackerBone, hasLeftFootTracker)
-		updateComputedTracker(computedRightFootTracker, rightFootTrackerBone, hasRightFootTracker)
-		updateComputedTracker(computedLeftElbowTracker, leftElbowTrackerBone, false)
-		updateComputedTracker(computedRightElbowTracker, rightElbowTrackerBone, false)
-		updateComputedTracker(computedLeftHandTracker, leftHandTrackerBone, true)
-		updateComputedTracker(computedRightHandTracker, rightHandTrackerBone, true)
+		updateComputedTracker(computedHeadTracker, headTrackerBone)
+		updateComputedTracker(computedChestTracker, chestTrackerBone)
+		updateComputedTracker(computedHipTracker, hipTrackerBone)
+		updateComputedTracker(computedLeftKneeTracker, leftKneeTrackerBone)
+		updateComputedTracker(computedRightKneeTracker, rightKneeTrackerBone)
+		updateComputedTracker(computedLeftFootTracker, leftFootTrackerBone)
+		updateComputedTracker(computedRightFootTracker, rightFootTrackerBone)
+		updateComputedTracker(computedLeftElbowTracker, leftElbowTrackerBone)
+		updateComputedTracker(computedRightElbowTracker, rightElbowTrackerBone)
+		updateComputedTracker(computedLeftHandTracker, leftHandTrackerBone)
+		updateComputedTracker(computedRightHandTracker, rightHandTrackerBone)
 	}
 
-	private fun updateComputedTracker(computedTracker: Tracker?, trackerBone: Bone, rotateUp: Boolean) {
+	private fun updateComputedTracker(computedTracker: Tracker?, trackerBone: Bone) {
 		computedTracker?.let {
 			it.position = trackerBone.getTailPosition()
-			it.setRotation(
-				trackerBone.getGlobalRawRotation() *
-					(if (rotateUp) FORWARD_QUATERNION else IDENTITY)
-			)
+			it.setRotation(trackerBone.getGlobalRotation() * trackerBone.rotationOffset.inv())
 			it.dataTick()
 		}
 	}
