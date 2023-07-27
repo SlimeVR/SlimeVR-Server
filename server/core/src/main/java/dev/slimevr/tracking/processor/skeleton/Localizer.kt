@@ -137,13 +137,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			)
 		}
 
-		// TODO find the root cause of this issue
-		if (finalTravel.y.isNaN()) {
-			println(finalTravel)
-			println(worldReference)
-			finalTravel = Vector3(finalTravel.x, 0.0f, finalTravel.z)
-		}
-
 		updateSkeletonPos(finalTravel)
 	}
 
@@ -261,7 +254,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 		var dist: Vector3 = bufCur.centerOfMass
 		dist = dist.minus(targetCOM)
-
 		return dist
 	}
 
@@ -420,7 +412,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			accel += skeleton.chestTracker.getAcceleration()
 			num++
 		}
-		return accel.div(num)
+		return if (num == 0f) accel else accel.div(num)
 	}
 
 	// update the hmd position and rotation
