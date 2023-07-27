@@ -77,7 +77,7 @@ export function MainLayoutRoute({
           >
             <div
               className={classNames(
-                'flex flex-col rounded-xl w-full overflow-hidden mobile:overflow-y-auto',
+                'flex flex-col rounded-xl w-full overflow-clip mobile:overflow-y-auto',
                 background && 'bg-background-70'
               )}
             >
