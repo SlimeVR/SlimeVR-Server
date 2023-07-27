@@ -4,7 +4,7 @@ import dev.slimevr.VRServer
 
 enum class ArmsResetModes {
 	// Upper arm going back and forearm going forward
-	DEFAULT,
+	BACK,
 
 	// Arms going to the side
 	TPOSE,
@@ -16,7 +16,7 @@ enum class ArmsResetModes {
 class ArmsResetModeConfig {
 
 	// Reset mode used for the arms
-	var mode = ArmsResetModes.DEFAULT
+	var mode = ArmsResetModes.BACK
 
 	fun updateTrackersArmsResetMode() {
 		for (t in VRServer.instance.allTrackers) {

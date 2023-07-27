@@ -30,7 +30,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var timeAtLastReset: Long = 0
 	private var compensateDrift = false
 	private var driftCompensationEnabled = false
-	private var armsResetMode = ArmsResetModes.DEFAULT
+	private var armsResetMode = ArmsResetModes.BACK
 	var allowDriftCompensation = false
 	var lastResetQuaternion: Quaternion? = null
 
@@ -177,17 +177,17 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		val rot: Quaternion = adjustToReference(tracker.getRawRotation())
 
 		if (tracker.needsMounting) {
-			fixGyroscope(tracker.getRawRotation() * mountingOrientation)
+			gyroFix = fixGyroscope(tracker.getRawRotation() * mountingOrientation)
 		} else {
 			// Set mounting to the HMD's yaw so that the non-mounting-adjusted
 			// tracker goes forward.
 			mountRotFix = EulerAngles(EulerOrder.YZX, 0f, getYaw(reference), 0f).toQuaternion()
 		}
-		fixAttachment(tracker.getRawRotation() * mountingOrientation)
+		attachmentFix = fixAttachment(tracker.getRawRotation() * mountingOrientation)
 
 		makeIdentityAdjustmentQuatsFull()
 
-		fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
+		yawFix = fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
 
 		calculateDrift(rot)
 
@@ -208,7 +208,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		val rot: Quaternion = adjustToReference(tracker.getRawRotation())
 
-		fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
+		yawFix = fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
 
 		makeIdentityAdjustmentQuatsYaw()
 
@@ -228,6 +228,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * and stores it in mountRotFix, and adjusts yawFix
 	 */
 	fun resetMounting(reverseYaw: Boolean, reference: Quaternion) {
+		// TODO use HMD as forward
+		// TODO armsResetMode
 		// Get the current calibrated rotation
 		var buffer = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
 		buffer = gyroFix * buffer
@@ -236,11 +238,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		// Use the HMD's yaw as the reference
 		buffer *= reference.project(Vector3.POS_Y).unit().inv()
 
-		// Make a vector pointing straight up
-		var rotVector = Vector3(0f, 1f, 0f)
-
-		// Rotate the normalized vector by the quat
-		rotVector = buffer.sandwich(rotVector.unit())
+		// Rotate a vector pointing up by the quat
+		val rotVector = buffer.sandwich(Vector3.POS_Y)
 
 		// Calculate the yaw angle using tan
 		val yawAngle = atan2(rotVector.x, rotVector.z)
@@ -269,23 +268,26 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		mountRotFix = Quaternion.IDENTITY
 	}
 
-	private fun fixGyroscope(sensorRotation: Quaternion) {
-		gyroFix = EulerAngles(EulerOrder.YZX, 0f, getYaw(sensorRotation), 0f).toQuaternion().inv()
+	private fun fixGyroscope(sensorRotation: Quaternion): Quaternion {
+		// TODO remove usage of getYaw here
+		return EulerAngles(EulerOrder.YZX, 0f, getYaw(sensorRotation), 0f).toQuaternion().inv()
 	}
 
-	private fun fixAttachment(sensorRotation: Quaternion) {
-		attachmentFix = (gyroFix * sensorRotation).inv()
+	private fun fixAttachment(sensorRotation: Quaternion): Quaternion {
+		return (gyroFix * sensorRotation).inv()
 	}
 
-	private fun fixYaw(sensorRotation: Quaternion, reference: Quaternion) {
+	private fun fixYaw(sensorRotation: Quaternion, reference: Quaternion): Quaternion {
 		var rot = gyroFix * sensorRotation
 		rot *= attachmentFix
 		rot *= mountRotFix
-		rot = EulerAngles(EulerOrder.YZX, 0f, getYaw(rot), 0f).toQuaternion() // FIXME
-		yawFix = rot.inv() * reference.project(Vector3.POS_Y).unit()
+
+		rot = rot.project(Vector3.POS_Y).unit()
+
+		return rot.inv() * reference.project(Vector3.POS_Y).unit()
 	}
 
-	// FIXME : isolating yaw for yaw reset bad.
+	// TODO : isolating yaw for yaw reset bad.
 	// The way we isolate the tracker's yaw for yaw reset is
 	// incorrect. This is old math from JME; projection around the
 	// Y-axis is worse. In both cases, the isolated yaw value changes
@@ -309,15 +311,15 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 	private fun makeIdentityAdjustmentQuatsFull() {
 		val sensorRotation = tracker.getRawRotation()
-		gyroFixNoMounting = sensorRotation.project(Vector3.POS_Y).unit().inv()
-		attachmentFixNoMounting = (gyroFixNoMounting * sensorRotation).inv()
+		gyroFixNoMounting = fixGyroscope(sensorRotation)
+		attachmentFixNoMounting = fixAttachment(sensorRotation)
 	}
 
 	private fun makeIdentityAdjustmentQuatsYaw() {
 		var sensorRotation = tracker.getRawRotation()
 		sensorRotation = gyroFixNoMounting * sensorRotation
 		sensorRotation *= attachmentFixNoMounting
-		yawFixZeroReference = EulerAngles(EulerOrder.YZX, 0f, getYaw(sensorRotation), 0f).toQuaternion().inv()
+		yawFixZeroReference = fixYaw(sensorRotation, Quaternion.IDENTITY)
 	}
 
 	/**
