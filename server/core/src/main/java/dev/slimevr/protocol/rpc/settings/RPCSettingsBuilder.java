@@ -326,4 +326,12 @@ public class RPCSettingsBuilder {
 
 		return autoBoneConfig;
 	}
+
+	public static int createArmsResetModeSettings(
+		FlatBufferBuilder fbb,
+		ArmsResetModeConfig armsResetModeConfig
+	) {
+		// TODO
+		return 0;
+	}
 }

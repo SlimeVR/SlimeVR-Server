@@ -85,6 +85,11 @@ public class RPCSettingsHandler {
 					.createAutoBoneSettings(
 						fbb,
 						this.api.server.configManager.getVrConfig().getAutoBone()
+					),
+				RPCSettingsBuilder
+					.createArmsResetModeSettings(
+						fbb,
+						this.api.server.configManager.getVrConfig().getArmsResetMode()
 					)
 			);
 		int outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);

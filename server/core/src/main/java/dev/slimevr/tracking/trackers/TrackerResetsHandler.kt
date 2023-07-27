@@ -2,6 +2,8 @@ package dev.slimevr.tracking.trackers
 
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer
+import dev.slimevr.config.ArmsResetModeConfig
+import dev.slimevr.config.ArmsResetModes
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.filtering.CircularArrayList
 import io.github.axisangles.ktmath.EulerAngles
@@ -28,6 +30,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var timeAtLastReset: Long = 0
 	private var compensateDrift = false
 	private var driftCompensationEnabled = false
+	private var armsResetMode = ArmsResetModes.DEFAULT
 	var allowDriftCompensation = false
 	var lastResetQuaternion: Quaternion? = null
 
@@ -90,6 +93,13 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun refreshDriftCompensationEnabled() {
 		driftCompensationEnabled = compensateDrift && allowDriftCompensation &&
 			TrackerUtils.getNonInternalNonImuTrackerForBodyPosition(VRServer.instance.allTrackers, TrackerPosition.HEAD) != null
+	}
+
+	/**
+	 * Reads/loads arms reset mode settings from given config
+	 */
+	fun readArmsResetModeConfig(config: ArmsResetModeConfig) {
+		armsResetMode = config.mode
 	}
 
 	/**
