@@ -139,10 +139,6 @@ public class TapDetection {
 		if (newTaps > taps) {
 			taps = newTaps;
 			detectionTime = time;
-
-			System.out.println(trackerToWatch.getTrackerPosition());
-			System.out.println(taps);
-
 		}
 	}
 
