@@ -26,10 +26,10 @@ abstract class SerialHandler {
 			// CH9102
 			Pair(0x1A86, 0x55D4),
 			// CP210x
-			Pair(0x10C4, 0xEA60),
+			Pair(0x10C4, 0xEA60)
 		)
-		fun isKnownBoard(port: SerialPort): Boolean
-			= supportedSerial.contains(Pair(port.vendorId, port.productId))
+		fun isKnownBoard(port: SerialPort): Boolean =
+			supportedSerial.contains(Pair(port.vendorId, port.productId))
 	}
 }
 
