@@ -122,6 +122,7 @@ public class TapDetectionManager {
 				|| fullResetDetector == null
 				|| mountingResetDetector == null
 				|| tapDetectors == null
+				|| config == null
 		)
 			return;
 
