@@ -18,7 +18,7 @@ abstract class SerialHandler {
 
 	companion object {
 		val supportedSerial: Set<Pair<Int, Int>> = setOf(
-			/// QinHeng
+			// / QinHeng
 			// CH340
 			Pair(0x1A86, 0x7522),
 			Pair(0x1A86, 0x7523),
@@ -26,12 +26,12 @@ abstract class SerialHandler {
 			Pair(0x1A86, 0x5523),
 			// CH9102x
 			Pair(0x1A86, 0x55D4),
-			/// Silabs
+			// / Silabs
 			// CP210x
 			Pair(0x10C4, 0xEA60),
-			/// Espressif
+			// / Espressif
 			// ESP32-C3
-			Pair(0x303A, 0x1001),
+			Pair(0x303A, 0x1001)
 		)
 		fun isKnownBoard(port: SerialPort): Boolean =
 			supportedSerial.contains(Pair(port.vendorId, port.productId))
