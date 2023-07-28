@@ -81,7 +81,7 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 		val ports = SerialPort.getCommPorts()
 		lastKnownPorts = ports.map { SerialPortWrapper(it) }.toSet()
 		val newPort: SerialPort? = ports.find {
-			return (!auto && it.portLocation == portLocation) ||
+			(!auto && it.portLocation == portLocation) ||
 				(auto && isKnownBoard(it.descriptivePortName))
 		}
 		if (newPort == null) {
