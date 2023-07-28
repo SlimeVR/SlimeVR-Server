@@ -57,7 +57,7 @@ dependencies {
 	implementation("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
-	implementation("com.fazecast:jSerialComm:2.+")
+	implementation("com.fazecast:jSerialComm:2.10.2")
 }
 
 tasks.shadowJar {
