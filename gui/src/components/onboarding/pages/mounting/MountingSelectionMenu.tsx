@@ -12,7 +12,6 @@ import { SlimeUpIcon } from '../../../commons/icon/SlimeUpIcon';
 import { BodyPart } from 'solarxr-protocol';
 import { PawIcon } from '../../../commons/icon/PawIcon';
 import { useLocaleConfig } from '../../../../i18n/config';
-import { UpperChestIcon } from '../../../commons/icon/UpperChestIcon';
 
 // All body parts that are right or left, are by default left!
 export const mapPart: Record<
