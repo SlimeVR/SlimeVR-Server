@@ -12,6 +12,7 @@ import { SlimeUpIcon } from '../../../commons/icon/SlimeUpIcon';
 import { BodyPart } from 'solarxr-protocol';
 import { PawIcon } from '../../../commons/icon/PawIcon';
 import { useLocaleConfig } from '../../../../i18n/config';
+import { UpperChestIcon } from '../../../commons/icon/UpperChestIcon';
 
 // All body parts that are right or left, are by default left!
 export const mapPart: Record<
@@ -24,6 +25,7 @@ export const mapPart: Record<
     currentLocales: string[];
   }) => JSX.Element
 > = {
+  [BodyPart.UPPER_CHEST]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.CHEST]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.HEAD]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.HIP]: ({ width }) => <FootIcon width={width}></FootIcon>,
