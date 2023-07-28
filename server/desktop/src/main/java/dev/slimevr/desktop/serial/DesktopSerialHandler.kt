@@ -23,6 +23,12 @@ class SerialPortWrapper(val port: SerialPort) : SlimeSerialPort() {
 		get() = port.portLocation
 	override val descriptivePortName: String
 		get() = port.descriptivePortName
+
+	override val vendorId: Int
+		get() = port.vendorID
+
+	override val productId: Int
+		get() = port.productID
 }
 
 class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
@@ -82,7 +88,7 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 		lastKnownPorts = ports.map { SerialPortWrapper(it) }.toSet()
 		val newPort: SerialPort? = ports.find {
 			(!auto && it.portLocation == portLocation) ||
-				(auto && isKnownBoard(it.descriptivePortName))
+				(auto && isKnownBoard(SerialPortWrapper(it)))
 		}
 		if (newPort == null) {
 			LogManager.info(
@@ -91,9 +97,7 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 			return false
 		}
 		if (isConnected) {
-			if (newPort.portLocation != currentPort!!.portLocation ||
-				newPort.descriptivePortName != currentPort!!.descriptivePortName
-			) {
+			if (SerialPortWrapper(newPort) != currentPort?.let { SerialPortWrapper(it) }) {
 				LogManager.info(
 					"[SerialHandler] Closing current serial port " +
 						currentPort!!.descriptivePortName
@@ -111,18 +115,18 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 			"[SerialHandler] Trying to connect to new serial port " +
 				currentPort!!.descriptivePortName
 		)
-		currentPort!!.setBaudRate(115200)
-		currentPort!!.clearRTS()
-		currentPort!!.clearDTR()
-		if (!currentPort!!.openPort(1000)) {
+		currentPort?.setBaudRate(115200)
+		currentPort?.clearRTS()
+		currentPort?.clearDTR()
+		if (currentPort?.openPort(1000) == false) {
 			LogManager.warning(
-				"[SerialHandler] Can't open serial port ${currentPort!!.descriptivePortName}, last error: " +
-					currentPort!!.lastErrorCode
+				"[SerialHandler] Can't open serial port ${currentPort?.descriptivePortName}, last error: ${currentPort?.lastErrorCode}"
+
 			)
 			currentPort = null
 			return false
 		}
-		currentPort!!.addDataListener(this)
+		currentPort?.addDataListener(this)
 		listeners.forEach { it.onSerialConnected(SerialPortWrapper(currentPort!!)) }
 		LogManager.info("[SerialHandler] Serial port ${newPort.descriptivePortName} is open")
 		return true
@@ -143,7 +147,7 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 	@Synchronized
 	override fun closeSerial() {
 		try {
-			if (currentPort != null) currentPort!!.closePort()
+			currentPort?.closePort()
 			listeners.forEach { it.onSerialDisconnected() }
 			LogManager.info(
 				"[SerialHandler] Port ${currentPort?.descriptivePortName} closed okay"
@@ -159,8 +163,7 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 
 	@Synchronized
 	private fun writeSerial(serialText: String) {
-		if (currentPort == null) return
-		val os = currentPort!!.outputStream
+		val os = currentPort?.outputStream ?: return
 		val writer = OutputStreamWriter(os)
 		try {
 			writer.append(serialText).append("\n")
@@ -174,8 +177,7 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 
 	@Synchronized
 	override fun setWifi(ssid: String, passwd: String) {
-		if (currentPort == null) return
-		val os = currentPort!!.outputStream
+		val os = currentPort?.outputStream ?: return
 		val writer = OutputStreamWriter(os)
 		try {
 			writer.append("SET WIFI \"").append(ssid).append("\" \"").append(passwd).append("\"\n")
@@ -227,22 +229,9 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 	override val knownPorts: Stream<SerialPortWrapper>
 		get() = SerialPort.getCommPorts()
 			.asSequence()
-			.filter { isKnownBoard(it.descriptivePortName) }
 			.map { SerialPortWrapper(it) }
+			.filter { isKnownBoard(it) }
 			.asStream()
-
-	private fun isKnownBoard(com: String): Boolean {
-		val lowerCom = com.lowercase(Locale.getDefault())
-		return (
-			lowerCom.contains("ch340") ||
-				lowerCom.contains("cp21") ||
-				lowerCom.contains("ch910") ||
-				(
-					lowerCom.contains("usb") &&
-						lowerCom.contains("seri")
-					)
-			)
-	}
 
 	private fun detectNewPorts() {
 		try {
