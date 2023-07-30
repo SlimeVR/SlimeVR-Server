@@ -5,7 +5,6 @@ import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
 import org.robovm.apple.uikit.UIApplicationLaunchOptions;
-import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIWindow;
 
 import java.io.File;

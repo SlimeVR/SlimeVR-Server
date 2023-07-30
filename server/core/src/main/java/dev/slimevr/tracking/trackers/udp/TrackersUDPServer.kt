@@ -213,7 +213,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 
 							try {
 								socket.send(DatagramPacket(rcvBuffer, bb.position(), conn.address))
-							} catch(e: IOException) {
+							} catch (e: IOException) {
 								LogManager.warning("[TrackerServer] Failed to send package to $conn", e)
 							}
 							if (conn.lastPacket + 1000 < System.currentTimeMillis()) {
@@ -252,7 +252,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 								bb.putInt(conn.lastPingPacketId)
 								try {
 									socket.send(DatagramPacket(rcvBuffer, bb.position(), conn.address))
-								} catch(e: IOException) {
+								} catch (e: IOException) {
 									LogManager.warning("[TrackerServer] Failed to send package to $conn", e)
 								}
 							}
