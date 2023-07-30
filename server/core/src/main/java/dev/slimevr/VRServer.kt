@@ -267,6 +267,9 @@ class VRServer @JvmOverloads constructor(
 	private fun trackerAdded(tracker: Tracker) {
 		humanPoseManager.trackerAdded(tracker)
 		updateSkeletonModel()
+		if (tracker.isComputed && tracker.name != "HMD") {
+			vMCHandler.addComputedTracker(tracker)
+		}
 		refreshTrackersDriftCompensationEnabled()
 	}
 

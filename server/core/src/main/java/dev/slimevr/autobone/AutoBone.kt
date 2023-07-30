@@ -34,7 +34,8 @@ class AutoBone(server: VRServer) {
 			SkeletonConfigOffsets.UPPER_CHEST,
 			SkeletonConfigOffsets.CHEST,
 			SkeletonConfigOffsets.WAIST,
-			SkeletonConfigOffsets.HIP, // This now works when using body proportion error! It's not the
+			SkeletonConfigOffsets.HIP,
+			// HIPS_WIDTH now works when using body proportion error! It's not the
 			// best still, but it is somewhat functional
 			SkeletonConfigOffsets.HIPS_WIDTH,
 			SkeletonConfigOffsets.UPPER_LEG,
