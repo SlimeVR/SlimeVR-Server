@@ -25,10 +25,10 @@ class FirmwareFeatures {
 	 * Whether the firmware supports the "feature flags" feature,
 	 * set to true when we've received flags packet from the firmware.
 	 */
-	fun isAvailable(): Boolean = available
+	var available = false
+		private set
 
 	companion object {
-		@JvmStatic
 		fun from(received: ByteBuffer, length: Int): FirmwareFeatures {
 			val res = FirmwareFeatures()
 			res.available = true
@@ -37,7 +37,6 @@ class FirmwareFeatures {
 		}
 	}
 
-	private var available = false
 	private val flags = ByteArray(FirmwareFeatureFlags.BITS_TOTAL.ordinal / 8 + 1)
 }
 
@@ -50,15 +49,15 @@ enum class ServerFeatureFlags {
 	BITS_TOTAL, ;
 
 	companion object {
-		private var flagsEnabled: List<ServerFeatureFlags> = listOf(
-			PROTOCOL_BUNDLE_SUPPORT
+		val flagsEnabled: Set<ServerFeatureFlags> = setOf(
+			PROTOCOL_BUNDLE_SUPPORT,
 
 			// Add enabled flags here
 		)
 
-		private val flagsLength = BITS_TOTAL.ordinal / 8 + 1
-		private val flags = run {
-			val tempPacked = ByteArray(flagsLength)
+		val packed = run {
+			val byteLength = BITS_TOTAL.ordinal / 8 + 1
+			val tempPacked = ByteArray(byteLength)
 
 			for (flag in flagsEnabled) {
 				val bit = flag.ordinal
@@ -68,7 +67,5 @@ enum class ServerFeatureFlags {
 
 			tempPacked
 		}
-
-		fun getPacked() = flags
 	}
 }

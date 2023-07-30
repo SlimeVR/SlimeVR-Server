@@ -329,7 +329,7 @@ class UDPPacket22FeatureFlags(
 	}
 
 	override fun writeData(buf: ByteBuffer) {
-		buf.put(ServerFeatureFlags.getPacked())
+		buf.put(ServerFeatureFlags.packed)
 	}
 }
 
