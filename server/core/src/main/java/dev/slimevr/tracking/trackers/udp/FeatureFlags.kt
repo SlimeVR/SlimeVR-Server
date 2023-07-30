@@ -2,10 +2,11 @@ package dev.slimevr.tracking.trackers.udp
 
 import java.nio.ByteBuffer
 
-// Bit packed flags, enum values start with 0 and indicate which bit it is
-
-// Change the enums/flagsEnabled to extend
-
+/**
+ * Bit packed flags, enum values start with 0 and indicate which bit it is.
+ *
+ * Change the enums and `flagsEnabled` inside to extend.
+ */
 class FirmwareFeatures {
 	enum class FirmwareFeatureFlags {
 		// EXAMPLE_FEATURE,
@@ -20,8 +21,10 @@ class FirmwareFeatures {
 		return (flags[bit / 8].toInt() and (1 shl (bit % 8))) != 0
 	}
 
-	// Whether the firmware supports the "feature flags" feature,
-	// set to true when we've received flags packet from the firmware
+	/**
+	 * Whether the firmware supports the "feature flags" feature,
+	 * set to true when we've received flags packet from the firmware.
+	 */
 	fun isAvailable(): Boolean = available
 
 	companion object {
@@ -39,7 +42,7 @@ class FirmwareFeatures {
 }
 
 enum class ServerFeatureFlags {
-	// Server can parse bundle packets
+	/** Server can parse bundle packets: `PACKET_BUNDLE` = 100 (0x64). */
 	PROTOCOL_BUNDLE_SUPPORT,
 
 	// Add new flags here
