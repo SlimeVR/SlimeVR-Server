@@ -50,7 +50,7 @@ enum class ServerFeatureFlags {
 
 	companion object {
 		val flagsEnabled: Set<ServerFeatureFlags> = setOf(
-			PROTOCOL_BUNDLE_SUPPORT,
+			PROTOCOL_BUNDLE_SUPPORT
 
 			// Add enabled flags here
 		)
