@@ -132,6 +132,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			}
 			connection
 		}
+		connection.firmwareFeatures = FirmwareFeatures()
 		bb.limit(bb.capacity())
 		bb.rewind()
 		parser.writeHandshakeResponse(bb, connection)
