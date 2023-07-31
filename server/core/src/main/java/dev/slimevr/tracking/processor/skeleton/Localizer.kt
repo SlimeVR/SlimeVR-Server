@@ -90,6 +90,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 		if (warmupFrames < WARMUP_FRAMES) {
 			comVelocity = Vector3.NULL
+			targetFoot = Vector3.NULL
 		}
 		warmupFrames++
 
@@ -141,14 +142,14 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	// resets to the starting position
 	fun reset() {
-		skeleton.hmdNode.localTransform.translation = Vector3.NULL
+		if (!enabled) return
 
-		// reset the velocity
+		skeleton.hmdNode.localTransform.translation = Vector3.NULL
 		comVelocity = Vector3.NULL
 
 		// when localizing without a 6 dof device we choose the floor level
 		// 0 happens to be an easy number to use
-		legTweaks.setLocalizerMode(true)
+		legTweaks.setLocalizerMode(enabled)
 		floor = 0.0f
 		uncorrectedFloor = 0.0f - LegTweaks.FLOOR_CALIBRATION_OFFSET
 		warmupFrames = 0
@@ -233,6 +234,12 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		// get the distance to move the waist to the target waist
 		val dist: Vector3 = hip.minus(targetHip)
 
+		val lowTracker = getLowestTracker()
+
+		if (lowTracker.position.y < uncorrectedFloor) {
+			targetHip = Vector3(targetHip.x, targetHip.y + (uncorrectedFloor - lowTracker.position.y), targetHip.z)
+		}
+
 		// if the world reference is not sitting update the target waist
 		if (worldReference != MovementStates.FOLLOW_SITTING || sittingFrames < SITTING_EARLY) {
 			targetHip = hip
@@ -247,7 +254,6 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 		var dist: Vector3 = bufCur.centerOfMass
 		dist = dist.minus(targetCOM)
-
 		return dist
 	}
 
@@ -352,16 +358,14 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		)
 
 		var minVal = trackerList[0].position.y
-		var tempVal: Float
 		var retVal: Tracker = trackerList[0]
 		for (tracker in trackerList) {
 			if (tracker == null) {
 				continue
 			}
-			// get the max distance to the ground
-			tempVal = tracker.position.y - uncorrectedFloor
-			if (tempVal < minVal) {
-				minVal = tempVal
+
+			if (tracker.position.y < minVal) {
+				minVal = tracker.position.y
 				retVal = tracker
 			}
 		}
@@ -408,7 +412,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			accel += skeleton.chestTracker.getAcceleration()
 			num++
 		}
-		return accel.div(num)
+		return if (num == 0f) accel else accel.div(num)
 	}
 
 	// update the hmd position and rotation
@@ -417,8 +421,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		if (skeleton.headTracker != null) {
 			rot = skeleton.headTracker.getRotation()
 		}
-		val temp = skeleton.hmdNode.localTransform.translation.minus(travel)
 
+		val temp = skeleton.hmdNode.localTransform.translation.minus(travel)
 		skeleton.hmdNode.localTransform.translation = temp
 		skeleton.hmdNode.localTransform.rotation = rot
 	}
