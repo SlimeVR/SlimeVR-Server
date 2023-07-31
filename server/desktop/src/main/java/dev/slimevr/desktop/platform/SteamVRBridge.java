@@ -96,7 +96,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		boolean needsReset;
 		if (trackerAdded.getTrackerId() == 0) {
 			if (trackerAdded.getTrackerName().equals("HMD"))
-				displayName = "Driver HMD";
+				displayName = "SteamVR Driver HMD";
 			else
 				displayName = "Feeder App HMD";
 			// TODO support needsReset = true if HMD isn't assigned to head
