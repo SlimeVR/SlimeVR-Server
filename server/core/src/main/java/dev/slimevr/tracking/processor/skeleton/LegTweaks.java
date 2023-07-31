@@ -265,29 +265,30 @@ public class LegTweaks {
 	public void updateConfig() {
 		LegTweaks.updateHyperParameters(config.getCorrectionStrength());
 
-		floorclipEnabled = skeleton
-			.getHumanPoseManager()
-			.getToggle(SkeletonConfigToggles.FLOOR_CLIP);
+		floorclipEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP);
 		alwaysUseFloorclip = config.getAlwaysUseFloorclip();
-		skatingCorrectionEnabled = skeleton
-			.getHumanPoseManager()
+		skatingCorrectionEnabled = skeleton.humanPoseManager
 			.getToggle(SkeletonConfigToggles.SKATING_CORRECTION);
-		toeSnapEnabled = skeleton.getHumanPoseManager().getToggle(SkeletonConfigToggles.TOE_SNAP);
-		footPlantEnabled = skeleton
-			.getHumanPoseManager()
-			.getToggle(SkeletonConfigToggles.FOOT_PLANT);
+		toeSnapEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP);
+		footPlantEnabled = skeleton.humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT);
 	}
 
 	// update the hyperparameters with the config
 	public static void updateHyperParameters(float newStrength) {
-		LegTweakBuffer.Companion.setSkatingVelocityThreshold(getScaledHyperParameter(
-			newStrength,
-			LegTweakBuffer.Companion.getSkatingVelocityThreshold()
-		));
-		LegTweakBuffer.Companion.setSkatingAccelerationThreshold(getScaledHyperParameter(
-			newStrength,
-			LegTweakBuffer.Companion.getSkatingAccelerationThreshold()
-		));
+		LegTweakBuffer.Companion
+			.setSkatingVelocityThreshold(
+				getScaledHyperParameter(
+					newStrength,
+					LegTweakBuffer.Companion.getSkatingVelocityThreshold()
+				)
+			);
+		LegTweakBuffer.Companion
+			.setSkatingAccelerationThreshold(
+				getScaledHyperParameter(
+					newStrength,
+					LegTweakBuffer.Companion.getSkatingAccelerationThreshold()
+				)
+			);
 		currentCorrectionStrength = newStrength;
 	}
 
@@ -300,35 +301,30 @@ public class LegTweaks {
 	private void setVectors() {
 		// set the positions of the feet and knees to the skeleton's
 		// current positions
-		hipPosition = skeleton.getComputedHipTracker().getPosition();
+		hipPosition = skeleton.computedHipTracker.getPosition();
 
-		leftKneePosition = skeleton.getComputedLeftKneeTracker().getPosition();
-		rightKneePosition = skeleton.getComputedRightKneeTracker().getPosition();
+		leftKneePosition = skeleton.computedLeftKneeTracker.getPosition();
+		rightKneePosition = skeleton.computedRightKneeTracker.getPosition();
 
-		leftFootPosition = skeleton.getComputedLeftFootTracker().getPosition();
-		rightFootPosition = skeleton.getComputedRightFootTracker().getPosition();
-		leftFootRotation = skeleton.getComputedLeftFootTracker().getRotation();
-		rightFootRotation = skeleton.getComputedRightFootTracker().getRotation();
+		leftFootPosition = skeleton.computedLeftFootTracker.getPosition();
+		rightFootPosition = skeleton.computedRightFootTracker.getPosition();
+		leftFootRotation = skeleton.computedLeftFootTracker.getRotation();
+		rightFootRotation = skeleton.computedRightFootTracker.getRotation();
 
-		// get the vector for acceleration of the feet and knees
-		// (if feet are not available, fallback to 6 tracker mode)
-		if (skeleton.getLeftFootTracker() != null && skeleton.getRightFootTracker() != null) {
-			leftFootAcceleration = skeleton.getLeftFootTracker().getAcceleration();
-			rightFootAcceleration = skeleton.getRightFootTracker().getAcceleration();
-		} else {
-			leftFootAcceleration = Vector3.Companion.getNULL();
-			rightFootAcceleration = Vector3.Companion.getNULL();
-		}
+		// get the vector for acceleration of the feet and lower legs
+		leftFootAcceleration = (skeleton.leftFootTracker != null)
+			? skeleton.leftFootTracker.getAcceleration()
+			: Vector3.Companion.getNULL();
+		rightFootAcceleration = (skeleton.rightFootTracker != null)
+			? skeleton.rightFootTracker.getAcceleration()
+			: Vector3.Companion.getNULL();
 
-		if (
-			skeleton.getLeftLowerLegTracker() != null && skeleton.getRightLowerLegTracker() != null
-		) {
-			leftLowerLegAcceleration = skeleton.getLeftLowerLegTracker().getAcceleration();
-			rightLowerLegAcceleration = skeleton.getRightLowerLegTracker().getAcceleration();
-		} else {
-			leftLowerLegAcceleration = Vector3.Companion.getNULL();
-			rightLowerLegAcceleration = Vector3.Companion.getNULL();
-		}
+		leftLowerLegAcceleration = (skeleton.leftLowerLegTracker != null)
+			? skeleton.leftLowerLegTracker.getAcceleration()
+			: Vector3.Companion.getNULL();
+		rightLowerLegAcceleration = (skeleton.rightLowerLegTracker != null)
+			? skeleton.rightLowerLegTracker.getAcceleration()
+			: Vector3.Companion.getNULL();
 	}
 
 	// updates the object with the latest data from the skeleton
@@ -350,7 +346,7 @@ public class LegTweaks {
 		}
 
 		// update the foot length
-		footLength = skeleton.getLeftFootNode().getLocalTransform().getTranslation().len();
+		footLength = skeleton.leftFootNode.getLocalTransform().getTranslation().len();
 
 		// if the user is standing start checking for a good time to enable leg
 		// tweaks
@@ -358,72 +354,72 @@ public class LegTweaks {
 
 		// if the buffer is invalid add all the extra info
 		if (bufferInvalid && !localizerMode) {
-			bufferHead.setLeftFootPositionCorrected(leftFootPosition);
-			bufferHead.setRightFootPositionCorrected(rightFootPosition);
-			bufferHead.setLeftKneePositionCorrected(leftKneePosition);
-			bufferHead.setRightKneePositionCorrected(rightKneePosition);
-			bufferHead.setHipPositionCorrected(hipPosition);
-			bufferHead.setLeftFootPosition(leftFootPosition);
-			bufferHead.setRightFootPosition(rightFootPosition);
-			bufferHead.setLeftKneePosition(leftKneePosition);
-			bufferHead.setRightKneePosition(rightKneePosition);
-			bufferHead.setHipPosition(hipPosition);
-			bufferHead.setLeftLegState(LegTweakBuffer.UNLOCKED);
-			bufferHead.setRightLegState(LegTweakBuffer.UNLOCKED);
+			bufferHead
+				.setPositions(
+					leftFootPosition,
+					rightFootPosition,
+					leftKneePosition,
+					rightKneePosition,
+					hipPosition
+				);
 
-			// if the system is active, populate the buffer with corrected floor
-			// clip feet positions
+			// if active correct clipping before populating corrected positions
 			if (active) {
 				correctClipping();
-				bufferHead.setLeftFootPositionCorrected(leftFootPosition);
-				bufferHead.setRightFootPositionCorrected(rightFootPosition);
 			}
+
+			bufferHead
+				.setCorrectedPositions(
+					leftFootPosition,
+					rightFootPosition,
+					leftKneePosition,
+					rightKneePosition,
+					hipPosition
+				);
+
+			bufferHead.setLeftLegState(LegTweakBuffer.UNLOCKED);
+			bufferHead.setRightLegState(LegTweakBuffer.UNLOCKED);
 
 			bufferInvalid = false;
 		}
 
 		// update the buffer
-		LegTweakBuffer currentFrame = new LegTweakBuffer();
-		currentFrame.setLeftFootPosition(leftFootPosition);
-		currentFrame.setLeftFootRotation(leftFootRotation);
-		currentFrame.setLeftKneePosition(leftKneePosition);
-		currentFrame.setRightFootPosition(rightFootPosition);
-		currentFrame.setRightFootRotation(rightFootRotation);
-		currentFrame.setRightKneePosition(rightKneePosition);
-		currentFrame.setHipPosition(hipPosition);
-		currentFrame.setCenterOfMass(computeCenterOfMass());
+		float leftFloorLevel = (floorLevel + (footLength * getLeftFootOffset()))
+			- currentDisengagementOffset;
+		float rightFloorLevel = (floorLevel + (footLength * getRightFootOffset()))
+			- currentDisengagementOffset;
 
-		currentFrame
-			.setLeftFloorLevel(
-				(floorLevel + (footLength * getLeftFootOffset()))
-					- currentDisengagementOffset
-			);
+		Vector3 leftFootAccel = (skeleton.leftFootTracker != null)
+			? leftFootAcceleration
+			: leftLowerLegAcceleration;
+		Vector3 rightFootAccel = (skeleton.rightFootTracker != null)
+			? rightFootAcceleration
+			: rightLowerLegAcceleration;
 
-		currentFrame
-			.setRightFloorLevel(
-				(floorLevel + (footLength * getRightFootOffset()))
-					- currentDisengagementOffset
-			);
+		int detectionMode = (skeleton.leftFootTracker != null && skeleton.rightFootTracker != null)
+			? LegTweakBuffer.FOOT_ACCEL
+			: LegTweakBuffer.ANKLE_ACCEL;
 
-		// put the acceleration vector that is applicable to the tracker
-		// quantity in the buffer
-		// (if feet are not available, fall back to 6 tracker mode)
-		if (skeleton.getLeftFootTracker() != null && skeleton.getRightFootTracker() != null) {
-			currentFrame.setLeftFootAcceleration(leftFootAcceleration);
-			currentFrame.setRightFootAcceleration(rightFootAcceleration);
-			currentFrame.setDetectionMode(LegTweakBuffer.FOOT_ACCEL);
-		} else if (
-			skeleton.getLeftLowerLegTracker() != null && skeleton.getRightLowerLegTracker() != null
-		) {
-			currentFrame.setLeftFootAcceleration(leftLowerLegAcceleration);
-			currentFrame.setRightFootAcceleration(rightLowerLegAcceleration);
-			currentFrame.setDetectionMode(LegTweakBuffer.ANKLE_ACCEL);
-		}
+		Vector3 centerOfMass = computeCenterOfMass();
 
-		// update the buffer head and compute the current state of the legs
-		currentFrame.setParent(bufferHead);
-		this.bufferHead = currentFrame;
-		this.bufferHead.calculateFootAttributes(active);
+		// update the buffer head
+		this.bufferHead = new LegTweakBuffer(
+			leftFootPosition,
+			rightFootPosition,
+			leftKneePosition,
+			rightKneePosition,
+			leftFootRotation,
+			rightFootRotation,
+			leftFloorLevel,
+			rightFloorLevel,
+			leftFootAccel,
+			rightFootAccel,
+			detectionMode,
+			hipPosition,
+			centerOfMass,
+			bufferHead,
+			active
+		);
 
 		// update the lock duration counters
 		updateLockStateCounters();
@@ -435,7 +431,7 @@ public class LegTweaks {
 	public void tweakLegs() {
 		// If user doesn't have knees or legtweaks is disabled,
 		// don't spend time doing calculations!
-		if ((!skeleton.getHasKneeTrackers() && !alwaysUseFloorclip) || !enabled)
+		if ((!skeleton.hasKneeTrackers && !alwaysUseFloorclip) || !enabled)
 			return;
 
 		// update the class with the latest data from the skeleton
@@ -519,18 +515,21 @@ public class LegTweaks {
 			solveLowerBody();
 
 		// populate the corrected data into the current frame
-		this.bufferHead.setLeftFootPositionCorrected(leftFootPosition);
-		this.bufferHead.setRightFootPositionCorrected(rightFootPosition);
-		this.bufferHead.setLeftKneePositionCorrected(leftKneePosition);
-		this.bufferHead.setRightKneePositionCorrected(rightKneePosition);
-		this.bufferHead.setHipPositionCorrected(hipPosition);
+		this.bufferHead
+			.setCorrectedPositions(
+				leftFootPosition,
+				rightFootPosition,
+				leftKneePosition,
+				rightKneePosition,
+				hipPosition
+			);
 
 		// Set the corrected positions in the skeleton
-		skeleton.getComputedHipTracker().setPosition(hipPosition);
-		skeleton.getComputedLeftKneeTracker().setPosition(leftKneePosition);
-		skeleton.getComputedRightKneeTracker().setPosition(rightKneePosition);
-		skeleton.getComputedLeftFootTracker().setPosition(leftFootPosition);
-		skeleton.getComputedRightFootTracker().setPosition(rightFootPosition);
+		skeleton.computedHipTracker.setPosition(hipPosition);
+		skeleton.computedLeftKneeTracker.setPosition(leftKneePosition);
+		skeleton.computedRightKneeTracker.setPosition(rightKneePosition);
+		skeleton.computedLeftFootTracker.setPosition(leftFootPosition);
+		skeleton.computedRightFootTracker.setPosition(rightFootPosition);
 	}
 
 	// returns true if the foot is clipped and false if it is not
@@ -836,8 +835,8 @@ public class LegTweaks {
 			return;
 
 		// boolean for if there is a foot tracker
-		boolean leftFootTracker = skeleton.getLeftFootTracker() != null;
-		boolean rightFootTracker = skeleton.getRightFootTracker() != null;
+		boolean leftFootTracker = skeleton.leftFootTracker != null;
+		boolean rightFootTracker = skeleton.rightFootTracker != null;
 
 		// get the foot positions
 		Quaternion leftFootRotation = bufferHead.getLeftFootRotation();
@@ -940,12 +939,11 @@ public class LegTweaks {
 		}
 
 		// update the foot rotations in the buffer
-		bufferHead.setLeftFootRotationCorrected(leftFootRotation);
-		bufferHead.setRightFootRotationCorrected(rightFootRotation);
+		bufferHead.setCorrectedRotations(leftFootRotation, rightFootRotation);
 
 		// update the skeleton
-		skeleton.getComputedLeftFootTracker().setRotation(leftFootRotation);
-		skeleton.getComputedRightFootTracker().setRotation(rightFootRotation);
+		skeleton.computedLeftFootTracker.setRotation(leftFootRotation);
+		skeleton.computedRightFootTracker.setRotation(rightFootRotation);
 	}
 
 	// returns the length of the xz components of the normalized difference
@@ -1109,33 +1107,21 @@ public class LegTweaks {
 	// returns a vector representing the center of mass position
 	private Vector3 computeCenterOfMass() {
 		// check if arm data is available
-		boolean armsAvailable = skeleton.getHasLeftArmTracker()
-			&& skeleton.getHasRightArmTracker();
+		boolean armsAvailable = skeleton.hasLeftArmTracker
+			&& skeleton.hasRightArmTracker;
 
 		Vector3 centerOfMass = new Vector3(0f, 0f, 0f);
 
 		// compute the center of mass of smaller body parts and then sum them up
 		// with their respective weights
-		Vector3 head = skeleton.getHeadNode().getWorldTransform().getTranslation();
-		Vector3 thorax = getCenterOfJoint(skeleton.getChestNode(), skeleton.getUpperChestNode());
-		Vector3 abdomen = skeleton.getWaistNode().getWorldTransform().getTranslation();
-		Vector3 pelvis = skeleton.getHipNode().getWorldTransform().getTranslation();
-		Vector3 leftCalf = getCenterOfJoint(
-			skeleton.getLeftAnkleNode(),
-			skeleton.getLeftKneeNode()
-		);
-		Vector3 rightCalf = getCenterOfJoint(
-			skeleton.getRightAnkleNode(),
-			skeleton.getRightKneeNode()
-		);
-		Vector3 leftThigh = getCenterOfJoint(
-			skeleton.getLeftKneeNode(),
-			skeleton.getLeftHipNode()
-		);
-		Vector3 rightThigh = getCenterOfJoint(
-			skeleton.getRightKneeNode(),
-			skeleton.getRightHipNode()
-		);
+		Vector3 head = skeleton.headNode.getWorldTransform().getTranslation();
+		Vector3 thorax = getCenterOfJoint(skeleton.chestNode, skeleton.upperChestNode);
+		Vector3 abdomen = skeleton.waistNode.getWorldTransform().getTranslation();
+		Vector3 pelvis = skeleton.hipNode.getWorldTransform().getTranslation();
+		Vector3 leftCalf = getCenterOfJoint(skeleton.leftAnkleNode, skeleton.leftKneeNode);
+		Vector3 rightCalf = getCenterOfJoint(skeleton.rightAnkleNode, skeleton.rightKneeNode);
+		Vector3 leftThigh = getCenterOfJoint(skeleton.leftKneeNode, skeleton.leftHipNode);
+		Vector3 rightThigh = getCenterOfJoint(skeleton.rightKneeNode, skeleton.rightHipNode);
 		centerOfMass = centerOfMass.plus(head.times(HEAD_MASS));
 		centerOfMass = centerOfMass.plus(thorax.times(THORAX_MASS));
 		centerOfMass = centerOfMass.plus(abdomen.times(ABDOMEN_MASS));
@@ -1147,20 +1133,17 @@ public class LegTweaks {
 
 		if (armsAvailable) {
 			Vector3 leftUpperArm = getCenterOfJoint(
-				skeleton.getLeftElbowNode(),
-				skeleton.getLeftShoulderTailNode()
+				skeleton.leftElbowNode,
+				skeleton.leftShoulderTailNode
 			);
 			Vector3 rightUpperArm = getCenterOfJoint(
-				skeleton.getRightElbowNode(),
-				skeleton.getRightShoulderTailNode()
+				skeleton.rightElbowNode,
+				skeleton.rightShoulderTailNode
 			);
-			Vector3 leftForearm = getCenterOfJoint(
-				skeleton.getLeftElbowNode(),
-				skeleton.getLeftHandNode()
-			);
+			Vector3 leftForearm = getCenterOfJoint(skeleton.leftElbowNode, skeleton.leftHandNode);
 			Vector3 rightForearm = getCenterOfJoint(
-				skeleton.getRightElbowNode(),
-				skeleton.getRightHandNode()
+				skeleton.rightElbowNode,
+				skeleton.rightHandNode
 			);
 			centerOfMass = centerOfMass.plus(leftUpperArm.times(UPPER_ARM_MASS));
 			centerOfMass = centerOfMass.plus(rightUpperArm.times(UPPER_ARM_MASS));
@@ -1170,7 +1153,7 @@ public class LegTweaks {
 			// if the arms are not available put them slightly in front
 			// of the upper chest.
 			Vector3 chestUnitVector = computeUnitVector(
-				skeleton.getUpperChestNode().getWorldTransform().getRotation()
+				skeleton.upperChestNode.getWorldTransform().getRotation()
 			);
 			Vector3 armLocation = abdomen.plus(chestUnitVector.times(DEFAULT_ARM_DISTANCE));
 			centerOfMass = centerOfMass.plus(armLocation.times(UPPER_ARM_MASS * 2.0f));
@@ -1180,8 +1163,7 @@ public class LegTweaks {
 		// finally translate in to tracker space
 		centerOfMass = hipPosition
 			.plus(
-				centerOfMass
-					.minus(skeleton.getTrackerHipNode().getWorldTransform().getTranslation())
+				centerOfMass.minus(skeleton.trackerHipNode.getWorldTransform().getTranslation())
 			);
 
 		return centerOfMass;

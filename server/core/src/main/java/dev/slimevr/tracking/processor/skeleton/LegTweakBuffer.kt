@@ -1,4 +1,4 @@
-package dev.slimevr.tracking.processor.skeleton;
+package dev.slimevr.tracking.processor.skeleton
 
 import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
@@ -19,7 +19,7 @@ import io.github.axisangles.ktmath.Vector3
  * large range of actions and body types.
  */
 
-class LegTweakBuffer {
+class LegTweakBuffer() {
 	// hyperparameters / constants
 	companion object {
 		const val STATE_UNKNOWN = 0
@@ -32,11 +32,11 @@ class LegTweakBuffer {
 		val GRAVITY: Vector3 = Vector3(0f, -9.81f, 0f)
 		val GRAVITY_MAGNITUDE: Float = GRAVITY.len()
 
-		private val SKATING_DISTANCE_CUTOFF = 0.5f
-		private val SKATING_ROTVELOCITY_THRESHOLD = 4.5f
-		private val SKATING_LOCK_ENGAGE_PERCENT = 0.85f
-		private val FLOOR_DISTANCE_CUTOFF = 0.125f
-		private val SIX_TRACKER_TOLERANCE = -0.10f
+		private const val SKATING_DISTANCE_CUTOFF = 0.5f
+		private const val SKATING_ROTVELOCITY_THRESHOLD = 4.5f
+		private const val SKATING_LOCK_ENGAGE_PERCENT = 0.85f
+		private const val FLOOR_DISTANCE_CUTOFF = 0.125f
+		private const val SIX_TRACKER_TOLERANCE = -0.10f
 		private val FORCE_VECTOR_TO_PRESSURE: Vector3 = Vector3(0.25f, 1.0f, 0.25f)
 		private val FORCE_ERROR_TOLERANCE_SQR: Float = FastMath.sqr(4.0f)
 		private val FORCE_VECTOR_FALLBACK = floatArrayOf(0.1f, 0.1f) // TODO experiment with this
@@ -46,40 +46,50 @@ class LegTweakBuffer {
 
 		private var PARAM_SCALAR_MAX = 3.2f
 		private var PARAM_SCALAR_MIN = 0.25f
-		private val PARAM_SCALAR_MID = 1.0f
+		private const val PARAM_SCALAR_MID = 1.0f
 
 		// the point at which the scalar is at the max or min depending on accel
-		private val MAX_SCALAR_ACCEL = 0.2f
-		private val MIN_SCALAR_ACCEL = 0.9f
+		private const val MAX_SCALAR_ACCEL = 0.2f
+		private const val MIN_SCALAR_ACCEL = 0.9f
 
 		// the point at which the scalar is at it max or min in a double locked foot
 		// situation
-		private val MAX_SCALAR_DORMANT = 0.2f
-		private val MIN_SCALAR_DORMANT = 1.50f
+		private const val MAX_SCALAR_DORMANT = 0.2f
+		private const val MIN_SCALAR_DORMANT = 1.50f
 
 		// the point at which the scalar is at it max or min in a single locked foot
 		// situation
-		private val MIN_SCALAR_ACTIVE = 1.75f
-		private val MAX_SCALAR_ACTIVE = 0.1f
+		private const val MIN_SCALAR_ACTIVE = 1.75f
+		private const val MAX_SCALAR_ACTIVE = 0.1f
 
 		// maximum scalars for the pressure on each foot
-		private val PRESSURE_SCALAR_MIN = 0.1f
-		private val PRESSURE_SCALAR_MAX = 1.9f
+		private const val PRESSURE_SCALAR_MIN = 0.1f
+		private const val PRESSURE_SCALAR_MAX = 1.9f
 
-		private val SKATING_CUTOFF_ENGAGE = (SKATING_DISTANCE_CUTOFF
-			* SKATING_LOCK_ENGAGE_PERCENT)
-		private var SKATING_VELOCITY_CUTOFF_ENGAGE = (SKATING_VELOCITY_THRESHOLD
-			* SKATING_LOCK_ENGAGE_PERCENT)
-		private var SKATING_ACCELERATION_CUTOFF_ENGAGE = (SKATING_ACCELERATION_THRESHOLD
-			* SKATING_LOCK_ENGAGE_PERCENT)
-		private val SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE =
-			(SKATING_ROTVELOCITY_THRESHOLD
-				* SKATING_LOCK_ENGAGE_PERCENT)
+		private const val SKATING_CUTOFF_ENGAGE = (
+			SKATING_DISTANCE_CUTOFF
+				* SKATING_LOCK_ENGAGE_PERCENT
+			)
+		private var SKATING_VELOCITY_CUTOFF_ENGAGE = (
+			SKATING_VELOCITY_THRESHOLD
+				* SKATING_LOCK_ENGAGE_PERCENT
+			)
+		private var SKATING_ACCELERATION_CUTOFF_ENGAGE = (
+			SKATING_ACCELERATION_THRESHOLD
+				* SKATING_LOCK_ENGAGE_PERCENT
+			)
+		private const val SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE =
+			(
+				SKATING_ROTVELOCITY_THRESHOLD
+					* SKATING_LOCK_ENGAGE_PERCENT
+				)
 
 		fun setSkatingVelocityThreshold(value: Float) {
 			SKATING_VELOCITY_THRESHOLD = value
-			SKATING_VELOCITY_CUTOFF_ENGAGE = (SKATING_VELOCITY_THRESHOLD
-				* SKATING_LOCK_ENGAGE_PERCENT)
+			SKATING_VELOCITY_CUTOFF_ENGAGE = (
+				SKATING_VELOCITY_THRESHOLD
+					* SKATING_LOCK_ENGAGE_PERCENT
+				)
 		}
 
 		fun getSkatingVelocityThreshold(): Float {
@@ -88,8 +98,10 @@ class LegTweakBuffer {
 
 		fun setSkatingAccelerationThreshold(value: Float) {
 			SKATING_ACCELERATION_THRESHOLD = value
-			SKATING_ACCELERATION_CUTOFF_ENGAGE = (SKATING_ACCELERATION_THRESHOLD
-				* SKATING_LOCK_ENGAGE_PERCENT)
+			SKATING_ACCELERATION_CUTOFF_ENGAGE = (
+				SKATING_ACCELERATION_THRESHOLD
+					* SKATING_LOCK_ENGAGE_PERCENT
+				)
 		}
 
 		fun getSkatingAccelerationThreshold(): Float {
@@ -104,49 +116,49 @@ class LegTweakBuffer {
 	private var rightLegNumericalState = 0f
 
 	// positions and rotations
-	private var leftFootPosition: Vector3 = Vector3.Companion.NULL
-	private var rightFootPosition: Vector3 = Vector3.Companion.NULL
-	private var leftKneePosition: Vector3 = Vector3.Companion.NULL
-	private var rightKneePosition: Vector3 = Vector3.Companion.NULL
-	private var hipPosition: Vector3 = Vector3.Companion.NULL
-	private var leftFootRotation: Quaternion = Quaternion.Companion.IDENTITY
-	private var rightFootRotation: Quaternion = Quaternion.Companion.IDENTITY
+	private var leftFootPosition: Vector3 = Vector3.NULL
+	private var rightFootPosition: Vector3 = Vector3.NULL
+	private var leftKneePosition: Vector3 = Vector3.NULL
+	private var rightKneePosition: Vector3 = Vector3.NULL
+	private var hipPosition: Vector3 = Vector3.NULL
+	private var leftFootRotation: Quaternion = Quaternion.IDENTITY
+	private var rightFootRotation: Quaternion = Quaternion.IDENTITY
 
-	private var leftFootPositionCorrected: Vector3 = Vector3.Companion.NULL
-	private var rightFootPositionCorrected: Vector3 = Vector3.Companion.NULL
-	private var leftKneePositionCorrected: Vector3 = Vector3.Companion.NULL
-	private var rightKneePositionCorrected: Vector3 = Vector3.Companion.NULL
-	private var hipPositionCorrected: Vector3 = Vector3.Companion.NULL
+	private var leftFootPositionCorrected: Vector3 = Vector3.NULL
+	private var rightFootPositionCorrected: Vector3 = Vector3.NULL
+	private var leftKneePositionCorrected: Vector3 = Vector3.NULL
+	private var rightKneePositionCorrected: Vector3 = Vector3.NULL
+	private var hipPositionCorrected: Vector3 = Vector3.NULL
 	private var leftFootRotationCorrected: Quaternion =
-		Quaternion.Companion.IDENTITY
+		Quaternion.IDENTITY
 	private var rightFootRotationCorrected: Quaternion =
-		Quaternion.Companion.IDENTITY
+		Quaternion.IDENTITY
 
 	// velocities
-	private var leftFootVelocity: Vector3 = Vector3.Companion.NULL
+	private var leftFootVelocity: Vector3 = Vector3.NULL
 	private var leftFootVelocityMagnitude = 0f
-	private var rightFootVelocity: Vector3 = Vector3.Companion.NULL
+	private var rightFootVelocity: Vector3 = Vector3.NULL
 	private var rightFootVelocityMagnitude = 0f
 	private var leftFootAngleDiff = 0f
 	private var rightFootAngleDiff = 0f
 
 	// acceleration
-	private var leftFootAcceleration: Vector3 = Vector3.Companion.NULL
+	private var leftFootAcceleration: Vector3 = Vector3.NULL
 	private var leftFootAccelerationMagnitude = 0f
-	private var rightFootAcceleration: Vector3 = Vector3.Companion.NULL
+	private var rightFootAcceleration: Vector3 = Vector3.NULL
 	private var rightFootAccelerationMagnitude = 0f
 
 	// other data
-	private val timeOfFrame: Long = java.lang.System.nanoTime()
+	private val timeOfFrame: Long = System.nanoTime()
 	private var parent: LegTweakBuffer? = null
 	private var frameNumber = 0 // higher number is older frame
 	private var detectionMode = ANKLE_ACCEL
 
 	private var accelerationAboveThresholdLeft = true
 	private var accelerationAboveThresholdRight = true
-	private var centerOfMass: Vector3 = Vector3.Companion.NULL
-	private var centerOfMassVelocity: Vector3 = Vector3.Companion.NULL
-	private var centerOfMassAcceleration: Vector3 = Vector3.Companion.NULL
+	private var centerOfMass: Vector3 = Vector3.NULL
+	private var centerOfMassVelocity: Vector3 = Vector3.NULL
+	private var centerOfMassAcceleration: Vector3 = Vector3.NULL
 	private var leftFloorLevel = 0f
 	private var rightFloorLevel = 0f
 	private var isStanding = false
@@ -156,117 +168,129 @@ class LegTweakBuffer {
 	private var leftFootSensitivityAccel = 1.0f
 	private var rightFootSensitivityAccel = 1.0f
 
+	constructor(
+		leftFootPosition: Vector3,
+		rightFootPosition: Vector3,
+		leftKneePosition: Vector3,
+		rightKneePosition: Vector3,
+		leftFootRotation: Quaternion,
+		rightFootRotation: Quaternion,
+		leftFloorLevel: Float,
+		rightFloorLevel: Float,
+		leftFootAcceleration: Vector3,
+		rightFootAcceleration: Vector3,
+		accelerationMode: Int,
+		hipPosition: Vector3,
+		centerOfMass: Vector3,
+		parent: LegTweakBuffer,
+		active: Boolean,
+	) : this() {
+		this.leftFootPosition = leftFootPosition
+		this.rightFootPosition = rightFootPosition
+		this.leftKneePosition = leftKneePosition
+		this.rightKneePosition = rightKneePosition
+		this.leftFootRotation = leftFootRotation
+		this.rightFootRotation = rightFootRotation
+		this.leftFloorLevel = leftFloorLevel
+		this.rightFloorLevel = rightFloorLevel
+		this.leftFootAcceleration = leftFootAcceleration
+		this.rightFootAcceleration = rightFootAcceleration
+		this.detectionMode = accelerationMode
+		this.hipPosition = hipPosition
+		this.centerOfMass = centerOfMass
+		this.parent = parent
+
+		this.calculateFootAttributes(active)
+	}
+
+	fun setPositions(
+		leftFootPosition: Vector3,
+		rightFootPosition: Vector3,
+		leftKneePosition: Vector3,
+		rightKneePosition: Vector3,
+		hipPosition: Vector3,
+	) {
+		this.leftFootPosition = leftFootPosition
+		this.rightFootPosition = rightFootPosition
+		this.leftKneePosition = leftKneePosition
+		this.rightKneePosition = rightKneePosition
+		this.hipPosition = hipPosition
+	}
+
+	fun setCorrectedPositions(
+		leftFootPosition: Vector3,
+		rightFootPosition: Vector3,
+		leftKneePosition: Vector3,
+		rightKneePosition: Vector3,
+		hipPosition: Vector3,
+	) {
+		this.leftFootPositionCorrected = leftFootPosition
+		this.rightFootPositionCorrected = rightFootPosition
+		this.leftKneePositionCorrected = leftKneePosition
+		this.rightKneePositionCorrected = rightKneePosition
+		this.hipPositionCorrected = hipPosition
+	}
+
+	fun setCorrectedRotations(leftFootRotation: Quaternion, rightFootRotation: Quaternion) {
+		this.leftFootRotationCorrected = leftFootRotation
+		this.rightFootRotationCorrected = rightFootRotation
+	}
+
 	// getters and setters
 	fun getLeftFootPosition(): Vector3 {
 		return leftFootPosition
-	}
-
-	fun setLeftFootPosition(leftFootPosition: Vector3) {
-		this.leftFootPosition = leftFootPosition
 	}
 
 	fun getRightFootPosition(): Vector3 {
 		return rightFootPosition
 	}
 
-	fun setRightFootPosition(rightFootPosition: Vector3) {
-		this.rightFootPosition = rightFootPosition
-	}
-
 	fun getLeftKneePosition(): Vector3 {
 		return leftKneePosition
-	}
-
-	fun setLeftKneePosition(leftKneePosition: Vector3) {
-		this.leftKneePosition = leftKneePosition
 	}
 
 	fun getRightKneePosition(): Vector3 {
 		return rightKneePosition
 	}
 
-	fun setRightKneePosition(rightKneePosition: Vector3) {
-		this.rightKneePosition = rightKneePosition
-	}
-
 	fun getHipPosition(): Vector3 {
 		return hipPosition
-	}
-
-	fun setHipPosition(hipPosition: Vector3) {
-		this.hipPosition = hipPosition
 	}
 
 	fun getLeftFootRotation(): Quaternion {
 		return leftFootRotation
 	}
 
-	fun setLeftFootRotation(leftFootRotation: Quaternion) {
-		this.leftFootRotation = leftFootRotation
-	}
-
 	fun getRightFootRotation(): Quaternion {
 		return rightFootRotation
-	}
-
-	fun setRightFootRotation(rightFootRotation: Quaternion) {
-		this.rightFootRotation = rightFootRotation
 	}
 
 	fun getLeftFootRotationCorrected(): Quaternion {
 		return leftFootRotationCorrected
 	}
 
-	fun setLeftFootRotationCorrected(quat: Quaternion) {
-		leftFootRotationCorrected = quat
-	}
-
 	fun getRightFootRotationCorrected(): Quaternion {
 		return rightFootRotationCorrected
-	}
-
-	fun setRightFootRotationCorrected(quat: Quaternion) {
-		rightFootRotationCorrected = quat
 	}
 
 	fun getLeftFootPositionCorrected(): Vector3 {
 		return leftFootPositionCorrected
 	}
 
-	fun setLeftFootPositionCorrected(leftFootPositionCorrected: Vector3) {
-		this.leftFootPositionCorrected = leftFootPositionCorrected
-	}
-
 	fun getRightFootPositionCorrected(): Vector3 {
 		return rightFootPositionCorrected
-	}
-
-	fun setRightFootPositionCorrected(rightFootPositionCorrected: Vector3) {
-		this.rightFootPositionCorrected = rightFootPositionCorrected
 	}
 
 	fun getLeftKneePositionCorrected(): Vector3 {
 		return leftKneePositionCorrected
 	}
 
-	fun setLeftKneePositionCorrected(leftKneePositionCorrected: Vector3) {
-		this.leftKneePositionCorrected = leftKneePositionCorrected
-	}
-
 	fun getRightKneePositionCorrected(): Vector3 {
 		return rightKneePositionCorrected
 	}
 
-	fun setRightKneePositionCorrected(rightKneePositionCorrected: Vector3) {
-		this.rightKneePositionCorrected = rightKneePositionCorrected
-	}
-
 	fun getHipPositionCorrected(): Vector3 {
 		return hipPositionCorrected
-	}
-
-	fun setHipPositionCorrected(hipPositionCorrected: Vector3) {
-		this.hipPositionCorrected = hipPositionCorrected
 	}
 
 	fun getLeftFootVelocity(): Vector3 {
@@ -279,18 +303,6 @@ class LegTweakBuffer {
 
 	fun getCenterOfMass(): Vector3 {
 		return centerOfMass
-	}
-
-	fun setCenterOfMass(centerOfMass: Vector3) {
-		this.centerOfMass = centerOfMass
-	}
-
-	fun setLeftFloorLevel(leftFloorLevel: Float) {
-		this.leftFloorLevel = leftFloorLevel
-	}
-
-	fun setRightFloorLevel(rightFloorLevel: Float) {
-		this.rightFloorLevel = rightFloorLevel
 	}
 
 	fun getLeftLegState(): Int {
@@ -317,20 +329,8 @@ class LegTweakBuffer {
 		return rightLegNumericalState
 	}
 
-	fun setParent(parent: LegTweakBuffer) {
-		this.parent = parent
-	}
-
 	fun getParent(): LegTweakBuffer? {
 		return parent
-	}
-
-	fun setLeftFootAcceleration(leftFootAcceleration: Vector3) {
-		this.leftFootAcceleration = leftFootAcceleration
-	}
-
-	fun setRightFootAcceleration(rightFootAcceleration: Vector3) {
-		this.rightFootAcceleration = rightFootAcceleration
 	}
 
 	fun getLeftFootAcceleration(): Vector3 {
@@ -339,22 +339,6 @@ class LegTweakBuffer {
 
 	fun getRightFootAcceleration(): Vector3 {
 		return rightFootAcceleration
-	}
-
-	fun getLeftFootAccelerationMagnitude(): Float {
-		return leftFootAcceleration.len()
-	}
-
-	fun getRightFootAccelerationMagnitude(): Float {
-		return rightFootAcceleration.len()
-	}
-
-	fun getLeftFootAccelerationY(): Float {
-		return leftFootAcceleration.y
-	}
-
-	fun getRightFootAccelerationY(): Float {
-		return rightFootAcceleration.y
 	}
 
 	fun getLeftFloorLevel(): Float {
@@ -378,12 +362,8 @@ class LegTweakBuffer {
 		return timeOfFrame
 	}
 
-	fun setDetectionMode(mode: Int) {
-		detectionMode = mode
-	}
-
 	// calculate movement attributes
-	fun calculateFootAttributes(active: Boolean) {
+	private fun calculateFootAttributes(active: Boolean) {
 		updateFrameNumber(0)
 
 		// compute attributes of the legs
@@ -411,7 +391,7 @@ class LegTweakBuffer {
 	}
 
 	// update the frame number and discard frames older than BUFFER_LEN
-	fun updateFrameNumber(frameNumber: Int) {
+	private fun updateFrameNumber(frameNumber: Int) {
 		this.frameNumber = frameNumber
 		if (this.frameNumber >= BUFFER_LEN) parent = null
 		parent?.updateFrameNumber(frameNumber + 1)
@@ -425,21 +405,41 @@ class LegTweakBuffer {
 
 		// based on the last state of the legs compute their state for this
 		// individual frame
-		leftLegState = checkState(parent!!.leftLegState, leftDiff,
-			leftFootVelocityMagnitude, leftFootSensitivityVel, leftFootAngleDiff,
-			leftFloorLevel, accelerationAboveThresholdLeft, leftFootPosition)
-		rightLegState = checkState(parent!!.rightLegState, rightDiff,
-			rightFootVelocityMagnitude, rightFootSensitivityVel, rightFootAngleDiff,
-			rightFloorLevel, accelerationAboveThresholdRight, rightFootPosition)
+		leftLegState = checkState(
+			parent!!.leftLegState,
+			leftDiff,
+			leftFootVelocityMagnitude,
+			leftFootSensitivityVel,
+			leftFootAngleDiff,
+			leftFloorLevel,
+			accelerationAboveThresholdLeft,
+			leftFootPosition
+		)
+		rightLegState = checkState(
+			parent!!.rightLegState,
+			rightDiff,
+			rightFootVelocityMagnitude,
+			rightFootSensitivityVel,
+			rightFootAngleDiff,
+			rightFloorLevel,
+			accelerationAboveThresholdRight,
+			rightFootPosition
+		)
 
 		computeNumericalState()
 	}
 
 	// check if a locked foot should stay locked or be released and vice versa
-	private fun checkState(legState: Int, horizontalDifference: Float, velocityMagnitude: Float,
-						   velocitySensitivity: Float, angleDiff: Float,
-						   floorLevel: Float, accelerationAboveThreshold: Boolean,
-						   footPosition: Vector3): Int {
+	private fun checkState(
+		legState: Int,
+		horizontalDifference: Float,
+		velocityMagnitude: Float,
+		velocitySensitivity: Float,
+		angleDiff: Float,
+		floorLevel: Float,
+		accelerationAboveThreshold: Boolean,
+		footPosition: Vector3,
+	): Int {
 		val timeStep = getTimeDelta()
 		if (legState == UNLOCKED) {
 			return if (horizontalDifference > SKATING_CUTOFF_ENGAGE ||
@@ -449,38 +449,55 @@ class LegTweakBuffer {
 				accelerationAboveThreshold
 			) {
 				UNLOCKED
-			} else LOCKED
+			} else {
+				LOCKED
+			}
 		}
 		return if (horizontalDifference > SKATING_DISTANCE_CUTOFF ||
-			(velocityMagnitude * timeStep > LegTweakBuffer.SKATING_VELOCITY_THRESHOLD * velocitySensitivity) ||
+			(velocityMagnitude * timeStep > SKATING_VELOCITY_THRESHOLD * velocitySensitivity) ||
 			(angleDiff * timeStep > SKATING_ROTVELOCITY_THRESHOLD * velocitySensitivity) ||
 			footPosition.y > floorLevel + FLOOR_DISTANCE_CUTOFF ||
 			accelerationAboveThreshold
 		) {
 			UNLOCKED
-		} else LOCKED
+		} else {
+			LOCKED
+		}
 	}
 
 	// compute a numerical value representing how locked a foot is (bigger
 	// number == less locked)
 	private fun computeNumericalState() {
-		leftLegNumericalState = computeNumericalState(leftFootVelocityMagnitude, leftFootAccelerationMagnitude,
-			leftFootSensitivityAccel, leftFootSensitivityVel)
-		rightLegNumericalState = computeNumericalState(rightFootVelocityMagnitude, rightFootAccelerationMagnitude,
-			rightFootSensitivityAccel, rightFootSensitivityVel)
+		leftLegNumericalState = computeNumericalState(
+			leftFootVelocityMagnitude,
+			leftFootAccelerationMagnitude,
+			leftFootSensitivityAccel,
+			leftFootSensitivityVel
+		)
+		rightLegNumericalState = computeNumericalState(
+			rightFootVelocityMagnitude,
+			rightFootAccelerationMagnitude,
+			rightFootSensitivityAccel,
+			rightFootSensitivityVel
+		)
 	}
 
 	// returns the average percentage the real velocity and acceleration are of
 	// the scaled thresholds for velocity and acceleration
-	private fun computeNumericalState(velocityMagnitude: Float, accelerationMagnitude: Float,
-									  accelSensitivity: Float, velSensitivity: Float): Float {
+	private fun computeNumericalState(
+		velocityMagnitude: Float,
+		accelerationMagnitude: Float,
+		accelSensitivity: Float,
+		velSensitivity: Float,
+	): Float {
 		val timeStep = getTimeDelta()
 		val velocity = velocityMagnitude * timeStep
-		val acceleration = accelerationMagnitude
 		val velocityPercentage: Float =
-			velocity / (LegTweakBuffer.SKATING_VELOCITY_THRESHOLD * velSensitivity)
-		val accelerationPercentage: Float = (acceleration
-			/ (LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD * accelSensitivity))
+			velocity / (SKATING_VELOCITY_THRESHOLD * velSensitivity)
+		val accelerationPercentage: Float = (
+			accelerationMagnitude /
+				(SKATING_ACCELERATION_THRESHOLD * accelSensitivity)
+			)
 		return (velocityPercentage + accelerationPercentage) * 0.5f
 	}
 
@@ -534,21 +551,29 @@ class LegTweakBuffer {
 			centerOfMassVelocity.minus(parent!!.centerOfMassVelocity)
 	}
 
-	// for a setup with foot trackers trackers the data from the imus is enough to determine lock/unlock
+	// for a setup with foot trackers the data from the imus is enough to determine lock/unlock
 	private fun computeAccelerationAboveThresholdFootTrackers() {
-		accelerationAboveThresholdLeft = (leftFootAccelerationMagnitude
-			> SKATING_ACCELERATION_CUTOFF_ENGAGE * leftFootSensitivityAccel)
-		accelerationAboveThresholdRight = (rightFootAccelerationMagnitude
-			> SKATING_ACCELERATION_CUTOFF_ENGAGE * rightFootSensitivityAccel)
+		accelerationAboveThresholdLeft = (
+			leftFootAccelerationMagnitude
+			> SKATING_ACCELERATION_CUTOFF_ENGAGE * leftFootSensitivityAccel
+			)
+		accelerationAboveThresholdRight = (
+			rightFootAccelerationMagnitude
+			> SKATING_ACCELERATION_CUTOFF_ENGAGE * rightFootSensitivityAccel
+			)
 	}
 
 	// for any setup without foot trackers the data from the imus is enough to
 	// determine lock/unlock but we add some tolerance
 	private fun computeAccelerationAboveThresholdAnkleTrackers() {
-		accelerationAboveThresholdLeft = (leftFootAccelerationMagnitude
-			> (LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * leftFootSensitivityAccel)
-		accelerationAboveThresholdRight = (rightFootAccelerationMagnitude
-			> (LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * rightFootSensitivityAccel)
+		accelerationAboveThresholdLeft = (
+			leftFootAccelerationMagnitude
+			> (LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * leftFootSensitivityAccel
+			)
+		accelerationAboveThresholdRight = (
+			rightFootAccelerationMagnitude
+			> (LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * rightFootSensitivityAccel
+			)
 	}
 
 	private fun computeScalar() {
@@ -561,29 +586,45 @@ class LegTweakBuffer {
 		// foot is to a lock and dynamically adjusting the scalars
 		// (based off the assumption that if you are standing one foot is likely
 		// planted on the ground unless you are moving fast)
-		val leftFootScalarVel: Float = getFootLockLikelihood(leftFootVelocity, rightFootVelocity,
-			leftFootVelocityMagnitude, rightFootVelocityMagnitude)
-		val rightFootScalarVel: Float = getFootLockLikelihood(rightFootVelocity, leftFootVelocity,
-			rightFootVelocityMagnitude, leftFootVelocityMagnitude)
+		val leftFootScalarVel: Float = getFootLockLikelihood(
+			leftFootVelocity,
+			rightFootVelocity,
+			leftFootVelocityMagnitude,
+			rightFootVelocityMagnitude
+		)
+		val rightFootScalarVel: Float = getFootLockLikelihood(
+			rightFootVelocity,
+			leftFootVelocity,
+			rightFootVelocityMagnitude,
+			leftFootVelocityMagnitude
+		)
 
 		// get the third set of scalars that is based on where the COM is
 		val pressureScalars: FloatArray = getPressurePrediction()
 
 		// combine the scalars to get the final scalars
-		leftFootSensitivityVel = ((leftFootScalarAccel
-			+ leftFootScalarVel / 2.0f)
-			* FastMath.clamp(
-			pressureScalars[0] * 2.0f,
-			PRESSURE_SCALAR_MIN,
-			PRESSURE_SCALAR_MAX
-		))
-		rightFootSensitivityVel = ((rightFootScalarAccel
-			+ rightFootScalarVel / 2.0f)
-			* FastMath.clamp(
-			pressureScalars[1] * 2.0f,
-			PRESSURE_SCALAR_MIN,
-			PRESSURE_SCALAR_MAX
-		))
+		leftFootSensitivityVel = (
+			(
+				leftFootScalarAccel +
+					leftFootScalarVel / 2.0f
+				) *
+				FastMath.clamp(
+					pressureScalars[0] * 2.0f,
+					PRESSURE_SCALAR_MIN,
+					PRESSURE_SCALAR_MAX
+				)
+			)
+		rightFootSensitivityVel = (
+			(
+				rightFootScalarAccel +
+					rightFootScalarVel / 2.0f
+				) *
+				FastMath.clamp(
+					pressureScalars[1] * 2.0f,
+					PRESSURE_SCALAR_MIN,
+					PRESSURE_SCALAR_MAX
+				)
+			)
 
 		leftFootSensitivityAccel = leftFootScalarVel
 		rightFootSensitivityAccel = rightFootScalarVel
@@ -597,9 +638,11 @@ class LegTweakBuffer {
 			if (accelMagnitude < MAX_SCALAR_ACCEL) {
 				return PARAM_SCALAR_MAX
 			} else if (accelMagnitude > MIN_SCALAR_ACCEL) {
-				return (PARAM_SCALAR_MAX
-					* (accelMagnitude - MIN_SCALAR_ACCEL)
-					/ (MAX_SCALAR_ACCEL - MIN_SCALAR_ACCEL))
+				return (
+					PARAM_SCALAR_MAX
+						* (accelMagnitude - MIN_SCALAR_ACCEL) /
+						(MAX_SCALAR_ACCEL - MIN_SCALAR_ACCEL)
+					)
 			}
 		}
 		return PARAM_SCALAR_MID
@@ -609,8 +652,12 @@ class LegTweakBuffer {
 	// states to calculate a scalar to apply to the non acceleration based
 	// hyperparameters when calculating
 	// lock states
-	private fun getFootLockLikelihood(primaryFootVel: Vector3, otherFootVel: Vector3,
-									  primaryFootVelMagnitude: Float, otherFootVelMagnitude: Float): Float {
+	private fun getFootLockLikelihood(
+		primaryFootVel: Vector3,
+		otherFootVel: Vector3,
+		primaryFootVelMagnitude: Float,
+		otherFootVelMagnitude: Float,
+	): Float {
 		if (leftLegState == LOCKED && rightLegState == LOCKED) {
 			var velocityDiff: Vector3 = primaryFootVel.minus(otherFootVel)
 			velocityDiff = Vector3(velocityDiff.x, 0f, velocityDiff.z)
@@ -618,9 +665,11 @@ class LegTweakBuffer {
 			if (velocityDiffMagnitude < MAX_SCALAR_DORMANT) {
 				return PARAM_SCALAR_MAX
 			} else if (velocityDiffMagnitude > MIN_SCALAR_DORMANT) {
-				return (PARAM_SCALAR_MAX
-					* (velocityDiffMagnitude - MIN_SCALAR_DORMANT)
-					/ (MAX_SCALAR_DORMANT - MIN_SCALAR_DORMANT))
+				return (
+					PARAM_SCALAR_MAX
+						* (velocityDiffMagnitude - MIN_SCALAR_DORMANT) /
+						(MAX_SCALAR_DORMANT - MIN_SCALAR_DORMANT)
+					)
 			}
 		}
 
@@ -634,10 +683,12 @@ class LegTweakBuffer {
 		} else if (velocityDiffAbs < MAX_SCALAR_ACTIVE) {
 			return PARAM_SCALAR_MAX
 		}
-		return (PARAM_SCALAR_MAX
-			* (velocityDiffAbs - MIN_SCALAR_ACTIVE)
-			/ (MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE)
-			- PARAM_SCALAR_MID)
+		return (
+			PARAM_SCALAR_MAX
+				* (velocityDiffAbs - MIN_SCALAR_ACTIVE) /
+				(MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE) -
+				PARAM_SCALAR_MID
+			)
 	}
 
 	// get the pressure prediction for the feet based of the center of mass
@@ -655,9 +706,11 @@ class LegTweakBuffer {
 		// get the magnitude of the force on each foot
 		val leftFootMagnitude: Float =
 			GRAVITY_MAGNITUDE * leftFootVector.y / leftFootVector.len()
-		val rightFootMagnitude: Float = (GRAVITY_MAGNITUDE
-			* rightFootVector.y
-			/ rightFootVector.len())
+		val rightFootMagnitude: Float = (
+			GRAVITY_MAGNITUDE
+				* rightFootVector.y /
+				rightFootVector.len()
+			)
 
 		// get the force vector each foot could apply to the com
 		val leftFootForce: Vector3 = leftFootVector.times(leftFootMagnitude / 2.0f)
