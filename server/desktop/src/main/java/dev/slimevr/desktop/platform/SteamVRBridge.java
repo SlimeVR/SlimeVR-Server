@@ -23,13 +23,12 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 
 	public SteamVRBridge(
 		VRServer server,
-		Tracker hmd,
 		String threadName,
 		String bridgeName,
 		String bridgeSettingsKey,
 		List<Tracker> shareableTrackers
 	) {
-		super(bridgeName, hmd);
+		super(bridgeName);
 		this.bridgeSettingsKey = bridgeSettingsKey;
 		this.runnerThread = new Thread(this, threadName);
 		this.shareableTrackers = shareableTrackers;
@@ -96,7 +95,11 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		String displayName;
 		boolean needsReset;
 		if (trackerAdded.getTrackerId() == 0) {
-			displayName = "OpenVR HMD";
+			if (trackerAdded.getTrackerName().equals("HMD"))
+				displayName = "Driver HMD";
+			else
+				displayName = "Feeder App HMD";
+			// TODO support needsReset = true if HMD isn't assigned to head
 			needsReset = false;
 		} else {
 			displayName = trackerAdded.getTrackerName();
