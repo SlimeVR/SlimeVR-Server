@@ -84,7 +84,7 @@ buildConfig {
 		commandLine("git", "--no-pager", "tag", "--points-at", "HEAD")
 	}.standardOutput.asText.get()
 	buildConfigField("String", "GIT_COMMIT_HASH", "\"${grgit.head().abbreviatedId}\"")
-	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag}\"")
+	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag.trim()}\"")
 	buildConfigField("boolean", "GIT_CLEAN", grgit.status().isClean.toString())
 }
 
