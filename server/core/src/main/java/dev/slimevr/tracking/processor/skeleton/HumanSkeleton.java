@@ -515,7 +515,7 @@ public class HumanSkeleton {
 		resetBones();
 
 		// Update tap detection's trackers
-		tapDetectionManager.updateConfig();
+		tapDetectionManager.updateConfig(trackers);
 	}
 
 	protected void setComputedTracker(Tracker tracker) {
@@ -572,8 +572,8 @@ public class HumanSkeleton {
 		// Don't run leg tweaks if the tracking is paused
 		if (!pauseTracking)
 			tweakLegPos();
-		viveEmulation.update();
 		localizer.update();
+		viveEmulation.update();
 	}
 	// #endregion
 
@@ -1452,7 +1452,9 @@ public class HumanSkeleton {
 
 		// tell the clip corrector to reset its floor level on the next update
 		// of the computed trackers
-		this.legTweaks.resetFloorLevel();
+		if (!localizer.getEnabled()) {
+			this.legTweaks.resetFloorLevel();
+		}
 		this.legTweaks.resetBuffer();
 		this.localizer.reset();
 
@@ -1570,7 +1572,7 @@ public class HumanSkeleton {
 	}
 
 	public void updateTapDetectionConfig() {
-		tapDetectionManager.updateConfig();
+		tapDetectionManager.updateConfig(null);
 	}
 
 	public void updateLegTweaksConfig() {

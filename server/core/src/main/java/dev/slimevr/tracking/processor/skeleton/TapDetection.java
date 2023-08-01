@@ -140,10 +140,6 @@ public class TapDetection {
 			taps = newTaps;
 			detectionTime = time;
 		}
-
-		if (time - detectionTime > timeWindowNS) {
-			tapTimes.clear();
-		}
 	}
 
 	private float getAccelDelta() {
