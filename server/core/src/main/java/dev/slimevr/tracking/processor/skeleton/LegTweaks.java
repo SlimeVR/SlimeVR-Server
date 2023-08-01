@@ -96,6 +96,7 @@ public class LegTweaks {
 	private boolean leftToeTouched = false;
 	private float rightToeAngle = 0.0f;
 	private boolean rightToeTouched = false;
+	public boolean localizerMode = false;
 
 	// skeleton and config
 	private final HumanSkeleton skeleton;
@@ -125,7 +126,6 @@ public class LegTweaks {
 
 	public LegTweaks(HumanSkeleton skeleton, LegTweaksConfig config) {
 		this.skeleton = skeleton;
-		// set all the hyperparameters from the config
 		this.config = config;
 		updateConfig();
 	}
@@ -244,8 +244,7 @@ public class LegTweaks {
 	}
 
 	public void setLocalizerMode(boolean val) {
-		this.initialized = false;
-
+		this.localizerMode = val;
 		if (val)
 			setFloorLevel(0.0f);
 	}
@@ -351,7 +350,7 @@ public class LegTweaks {
 		active = isStanding();
 
 		// if the buffer is invalid add all the extra info
-		if (bufferInvalid) {
+		if (bufferInvalid && !localizerMode) {
 			bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 			bufferHead.setRightFootPositionCorrected(rightFootPosition);
 			bufferHead.setLeftKneePositionCorrected(leftKneePosition);
@@ -441,7 +440,7 @@ public class LegTweaks {
 			correctFootRotations();
 
 		// push the feet up if needed (Floor clip)
-		if (floorclipEnabled)
+		if (floorclipEnabled && !localizerMode)
 			correctClipping();
 
 		// correct for skating if needed (Skating correction)
