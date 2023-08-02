@@ -113,7 +113,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	/**
 	 * Get the adjusted accel from yawFixZeroReference
 	 */
-	fun getYawAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 {
+	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 {
 		return (adjustToReference(rawRot) / yawFix).sandwich(accel)
 	}
 

@@ -296,7 +296,7 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun getAcceleration(): Vector3 {
 		return if (needsReset) {
-			resetsHandler.getYawAdjustedAccel(rotation, acceleration)
+			resetsHandler.getReferenceAdjustedAccel(rotation, acceleration)
 		} else {
 			acceleration
 		}
