@@ -292,15 +292,14 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
-	 * Gets the adjusted tracker acceleration after mounting corrections.
+	 * Gets the world-adjusted acceleration
 	 */
 	fun getAcceleration(): Vector3 {
-		var vec = acceleration
-		if (needsReset) {
-			vec = resetsHandler.getMountingAdjustedRotationFrom(rotation).sandwich(vec)
+		return if (needsReset) {
+			resetsHandler.getYawAdjustedAccel(rotation, acceleration)
+		} else {
+			acceleration
 		}
-
-		return vec
 	}
 
 	/**
