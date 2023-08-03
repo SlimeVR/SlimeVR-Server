@@ -53,6 +53,8 @@ class UDPDevice(
 	var timedOut = false
 	override val trackers = ConcurrentHashMap<Int, Tracker>()
 
+	var firmwareFeatures = FirmwareFeatures()
+
 	fun isNextPacket(packetId: Long): Boolean {
 		if (packetId != 0L && packetId <= lastPacketNumber) return false
 		lastPacketNumber = packetId
