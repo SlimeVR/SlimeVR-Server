@@ -24,6 +24,7 @@ export const mapPart: Record<
     currentLocales: string[];
   }) => JSX.Element
 > = {
+  [BodyPart.UPPER_CHEST]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.CHEST]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.HEAD]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.HIP]: ({ width }) => <FootIcon width={width}></FootIcon>,

@@ -96,6 +96,7 @@ public class LegTweaks {
 	private boolean leftToeTouched = false;
 	private float rightToeAngle = 0.0f;
 	private boolean rightToeTouched = false;
+	public boolean localizerMode = false;
 
 	// skeleton and config
 	private final HumanSkeleton skeleton;
@@ -125,7 +126,6 @@ public class LegTweaks {
 
 	public LegTweaks(HumanSkeleton skeleton, LegTweaksConfig config) {
 		this.skeleton = skeleton;
-		// set all the hyperparameters from the config
 		this.config = config;
 		updateConfig();
 	}
@@ -244,8 +244,7 @@ public class LegTweaks {
 	}
 
 	public void setLocalizerMode(boolean val) {
-		this.initialized = false;
-
+		this.localizerMode = val;
 		if (val)
 			setFloorLevel(0.0f);
 	}
@@ -351,7 +350,7 @@ public class LegTweaks {
 		active = isStanding();
 
 		// if the buffer is invalid add all the extra info
-		if (bufferInvalid) {
+		if (bufferInvalid && !localizerMode) {
 			bufferHead.setLeftFootPositionCorrected(leftFootPosition);
 			bufferHead.setRightFootPositionCorrected(rightFootPosition);
 			bufferHead.setLeftKneePositionCorrected(leftKneePosition);
@@ -441,7 +440,7 @@ public class LegTweaks {
 			correctFootRotations();
 
 		// push the feet up if needed (Floor clip)
-		if (floorclipEnabled)
+		if (floorclipEnabled && !localizerMode)
 			correctClipping();
 
 		// correct for skating if needed (Skating correction)
@@ -899,14 +898,14 @@ public class LegTweaks {
 			}
 
 			// then slerp the rotation to the new rotation based on the weight
-			if (leftFootTracker) {
+			if (!leftFootTracker) {
 				leftFootRotation = leftFootRotation
 					.interpR(
 						replacePitch(leftFootRotation, -angleL),
 						weightL * masterWeightL
 					);
 			}
-			if (rightFootTracker) {
+			if (!rightFootTracker) {
 				rightFootRotation = rightFootRotation
 					.interpR(
 						replacePitch(rightFootRotation, -angleR),
@@ -918,14 +917,14 @@ public class LegTweaks {
 			if (leftFootPosition.getY() - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
 				leftToeTouched = false;
 				leftToeAngle = weightL;
-			} else if (leftFootPosition.getY() - floorLevel < 0.0f) {
+			} else if (leftFootPosition.getY() - floorLevel <= 0.0f) {
 				leftToeTouched = true;
 				leftToeAngle = 1.0f;
 			}
 			if (rightFootPosition.getY() - floorLevel > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
 				rightToeTouched = false;
 				rightToeAngle = weightR;
-			} else if (rightFootPosition.getY() - floorLevel < 0.0f) {
+			} else if (rightFootPosition.getY() - floorLevel <= 0.0f) {
 				rightToeTouched = true;
 				rightToeAngle = 1.0f;
 			}

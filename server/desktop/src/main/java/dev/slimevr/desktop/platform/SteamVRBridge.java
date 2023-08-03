@@ -90,7 +90,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			.createDevice(
 				trackerAdded.getTrackerName(),
 				trackerAdded.getTrackerSerial(),
-				"OpenVR"
+				"OpenVR" // TODO : We need the manufacturer
 			);
 
 		String displayName;
@@ -105,13 +105,11 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 
 		Tracker tracker = new Tracker(
 			device,
-			// FIXME use SteamVR tracker's id for SlimeVR tracker's trackerNum,
-			// and use VRServer's unique id for SlimeVR tracker' id
-			trackerAdded.getTrackerId(),
-			trackerAdded.getTrackerName(),
+			VRServer.getNextLocalTrackerId(),
+			trackerAdded.getTrackerSerial(),
 			displayName,
 			null,
-			null,
+			trackerAdded.getTrackerId(),
 			true,
 			true,
 			false,
@@ -352,7 +350,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			}
 		}
 
-		Battery.Builder builder = Battery.newBuilder().setTrackerId(localTracker.getId());
+		Battery.Builder builder = Battery.newBuilder().setTrackerId(localTracker.getTrackerNum());
 
 		builder.setBatteryLevel(trackerLevel);
 		builder.setIsCharging(isCharging);
