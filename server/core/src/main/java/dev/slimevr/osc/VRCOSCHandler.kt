@@ -42,6 +42,7 @@ class VRCOSCHandler(
 	private val config: VRCOSCConfig,
 	private val computedTrackers: List<Tracker>,
 ) : OSCHandler {
+	private val OSCQueryHandler = OSCQueryHandler()
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
 	private var oscMessage: OSCMessage? = null
@@ -118,10 +119,10 @@ class VRCOSCHandler(
 			}
 
 			// Starts listening for VRC or OSCTrackers messages
-			if (oscReceiver != null) {
+			oscReceiver?.let {
 				val listener = OSCMessageListener { event: OSCMessageEvent -> handleReceivedMessage(event) }
-				val vrcSelector: MessageSelector = OSCPatternAddressMessageSelector(
-					"/avatar/parameters/Upright"
+				val vrcTrackingSelector: MessageSelector = OSCPatternAddressMessageSelector(
+					"/tracking/vrsystem/*/pose"
 				)
 				val trackersPositionSelector: MessageSelector = OSCPatternAddressMessageSelector(
 					"/tracking/trackers/*/position"
@@ -129,11 +130,11 @@ class VRCOSCHandler(
 				val trackersRotationSelector: MessageSelector = OSCPatternAddressMessageSelector(
 					"/tracking/trackers/*/rotation"
 				)
-				oscReceiver!!.dispatcher.addListener(vrcSelector, listener)
-				oscReceiver!!.dispatcher.addListener(trackersPositionSelector, listener)
-				oscReceiver!!.dispatcher.addListener(trackersRotationSelector, listener)
+				it.dispatcher.addListener(vrcTrackingSelector, listener)
+				it.dispatcher.addListener(trackersPositionSelector, listener)
+				it.dispatcher.addListener(trackersRotationSelector, listener)
 				listenTrackers = false
-				oscReceiver!!.startListening()
+				it.startListening()
 				// Delay so we can actually detect if SteamVR is running
 				scheduleStartListeningSteamVR(1000)
 			}
@@ -169,6 +170,9 @@ class VRCOSCHandler(
 							e
 					)
 			}
+
+			// Start OSCQuery
+			if (!OSCQueryHandler.started) OSCQueryHandler.start()
 		}
 		if (refreshRouterSettings) server.oSCRouter.refreshSettings(false)
 	}
