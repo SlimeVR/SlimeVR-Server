@@ -188,13 +188,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				-FastMath.HALF_PI
 			).toQuaternion()
 		} else if ((isRightArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
-			tposeFix = EulerAngles(
-				EulerOrder.YZX,
-				0f,
-				0f,
-				FastMath.HALF_PI
-			).toQuaternion()
-		}else{
+			tposeFix = EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
+		} else {
 			tposeFix = Quaternion.IDENTITY
 		}
 
