@@ -59,18 +59,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var gyroFixNoMounting = Quaternion.IDENTITY
 	private var attachmentFixNoMounting = Quaternion.IDENTITY
 	private var yawFixZeroReference = Quaternion.IDENTITY
-	private val LEFT_QUATERNION = EulerAngles(
-		EulerOrder.YZX,
-		0f,
-		0f,
-		-FastMath.HALF_PI
-	).toQuaternion()
-	private val RIGHT_QUATERNION = EulerAngles(
-		EulerOrder.YZX,
-		0f,
-		0f,
-		FastMath.HALF_PI
-	).toQuaternion()
+	private var tposeFix = Quaternion.IDENTITY
 
 	/**
 	 * Reads/loads drift compensation settings from given config
@@ -155,7 +144,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		rot = gyroFix * rot
 		rot *= attachmentFix
 		rot *= mountRotFix
-		return yawFix * rot
+		rot = yawFix * rot
+		return rot * tposeFix
 	}
 
 	/**
@@ -189,12 +179,29 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * 0). This allows the tracker to be strapped to body at any pitch and roll.
 	 */
 	fun resetFull(reference: Quaternion) {
+		// Adjust for T-Pose
+		if ((isLeftArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
+			tposeFix = EulerAngles(
+				EulerOrder.YZX,
+				0f,
+				0f,
+				-FastMath.HALF_PI
+			).toQuaternion()
+		} else if ((isRightArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
+			tposeFix = EulerAngles(
+				EulerOrder.YZX,
+				0f,
+				0f,
+				FastMath.HALF_PI
+			).toQuaternion()
+		}
+
 		lastResetQuaternion = adjustToReference(tracker.getRawRotation())
 
 		val oldRot = adjustToReference(tracker.getRawRotation())
 
 		if (tracker.needsMounting) {
-			gyroFix = fixGyroscope(tracker.getRawRotation() * mountingOrientation)
+			gyroFix = fixGyroscope(tposeFix * tracker.getRawRotation() * mountingOrientation)
 		} else {
 			// Set mounting to the HMD's yaw so that the non-mounting-adjusted
 			// tracker goes forward.
@@ -248,6 +255,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		if (resetMountingFeet || !isFootTracker()) {
 			// Get the current calibrated rotation
 			var buffer = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
+			buffer *= tposeFix
 			buffer = gyroFix * buffer
 			buffer *= attachmentFix
 
