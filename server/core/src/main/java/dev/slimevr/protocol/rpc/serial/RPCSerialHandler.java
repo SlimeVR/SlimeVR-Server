@@ -1,11 +1,11 @@
 package dev.slimevr.protocol.rpc.serial;
 
-import com.fazecast.jSerialComm.SerialPort;
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.rpc.RPCHandler;
 import dev.slimevr.serial.SerialListener;
+import dev.slimevr.serial.SerialPort;
 import io.eiren.util.logging.LogManager;
 import solarxr_protocol.rpc.*;
 

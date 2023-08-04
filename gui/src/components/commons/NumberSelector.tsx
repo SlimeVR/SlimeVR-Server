@@ -34,7 +34,7 @@ export function NumberSelector({
       render={({ field: { onChange, value } }) => (
         <div className="flex flex-col gap-1 w-full">
           <Typography bold>{label}</Typography>
-          <div className="flex gap-2 bg-background-60 p-2 rounded-lg">
+          <div className="flex gap-5 bg-background-60 p-2 rounded-lg">
             <div className="flex">
               <Button
                 variant="tertiary"
