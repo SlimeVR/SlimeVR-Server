@@ -1,9 +1,10 @@
 package dev.slimevr.tracking.trackers
 
+import com.jme3.math.FastMath
 import dev.slimevr.VRServer
-import dev.slimevr.config.ArmsResetModeConfig
 import dev.slimevr.config.ArmsResetModes
 import dev.slimevr.config.DriftCompensationConfig
+import dev.slimevr.config.ResetsConfig
 import dev.slimevr.filtering.CircularArrayList
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
@@ -29,6 +30,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var timeAtLastReset: Long = 0
 	private var compensateDrift = false
 	private var driftCompensationEnabled = false
+	private var resetMountingFeet = false
 	private var armsResetMode = ArmsResetModes.BACK
 	var allowDriftCompensation = false
 	var lastResetQuaternion: Quaternion? = null
@@ -57,6 +59,18 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var gyroFixNoMounting = Quaternion.IDENTITY
 	private var attachmentFixNoMounting = Quaternion.IDENTITY
 	private var yawFixZeroReference = Quaternion.IDENTITY
+	private val LEFT_QUATERNION = EulerAngles(
+		EulerOrder.YZX,
+		0f,
+		0f,
+		-FastMath.HALF_PI
+	).toQuaternion()
+	private val RIGHT_QUATERNION = EulerAngles(
+		EulerOrder.YZX,
+		0f,
+		0f,
+		FastMath.HALF_PI
+	).toQuaternion()
 
 	/**
 	 * Reads/loads drift compensation settings from given config
@@ -91,13 +105,17 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	fun refreshDriftCompensationEnabled() {
 		driftCompensationEnabled = compensateDrift && allowDriftCompensation &&
-			TrackerUtils.getNonInternalNonImuTrackerForBodyPosition(VRServer.instance.allTrackers, TrackerPosition.HEAD) != null
+			TrackerUtils.getNonInternalNonImuTrackerForBodyPosition(
+			VRServer.instance.allTrackers,
+			TrackerPosition.HEAD
+		) != null
 	}
 
 	/**
 	 * Reads/loads arms reset mode settings from given config
 	 */
-	fun readArmsResetModeConfig(config: ArmsResetModeConfig) {
+	fun readArmsResetModeConfig(config: ResetsConfig) {
+		resetMountingFeet = config.resetMountingFeet
 		armsResetMode = config.mode
 	}
 
@@ -173,7 +191,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun resetFull(reference: Quaternion) {
 		lastResetQuaternion = adjustToReference(tracker.getRawRotation())
 
-		val rot: Quaternion = adjustToReference(tracker.getRawRotation())
+		val oldRot = adjustToReference(tracker.getRawRotation())
 
 		if (tracker.needsMounting) {
 			gyroFix = fixGyroscope(tracker.getRawRotation() * mountingOrientation)
@@ -188,7 +206,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		yawFix = fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
 
-		calculateDrift(rot)
+		calculateDrift(oldRot)
 
 		if (this.tracker.lastResetStatus != 0u) {
 			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
@@ -226,35 +244,53 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Perform the math to align the tracker to go forward
 	 * and stores it in mountRotFix, and adjusts yawFix
 	 */
-	fun resetMounting(reverseYaw: Boolean, reference: Quaternion) {
-		// TODO use HMD as forward
-		// TODO armsResetMode
-		// Get the current calibrated rotation
-		var buffer = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
-		buffer = gyroFix * buffer
-		buffer *= attachmentFix
+	fun resetMounting(reference: Quaternion) {
+		if (resetMountingFeet || !isFootTracker()) {
+			// Get the current calibrated rotation
+			var buffer = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
+			buffer = gyroFix * buffer
+			buffer *= attachmentFix
 
-		// Use the HMD's yaw as the reference
-		buffer *= reference.project(Vector3.POS_Y).unit().inv()
+			// TODO adjust buffer to reference
 
-		// Rotate a vector pointing up by the quat
-		val rotVector = buffer.sandwich(Vector3.POS_Y)
+			// Rotate a vector pointing up by the quat
+			val rotVector = buffer.sandwich(Vector3.POS_Y)
 
-		// Calculate the yaw angle using tan
-		val yawAngle = atan2(rotVector.x, rotVector.z)
+			// Calculate the yaw angle using tan
+			var yawAngle = atan2(rotVector.x, rotVector.z)
 
-		// Make an adjustment quaternion from the angle
-		buffer = EulerAngles(
-			EulerOrder.YZX,
-			0f,
-			(if (reverseYaw) yawAngle else yawAngle - Math.PI.toFloat()),
-			0f
-		).toQuaternion()
+			// Adjust for T-Pose
+			if ((isLeftArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
+				(isRightArmTracker() && armsResetMode == ArmsResetModes.TPOSE_UP)
+			) {
+				// Tracker goes right
+				yawAngle -= FastMath.HALF_PI
+			}
+			if ((isLeftArmTracker() && armsResetMode == ArmsResetModes.TPOSE_UP) ||
+				(isRightArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN)
+			) {
+				// Tracker goes left
+				yawAngle += FastMath.HALF_PI
+			}
 
-		// Get the difference from the last mounting to the current mounting and apply
-		// the difference to the yaw fix quaternion to correct for the rotation change
-		yawFix *= (buffer * mountRotFix.inv()).inv()
-		mountRotFix = buffer
+			// Adjust for forward/back arms and thighs
+			val isLowerArmBack =
+				armsResetMode == ArmsResetModes.BACK && (isLeftLowerArmTracker() || isRightLowerArmTracker())
+			val isArmForward =
+				armsResetMode == ArmsResetModes.FORWARD && (isLeftArmTracker() || isRightArmTracker())
+			if (!isThighTracker() && !isArmForward && !isLowerArmBack) {
+				// Tracker goes back
+				yawAngle -= FastMath.PI
+			}
+
+			// Make an adjustment quaternion from the angle
+			buffer = EulerAngles(EulerOrder.YZX, 0f, yawAngle, 0f).toQuaternion()
+
+			// Get the difference from the last mounting to the current mounting and apply
+			// the difference to the yaw fix quaternion to correct for the rotation change
+			yawFix /= (buffer / mountRotFix)
+			mountRotFix = buffer
+		}
 	}
 
 	fun clearMounting() {
@@ -280,6 +316,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		rot *= attachmentFix
 		rot *= mountRotFix
 		rot = getYawQuaternion(rot)
+		// rot = Quaternion.fromRotationVector(0f, biAlign(rot, Vector3.POS_Y, Vector3.POS_X), 0f)
 		return rot.inv() * reference.project(Vector3.POS_Y).unit()
 	}
 
@@ -291,6 +328,20 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	// According to 9/10 dentists, this is the best way to do it.
 	private fun getYawQuaternion(rot: Quaternion): Quaternion {
 		return EulerAngles(EulerOrder.YZX, 0f, rot.toEulerAngles(EulerOrder.YZX).y, 0f).toQuaternion()
+	}
+
+	// TODO
+	private fun biAlign(rot: Quaternion, axisA: Vector3, axisB: Vector3): Float {
+		val aQ = axisA.dot(rot.xyz)
+		val bQ = axisA.dot(rot.xyz)
+		val abQ = axisA.cross(axisB).dot(rot.xyz)
+
+		val angleA = atan2(2 * (abQ * bQ + aQ * rot.w), abQ * abQ + aQ * aQ - bQ * bQ - rot.w * rot.w)
+		val cosA = cos(angleA / 2)
+		val sinA = sin(angleA / 2)
+		val angleB = 2 * atan2(aQ * cosA - rot.w * sinA, bQ * sinA - abQ * cosA)
+
+		return angleA
 	}
 
 	private fun makeIdentityAdjustmentQuatsFull() {
@@ -392,5 +443,57 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			totalMatrix += (qn[i].toMatrix() * tn[i])
 		}
 		return totalMatrix.toQuaternion()
+	}
+
+	private fun isThighTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.LEFT_UPPER_LEG ||
+				it == TrackerPosition.RIGHT_UPPER_LEG
+		}
+		return false
+	}
+
+	private fun isLeftArmTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.LEFT_SHOULDER ||
+				it == TrackerPosition.LEFT_UPPER_ARM ||
+				it == TrackerPosition.LEFT_LOWER_ARM ||
+				it == TrackerPosition.LEFT_HAND
+		}
+		return false
+	}
+
+	private fun isRightArmTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.RIGHT_SHOULDER ||
+				it == TrackerPosition.RIGHT_UPPER_ARM ||
+				it == TrackerPosition.RIGHT_LOWER_ARM ||
+				it == TrackerPosition.RIGHT_HAND
+		}
+		return false
+	}
+
+	private fun isLeftLowerArmTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.LEFT_LOWER_ARM ||
+				it == TrackerPosition.LEFT_HAND
+		}
+		return false
+	}
+
+	private fun isRightLowerArmTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.RIGHT_LOWER_ARM ||
+				it == TrackerPosition.RIGHT_HAND
+		}
+		return false
+	}
+
+	private fun isFootTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.LEFT_FOOT ||
+				it == TrackerPosition.RIGHT_FOOT
+		}
+		return false
 	}
 }

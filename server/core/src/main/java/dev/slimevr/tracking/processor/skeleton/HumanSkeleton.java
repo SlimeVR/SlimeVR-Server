@@ -1483,36 +1483,6 @@ public class HumanSkeleton {
 		LogManager.info(String.format("[HumanSkeleton] Reset: yaw (%s)", resetSourceName));
 	}
 
-	private boolean shouldResetMounting(TrackerPosition position) {
-		return position != null
-			// TODO: Feet can't currently be reset using this method, maybe
-			// they'll need a separate step just for them?
-			&& position != TrackerPosition.LEFT_FOOT
-			&& position != TrackerPosition.RIGHT_FOOT;
-	}
-
-	private boolean shouldResetMounting(Tracker tracker) {
-		return shouldResetMounting(tracker.getTrackerPosition());
-	}
-
-	private boolean shouldReverseYaw(TrackerPosition position) {
-		switch (position) {
-			case LEFT_UPPER_LEG:
-			case RIGHT_UPPER_LEG:
-			case LEFT_LOWER_ARM:
-			case LEFT_HAND:
-			case RIGHT_LOWER_ARM:
-			case RIGHT_HAND:
-				return true;
-			default:
-				return false;
-		}
-	}
-
-	private boolean shouldReverseYaw(Tracker tracker) {
-		return shouldReverseYaw(tracker.getTrackerPosition());
-	}
-
 	@VRServerThread
 	public void resetTrackersMounting(String resetSourceName) {
 		List<Tracker> trackersToReset = humanPoseManager.getTrackersToReset();
@@ -1522,9 +1492,7 @@ public class HumanSkeleton {
 		Quaternion referenceRotation = Quaternion.Companion.getIDENTITY();
 		if (headTracker != null) {
 			if (headTracker.getNeedsMounting())
-				headTracker
-					.getResetsHandler()
-					.resetMounting(shouldReverseYaw(headTracker), referenceRotation);
+				headTracker.getResetsHandler().resetMounting(referenceRotation);
 			else
 				referenceRotation = headTracker.getRotation();
 		}
@@ -1533,11 +1501,8 @@ public class HumanSkeleton {
 			if (
 				tracker != null
 					&& tracker.getNeedsMounting()
-					&& shouldResetMounting(tracker)
 			) {
-				tracker
-					.getResetsHandler()
-					.resetMounting(shouldReverseYaw(tracker), referenceRotation);
+				tracker.getResetsHandler().resetMounting(referenceRotation);
 			}
 		}
 		this.legTweaks.resetBuffer();

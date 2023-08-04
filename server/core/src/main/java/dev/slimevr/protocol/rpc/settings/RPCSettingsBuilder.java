@@ -329,9 +329,13 @@ public class RPCSettingsBuilder {
 
 	public static int createArmsResetModeSettings(
 		FlatBufferBuilder fbb,
-		ArmsResetModeConfig armsResetModeConfig
+		ResetsConfig resetsConfig
 	) {
-		// TODO
-		return 0;
+		return ResetsSettings
+			.createResetsSettings(
+				fbb,
+				resetsConfig.getResetMountingFeet(),
+				resetsConfig.getMode().getId()
+			);
 	}
 }

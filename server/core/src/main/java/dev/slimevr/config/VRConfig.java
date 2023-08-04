@@ -40,7 +40,7 @@ public class VRConfig {
 
 	private final TapDetectionConfig tapDetection = new TapDetectionConfig();
 
-	private final ArmsResetModeConfig armsResetMode = new ArmsResetModeConfig();
+	private final ResetsConfig resetsConfig = new ResetsConfig();
 
 	@JsonDeserialize(using = TrackerConfigMapDeserializer.class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer.class)
@@ -134,8 +134,8 @@ public class VRConfig {
 		return tapDetection;
 	}
 
-	public ArmsResetModeConfig getArmsResetMode() {
-		return armsResetMode;
+	public ResetsConfig getResetsConfig() {
+		return resetsConfig;
 	}
 
 	public OverlayConfig getOverlay() {
@@ -158,7 +158,7 @@ public class VRConfig {
 			if (tracker.isImu())
 				tracker.getResetsHandler().readDriftCompensationConfig(driftCompensation);
 			if (tracker.getNeedsReset())
-				tracker.getResetsHandler().readArmsResetModeConfig(armsResetMode);
+				tracker.getResetsHandler().readArmsResetModeConfig(resetsConfig);
 			if (tracker.getAllowFiltering())
 				tracker
 					.getFilteringHandler()
