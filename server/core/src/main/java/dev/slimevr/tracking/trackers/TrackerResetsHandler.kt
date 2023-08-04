@@ -194,6 +194,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				0f,
 				FastMath.HALF_PI
 			).toQuaternion()
+		}else{
+			tposeFix = Quaternion.IDENTITY
 		}
 
 		lastResetQuaternion = adjustToReference(tracker.getRawRotation())
@@ -333,7 +335,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	// incorrect. Projection around the Y-axis is worse.
 	// In both cases, the isolated yaw value changes
 	// with the tracker's roll when pointing forward.
-	// According to 9/10 dentists, this is the best way to do it.
 	private fun getYawQuaternion(rot: Quaternion): Quaternion {
 		return EulerAngles(EulerOrder.YZX, 0f, rot.toEulerAngles(EulerOrder.YZX).y, 0f).toQuaternion()
 	}
