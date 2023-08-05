@@ -36,6 +36,7 @@ body_part-RIGHT_HAND = Rechte Hand
 body_part-RIGHT_UPPER_LEG = Rechter Oberschenkel
 body_part-RIGHT_LOWER_LEG = Rechter Unterschenkel
 body_part-RIGHT_FOOT = Rechter Fuß
+body_part-UPPER_CHEST = Obere Brust
 body_part-CHEST = Brust
 body_part-WAIST = Taille
 body_part-HIP = Hüfte
@@ -53,8 +54,9 @@ skeleton_bone-NONE = Keine
 skeleton_bone-HEAD = Kopfverschiebung
 skeleton_bone-NECK = Halslänge
 skeleton_bone-torso_group = Oberkörperhöhe
-skeleton_bone-CHEST = Brustabstand
+skeleton_bone-UPPER_CHEST = Obere Brustlänge
 skeleton_bone-CHEST_OFFSET = Brustversatz
+skeleton_bone-CHEST = Brustabstand
 skeleton_bone-WAIST = Taillenabstand
 skeleton_bone-HIP = Hüftlänge
 skeleton_bone-HIP_OFFSET = Hüftversatz
@@ -120,6 +122,9 @@ widget-overlay-is_mirrored_label = Visualisierung spiegeln
 
 widget-drift_compensation-clear = Driftkompensation zurücksetzen
 
+## Widget: Clear Reset Mounting
+
+
 ## Widget: Developer settings
 
 widget-developer_mode = Entwicklermodus
@@ -163,9 +168,15 @@ tracker-table-column-url = Adresse
 ## Tracker rotation
 
 tracker-rotation-front = Vorne
+tracker-rotation-front_left = Vorne-Links
+tracker-rotation-front_right = Vorne-Rechts
 tracker-rotation-left = Links
 tracker-rotation-right = Rechts
 tracker-rotation-back = Hinten
+tracker-rotation-back_left = Hinten-Links
+tracker-rotation-back_right = Hinten-Rechts
+tracker-rotation-custom = Benutzerdefiniert
+tracker-rotation-overriden = (von Befestigungs-Reset überschrieben)
 
 ## Tracker information
 
@@ -269,6 +280,8 @@ settings-sidebar-osc_router = OSC-Router
 settings-sidebar-osc_trackers = VRChat OSC-Tracker
 settings-sidebar-utils = Werkzeuge
 settings-sidebar-serial = Serielle Konsole
+settings-sidebar-appearance = Erscheinungsbild
+settings-sidebar-notifications = Benachrichtigungen
 
 ## SteamVR settings
 
@@ -338,9 +351,10 @@ settings-general-fk_settings-arm_fk-description = Ändern Sie die Art und Weise,
 settings-general-fk_settings-arm_fk-force_arms = Arme vom VR-Headset erzwingen
 settings-general-fk_settings-skeleton_settings = Skeletteinstellungen
 settings-general-fk_settings-skeleton_settings-description = Schalten Sie Skeletteinstellungen ein oder aus. Es wird empfohlen, diese eingeschaltet zu lassen.
-settings-general-fk_settings-skeleton_settings-extended_spine = Erweiterte Wirbelsäule
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Erweiterter Beckenbereich
-settings-general-fk_settings-skeleton_settings-extended_knees = Erweiterte Knie
+settings-general-fk_settings-skeleton_settings-extended_spine_model = Erweitertes Wirbelsäulen-Modell
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Erweitertes Pelvis-Modell
+settings-general-fk_settings-skeleton_settings-extended_knees_model = Erweitertes Knie-Modell
+settings-general-fk_settings-self_localization-title = Motion-Capture-Modus
 settings-general-fk_settings-vive_emulation-title = Vive-Simulierung
 settings-general-fk_settings-vive_emulation-description = Simuliere die Tracking-Probleme, welche bei Vive-Trackern auftreten. Dies ist ein Scherz und verschlechtert das Tracking.
 settings-general-fk_settings-vive_emulation-label = Vive-Simulierung
@@ -357,6 +371,13 @@ settings-general-gesture_control-taps =
         [one] 1-mal antippen
        *[other] { $amount }-mal antippen
     }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [one] Tracker
+       *[other] Tracker
+    }
 settings-general-gesture_control-yawResetEnabled = Horizontaler Reset durch Antippen
 settings-general-gesture_control-yawResetDelay = Verzögerung für einen horizontalen Reset
 settings-general-gesture_control-yawResetTaps = Antipp-Anzahl für einen horizontalen Reset
@@ -366,13 +387,30 @@ settings-general-gesture_control-fullResetTaps = Antipp-Anzahl für einen vollst
 settings-general-gesture_control-mountingResetEnabled = Antippen für Befestigungs-Reset
 settings-general-gesture_control-mountingResetDelay = Befestigungs-Reset-Verzögerung
 settings-general-gesture_control-mountingResetTaps = Anzahl für Befestigungs-Reset
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = Tracker über Schwellwert
 
-## Interface settings
+## Appearance settings
 
-settings-general-interface = Bedienoberfläche
+settings-interface-appearance = Erscheinungsbild
 settings-general-interface-dev_mode = Entwicklermodus
 settings-general-interface-dev_mode-description = Der Entwicklermodus stellt mehr Daten dar und erlaubt auch erweiterte Einstellungen, so wie erweiterte Optionen bei verbundenen Trackern.
 settings-general-interface-dev_mode-label = Entwicklermodus
+settings-general-interface-theme = Farbschema
+settings-general-interface-lang = Sprachauswahl
+settings-general-interface-lang-description = Ändern Sie die Standard-Sprache, die Sie verwenden möchten
+settings-general-interface-lang-placeholder = Wählen Sie die zu verwendende Sprache aus
+# Keep the font name untranslated
+settings-interface-appearance-font = GUI-Schriftart
+settings-interface-appearance-font-description = Verändert die Schriftart der Benutzeroberfläche.
+settings-interface-appearance-font-placeholder = Standard-Schriftart
+settings-interface-appearance-font-os_font = Betriebssystem-Schriftart
+settings-interface-appearance-font-slime_font = Standard-Schriftart
+settings-interface-appearance-font_size = Standard-Schriftgröße
+
+## Notification settings
+
+settings-interface-notifications = Benachrichtigungen
 settings-general-interface-serial_detection = Serielle Geräteerkennung
 settings-general-interface-serial_detection-description = Diese Option zeigt jedes Mal ein Pop-up-Fenster an, wenn ein neues serielles Gerät angeschlossen wird, das ein Tracker sein könnte. Dies hilft beim Einrichtungsprozess des Trackers
 settings-general-interface-serial_detection-label = Serielle Geräteerkennung
@@ -380,10 +418,6 @@ settings-general-interface-feedback_sound = Feedback-Geräusch
 settings-general-interface-feedback_sound-description = Diese Option wird ein Geräusch abspielen, wenn ein Reset ausgeführt wurde.
 settings-general-interface-feedback_sound-label = Feedback-Geräusch
 settings-general-interface-feedback_sound-volume = Feedback-Sound-Lautstärke
-settings-general-interface-theme = Farbschema
-settings-general-interface-lang = Sprachauswahl
-settings-general-interface-lang-description = Ändern Sie die Standard-Sprache, die Sie verwenden möchten
-settings-general-interface-lang-placeholder = Wählen Sie die zu verwendende Sprache aus
 
 ## Serial settings
 
@@ -736,7 +770,6 @@ onboarding-choose_proportions = Welche Kalibrierungsmethode ist zu verwenden?
 onboarding-choose_proportions-auto_proportions = Automatische Proportionen
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Empfohlen
-onboarding-choose_proportions-auto_proportions-description = Dadurch werden Ihre Proportionen erraten, indem Stichproben Ihrer Bewegungen verrechnet werden
 onboarding-choose_proportions-manual_proportions = Manuelle Körperproportionen
 onboarding-choose_proportions-manual_proportions-description = Auf diese Weise können Sie Ihre Proportionen manuell anpassen, indem Sie diese direkt ändern
 onboarding-choose_proportions-export = Proportionen exportieren
@@ -748,6 +781,7 @@ onboarding-manual_proportions-back = Gehen Sie zurück zum Reset-Tutorial
 onboarding-manual_proportions-title = Manuelle Körperproportionen
 onboarding-manual_proportions-precision = Feinanpassung
 onboarding-manual_proportions-auto = Automatische Kalibrierung
+onboarding-manual_proportions-ratio = Anpassung nach Proportionen
 
 ## Tracker automatic proportions setup
 
@@ -761,6 +795,14 @@ onboarding-automatic_proportions-put_trackers_on-description = Um Ihre Proportio
 onboarding-automatic_proportions-put_trackers_on-next = Ich habe alle meine Tracker angelegt
 onboarding-automatic_proportions-requirements-title = Anforderungen
 onboarding-automatic_proportions-requirements-next = Ich habe die Anforderungen gelesen
+onboarding-automatic_proportions-check_height-title = Überprüfen Sie Ihre Körpergröße
+onboarding-automatic_proportions-check_height-fetch_height = Ich stehe!
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Unbekannt
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height = Ihre Körpergröße ist
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height = Und Ihre Headset-Höhe ist
 onboarding-automatic_proportions-start_recording-title = Bereiten Sie sich auf ein paar Bewegungen vor
 onboarding-automatic_proportions-start_recording-description = Wir werden nun einige bestimmte Posen und Bewegungen aufnehmen. Diese werden im nächsten Bildschirm angezeigt. Bereiten Sie sicht darauf vor, wenn Sie den Knopf drücken!
 onboarding-automatic_proportions-start_recording-next = Aufnahme starten

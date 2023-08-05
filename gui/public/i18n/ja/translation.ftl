@@ -120,6 +120,9 @@ widget-overlay-is_mirrored_label = オーバーレイをミラーとして表示
 
 widget-drift_compensation-clear = ドリフト補正をクリアする
 
+## Widget: Clear Reset Mounting
+
+
 ## Widget: Developer settings
 
 widget-developer_mode = 開発者モード
@@ -166,6 +169,7 @@ tracker-rotation-front = 前
 tracker-rotation-left = 左
 tracker-rotation-right = 右
 tracker-rotation-back = 後
+tracker-rotation-custom = カスタム
 
 ## Tracker information
 
@@ -267,6 +271,7 @@ settings-sidebar-osc_router = OSCルーター
 settings-sidebar-osc_trackers = VRChatOSCトラッカー
 settings-sidebar-utils = ユーティリティ
 settings-sidebar-serial = シリアルコンソール
+settings-sidebar-notifications = 通知
 
 ## SteamVR settings
 
@@ -328,11 +333,8 @@ settings-general-fk_settings-leg_fk = 足のトラッキング
 settings-general-fk_settings-arm_fk = アームトラッキング
 settings-general-fk_settings-arm_fk-description = 腕の追従方法を変更する。
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
-settings-general-fk_settings-skeleton_settings = スケルトン設定
 settings-general-fk_settings-skeleton_settings-description = スケルトン設定のオン/オフを切り替えます。これらはオンのままにしておくことをお勧めします。
-settings-general-fk_settings-skeleton_settings-extended_spine = Extended spine
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Extended pelvis
-settings-general-fk_settings-skeleton_settings-extended_knees = Extended knee
+settings-general-fk_settings-self_localization-title = モーションキャプチャモード
 settings-general-fk_settings-vive_emulation-title = Viveエミュレーション
 settings-general-fk_settings-vive_emulation-description = Viveトラッカーが抱える腰トラッカーの問題をエミュレートします。
 settings-general-fk_settings-vive_emulation-label = Viveエミュレーションの有効化
@@ -359,22 +361,28 @@ settings-general-gesture_control-mountingResetEnabled = タップによるマウ
 settings-general-gesture_control-mountingResetDelay = マウントリセットディレイ
 settings-general-gesture_control-mountingResetTaps = タップによるマウントリセット
 
-## Interface settings
+## Appearance settings
 
-settings-general-interface = インターフェース
 settings-general-interface-dev_mode = 開発者モード
 settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
 settings-general-interface-dev_mode-label = 開発者モード
+settings-general-interface-theme = カラーテーマ
+settings-general-interface-lang = 言語を選択
+settings-general-interface-lang-description = 使用したいデフォルトの言語を変更する
+settings-general-interface-lang-placeholder = 使用する言語を選択する
+# Keep the font name untranslated
+settings-interface-appearance-font = GUIフォント
+settings-interface-appearance-font-os_font = OSフォント
+
+## Notification settings
+
+settings-interface-notifications = 通知
 settings-general-interface-serial_detection = シリアルデバイスの検出
 settings-general-interface-serial_detection-description = このオプションは、トラッカーとなり得る新しいシリアルデバイスを接続するたびにポップアップを表示します。これはトラッカーの設定プロセスを改善するのに役立ちます。
 settings-general-interface-serial_detection-label = シリアルデバイスの検出
 settings-general-interface-feedback_sound = フィードバック音
 settings-general-interface-feedback_sound-label = フィードバック音
 settings-general-interface-feedback_sound-volume = フィードバック音量
-settings-general-interface-theme = カラーテーマ
-settings-general-interface-lang = 言語を選択
-settings-general-interface-lang-description = 使用したいデフォルトの言語を変更する
-settings-general-interface-lang-placeholder = 使用する言語を選択する
 
 ## Serial settings
 
@@ -570,6 +578,8 @@ onboarding-assign_trackers-next = すべてのトラッカーを割り当てま�
 
 ## Tracker mounting method choose
 
+# Italized text
+onboarding-choose_mounting-auto_mounting-label = 実験的な
 
 ## Tracker manual mounting setup
 
@@ -624,6 +634,8 @@ onboarding-automatic_proportions-put_trackers_on-description = プロポーシ�
 onboarding-automatic_proportions-put_trackers_on-next = すべてのトラッカーを装着しました
 onboarding-automatic_proportions-requirements-title = 要件
 onboarding-automatic_proportions-requirements-next = 要件を読みました
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height = あなたの身長は
 onboarding-automatic_proportions-start_recording-title = 測定の準備をする
 onboarding-automatic_proportions-start_recording-description = これから具体的なポーズや動きを記録します。これらは次の画面に表示されます。ボタンが押されたらすぐに始められるように準備しておいてください！
 onboarding-automatic_proportions-start_recording-next = レコーディングスタート
