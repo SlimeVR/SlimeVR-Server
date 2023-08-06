@@ -1,4 +1,4 @@
-import { BaseDirectory, readTextFile } from '@tauri-apps/api/fs';
+import { BaseDirectory, readTextFile } from '@tauri-apps/plugin-fs';
 
 import { createContext, useContext, useRef, useState } from 'react';
 import { DeveloperModeWidgetForm } from '../components/widgets/DeveloperModeWidget';
@@ -96,7 +96,7 @@ export function useConfigProvider(): ConfigContext {
         const migrated = localStorage.getItem('configMigrated');
         if (!migrated) {
           const oldConfig = await readTextFile('config.json', {
-            dir: BaseDirectory.App,
+            dir: BaseDirectory.AppConfig,
           }).catch(() => null);
 
           if (oldConfig) localStorage.setItem('config.json', oldConfig);

@@ -36,6 +36,7 @@ body_part-RIGHT_HAND = Main droite
 body_part-RIGHT_UPPER_LEG = Cuisse droite
 body_part-RIGHT_LOWER_LEG = Cheville droite
 body_part-RIGHT_FOOT = Pied droit
+body_part-UPPER_CHEST = Poitrine supérieure
 body_part-CHEST = Poitrine
 body_part-WAIST = Taille
 body_part-HIP = Hanche
@@ -53,8 +54,9 @@ skeleton_bone-NONE = Aucun
 skeleton_bone-HEAD = Décalage de la tête
 skeleton_bone-NECK = Longueur du cou
 skeleton_bone-torso_group = Longueur du torse
-skeleton_bone-CHEST = Longueur de la poitrine
+skeleton_bone-UPPER_CHEST = Longueur de la poitrine supérieure
 skeleton_bone-CHEST_OFFSET = Décalage de la poitrine
+skeleton_bone-CHEST = Longueur de la poitrine
 skeleton_bone-WAIST = Longueur de la taille
 skeleton_bone-HIP = Longueur des hanches
 skeleton_bone-HIP_OFFSET = Décalage de la hanche
@@ -120,6 +122,10 @@ widget-overlay-is_mirrored_label = Afficher le squelette en tant que miroir
 
 widget-drift_compensation-clear = Réinitialiser la compensation de la dérive
 
+## Widget: Clear Reset Mounting
+
+widget-clear_mounting = Mettre à zéro la réinitialisation de l'alignement
+
 ## Widget: Developer settings
 
 widget-developer_mode = Mode développeur
@@ -163,9 +169,15 @@ tracker-table-column-url = URL
 ## Tracker rotation
 
 tracker-rotation-front = Avant
+tracker-rotation-front_left = Avant-Gauche
+tracker-rotation-front_right = Avant-Droite
 tracker-rotation-left = Gauche
 tracker-rotation-right = Droite
 tracker-rotation-back = Arrière
+tracker-rotation-back_left = Arrière-Gauche
+tracker-rotation-back_right = Arrière-Droite
+tracker-rotation-custom = Personnalisé
+tracker-rotation-overriden = (remplacé par la réinitialisation du montage)
 
 ## Tracker information
 
@@ -230,6 +242,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } cuisse droi
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } cheville droite ?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } pied droit ?
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } manette droite ?
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } poitrine supérieure ?
 tracker_selection_menu-CHEST = { -tracker_selection-part } poitrine ?
 tracker_selection_menu-WAIST = { -tracker_selection-part } taille ?
 tracker_selection_menu-HIP = { -tracker_selection-part } hanche ?
@@ -269,6 +282,8 @@ settings-sidebar-osc_router = Routeur OSC
 settings-sidebar-osc_trackers = Capteurs OSC VRChat
 settings-sidebar-utils = Utilitaires
 settings-sidebar-serial = Console série
+settings-sidebar-appearance = Apparence
+settings-sidebar-notifications = Notifications
 
 ## SteamVR settings
 
@@ -336,11 +351,21 @@ settings-general-fk_settings-leg_fk = Capture des jambes
 settings-general-fk_settings-arm_fk = Capture des bras
 settings-general-fk_settings-arm_fk-description = Changez la façon dont les bras sont captés.
 settings-general-fk_settings-arm_fk-force_arms = Forcer les bras en provenance du casque VR
-settings-general-fk_settings-skeleton_settings = Paramètres du squelette
+settings-general-fk_settings-skeleton_settings-toggles = Bascules du squelette
 settings-general-fk_settings-skeleton_settings-description = Activez ou désactivez des paramètres avancés de capture.
-settings-general-fk_settings-skeleton_settings-extended_spine = Colone vertébrale avancée
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Bassin avancé
-settings-general-fk_settings-skeleton_settings-extended_knees = Genoux avancés
+settings-general-fk_settings-skeleton_settings-extended_spine_model = Modèle de colonne vertébrale avancé
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Modèle de bassin avancé
+settings-general-fk_settings-skeleton_settings-extended_knees_model = Modèle de genou avancé
+settings-general-fk_settings-skeleton_settings-ratios = Ratios du squelette
+settings-general-fk_settings-skeleton_settings-ratios-description = Modifiez les valeurs des paramètres du squelette. Vous devrez peut-être ajuster vos proportions après les avoir modifiées.
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Interpoler la taille de la poitrine à la hanche
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Interpoler la taille de la poitrine aux jambes
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Interpoler la hanche de la poitrine aux jambes
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Interpoler la hanche de la taille aux jambes
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Interpoler la rotation horizontale et de torsion de la hanche avec celle des jambes
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Interpoler les rotations horizontales et de torsion des capteurs de genoux avec celles des chevilles
+settings-general-fk_settings-self_localization-title = Mode Mocap
+settings-general-fk_settings-self_localization-description = Le mode Mocap permet au squelette de suivre grossièrement sa propre position sans casque ou autres capteurs. Ce mode nécessite des capteurs de pieds et de tête afin de fonctionner et est encore expérimental.
 settings-general-fk_settings-vive_emulation-title = Émulation Vive
 settings-general-fk_settings-vive_emulation-description = Simule les problèmes des capteurs de taille que capteurs Vive ont. Cette optionest une blague et rend la capture des mouvements pire.
 settings-general-fk_settings-vive_emulation-label = Activer l'émulation Vive
@@ -357,6 +382,13 @@ settings-general-gesture_control-taps =
         [one] 1 tap
        *[other] { $amount } taps
     }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [one] 1 capteur
+       *[other] { $amount } capteurs
+    }
 settings-general-gesture_control-yawResetEnabled = Tapoter pour réinitialisation horizontale
 settings-general-gesture_control-yawResetDelay = Délai de réinitialisation horizontale
 settings-general-gesture_control-yawResetTaps = Nombre de tapes pour réinitialisation horizontale
@@ -366,24 +398,39 @@ settings-general-gesture_control-fullResetTaps = Nombre de tapes pour réinitial
 settings-general-gesture_control-mountingResetEnabled = Tapoter pour réinitialisation de l'alignement
 settings-general-gesture_control-mountingResetDelay = Délai de réinitialisation de l'alignement
 settings-general-gesture_control-mountingResetTaps = Nombre de tapes pour la réinitialisation de l'alignement
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = Capteurs au-dessus du seuil
+settings-general-gesture_control-numberTrackersOverThreshold-description = Augmentez cette valeur si la détection des tapotements ne fonctionne pas. N'augmentez pas cette valeur au-delà de ce qui est nécessaire pour que la détection des tapotements fonctionne, car cela pourrait entraîner des faux positifs.
 
-## Interface settings
+## Appearance settings
 
-settings-general-interface = Interface
+settings-interface-appearance = Apparence
 settings-general-interface-dev_mode = Mode développeur
 settings-general-interface-dev_mode-description = Ce mode peut être utile pour avoir des données approfondies ou pour interagir avec des capteurs connectés à un niveau plus avancé.
 settings-general-interface-dev_mode-label = Mode développeur
-settings-general-interface-serial_detection = Détection de périphérique série
-settings-general-interface-serial_detection-description = Cette option affichera une fenêtre chaque fois qu'un nouveau périphérique série qui pourrait être un capteur est connecté.
-settings-general-interface-serial_detection-label = Détection de périphérique série
-settings-general-interface-feedback_sound = Son de retour
-settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée
-settings-general-interface-feedback_sound-label = Son de retour
-settings-general-interface-feedback_sound-volume = Volume du son de retour
 settings-general-interface-theme = Thème
 settings-general-interface-lang = Langue
 settings-general-interface-lang-description = Choisir la langue par défaut.
 settings-general-interface-lang-placeholder = Langue
+# Keep the font name untranslated
+settings-interface-appearance-font = Police de l'interface
+settings-interface-appearance-font-description = Cela change la police d'écriture utilisée par l'interface.
+settings-interface-appearance-font-placeholder = Police par défaut
+settings-interface-appearance-font-os_font = Police du système d’exploitation
+settings-interface-appearance-font-slime_font = Police par défaut
+settings-interface-appearance-font_size = Agrandissement du texte
+settings-interface-appearance-font_size-description = Cela affecte la taille du texte de toute l'interface, sauf de ce menu.
+
+## Notification settings
+
+settings-interface-notifications = Notifications
+settings-general-interface-serial_detection = Détection de périphérique série
+settings-general-interface-serial_detection-description = Cette option affichera une fenêtre chaque fois qu'un nouveau périphérique série qui pourrait être un capteur est connecté.
+settings-general-interface-serial_detection-label = Détection de périphérique série
+settings-general-interface-feedback_sound = Son de retour
+settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée.
+settings-general-interface-feedback_sound-label = Son de retour
+settings-general-interface-feedback_sound-volume = Volume du son de retour
 
 ## Serial settings
 
@@ -753,7 +800,10 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = Proportions automatiques
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommendée
-onboarding-choose_proportions-auto_proportions-description = Ceci estimera vos proportions en enregistrant un extrait de vos mouvements et en le faisant traiter par un algorithme
+onboarding-choose_proportions-auto_proportions-descriptionv2 =
+    Cela permettra d'estimer vos proportions en enregistrant un échantillon de vos mouvements et en le faisant passer par un algorithme.
+    
+    <b>Cela nécessite d’avoir votre casque VR connecté à SlimeVR !</b>
 onboarding-choose_proportions-manual_proportions = Proportions manuelles
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Pour les retouches
@@ -789,6 +839,18 @@ onboarding-automatic_proportions-requirements-description =
     Vos capteurs et votre casque VR fonctionnent correctement au sein du serveur SlimeVR.
     Votre casque envoie sa position au serveur SlimeVR (cela signifie généralement que SteamVR est ouvert et connecté à SlimeVR en utilisant le driver SteamVR de SlimeVR).
 onboarding-automatic_proportions-requirements-next = J'ai lu les exigences
+onboarding-automatic_proportions-check_height-title = Vérifiez votre taille
+onboarding-automatic_proportions-check_height-description = Nous utilisons votre taille comme la base de nos mesures en utilisant la hauteur de votre casque comme approximation de votre taille réelle, mais il est préférable de vérifier si elles sont correctes vous-même !
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = Veuillez appuyer sur le bouton en vous <u>tenant debout</u> pour calculer votre taille. Vous avez un délais de 3 secondes après avoir appuyé sur le bouton !
+onboarding-automatic_proportions-check_height-fetch_height = Je suis debout !
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Inconnu
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height1 = La hauteur de votre casque est
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height1 = donc votre taille est
+onboarding-automatic_proportions-check_height-next_step = Ils sont bons
 onboarding-automatic_proportions-start_recording-title = Préparez-vous à bouger
 onboarding-automatic_proportions-start_recording-description = Nous allons maintenant enregistrer quelques positions et mouvements spécifiques. Ceux-ci seront inscris sur l’écran suivant. Soyez prêt à commencer dès que vous appuyez sur le bouton !
 onboarding-automatic_proportions-start_recording-next = Commencer l'enregistrement
@@ -818,6 +880,10 @@ onboarding-automatic_proportions-verify_results-redo = Refaire l'enregistrement
 onboarding-automatic_proportions-verify_results-confirm = Les résultats sont corrects
 onboarding-automatic_proportions-done-title = Calibration terminée
 onboarding-automatic_proportions-done-description = La calibration de vos proportions est terminée !
+onboarding-automatic_proportions-error_modal =
+    <b>Avertissement :</b> Une erreur a été détectée lors de l’estimation des proportions !
+    Veuillez <docs>consulter la documentation</docs> ou rejoindre notre <discord>Discord</discord> pour obtenir de l’aide ^_^
+onboarding-automatic_proportions-error_modal-confirm = Compris !
 
 ## Home
 

@@ -9,7 +9,7 @@ import {
   createContext,
   useContext,
 } from 'react';
-import { exists, readTextFile, BaseDirectory } from '@tauri-apps/api/fs';
+import { exists, readTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
 import { error } from '../utils/logging';
 
 export const defaultNS = 'translation';
@@ -40,6 +40,10 @@ export const langs = [
   {
     name: '🌎 Español Latinoamericano',
     key: 'es-419',
+  },
+  {
+    name: '🇪🇸 Español España',
+    key: 'es-ES',
   },
   {
     name: '🇪🇪 Eesti',
@@ -110,9 +114,7 @@ export const langs = [
 // AppConfig path: https://docs.rs/tauri/1.2.4/tauri/api/path/fn.config_dir.html
 // We doing this only once, don't want an override check to be done on runtime,
 // only on launch :P
-const overrideLangExists = exists(OVERRIDE_FILENAME, {
-  dir: BaseDirectory.AppConfig,
-}).catch(() => false);
+const overrideLangExists = exists(OVERRIDE_FILENAME).catch(() => false);
 
 // Fetch translation file
 async function fetchMessages(locale: string): Promise<[string, string]> {

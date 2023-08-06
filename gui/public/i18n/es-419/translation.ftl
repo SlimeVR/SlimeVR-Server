@@ -36,6 +36,7 @@ body_part-RIGHT_HAND = Mano derecha
 body_part-RIGHT_UPPER_LEG = Muslo derecho
 body_part-RIGHT_LOWER_LEG = Tobillo derecho
 body_part-RIGHT_FOOT = Pie derecho
+body_part-UPPER_CHEST = Pecho superior
 body_part-CHEST = Pecho
 body_part-WAIST = Cintura
 body_part-HIP = Cadera
@@ -53,8 +54,9 @@ skeleton_bone-NONE = Nada
 skeleton_bone-HEAD = Inclinación de cabeza
 skeleton_bone-NECK = Largo del cuello
 skeleton_bone-torso_group = Largo del torso
-skeleton_bone-CHEST = Largo del pecho
+skeleton_bone-UPPER_CHEST = Largo del pecho superior
 skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-CHEST = Largo del pecho
 skeleton_bone-WAIST = Largo de la cintura
 skeleton_bone-HIP = Largo de la cadera
 skeleton_bone-HIP_OFFSET = Desplazamiento de la cadera
@@ -118,7 +120,11 @@ widget-overlay-is_mirrored_label = Mostrar interfaz reflejada
 
 ## Widget: Drift compensation
 
-widget-drift_compensation-clear = Limpiar compensación de desviación
+widget-drift_compensation-clear = Olvidar compensación de drift
+
+## Widget: Clear Reset Mounting
+
+widget-clear_mounting = Olvidar reinicio de montura
 
 ## Widget: Developer settings
 
@@ -163,9 +169,15 @@ tracker-table-column-url = URL
 ## Tracker rotation
 
 tracker-rotation-front = Frente
+tracker-rotation-front_left = Frente izquierdo
+tracker-rotation-front_right = Frente derecho
 tracker-rotation-left = Izquierda
 tracker-rotation-right = Derecha
 tracker-rotation-back = Atrás
+tracker-rotation-back_left = Atrás izquierdo
+tracker-rotation-back_right = Atrás derecho
+tracker-rotation-custom = Personalizado
+tracker-rotation-overriden = (siendo invalidado por el reinicio de montura)
 
 ## Tracker information
 
@@ -230,6 +242,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } muslo derec
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } tobillo derecho?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } pie derecho?
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } mando derecho?
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } pecho superior?
 tracker_selection_menu-CHEST = { -tracker_selection-part } pecho?
 tracker_selection_menu-WAIST = { -tracker_selection-part } cintura?
 tracker_selection_menu-HIP = { -tracker_selection-part } cadera?
@@ -269,6 +282,8 @@ settings-sidebar-osc_router = Router OSC
 settings-sidebar-osc_trackers = Sensores OSC de VRChat
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
+settings-sidebar-appearance = Apariencia
+settings-sidebar-notifications = Notificaciones
 
 ## SteamVR settings
 
@@ -338,9 +353,11 @@ settings-general-fk_settings-arm_fk-description = Cambia cómo el movimiento de 
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
 settings-general-fk_settings-skeleton_settings = Ajustes de esqueleto
 settings-general-fk_settings-skeleton_settings-description = Habilita o deshabilita los ajustes de esqueleto. Es recomendado dejar estos ajustes habilitados.
-settings-general-fk_settings-skeleton_settings-extended_spine = Extención de columna
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Extención de pelvis
-settings-general-fk_settings-skeleton_settings-extended_knees = Extención de rodillas
+settings-general-fk_settings-skeleton_settings-extended_spine_model = Modelo extendido de la columna
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Modelo extendido del pelvis
+settings-general-fk_settings-skeleton_settings-extended_knees_model = Modelo extendido de la rodilla
+settings-general-fk_settings-self_localization-title = Modo mocap
+settings-general-fk_settings-self_localization-description = El modo mocap permite al esqueleto rastrear de forma aproximada su propia posición sin un casco o otros sensores. Nota que esto requiere que los trackers en el pie y cabeza estén y sigue siendo experimental.
 settings-general-fk_settings-vive_emulation-title = Vive emulation
 settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
 settings-general-fk_settings-vive_emulation-label = Habilitar emulación de Vive
@@ -357,6 +374,13 @@ settings-general-gesture_control-taps =
         [one] 1 toque
        *[other] { $amount } toques
     }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [one] 1 tracker
+       *[other] { $amount } trackers
+    }
 settings-general-gesture_control-yawResetEnabled = Activar toques para reinicio horizontal
 settings-general-gesture_control-yawResetDelay = Retraso del reinicio horizontal
 settings-general-gesture_control-yawResetTaps = Toques para reinicio horizontal
@@ -366,13 +390,32 @@ settings-general-gesture_control-fullResetTaps = Toques para reinicio completo
 settings-general-gesture_control-mountingResetEnabled = Activar toques para reinicio de montura
 settings-general-gesture_control-mountingResetDelay = Retraso del reinicio de montura
 settings-general-gesture_control-mountingResetTaps = Toques para reinicio de montura
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = Trackers sobre el límite
+settings-general-gesture_control-numberTrackersOverThreshold-description = Aumente este valor si la detección de toques no funciona. No lo aumente mas de lo necesario para que funciona ya que puede causar que la detección tenga más falsas positivas.
 
-## Interface settings
+## Appearance settings
 
-settings-general-interface = Interfaz
+settings-interface-appearance = Apariencia
 settings-general-interface-dev_mode = Modo desarrollador
 settings-general-interface-dev_mode-description = Este modo puede ser útil si es que necesitas información a fondo o para un nivel de interacción más avanzado con los sensores conectados.
 settings-general-interface-dev_mode-label = Modo desarrollador
+settings-general-interface-theme = Tema de color
+settings-general-interface-lang = Selecciona un idioma
+settings-general-interface-lang-description = Cambia el idioma que quieras usar.
+settings-general-interface-lang-placeholder = Selecciona el idioma a utilizar
+# Keep the font name untranslated
+settings-interface-appearance-font = Fuente de la interfaz
+settings-interface-appearance-font-description = Esto cambia el estilo de letra utilizado por la interfaz.
+settings-interface-appearance-font-placeholder = Fuente predeterminada
+settings-interface-appearance-font-os_font = Fuente del sistema operativo
+settings-interface-appearance-font-slime_font = Fuente predeterminada
+settings-interface-appearance-font_size = Tamaño base de la fuente
+settings-interface-appearance-font_size-description = Esto afecta al tamaño de las letras en toda la interfaz excepto en este panel de ajustes.
+
+## Notification settings
+
+settings-interface-notifications = Notificaciones
 settings-general-interface-serial_detection = Detección de dispositivo serial
 settings-general-interface-serial_detection-description = Esta opción mostrará un notificación cada vez que conectes un nuevo dispositivo serial que pueda ser un sensor. Ayuda a mejorar el proceso de configuración de un sensor.
 settings-general-interface-serial_detection-label = Detección de dispositivo serial
@@ -380,10 +423,6 @@ settings-general-interface-feedback_sound = Sonido de feedback
 settings-general-interface-feedback_sound-description = Esta opción reproducirá un sonido cuando se realice un reinicio.
 settings-general-interface-feedback_sound-label = Sonido de feedback
 settings-general-interface-feedback_sound-volume = Volumen del sonido de feedback
-settings-general-interface-theme = Tema de color
-settings-general-interface-lang = Selecciona un idioma
-settings-general-interface-lang-description = Cambia el idioma que quieras usar.
-settings-general-interface-lang-placeholder = Selecciona el idioma a utilizar
 
 ## Serial settings
 
@@ -527,25 +566,25 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = Volver a la calibración de montura
 onboarding-reset_tutorial = Reiniciar tutorial
-onboarding-reset_tutorial-description = Esta aún parte no está finalizada, por favor presione continuar
+onboarding-reset_tutorial-explanation = Mientras estés usando tus trackers, estos pueden empezar a desalinearse por el drift horizontal del IMU, o porque los moviste físicamente. Hay varias formas de arreglar este tipo de problemas.
 onboarding-reset_tutorial-skip = Saltar paso
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio horizontal.
-
+    
     Esto va a hacer que tus sensores miren para la misma dirección que tu HMD.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio completo.
-
+    
     Se requiere que estas de forma parada (pose en i). Esto tiene un delay de 3 segundos (configurable) antes de que actualmente suceda.
     Esto reinicia completamente la posición y rotación de todos tus sensores, debería de arreglar la mayoría de tus problemas.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio de montura.
-
+    
     El reinicio de montura ayuda en como tus sensores están puestos en tu cuerpo, ya que si los movistes o cambiaste para donde están orientados bastante, esto debería de ayudar.
-
+    
     Requiere que estas en una pose como que estás esquiando, como se muestra en el tutorial de montura automática y tenes un retraso de 3 segundos (configurable) antes de que actualmente suceda.
 
 ## Setup start
@@ -707,11 +746,11 @@ onboarding-choose_mounting = ¿Qué método de calibración de montura quiere us
 onboarding-choose_mounting-description = La orientación de montura corrige la colocación (o orientación) de los trackers en tu cuerpo.
 onboarding-choose_mounting-auto_mounting = Montura automática
 # Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = Recomendado
+onboarding-choose_mounting-auto_mounting-label = Experimental
 onboarding-choose_mounting-auto_mounting-description = Esto detectará automáticamente las direcciones de montura para todos tus trackers a partir de 2 poses
 onboarding-choose_mounting-manual_mounting = Montura manual
 # Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = Si sabes lo que estás haciendo
+onboarding-choose_mounting-manual_mounting-label = Recomendado
 onboarding-choose_mounting-manual_mounting-description = Esto te permitirá elegir la dirección de montura manualmente para cada tracker.
 
 ## Tracker manual mounting setup
@@ -753,7 +792,9 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = Proporciones automáticas
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recomendado
-onboarding-choose_proportions-auto_proportions-description = Esto adivinará tus proporciones en base de muestras de tus movimientos y pasándola a través de un algoritmo.
+onboarding-choose_proportions-auto_proportions-descriptionv2 =
+    Esto adivinará tus proporciones grabando una muestra de tus movimientos y pasándola por un algoritmo.
+    <b>¡Esto requiere tener tu VR conectado a SlimeVR!</b>
 onboarding-choose_proportions-manual_proportions = Proporciones manuales
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Para toques pequeños
@@ -789,6 +830,18 @@ onboarding-automatic_proportions-requirements-description =
     Tus trackers y VR están funcionando correctamente con el servidor de SlimeVR.
     Tu VR está reportando datos posicionales al servidor de SlimeVR (esto generalmente implica que SteamVR esté corriendo y conectado a SlimeVR usando el driver de SlimeVR para SteamVR).
 onboarding-automatic_proportions-requirements-next = He leído los requisitos
+onboarding-automatic_proportions-check_height-title = Compruebe su altura
+onboarding-automatic_proportions-check_height-description = Utilizamos tu altura como base de nuestras mediciones utilizando la altura del VR como aproximación a tu altura real, ¡Pero es mejor que compruebes tú mismo si son correctas!
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = Por favor, pulse el botón mientras está <u>de pie</u> para calcular su altura. ¡Tienes unos 3 segundos después de pulsar el botón!
+onboarding-automatic_proportions-check_height-fetch_height = Estoy de pie
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Desconocida
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height = Su altura es
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height = Y la altura del VR es
+onboarding-automatic_proportions-check_height-next_step = Están bien
 onboarding-automatic_proportions-start_recording-title = Prepárate para moverte
 onboarding-automatic_proportions-start_recording-description = Ahora vamos a grabar poses y movimientos en específico. Estas serán mostradas en la siguiente ventana. ¡Prepárate para empezar cuando presiones el botón!
 onboarding-automatic_proportions-start_recording-next = Empezar grabación
@@ -818,6 +871,10 @@ onboarding-automatic_proportions-verify_results-redo = Rehacer grabación
 onboarding-automatic_proportions-verify_results-confirm = Son correctos
 onboarding-automatic_proportions-done-title = Cuerpo medido y guardado.
 onboarding-automatic_proportions-done-description = ¡La calibración de tus proporciones corporales fue completada!
+onboarding-automatic_proportions-error_modal =
+    <b>Atención:</b> ¡Se ha encontrado un error durante la estimación de sus proporciones!
+    Por favor <docs>fijate la documentación</docs> o únete a nuestro <discord>Discord</discord> para obtener ayuda ^_^
+onboarding-automatic_proportions-error_modal-confirm = ¡Entendido!
 
 ## Home
 
