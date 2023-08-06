@@ -24,6 +24,7 @@ export function TrackerBattery({
   });
   const voltageFormatter = new Intl.NumberFormat(currentLocales, {
     maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
   });
 
   return (

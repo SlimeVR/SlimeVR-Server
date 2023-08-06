@@ -783,9 +783,9 @@ onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Unknown
 # Shows an element below it
-onboarding-automatic_proportions-check_height-height = Your height is
+onboarding-automatic_proportions-check_height-hmd_height1 = Your HMD height is
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height = And HMD height is
+onboarding-automatic_proportions-check_height-height1 = so your actual height is
 onboarding-automatic_proportions-check_height-next_step = They are fine
 onboarding-automatic_proportions-start_recording-title = Get ready to move
 onboarding-automatic_proportions-start_recording-description = We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!

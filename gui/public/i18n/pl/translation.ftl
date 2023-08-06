@@ -122,6 +122,10 @@ widget-overlay-is_mirrored_label = Pokaż Overlay jako Lustro
 
 widget-drift_compensation-clear = Wyczyść kompensację dryfu
 
+## Widget: Clear Reset Mounting
+
+widget-clear_mounting = Wyczyść resetowanie montażu
+
 ## Widget: Developer settings
 
 widget-developer_mode = Tryb Dewelopera
@@ -165,9 +169,15 @@ tracker-table-column-url = URL
 ## Tracker rotation
 
 tracker-rotation-front = Przód
+tracker-rotation-front_left = Przedni lewy
+tracker-rotation-front_right = Przedni prawy
 tracker-rotation-left = Lewa
 tracker-rotation-right = Prawa
 tracker-rotation-back = Tył
+tracker-rotation-back_left = Lewy tył
+tracker-rotation-back_right = Prawy tył
+tracker-rotation-custom = Własne
+tracker-rotation-overriden = (nadpisany przez reset montażu)
 
 ## Tracker information
 
@@ -272,6 +282,8 @@ settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = Śledzenie VRChat OSC
 settings-sidebar-utils = Narzędzia
 settings-sidebar-serial = Konsola Seryjna
+settings-sidebar-appearance = Wygląd
+settings-sidebar-notifications = Powiadomienia
 
 ## SteamVR settings
 
@@ -339,11 +351,21 @@ settings-general-fk_settings-leg_fk = Śledzenie nóg
 settings-general-fk_settings-arm_fk = Śledzenie ramienia
 settings-general-fk_settings-arm_fk-description = Zmień sposób śledzenia ramion.
 settings-general-fk_settings-arm_fk-force_arms = Śledź ramiona z gogli VR
-settings-general-fk_settings-skeleton_settings = Ustawienia szkieletu
+settings-general-fk_settings-skeleton_settings-toggles = Przełączniki szkieletowe
 settings-general-fk_settings-skeleton_settings-description = Włącz lub wyłącz ustawienia szkieletu. Zaleca się pozostawienie ich włączonych.
-settings-general-fk_settings-skeleton_settings-extended_spine = Wydłużony kręgosłup
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Rozszerzona miednica
-settings-general-fk_settings-skeleton_settings-extended_knees = Wydłużone kolano
+settings-general-fk_settings-skeleton_settings-extended_spine_model = Wydłużony model kręgosłupa
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Rozszerzony model miednicy
+settings-general-fk_settings-skeleton_settings-extended_knees_model = Model z przedłużonym kolanem
+settings-general-fk_settings-skeleton_settings-ratios = Współczynniki szkieletu
+settings-general-fk_settings-skeleton_settings-ratios-description = Zmień wartości ustawień szkieletu. Po zmianie może być konieczne dostosowanie proporcji.
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Przypisz talię od klatki piersiowej do bioder
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Przypisz talię od klatki piersiowej do nóg
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Przypisz biodro od klatki piersiowej do nóg
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Przypisz biodro od pasa do nóg
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Średnie odchylenie biodra i przetoczenie nogami
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Uśrednij odchylenie i przechylenie nakolanników za pomocą kostek
+settings-general-fk_settings-self_localization-title = Tryb Mocap
+settings-general-fk_settings-self_localization-description = Tryb Mocap pozwala szkieletowi z grubsza śledzić własną pozycję bez headsetu lub innych trackerów. Pamiętaj, że wymaga to śledzenia stóp i głowy do działania i nadal jest eksperymentalne.
 settings-general-fk_settings-vive_emulation-title = Emulacja Vive
 settings-general-fk_settings-vive_emulation-description = Naśladuj problemy z trackerem talii, które mają trackery Vive. To żart i pogarsza śledzenie.
 settings-general-fk_settings-vive_emulation-label = Włącz emulację Vive
@@ -362,6 +384,15 @@ settings-general-gesture_control-taps =
         [many] { $amount } dotknięć
        *[other] { $amount } dotknięć
     }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [one] 1 tracker
+        [few] 2 trackery
+        [many] { $amount } trackery
+       *[other] { $amount } trackery
+    }
 settings-general-gesture_control-yawResetEnabled = Włącz stuknięcie, aby zresetować odchylanie
 settings-general-gesture_control-yawResetDelay = Opóźnienie resetowania odchylenia
 settings-general-gesture_control-yawResetTaps = Stuknięcie do resetowania odchylenia
@@ -371,13 +402,32 @@ settings-general-gesture_control-fullResetTaps = Stuknij do pełnego resetu
 settings-general-gesture_control-mountingResetEnabled = Włącz stuknięcie, aby zresetować położenie
 settings-general-gesture_control-mountingResetDelay = Opóźnienie resetowania położenia
 settings-general-gesture_control-mountingResetTaps = Stuknięcie do resetowania położenia
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = Trackery ponad progiem
+settings-general-gesture_control-numberTrackersOverThreshold-description = Zwiększ tę wartość, jeśli wykrywanie dotknięcia nie działa. Nie zwiększaj go ponad to, co jest potrzebne, aby wykrywanie dotknięcia działało, ponieważ spowoduje to fałszywe alarmy
 
-## Interface settings
+## Appearance settings
 
-settings-general-interface = Interfejs
+settings-interface-appearance = Wygląd
 settings-general-interface-dev_mode = Tryb Dewelopera
 settings-general-interface-dev_mode-description = Ten tryb przydaje się do sprawdzania większej ilości danych.
 settings-general-interface-dev_mode-label = Tryb Dewelopera
+settings-general-interface-theme = Motyw kolorystyczny
+settings-general-interface-lang = Wybierz Język
+settings-general-interface-lang-description = Zmień podstawowy język jaki chcesz używać
+settings-general-interface-lang-placeholder = Wybierz Język który będziesz używać
+# Keep the font name untranslated
+settings-interface-appearance-font = Czcionka interfejsu użytkownika
+settings-interface-appearance-font-description = Spowoduje to zmianę czcionki używanej przez interfejs
+settings-interface-appearance-font-placeholder = Domyślna czcionka
+settings-interface-appearance-font-os_font = Czcionka systemu operacyjnego
+settings-interface-appearance-font-slime_font = Domyślna czcionka
+settings-interface-appearance-font_size = Skalowanie czcionki bazowej
+settings-interface-appearance-font_size-description = Wpływa to na rozmiar czcionki całego interfejsu z wyjątkiem tego panelu ustawień
+
+## Notification settings
+
+settings-interface-notifications = Powiadomienia
 settings-general-interface-serial_detection = Wykrywanie urządzeń
 settings-general-interface-serial_detection-description = Ta opcja daje powiadomienia jeżeli serwer wykryje urządzenie które może być trackerem
 settings-general-interface-serial_detection-label = Wykrywanie urządzeń
@@ -385,10 +435,6 @@ settings-general-interface-feedback_sound = Dźwięk Informacji
 settings-general-interface-feedback_sound-description = Ta opcja odtworzy dźwięk, gdy reset zostanie uruchomiony
 settings-general-interface-feedback_sound-label = Dźwięk Informacji
 settings-general-interface-feedback_sound-volume = Poziom głośności sprzężenia zwrotnego
-settings-general-interface-theme = Motyw kolorystyczny
-settings-general-interface-lang = Wybierz Język
-settings-general-interface-lang-description = Zmień podstawowy język jaki chcesz używać
-settings-general-interface-lang-placeholder = Wybierz Język który będziesz używać
 
 ## Serial settings
 
@@ -762,7 +808,10 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = Proporcje automatyczne
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Zalecana
-onboarding-choose_proportions-auto_proportions-description = To odgadnie twoje proporcje, rejestrując próbkę twoich ruchów i przepuszczając ją przez sztuczną inteligencję
+onboarding-choose_proportions-auto_proportions-descriptionv2 =
+    To odgadnie twoje proporcje, rejestrując próbkę twoich ruchów i przepuszczając ją przez algorytm.
+    
+    <b>Wymaga podłączenia HMD do SlimeVR!</b>
 onboarding-choose_proportions-manual_proportions = Ręczne proporcje
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Drobne detale
@@ -798,6 +847,18 @@ onboarding-automatic_proportions-requirements-description =
     Twoje urządzenia śledzące i zestaw VR działają poprawnie na serwerze SlimeVR.
     Twój zestaw VR przesyła dane pozycyjne do serwera SlimeVR (oznacza to ogólnie, że SteamVR działa i jest połączony ze SlimeVR za pomocą sterownika SlimeVR dla SteamVR).
 onboarding-automatic_proportions-requirements-next = Zapoznałem się z wymaganiami
+onboarding-automatic_proportions-check_height-title = Sprawdź swój wzrost
+onboarding-automatic_proportions-check_height-description = Używamy Twojego wzrostu jako podstawy naszych pomiarów, używając wzrostu HMD jako przybliżenia Twojego rzeczywistego wzrostu, ale lepiej samemu sprawdzić, czy są prawidłowe!
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = Naciśnij przycisk stojąc <u>wyprostowany</u>, aby obliczyć swój wzrost. Masz 3 sekundy po naciśnięciu przycisku!
+onboarding-automatic_proportions-check_height-fetch_height = Stoję!
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Nieznany
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height = Twój wzrost to
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height = A wysokość HMD jest
+onboarding-automatic_proportions-check_height-next_step = Są w porządku
 onboarding-automatic_proportions-start_recording-title = Bądź gotowy żeby się ruszać
 onboarding-automatic_proportions-start_recording-description = Będziemy teraz nagrywać specyficzne pozycje i ruchy. Będą one pokazane w następnym okienku. Bądź gotowy po naciśnięciu przycisku!
 onboarding-automatic_proportions-start_recording-next = Uruchom nagrywanie
@@ -829,6 +890,10 @@ onboarding-automatic_proportions-verify_results-redo = Powtórz Nagrywanie
 onboarding-automatic_proportions-verify_results-confirm = Są Prawidłowe
 onboarding-automatic_proportions-done-title = Zmierzono oraz Zapisano.
 onboarding-automatic_proportions-done-description = Twoja kalibracja ciała została zakończona!
+onboarding-automatic_proportions-error_modal =
+    <b>Ostrzeżenie:</b> Wykryto błąd podczas szacowania proporcji!
+    Proszę <docs>sprawdź dokumenty</docs> lub dołącz do naszego <discord>Discord</discord>, aby uzyskać pomoc ^_^
+onboarding-automatic_proportions-error_modal-confirm = Zrozumiano!
 
 ## Home
 
