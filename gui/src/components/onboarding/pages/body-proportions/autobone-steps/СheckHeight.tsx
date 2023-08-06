@@ -117,26 +117,9 @@ export function CheckHeight({
           <form className="flex flex-col self-center items-center justify-center">
             <NumberSelector
               control={control}
-              name="height"
-              label={l10n.getString(
-                'onboarding-automatic_proportions-check_height-height'
-              )}
-              valueLabelFormat={(value) =>
-                isNaN(value)
-                  ? l10n.getString(
-                      'onboarding-automatic_proportions-check_height-unknown'
-                    )
-                  : mFormat.format(value)
-              }
-              min={MIN_HEIGHT}
-              max={4}
-              step={0.01}
-            />
-            <NumberSelector
-              control={control}
               name="hmdHeight"
               label={l10n.getString(
-                'onboarding-automatic_proportions-check_height-hmd_height'
+                'onboarding-automatic_proportions-check_height-hmd_height1'
               )}
               valueLabelFormat={(value) =>
                 isNaN(value)
@@ -149,6 +132,23 @@ export function CheckHeight({
               max={4}
               step={0.01}
               disabled={true}
+            />
+            <NumberSelector
+              control={control}
+              name="height"
+              label={l10n.getString(
+                'onboarding-automatic_proportions-check_height-height1'
+              )}
+              valueLabelFormat={(value) =>
+                isNaN(value)
+                  ? l10n.getString(
+                      'onboarding-automatic_proportions-check_height-unknown'
+                    )
+                  : mFormat.format(value)
+              }
+              min={MIN_HEIGHT}
+              max={4}
+              step={0.01}
             />
           </form>
         </div>
