@@ -7,6 +7,7 @@
     "@fluent/react": "^0.14.1",
     "@fontsource/poppins": "^4.5.8",
     "@formatjs/intl-localematcher": "^0.2.32",
+    "@react-three/drei": "^9.80.1",
     "@react-three/fiber": "^8.10.0",
     "@tauri-apps/api": "^2.0.0-alpha.5",
     "@tauri-apps/plugin-app": "github:tauri-apps/tauri-plugin-app#v2",
