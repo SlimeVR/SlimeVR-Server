@@ -5,6 +5,7 @@ import { useMemo, useEffect, useRef } from 'react';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 import { BodyPart, BoneT } from 'solarxr-protocol';
+import { OrbitControls } from '@react-three/drei';
 
 class BoneKind extends Bone {
   boneT: BoneT;
@@ -178,10 +179,7 @@ export function SkeletonVisualizerWidget() {
     [_bones]
   );
 
-  const skeleton = useMemo(
-    () => createChildren(bones, BoneKind.root),
-    [bones.size]
-  );
+  const skeleton = createChildren(bones, BoneKind.root);
 
   // useEffect(() => {
   //   skeleton.current.bones.forEach(
@@ -189,20 +187,20 @@ export function SkeletonVisualizerWidget() {
   //   );
   // }, [bones]);
 
-  if(skeleton.length === 0) return <></>
-
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
       <Canvas
         className="container"
-        style={{ height: 200, background: 'transparent' }}
+        style={{ height: 400, background: 'transparent' }}
         onCreated={({ camera }) => {
           (camera as PerspectiveCamera).fov = 60;
         }}
       >
-        <group scale={1}>
+        <group scale={2}>
           <skeletonHelper args={[skeleton[0]]}></skeletonHelper>
         </group>
+        <primitive object={skeleton[0]} />
+        <OrbitControls />
       </Canvas>
     </div>
   );
