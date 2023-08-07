@@ -8,14 +8,16 @@ import {
   SkeletonConfigResponseT,
   RpcMessage,
   SkeletonConfigRequestT,
+  SkeletonBone,
+  ChangeSkeletonConfigRequestT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '../../../../hooks/websocket-api';
-import saveAs from 'file-saver';
 import { save } from '@tauri-apps/plugin-dialog';
 import { writeTextFile } from '@tauri-apps/plugin-fs';
 import { useIsTauri } from '../../../../hooks/breakpoint';
 import { useAppContext } from '../../../../hooks/app';
 import { error } from '../../../../utils/logging';
+import { fileOpen, fileSave } from 'browser-fs-access';
 
 export const MIN_HEIGHT = 0.4;
 export const MAX_HEIGHT = 4;
@@ -51,6 +53,9 @@ export function ProportionsChoose() {
   useRPCPacket(
     RpcMessage.SkeletonConfigResponse,
     (data: SkeletonConfigResponseT) => {
+      data.skeletonParts.forEach(
+        (x) => (x.bone = SkeletonBone[x.bone] as unknown as SkeletonBone)
+      );
       const blob = new Blob([JSON.stringify(data)], {
         type: 'application/json',
       });
@@ -71,7 +76,10 @@ export function ProportionsChoose() {
             error(err);
           });
       } else {
-        saveAs(blob, 'body-proportions.json');
+        fileSave(blob, {
+          fileName: 'body-proportions.json',
+          extensions: ['.json'],
+        });
       }
     }
   );
@@ -196,7 +204,7 @@ export function ProportionsChoose() {
               </div>
             </div>
           </div>
-          <div className="flex flex-row">
+          <div className="flex flex-row gap-3">
             {!state.alonePage && (
               <Button variant="secondary" to="/onboarding/reset-tutorial">
                 {l10n.getString('onboarding-previous_step')}
@@ -213,6 +221,51 @@ export function ProportionsChoose() {
               }
             >
               {l10n.getString('onboarding-choose_proportions-export')}
+            </Button>
+            <Button
+              variant={!state.alonePage ? 'secondary' : 'tertiary'}
+              onClick={async () => {
+                const file = await fileOpen({
+                  mimeTypes: ['application/json'],
+                });
+
+                const text = await file.text();
+                const config = JSON.parse(text) as SkeletonConfigResponseT;
+                if (
+                  !config?.skeletonParts?.length ||
+                  !Array.isArray(config.skeletonParts)
+                )
+                  return;
+
+                const configRequests = [];
+                for (const bone of [...config.skeletonParts]) {
+                  if (
+                    (typeof bone.bone === 'string' &&
+                      typeof SkeletonBone[bone.bone] !== 'number') ||
+                    (typeof bone.bone === 'number' &&
+                      typeof SkeletonBone[bone.bone] !== 'string')
+                  )
+                    return;
+
+                  const skeletonBone =
+                    typeof bone.bone === 'string'
+                      ? SkeletonBone[bone.bone]
+                      : bone.bone;
+
+                  configRequests.push(
+                    new ChangeSkeletonConfigRequestT(
+                      skeletonBone as SkeletonBone,
+                      bone.value
+                    )
+                  );
+                }
+
+                configRequests.forEach((x) =>
+                  sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, x)
+                );
+              }}
+            >
+              {l10n.getString('onboarding-choose_proportions-import')}
             </Button>
           </div>
         </div>
