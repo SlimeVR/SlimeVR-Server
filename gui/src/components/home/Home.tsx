@@ -50,7 +50,7 @@ export function Home() {
         <HeadsetIcon></HeadsetIcon>
       </NavLink>
       <div className="h-full overflow-y-auto">
-      <SkeletonVisualizerWidget></SkeletonVisualizerWidget>
+        <SkeletonVisualizerWidget></SkeletonVisualizerWidget>
 
         <div
           className={classNames(

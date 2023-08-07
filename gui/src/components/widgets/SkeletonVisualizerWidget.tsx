@@ -1,6 +1,6 @@
-import { Canvas, Object3DNode, extend } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import { useAppContext } from '@/hooks/app';
-import { Bone, PerspectiveCamera, Quaternion, Skeleton, Vector3 } from 'three';
+import { Bone, PerspectiveCamera, Quaternion, Vector3 } from 'three';
 import { useMemo, useEffect, useRef } from 'react';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
@@ -14,7 +14,6 @@ class BoneKind extends Bone {
     super();
     const bone = bones.get(bodyPart);
     if (!bone) {
-      console.log(bones);
       throw 'Couldnt find bone ' + BodyPart[bodyPart];
     }
     this.boneT = bone;
@@ -191,7 +190,7 @@ export function SkeletonVisualizerWidget() {
     );
   }, [bones]);
 
-  if(!skeleton.current) return <></>
+  if (!skeleton.current) return <></>;
 
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
