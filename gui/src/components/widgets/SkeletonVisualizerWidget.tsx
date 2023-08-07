@@ -25,11 +25,14 @@ class BoneKind extends Bone {
     const parent = BoneKind.parent(this.boneT.bodyPart);
     const parentBone = parent === null ? undefined : bones.get(parent);
     this.setRotationFromQuaternion(
-      QuaternionFromQuatT(this.boneT.rotationG).multiply(
-        parentBone === undefined
-          ? new Quaternion().identity()
-          : QuaternionFromQuatT(parentBone.rotationG).invert()
-      )
+      QuaternionFromQuatT(this.boneT.rotationG)
+        .normalize()
+        .multiply(
+          parentBone === undefined
+            ? new Quaternion().identity()
+            : QuaternionFromQuatT(parentBone.rotationG).normalize().invert()
+        )
+        .normalize()
     );
     // console.log(this.quaternion);
     // console.log(
