@@ -25,13 +25,13 @@ class BoneKind extends Bone {
   updateData(bones: Map<BodyPart, BoneT>) {
     const parent = BoneKind.parent(this.boneT.bodyPart);
     const parentBone = parent === null ? undefined : bones.get(parent);
-    // this.setRotationFromQuaternion(
-    //   QuaternionFromQuatT(this.boneT.rotationG).multiply(
-    //     parentBone === undefined
-    //       ? new Quaternion().identity()
-    //       : QuaternionFromQuatT(parentBone.rotationG).invert()
-    //   )
-    // );
+    this.setRotationFromQuaternion(
+      QuaternionFromQuatT(this.boneT.rotationG).multiply(
+        parentBone === undefined
+          ? new Quaternion().identity()
+          : QuaternionFromQuatT(parentBone.rotationG).invert()
+      )
+    );
     // console.log(this.quaternion);
     // console.log(
     //   parentBone === undefined
@@ -179,13 +179,19 @@ export function SkeletonVisualizerWidget() {
     [_bones]
   );
 
-  const skeleton = createChildren(bones, BoneKind.root);
+  const skeleton = useRef<Bone[]>();
 
-  // useEffect(() => {
-  //   skeleton.current.bones.forEach(
-  //     (bone) => bone instanceof BoneKind && bone.updateData(bones)
-  //   );
-  // }, [bones]);
+  useEffect(() => {
+    skeleton.current = createChildren(bones, BoneKind.root);
+  }, [bones.size]);
+
+  useEffect(() => {
+    skeleton.current?.forEach(
+      (bone) => bone instanceof BoneKind && bone.updateData(bones)
+    );
+  }, [bones]);
+
+  if(!skeleton.current) return <></>
 
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
@@ -197,9 +203,9 @@ export function SkeletonVisualizerWidget() {
         }}
       >
         <group scale={2}>
-          <skeletonHelper args={[skeleton[0]]}></skeletonHelper>
+          <skeletonHelper args={[skeleton.current[0]]}></skeletonHelper>
         </group>
-        <primitive object={skeleton[0]} />
+        <primitive object={skeleton.current[0]} />
         <OrbitControls />
       </Canvas>
     </div>
