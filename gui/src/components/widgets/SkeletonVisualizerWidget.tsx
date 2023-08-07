@@ -24,16 +24,16 @@ class BoneKind extends Bone {
   updateData(bones: Map<BodyPart, BoneT>) {
     const parent = BoneKind.parent(this.boneT.bodyPart);
     const parentBone = parent === null ? undefined : bones.get(parent);
-    this.setRotationFromQuaternion(
-      QuaternionFromQuatT(this.boneT.rotationG)
-        .normalize()
-        .multiply(
-          parentBone === undefined
-            ? new Quaternion().identity()
-            : QuaternionFromQuatT(parentBone.rotationG).normalize().invert()
-        )
-        .normalize()
-    );
+    // this.setRotationFromQuaternion(
+    //   QuaternionFromQuatT(this.boneT.rotationG)
+    //     .normalize()
+    //     .multiply(
+    //       parentBone === undefined
+    //         ? new Quaternion().identity()
+    //         : QuaternionFromQuatT(parentBone.rotationG).normalize().invert()
+    //     )
+    //     .normalize()
+    // );
     // console.log(this.quaternion);
     // console.log(
     //   parentBone === undefined
@@ -137,9 +137,9 @@ class BoneKind extends Bone {
         return BodyPart.RIGHT_LOWER_LEG;
 
       case BodyPart.LEFT_SHOULDER:
-        return BodyPart.HIP;
+        return BodyPart.NECK;
       case BodyPart.RIGHT_SHOULDER:
-        return BodyPart.HIP;
+        return BodyPart.NECK;
       case BodyPart.LEFT_UPPER_ARM:
         return BodyPart.LEFT_SHOULDER;
       case BodyPart.RIGHT_UPPER_ARM:
