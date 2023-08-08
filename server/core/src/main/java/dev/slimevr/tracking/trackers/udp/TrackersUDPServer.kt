@@ -223,7 +223,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							} else {
 								conn.timedOut = false
 								for (value in conn.trackers.values) {
-									if(value.status == TrackerStatus.DISCONNECTED){
+									if (value.status == TrackerStatus.DISCONNECTED) {
 										value.status = TrackerStatus.OK
 									}
 								}
