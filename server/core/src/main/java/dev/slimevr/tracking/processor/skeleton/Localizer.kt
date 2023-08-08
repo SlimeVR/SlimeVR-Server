@@ -34,8 +34,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	private val skeleton: HumanSkeleton
 	private val legTweaks: LegTweaks
-	private var bufCur: LegTweakBuffer
-	private var bufPrev: LegTweakBuffer
+	private var bufCur: LegTweaksBuffer
+	private var bufPrev: LegTweaksBuffer
 
 	init {
 		skeleton = humanSkeleton
@@ -308,7 +308,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		timeEnd = buf.timeOfFrame
 
 		// calculate the velocity
-		comVelocity = comPosEnd.minus(comPosStart).div((timeEnd - timeStart) / LegTweakBuffer.NS_CONVERT)
+		comVelocity = comPosEnd.minus(comPosStart).div((timeEnd - timeStart) / LegTweaksBuffer.NS_CONVERT)
 
 		// if the feet have been the reference for a short amount of time nullify any upwards acceleration to prevent flying away
 		if (footFrames < WARMUP_FRAMES) {

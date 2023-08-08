@@ -32,10 +32,11 @@ class LegTweaksBuffer() {
 		val GRAVITY: Vector3 = Vector3(0f, -9.81f, 0f)
 		val GRAVITY_MAGNITUDE: Float = GRAVITY.len()
 
-		private const val SKATING_DISTANCE_CUTOFF = 0.15f
+		private const val SKATING_DISTANCE_CUTOFF = 0.5f
 		private const val SKATING_ROTVELOCITY_THRESHOLD = 4.5f
-		private const val SKATING_LOCK_ENGAGE_PERCENT = 0.15f
+		private const val SKATING_LOCK_ENGAGE_PERCENT = 0.85f
 		private const val FLOOR_DISTANCE_CUTOFF = 0.05f
+		private const val SIX_TRACKER_TOLERANCE = -0.10f
 		private val FORCE_VECTOR_TO_PRESSURE: Vector3 = Vector3(0.25f, 1.0f, 0.25f)
 		private val FORCE_ERROR_TOLERANCE_SQR: Float = FastMath.sqr(4.0f)
 		private val FORCE_VECTOR_FALLBACK = floatArrayOf(0.1f, 0.1f)
@@ -109,86 +110,58 @@ class LegTweaksBuffer() {
 	}
 
 	// states for the legs
-	var leftLegState = STATE_UNKNOWN
-	var rightLegState = STATE_UNKNOWN
-	var leftLegNumericalState = 0f
-		private set
-	var rightLegNumericalState = 0f
-		private set
+	private var leftLegState = STATE_UNKNOWN
+	private var rightLegState = STATE_UNKNOWN
+	private var leftLegNumericalState = 0f
+	private var rightLegNumericalState = 0f
 
 	// positions and rotations
-	var leftFootPosition: Vector3 = Vector3.NULL
-		private set
-	var rightFootPosition: Vector3 = Vector3.NULL
-		private set
-	var leftKneePosition: Vector3 = Vector3.NULL
-		private set
-	var rightKneePosition: Vector3 = Vector3.NULL
-		private set
-	var hipPosition: Vector3 = Vector3.NULL
-		private set
-	var leftFootRotation: Quaternion = Quaternion.IDENTITY
-		private set
-	var rightFootRotation: Quaternion = Quaternion.IDENTITY
-		private set
-	var leftFootPositionCorrected: Vector3 = Vector3.NULL
-		private set
-	var rightFootPositionCorrected: Vector3 = Vector3.NULL
-		private set
-	var leftKneePositionCorrected: Vector3 = Vector3.NULL
-		private set
-	var rightKneePositionCorrected: Vector3 = Vector3.NULL
-		private set
-	var hipPositionCorrected: Vector3 = Vector3.NULL
-		private set
-	var leftFootRotationCorrected: Quaternion =
+	private var leftFootPosition: Vector3 = Vector3.NULL
+	private var rightFootPosition: Vector3 = Vector3.NULL
+	private var leftKneePosition: Vector3 = Vector3.NULL
+	private var rightKneePosition: Vector3 = Vector3.NULL
+	private var hipPosition: Vector3 = Vector3.NULL
+	private var leftFootRotation: Quaternion = Quaternion.IDENTITY
+	private var rightFootRotation: Quaternion = Quaternion.IDENTITY
+
+	private var leftFootPositionCorrected: Vector3 = Vector3.NULL
+	private var rightFootPositionCorrected: Vector3 = Vector3.NULL
+	private var leftKneePositionCorrected: Vector3 = Vector3.NULL
+	private var rightKneePositionCorrected: Vector3 = Vector3.NULL
+	private var hipPositionCorrected: Vector3 = Vector3.NULL
+	private var leftFootRotationCorrected: Quaternion =
 		Quaternion.IDENTITY
-		private set
-	var rightFootRotationCorrected: Quaternion =
+	private var rightFootRotationCorrected: Quaternion =
 		Quaternion.IDENTITY
-		private set
 
 	// velocities
-	var leftFootVelocity: Vector3 = Vector3.NULL
-		private set
-	var leftFootVelocityMagnitude = 0f
-		private set
-	var rightFootVelocity: Vector3 = Vector3.NULL
-		private set
-	var rightFootVelocityMagnitude = 0f
-		private set
+	private var leftFootVelocity: Vector3 = Vector3.NULL
+	private var leftFootVelocityMagnitude = 0f
+	private var rightFootVelocity: Vector3 = Vector3.NULL
+	private var rightFootVelocityMagnitude = 0f
 	private var leftFootAngleDiff = 0f
 	private var rightFootAngleDiff = 0f
 
 	// acceleration
-	var leftFootAcceleration: Vector3 = Vector3.NULL
-		private set
-	var leftFootAccelerationMagnitude = 0f
-		private set
-	var rightFootAcceleration: Vector3 = Vector3.NULL
-		private set
-	var rightFootAccelerationMagnitude = 0f
-		private set
-
-	// center of mass
-	var centerOfMass: Vector3 = Vector3.NULL
-		private set
-	var centerOfMassVelocity: Vector3 = Vector3.NULL
-		private set
-	var centerOfMassAcceleration: Vector3 = Vector3.NULL
-		private set
+	private var leftFootAcceleration: Vector3 = Vector3.NULL
+	private var leftFootAccelerationMagnitude = 0f
+	private var rightFootAcceleration: Vector3 = Vector3.NULL
+	private var rightFootAccelerationMagnitude = 0f
 
 	// other data
-	val timeOfFrame: Long = System.nanoTime()
-	var parent: LegTweaksBuffer? = null
-		private set
-
+	private val timeOfFrame: Long = System.nanoTime()
+	private var parent: LegTweaksBuffer? = null
 	private var frameNumber = 0 // higher number is older frame
 	private var detectionMode = ANKLE_ACCEL
+
+	private var accelerationAboveThresholdLeft = true
+	private var accelerationAboveThresholdRight = true
+	private var centerOfMass: Vector3 = Vector3.NULL
+	private var centerOfMassVelocity: Vector3 = Vector3.NULL
+	private var centerOfMassAcceleration: Vector3 = Vector3.NULL
 	private var leftFloorLevel = 0f
 	private var rightFloorLevel = 0f
-	var isStanding = false
-		private set
+	private var isStanding = false
 
 	private var leftFootSensitivityVel = 1.0f
 	private var rightFootSensitivityVel = 1.0f
@@ -263,9 +236,130 @@ class LegTweaksBuffer() {
 		this.rightFootRotationCorrected = rightFootRotation
 	}
 
+	// getters and setters
+	fun getLeftFootPosition(): Vector3 {
+		return leftFootPosition
+	}
+
+	fun getRightFootPosition(): Vector3 {
+		return rightFootPosition
+	}
+
+	fun getLeftKneePosition(): Vector3 {
+		return leftKneePosition
+	}
+
+	fun getRightKneePosition(): Vector3 {
+		return rightKneePosition
+	}
+
+	fun getHipPosition(): Vector3 {
+		return hipPosition
+	}
+
+	fun getLeftFootRotation(): Quaternion {
+		return leftFootRotation
+	}
+
+	fun getRightFootRotation(): Quaternion {
+		return rightFootRotation
+	}
+
+	fun getLeftFootRotationCorrected(): Quaternion {
+		return leftFootRotationCorrected
+	}
+
+	fun getRightFootRotationCorrected(): Quaternion {
+		return rightFootRotationCorrected
+	}
+
+	fun getLeftFootPositionCorrected(): Vector3 {
+		return leftFootPositionCorrected
+	}
+
+	fun getRightFootPositionCorrected(): Vector3 {
+		return rightFootPositionCorrected
+	}
+
+	fun getLeftKneePositionCorrected(): Vector3 {
+		return leftKneePositionCorrected
+	}
+
+	fun getRightKneePositionCorrected(): Vector3 {
+		return rightKneePositionCorrected
+	}
+
+	fun getHipPositionCorrected(): Vector3 {
+		return hipPositionCorrected
+	}
+
+	fun getLeftFootVelocity(): Vector3 {
+		return leftFootVelocity
+	}
+
+	fun getRightFootVelocity(): Vector3 {
+		return rightFootVelocity
+	}
+
+	fun getCenterOfMass(): Vector3 {
+		return centerOfMass
+	}
+
+	fun getLeftLegState(): Int {
+		return leftLegState
+	}
+
+	fun setLeftLegState(leftLegState: Int) {
+		this.leftLegState = leftLegState
+	}
+
+	fun getRightLegState(): Int {
+		return rightLegState
+	}
+
+	fun setRightLegState(rightLegState: Int) {
+		this.rightLegState = rightLegState
+	}
+
+	fun getLeftLegNumericalState(): Float {
+		return leftLegNumericalState
+	}
+
+	fun getRightLegNumericalState(): Float {
+		return rightLegNumericalState
+	}
+
+	fun getParent(): LegTweaksBuffer? {
+		return parent
+	}
+
+	fun getLeftFootAcceleration(): Vector3 {
+		return leftFootAcceleration
+	}
+
+	fun getRightFootAcceleration(): Vector3 {
+		return rightFootAcceleration
+	}
+
+	fun getLeftFloorLevel(): Float {
+		return leftFloorLevel
+	}
+
+	fun getRightFloorLevel(): Float {
+		return rightFloorLevel
+	}
+
+	fun getIsStanding(): Boolean {
+		return isStanding
+	}
+
 	// returns 1 / delta time
 	fun getTimeDelta(): Float {
 		return if (parent == null) 0.0f else 1.0f / ((timeOfFrame - parent!!.timeOfFrame) / NS_CONVERT)
+	}
+
+	fun getTimeOfFrame(): Long {
+		return timeOfFrame
 	}
 
 	// calculate movement attributes
@@ -276,6 +370,13 @@ class LegTweaksBuffer() {
 		computeVelocity()
 		computeAccelerationMagnitude()
 		computeComAttributes()
+
+		// check if the acceleration triggers forced unlock
+		if (detectionMode == FOOT_ACCEL) {
+			computeAccelerationAboveThresholdFootTrackers()
+		} else {
+			computeAccelerationAboveThresholdAnkleTrackers()
+		}
 
 		// calculate the scalar for other parameters
 		computeScalar()
@@ -299,8 +400,8 @@ class LegTweaksBuffer() {
 	// compute the state of the legs
 	private fun computeState() {
 		// get the difference of the corrected and current positions
-		val leftDiff = getFootHorizontalDifference(parent!!.leftFootPositionCorrected, leftFootPosition)
-		val rightDiff = getFootHorizontalDifference(parent!!.rightFootPositionCorrected, rightFootPosition)
+		val leftDiff = parent!!.getFootHorizontalDifference(leftFootPositionCorrected, leftFootPosition)
+		val rightDiff = parent!!.getFootHorizontalDifference(rightFootPositionCorrected, rightFootPosition)
 
 		// based on the last state of the legs compute their state for this
 		// individual frame
@@ -311,8 +412,7 @@ class LegTweaksBuffer() {
 			leftFootSensitivityVel,
 			leftFootAngleDiff,
 			leftFloorLevel,
-			leftFootAccelerationMagnitude,
-			leftFootSensitivityAccel,
+			accelerationAboveThresholdLeft,
 			leftFootPosition
 		)
 		rightLegState = checkState(
@@ -322,8 +422,7 @@ class LegTweaksBuffer() {
 			rightFootSensitivityVel,
 			rightFootAngleDiff,
 			rightFloorLevel,
-			rightFootAccelerationMagnitude,
-			rightFootSensitivityAccel,
+			accelerationAboveThresholdRight,
 			rightFootPosition
 		)
 
@@ -338,30 +437,32 @@ class LegTweaksBuffer() {
 		velocitySensitivity: Float,
 		angleDiff: Float,
 		floorLevel: Float,
-		accelerationMagnitude: Float,
-		accelSensitivity: Float,
+		accelerationAboveThreshold: Boolean,
 		footPosition: Vector3,
 	): Int {
 		val timeStep = getTimeDelta()
-
-		if (horizontalDifference > SKATING_DISTANCE_CUTOFF ||
+		if (legState == UNLOCKED) {
+			return if (horizontalDifference > SKATING_CUTOFF_ENGAGE ||
+				(velocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF_ENGAGE * velocitySensitivity) ||
+				(angleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE * velocitySensitivity) ||
+				footPosition.y > floorLevel + FLOOR_DISTANCE_CUTOFF ||
+				accelerationAboveThreshold
+			) {
+				UNLOCKED
+			} else {
+				LOCKED
+			}
+		}
+		return if (horizontalDifference > SKATING_DISTANCE_CUTOFF ||
 			(velocityMagnitude * timeStep > SKATING_VELOCITY_THRESHOLD * velocitySensitivity) ||
 			(angleDiff * timeStep > SKATING_ROTVELOCITY_THRESHOLD * velocitySensitivity) ||
 			footPosition.y > floorLevel + FLOOR_DISTANCE_CUTOFF ||
-			accelerationMagnitude > SKATING_ACCELERATION_THRESHOLD * accelSensitivity
+			accelerationAboveThreshold
 		) {
-			return UNLOCKED
+			UNLOCKED
+		} else {
+			LOCKED
 		}
-		if (horizontalDifference < SKATING_CUTOFF_ENGAGE &&
-			(velocityMagnitude * timeStep < SKATING_VELOCITY_CUTOFF_ENGAGE * velocitySensitivity) &&
-			(angleDiff * timeStep < SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE * velocitySensitivity) &&
-			footPosition.y < floorLevel + FLOOR_DISTANCE_CUTOFF &&
-			accelerationMagnitude < SKATING_ACCELERATION_CUTOFF_ENGAGE * accelSensitivity
-		) {
-			return LOCKED
-		}
-
-		return legState
 	}
 
 	// compute a numerical value representing how locked a foot is (bigger
@@ -403,7 +504,7 @@ class LegTweaksBuffer() {
 	// get the difference in feet position between the kinematic and corrected
 	// positions of the feet disregarding vertical displacement
 	private fun getFootHorizontalDifference(correctedPosition: Vector3, position: Vector3): Float {
-		val diff: Vector3 = correctedPosition - position
+		val diff: Vector3 = correctedPosition.minus(position)
 		return Vector3(
 			diff.x,
 			0f,
@@ -413,15 +514,19 @@ class LegTweaksBuffer() {
 
 	// get the angular velocity of the left foot (kinda we just want a scalar)
 	private fun getFootAngularVelocity(oldRot: Quaternion, rot: Quaternion): Float {
-		return (rot.toMatrix().z.unit() - oldRot.toMatrix().z.unit()).len()
+		return rot
+			.toMatrix()
+			.z
+			.minus(oldRot.toMatrix().z)
+			.len()
 	}
 
 	// compute the velocity of the feet from the position in the last frames
 	private fun computeVelocity() {
 		if (parent == null) return
-		leftFootVelocity = leftFootPosition - parent!!.leftFootPosition
+		leftFootVelocity = leftFootPosition.minus(parent!!.leftFootPosition)
 		leftFootVelocityMagnitude = leftFootVelocity.len()
-		rightFootVelocity = rightFootPosition - parent!!.rightFootPosition
+		rightFootVelocity = rightFootPosition.minus(parent!!.rightFootPosition)
 		rightFootVelocityMagnitude = rightFootVelocity.len()
 		leftFootAngleDiff = getFootAngularVelocity(parent!!.leftFootRotation, leftFootRotation)
 		rightFootAngleDiff = getFootAngularVelocity(parent!!.rightFootRotation, rightFootRotation)
@@ -441,8 +546,34 @@ class LegTweaksBuffer() {
 
 	// compute the velocity and acceleration of the center of mass
 	private fun computeComAttributes() {
-		centerOfMassVelocity = centerOfMass - parent!!.centerOfMass
-		centerOfMassAcceleration = centerOfMassVelocity - parent!!.centerOfMassVelocity
+		centerOfMassVelocity = centerOfMass.minus(parent!!.centerOfMass)
+		centerOfMassAcceleration =
+			centerOfMassVelocity.minus(parent!!.centerOfMassVelocity)
+	}
+
+	// for a setup with foot trackers the data from the imus is enough to determine lock/unlock
+	private fun computeAccelerationAboveThresholdFootTrackers() {
+		accelerationAboveThresholdLeft = (
+			leftFootAccelerationMagnitude
+			> SKATING_ACCELERATION_CUTOFF_ENGAGE * leftFootSensitivityAccel
+			)
+		accelerationAboveThresholdRight = (
+			rightFootAccelerationMagnitude
+			> SKATING_ACCELERATION_CUTOFF_ENGAGE * rightFootSensitivityAccel
+			)
+	}
+
+	// for any setup without foot trackers the data from the imus is enough to
+	// determine lock/unlock but we add some tolerance
+	private fun computeAccelerationAboveThresholdAnkleTrackers() {
+		accelerationAboveThresholdLeft = (
+			leftFootAccelerationMagnitude
+			> (SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * leftFootSensitivityAccel
+			)
+		accelerationAboveThresholdRight = (
+			rightFootAccelerationMagnitude
+			> (SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * rightFootSensitivityAccel
+			)
 	}
 
 	private fun computeScalar() {
@@ -528,7 +659,7 @@ class LegTweaksBuffer() {
 		otherFootVelMagnitude: Float,
 	): Float {
 		if (leftLegState == LOCKED && rightLegState == LOCKED) {
-			var velocityDiff: Vector3 = primaryFootVel - otherFootVel
+			var velocityDiff: Vector3 = primaryFootVel.minus(otherFootVel)
 			velocityDiff = Vector3(velocityDiff.x, 0f, velocityDiff.z)
 			val velocityDiffMagnitude: Float = velocityDiff.len()
 			if (velocityDiffMagnitude < MAX_SCALAR_DORMANT) {
@@ -569,8 +700,8 @@ class LegTweaksBuffer() {
 	// since F = ma and if m is 1 then F = a
 	private fun getPressurePrediction(): FloatArray {
 		// get the vectors from the com to each foot
-		val leftFootVector: Vector3 = (leftFootPosition - centerOfMass).unit()
-		val rightFootVector: Vector3 = (rightFootPosition - centerOfMass).unit()
+		val leftFootVector: Vector3 = leftFootPosition.minus(centerOfMass).unit()
+		val rightFootVector: Vector3 = rightFootPosition.minus(centerOfMass).unit()
 
 		// get the magnitude of the force on each foot
 		val leftFootMagnitude: Float =
@@ -582,19 +713,18 @@ class LegTweaksBuffer() {
 			)
 
 		// get the force vector each foot could apply to the com
-		val leftFootForce: Vector3 = leftFootVector * (leftFootMagnitude / 2.0f)
-		val rightFootForce: Vector3 = rightFootVector * (rightFootMagnitude / 2.0f)
+		val leftFootForce: Vector3 = leftFootVector.times(leftFootMagnitude / 2.0f)
+		val rightFootForce: Vector3 = rightFootVector.times(rightFootMagnitude / 2.0f)
 
 		// based off the acceleration of the com, get the force each foot is
 		// likely applying (the expected force sum should be equal to
 		// centerOfMassAcceleration since the mass is 1)
-		val (modifiedLeftFootForce, modifiedRightFootForce) =
-			findForceVectors(leftFootForce, rightFootForce)
+		findForceVectors(leftFootForce, rightFootForce)
 
 		// see if the force vectors found a reasonable solution
 		// if they did not we assume there is another force acting on the com
 		// and fall back to a low pressure prediction
-		if (detectOutsideForces(modifiedLeftFootForce, modifiedRightFootForce)) {
+		if (detectOutsideForces(leftFootForce, rightFootForce)) {
 			isStanding = false
 			return FORCE_VECTOR_FALLBACK
 		}
@@ -602,25 +732,17 @@ class LegTweaksBuffer() {
 
 		// set the pressure to the force on each foot times the force to
 		// pressure scalar
-		var leftFootPressure = modifiedLeftFootForce.hadamard(FORCE_VECTOR_TO_PRESSURE).len()
-		var rightFootPressure = modifiedRightFootForce.hadamard(FORCE_VECTOR_TO_PRESSURE).len()
+		var leftFootPressure = leftFootForce.hadamard(FORCE_VECTOR_TO_PRESSURE).len()
+		var rightFootPressure = rightFootForce.hadamard(FORCE_VECTOR_TO_PRESSURE).len()
 
 		// distance from the ground is a factor in the pressure
 		// using the inverse of the distance to the ground scale the
 		// pressure
 		val leftDistance: Float =
-			if (leftFootPosition.y > (leftFloorLevel + FLOOR_DISTANCE_CUTOFF)) {
-				leftFootPosition.y - (leftFloorLevel + FLOOR_DISTANCE_CUTOFF)
-			} else {
-				LegTweaks.NEARLY_ZERO
-			}
+			if (leftFootPosition.y > leftFloorLevel) leftFootPosition.y - leftFloorLevel else LegTweaks.NEARLY_ZERO
 		leftFootPressure *= 1.0f / leftDistance
 		val rightDistance: Float =
-			if (rightFootPosition.y > (rightFloorLevel + FLOOR_DISTANCE_CUTOFF)) {
-				rightFootPosition.y - (rightFloorLevel + FLOOR_DISTANCE_CUTOFF)
-			} else {
-				LegTweaks.NEARLY_ZERO
-			}
+			if (rightFootPosition.y > rightFloorLevel) rightFootPosition.y - rightFloorLevel else LegTweaks.NEARLY_ZERO
 		rightFootPressure *= 1.0f / rightDistance
 
 		// normalize the pressure values
@@ -632,7 +754,7 @@ class LegTweaksBuffer() {
 
 	// perform a gradient descent to find the force vectors that best match the
 	// acceleration of the com
-	private fun findForceVectors(leftFootForceInit: Vector3, rightFootForceInit: Vector3): List<Vector3> {
+	private fun findForceVectors(leftFootForceInit: Vector3, rightFootForceInit: Vector3) {
 		var leftFootForce: Vector3 = leftFootForceInit
 		var rightFootForce: Vector3 = rightFootForceInit
 		val iterations = 100
@@ -654,13 +776,14 @@ class LegTweaksBuffer() {
 			tempRightFootForce2 = rightFootForce
 
 			// get the error at the current position
-			error = centerOfMassAcceleration - (leftFootForce + rightFootForce + GRAVITY)
+			error = centerOfMassAcceleration
+				.minus(leftFootForce.plus(rightFootForce).plus(GRAVITY))
 
 			// add and subtract the error to the force vectors
-			tempLeftFootForce1 *= (1.0f + stepSize)
-			tempLeftFootForce2 *= (1.0f - stepSize)
-			tempRightFootForce1 *= (1.0f + stepSize)
-			tempRightFootForce2 *= (1.0f - stepSize)
+			tempLeftFootForce1 = tempLeftFootForce1.times(1.0f + stepSize)
+			tempLeftFootForce2 = tempLeftFootForce2.times(1.0f - stepSize)
+			tempRightFootForce1 = tempRightFootForce1.times(1.0f + stepSize)
+			tempRightFootForce2 = tempRightFootForce2.times(1.0f - stepSize)
 
 			// get the error at the new position
 			error1 = getForceVectorError(tempLeftFootForce1, rightFootForce)
@@ -680,20 +803,19 @@ class LegTweaksBuffer() {
 				rightFootForce = tempRightFootForce2
 			}
 		}
-
-		return listOf(leftFootForce, rightFootForce)
 	}
 
 	// detect any outside forces on the body such
 	// as a wall or a chair. returns true if there is an outside force
 	private fun detectOutsideForces(f1: Vector3, f2: Vector3): Boolean {
-		val force: Vector3 = GRAVITY + f1 + f2
-		val error: Vector3 = centerOfMassAcceleration - force
+		val force: Vector3 = GRAVITY.plus(f1).plus(f2)
+		val error: Vector3 = centerOfMassAcceleration.minus(force)
 		return error.lenSq() > FORCE_ERROR_TOLERANCE_SQR
 	}
 
 	// simple error function for the force vector gradient descent
 	private fun getForceVectorError(testForce: Vector3, otherForce: Vector3): Vector3 {
-		return centerOfMassAcceleration - (testForce + otherForce + GRAVITY)
+		return centerOfMassAcceleration
+			.minus(testForce.plus(otherForce).plus(GRAVITY))
 	}
 }
