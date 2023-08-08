@@ -19,7 +19,7 @@ import io.github.axisangles.ktmath.Vector3
  * large range of actions and body types.
  */
 
-class LegTweakBuffer() {
+class LegTweaksBuffer() {
 	// hyperparameters / constants
 	companion object {
 		const val STATE_UNKNOWN = 0
@@ -35,11 +35,11 @@ class LegTweakBuffer() {
 		private const val SKATING_DISTANCE_CUTOFF = 0.5f
 		private const val SKATING_ROTVELOCITY_THRESHOLD = 4.5f
 		private const val SKATING_LOCK_ENGAGE_PERCENT = 0.85f
-		private const val FLOOR_DISTANCE_CUTOFF = 0.125f
+		private const val FLOOR_DISTANCE_CUTOFF = 0.05f
 		private const val SIX_TRACKER_TOLERANCE = -0.10f
 		private val FORCE_VECTOR_TO_PRESSURE: Vector3 = Vector3(0.25f, 1.0f, 0.25f)
 		private val FORCE_ERROR_TOLERANCE_SQR: Float = FastMath.sqr(4.0f)
-		private val FORCE_VECTOR_FALLBACK = floatArrayOf(0.1f, 0.1f) // TODO experiment with this
+		private val FORCE_VECTOR_FALLBACK = floatArrayOf(0.1f, 0.1f)
 
 		var SKATING_VELOCITY_THRESHOLD = 2.4f
 		var SKATING_ACCELERATION_THRESHOLD = 0.8f
@@ -150,7 +150,7 @@ class LegTweakBuffer() {
 
 	// other data
 	private val timeOfFrame: Long = System.nanoTime()
-	private var parent: LegTweakBuffer? = null
+	private var parent: LegTweaksBuffer? = null
 	private var frameNumber = 0 // higher number is older frame
 	private var detectionMode = ANKLE_ACCEL
 
@@ -182,7 +182,7 @@ class LegTweakBuffer() {
 		accelerationMode: Int,
 		hipPosition: Vector3,
 		centerOfMass: Vector3,
-		parent: LegTweakBuffer,
+		parent: LegTweaksBuffer,
 		active: Boolean,
 	) : this() {
 		this.leftFootPosition = leftFootPosition
@@ -329,7 +329,7 @@ class LegTweakBuffer() {
 		return rightLegNumericalState
 	}
 
-	fun getParent(): LegTweakBuffer? {
+	fun getParent(): LegTweaksBuffer? {
 		return parent
 	}
 
@@ -533,7 +533,7 @@ class LegTweakBuffer() {
 	}
 
 	// get the nth parent of this frame
-	private fun getNParent(n: Int): LegTweakBuffer? {
+	private fun getNParent(n: Int): LegTweaksBuffer? {
 		return if (n == 0 || parent == null) this else parent!!.getNParent(n - 1)
 	}
 
@@ -568,11 +568,11 @@ class LegTweakBuffer() {
 	private fun computeAccelerationAboveThresholdAnkleTrackers() {
 		accelerationAboveThresholdLeft = (
 			leftFootAccelerationMagnitude
-			> (LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * leftFootSensitivityAccel
+			> (SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * leftFootSensitivityAccel
 			)
 		accelerationAboveThresholdRight = (
 			rightFootAccelerationMagnitude
-			> (LegTweakBuffer.SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * rightFootSensitivityAccel
+			> (SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * rightFootSensitivityAccel
 			)
 	}
 

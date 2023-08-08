@@ -34,14 +34,14 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	private val skeleton: HumanSkeleton
 	private val legTweaks: LegTweaks
-	private var bufCur: LegTweakBuffer
-	private var bufPrev: LegTweakBuffer
+	private var bufCur: LegTweaksBuffer
+	private var bufPrev: LegTweaksBuffer
 
 	init {
 		skeleton = humanSkeleton
 		legTweaks = skeleton.legTweaks
 		bufCur = legTweaks.getBuffer()
-		bufPrev = LegTweakBuffer()
+		bufPrev = LegTweaksBuffer()
 	}
 
 	// state variables
@@ -157,8 +157,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	private fun getPlantedFoot(): MovementStates {
 		// if locked in legtweaks it's the locked foot
-		if (bufCur.getLeftLegState() == LegTweakBuffer.LOCKED) return MovementStates.LEFT_LOCKED
-		if (bufCur.getRightLegState() == LegTweakBuffer.LOCKED) return MovementStates.RIGHT_LOCKED
+		if (bufCur.getLeftLegState() == LegTweaksBuffer.LOCKED) return MovementStates.LEFT_LOCKED
+		if (bufCur.getRightLegState() == LegTweaksBuffer.LOCKED) return MovementStates.RIGHT_LOCKED
 
 		// if the state is not locked, use the numerical state to determine a
 		// foot to follow
@@ -311,7 +311,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		timeEnd = buf.getTimeOfFrame()
 
 		// calculate the velocity
-		comVelocity = comPosEnd.minus(comPosStart).div((timeEnd - timeStart) / LegTweakBuffer.NS_CONVERT)
+		comVelocity = comPosEnd.minus(comPosStart).div((timeEnd - timeStart) / LegTweaksBuffer.NS_CONVERT)
 
 		// if the feet have been the reference for a short amount of time nullify any upwards acceleration to prevent flying away
 		if (footFrames < WARMUP_FRAMES) {
