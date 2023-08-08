@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import { Typography } from '../../../commons/Typography';
 import { Button } from '../../../commons/Button';
 import {
-  SkeletonConfigResponseT,
   RpcMessage,
   SkeletonConfigRequestT,
   SkeletonBone,
@@ -18,10 +17,18 @@ import { useIsTauri } from '../../../../hooks/breakpoint';
 import { useAppContext } from '../../../../hooks/app';
 import { error } from '../../../../utils/logging';
 import { fileOpen, fileSave } from 'browser-fs-access';
+import { useDebouncedEffect } from '../../../../hooks/timeout';
 
 export const MIN_HEIGHT = 0.4;
 export const MAX_HEIGHT = 4;
 export const DEFAULT_HEIGHT = 1.5;
+export const CURRENT_EXPORT_VERSION = 1;
+
+enum ImportStatus {
+  FAILED,
+  SUCCESS,
+  OK,
+}
 
 export function ProportionsChoose() {
   const isTauri = useIsTauri();
@@ -29,7 +36,14 @@ export function ProportionsChoose() {
   const { applyProgress, state } = useOnboarding();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [animated, setAnimated] = useState(false);
+  const [importState, setImportState] = useState(ImportStatus.OK);
   const { computedTrackers } = useAppContext();
+
+  useDebouncedEffect(
+    () => setImportState(ImportStatus.OK),
+    [importState],
+    2000
+  );
 
   const hmdTracker = useMemo(
     () =>
@@ -50,12 +64,27 @@ export function ProportionsChoose() {
     [hmdTracker?.tracker.position?.y]
   );
 
+  const importStatusKey = useMemo(() => {
+    switch (importState) {
+      case ImportStatus.FAILED:
+        return 'onboarding-choose_proportions-import-failed';
+      case ImportStatus.SUCCESS:
+        return 'onboarding-choose_proportions-import-success';
+      case ImportStatus.OK:
+        return 'onboarding-choose_proportions-import';
+    }
+  }, [importState]);
+
   useRPCPacket(
     RpcMessage.SkeletonConfigResponse,
-    (data: SkeletonConfigResponseT) => {
-      data.skeletonParts.forEach(
-        (x) => (x.bone = SkeletonBone[x.bone] as unknown as SkeletonBone)
-      );
+    (data: SkeletonConfigExport) => {
+      // Convert the skeleton part enums into a string
+      data.skeletonParts.forEach((x) => {
+        if (typeof x.bone === 'number')
+          x.bone = SkeletonBone[x.bone] as SkeletonBoneKey;
+      });
+      data.version = CURRENT_EXPORT_VERSION;
+
       const blob = new Blob([JSON.stringify(data)], {
         type: 'application/json',
       });
@@ -224,52 +253,72 @@ export function ProportionsChoose() {
             </Button>
             <Button
               variant={!state.alonePage ? 'secondary' : 'tertiary'}
+              className={classNames(
+                'transition-colors',
+                importState === ImportStatus.FAILED && 'bg-status-critical',
+                importState === ImportStatus.SUCCESS && 'bg-status-success'
+              )}
               onClick={async () => {
                 const file = await fileOpen({
                   mimeTypes: ['application/json'],
                 });
 
                 const text = await file.text();
-                const config = JSON.parse(text) as SkeletonConfigResponseT;
+                const config = JSON.parse(text) as SkeletonConfigExport;
                 if (
                   !config?.skeletonParts?.length ||
                   !Array.isArray(config.skeletonParts)
                 )
-                  return;
+                  return setImportState(ImportStatus.FAILED);
 
-                const configRequests = [];
                 for (const bone of [...config.skeletonParts]) {
                   if (
                     (typeof bone.bone === 'string' &&
-                      typeof SkeletonBone[bone.bone] !== 'number') ||
+                      bone.bone in SkeletonBone) ||
                     (typeof bone.bone === 'number' &&
                       typeof SkeletonBone[bone.bone] !== 'string')
-                  )
-                    return;
-
-                  const skeletonBone =
-                    typeof bone.bone === 'string'
-                      ? SkeletonBone[bone.bone]
-                      : bone.bone;
-
-                  configRequests.push(
-                    new ChangeSkeletonConfigRequestT(
-                      skeletonBone as SkeletonBone,
-                      bone.value
-                    )
-                  );
+                  ) {
+                    return setImportState(ImportStatus.FAILED);
+                  }
                 }
 
-                configRequests.forEach((x) =>
-                  sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, x)
+                parseConfigImport(config).forEach((req) =>
+                  sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, req)
                 );
+                setImportState(ImportStatus.SUCCESS);
               }}
             >
-              {l10n.getString('onboarding-choose_proportions-import')}
+              {l10n.getString(importStatusKey)}
             </Button>
           </div>
         </div>
       </div>
     </>
   );
+}
+
+function parseConfigImport(
+  config: SkeletonConfigExport
+): ChangeSkeletonConfigRequestT[] {
+  if (!config.version) config.version = 1;
+  if (config.version < 1) {
+    // Add config migration stuff here, this one is just an example.
+  }
+
+  return config.skeletonParts.map((part) => {
+    const bone =
+      typeof part.bone === 'string' ? SkeletonBone[part.bone] : part.bone;
+
+    return new ChangeSkeletonConfigRequestT(bone, part.value);
+  });
+}
+
+type SkeletonBoneKey = keyof typeof SkeletonBone;
+
+interface SkeletonConfigExport {
+  version?: number;
+  skeletonParts: {
+    bone: SkeletonBoneKey | SkeletonBone;
+    value: number;
+  }[];
 }

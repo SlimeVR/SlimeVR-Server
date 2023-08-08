@@ -748,6 +748,8 @@ onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
 onboarding-choose_proportions-export = Export proportions
 onboarding-choose_proportions-import = Import proportions
+onboarding-choose_proportions-import-success = Imported
+onboarding-choose_proportions-import-failed = Failed
 onboarding-choose_proportions-file_type = Body proportions file
 
 ## Tracker manual proportions setup
