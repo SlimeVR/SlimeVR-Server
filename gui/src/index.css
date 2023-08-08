@@ -11,9 +11,7 @@ body {
   user-select: none;
   background: theme('colors.background.20');
 
-  /**
-    * Scrollbars for Firefox
-    */
+  /*Scrollbar for firefox */
   scrollbar-color: theme('colors.background.50') theme('colors.background.60');
   scrollbar-width: thin;
 }

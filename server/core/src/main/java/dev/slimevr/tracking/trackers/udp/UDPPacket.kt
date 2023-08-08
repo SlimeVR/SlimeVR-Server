@@ -8,7 +8,7 @@ import java.nio.BufferUnderflowException
 import java.nio.ByteBuffer
 
 sealed class UDPPacket(val packetId: Int) {
-	@Throws(IOException::class)
+	@Throws(IOException::class, BufferUnderflowException::class)
 	open fun readData(buf: ByteBuffer) {}
 
 	@Throws(IOException::class)
@@ -317,6 +317,19 @@ data class UDPPacket21UserAction(var type: Int = 0) : UDPPacket(21) {
 		const val RESET_FULL = 2
 		const val RESET_YAW = 3
 		const val RESET_MOUNTING = 4
+	}
+}
+
+class UDPPacket22FeatureFlags(
+	var firmwareFeatures: FirmwareFeatures = FirmwareFeatures(),
+) :
+	UDPPacket(22) {
+	override fun readData(buf: ByteBuffer) {
+		firmwareFeatures = FirmwareFeatures.from(buf, buf.remaining())
+	}
+
+	override fun writeData(buf: ByteBuffer) {
+		buf.put(ServerFeatureFlags.packed)
 	}
 }
 

@@ -219,7 +219,7 @@ export function Serial() {
           </div>
           <div className="" ref={toolbarRef}>
             <div className="border-t-2 pt-2  border-background-60 border-solid m-2 gap-2 flex flex-row">
-              <div className="flex flex-grow gap-2 mobile:grid mobile:grid-cols-2  mobile:grid-rows-2">
+              <div className="flex flex-grow flex-wrap gap-2 mobile:grid mobile:grid-cols-2 mobile:grid-rows-2">
                 <Button variant="quaternary" onClick={reboot}>
                   {l10n.getString('settings-serial-reboot')}
                 </Button>
