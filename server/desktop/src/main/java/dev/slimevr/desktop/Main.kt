@@ -9,6 +9,7 @@ import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
+import dev.slimevr.desktop.serial.DesktopSerialHandler
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.OperatingSystem
 import io.eiren.util.collections.FastList
@@ -116,7 +117,12 @@ fun main(args: Array<String>) {
 	try {
 		val configDir = resolveConfig()
 		LogManager.info("Using config dir: $configDir")
-		val vrServer = VRServer(::provideSteamVRBridge, ::provideFeederBridge, configDir)
+		val vrServer = VRServer(
+			::provideSteamVRBridge,
+			::provideFeederBridge,
+			{ _ -> DesktopSerialHandler() },
+			configDir
+		)
 		vrServer.start()
 		Keybinding(vrServer)
 		val scanner = thread {
@@ -139,7 +145,6 @@ fun main(args: Array<String>) {
 
 fun provideSteamVRBridge(
 	server: VRServer,
-	hmdTracker: Tracker,
 	computedTrackers: List<Tracker>,
 ): ISteamVRBridge? {
 	val driverBridge: SteamVRBridge?
@@ -147,7 +152,6 @@ fun provideSteamVRBridge(
 		// Create named pipe bridge for SteamVR driver
 		driverBridge = WindowsNamedPipeBridge(
 			server,
-			hmdTracker,
 			"steamvr",
 			"SteamVR Driver Bridge",
 			"""\\.\pipe\SlimeVRDriver""",
@@ -158,7 +162,6 @@ fun provideSteamVRBridge(
 		try {
 			linuxBridge = UnixSocketBridge(
 				server,
-				hmdTracker,
 				"steamvr",
 				"SteamVR Driver Bridge",
 				Paths.get(OperatingSystem.tempDirectory, "SlimeVRDriver")
@@ -195,29 +198,30 @@ fun provideFeederBridge(
 	server: VRServer,
 ): ISteamVRBridge? {
 	val feederBridge: SteamVRBridge?
-	if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
-		// Create named pipe bridge for SteamVR input
-		// TODO: how do we want to handle HMD input from the feeder app?
-		feederBridge = WindowsNamedPipeBridge(
-			server,
-			null,
-			"steamvr_feeder",
-			"SteamVR Feeder Bridge",
-			"""\\.\pipe\SlimeVRInput""",
-			FastList()
-		)
-	} else if (OperatingSystem.currentPlatform == OperatingSystem.LINUX) {
-		feederBridge = UnixSocketBridge(
-			server,
-			null,
-			"steamvr_feeder",
-			"SteamVR Feeder Bridge",
-			Paths.get(OperatingSystem.tempDirectory, "SlimeVRInput")
-				.toString(),
-			FastList()
-		)
-	} else {
-		feederBridge = null
+	when (OperatingSystem.currentPlatform) {
+		OperatingSystem.WINDOWS -> {
+			// Create named pipe bridge for SteamVR input
+			feederBridge = WindowsNamedPipeBridge(
+				server,
+				"steamvr_feeder",
+				"SteamVR Feeder Bridge",
+				"""\\.\pipe\SlimeVRInput""",
+				FastList()
+			)
+		}
+		OperatingSystem.LINUX -> {
+			feederBridge = UnixSocketBridge(
+				server,
+				"steamvr_feeder",
+				"SteamVR Feeder Bridge",
+				Paths.get(OperatingSystem.tempDirectory, "SlimeVRInput")
+					.toString(),
+				FastList()
+			)
+		}
+		else -> {
+			feederBridge = null
+		}
 	}
 
 	return feederBridge

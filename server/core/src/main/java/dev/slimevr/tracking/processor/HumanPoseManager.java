@@ -11,6 +11,7 @@ import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
 import dev.slimevr.tracking.trackers.TrackerRole;
+import dev.slimevr.tracking.trackers.TrackerStatus;
 import dev.slimevr.util.ann.VRServerThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
@@ -314,6 +315,8 @@ public class HumanPoseManager {
 					true
 				)
 			);
+
+		connectComputedHumanPoseTrackers();
 	}
 
 	public void loadFromConfig(ConfigManager configManager) {
@@ -323,6 +326,12 @@ public class HumanPoseManager {
 	@VRServerThread
 	public void updateSkeletonModelFromServer() {
 		skeleton.setTrackersFromList(server.getAllTrackers());
+	}
+
+	private void connectComputedHumanPoseTrackers() {
+		for (Tracker t : computedTrackers) {
+			t.setStatus(TrackerStatus.OK);
+		}
 	}
 
 	// #endregion

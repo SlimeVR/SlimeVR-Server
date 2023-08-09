@@ -23,13 +23,12 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 
 	public SteamVRBridge(
 		VRServer server,
-		Tracker hmd,
 		String threadName,
 		String bridgeName,
 		String bridgeSettingsKey,
 		List<Tracker> shareableTrackers
 	) {
-		super(bridgeName, hmd);
+		super(bridgeName);
 		this.bridgeSettingsKey = bridgeSettingsKey;
 		this.runnerThread = new Thread(this, threadName);
 		this.shareableTrackers = shareableTrackers;
@@ -90,13 +89,17 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			.createDevice(
 				trackerAdded.getTrackerName(),
 				trackerAdded.getTrackerSerial(),
-				"OpenVR"
+				"OpenVR" // TODO : We need the manufacturer
 			);
 
 		String displayName;
 		boolean needsReset;
 		if (trackerAdded.getTrackerId() == 0) {
-			displayName = "OpenVR HMD";
+			if (trackerAdded.getTrackerName().equals("HMD"))
+				displayName = "SteamVR Driver HMD";
+			else
+				displayName = "Feeder App HMD";
+			// TODO support needsReset = true if HMD isn't assigned to head
 			needsReset = false;
 		} else {
 			displayName = trackerAdded.getTrackerName();
@@ -105,13 +108,11 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 
 		Tracker tracker = new Tracker(
 			device,
-			// FIXME use SteamVR tracker's id for SlimeVR tracker's trackerNum,
-			// and use VRServer's unique id for SlimeVR tracker' id
-			trackerAdded.getTrackerId(),
-			trackerAdded.getTrackerName(),
+			VRServer.getNextLocalTrackerId(),
+			trackerAdded.getTrackerSerial(),
 			displayName,
 			null,
-			null,
+			trackerAdded.getTrackerId(),
 			true,
 			true,
 			false,
@@ -352,7 +353,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 			}
 		}
 
-		Battery.Builder builder = Battery.newBuilder().setTrackerId(localTracker.getId());
+		Battery.Builder builder = Battery.newBuilder().setTrackerId(localTracker.getTrackerNum());
 
 		builder.setBatteryLevel(trackerLevel);
 		builder.setIsCharging(isCharging);

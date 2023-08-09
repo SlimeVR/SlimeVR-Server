@@ -24,6 +24,7 @@ export function TrackerBattery({
   });
   const voltageFormatter = new Intl.NumberFormat(currentLocales, {
     maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
   });
 
   return (
@@ -41,7 +42,7 @@ export function TrackerBattery({
         </Typography>
         {voltage && config?.debug && (
           <Typography color={textColor}>
-            {voltageFormatter.format(voltage)} V
+            {voltageFormatter.format(voltage)}V
           </Typography>
         )}
       </div>

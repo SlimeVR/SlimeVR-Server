@@ -374,7 +374,7 @@ settings-general-gesture_control-mountingResetDelay = Mounting reset delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers over threshold
-settings-general-gesture_control-numberTrackersOverThreshold-description = Increase this value if tap detection is not working. Do not increase it above what is needed to make tap detection work this will cause false positives
+settings-general-gesture_control-numberTrackersOverThreshold-description = Increase this value if tap detection is not working. Do not increase it above what is needed to make tap detection work as it would cause more false positives.
 
 ## Appearance settings
 settings-interface-appearance = Appearance
@@ -387,12 +387,12 @@ settings-general-interface-lang-description = Change the default language you wa
 settings-general-interface-lang-placeholder = Select the language to use
 # Keep the font name untranslated
 settings-interface-appearance-font = GUI font
-settings-interface-appearance-font-description = This changes the font used by the interface
+settings-interface-appearance-font-description = This changes the font used by the interface.
 settings-interface-appearance-font-placeholder = Default font
 settings-interface-appearance-font-os_font = OS font
 settings-interface-appearance-font-slime_font = Default font
 settings-interface-appearance-font_size = Base font scaling
-settings-interface-appearance-font_size-description = This affects the font size of the whole interface except this settings panel
+settings-interface-appearance-font_size-description = This affects the font size of the whole interface except this settings panel.
 
 ## Notification settings
 settings-interface-notifications = Notifications
@@ -400,7 +400,7 @@ settings-general-interface-serial_detection = Serial device detection
 settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker.
 settings-general-interface-serial_detection-label = Serial device detection
 settings-general-interface-feedback_sound = Feedback sound
-settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered
+settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered.
 settings-general-interface-feedback_sound-label = Feedback sound
 settings-general-interface-feedback_sound-volume = Feedback sound volume
 
@@ -486,7 +486,7 @@ settings-osc-vmc-enable = Enable
 settings-osc-vmc-enable-description = Toggle the sending and receiving of data.
 settings-osc-vmc-enable-label = Enable
 settings-osc-vmc-network = Network ports
-settings-osc-vmc-network-description = Set the ports for listening and sending data via VMC
+settings-osc-vmc-network-description = Set the ports for listening and sending data via VMC.
 settings-osc-vmc-network-port_in =
     .label = Port In
     .placeholder = Port in (default: 39540)
@@ -494,10 +494,10 @@ settings-osc-vmc-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 39539)
 settings-osc-vmc-network-address = Network address
-settings-osc-vmc-network-address-description = Choose which address to send out data at via VMC
+settings-osc-vmc-network-address-description = Choose which address to send out data at via VMC.
 settings-osc-vmc-network-address-placeholder = IPV4 address
 settings-osc-vmc-vrm = VRM Model
-settings-osc-vmc-vrm-description = Load a VRM model to allow head anchor and enable a higher compatibility with other applications
+settings-osc-vmc-vrm-description = Load a VRM model to allow head anchor and enable a higher compatibility with other applications.
 settings-osc-vmc-vrm-model_unloaded = No model loaded
 settings-osc-vmc-vrm-model_loaded = { $titled ->
     *[false] Untitled model loaded
@@ -742,7 +742,7 @@ onboarding-choose_proportions-auto_proportions-subtitle = Recommended
 onboarding-choose_proportions-auto_proportions-descriptionv2 =
     This will guess your proportions by recording a sample of your movements and passing it through an algorithm.
 
-    <b>It requires having your HMD connected to SlimeVR!</b>
+    <b>This requires having your HMD connected to SlimeVR!</b>
 onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
@@ -784,9 +784,9 @@ onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Unknown
 # Shows an element below it
-onboarding-automatic_proportions-check_height-height = Your height is
+onboarding-automatic_proportions-check_height-hmd_height1 = Your HMD height is
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height = And HMD height is
+onboarding-automatic_proportions-check_height-height1 = so your actual height is
 onboarding-automatic_proportions-check_height-next_step = They are fine
 onboarding-automatic_proportions-start_recording-title = Get ready to move
 onboarding-automatic_proportions-start_recording-description = We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!
