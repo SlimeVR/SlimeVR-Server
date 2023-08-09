@@ -713,18 +713,19 @@ class LegTweaksBuffer() {
 			)
 
 		// get the force vector each foot could apply to the com
-		val leftFootForce: Vector3 = leftFootVector.times(leftFootMagnitude / 2.0f)
-		val rightFootForce: Vector3 = rightFootVector.times(rightFootMagnitude / 2.0f)
+		val leftFootForce: Vector3 = leftFootVector * (leftFootMagnitude / 2.0f)
+		val rightFootForce: Vector3 = rightFootVector * (rightFootMagnitude / 2.0f)
 
 		// based off the acceleration of the com, get the force each foot is
 		// likely applying (the expected force sum should be equal to
 		// centerOfMassAcceleration since the mass is 1)
-		findForceVectors(leftFootForce, rightFootForce)
+		val (modifiedLeftFootForce, modifiedRightFootForce) =
+			findForceVectors(leftFootForce, rightFootForce)
 
 		// see if the force vectors found a reasonable solution
 		// if they did not we assume there is another force acting on the com
 		// and fall back to a low pressure prediction
-		if (detectOutsideForces(leftFootForce, rightFootForce)) {
+		if (detectOutsideForces(modifiedLeftFootForce, modifiedRightFootForce)) {
 			isStanding = false
 			return FORCE_VECTOR_FALLBACK
 		}
@@ -732,17 +733,17 @@ class LegTweaksBuffer() {
 
 		// set the pressure to the force on each foot times the force to
 		// pressure scalar
-		var leftFootPressure = leftFootForce.hadamard(FORCE_VECTOR_TO_PRESSURE).len()
-		var rightFootPressure = rightFootForce.hadamard(FORCE_VECTOR_TO_PRESSURE).len()
+		var leftFootPressure = modifiedLeftFootForce.hadamard(FORCE_VECTOR_TO_PRESSURE).len()
+		var rightFootPressure = modifiedRightFootForce.hadamard(FORCE_VECTOR_TO_PRESSURE).len()
 
 		// distance from the ground is a factor in the pressure
 		// using the inverse of the distance to the ground scale the
 		// pressure
 		val leftDistance: Float =
-			if (leftFootPosition.y > leftFloorLevel) leftFootPosition.y - leftFloorLevel else LegTweaks.NEARLY_ZERO
+			if (leftFootPosition.y > (leftFloorLevel + FLOOR_DISTANCE_CUTOFF)) leftFootPosition.y - (leftFloorLevel + FLOOR_DISTANCE_CUTOFF) else LegTweaks.NEARLY_ZERO
 		leftFootPressure *= 1.0f / leftDistance
 		val rightDistance: Float =
-			if (rightFootPosition.y > rightFloorLevel) rightFootPosition.y - rightFloorLevel else LegTweaks.NEARLY_ZERO
+			if (rightFootPosition.y > (rightFloorLevel + FLOOR_DISTANCE_CUTOFF)) rightFootPosition.y - (rightFloorLevel + FLOOR_DISTANCE_CUTOFF) else LegTweaks.NEARLY_ZERO
 		rightFootPressure *= 1.0f / rightDistance
 
 		// normalize the pressure values
@@ -754,7 +755,7 @@ class LegTweaksBuffer() {
 
 	// perform a gradient descent to find the force vectors that best match the
 	// acceleration of the com
-	private fun findForceVectors(leftFootForceInit: Vector3, rightFootForceInit: Vector3) {
+	private fun findForceVectors(leftFootForceInit: Vector3, rightFootForceInit: Vector3): List<Vector3> {
 		var leftFootForce: Vector3 = leftFootForceInit
 		var rightFootForce: Vector3 = rightFootForceInit
 		val iterations = 100
@@ -803,6 +804,8 @@ class LegTweaksBuffer() {
 				rightFootForce = tempRightFootForce2
 			}
 		}
+
+		return listOf(leftFootForce, rightFootForce)
 	}
 
 	// detect any outside forces on the body such
