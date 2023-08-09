@@ -375,7 +375,10 @@ public class VMCHandler implements OSCHandler {
 							// Update unity hierarchy from bone's global
 							// rotation
 							outputUnityArmature
-								.setGlobalRotationForBone(unityBone, bone.getGlobalRotation().times(bone.getRotationOffset().inv()));
+								.setGlobalRotationForBone(
+									unityBone,
+									bone.getGlobalRotation().times(bone.getRotationOffset().inv())
+								);
 						}
 					}
 					if (!anchorHip) {

@@ -1,7 +1,6 @@
 package dev.slimevr.tracking.processor
 
 import io.eiren.util.ann.ThreadSafe
-import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Transform
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.function.Consumer

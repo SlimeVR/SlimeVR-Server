@@ -300,7 +300,7 @@ class HumanSkeleton(
 		computeDependentArmOffsets()
 
 		// Update tap detection's trackers
-		tapDetectionManager.updateConfig()
+		tapDetectionManager.updateConfig(trackers)
 	}
 
 	/**
@@ -367,8 +367,8 @@ class HumanSkeleton(
 		if (pauseTracking) return
 
 		legTweaks.tweakLegs()
-		viveEmulation.update()
 		localizer.update()
+		viveEmulation.update()
 	}
 
 	/**
@@ -1056,7 +1056,9 @@ class HumanSkeleton(
 
 		// Tell floorclip to reset its floor level on the next update
 		// of the computed trackers
-		legTweaks.resetFloorLevel()
+		if (!localizer.getEnabled()) {
+			legTweaks.resetFloorLevel()
+		}
 		legTweaks.resetBuffer()
 		localizer.reset()
 		LogManager.info(String.format("[HumanSkeleton] Reset: full (%s)", resetSourceName))
@@ -1149,7 +1151,7 @@ class HumanSkeleton(
 	}
 
 	fun updateTapDetectionConfig() {
-		tapDetectionManager.updateConfig()
+		tapDetectionManager.updateConfig(null)
 	}
 
 	fun updateLegTweaksConfig() {

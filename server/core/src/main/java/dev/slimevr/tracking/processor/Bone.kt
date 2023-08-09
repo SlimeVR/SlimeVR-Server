@@ -1,6 +1,5 @@
 package dev.slimevr.tracking.processor
 
-import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import java.util.concurrent.CopyOnWriteArrayList

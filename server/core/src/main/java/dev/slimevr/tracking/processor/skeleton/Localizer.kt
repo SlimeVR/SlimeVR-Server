@@ -144,7 +144,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	fun reset() {
 		if (!enabled) return
 
-		skeleton.hmdNode.localTransform.translation = Vector3.NULL
+		skeleton.headBone.setPosition(Vector3.NULL)
 		comVelocity = Vector3.NULL
 
 		// when localizing without a 6 dof device we choose the floor level
