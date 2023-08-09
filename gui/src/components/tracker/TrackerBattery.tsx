@@ -42,7 +42,7 @@ export function TrackerBattery({
         </Typography>
         {voltage && config?.debug && (
           <Typography color={textColor}>
-            {voltageFormatter.format(voltage)} V
+            {voltageFormatter.format(voltage)}V
           </Typography>
         )}
       </div>
