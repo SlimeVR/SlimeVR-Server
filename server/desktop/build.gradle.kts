@@ -6,7 +6,6 @@
  * User Manual available at https://docs.gradle.org/6.3/userguide/java_library_plugin.html
  */
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.io.ByteArrayOutputStream
 
 plugins {
 	kotlin("jvm")
@@ -58,6 +57,7 @@ dependencies {
 	implementation("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
+	implementation("com.fazecast:jSerialComm:2.10.2")
 }
 
 tasks.shadowJar {
@@ -76,16 +76,6 @@ application {
 	mainClass.set("dev.slimevr.desktop.Main")
 }
 
-fun String.runCommand(currentWorkingDir: File = file("./")): String {
-	val byteOut = ByteArrayOutputStream()
-	project.exec {
-		workingDir = currentWorkingDir
-		commandLine = this@runCommand.split("\\s".toRegex())
-		standardOutput = byteOut
-	}
-	return String(byteOut.toByteArray()).trim()
-}
-
 buildConfig {
 	useKotlinOutput { topLevelConstants = true }
 	packageName("dev.slimevr.desktop")
@@ -94,7 +84,7 @@ buildConfig {
 		commandLine("git", "--no-pager", "tag", "--points-at", "HEAD")
 	}.standardOutput.asText.get()
 	buildConfigField("String", "GIT_COMMIT_HASH", "\"${grgit.head().abbreviatedId}\"")
-	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag}\"")
+	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag.trim()}\"")
 	buildConfigField("boolean", "GIT_CLEAN", grgit.status().isClean.toString())
 }
 

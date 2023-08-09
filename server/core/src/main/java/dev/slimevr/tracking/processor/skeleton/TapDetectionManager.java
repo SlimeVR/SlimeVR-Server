@@ -68,22 +68,23 @@ public class TapDetectionManager {
 		this.resetHandler = resetHandler;
 		this.tapSetupHandler = tapSetupHandler;
 
-		// a list of tap detectors for each tracker
-		tapDetectors = new ArrayList<>();
-		for (Tracker tracker : trackers) {
-			TapDetection tapDetector = new TapDetection(skeleton, tracker);
-			tapDetector.setEnabled(true);
-			tapDetectors.add(tapDetector);
-		}
-
-		updateConfig();
+		updateConfig(trackers);
 	}
 
-	public void updateConfig() {
+	public void updateConfig(List<Tracker> trackers) {
 		// check the skeleton for new trackers
 		yawResetDetector = new TapDetection(skeleton, getTrackerToWatchYawReset());
 		fullResetDetector = new TapDetection(skeleton, getTrackerToWatchFullReset());
 		mountingResetDetector = new TapDetection(skeleton, getTrackerToWatchMountingReset());
+
+		if (trackers != null) {
+			tapDetectors = new ArrayList<>();
+			for (Tracker tracker : trackers) {
+				TapDetection tapDetector = new TapDetection(skeleton, tracker);
+				tapDetector.setEnabled(true);
+				tapDetectors.add(tapDetector);
+			}
+		}
 
 		if (this.config == null) {
 			return;
@@ -121,6 +122,7 @@ public class TapDetectionManager {
 				|| fullResetDetector == null
 				|| mountingResetDetector == null
 				|| tapDetectors == null
+				|| config == null
 		)
 			return;
 

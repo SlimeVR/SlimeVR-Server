@@ -200,7 +200,7 @@ public abstract class ProtobufBridge implements ISteamVRBridge {
 			remoteTrackersBySerial.put(tracker.getName(), tracker);
 		}
 		synchronized (remoteTrackersByTrackerId) {
-			remoteTrackersByTrackerId.put(tracker.getId(), tracker);
+			remoteTrackersByTrackerId.put(tracker.getTrackerNum(), tracker);
 		}
 		if (trackerAdded.getTrackerRole() == TrackerRole.HMD.getId()) {
 			hmdTracker = tracker;

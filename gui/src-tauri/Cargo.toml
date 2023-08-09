@@ -21,15 +21,20 @@ default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
 
 [build-dependencies]
-tauri-build = { version = "1.2", features = [] }
+tauri-build = { version = "2.0.0-alpha.6", features = [] }
 cfg_aliases = "0.1"
 shadow-rs = "0.23"
 
 [dependencies]
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
-tauri = { version = "1.4", features = ["devtools", "dialog", "dialog-save", "fs-all", "os-all", "path-all", "shell-execute", "shell-open", "window-close", "window-maximize", "window-minimize", "window-set-resizable", "window-set-size", "window-set-title", "window-start-dragging", "window-unmaximize", "window-unminimize"] }
-tauri-runtime = "0.14"
+tauri = { version = "2.0.0-alpha.10", features = [] }
+tauri-runtime = "0.13.0-alpha.6"
+tauri-plugin-dialog = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
+tauri-plugin-fs = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
+tauri-plugin-os = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
+tauri-plugin-shell = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
+tauri-plugin-window = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 flexi_logger = "0.25"
 log-panics = { version = "2", features = ["with-backtrace"] }
 log = "0.4"
@@ -44,6 +49,8 @@ shadow-rs = { version = "0.23", default-features = false }
 const_format = "0.2.30"
 cfg-if = "1"
 color-eyre = "0.6"
+rfd = "0.11.4"
+dirs-next = "2.0.0"
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"

@@ -96,8 +96,7 @@ public class BVHFileStream extends PoseDataStream {
 		if (isEndBone) {
 			writer.write(indentLevel + "End Site\n");
 		} else {
-			writer
-				.write((level > 0 ? indentLevel + "JOINT " : "ROOT ") + bone.getBoneType() + "\n");
+			writer.write((level > 0 ? indentLevel + "JOINT " : "ROOT ") + bone.getBoneType() + "\n");
 		}
 		writer.write(indentLevel + "{\n");
 
