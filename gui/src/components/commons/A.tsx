@@ -1,4 +1,4 @@
-import { open } from '@tauri-apps/api/shell';
+import { open } from '@tauri-apps/plugin-shell';
 import { ReactNode } from 'react';
 
 export function A({ href, children }: { href: string; children?: ReactNode }) {
