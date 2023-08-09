@@ -419,6 +419,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	private fun updateSkeletonPos(travel: Vector3) {
 		val rot = skeleton.headTracker?.getRotation() ?: Quaternion.IDENTITY
 		val temp = skeleton.hmdNode.localTransform.translation.minus(travel)
+
 		skeleton.hmdNode.localTransform.translation = temp
 		skeleton.hmdNode.localTransform.rotation = rot
 	}
