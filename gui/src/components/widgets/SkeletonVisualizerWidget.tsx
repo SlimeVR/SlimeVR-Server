@@ -1,183 +1,20 @@
-import { Canvas } from '@react-three/fiber';
+import { Canvas, Object3DNode, extend } from '@react-three/fiber';
 import { useAppContext } from '@/hooks/app';
-import { Bone, PerspectiveCamera, Quaternion } from 'three';
+import { Bone, PerspectiveCamera } from 'three';
 import { useMemo, useEffect, useRef } from 'react';
-import { QuaternionFromQuatT } from '@/maths/quaternion';
-import { BodyPart, BoneT } from 'solarxr-protocol';
 import { OrbitControls } from '@react-three/drei';
+import {
+  BoneKind,
+  createChildren,
+  BasedSkeletonHelper,
+} from '../../utils/SkeletonHelper';
 
-class BoneKind extends Bone {
-  boneT: BoneT;
+extend({ BasedSkeletonHelper });
 
-  constructor(bones: Map<BodyPart, BoneT>, bodyPart: BodyPart) {
-    super();
-    const bone = bones.get(bodyPart);
-    if (!bone) {
-      throw 'Couldnt find bone ' + BodyPart[bodyPart];
-    }
-    this.boneT = bone;
-    this.name = BodyPart[bodyPart];
-    this.updateData(bones);
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    basedSkeletonHelper: Object3DNode<BasedSkeletonHelper, typeof BasedSkeletonHelper>
   }
-
-  updateData(bones: Map<BodyPart, BoneT>) {
-    this.boneT = bones.get(this.boneT.bodyPart) ?? this.boneT;
-    const parent = BoneKind.parent(this.boneT.bodyPart);
-    const parentBone = parent === null ? undefined : bones.get(parent);
-    this.setRotationFromQuaternion(
-      QuaternionFromQuatT(this.boneT.rotationG)
-        .normalize()
-        .multiply(
-          parentBone === undefined
-            ? new Quaternion().identity()
-            : QuaternionFromQuatT(parentBone.rotationG).normalize().invert()
-        )
-        .normalize()
-    );
-    // console.log(this.quaternion);
-    // console.log(
-    //   parentBone === undefined
-    //     ? new Vector3(0, 0, 0)
-    //     : Vector3FromVec3fT(parentBone.headPositionG),
-    //   Vector3FromVec3fT(this.boneT.headPositionG)
-    // );
-    // const localPosition = Vector3FromVec3fT(this.boneT.headPositionG).sub(
-    //   Vector3FromVec3fT(
-    //     parentBone === undefined
-    //       ? new Vector3(0, 0, 0)
-    //       : Vector3FromVec3fT(parentBone.headPositionG)
-    //   )
-    // );
-    this.position.set(0, -this.boneT.boneLength, 0);
-    // console.log(this.position);
-  }
-
-  static root: BodyPart = BodyPart.HEAD;
-
-  static children(part: BodyPart): BodyPart[] {
-    switch (part) {
-      case BodyPart.NONE:
-        throw 'Unexpected body part';
-      case BodyPart.HEAD:
-        return [BodyPart.NECK];
-      case BodyPart.NECK:
-        return [
-          BodyPart.UPPER_CHEST,
-          BodyPart.LEFT_SHOULDER,
-          BodyPart.RIGHT_SHOULDER,
-        ];
-      case BodyPart.UPPER_CHEST:
-        return [BodyPart.CHEST];
-      case BodyPart.CHEST:
-        return [BodyPart.WAIST];
-      case BodyPart.WAIST:
-        return [BodyPart.HIP];
-      case BodyPart.HIP:
-        return [BodyPart.LEFT_HIP, BodyPart.RIGHT_HIP];
-
-      case BodyPart.LEFT_HIP:
-        return [BodyPart.LEFT_UPPER_LEG];
-      case BodyPart.RIGHT_HIP:
-        return [BodyPart.RIGHT_UPPER_LEG];
-      case BodyPart.LEFT_UPPER_LEG:
-        return [BodyPart.LEFT_LOWER_LEG];
-      case BodyPart.RIGHT_UPPER_LEG:
-        return [BodyPart.RIGHT_LOWER_LEG];
-      case BodyPart.LEFT_LOWER_LEG:
-        return [BodyPart.LEFT_FOOT];
-      case BodyPart.RIGHT_LOWER_LEG:
-        return [BodyPart.RIGHT_FOOT];
-      case BodyPart.LEFT_FOOT:
-        return [];
-      case BodyPart.RIGHT_FOOT:
-        return [];
-
-      case BodyPart.LEFT_SHOULDER:
-        return [BodyPart.LEFT_UPPER_ARM];
-      case BodyPart.RIGHT_SHOULDER:
-        return [BodyPart.RIGHT_UPPER_ARM];
-      case BodyPart.LEFT_UPPER_ARM:
-        return [BodyPart.LEFT_LOWER_ARM];
-      case BodyPart.RIGHT_UPPER_ARM:
-        return [BodyPart.RIGHT_LOWER_ARM];
-      case BodyPart.LEFT_LOWER_ARM:
-        return [BodyPart.LEFT_HAND];
-      case BodyPart.RIGHT_LOWER_ARM:
-        return [BodyPart.RIGHT_HAND];
-      case BodyPart.LEFT_HAND:
-        return [];
-      case BodyPart.RIGHT_HAND:
-        return [];
-    }
-  }
-
-  static parent(part: BodyPart): BodyPart | null {
-    switch (part) {
-      case BodyPart.NONE:
-        throw 'Unexpected body part';
-      case BodyPart.HEAD:
-        return null;
-      case BodyPart.NECK:
-        return BodyPart.HEAD;
-      case BodyPart.UPPER_CHEST:
-        return BodyPart.NECK;
-      case BodyPart.CHEST:
-        return BodyPart.UPPER_CHEST;
-      case BodyPart.WAIST:
-        return BodyPart.CHEST;
-      case BodyPart.HIP:
-        return BodyPart.WAIST;
-
-      case BodyPart.LEFT_HIP:
-      case BodyPart.RIGHT_HIP:
-        return BodyPart.HIP;
-      case BodyPart.LEFT_UPPER_LEG:
-        return BodyPart.LEFT_HIP;
-      case BodyPart.RIGHT_UPPER_LEG:
-        return BodyPart.RIGHT_HIP;
-      case BodyPart.LEFT_LOWER_LEG:
-        return BodyPart.LEFT_UPPER_LEG;
-      case BodyPart.RIGHT_LOWER_LEG:
-        return BodyPart.RIGHT_UPPER_LEG;
-      case BodyPart.LEFT_FOOT:
-        return BodyPart.LEFT_LOWER_LEG;
-      case BodyPart.RIGHT_FOOT:
-        return BodyPart.RIGHT_LOWER_LEG;
-
-      case BodyPart.LEFT_SHOULDER:
-      case BodyPart.RIGHT_SHOULDER:
-        return BodyPart.NECK;
-      case BodyPart.LEFT_UPPER_ARM:
-        return BodyPart.LEFT_SHOULDER;
-      case BodyPart.RIGHT_UPPER_ARM:
-        return BodyPart.RIGHT_SHOULDER;
-      case BodyPart.LEFT_LOWER_ARM:
-        return BodyPart.LEFT_UPPER_ARM;
-      case BodyPart.RIGHT_LOWER_ARM:
-        return BodyPart.RIGHT_UPPER_ARM;
-      case BodyPart.LEFT_HAND:
-        return BodyPart.LEFT_LOWER_ARM;
-      case BodyPart.RIGHT_HAND:
-        return BodyPart.RIGHT_LOWER_ARM;
-    }
-  }
-}
-
-function createChildren(
-  bones: Map<BodyPart, BoneT>,
-  body: BodyPart,
-  parentBone?: BoneKind
-): (BoneKind | Bone)[] {
-  if (bones.size === 0) return [new Bone()];
-  const childrenBodies = BoneKind.children(body);
-  const parent = new BoneKind(bones, body);
-  parentBone?.add(parent);
-  if (childrenBodies.length === 0) return [parent];
-
-  const children = childrenBodies.flatMap((bodyPart) =>
-    createChildren(bones, bodyPart, parent)
-  );
-  return [parent, ...children];
 }
 
 export function SkeletonVisualizerWidget() {
@@ -212,7 +49,7 @@ export function SkeletonVisualizerWidget() {
         }}
       >
         <group scale={2}>
-          <skeletonHelper args={[skeleton.current[0]]}></skeletonHelper>
+          <basedSkeletonHelper args={[skeleton.current[0]]}></basedSkeletonHelper>
         </group>
         <primitive object={skeleton.current[0]} />
         <OrbitControls />
