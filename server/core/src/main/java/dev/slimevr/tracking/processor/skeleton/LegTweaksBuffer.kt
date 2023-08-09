@@ -110,58 +110,88 @@ class LegTweaksBuffer() {
 	}
 
 	// states for the legs
-	private var leftLegState = STATE_UNKNOWN
-	private var rightLegState = STATE_UNKNOWN
-	private var leftLegNumericalState = 0f
-	private var rightLegNumericalState = 0f
+	var leftLegState = STATE_UNKNOWN
+	var rightLegState = STATE_UNKNOWN
+	var leftLegNumericalState = 0f
+		private set
+	var rightLegNumericalState = 0f
+		private set
 
 	// positions and rotations
-	private var leftFootPosition: Vector3 = Vector3.NULL
-	private var rightFootPosition: Vector3 = Vector3.NULL
-	private var leftKneePosition: Vector3 = Vector3.NULL
-	private var rightKneePosition: Vector3 = Vector3.NULL
-	private var hipPosition: Vector3 = Vector3.NULL
-	private var leftFootRotation: Quaternion = Quaternion.IDENTITY
-	private var rightFootRotation: Quaternion = Quaternion.IDENTITY
-
-	private var leftFootPositionCorrected: Vector3 = Vector3.NULL
-	private var rightFootPositionCorrected: Vector3 = Vector3.NULL
-	private var leftKneePositionCorrected: Vector3 = Vector3.NULL
-	private var rightKneePositionCorrected: Vector3 = Vector3.NULL
-	private var hipPositionCorrected: Vector3 = Vector3.NULL
-	private var leftFootRotationCorrected: Quaternion =
+	var leftFootPosition: Vector3 = Vector3.NULL
+		private set
+	var rightFootPosition: Vector3 = Vector3.NULL
+		private set
+	var leftKneePosition: Vector3 = Vector3.NULL
+		private set
+	var rightKneePosition: Vector3 = Vector3.NULL
+		private set
+	var hipPosition: Vector3 = Vector3.NULL
+		private set
+	var leftFootRotation: Quaternion = Quaternion.IDENTITY
+		private set
+	var rightFootRotation: Quaternion = Quaternion.IDENTITY
+		private set
+	var leftFootPositionCorrected: Vector3 = Vector3.NULL
+		private set
+	var rightFootPositionCorrected: Vector3 = Vector3.NULL
+		private set
+	var leftKneePositionCorrected: Vector3 = Vector3.NULL
+		private set
+	var rightKneePositionCorrected: Vector3 = Vector3.NULL
+		private set
+	var hipPositionCorrected: Vector3 = Vector3.NULL
+		private set
+	var leftFootRotationCorrected: Quaternion =
 		Quaternion.IDENTITY
-	private var rightFootRotationCorrected: Quaternion =
+		private set
+	var rightFootRotationCorrected: Quaternion =
 		Quaternion.IDENTITY
+		private set
 
 	// velocities
-	private var leftFootVelocity: Vector3 = Vector3.NULL
-	private var leftFootVelocityMagnitude = 0f
-	private var rightFootVelocity: Vector3 = Vector3.NULL
-	private var rightFootVelocityMagnitude = 0f
+	var leftFootVelocity: Vector3 = Vector3.NULL
+		private set
+	var leftFootVelocityMagnitude = 0f
+		private set
+	var rightFootVelocity: Vector3 = Vector3.NULL
+		private set
+	var rightFootVelocityMagnitude = 0f
+		private set
 	private var leftFootAngleDiff = 0f
 	private var rightFootAngleDiff = 0f
 
 	// acceleration
-	private var leftFootAcceleration: Vector3 = Vector3.NULL
-	private var leftFootAccelerationMagnitude = 0f
-	private var rightFootAcceleration: Vector3 = Vector3.NULL
-	private var rightFootAccelerationMagnitude = 0f
+	var leftFootAcceleration: Vector3 = Vector3.NULL
+		private set
+	var leftFootAccelerationMagnitude = 0f
+		private set
+	var rightFootAcceleration: Vector3 = Vector3.NULL
+		private set
+	var rightFootAccelerationMagnitude = 0f
+		private set
+
+	// center of mass
+	var centerOfMass: Vector3 = Vector3.NULL
+		private set
+	var centerOfMassVelocity: Vector3 = Vector3.NULL
+		private set
+	var centerOfMassAcceleration: Vector3 = Vector3.NULL
+		private set
 
 	// other data
-	private val timeOfFrame: Long = System.nanoTime()
-	private var parent: LegTweaksBuffer? = null
+	val timeOfFrame: Long = System.nanoTime()
+	var parent: LegTweaksBuffer? = null
+		private set
+
 	private var frameNumber = 0 // higher number is older frame
 	private var detectionMode = ANKLE_ACCEL
-
 	private var accelerationAboveThresholdLeft = true
 	private var accelerationAboveThresholdRight = true
-	private var centerOfMass: Vector3 = Vector3.NULL
-	private var centerOfMassVelocity: Vector3 = Vector3.NULL
-	private var centerOfMassAcceleration: Vector3 = Vector3.NULL
 	private var leftFloorLevel = 0f
 	private var rightFloorLevel = 0f
-	private var isStanding = false
+	var isStanding = false
+		private set
 
 	private var leftFootSensitivityVel = 1.0f
 	private var rightFootSensitivityVel = 1.0f
@@ -236,130 +266,9 @@ class LegTweaksBuffer() {
 		this.rightFootRotationCorrected = rightFootRotation
 	}
 
-	// getters and setters
-	fun getLeftFootPosition(): Vector3 {
-		return leftFootPosition
-	}
-
-	fun getRightFootPosition(): Vector3 {
-		return rightFootPosition
-	}
-
-	fun getLeftKneePosition(): Vector3 {
-		return leftKneePosition
-	}
-
-	fun getRightKneePosition(): Vector3 {
-		return rightKneePosition
-	}
-
-	fun getHipPosition(): Vector3 {
-		return hipPosition
-	}
-
-	fun getLeftFootRotation(): Quaternion {
-		return leftFootRotation
-	}
-
-	fun getRightFootRotation(): Quaternion {
-		return rightFootRotation
-	}
-
-	fun getLeftFootRotationCorrected(): Quaternion {
-		return leftFootRotationCorrected
-	}
-
-	fun getRightFootRotationCorrected(): Quaternion {
-		return rightFootRotationCorrected
-	}
-
-	fun getLeftFootPositionCorrected(): Vector3 {
-		return leftFootPositionCorrected
-	}
-
-	fun getRightFootPositionCorrected(): Vector3 {
-		return rightFootPositionCorrected
-	}
-
-	fun getLeftKneePositionCorrected(): Vector3 {
-		return leftKneePositionCorrected
-	}
-
-	fun getRightKneePositionCorrected(): Vector3 {
-		return rightKneePositionCorrected
-	}
-
-	fun getHipPositionCorrected(): Vector3 {
-		return hipPositionCorrected
-	}
-
-	fun getLeftFootVelocity(): Vector3 {
-		return leftFootVelocity
-	}
-
-	fun getRightFootVelocity(): Vector3 {
-		return rightFootVelocity
-	}
-
-	fun getCenterOfMass(): Vector3 {
-		return centerOfMass
-	}
-
-	fun getLeftLegState(): Int {
-		return leftLegState
-	}
-
-	fun setLeftLegState(leftLegState: Int) {
-		this.leftLegState = leftLegState
-	}
-
-	fun getRightLegState(): Int {
-		return rightLegState
-	}
-
-	fun setRightLegState(rightLegState: Int) {
-		this.rightLegState = rightLegState
-	}
-
-	fun getLeftLegNumericalState(): Float {
-		return leftLegNumericalState
-	}
-
-	fun getRightLegNumericalState(): Float {
-		return rightLegNumericalState
-	}
-
-	fun getParent(): LegTweaksBuffer? {
-		return parent
-	}
-
-	fun getLeftFootAcceleration(): Vector3 {
-		return leftFootAcceleration
-	}
-
-	fun getRightFootAcceleration(): Vector3 {
-		return rightFootAcceleration
-	}
-
-	fun getLeftFloorLevel(): Float {
-		return leftFloorLevel
-	}
-
-	fun getRightFloorLevel(): Float {
-		return rightFloorLevel
-	}
-
-	fun getIsStanding(): Boolean {
-		return isStanding
-	}
-
 	// returns 1 / delta time
 	fun getTimeDelta(): Float {
 		return if (parent == null) 0.0f else 1.0f / ((timeOfFrame - parent!!.timeOfFrame) / NS_CONVERT)
-	}
-
-	fun getTimeOfFrame(): Long {
-		return timeOfFrame
 	}
 
 	// calculate movement attributes
@@ -400,8 +309,8 @@ class LegTweaksBuffer() {
 	// compute the state of the legs
 	private fun computeState() {
 		// get the difference of the corrected and current positions
-		val leftDiff = parent!!.getFootHorizontalDifference(leftFootPositionCorrected, leftFootPosition)
-		val rightDiff = parent!!.getFootHorizontalDifference(rightFootPositionCorrected, rightFootPosition)
+		val leftDiff = getFootHorizontalDifference(parent!!.leftFootPositionCorrected, leftFootPosition)
+		val rightDiff = getFootHorizontalDifference(parent!!.rightFootPositionCorrected, rightFootPosition)
 
 		// based on the last state of the legs compute their state for this
 		// individual frame

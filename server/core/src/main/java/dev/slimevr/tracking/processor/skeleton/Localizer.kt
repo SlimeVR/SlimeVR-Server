@@ -81,7 +81,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		}
 
 		// if there is a 6dof device just use it
-		if (skeleton.headTracker != null && skeleton.headTracker!!.hasPosition) {
+		if (skeleton.headTracker != null && skeleton.headTracker.hasPosition) {
 			return
 		}
 
@@ -99,7 +99,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		if (bufCur.parent == null) {
 			return
 		}
-		bufPrev = bufCur.parent
+		bufPrev = bufCur.parent!!
 
 		var finalTravel: Vector3
 
@@ -162,13 +162,16 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 		// if the state is not locked, use the numerical state to determine a
 		// foot to follow
-		return if (bufCur.leftLegNumericalState < bufCur.rightLegNumericalState &&
-			bufCur.leftLegNumericalState < MAX_FOOT_PERCENTAGE &&
+		val leftNumericalState = bufCur.leftLegNumericalState
+		val rightNumericalState = bufCur.rightLegNumericalState
+
+		return if (leftNumericalState < rightNumericalState &&
+			leftNumericalState < MAX_FOOT_PERCENTAGE &&
 			bufCur.leftFootAcceleration.y < MAX_ACCEL_UP
 		) {
 			return MovementStates.LEFT_LOCKED
-		} else if (bufCur.rightLegNumericalState < bufCur.leftLegNumericalState &&
-			bufCur.rightLegNumericalState < MAX_FOOT_PERCENTAGE &&
+		} else if (rightNumericalState < leftNumericalState &&
+			rightNumericalState < MAX_FOOT_PERCENTAGE &&
 			bufCur.rightFootAcceleration.y < MAX_ACCEL_UP
 		) {
 			MovementStates.RIGHT_LOCKED
@@ -301,7 +304,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 		// get the buffer that occurred VELOCITY_SAMPLE_RATE ago in time
 		while (buf.timeOfFrame > timeEnd && buf.parent !== null) {
-			buf = buf.parent
+			buf = buf.parent!!
 		}
 
 		val comPosEnd: Vector3 = buf.centerOfMass
@@ -357,8 +360,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			skeleton.computedRightFootTracker
 		)
 
-		var minVal = trackerList[0]!!.position.y
-		var retVal: Tracker = trackerList[0]!!
+		var minVal = trackerList[0].position.y
+		var retVal: Tracker = trackerList[0]
 		for (tracker in trackerList) {
 			if (tracker == null) {
 				continue
@@ -381,7 +384,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		// to the side for both feet)
 		var leftKnee: Vector3 = bufCur.leftKneePosition
 		var rightKnee: Vector3 = bufCur.rightKneePosition
-		val hip: Vector3 = skeleton.computedHipTracker!!.position
+		val hip: Vector3 = skeleton.computedHipTracker.position
 		leftKnee = hip.minus(leftKnee)
 		rightKnee = hip.minus(rightKnee)
 
@@ -403,13 +406,13 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		var num = 0.0f
 		var accel = Vector3.NULL
 		if (skeleton.waistTracker != null) {
-			accel += skeleton.waistTracker!!.getAcceleration()
+			accel += skeleton.waistTracker.getAcceleration()
 			num++
 		} else if (skeleton.hipTracker != null) {
-			accel += skeleton.hipTracker!!.getAcceleration()
+			accel += skeleton.hipTracker.getAcceleration()
 			num++
 		} else if (skeleton.chestTracker != null) {
-			accel += skeleton.chestTracker!!.getAcceleration()
+			accel += skeleton.chestTracker.getAcceleration()
 			num++
 		}
 		return if (num == 0f) accel else accel.div(num)
