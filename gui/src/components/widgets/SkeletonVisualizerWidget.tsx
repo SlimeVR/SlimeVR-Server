@@ -1,8 +1,7 @@
 import { Canvas } from '@react-three/fiber';
 import { useAppContext } from '@/hooks/app';
-import { Bone, PerspectiveCamera, Quaternion, Vector3 } from 'three';
+import { Bone, PerspectiveCamera, Quaternion } from 'three';
 import { useMemo, useEffect, useRef } from 'react';
-import { Vector3FromVec3fT } from '@/maths/vector3';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 import { BodyPart, BoneT } from 'solarxr-protocol';
 import { OrbitControls } from '@react-three/drei';
@@ -74,7 +73,12 @@ class BoneKind extends Bone {
       case BodyPart.WAIST:
         return [BodyPart.HIP];
       case BodyPart.HIP:
-        return [BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG];
+        return [BodyPart.LEFT_HIP, BodyPart.RIGHT_HIP];
+
+      case BodyPart.LEFT_HIP:
+        return [BodyPart.LEFT_UPPER_LEG];
+      case BodyPart.RIGHT_HIP:
+        return [BodyPart.RIGHT_UPPER_LEG];
       case BodyPart.LEFT_UPPER_LEG:
         return [BodyPart.LEFT_LOWER_LEG];
       case BodyPart.RIGHT_UPPER_LEG:
@@ -124,10 +128,13 @@ class BoneKind extends Bone {
       case BodyPart.HIP:
         return BodyPart.WAIST;
 
+      case BodyPart.LEFT_HIP:
+      case BodyPart.RIGHT_HIP:
+        return BodyPart.HIP;
       case BodyPart.LEFT_UPPER_LEG:
-        return BodyPart.HIP;
+        return BodyPart.LEFT_HIP;
       case BodyPart.RIGHT_UPPER_LEG:
-        return BodyPart.HIP;
+        return BodyPart.RIGHT_HIP;
       case BodyPart.LEFT_LOWER_LEG:
         return BodyPart.LEFT_UPPER_LEG;
       case BodyPart.RIGHT_LOWER_LEG:
@@ -138,7 +145,6 @@ class BoneKind extends Bone {
         return BodyPart.RIGHT_LOWER_LEG;
 
       case BodyPart.LEFT_SHOULDER:
-        return BodyPart.NECK;
       case BodyPart.RIGHT_SHOULDER:
         return BodyPart.NECK;
       case BodyPart.LEFT_UPPER_ARM:
