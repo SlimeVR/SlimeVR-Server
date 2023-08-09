@@ -391,9 +391,9 @@ class HumanSkeleton(
 
 		// Rebuild the bone list
 		resetBones()
-		
+
 		// Update tap detection's trackers
-		tapDetectionManager.updateConfig()
+		tapDetectionManager.updateConfig(trackers)
 	}
 
 	/**
@@ -456,8 +456,8 @@ class HumanSkeleton(
 		updateComputedTrackers()
 		// Don't run legtweaks if the tracking is paused
 		if (!pauseTracking) tweakLegPos()
-		viveEmulation.update()
 		localizer.update()
+		viveEmulation.update()
 	}
 
 	/**
@@ -1187,7 +1187,9 @@ class HumanSkeleton(
 
 		// Tell floorclip to reset its floor level on the next update
 		// of the computed trackers
-		legTweaks.resetFloorLevel()
+		if (!localizer.getEnabled()) {
+			legTweaks.resetFloorLevel()
+		}
 		legTweaks.resetBuffer()
 		localizer.reset()
 		LogManager.info(String.format("[HumanSkeleton] Reset: full (%s)", resetSourceName))
@@ -1286,7 +1288,7 @@ class HumanSkeleton(
 	}
 
 	fun updateTapDetectionConfig() {
-		tapDetectionManager.updateConfig()
+		tapDetectionManager.updateConfig(null)
 	}
 
 	fun updateLegTweaksConfig() {

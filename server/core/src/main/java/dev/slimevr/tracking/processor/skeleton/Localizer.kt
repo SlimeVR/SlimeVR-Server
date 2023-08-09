@@ -357,8 +357,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			skeleton.computedRightFootTracker
 		)
 
-		var minVal = trackerList[0].position.y
-		var retVal: Tracker = trackerList[0]
+		var minVal = trackerList[0]!!.position.y
+		var retVal: Tracker = trackerList[0]!!
 		for (tracker in trackerList) {
 			if (tracker == null) {
 				continue
