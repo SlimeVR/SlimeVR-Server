@@ -55,13 +55,12 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 
 	public WindowsNamedPipeBridge(
 		VRServer server,
-		Tracker hmd,
 		String bridgeSettingsKey,
 		String bridgeName,
 		String pipeName,
 		List<Tracker> shareableTrackers
 	) {
-		super(server, hmd, "Named pipe thread", bridgeName, bridgeSettingsKey, shareableTrackers);
+		super(server, "Named pipe thread", bridgeName, bridgeSettingsKey, shareableTrackers);
 		this.pipeName = pipeName;
 		overlappedWait.hEvent = rxEvent;
 	}

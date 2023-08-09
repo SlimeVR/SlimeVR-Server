@@ -35,13 +35,12 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 
 	public UnixSocketBridge(
 		VRServer server,
-		Tracker hmd,
 		String bridgeSettingsKey,
 		String bridgeName,
 		String socketPath,
 		List<Tracker> shareableTrackers
 	) {
-		super(server, hmd, "Named socket thread", bridgeName, bridgeSettingsKey, shareableTrackers);
+		super(server, "Named socket thread", bridgeName, bridgeSettingsKey, shareableTrackers);
 		this.socketPath = socketPath;
 		this.socketAddress = UnixDomainSocketAddress.of(socketPath);
 
