@@ -10,15 +10,15 @@
 rootProject.name = "SlimeVR Server"
 
 pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
+	repositories {
+		gradlePluginPortal()
+		google()
+		mavenCentral()
 //		mavenLocal()
 		maven {
 			url = uri("https://oss.sonatype.org/content/repositories/snapshots")
 		}
-    }
+	}
 
 	val robovmVersion: String by settings
 	resolutionStrategy {
