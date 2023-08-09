@@ -74,14 +74,15 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	}
 
 	// state variables
-	private var floorLevel = 0f
+	var floorLevel = 0f
+		private set
 	private var hipToFloorDist = 0f
 	private var currentDisengagementOffset = 0.0f
 	private var footLength = 0.0f
 	private var currentCorrectionStrength = 0.3f // default value
 
 	private var initialized = true
-	private var enabled = true // master switch
+	var enabled = true // master switch
 
 	private var floorClipEnabled = false
 	private var alwaysUseFloorclip = false
@@ -127,68 +128,8 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		updateConfig()
 	}
 
-	fun getLeftFootPosition(): Vector3 {
-		return leftFootPosition
-	}
-
-	fun setLeftFootPosition(leftFootPosition: Vector3) {
-		this.leftFootPosition = leftFootPosition
-	}
-
-	fun setLeftFootRotation(leftFootRotation: Quaternion) {
-		this.leftFootRotation = leftFootRotation
-	}
-
-	fun getRightFootPosition(): Vector3 {
-		return rightFootPosition
-	}
-
-	fun setRightFootPosition(rightFootPosition: Vector3) {
-		this.rightFootPosition = rightFootPosition
-	}
-
-	fun setRightFootRotation(rightFootRotation: Quaternion) {
-		this.rightFootRotation = rightFootRotation
-	}
-
-	fun getLeftKneePosition(): Vector3 {
-		return leftKneePosition
-	}
-
-	fun setLeftKneePosition(leftKneePosition: Vector3) {
-		this.leftKneePosition = leftKneePosition
-	}
-
-	fun getRightKneePosition(): Vector3 {
-		return rightKneePosition
-	}
-
-	fun setRightKneePosition(rightKneePosition: Vector3) {
-		this.rightKneePosition = rightKneePosition
-	}
-
-	fun getHipPosition(): Vector3 {
-		return hipPosition
-	}
-
-	fun setHipPosition(hipPosition: Vector3) {
-		this.hipPosition = hipPosition
-	}
-
-	fun getFloorLevel(): Float {
-		return floorLevel
-	}
-
 	fun resetFloorLevel() {
 		initialized = false
-	}
-
-	fun getActive(): Boolean {
-		return active
-	}
-
-	fun setEnabled(enabled: Boolean) {
-		this.enabled = enabled
 	}
 
 	fun setFloorClipEnabled(floorClipEnabled: Boolean) {
@@ -213,10 +154,6 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 	fun setFootPlantEnabled(value: Boolean) {
 		footPlantEnabled = value
-	}
-
-	fun getEnabled(): Boolean {
-		return enabled
 	}
 
 	fun getFloorclipEnabled(): Boolean {
@@ -294,14 +231,14 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		val leftFootDif = FastMath
 			.abs(
 				bufferHead
-					.getLeftFootPosition()
+					.leftFootPosition
 					.minus(leftFootPosition)
 					.y
 			)
 		val rightFootDif = FastMath
 			.abs(
 				bufferHead
-					.getRightFootPosition()
+					.rightFootPosition
 					.minus(rightFootPosition)
 					.y
 			)
@@ -321,24 +258,24 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		if (!leftLegActive) {
 			leftFootPosition = Vector3(
 				leftFootPosition.x,
-				bufferHead.getLeftFootPosition().y,
+				bufferHead.leftFootPosition.y,
 				leftFootPosition.z
 			)
 			leftKneePosition = Vector3(
 				leftKneePosition.x,
-				bufferHead.getLeftKneePosition().y,
+				bufferHead.leftKneePosition.y,
 				leftKneePosition.z
 			)
 		}
 		if (!rightLegActive) {
 			rightFootPosition = Vector3(
 				rightFootPosition.x,
-				bufferHead.getRightFootPosition().y,
+				bufferHead.rightFootPosition.y,
 				rightFootPosition.z
 			)
 			rightKneePosition = Vector3(
 				rightKneePosition.x,
-				bufferHead.getRightKneePosition().y,
+				bufferHead.rightKneePosition.y,
 				rightKneePosition.z
 			)
 		}
@@ -460,8 +397,8 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 					rightKneePosition,
 					hipPosition
 				)
-			bufferHead.setLeftLegState(LegTweaksBuffer.UNLOCKED)
-			bufferHead.setRightLegState(LegTweaksBuffer.UNLOCKED)
+			bufferHead.leftLegState = LegTweaksBuffer.UNLOCKED
+			bufferHead.rightLegState = LegTweaksBuffer.UNLOCKED
 			bufferInvalid = false
 		}
 
@@ -584,27 +521,27 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	private fun correctSkating() {
 		// for either foot that is locked get its position (x and z only we let
 		// y move freely) and set it to be there
-		val bufPrev = bufferHead.getParent() ?: return
+		val bufPrev = bufferHead.parent ?: return
 
-		if (bufferHead.getLeftLegState() == LegTweaksBuffer.LOCKED) {
+		if (bufferHead.leftLegState == LegTweaksBuffer.LOCKED) {
 			leftFootPosition = Vector3(
 				bufPrev
-					.getLeftFootPositionCorrected()
+					.leftFootPositionCorrected
 					.x,
 				leftFootPosition.y,
 				bufPrev
-					.getLeftFootPositionCorrected()
+					.leftFootPositionCorrected
 					.z
 			)
 		}
-		if (bufferHead.getRightLegState() == LegTweaksBuffer.LOCKED) {
+		if (bufferHead.rightLegState == LegTweaksBuffer.LOCKED) {
 			rightFootPosition = Vector3(
 				bufPrev
-					.getRightFootPositionCorrected()
+					.rightFootPositionCorrected
 					.x,
 				rightFootPosition.y,
 				bufPrev
-					.getRightFootPositionCorrected()
+					.rightFootPositionCorrected
 					.z
 			)
 		}
@@ -613,11 +550,11 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		// its position for this frame. the amount of displacement is based on
 		// the distance between the last position, the current position, and
 		// the hyperparameters
-		if (bufferHead.getLeftLegState() == LegTweaksBuffer.UNLOCKED) {
-			leftFootPosition = correctUnlockedFootTracker(leftFootPosition, bufPrev.getLeftFootPosition(), bufPrev.getLeftFootPositionCorrected(), bufferHead.getLeftFootVelocity(), leftFramesUnlocked)
+		if (bufferHead.leftLegState == LegTweaksBuffer.UNLOCKED) {
+			leftFootPosition = correctUnlockedFootTracker(leftFootPosition, bufPrev.leftFootPosition, bufPrev.leftFootPositionCorrected, bufferHead.leftFootVelocity, leftFramesUnlocked)
 		}
-		if (bufferHead.getRightLegState() == LegTweaksBuffer.UNLOCKED) {
-			rightFootPosition = correctUnlockedFootTracker(rightFootPosition, bufPrev.getRightFootPosition(), bufPrev.getRightFootPositionCorrected(), bufferHead.getRightFootVelocity(), rightFramesUnlocked)
+		if (bufferHead.rightLegState == LegTweaksBuffer.UNLOCKED) {
+			rightFootPosition = correctUnlockedFootTracker(rightFootPosition, bufPrev.rightFootPosition, bufPrev.rightFootPositionCorrected, bufferHead.rightFootVelocity, rightFramesUnlocked)
 		}
 	}
 
@@ -732,15 +669,15 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	// this is done by planting the foot better and by snapping the toes to the
 	// ground
 	private fun correctFootRotations() {
-		if (bufferHead.getParent() == null) return
+		if (bufferHead.parent == null) return
 
 		// boolean for if there is a foot tracker
 		val leftFootTracker = skeleton.leftFootTracker != null
 		val rightFootTracker = skeleton.rightFootTracker != null
 
 		// get the foot positions
-		var leftFootRotation = bufferHead.getLeftFootRotation()
-		var rightFootRotation = bufferHead.getRightFootRotation()
+		var leftFootRotation = bufferHead.leftFootRotation
+		var rightFootRotation = bufferHead.rightFootRotation
 
 		// between maximum correction angle and maximum correction angle delta
 		// the values are interpolated
@@ -963,10 +900,10 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 		// before moving the knees back closer to the hip nodes, offset them
 		// the same amount the foot trackers where offset
-		val leftXDif = leftFootPosition.x - bufferHead.getLeftFootPosition().x
-		val rightXDif = rightFootPosition.x - bufferHead.getRightFootPosition().x
-		val leftZDif = leftFootPosition.z - bufferHead.getLeftFootPosition().z
-		val rightZDif = rightFootPosition.z - bufferHead.getRightFootPosition().z
+		val leftXDif = leftFootPosition.x - bufferHead.leftFootPosition.x
+		val rightXDif = rightFootPosition.x - bufferHead.rightFootPosition.x
+		val leftZDif = leftFootPosition.z - bufferHead.leftFootPosition.z
+		val rightZDif = rightFootPosition.z - bufferHead.rightFootPosition.z
 		val leftX = leftKneePosition.x + leftXDif * KNEE_LATERAL_WEIGHT
 		val leftZ = leftKneePosition.z + leftZDif * KNEE_LATERAL_WEIGHT
 		val rightX = rightKneePosition.x + rightXDif * KNEE_LATERAL_WEIGHT
@@ -975,8 +912,8 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		rightKneePosition = Vector3(rightX, rightKneePosition.y, rightZ)
 
 		// calculate the bone distances
-		val leftKneeHip = bufferHead.getLeftKneePosition().minus(leftHip).len()
-		val rightKneeHip = bufferHead.getRightKneePosition().minus(rightHip).len()
+		val leftKneeHip = bufferHead.leftKneePosition.minus(leftHip).len()
+		val rightKneeHip = bufferHead.rightKneePosition.minus(rightHip).len()
 		val leftKneeHipNew = leftKneePosition.minus(leftHip).len()
 		val rightKneeHipNew = rightKneePosition.minus(rightHip).len()
 		val leftKneeOffset = leftKneeHipNew - leftKneeHip
@@ -1112,14 +1049,14 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 	// update counters for the lock state of the feet
 	private fun updateLockStateCounters() {
-		if (bufferHead.getLeftLegState() == LegTweaksBuffer.LOCKED) {
+		if (bufferHead.leftLegState == LegTweaksBuffer.LOCKED) {
 			leftFramesUnlocked = 0
 			leftFramesLocked++
 		} else {
 			leftFramesLocked = 0
 			leftFramesUnlocked++
 		}
-		if (bufferHead.getRightLegState() == LegTweaksBuffer.LOCKED) {
+		if (bufferHead.rightLegState == LegTweaksBuffer.LOCKED) {
 			rightFramesUnlocked = 0
 			rightFramesLocked++
 		} else {

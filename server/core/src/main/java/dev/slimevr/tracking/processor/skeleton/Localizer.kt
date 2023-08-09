@@ -96,10 +96,10 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 		// set the buffers for easy access
 		bufCur = legTweaks.getBuffer()
-		if (bufCur.getParent() == null) {
+		if (bufCur.parent == null) {
 			return
 		}
-		bufPrev = bufCur.getParent()!!
+		bufPrev = bufCur.parent!!
 
 		var finalTravel: Vector3
 
@@ -157,22 +157,22 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	private fun getPlantedFoot(): MovementStates {
 		// if locked in legtweaks it's the locked foot
-		if (bufCur.getLeftLegState() == LegTweaksBuffer.LOCKED) return MovementStates.LEFT_LOCKED
-		if (bufCur.getRightLegState() == LegTweaksBuffer.LOCKED) return MovementStates.RIGHT_LOCKED
+		if (bufCur.leftLegState == LegTweaksBuffer.LOCKED) return MovementStates.LEFT_LOCKED
+		if (bufCur.rightLegState == LegTweaksBuffer.LOCKED) return MovementStates.RIGHT_LOCKED
 
 		// if the state is not locked, use the numerical state to determine a
 		// foot to follow
-		val leftNumericalState = bufCur.getLeftLegNumericalState()
-		val rightNumericalState = bufCur.getRightLegNumericalState()
+		val leftNumericalState = bufCur.leftLegNumericalState
+		val rightNumericalState = bufCur.rightLegNumericalState
 
 		return if (leftNumericalState < rightNumericalState &&
 			leftNumericalState < MAX_FOOT_PERCENTAGE &&
-			bufCur.getLeftFootAcceleration().y < MAX_ACCEL_UP
+			bufCur.leftFootAcceleration.y < MAX_ACCEL_UP
 		) {
 			return MovementStates.LEFT_LOCKED
 		} else if (rightNumericalState < leftNumericalState &&
 			rightNumericalState < MAX_FOOT_PERCENTAGE &&
-			bufCur.getRightFootAcceleration().y < MAX_ACCEL_UP
+			bufCur.rightFootAcceleration.y < MAX_ACCEL_UP
 		) {
 			MovementStates.RIGHT_LOCKED
 		} else {
@@ -202,11 +202,11 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		val foot: MovementStates = getPlantedFoot()
 
 		if (foot == MovementStates.LEFT_LOCKED) {
-			val footLoc: Vector3 = bufCur.getLeftFootPosition()
+			val footLoc: Vector3 = bufCur.leftFootPosition
 			updateTargetPos(footLoc, foot)
 			return getFootTravel(footLoc)
 		} else if (foot == MovementStates.RIGHT_LOCKED) {
-			val footLoc: Vector3 = bufCur.getRightFootPosition()
+			val footLoc: Vector3 = bufCur.rightFootPosition
 			updateTargetPos(footLoc, foot)
 			return getFootTravel(footLoc)
 		}
@@ -255,7 +255,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		// update COM attributes
 		updateCOMAttributes()
 
-		var dist: Vector3 = bufCur.getCenterOfMass()
+		var dist: Vector3 = bufCur.centerOfMass
 		dist = dist.minus(targetCOM)
 		return dist
 	}
@@ -277,7 +277,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	private fun updateTargetCOM() {
 		// if not in COM tracking mode, just use the current COM
 		if (worldReference === MovementStates.FOLLOW_FOOT || worldReference === MovementStates.FOLLOW_SITTING) {
-			targetCOM = bufCur.getCenterOfMass()
+			targetCOM = bufCur.centerOfMass
 		} else {
 			currentCOM = targetCOM
 		}
@@ -298,17 +298,17 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		val comY = comVelocity.y
 
 		var buf = bufCur
-		val timeStart: Long = buf.getTimeOfFrame()
+		val timeStart: Long = buf.timeOfFrame
 		var timeEnd = timeStart - VELOCITY_SAMPLE_RATE
-		val comPosStart: Vector3 = buf.getCenterOfMass()
+		val comPosStart: Vector3 = buf.centerOfMass
 
 		// get the buffer that occurred VELOCITY_SAMPLE_RATE ago in time
-		while (buf.getTimeOfFrame() > timeEnd && buf.getParent() !== null) {
-			buf = buf.getParent()!!
+		while (buf.timeOfFrame > timeEnd && buf.parent !== null) {
+			buf = buf.parent!!
 		}
 
-		val comPosEnd: Vector3 = buf.getCenterOfMass()
-		timeEnd = buf.getTimeOfFrame()
+		val comPosEnd: Vector3 = buf.centerOfMass
+		timeEnd = buf.timeOfFrame
 
 		// calculate the velocity
 		comVelocity = comPosEnd.minus(comPosStart).div((timeEnd - timeStart) / LegTweaksBuffer.NS_CONVERT)
@@ -339,8 +339,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	// returns true if either foot is below 0.0
 	private fun isFootOnGround(): Boolean {
 		return (
-			bufCur.getLeftFootPosition().y <= floor ||
-				bufCur.getRightFootPosition().y <= floor
+			bufCur.leftFootPosition.y <= floor ||
+				bufCur.rightFootPosition.y <= floor
 			)
 	}
 
@@ -382,8 +382,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		// based on the waist to knee vector decide if the user is sitting or
 		// standing (ie, if the user is sitting the vector will be pointing off
 		// to the side for both feet)
-		var leftKnee: Vector3 = bufCur.getLeftKneePosition()
-		var rightKnee: Vector3 = bufCur.getRightKneePosition()
+		var leftKnee: Vector3 = bufCur.leftKneePosition
+		var rightKnee: Vector3 = bufCur.rightKneePosition
 		val hip: Vector3 = skeleton.computedHipTracker.position
 		leftKnee = hip.minus(leftKnee)
 		rightKnee = hip.minus(rightKnee)
@@ -398,7 +398,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		if (rightKnee.y * SITTING_KNEE_THRESHOLD < rightKnee.x + rightKnee.z) {
 			right = true
 		}
-		return !bufCur.getIsStanding() || left && right
+		return !bufCur.isStanding || left && right
 	}
 
 	// get the combined accel of the Torso trackers
