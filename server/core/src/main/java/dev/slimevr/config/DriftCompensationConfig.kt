@@ -12,9 +12,10 @@ class DriftCompensationConfig {
 
 	// Max resets for the calculated average drift
 	var maxResets = 6
+
 	fun updateTrackersDriftCompensation() {
 		for (t in VRServer.instance.allTrackers) {
-			if (t.allowFiltering) {
+			if (t.isImu()) {
 				t.resetsHandler.readDriftCompensationConfig(this)
 			}
 		}

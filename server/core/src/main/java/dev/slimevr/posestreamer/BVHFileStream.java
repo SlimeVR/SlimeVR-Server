@@ -126,8 +126,16 @@ public class BVHFileStream extends PoseDataStream {
 		if (isEndNode) {
 			writer.write(indentLevel + "End Site\n");
 		} else {
+			TransformNodeWrapper parent = node.getParent();
+			boolean parentHasSameName = parent != null
+				&& parent.getBoneType() == node.getBoneType();
 			writer
-				.write((level > 0 ? indentLevel + "JOINT " : "ROOT ") + node.getBoneType() + "\n");
+				.write(
+					(level > 0 ? indentLevel + "JOINT " : "ROOT ")
+						+ node.getBoneType()
+						+ (parentHasSameName ? "2" : "")
+						+ "\n"
+				);
 		}
 		writer.write(indentLevel + "{\n");
 

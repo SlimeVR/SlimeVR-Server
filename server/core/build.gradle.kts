@@ -6,7 +6,6 @@
  * User Manual available at https://docs.gradle.org/6.3/userguide/java_library_plugin.html
  */
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.io.ByteArrayOutputStream
 
 plugins {
 	kotlin("jvm")
@@ -64,7 +63,6 @@ dependencies {
 	implementation("org.apache.commons:commons-collections4:4.4")
 
 	implementation("com.illposed.osc:javaosc-core:0.8")
-	implementation("com.fazecast:jSerialComm:2.+")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
@@ -78,14 +76,4 @@ dependencies {
 }
 tasks.test {
 	useJUnitPlatform()
-}
-
-fun String.runCommand(currentWorkingDir: File = file("./")): String {
-	val byteOut = ByteArrayOutputStream()
-	project.exec {
-		workingDir = currentWorkingDir
-		commandLine = this@runCommand.split("\\s".toRegex())
-		standardOutput = byteOut
-	}
-	return String(byteOut.toByteArray()).trim()
 }

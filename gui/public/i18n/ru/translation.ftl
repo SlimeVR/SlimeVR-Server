@@ -36,6 +36,7 @@ body_part-RIGHT_HAND = Правая рука
 body_part-RIGHT_UPPER_LEG = Правое бедро
 body_part-RIGHT_LOWER_LEG = Правая голень
 body_part-RIGHT_FOOT = Правая ступня
+body_part-UPPER_CHEST = Верхняя часть груди
 body_part-CHEST = Грудь
 body_part-WAIST = Талия
 body_part-HIP = Таз
@@ -53,8 +54,9 @@ skeleton_bone-NONE = Пусто
 skeleton_bone-HEAD = Голова
 skeleton_bone-NECK = Длина шеи
 skeleton_bone-torso_group = Длина туловища
-skeleton_bone-CHEST = Длина груди
+skeleton_bone-UPPER_CHEST = Длина верхней части груди
 skeleton_bone-CHEST_OFFSET = Смещение груди
+skeleton_bone-CHEST = Длина груди
 skeleton_bone-WAIST = Длина талии
 skeleton_bone-HIP = Длина таза
 skeleton_bone-HIP_OFFSET = Смещение таза
@@ -120,6 +122,10 @@ widget-overlay-is_mirrored_label = Показывать оверлей как з
 
 widget-drift_compensation-clear = Очистить компенсацию дрифта
 
+## Widget: Clear Reset Mounting
+
+widget-clear_mounting = Обнулить сброс выравнивания
+
 ## Widget: Developer settings
 
 widget-developer_mode = Режим разработчика
@@ -163,9 +169,14 @@ tracker-table-column-url = URL
 ## Tracker rotation
 
 tracker-rotation-front = Спереди
+tracker-rotation-front_left = Левая сторона передней части
+tracker-rotation-front_right = Правая сторона передней части
 tracker-rotation-left = Слева
 tracker-rotation-right = Справа
 tracker-rotation-back = Сзади
+tracker-rotation-back_left = Левая сторона задней части
+tracker-rotation-back_right = Правая сторона задней части
+tracker-rotation-custom = Пользовательское
 
 ## Tracker information
 
@@ -230,6 +241,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } право�
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } правой лодышке?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } правой ступне?
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } правому контроллеру?
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } верхняя часть груди?
 tracker_selection_menu-CHEST = { -tracker_selection-part } груди?
 tracker_selection_menu-WAIST = { -tracker_selection-part } талии?
 tracker_selection_menu-HIP = { -tracker_selection-part } тазу?
@@ -269,6 +281,8 @@ settings-sidebar-osc_router = OSC роутер
 settings-sidebar-osc_trackers = VRChat OSC Трекеры
 settings-sidebar-utils = Утилиты
 settings-sidebar-serial = Консоль
+settings-sidebar-appearance = Внешность
+settings-sidebar-notifications = Уведомление
 
 ## SteamVR settings
 
@@ -336,11 +350,14 @@ settings-general-fk_settings-leg_fk = Трекинг ноги
 settings-general-fk_settings-arm_fk = Трекинг руки
 settings-general-fk_settings-arm_fk-description = Измените способ отслеживания рук.
 settings-general-fk_settings-arm_fk-force_arms = Руки от HMD
-settings-general-fk_settings-skeleton_settings = Настройки скелета
 settings-general-fk_settings-skeleton_settings-description = Включите или выключите настройки скелета. Рекомендуется оставить их включенными.
-settings-general-fk_settings-skeleton_settings-extended_spine = Удлиненный позвоночник
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Расширенный таз
-settings-general-fk_settings-skeleton_settings-extended_knees = Вытянутое колено
+settings-general-fk_settings-skeleton_settings-extended_spine_model = Модель вытянутого позвоночника
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Модель удлиненного таза
+settings-general-fk_settings-skeleton_settings-extended_knees_model = Модель с удлиненным коленом
+settings-general-fk_settings-skeleton_settings-ratios = Соотношения скелета
+settings-general-fk_settings-skeleton_settings-ratios-description = Измените значения параметров скелета. Возможно, вам придется скорректировать пропорции после их изменения.
+settings-general-fk_settings-self_localization-title = Режим Mocap
+settings-general-fk_settings-self_localization-description = Режим Mocap позволяет скелету примерно отслеживать свое собственное положение без использования гарнитуры или других трекеров. Обратите внимание, что для работы этого требуются трекеры ног и головы, и это все еще экспериментальный метод.
 settings-general-fk_settings-vive_emulation-title = Эмуляция Vive
 settings-general-fk_settings-vive_emulation-description = Имитируйте проблемы с отслеживанием талии, которые возникают у трекеров Vive. Это шутка, и она ухудшает отслеживание.
 settings-general-fk_settings-vive_emulation-label = Включить эмуляцию Vive
@@ -359,6 +376,15 @@ settings-general-gesture_control-taps =
         [many] { $amount } нажатий
        *[other] { $amount } нажатий
     }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [one] 1 трекер
+        [few] { $amount } трекера
+        [many] { $amount } трекеров
+       *[other] { $amount } трекеров
+    }
 settings-general-gesture_control-yawResetEnabled = Включить нажатие для сброса
 settings-general-gesture_control-yawResetDelay = Задержка сброса
 settings-general-gesture_control-yawResetTaps = Нажатия для сброса
@@ -368,13 +394,32 @@ settings-general-gesture_control-fullResetTaps = Нажатия для полн�
 settings-general-gesture_control-mountingResetEnabled = Включить нажатия для сброса крепления
 settings-general-gesture_control-mountingResetDelay = Задержка сброса крепления
 settings-general-gesture_control-mountingResetTaps = Нажатия для сброса крепления
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = Трекеры превышают порог
+settings-general-gesture_control-numberTrackersOverThreshold-description = Увеличьте это значение, если обнаружение касания не работает. Не увеличивайте его выше того, что необходимо для работы обнаружения касания, так как это приведет к большему количеству ложных срабатываний.
 
-## Interface settings
+## Appearance settings
 
-settings-general-interface = Интерфейс
+settings-interface-appearance = Внешность
 settings-general-interface-dev_mode = Режим разработчика
 settings-general-interface-dev_mode-description = Этот режим может быть полезен, если вам нужны подробные данные или для взаимодействия с подключенными трекерами на более продвинутом уровне.
 settings-general-interface-dev_mode-label = Режим разработчика
+settings-general-interface-theme = Варианты оформления
+settings-general-interface-lang = Выбрать язык
+settings-general-interface-lang-description = Измените язык по умолчанию, который вы хотите использовать.
+settings-general-interface-lang-placeholder = Выберите язык для использования
+# Keep the font name untranslated
+settings-interface-appearance-font = Шрифт GUI
+settings-interface-appearance-font-description = Это изменяет шрифт, используемый интерфейсом.
+settings-interface-appearance-font-placeholder = Шрифт по умолчанию
+settings-interface-appearance-font-os_font = Шрифт ОС
+settings-interface-appearance-font-slime_font = Шрифт по умолчанию
+settings-interface-appearance-font_size = Базовое масштабирование шрифта
+settings-interface-appearance-font_size-description = Это влияет на размер шрифта всего интерфейса, за исключением этой панели настроек.
+
+## Notification settings
+
+settings-interface-notifications = Уведомления
 settings-general-interface-serial_detection = Обнаружение серийного устройства
 settings-general-interface-serial_detection-description = Эта опция будет показывать всплывающее окно каждый раз, когда вы подключаете новое серийное устройство, которое может быть трекером. Это помогает улучшить процесс настройки трекера.
 settings-general-interface-serial_detection-label = Обнаружение серийного устройства
@@ -382,10 +427,6 @@ settings-general-interface-feedback_sound = Звук обратной связи
 settings-general-interface-feedback_sound-description = Эта опция будет воспроизводить звук при срабатывании сброса.
 settings-general-interface-feedback_sound-label = Звук обратной связи
 settings-general-interface-feedback_sound-volume = Громкость реакции интерфейса на косание треккера
-settings-general-interface-theme = Варианты оформления
-settings-general-interface-lang = Выбрать язык
-settings-general-interface-lang-description = Измените язык по умолчанию, который вы хотите использовать.
-settings-general-interface-lang-placeholder = Выберите язык для использования
 
 ## Serial settings
 
@@ -759,7 +800,6 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = Автоматическая привязка
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Рекомендуется
-onboarding-choose_proportions-auto_proportions-description = Это позволит угадать ваши пропорции, записав образец ваших движений и передав его через алгоритм.
 onboarding-choose_proportions-manual_proportions = Ручные пропорции
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Для небольших штрихов

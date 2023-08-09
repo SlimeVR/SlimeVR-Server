@@ -325,11 +325,19 @@ settings-general-fk_settings-leg_fk = Leg tracking
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the HMD even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
-settings-general-fk_settings-skeleton_settings = Skeleton settings
+settings-general-fk_settings-skeleton_settings-toggles = Skeleton toggles
 settings-general-fk_settings-skeleton_settings-description = Toggle skeleton settings on or off. It is recommended to leave these on.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Extended spine model
 settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Extended pelvis model
 settings-general-fk_settings-skeleton_settings-extended_knees_model = Extended knee model
+settings-general-fk_settings-skeleton_settings-ratios = Skeleton ratios
+settings-general-fk_settings-skeleton_settings-ratios-description = Change the values of skeleton settings. You may need to adjust your proportions after changing these.
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Impute waist from chest to hip
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Impute waist from chest to legs
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Impute hip from chest to legs
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Impute hip from waist to legs
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Average the hip's yaw and roll with the legs'
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Average the knee trackers' yaw and roll with the ankles'
 
 settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
@@ -775,9 +783,9 @@ onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Unknown
 # Shows an element below it
-onboarding-automatic_proportions-check_height-height = Your height is
+onboarding-automatic_proportions-check_height-hmd_height1 = Your HMD height is
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height = And HMD height is
+onboarding-automatic_proportions-check_height-height1 = so your actual height is
 onboarding-automatic_proportions-check_height-next_step = They are fine
 onboarding-automatic_proportions-start_recording-title = Get ready to move
 onboarding-automatic_proportions-start_recording-description = We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!
