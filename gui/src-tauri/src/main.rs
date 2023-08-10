@@ -186,7 +186,7 @@ fn main() -> Result<()> {
 
 			let window = tauri::WindowBuilder::new(
 				app,
-				"local",
+				"main",
 				tauri::WindowUrl::App("index.html".into()),
 			)
 			.title("SlimeVR")
