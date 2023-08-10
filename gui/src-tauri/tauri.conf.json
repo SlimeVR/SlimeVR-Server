@@ -10,20 +10,11 @@
     "beforeBuildCommand": "npm run build"
   },
   "plugins": {
-    "dialog": {
-      "all": false,
-      "save": true
-    },
     "shell": {
-      "all": false,
-      "execute": true,
       "open": true
     },
     "fs": {
       "scope": ["$APP/*", "$APP"],
-      "all": true
-    },
-    "path": {
       "all": true
     },
     "os": {
