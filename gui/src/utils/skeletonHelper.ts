@@ -8,10 +8,9 @@ import {
   Matrix4,
   Object3D,
   Vector3,
-  Quaternion,
 } from 'three';
-import { QuaternionFromQuatT } from '../maths/quaternion';
 import { BodyPart, BoneT } from 'solarxr-protocol';
+import { Vector3FromVec3fT } from '../maths/vector3';
 
 const _vector = new Vector3();
 const _boneMatrix = new Matrix4();
@@ -39,8 +38,8 @@ export class BasedSkeletonHelper extends LineSegments {
       if (bone.parent && (bone.parent as Bone).isBone) {
         vertices.push(0, 0, 0);
         vertices.push(0, 0, 0);
-        if (bone instanceof BoneKind) {
-          const color = bone.boneColor;
+        if (bone.parent instanceof BoneKind) {
+          const color = bone.parent.boneColor;
           colors.push(color.r, color.g, color.b);
           colors.push(color.r, color.g, color.b);
         } else {
@@ -145,16 +144,16 @@ export class BoneKind extends Bone {
     this.boneT = bones.get(this.boneT.bodyPart) ?? this.boneT;
     const parent = BoneKind.parent(this.boneT.bodyPart);
     const parentBone = parent === null ? undefined : bones.get(parent);
-    this.setRotationFromQuaternion(
-      QuaternionFromQuatT(this.boneT.rotationG)
-        .normalize()
-        .multiply(
-          parentBone === undefined
-            ? new Quaternion().identity()
-            : QuaternionFromQuatT(parentBone.rotationG).normalize().invert()
-        )
-        .normalize()
-    );
+    // this.setRotationFromQuaternion(
+    //   QuaternionFromQuatT(this.boneT.rotationG)
+    //     .normalize()
+    //     .multiply(
+    //       parentBone === undefined
+    //         ? new Quaternion().identity()
+    //         : QuaternionFromQuatT(parentBone.rotationG).normalize().invert().normalize()
+    //     )
+    //     .normalize()
+    // );
     // console.log(this.quaternion);
     // console.log(
     //   parentBone === undefined
@@ -162,14 +161,15 @@ export class BoneKind extends Bone {
     //     : Vector3FromVec3fT(parentBone.headPositionG),
     //   Vector3FromVec3fT(this.boneT.headPositionG)
     // );
-    // const localPosition = Vector3FromVec3fT(this.boneT.headPositionG).sub(
-    //   Vector3FromVec3fT(
-    //     parentBone === undefined
-    //       ? new Vector3(0, 0, 0)
-    //       : Vector3FromVec3fT(parentBone.headPositionG)
-    //   )
-    // );
-    this.position.set(0, -this.boneT.boneLength, 0);
+    const localPosition = Vector3FromVec3fT(this.boneT.headPositionG).sub(
+      Vector3FromVec3fT(
+        parentBone === undefined
+          ? new Vector3(0, 0, 0)
+          : Vector3FromVec3fT(parentBone.headPositionG)
+      )
+    );
+    this.position.copy(localPosition);
+    // this.position.set(0, -this.boneT.boneLength, 0)
     // console.log(this.position);
   }
 
