@@ -230,17 +230,11 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		// (use the buffer to get the positions before corrections)
 		val leftFootDif = FastMath
 			.abs(
-				bufferHead
-					.leftFootPosition
-					.minus(leftFootPosition)
-					.y
+				(bufferHead.leftFootPosition - leftFootPosition).y
 			)
 		val rightFootDif = FastMath
 			.abs(
-				bufferHead
-					.rightFootPosition
-					.minus(rightFootPosition)
-					.y
+				(bufferHead.rightFootPosition - rightFootPosition).y
 			)
 
 		if (!active && leftFootDif < NEARLY_ZERO) {
@@ -560,8 +554,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 	private fun correctUnlockedFootTracker(footPosition: Vector3, previousFootPosition: Vector3, previousFootPositionCorrected: Vector3, footVelocity: Vector3, framesUnlocked: Int): Vector3 {
 		var newFootPosition = footPosition
-		var footDif = footPosition
-			.minus(previousFootPositionCorrected)
+		var footDif = footPosition - previousFootPositionCorrected
 		footDif = Vector3(footDif.x, 0f, footDif.z)
 
 		if (footDif.len() > NEARLY_ZERO) {
@@ -570,11 +563,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			val (x, _, z) = footVelocity
 
 			// first add the difference from the last frame to this frame
-			temp = temp
-				.minus(
-					previousFootPosition
-						.minus(footPosition)
-				)
+			temp -= (previousFootPosition - footPosition)
 			newFootPosition = Vector3(temp.x, leftY, temp.z)
 
 			// if velocity and dif are pointing in the same direction,
@@ -785,8 +774,8 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 	// returns the length of the xz components of the normalized difference
 	// between two vectors
-	private fun getXZAmount(vec1: Vector3, vec2: Vector3?): Float {
-		val (x, _, z) = vec1.minus(vec2!!).unit()
+	private fun getXZAmount(vec1: Vector3, vec2: Vector3): Float {
+		val (x, _, z) = (vec1 - vec2).unit()
 		return Vector3(x, 0f, z).len()
 	}
 
@@ -912,26 +901,22 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		rightKneePosition = Vector3(rightX, rightKneePosition.y, rightZ)
 
 		// calculate the bone distances
-		val leftKneeHip = bufferHead.leftKneePosition.minus(leftHip).len()
-		val rightKneeHip = bufferHead.rightKneePosition.minus(rightHip).len()
-		val leftKneeHipNew = leftKneePosition.minus(leftHip).len()
-		val rightKneeHipNew = rightKneePosition.minus(rightHip).len()
+		val leftKneeHip = (bufferHead.leftKneePosition - leftHip).len()
+		val rightKneeHip = (bufferHead.rightKneePosition - rightHip).len()
+		val leftKneeHipNew = (leftKneePosition - leftHip).len()
+		val rightKneeHipNew = (rightKneePosition - rightHip).len()
 		val leftKneeOffset = leftKneeHipNew - leftKneeHip
 		val rightKneeOffset = rightKneeHipNew - rightKneeHip
 
 		// get the vector from the hip to the knee
-		val leftKneeVector = leftKneePosition
-			.minus(leftHip)
-			.unit()
-			.times(leftKneeOffset * KNEE_CORRECTION_WEIGHT)
-		val rightKneeVector = rightKneePosition
-			.minus(rightHip)
-			.unit()
-			.times(rightKneeOffset * KNEE_CORRECTION_WEIGHT)
+		val leftKneeVector = (leftKneePosition - leftHip).unit() *
+			(leftKneeOffset * KNEE_CORRECTION_WEIGHT)
+		val rightKneeVector = (rightKneePosition - rightHip).unit() *
+			(rightKneeOffset * KNEE_CORRECTION_WEIGHT)
 
 		// correct the knees
-		leftKneePosition = leftKneePosition.minus(leftKneeVector)
-		rightKneePosition = rightKneePosition.minus(rightKneeVector)
+		leftKneePosition -= leftKneeVector
+		rightKneePosition -= rightKneeVector
 	}
 
 	private fun getFootOffset(footRotation: Quaternion): Float {
@@ -944,7 +929,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		foot: Vector3,
 		footCorrected: Vector3,
 	): Float {
-		var footDif = foot.minus(footCorrected)
+		var footDif = foot - footCorrected
 		footDif = Vector3(footDif.x, 0f, footDif.z)
 		if (footDif.len() < MIN_ACCEPTABLE_ERROR) {
 			return CORRECTION_WEIGHT_MIN
@@ -984,14 +969,14 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			getCenterOfJoint(skeleton.leftKneeNode, skeleton.leftHipNode)
 		val rightThigh: Vector3 =
 			getCenterOfJoint(skeleton.rightKneeNode, skeleton.rightHipNode)
-		centerOfMass = centerOfMass.plus(head.times(HEAD_MASS))
-		centerOfMass = centerOfMass.plus(thorax.times(THORAX_MASS))
-		centerOfMass = centerOfMass.plus(abdomen.times(ABDOMEN_MASS))
-		centerOfMass = centerOfMass.plus(pelvis.times(PELVIS_MASS))
-		centerOfMass = centerOfMass.plus(leftCalf.times(LEG_AND_FOOT_MASS))
-		centerOfMass = centerOfMass.plus(rightCalf.times(LEG_AND_FOOT_MASS))
-		centerOfMass = centerOfMass.plus(leftThigh.times(THIGH_MASS))
-		centerOfMass = centerOfMass.plus(rightThigh.times(THIGH_MASS))
+		centerOfMass += head * HEAD_MASS
+		centerOfMass += thorax * THORAX_MASS
+		centerOfMass += abdomen * ABDOMEN_MASS
+		centerOfMass += pelvis * PELVIS_MASS
+		centerOfMass += leftCalf * LEG_AND_FOOT_MASS
+		centerOfMass += rightCalf * LEG_AND_FOOT_MASS
+		centerOfMass += leftThigh * THIGH_MASS
+		centerOfMass += rightThigh * THIGH_MASS
 
 		if (armsAvailable) {
 			val leftUpperArm: Vector3 = getCenterOfJoint(
@@ -1008,14 +993,10 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 				skeleton.rightElbowNode,
 				skeleton.rightHandNode
 			)
-			centerOfMass =
-				centerOfMass.plus(leftUpperArm.times(UPPER_ARM_MASS))
-			centerOfMass =
-				centerOfMass.plus(rightUpperArm.times(UPPER_ARM_MASS))
-			centerOfMass =
-				centerOfMass.plus(leftForearm.times(FOREARM_AND_HAND_MASS))
-			centerOfMass =
-				centerOfMass.plus(rightForearm.times(FOREARM_AND_HAND_MASS))
+			centerOfMass += leftUpperArm * UPPER_ARM_MASS
+			centerOfMass += rightUpperArm * UPPER_ARM_MASS
+			centerOfMass += leftForearm * FOREARM_AND_HAND_MASS
+			centerOfMass += rightForearm * FOREARM_AND_HAND_MASS
 		} else {
 			// if the arms are not available put them slightly in front
 			// of the upper chest.
@@ -1023,28 +1004,22 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 				skeleton.upperChestNode.worldTransform.rotation
 			)
 			val armLocation =
-				abdomen.plus(chestUnitVector.times(DEFAULT_ARM_DISTANCE))
-			centerOfMass =
-				centerOfMass.plus(armLocation.times(UPPER_ARM_MASS * 2.0f))
-			centerOfMass =
-				centerOfMass.plus(armLocation.times(FOREARM_AND_HAND_MASS * 2.0f))
+				abdomen + (chestUnitVector * DEFAULT_ARM_DISTANCE)
+			centerOfMass += armLocation * (UPPER_ARM_MASS * 2.0f)
+			centerOfMass += armLocation * (FOREARM_AND_HAND_MASS * 2.0f)
 		}
 
 		// finally translate in to tracker space
-		centerOfMass = hipPosition
-			.plus(
-				centerOfMass.minus(skeleton.trackerHipNode.worldTransform.translation)
-			)
+		centerOfMass = hipPosition +
+			(centerOfMass - skeleton.trackerHipNode.worldTransform.translation)
 		return centerOfMass
 	}
 
 	// get the center of two joints
 	private fun getCenterOfJoint(node1: TransformNode, node2: TransformNode): Vector3 {
-		return node1
-			.worldTransform
-			.translation
-			.plus(node2.worldTransform.translation)
-			.times(0.5f)
+		return node1.worldTransform.translation +
+			node2.worldTransform.translation *
+			0.5f
 	}
 
 	// update counters for the lock state of the feet

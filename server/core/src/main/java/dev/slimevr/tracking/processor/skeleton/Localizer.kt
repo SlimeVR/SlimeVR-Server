@@ -157,8 +157,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	private fun getPlantedFoot(): MovementStates {
 		// if locked in legtweaks it's the locked foot
-		if (bufCur.leftLegState == LegTweakBuffer.LOCKED) return MovementStates.LEFT_LOCKED
-		if (bufCur.rightLegState == LegTweakBuffer.LOCKED) return MovementStates.RIGHT_LOCKED
+		if (bufCur.leftLegState == LegTweaksBuffer.LOCKED) return MovementStates.LEFT_LOCKED
+		if (bufCur.rightLegState == LegTweaksBuffer.LOCKED) return MovementStates.RIGHT_LOCKED
 
 		// if the state is not locked, use the numerical state to determine a
 		// foot to follow
@@ -215,7 +215,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	// get the travel of a foot over a frame
 	private fun getFootTravel(loc: Vector3): Vector3 {
-		return loc.minus(targetFoot)
+		return loc - targetFoot
 	}
 
 	// update the target position of the foot
@@ -235,7 +235,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		val hip = skeleton.computedHipTracker?.position ?: Vector3.NULL
 
 		// get the distance to move the waist to the target waist
-		val dist: Vector3 = hip.minus(targetHip)
+		val dist: Vector3 = hip - targetHip
 
 		val lowTracker = getLowestTracker()
 
@@ -254,10 +254,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	private fun getCOMTravel(): Vector3 {
 		// update COM attributes
 		updateCOMAttributes()
-
-		var dist: Vector3 = bufCur.centerOfMass
-		dist = dist.minus(targetCOM)
-		return dist
+		return bufCur.centerOfMass - targetCOM
 	}
 
 	// get the movement of the COM based on the last velocity
@@ -282,7 +279,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			currentCOM = targetCOM
 		}
 
-		targetCOM = targetCOM.plus(comVelocity.div(bufCur.timeDelta))
+		targetCOM += (comVelocity / bufCur.timeDelta)
 
 		val lowTracker = getLowestTracker()
 
@@ -311,7 +308,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		timeEnd = buf.timeOfFrame
 
 		// calculate the velocity
-		comVelocity = comPosEnd.minus(comPosStart).div((timeEnd - timeStart) / LegTweaksBuffer.NS_CONVERT)
+		comVelocity = (comPosEnd - comPosStart) / ((timeEnd - timeStart) / LegTweaksBuffer.NS_CONVERT)
 
 		// if the feet have been the reference for a short amount of time nullify any upwards acceleration to prevent flying away
 		if (footFrames < WARMUP_FRAMES) {
@@ -385,8 +382,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		var leftKnee: Vector3 = bufCur.leftKneePosition
 		var rightKnee: Vector3 = bufCur.rightKneePosition
 		val hip: Vector3 = skeleton.computedHipTracker.position
-		leftKnee = hip.minus(leftKnee)
-		rightKnee = hip.minus(rightKnee)
+		leftKnee = hip - leftKnee
+		rightKnee = hip - rightKnee
 
 		// if the y component of the vectors is small then the user is probably
 		// sitting
@@ -415,7 +412,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			accel += skeleton.chestTracker.getAcceleration()
 			num++
 		}
-		return if (num == 0f) accel else accel.div(num)
+		return if (num == 0f) accel else accel / num
 	}
 
 	// update the head position and rotation
