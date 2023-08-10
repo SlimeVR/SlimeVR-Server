@@ -3024,6 +3024,7 @@ dependencies = [
  "tauri-plugin-os",
  "tauri-plugin-shell",
  "tauri-plugin-window",
+ "tauri-runtime",
  "tempfile",
  "which",
  "win32job",
