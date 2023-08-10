@@ -28,13 +28,14 @@ shadow-rs = "0.23"
 [dependencies]
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
-tauri = { version = "2.0.0-alpha.10", features = [] }
-tauri-runtime = "0.13.0-alpha.6"
+tauri = { version = "2.0.0-alpha.10", features = ["devtools"] }
 tauri-plugin-dialog = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 tauri-plugin-fs = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 tauri-plugin-os = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 tauri-plugin-shell = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
-tauri-plugin-window = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
+tauri-plugin-window = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2", features = [
+    "devtools",
+] }
 flexi_logger = "0.25"
 log-panics = { version = "2", features = ["with-backtrace"] }
 log = "0.4"

@@ -81,7 +81,7 @@ fn main() -> Result<()> {
 		});
 
 		#[cfg(not(target_os = "macos"))]
-		let path = dirs_next::data_local_dir()
+		let path = dirs_next::data_dir()
 			.ok_or(Error::UnknownPath)
 			.map(|dir| {
 				dir.join(&tauri_context.config().tauri.bundle.identifier)
