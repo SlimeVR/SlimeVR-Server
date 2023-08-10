@@ -7,10 +7,12 @@ import {
   LineSegments,
   Matrix4,
   Object3D,
+  Quaternion,
   Vector3,
 } from 'three';
 import { BodyPart, BoneT } from 'solarxr-protocol';
 import { Vector3FromVec3fT } from '../maths/vector3';
+import { QuaternionFromQuatT } from '../maths/quaternion';
 
 const _vector = new Vector3();
 const _boneMatrix = new Matrix4();
@@ -128,8 +130,9 @@ function getBoneList(object: Object3D): Bone[] {
 
 export class BoneKind extends Bone {
   boneT: BoneT;
+  tail: boolean;
 
-  constructor(bones: Map<BodyPart, BoneT>, bodyPart: BodyPart) {
+  constructor(bones: Map<BodyPart, BoneT>, bodyPart: BodyPart, tail: boolean) {
     super();
     const bone = bones.get(bodyPart);
     if (!bone) {
@@ -137,6 +140,7 @@ export class BoneKind extends Bone {
     }
     this.boneT = bone;
     this.name = BodyPart[bodyPart];
+    this.tail = tail;
     this.updateData(bones);
   }
 
@@ -144,16 +148,27 @@ export class BoneKind extends Bone {
     this.boneT = bones.get(this.boneT.bodyPart) ?? this.boneT;
     const parent = BoneKind.parent(this.boneT.bodyPart);
     const parentBone = parent === null ? undefined : bones.get(parent);
-    // this.setRotationFromQuaternion(
-    //   QuaternionFromQuatT(this.boneT.rotationG)
-    //     .normalize()
-    //     .multiply(
-    //       parentBone === undefined
-    //         ? new Quaternion().identity()
-    //         : QuaternionFromQuatT(parentBone.rotationG).normalize().invert().normalize()
-    //     )
-    //     .normalize()
-    // );
+    if(!this.tail) {
+      const localPosition = Vector3FromVec3fT(this.boneT.headPositionG).sub(
+        Vector3FromVec3fT(
+          parentBone === undefined
+            ? new Vector3(0, 0, 0)
+            : Vector3FromVec3fT(parentBone.headPositionG)
+        )
+      );
+      this.position.copy(localPosition);
+      return;
+    }
+    this.setRotationFromQuaternion(
+      QuaternionFromQuatT(this.boneT.rotationG)
+        .normalize()
+        .multiply(
+          parentBone === undefined
+            ? new Quaternion().identity()
+            : QuaternionFromQuatT(parentBone.rotationG).normalize().invert().normalize()
+        )
+        .normalize()
+    );
     // console.log(this.quaternion);
     // console.log(
     //   parentBone === undefined
@@ -161,15 +176,7 @@ export class BoneKind extends Bone {
     //     : Vector3FromVec3fT(parentBone.headPositionG),
     //   Vector3FromVec3fT(this.boneT.headPositionG)
     // );
-    const localPosition = Vector3FromVec3fT(this.boneT.headPositionG).sub(
-      Vector3FromVec3fT(
-        parentBone === undefined
-          ? new Vector3(0, 0, 0)
-          : Vector3FromVec3fT(parentBone.headPositionG)
-      )
-    );
-    this.position.copy(localPosition);
-    // this.position.set(0, -this.boneT.boneLength, 0)
+    this.position.set(0, -this.boneT.boneLength, 0)
     // console.log(this.position);
   }
 
@@ -184,7 +191,7 @@ export class BoneKind extends Bone {
       case BodyPart.UPPER_CHEST:
         return new Color('yellow');
       case BodyPart.CHEST:
-        return new Color('red');
+        return new Color('blue');
       case BodyPart.WAIST:
         return new Color('lime');
       case BodyPart.HIP:
@@ -330,9 +337,13 @@ export function createChildren(
 ): (BoneKind | Bone)[] {
   if (bones.size === 0) return [new Bone()];
   const childrenBodies = BoneKind.children(body);
-  const parent = new BoneKind(bones, body);
+  const parent = new BoneKind(bones, body, false);
   parentBone?.add(parent);
-  if (childrenBodies.length === 0) return [parent];
+  if (childrenBodies.length === 0) {
+    const tail =  new BoneKind(bones, body, true);
+    parent.add(tail);
+    return [parent, tail];
+  }
 
   const children = childrenBodies.flatMap((bodyPart) =>
     createChildren(bones, bodyPart, parent)
