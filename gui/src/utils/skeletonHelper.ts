@@ -139,7 +139,6 @@ export class BoneKind extends Bone {
     this.boneT = bone;
     this.name = BodyPart[bodyPart];
     this.updateData(bones);
-    console.log(`${BodyPart[this.boneT.bodyPart]}: ${this.boneT.boneLength}`);
   }
 
   updateData(bones: Map<BodyPart, BoneT>) {
@@ -185,7 +184,7 @@ export class BoneKind extends Bone {
       case BodyPart.UPPER_CHEST:
         return new Color('yellow');
       case BodyPart.CHEST:
-        return new Color('olive');
+        return new Color('red');
       case BodyPart.WAIST:
         return new Color('lime');
       case BodyPart.HIP:

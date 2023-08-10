@@ -7,7 +7,7 @@ import {
   BoneKind,
   createChildren,
   BasedSkeletonHelper,
-} from '../../utils/SkeletonHelper';
+} from '../../utils/skeletonHelper';
 
 extend({ BasedSkeletonHelper });
 
