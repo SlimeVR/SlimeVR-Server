@@ -413,7 +413,7 @@ class LegTweaksBuffer() {
 	// get the difference in feet position between the kinematic and corrected
 	// positions of the feet disregarding vertical displacement
 	private fun getFootHorizontalDifference(correctedPosition: Vector3, position: Vector3): Float {
-		val diff: Vector3 = correctedPosition.minus(position)
+		val diff: Vector3 = correctedPosition - position
 		return Vector3(
 			diff.x,
 			0f,
@@ -423,19 +423,15 @@ class LegTweaksBuffer() {
 
 	// get the angular velocity of the left foot (kinda we just want a scalar)
 	private fun getFootAngularVelocity(oldRot: Quaternion, rot: Quaternion): Float {
-		return rot
-			.toMatrix()
-			.z
-			.minus(oldRot.toMatrix().z)
-			.len()
+		return (rot.toMatrix().z.unit() - oldRot.toMatrix().z.unit()).len()
 	}
 
 	// compute the velocity of the feet from the position in the last frames
 	private fun computeVelocity() {
 		if (parent == null) return
-		leftFootVelocity = leftFootPosition.minus(parent!!.leftFootPosition)
+		leftFootVelocity = leftFootPosition - parent!!.leftFootPosition
 		leftFootVelocityMagnitude = leftFootVelocity.len()
-		rightFootVelocity = rightFootPosition.minus(parent!!.rightFootPosition)
+		rightFootVelocity = rightFootPosition - parent!!.rightFootPosition
 		rightFootVelocityMagnitude = rightFootVelocity.len()
 		leftFootAngleDiff = getFootAngularVelocity(parent!!.leftFootRotation, leftFootRotation)
 		rightFootAngleDiff = getFootAngularVelocity(parent!!.rightFootRotation, rightFootRotation)
@@ -455,9 +451,8 @@ class LegTweaksBuffer() {
 
 	// compute the velocity and acceleration of the center of mass
 	private fun computeComAttributes() {
-		centerOfMassVelocity = centerOfMass.minus(parent!!.centerOfMass)
-		centerOfMassAcceleration =
-			centerOfMassVelocity.minus(parent!!.centerOfMassVelocity)
+		centerOfMassVelocity = centerOfMass - parent!!.centerOfMass
+		centerOfMassAcceleration = centerOfMassVelocity - parent!!.centerOfMassVelocity
 	}
 
 	// for a setup with foot trackers the data from the imus is enough to determine lock/unlock
@@ -568,7 +563,7 @@ class LegTweaksBuffer() {
 		otherFootVelMagnitude: Float,
 	): Float {
 		if (leftLegState == LOCKED && rightLegState == LOCKED) {
-			var velocityDiff: Vector3 = primaryFootVel.minus(otherFootVel)
+			var velocityDiff: Vector3 = primaryFootVel - otherFootVel
 			velocityDiff = Vector3(velocityDiff.x, 0f, velocityDiff.z)
 			val velocityDiffMagnitude: Float = velocityDiff.len()
 			if (velocityDiffMagnitude < MAX_SCALAR_DORMANT) {
@@ -609,8 +604,8 @@ class LegTweaksBuffer() {
 	// since F = ma and if m is 1 then F = a
 	private fun getPressurePrediction(): FloatArray {
 		// get the vectors from the com to each foot
-		val leftFootVector: Vector3 = leftFootPosition.minus(centerOfMass).unit()
-		val rightFootVector: Vector3 = rightFootPosition.minus(centerOfMass).unit()
+		val leftFootVector: Vector3 = (leftFootPosition - centerOfMass).unit()
+		val rightFootVector: Vector3 = (rightFootPosition - centerOfMass).unit()
 
 		// get the magnitude of the force on each foot
 		val leftFootMagnitude: Float =
@@ -649,10 +644,18 @@ class LegTweaksBuffer() {
 		// using the inverse of the distance to the ground scale the
 		// pressure
 		val leftDistance: Float =
-			if (leftFootPosition.y > (leftFloorLevel + FLOOR_DISTANCE_CUTOFF)) leftFootPosition.y - (leftFloorLevel + FLOOR_DISTANCE_CUTOFF) else LegTweaks.NEARLY_ZERO
+			if (leftFootPosition.y > (leftFloorLevel + FLOOR_DISTANCE_CUTOFF)) {
+				leftFootPosition.y - (leftFloorLevel + FLOOR_DISTANCE_CUTOFF)
+			} else {
+				LegTweaks.NEARLY_ZERO
+			}
 		leftFootPressure *= 1.0f / leftDistance
 		val rightDistance: Float =
-			if (rightFootPosition.y > (rightFloorLevel + FLOOR_DISTANCE_CUTOFF)) rightFootPosition.y - (rightFloorLevel + FLOOR_DISTANCE_CUTOFF) else LegTweaks.NEARLY_ZERO
+			if (rightFootPosition.y > (rightFloorLevel + FLOOR_DISTANCE_CUTOFF)) {
+				rightFootPosition.y - (rightFloorLevel + FLOOR_DISTANCE_CUTOFF)
+			} else {
+				LegTweaks.NEARLY_ZERO
+			}
 		rightFootPressure *= 1.0f / rightDistance
 
 		// normalize the pressure values
@@ -686,14 +689,13 @@ class LegTweaksBuffer() {
 			tempRightFootForce2 = rightFootForce
 
 			// get the error at the current position
-			error = centerOfMassAcceleration
-				.minus(leftFootForce.plus(rightFootForce).plus(GRAVITY))
+			error = centerOfMassAcceleration - (leftFootForce + rightFootForce + GRAVITY)
 
 			// add and subtract the error to the force vectors
-			tempLeftFootForce1 = tempLeftFootForce1.times(1.0f + stepSize)
-			tempLeftFootForce2 = tempLeftFootForce2.times(1.0f - stepSize)
-			tempRightFootForce1 = tempRightFootForce1.times(1.0f + stepSize)
-			tempRightFootForce2 = tempRightFootForce2.times(1.0f - stepSize)
+			tempLeftFootForce1 *= (1.0f + stepSize)
+			tempLeftFootForce2 *= (1.0f - stepSize)
+			tempRightFootForce1 *= (1.0f + stepSize)
+			tempRightFootForce2 *= (1.0f - stepSize)
 
 			// get the error at the new position
 			error1 = getForceVectorError(tempLeftFootForce1, rightFootForce)
@@ -720,14 +722,13 @@ class LegTweaksBuffer() {
 	// detect any outside forces on the body such
 	// as a wall or a chair. returns true if there is an outside force
 	private fun detectOutsideForces(f1: Vector3, f2: Vector3): Boolean {
-		val force: Vector3 = GRAVITY.plus(f1).plus(f2)
-		val error: Vector3 = centerOfMassAcceleration.minus(force)
+		val force: Vector3 = GRAVITY + f1 + f2
+		val error: Vector3 = centerOfMassAcceleration - force
 		return error.lenSq() > FORCE_ERROR_TOLERANCE_SQR
 	}
 
 	// simple error function for the force vector gradient descent
 	private fun getForceVectorError(testForce: Vector3, otherForce: Vector3): Vector3 {
-		return centerOfMassAcceleration
-			.minus(testForce.plus(otherForce).plus(GRAVITY))
+		return centerOfMassAcceleration - (testForce + otherForce + GRAVITY)
 	}
 }
