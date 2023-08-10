@@ -9,6 +9,38 @@
     "beforeDevCommand": "npm run start",
     "beforeBuildCommand": "npm run build"
   },
+  "plugins": {
+    "dialog": {
+      "all": false,
+      "save": true
+    },
+    "shell": {
+      "all": false,
+      "execute": true,
+      "open": true
+    },
+    "fs": {
+      "scope": ["$APP/*", "$APP"],
+      "all": true
+    },
+    "path": {
+      "all": true
+    },
+    "os": {
+      "all": true
+    },
+    "window": {
+      "setResizable": true,
+      "setTitle": true,
+      "maximize": true,
+      "unmaximize": true,
+      "minimize": true,
+      "unminimize": true,
+      "close": true,
+      "startDragging": true,
+      "setSize": true
+    }
+  },
   "tauri": {
     "bundle": {
       "active": true,
@@ -48,38 +80,6 @@
         "certificateThumbprint": null,
         "digestAlgorithm": "sha256",
         "timestampUrl": ""
-      }
-    },
-    "plugins": {
-      "dialog": {
-        "all": false,
-        "save": true
-      },
-      "shell": {
-        "all": false,
-        "execute": true,
-        "open": true
-      },
-      "fs": {
-        "scope": ["$APP/*", "$APP"],
-        "all": true
-      },
-      "path": {
-        "all": true
-      },
-      "os": {
-        "all": true
-      },
-      "window": {
-        "setResizable": true,
-        "setTitle": true,
-        "maximize": true,
-        "unmaximize": true,
-        "minimize": true,
-        "unminimize": true,
-        "close": true,
-        "startDragging": true,
-        "setSize": true
       }
     },
     "security": {
