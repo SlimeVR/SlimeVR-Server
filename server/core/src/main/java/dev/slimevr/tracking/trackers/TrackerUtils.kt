@@ -14,11 +14,6 @@ object TrackerUtils {
 		allTrackers: List<Tracker>,
 		position: TrackerPosition,
 	): Tracker? {
-		if (position == TrackerPosition.HEAD) {
-			// Prioritize non-computed
-			val head = getNonInternalNonComputedTrackerForBodyPosition(allTrackers, position)
-			if (head != null) return head
-		}
 		return getNonInternalTrackerForBodyPosition(allTrackers, position)
 	}
 
