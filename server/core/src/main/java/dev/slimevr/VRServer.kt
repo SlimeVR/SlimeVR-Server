@@ -38,14 +38,13 @@ import java.util.function.Consumer
 
 typealias SteamBridgeProvider = (
 	server: VRServer,
-	hmdTracker: Tracker,
 	computedTrackers: List<Tracker>,
 ) -> ISteamVRBridge?
 
 const val SLIMEVR_IDENTIFIER = "dev.slimevr.SlimeVR"
 
 class VRServer @JvmOverloads constructor(
-	driverBridgeProvider: SteamBridgeProvider = { _, _, _ -> null },
+	driverBridgeProvider: SteamBridgeProvider = { _, _ -> null },
 	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _ -> null },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
 	// configPath is used by VRWorkout, do not remove!
@@ -56,7 +55,6 @@ class VRServer @JvmOverloads constructor(
 
 	@JvmField
 	val humanPoseManager: HumanPoseManager
-	val hmdTracker: Tracker
 	private val trackers: MutableList<Tracker> = FastList()
 	val trackersServer: TrackersUDPServer
 	private val bridges: MutableList<Bridge> = FastList()
@@ -109,17 +107,6 @@ class VRServer @JvmOverloads constructor(
 		tapSetupHandler = TapSetupHandler()
 		autoBoneHandler = AutoBoneHandler(this)
 		protocolAPI = ProtocolAPI(this)
-		hmdTracker = Tracker(
-			null,
-			0,
-			"HMD",
-			"HMD",
-			TrackerPosition.HEAD,
-			null,
-			hasPosition = true,
-			hasRotation = true,
-			isComputed = true
-		)
 		humanPoseManager = HumanPoseManager(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 
@@ -132,7 +119,7 @@ class VRServer @JvmOverloads constructor(
 		) { tracker: Tracker -> registerTracker(tracker) }
 
 		// Start bridges for SteamVR and Feeder
-		val driverBridge = driverBridgeProvider(this, hmdTracker, computedTrackers)
+		val driverBridge = driverBridgeProvider(this, computedTrackers)
 		if (driverBridge != null) {
 			tasks.add(Runnable { driverBridge.startBridge() })
 			bridges.add(driverBridge)
@@ -144,7 +131,7 @@ class VRServer @JvmOverloads constructor(
 		}
 
 		// Create WebSocket server
-		val wsBridge = WebSocketVRBridge(hmdTracker, computedTrackers, this)
+		val wsBridge = WebSocketVRBridge(computedTrackers, this)
 		tasks.add(Runnable { wsBridge.startBridge() })
 		bridges.add(wsBridge)
 
@@ -169,7 +156,6 @@ class VRServer @JvmOverloads constructor(
 		oscHandlers.add(vMCHandler)
 		oSCRouter = OSCRouter(configManager.vrConfig.oscRouter, oscHandlers)
 		bvhRecorder = BVHRecorder(this)
-		registerTracker(hmdTracker)
 		for (tracker in computedTrackers) {
 			registerTracker(tracker)
 		}
@@ -269,7 +255,7 @@ class VRServer @JvmOverloads constructor(
 	private fun trackerAdded(tracker: Tracker) {
 		humanPoseManager.trackerAdded(tracker)
 		updateSkeletonModel()
-		if (tracker.isComputed && tracker.name != "HMD") {
+		if (tracker.isComputed) {
 			vMCHandler.addComputedTracker(tracker)
 		}
 		refreshTrackersDriftCompensationEnabled()
