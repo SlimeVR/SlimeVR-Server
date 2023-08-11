@@ -268,16 +268,23 @@ export function ProportionsChoose() {
                 if (
                   !config?.skeletonParts?.length ||
                   !Array.isArray(config.skeletonParts)
-                )
+                ) {
+                  error(
+                    'failed to import body proportions because skeletonParts is not an array/empty'
+                  );
                   return setImportState(ImportStatus.FAILED);
+                }
 
                 for (const bone of [...config.skeletonParts]) {
                   if (
                     (typeof bone.bone === 'string' &&
-                      bone.bone in SkeletonBone) ||
+                      !(bone.bone in SkeletonBone)) ||
                     (typeof bone.bone === 'number' &&
                       typeof SkeletonBone[bone.bone] !== 'string')
                   ) {
+                    error(
+                      `failed to import body proportions because ${bone.bone} is not a valid bone`
+                    );
                     return setImportState(ImportStatus.FAILED);
                   }
                 }
