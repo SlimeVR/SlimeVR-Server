@@ -40,7 +40,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	init {
 		skeleton = humanSkeleton
 		legTweaks = skeleton.legTweaks
-		bufCur = legTweaks.getBuffer()
+		bufCur = legTweaks.bufferHead
 		bufPrev = LegTweaksBuffer()
 	}
 
@@ -95,7 +95,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		warmupFrames++
 
 		// set the buffers for easy access
-		bufCur = legTweaks.getBuffer()
+		bufCur = legTweaks.bufferHead
 		if (bufCur.parent == null) {
 			return
 		}
