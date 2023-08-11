@@ -84,11 +84,13 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	private var initialized = true
 	var enabled = true // master switch
 
-	private var floorClipEnabled = false
 	private var alwaysUseFloorclip = false
-	private var skatingCorrectionEnabled = false
-	private var toeSnapEnabled = false
-	private var footPlantEnabled = false
+	var floorClipEnabled = false
+		private set
+	var skatingCorrectionEnabled = false
+		private set
+	var toeSnapEnabled = false
+	var footPlantEnabled = false
 	private var active = false
 	private var rightLegActive = false
 	private var leftLegActive = false
@@ -120,7 +122,8 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	private var rightLowerLegAcceleration = Vector3.NULL
 
 	// buffer for holding previous frames of data
-	private var bufferHead = LegTweaksBuffer()
+	var bufferHead = LegTweaksBuffer()
+		private set
 	private var bufferInvalid = true
 
 	constructor(skeleton: HumanSkeleton, config: LegTweaksConfig) : this(skeleton) {
@@ -140,36 +143,12 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		bufferInvalid = true
 	}
 
-	fun setSkatingReductionEnabled(skatingCorrectionEnabled: Boolean) {
+	fun setSkatingCorrectionEnabled(skatingCorrectionEnabled: Boolean) {
 		this.skatingCorrectionEnabled = skatingCorrectionEnabled
 
 		// reset the buffer
 		bufferHead = LegTweaksBuffer()
 		bufferInvalid = true
-	}
-
-	fun setToeSnapEnabled(value: Boolean) {
-		toeSnapEnabled = value
-	}
-
-	fun setFootPlantEnabled(value: Boolean) {
-		footPlantEnabled = value
-	}
-
-	fun getFloorclipEnabled(): Boolean {
-		return floorClipEnabled
-	}
-
-	fun getSkatingReductionEnabled(): Boolean {
-		return skatingCorrectionEnabled
-	}
-
-	fun getToeSnapEnabled(): Boolean {
-		return toeSnapEnabled
-	}
-
-	fun getFootPlantEnabled(): Boolean {
-		return footPlantEnabled
 	}
 
 	fun setLocalizerMode(value: Boolean) {
@@ -179,10 +158,6 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 	fun resetBuffer() {
 		bufferInvalid = true
-	}
-
-	fun getBuffer(): LegTweaksBuffer {
-		return bufferHead
 	}
 
 	fun setConfig(config: LegTweaksConfig) {
