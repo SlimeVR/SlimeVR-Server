@@ -5,11 +5,12 @@ import { Typography } from '../commons/Typography';
 import { formatVector3 } from '../../utils/formatting';
 import { Canvas, useLoader } from '@react-three/fiber';
 import * as THREE from 'three';
-import { PerspectiveCamera } from 'three';
+import { PerspectiveCamera, Vector3 } from 'three';
 import { Button } from '../commons/Button';
 import { QuatObject } from '../../maths/quaternion';
 import { useLocalization } from '@fluent/react';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { Vector3Object } from '../../maths/vector3';
 
 const groundColor = '#4444aa';
 
@@ -25,10 +26,12 @@ export function TrackerModel({ model }: { model: string }) {
 }
 
 function SceneRenderer({
-  quat: { x, y, z, w },
+  quat,
+  vec,
   model,
 }: {
   quat: QuatObject;
+  vec: Vector3Object;
   model: string;
 }) {
   return (
@@ -41,10 +44,32 @@ function SceneRenderer({
     >
       <ambientLight intensity={0.5} />
       <spotLight position={[20, 20, 20]} angle={0.09} penumbra={1} />
-      <group quaternion={new THREE.Quaternion(x, y, z, w)}>
+      <group quaternion={new THREE.Quaternion(quat.x, quat.y, quat.z, quat.w)}>
         <TrackerModel model={model}></TrackerModel>
         <axesHelper args={[10]} />
       </group>
+
+      <arrowHelper
+        args={[
+          new Vector3(-Math.sign(vec.x), 0, 0),
+          new Vector3(0, 0, 0),
+          Math.sqrt(Math.abs(vec.x)) * 2,
+        ]}
+      />
+      <arrowHelper
+        args={[
+          new Vector3(0, Math.sign(vec.y), 0),
+          new Vector3(0, 0, 0),
+          Math.sqrt(Math.abs(vec.y)) * 2,
+        ]}
+      />
+      <arrowHelper
+        args={[
+          new Vector3(0, 0, -Math.sign(vec.z)),
+          new Vector3(0, 0, 0),
+          Math.sqrt(Math.abs(vec.z)) * 2,
+        ]}
+      />
 
       <mesh position={[0, -3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[50, 50, 10, 10]} />
@@ -82,6 +107,10 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
     tracker?.rotationIdentityAdjusted ||
     tracker?.rotation ||
     new THREE.Quaternion();
+  const vec =
+    tracker?.linearAcceleration ||
+    tracker?.rawAcceleration ||
+    new THREE.Vector3();
 
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
@@ -127,6 +156,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
           </Button>
           <SceneRenderer
             quat={{ ...quat }}
+            vec={{ ...vec }}
             model={
               isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'
             }
