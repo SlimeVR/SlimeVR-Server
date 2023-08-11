@@ -86,6 +86,15 @@ export function SkeletonVisualizerWidget() {
     return (yLength as BoneT[]).reduce((prev, cur) => prev + cur.boneLength, 0);
   }, [bones]);
 
+  const targetCamera = useMemo(() => {
+    const hmd = bones.get(BodyPart.HEAD);
+    if (hmd?.headPositionG?.y && hmd.headPositionG.y > 0) {
+      return hmd.headPositionG.y / 2;
+    }
+
+    return heightOffset/ 2;
+  }, [bones]);
+
   if (!skeleton.current) return <></>;
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
@@ -110,7 +119,7 @@ export function SkeletonVisualizerWidget() {
           ></basedSkeletonHelper>
         </group>
         <primitive object={skeleton.current[0]} />
-        <OrbitControls target={[0, -1, 0]} />
+        <OrbitControls target={[0, targetCamera, 0]} />
         <OrthographicCameraWrapper />
       </Canvas>
     </div>
