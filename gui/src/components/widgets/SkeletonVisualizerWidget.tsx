@@ -71,7 +71,7 @@ export function SkeletonVisualizerWidget() {
         style={{ height: 400, background: 'transparent' }}
       >
         <mesh position={[0, -3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[50, 50, 10, 10]} />
+          <planeGeometry args={[10, 10, 50, 50]} />
           <meshBasicMaterial
             wireframe
             color={groundColor}
