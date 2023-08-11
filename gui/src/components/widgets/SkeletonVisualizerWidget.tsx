@@ -38,7 +38,7 @@ function OrthographicCameraWrapper() {
       right={(0.5 * frustumSize * aspect) / 2}
       near={0.1}
       far={1000}
-      position={[0, 0, 100]}
+      position={[50, 150, 100]}
     />
   );
 }
