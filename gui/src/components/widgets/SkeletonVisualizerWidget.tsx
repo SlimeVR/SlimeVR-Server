@@ -71,17 +71,18 @@ export function SkeletonVisualizerWidget() {
         style={{ height: 400, background: 'transparent' }}
       >
         <mesh position={[0, -3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[50, 50, 10, 10]} />
-        <meshBasicMaterial
-          wireframe
-          color={groundColor}
-          transparent
-          opacity={0.2}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
+          <planeGeometry args={[50, 50, 10, 10]} />
+          <meshBasicMaterial
+            wireframe
+            color={groundColor}
+            transparent
+            opacity={0.2}
+            side={THREE.DoubleSide}
+          />
+        </mesh>
         <group scale={2}>
           <basedSkeletonHelper
+            frustumCulled={false}
             args={[skeleton.current[0]]}
           ></basedSkeletonHelper>
         </group>

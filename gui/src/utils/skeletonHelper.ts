@@ -148,7 +148,7 @@ export class BoneKind extends Bone {
     this.boneT = bones.get(this.boneT.bodyPart) ?? this.boneT;
     const parent = BoneKind.parent(this.boneT.bodyPart);
     const parentBone = parent === null ? undefined : bones.get(parent);
-    if(!this.tail) {
+    if (!this.tail) {
       const localPosition = Vector3FromVec3fT(this.boneT.headPositionG).sub(
         Vector3FromVec3fT(
           parentBone === undefined
@@ -176,7 +176,7 @@ export class BoneKind extends Bone {
     //     : Vector3FromVec3fT(parentBone.headPositionG),
     //   Vector3FromVec3fT(this.boneT.headPositionG)
     // );
-    this.position.set(0, -this.boneT.boneLength, 0)
+    this.position.set(0, -this.boneT.boneLength, 0);
     // console.log(this.position);
   }
 
@@ -340,7 +340,7 @@ export function createChildren(
   const parent = new BoneKind(bones, body, false);
   parentBone?.add(parent);
   if (childrenBodies.length === 0) {
-    const tail =  new BoneKind(bones, body, true);
+    const tail = new BoneKind(bones, body, true);
     parent.add(tail);
     return [parent, tail];
   }
