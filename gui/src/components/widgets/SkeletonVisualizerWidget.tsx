@@ -1,8 +1,8 @@
-import { Canvas, Object3DNode, extend, useThree } from '@react-three/fiber';
+import { Canvas, Object3DNode, extend } from '@react-three/fiber';
 import { useAppContext } from '@/hooks/app';
-import { Bone } from 'three';
+import { Bone, PerspectiveCamera } from 'three';
 import { useMemo, useEffect, useRef } from 'react';
-import { OrbitControls, OrthographicCamera } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import {
   BoneKind,
   createChildren,
@@ -22,26 +22,6 @@ declare module '@react-three/fiber' {
 }
 
 const groundColor = '#4444aa';
-const frustumSize = 600;
-
-function OrthographicCameraWrapper() {
-  const { size } = useThree();
-  const aspect = useMemo(() => size.width / size.height, [size]);
-
-  return (
-    <OrthographicCamera
-      makeDefault
-      zoom={90}
-      top={frustumSize / 2}
-      bottom={frustumSize / -2}
-      left={(0.5 * frustumSize * aspect) / -2}
-      right={(0.5 * frustumSize * aspect) / 2}
-      near={0.1}
-      far={1000}
-      position={[50, 150, 100]}
-    />
-  );
-}
 
 export function SkeletonVisualizerWidget() {
   const { bones: _bones } = useAppContext();
@@ -69,6 +49,12 @@ export function SkeletonVisualizerWidget() {
       <Canvas
         className="container"
         style={{ height: 400, background: 'transparent' }}
+        onCreated={({camera}) => {
+          (camera as PerspectiveCamera).fov = 60;
+          camera.near = 0.01
+          camera.position.set(3, 5, 3)
+          camera.zoom = 4
+        }}
       >
         <mesh position={[0, -3, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[10, 10, 50, 50]} />
@@ -87,8 +73,7 @@ export function SkeletonVisualizerWidget() {
           ></basedSkeletonHelper>
         </group>
         <primitive object={skeleton.current[0]} />
-        <OrbitControls />
-        <OrthographicCameraWrapper />
+        <OrbitControls target={[0, -1.5, 0]} />
       </Canvas>
     </div>
   );
