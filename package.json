@@ -15,6 +15,7 @@
     "prepare": "husky install && npm run update-solarxr"
   },
   "devDependencies": {
-    "husky": "^8.0.3"
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3"
   }
 }

@@ -3,12 +3,10 @@
 
 case "$(uname -sr)" in
 	CYGWIN*|MINGW*|MINGW32*|MSYS*)
-		./gradlew.bat spotlessApply
-		npx.cmd -w gui lint-staged
+		npx.cmd lint-staged
 		;;
 
 	*)
-		./gradlew spotlessApply
-		npx -w gui lint-staged
+		npx lint-staged
 		;;
 esac
