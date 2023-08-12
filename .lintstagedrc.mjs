@@ -1,5 +1,5 @@
 export default {
-  'server/**/*.{java,kt}': (filenames) =>
+  'server/**/*.{java,kt,kts}': (filenames) =>
     filenames.map(
       (filename) =>
         `./gradlew${
