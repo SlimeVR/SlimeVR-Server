@@ -159,16 +159,14 @@ export class BoneKind extends Bone {
       this.position.copy(localPosition);
       return;
     }
-    this.setRotationFromQuaternion(
-      QuaternionFromQuatT(this.boneT.rotationG)
-        .normalize()
-        .multiply(
-          parentBone === undefined
-            ? new Quaternion().identity()
-            : QuaternionFromQuatT(parentBone.rotationG).normalize().invert().normalize()
-        )
-        .normalize()
-    );
+    const quat = QuaternionFromQuatT(this.boneT.rotationG)
+      .normalize()
+      .multiply(
+        parentBone === undefined
+          ? new Quaternion().identity()
+          : QuaternionFromQuatT(parentBone.rotationG).normalize().invert().normalize()
+      )
+      .normalize();
     // console.log(this.quaternion);
     // console.log(
     //   parentBone === undefined
@@ -177,6 +175,7 @@ export class BoneKind extends Bone {
     //   Vector3FromVec3fT(this.boneT.headPositionG)
     // );
     this.position.set(0, -this.boneT.boneLength, 0);
+    this.position.applyQuaternion(quat);
     // console.log(this.position);
   }
 

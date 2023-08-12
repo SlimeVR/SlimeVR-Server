@@ -53,7 +53,6 @@ const yParts = [
   BodyPart.HIP,
   BodyPart.LEFT_UPPER_LEG,
   BodyPart.LEFT_LOWER_LEG,
-  BodyPart.LEFT_FOOT,
 ];
 
 export function SkeletonVisualizerWidget() {
