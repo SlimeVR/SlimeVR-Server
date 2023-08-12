@@ -5,12 +5,10 @@ import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.bridge.ISteamVRBridge;
 import dev.slimevr.desktop.platform.ProtobufMessages.*;
 import dev.slimevr.tracking.trackers.Tracker;
-import dev.slimevr.tracking.trackers.TrackerRole;
 import dev.slimevr.util.ann.VRServerThread;
 import io.eiren.util.ann.Synchronize;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
-import io.eiren.util.logging.LogManager;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
 
@@ -36,13 +34,10 @@ public abstract class ProtobufBridge implements ISteamVRBridge {
 	private final Map<String, Tracker> remoteTrackersBySerial = new HashMap<>();
 	@Synchronize("self")
 	private final Map<Integer, Tracker> remoteTrackersByTrackerId = new HashMap<>();
-	private final Tracker hmd;
 	private boolean hadNewData = false;
-	private Tracker hmdTracker;
 
-	public ProtobufBridge(String bridgeName, Tracker hmd) {
+	public ProtobufBridge(String bridgeName) {
 		this.bridgeName = bridgeName;
-		this.hmd = hmd;
 	}
 
 	/**
@@ -82,9 +77,6 @@ public abstract class ProtobufBridge implements ISteamVRBridge {
 		while ((message = inputQueue.poll()) != null) {
 			processMessageReceived(message);
 			hadNewData = true;
-		}
-		if (hadNewData && hmdTracker != null) {
-			trackerOverrideUpdate(hmdTracker, hmd);
 		}
 	}
 
@@ -202,27 +194,17 @@ public abstract class ProtobufBridge implements ISteamVRBridge {
 		synchronized (remoteTrackersByTrackerId) {
 			remoteTrackersByTrackerId.put(tracker.getTrackerNum(), tracker);
 		}
-		if (trackerAdded.getTrackerRole() == TrackerRole.HMD.getId()) {
-			hmdTracker = tracker;
-		} else {
-			VRServer.Companion.getInstance().registerTracker(tracker);
-		}
+		VRServer.Companion.getInstance().registerTracker(tracker);
 	}
 
 	@VRServerThread
 	protected void userActionReceived(UserAction userAction) {
 		String resetSourceName = String.format("%s: %s", resetSourceNamePrefix, bridgeName);
 		switch (userAction.getName()) {
-			case "calibrate":
-				LogManager
-					.warning("[" + bridgeName + "] Received deprecated user action 'calibrate'!");
-			case "reset":
+			case "reset" ->
 				// TODO : Check pose field
 				VRServer.Companion.getInstance().resetTrackersFull(resetSourceName);
-				break;
-			case "fast_reset":
-				VRServer.Companion.getInstance().resetTrackersYaw(resetSourceName);
-				break;
+			case "fast_reset" -> VRServer.Companion.getInstance().resetTrackersYaw(resetSourceName);
 		}
 	}
 
@@ -266,9 +248,6 @@ public abstract class ProtobufBridge implements ISteamVRBridge {
 					.getValue()
 					.setStatus(dev.slimevr.tracking.trackers.TrackerStatus.DISCONNECTED);
 			}
-		}
-		if (hmdTracker != null) {
-			hmd.setStatus(dev.slimevr.tracking.trackers.TrackerStatus.DISCONNECTED);
 		}
 	}
 
