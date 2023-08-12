@@ -111,10 +111,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	/**
-	 * Takes a rotation and adjusts it to mounting
+	 * Get the adjusted accel from yawFixZeroReference
 	 */
-	fun getMountingAdjustedRotationFrom(rotation: Quaternion): Quaternion {
-		return rotation * mountingOrientation * mountRotFix
+	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 {
+		return (adjustToReference(rawRot) / yawFix).sandwich(accel)
 	}
 
 	/**
