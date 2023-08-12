@@ -1,5 +1,14 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-./gradlew spotlessApply
+case "$(uname -sr)" in
+	CYGWIN*|MINGW*|MINGW32*|MSYS*)
+		./gradlew.bat spotlessApply
+		;;
+
+	*)
+		./gradlew spotlessApply
+		;;
+esac
+
 npx -w gui lint-staged
