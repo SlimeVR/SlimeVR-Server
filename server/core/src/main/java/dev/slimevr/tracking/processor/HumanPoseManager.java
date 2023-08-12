@@ -648,15 +648,20 @@ public class HumanPoseManager {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersFull(resetSourceName);
 			if (server != null) {
-				if (skeleton.getHeadTracker() == null && skeleton.getNeckTracker() == null) {
+				if (skeleton.headTracker == null && skeleton.neckTracker == null) {
 					server.vrcOSCHandler.yawAlign(Quaternion.Companion.getIDENTITY());
 				} else {
 					server.vrcOSCHandler
 						.yawAlign(
-							getHeadBone().getGlobalRotation().project(Vector3.Companion.getPOS_Y())
+							getRootNode()
+								.getLocalTransform()
+								.getRotation()
+								.project(Vector3.Companion.getPOS_Y())
 						);
 				}
-				server.getVMCHandler().alignVMCTracking(getHeadBone().getGlobalRotation());
+				server
+					.getVMCHandler()
+					.alignVMCTracking(getRootNode().getWorldTransform().getRotation());
 				logTrackersDrift();
 			}
 		}
@@ -666,15 +671,20 @@ public class HumanPoseManager {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersYaw(resetSourceName);
 			if (server != null) {
-				if (skeleton.getHeadTracker() == null && skeleton.getNeckTracker() == null) {
+				if (skeleton.headTracker == null && skeleton.neckTracker == null) {
 					server.vrcOSCHandler.yawAlign(Quaternion.Companion.getIDENTITY());
 				} else {
 					server.vrcOSCHandler
 						.yawAlign(
-							getHeadBone().getGlobalRotation().project(Vector3.Companion.getPOS_Y())
+							getRootNode()
+								.getLocalTransform()
+								.getRotation()
+								.project(Vector3.Companion.getPOS_Y())
 						);
 				}
-				server.getVMCHandler().alignVMCTracking(getHeadBone().getGlobalRotation());
+				server
+					.getVMCHandler()
+					.alignVMCTracking(getRootNode().getWorldTransform().getRotation());
 				logTrackersDrift();
 			}
 		}
