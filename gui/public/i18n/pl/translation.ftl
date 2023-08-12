@@ -855,9 +855,9 @@ onboarding-automatic_proportions-check_height-fetch_height = Stoję!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Nieznany
 # Shows an element below it
-onboarding-automatic_proportions-check_height-height = Twój wzrost to
+onboarding-automatic_proportions-check_height-hmd_height1 = Twoja wysokość HMD to
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height = A wysokość HMD jest
+onboarding-automatic_proportions-check_height-height1 = Twoje rzeczywisty wzrost to
 onboarding-automatic_proportions-check_height-next_step = Są w porządku
 onboarding-automatic_proportions-start_recording-title = Bądź gotowy żeby się ruszać
 onboarding-automatic_proportions-start_recording-description = Będziemy teraz nagrywać specyficzne pozycje i ruchy. Będą one pokazane w następnym okienku. Bądź gotowy po naciśnięciu przycisku!
