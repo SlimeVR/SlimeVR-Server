@@ -428,29 +428,25 @@ class VRCOSCHandler(
 	/**
 	 * Sends the expected HMD rotation upon reset to align the trackers in VRC
 	 */
-	fun yawAlign() {
+	fun yawAlign(headRot: Quaternion) {
 		if (oscSender != null && oscSender!!.isConnected) {
-			for (shareableTracker in computedTrackers) {
-				if (shareableTracker.trackerPosition === TrackerPosition.HEAD) {
-					val (_, _, y) = shareableTracker.getRotation().toEulerAngles(EulerOrder.XYZ)
-					oscArgs.clear()
-					oscArgs.add(0f)
-					oscArgs.add(-y * FastMath.RAD_TO_DEG)
-					oscArgs.add(0f)
-					oscMessage = OSCMessage(
-						"/tracking/trackers/head/rotation",
-						oscArgs
-					)
-					try {
-						oscSender!!.send(oscMessage)
-					} catch (e: IOException) {
-						LogManager
-							.warning("[VRCOSCHandler] Error sending OSC message to VRChat: $e")
-					} catch (e: OSCSerializeException) {
-						LogManager
-							.warning("[VRCOSCHandler] Error sending OSC message to VRChat: $e")
-					}
-				}
+			val (_, _, y, _) = headRot.toEulerAngles(EulerOrder.YXZ)
+			oscArgs.clear()
+			oscArgs.add(0f)
+			oscArgs.add(-y * FastMath.RAD_TO_DEG)
+			oscArgs.add(0f)
+			oscMessage = OSCMessage(
+				"/tracking/trackers/head/rotation",
+				oscArgs
+			)
+			try {
+				oscSender!!.send(oscMessage)
+			} catch (e: IOException) {
+				LogManager
+					.warning("[VRCOSCHandler] Error sending OSC message to VRChat: $e")
+			} catch (e: OSCSerializeException) {
+				LogManager
+					.warning("[VRCOSCHandler] Error sending OSC message to VRChat: $e")
 			}
 		}
 	}
