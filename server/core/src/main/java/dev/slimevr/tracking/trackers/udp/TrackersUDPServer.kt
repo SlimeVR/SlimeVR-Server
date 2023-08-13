@@ -9,6 +9,7 @@ import io.eiren.util.Util
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
+import io.github.axisangles.ktmath.Vector3
 import org.apache.commons.lang3.ArrayUtils
 import solarxr_protocol.rpc.ResetType
 import java.io.IOException
@@ -229,7 +230,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							} else {
 								conn.timedOut = false
 								for (value in conn.trackers.values) {
-									value.status = TrackerStatus.OK
+									if (value.status == TrackerStatus.DISCONNECTED) {
+										value.status = TrackerStatus.OK
+									}
 								}
 							}
 							if (conn.serialBuffer.isNotEmpty() &&
@@ -286,7 +289,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
 				var rot17 = packet.rotation
-				rot17 = AXES_OFFSET.times(rot17)
+				rot17 = AXES_OFFSET * rot17
 				when (packet.dataType) {
 					UDPPacket17RotationData.DATA_TYPE_NORMAL -> {
 						tracker.setRotation(rot17)
@@ -307,7 +310,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			is UDPPacket4Acceleration -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				tracker.setAcceleration(packet.acceleration)
+				// Switch x and y around to adjust for different axes
+				tracker.setAcceleration(Vector3(packet.acceleration.y, packet.acceleration.x, packet.acceleration.z))
 			}
 			is UDPPacket10PingPong -> {
 				if (connection == null) return
