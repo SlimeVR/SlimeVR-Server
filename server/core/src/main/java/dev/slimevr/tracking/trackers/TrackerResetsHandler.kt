@@ -249,53 +249,55 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * and stores it in mountRotFix, and adjusts yawFix
 	 */
 	fun resetMounting(reference: Quaternion) {
-		if (resetMountingFeet || !isFootTracker()) {
-			// Get the current calibrated rotation
-			var buffer = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
-			buffer *= tposeFix
-			buffer = gyroFix * buffer
-			buffer *= attachmentFix
-
-			// TODO adjust buffer to reference
-
-			// Rotate a vector pointing up by the quat
-			val rotVector = buffer.sandwich(Vector3.POS_Y)
-
-			// Calculate the yaw angle using tan
-			var yawAngle = atan2(rotVector.x, rotVector.z)
-
-			// Adjust for T-Pose
-			if ((isLeftArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
-				(isRightArmTracker() && armsResetMode == ArmsResetModes.TPOSE_UP)
-			) {
-				// Tracker goes right
-				yawAngle -= FastMath.HALF_PI
-			}
-			if ((isLeftArmTracker() && armsResetMode == ArmsResetModes.TPOSE_UP) ||
-				(isRightArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN)
-			) {
-				// Tracker goes left
-				yawAngle += FastMath.HALF_PI
-			}
-
-			// Adjust for forward/back arms and thighs
-			val isLowerArmBack =
-				armsResetMode == ArmsResetModes.BACK && (isLeftLowerArmTracker() || isRightLowerArmTracker())
-			val isArmForward =
-				armsResetMode == ArmsResetModes.FORWARD && (isLeftArmTracker() || isRightArmTracker())
-			if (!isThighTracker() && !isArmForward && !isLowerArmBack) {
-				// Tracker goes back
-				yawAngle -= FastMath.PI
-			}
-
-			// Make an adjustment quaternion from the angle
-			buffer = EulerAngles(EulerOrder.YZX, 0f, yawAngle, 0f).toQuaternion()
-
-			// Get the difference from the last mounting to the current mounting and apply
-			// the difference to the yaw fix quaternion to correct for the rotation change
-			yawFix /= (buffer / mountRotFix)
-			mountRotFix = buffer
+		if (!resetMountingFeet && isFootTracker()) {
+			return
 		}
+
+		// Get the current calibrated rotation
+		var buffer = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
+		buffer *= tposeFix
+		buffer = gyroFix * buffer
+		buffer *= attachmentFix
+
+		// TODO adjust buffer to reference
+
+		// Rotate a vector pointing up by the quat
+		val rotVector = buffer.sandwich(Vector3.POS_Y)
+
+		// Calculate the yaw angle using tan
+		var yawAngle = atan2(rotVector.x, rotVector.z)
+
+		// Adjust for T-Pose
+		if ((isLeftArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
+			(isRightArmTracker() && armsResetMode == ArmsResetModes.TPOSE_UP)
+		) {
+			// Tracker goes right
+			yawAngle -= FastMath.HALF_PI
+		}
+		if ((isLeftArmTracker() && armsResetMode == ArmsResetModes.TPOSE_UP) ||
+			(isRightArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN)
+		) {
+			// Tracker goes left
+			yawAngle += FastMath.HALF_PI
+		}
+
+		// Adjust for forward/back arms and thighs
+		val isLowerArmBack =
+			armsResetMode == ArmsResetModes.BACK && (isLeftLowerArmTracker() || isRightLowerArmTracker())
+		val isArmForward =
+			armsResetMode == ArmsResetModes.FORWARD && (isLeftArmTracker() || isRightArmTracker())
+		if (!isThighTracker() && !isArmForward && !isLowerArmBack) {
+			// Tracker goes back
+			yawAngle -= FastMath.PI
+		}
+
+		// Make an adjustment quaternion from the angle
+		buffer = EulerAngles(EulerOrder.YZX, 0f, yawAngle, 0f).toQuaternion()
+
+		// Get the difference from the last mounting to the current mounting and apply
+		// the difference to the yaw fix quaternion to correct for the rotation change
+		yawFix /= (buffer / mountRotFix)
+		mountRotFix = buffer
 	}
 
 	fun clearMounting() {
