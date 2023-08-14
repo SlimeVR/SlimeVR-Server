@@ -26,7 +26,7 @@ const groundColor = '#4444aa';
 const frustumSize = 10;
 const factor = 2;
 
-function OrthographicCameraWrapper() {
+export function OrthographicCameraWrapper() {
   const { size } = useThree();
   const aspect = useMemo(() => size.width / size.height, [size]);
 
@@ -91,7 +91,7 @@ export function SkeletonVisualizerWidget() {
       return hmd.headPositionG.y / 2;
     }
 
-    return heightOffset/ 2;
+    return heightOffset / 2;
   }, [bones]);
 
   if (!skeleton.current) return <></>;
@@ -100,6 +100,10 @@ export function SkeletonVisualizerWidget() {
       <Canvas
         className="container"
         style={{ height: 400, background: 'transparent' }}
+        onCreated={({ camera }) => {
+          (camera as THREE.PerspectiveCamera).fov = 20;
+          camera.position.set(3, 3, -3)
+        }}
       >
         <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[10, 10, 50, 50]} />
@@ -119,7 +123,6 @@ export function SkeletonVisualizerWidget() {
         </group>
         <primitive object={skeleton.current[0]} />
         <OrbitControls target={[0, targetCamera, 0]} />
-        <OrthographicCameraWrapper />
       </Canvas>
     </div>
   );
