@@ -102,7 +102,7 @@ export function SkeletonVisualizerWidget() {
         style={{ height: 400, background: 'transparent' }}
         onCreated={({ camera }) => {
           (camera as THREE.PerspectiveCamera).fov = 20;
-          camera.position.set(3, 3, -3)
+          camera.position.set(3, 3, -3);
         }}
       >
         <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -122,7 +122,11 @@ export function SkeletonVisualizerWidget() {
           ></basedSkeletonHelper>
         </group>
         <primitive object={skeleton.current[0]} />
-        <OrbitControls target={[0, targetCamera, 0]} />
+        <OrbitControls
+          target={[0, targetCamera, 0]}
+          maxDistance={5}
+          maxPolarAngle={Math.PI / 2}
+        />
       </Canvas>
     </div>
   );

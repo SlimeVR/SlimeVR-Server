@@ -7,9 +7,8 @@ import { Canvas, useLoader } from '@react-three/fiber';
 import * as THREE from 'three';
 import { PerspectiveCamera, Vector3 } from 'three';
 import { Button } from '@/components/commons/Button';
-import { QuatObject } from '@/maths/quaternion';
+import { QuatObject, QuaternionFromQuatT } from '@/maths/quaternion';
 import { useLocalization } from '@fluent/react';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Vector3Object } from '@/maths/vector3';
 import { Gltf } from '@react-three/drei';
 
@@ -20,7 +19,7 @@ const scale = 6.5;
 export function TrackerModel({ model }: { model: string }) {
   return (
     <group scale={scale} rotation={[Math.PI / 2, 0, 0]}>
-      <Gltf src={model} receiveShadow />
+      <Gltf src={model} />
     </group>
   );
 }
@@ -42,9 +41,9 @@ function SceneRenderer({
         (camera as PerspectiveCamera).fov = 60;
       }}
     >
-      <ambientLight intensity={0.5} />
-      <spotLight position={[20, 20, 20]} angle={0.09} penumbra={1} />
-      <group quaternion={new THREE.Quaternion(quat.x, quat.y, quat.z, quat.w)}>
+      <ambientLight intensity={0.5 * Math.PI} />
+      <spotLight position={[20, 20, 20]} angle={0.09} penumbra={1} intensity={4000}/>
+      <group quaternion={QuaternionFromQuatT(quat)}>
         <TrackerModel model={model}></TrackerModel>
         <axesHelper args={[10]} />
       </group>
