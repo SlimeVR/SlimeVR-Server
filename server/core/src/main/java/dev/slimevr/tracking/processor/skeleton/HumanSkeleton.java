@@ -87,8 +87,8 @@ public class HumanSkeleton {
 		0
 	).toQuaternion();
 	// #region Tracker Input
-	protected Tracker headTracker;
-	protected Tracker neckTracker;
+	public Tracker headTracker;
+	public Tracker neckTracker;
 	protected Tracker upperChestTracker;
 	protected Tracker chestTracker;
 	protected Tracker waistTracker;
