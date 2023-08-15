@@ -55,6 +55,7 @@
           gst_all_1.gst-plugins-base
           gst_all_1.gst-plugins-good
           gst_all_1.gst-plugins-bad
+          librsvg
 
           # Some nice things to have
           exa
