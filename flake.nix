@@ -7,6 +7,7 @@
     nix2container.url = "github:nlewo/nix2container";
     nix2container.inputs.nixpkgs.follows = "nixpkgs";
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
+    nixgl.url = "github:guibou/nixGL";
   };
 
   nixConfig = {
@@ -14,7 +15,12 @@
     extra-substituters = "https://devenv.cachix.org";
   };
 
-  outputs = inputs @ {flake-parts, ...}:
+  outputs = inputs @ {
+    self,
+    flake-parts,
+    nixgl,
+    ...
+  }:
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         inputs.devenv.flakeModule
@@ -36,6 +42,10 @@
 
         # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
         # packages.default = pkgs.hello;
+        _module.args.pkgs = import self.inputs.nixpkgs {
+          inherit system;
+          overlays = [nixgl.overlay];
+        };
 
         devenv.shells.default = {
           name = "slimevr";
@@ -49,6 +59,7 @@
           # https://devenv.sh/reference/options/
           packages =
             [
+              pkgs.nixgl.nixGLIntel
             ]
             ++ lib.optionals pkgs.stdenv.isLinux (with pkgs; [
               appimagekit

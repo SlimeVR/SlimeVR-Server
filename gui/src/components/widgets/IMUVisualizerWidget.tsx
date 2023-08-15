@@ -11,16 +11,16 @@ import { QuatObject } from '@/maths/quaternion';
 import { useLocalization } from '@fluent/react';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Vector3Object } from '@/maths/vector3';
+import { Gltf } from '@react-three/drei';
 
 const groundColor = '#4444aa';
 
 const scale = 6.5;
 
 export function TrackerModel({ model }: { model: string }) {
-  const gltf = useLoader(GLTFLoader, model);
   return (
     <group scale={scale} rotation={[Math.PI / 2, 0, 0]}>
-      <primitive object={gltf.scene} />
+      <Gltf src={model} receiveShadow />
     </group>
   );
 }
