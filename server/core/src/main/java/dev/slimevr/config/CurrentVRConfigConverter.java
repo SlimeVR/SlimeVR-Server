@@ -256,20 +256,14 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 			}
 			if (version < 11) {
 				// Sets HMD's designation to "body:head"
-				ObjectNode oldTrackersNode = (ObjectNode) modelData.get("trackers");
-				if (oldTrackersNode != null) {
-					var trackersIter = oldTrackersNode.iterator();
-					var fieldNamesIter = oldTrackersNode.fieldNames();
-					ObjectNode trackersNode = nodeFactory.objectNode();
-					String fieldName;
-					while (trackersIter.hasNext()) {
-						ObjectNode node = (ObjectNode) trackersIter.next();
-						fieldName = fieldNamesIter.next();
-						if (fieldName.equals("HMD"))
-							node.set("designation", new TextNode("body:head"));
-						trackersNode.set(fieldName, node);
+				ObjectNode trackersNode = (ObjectNode) modelData.get("trackers");
+				if (trackersNode != null) {
+					ObjectNode HMDNode = (ObjectNode) trackersNode.get("HMD");
+					if (HMDNode != null) {
+						HMDNode.set("designation", new TextNode("body:head"));
+						trackersNode.set("HMD", HMDNode);
+						modelData.set("trackers", trackersNode);
 					}
-					modelData.set("trackers", trackersNode);
 				}
 			}
 		} catch (Exception e) {
