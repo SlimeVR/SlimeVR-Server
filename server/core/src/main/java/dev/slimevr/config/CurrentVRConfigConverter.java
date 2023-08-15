@@ -254,6 +254,24 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					}
 				}
 			}
+			if (version < 11) {
+				// Sets HMD's designation to "body:head"
+				ObjectNode oldTrackersNode = (ObjectNode) modelData.get("trackers");
+				if (oldTrackersNode != null) {
+					var trackersIter = oldTrackersNode.iterator();
+					var fieldNamesIter = oldTrackersNode.fieldNames();
+					ObjectNode trackersNode = nodeFactory.objectNode();
+					String fieldName;
+					while (trackersIter.hasNext()) {
+						ObjectNode node = (ObjectNode) trackersIter.next();
+						fieldName = fieldNamesIter.next();
+						if (fieldName.equals("HMD"))
+							node.set("designation", new TextNode("body:head"));
+						trackersNode.set(fieldName, node);
+					}
+					modelData.set("trackers", trackersNode);
+				}
+			}
 		} catch (Exception e) {
 			LogManager.severe("Error during config migration: " + e);
 		}

@@ -84,7 +84,6 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 	@Override
 	@VRServerThread
 	protected Tracker createNewTracker(ProtobufMessages.TrackerAdded trackerAdded) {
-		// Todo: We need the manufacturer
 		Device device = VRServer.Companion.getInstance().deviceManager
 			.createDevice(
 				trackerAdded.getTrackerName(),
@@ -99,7 +98,7 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 				displayName = "SteamVR Driver HMD";
 			else
 				displayName = "Feeder App HMD";
-			// TODO support needsReset = true if HMD isn't assigned to head
+			// TODO support needsReset = true for VTubing (GUI toggle?)
 			needsReset = false;
 		} else {
 			displayName = trackerAdded.getTrackerName();
