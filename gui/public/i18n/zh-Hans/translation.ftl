@@ -351,11 +351,19 @@ settings-general-fk_settings-leg_fk = 腿部追踪
 settings-general-fk_settings-arm_fk = 手臂追踪
 settings-general-fk_settings-arm_fk-description = 即使有手臂位置数据可用，也强制使用头显的数据追踪手臂。
 settings-general-fk_settings-arm_fk-force_arms = 强制使用头显数据追踪手臂
-settings-general-fk_settings-skeleton_settings = 骨架设置
+settings-general-fk_settings-skeleton_settings-toggles = 骨架设置
 settings-general-fk_settings-skeleton_settings-description = 打开或关闭骨架设置。建议保持这些设置不变。
 settings-general-fk_settings-skeleton_settings-extended_spine_model = 延伸脊柱模型
 settings-general-fk_settings-skeleton_settings-extended_pelvis_model = 延伸骨盆模型
 settings-general-fk_settings-skeleton_settings-extended_knees_model = 伸展膝盖模型
+settings-general-fk_settings-skeleton_settings-ratios = 骨架比例
+settings-general-fk_settings-skeleton_settings-ratios-description = 更改骨架设置的参数。您可能需要在更改后调整身体比例。
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = 用胸部到髋部的数据推算腰部
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = 用胸部到腿部的数据推算腰部
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = 用胸部到腿部的数据推算髋部
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = 用腰部到腿部的数据推算髋部
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = 平均髋部与腿部间航向轴和横滚轴的数值
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = 平均膝盖与小腿间航向轴和横滚轴的数值
 settings-general-fk_settings-self_localization-title = 动作捕捉模式
 settings-general-fk_settings-self_localization-description = 动作捕捉模式允许在没有头戴设备或其他追踪器的情况下粗略地跟踪骨架姿态。请注意，本功能需要脚部和头部追踪器，且现阶段依然是实验性的。
 settings-general-fk_settings-vive_emulation-title = Vive 模拟
@@ -829,9 +837,9 @@ onboarding-automatic_proportions-check_height-fetch_height = 我站好了！
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 未知
 # Shows an element below it
-onboarding-automatic_proportions-check_height-height = 你的身高是
+onboarding-automatic_proportions-check_height-hmd_height1 = 你的头戴设备的高度是
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height = 然后，头戴设备的高度是
+onboarding-automatic_proportions-check_height-height1 = 所以你的实际身高是
 onboarding-automatic_proportions-check_height-next_step = 数值没问题
 onboarding-automatic_proportions-start_recording-title = 准备录制运动
 onboarding-automatic_proportions-start_recording-description = 我们现在要记录一些特定的姿势和动作。这些将在下一个屏幕中提示。当按钮被按下时，准备好开始！

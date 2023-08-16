@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.*;
 import com.github.jonpeterson.jackson.module.versioning.VersionedModelConverter;
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
+import dev.slimevr.tracking.trackers.TrackerPosition;
 import io.eiren.util.logging.LogManager;
 
 import java.util.Map;
@@ -251,6 +252,22 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					JsonNode sampleCountNode = autoBoneNode.get("sampleCount");
 					if (sampleCountNode != null && sampleCountNode.intValue() == 1000) {
 						autoBoneNode.set("sampleCount", new IntNode(1500));
+					}
+				}
+			}
+			if (version < 11) {
+				// Sets HMD's designation to "body:head"
+				ObjectNode trackersNode = (ObjectNode) modelData.get("trackers");
+				if (trackersNode != null) {
+					ObjectNode HMDNode = (ObjectNode) trackersNode.get("HMD");
+					if (HMDNode != null) {
+						HMDNode
+							.set(
+								"designation",
+								new TextNode(TrackerPosition.HEAD.getDesignation())
+							);
+						trackersNode.set("HMD", HMDNode);
+						modelData.set("trackers", trackersNode);
 					}
 				}
 			}
