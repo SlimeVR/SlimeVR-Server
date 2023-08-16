@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.slimevr.VRServer;
 import dev.slimevr.bridge.Bridge;
+import dev.slimevr.tracking.trackers.Device;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
 import dev.slimevr.tracking.trackers.TrackerStatus;
@@ -20,7 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	private static final String resetSourceName = "WebSocketVRBridge";
-	private final Tracker hmd;
 	private final List<Tracker> computedTrackers;
 	private final List<Tracker> internalTrackers;
 	private final AtomicBoolean newHMDData = new AtomicBoolean(false);
@@ -39,14 +39,13 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 		true,
 		true
 	);
+	private Tracker hmdTracker;
 
 	public WebSocketVRBridge(
-		Tracker hmd,
 		List<Tracker> computedTrackers,
 		VRServer server
 	) {
 		super(server, server.protocolAPI);
-		this.hmd = hmd;
 		this.computedTrackers = new FastList<>(computedTrackers);
 		this.internalTrackers = new FastList<>(computedTrackers.size());
 		for (Tracker t : computedTrackers) {
@@ -71,9 +70,31 @@ public class WebSocketVRBridge extends WebsocketAPI implements Bridge {
 	@Override
 	public void dataRead() {
 		if (newHMDData.compareAndSet(true, false)) {
-			hmd.setPosition(internalHMDTracker.getPosition());
-			hmd.setRotation(internalHMDTracker.getRotation());
-			hmd.dataTick();
+			if (hmdTracker == null) {
+				// Create HMD for websocket
+				Device hmdDevice = server.deviceManager
+					.createDevice("WebSocketVRBridge", null, null);
+				hmdTracker = new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"WebSocketHMD",
+					"WebSocketHMD",
+					TrackerPosition.HEAD,
+					null,
+					true,
+					true,
+					false,
+					true,
+					false,
+					true
+				);
+				hmdDevice.getTrackers().put(0, hmdTracker);
+				server.registerTracker(hmdTracker);
+			}
+
+			hmdTracker.setPosition(internalHMDTracker.getPosition());
+			hmdTracker.setRotation(internalHMDTracker.getRotation());
+			hmdTracker.dataTick();
 		}
 	}
 

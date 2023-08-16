@@ -30,14 +30,6 @@ public class LogManager {
 			if (!mainLogDir.exists())
 				mainLogDir.mkdirs();
 
-			// Clean old log files if they exist
-			File[] logFiles = mainLogDir.listFiles();
-			if (logFiles != null) {
-				for (File f : logFiles) {
-					if (f.getName().startsWith("log_last"))
-						f.delete();
-				}
-			}
 			String lastLogPattern = Paths.get(mainLogDir.getPath(), "log_last_%g.log").toString();
 			FileHandler filehandler = new FileHandler(lastLogPattern, 25 * 1000000, 2);
 			filehandler.setFormatter(loc);
