@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-latest, macos-latest]
+        os: [ubuntu-22.04, windows-latest, macos-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -54,11 +54,11 @@ jobs:
         with:
           submodules: recursive
 
-      - if: matrix.os == 'ubuntu-20.04'
+      - if: matrix.os == 'ubuntu-22.04'
         name: Set up Linux dependencies
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
+          packages: libgtk-3-dev webkit2gtk-4.1 libappindicator3-dev librsvg2-dev patchelf
           # Increment to invalidate the cache
           version: 1.0
           # Enables a workaround to attempt to run pre and post install scripts
@@ -91,7 +91,7 @@ jobs:
           # A file, directory or wildcard pattern that describes what to upload
           path: target/release/slimevr.exe
 
-      - if: matrix.os == 'ubuntu-20.04'
+      - if: matrix.os == 'ubuntu-22.04'
         name: Upload a Build Artifact (Linux)
         uses: actions/upload-artifact@v3
         with:

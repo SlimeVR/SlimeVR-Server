@@ -122,6 +122,10 @@ widget-overlay-is_mirrored_label = عكس تراكب الشاشة
 
 widget-drift_compensation-clear = حذف تعويض الانجراف
 
+## Widget: Clear Reset Mounting
+
+widget-clear_mounting = مسح إعادة تعيين التركيب
+
 ## Widget: Developer settings
 
 widget-developer_mode = وضع المطوّر
@@ -165,9 +169,15 @@ tracker-table-column-url = عنوان URL
 ## Tracker rotation
 
 tracker-rotation-front = المقدمة
+tracker-rotation-front_left = أمامي-يسار
+tracker-rotation-front_right = أمامي -يمين
 tracker-rotation-left = اليسار
 tracker-rotation-right = اليمين
 tracker-rotation-back = الخلف
+tracker-rotation-back_left = الخلف اليسار
+tracker-rotation-back_right = الخلف الأيمن
+tracker-rotation-custom = مخصص
+tracker-rotation-overriden = (تم تجاوزه عن طريق إعادة الضبط المتصاعد)
 
 ## Tracker information
 
@@ -272,6 +282,8 @@ settings-sidebar-osc_router = راوتر أوه أس سي
 settings-sidebar-osc_trackers = أجهزة تعقب في ار تشات أوه أس سي
 settings-sidebar-utils = الأدوات المساعدة
 settings-sidebar-serial = وحدة التحكم التسلسلية
+settings-sidebar-appearance = مظهر
+settings-sidebar-notifications = إشعارات
 
 ## SteamVR settings
 
@@ -339,11 +351,21 @@ settings-general-fk_settings-leg_fk = تعقب الساق
 settings-general-fk_settings-arm_fk = تعقب الذراع
 settings-general-fk_settings-arm_fk-description = تغيير طريقة تعقب الذراعين.
 settings-general-fk_settings-arm_fk-force_arms = إجبار الذراعين من ايتش أم دي
-settings-general-fk_settings-skeleton_settings = إعدادات الهيكل العظمي
+settings-general-fk_settings-skeleton_settings-toggles = تبديل الهيكل العظمي
 settings-general-fk_settings-skeleton_settings-description = تبديل إعدادات الهيكل العظمي أو إيقافه. يوصى بتركها شغالة.
-settings-general-fk_settings-skeleton_settings-extended_spine = العمود الفقري الممتد
-settings-general-fk_settings-skeleton_settings-extended_pelvis = الحوض الممتد
-settings-general-fk_settings-skeleton_settings-extended_knees = الركبة الممتدة
+settings-general-fk_settings-skeleton_settings-extended_spine_model = نموذج العمود الفقري الممتد
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = نموذج الحوض الممتد
+settings-general-fk_settings-skeleton_settings-extended_knees_model = نموذج الركبة الممتدة
+settings-general-fk_settings-skeleton_settings-ratios = نسب الهيكل العظمي
+settings-general-fk_settings-skeleton_settings-ratios-description = تغيير قيم إعدادات الهيكل العظمي. قد تحتاج إلى ضبط النسب الخاصة بك بعد تغييرها.
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = خصص الخصر من الصدر إلى الورك
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = خصص الخصر من الصدر إلى الساقين
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = خصص الورك من الصدر إلى الساقين
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = خصص الورك من الخصر إلى الساقين
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = متوسط انعراج الفخذ وتدحرج مع الساقين'
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = متوسط الانحراف وتدحرج مع الكاحلين
+settings-general-fk_settings-self_localization-title = وضع Mocap
+settings-general-fk_settings-self_localization-description = يسمح وضع Mocap للهيكل العظمي بتعقب موضعه تقريبا بدون سماعة رأس أو أجهزة تعقب أخرى. لاحظ أن هذا يتطلب أجهزة تعقب القدمين والرأس للعمل ولا تزال تجريبية.
 settings-general-fk_settings-vive_emulation-title = محاكاة فايف
 settings-general-fk_settings-vive_emulation-description = محاكاة مشاكل تعقب الخصر التي تعاني منها أجهزة تعقب فايف. هذه مزحة وتجعل التتبع أسوأ.
 settings-general-fk_settings-vive_emulation-label = تمكين محاكاة فايف
@@ -364,6 +386,17 @@ settings-general-gesture_control-taps =
         [many] { $amount } نقرات
        *[other] { $amount } نقرات
     }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [zero] لا أجهزة تعقب
+        [one] جهاز تعقب واحد
+        [two] جهازي تعقب
+        [few] { "" }
+        [many] { "" }
+       *[other] { $amount } أجهزة تعقب
+    }
 settings-general-gesture_control-yawResetEnabled = تمكين النقر لإعادة التعيين الانعراج
 settings-general-gesture_control-yawResetDelay = إعادة تعيين التأخير الانعراج
 settings-general-gesture_control-yawResetTaps = عدد النقرات لإعادة تعيين الانعراج
@@ -373,13 +406,32 @@ settings-general-gesture_control-fullResetTaps = عدد النقرات لإعا�
 settings-general-gesture_control-mountingResetEnabled = تمكين النقر لإعادة تعيين التركيب
 settings-general-gesture_control-mountingResetDelay = تأخير إعادة تعيين التركيب
 settings-general-gesture_control-mountingResetTaps = نقرات لإعادة تعيين التركيب
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = أجهزة تعقب فوق قيمة القطع
+settings-general-gesture_control-numberTrackersOverThreshold-description = قم بزيادة هذه القيمة إذا كان اكتشاف النقر لا يعمل. لا تقم بزيادته فوق ما هو مطلوب لجعل اكتشاف النقر يعمل لأنه قد يتسبب في المزيد من الإيجابيات الخاطئة.
 
-## Interface settings
+## Appearance settings
 
-settings-general-interface = واجهة المستخدم
+settings-interface-appearance = مظهر
 settings-general-interface-dev_mode = وضع المطوّر
 settings-general-interface-dev_mode-description = يمكن أن يكون هذا الوضع مفيدًا إذا كنت بحاجة إلى بيانات متعمقة أو للتفاعل مع أجهزة التعقب المتصلة على مستوى أكثر تقدمًا.
 settings-general-interface-dev_mode-label = وضع المطوّر
+settings-general-interface-theme = موضوع اللون
+settings-general-interface-lang = اختر اللغة
+settings-general-interface-lang-description = قم بتغيير اللغة الافتراضية التي تريد استخدامها.
+settings-general-interface-lang-placeholder = اختر اللغة التي تريد استخدامها
+# Keep the font name untranslated
+settings-interface-appearance-font = خط واجهة المستخدم الرسومية
+settings-interface-appearance-font-description = هذا يغير الخط المستخدم من قبل الواجهة.
+settings-interface-appearance-font-placeholder = الخط الافتراضي
+settings-interface-appearance-font-os_font = خط نظام التشغيل
+settings-interface-appearance-font-slime_font = الخط الافتراضي
+settings-interface-appearance-font_size = قياس الخط الأساسي
+settings-interface-appearance-font_size-description = يؤثر هذا على حجم خط الواجهة بأكملها باستثناء لوحة الإعدادات هذه.
+
+## Notification settings
+
+settings-interface-notifications = إشعارات
 settings-general-interface-serial_detection = الكشف عن جهاز تسلسلي
 settings-general-interface-serial_detection-description = سيعرض هذا الخيار نافذة منبثقة في كل مرة تقوم فيها بتوصيل جهاز تسلسلي جديد يمكن أن يكون جهاز تعقب. يساعد في تحسين عملية إعداد جهاز التعقب.
 settings-general-interface-serial_detection-label = الكشف عن جهاز تسلسلي
@@ -387,10 +439,6 @@ settings-general-interface-feedback_sound = صوت ردود الفعل
 settings-general-interface-feedback_sound-description = سيصدر هذا الخيار صوتًا عند تشغيل إعادة الضبط
 settings-general-interface-feedback_sound-label = صوت ردود الفعل
 settings-general-interface-feedback_sound-volume = حجم صوت ردود الفعل
-settings-general-interface-theme = موضوع اللون
-settings-general-interface-lang = اختر اللغة
-settings-general-interface-lang-description = قم بتغيير اللغة الافتراضية التي تريد استخدامها.
-settings-general-interface-lang-placeholder = اختر اللغة التي تريد استخدامها
 
 ## Serial settings
 
@@ -768,7 +816,10 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = النسب التلقائية
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = الموصى به
-onboarding-choose_proportions-auto_proportions-description = سيقدر هذا النسب الخاصة بك عن طريق تسجيل عينة من حركاتك وتمريرها من خلال برنامج
+onboarding-choose_proportions-auto_proportions-descriptionv2 =
+    سيؤدي ذلك إلى تخمين نسبك عن طريق تسجيل عينة من تحركاتك وتمريرها عبر خوارزمية.
+    
+    <b>هذا يتطلب توصيل HMD الخاص بك ب SlimeVR!</b>
 onboarding-choose_proportions-manual_proportions = النسب اليدوية
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = للمسات الصغيرة
@@ -804,6 +855,18 @@ onboarding-automatic_proportions-requirements-description =
     تعمل أجهزة التتبع وسماعات الرأس بشكل صحيح داخل سرفر سلايم في ار .
     تقوم سماعة الرأس الخاصة بك بالإبلاغ عن بيانات الموقع إلى  سرفر سلايم في ار (وهذا يعني بشكل عام تشغيل سلايم في ار وتوصيله بـ سلايم في ار باستخدام برنامج تشغيل ستيم في ار  من سلايم في ار ).
 onboarding-automatic_proportions-requirements-next = لقد قرأت المتطلبات
+onboarding-automatic_proportions-check_height-title = تحقق من طولك
+onboarding-automatic_proportions-check_height-description = نستخدم طولك كأساس لقياساتنا باستخدام ارتفاع HMD كتقريب لطولك الفعلي ، ولكن من الأفضل التحقق مما إذا كانت صحيحة بنفسك!
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = يرجى الضغط على الزر أثناء الوقوف <u>في وضع مستقيم</u> لحساب طولك. لديك 3 ثوان بعد الضغط على الزر!
+onboarding-automatic_proportions-check_height-fetch_height = أنا واقف!
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = مجهول
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height1 = طولك من خلال HMD
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height1 = لذا فإن طولك الفعلي هو
+onboarding-automatic_proportions-check_height-next_step = انهم بخير
 onboarding-automatic_proportions-start_recording-title = استعد للتحرك
 onboarding-automatic_proportions-start_recording-description = سنقوم الآن بتسجيل بعض الوضعيات والحركات المحددة. ستتم مطالبتك بذلك في الشاشة التالية. كن مستعدا للبدء عند الضغط على الزر!
 onboarding-automatic_proportions-start_recording-next = بدء التسجيل
@@ -837,6 +900,10 @@ onboarding-automatic_proportions-verify_results-redo = إعادة التسجيل
 onboarding-automatic_proportions-verify_results-confirm = تبدو صحيحة
 onboarding-automatic_proportions-done-title = تم قياس الجسم و حفظه.
 onboarding-automatic_proportions-done-description = اكتملت معايرة نسب جسمك!
+onboarding-automatic_proportions-error_modal =
+    <b>تحذير:</b> تم العثور على خطأ أثناء تقدير النسب!
+    يرجى <docs>التحقق من المستندات</docs> أو الانضمام إلى <discord>Discord</discord> للحصول على المساعدة ^_^
+onboarding-automatic_proportions-error_modal-confirm = مفهوم!
 
 ## Home
 

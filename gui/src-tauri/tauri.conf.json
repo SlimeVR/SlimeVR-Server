@@ -9,6 +9,29 @@
     "beforeDevCommand": "npm run start",
     "beforeBuildCommand": "npm run build"
   },
+  "plugins": {
+    "shell": {
+      "open": true
+    },
+    "fs": {
+      "scope": ["$APP/*", "$APP"],
+      "all": true
+    },
+    "os": {
+      "all": true
+    },
+    "window": {
+      "setResizable": true,
+      "setTitle": true,
+      "maximize": true,
+      "unmaximize": true,
+      "minimize": true,
+      "unminimize": true,
+      "close": true,
+      "startDragging": true,
+      "setSize": true
+    }
+  },
   "tauri": {
     "bundle": {
       "active": true,
@@ -50,43 +73,15 @@
         "timestampUrl": ""
       }
     },
-    "updater": {
-      "active": false
-    },
-    "allowlist": {
-      "dialog": {
-        "all": false,
-        "save": true
-      },
-      "shell": {
-        "all": false,
-        "execute": true,
-        "open": true
-      },
-      "fs": {
-        "scope": ["$APP/*", "$APP"],
-        "all": true
-      },
-      "path": {
-        "all": true
-      },
-      "os": {
-        "all": true
-      },
-      "window": {
-        "setResizable": true,
-        "setTitle": true,
-        "maximize": true,
-        "unmaximize": true,
-        "minimize": true,
-        "unminimize": true,
-        "close": true,
-        "startDragging": true,
-        "setSize": true
-      }
-    },
     "security": {
-      "csp": null
+      "csp": null,
+      "dangerousRemoteDomainIpcAccess": [
+        {
+          "domain": "tauri.localhost",
+          "windows": ["main"],
+          "plugins": ["dialog", "fs", "os", "shell", "window"]
+        }
+      ]
     }
   }
 }

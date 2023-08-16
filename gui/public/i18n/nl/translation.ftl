@@ -13,7 +13,7 @@ websocket-connection_lost = Verbinding met de server verbroken. Opniew verbindin
 ## Update notification
 
 version_update-title = Nieuwe versie beschikbaar: { $version }
-version_update-description = Als u op "Bijwerken" klikt, wordt het SlimeVR-installatieprogramma voor je gedownload.
+version_update-description = Als je op "{ version_update-update }" klikt, wordt het SlimeVR-installatieprogramma voor je gedownload.
 version_update-update = Bijwerken
 version_update-close = Sluiten
 
@@ -28,7 +28,7 @@ tips-tap_setup = Je kan langzaam 2 keer op je tracker tikken om deze te kiezen i
 
 body_part-NONE = Niet toegewezen
 body_part-HEAD = Hoofd
-body_part-NECK = Neck
+body_part-NECK = Nek
 body_part-RIGHT_SHOULDER = Rechterschouder
 body_part-RIGHT_UPPER_ARM = Rechterbovenarm
 body_part-RIGHT_LOWER_ARM = Rechteronderarm
@@ -36,6 +36,7 @@ body_part-RIGHT_HAND = Rechterhand
 body_part-RIGHT_UPPER_LEG = Rechterdij
 body_part-RIGHT_LOWER_LEG = Rechterenkel
 body_part-RIGHT_FOOT = Rechtervoet
+body_part-UPPER_CHEST = Bovenborst
 body_part-CHEST = Borst
 body_part-WAIST = Taille
 body_part-HIP = Heup
@@ -51,11 +52,12 @@ body_part-LEFT_FOOT = Linkervoet
 
 skeleton_bone-NONE = Geen
 skeleton_bone-HEAD = Hoofdverschuiving
-skeleton_bone-NECK = Necklengte
-skeleton_bone-torso_group = Torso lengte
-skeleton_bone-CHEST = Borstafstand
+skeleton_bone-NECK = Neklengte
+skeleton_bone-torso_group = Romp lengte
+skeleton_bone-UPPER_CHEST = Bovenborst Lengte
 skeleton_bone-CHEST_OFFSET = Borstoffset
-skeleton_bone-WAIST = Tailleafstand
+skeleton_bone-CHEST = Borstafstand
+skeleton_bone-WAIST = Taille lengte
 skeleton_bone-HIP = Heuplengte
 skeleton_bone-HIP_OFFSET = Heupoffset
 skeleton_bone-HIPS_WIDTH = Heupbreedte
@@ -64,7 +66,7 @@ skeleton_bone-UPPER_LEG = Bovenbeenlengte
 skeleton_bone-LOWER_LEG = Onderbeenlengte
 skeleton_bone-FOOT_LENGTH = Voetlengte
 skeleton_bone-FOOT_SHIFT = Voetverschuiving
-skeleton_bone-SKELETON_OFFSET = Skelettenoffset
+skeleton_bone-SKELETON_OFFSET = Skelet offset
 skeleton_bone-SHOULDERS_DISTANCE = Schoudersafstand
 skeleton_bone-SHOULDERS_WIDTH = Schouderbreedte
 skeleton_bone-arm_group = Armlengte
@@ -77,16 +79,16 @@ skeleton_bone-ELBOW_OFFSET = Elleboogoffset
 ## Tracker reset buttons
 
 reset-reset_all = Alle afmetingen resetten
-reset-full = Resetten
-reset-mounting = Bevestiging resetten
-reset-yaw = Horizontale reset
+reset-full = Volledige reset
+reset-mounting = Reset montage
+reset-yaw = Yaw Reset
 
 ## Serial detection stuff
 
 serial_detection-new_device-p0 = Nieuw serieel apparaat gedetecteerd!
 serial_detection-new_device-p1 = Voer je WiFi-inloggegevens in!
 serial_detection-new_device-p2 = Selecteer wat je wil doen
-serial_detection-open_wifi = Verbinding maken met WiFi
+serial_detection-open_wifi = Verbind met Wi-Fi
 serial_detection-open_serial = Seriële console openen
 serial_detection-submit = Verzenden!
 serial_detection-close = Sluiten
@@ -94,10 +96,10 @@ serial_detection-close = Sluiten
 ## Navigation bar
 
 navbar-home = Startpagina
-navbar-body_proportions = Lichaams- verhoudingen
-navbar-trackers_assign = Tracker- toewijzing
-navbar-mounting = Bevestigings- kalibratie
-navbar-onboarding = Setupgids
+navbar-body_proportions = Lichaamsverhoudingen
+navbar-trackers_assign = Tracker-toewijzing
+navbar-mounting = Bevestigings-kalibratie
+navbar-onboarding = Installatiewizard
 navbar-settings = Instellingen
 
 ## Biovision hierarchy recording
@@ -108,7 +110,7 @@ bvh-recording = Opname bezig...
 ## Tracking pause
 
 tracking-unpaused = Pauzeer tracking
-tracking-paused = Herneem tracking
+tracking-paused = Hervat tracking
 
 ## Widget: Overlay settings
 
@@ -118,7 +120,11 @@ widget-overlay-is_mirrored_label = Overlay weergeven als spiegel
 
 ## Widget: Drift compensation
 
-widget-drift_compensation-clear = Reset huidige drift compensatie waarden
+widget-drift_compensation-clear = Reset huidige drift compensatie
+
+## Widget: Clear Reset Mounting
+
+widget-clear_mounting = Reset montage legen
 
 ## Widget: Developer settings
 
@@ -127,7 +133,7 @@ widget-developer_mode-high_contrast = Hoog contrast
 widget-developer_mode-precise_rotation = Precieze rotatie
 widget-developer_mode-fast_data_feed = Snelle data feed
 widget-developer_mode-filter_slimes_and_hmd = Filter slimes en HMD
-widget-developer_mode-sort_by_name = Op naam sorteren
+widget-developer_mode-sort_by_name = Sorteer op naam
 widget-developer_mode-raw_slime_rotation = Ruwe rotatie
 widget-developer_mode-more_info = Meer informatie
 
@@ -163,9 +169,15 @@ tracker-table-column-url = URL
 ## Tracker rotation
 
 tracker-rotation-front = Voorzijde
+tracker-rotation-front_left = Linksvoor
+tracker-rotation-front_right = Rechtsvoor
 tracker-rotation-left = Links
 tracker-rotation-right = Rechts
 tracker-rotation-back = Achterzijde
+tracker-rotation-back_left = Linksachter
+tracker-rotation-back_right = Rechtsachter
+tracker-rotation-custom = Aangepast
+tracker-rotation-overriden = (overschreven door montage reset)
 
 ## Tracker information
 
@@ -187,7 +199,7 @@ tracker-settings-assignment_section = Toewijzing
 tracker-settings-assignment_section-description = Aan welk lichaamsdeel de tracker is toegewezen.
 tracker-settings-assignment_section-edit = Toewijzing bewerken
 tracker-settings-mounting_section = Bevestigingsorientatie
-tracker-settings-mounting_section-description = Hoe is de tracker georiënteerd?
+tracker-settings-mounting_section-description = Waar is de tracker gemonteerd?
 tracker-settings-mounting_section-edit = Bevestiging bewerken
 tracker-settings-drift_compensation_section = Laat drift compensatie toe
 tracker-settings-drift_compensation_section-description = Moet deze tracker compenseren voor drift wanneer drift compensatie is ingeschakeld?
@@ -230,6 +242,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } rechterdij?
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } rechterenkel?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } rechtervoet?
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } rechtercontroller?
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } bovenborst?
 tracker_selection_menu-CHEST = { -tracker_selection-part } borst?
 tracker_selection_menu-WAIST = { -tracker_selection-part } taille?
 tracker_selection_menu-HIP = { -tracker_selection-part } heup?
@@ -269,6 +282,8 @@ settings-sidebar-osc_router = OSC-router
 settings-sidebar-osc_trackers = VRChat OSC Trackers
 settings-sidebar-utils = Hulpmiddelen
 settings-sidebar-serial = Serieel console
+settings-sidebar-appearance = Uiterlijk
+settings-sidebar-notifications = Notificaties
 
 ## SteamVR settings
 
@@ -328,15 +343,31 @@ settings-general-fk_settings-leg_tweak-skating_correction = Skating-correctie
 settings-general-fk_settings-leg_tweak-toe_snap = Teen snap
 settings-general-fk_settings-leg_tweak-foot_plant = Voetplant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-correctie sterkte
+settings-general-fk_settings-leg_tweak-skating_correction-description = Schaatscorrectie corrigeert voor schaatsen, maar kan de nauwkeurigheid van bepaalde bewegingspatronen verminderen. Zorg ervoor dat je bij het inschakelen een volledige reset uitvoert en opnieuw kalibreert in het spel.
+settings-general-fk_settings-leg_tweak-floor_clip-description =
+    Floor-clip kan het doorknippen van de vloer verminderen of zelfs elimineren.
+    Zorg ervoor dat u bij het inschakelen een volledige reset uitvoert en opnieuw kalibreert in het spel.
+settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap probeert de rotatie van uw voeten te raden als voet-trackers niet worden gebruikt.
+settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant roteert je voeten zodat ze evenwijdig aan de grond zijn wanneer ze in contact zijn.
 settings-general-fk_settings-leg_fk = Been tracking
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Verander de manier waarop de armen worden getrackt.
 settings-general-fk_settings-arm_fk-force_arms = Dwing armen vanuit HMD
-settings-general-fk_settings-skeleton_settings = Skeleton instellingen
+settings-general-fk_settings-skeleton_settings-toggles = Skelet schakelaars
 settings-general-fk_settings-skeleton_settings-description = Schakel skeleton instellingen in of uit. Het is aanbevolen om deze aan te laten.
-settings-general-fk_settings-skeleton_settings-extended_spine = Uitgebreide rug
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Uitgebreide bekken
-settings-general-fk_settings-skeleton_settings-extended_knees = Uitgebreide knieën
+settings-general-fk_settings-skeleton_settings-extended_spine_model = Uitgebreid ruggengraat model
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Uitgebreid bekken model
+settings-general-fk_settings-skeleton_settings-extended_knees_model = Uitgebreid knie model
+settings-general-fk_settings-skeleton_settings-ratios = skelet verhoudingen
+settings-general-fk_settings-skeleton_settings-ratios-description = Pas de waardes van de skelet instellingen aan. Het kan zijn dat je hierna je lichaams proporties moet aanpassen.
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Bereken taille van borst naar heup
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Bereken taille van borst naar benen
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Bereken heup van borst naar benen
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Bereken heup van taille naar benen
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Bereken het gemiddelde van de 'yaw en roll van de heup met die van de benen'
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Bereken het gemiddelde van de 'yaw en roll van de knie trackers met die van de enkels'
+settings-general-fk_settings-self_localization-title = Mocap modus
+settings-general-fk_settings-self_localization-description = Mocap modus staat het skelet model toe om zijn eigen positie te bepalen zonder het gebruik van een headset of andere trackers. Dit vergt wel het gebruik van voet en hoofd trackers, dit is momenteel nog expirimenteel.
 settings-general-fk_settings-vive_emulation-title = Vive-emulatie
 settings-general-fk_settings-vive_emulation-description = Emuleer de problemen met de taille van Vive trackers. Dit is een mop en maakt tracking slechter.
 settings-general-fk_settings-vive_emulation-label = Vive-emulatie inschakelen
@@ -353,6 +384,13 @@ settings-general-gesture_control-taps =
         [one] 1 tik
        *[other] { $amount } tikken
     }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [one] één
+       *[other] anders
+    }
 settings-general-gesture_control-yawResetEnabled = Activeer tikken voor horizontale reset
 settings-general-gesture_control-yawResetDelay = Vertraging horizontale reset
 settings-general-gesture_control-yawResetTaps = Hoeveelheid tikken voor horizontale reset
@@ -362,13 +400,32 @@ settings-general-gesture_control-fullResetTaps = Hoeveelheid tikken voor volledi
 settings-general-gesture_control-mountingResetEnabled = Activeer tikken voor bevestigingskalibratie
 settings-general-gesture_control-mountingResetDelay = Vertraging bevestigingskalibratie
 settings-general-gesture_control-mountingResetTaps = Hoeveelheid tikken voor bevestigingskalibratie
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = Trackers over drempelwaarde
+settings-general-gesture_control-numberTrackersOverThreshold-description = Verhoog deze waarde als de tik detectie niet werkt. Zet deze waarde niet te hoog om tik detectie te laten werken, dit kan vals positieve resultaten creëren.
 
-## Interface settings
+## Appearance settings
 
-settings-general-interface = Interface
+settings-interface-appearance = Uiterlijk
 settings-general-interface-dev_mode = Ontwikkelaarsmodus
 settings-general-interface-dev_mode-description = Deze modus kan nuttig zijn als je diepgaande gegevens nodig hebt of op een geavanceerd niveau wilt communiceren met aangesloten trackers.
 settings-general-interface-dev_mode-label = Ontwikkelaarsmodus
+settings-general-interface-theme = Themakleur
+settings-general-interface-lang = Selecteer taal
+settings-general-interface-lang-description = Verander de standaardtaal die je wilt gebruiken.
+settings-general-interface-lang-placeholder = Selecteer de te gebruiken taal
+# Keep the font name untranslated
+settings-interface-appearance-font = GUI lettertype
+settings-interface-appearance-font-description = Dit past het lettertype aan welke gebruikt wordt binnen het interface
+settings-interface-appearance-font-placeholder = Standaard lettertype
+settings-interface-appearance-font-os_font = Besturingssysteem lettertype
+settings-interface-appearance-font-slime_font = Standaard lettertype
+settings-interface-appearance-font_size = Standaard lettertype grote
+settings-interface-appearance-font_size-description = Dit past het lettertype grote aan voor het gehele interfeace, behalve voor deze instellingen pagina.
+
+## Notification settings
+
+settings-interface-notifications = Notificaties
 settings-general-interface-serial_detection = Detectie van seriële apparaten
 settings-general-interface-serial_detection-description = Met deze optie verschijnt er elke keer dat je een nieuw serieel apparaat aansluit dat mogelijk een tracker is, een pop-up. Dit helpt bij het verbeteren van het instelproces van een tracker.
 settings-general-interface-serial_detection-label = Detectie van seriële apparaten
@@ -376,10 +433,6 @@ settings-general-interface-feedback_sound = Feedback geluid
 settings-general-interface-feedback_sound-description = Speelt een geluid telkens de reset wordt uitgevoerd
 settings-general-interface-feedback_sound-label = Feedback geluid
 settings-general-interface-feedback_sound-volume = Feedback geluid volume
-settings-general-interface-theme = Themakleur
-settings-general-interface-lang = Selecteer taal
-settings-general-interface-lang-description = Verander de standaardtaal die je wilt gebruiken.
-settings-general-interface-lang-placeholder = Selecteer de te gebruiken taal
 
 ## Serial settings
 
@@ -523,7 +576,26 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = Ga terug naar de bevestigingskalibratie
 onboarding-reset_tutorial = Reset tutorial
+onboarding-reset_tutorial-explanation = Terwijl je jouw trackers gebruikt, kunnen ze uit de lijn raken vanwege IMU-yaw-drift, of omdat je ze fysiek hebt verplaatst. Je hebt verschillende manieren om dit op te lossen.
 onboarding-reset_tutorial-skip = Stap overslaan
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    Tik { $taps } keer op de gemarkeerde tracker om de yaw-reset te activeren.
+    
+    Hierdoor staan de trackers in dezelfde richting als je HMD.
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    Tik { $taps } keer op de gemarkeerde tracker om een volledige reset uit te voeren.
+    
+    Hiervoor moet je staan (i-pose). Er is een vertraging van 3 seconden (instelbaar) voordat het daadwerkelijk gebeurt.
+    Hiermee wordt de positie en rotatie van al je trackers volledig gereset. Dit zou de meeste problemen moeten oplossen.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    Tik { $taps } keer op de gemarkeerde tracker om de montage opnieuw in te stellen.
+    
+    Montage-reset helpt bij hoe de trackers daadwerkelijk op je worden geplaatst, dus als je ze per ongeluk hebt verplaatst en de oriëntatie ervan voor een groot deel hebt veranderd, zal dit helpen.
+    
+    Je moet in een houding staan alsof je aan het skiën bent, zoals wordt weergegeven in de Automatische montage wizard, je hebt een vertraging van 3 seconden (instelbaar) voordat deze wordt geactiveerd.
 
 ## Setup start
 
@@ -585,6 +657,13 @@ onboarding-calibration_tutorial-status-error = De tracker werd verplaatst
 
 ## Tracker assignment tutorial
 
+onboarding-assignment_tutorial = Hoe een Slime Tracker voor te bereiden voordat u deze aantrekt
+onboarding-assignment_tutorial-first_step = 1. Plaats een lichaamsdeelsticker (als je die hebt) op de tracker naar keuze
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = Sticker
+onboarding-assignment_tutorial-second_step = Bevestig de riem aan je tracker, waarbij je de haak-en-luskant van het bandje in de volgende richting houdt:
+onboarding-assignment_tutorial-second_step-continuation = De haak-en-luskant voor de verlenging moet in deze richting staan:
+onboarding-assignment_tutorial-done = Ik heb stickers en riemen geplaatst!
 
 ## Tracker assignment setup
 
@@ -673,6 +752,8 @@ onboarding-assign_trackers-warning-WAIST =
 ## Tracker mounting method choose
 
 onboarding-choose_mounting = Welke montagekalibratiemethode moet worden gebruikt?
+# Multiline text
+onboarding-choose_mounting-description = De oriëntatie van de montage corrigeert de plaatsing van trackers op uw lichaam.
 onboarding-choose_mounting-auto_mounting = Automatische bevestiging
 # Italized text
 onboarding-choose_mounting-auto_mounting-label = Experimenteel
@@ -714,14 +795,20 @@ onboarding-automatic_mounting-put_trackers_on-next = Ik heb al mijn trackers aan
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = Welke verhoudingskalibratiemethode moet worden gebruikt?
+# Multiline string
+onboarding-choose_proportions-description = Lichaamsverhoudingen worden gebruikt om de maten van je lichaam te kennen. Die zijn nodig om de posities van de trackers te berekenen. Wanneer de verhoudingen van uw lichaam niet overeenkomen met de opgeslagen verhoudingen, zal je trackingprecisie slechter zijn en zal je dingen opmerken zoals schaatsen of glijden, of je lichaam past niet goed bij je avatar.
 onboarding-choose_proportions-auto_proportions = Automatische verhoudingen
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Aanbevolen
-onboarding-choose_proportions-auto_proportions-description = We kunnen je verhoudingen proberen approximeren door middel van jouw bewegingen
+onboarding-choose_proportions-auto_proportions-descriptionv2 =
+    Dit zal je proporties gokken met jouw bewegingen op basis van een opname, waarna deze door een algoritme gehaald worden.
+    <b>Hiervoor moet een HMD verbonden zijn aan SlimeVR!</b>
 onboarding-choose_proportions-manual_proportions = Handmatige lichaamsverhoudingen
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Voor kleine details
 onboarding-choose_proportions-manual_proportions-description = Hier kan je jouw verhoudingen handmatig aanpassen
+onboarding-choose_proportions-export = Export proporties
+onboarding-choose_proportions-file_type = Lichaamsproporties bestand
 
 ## Tracker manual proportions setup
 
@@ -751,6 +838,20 @@ onboarding-automatic_proportions-requirements-description =
     Je trackers en headset werken goed binnen de SlimeVR server.
     Je headset rapporteert positiegegevens aan de SlimeVR-server (dit betekent over het algemeen dat SteamVR wordt uitgevoerd en verbonden met SlimeVR met behulp van SlimeVR's SteamVR-stuurprogramma).
 onboarding-automatic_proportions-requirements-next = Ik heb de vereisten gelezen
+onboarding-automatic_proportions-check_height-title = Controleer je lengte
+onboarding-automatic_proportions-check_height-description =
+    We gebruiken je lengte als een basis voor onze metingen middels de HMD's hoogte, hiermee bepalen we je echte lengte.
+    Maar het is beter om zelf te controleren of dit klopt.
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = Druk op de knop terwijl je <u>rechtop</u> staat om je lengte te berekenen. Je hebt 3 seconden na dat je op de knop drukt!
+onboarding-automatic_proportions-check_height-fetch_height = Ik sta!
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Onbekend
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height1 = Je HMD lengte is
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height1 = Je echte lengte is
+onboarding-automatic_proportions-check_height-next_step = Ze zijn goed
 onboarding-automatic_proportions-start_recording-title = Zorg dat je klaar bent om te bewegen
 onboarding-automatic_proportions-start_recording-description = We gaan nu enkele specifieke houdingen en bewegingen opnemen. Deze worden in het volgende scherm geprompt. Zorg dat je klaar bent om te beginnen als de knop wordt ingedrukt!
 onboarding-automatic_proportions-start_recording-next = Start opname
@@ -780,6 +881,10 @@ onboarding-automatic_proportions-verify_results-redo = Opname opnieuw doen
 onboarding-automatic_proportions-verify_results-confirm = Ze zijn correct
 onboarding-automatic_proportions-done-title = Lichaam gemeten en opgeslagen.
 onboarding-automatic_proportions-done-description = Je kalibratie voor lichaamsverhoudingen is voltooid!
+onboarding-automatic_proportions-error_modal =
+    <b>Waarschuwing:</b> Er is een error ontstaan bij het schatten van de proporties!
+    Check alsjeblieft <docs>de docs</docs> of join onze <discord>Discord</Discord> voor hulp ^_^
+onboarding-automatic_proportions-error_modal-confirm = Begrepen!
 
 ## Home
 
@@ -787,3 +892,10 @@ home-no_trackers = Geen trackers gedetecteerd of toegewezen
 
 ## Status system
 
+status_system-StatusTrackerReset = Het wordt aanbevolen om een volledige reset uit te voeren omdat een of meer trackers niet zijn aangepast.
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] Momenteel niet verbonden naar de SlimeVR Feeder App.
+       *[other] Momenteel niet verbonden naar SteamVR via de SlimeVR driver.
+    }
+status_system-StatusTrackerError = De { $trackerName } tracker heeft een error.

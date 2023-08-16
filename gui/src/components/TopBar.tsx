@@ -1,4 +1,4 @@
-import { appWindow } from '@tauri-apps/api/window';
+import { getCurrent } from '@tauri-apps/plugin-window';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {
@@ -14,7 +14,7 @@ import { SlimeVRIcon } from './commons/icon/SimevrIcon';
 import { ProgressBar } from './commons/ProgressBar';
 import { Typography } from './commons/Typography';
 import { DownloadIcon } from './commons/icon/DownloadIcon';
-import { open } from '@tauri-apps/api/shell';
+import { open } from '@tauri-apps/plugin-shell';
 import { GH_REPO, VersionContext, DOCS_SITE } from '../App';
 import classNames from 'classnames';
 import { QuestionIcon } from './commons/icon/QuestionIcon';
@@ -185,13 +185,13 @@ export function TopBar({
               <>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => appWindow.minimize()}
+                  onClick={() => getCurrent().minimize()}
                 >
                   <MinimiseIcon></MinimiseIcon>
                 </div>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => appWindow.toggleMaximize()}
+                  onClick={() => getCurrent().toggleMaximize()}
                 >
                   <MaximiseIcon></MaximiseIcon>
                 </div>
@@ -199,7 +199,7 @@ export function TopBar({
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
                   onClick={async () => {
                     await invoke('update_window_state');
-                    appWindow.close();
+                    getCurrent().close();
                   }}
                 >
                   <CloseIcon></CloseIcon>

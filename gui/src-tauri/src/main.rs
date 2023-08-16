@@ -11,10 +11,10 @@ use std::time::Instant;
 use clap::Parser;
 use color_eyre::Result;
 use state::WindowState;
-use tauri::api::process::{Command, CommandChild};
 use tauri::Manager;
 use tauri::RunEvent;
 use tauri::WindowEvent;
+use tauri_plugin_shell::process::CommandChild;
 
 use crate::util::{
 	get_launch_path, show_error, valid_java_paths, Cli, JAVA_BIN, MINIMUM_JAVA_VERSION,
@@ -71,12 +71,27 @@ fn main() -> Result<()> {
 		use flexi_logger::{
 			Age, Cleanup, Criterion, Duplicate, FileSpec, Logger, Naming, WriteMode,
 		};
-		use tauri::api::path::app_log_dir;
+		use tauri::path::Error;
+
+		// Based on https://docs.rs/tauri/2.0.0-alpha.10/src/tauri/path/desktop.rs.html#238-256
+		#[cfg(target_os = "macos")]
+		let path = dirs_next::home_dir().ok_or(Error::UnknownPath).map(|dir| {
+			dir.join("Library/Logs")
+				.join(&tauri_context.config().tauri.bundle.identifier)
+		});
+
+		#[cfg(not(target_os = "macos"))]
+		let path = dirs_next::data_dir()
+			.ok_or(Error::UnknownPath)
+			.map(|dir| {
+				dir.join(&tauri_context.config().tauri.bundle.identifier)
+					.join("logs")
+			});
 
 		Logger::try_with_env_or_str("info")?
-			.log_to_file(FileSpec::default().directory(
-				app_log_dir(tauri_context.config()).expect("We need a log dir"),
-			))
+			.log_to_file(
+				FileSpec::default().directory(path.expect("We need a log dir")),
+			)
 			.format_for_files(util::logger_format)
 			.format_for_stderr(util::logger_format)
 			.rotate(
@@ -109,13 +124,13 @@ fn main() -> Result<()> {
 		if !webview2_exists() {
 			// This makes a dialog appear which let's you press Ok or Cancel
 			// If you press Ok it will open the SlimeVR installer documentation
-			use tauri::api::dialog::{
-				blocking::MessageDialogBuilder, MessageDialogButtons, MessageDialogKind,
-			};
+			use rfd::{MessageButtons, MessageDialog, MessageLevel};
 
-			let confirm = MessageDialogBuilder::new("SlimeVR", "Couldn't find WebView2 installed. You can install it with the SlimeVR installer")
-				.buttons(MessageDialogButtons::OkCancel)
-				.kind(MessageDialogKind::Error)
+			let confirm = MessageDialog::new()
+				.set_title("SlimeVR")
+				.set_description("Couldn't find WebView2 installed. You can install it with the SlimeVR installer")
+				.set_buttons(MessageButtons::OkCancel)
+				.set_level(MessageLevel::Error)
 				.show();
 			if confirm {
 				open::that("https://docs.slimevr.dev/server-setup/installing-and-connecting.html#install-the-latest-slimevr-installer").unwrap();
@@ -126,10 +141,11 @@ fn main() -> Result<()> {
 
 	// Spawn server process
 	let exit_flag = Arc::new(AtomicBool::new(false));
-	let mut backend: Option<CommandChild> = None;
+	let backend = Arc::new(Mutex::new(Option::<CommandChild>::None));
+	let backend_termination = backend.clone();
 	let run_path = get_launch_path(cli);
 
-	let stdout_recv = if let Some(p) = run_path {
+	let server_info = if let Some(p) = run_path {
 		log::info!("Server found on path: {}", p.to_str().unwrap());
 
 		// Check if any Java already installed is compatible
@@ -144,13 +160,7 @@ fn main() -> Result<()> {
 		};
 
 		log::info!("Using Java binary: {:?}", java_bin);
-		let (recv, child) = Command::new(java_bin.to_str().unwrap())
-			.current_dir(p)
-			.args(["-Xmx512M", "-jar", "slimevr.jar", "run"])
-			.spawn()
-			.expect("Unable to start the server jar");
-		backend = Some(child);
-		Some(recv)
+		Some((java_bin, p))
 	} else {
 		log::warn!("No server found. We will not start the server.");
 		None
@@ -158,6 +168,11 @@ fn main() -> Result<()> {
 
 	let exit_flag_terminated = exit_flag.clone();
 	let build_result = tauri::Builder::default()
+		.plugin(tauri_plugin_dialog::init())
+		.plugin(tauri_plugin_fs::init())
+		.plugin(tauri_plugin_os::init())
+		.plugin(tauri_plugin_shell::init())
+		.plugin(tauri_plugin_window::init())
 		.invoke_handler(tauri::generate_handler![
 			update_window_state,
 			logging,
@@ -166,12 +181,12 @@ fn main() -> Result<()> {
 		])
 		.setup(move |app| {
 			let window_state =
-				WindowState::open_state(app.path_resolver().app_config_dir().unwrap())
+				WindowState::open_state(app.path().app_config_dir().unwrap())
 					.unwrap_or_default();
 
 			let window = tauri::WindowBuilder::new(
 				app,
-				"local",
+				"main",
 				tauri::WindowUrl::App("index.html".into()),
 			)
 			.title("SlimeVR")
@@ -189,15 +204,32 @@ fn main() -> Result<()> {
 
 			app.manage(Mutex::new(window_state));
 
-			if let Some(mut recv) = stdout_recv {
+			if let Some((java_bin, p)) = server_info {
 				let app_handle = app.app_handle();
 				tauri::async_runtime::spawn(async move {
-					use tauri::api::process::CommandEvent;
+					use tauri_plugin_shell::{process::CommandEvent, ShellExt};
 
-					while let Some(cmd_event) = recv.recv().await {
+					let (mut rx, child) = app_handle
+						.shell()
+						.command(java_bin.to_str().unwrap())
+						.current_dir(p)
+						.args(["-Xmx512M", "-jar", "slimevr.jar", "run"])
+						.spawn()
+						.expect("Unable to start the server jar");
+
+					{
+						let mut lock = backend.lock().unwrap();
+						*lock = Some(child)
+					}
+
+					while let Some(cmd_event) = rx.recv().await {
 						let emit_me = match cmd_event {
-							CommandEvent::Stderr(s) => ("stderr", s),
-							CommandEvent::Stdout(s) => ("stdout", s),
+							CommandEvent::Stderr(v) => {
+								("stderr", String::from_utf8(v).unwrap_or_default())
+							}
+							CommandEvent::Stdout(v) => {
+								("stdout", String::from_utf8(v).unwrap_or_default())
+							}
 							CommandEvent::Error(s) => ("error", s),
 							CommandEvent::Terminated(s) => {
 								exit_flag_terminated.store(true, Ordering::Relaxed);
@@ -236,19 +268,19 @@ fn main() -> Result<()> {
 				RunEvent::ExitRequested { .. } => {
 					let window_state = app_handle.state::<Mutex<WindowState>>();
 					let lock = window_state.lock().unwrap();
-					let config_dir =
-						app_handle.path_resolver().app_config_dir().unwrap();
+					let config_dir = app_handle.path().app_config_dir().unwrap();
 					let window_state_res = lock.save_state(config_dir);
 					match window_state_res {
 						Ok(()) => log::info!("saved window state"),
 						Err(e) => log::error!("failed to save window state: {}", e),
 					}
 
-					let Some(ref mut child) = backend else { return };
+					let mut lock = backend_termination.lock().unwrap();
+					let Some(ref mut child) = *lock else { return };
 					let write_result = child.write(b"exit\n");
 					match write_result {
 						Ok(()) => log::info!("send exit to backend"),
-						Err(_) => log::info!("fail to send exit to backend"),
+						Err(_) => log::error!("fail to send exit to backend"),
 					}
 					let ten_seconds = Duration::from_secs(10);
 					let start_time = Instant::now();
@@ -268,13 +300,13 @@ fn main() -> Result<()> {
 			// I should log this anyways, don't want to dig a grave by not logging the error.
 			log::error!("CreateWebview error {}", error);
 
-			use tauri::api::dialog::{
-				blocking::MessageDialogBuilder, MessageDialogButtons, MessageDialogKind,
-			};
+			use rfd::{MessageButtons, MessageDialog, MessageLevel};
 
-			let confirm = MessageDialogBuilder::new("SlimeVR", "You seem to have a faulty installation of WebView2. You can check a guide on how to fix that in the docs!")
-				.buttons(MessageDialogButtons::OkCancel)
-				.kind(MessageDialogKind::Error)
+			let confirm = MessageDialog::new()
+				.set_title("SlimeVR")
+				.set_description("You seem to have a faulty installation of WebView2. You can check a guide on how to fix that in the docs!")
+				.set_buttons(MessageButtons::OkCancel)
+				.set_level(MessageLevel::Error)
 				.show();
 			if confirm {
 				open::that("https://docs.slimevr.dev/common-issues.html#webview2-is-missing--slimevr-gui-crashes-immediately--panicked-at--webview2error").unwrap();

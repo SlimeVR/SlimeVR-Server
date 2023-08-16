@@ -43,19 +43,19 @@
           gobject-introspection
           gtk3
           harfbuzz
-          libayatana-appindicator-gtk3
           libffi
-          libsoup
+          libsoup_3
           openssl.out
           pango
           pkg-config
           treefmt
-          webkitgtk
+          webkitgtk_4_1
           zlib
           gst_all_1.gstreamer
           gst_all_1.gst-plugins-base
           gst_all_1.gst-plugins-good
           gst_all_1.gst-plugins-bad
+          librsvg
 
           # Some nice things to have
           exa
