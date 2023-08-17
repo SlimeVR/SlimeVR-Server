@@ -43,7 +43,7 @@ function SceneRenderer({
     >
       <ambientLight intensity={0.5 * Math.PI} />
       <spotLight position={[20, 20, 20]} angle={0.09} penumbra={1} intensity={4000}/>
-      <group quaternion={QuaternionFromQuatT(quat)}>
+      <group quaternion={[quat.x, quat.y, quat.z, quat.w]}>
         <TrackerModel model={model}></TrackerModel>
         <axesHelper args={[10]} />
       </group>

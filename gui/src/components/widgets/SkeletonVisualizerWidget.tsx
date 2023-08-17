@@ -124,7 +124,7 @@ export function SkeletonVisualizerWidget() {
         <primitive object={skeleton.current[0]} />
         <OrbitControls
           target={[0, targetCamera, 0]}
-          maxDistance={5}
+          maxDistance={10}
           maxPolarAngle={Math.PI / 2}
         />
       </Canvas>
