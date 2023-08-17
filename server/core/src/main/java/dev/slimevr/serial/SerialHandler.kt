@@ -31,7 +31,13 @@ abstract class SerialHandler {
 			Pair(0x10C4, 0xEA60),
 			// / Espressif
 			// ESP32-C3
-			Pair(0x303A, 0x1001)
+			Pair(0x303A, 0x1001),
+			// / FTDI
+			// FT232BM/L/Q, FT245BM/L/Q
+			// FT232RL/Q, FT245RL/Q
+			// VNC1L with VDPS Firmware
+			// VNC2 with FT232Slave
+			Pair(0x0403, 0x6001)
 		)
 		fun isKnownBoard(port: SerialPort): Boolean =
 			supportedSerial.contains(Pair(port.vendorId, port.productId))
