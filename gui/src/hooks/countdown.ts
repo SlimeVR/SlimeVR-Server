@@ -11,7 +11,7 @@ export function useCountdown({
 }) {
   const [isCounting, setIsCounting] = useState(false);
   const [timer, setDisplayTimer] = useState(0);
-  const countdownTimer = useRef<NodeJS.Timer>();
+  const countdownTimer = useRef<NodeJS.Timeout>();
   const counter = useRef(0);
 
   const startCountdown = () => {
@@ -23,7 +23,7 @@ export function useCountdown({
         counter.current++;
         setDisplayTimer(duration - counter.current);
         if (counter.current >= duration) {
-          clearInterval(countdownTimer.current as number | undefined);
+          clearInterval(countdownTimer.current);
           resetEnd();
         }
       },
@@ -33,13 +33,13 @@ export function useCountdown({
 
   const resetEnd = () => {
     setIsCounting(false);
-    clearInterval(countdownTimer.current as number | undefined);
+    clearInterval(countdownTimer.current);
     onCountdownEnd();
   };
 
   const abortCountdown = () => {
     setIsCounting(false);
-    clearInterval(countdownTimer.current as number | undefined);
+    clearInterval(countdownTimer.current);
   };
 
   return {
