@@ -23,7 +23,7 @@ export function useCountdown({
         counter.current++;
         setDisplayTimer(duration - counter.current);
         if (counter.current >= duration) {
-          clearInterval(countdownTimer.current);
+          clearInterval(countdownTimer.current as number | undefined);
           resetEnd();
         }
       },
@@ -33,13 +33,13 @@ export function useCountdown({
 
   const resetEnd = () => {
     setIsCounting(false);
-    clearInterval(countdownTimer.current);
+    clearInterval(countdownTimer.current as number | undefined);
     onCountdownEnd();
   };
 
   const abortCountdown = () => {
     setIsCounting(false);
-    clearInterval(countdownTimer.current);
+    clearInterval(countdownTimer.current as number | undefined);
   };
 
   return {
