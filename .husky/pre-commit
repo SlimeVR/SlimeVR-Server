@@ -6,7 +6,7 @@ GREEN="\033[1;32m"
 RESET="\033[0m"
 
 if git rev-parse -q --verify MERGE_HEAD; then
-	echo -e "${YELLOW}Skipping precommit hook because of merge"
+	echo -e "${YELLOW}Skipping precommit hook because of merge${RESET}"
 	exit 0
 fi
 
