@@ -351,11 +351,19 @@ settings-general-fk_settings-leg_fk = Tracking de piernas
 settings-general-fk_settings-arm_fk = Trackeo de brazos
 settings-general-fk_settings-arm_fk-description = Cambia cómo el movimiento de los brazos es detectado.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
-settings-general-fk_settings-skeleton_settings = Ajustes de esqueleto
+settings-general-fk_settings-skeleton_settings-toggles = Interruptores del esqueleto
 settings-general-fk_settings-skeleton_settings-description = Habilita o deshabilita los ajustes de esqueleto. Es recomendado dejar estos ajustes habilitados.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Modelo extendido de la columna
 settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Modelo extendido del pelvis
 settings-general-fk_settings-skeleton_settings-extended_knees_model = Modelo extendido de la rodilla
+settings-general-fk_settings-skeleton_settings-ratios = Radios del esqueleto
+settings-general-fk_settings-skeleton_settings-ratios-description = Cambia los valores de los ajustes del esqueleto. Podes llegar a necesitar reajustar tus proporciones después de cambiar estos valores.
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Imputar de la cintura al pecho hasta la cadera
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Imputar de la cintura al pecho hasta las piernas
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Imputar de la cadera al pecho hasta las piernas
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Imputar de la cadera a la cintura hasta las piernas
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Promediar la rotación del eje vertical y horizontal de la cadera con la de las piernas
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Promediar la rotación del eje vertical y horizontal de la rodilla con la de los tobillos
 settings-general-fk_settings-self_localization-title = Modo mocap
 settings-general-fk_settings-self_localization-description = El modo mocap permite al esqueleto rastrear de forma aproximada su propia posición sin un casco o otros sensores. Nota que esto requiere que los trackers en el pie y cabeza estén y sigue siendo experimental.
 settings-general-fk_settings-vive_emulation-title = Vive emulation
@@ -651,8 +659,8 @@ onboarding-assignment_tutorial = Como preparar un Tracker Slime antes de ponerte
 onboarding-assignment_tutorial-first_step = 1. Pon un sticker con la parte del cuerpo de tu elección (si tenes uno)
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Sticker
-onboarding-assignment_tutorial-second_step = 2. Coloque la correa en el tracker, manteniendo el lado con velcro de la correa en la siguiente orientación:
-onboarding-assignment_tutorial-second_step-continuation = El lado con velcro en las extensiones deben también estar en la siguiente orientación:
+onboarding-assignment_tutorial-second_step-v2 = 2. Coloca la tira de velcro a tu tracker, manteniendo el lado del velcro de la tira, mirando para la misma dirección que la cara del slime de tu sensor:
+onboarding-assignment_tutorial-second_step-continuation-v2 = El lado del velcro de la tira para la extensión deberá estar viendo para arriba como en la siguiente imagen:
 onboarding-assignment_tutorial-done = ¡Puse las correas y stickers!
 
 ## Tracker assignment setup
@@ -838,9 +846,9 @@ onboarding-automatic_proportions-check_height-fetch_height = Estoy de pie
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Desconocida
 # Shows an element below it
-onboarding-automatic_proportions-check_height-height = Su altura es
+onboarding-automatic_proportions-check_height-hmd_height1 = La altura de tu HMD es
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height = Y la altura del VR es
+onboarding-automatic_proportions-check_height-height1 = entonces tu altura real es
 onboarding-automatic_proportions-check_height-next_step = Están bien
 onboarding-automatic_proportions-start_recording-title = Prepárate para moverte
 onboarding-automatic_proportions-start_recording-description = Ahora vamos a grabar poses y movimientos en específico. Estas serán mostradas en la siguiente ventana. ¡Prepárate para empezar cuando presiones el botón!
