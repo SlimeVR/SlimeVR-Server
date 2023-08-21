@@ -1199,12 +1199,16 @@ public class HumanSkeleton {
 				.getLocalTransform()
 				.setTranslation(offset);
 			case LEFT_UPPER_ARM -> {
-				if (!isTrackingLeftArmFromController()) {
+				if (isTrackingLeftArmFromController()) {
+					leftElbowNode.getLocalTransform().setTranslation(Vector3.Companion.getNULL());
+				} else {
 					leftElbowNode.getLocalTransform().setTranslation(offset);
 				}
 			}
 			case RIGHT_UPPER_ARM -> {
-				if (!isTrackingRightArmFromController()) {
+				if (isTrackingRightArmFromController()) {
+					rightElbowNode.getLocalTransform().setTranslation(Vector3.Companion.getNULL());
+				} else {
 					rightElbowNode.getLocalTransform().setTranslation(offset);
 				}
 			}
@@ -1254,6 +1258,8 @@ public class HumanSkeleton {
 		humanPoseManager.computeNodeOffset(BoneType.RIGHT_UPPER_ARM);
 		humanPoseManager.computeNodeOffset(BoneType.LEFT_LOWER_ARM);
 		humanPoseManager.computeNodeOffset(BoneType.RIGHT_LOWER_ARM);
+		humanPoseManager.computeNodeOffset(BoneType.LEFT_HAND);
+		humanPoseManager.computeNodeOffset(BoneType.RIGHT_HAND);
 	}
 
 	public TransformNode getTailNodeOfBone(BoneType bone) {

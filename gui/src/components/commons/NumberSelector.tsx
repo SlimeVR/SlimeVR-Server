@@ -12,7 +12,7 @@ export function NumberSelector({
   step,
   disabled = false,
 }: {
-  label: string;
+  label?: string;
   valueLabelFormat?: (value: number) => string;
   control: Control<any>;
   name: string;

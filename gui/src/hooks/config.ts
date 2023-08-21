@@ -22,6 +22,7 @@ export interface Config {
   theme: string;
   textSize: number;
   fonts: string[];
+  advancedAssign: boolean;
 }
 
 export interface ConfigContext {
@@ -41,6 +42,7 @@ export const defaultConfig = {
   theme: 'slime',
   textSize: 12,
   fonts: ['poppins'],
+  advancedAssign: false,
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {

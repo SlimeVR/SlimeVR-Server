@@ -205,7 +205,7 @@ fn main() -> Result<()> {
 			app.manage(Mutex::new(window_state));
 
 			if let Some((java_bin, p)) = server_info {
-				let app_handle = app.app_handle();
+				let app_handle = app.app_handle().clone();
 				tauri::async_runtime::spawn(async move {
 					use tauri_plugin_shell::{process::CommandEvent, ShellExt};
 
@@ -239,7 +239,7 @@ fn main() -> Result<()> {
 						};
 						app_handle
 							.emit_all("server-status", emit_me)
-							.expect("Failed to emit");
+							.expect("Check server log files. \nFailed to emit");
 					}
 					log::error!("Java server receiver died");
 					app_handle
