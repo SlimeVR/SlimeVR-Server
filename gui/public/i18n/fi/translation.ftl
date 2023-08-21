@@ -659,6 +659,7 @@ onboarding-assignment_tutorial = Kuinka valmistellaan Slime-jäljitin ennen käy
 onboarding-assignment_tutorial-first_step = 1. Aseta kehonosatarra (jos sinulla on) jäljittimeen valintasi mukaan
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Tarra
+onboarding-assignment_tutorial-second_step-continuation-v2 = Jatkeen tarranauhapuolen tulee olla ylöspäin seuraavan kuvan mukaisesti:
 onboarding-assignment_tutorial-done = Laitoin tarrat ja hihnat!
 
 ## Tracker assignment setup
@@ -790,15 +791,65 @@ onboarding-automatic_mounting-put_trackers_on-next = Minulla on kaikki jäljitti
 
 ## Tracker proportions method choose
 
+onboarding-choose_proportions = Mitä kalibrointimenetelmää käytetään?
+onboarding-choose_proportions-auto_proportions = Automaattiset mittasuhteet
+onboarding-choose_proportions-manual_proportions = Manuaaliset mittasuhteet
 
 ## Tracker manual proportions setup
 
+onboarding-manual_proportions-title = Manuaaliset kehon mittasuhteet
+onboarding-manual_proportions-precision = Tarkka säätö
+onboarding-manual_proportions-auto = Automaattiset mittasuhteet
+onboarding-manual_proportions-ratio = Säädä suhderyhmien mukaan
 
 ## Tracker automatic proportions setup
 
+onboarding-automatic_proportions-title = Mittaa kehosi
+onboarding-automatic_proportions-manual = Manuaaliset mittasuhteet
+onboarding-automatic_proportions-prev_step = Edellinen vaihe
+onboarding-automatic_proportions-put_trackers_on-title = Laita jäljittimet päällesi
+onboarding-automatic_proportions-put_trackers_on-next = Minulla on kaikki jäljittimet päällä
+onboarding-automatic_proportions-requirements-title = Vaatimukset
+onboarding-automatic_proportions-requirements-next = Olen lukenut vaatimukset
+onboarding-automatic_proportions-check_height-title = Tarkista pituutesi
+onboarding-automatic_proportions-check_height-fetch_height = Seison
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Tuntematon
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height1 = HMD-korkeus on
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height1 = Joten todellinen pituutesi on
+onboarding-automatic_proportions-check_height-next_step = Ne ovat hyvät
+onboarding-automatic_proportions-start_recording-title = Valmistaudu liikkumaan
+onboarding-automatic_proportions-start_recording-next = Aloita tallennus
+onboarding-automatic_proportions-recording-description-p0 = Tallennus käynnissä...
+onboarding-automatic_proportions-recording-description-p1 = Tee alla esitetyt liikkeet:
+onboarding-automatic_proportions-recording-processing = Käsitellään tuloksia
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
+onboarding-automatic_proportions-recording-timer =
+    { $time ->
+        [one] 1 sekuntti jäljellä
+       *[other] { $time } sekuntia jäljellä
+    }
+onboarding-automatic_proportions-verify_results-title = Vahvista tulokset
+onboarding-automatic_proportions-verify_results-description = Tarkista alla olevat tulokset, näyttävätkö ne oikeilta?
+onboarding-automatic_proportions-verify_results-results = Tallennuksen tulokset
+onboarding-automatic_proportions-verify_results-processing = Käsitellään tuloksia
+onboarding-automatic_proportions-verify_results-confirm = Nämä ovat oikein
+onboarding-automatic_proportions-done-title = Keho mitattu ja tallennettu.
+onboarding-automatic_proportions-done-description = Kehosi mittasuhteiden kalibrointi on valmis!
+onboarding-automatic_proportions-error_modal-confirm = Ymmäretty!
 
 ## Home
 
+home-no_trackers = Jäjittimiä ei havaittu tai määritetty
 
 ## Status system
 
+status_system-StatusTrackerReset = On suositeltavaa suorittaa täydellinen nollaus, koska yhtä tai useampaa jäljitintä ei ole säädetty.
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] Tällä hetkellä ei ole yhdistetty SlimeVR Feeder -sovellukseen.
+       *[other] Tällä hetkellä ei ole yhdistetty SteamVR:ään SlimeVR-ajurin kautta.
+    }
+status_system-StatusTrackerError = { $trackerName } jäljittimessä on virhe
