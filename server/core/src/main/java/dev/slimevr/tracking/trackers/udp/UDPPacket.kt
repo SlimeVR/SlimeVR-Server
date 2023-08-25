@@ -88,11 +88,7 @@ data class UDPPacket1Rotation(override var rotation: Quaternion = Quaternion.IDE
 	UDPPacket(1), RotationPacket {
 	override val sensorId = 0
 	override fun readData(buf: ByteBuffer) {
-		val x = UDPUtils.getSafeBufferFloat(buf)
-		val y = UDPUtils.getSafeBufferFloat(buf)
-		val z = UDPUtils.getSafeBufferFloat(buf)
-		val w = UDPUtils.getSafeBufferFloat(buf)
-		rotation = Quaternion(w, x, y, z)
+		rotation = UDPUtils.getSafeBufferQuaternion(buf)
 	}
 }
 
@@ -250,11 +246,7 @@ data class UDPPacket16Rotation2(override var rotation: Quaternion = Quaternion.I
 	UDPPacket(16), RotationPacket {
 	override val sensorId = 1
 	override fun readData(buf: ByteBuffer) {
-		val x = UDPUtils.getSafeBufferFloat(buf)
-		val y = UDPUtils.getSafeBufferFloat(buf)
-		val z = UDPUtils.getSafeBufferFloat(buf)
-		val w = UDPUtils.getSafeBufferFloat(buf)
-		rotation = Quaternion(w, x, y, z)
+		rotation = UDPUtils.getSafeBufferQuaternion(buf)
 	}
 }
 
@@ -267,11 +259,7 @@ data class UDPPacket17RotationData(
 	override fun readData(buf: ByteBuffer) {
 		sensorId = buf.get().toInt() and 0xFF
 		dataType = buf.get().toInt() and 0xFF
-		val x = UDPUtils.getSafeBufferFloat(buf)
-		val y = UDPUtils.getSafeBufferFloat(buf)
-		val z = UDPUtils.getSafeBufferFloat(buf)
-		val w = UDPUtils.getSafeBufferFloat(buf)
-		rotation = Quaternion(w, x, y, z)
+		rotation = UDPUtils.getSafeBufferQuaternion(buf)
 		calibrationInfo = buf.get().toInt() and 0xFF
 	}
 
@@ -351,6 +339,18 @@ data class UDPPacket200ProtocolChange(
 
 class UDPUtils {
 	companion object {
+		fun getSafeBufferQuaternion(byteBuffer: ByteBuffer): Quaternion {
+			val x = byteBuffer.getFloat()
+			val y = byteBuffer.getFloat()
+			val z = byteBuffer.getFloat()
+			val w = byteBuffer.getFloat()
+
+			return if (x.isNaN() || y.isNaN() || z.isNaN() || w.isNaN()) {
+				Quaternion.IDENTITY
+			} else {
+				Quaternion(w, x, y, z)
+			}
+		}
 		fun getSafeBufferFloat(byteBuffer: ByteBuffer): Float {
 			val value = byteBuffer.getFloat()
 			return if (value.isNaN()) {
