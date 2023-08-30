@@ -653,8 +653,8 @@ onboarding-assignment_tutorial = 在佩戴 Slime 追踪器之前的准备工作
 onboarding-assignment_tutorial-first_step = 1. 根据您分配的情况在追踪器上粘贴标识身体部位的贴纸（如果有）
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = 贴纸
-onboarding-assignment_tutorial-second_step = 2. 将绑带与追踪器连接，调整绑带的粘扣朝向到如下图所示（如果有）：
-onboarding-assignment_tutorial-second_step-continuation = 扩展追踪器的粘扣朝向：
+onboarding-assignment_tutorial-second_step-v2 = 2. 将绑带穿过追踪器，确保绑带有粘扣面的朝向与追踪器上的笑脸标志同向：
+onboarding-assignment_tutorial-second_step-continuation-v2 = 扩展追踪器的粘扣朝向应如下图所示：
 onboarding-assignment_tutorial-done = 我把贴纸和绑带都弄好了！
 
 ## Tracker assignment setup
