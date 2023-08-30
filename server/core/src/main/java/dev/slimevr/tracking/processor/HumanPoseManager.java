@@ -648,7 +648,7 @@ public class HumanPoseManager {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersFull(resetSourceName);
 			if (server != null) {
-				if (skeleton.headTracker == null && skeleton.neckTracker == null) {
+				if (skeleton.getHeadTracker() == null && skeleton.getNeckTracker() == null) {
 					server.vrcOSCHandler.yawAlign(Quaternion.Companion.getIDENTITY());
 				} else {
 					server.vrcOSCHandler
@@ -671,7 +671,7 @@ public class HumanPoseManager {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersYaw(resetSourceName);
 			if (server != null) {
-				if (skeleton.headTracker == null && skeleton.neckTracker == null) {
+				if (skeleton.getHeadTracker() == null && skeleton.getNeckTracker() == null) {
 					server.vrcOSCHandler.yawAlign(Quaternion.Companion.getIDENTITY());
 				} else {
 					server.vrcOSCHandler

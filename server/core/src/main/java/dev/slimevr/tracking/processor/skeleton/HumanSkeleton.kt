@@ -970,12 +970,16 @@ class HumanSkeleton(
 			BoneType.LEFT_SHOULDER -> leftShoulderTailNode.localTransform.translation = offset
 			BoneType.RIGHT_SHOULDER -> rightShoulderTailNode.localTransform.translation = offset
 			BoneType.LEFT_UPPER_ARM -> {
-				if (!isTrackingLeftArmFromController) {
+				if (isTrackingLeftArmFromController) {
+					leftElbowNode.localTransform.translation = NULL
+				} else {
 					leftElbowNode.localTransform.translation = offset
 				}
 			}
 			BoneType.RIGHT_UPPER_ARM -> {
-				if (!isTrackingRightArmFromController) {
+				if (isTrackingRightArmFromController) {
+					rightElbowNode.localTransform.translation = NULL
+				} else {
 					rightElbowNode.localTransform.translation = offset
 				}
 			}
@@ -1029,6 +1033,8 @@ class HumanSkeleton(
 		humanPoseManager.computeNodeOffset(BoneType.RIGHT_UPPER_ARM)
 		humanPoseManager.computeNodeOffset(BoneType.LEFT_LOWER_ARM)
 		humanPoseManager.computeNodeOffset(BoneType.RIGHT_LOWER_ARM)
+		humanPoseManager.computeNodeOffset(BoneType.LEFT_HAND)
+		humanPoseManager.computeNodeOffset(BoneType.RIGHT_HAND)
 	}
 
 	fun getTailNodeOfBone(bone: BoneType?): TransformNode? {
