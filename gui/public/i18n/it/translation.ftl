@@ -658,8 +658,8 @@ onboarding-assignment_tutorial = Come preparare uno Slime Tracker prima di indos
 onboarding-assignment_tutorial-first_step = 1. Posiziona un adesivo di una parte del corpo sul tracker in base alla tua scelta (se ne hai uno)
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Adesivo
-onboarding-assignment_tutorial-second_step = 2. Fissa il cinturino al tracker, mantenendo il lato del gancio e dell'anello del cintutino nel seguente orientamento:
-onboarding-assignment_tutorial-second_step-continuation = Il lato del gancio e dell'anello del cinturino per l'estensione dovrebbe essere in questo orientamento:
+onboarding-assignment_tutorial-second_step-v2 = 2. Fissare il cinturino al tracker, mantenendo il lato in velcro del cinturino rivolto nella stessa direzione del lato frontale del tuo slime tracker:
+onboarding-assignment_tutorial-second_step-continuation-v2 = Il lato del velcro per l'estensione dovrebbe essere rivolto verso l'alto come nell'immagine seguente:
 onboarding-assignment_tutorial-done = Ho messo gli adesivi e i cinturini!
 
 ## Tracker assignment setup
@@ -845,9 +845,9 @@ onboarding-automatic_proportions-check_height-fetch_height = Sono in piedi!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Sconosciuto
 # Shows an element below it
-onboarding-automatic_proportions-check_height-height = La tua altezza è
+onboarding-automatic_proportions-check_height-hmd_height1 = L'altezza del tuo HMD è
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height = E l'altezza del HMD è
+onboarding-automatic_proportions-check_height-height1 = quindi la tua altezza effettiva è
 onboarding-automatic_proportions-check_height-next_step = Sono corretti
 onboarding-automatic_proportions-start_recording-title = Preparati a muoverti
 onboarding-automatic_proportions-start_recording-description = Ora registreremo alcune pose e movimenti specifici. Questi verranno descritte nelle schermate successive. Preparati a iniziare quando premi il pulsante!
