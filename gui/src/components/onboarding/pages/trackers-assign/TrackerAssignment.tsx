@@ -45,18 +45,21 @@ interface FlatDeviceTrackerDummy {
 export function TrackersAssignPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
+  const { config, setConfig } = useConfig();
   const { useAssignedTrackers, trackers } = useTrackers();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const { control, watch } = useForm<{ advanced: boolean }>({
-    defaultValues: { advanced: false },
+    defaultValues: { advanced: config?.advancedAssign ?? false },
   });
   const { advanced } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
+  useEffect(() => {
+    setConfig({ advancedAssign: advanced });
+  }, [advanced]);
 
-  const { config } = useConfig();
   const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
     TapDetectionSettingsT,
     'pack'

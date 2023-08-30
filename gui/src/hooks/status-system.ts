@@ -132,7 +132,7 @@ export function parseStatusToLocale(
     }
     case StatusData.StatusTrackerError: {
       const data = status.data as StatusTrackerErrorT;
-      if (!data.trackerId?.trackerNum || !trackers) {
+      if (data.trackerId?.trackerNum === undefined || !trackers) {
         return {};
       }
 

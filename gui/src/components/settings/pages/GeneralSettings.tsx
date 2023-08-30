@@ -78,7 +78,7 @@ interface SettingsForm {
     yawResetTaps: number;
     fullResetTaps: number;
     mountingResetTaps: number;
-    numberTrackersOverThreshold;
+    numberTrackersOverThreshold: number;
   };
   legTweaks: {
     correctionStrength: number;
