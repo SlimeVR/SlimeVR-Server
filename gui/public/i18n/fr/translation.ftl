@@ -20,7 +20,7 @@ version_update-close = Fermer
 ## Tips
 
 tips-find_tracker = Impossible de différencier vos capteurs ? Secouez-en un pour qu'il soit mis en évidence.
-tips-do_not_move_heels = Assurez-vous de ne pas bouger vos pieds pendant la calibration !
+tips-do_not_move_heels = Assurez-vous de ne pas bouger vos pieds pendant l'enregistrement !
 tips-file_select = Glissez et déposez des fichiers à utiliser, ou <u>parcourir</u>.
 tips-tap_setup = Vous pouvez tapoter lentement votre capteur 2 fois pour le choisir au lieu de le sélectionner depuis le menu.
 
@@ -659,8 +659,8 @@ onboarding-assignment_tutorial = Comment préparer un capteur Slime avant de le 
 onboarding-assignment_tutorial-first_step = 1. Placez un autocollant de partie du corps (si vous en avez un) sur le capteur selon votre choix
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Autocollant
-onboarding-assignment_tutorial-second_step = 2. Attachez la sangle à votre capteur en gardant le côté velcro de la sangle dans l’orientation suivante:
-onboarding-assignment_tutorial-second_step-continuation = La partie velcro pour l’extension doit être dans cette orientation:
+onboarding-assignment_tutorial-second_step-v2 = 2. Attachez la sangle à votre capteur en gardant le velcro de la sangle dans la même direction que le visage du capteur :
+onboarding-assignment_tutorial-second_step-continuation-v2 = Le velcro de l’extension doit être orienté vers le haut comme dans l’image suivante :
 onboarding-assignment_tutorial-done = J'ai mis les autocollants et les sangles !
 
 ## Tracker assignment setup
