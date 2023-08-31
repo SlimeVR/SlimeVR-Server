@@ -418,7 +418,7 @@ public class HumanPoseManager {
 	@ThreadSafe
 	public TransformNode getRootNode() {
 		if (isSkeletonPresent())
-			return skeleton.getRootNode();
+			return skeleton.getHmdNode();
 		return null;
 	}
 
@@ -479,7 +479,7 @@ public class HumanPoseManager {
 	@ThreadSafe
 	public List<BoneInfo> getAllBoneInfo() {
 		if (isSkeletonPresent())
-			return skeleton.allBoneInfo;
+			return skeleton.getAllBoneInfo();
 		return null;
 	}
 
@@ -489,7 +489,7 @@ public class HumanPoseManager {
 	@ThreadSafe
 	public List<BoneInfo> getShareableBoneInfo() {
 		if (isSkeletonPresent())
-			return skeleton.shareableBoneInfo;
+			return skeleton.getShareableBoneInfo();
 		return null;
 	}
 
@@ -600,15 +600,15 @@ public class HumanPoseManager {
 	}
 
 	/**
-	 * Update the given node with the given offset
+	 * Update the given bone with the given offset
 	 *
-	 * @param node the node to update
-	 * @param offset the new offset to apply to the node
+	 * @param bone the bone to update
+	 * @param offset the new offset to apply to the bone
 	 */
 	@ThreadSafe
-	public void updateNodeOffset(BoneType node, Vector3 offset) {
+	public void updateNodeOffset(BoneType bone, Vector3 offset) {
 		if (isSkeletonPresent())
-			skeleton.updateNodeOffset(node, offset);
+			skeleton.updateNodeOffset(bone, offset);
 	}
 
 	/**
@@ -648,7 +648,7 @@ public class HumanPoseManager {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersFull(resetSourceName);
 			if (server != null) {
-				if (skeleton.headTracker == null && skeleton.neckTracker == null) {
+				if (skeleton.getHeadTracker() == null && skeleton.getNeckTracker() == null) {
 					server.vrcOSCHandler.yawAlign(Quaternion.Companion.getIDENTITY());
 				} else {
 					server.vrcOSCHandler
@@ -671,7 +671,7 @@ public class HumanPoseManager {
 		if (isSkeletonPresent()) {
 			skeleton.resetTrackersYaw(resetSourceName);
 			if (server != null) {
-				if (skeleton.headTracker == null && skeleton.neckTracker == null) {
+				if (skeleton.getHeadTracker() == null && skeleton.getNeckTracker() == null) {
 					server.vrcOSCHandler.yawAlign(Quaternion.Companion.getIDENTITY());
 				} else {
 					server.vrcOSCHandler
