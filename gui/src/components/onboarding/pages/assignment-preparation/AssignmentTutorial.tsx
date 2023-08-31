@@ -44,7 +44,7 @@ export function AssignmentTutorialPage() {
                 <div>
                   <Typography variant="section-title">
                     {l10n.getString(
-                      'onboarding-assignment_tutorial-second_step'
+                      'onboarding-assignment_tutorial-second_step-v2'
                     )}
                   </Typography>
                 </div>
@@ -54,7 +54,7 @@ export function AssignmentTutorialPage() {
                 <div>
                   <Typography variant="section-title">
                     {l10n.getString(
-                      'onboarding-assignment_tutorial-second_step-continuation'
+                      'onboarding-assignment_tutorial-second_step-continuation-v2'
                     )}
                   </Typography>
                 </div>

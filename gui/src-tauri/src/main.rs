@@ -239,7 +239,7 @@ fn main() -> Result<()> {
 						};
 						app_handle
 							.emit_all("server-status", emit_me)
-							.expect("Failed to emit");
+							.expect("Check server log files. \nFailed to emit");
 					}
 					log::error!("Java server receiver died");
 					app_handle

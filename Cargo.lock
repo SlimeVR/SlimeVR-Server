@@ -3018,7 +3018,7 @@ dependencies = [
  "serde_json",
  "shadow-rs",
  "tauri",
- "tauri-build",
+ "tauri-build 2.0.0-alpha.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "tauri-plugin-dialog",
  "tauri-plugin-fs",
  "tauri-plugin-os",
@@ -3255,8 +3255,7 @@ checksum = "9d0e916b1148c8e263850e1ebcbd046f333e0683c724876bb0da63ea4373dc8a"
 [[package]]
 name = "tauri"
 version = "2.0.0-alpha.10"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e18377a75e314aa1d476896af881ed63f57a78ca84889fe63e69067f0de158d"
+source = "git+https://github.com/imurx/tauri?branch=ipc-backport#c1f5d5fe4065d593586635194294c13f77e968c2"
 dependencies = [
  "anyhow",
  "bytes",
@@ -3285,11 +3284,11 @@ dependencies = [
  "serialize-to-javascript",
  "state",
  "swift-rs",
- "tauri-build",
+ "tauri-build 2.0.0-alpha.6 (git+https://github.com/imurx/tauri?branch=ipc-backport)",
  "tauri-macros",
  "tauri-runtime",
  "tauri-runtime-wry",
- "tauri-utils",
+ "tauri-utils 2.0.0-alpha.6 (git+https://github.com/imurx/tauri?branch=ipc-backport)",
  "tempfile",
  "thiserror",
  "tokio",
@@ -3314,7 +3313,25 @@ dependencies = [
  "serde",
  "serde_json",
  "swift-rs",
- "tauri-utils",
+ "tauri-utils 2.0.0-alpha.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "tauri-winres",
+ "walkdir",
+]
+
+[[package]]
+name = "tauri-build"
+version = "2.0.0-alpha.6"
+source = "git+https://github.com/imurx/tauri?branch=ipc-backport#c1f5d5fe4065d593586635194294c13f77e968c2"
+dependencies = [
+ "anyhow",
+ "cargo_toml",
+ "heck",
+ "json-patch",
+ "semver",
+ "serde",
+ "serde_json",
+ "swift-rs",
+ "tauri-utils 2.0.0-alpha.6 (git+https://github.com/imurx/tauri?branch=ipc-backport)",
  "tauri-winres",
  "walkdir",
 ]
@@ -3322,8 +3339,7 @@ dependencies = [
 [[package]]
 name = "tauri-codegen"
 version = "2.0.0-alpha.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5c1f1611ab0896f2693163ba4e8f3e39c02a1b70cdca4314286b5e365a5e08c6"
+source = "git+https://github.com/imurx/tauri?branch=ipc-backport#c1f5d5fe4065d593586635194294c13f77e968c2"
 dependencies = [
  "base64 0.21.2",
  "brotli",
@@ -3337,7 +3353,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
- "tauri-utils",
+ "tauri-utils 2.0.0-alpha.6 (git+https://github.com/imurx/tauri?branch=ipc-backport)",
  "thiserror",
  "time",
  "url",
@@ -3348,15 +3364,14 @@ dependencies = [
 [[package]]
 name = "tauri-macros"
 version = "2.0.0-alpha.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22752425c6dd6f3a058f376db7371f1d5bac250e340d40ba6c97ecf7182eef29"
+source = "git+https://github.com/imurx/tauri?branch=ipc-backport#c1f5d5fe4065d593586635194294c13f77e968c2"
 dependencies = [
  "heck",
  "proc-macro2",
  "quote",
  "syn 1.0.109",
  "tauri-codegen",
- "tauri-utils",
+ "tauri-utils 2.0.0-alpha.6 (git+https://github.com/imurx/tauri?branch=ipc-backport)",
 ]
 
 [[package]]
@@ -3371,7 +3386,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tauri",
- "tauri-build",
+ "tauri-build 2.0.0-alpha.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "tauri-plugin-fs",
  "thiserror",
 ]
@@ -3435,8 +3450,7 @@ dependencies = [
 [[package]]
 name = "tauri-runtime"
 version = "0.13.0-alpha.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d7ce19f1309299bbc38ee9236307fad4943bd8fb09dd3fea5e9dd93c1d0898d6"
+source = "git+https://github.com/imurx/tauri?branch=ipc-backport#c1f5d5fe4065d593586635194294c13f77e968c2"
 dependencies = [
  "gtk",
  "http",
@@ -3446,7 +3460,7 @@ dependencies = [
  "raw-window-handle",
  "serde",
  "serde_json",
- "tauri-utils",
+ "tauri-utils 2.0.0-alpha.6 (git+https://github.com/imurx/tauri?branch=ipc-backport)",
  "thiserror",
  "url",
  "uuid",
@@ -3456,8 +3470,7 @@ dependencies = [
 [[package]]
 name = "tauri-runtime-wry"
 version = "0.13.0-alpha.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1231be42085f3a8b150e615601f8a070bd16bf579771a5dafe2931970a05b518"
+source = "git+https://github.com/imurx/tauri?branch=ipc-backport#c1f5d5fe4065d593586635194294c13f77e968c2"
 dependencies = [
  "cocoa",
  "gtk",
@@ -3466,7 +3479,7 @@ dependencies = [
  "rand 0.8.5",
  "raw-window-handle",
  "tauri-runtime",
- "tauri-utils",
+ "tauri-utils 2.0.0-alpha.6 (git+https://github.com/imurx/tauri?branch=ipc-backport)",
  "uuid",
  "webkit2gtk",
  "webview2-com",
@@ -3479,6 +3492,33 @@ name = "tauri-utils"
 version = "2.0.0-alpha.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2e2812e0cdfffb892c654555b2f1b8c84a035b4c56eb1646cb3eb5a9d8164d8e"
+dependencies = [
+ "ctor",
+ "dunce",
+ "glob",
+ "heck",
+ "html5ever",
+ "infer",
+ "json-patch",
+ "kuchiki",
+ "memchr",
+ "phf 0.10.1",
+ "proc-macro2",
+ "quote",
+ "semver",
+ "serde",
+ "serde_json",
+ "serde_with",
+ "thiserror",
+ "url",
+ "walkdir",
+ "windows 0.44.0",
+]
+
+[[package]]
+name = "tauri-utils"
+version = "2.0.0-alpha.6"
+source = "git+https://github.com/imurx/tauri?branch=ipc-backport#c1f5d5fe4065d593586635194294c13f77e968c2"
 dependencies = [
  "brotli",
  "ctor",
