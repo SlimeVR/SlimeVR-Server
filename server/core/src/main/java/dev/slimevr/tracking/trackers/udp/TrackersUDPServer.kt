@@ -14,9 +14,9 @@ import org.apache.commons.lang3.ArrayUtils
 import solarxr_protocol.rpc.ResetType
 import java.net.DatagramPacket
 import java.net.DatagramSocket
-import java.net.SocketAddress
 import java.net.InetSocketAddress
 import java.net.NetworkInterface
+import java.net.SocketAddress
 import java.net.SocketTimeoutException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
