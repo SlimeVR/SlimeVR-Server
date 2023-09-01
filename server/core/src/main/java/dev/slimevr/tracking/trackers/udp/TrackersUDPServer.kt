@@ -14,7 +14,7 @@ import org.apache.commons.lang3.ArrayUtils
 import solarxr_protocol.rpc.ResetType
 import java.net.DatagramPacket
 import java.net.DatagramSocket
-import java.net.InetAddress
+import java.net.SocketAddress
 import java.net.InetSocketAddress
 import java.net.NetworkInterface
 import java.net.SocketTimeoutException
@@ -32,7 +32,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 	Thread(name) {
 	private val random = Random()
 	private val connections: MutableList<UDPDevice> = FastList()
-	private val connectionsByAddress: MutableMap<InetAddress, UDPDevice> = HashMap()
+	private val connectionsByAddress: MutableMap<SocketAddress, UDPDevice> = HashMap()
 	private val connectionsByMAC: MutableMap<String, UDPDevice> = HashMap()
 	private val broadcastAddresses: List<InetSocketAddress> = try {
 		NetworkInterface.getNetworkInterfaces().asSequence().filter {
@@ -58,17 +58,17 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 
 	private fun setUpNewConnection(handshakePacket: DatagramPacket, handshake: UDPPacket3Handshake) {
 		LogManager.info("[TrackerServer] Handshake received from ${handshakePacket.address}:${handshakePacket.port}")
-		val addr = handshakePacket.address
+		val socketAddr = handshakePacket.socketAddress
 
-		val connection: UDPDevice = synchronized(connections) { connectionsByAddress[addr] } ?: run {
+		val connection: UDPDevice = synchronized(connections) { connectionsByAddress[socketAddr] } ?: run {
+			val addr = handshakePacket.address
 			val connection = UDPDevice(
-				handshakePacket.socketAddress,
+				socketAddr,
 				addr,
 				handshake.macString ?: addr.hostAddress,
 				handshake.boardType,
 				handshake.mcuType
 			)
-			VRServer.instance.deviceManager.addDevice(connection)
 			connection.firmwareBuild = handshake.firmwareBuild
 			connection.protocol = if (handshake.firmware?.isEmpty() == true) {
 				// Only old owoTrack doesn't report firmware and have different packet IDs with SlimeVR
@@ -83,21 +83,23 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			// 		string it just looks like "/address" lol.
 			// 		Fixing this would break config!
 			connection.descriptiveName = "udp:/${handshakePacket.address}"
-			synchronized(connections) {
+			val outConnection = synchronized(connections) {
 				if (handshake.macString != null && connectionsByMAC.containsKey(handshake.macString)) {
 					val previousConnection = connectionsByMAC[handshake.macString]!!
 					val i = connections.indexOf(previousConnection)
-					connectionsByAddress.remove(previousConnection.ipAddress)
+					connectionsByAddress.remove(previousConnection.address)
 					previousConnection.lastPacketNumber = 0
 					previousConnection.ipAddress = addr
 					previousConnection.address = handshakePacket.socketAddress
 					previousConnection.name = connection.name
 					previousConnection.descriptiveName = connection.descriptiveName
-					connectionsByAddress[addr] = previousConnection
+					previousConnection.protocol = connection.protocol
+					previousConnection.firmwareBuild = connection.firmwareBuild
+					connectionsByAddress[socketAddr] = previousConnection
 					LogManager
 						.info(
 							"""
-							[TrackerServer] Tracker $i handed over to address ${handshakePacket.socketAddress}.
+							[TrackerServer] Tracker $i switched over to address ${handshakePacket.socketAddress}.
 							Board type: ${handshake.boardType},
 							imu type: ${handshake.imuType},
 							firmware: ${handshake.firmware} (${connection.firmwareBuild}),
@@ -105,17 +107,22 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							name: ${previousConnection.name}
 							""".trimIndent()
 						)
+					
+					previousConnection
 				} else {
 					val i = connections.size
 					connections.add(connection)
-					connectionsByAddress[addr] = connection
+					connectionsByAddress[socketAddr] = connection
 					if (handshake.macString != null) {
 						connectionsByMAC[handshake.macString!!] = connection
 					}
+
+					VRServer.instance.deviceManager.addDevice(connection)
+
 					LogManager
 						.info(
 							"""
-							[TrackerServer] Tracker $i handed over to address ${handshakePacket.socketAddress}.
+							[TrackerServer] Tracker $i added for address ${handshakePacket.socketAddress}.
 							Board type: ${handshake.boardType},
 							imu type: ${handshake.imuType},
 							firmware: ${handshake.firmware} (${connection.firmwareBuild}),
@@ -123,15 +130,17 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							name: ${connection.name}
 							""".trimIndent()
 						)
+					
+					connection
 				}
 			}
-			if (connection.protocol == NetworkProtocol.OWO_LEGACY || connection.firmwareBuild < 9) {
+			if (outConnection.protocol == NetworkProtocol.OWO_LEGACY || outConnection.firmwareBuild < 9) {
 				// Set up new sensor for older firmware.
 				// Firmware after 7 should send sensor status packet and sensor
 				// will be created when it's received
-				setUpSensor(connection, 0, handshake.imuType, 1)
+				setUpSensor(outConnection, 0, handshake.imuType, 1)
 			}
-			connection
+			outConnection
 		}
 		connection.firmwareFeatures = FirmwareFeatures()
 		bb.limit(bb.capacity())
@@ -194,7 +203,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					socket.receive(received)
 					bb.limit(received.length)
 					bb.rewind()
-					val connection = synchronized(connections) { connectionsByAddress[received.address] }
+					val connection = synchronized(connections) { connectionsByAddress[received.socketAddress] }
 					parser.parse(bb, connection)
 						.filterNotNull()
 						.forEach { processPacket(received, it, connection) }
