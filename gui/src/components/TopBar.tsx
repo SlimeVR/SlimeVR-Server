@@ -1,4 +1,4 @@
-import { appWindow } from '@tauri-apps/plugin-window';
+import { getCurrent } from '@tauri-apps/plugin-window';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {
@@ -185,13 +185,13 @@ export function TopBar({
               <>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => appWindow.minimize()}
+                  onClick={() => getCurrent().minimize()}
                 >
                   <MinimiseIcon></MinimiseIcon>
                 </div>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => appWindow.toggleMaximize()}
+                  onClick={() => getCurrent().toggleMaximize()}
                 >
                   <MaximiseIcon></MaximiseIcon>
                 </div>
@@ -199,7 +199,7 @@ export function TopBar({
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
                   onClick={async () => {
                     await invoke('update_window_state');
-                    appWindow.close();
+                    getCurrent().close();
                   }}
                 >
                   <CloseIcon></CloseIcon>

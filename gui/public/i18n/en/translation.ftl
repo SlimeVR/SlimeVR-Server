@@ -613,8 +613,8 @@ onboarding-assignment_tutorial = How to prepare a Slime Tracker before putting i
 onboarding-assignment_tutorial-first_step = 1. Place a body part sticker (if you have one) on the tracker according to your choosing
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Sticker
-onboarding-assignment_tutorial-second_step = 2. Attach the strap to your tracker, keeping the hook and loop side of the strap face in the following orientation:
-onboarding-assignment_tutorial-second_step-continuation = The hook and loop side for the extension should be in this orientation:
+onboarding-assignment_tutorial-second_step-v2 = 2. Attach the strap to your tracker, keeping the velcro side of the strap facing the same direction as the slime face of your tracker:
+onboarding-assignment_tutorial-second_step-continuation-v2 = The velcro side for the extension should be facing up like the following image:
 onboarding-assignment_tutorial-done = I put stickers and straps!
 
 ## Tracker assignment setup

@@ -665,8 +665,7 @@ onboarding-assignment_tutorial = Jak przygotować Slime Tracker przed założeni
 onboarding-assignment_tutorial-first_step = 1. Umieść naklejkę z częścią ciała (jeśli ją posiadasz) na trackerze według własnego uznania
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Naklejka
-onboarding-assignment_tutorial-second_step = 2. Przymocuj pasek do trackera, utrzymując stronę paska z haczykiem i pętelką w następującej orientacji:
-onboarding-assignment_tutorial-second_step-continuation = Strona z haczykiem i pętelką dla przedłużenia powinna być w tej orientacji:
+onboarding-assignment_tutorial-second_step-continuation-v2 = Strona z rzepem dla przedłużenia powinna być skierowana do góry, jak na poniższym obrazku:
 onboarding-assignment_tutorial-done = Umieszczam naklejki i paski!
 
 ## Tracker assignment setup
@@ -855,9 +854,9 @@ onboarding-automatic_proportions-check_height-fetch_height = Stoję!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Nieznany
 # Shows an element below it
-onboarding-automatic_proportions-check_height-height = Twój wzrost to
+onboarding-automatic_proportions-check_height-hmd_height1 = Twoja wysokość HMD to
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height = A wysokość HMD jest
+onboarding-automatic_proportions-check_height-height1 = Twoje rzeczywisty wzrost to
 onboarding-automatic_proportions-check_height-next_step = Są w porządku
 onboarding-automatic_proportions-start_recording-title = Bądź gotowy żeby się ruszać
 onboarding-automatic_proportions-start_recording-description = Będziemy teraz nagrywać specyficzne pozycje i ruchy. Będą one pokazane w następnym okienku. Bądź gotowy po naciśnięciu przycisku!
