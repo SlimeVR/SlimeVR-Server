@@ -31,7 +31,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	companion object {
 		// clip correction
 		const val DYNAMIC_DISPLACEMENT_CUTOFF = 1.0f
-		const val FLOOR_CALIBRATION_OFFSET = 0.015f
+		const val FLOOR_CALIBRATION_OFFSET = 0.0025f
 
 		// skating correction
 		private const val MIN_ACCEPTABLE_ERROR = 0.01f
@@ -263,11 +263,11 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			)
 
 		// Set the corrected positions in the skeleton
-		skeleton.computedHipTracker.position = hipPosition
-		skeleton.computedLeftKneeTracker.position = leftKneePosition
-		skeleton.computedRightKneeTracker.position = rightKneePosition
-		skeleton.computedLeftFootTracker.position = leftFootPosition
-		skeleton.computedRightFootTracker.position = rightFootPosition
+		skeleton.computedHipTracker?.position = hipPosition
+		skeleton.computedLeftKneeTracker?.position = leftKneePosition
+		skeleton.computedRightKneeTracker?.position = rightKneePosition
+		skeleton.computedLeftFootTracker?.position = leftFootPosition
+		skeleton.computedRightFootTracker?.position = rightFootPosition
 	}
 
 	// update the hyperparameters with the config
@@ -300,23 +300,23 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	private fun setVectors() {
 		// set the positions of the feet and knees to the skeleton's
 		// current positions
-		hipPosition = skeleton.computedHipTracker.position
-		leftKneePosition = skeleton.computedLeftKneeTracker.position
-		rightKneePosition = skeleton.computedRightKneeTracker.position
-		leftFootPosition = skeleton.computedLeftFootTracker.position
-		rightFootPosition = skeleton.computedRightFootTracker.position
-		leftFootRotation = skeleton.computedLeftFootTracker.getRotation()
-		rightFootRotation = skeleton.computedRightFootTracker.getRotation()
+		hipPosition = skeleton.computedHipTracker?.position ?: Vector3.NULL
+		leftKneePosition = skeleton.computedLeftKneeTracker?.position ?: Vector3.NULL
+		rightKneePosition = skeleton.computedRightKneeTracker?.position ?: Vector3.NULL
+		leftFootPosition = skeleton.computedLeftFootTracker?.position ?: Vector3.NULL
+		rightFootPosition = skeleton.computedRightFootTracker?.position ?: Vector3.NULL
+		leftFootRotation = skeleton.computedLeftFootTracker?.getRotation() ?: Quaternion.NULL
+		rightFootRotation = skeleton.computedRightFootTracker?.getRotation() ?: Quaternion.NULL
 
 		// get the vector for acceleration of the feet and lower legs
 		leftFootAcceleration =
-			if (skeleton.leftFootTracker != null) skeleton.leftFootTracker.getAcceleration() else Vector3.NULL
+			if (skeleton.leftFootTracker != null) skeleton.leftFootTracker!!.getAcceleration() else Vector3.NULL
 		rightFootAcceleration =
-			if (skeleton.rightFootTracker != null) skeleton.rightFootTracker.getAcceleration() else Vector3.NULL
+			if (skeleton.rightFootTracker != null) skeleton.rightFootTracker!!.getAcceleration() else Vector3.NULL
 		leftLowerLegAcceleration =
-			if (skeleton.leftLowerLegTracker != null) skeleton.leftLowerLegTracker.getAcceleration() else Vector3.NULL
+			if (skeleton.leftLowerLegTracker != null) skeleton.leftLowerLegTracker!!.getAcceleration() else Vector3.NULL
 		rightLowerLegAcceleration =
-			if (skeleton.rightLowerLegTracker != null) skeleton.rightLowerLegTracker.getAcceleration() else Vector3.NULL
+			if (skeleton.rightLowerLegTracker != null) skeleton.rightLowerLegTracker!!.getAcceleration() else Vector3.NULL
 	}
 
 	// updates the object with the latest data from the skeleton
@@ -743,8 +743,8 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		bufferHead.setCorrectedRotations(leftFootRotation, rightFootRotation)
 
 		// update the skeleton
-		skeleton.computedLeftFootTracker.setRotation(leftFootRotation)
-		skeleton.computedRightFootTracker.setRotation(rightFootRotation)
+		skeleton.computedLeftFootTracker?.setRotation(leftFootRotation)
+		skeleton.computedRightFootTracker?.setRotation(rightFootRotation)
 	}
 
 	// returns the length of the xz components of the normalized difference
