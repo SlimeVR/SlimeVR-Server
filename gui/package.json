@@ -47,8 +47,8 @@
     "dev": "tauri dev",
     "skipbundler": "tauri build -b none",
     "tauri": "tauri",
-    "lint": "eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && prettier --check \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
-    "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx,json}\"",
+    "lint": "tsc --noEmit && eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && prettier --check \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
+    "lint:fix": "tsc --noEmit && eslint --fix --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && npm run format",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
     "preview-vite": "vite preview",
     "javaversion-build": "cd src-tauri/src/ && javac JavaVersion.java && jar cvfe JavaVersion.jar JavaVersion JavaVersion.class"

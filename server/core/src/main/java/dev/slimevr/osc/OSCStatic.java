@@ -1,10 +1,6 @@
 package dev.slimevr.osc;
 
 import com.illposed.osc.OSCSerializerAndParserBuilder;
-import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.argument.handler.Activator;
-
-import java.util.List;
 
 
 public class OSCStatic {
@@ -12,18 +8,10 @@ public class OSCStatic {
 
 	static {
 		// Really hacky workaround for getting the OSC library to work on
-		// Android
-		// (Removes reference to java.awt.Color)
-		// https://github.com/hoijui/JavaOSC/issues/60#issuecomment-960713779
+		// Android (Removes reference to java.awt.Color)
 		OSCSerializerAndParserBuilder serializer = new OSCSerializerAndParserBuilder();
-		serializer.setUsingDefaultHandlers(false);
-		List<ArgumentHandler> defaultParserTypes = Activator.createSerializerTypes();
-		defaultParserTypes.remove(16);
-		char typeChar = 'a';
-		for (ArgumentHandler argumentHandler : defaultParserTypes) {
-			serializer.registerArgumentHandler(argumentHandler, typeChar);
-			typeChar++;
-		}
+		serializer.setUsingDefaultHandlers(true);
+		serializer.unregisterArgumentHandler('r');
 
 		OSCStatic.serializer = serializer;
 	}

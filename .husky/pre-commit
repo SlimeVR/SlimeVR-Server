@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+YELLOW="\033[1;33m"
+GREEN="\033[1;32m"
+RESET="\033[0m"
+
+if git rev-parse -q --verify MERGE_HEAD; then
+	echo -e "${YELLOW}Skipping precommit hook because of merge${RESET}"
+	exit 0
+fi
+
+APP_PRE_COMMIT_OPTIONS="$(dirname "$0")/_/pre-commit.options"
+
+if ! [ -f "$APP_PRE_COMMIT_OPTIONS" ]; then
+	echo -e "${YELLOW}\nSkipping pre-commit hook."
+	echo -e "If you want to use pre-commit for lint-staged, run:\n"
+	echo -e "  ${GREEN}echo -e 'APP_LINT=true;' > ${APP_PRE_COMMIT_OPTIONS}${RESET}"
+	echo -e "${YELLOW}\nIt will add some delay before committing!\n${RESET}"
+	exit 0
+fi
+
+source $APP_PRE_COMMIT_OPTIONS
+
+if [ -n "${APP_LINT}" ] && [ "${APP_LINT}" == "true" ]; then
+	echo -e "${GREEN}[husky] [pre-commit] [lint-staged]${RESET}"
+	case "$(uname -sr)" in
+		CYGWIN*|MINGW*|MINGW32*|MSYS*)
+			npx.cmd lint-staged
+			;;
+
+		*)
+			npx lint-staged
+			;;
+	esac
+fi

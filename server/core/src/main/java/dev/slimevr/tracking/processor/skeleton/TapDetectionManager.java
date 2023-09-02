@@ -215,31 +215,31 @@ public class TapDetectionManager {
 	// on which one is available
 	// if none are available, returns null
 	private Tracker getTrackerToWatchYawReset() {
-		if (skeleton.upperChestTracker != null)
-			return skeleton.upperChestTracker;
-		else if (skeleton.chestTracker != null)
-			return skeleton.chestTracker;
-		else if (skeleton.hipTracker != null)
-			return skeleton.hipTracker;
-		else if (skeleton.waistTracker != null)
-			return skeleton.waistTracker;
+		if (skeleton.getUpperChestTracker() != null)
+			return skeleton.getUpperChestTracker();
+		else if (skeleton.getChestTracker() != null)
+			return skeleton.getChestTracker();
+		else if (skeleton.getHipTracker() != null)
+			return skeleton.getHipTracker();
+		else if (skeleton.getWaistTracker() != null)
+			return skeleton.getWaistTracker();
 		else
 			return null;
 	}
 
 	private Tracker getTrackerToWatchFullReset() {
-		if (skeleton.leftUpperLegTracker != null)
-			return skeleton.leftUpperLegTracker;
-		else if (skeleton.leftLowerLegTracker != null)
-			return skeleton.leftLowerLegTracker;
+		if (skeleton.getLeftUpperLegTracker() != null)
+			return skeleton.getLeftUpperLegTracker();
+		else if (skeleton.getLeftLowerLegTracker() != null)
+			return skeleton.getLeftLowerLegTracker();
 		return null;
 	}
 
 	private Tracker getTrackerToWatchMountingReset() {
-		if (skeleton.rightUpperLegTracker != null)
-			return skeleton.rightUpperLegTracker;
-		else if (skeleton.rightLowerLegTracker != null)
-			return skeleton.rightLowerLegTracker;
+		if (skeleton.getRightUpperLegTracker() != null)
+			return skeleton.getRightUpperLegTracker();
+		else if (skeleton.getRightLowerLegTracker() != null)
+			return skeleton.getRightLowerLegTracker();
 		return null;
 	}
 
