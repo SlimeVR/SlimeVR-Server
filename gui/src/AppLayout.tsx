@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { useConfig } from './hooks/config';
 import { Outlet, useNavigate } from 'react-router-dom';
 
