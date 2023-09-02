@@ -22,6 +22,7 @@ export class BasedSkeletonHelper extends LineSegments {
   isSkeletonHelper: boolean;
   root: Object3D;
   bones: Bone[];
+  readonly type = 'SkeletonHelper';
 
   constructor(object: Object3D) {
     const bones = getBoneList(object);
@@ -65,8 +66,6 @@ export class BasedSkeletonHelper extends LineSegments {
     super(geometry, material);
 
     this.isSkeletonHelper = true;
-
-    this.type = 'SkeletonHelper';
 
     this.root = object;
     this.bones = bones;
@@ -148,8 +147,8 @@ export class BoneKind extends Bone {
     this.boneT = bones.get(this.boneT.bodyPart) ?? this.boneT;
     const parent = BoneKind.parent(this.boneT.bodyPart);
     const parentBone = parent === null ? undefined : bones.get(parent);
-    if(this.boneT.bodyPart === BoneKind.root) {
-      this.position.set(0, this.boneT.headPositionG?.y ?? 0, 0)
+    if (this.boneT.bodyPart === BoneKind.root) {
+      this.position.set(0, this.boneT.headPositionG?.y ?? 0, 0);
       return;
     }
 
