@@ -132,6 +132,7 @@ class HumanSkeleton(
 	private var hipFromWaistLegsAveraging = 0f
 	private var hipLegsAveraging = 0f
 	private var kneeTrackerAnkleAveraging = 0f
+	private var kneeAnkleAveraging = 0f
 
 	// Others
 	private var sendAllBones = false
@@ -579,6 +580,10 @@ class HumanSkeleton(
 			val leftHipRot = leftHipNode.localTransform.rotation
 			val leftKneeRot = leftKneeNode.localTransform.rotation
 			val extendedRot = extendedKneeYawRoll(leftHipRot, leftKneeRot)
+
+			leftHipNode
+				.localTransform
+				.rotation = leftHipRot.interpR(extendedRot, kneeAnkleAveraging)
 			trackerLeftKneeNode
 				.localTransform
 				.rotation = leftHipRot.interpR(extendedRot, kneeTrackerAnkleAveraging)
@@ -614,6 +619,10 @@ class HumanSkeleton(
 			val rightHipRot = rightHipNode.localTransform.rotation
 			val rightKneeRot = rightKneeNode.localTransform.rotation
 			val extendedRot = extendedKneeYawRoll(rightHipRot, rightKneeRot)
+
+			rightHipNode
+				.localTransform
+				.rotation = rightHipRot.interpR(extendedRot, kneeAnkleAveraging)
 			trackerRightKneeNode
 				.localTransform
 				.rotation = rightHipRot.interpR(extendedRot, kneeTrackerAnkleAveraging)
@@ -935,6 +944,7 @@ class HumanSkeleton(
 			SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING -> hipFromWaistLegsAveraging = newValue
 			SkeletonConfigValues.HIP_LEGS_AVERAGING -> hipLegsAveraging = newValue
 			SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING -> kneeTrackerAnkleAveraging = newValue
+			SkeletonConfigValues.KNEE_ANKLE_AVERAGING -> kneeAnkleAveraging = newValue
 		}
 	}
 
