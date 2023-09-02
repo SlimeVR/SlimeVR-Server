@@ -81,7 +81,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		}
 
 		// if there is a 6dof device just use it
-		if (skeleton.headTracker != null && skeleton.headTracker.hasPosition) {
+		if (skeleton.headTracker != null && skeleton.headTracker!!.hasPosition) {
 			return
 		}
 
@@ -239,8 +239,10 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 		val lowTracker = getLowestTracker()
 
-		if (lowTracker.position.y < uncorrectedFloor) {
-			targetHip = Vector3(targetHip.x, targetHip.y + (uncorrectedFloor - lowTracker.position.y), targetHip.z)
+		if (lowTracker != null) {
+			if (lowTracker.position.y < uncorrectedFloor) {
+				targetHip = Vector3(targetHip.x, targetHip.y + (uncorrectedFloor - lowTracker.position.y), targetHip.z)
+			}
 		}
 
 		// if the world reference is not sitting update the target waist
@@ -284,9 +286,11 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		val lowTracker = getLowestTracker()
 
 		// update the target COM and velocity to reflect this new distance
-		if (lowTracker.position.y < uncorrectedFloor) {
-			targetCOM = Vector3(targetCOM.x, targetCOM.y + (uncorrectedFloor - lowTracker.position.y), targetCOM.z)
-			comVelocity = Vector3(comVelocity.x, 0.0f, comVelocity.z)
+		if (lowTracker != null) {
+			if (lowTracker.position.y < uncorrectedFloor) {
+				targetCOM = Vector3(targetCOM.x, targetCOM.y + (uncorrectedFloor - lowTracker.position.y), targetCOM.z)
+				comVelocity = Vector3(comVelocity.x, 0.0f, comVelocity.z)
+			}
 		}
 	}
 
@@ -342,7 +346,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	}
 
 	// returns the tracker closest to or the furthest in the ground
-	private fun getLowestTracker(): Tracker {
+	private fun getLowestTracker(): Tracker? {
 		val trackerList = arrayOf(
 			skeleton.computedHeadTracker,
 			skeleton.computedChestTracker,
@@ -357,14 +361,14 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			skeleton.computedRightFootTracker
 		)
 
-		var minVal = trackerList[0].position.y
-		var retVal: Tracker = trackerList[0]
+		var minVal = trackerList[0]?.position?.y
+		var retVal: Tracker? = trackerList[0]
 		for (tracker in trackerList) {
 			if (tracker == null) {
 				continue
 			}
 
-			if (tracker.position.y < minVal) {
+			if (tracker.position.y < minVal!!) {
 				minVal = tracker.position.y
 				retVal = tracker
 			}
@@ -381,7 +385,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		// to the side for both feet)
 		var leftKnee: Vector3 = bufCur.leftKneePosition
 		var rightKnee: Vector3 = bufCur.rightKneePosition
-		val hip: Vector3 = skeleton.computedHipTracker.position
+		val hip: Vector3 = skeleton.computedHipTracker?.position ?: Vector3.NULL
 		leftKnee = hip - leftKnee
 		rightKnee = hip - rightKnee
 
@@ -403,13 +407,13 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		var num = 0.0f
 		var accel = Vector3.NULL
 		if (skeleton.waistTracker != null) {
-			accel += skeleton.waistTracker.getAcceleration()
+			accel += skeleton.waistTracker!!.getAcceleration()
 			num++
 		} else if (skeleton.hipTracker != null) {
-			accel += skeleton.hipTracker.getAcceleration()
+			accel += skeleton.hipTracker!!.getAcceleration()
 			num++
 		} else if (skeleton.chestTracker != null) {
-			accel += skeleton.chestTracker.getAcceleration()
+			accel += skeleton.chestTracker!!.getAcceleration()
 			num++
 		}
 		return if (num == 0f) accel else accel / num

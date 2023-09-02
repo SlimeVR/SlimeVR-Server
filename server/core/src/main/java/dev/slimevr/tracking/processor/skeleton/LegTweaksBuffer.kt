@@ -34,8 +34,8 @@ class LegTweaksBuffer() {
 
 		private const val SKATING_DISTANCE_CUTOFF = 0.5f
 		private const val SKATING_ROTVELOCITY_THRESHOLD = 4.5f
-		private const val SKATING_LOCK_ENGAGE_PERCENT = 0.85f
-		private const val FLOOR_DISTANCE_CUTOFF = 0.05f
+		private const val SKATING_LOCK_ENGAGE_PERCENT = 1.1f
+		private const val FLOOR_DISTANCE_CUTOFF = 0.065f
 		private const val SIX_TRACKER_TOLERANCE = -0.10f
 		private val FORCE_VECTOR_TO_PRESSURE: Vector3 = Vector3(0.25f, 1.0f, 0.25f)
 		private val FORCE_ERROR_TOLERANCE_SQR: Float = FastMath.sqr(4.0f)
