@@ -354,6 +354,13 @@ public class RPCSettingsHandler {
 							Math.max(0, ratios.interpKneeTrackerAnkle())
 						);
 				}
+				if (ratios.hasInterpKneeAnkle()) {
+					hpm
+						.setValue(
+							SkeletonConfigValues.KNEE_ANKLE_AVERAGING,
+							Math.max(0, ratios.interpKneeAnkle())
+						);
+				}
 			}
 
 			if (legTweaks != null) {
