@@ -327,4 +327,16 @@ public class RPCSettingsBuilder {
 
 		return autoBoneConfig;
 	}
+
+	public static int createArmsResetModeSettings(
+		FlatBufferBuilder fbb,
+		ResetsConfig resetsConfig
+	) {
+		return ResetsSettings
+			.createResetsSettings(
+				fbb,
+				resetsConfig.getResetMountingFeet(),
+				resetsConfig.getMode().getId()
+			);
+	}
 }
