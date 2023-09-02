@@ -14,9 +14,9 @@ import org.apache.commons.lang3.ArrayUtils
 import solarxr_protocol.rpc.ResetType
 import java.net.DatagramPacket
 import java.net.DatagramSocket
-import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.NetworkInterface
+import java.net.SocketAddress
 import java.net.SocketTimeoutException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -32,7 +32,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 	Thread(name) {
 	private val random = Random()
 	private val connections: MutableList<UDPDevice> = FastList()
-	private val connectionsByAddress: MutableMap<InetAddress, UDPDevice> = HashMap()
+	private val connectionsByAddress: MutableMap<SocketAddress, UDPDevice> = HashMap()
 	private val connectionsByMAC: MutableMap<String, UDPDevice> = HashMap()
 	private val broadcastAddresses: List<InetSocketAddress> = try {
 		NetworkInterface.getNetworkInterfaces().asSequence().filter {
@@ -60,7 +60,31 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		LogManager.info("[TrackerServer] Handshake received from ${handshakePacket.address}:${handshakePacket.port}")
 		val addr = handshakePacket.address
 
-		val connection: UDPDevice = synchronized(connections) { connectionsByAddress[addr] } ?: run {
+		val connection: UDPDevice = synchronized(connections) {
+			connectionsByMAC[handshake.macString]?.apply {
+				connectionsByAddress.remove(address)
+				address = handshakePacket.socketAddress
+				lastPacketNumber = 0
+				ipAddress = addr
+				name = handshake.macString?.let { "udp://$it" }
+				descriptiveName = "udp:/${handshakePacket.address}"
+				firmwareBuild = handshake.firmwareBuild
+				connectionsByAddress[address] = this
+
+				val i = connections.indexOf(this)
+				LogManager
+					.info(
+						"""
+						[TrackerServer] Tracker $i handed over to address ${handshakePacket.socketAddress}.
+						Board type: ${handshake.boardType},
+						imu type: ${handshake.imuType},
+						firmware: ${handshake.firmware} ($firmwareBuild),
+						mac: ${handshake.macString},
+						name: $name
+						""".trimIndent()
+					)
+			}
+		} ?: run {
 			val connection = UDPDevice(
 				handshakePacket.socketAddress,
 				addr,
@@ -87,13 +111,13 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				if (handshake.macString != null && connectionsByMAC.containsKey(handshake.macString)) {
 					val previousConnection = connectionsByMAC[handshake.macString]!!
 					val i = connections.indexOf(previousConnection)
-					connectionsByAddress.remove(previousConnection.ipAddress)
+					connectionsByAddress.remove(previousConnection.address)
 					previousConnection.lastPacketNumber = 0
 					previousConnection.ipAddress = addr
 					previousConnection.address = handshakePacket.socketAddress
 					previousConnection.name = connection.name
 					previousConnection.descriptiveName = connection.descriptiveName
-					connectionsByAddress[addr] = previousConnection
+					connectionsByAddress[handshakePacket.socketAddress] = previousConnection
 					LogManager
 						.info(
 							"""
@@ -108,7 +132,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				} else {
 					val i = connections.size
 					connections.add(connection)
-					connectionsByAddress[addr] = connection
+					connectionsByAddress[handshakePacket.socketAddress] = connection
 					if (handshake.macString != null) {
 						connectionsByMAC[handshake.macString!!] = connection
 					}
@@ -194,7 +218,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					socket.receive(received)
 					bb.limit(received.length)
 					bb.rewind()
-					val connection = synchronized(connections) { connectionsByAddress[received.address] }
+					val connection = synchronized(connections) { connectionsByAddress[received.socketAddress] }
 					parser.parse(bb, connection)
 						.filterNotNull()
 						.forEach { processPacket(received, it, connection) }

@@ -349,6 +349,7 @@ settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Impu
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Impute hip from waist to legs
 settings-general-fk_settings-skeleton_settings-interp_hip_legs = Average the hip's yaw and roll with the legs'
 settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Average the knee trackers' yaw and roll with the ankles'
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Average the knees' yaw and roll with the ankles'
 
 settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
@@ -758,6 +759,9 @@ onboarding-choose_proportions-manual_proportions = Manual proportions
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
 onboarding-choose_proportions-export = Export proportions
+onboarding-choose_proportions-import = Import proportions
+onboarding-choose_proportions-import-success = Imported
+onboarding-choose_proportions-import-failed = Failed
 onboarding-choose_proportions-file_type = Body proportions file
 
 ## Tracker manual proportions setup
