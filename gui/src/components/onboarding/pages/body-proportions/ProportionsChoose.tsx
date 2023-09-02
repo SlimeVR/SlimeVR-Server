@@ -115,6 +115,42 @@ export function ProportionsChoose() {
 
   applyProgress(0.85);
 
+  const onImport = async () => {
+    const file = await fileOpen({
+      mimeTypes: ['application/json'],
+    });
+
+    const text = await file.text();
+    const config = JSON.parse(text) as SkeletonConfigExport;
+    if (
+      !config?.skeletonParts?.length ||
+      !Array.isArray(config.skeletonParts)
+    ) {
+      error(
+        'failed to import body proportions because skeletonParts is not an array/empty'
+      );
+      return setImportState(ImportStatus.FAILED);
+    }
+
+    for (const bone of [...config.skeletonParts]) {
+      if (
+        (typeof bone.bone === 'string' && !(bone.bone in SkeletonBone)) ||
+        (typeof bone.bone === 'number' &&
+          typeof SkeletonBone[bone.bone] !== 'string')
+      ) {
+        error(
+          `failed to import body proportions because ${bone.bone} is not a valid bone`
+        );
+        return setImportState(ImportStatus.FAILED);
+      }
+    }
+
+    parseConfigImport(config).forEach((req) =>
+      sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, req)
+    );
+    setImportState(ImportStatus.SUCCESS);
+  };
+
   return (
     <>
       <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center mobile:overflow-y-auto relative px-4 pb-4">
@@ -258,42 +294,7 @@ export function ProportionsChoose() {
                 importState === ImportStatus.FAILED && 'bg-status-critical',
                 importState === ImportStatus.SUCCESS && 'bg-status-success'
               )}
-              onClick={async () => {
-                const file = await fileOpen({
-                  mimeTypes: ['application/json'],
-                });
-
-                const text = await file.text();
-                const config = JSON.parse(text) as SkeletonConfigExport;
-                if (
-                  !config?.skeletonParts?.length ||
-                  !Array.isArray(config.skeletonParts)
-                ) {
-                  error(
-                    'failed to import body proportions because skeletonParts is not an array/empty'
-                  );
-                  return setImportState(ImportStatus.FAILED);
-                }
-
-                for (const bone of [...config.skeletonParts]) {
-                  if (
-                    (typeof bone.bone === 'string' &&
-                      !(bone.bone in SkeletonBone)) ||
-                    (typeof bone.bone === 'number' &&
-                      typeof SkeletonBone[bone.bone] !== 'string')
-                  ) {
-                    error(
-                      `failed to import body proportions because ${bone.bone} is not a valid bone`
-                    );
-                    return setImportState(ImportStatus.FAILED);
-                  }
-                }
-
-                parseConfigImport(config).forEach((req) =>
-                  sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, req)
-                );
-                setImportState(ImportStatus.SUCCESS);
-              }}
+              onClick={onImport}
             >
               {l10n.getString(importStatusKey)}
             </Button>
