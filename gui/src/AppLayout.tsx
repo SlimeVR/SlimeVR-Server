@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useConfig } from './hooks/config';
 import { Outlet, useNavigate } from 'react-router-dom';
 
@@ -6,7 +6,7 @@ export function AppLayout() {
   const { loading, config } = useConfig();
   const navigate = useNavigate();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (loading || !config) return;
     if (config.theme !== undefined) {
       document.documentElement.dataset.theme = config.theme;
