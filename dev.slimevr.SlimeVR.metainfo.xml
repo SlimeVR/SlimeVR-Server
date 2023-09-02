@@ -48,7 +48,6 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
       tracking (FBT) in virtual reality. With no base station required, SlimeVR makes wireless
       VR FBT affordable and comfortable.
     </p>
-
   </description>
 
   <launchable type="desktop-id">dev.slimevr.SlimeVR.desktop</launchable>
@@ -59,6 +58,14 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.9.1" date="2023-08-30"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1</url></release>
+    <release version="0.9.1-rc.4" type="development" date="2023-08-28"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.4</url></release>
+    <release version="0.9.1-rc.3" type="development" date="2023-08-19"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.3</url></release>
+    <release version="0.9.1-rc.2" type="development" date="2023-08-15"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.2</url></release>
+    <release version="0.9.1-rc.1" type="development" date="2023-08-13"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.1</url></release>
+    <release version="0.9.0" date="2023-08-05"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.0</url></release>
+    <release version="0.9.0-rc.2" type="development" date="2023-08-02"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.0-rc.2</url></release>
+    <release version="0.9.0-rc.1" type="development" date="2023-07-31"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.0-rc.1</url></release>
     <release version="0.8.3" date="2023-07-09"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.3</url></release>
     <release version="0.8.2" date="2023-07-09"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.2</url></release>
     <release version="0.8.2-rc.1" type="development" date="2023-07-07"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.2-rc.1</url></release>

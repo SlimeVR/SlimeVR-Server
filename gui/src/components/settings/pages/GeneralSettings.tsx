@@ -67,6 +67,7 @@ interface SettingsForm {
     imputeHipFromWaistLegs: number;
     interpHipLegs: number;
     interpKneeTrackerAnkle: number;
+    interpKneeAnkle: number;
   };
   tapDetection: {
     mountingResetEnabled: boolean;
@@ -113,6 +114,7 @@ const defaultValues = {
     imputeHipFromWaistLegs: 0.4,
     interpHipLegs: 0.25,
     interpKneeTrackerAnkle: 0.85,
+    interpKneeAnkle: 0.2,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
   driftCompensation: {
@@ -196,6 +198,7 @@ export function GeneralSettings() {
       ratios.interpHipLegs = values.ratios.interpHipLegs || -1;
       ratios.interpKneeTrackerAnkle =
         values.ratios.interpKneeTrackerAnkle || -1;
+      ratios.interpKneeAnkle = values.ratios.interpKneeAnkle || -1;
       modelSettings.ratios = ratios;
     }
 
@@ -800,6 +803,19 @@ export function GeneralSettings() {
                       name="ratios.interpKneeTrackerAnkle"
                       label={l10n.getString(
                         'settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle'
+                      )}
+                      valueLabelFormat={(value) =>
+                        percentageFormat.format(value)
+                      }
+                      min={0.0}
+                      max={1.0}
+                      step={0.05}
+                    />
+                    <NumberSelector
+                      control={control}
+                      name="ratios.interpKneeAnkle"
+                      label={l10n.getString(
+                        'settings-general-fk_settings-skeleton_settings-interp_knee_ankle'
                       )}
                       valueLabelFormat={(value) =>
                         percentageFormat.format(value)

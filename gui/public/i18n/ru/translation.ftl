@@ -177,6 +177,7 @@ tracker-rotation-back = Сзади
 tracker-rotation-back_left = Левая сторона задней части
 tracker-rotation-back_right = Правая сторона задней части
 tracker-rotation-custom = Пользовательское
+tracker-rotation-overriden = (перезаписан крепёжным сбросом)
 
 ## Tracker information
 
@@ -350,12 +351,15 @@ settings-general-fk_settings-leg_fk = Трекинг ноги
 settings-general-fk_settings-arm_fk = Трекинг руки
 settings-general-fk_settings-arm_fk-description = Измените способ отслеживания рук.
 settings-general-fk_settings-arm_fk-force_arms = Руки от HMD
+settings-general-fk_settings-skeleton_settings-toggles = Переключатели скелета
 settings-general-fk_settings-skeleton_settings-description = Включите или выключите настройки скелета. Рекомендуется оставить их включенными.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Модель вытянутого позвоночника
 settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Модель удлиненного таза
 settings-general-fk_settings-skeleton_settings-extended_knees_model = Модель с удлиненным коленом
 settings-general-fk_settings-skeleton_settings-ratios = Соотношения скелета
 settings-general-fk_settings-skeleton_settings-ratios-description = Измените значения параметров скелета. Возможно, вам придется скорректировать пропорции после их изменения.
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Усредните рыскание и перекат бедра c рысканьем и перекатом ног
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Усредните рыскание и крен коленных трекеров с рысканьем и креном трекеров лодыжек
 settings-general-fk_settings-self_localization-title = Режим Mocap
 settings-general-fk_settings-self_localization-description = Режим Mocap позволяет скелету примерно отслеживать свое собственное положение без использования гарнитуры или других трекеров. Обратите внимание, что для работы этого требуются трекеры ног и головы, и это все еще экспериментальный метод.
 settings-general-fk_settings-vive_emulation-title = Эмуляция Vive
@@ -657,8 +661,8 @@ onboarding-assignment_tutorial = Как подготовить Slime Треке�
 onboarding-assignment_tutorial-first_step = 1. Наклейте стикер с частью тела (если он у вас есть) на трекер по вашему выбору.
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Стикер
-onboarding-assignment_tutorial-second_step = 2. Прикрепите ремешок к вашему трекеру, придерживая лицевую сторону ремешка со стороны крючка и петли в следующем положении:
-onboarding-assignment_tutorial-second_step-continuation = Сторона крючка и петли для удлинителя должна быть в этой ориентации:
+onboarding-assignment_tutorial-second_step-v2 = 2. Прикрепите ремешок к трекеру, держа липучку в том же направлении, что и верхняя сторона трекера:
+onboarding-assignment_tutorial-second_step-continuation-v2 = Липучка расширения должна смотреть вверх, как показано на следующей картинке:
 onboarding-assignment_tutorial-done = Я наклеил стикеры и ремешки!
 
 ## Tracker assignment setup
@@ -800,6 +804,10 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = Автоматическая привязка
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Рекомендуется
+onboarding-choose_proportions-auto_proportions-descriptionv2 =
+    Приложение попытаеться угадать ваши пропорции, записывая образец ваших движений и пропуская его через алгоритм.
+    
+    <b>Для этого необходимо, чтобы ваш HMD был подключен к SlimeVR!</b>
 onboarding-choose_proportions-manual_proportions = Ручные пропорции
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Для небольших штрихов
@@ -835,6 +843,18 @@ onboarding-automatic_proportions-requirements-description =
     Ваши трекеры и гарнитура правильно работают на сервере SlimeVR.
     Ваша гарнитура передает данные о местоположении на сервер SlimeVR (обычно это означает, что SteamVR запущен и подключен к SlimeVR с помощью драйвера SlimeVR SteamVR).
 onboarding-automatic_proportions-requirements-next = Я прочитал требования
+onboarding-automatic_proportions-check_height-title = Проверьте ваш рост
+onboarding-automatic_proportions-check_height-description = Мы используем ваш рост в качестве основы для наших измерений, используя высоту HMD как приблизительное значение к вашему фактическому росту, но лучше проверить, верны ли эти значения самому!
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = Для рассчёта вашего роста, пожалуйста, нажимите кнопку стоя, <u>смотря вперёд</u>. У вас будут 3 секунды после того, как вы нажмете кнопку!
+onboarding-automatic_proportions-check_height-fetch_height = Я стою!
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Неизвестно
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height1 = Высота вашего HMD равна
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height1 = поэтому ваш реальный рост равен
+onboarding-automatic_proportions-check_height-next_step = С ними всё хорошо
 onboarding-automatic_proportions-start_recording-title = Будьте готовы к движению
 onboarding-automatic_proportions-start_recording-description = Теперь мы собираемся записать некоторые конкретные позы и движения. Они будут запрошены на следующем экране. Будьте готовы начать, когда кнопка будет нажата!
 onboarding-automatic_proportions-start_recording-next = Начать запись
@@ -866,6 +886,10 @@ onboarding-automatic_proportions-verify_results-redo = Перезаписать
 onboarding-automatic_proportions-verify_results-confirm = Они правильные
 onboarding-automatic_proportions-done-title = Тело измерено и сохранено.
 onboarding-automatic_proportions-done-description = Калибровка пропорций вашего тела завершена!
+onboarding-automatic_proportions-error_modal =
+    <b>Предупреждение:</b> Была обнаружена ошибка при расчёте пропорций!
+    Пожалуйста, <docs>ознакомьтесь с документацией</docs>, или присоединитесь к нашему <discord>Discord серверу</discord> для получения помощи ^_^
+onboarding-automatic_proportions-error_modal-confirm = Принято!
 
 ## Home
 
