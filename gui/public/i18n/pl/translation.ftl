@@ -665,8 +665,7 @@ onboarding-assignment_tutorial = Jak przygotować Slime Tracker przed założeni
 onboarding-assignment_tutorial-first_step = 1. Umieść naklejkę z częścią ciała (jeśli ją posiadasz) na trackerze według własnego uznania
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Naklejka
-onboarding-assignment_tutorial-second_step = 2. Przymocuj pasek do trackera, utrzymując stronę paska z haczykiem i pętelką w następującej orientacji:
-onboarding-assignment_tutorial-second_step-continuation = Strona z haczykiem i pętelką dla przedłużenia powinna być w tej orientacji:
+onboarding-assignment_tutorial-second_step-continuation-v2 = Strona z rzepem dla przedłużenia powinna być skierowana do góry, jak na poniższym obrazku:
 onboarding-assignment_tutorial-done = Umieszczam naklejki i paski!
 
 ## Tracker assignment setup

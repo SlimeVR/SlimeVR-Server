@@ -170,50 +170,72 @@ public class TapDetection {
 	private boolean isUserStatic(Tracker trackerToExclude) {
 		int num = 0;
 		if (
-			skeleton.upperChestTracker != null
-				&& !skeleton.upperChestTracker.equals(trackerToExclude)
-		) {
-			if (skeleton.upperChestTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
-				num++;
-		}
-		if (skeleton.chestTracker != null && !skeleton.chestTracker.equals(trackerToExclude)) {
-			if (skeleton.chestTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
-				num++;
-		}
-		if (skeleton.hipTracker != null && !skeleton.hipTracker.equals(trackerToExclude)) {
-			if (skeleton.hipTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
-				num++;
-		}
-		if (skeleton.waistTracker != null && !skeleton.waistTracker.equals(trackerToExclude)) {
-			if (skeleton.waistTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
-				num++;
-		}
-		if (
-			skeleton.leftUpperLegTracker != null
-				&& !skeleton.leftUpperLegTracker.equals(trackerToExclude)
-		) {
-			if (skeleton.leftUpperLegTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
-				num++;
-		}
-		if (
-			skeleton.rightUpperLegTracker != null
-				&& !skeleton.rightUpperLegTracker.equals(trackerToExclude)
+			skeleton.getUpperChestTracker() != null
+				&& !skeleton.getUpperChestTracker().equals(trackerToExclude)
 		) {
 			if (
-				skeleton.rightUpperLegTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED
+				skeleton.getUpperChestTracker().getAcceleration().lenSq()
+					> ALLOWED_BODY_ACCEL_SQUARED
 			)
 				num++;
 		}
 		if (
-			skeleton.leftFootTracker != null && !skeleton.leftFootTracker.equals(trackerToExclude)
+			skeleton.getChestTracker() != null
+				&& !skeleton.getChestTracker().equals(trackerToExclude)
 		) {
-			if (skeleton.leftFootTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
+			if (skeleton.getChestTracker().getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
 				num++;
 		}
 		if (
-			skeleton.rightFootTracker != null && !skeleton.rightFootTracker.equals(trackerToExclude)
+			skeleton.getHipTracker() != null && !skeleton.getHipTracker().equals(trackerToExclude)
 		) {
-			if (skeleton.rightFootTracker.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
+			if (skeleton.getHipTracker().getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
+				num++;
+		}
+		if (
+			skeleton.getWaistTracker() != null
+				&& !skeleton.getWaistTracker().equals(trackerToExclude)
+		) {
+			if (skeleton.getWaistTracker().getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED)
+				num++;
+		}
+		if (
+			skeleton.getLeftUpperLegTracker() != null
+				&& !skeleton.getLeftUpperLegTracker().equals(trackerToExclude)
+		) {
+			if (
+				skeleton.getLeftUpperLegTracker().getAcceleration().lenSq()
+					> ALLOWED_BODY_ACCEL_SQUARED
+			)
+				num++;
+		}
+		if (
+			skeleton.getRightUpperLegTracker() != null
+				&& !skeleton.getRightUpperLegTracker().equals(trackerToExclude)
+		) {
+			if (
+				skeleton.getRightUpperLegTracker().getAcceleration().lenSq()
+					> ALLOWED_BODY_ACCEL_SQUARED
+			)
+				num++;
+		}
+		if (
+			skeleton.getLeftFootTracker() != null
+				&& !skeleton.getLeftFootTracker().equals(trackerToExclude)
+		) {
+			if (
+				skeleton.getLeftFootTracker().getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED
+			)
+				num++;
+		}
+		if (
+			skeleton.getRightFootTracker() != null
+				&& !skeleton.getRightFootTracker().equals(trackerToExclude)
+		) {
+			if (
+				skeleton.getRightFootTracker().getAcceleration().lenSq()
+					> ALLOWED_BODY_ACCEL_SQUARED
+			)
 				num++;
 		}
 		return num < numberTrackersOverThreshold;
