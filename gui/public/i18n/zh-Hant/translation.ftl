@@ -651,8 +651,8 @@ onboarding-assignment_tutorial = 戴上 Slime 追蹤器前的準備事項
 onboarding-assignment_tutorial-first_step = 1. 若有標示身體部位的貼紙，可在您所要分配使用的追蹤器上貼上。
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = 貼紙
-onboarding-assignment_tutorial-second_step = 2. 將綁帶有魔鬼氈（魔術貼）的一面，依照下圖所示的方向穿過追蹤器：
-onboarding-assignment_tutorial-second_step-continuation = 延伸追蹤器應照下圖所示：
+onboarding-assignment_tutorial-second_step-v2 = 2. 將綁帶有魔鬼氈（魔術貼）的一面朝向臉部標誌穿過追蹤器：
+onboarding-assignment_tutorial-second_step-continuation-v2 = 延伸追蹤器的穿法應照下圖所示：
 onboarding-assignment_tutorial-done = 我把貼紙跟綁帶都弄上了
 
 ## Tracker assignment setup
