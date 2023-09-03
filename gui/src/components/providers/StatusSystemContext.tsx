@@ -1,8 +1,5 @@
 import { ReactNode } from 'react';
-import {
-  StatusSystemC,
-  useProvideStatusContext,
-} from '../../hooks/status-system';
+import { StatusSystemC, useProvideStatusContext } from '@/hooks/status-system';
 
 export function StatusProvider({ children }: { children: ReactNode }) {
   const context = useProvideStatusContext();

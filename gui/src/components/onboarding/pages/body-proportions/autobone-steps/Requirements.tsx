@@ -1,5 +1,5 @@
-import { Button } from '../../../../commons/Button';
-import { Typography } from '../../../../commons/Typography';
+import { Button } from '@/components/commons/Button';
+import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 
 export function RequirementsStep({

@@ -71,6 +71,7 @@
     ]
   },
   "devDependencies": {
+    "@dword-design/eslint-plugin-import-alias": "^4.0.8",
     "@tailwindcss/forms": "^0.5.3",
     "@tauri-apps/cli": "^2.0.0-alpha.10",
     "@types/file-saver": "^2.0.5",

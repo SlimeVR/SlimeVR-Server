@@ -1,4 +1,4 @@
-import { WidgetsComponent } from '../WidgetsComponent';
+import { WidgetsComponent } from '@/components/WidgetsComponent';
 
 export function VRModePage() {
   return (

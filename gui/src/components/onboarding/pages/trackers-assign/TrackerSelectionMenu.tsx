@@ -1,13 +1,13 @@
 import classNames from 'classnames';
 import ReactModal from 'react-modal';
 import { BodyPart } from 'solarxr-protocol';
-import { FlatDeviceTracker } from '../../../../hooks/app';
-import { useElemSize, useLayout } from '../../../../hooks/layout';
-import { useTrackers } from '../../../../hooks/tracker';
-import { Button } from '../../../commons/Button';
-import { TipBox } from '../../../commons/TipBox';
-import { Typography } from '../../../commons/Typography';
-import { TrackerCard } from '../../../tracker/TrackerCard';
+import { FlatDeviceTracker } from '@/hooks/app';
+import { useElemSize, useLayout } from '@/hooks/layout';
+import { useTrackers } from '@/hooks/tracker';
+import { Button } from '@/components/commons/Button';
+import { TipBox } from '@/components/commons/TipBox';
+import { Typography } from '@/components/commons/Typography';
+import { TrackerCard } from '@/components/tracker/TrackerCard';
 import { useLocalization } from '@fluent/react';
 
 export function TrackerSelectionMenu({

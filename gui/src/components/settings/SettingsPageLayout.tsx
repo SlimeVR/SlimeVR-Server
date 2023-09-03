@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { ReactNode, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useBreakpoint } from '../../hooks/breakpoint';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 export function SettingsPageLayout({
   children,

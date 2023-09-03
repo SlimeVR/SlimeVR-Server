@@ -6,9 +6,9 @@ import {
   OVERLAY_DISPLAY_SETTINGS_TOPIC,
   PayloadData,
   usePubSub,
-} from '../../hooks/pubSub';
-import { CheckBox } from '../commons/Checkbox';
-import { Typography } from '../commons/Typography';
+} from '@/hooks/pubSub';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { Typography } from '@/components/commons/Typography';
 
 export function OverlayWidget() {
   const { l10n } = useLocalization();

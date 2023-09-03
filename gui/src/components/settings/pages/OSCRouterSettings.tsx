@@ -9,15 +9,15 @@ import {
   SettingsRequestT,
   SettingsResponseT,
 } from 'solarxr-protocol';
-import { useWebsocketAPI } from '../../../hooks/websocket-api';
-import { CheckBox } from '../../commons/Checkbox';
-import { RouterIcon } from '../../commons/icon/RouterIcon';
-import { Input } from '../../commons/Input';
-import { Typography } from '../../commons/Typography';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { RouterIcon } from '@/components/commons/icon/RouterIcon';
+import { Input } from '@/components/commons/Input';
+import { Typography } from '@/components/commons/Typography';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
-} from '../SettingsPageLayout';
+} from '@/components/settings/SettingsPageLayout';
 
 interface OSCRouterSettingsForm {
   router: {

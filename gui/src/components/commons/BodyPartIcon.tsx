@@ -1,5 +1,5 @@
 import { BodyPart } from 'solarxr-protocol';
-import { useLocaleConfig } from '../../i18n/config';
+import { useLocaleConfig } from '@/i18n/config';
 import { AnkleIcon } from './icon/AnkleIcon';
 import { ChestIcon } from './icon/ChestIcon';
 import { ControllerIcon } from './icon/ControllerIcon';
