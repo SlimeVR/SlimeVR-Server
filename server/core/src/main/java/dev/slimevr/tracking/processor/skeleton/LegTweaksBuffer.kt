@@ -32,11 +32,10 @@ class LegTweaksBuffer() {
 		val GRAVITY: Vector3 = Vector3(0f, -9.81f, 0f)
 		val GRAVITY_MAGNITUDE: Float = GRAVITY.len()
 
-		private const val SKATING_DISTANCE_CUTOFF = 0.5f
+		private const val SKATING_DISTANCE_CUTOFF = 0.15f
 		private const val SKATING_ROTVELOCITY_THRESHOLD = 4.5f
-		private const val SKATING_LOCK_ENGAGE_PERCENT = 1.1f
-		private const val FLOOR_DISTANCE_CUTOFF = 0.065f
-		private const val SIX_TRACKER_TOLERANCE = -0.10f
+		private const val SKATING_LOCK_ENGAGE_PERCENT = 0.15f
+		private const val FLOOR_DISTANCE_CUTOFF = 0.05f
 		private val FORCE_VECTOR_TO_PRESSURE: Vector3 = Vector3(0.25f, 1.0f, 0.25f)
 		private val FORCE_ERROR_TOLERANCE_SQR: Float = FastMath.sqr(4.0f)
 		private val FORCE_VECTOR_FALLBACK = floatArrayOf(0.1f, 0.1f)
@@ -186,8 +185,6 @@ class LegTweaksBuffer() {
 
 	private var frameNumber = 0 // higher number is older frame
 	private var detectionMode = ANKLE_ACCEL
-	private var accelerationAboveThresholdLeft = true
-	private var accelerationAboveThresholdRight = true
 	private var leftFloorLevel = 0f
 	private var rightFloorLevel = 0f
 	var isStanding = false
@@ -280,13 +277,6 @@ class LegTweaksBuffer() {
 		computeAccelerationMagnitude()
 		computeComAttributes()
 
-		// check if the acceleration triggers forced unlock
-		if (detectionMode == FOOT_ACCEL) {
-			computeAccelerationAboveThresholdFootTrackers()
-		} else {
-			computeAccelerationAboveThresholdAnkleTrackers()
-		}
-
 		// calculate the scalar for other parameters
 		computeScalar()
 
@@ -321,7 +311,8 @@ class LegTweaksBuffer() {
 			leftFootSensitivityVel,
 			leftFootAngleDiff,
 			leftFloorLevel,
-			accelerationAboveThresholdLeft,
+			leftFootAccelerationMagnitude,
+			leftFootSensitivityAccel,
 			leftFootPosition
 		)
 		rightLegState = checkState(
@@ -331,7 +322,8 @@ class LegTweaksBuffer() {
 			rightFootSensitivityVel,
 			rightFootAngleDiff,
 			rightFloorLevel,
-			accelerationAboveThresholdRight,
+			rightFootAccelerationMagnitude,
+			rightFootSensitivityAccel,
 			rightFootPosition
 		)
 
@@ -346,32 +338,30 @@ class LegTweaksBuffer() {
 		velocitySensitivity: Float,
 		angleDiff: Float,
 		floorLevel: Float,
-		accelerationAboveThreshold: Boolean,
+		accelerationMagnitude: Float,
+		accelSensitivity: Float,
 		footPosition: Vector3,
 	): Int {
 		val timeStep = getTimeDelta()
-		if (legState == UNLOCKED) {
-			return if (horizontalDifference > SKATING_CUTOFF_ENGAGE ||
-				(velocityMagnitude * timeStep > SKATING_VELOCITY_CUTOFF_ENGAGE * velocitySensitivity) ||
-				(angleDiff * timeStep > SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE * velocitySensitivity) ||
-				footPosition.y > floorLevel + FLOOR_DISTANCE_CUTOFF ||
-				accelerationAboveThreshold
-			) {
-				UNLOCKED
-			} else {
-				LOCKED
-			}
-		}
-		return if (horizontalDifference > SKATING_DISTANCE_CUTOFF ||
+
+		if (horizontalDifference > SKATING_DISTANCE_CUTOFF ||
 			(velocityMagnitude * timeStep > SKATING_VELOCITY_THRESHOLD * velocitySensitivity) ||
 			(angleDiff * timeStep > SKATING_ROTVELOCITY_THRESHOLD * velocitySensitivity) ||
 			footPosition.y > floorLevel + FLOOR_DISTANCE_CUTOFF ||
-			accelerationAboveThreshold
+			accelerationMagnitude > SKATING_ACCELERATION_THRESHOLD * accelSensitivity
 		) {
-			UNLOCKED
-		} else {
-			LOCKED
+			return UNLOCKED
 		}
+		if (horizontalDifference < SKATING_CUTOFF_ENGAGE &&
+			(velocityMagnitude * timeStep < SKATING_VELOCITY_CUTOFF_ENGAGE * velocitySensitivity) &&
+			(angleDiff * timeStep < SKATING_ROTATIONAL_VELOCITY_CUTOFF_ENGAGE * velocitySensitivity) &&
+			footPosition.y < floorLevel + FLOOR_DISTANCE_CUTOFF &&
+			accelerationMagnitude < SKATING_ACCELERATION_CUTOFF_ENGAGE * accelSensitivity
+		) {
+			return LOCKED
+		}
+
+		return legState
 	}
 
 	// compute a numerical value representing how locked a foot is (bigger
@@ -453,31 +443,6 @@ class LegTweaksBuffer() {
 	private fun computeComAttributes() {
 		centerOfMassVelocity = centerOfMass - parent!!.centerOfMass
 		centerOfMassAcceleration = centerOfMassVelocity - parent!!.centerOfMassVelocity
-	}
-
-	// for a setup with foot trackers the data from the imus is enough to determine lock/unlock
-	private fun computeAccelerationAboveThresholdFootTrackers() {
-		accelerationAboveThresholdLeft = (
-			leftFootAccelerationMagnitude
-			> SKATING_ACCELERATION_CUTOFF_ENGAGE * leftFootSensitivityAccel
-			)
-		accelerationAboveThresholdRight = (
-			rightFootAccelerationMagnitude
-			> SKATING_ACCELERATION_CUTOFF_ENGAGE * rightFootSensitivityAccel
-			)
-	}
-
-	// for any setup without foot trackers the data from the imus is enough to
-	// determine lock/unlock but we add some tolerance
-	private fun computeAccelerationAboveThresholdAnkleTrackers() {
-		accelerationAboveThresholdLeft = (
-			leftFootAccelerationMagnitude
-			> (SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * leftFootSensitivityAccel
-			)
-		accelerationAboveThresholdRight = (
-			rightFootAccelerationMagnitude
-			> (SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * rightFootSensitivityAccel
-			)
 	}
 
 	private fun computeScalar() {
