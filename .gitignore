@@ -36,6 +36,7 @@ build/
 
 # direnv has been claimed for Nix usage
 .direnv/
+.devenv
 
 # Ignore Android local properties
 local.properties

@@ -103,7 +103,7 @@ public enum SkeletonConfigOffsets {
 	SHOULDERS_WIDTH(
 		15,
 		"shouldersWidth",
-		0.36f,
+		0.35f,
 		new BoneType[] { BoneType.LEFT_SHOULDER, BoneType.RIGHT_SHOULDER }
 	),
 	UPPER_ARM(

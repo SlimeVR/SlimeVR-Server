@@ -13,10 +13,7 @@ import dev.slimevr.protocol.rpc.RPCHandler;
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues;
 import dev.slimevr.tracking.trackers.TrackerRole;
-import solarxr_protocol.rpc.ChangeSettingsRequest;
-import solarxr_protocol.rpc.RpcMessage;
-import solarxr_protocol.rpc.RpcMessageHeader;
-import solarxr_protocol.rpc.SettingsResponse;
+import solarxr_protocol.rpc.*;
 
 
 public class RPCSettingsHandler {
@@ -85,6 +82,11 @@ public class RPCSettingsHandler {
 					.createAutoBoneSettings(
 						fbb,
 						this.api.server.configManager.getVrConfig().getAutoBone()
+					),
+				RPCSettingsBuilder
+					.createArmsResetModeSettings(
+						fbb,
+						this.api.server.configManager.getVrConfig().getResetsConfig()
 					)
 			);
 		int outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
@@ -354,6 +356,13 @@ public class RPCSettingsHandler {
 							Math.max(0, ratios.interpKneeTrackerAnkle())
 						);
 				}
+				if (ratios.hasInterpKneeAnkle()) {
+					hpm
+						.setValue(
+							SkeletonConfigValues.KNEE_ANKLE_AVERAGING,
+							Math.max(0, ratios.interpKneeAnkle())
+						);
+				}
 			}
 
 			if (legTweaks != null) {
@@ -374,6 +383,19 @@ public class RPCSettingsHandler {
 				.getAutoBone();
 
 			RPCSettingsBuilder.readAutoBoneSettings(autoBoneSettings, autoBoneConfig);
+		}
+
+		if (req.resetsSettings() != null) {
+			ResetsConfig resetsConfig = this.api.server.configManager
+				.getVrConfig()
+				.getResetsConfig();
+			ArmsResetModes mode = ArmsResetModes
+				.fromId(Math.max(req.resetsSettings().armsMountingResetMode(), 0));
+			if (mode != null) {
+				resetsConfig.setMode(mode);
+			}
+			resetsConfig.setResetMountingFeet(req.resetsSettings().resetMountingFeet());
+			resetsConfig.updateTrackersResetsSettings();
 		}
 
 		this.api.server.configManager.saveConfig();

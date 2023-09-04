@@ -130,6 +130,7 @@ class HumanSkeleton(
 	private var hipFromWaistLegsAveraging = 0f
 	private var hipLegsAveraging = 0f
 	private var kneeTrackerAnkleAveraging = 0f
+	private var kneeAnkleAveraging = 0f
 
 	// Others
 	private var pauseTracking = false // Pauses skeleton tracking if true, resumes skeleton tracking if false
@@ -688,6 +689,8 @@ class HumanSkeleton(
 					val upperRot = upper.getRotation()
 					val lowerRot = lower.getRotation()
 					val extendedRot = extendedKneeYawRoll(upperRot, lowerRot)
+
+					upperLegBone.setRotation(upperRot.interpR(extendedRot, kneeAnkleAveraging))
 					kneeTrackerBone.setRotation(upperRot.interpR(extendedRot, kneeTrackerAnkleAveraging))
 				}
 			}
@@ -862,6 +865,7 @@ class HumanSkeleton(
 			SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING -> hipFromWaistLegsAveraging = newValue
 			SkeletonConfigValues.HIP_LEGS_AVERAGING -> hipLegsAveraging = newValue
 			SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING -> kneeTrackerAnkleAveraging = newValue
+			SkeletonConfigValues.KNEE_ANKLE_AVERAGING -> kneeAnkleAveraging = newValue
 		}
 	}
 
@@ -1086,25 +1090,6 @@ class HumanSkeleton(
 		LogManager.info(String.format("[HumanSkeleton] Reset: yaw (%s)", resetSourceName))
 	}
 
-	private fun shouldResetMounting(position: TrackerPosition?): Boolean {
-		return position != null && position !== TrackerPosition.LEFT_FOOT && position !== TrackerPosition.RIGHT_FOOT
-	}
-
-	private fun shouldResetMounting(tracker: Tracker): Boolean {
-		return shouldResetMounting(tracker.trackerPosition)
-	}
-
-	private fun shouldReverseYaw(position: TrackerPosition?): Boolean {
-		return when (position) {
-			TrackerPosition.LEFT_UPPER_LEG, TrackerPosition.RIGHT_UPPER_LEG, TrackerPosition.LEFT_LOWER_ARM, TrackerPosition.LEFT_HAND, TrackerPosition.RIGHT_LOWER_ARM, TrackerPosition.RIGHT_HAND -> true
-			else -> false
-		}
-	}
-
-	private fun shouldReverseYaw(tracker: Tracker): Boolean {
-		return shouldReverseYaw(tracker.trackerPosition)
-	}
-
 	@VRServerThread
 	fun resetTrackersMounting(resetSourceName: String?) {
 		val trackersToReset = humanPoseManager.getTrackersToReset()
@@ -1114,18 +1099,14 @@ class HumanSkeleton(
 		var referenceRotation = IDENTITY
 		headTracker?.let {
 			if (it.needsMounting) {
-				it.resetsHandler.resetMounting(shouldReverseYaw(it), referenceRotation)
+				it.resetsHandler.resetMounting(referenceRotation)
 			} else {
 				referenceRotation = it.getRotation()
 			}
 		}
 		for (tracker in trackersToReset) {
-			if (tracker != null && tracker.needsMounting &&
-				shouldResetMounting(tracker)
-			) {
-				tracker
-					.resetsHandler
-					.resetMounting(shouldReverseYaw(tracker), referenceRotation)
+			if (tracker != null && tracker.needsMounting) {
+				tracker.resetsHandler.resetMounting(referenceRotation)
 			}
 		}
 		legTweaks.resetBuffer()
