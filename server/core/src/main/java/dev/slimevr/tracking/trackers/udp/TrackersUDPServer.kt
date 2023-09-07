@@ -169,7 +169,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
-			// Get the hash from the mac address
+			// Get the hash of the mac address (SHA-256)
 			val hash = MessageDigest.getInstance("SHA-256").digest(connection.hardwareIdentifier.toByteArray(StandardCharsets.UTF_8))
 			// Format it to a string to be used as display name
 			val hashString = String.format("%064x", BigInteger(1, hash)).subSequence(0, 5)
