@@ -12,6 +12,7 @@ import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import io.github.axisangles.ktmath.Vector3
 import org.apache.commons.lang3.ArrayUtils
 import solarxr_protocol.rpc.ResetType
+import java.math.BigInteger
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetSocketAddress
@@ -168,12 +169,16 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
+			// Get the hash from the mac address
+			val hash = MessageDigest.getInstance("SHA-256").digest(connection.hardwareIdentifier.toByteArray(StandardCharsets.UTF_8))
+			// Format it to a string to be used as display name
+			val hashString = String.format("%064x", BigInteger(1, hash)).subSequence(0, 5)
+
 			imuTracker = Tracker(
 				connection,
 				VRServer.getNextLocalTrackerId(),
 				connection.name + "/" + trackerId,
-				"IMU Tracker " + MessageDigest.getInstance("SHA-256")
-					.digest(connection.hardwareIdentifier.toByteArray(StandardCharsets.UTF_8)).toString().subSequence(3, 8),
+				"IMU Tracker $hashString",
 				null,
 				trackerNum = trackerId,
 				hasRotation = true,
