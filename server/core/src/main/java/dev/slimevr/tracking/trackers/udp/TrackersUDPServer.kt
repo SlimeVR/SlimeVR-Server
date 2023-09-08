@@ -12,7 +12,6 @@ import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import io.github.axisangles.ktmath.Vector3
 import org.apache.commons.lang3.ArrayUtils
 import solarxr_protocol.rpc.ResetType
-import java.math.BigInteger
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetSocketAddress
@@ -21,8 +20,6 @@ import java.net.SocketAddress
 import java.net.SocketTimeoutException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
 import java.util.Random
 import java.util.function.Consumer
 
@@ -169,16 +166,12 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
-			// Get the hash of the mac address (SHA-256)
-			val hash = MessageDigest.getInstance("SHA-256").digest(connection.hardwareIdentifier.toByteArray(StandardCharsets.UTF_8))
-			// Format it to a string to be used as display name
-			val hashString = String.format("%064x", BigInteger(1, hash)).subSequence(0, 5)
-
+			val formattedHWID = connection.hardwareIdentifier.replace(":", "").lowercase()
 			imuTracker = Tracker(
 				connection,
 				VRServer.getNextLocalTrackerId(),
 				connection.name + "/" + trackerId,
-				"IMU Tracker $hashString",
+				"IMU Tracker " + formattedHWID.subSequence(formattedHWID.length - 5, formattedHWID.length),
 				null,
 				trackerNum = trackerId,
 				hasRotation = true,
