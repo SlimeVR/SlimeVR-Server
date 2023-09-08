@@ -166,7 +166,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
-			val formattedHWID = connection.hardwareIdentifier.replace(":", "").lowercase()
+			val formattedHWID = connection.hardwareIdentifier.replace(":", "")
 			imuTracker = Tracker(
 				connection,
 				VRServer.getNextLocalTrackerId(),
