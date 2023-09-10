@@ -171,7 +171,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				connection,
 				VRServer.getNextLocalTrackerId(),
 				connection.name + "/" + trackerId,
-				"IMU Tracker " + formattedHWID.subSequence(formattedHWID.length - 5, formattedHWID.length),
+				"IMU Tracker " + formattedHWID.subSequence(Math.max(formattedHWID.length - 5, 0), formattedHWID.length),
 				null,
 				trackerNum = trackerId,
 				hasRotation = true,
