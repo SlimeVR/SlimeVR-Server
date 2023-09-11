@@ -81,7 +81,7 @@ fn main() -> Result<()> {
 		});
 
 		#[cfg(not(target_os = "macos"))]
-		let path = dirs_next::data_local_dir()
+		let path = dirs_next::data_dir()
 			.ok_or(Error::UnknownPath)
 			.map(|dir| {
 				dir.join(&tauri_context.config().tauri.bundle.identifier)
@@ -186,7 +186,7 @@ fn main() -> Result<()> {
 
 			let window = tauri::WindowBuilder::new(
 				app,
-				"local",
+				"main",
 				tauri::WindowUrl::App("index.html".into()),
 			)
 			.title("SlimeVR")
@@ -239,7 +239,7 @@ fn main() -> Result<()> {
 						};
 						app_handle
 							.emit_all("server-status", emit_me)
-							.expect("Failed to emit");
+							.expect("Check server log files. \nFailed to emit");
 					}
 					log::error!("Java server receiver died");
 					app_handle

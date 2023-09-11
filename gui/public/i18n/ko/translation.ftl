@@ -36,6 +36,7 @@ body_part-RIGHT_HAND = 오른손
 body_part-RIGHT_UPPER_LEG = 오른쪽 다리 위
 body_part-RIGHT_LOWER_LEG = 오른쪽 다리 아래
 body_part-RIGHT_FOOT = 오른발
+body_part-UPPER_CHEST = 가슴 위
 body_part-CHEST = 가슴
 body_part-WAIST = 허리
 body_part-HIP = 골반
@@ -53,8 +54,9 @@ skeleton_bone-NONE = 없음
 skeleton_bone-HEAD = 머리 밀림
 skeleton_bone-NECK = 목 길이
 skeleton_bone-torso_group = 몸통 길이
-skeleton_bone-CHEST = 가슴 길이
+skeleton_bone-UPPER_CHEST = 가슴 위쪽 길이
 skeleton_bone-CHEST_OFFSET = 가슴 오프셋
+skeleton_bone-CHEST = 가슴 길이
 skeleton_bone-WAIST = 허리 길이
 skeleton_bone-HIP = 골반 길이
 skeleton_bone-HIP_OFFSET = 골반 오프셋
@@ -120,6 +122,10 @@ widget-overlay-is_mirrored_label = 오버레이 반전
 
 widget-drift_compensation-clear = 틀어짐 보정 초기화
 
+## Widget: Clear Reset Mounting
+
+widget-clear_mounting = 착용 방향 정렬 초기화
+
 ## Widget: Developer settings
 
 widget-developer_mode = 개발자 모드
@@ -163,9 +169,15 @@ tracker-table-column-url = URL
 ## Tracker rotation
 
 tracker-rotation-front = 앞쪽
+tracker-rotation-front_left = 왼쪽 앞
+tracker-rotation-front_right = 오른쪽 앞
 tracker-rotation-left = 왼쪽
 tracker-rotation-right = 오른쪽
 tracker-rotation-back = 뒤쪽
+tracker-rotation-back_left = 왼쪽 뒤
+tracker-rotation-back_right = 오른쪽 뒤
+tracker-rotation-custom = 사용자 지정
+tracker-rotation-overriden = (착용 방향 보정으로 재정의됨)
 
 ## Tracker information
 
@@ -230,6 +242,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = 오른쪽 다리 위{ -tracker_selectio
 tracker_selection_menu-RIGHT_LOWER_LEG = 오른쪽 다리 아래{ -tracker_selection-part }
 tracker_selection_menu-RIGHT_FOOT = 오른쪽 발{ -tracker_selection-part }
 tracker_selection_menu-RIGHT_CONTROLLER = 오른쪽 컨트롤러{ -tracker_selection-part }
+tracker_selection_menu-UPPER_CHEST = 가슴 위{ -tracker_selection-part }
 tracker_selection_menu-CHEST = 가슴{ -tracker_selection-part }
 tracker_selection_menu-WAIST = 허리{ -tracker_selection-part }
 tracker_selection_menu-HIP = 골반{ -tracker_selection-part }
@@ -269,6 +282,8 @@ settings-sidebar-osc_router = OSC 라우터
 settings-sidebar-osc_trackers = VRChat OSC 트래커
 settings-sidebar-utils = 유틸리티
 settings-sidebar-serial = 시리얼 콘솔
+settings-sidebar-appearance = 모양
+settings-sidebar-notifications = 알림
 
 ## SteamVR settings
 
@@ -336,11 +351,10 @@ settings-general-fk_settings-leg_fk = 발 트래킹
 settings-general-fk_settings-arm_fk = 팔 운동학
 settings-general-fk_settings-arm_fk-description = 팔이 추적되는 방식을 변경할 수 있어요.
 settings-general-fk_settings-arm_fk-force_arms = 팔을 HMD에서만 받아오기
-settings-general-fk_settings-skeleton_settings = 골격 설정
 settings-general-fk_settings-skeleton_settings-description = 골격 설정을 설정하거나 해제해요. 이것들은 켜두는 게 좋아요.
-settings-general-fk_settings-skeleton_settings-extended_spine = 척추 확장
-settings-general-fk_settings-skeleton_settings-extended_pelvis = 골반 확장
-settings-general-fk_settings-skeleton_settings-extended_knees = 무릎 확장
+settings-general-fk_settings-skeleton_settings-ratios = 골격 비율
+settings-general-fk_settings-self_localization-title = Mocap 모드
+settings-general-fk_settings-self_localization-description = Mocap 모드에서는 헤드셋이나 다른 트래커 없이 골격이 자신의 위치를 대략적으로 추적할 수 있어요. 발과 머리 트래커가 필요하고 아직 실험적이에요.
 settings-general-fk_settings-vive_emulation-title = VIVE 에뮬레이션
 settings-general-fk_settings-vive_emulation-description = 바이브 트래커가 가지고 있는 허리 트래커 문제를 따라해보세요! 사실 이건 장난이고 추적을 더 악화시켜요.
 settings-general-fk_settings-vive_emulation-label = VIVE 에뮬레이션 활성화
@@ -356,6 +370,9 @@ settings-general-gesture_control-taps =
     { $amount ->
        *[other] { $amount } 탭
     }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers = { $amount } 트래커
 settings-general-gesture_control-yawResetEnabled = 탭해서 Yaw 정렬 활성화
 settings-general-gesture_control-yawResetDelay = Yaw 정렬 딜레이
 settings-general-gesture_control-yawResetTaps = Yaw 정렬 탭 횟수
@@ -365,13 +382,32 @@ settings-general-gesture_control-fullResetTaps = 탭해서 전체 정렬
 settings-general-gesture_control-mountingResetEnabled = 탭해서 착용 방향 정렬 활성화
 settings-general-gesture_control-mountingResetDelay = 착용 방향 정렬 딜레이
 settings-general-gesture_control-mountingResetTaps = 탭해서 착용 방향 정렬
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = 트래커 감지 한계
+settings-general-gesture_control-numberTrackersOverThreshold-description = 몸을 움직이면서 제스처 제어를 하고 싶은데 잘 작동하지 않는다면 이 값을 늘리세요. 탭 탐지가 작동하는 데 필요한 값 이상으로 늘리지 마세요. 더 많은 오작동이 발생할 수 있어요.
 
-## Interface settings
+## Appearance settings
 
-settings-general-interface = 인터페이스
+settings-interface-appearance = 모양
 settings-general-interface-dev_mode = 개발자 모드
 settings-general-interface-dev_mode-description = 이 모드는 더 많은 데이터가 필요하거나 고급 수준에서 연결된 트래커와 상호 작용하는 경우에 유용할 수 있어요.
 settings-general-interface-dev_mode-label = 개발자 모드
+settings-general-interface-theme = 컬러 테마
+settings-general-interface-lang = 언어 선택
+settings-general-interface-lang-description = 사용하고 싶은 기본 언어를 선택하세요.
+settings-general-interface-lang-placeholder = 사용할 언어를 선택하세요
+# Keep the font name untranslated
+settings-interface-appearance-font = GUI 글꼴
+settings-interface-appearance-font-description = 이렇게 하면 인터페이스에서 사용하는 글꼴이 변경돼요.
+settings-interface-appearance-font-placeholder = 기본 글꼴
+settings-interface-appearance-font-os_font = OS 글꼴
+settings-interface-appearance-font-slime_font = 기본 글꼴
+settings-interface-appearance-font_size = 글꼴 크기 조정
+settings-interface-appearance-font_size-description = 변경하면 이 설정 패널을 제외하고 모든 인터페이스의 글꼴 크기가 달라져요.
+
+## Notification settings
+
+settings-interface-notifications = 알림
 settings-general-interface-serial_detection = 시리얼 디바이스 감지
 settings-general-interface-serial_detection-description = 이 옵션은 트래커일 수도 있는 새로운 시리얼 디바이스를 연결할 때마다 팝업을 표시해요. 트래커 설정 프로세스를 개선하는 데 도움이 될 거예요.
 settings-general-interface-serial_detection-label = 시리얼 디바이스 감지
@@ -379,10 +415,6 @@ settings-general-interface-feedback_sound = 피드백 사운드
 settings-general-interface-feedback_sound-description = 이 옵션을 켜면 트래커를 정렬할 때 효과음을 재생해요
 settings-general-interface-feedback_sound-label = 피드백 사운드
 settings-general-interface-feedback_sound-volume = 피드백 사운드 음량
-settings-general-interface-theme = 컬러 테마
-settings-general-interface-lang = 언어 선택
-settings-general-interface-lang-description = 사용하고 싶은 기본 언어를 선택하세요.
-settings-general-interface-lang-placeholder = 사용할 언어를 선택하세요
 
 ## Serial settings
 
@@ -526,6 +558,27 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = 착용 방향 정렬로 돌아가기
 onboarding-reset_tutorial = 정렬 튜토리얼
+onboarding-reset_tutorial-explanation =
+    트래커를 사용하다 보면 Yaw 드리프트 또는 트래커가 미끄러져서 틀어짐이 발생할 수 있어요. 
+    지금부터 그런 문제를 해결하는 방법을 알려 드릴게요.
+onboarding-reset_tutorial-skip = 무시하고 건너뛰기
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    Yaw 정렬을 시도하려면 강조된 트래커를 { $taps }번 탭하세요.
+    그러면 트래커는 HMD가 바라보는 면과 같은 방향으로 정렬될 거예요.
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    전체 정렬을 시도하려면 강조된 트래커를 { $taps }번 탭하세요.
+    
+    탭한 다음 3초 뒤에(설정에서 변경 가능) 실제 보정이 이뤄지기 때문에 그 사이에 일어나서 차렷 자세로 보정을 기다리면 돼요.
+    전체 정렬은 모든 트래커의 위치와 각도를 원래대로 되돌리기 때문에 대부분의 틀어짐 문제를 해결할 수 있어요.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    착용 방향 정렬을 시도하려면 강조된 트래커를 { $taps }번 탭하세요.
+    
+    착용 방향 정렬은 실제로 몸에 있는 트래커의 위치를 감지할 수 있어요. 트래커를 정확한 방향으로 착용하지 않거나 실수로 움직여서 트래커가 미끄러져도 착용 방향 정렬을 통해 해결할 수 있어요.
+    
+    자동 착용 방향 설정 마법사에서 봤던 것처럼 스키를 타는 듯한 자세로 몸을 구부리고 있으세요. 탭한 다음 3초 뒤에(설정에서 변경 가능) 보정이 시작될 거예요.
 
 ## Setup start
 
@@ -577,6 +630,9 @@ onboarding-connect_tracker-next = 모든 트래커를 잘 연결했어요
 
 onboarding-calibration_tutorial = IMU 캘리브레이션 튜토리얼
 onboarding-calibration_tutorial-subtitle = 트래커 틀어짐을 줄이는 데 도움이 될 거예요!
+onboarding-calibration_tutorial-description =
+    매번 트래커의 전원을 켤 때마다 평평한 바닥에 트래커를 두고 잠시 기다려서 보정을 수행해야 해요. <b>(트래커를 움직이지 마세요!)</b>
+    어떻게 하면 되는지 "{ onboarding-calibration_tutorial-calibrate }"를 눌러 같이 따라해보죠!
 onboarding-calibration_tutorial-status-calibrating = 캘리브레이팅
 
 ## Tracker assignment tutorial
@@ -714,11 +770,11 @@ onboarding-choose_proportions = 신체 비율을 설정하기 위해 어떤 방�
 onboarding-choose_proportions-auto_proportions = 자동으로 비율 설정
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = 권장
-onboarding-choose_proportions-auto_proportions-description = 이렇게 하면 움직임 샘플을 기록하고 알고리즘을 통과해서 자동으로 신체 비율을 설정할 수 있어요
 onboarding-choose_proportions-manual_proportions = 수동으로 비율 설정
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = 정밀하게 설정하고 싶다면
 onboarding-choose_proportions-manual_proportions-description = 이렇게 하면 신체 비율을 직접 수정하여 수동으로 조절할 수 있어요
+onboarding-choose_proportions-export = 다른 이름으로 저장
 
 ## Tracker manual proportions setup
 
@@ -776,6 +832,7 @@ onboarding-automatic_proportions-verify_results-redo = 다시 기록하기
 onboarding-automatic_proportions-verify_results-confirm = 정확해요!
 onboarding-automatic_proportions-done-title = 몸을 측정하고 저장했어요
 onboarding-automatic_proportions-done-description = 신체 비율 보정이 완료되었어요!
+onboarding-automatic_proportions-error_modal-confirm = 이해했어요!
 
 ## Home
 
@@ -783,3 +840,10 @@ home-no_trackers = 감지되거나 할당된 트래커가 없어요.
 
 ## Status system
 
+status_system-StatusTrackerReset = 아직 정렬되지 않은 트래커가 있어서 전체 정렬을 수행해주세요.
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] SlimeVR 피더와 통신할 수 없어요.
+       *[other] SlimeVR 드라이버를 통해 SteamVR과 통신할 수 없어요.
+    }
+status_system-StatusTrackerError = { $trackerName } 트래커에 문제가 발생했어요.

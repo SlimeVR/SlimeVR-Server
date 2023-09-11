@@ -351,11 +351,19 @@ settings-general-fk_settings-leg_fk = leg twacking
 settings-general-fk_settings-arm_fk = awm twacking
 settings-general-fk_settings-arm_fk-description = chawnge teh way teh awms awe twacked.
 settings-general-fk_settings-arm_fk-force_arms = fowce awms fwom hmd
-settings-general-fk_settings-skeleton_settings = skeweton sewttings
+settings-general-fk_settings-skeleton_settings-toggles = skeweton toggews
 settings-general-fk_settings-skeleton_settings-description = toggwe skeweton sewttings on owow off. is wowcommended to weawve these on~
 settings-general-fk_settings-skeleton_settings-extended_spine_model = extwended spine modew
 settings-general-fk_settings-skeleton_settings-extended_pelvis_model = extwended pewvis modew
 settings-general-fk_settings-skeleton_settings-extended_knees_model = extwended nee modew
+settings-general-fk_settings-skeleton_settings-ratios = skeweton watios
+settings-general-fk_settings-skeleton_settings-ratios-description = change da vawue of skeweton settings. u may need to ajust ur pawpowshuns aftew changin dese.
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = impute waist fwom chest to hip
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = impute waist fwom chest to wegs
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = impute hip fwom chest to wegs
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = impute hip fwom waist to wegs
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = awewage da hip's yaw and woll wiff da legs'
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = awewage da knee twackews' yaw and woll wiff da ankews'
 settings-general-fk_settings-self_localization-title = mocap mowd
 settings-general-fk_settings-self_localization-description = mocap mowd awwows da skeweton to wuffly twack is own posishun without a hedset or other twackews. note dat dis wequiwes feet and hed twackews to wowk and is stiwll expewimentaw.
 settings-general-fk_settings-vive_emulation-title = vive emuwation
@@ -651,8 +659,8 @@ onboarding-assignment_tutorial = how to pwepawe a Swime Twackew befowe puting it
 onboarding-assignment_tutorial-first_step = 1. pwace a body pawt stickew (if you has wun) on da twackew accowding to u choosing :3
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = sticker
-onboarding-assignment_tutorial-second_step = 2. put da stwap to u twackew, keep da hook an woop side of the stwap face in the fowlowing owientation:
-onboarding-assignment_tutorial-second_step-continuation = da hook an woop side fow da extenson shouwd be in this owientation:
+onboarding-assignment_tutorial-second_step-v2 = 2. attach da stwap to youw twackew, keeping da vewcwo side of da stwap facing da same diwecshun as da swime face of youw twackew:
+onboarding-assignment_tutorial-second_step-continuation-v2 = da vewcwo side fow da extenshun shud be facing up wike da fowwowing image:
 onboarding-assignment_tutorial-done = i put da stickew an stwap on :3
 
 ## Tracker assignment setup
@@ -839,9 +847,9 @@ onboarding-automatic_proportions-check_height-fetch_height = am standing!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = unnown
 # Shows an element below it
-onboarding-automatic_proportions-check_height-height = youw height is
+onboarding-automatic_proportions-check_height-hmd_height1 = youw hmd heit is
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height = an hmd height is
+onboarding-automatic_proportions-check_height-height1 = so youw actuaw heit is
 onboarding-automatic_proportions-check_height-next_step = dey awe fine
 onboarding-automatic_proportions-start_recording-title = get wowdy to move
 onboarding-automatic_proportions-start_recording-description = we'we now going to wowcawd some specific poses and moves. these will be pwompted in teh wowst screen. be wowdy to stawt when teh buttawn is pwessed!

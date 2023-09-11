@@ -7,7 +7,7 @@
 
 ## Websocket (server) status
 
-websocket-connecting = جاري التوصيل بالسيرفر
+websocket-connecting = يتم التوصيل بالسيرفر
 websocket-connection_lost = انقطع الاتصال بالسيرفر. يتم إعادة التوصيل...
 
 ## Update notification
@@ -671,8 +671,8 @@ onboarding-assignment_tutorial = كيفية تحضير جهاز تعقب Slime �
 onboarding-assignment_tutorial-first_step = 1. ضع ملصق جزء الجسم (إذا كان لديك واحد) على جهاز التعقب وفقا لاختيارك
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = ملصق
-onboarding-assignment_tutorial-second_step = 2. قم بتوصيل الشريط بجهاز التعقب الخاص بك ، مع الحفاظ على جانب الخطاف والحلقة من وجه الشريط في الاتجاه التالي:
-onboarding-assignment_tutorial-second_step-continuation = يجب أن يكون جانب الخطاف والحلقة للامتداد في هذا الاتجاه:
+onboarding-assignment_tutorial-second_step-v2 = 2. قم بتوصيل الشريط بجهاز التعقب، مع الحفاظ على جانب الفيلكرو من الشريط في نفس اتجاه وجه السلايم لجهاز التعقب:
+onboarding-assignment_tutorial-second_step-continuation-v2 = يجب أن يكون جانب الفيلكرو للامتداد متجها للأعلى مثل الصورة التالية:
 onboarding-assignment_tutorial-done = وضعت الملصقات والأشرطة!
 
 ## Tracker assignment setup
@@ -863,9 +863,9 @@ onboarding-automatic_proportions-check_height-fetch_height = أنا واقف!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = مجهول
 # Shows an element below it
-onboarding-automatic_proportions-check_height-height = طولك هو
+onboarding-automatic_proportions-check_height-hmd_height1 = طولك من خلال HMD
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height = وارتفاع HMD هو
+onboarding-automatic_proportions-check_height-height1 = لذا فإن طولك الفعلي هو
 onboarding-automatic_proportions-check_height-next_step = انهم بخير
 onboarding-automatic_proportions-start_recording-title = استعد للتحرك
 onboarding-automatic_proportions-start_recording-description = سنقوم الآن بتسجيل بعض الوضعيات والحركات المحددة. ستتم مطالبتك بذلك في الشاشة التالية. كن مستعدا للبدء عند الضغط على الزر!

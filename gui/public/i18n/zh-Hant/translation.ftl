@@ -374,7 +374,7 @@ settings-general-fk_settings-vive_emulation-label = 開啟 Vive 模擬
 
 settings-general-gesture_control = 手勢控制
 settings-general-gesture_control-subtitle = 敲擊重置
-settings-general-gesture_control-description = 使用敲擊追蹤器的方法觸發重置。敲擊軀幹所配戴的最高的追蹤器會啟用左右偏擺重置，敲擊左腳配戴最高的追蹤器會觸發完整重置，敲擊右腳配戴最高的追蹤器會觸發配戴重置。請注意，需要在 0.6 秒內滿足敲擊次數才會觸發。
+settings-general-gesture_control-description = 使用敲擊追蹤器的方法觸發重置。敲擊軀幹所配戴的最高的追蹤器會啟用左右偏擺重置，敲擊左腳配戴最高的追蹤器會觸發完整重置，敲擊右腳配戴最高的追蹤器會觸發配戴重置。請注意，需要在 0.3 秒內滿足敲擊次數才會觸發。
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -651,8 +651,8 @@ onboarding-assignment_tutorial = 戴上 Slime 追蹤器前的準備事項
 onboarding-assignment_tutorial-first_step = 1. 若有標示身體部位的貼紙，可在您所要分配使用的追蹤器上貼上。
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = 貼紙
-onboarding-assignment_tutorial-second_step = 2. 將綁帶有魔鬼氈（魔術貼）的一面，依照下圖所示的方向穿過追蹤器：
-onboarding-assignment_tutorial-second_step-continuation = 延伸追蹤器應照下圖所示：
+onboarding-assignment_tutorial-second_step-v2 = 2. 將綁帶有魔鬼氈（魔術貼）的一面朝向臉部標誌穿過追蹤器：
+onboarding-assignment_tutorial-second_step-continuation-v2 = 延伸追蹤器的穿法應照下圖所示：
 onboarding-assignment_tutorial-done = 我把貼紙跟綁帶都弄上了
 
 ## Tracker assignment setup
@@ -761,7 +761,7 @@ onboarding-manual_mounting-next = 下一步
 
 onboarding-automatic_mounting-back = 返回到進入 VR
 onboarding-automatic_mounting-title = 配戴校正
-onboarding-automatic_mounting-description = 為了讓 SlimeVR 追蹤器正常運作，我們需要為你的追蹤器設定一個配戴方向，以使其與你的物理追蹤器配戴方式對齊。
+onboarding-automatic_mounting-description = 為了讓 SlimeVR 追蹤器正常運作，我們需要為每個追蹤器設定配戴方向，以符合您實際的追蹤器配戴方式。
 onboarding-automatic_mounting-manual_mounting = 進行手動設定
 onboarding-automatic_mounting-next = 下一步
 onboarding-automatic_mounting-prev_step = 上一步
@@ -835,9 +835,9 @@ onboarding-automatic_proportions-check_height-fetch_height = 我站著了！
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 不明
 # Shows an element below it
-onboarding-automatic_proportions-check_height-height = 您的身高為
+onboarding-automatic_proportions-check_height-hmd_height1 = 您的頭戴顯示器高度是
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height = 然後頭戴顯示器的高度是
+onboarding-automatic_proportions-check_height-height1 = 所以您的實際身高是
 onboarding-automatic_proportions-check_height-next_step = 數值沒問題
 onboarding-automatic_proportions-start_recording-title = 準備擺動作囉
 onboarding-automatic_proportions-start_recording-description = 我們現在要記錄一些特定的姿勢和動作，將會在下一個畫面中提示。當按鈕被按下時，準備好開始！

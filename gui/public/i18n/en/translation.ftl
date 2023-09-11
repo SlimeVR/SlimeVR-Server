@@ -322,9 +322,20 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can R
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if feet trackers are not in use.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotates your feet to be parallel to the ground when in contact.
 settings-general-fk_settings-leg_fk = Leg tracking
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Enable feet Mounting Reset by tiptoeing.
+settings-general-fk_settings-leg_fk-reset_mounting_feet = Feet Mounting Reset
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the HMD even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
+settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for mounting reset.
+settings-general-fk_settings-arm_fk-back = Back
+settings-general-fk_settings-arm_fk-back-description = The default mode, with the upper arms going back and lower arms going forward.
+settings-general-fk_settings-arm_fk-tpose_up = T-pose (up)
+settings-general-fk_settings-arm_fk-tpose_up-description = Expects your arms to be down on the sides during Full Reset, and 90 degrees up to the sides during Mounting Reset.
+settings-general-fk_settings-arm_fk-tpose_down = T-pose (down)
+settings-general-fk_settings-arm_fk-tpose_down-description = Expects your arms to be 90 degrees up to the sides during Full Reset, and down on the sides during Mounting Reset.
+settings-general-fk_settings-arm_fk-forward = Forward
+settings-general-fk_settings-arm_fk-forward-description = Expects your arms to be up 90 degrees forward. Useful for VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Skeleton toggles
 settings-general-fk_settings-skeleton_settings-description = Toggle skeleton settings on or off. It is recommended to leave these on.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Extended spine model
@@ -338,6 +349,7 @@ settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Impu
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Impute hip from waist to legs
 settings-general-fk_settings-skeleton_settings-interp_hip_legs = Average the hip's yaw and roll with the legs'
 settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Average the knee trackers' yaw and roll with the ankles'
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Average the knees' yaw and roll with the ankles'
 
 settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
@@ -612,8 +624,8 @@ onboarding-assignment_tutorial = How to prepare a Slime Tracker before putting i
 onboarding-assignment_tutorial-first_step = 1. Place a body part sticker (if you have one) on the tracker according to your choosing
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Sticker
-onboarding-assignment_tutorial-second_step = 2. Attach the strap to your tracker, keeping the hook and loop side of the strap face in the following orientation:
-onboarding-assignment_tutorial-second_step-continuation = The hook and loop side for the extension should be in this orientation:
+onboarding-assignment_tutorial-second_step-v2 = 2. Attach the strap to your tracker, keeping the velcro side of the strap facing the same direction as the slime face of your tracker:
+onboarding-assignment_tutorial-second_step-continuation-v2 = The velcro side for the extension should be facing up like the following image:
 onboarding-assignment_tutorial-done = I put stickers and straps!
 
 ## Tracker assignment setup
@@ -747,6 +759,9 @@ onboarding-choose_proportions-manual_proportions = Manual proportions
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
 onboarding-choose_proportions-export = Export proportions
+onboarding-choose_proportions-import = Import proportions
+onboarding-choose_proportions-import-success = Imported
+onboarding-choose_proportions-import-failed = Failed
 onboarding-choose_proportions-file_type = Body proportions file
 
 ## Tracker manual proportions setup

@@ -1,8 +1,9 @@
 import { BaseDirectory, readTextFile } from '@tauri-apps/plugin-fs';
 
-import { createContext, useContext, useRef, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { DeveloperModeWidgetForm } from '../components/widgets/DeveloperModeWidget';
 import { error } from '../utils/logging';
+import { useDebouncedEffect } from './timeout';
 
 export interface WindowConfig {
   width: number;
@@ -22,6 +23,7 @@ export interface Config {
   theme: string;
   textSize: number;
   fonts: string[];
+  advancedAssign: boolean;
 }
 
 export interface ConfigContext {
@@ -41,6 +43,7 @@ export const defaultConfig = {
   theme: 'slime',
   textSize: 12,
   fonts: ['poppins'],
+  advancedAssign: false,
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {
@@ -48,42 +51,28 @@ function fallbackToDefaults(loadedConfig: any): Config {
 }
 
 export function useConfigProvider(): ConfigContext {
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
   const [currConfig, set] = useState<Config | null>(null);
   const [loading, setLoading] = useState(false);
 
+  useDebouncedEffect(
+    () => {
+      if (!currConfig) return;
+
+      localStorage.setItem('config.json', JSON.stringify(currConfig));
+    },
+    [currConfig],
+    100
+  );
+
   const setConfig = async (config: Partial<Config>) => {
-    const newConfig = config
-      ? {
-          ...currConfig,
-          ...config,
-        }
-      : null;
-    set(newConfig as Config);
-    if (config.theme !== undefined) {
-      document.documentElement.dataset.theme = config.theme;
-    }
-
-    if (config.fonts !== undefined) {
-      document.documentElement.style.setProperty(
-        '--font-name',
-        config.fonts.map((x) => `"${x}"`).join(',')
-      );
-    }
-
-    if (config.textSize !== undefined) {
-      document.documentElement.style.setProperty(
-        '--font-size',
-        `${config.textSize}rem`
-      );
-    }
-
-    if (!debounceTimer.current) {
-      debounceTimer.current = setTimeout(async () => {
-        localStorage.setItem('config.json', JSON.stringify(newConfig));
-        debounceTimer.current = null;
-      }, 10);
-    }
+    set((curr) =>
+      config
+        ? ({
+            ...curr,
+            ...config,
+          } as Config)
+        : null
+    );
   };
 
   return {
@@ -110,15 +99,7 @@ export function useConfigProvider(): ConfigContext {
 
         const loadedConfig = fallbackToDefaults(JSON.parse(json));
         set(loadedConfig);
-        document.documentElement.dataset.theme = loadedConfig.theme;
-        document.documentElement.style.setProperty(
-          '--font-size',
-          `${loadedConfig.textSize}rem`
-        );
-        document.documentElement.style.setProperty(
-          '--font-name',
-          loadedConfig.fonts.map((x) => `"${x}"`).join(',')
-        );
+
         setLoading(false);
         return loadedConfig;
       } catch (e) {

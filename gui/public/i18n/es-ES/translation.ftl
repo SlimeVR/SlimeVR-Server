@@ -81,6 +81,7 @@ skeleton_bone-ELBOW_OFFSET = Compensacion de los codos
 reset-reset_all = Reiniciar todas las proporciones
 reset-full = Reiniciar
 reset-mounting = Reiniciar montura
+reset-yaw = Restablecimiento horizontal
 
 ## Serial detection stuff
 

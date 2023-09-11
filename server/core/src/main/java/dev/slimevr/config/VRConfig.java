@@ -14,7 +14,7 @@ import java.util.Map;
 
 
 @JsonVersionedModel(
-	currentVersion = "10", defaultDeserializeToVersion = "10", toCurrentConverterClass = CurrentVRConfigConverter.class
+	currentVersion = "11", defaultDeserializeToVersion = "11", toCurrentConverterClass = CurrentVRConfigConverter.class
 )
 public class VRConfig {
 
@@ -39,6 +39,8 @@ public class VRConfig {
 	private final LegTweaksConfig legTweaks = new LegTweaksConfig();
 
 	private final TapDetectionConfig tapDetection = new TapDetectionConfig();
+
+	private final ResetsConfig resetsConfig = new ResetsConfig();
 
 	@JsonDeserialize(using = TrackerConfigMapDeserializer.class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer.class)
@@ -132,6 +134,10 @@ public class VRConfig {
 		return tapDetection;
 	}
 
+	public ResetsConfig getResetsConfig() {
+		return resetsConfig;
+	}
+
 	public OverlayConfig getOverlay() {
 		return overlay;
 	}
@@ -151,6 +157,8 @@ public class VRConfig {
 			tracker.readConfig(config);
 			if (tracker.isImu())
 				tracker.getResetsHandler().readDriftCompensationConfig(driftCompensation);
+			if (tracker.getNeedsReset())
+				tracker.getResetsHandler().readArmsResetModeConfig(resetsConfig);
 			if (tracker.getAllowFiltering())
 				tracker
 					.getFilteringHandler()

@@ -195,7 +195,8 @@ public class RPCSettingsBuilder {
 				humanPoseManager.getValue(SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING),
 				humanPoseManager.getValue(SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING),
 				humanPoseManager.getValue(SkeletonConfigValues.HIP_LEGS_AVERAGING),
-				humanPoseManager.getValue(SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING)
+				humanPoseManager.getValue(SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING),
+				humanPoseManager.getValue(SkeletonConfigValues.KNEE_ANKLE_AVERAGING)
 			);
 		int legTweaksOffset = LegTweaksSettings
 			.createLegTweaksSettings(
@@ -325,5 +326,17 @@ public class RPCSettingsBuilder {
 		}
 
 		return autoBoneConfig;
+	}
+
+	public static int createArmsResetModeSettings(
+		FlatBufferBuilder fbb,
+		ResetsConfig resetsConfig
+	) {
+		return ResetsSettings
+			.createResetsSettings(
+				fbb,
+				resetsConfig.getResetMountingFeet(),
+				resetsConfig.getMode().getId()
+			);
 	}
 }
