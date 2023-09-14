@@ -544,17 +544,17 @@ class AutoBone(server: VRServer) {
 
 			// Reset the skeleton values to minimize bias in other variables,
 			// it's applied later
-			applyConfig(trainingStep.skeleton1)
-			applyConfig(trainingStep.skeleton2)
+			applyConfig(skeleton1)
+			applyConfig(skeleton2)
 		}
 
 		// Update the offsets from the adjusted ones
 		offsets.putAll(intermediateOffsets)
-		applyConfig(trainingStep.skeleton1)
-		applyConfig(trainingStep.skeleton2)
+		applyConfig(skeleton1)
+		applyConfig(skeleton2)
 
 		// Normalize the scale, it will be upscaled to the target height later
-		val height = trainingStep.skeleton1.userHeightFromConfig
+		val height = skeleton1.userHeightFromConfig
 		for (entry in offsets.entries) {
 			entry.setValue(entry.value / height)
 		}
