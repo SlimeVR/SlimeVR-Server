@@ -20,8 +20,6 @@ import java.net.SocketAddress
 import java.net.SocketTimeoutException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
 import java.util.Random
 import java.util.function.Consumer
 
@@ -168,12 +166,12 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
+			val formattedHWID = connection.hardwareIdentifier.replace(":", "")
 			imuTracker = Tracker(
 				connection,
 				VRServer.getNextLocalTrackerId(),
 				connection.name + "/" + trackerId,
-				"IMU Tracker " + MessageDigest.getInstance("SHA-256")
-					.digest(connection.hardwareIdentifier.toByteArray(StandardCharsets.UTF_8)).toString().subSequence(3, 8),
+				"IMU Tracker " + formattedHWID.subSequence(Math.max(formattedHWID.length - 5, 0), formattedHWID.length),
 				null,
 				trackerNum = trackerId,
 				hasRotation = true,
