@@ -277,6 +277,61 @@ class AutoBone(server: VRServer) {
 		// Initialize the frame order randomizer with a repeatable seed
 		rand.setSeed(config.randSeed)
 
+		// Before running adjustments, measure frame errors
+		val frameErrors = FloatArray(frames.maxFrameCount)
+		val frameStats = StatsCalculator()
+		val recordingStats = StatsCalculator()
+		for (i in 0 until frames.maxFrameCount) {
+			frameStats.reset()
+			for (j in 0 until frames.maxFrameCount) {
+				if (i == j) continue
+
+				trainingStep.setCursors(
+					i,
+					j,
+					updatePlayerCursors = true
+				)
+
+				frameStats.addValue(getErrorDeriv(trainingStep))
+			}
+			frameErrors[i] = frameStats.mean
+			recordingStats.addValue(frameStats.mean)
+			// LogManager.info("[AutoBone] Frame: ${i + 1}, Mean error: ${frameStats.mean} (SD ${frameStats.standardDeviation})")
+		}
+		LogManager.info("[AutoBone] Full recording mean error: ${frameStats.mean} (SD ${frameStats.standardDeviation})")
+
+		// Remove outlier frames
+		val sdMult = 1.4f
+		for (i in frameErrors.size - 1 downTo 0) {
+			val err = frameErrors[i]
+			val mean = recordingStats.mean
+			val sd = recordingStats.standardDeviation * sdMult
+			if (err < mean - sd || err > mean + sd) {
+				for (frameHolder in frames.frameHolders) {
+					frameHolder.frames.removeAt(i)
+				}
+			}
+		}
+		trainingStep.maxFrameCount = frames.maxFrameCount
+
+		recordingStats.reset()
+		for (i in 0 until frames.maxFrameCount) {
+			frameStats.reset()
+			for (j in 0 until frames.maxFrameCount) {
+				if (i == j) continue
+
+				trainingStep.setCursors(
+					i,
+					j,
+					updatePlayerCursors = true
+				)
+
+				frameStats.addValue(getErrorDeriv(trainingStep))
+			}
+			recordingStats.addValue(frameStats.mean)
+		}
+		LogManager.info("[AutoBone] Full recording after mean error: ${frameStats.mean} (SD ${frameStats.standardDeviation})")
+
 		// Epoch loop, each epoch is one full iteration over the full dataset
 		for (epoch in (if (config.calcInitError) -1 else 0) until config.numEpochs) {
 			// Set the current epoch to process
