@@ -414,30 +414,34 @@ class AutoBone(server: VRServer) {
 		skeleton2.update()
 		val negHeightErrorDeriv = getErrorDeriv(trainingStep)
 
-		if (negHeightErrorDeriv < heightErrorDeriv) {
+		val posHeight = (estimatedHeight + heightAdjust).coerceIn(minHeight, maxHeight)
+		val posScale = 1f / posHeight
+		trainingStep.framePlayer1.setScales(posScale)
+		trainingStep.framePlayer2.setScales(posScale)
+		skeleton1.update()
+		skeleton2.update()
+		val posHeightErrorDeriv = getErrorDeriv(trainingStep)
+
+		if (negHeightErrorDeriv < heightErrorDeriv && negHeightErrorDeriv < posHeightErrorDeriv) {
 			estimatedHeight = negHeight
-		} else {
-			val posHeight = (estimatedHeight + heightAdjust).coerceIn(minHeight, maxHeight)
-			val posScale = 1f / posHeight
-			trainingStep.framePlayer1.setScales(posScale)
-			trainingStep.framePlayer2.setScales(posScale)
+
+			// Reset head position to estimated height
+			val initScale = 1f / estimatedHeight
+			trainingStep.framePlayer1.setScales(initScale)
+			trainingStep.framePlayer2.setScales(initScale)
 			skeleton1.update()
 			skeleton2.update()
-			val posHeightErrorDeriv = getErrorDeriv(trainingStep)
-
-			if (posHeightErrorDeriv < heightErrorDeriv) {
-				estimatedHeight = posHeight
-			} else {
-				// Reset head position to estimated height
-				val initScale = 1f / estimatedHeight
-				trainingStep.framePlayer1.setScales(initScale)
-				trainingStep.framePlayer2.setScales(initScale)
-				skeleton1.update()
-				skeleton2.update()
-			}
+		} else if (posHeightErrorDeriv < heightErrorDeriv) {
+			estimatedHeight = posHeight
+			// The last estimated height set was positive, so no need to reset
+		} else {
+			// Reset head position to estimated height
+			val initScale = 1f / estimatedHeight
+			trainingStep.framePlayer1.setScales(initScale)
+			trainingStep.framePlayer2.setScales(initScale)
+			skeleton1.update()
+			skeleton2.update()
 		}
-
-		//LogManager.info("$estimatedHeight")
 
 		val errorDeriv = getErrorDeriv(trainingStep)
 		val error = errorFunc(errorDeriv)
@@ -541,7 +545,7 @@ class AutoBone(server: VRServer) {
 
 		if (trainingStep.config.scaleEachStep) {
 			// Scale to the target height if requested by the config
-			//scaleToTargetHeight(trainingStep)
+			// scaleToTargetHeight(trainingStep)
 
 			// Normalize the scale, it will be upscaled to the target height later
 			val height = trainingStep.skeleton1.userHeightFromConfig
