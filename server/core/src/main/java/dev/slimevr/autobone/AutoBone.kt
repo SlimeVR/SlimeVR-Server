@@ -345,6 +345,12 @@ class AutoBone(server: VRServer) {
 				applyConfig(trainingStep.skeleton1)
 				applyConfig(trainingStep.skeleton2)
 
+				// Scale to 1 meter before starting the first iteration, as it's scaled after otherwise
+				val height = trainingStep.skeleton1.userHeightFromConfig
+				for (entry in offsets.entries) {
+					entry.setValue(entry.value / height)
+				}
+
 				// Then set the frame cursors and apply them to both skeletons
 				if (config.randomizeFrameOrder && randomFrameIndices != null) {
 					trainingStep
@@ -541,17 +547,16 @@ class AutoBone(server: VRServer) {
 			applyConfig(trainingStep.skeleton1)
 			applyConfig(trainingStep.skeleton2)
 		}
+
+		// Update the offsets from the adjusted ones
 		offsets.putAll(intermediateOffsets)
+		applyConfig(trainingStep.skeleton1)
+		applyConfig(trainingStep.skeleton2)
 
-		if (trainingStep.config.scaleEachStep) {
-			// Scale to the target height if requested by the config
-			// scaleToTargetHeight(trainingStep)
-
-			// Normalize the scale, it will be upscaled to the target height later
-			val height = trainingStep.skeleton1.userHeightFromConfig
-			for (entry in offsets.entries) {
-				entry.setValue(entry.value / height)
-			}
+		// Normalize the scale, it will be upscaled to the target height later
+		val height = trainingStep.skeleton1.userHeightFromConfig
+		for (entry in offsets.entries) {
+			entry.setValue(entry.value / height)
 		}
 	}
 
