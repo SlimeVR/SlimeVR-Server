@@ -41,7 +41,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		}.map {
 			// This ignores IPv6 addresses
 			it.broadcast
-		}.filterNotNull().map { InetSocketAddress(it, this.port) }.toList()
+		}.filterNotNull().map { InetSocketAddress(it, this.port) }.toList().filter { it.address.isSiteLocalAddress }
 	} catch (e: Exception) {
 		LogManager.severe("[TrackerServer] Can't enumerate network interfaces", e)
 		emptyList()
