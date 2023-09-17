@@ -81,7 +81,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		}
 
 		// if there is a 6dof device just use it
-		if (skeleton.headTracker != null && skeleton.headTracker.hasPosition) {
+		if (skeleton.headTracker != null && skeleton.headTracker!!.hasPosition) {
 			return
 		}
 
@@ -229,7 +229,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	// get the sitting travel (emulates hip lock)
 	private fun getSittingTravel(): Vector3 {
-		val hip: Vector3 = skeleton.computedHipTracker.position
+		val hip = skeleton.computedHipTracker?.position ?: Vector3.NULL
 
 		// get the distance to move the waist to the target waist
 		val dist: Vector3 = hip.minus(targetHip)
@@ -357,8 +357,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			skeleton.computedRightFootTracker
 		)
 
-		var minVal = trackerList[0].position.y
-		var retVal: Tracker = trackerList[0]
+		var minVal = trackerList[0]!!.position.y
+		var retVal: Tracker = trackerList[0]!!
 		for (tracker in trackerList) {
 			if (tracker == null) {
 				continue
@@ -381,7 +381,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		// to the side for both feet)
 		var leftKnee: Vector3 = bufCur.leftKneePosition
 		var rightKnee: Vector3 = bufCur.rightKneePosition
-		val hip: Vector3 = skeleton.computedHipTracker.position
+		val hip: Vector3 = skeleton.computedHipTracker!!.position
 		leftKnee = hip.minus(leftKnee)
 		rightKnee = hip.minus(rightKnee)
 
@@ -403,13 +403,13 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		var num = 0.0f
 		var accel = Vector3.NULL
 		if (skeleton.waistTracker != null) {
-			accel += skeleton.waistTracker.getAcceleration()
+			accel += skeleton.waistTracker!!.getAcceleration()
 			num++
 		} else if (skeleton.hipTracker != null) {
-			accel += skeleton.hipTracker.getAcceleration()
+			accel += skeleton.hipTracker!!.getAcceleration()
 			num++
 		} else if (skeleton.chestTracker != null) {
-			accel += skeleton.chestTracker.getAcceleration()
+			accel += skeleton.chestTracker!!.getAcceleration()
 			num++
 		}
 		return if (num == 0f) accel else accel.div(num)
@@ -417,12 +417,9 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 	// update the hmd position and rotation
 	private fun updateSkeletonPos(travel: Vector3) {
-		var rot = Quaternion.IDENTITY
-		if (skeleton.headTracker != null) {
-			rot = skeleton.headTracker.getRotation()
-		}
-
+		val rot = skeleton.headTracker?.getRotation() ?: Quaternion.IDENTITY
 		val temp = skeleton.hmdNode.localTransform.translation.minus(travel)
+
 		skeleton.hmdNode.localTransform.translation = temp
 		skeleton.hmdNode.localTransform.rotation = rot
 	}

@@ -30,11 +30,11 @@ serde_json = "1"
 serde = { version = "1", features = ["derive"] }
 tauri = { version = "2.0.0-alpha.10", features = ["devtools"] }
 tauri-runtime = "0.13.0-alpha.6"
-tauri-plugin-dialog = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
-tauri-plugin-fs = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
-tauri-plugin-os = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
-tauri-plugin-shell = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
-tauri-plugin-window = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2", features = [
+tauri-plugin-dialog = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "4ab90f048eab2918344f97dc8e04413a404e392d" }
+tauri-plugin-fs = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "4ab90f048eab2918344f97dc8e04413a404e392d" }
+tauri-plugin-os = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "4ab90f048eab2918344f97dc8e04413a404e392d" }
+tauri-plugin-shell = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "4ab90f048eab2918344f97dc8e04413a404e392d" }
+tauri-plugin-window = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "4ab90f048eab2918344f97dc8e04413a404e392d", features = [
     "devtools",
 ] }
 flexi_logger = "0.25"
