@@ -146,6 +146,7 @@ class HumanSkeleton(
 	var tapDetectionManager = TapDetectionManager(this)
 	var viveEmulation = ViveEmulation(this)
 	var localizer = Localizer(this)
+	var ikSolver = IKSolver(headBone)
 
 	// Constructors
 	init {
@@ -303,6 +304,9 @@ class HumanSkeleton(
 
 		// Update tap detection's trackers
 		tapDetectionManager.updateConfig(trackers)
+
+		// Rebuild Ik Solver
+		ikSolver.buildChains(trackers)
 	}
 
 	/**
@@ -361,6 +365,7 @@ class HumanSkeleton(
 
 		updateTransforms()
 		updateBones()
+		ikSolver.solve()
 		updateComputedTrackers()
 
 		// Don't run post-processing if the tracking is paused
