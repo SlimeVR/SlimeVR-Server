@@ -170,8 +170,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			formattedHWID =
 				formattedHWID.subSequence(Math.max(formattedHWID.length - 5, 0), formattedHWID.length)
 					.toString()
-			if(trackerId != 0)
+			if (trackerId != 0) {
 				formattedHWID += "_$trackerId"
+			}
 
 			imuTracker = Tracker(
 				connection,
