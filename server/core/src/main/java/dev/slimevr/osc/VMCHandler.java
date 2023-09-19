@@ -44,6 +44,8 @@ public class VMCHandler implements OSCHandler {
 	private final FastList<Object> oscArgs = new FastList<>();
 	private final long startTime;
 	private final Map<String, Tracker> byTrackerNameTracker = new HashMap<>();
+	private final String[] listenAddresses = { "/VMC/Ext/Bone/Pos", "/VMC/Ext/Hmd/Pos",
+		"/VMC/Ext/Con/Pos", "/VMC/Ext/Tra/Pos", "/VMC/Ext/Root/Pos" };
 	private Quaternion yawOffset = Quaternion.Companion.getIDENTITY();
 	private UnityArmature inputUnityArmature;
 	private UnityArmature outputUnityArmature;
@@ -75,89 +77,14 @@ public class VMCHandler implements OSCHandler {
 	public void refreshSettings(boolean refreshRouterSettings) {
 		anchorHip = config.getAnchorHip();
 
-		// Stops listening and closes OSC port
-		boolean wasListening = oscReceiver != null && oscReceiver.isListening();
-		if (wasListening) {
-			oscReceiver.stopListening();
-		}
-		boolean wasConnected = oscSender != null && oscSender.isConnected();
-		if (wasConnected) {
-			try {
-				oscSender.close();
-			} catch (IOException e) {
-				LogManager.severe("[VMCHandler] Error closing the OSC sender: " + e);
-			}
-		}
+		updateOscReceiver(config.getPortIn(), listenAddresses);
+		updateOscSender(config.getPortOut(), config.getAddress());
 
 		if (config.getEnabled()) {
-			// Instantiates the OSC receiver
-			try {
-				int port = config.getPortIn();
-				oscReceiver = new OSCPortIn(port);
-				if (lastPortIn != port || !wasListening) {
-					LogManager.info("[VMCHandler] Listening to port " + port);
-				}
-				lastPortIn = port;
-			} catch (IOException e) {
-				LogManager
-					.severe(
-						"[VMCHandler] Error listening to the port "
-							+ config.getPortIn()
-							+ ": "
-							+ e
-					);
-			}
-
-			// Starts listening for VMC messages
-			if (oscReceiver != null) {
-				OSCMessageListener listener = this::handleReceivedMessage;
-				String[] listenAddresses = { "/VMC/Ext/Bone/Pos", "/VMC/Ext/Hmd/Pos",
-					"/VMC/Ext/Con/Pos", "/VMC/Ext/Tra/Pos", "/VMC/Ext/Root/Pos" };
-
-				for (String address : listenAddresses) {
-					oscReceiver
-						.getDispatcher()
-						.addListener(new OSCPatternAddressMessageSelector(address), listener);
-				}
-
-				oscReceiver.startListening();
-			}
-
-			// Instantiate the OSC sender
-			try {
-				InetAddress address = InetAddress.getByName(config.getAddress());
-				int port = config.getPortOut();
-				oscSender = new OSCPortOut(new InetSocketAddress(address, port));
-				if ((lastPortOut != port && lastAddress != address) || !wasConnected) {
-					LogManager
-						.info(
-							"[VMCHandler] Sending to port "
-								+ port
-								+ " at address "
-								+ address.toString()
-						);
-				}
-				lastPortOut = port;
-				lastAddress = address;
-
-				oscSender.connect();
-				outputUnityArmature = new UnityArmature(false);
-			} catch (IOException e) {
-				LogManager
-					.severe(
-						"[VMCHandler] Error connecting to port "
-							+ config.getPortOut()
-							+ " at the address "
-							+ config.getAddress()
-							+ ": "
-							+ e
-					);
-			}
-
 			// Load VRM data
 			if (outputUnityArmature != null && config.getVrmJson() != null) {
 				VRMReader vrmReader = new VRMReader(config.getVrmJson());
-				for (UnityBone unityBone : UnityBone.values()) {
+				for (UnityBone unityBone : UnityBone.getEntries()) {
 					TransformNode node = outputUnityArmature.getHeadNodeOfBone(unityBone);
 					if (node != null)
 						node
@@ -175,8 +102,93 @@ public class VMCHandler implements OSCHandler {
 			}
 		}
 
-		if (refreshRouterSettings && server.getOSCRouter() != null)
+		if (refreshRouterSettings)
 			server.getOSCRouter().refreshSettings(false);
+	}
+
+	@Override
+	public void updateOscReceiver(int portIn, String[] args) {
+		// Stop listening
+		boolean wasListening = oscReceiver != null && oscReceiver.isListening();
+		if (wasListening) {
+			oscReceiver.stopListening();
+		}
+
+		if (config.getEnabled()) {
+			// Instantiates the OSC receiver
+			try {
+				oscReceiver = new OSCPortIn(portIn);
+				if (lastPortIn != portIn || !wasListening) {
+					LogManager.info("[VMCHandler] Listening to port " + portIn);
+				}
+				lastPortIn = portIn;
+			} catch (IOException e) {
+				LogManager
+					.severe(
+						"[VMCHandler] Error listening to the port "
+							+ portIn
+							+ ": "
+							+ e
+					);
+			}
+
+			// Starts listening for VMC messages
+			if (oscReceiver != null) {
+				OSCMessageListener listener = this::handleReceivedMessage;
+				for (String address : args) {
+					oscReceiver
+						.getDispatcher()
+						.addListener(new OSCPatternAddressMessageSelector(address), listener);
+				}
+
+				oscReceiver.startListening();
+			}
+		}
+	}
+
+	@Override
+	public void updateOscSender(int portOut, String address) {
+		// Stop sending
+		boolean wasConnected = oscSender != null && oscSender.isConnected();
+		if (wasConnected) {
+			try {
+				oscSender.close();
+			} catch (IOException e) {
+				LogManager.severe("[VMCHandler] Error closing the OSC sender: " + e);
+			}
+		}
+
+		if (config.getEnabled()) {
+			// Instantiate the OSC sender
+			try {
+				InetAddress addr = InetAddress.getByName(address);
+				oscSender = new OSCPortOut(new InetSocketAddress(addr, portOut));
+				if ((lastPortOut != portOut && lastAddress != addr) || !wasConnected) {
+					LogManager
+						.info(
+							"[VMCHandler] Sending to port "
+								+ portOut
+								+ " at address "
+								+ address
+						);
+				}
+				lastPortOut = portOut;
+				lastAddress = addr;
+
+				oscSender.connect();
+				outputUnityArmature = new UnityArmature(false);
+			} catch (IOException e) {
+				LogManager
+					.severe(
+						"[VMCHandler] Error connecting to port "
+							+ portOut
+							+ " at the address "
+							+ address
+							+ ": "
+							+ e
+					);
+			}
+		}
 	}
 
 	private void handleReceivedMessage(OSCMessageEvent event) {

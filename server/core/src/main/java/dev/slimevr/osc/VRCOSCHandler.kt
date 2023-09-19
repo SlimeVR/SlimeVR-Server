@@ -1,6 +1,5 @@
 package dev.slimevr.osc
 
-import com.illposed.osc.MessageSelector
 import com.illposed.osc.OSCBundle
 import com.illposed.osc.OSCMessage
 import com.illposed.osc.OSCMessageEvent
@@ -28,7 +27,8 @@ import io.github.axisangles.ktmath.Vector3
 import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
-import java.util.*
+import java.util.Timer
+import java.util.TimerTask
 
 private const val OFFSET_SLERP_FACTOR = 0.5f // Guessed from eyeing VRChat
 
@@ -42,7 +42,11 @@ class VRCOSCHandler(
 	private val config: VRCOSCConfig,
 	private val computedTrackers: List<Tracker>,
 ) : OSCHandler {
-	private val OSCQueryHandler = OSCQueryHandler()
+	private val listenAddresses = arrayOf(
+		"/tracking/vrsystem/*/pose",
+		"/tracking/trackers/*/position",
+		"/tracking/trackers/*/rotation"
+	)
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
 	private var oscMessage: OSCMessage? = null
@@ -83,11 +87,62 @@ class VRCOSCHandler(
 			}
 		}
 
-		// Stops listening and closes OSC port
+		updateOscReceiver(config.portIn, listenAddresses)
+		updateOscSender(config.portOut, config.address)
+
+		if (config.enabled) {
+			// Use OSCQuery
+			val OSCQueryHandler = OSCQueryHandler(this)
+		}
+
+		if (refreshRouterSettings) {
+			server.oSCRouter.refreshSettings(false)
+		}
+	}
+
+	override fun updateOscReceiver(portIn: Int, args: Array<String>) {
+		// Stop listening
 		val wasListening = oscReceiver != null && oscReceiver!!.isListening
 		if (wasListening) {
 			oscReceiver!!.stopListening()
 		}
+
+		if (config.enabled) {
+			// Instantiates the OSC receiver
+			try {
+				oscReceiver = OSCPortIn(portIn)
+				if (lastPortIn != portIn || !wasListening) {
+					LogManager.info("[VRCOSCHandler] Listening to port $portIn")
+				}
+				lastPortIn = portIn
+			} catch (e: IOException) {
+				LogManager
+					.severe(
+						"[VRCOSCHandler] Error listening to the port $portIn: $e"
+					)
+			}
+
+			// Starts listening for VRC or OSCTrackers messages
+			oscReceiver?.let {
+				val listener = OSCMessageListener { event: OSCMessageEvent ->
+					handleReceivedMessage(event)
+				}
+				for (address in args) {
+					it.dispatcher.addListener(
+						OSCPatternAddressMessageSelector("address"),
+						listener
+					)
+				}
+				listenTrackers = false
+				it.startListening()
+				// Delay so we can actually detect if SteamVR is running
+				scheduleStartListeningSteamVR(1000)
+			}
+		}
+	}
+
+	override fun updateOscSender(portOut: Int, address: String) {
+		// Stop sending
 		val wasConnected = oscSender != null && oscSender!!.isConnected
 		if (wasConnected) {
 			try {
@@ -96,79 +151,25 @@ class VRCOSCHandler(
 				LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: $e")
 			}
 		}
+
 		if (config.enabled) {
-			// Instantiates the OSC receiver
-			try {
-				val port = config.portIn
-				oscReceiver = OSCPortIn(port)
-				if (lastPortIn != port || !wasListening) {
-					LogManager.info("[VRCOSCHandler] Listening to port $port")
-				}
-				lastPortIn = port
-			} catch (e: IOException) {
-				LogManager
-					.severe(
-						"[VRCOSCHandler] Error listening to the port " +
-							config.portIn +
-							": " +
-							e
-					)
-			}
-
-			// Starts listening for VRC or OSCTrackers messages
-			oscReceiver?.let {
-				val listener = OSCMessageListener { event: OSCMessageEvent -> handleReceivedMessage(event) }
-				val vrcTrackingSelector: MessageSelector = OSCPatternAddressMessageSelector(
-					"/tracking/vrsystem/*/pose"
-				)
-				val trackersPositionSelector: MessageSelector = OSCPatternAddressMessageSelector(
-					"/tracking/trackers/*/position"
-				)
-				val trackersRotationSelector: MessageSelector = OSCPatternAddressMessageSelector(
-					"/tracking/trackers/*/rotation"
-				)
-				it.dispatcher.addListener(vrcTrackingSelector, listener)
-				it.dispatcher.addListener(trackersPositionSelector, listener)
-				it.dispatcher.addListener(trackersRotationSelector, listener)
-				listenTrackers = false
-				it.startListening()
-				// Delay so we can actually detect if SteamVR is running
-				scheduleStartListeningSteamVR(1000)
-			}
-
 			// Instantiate the OSC sender
 			try {
-				val address = InetAddress.getByName(config.address)
-				val port = config.portOut
-				oscSender = OSCPortOut(InetSocketAddress(address, port))
-				if (lastPortOut != port && lastAddress !== address || !wasConnected) {
-					LogManager
-						.info(
-							"[VRCOSCHandler] Sending to port " +
-								port +
-								" at address " +
-								address.toString()
-						)
+				val addr = InetAddress.getByName(address)
+				oscSender = OSCPortOut(InetSocketAddress(addr, portOut))
+				if (lastPortOut != portOut && lastAddress !== addr || !wasConnected) {
+					LogManager.info("[VRCOSCHandler] Sending to port $portOut at address $address")
 				}
-				lastPortOut = port
-				lastAddress = address
+				lastPortOut = portOut
+				lastAddress = addr
 				oscSender!!.connect()
 			} catch (e: IOException) {
 				LogManager
 					.severe(
-						"[VRCOSCHandler] Error connecting to port " +
-							config.portOut +
-							" at the address " +
-							config.address +
-							": " +
-							e
+						"[VRCOSCHandler] Error connecting to port $portOut at the address $address: $e"
 					)
 			}
-
-			// Start OSCQuery
-			if (!OSCQueryHandler.started) OSCQueryHandler.start()
 		}
-		if (refreshRouterSettings) server.oSCRouter.refreshSettings(false)
 	}
 
 	private fun scheduleStartListeningSteamVR(delay: Long) {

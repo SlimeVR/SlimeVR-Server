@@ -1,5 +1,7 @@
 package dev.slimevr.osc
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import dev.slimevr.protocol.rpc.setup.RPCUtil
 import io.eiren.util.logging.LogManager
 import java.io.IOException
 import java.net.InetAddress
@@ -11,50 +13,48 @@ import javax.jmdns.JmDNS
 import javax.jmdns.ServiceEvent
 import javax.jmdns.ServiceListener
 
+class OSCQueryHandler(oscHandler: OSCHandler) {
 
-class OSCQueryHandler {
+	private class OSCQueryListener(val oscHandler: OSCHandler) : ServiceListener {
+		override fun serviceAdded(event: ServiceEvent) {}
 
-	var started = false
-	private lateinit var jmdns: JmDNS
-
-
-	private class OSCQueryListener : ServiceListener {
-		override fun serviceAdded(event: ServiceEvent) {
-			//LogManager.info("[OSCQueryHandler] Service added: " + event.name + ", " + event.info.inetAddresses[0].toString())
-		}
-
-		override fun serviceRemoved(event: ServiceEvent) {
-			LogManager.info("[OSCQueryHandler] Service removed: " + event.name + ", " + event.info.inetAddresses[0].toString())
-
-			// fallback to user-set port & address
-		}
+		override fun serviceRemoved(event: ServiceEvent) {}
 
 		override fun serviceResolved(event: ServiceEvent) {
-			LogManager.info("[OSCQueryHandler] Service resolved: " + event.name + ", " + event.info.inetAddresses[0].toString())
+			LogManager.info("[OSCQueryHandler] Service resolved: ${event.name}, ${event.info.inetAddresses[0]}")
 
-			// override user-set port & address
-			val address = event.info.inetAddresses[0]
-			val port = event.info.port
-
-			// TODO https://zetcode.com/java/httpclient/
-			val target = "https:/$address:$port"
+			// Request http
+			val httpAddress = "http:/${event.info.inetAddresses[0]}:${event.info.port}"
 			val client = HttpClient.newHttpClient()
-			val request = HttpRequest.newBuilder().uri(URI.create(target)).GET().build()
-			val response = client.send(request, HttpResponse.BodyHandlers.discarding())
+			val hostInfoRequest = HttpRequest.newBuilder().uri(URI.create("$httpAddress?HOST_INFO")).build()
+			val methodsRequest = HttpRequest.newBuilder().uri(URI.create(httpAddress)).build()
 
-			println("OSCQuery HTTP response: " + response.statusCode())
+			// Get http response
+			val hostInfoResponse = client.send(hostInfoRequest, HttpResponse.BodyHandlers.ofString())
+			val methodsResponse = client.send(methodsRequest, HttpResponse.BodyHandlers.ofString())
+
+			// map to json
+			val objectMapper = ObjectMapper()
+			val hostInfoJson = objectMapper.readTree(hostInfoResponse.body())
+			val methodsJson = objectMapper.readTree(methodsResponse.body())
+
+			// Get data from HOST_INFO
+			val oscIP = hostInfoJson.get("OSC_IP").asText()
+			val oscPort = hostInfoJson.get("OSC_PORT").asInt()
+			LogManager.info("[OSCQueryHandler] Found OSC address = $oscIP and OSC port = $oscPort for ${event.name}")
+
+			// Update the oscHandler
+			oscHandler.updateOscSender(oscPort, oscIP)
 		}
 	}
 
-	fun start() {
-		started = true
-
+	init {
 		try {
 			// Create a JmDNS instance
-			jmdns = JmDNS.create(InetAddress.getLocalHost(), "SlimeVR-Server-" + InetAddress.getLocalHost())
+			val jmdns = JmDNS.create(InetAddress.getLocalHost(), "SlimeVR-Server-" + RPCUtil.getLocalIp())
 
 			// Add an OSCQuery service listener
-			jmdns.addServiceListener("_oscjson._tcp.local.", OSCQueryListener())
+			jmdns.addServiceListener("_oscjson._tcp.local.", OSCQueryListener(oscHandler))
 		} catch (e: IOException) {
 			LogManager.warning("[OSCQueryHandler] " + e.message)
 		}
