@@ -93,10 +93,7 @@ public class VMCHandler implements OSCHandler {
 			// Instantiates the OSC receiver
 			try {
 				int port = config.getPortIn();
-				oscReceiver = new OSCPortIn(
-					OSCStatic.serializer,
-					port
-				);
+				oscReceiver = new OSCPortIn(port);
 				if (lastPortIn != port || !wasListening) {
 					LogManager.info("[VMCHandler] Listening to port " + port);
 				}
@@ -130,10 +127,7 @@ public class VMCHandler implements OSCHandler {
 			try {
 				InetAddress address = InetAddress.getByName(config.getAddress());
 				int port = config.getPortOut();
-				oscSender = new OSCPortOut(
-					OSCStatic.serializer,
-					new InetSocketAddress(address, port)
-				);
+				oscSender = new OSCPortOut(new InetSocketAddress(address, port));
 				if ((lastPortOut != port && lastAddress != address) || !wasConnected) {
 					LogManager
 						.info(

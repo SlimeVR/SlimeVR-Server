@@ -877,9 +877,7 @@ class HumanSkeleton(
 		computedLeftKneeTracker!!.dataTick()
 
 		computedLeftFootTracker!!.position = trackerLeftFootNode.worldTransform.translation
-		var rot = trackerLeftFootNode.worldTransform.rotation
-		if (hasLeftFootTracker) rot = rot.times(FORWARD_QUATERNION)
-		computedLeftFootTracker!!.setRotation(rot)
+		computedLeftFootTracker!!.setRotation(trackerLeftFootNode.worldTransform.rotation)
 		computedLeftFootTracker!!.dataTick()
 
 		computedRightKneeTracker!!.position = trackerRightKneeNode.worldTransform.translation
@@ -887,9 +885,7 @@ class HumanSkeleton(
 		computedRightKneeTracker!!.dataTick()
 
 		computedRightFootTracker!!.position = trackerRightFootNode.worldTransform.translation
-		rot = trackerRightFootNode.worldTransform.rotation
-		if (hasRightFootTracker) rot = rot.times(FORWARD_QUATERNION)
-		computedRightFootTracker!!.setRotation(rot)
+		computedRightFootTracker!!.setRotation(trackerRightFootNode.worldTransform.rotation)
 		computedRightFootTracker!!.dataTick()
 
 		computedLeftElbowTracker!!.position = trackerLeftElbowNode.worldTransform.translation

@@ -25,7 +25,8 @@ class UDPProtocolParser {
 				if (bundlePacketLen == 0) continue
 
 				val bundlePacketStart = buf.position()
-				val bundleBuf = buf.slice(bundlePacketStart, bundlePacketLen)
+				val bundleBuf = buf.slice()
+				bundleBuf.limit(bundlePacketLen)
 				val bundlePacketId = bundleBuf.int
 				val newPacket = getNewPacket(bundlePacketId)
 				newPacket?.let {
