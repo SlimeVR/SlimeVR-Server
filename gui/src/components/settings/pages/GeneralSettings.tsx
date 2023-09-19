@@ -1065,6 +1065,28 @@ export function GeneralSettings() {
               />
             </div>
 
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography bold>
+                {l10n.getString('settings-general-fk_settings-ik')}
+              </Typography>
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-fk_settings-ik-use_position-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-1 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="toggles.usePosition"
+                label={l10n.getString(
+                  'settings-general-fk_settings-ik-use_position'
+                )}
+              />
+            </div>
+
             {config?.debug && (
               <>
                 <div className="flex flex-col pt-2 pb-3">
