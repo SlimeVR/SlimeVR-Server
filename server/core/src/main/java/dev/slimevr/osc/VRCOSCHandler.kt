@@ -99,10 +99,7 @@ class VRCOSCHandler(
 			// Instantiates the OSC receiver
 			try {
 				val port = config.portIn
-				oscReceiver = OSCPortIn(
-					OSCStatic.serializer,
-					port
-				)
+				oscReceiver = OSCPortIn(port)
 				if (lastPortIn != port || !wasListening) {
 					LogManager.info("[VRCOSCHandler] Listening to port $port")
 				}
@@ -142,10 +139,7 @@ class VRCOSCHandler(
 			try {
 				val address = InetAddress.getByName(config.address)
 				val port = config.portOut
-				oscSender = OSCPortOut(
-					OSCStatic.serializer,
-					InetSocketAddress(address, port)
-				)
+				oscSender = OSCPortOut(InetSocketAddress(address, port))
 				if (lastPortOut != port && lastAddress !== address || !wasConnected) {
 					LogManager
 						.info(
