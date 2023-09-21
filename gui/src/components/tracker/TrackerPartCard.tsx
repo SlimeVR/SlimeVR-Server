@@ -1,11 +1,11 @@
 import classNames from 'classnames';
 import { MouseEventHandler, useEffect, useMemo, useState } from 'react';
 import { BodyPart, TrackerDataT } from 'solarxr-protocol';
-import { FlatDeviceTracker } from '../../hooks/app';
-import { useTracker } from '../../hooks/tracker';
-import { Typography } from '../commons/Typography';
+import { FlatDeviceTracker } from '@/hooks/app';
+import { useTracker } from '@/hooks/tracker';
+import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
-import { WarningIcon } from '../commons/icon/WarningIcon';
+import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 
 function Tracker({
   tracker,

@@ -1,13 +1,13 @@
 import { Localized, useLocalization } from '@fluent/react';
-import { useOnboarding } from '../../../hooks/onboarding';
-import { Button } from '../../commons/Button';
-import { Typography } from '../../commons/Typography';
+import { useOnboarding } from '@/hooks/onboarding';
+import { Button } from '@/components/commons/Button';
+import { Typography } from '@/components/commons/Typography';
 import { useMemo, useState } from 'react';
-import { ProgressBar } from '../../commons/ProgressBar';
-import { LoaderIcon, SlimeState } from '../../commons/icon/LoaderIcon';
-import { useCountdown } from '../../../hooks/countdown';
+import { ProgressBar } from '@/components/commons/ProgressBar';
+import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
+import { useCountdown } from '@/hooks/countdown';
 import classNames from 'classnames';
-import { TaybolIcon } from '../../commons/icon/TaybolIcon';
+import { TaybolIcon } from '@/components/commons/icon/TaybolIcon';
 
 export enum CalibrationStatus {
   SUCCESS,

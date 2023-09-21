@@ -1,21 +1,18 @@
 import { useLocalization } from '@fluent/react';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
-import {
-  AutoboneContextC,
-  useProvideAutobone,
-} from '../../../../hooks/autobone';
-import { useOnboarding } from '../../../../hooks/onboarding';
-import { useWebsocketAPI } from '../../../../hooks/websocket-api';
-import { Button } from '../../../commons/Button';
-import { Typography } from '../../../commons/Typography';
-import { StepperSlider } from '../../StepperSlider';
+import { AutoboneContextC, useProvideAutobone } from '@/hooks/autobone';
+import { useOnboarding } from '@/hooks/onboarding';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { Button } from '@/components/commons/Button';
+import { Typography } from '@/components/commons/Typography';
+import { StepperSlider } from '@/components/onboarding/StepperSlider';
 import { DoneStep } from './autobone-steps/Done';
 import { RequirementsStep } from './autobone-steps/Requirements';
 import { PutTrackersOnStep } from './autobone-steps/PutTrackersOn';
 import { Recording } from './autobone-steps/Recording';
 import { StartRecording } from './autobone-steps/StartRecording';
 import { VerifyResultsStep } from './autobone-steps/VerifyResults';
-import { useCountdown } from '../../../../hooks/countdown';
+import { useCountdown } from '@/hooks/countdown';
 import { CheckHeight } from './autobone-steps/СheckHeight';
 
 export function AutomaticProportionsPage() {

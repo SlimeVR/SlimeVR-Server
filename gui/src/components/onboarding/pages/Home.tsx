@@ -1,9 +1,9 @@
 import { useLocalization } from '@fluent/react';
-import { useOnboarding } from '../../../hooks/onboarding';
-import { Button } from '../../commons/Button';
-import { SlimeVRIcon } from '../../commons/icon/SimevrIcon';
-import { LangSelector } from '../../commons/LangSelector';
-import { Typography } from '../../commons/Typography';
+import { useOnboarding } from '@/hooks/onboarding';
+import { Button } from '@/components/commons/Button';
+import { SlimeVRIcon } from '@/components/commons/icon/SimevrIcon';
+import { LangSelector } from '@/components/commons/LangSelector';
+import { Typography } from '@/components/commons/Typography';
 
 export function HomePage() {
   const { l10n } = useLocalization();

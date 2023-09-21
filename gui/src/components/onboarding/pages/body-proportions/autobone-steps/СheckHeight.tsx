@@ -5,16 +5,19 @@ import {
   HeightResponseT,
   RpcMessage,
 } from 'solarxr-protocol';
-import { useWebsocketAPI } from '../../../../../hooks/websocket-api';
-import { Button } from '../../../../commons/Button';
-import { Typography } from '../../../../commons/Typography';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { Button } from '@/components/commons/Button';
+import { Typography } from '@/components/commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
 import { useForm } from 'react-hook-form';
 import { useMemo, useState } from 'react';
-import { NumberSelector } from '../../../../commons/NumberSelector';
-import { DEFAULT_HEIGHT, MIN_HEIGHT } from '../ProportionsChoose';
-import { useLocaleConfig } from '../../../../../i18n/config';
-import { useCountdown } from '../../../../../hooks/countdown';
+import { NumberSelector } from '@/components/commons/NumberSelector';
+import {
+  DEFAULT_HEIGHT,
+  MIN_HEIGHT,
+} from '@/components/onboarding/pages/body-proportions/ProportionsChoose';
+import { useLocaleConfig } from '@/i18n/config';
+import { useCountdown } from '@/hooks/countdown';
 
 interface HeightForm {
   height: number;

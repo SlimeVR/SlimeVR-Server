@@ -1,7 +1,7 @@
-import { Button } from '../commons/Button';
-import { WarningBox } from '../commons/TipBox';
+import { Button } from '@/components/commons/Button';
+import { WarningBox } from '@/components/commons/TipBox';
 import { Localized, useLocalization } from '@fluent/react';
-import { BaseModal } from '../commons/BaseModal';
+import { BaseModal } from '@/components/commons/BaseModal';
 import ReactModal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 

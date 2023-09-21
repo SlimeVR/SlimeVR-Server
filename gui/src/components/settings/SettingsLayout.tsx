@@ -1,10 +1,10 @@
 import { ReactNode, useEffect } from 'react';
-import { useElemSize, useLayout } from '../../hooks/layout';
-import { Navbar } from '../Navbar';
-import { TopBar } from '../TopBar';
+import { useElemSize, useLayout } from '@/hooks/layout';
+import { Navbar } from '@/components/Navbar';
+import { TopBar } from '@/components/TopBar';
 import { SettingsSidebar } from './SettingsSidebar';
-import { useBreakpoint } from '../../hooks/breakpoint';
-import { Dropdown } from '../commons/Dropdown';
+import { useBreakpoint } from '@/hooks/breakpoint';
+import { Dropdown } from '@/components/commons/Dropdown';
 import { useForm } from 'react-hook-form';
 import { useLocalization } from '@fluent/react';
 import { useLocation, useNavigate } from 'react-router-dom';

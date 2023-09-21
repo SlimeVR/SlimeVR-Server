@@ -1,7 +1,7 @@
-import { useConfig } from '../../hooks/config';
-import { useLocaleConfig } from '../../i18n/config';
-import { BatteryIcon } from '../commons/icon/BatteryIcon';
-import { Typography } from '../commons/Typography';
+import { useConfig } from '@/hooks/config';
+import { useLocaleConfig } from '@/i18n/config';
+import { BatteryIcon } from '@/components/commons/icon/BatteryIcon';
+import { Typography } from '@/components/commons/Typography';
 
 export function TrackerBattery({
   value,

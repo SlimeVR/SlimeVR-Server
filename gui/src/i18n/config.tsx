@@ -10,7 +10,7 @@ import {
   useContext,
 } from 'react';
 import { exists, readTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
-import { error } from '../utils/logging';
+import { error } from '@/utils/logging';
 
 export const defaultNS = 'translation';
 export const DEFAULT_LOCALE = 'en';

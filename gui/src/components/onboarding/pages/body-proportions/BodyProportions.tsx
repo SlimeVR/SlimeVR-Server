@@ -12,12 +12,15 @@ import {
   LabelType,
   ProportionChangeType,
   useManualProportions,
-} from '../../../../hooks/manual-proportions';
-import { useLocaleConfig } from '../../../../i18n/config';
-import { Typography } from '../../../commons/Typography';
-import { ArrowDownIcon, ArrowUpIcon } from '../../../commons/icon/ArrowIcons';
-import { useBreakpoint } from '../../../../hooks/breakpoint';
-import { debounce } from '../../../../hooks/timeout';
+} from '@/hooks/manual-proportions';
+import { useLocaleConfig } from '@/i18n/config';
+import { Typography } from '@/components/commons/Typography';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+} from '@/components/commons/icon/ArrowIcons';
+import { useBreakpoint } from '@/hooks/breakpoint';
+import { debounce } from '@/hooks/timeout';
 
 function IncrementButton({
   children,

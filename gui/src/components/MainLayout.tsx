@@ -6,10 +6,10 @@ import {
   RpcMessage,
   SettingsRequestT,
 } from 'solarxr-protocol';
-import { useElemSize, useLayout } from '../hooks/layout';
+import { useElemSize, useLayout } from '@/hooks/layout';
 import { Navbar } from './Navbar';
 import { TopBar } from './TopBar';
-import { useWebsocketAPI } from '../hooks/websocket-api';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { WidgetsComponent } from './WidgetsComponent';
 
 export function MainLayoutRoute({

@@ -14,21 +14,24 @@ import {
   ChangeSettingsRequestT,
   TapDetectionSetupNotificationT,
 } from 'solarxr-protocol';
-import { FlatDeviceTracker } from '../../../../hooks/app';
-import { useChokerWarning } from '../../../../hooks/choker-warning';
-import { useOnboarding } from '../../../../hooks/onboarding';
-import { useTrackers } from '../../../../hooks/tracker';
-import { useWebsocketAPI } from '../../../../hooks/websocket-api';
-import { Button } from '../../../commons/Button';
-import { CheckBox } from '../../../commons/Checkbox';
-import { TipBox } from '../../../commons/TipBox';
-import { Typography } from '../../../commons/Typography';
-import { ASSIGNMENT_RULES, BodyAssignment } from '../../BodyAssignment';
-import { NeckWarningModal } from '../../NeckWarningModal';
+import { FlatDeviceTracker } from '@/hooks/app';
+import { useChokerWarning } from '@/hooks/choker-warning';
+import { useOnboarding } from '@/hooks/onboarding';
+import { useTrackers } from '@/hooks/tracker';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { Button } from '@/components/commons/Button';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { TipBox } from '@/components/commons/TipBox';
+import { Typography } from '@/components/commons/Typography';
+import {
+  ASSIGNMENT_RULES,
+  BodyAssignment,
+} from '@/components/onboarding/BodyAssignment';
+import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
-import { useConfig } from '../../../../hooks/config';
-import { playTapSetupSound } from '../../../../sounds/sounds';
-import { useBreakpoint } from '../../../../hooks/breakpoint';
+import { useConfig } from '@/hooks/config';
+import { playTapSetupSound } from '@/sounds/sounds';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 export type BodyPartError = {
   label: string | undefined;

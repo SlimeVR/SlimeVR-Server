@@ -4,13 +4,13 @@ import {
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
 } from 'solarxr-protocol';
-import { Typography } from '../commons/Typography';
+import { Typography } from '@/components/commons/Typography';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerWifi } from './TrackerWifi';
 import { TrackerStatus } from './TrackerStatus';
 import classNames from 'classnames';
-import { useTracker } from '../../hooks/tracker';
-import { BodyPartIcon } from '../commons/BodyPartIcon';
+import { useTracker } from '@/hooks/tracker';
+import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 
 function TrackerBig({
   device,

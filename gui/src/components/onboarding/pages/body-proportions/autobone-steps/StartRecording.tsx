@@ -1,7 +1,7 @@
-import { useAutobone } from '../../../../../hooks/autobone';
-import { Button } from '../../../../commons/Button';
-import { TipBox } from '../../../../commons/TipBox';
-import { Typography } from '../../../../commons/Typography';
+import { useAutobone } from '@/hooks/autobone';
+import { Button } from '@/components/commons/Button';
+import { TipBox } from '@/components/commons/TipBox';
+import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 
 export function StartRecording({

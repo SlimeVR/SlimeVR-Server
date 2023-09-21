@@ -1,8 +1,5 @@
 import { ReactNode } from 'react';
-import {
-  OnboardingContextC,
-  useProvideOnboarding,
-} from '../../hooks/onboarding';
+import { OnboardingContextC, useProvideOnboarding } from '@/hooks/onboarding';
 
 export function OnboardingContextProvider({
   children,

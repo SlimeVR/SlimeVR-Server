@@ -6,7 +6,7 @@ import { ResetButton } from './home/ResetButton';
 import { OverlayWidget } from './widgets/OverlayWidget';
 import { TipBox } from './commons/TipBox';
 import { DeveloperModeWidget } from './widgets/DeveloperModeWidget';
-import { useConfig } from '../hooks/config';
+import { useConfig } from '@/hooks/config';
 import {
   ResetType,
   RpcMessage,
@@ -15,9 +15,9 @@ import {
   StatusData,
 } from 'solarxr-protocol';
 import { useEffect, useMemo, useState } from 'react';
-import { parseStatusToLocale, useStatusContext } from '../hooks/status-system';
-import { useWebsocketAPI } from '../hooks/websocket-api';
-import { useAppContext } from '../hooks/app';
+import { parseStatusToLocale, useStatusContext } from '@/hooks/status-system';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useAppContext } from '@/hooks/app';
 import { ClearMountingButton } from './ClearMountingButton';
 
 export function WidgetsComponent() {

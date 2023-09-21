@@ -5,8 +5,8 @@ import { Button } from './commons/Button';
 import { Typography } from './commons/Typography';
 import { open } from '@tauri-apps/plugin-shell';
 import semver from 'semver';
-import { GH_REPO, VersionContext } from '../App';
-import { error } from '../utils/logging';
+import { GH_REPO, VersionContext } from '@/App';
+import { error } from '@/utils/logging';
 
 export function VersionUpdateModal() {
   const { l10n } = useLocalization();

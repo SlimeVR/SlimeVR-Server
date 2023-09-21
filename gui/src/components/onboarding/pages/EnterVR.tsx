@@ -1,8 +1,8 @@
 import { useLocalization } from '@fluent/react';
-import { useOnboarding } from '../../../hooks/onboarding';
-import { ArrowLink } from '../../commons/ArrowLink';
-import { Button } from '../../commons/Button';
-import { Typography } from '../../commons/Typography';
+import { useOnboarding } from '@/hooks/onboarding';
+import { ArrowLink } from '@/components/commons/ArrowLink';
+import { Button } from '@/components/commons/Button';
+import { Typography } from '@/components/commons/Typography';
 
 export function EnterVRPage() {
   const { l10n } = useLocalization();
