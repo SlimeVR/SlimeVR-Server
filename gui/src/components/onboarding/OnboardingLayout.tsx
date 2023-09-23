@@ -1,9 +1,9 @@
 import { ReactNode, useState } from 'react';
-import { useLayout } from '../../hooks/layout';
-import { useOnboarding } from '../../hooks/onboarding';
-import { MainLayoutRoute } from '../MainLayout';
-import { TopBar } from '../TopBar';
-import { useBreakpoint } from '../../hooks/breakpoint';
+import { useLayout } from '@/hooks/layout';
+import { useOnboarding } from '@/hooks/onboarding';
+import { MainLayoutRoute } from '@/components/MainLayout';
+import { TopBar } from '@/components/TopBar';
+import { useBreakpoint } from '@/hooks/breakpoint';
 import { SkipSetupButton } from './SkipSetupButton';
 import { SkipSetupWarningModal } from './SkipSetupWarningModal';
 

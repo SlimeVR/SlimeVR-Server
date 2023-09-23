@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useContext } from 'react';
-import { ConfigContextC, useConfigProvider } from '../../hooks/config';
-import { DEFAULT_LOCALE, LangContext } from '../../i18n/config';
+import { ConfigContextC, useConfigProvider } from '@/hooks/config';
+import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
 
 export function ConfigContextProvider({ children }: { children: ReactNode }) {
   const context = useConfigProvider();

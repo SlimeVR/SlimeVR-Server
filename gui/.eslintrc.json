@@ -4,7 +4,7 @@
     "es2021": true,
     "jest": true
   },
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:@dword-design/import-alias/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
@@ -29,6 +29,14 @@
       {
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_"
+      }
+    ],
+    "@dword-design/import-alias/prefer-alias": [
+      "error",
+      {
+        "alias": {
+          "@": "./src/"
+        }
       }
     ]
   },

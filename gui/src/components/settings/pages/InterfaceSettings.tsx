@@ -1,21 +1,21 @@
 import { useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { CheckBox } from '../../commons/Checkbox';
-import { Typography } from '../../commons/Typography';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { Typography } from '@/components/commons/Typography';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
-} from '../SettingsPageLayout';
-import { defaultConfig, useConfig } from '../../../hooks/config';
-import { ThemeSelector } from '../../commons/ThemeSelector';
-import { SquaresIcon } from '../../commons/icon/SquaresIcon';
-import { NumberSelector } from '../../commons/NumberSelector';
-import { useLocaleConfig } from '../../../i18n/config';
-import { LangSelector } from '../../commons/LangSelector';
-import { BellIcon } from '../../commons/icon/BellIcon';
-import { Range } from '../../commons/Range';
-import { Dropdown } from '../../commons/Dropdown';
+} from '@/components/settings/SettingsPageLayout';
+import { defaultConfig, useConfig } from '@/hooks/config';
+import { ThemeSelector } from '@/components/commons/ThemeSelector';
+import { SquaresIcon } from '@/components/commons/icon/SquaresIcon';
+import { NumberSelector } from '@/components/commons/NumberSelector';
+import { useLocaleConfig } from '@/i18n/config';
+import { LangSelector } from '@/components/commons/LangSelector';
+import { BellIcon } from '@/components/commons/icon/BellIcon';
+import { Range } from '@/components/commons/Range';
+import { Dropdown } from '@/components/commons/Dropdown';
 
 interface InterfaceSettingsForm {
   appearance: {

@@ -1,10 +1,10 @@
 import { Canvas } from '@react-three/fiber';
-import { useAppContext } from '../../hooks/app';
+import { useAppContext } from '@/hooks/app';
 import { Bone, PerspectiveCamera, Quaternion, Skeleton } from 'three';
 import { getHelperFromSkeleton } from 'three/examples/jsm/utils/SkeletonUtils';
 import { useMemo } from 'react';
-import { Vector3FromVec3fT } from '../../maths/vector3';
-import { QuaternionFromQuatT } from '../../maths/quaternion';
+import { Vector3FromVec3fT } from '@/maths/vector3';
+import { QuaternionFromQuatT } from '@/maths/quaternion';
 
 export const threeSkeleton = (() => {
   const bones = [];

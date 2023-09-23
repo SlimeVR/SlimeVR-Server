@@ -72,7 +72,7 @@ public class OSCRouter {
 			// Else, create our own OSC receiver
 			if (oscReceiver == null) {
 				try {
-					oscReceiver = new OSCPortIn(OSCStatic.serializer, portIn);
+					oscReceiver = new OSCPortIn(portIn);
 					if (lastPortIn != portIn || !wasListening) {
 						LogManager.info("[OSCRouter] Listening to port " + portIn);
 					}
@@ -114,10 +114,7 @@ public class OSCRouter {
 			// Else, create our own OSC sender
 			if (oscSender == null) {
 				try {
-					oscSender = new OSCPortOut(
-						OSCStatic.serializer,
-						new InetSocketAddress(address, portOut)
-					);
+					oscSender = new OSCPortOut(new InetSocketAddress(address, portOut));
 					if ((lastPortOut != portOut && lastAddress != address) || !wasConnected) {
 						LogManager
 							.info(

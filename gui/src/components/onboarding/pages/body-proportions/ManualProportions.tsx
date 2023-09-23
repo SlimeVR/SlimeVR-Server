@@ -1,15 +1,15 @@
 import { useForm } from 'react-hook-form';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
-import { useOnboarding } from '../../../../hooks/onboarding';
-import { useWebsocketAPI } from '../../../../hooks/websocket-api';
-import { Button } from '../../../commons/Button';
-import { CheckBox } from '../../../commons/Checkbox';
-import { PersonFrontIcon } from '../../../commons/PersonFrontIcon';
-import { Typography } from '../../../commons/Typography';
+import { useOnboarding } from '@/hooks/onboarding';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { Button } from '@/components/commons/Button';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { PersonFrontIcon } from '@/components/commons/PersonFrontIcon';
+import { Typography } from '@/components/commons/Typography';
 import { BodyProportions } from './BodyProportions';
 import { useLocalization } from '@fluent/react';
 import { useEffect, useMemo } from 'react';
-import { useBreakpoint } from '../../../../hooks/breakpoint';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 export function ButtonsControl() {
   const { l10n } = useLocalization();

@@ -10,15 +10,15 @@ import {
   SettingsResponseT,
   VRCOSCSettingsT,
 } from 'solarxr-protocol';
-import { useWebsocketAPI } from '../../../hooks/websocket-api';
-import { CheckBox } from '../../commons/Checkbox';
-import { VRCIcon } from '../../commons/icon/VRCIcon';
-import { Input } from '../../commons/Input';
-import { Typography } from '../../commons/Typography';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { VRCIcon } from '@/components/commons/icon/VRCIcon';
+import { Input } from '@/components/commons/Input';
+import { Typography } from '@/components/commons/Typography';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
-} from '../SettingsPageLayout';
+} from '@/components/settings/SettingsPageLayout';
 
 interface VRCOSCSettingsForm {
   vrchat: {

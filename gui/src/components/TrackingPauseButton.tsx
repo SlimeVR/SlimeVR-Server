@@ -1,7 +1,7 @@
 import { useLocalization } from '@fluent/react';
 import { useState } from 'react';
 import { SetPauseTrackingRequestT, RpcMessage } from 'solarxr-protocol';
-import { useWebsocketAPI } from '../hooks/websocket-api';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { BigButton } from './commons/BigButton';
 import { PlayIcon } from './commons/icon/PlayIcon';
 import { PauseIcon } from './commons/icon/PauseIcon';

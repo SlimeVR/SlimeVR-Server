@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { TrackerDataT } from 'solarxr-protocol';
-import { useTracker } from '../../hooks/tracker';
-import { Typography } from '../commons/Typography';
-import { formatVector3 } from '../../utils/formatting';
+import { useTracker } from '@/hooks/tracker';
+import { Typography } from '@/components/commons/Typography';
+import { formatVector3 } from '@/utils/formatting';
 import { Canvas, useLoader } from '@react-three/fiber';
 import * as THREE from 'three';
 import { PerspectiveCamera, Vector3 } from 'three';
-import { Button } from '../commons/Button';
-import { QuatObject } from '../../maths/quaternion';
+import { Button } from '@/components/commons/Button';
+import { QuatObject } from '@/maths/quaternion';
 import { useLocalization } from '@fluent/react';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Vector3Object } from '../../maths/vector3';
+import { Vector3Object } from '@/maths/vector3';
 
 const groundColor = '#4444aa';
 

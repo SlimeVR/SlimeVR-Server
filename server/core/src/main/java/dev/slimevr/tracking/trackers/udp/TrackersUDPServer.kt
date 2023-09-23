@@ -20,8 +20,6 @@ import java.net.SocketAddress
 import java.net.SocketTimeoutException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
 import java.util.Random
 import java.util.function.Consumer
 
@@ -43,7 +41,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		}.map {
 			// This ignores IPv6 addresses
 			it.broadcast
-		}.filterNotNull().map { InetSocketAddress(it, this.port) }.toList()
+		}.filter { it != null && it.isSiteLocalAddress }.map { InetSocketAddress(it, this.port) }.toList()
 	} catch (e: Exception) {
 		LogManager.severe("[TrackerServer] Can't enumerate network interfaces", e)
 		emptyList()
@@ -168,12 +166,16 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
+			var formattedHWID = connection.hardwareIdentifier.replace(":", "").takeLast(5)
+			if (trackerId != 0) {
+				formattedHWID += "_$trackerId"
+			}
+
 			imuTracker = Tracker(
 				connection,
 				VRServer.getNextLocalTrackerId(),
 				connection.name + "/" + trackerId,
-				"IMU Tracker " + MessageDigest.getInstance("SHA-256")
-					.digest(connection.hardwareIdentifier.toByteArray(StandardCharsets.UTF_8)).toString().subSequence(3, 8),
+				"IMU Tracker $formattedHWID",
 				null,
 				trackerNum = trackerId,
 				hasRotation = true,

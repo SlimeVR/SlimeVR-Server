@@ -1,8 +1,8 @@
 import { BaseDirectory, readTextFile } from '@tauri-apps/plugin-fs';
 
 import { createContext, useContext, useState } from 'react';
-import { DeveloperModeWidgetForm } from '../components/widgets/DeveloperModeWidget';
-import { error } from '../utils/logging';
+import { DeveloperModeWidgetForm } from '@/components/widgets/DeveloperModeWidget';
+import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
 
 export interface WindowConfig {

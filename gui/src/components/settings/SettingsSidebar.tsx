@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { ReactNode, useMemo } from 'react';
 import { NavLink, useLocation, useMatch } from 'react-router-dom';
-import { Typography } from '../commons/Typography';
+import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 
 export function SettingsLink({

@@ -11,7 +11,7 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { useLocalization } from '@fluent/react';
-import { log } from '../utils/logging';
+import { log } from '@/utils/logging';
 
 export enum ProcessStatus {
   PENDING,

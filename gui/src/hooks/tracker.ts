@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BodyPart, TrackerDataT, TrackerStatus } from 'solarxr-protocol';
-import { QuaternionFromQuatT, QuaternionToEulerDegrees } from '../maths/quaternion';
+import { QuaternionFromQuatT, QuaternionToEulerDegrees } from '@/maths/quaternion';
 import { useAppContext } from './app';
 import { useLocalization } from '@fluent/react';
 import { useDataFeedConfig } from './datafeed-config';
 import { Quaternion, Vector3 } from 'three';
-import { Vector3FromVec3fT } from '../maths/vector3';
+import { Vector3FromVec3fT } from '@/maths/vector3';
 
 export function useTrackers() {
   const { trackers } = useAppContext();

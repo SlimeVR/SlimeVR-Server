@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { useEffect } from 'react';
-import { EscapeIcon } from '../commons/icon/EscapeIcon';
+import { EscapeIcon } from '@/components/commons/icon/EscapeIcon';
 
 export function SkipSetupButton({
   modalVisible,

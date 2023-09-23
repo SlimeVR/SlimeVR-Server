@@ -1,10 +1,10 @@
-import { useOnboarding } from '../../../../hooks/onboarding';
+import { useOnboarding } from '@/hooks/onboarding';
 import { useLocalization } from '@fluent/react';
 import { useState } from 'react';
-import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
+import { SkipSetupWarningModal } from '@/components/onboarding/SkipSetupWarningModal';
 import classNames from 'classnames';
-import { Typography } from '../../../commons/Typography';
-import { Button } from '../../../commons/Button';
+import { Typography } from '@/components/commons/Typography';
+import { Button } from '@/components/commons/Button';
 
 export function MountingChoose() {
   const { l10n } = useLocalization();

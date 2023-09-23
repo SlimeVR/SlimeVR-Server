@@ -8,7 +8,7 @@ import { HumanIcon } from './commons/icon/HumanIcon';
 import { RulerIcon } from './commons/icon/RulerIcon';
 import { SparkleIcon } from './commons/icon/SparkleIcon';
 import { WrenchIcon } from './commons/icon/WrenchIcons';
-import { useBreakpoint } from '../hooks/breakpoint';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 export function NavButton({
   to,
