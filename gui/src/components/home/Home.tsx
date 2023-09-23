@@ -1,19 +1,19 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { StatusData, TrackerDataT } from 'solarxr-protocol';
-import { useConfig } from '../../hooks/config';
-import { useTrackers } from '../../hooks/tracker';
-import { Typography } from '../commons/Typography';
-import { TrackerCard } from '../tracker/TrackerCard';
-import { TrackersTable } from '../tracker/TrackersTable';
+import { useConfig } from '@/hooks/config';
+import { useTrackers } from '@/hooks/tracker';
+import { Typography } from '@/components/commons/Typography';
+import { TrackerCard } from '@/components/tracker/TrackerCard';
+import { TrackersTable } from '@/components/tracker/TrackersTable';
 import {
   parseStatusToLocale,
   trackerStatusRelated,
   useStatusContext,
-} from '../../hooks/status-system';
+} from '@/hooks/status-system';
 import { useMemo } from 'react';
-import { WarningBox } from '../commons/TipBox';
-import { HeadsetIcon } from '../commons/icon/HeadsetIcon';
+import { WarningBox } from '@/components/commons/TipBox';
+import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
 import classNames from 'classnames';
 
 const DONT_REPEAT_STATUSES = [StatusData.StatusTrackerReset];

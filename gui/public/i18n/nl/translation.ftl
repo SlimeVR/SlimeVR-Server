@@ -353,6 +353,7 @@ settings-general-fk_settings-leg_fk = Been tracking
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Verander de manier waarop de armen worden getrackt.
 settings-general-fk_settings-arm_fk-force_arms = Dwing armen vanuit HMD
+settings-general-fk_settings-arm_fk-reset_mode-description = Pas de verwachte armhouding aan voor het resetten van de montage.
 settings-general-fk_settings-skeleton_settings-toggles = Skelet schakelaars
 settings-general-fk_settings-skeleton_settings-description = Schakel skeleton instellingen in of uit. Het is aanbevolen om deze aan te laten.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Uitgebreid ruggengraat model
@@ -661,8 +662,8 @@ onboarding-assignment_tutorial = Hoe een Slime Tracker voor te bereiden voordat 
 onboarding-assignment_tutorial-first_step = 1. Plaats een lichaamsdeelsticker (als je die hebt) op de tracker naar keuze
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Sticker
-onboarding-assignment_tutorial-second_step = Bevestig de riem aan je tracker, waarbij je de haak-en-luskant van het bandje in de volgende richting houdt:
-onboarding-assignment_tutorial-second_step-continuation = De haak-en-luskant voor de verlenging moet in deze richting staan:
+onboarding-assignment_tutorial-second_step-v2 = Bevestig de strap aan de tracker met de klittenbandzijde in dezelfde richting als de voorzijde van de tracker:
+onboarding-assignment_tutorial-second_step-continuation-v2 = De klittenbandzijde van de extensie moet naar boven gericht zijn, zoals in de foto afgebeeld:
 onboarding-assignment_tutorial-done = Ik heb stickers en riemen geplaatst!
 
 ## Tracker assignment setup
@@ -808,6 +809,9 @@ onboarding-choose_proportions-manual_proportions = Handmatige lichaamsverhouding
 onboarding-choose_proportions-manual_proportions-subtitle = Voor kleine details
 onboarding-choose_proportions-manual_proportions-description = Hier kan je jouw verhoudingen handmatig aanpassen
 onboarding-choose_proportions-export = Export proporties
+onboarding-choose_proportions-import = Importeer proporties
+onboarding-choose_proportions-import-success = geïmporteerd
+onboarding-choose_proportions-import-failed = Mislukt
 onboarding-choose_proportions-file_type = Lichaamsproporties bestand
 
 ## Tracker manual proportions setup

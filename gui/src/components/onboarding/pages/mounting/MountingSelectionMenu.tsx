@@ -1,17 +1,17 @@
 import classNames from 'classnames';
 import { MouseEventHandler } from 'react';
 import ReactModal from 'react-modal';
-import { useElemSize, useLayout } from '../../../../hooks/layout';
-import { Button } from '../../../commons/Button';
-import { Typography } from '../../../commons/Typography';
+import { useElemSize, useLayout } from '@/hooks/layout';
+import { Button } from '@/components/commons/Button';
+import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
-import { FootIcon } from '../../../commons/icon/FootIcon';
-import { rotationToQuatMap } from '../../../../maths/quaternion';
+import { FootIcon } from '@/components/commons/icon/FootIcon';
+import { rotationToQuatMap } from '@/maths/quaternion';
 import { Quaternion } from 'three';
-import { SlimeUpIcon } from '../../../commons/icon/SlimeUpIcon';
+import { SlimeUpIcon } from '@/components/commons/icon/SlimeUpIcon';
 import { BodyPart } from 'solarxr-protocol';
-import { PawIcon } from '../../../commons/icon/PawIcon';
-import { useLocaleConfig } from '../../../../i18n/config';
+import { PawIcon } from '@/components/commons/icon/PawIcon';
+import { useLocaleConfig } from '@/i18n/config';
 
 // All body parts that are right or left, are by default left!
 export const mapPart: Record<

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useMemo } from 'react';
 import { TrackerStatus as TrackerStatusEnum } from 'solarxr-protocol';
-import { Typography } from '../commons/Typography';
+import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 
 const statusLabelMap: { [key: number]: string } = {

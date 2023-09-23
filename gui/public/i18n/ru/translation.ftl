@@ -358,6 +358,10 @@ settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Моде�
 settings-general-fk_settings-skeleton_settings-extended_knees_model = Модель с удлиненным коленом
 settings-general-fk_settings-skeleton_settings-ratios = Соотношения скелета
 settings-general-fk_settings-skeleton_settings-ratios-description = Измените значения параметров скелета. Возможно, вам придется скорректировать пропорции после их изменения.
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Рассчитать талию от груди до бёдер
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Рассчитать талию от груди до ног
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Рассчитать бедро от груди до ног
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Рассчитать бедро от талии до ног
 settings-general-fk_settings-skeleton_settings-interp_hip_legs = Усредните рыскание и перекат бедра c рысканьем и перекатом ног
 settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Усредните рыскание и крен коленных трекеров с рысканьем и креном трекеров лодыжек
 settings-general-fk_settings-self_localization-title = Режим Mocap
@@ -813,6 +817,9 @@ onboarding-choose_proportions-manual_proportions = Ручные пропорци
 onboarding-choose_proportions-manual_proportions-subtitle = Для небольших штрихов
 onboarding-choose_proportions-manual_proportions-description = Это позволит вам настроить пропорции вручную, изменив их напрямую.
 onboarding-choose_proportions-export = Экспорт пропорций
+onboarding-choose_proportions-import = Ввод пропорций
+onboarding-choose_proportions-import-success = Введён
+onboarding-choose_proportions-import-failed = Неудача
 onboarding-choose_proportions-file_type = Файл пропорций тела
 
 ## Tracker manual proportions setup

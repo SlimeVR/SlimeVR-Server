@@ -42,7 +42,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		}.map {
 			// This ignores IPv6 addresses
 			it.broadcast
-		}.filterNotNull().map { InetSocketAddress(it, this.port) }.toList()
+		}.filter { it != null && it.isSiteLocalAddress }.map { InetSocketAddress(it, this.port) }.toList()
 	} catch (e: Exception) {
 		LogManager.severe("[TrackerServer] Can't enumerate network interfaces", e)
 		emptyList()
@@ -167,12 +167,16 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
-			val formattedHWID = connection.hardwareIdentifier.replace(":", "")
+			var formattedHWID = connection.hardwareIdentifier.replace(":", "").takeLast(5)
+			if (trackerId != 0) {
+				formattedHWID += "_$trackerId"
+			}
+
 			imuTracker = Tracker(
 				connection,
 				VRServer.getNextLocalTrackerId(),
 				connection.name + "/" + trackerId,
-				"IMU Tracker " + formattedHWID.subSequence(Math.max(formattedHWID.length - 5, 0), formattedHWID.length),
+				"IMU Tracker $formattedHWID",
 				null,
 				trackerNum = trackerId,
 				hasRotation = true,

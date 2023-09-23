@@ -5,7 +5,7 @@ import {
   RecordBVHStatusT,
   RpcMessage,
 } from 'solarxr-protocol';
-import { useWebsocketAPI } from '../hooks/websocket-api';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { BigButton } from './commons/BigButton';
 import { RecordIcon } from './commons/icon/RecordIcon';
 

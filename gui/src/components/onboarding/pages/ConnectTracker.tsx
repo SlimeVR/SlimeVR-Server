@@ -9,19 +9,19 @@ import {
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
 } from 'solarxr-protocol';
-import { useLayout } from '../../../hooks/layout';
-import { useOnboarding } from '../../../hooks/onboarding';
-import { useTrackers } from '../../../hooks/tracker';
-import { useWebsocketAPI } from '../../../hooks/websocket-api';
-import { ArrowLink } from '../../commons/ArrowLink';
-import { Button } from '../../commons/Button';
-import { LoaderIcon, SlimeState } from '../../commons/icon/LoaderIcon';
-import { ProgressBar } from '../../commons/ProgressBar';
-import { TipBox } from '../../commons/TipBox';
-import { Typography } from '../../commons/Typography';
-import { TrackerCard } from '../../tracker/TrackerCard';
-import { useBnoExists } from '../../../hooks/imu-logic';
-import { useBreakpoint } from '../../../hooks/breakpoint';
+import { useLayout } from '@/hooks/layout';
+import { useOnboarding } from '@/hooks/onboarding';
+import { useTrackers } from '@/hooks/tracker';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { ArrowLink } from '@/components/commons/ArrowLink';
+import { Button } from '@/components/commons/Button';
+import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
+import { ProgressBar } from '@/components/commons/ProgressBar';
+import { TipBox } from '@/components/commons/TipBox';
+import { Typography } from '@/components/commons/Typography';
+import { TrackerCard } from '@/components/tracker/TrackerCard';
+import { useBnoExists } from '@/hooks/imu-logic';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 const BOTTOM_HEIGHT = 80;
 

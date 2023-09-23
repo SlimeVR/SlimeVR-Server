@@ -18,11 +18,11 @@ import {
   StartDataFeedT,
   TrackerDataT,
 } from 'solarxr-protocol';
-import { playSoundOnResetStarted } from '../sounds/sounds';
+import { playSoundOnResetStarted } from '@/sounds/sounds';
 import { useConfig } from './config';
 import { useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
-import { error } from '../utils/logging';
+import { error } from '@/utils/logging';
 
 export interface FlatDeviceTracker {
   device?: DeviceDataT;

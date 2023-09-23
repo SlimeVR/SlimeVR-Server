@@ -2,14 +2,14 @@ import classNames from 'classnames';
 import { useForm } from 'react-hook-form';
 import ReactModal from 'react-modal';
 import { BodyPart } from 'solarxr-protocol';
-import { Button } from '../commons/Button';
-import { CheckBox } from '../commons/Checkbox';
-import { Typography } from '../commons/Typography';
-import { BodyAssignment } from '../onboarding/BodyAssignment';
+import { Button } from '@/components/commons/Button';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { Typography } from '@/components/commons/Typography';
+import { BodyAssignment } from '@/components/onboarding/BodyAssignment';
 import { useLocalization } from '@fluent/react';
-import { NeckWarningModal } from '../onboarding/NeckWarningModal';
-import { useChokerWarning } from '../../hooks/choker-warning';
-import { useBreakpoint } from '../../hooks/breakpoint';
+import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
+import { useChokerWarning } from '@/hooks/choker-warning';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 export function SingleTrackerBodyAssignmentMenu({
   isOpen,

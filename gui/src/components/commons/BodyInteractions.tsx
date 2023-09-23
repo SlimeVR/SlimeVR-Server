@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { ReactNode, useLayoutEffect, useRef, useState } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { PersonFrontIcon } from './PersonFrontIcon';
-import { useBreakpoint } from '../../hooks/breakpoint';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 export function BodyInteractions({
   leftControls,

@@ -1,5 +1,5 @@
-import { WifiIcon } from '../commons/icon/WifiIcon';
-import { Typography } from '../commons/Typography';
+import { WifiIcon } from '@/components/commons/icon/WifiIcon';
+import { Typography } from '@/components/commons/Typography';
 
 export function TrackerWifi({
   rssi,

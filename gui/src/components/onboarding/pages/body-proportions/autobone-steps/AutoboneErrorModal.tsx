@@ -1,10 +1,10 @@
 import { Localized, useLocalization } from '@fluent/react';
 import ReactModal from 'react-modal';
-import { BaseModal } from '../../../../commons/BaseModal';
-import { WarningBox } from '../../../../commons/TipBox';
-import { Button } from '../../../../commons/Button';
-import { A } from '../../../../commons/A';
-import { DOCS_SITE, SLIMEVR_DISCORD } from '../../../../../App';
+import { BaseModal } from '@/components/commons/BaseModal';
+import { WarningBox } from '@/components/commons/TipBox';
+import { Button } from '@/components/commons/Button';
+import { A } from '@/components/commons/A';
+import { DOCS_SITE, SLIMEVR_DISCORD } from '@/App';
 
 export function AutoboneErrorModal({
   isOpen = true,

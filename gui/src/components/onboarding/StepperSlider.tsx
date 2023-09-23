@@ -7,9 +7,9 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useElemSize } from '../../hooks/layout';
-import { CheckIcon } from '../commons/icon/CheckIcon';
-import { Typography } from '../commons/Typography';
+import { useElemSize } from '@/hooks/layout';
+import { CheckIcon } from '@/components/commons/icon/CheckIcon';
+import { Typography } from '@/components/commons/Typography';
 
 type StepComponentType = FC<{
   nextStep: () => void;

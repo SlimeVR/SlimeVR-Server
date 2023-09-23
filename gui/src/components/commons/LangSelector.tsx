@@ -1,8 +1,8 @@
 import { useLocalization } from '@fluent/react';
 import { useEffect, useMemo, useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { useConfig } from '../../hooks/config';
-import { langs, LangContext } from '../../i18n/config';
+import { useConfig } from '@/hooks/config';
+import { langs, LangContext } from '@/i18n/config';
 import { Dropdown, DropdownDirection } from './Dropdown';
 
 export function LangSelector({
