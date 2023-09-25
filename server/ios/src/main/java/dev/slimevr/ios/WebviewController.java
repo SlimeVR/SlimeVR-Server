@@ -54,7 +54,7 @@ public class WebviewController extends UIViewController {
 
 			private NSURL fileUrlFromUrl(NSURL url) {
 				List<String> paths = url.getPathComponents();
-				if(paths.size() == 1) {
+				if (paths.size() == 1) {
 					return NSBundle.getMainBundle().findResourceURL("index.html", "", "dist");
 				}
 				String last = paths.remove(paths.size() - 1);
