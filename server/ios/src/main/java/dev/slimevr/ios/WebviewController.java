@@ -54,6 +54,9 @@ public class WebviewController extends UIViewController {
 
 			private NSURL fileUrlFromUrl(NSURL url) {
 				List<String> paths = url.getPathComponents();
+				if(paths.size() == 1) {
+					return NSBundle.getMainBundle().findResourceURL("index.html", "", "dist");
+				}
 				String last = paths.remove(paths.size() - 1);
 				paths.remove(0); // Remove "/"
 				StringBuilder joining = new StringBuilder();
@@ -80,7 +83,7 @@ public class WebviewController extends UIViewController {
 	public void viewDidLoad() {
 		super.viewDidLoad();
 
-		var req = new NSURLRequest(new NSURL("slimevr:///index.html"));
+		var req = new NSURLRequest(new NSURL("slimevr:///"));
 		webView.loadRequest(req);
 	}
 }
