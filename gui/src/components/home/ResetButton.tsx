@@ -6,18 +6,18 @@ import {
   RpcMessage,
   StatusData,
 } from 'solarxr-protocol';
-import { useConfig } from '../../hooks/config';
-import { useCountdown } from '../../hooks/countdown';
-import { useWebsocketAPI } from '../../hooks/websocket-api';
-import { playSoundOnResetStarted } from '../../sounds/sounds';
-import { BigButton } from '../commons/BigButton';
-import { Button } from '../commons/Button';
+import { useConfig } from '@/hooks/config';
+import { useCountdown } from '@/hooks/countdown';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { playSoundOnResetStarted } from '@/sounds/sounds';
+import { BigButton } from '@/components/commons/BigButton';
+import { Button } from '@/components/commons/Button';
 import {
   MountingResetIcon,
   YawResetIcon,
   FullResetIcon,
-} from '../commons/icon/ResetIcon';
-import { useStatusContext } from '../../hooks/status-system';
+} from '@/components/commons/icon/ResetIcon';
+import { useStatusContext } from '@/hooks/status-system';
 
 export function ResetButton({
   type,

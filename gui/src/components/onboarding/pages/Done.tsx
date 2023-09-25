@@ -1,8 +1,8 @@
 import { useLocalization } from '@fluent/react';
-import { useOnboarding } from '../../../hooks/onboarding';
-import { Button } from '../../commons/Button';
-import { SlimeVRIcon } from '../../commons/icon/SimevrIcon';
-import { Typography } from '../../commons/Typography';
+import { useOnboarding } from '@/hooks/onboarding';
+import { Button } from '@/components/commons/Button';
+import { SlimeVRIcon } from '@/components/commons/icon/SimevrIcon';
+import { Typography } from '@/components/commons/Typography';
 
 export function DonePage() {
   const { l10n } = useLocalization();

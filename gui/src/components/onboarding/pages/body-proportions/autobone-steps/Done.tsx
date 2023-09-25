@@ -1,6 +1,6 @@
-import { Typography } from '../../../../commons/Typography';
+import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
-import { Button } from '../../../../commons/Button';
+import { Button } from '@/components/commons/Button';
 
 export function DoneStep({ variant }: { variant: 'onboarding' | 'alone' }) {
   const { l10n } = useLocalization();

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import { ProcessStatus, useAutobone } from '../../../../../hooks/autobone';
-import { Button } from '../../../../commons/Button';
-import { Typography } from '../../../../commons/Typography';
+import { ProcessStatus, useAutobone } from '@/hooks/autobone';
+import { Button } from '@/components/commons/Button';
+import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 
 export function VerifyResultsStep({

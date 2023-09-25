@@ -10,24 +10,24 @@ import {
   ImuType,
   RpcMessage,
 } from 'solarxr-protocol';
-import { useDebouncedEffect } from '../../hooks/timeout';
-import { useTrackerFromId } from '../../hooks/tracker';
-import { useWebsocketAPI } from '../../hooks/websocket-api';
+import { useDebouncedEffect } from '@/hooks/timeout';
+import { useTrackerFromId } from '@/hooks/tracker';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
   MountingOrientationDegreesToQuatT,
   QuaternionFromQuatT,
   rotationToQuatMap,
   similarQuaternions,
-} from '../../maths/quaternion';
-import { ArrowLink } from '../commons/ArrowLink';
-import { BodyPartIcon } from '../commons/BodyPartIcon';
-import { Button } from '../commons/Button';
-import { CheckBox } from '../commons/Checkbox';
-import { WarningIcon } from '../commons/icon/WarningIcon';
-import { Input } from '../commons/Input';
-import { Typography } from '../commons/Typography';
-import { MountingSelectionMenu } from '../onboarding/pages/mounting/MountingSelectionMenu';
-import { IMUVisualizerWidget } from '../widgets/IMUVisualizerWidget';
+} from '@/maths/quaternion';
+import { ArrowLink } from '@/components/commons/ArrowLink';
+import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
+import { Button } from '@/components/commons/Button';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { WarningIcon } from '@/components/commons/icon/WarningIcon';
+import { Input } from '@/components/commons/Input';
+import { Typography } from '@/components/commons/Typography';
+import { MountingSelectionMenu } from '@/components/onboarding/pages/mounting/MountingSelectionMenu';
+import { IMUVisualizerWidget } from '@/components/widgets/IMUVisualizerWidget';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';

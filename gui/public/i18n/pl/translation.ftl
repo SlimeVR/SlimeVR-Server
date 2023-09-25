@@ -348,9 +348,20 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip może
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap próbuje odgadnąć obrót twoich stóp, jeśli trackery stóp nie są używane.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant obraca stopy, aby były równoległe do podłoża podczas kontaktu.
 settings-general-fk_settings-leg_fk = Śledzenie nóg
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Włącz resetowanie montażu stóp, chodząc na palcach.
+settings-general-fk_settings-leg_fk-reset_mounting_feet = Reset mocowania stóp
 settings-general-fk_settings-arm_fk = Śledzenie ramienia
 settings-general-fk_settings-arm_fk-description = Zmień sposób śledzenia ramion.
 settings-general-fk_settings-arm_fk-force_arms = Śledź ramiona z gogli VR
+settings-general-fk_settings-arm_fk-reset_mode-description = Zmień pozycję ramienia oczekiwaną przy resetowaniu montażu.
+settings-general-fk_settings-arm_fk-back = Wstecz
+settings-general-fk_settings-arm_fk-back-description = Tryb domyślny, w którym górne ramiona cofają się, a dolne ramiona przesuwają się do przodu.
+settings-general-fk_settings-arm_fk-tpose_up = T-pose (w górę)
+settings-general-fk_settings-arm_fk-tpose_up-description = Oczekuje, że podczas pełnego resetu twoje ramiona będą opuszczone na boki w 90 stopni w górę podczas resetu montażowego.
+settings-general-fk_settings-arm_fk-tpose_down = T-pose (w dół)
+settings-general-fk_settings-arm_fk-tpose_down-description = Oczekuje, że Twoje ramiona będą ustawione pod kątem w 90 stopni na boki podczas Pełnego Resetu i w dół po bokach podczas Resetu Montażowego.
+settings-general-fk_settings-arm_fk-forward = Do przodu
+settings-general-fk_settings-arm_fk-forward-description = Oczekuje, że Twoje ramiona będą uniesione pod kątem 90 stopni do przodu. Przydatne w VTubingu.
 settings-general-fk_settings-skeleton_settings-toggles = Przełączniki szkieletowe
 settings-general-fk_settings-skeleton_settings-description = Włącz lub wyłącz ustawienia szkieletu. Zaleca się pozostawienie ich włączonych.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Wydłużony model kręgosłupa
@@ -364,6 +375,7 @@ settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Przy
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Przypisz biodro od pasa do nóg
 settings-general-fk_settings-skeleton_settings-interp_hip_legs = Średnie odchylenie biodra i przetoczenie nogami
 settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Uśrednij odchylenie i przechylenie nakolanników za pomocą kostek
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Średnie odchylenie kolan i przechylenie kostek
 settings-general-fk_settings-self_localization-title = Tryb Mocap
 settings-general-fk_settings-self_localization-description = Tryb Mocap pozwala szkieletowi z grubsza śledzić własną pozycję bez headsetu lub innych trackerów. Pamiętaj, że wymaga to śledzenia stóp i głowy do działania i nadal jest eksperymentalne.
 settings-general-fk_settings-vive_emulation-title = Emulacja Vive
@@ -665,6 +677,7 @@ onboarding-assignment_tutorial = Jak przygotować Slime Tracker przed założeni
 onboarding-assignment_tutorial-first_step = 1. Umieść naklejkę z częścią ciała (jeśli ją posiadasz) na trackerze według własnego uznania
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Naklejka
+onboarding-assignment_tutorial-second_step-v2 = 2. Przymocuj pasek do trackera, tak aby rzep paska był skierowany w tę samą stronę, co slime face część trackera:
 onboarding-assignment_tutorial-second_step-continuation-v2 = Strona z rzepem dla przedłużenia powinna być skierowana do góry, jak na poniższym obrazku:
 onboarding-assignment_tutorial-done = Umieszczam naklejki i paski!
 
@@ -816,6 +829,9 @@ onboarding-choose_proportions-manual_proportions = Ręczne proporcje
 onboarding-choose_proportions-manual_proportions-subtitle = Drobne detale
 onboarding-choose_proportions-manual_proportions-description = Umożliwi to ręczne dostosowanie proporcji poprzez ich bezpośrednią modyfikację
 onboarding-choose_proportions-export = Eksportuj proporcje
+onboarding-choose_proportions-import = Importuj proporcje
+onboarding-choose_proportions-import-success = Importowane
+onboarding-choose_proportions-import-failed = Niepowodzenie
 onboarding-choose_proportions-file_type = Proporcje ciała
 
 ## Tracker manual proportions setup

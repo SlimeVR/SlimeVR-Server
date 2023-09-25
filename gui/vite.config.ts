@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig, PluginOption } from 'vite';
 import { execSync } from 'child_process';
+import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer';
 
 const commitHash = execSync('git rev-parse --verify --short HEAD').toString().trim();
@@ -48,4 +49,9 @@ export default defineConfig({
     needsInterop: ['solarxr-protocol'],
     include: ['solarxr-protocol'],
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  }
 });

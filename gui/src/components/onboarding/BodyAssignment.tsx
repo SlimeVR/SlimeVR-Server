@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { BodyPart } from 'solarxr-protocol';
-import { FlatDeviceTracker } from '../../hooks/app';
-import { useTrackers } from '../../hooks/tracker';
-import { BodyInteractions } from '../commons/BodyInteractions';
-import { TrackerPartCard } from '../tracker/TrackerPartCard';
+import { FlatDeviceTracker } from '@/hooks/app';
+import { useTrackers } from '@/hooks/tracker';
+import { BodyInteractions } from '@/components/commons/BodyInteractions';
+import { TrackerPartCard } from '@/components/tracker/TrackerPartCard';
 import { BodyPartError } from './pages/trackers-assign/TrackerAssignment';
 
 export const SPINE_PARTS = [

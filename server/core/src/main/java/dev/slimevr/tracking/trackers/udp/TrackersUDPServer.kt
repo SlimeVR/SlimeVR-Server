@@ -20,8 +20,6 @@ import java.net.SocketAddress
 import java.net.SocketTimeoutException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
 import java.util.Random
 import java.util.function.Consumer
 
@@ -43,7 +41,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		}.map {
 			// This ignores IPv6 addresses
 			it.broadcast
-		}.filterNotNull().map { InetSocketAddress(it, this.port) }.toList()
+		}.filter { it != null && it.isSiteLocalAddress }.map { InetSocketAddress(it, this.port) }.toList()
 	} catch (e: Exception) {
 		LogManager.severe("[TrackerServer] Can't enumerate network interfaces", e)
 		emptyList()
@@ -59,15 +57,19 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 	private fun setUpNewConnection(handshakePacket: DatagramPacket, handshake: UDPPacket3Handshake) {
 		LogManager.info("[TrackerServer] Handshake received from ${handshakePacket.address}:${handshakePacket.port}")
 		val addr = handshakePacket.address
+		val socketAddr = handshakePacket.socketAddress
 
+		// Get a connection either by an existing one, or by creating a new one
 		val connection: UDPDevice = synchronized(connections) {
 			connectionsByMAC[handshake.macString]?.apply {
+				// Look for an existing connection by the MAC address and update the
+				// connection information
 				connectionsByAddress.remove(address)
-				address = handshakePacket.socketAddress
+				address = socketAddr
 				lastPacketNumber = 0
 				ipAddress = addr
 				name = handshake.macString?.let { "udp://$it" }
-				descriptiveName = "udp:/${handshakePacket.address}"
+				descriptiveName = "udp:/$addr"
 				firmwareBuild = handshake.firmwareBuild
 				connectionsByAddress[address] = this
 
@@ -75,7 +77,28 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				LogManager
 					.info(
 						"""
-						[TrackerServer] Tracker $i handed over to address ${handshakePacket.socketAddress}.
+						[TrackerServer] Tracker $i handed over to address $socketAddr.
+						Board type: ${handshake.boardType},
+						imu type: ${handshake.imuType},
+						firmware: ${handshake.firmware} ($firmwareBuild),
+						mac: ${handshake.macString},
+						name: $name
+						""".trimIndent()
+					)
+			} ?: connectionsByAddress[socketAddr]?.apply {
+				// Look for an existing connection by the socket address (IP and port)
+				// and update the connection information
+				lastPacketNumber = 0
+				ipAddress = addr
+				name = handshake.macString?.let { "udp://$it" }
+					?: "udp:/$addr"
+				descriptiveName = "udp:/$addr"
+				firmwareBuild = handshake.firmwareBuild
+				val i = connections.indexOf(this)
+				LogManager
+					.info(
+						"""
+						[TrackerServer] Tracker $i reconnected from address $socketAddr.
 						Board type: ${handshake.boardType},
 						imu type: ${handshake.imuType},
 						firmware: ${handshake.firmware} ($firmwareBuild),
@@ -85,8 +108,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					)
 			}
 		} ?: run {
+			// No existing connection could be found, create a new one
 			val connection = UDPDevice(
-				handshakePacket.socketAddress,
+				socketAddr,
 				addr,
 				handshake.macString ?: addr.hostAddress,
 				handshake.boardType,
@@ -101,53 +125,31 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				NetworkProtocol.SLIMEVR_RAW
 			}
 			connection.name = handshake.macString?.let { "udp://$it" }
-				?: "udp:/${handshakePacket.address}"
+				?: "udp:/$addr"
 			// TODO: The missing slash in udp:// was intended because InetAddress.toString()
 			// 		returns "hostname/address" but it wasn't known that if hostname is empty
 			// 		string it just looks like "/address" lol.
 			// 		Fixing this would break config!
-			connection.descriptiveName = "udp:/${handshakePacket.address}"
+			connection.descriptiveName = "udp:/$addr"
 			synchronized(connections) {
-				if (handshake.macString != null && connectionsByMAC.containsKey(handshake.macString)) {
-					val previousConnection = connectionsByMAC[handshake.macString]!!
-					val i = connections.indexOf(previousConnection)
-					connectionsByAddress.remove(previousConnection.address)
-					previousConnection.lastPacketNumber = 0
-					previousConnection.ipAddress = addr
-					previousConnection.address = handshakePacket.socketAddress
-					previousConnection.name = connection.name
-					previousConnection.descriptiveName = connection.descriptiveName
-					connectionsByAddress[handshakePacket.socketAddress] = previousConnection
-					LogManager
-						.info(
-							"""
-							[TrackerServer] Tracker $i handed over to address ${handshakePacket.socketAddress}.
-							Board type: ${handshake.boardType},
-							imu type: ${handshake.imuType},
-							firmware: ${handshake.firmware} (${connection.firmwareBuild}),
-							mac: ${handshake.macString},
-							name: ${previousConnection.name}
-							""".trimIndent()
-						)
-				} else {
-					val i = connections.size
-					connections.add(connection)
-					connectionsByAddress[handshakePacket.socketAddress] = connection
-					if (handshake.macString != null) {
-						connectionsByMAC[handshake.macString!!] = connection
-					}
-					LogManager
-						.info(
-							"""
-							[TrackerServer] Tracker $i handed over to address ${handshakePacket.socketAddress}.
-							Board type: ${handshake.boardType},
-							imu type: ${handshake.imuType},
-							firmware: ${handshake.firmware} (${connection.firmwareBuild}),
-							mac: ${handshake.macString},
-							name: ${connection.name}
-							""".trimIndent()
-						)
+				// Register the new connection
+				val i = connections.size
+				connections.add(connection)
+				connectionsByAddress[socketAddr] = connection
+				if (handshake.macString != null) {
+					connectionsByMAC[handshake.macString!!] = connection
 				}
+				LogManager
+					.info(
+						"""
+						[TrackerServer] Tracker $i connected from address $socketAddr.
+						Board type: ${handshake.boardType},
+						imu type: ${handshake.imuType},
+						firmware: ${handshake.firmware} (${connection.firmwareBuild}),
+						mac: ${handshake.macString},
+						name: ${connection.name}
+						""".trimIndent()
+					)
 			}
 			if (connection.protocol == NetworkProtocol.OWO_LEGACY || connection.firmwareBuild < 9) {
 				// Set up new sensor for older firmware.
@@ -168,12 +170,16 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
+			var formattedHWID = connection.hardwareIdentifier.replace(":", "").takeLast(5)
+			if (trackerId != 0) {
+				formattedHWID += "_$trackerId"
+			}
+
 			imuTracker = Tracker(
 				connection,
 				VRServer.getNextLocalTrackerId(),
 				connection.name + "/" + trackerId,
-				"IMU Tracker " + MessageDigest.getInstance("SHA-256")
-					.digest(connection.hardwareIdentifier.toByteArray(StandardCharsets.UTF_8)).toString().subSequence(3, 8),
+				"IMU Tracker $formattedHWID",
 				null,
 				trackerNum = trackerId,
 				hasRotation = true,

@@ -17,19 +17,19 @@ import {
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
 } from 'solarxr-protocol';
-import { useConfig } from '../../../hooks/config';
-import { useWebsocketAPI } from '../../../hooks/websocket-api';
-import { useLocaleConfig } from '../../../i18n/config';
-import { CheckBox } from '../../commons/Checkbox';
-import { SteamIcon } from '../../commons/icon/SteamIcon';
-import { WrenchIcon } from '../../commons/icon/WrenchIcons';
-import { NumberSelector } from '../../commons/NumberSelector';
-import { Radio } from '../../commons/Radio';
-import { Typography } from '../../commons/Typography';
+import { useConfig } from '@/hooks/config';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useLocaleConfig } from '@/i18n/config';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { SteamIcon } from '@/components/commons/icon/SteamIcon';
+import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
+import { NumberSelector } from '@/components/commons/NumberSelector';
+import { Radio } from '@/components/commons/Radio';
+import { Typography } from '@/components/commons/Typography';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
-} from '../SettingsPageLayout';
+} from '@/components/settings/SettingsPageLayout';
 
 interface SettingsForm {
   trackers: {

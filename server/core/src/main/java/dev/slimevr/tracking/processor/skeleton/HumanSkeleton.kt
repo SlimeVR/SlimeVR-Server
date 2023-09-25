@@ -877,9 +877,7 @@ class HumanSkeleton(
 		computedLeftKneeTracker!!.dataTick()
 
 		computedLeftFootTracker!!.position = trackerLeftFootNode.worldTransform.translation
-		var rot = trackerLeftFootNode.worldTransform.rotation
-		if (hasLeftFootTracker) rot = rot.times(FORWARD_QUATERNION)
-		computedLeftFootTracker!!.setRotation(rot)
+		computedLeftFootTracker!!.setRotation(trackerLeftFootNode.worldTransform.rotation)
 		computedLeftFootTracker!!.dataTick()
 
 		computedRightKneeTracker!!.position = trackerRightKneeNode.worldTransform.translation
@@ -887,9 +885,7 @@ class HumanSkeleton(
 		computedRightKneeTracker!!.dataTick()
 
 		computedRightFootTracker!!.position = trackerRightFootNode.worldTransform.translation
-		rot = trackerRightFootNode.worldTransform.rotation
-		if (hasRightFootTracker) rot = rot.times(FORWARD_QUATERNION)
-		computedRightFootTracker!!.setRotation(rot)
+		computedRightFootTracker!!.setRotation(trackerRightFootNode.worldTransform.rotation)
 		computedRightFootTracker!!.dataTick()
 
 		computedLeftElbowTracker!!.position = trackerLeftElbowNode.worldTransform.translation
@@ -1075,8 +1071,8 @@ class HumanSkeleton(
 				BoneType.RIGHT_FOOT_TRACKER -> trackerRightFootNode
 				BoneType.LEFT_SHOULDER -> leftShoulderTailNode
 				BoneType.RIGHT_SHOULDER -> rightShoulderTailNode
-				BoneType.LEFT_UPPER_ARM -> if (!isTrackingLeftArmFromController) leftElbowNode else null
-				BoneType.RIGHT_UPPER_ARM -> if (!isTrackingLeftArmFromController) rightElbowNode else null
+				BoneType.LEFT_UPPER_ARM -> leftElbowNode
+				BoneType.RIGHT_UPPER_ARM -> rightElbowNode
 				BoneType.LEFT_ELBOW_TRACKER -> trackerLeftElbowNode
 				BoneType.RIGHT_ELBOW_TRACKER -> trackerRightElbowNode
 				BoneType.LEFT_LOWER_ARM -> if (isTrackingLeftArmFromController) leftElbowNode else leftWristNode
