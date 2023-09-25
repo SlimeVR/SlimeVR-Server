@@ -13,7 +13,6 @@ class IKSolver(val root: Bone) {
 	var chainList = mutableListOf<IKChain>()
 	var rootChain: IKChain? = null
 
-
 	fun buildChains(trackers: List<Tracker>) {
 		chainList = mutableListOf()
 
@@ -21,33 +20,72 @@ class IKSolver(val root: Bone) {
 		val constraints = extractConstraints(trackers)
 
 		// build the system of chains
-		rootChain = chainBuilder(root, null, 0)
+		rootChain = chainBuilder(root, null, 0, constraints)
+		populateChainList(rootChain!!)
+
+		// check if there is any constraints (other than the head) in the model
+		rootChain = if (neededChain(rootChain!!)) rootChain else null
 		chainList.sortBy { -it.level }
 
+		print("DEBUG chainList.size = ")
 		println(chainList.size)
+	}
+
+	// prints the system of chains
+	private fun printer(root: IKChain?) {
+		if (root == null) {
+			return
+		}
+
+		for (n in root.nodes) {
+			println(n.boneType.name)
+			println(n.length)
+		}
+
+		println("\n")
+		var lastPos = Vector3.NULL
+		for (n in root.positions) {
+			println((n - lastPos).len())
+			println(n)
+			lastPos = n
+		}
+
+		println("\n")
+		println(root.tailConstraint?.tracker?.position)
+
+		for (c in root.children) {
+			printer(c)
+		}
 	}
 
 	// convert the skeleton in to a system of chains
 	// a break in a chain is created at any point that has either
 	// multiple children or is positionally constrained, useless chains are discarded
-	private fun chainBuilder(root: Bone, parent: IKChain?, level: Int): IKChain {
+	private fun chainBuilder(root: Bone, parent: IKChain?, level: Int, constraints: MutableList<IKConstraint>): IKChain {
 		val boneList = mutableListOf<Bone>()
-
 		var currentBone = root
 		boneList.add(currentBone)
-		while(currentBone.children.size == 1) {
+
+		// get constraints
+		val baseConstraint = if (parent == null) getConstraint(boneList.first(), constraints)
+							 else parent.tailConstraint
+		var tailConstraint: IKConstraint? = null
+
+		// add bones until there is a reason to make a new chain
+		while(currentBone.children.size == 1 && tailConstraint == null) {
 			currentBone = currentBone.children[0]
 			boneList.add(currentBone)
+			tailConstraint = getConstraint(boneList.last(), constraints)
 		}
 
-		val chain = IKChain(boneList, parent, level, null, null)
+		var chain = IKChain(boneList, parent, level, baseConstraint, tailConstraint)
 
 		if (currentBone.children.isNotEmpty()) {
 			val childrenList = mutableListOf<IKChain>()
 
 			// build child chains
 			for (child in currentBone.children) {
-				val childChain = chainBuilder(child, chain, level + 1)
+				val childChain = chainBuilder(child, chain, level + 1, constraints)
 				if (neededChain(childChain)) {
 					childrenList.add(childChain)
 				}
@@ -55,18 +93,44 @@ class IKSolver(val root: Bone) {
 			chain.children = childrenList
 		}
 
-		if (chain.children.isNotEmpty() || chain.tailConstraint != null)
-			chainList.add(chain)
+		// if the chain has only one child and no tail constraint combine the chains
+		if (chain.children.size == 1 && chain.tailConstraint == null)
+			chain = combineChains(chain, chain.children[0])
 
 		return chain
 	}
 
-	// a chain is needed if there is a positional constraint in its children
-	private fun neededChain(ikChain: IKChain): Boolean {
-		if (ikChain.children.isEmpty() && ikChain.tailConstraint == null)
-			return false
+	private fun populateChainList(chain: IKChain) {
+		chainList.add(chain)
+		for (c in chain.children) {
+			populateChainList(c)
+		}
+	}
 
-		for (c in ikChain.children) {
+	private fun combineChains(chain: IKChain, childChain: IKChain): IKChain {
+		val boneList = mutableListOf<Bone>()
+		boneList.addAll(chain.nodes)
+		boneList.addAll(childChain.nodes)
+
+		val newChain = IKChain(boneList, chain.parent, chain.level,
+			chain.baseConstraint, childChain.tailConstraint)
+
+		newChain.children = childChain.children
+
+		for (c in newChain.children) {
+			c.parent = newChain
+		}
+
+		return newChain
+	}
+
+	// a chain is needed if there is a positional constraint in its children
+	private fun neededChain(chain: IKChain): Boolean {
+		if (chain.tailConstraint != null) {
+			return true
+		}
+
+		for (c in chain.children) {
 			if (c.tailConstraint != null)
 				return true
 
@@ -82,44 +146,51 @@ class IKSolver(val root: Bone) {
 
 		// each tracker that has position is a positional constraint
 		for (t in trackers) {
-			if (t.hasPosition)
+			if (t.hasPosition && !t.isInternal &&
+				!t.status.reset)
 				constraintList.add(IKConstraint(t))
 		}
-
 		return constraintList
 	}
 
-	fun solve() {
-		for (chain in chainList) {
-			chain.updatePositions()
+	private fun getConstraint(bone: Bone, constraints: MutableList<IKConstraint>): IKConstraint? {
+		for (c in constraints) {
+			if (bone.boneType.bodyPart == (c.tracker.trackerPosition?.bodyPart ?: 0)) {
+				constraints.remove(c)
+				return c
+			}
 		}
+		return null
+	}
 
+	fun solve() {
 		// for now run 10 iterations per tick
-		for (i in 0..100) {
-
-			//println("iter $i")
+		for (i in 0..10) {
 			for (chain in chainList) {
 				chain.backwards()
 			}
 			rootChain?.forwardsMulti()
-
 		}
-
 		// update transforms
 		root.update()
+
+		// print distances to the root constraints
+		for (c in chainList) {
+			println("\n")
+			println(c.tailConstraint?.tracker?.position)
+			println(c.positions.last())
+		}
 
 	}
 }
 
-class IKChain(val nodes: MutableList<Bone>, val parent: IKChain?, val level: Int,
+class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int,
 				val baseConstraint: IKConstraint? , val tailConstraint: IKConstraint?) {
-	val baseNode = nodes.first()
-	val tailNode = nodes.last()
 	var children = mutableListOf<IKChain>()
-	private var positions = getPositionList()
-
+	var positions = getPositionList()
 	var target = Vector3.NULL
-	val squThreshold = 0.01f
+
+	val squThreshold = 0.0001f
 
 	private fun getPositionList(): MutableList<Vector3> {
 		val posList = mutableListOf<Vector3>()
@@ -135,23 +206,17 @@ class IKChain(val nodes: MutableList<Bone>, val parent: IKChain?, val level: Int
 		for (i in nodes.indices) {
 			positions[i] = nodes[i].getPosition()
 		}
-		positions[positions.size - 1] = tailNode.getTailPosition()
+		positions[positions.size - 1] = nodes.last().getTailPosition()
 	}
 
 	fun backwards() {
-		val origin = baseNode.getPosition()
-
-		if (children.size > 1 && tailConstraint == null) {
+		// start at the constraint or the centroid of the children
+		if (tailConstraint == null && children.size > 1)
 			target /= children.size.toFloat()
-		}
-		else {
-			// TODO set constraints here
-			target = Vector3.NULL
-		}
+		else
+			target = tailConstraint?.tracker?.position ?: Vector3.NULL
 
 		if ((positions.last() - target).lenSq() > squThreshold) {
-			//println((positions.last() - target).lenSq())
-
 			// set the end node to target
 			positions[positions.size - 1] = target
 
@@ -161,83 +226,51 @@ class IKChain(val nodes: MutableList<Bone>, val parent: IKChain?, val level: Int
 			}
 		}
 
-		if (parent != null && parent.tailConstraint == null) {
-			parent.target += positions[0]
-		}
-
-		// restore the base position
-		positions[0] = origin
-
+		if (parent != null)
+			parent!!.target += positions[0]
 	}
 
 	private fun forwards() {
+		if (baseConstraint != null)
+			positions[0] = baseConstraint.tracker.position
+		else if (parent != null)
+			positions[0] = parent!!.positions.last()
+
 		for (i in 1 until positions.size - 1) {
 			val direction = (positions[i] - positions[i - 1]).unit()
 
 			// TODO apply constraints here
-			setBoneRotation(nodes[i - 1], direction, i - 1)
+			setBoneRotation(nodes[i - 1], direction)
 
 			positions[i] = positions[i - 1] + (direction * nodes[i - 1].length)
 		}
 
-		// if there are children and the tail of this chain is not constrained
-		// we must average the children direction and use this to set the
-		// starting point for the children
+		// set the last node position to point at the centroid of the children
+		// or the positional constraint
 		if (children.isNotEmpty() && tailConstraint == null) {
-			// reset target for next pass
-			target = Vector3.NULL
-
-			// average the children positions
-			var direction = Vector3.NULL
-			for (c in children) {
-				direction += (c.positions[0] - positions[positions.size - 2]).unit()
-			}
-
-			// set the last position using direction
-			direction /= children.size.toFloat()
-			positions[positions.size - 1] = positions[positions.size - 2] + (direction * tailNode.length)
-
-			// set the children start positions for their forward passes // TODO investigate
-			for (c in children) {
-				c.positions[0] = positions[positions.size - 1]
-			}
-
-			// update the Bone
-			setBoneRotation(tailNode, direction, nodes.size - 1)
-		}
-		else if (children.isEmpty()) {
 			val direction = (target - positions[positions.size - 2]).unit()
-			positions[positions.size - 1] = positions[positions.size - 2] + (direction * tailNode.length)
-
-			setBoneRotation(tailNode, direction, nodes.size - 1)
+			positions[positions.size - 1] = positions[positions.size - 2] + (direction * nodes.last().length)
+			setBoneRotation(nodes.last(), direction)
+		}
+		else if (tailConstraint != null) {
+			val direction = (tailConstraint.tracker.position - positions[positions.size - 2]).unit()
+			positions[positions.size - 1] = positions[positions.size - 2] + (direction * nodes.last().length)
+			setBoneRotation(nodes.last(), direction)
 		}
 
+		target = Vector3.NULL
 	}
 
 	fun forwardsMulti() {
 		forwards()
 
-		for (c in (children)) {
+		for (c in children) {
 			c.forwardsMulti()
 		}
-
 	}
 
-	private fun setBoneRotation(bone: Bone, rotationVector: Vector3, nodeIdx: Int) {
-//		val parentRot = if (nodeIdx == 0) {
-//			parent?.nodes?.last()?.getGlobalRotation() ?: baseNode.getGlobalRotation()
-//		}
-//		else  (
-//			nodes[nodeIdx - 1].getGlobalRotation()
-//		)
-//
-//		val globalRotation = Quaternion.fromRotationVector(rotationVector)
-//		val localRotation = parentRot.inv() * globalRotation
-//
-//		bone.setRotation(localRotation)
-
-		bone.setRotation(Quaternion.fromRotationVector(rotationVector))
-
+	private fun setBoneRotation(bone: Bone, rotationVector: Vector3) {
+		bone.setRotation(Quaternion.fromTo(Vector3.NEG_Y, rotationVector))
 	}
 }
 
