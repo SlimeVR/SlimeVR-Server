@@ -25,4 +25,11 @@
     <frameworks>
         <framework>WebKit</framework>
     </frameworks>
+    <tools>
+        <linker>
+            <flags>
+                <flag>-ld_classic</flag>
+            </flags>
+        </linker>
+    </tools>
 </config>
