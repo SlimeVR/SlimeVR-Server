@@ -19,8 +19,9 @@
         <pattern>java.util.logging.SimpleFormatter</pattern>
         <pattern>java.util.logging.LoggingProxyImpl</pattern>
         <pattern>android.icu.impl.TimeZoneNamesFactoryImpl</pattern>
-        <databind>com.fasterxml.jackson.databind.**</databind>
-        <databind>com.google.flatbuffers.**</databind>
+        <pattern>com.fasterxml.jackson.databind.**</pattern>
+        <pattern>com.google.flatbuffers.**</pattern>
+        <pattern>kotlin.reflect.jvm.internal.ReflectionFactoryImpl</pattern>
     </forceLinkClasses>
     <frameworks>
         <framework>WebKit</framework>
