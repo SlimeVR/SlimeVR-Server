@@ -81,7 +81,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						name: $name
 						""".trimIndent()
 					)
-			}
+			} ?: connectionsByAddress[handshakePacket.socketAddress]
 		} ?: run {
 			val connection = UDPDevice(
 				handshakePacket.socketAddress,
