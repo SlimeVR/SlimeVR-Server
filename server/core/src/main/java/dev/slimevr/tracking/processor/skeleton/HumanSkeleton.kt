@@ -1071,8 +1071,8 @@ class HumanSkeleton(
 				BoneType.RIGHT_FOOT_TRACKER -> trackerRightFootNode
 				BoneType.LEFT_SHOULDER -> leftShoulderTailNode
 				BoneType.RIGHT_SHOULDER -> rightShoulderTailNode
-				BoneType.LEFT_UPPER_ARM -> if (!isTrackingLeftArmFromController) leftElbowNode else null
-				BoneType.RIGHT_UPPER_ARM -> if (!isTrackingLeftArmFromController) rightElbowNode else null
+				BoneType.LEFT_UPPER_ARM -> leftElbowNode
+				BoneType.RIGHT_UPPER_ARM -> rightElbowNode
 				BoneType.LEFT_ELBOW_TRACKER -> trackerLeftElbowNode
 				BoneType.RIGHT_ELBOW_TRACKER -> trackerRightElbowNode
 				BoneType.LEFT_LOWER_ARM -> if (isTrackingLeftArmFromController) leftElbowNode else leftWristNode
