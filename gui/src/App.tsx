@@ -52,6 +52,7 @@ import { VRModePage } from './components/vr-mode/VRModePage';
 import { InterfaceSettings } from './components/settings/pages/InterfaceSettings';
 import { error, log } from './utils/logging';
 import { AppLayout } from './AppLayout';
+import { Preload } from './components/Preload';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -252,6 +253,7 @@ export default function App() {
               <StatusProvider>
                 <VersionContext.Provider value={updateFound}>
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
+                    <Preload />
                     <div className="flex-col h-full">
                       {!websocketAPI.isConnected && (
                         <>
