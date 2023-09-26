@@ -15,12 +15,15 @@ import { ProgressBar } from './commons/ProgressBar';
 import { Typography } from './commons/Typography';
 import { DownloadIcon } from './commons/icon/DownloadIcon';
 import { open } from '@tauri-apps/plugin-shell';
-import { GH_REPO, VersionContext, DOCS_SITE } from '@/App';
+import { DOCS_SITE, GH_REPO, VersionContext } from '@/App';
 import classNames from 'classnames';
 import { QuestionIcon } from './commons/icon/QuestionIcon';
 import { useBreakpoint, useIsTauri } from '@/hooks/breakpoint';
 import { GearIcon } from './commons/icon/GearIcon';
 import { invoke } from '@tauri-apps/api';
+import { useTrackers } from '@/hooks/tracker';
+import { TrackersStillOnModal } from './TrackersStillOnModal';
+import { useConfig } from '@/hooks/config';
 
 export function VersionTag() {
   return (
@@ -40,6 +43,11 @@ export function VersionTag() {
   );
 }
 
+export async function CloseApp() {
+  await invoke('update_window_state');
+  getCurrent().close();
+}
+
 export function TopBar({
   progress,
 }: {
@@ -49,8 +57,13 @@ export function TopBar({
   const isTauri = useIsTauri();
   const { isMobile } = useBreakpoint('mobile');
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+  const { useConnectedIMUTrackers } = useTrackers();
+  const connectedIMUTrackers = useConnectedIMUTrackers();
+  const { config } = useConfig();
   const version = useContext(VersionContext);
   const [localIp, setLocalIp] = useState<string | null>(null);
+  const [showConnectedTrackersWarning, setConnectedTrackerWarning] =
+    useState(false);
   const doesMatchSettings = useMatch({
     path: '/settings/*',
   });
@@ -197,9 +210,13 @@ export function TopBar({
                 </div>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={async () => {
-                    await invoke('update_window_state');
-                    getCurrent().close();
+                  onClick={() => {
+                    if (
+                      config?.connectedTrackersWarning &&
+                      connectedIMUTrackers.length > 0
+                    )
+                      setConnectedTrackerWarning(true);
+                    else CloseApp();
                   }}
                 >
                   <CloseIcon></CloseIcon>
@@ -214,6 +231,11 @@ export function TopBar({
           </div>
         )}
       </div>
+      <TrackersStillOnModal
+        isOpen={showConnectedTrackersWarning}
+        accept={() => CloseApp()}
+        cancel={() => setConnectedTrackerWarning(false)}
+      ></TrackersStillOnModal>
     </>
   );
 }

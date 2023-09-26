@@ -443,6 +443,9 @@ settings-general-interface-feedback_sound = Son de retour
 settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée.
 settings-general-interface-feedback_sound-label = Son de retour
 settings-general-interface-feedback_sound-volume = Volume du son de retour
+settings-general-interface-connected_trackers_warning = Avertissement de capteurs connectés
+settings-general-interface-connected_trackers_warning-description = Cette option affichera une fenêtre chaque fois que vous essaierez de quitter SlimeVR tout en ayant un ou plusieurs capteurs connectés. Cette option vous rappelle d'éteindre vos capteurs une fois leur usage terminé afin de préserver la durée de vie des batteries.
+settings-general-interface-connected_trackers_warning-label = Avertissement de capteurs connectés à la fermeture de SlimeVR
 
 ## Serial settings
 
@@ -591,20 +594,20 @@ onboarding-reset_tutorial-skip = Sauter l'étape
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour effectuer une réinitialisation horizontale.
-    
+
     Cela orientera les capteurs dans la même direction que votre casque VR.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour effectuer une réinitialisation complète.
-    
+
     Vous devrez restez en position « i » (droit debout, bras le long du corps). Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
     Cela réinitialise complètement la position et la rotation de tout vos capteurs, ce qui devrait corriger la plupart des problèmes.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour réinitialiser l'alignement des capteurs.
-    
+
     La réinitialisation de l'alignement des capteurs aide à définir la façon dont ces derniers sont portés sur vous. Cela aidera si vous en avez déplacé un sur vous accidentellement.
-    
+
     Accroupissez-vous dans une position de « ski » comme affiché sur l'assistant d'alignement des capteurs. Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
 
 ## Setup start
@@ -814,7 +817,7 @@ onboarding-choose_proportions-auto_proportions = Proportions automatiques
 onboarding-choose_proportions-auto_proportions-subtitle = Recommendée
 onboarding-choose_proportions-auto_proportions-descriptionv2 =
     Cela permettra d'estimer vos proportions en enregistrant un échantillon de vos mouvements et en le faisant passer par un algorithme.
-    
+
     <b>Cela nécessite d’avoir votre casque VR connecté à SlimeVR !</b>
 onboarding-choose_proportions-manual_proportions = Proportions manuelles
 # Italized text
@@ -903,6 +906,14 @@ onboarding-automatic_proportions-error_modal-confirm = Compris !
 ## Home
 
 home-no_trackers = Aucun capteur détecté ou attribué
+
+## Trackers Still On notification
+trackers_still_on-modal-title = Capteurs toujours connectés
+trackers_still_on-modal-description =
+    Un ou plusieurs capteurs sont encore connectés.
+    Voulez-vous tout de même fermer SlimeVR ?
+trackers_still_on-modal-confirm = Fermer SlimeVR
+trackers_still_on-modal-cancel = Un instant...
 
 ## Status system
 
