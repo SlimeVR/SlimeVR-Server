@@ -116,8 +116,6 @@ class IKSolver(val root: Bone) {
 
 	private fun extractConstraints(trackers: List<Tracker>): MutableList<IKConstraint> {
 		val constraintList = mutableListOf<IKConstraint>()
-
-		// each tracker that has position is a positional constraint
 		for (t in trackers) {
 			if (t.hasPosition && !t.isInternal &&
 				!t.status.reset)
@@ -137,12 +135,15 @@ class IKSolver(val root: Bone) {
 	}
 
 	fun solve() {
-		// for now run 100 iterations per tick
+		// run up to 100 iterations per tick
 		for (i in 0..100) {
 			for (chain in chainList) {
 				chain.backwards()
 			}
 			rootChain?.forwardsMulti()
+
+			if (chainList.all {it.solved})
+				break
 		}
 		// update transforms
 		root.update()
@@ -151,11 +152,13 @@ class IKSolver(val root: Bone) {
 
 class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int,
 				val baseConstraint: IKConstraint? , val tailConstraint: IKConstraint?) {
-	var children = mutableListOf<IKChain>()
-	var positions = getPositionList()
-	var target = Vector3.NULL
-
 	private val squThreshold = 0.00001f
+
+	// state variables
+	var children = mutableListOf<IKChain>()
+	var target = Vector3.NULL
+	var solved = false
+	private var positions = getPositionList()
 
 	private fun getPositionList(): MutableList<Vector3> {
 		val posList = mutableListOf<Vector3>()
@@ -182,6 +185,9 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 				val direction = (positions[i] - positions[i + 1]).unit()
 				positions[i] = positions[i + 1] + (direction * nodes[i].length)
 			}
+			solved = false
+		} else {
+			solved = true
 		}
 
 		if (parent != null)
@@ -203,19 +209,12 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 			positions[i] = positions[i - 1] + (direction * nodes[i - 1].length)
 		}
 
-		// set the last node position to point at the centroid of the children
-		// or the positional constraint
-		if (children.isNotEmpty() && tailConstraint == null) {
-			val direction = (target - positions[positions.size - 2]).unit()
-			positions[positions.size - 1] = positions[positions.size - 2] + (direction * nodes.last().length)
-			setBoneRotation(nodes.last(), direction)
-		}
-		else if (tailConstraint != null) {
-			val direction = (tailConstraint.tracker.position - positions[positions.size - 2]).unit()
-			positions[positions.size - 1] = positions[positions.size - 2] + (direction * nodes.last().length)
-			setBoneRotation(nodes.last(), direction)
-		}
+		// point the last bone at the target
+		val direction = (target - positions[positions.size - 2]).unit()
+		positions[positions.size - 1] = positions[positions.size - 2] + (direction * nodes.last().length)
+		setBoneRotation(nodes.last(), direction)
 
+		// reset sub-base target
 		target = Vector3.NULL
 	}
 
