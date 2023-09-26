@@ -48,8 +48,9 @@
 
           # https://devenv.sh/reference/options/
           packages =
-            [
-            ]
+            (with pkgs; [
+              cacert
+            ])
             ++ lib.optionals pkgs.stdenv.isLinux (with pkgs; [
               appimagekit
               atk
@@ -59,6 +60,7 @@
               dprint
               gdk-pixbuf
               glib.out
+              glib-networking
               gobject-introspection
               gtk3
               harfbuzz
@@ -95,6 +97,10 @@
           };
 
           languages.rust.enable = true;
+
+          env = {
+            GIO_EXTRA_MODULES = "${pkgs.glib-networking}/lib/gio/modules:${pkgs.dconf.lib}/lib/gio/modules";
+          };
 
           enterShell = with pkgs; ''
           '';
