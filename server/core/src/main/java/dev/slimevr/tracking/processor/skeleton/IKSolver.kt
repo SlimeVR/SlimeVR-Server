@@ -31,33 +31,6 @@ class IKSolver(val root: Bone) {
 		println(chainList.size)
 	}
 
-	// prints the system of chains
-	private fun printer(root: IKChain?) {
-		if (root == null) {
-			return
-		}
-
-		for (n in root.nodes) {
-			println(n.boneType.name)
-			println(n.length)
-		}
-
-		println("\n")
-		var lastPos = Vector3.NULL
-		for (n in root.positions) {
-			println((n - lastPos).len())
-			println(n)
-			lastPos = n
-		}
-
-		println("\n")
-		println(root.tailConstraint?.tracker?.position)
-
-		for (c in root.children) {
-			printer(c)
-		}
-	}
-
 	// convert the skeleton in to a system of chains
 	// a break in a chain is created at any point that has either
 	// multiple children or is positionally constrained, useless chains are discarded
@@ -164,8 +137,8 @@ class IKSolver(val root: Bone) {
 	}
 
 	fun solve() {
-		// for now run 10 iterations per tick
-		for (i in 0..10) {
+		// for now run 100 iterations per tick
+		for (i in 0..100) {
 			for (chain in chainList) {
 				chain.backwards()
 			}
@@ -173,14 +146,6 @@ class IKSolver(val root: Bone) {
 		}
 		// update transforms
 		root.update()
-
-		// print distances to the root constraints
-		for (c in chainList) {
-			println("\n")
-			println(c.tailConstraint?.tracker?.position)
-			println(c.positions.last())
-		}
-
 	}
 }
 
@@ -190,7 +155,7 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 	var positions = getPositionList()
 	var target = Vector3.NULL
 
-	val squThreshold = 0.0001f
+	private val squThreshold = 0.00001f
 
 	private fun getPositionList(): MutableList<Vector3> {
 		val posList = mutableListOf<Vector3>()
@@ -200,13 +165,6 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 		posList.add(nodes.last().getTailPosition())
 
 		return posList
-	}
-
-	fun updatePositions() {
-		for (i in nodes.indices) {
-			positions[i] = nodes[i].getPosition()
-		}
-		positions[positions.size - 1] = nodes.last().getTailPosition()
 	}
 
 	fun backwards() {
@@ -270,7 +228,7 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 	}
 
 	private fun setBoneRotation(bone: Bone, rotationVector: Vector3) {
-		bone.setRotation(Quaternion.fromTo(Vector3.NEG_Y, rotationVector))
+		bone.setRotationRaw(Quaternion.fromTo(Vector3.NEG_Y, rotationVector).unit())
 	}
 }
 
