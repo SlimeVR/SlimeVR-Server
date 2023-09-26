@@ -237,3 +237,11 @@ pub fn logger_format(
 		style(level).paint(record.args().to_string())
 	)
 }
+
+pub fn check_server_hash(file: &[u8]) -> bool {
+	use sha2::{Digest, Sha256};
+
+	let mut hasher = Sha256::new();
+	hasher.update(file);
+	hasher.finalize()[..] == build::ORIGINAL_SERVER_HASH
+}

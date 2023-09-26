@@ -24,6 +24,8 @@ custom-protocol = ["tauri/custom-protocol"]
 tauri-build = { version = "2.0.0-alpha.6", features = [] }
 cfg_aliases = "0.1"
 shadow-rs = "0.23"
+const-gen = { version = "1.5", default-features = false, features = ["std"] }
+sha2.workspace = true
 
 [dependencies]
 serde_json = "1"
@@ -53,6 +55,7 @@ cfg-if = "1"
 color-eyre = "0.6"
 rfd = "0.11.4"
 dirs-next = "2.0.0"
+sha2.workspace = true
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"

@@ -508,6 +508,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "const-gen"
+version = "1.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e986526a95b731c73425dd979ada78f3f39140e3694efe982c002e0f2a24acc"
+
+[[package]]
 name = "const_fn"
 version = "0.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3003,6 +3009,7 @@ dependencies = [
  "clap",
  "clap-verbosity-flag",
  "color-eyre",
+ "const-gen",
  "const_format",
  "dirs-next",
  "flexi_logger",
@@ -3014,6 +3021,7 @@ dependencies = [
  "rfd",
  "serde",
  "serde_json",
+ "sha2",
  "shadow-rs",
  "tauri",
  "tauri-build",

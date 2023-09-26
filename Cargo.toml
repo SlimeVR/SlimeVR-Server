@@ -12,6 +12,9 @@ license = "MIT OR Apache-2.0"
 rust-version = "1.65" # This version stabilized GATs and let-else
 repository = "https://github.com/SlimeVR/SlimeVR-Server"
 
+[workspace.dependencies]
+sha2 = "0.10.7"
+
 [profile.release]
 lto = "thin"
 strip = "debuginfo" # Only affects Unix binaries with DWARF

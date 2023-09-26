@@ -16,6 +16,7 @@ use tauri::RunEvent;
 use tauri::WindowEvent;
 use tauri_plugin_shell::process::CommandChild;
 
+use crate::util::check_server_hash;
 use crate::util::{
 	get_launch_path, show_error, valid_java_paths, Cli, JAVA_BIN, MINIMUM_JAVA_VERSION,
 };
@@ -81,12 +82,10 @@ fn main() -> Result<()> {
 		});
 
 		#[cfg(not(target_os = "macos"))]
-		let path = dirs_next::data_dir()
-			.ok_or(Error::UnknownPath)
-			.map(|dir| {
-				dir.join(&tauri_context.config().tauri.bundle.identifier)
-					.join("logs")
-			});
+		let path = dirs_next::data_dir().ok_or(Error::UnknownPath).map(|dir| {
+			dir.join(&tauri_context.config().tauri.bundle.identifier)
+				.join("logs")
+		});
 
 		Logger::try_with_env_or_str("info")?
 			.log_to_file(
@@ -156,10 +155,33 @@ fn main() -> Result<()> {
 			.or_else(|| valid_java_paths().first().map(|x| x.0.to_owned()));
 		let Some(java_bin) = java_bin else {
 			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
+			log::error!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION);
 			return Ok(());
 		};
 
 		log::info!("Using Java binary: {:?}", java_bin);
+
+		// Check if hash of jar is fine
+		let server_jar =
+			std::fs::read(p.join("slimevr.jar")).expect("Couldn't read the server jar");
+		if !check_server_hash(&server_jar) {
+			use rfd::{MessageButtons, MessageDialog, MessageLevel};
+
+			log::warn!("Found unsafe server jar, asking if we should continue");
+			let confirm = MessageDialog::new()
+				.set_title("SlimeVR")
+				.set_description("The server binary is a different hash compared to the one\nthis executable was built with!\nDo you want to run this unsafe SlimeVR server?")
+				.set_buttons(MessageButtons::OkCancel)
+				.set_level(MessageLevel::Warning)
+				.show();
+
+			if !confirm {
+				log::warn!("Stopping...");
+				return Ok(());
+			}
+			log::warn!("Continuing...")
+		}
+
 		Some((java_bin, p))
 	} else {
 		log::warn!("No server found. We will not start the server.");
