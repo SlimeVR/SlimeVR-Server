@@ -81,12 +81,10 @@ fn main() -> Result<()> {
 		});
 
 		#[cfg(not(target_os = "macos"))]
-		let path = dirs_next::data_dir()
-			.ok_or(Error::UnknownPath)
-			.map(|dir| {
-				dir.join(&tauri_context.config().tauri.bundle.identifier)
-					.join("logs")
-			});
+		let path = dirs_next::data_dir().ok_or(Error::UnknownPath).map(|dir| {
+			dir.join(&tauri_context.config().tauri.bundle.identifier)
+				.join("logs")
+		});
 
 		Logger::try_with_env_or_str("info")?
 			.log_to_file(
