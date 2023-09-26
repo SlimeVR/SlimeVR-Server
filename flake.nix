@@ -7,6 +7,7 @@
     nix2container.url = "github:nlewo/nix2container";
     nix2container.inputs.nixpkgs.follows = "nixpkgs";
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
+    fenix.url = "github:nix-community/fenix";
   };
 
   nixConfig = {
@@ -37,7 +38,10 @@
         # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
         # packages.default = pkgs.hello;
 
-        devenv.shells.default = {
+        devenv.shells.default = let
+          fenixpkgs = inputs'.fenix.packages;
+          rust_toolchain = lib.importTOML ./rust-toolchain.toml;
+        in {
           name = "slimevr";
 
           imports = [
@@ -94,7 +98,14 @@
             corepack.enable = true;
           };
 
-          languages.rust.enable = true;
+          languages.rust = {
+            enable = true;
+            toolchain = fenixpkgs.fromToolchainName {
+              name = rust_toolchain.toolchain.channel;
+              sha256 = "sha256-R0F0Risbr74xg9mEYydyebx/z0Wu6HI0/KWwrV30vZo=";
+            };
+            components = rust_toolchain.toolchain.components;
+          };
 
           enterShell = with pkgs; ''
           '';
