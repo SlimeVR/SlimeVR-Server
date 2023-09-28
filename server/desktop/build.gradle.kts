@@ -81,7 +81,7 @@ buildConfig {
 	packageName("dev.slimevr.desktop")
 
 	val gitVersionTag = providers.exec {
-		commandLine("git", "--no-pager", "tag", "--points-at", "HEAD")
+		commandLine("git", "--no-pager", "tag", "--sort", "-taggerdate", "--points-at", "HEAD")
 	}.standardOutput.asText.get().split('\n').first()
 	buildConfigField("String", "GIT_COMMIT_HASH", "\"${grgit.head().abbreviatedId}\"")
 	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag.trim()}\"")
