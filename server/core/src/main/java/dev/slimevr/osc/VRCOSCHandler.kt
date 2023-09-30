@@ -42,11 +42,16 @@ class VRCOSCHandler(
 	private val config: VRCOSCConfig,
 	private val computedTrackers: List<Tracker>,
 ) : OSCHandler {
+	private val oscQueryListenAddresses = arrayOf(
+		"/tracking/vrsystem/head/pose",
+		"/tracking/vrsystem/leftwrist/pose",
+		"/tracking/vrsystem/rightwrist/pose"
+	)
+	private val uprightListenAddress = "/avatar/parameters/Upright"
 	private val listenAddresses = arrayOf(
-		"/tracking/vrsystem/*/pose",
 		"/tracking/trackers/*/position",
 		"/tracking/trackers/*/rotation"
-	)
+	) + oscQueryListenAddresses + uprightListenAddress
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
 	private var oscMessage: OSCMessage? = null
@@ -68,6 +73,7 @@ class VRCOSCHandler(
 	private val postReceivingOffset = EulerAngles(EulerOrder.YXZ, 0f, FastMath.PI, 0f).toQuaternion()
 	private var timeAtLastReceivedRotationOffset = System.currentTimeMillis()
 	private var fpsTimer: NanoTimer? = null
+	private var oscQueryHandler: OSCQueryHandler? = null
 
 	init {
 		refreshSettings(false)
@@ -90,9 +96,12 @@ class VRCOSCHandler(
 		updateOscReceiver(config.portIn, listenAddresses)
 		updateOscSender(config.portOut, config.address)
 
-		if (config.enabled) {
+		oscQueryHandler = if (config.enabled) {
 			// Use OSCQuery
-			val OSCQueryHandler = OSCQueryHandler(this)
+			OSCQueryHandler(this, config.address, oscQueryListenAddresses, "VRChat")
+		} else {
+			// Disable OSCQuery
+			null
 		}
 
 		if (refreshRouterSettings) {
@@ -129,7 +138,7 @@ class VRCOSCHandler(
 				}
 				for (address in args) {
 					it.dispatcher.addListener(
-						OSCPatternAddressMessageSelector("address"),
+						OSCPatternAddressMessageSelector(address),
 						listener
 					)
 				}
@@ -182,138 +191,138 @@ class VRCOSCHandler(
 	}
 
 	private fun handleReceivedMessage(event: OSCMessageEvent) {
-		if (listenTrackers) {
-			if (event.message.address.equals("/avatar/parameters/Upright")) {
-				// Receiving HMD data from VRChat
-				if (steamvrBridge != null && !steamvrBridge.isConnected()) {
-					if (vrcHmd == null) {
-						val vrcDevice = server.deviceManager.createDevice("VRChat OSC", null, "VRChat")
-						server.deviceManager.addDevice(vrcDevice)
-						vrcHmd = Tracker(
-							device = vrcDevice,
-							id = VRServer.getNextLocalTrackerId(),
-							name = "VRC HMD",
-							displayName = "VRC HMD",
-							trackerPosition = TrackerPosition.HEAD,
-							trackerNum = 0,
-							hasPosition = true,
-							userEditable = false,
-							isComputed = true,
-							usesTimeout = true
-						)
-						vrcDevice.trackers[0] = vrcHmd!!
-						server.registerTracker(vrcHmd!!)
+		if (event.message.address.equals(uprightListenAddress) && listenTrackers) {
+			// LEGACY
+			// Receiving HMD y pos from VRChat
+			if (steamvrBridge != null && !steamvrBridge.isConnected()) {
+				if (vrcHmd == null) {
+					val vrcDevice = server.deviceManager.createDevice("VRChat OSC", null, "VRChat")
+					server.deviceManager.addDevice(vrcDevice)
+					vrcHmd = Tracker(
+						device = vrcDevice,
+						id = VRServer.getNextLocalTrackerId(),
+						name = "VRC HMD",
+						displayName = "VRC HMD",
+						trackerPosition = TrackerPosition.HEAD,
+						trackerNum = 0,
+						hasPosition = true,
+						userEditable = false,
+						isComputed = true,
+						usesTimeout = true
+					)
+					vrcDevice.trackers[0] = vrcHmd!!
+					server.registerTracker(vrcHmd!!)
+				}
+
+				// Sets HMD status to OK
+				vrcHmd!!.status = TrackerStatus.OK
+
+				// Sets the HMD y position to
+				// the vrc Upright parameter (0-1) * the user's height
+				vrcHmd!!
+					.position = Vector3(
+					0f,
+					event
+						.message
+						.arguments[0] as Float * humanPoseManager.userHeightFromConfig,
+					0f
+				)
+				vrcHmd!!.dataTick()
+			}
+		} else if (oscQueryListenAddresses.contains(event.message.address) && listenTrackers) {
+			// Receiving Head and Wrist pose data thanks to OSCQuery
+			LogManager.debug("received: " + event.message.address)
+		} else {
+			// Receiving OSC Trackers data. This is not receiving from VRChat.
+			// This cannot be replaced by OSCQuery
+			if (oscTrackersDevice == null) {
+				// Instantiate OSC Trackers device
+				oscTrackersDevice = server.deviceManager.createDevice("OSC Tracker", null, "OSC Trackers")
+				server.deviceManager.addDevice(oscTrackersDevice!!)
+			}
+
+			// Extract the x in "/tracking/trackers/x.../..."
+			val trackerStringValue = event.message.address.toString().subSequence(19, 20)
+			if (trackerStringValue == "h") {
+				// Head data
+				val slimeHead = headTracker
+				if (event.message.address.toString() == "/tracking/trackers/head/position") {
+					// Position offset
+					receivingPositionOffset = Vector3(
+						event.message.arguments[0] as Float,
+						event.message.arguments[1] as Float,
+						-(event.message.arguments[2] as Float)
+					)
+
+					if (slimeHead != null && slimeHead.hasPosition) {
+						postReceivingPositionOffset = slimeHead.position
+					}
+				} else {
+					// Rotation offset
+					val (w, x, y, z) = EulerAngles(EulerOrder.YXZ, event.message.arguments[0] as Float * FastMath.DEG_TO_RAD, event.message.arguments[1] as Float * FastMath.DEG_TO_RAD, event.message.arguments[2] as Float * FastMath.DEG_TO_RAD).toQuaternion()
+					receivingRotationOffsetGoal = Quaternion(w, -x, -y, z).inv()
+
+					receivingRotationOffsetGoal = if (slimeHead != null && slimeHead.hasRotation) {
+						slimeHead.getRotation().project(Vector3.POS_Y).unit() * receivingRotationOffsetGoal
+					} else {
+						receivingRotationOffsetGoal
 					}
 
-					// Sets HMD status to OK
-					vrcHmd!!.status = TrackerStatus.OK
+					// If greater than 300ms, snap to rotation
+					if (System.currentTimeMillis() - timeAtLastReceivedRotationOffset > 300) {
+						receivingRotationOffset = receivingRotationOffsetGoal
+					}
 
-					// Sets the HMD y position to
-					// the vrc Upright parameter (0-1) * the user's height
-					vrcHmd!!
-						.position = Vector3(
-						0f,
-						event
-							.message
-							.arguments[0] as Float * humanPoseManager.userHeightFromConfig,
-						0f
-					)
-					vrcHmd!!.dataTick()
+					// Update time variable
+					timeAtLastReceivedRotationOffset = System.currentTimeMillis()
 				}
 			} else {
-				// Receiving OSC Trackers data
-				if (oscTrackersDevice == null) {
-					// Instantiate OSC Trackers device
-					oscTrackersDevice = server.deviceManager.createDevice("OSC Tracker", null, "OSC Trackers")
-					server.deviceManager.addDevice(oscTrackersDevice!!)
+				// Trackers data (1-8)
+				val trackerId = trackerStringValue[0].digitToInt()
+				var tracker = oscTrackersDevice!!.trackers[trackerId]
+
+				if (tracker == null) {
+					tracker = Tracker(
+						device = oscTrackersDevice,
+						id = VRServer.getNextLocalTrackerId(),
+						name = "OSC Tracker #$trackerId",
+						displayName = "OSC Tracker #$trackerId",
+						trackerNum = trackerId,
+						trackerPosition = null,
+						hasRotation = true,
+						hasPosition = true,
+						userEditable = true,
+						isComputed = true,
+						needsReset = true,
+						usesTimeout = true
+					)
+					oscTrackersDevice!!.trackers[trackerId] = tracker
+					server.registerTracker(tracker)
 				}
 
-				// Extract the x in "/tracking/trackers/x.../..."
-				val trackerStringValue = event.message.address.toString().subSequence(19, 20)
-				if (trackerStringValue == "h") {
-					// Head data
-					val slimeHead = headTracker
-					if (event.message.address.toString() == "/tracking/trackers/head/position") {
-						// Position offset
-						receivingPositionOffset = Vector3(
+				// Sets the tracker status to OK
+				tracker.status = TrackerStatus.OK
+
+				if (event.message.address.toString() == "/tracking/trackers/$trackerId/position") {
+					tracker.position = receivingRotationOffset.sandwich(
+						Vector3(
 							event.message.arguments[0] as Float,
 							event.message.arguments[1] as Float,
 							-(event.message.arguments[2] as Float)
-						)
-
-						if (slimeHead != null && slimeHead.hasPosition) {
-							postReceivingPositionOffset = slimeHead.position
-						}
-					} else {
-						// Rotation offset
-						val (w, x, y, z) = EulerAngles(EulerOrder.YXZ, event.message.arguments[0] as Float * FastMath.DEG_TO_RAD, event.message.arguments[1] as Float * FastMath.DEG_TO_RAD, event.message.arguments[2] as Float * FastMath.DEG_TO_RAD).toQuaternion()
-						receivingRotationOffsetGoal = Quaternion(w, -x, -y, z).inv()
-
-						receivingRotationOffsetGoal = if (slimeHead != null && slimeHead.hasRotation) {
-							slimeHead.getRotation().project(Vector3.POS_Y).unit() * receivingRotationOffsetGoal
-						} else {
-							receivingRotationOffsetGoal
-						}
-
-						// If greater than 300ms, snap to rotation
-						if (System.currentTimeMillis() - timeAtLastReceivedRotationOffset > 300) {
-							receivingRotationOffset = receivingRotationOffsetGoal
-						}
-
-						// Update time variable
-						timeAtLastReceivedRotationOffset = System.currentTimeMillis()
-					}
+						) - receivingPositionOffset
+					) + postReceivingPositionOffset
 				} else {
-					// Trackers data (1-8)
-					val trackerId = trackerStringValue[0].digitToInt()
-					var tracker = oscTrackersDevice!!.trackers[trackerId]
-
-					if (tracker == null) {
-						tracker = Tracker(
-							device = oscTrackersDevice,
-							id = VRServer.getNextLocalTrackerId(),
-							name = "OSC Tracker #$trackerId",
-							displayName = "OSC Tracker #$trackerId",
-							trackerNum = trackerId,
-							trackerPosition = null,
-							hasRotation = true,
-							hasPosition = true,
-							userEditable = true,
-							isComputed = true,
-							needsReset = true,
-							usesTimeout = true
-						)
-						oscTrackersDevice!!.trackers[trackerId] = tracker
-						server.registerTracker(tracker)
-					}
-
-					// Sets the tracker status to OK
-					tracker.status = TrackerStatus.OK
-
-					if (event.message.address.toString() == "/tracking/trackers/$trackerId/position") {
-						tracker.position = receivingRotationOffset.sandwich(
-							Vector3(
-								event.message.arguments[0] as Float,
-								event.message.arguments[1] as Float,
-								-(event.message.arguments[2] as Float)
-							) - receivingPositionOffset
-						) + postReceivingPositionOffset
-					} else {
-						val (w, x, y, z) = EulerAngles(EulerOrder.YXZ, event.message.arguments[0] as Float * FastMath.DEG_TO_RAD, event.message.arguments[1] as Float * FastMath.DEG_TO_RAD, event.message.arguments[2] as Float * FastMath.DEG_TO_RAD).toQuaternion()
-						val rot = Quaternion(w, -x, -y, z)
-						tracker.setRotation(receivingRotationOffset * rot * postReceivingOffset)
-					}
-
-					tracker.dataTick()
+					val (w, x, y, z) = EulerAngles(EulerOrder.YXZ, event.message.arguments[0] as Float * FastMath.DEG_TO_RAD, event.message.arguments[1] as Float * FastMath.DEG_TO_RAD, event.message.arguments[2] as Float * FastMath.DEG_TO_RAD).toQuaternion()
+					val rot = Quaternion(w, -x, -y, z)
+					tracker.setRotation(receivingRotationOffset * rot * postReceivingOffset)
 				}
+
+				tracker.dataTick()
 			}
 		}
 	}
 
 	override fun update() {
-		// Update current time
-		val currentTime = System.currentTimeMillis().toFloat()
-
 		// Gets timer from vrServer
 		if (fpsTimer == null) {
 			fpsTimer = VRServer.instance.fpsTimer
@@ -322,6 +331,9 @@ class VRCOSCHandler(
 		if (receivingRotationOffset != receivingRotationOffsetGoal) {
 			receivingRotationOffset = receivingRotationOffset.interpR(receivingRotationOffsetGoal, OFFSET_SLERP_FACTOR * (fpsTimer?.timePerFrame ?: 1f))
 		}
+
+		// Update current time
+		val currentTime = System.currentTimeMillis().toFloat()
 
 		// Send OSC data
 		if (oscSender != null && oscSender!!.isConnected) {
