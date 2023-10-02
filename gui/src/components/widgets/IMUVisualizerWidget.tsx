@@ -11,6 +11,8 @@ import { QuatObject } from '@/maths/quaternion';
 import { useLocalization } from '@fluent/react';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Vector3Object } from '@/maths/vector3';
+import { useIsTauri } from '@/hooks/breakpoint';
+import { invoke } from '@tauri-apps/api';
 
 const groundColor = '#4444aa';
 
@@ -34,6 +36,22 @@ function SceneRenderer({
   vec: Vector3Object;
   model: string;
 }) {
+  const tauri = useIsTauri();
+  const [nvidia, setNvidia] = useState<null | boolean>(null);
+
+  useEffect(() => {
+    async function checkNvidia() {
+      if (!tauri) {
+        setNvidia(false);
+      } else {
+        setNvidia(await invoke('using_nvidia'));
+      }
+    }
+
+    checkNvidia().catch(() => setNvidia(false));
+  }, []);
+
+  if (nvidia === null) return <></>;
   return (
     <Canvas
       className="container"
@@ -41,6 +59,7 @@ function SceneRenderer({
       onCreated={({ camera }) => {
         (camera as PerspectiveCamera).fov = 60;
       }}
+      gl={nvidia ? (canvas) => new THREE.WebGL1Renderer({ canvas }) : undefined}
     >
       <ambientLight intensity={0.5} />
       <spotLight position={[20, 20, 20]} angle={0.09} penumbra={1} />

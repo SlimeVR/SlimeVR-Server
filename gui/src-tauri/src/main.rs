@@ -54,6 +54,22 @@ fn warning(msg: String) {
 	log::warn!(target: "webview", "{}", msg)
 }
 
+// Only used on Linux currently
+#[tauri::command]
+#[cfg(target_os = "linux")]
+fn using_nvidia() -> bool {
+	use nvml_wrapper::Nvml;
+	use once_cell::sync::Lazy;
+	static NVIDIA_INIT: Lazy<bool> = Lazy::new(|| Nvml::init().is_ok());
+	*NVIDIA_INIT
+}
+
+#[tauri::command]
+#[cfg(not(target_os = "linux"))]
+fn using_nvidia() -> bool {
+	false
+}
+
 fn main() -> Result<()> {
 	log_panics::init();
 	let hook = panic::take_hook();
@@ -81,12 +97,10 @@ fn main() -> Result<()> {
 		});
 
 		#[cfg(not(target_os = "macos"))]
-		let path = dirs_next::data_dir()
-			.ok_or(Error::UnknownPath)
-			.map(|dir| {
-				dir.join(&tauri_context.config().tauri.bundle.identifier)
-					.join("logs")
-			});
+		let path = dirs_next::data_dir().ok_or(Error::UnknownPath).map(|dir| {
+			dir.join(&tauri_context.config().tauri.bundle.identifier)
+				.join("logs")
+		});
 
 		Logger::try_with_env_or_str("info")?
 			.log_to_file(
@@ -177,7 +191,8 @@ fn main() -> Result<()> {
 			update_window_state,
 			logging,
 			erroring,
-			warning
+			warning,
+			using_nvidia,
 		])
 		.setup(move |app| {
 			let window_state =
