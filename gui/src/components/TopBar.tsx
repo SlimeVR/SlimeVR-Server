@@ -43,11 +43,6 @@ export function VersionTag() {
   );
 }
 
-export async function CloseApp() {
-  await invoke('update_window_state');
-  getCurrent().close();
-}
-
 export function TopBar({
   progress,
 }: {
@@ -67,6 +62,10 @@ export function TopBar({
   const doesMatchSettings = useMatch({
     path: '/settings/*',
   });
+  const closeApp = async () => {
+    await invoke('update_window_state');
+    getCurrent().close();
+  };
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.ServerInfosRequest, new ServerInfosRequestT());
@@ -214,9 +213,11 @@ export function TopBar({
                     if (
                       config?.connectedTrackersWarning &&
                       connectedIMUTrackers.length > 0
-                    )
+                    ) {
                       setConnectedTrackerWarning(true);
-                    else CloseApp();
+                    } else {
+                      closeApp();
+                    }
                   }}
                 >
                   <CloseIcon></CloseIcon>
@@ -233,7 +234,7 @@ export function TopBar({
       </div>
       <TrackersStillOnModal
         isOpen={showConnectedTrackersWarning}
-        accept={() => CloseApp()}
+        accept={() => closeApp()}
         cancel={() => setConnectedTrackerWarning(false)}
       ></TrackersStillOnModal>
     </>
