@@ -11,7 +11,6 @@ import com.illposed.osc.transport.OSCPortOut
 import com.jme3.math.FastMath
 import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
-import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Device
@@ -28,7 +27,6 @@ import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.util.Timer
-import java.util.TimerTask
 
 private const val OFFSET_SLERP_FACTOR = 0.5f // Guessed from eyeing VRChat
 
@@ -38,7 +36,6 @@ private const val OFFSET_SLERP_FACTOR = 0.5f // Guessed from eyeing VRChat
 class VRCOSCHandler(
 	private val server: VRServer,
 	private val humanPoseManager: HumanPoseManager,
-	private val steamvrBridge: ISteamVRBridge?,
 	private val config: VRCOSCConfig,
 	private val computedTrackers: List<Tracker>,
 ) : OSCHandler {
@@ -65,7 +62,6 @@ class VRCOSCHandler(
 	private var lastAddress: InetAddress? = null
 	private var timeAtLastError: Long = 0
 	private val timer = Timer()
-	private var listenTrackers = false
 	private var receivingPositionOffset = Vector3.NULL
 	private var postReceivingPositionOffset = Vector3.NULL
 	private var receivingRotationOffset = Quaternion.IDENTITY
@@ -142,10 +138,7 @@ class VRCOSCHandler(
 						listener
 					)
 				}
-				listenTrackers = false
 				it.startListening()
-				// Delay so we can actually detect if SteamVR is running
-				scheduleStartListeningSteamVR(1000)
 			}
 		}
 	}
@@ -181,57 +174,47 @@ class VRCOSCHandler(
 		}
 	}
 
-	private fun scheduleStartListeningSteamVR(delay: Long) {
-		val resetTask: TimerTask = object : TimerTask() {
-			override fun run() {
-				listenTrackers = true
-			}
-		}
-		timer.schedule(resetTask, delay)
-	}
-
 	private fun handleReceivedMessage(event: OSCMessageEvent) {
-		if (event.message.address.equals(uprightListenAddress) && listenTrackers) {
+		if (event.message.address.equals(uprightListenAddress)) {
 			// LEGACY
 			// Receiving HMD y pos from VRChat
-			if (steamvrBridge != null && !steamvrBridge.isConnected()) {
-				if (vrcHmd == null) {
-					val vrcDevice = server.deviceManager.createDevice("VRChat OSC", null, "VRChat")
-					server.deviceManager.addDevice(vrcDevice)
-					vrcHmd = Tracker(
-						device = vrcDevice,
-						id = VRServer.getNextLocalTrackerId(),
-						name = "VRC HMD",
-						displayName = "VRC HMD",
-						trackerPosition = TrackerPosition.HEAD,
-						trackerNum = 0,
-						hasPosition = true,
-						userEditable = false,
-						isComputed = true,
-						usesTimeout = true
-					)
-					vrcDevice.trackers[0] = vrcHmd!!
-					server.registerTracker(vrcHmd!!)
-				}
-
-				// Sets HMD status to OK
-				vrcHmd!!.status = TrackerStatus.OK
-
-				// Sets the HMD y position to
-				// the vrc Upright parameter (0-1) * the user's height
-				vrcHmd!!
-					.position = Vector3(
-					0f,
-					event
-						.message
-						.arguments[0] as Float * humanPoseManager.userHeightFromConfig,
-					0f
+			if (vrcHmd == null) {
+				val vrcDevice = server.deviceManager.createDevice("VRChat OSC", null, "VRChat")
+				server.deviceManager.addDevice(vrcDevice)
+				vrcHmd = Tracker(
+					device = vrcDevice,
+					id = VRServer.getNextLocalTrackerId(),
+					name = "VRC Upright",
+					displayName = "VRC Upright",
+					trackerPosition = null, // TrackerPosition.HEAD,
+					trackerNum = 0,
+					hasPosition = true,
+					userEditable = true,
+					isComputed = true,
+					usesTimeout = true
 				)
-				vrcHmd!!.dataTick()
+				vrcDevice.trackers[0] = vrcHmd!!
+				server.registerTracker(vrcHmd!!)
 			}
-		} else if (oscQueryListenAddresses.contains(event.message.address) && listenTrackers) {
+
+			// Sets tracker status to OK
+			vrcHmd!!.status = TrackerStatus.OK
+
+			// Sets the tracker y position to
+			// the vrc Upright parameter (0-1) * the user's height
+			vrcHmd!!
+				.position = Vector3(
+				0f,
+				event
+					.message
+					.arguments[0] as Float * humanPoseManager.userHeightFromConfig,
+				0f
+			)
+			vrcHmd!!.dataTick()
+		} else if (oscQueryListenAddresses.contains(event.message.address)) {
 			// Receiving Head and Wrist pose data thanks to OSCQuery
 			LogManager.debug("received: " + event.message.address)
+			// TODO
 		} else {
 			// Receiving OSC Trackers data. This is not receiving from VRChat.
 			// This cannot be replaced by OSCQuery

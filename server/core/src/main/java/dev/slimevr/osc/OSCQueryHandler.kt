@@ -1,8 +1,10 @@
 package dev.slimevr.osc
 
+import OSCQueryWebsocket
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.slimevr.protocol.rpc.setup.RPCUtil
 import io.eiren.util.logging.LogManager
+import org.java_websocket.drafts.Draft_6455
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.InetAddress
@@ -56,16 +58,24 @@ class OSCQueryHandler(
 
 	fun updateService(newService: ServiceEvent) {
 		service = newService
+		updateWebsocket()
 		updateUDPInfo()
-		addEndpoints()
 	}
 
-	private fun addEndpoints() {
+	private fun updateWebsocket() {
 		service?.let {
-			for (param in queryAddresses) {
-				val httpAddress = "http:/${it.info.inetAddresses?.get(0)}:${it.info.port}"
-				// Add endpoint
-			}
+			// Get data service info
+			val port = it.info.port
+			val address = it.info.inetAddresses?.get(0)
+			LogManager.info("[OSCQueryHandler] Found Websocket address = $address and port = $port for ${it.name}")
+
+			// Add endpoint
+			val jsonTest = "{\"COMMAND\": \"LISTEN\",\"DATA\": \"/tracking/vrsystem\" }"
+
+			val websocketServer = OSCQueryWebsocket(port, Draft_6455())
+			websocketServer.start()
+
+			// for (param in queryAddresses) { }
 		}
 	}
 
@@ -90,7 +100,7 @@ class OSCQueryHandler(
 			// Get data from HOST_INFO
 			val oscIP = hostInfoJson.get("OSC_IP").asText()
 			val oscPort = hostInfoJson.get("OSC_PORT").asInt()
-			LogManager.info("[OSCQueryHandler] Found OSC address = $oscIP and OSC port = $oscPort for ${it.name}")
+			LogManager.info("[OSCQueryHandler] Found OSC address = $oscIP and port = $oscPort for ${it.name}")
 
 			// Update the oscHandler
 			oscHandler.updateOscSender(oscPort, oscIP)
