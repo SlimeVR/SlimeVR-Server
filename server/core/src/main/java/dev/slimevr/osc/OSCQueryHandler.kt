@@ -4,10 +4,10 @@ import OSCQueryWebsocket
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.slimevr.protocol.rpc.setup.RPCUtil
 import io.eiren.util.logging.LogManager
-import org.java_websocket.drafts.Draft_6455
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.InetAddress
+import java.net.InetSocketAddress
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -18,12 +18,9 @@ import javax.jmdns.ServiceListener
 
 class OSCQueryHandler(
 	private val oscHandler: OSCHandler,
-	private val address: String,
-	private val queryAddresses: Array<String>,
+	private val queryText: String,
 	serviceStartsWith: String,
 ) {
-	private var service: ServiceEvent? = null
-	private val httpClient = HttpClient.newHttpClient()
 
 	private class OSCQueryListener(private val oscQueryHandler: OSCQueryHandler, private val serviceStartsWith: String) : ServiceListener {
 
@@ -33,77 +30,61 @@ class OSCQueryHandler(
 
 		override fun serviceResolved(event: ServiceEvent) {
 			if (event.name.startsWith(serviceStartsWith)) {
-				LogManager.info("[OSCQueryHandler] Service resolved: ${event.name}, ${event.info.inetAddresses[0]}")
-				oscQueryHandler.updateService(event)
+				LogManager.debug("[OSCQueryHandler] Service resolved: ${event.name}, ${event.info.inetAddresses[0]}")
+				oscQueryHandler.updateWebsocket(event)
+				oscQueryHandler.updateOSCSendingInfo(event)
 			}
 		}
 	}
 
 	init {
 		try {
-			// Create a JmDNS instance
-			val iNetAddress = if (address == "127.0.0.1") {
-				InetAddress.getLocalHost()
-			} else {
-				InetAddress.getByName(address)
-			}
-			val jmdns = JmDNS.create(iNetAddress, "SlimeVR-Server-" + RPCUtil.getLocalIp())
+			val jmdns = JmDNS.create(InetAddress.getByName(RPCUtil.getLocalIp()), "SlimeVR-Server-" + RPCUtil.getLocalIp())
 
-			// Add an OSCQuery service listener
+			// Add OSCQuery service listeners for local and non-local
 			jmdns.addServiceListener("_oscjson._tcp.local.", OSCQueryListener(this, serviceStartsWith))
+			jmdns.addServiceListener("_oscjson._tcp.", OSCQueryListener(this, serviceStartsWith))
 		} catch (e: IOException) {
 			LogManager.warning("[OSCQueryHandler] " + e.message)
 		}
 	}
 
-	fun updateService(newService: ServiceEvent) {
-		service = newService
-		updateWebsocket()
-		updateUDPInfo()
+	fun updateWebsocket(service: ServiceEvent) {
+		val ip = service.info.inetAddresses[0]
+		val port = service.info.port
+		val websocket = OSCQueryWebsocket(InetSocketAddress(ip, port), queryText)
+		// websocket.run() //just does nothing
+		// websocket.start() //NullPointerException
 	}
 
-	private fun updateWebsocket() {
-		service?.let {
-			// Get data service info
-			val port = it.info.port
-			val address = it.info.inetAddresses?.get(0)
-			LogManager.info("[OSCQueryHandler] Found Websocket address = $address and port = $port for ${it.name}")
+	/**
+	 * Retrieves the OSC Port and IP from the remote OSCQuery service.
+	 * These tell us where to send our OSC packets to.
+	 */
+	fun updateOSCSendingInfo(service: ServiceEvent) {
+		// Request HOST_INFO via http
+		val remoteAddress = service.info.urLs[0]
+		val hostInfoRequest = HttpRequest.newBuilder().uri(URI.create("$remoteAddress?HOST_INFO")).build()
+		LogManager.debug("[OSCQueryHandler] OSCQuery's service's address: $remoteAddress")
 
-			// Add endpoint
-			val jsonTest = "{\"COMMAND\": \"LISTEN\",\"DATA\": \"/tracking/vrsystem\" }"
+		// Get http response
+		val hostInfoResponse = HttpClient.newHttpClient().send(hostInfoRequest, HttpResponse.BodyHandlers.ofString())
 
-			val websocketServer = OSCQueryWebsocket(port, Draft_6455())
-			websocketServer.start()
-
-			// for (param in queryAddresses) { }
+		if (hostInfoResponse.statusCode() != HttpURLConnection.HTTP_OK) {
+			LogManager.warning("[OSCQueryHandler] Received HTTP status code ${hostInfoResponse.statusCode()}")
+			return
 		}
-	}
 
-	private fun updateUDPInfo() {
-		service?.let {
-			// Request HOST_INFO via http
-			val httpAddress = "http:/${it.info.inetAddresses?.get(0)}:${it.info.port}"
-			val hostInfoRequest = HttpRequest.newBuilder().uri(URI.create("$httpAddress?HOST_INFO")).build()
+		// map to json
+		val objectMapper = ObjectMapper()
+		val hostInfoJson = objectMapper.readTree(hostInfoResponse.body())
 
-			// Get http response
-			val hostInfoResponse = httpClient.send(hostInfoRequest, HttpResponse.BodyHandlers.ofString())
+		// Get data from HOST_INFO
+		val oscIP = hostInfoJson.get("OSC_IP").asText()
+		val oscPort = hostInfoJson.get("OSC_PORT").asInt()
+		LogManager.info("[OSCQueryHandler] Found OSC address = $oscIP and port = $oscPort for ${service.name}")
 
-			if (hostInfoResponse.statusCode() != HttpURLConnection.HTTP_OK) {
-				LogManager.warning("[OSCQueryHandler] Received HTTP status code ${hostInfoResponse.statusCode()}")
-				return
-			}
-
-			// map to json
-			val objectMapper = ObjectMapper()
-			val hostInfoJson = objectMapper.readTree(hostInfoResponse.body())
-
-			// Get data from HOST_INFO
-			val oscIP = hostInfoJson.get("OSC_IP").asText()
-			val oscPort = hostInfoJson.get("OSC_PORT").asInt()
-			LogManager.info("[OSCQueryHandler] Found OSC address = $oscIP and port = $oscPort for ${it.name}")
-
-			// Update the oscHandler
-			oscHandler.updateOscSender(oscPort, oscIP)
-		}
+		// Update the oscHandler
+		oscHandler.updateOscSender(oscPort, oscIP)
 	}
 }

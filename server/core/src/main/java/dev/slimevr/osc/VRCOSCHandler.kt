@@ -39,16 +39,16 @@ class VRCOSCHandler(
 	private val config: VRCOSCConfig,
 	private val computedTrackers: List<Tracker>,
 ) : OSCHandler {
-	private val oscQueryListenAddresses = arrayOf(
+	private val vrsystemTrackersAddresses = arrayOf(
 		"/tracking/vrsystem/head/pose",
 		"/tracking/vrsystem/leftwrist/pose",
 		"/tracking/vrsystem/rightwrist/pose"
 	)
-	private val uprightListenAddress = "/avatar/parameters/Upright"
-	private val listenAddresses = arrayOf(
+	private val oscTrackersAddresses = arrayOf(
 		"/tracking/trackers/*/position",
 		"/tracking/trackers/*/rotation"
-	) + oscQueryListenAddresses + uprightListenAddress
+	)
+	private val uprightAddress = "/avatar/parameters/Upright"
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
 	private var oscMessage: OSCMessage? = null
@@ -89,12 +89,13 @@ class VRCOSCHandler(
 			}
 		}
 
-		updateOscReceiver(config.portIn, listenAddresses)
+		updateOscReceiver(config.portIn, vrsystemTrackersAddresses + oscTrackersAddresses + uprightAddress)
 		updateOscSender(config.portOut, config.address)
 
 		oscQueryHandler = if (config.enabled) {
 			// Use OSCQuery
-			OSCQueryHandler(this, config.address, oscQueryListenAddresses, "VRChat")
+			val queryText = "{\"COMMAND\":\"LISTEN\",\"DATA\":\"/tracking/vrsystem\"}"
+			OSCQueryHandler(this, queryText, "VRChat")
 		} else {
 			// Disable OSCQuery
 			null
@@ -175,7 +176,7 @@ class VRCOSCHandler(
 	}
 
 	private fun handleReceivedMessage(event: OSCMessageEvent) {
-		if (event.message.address.equals(uprightListenAddress)) {
+		if (event.message.address.equals(uprightAddress)) {
 			// LEGACY
 			// Receiving HMD y pos from VRChat
 			if (vrcHmd == null) {
@@ -211,7 +212,7 @@ class VRCOSCHandler(
 				0f
 			)
 			vrcHmd!!.dataTick()
-		} else if (oscQueryListenAddresses.contains(event.message.address)) {
+		} else if (vrsystemTrackersAddresses.contains(event.message.address)) {
 			// Receiving Head and Wrist pose data thanks to OSCQuery
 			LogManager.debug("received: " + event.message.address)
 			// TODO
