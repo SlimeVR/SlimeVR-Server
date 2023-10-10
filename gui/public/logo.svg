@@ -1,5 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg clip-rule="evenodd" fill-rule="evenodd" stroke-miterlimit="10" version="1.1" viewBox="0 0 380 380" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
-    <style>svg { background-color: #663499; }</style>
-    <rect id="bg" width="100%" height="100%" fill="#663499"/><g id="logo" fill="none" stroke="#fff"><path id="left" d="m72.867 191.74 37-39 39 36" stroke-width="13.62px"/><path id="right" d="m208.87 187.74 38-35 36 38" stroke-width="13.62px"/><path id="outer" d="m56.867 253.74s130.61-31.182 248 5c13.45 4.146 20.244 2.975 20-8s1.909-126.06-46-131" stroke-linecap="square" stroke-width="17px"/></g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" stroke-miterlimit="10" clip-rule="evenodd" version="1.1" viewBox="0 0 380 380" xml:space="preserve"><style>svg{background-color:#663499}</style><rect id="bg" width="100%" height="100%" fill="#663499"/><g id="logo" fill="none" stroke="#fff"><path id="left" stroke-width="13.62" d="m72.867 191.74 37-39 39 36"/><path id="right" stroke-width="13.62" d="m208.87 187.74 38-35 36 38"/><path id="outer" stroke-linecap="square" stroke-width="17" d="m56.867 253.74s130.61-31.182 248 5c13.45 4.146 20.244 2.975 20-8s1.909-126.06-46-131"/></g></svg>

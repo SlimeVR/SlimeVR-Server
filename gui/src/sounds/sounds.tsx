@@ -15,24 +15,6 @@ const tapSetupSound5 = new Audio('/sounds/fifth-tap.mp3');
 const tapSetupSoundEnd = new Audio('/sounds/end-tap.mp3');
 const tapSetupExtraSound = new Audio('/sounds/tapextrasetup.mp3');
 
-const sounds = [
-  quickResetStartedSound,
-  fullResetStartedSound,
-  mountingResetStartedSound,
-  tapSetupSound1,
-  tapSetupSound2,
-  tapSetupSound3,
-  tapSetupSound4,
-  tapSetupSound5,
-  tapSetupSoundEnd,
-  tapSetupExtraSound,
-];
-
-sounds.forEach((s) => {
-  s.play();
-  setTimeout(() => s.pause(), 10);
-});
-
 function restartAndPlay(audio: HTMLAudioElement, volume: number) {
   audio.volume = Math.min(1, Math.pow(volume, Math.E) + 0.05);
   if (audio.paused) {
