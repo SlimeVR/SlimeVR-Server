@@ -297,6 +297,14 @@ class VRServer @JvmOverloads constructor(
 		queueTask { humanPoseManager.clearTrackersMounting(resetSourceName) }
 	}
 
+	fun setPauseTracking(pauseTracking: Boolean, sourceName: String?) {
+		queueTask { humanPoseManager.setPauseTracking(pauseTracking, sourceName) }
+	}
+
+	fun togglePauseTracking(sourceName: String?) {
+		queueTask { humanPoseManager.togglePauseTracking(sourceName) }
+	}
+
 	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
 		val resetTask: TimerTask = object : TimerTask() {
 			override fun run() {
@@ -322,6 +330,24 @@ class VRServer @JvmOverloads constructor(
 			}
 		}
 		timer.schedule(resetMountingTask, delay)
+	}
+
+	fun scheduleSetPauseTracking(pauseTracking: Boolean, sourceName: String?, delay: Long) {
+		val pauseTrackingTask: TimerTask = object : TimerTask() {
+			override fun run() {
+				queueTask { humanPoseManager.setPauseTracking(pauseTracking, sourceName) }
+			}
+		}
+		timer.schedule(pauseTrackingTask, delay)
+	}
+
+	fun scheduleTogglePauseTracking(sourceName: String?, delay: Long) {
+		val pauseTrackingTask: TimerTask = object : TimerTask() {
+			override fun run() {
+				queueTask { humanPoseManager.togglePauseTracking(sourceName) }
+			}
+		}
+		timer.schedule(pauseTrackingTask, delay)
 	}
 
 	fun setLegTweaksEnabled(value: Boolean) {

@@ -1210,12 +1210,19 @@ class HumanSkeleton(
 		return pauseTracking
 	}
 
-	fun setPauseTracking(pauseTracking: Boolean) {
+	fun setPauseTracking(pauseTracking: Boolean, sourceName: String?) {
 		if (!pauseTracking && this.pauseTracking) {
 			// If unpausing tracking, clear the legtweaks buffer
 			legTweaks.resetBuffer()
 		}
 		this.pauseTracking = pauseTracking
+		LogManager.info(String.format("[HumanSkeleton] ${if (pauseTracking) "Pause" else "Unpause"} tracking (%s)", sourceName))
+	}
+
+	fun togglePauseTracking(sourceName: String?): Boolean {
+		val newState = !pauseTracking
+		setPauseTracking(newState, sourceName)
+		return newState
 	}
 
 	companion object {

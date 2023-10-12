@@ -813,9 +813,15 @@ public class HumanPoseManager {
 	}
 	// #endregion
 
-	public void setPauseTracking(boolean pauseTracking) {
+	public void setPauseTracking(boolean pauseTracking, String sourceName) {
 		if (isSkeletonPresent())
-			skeleton.setPauseTracking(pauseTracking);
+			skeleton.setPauseTracking(pauseTracking, sourceName);
+	}
+
+	public boolean togglePauseTracking(String sourceName) {
+		if (isSkeletonPresent())
+			return skeleton.togglePauseTracking(sourceName);
+		return false;
 	}
 	// #endregion
 }

@@ -379,7 +379,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 		if (req == null)
 			return;
 
-		this.api.server.humanPoseManager.setPauseTracking(req.pauseTracking());
+		this.api.server.humanPoseManager.setPauseTracking(req.pauseTracking(), resetSourceName);
 	}
 
 	public void onHeightRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
