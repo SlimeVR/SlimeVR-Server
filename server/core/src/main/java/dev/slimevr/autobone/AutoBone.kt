@@ -42,22 +42,6 @@ class AutoBone(server: VRServer) {
 			SkeletonConfigOffsets.LOWER_LEG
 		)
 	)
-	val heightOffsetDefaults = EnumMap<SkeletonConfigOffsets, Float>(
-		SkeletonConfigOffsets::class.java
-	)
-
-	// This is filled by loadConfigValues()
-	val heightOffsets = FastList(
-		arrayOf(
-			SkeletonConfigOffsets.NECK,
-			SkeletonConfigOffsets.UPPER_CHEST,
-			SkeletonConfigOffsets.CHEST,
-			SkeletonConfigOffsets.WAIST,
-			SkeletonConfigOffsets.HIP,
-			SkeletonConfigOffsets.UPPER_LEG,
-			SkeletonConfigOffsets.LOWER_LEG
-		)
-	)
 
 	var estimatedHeight: Float = 1f
 
@@ -103,12 +87,6 @@ class AutoBone(server: VRServer) {
 			val offset = getOffset.apply(bone)
 			if (offset > 0f) {
 				offsets[bone] = offset
-			}
-		}
-		for (bone in heightOffsets) {
-			val offset = getOffset.apply(bone)
-			if (offset > 0f) {
-				heightOffsetDefaults[bone] = offset
 			}
 		}
 	}
@@ -253,6 +231,8 @@ class AutoBone(server: VRServer) {
 		// Initialize normalization to the set target height
 		estimatedHeight = targetHmdHeight
 		updateRecordingScale(trainingStep, 1f / targetHmdHeight)
+		scaleSkeleton(trainingStep.skeleton1)
+		scaleSkeleton(trainingStep.skeleton2)
 
 		if (config.useFrameFiltering) {
 			// Calculate the initial frame errors and recording stats
@@ -376,7 +356,7 @@ class AutoBone(server: VRServer) {
 			while (frameCursor < frameCount - cursorOffset) {
 				val frameCursor2 = frameCursor + cursorOffset
 
-				// Apply the current adjusted config to both skeletons
+				// Apply the current config values
 				applyConfig(trainingStep.skeleton1)
 				applyConfig(trainingStep.skeleton2)
 
@@ -385,6 +365,10 @@ class AutoBone(server: VRServer) {
 				for (entry in offsets.entries) {
 					entry.setValue(entry.value / height)
 				}
+
+				// Apply the normalized config values
+				applyConfig(trainingStep.skeleton1)
+				applyConfig(trainingStep.skeleton2)
 
 				// Then set the frame cursors and apply them to both skeletons
 				if (config.randomizeFrameOrder && randomFrameIndices != null) {
