@@ -134,7 +134,8 @@ public class ProvisioningHandler implements SerialListener {
 
 		if (
 			provisioningStatus == ProvisioningStatus.CONNECTING
-				&& str.contains("Looking for the server")
+				&& (str.contains("Looking for the server")
+					|| str.contains("Searching for the server on the local network"))
 		) {
 			this.changeStatus(ProvisioningStatus.LOOKING_FOR_SERVER);
 		}
@@ -157,7 +158,11 @@ public class ProvisioningHandler implements SerialListener {
 	public void changeStatus(ProvisioningStatus status) {
 		this.lastStatusChange = System.currentTimeMillis();
 		if (this.provisioningStatus != status) {
-			this.listeners.forEach((l) -> l.onProvisioningStatusChange(status));
+			this.listeners
+				.forEach(
+					(l) -> l
+						.onProvisioningStatusChange(status, vrServer.serialHandler.getCurrentPort())
+				);
 			this.provisioningStatus = status;
 		}
 	}

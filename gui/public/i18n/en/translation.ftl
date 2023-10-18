@@ -43,6 +43,21 @@ body_part-LEFT_UPPER_LEG = Left thigh
 body_part-LEFT_LOWER_LEG = Left ankle
 body_part-LEFT_FOOT = Left foot
 
+## BoardType
+board_type-UNKNOWN = Unknown
+board_type-SLIMEVR_LEGACY = SlimeVR Legacy
+board_type-SLIMEVR_DEV = SlimeVR Dev
+board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Custom Board
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C32 = Beetle ESP32-C3
+board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+
 ## Proportions
 skeleton_bone-NONE = None
 skeleton_bone-HEAD = Head Shift
@@ -260,6 +275,8 @@ settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 settings-sidebar-appearance = Appearance
 settings-sidebar-notifications = Notifications
+settings-sidebar-firmware-tool = DIY Firmware Tool
+
 
 ## SteamVR settings
 settings-general-steamvr = SteamVR
@@ -542,6 +559,7 @@ onboarding-wifi_creds-submit = Submit!
 onboarding-wifi_creds-ssid =
     .label = Wi-Fi name
     .placeholder = Enter Wi-Fi name
+onboarding-wifi_creds-ssid-required = Wi-Fi name is required
 onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
@@ -845,3 +863,139 @@ status_system-StatusSteamVRDisconnected = { $type ->
     [steamvr_feeder] Currently not connected to the SlimeVR Feeder App.
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
+
+
+## Firmware tool globals
+
+firmware-tool-next-step = Next Step
+firmware-tool-previous-step = Previous Step
+firmware-tool-ok = Looks good
+firmware-tool-retry = Retry
+
+firmware-tool-loading = Loading...
+
+## Firmware tool Steps
+
+firmware-tool = DIY Firmware tool
+firmware-tool-description =
+    Allows to configure and flash your DIY slimevr trackers
+firmware-tool-not-available = Oops the firmware tool is not available at the moment. Come back later!
+
+firmware-tool-board-step = Select your Board
+firmware-tool-board-step-description = Select one of the boards listed below.
+
+firmware-tool-board-pins-step = Check the pins
+firmware-tool-board-pins-step-description =
+    Please verify that the selected pins are correct.
+    If you followed the slimevr documentation the defaults values should be correct
+firmware-tool-board-pins-step-enable-led = Enable Led
+firmware-tool-board-pins-step-led-pin =
+    .label = Led Pin
+    .placeholder = Enter the pin address of the led
+
+firmware-tool-board-pins-step-battery-type = Select a battery type
+firmware-tool-board-pins-step-battery-type-BAT_EXTERNAL = External battery
+firmware-tool-board-pins-step-battery-type-BAT_INTERNAL = Internal battery
+firmware-tool-board-pins-step-battery-type-BAT_INTERNAL_MCP3021 = Internal MCP3021
+firmware-tool-board-pins-step-battery-type-BAT_MCP3021 = MCP3021
+
+
+firmware-tool-board-pins-step-battery-sensor-pin =
+    .label = Battery sensor Pin
+    .placeholder = Enter the pin address of battery sensor
+firmware-tool-board-pins-step-battery-resistor =
+    .label = Battery Resistor (Ohms)
+    .placeholder = Enter the value of battery resistor
+firmware-tool-board-pins-step-battery-shield-resistor-0 =
+    .label = Battery Shield R1 (Ohms)
+    .placeholder = Enter the value of Battery Shield R1
+firmware-tool-board-pins-step-battery-shield-resistor-1 =
+    .label = Battery Shield R2 (Ohms)
+    .placeholder = Enter the value of Battery Shield R2
+
+firmware-tool-add-imus-step = Declare your IMUs
+firmware-tool-add-imus-step-description =
+    Please add the inmus that your tracker have
+    If you followed the slimevr documentation the defaults values should be correct
+firmware-tool-add-imus-step-imu-type-label = Imu type
+firmware-tool-add-imus-step-imu-type-placeholder = Select the type of imu
+firmware-tool-add-imus-step-imu-rotation  =
+    .label = Imu Rotation (deg)
+    .placeholder = Rotation angle of the imu
+firmware-tool-add-imus-step-scl-pin  =
+    .label = SCL Pin
+    .placeholder = Pin address of SCL
+firmware-tool-add-imus-step-sda-pin  =
+    .label = SDA Pin
+    .placeholder = Pin address of SDA
+firmware-tool-add-imus-step-int-pin  =
+    .label = INT Pin
+    .placeholder = Pin address of INT
+firmware-tool-add-imus-optional-tracker  =
+    .label = Optional tracker
+firmware-tool-add-imus-show-less = Show Less
+firmware-tool-add-imus-show-more = Show More
+firmware-tool-add-imus-add-more = Add more IMUs
+
+firmware-tool-select-firmware-step = Select the firmware version
+firmware-tool-select-firmware-step-description =
+    Please choose what version of the firmware you want to use
+
+firmware-tool-flash-method-step = Flashing Method
+firmware-tool-flash-method-step-description =
+    Please select the flashing method you want to use
+firmware-tool-flash-method-step-ota =
+    .label = OTA
+    .description = Use the over the air method. Your tacker will use the wifi to update the tacker. Works only on already setup trackers
+firmware-tool-flash-method-step-serial =
+    .label = Serial
+    .description = Use a usb cable to update your tacker
+
+firmware-tool-flash-method-ota-devices = Detected OTA Devices:
+firmware-tool-flash-method-ota-no-devices = There are no boards that can be updated using ota, Make sure you
+          selected the correct board type
+firmware-tool-flash-method-serial-wifi = Wifi Credentials:
+firmware-tool-flash-method-serial-devices-label = Detected Serial Devices:
+firmware-tool-flash-method-serial-devices-placeholder = Select a serial device
+firmware-tool-flash-method-serial-no-devices = There are compatible serial device detected, make sure the tracker is plugged in
+
+firmware-tool-build-step = Building
+firmware-tool-build-step-description =
+    The firmware is building, please wait
+
+firmware-tool-flashing-step = Flashing
+firmware-tool-flashing-step-description =
+    Your trackers are flashing, please follow the instructions on the screen
+firmware-tool-flashing-step-warning = Do not unplug or restart the tracker during the upload process unless told to, it can make your board unusable
+firmware-tool-flashing-step-flash-more = Flash more trackers
+firmware-tool-flashing-step-exit = Exit
+
+## firmware tool build status
+
+firmware-tool-build-CREATING_BUILD_FOLDER = Creating the build folder
+firmware-tool-build-DOWNLOADING_FIRMWARE = Downloading the firmware
+firmware-tool-build-EXTRACTING_FIRMWARE = Extracting the firmware
+firmware-tool-build-SETTING_UP_DEFINES = Configuring the defines
+firmware-tool-build-BUILDING = Building the firmware
+firmware-tool-build-SAVING = Saving the build
+firmware-tool-build-DONE = Build Complete
+firmware-tool-build-ERROR = Unable to build the firmware
+
+## Firmware update status
+
+firmware-update-status-DOWNLOADING = Downloading the firmware
+firmware-update-status-WAITING_FOR_REBOOT = Waiting for the user to reboot the tracker
+firmware-update-status-AUTHENTICATING = Authenticating with the mcu
+firmware-update-status-UPLOADING = Uploading the firmware
+firmware-update-status-SYNCING_WITH_MCU = Syncing with the mcu
+firmware-update-status-REBOOTING = Rebooting the tracker
+firmware-update-status-PROVISIONING = Setting wifi credentials
+firmware-update-status-DONE = Update complete!
+firmware-update-status-ERROR_DEVICE_NOT_FOUND = Could not find the device
+firmware-update-status-ERROR_TIMEOUT = The update process timed out
+firmware-update-status-ERROR_DOWNLOAD_FAILED = Could not download the firmware
+firmware-update-status-ERROR_AUTHENTICATION_FAILED = Could not authenticate with the mcu
+firmware-update-status-ERROR_UPLOAD_FAILED = Could not upload the firmware
+firmware-update-status-ERROR_PROVISIONING_FAILED = Could not set the wifi credentials
+firmware-update-status-ERROR_UNSUPPORTED_METHOD = The update method is not supported
+firmware-update-status-ERROR_UNKNOWN = Unknown error

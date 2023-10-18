@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import {
   AssignTrackerRequestT,
+  BoardType,
   BodyPart,
   ImuType,
   RpcMessage,
@@ -263,7 +264,15 @@ export function TrackerSettingsPage() {
                 {l10n.getString('tracker-infos-board_type')}
               </Typography>
               <Typography>
-                {tracker?.device?.hardwareInfo?.boardType || '--'}
+                {tracker?.device?.hardwareInfo?.boardTypeId
+                  ? l10n.getString(
+                      'board_type-' +
+                        BoardType[
+                          tracker?.device?.hardwareInfo?.boardTypeId ??
+                            BoardType.UNKNOWN
+                        ]
+                    )
+                  : '--'}
               </Typography>
             </div>
           </div>
@@ -399,7 +408,7 @@ export function TrackerSettingsPage() {
               type="text"
               name="trackerName"
               control={control}
-              autocomplete="false"
+              autocomplete="off"
               rules={undefined}
               label="Tracker name"
             ></Input>

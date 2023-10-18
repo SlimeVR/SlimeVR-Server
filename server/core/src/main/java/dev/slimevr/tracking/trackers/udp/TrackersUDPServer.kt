@@ -442,7 +442,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		}
 	}
 
-	fun getConnections(): List<UDPDevice?> {
+	fun getConnections(): List<UDPDevice> {
 		return connections
 	}
 

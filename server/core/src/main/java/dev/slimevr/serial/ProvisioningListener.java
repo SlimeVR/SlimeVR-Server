@@ -2,5 +2,5 @@ package dev.slimevr.serial;
 
 public interface ProvisioningListener {
 
-	void onProvisioningStatusChange(ProvisioningStatus status);
+	void onProvisioningStatusChange(ProvisioningStatus status, SerialPort port);
 }

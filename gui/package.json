@@ -7,7 +7,9 @@
     "@fluent/react": "^0.14.1",
     "@fontsource/poppins": "^4.5.8",
     "@formatjs/intl-localematcher": "^0.2.32",
+    "@hookform/resolvers": "^3.3.2",
     "@react-three/fiber": "^8.10.0",
+    "@tanstack/react-query": "^4.32.6",
     "@tauri-apps/api": "^2.0.0-alpha.5",
     "@tauri-apps/plugin-app": "github:tauri-apps/tauri-plugin-app#v2",
     "@tauri-apps/plugin-dialog": "github:tauri-apps/tauri-plugin-dialog#v2",
@@ -19,6 +21,7 @@
     "browser-fs-access": "^0.34.1",
     "browserslist": "^4.18.1",
     "classnames": "^2.3.1",
+    "dotenv": "^16.3.1",
     "eslint-config-react-app": "^7.0.0",
     "flatbuffers": "^22.10.26",
     "identity-obj-proxy": "^3.0.0",
@@ -40,7 +43,8 @@
     "solarxr-protocol": "file:../solarxr-protocol",
     "three": "^0.148.0",
     "ts-pattern": "^5.0.1",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "yup": "^1.3.2"
   },
   "scripts": {
     "start": "vite --force",
@@ -52,7 +56,8 @@
     "lint:fix": "tsc --noEmit && eslint --fix --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && npm run format",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
     "preview-vite": "vite preview",
-    "javaversion-build": "cd src-tauri/src/ && javac JavaVersion.java && jar cvfe JavaVersion.jar JavaVersion JavaVersion.class"
+    "javaversion-build": "cd src-tauri/src/ && javac JavaVersion.java && jar cvfe JavaVersion.jar JavaVersion JavaVersion.class",
+    "gen:firmware-tool": "openapi-codegen gen firmwareTool"
   },
   "eslintConfig": {
     "extends": [
@@ -73,6 +78,8 @@
   },
   "devDependencies": {
     "@dword-design/eslint-plugin-import-alias": "^4.0.8",
+    "@openapi-codegen/cli": "^2.0.0",
+    "@openapi-codegen/typescript": "^7.0.1",
     "@tailwindcss/forms": "^0.5.3",
     "@tauri-apps/cli": "^2.0.0-alpha.10",
     "@types/file-saver": "^2.0.5",

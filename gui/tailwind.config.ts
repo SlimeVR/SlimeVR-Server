@@ -156,14 +156,16 @@ const config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     screens: {
+      'mobile-settings': { raw: 'not (min-width: 900px)' },
       mobile: { raw: 'not (min-width: 800px)' },
+      'xs-settings': '900px',
       xs: '800px',
       sm: '900px',
       md: '1100px',
       'md-max': { raw: 'not (min-width: 1100px)' },
       lg: '1300px',
       xl: '1600px',
-      tall: { raw: '(min-height: 800px)'}
+      tall: { raw: '(min-height: 800px)' }
     },
     extend: {
       colors: {
@@ -251,7 +253,7 @@ const config = {
         '.text-standard-bold': textConfig('calc(var(--font-size-standard) / 16)', 700),
       });
     }),
-    plugin(function({ addVariant }) {
+    plugin(function ({ addVariant }) {
       addVariant('checked-hover', ['&:hover', '&[data-checked=true]'])
     })
   ],

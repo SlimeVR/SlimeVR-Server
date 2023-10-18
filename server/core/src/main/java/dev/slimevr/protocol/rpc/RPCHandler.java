@@ -7,6 +7,7 @@ import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.ProtocolHandler;
 import dev.slimevr.protocol.rpc.autobone.RPCAutoBoneHandler;
+import dev.slimevr.protocol.rpc.firmware.RPCFirmwareUpdateHandler;
 import dev.slimevr.protocol.rpc.reset.RPCResetHandler;
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler;
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler;
@@ -46,6 +47,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 		new RPCTapSetupHandler(this, api);
 		new RPCStatusHandler(this, api);
 		new RPCAutoBoneHandler(this, api);
+		new RPCFirmwareUpdateHandler(this, api);
 
 		registerPacketListener(RpcMessage.ResetRequest, this::onResetRequest);
 		registerPacketListener(

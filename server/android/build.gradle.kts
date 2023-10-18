@@ -53,11 +53,8 @@ tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
 
-allprojects {
-	repositories {
-		google()
-		mavenCentral()
-	}
+repositories {
+	google()
 }
 
 dependencies {

@@ -2,8 +2,11 @@ plugins {
 	id("com.diffplug.spotless")
 }
 
-repositories {
-	mavenCentral()
+allprojects {
+	repositories {
+		mavenCentral()
+		maven("https://jitpack.io")
+	}
 }
 
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
@@ -36,7 +39,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 // 			"max_line_length" to 88,
 			"ktlint_experimental" to "enabled",
 			"ij_kotlin_packages_to_use_import_on_demand" to
-				"java.util.*,kotlin.math.*,dev.slimevr.autobone.errors.*,io.github.axisangles.ktmath.*,kotlinx.atomicfu.*",
+				"java.util.*,kotlin.math.*,dev.slimevr.autobone.errors.*,io.github.axisangles.ktmath.*,kotlinx.atomicfu.*,kotlinx.coroutines.*,dev.slimevr.tracking.trackers.*",
 			"ij_kotlin_allow_trailing_comma" to true
 		)
 	val ktlintVersion = "0.47.1"

@@ -58,7 +58,11 @@ export function SerialDetectionModal() {
     ({ device }: NewSerialDeviceResponseT) => {
       if (
         config?.watchNewDevices &&
-        !['/settings/serial', '/onboarding/connect-trackers'].includes(pathname)
+        ![
+          '/settings/serial',
+          '/onboarding/connect-trackers',
+          '/firmware-tool',
+        ].includes(pathname)
       ) {
         setOpen(device);
       }

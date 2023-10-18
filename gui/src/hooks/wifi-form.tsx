@@ -5,7 +5,7 @@ import { useOnboarding } from './onboarding';
 
 export interface WifiFormData {
   ssid: string;
-  password: string;
+  password?: string;
 }
 
 export function useWifiForm() {

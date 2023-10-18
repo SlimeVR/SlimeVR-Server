@@ -13,5 +13,10 @@ rem WebSocket server default port
 netsh advfirewall firewall delete rule name="SlimeVR TCP 21110 incoming"
 netsh advfirewall firewall delete rule name="SlimeVR TCP 21110 outgoing"
 
+rem OTA server default port
+netsh advfirewall firewall delete rule name="SlimeVR UDP 10001 incoming"
+netsh advfirewall firewall delete rule name="SlimeVR UDP 10001 outgoing"
+
+
 echo Done!
 pause

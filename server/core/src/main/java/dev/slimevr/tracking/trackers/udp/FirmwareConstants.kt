@@ -39,6 +39,8 @@ enum class BoardType(val id: UInt) {
 	ES32C3DEVKITM1(12u),
 	;
 
+	fun getSolarType(): Int = this.id.toInt()
+
 	override fun toString(): String {
 		return when (this) {
 			UNKNOWN -> "Unknown"

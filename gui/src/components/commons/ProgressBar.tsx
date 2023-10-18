@@ -7,12 +7,14 @@ export function ProgressBar({
   height = 10,
   colorClass = 'bg-accent-background-20',
   animated = false,
+  bottom = false,
 }: {
   progress: number;
   parts?: number;
   height?: number;
   colorClass?: string;
   animated?: boolean;
+  bottom?: boolean;
 }) {
   return (
     <div className="flex w-full flex-row gap-2">
@@ -25,6 +27,7 @@ export function ProgressBar({
           colorClass={colorClass}
           animated={animated}
           parts={parts}
+          bottom={bottom}
         ></Bar>
       ))}
     </div>
@@ -38,6 +41,7 @@ export function Bar({
   height,
   animated,
   colorClass,
+  bottom,
 }: {
   index: number;
   progress: number;
@@ -45,6 +49,7 @@ export function Bar({
   height: number;
   colorClass: string;
   animated: boolean;
+  bottom: boolean;
 }) {
   const value = useMemo(
     () => Math.min(Math.max((progress * parts) / 1 - index, 0), 1),
@@ -52,12 +57,16 @@ export function Bar({
   );
   return (
     <div
-      className="flex relative flex-grow bg-background-50 rounded-lg overflow-hidden"
+      className={classNames(
+        'flex relative flex-grow bg-background-50 rounded-lg overflow-hidden',
+        bottom && 'rounded-t-none'
+      )}
       style={{ height: `${height}px` }}
     >
       <div
         className={classNames(
-          'rounded-lg overflow-hidden absolute top-0',
+          'overflow-hidden absolute top-0',
+          bottom ? 'rounded-none' : 'rounded-lg',
           animated && 'transition-[width,background-color]',
           colorClass
         )}

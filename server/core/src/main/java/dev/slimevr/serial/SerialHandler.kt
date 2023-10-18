@@ -14,7 +14,9 @@ abstract class SerialHandler {
 	abstract fun factoryResetRequest()
 	abstract fun infoRequest()
 	abstract fun closeSerial()
+	abstract fun write(buff: ByteArray)
 	abstract fun setWifi(ssid: String, passwd: String)
+	abstract fun getCurrentPort(): SerialPort?
 
 	companion object {
 		val supportedSerial: Set<Pair<Int, Int>> = setOf(
@@ -64,5 +66,11 @@ class SerialHandlerStub() : SerialHandler() {
 
 	override fun closeSerial() {}
 
+	override fun write(buff: ByteArray) {}
+
 	override fun setWifi(ssid: String, passwd: String) {}
+
+	override fun getCurrentPort(): SerialPort? {
+		return null
+	}
 }

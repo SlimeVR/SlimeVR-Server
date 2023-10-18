@@ -39,14 +39,6 @@ tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
 
-allprojects {
-	repositories {
-		// Use jcenter for resolving dependencies.
-		// You can declare any Maven/Ivy/file repository here.
-		mavenCentral()
-	}
-}
-
 dependencies {
 	implementation(project(":solarxr-protocol"))
 
@@ -67,6 +59,13 @@ dependencies {
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 	implementation("it.unimi.dsi:fastutil:8.5.12")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+	implementation("com.mayakapps.kache:kache:2.0.0-rc02")
+
+	api("com.github.loucass003:EspflashKotlin:v0.6.1")
+
+	// Allow the use of reflection
+	implementation(kotlin("reflect"))
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework
@@ -74,6 +73,7 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("org.junit.platform:junit-platform-launcher")
 }
+
 tasks.test {
 	useJUnitPlatform()
 }

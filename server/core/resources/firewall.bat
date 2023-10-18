@@ -13,5 +13,9 @@ rem WebSocket server default port
 netsh advfirewall firewall add rule name="SlimeVR TCP 21110 incoming" dir=in action=allow protocol=TCP localport=21110
 netsh advfirewall firewall add rule name="SlimeVR TCP 21110 outgoing" dir=out action=allow protocol=TCP localport=21110
 
+rem OTA server default port
+netsh advfirewall firewall add rule name="SlimeVR UDP 10001 incoming" dir=in action=allow protocol=UDP localport=10001
+netsh advfirewall firewall add rule name="SlimeVR UDP 10001 outgoing" dir=out action=allow protocol=UDP localport=10001
+
 echo Done!
 pause

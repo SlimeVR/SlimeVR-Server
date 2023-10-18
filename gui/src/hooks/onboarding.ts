@@ -16,7 +16,7 @@ interface OnboardingState {
 export interface OnboardingContext {
   state: OnboardingState;
   applyProgress: (value: number) => void;
-  setWifiCredentials: (ssid: string, password: string) => void;
+  setWifiCredentials: (ssid: string, password?: string) => void;
   skipSetup: () => void;
 }
 
@@ -68,8 +68,8 @@ export function useProvideOnboarding(): OnboardingContext {
         dispatch({ type: 'progress', value });
       }, []);
     },
-    setWifiCredentials: (ssid: string, password: string) => {
-      dispatch({ type: 'wifi-creds', ssid, password });
+    setWifiCredentials: (ssid: string, password?: string) => {
+      dispatch({ type: 'wifi-creds', ssid, password: password ?? '' });
     },
     skipSetup: () => {
       setConfig({ doneOnboarding: true });

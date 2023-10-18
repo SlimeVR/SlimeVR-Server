@@ -40,6 +40,10 @@ export function SettingSelectorMobile() {
         label: l10n.getString('settings-sidebar-serial'),
         value: { url: '/settings/serial' },
       },
+      {
+        label: l10n.getString('settings-sidebar-firmware-tool'),
+        value: { url: '/settings/firmware-tool' },
+      },
     ];
 
   const { control, watch, handleSubmit, setValue } = useForm<{
