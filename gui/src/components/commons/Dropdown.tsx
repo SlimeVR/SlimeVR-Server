@@ -1,12 +1,33 @@
 import classNames from 'classnames';
-import { useEffect, useState } from 'react';
-import {
-  Control,
-  Controller,
-  UseFormGetValues,
-  useWatch,
-} from 'react-hook-form';
+import { useEffect, useRef, useState } from 'react';
+import { Control, Controller, UseControllerProps } from 'react-hook-form';
 import { a11yClick } from '@/utils/a11y';
+import { createPortal } from 'react-dom';
+import { useElemSize } from '@/hooks/layout';
+import { ArrowDownIcon } from './icon/ArrowIcons';
+
+interface DropdownProps {
+  direction?: DropdownDirection;
+  variant?: 'primary' | 'secondary' | 'tertiary';
+  alignment?: 'right' | 'left';
+  display?: 'fit' | 'block';
+  placeholder: string;
+  control: Control<any>;
+  name: string;
+  items: DropdownItem[];
+  maxHeight?: string | number;
+  rules?: UseControllerProps<any>['rules'];
+}
+
+type DropdownItemsProps = Pick<
+  DropdownProps,
+  'direction' | 'variant' | 'alignment' | 'display' | 'items' | 'maxHeight'
+> & {
+  onSelectItem: (item: DropdownItem) => void;
+  onBackdropClick: () => void;
+  value: string;
+  dropdownBounds: DOMRect;
+};
 
 export interface DropdownItem {
   label: string;
@@ -16,200 +37,188 @@ export interface DropdownItem {
 
 export type DropdownDirection = 'up' | 'down';
 
+export function DropdownItems({
+  display,
+  direction,
+  variant,
+  alignment,
+  items,
+  maxHeight,
+  value,
+  dropdownBounds,
+  onSelectItem,
+  onBackdropClick,
+}: DropdownItemsProps) {
+  const { height, width, ref } = useElemSize<HTMLDivElement>();
+
+  const GAP = 8;
+
+  return (
+    <>
+      <div
+        className="z-[999] fixed top-0 w-full h-full"
+        onClick={onBackdropClick}
+      ></div>
+      <div
+        ref={ref}
+        className={classNames(
+          'z-[1000] fixed rounded shadow',
+          'overflow-y-auto dropdown-scroll overflow-x-hidden text-background-10',
+          variant == 'primary' && 'bg-background-60',
+          variant == 'secondary' && 'bg-background-70',
+          variant == 'tertiary' && 'bg-accent-background-30',
+          height == 0 && 'opacity-0' // Avoid flicker while the component find its position
+        )}
+        style={{
+          maxHeight: maxHeight,
+          left:
+            alignment === 'left'
+              ? dropdownBounds.left
+              : dropdownBounds.left + dropdownBounds.width - width,
+          top:
+            direction == 'down'
+              ? dropdownBounds.bottom + GAP
+              : dropdownBounds.top - height - GAP,
+          minWidth: display === 'block' ? dropdownBounds.width : 'inherit',
+        }}
+      >
+        <ul className="py-1 text-sm flex flex-col">
+          {items.map((item) => (
+            <li
+              style={item.fontName ? { fontFamily: item.fontName } : {}}
+              className={classNames(
+                'py-2 px-4 min-w-max cursor-pointer',
+                variant == 'primary' &&
+                  'checked-hover:bg-background-50 text-background-20 ' +
+                    'checked-hover:text-background-10',
+                variant == 'secondary' &&
+                  'checked-hover:bg-background-60 text-background-20 ' +
+                    'checked-hover:text-background-10',
+                variant == 'tertiary' &&
+                  'bg-accent-background-30 checked-hover:bg-accent-background-20'
+              )}
+              onClick={() => {
+                onSelectItem(item);
+              }}
+              onKeyDown={(ev) => {
+                if (!a11yClick(ev)) return;
+                onSelectItem(item);
+              }}
+              key={item.value}
+              tabIndex={0}
+              data-checked={item.value === value}
+            >
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  );
+}
+
 export function Dropdown({
   direction = 'up',
   variant = 'primary',
   alignment = 'right',
   display = 'fit',
+  maxHeight = '50vh',
   placeholder,
   control,
-  getValues,
+  rules,
   name,
   items = [],
-}: {
-  direction?: DropdownDirection;
-  variant?: 'primary' | 'secondary' | 'tertiary';
-  alignment?: 'right' | 'left';
-  display?: 'fit' | 'block';
-  placeholder: string;
-  control: Control<any>;
-  getValues: UseFormGetValues<any>;
-  name: string;
-  items: DropdownItem[];
-}) {
-  const itemRefs: Record<string, HTMLLIElement> = {};
-  const [isOpen, setOpen] = useState(false);
-  const formValue = {
-    ...{ value: useWatch({ control, name }) as string },
-    ...{ value: getValues(name) as string },
+}: DropdownProps) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [isOpen, setOpenState] = useState(false);
+  const [dropdownBounds, setDropdownBounds] = useState<DOMRect>();
+
+  const updateBounds = () => {
+    if (!ref.current) return;
+    setDropdownBounds(ref.current?.getBoundingClientRect());
   };
+
+  const onResize = () => {
+    // We could have two behaviours here:
+    // 1 - We update the bounds of the dropdown so the size and position match.
+    //    Works but have a slight delay when resizing, kinda looks laggy
+    // 2 - We close the dropdown on resize.
+    //     We could consider this as the same as clicking outside of the dropdown
+    //     This is the approach choosen RN
+    setOpen(false);
+  };
+
   useEffect(() => {
-    if (!isOpen) return;
-
-    const curItem = itemRefs[formValue.value];
-    const dropdownParent = curItem
-      ? (curItem.closest('.dropdown-scroll') as HTMLElement | null)
-      : null;
-    if (curItem && dropdownParent) {
-      dropdownParent.scroll({
-        top: curItem.offsetTop - dropdownParent.offsetHeight / 2,
-      });
-    }
-
-    function onWheelEvent() {
-      if (isOpen && !document.querySelector('div.dropdown-scroll:hover')) {
-        setOpen(false);
-      }
-    }
-
-    function onTouchEvent(event: TouchEvent) {
-      // Check if we touch scroll outside of the dropdown
-      if (
-        isOpen &&
-        !document
-          .querySelector('div.dropdown-scroll')
-          ?.contains(event.target as HTMLDivElement)
-      ) {
-        setOpen(false);
-      }
-    }
-
-    function onClick(event: MouseEvent) {
-      const isInDropdownScroll = document
-        .querySelector('div.dropdown-scroll')
-        ?.contains(event.target as HTMLDivElement);
-      const isInDropdown = !!(event.target as HTMLDivElement).closest(
-        '.dropdown'
-      );
-      if (isOpen && !isInDropdownScroll && !isInDropdown) {
-        setOpen(false);
-      }
-    }
-
-    document.addEventListener('click', onClick, false);
-    document.addEventListener('touchmove', onTouchEvent, false);
-    // TS doesn't let me specify { passive: true }, but I believe it will work anyways
-    document.addEventListener('wheel', onWheelEvent, { passive: true });
+    window.addEventListener('resize', onResize);
     return () => {
-      document.removeEventListener('wheel', onWheelEvent);
-      document.removeEventListener('click', onClick);
-      document.removeEventListener('touchmove', onTouchEvent);
+      window.removeEventListener('resize', onResize);
     };
-  }, [isOpen]);
+  }, []);
+
+  const setOpen = (open: boolean | ((prevState: boolean) => boolean)) => {
+    updateBounds();
+    setOpenState(open);
+  };
 
   return (
     <Controller
       control={control}
       name={name}
+      rules={rules}
       render={({ field: { onChange, value } }) => (
         <>
-          {isOpen && (
-            <div
-              className="absolute top-0 left-0 w-full h-full bg-transparent"
-              onClick={() => setOpen(false)}
-            ></div>
-          )}
           <div
+            ref={ref}
             className={classNames(
-              'relative',
+              'min-h-[42px] text-background-10 px-5 py-3 rounded-md focus:ring-4 text-center dropdown',
+              'flex cursor-pointer',
+              variant == 'primary' && 'bg-background-60 hover:bg-background-50',
+              variant == 'secondary' &&
+                'bg-background-70 hover:bg-background-60',
+              variant == 'tertiary' &&
+                'bg-accent-background-30 hover:bg-accent-background-20',
               display === 'fit' && 'w-fit',
               display === 'block' && 'w-full'
             )}
+            onClick={() => setOpen((open) => !open)}
+            onKeyDown={(ev) => a11yClick(ev) && setOpen((open) => !open)}
+            tabIndex={0}
           >
+            <div className="flex-grow text-standard">
+              {items.find((i) => i.value == value)?.label || placeholder}
+            </div>
             <div
               className={classNames(
-                'min-h-[35px] text-background-10 px-5 py-2.5 rounded-md focus:ring-4 text-center dropdown',
-                'flex cursor-pointer',
-                variant == 'primary' &&
-                  'bg-background-60 hover:bg-background-50',
-                variant == 'secondary' &&
-                  'bg-background-70 hover:bg-background-60',
-                variant == 'tertiary' &&
-                  'bg-accent-background-30 hover:bg-accent-background-20'
+                'ml-2 fill-background-10',
+                direction == 'up' && 'rotate-180',
+                direction == 'down' && 'rotate-0'
               )}
-              onClick={() => setOpen((open) => !open)}
-              onKeyDown={(ev) => a11yClick(ev) && setOpen((open) => !open)}
-              tabIndex={0}
             >
-              <div className="flex-grow text-standard">
-                {items.find((i) => i.value == value)?.label || placeholder}
-              </div>
-              <div
-                className={classNames(
-                  'ml-2',
-                  direction == 'up' && 'rotate-180',
-                  direction == 'down' && 'rotate-0'
-                )}
-              >
-                <svg
-                  className="justify-end w-4 h-4 "
-                  aria-hidden="true"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
-              </div>
+              <ArrowDownIcon size={16}></ArrowDownIcon>
             </div>
-            {isOpen && (
-              <div
-                className={classNames(
-                  'absolute z-10 rounded shadow min-w-max max-h-[50vh]',
-                  'overflow-y-auto dropdown-scroll overflow-x-hidden',
-                  display === 'fit' && 'w-fit',
-                  display === 'block' && 'w-full',
-                  direction === 'up' && 'bottom-[45px]',
-                  direction === 'down' && 'top-[45px]',
-                  variant == 'primary' && 'bg-background-60',
-                  variant == 'secondary' && 'bg-background-70',
-                  variant == 'tertiary' && 'bg-accent-background-30',
-                  alignment === 'right' && 'right-0',
-                  alignment === 'left' && 'left-0'
-                )}
-              >
-                <ul className="py-1 text-sm flex flex-col">
-                  {items.map((item) => (
-                    <li
-                      style={item.fontName ? { fontFamily: item.fontName } : {}}
-                      className={classNames(
-                        'py-2 px-4 min-w-max cursor-pointer',
-                        variant == 'primary' &&
-                          'checked-hover:bg-background-50 text-background-20 ' +
-                            'checked-hover:text-background-10',
-                        variant == 'secondary' &&
-                          'checked-hover:bg-background-60 text-background-20 ' +
-                            'checked-hover:text-background-10',
-                        variant == 'tertiary' &&
-                          'bg-accent-background-30 checked-hover:bg-accent-background-20'
-                      )}
-                      onClick={() => {
-                        onChange(item.value);
-                        setOpen(false);
-                      }}
-                      onKeyDown={(ev) => {
-                        if (!a11yClick(ev)) return;
-                        onChange(item.value);
-                        setOpen(false);
-                      }}
-                      ref={(ref) => (ref ? (itemRefs[item.value] = ref) : {})}
-                      key={item.value}
-                      tabIndex={0}
-                      data-checked={item.value === value}
-                    >
-                      {item.label}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
           </div>
+          {isOpen &&
+            dropdownBounds &&
+            createPortal(
+              <DropdownItems
+                items={items}
+                dropdownBounds={dropdownBounds}
+                direction={direction}
+                display={display}
+                alignment={alignment}
+                maxHeight={maxHeight}
+                variant={variant}
+                value={value}
+                onSelectItem={(item) => {
+                  setOpen(false);
+                  onChange(item.value);
+                }}
+                onBackdropClick={() => {
+                  setOpen(false);
+                }}
+              ></DropdownItems>,
+              document.body
+            )}
         </>
       )}
     />
