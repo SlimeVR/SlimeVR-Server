@@ -13,7 +13,8 @@ class BodyProportionError : IAutoBoneError {
 	override fun getStepError(trainingStep: AutoBoneStep): Float {
 		return getBodyProportionError(
 			trainingStep.skeleton1,
-			trainingStep.currentHmdHeight / trainingStep.eyeHeightToHeightRatio
+			// Skeletons are now normalized to reduce bias, so height is always 1
+			1f
 		)
 	}
 

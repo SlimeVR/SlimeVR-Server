@@ -164,42 +164,8 @@ class AutoBone(server: VRServer) {
 		return true
 	}
 
-	fun <T> sumSelectConfigs(
-		selection: List<T>,
-		configs: Map<T, Float>,
-		configsAlt: Map<T, Float>? = null,
-	): Float {
-		var sum = 0f
-		for (config in selection) {
-			val length = configs[config] ?: configsAlt?.get(config)
-			if (length != null) {
-				sum += length
-			}
-		}
-		return sum
-	}
-
-	fun calcHeight(): Float {
-		return sumSelectConfigs(heightOffsets, offsets, heightOffsetDefaults)
-	}
-
 	fun getLengthSum(configs: Map<SkeletonConfigOffsets, Float>): Float {
-		return getLengthSum(configs, null)
-	}
-
-	fun getLengthSum(
-		configs: Map<SkeletonConfigOffsets, Float>,
-		configsAlt: Map<SkeletonConfigOffsets, Float>?,
-	): Float {
 		var length = 0f
-		if (configsAlt != null) {
-			for ((key, value) in configsAlt) {
-				// If there isn't a duplicate config
-				if (!configs.containsKey(key)) {
-					length += value
-				}
-			}
-		}
 		for (boneLength in configs.values) {
 			length += boneLength
 		}
@@ -357,14 +323,13 @@ class AutoBone(server: VRServer) {
 			entry.setValue((entry.value * estimatedHeight) / trainingStep.skeleton1.userHeightFromConfig)
 		}
 
-		val finalHeight = calcHeight()
 		LogManager
 			.info(
-				"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, New height: $finalHeight"
+				"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, New height: $estimatedHeight"
 			)
 
 		return AutoBoneResults(
-			finalHeight,
+			estimatedHeight,
 			trainingStep.targetHmdHeight,
 			trainingStep.errorStats,
 			offsets
@@ -471,29 +436,27 @@ class AutoBone(server: VRServer) {
 		val skeleton2 = trainingStep.skeleton2
 
 		val totalLength = getLengthSum(offsets)
-		val curHeight = calcHeight()
-		trainingStep.currentHmdHeight = curHeight
-
-		val heightErrorDeriv = getErrorDeriv(trainingStep)
-		val heightError = errorFunc(heightErrorDeriv)
 
 		// Scaling each step used to mean enforcing the target height, so keep that
 		// behaviour to improve predictability
 		if (!trainingStep.config.scaleEachStep) {
 			// Try to estimate a new height by calculating the height with the lowest
 			// error between adding or subtracting from the height
-
 			val maxHeight = trainingStep.targetHmdHeight + 0.2f
 			val minHeight = trainingStep.targetHmdHeight - 0.2f
 
-			val heightAdjust = heightError * trainingStep.curAdjustRate
+			trainingStep.currentHmdHeight = estimatedHeight
+			val heightErrorDeriv = getErrorDeriv(trainingStep)
+			val heightAdjust = errorFunc(heightErrorDeriv) * trainingStep.curAdjustRate
 
 			val negHeight = (estimatedHeight - heightAdjust).coerceIn(minHeight, maxHeight)
 			updateRecordingScale(trainingStep, 1f / negHeight)
+			trainingStep.currentHmdHeight = negHeight
 			val negHeightErrorDeriv = getErrorDeriv(trainingStep)
 
 			val posHeight = (estimatedHeight + heightAdjust).coerceIn(minHeight, maxHeight)
 			updateRecordingScale(trainingStep, 1f / posHeight)
+			trainingStep.currentHmdHeight = posHeight
 			val posHeightErrorDeriv = getErrorDeriv(trainingStep)
 
 			if (negHeightErrorDeriv < heightErrorDeriv && negHeightErrorDeriv < posHeightErrorDeriv) {
@@ -508,6 +471,9 @@ class AutoBone(server: VRServer) {
 				updateRecordingScale(trainingStep, 1f / estimatedHeight)
 			}
 		}
+
+		// Update the heights used for error calculations
+		trainingStep.currentHmdHeight = estimatedHeight
 
 		val errorDeriv = getErrorDeriv(trainingStep)
 		val error = errorFunc(errorDeriv)
@@ -613,36 +579,6 @@ class AutoBone(server: VRServer) {
 		val height = skeleton1.userHeightFromConfig
 		for (entry in offsets.entries) {
 			entry.setValue(entry.value / height)
-		}
-	}
-
-	private fun scaleToTargetHeight(trainingStep: AutoBoneStep) {
-		// Recalculate the height and update it in the AutoBoneStep
-		val stepHeight = calcHeight()
-		trainingStep.currentHmdHeight = stepHeight
-
-		if (stepHeight > 0f) {
-			val stepHeightDiff = trainingStep.targetHmdHeight - stepHeight
-			for (entry in offsets.entries) {
-				// Only height variables
-				if (entry.key == SkeletonConfigOffsets.NECK ||
-					!heightOffsets.contains(entry.key)
-				) {
-					continue
-				}
-				val length = entry.value
-
-				// Multiply the diff by the length to height
-				// ratio
-				val adjVal = stepHeightDiff * (length / stepHeight)
-
-				// Scale the length to fit the target height
-				entry.setValue(
-					(length + adjVal / 2f).coerceAtLeast(
-						0.01f
-					)
-				)
-			}
 		}
 	}
 
