@@ -89,6 +89,7 @@ class AutoBone(server: VRServer) {
 
 		// Get current or default skeleton configs
 		val skeleton = server.humanPoseManager
+		// Still compensate for a null skeleton, as it may not be initialized yet
 		val getOffset: Function<SkeletonConfigOffsets, Float> =
 			if (skeleton != null) {
 				Function { key: SkeletonConfigOffsets -> skeleton.getOffset(key) }
@@ -178,10 +179,12 @@ class AutoBone(server: VRServer) {
 	): Float {
 		val targetHeight: Float
 		// Get the current skeleton from the server
-		if (config.useSkeletonHeight) {
+		val humanPoseManager = server.humanPoseManager
+		// Still compensate for a null skeleton, as it may not be initialized yet
+		if (config.useSkeletonHeight && humanPoseManager != null) {
 			// If there is a skeleton available, calculate the target height
 			// from its configs
-			targetHeight = server.humanPoseManager.userHeightFromConfig
+			targetHeight = humanPoseManager.userHeightFromConfig
 			LogManager
 				.warning(
 					"[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): $targetHeight"
@@ -230,7 +233,7 @@ class AutoBone(server: VRServer) {
 		val targetFullHeight = if (config.targetFullHeight > 0f) {
 			config.targetFullHeight
 		} else {
-			targetHmdHeight * BodyProportionError.eyeHeightToHeightRatio
+			targetHmdHeight / BodyProportionError.eyeHeightToHeightRatio
 		}
 
 		// Set up the current state, making all required players and setting up the
@@ -325,7 +328,7 @@ class AutoBone(server: VRServer) {
 
 		LogManager
 			.info(
-				"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, New height: $estimatedHeight"
+				"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, Final height: $estimatedHeight"
 			)
 
 		return AutoBoneResults(
@@ -416,7 +419,7 @@ class AutoBone(server: VRServer) {
 				)
 			LogManager
 				.info(
-					"[AutoBone] Estimated height: $estimatedHeight, Target height: ${trainingStep.targetHmdHeight}"
+					"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, Estimated height: $estimatedHeight"
 				)
 		}
 
@@ -438,7 +441,7 @@ class AutoBone(server: VRServer) {
 		val totalLength = getLengthSum(offsets)
 
 		// Scaling each step used to mean enforcing the target height, so keep that
-		// behaviour to improve predictability
+		// behaviour to retain predictability
 		if (!trainingStep.config.scaleEachStep) {
 			// Try to estimate a new height by calculating the height with the lowest
 			// error between adding or subtracting from the height

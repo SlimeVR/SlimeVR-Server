@@ -105,9 +105,10 @@ class VRServer @JvmOverloads constructor(
 		provisioningHandler = ProvisioningHandler(this)
 		resetHandler = ResetHandler()
 		tapSetupHandler = TapSetupHandler()
+		humanPoseManager = HumanPoseManager(this)
+		// AutoBone requires HumanPoseManager first
 		autoBoneHandler = AutoBoneHandler(this)
 		protocolAPI = ProtocolAPI(this)
-		humanPoseManager = HumanPoseManager(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 
 		// Start server for SlimeVR trackers
