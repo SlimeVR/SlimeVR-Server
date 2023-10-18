@@ -358,7 +358,6 @@ class AutoBone(server: VRServer) {
 
 				// Apply the current config values
 				applyConfig(trainingStep.skeleton1)
-				applyConfig(trainingStep.skeleton2)
 
 				// Scale to 1 meter before starting the first iteration, as it's scaled after otherwise
 				val height = trainingStep.skeleton1.userHeightFromConfig
