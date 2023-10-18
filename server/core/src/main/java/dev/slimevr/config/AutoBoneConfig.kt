@@ -25,4 +25,5 @@ class AutoBoneConfig {
 	var saveRecordings = false
 	var useSkeletonHeight = false
 	var randSeed = 4L
+	var useFrameFiltering = false
 }
