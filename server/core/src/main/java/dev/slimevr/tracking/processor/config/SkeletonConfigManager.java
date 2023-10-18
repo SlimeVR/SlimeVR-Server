@@ -431,7 +431,8 @@ public class SkeletonConfigManager {
 					/ BodyProportionError.eyeHeightToHeightRatio;
 				if (height > 0.5f) { // Reset only if floor level seems right,
 					ProportionLimiter proportionLimiter = BodyProportionError
-						.getProportionLimitForOffset(config);
+						.getProportionLimitMap()
+						.get(config);
 					if (proportionLimiter != null) {
 						setOffset(
 							config,
