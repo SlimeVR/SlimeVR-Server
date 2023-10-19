@@ -144,7 +144,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	fun reset() {
 		if (!enabled) return
 
-		skeleton.hmdNode.localTransform.translation = Vector3.NULL
+		skeleton.headBone.setPosition(Vector3.NULL)
 		comVelocity = Vector3.NULL
 
 		// when localizing without a 6 dof device we choose the floor level
@@ -415,12 +415,12 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		return if (num == 0f) accel else accel.div(num)
 	}
 
-	// update the hmd position and rotation
+	// update the head position and rotation
 	private fun updateSkeletonPos(travel: Vector3) {
 		val rot = skeleton.headTracker?.getRotation() ?: Quaternion.IDENTITY
-		val temp = skeleton.hmdNode.localTransform.translation.minus(travel)
+		val temp = skeleton.headBone.getPosition() - travel
 
-		skeleton.hmdNode.localTransform.translation = temp
-		skeleton.hmdNode.localTransform.rotation = rot
+		skeleton.headBone.setPosition(temp)
+		skeleton.headBone.setRotation(rot)
 	}
 }
