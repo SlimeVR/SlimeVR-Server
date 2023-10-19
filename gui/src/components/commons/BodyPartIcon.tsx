@@ -86,10 +86,6 @@ export const mapPart: Record<
     <UpperLegIcon width={width} flipped></UpperLegIcon>
   ),
   [BodyPart.WAIST]: ({ width }) => <WaistIcon width={width}></WaistIcon>,
-  [BodyPart.LEFT_HIP]: ({ width }) => <SlimeVRIcon width={width}></SlimeVRIcon>,
-  [BodyPart.RIGHT_HIP]: ({ width }) => (
-    <SlimeVRIcon width={width}></SlimeVRIcon>
-  ),
 };
 
 export function BodyPartIcon({

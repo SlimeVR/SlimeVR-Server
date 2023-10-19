@@ -15,7 +15,7 @@ import { useMemo } from 'react';
 import { WarningBox } from '@/components/commons/TipBox';
 import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
 import classNames from 'classnames';
-import { SkeletonVisualizerWidget } from '../widgets/SkeletonVisualizerWidget';
+import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
 
 const DONT_REPEAT_STATUSES = [StatusData.StatusTrackerReset];
 

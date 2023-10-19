@@ -7,7 +7,7 @@ import {
   BoneKind,
   createChildren,
   BasedSkeletonHelper,
-} from '../../utils/skeletonHelper';
+} from '@/utils/skeletonHelper';
 import * as THREE from 'three';
 import { BodyPart, BoneT } from 'solarxr-protocol';
 

@@ -11,8 +11,8 @@ import {
   Vector3,
 } from 'three';
 import { BodyPart, BoneT } from 'solarxr-protocol';
-import { Vector3FromVec3fT } from '../maths/vector3';
-import { QuaternionFromQuatT } from '../maths/quaternion';
+import { Vector3FromVec3fT } from '@/maths/vector3';
+import { QuaternionFromQuatT } from '@/maths/quaternion';
 
 const _vector = new Vector3();
 const _boneMatrix = new Matrix4();

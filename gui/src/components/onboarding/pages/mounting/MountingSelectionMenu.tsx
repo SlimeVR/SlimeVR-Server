@@ -99,8 +99,6 @@ export const mapPart: Record<
       <FootIcon width={width} flipped></FootIcon>
     ),
   [BodyPart.WAIST]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.LEFT_HIP]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.RIGHT_HIP]: ({ width }) => <FootIcon width={width}></FootIcon>,
 };
 
 export function MountingBodyPartIcon({
