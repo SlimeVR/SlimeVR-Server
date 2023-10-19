@@ -98,7 +98,7 @@ export function SkeletonVisualizerWidget() {
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
       <Canvas
-        className="container"
+        className="container mx-auto"
         style={{ height: 400, background: 'transparent' }}
         onCreated={({ camera }) => {
           (camera as THREE.PerspectiveCamera).fov = 20;
