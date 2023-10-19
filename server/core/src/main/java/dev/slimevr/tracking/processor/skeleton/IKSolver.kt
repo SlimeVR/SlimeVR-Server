@@ -26,15 +26,12 @@ class IKSolver(val root: Bone) {
 		// check if there is any constraints (other than the head) in the model
 		rootChain = if (neededChain(rootChain!!)) rootChain else null
 		chainList.sortBy { -it.level }
-
-		print("DEBUG chainList.size = ")
-		println(chainList.size)
 	}
 
 	// convert the skeleton in to a system of chains
 	// a break in a chain is created at any point that has either
 	// multiple children or is positionally constrained, useless chains are discarded
-	private fun chainBuilder(root: Bone, parent: IKChain?, level: Int, constraints: MutableList<IKConstraint>): IKChain {
+	private fun chainBuilder(root: Bone, parent: IKChain?, level: Int, constraints: MutableList<Tracker>): IKChain {
 		val boneList = mutableListOf<Bone>()
 		var currentBone = root
 		boneList.add(currentBone)
@@ -42,7 +39,7 @@ class IKSolver(val root: Bone) {
 		// get constraints
 		val baseConstraint = if (parent == null) getConstraint(boneList.first(), constraints)
 							 else parent.tailConstraint
-		var tailConstraint: IKConstraint? = null
+		var tailConstraint: Tracker? = null
 
 		// add bones until there is a reason to make a new chain
 		while(currentBone.children.size == 1 && tailConstraint == null) {
@@ -114,19 +111,19 @@ class IKSolver(val root: Bone) {
 		return false
 	}
 
-	private fun extractConstraints(trackers: List<Tracker>): MutableList<IKConstraint> {
-		val constraintList = mutableListOf<IKConstraint>()
+	private fun extractConstraints(trackers: List<Tracker>): MutableList<Tracker> {
+		val constraintList = mutableListOf<Tracker>()
 		for (t in trackers) {
 			if (t.hasPosition && !t.isInternal &&
 				!t.status.reset)
-				constraintList.add(IKConstraint(t))
+				constraintList.add(t)
 		}
 		return constraintList
 	}
 
-	private fun getConstraint(bone: Bone, constraints: MutableList<IKConstraint>): IKConstraint? {
+	private fun getConstraint(bone: Bone, constraints: MutableList<Tracker>): Tracker? {
 		for (c in constraints) {
-			if (bone.boneType.bodyPart == (c.tracker.trackerPosition?.bodyPart ?: 0)) {
+			if (bone.boneType.bodyPart == (c.trackerPosition?.bodyPart ?: 0)) {
 				constraints.remove(c)
 				return c
 			}
@@ -151,7 +148,7 @@ class IKSolver(val root: Bone) {
 }
 
 class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int,
-				val baseConstraint: IKConstraint? , val tailConstraint: IKConstraint?) {
+				val baseConstraint: Tracker? , val tailConstraint: Tracker?) {
 	private val squThreshold = 0.00001f
 
 	// state variables
@@ -175,7 +172,7 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 		if (tailConstraint == null && children.size > 1)
 			target /= children.size.toFloat()
 		else
-			target = tailConstraint?.tracker?.position ?: Vector3.NULL
+			target = tailConstraint?.position ?: Vector3.NULL
 
 		if ((positions.last() - target).lenSq() > squThreshold) {
 			// set the end node to target
@@ -196,14 +193,13 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 
 	private fun forwards() {
 		if (baseConstraint != null)
-			positions[0] = baseConstraint.tracker.position
+			positions[0] = baseConstraint.position
 		else if (parent != null)
 			positions[0] = parent!!.positions.last()
 
 		for (i in 1 until positions.size - 1) {
 			val direction = (positions[i] - positions[i - 1]).unit()
 
-			// TODO apply constraints here
 			setBoneRotation(nodes[i - 1], direction)
 
 			positions[i] = positions[i - 1] + (direction * nodes[i - 1].length)
@@ -227,11 +223,7 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 	}
 
 	private fun setBoneRotation(bone: Bone, rotationVector: Vector3) {
-		bone.setRotationRaw(Quaternion.fromTo(Vector3.NEG_Y, rotationVector).unit())
+		val rotation = bone.constraint.applyConstraint(rotationVector, bone.parent)
+		bone.setRotationRaw(rotation)
 	}
-}
-
-class IKConstraint(val tracker: Tracker) {
-
-
 }
