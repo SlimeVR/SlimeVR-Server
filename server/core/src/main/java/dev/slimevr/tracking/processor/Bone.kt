@@ -76,7 +76,7 @@ class Bone(val boneType: BoneType) {
 	}
 
 	/**
-	 * Sets the global rotation of the bone without applying the rotation offset
+	 * Sets the global rotation of the bone directly
 	 */
 	fun setRotationRaw(rotation: Quaternion) {
 		headNode.localTransform.rotation = rotation
