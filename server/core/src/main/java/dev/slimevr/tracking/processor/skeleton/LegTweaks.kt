@@ -961,7 +961,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 				skeleton.rightUpperArmBone
 			)
 			val leftForearm: Vector3 = getCenterOfJoint(
-					skeleton.leftLowerArmBone
+				skeleton.leftLowerArmBone
 			)
 			val rightForearm: Vector3 = getCenterOfJoint(
 				skeleton.rightLowerArmBone
@@ -990,8 +990,10 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 	// get the center of two joints
 	private fun getCenterOfJoint(bone: Bone): Vector3 {
-		return (bone.getPosition() +
-			bone.getTailPosition()) *
+		return (
+			bone.getPosition() +
+				bone.getTailPosition()
+			) *
 			0.5f
 	}
 
