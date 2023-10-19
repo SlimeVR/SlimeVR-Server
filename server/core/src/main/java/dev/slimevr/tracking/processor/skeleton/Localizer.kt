@@ -40,8 +40,8 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	init {
 		skeleton = humanSkeleton
 		legTweaks = skeleton.legTweaks
-		bufCur = legTweaks.buffer
-		bufPrev = LegTweakBuffer()
+		bufCur = legTweaks.bufferHead
+		bufPrev = LegTweaksBuffer()
 	}
 
 	// state variables
@@ -95,7 +95,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		warmupFrames++
 
 		// set the buffers for easy access
-		bufCur = legTweaks.buffer
+		bufCur = legTweaks.bufferHead
 		if (bufCur.parent == null) {
 			return
 		}
@@ -281,7 +281,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			currentCOM = targetCOM
 		}
 
-		targetCOM += (comVelocity / bufCur.timeDelta)
+		targetCOM += (comVelocity / bufCur.getTimeDelta())
 
 		val lowTracker = getLowestTracker()
 
@@ -330,7 +330,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		// add the acceleration of gravity
 		comVelocity = Vector3(
 			comVelocity.x,
-			comY + (gravity / bufCur.timeDelta),
+			comY + (gravity / bufCur.getTimeDelta()),
 			comVelocity.z
 		)
 

@@ -2,7 +2,7 @@ package dev.slimevr.tracking.processor.skeleton
 
 import com.jme3.math.FastMath
 import dev.slimevr.config.LegTweaksConfig
-import dev.slimevr.tracking.processor.TransformNode
+import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
@@ -336,7 +336,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		}
 
 		// update the foot length
-		footLength = skeleton.leftFootNode.localTransform.translation.len()
+		footLength = skeleton.leftFootBone.length
 
 		// if the user is standing start checking for a good time to enable leg
 		// tweaks
@@ -931,19 +931,19 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 		// compute the center of mass of smaller body parts and then sum them up
 		// with their respective weights
-		val head = skeleton.headNode.worldTransform.translation
+		val head = skeleton.headBone.getPosition()
 		val thorax: Vector3 =
-			getCenterOfJoint(skeleton.chestNode, skeleton.upperChestNode)
-		val abdomen = skeleton.waistNode.worldTransform.translation
-		val pelvis = skeleton.hipNode.worldTransform.translation
+			getCenterOfJoint(skeleton.chestBone)
+		val abdomen = skeleton.waistBone.getPosition()
+		val pelvis = skeleton.hipBone.getPosition()
 		val leftCalf: Vector3 =
-			getCenterOfJoint(skeleton.leftAnkleNode, skeleton.leftKneeNode)
+			getCenterOfJoint(skeleton.leftLowerLegBone)
 		val rightCalf: Vector3 =
-			getCenterOfJoint(skeleton.rightAnkleNode, skeleton.rightKneeNode)
+			getCenterOfJoint(skeleton.rightLowerLegBone)
 		val leftThigh: Vector3 =
-			getCenterOfJoint(skeleton.leftKneeNode, skeleton.leftHipNode)
+			getCenterOfJoint(skeleton.leftUpperLegBone)
 		val rightThigh: Vector3 =
-			getCenterOfJoint(skeleton.rightKneeNode, skeleton.rightHipNode)
+			getCenterOfJoint(skeleton.rightUpperLegBone)
 		centerOfMass += head * HEAD_MASS
 		centerOfMass += thorax * THORAX_MASS
 		centerOfMass += abdomen * ABDOMEN_MASS
@@ -955,18 +955,16 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 		if (armsAvailable) {
 			val leftUpperArm: Vector3 = getCenterOfJoint(
-				skeleton.leftElbowNode,
-				skeleton.leftShoulderTailNode
+				skeleton.leftUpperArmBone
 			)
 			val rightUpperArm: Vector3 = getCenterOfJoint(
-				skeleton.rightElbowNode,
-				skeleton.rightShoulderTailNode
+				skeleton.rightUpperArmBone
 			)
-			val leftForearm: Vector3 =
-				getCenterOfJoint(skeleton.leftElbowNode, skeleton.leftHandNode)
+			val leftForearm: Vector3 = getCenterOfJoint(
+					skeleton.leftLowerArmBone
+			)
 			val rightForearm: Vector3 = getCenterOfJoint(
-				skeleton.rightElbowNode,
-				skeleton.rightHandNode
+				skeleton.rightLowerArmBone
 			)
 			centerOfMass += leftUpperArm * UPPER_ARM_MASS
 			centerOfMass += rightUpperArm * UPPER_ARM_MASS
@@ -976,7 +974,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			// if the arms are not available put them slightly in front
 			// of the upper chest.
 			val chestUnitVector: Vector3 = computeUnitVector(
-				skeleton.upperChestNode.worldTransform.rotation
+				skeleton.upperChestBone.getGlobalRotation()
 			)
 			val armLocation =
 				abdomen + (chestUnitVector * DEFAULT_ARM_DISTANCE)
@@ -986,14 +984,14 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 		// finally translate in to tracker space
 		centerOfMass = hipPosition +
-			(centerOfMass - skeleton.trackerHipNode.worldTransform.translation)
+			(centerOfMass - skeleton.hipTrackerBone.getPosition())
 		return centerOfMass
 	}
 
 	// get the center of two joints
-	private fun getCenterOfJoint(node1: TransformNode, node2: TransformNode): Vector3 {
-		return node1.worldTransform.translation +
-			node2.worldTransform.translation *
+	private fun getCenterOfJoint(bone: Bone): Vector3 {
+		return (bone.getPosition() +
+			bone.getTailPosition()) *
 			0.5f
 	}
 
