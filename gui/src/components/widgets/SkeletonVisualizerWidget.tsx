@@ -45,6 +45,7 @@ export function OrthographicCameraWrapper() {
   );
 }
 
+// Just need to know the length of the total body, so don't need right legs
 const yParts = [
   BodyPart.NECK,
   BodyPart.UPPER_CHEST,
@@ -77,7 +78,8 @@ export function SkeletonVisualizerWidget() {
 
   const heightOffset = useMemo(() => {
     const hmd = bones.get(BodyPart.HEAD);
-    if (hmd?.headPositionG?.y === undefined || hmd.headPositionG?.y > 0) {
+    // If I know the head position, don't use an offset
+    if (hmd?.headPositionG?.y !== undefined && hmd.headPositionG?.y > 0) {
       return 0;
     }
     const yLength = yParts.map((x) => bones.get(x));

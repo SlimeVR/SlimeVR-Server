@@ -61,6 +61,7 @@ export class BasedSkeletonHelper extends LineSegments {
       depthWrite: false,
       toneMapped: false,
       transparent: true,
+      linewidth: 4,
     });
 
     super(geometry, material);
@@ -208,7 +209,7 @@ export class BoneKind extends Bone {
         return new Color('teal');
       case BodyPart.LEFT_FOOT:
       case BodyPart.RIGHT_FOOT:
-        return new Color('purple');
+        return new Color('#00ffcc');
       case BodyPart.LEFT_LOWER_ARM:
       case BodyPart.RIGHT_LOWER_ARM:
         return new Color('red');
@@ -220,7 +221,7 @@ export class BoneKind extends Bone {
         return new Color('fuchsia');
       case BodyPart.LEFT_SHOULDER:
       case BodyPart.RIGHT_SHOULDER:
-        return new Color('rebeccapurple');
+        return new Color('#00ffff');
       case BodyPart.LEFT_HIP:
       case BodyPart.RIGHT_HIP:
         return new Color('salmon');
