@@ -1,15 +1,7 @@
-import {
-  Bone,
-  BufferGeometry,
-  Color,
-  Float32BufferAttribute,
-  LineBasicMaterial,
-  LineSegments,
-  Matrix4,
-  Object3D,
-  Quaternion,
-  Vector3,
-} from 'three';
+import { Bone, Color, Matrix4, Object3D, Quaternion, Vector2, Vector3 } from 'three';
+import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
+import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
+import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
 import { BodyPart, BoneT } from 'solarxr-protocol';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
@@ -18,16 +10,23 @@ const _vector = new Vector3();
 const _boneMatrix = new Matrix4();
 const _matrixWorldInv = new Matrix4();
 
-export class BasedSkeletonHelper extends LineSegments {
+export class BasedSkeletonHelper extends LineSegments2 {
   isSkeletonHelper: boolean;
   root: Object3D;
   bones: Bone[];
   readonly type = 'SkeletonHelper';
 
+  get resolution() {
+    return this.material.resolution;
+  }
+  set resolution(v: Vector2) {
+    this.material.resolution = v;
+  }
+
   constructor(object: Object3D) {
     const bones = getBoneList(object);
 
-    const geometry = new BufferGeometry();
+    const geometry = new LineSegmentsGeometry();
 
     const vertices = [];
     const colors = [];
@@ -52,10 +51,10 @@ export class BasedSkeletonHelper extends LineSegments {
       }
     }
 
-    geometry.setAttribute('position', new Float32BufferAttribute(vertices, 3));
-    geometry.setAttribute('color', new Float32BufferAttribute(colors, 3));
+    geometry.setPositions(vertices);
+    geometry.setColors(colors);
 
-    const material = new LineBasicMaterial({
+    const material = new LineMaterial({
       vertexColors: true,
       depthTest: false,
       depthWrite: false,
@@ -79,27 +78,25 @@ export class BasedSkeletonHelper extends LineSegments {
     const bones = this.bones;
 
     const geometry = this.geometry;
-    const position = geometry.getAttribute('position');
+    const vertices = [];
 
     _matrixWorldInv.copy(this.root.matrixWorld).invert();
 
-    for (let i = 0, j = 0; i < bones.length; i++) {
+    for (let i = 0; i < bones.length; i++) {
       const bone = bones[i];
 
       if (bone.parent && (bone.parent as Bone).isBone) {
-        _boneMatrix.multiplyMatrices(_matrixWorldInv, bone.matrixWorld);
-        _vector.setFromMatrixPosition(_boneMatrix);
-        position.setXYZ(j, _vector.x, _vector.y, _vector.z);
-
         _boneMatrix.multiplyMatrices(_matrixWorldInv, bone.parent.matrixWorld);
         _vector.setFromMatrixPosition(_boneMatrix);
-        position.setXYZ(j + 1, _vector.x, _vector.y, _vector.z);
+        vertices.push(_vector.x, _vector.y, _vector.z);
 
-        j += 2;
+        _boneMatrix.multiplyMatrices(_matrixWorldInv, bone.matrixWorld);
+        _vector.setFromMatrixPosition(_boneMatrix);
+        vertices.push(_vector.x, _vector.y, _vector.z);
       }
     }
 
-    geometry.getAttribute('position').needsUpdate = true;
+    geometry.setPositions(vertices);
 
     super.updateMatrixWorld(force);
   }

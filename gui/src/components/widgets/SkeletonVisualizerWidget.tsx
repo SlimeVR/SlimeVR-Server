@@ -45,6 +45,19 @@ export function OrthographicCameraWrapper() {
   );
 }
 
+export function SkeletonHelper({ object }: { object: Bone }) {
+  const { size } = useThree();
+  const res = useMemo(() => new THREE.Vector2(size.width, size.height), [size]);
+
+  return (
+    <basedSkeletonHelper
+      frustumCulled={false}
+      resolution={res}
+      args={[object]}
+    />
+  );
+}
+
 // Just need to know the length of the total body, so don't need right legs
 const yParts = [
   BodyPart.NECK,
@@ -118,10 +131,7 @@ export function SkeletonVisualizerWidget() {
           />
         </mesh>
         <group position={[0, heightOffset, 0]}>
-          <basedSkeletonHelper
-            frustumCulled={false}
-            args={[skeleton.current[0]]}
-          ></basedSkeletonHelper>
+          <SkeletonHelper object={skeleton.current[0]}></SkeletonHelper>
         </group>
         <primitive object={skeleton.current[0]} />
         <OrbitControls
