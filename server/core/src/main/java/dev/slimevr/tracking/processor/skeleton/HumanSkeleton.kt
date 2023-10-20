@@ -1217,6 +1217,8 @@ class HumanSkeleton(
 		}
 		this.pauseTracking = pauseTracking
 		LogManager.info(String.format("[HumanSkeleton] ${if (pauseTracking) "Pause" else "Unpause"} tracking (%s)", sourceName))
+		// Report the new state of tracking pause
+		humanPoseManager.trackingPauseHandler.sendTrackingPauseState(pauseTracking)
 	}
 
 	fun togglePauseTracking(sourceName: String?): Boolean {

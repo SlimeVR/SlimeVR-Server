@@ -14,6 +14,7 @@ import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler;
 import dev.slimevr.protocol.rpc.setup.RPCTapSetupHandler;
 import dev.slimevr.protocol.rpc.setup.RPCUtil;
 import dev.slimevr.protocol.rpc.status.RPCStatusHandler;
+import dev.slimevr.protocol.rpc.trackingpause.RPCTrackingPause;
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
@@ -46,6 +47,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 		new RPCTapSetupHandler(this, api);
 		new RPCStatusHandler(this, api);
 		new RPCAutoBoneHandler(this, api);
+		new RPCTrackingPause(this, api);
 
 		registerPacketListener(RpcMessage.ResetRequest, this::onResetRequest);
 		registerPacketListener(
