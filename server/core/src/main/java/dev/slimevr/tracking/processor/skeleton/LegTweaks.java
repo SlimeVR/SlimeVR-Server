@@ -2,7 +2,7 @@ package dev.slimevr.tracking.processor.skeleton;
 
 import com.jme3.math.FastMath;
 import dev.slimevr.config.LegTweaksConfig;
-import dev.slimevr.tracking.processor.TransformNode;
+import dev.slimevr.tracking.processor.Bone;
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
 import io.github.axisangles.ktmath.EulerAngles;
 import io.github.axisangles.ktmath.EulerOrder;
@@ -350,7 +350,7 @@ public class LegTweaks {
 		}
 
 		// update the foot length
-		footLength = skeleton.getLeftFootNode().getLocalTransform().getTranslation().len();
+		footLength = skeleton.getLeftFootBone().getLength();
 
 		// if the user is standing start checking for a good time to enable leg
 		// tweaks
@@ -1116,26 +1116,16 @@ public class LegTweaks {
 
 		// compute the center of mass of smaller body parts and then sum them up
 		// with their respective weights
-		Vector3 head = skeleton.getHeadNode().getWorldTransform().getTranslation();
-		Vector3 thorax = getCenterOfJoint(skeleton.getChestNode(), skeleton.getUpperChestNode());
-		Vector3 abdomen = skeleton.getWaistNode().getWorldTransform().getTranslation();
-		Vector3 pelvis = skeleton.getHipNode().getWorldTransform().getTranslation();
-		Vector3 leftCalf = getCenterOfJoint(
-			skeleton.getLeftAnkleNode(),
-			skeleton.getLeftKneeNode()
-		);
-		Vector3 rightCalf = getCenterOfJoint(
-			skeleton.getRightAnkleNode(),
-			skeleton.getRightKneeNode()
-		);
-		Vector3 leftThigh = getCenterOfJoint(
-			skeleton.getLeftKneeNode(),
-			skeleton.getLeftHipNode()
-		);
-		Vector3 rightThigh = getCenterOfJoint(
-			skeleton.getRightKneeNode(),
-			skeleton.getRightHipNode()
-		);
+		Vector3 head = skeleton.getHeadBone().getPosition();
+		Vector3 thorax = getCenterOfBone(skeleton.getChestBone())
+			.plus(getCenterOfBone(skeleton.getUpperChestBone()))
+			.times(0.5f);
+		Vector3 abdomen = skeleton.getWaistBone().getPosition();
+		Vector3 pelvis = skeleton.getHipBone().getPosition();
+		Vector3 leftCalf = getCenterOfBone(skeleton.getLeftLowerLegBone());
+		Vector3 rightCalf = getCenterOfBone(skeleton.getRightLowerLegBone());
+		Vector3 leftThigh = getCenterOfBone(skeleton.getLeftUpperLegBone());
+		Vector3 rightThigh = getCenterOfBone(skeleton.getRightUpperLegBone());
 		centerOfMass = centerOfMass.plus(head.times(HEAD_MASS));
 		centerOfMass = centerOfMass.plus(thorax.times(THORAX_MASS));
 		centerOfMass = centerOfMass.plus(abdomen.times(ABDOMEN_MASS));
@@ -1146,22 +1136,10 @@ public class LegTweaks {
 		centerOfMass = centerOfMass.plus(rightThigh.times(THIGH_MASS));
 
 		if (armsAvailable) {
-			Vector3 leftUpperArm = getCenterOfJoint(
-				skeleton.getLeftElbowNode(),
-				skeleton.getLeftShoulderTailNode()
-			);
-			Vector3 rightUpperArm = getCenterOfJoint(
-				skeleton.getRightElbowNode(),
-				skeleton.getRightShoulderTailNode()
-			);
-			Vector3 leftForearm = getCenterOfJoint(
-				skeleton.getLeftElbowNode(),
-				skeleton.getLeftHandNode()
-			);
-			Vector3 rightForearm = getCenterOfJoint(
-				skeleton.getRightElbowNode(),
-				skeleton.getRightHandNode()
-			);
+			Vector3 leftUpperArm = getCenterOfBone(skeleton.getLeftUpperArmBone());
+			Vector3 rightUpperArm = getCenterOfBone(skeleton.getRightUpperArmBone());
+			Vector3 leftForearm = getCenterOfBone(skeleton.getLeftLowerArmBone());
+			Vector3 rightForearm = getCenterOfBone(skeleton.getRightLowerArmBone());
 			centerOfMass = centerOfMass.plus(leftUpperArm.times(UPPER_ARM_MASS));
 			centerOfMass = centerOfMass.plus(rightUpperArm.times(UPPER_ARM_MASS));
 			centerOfMass = centerOfMass.plus(leftForearm.times(FOREARM_AND_HAND_MASS));
@@ -1170,7 +1148,7 @@ public class LegTweaks {
 			// if the arms are not available put them slightly in front
 			// of the upper chest.
 			Vector3 chestUnitVector = computeUnitVector(
-				skeleton.getUpperChestNode().getWorldTransform().getRotation()
+				skeleton.getUpperChestBone().getGlobalRotation()
 			);
 			Vector3 armLocation = abdomen.plus(chestUnitVector.times(DEFAULT_ARM_DISTANCE));
 			centerOfMass = centerOfMass.plus(armLocation.times(UPPER_ARM_MASS * 2.0f));
@@ -1181,19 +1159,15 @@ public class LegTweaks {
 		centerOfMass = hipPosition
 			.plus(
 				centerOfMass
-					.minus(skeleton.getTrackerHipNode().getWorldTransform().getTranslation())
+					.minus(skeleton.getHipTrackerBone().getPosition())
 			);
 
 		return centerOfMass;
 	}
 
-	// get the center of two joints
-	private Vector3 getCenterOfJoint(TransformNode node1, TransformNode node2) {
-		return node1
-			.getWorldTransform()
-			.getTranslation()
-			.plus(node2.getWorldTransform().getTranslation())
-			.times(0.5f);
+	// get the center of a bone
+	private Vector3 getCenterOfBone(Bone bone) {
+		return bone.getPosition().plus(bone.getTailPosition()).times(0.5f);
 	}
 
 	// get the amount of the constant correction to apply.
