@@ -22,10 +22,10 @@ declare module '@react-three/fiber' {
   }
 }
 
-const groundColor = '#4444aa';
-const frustumSize = 10;
-const factor = 2;
-
+const GROUND_COLOR = '#4444aa';
+const FRUSTUM_SIZE = 10;
+const FACTOR = 2;
+// Not currently used but nice to have
 export function OrthographicCameraWrapper() {
   const { size } = useThree();
   const aspect = useMemo(() => size.width / size.height, [size]);
@@ -34,10 +34,10 @@ export function OrthographicCameraWrapper() {
     <OrthographicCamera
       makeDefault
       zoom={200}
-      top={frustumSize / factor}
-      bottom={frustumSize / -factor}
-      left={(0.5 * frustumSize * aspect) / -factor}
-      right={(0.5 * frustumSize * aspect) / factor}
+      top={FRUSTUM_SIZE / FACTOR}
+      bottom={FRUSTUM_SIZE / -FACTOR}
+      left={(0.5 * FRUSTUM_SIZE * aspect) / -FACTOR}
+      right={(0.5 * FRUSTUM_SIZE * aspect) / FACTOR}
       near={0.1}
       far={1000}
       position={[25, 75, 50]}
@@ -59,7 +59,7 @@ export function SkeletonHelper({ object }: { object: Bone }) {
 }
 
 // Just need to know the length of the total body, so don't need right legs
-const yParts = [
+const Y_PARTS = [
   BodyPart.NECK,
   BodyPart.UPPER_CHEST,
   BodyPart.CHEST,
@@ -95,7 +95,7 @@ export function SkeletonVisualizerWidget() {
     if (hmd?.headPositionG?.y !== undefined && hmd.headPositionG?.y > 0) {
       return 0;
     }
-    const yLength = yParts.map((x) => bones.get(x));
+    const yLength = Y_PARTS.map((x) => bones.get(x));
     if (yLength.some((x) => x === undefined)) return 0;
     return (yLength as BoneT[]).reduce((prev, cur) => prev + cur.boneLength, 0);
   }, [bones]);
@@ -124,7 +124,7 @@ export function SkeletonVisualizerWidget() {
           <planeGeometry args={[10, 10, 50, 50]} />
           <meshBasicMaterial
             wireframe
-            color={groundColor}
+            color={GROUND_COLOR}
             transparent
             opacity={0.2}
             side={THREE.DoubleSide}
