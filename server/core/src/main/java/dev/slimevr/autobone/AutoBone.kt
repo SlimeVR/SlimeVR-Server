@@ -231,22 +231,20 @@ class AutoBone(server: VRServer) {
 		// Initialize the frame order randomizer with a repeatable seed
 		rand.setSeed(config.randSeed)
 
-		// Initialize normalization to the set target height
-		estimatedHeight = targetHmdHeight
-
 		// Normalize the skeletons and get the normalized height for adjusted offsets
 		scaleSkeleton(trainingStep.skeleton1)
 		scaleSkeleton(trainingStep.skeleton2)
 		adjustedHeightNormalized = sumAdjustedHeightOffsets(trainingStep.skeleton1)
 
 		// Normalize offsets based on the initial normalized skeleton
-		scaleHeightOffsets()
+		scaleOffsets()
 
 		// Apply the initial normalized config values
 		applyConfig(trainingStep.skeleton1)
 		applyConfig(trainingStep.skeleton2)
 
-		// Update the scale of the HMD (also updates skeletons)
+		// Initialize normalization to the set target height (also updates skeleton)
+		estimatedHeight = targetHmdHeight
 		updateRecordingScale(trainingStep, 1f / targetHmdHeight)
 
 		if (config.useFrameFiltering) {
@@ -562,7 +560,7 @@ class AutoBone(server: VRServer) {
 
 		// Normalize the scale, it will be upscaled to the target height later
 		// We only need to scale height offsets, as other offsets are not affected by height
-		scaleHeightOffsets(onlyHeightOffsets = true)
+		scaleOffsets(onlyHeightOffsets = true)
 
 		// Apply the normalized offsets to the skeleton
 		applyConfig(skeleton1)
@@ -612,7 +610,7 @@ class AutoBone(server: VRServer) {
 		}
 	}
 
-	private fun scaleHeightOffsets(offsets: EnumMap<SkeletonConfigOffsets, Float> = this.offsets, targetHeight: Float = adjustedHeightNormalized, onlyHeightOffsets: Boolean = false) {
+	private fun scaleOffsets(offsets: EnumMap<SkeletonConfigOffsets, Float> = this.offsets, targetHeight: Float = adjustedHeightNormalized, onlyHeightOffsets: Boolean = false) {
 		// Get the scale to apply for the appropriate offsets
 		val scale = targetHeight / sumHeightOffsets(offsets)
 
