@@ -241,6 +241,10 @@ class AutoBone(server: VRServer) {
 		// Normalize offsets based on the initial normalized skeleton
 		scaleHeightOffsets()
 
+		// Apply the initial normalized config values
+		applyConfig(trainingStep.skeleton1)
+		applyConfig(trainingStep.skeleton2)
+
 		if (config.useFrameFiltering) {
 			// Calculate the initial frame errors and recording stats
 			val frameErrors = FloatArray(frames.maxFrameCount)
@@ -362,10 +366,6 @@ class AutoBone(server: VRServer) {
 			var frameCursor = 0
 			while (frameCursor < frameCount - cursorOffset) {
 				val frameCursor2 = frameCursor + cursorOffset
-
-				// Apply the normalized config values
-				applyConfig(trainingStep.skeleton1)
-				applyConfig(trainingStep.skeleton2)
 
 				// Then set the frame cursors and apply them to both skeletons
 				if (config.randomizeFrameOrder && randomFrameIndices != null) {
