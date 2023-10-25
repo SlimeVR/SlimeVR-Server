@@ -45,6 +45,9 @@ class AutoBone(server: VRServer) {
 
 	var estimatedHeight: Float = 1f
 
+	// The total height of the normalized adjusted offsets
+	var adjustedHeightNormalized: Float = 1f
+
 	private val server: VRServer
 
 	// #region Error functions
@@ -233,6 +236,10 @@ class AutoBone(server: VRServer) {
 		updateRecordingScale(trainingStep, 1f / targetHmdHeight)
 		scaleSkeleton(trainingStep.skeleton1)
 		scaleSkeleton(trainingStep.skeleton2)
+		adjustedHeightNormalized = sumAdjustedHeightOffsets(trainingStep.skeleton1)
+
+		// Normalize offsets based on the initial normalized skeleton
+		scaleHeightOffsets()
 
 		if (config.useFrameFiltering) {
 			// Calculate the initial frame errors and recording stats
@@ -303,7 +310,7 @@ class AutoBone(server: VRServer) {
 
 		// Scale the normalized offsets to the estimated height for the final result
 		for (entry in offsets.entries) {
-			entry.setValue((entry.value * estimatedHeight) / trainingStep.skeleton1.userHeightFromConfig)
+			entry.setValue(entry.value * estimatedHeight)
 		}
 
 		LogManager
@@ -356,15 +363,6 @@ class AutoBone(server: VRServer) {
 			while (frameCursor < frameCount - cursorOffset) {
 				val frameCursor2 = frameCursor + cursorOffset
 
-				// Apply the current config values
-				applyConfig(trainingStep.skeleton1)
-
-				// Scale to 1 meter before starting the first iteration, as it's scaled after otherwise
-				val height = trainingStep.skeleton1.userHeightFromConfig
-				for (entry in offsets.entries) {
-					entry.setValue(entry.value / height)
-				}
-
 				// Apply the normalized config values
 				applyConfig(trainingStep.skeleton1)
 				applyConfig(trainingStep.skeleton2)
@@ -410,7 +408,7 @@ class AutoBone(server: VRServer) {
 			// Scale the normalized offsets to the estimated height for the callback
 			val scaledOffsets = EnumMap(offsets)
 			for (entry in scaledOffsets.entries) {
-				entry.setValue((entry.value * estimatedHeight) / trainingStep.skeleton1.userHeightFromConfig)
+				entry.setValue(entry.value * estimatedHeight)
 			}
 			trainingStep.epochCallback.accept(Epoch(epoch + 1, config.numEpochs, errorStats, scaledOffsets))
 		}
@@ -537,8 +535,8 @@ class AutoBone(server: VRServer) {
 			// Apply new offset length
 			skeleton1.setOffset(entry.key, newLength)
 			skeleton2.setOffset(entry.key, newLength)
-			scaleSkeleton(skeleton1)
-			scaleSkeleton(skeleton2)
+			scaleSkeleton(skeleton1, onlyAdjustedHeight = true)
+			scaleSkeleton(skeleton2, onlyAdjustedHeight = true)
 
 			// Update the skeleton poses for the new offset length
 			skeleton1.update()
@@ -550,28 +548,73 @@ class AutoBone(server: VRServer) {
 				entry.setValue(newLength)
 			}
 
-			// Reset the skeleton values to minimize bias in other variables,
-			// it's applied later
+			// Reset the skeleton values to minimize bias in other variables, it's applied later
 			applyConfig(skeleton1)
 			applyConfig(skeleton2)
 		}
 
 		// Update the offsets from the adjusted ones
 		offsets.putAll(intermediateOffsets)
-		applyConfig(skeleton1)
-		applyConfig(skeleton2)
 
 		// Normalize the scale, it will be upscaled to the target height later
-		val height = skeleton1.userHeightFromConfig
-		for (entry in offsets.entries) {
-			entry.setValue(entry.value / height)
+		// We only need to scale height offsets, as other offsets are not affected by height
+		scaleHeightOffsets(onlyHeightOffsets = true)
+
+		// Apply the normalized offsets to the skeleton
+		applyConfig(skeleton1)
+		applyConfig(skeleton2)
+	}
+
+	/**
+	 * Sums only the adjusted height offsets of the provided HumanPoseManager
+	 */
+	private fun sumAdjustedHeightOffsets(humanPoseManager: HumanPoseManager): Float {
+		var sum = 0f
+		SkeletonConfigManager.HEIGHT_OFFSETS.forEach {
+			if (!adjustOffsets.contains(it)) return@forEach
+			sum += humanPoseManager.getOffset(it)
+		}
+		return sum
+	}
+
+	/**
+	 * Sums only the height offsets of the provided offset map
+	 */
+	private fun sumHeightOffsets(offsets: EnumMap<SkeletonConfigOffsets, Float> = this.offsets): Float {
+		var sum = 0f
+		SkeletonConfigManager.HEIGHT_OFFSETS.forEach {
+			sum += offsets[it] ?: return@forEach
+		}
+		return sum
+	}
+
+	private fun scaleSkeleton(humanPoseManager: HumanPoseManager, targetHeight: Float = 1f, onlyAdjustedHeight: Boolean = false) {
+		// Get the scale to apply for the appropriate offsets
+		val scale = if (onlyAdjustedHeight) {
+			// Only adjusted height offsets
+			val adjHeight = sumAdjustedHeightOffsets(humanPoseManager)
+			// Remove the constant from the target, leaving only the target for adjusted height offsets
+			val adjTarget = targetHeight - (humanPoseManager.userHeightFromConfig - adjHeight)
+			// Return only the scale for adjusted offsets
+			adjTarget / adjHeight
+		} else {
+			targetHeight / humanPoseManager.userHeightFromConfig
+		}
+
+		val offsets = if (onlyAdjustedHeight) SkeletonConfigManager.HEIGHT_OFFSETS else SkeletonConfigOffsets.values
+		for (offset in offsets) {
+			if (onlyAdjustedHeight && !adjustOffsets.contains(offset)) continue
+			humanPoseManager.setOffset(offset, humanPoseManager.getOffset(offset) * scale)
 		}
 	}
 
-	private fun scaleSkeleton(humanPoseManager: HumanPoseManager, targetHeight: Float = 1f) {
-		val scale = targetHeight / humanPoseManager.userHeightFromConfig
-		for (offset in SkeletonConfigOffsets.values) {
-			humanPoseManager.setOffset(offset, humanPoseManager.getOffset(offset) * scale)
+	private fun scaleHeightOffsets(offsets: EnumMap<SkeletonConfigOffsets, Float> = this.offsets, targetHeight: Float = adjustedHeightNormalized, onlyHeightOffsets: Boolean = false) {
+		// Get the scale to apply for the appropriate offsets
+		val scale = targetHeight / sumHeightOffsets(offsets)
+
+		for (entry in offsets.entries) {
+			if (onlyHeightOffsets && !SkeletonConfigManager.HEIGHT_OFFSETS.contains(entry.key)) continue
+			entry.setValue(entry.value * scale)
 		}
 	}
 
