@@ -233,7 +233,8 @@ class AutoBone(server: VRServer) {
 
 		// Initialize normalization to the set target height
 		estimatedHeight = targetHmdHeight
-		updateRecordingScale(trainingStep, 1f / targetHmdHeight)
+
+		// Normalize the skeletons and get the normalized height for adjusted offsets
 		scaleSkeleton(trainingStep.skeleton1)
 		scaleSkeleton(trainingStep.skeleton2)
 		adjustedHeightNormalized = sumAdjustedHeightOffsets(trainingStep.skeleton1)
@@ -244,6 +245,9 @@ class AutoBone(server: VRServer) {
 		// Apply the initial normalized config values
 		applyConfig(trainingStep.skeleton1)
 		applyConfig(trainingStep.skeleton2)
+
+		// Update the scale of the HMD (also updates skeletons)
+		updateRecordingScale(trainingStep, 1f / targetHmdHeight)
 
 		if (config.useFrameFiltering) {
 			// Calculate the initial frame errors and recording stats
