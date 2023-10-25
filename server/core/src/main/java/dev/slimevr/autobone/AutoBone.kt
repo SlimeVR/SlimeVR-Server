@@ -421,8 +421,6 @@ class AutoBone(server: VRServer) {
 		val skeleton1 = trainingStep.skeleton1
 		val skeleton2 = trainingStep.skeleton2
 
-		val totalLength = getLengthSum(offsets)
-
 		// Scaling each step used to mean enforcing the target height, so keep that
 		// behaviour to retain predictability
 		if (!trainingStep.config.scaleEachStep) {
@@ -526,7 +524,7 @@ class AutoBone(server: VRServer) {
 			val dotLength = originalLength * ((leftDotProduct + rightDotProduct) / 2f)
 
 			// Scale by the ratio for smooth adjustment and more stable results
-			val curAdjustVal = (adjustVal * -dotLength) / totalLength
+			val curAdjustVal = adjustVal * -dotLength
 			val newLength = originalLength + curAdjustVal
 
 			// No small or negative numbers!!! Bad algorithm!
