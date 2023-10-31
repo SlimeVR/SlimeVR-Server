@@ -120,16 +120,7 @@ export function SkeletonVisualizerWidget() {
           camera.position.set(3, 3, -3);
         }}
       >
-        <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[10, 10, 50, 50]} />
-          <meshBasicMaterial
-            wireframe
-            color={GROUND_COLOR}
-            transparent
-            opacity={0.2}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
+        <gridHelper args={[10, 50, GROUND_COLOR, GROUND_COLOR]} />
         <group position={[0, heightOffset, 0]}>
           <SkeletonHelper object={skeleton.current[0]}></SkeletonHelper>
         </group>

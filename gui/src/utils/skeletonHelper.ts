@@ -1,4 +1,4 @@
-import { Bone, Color, Matrix4, Object3D, Quaternion, Vector2, Vector3 } from 'three';
+import { Bone, Color, Matrix4, Object3D, Vector2, Vector3 } from 'three';
 import { LineSegments2 } from 'three/examples/jsm/lines/LineSegments2';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeometry.js';
@@ -163,13 +163,14 @@ export class BoneKind extends Bone {
     }
 
     const quat = QuaternionFromQuatT(this.boneT.rotationG)
-      .normalize()
-      .multiply(
-        parentBone === undefined
-          ? new Quaternion().identity()
-          : QuaternionFromQuatT(parentBone.rotationG).normalize().invert().normalize()
-      )
+      // .normalize()
+      // .multiply(
+      //   parentBone === undefined
+      //     ? new Quaternion().identity()
+      //     : QuaternionFromQuatT(parentBone.rotationG).normalize().invert().normalize()
+      // )
       .normalize();
+
     // console.log(this.quaternion);
     // console.log(
     //   parentBone === undefined
