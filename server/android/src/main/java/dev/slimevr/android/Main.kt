@@ -5,6 +5,7 @@ package dev.slimevr.android
 import androidx.appcompat.app.AppCompatActivity
 import dev.slimevr.Keybinding
 import dev.slimevr.VRServer
+import dev.slimevr.android.serial.AndroidSerialHandler
 import io.eiren.util.logging.LogManager
 import io.ktor.http.CacheControl
 import io.ktor.http.CacheControl.Visibility
@@ -44,8 +45,12 @@ fun main(activity: AppCompatActivity) {
 		} catch (e1: java.lang.Exception) {
 			e1.printStackTrace()
 		}
+
 		try {
-			vrServer = VRServer(configPath = File(activity.filesDir, "vrconfig.yml").absolutePath)
+			vrServer = VRServer(
+				configPath = File(activity.filesDir, "vrconfig.yml").absolutePath,
+				serialHandlerProvider = { _ -> AndroidSerialHandler(activity) }
+			)
 			vrServer.start()
 			Keybinding(vrServer)
 			vrServer.join()
