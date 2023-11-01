@@ -72,7 +72,7 @@ const Y_PARTS = [
 ];
 
 export function SkeletonVisualizerWidget({
-  height,
+  height = '35vh',
   maxHeight = 400,
 }: {
   height?: number | string;
@@ -138,10 +138,7 @@ export function SkeletonVisualizerWidget({
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
       <Canvas
-        className={classNames(
-          'container mx-auto',
-          height === undefined && 'my-auto'
-        )}
+        className={classNames('container mx-auto')}
         style={{ height, background: 'transparent', maxHeight }}
         onCreated={({ camera }) => {
           (camera as THREE.PerspectiveCamera).fov = 20;
