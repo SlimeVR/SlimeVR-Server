@@ -1,7 +1,7 @@
 import { Canvas, Object3DNode, extend, useThree } from '@react-three/fiber';
 import { useAppContext } from '@/hooks/app';
 import { Bone } from 'three';
-import { useMemo, useEffect, useRef } from 'react';
+import { useMemo, useEffect, useRef, useState } from 'react';
 import { OrbitControls, OrthographicCamera } from '@react-three/drei';
 import {
   BoneKind,
@@ -12,6 +12,8 @@ import * as THREE from 'three';
 import { BodyPart, BoneT } from 'solarxr-protocol';
 import { QuaternionFromQuatT, isIdentity } from '@/maths/quaternion';
 import classNames from 'classnames';
+import { Button } from '@/components/commons/Button';
+import { useLocalization } from '@fluent/react';
 
 extend({ BasedSkeletonHelper });
 
@@ -71,13 +73,54 @@ const Y_PARTS = [
   BodyPart.LEFT_LOWER_LEG,
 ];
 
+interface SkeletonVisualizerWidgetProps {
+  height?: number | string;
+  maxHeight?: number | string;
+}
+
+export function ToggleableSkeletonVisualizerWidget(
+  props: SkeletonVisualizerWidgetProps
+) {
+  const { l10n } = useLocalization();
+  const [enabled, setEnabled] = useState(false);
+
+  return (
+    <>
+      {!enabled && (
+        <Button
+          variant="secondary"
+          className="w-full"
+          onClick={() => {
+            setEnabled(true);
+            localStorage.setItem('modelPreview', 'true');
+          }}
+        >
+          {l10n.getString('widget-skeleton_visualizer-preview')}
+        </Button>
+      )}
+      {enabled && (
+        <>
+          <Button
+            className="w-full"
+            variant="secondary"
+            onClick={() => {
+              setEnabled(false);
+              localStorage.setItem('modelPreview', 'false');
+            }}
+          >
+            {l10n.getString('widget-skeleton_visualizer-hide')}
+          </Button>
+          <SkeletonVisualizerWidget {...props} />
+        </>
+      )}
+    </>
+  );
+}
+
 export function SkeletonVisualizerWidget({
   height = '35vh',
   maxHeight = 400,
-}: {
-  height?: number | string;
-  maxHeight?: number | string;
-}) {
+}: SkeletonVisualizerWidgetProps) {
   const { bones: _bones } = useAppContext();
 
   const bones = useMemo(
@@ -120,8 +163,8 @@ export function SkeletonVisualizerWidget({
 
   const yawReset = useMemo(() => {
     const hmd = bones.get(BodyPart.HEAD);
-    const chest = bones.get(BodyPart.CHEST);
-    // Check if HMD is identity, if it's then use chest's rotation
+    const chest = bones.get(BodyPart.UPPER_CHEST);
+    // Check if HMD is identity, if it's then use upper chest's rotation
     const quat = isIdentity(hmd?.rotationG)
       ? QuaternionFromQuatT(chest?.rotationG).normalize().invert()
       : QuaternionFromQuatT(hmd?.rotationG).normalize().invert();
@@ -142,7 +185,7 @@ export function SkeletonVisualizerWidget({
         style={{ height, background: 'transparent', maxHeight }}
         onCreated={({ camera }) => {
           (camera as THREE.PerspectiveCamera).fov = 20;
-          camera.position.set(3, 3, -3);
+          camera.position.set(3, 2.5, -3);
         }}
       >
         <gridHelper args={[10, 50, GROUND_COLOR, GROUND_COLOR]} />

@@ -15,7 +15,6 @@ import { useMemo } from 'react';
 import { WarningBox } from '@/components/commons/TipBox';
 import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
 import classNames from 'classnames';
-import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
 
 const DONT_REPEAT_STATUSES = [StatusData.StatusTrackerReset];
 
@@ -50,7 +49,6 @@ export function Home() {
         <HeadsetIcon></HeadsetIcon>
       </NavLink>
       <div className="h-full overflow-y-auto">
-        <SkeletonVisualizerWidget height={400} />
         <div
           className={classNames(
             'px-2 pt-4 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1',
