@@ -117,7 +117,7 @@ jobs:
           cd gui && npm run build
 
       - name: Build with Gradle
-        run: ./gradlew :server:android:build
+        run: ./gradlew :server:android:assembleDebug
 
       - name: Upload the APK
         uses: actions/upload-artifact@v3
