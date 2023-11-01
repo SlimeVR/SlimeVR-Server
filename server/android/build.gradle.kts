@@ -80,7 +80,7 @@ dependencies {
 	implementation("io.ktor:ktor-server-netty:2.3.0")
 	implementation("io.ktor:ktor-server-caching-headers:2.3.0")
 
-	//Serial
+	// Serial
 	implementation("com.github.mik3y:usb-serial-for-android:3.7.0")
 }
 

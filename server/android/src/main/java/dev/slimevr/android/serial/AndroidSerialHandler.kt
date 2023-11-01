@@ -1,7 +1,6 @@
 package dev.slimevr.android.serial
 
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.hardware.usb.UsbManager
@@ -14,7 +13,6 @@ import dev.slimevr.serial.SerialHandler
 import dev.slimevr.serial.SerialListener
 import io.eiren.util.logging.LogManager
 import java.io.IOException
-import java.io.OutputStreamWriter
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -24,7 +22,6 @@ import kotlin.concurrent.timerTask
 import kotlin.streams.asSequence
 import kotlin.streams.asStream
 import dev.slimevr.serial.SerialPort as SlimeSerialPort
-
 
 class SerialPortWrapper(val port: UsbSerialPort) : SlimeSerialPort() {
 	override val portLocation: String
@@ -39,19 +36,18 @@ class SerialPortWrapper(val port: UsbSerialPort) : SlimeSerialPort() {
 		get() = port.device.productId
 }
 
-
-class AndroidSerialHandler(val activity: AppCompatActivity) : SerialHandler(),
+class AndroidSerialHandler(val activity: AppCompatActivity) :
+	SerialHandler(),
 	SerialInputOutputManager.Listener {
 
-	private var usbIoManager: SerialInputOutputManager? = null;
-
+	private var usbIoManager: SerialInputOutputManager? = null
 
 	private val listeners: MutableList<SerialListener> = CopyOnWriteArrayList()
 	private val getDevicesTimer = Timer("GetDevicesTimer")
 	private var watchingNewDevices = false
 	private var lastKnownPorts = setOf<SerialPortWrapper>()
-	private val manager = activity.getSystemService(Context.USB_SERVICE) as UsbManager;
-	private var currentPort: SerialPortWrapper? = null;
+	private val manager = activity.getSystemService(Context.USB_SERVICE) as UsbManager
+	private var currentPort: SerialPortWrapper? = null
 	private var requestingPermission: String = ""
 
 	override val isConnected: Boolean
@@ -98,7 +94,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) : SerialHandler(),
 
 	private fun detectNewPorts() {
 		val differences = knownPorts.asSequence() - lastKnownPorts
-		lastKnownPorts = knownPorts.asSequence().toSet();
+		lastKnownPorts = knownPorts.asSequence().toSet()
 		differences.forEach { onNewDevice(it) }
 	}
 
@@ -113,10 +109,10 @@ class AndroidSerialHandler(val activity: AppCompatActivity) : SerialHandler(),
 	@Synchronized
 	override fun openSerial(portLocation: String?, auto: Boolean): Boolean {
 		LogManager.info("[SerialHandler] Trying to open: $portLocation, auto: $auto")
-		lastKnownPorts = knownPorts.asSequence().toSet();
+		lastKnownPorts = knownPorts.asSequence().toSet()
 		val newPort = lastKnownPorts.find {
 			(!auto && it.portLocation == portLocation) || (auto && isKnownBoard(it))
-		};
+		}
 
 		if (newPort == null) {
 			LogManager.info(
@@ -126,13 +122,13 @@ class AndroidSerialHandler(val activity: AppCompatActivity) : SerialHandler(),
 		}
 
 		if (isConnected) {
-			val port = currentPort!!;
+			val port = currentPort!!
 			if (newPort != port) {
 				LogManager.info(
 					"[SerialHandler] Closing current serial port " +
 						port.descriptivePortName
 				)
-				closeSerial();
+				closeSerial()
 			} else {
 				LogManager.info("[SerialHandler] Reusing already open port")
 				listeners.forEach { it.onSerialConnected(port) }
@@ -143,7 +139,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) : SerialHandler(),
 		LogManager.info(
 			"[SerialHandler] Trying to connect to new serial port " +
 				newPort.descriptivePortName
-		);
+		)
 
 		if (!manager.hasPermission(newPort.port.device)) {
 			val flags = PendingIntent.FLAG_IMMUTABLE
@@ -155,46 +151,46 @@ class AndroidSerialHandler(val activity: AppCompatActivity) : SerialHandler(),
 			)
 			if (requestingPermission != newPort.portLocation) {
 				println("Requesting permission for ${newPort.portLocation}")
-				manager.requestPermission(newPort.port.device, usbPermissionIntent);
-				requestingPermission = newPort.portLocation;
+				manager.requestPermission(newPort.port.device, usbPermissionIntent)
+				requestingPermission = newPort.portLocation
 			}
 			LogManager.warning(
 				"[SerialHandler] Can't open serial port ${newPort.descriptivePortName}, invalid permissions"
 			)
-			return false;
+			return false
 		}
 
-		val connection = manager.openDevice(newPort.port.device);
+		val connection = manager.openDevice(newPort.port.device)
 		if (connection == null) {
 			LogManager.warning(
 				"[SerialHandler] Can't open serial port ${newPort.descriptivePortName}, connection failed"
 
 			)
-			return false;
+			return false
 		}
-		newPort.port.open(connection);
-		newPort.port.setParameters(115200, 8, 1, UsbSerialPort.PARITY_NONE);
+		newPort.port.open(connection)
+		newPort.port.setParameters(115200, 8, 1, UsbSerialPort.PARITY_NONE)
 		usbIoManager = SerialInputOutputManager(newPort.port, this).apply {
 			start()
 		}
-		listeners.forEach { it.onSerialConnected(newPort) };
-		currentPort = newPort;
+		listeners.forEach { it.onSerialConnected(newPort) }
+		currentPort = newPort
 		LogManager.info("[SerialHandler] Serial port ${newPort.descriptivePortName} is open")
-		return true;
+		return true
 	}
 
 	@Synchronized
 	private fun writeSerial(serialText: String, print: Boolean = false) {
 		try {
-			usbIoManager?.writeAsync("${serialText}\n".toByteArray());
-			if (print)
+			usbIoManager?.writeAsync("${serialText}\n".toByteArray())
+			if (print) {
 				addLog("-> $serialText\n")
+			}
 		} catch (e: IOException) {
 			addLog("[!] Serial error: ${e.message}\n")
 			LogManager.warning("[SerialHandler] Serial port write error", e)
 		}
 	}
-
 
 	override fun rebootRequest() {
 		writeSerial("REBOOT")
@@ -208,18 +204,18 @@ class AndroidSerialHandler(val activity: AppCompatActivity) : SerialHandler(),
 		writeSerial("GET INFO")
 	}
 
-
 	override fun closeSerial() {
 		try {
-			if (isConnected)
-				currentPort?.port?.close();
+			if (isConnected) {
+				currentPort?.port?.close()
+			}
 			listeners.forEach { it.onSerialDisconnected() }
 			LogManager.info(
 				"[SerialHandler] Port ${currentPort?.descriptivePortName} closed okay"
 			)
-			usbIoManager?.stop();
-			usbIoManager = null;
-			currentPort = null;
+			usbIoManager?.stop()
+			usbIoManager = null
+			currentPort = null
 		} catch (e: Exception) {
 			LogManager.warning(
 				"[SerialHandler] Error closing port ${currentPort?.descriptivePortName}",
@@ -251,6 +247,4 @@ class AndroidSerialHandler(val activity: AppCompatActivity) : SerialHandler(),
 	companion object {
 		private val ACTION_USB_PERMISSION = "dev.slimevr.USB_PERMISSION"
 	}
-
-
 }
