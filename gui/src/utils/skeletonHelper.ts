@@ -56,8 +56,8 @@ export class BasedSkeletonHelper extends LineSegments2 {
 
     const material = new LineMaterial({
       vertexColors: true,
-      depthTest: false,
-      depthWrite: false,
+      // depthTest: false,
+      // depthWrite: false,
       toneMapped: false,
       transparent: true,
       linewidth: 4,

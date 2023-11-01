@@ -100,14 +100,20 @@ export function SkeletonVisualizerWidget() {
     return (yLength as BoneT[]).reduce((prev, cur) => prev + cur.boneLength, 0);
   }, [bones]);
 
-  const targetCamera = useMemo(() => {
+  const targetCameraInit = useRef(false);
+  const targetCameraMemo = useMemo(() => {
     const hmd = bones.get(BodyPart.HEAD);
     if (hmd?.headPositionG?.y && hmd.headPositionG.y > 0) {
+      targetCameraInit.current = true;
       return hmd.headPositionG.y / 2;
     }
-
+    if (heightOffset > 0) targetCameraInit.current = true;
     return heightOffset / 2;
   }, [bones]);
+  const targetCamera = useMemo(
+    () => (targetCameraInit ? targetCameraMemo : 0),
+    [targetCameraInit]
+  );
 
   if (!skeleton.current) return <></>;
   return (
