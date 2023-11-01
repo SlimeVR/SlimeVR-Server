@@ -127,11 +127,7 @@ class AutoBone(server: VRServer) {
 				if (rightSide) configOffset.affectedOffsets[1] else configOffset.affectedOffsets[0]
 			else -> configOffset.affectedOffsets[0]
 		}
-		val relevantTransform = skeleton.getTailNodeOfBone(boneType)
-		return (
-			relevantTransform.worldTransform.translation -
-				relevantTransform.parent!!.worldTransform.translation
-			).unit()
+		return skeleton.getBone(boneType).getGlobalRotation().toRotationVector()
 	}
 
 	fun getDotProductDiff(
