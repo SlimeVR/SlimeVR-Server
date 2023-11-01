@@ -11,6 +11,7 @@ import {
 import * as THREE from 'three';
 import { BodyPart, BoneT } from 'solarxr-protocol';
 import { QuaternionFromQuatT, isIdentity } from '@/maths/quaternion';
+import classNames from 'classnames';
 
 extend({ BasedSkeletonHelper });
 
@@ -70,7 +71,13 @@ const Y_PARTS = [
   BodyPart.LEFT_LOWER_LEG,
 ];
 
-export function SkeletonVisualizerWidget() {
+export function SkeletonVisualizerWidget({
+  height,
+  maxHeight = 400,
+}: {
+  height?: number | string;
+  maxHeight?: number | string;
+}) {
   const { bones: _bones } = useAppContext();
 
   const bones = useMemo(
@@ -131,8 +138,11 @@ export function SkeletonVisualizerWidget() {
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
       <Canvas
-        className="container mx-auto"
-        style={{ height: 400, background: 'transparent' }}
+        className={classNames(
+          'container mx-auto',
+          height === undefined && 'my-auto'
+        )}
+        style={{ height, background: 'transparent', maxHeight }}
         onCreated={({ camera }) => {
           (camera as THREE.PerspectiveCamera).fov = 20;
           camera.position.set(3, 3, -3);

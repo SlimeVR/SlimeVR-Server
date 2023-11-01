@@ -50,7 +50,7 @@ export function Home() {
         <HeadsetIcon></HeadsetIcon>
       </NavLink>
       <div className="h-full overflow-y-auto">
-        <SkeletonVisualizerWidget />
+        <SkeletonVisualizerWidget height={400} />
         <div
           className={classNames(
             'px-2 pt-4 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1',
