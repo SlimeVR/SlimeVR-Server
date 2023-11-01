@@ -10,6 +10,7 @@ import {
 } from '@/utils/skeletonHelper';
 import * as THREE from 'three';
 import { BodyPart, BoneT } from 'solarxr-protocol';
+import { QuaternionFromQuatT, isIdentity } from '@/maths/quaternion';
 
 extend({ BasedSkeletonHelper });
 
@@ -100,20 +101,31 @@ export function SkeletonVisualizerWidget() {
     return (yLength as BoneT[]).reduce((prev, cur) => prev + cur.boneLength, 0);
   }, [bones]);
 
-  const targetCameraInit = useRef(false);
-  const targetCameraMemo = useMemo(() => {
+  const bonesInitialized = bones.size > 0;
+
+  const targetCamera = useMemo(() => {
     const hmd = bones.get(BodyPart.HEAD);
     if (hmd?.headPositionG?.y && hmd.headPositionG.y > 0) {
-      targetCameraInit.current = true;
       return hmd.headPositionG.y / 2;
     }
-    if (heightOffset > 0) targetCameraInit.current = true;
     return heightOffset / 2;
-  }, [bones]);
-  const targetCamera = useMemo(
-    () => (targetCameraInit ? targetCameraMemo : 0),
-    [targetCameraInit]
-  );
+  }, [bonesInitialized]);
+
+  const yawReset = useMemo(() => {
+    const hmd = bones.get(BodyPart.HEAD);
+    const chest = bones.get(BodyPart.CHEST);
+    // Check if HMD is identity, if it's then use chest's rotation
+    const quat = isIdentity(hmd?.rotationG)
+      ? QuaternionFromQuatT(chest?.rotationG).normalize().invert()
+      : QuaternionFromQuatT(hmd?.rotationG).normalize().invert();
+
+    // Project quat to (0x, 1y, 0z)
+    const VEC_Y = new THREE.Vector3(0, 1, 0);
+    const vec = VEC_Y.multiplyScalar(
+      new THREE.Vector3(quat.x, quat.y, quat.z).dot(VEC_Y) / VEC_Y.lengthSq()
+    );
+    return new THREE.Quaternion(vec.x, vec.y, vec.z, quat.w).normalize();
+  }, [bonesInitialized]);
 
   if (!skeleton.current) return <></>;
   return (
@@ -127,7 +139,7 @@ export function SkeletonVisualizerWidget() {
         }}
       >
         <gridHelper args={[10, 50, GROUND_COLOR, GROUND_COLOR]} />
-        <group position={[0, heightOffset, 0]}>
+        <group position={[0, heightOffset, 0]} quaternion={yawReset}>
           <SkeletonHelper object={skeleton.current[0]}></SkeletonHelper>
         </group>
         <primitive object={skeleton.current[0]} />
