@@ -2,7 +2,11 @@ import { Canvas, Object3DNode, extend, useThree } from '@react-three/fiber';
 import { useAppContext } from '@/hooks/app';
 import { Bone } from 'three';
 import { useMemo, useEffect, useRef, useState } from 'react';
-import { OrbitControls, OrthographicCamera } from '@react-three/drei';
+import {
+  OrbitControls,
+  OrthographicCamera,
+  PerspectiveCamera,
+} from '@react-three/drei';
 import {
   BoneKind,
   createChildren,
@@ -177,25 +181,32 @@ export function SkeletonVisualizerWidget({
     return new THREE.Quaternion(vec.x, vec.y, vec.z, quat.w).normalize();
   }, [bonesInitialized]);
 
+  const scale = useMemo(
+    () => Math.max(1.8, heightOffset) / 1.8,
+    [heightOffset]
+  );
+
   if (!skeleton.current) return <></>;
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
       <Canvas
         className={classNames('container mx-auto')}
         style={{ height, background: 'transparent', maxHeight }}
-        onCreated={({ camera }) => {
-          (camera as THREE.PerspectiveCamera).fov = 20;
-          camera.position.set(3, 2.5, -3);
-        }}
       >
         <gridHelper args={[10, 50, GROUND_COLOR, GROUND_COLOR]} />
         <group position={[0, heightOffset, 0]} quaternion={yawReset}>
           <SkeletonHelper object={skeleton.current[0]}></SkeletonHelper>
         </group>
         <primitive object={skeleton.current[0]} />
+        <PerspectiveCamera
+          makeDefault
+          position={[3, 2.5, -3]}
+          fov={20}
+          zoom={(1 * 1) / scale}
+        />
         <OrbitControls
           target={[0, targetCamera, 0]}
-          maxDistance={10}
+          maxDistance={20}
           maxPolarAngle={Math.PI / 2}
         />
       </Canvas>

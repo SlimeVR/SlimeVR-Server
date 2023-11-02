@@ -192,13 +192,13 @@ export class BoneKind extends Bone {
       case BodyPart.NECK:
         return new Color('silver');
       case BodyPart.UPPER_CHEST:
-        return new Color('yellow');
-      case BodyPart.CHEST:
         return new Color('blue');
+      case BodyPart.CHEST:
+        return new Color('purple');
       case BodyPart.WAIST:
-        return new Color('lime');
+        return new Color('red');
       case BodyPart.HIP:
-        return new Color('maroon');
+        return new Color('orange');
       case BodyPart.LEFT_UPPER_LEG:
       case BodyPart.RIGHT_UPPER_LEG:
         return new Color('blue');
@@ -222,7 +222,7 @@ export class BoneKind extends Bone {
         return new Color('#00ffff');
       case BodyPart.LEFT_HIP:
       case BodyPart.RIGHT_HIP:
-        return new Color('salmon');
+        return new Color('pink');
     }
   }
 
