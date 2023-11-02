@@ -202,7 +202,7 @@ export function SkeletonVisualizerWidget({
           makeDefault
           position={[3, 2.5, -3]}
           fov={20}
-          zoom={(1 * 1) / scale}
+          zoom={1 / scale}
         />
         <OrbitControls
           target={[0, targetCamera, 0]}
