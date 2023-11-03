@@ -171,6 +171,7 @@ export function InterfaceSettings() {
             </div>
             <div className="grid sm:grid-cols-2 pb-4">
               <CheckBox
+                variant="toggle"
                 control={control}
                 outlined
                 name="notifications.connectedTrackersWarning"
