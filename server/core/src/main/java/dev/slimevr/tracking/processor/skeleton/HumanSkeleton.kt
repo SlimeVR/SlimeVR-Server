@@ -2,10 +2,9 @@ package dev.slimevr.tracking.processor.skeleton
 
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer
-import dev.slimevr.tracking.processor.BoneInfo
+import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
-import dev.slimevr.tracking.processor.TransformNode
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
 import dev.slimevr.tracking.trackers.Tracker
@@ -20,59 +19,58 @@ import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Quaternion.Companion.I
 import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
+import io.github.axisangles.ktmath.Quaternion.Companion.fromTo
 import io.github.axisangles.ktmath.Vector3
+import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
+import java.lang.IllegalArgumentException
 
 class HumanSkeleton(
 	val humanPoseManager: HumanPoseManager,
 ) {
-	// Upper body nodes (torso)
-	val hmdNode = TransformNode(BoneType.HMD, false)
-	val headNode = TransformNode(BoneType.HEAD, false)
-	val trackerHeadNode = TransformNode(BoneType.HEAD_TRACKER, false)
-	val neckNode = TransformNode(BoneType.NECK, false)
-	val upperChestNode = TransformNode(BoneType.CHEST, false)
-	val trackerChestNode = TransformNode(BoneType.CHEST_TRACKER, false)
-	val chestNode = TransformNode(BoneType.CHEST, false)
-	val waistNode = TransformNode(BoneType.WAIST, false)
-	val hipNode = TransformNode(BoneType.HIP, false)
-	val trackerHipNode = TransformNode(BoneType.HIP_TRACKER, false)
+	// Upper body bones
+	val headBone = Bone(BoneType.HEAD)
+	val neckBone = Bone(BoneType.NECK)
+	val upperChestBone = Bone(BoneType.UPPER_CHEST)
+	val chestBone = Bone(BoneType.CHEST)
+	val waistBone = Bone(BoneType.WAIST)
+	val hipBone = Bone(BoneType.HIP)
 
-	// Lower body nodes (legs)
-	val leftHipNode = TransformNode(BoneType.LEFT_HIP, false)
-	val leftKneeNode = TransformNode(BoneType.LEFT_UPPER_LEG, false)
-	val trackerLeftKneeNode = TransformNode(BoneType.LEFT_KNEE_TRACKER, false)
-	val leftAnkleNode = TransformNode(BoneType.LEFT_LOWER_LEG, false)
-	val leftFootNode = TransformNode(BoneType.LEFT_FOOT, false)
-	val trackerLeftFootNode = TransformNode(BoneType.LEFT_FOOT_TRACKER, false)
-	val rightHipNode = TransformNode(BoneType.RIGHT_HIP, false)
-	val rightKneeNode = TransformNode(BoneType.RIGHT_UPPER_LEG, false)
-	val trackerRightKneeNode = TransformNode(BoneType.RIGHT_KNEE_TRACKER, false)
-	val rightAnkleNode = TransformNode(BoneType.RIGHT_LOWER_LEG, false)
-	val rightFootNode = TransformNode(BoneType.RIGHT_FOOT, false)
-	val trackerRightFootNode = TransformNode(BoneType.RIGHT_FOOT_TRACKER, false)
+	// Lower body bones
+	val leftHipBone = Bone(BoneType.LEFT_HIP)
+	val rightHipBone = Bone(BoneType.RIGHT_HIP)
+	val leftUpperLegBone = Bone(BoneType.LEFT_UPPER_LEG)
+	val rightUpperLegBone = Bone(BoneType.RIGHT_UPPER_LEG)
+	val leftLowerLegBone = Bone(BoneType.LEFT_LOWER_LEG)
+	val rightLowerLegBone = Bone(BoneType.RIGHT_LOWER_LEG)
+	val leftFootBone = Bone(BoneType.LEFT_FOOT)
+	val rightFootBone = Bone(BoneType.RIGHT_FOOT)
 
-	// Arms
-	val leftShoulderHeadNode = TransformNode(BoneType.LEFT_SHOULDER, false)
-	val rightShoulderHeadNode = TransformNode(BoneType.RIGHT_SHOULDER, false)
-	val leftShoulderTailNode = TransformNode(BoneType.LEFT_UPPER_ARM, false)
-	val rightShoulderTailNode = TransformNode(BoneType.RIGHT_UPPER_ARM, false)
-	val leftElbowNode = TransformNode(BoneType.LEFT_LOWER_ARM, false)
-	val rightElbowNode = TransformNode(BoneType.RIGHT_LOWER_ARM, false)
-	val trackerLeftElbowNode = TransformNode(BoneType.LEFT_ELBOW_TRACKER, false)
-	val trackerRightElbowNode = TransformNode(BoneType.RIGHT_ELBOW_TRACKER, false)
-	val leftWristNode = TransformNode(BoneType.LEFT_HAND, false)
-	val rightWristNode = TransformNode(BoneType.RIGHT_HAND, false)
-	val leftHandNode = TransformNode(BoneType.LEFT_HAND, false)
-	val rightHandNode = TransformNode(BoneType.RIGHT_HAND, false)
-	val trackerLeftHandNode = TransformNode(BoneType.LEFT_HAND_TRACKER, false)
-	val trackerRightHandNode = TransformNode(BoneType.RIGHT_HAND_TRACKER, false)
+	// Arm bones
+	val leftShoulderBone = Bone(BoneType.LEFT_SHOULDER)
+	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER)
+	val leftUpperArmBone = Bone(BoneType.LEFT_UPPER_ARM)
+	val rightUpperArmBone = Bone(BoneType.RIGHT_UPPER_ARM)
+	val leftLowerArmBone = Bone(BoneType.LEFT_LOWER_ARM)
+	val rightLowerArmBone = Bone(BoneType.RIGHT_LOWER_ARM)
+	val leftHandBone = Bone(BoneType.LEFT_HAND)
+	val rightHandBone = Bone(BoneType.RIGHT_HAND)
 
-	val allBoneInfo: MutableList<BoneInfo> = ArrayList()
-
-	val shareableBoneInfo: MutableList<BoneInfo?> = ArrayList()
+	// Tracker bones
+	val headTrackerBone = Bone(BoneType.HEAD_TRACKER)
+	val chestTrackerBone = Bone(BoneType.CHEST_TRACKER)
+	val hipTrackerBone = Bone(BoneType.HIP_TRACKER)
+	val leftKneeTrackerBone = Bone(BoneType.LEFT_KNEE_TRACKER)
+	val rightKneeTrackerBone = Bone(BoneType.RIGHT_KNEE_TRACKER)
+	val leftFootTrackerBone = Bone(BoneType.LEFT_FOOT_TRACKER)
+	val rightFootTrackerBone = Bone(BoneType.RIGHT_FOOT_TRACKER)
+	val leftElbowTrackerBone = Bone(BoneType.LEFT_ELBOW_TRACKER)
+	val rightElbowTrackerBone = Bone(BoneType.RIGHT_ELBOW_TRACKER)
+	val leftHandTrackerBone = Bone(BoneType.LEFT_HAND_TRACKER)
+	val rightHandTrackerBone = Bone(BoneType.RIGHT_HAND_TRACKER)
 
 	// Buffers
 	var hasSpineTracker = false
@@ -135,7 +133,6 @@ class HumanSkeleton(
 	private var kneeAnkleAveraging = 0f
 
 	// Others
-	private var sendAllBones = false
 	private var pauseTracking = false // Pauses skeleton tracking if true, resumes skeleton tracking if false
 
 	// Modules
@@ -150,7 +147,6 @@ class HumanSkeleton(
 		if (humanPoseManager.computedTrackers != null) {
 			setComputedTrackers(humanPoseManager.computedTrackers)
 		}
-		resetBones()
 	}
 
 	constructor(
@@ -186,32 +182,31 @@ class HumanSkeleton(
 	 */
 	@ThreadSafe
 	fun assembleSkeleton() {
-		// Assemble skeleton from head to hip
-		hmdNode.attachChild(headNode)
-		headNode.attachChild(neckNode)
-		neckNode.attachChild(upperChestNode)
-		upperChestNode.attachChild(chestNode)
-		chestNode.attachChild(waistNode)
-		waistNode.attachChild(hipNode)
+		// Assemble upper skeleton (head to hip)
+		headBone.attachChild(neckBone)
+		neckBone.attachChild(upperChestBone)
+		upperChestBone.attachChild(chestBone)
+		chestBone.attachChild(waistBone)
+		waistBone.attachChild(hipBone)
 
-		// Assemble skeleton from hips to feet
-		hipNode.attachChild(leftHipNode)
-		hipNode.attachChild(rightHipNode)
-		leftHipNode.attachChild(leftKneeNode)
-		rightHipNode.attachChild(rightKneeNode)
-		leftKneeNode.attachChild(leftAnkleNode)
-		rightKneeNode.attachChild(rightAnkleNode)
-		leftAnkleNode.attachChild(leftFootNode)
-		rightAnkleNode.attachChild(rightFootNode)
+		// Assemble lower skeleton (hip to feet)
+		hipBone.attachChild(leftHipBone)
+		hipBone.attachChild(rightHipBone)
+		leftHipBone.attachChild(leftUpperLegBone)
+		rightHipBone.attachChild(rightUpperLegBone)
+		leftUpperLegBone.attachChild(leftLowerLegBone)
+		rightUpperLegBone.attachChild(rightLowerLegBone)
+		leftLowerLegBone.attachChild(leftFootBone)
+		rightLowerLegBone.attachChild(rightFootBone)
 
-		// Attach tracker nodes for tracker offsets
-		neckNode.attachChild(trackerHeadNode)
-		neckNode.attachChild(trackerChestNode)
-		hipNode.attachChild(trackerHipNode)
-		leftKneeNode.attachChild(trackerLeftKneeNode)
-		rightKneeNode.attachChild(trackerRightKneeNode)
-		leftFootNode.attachChild(trackerLeftFootNode)
-		rightFootNode.attachChild(trackerRightFootNode)
+		// Attach tracker bones for tracker offsets
+		neckBone.attachChild(headTrackerBone)
+		upperChestBone.attachChild(chestTrackerBone)
+		hipBone.attachChild(hipTrackerBone)
+		leftUpperLegBone.attachChild(leftKneeTrackerBone)
+		rightUpperLegBone.attachChild(rightKneeTrackerBone)
+		leftFootBone.attachChild(leftFootTrackerBone)
+		rightFootBone.attachChild(rightFootTrackerBone)
 
 		// Attach arms
 		assembleSkeletonArms(false)
@@ -225,124 +220,39 @@ class HumanSkeleton(
 	@ThreadSafe
 	fun assembleSkeletonArms(reset: Boolean) {
 		if (reset) {
-			for (node in armNodes) {
-				node.detachWithChildren()
+			for (bone in allArmBones) {
+				bone.detachWithChildren()
 			}
 		}
 
-		// Assemble skeleton arms
-		neckNode.attachChild(leftShoulderHeadNode)
-		neckNode.attachChild(rightShoulderHeadNode)
-		leftShoulderHeadNode.attachChild(leftShoulderTailNode)
-		rightShoulderHeadNode.attachChild(rightShoulderTailNode)
+		// Shoulders
+		neckBone.attachChild(leftShoulderBone)
+		neckBone.attachChild(rightShoulderBone)
+
+		// Upper arm
+		leftShoulderBone.attachChild(leftUpperArmBone)
+		rightShoulderBone.attachChild(rightUpperArmBone)
+
+		// Lower arm and hand
 		if (isTrackingLeftArmFromController) {
-			leftWristNode.attachChild(leftElbowNode)
-			leftHandNode.attachChild(leftWristNode)
+			leftHandTrackerBone.attachChild(leftHandBone)
+			leftHandBone.attachChild(leftLowerArmBone)
+			leftLowerArmBone.attachChild(leftElbowTrackerBone)
 		} else {
-			leftShoulderTailNode.attachChild(leftElbowNode)
-			leftElbowNode.attachChild(leftWristNode)
-			leftWristNode.attachChild(leftHandNode)
+			leftUpperArmBone.attachChild(leftLowerArmBone)
+			leftUpperArmBone.attachChild(leftElbowTrackerBone)
+			leftLowerArmBone.attachChild(leftHandBone)
+			leftHandBone.attachChild(leftHandTrackerBone)
 		}
 		if (isTrackingRightArmFromController) {
-			rightWristNode.attachChild(rightElbowNode)
-			rightHandNode.attachChild(rightWristNode)
+			rightHandTrackerBone.attachChild(rightHandBone)
+			rightHandBone.attachChild(rightLowerArmBone)
+			rightLowerArmBone.attachChild(rightElbowTrackerBone)
 		} else {
-			rightShoulderTailNode.attachChild(rightElbowNode)
-			rightElbowNode.attachChild(rightWristNode)
-			rightWristNode.attachChild(rightHandNode)
-		}
-
-		// Attach tracker nodes for tracker offsets
-		leftElbowNode.attachChild(trackerLeftElbowNode)
-		rightElbowNode.attachChild(trackerRightElbowNode)
-		leftHandNode.attachChild(trackerLeftHandNode)
-		rightHandNode.attachChild(trackerRightHandNode)
-	}
-
-	/**
-	 * Rebuilds allBoneInfo and shareableBoneInfo
-	 */
-	private fun resetBones() {
-		allBoneInfo.clear()
-		shareableBoneInfo.clear()
-
-		// Create all bones and add to allBoneInfo
-		for (boneType in BoneType.values) allBoneInfo.add(BoneInfo(boneType, getTailNodeOfBone(boneType)))
-
-		// Add shareable bones to shareableBoneInfo
-		// Head
-		shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.HEAD))
-		shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.NECK))
-
-		// Spine and legs
-		if (hasSpineTracker || hasLeftLegTracker || hasRightLegTracker || sendAllBones) {
-			// Spine
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.CHEST))
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.WAIST))
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.HIP))
-
-			// Left leg
-			if (hasLeftLegTracker || sendAllBones) {
-				if (sendAllBones) {
-					// don't send currently
-					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_HIP))
-				}
-				shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_UPPER_LEG))
-				shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_LOWER_LEG))
-				if (leftFootTracker != null || sendAllBones) {
-					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_FOOT))
-				}
-			}
-
-			// Right leg
-			if (hasRightLegTracker || sendAllBones) {
-				if (sendAllBones) {
-					// don't send currently
-					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_HIP))
-				}
-				shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_UPPER_LEG))
-				shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_LOWER_LEG))
-				if (rightFootTracker != null || sendAllBones) {
-					shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_FOOT))
-				}
-			}
-		}
-
-		// TODO: Expose more bones
-		// TODO: Handle arms fromHmd and fromControllers
-
-		// Left arm
-		if ((hasLeftArmTracker || leftShoulderTracker != null) && sendAllBones) {
-			// don't send currently
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_SHOULDER))
-		}
-		if (hasLeftArmTracker || sendAllBones) {
-			// don't send currently
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_UPPER_ARM))
-		}
-		if (hasLeftArmTracker && sendAllBones) {
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_LOWER_ARM))
-		}
-		if ((hasLeftArmTracker || leftHandTracker != null) && sendAllBones) {
-			// don't send currently
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.LEFT_HAND))
-		}
-
-		// Right arm
-		if ((hasRightArmTracker || rightShoulderTracker != null) && sendAllBones) {
-			// don't send currently
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_SHOULDER))
-		}
-		if (hasRightArmTracker || sendAllBones) {
-			// don't send currently
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_UPPER_ARM))
-		}
-		if (hasRightArmTracker && sendAllBones) {
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_LOWER_ARM))
-		}
-		if (hasRightArmTracker && rightHandTracker != null && sendAllBones) {
-			// don't send currently
-			shareableBoneInfo.add(getBoneInfoForBoneType(BoneType.RIGHT_HAND))
+			rightUpperArmBone.attachChild(rightLowerArmBone)
+			rightUpperArmBone.attachChild(rightElbowTrackerBone)
+			rightLowerArmBone.attachChild(rightHandBone)
+			rightHandBone.attachChild(rightHandTrackerBone)
 		}
 	}
 
@@ -390,15 +300,12 @@ class HumanSkeleton(
 		// Refresh node offsets for arms
 		computeDependentArmOffsets()
 
-		// Rebuild the bone list
-		resetBones()
-
 		// Update tap detection's trackers
 		tapDetectionManager.updateConfig(trackers)
 	}
 
 	/**
-	 * Set output trackers from list
+	 * Set computed trackers from list
 	 */
 	private fun setComputedTrackers(trackers: List<Tracker>) {
 		for (t in trackers) {
@@ -407,7 +314,7 @@ class HumanSkeleton(
 	}
 
 	/**
-	 * Set output tracker
+	 * Set computed tracker
 	 */
 	private fun setComputedTracker(tracker: Tracker) {
 		when (tracker.trackerPosition) {
@@ -442,7 +349,7 @@ class HumanSkeleton(
 			TrackerRole.RIGHT_ELBOW -> computedRightElbowTracker!!
 			TrackerRole.LEFT_HAND -> computedLeftHandTracker!!
 			TrackerRole.RIGHT_HAND -> computedRightHandTracker!!
-			else -> throw IllegalArgumentException()
+			else -> throw IllegalArgumentException("Unsupported computed tracker's TrackerRole in HumanSkeleton")
 		}
 	}
 
@@ -452,355 +359,407 @@ class HumanSkeleton(
 	@VRServerThread
 	fun updatePose() {
 		tapDetectionManager.update()
-		updateLocalTransforms()
-		updateNodes()
+
+		updateTransforms()
+		updateBones()
 		updateComputedTrackers()
-		// Don't run legtweaks if the tracking is paused
-		if (!pauseTracking) tweakLegPos()
+
+		// Don't run post-processing if the tracking is paused
+		if (pauseTracking) return
+
+		legTweaks.tweakLegs()
 		localizer.update()
 		viveEmulation.update()
 	}
 
 	/**
-	 * Update all the nodes by updating the roots
+	 * Update all the bones by updating the roots
 	 */
 	@ThreadSafe
-	fun updateNodes() {
-		hmdNode.update()
-		if (isTrackingLeftArmFromController) {
-			leftHandNode.update()
-		}
-		if (isTrackingRightArmFromController) {
-			rightHandNode.update()
-		}
+	fun updateBones() {
+		headBone.update()
+		if (isTrackingLeftArmFromController) leftHandTrackerBone.update()
+		if (isTrackingRightArmFromController) rightHandTrackerBone.update()
 	}
 
 	/**
-	 * Run legtweaks
+	 * Update all the bones' transforms from trackers
 	 */
-	private fun tweakLegPos() {
-		legTweaks.tweakLegs()
-	}
+	private fun updateTransforms() {
+		// Head
+		updateHeadTransforms()
 
-	/**
-	 * Update the nodes transforms from the trackers
-	 */
-	private fun updateLocalTransforms() {
-		// HMD, head and neck
-		var headRot = IDENTITY
-		if (headTracker != null) {
-			if (headTracker!!.hasPosition) hmdNode.localTransform.translation = headTracker!!.position
-			headRot = headTracker!!.getRotation()
-			hmdNode.localTransform.rotation = headRot
-			trackerHeadNode.localTransform.rotation = headRot
-			if (neckTracker != null) headRot = neckTracker!!.getRotation()
-			headNode.localTransform.rotation = headRot
-		} else {
-			if (!localizer.getEnabled()) hmdNode.localTransform.translation = NULL
-			if (neckTracker != null) {
-				headRot = neckTracker!!.getRotation()
-			} else if (hasSpineTracker) {
-				headRot = getFirstAvailableTracker(
-					upperChestTracker,
-					chestTracker,
-					waistTracker,
-					hipTracker
-				)!!.getRotation()
-			}
-			hmdNode.localTransform.rotation = headRot
-			trackerHeadNode.localTransform.rotation = headRot
-			headNode.localTransform.rotation = headRot
-		}
-
-		// Only update the head and neck as they are relevant to the position
-		// of the computed trackers for VR, the rest should be frozen
+		// Stop at head (for the body to follow) if tracking is paused
 		if (pauseTracking) return
 
 		// Spine
+		updateSpineTransforms()
+		// Left leg
+		updateLegTransforms(
+			leftUpperLegBone,
+			leftKneeTrackerBone,
+			leftLowerLegBone,
+			leftFootBone,
+			leftFootTrackerBone,
+			leftUpperLegTracker,
+			leftLowerLegTracker,
+			leftFootTracker
+		)
+		// Right leg
+		updateLegTransforms(
+			rightUpperLegBone,
+			rightKneeTrackerBone,
+			rightLowerLegBone,
+			rightFootBone,
+			rightFootTrackerBone,
+			rightUpperLegTracker,
+			rightLowerLegTracker,
+			rightFootTracker
+		)
+		// Left arm
+		updateArmTransforms(
+			isTrackingLeftArmFromController,
+			leftShoulderBone,
+			leftUpperArmBone,
+			leftElbowTrackerBone,
+			leftLowerArmBone,
+			leftHandBone,
+			leftHandTrackerBone,
+			leftShoulderTracker,
+			leftUpperArmTracker,
+			leftLowerArmTracker,
+			leftHandTracker
+		)
+		// Right arm
+		updateArmTransforms(
+			isTrackingRightArmFromController,
+			rightShoulderBone,
+			rightUpperArmBone,
+			rightElbowTrackerBone,
+			rightLowerArmBone,
+			rightHandBone,
+			rightHandTrackerBone,
+			rightShoulderTracker,
+			rightUpperArmTracker,
+			rightLowerArmTracker,
+			rightHandTracker
+		)
+	}
+
+	/**
+	 * Update the head and neck bone transforms
+	 */
+	private fun updateHeadTransforms() {
+		var headRot = IDENTITY
+		headTracker?.let { head ->
+			// Set head position
+			if (head.hasPosition) headBone.setPosition(head.position)
+
+			// Get head rotation
+			headRot = head.getRotation()
+
+			// Set head rotation
+			headBone.setRotation(headRot)
+			headTrackerBone.setRotation(headRot)
+
+			// Get neck rotation
+			neckTracker?.let { headRot = it.getRotation() }
+
+			// Set neck rotation
+			neckBone.setRotation(headRot)
+		} ?: run {
+			// Set head position
+			if (!localizer.getEnabled()) headBone.setPosition(NULL)
+
+			// Get neck or spine rotation (else is identity)
+			getFirstAvailableTracker(
+				neckTracker,
+				upperChestTracker,
+				chestTracker,
+				waistTracker,
+				hipTracker
+			)?.let { headRot = it.getRotation() }
+
+			headBone.setRotation(headRot)
+			headTrackerBone.setRotation(headRot)
+			neckBone.setRotation(headRot)
+		}
+	}
+
+	/**
+	 * Update the spine transforms, from the upper chest to the hip
+	 */
+	private fun updateSpineTransforms() {
 		if (hasSpineTracker) {
-			// Upper chest
-			var torsoRot = getFirstAvailableTracker(upperChestTracker, chestTracker, waistTracker, hipTracker)!!.getRotation()
-			neckNode.localTransform.rotation = torsoRot
-			trackerChestNode.localTransform.rotation = torsoRot
+			// Upper chest and chest tracker
+			getFirstAvailableTracker(upperChestTracker, chestTracker, waistTracker, hipTracker)?.let {
+				upperChestBone.setRotation(it.getRotation())
+				chestTrackerBone.setRotation(it.getRotation())
+			}
 
 			// Chest
-			torsoRot = getFirstAvailableTracker(chestTracker, upperChestTracker, waistTracker, hipTracker)!!.getRotation()
-			upperChestNode.localTransform.rotation = torsoRot
+			getFirstAvailableTracker(chestTracker, upperChestTracker, waistTracker, hipTracker)?.let {
+				chestBone.setRotation(it.getRotation())
+			}
 
 			// Waist
-			torsoRot = getFirstAvailableTracker(waistTracker, chestTracker, upperChestTracker, hipTracker)!!.getRotation()
-			chestNode.localTransform.rotation = torsoRot
+			getFirstAvailableTracker(waistTracker, chestTracker, hipTracker, upperChestTracker)?.let {
+				waistBone.setRotation(it.getRotation())
+			}
 
-			// Hip
-			torsoRot = getFirstAvailableTracker(hipTracker, waistTracker, chestTracker, upperChestTracker)!!.getRotation()
-			waistNode.localTransform.rotation = torsoRot
-			hipNode.localTransform.rotation = torsoRot
-			trackerHipNode.localTransform.rotation = torsoRot
+			// Hip and hip tracker
+			getFirstAvailableTracker(hipTracker, waistTracker, chestTracker, upperChestTracker)?.let {
+				hipBone.setRotation(it.getRotation())
+				hipTrackerBone.setRotation(it.getRotation())
+			}
 		} else if (headTracker != null) {
-			// Align with last tracker's yaw (HMD or neck)
-			val yawQuat = headRot.project(POS_Y).unit()
-			neckNode.localTransform.rotation = yawQuat
-			trackerChestNode.localTransform.rotation = yawQuat
-			upperChestNode.localTransform.rotation = yawQuat
-			chestNode.localTransform.rotation = yawQuat
-			waistNode.localTransform.rotation = yawQuat
-			hipNode.localTransform.rotation = yawQuat
-			trackerHipNode.localTransform.rotation = yawQuat
+			// Align with neck's yaw
+			val yawRot = neckBone.getGlobalRotation().project(POS_Y).unit()
+			upperChestBone.setRotation(yawRot)
+			chestTrackerBone.setRotation(yawRot)
+			chestBone.setRotation(yawRot)
+			waistBone.setRotation(yawRot)
+			hipBone.setRotation(yawRot)
+			hipTrackerBone.setRotation(yawRot)
 		}
 
-		// Left Leg
-		// Get rotation
-		val leftUpperLeg = if (leftUpperLegTracker != null) {
-			leftUpperLegTracker!!.getRotation()
-		} else {
-			// Align with the hip's yaw
-			hipNode.localTransform.rotation.project(POS_Y).unit()
-		}
-		var leftLowerLeg: Quaternion
-		leftLowerLeg = if (leftLowerLegTracker != null) {
-			leftLowerLegTracker!!.getRotation()
-		} else {
-			// Align with the upper leg's yaw
-			leftUpperLeg.project(POS_Y).unit()
-		}
-		leftHipNode.localTransform.rotation = leftUpperLeg
-		trackerLeftKneeNode.localTransform.rotation = leftUpperLeg
-		leftKneeNode.localTransform.rotation = leftLowerLeg
-		if (leftFootTracker != null) {
-			leftLowerLeg = leftFootTracker!!.getRotation()
-		}
-		leftAnkleNode.localTransform.rotation = leftLowerLeg
-		leftFootNode.localTransform.rotation = leftLowerLeg
-		trackerLeftFootNode.localTransform.rotation = leftLowerLeg
-
-		// Extended left knee
-		if (leftUpperLegTracker != null && leftLowerLegTracker != null && extendedKneeModel) {
-			// Averages the knee's rotation with the local ankle's
-			// pitch and roll and apply to the tracker node.
-			val leftHipRot = leftHipNode.localTransform.rotation
-			val leftKneeRot = leftKneeNode.localTransform.rotation
-			val extendedRot = extendedKneeYawRoll(leftHipRot, leftKneeRot)
-
-			leftHipNode
-				.localTransform
-				.rotation = leftHipRot.interpR(extendedRot, kneeAnkleAveraging)
-			trackerLeftKneeNode
-				.localTransform
-				.rotation = leftHipRot.interpR(extendedRot, kneeTrackerAnkleAveraging)
-		}
-
-		// Right Leg
-		// Get rotations
-		val rightUpperLeg = if (rightUpperLegTracker != null) {
-			rightUpperLegTracker!!.getRotation()
-		} else {
-			// Align with the hip's yaw
-			hipNode.localTransform.rotation.project(POS_Y).unit()
-		}
-		var rightLowerLeg: Quaternion
-		rightLowerLeg = if (rightLowerLegTracker != null) {
-			rightLowerLegTracker!!.getRotation()
-		} else {
-			// Align with the upper leg's yaw
-			rightUpperLeg.project(POS_Y).unit()
-		}
-		rightHipNode.localTransform.rotation = rightUpperLeg
-		trackerRightKneeNode.localTransform.rotation = rightUpperLeg
-		rightKneeNode.localTransform.rotation = rightLowerLeg
-		if (rightFootTracker != null) rightLowerLeg = rightFootTracker!!.getRotation()
-		rightAnkleNode.localTransform.rotation = rightLowerLeg
-		rightFootNode.localTransform.rotation = rightLowerLeg
-		trackerRightFootNode.localTransform.rotation = rightLowerLeg
-
-		// Extended right knee
-		if (rightUpperLegTracker != null && rightLowerLegTracker != null && extendedKneeModel) {
-			// Averages the knee's rotation with the local ankle's
-			// pitch and roll and apply to the tracker node.
-			val rightHipRot = rightHipNode.localTransform.rotation
-			val rightKneeRot = rightKneeNode.localTransform.rotation
-			val extendedRot = extendedKneeYawRoll(rightHipRot, rightKneeRot)
-
-			rightHipNode
-				.localTransform
-				.rotation = rightHipRot.interpR(extendedRot, kneeAnkleAveraging)
-			trackerRightKneeNode
-				.localTransform
-				.rotation = rightHipRot.interpR(extendedRot, kneeTrackerAnkleAveraging)
-		}
-
-		// Extended spine
+		// Extended spine model
 		if (extendedSpineModel && hasSpineTracker) {
-			// Tries to guess missing lower spine trackers by interpolating
-			// rotations
+			// Tries to guess missing lower spine trackers by interpolating rotations
 			if (waistTracker == null) {
-				if ((upperChestTracker != null || chestTracker != null) && hipTracker != null) {
-					// Calculates waist from chest + hip
-					var hipRot = hipTracker!!.getRotation()
-					var chestRot = getFirstAvailableTracker(upperChestTracker, chestTracker)!!.getRotation()
+				getFirstAvailableTracker(chestTracker, upperChestTracker)?.let { chest ->
+					hipTracker?.let {
+						// Calculates waist from chest + hip
+						var hipRot = it.getRotation()
+						var chestRot = chest.getRotation()
 
-					// Get the rotation relative to where we expect the hip to be
-					if (chestRot.times(FORWARD_QUATERNION).dot(hipRot) < 0.0f) {
-						hipRot = hipRot.unaryMinus()
+						// Get the rotation relative to where we expect the hip to be
+						if (chestRot.times(FORWARD_QUATERNION).dot(hipRot) < 0.0f) {
+							hipRot = hipRot.unaryMinus()
+						}
+
+						// Interpolate between the chest and the hip
+						chestRot = chestRot.interpQ(hipRot, waistFromChestHipAveraging)
+
+						// Set waist's rotation
+						waistBone.setRotation(chestRot)
+					} ?: run {
+						if (hasKneeTrackers) {
+							// Calculates waist from chest + legs
+							var leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
+							var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
+							var chestRot = chest.getRotation()
+
+							// Get the rotation relative to where we expect the upper legs to be
+							val expectedUpperLegsRot = chestRot.times(FORWARD_QUATERNION)
+							if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
+								leftLegRot = leftLegRot.unaryMinus()
+							}
+							if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
+								rightLegRot = rightLegRot.unaryMinus()
+							}
+
+							// Interpolate between the pelvis, averaged from the legs, and the chest
+							chestRot = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), waistFromChestLegsAveraging).unit()
+
+							// Set waist's rotation
+							waistBone.setRotation(chestRot)
+						}
 					}
-
-					// Interpolate between the chest and the hip
-					chestRot = chestRot.interpQ(hipRot, waistFromChestHipAveraging)
-					chestNode.localTransform.rotation = chestRot
-				} else if ((upperChestTracker != null || chestTracker != null) && hasKneeTrackers) {
-					// Calculates waist from chest + legs
-					var leftHipRot = leftHipNode.localTransform.rotation
-					var rightHipRot = rightHipNode.localTransform.rotation
-					var chestRot = getFirstAvailableTracker(upperChestTracker, chestTracker)!!.getRotation()
-
-					// Get the rotation relative to where we expect the
-					// upper legs to be
-					val expectedUpperLegsRot = chestRot.times(FORWARD_QUATERNION)
-					if (expectedUpperLegsRot.dot(leftHipRot) < 0.0f) {
-						leftHipRot = leftHipRot.unaryMinus()
-					}
-					if (expectedUpperLegsRot.dot(rightHipRot) < 0.0f) {
-						rightHipRot = rightHipRot.unaryMinus()
-					}
-
-					// Interpolate between the pelvis, averaged from the legs, and the chest
-					chestRot = chestRot.interpQ(leftHipRot.lerpQ(rightHipRot, 0.5f), waistFromChestLegsAveraging).unit()
-					chestNode.localTransform.rotation = chestRot
 				}
 			}
 			if (hipTracker == null && hasKneeTrackers) {
-				if (waistTracker != null) {
+				waistTracker?.let {
 					// Calculates hip from waist + legs
-					var leftHipRot = leftHipNode.localTransform.rotation
-					var rightHipRot = rightHipNode.localTransform.rotation
-					var waistRot = waistTracker!!.getRotation()
-
-					// Get the rotation relative to where we expect the
-					// upper legs to be
-					val expectedUpperLegsRot = waistRot.times(FORWARD_QUATERNION)
-					if (expectedUpperLegsRot.dot(leftHipRot) < 0.0f) {
-						leftHipRot = leftHipRot.unaryMinus()
-					}
-					if (expectedUpperLegsRot.dot(rightHipRot) < 0.0f) {
-						rightHipRot = rightHipRot.unaryMinus()
-					}
-
-					// Interpolate between the pelvis, averaged from the legs,
-					// and the chest
-					waistRot = waistRot
-						.interpQ(leftHipRot.lerpQ(rightHipRot, 0.5f), hipFromWaistLegsAveraging)
-						.unit()
-					waistNode.localTransform.rotation = waistRot
-					hipNode.localTransform.rotation = waistRot
-					trackerHipNode.localTransform.rotation = waistRot
-				} else if (upperChestTracker != null || chestTracker != null) {
-					// Calculates hip from chest + legs
-					var leftHipRot = leftHipNode.localTransform.rotation
-					var rightHipRot = rightHipNode.localTransform.rotation
-					var chestRot = getFirstAvailableTracker(upperChestTracker, chestTracker)!!.getRotation()
+					var leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
+					var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
+					var waistRot = it.getRotation()
 
 					// Get the rotation relative to where we expect the upper legs to be
-					val expectedUpperLegsRot = chestRot.times(FORWARD_QUATERNION)
-					if (expectedUpperLegsRot.dot(leftHipRot) < 0.0f) {
-						leftHipRot = leftHipRot.unaryMinus()
+					val expectedUpperLegsRot = waistRot.times(FORWARD_QUATERNION)
+					if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
+						leftLegRot = leftLegRot.unaryMinus()
 					}
-					if (expectedUpperLegsRot.dot(rightHipRot) < 0.0f) {
-						rightHipRot = rightHipRot.unaryMinus()
+					if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
+						rightLegRot = rightLegRot.unaryMinus()
 					}
 
 					// Interpolate between the pelvis, averaged from the legs, and the chest
-					chestRot = chestRot.interpQ(leftHipRot.lerpQ(rightHipRot, 0.5f), hipFromChestLegsAveraging).unit()
-					waistNode.localTransform.rotation = chestRot
-					hipNode.localTransform.rotation = chestRot
-					trackerHipNode.localTransform.rotation = chestRot
+					waistRot = waistRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromWaistLegsAveraging).unit()
+
+					// Set hip rotation
+					hipBone.setRotation(waistRot)
+					hipTrackerBone.setRotation(waistRot)
+				} ?: run {
+					getFirstAvailableTracker(chestTracker, upperChestTracker)?.let {
+						// Calculates hip from chest + legs
+						var leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
+						var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
+						var chestRot = it.getRotation()
+
+						// Get the rotation relative to where we expect the upper legs to be
+						val expectedUpperLegsRot = chestRot.times(FORWARD_QUATERNION)
+						if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
+							leftLegRot = leftLegRot.unaryMinus()
+						}
+						if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
+							rightLegRot = rightLegRot.unaryMinus()
+						}
+
+						// Interpolate between the pelvis, averaged from the legs, and the chest
+						chestRot = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromChestLegsAveraging).unit()
+
+						// Set hip rotation
+						hipBone.setRotation(chestRot)
+						hipTrackerBone.setRotation(chestRot)
+					}
 				}
 			}
 		}
 
-		// Extended pelvis
+		// Extended pelvis model
 		if (extendedPelvisModel && hasKneeTrackers && hipTracker == null) {
-			val leftHipRot = leftHipNode.localTransform.rotation
-			val rightHipRot = rightHipNode.localTransform.rotation
-			val hipRot = hipNode.localTransform.rotation
-			val extendedPelvisRot = extendedPelvisYawRoll(leftHipRot, rightHipRot, hipRot)
-			val slerp = hipRot.interpR(extendedPelvisRot, hipLegsAveraging)
+			val leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
+			val rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
+			val hipRot = hipBone.getLocalRotation()
 
-			hipNode.localTransform.rotation = slerp
-			trackerHipNode.localTransform.rotation = slerp
+			val extendedPelvisRot = extendedPelvisYawRoll(leftLegRot, rightLegRot, hipRot)
+
+			// Interpolate between the hipRot and extendedPelvisRot
+			val newHipRot = hipRot.interpR(extendedPelvisRot, hipLegsAveraging)
+
+			// Set new hip rotation
+			hipBone.setRotation(newHipRot)
+			hipTrackerBone.setRotation(newHipRot)
 		}
 
-		// Left arm
-		if (isTrackingLeftArmFromController) { // From controller
-			leftHandNode.localTransform.translation = leftHandTracker!!.position
-			leftHandNode.localTransform.rotation = leftHandTracker!!.getRotation()
-			val lowerArm = getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker)
-			if (lowerArm != null) {
-				leftWristNode.localTransform.rotation = lowerArm.getRotation()
-				val leftArmRot = getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker)!!.getRotation()
+		// Set left and right hip rotations to the hip's
+		leftHipBone.setRotation(hipBone.getLocalRotation())
+		rightHipBone.setRotation(hipBone.getLocalRotation())
+	}
 
-				leftElbowNode.localTransform.rotation = leftArmRot
-				trackerLeftElbowNode.localTransform.rotation = leftArmRot
-			}
-		} else { // From HMD
-			val leftShoulderRot: Quaternion
-			leftShoulderRot =
-				if (leftShoulderTracker != null) leftShoulderTracker!!.getRotation() else neckNode.localTransform.rotation
-			leftShoulderHeadNode.localTransform.rotation = leftShoulderRot
-			var leftArmRot: Quaternion
-			if (leftUpperArmTracker != null || leftLowerArmTracker != null) {
-				leftArmRot = getFirstAvailableTracker(leftUpperArmTracker, leftLowerArmTracker)!!.getRotation()
-				leftShoulderTailNode.localTransform.rotation = leftArmRot
-				trackerLeftElbowNode.localTransform.rotation = leftArmRot
+	/**
+	 * Update a leg's transforms, from its hip to its foot
+	 */
+	private fun updateLegTransforms(
+		upperLegBone: Bone,
+		kneeTrackerBone: Bone,
+		lowerLegBone: Bone,
+		footBone: Bone,
+		footTrackerBone: Bone,
+		upperLegTracker: Tracker?,
+		lowerLegTracker: Tracker?,
+		footTracker: Tracker?,
+	) {
+		var legRot = IDENTITY
 
-				leftArmRot = getFirstAvailableTracker(leftLowerArmTracker, leftUpperArmTracker)!!.getRotation()
-				leftElbowNode.localTransform.rotation = leftArmRot
-			} else {
-				leftArmRot = neckNode.localTransform.rotation
-				leftShoulderTailNode.localTransform.rotation = leftArmRot
-				trackerLeftElbowNode.localTransform.rotation = leftArmRot
-				leftElbowNode.localTransform.rotation = leftArmRot
-			}
-			if (leftHandTracker != null) leftArmRot = leftHandTracker!!.getRotation()
-			leftWristNode.localTransform.rotation = leftArmRot
-			leftHandNode.localTransform.rotation = leftArmRot
-			trackerLeftHandNode.localTransform.rotation = leftArmRot
+		upperLegTracker?.let {
+			// Get upper leg rotation
+			legRot = it.getRotation()
+		} ?: run {
+			// Use hip's yaw
+			legRot = hipBone.getLocalRotation().project(POS_Y).unit()
 		}
+		// Set upper leg rotation
+		upperLegBone.setRotation(legRot)
+		kneeTrackerBone.setRotation(legRot)
 
-		// Right arm
-		if (isTrackingRightArmFromController) { // From controller
-			rightHandNode.localTransform.translation = rightHandTracker!!.position
-			rightHandNode.localTransform.rotation = rightHandTracker!!.getRotation()
-			val lowerArm = getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker)
-			if (lowerArm != null) {
-				rightWristNode.localTransform.rotation = lowerArm.getRotation()
-				val rightArmRot = getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker)!!.getRotation()
+		lowerLegTracker?.let {
+			// Get lower leg rotation
+			legRot = it.getRotation()
+		} ?: run {
+			// Use lower leg or hip's yaw
+			legRot = legRot.project(POS_Y).unit()
+		}
+		// Set lower leg rotation
+		lowerLegBone.setRotation(legRot)
 
-				rightElbowNode.localTransform.rotation = rightArmRot
-				trackerRightElbowNode.localTransform.rotation = rightArmRot
+		// Get foot rotation
+		footTracker?.let { legRot = it.getRotation() }
+		// Set foot rotation
+		footBone.setRotation(legRot)
+		footTrackerBone.setRotation(legRot)
+
+		// Extended knee model
+		if (extendedKneeModel) {
+			upperLegTracker?.let { upper ->
+				lowerLegTracker?.let { lower ->
+					// Averages the upper leg's rotation with the local lower leg's
+					// pitch and roll and apply to the tracker node.
+					val upperRot = upper.getRotation()
+					val lowerRot = lower.getRotation()
+					val extendedRot = extendedKneeYawRoll(upperRot, lowerRot)
+
+					upperLegBone.setRotation(upperRot.interpR(extendedRot, kneeAnkleAveraging))
+					kneeTrackerBone.setRotation(upperRot.interpR(extendedRot, kneeTrackerAnkleAveraging))
+				}
 			}
+		}
+	}
+
+	/**
+	 * Update an arm's transforms, from its shoulder to its hand
+	 */
+	private fun updateArmTransforms(
+		isTrackingFromController: Boolean,
+		shoulderBone: Bone,
+		upperArmBone: Bone,
+		elbowTrackerBone: Bone,
+		lowerArmBone: Bone,
+		handBone: Bone,
+		handTrackerBone: Bone,
+		shoulderTracker: Tracker?,
+		upperArmTracker: Tracker?,
+		lowerArmTracker: Tracker?,
+		handTracker: Tracker?,
+	) {
+		if (isTrackingFromController) { // From controller
+			// Set hand rotation and position from tracker
+			handTracker?.let {
+				handTrackerBone.setPosition(it.position)
+				handTrackerBone.setRotation(it.getRotation())
+				handBone.setRotation(it.getRotation())
+			}
+
+			// Get lower arm rotation
+			var armRot = getFirstAvailableTracker(lowerArmTracker, upperArmTracker)?.getRotation() ?: IDENTITY
+			// Set lower arm rotation
+			lowerArmBone.setRotation(armRot)
+
+			// Get upper arm rotation
+			armRot = getFirstAvailableTracker(upperArmTracker, lowerArmTracker)?.getRotation() ?: IDENTITY
+			// Set elbow tracker rotation
+			elbowTrackerBone.setRotation(armRot)
 		} else { // From HMD
-			val rightShoulderRot: Quaternion
-			rightShoulderRot =
-				if (rightShoulderTracker != null) rightShoulderTracker!!.getRotation() else neckNode.localTransform.rotation
-			rightShoulderHeadNode.localTransform.rotation = rightShoulderRot
-			var rightArmRot: Quaternion
-			if (rightUpperArmTracker != null || rightLowerArmTracker != null) {
-				rightArmRot = getFirstAvailableTracker(rightUpperArmTracker, rightLowerArmTracker)!!.getRotation()
-				rightShoulderTailNode.localTransform.rotation = rightArmRot
-				trackerRightElbowNode.localTransform.rotation = rightArmRot
+			// Get shoulder rotation
+			var armRot = shoulderTracker?.getRotation() ?: upperChestBone.getLocalRotation()
+			// Set shoulder rotation
+			shoulderBone.setRotation(armRot)
 
-				rightArmRot = getFirstAvailableTracker(rightLowerArmTracker, rightUpperArmTracker)!!.getRotation()
-				rightElbowNode.localTransform.rotation = rightArmRot
+			if (upperArmTracker != null || lowerArmTracker != null) {
+				// Get upper arm rotation
+				getFirstAvailableTracker(upperArmTracker, lowerArmTracker)?.let { armRot = it.getRotation() }
+				// Set upper arm and elbow tracker rotation
+				upperArmBone.setRotation(armRot)
+				elbowTrackerBone.setRotation(armRot)
+
+				// Get lower arm rotation
+				getFirstAvailableTracker(lowerArmTracker, upperArmTracker)?.let { armRot = it.getRotation() }
+				// Set lower arm rotation
+				lowerArmBone.setRotation(armRot)
 			} else {
-				rightArmRot = neckNode.localTransform.rotation
-
-				rightShoulderTailNode.localTransform.rotation = rightArmRot
-				trackerRightElbowNode.localTransform.rotation = rightArmRot
-				rightElbowNode.localTransform.rotation = rightArmRot
+				// Fallback arm rotation as upper chest
+				armRot = upperChestBone.getLocalRotation()
+				upperArmBone.setRotation(armRot)
+				elbowTrackerBone.setRotation(armRot)
+				lowerArmBone.setRotation(armRot)
 			}
-			if (rightHandTracker != null) rightArmRot = rightHandTracker!!.getRotation()
-			rightWristNode.localTransform.rotation = rightArmRot
-			rightHandNode.localTransform.rotation = rightArmRot
-			trackerRightHandNode.localTransform.rotation = rightArmRot
+
+			// Get hand rotation
+			handTracker?.let { armRot = it.getRotation() }
+			// Set hand, and hand tracker rotation
+			handBone.setRotation(armRot)
+			handTrackerBone.setRotation(armRot)
 		}
 	}
 
@@ -813,13 +772,9 @@ class HumanSkeleton(
 	 * @return the rotated Quaternion
 	 */
 	private fun extendedKneeYawRoll(knee: Quaternion, ankle: Quaternion): Quaternion {
-		// R = InverseKnee * Ankle
-		// C = Quaternion(R.w, -R.x, 0, 0)
-		// Knee = Knee * R * C
-		// normalize(Knee)
-		val r = knee.inv().times(ankle)
+		val r = knee.inv() * ankle
 		val c = Quaternion(r.w, -r.x, 0f, 0f)
-		return knee.times(r).times(c).unit()
+		return (knee * r * c).unit()
 	}
 
 	/**
@@ -853,63 +808,36 @@ class HumanSkeleton(
 		// C = Quaternion(R.w, -R.x, 0, 0)
 		// Pelvis = Hip * R * C
 		// normalize(Pelvis)
-		val r = hip.inv().times(leftKneeRot.plus(rightKneeRot))
+		val r = hip.inv() * (leftKneeRot + rightKneeRot)
 		val c = Quaternion(r.w, -r.x, 0f, 0f)
-		return hip.times(r).times(c).unit()
+		return (hip * r * c).unit()
 	}
 
 	// Update the output trackers
 	private fun updateComputedTrackers() {
-		computedHeadTracker!!.position = trackerHeadNode.worldTransform.translation
-		computedHeadTracker!!.setRotation(trackerHeadNode.worldTransform.rotation)
-		computedHeadTracker!!.dataTick()
+		updateComputedTracker(computedHeadTracker, headTrackerBone)
+		updateComputedTracker(computedChestTracker, chestTrackerBone)
+		updateComputedTracker(computedHipTracker, hipTrackerBone)
+		updateComputedTracker(computedLeftKneeTracker, leftKneeTrackerBone)
+		updateComputedTracker(computedRightKneeTracker, rightKneeTrackerBone)
+		updateComputedTracker(computedLeftFootTracker, leftFootTrackerBone)
+		updateComputedTracker(computedRightFootTracker, rightFootTrackerBone)
+		updateComputedTracker(computedLeftElbowTracker, leftElbowTrackerBone)
+		updateComputedTracker(computedRightElbowTracker, rightElbowTrackerBone)
+		updateComputedTracker(computedLeftHandTracker, leftHandTrackerBone)
+		updateComputedTracker(computedRightHandTracker, rightHandTrackerBone)
+	}
 
-		computedChestTracker!!.position = trackerChestNode.worldTransform.translation
-		computedChestTracker!!.setRotation(trackerChestNode.worldTransform.rotation)
-		computedChestTracker!!.dataTick()
-
-		computedHipTracker!!.position = trackerHipNode.worldTransform.translation
-		computedHipTracker!!.setRotation(trackerHipNode.worldTransform.rotation)
-		computedHipTracker!!.dataTick()
-
-		computedLeftKneeTracker!!.position = trackerLeftKneeNode.worldTransform.translation
-		computedLeftKneeTracker!!.setRotation(trackerLeftKneeNode.worldTransform.rotation)
-		computedLeftKneeTracker!!.dataTick()
-
-		computedLeftFootTracker!!.position = trackerLeftFootNode.worldTransform.translation
-		computedLeftFootTracker!!.setRotation(trackerLeftFootNode.worldTransform.rotation)
-		computedLeftFootTracker!!.dataTick()
-
-		computedRightKneeTracker!!.position = trackerRightKneeNode.worldTransform.translation
-		computedRightKneeTracker!!.setRotation(trackerRightKneeNode.worldTransform.rotation)
-		computedRightKneeTracker!!.dataTick()
-
-		computedRightFootTracker!!.position = trackerRightFootNode.worldTransform.translation
-		computedRightFootTracker!!.setRotation(trackerRightFootNode.worldTransform.rotation)
-		computedRightFootTracker!!.dataTick()
-
-		computedLeftElbowTracker!!.position = trackerLeftElbowNode.worldTransform.translation
-		computedLeftElbowTracker!!.setRotation(trackerLeftElbowNode.worldTransform.rotation)
-		computedLeftElbowTracker!!.dataTick()
-
-		computedRightElbowTracker!!.position = trackerRightElbowNode.worldTransform.translation
-		computedRightElbowTracker!!.setRotation(trackerRightElbowNode.worldTransform.rotation)
-		computedRightElbowTracker!!.dataTick()
-
-		computedLeftHandTracker!!.position = trackerLeftHandNode.worldTransform.translation
-		computedLeftHandTracker!!.setRotation(trackerLeftHandNode.worldTransform.rotation)
-		computedLeftHandTracker!!.dataTick()
-
-		computedRightHandTracker!!.position = trackerRightHandNode.worldTransform.translation
-		computedRightHandTracker!!.setRotation(trackerRightHandNode.worldTransform.rotation)
-		computedRightHandTracker!!.dataTick()
+	private fun updateComputedTracker(computedTracker: Tracker?, trackerBone: Bone) {
+		computedTracker?.let {
+			it.position = trackerBone.getTailPosition()
+			it.setRotation(trackerBone.getGlobalRotation() * trackerBone.rotationOffset.inv())
+			it.dataTick()
+		}
 	}
 
 	// Skeleton Config toggles
-	fun updateToggleState(configToggle: SkeletonConfigToggles?, newValue: Boolean) {
-		if (configToggle == null) {
-			return
-		}
+	fun updateToggleState(configToggle: SkeletonConfigToggles, newValue: Boolean) {
 		when (configToggle) {
 			SkeletonConfigToggles.EXTENDED_SPINE_MODEL -> extendedSpineModel = newValue
 			SkeletonConfigToggles.EXTENDED_PELVIS_MODEL -> extendedPelvisModel = newValue
@@ -929,10 +857,7 @@ class HumanSkeleton(
 	}
 
 	// Skeleton Config ratios
-	fun updateValueState(configValue: SkeletonConfigValues?, newValue: Float) {
-		if (configValue == null) {
-			return
-		}
+	fun updateValueState(configValue: SkeletonConfigValues, newValue: Float) {
 		when (configValue) {
 			SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING -> waistFromChestHipAveraging = newValue
 			SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING -> waistFromChestLegsAveraging = newValue
@@ -945,198 +870,136 @@ class HumanSkeleton(
 	}
 
 	// Skeleton Config bone lengths
-	fun updateNodeOffset(nodeOffset: BoneType, offset: Vector3) {
-		when (nodeOffset) {
-			BoneType.HEAD -> {
-				if (headTracker != null && headTracker!!.hasPosition) {
-					headNode.localTransform.translation = offset
-				} else {
-					headNode.localTransform.translation = NULL
-				}
-			}
-			BoneType.NECK -> neckNode.localTransform.translation = offset
-			BoneType.UPPER_CHEST -> upperChestNode.localTransform.translation = offset
-			BoneType.CHEST_TRACKER -> trackerChestNode.localTransform.translation = offset
-			BoneType.CHEST -> chestNode.localTransform.translation = offset
-			BoneType.WAIST -> waistNode.localTransform.translation = offset
-			BoneType.HIP -> hipNode.localTransform.translation = offset
-			BoneType.HIP_TRACKER -> trackerHipNode.localTransform.translation = offset
-			BoneType.LEFT_HIP -> leftHipNode.localTransform.translation = offset
-			BoneType.RIGHT_HIP -> rightHipNode.localTransform.translation = offset
-			BoneType.LEFT_UPPER_LEG -> leftKneeNode.localTransform.translation = offset
-			BoneType.RIGHT_UPPER_LEG -> rightKneeNode.localTransform.translation = offset
-			BoneType.LEFT_KNEE_TRACKER -> trackerLeftKneeNode.localTransform.translation = offset
-			BoneType.RIGHT_KNEE_TRACKER -> trackerRightKneeNode.localTransform.translation = offset
-			BoneType.LEFT_LOWER_LEG -> leftAnkleNode.localTransform.translation = offset
-			BoneType.RIGHT_LOWER_LEG -> rightAnkleNode.localTransform.translation = offset
-			BoneType.LEFT_FOOT -> leftFootNode.localTransform.translation = offset
-			BoneType.RIGHT_FOOT -> rightFootNode.localTransform.translation = offset
-			BoneType.LEFT_FOOT_TRACKER -> trackerLeftFootNode.localTransform.translation = offset
-			BoneType.RIGHT_FOOT_TRACKER -> trackerRightFootNode.localTransform.translation = offset
-			BoneType.LEFT_SHOULDER -> leftShoulderTailNode.localTransform.translation = offset
-			BoneType.RIGHT_SHOULDER -> rightShoulderTailNode.localTransform.translation = offset
-			BoneType.LEFT_UPPER_ARM -> {
-				if (isTrackingLeftArmFromController) {
-					leftElbowNode.localTransform.translation = NULL
-				} else {
-					leftElbowNode.localTransform.translation = offset
-				}
-			}
-			BoneType.RIGHT_UPPER_ARM -> {
-				if (isTrackingRightArmFromController) {
-					rightElbowNode.localTransform.translation = NULL
-				} else {
-					rightElbowNode.localTransform.translation = offset
-				}
-			}
-			BoneType.LEFT_LOWER_ARM -> {
-				if (isTrackingLeftArmFromController) {
-					leftElbowNode.localTransform.translation = offset
-				} else {
-					leftWristNode.localTransform.translation = offset.unaryMinus()
-				}
-			}
-			BoneType.RIGHT_LOWER_ARM -> {
-				if (isTrackingRightArmFromController) {
-					rightElbowNode.localTransform.translation = offset
-				} else {
-					rightWristNode.localTransform.translation = offset.unaryMinus()
-				}
-			}
-			BoneType.LEFT_ELBOW_TRACKER ->
-				trackerLeftElbowNode
-					.localTransform
-					.translation = offset
+	fun updateNodeOffset(boneType: BoneType, offset: Vector3) {
+		var transOffset = offset
 
-			BoneType.RIGHT_ELBOW_TRACKER ->
-				trackerRightElbowNode
-					.localTransform
-					.translation = offset
-			BoneType.LEFT_HAND -> {
-				if (isTrackingLeftArmFromController) {
-					leftWristNode.localTransform.translation = offset.unaryMinus()
-				} else {
-					leftHandNode.localTransform.translation = offset
-				}
-			}
-			BoneType.RIGHT_HAND -> {
-				if (isTrackingRightArmFromController) {
-					rightWristNode.localTransform.translation = offset.unaryMinus()
-				} else {
-					rightHandNode.localTransform.translation = offset
-				}
-			}
-			else -> throw IllegalArgumentException("Used unsupported offset in HumanSkeleton")
+		// If no head position + rotation, headShift == 0
+		if (boneType == BoneType.HEAD && (headTracker == null || !(headTracker!!.hasPosition && headTracker!!.hasRotation))) {
+			transOffset = NULL
+		}
+		// If trackingArmFromController, reverse
+		if (((boneType == BoneType.LEFT_LOWER_ARM || boneType == BoneType.LEFT_HAND) && isTrackingLeftArmFromController) ||
+			(boneType == BoneType.RIGHT_LOWER_ARM || boneType == BoneType.RIGHT_HAND) && isTrackingRightArmFromController
+		) {
+			transOffset = -transOffset
 		}
 
-		for (bone in allBoneInfo) {
-			bone.updateLength()
+		// Compute bone rotation
+		val rotOffset = if (transOffset.len() > 0f) {
+			if (transOffset.unit().y == 1f) {
+				I
+			} else {
+				fromTo(NEG_Y, transOffset)
+			}
+		} else {
+			IDENTITY
 		}
+
+		// Get the bone
+		val bone = getBone(boneType)
+
+		// Update bone length
+		bone.length = transOffset.len()
+
+		// Set bone rotation offset
+		bone.rotationOffset = rotOffset
 	}
 
 	private fun computeDependentArmOffsets() {
-		humanPoseManager.computeNodeOffset(BoneType.LEFT_UPPER_ARM)
-		humanPoseManager.computeNodeOffset(BoneType.RIGHT_UPPER_ARM)
 		humanPoseManager.computeNodeOffset(BoneType.LEFT_LOWER_ARM)
 		humanPoseManager.computeNodeOffset(BoneType.RIGHT_LOWER_ARM)
 		humanPoseManager.computeNodeOffset(BoneType.LEFT_HAND)
 		humanPoseManager.computeNodeOffset(BoneType.RIGHT_HAND)
 	}
 
-	fun getTailNodeOfBone(bone: BoneType?): TransformNode? {
-		return if (bone == null) {
-			null
-		} else {
-			when (bone) {
-				BoneType.HMD, BoneType.HEAD -> headNode
-				BoneType.HEAD_TRACKER -> trackerHeadNode
-				BoneType.NECK -> neckNode
-				BoneType.UPPER_CHEST -> upperChestNode
-				BoneType.CHEST_TRACKER -> trackerChestNode
-				BoneType.CHEST -> chestNode
-				BoneType.WAIST -> waistNode
-				BoneType.HIP -> hipNode
-				BoneType.HIP_TRACKER -> trackerHipNode
-				BoneType.LEFT_HIP -> leftHipNode
-				BoneType.RIGHT_HIP -> rightHipNode
-				BoneType.LEFT_UPPER_LEG -> leftKneeNode
-				BoneType.RIGHT_UPPER_LEG -> rightKneeNode
-				BoneType.RIGHT_KNEE_TRACKER -> trackerRightKneeNode
-				BoneType.LEFT_KNEE_TRACKER -> trackerLeftKneeNode
-				BoneType.LEFT_LOWER_LEG -> leftAnkleNode
-				BoneType.RIGHT_LOWER_LEG -> rightAnkleNode
-				BoneType.LEFT_FOOT -> leftFootNode
-				BoneType.RIGHT_FOOT -> rightFootNode
-				BoneType.LEFT_FOOT_TRACKER -> trackerLeftFootNode
-				BoneType.RIGHT_FOOT_TRACKER -> trackerRightFootNode
-				BoneType.LEFT_SHOULDER -> leftShoulderTailNode
-				BoneType.RIGHT_SHOULDER -> rightShoulderTailNode
-				BoneType.LEFT_UPPER_ARM -> leftElbowNode
-				BoneType.RIGHT_UPPER_ARM -> rightElbowNode
-				BoneType.LEFT_ELBOW_TRACKER -> trackerLeftElbowNode
-				BoneType.RIGHT_ELBOW_TRACKER -> trackerRightElbowNode
-				BoneType.LEFT_LOWER_ARM -> if (isTrackingLeftArmFromController) leftElbowNode else leftWristNode
-				BoneType.RIGHT_LOWER_ARM -> if (isTrackingRightArmFromController) rightElbowNode else rightWristNode
-				BoneType.LEFT_HAND -> if (isTrackingLeftArmFromController) leftWristNode else leftHandNode
-				BoneType.RIGHT_HAND -> if (isTrackingRightArmFromController) rightWristNode else rightHandNode
-				BoneType.LEFT_HAND_TRACKER -> trackerLeftHandNode
-				BoneType.RIGHT_HAND_TRACKER -> trackerRightHandNode
-			}
+	fun getBone(bone: BoneType): Bone {
+		return when (bone) {
+			BoneType.HEAD -> headBone
+			BoneType.HEAD_TRACKER -> headTrackerBone
+			BoneType.NECK -> neckBone
+			BoneType.UPPER_CHEST -> upperChestBone
+			BoneType.CHEST_TRACKER -> chestTrackerBone
+			BoneType.CHEST -> chestBone
+			BoneType.WAIST -> waistBone
+			BoneType.HIP -> hipBone
+			BoneType.HIP_TRACKER -> hipTrackerBone
+			BoneType.LEFT_HIP -> leftHipBone
+			BoneType.RIGHT_HIP -> rightHipBone
+			BoneType.LEFT_UPPER_LEG -> leftUpperLegBone
+			BoneType.RIGHT_UPPER_LEG -> rightUpperLegBone
+			BoneType.LEFT_KNEE_TRACKER -> leftKneeTrackerBone
+			BoneType.RIGHT_KNEE_TRACKER -> rightKneeTrackerBone
+			BoneType.LEFT_LOWER_LEG -> leftLowerLegBone
+			BoneType.RIGHT_LOWER_LEG -> rightLowerLegBone
+			BoneType.LEFT_FOOT -> leftFootBone
+			BoneType.RIGHT_FOOT -> rightFootBone
+			BoneType.LEFT_FOOT_TRACKER -> leftFootTrackerBone
+			BoneType.RIGHT_FOOT_TRACKER -> rightFootTrackerBone
+			BoneType.LEFT_SHOULDER -> leftShoulderBone
+			BoneType.RIGHT_SHOULDER -> rightShoulderBone
+			BoneType.LEFT_UPPER_ARM -> leftUpperArmBone
+			BoneType.RIGHT_UPPER_ARM -> rightUpperArmBone
+			BoneType.LEFT_ELBOW_TRACKER -> leftElbowTrackerBone
+			BoneType.RIGHT_ELBOW_TRACKER -> rightElbowTrackerBone
+			BoneType.LEFT_LOWER_ARM -> leftLowerArmBone
+			BoneType.RIGHT_LOWER_ARM -> rightLowerArmBone
+			BoneType.LEFT_HAND -> leftHandBone
+			BoneType.RIGHT_HAND -> rightHandBone
+			BoneType.LEFT_HAND_TRACKER -> leftHandTrackerBone
+			BoneType.RIGHT_HAND_TRACKER -> rightHandTrackerBone
 		}
 	}
 
-	fun getBoneInfoForBoneType(boneType: BoneType): BoneInfo? {
-		for (bone in allBoneInfo) {
-			if (bone.boneType == boneType) return bone
-		}
-		return null
-	}
-
-	val allNodes: Array<TransformNode>
+	/**
+	 * Returns an array of all the non-tracker bones.
+	 */
+	val allHumanBones: Array<Bone>
 		get() = arrayOf(
-			hmdNode,
-			headNode,
-			trackerHeadNode,
-			neckNode,
-			upperChestNode,
-			trackerChestNode,
-			chestNode,
-			waistNode,
-			hipNode,
-			trackerHipNode,
-			leftHipNode,
-			leftKneeNode,
-			trackerLeftKneeNode,
-			leftAnkleNode,
-			leftFootNode,
-			trackerLeftFootNode,
-			rightHipNode,
-			rightKneeNode,
-			trackerRightKneeNode,
-			rightAnkleNode,
-			rightFootNode,
-			trackerRightFootNode
-
-		).copyInto(armNodes)
-	private val armNodes: Array<TransformNode>
-		get() = arrayOf(
-			leftShoulderHeadNode,
-			rightShoulderHeadNode,
-			leftShoulderTailNode,
-			rightShoulderTailNode,
-			leftElbowNode,
-			rightElbowNode,
-			trackerLeftElbowNode,
-			trackerRightElbowNode,
-			leftWristNode,
-			rightWristNode,
-			leftHandNode,
-			rightHandNode,
-			trackerLeftHandNode,
-			trackerRightHandNode
+			headBone,
+			neckBone,
+			upperChestBone,
+			chestBone,
+			waistBone,
+			hipBone,
+			leftHipBone,
+			rightHipBone,
+			leftUpperLegBone,
+			rightUpperLegBone,
+			leftLowerLegBone,
+			rightLowerLegBone,
+			leftFootBone,
+			rightFootBone,
+			leftShoulderBone,
+			rightShoulderBone,
+			leftUpperArmBone,
+			rightUpperArmBone,
+			leftLowerArmBone,
+			rightLowerArmBone,
+			leftHandBone,
+			rightHandBone
 		)
+
+	/**
+	 * Returns all the arm bones, tracker or not.
+	 */
+	private val allArmBones: Array<Bone>
+		get() = arrayOf(
+			leftShoulderBone,
+			rightShoulderBone,
+			leftUpperArmBone,
+			rightUpperArmBone,
+			leftElbowTrackerBone,
+			rightElbowTrackerBone,
+			leftLowerArmBone,
+			rightLowerArmBone,
+			leftHandBone,
+			rightHandBone,
+			leftHandTrackerBone,
+			rightHandTrackerBone
+		)
+
 	val hmdHeight: Float
-		get() = if (headTracker != null && headTracker!!.hasPosition) headTracker!!.position.y else 0f
+		get() = headTracker?.position?.y ?: 0f
 	val isTrackingLeftArmFromController: Boolean
 		/**
 		 * Runs checks to know if we should (and are) performing the tracking of the
@@ -1156,39 +1019,37 @@ class HumanSkeleton(
 		 */
 		get() = rightHandTracker != null && rightHandTracker!!.hasPosition && !forceArmsFromHMD
 	val localTrackers: List<Tracker?>
-		get() = java.util.List
-			.of(
-				neckTracker,
-				chestTracker,
-				waistTracker,
-				hipTracker,
-				leftUpperLegTracker,
-				leftLowerLegTracker,
-				leftFootTracker,
-				rightUpperLegTracker,
-				rightLowerLegTracker,
-				rightFootTracker,
-				leftLowerArmTracker,
-				rightLowerArmTracker,
-				leftUpperArmTracker,
-				rightUpperArmTracker,
-				leftHandTracker,
-				rightHandTracker,
-				leftShoulderTracker,
-				rightShoulderTracker
-			)
+		get() = listOf(
+			neckTracker,
+			chestTracker,
+			waistTracker,
+			hipTracker,
+			leftUpperLegTracker,
+			leftLowerLegTracker,
+			leftFootTracker,
+			rightUpperLegTracker,
+			rightLowerLegTracker,
+			rightFootTracker,
+			leftLowerArmTracker,
+			rightLowerArmTracker,
+			leftUpperArmTracker,
+			rightUpperArmTracker,
+			leftHandTracker,
+			rightHandTracker,
+			leftShoulderTracker,
+			rightShoulderTracker
+		)
 
 	fun resetTrackersFull(resetSourceName: String?) {
 		val trackersToReset = humanPoseManager.getTrackersToReset()
 
 		// Resets all axis of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
-		if (headTracker != null) {
-			if (headTracker!!.needsReset) {
-				headTracker!!.resetsHandler.resetFull(referenceRotation)
+		headTracker?.let {
+			if (it.needsReset) {
+				it.resetsHandler.resetFull(referenceRotation)
 			} else {
-				referenceRotation =
-					headTracker!!.getRotation()
+				referenceRotation = it.getRotation()
 			}
 		}
 		for (tracker in trackersToReset) {
@@ -1213,12 +1074,11 @@ class HumanSkeleton(
 
 		// Resets the yaw of the trackers with the head as reference.
 		var referenceRotation = IDENTITY
-		if (headTracker != null) {
-			if (headTracker!!.needsReset) {
-				headTracker!!.resetsHandler.resetYaw(referenceRotation)
+		headTracker?.let {
+			if (it.needsReset) {
+				it.resetsHandler.resetYaw(referenceRotation)
 			} else {
-				referenceRotation =
-					headTracker!!.getRotation()
+				referenceRotation = it.getRotation()
 			}
 		}
 		for (tracker in trackersToReset) {
@@ -1237,12 +1097,11 @@ class HumanSkeleton(
 		// Resets the mounting rotation of the trackers with the HMD as
 		// reference.
 		var referenceRotation = IDENTITY
-		if (headTracker != null) {
-			if (headTracker!!.needsMounting) {
-				headTracker!!.resetsHandler.resetMounting(referenceRotation)
+		headTracker?.let {
+			if (it.needsMounting) {
+				it.resetsHandler.resetMounting(referenceRotation)
 			} else {
-				referenceRotation =
-					headTracker!!.getRotation()
+				referenceRotation = it.getRotation()
 			}
 		}
 		for (tracker in trackersToReset) {
@@ -1258,10 +1117,8 @@ class HumanSkeleton(
 	@VRServerThread
 	fun clearTrackersMounting(resetSourceName: String?) {
 		val trackersToReset = humanPoseManager.getTrackersToReset()
-		if (headTracker != null && headTracker!!.needsMounting) {
-			headTracker!!
-				.resetsHandler
-				.clearMounting()
+		headTracker?.let {
+			if (it.needsMounting) it.resetsHandler.clearMounting()
 		}
 		for (tracker in trackersToReset) {
 			if (tracker != null &&
@@ -1282,7 +1139,9 @@ class HumanSkeleton(
 		legTweaks.updateConfig()
 	}
 
-	// Does not save to config
+	/**
+	 * Does not save to config
+	 */
 	fun setLegTweaksStateTemp(
 		skatingCorrection: Boolean,
 		floorClip: Boolean,
@@ -1295,7 +1154,9 @@ class HumanSkeleton(
 		legTweaks.footPlantEnabled = footPlant
 	}
 
-	// Resets to config values
+	/**
+	 * Resets to config values
+	 */
 	fun clearLegTweaksStateTemp(
 		skatingCorrection: Boolean,
 		floorClip: Boolean,
@@ -1327,7 +1188,9 @@ class HumanSkeleton(
 			return state
 		}
 
-	// master enable/disable of all leg tweaks (for Autobone)
+	/**
+	 * Master enable/disable of all leg tweaks (for Autobone)
+	 */
 	@VRServerThread
 	fun setLegTweaksEnabled(value: Boolean) {
 		legTweaks.enabled = value

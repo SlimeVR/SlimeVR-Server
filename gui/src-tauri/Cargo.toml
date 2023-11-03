@@ -21,22 +21,20 @@ default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
 
 [build-dependencies]
-tauri-build = { version = "2.0.0-alpha.6", features = [] }
+tauri-build = { version = "2.0.0-alpha", features = [] }
 cfg_aliases = "0.1"
 shadow-rs = "0.23"
 
 [dependencies]
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
-tauri = { version = "2.0.0-alpha.10", features = ["devtools"] }
-tauri-runtime = "0.13.0-alpha.6"
-tauri-plugin-dialog = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "4ab90f048eab2918344f97dc8e04413a404e392d" }
-tauri-plugin-fs = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "4ab90f048eab2918344f97dc8e04413a404e392d" }
-tauri-plugin-os = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "4ab90f048eab2918344f97dc8e04413a404e392d" }
-tauri-plugin-shell = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "4ab90f048eab2918344f97dc8e04413a404e392d" }
-tauri-plugin-window = { git = "https://github.com/tauri-apps/plugins-workspace", rev = "4ab90f048eab2918344f97dc8e04413a404e392d", features = [
-    "devtools",
-] }
+tauri = { version = "2.0.0-alpha", features = ["devtools"] }
+tauri-runtime = "1.0.0-alpha"
+tauri-plugin-dialog = "2.0.0-alpha"
+tauri-plugin-fs = "2.0.0-alpha"
+tauri-plugin-os = "2.0.0-alpha"
+tauri-plugin-shell = "2.0.0-alpha"
+tauri-plugin-window = { version = "2.0.0-alpha", features = ["devtools"] }
 flexi_logger = "0.25"
 log-panics = { version = "2", features = ["with-backtrace"] }
 log = "0.4"
