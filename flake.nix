@@ -7,6 +7,7 @@
     nix2container.url = "github:nlewo/nix2container";
     nix2container.inputs.nixpkgs.follows = "nixpkgs";
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
+    nixgl.url = "github:guibou/nixGL";
     fenix.url = "github:nix-community/fenix";
   };
 
@@ -15,7 +16,12 @@
     extra-substituters = "https://devenv.cachix.org";
   };
 
-  outputs = inputs @ {flake-parts, ...}:
+  outputs = inputs @ {
+    self,
+    flake-parts,
+    nixgl,
+    ...
+  }:
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         inputs.devenv.flakeModule
@@ -37,6 +43,10 @@
 
         # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
         # packages.default = pkgs.hello;
+        _module.args.pkgs = import self.inputs.nixpkgs {
+          inherit system;
+          overlays = [nixgl.overlay];
+        };
 
         devenv.shells.default = let
           fenixpkgs = inputs'.fenix.packages;
@@ -53,6 +63,7 @@
           # https://devenv.sh/reference/options/
           packages =
             (with pkgs; [
+              pkgs.nixgl.nixGLIntel
               cacert
             ])
             ++ lib.optionals pkgs.stdenv.isLinux (with pkgs; [
@@ -104,7 +115,7 @@
             enable = true;
             toolchain = fenixpkgs.fromToolchainName {
               name = rust_toolchain.toolchain.channel;
-              sha256 = "sha256-R0F0Risbr74xg9mEYydyebx/z0Wu6HI0/KWwrV30vZo=";
+              sha256 = "sha256-rLP8+fTxnPHoR96ZJiCa/5Ans1OojI7MLsmSqR2ip8o=";
             };
             components = rust_toolchain.toolchain.components;
           };

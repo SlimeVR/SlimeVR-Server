@@ -128,6 +128,10 @@ widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = Preview
 widget-imu_visualizer-rotation_hide = Hide
 
+## Widget: Skeleton Visualizer
+widget-skeleton_visualizer-preview = Skeleton preview
+widget-skeleton_visualizer-hide = Hide
+
 ## Tracker status
 tracker-status-none = No Status
 tracker-status-busy = Busy
