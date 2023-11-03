@@ -51,10 +51,9 @@ export function Serial() {
 
   const [tryFactoryReset, setTryFactoryReset] = useState(false);
 
-  const { control, watch, handleSubmit, reset, getValues } =
-    useForm<SerialForm>({
-      defaultValues: { port: 'Auto' },
-    });
+  const { control, watch, handleSubmit, reset } = useForm<SerialForm>({
+    defaultValues: { port: 'Auto' },
+  });
 
   const { port } = watch();
 
@@ -235,7 +234,6 @@ export function Serial() {
                 {isMobile && (
                   <Dropdown
                     control={control}
-                    getValues={getValues}
                     name="port"
                     display="block"
                     placeholder={l10n.getString(
@@ -252,7 +250,6 @@ export function Serial() {
               {!isMobile && (
                 <Dropdown
                   control={control}
-                  getValues={getValues}
                   name="port"
                   display="fit"
                   placeholder={l10n.getString('settings-serial-serial_select')}

@@ -25,7 +25,7 @@ export function Typography({
     | 'whitespace-pre'
     | 'whitespace-pre-line'
     | 'whitespace-pre-wrap';
-  children: ReactNode;
+  children?: ReactNode;
 }) {
   const tag = useMemo(() => {
     const tags = {
@@ -58,6 +58,6 @@ export function Typography({
         italic && 'italic',
       ]),
     },
-    children
+    children || []
   );
 }
