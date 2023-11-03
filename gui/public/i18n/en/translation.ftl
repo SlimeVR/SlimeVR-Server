@@ -418,6 +418,9 @@ settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered.
 settings-general-interface-feedback_sound-label = Feedback sound
 settings-general-interface-feedback_sound-volume = Feedback sound volume
+settings-general-interface-connected_trackers_warning = Connected trackers warning
+settings-general-interface-connected_trackers_warning-description = This option will show a pop-up every time you try exiting SlimeVR while having one or more connected trackers. It reminds you to turn off your trackers when you are done to preserve battery life.
+settings-general-interface-connected_trackers_warning-label = Connected trackers warning on SlimeVR exit
 
 ## Serial settings
 settings-serial = Serial Console
@@ -841,6 +844,14 @@ onboarding-automatic_proportions-error_modal-confirm = Understood!
 
 ## Home
 home-no_trackers = No trackers detected or assigned
+
+## Trackers Still On notification
+trackers_still_on-modal-title = Trackers still on
+trackers_still_on-modal-description =
+    One or more trackers are still on.
+    Do you still want to exit SlimeVR?
+trackers_still_on-modal-confirm = Exit SlimeVR
+trackers_still_on-modal-cancel = Hold on...
 
 ## Status system
 status_system-StatusTrackerReset = It is recommended to perform a full reset as one or more trackers are unadjusted.
