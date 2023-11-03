@@ -20,6 +20,7 @@ export interface Config {
   devSettings: DeveloperModeWidgetForm;
   feedbackSound: boolean;
   feedbackSoundVolume: number;
+  connectedTrackersWarning: boolean;
   theme: string;
   textSize: number;
   fonts: string[];
@@ -40,6 +41,7 @@ export const defaultConfig = {
   watchNewDevices: true,
   feedbackSound: true,
   feedbackSoundVolume: 0.5,
+  connectedTrackersWarning: true,
   theme: 'slime',
   textSize: 12,
   fonts: ['poppins'],
