@@ -127,6 +127,20 @@ jobs:
           # A file, directory or wildcard pattern that describes what to upload
           path: server/android/build/outputs/apk/*
 
+      - name: Prepare for release
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          cp server/android/build/outputs/apk/debug/android-debug.apk ./SlimeVR-android.apk
+
+      - name: Upload to draft release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: true
+          generate_release_notes: true
+          files: |
+            ./SlimeVR-android.apk
+
 
   bundle-linux:
     runs-on: ubuntu-22.04
