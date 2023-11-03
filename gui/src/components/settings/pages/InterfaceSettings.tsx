@@ -28,6 +28,7 @@ interface InterfaceSettingsForm {
     watchNewDevices: boolean;
     feedbackSound: boolean;
     feedbackSoundVolume: number;
+    connectedTrackersWarning: boolean;
   };
 }
 
@@ -50,6 +51,9 @@ export function InterfaceSettings() {
           feedbackSound: config?.feedbackSound ?? defaultConfig.feedbackSound,
           feedbackSoundVolume:
             config?.feedbackSoundVolume ?? defaultConfig.feedbackSoundVolume,
+          connectedTrackersWarning:
+            config?.connectedTrackersWarning ??
+            defaultConfig.connectedTrackersWarning,
         },
       },
     });
@@ -60,6 +64,7 @@ export function InterfaceSettings() {
       watchNewDevices: values.notifications.watchNewDevices,
       feedbackSound: values.notifications.feedbackSound,
       feedbackSoundVolume: values.notifications.feedbackSoundVolume,
+      connectedTrackersWarning: values.notifications.connectedTrackersWarning,
       theme: values.appearance.theme,
       fonts: values.appearance.fonts.split(','),
       textSize: values.appearance.textSize,
@@ -149,6 +154,29 @@ export function InterfaceSettings() {
                 min={0.1}
                 max={1.0}
                 step={0.1}
+              />
+            </div>
+
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-interface-connected_trackers_warning'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-interface-connected_trackers_warning-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                control={control}
+                outlined
+                name="notifications.connectedTrackersWarning"
+                label={l10n.getString(
+                  'settings-general-interface-connected_trackers_warning-label'
+                )}
               />
             </div>
           </>

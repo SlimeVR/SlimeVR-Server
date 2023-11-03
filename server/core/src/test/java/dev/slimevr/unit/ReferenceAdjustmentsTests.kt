@@ -2,7 +2,6 @@ package dev.slimevr.unit
 
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
-import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.TransformNode
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.udp.IMUType
@@ -164,8 +163,8 @@ class ReferenceAdjustmentsTests {
 
 		// Use only yaw HMD rotation
 		referenceQuat.project(POS_Y).unit()
-		val trackerNode = TransformNode(BoneType.HIP, true)
-		val rotationNode = TransformNode(BoneType.HIP, true)
+		val trackerNode = TransformNode(true)
+		val rotationNode = TransformNode(true)
 		rotationNode.attachChild(trackerNode)
 		trackerNode.localTransform.rotation = tracker.getRawRotation()
 		var yaw = 0
