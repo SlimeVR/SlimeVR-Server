@@ -35,24 +35,23 @@ export function InterfaceSettings() {
   const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { control, watch, handleSubmit } =
-    useForm<InterfaceSettingsForm>({
-      defaultValues: {
-        appearance: {
-          devmode: config?.debug ?? defaultConfig.debug,
-          theme: config?.theme ?? defaultConfig.theme,
-          textSize: config?.textSize ?? defaultConfig.textSize,
-          fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
-        },
-        notifications: {
-          watchNewDevices:
-            config?.watchNewDevices ?? defaultConfig.watchNewDevices,
-          feedbackSound: config?.feedbackSound ?? defaultConfig.feedbackSound,
-          feedbackSoundVolume:
-            config?.feedbackSoundVolume ?? defaultConfig.feedbackSoundVolume,
-        },
+  const { control, watch, handleSubmit } = useForm<InterfaceSettingsForm>({
+    defaultValues: {
+      appearance: {
+        devmode: config?.debug ?? defaultConfig.debug,
+        theme: config?.theme ?? defaultConfig.theme,
+        textSize: config?.textSize ?? defaultConfig.textSize,
+        fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
       },
-    });
+      notifications: {
+        watchNewDevices:
+          config?.watchNewDevices ?? defaultConfig.watchNewDevices,
+        feedbackSound: config?.feedbackSound ?? defaultConfig.feedbackSound,
+        feedbackSoundVolume:
+          config?.feedbackSoundVolume ?? defaultConfig.feedbackSoundVolume,
+      },
+    },
+  });
 
   const onSubmit = (values: InterfaceSettingsForm) => {
     setConfig({
