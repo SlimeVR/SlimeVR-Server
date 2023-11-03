@@ -7,6 +7,9 @@ import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
+/**
+ * TODO make this class use Bone.kt
+ */
 class UnityArmature(localRot: Boolean) {
 
 	private val headNode = TransformNode(localRotation = localRot)
@@ -14,9 +17,9 @@ class UnityArmature(localRot: Boolean) {
 	private val neckHeadNode = TransformNode(localRotation = localRot)
 	private val upperChestNode = TransformNode(localRotation = localRot)
 	private val chestNode = TransformNode(localRotation = localRot)
-	private val waistTailNode = TransformNode(localRotation = localRot)
-	private val waistHeadNode = TransformNode(localRotation = localRot)
-	private val hipNode = TransformNode(localRotation = localRot)
+	private val spineTailNode = TransformNode(localRotation = localRot)
+	private val spineHeadNode = TransformNode(localRotation = localRot)
+	private val hipsNode = TransformNode(localRotation = localRot)
 	private val leftHipNode = TransformNode(localRotation = localRot)
 	private val rightHipNode = TransformNode(localRotation = localRot)
 	private val leftKneeNode = TransformNode(localRotation = localRot)
@@ -42,17 +45,17 @@ class UnityArmature(localRot: Boolean) {
 	init {
 		// Attach nodes
 		// Spine
-		hipNode.attachChild(waistHeadNode)
-		waistHeadNode.attachChild(waistTailNode)
-		waistTailNode.attachChild(chestNode)
+		hipsNode.attachChild(spineHeadNode)
+		spineHeadNode.attachChild(spineTailNode)
+		spineTailNode.attachChild(chestNode)
 		chestNode.attachChild(upperChestNode)
 		upperChestNode.attachChild(neckHeadNode)
 		neckHeadNode.attachChild(neckTailNode)
 		neckTailNode.attachChild(headNode)
 
 		// Legs
-		hipNode.attachChild(leftHipNode)
-		hipNode.attachChild(rightHipNode)
+		hipsNode.attachChild(leftHipNode)
+		hipsNode.attachChild(rightHipNode)
 		leftHipNode.attachChild(leftKneeNode)
 		rightHipNode.attachChild(rightKneeNode)
 		leftKneeNode.attachChild(leftAnkleNode)
@@ -73,11 +76,11 @@ class UnityArmature(localRot: Boolean) {
 		rightWristNode.attachChild(rightHandNode)
 	}
 
-	fun updateNodes() {
+	fun update() {
 		// Set the upper chest node's rotation to the chest's
 		upperChestNode.localTransform.rotation = chestNode.localTransform.rotation
 		// Update the root node
-		hipNode.update()
+		hipsNode.update()
 	}
 
 	fun setRootPose(globalPos: Vector3, globalRot: Quaternion) {
@@ -175,9 +178,9 @@ class UnityArmature(localRot: Boolean) {
 				UnityBone.HEAD -> neckTailNode
 				UnityBone.NECK -> neckHeadNode
 				UnityBone.UPPER_CHEST -> chestNode
-				UnityBone.CHEST -> waistTailNode
-				UnityBone.SPINE -> waistHeadNode
-				UnityBone.HIPS -> hipNode
+				UnityBone.CHEST -> spineTailNode
+				UnityBone.SPINE -> spineHeadNode
+				UnityBone.HIPS -> hipsNode
 				UnityBone.LEFT_UPPER_LEG -> leftHipNode
 				UnityBone.RIGHT_UPPER_LEG -> rightHipNode
 				UnityBone.LEFT_LOWER_LEG -> leftKneeNode
