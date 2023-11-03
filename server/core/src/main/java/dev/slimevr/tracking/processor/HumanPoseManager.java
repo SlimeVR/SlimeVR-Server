@@ -183,40 +183,6 @@ public class HumanPoseManager {
 				new Tracker(
 					null,
 					VRServer.getNextLocalTrackerId(),
-					"human://LEFT_FOOT",
-					"Computed left foot",
-					TrackerPosition.LEFT_FOOT,
-					null,
-					true,
-					true,
-					false,
-					false,
-					true,
-					true
-				)
-			);
-		computedTrackers
-			.add(
-				new Tracker(
-					null,
-					VRServer.getNextLocalTrackerId(),
-					"human://RIGHT_FOOT",
-					"Computed right foot",
-					TrackerPosition.RIGHT_FOOT,
-					null,
-					true,
-					true,
-					false,
-					false,
-					true,
-					true
-				)
-			);
-		computedTrackers
-			.add(
-				new Tracker(
-					null,
-					VRServer.getNextLocalTrackerId(),
 					"human://LEFT_KNEE",
 					"Computed left knee",
 					TrackerPosition.LEFT_UPPER_LEG,
@@ -237,6 +203,40 @@ public class HumanPoseManager {
 					"human://RIGHT_KNEE",
 					"Computed right knee",
 					TrackerPosition.RIGHT_UPPER_LEG,
+					null,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
+				)
+			);
+		computedTrackers
+			.add(
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"human://LEFT_FOOT",
+					"Computed left foot",
+					TrackerPosition.LEFT_FOOT,
+					null,
+					true,
+					true,
+					false,
+					false,
+					true,
+					true
+				)
+			);
+		computedTrackers
+			.add(
+				new Tracker(
+					null,
+					VRServer.getNextLocalTrackerId(),
+					"human://RIGHT_FOOT",
+					"Computed right foot",
+					TrackerPosition.RIGHT_FOOT,
 					null,
 					true,
 					true,
@@ -413,25 +413,25 @@ public class HumanPoseManager {
 	}
 
 	/**
-	 * @return the root node of the skeleton, which is the HMD
+	 * @return the head bone, which is the root of the skeleton
 	 */
 	@ThreadSafe
-	public TransformNode getRootNode() {
+	public Bone getHeadBone() {
 		if (isSkeletonPresent())
-			return skeleton.getHmdNode();
+			return skeleton.getHeadBone();
 		return null;
 	}
 
 	/**
-	 * Get the tail node (away from the tracking root) of the given bone
+	 * Get a specified bone from the passed BoneType
 	 *
-	 * @param bone the bone from which we want the tail node
-	 * @return the tail node of the bone
+	 * @param boneType the type of the bone we want
+	 * @return the specified bone
 	 */
 	@ThreadSafe
-	public TransformNode getTailNodeOfBone(BoneType bone) {
+	public Bone getBone(BoneType boneType) {
 		if (isSkeletonPresent())
-			return skeleton.getTailNodeOfBone(bone);
+			return skeleton.getBone(boneType);
 		return null;
 	}
 
@@ -474,32 +474,12 @@ public class HumanPoseManager {
 	}
 
 	/**
-	 * @return All skeleton bones as BoneInfo
+	 * @return All non-tracker bones
 	 */
 	@ThreadSafe
-	public List<BoneInfo> getAllBoneInfo() {
+	public List<Bone> getAllBones() {
 		if (isSkeletonPresent())
-			return skeleton.getAllBoneInfo();
-		return null;
-	}
-
-	/**
-	 * @return All shareable bones as BoneInfo
-	 */
-	@ThreadSafe
-	public List<BoneInfo> getShareableBoneInfo() {
-		if (isSkeletonPresent())
-			return skeleton.getShareableBoneInfo();
-		return null;
-	}
-
-	/**
-	 * @return The bone as BoneInfo for the given BoneType
-	 */
-	@ThreadSafe
-	public BoneInfo getBoneInfoForBoneType(BoneType boneType) {
-		if (isSkeletonPresent())
-			return skeleton.getBoneInfoForBoneType(boneType);
+			return List.of(skeleton.getAllHumanBones());
 		return null;
 	}
 
@@ -602,13 +582,13 @@ public class HumanPoseManager {
 	/**
 	 * Update the given bone with the given offset
 	 *
-	 * @param bone the bone to update
-	 * @param offset the new offset to apply to the bone
+	 * @param boneType the type of the bone to update
+	 * @param offset the new offset to apply to the boneType
 	 */
 	@ThreadSafe
-	public void updateNodeOffset(BoneType bone, Vector3 offset) {
+	public void updateNodeOffset(BoneType boneType, Vector3 offset) {
 		if (isSkeletonPresent())
-			skeleton.updateNodeOffset(bone, offset);
+			skeleton.updateNodeOffset(boneType, offset);
 	}
 
 	/**
@@ -653,15 +633,10 @@ public class HumanPoseManager {
 				} else {
 					server.vrcOSCHandler
 						.yawAlign(
-							getRootNode()
-								.getLocalTransform()
-								.getRotation()
-								.project(Vector3.Companion.getPOS_Y())
+							getHeadBone().getGlobalRotation().project(Vector3.Companion.getPOS_Y())
 						);
 				}
-				server
-					.getVMCHandler()
-					.alignVMCTracking(getRootNode().getWorldTransform().getRotation());
+				server.getVMCHandler().alignVMCTracking(getHeadBone().getGlobalRotation());
 				logTrackersDrift();
 			}
 		}
@@ -676,15 +651,10 @@ public class HumanPoseManager {
 				} else {
 					server.vrcOSCHandler
 						.yawAlign(
-							getRootNode()
-								.getLocalTransform()
-								.getRotation()
-								.project(Vector3.Companion.getPOS_Y())
+							getHeadBone().getGlobalRotation().project(Vector3.Companion.getPOS_Y())
 						);
 				}
-				server
-					.getVMCHandler()
-					.alignVMCTracking(getRootNode().getWorldTransform().getRotation());
+				server.getVMCHandler().alignVMCTracking(getHeadBone().getGlobalRotation());
 				logTrackersDrift();
 			}
 		}
