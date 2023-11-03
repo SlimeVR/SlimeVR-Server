@@ -420,7 +420,7 @@ settings-general-interface-feedback_sound-label = Feedback sound
 settings-general-interface-feedback_sound-volume = Feedback sound volume
 settings-general-interface-connected_trackers_warning = Connected trackers warning
 settings-general-interface-connected_trackers_warning-description = This option will show a pop-up every time you try exiting SlimeVR while having one or more connected trackers. It reminds you to turn off your trackers when you are done to preserve battery life.
-settings-general-interface-connected_trackers_warning-label = Connected trackers warning on SlimeVR exit
+settings-general-interface-connected_trackers_warning-label = Connected trackers warning on exit
 
 ## Serial settings
 settings-serial = Serial Console
