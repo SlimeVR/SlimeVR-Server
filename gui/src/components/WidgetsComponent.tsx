@@ -19,6 +19,7 @@ import { parseStatusToLocale, useStatusContext } from '@/hooks/status-system';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useAppContext } from '@/hooks/app';
 import { ClearMountingButton } from './ClearMountingButton';
+import { ToggleableSkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
 
 export function WidgetsComponent() {
   const { config } = useConfig();
@@ -57,6 +58,9 @@ export function WidgetsComponent() {
       </div>
       <div className="w-full">
         <OverlayWidget></OverlayWidget>
+      </div>
+      <div className="mb-2">
+        <ToggleableSkeletonVisualizerWidget height={400} />
       </div>
       <div className="w-full flex flex-col gap-3 mb-2">
         {unprioritizedStatuses.map((status) => (
