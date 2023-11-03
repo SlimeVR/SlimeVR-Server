@@ -5,6 +5,7 @@ import dev.slimevr.desktop.platform.ProtobufMessages.*;
 import dev.slimevr.config.BridgeConfig;
 import dev.slimevr.tracking.trackers.*;
 import dev.slimevr.util.ann.VRServerThread;
+import dev.slimevr.bridge.BridgeThread;
 import io.eiren.util.collections.FastList;
 import solarxr_protocol.rpc.StatusData;
 import solarxr_protocol.rpc.StatusDataUnion;
@@ -383,11 +384,10 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 	 */
 	protected int lastSteamVRStatus = 0;
 
+	@BridgeThread
 	protected void reportDisconnected() {
 		if (lastSteamVRStatus != 0) {
-			throw new IllegalStateException(
-				"lastSteamVRStatus wasn't 0 and it was " + lastSteamVRStatus + " instead"
-			);
+			return;
 		}
 		var statusData = new StatusSteamVRDisconnectedT();
 		statusData.setBridgeSettingsName(bridgeSettingsKey);
@@ -398,5 +398,15 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 		lastSteamVRStatus = VRServer.Companion.getInstance().statusSystem
 			.addStatusInt(status, false);
 
+	}
+
+	@BridgeThread
+	protected void reportConnected() {
+		if (lastSteamVRStatus == 0) {
+			return;
+		}
+		VRServer.Companion.getInstance().statusSystem
+			.removeStatusInt(lastSteamVRStatus);
+		lastSteamVRStatus = 0;
 	}
 }
