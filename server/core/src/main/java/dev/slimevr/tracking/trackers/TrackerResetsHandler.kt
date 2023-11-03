@@ -353,14 +353,15 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private fun makeIdentityAdjustmentQuatsFull() {
 		val sensorRotation = tracker.getRawRotation()
 		gyroFixNoMounting = fixGyroscope(sensorRotation)
-		attachmentFixNoMounting = fixAttachment(sensorRotation)
+		attachmentFixNoMounting = (gyroFixNoMounting * sensorRotation).inv()
+		yawFixZeroReference = Quaternion.IDENTITY
 	}
 
 	private fun makeIdentityAdjustmentQuatsYaw() {
 		var sensorRotation = tracker.getRawRotation()
 		sensorRotation = gyroFixNoMounting * sensorRotation
 		sensorRotation *= attachmentFixNoMounting
-		yawFixZeroReference = fixYaw(sensorRotation, Quaternion.IDENTITY)
+		yawFixZeroReference = fixGyroscope(sensorRotation)
 	}
 
 	/**

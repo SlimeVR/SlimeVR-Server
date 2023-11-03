@@ -10,7 +10,7 @@
 /gui/src/i18n/ @ImUrX @Louka3000
 /l10n.toml @ImUrX @Louka3000
 
-/gui/src/components/settings/ @Louka3000 @loucass003
+/gui/src/components/settings/ @Louka3000 @loucass003 @ImUrX
 
 # Rust part of the GUI
 /gui/src-tauri/ @ImUrX @TheButlah

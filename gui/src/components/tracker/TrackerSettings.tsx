@@ -399,7 +399,7 @@ export function TrackerSettingsPage() {
               type="text"
               name="trackerName"
               control={control}
-              autocomplete="false"
+              autocomplete="on"
               rules={undefined}
               label="Tracker name"
             ></Input>
