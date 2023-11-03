@@ -1,6 +1,7 @@
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { Button } from '@/components/commons/Button';
+import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
 
 export function DoneStep({ variant }: { variant: 'onboarding' | 'alone' }) {
   const { l10n } = useLocalization();
@@ -16,13 +17,14 @@ export function DoneStep({ variant }: { variant: 'onboarding' | 'alone' }) {
         </Typography>
       </div>
 
-      <div className="flex">
+      <div className="flex gap-3">
         {variant === 'onboarding' && (
           <Button variant="primary" to="/onboarding/done">
             {l10n.getString('onboarding-continue')}
           </Button>
         )}
       </div>
+      <SkeletonVisualizerWidget />
     </div>
   );
 }

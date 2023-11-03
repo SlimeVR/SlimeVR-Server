@@ -219,7 +219,6 @@ public class SkeletonConfigManager {
 				nodeOffset,
 				0,
 				-getOffset(SkeletonConfigOffsets.CHEST_OFFSET)
-					- getOffset(SkeletonConfigOffsets.UPPER_CHEST)
 					- getOffset(SkeletonConfigOffsets.CHEST),
 				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
 			);
@@ -295,7 +294,7 @@ public class SkeletonConfigManager {
 			case LEFT_LOWER_ARM, RIGHT_LOWER_ARM -> setNodeOffset(
 				nodeOffset,
 				0,
-				getOffset(SkeletonConfigOffsets.LOWER_ARM),
+				-getOffset(SkeletonConfigOffsets.LOWER_ARM),
 				0
 			);
 			case LEFT_HAND, RIGHT_HAND -> setNodeOffset(
