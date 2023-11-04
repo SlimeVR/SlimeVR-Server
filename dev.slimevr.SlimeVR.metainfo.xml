@@ -24,6 +24,7 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
   <url type="homepage">https://slimevr.dev/</url>
   <url type="bugtracker">https://github.com/SlimeVR/SlimeVR-Server/issues</url>
   <url type="faq">https://docs.slimevr.dev/slimevr101.html</url>
+  <url type="donation">https://github.com/sponsors/SlimeVR</url>
   <url type="vcs-browser">https://github.com/SlimeVR/SlimeVR-Server</url>
   <url type="translate">https://i18n.slimevr.dev</url>
   <url type="help">https://docs.slimevr.dev/server-setup/slimevr-setup.html</url>
@@ -57,7 +58,17 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
       <image>https://raw.githubusercontent.com/SlimeVR/SlimeVR-Server/main/assets/img/onboarding.png</image>
     </screenshot>
   </screenshots>
+
+  <provides>
+    <binary>slimevr</binary>
+  </provides>
+
   <releases>
+    <release version="0.10.1" date="2023-09-30"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.1</url></release>
+    <release version="0.10.1-rc.1" type="development" date="2023-09-29"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.1-rc.1</url></release>
+    <release version="0.10.0" date="2023-09-22"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.0</url></release>
+    <release version="0.10.0-rc.2" type="development" date="2023-09-15"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.0-rc.2</url></release>
+    <release version="0.10.0-rc.1" type="development" date="2023-09-02"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.0-rc.1</url></release>
     <release version="0.9.1" date="2023-08-30"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1</url></release>
     <release version="0.9.1-rc.4" type="development" date="2023-08-28"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.4</url></release>
     <release version="0.9.1-rc.3" type="development" date="2023-08-19"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.3</url></release>
