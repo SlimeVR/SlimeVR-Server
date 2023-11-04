@@ -119,13 +119,27 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew :server:android:assembleDebug
 
-      - name: Upload the APK
+      - name: Upload the Android Build Artifact
         uses: actions/upload-artifact@v3
         with:
           # Artifact name
           name: "SlimeVR-Android" # optional, default is artifact
           # A file, directory or wildcard pattern that describes what to upload
           path: server/android/build/outputs/apk/*
+
+      - name: Prepare for release
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          cp server/android/build/outputs/apk/debug/android-debug.apk ./SlimeVR-android.apk
+
+      - name: Upload to draft release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: true
+          generate_release_notes: true
+          files: |
+            ./SlimeVR-android.apk
 
 
   bundle-linux:
