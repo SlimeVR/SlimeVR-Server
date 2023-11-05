@@ -16,7 +16,7 @@ export function ClearDriftCompensationButton() {
   return (
     <BigButton
       text={l10n.getString('widget-drift_compensation-clear')}
-      icon={<TrashIcon width={20} />}
+      icon={<TrashIcon size={20} />}
       onClick={clearDriftCompensation}
     >
       {}

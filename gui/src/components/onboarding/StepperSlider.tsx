@@ -10,6 +10,7 @@ import {
 import { useElemSize } from '@/hooks/layout';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { Typography } from '@/components/commons/Typography';
+import { useDebouncedEffect } from '@/hooks/timeout';
 
 type StepComponentType = FC<{
   nextStep: () => void;
@@ -99,6 +100,7 @@ export function StepperSlider({
   const ref = useRef<HTMLDivElement | null>(null);
   const { width } = useElemSize(ref);
   const [stepsContainers, setSteps] = useState(0);
+  const [shouldAnimate, setShouldAnimate] = useState(true);
   const [step, setStep] = useState(0);
 
   useEffect(() => {
@@ -122,11 +124,26 @@ export function StepperSlider({
     setStep(0);
   };
 
+  useEffect(() => {
+    setShouldAnimate(false);
+  }, [width]);
+
+  // Make it so if you resize the window it wont try to move the slide with an animation
+  useDebouncedEffect(
+    () => {
+      setShouldAnimate(true);
+    },
+    [width],
+    500
+  );
+
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="w-full flex" ref={ref}>
         <div
-          className="transition-transform duration-500 flex gap-8"
+          className={classNames('flex gap-8', {
+            'transition-transform duration-500 ': shouldAnimate,
+          })}
           style={{ transform: `translateX(-${(width + 32) * step}px)` }}
         >
           {steps.map(({ type, component: StepComponent }, index) => (
