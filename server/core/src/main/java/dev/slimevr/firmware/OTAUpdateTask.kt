@@ -125,7 +125,7 @@ class OTAUpdateTask(
 
 					// Those skipped bytes are the size written to the MCU. We do not really need that information,
 					// so we simply skip it.
-					// The reason those bytes are skipped here  is to do not have to skip all of them when checking
+					// The reason those bytes are skipped here is to not have to skip all of them when checking
 					// for the OK response. Saving time
 					dis.skipNBytes(4)
 				}
