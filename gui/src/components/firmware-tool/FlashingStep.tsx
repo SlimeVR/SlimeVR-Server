@@ -10,15 +10,15 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
   DeviceIdT,
   DeviceIdTableT,
-  FirmwareDeviceId,
   FirmwarePartT,
+  FirmwareUpdateDeviceId,
   FirmwareUpdateRequestT,
   FirmwareUpdateStatus,
   FirmwareUpdateStatusResponseT,
   FirmwareUpdateStopQueuesRequestT,
   FlashingMethod,
   RpcMessage,
-  SerialDeviceIdT,
+  SerialDevicePortT,
 } from 'solarxr-protocol';
 import { firmwareToolS3BaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
 import { useOnboarding } from '@/hooks/onboarding';
@@ -84,14 +84,14 @@ export function FlashingStep({
           const req = new FirmwareUpdateRequestT();
           req.flashingMethod = device.type;
           req.deviceIdType =
-            FirmwareDeviceId.solarxr_protocol_datatypes_DeviceIdTable;
+            FirmwareUpdateDeviceId.solarxr_protocol_datatypes_DeviceIdTable;
           req.deviceId = id;
           req.firmwarePart = [part];
           sendRPCPacket(RpcMessage.FirmwareUpdateRequest, req);
           break;
         }
         case FlashingMethod.SERIAL: {
-          const id = new SerialDeviceIdT();
+          const id = new SerialDevicePortT();
           id.port = device.deviceId.toString();
 
           if (!onboardingState.wifi?.ssid || !onboardingState.wifi?.password)
@@ -99,7 +99,7 @@ export function FlashingStep({
 
           const req = new FirmwareUpdateRequestT();
           req.flashingMethod = device.type;
-          req.deviceIdType = FirmwareDeviceId.SerialDeviceId;
+          req.deviceIdType = FirmwareUpdateDeviceId.SerialDevicePort;
           req.deviceId = id;
           req.ssid = onboardingState.wifi.ssid;
           req.password = onboardingState.wifi.password;

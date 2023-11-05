@@ -10,14 +10,14 @@ import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
 import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.DeviceIdTableT
-import solarxr_protocol.rpc.FirmwareDeviceId
-import solarxr_protocol.rpc.FirmwareDeviceIdUnion
+import solarxr_protocol.rpc.FirmwareUpdateDeviceId
+import solarxr_protocol.rpc.FirmwareUpdateDeviceIdUnion
 import solarxr_protocol.rpc.FirmwareUpdateRequest
 import solarxr_protocol.rpc.FirmwareUpdateRequestT
 import solarxr_protocol.rpc.FirmwareUpdateStatusResponse
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
-import solarxr_protocol.rpc.SerialDeviceIdT
+import solarxr_protocol.rpc.SerialDevicePortT
 
 class RPCFirmwareUpdateHandler(
 	private val rpcHandler: RPCHandler,
@@ -65,11 +65,11 @@ class RPCFirmwareUpdateHandler(
 	override fun onUpdateStatusChange(event: UpdateStatusEvent<*>) {
 		val fbb = FlatBufferBuilder(32)
 
-		val dataUnion = FirmwareDeviceIdUnion()
+		val dataUnion = FirmwareUpdateDeviceIdUnion()
 		dataUnion.type = event.deviceId.type.id.toByte()
 		dataUnion.value = createUpdateDeviceId(event.deviceId)
 
-		val deviceIdOffset = FirmwareDeviceIdUnion.pack(fbb, dataUnion)
+		val deviceIdOffset = FirmwareUpdateDeviceIdUnion.pack(fbb, dataUnion)
 
 		FirmwareUpdateStatusResponse.startFirmwareUpdateStatusResponse(fbb)
 		FirmwareUpdateStatusResponse.addStatus(fbb, event.status.id)
@@ -95,17 +95,17 @@ class RPCFirmwareUpdateHandler(
 
 	private fun buildUpdateDeviceId(req: FirmwareUpdateRequestT): UpdateDeviceId<Any>? {
 		when (req.deviceId.type) {
-			FirmwareDeviceId.solarxr_protocol_datatypes_DeviceIdTable -> {
+			FirmwareUpdateDeviceId.solarxr_protocol_datatypes_DeviceIdTable -> {
 				return UpdateDeviceId(
 					FirmwareUpdateMethod.OTA,
 					req.deviceId.assolarxr_protocol_datatypes_DeviceIdTable().id.id
 				)
 			}
 
-			FirmwareDeviceId.SerialDeviceId -> {
+			FirmwareUpdateDeviceId.SerialDevicePort -> {
 				return UpdateDeviceId(
 					FirmwareUpdateMethod.SERIAL,
-					req.deviceId.asSerialDeviceId().port
+					req.deviceId.asSerialDevicePort().port
 				)
 			}
 		}
@@ -130,7 +130,7 @@ class RPCFirmwareUpdateHandler(
 				if (data.id !is String) {
 					error("Invalid state, the id type should be String")
 				}
-				SerialDeviceIdT().apply {
+				SerialDevicePortT().apply {
 					port = data.id
 				}
 			}

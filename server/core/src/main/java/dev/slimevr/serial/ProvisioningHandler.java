@@ -135,7 +135,7 @@ public class ProvisioningHandler implements SerialListener {
 		if (
 			provisioningStatus == ProvisioningStatus.CONNECTING
 				&& (str.contains("Looking for the server")
-					|| str.contains("Searching for the server on the local network"))
+					|| str.contains("Searching for the server"))
 		) {
 			this.changeStatus(ProvisioningStatus.LOOKING_FOR_SERVER);
 		}

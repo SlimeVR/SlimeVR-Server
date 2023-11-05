@@ -150,6 +150,25 @@ export function TrackerSettingsPage() {
     }
   }, [firstLoad]);
 
+  const boarType = useMemo(() => {
+    if (tracker?.device?.hardwareInfo?.officialBoardType) {
+      return l10n.getString(
+        'board_type-' +
+          BoardType[
+            tracker?.device?.hardwareInfo?.officialBoardType ??
+              BoardType.UNKNOWN
+          ]
+      );
+    } else if (tracker?.device?.hardwareInfo?.boardType) {
+      return tracker?.device?.hardwareInfo?.boardType;
+    } else {
+      return '--';
+    }
+  }, [
+    tracker?.device?.hardwareInfo?.officialBoardType,
+    tracker?.device?.hardwareInfo?.boardType,
+  ]);
+
   return (
     <form
       className="h-full overflow-y-auto"
@@ -263,17 +282,7 @@ export function TrackerSettingsPage() {
               <Typography color="secondary">
                 {l10n.getString('tracker-infos-board_type')}
               </Typography>
-              <Typography>
-                {tracker?.device?.hardwareInfo?.boardTypeId
-                  ? l10n.getString(
-                      'board_type-' +
-                        BoardType[
-                          tracker?.device?.hardwareInfo?.boardTypeId ??
-                            BoardType.UNKNOWN
-                        ]
-                    )
-                  : '--'}
-              </Typography>
+              <Typography>{boarType}</Typography>
             </div>
           </div>
           {tracker?.tracker && (

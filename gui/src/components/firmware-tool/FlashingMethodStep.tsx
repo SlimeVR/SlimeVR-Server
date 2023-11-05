@@ -193,7 +193,7 @@ function OTADevicesList({
       ({ trackers, hardwareInfo }) =>
         trackers.length > 0 &&
         boardTypeToFirmwareToolBoardType[
-          hardwareInfo?.boardTypeId ?? BoardType.UNKNOWN
+          hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN
         ] == newConfig?.boardConfig?.type &&
         trackers.every(({ status }) => status == TrackerStatus.OK)
     ) || [];
