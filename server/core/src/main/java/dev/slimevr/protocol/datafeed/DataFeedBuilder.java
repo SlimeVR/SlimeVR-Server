@@ -64,7 +64,7 @@ public class DataFeedBuilder {
 		// TODO need support: HardwareInfo.addDisplayName(fbb, de);
 
 		HardwareInfo.addMcuId(fbb, device.getMcuType().getSolarType());
-		HardwareInfo.addBoardTypeId(fbb, device.getBoardType().getSolarType());
+		HardwareInfo.addOfficialBoardType(fbb, device.getBoardType().getSolarType());
 		return HardwareInfo.endHardwareInfo(fbb);
 	}
 
