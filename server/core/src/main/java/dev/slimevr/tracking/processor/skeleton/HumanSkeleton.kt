@@ -847,8 +847,8 @@ class HumanSkeleton(
 				assembleSkeletonArms(true) // Rebuilds the arm skeleton nodes attachments
 				computeDependentArmOffsets() // Refresh node offsets for arms
 			}
-			SkeletonConfigToggles.SKATING_CORRECTION -> legTweaks.setSkatingReductionEnabled(newValue)
-			SkeletonConfigToggles.FLOOR_CLIP -> legTweaks.setFloorclipEnabled(newValue)
+			SkeletonConfigToggles.SKATING_CORRECTION -> legTweaks.setSkatingCorrectionEnabled(newValue)
+			SkeletonConfigToggles.FLOOR_CLIP -> legTweaks.setFloorClipEnabled(newValue)
 			SkeletonConfigToggles.VIVE_EMULATION -> viveEmulation.enabled = newValue
 			SkeletonConfigToggles.TOE_SNAP -> legTweaks.toeSnapEnabled = newValue
 			SkeletonConfigToggles.FOOT_PLANT -> legTweaks.footPlantEnabled = newValue
@@ -1148,8 +1148,8 @@ class HumanSkeleton(
 		toeSnap: Boolean,
 		footPlant: Boolean,
 	) {
-		legTweaks.setSkatingReductionEnabled(skatingCorrection)
-		legTweaks.setFloorclipEnabled(floorClip)
+		legTweaks.setSkatingCorrectionEnabled(skatingCorrection)
+		legTweaks.setFloorClipEnabled(floorClip)
 		legTweaks.toeSnapEnabled = toeSnap
 		legTweaks.footPlantEnabled = footPlant
 	}
@@ -1166,13 +1166,13 @@ class HumanSkeleton(
 		// only reset the true values as they are a mask for what to reset
 		if (skatingCorrection) {
 			legTweaks
-				.setSkatingReductionEnabled(
+				.setSkatingCorrectionEnabled(
 					humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION)
 				)
 		}
 		if (floorClip) {
 			legTweaks
-				.setFloorclipEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP))
+				.setFloorClipEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP))
 		}
 		if (toeSnap) legTweaks.toeSnapEnabled = humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP)
 		if (footPlant) legTweaks.footPlantEnabled = humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT)
@@ -1181,8 +1181,8 @@ class HumanSkeleton(
 	val legTweaksState: BooleanArray
 		get() {
 			val state = BooleanArray(4)
-			state[0] = legTweaks.floorclipEnabled
-			state[1] = legTweaks.skatingReductionEnabled
+			state[0] = legTweaks.floorClipEnabled
+			state[1] = legTweaks.skatingCorrectionEnabled
 			state[2] = legTweaks.toeSnapEnabled
 			state[3] = legTweaks.footPlantEnabled
 			return state
