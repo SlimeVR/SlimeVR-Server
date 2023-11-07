@@ -146,14 +146,6 @@ class AutoBone(server: VRServer) {
 		return true
 	}
 
-	fun getLengthSum(configs: Map<SkeletonConfigOffsets, Float>): Float {
-		var length = 0f
-		for (boneLength in configs.values) {
-			length += boneLength
-		}
-		return length
-	}
-
 	fun calcTargetHmdHeight(
 		frames: PoseFrames,
 		config: AutoBoneConfig = globalConfig,
