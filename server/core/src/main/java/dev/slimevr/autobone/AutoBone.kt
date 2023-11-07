@@ -714,27 +714,20 @@ class AutoBone(server: VRServer) {
 
 	fun loadRecordings(): FastList<Pair<String, PoseFrames>> {
 		val recordings = FastList<Pair<String, PoseFrames>>()
-		if (loadDir.isDirectory) {
-			val files = loadDir.listFiles()
-			if (files != null) {
-				for (file in files) {
-					if (file.isFile &&
-						org.apache.commons.lang3.StringUtils
-							.endsWithIgnoreCase(file.name, ".pfr")
-					) {
-						LogManager
-							.info(
-								"[AutoBone] Detected recording at \"${file.path}\", loading frames..."
-							)
-						val frames = PoseFrameIO.tryReadFromFile(file)
-						if (frames == null) {
-							LogManager
-								.severe("Reading frames from \"${file.path}\" failed...")
-						} else {
-							recordings.add(Pair.of(file.name, frames))
-						}
-					}
-				}
+		if (!loadDir.isDirectory) return recordings
+		val files = loadDir.listFiles() ?: return recordings
+		for (file in files) {
+			if (!file.isFile || !file.name.endsWith(".pfr", ignoreCase = true)) continue
+
+			LogManager
+				.info(
+					"[AutoBone] Detected recording at \"${file.path}\", loading frames..."
+				)
+			val frames = PoseFrameIO.tryReadFromFile(file)
+			if (frames == null) {
+				LogManager.severe("Reading frames from \"${file.path}\" failed...")
+			} else {
+				recordings.add(Pair.of(file.name, frames))
 			}
 		}
 		return recordings

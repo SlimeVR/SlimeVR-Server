@@ -64,9 +64,6 @@ class AutoBoneHandler(private val server: VRServer) {
 		}
 	}
 
-	val lengthsString: String
-		get() = autoBone.lengthsString
-
 	@Throws(AutoBoneException::class)
 	private fun processFrames(frames: PoseFrames): AutoBoneResults {
 		return autoBone
