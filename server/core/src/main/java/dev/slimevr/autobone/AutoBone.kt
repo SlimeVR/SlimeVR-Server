@@ -664,7 +664,7 @@ class AutoBone(server: VRServer) {
 	val lengthsString: String
 		get() {
 			val configInfo = StringBuilder()
-			offsets.forEach { (key: SkeletonConfigOffsets, value: Float) ->
+			offsets.forEach { (key, value) ->
 				if (configInfo.isNotEmpty()) {
 					configInfo.append(", ")
 				}

@@ -15,6 +15,7 @@ import io.eiren.util.StringUtils
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import org.apache.commons.lang3.tuple.Pair
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
@@ -264,21 +265,55 @@ class AutoBoneHandler(private val server: VRServer) {
 			announceProcessStatus(AutoBoneProcessType.PROCESS, "Processing recording(s)...")
 			LogManager.info("[AutoBone] Processing frames...")
 			val errorStats = StatsCalculator()
+			val offsetStats = EnumMap<SkeletonConfigOffsets, StatsCalculator>(
+				SkeletonConfigOffsets::class.java
+			)
 			val skeletonConfigManagerBuffer = SkeletonConfigManager(false)
 			for ((key, value) in frameRecordings) {
-				LogManager
-					.info("[AutoBone] Processing frames from \"$key\"...")
+				LogManager.info("[AutoBone] Processing frames from \"$key\"...")
+				// Output tracker info for the recording
 				printTrackerInfo(value.frameHolders)
 
+				// Actually process the recording
 				val autoBoneResults = processFrames(value)
-				errorStats.addValue(autoBoneResults.heightDifference)
 				LogManager.info("[AutoBone] Done processing!")
 
 				// #region Stats/Values
+				// Accumulate height error
+				errorStats.addValue(autoBoneResults.heightDifference)
+
+				// Accumulate length values
+				for (offset in autoBoneResults.configValues) {
+					val statCalc = offsetStats.getOrPut(offset.key) {
+						StatsCalculator()
+					}
+					// Multiply by 100 to get cm
+					statCalc.addValue(offset.value * 100f)
+				}
+
+				// Calculate and output skeleton ratios
 				skeletonConfigManagerBuffer.setOffsets(autoBoneResults.configValues)
 				printSkeletonRatios(skeletonConfigManagerBuffer)
-				LogManager.info("[AutoBone] Length values: " + autoBone.lengthsString)
+
+				LogManager.info("[AutoBone] Length values: ${autoBone.lengthsString}")
 			}
+			// Length value stats
+			val averageLengthVals = StringBuilder()
+			offsetStats.forEach { (key, value) ->
+				if (averageLengthVals.isNotEmpty()) {
+					averageLengthVals.append(", ")
+				}
+				averageLengthVals
+					.append(key.configKey)
+					.append(": ")
+					.append(StringUtils.prettyNumber(value.mean, 2))
+					.append(" (SD ")
+					.append(StringUtils.prettyNumber(value.standardDeviation, 2))
+					.append(")")
+			}
+			LogManager.info("[AutoBone] Average length values: $averageLengthVals")
+
+			// Height error stats
 			LogManager
 				.info(
 					"[AutoBone] Average height error: ${
