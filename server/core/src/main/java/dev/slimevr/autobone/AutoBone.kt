@@ -515,7 +515,7 @@ class AutoBone(server: VRServer) {
 			// Calculate the total effect of the bone based on change in rotation
 			val dotLength = originalLength * ((leftDotProduct + rightDotProduct) / 2f)
 
-			// Scale by the ratio for smooth adjustment and more stable results
+			// Scale by the total effect of the bone
 			val curAdjustVal = adjustVal * -dotLength
 			val newLength = originalLength + curAdjustVal
 
