@@ -8,9 +8,11 @@ import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.poseframeformat.PoseRecorder
 import dev.slimevr.poseframeformat.PoseRecorder.RecordingProgress
 import dev.slimevr.poseframeformat.trackerdata.TrackerFrameData
+import dev.slimevr.poseframeformat.trackerdata.TrackerFrames
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import io.eiren.util.StringUtils
+import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import org.apache.commons.lang3.tuple.Pair
 import java.util.concurrent.CopyOnWriteArrayList
@@ -254,9 +256,7 @@ class AutoBoneHandler(private val server: VRServer) {
 					)
 					LogManager
 						.severe(
-							"[AutoBone] No recordings found in \"" +
-								loadDir.path +
-								"\" and no recording was done..."
+							"[AutoBone] No recordings found in \"${loadDir.path}\" and no recording was done..."
 						)
 					return
 				}
@@ -268,106 +268,22 @@ class AutoBoneHandler(private val server: VRServer) {
 			for ((key, value) in frameRecordings) {
 				LogManager
 					.info("[AutoBone] Processing frames from \"$key\"...")
-				val trackers = value.frameHolders
-				val trackerInfo = StringBuilder()
-				for (tracker in trackers) {
-					if (tracker == null) continue
-					val frame = tracker.tryGetFrame(0)
-					if (frame?.trackerPosition == null) continue
+				printTrackerInfo(value.frameHolders)
 
-					// Add a comma if this is not the first item listed
-					if (trackerInfo.isNotEmpty()) {
-						trackerInfo.append(", ")
-					}
-					trackerInfo.append(frame.trackerPosition.designation)
-
-					// Represent the data flags
-					val trackerFlags = StringBuilder()
-					if (frame.hasData(TrackerFrameData.ROTATION)) {
-						trackerFlags.append("R")
-					}
-					if (frame.hasData(TrackerFrameData.POSITION)) {
-						trackerFlags.append("P")
-					}
-					if (frame.hasData(TrackerFrameData.ACCELERATION)) {
-						trackerFlags.append("A")
-					}
-					if (frame.hasData(TrackerFrameData.RAW_ROTATION)) {
-						trackerFlags.append("r")
-					}
-
-					// If there are data flags, print them in brackets after the
-					// designation
-					if (trackerFlags.isNotEmpty()) {
-						trackerInfo.append(" (").append(trackerFlags).append(")")
-					}
-				}
-				LogManager
-					.info(
-						"[AutoBone] (" +
-							trackers.size +
-							" trackers) [" +
-							trackerInfo +
-							"]"
-					)
 				val autoBoneResults = processFrames(value)
 				errorStats.addValue(autoBoneResults.heightDifference)
 				LogManager.info("[AutoBone] Done processing!")
 
 				// #region Stats/Values
 				skeletonConfigManagerBuffer.setOffsets(autoBoneResults.configValues)
-				val neckLength = skeletonConfigManagerBuffer
-					.getOffset(SkeletonConfigOffsets.NECK)
-				val upperChestLength = skeletonConfigManagerBuffer
-					.getOffset(SkeletonConfigOffsets.UPPER_CHEST)
-				val chestLength = skeletonConfigManagerBuffer
-					.getOffset(SkeletonConfigOffsets.CHEST)
-				val waistLength = skeletonConfigManagerBuffer
-					.getOffset(SkeletonConfigOffsets.WAIST)
-				val hipLength = skeletonConfigManagerBuffer
-					.getOffset(SkeletonConfigOffsets.HIP)
-				val torsoLength = upperChestLength + chestLength + waistLength + hipLength
-				val hipWidth = skeletonConfigManagerBuffer
-					.getOffset(SkeletonConfigOffsets.HIPS_WIDTH)
-				val legLength = (
-					skeletonConfigManagerBuffer
-						.getOffset(SkeletonConfigOffsets.UPPER_LEG) +
-						skeletonConfigManagerBuffer
-							.getOffset(SkeletonConfigOffsets.LOWER_LEG)
-					)
-				val lowerLegLength = skeletonConfigManagerBuffer
-					.getOffset(SkeletonConfigOffsets.LOWER_LEG)
-				val neckTorso = neckLength / torsoLength
-				val chestTorso = (upperChestLength + chestLength) / torsoLength
-				val torsoWaist = hipWidth / torsoLength
-				val legTorso = legLength / torsoLength
-				val legBody = legLength / (torsoLength + neckLength)
-				val kneeLeg = lowerLegLength / legLength
-				LogManager
-					.info(
-						"[AutoBone] Ratios: [{Neck-Torso: " +
-							StringUtils.prettyNumber(neckTorso) +
-							"}, {Chest-Torso: " +
-							StringUtils.prettyNumber(chestTorso) +
-							"}, {Torso-Waist: " +
-							StringUtils.prettyNumber(torsoWaist) +
-							"}, {Leg-Torso: " +
-							StringUtils.prettyNumber(legTorso) +
-							"}, {Leg-Body: " +
-							StringUtils.prettyNumber(legBody) +
-							"}, {Knee-Leg: " +
-							StringUtils.prettyNumber(kneeLeg) +
-							"}]"
-					)
+				printSkeletonRatios(skeletonConfigManagerBuffer)
 				LogManager.info("[AutoBone] Length values: " + autoBone.lengthsString)
 			}
 			LogManager
 				.info(
-					"[AutoBone] Average height error: " +
-						StringUtils.prettyNumber(errorStats.mean, 6) +
-						" (SD " +
-						StringUtils.prettyNumber(errorStats.standardDeviation, 6) +
-						")"
+					"[AutoBone] Average height error: ${
+					StringUtils.prettyNumber(errorStats.mean, 6)
+					} (SD ${StringUtils.prettyNumber(errorStats.standardDeviation, 6)})"
 				)
 			// #endregion
 			listeners.forEach { listener: AutoBoneListener -> listener.onAutoBoneEnd(autoBone.offsets) }
@@ -388,6 +304,71 @@ class AutoBoneHandler(private val server: VRServer) {
 		} finally {
 			autoBoneThread = null
 		}
+	}
+
+	private fun printTrackerInfo(trackers: FastList<TrackerFrames>) {
+		val trackerInfo = StringBuilder()
+		for (tracker in trackers) {
+			val frame = tracker?.tryGetFrame(0) ?: continue
+
+			// Add a comma if this is not the first item listed
+			if (trackerInfo.isNotEmpty()) {
+				trackerInfo.append(", ")
+			}
+
+			trackerInfo.append(frame.tryGetTrackerPosition()?.designation ?: "unassigned")
+
+			// Represent the data flags
+			val trackerFlags = StringBuilder()
+			if (frame.hasData(TrackerFrameData.ROTATION)) {
+				trackerFlags.append("R")
+			}
+			if (frame.hasData(TrackerFrameData.POSITION)) {
+				trackerFlags.append("P")
+			}
+			if (frame.hasData(TrackerFrameData.ACCELERATION)) {
+				trackerFlags.append("A")
+			}
+			if (frame.hasData(TrackerFrameData.RAW_ROTATION)) {
+				trackerFlags.append("r")
+			}
+
+			// If there are data flags, print them in brackets after the designation
+			if (trackerFlags.isNotEmpty()) {
+				trackerInfo.append(" (").append(trackerFlags).append(")")
+			}
+		}
+		LogManager.info("[AutoBone] (${trackers.size} trackers) [$trackerInfo]")
+	}
+
+	private fun printSkeletonRatios(skeleton: SkeletonConfigManager) {
+		val neckLength = skeleton.getOffset(SkeletonConfigOffsets.NECK)
+		val upperChestLength = skeleton.getOffset(SkeletonConfigOffsets.UPPER_CHEST)
+		val chestLength = skeleton.getOffset(SkeletonConfigOffsets.CHEST)
+		val waistLength = skeleton.getOffset(SkeletonConfigOffsets.WAIST)
+		val hipLength = skeleton.getOffset(SkeletonConfigOffsets.HIP)
+		val torsoLength = upperChestLength + chestLength + waistLength + hipLength
+		val hipWidth = skeleton.getOffset(SkeletonConfigOffsets.HIPS_WIDTH)
+		val legLength = skeleton.getOffset(SkeletonConfigOffsets.UPPER_LEG) +
+			skeleton.getOffset(SkeletonConfigOffsets.LOWER_LEG)
+		val lowerLegLength = skeleton.getOffset(SkeletonConfigOffsets.LOWER_LEG)
+
+		val neckTorso = neckLength / torsoLength
+		val chestTorso = (upperChestLength + chestLength) / torsoLength
+		val torsoWaist = hipWidth / torsoLength
+		val legTorso = legLength / torsoLength
+		val legBody = legLength / (torsoLength + neckLength)
+		val kneeLeg = lowerLegLength / legLength
+
+		LogManager.info(
+			"[AutoBone] Ratios: [{Neck-Torso: ${
+			StringUtils.prettyNumber(neckTorso)}}, {Chest-Torso: ${
+			StringUtils.prettyNumber(chestTorso)}}, {Torso-Waist: ${
+			StringUtils.prettyNumber(torsoWaist)}}, {Leg-Torso: ${
+			StringUtils.prettyNumber(legTorso)}}, {Leg-Body: ${
+			StringUtils.prettyNumber(legBody)}}, {Knee-Leg: ${
+			StringUtils.prettyNumber(kneeLeg)}}]"
+		)
 	}
 
 	fun applyValues() {
