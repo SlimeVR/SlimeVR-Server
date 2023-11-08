@@ -144,6 +144,9 @@ widget-imu_visualizer-rotation_raw = 原始旋轉
 widget-imu_visualizer-rotation_preview = 預覽
 widget-imu_visualizer-rotation_hide = 隱藏
 
+## Widget: Skeleton Visualizer
+
+
 ## Tracker status
 
 tracker-status-none = 無
@@ -373,9 +376,9 @@ settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = 推
 settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = 推算腰部定位時，胸部與腿部定位使用的比例
 settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = 推算臀部定位時，胸部與腿部定位使用的比例
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = 推算臀部定位時， 腰部與腿部定位使用的比例
-settings-general-fk_settings-skeleton_settings-interp_hip_legs = 臀部的偏航軸與翻滾軸，混合腿部定位的比例
-settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = 膝部的偏航軸與翻滾軸，混合腳踝定位的比例
-settings-general-fk_settings-skeleton_settings-interp_knee_ankle = 將膝部的偏航軸與翻滾軸與腳踝計算平均
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = 臀部的偏航軸與翻滾軸，與腿部定位平均的比例
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = 膝部的偏航軸與翻滾軸，與腳踝定位平均的比例
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = 膝部的偏航軸與翻滾軸，與腳踝定位平均的比例
 settings-general-fk_settings-self_localization-title = 動作捕捉模式
 settings-general-fk_settings-self_localization-description = 動作捕捉模式允許在沒有頭戴顯示器或其他追蹤器時，粗略的追蹤身體骨架的定位。請注意，本功能需要腳部與頭部的追蹤器，並且本功能仍在實驗階段。
 settings-general-fk_settings-vive_emulation-title = Vive 模擬
@@ -888,9 +891,12 @@ onboarding-automatic_proportions-error_modal-confirm = 瞭解！
 
 home-no_trackers = 未偵測到或未分配追蹤器
 
+## Trackers Still On notification
+
+
 ## Status system
 
-status_system-StatusTrackerReset = 建議執行完全重置，因為有至少一個追蹤器尚未調整
+status_system-StatusTrackerReset = 有至少一個追蹤器尚未進行調整，建議執行完整重置。
 status_system-StatusSteamVRDisconnected =
     { $type ->
         [steamvr_feeder] 尚未連接 SlimeVR 資料迴送程式

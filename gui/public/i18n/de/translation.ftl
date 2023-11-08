@@ -349,7 +349,6 @@ settings-general-fk_settings-leg_fk = Beintracking
 settings-general-fk_settings-arm_fk = Arm-Tracking
 settings-general-fk_settings-arm_fk-description = Ändern Sie die Art und Weise, wie die Arme berechnet werden.
 settings-general-fk_settings-arm_fk-force_arms = Arme vom VR-Headset erzwingen
-settings-general-fk_settings-skeleton_settings = Skeletteinstellungen
 settings-general-fk_settings-skeleton_settings-description = Schalten Sie Skeletteinstellungen ein oder aus. Es wird empfohlen, diese eingeschaltet zu lassen.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Erweitertes Wirbelsäulen-Modell
 settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Erweitertes Pelvis-Modell
@@ -375,8 +374,8 @@ settings-general-gesture_control-taps =
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers =
     { $amount ->
-        [one] Tracker
-       *[other] Tracker
+        [one] 1 Tracker
+       *[other] { $amount } Tracker
     }
 settings-general-gesture_control-yawResetEnabled = Horizontaler Reset durch Antippen
 settings-general-gesture_control-yawResetDelay = Verzögerung für einen horizontalen Reset
@@ -634,7 +633,6 @@ onboarding-assignment_tutorial = So bereiten Sie einen SlimeVR-Tracker vor, bevo
 onboarding-assignment_tutorial-first_step = 1. Platzieren Sie einen Körperteilaufkleber (falls vorhanden) auf dem Tracker Ihrer Wahl
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Aufkleber
-onboarding-assignment_tutorial-second_step-continuation = Die Klettseite für die Verlängerung sollte in dieser Ausrichtung sein:
 onboarding-assignment_tutorial-done = Ich habe Aufkleber und Bänder angebracht!
 
 ## Tracker assignment setup
@@ -799,10 +797,6 @@ onboarding-automatic_proportions-check_height-title = Überprüfen Sie Ihre Kör
 onboarding-automatic_proportions-check_height-fetch_height = Ich stehe!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Unbekannt
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height = Ihre Körpergröße ist
-# Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height = Und Ihre Headset-Höhe ist
 onboarding-automatic_proportions-start_recording-title = Bereiten Sie sich auf ein paar Bewegungen vor
 onboarding-automatic_proportions-start_recording-description = Wir werden nun einige bestimmte Posen und Bewegungen aufnehmen. Diese werden im nächsten Bildschirm angezeigt. Bereiten Sie sicht darauf vor, wenn Sie den Knopf drücken!
 onboarding-automatic_proportions-start_recording-next = Aufnahme starten
