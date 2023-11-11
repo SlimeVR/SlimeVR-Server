@@ -82,7 +82,7 @@ pub fn create_tray<R: Runtime>(app: &tauri::AppHandle<R>) -> tauri::Result<()> {
 			Icon::Raw(include_bytes!("../icons/128x128.png").to_vec())
 		})
 		.on_menu_event(move |app, event| match event.id.as_ref() {
-			"quit" => app.exit(0),
+			"quit" => app.emit_all("try-close", "tray").unwrap(),
 			"toggle" => {
 				let i18n = app.state::<TrayTranslations>();
 				if let Some(window) = app.get_window("main") {

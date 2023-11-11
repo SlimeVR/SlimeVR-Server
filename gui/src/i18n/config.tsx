@@ -207,7 +207,10 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
       newI18n[key] = l10n.getString(key);
     });
     const promise = invoke('update_translations', { newI18n });
-    promise.catch((err) => error(err));
+    return () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      promise.then(() => {});
+    };
   }, [l10n]);
 
   if (l10n === null) {

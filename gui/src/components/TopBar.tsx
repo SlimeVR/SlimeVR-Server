@@ -24,6 +24,7 @@ import { invoke } from '@tauri-apps/api';
 import { useTrackers } from '@/hooks/tracker';
 import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
+import { listen } from '@tauri-apps/api/event';
 
 export function VersionTag() {
   return (
@@ -66,6 +67,26 @@ export function TopBar({
     await invoke('update_window_state');
     getCurrent().close();
   };
+  const tryCloseApp = async () => {
+    if (config?.connectedTrackersWarning && connectedIMUTrackers.length > 0) {
+      setConnectedTrackerWarning(true);
+    } else {
+      await closeApp();
+    }
+  };
+
+  useEffect(() => {
+    const unlisten = listen('try-close', async () => {
+      const window = getCurrent();
+      await window.show();
+      await window.setFocus();
+      await invoke('update_tray_text');
+      await tryCloseApp();
+    });
+    return () => {
+      unlisten.then((fn) => fn());
+    };
+  }, []);
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.ServerInfosRequest, new ServerInfosRequestT());
@@ -209,16 +230,7 @@ export function TopBar({
                 </div>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => {
-                    if (
-                      config?.connectedTrackersWarning &&
-                      connectedIMUTrackers.length > 0
-                    ) {
-                      setConnectedTrackerWarning(true);
-                    } else {
-                      closeApp();
-                    }
-                  }}
+                  onClick={tryCloseApp}
                 >
                   <CloseIcon></CloseIcon>
                 </div>
