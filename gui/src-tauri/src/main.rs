@@ -174,7 +174,9 @@ fn main() -> Result<()> {
 			update_window_state,
 			logging,
 			erroring,
-			warning
+			warning,
+			tray::update_translations,
+			tray::update_tray_text
 		])
 		.setup(move |app| {
 			let window_state =

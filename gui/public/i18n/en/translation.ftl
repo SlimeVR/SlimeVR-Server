@@ -860,3 +860,8 @@ status_system-StatusSteamVRDisconnected = { $type ->
     [steamvr_feeder] Currently not connected to the SlimeVR Feeder App.
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
+
+## Tray Menu
+tray_menu-show = Show
+tray_menu-hide = Hide
+tray_menu-quit = Quit
