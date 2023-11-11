@@ -1,7 +1,0 @@
-{
-  "tauri": {
-    "trayIcon": {
-      "iconPath": "icons/appleTrayIcon.png"
-    }
-  }
-}

@@ -73,11 +73,6 @@
         "timestampUrl": ""
       }
     },
-    "trayIcon": {
-      "iconAsTemplate": true,
-      "title": "SlimeVR",
-      "iconPath": "icons/128x128.png"
-    },
     "security": {
       "csp": null,
       "dangerousRemoteDomainIpcAccess": [
