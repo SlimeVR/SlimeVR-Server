@@ -19,6 +19,7 @@ use crate::util::{
 };
 
 mod state;
+mod tray;
 mod util;
 
 #[tauri::command]
@@ -196,6 +197,12 @@ fn main() -> Result<()> {
 			.build()?;
 			if window_state.is_old() {
 				window_state.update_window(&window, false)?;
+			}
+
+			#[cfg(desktop)]
+			{
+				let handle = app.handle();
+				tray::create_tray(&handle)?;
 			}
 
 			app.manage(Mutex::new(window_state));
