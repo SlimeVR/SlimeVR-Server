@@ -865,3 +865,14 @@ status_system-StatusTrackerError = The { $trackerName } tracker has an error.
 tray_menu-show = Show
 tray_menu-hide = Hide
 tray_menu-quit = Quit
+
+## First exit modal
+tray_or_exit_modal-title = What should the close button do?
+# Multiline text
+tray_or_exit_modal-description = This let's you choose if you want to exit or close to tray when pressing the close button.
+
+    You can later change this in the interface settings!
+tray_or_exit_modal-radio-exit = Exit on close
+tray_or_exit_modal-radio-tray = Close to the system tray
+tray_or_exit_modal-submit = Save
+tray_or_exit_modal-cancel = Cancel

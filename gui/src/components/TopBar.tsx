@@ -25,6 +25,7 @@ import { useTrackers } from '@/hooks/tracker';
 import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
 import { listen } from '@tauri-apps/api/event';
+import { TrayOrExitModal } from './TrayOrExitModal';
 
 export function VersionTag() {
   return (
@@ -55,19 +56,30 @@ export function TopBar({
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const { useConnectedIMUTrackers } = useTrackers();
   const connectedIMUTrackers = useConnectedIMUTrackers();
-  const { config } = useConfig();
+  const { config, setConfig } = useConfig();
   const version = useContext(VersionContext);
   const [localIp, setLocalIp] = useState<string | null>(null);
   const [showConnectedTrackersWarning, setConnectedTrackerWarning] =
     useState(false);
+  const [showTrayOrExitModal, setShowTrayOrExitModal] = useState(false);
   const doesMatchSettings = useMatch({
     path: '/settings/*',
   });
   const closeApp = async () => {
-    await invoke('update_window_state');
-    getCurrent().close();
+    if (config?.useTray) {
+      await getCurrent().hide();
+      await invoke('update_tray_text');
+    } else {
+      await invoke('update_window_state');
+      await getCurrent().close();
+    }
   };
   const tryCloseApp = async () => {
+    if (isTauri && config?.useTray === null) {
+      setShowTrayOrExitModal(true);
+      return;
+    }
+
     if (config?.connectedTrackersWarning && connectedIMUTrackers.length > 0) {
       setConnectedTrackerWarning(true);
     } else {
@@ -244,6 +256,30 @@ export function TopBar({
           </div>
         )}
       </div>
+      <TrayOrExitModal
+        isOpen={showTrayOrExitModal}
+        accept={async (useTray) => {
+          await setConfig({ useTray });
+          setShowTrayOrExitModal(false);
+
+          // Doing this in here just in case config doesn't get updated in time
+          if (
+            config?.connectedTrackersWarning &&
+            connectedIMUTrackers.length > 0
+          ) {
+            setConnectedTrackerWarning(true);
+          } else {
+            if (useTray) {
+              await getCurrent().hide();
+              await invoke('update_tray_text');
+            } else {
+              await invoke('update_window_state');
+              await getCurrent().close();
+            }
+          }
+        }}
+        cancel={() => setShowTrayOrExitModal(false)}
+      />
       <TrackersStillOnModal
         isOpen={showConnectedTrackersWarning}
         accept={() => closeApp()}

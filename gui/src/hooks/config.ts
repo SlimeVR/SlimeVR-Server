@@ -25,6 +25,7 @@ export interface Config {
   textSize: number;
   fonts: string[];
   advancedAssign: boolean;
+  useTray: boolean | null;
 }
 
 export interface ConfigContext {
@@ -46,6 +47,7 @@ export const defaultConfig = {
   textSize: 12,
   fonts: ['poppins'],
   advancedAssign: false,
+  useTray: null,
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {
