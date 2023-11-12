@@ -66,21 +66,22 @@ export function TopBar({
     path: '/settings/*',
   });
   const closeApp = async () => {
-    if (config?.useTray) {
-      await getCurrent().hide();
-      await invoke('update_tray_text');
-    } else {
-      await invoke('update_window_state');
-      await getCurrent().close();
-    }
+    await invoke('update_window_state');
+    await getCurrent().close();
   };
-  const tryCloseApp = async () => {
+  const tryCloseApp = async (dontTray = false) => {
     if (isTauri && config?.useTray === null) {
       setShowTrayOrExitModal(true);
       return;
     }
 
-    if (config?.connectedTrackersWarning && connectedIMUTrackers.length > 0) {
+    if (config?.useTray && !dontTray) {
+      await getCurrent().hide();
+      await invoke('update_tray_text');
+    } else if (
+      config?.connectedTrackersWarning &&
+      connectedIMUTrackers.length > 0
+    ) {
       setConnectedTrackerWarning(true);
     } else {
       await closeApp();
@@ -88,12 +89,13 @@ export function TopBar({
   };
 
   useEffect(() => {
+    // setConfig({useTray: null})
     const unlisten = listen('try-close', async () => {
       const window = getCurrent();
       await window.show();
       await window.setFocus();
       await invoke('update_tray_text');
-      await tryCloseApp();
+      await tryCloseApp(true);
     });
     return () => {
       unlisten.then((fn) => fn());
@@ -242,7 +244,7 @@ export function TopBar({
                 </div>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={tryCloseApp}
+                  onClick={() => tryCloseApp()}
                 >
                   <CloseIcon></CloseIcon>
                 </div>
@@ -263,19 +265,16 @@ export function TopBar({
           setShowTrayOrExitModal(false);
 
           // Doing this in here just in case config doesn't get updated in time
-          if (
+          if (useTray) {
+            await getCurrent().hide();
+            await invoke('update_tray_text');
+          } else if (
             config?.connectedTrackersWarning &&
             connectedIMUTrackers.length > 0
           ) {
             setConnectedTrackerWarning(true);
           } else {
-            if (useTray) {
-              await getCurrent().hide();
-              await invoke('update_tray_text');
-            } else {
-              await invoke('update_window_state');
-              await getCurrent().close();
-            }
+            await closeApp();
           }
         }}
         cancel={() => setShowTrayOrExitModal(false)}

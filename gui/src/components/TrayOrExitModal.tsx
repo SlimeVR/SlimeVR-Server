@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { Radio } from './commons/Radio';
 
 interface TrayOrExitForm {
-  exitType: number;
+  exitType: string;
 }
 
 export function TrayOrExitModal({
@@ -31,7 +31,7 @@ export function TrayOrExitModal({
   const { l10n } = useLocalization();
   const { control, handleSubmit } = useForm<TrayOrExitForm>({
     defaultValues: {
-      exitType: 0,
+      exitType: '0',
     },
   });
 
@@ -39,7 +39,7 @@ export function TrayOrExitModal({
     <BaseModal isOpen={isOpen} onRequestClose={cancel}>
       <form
         className="flex flex-col gap-3 w-[27rem]"
-        onSubmit={handleSubmit((form) => accept(form.exitType === 1))}
+        onSubmit={handleSubmit((form) => accept(form.exitType === '1'))}
       >
         <div className="flex flex-col items-center gap-3 fill-accent-background-20">
           <div className="flex flex-col items-center gap-2">
