@@ -723,7 +723,7 @@ onboarding-choose_mounting-manual_mounting-description = This will let you choos
 # Multiline text
 onboarding-choose_mounting-manual_modal-title = Are you sure you want to do
     the automatic mounting calibration?
-onboarding-choose_mounting-manual_modal-description = <b>We recommend the manual mounting calibration for new users</b>, as the automatic mounting calibration's poses can be hard to get right first and may require some practice.
+onboarding-choose_mounting-manual_modal-description = <b>The manual mounting calibration is recommended for new users</b>, as the automatic mounting calibration's poses can be hard to get right first and may require some practice.
 onboarding-choose_mounting-manual_modal-confirm = I'm sure of what I'm doing
 onboarding-choose_mounting-manual_modal-cancel = Cancel
 
