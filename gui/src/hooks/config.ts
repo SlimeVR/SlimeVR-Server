@@ -25,6 +25,7 @@ export interface Config {
   textSize: number;
   fonts: string[];
   advancedAssign: boolean;
+  doneManualMounting: boolean;
 }
 
 export interface ConfigContext {
@@ -34,7 +35,7 @@ export interface ConfigContext {
   loadConfig: () => Promise<Config | null>;
 }
 
-export const defaultConfig = {
+export const defaultConfig: Omit<Config, 'devSettings'> = {
   lang: 'en',
   debug: false,
   doneOnboarding: false,
@@ -46,6 +47,7 @@ export const defaultConfig = {
   textSize: 12,
   fonts: ['poppins'],
   advancedAssign: false,
+  doneManualMounting: false,
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {
