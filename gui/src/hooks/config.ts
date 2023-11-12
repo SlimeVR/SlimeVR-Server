@@ -26,6 +26,7 @@ export interface Config {
   fonts: string[];
   advancedAssign: boolean;
   useTray: boolean | null;
+  doneManualMounting: boolean;
 }
 
 export interface ConfigContext {
@@ -35,7 +36,7 @@ export interface ConfigContext {
   loadConfig: () => Promise<Config | null>;
 }
 
-export const defaultConfig = {
+export const defaultConfig: Omit<Config, 'devSettings'> = {
   lang: 'en',
   debug: false,
   doneOnboarding: false,
@@ -48,6 +49,7 @@ export const defaultConfig = {
   fonts: ['poppins'],
   advancedAssign: false,
   useTray: null,
+  doneManualMounting: false,
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {
