@@ -722,8 +722,8 @@ onboarding-choose_mounting-manual_mounting-label = Recommended
 onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting direction manually for each tracker
 # Multiline text
 onboarding-choose_mounting-manual_modal-title = Are you sure you want to do
-    automatic mounting?
-onboarding-choose_mounting-manual_modal-description = <b>You should first try doing manual mounting</b>, automatic mounting is quite hard to get right in its poses and requires some practice.
+    the automatic mounting calibration?
+onboarding-choose_mounting-manual_modal-description = <b>We recommend the manual mounting calibration for new users</b>, as the automatic mounting calibration's poses can be hard to get right first and may require some practice.
 onboarding-choose_mounting-manual_modal-confirm = I'm sure of what I'm doing
 onboarding-choose_mounting-manual_modal-cancel = Cancel
 
