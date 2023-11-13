@@ -421,9 +421,9 @@ settings-general-interface-feedback_sound-volume = Feedback sound volume
 settings-general-interface-connected_trackers_warning = Connected trackers warning
 settings-general-interface-connected_trackers_warning-description = This option will show a pop-up every time you try exiting SlimeVR while having one or more connected trackers. It reminds you to turn off your trackers when you are done to preserve battery life.
 settings-general-interface-connected_trackers_warning-label = Connected trackers warning on exit
-settings-general-interface-use_tray = Close to system tray
-settings-general-interface-use_tray-description = Let's you close the window without stopping the SlimeVR server so you can continue using it without having the GUI bothering you.
-settings-general-interface-use_tray-label = Close to system tray
+settings-general-interface-use_tray = Minimize to system tray
+settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bothering you.
+settings-general-interface-use_tray-label = Minimize to system tray
 
 ## Serial settings
 settings-serial = Serial Console
@@ -877,9 +877,9 @@ tray_menu-quit = Quit
 ## First exit modal
 tray_or_exit_modal-title = What should the close button do?
 # Multiline text
-tray_or_exit_modal-description = This let's you choose if you want to exit or close to tray when pressing the close button.
+tray_or_exit_modal-description = This lets you choose whether you want to exit the server or to minimize it to the tray when pressing the close button.
 
-    You can later change this in the interface settings!
+    You can change this later in the interface settings!
 tray_or_exit_modal-radio-exit = Exit on close
 tray_or_exit_modal-radio-tray = Minimize to system tray
 tray_or_exit_modal-submit = Save
