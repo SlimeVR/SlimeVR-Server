@@ -89,7 +89,6 @@ export function TopBar({
   };
 
   useEffect(() => {
-    // setConfig({useTray: null})
     const unlisten = listen('try-close', async () => {
       const window = getCurrent();
       await window.show();

@@ -881,6 +881,6 @@ tray_or_exit_modal-description = This let's you choose if you want to exit or cl
 
     You can later change this in the interface settings!
 tray_or_exit_modal-radio-exit = Exit on close
-tray_or_exit_modal-radio-tray = Close to the system tray
+tray_or_exit_modal-radio-tray = Minimize to system tray
 tray_or_exit_modal-submit = Save
 tray_or_exit_modal-cancel = Cancel
