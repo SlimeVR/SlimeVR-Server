@@ -8,6 +8,7 @@ export function Typography({
   whitespace = 'whitespace-normal',
   children,
   italic = false,
+  textAlign,
 }: {
   variant?:
     | 'main-title'
@@ -25,6 +26,13 @@ export function Typography({
     | 'whitespace-pre'
     | 'whitespace-pre-line'
     | 'whitespace-pre-wrap';
+  textAlign?:
+    | 'text-left'
+    | 'text-center'
+    | 'text-right'
+    | 'text-justify'
+    | 'text-start'
+    | 'text-end';
   children?: ReactNode;
 }) {
   const tag = useMemo(() => {
@@ -55,6 +63,7 @@ export function Typography({
         color === 'secondary' && 'text-background-30',
         typeof color === 'string' && color,
         whitespace,
+        textAlign,
         italic && 'italic',
       ]),
     },

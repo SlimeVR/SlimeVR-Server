@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '@/hooks/app';
 import { useOnboarding } from '@/hooks/onboarding';
@@ -13,12 +13,14 @@ import { MountingSelectionMenu } from './MountingSelectionMenu';
 import { useLocalization } from '@fluent/react';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { Quaternion } from 'three';
+import { useConfig } from '@/hooks/config';
 
 export function ManualMountingPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
+  const { setConfig } = useConfig();
 
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
 
@@ -26,6 +28,10 @@ export function ManualMountingPage() {
 
   const { useAssignedTrackers } = useTrackers();
   const assignedTrackers = useAssignedTrackers();
+
+  useEffect(() => {
+    setConfig({ doneManualMounting: true });
+  }, []);
 
   const trackerPartGrouped = useMemo(
     () =>
