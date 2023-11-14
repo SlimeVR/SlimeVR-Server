@@ -8,6 +8,7 @@ import dev.slimevr.config.serializers.BridgeConfigMapDeserializer;
 import dev.slimevr.config.serializers.TrackerConfigMapDeserializer;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerRole;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -140,6 +141,11 @@ public class VRConfig {
 
 	public OverlayConfig getOverlay() {
 		return overlay;
+	}
+
+	@Nullable
+	public TrackerConfig getTrackerByName(String name) {
+		return trackers.get(name);
 	}
 
 	public TrackerConfig getTracker(Tracker tracker) {

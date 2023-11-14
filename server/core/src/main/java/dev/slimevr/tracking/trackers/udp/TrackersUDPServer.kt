@@ -109,6 +109,11 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			}
 		} ?: run {
 			// No existing connection could be found, create a new one
+
+			// Check if it's a known device
+			VRServer.instance.configManager.vrConfig.getTrackerByName(handshake.macString?.let { "udp://$it" })
+				?: return
+
 			val connection = UDPDevice(
 				socketAddr,
 				addr,
