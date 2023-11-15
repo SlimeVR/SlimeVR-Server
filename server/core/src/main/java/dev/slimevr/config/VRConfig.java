@@ -8,10 +8,11 @@ import dev.slimevr.config.serializers.BridgeConfigMapDeserializer;
 import dev.slimevr.config.serializers.TrackerConfigMapDeserializer;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerRole;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 @JsonVersionedModel(
@@ -50,6 +51,8 @@ public class VRConfig {
 	@JsonDeserialize(using = BridgeConfigMapDeserializer.class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer.class)
 	private final Map<String, BridgeConfig> bridges = new HashMap<>();
+
+	private final Set<String> knownDevices = new HashSet<>();
 
 	private final OverlayConfig overlay = new OverlayConfig();
 
@@ -143,9 +146,12 @@ public class VRConfig {
 		return overlay;
 	}
 
-	@Nullable
-	public TrackerConfig getTrackerByName(String name) {
-		return trackers.get(name);
+	public Set<String> getKnownDevices() {
+		return knownDevices;
+	}
+
+	public boolean hasTrackerByName(String name) {
+		return trackers.containsKey(name);
 	}
 
 	public TrackerConfig getTracker(Tracker tracker) {
@@ -186,6 +192,14 @@ public class VRConfig {
 			bridges.put(bridgeKey, config);
 		}
 		return config;
+	}
+
+	public boolean isKnownDevice(String mac) {
+		return knownDevices.contains(mac);
+	}
+
+	public boolean addKnownDevice(String mac) {
+		return knownDevices.add(mac);
 	}
 }
 
