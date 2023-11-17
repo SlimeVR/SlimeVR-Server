@@ -16,7 +16,7 @@ import java.util.Set;
 
 
 @JsonVersionedModel(
-	currentVersion = "11", defaultDeserializeToVersion = "11", toCurrentConverterClass = CurrentVRConfigConverter.class
+	currentVersion = "12", defaultDeserializeToVersion = "12", toCurrentConverterClass = CurrentVRConfigConverter.class
 )
 public class VRConfig {
 
@@ -200,6 +200,10 @@ public class VRConfig {
 
 	public boolean addKnownDevice(String mac) {
 		return knownDevices.add(mac);
+	}
+
+	public boolean forgetKnownDevice(String mac) {
+		return knownDevices.remove(mac);
 	}
 }
 

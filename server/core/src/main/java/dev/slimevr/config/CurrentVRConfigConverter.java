@@ -8,6 +8,7 @@ import dev.slimevr.tracking.trackers.TrackerPosition;
 import io.eiren.util.logging.LogManager;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 
 public class CurrentVRConfigConverter implements VersionedModelConverter {
@@ -268,6 +269,21 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 							);
 						trackersNode.set("HMD", HMDNode);
 						modelData.set("trackers", trackersNode);
+					}
+				}
+			}
+			if (version < 12) {
+				ObjectNode oldTrackersNode = (ObjectNode) modelData.get("trackers");
+				if (oldTrackersNode != null) {
+					var fieldNamesIter = oldTrackersNode.fieldNames();
+					String trackerId;
+					final String macAddressRegex = "udp://((?:[a-zA-Z\\d]{2}:){5}[a-zA-Z\\d]{2})/0";
+					final Pattern pattern = Pattern.compile(macAddressRegex);
+					while (fieldNamesIter.hasNext()) {
+						trackerId = fieldNamesIter.next();
+						if (!trackerId.endsWith("0") || !trackerId.contains(":"))
+							continue;
+
 					}
 				}
 			}

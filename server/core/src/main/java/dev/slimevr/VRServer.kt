@@ -48,7 +48,6 @@ class VRServer @JvmOverloads constructor(
 	driverBridgeProvider: SteamBridgeProvider = { _, _ -> null },
 	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _ -> null },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
-	// configPath is used by VRWorkout, do not remove!
 	configPath: String,
 ) : Thread("VRServer") {
 	@JvmField

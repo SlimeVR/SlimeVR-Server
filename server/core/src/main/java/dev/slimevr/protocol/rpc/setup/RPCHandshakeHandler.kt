@@ -6,6 +6,7 @@ import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.setup.HandshakeListener
 import solarxr_protocol.rpc.AddUnknownDeviceRequest
+import solarxr_protocol.rpc.ForgetDeviceRequest
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
 import solarxr_protocol.rpc.UnknownDeviceHandshakeNotification
@@ -18,6 +19,11 @@ class RPCHandshakeHandler(
 		rpcHandler.registerPacketListener(
 			RpcMessage.AddUnknownDeviceRequest,
 			::onAddUnknownDevice
+		)
+
+		rpcHandler.registerPacketListener(
+			RpcMessage.ForgetDeviceRequest,
+			::onForgetDevice
 		)
 
 		this.api.server.handshakeHandler.addListener(this)
@@ -56,6 +62,17 @@ class RPCHandshakeHandler(
 		this.api.server.configManager.vrConfig.addKnownDevice(
 			req.macAddress() ?: return
 		)
+		this.api.server.configManager.saveConfig()
+	}
+
+	fun onForgetDevice(
+		conn: GenericConnection,
+		messageHeader: RpcMessageHeader,
+	) {
+		val req = messageHeader.message(ForgetDeviceRequest()) as ForgetDeviceRequest? ?: return
+
+		this.api.server.configManager.vrConfig.forgetKnownDevice(req.macAddress() ?: return)
+
 		this.api.server.configManager.saveConfig()
 	}
 }
