@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { BaseModal } from './commons/BaseModal';
 import { Typography } from './commons/Typography';
 import { Button } from './commons/Button';
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocation } from 'react-router-dom';
 import {
@@ -38,7 +38,7 @@ export function UnknownDeviceModal() {
     const timeout = setTimeout(() => {
       setOpen(0);
       setCurrentTracker(null);
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(timeout);
   }, [open]);
@@ -56,9 +56,19 @@ export function UnknownDeviceModal() {
             <Typography variant="main-title">
               {l10n.getString('unknown_device-modal-title')}
             </Typography>
-            <Typography variant="standard">
-              {l10n.getString('unknown_device_on-modal-description')}
-            </Typography>
+            <Localized
+              id="unknown_device-modal-description"
+              elems={{ b: <b></b> }}
+              vars={{ deviceId: currentTracker ?? 'ERROR' }}
+            >
+              <Typography
+                variant="standard"
+                textAlign="text-center"
+                whitespace="whitespace-pre-line"
+              >
+                There is a new device in here!
+              </Typography>
+            </Localized>
           </div>
         </div>
 

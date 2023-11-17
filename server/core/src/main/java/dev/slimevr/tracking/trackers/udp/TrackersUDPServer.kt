@@ -59,6 +59,15 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		val addr = handshakePacket.address
 		val socketAddr = handshakePacket.socketAddress
 
+		// Check if it's a known device
+		VRServer.instance.configManager.vrConfig.let { vrConfig ->
+			if (vrConfig.isKnownDevice(handshake.macString)) return@let
+			val mac = handshake.macString ?: return@let
+
+			VRServer.instance.handshakeHandler.sendUnknownHandshake(mac)
+			return
+		}
+
 		// Get a connection either by an existing one, or by creating a new one
 		val connection: UDPDevice = synchronized(connections) {
 			connectionsByMAC[handshake.macString]?.apply {
@@ -109,21 +118,6 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			}
 		} ?: run {
 			// No existing connection could be found, create a new one
-
-			// Check if it's a known device
-			VRServer.instance.configManager.vrConfig.let { vrConfig ->
-				if (vrConfig.isKnownDevice(handshake.macString)) return@let
-				val mac = handshake.macString ?: return@let
-
-				if (vrConfig.hasTrackerByName(mac.let { "udp://$it/0" })) {
-					vrConfig.addKnownDevice(mac)
-					VRServer.instance.configManager.saveConfig()
-					return@let
-				}
-
-				VRServer.instance.handshakeHandler.sendUnknownHandshake(mac)
-				return
-			}
 
 			val connection = UDPDevice(
 				socketAddr,
@@ -460,6 +454,24 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 
 	fun getConnections(): List<UDPDevice?> {
 		return connections
+	}
+
+	fun disconnectDevice(device: UDPDevice) {
+		synchronized(connections) {
+			connections.remove(device)
+		}
+		synchronized(connectionsByAddress) {
+			connectionsByAddress.filter { (_, dev) -> dev.id == device.id }.keys.forEach(
+				connectionsByAddress::remove
+			)
+		}
+		device.trackers.forEach { (_, tracker) ->
+			tracker.status = TrackerStatus.DISCONNECTED
+		}
+
+		LogManager.info(
+			"[TrackerServer] Forcefully disconnected ${device.hardwareIdentifier} device."
+		)
 	}
 
 	companion object {

@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import {
   AssignTrackerRequestT,
   BodyPart,
+  ForgetDeviceRequestT,
   ImuType,
   RpcMessage,
 } from 'solarxr-protocol';
@@ -149,6 +150,18 @@ export function TrackerSettingsPage() {
     }
   }, [firstLoad]);
 
+  const macAddress = useMemo(() => {
+    if (
+      /(?:[a-zA-Z\d]{2}:){5}[a-zA-Z\d]{2}/.test(
+        (tracker?.device?.hardwareInfo?.hardwareIdentifier as string | null) ??
+          ''
+      )
+    ) {
+      return tracker?.device?.hardwareInfo?.hardwareIdentifier as string;
+    }
+    return null;
+  }, [tracker?.device?.hardwareInfo?.hardwareIdentifier]);
+
   return (
     <form
       className="h-full overflow-y-auto"
@@ -165,7 +178,7 @@ export function TrackerSettingsPage() {
         onClose={() => setSelectRotation(false)}
         onDirectionSelected={onDirectionSelected}
       ></MountingSelectionMenu>
-      <div className="flex gap-2 md:h-full max-md:flex-wrap md:flex-row xs:flex-col mobile:flex-col">
+      <div className="flex gap-2 max-md:flex-wrap md:flex-row xs:flex-col mobile:flex-col">
         <div className="flex flex-col w-full md:max-w-xs gap-2">
           {tracker && (
             <TrackerCard
@@ -404,6 +417,28 @@ export function TrackerSettingsPage() {
               label="Tracker name"
             ></Input>
           </div>
+          {macAddress && (
+            <div className="flex flex-col gap-2 w-full mt-3">
+              <Typography variant="section-title">
+                {l10n.getString('tracker-settings-forget')}
+              </Typography>
+              <Typography color="secondary">
+                {l10n.getString('tracker-settings-forget-description')}
+              </Typography>
+              <Button
+                variant="secondary"
+                className="!bg-status-critical  self-start"
+                onClick={() =>
+                  sendRPCPacket(
+                    RpcMessage.ForgetDeviceRequest,
+                    new ForgetDeviceRequestT(macAddress)
+                  )
+                }
+              >
+                {l10n.getString('tracker-settings-forget-label')}
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </form>

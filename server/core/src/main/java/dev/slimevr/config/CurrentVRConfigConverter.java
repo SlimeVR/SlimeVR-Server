@@ -281,9 +281,11 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					final Pattern pattern = Pattern.compile(macAddressRegex);
 					while (fieldNamesIter.hasNext()) {
 						trackerId = fieldNamesIter.next();
-						if (!trackerId.endsWith("0") || !trackerId.contains(":"))
+						var matcher = pattern.matcher(trackerId);
+						if (!matcher.find())
 							continue;
 
+						modelData.withArray("knownDevices").add(matcher.group(1));
 					}
 				}
 			}

@@ -5,6 +5,7 @@ import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.setup.HandshakeListener
+import dev.slimevr.tracking.trackers.udp.UDPDevice
 import solarxr_protocol.rpc.AddUnknownDeviceRequest
 import solarxr_protocol.rpc.ForgetDeviceRequest
 import solarxr_protocol.rpc.RpcMessage
@@ -69,10 +70,17 @@ class RPCHandshakeHandler(
 		conn: GenericConnection,
 		messageHeader: RpcMessageHeader,
 	) {
-		val req = messageHeader.message(ForgetDeviceRequest()) as ForgetDeviceRequest? ?: return
+		val req = messageHeader.message(ForgetDeviceRequest()) as ForgetDeviceRequest?
+			?: return
 
-		this.api.server.configManager.vrConfig.forgetKnownDevice(req.macAddress() ?: return)
-
+		this.api.server.configManager.vrConfig.forgetKnownDevice(
+			req.macAddress() ?: return
+		)
+		val device =
+			this.api.server.deviceManager.devices.find { it.hardwareIdentifier == req.macAddress() }
+		if (device != null && device is UDPDevice) {
+			this.api.server.trackersServer.disconnectDevice(device)
+		}
 		this.api.server.configManager.saveConfig()
 	}
 }
