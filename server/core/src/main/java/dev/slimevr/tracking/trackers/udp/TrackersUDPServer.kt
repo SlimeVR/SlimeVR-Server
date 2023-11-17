@@ -121,6 +121,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					return@let
 				}
 
+				VRServer.instance.handshakeHandler.sendUnknownHandshake(mac)
 				return
 			}
 
