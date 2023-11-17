@@ -456,6 +456,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		return connections
 	}
 
+	// FIXME: for some reason it ends up disconnecting after 30 seconds have passed instead of immediately
 	fun disconnectDevice(device: UDPDevice) {
 		synchronized(connections) {
 			connections.remove(device)
