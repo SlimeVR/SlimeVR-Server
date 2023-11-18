@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = Preview
 widget-imu_visualizer-rotation_hide = Ocultar
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = Previsualización del esqueleto
+widget-skeleton_visualizer-hide = Ocultar
+
 ## Tracker status
 
 tracker-status-none = Sin estado
@@ -348,9 +353,18 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = El clip del suel
 settings-general-fk_settings-leg_tweak-toe_snap-description = El encajado de dedos intenta adivinar la rotación de los pies si sus respectivos trackers no están en uso.
 settings-general-fk_settings-leg_tweak-foot_plant-description = El plantado del pie rota los pies para que sean paralelos con el suelo al entrar en contacto.
 settings-general-fk_settings-leg_fk = Tracking de piernas
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Activar reinicio de montura para el pie mediante el pararse de puntillas.
+settings-general-fk_settings-leg_fk-reset_mounting_feet = Reinicio de montura de pies
 settings-general-fk_settings-arm_fk = Trackeo de brazos
 settings-general-fk_settings-arm_fk-description = Cambia cómo el movimiento de los brazos es detectado.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
+settings-general-fk_settings-arm_fk-reset_mode-description = Cambiar que pose de brazos es esperada para el reinicio de montura.
+settings-general-fk_settings-arm_fk-back = Detrás
+settings-general-fk_settings-arm_fk-back-description = El modo predeterminado, con el brazo yendo por detrás y el antebrazo yendo para adelante.
+settings-general-fk_settings-arm_fk-tpose_up = T-pose (arriba)
+settings-general-fk_settings-arm_fk-tpose_down = T-pose (abajo)
+settings-general-fk_settings-arm_fk-forward = Delante
+settings-general-fk_settings-arm_fk-forward-description = Espera que tus brazos estén 90 grados para delante. Útil para VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Interruptores del esqueleto
 settings-general-fk_settings-skeleton_settings-description = Habilita o deshabilita los ajustes de esqueleto. Es recomendado dejar estos ajustes habilitados.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Modelo extendido de la columna
@@ -363,7 +377,8 @@ settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Im
 settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Imputar de la cadera al pecho hasta las piernas
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Imputar de la cadera a la cintura hasta las piernas
 settings-general-fk_settings-skeleton_settings-interp_hip_legs = Promediar la rotación del eje vertical y horizontal de la cadera con la de las piernas
-settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Promediar la rotación del eje vertical y horizontal de la rodilla con la de los tobillos
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Promediar la rotación del eje vertical y horizontal de los trackers de las rodillas con la de los tobillos
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Promediar la rotación del eje vertical y horizontal de las rodillas con la de los tobillos
 settings-general-fk_settings-self_localization-title = Modo mocap
 settings-general-fk_settings-self_localization-description = El modo mocap permite al esqueleto rastrear de forma aproximada su propia posición sin un casco o otros sensores. Nota que esto requiere que los trackers en el pie y cabeza estén y sigue siendo experimental.
 settings-general-fk_settings-vive_emulation-title = Vive emulation
@@ -431,6 +446,9 @@ settings-general-interface-feedback_sound = Sonido de feedback
 settings-general-interface-feedback_sound-description = Esta opción reproducirá un sonido cuando se realice un reinicio.
 settings-general-interface-feedback_sound-label = Sonido de feedback
 settings-general-interface-feedback_sound-volume = Volumen del sonido de feedback
+settings-general-interface-connected_trackers_warning = Advertencia de trackers conectados
+settings-general-interface-connected_trackers_warning-description = Esta opción hará que aparezca un pop-up cada vez que intentas salir de SlimeVR mientras tienes uno o más trackers conectados. Te recuerda de apagar tus trackers cuando ya paraste de usarlos así preservas la duración de la batería.
+settings-general-interface-connected_trackers_warning-label = Advertencia de trackers conectados al salir
 
 ## Serial settings
 
@@ -808,6 +826,9 @@ onboarding-choose_proportions-manual_proportions = Proporciones manuales
 onboarding-choose_proportions-manual_proportions-subtitle = Para toques pequeños
 onboarding-choose_proportions-manual_proportions-description = Esto te permitirá ajustar tus proporciones manualmente de forma directa
 onboarding-choose_proportions-export = Exportar proporciones
+onboarding-choose_proportions-import = Importar proporciones
+onboarding-choose_proportions-import-success = Importado
+onboarding-choose_proportions-import-failed = Error
 onboarding-choose_proportions-file_type = Archivo de proporciones del cuerpo
 
 ## Tracker manual proportions setup
@@ -887,6 +908,15 @@ onboarding-automatic_proportions-error_modal-confirm = ¡Entendido!
 ## Home
 
 home-no_trackers = No hay sensores detectados o asignados
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = Los trackers siguen encendidos
+trackers_still_on-modal-description =
+    Uno o más trackers siguen encendidos.
+    ¿Estás seguro que quieres salir de SlimeVR?
+trackers_still_on-modal-confirm = Salir de SlimeVR
+trackers_still_on-modal-cancel = Espera un momento...
 
 ## Status system
 

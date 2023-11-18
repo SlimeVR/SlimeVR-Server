@@ -253,11 +253,6 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 								}
 							} else {
 								conn.timedOut = false
-								for (value in conn.trackers.values) {
-									if (value.status == TrackerStatus.DISCONNECTED) {
-										value.status = TrackerStatus.OK
-									}
-								}
 							}
 							if (conn.serialBuffer.isNotEmpty() &&
 								conn.lastSerialUpdate + 500L < System.currentTimeMillis()

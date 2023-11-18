@@ -351,6 +351,7 @@ settings-general-fk_settings-leg_fk = 발 트래킹
 settings-general-fk_settings-arm_fk = 팔 운동학
 settings-general-fk_settings-arm_fk-description = 팔이 추적되는 방식을 변경할 수 있어요.
 settings-general-fk_settings-arm_fk-force_arms = 팔을 HMD에서만 받아오기
+settings-general-fk_settings-arm_fk-reset_mode-description = 착용 방향 정렬에 사용되는 팔 자세 설정
 settings-general-fk_settings-skeleton_settings-description = 골격 설정을 설정하거나 해제해요. 이것들은 켜두는 게 좋아요.
 settings-general-fk_settings-skeleton_settings-ratios = 골격 비율
 settings-general-fk_settings-self_localization-title = Mocap 모드
@@ -641,8 +642,6 @@ onboarding-assignment_tutorial = 슬라임 트래커를 착용하기 전에 준�
 onboarding-assignment_tutorial-first_step = 1. 신체 부위가 적힌 스티커를 가지고 있다면 트래커에 붙여보세요
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = 스티커
-onboarding-assignment_tutorial-second_step = 2. 스트랩의 벨크로 테이프 쪽을 그림과 같은 방향으로 유지하면서 스트랩을 트래커에 끼우세요:
-onboarding-assignment_tutorial-second_step-continuation = 익스텐션 트래커의 벨크로 테이프는 다음과 같은 방향으로 끼워주세요:
 onboarding-assignment_tutorial-done = 스트랩과 스티커를 트래커에 잘 부착했어요!
 
 ## Tracker assignment setup
