@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { BaseModal } from './commons/BaseModal';
 import { Typography } from './commons/Typography';
 import { Button } from './commons/Button';
@@ -10,6 +10,7 @@ import {
   RpcMessage,
   UnknownDeviceHandshakeNotificationT,
 } from 'solarxr-protocol';
+import { useDebouncedEffect } from '@/hooks/timeout';
 
 export function UnknownDeviceModal() {
   const { l10n } = useLocalization();
@@ -34,14 +35,14 @@ export function UnknownDeviceModal() {
     }
   );
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
+  useDebouncedEffect(
+    () => {
       setOpen(0);
       setCurrentTracker(null);
-    }, 3000);
-
-    return () => clearTimeout(timeout);
-  }, [open]);
+    },
+    [open],
+    3000
+  );
 
   const closeModal = () => {
     setCurrentTracker(null);
