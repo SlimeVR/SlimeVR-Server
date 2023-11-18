@@ -8,11 +8,15 @@ public class KeybindingsConfig {
 
 	private String mountingResetBinding = "CTRL+ALT+SHIFT+I";
 
+	private String pauseTrackingBinding = "CTRL+ALT+SHIFT+O";
+
 	private long fullResetDelay = 0L;
 
 	private long yawResetDelay = 0L;
 
 	private long mountingResetDelay = 0L;
+
+	private long pauseTrackingDelay = 0L;
 
 
 	public KeybindingsConfig() {
@@ -28,6 +32,10 @@ public class KeybindingsConfig {
 
 	public String getMountingResetBinding() {
 		return mountingResetBinding;
+	}
+
+	public String getPauseTrackingBinding() {
+		return pauseTrackingBinding;
 	}
 
 	public long getFullResetDelay() {
@@ -52,5 +60,13 @@ public class KeybindingsConfig {
 
 	public void setMountingResetDelay(long delay) {
 		mountingResetDelay = delay;
+	}
+
+	public long getPauseTrackingDelay() {
+		return pauseTrackingDelay;
+	}
+
+	public void setPauseTrackingDelay(long delay) {
+		pauseTrackingDelay = delay;
 	}
 }
