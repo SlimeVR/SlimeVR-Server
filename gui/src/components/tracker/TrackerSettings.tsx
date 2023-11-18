@@ -32,6 +32,7 @@ import { IMUVisualizerWidget } from '@/components/widgets/IMUVisualizerWidget';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
 import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';
+import { useAppContext } from '@/hooks/app';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -65,6 +66,7 @@ export function TrackerSettingsPage() {
     },
     reValidateMode: 'onSubmit',
   });
+  const { dispatch } = useAppContext();
   const { trackerName, allowDriftCompensation } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
@@ -125,13 +127,7 @@ export function TrackerSettingsPage() {
     updateTrackerSettings();
   };
 
-  useDebouncedEffect(
-    () => {
-      updateTrackerSettings();
-    },
-    [trackerName],
-    1000
-  );
+  useDebouncedEffect(() => updateTrackerSettings(), [trackerName], 1000);
 
   useEffect(() => {
     updateTrackerSettings();
@@ -428,12 +424,13 @@ export function TrackerSettingsPage() {
               <Button
                 variant="secondary"
                 className="!bg-status-critical  self-start"
-                onClick={() =>
+                onClick={() => {
                   sendRPCPacket(
                     RpcMessage.ForgetDeviceRequest,
                     new ForgetDeviceRequestT(macAddress)
-                  )
-                }
+                  );
+                  dispatch({ type: 'ignoreTracker', value: macAddress });
+                }}
               >
                 {l10n.getString('tracker-settings-forget-label')}
               </Button>
