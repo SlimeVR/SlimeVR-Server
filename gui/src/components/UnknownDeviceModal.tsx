@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { BaseModal } from './commons/BaseModal';
 import { Typography } from './commons/Typography';
 import { Button } from './commons/Button';
@@ -11,12 +11,13 @@ import {
   UnknownDeviceHandshakeNotificationT,
 } from 'solarxr-protocol';
 import { useDebouncedEffect } from '@/hooks/timeout';
+import { useAppContext } from '@/hooks/app';
 
 export function UnknownDeviceModal() {
   const { l10n } = useLocalization();
   const [open, setOpen] = useState(0);
   const { pathname } = useLocation();
-  const ignoredTrackers = useRef(new Set());
+  const { state, dispatch } = useAppContext();
   const [currentTracker, setCurrentTracker] = useState<string | null>(null);
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
 
@@ -25,7 +26,7 @@ export function UnknownDeviceModal() {
     ({ macAddress }: UnknownDeviceHandshakeNotificationT) => {
       if (
         ['/onboarding/connect-trackers'].includes(pathname) ||
-        ignoredTrackers.current.has(macAddress) ||
+        state.ignoredTrackers.has(macAddress as string) ||
         (currentTracker !== null && currentTracker !== macAddress)
       )
         return;
@@ -88,7 +89,10 @@ export function UnknownDeviceModal() {
         <Button
           variant="tertiary"
           onClick={() => {
-            ignoredTrackers.current.add(currentTracker);
+            dispatch({
+              type: 'ignoreTracker',
+              value: currentTracker as string,
+            });
             closeModal();
           }}
         >
