@@ -142,6 +142,9 @@ widget-imu_visualizer-rotation_raw = Sin filtrar
 widget-imu_visualizer-rotation_preview = Previsualización
 widget-imu_visualizer-rotation_hide = Ocultar
 
+## Widget: Skeleton Visualizer
+
+
 ## Tracker status
 
 tracker-status-none = Sin estatus
@@ -275,6 +278,8 @@ settings-sidebar-interface = Interfaz
 settings-sidebar-osc_router = Router OSC
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
+settings-sidebar-appearance = Apariencia
+settings-sidebar-notifications = Notificaciones
 
 ## SteamVR settings
 
@@ -326,12 +331,32 @@ settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Corrección del patinaje
+settings-general-fk_settings-leg_tweak-foot_plant = Planta del pie
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Intensidad de la corrección del patinaje
 settings-general-fk_settings-leg_fk = Tracking de piernas
 settings-general-fk_settings-arm_fk = Tracking de brazos
 settings-general-fk_settings-arm_fk-description = Forzar el seguimiento de los brazos desde el HMD incluso si hay datos de posición de la mano disponibles.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
+settings-general-fk_settings-arm_fk-back = Parte posterior del brazo
+settings-general-fk_settings-arm_fk-back-description = El modo predeterminado, con la parte superior de los brazos hacia atrás y la parte inferior hacia adelante.
+settings-general-fk_settings-arm_fk-tpose_up = T-pose (arriba)
+settings-general-fk_settings-arm_fk-tpose_up-description = Se espera que tus brazos esten relajados, perpendicular a tu cuerpo durante el reinicio completo y 90 grados respecto a tu cuerpo durante el reinicio de montaje.
+settings-general-fk_settings-arm_fk-tpose_down = T-pose (abajo)
+settings-general-fk_settings-arm_fk-tpose_down-description = Se espera que tus brazos estén a 90 grados respecto a tu cuerpo durante el reinicio completo y relajados, perpendicular a tu cuerpo durante el reinicio del montaje.
+settings-general-fk_settings-arm_fk-forward-description = Espera que tus brazos estén 90 grados hacia adelante. Útil para VTubing.
 settings-general-fk_settings-skeleton_settings-description = Activa o desactiva la configuración del esqueleto. Se recomienda dejar esta opción activada.
+settings-general-fk_settings-skeleton_settings-extended_spine_model = Modelo de columna extendida
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Modelo de pelvis extendida
+settings-general-fk_settings-skeleton_settings-extended_knees_model = Modelo de rodilla extendida
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Atribuye la cintura desde el pecho hasta la cadera
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Atribuye la cintura desde el pecho hasta las piernas
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Atribuye la cadera desde el pecho hasta las piernas
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Atribuye la cadera desde la cintura hasta las piernas
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Promedia el balanceo de la cadera con el de las piernas
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Promedia el balanceo de los trackers de rodilla con el de los tobillos.
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Promedia el balanceo de las rodillas con la de los tobillos
+settings-general-fk_settings-self_localization-title = Modo Captura de movimiento
+settings-general-fk_settings-self_localization-description = El modo captura de movimiento permite al esqueleto seguir aproximadamente tu posición sin auriculares ni otros trackers. Ten en cuenta que esto requiere trrackers de pies y cabeza para funcionar y que aún está en fase experimental.
 settings-general-fk_settings-vive_emulation-title = Emulación Vive
 settings-general-fk_settings-vive_emulation-description = Emula los problemas de cintura que lo Vive trackers producen. Es una broma y produce peor tracking.
 settings-general-fk_settings-vive_emulation-label = Habilitar emulación Vive
@@ -340,27 +365,59 @@ settings-general-fk_settings-vive_emulation-label = Habilitar emulación Vive
 
 settings-general-gesture_control = Control de gestos
 settings-general-gesture_control-subtitle = Reinicio basado en toques
+settings-general-gesture_control-fullResetEnabled = Activa toque para reinicio completo
+settings-general-gesture_control-fullResetDelay = Retraso de reinicio completo
+settings-general-gesture_control-fullResetTaps = Da toquecitos para reinicio completo
+settings-general-gesture_control-mountingResetEnabled = Activa toquecitos para reiniciar montaje
+settings-general-gesture_control-mountingResetDelay = Reinicio de montaje retrasado
+settings-general-gesture_control-mountingResetTaps = Da toquecitos para reinicio de montaje
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = Trackers por encima del limite
+settings-general-gesture_control-numberTrackersOverThreshold-description = Aumenta este valor si la detección de toqueteo no funciona. No lo aumentes por encima de lo necesario para que la detección de toques funcione, ya que crearía más falsos positivos
 
 ## Appearance settings
 
+settings-interface-appearance = Apariencia
 settings-general-interface-dev_mode = Modo de desarrollador
+settings-general-interface-dev_mode-description = Este modo puede ser útil si necesitas datos en profundidad o para interactuar con los trackers conectados a un nivel más avanzado
 settings-general-interface-dev_mode-label = Modo de desarrollador
 settings-general-interface-theme = Temas
 settings-general-interface-lang = Seleccionar idioma
 settings-general-interface-lang-description = Cambiar el idioma predeterminado que deseas utilizar.
 settings-general-interface-lang-placeholder = Seleccionar el idioma que desea utilizar
+settings-interface-appearance-font-description = Esto cambia la fuente utilizada por la interfaz
+settings-interface-appearance-font-placeholder = Fuente predeterminada
+settings-interface-appearance-font-os_font = Fuente SO
+settings-interface-appearance-font-slime_font = Fuente predeterminada
+settings-interface-appearance-font_size = Escala de la fuente base
+settings-interface-appearance-font_size-description = Esto afecta al tamaño de la fuente de toda la interfaz excepto este panel de configuración
 
 ## Notification settings
 
+settings-interface-notifications = Notificaciones
 settings-general-interface-serial_detection = Detección de dispositivos seriales
+settings-general-interface-serial_detection-description = Esta opción mostrará una ventana emergente cada vez que conectes un nuevo dispositivo serie que podría ser un tracker. Ayuda a mejorar el proceso de configuración de un tracker.
 settings-general-interface-serial_detection-label = Detección de dispositivos seriales
+settings-general-interface-feedback_sound = Sonido de feedback
+settings-general-interface-feedback_sound-description = Esta opción reproducirá un sonido cuando se activa un reinicio
+settings-general-interface-feedback_sound-label = Sonido de feedback
+settings-general-interface-feedback_sound-volume = Volumen del sonido de feedback
 
 ## Serial settings
 
 settings-serial = Consola serial
+# This cares about multilines
+settings-serial-description =
+    Esta es una fuente de información en vivo para la comunicación serial.
+    Puede ser útil si necesitas saber si el firmware está fallando.
 settings-serial-connection_lost = Conexión a puerto serial perdida, Reconectando...
 settings-serial-reboot = Reiniciar
 settings-serial-factory_reset = Restablecimiento de fábrica
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>Advertencia:</b> Esto restablecerá la configuración de fábrica del tracker.
+    Esto significa que los ajustes de Wi-Fi y calibración <b>se perderán</b>.
 settings-serial-factory_reset-warning-ok = Sé lo que estoy haciendo
 settings-serial-factory_reset-warning-cancel = Cancelar
 settings-serial-get_infos = Obtener información
@@ -370,6 +427,7 @@ settings-serial-auto_dropdown_item = Automático
 ## OSC router settings
 
 settings-osc-router-enable = Habilitar
+settings-osc-router-enable-description = Activar el reenvío de mensajes
 settings-osc-router-enable-label = Habilitar
 settings-osc-router-network = Puertos de red
 settings-osc-router-network-address = Dirección de red
@@ -378,17 +436,21 @@ settings-osc-router-network-address-placeholder = Dirección IPV4
 ## OSC VRChat settings
 
 settings-osc-vrchat-enable = Habilitar
+settings-osc-vrchat-enable-description = Alternar el envío y la recepción de datos
 settings-osc-vrchat-enable-label = Habilitar
 settings-osc-vrchat-network = Puertos de red
 settings-osc-vrchat-network-address = Dirección de red
+settings-osc-vrchat-network-address-placeholder = Dirección IP de VRChat
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-chest = Pecho
 settings-osc-vrchat-network-trackers-hip = Cadera
 settings-osc-vrchat-network-trackers-knees = Rodillas
 settings-osc-vrchat-network-trackers-feet = Pies
+settings-osc-vrchat-network-trackers-elbows = Codos
 
 ## VMC OSC settings
 
+settings-osc-vmc = Captura de movimiento virtual
 settings-osc-vmc-enable = Habilitar
 settings-osc-vmc-enable-label = Habilitar
 settings-osc-vmc-network = Puertos de red
@@ -402,6 +464,7 @@ settings-osc-vmc-anchor_hip-label = Anclar a la cadera
 
 onboarding-skip = Omitir configuración
 onboarding-continue = Continuar
+onboarding-wip = Trabajo en progreso
 onboarding-previous_step = Paso anterior
 onboarding-setup_warning-skip = Omitir configuración
 onboarding-setup_warning-cancel = Continuar con la configuración
@@ -409,12 +472,24 @@ onboarding-setup_warning-cancel = Continuar con la configuración
 ## Wi-Fi setup
 
 onboarding-wifi_creds-back = Volver a la introducción
+onboarding-wifi_creds = Introduce credenciales de Wi-Fi
+# This cares about multilines
+onboarding-wifi_creds-description =
+    Los trackers utilizarán estas credenciales para conectarse de forma inalámbrica.
+    Por favor, utiliza las credenciales a las que está conectado actualmente.
 onboarding-wifi_creds-skip = Omitir configuración Wi-Fi
 onboarding-wifi_creds-submit = ¡Enviar!
+onboarding-wifi_creds-ssid =
+    .label = Nombre Wi-Fi
+    .placeholder = Introduce nombre de Wi-Fi
+onboarding-wifi_creds-password =
+    .label = Contraseña
+    .placeholder = Introduce contraseña
 
 ## Mounting setup
 
 onboarding-reset_tutorial = Tutorial para resetteo de trackers
+onboarding-reset_tutorial-explanation = Mientras usas tus trackers, es posible que se desalineen debido al balanceo de la IMU o porque es posible que se hayan movido físicamente. Tienes varias formas de solucionar este problema.
 onboarding-reset_tutorial-skip = Omitir paso
 
 ## Setup start
@@ -424,48 +499,90 @@ onboarding-home-start = ¡Vamos a prepararnos!
 
 ## Enter VR part of setup
 
+onboarding-enter_vr-back = Volver a la asignación del tracker
 onboarding-enter_vr-title = ¡Hora de entrar en VR!
+onboarding-enter_vr-description = ¡Ponte todos tus trackers y luego entra a la realidad virtual!
 onboarding-enter_vr-ready = Estoy listo
 
 ## Setup done
 
 onboarding-done-title = ¡Todo listo!
+onboarding-done-description = Disfruta de la experiencia de full-body tracking
 onboarding-done-close = Cerrar configuración
 
 ## Tracker connection setup
 
+onboarding-connect_tracker-back = Volver a credenciales de Wi-Fi
 onboarding-connect_tracker-title = Conectar trackers
 onboarding-connect_tracker-description-p0 = ¡Ahora a la parte divertida, conectando todos los trackers!
+onboarding-connect_tracker-description-p1 = Simplemente conecta todos los que aún no están conectados, a través de un puerto USB.
 onboarding-connect_tracker-issue-serial = ¡Tengo problemas para conectarme!
+onboarding-connect_tracker-usb = Tracker USB
 onboarding-connect_tracker-connection_status-none = Buscando trackers
 onboarding-connect_tracker-connection_status-serial_init = Conectándose al dispositivo serial
 onboarding-connect_tracker-connection_status-provisioning = Enviando credenciales Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Intentando conectarse a una red Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Buscando servidor
+onboarding-connect_tracker-connection_status-connection_error = No se puede conectar al Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = No se pudo encontrar el servidor
+onboarding-connect_tracker-connection_status-done = Conectado al Server
+onboarding-connect_tracker-next = He conectado todos mis trackers
 
 ## Tracker calibration tutorial
 
 onboarding-calibration_tutorial = Tutorial de calibración de IMU
 onboarding-calibration_tutorial-subtitle = ¡Esto ayudará a reducir el drift de los trackers!
 onboarding-calibration_tutorial-calibrate = Mis trackers estan en una superficie plana
+onboarding-calibration_tutorial-status-waiting = Esperando por ti
 onboarding-calibration_tutorial-status-calibrating = Calibrando
 onboarding-calibration_tutorial-status-success = ¡Bien!
 onboarding-calibration_tutorial-status-error = El tracker se ha movido
 
 ## Tracker assignment tutorial
 
+onboarding-assignment_tutorial = Cómo preparar un Slime Tracker antes de ponértelo
+onboarding-assignment_tutorial-first_step = 1. Coloca una pegatina de parte del cuerpo (si tienes una) en el rastreador según tu elección.
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Sticker
+onboarding-assignment_tutorial-second_step-v2 = 2. Conecta la correa con su tracker, manteniendo el lado de velcro de la correa orientado en la misma dirección que la cara de Slime de su rastreador:
+onboarding-assignment_tutorial-second_step-continuation-v2 = El lado del velcro de la extensión debe quedar hacia arriba como en la siguiente imagen:
+onboarding-assignment_tutorial-done = ¡Le puse pegatinas y correas!
 
 ## Tracker assignment setup
 
+onboarding-assign_trackers-back = Volver a credenciales de Wi-Fi
 onboarding-assign_trackers-title = Asignar trackers
+onboarding-assign_trackers-description = Elije qué tracker va a dónde. Haz clic en la ubicación donde deseas colocar un tracker
 onboarding-assign_trackers-advanced = Mostrar ubicaciones de asignación avanzadas
 onboarding-assign_trackers-next = He asignado todos los trackers
 
 ## Tracker assignment warnings
 
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [0] El pie izquierdo está asignado, pero es necesario que también se asignen el tobillo izquierdo, el muslo izquierdo y el pecho, la cadera o la cintura!
+        [1] El pie izquierdo está asignado, pero también es necesario que también se asignen el muslo izquierdo y el pecho, la cadera o la cintura!
+        [2] El pie izquierdo está asignado, pero también es necesario que también se asignen el tobillo izquierdo y el pecho, la cadera o la cintura!
+        [3] El pie izquierdo está asignado, pero también es necesario que también se asignen el pecho, la cadera o la cintura!
+        [4] El pie izquierdo está asignado, pero también es necesario que también se asignen el tobillo izquierdo y el muslo izquierdo!
+        [5] El pie izquierdo está asignado, pero también es necesario que también se asigne el muslo izquierdo!
+        [6] El pie izquierdo está asignado, pero también es necesario que también se asigne el tobillo izquierdo!
+       *[other] El pie izquierdo está asignado, pero también es necesario que también se asigne el Parte del cuerpo asignada desconocida.
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] El pie derecho está asignado, pero es necesario que también se asignen el tobillo derecho, el muslo derecho y el pecho, la cadera o la cintura!
+        [1] El pie derecho está asignado, pero es necesario que también se asignen el muslo derecho y el pecho, la cadera o la cintura!
+        [2] El pie derecho está asignado, pero es necesario que también se asignen el tobillo derecho y el pecho, la cadera o la cintura!
+        [3] El pie derecho está asignado, pero es necesario que también se asignen el pecho, la cadera o la cintura!
+        [4] El pie derecho está asignado, pero es necesario que también se asignen tobillo derecho y el muslo derecho!
+        [5] El pie derecho está asignado, pero es necesario que también se asigne el muslo derecho!
+        [6] El pie derecho está asignado, pero es necesario que también se asigne el tobillo derecho!
+       *[other] Pie derecho asignado, pero necesitas asignar Desconocido
+    }
 
 ## Tracker mounting method choose
 
@@ -508,6 +625,9 @@ onboarding-automatic_proportions-verify_results-title = Verificar resultados
 onboarding-automatic_proportions-verify_results-processing = Procesando los resultados
 
 ## Home
+
+
+## Trackers Still On notification
 
 
 ## Status system

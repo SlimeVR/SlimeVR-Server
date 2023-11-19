@@ -28,6 +28,7 @@ interface InterfaceSettingsForm {
     watchNewDevices: boolean;
     feedbackSound: boolean;
     feedbackSoundVolume: number;
+    connectedTrackersWarning: boolean;
   };
 }
 
@@ -49,6 +50,9 @@ export function InterfaceSettings() {
         feedbackSound: config?.feedbackSound ?? defaultConfig.feedbackSound,
         feedbackSoundVolume:
           config?.feedbackSoundVolume ?? defaultConfig.feedbackSoundVolume,
+        connectedTrackersWarning:
+          config?.connectedTrackersWarning ??
+          defaultConfig.connectedTrackersWarning,
       },
     },
   });
@@ -62,6 +66,7 @@ export function InterfaceSettings() {
       theme: values.appearance.theme,
       fonts: values.appearance.fonts.split(','),
       textSize: values.appearance.textSize,
+      connectedTrackersWarning: values.notifications.connectedTrackersWarning,
     });
   };
 

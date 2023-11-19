@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = Brute
 widget-imu_visualizer-rotation_preview = Aperçu
 widget-imu_visualizer-rotation_hide = Masquer
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = Aperçu du squelette
+widget-skeleton_visualizer-hide = Masquer
+
 ## Tracker status
 
 tracker-status-none = Pas de statut
@@ -443,6 +448,9 @@ settings-general-interface-feedback_sound = Son de retour
 settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée.
 settings-general-interface-feedback_sound-label = Son de retour
 settings-general-interface-feedback_sound-volume = Volume du son de retour
+settings-general-interface-connected_trackers_warning = Avertissement de capteurs connectés
+settings-general-interface-connected_trackers_warning-description = Cette option affichera une fenêtre contextuelle chaque fois que vous essaierez de quitter SlimeVR tout en ayant un ou plusieurs capteurs connectés. Il vous rappelle d’éteindre vos capteurs lorsque vous avez terminé pour préserver la durée de vie de la batterie.
+settings-general-interface-connected_trackers_warning-label = Avertissement de capteurs connectés en quittant
 
 ## Serial settings
 
@@ -903,6 +911,15 @@ onboarding-automatic_proportions-error_modal-confirm = Compris !
 ## Home
 
 home-no_trackers = Aucun capteur détecté ou attribué
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = Capteurs encore allumés
+trackers_still_on-modal-description =
+    Un ou plusieurs capteurs sont encore allumés.
+    Voulez-vous quand même quitter SlimeVR ?
+trackers_still_on-modal-confirm = Quitter SlimeVR
+trackers_still_on-modal-cancel = Annuler...
 
 ## Status system
 
