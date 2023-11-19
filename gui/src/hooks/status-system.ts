@@ -138,19 +138,18 @@ export function parseStatusToLocale(
 
       const tracker = trackers.find(
         ({ tracker }) =>
-          tracker?.trackerId?.trackerNum == data.trackerId.trackerNum &&
-          tracker?.trackerId?.deviceId?.id == data.trackerId.deviceId?.id
+          tracker?.trackerId?.trackerNum == data.trackerId?.trackerNum &&
+          tracker?.trackerId?.deviceId?.id == data.trackerId?.deviceId?.id
       );
       if (!tracker)
         return {
           trackerName: 'unknown',
         };
-      const name =
-        tracker.tracker.info?.customName ??
-        (tracker.tracker.info?.bodyPart !== undefined
-          ? l10n.getString('body_part-' + BodyPart[tracker.tracker.info.bodyPart])
-          : tracker.tracker.info?.displayName) ??
-        'unknown';
+      const name = tracker.tracker.info?.customName
+        ? tracker.tracker.info?.customName
+        : tracker.tracker.info?.bodyPart
+        ? l10n.getString('body_part-' + BodyPart[tracker.tracker.info?.bodyPart])
+        : tracker.tracker.info?.displayName || 'unknown';
       if (typeof name !== 'string') {
         return {
           trackerName: new TextDecoder().decode(name),
