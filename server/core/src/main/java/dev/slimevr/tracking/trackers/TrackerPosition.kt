@@ -1,5 +1,6 @@
 package dev.slimevr.tracking.trackers
 
+import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
 
 /**
@@ -34,6 +35,17 @@ enum class TrackerPosition(
 	LEFT_SHOULDER("body:left_shoulder", TrackerRole.LEFT_SHOULDER, BodyPart.LEFT_SHOULDER),
 	RIGHT_SHOULDER("body:right_shoulder", TrackerRole.RIGHT_SHOULDER, BodyPart.RIGHT_SHOULDER),
 	;
+
+	/**
+	 * Returns the default mounting position for the body part
+	 */
+	fun defaultMounting(): Quaternion = when (this) {
+		LEFT_LOWER_ARM, LEFT_HAND -> Quaternion.SLIMEVR.LEFT
+		RIGHT_LOWER_ARM, RIGHT_HAND -> Quaternion.SLIMEVR.RIGHT
+		LEFT_UPPER_ARM, LEFT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_LEFT
+		RIGHT_UPPER_ARM, RIGHT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_RIGHT
+		else -> Quaternion.SLIMEVR.FRONT
+	}
 
 	companion object {
 		/** Indexed by `BodyPart` int value. EFFICIENCY FTW  */
