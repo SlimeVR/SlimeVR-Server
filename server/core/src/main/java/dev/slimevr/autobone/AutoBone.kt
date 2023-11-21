@@ -42,22 +42,11 @@ class AutoBone(server: VRServer) {
 			SkeletonConfigOffsets.LOWER_LEG
 		)
 	)
-	val heightOffsetDefaults = EnumMap<SkeletonConfigOffsets, Float>(
-		SkeletonConfigOffsets::class.java
-	)
 
-	// This is filled by loadConfigValues()
-	val heightOffsets = FastList(
-		arrayOf(
-			SkeletonConfigOffsets.NECK,
-			SkeletonConfigOffsets.UPPER_CHEST,
-			SkeletonConfigOffsets.CHEST,
-			SkeletonConfigOffsets.WAIST,
-			SkeletonConfigOffsets.HIP,
-			SkeletonConfigOffsets.UPPER_LEG,
-			SkeletonConfigOffsets.LOWER_LEG
-		)
-	)
+	var estimatedHeight: Float = 1f
+
+	// The total height of the normalized adjusted offsets
+	var adjustedHeightNormalized: Float = 1f
 
 	private val server: VRServer
 
@@ -87,6 +76,7 @@ class AutoBone(server: VRServer) {
 
 		// Get current or default skeleton configs
 		val skeleton = server.humanPoseManager
+		// Still compensate for a null skeleton, as it may not be initialized yet
 		val getOffset: Function<SkeletonConfigOffsets, Float> =
 			if (skeleton != null) {
 				Function { key: SkeletonConfigOffsets -> skeleton.getOffset(key) }
@@ -100,12 +90,6 @@ class AutoBone(server: VRServer) {
 			val offset = getOffset.apply(bone)
 			if (offset > 0f) {
 				offsets[bone] = offset
-			}
-		}
-		for (bone in heightOffsets) {
-			val offset = getOffset.apply(bone)
-			if (offset > 0f) {
-				heightOffsetDefaults[bone] = offset
 			}
 		}
 	}
@@ -162,48 +146,6 @@ class AutoBone(server: VRServer) {
 		return true
 	}
 
-	fun <T> sumSelectConfigs(
-		selection: List<T>,
-		configs: Map<T, Float>,
-		configsAlt: Map<T, Float>? = null,
-	): Float {
-		var sum = 0f
-		for (config in selection) {
-			val length = configs[config] ?: configsAlt?.get(config)
-			if (length != null) {
-				sum += length
-			}
-		}
-		return sum
-	}
-
-	fun calcHeight(): Float {
-		return sumSelectConfigs(heightOffsets, offsets, heightOffsetDefaults)
-	}
-
-	fun getLengthSum(configs: Map<SkeletonConfigOffsets, Float>): Float {
-		return getLengthSum(configs, null)
-	}
-
-	fun getLengthSum(
-		configs: Map<SkeletonConfigOffsets, Float>,
-		configsAlt: Map<SkeletonConfigOffsets, Float>?,
-	): Float {
-		var length = 0f
-		if (configsAlt != null) {
-			for ((key, value) in configsAlt) {
-				// If there isn't a duplicate config
-				if (!configs.containsKey(key)) {
-					length += value
-				}
-			}
-		}
-		for (boneLength in configs.values) {
-			length += boneLength
-		}
-		return length
-	}
-
 	fun calcTargetHmdHeight(
 		frames: PoseFrames,
 		config: AutoBoneConfig = globalConfig,
@@ -211,6 +153,7 @@ class AutoBone(server: VRServer) {
 		val targetHeight: Float
 		// Get the current skeleton from the server
 		val humanPoseManager = server.humanPoseManager
+		// Still compensate for a null skeleton, as it may not be initialized yet
 		if (config.useSkeletonHeight && humanPoseManager != null) {
 			// If there is a skeleton available, calculate the target height
 			// from its configs
@@ -238,6 +181,13 @@ class AutoBone(server: VRServer) {
 		return targetHeight
 	}
 
+	private fun updateRecordingScale(trainingStep: AutoBoneStep, scale: Float) {
+		trainingStep.framePlayer1.setScales(scale)
+		trainingStep.framePlayer2.setScales(scale)
+		trainingStep.skeleton1.update()
+		trainingStep.skeleton2.update()
+	}
+
 	@Throws(AutoBoneException::class)
 	fun processFrames(
 		frames: PoseFrames,
@@ -256,7 +206,7 @@ class AutoBone(server: VRServer) {
 		val targetFullHeight = if (config.targetFullHeight > 0f) {
 			config.targetFullHeight
 		} else {
-			targetHmdHeight * BodyProportionError.eyeHeightToHeightRatio
+			targetHmdHeight / BodyProportionError.eyeHeightToHeightRatio
 		}
 
 		// Set up the current state, making all required players and setting up the
@@ -273,6 +223,80 @@ class AutoBone(server: VRServer) {
 		// Initialize the frame order randomizer with a repeatable seed
 		rand.setSeed(config.randSeed)
 
+		// Normalize the skeletons and get the normalized height for adjusted offsets
+		scaleSkeleton(trainingStep.skeleton1)
+		scaleSkeleton(trainingStep.skeleton2)
+		adjustedHeightNormalized = sumAdjustedHeightOffsets(trainingStep.skeleton1)
+
+		// Normalize offsets based on the initial normalized skeleton
+		scaleOffsets()
+
+		// Apply the initial normalized config values
+		applyConfig(trainingStep.skeleton1)
+		applyConfig(trainingStep.skeleton2)
+
+		// Initialize normalization to the set target height (also updates skeleton)
+		estimatedHeight = targetHmdHeight
+		updateRecordingScale(trainingStep, 1f / targetHmdHeight)
+
+		if (config.useFrameFiltering) {
+			// Calculate the initial frame errors and recording stats
+			val frameErrors = FloatArray(frames.maxFrameCount)
+			val frameStats = StatsCalculator()
+			val recordingStats = StatsCalculator()
+			for (i in 0 until frames.maxFrameCount) {
+				frameStats.reset()
+				for (j in 0 until frames.maxFrameCount) {
+					if (i == j) continue
+
+					trainingStep.setCursors(
+						i,
+						j,
+						updatePlayerCursors = true
+					)
+
+					frameStats.addValue(getErrorDeriv(trainingStep))
+				}
+				frameErrors[i] = frameStats.mean
+				recordingStats.addValue(frameStats.mean)
+				// LogManager.info("[AutoBone] Frame: ${i + 1}, Mean error: ${frameStats.mean} (SD ${frameStats.standardDeviation})")
+			}
+			LogManager.info("[AutoBone] Full recording mean error: ${frameStats.mean} (SD ${frameStats.standardDeviation})")
+
+			// Remove outlier frames
+			val sdMult = 1.4f
+			val mean = recordingStats.mean
+			val sd = recordingStats.standardDeviation * sdMult
+			for (i in frameErrors.size - 1 downTo 0) {
+				val err = frameErrors[i]
+				if (err < mean - sd || err > mean + sd) {
+					for (frameHolder in frames.frameHolders) {
+						frameHolder.frames.removeAt(i)
+					}
+				}
+			}
+			trainingStep.maxFrameCount = frames.maxFrameCount
+
+			// Calculate and print the resulting recording stats
+			recordingStats.reset()
+			for (i in 0 until frames.maxFrameCount) {
+				frameStats.reset()
+				for (j in 0 until frames.maxFrameCount) {
+					if (i == j) continue
+
+					trainingStep.setCursors(
+						i,
+						j,
+						updatePlayerCursors = true
+					)
+
+					frameStats.addValue(getErrorDeriv(trainingStep))
+				}
+				recordingStats.addValue(frameStats.mean)
+			}
+			LogManager.info("[AutoBone] Full recording after mean error: ${frameStats.mean} (SD ${frameStats.standardDeviation})")
+		}
+
 		// Epoch loop, each epoch is one full iteration over the full dataset
 		for (epoch in (if (config.calcInitError) -1 else 0) until config.numEpochs) {
 			// Set the current epoch to process
@@ -282,14 +306,18 @@ class AutoBone(server: VRServer) {
 			internalEpoch(trainingStep)
 		}
 
-		val finalHeight = calcHeight()
+		// Scale the normalized offsets to the estimated height for the final result
+		for (entry in offsets.entries) {
+			entry.setValue(entry.value * estimatedHeight)
+		}
+
 		LogManager
 			.info(
-				"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, New height: $finalHeight"
+				"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, Final height: $estimatedHeight"
 			)
 
 		return AutoBoneResults(
-			finalHeight,
+			estimatedHeight,
 			trainingStep.targetHmdHeight,
 			trainingStep.errorStats,
 			offsets
@@ -333,10 +361,6 @@ class AutoBone(server: VRServer) {
 			while (frameCursor < frameCount - cursorOffset) {
 				val frameCursor2 = frameCursor + cursorOffset
 
-				// Apply the current adjusted config to both skeletons
-				applyConfig(trainingStep.skeleton1)
-				applyConfig(trainingStep.skeleton2)
-
 				// Then set the frame cursors and apply them to both skeletons
 				if (config.randomizeFrameOrder && randomFrameIndices != null) {
 					trainingStep
@@ -368,9 +392,20 @@ class AutoBone(server: VRServer) {
 				.info(
 					"[AutoBone] Epoch: ${epoch + 1}, Mean error: ${errorStats.mean} (SD ${errorStats.standardDeviation}), Adjust rate: ${trainingStep.curAdjustRate}"
 				)
+			LogManager
+				.info(
+					"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, Estimated height: $estimatedHeight"
+				)
 		}
 
-		trainingStep.epochCallback?.accept(Epoch(epoch + 1, config.numEpochs, errorStats, offsets))
+		if (trainingStep.epochCallback != null) {
+			// Scale the normalized offsets to the estimated height for the callback
+			val scaledOffsets = EnumMap(offsets)
+			for (entry in scaledOffsets.entries) {
+				entry.setValue(entry.value * estimatedHeight)
+			}
+			trainingStep.epochCallback.accept(Epoch(epoch + 1, config.numEpochs, errorStats, scaledOffsets))
+		}
 	}
 
 	private fun internalIter(trainingStep: AutoBoneStep) {
@@ -378,9 +413,43 @@ class AutoBone(server: VRServer) {
 		val skeleton1 = trainingStep.skeleton1
 		val skeleton2 = trainingStep.skeleton2
 
-		val totalLength = getLengthSum(offsets)
-		val curHeight = calcHeight()
-		trainingStep.currentHmdHeight = curHeight
+		// Scaling each step used to mean enforcing the target height, so keep that
+		// behaviour to retain predictability
+		if (!trainingStep.config.scaleEachStep) {
+			// Try to estimate a new height by calculating the height with the lowest
+			// error between adding or subtracting from the height
+			val maxHeight = trainingStep.targetHmdHeight + 0.2f
+			val minHeight = trainingStep.targetHmdHeight - 0.2f
+
+			trainingStep.currentHmdHeight = estimatedHeight
+			val heightErrorDeriv = getErrorDeriv(trainingStep)
+			val heightAdjust = errorFunc(heightErrorDeriv) * trainingStep.curAdjustRate
+
+			val negHeight = (estimatedHeight - heightAdjust).coerceIn(minHeight, maxHeight)
+			updateRecordingScale(trainingStep, 1f / negHeight)
+			trainingStep.currentHmdHeight = negHeight
+			val negHeightErrorDeriv = getErrorDeriv(trainingStep)
+
+			val posHeight = (estimatedHeight + heightAdjust).coerceIn(minHeight, maxHeight)
+			updateRecordingScale(trainingStep, 1f / posHeight)
+			trainingStep.currentHmdHeight = posHeight
+			val posHeightErrorDeriv = getErrorDeriv(trainingStep)
+
+			if (negHeightErrorDeriv < heightErrorDeriv && negHeightErrorDeriv < posHeightErrorDeriv) {
+				estimatedHeight = negHeight
+				// Apply the negative height scale
+				updateRecordingScale(trainingStep, 1f / negHeight)
+			} else if (posHeightErrorDeriv < heightErrorDeriv) {
+				estimatedHeight = posHeight
+				// The last estimated height set was the positive adjustment, so no need to apply it again
+			} else {
+				// Reset to the initial scale
+				updateRecordingScale(trainingStep, 1f / estimatedHeight)
+			}
+		}
+
+		// Update the heights used for error calculations
+		trainingStep.currentHmdHeight = estimatedHeight
 
 		val errorDeriv = getErrorDeriv(trainingStep)
 		val error = errorFunc(errorDeriv)
@@ -419,9 +488,10 @@ class AutoBone(server: VRServer) {
 			.getComputedTracker(TrackerRole.RIGHT_FOOT).position -
 			skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position
 
-		for (entry in offsets.entries) {
-			// Skip adjustment if the epoch is before starting (for
-			// logging only) or if there are no BoneTypes for this value
+		val intermediateOffsets = EnumMap(offsets)
+		for (entry in intermediateOffsets.entries) {
+			// Skip adjustment if the epoch is before starting (for logging only) or
+			// if there are no BoneTypes for this value
 			if (trainingStep.curEpoch < 0 || entry.key.affectedOffsets.isEmpty()) {
 				break
 			}
@@ -443,14 +513,10 @@ class AutoBone(server: VRServer) {
 			)
 
 			// Calculate the total effect of the bone based on change in rotation
-			val dotLength = (
-				originalLength
-					* ((leftDotProduct + rightDotProduct) / 2f)
-				)
+			val dotLength = originalLength * ((leftDotProduct + rightDotProduct) / 2f)
 
-			// Scale by the ratio for smooth adjustment and more
-			// stable results
-			val curAdjustVal = adjustVal * -dotLength / totalLength
+			// Scale by the total effect of the bone
+			val curAdjustVal = adjustVal * -dotLength
 			val newLength = originalLength + curAdjustVal
 
 			// No small or negative numbers!!! Bad algorithm!
@@ -461,6 +527,8 @@ class AutoBone(server: VRServer) {
 			// Apply new offset length
 			skeleton1.setOffset(entry.key, newLength)
 			skeleton2.setOffset(entry.key, newLength)
+			scaleSkeleton(skeleton1, onlyAdjustedHeight = true)
+			scaleSkeleton(skeleton2, onlyAdjustedHeight = true)
 
 			// Update the skeleton poses for the new offset length
 			skeleton1.update()
@@ -472,45 +540,73 @@ class AutoBone(server: VRServer) {
 				entry.setValue(newLength)
 			}
 
-			// Reset the length to minimize bias in other variables,
-			// it's applied later
-			skeleton1.setOffset(entry.key, originalLength)
-			skeleton2.setOffset(entry.key, originalLength)
+			// Reset the skeleton values to minimize bias in other variables, it's applied later
+			applyConfig(skeleton1)
+			applyConfig(skeleton2)
 		}
 
-		if (trainingStep.config.scaleEachStep) {
-			// Scale to the target height if requested by the config
-			scaleToTargetHeight(trainingStep)
+		// Update the offsets from the adjusted ones
+		offsets.putAll(intermediateOffsets)
+
+		// Normalize the scale, it will be upscaled to the target height later
+		// We only need to scale height offsets, as other offsets are not affected by height
+		scaleOffsets(onlyHeightOffsets = true)
+
+		// Apply the normalized offsets to the skeleton
+		applyConfig(skeleton1)
+		applyConfig(skeleton2)
+	}
+
+	/**
+	 * Sums only the adjusted height offsets of the provided HumanPoseManager
+	 */
+	private fun sumAdjustedHeightOffsets(humanPoseManager: HumanPoseManager): Float {
+		var sum = 0f
+		SkeletonConfigManager.HEIGHT_OFFSETS.forEach {
+			if (!adjustOffsets.contains(it)) return@forEach
+			sum += humanPoseManager.getOffset(it)
+		}
+		return sum
+	}
+
+	/**
+	 * Sums only the height offsets of the provided offset map
+	 */
+	private fun sumHeightOffsets(offsets: EnumMap<SkeletonConfigOffsets, Float> = this.offsets): Float {
+		var sum = 0f
+		SkeletonConfigManager.HEIGHT_OFFSETS.forEach {
+			sum += offsets[it] ?: return@forEach
+		}
+		return sum
+	}
+
+	private fun scaleSkeleton(humanPoseManager: HumanPoseManager, targetHeight: Float = 1f, onlyAdjustedHeight: Boolean = false) {
+		// Get the scale to apply for the appropriate offsets
+		val scale = if (onlyAdjustedHeight) {
+			// Only adjusted height offsets
+			val adjHeight = sumAdjustedHeightOffsets(humanPoseManager)
+			// Remove the constant from the target, leaving only the target for adjusted height offsets
+			val adjTarget = targetHeight - (humanPoseManager.userHeightFromConfig - adjHeight)
+			// Return only the scale for adjusted offsets
+			adjTarget / adjHeight
+		} else {
+			targetHeight / humanPoseManager.userHeightFromConfig
+		}
+
+		val offsets = if (onlyAdjustedHeight) SkeletonConfigManager.HEIGHT_OFFSETS else SkeletonConfigOffsets.values
+		for (offset in offsets) {
+			if (onlyAdjustedHeight && !adjustOffsets.contains(offset)) continue
+			humanPoseManager.setOffset(offset, humanPoseManager.getOffset(offset) * scale)
 		}
 	}
 
-	private fun scaleToTargetHeight(trainingStep: AutoBoneStep) {
-		// Recalculate the height and update it in the AutoBoneStep
-		val stepHeight = calcHeight()
-		trainingStep.currentHmdHeight = stepHeight
+	private fun scaleOffsets(offsets: EnumMap<SkeletonConfigOffsets, Float> = this.offsets, targetHeight: Float = adjustedHeightNormalized, onlyHeightOffsets: Boolean = false) {
+		// Get the scale to apply for the appropriate offsets
+		val scale = targetHeight / sumHeightOffsets(offsets)
 
-		if (stepHeight > 0f) {
-			val stepHeightDiff = trainingStep.targetHmdHeight - stepHeight
-			for (entry in offsets.entries) {
-				// Only height variables
-				if (entry.key == SkeletonConfigOffsets.NECK ||
-					!heightOffsets.contains(entry.key)
-				) {
-					continue
-				}
-				val length = entry.value
-
-				// Multiply the diff by the length to height
-				// ratio
-				val adjVal = stepHeightDiff * (length / stepHeight)
-
-				// Scale the length to fit the target height
-				entry.setValue(
-					(length + adjVal / 2f).coerceAtLeast(
-						0.01f
-					)
-				)
-			}
+		for (entry in offsets.entries) {
+			if (onlyHeightOffsets && !SkeletonConfigManager.HEIGHT_OFFSETS.contains(entry.key)) continue
+			entry.setValue(entry.value * scale)
 		}
 	}
 
@@ -560,7 +656,7 @@ class AutoBone(server: VRServer) {
 	val lengthsString: String
 		get() {
 			val configInfo = StringBuilder()
-			offsets.forEach { (key: SkeletonConfigOffsets, value: Float) ->
+			offsets.forEach { (key, value) ->
 				if (configInfo.isNotEmpty()) {
 					configInfo.append(", ")
 				}
@@ -610,27 +706,20 @@ class AutoBone(server: VRServer) {
 
 	fun loadRecordings(): FastList<Pair<String, PoseFrames>> {
 		val recordings = FastList<Pair<String, PoseFrames>>()
-		if (loadDir.isDirectory) {
-			val files = loadDir.listFiles()
-			if (files != null) {
-				for (file in files) {
-					if (file.isFile &&
-						org.apache.commons.lang3.StringUtils
-							.endsWithIgnoreCase(file.name, ".pfr")
-					) {
-						LogManager
-							.info(
-								"[AutoBone] Detected recording at \"${file.path}\", loading frames..."
-							)
-						val frames = PoseFrameIO.tryReadFromFile(file)
-						if (frames == null) {
-							LogManager
-								.severe("Reading frames from \"${file.path}\" failed...")
-						} else {
-							recordings.add(Pair.of(file.name, frames))
-						}
-					}
-				}
+		if (!loadDir.isDirectory) return recordings
+		val files = loadDir.listFiles() ?: return recordings
+		for (file in files) {
+			if (!file.isFile || !file.name.endsWith(".pfr", ignoreCase = true)) continue
+
+			LogManager
+				.info(
+					"[AutoBone] Detected recording at \"${file.path}\", loading frames..."
+				)
+			val frames = PoseFrameIO.tryReadFromFile(file)
+			if (frames == null) {
+				LogManager.severe("Reading frames from \"${file.path}\" failed...")
+			} else {
+				recordings.add(Pair.of(file.name, frames))
 			}
 		}
 		return recordings

@@ -16,7 +16,7 @@ import java.util.Set;
 
 
 @JsonVersionedModel(
-	currentVersion = "12", defaultDeserializeToVersion = "12", toCurrentConverterClass = CurrentVRConfigConverter.class
+	currentVersion = "13", defaultDeserializeToVersion = "13", toCurrentConverterClass = CurrentVRConfigConverter.class
 )
 public class VRConfig {
 

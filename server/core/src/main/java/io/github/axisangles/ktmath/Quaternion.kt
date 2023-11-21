@@ -13,6 +13,11 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		val K = Quaternion(0f, 0f, 0f, 1f)
 
 		/**
+		 * SlimeVR-specific constants and utils
+		 */
+		val SLIMEVR: SlimeVR = SlimeVR
+
+		/**
 		 * creates a new quaternion representing the rotation about v's axis
 		 * by an angle of v's length
 		 * @param v the rotation vector
@@ -44,6 +49,20 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 			val D = V / U
 
 			return (D + D.len()).unit()
+		}
+
+		/**
+		 * SlimeVR-specific constants and utils
+		 */
+		object SlimeVR {
+			val FRONT = Quaternion(0f, 0f, 1f, 0f)
+			val FRONT_LEFT = Quaternion(0.383f, 0f, 0.924f, 0f)
+			val LEFT = Quaternion(0.707f, 0f, 0.707f, 0f)
+			val BACK_LEFT = Quaternion(0.924f, 0f, 0.383f, 0f)
+			val FRONT_RIGHT = Quaternion(0.383f, 0f, -0.924f, 0f)
+			val RIGHT = Quaternion(0.707f, 0f, -0.707f, 0f)
+			val BACK_RIGHT = Quaternion(0.924f, 0f, -0.383f, 0f)
+			val BACK = Quaternion(1f, 0f, 0f, 0f)
 		}
 	}
 
