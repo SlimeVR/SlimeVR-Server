@@ -35,6 +35,7 @@ import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
+import kotlin.concurrent.schedule
 
 typealias SteamBridgeProvider = (
 	server: VRServer,
@@ -105,9 +106,10 @@ class VRServer @JvmOverloads constructor(
 		provisioningHandler = ProvisioningHandler(this)
 		resetHandler = ResetHandler()
 		tapSetupHandler = TapSetupHandler()
+		humanPoseManager = HumanPoseManager(this)
+		// AutoBone requires HumanPoseManager first
 		autoBoneHandler = AutoBoneHandler(this)
 		protocolAPI = ProtocolAPI(this)
-		humanPoseManager = HumanPoseManager(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 
 		// Start server for SlimeVR trackers
@@ -297,31 +299,42 @@ class VRServer @JvmOverloads constructor(
 		queueTask { humanPoseManager.clearTrackersMounting(resetSourceName) }
 	}
 
+	fun setPauseTracking(pauseTracking: Boolean, sourceName: String?) {
+		queueTask { humanPoseManager.setPauseTracking(pauseTracking, sourceName) }
+	}
+
+	fun togglePauseTracking(sourceName: String?) {
+		queueTask { humanPoseManager.togglePauseTracking(sourceName) }
+	}
+
 	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
-		val resetTask: TimerTask = object : TimerTask() {
-			override fun run() {
-				queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
-			}
+		timer.schedule(delay) {
+			queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
 		}
-		timer.schedule(resetTask, delay)
 	}
 
 	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long) {
-		val yawResetTask: TimerTask = object : TimerTask() {
-			override fun run() {
-				queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
-			}
+		timer.schedule(delay) {
+			queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
 		}
-		timer.schedule(yawResetTask, delay)
 	}
 
 	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long) {
-		val resetMountingTask: TimerTask = object : TimerTask() {
-			override fun run() {
-				queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
-			}
+		timer.schedule(delay) {
+			queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
 		}
-		timer.schedule(resetMountingTask, delay)
+	}
+
+	fun scheduleSetPauseTracking(pauseTracking: Boolean, sourceName: String?, delay: Long) {
+		timer.schedule(delay) {
+			queueTask { humanPoseManager.setPauseTracking(pauseTracking, sourceName) }
+		}
+	}
+
+	fun scheduleTogglePauseTracking(sourceName: String?, delay: Long) {
+		timer.schedule(delay) {
+			queueTask { humanPoseManager.togglePauseTracking(sourceName) }
+		}
 	}
 
 	fun setLegTweaksEnabled(value: Boolean) {
