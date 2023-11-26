@@ -297,12 +297,18 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				rot = AXES_OFFSET.times(rot)
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
+				if (tracker.status == TrackerStatus.DISCONNECTED) {
+					tracker.status = TrackerStatus.OK
+				}
 				tracker.setRotation(rot)
 				tracker.dataTick()
 			}
 			is UDPPacket17RotationData -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
+				if (tracker.status == TrackerStatus.DISCONNECTED) {
+					tracker.status = TrackerStatus.OK
+				}
 				var rot17 = packet.rotation
 				rot17 = AXES_OFFSET * rot17
 				when (packet.dataType) {
