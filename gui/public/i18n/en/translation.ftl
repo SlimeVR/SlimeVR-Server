@@ -139,6 +139,7 @@ tracker-status-error = Error
 tracker-status-disconnected = Disconnected
 tracker-status-occluded = Occluded
 tracker-status-ok = OK
+tracker-status-timed_out = Timed out
 
 ## Tracker status columns
 tracker-table-column-name = Name

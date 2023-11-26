@@ -26,10 +26,13 @@ object TrackerUtils {
 	private fun getNonInternalTrackerForBodyPosition(
 		allTrackers: List<Tracker>,
 		position: TrackerPosition,
-	): Tracker? = allTrackers.firstOrNull {
-		it.trackerPosition === position &&
-			!it.isInternal &&
-			!it.status.reset
+	): Tracker? {
+		val resetTrackers = allTrackers.filter {
+			it.trackerPosition === position &&
+				!it.isInternal &&
+				!it.status.reset
+		}
+		return resetTrackers.firstOrNull { it.status != TrackerStatus.TIMED_OUT } ?: resetTrackers.firstOrNull()
 	}
 
 	/**
@@ -41,11 +44,14 @@ object TrackerUtils {
 	private fun getNonInternalNonComputedTrackerForBodyPosition(
 		allTrackers: List<Tracker>,
 		position: TrackerPosition,
-	): Tracker? = allTrackers.firstOrNull {
-		it.trackerPosition === position &&
-			!it.isComputed &&
-			!it.isInternal &&
-			!it.status.reset
+	): Tracker? {
+		val resetTrackers = allTrackers.filter {
+			it.trackerPosition === position &&
+				!it.isComputed &&
+				!it.isInternal &&
+				!it.status.reset
+		}
+		return resetTrackers.firstOrNull { it.status != TrackerStatus.TIMED_OUT } ?: resetTrackers.firstOrNull()
 	}
 
 	/**
@@ -58,11 +64,14 @@ object TrackerUtils {
 	fun getNonInternalNonImuTrackerForBodyPosition(
 		allTrackers: List<Tracker>,
 		position: TrackerPosition,
-	): Tracker? = allTrackers.firstOrNull {
-		it.trackerPosition === position &&
-			!it.isImu() &&
-			!it.isInternal &&
-			!it.status.reset
+	): Tracker? {
+		val resetTrackers = allTrackers.filter {
+			it.trackerPosition === position &&
+				!it.isImu() &&
+				!it.isInternal &&
+				!it.status.reset
+		}
+		return resetTrackers.firstOrNull { it.status != TrackerStatus.TIMED_OUT } ?: resetTrackers.firstOrNull()
 	}
 
 	/**

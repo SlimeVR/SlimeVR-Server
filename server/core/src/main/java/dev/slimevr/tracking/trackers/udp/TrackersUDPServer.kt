@@ -188,7 +188,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				imuType = sensorType,
 				allowFiltering = true,
 				needsReset = true,
-				needsMounting = true
+				needsMounting = true,
+				usesTimeout = true
 			)
 			connection.trackers[trackerId] = imuTracker
 			trackersConsumer.accept(imuTracker)
@@ -244,9 +245,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							parser.write(bb, conn, UDPPacket1Heartbeat)
 							socket.send(DatagramPacket(rcvBuffer, bb.position(), conn.address))
 							if (conn.lastPacket + 1000 < System.currentTimeMillis()) {
-								for (value in conn.trackers.values) {
-									value.status = TrackerStatus.DISCONNECTED
-								}
+// 								for (value in conn.trackers.values) {
+// 									value.status = TrackerStatus.DISCONNECTED
+// 								}
 								if (!conn.timedOut) {
 									conn.timedOut = true
 									LogManager.info("[TrackerServer] Tracker timed out: $conn")
@@ -254,6 +255,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							} else {
 								conn.timedOut = false
 							}
+
 							if (conn.serialBuffer.isNotEmpty() &&
 								conn.lastSerialUpdate + 500L < System.currentTimeMillis()
 							) {
@@ -266,6 +268,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 								serialBuffer2.setLength(0)
 								conn.serialBuffer.setLength(0)
 							}
+
 							if (conn.lastPingPacketTime + 500 < System.currentTimeMillis()) {
 								conn.lastPingPacketId = random.nextInt()
 								conn.lastPingPacketTime = System.currentTimeMillis()
@@ -297,18 +300,12 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				rot = AXES_OFFSET.times(rot)
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				if (tracker.status == TrackerStatus.DISCONNECTED) {
-					tracker.status = TrackerStatus.OK
-				}
 				tracker.setRotation(rot)
 				tracker.dataTick()
 			}
 			is UDPPacket17RotationData -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				if (tracker.status == TrackerStatus.DISCONNECTED) {
-					tracker.status = TrackerStatus.OK
-				}
 				var rot17 = packet.rotation
 				rot17 = AXES_OFFSET * rot17
 				when (packet.dataType) {
