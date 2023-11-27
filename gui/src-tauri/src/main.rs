@@ -236,12 +236,12 @@ fn main() -> Result<()> {
 							_ => ("other", "".to_string()),
 						};
 						app_handle
-							.emit_all("server-status", emit_me)
+							.emit("server-status", emit_me)
 							.expect("Check server log files. \nFailed to emit");
 					}
 					log::error!("Java server receiver died");
 					app_handle
-						.emit_all("server-status", ("other", "receiver cancelled"))
+						.emit("server-status", ("other", "receiver cancelled"))
 						.expect("Failed to emit");
 				});
 			}

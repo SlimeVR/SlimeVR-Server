@@ -21,20 +21,20 @@ default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
 
 [build-dependencies]
-tauri-build = { version = "2.0.0-alpha", features = [] }
+tauri-build = { version = "=2.0.0-alpha.12", features = [] }
 cfg_aliases = "0.1"
 shadow-rs = "0.23"
 
 [dependencies]
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
-tauri = { version = "2.0.0-alpha", features = ["devtools"] }
-tauri-runtime = "1.0.0-alpha"
-tauri-plugin-dialog = "2.0.0-alpha"
-tauri-plugin-fs = "2.0.0-alpha"
-tauri-plugin-os = "2.0.0-alpha"
-tauri-plugin-shell = "2.0.0-alpha"
-tauri-plugin-window = { version = "2.0.0-alpha", features = ["devtools"] }
+tauri = { version = "=2.0.0-alpha.18", features = ["devtools"] }
+tauri-runtime = "=1.0.0-alpha.5"
+tauri-plugin-dialog = "=2.0.0-alpha.4"
+tauri-plugin-fs = "=2.0.0-alpha.4"
+tauri-plugin-os = "=2.0.0-alpha.4"
+tauri-plugin-shell = "=2.0.0-alpha.4"
+tauri-plugin-window = { version = "=2.0.0-alpha.2", features = ["devtools"] }
 flexi_logger = "0.25"
 log-panics = { version = "2", features = ["with-backtrace"] }
 log = "0.4"
@@ -49,7 +49,7 @@ shadow-rs = { version = "0.23", default-features = false }
 const_format = "0.2.30"
 cfg-if = "1"
 color-eyre = "0.6"
-rfd = "0.11.4"
+rfd = "0.12.1"
 dirs-next = "2.0.0"
 
 [target.'cfg(windows)'.dependencies]

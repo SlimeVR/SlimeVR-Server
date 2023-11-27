@@ -95,7 +95,7 @@ pub fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> 
 #[cfg(desktop)]
 pub fn show_error(text: &str) -> bool {
 	use rand::{seq::SliceRandom, thread_rng};
-	use rfd::{MessageButtons, MessageDialog, MessageLevel};
+	use rfd::{MessageButtons, MessageDialog, MessageLevel, MessageDialogResult};
 
 	MessageDialog::new()
 		.set_title(&format!(
@@ -105,7 +105,7 @@ pub fn show_error(text: &str) -> bool {
 		.set_description(text)
 		.set_buttons(MessageButtons::Ok)
 		.set_level(MessageLevel::Error)
-		.show()
+		.show() == MessageDialogResult::Ok
 }
 
 #[cfg(mobile)]
