@@ -16,7 +16,7 @@ import solarxr_protocol.rpc.StatusTrackerResetT
 import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2_000L
-const val DISCONNECT_MS = 10_000L + TIMEOUT_MS
+const val DISCONNECT_MS = 3_000L + TIMEOUT_MS
 
 /**
  * Generic tracker class for input and output tracker,
