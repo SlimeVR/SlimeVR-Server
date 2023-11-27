@@ -9,7 +9,7 @@
     "@formatjs/intl-localematcher": "^0.2.32",
     "@react-three/drei": "^9.80.3",
     "@react-three/fiber": "^8.13.6",
-    "@tauri-apps/api": "=2.0.0-alpha.12",
+    "@tauri-apps/api": "=2.0.0-alpha.11",
     "@tauri-apps/plugin-app": "=2.0.0-alpha.1",
     "@tauri-apps/plugin-dialog": "=2.0.0-alpha.3",
     "@tauri-apps/plugin-fs": "=2.0.0-alpha.3",
