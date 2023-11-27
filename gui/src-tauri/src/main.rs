@@ -122,7 +122,7 @@ fn main() -> Result<()> {
 		if !webview2_exists() {
 			// This makes a dialog appear which let's you press Ok or Cancel
 			// If you press Ok it will open the SlimeVR installer documentation
-			use rfd::{MessageButtons, MessageDialog, MessageLevel};
+			use rfd::{MessageButtons, MessageDialog, MessageLevel, MessageDialogResult};
 
 			let confirm = MessageDialog::new()
 				.set_title("SlimeVR")
@@ -130,7 +130,7 @@ fn main() -> Result<()> {
 				.set_buttons(MessageButtons::OkCancel)
 				.set_level(MessageLevel::Error)
 				.show();
-			if confirm {
+			if confirm == MessageDialogResult::Ok {
 				open::that("https://docs.slimevr.dev/server-setup/installing-and-connecting.html#install-the-latest-slimevr-installer").unwrap();
 			}
 			return Ok(());
@@ -298,7 +298,7 @@ fn main() -> Result<()> {
 			// I should log this anyways, don't want to dig a grave by not logging the error.
 			log::error!("CreateWebview error {}", error);
 
-			use rfd::{MessageButtons, MessageDialog, MessageLevel};
+			use rfd::{MessageButtons, MessageDialog, MessageLevel, MessageDialogResult};
 
 			let confirm = MessageDialog::new()
 				.set_title("SlimeVR")
@@ -306,7 +306,7 @@ fn main() -> Result<()> {
 				.set_buttons(MessageButtons::OkCancel)
 				.set_level(MessageLevel::Error)
 				.show();
-			if confirm {
+			if confirm == MessageDialogResult::Ok {
 				open::that("https://docs.slimevr.dev/common-issues.html#webview2-is-missing--slimevr-gui-crashes-immediately--panicked-at--webview2error").unwrap();
 			}
 		}
