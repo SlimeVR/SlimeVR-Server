@@ -245,9 +245,6 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							parser.write(bb, conn, UDPPacket1Heartbeat)
 							socket.send(DatagramPacket(rcvBuffer, bb.position(), conn.address))
 							if (conn.lastPacket + 1000 < System.currentTimeMillis()) {
-// 								for (value in conn.trackers.values) {
-// 									value.status = TrackerStatus.DISCONNECTED
-// 								}
 								if (!conn.timedOut) {
 									conn.timedOut = true
 									LogManager.info("[TrackerServer] Tracker timed out: $conn")
