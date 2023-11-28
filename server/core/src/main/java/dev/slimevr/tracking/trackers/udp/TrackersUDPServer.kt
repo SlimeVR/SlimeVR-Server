@@ -251,6 +251,17 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 								}
 							} else {
 								conn.timedOut = false
+								// If before the change of sending sensor info every second
+								if (conn.firmwareBuild < 17) {
+									conn.trackers.values
+										.filter {
+											it.status == TrackerStatus.TIMED_OUT ||
+												it.status == TrackerStatus.DISCONNECTED
+										}
+										.forEach {
+											it.status = TrackerStatus.OK
+										}
+								}
 							}
 
 							if (conn.serialBuffer.isNotEmpty() &&
