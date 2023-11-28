@@ -24,6 +24,8 @@ public class ProvisioningHandler implements SerialListener {
 
 	private final Timer provisioningTickTimer = new Timer("ProvisioningTickTimer");
 	private long lastStatusChange = -1;
+	private byte connectRetries = 0;
+	private final byte MAX_CONNECTION_RETRIES = 2;
 	private final VRServer vrServer;
 
 	public ProvisioningHandler(VRServer vrServer) {
@@ -46,13 +48,14 @@ public class ProvisioningHandler implements SerialListener {
 		this.password = password;
 		this.preferredPort = port;
 		this.provisioningStatus = ProvisioningStatus.NONE;
-
+		this.connectRetries = 0;
 	}
 
 	public void stop() {
 		this.isRunning = false;
 		this.ssid = null;
 		this.password = null;
+		this.connectRetries = 0;
 		this.changeStatus(ProvisioningStatus.NONE);
 		this.vrServer.serialHandler.closeSerial();
 	}
@@ -118,6 +121,7 @@ public class ProvisioningHandler implements SerialListener {
 		if (!isRunning)
 			return;
 		this.changeStatus(ProvisioningStatus.NONE);
+		this.connectRetries = 0;
 	}
 
 	@Override
@@ -151,7 +155,11 @@ public class ProvisioningHandler implements SerialListener {
 			provisioningStatus == ProvisioningStatus.CONNECTING
 				&& str.contains("Can't connect from any credentials")
 		) {
-			this.changeStatus(ProvisioningStatus.CONNECTION_ERROR);
+			if (++connectRetries >= MAX_CONNECTION_RETRIES) {
+				this.changeStatus(ProvisioningStatus.CONNECTION_ERROR);
+			} else {
+				this.vrServer.serialHandler.rebootRequest();
+			}
 		}
 	}
 
