@@ -250,7 +250,6 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 									LogManager.info("[TrackerServer] Tracker timed out: $conn")
 								}
 							} else {
-								conn.timedOut = false
 								for (value in conn.trackers.values) {
 									if (value.status == TrackerStatus.DISCONNECTED ||
 										value.status == TrackerStatus.TIMED_OUT
@@ -258,6 +257,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 										value.status = TrackerStatus.OK
 									}
 								}
+								conn.timedOut = false
 							}
 
 							if (conn.serialBuffer.isNotEmpty() &&
