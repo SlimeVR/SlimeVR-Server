@@ -11,6 +11,9 @@ enum class IMUType(val id: UInt) {
 	BNO086(7u),
 	BMI160(8u),
 	ICM20948(9u),
+	ICM42688(10u),
+	BMI270(11u),
+	LSM6DSV(12u),
 	;
 
 	fun getSolarType(): Int = this.id.toInt()
