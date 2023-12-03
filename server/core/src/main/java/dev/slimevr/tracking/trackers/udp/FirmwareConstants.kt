@@ -12,7 +12,7 @@ enum class IMUType(val id: UInt) {
 	BMI160(8u),
 	ICM20948(9u),
 	ICM42688(10u),
-	BMI270(11u),
+	BMI323(11u),
 	LSM6DSV(12u),
 	;
 
