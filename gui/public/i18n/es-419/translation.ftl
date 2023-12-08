@@ -157,6 +157,7 @@ tracker-status-error = Error
 tracker-status-disconnected = Desconectado
 tracker-status-occluded = Ocluido
 tracker-status-ok = Conectado
+tracker-status-timed_out = Conexión interrumpida
 
 ## Tracker status columns
 
@@ -778,6 +779,13 @@ onboarding-choose_mounting-manual_mounting = Montura manual
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Recomendado
 onboarding-choose_mounting-manual_mounting-description = Esto te permitirá elegir la dirección de montura manualmente para cada tracker.
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    ¿Está seguro de que quiere
+    hacer la calibración automática de montura?
+onboarding-choose_mounting-manual_modal-description = <b>Está recomendado para nuevos usuarios el uso de la calibración manual de montura</b>, ya que las poses de la calibración automática pueden ser difíciles de hacer correctamente en el primer intento y requieran un poco de práctica.
+onboarding-choose_mounting-manual_modal-confirm = Estoy seguro de lo que hago
+onboarding-choose_mounting-manual_modal-cancel = Cancelar
 
 ## Tracker manual mounting setup
 
