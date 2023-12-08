@@ -36,7 +36,7 @@ body_part-RIGHT_HAND = Mano derecha
 body_part-RIGHT_UPPER_LEG = Muslo derecho
 body_part-RIGHT_LOWER_LEG = Tobillo derecho
 body_part-RIGHT_FOOT = Pie derecho
-body_part-UPPER_CHEST = Abdomen superior
+body_part-UPPER_CHEST = Torso superior
 body_part-CHEST = Pecho
 body_part-WAIST = Cintura
 body_part-HIP = Cadera
@@ -60,26 +60,26 @@ skeleton_bone-CHEST = Longitud del pecho
 skeleton_bone-WAIST = Longitud de cintura
 skeleton_bone-HIP = Longitud de cadera
 skeleton_bone-HIP_OFFSET = Compensacion de cadera
-skeleton_bone-HIPS_WIDTH = Ancho de la Cadera
-skeleton_bone-leg_group = Largo de las piernas
-skeleton_bone-UPPER_LEG = Largo de la zona alta de las piernas
-skeleton_bone-LOWER_LEG = Largo de la zona baja de las piernas
-skeleton_bone-FOOT_LENGTH = Largo del pie
+skeleton_bone-HIPS_WIDTH = Ancho de la cadera
+skeleton_bone-leg_group = Longitud de la espinilla
+skeleton_bone-UPPER_LEG = Longitud del muslo
+skeleton_bone-LOWER_LEG = Longitud de la espinilla
+skeleton_bone-FOOT_LENGTH = Longitud del pie
 skeleton_bone-FOOT_SHIFT = Desplazamiento del pie
 skeleton_bone-SKELETON_OFFSET = Compensacion del esqueleto
-skeleton_bone-SHOULDERS_DISTANCE = Distancia de los hombros
-skeleton_bone-SHOULDERS_WIDTH = Ancho de los hombros
-skeleton_bone-arm_group = Largo del brazo
-skeleton_bone-UPPER_ARM = Largo de la zona alta del brazo
-skeleton_bone-LOWER_ARM = Largo del antebrazo
-skeleton_bone-HAND_Y = Distancia de la mano Y
-skeleton_bone-HAND_Z = Distancia de la mano Z
+skeleton_bone-SHOULDERS_DISTANCE = Distancia de hombros
+skeleton_bone-SHOULDERS_WIDTH = Ancho de hombros
+skeleton_bone-arm_group = Longitud del brazo
+skeleton_bone-UPPER_ARM = Longitud del brazo
+skeleton_bone-LOWER_ARM = Longitud del antebrazo
+skeleton_bone-HAND_Y = Distancia Y de la mano
+skeleton_bone-HAND_Z = Distancia Z de la mano
 skeleton_bone-ELBOW_OFFSET = Compensacion de los codos
 
 ## Tracker reset buttons
 
 reset-reset_all = Reiniciar todas las proporciones
-reset-full = Reiniciar
+reset-full = Reinicio completo
 reset-mounting = Reiniciar montura
 reset-yaw = Restablecimiento horizontal
 
@@ -96,7 +96,7 @@ serial_detection-close = Cerrar
 ## Navigation bar
 
 navbar-home = Inicio
-navbar-body_proportions = Proporciones corporales
+navbar-body_proportions = Proporciones físicas
 navbar-trackers_assign = Asignación de trackers
 navbar-mounting = Calibración de montura
 navbar-onboarding = Asistente de Configuración
@@ -130,6 +130,7 @@ widget-drift_compensation-clear = Eliminar compensacion del drift
 widget-developer_mode = Modo de desarrollador
 widget-developer_mode-high_contrast = Contraste alto
 widget-developer_mode-precise_rotation = Rotación precisa
+widget-developer_mode-fast_data_feed = Flujo de datos rápido
 widget-developer_mode-filter_slimes_and_hmd = Filtrar Slimes y HMD
 widget-developer_mode-sort_by_name = Ordenar por nombre
 widget-developer_mode-raw_slime_rotation = Rotación sin filtrar
@@ -144,6 +145,8 @@ widget-imu_visualizer-rotation_hide = Ocultar
 
 ## Widget: Skeleton Visualizer
 
+widget-skeleton_visualizer-preview = Previsualización del esqueleto
+widget-skeleton_visualizer-hide = Ocultar
 
 ## Tracker status
 
@@ -178,6 +181,7 @@ tracker-rotation-back = Trasero
 tracker-rotation-back_left = Trasero-Izquierdo
 tracker-rotation-back_right = Trasero-Derecho
 tracker-rotation-custom = Personalizado
+tracker-rotation-overriden = (anulado por el reinicio de montura)
 
 ## Tracker information
 
@@ -241,6 +245,8 @@ tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } mano derecha?
 tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } muslo derecho?
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } tobillo derecho?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } pie derecho?
+tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } mando derecho?
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } torso superior?
 tracker_selection_menu-CHEST = { -tracker_selection-part } pecho?
 tracker_selection_menu-WAIST = { -tracker_selection-part } cintura?
 tracker_selection_menu-HIP = { -tracker_selection-part } cadera?
@@ -264,7 +270,7 @@ tracker_selection_menu-neck_warning-cancel = Cancelar
 
 ## Mounting menu
 
-mounting_selection_menu = ¿Dónde quieres que esté este tracker?
+mounting_selection_menu = ¿Dónde quieres colocar el tracker?
 mounting_selection_menu-close = Cerrar
 
 ## Sidebar settings
@@ -276,6 +282,7 @@ settings-sidebar-fk_settings = Configuración del tracking
 settings-sidebar-gesture_control = Control de los gestos
 settings-sidebar-interface = Interfaz
 settings-sidebar-osc_router = Router OSC
+settings-sidebar-osc_trackers = VRChat OSC Trackers
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
 settings-sidebar-appearance = Apariencia
@@ -318,6 +325,7 @@ settings-general-tracker_mechanics-filtering-amount = Cantidad
 settings-general-tracker_mechanics-drift_compensation = Compensación en la desviación
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensación en la desviación
 settings-general-tracker_mechanics-drift_compensation-amount-label = Cantidad de compensación
+settings-general-tracker_mechanics-drift_compensation-max_resets-label = Usar los últimos X reinicios.
 
 ## FK/Tracking settings
 
@@ -325,7 +333,7 @@ settings-general-fk_settings = Configuración de FK Tracking
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
-settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
+settings-general-fk_settings-leg_tweak-floor_clip = Anclado al suelo
 # Skating correction:
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
@@ -333,21 +341,25 @@ settings-general-fk_settings-leg_tweak-floor_clip = Floor clip
 settings-general-fk_settings-leg_tweak-skating_correction = Corrección del patinaje
 settings-general-fk_settings-leg_tweak-foot_plant = Planta del pie
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Intensidad de la corrección del patinaje
+settings-general-fk_settings-leg_tweak-skating_correction-description = Corrección del patinaje corrige el deslizamiento en el suelo, pero puede disminuir la precisión en ciertos movimientos. Activar esta opción requerirá realizar un reinicio general y recalibrar en el juego.
 settings-general-fk_settings-leg_fk = Tracking de piernas
 settings-general-fk_settings-arm_fk = Tracking de brazos
 settings-general-fk_settings-arm_fk-description = Forzar el seguimiento de los brazos desde el HMD incluso si hay datos de posición de la mano disponibles.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
 settings-general-fk_settings-arm_fk-back = Parte posterior del brazo
-settings-general-fk_settings-arm_fk-back-description = El modo predeterminado, con la parte superior de los brazos hacia atrás y la parte inferior hacia adelante.
+settings-general-fk_settings-arm_fk-back-description = Modo predeterminado, con los brazos hacia atrás y los antebrazos hacia adelante.
 settings-general-fk_settings-arm_fk-tpose_up = T-pose (arriba)
 settings-general-fk_settings-arm_fk-tpose_up-description = Se espera que tus brazos esten relajados, perpendicular a tu cuerpo durante el reinicio completo y 90 grados respecto a tu cuerpo durante el reinicio de montaje.
 settings-general-fk_settings-arm_fk-tpose_down = T-pose (abajo)
 settings-general-fk_settings-arm_fk-tpose_down-description = Se espera que tus brazos estén a 90 grados respecto a tu cuerpo durante el reinicio completo y relajados, perpendicular a tu cuerpo durante el reinicio del montaje.
+settings-general-fk_settings-arm_fk-forward = Siguiente
 settings-general-fk_settings-arm_fk-forward-description = Espera que tus brazos estén 90 grados hacia adelante. Útil para VTubing.
 settings-general-fk_settings-skeleton_settings-description = Activa o desactiva la configuración del esqueleto. Se recomienda dejar esta opción activada.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Modelo de columna extendida
 settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Modelo de pelvis extendida
 settings-general-fk_settings-skeleton_settings-extended_knees_model = Modelo de rodilla extendida
+settings-general-fk_settings-skeleton_settings-ratios = Proporciones del esqueleto
+settings-general-fk_settings-skeleton_settings-ratios-description = Cambia los valores de la configuración del esqueleto. Es posible que debas ajustar tus proporciones de nuevo.
 settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Atribuye la cintura desde el pecho hasta la cadera
 settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Atribuye la cintura desde el pecho hasta las piernas
 settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Atribuye la cadera desde el pecho hasta las piernas
@@ -426,6 +438,7 @@ settings-serial-auto_dropdown_item = Automático
 
 ## OSC router settings
 
+settings-osc-router = Router OSC
 settings-osc-router-enable = Habilitar
 settings-osc-router-enable-description = Activar el reenvío de mensajes
 settings-osc-router-enable-label = Habilitar
@@ -439,6 +452,7 @@ settings-osc-vrchat-enable = Habilitar
 settings-osc-vrchat-enable-description = Alternar el envío y la recepción de datos
 settings-osc-vrchat-enable-label = Habilitar
 settings-osc-vrchat-network = Puertos de red
+settings-osc-vrchat-network-description = Configura los puertos para escuchar y enviar datos a VRChat.
 settings-osc-vrchat-network-address = Dirección de red
 settings-osc-vrchat-network-address-placeholder = Dirección IP de VRChat
 settings-osc-vrchat-network-trackers = Trackers
@@ -452,12 +466,14 @@ settings-osc-vrchat-network-trackers-elbows = Codos
 
 settings-osc-vmc = Captura de movimiento virtual
 settings-osc-vmc-enable = Habilitar
+settings-osc-vmc-enable-description = Alterna el envío y recepción de datos.
 settings-osc-vmc-enable-label = Habilitar
 settings-osc-vmc-network = Puertos de red
 settings-osc-vmc-network-address = Dirección de red
 settings-osc-vmc-network-address-placeholder = Dirección IPV4
 settings-osc-vmc-vrm-model_unloaded = No hay modelo cargado
 settings-osc-vmc-anchor_hip = Anclar a la cadera
+settings-osc-vmc-anchor_hip-description = Ancla el tracking a la cadera, útil para VTubing sentado. Si se deshabilita, carga un modelo VRM.
 settings-osc-vmc-anchor_hip-label = Anclar a la cadera
 
 ## Setup/onboarding menu
@@ -604,18 +620,25 @@ onboarding-automatic_mounting-preparation-title = Preparación
 
 ## Tracker proportions method choose
 
+# Multiline string
+onboarding-choose_proportions-description =
+    Las proporciones físicas se usan para saber las medidas de tu cuerpo. Son requeridas para calculas la posición de los trackers.
+    Si las proporciones guardadas no coinciden con las reales, la calidad de tu tracking será peor y notaras fallos como deslizamiento, desplazamiento o tu cuerpo no coincidirá con tu avatar.
 onboarding-choose_proportions-auto_proportions = Proporciones automáticas
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recomendado
 onboarding-choose_proportions-manual_proportions = Proporciones manuales
 onboarding-choose_proportions-export = Exportar proporciones
+onboarding-choose_proportions-file_type = Archivo de proporciones físicas
 
 ## Tracker manual proportions setup
 
+onboarding-manual_proportions-title = Proporciones físicas manuales
 onboarding-manual_proportions-auto = Proporciones automáticas
 
 ## Tracker automatic proportions setup
 
+onboarding-automatic_proportions-title = Mide tu cuerpo
 onboarding-automatic_proportions-prev_step = Paso anterior
 onboarding-automatic_proportions-requirements-title = Requisitos
 onboarding-automatic_proportions-requirements-next = He leído los requisitos
@@ -623,6 +646,8 @@ onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-processing = Procesando los resultados
 onboarding-automatic_proportions-verify_results-title = Verificar resultados
 onboarding-automatic_proportions-verify_results-processing = Procesando los resultados
+onboarding-automatic_proportions-done-title = Proporciones medidas y guardadas.
+onboarding-automatic_proportions-done-description = ¡Calibración de las proporciones físicas completada!
 
 ## Home
 
