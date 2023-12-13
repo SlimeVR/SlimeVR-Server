@@ -164,7 +164,7 @@ fun provideSteamVRBridge(
 				server,
 				"steamvr",
 				"SteamVR Driver Bridge",
-				Paths.get(OperatingSystem.tempDirectory, "SlimeVRDriver")
+				Paths.get(OperatingSystem.socketDirectory, "SlimeVRDriver")
 					.toString(),
 				computedTrackers
 			)
@@ -214,7 +214,7 @@ fun provideFeederBridge(
 				server,
 				"steamvr_feeder",
 				"SteamVR Feeder Bridge",
-				Paths.get(OperatingSystem.tempDirectory, "SlimeVRInput")
+				Paths.get(OperatingSystem.socketDirectory, "SlimeVRInput")
 					.toString(),
 				FastList()
 			)
