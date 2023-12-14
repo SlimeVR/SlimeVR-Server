@@ -800,7 +800,7 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     You have your trackers and headset on and are wearing them.
     Your trackers and headset are connected to the SlimeVR server and are working properly (ex. no stuttering, disconnecting, etc).
     Your headset is reporting positional data to the SlimeVR server (this generally means having SteamVR running and connected to SlimeVR using SlimeVR's SteamVR driver).
-    Your tracking is working and is accurately representing your movements (ex. they move the right direction when kicking, bending over, sitting, etc).
+    Your tracking is working and is accurately representing your movements (ex. you have performed a full reset and they move the right direction when kicking, bending over, sitting, etc).
 onboarding-automatic_proportions-requirements-next = I have read the requirements
 onboarding-automatic_proportions-check_height-title = Check your height
 onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the headset's (HMD) height as an approximation of your actual height, but it's better to check if they are right yourself!
