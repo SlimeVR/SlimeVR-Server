@@ -244,7 +244,7 @@ export function ProportionsChoose() {
                   </div>
                   <div>
                     <Localized
-                      id="onboarding-choose_proportions-auto_proportions-descriptionv2"
+                      id="onboarding-choose_proportions-auto_proportions-descriptionv3"
                       elems={{ b: <b></b> }}
                     >
                       <Typography
