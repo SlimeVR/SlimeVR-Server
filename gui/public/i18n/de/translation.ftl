@@ -124,6 +124,7 @@ widget-drift_compensation-clear = Driftkompensation zurücksetzen
 
 ## Widget: Clear Reset Mounting
 
+widget-clear_mounting = Befestigungs-Reset zurücksetzen
 
 ## Widget: Developer settings
 
@@ -142,6 +143,11 @@ widget-imu_visualizer = Drehung
 widget-imu_visualizer-rotation_raw = Rohe Drehung
 widget-imu_visualizer-rotation_preview = Vorschau
 widget-imu_visualizer-rotation_hide = Ausblenden
+
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = Skelett Vorschau
+widget-skeleton_visualizer-hide = Ausblenden
 
 ## Tracker status
 
@@ -241,6 +247,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } dem rechten
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } dem rechten Unterschenkel zugewiesen werden?
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part } dem rechten Fuß zugewiesen werden?
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } dem rechten Controller zugewiesen werden?
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } obere Brust?
 tracker_selection_menu-CHEST = { -tracker_selection-part } der Brust zugewiesen werden?
 tracker_selection_menu-WAIST = { -tracker_selection-part } der Taille zugewiesen werden?
 tracker_selection_menu-HIP = { -tracker_selection-part } der Hüfte zugewiesen werden?
@@ -346,13 +353,27 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Bodenclip kann d
 settings-general-fk_settings-leg_tweak-toe_snap-description = Zehen-Ausrichtung versucht, die Rotation Ihrer Füße zu erraten, wenn keine Fuß-Tracker verwendet werden.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Fußkorrektur richtet Ihre Füße parallel zum Boden aus, wenn sie den Boden berühren.
 settings-general-fk_settings-leg_fk = Beintracking
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Aktiviert das Zurücksetzen der Fußausrichtung, indem Sie auf die Zehenspitzen stehen.
+settings-general-fk_settings-leg_fk-reset_mounting_feet = Fußausrichtung zurücksetzen
 settings-general-fk_settings-arm_fk = Arm-Tracking
 settings-general-fk_settings-arm_fk-description = Ändern Sie die Art und Weise, wie die Arme berechnet werden.
 settings-general-fk_settings-arm_fk-force_arms = Arme vom VR-Headset erzwingen
+settings-general-fk_settings-arm_fk-reset_mode-description = Ändern Sie, welche Armhaltung für den Befestigungs-Reset erwartet wird.
+settings-general-fk_settings-arm_fk-back = nach Hinten
+settings-general-fk_settings-arm_fk-back-description = Der Standardmodus, bei dem die Oberarme nach hinten und die Unterarme nach vorne gehen.
+settings-general-fk_settings-arm_fk-tpose_up = T-Pose (oben)
+settings-general-fk_settings-arm_fk-tpose_up-description = Erwartet, dass deine Arme während des vollständigen Zurücksetzens seitlich nach unten gerichtet sind und während des Befestigungs-Reset um 90 Grad nach außen gerichtet sind.
+settings-general-fk_settings-arm_fk-tpose_down = T-Pose (unten)
+settings-general-fk_settings-arm_fk-tpose_down-description = Erwartet, dass deine Arme während des vollständigen Zurücksetzens um 90 Grad nach außen gerichtet sind und während des Befestigungs-Reset seitlich nach unten.
+settings-general-fk_settings-arm_fk-forward = Vorwärts
+settings-general-fk_settings-arm_fk-forward-description = Erwartet, dass deine Arme um 90 Grad nach vorne gerichtet sind. Nützlich für VTubing.
+settings-general-fk_settings-skeleton_settings-toggles = Skelett-Schalter
 settings-general-fk_settings-skeleton_settings-description = Schalten Sie Skeletteinstellungen ein oder aus. Es wird empfohlen, diese eingeschaltet zu lassen.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Erweitertes Wirbelsäulen-Modell
 settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Erweitertes Pelvis-Modell
 settings-general-fk_settings-skeleton_settings-extended_knees_model = Erweitertes Knie-Modell
+settings-general-fk_settings-skeleton_settings-ratios = Skelettverhältnisse
+settings-general-fk_settings-skeleton_settings-ratios-description = Ändert die Werte der Skeletteinstellungen. Nachdem Sie diese geändert haben, müssen Sie möglicherweise Ihre Proportionen anpassen.
 settings-general-fk_settings-self_localization-title = Motion-Capture-Modus
 settings-general-fk_settings-vive_emulation-title = Vive-Simulierung
 settings-general-fk_settings-vive_emulation-description = Simuliere die Tracking-Probleme, welche bei Vive-Trackern auftreten. Dies ist ein Scherz und verschlechtert das Tracking.
@@ -818,10 +839,16 @@ onboarding-automatic_proportions-verify_results-redo = Aufnahme wiederholen
 onboarding-automatic_proportions-verify_results-confirm = Ergebnisse sind korrekt
 onboarding-automatic_proportions-done-title = Körper gemessen und gespeichert.
 onboarding-automatic_proportions-done-description = Ihre Körperproportionen-Kalibrierung ist abgeschlossen!
+onboarding-automatic_proportions-error_modal-confirm = Verstanden!
 
 ## Home
 
 home-no_trackers = Keine Tracker erkannt oder zugewiesen
+
+## Trackers Still On notification
+
+trackers_still_on-modal-confirm = SlimeVR beenden
+trackers_still_on-modal-cancel = Bitte warten...
 
 ## Status system
 

@@ -116,7 +116,7 @@ tracking-paused = Riprendio il tracking
 
 widget-overlay = Overlay
 widget-overlay-is_visible_label = Mostra Overlay in SteamVR
-widget-overlay-is_mirrored_label = Includi uno specchio nel Overlay
+widget-overlay-is_mirrored_label = Mostra Overlay come specchio
 
 ## Widget: Drift compensation
 
@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = Non processato
 widget-imu_visualizer-rotation_preview = Anteprima
 widget-imu_visualizer-rotation_hide = Nascondi
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = Anteprima dello scheletro
+widget-skeleton_visualizer-hide = Nascondi
+
 ## Tracker status
 
 tracker-status-none = Nessuno stato
@@ -152,6 +157,7 @@ tracker-status-error = Errore
 tracker-status-disconnected = Disconnesso
 tracker-status-occluded = Ostruito
 tracker-status-ok = OK
+tracker-status-timed_out = Tempo esaurito
 
 ## Tracker status columns
 
@@ -442,6 +448,9 @@ settings-general-interface-feedback_sound = Suono di feedback
 settings-general-interface-feedback_sound-description = Questa opzione riprodurrà un suono quando viene effettuato un reset
 settings-general-interface-feedback_sound-label = Suono di feedback
 settings-general-interface-feedback_sound-volume = Volume del suono di feedback
+settings-general-interface-connected_trackers_warning = Avviso di tracker connessi
+settings-general-interface-connected_trackers_warning-description = Questa opzione mostrerà un pop-up ogni volta che proverai ad uscire da SmileVR mentre uno o più tracker sono connessi. Ció ti permetterà di ricordarti di spegnere i tuoi tracker per preservarne la durata delle batterie.
+settings-general-interface-connected_trackers_warning-label = Avviso di tracker connessi alla chiusura dell'applicazione
 
 ## Serial settings
 
@@ -771,6 +780,13 @@ onboarding-choose_mounting-manual_mounting = Posizionamento manuale
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Raccomandato
 onboarding-choose_mounting-manual_mounting-description = Questo processo ti lascerá scegliere manualmente le direzioni per la posizione di montaggio di tutti i tracker
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    Sei sicuro di voler fare
+    la calibrazione automatica di posizionamento?
+onboarding-choose_mounting-manual_modal-description = <b>La calibrazione manuale è raccomandata per i nuovi utenti</b>, considerando che le pose necessarie per la calibrazione automatica di posizionamento possono risultare complicate al primo tentativo e potrebbero richiedere un po' di pratica.
+onboarding-choose_mounting-manual_modal-confirm = Sono sicurə di ciò che sto facendo.
+onboarding-choose_mounting-manual_modal-cancel = Annulla
 
 ## Tracker manual mounting setup
 
@@ -901,6 +917,15 @@ onboarding-automatic_proportions-error_modal-confirm = Ho capito!
 ## Home
 
 home-no_trackers = Nessun tracker rilevato o assegnato
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = I tracker sono ancora accesi
+trackers_still_on-modal-description =
+    Uno o più tracker ancora accesi.
+    Vuoi uscire comunque da SmileVR?
+trackers_still_on-modal-confirm = Chiudi SlimeVR
+trackers_still_on-modal-cancel = Attendi un momento...
 
 ## Status system
 

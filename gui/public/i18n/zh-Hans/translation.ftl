@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = 原始旋转
 widget-imu_visualizer-rotation_preview = 预览
 widget-imu_visualizer-rotation_hide = 隐藏
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = 骨架预览
+widget-skeleton_visualizer-hide = 隐藏
+
 ## Tracker status
 
 tracker-status-none = 无状态
@@ -438,6 +443,9 @@ settings-general-interface-feedback_sound = 声音反馈
 settings-general-interface-feedback_sound-description = 开启此选项会在触发重置时发出提示音
 settings-general-interface-feedback_sound-label = 声音反馈
 settings-general-interface-feedback_sound-volume = 提示音音量
+settings-general-interface-connected_trackers_warning = 已连接追踪器警告
+settings-general-interface-connected_trackers_warning-description = 启用本选项后，每次当退出 SlimeVR 时仍有追踪器连接着会显示通知，提醒你在使用完毕时关闭追踪器电源来节省电池电量。
+settings-general-interface-connected_trackers_warning-label = 退出时，有追踪器连接中则显示警告
 
 ## Serial settings
 
@@ -762,6 +770,11 @@ onboarding-choose_mounting-manual_mounting = 手动设置佩戴方向
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = 推荐
 onboarding-choose_mounting-manual_mounting-description = 这将需要你手动选择每个追踪器的佩戴方向
+# Multiline text
+onboarding-choose_mounting-manual_modal-title = 确定要进行自动佩戴校准？
+onboarding-choose_mounting-manual_modal-description = <b>我们建议新手使用手动佩戴校准</b>，因为自动佩戴校准的姿势要一次做正确比较困难，可能需要一些练习。
+onboarding-choose_mounting-manual_modal-confirm = 我已知晓
+onboarding-choose_mounting-manual_modal-cancel = 取消
 
 ## Tracker manual mounting setup
 
@@ -889,6 +902,15 @@ onboarding-automatic_proportions-error_modal-confirm = 了解！
 ## Home
 
 home-no_trackers = 未检测到或未分配追踪器
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = 有追踪器的电源还开着
+trackers_still_on-modal-description =
+    至少有一个追踪器的电源还开着。
+    确定要退出 SlimeVR 吗？
+trackers_still_on-modal-confirm = 退出 SlimeVR
+trackers_still_on-modal-cancel = 等会…
 
 ## Status system
 
