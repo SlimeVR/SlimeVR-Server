@@ -25,7 +25,7 @@ public class ProvisioningHandler implements SerialListener {
 	private final Timer provisioningTickTimer = new Timer("ProvisioningTickTimer");
 	private long lastStatusChange = -1;
 	private byte connectRetries = 0;
-	private final byte MAX_CONNECTION_RETRIES = 2;
+	private final byte MAX_CONNECTION_RETRIES = 1;
 	private final VRServer vrServer;
 
 	public ProvisioningHandler(VRServer vrServer) {
