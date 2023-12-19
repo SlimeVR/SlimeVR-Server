@@ -76,7 +76,7 @@ class UDPDevice(
 			super.firmwareVersion = firmwareVersion
 		}
 
-	fun getTracker(id: Int): Tracker? {
+	override fun getTracker(id: Int): Tracker? {
 		return trackers[id]
 	}
 }

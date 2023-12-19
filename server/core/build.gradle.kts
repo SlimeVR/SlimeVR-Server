@@ -67,6 +67,7 @@ dependencies {
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 	implementation("it.unimi.dsi:fastutil:8.5.12")
+	implementation("org.hid4java:hid4java:0.7.0")
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework

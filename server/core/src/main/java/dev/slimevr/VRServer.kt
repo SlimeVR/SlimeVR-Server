@@ -24,6 +24,7 @@ import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerUtils
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
+import dev.slimevr.tracking.trackers.hid.TrackersHID
 import dev.slimevr.util.ann.VRServerThread
 import dev.slimevr.websocketapi.WebSocketVRBridge
 import io.eiren.util.ann.ThreadSafe
@@ -58,6 +59,7 @@ class VRServer @JvmOverloads constructor(
 	val humanPoseManager: HumanPoseManager
 	private val trackers: MutableList<Tracker> = FastList()
 	val trackersServer: TrackersUDPServer
+	val trackersHidDevice: TrackersHID
 	private val bridges: MutableList<Bridge> = FastList()
 	private val tasks: Queue<Runnable> = LinkedBlockingQueue()
 	private val newTrackersConsumers: MutableList<Consumer<Tracker>> = FastList()
@@ -118,6 +120,11 @@ class VRServer @JvmOverloads constructor(
 		trackersServer = TrackersUDPServer(
 			trackerPort,
 			"Sensors UDP server"
+		) { tracker: Tracker -> registerTracker(tracker) }
+
+		// Start service for USB HID trackers
+		trackersHidDevice = TrackersHID(
+			"Sensors HID service"
 		) { tracker: Tracker -> registerTracker(tracker) }
 
 		// Start bridges for SteamVR and Feeder

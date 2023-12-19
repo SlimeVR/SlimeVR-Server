@@ -25,4 +25,8 @@ open class Device {
 		@JvmStatic
 		protected val nextLocalDeviceId = AtomicInteger()
 	}
+	
+	open fun getTracker(id: Int): Tracker? {
+		return trackers[id]
+	}
 }
