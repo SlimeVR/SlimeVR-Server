@@ -110,7 +110,7 @@ bvh-recording = Registrazione in corso...
 ## Tracking pause
 
 tracking-unpaused = Pausa il tracking
-tracking-paused = Riprendio il tracking
+tracking-paused = Riprendi il tracking
 
 ## Widget: Overlay settings
 
@@ -827,10 +827,10 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = Proporzioni automatiche
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Raccomandato
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
     Questo indovinerà le tue proporzioni registrando un campione dei tuoi movimenti e passandolo attraverso un algoritmo.
     
-    <b>Ciò richiede che il tuo HMD sia collegato a SlimeVR!</b>
+    <b>Ciò richiede che il tuo visore (HMD) sia collegato a SlimeVR e indossato  correttaments sulla tua testa</b>
 onboarding-choose_proportions-manual_proportions = Proporzioni manuali
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Per piccole modifiche
@@ -861,12 +861,13 @@ onboarding-automatic_proportions-put_trackers_on-description = Per calibrare le 
 onboarding-automatic_proportions-put_trackers_on-next = Sto indossando tutti i miei tracker
 onboarding-automatic_proportions-requirements-title = Requisiti
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
+onboarding-automatic_proportions-requirements-descriptionv2 =
     Hai almeno abbastanza tracker per tracciare i tuoi piedi (generalmente 5 tracker).
-    Hai indossato i tuoi tracker e il visore.
-    I tuoi tracker e il visore sono connessi al server di SlimeVR.
-    I tuoi tracker e il visore stanno funzionando correttamente con il server di SlimeVR.
+    Hai i tuoi tracker e il visore accessi e li stai indossando.
+    I tuoi tracker e il visore sono connessi al server di SlimeVR e stanno funzionando correttamente (e.g. non si bloccano, disconnettono, etc.)
     Il tuo visore sta riportando dati di posizione al server di SlimeVR (ciò significa generalmente avere SteamVR in esecuzione e connesso a SlimeVR usando il driver di SlimeVR per SteamVR).
+    Il tuo visore sta riportando dati di posizione al server di SlimeVR (ciò significa generalmente avere SteamVR in esecuzione e connesso a SlimeVR usando il driver di SlimeVR per SteamVR).
+    Il tuo tracciamento funziona e rappresenta accuratamente i tuoi movimenti (e.g. hai eseguito un reset completo e i traker si muovono nella giusta direzione quando calci, ti pieghi, ti siedi, ecc.).
 onboarding-automatic_proportions-requirements-next = Ho letto i requisiti.
 onboarding-automatic_proportions-check_height-title = Controlla la tua altezza
 onboarding-automatic_proportions-check_height-description = Usiamo la tua altezza come base delle nostre misurazioni utilizzando l'altezza dell'HMD come approssimazione della tua altezza effettiva, ma è meglio controllare se il valore è giusto!
