@@ -157,6 +157,7 @@ tracker-status-error = Fehler
 tracker-status-disconnected = Getrennt
 tracker-status-occluded = Verdeckt
 tracker-status-ok = Verbunden
+tracker-status-timed_out = Zeitüberschreitung
 
 ## Tracker status columns
 
@@ -374,7 +375,15 @@ settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Erweitert
 settings-general-fk_settings-skeleton_settings-extended_knees_model = Erweitertes Knie-Modell
 settings-general-fk_settings-skeleton_settings-ratios = Skelettverhältnisse
 settings-general-fk_settings-skeleton_settings-ratios-description = Ändert die Werte der Skeletteinstellungen. Nachdem Sie diese geändert haben, müssen Sie möglicherweise Ihre Proportionen anpassen.
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Taille aus Brust zu Hüfte berechnen
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Taille von Brust zu Beine berechnen
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Hüfte von Brust zu Beine berechnen
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Hüfte von Taille zu Beine berechnen
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Interpolieren der horizontalen und Torsionsrotation der Hüfte mit denen der Beine
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Interpolation der horizontalen und Torsionsrotationen der Knietracker mit denen der Fußgelenke
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Interpolation der horizontalen und Torsionsrotationen der Knie mit denen der Fußgelenke
 settings-general-fk_settings-self_localization-title = Motion-Capture-Modus
+settings-general-fk_settings-self_localization-description = Der Motion-Capture-Modus ermöglicht es dem Skelett, ungefähr die eigene Position ohne Headset oder Tracker zu verfolgen. Beachten Sie, dass diese Funktion Fuß- und Kopf-Tracker benötigt und noch experimentell ist.
 settings-general-fk_settings-vive_emulation-title = Vive-Simulierung
 settings-general-fk_settings-vive_emulation-description = Simuliere die Tracking-Probleme, welche bei Vive-Trackern auftreten. Dies ist ein Scherz und verschlechtert das Tracking.
 settings-general-fk_settings-vive_emulation-label = Vive-Simulierung
@@ -409,6 +418,7 @@ settings-general-gesture_control-mountingResetDelay = Befestigungs-Reset-Verzög
 settings-general-gesture_control-mountingResetTaps = Anzahl für Befestigungs-Reset
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Tracker über Schwellwert
+settings-general-gesture_control-numberTrackersOverThreshold-description = Erhöhen Sie diesen Wert wenn Tipp-Erkennung nicht funktioniert. Setzen Sie den Wert nicht höher als benötigt, da dies Fehlauslöser verursachen kann.
 
 ## Appearance settings
 
@@ -427,6 +437,7 @@ settings-interface-appearance-font-placeholder = Standard-Schriftart
 settings-interface-appearance-font-os_font = Betriebssystem-Schriftart
 settings-interface-appearance-font-slime_font = Standard-Schriftart
 settings-interface-appearance-font_size = Standard-Schriftgröße
+settings-interface-appearance-font_size-description = Verändert die Schriftgröße der gesamten Oberfläche außer diesem Einstellungs-Panel.
 
 ## Notification settings
 
@@ -438,6 +449,9 @@ settings-general-interface-feedback_sound = Feedback-Geräusch
 settings-general-interface-feedback_sound-description = Diese Option wird ein Geräusch abspielen, wenn ein Reset ausgeführt wurde.
 settings-general-interface-feedback_sound-label = Feedback-Geräusch
 settings-general-interface-feedback_sound-volume = Feedback-Sound-Lautstärke
+settings-general-interface-connected_trackers_warning = Warnung zu verbundenen Trackern
+settings-general-interface-connected_trackers_warning-description = Diese Option zeigt jedes Mal ein Pop-up-Fenster an, wenn Sie versuchen, SlimeVR zu beenden, während ein oder mehrere Tracker verbunden sind. Es erinnert Sie daran, die Tracker auszuschalten, um die Akkulaufzeit zu verlängern.
+settings-general-interface-connected_trackers_warning-label = Warnung vor verbundenen Trackern beim Verlassen
 
 ## Serial settings
 
@@ -589,6 +603,13 @@ onboarding-reset_tutorial-1 =
     
     Sie müssen dafür in einer I-Pose stehen. Es gibt eine Verzögerung von 3 Sekunden (konfigurierbar), bevor der Reset tatsächlich durchgeführt wird.
     Dadurch werden die Position und Rotation aller Ihrer Tracker vollständig zurückgesetzt. Dies sollte die meisten Probleme beheben.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    Tippen Sie { $taps } mal auf den markierten Tracker um einen Befestigungs-Reset auszulösen.
+    
+    Ein Befestigungs-Reset hilft dabei, die Tracker neu auszurichten, so wie diese tatsächlich an Ihnen angebracht sind. Zum Beispiel, wenn Sie ein Tracker versehentlich verschoben haben und dessen Orientierung sich stark verändert hat.
+    
+    Sie müssen sich in einer "Skifahren"-Pose, wie im Befestigungs-Assistenten gezeigt wird, befinden. Nach dem Auslösen wird der Reset nach 3 Sekunden (konfigurierbar) durchgeführt.
 
 ## Setup start
 
@@ -654,6 +675,8 @@ onboarding-assignment_tutorial = So bereiten Sie einen SlimeVR-Tracker vor, bevo
 onboarding-assignment_tutorial-first_step = 1. Platzieren Sie einen Körperteilaufkleber (falls vorhanden) auf dem Tracker Ihrer Wahl
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Aufkleber
+onboarding-assignment_tutorial-second_step-v2 = 2. Befestigen Sie den Riemen an ihrem Tracker, wobei die Klettseite des Riemens in dieselbe Richtung zeigt wie das SlimeVR Logo Ihres Trackers:
+onboarding-assignment_tutorial-second_step-continuation-v2 = Die Klettseite für den Erweiterungstracker sollte nach oben zeigen, wie in der folgenden Abbildung:
 onboarding-assignment_tutorial-done = Ich habe Aufkleber und Bänder angebracht!
 
 ## Tracker assignment setup
@@ -753,6 +776,13 @@ onboarding-choose_mounting-manual_mounting = Manuelle Befestigungsposition
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Empfohlen
 onboarding-choose_mounting-manual_mounting-description = Auf diese Weise können Sie die Montagerichtung für jeden Tracker manuell auswählen
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    Sind Sie sich sicher, dass Sie
+    die automatische Tracker-Ausrichtung durchführen möchten?
+onboarding-choose_mounting-manual_modal-description = <b>Die manuelle Tracker-Ausrichtung wird für neue Benutzer empfohlen</b>, da die Posen der automatischen Tracker-Ausrichtung anfangs schwer zu treffen sind und möglicherweise etwas Übung erfordern.
+onboarding-choose_mounting-manual_modal-confirm = Ich bin mir sicher, was ich tue
+onboarding-choose_mounting-manual_modal-cancel = Abbruch
 
 ## Tracker manual mounting setup
 
@@ -790,8 +820,13 @@ onboarding-choose_proportions-auto_proportions = Automatische Proportionen
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Empfohlen
 onboarding-choose_proportions-manual_proportions = Manuelle Körperproportionen
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = Für kleine Anpassungen
 onboarding-choose_proportions-manual_proportions-description = Auf diese Weise können Sie Ihre Proportionen manuell anpassen, indem Sie diese direkt ändern
 onboarding-choose_proportions-export = Proportionen exportieren
+onboarding-choose_proportions-import = Proportionen importieren
+onboarding-choose_proportions-import-success = Importiert
+onboarding-choose_proportions-import-failed = Fehlgeschlagen
 onboarding-choose_proportions-file_type = Körperproportions-Datei
 
 ## Tracker manual proportions setup
@@ -824,6 +859,14 @@ onboarding-automatic_proportions-start_recording-next = Aufnahme starten
 onboarding-automatic_proportions-recording-title = Aufnahme
 onboarding-automatic_proportions-recording-description-p0 = Aufnahme läuft...
 onboarding-automatic_proportions-recording-description-p1 = Machen Sie die unten beschriebenen Bewegungen:
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    Stehen Sie aufrecht und drehen Sie den Kopf im Kreis.
+    Beugen Sie den Rücken nach vorne und gehen Sie in die Hocke. Schauen Sie in der Hocke erst nach links, dann nach rechts.
+    Drehen Sie Ihren Oberkörper nach links (gegen den Uhrzeigersinn), dann strecken Sie sich nach unten zum Boden.
+    Drehen Sie Ihren Oberkörper nach rechts (im Uhrzeigersinn) und strecken Sie ihn dann nach unten zum Boden.
+    Rollen Sie Ihre Hüften in einer kreisförmigen Bewegung, als ob Sie einen Hula-Hoop-Reifen benutzen würden.
+    Wenn die Aufnahme noch nicht zu Ende ist, können Sie diese Schritte wiederholen, bis sie zu Ende ist.
 onboarding-automatic_proportions-recording-processing = Aufnahme wird verarbeitet...
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
