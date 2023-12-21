@@ -23,8 +23,8 @@ import dev.slimevr.tracking.trackers.DeviceManager
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerUtils
-import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
 import dev.slimevr.tracking.trackers.hid.TrackersHID
+import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
 import dev.slimevr.util.ann.VRServerThread
 import dev.slimevr.websocketapi.WebSocketVRBridge
 import io.eiren.util.ann.ThreadSafe
