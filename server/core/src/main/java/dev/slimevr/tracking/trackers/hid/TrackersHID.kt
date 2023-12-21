@@ -107,8 +107,10 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 				allowFiltering = true,
 				needsReset = true,
 				needsMounting = true,
-				usesTimeout = true
+				usesTimeout = false
 			)
+			// usesTimeout false because HID trackers aren't "Disconnected" unless receiver is physically removed probably
+			// TODO: Could tracker maybe use "Timed out" status without marking as disconnecting?
 			device.trackers[trackerId] = imuTracker
 			trackersConsumer.accept(imuTracker)
 			imuTracker.status = sensorStatus
