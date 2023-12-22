@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = صافي
 widget-imu_visualizer-rotation_preview = عرض مسبق
 widget-imu_visualizer-rotation_hide = إخفاء
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = إظهار الهيكل العظمي
+widget-skeleton_visualizer-hide = إخفاء
+
 ## Tracker status
 
 tracker-status-none = لا توجد حالة
@@ -152,6 +157,7 @@ tracker-status-error = خطأ
 tracker-status-disconnected = فقد الاتصال
 tracker-status-occluded = محجوب
 tracker-status-ok = حسنًا
+tracker-status-timed_out = انتهت المهله
 
 ## Tracker status columns
 
@@ -451,6 +457,9 @@ settings-general-interface-feedback_sound = صوت ردود الفعل
 settings-general-interface-feedback_sound-description = سيصدر هذا الخيار صوتًا عند تشغيل إعادة الضبط
 settings-general-interface-feedback_sound-label = صوت ردود الفعل
 settings-general-interface-feedback_sound-volume = حجم صوت ردود الفعل
+settings-general-interface-connected_trackers_warning = تحذير عن أجهزة التعقب المتصلة
+settings-general-interface-connected_trackers_warning-description = سيعرض هذا الخيار نافذة كل مرة تحاول فيها الخروج من SlimeVR أثناء وجود جهاز أو أكثر من أجهزة التعقب المتصلة. سيذكرك بإيقاف تشغيل أجهزة التعقب عند الانتهاء للحفاظ على عمر البطارية.
+settings-general-interface-connected_trackers_warning-label = تحذير عن أجهزة التعقب المتصلة عند الخروج
 
 ## Serial settings
 
@@ -788,6 +797,13 @@ onboarding-choose_mounting-manual_mounting = التركيب اليدوي
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = المستحسن
 onboarding-choose_mounting-manual_mounting-description = سيسمح لك باختيار اتجاه التثبيت يدويًا لكل جهاز تعقب
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    هل أنت متأكد من أنك تريد 
+    معايرة التركيب التلقائي؟
+onboarding-choose_mounting-manual_modal-description = <b>يوصى بمعايرة التركيب اليدوي للمستخدمين الجدد</b> ، حيث قد يكون من الصعب الحصول على أوضاع معايرة التركيب التلقائي الصحيحة من اول مرة وقد تتطلب بعض التمرين.
+onboarding-choose_mounting-manual_modal-confirm = أنا أعرف ماذا أفعل
+onboarding-choose_mounting-manual_modal-cancel = إلغاء
 
 ## Tracker manual mounting setup
 
@@ -828,10 +844,10 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = النسب التلقائية
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = الموصى به
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
     سيؤدي ذلك إلى تخمين نسبك عن طريق تسجيل عينة من تحركاتك وتمريرها عبر خوارزمية.
     
-    <b>هذا يتطلب توصيل HMD الخاص بك ب SlimeVR!</b>
+    <b>يتطلب ذلك توصيل جهاز الواقع الافتراضي (HMD) ب SlimeVR و وضعها  على رأسك!</b>
 onboarding-choose_proportions-manual_proportions = النسب اليدوية
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = للمسات الصغيرة
@@ -862,13 +878,12 @@ onboarding-automatic_proportions-put_trackers_on-description = لمعايرة ن
 onboarding-automatic_proportions-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
 onboarding-automatic_proportions-requirements-title = المتطلبات
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
-    لديك على الأقل ما يكفي من أجهزة تعقب لتعقب قدميك (بشكل عام 5 أجهزة تعقب).
-    ارتديت أجهزة التعقب وسماعة الرأس.
-    شغلت أجهزة التعقب وسماعة الرأس.
-    أجهزة التعقب وسماعات الرأس متصلة بسرفر سلايم في ار.
-    تعمل أجهزة التتبع وسماعات الرأس بشكل صحيح داخل سرفر سلايم في ار .
-    تقوم سماعة الرأس الخاصة بك بالإبلاغ عن بيانات الموقع إلى  سرفر سلايم في ار (وهذا يعني بشكل عام تشغيل سلايم في ار وتوصيله بـ سلايم في ار باستخدام برنامج تشغيل ستيم في ار  من سلايم في ار ).
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    لديك على الأقل ما يكفي من أجهزة التعقب لتتبع قدميك (بشكل عام 5 أجهزة تعقب).
+    لديك أجهزة التعقب  وجهاز الواقع الافتراضي الخاص بك وترتديهم.
+    أجهزة التعقب وجهاز الواقع الافتراضي متصلة بخادم SlimeVR وتعمل بشكل صحيح (مثلاً، لا يوجد تأتأة أو قطع اتصال ، إلخ).
+    يقوم جهاز الواقع الافتراضي بالإبلاغ عن البيانات الموضعية إلى خادم SlimeVR (وهذا يعني عموما تشغيل SteamVR وتوصيله ب SlimeVR باستخدام برنامج تشغيل SteamVR الخاص ب SlimeVR).
+    يعمل التتبع الخاص بك ويمثل تحركاتك بدقة (على سبيل المثال ، لقد أجريت إعادة تعيين كاملة وتتحرك في الاتجاه الصحيح عند الركل, الانحناء, الجلوس, إلخ).
 onboarding-automatic_proportions-requirements-next = لقد قرأت المتطلبات
 onboarding-automatic_proportions-check_height-title = تحقق من طولك
 onboarding-automatic_proportions-check_height-description = نستخدم طولك كأساس لقياساتنا باستخدام ارتفاع HMD كتقريب لطولك الفعلي ، ولكن من الأفضل التحقق مما إذا كانت صحيحة بنفسك!
@@ -923,6 +938,15 @@ onboarding-automatic_proportions-error_modal-confirm = مفهوم!
 ## Home
 
 home-no_trackers = لم يتم الكشف أو تعيين عن أي جهاز تعقب
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = أجهزة التعقب لا تزال قيد التشغيل
+trackers_still_on-modal-description =
+    لا يزال واحد أو أكثر من أجهزة التعقب قيد التشغيل.
+    هل مازلت تريد الخروج من SlimeVR؟
+trackers_still_on-modal-confirm = الخروج من SlimeVR
+trackers_still_on-modal-cancel = انتظر...
 
 ## Status system
 
