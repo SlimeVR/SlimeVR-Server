@@ -16,6 +16,16 @@ import java.util.Map;
 
 public class SkeletonConfigManager {
 
+	public static final SkeletonConfigOffsets[] HEIGHT_OFFSETS = new SkeletonConfigOffsets[] {
+		SkeletonConfigOffsets.NECK,
+		SkeletonConfigOffsets.UPPER_CHEST,
+		SkeletonConfigOffsets.CHEST,
+		SkeletonConfigOffsets.WAIST,
+		SkeletonConfigOffsets.HIP,
+		SkeletonConfigOffsets.UPPER_LEG,
+		SkeletonConfigOffsets.LOWER_LEG
+	};
+
 	protected final EnumMap<SkeletonConfigOffsets, Float> configOffsets = new EnumMap<>(
 		SkeletonConfigOffsets.class
 	);
@@ -124,13 +134,11 @@ public class SkeletonConfigManager {
 	}
 
 	private float calculateUserHeight() {
-		return getOffset(SkeletonConfigOffsets.NECK)
-			+ getOffset(SkeletonConfigOffsets.UPPER_CHEST)
-			+ getOffset(SkeletonConfigOffsets.CHEST)
-			+ getOffset(SkeletonConfigOffsets.WAIST)
-			+ getOffset(SkeletonConfigOffsets.HIP)
-			+ getOffset(SkeletonConfigOffsets.UPPER_LEG)
-			+ getOffset(SkeletonConfigOffsets.LOWER_LEG);
+		float height = 0f;
+		for (SkeletonConfigOffsets offset : HEIGHT_OFFSETS) {
+			height += getOffset(offset);
+		}
+		return height;
 	}
 
 	public float getUserHeightFromOffsets() {
@@ -431,7 +439,8 @@ public class SkeletonConfigManager {
 					/ BodyProportionError.eyeHeightToHeightRatio;
 				if (height > 0.5f) { // Reset only if floor level seems right,
 					ProportionLimiter proportionLimiter = BodyProportionError
-						.getProportionLimitForOffset(config);
+						.getProportionLimitMap()
+						.get(config);
 					if (proportionLimiter != null) {
 						setOffset(
 							config,

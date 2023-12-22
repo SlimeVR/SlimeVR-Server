@@ -23,7 +23,7 @@ class AutoBoneStep(
 
 	val eyeHeightToHeightRatio: Float = targetHmdHeight / targetFullHeight
 
-	val maxFrameCount = frames.maxFrameCount
+	var maxFrameCount = frames.maxFrameCount
 
 	val framePlayer1 = TrackerFramesPlayer(frames)
 	val framePlayer2 = TrackerFramesPlayer(frames)

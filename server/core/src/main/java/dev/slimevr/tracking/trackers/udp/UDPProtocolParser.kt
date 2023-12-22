@@ -17,6 +17,9 @@ class UDPProtocolParser {
 				)
 			}
 			connection.lastPacket = System.currentTimeMillis()
+			connection.trackers.forEach { (_, tracker) ->
+				tracker.heartbeat()
+			}
 		}
 		if (packetId == PACKET_BUNDLE) {
 			bundlePackets.clear()

@@ -188,7 +188,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				imuType = sensorType,
 				allowFiltering = true,
 				needsReset = true,
-				needsMounting = true
+				needsMounting = true,
+				usesTimeout = true
 			)
 			connection.trackers[trackerId] = imuTracker
 			trackersConsumer.accept(imuTracker)
@@ -244,21 +245,21 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							parser.write(bb, conn, UDPPacket1Heartbeat)
 							socket.send(DatagramPacket(rcvBuffer, bb.position(), conn.address))
 							if (conn.lastPacket + 1000 < System.currentTimeMillis()) {
-								for (value in conn.trackers.values) {
-									value.status = TrackerStatus.DISCONNECTED
-								}
 								if (!conn.timedOut) {
 									conn.timedOut = true
 									LogManager.info("[TrackerServer] Tracker timed out: $conn")
 								}
 							} else {
-								conn.timedOut = false
 								for (value in conn.trackers.values) {
-									if (value.status == TrackerStatus.DISCONNECTED) {
+									if (value.status == TrackerStatus.DISCONNECTED ||
+										value.status == TrackerStatus.TIMED_OUT
+									) {
 										value.status = TrackerStatus.OK
 									}
 								}
+								conn.timedOut = false
 							}
+
 							if (conn.serialBuffer.isNotEmpty() &&
 								conn.lastSerialUpdate + 500L < System.currentTimeMillis()
 							) {
@@ -271,6 +272,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 								serialBuffer2.setLength(0)
 								conn.serialBuffer.setLength(0)
 							}
+
 							if (conn.lastPingPacketTime + 500 < System.currentTimeMillis()) {
 								conn.lastPingPacketId = random.nextInt()
 								conn.lastPingPacketTime = System.currentTimeMillis()
