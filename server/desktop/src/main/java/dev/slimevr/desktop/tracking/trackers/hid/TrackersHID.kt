@@ -1,4 +1,4 @@
-package dev.slimevr.tracking.trackers.hid
+package dev.slimevr.desktop.tracking.trackers.hid
 
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer
@@ -46,8 +46,8 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			}
 			// TODO: Configure the device here
 			val serial = hidDevice.serialNumber ?: "Unknown HID Device"
-			val product = hidDevice.product
-			val manufacturer = hidDevice.manufacturer
+			// val product = hidDevice.product
+			// val manufacturer = hidDevice.manufacturer
 			this.devicesBySerial[serial]?.let {
 				this.devicesByHID[hidDevice] = it
 				synchronized(this.devices) {

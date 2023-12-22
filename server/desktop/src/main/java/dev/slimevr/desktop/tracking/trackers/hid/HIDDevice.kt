@@ -1,4 +1,4 @@
-package dev.slimevr.tracking.trackers.hid
+package dev.slimevr.desktop.tracking.trackers.hid
 
 import dev.slimevr.tracking.trackers.Device
 
