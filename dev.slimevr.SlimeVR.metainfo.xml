@@ -64,29 +64,29 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
   </provides>
 
   <releases>
-    <release version="0.11.0-rc.2" type="development" date="2023-12-08"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.11.0-rc.2</url></release>
-    <release version="0.11.0-rc.1" type="development" date="2023-11-23"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.11.0-rc.1</url></release>
+    <release version="0.11.0~rc.2" type="development" date="2023-12-08"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.11.0-rc.2</url></release>
+    <release version="0.11.0~rc.1" type="development" date="2023-11-23"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.11.0-rc.1</url></release>
     <release version="0.10.1" date="2023-09-30"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.1</url></release>
-    <release version="0.10.1-rc.1" type="development" date="2023-09-29"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.1-rc.1</url></release>
+    <release version="0.10.1~rc.1" type="development" date="2023-09-29"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.1-rc.1</url></release>
     <release version="0.10.0" date="2023-09-22"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.0</url></release>
-    <release version="0.10.0-rc.2" type="development" date="2023-09-15"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.0-rc.2</url></release>
-    <release version="0.10.0-rc.1" type="development" date="2023-09-02"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.0-rc.1</url></release>
+    <release version="0.10.0~rc.2" type="development" date="2023-09-15"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.0-rc.2</url></release>
+    <release version="0.10.0~rc.1" type="development" date="2023-09-02"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.10.0-rc.1</url></release>
     <release version="0.9.1" date="2023-08-30"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1</url></release>
-    <release version="0.9.1-rc.4" type="development" date="2023-08-28"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.4</url></release>
-    <release version="0.9.1-rc.3" type="development" date="2023-08-19"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.3</url></release>
-    <release version="0.9.1-rc.2" type="development" date="2023-08-15"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.2</url></release>
-    <release version="0.9.1-rc.1" type="development" date="2023-08-13"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.1</url></release>
+    <release version="0.9.1~rc.4" type="development" date="2023-08-28"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.4</url></release>
+    <release version="0.9.1~rc.3" type="development" date="2023-08-19"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.3</url></release>
+    <release version="0.9.1~rc.2" type="development" date="2023-08-15"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.2</url></release>
+    <release version="0.9.1~rc.1" type="development" date="2023-08-13"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.1-rc.1</url></release>
     <release version="0.9.0" date="2023-08-05"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.0</url></release>
-    <release version="0.9.0-rc.2" type="development" date="2023-08-02"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.0-rc.2</url></release>
-    <release version="0.9.0-rc.1" type="development" date="2023-07-31"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.0-rc.1</url></release>
+    <release version="0.9.0~rc.2" type="development" date="2023-08-02"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.0-rc.2</url></release>
+    <release version="0.9.0~rc.1" type="development" date="2023-07-31"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.9.0-rc.1</url></release>
     <release version="0.8.3" date="2023-07-09"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.3</url></release>
     <release version="0.8.2" date="2023-07-09"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.2</url></release>
-    <release version="0.8.2-rc.1" type="development" date="2023-07-07"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.2-rc.1</url></release>
+    <release version="0.8.2~rc.1" type="development" date="2023-07-07"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.2-rc.1</url></release>
     <release version="0.8.1" date="2023-07-04"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.1</url></release>
     <release version="0.8.0" date="2023-06-22"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.0</url></release>
-    <release version="0.8.0-rc.3" type="development" date="2023-06-20"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.0-rc.3</url></release>
-    <release version="0.8.0-rc.2" type="development" date="2023-06-15"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.0-rc.2</url></release>
-    <release version="0.8.0-rc.1" type="development" date="2023-06-01"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.0-rc.1</url></release>
+    <release version="0.8.0~rc.3" type="development" date="2023-06-20"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.0-rc.3</url></release>
+    <release version="0.8.0~rc.2" type="development" date="2023-06-15"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.0-rc.2</url></release>
+    <release version="0.8.0~rc.1" type="development" date="2023-06-01"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.8.0-rc.1</url></release>
     <release version="0.7.1" date="2023-04-14"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.7.1</url></release>
     <release version="0.7.0" date="2023-04-11"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.7.0</url></release>
     <release version="0.6.3" date="2023-02-22"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.6.3</url></release>
