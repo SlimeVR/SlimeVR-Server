@@ -89,7 +89,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 		}
 	}
 
-	private fun setUpSensor(device: Device, trackerId: Int, sensorType: IMUType, sensorStatus: TrackerStatus) {
+	private fun setUpSensor(device: HIDDevice, trackerId: Int, sensorType: IMUType, sensorStatus: TrackerStatus) {
 		// LogManager.info("[TrackerServer] Sensor $trackerId for ${device.name}, status $sensorStatus")
 		var imuTracker = device.getTracker(trackerId)
 		if (imuTracker == null) {
