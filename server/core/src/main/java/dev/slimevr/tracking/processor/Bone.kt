@@ -7,7 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 /**
  * Represents a bone composed of 2 joints: headNode and tailNode.
  */
-class Bone(val boneType: BoneType) {
+class Bone(val boneType: BoneType, val rotationConstraint: Constraint) {
 	private val headNode = TransformNode(true)
 	private val tailNode = TransformNode(false)
 	var parent: Bone? = null
