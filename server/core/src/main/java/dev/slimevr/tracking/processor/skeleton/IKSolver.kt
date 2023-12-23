@@ -2,14 +2,19 @@ package dev.slimevr.tracking.processor.skeleton
 
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.trackers.Tracker
-import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
 /*
- * Implements FABRIK (Forwards And Backwards Reaching Inverse Kinematics)
+ * Implements FABRIK (Forwards And Backwards Reaching Inverse Kinematics) and allows
+ * positional trackers such as vive/tundra trackers to be used in conjunction with
+ * IMU trackers
  */
 
 class IKSolver(val root: Bone) {
+	companion object {
+		private const val TOLERANCE = 0.001f
+	}
+
 	var chainList = mutableListOf<IKChain>()
 	var rootChain: IKChain? = null
 
@@ -132,6 +137,11 @@ class IKSolver(val root: Bone) {
 	}
 
 	fun solve() {
+		// get the distance from the target
+		var perturbationStrength = 0
+		var distSqrToTarget = Float.POSITIVE_INFINITY
+		var lastDistSqrToTarget: Float
+
 		// run up to 100 iterations per tick
 		for (i in 0..100) {
 			for (chain in chainList) {
@@ -139,91 +149,21 @@ class IKSolver(val root: Bone) {
 			}
 			rootChain?.forwardsMulti()
 
-			if (chainList.all {it.solved})
+			lastDistSqrToTarget = distSqrToTarget
+			distSqrToTarget = chainList.first().getTargetDistance()
+			if (distSqrToTarget < TOLERANCE)
 				break
+
+			// If the distance to the target is not changing the algorithm might be in a deadlock
+			// to solve this introduce some perturbations in the bones closest to the target to allow
+			// the parent bones to bend more.
+			if (lastDistSqrToTarget == distSqrToTarget) {
+				perturbationStrength += 2
+				chainList.first().firstBonePerturbation = perturbationStrength
+			}
 		}
+
 		// update transforms
 		root.update()
-	}
-}
-
-class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int,
-				val baseConstraint: Tracker? , val tailConstraint: Tracker?) {
-	private val squThreshold = 0.00001f
-
-	// state variables
-	var children = mutableListOf<IKChain>()
-	var target = Vector3.NULL
-	var solved = false
-	private var positions = getPositionList()
-
-	private fun getPositionList(): MutableList<Vector3> {
-		val posList = mutableListOf<Vector3>()
-		for (n in nodes) {
-			posList.add(n.getPosition())
-		}
-		posList.add(nodes.last().getTailPosition())
-
-		return posList
-	}
-
-	fun backwards() {
-		// start at the constraint or the centroid of the children
-		if (tailConstraint == null && children.size > 1)
-			target /= children.size.toFloat()
-		else
-			target = tailConstraint?.position ?: Vector3.NULL
-
-		if ((positions.last() - target).lenSq() > squThreshold) {
-			// set the end node to target
-			positions[positions.size - 1] = target
-
-			for (i in positions.size - 2 downTo 0) {
-				val direction = (positions[i] - positions[i + 1]).unit()
-				positions[i] = positions[i + 1] + (direction * nodes[i].length)
-			}
-			solved = false
-		} else {
-			solved = true
-		}
-
-		if (parent != null)
-			parent!!.target += positions[0]
-	}
-
-	private fun forwards() {
-		if (baseConstraint != null)
-			positions[0] = baseConstraint.position
-		else if (parent != null)
-			positions[0] = parent!!.positions.last()
-
-		for (i in 1 until positions.size - 1) {
-			val direction = (positions[i] - positions[i - 1]).unit()
-
-			setBoneRotation(nodes[i - 1], direction)
-
-			positions[i] = positions[i - 1] + (direction * nodes[i - 1].length)
-		}
-
-		// point the last bone at the target
-		val direction = (target - positions[positions.size - 2]).unit()
-		positions[positions.size - 1] = positions[positions.size - 2] + (direction * nodes.last().length)
-		setBoneRotation(nodes.last(), direction)
-
-		// reset sub-base target
-		target = Vector3.NULL
-	}
-
-	fun forwardsMulti() {
-		forwards()
-
-		for (c in children) {
-			c.forwardsMulti()
-		}
-	}
-
-	private fun setBoneRotation(bone: Bone, rotationVector: Vector3) {
-		val rotation = bone.constraint.applyConstraint(rotationVector, bone.parent)
-		bone.setRotationRaw(rotation)
 	}
 }
