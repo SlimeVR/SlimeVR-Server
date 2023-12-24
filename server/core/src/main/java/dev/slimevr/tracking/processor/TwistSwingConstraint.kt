@@ -6,15 +6,8 @@ import io.github.axisangles.ktmath.Vector3
 
 
 class TwistSwingConstraint(val twist: Float, val swing: Float) : Constraint()  {
-	private fun project(vector: Vector3, onNormal: Vector3): Vector3 {
-		val sqrMag = onNormal.lenSq()
-		val dot = vector.dot(onNormal)
-		return onNormal * (dot / sqrMag)
-	}
-
 	private fun decompose(rotation: Quaternion, twistAxis: Vector3): Pair<Quaternion, Quaternion> {
-		val vector = Vector3(rotation.x, rotation.y, rotation.z)
-		val projection = project(vector, twistAxis)
+		val projection = rotation.project(twistAxis)
 
 		val twist = Quaternion(rotation.w, projection.x, projection.y, projection.z).unit()
 		val swing = rotation * twist.inv()
@@ -58,6 +51,6 @@ class TwistSwingConstraint(val twist: Float, val swing: Float) : Constraint()  {
 			twistQ = constrain(twistQ, twist)
 		}
 
-		return parent.getGlobalRotation() * (swingQ * twistQ) * parent.getGlobalRotation().inv()
+		return parent.getGlobalRotation() * (swingQ * twistQ)
 	}
 }
