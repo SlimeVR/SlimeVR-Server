@@ -13,7 +13,11 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 	// state variables
 	var children = mutableListOf<IKChain>()
 	var target = Vector3.NULL
+	var distToTargetSqr = Float.POSITIVE_INFINITY
+	var lastDistToTargetSqr = Float.POSITIVE_INFINITY
 	private var positions = getPositionList()
+
+	// deadlock escaping vars
 	var firstBonePerturbation = 0
 
 	private fun getPositionList(): MutableList<Vector3> {
@@ -74,8 +78,18 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 		}
 	}
 
-	fun getTargetDistance(): Float {
-		return (positions.last() - (tailConstraint?.position ?: Vector3.NULL)).lenSq()
+	// Updates the distance to target and last distance to target variables
+	// and returns the new distance to the target
+	fun computeTargetDistance(): Float {
+		if (tailConstraint != null) {
+			lastDistToTargetSqr = distToTargetSqr
+			distToTargetSqr = (positions.last() - (tailConstraint.position)).lenSq()
+		} else {
+			lastDistToTargetSqr = distToTargetSqr
+			distToTargetSqr = 0.0f
+		}
+
+		return distToTargetSqr
 	}
 
 	// Sets a bones rotation from a rotation vector after constraining the rotation
