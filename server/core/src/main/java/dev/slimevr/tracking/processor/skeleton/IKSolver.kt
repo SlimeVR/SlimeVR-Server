@@ -2,7 +2,6 @@ package dev.slimevr.tracking.processor.skeleton
 
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.trackers.Tracker
-import io.github.axisangles.ktmath.Vector3
 
 /*
  * Implements FABRIK (Forwards And Backwards Reaching Inverse Kinematics) and allows
@@ -12,7 +11,8 @@ import io.github.axisangles.ktmath.Vector3
 
 class IKSolver(val root: Bone) {
 	companion object {
-		private const val TOLERANCE = 0.001f
+		private const val TOLERANCE_SQR = 1e-8 // == 0.0001 cm
+		private const val MAX_ITERATIONS = 100
 	}
 
 	var chainList = mutableListOf<IKChain>()
@@ -137,30 +137,28 @@ class IKSolver(val root: Bone) {
 	}
 
 	fun solve() {
-		// get the distance from the target
-		var perturbationStrength = 0
-		var distSqrToTarget = Float.POSITIVE_INFINITY
-		var lastDistSqrToTarget: Float
-
-		// run up to 100 iterations per tick
-		for (i in 0..100) {
+		// run up to MAX_ITERATIONS iterations per tick
+		for (i in 0..MAX_ITERATIONS) {
 			for (chain in chainList) {
 				chain.backwards()
 			}
 			rootChain?.forwardsMulti()
 
-			lastDistSqrToTarget = distSqrToTarget
-			distSqrToTarget = chainList.first().getTargetDistance()
-			if (distSqrToTarget < TOLERANCE)
-				break
+			// if all chains have reached their target the chain is solved
+			var solved = true
+			for (chain in chainList) {
+				if (chain.computeTargetDistance() > TOLERANCE_SQR) {
+					solved = false
+					break
+				}
+			}
 
-			// If the distance to the target is not changing the algorithm might be in a deadlock
+			if (solved) break
+
+			// TODO If the distance to the target is not changing the algorithm might be in a deadlock
 			// to solve this introduce some perturbations in the bones closest to the target to allow
 			// the parent bones to bend more.
-			if (lastDistSqrToTarget == distSqrToTarget) {
-				perturbationStrength += 2
-				chainList.first().firstBonePerturbation = perturbationStrength
-			}
+
 		}
 
 		// update transforms
