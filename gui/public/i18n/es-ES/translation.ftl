@@ -124,6 +124,7 @@ widget-drift_compensation-clear = Eliminar compensacion del drift
 
 ## Widget: Clear Reset Mounting
 
+widget-clear_mounting = Limpiar reinicio de montura
 
 ## Widget: Developer settings
 
@@ -257,6 +258,7 @@ tracker_selection_menu-LEFT_HAND = { -tracker_selection-part } mano izquierda?
 tracker_selection_menu-LEFT_UPPER_LEG = { -tracker_selection-part } muslo izquierdo?
 tracker_selection_menu-LEFT_LOWER_LEG = { -tracker_selection-part } tobillo izquierdo?
 tracker_selection_menu-LEFT_FOOT = { -tracker_selection-part } pie izquierdo?
+tracker_selection_menu-LEFT_CONTROLLER = { -tracker_selection-part } mando izquierdo?
 tracker_selection_menu-unassigned = Trackers sin asignar
 tracker_selection_menu-assigned = Trackers asignados
 tracker_selection_menu-dont_assign = No asignar
@@ -323,6 +325,10 @@ settings-general-tracker_mechanics-filtering-type-prediction = Predicción
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduce la latencia y hace que los movimientos sean mas inmediatos, pero puede aumentar la fluctuación.
 settings-general-tracker_mechanics-filtering-amount = Cantidad
 settings-general-tracker_mechanics-drift_compensation = Compensación en la desviación
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-description =
+    Compensa la desviación horizontal del IMU aplicando una rotación inversa.
+    Cambia la cantidad de compensación y de reinicios que se tienen en cuenta.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensación en la desviación
 settings-general-tracker_mechanics-drift_compensation-amount-label = Cantidad de compensación
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Usar los últimos X reinicios.
@@ -342,6 +348,7 @@ settings-general-fk_settings-leg_tweak-skating_correction = Corrección del pati
 settings-general-fk_settings-leg_tweak-foot_plant = Planta del pie
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Intensidad de la corrección del patinaje
 settings-general-fk_settings-leg_tweak-skating_correction-description = Corrección del patinaje corrige el deslizamiento en el suelo, pero puede disminuir la precisión en ciertos movimientos. Activar esta opción requerirá realizar un reinicio general y recalibrar en el juego.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Anclado al suelo puede reducir o incluso eliminar el atravesar el piso con tu modelo. Al habilitar esto, asegúrese de hacer un "reinicio completo" y recalibrar en el juego.
 settings-general-fk_settings-leg_fk = Tracking de piernas
 settings-general-fk_settings-arm_fk = Tracking de brazos
 settings-general-fk_settings-arm_fk-description = Forzar el seguimiento de los brazos desde el HMD incluso si hay datos de posición de la mano disponibles.
