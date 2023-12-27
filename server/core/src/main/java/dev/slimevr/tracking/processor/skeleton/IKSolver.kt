@@ -9,14 +9,14 @@ import dev.slimevr.tracking.trackers.Tracker
  * IMU trackers
  */
 
-class IKSolver(val root: Bone) {
+class IKSolver(private val root: Bone) {
 	companion object {
 		private const val TOLERANCE_SQR = 1e-8 // == 0.0001 cm
 		private const val MAX_ITERATIONS = 100
 	}
 
-	var chainList = mutableListOf<IKChain>()
-	var rootChain: IKChain? = null
+	private var chainList = mutableListOf<IKChain>()
+	private var rootChain: IKChain? = null
 
 	fun buildChains(trackers: List<Tracker>) {
 		chainList = mutableListOf()
@@ -154,11 +154,6 @@ class IKSolver(val root: Bone) {
 			}
 
 			if (solved) break
-
-			// TODO If the distance to the target is not changing the algorithm might be in a deadlock
-			// to solve this introduce some perturbations in the bones closest to the target to allow
-			// the parent bones to bend more.
-
 		}
 
 		// update transforms
