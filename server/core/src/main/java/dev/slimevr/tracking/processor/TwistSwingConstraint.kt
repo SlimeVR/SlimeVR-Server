@@ -5,11 +5,11 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
 
-class TwistSwingConstraint(val twist: Float, val swing: Float) : Constraint()  {
+class TwistSwingConstraint(private val twist: Float, private val swing: Float) : Constraint()  {
 	private fun decompose(rotation: Quaternion, twistAxis: Vector3): Pair<Quaternion, Quaternion> {
 		val projection = rotation.project(twistAxis)
 
-		val twist = Quaternion(rotation.w, projection.x, projection.y, projection.z).unit()
+		val twist = Quaternion(rotation.w, projection.xyz).unit()
 		val swing = rotation * twist.inv()
 
 		return Pair(swing, twist)
@@ -32,24 +32,19 @@ class TwistSwingConstraint(val twist: Float, val swing: Float) : Constraint()  {
 
 	override fun applyConstraint(direction: Vector3, parent: Bone?): Quaternion {
 		// if there is no parent or no constraint return the direction
-		if (parent == null || (swing.isNaN() && twist.isNaN())) {
-			return Quaternion.fromTo(Vector3.NEG_Y, direction).unit()
-		}
+		if (parent == null || (swing.isNaN() && twist.isNaN()))
+			return Quaternion.fromTo(Vector3.NEG_Y, direction)
 
 		// get the local rotation
-		val rotationGlobal = Quaternion.fromTo(Vector3.NEG_Y, direction).unit()
+		val rotationGlobal = Quaternion.fromTo(Vector3.NEG_Y, direction)
 		val rotationLocal = parent.getGlobalRotation().inv() * rotationGlobal
 
+		// decompose in to twist and swing
 		var (swingQ, twistQ) = decompose(rotationLocal, Vector3.NEG_Y)
 
 		// apply the constraints
-		if (!swing.isNaN()) {
-			swingQ = constrain(swingQ, swing)
-		}
-
-		if (!twist.isNaN()) {
-			twistQ = constrain(twistQ, twist)
-		}
+		if (!swing.isNaN()) swingQ = constrain(swingQ, swing)
+		if (!twist.isNaN()) twistQ = constrain(twistQ, twist)
 
 		return parent.getGlobalRotation() * (swingQ * twistQ)
 	}
