@@ -13,12 +13,8 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 	// state variables
 	var children = mutableListOf<IKChain>()
 	var target = Vector3.NULL
-	var distToTargetSqr = Float.POSITIVE_INFINITY
-	var lastDistToTargetSqr = Float.POSITIVE_INFINITY
+	private var distToTargetSqr = Float.POSITIVE_INFINITY
 	private var positions = getPositionList()
-
-	// deadlock escaping vars
-	var firstBonePerturbation = 0
 
 	private fun getPositionList(): MutableList<Vector3> {
 		val posList = mutableListOf<Vector3>()
@@ -42,11 +38,14 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 
 		for (i in positions.size - 2 downTo 0) {
 			val direction = (positions[i] - positions[i + 1]).unit()
-			positions[i] = positions[i + 1] + (direction * nodes[i].length)
+			val constrainedDirection = nodes[i].rotationConstraint
+				.applyConstraintInverse(direction, nodes[i].parent)
+
+
+			positions[i] = positions[i + 1] + (constrainedDirection * nodes[i].length)
 		}
 
-		if (parent != null)
-			parent!!.target += positions[0]
+		if (parent != null) parent!!.target += positions[0]
 	}
 
 	private fun forwards() {
@@ -81,13 +80,10 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 	// Updates the distance to target and last distance to target variables
 	// and returns the new distance to the target
 	fun computeTargetDistance(): Float {
-		if (tailConstraint != null) {
-			lastDistToTargetSqr = distToTargetSqr
-			distToTargetSqr = (positions.last() - (tailConstraint.position)).lenSq()
-		} else {
-			lastDistToTargetSqr = distToTargetSqr
-			distToTargetSqr = 0.0f
-		}
+		distToTargetSqr = if (tailConstraint != null)
+			(positions.last() - (tailConstraint.position)).lenSq()
+		else
+			0.0f
 
 		return distToTargetSqr
 	}
@@ -98,9 +94,12 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 	private fun setBoneRotation(bone: Bone, rotationVector: Vector3): Vector3 {
 		// TODO if a bone has a tracker associated with it force that rotation
 
-
 		val rotation = bone.rotationConstraint.applyConstraint(rotationVector, bone.parent)
 		bone.setRotationRaw(rotation)
+
+		// TODO optimize (this is required to update the world translation for the next bone as it uses the world
+		//  rotation of the parent)
+		bone.update()
 
 		return rotation.sandwich(Vector3.NEG_Y)
 	}
