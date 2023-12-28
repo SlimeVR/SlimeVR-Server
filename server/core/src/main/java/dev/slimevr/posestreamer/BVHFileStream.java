@@ -174,41 +174,6 @@ public class BVHFileStream extends PoseDataStream {
 		writer.write("Frame Time: " + (streamer.getFrameInterval() / 1000d) + "\n");
 	}
 
-	// Roughly based off code from
-	// https://github.com/TrackLab/ViRe/blob/50a987eff4db31036b2ebaeb5a28983cd473f267/Assets/Scripts/BVH/BVHRecorder.cs
-	private float[] quatToXyzAngles(Quaternion q, float[] angles) {
-		if (angles == null) {
-			angles = new float[3];
-		} else if (angles.length != 3) {
-			throw new IllegalArgumentException("Angles array must have three elements");
-		}
-
-		float x = q.getX();
-		float y = q.getY();
-		float z = q.getZ();
-		float w = q.getW();
-
-		// Roll (X)
-		float sinrCosp = -2f * (x * y - w * z);
-		float cosrCosp = w * w - x * x + y * y - z * z;
-		angles[0] = FastMath.atan2(sinrCosp, cosrCosp);
-
-		// Pitch (Y)
-		float sinp = 2f * (y * z + w * x);
-		// Use 90 degrees if out of range
-		angles[1] = FastMath.abs(sinp) >= 1f
-			? FastMath.copysign(FastMath.PI / 2f, sinp)
-			: FastMath
-				.asin(sinp);
-
-		// Yaw (Z)
-		float sinyCosp = -2f * (x * z - w * y);
-		float cosyCosp = w * w - x * x - y * y + z * z;
-		angles[2] = FastMath.atan2(sinyCosp, cosyCosp);
-
-		return angles;
-	}
-
 	private void writeBoneHierarchyRotation(Bone bone, Quaternion inverseRootRot)
 		throws IOException {
 		Quaternion rot = bone.getGlobalRotation();
