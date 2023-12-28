@@ -42,12 +42,15 @@ class IKSolver(private val root: Bone) {
 		boneList.add(currentBone)
 
 		// get constraints
-		val baseConstraint = if (parent == null) getConstraint(boneList.first(), constraints)
-							 else parent.tailConstraint
+		val baseConstraint = if (parent == null) {
+			getConstraint(boneList.first(), constraints)
+		} else {
+			parent.tailConstraint
+		}
 		var tailConstraint: Tracker? = null
 
 		// add bones until there is a reason to make a new chain
-		while(currentBone.children.size == 1 && tailConstraint == null) {
+		while (currentBone.children.size == 1 && tailConstraint == null) {
 			currentBone = currentBone.children[0]
 			boneList.add(currentBone)
 			tailConstraint = getConstraint(boneList.last(), constraints)
@@ -69,8 +72,9 @@ class IKSolver(private val root: Bone) {
 		}
 
 		// if the chain has only one child and no tail constraint combine the chains
-		if (chain.children.size == 1 && chain.tailConstraint == null)
+		if (chain.children.size == 1 && chain.tailConstraint == null) {
 			chain = combineChains(chain, chain.children[0])
+		}
 
 		return chain
 	}
@@ -87,8 +91,13 @@ class IKSolver(private val root: Bone) {
 		boneList.addAll(chain.nodes)
 		boneList.addAll(childChain.nodes)
 
-		val newChain = IKChain(boneList, chain.parent, chain.level,
-			chain.baseConstraint, childChain.tailConstraint)
+		val newChain = IKChain(
+			boneList,
+			chain.parent,
+			chain.level,
+			chain.baseConstraint,
+			childChain.tailConstraint
+		)
 
 		newChain.children = childChain.children
 
@@ -106,11 +115,13 @@ class IKSolver(private val root: Bone) {
 		}
 
 		for (c in chain.children) {
-			if (c.tailConstraint != null)
+			if (c.tailConstraint != null) {
 				return true
+			}
 
-			if (neededChain(c))
+			if (neededChain(c)) {
 				return true
+			}
 		}
 
 		return false
@@ -120,8 +131,10 @@ class IKSolver(private val root: Bone) {
 		val constraintList = mutableListOf<Tracker>()
 		for (t in trackers) {
 			if (t.hasPosition && !t.isInternal &&
-				!t.status.reset)
+				!t.status.reset
+			) {
 				constraintList.add(t)
+			}
 		}
 		return constraintList
 	}

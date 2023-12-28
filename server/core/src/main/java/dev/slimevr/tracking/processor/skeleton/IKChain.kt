@@ -8,8 +8,13 @@ import io.github.axisangles.ktmath.Vector3
  * This class implements a chain of Bones for use by the FABRIK solver
  */
 
-class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int,
-			  val baseConstraint: Tracker?, val tailConstraint: Tracker?) {
+class IKChain(
+	val nodes: MutableList<Bone>,
+	var parent: IKChain?,
+	val level: Int,
+	val baseConstraint: Tracker?,
+	val tailConstraint: Tracker?,
+) {
 	// state variables
 	var children = mutableListOf<IKChain>()
 	var target = Vector3.NULL
@@ -31,8 +36,9 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 		// start at the constraint or the centroid of the children
 		if (tailConstraint == null && children.size > 1) {
 			target /= getChildrenCentroidWeightSum()
+		} else {
+			target = tailConstraint?.position ?: Vector3.NULL
 		}
-		else target = tailConstraint?.position ?: Vector3.NULL
 
 		// set the end node to target
 		positions[positions.size - 1] = target
@@ -42,7 +48,6 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 			val constrainedDirection = nodes[i].rotationConstraint
 				.applyConstraintInverse(direction, nodes[i])
 
-
 			positions[i] = positions[i + 1] + (constrainedDirection * nodes[i].length)
 		}
 
@@ -50,10 +55,11 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 	}
 
 	private fun forwards() {
-		if (baseConstraint != null)
+		if (baseConstraint != null) {
 			positions[0] = baseConstraint.position
-		else if (parent != null)
+		} else if (parent != null) {
 			positions[0] = parent!!.positions.last()
+		}
 
 		for (i in 1 until positions.size - 1) {
 			var direction = (positions[i] - positions[i - 1]).unit()
@@ -89,7 +95,6 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 		return sum
 	}
 
-
 	// Reset any vars that may be modified from the last solve
 	fun resetChain() {
 		centroidWeight = 1f
@@ -105,22 +110,25 @@ class IKChain(val nodes: MutableList<Bone>, var parent: IKChain?, val level: Int
 
 		var closestToSolved = children.first()
 		for (child in children) {
-			if (child.distToTargetSqr < closestToSolved.distToTargetSqr)
+			if (child.distToTargetSqr < closestToSolved.distToTargetSqr) {
 				closestToSolved = child
+			}
 		}
 
 		// TODO remove nasty magic numbers
-		if (closestToSolved.centroidWeight > 0.1f)
+		if (closestToSolved.centroidWeight > 0.1f) {
 			closestToSolved.centroidWeight -= 0.1f
+		}
 	}
 
 	// Updates the distance to target and centroid weight variables
 	// and returns the new distance to the target
 	fun computeTargetDistance(): Float {
-		distToTargetSqr = if (tailConstraint != null)
+		distToTargetSqr = if (tailConstraint != null) {
 			(positions.last() - (tailConstraint.position)).lenSq()
-		else
+		} else {
 			0.0f
+		}
 
 		return distToTargetSqr
 	}
