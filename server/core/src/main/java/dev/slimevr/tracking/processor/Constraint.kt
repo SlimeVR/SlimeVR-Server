@@ -18,7 +18,7 @@ abstract class Constraint {
 	 * This is used for constraining direction vectors on the backwards pass
 	 * of the FABRIK solver.
 	 */
-	fun applyConstraintInverse(direction: Vector3, thisBone: Bone) : Vector3 {
+	fun applyConstraintInverse(direction: Vector3, thisBone: Bone): Vector3 {
 		return -applyConstraint(-direction, thisBone).sandwich(Vector3.NEG_Y)
 	}
 }
