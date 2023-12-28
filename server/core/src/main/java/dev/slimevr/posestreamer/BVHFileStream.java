@@ -3,6 +3,8 @@ package dev.slimevr.posestreamer;
 import com.jme3.math.FastMath;
 import dev.slimevr.tracking.processor.Bone;
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton;
+import io.github.axisangles.ktmath.EulerAngles;
+import io.github.axisangles.ktmath.EulerOrder;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
 import org.apache.commons.lang3.StringUtils;
@@ -18,8 +20,6 @@ public class BVHFileStream extends PoseDataStream {
 	private final BufferedWriter writer;
 	private long frameCount = 0;
 	private long frameCountOffset;
-
-	private float[] angleBuf = new float[3];
 
 	public BVHFileStream(OutputStream outputStream) {
 		super(outputStream);
@@ -219,18 +219,16 @@ public class BVHFileStream extends PoseDataStream {
 		}
 
 		// Roll (X), pitch (Y), yaw (Z) (intrinsic)
-		// TODO: `quatToXyzAngles` should no longer be needed, this should be
-		// changed to use `Quaternion.toEulerAngles()` instead
-		angleBuf = quatToXyzAngles(rot.unit(), angleBuf);
+		EulerAngles eulerIntrinsic = rot.unit().toEulerAngles(EulerOrder.XYZ);
 
 		// Output in order of roll (Z), pitch (X), yaw (Y) (extrinsic)
 		writer
 			.write(
-				angleBuf[0] * FastMath.RAD_TO_DEG
+				eulerIntrinsic.getZ() * FastMath.RAD_TO_DEG
 					+ " "
-					+ angleBuf[1] * FastMath.RAD_TO_DEG
+					+ eulerIntrinsic.getX() * FastMath.RAD_TO_DEG
 					+ " "
-					+ angleBuf[2] * FastMath.RAD_TO_DEG
+					+ eulerIntrinsic.getY() * FastMath.RAD_TO_DEG
 			);
 
 		// Get inverse rotation for child local rotations
