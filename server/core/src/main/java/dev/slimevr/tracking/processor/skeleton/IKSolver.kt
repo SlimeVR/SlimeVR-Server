@@ -137,6 +137,8 @@ class IKSolver(private val root: Bone) {
 	}
 
 	fun solve() {
+		rootChain?.resetChain()
+
 		// run up to MAX_ITERATIONS iterations per tick
 		for (i in 0..MAX_ITERATIONS) {
 			for (chain in chainList) {
@@ -154,6 +156,11 @@ class IKSolver(private val root: Bone) {
 			}
 
 			if (solved) break
+
+			// help the chains out of a deadlock
+			for (chain in chainList) {
+				chain.updateChildCentroidWeight()
+			}
 		}
 
 		// update transforms
