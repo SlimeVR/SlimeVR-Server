@@ -30,10 +30,12 @@ class TwistSwingConstraint(private val twist: Float, private val swing: Float) :
 		return rot
 	}
 
-	override fun applyConstraint(direction: Vector3, parent: Bone?): Quaternion {
+	override fun applyConstraint(direction: Vector3, thisBone: Bone): Quaternion {
 		// if there is no parent or no constraint return the direction
-		if (parent == null || (swing.isNaN() && twist.isNaN()))
+		if (thisBone.parent == null || (swing.isNaN() && twist.isNaN()))
 			return Quaternion.fromTo(Vector3.NEG_Y, direction)
+
+		val parent = thisBone.parent!!
 
 		// get the local rotation
 		val rotationGlobal = Quaternion.fromTo(Vector3.NEG_Y, direction)

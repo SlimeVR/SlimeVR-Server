@@ -10,7 +10,7 @@ abstract class Constraint {
 	/**
 	 * Apply constraints to the direction vector
 	 */
-	abstract fun applyConstraint(direction: Vector3, parent: Bone?): Quaternion
+	abstract fun applyConstraint(direction: Vector3, thisBone: Bone): Quaternion
 
 	/**
 	 * Apply constraints to the direction vector such that when
@@ -18,7 +18,7 @@ abstract class Constraint {
 	 * This is used for constraining direction vectors on the backwards pass
 	 * of the FABRIK solver.
 	 */
-	fun applyConstraintInverse(direction: Vector3, parent: Bone?) : Vector3 {
-		return -applyConstraint(-direction, parent).sandwich(Vector3.NEG_Y)
+	fun applyConstraintInverse(direction: Vector3, thisBone: Bone) : Vector3 {
+		return -applyConstraint(-direction, thisBone).sandwich(Vector3.NEG_Y)
 	}
 }
