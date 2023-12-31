@@ -137,8 +137,6 @@ class IKChain(
 	// vector with the bone's rotational constraint
 	// returns the constrained rotation as a vector
 	private fun setBoneRotation(bone: Bone, rotationVector: Vector3): Vector3 {
-		// TODO if a bone has a tracker associated with it force that rotation
-
 		val rotation = bone.rotationConstraint.applyConstraint(rotationVector, bone)
 		bone.setRotationRaw(rotation)
 
