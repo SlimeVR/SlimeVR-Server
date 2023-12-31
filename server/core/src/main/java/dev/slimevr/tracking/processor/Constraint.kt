@@ -8,9 +8,27 @@ import io.github.axisangles.ktmath.Vector3
  */
 abstract class Constraint {
 	/**
-	 * Apply constraints to the direction vector
+	 * If false don't allow the rotation of the bone
+	 * to be modified except to satisfy a constraint
 	 */
-	abstract fun applyConstraint(direction: Vector3, thisBone: Bone): Quaternion
+	var allowModifications = true
+
+	/**
+	 * Apply rotational constraints to the direction vector
+	 */
+	protected abstract fun constraintRotation(direction: Vector3, thisBone: Bone): Quaternion
+
+	/**
+	 * Apply rotational constraints and if applicable force the rotation
+	 * to be unchanged unless it violates the constraints
+	 */
+	fun applyConstraint(direction: Vector3, thisBone: Bone): Quaternion {
+		if (!allowModifications) {
+			return constraintRotation(thisBone.getGlobalRotation().sandwich(Vector3.NEG_Y), thisBone)
+		}
+
+		return constraintRotation(direction, thisBone)
+	}
 
 	/**
 	 * Apply constraints to the direction vector such that when
