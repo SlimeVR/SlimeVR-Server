@@ -18,14 +18,19 @@ class IKSolver(private val root: Bone) {
 	private var chainList = mutableListOf<IKChain>()
 	private var rootChain: IKChain? = null
 
+	/**
+	 * Any time the skeleton is rebuilt or trackers are assigned / unassigned the chains
+	 * should be rebuilt.
+	 */
 	fun buildChains(trackers: List<Tracker>) {
 		chainList = mutableListOf()
 
 		// extract the positional constraints
-		val constraints = extractConstraints(trackers)
+		val positionalConstraints = extractPositionalConstraints(trackers)
+		val rotationalConstraints = extractRotationalConstraints(trackers)
 
 		// build the system of chains
-		rootChain = chainBuilder(root, null, 0, constraints)
+		rootChain = chainBuilder(root, null, 0, positionalConstraints, rotationalConstraints)
 		populateChainList(rootChain!!)
 
 		// check if there is any constraints (other than the head) in the model
@@ -33,17 +38,28 @@ class IKSolver(private val root: Bone) {
 		chainList.sortBy { -it.level }
 	}
 
-	// convert the skeleton in to a system of chains
-	// a break in a chain is created at any point that has either
-	// multiple children or is positionally constrained, useless chains are discarded
-	private fun chainBuilder(root: Bone, parent: IKChain?, level: Int, constraints: MutableList<Tracker>): IKChain {
+	/**
+	 * Convert the skeleton in to a system of chains.
+	 * A break in a chain is created at any point that has either
+	 * multiple children or is positionally constrained, useless chains are discarded
+	 * (useless chains are chains with no positional constraint at their tail).
+	 */
+	private fun chainBuilder(
+		root: Bone,
+		parent: IKChain?,
+		level: Int,
+		positionalConstraints: MutableList<Tracker>,
+		rotationalConstraints: MutableList<Tracker>,
+	): IKChain {
 		val boneList = mutableListOf<Bone>()
 		var currentBone = root
+		currentBone.rotationConstraint.allowModifications =
+			getConstraint(currentBone, rotationalConstraints) == null
 		boneList.add(currentBone)
 
 		// get constraints
 		val baseConstraint = if (parent == null) {
-			getConstraint(boneList.first(), constraints)
+			getConstraint(boneList.first(), positionalConstraints)
 		} else {
 			parent.tailConstraint
 		}
@@ -52,8 +68,10 @@ class IKSolver(private val root: Bone) {
 		// add bones until there is a reason to make a new chain
 		while (currentBone.children.size == 1 && tailConstraint == null) {
 			currentBone = currentBone.children[0]
+			currentBone.rotationConstraint.allowModifications =
+				getConstraint(currentBone, rotationalConstraints) == null
 			boneList.add(currentBone)
-			tailConstraint = getConstraint(boneList.last(), constraints)
+			tailConstraint = getConstraint(boneList.last(), positionalConstraints)
 		}
 
 		var chain = IKChain(boneList, parent, level, baseConstraint, tailConstraint)
@@ -63,7 +81,7 @@ class IKSolver(private val root: Bone) {
 
 			// build child chains
 			for (child in currentBone.children) {
-				val childChain = chainBuilder(child, chain, level + 1, constraints)
+				val childChain = chainBuilder(child, chain, level + 1, positionalConstraints, rotationalConstraints)
 				if (neededChain(childChain)) {
 					childrenList.add(childChain)
 				}
@@ -127,16 +145,31 @@ class IKSolver(private val root: Bone) {
 		return false
 	}
 
-	private fun extractConstraints(trackers: List<Tracker>): MutableList<Tracker> {
+	private fun extractPositionalConstraints(trackers: List<Tracker>): MutableList<Tracker> {
 		val constraintList = mutableListOf<Tracker>()
 		for (t in trackers) {
-			if (t.hasPosition && !t.isInternal &&
+			if (t.hasPosition &&
+				!t.isInternal &&
 				!t.status.reset
 			) {
 				constraintList.add(t)
 			}
 		}
 		return constraintList
+	}
+
+	private fun extractRotationalConstraints(trackers: List<Tracker>): MutableList<Tracker> {
+		val constrainList = mutableListOf<Tracker>()
+		for (t in trackers) {
+			if (t.hasRotation &&
+				!t.status.reset &&
+				!t.isInternal
+			) {
+				constrainList.add(t)
+			}
+		}
+
+		return constrainList
 	}
 
 	private fun getConstraint(bone: Bone, constraints: MutableList<Tracker>): Tracker? {
