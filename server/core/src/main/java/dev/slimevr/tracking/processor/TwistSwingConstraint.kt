@@ -4,6 +4,10 @@ import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
+/**
+ * A constraint type that allows for a rotation to be constrained relative to the parent
+ * of the supplied bone
+ */
 class TwistSwingConstraint(private val twist: Float, private val swing: Float) : Constraint() {
 	private fun decompose(rotation: Quaternion, twistAxis: Vector3): Pair<Quaternion, Quaternion> {
 		val projection = rotation.project(twistAxis)
@@ -33,7 +37,7 @@ class TwistSwingConstraint(private val twist: Float, private val swing: Float) :
 		return rot
 	}
 
-	override fun applyConstraint(direction: Vector3, thisBone: Bone): Quaternion {
+	override fun constraintRotation(direction: Vector3, thisBone: Bone): Quaternion {
 		// if there is no parent or no constraint return the direction
 		if (thisBone.parent == null || (swing.isNaN() && twist.isNaN())) {
 			return Quaternion.fromTo(Vector3.NEG_Y, direction)
