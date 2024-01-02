@@ -16,18 +16,17 @@ abstract class Constraint {
 	/**
 	 * Apply rotational constraints to the direction vector
 	 */
-	protected abstract fun constraintRotation(direction: Vector3, thisBone: Bone): Quaternion
+	protected abstract fun constraintRotation(rotation: Quaternion, thisBone: Bone): Quaternion
 
 	/**
 	 * Apply rotational constraints and if applicable force the rotation
 	 * to be unchanged unless it violates the constraints
 	 */
 	fun applyConstraint(direction: Vector3, thisBone: Bone): Quaternion {
-		if (!allowModifications) {
-			return constraintRotation(thisBone.getGlobalRotation().sandwich(Vector3.NEG_Y), thisBone)
-		}
+		if (!allowModifications)
+			return constraintRotation(thisBone.getGlobalRotation(), thisBone)
 
-		return constraintRotation(direction, thisBone)
+		return constraintRotation(Quaternion.fromTo(Vector3.NEG_Y, direction), thisBone)
 	}
 
 	/**
