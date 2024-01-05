@@ -9,6 +9,9 @@ import io.github.axisangles.ktmath.Vector3
  * of the supplied bone
  */
 class TwistSwingConstraint(private val twist: Float, private val swing: Float) : Constraint() {
+	private val twistRad = Math.toRadians(twist.toDouble()).toFloat()
+	private val swingRad = Math.toRadians(swing.toDouble()).toFloat()
+
 	private fun decompose(rotation: Quaternion, twistAxis: Vector3): Pair<Quaternion, Quaternion> {
 		val projection = rotation.project(twistAxis)
 
@@ -19,15 +22,15 @@ class TwistSwingConstraint(private val twist: Float, private val swing: Float) :
 	}
 
 	private fun constrain(rotation: Quaternion, angle: Float): Quaternion {
-		val length = FastMath.sin(Math.toRadians(angle.toDouble()).toFloat())
-		val sqrLength = length * length
-		var vector = Vector3(rotation.x, rotation.y, rotation.z)
+		val magnitude = FastMath.sin(angle * 0.5f)
+		val magnitudeSqr = magnitude * magnitude
+		var vector = rotation.xyz
 		var rot = rotation
 
-		if (vector.lenSq() > sqrLength) {
-			vector = vector.unit() * length
+		if (vector.lenSq() > magnitudeSqr) {
+			vector = vector.unit() * magnitude
 			rot = Quaternion(
-				FastMath.sqrt(1.0f - sqrLength) * FastMath.sign(rot.w),
+				FastMath.sqrt(1.0f - magnitudeSqr) * FastMath.sign(rot.w),
 				vector.x,
 				vector.y,
 				vector.z
@@ -48,13 +51,12 @@ class TwistSwingConstraint(private val twist: Float, private val swing: Float) :
 		// get the local rotation
 		val rotationLocal = (parent.getGlobalRotation() * thisBone.rotationOffset).inv() * rotation
 
-
 		// decompose in to twist and swing
 		var (swingQ, twistQ) = decompose(rotationLocal, Vector3.NEG_Y)
 
 		// apply the constraints
-		if (!swing.isNaN()) swingQ = constrain(swingQ, swing)
-		if (!twist.isNaN()) twistQ = constrain(twistQ, twist)
+		if (!swing.isNaN()) swingQ = constrain(swingQ, swingRad)
+		if (!twist.isNaN()) twistQ = constrain(twistQ, twistRad)
 
 		return parent.getGlobalRotation() * thisBone.rotationOffset * (swingQ * twistQ)
 	}
