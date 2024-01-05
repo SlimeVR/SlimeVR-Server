@@ -15,12 +15,17 @@ class IKChain(
 	val baseConstraint: Tracker?,
 	val tailConstraint: Tracker?,
 ) {
+	companion object {
+		const val CENTROID_PULL_ADJUSTMENT = 0.1f
+	}
+
 	// state variables
 	var children = mutableListOf<IKChain>()
 	var target = Vector3.NULL
 	private var distToTargetSqr = Float.POSITIVE_INFINITY
 	private var centroidWeight = 1f
 	private var positions = getPositionList()
+	private var tailConstrainPosOffset = Vector3.NULL
 
 	private fun getPositionList(): MutableList<Vector3> {
 		val posList = mutableListOf<Vector3>()
@@ -37,7 +42,7 @@ class IKChain(
 		if (tailConstraint == null && children.size > 1) {
 			target /= getChildrenCentroidWeightSum()
 		} else {
-			target = tailConstraint?.position ?: Vector3.NULL
+			target = (tailConstraint?.position?.plus(tailConstrainPosOffset)) ?: Vector3.NULL
 		}
 
 		// set the end node to target
@@ -76,7 +81,9 @@ class IKChain(
 		target = Vector3.NULL
 	}
 
-	// Run the forward pass
+	/**
+	 * Run the forward pass
+	 */
 	fun forwardsMulti() {
 		forwards()
 
@@ -85,7 +92,6 @@ class IKChain(
 		}
 	}
 
-	// Returns the sum of the children's centroid weights
 	private fun getChildrenCentroidWeightSum(): Float {
 		var sum = 0.0f
 		for (child in children) {
@@ -95,7 +101,6 @@ class IKChain(
 		return sum
 	}
 
-	// Reset any vars that may be modified from the last solve
 	fun resetChain() {
 		centroidWeight = 1f
 
@@ -104,7 +109,17 @@ class IKChain(
 		}
 	}
 
-	// Reduce the centroid weight of the child that is closest to its target
+	fun resetTrackerOffsets() {
+		if (tailConstraint == null) {
+			return
+		}
+		tailConstrainPosOffset = nodes.last().getTailPosition() - tailConstraint.position
+	}
+
+	/**
+	 * Prevent deadlocks where the centroid becomes stuck
+	 * due to two or more chains pulling equally on the centroid
+	 */
 	fun updateChildCentroidWeight() {
 		if (children.size <= 1) return
 
@@ -115,17 +130,18 @@ class IKChain(
 			}
 		}
 
-		// TODO remove nasty magic numbers
-		if (closestToSolved.centroidWeight > 0.1f) {
-			closestToSolved.centroidWeight -= 0.1f
+		if (closestToSolved.centroidWeight > CENTROID_PULL_ADJUSTMENT) {
+			closestToSolved.centroidWeight -= CENTROID_PULL_ADJUSTMENT
 		}
 	}
 
-	// Updates the distance to target and centroid weight variables
-	// and returns the new distance to the target
+	/**
+	 * Updates the distance to target and centroid weight variables
+	 * and returns the new distance to the target
+	 */
 	fun computeTargetDistance(): Float {
 		distToTargetSqr = if (tailConstraint != null) {
-			(positions.last() - (tailConstraint.position)).lenSq()
+			(positions.last() - (tailConstraint.position + tailConstrainPosOffset)).lenSq()
 		} else {
 			0.0f
 		}
@@ -133,9 +149,11 @@ class IKChain(
 		return distToTargetSqr
 	}
 
-	// Sets a bones rotation from a rotation vector after constraining the rotation
-	// vector with the bone's rotational constraint
-	// returns the constrained rotation as a vector
+	/**
+	 * Sets a bones rotation from a rotation vector after constraining the rotation
+	 * vector with the bone's rotational constraint
+	 * returns the constrained rotation as a vector
+	 */
 	private fun setBoneRotation(bone: Bone, rotationVector: Vector3): Vector3 {
 		val rotation = bone.rotationConstraint.applyConstraint(rotationVector, bone)
 		bone.setRotationRaw(rotation)

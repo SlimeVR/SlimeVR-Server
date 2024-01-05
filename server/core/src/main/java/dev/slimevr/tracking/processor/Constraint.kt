@@ -23,8 +23,9 @@ abstract class Constraint {
 	 * to be unchanged unless it violates the constraints
 	 */
 	fun applyConstraint(direction: Vector3, thisBone: Bone): Quaternion {
-		if (!allowModifications)
+		if (!allowModifications) {
 			return constraintRotation(thisBone.getGlobalRotation(), thisBone)
+		}
 
 		return constraintRotation(Quaternion.fromTo(Vector3.NEG_Y, direction), thisBone)
 	}
