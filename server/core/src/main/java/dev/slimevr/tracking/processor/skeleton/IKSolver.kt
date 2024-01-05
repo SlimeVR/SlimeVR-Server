@@ -17,6 +17,7 @@ class IKSolver(private val root: Bone) {
 
 	private var chainList = mutableListOf<IKChain>()
 	private var rootChain: IKChain? = null
+	private var needsReset = false
 
 	/**
 	 * Any time the skeleton is rebuilt or trackers are assigned / unassigned the chains
@@ -36,6 +37,14 @@ class IKSolver(private val root: Bone) {
 		// check if there is any constraints (other than the head) in the model
 		rootChain = if (neededChain(rootChain!!)) rootChain else null
 		chainList.sortBy { -it.level }
+	}
+
+	/**
+	 * Reset the offsets of positional trackers. Should only be called right after a full reset
+	 * is performed.
+	 */
+	fun resetOffsets() {
+		needsReset = true
 	}
 
 	/**
@@ -126,7 +135,6 @@ class IKSolver(private val root: Bone) {
 		return newChain
 	}
 
-	// a chain is needed if there is a positional constraint in its children
 	private fun neededChain(chain: IKChain): Boolean {
 		if (chain.tailConstraint != null) {
 			return true
@@ -183,6 +191,13 @@ class IKSolver(private val root: Bone) {
 	}
 
 	fun solve() {
+		if (needsReset) {
+			for (c in chainList) {
+				c.resetTrackerOffsets()
+			}
+			needsReset = false
+		}
+
 		rootChain?.resetChain()
 
 		// run up to MAX_ITERATIONS iterations per tick
