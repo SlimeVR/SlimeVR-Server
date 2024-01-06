@@ -26,6 +26,7 @@ class IKChain(
 	private var centroidWeight = 1f
 	private var positions = getPositionList()
 	private var tailConstrainPosOffset = Vector3.NULL
+	private var baseConstraintPosOffset = Vector3.NULL
 
 	private fun getPositionList(): MutableList<Vector3> {
 		val posList = mutableListOf<Vector3>()
@@ -61,7 +62,7 @@ class IKChain(
 
 	private fun forwards() {
 		if (baseConstraint != null) {
-			positions[0] = baseConstraint.position
+			positions[0] = baseConstraint.position + baseConstraintPosOffset
 		} else if (parent != null) {
 			positions[0] = parent!!.positions.last()
 		}
@@ -110,10 +111,12 @@ class IKChain(
 	}
 
 	fun resetTrackerOffsets() {
-		if (tailConstraint == null) {
-			return
+		if (tailConstraint != null) {
+			tailConstrainPosOffset = nodes.last().getTailPosition() - tailConstraint.position
 		}
-		tailConstrainPosOffset = nodes.last().getTailPosition() - tailConstraint.position
+		if (baseConstraint != null) {
+			baseConstraintPosOffset = nodes.first().getPosition() - baseConstraint.position
+		}
 	}
 
 	/**
