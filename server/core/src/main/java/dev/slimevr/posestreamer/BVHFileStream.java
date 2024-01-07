@@ -183,17 +183,17 @@ public class BVHFileStream extends PoseDataStream {
 			rot = inverseRootRot.times(rot);
 		}
 
-		// Roll (X), pitch (Y), yaw (Z) (intrinsic)
-		EulerAngles eulerIntrinsic = rot.unit().toEulerAngles(EulerOrder.XYZ);
+		// Pitch (X), Yaw (Y), Roll (Z)
+		EulerAngles angles = rot.toEulerAngles(EulerOrder.ZXY);
 
 		// Output in order of roll (Z), pitch (X), yaw (Y) (extrinsic)
 		writer
 			.write(
-				eulerIntrinsic.getZ() * FastMath.RAD_TO_DEG
+				angles.getZ() * FastMath.RAD_TO_DEG
 					+ " "
-					+ eulerIntrinsic.getX() * FastMath.RAD_TO_DEG
+					+ angles.getX() * FastMath.RAD_TO_DEG
 					+ " "
-					+ eulerIntrinsic.getY() * FastMath.RAD_TO_DEG
+					+ angles.getY() * FastMath.RAD_TO_DEG
 			);
 
 		// Get inverse rotation for child local rotations
