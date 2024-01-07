@@ -261,7 +261,7 @@ class Tracker @JvmOverloads constructor(
 				status = TrackerStatus.TIMED_OUT
 			}
 		}
-		filteringHandler.tick()
+		filteringHandler.update()
 	}
 
 	/**

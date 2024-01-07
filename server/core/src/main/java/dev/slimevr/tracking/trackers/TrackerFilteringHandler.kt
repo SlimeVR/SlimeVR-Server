@@ -8,8 +8,9 @@ import io.github.axisangles.ktmath.Quaternion
 /**
  * Class taking care of filtering logic
  * (smoothing and prediction)
+ * See QuaternionMovingAverage.kt for the quaternion math.
  */
-class TrackerFilteringHandler() {
+class TrackerFilteringHandler {
 
 	private var movingAverage: QuaternionMovingAverage? = null
 	var enabled = false
@@ -33,9 +34,9 @@ class TrackerFilteringHandler() {
 	}
 
 	/**
-	 * Update the moving average to make it smooth~
+	 * Update the moving average to make it smooth
 	 */
-	fun tick() {
+	fun update() {
 		movingAverage?.update()
 	}
 
