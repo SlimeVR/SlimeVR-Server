@@ -22,7 +22,7 @@ class IKChain(
 	// state variables
 	var children = mutableListOf<IKChain>()
 	var target = Vector3.NULL
-	private var distToTargetSqr = Float.POSITIVE_INFINITY
+	var distToTargetSqr = Float.POSITIVE_INFINITY
 	private var centroidWeight = 1f
 	private var positions = getPositionList()
 	private var tailConstrainPosOffset = Vector3.NULL
@@ -50,21 +50,22 @@ class IKChain(
 		positions[positions.size - 1] = target
 
 		for (i in positions.size - 2 downTo 0) {
-			val direction = (positions[i] - positions[i + 1]).unit()
-			val constrainedDirection = nodes[i].rotationConstraint
+			var direction = (positions[i] - positions[i + 1]).unit()
+			direction = nodes[i].rotationConstraint
 				.applyConstraintInverse(direction, nodes[i])
 
-			positions[i] = positions[i + 1] + (constrainedDirection * nodes[i].length)
+			positions[i] = positions[i + 1] + (direction * nodes[i].length)
 		}
 
-		if (parent != null) parent!!.target += positions[0] * centroidWeight
+		if (parent != null && parent!!.tailConstraint == null)
+			parent!!.target += positions[0] * centroidWeight
 	}
 
 	private fun forwards() {
-		if (baseConstraint != null) {
-			positions[0] = baseConstraint.position + baseConstraintPosOffset
-		} else if (parent != null) {
+		if (parent != null) {
 			positions[0] = parent!!.positions.last()
+		} else if (baseConstraint != null) {
+			positions[0] = baseConstraint.position + baseConstraintPosOffset
 		}
 
 		for (i in 1 until positions.size - 1) {
@@ -104,6 +105,8 @@ class IKChain(
 
 	fun resetChain() {
 		centroidWeight = 1f
+		distToTargetSqr = Float.POSITIVE_INFINITY
+		target = Vector3.NULL
 
 		for (child in children) {
 			child.resetChain()
@@ -139,17 +142,19 @@ class IKChain(
 	}
 
 	/**
-	 * Updates the distance to target and centroid weight variables
-	 * and returns the new distance to the target
+	 * Updates the distance to target and other fields
+	 * Call on the root chain only returns the sum of the
+	 * distances
 	 */
-	fun computeTargetDistance(): Float {
+	fun computeTargetDistance() {
 		distToTargetSqr = if (tailConstraint != null) {
 			(positions.last() - (tailConstraint.position + tailConstrainPosOffset)).lenSq()
 		} else {
 			0.0f
 		}
 
-		return distToTargetSqr
+		for (chain in children)
+			chain.computeTargetDistance()
 	}
 
 	/**

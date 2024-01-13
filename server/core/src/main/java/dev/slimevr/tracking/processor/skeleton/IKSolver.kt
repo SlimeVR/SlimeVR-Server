@@ -207,10 +207,12 @@ class IKSolver(private val root: Bone) {
 			}
 			rootChain?.forwardsMulti()
 
+			rootChain?.computeTargetDistance()
+
 			// if all chains have reached their target the chain is solved
 			var solved = true
 			for (chain in chainList) {
-				if (chain.computeTargetDistance() > TOLERANCE_SQR) {
+				if (chain.distToTargetSqr > TOLERANCE_SQR) {
 					solved = false
 					break
 				}
