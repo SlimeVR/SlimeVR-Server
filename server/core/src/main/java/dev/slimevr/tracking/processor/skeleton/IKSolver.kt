@@ -11,7 +11,7 @@ import dev.slimevr.tracking.trackers.Tracker
 
 class IKSolver(private val root: Bone) {
 	companion object {
-		private const val TOLERANCE_SQR = 1e-8 // == 0.0001 cm
+		private const val TOLERANCE_SQR = 1e-8 // == 0.01 cm
 		private const val MAX_ITERATIONS = 100
 	}
 
@@ -26,15 +26,15 @@ class IKSolver(private val root: Bone) {
 	fun buildChains(trackers: List<Tracker>) {
 		chainList = mutableListOf()
 
-		// extract the positional constraints
+		// Extract the positional constraints
 		val positionalConstraints = extractPositionalConstraints(trackers)
 		val rotationalConstraints = extractRotationalConstraints(trackers)
 
-		// build the system of chains
+		// Build the system of chains
 		rootChain = chainBuilder(root, null, 0, positionalConstraints, rotationalConstraints)
 		populateChainList(rootChain!!)
 
-		// check if there is any constraints (other than the head) in the model
+		// Check if there is any constraints (other than the head) in the model
 		rootChain = if (neededChain(rootChain!!)) rootChain else null
 		chainList.sortBy { -it.level }
 	}
@@ -66,7 +66,7 @@ class IKSolver(private val root: Bone) {
 			getConstraint(currentBone, rotationalConstraints) == null
 		boneList.add(currentBone)
 
-		// get constraints
+		// Get constraints
 		val baseConstraint = if (parent == null) {
 			getConstraint(boneList.first(), positionalConstraints)
 		} else {
@@ -74,7 +74,7 @@ class IKSolver(private val root: Bone) {
 		}
 		var tailConstraint: Tracker? = null
 
-		// add bones until there is a reason to make a new chain
+		// Add bones until there is a reason to make a new chain
 		while (currentBone.children.size == 1 && tailConstraint == null) {
 			currentBone = currentBone.children[0]
 			currentBone.rotationConstraint.allowModifications =
@@ -88,7 +88,7 @@ class IKSolver(private val root: Bone) {
 		if (currentBone.children.isNotEmpty()) {
 			val childrenList = mutableListOf<IKChain>()
 
-			// build child chains
+			// Build child chains
 			for (child in currentBone.children) {
 				val childChain = chainBuilder(child, chain, level + 1, positionalConstraints, rotationalConstraints)
 				if (neededChain(childChain)) {
@@ -98,7 +98,7 @@ class IKSolver(private val root: Bone) {
 			chain.children = childrenList
 		}
 
-		// if the chain has only one child and no tail constraint combine the chains
+		// If the chain has only one child and no tail constraint combine the chains
 		if (chain.children.size == 1 && chain.tailConstraint == null) {
 			chain = combineChains(chain, chain.children[0])
 		}
@@ -191,6 +191,7 @@ class IKSolver(private val root: Bone) {
 	}
 
 	fun solve() {
+		var solved: Boolean
 		if (needsReset) {
 			for (c in chainList) {
 				c.resetTrackerOffsets()
@@ -200,8 +201,8 @@ class IKSolver(private val root: Bone) {
 
 		rootChain?.resetChain()
 
-		// run up to MAX_ITERATIONS iterations per tick
-		for (i in 0..MAX_ITERATIONS) {
+		// run up to MAX_ITERATIONS per tick
+		for (i in 0 until MAX_ITERATIONS) {
 			for (chain in chainList) {
 				chain.backwards()
 			}
@@ -209,24 +210,33 @@ class IKSolver(private val root: Bone) {
 
 			rootChain?.computeTargetDistance()
 
-			// if all chains have reached their target the chain is solved
-			var solved = true
+			// Stop solving chains after one iteration for chains that
+			// failed to solve last tick this prevents some extreme jitter
+			if (i == 0) {
+				for (chain in chainList) {
+					chain.trySolve = chain.solved
+				}
+			}
+
+			// If all chains have reached their target the chain is solved
+			solved = true
 			for (chain in chainList) {
-				if (chain.distToTargetSqr > TOLERANCE_SQR) {
+				if (chain.distToTargetSqr > TOLERANCE_SQR && chain.trySolve) {
+					chain.solved = false
 					solved = false
-					break
+				} else if (chain.distToTargetSqr <= TOLERANCE_SQR) {
+					chain.solved = true
 				}
 			}
 
 			if (solved) break
 
-			// help the chains out of a deadlock
+			// Help the chains out of a deadlock
 			for (chain in chainList) {
 				chain.updateChildCentroidWeight()
 			}
 		}
 
-		// update transforms
 		root.update()
 	}
 }
