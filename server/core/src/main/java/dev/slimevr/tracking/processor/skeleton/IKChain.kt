@@ -17,12 +17,15 @@ class IKChain(
 ) {
 	companion object {
 		const val CENTROID_PULL_ADJUSTMENT = 0.1f
+		const val CENTROID_RECOVERY = 0.01f
 	}
 
 	// state variables
 	var children = mutableListOf<IKChain>()
 	var target = Vector3.NULL
 	var distToTargetSqr = Float.POSITIVE_INFINITY
+	var trySolve = true
+	var solved = true
 	private var centroidWeight = 1f
 	private var positions = getPositionList()
 	private var tailConstrainPosOffset = Vector3.NULL
@@ -39,6 +42,8 @@ class IKChain(
 	}
 
 	fun backwards() {
+		if (!trySolve) return
+
 		// start at the constraint or the centroid of the children
 		if (tailConstraint == null && children.size > 1) {
 			target /= getChildrenCentroidWeightSum()
@@ -57,11 +62,14 @@ class IKChain(
 			positions[i] = positions[i + 1] + (direction * nodes[i].length)
 		}
 
-		if (parent != null && parent!!.tailConstraint == null)
+		if (parent != null && parent!!.tailConstraint == null) {
 			parent!!.target += positions[0] * centroidWeight
+		}
 	}
 
 	private fun forwards() {
+		if (!trySolve) return
+
 		if (parent != null) {
 			positions[0] = parent!!.positions.last()
 		} else if (baseConstraint != null) {
@@ -104,9 +112,8 @@ class IKChain(
 	}
 
 	fun resetChain() {
-		centroidWeight = 1f
 		distToTargetSqr = Float.POSITIVE_INFINITY
-		target = Vector3.NULL
+		trySolve = true
 
 		for (child in children) {
 			child.resetChain()
@@ -133,6 +140,11 @@ class IKChain(
 		for (child in children) {
 			if (child.distToTargetSqr < closestToSolved.distToTargetSqr) {
 				closestToSolved = child
+			}
+			child.centroidWeight = if (centroidWeight < 1f) {
+				child.centroidWeight + CENTROID_RECOVERY
+			} else {
+				child.centroidWeight
 			}
 		}
 
