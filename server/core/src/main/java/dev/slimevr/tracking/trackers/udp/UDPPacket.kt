@@ -305,6 +305,7 @@ data class UDPPacket21UserAction(var type: Int = 0) : UDPPacket(21) {
 		const val RESET_FULL = 2
 		const val RESET_YAW = 3
 		const val RESET_MOUNTING = 4
+		const val PAUSE_TRACKING = 5
 	}
 }
 

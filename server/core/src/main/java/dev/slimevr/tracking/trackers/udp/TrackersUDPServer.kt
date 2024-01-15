@@ -404,29 +404,34 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				var name = ""
 				when (packet.type) {
 					UDPPacket21UserAction.RESET_FULL -> {
-						name = "Full"
+						name = "Full reset"
 						VRServer.instance.resetHandler.sendStarted(ResetType.Full)
 						VRServer.instance.resetTrackersFull(resetSourceName)
 					}
 
 					UDPPacket21UserAction.RESET_YAW -> {
-						name = "Yaw"
+						name = "Yaw reset"
 						VRServer.instance.resetHandler.sendStarted(ResetType.Yaw)
 						VRServer.instance.resetTrackersYaw(resetSourceName)
 					}
 
 					UDPPacket21UserAction.RESET_MOUNTING -> {
-						name = "Mounting"
+						name = "Mounting reset"
 						VRServer
 							.instance
 							.resetHandler
 							.sendStarted(ResetType.Mounting)
 						VRServer.instance.resetTrackersMounting(resetSourceName)
 					}
+
+					UDPPacket21UserAction.PAUSE_TRACKING -> {
+						name = "Pause tracking toggle"
+						VRServer.instance.togglePauseTracking(resetSourceName)
+					}
 				}
 
 				LogManager.info(
-					"[TrackerServer] User action from ${connection.descriptiveName } received. $name reset performed."
+					"[TrackerServer] User action from ${connection.descriptiveName } received. $name performed."
 				)
 			}
 
