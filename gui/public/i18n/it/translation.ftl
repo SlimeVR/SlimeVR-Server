@@ -157,7 +157,7 @@ tracker-status-error = Errore
 tracker-status-disconnected = Disconnesso
 tracker-status-occluded = Ostruito
 tracker-status-ok = OK
-tracker-status-timed_out = Tempo esaurito
+tracker-status-timed_out = Tempo scaduto
 
 ## Tracker status columns
 
