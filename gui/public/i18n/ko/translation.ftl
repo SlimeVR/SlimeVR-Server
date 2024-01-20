@@ -281,7 +281,7 @@ mounting_selection_menu-close = 닫기
 settings-sidebar-title = 설정
 settings-sidebar-general = 일반
 settings-sidebar-tracker_mechanics = 트래커 역학
-settings-sidebar-fk_settings = FK 설정
+settings-sidebar-fk_settings = 트래킹 설정
 settings-sidebar-gesture_control = 제스처 제어
 settings-sidebar-interface = 인터페이스
 settings-sidebar-osc_router = OSC 라우터
@@ -800,7 +800,7 @@ onboarding-automatic_mounting-done-title = 착용 방향이 정렬되었어요
 onboarding-automatic_mounting-done-description = 트래커의 착용 방향이 잘 설정되었어요!
 onboarding-automatic_mounting-done-restart = 다시 처음으로 돌아가기
 onboarding-automatic_mounting-mounting_reset-title = 착용 방향 정렬
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. 팔, 다리를 구부린 다음 상체를 앞으로 기울여서 마치 스키를 타는 것처럼 쪼그리고 앉으세요.
+onboarding-automatic_mounting-mounting_reset-step-0 = 1. 팔, 다리를 구부린 다음 상체를 앞으로 기울여서 마치 스키를 타는 것처럼 몸을 굽혀 낮추세요.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. "착용 방향 재설정" 버튼을 누르고 착용 방향이 재설정될 때 까지 3초간 기다려주세요.
 onboarding-automatic_mounting-preparation-title = 준비
 onboarding-automatic_mounting-preparation-step-0 = 1. 팔을 몸에 붙이고 똑바로 서 주세요
@@ -880,7 +880,7 @@ onboarding-automatic_proportions-recording-description-p1 = 아래에 표시된 
 # Each line of text is a different list item
 onboarding-automatic_proportions-recording-steps =
     자리에서 똑바로 일어나서, 머리를 원을 그리듯이 움직이세요. 
-    등을 앞으로 구부리고 쪼그리고 앉으세요. 그대로 왼쪽을 바라본 다음 오른쪽을 바라보세요.
+    등을 앞으로 구부리고 스쿼트를 하듯이 몸을 낮추세요. 그대로 왼쪽을 바라본 다음 오른쪽을 바라보세요.
     상체를 왼쪽(시계 반대 방향)으로 비틀어서 바닥을 향해 손을 뻗으세요.
     상체를 오른쪽(시계 방향)으로 비틀어서 바닥을 향해 손을 뻗으세요.
     훌라후프를 사용하는 것처럼 골반을 원을 그리며 굴리세요.
