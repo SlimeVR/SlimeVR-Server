@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = Podgląd
 widget-imu_visualizer-rotation_hide = Ukryj
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = Podgląd szkieletu
+widget-skeleton_visualizer-hide = Ukryj
+
 ## Tracker status
 
 tracker-status-none = Brak Statusu
@@ -447,6 +452,9 @@ settings-general-interface-feedback_sound = Dźwięk Informacji
 settings-general-interface-feedback_sound-description = Ta opcja odtworzy dźwięk, gdy reset zostanie uruchomiony
 settings-general-interface-feedback_sound-label = Dźwięk Informacji
 settings-general-interface-feedback_sound-volume = Poziom głośności sprzężenia zwrotnego
+settings-general-interface-connected_trackers_warning = Ostrzeżenie o podłączonych trackerach
+settings-general-interface-connected_trackers_warning-description = Ta opcja wyświetli wyskakujące okienko za każdym razem, gdy spróbujesz wyjść ze SlimeVR, mając jeden lub więcej podłączonych trackerów. Przypomina o wyłączeniu trackerów, gdy skończysz, aby wydłużyć żywotność baterii.
+settings-general-interface-connected_trackers_warning-label = Ostrzeżenie o podłączonych trackerach przy wyjściu
 
 ## Serial settings
 
@@ -780,6 +788,13 @@ onboarding-choose_mounting-manual_mounting = Montaż ręczny
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Zalecany
 onboarding-choose_mounting-manual_mounting-description = Umożliwi to ręczne wybranie kierunku montażu dla każdego trackera
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    Czy na pewno chcesz to zrobić
+    automatyczna kalibracja montażu?
+onboarding-choose_mounting-manual_modal-description = <b> Ręczna kalibracja montażu jest zalecana dla nowych użytkowników </b> , ponieważ prawidłowe ustawienie pozycji automatycznej kalibracji montażu może być trudne i może wymagać pewnej praktyki.
+onboarding-choose_mounting-manual_modal-confirm = Jestem pewien tego, co robię
+onboarding-choose_mounting-manual_modal-cancel = Anuluj
 
 ## Tracker manual mounting setup
 
@@ -913,6 +928,15 @@ onboarding-automatic_proportions-error_modal-confirm = Zrozumiano!
 ## Home
 
 home-no_trackers = Nie wykryto trackerów
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = Trackery nadal włączone
+trackers_still_on-modal-description =
+    Jeden lub więcej modułów śledzących jest nadal włączonych.
+    Czy nadal chcesz wyjść ze SlimeVR?
+trackers_still_on-modal-confirm = Wyjdź ze SlimeVR
+trackers_still_on-modal-cancel = Poczekaj!
 
 ## Status system
 
