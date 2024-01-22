@@ -170,6 +170,7 @@ fn main() -> Result<()> {
 		.plugin(tauri_plugin_fs::init())
 		.plugin(tauri_plugin_os::init())
 		.plugin(tauri_plugin_shell::init())
+		.plugin(tauri_plugin_store::Builder::default().build())
 		.plugin(tauri_plugin_window::init())
 		.invoke_handler(tauri::generate_handler![
 			update_window_state,
