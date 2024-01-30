@@ -60,7 +60,7 @@ enum class BoardType(val id: UInt) {
 			LOLIN_C3_MINI -> "Lolin C3 Mini"
 			BEETLE32C32 -> "Beetle ESP32-C3"
 			ES32C3DEVKITM1 -> "Espressif ESP32-C3 DevKitM-1"
-			OWOTRACK -> "OwOTrack"
+			OWOTRACK -> "owoTrack"
 			WRANGLER -> "Wrangler Joycons"
 			MOCOPI -> "Sony Mocopi"
 			WEMOSWROOM02 -> "Wemos Wroom-02 D1 Mini"
