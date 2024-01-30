@@ -8,7 +8,7 @@ export function useBnoExists(connectedTrackers: FlatDeviceTracker[]): boolean {
       connectedTrackers.some(
         (tracker) =>
           tracker.tracker.info?.imuType &&
-          [ImuType.BNO055, ImuType.BNO080, ImuType.BNO085].includes(
+          [ImuType.BNO055, ImuType.BNO080, ImuType.BNO085, ImuType.LSM6DSV].includes(
             tracker.tracker.info?.imuType
           )
       ),
