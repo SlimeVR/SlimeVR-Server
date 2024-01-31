@@ -1,6 +1,9 @@
 # Global code owner
 * @Eirenliel
 
+# Make everyone be able to approve SolarXR submodule changes
+/solarxr-protocol @ButterscotchV @Louka3000 @loucass003 @ImUrX
+
 # Make Loucas and Uriel the owners of all GUI stuff
 /gui/ @loucass003 @ImUrX
 /package-lock.json @loucass003 @ImUrX
