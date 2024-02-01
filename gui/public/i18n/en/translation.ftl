@@ -442,6 +442,7 @@ settings-serial-factory_reset-warning-cancel = Cancel
 settings-serial-get_infos = Get Infos
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
+settings-serial-get_wifi_scan = Get WiFi Scan
 
 ## OSC router settings
 settings-osc-router = OSC router
