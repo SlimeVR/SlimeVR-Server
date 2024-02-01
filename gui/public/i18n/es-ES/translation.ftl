@@ -157,6 +157,7 @@ tracker-status-error = Error
 tracker-status-disconnected = Desconectado
 tracker-status-occluded = Ocluída
 tracker-status-ok = Ok
+tracker-status-timed_out = Sin respuesta
 
 ## Tracker status columns
 
@@ -349,10 +350,15 @@ settings-general-fk_settings-leg_tweak-foot_plant = Planta del pie
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Intensidad de la corrección del patinaje
 settings-general-fk_settings-leg_tweak-skating_correction-description = Corrección del patinaje corrige el deslizamiento en el suelo, pero puede disminuir la precisión en ciertos movimientos. Activar esta opción requerirá realizar un reinicio general y recalibrar en el juego.
 settings-general-fk_settings-leg_tweak-floor_clip-description = Anclado al suelo puede reducir o incluso eliminar el atravesar el piso con tu modelo. Al habilitar esto, asegúrese de hacer un "reinicio completo" y recalibrar en el juego.
+settings-general-fk_settings-leg_tweak-toe_snap-description = "Acople de puntera" intenta adivinar la rotación de tus pies si los trackers de estos no están en uso.
+settings-general-fk_settings-leg_tweak-foot_plant-description = El plantado de pie gira los pies para que queden paralelos al suelo en el momento del contacto.
 settings-general-fk_settings-leg_fk = Tracking de piernas
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Habilitar reinicio de montura de los pies al estar de puntillas.
+settings-general-fk_settings-leg_fk-reset_mounting_feet = Reinicio de montura de los pies.
 settings-general-fk_settings-arm_fk = Tracking de brazos
 settings-general-fk_settings-arm_fk-description = Forzar el seguimiento de los brazos desde el HMD incluso si hay datos de posición de la mano disponibles.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
+settings-general-fk_settings-arm_fk-reset_mode-description = Cambia la posición por defecto para el restablecimiento de montura
 settings-general-fk_settings-arm_fk-back = Parte posterior del brazo
 settings-general-fk_settings-arm_fk-back-description = Modo predeterminado, con los brazos hacia atrás y los antebrazos hacia adelante.
 settings-general-fk_settings-arm_fk-tpose_up = T-pose (arriba)
@@ -361,6 +367,7 @@ settings-general-fk_settings-arm_fk-tpose_down = T-pose (abajo)
 settings-general-fk_settings-arm_fk-tpose_down-description = Se espera que tus brazos estén a 90 grados respecto a tu cuerpo durante el reinicio completo y relajados, perpendicular a tu cuerpo durante el reinicio del montaje.
 settings-general-fk_settings-arm_fk-forward = Siguiente
 settings-general-fk_settings-arm_fk-forward-description = Espera que tus brazos estén 90 grados hacia adelante. Útil para VTubing.
+settings-general-fk_settings-skeleton_settings-toggles = Opciones de esqueleto
 settings-general-fk_settings-skeleton_settings-description = Activa o desactiva la configuración del esqueleto. Se recomienda dejar esta opción activada.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Modelo de columna extendida
 settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Modelo de pelvis extendida
@@ -384,6 +391,26 @@ settings-general-fk_settings-vive_emulation-label = Habilitar emulación Vive
 
 settings-general-gesture_control = Control de gestos
 settings-general-gesture_control-subtitle = Reinicio basado en toques
+settings-general-gesture_control-description = Permite que los reinicios se activen tocando un tracker. El tracker situado más arriba en tu torso se utiliza para el restablecimiento horizontal, el tracker situado más arriba en tu pierna izquierda se utiliza para el reinicio completo y el tracker situado más arriba en tu pierna derecha se utiliza para el reinicio de montaje. Los toques deben producirse dentro del tiempo límite de 0,3 segundos multiplicado por el número de toques a reconocer.
+# This is a unit: 3 taps, 2 taps, 1 tap
+# $amount (Number) - Amount of taps (touches to the tracker's case)
+settings-general-gesture_control-taps =
+    { $amount ->
+        [one] toque
+        [many] toques
+       *[other] toques
+    }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers =
+    { $amount ->
+        [one] tracker
+        [many] trackers
+       *[other] trackers
+    }
+settings-general-gesture_control-yawResetEnabled = Activa toque para restablecimiento horizontal
+settings-general-gesture_control-yawResetDelay = Retraso de restablecimiento horizontal
+settings-general-gesture_control-yawResetTaps = Toques para restablecimiento horizontal
 settings-general-gesture_control-fullResetEnabled = Activa toque para reinicio completo
 settings-general-gesture_control-fullResetDelay = Retraso de reinicio completo
 settings-general-gesture_control-fullResetTaps = Da toquecitos para reinicio completo
@@ -404,6 +431,8 @@ settings-general-interface-theme = Temas
 settings-general-interface-lang = Seleccionar idioma
 settings-general-interface-lang-description = Cambiar el idioma predeterminado que deseas utilizar.
 settings-general-interface-lang-placeholder = Seleccionar el idioma que desea utilizar
+# Keep the font name untranslated
+settings-interface-appearance-font = Fuente de GUI
 settings-interface-appearance-font-description = Esto cambia la fuente utilizada por la interfaz
 settings-interface-appearance-font-placeholder = Fuente predeterminada
 settings-interface-appearance-font-os_font = Fuente SO
@@ -421,6 +450,9 @@ settings-general-interface-feedback_sound = Sonido de feedback
 settings-general-interface-feedback_sound-description = Esta opción reproducirá un sonido cuando se activa un reinicio
 settings-general-interface-feedback_sound-label = Sonido de feedback
 settings-general-interface-feedback_sound-volume = Volumen del sonido de feedback
+settings-general-interface-connected_trackers_warning = Advertencia de trackers conectados
+settings-general-interface-connected_trackers_warning-description = Esta opción mostrará una ventana emergente cada vez que intentes salir de SlimeVR mientras tengas uno o más trackers conectados. Te recuerda que debes apagar los trackers cuando hayas terminado para ahorrar batería.
+settings-general-interface-connected_trackers_warning-label = Aviso de trackers conectados al cerrar
 
 ## Serial settings
 
@@ -446,11 +478,26 @@ settings-serial-auto_dropdown_item = Automático
 ## OSC router settings
 
 settings-osc-router = Router OSC
+# This cares about multilines
+settings-osc-router-description =
+    Reenvía mensajes OSC desde otro programa.
+    Útil para usar otro programa OSC con VRChat por ejemplo.
 settings-osc-router-enable = Habilitar
 settings-osc-router-enable-description = Activar el reenvío de mensajes
 settings-osc-router-enable-label = Habilitar
 settings-osc-router-network = Puertos de red
+# This cares about multilines
+settings-osc-router-network-description =
+    Establece los puertos para escuchar y enviar datos.
+    Estos pueden ser los mismos que otros puertos utilizados en el servidor de SlimeVR.
+settings-osc-router-network-port_in =
+    .label = Puerto de entrada
+    .placeholder = Puerto de entrada (por defecto: 9002)
+settings-osc-router-network-port_out =
+    .label = Puerto de salida
+    .placeholder = Puerto de salida (por defecto: 9000)
 settings-osc-router-network-address = Dirección de red
+settings-osc-router-network-address-description = Establece la dirección a la que se enviarán los datos.
 settings-osc-router-network-address-placeholder = Dirección IPV4
 
 ## OSC VRChat settings
