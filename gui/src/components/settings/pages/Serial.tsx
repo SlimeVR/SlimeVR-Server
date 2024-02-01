@@ -159,7 +159,7 @@ export function Serial() {
       new SerialTrackerGetInfoRequestT()
     );
   };
-  const getWifiScan = () =>{
+  const getWifiScan = () => {
     sendRPCPacket(
       RpcMessage.SerialTrackerGetWifiScanRequest,
       new SerialTrackerGetWifiScanRequestT()
