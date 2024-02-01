@@ -1,6 +1,9 @@
 # Global code owner
 * @Eirenliel
 
+# Make everyone be able to approve SolarXR submodule changes
+/solarxr-protocol @ButterscotchV @Louka3000 @loucass003 @ImUrX
+
 # Make Loucas and Uriel the owners of all GUI stuff
 /gui/ @loucass003 @ImUrX
 /package-lock.json @loucass003 @ImUrX
@@ -13,8 +16,8 @@
 /gui/src/components/settings/ @Louka3000 @loucass003 @ImUrX
 
 # Rust part of the GUI
-/gui/src-tauri/ @ImUrX @TheButlah
-/Cargo.lock @ImUrX @TheButlah
+/gui/src-tauri/ @ImUrX
+/Cargo.lock @ImUrX
 
 # Some server code~
 /server/ @ButterscotchV @Eirenliel @Louka3000

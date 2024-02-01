@@ -36,6 +36,7 @@ body_part-RIGHT_HAND = Mão Direita
 body_part-RIGHT_UPPER_LEG = Coxa direita
 body_part-RIGHT_LOWER_LEG = Canela direita
 body_part-RIGHT_FOOT = Pé direito
+body_part-UPPER_CHEST = Peito Superior
 body_part-CHEST = Peito
 body_part-WAIST = Cintura
 body_part-HIP = Quadril
@@ -52,12 +53,15 @@ body_part-LEFT_FOOT = Pé esquerdo
 skeleton_bone-NONE = Nada
 skeleton_bone-HEAD = Deslocamento da Cabeça
 skeleton_bone-NECK = Tamanho do Pescoço
-skeleton_bone-CHEST = Chest Length
+skeleton_bone-torso_group = Tamanho do Tronco
+skeleton_bone-UPPER_CHEST = Tamanho do Peito Superior
 skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-CHEST = Chest Length
 skeleton_bone-WAIST = Waist Length
 skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP_OFFSET = Compensação do Quadril
 skeleton_bone-HIPS_WIDTH = Largura do Quadril
+skeleton_bone-leg_group = Tamanho da Perna
 skeleton_bone-UPPER_LEG = Upper Leg Length
 skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-FOOT_LENGTH = Tamanho do Pé
@@ -65,6 +69,7 @@ skeleton_bone-FOOT_SHIFT = Compensação do Pé
 skeleton_bone-SKELETON_OFFSET = Compensação do Esqueleto
 skeleton_bone-SHOULDERS_DISTANCE = Distância dos Ombros
 skeleton_bone-SHOULDERS_WIDTH = Largura dos Ombros
+skeleton_bone-arm_group = Tamanho do Braço
 skeleton_bone-UPPER_ARM = Tamanho do Braço Superior
 skeleton_bone-LOWER_ARM = Distância do Antebraço
 skeleton_bone-HAND_Y = Distância da mão Y
@@ -114,6 +119,9 @@ widget-overlay-is_mirrored_label = Mostrar Overlay como espelho
 
 widget-drift_compensation-clear = Refazer compensação de drift
 
+## Widget: Clear Reset Mounting
+
+
 ## Widget: Developer settings
 
 widget-developer_mode = Modo de desenvolvedor
@@ -130,6 +138,9 @@ widget-developer_mode-more_info = More info
 widget-imu_visualizer = Rotation
 widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = Preview
+
+## Widget: Skeleton Visualizer
+
 
 ## Tracker status
 
@@ -258,6 +269,7 @@ settings-sidebar-interface = Interface
 settings-sidebar-osc_router = Roteador OSC
 settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Console Serial
+settings-sidebar-notifications = Notificações
 
 ## SteamVR settings
 
@@ -318,11 +330,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = Força da cor
 settings-general-fk_settings-arm_fk = Opções do Braço
 settings-general-fk_settings-arm_fk-description = Muda o jeito que os braços são rastreados.
 settings-general-fk_settings-arm_fk-force_arms = Forçar braços do HMD
-settings-general-fk_settings-skeleton_settings = Opções do esqueleto
 settings-general-fk_settings-skeleton_settings-description = Ligar ou desligar opções do esqueleto. É recomendado deixar eles ligados.
-settings-general-fk_settings-skeleton_settings-extended_spine = Estender coluna
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Estender pélvis
-settings-general-fk_settings-skeleton_settings-extended_knees = Estender joelho
 settings-general-fk_settings-vive_emulation-title = Emulação de Vive
 settings-general-fk_settings-vive_emulation-description = Emule o problema de tracker da cintura que o Vive tracker tem. Isso é uma piada e faz o tracking ficar pior.
 settings-general-fk_settings-vive_emulation-label = Ativar emulação de Vive
@@ -343,18 +351,20 @@ settings-general-gesture_control-mountingResetEnabled = Toques para o reset de p
 settings-general-gesture_control-mountingResetDelay = Delay do reset de posição
 settings-general-gesture_control-mountingResetTaps = Toques para o reset de posição
 
-## Interface settings
+## Appearance settings
 
-settings-general-interface = Interface
 settings-general-interface-dev_mode = Modo de desenvolvedor
 settings-general-interface-dev_mode-description = Este modo pode ser útil se precisar de dados específicos ou para interagir com trackers conectados a um nível mais avançado
 settings-general-interface-dev_mode-label = Modo de desenvolvedor
-settings-general-interface-serial_detection = Detecção de dispositivo serial
-settings-general-interface-serial_detection-description = Esta opção mostrará um pop-up toda vez que você conectar um novo dispositivo serial que pode ser um tracker. Ajuda a melhorar o processo de configuração de um tracker
-settings-general-interface-serial_detection-label = Detecção de dispositivo serial
 settings-general-interface-lang = Selecione o idioma
 settings-general-interface-lang-description = Alterar o idioma padrão que pretende utilizar
 settings-general-interface-lang-placeholder = Selecione o idioma que vai usar
+
+## Notification settings
+
+settings-general-interface-serial_detection = Detecção de dispositivo serial
+settings-general-interface-serial_detection-description = Esta opção mostrará um pop-up toda vez que você conectar um novo dispositivo serial que pode ser um tracker. Ajuda a melhorar o processo de configuração de um tracker
+settings-general-interface-serial_detection-label = Detecção de dispositivo serial
 
 ## Serial settings
 
@@ -460,7 +470,6 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = Voltar para a Calibragem de Posição
 onboarding-reset_tutorial = Resetar Tutorial
-onboarding-reset_tutorial-description = Esse recurso não está concluído, apenas aperte continue
 
 ## Setup start
 
@@ -676,6 +685,9 @@ onboarding-automatic_proportions-done-description = Sua calibragem de proporçã
 ## Home
 
 home-no_trackers = Nenhum tracker detectado ou atribuído
+
+## Trackers Still On notification
+
 
 ## Status system
 

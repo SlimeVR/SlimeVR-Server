@@ -15,7 +15,8 @@ import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
 import kotlin.properties.Delegates
 
-const val TIMEOUT_MS = 2000L
+const val TIMEOUT_MS = 2_000L
+const val DISCONNECT_MS = 3_000L + TIMEOUT_MS
 
 /**
  * Generic tracker class for input and output tracker,
@@ -65,7 +66,7 @@ class Tracker @JvmOverloads constructor(
 	val needsMounting: Boolean = false,
 ) {
 	private val timer = BufferedTimer(1f)
-	private var timeAtLastUpdate: Long = 0
+	private var timeAtLastUpdate: Long = System.currentTimeMillis()
 	private var rotation = Quaternion.IDENTITY
 	private var acceleration = Vector3.NULL
 	var position = Vector3.NULL
@@ -110,6 +111,9 @@ class Tracker @JvmOverloads constructor(
 		if (old == new) return@observable
 
 		if (!isInternal) {
+			// Set default mounting position for that body part
+			new?.let { resetsHandler.mountingOrientation = it.defaultMounting() }
+
 			checkReportRequireReset()
 		}
 	}
@@ -251,11 +255,13 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun tick() {
 		if (usesTimeout) {
-			if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
+			if (System.currentTimeMillis() - timeAtLastUpdate > DISCONNECT_MS) {
 				status = TrackerStatus.DISCONNECTED
+			} else if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
+				status = TrackerStatus.TIMED_OUT
 			}
 		}
-		filteringHandler.tick()
+		filteringHandler.update()
 	}
 
 	/**
@@ -265,6 +271,13 @@ class Tracker @JvmOverloads constructor(
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
 		filteringHandler.dataTick(rotation)
+	}
+
+	/**
+	 * A way to delay the timeout of the tracker
+	 */
+	fun heartbeat() {
+		timeAtLastUpdate = System.currentTimeMillis()
 	}
 
 	/**

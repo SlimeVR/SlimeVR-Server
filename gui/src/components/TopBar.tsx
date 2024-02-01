@@ -5,6 +5,7 @@ import {
   RpcMessage,
   ServerInfosRequestT,
   ServerInfosResponseT,
+  TrackerStatus,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CloseIcon } from './commons/icon/CloseIcon';
@@ -80,7 +81,9 @@ export function TopBar({
       await invoke('update_tray_text');
     } else if (
       config?.connectedTrackersWarning &&
-      connectedIMUTrackers.length > 0
+      connectedIMUTrackers.filter(
+        (t) => t.tracker.status !== TrackerStatus.TIMED_OUT
+      ).length > 0
     ) {
       setConnectedTrackerWarning(true);
     } else {
