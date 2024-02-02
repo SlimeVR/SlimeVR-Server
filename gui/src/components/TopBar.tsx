@@ -1,4 +1,4 @@
-import { getCurrent } from '@tauri-apps/plugin-window';
+import { getCurrent } from '@tauri-apps/api/window';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {
@@ -21,7 +21,7 @@ import classNames from 'classnames';
 import { QuestionIcon } from './commons/icon/QuestionIcon';
 import { useBreakpoint, useIsTauri } from '@/hooks/breakpoint';
 import { GearIcon } from './commons/icon/GearIcon';
-import { invoke } from '@tauri-apps/api/primitives';
+import { invoke } from '@tauri-apps/api/core';
 import { useTrackers } from '@/hooks/tracker';
 import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';

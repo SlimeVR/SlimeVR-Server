@@ -148,8 +148,8 @@ export function parseStatusToLocale(
       const name = tracker.tracker.info?.customName
         ? tracker.tracker.info?.customName
         : tracker.tracker.info?.bodyPart
-        ? l10n.getString('body_part-' + BodyPart[tracker.tracker.info?.bodyPart])
-        : tracker.tracker.info?.displayName || 'unknown';
+          ? l10n.getString('body_part-' + BodyPart[tracker.tracker.info?.bodyPart])
+          : tracker.tracker.info?.displayName || 'unknown';
       if (typeof name !== 'string') {
         return {
           trackerName: new TextDecoder().decode(name),

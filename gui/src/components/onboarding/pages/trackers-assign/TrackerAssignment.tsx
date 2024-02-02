@@ -52,10 +52,8 @@ export function TrackersAssignPage() {
   const { useAssignedTrackers, trackers } = useTrackers();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-
-  const { control, watch } = useForm<{ advanced: boolean }>({
-    defaultValues: { advanced: config?.advancedAssign ?? false },
-  });
+  const defaultValues = { advanced: config?.advancedAssign ?? false };
+  const { control, watch } = useForm<{ advanced: boolean }>({ defaultValues });
   const { advanced } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
@@ -319,7 +317,7 @@ export function TrackersAssignPage() {
                 onlyAssigned={false}
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
-                advanced={advanced}
+                advanced={advanced ?? defaultValues.advanced}
                 onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
             </div>

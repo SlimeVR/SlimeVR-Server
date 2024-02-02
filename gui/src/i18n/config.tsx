@@ -169,7 +169,7 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
       ? [
           currentLocale,
           await readTextFile(OVERRIDE_FILENAME, {
-            dir: BaseDirectory.AppConfig,
+            baseDir: BaseDirectory.AppConfig,
           }),
         ]
       : await fetchMessages(currentLocale);

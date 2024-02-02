@@ -210,8 +210,8 @@ export function ConnectTrackersPage() {
                 state.alonePage
                   ? '/'
                   : bnoExists
-                  ? '/onboarding/calibration-tutorial'
-                  : '/onboarding/assign-tutorial'
+                    ? '/onboarding/calibration-tutorial'
+                    : '/onboarding/assign-tutorial'
               }
               className="ml-auto"
             >

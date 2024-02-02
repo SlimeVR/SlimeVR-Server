@@ -24,5 +24,9 @@ export function useBreakpoint<K extends BreakpointKey>(breakpointKey: K) {
 }
 
 export function useIsTauri() {
-  return !!window.__TAURI_METADATA__;
+  if ('__TAURI_INTERNALS__' in window) {
+    return true;
+  } else {
+    return false;
+  }
 }

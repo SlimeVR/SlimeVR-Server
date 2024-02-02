@@ -114,7 +114,7 @@ export function TrackerSettingsPage() {
       ? MountingOrientationDegreesToQuatT(currRotation)
       : null;
 
-    assignreq.displayName = trackerName;
+    assignreq.displayName = trackerName ?? null;
     assignreq.trackerId = tracker?.tracker.trackerId;
     assignreq.allowDriftCompensation = allowDriftCompensation;
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);

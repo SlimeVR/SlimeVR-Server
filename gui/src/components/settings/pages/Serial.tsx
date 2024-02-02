@@ -51,8 +51,9 @@ export function Serial() {
 
   const [tryFactoryReset, setTryFactoryReset] = useState(false);
 
+  const defaultValues = { port: 'Auto' };
   const { control, watch, handleSubmit, reset } = useForm<SerialForm>({
-    defaultValues: { port: 'Auto' },
+    defaultValues,
   });
 
   const { port } = watch();
@@ -127,7 +128,7 @@ export function Serial() {
   useEffect(() => {
     const id = setInterval(() => {
       if (!isSerialOpen) {
-        openSerial(port);
+        openSerial(port ?? defaultValues.port);
       } else {
         clearInterval(id);
       }

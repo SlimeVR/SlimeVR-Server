@@ -160,7 +160,7 @@ export function GeneralSettings() {
 
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { reset, control, watch, handleSubmit } = useForm<SettingsForm>({
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   const onSubmit = (values: SettingsForm) => {

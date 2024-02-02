@@ -89,7 +89,7 @@ export function useConfigProvider(): ConfigContext {
         const migrated = localStorage.getItem('configMigrated');
         if (!migrated) {
           const oldConfig = await readTextFile('config.json', {
-            dir: BaseDirectory.AppConfig,
+            baseDir: BaseDirectory.AppConfig,
           }).catch(() => null);
 
           if (oldConfig) localStorage.setItem('config.json', oldConfig);
