@@ -58,6 +58,7 @@ dependencies {
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
 	implementation("com.fazecast:jSerialComm:2.10.2")
+	implementation("org.hid4java:hid4java:0.7.0")
 }
 
 tasks.shadowJar {
@@ -81,8 +82,8 @@ buildConfig {
 	packageName("dev.slimevr.desktop")
 
 	val gitVersionTag = providers.exec {
-		commandLine("git", "--no-pager", "tag", "--points-at", "HEAD")
-	}.standardOutput.asText.get()
+		commandLine("git", "--no-pager", "tag", "--sort", "-taggerdate", "--points-at", "HEAD")
+	}.standardOutput.asText.get().split('\n').first()
 	buildConfigField("String", "GIT_COMMIT_HASH", "\"${grgit.head().abbreviatedId}\"")
 	buildConfigField("String", "GIT_VERSION_TAG", "\"${gitVersionTag.trim()}\"")
 	buildConfigField("boolean", "GIT_CLEAN", grgit.status().isClean.toString())

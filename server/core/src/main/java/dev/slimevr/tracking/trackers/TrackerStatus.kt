@@ -7,11 +7,12 @@ enum class TrackerStatus(val id: Int, val sendData: Boolean, val reset: Boolean)
 	BUSY(2, true, false),
 	ERROR(3, false, true),
 	OCCLUDED(4, false, false),
+	TIMED_OUT(5, false, false),
 	;
 
 	companion object {
 
-		private val byId = values().associateBy { it.id }
+		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
 		fun getById(id: Int): TrackerStatus? = byId[id]

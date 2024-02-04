@@ -13,15 +13,15 @@ import {
   SerialTrackerRebootRequestT,
   SerialUpdateResponseT,
 } from 'solarxr-protocol';
-import { useElemSize, useLayout } from '../../../hooks/layout';
-import { useWebsocketAPI } from '../../../hooks/websocket-api';
-import { Button } from '../../commons/Button';
-import { Dropdown } from '../../commons/Dropdown';
-import { Typography } from '../../commons/Typography';
+import { useElemSize, useLayout } from '@/hooks/layout';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { Button } from '@/components/commons/Button';
+import { Dropdown } from '@/components/commons/Dropdown';
+import { Typography } from '@/components/commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
-import { BaseModal } from '../../commons/BaseModal';
-import { WarningBox } from '../../commons/TipBox';
-import { useBreakpoint } from '../../../hooks/breakpoint';
+import { BaseModal } from '@/components/commons/BaseModal';
+import { WarningBox } from '@/components/commons/TipBox';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 export interface SerialForm {
   port: string;
@@ -51,10 +51,9 @@ export function Serial() {
 
   const [tryFactoryReset, setTryFactoryReset] = useState(false);
 
-  const { control, watch, handleSubmit, reset, getValues } =
-    useForm<SerialForm>({
-      defaultValues: { port: 'Auto' },
-    });
+  const { control, watch, handleSubmit, reset } = useForm<SerialForm>({
+    defaultValues: { port: 'Auto' },
+  });
 
   const { port } = watch();
 
@@ -235,7 +234,6 @@ export function Serial() {
                 {isMobile && (
                   <Dropdown
                     control={control}
-                    getValues={getValues}
                     name="port"
                     display="block"
                     placeholder={l10n.getString(
@@ -252,7 +250,6 @@ export function Serial() {
               {!isMobile && (
                 <Dropdown
                   control={control}
-                  getValues={getValues}
                   name="port"
                   display="fit"
                   placeholder={l10n.getString('settings-serial-serial_select')}

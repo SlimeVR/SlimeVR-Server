@@ -1,10 +1,10 @@
 import { ReactNode, useEffect } from 'react';
-import { useElemSize, useLayout } from '../../hooks/layout';
-import { Navbar } from '../Navbar';
-import { TopBar } from '../TopBar';
+import { useElemSize, useLayout } from '@/hooks/layout';
+import { Navbar } from '@/components/Navbar';
+import { TopBar } from '@/components/TopBar';
 import { SettingsSidebar } from './SettingsSidebar';
-import { useBreakpoint } from '../../hooks/breakpoint';
-import { Dropdown } from '../commons/Dropdown';
+import { useBreakpoint } from '@/hooks/breakpoint';
+import { Dropdown } from '@/components/commons/Dropdown';
 import { useForm } from 'react-hook-form';
 import { useLocalization } from '@fluent/react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -42,7 +42,7 @@ export function SettingSelectorMobile() {
       },
     ];
 
-  const { control, watch, handleSubmit, setValue, getValues } = useForm<{
+  const { control, watch, handleSubmit, setValue } = useForm<{
     link: string;
   }>({
     defaultValues: { link: links[0].value.url },
@@ -69,7 +69,6 @@ export function SettingSelectorMobile() {
     <div className="fixed top-12 z-50 px-4 w-full">
       <Dropdown
         control={control}
-        getValues={getValues}
         display="block"
         items={links.map(({ label, value: { url: value } }) => ({
           label,

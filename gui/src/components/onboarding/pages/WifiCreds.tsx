@@ -1,12 +1,12 @@
 import { Localized, useLocalization } from '@fluent/react';
-import { useOnboarding } from '../../../hooks/onboarding';
-import { useWifiForm } from '../../../hooks/wifi-form';
-import { Button } from '../../commons/Button';
-import { Input } from '../../commons/Input';
-import { Typography } from '../../commons/Typography';
+import { useOnboarding } from '@/hooks/onboarding';
+import { useWifiForm } from '@/hooks/wifi-form';
+import { Button } from '@/components/commons/Button';
+import { Input } from '@/components/commons/Input';
+import { Typography } from '@/components/commons/Typography';
 import classNames from 'classnames';
-import { useTrackers } from '../../../hooks/tracker';
-import { useBnoExists } from '../../../hooks/imu-logic';
+import { useTrackers } from '@/hooks/tracker';
+import { useBnoExists } from '@/hooks/imu-logic';
 
 export function WifiCredsPage() {
   const { l10n } = useLocalization();

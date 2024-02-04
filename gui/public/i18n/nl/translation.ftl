@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = Rauw
 widget-imu_visualizer-rotation_preview = Preview
 widget-imu_visualizer-rotation_hide = Verbergen
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = Skelet voorbeeld
+widget-skeleton_visualizer-hide = Verbergen
+
 ## Tracker status
 
 tracker-status-none = Geen status
@@ -152,6 +157,7 @@ tracker-status-error = Fout
 tracker-status-disconnected = Verbinding verbroken
 tracker-status-occluded = Verborgen
 tracker-status-ok = OK
+tracker-status-timed_out = Timed Out
 
 ## Tracker status columns
 
@@ -350,9 +356,20 @@ settings-general-fk_settings-leg_tweak-floor_clip-description =
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap probeert de rotatie van uw voeten te raden als voet-trackers niet worden gebruikt.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant roteert je voeten zodat ze evenwijdig aan de grond zijn wanneer ze in contact zijn.
 settings-general-fk_settings-leg_fk = Been tracking
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Schakel Montage Reset voor de voeten in door op je tenen te staan.
+settings-general-fk_settings-leg_fk-reset_mounting_feet = Voeten montage reset.
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Verander de manier waarop de armen worden getrackt.
 settings-general-fk_settings-arm_fk-force_arms = Dwing armen vanuit HMD
+settings-general-fk_settings-arm_fk-reset_mode-description = Pas de verwachte armhouding aan voor het resetten van de montage.
+settings-general-fk_settings-arm_fk-back = Achterzijde
+settings-general-fk_settings-arm_fk-back-description = De standaardmodus, waarbij de bovenarmen  naar achteren gaan en de onderarmen naar voren.
+settings-general-fk_settings-arm_fk-tpose_up = T-pose (omhoog)
+settings-general-fk_settings-arm_fk-tpose_up-description = Verwacht je armen langs je zeiden te hangen tijdens een volledige reset, en 90 graden omhoog langs je zeiden tijdens een Montage Reset.
+settings-general-fk_settings-arm_fk-tpose_down = T-pose (omlaag)
+settings-general-fk_settings-arm_fk-tpose_down-description = Verwacht dat je armen 90 graden naar de zijkanten zijn tijdens een Volledige reset, en aan de zijkanten naar beneden tijdens een montage reset.
+settings-general-fk_settings-arm_fk-forward = Voorwaards
+settings-general-fk_settings-arm_fk-forward-description = Verwacht dat je armen 90 graden naar voren staan. Handig voor VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Skelet schakelaars
 settings-general-fk_settings-skeleton_settings-description = Schakel skeleton instellingen in of uit. Het is aanbevolen om deze aan te laten.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Uitgebreid ruggengraat model
@@ -366,6 +383,7 @@ settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Bere
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Bereken heup van taille naar benen
 settings-general-fk_settings-skeleton_settings-interp_hip_legs = Bereken het gemiddelde van de 'yaw en roll van de heup met die van de benen'
 settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Bereken het gemiddelde van de 'yaw en roll van de knie trackers met die van de enkels'
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Bereken het gemiddelde van de 'yaw en roll van de knie trackers met die van de enkels'
 settings-general-fk_settings-self_localization-title = Mocap modus
 settings-general-fk_settings-self_localization-description = Mocap modus staat het skelet model toe om zijn eigen positie te bepalen zonder het gebruik van een headset of andere trackers. Dit vergt wel het gebruik van voet en hoofd trackers, dit is momenteel nog expirimenteel.
 settings-general-fk_settings-vive_emulation-title = Vive-emulatie
@@ -433,6 +451,8 @@ settings-general-interface-feedback_sound = Feedback geluid
 settings-general-interface-feedback_sound-description = Speelt een geluid telkens de reset wordt uitgevoerd
 settings-general-interface-feedback_sound-label = Feedback geluid
 settings-general-interface-feedback_sound-volume = Feedback geluid volume
+settings-general-interface-connected_trackers_warning = Waarschuwing voor verbonden trackers
+settings-general-interface-connected_trackers_warning-label = Waarschuwing voor verbonden trackers bij het afsluiten
 
 ## Serial settings
 
@@ -661,8 +681,8 @@ onboarding-assignment_tutorial = Hoe een Slime Tracker voor te bereiden voordat 
 onboarding-assignment_tutorial-first_step = 1. Plaats een lichaamsdeelsticker (als je die hebt) op de tracker naar keuze
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Sticker
-onboarding-assignment_tutorial-second_step = Bevestig de riem aan je tracker, waarbij je de haak-en-luskant van het bandje in de volgende richting houdt:
-onboarding-assignment_tutorial-second_step-continuation = De haak-en-luskant voor de verlenging moet in deze richting staan:
+onboarding-assignment_tutorial-second_step-v2 = Bevestig de strap aan de tracker met de klittenbandzijde in dezelfde richting als de voorzijde van de tracker:
+onboarding-assignment_tutorial-second_step-continuation-v2 = De klittenbandzijde van de extensie moet naar boven gericht zijn, zoals in de foto afgebeeld:
 onboarding-assignment_tutorial-done = Ik heb stickers en riemen geplaatst!
 
 ## Tracker assignment setup
@@ -762,6 +782,8 @@ onboarding-choose_mounting-manual_mounting = Handmatige bevestiging
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Aanbevolen
 onboarding-choose_mounting-manual_mounting-description = Hiermee kunt u de montagerichting handmatig kiezen voor elke tracker
+onboarding-choose_mounting-manual_modal-confirm = Ik weet zeker wat ik doe
+onboarding-choose_mounting-manual_modal-cancel = Annuleren
 
 ## Tracker manual mounting setup
 
@@ -800,14 +822,14 @@ onboarding-choose_proportions-description = Lichaamsverhoudingen worden gebruikt
 onboarding-choose_proportions-auto_proportions = Automatische verhoudingen
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Aanbevolen
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
-    Dit zal je proporties gokken met jouw bewegingen op basis van een opname, waarna deze door een algoritme gehaald worden.
-    <b>Hiervoor moet een HMD verbonden zijn aan SlimeVR!</b>
 onboarding-choose_proportions-manual_proportions = Handmatige lichaamsverhoudingen
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Voor kleine details
 onboarding-choose_proportions-manual_proportions-description = Hier kan je jouw verhoudingen handmatig aanpassen
 onboarding-choose_proportions-export = Export proporties
+onboarding-choose_proportions-import = Importeer proporties
+onboarding-choose_proportions-import-success = geïmporteerd
+onboarding-choose_proportions-import-failed = Mislukt
 onboarding-choose_proportions-file_type = Lichaamsproporties bestand
 
 ## Tracker manual proportions setup
@@ -829,14 +851,6 @@ onboarding-automatic_proportions-put_trackers_on-title = Doe je trackers aan
 onboarding-automatic_proportions-put_trackers_on-description = Om je verhoudingen te kalibreren, gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
 onboarding-automatic_proportions-put_trackers_on-next = Ik heb al mijn trackers aan
 onboarding-automatic_proportions-requirements-title = Vereisten
-# Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
-    Je hebt in ieder geval genoeg trackers om je voeten te volgen (over het algemeen 5 trackers).
-    Je hebt je trackers en headset op.
-    Je draagt je trackers en headset.
-    Je trackers en headset zijn verbonden met de SlimeVR server.
-    Je trackers en headset werken goed binnen de SlimeVR server.
-    Je headset rapporteert positiegegevens aan de SlimeVR-server (dit betekent over het algemeen dat SteamVR wordt uitgevoerd en verbonden met SlimeVR met behulp van SlimeVR's SteamVR-stuurprogramma).
 onboarding-automatic_proportions-requirements-next = Ik heb de vereisten gelezen
 onboarding-automatic_proportions-check_height-title = Controleer je lengte
 onboarding-automatic_proportions-check_height-description =
@@ -889,6 +903,15 @@ onboarding-automatic_proportions-error_modal-confirm = Begrepen!
 ## Home
 
 home-no_trackers = Geen trackers gedetecteerd of toegewezen
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = Trackers staan nog steeds aan
+trackers_still_on-modal-description =
+    Een of meer trackers staan nog aan.
+    Wil je SlimeVR toch afsluiten?
+trackers_still_on-modal-confirm = SlimeVR afsluiten
+trackers_still_on-modal-cancel = Wacht even...
 
 ## Status system
 

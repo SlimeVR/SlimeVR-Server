@@ -1,8 +1,8 @@
 import { BaseDirectory, readTextFile } from '@tauri-apps/plugin-fs';
 
 import { createContext, useContext, useState } from 'react';
-import { DeveloperModeWidgetForm } from '../components/widgets/DeveloperModeWidget';
-import { error } from '../utils/logging';
+import { DeveloperModeWidgetForm } from '@/components/widgets/DeveloperModeWidget';
+import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
 
 export interface WindowConfig {
@@ -20,10 +20,12 @@ export interface Config {
   devSettings: DeveloperModeWidgetForm;
   feedbackSound: boolean;
   feedbackSoundVolume: number;
+  connectedTrackersWarning: boolean;
   theme: string;
   textSize: number;
   fonts: string[];
   advancedAssign: boolean;
+  doneManualMounting: boolean;
 }
 
 export interface ConfigContext {
@@ -33,17 +35,19 @@ export interface ConfigContext {
   loadConfig: () => Promise<Config | null>;
 }
 
-export const defaultConfig = {
+export const defaultConfig: Omit<Config, 'devSettings'> = {
   lang: 'en',
   debug: false,
   doneOnboarding: false,
   watchNewDevices: true,
   feedbackSound: true,
   feedbackSoundVolume: 0.5,
+  connectedTrackersWarning: true,
   theme: 'slime',
   textSize: 12,
   fonts: ['poppins'],
   advancedAssign: false,
+  doneManualMounting: false,
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {

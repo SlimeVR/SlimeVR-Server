@@ -1,5 +1,5 @@
-import { Button } from '../../../../commons/Button';
-import { Typography } from '../../../../commons/Typography';
+import { Button } from '@/components/commons/Button';
+import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 
 export function RequirementsStep({
@@ -26,7 +26,7 @@ export function RequirementsStep({
             <>
               {l10n
                 .getString(
-                  'onboarding-automatic_proportions-requirements-description'
+                  'onboarding-automatic_proportions-requirements-descriptionv2'
                 )
                 .split('\n')
                 .map((line, i) => (

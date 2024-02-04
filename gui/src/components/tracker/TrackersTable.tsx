@@ -7,19 +7,16 @@ import {
   TrackerIdT,
   TrackerStatus as TrackerStatusEnum,
 } from 'solarxr-protocol';
-import { FlatDeviceTracker } from '../../hooks/app';
-import { useConfig } from '../../hooks/config';
-import { useTracker } from '../../hooks/tracker';
-import { BodyPartIcon } from '../commons/BodyPartIcon';
-import { Typography } from '../commons/Typography';
-import { formatVector3 } from '../../utils/formatting';
+import { FlatDeviceTracker } from '@/hooks/app';
+import { useConfig } from '@/hooks/config';
+import { useTracker } from '@/hooks/tracker';
+import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
+import { Typography } from '@/components/commons/Typography';
+import { formatVector3 } from '@/utils/formatting';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
-import {
-  trackerStatusRelated,
-  useStatusContext,
-} from '../../hooks/status-system';
+import { trackerStatusRelated, useStatusContext } from '@/hooks/status-system';
 
 enum DisplayColumn {
   NAME,

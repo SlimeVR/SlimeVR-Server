@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = Preview
 widget-imu_visualizer-rotation_hide = Ocultar
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = Previsualización del esqueleto
+widget-skeleton_visualizer-hide = Ocultar
+
 ## Tracker status
 
 tracker-status-none = Sin estado
@@ -152,6 +157,7 @@ tracker-status-error = Error
 tracker-status-disconnected = Desconectado
 tracker-status-occluded = Ocluido
 tracker-status-ok = Conectado
+tracker-status-timed_out = Conexión interrumpida
 
 ## Tracker status columns
 
@@ -348,9 +354,20 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = El clip del suel
 settings-general-fk_settings-leg_tweak-toe_snap-description = El encajado de dedos intenta adivinar la rotación de los pies si sus respectivos trackers no están en uso.
 settings-general-fk_settings-leg_tweak-foot_plant-description = El plantado del pie rota los pies para que sean paralelos con el suelo al entrar en contacto.
 settings-general-fk_settings-leg_fk = Tracking de piernas
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Activar reinicio de montura para el pie mediante el pararse de puntillas.
+settings-general-fk_settings-leg_fk-reset_mounting_feet = Reinicio de montura de pies
 settings-general-fk_settings-arm_fk = Trackeo de brazos
 settings-general-fk_settings-arm_fk-description = Cambia cómo el movimiento de los brazos es detectado.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
+settings-general-fk_settings-arm_fk-reset_mode-description = Cambiar que pose de brazos es esperada para el reinicio de montura.
+settings-general-fk_settings-arm_fk-back = Detrás
+settings-general-fk_settings-arm_fk-back-description = El modo predeterminado, con el brazo yendo por detrás y el antebrazo yendo para adelante.
+settings-general-fk_settings-arm_fk-tpose_up = T-pose (arriba)
+settings-general-fk_settings-arm_fk-tpose_up-description = Espera que tus brazos estén abajo hacia los lados durante un reinicio completo, y 90 grados hacia los lados durante un reinicio de montura.
+settings-general-fk_settings-arm_fk-tpose_down = T-pose (abajo)
+settings-general-fk_settings-arm_fk-tpose_down-description = Espera que tus brazos estén 90 grados arriba hacia los lados durante un reinicio completo, y abajo hacia los lados durante un reinicio de montura.
+settings-general-fk_settings-arm_fk-forward = Delante
+settings-general-fk_settings-arm_fk-forward-description = Espera que tus brazos estén 90 grados para delante. Útil para VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Interruptores del esqueleto
 settings-general-fk_settings-skeleton_settings-description = Habilita o deshabilita los ajustes de esqueleto. Es recomendado dejar estos ajustes habilitados.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Modelo extendido de la columna
@@ -363,7 +380,8 @@ settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Im
 settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Imputar de la cadera al pecho hasta las piernas
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Imputar de la cadera a la cintura hasta las piernas
 settings-general-fk_settings-skeleton_settings-interp_hip_legs = Promediar la rotación del eje vertical y horizontal de la cadera con la de las piernas
-settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Promediar la rotación del eje vertical y horizontal de la rodilla con la de los tobillos
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Promediar la rotación del eje vertical y horizontal de los trackers de las rodillas con la de los tobillos
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Promediar la rotación del eje vertical y horizontal de las rodillas con la de los tobillos
 settings-general-fk_settings-self_localization-title = Modo mocap
 settings-general-fk_settings-self_localization-description = El modo mocap permite al esqueleto rastrear de forma aproximada su propia posición sin un casco o otros sensores. Nota que esto requiere que los trackers en el pie y cabeza estén y sigue siendo experimental.
 settings-general-fk_settings-vive_emulation-title = Vive emulation
@@ -431,6 +449,9 @@ settings-general-interface-feedback_sound = Sonido de feedback
 settings-general-interface-feedback_sound-description = Esta opción reproducirá un sonido cuando se realice un reinicio.
 settings-general-interface-feedback_sound-label = Sonido de feedback
 settings-general-interface-feedback_sound-volume = Volumen del sonido de feedback
+settings-general-interface-connected_trackers_warning = Advertencia de trackers conectados
+settings-general-interface-connected_trackers_warning-description = Esta opción hará que aparezca un pop-up cada vez que intentas salir de SlimeVR mientras tienes uno o más trackers conectados. Te recuerda de apagar tus trackers cuando ya paraste de usarlos así preservas la duración de la batería.
+settings-general-interface-connected_trackers_warning-label = Advertencia de trackers conectados al salir
 
 ## Serial settings
 
@@ -760,6 +781,13 @@ onboarding-choose_mounting-manual_mounting = Montura manual
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Recomendado
 onboarding-choose_mounting-manual_mounting-description = Esto te permitirá elegir la dirección de montura manualmente para cada tracker.
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    ¿Está seguro de que quiere
+    hacer la calibración automática de montura?
+onboarding-choose_mounting-manual_modal-description = <b>Está recomendado para nuevos usuarios el uso de la calibración manual de montura</b>, ya que las poses de la calibración automática pueden ser difíciles de hacer correctamente en el primer intento y requieran un poco de práctica.
+onboarding-choose_mounting-manual_modal-confirm = Estoy seguro de lo que hago
+onboarding-choose_mounting-manual_modal-cancel = Cancelar
 
 ## Tracker manual mounting setup
 
@@ -800,14 +828,18 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = Proporciones automáticas
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recomendado
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
-    Esto adivinará tus proporciones grabando una muestra de tus movimientos y pasándola por un algoritmo.
-    <b>¡Esto requiere tener tu VR conectado a SlimeVR!</b>
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
+    Esto estimará tus proporciones grabando una muestra de tus movimientos y pasándolos a través de un algoritmo.
+    
+    <b>¡Esto requiere tener tu visor (HMD) conectado a SlimeVR y en tu cabeza!</b>
 onboarding-choose_proportions-manual_proportions = Proporciones manuales
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Para toques pequeños
 onboarding-choose_proportions-manual_proportions-description = Esto te permitirá ajustar tus proporciones manualmente de forma directa
 onboarding-choose_proportions-export = Exportar proporciones
+onboarding-choose_proportions-import = Importar proporciones
+onboarding-choose_proportions-import-success = Importado
+onboarding-choose_proportions-import-failed = Error
 onboarding-choose_proportions-file_type = Archivo de proporciones del cuerpo
 
 ## Tracker manual proportions setup
@@ -830,13 +862,12 @@ onboarding-automatic_proportions-put_trackers_on-description = Para calibrar tus
 onboarding-automatic_proportions-put_trackers_on-next = Tengo puestos todos mis sensores
 onboarding-automatic_proportions-requirements-title = Requisitos
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
-    Tienes al menos suficientes trackers para rastrear tus pies (generalmente 5 trackers).
-    Tienes tus trackers y VR encendidos.
-    Tienes tus trackers y VR puestos.
-    Tus trackers y VR están conectados al servidor de SlimeVR.
-    Tus trackers y VR están funcionando correctamente con el servidor de SlimeVR.
-    Tu VR está reportando datos posicionales al servidor de SlimeVR (esto generalmente implica que SteamVR esté corriendo y conectado a SlimeVR usando el driver de SlimeVR para SteamVR).
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    Tienes suficientes sensores para mover tus pies (generalmente 5 sensores).
+    Tienes tus sensores y visor encendidos y los tienes puestos.
+    Tus sensores y visor están conectados al servidor de SlimeVR y están funcionando correctamente (ej: no se congela, no se desconecta, etc).
+    Tu visor esta reportando datos posicionales al servidor de SlimeVR (esto generalmente significa tener SteamVR abierto y conectado a SlimeVR usando el driver de SlimeVR para SteamVR).
+    Tus sensores están funcionando y están representando tus movimientos con precisión (ej: Realizaste un reinicio completo y se mueven en la dirección correcta cuando pateas, te agachas, te sientas, etc).
 onboarding-automatic_proportions-requirements-next = He leído los requisitos
 onboarding-automatic_proportions-check_height-title = Compruebe su altura
 onboarding-automatic_proportions-check_height-description = Utilizamos tu altura como base de nuestras mediciones utilizando la altura del VR como aproximación a tu altura real, ¡Pero es mejor que compruebes tú mismo si son correctas!
@@ -887,6 +918,15 @@ onboarding-automatic_proportions-error_modal-confirm = ¡Entendido!
 ## Home
 
 home-no_trackers = No hay sensores detectados o asignados
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = Los trackers siguen encendidos
+trackers_still_on-modal-description =
+    Uno o más trackers siguen encendidos.
+    ¿Estás seguro que quieres salir de SlimeVR?
+trackers_still_on-modal-confirm = Salir de SlimeVR
+trackers_still_on-modal-cancel = Espera un momento...
 
 ## Status system
 

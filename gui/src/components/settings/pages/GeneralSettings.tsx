@@ -17,19 +17,19 @@ import {
   SteamVRTrackersSettingT,
   TapDetectionSettingsT,
 } from 'solarxr-protocol';
-import { useConfig } from '../../../hooks/config';
-import { useWebsocketAPI } from '../../../hooks/websocket-api';
-import { useLocaleConfig } from '../../../i18n/config';
-import { CheckBox } from '../../commons/Checkbox';
-import { SteamIcon } from '../../commons/icon/SteamIcon';
-import { WrenchIcon } from '../../commons/icon/WrenchIcons';
-import { NumberSelector } from '../../commons/NumberSelector';
-import { Radio } from '../../commons/Radio';
-import { Typography } from '../../commons/Typography';
+import { useConfig } from '@/hooks/config';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useLocaleConfig } from '@/i18n/config';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { SteamIcon } from '@/components/commons/icon/SteamIcon';
+import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
+import { NumberSelector } from '@/components/commons/NumberSelector';
+import { Radio } from '@/components/commons/Radio';
+import { Typography } from '@/components/commons/Typography';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
-} from '../SettingsPageLayout';
+} from '@/components/settings/SettingsPageLayout';
 
 interface SettingsForm {
   trackers: {
@@ -479,10 +479,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-tracker_mechanics-filtering-type-none'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-tracker_mechanics-filtering-type-none-description'
                 )}
-                value={FilteringType.NONE}
+                value={FilteringType.NONE.toString()}
               ></Radio>
               <Radio
                 control={control}
@@ -490,10 +490,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-tracker_mechanics-filtering-type-smoothing'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-tracker_mechanics-filtering-type-smoothing-description'
                 )}
-                value={FilteringType.SMOOTHING}
+                value={FilteringType.SMOOTHING.toString()}
               ></Radio>
               <Radio
                 control={control}
@@ -501,10 +501,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-tracker_mechanics-filtering-type-prediction'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-tracker_mechanics-filtering-type-prediction-description'
                 )}
-                value={FilteringType.PREDICTION}
+                value={FilteringType.PREDICTION.toString()}
               ></Radio>
             </div>
             <div className="flex gap-5 pt-5 md:flex-row flex-col">
@@ -729,10 +729,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-fk_settings-arm_fk-back'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-fk_settings-arm_fk-back-description'
                 )}
-                value={0}
+                value={'0'}
               ></Radio>
               <Radio
                 control={control}
@@ -740,10 +740,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-fk_settings-arm_fk-forward'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-fk_settings-arm_fk-forward-description'
                 )}
-                value={1}
+                value={'1'}
               ></Radio>
               <Radio
                 control={control}
@@ -751,10 +751,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-fk_settings-arm_fk-tpose_up'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-fk_settings-arm_fk-tpose_up-description'
                 )}
-                value={2}
+                value={'2'}
               ></Radio>
               <Radio
                 control={control}
@@ -762,10 +762,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-fk_settings-arm_fk-tpose_down'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-fk_settings-arm_fk-tpose_down-description'
                 )}
-                value={3}
+                value={'3'}
               ></Radio>
             </div>
             {config?.debug && (
@@ -1112,6 +1112,9 @@ export function GeneralSettings() {
                 <NumberSelector
                   control={control}
                   name="tapDetection.numberTrackersOverThreshold"
+                  label={l10n.getString(
+                    'settings-general-gesture_control-numberTrackersOverThreshold'
+                  )}
                   valueLabelFormat={(value) =>
                     l10n.getString(
                       'settings-general-gesture_control-trackers',

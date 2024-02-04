@@ -1,23 +1,23 @@
-import { useOnboarding } from '../../../../hooks/onboarding';
+import { useOnboarding } from '@/hooks/onboarding';
 import { Localized, useLocalization } from '@fluent/react';
 import { useMemo, useState } from 'react';
 import classNames from 'classnames';
-import { Typography } from '../../../commons/Typography';
-import { Button } from '../../../commons/Button';
+import { Typography } from '@/components/commons/Typography';
+import { Button } from '@/components/commons/Button';
 import {
   RpcMessage,
   SkeletonConfigRequestT,
   SkeletonBone,
   ChangeSkeletonConfigRequestT,
 } from 'solarxr-protocol';
-import { useWebsocketAPI } from '../../../../hooks/websocket-api';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { save } from '@tauri-apps/plugin-dialog';
 import { writeTextFile } from '@tauri-apps/plugin-fs';
-import { useIsTauri } from '../../../../hooks/breakpoint';
-import { useAppContext } from '../../../../hooks/app';
-import { error } from '../../../../utils/logging';
+import { useIsTauri } from '@/hooks/breakpoint';
+import { useAppContext } from '@/hooks/app';
+import { error } from '@/utils/logging';
 import { fileOpen, fileSave } from 'browser-fs-access';
-import { useDebouncedEffect } from '../../../../hooks/timeout';
+import { useDebouncedEffect } from '@/hooks/timeout';
 
 export const MIN_HEIGHT = 0.4;
 export const MAX_HEIGHT = 4;
@@ -244,7 +244,7 @@ export function ProportionsChoose() {
                   </div>
                   <div>
                     <Localized
-                      id="onboarding-choose_proportions-auto_proportions-descriptionv2"
+                      id="onboarding-choose_proportions-auto_proportions-descriptionv3"
                       elems={{ b: <b></b> }}
                     >
                       <Typography

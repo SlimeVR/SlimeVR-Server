@@ -6,9 +6,9 @@ import {
   RpcMessage,
   SerialDeviceT,
 } from 'solarxr-protocol';
-import { useConfig } from '../hooks/config';
-import { useWebsocketAPI } from '../hooks/websocket-api';
-import { useWifiForm, WifiFormData } from '../hooks/wifi-form';
+import { useConfig } from '@/hooks/config';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useWifiForm, WifiFormData } from '@/hooks/wifi-form';
 import { BaseModal } from './commons/BaseModal';
 import { Button } from './commons/Button';
 import { BulbIcon } from './commons/icon/BulbIcon';

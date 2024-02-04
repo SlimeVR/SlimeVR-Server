@@ -1,7 +1,7 @@
 import { useLocalization } from '@fluent/react';
-import { useOnboarding } from '../../../hooks/onboarding';
-import { Button } from '../../commons/Button';
-import { Typography } from '../../commons/Typography';
+import { useOnboarding } from '@/hooks/onboarding';
+import { Button } from '@/components/commons/Button';
+import { Typography } from '@/components/commons/Typography';
 import { useState, useMemo, useEffect } from 'react';
 import {
   BodyPart,
@@ -12,12 +12,12 @@ import {
   SettingsRequestT,
   SettingsResponseT,
 } from 'solarxr-protocol';
-import { useTrackers } from '../../../hooks/tracker';
-import { BodyDisplay } from '../../commons/BodyDisplay';
-import { useWebsocketAPI } from '../../../hooks/websocket-api';
+import { useTrackers } from '@/hooks/tracker';
+import { BodyDisplay } from '@/components/commons/BodyDisplay';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 import classNames from 'classnames';
-import { useBreakpoint } from '../../../hooks/breakpoint';
-import { log } from '../../../utils/logging';
+import { useBreakpoint } from '@/hooks/breakpoint';
+import { log } from '@/utils/logging';
 
 export function ResetTutorialPage() {
   const { isMobile } = useBreakpoint('mobile');

@@ -1,15 +1,15 @@
 import { useForm } from 'react-hook-form';
 import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
-import { useOnboarding } from '../../../../hooks/onboarding';
-import { useWebsocketAPI } from '../../../../hooks/websocket-api';
-import { Button } from '../../../commons/Button';
-import { CheckBox } from '../../../commons/Checkbox';
-import { PersonFrontIcon } from '../../../commons/PersonFrontIcon';
-import { Typography } from '../../../commons/Typography';
+import { useOnboarding } from '@/hooks/onboarding';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { Button } from '@/components/commons/Button';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { Typography } from '@/components/commons/Typography';
 import { BodyProportions } from './BodyProportions';
 import { useLocalization } from '@fluent/react';
 import { useEffect, useMemo } from 'react';
-import { useBreakpoint } from '../../../../hooks/breakpoint';
+import { useBreakpoint } from '@/hooks/breakpoint';
+import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
 
 export function ButtonsControl() {
   const { l10n } = useLocalization();
@@ -101,7 +101,7 @@ export function ManualProportionsPage() {
               </div>
             </div>
             <div className="flex-col flex-grow gap-3 rounded-xl fill-background-50 items-center hidden md:flex">
-              <PersonFrontIcon width={200}></PersonFrontIcon>
+              <SkeletonVisualizerWidget height="65vh" maxHeight={600} />
             </div>
           </div>
           {!isMobile && (

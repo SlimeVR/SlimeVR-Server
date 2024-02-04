@@ -13,7 +13,7 @@ import {
 
 import { Builder, ByteBuffer } from 'flatbuffers';
 import { useInterval } from './timeout';
-import { log } from '../utils/logging';
+import { log } from '@/utils/logging';
 
 export interface WebSocketApi {
   isConnected: boolean;

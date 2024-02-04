@@ -1,21 +1,21 @@
 import { useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { CheckBox } from '../../commons/Checkbox';
-import { Typography } from '../../commons/Typography';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { Typography } from '@/components/commons/Typography';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
-} from '../SettingsPageLayout';
-import { defaultConfig, useConfig } from '../../../hooks/config';
-import { ThemeSelector } from '../../commons/ThemeSelector';
-import { SquaresIcon } from '../../commons/icon/SquaresIcon';
-import { NumberSelector } from '../../commons/NumberSelector';
-import { useLocaleConfig } from '../../../i18n/config';
-import { LangSelector } from '../../commons/LangSelector';
-import { BellIcon } from '../../commons/icon/BellIcon';
-import { Range } from '../../commons/Range';
-import { Dropdown } from '../../commons/Dropdown';
+} from '@/components/settings/SettingsPageLayout';
+import { defaultConfig, useConfig } from '@/hooks/config';
+import { ThemeSelector } from '@/components/commons/ThemeSelector';
+import { SquaresIcon } from '@/components/commons/icon/SquaresIcon';
+import { NumberSelector } from '@/components/commons/NumberSelector';
+import { useLocaleConfig } from '@/i18n/config';
+import { LangSelector } from '@/components/commons/LangSelector';
+import { BellIcon } from '@/components/commons/icon/BellIcon';
+import { Range } from '@/components/commons/Range';
+import { Dropdown } from '@/components/commons/Dropdown';
 
 interface InterfaceSettingsForm {
   appearance: {
@@ -28,6 +28,7 @@ interface InterfaceSettingsForm {
     watchNewDevices: boolean;
     feedbackSound: boolean;
     feedbackSoundVolume: number;
+    connectedTrackersWarning: boolean;
   };
 }
 
@@ -35,24 +36,26 @@ export function InterfaceSettings() {
   const { currentLocales } = useLocaleConfig();
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { control, watch, handleSubmit, getValues } =
-    useForm<InterfaceSettingsForm>({
-      defaultValues: {
-        appearance: {
-          devmode: config?.debug ?? defaultConfig.debug,
-          theme: config?.theme ?? defaultConfig.theme,
-          textSize: config?.textSize ?? defaultConfig.textSize,
-          fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
-        },
-        notifications: {
-          watchNewDevices:
-            config?.watchNewDevices ?? defaultConfig.watchNewDevices,
-          feedbackSound: config?.feedbackSound ?? defaultConfig.feedbackSound,
-          feedbackSoundVolume:
-            config?.feedbackSoundVolume ?? defaultConfig.feedbackSoundVolume,
-        },
+  const { control, watch, handleSubmit } = useForm<InterfaceSettingsForm>({
+    defaultValues: {
+      appearance: {
+        devmode: config?.debug ?? defaultConfig.debug,
+        theme: config?.theme ?? defaultConfig.theme,
+        textSize: config?.textSize ?? defaultConfig.textSize,
+        fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
       },
-    });
+      notifications: {
+        watchNewDevices:
+          config?.watchNewDevices ?? defaultConfig.watchNewDevices,
+        feedbackSound: config?.feedbackSound ?? defaultConfig.feedbackSound,
+        feedbackSoundVolume:
+          config?.feedbackSoundVolume ?? defaultConfig.feedbackSoundVolume,
+        connectedTrackersWarning:
+          config?.connectedTrackersWarning ??
+          defaultConfig.connectedTrackersWarning,
+      },
+    },
+  });
 
   const onSubmit = (values: InterfaceSettingsForm) => {
     setConfig({
@@ -63,6 +66,7 @@ export function InterfaceSettings() {
       theme: values.appearance.theme,
       fonts: values.appearance.fonts.split(','),
       textSize: values.appearance.textSize,
+      connectedTrackersWarning: values.notifications.connectedTrackersWarning,
     });
   };
 
@@ -149,6 +153,30 @@ export function InterfaceSettings() {
                 min={0.1}
                 max={1.0}
                 step={0.1}
+              />
+            </div>
+
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-interface-connected_trackers_warning'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-interface-connected_trackers_warning-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                variant="toggle"
+                control={control}
+                outlined
+                name="notifications.connectedTrackersWarning"
+                label={l10n.getString(
+                  'settings-general-interface-connected_trackers_warning-label'
+                )}
               />
             </div>
           </>
@@ -254,7 +282,6 @@ export function InterfaceSettings() {
             <div className="grid sm:grid-cols-2 pb-4">
               <Dropdown
                 control={control}
-                getValues={getValues}
                 name="appearance.fonts"
                 placeholder={l10n.getString(
                   'settings-interface-appearance-font-placeholder'

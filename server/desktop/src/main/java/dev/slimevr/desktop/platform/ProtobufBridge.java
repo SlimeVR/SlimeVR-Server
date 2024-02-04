@@ -205,6 +205,9 @@ public abstract class ProtobufBridge implements ISteamVRBridge {
 				// TODO : Check pose field
 				VRServer.Companion.getInstance().resetTrackersFull(resetSourceName);
 			case "fast_reset" -> VRServer.Companion.getInstance().resetTrackersYaw(resetSourceName);
+			case "pause_tracking" -> VRServer.Companion
+				.getInstance()
+				.togglePauseTracking(resetSourceName);
 		}
 	}
 

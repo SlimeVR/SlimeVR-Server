@@ -1,6 +1,6 @@
-import { useOnboarding } from '../../../../hooks/onboarding';
-import { Typography } from '../../../commons/Typography';
-import { Step, StepperSlider } from '../../StepperSlider';
+import { useOnboarding } from '@/hooks/onboarding';
+import { Typography } from '@/components/commons/Typography';
+import { Step, StepperSlider } from '@/components/onboarding/StepperSlider';
 import { DoneStep } from './mounting-steps/Done';
 import { MountingResetStep } from './mounting-steps/MountingReset';
 import { PreparationStep } from './mounting-steps/Preparation';

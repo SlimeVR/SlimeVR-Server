@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useMemo } from 'react';
 import { TrackerStatus as TrackerStatusEnum } from 'solarxr-protocol';
-import { Typography } from '../commons/Typography';
+import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 
 const statusLabelMap: { [key: number]: string } = {
@@ -11,6 +11,7 @@ const statusLabelMap: { [key: number]: string } = {
   [TrackerStatusEnum.DISCONNECTED]: 'tracker-status-disconnected',
   [TrackerStatusEnum.OCCLUDED]: 'tracker-status-occluded',
   [TrackerStatusEnum.OK]: 'tracker-status-ok',
+  [TrackerStatusEnum.TIMED_OUT]: 'tracker-status-timed_out',
 };
 
 const statusClassMap: { [key: number]: string } = {
@@ -20,6 +21,7 @@ const statusClassMap: { [key: number]: string } = {
   [TrackerStatusEnum.DISCONNECTED]: 'bg-background-30',
   [TrackerStatusEnum.OCCLUDED]: 'bg-status-warning',
   [TrackerStatusEnum.OK]: 'bg-status-success',
+  [TrackerStatusEnum.TIMED_OUT]: 'bg-status-warning',
 };
 
 export function TrackerStatus({ status }: { status: number }) {

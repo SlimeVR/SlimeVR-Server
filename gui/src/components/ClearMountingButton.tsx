@@ -1,11 +1,11 @@
 import { useLocalization } from '@fluent/react';
 import { ClearMountingResetRequestT, RpcMessage } from 'solarxr-protocol';
-import { useWebsocketAPI } from '../hooks/websocket-api';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { BigButton } from './commons/BigButton';
 import { TrashIcon } from './commons/icon/TrashIcon';
-import { useTrackers } from '../hooks/tracker';
+import { useTrackers } from '@/hooks/tracker';
 import { Quaternion } from 'three';
-import { QuaternionFromQuatT, similarQuaternions } from '../maths/quaternion';
+import { QuaternionFromQuatT, similarQuaternions } from '@/maths/quaternion';
 import { useMemo } from 'react';
 
 const _q = new Quaternion();
@@ -36,7 +36,7 @@ export function ClearMountingButton() {
   return (
     <BigButton
       text={l10n.getString('widget-clear_mounting')}
-      icon={<TrashIcon width={20} />}
+      icon={<TrashIcon size={20} />}
       onClick={clearMounting}
       disabled={!trackerWithMounting}
     />

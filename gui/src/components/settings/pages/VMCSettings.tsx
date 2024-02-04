@@ -9,18 +9,18 @@ import {
   OSCSettingsT,
   VMCOSCSettingsT,
 } from 'solarxr-protocol';
-import { useWebsocketAPI } from '../../../hooks/websocket-api';
-import { CheckBox } from '../../commons/Checkbox';
-import { FileInput } from '../../commons/FileInput';
-import { VMCIcon } from '../../commons/icon/VMCIcon';
-import { Input } from '../../commons/Input';
-import { Typography } from '../../commons/Typography';
-import { magic } from '../../../utils/formatting';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { CheckBox } from '@/components/commons/Checkbox';
+import { FileInput } from '@/components/commons/FileInput';
+import { VMCIcon } from '@/components/commons/icon/VMCIcon';
+import { Input } from '@/components/commons/Input';
+import { Typography } from '@/components/commons/Typography';
+import { magic } from '@/utils/formatting';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
-} from '../SettingsPageLayout';
-import { error } from '../../../utils/logging';
+} from '@/components/settings/SettingsPageLayout';
+import { error } from '@/utils/logging';
 
 interface VMCSettingsForm {
   vmc: {

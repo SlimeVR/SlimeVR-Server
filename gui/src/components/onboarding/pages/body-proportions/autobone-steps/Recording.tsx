@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { ProcessStatus, useAutobone } from '../../../../../hooks/autobone';
-import { ProgressBar } from '../../../../commons/ProgressBar';
-import { TipBox } from '../../../../commons/TipBox';
-import { Typography } from '../../../../commons/Typography';
+import { ProcessStatus, useAutobone } from '@/hooks/autobone';
+import { ProgressBar } from '@/components/commons/ProgressBar';
+import { TipBox } from '@/components/commons/TipBox';
+import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { P, match } from 'ts-pattern';
 import { AutoboneErrorModal } from './AutoboneErrorModal';

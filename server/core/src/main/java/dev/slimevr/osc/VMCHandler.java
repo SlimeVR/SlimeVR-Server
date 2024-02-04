@@ -7,6 +7,7 @@ import com.illposed.osc.transport.OSCPortOut;
 import dev.slimevr.VRServer;
 import dev.slimevr.autobone.errors.BodyProportionError;
 import dev.slimevr.config.VMCConfig;
+import dev.slimevr.tracking.processor.Bone;
 import dev.slimevr.tracking.processor.BoneType;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.processor.TransformNode;
@@ -193,7 +194,7 @@ public class VMCHandler implements OSCHandler {
 
 	private void handleReceivedMessage(OSCMessageEvent event) {
 		switch (event.getMessage().getAddress()) {
-			case "/VMC/Ext/Bone/Pos":
+			case "/VMC/Ext/Bone/Pos" -> {
 				// Is bone (rotation)
 				TrackerPosition trackerPosition = null;
 				UnityBone bone = UnityBone
@@ -220,10 +221,8 @@ public class VMCHandler implements OSCHandler {
 							)
 					);
 				}
-				break;
-			case "/VMC/Ext/Hmd/Pos":
-			case "/VMC/Ext/Con/Pos":
-			case "/VMC/Ext/Tra/Pos":
+			}
+			case "/VMC/Ext/Hmd/Pos", "/VMC/Ext/Con/Pos", "/VMC/Ext/Tra/Pos" ->
 				// Is tracker (position + rotation)
 				handleReceivedTracker(
 					"VMC-Tracker-" + event.getMessage().getArguments().get(0),
@@ -242,8 +241,7 @@ public class VMCHandler implements OSCHandler {
 					false,
 					null
 				);
-				break;
-			case "/VMC/Ext/Root/Pos":
+			case "/VMC/Ext/Root/Pos" -> {
 				// Is VMC tracking root (offsets all rotations)
 				if (inputUnityArmature != null) {
 					inputUnityArmature
@@ -261,7 +259,7 @@ public class VMCHandler implements OSCHandler {
 							)
 						);
 				}
-				break;
+			}
 		}
 	}
 
@@ -333,7 +331,7 @@ public class VMCHandler implements OSCHandler {
 	public void update() {
 		// Update unity hierarchy
 		if (inputUnityArmature != null)
-			inputUnityArmature.updateNodes();
+			inputUnityArmature.update();
 
 		long currentTime = System.currentTimeMillis();
 		if (currentTime - timeAtLastSend > 3) { // 200hz to not crash VSF
@@ -374,25 +372,26 @@ public class VMCHandler implements OSCHandler {
 							)
 						);
 
-					for (UnityBone bone : UnityBone.values()) {
-						// Get tailNode for bone
-						TransformNode tailNode = humanPoseManager
-							.getTailNodeOfBone(
-								bone.getBoneType()
-							);
-						// Update unity hierarchy from bone's global rotation
-						if (tailNode != null && tailNode.getParent() != null)
+					for (UnityBone unityBone : UnityBone.getEntries()) {
+						BoneType boneType = unityBone.getBoneType();
+						if (boneType != null) {
+							// Get SlimeVR bone
+							Bone bone = humanPoseManager.getBone(boneType);
+
+							// Update unity hierarchy from bone's global
+							// rotation
 							outputUnityArmature
 								.setGlobalRotationForBone(
-									bone,
-									tailNode.getParent().getWorldTransform().getRotation()
+									unityBone,
+									bone.getGlobalRotation().times(bone.getRotationOffset().inv())
 								);
+						}
 					}
 					if (!anchorHip) {
 						// Anchor from head
 						// Gets the SlimeVR head position, scales it to the VRM,
-						// and subtracts the difference between the VRM's head
-						// and hip
+						// and subtracts the difference between the VRM's
+						// head and hip
 						// FIXME this way isn't perfect, but I give up - Erimel
 						Vector3 upperLegsAverage = (outputUnityArmature
 							.getHeadNodeOfBone(UnityBone.LEFT_UPPER_LEG)
@@ -404,15 +403,16 @@ public class VMCHandler implements OSCHandler {
 									.getWorldTransform()
 									.getTranslation()
 							)).times(0.5f);
+
 						Vector3 scaledHead = humanPoseManager
-							.getTailNodeOfBone(BoneType.HEAD)
-							.getWorldTransform()
-							.getTranslation()
+							.getBone(BoneType.HEAD)
+							.getTailPosition()
 							.times(
 								vrmHeight
 									/ (humanPoseManager.getUserHeightFromConfig()
 										* BodyProportionError.eyeHeightToHeightRatio)
 							);
+
 						Vector3 pos = scaledHead
 							.minus(
 								(outputUnityArmature
@@ -423,7 +423,6 @@ public class VMCHandler implements OSCHandler {
 									.minus(upperLegsAverage))
 							);
 
-
 						outputUnityArmature
 							.getHeadNodeOfBone(UnityBone.HIPS)
 							.getLocalTransform()
@@ -431,10 +430,10 @@ public class VMCHandler implements OSCHandler {
 					}
 
 					// Update Unity skeleton
-					outputUnityArmature.updateNodes();
+					outputUnityArmature.update();
 
 					// Add Unity humanoid bones transforms
-					for (UnityBone bone : UnityBone.values()) {
+					for (UnityBone bone : UnityBone.getEntries()) {
 						if (
 							!(humanPoseManager.isTrackingLeftArmFromController()
 								&& isLeftArmUnityBone(bone))

@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = Brute
 widget-imu_visualizer-rotation_preview = Aperçu
 widget-imu_visualizer-rotation_hide = Masquer
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = Aperçu du squelette
+widget-skeleton_visualizer-hide = Masquer
+
 ## Tracker status
 
 tracker-status-none = Pas de statut
@@ -152,6 +157,7 @@ tracker-status-error = Erreur
 tracker-status-disconnected = Déconnecté
 tracker-status-occluded = Obstrué
 tracker-status-ok = OK
+tracker-status-timed_out = Délai expiré
 
 ## Tracker status columns
 
@@ -348,9 +354,20 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Le limitage au s
 settings-general-fk_settings-leg_tweak-toe_snap-description = La correction des orteils estime l'orientation de vos pieds si vous ne portez pas de capteurs sur ses derniers.
 settings-general-fk_settings-leg_tweak-foot_plant-description = La correction des pieds oriente vos pieds pour qu'ils soient parallèles au sol lorsqu'ils le touche.
 settings-general-fk_settings-leg_fk = Capture des jambes
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Activer la réinitialisation de l'alignement des pieds en allant sur la pointe des pieds.
+settings-general-fk_settings-leg_fk-reset_mounting_feet = Réinitialisation de l'alignement des pieds
 settings-general-fk_settings-arm_fk = Capture des bras
 settings-general-fk_settings-arm_fk-description = Changez la façon dont les bras sont captés.
 settings-general-fk_settings-arm_fk-force_arms = Forcer les bras en provenance du casque VR
+settings-general-fk_settings-arm_fk-reset_mode-description = Changer la pose des bras attendue pour la réinitialisation de l'alignement.
+settings-general-fk_settings-arm_fk-back = En arrière
+settings-general-fk_settings-arm_fk-back-description = Le mode par défaut, avec les bras vers l’arrière et les avant-bras vers l’avant.
+settings-general-fk_settings-arm_fk-tpose_up = T-pose (vers le haut)
+settings-general-fk_settings-arm_fk-tpose_up-description = S’attend à ce que vos bras soient  vers le bas sur les côtés pendant la réinitialisation complète et à 90 degrés vers l'extérieur pendant la réinitialisation de l'alignement.
+settings-general-fk_settings-arm_fk-tpose_down = T-pose (vers le bas)
+settings-general-fk_settings-arm_fk-tpose_down-description = S’attend à ce que vos bras soient à 90 degrés vers l'extérieur pendant la réinitialisation complète et vers le bas sur les côtés pendant la réinitialisation de l'alignement.
+settings-general-fk_settings-arm_fk-forward = En avant
+settings-general-fk_settings-arm_fk-forward-description = S’attend à ce que vos bras soient levés 90 degrés vers l’avant. Utile pour le VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Bascules du squelette
 settings-general-fk_settings-skeleton_settings-description = Activez ou désactivez des paramètres avancés de capture.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Modèle de colonne vertébrale avancé
@@ -364,6 +381,7 @@ settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Inte
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Interpoler la hanche de la taille aux jambes
 settings-general-fk_settings-skeleton_settings-interp_hip_legs = Interpoler la rotation horizontale et de torsion de la hanche avec celle des jambes
 settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Interpoler les rotations horizontales et de torsion des capteurs de genoux avec celles des chevilles
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Interpoler les rotations horizontales et de torsion des genoux avec celles des chevilles
 settings-general-fk_settings-self_localization-title = Mode Mocap
 settings-general-fk_settings-self_localization-description = Le mode Mocap permet au squelette de suivre grossièrement sa propre position sans casque ou autres capteurs. Ce mode nécessite des capteurs de pieds et de tête afin de fonctionner et est encore expérimental.
 settings-general-fk_settings-vive_emulation-title = Émulation Vive
@@ -431,6 +449,9 @@ settings-general-interface-feedback_sound = Son de retour
 settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée.
 settings-general-interface-feedback_sound-label = Son de retour
 settings-general-interface-feedback_sound-volume = Volume du son de retour
+settings-general-interface-connected_trackers_warning = Avertissement de capteurs connectés
+settings-general-interface-connected_trackers_warning-description = Cette option affichera une fenêtre contextuelle chaque fois que vous essaierez de quitter SlimeVR tout en ayant un ou plusieurs capteurs connectés. Il vous rappelle d’éteindre vos capteurs lorsque vous avez terminé pour préserver la durée de vie de la batterie.
+settings-general-interface-connected_trackers_warning-label = Avertissement de capteurs connectés en quittant
 
 ## Serial settings
 
@@ -760,6 +781,13 @@ onboarding-choose_mounting-manual_mounting = Alignement manuel
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Recommendée
 onboarding-choose_mounting-manual_mounting-description = Ceci vous permettra de choisir la direction de chaque capteur manuellement
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    Êtes-vous sûr de vouloir faire
+    la calibration automatique de l'alignement ?
+onboarding-choose_mounting-manual_modal-description = <b>La calibration manuel de l'alignement est recommandé pour les nouveaux utilisateurs</b>, car les poses de calibration automatique de l'alignement peuvent être difficiles à reproduire au départ et peuvent nécessiter un peu de pratique.
+onboarding-choose_mounting-manual_modal-confirm = Je suis sûr de ce que je fais
+onboarding-choose_mounting-manual_modal-cancel = Annuler
 
 ## Tracker manual mounting setup
 
@@ -800,15 +828,18 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = Proportions automatiques
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommendée
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
     Cela permettra d'estimer vos proportions en enregistrant un échantillon de vos mouvements et en le faisant passer par un algorithme.
     
-    <b>Cela nécessite d’avoir votre casque VR connecté à SlimeVR !</b>
+    <b>Cela nécessite d’avoir votre casque VR connecté à SlimeVR et sur votre tête !</b>
 onboarding-choose_proportions-manual_proportions = Proportions manuelles
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Pour les retouches
 onboarding-choose_proportions-manual_proportions-description = Ceci vous permettra d'ajuster vos proportions manuellement en les modifiant directement
 onboarding-choose_proportions-export = Exporter les proportions
+onboarding-choose_proportions-import = Importer les proportions
+onboarding-choose_proportions-import-success = Importé
+onboarding-choose_proportions-import-failed = Raté
 onboarding-choose_proportions-file_type = Fichier de proportions
 
 ## Tracker manual proportions setup
@@ -831,13 +862,12 @@ onboarding-automatic_proportions-put_trackers_on-description = Pour calibrer vos
 onboarding-automatic_proportions-put_trackers_on-next = J'ai tous mes capteurs
 onboarding-automatic_proportions-requirements-title = Exigences
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
+onboarding-automatic_proportions-requirements-descriptionv2 =
     Vous avez au moins assez de capteurs pour capturer vos pieds (généralement 5 capteurs).
-    Vos capteurs et votre casque VR sont allumés.
-    Vous portez vos capteurs et votre casque VR.
-    Vos capteurs et votre casque VR sont connectés au serveur SlimeVR.
-    Vos capteurs et votre casque VR fonctionnent correctement au sein du serveur SlimeVR.
-    Votre casque envoie sa position au serveur SlimeVR (cela signifie généralement que SteamVR est ouvert et connecté à SlimeVR en utilisant le driver SteamVR de SlimeVR).
+    Vos capteurs et votre casque VR sont allumés et sur vous.
+    Vos capteurs et votre casque VR sont connectés au serveur SlimeVR et fonctionnent correctement (ex. pas de lag, déconnexions, etc).
+    Votre casque envoie sa position au serveur SlimeVR (cela signifie généralement que SteamVR est ouvert et connecté à SlimeVR en utilisant le pilote SteamVR de SlimeVR).
+    La capture des mouvements fonctionne et représente correctement vos mouvements (ex. vous avez effectué une réinitialisation complète des capteurs et ils bougent dans le bon sens lorsque vous donnez des coups de pieds, vous penchez, vous assoyez, etc).
 onboarding-automatic_proportions-requirements-next = J'ai lu les exigences
 onboarding-automatic_proportions-check_height-title = Vérifiez votre taille
 onboarding-automatic_proportions-check_height-description = Nous utilisons votre taille comme la base de nos mesures en utilisant la hauteur de votre casque comme approximation de votre taille réelle, mais il est préférable de vérifier si elles sont correctes vous-même !
@@ -888,6 +918,15 @@ onboarding-automatic_proportions-error_modal-confirm = Compris !
 ## Home
 
 home-no_trackers = Aucun capteur détecté ou attribué
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = Capteurs encore allumés
+trackers_still_on-modal-description =
+    Un ou plusieurs capteurs sont encore allumés.
+    Voulez-vous quand même quitter SlimeVR ?
+trackers_still_on-modal-confirm = Quitter SlimeVR
+trackers_still_on-modal-cancel = Annuler...
 
 ## Status system
 

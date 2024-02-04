@@ -117,7 +117,7 @@ widget-developer_mode = Developer Mode
 widget-developer_mode-high_contrast = High contrast
 widget-developer_mode-precise_rotation = Precise rotation
 widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
+widget-developer_mode-filter_slimes_and_hmd = Filter Slimes and HMD
 widget-developer_mode-sort_by_name = Sort by name
 widget-developer_mode-raw_slime_rotation = Raw rotation
 widget-developer_mode-more_info = More info
@@ -128,6 +128,10 @@ widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = Preview
 widget-imu_visualizer-rotation_hide = Hide
 
+## Widget: Skeleton Visualizer
+widget-skeleton_visualizer-preview = Skeleton preview
+widget-skeleton_visualizer-hide = Hide
+
 ## Tracker status
 tracker-status-none = No Status
 tracker-status-busy = Busy
@@ -135,6 +139,7 @@ tracker-status-error = Error
 tracker-status-disconnected = Disconnected
 tracker-status-occluded = Occluded
 tracker-status-ok = OK
+tracker-status-timed_out = Timed out
 
 ## Tracker status columns
 tracker-table-column-name = Name
@@ -325,7 +330,7 @@ settings-general-fk_settings-leg_fk = Leg tracking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Enable feet Mounting Reset by tiptoeing.
 settings-general-fk_settings-leg_fk-reset_mounting_feet = Feet Mounting Reset
 settings-general-fk_settings-arm_fk = Arm tracking
-settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the HMD even if positional hand data is available.
+settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the headset (HMD) even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
 settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for mounting reset.
 settings-general-fk_settings-arm_fk-back = Back
@@ -414,6 +419,9 @@ settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered.
 settings-general-interface-feedback_sound-label = Feedback sound
 settings-general-interface-feedback_sound-volume = Feedback sound volume
+settings-general-interface-connected_trackers_warning = Connected trackers warning
+settings-general-interface-connected_trackers_warning-description = This option will show a pop-up every time you try exiting SlimeVR while having one or more connected trackers. It reminds you to turn off your trackers when you are done to preserve battery life.
+settings-general-interface-connected_trackers_warning-label = Connected trackers warning on exit
 
 ## Serial settings
 settings-serial = Serial Console
@@ -463,7 +471,7 @@ settings-osc-router-network-address-placeholder = IPV4 address
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description =
-    Change VRChat-specific settings to receive HMD data and send
+    Change VRChat-specific settings to receive headset (HMD) data and send
     tracker data for FBT without SteamVR (ex. Quest standalone).
 settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
@@ -554,7 +562,7 @@ onboarding-reset_tutorial-skip = Skip step
 # Cares about multiline
 onboarding-reset_tutorial-0 = Tap { $taps } times the highlighted tracker for triggering yaw reset.
 
-    This will make the trackers face the same direction as your HMD.
+    This will make the trackers face the same direction as your headset (HMD).
 # Cares about multiline
 onboarding-reset_tutorial-1 = Tap { $taps } times the highlighted tracker for triggering full reset.
 
@@ -713,7 +721,12 @@ onboarding-choose_mounting-manual_mounting = Manual mounting
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Recommended
 onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting direction manually for each tracker
-
+# Multiline text
+onboarding-choose_mounting-manual_modal-title = Are you sure you want to do
+    the automatic mounting calibration?
+onboarding-choose_mounting-manual_modal-description = <b>The manual mounting calibration is recommended for new users</b>, as the automatic mounting calibration's poses can be hard to get right first and may require some practice.
+onboarding-choose_mounting-manual_modal-confirm = I'm sure of what I'm doing
+onboarding-choose_mounting-manual_modal-cancel = Cancel
 
 ## Tracker manual mounting setup
 onboarding-manual_mounting-back = Go Back to Enter VR
@@ -750,10 +763,10 @@ onboarding-choose_proportions-description = Body proportions are used to know th
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
     This will guess your proportions by recording a sample of your movements and passing it through an algorithm.
 
-    <b>This requires having your HMD connected to SlimeVR!</b>
+    <b>This requires having your headset (HMD) connected to SlimeVR and on your head!</b>
 onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
@@ -782,16 +795,15 @@ onboarding-automatic_proportions-put_trackers_on-description = To calibrate your
 onboarding-automatic_proportions-put_trackers_on-next = I have all my trackers on
 onboarding-automatic_proportions-requirements-title = Requirements
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
+onboarding-automatic_proportions-requirements-descriptionv2 =
     You have at least enough trackers to track your feet (generally 5 trackers).
-    You have your trackers and headset on.
-    You are wearing your trackers and headset.
-    Your trackers and headset are connected to the SlimeVR server.
-    Your trackers and headset are working properly within the SlimeVR server.
+    You have your trackers and headset on and are wearing them.
+    Your trackers and headset are connected to the SlimeVR server and are working properly (ex. no stuttering, disconnecting, etc).
     Your headset is reporting positional data to the SlimeVR server (this generally means having SteamVR running and connected to SlimeVR using SlimeVR's SteamVR driver).
+    Your tracking is working and is accurately representing your movements (ex. you have performed a full reset and they move the right direction when kicking, bending over, sitting, etc).
 onboarding-automatic_proportions-requirements-next = I have read the requirements
 onboarding-automatic_proportions-check_height-title = Check your height
-onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the HMD's height as an approximation of your actual height, but it's better to check if they are right yourself!
+onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the headset's (HMD) height as an approximation of your actual height, but it's better to check if they are right yourself!
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = Please press the button while standing <u>upright</u> to calculate your height. You have 3 seconds after you press the button!
 onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
@@ -837,6 +849,14 @@ onboarding-automatic_proportions-error_modal-confirm = Understood!
 
 ## Home
 home-no_trackers = No trackers detected or assigned
+
+## Trackers Still On notification
+trackers_still_on-modal-title = Trackers still on
+trackers_still_on-modal-description =
+    One or more trackers are still on.
+    Do you still want to exit SlimeVR?
+trackers_still_on-modal-confirm = Exit SlimeVR
+trackers_still_on-modal-cancel = Hold on...
 
 ## Status system
 status_system-StatusTrackerReset = It is recommended to perform a full reset as one or more trackers are unadjusted.

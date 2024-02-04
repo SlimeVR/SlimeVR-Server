@@ -1,16 +1,22 @@
-import { useOnboarding } from '../../../../hooks/onboarding';
+import { useOnboarding } from '@/hooks/onboarding';
 import { useLocalization } from '@fluent/react';
 import { useState } from 'react';
-import { SkipSetupWarningModal } from '../../SkipSetupWarningModal';
+import { SkipSetupWarningModal } from '@/components/onboarding/SkipSetupWarningModal';
 import classNames from 'classnames';
-import { Typography } from '../../../commons/Typography';
-import { Button } from '../../../commons/Button';
+import { Typography } from '@/components/commons/Typography';
+import { Button } from '@/components/commons/Button';
+import { TryManualFirstModal } from './TryManualFirstModal';
+import { useConfig } from '@/hooks/config';
+import { useNavigate } from 'react-router';
 
 export function MountingChoose() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
+  const navigate = useNavigate();
+  const { config, setConfig } = useConfig();
   const [animated, setAnimated] = useState(false);
   const [skipWarning, setSkipWarning] = useState(false);
+  const [manualModal, setManualModal] = useState(false);
 
   applyProgress(0.65);
 
@@ -66,7 +72,16 @@ export function MountingChoose() {
                 </div>
                 <Button
                   variant={!state.alonePage ? 'secondary' : 'tertiary'}
-                  to="/onboarding/mounting/auto"
+                  to={
+                    config?.doneManualMounting
+                      ? '/onboarding/mounting/auto'
+                      : undefined
+                  }
+                  onClick={
+                    !config?.doneManualMounting
+                      ? () => setManualModal(true)
+                      : undefined
+                  }
                   className="self-start mt-auto"
                   state={{ alonePage: state.alonePage }}
                 >
@@ -137,6 +152,14 @@ export function MountingChoose() {
           )}
         </div>
       </div>
+      <TryManualFirstModal
+        isOpen={manualModal}
+        accept={() => {
+          setConfig({ doneManualMounting: true });
+          navigate('/onboarding/mounting/auto');
+        }}
+        cancel={() => setManualModal(false)}
+      ></TryManualFirstModal>
       <SkipSetupWarningModal
         accept={skipSetup}
         onClose={() => setSkipWarning(false)}

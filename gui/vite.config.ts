@@ -1,10 +1,14 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig, PluginOption } from 'vite';
 import { execSync } from 'child_process';
+import path from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 const commitHash = execSync('git rev-parse --verify --short HEAD').toString().trim();
-const versionTag = execSync('git --no-pager tag --points-at HEAD').toString().trim();
+const versionTag = execSync('git --no-pager tag --sort -taggerdate --points-at HEAD')
+  .toString()
+  .split('\n')[0]
+  .trim();
 // If not empty then it's not clean
 const gitClean = execSync('git status --porcelain').toString() ? false : true;
 
@@ -47,5 +51,10 @@ export default defineConfig({
     },
     needsInterop: ['solarxr-protocol'],
     include: ['solarxr-protocol'],
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
   },
 });

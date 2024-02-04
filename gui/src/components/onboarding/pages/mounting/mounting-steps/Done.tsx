@@ -1,5 +1,6 @@
-import { Button } from '../../../../commons/Button';
-import { Typography } from '../../../../commons/Typography';
+import { Button } from '@/components/commons/Button';
+import { Typography } from '@/components/commons/Typography';
+import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
 import { useLocalization } from '@fluent/react';
 
 export function DoneStep({
@@ -38,6 +39,8 @@ export function DoneStep({
           </Button>
         )}
       </div>
+
+      <SkeletonVisualizerWidget />
     </div>
   );
 }

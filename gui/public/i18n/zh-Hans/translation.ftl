@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = 原始旋转
 widget-imu_visualizer-rotation_preview = 预览
 widget-imu_visualizer-rotation_hide = 隐藏
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = 骨架预览
+widget-skeleton_visualizer-hide = 隐藏
+
 ## Tracker status
 
 tracker-status-none = 无状态
@@ -348,9 +353,20 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制可�
 settings-general-fk_settings-leg_tweak-toe_snap-description = 脚趾着地可以在没有脚部追踪器的情况下尝试猜测脚部的俯仰。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 脚掌着地会在脚与地面接触时保持脚掌与地板平行。
 settings-general-fk_settings-leg_fk = 腿部追踪
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = 开启脚部佩戴重置。（佩戴重置时需要踮起脚尖）
+settings-general-fk_settings-leg_fk-reset_mounting_feet = 脚部佩戴重置
 settings-general-fk_settings-arm_fk = 手臂追踪
 settings-general-fk_settings-arm_fk-description = 即使有手臂位置数据可用，也强制使用头显的数据追踪手臂。
 settings-general-fk_settings-arm_fk-force_arms = 强制使用头显数据追踪手臂
+settings-general-fk_settings-arm_fk-reset_mode-description = 更改佩戴重置时使用的手臂姿势。
+settings-general-fk_settings-arm_fk-back = 向后弯折
+settings-general-fk_settings-arm_fk-back-description = 默认，重置时大臂向后，小臂向前，类似滑雪。
+settings-general-fk_settings-arm_fk-tpose_up = T-pose（抬起）
+settings-general-fk_settings-arm_fk-tpose_up-description = 完整重置时手臂垂下，呈立正姿势；佩戴重置时手臂向两侧伸平。
+settings-general-fk_settings-arm_fk-tpose_down = T-pose（放下）
+settings-general-fk_settings-arm_fk-tpose_down-description = 完整重置时手臂向两侧伸平；佩戴重置时手臂垂下，呈立正姿势。
+settings-general-fk_settings-arm_fk-forward = 向前伸平
+settings-general-fk_settings-arm_fk-forward-description = 重置时手臂向前伸平，有利于坐姿进行虚拟直播。
 settings-general-fk_settings-skeleton_settings-toggles = 骨架设置
 settings-general-fk_settings-skeleton_settings-description = 打开或关闭骨架设置。建议保持这些设置不变。
 settings-general-fk_settings-skeleton_settings-extended_spine_model = 延伸脊柱模型
@@ -363,7 +379,8 @@ settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = �
 settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = 用胸部到腿部的数据推算髋部
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = 用腰部到腿部的数据推算髋部
 settings-general-fk_settings-skeleton_settings-interp_hip_legs = 平均髋部与腿部间航向轴和横滚轴的数值
-settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = 平均膝盖与小腿间航向轴和横滚轴的数值
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = 平均膝盖追踪器与小腿间航向轴和横滚轴的数值
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = 平均膝盖与小腿间航向轴和横滚轴的数值
 settings-general-fk_settings-self_localization-title = 动作捕捉模式
 settings-general-fk_settings-self_localization-description = 动作捕捉模式允许在没有头戴设备或其他追踪器的情况下粗略地跟踪骨架姿态。请注意，本功能需要脚部和头部追踪器，且现阶段依然是实验性的。
 settings-general-fk_settings-vive_emulation-title = Vive 模拟
@@ -426,6 +443,9 @@ settings-general-interface-feedback_sound = 声音反馈
 settings-general-interface-feedback_sound-description = 开启此选项会在触发重置时发出提示音
 settings-general-interface-feedback_sound-label = 声音反馈
 settings-general-interface-feedback_sound-volume = 提示音音量
+settings-general-interface-connected_trackers_warning = 已连接追踪器警告
+settings-general-interface-connected_trackers_warning-description = 启用本选项后，每次当退出 SlimeVR 时仍有追踪器连接着会显示通知，提醒你在使用完毕时关闭追踪器电源来节省电池电量。
+settings-general-interface-connected_trackers_warning-label = 退出时，有追踪器连接中则显示警告
 
 ## Serial settings
 
@@ -750,6 +770,11 @@ onboarding-choose_mounting-manual_mounting = 手动设置佩戴方向
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = 推荐
 onboarding-choose_mounting-manual_mounting-description = 这将需要你手动选择每个追踪器的佩戴方向
+# Multiline text
+onboarding-choose_mounting-manual_modal-title = 确定要进行自动佩戴校准？
+onboarding-choose_mounting-manual_modal-description = <b>我们建议新手使用手动佩戴校准</b>，因为自动佩戴校准的姿势要一次做正确比较困难，可能需要一些练习。
+onboarding-choose_mounting-manual_modal-confirm = 我已知晓
+onboarding-choose_mounting-manual_modal-cancel = 取消
 
 ## Tracker manual mounting setup
 
@@ -799,6 +824,9 @@ onboarding-choose_proportions-manual_proportions = 手动调整身体比例
 onboarding-choose_proportions-manual_proportions-subtitle = 用于精细调整
 onboarding-choose_proportions-manual_proportions-description = 这将需要你手动修改以调整你的身体比例
 onboarding-choose_proportions-export = 导出身体比例
+onboarding-choose_proportions-import = 导入身体比例
+onboarding-choose_proportions-import-success = 导入成功
+onboarding-choose_proportions-import-failed = 导入失败
 onboarding-choose_proportions-file_type = 身体比例文件
 
 ## Tracker manual proportions setup
@@ -874,6 +902,15 @@ onboarding-automatic_proportions-error_modal-confirm = 了解！
 ## Home
 
 home-no_trackers = 未检测到或未分配追踪器
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = 有追踪器的电源还开着
+trackers_still_on-modal-description =
+    至少有一个追踪器的电源还开着。
+    确定要退出 SlimeVR 吗？
+trackers_still_on-modal-confirm = 退出 SlimeVR
+trackers_still_on-modal-cancel = 等会…
 
 ## Status system
 

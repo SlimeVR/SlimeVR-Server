@@ -1,122 +1,214 @@
-import { Canvas } from '@react-three/fiber';
-import { useAppContext } from '../../hooks/app';
-import { Bone, PerspectiveCamera, Quaternion, Skeleton } from 'three';
-import { getHelperFromSkeleton } from 'three/examples/jsm/utils/SkeletonUtils';
-import { useMemo } from 'react';
-import { Vector3FromVec3fT } from '../../maths/vector3';
-import { QuaternionFromQuatT } from '../../maths/quaternion';
+import { Canvas, Object3DNode, extend, useThree } from '@react-three/fiber';
+import { useAppContext } from '@/hooks/app';
+import { Bone } from 'three';
+import { useMemo, useEffect, useRef, useState } from 'react';
+import {
+  OrbitControls,
+  OrthographicCamera,
+  PerspectiveCamera,
+} from '@react-three/drei';
+import {
+  BoneKind,
+  createChildren,
+  BasedSkeletonHelper,
+} from '@/utils/skeletonHelper';
+import * as THREE from 'three';
+import { BodyPart, BoneT } from 'solarxr-protocol';
+import { QuaternionFromQuatT, isIdentity } from '@/maths/quaternion';
+import classNames from 'classnames';
+import { Button } from '@/components/commons/Button';
+import { useLocalization } from '@fluent/react';
 
-export const threeSkeleton = (() => {
-  const bones = [];
+extend({ BasedSkeletonHelper });
 
-  const head = new Bone();
-  const neck = new Bone();
-  head.add(neck);
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    basedSkeletonHelper: Object3DNode<
+      BasedSkeletonHelper,
+      typeof BasedSkeletonHelper
+    >;
+  }
+}
 
-  const chest = new Bone();
-  neck.add(chest);
-  const waist = new Bone();
-  chest.add(waist);
-  const hip = new Bone();
-  waist.add(hip);
+const GROUND_COLOR = '#4444aa';
+const FRUSTUM_SIZE = 10;
+const FACTOR = 2;
+// Not currently used but nice to have
+export function OrthographicCameraWrapper() {
+  const { size } = useThree();
+  const aspect = useMemo(() => size.width / size.height, [size]);
 
-  const leftShoulder = new Bone();
-  neck.add(leftShoulder);
-  const leftUpperArm = new Bone();
-  leftShoulder.add(leftUpperArm);
-  const leftLowerArm = new Bone();
-  leftUpperArm.add(leftLowerArm);
-  const leftHand = new Bone();
-  leftLowerArm.add(leftHand);
+  return (
+    <OrthographicCamera
+      makeDefault
+      zoom={200}
+      top={FRUSTUM_SIZE / FACTOR}
+      bottom={FRUSTUM_SIZE / -FACTOR}
+      left={(0.5 * FRUSTUM_SIZE * aspect) / -FACTOR}
+      right={(0.5 * FRUSTUM_SIZE * aspect) / FACTOR}
+      near={0.1}
+      far={1000}
+      position={[25, 75, 50]}
+    />
+  );
+}
 
-  const rightShoulder = new Bone();
-  neck.add(rightShoulder);
-  const rightUpperArm = new Bone();
-  rightShoulder.add(rightUpperArm);
-  const rightLowerArm = new Bone();
-  rightUpperArm.add(rightLowerArm);
-  const rightHand = new Bone();
-  rightLowerArm.add(rightHand);
+export function SkeletonHelper({ object }: { object: Bone }) {
+  const { size } = useThree();
+  const res = useMemo(() => new THREE.Vector2(size.width, size.height), [size]);
 
-  const leftUpperLeg = new Bone();
-  hip.add(leftUpperLeg);
-  const leftLowerLeg = new Bone();
-  leftUpperLeg.add(leftLowerLeg);
-  const leftFoot = new Bone();
-  leftLowerLeg.add(leftFoot);
+  return (
+    <basedSkeletonHelper
+      frustumCulled={false}
+      resolution={res}
+      args={[object]}
+    />
+  );
+}
 
-  const rightUpperLeg = new Bone();
-  hip.add(rightUpperLeg);
-  const rightLowerLeg = new Bone();
-  rightUpperLeg.add(rightLowerLeg);
-  const rightFoot = new Bone();
-  rightLowerLeg.add(rightFoot);
+// Just need to know the length of the total body, so don't need right legs
+const Y_PARTS = [
+  BodyPart.NECK,
+  BodyPart.UPPER_CHEST,
+  BodyPart.CHEST,
+  BodyPart.WAIST,
+  BodyPart.HIP,
+  BodyPart.LEFT_UPPER_LEG,
+  BodyPart.LEFT_LOWER_LEG,
+];
 
-  bones.push(
-    head,
-    neck,
-    chest,
-    waist,
-    hip,
-    leftUpperLeg,
-    rightUpperLeg,
-    leftLowerLeg,
-    rightLowerLeg,
-    leftFoot,
-    rightFoot,
-    leftLowerArm,
-    rightLowerArm,
-    leftUpperArm,
-    rightUpperArm,
-    leftHand,
-    rightHand,
-    leftShoulder,
-    rightShoulder
+interface SkeletonVisualizerWidgetProps {
+  height?: number | string;
+  maxHeight?: number | string;
+}
+
+export function ToggleableSkeletonVisualizerWidget(
+  props: SkeletonVisualizerWidgetProps
+) {
+  const { l10n } = useLocalization();
+  const [enabled, setEnabled] = useState(false);
+
+  return (
+    <>
+      {!enabled && (
+        <Button
+          variant="secondary"
+          className="w-full"
+          onClick={() => {
+            setEnabled(true);
+            localStorage.setItem('modelPreview', 'true');
+          }}
+        >
+          {l10n.getString('widget-skeleton_visualizer-preview')}
+        </Button>
+      )}
+      {enabled && (
+        <>
+          <Button
+            className="w-full"
+            variant="secondary"
+            onClick={() => {
+              setEnabled(false);
+              localStorage.setItem('modelPreview', 'false');
+            }}
+          >
+            {l10n.getString('widget-skeleton_visualizer-hide')}
+          </Button>
+          <SkeletonVisualizerWidget {...props} />
+        </>
+      )}
+    </>
+  );
+}
+
+export function SkeletonVisualizerWidget({
+  height = '35vh',
+  maxHeight = 400,
+}: SkeletonVisualizerWidgetProps) {
+  const { bones: _bones } = useAppContext();
+
+  const bones = useMemo(
+    () => new Map(_bones.map((b) => [b.bodyPart, b])),
+    [JSON.stringify(_bones)]
   );
 
-  return new Skeleton(bones);
-})();
+  const skeleton = useRef<Bone[]>();
 
-export function SkeletonVisualizerWidget() {
-  const { bones } = useAppContext();
+  useEffect(() => {
+    skeleton.current = createChildren(bones, BoneKind.root);
+  }, [bones.size]);
 
-  const skeleton = useMemo(() => {
-    const skeleton = threeSkeleton.clone();
-    for (const solarBone of bones) {
-      const bone = skeleton.bones[solarBone.bodyPart - 1];
-      const localPos = bone.worldToLocal(
-        Vector3FromVec3fT(solarBone.headPositionG)
-      );
-      bone.position.set(localPos.x, localPos.y, localPos.z);
-
-      if (!bone.parent) {
-        bone.applyQuaternion(QuaternionFromQuatT(solarBone.rotationG));
-        continue;
-      }
-
-      const parentQuatInvert = bone.parent
-        .getWorldQuaternion(new Quaternion())
-        .invert();
-      bone.quaternion.multiplyQuaternions(
-        QuaternionFromQuatT(solarBone.rotationG),
-        parentQuatInvert
-      );
-    }
-    return getHelperFromSkeleton(skeleton);
+  useEffect(() => {
+    skeleton.current?.forEach(
+      (bone) => bone instanceof BoneKind && bone.updateData(bones)
+    );
   }, [bones]);
 
+  const heightOffset = useMemo(() => {
+    const hmd = bones.get(BodyPart.HEAD);
+    // If I know the head position, don't use an offset
+    if (hmd?.headPositionG?.y !== undefined && hmd.headPositionG?.y > 0) {
+      return 0;
+    }
+    const yLength = Y_PARTS.map((x) => bones.get(x));
+    if (yLength.some((x) => x === undefined)) return 0;
+    return (yLength as BoneT[]).reduce((prev, cur) => prev + cur.boneLength, 0);
+  }, [bones]);
+
+  const bonesInitialized = bones.size > 0;
+
+  const targetCamera = useMemo(() => {
+    const hmd = bones.get(BodyPart.HEAD);
+    if (hmd?.headPositionG?.y && hmd.headPositionG.y > 0) {
+      return hmd.headPositionG.y / 2;
+    }
+    return heightOffset / 2;
+  }, [bonesInitialized]);
+
+  const yawReset = useMemo(() => {
+    const hmd = bones.get(BodyPart.HEAD);
+    const chest = bones.get(BodyPart.UPPER_CHEST);
+    // Check if HMD is identity, if it's then use upper chest's rotation
+    const quat = isIdentity(hmd?.rotationG)
+      ? QuaternionFromQuatT(chest?.rotationG).normalize().invert()
+      : QuaternionFromQuatT(hmd?.rotationG).normalize().invert();
+
+    // Project quat to (0x, 1y, 0z)
+    const VEC_Y = new THREE.Vector3(0, 1, 0);
+    const vec = VEC_Y.multiplyScalar(
+      new THREE.Vector3(quat.x, quat.y, quat.z).dot(VEC_Y) / VEC_Y.lengthSq()
+    );
+    return new THREE.Quaternion(vec.x, vec.y, vec.z, quat.w).normalize();
+  }, [bonesInitialized]);
+
+  const scale = useMemo(
+    () => Math.max(1.8, heightOffset) / 1.8,
+    [heightOffset]
+  );
+
+  if (!skeleton.current) return <></>;
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
       <Canvas
-        className="container"
-        style={{ height: 200, background: 'transparent' }}
-        onCreated={({ camera }) => {
-          (camera as PerspectiveCamera).fov = 60;
-        }}
+        className={classNames('container mx-auto')}
+        style={{ height, background: 'transparent', maxHeight }}
       >
-        <group scale={0.04}>
-          <primitive object={skeleton}></primitive>
+        <gridHelper args={[10, 50, GROUND_COLOR, GROUND_COLOR]} />
+        <group position={[0, heightOffset, 0]} quaternion={yawReset}>
+          <SkeletonHelper object={skeleton.current[0]}></SkeletonHelper>
         </group>
+        <primitive object={skeleton.current[0]} />
+        <PerspectiveCamera
+          makeDefault
+          position={[3, 2.5, -3]}
+          fov={20}
+          zoom={1 / scale}
+        />
+        <OrbitControls
+          target={[0, targetCamera, 0]}
+          maxDistance={20}
+          maxPolarAngle={Math.PI / 2}
+        />
       </Canvas>
     </div>
   );

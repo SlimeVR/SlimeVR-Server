@@ -1,9 +1,9 @@
-import { useBreakpoint } from '../../../../../hooks/breakpoint';
-import { useTrackers } from '../../../../../hooks/tracker';
-import { BodyDisplay } from '../../../../commons/BodyDisplay';
-import { Button } from '../../../../commons/Button';
-import { TipBox } from '../../../../commons/TipBox';
-import { Typography } from '../../../../commons/Typography';
+import { useBreakpoint } from '@/hooks/breakpoint';
+import { useTrackers } from '@/hooks/tracker';
+import { BodyDisplay } from '@/components/commons/BodyDisplay';
+import { Button } from '@/components/commons/Button';
+import { TipBox } from '@/components/commons/TipBox';
+import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 
 export function PutTrackersOnStep({
