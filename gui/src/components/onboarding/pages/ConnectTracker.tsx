@@ -164,7 +164,10 @@ export function ConnectTrackersPage() {
               {l10n.getString('onboarding-connect_tracker-issue-serial')}
             </ArrowLink>
           </div>
-          <Localized id={currentTip} elems={{ em: <em></em>, b: <b></b> }}>
+          <Localized
+            id={currentTip}
+            elems={{ em: <em className="italic"></em>, b: <b></b> }}
+          >
             <TipBox>Conditional tip</TipBox>
           </Localized>
 
