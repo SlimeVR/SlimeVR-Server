@@ -26,6 +26,7 @@ export interface Config {
   fonts: string[];
   advancedAssign: boolean;
   doneManualMounting: boolean;
+  mirrorView: boolean;
 }
 
 export interface ConfigContext {
@@ -48,6 +49,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   fonts: ['poppins'],
   advancedAssign: false,
   doneManualMounting: false,
+  mirrorView: true,
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {

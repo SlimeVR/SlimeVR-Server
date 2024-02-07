@@ -650,6 +650,7 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
 } assigned
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
+onboarding-assign_trackers-mirror_view = Mirror view
 
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.

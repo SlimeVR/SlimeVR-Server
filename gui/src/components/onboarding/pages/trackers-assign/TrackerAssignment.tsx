@@ -53,15 +53,21 @@ export function TrackersAssignPage() {
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
-  const { control, watch } = useForm<{ advanced: boolean }>({
-    defaultValues: { advanced: config?.advancedAssign ?? false },
+  const { control, watch } = useForm<{
+    advanced: boolean;
+    mirrorView: boolean;
+  }>({
+    defaultValues: {
+      advanced: config?.advancedAssign ?? false,
+      mirrorView: config?.mirrorView ?? true,
+    },
   });
-  const { advanced } = watch();
+  const { advanced, mirrorView } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
   useEffect(() => {
-    setConfig({ advancedAssign: advanced });
-  }, [advanced]);
+    setConfig({ advancedAssign: advanced, mirrorView });
+  }, [advanced, mirrorView]);
 
   const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
     TapDetectionSettingsT,
@@ -277,12 +283,22 @@ export function TrackersAssignPage() {
                 </Typography>
               </div>
               <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
-              <CheckBox
-                control={control}
-                label={l10n.getString('onboarding-assign_trackers-advanced')}
-                name="advanced"
-                variant="toggle"
-              ></CheckBox>
+              <div>
+                <CheckBox
+                  control={control}
+                  label={l10n.getString('onboarding-assign_trackers-advanced')}
+                  name="advanced"
+                  variant="toggle"
+                ></CheckBox>
+                <CheckBox
+                  control={control}
+                  label={l10n.getString(
+                    'onboarding-assign_trackers-mirror_view'
+                  )}
+                  name="mirrorView"
+                  variant="toggle"
+                ></CheckBox>
+              </div>
               {!!firstError && (
                 <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
                   <div className="flex flex-col gap-1 whitespace-normal">
