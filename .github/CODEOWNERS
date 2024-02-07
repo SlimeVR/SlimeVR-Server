@@ -29,3 +29,9 @@
 /server/src/main/java/dev/slimevr/osc/ @Louka3000
 /server/src/main/java/dev/slimevr/tracking/processor/ @Louka3000
 /server/src/main/java/dev/slimevr/filtering/ @Louka3000
+
+# Linux files
+*.nix @ImUrX
+/flake.lock @ImUrX
+/dev.slimevr.SlimeVR.metainfo.xml @ImUrX
+/.envrc @ImUrX
