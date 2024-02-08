@@ -336,6 +336,7 @@ export function TrackersAssignPage() {
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
                 advanced={advanced}
+                mirror={mirrorView}
                 onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
             </div>

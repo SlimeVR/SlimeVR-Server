@@ -37,6 +37,7 @@ export const ASSIGNMENT_RULES: Partial<
 
 export function BodyAssignment({
   advanced,
+  mirror,
   onRoleSelected,
   rolesWithErrors = {},
   highlightedRoles = [],
@@ -44,6 +45,7 @@ export function BodyAssignment({
   width,
 }: {
   advanced: boolean;
+  mirror: boolean;
   onlyAssigned?: boolean;
   rolesWithErrors?: Partial<Record<BodyPart, BodyPartError>>;
   highlightedRoles?: BodyPart[];
@@ -84,6 +86,7 @@ export function BodyAssignment({
     <>
       <BodyInteractions
         width={width}
+        mirror={mirror}
         assignedRoles={assignedRoles}
         highlightedRoles={highlightedRoles}
         onSelectRole={onRoleSelected}
