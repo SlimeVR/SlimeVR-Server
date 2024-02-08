@@ -94,6 +94,9 @@
               librsvg
               freetype
               expat
+              husky
+              cargo
+              rustc
             ])
             ++ lib.optionals pkgs.stdenv.isDarwin [
               pkgs.darwin.apple_sdk.frameworks.Security
