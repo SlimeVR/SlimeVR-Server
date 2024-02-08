@@ -84,7 +84,7 @@ export function BodyAssignment({
   );
 
   const left = +!mirror;
-  // const right = +mirror;
+  const right = +mirror;
 
   return (
     <>
@@ -215,20 +215,20 @@ export function BodyAssignment({
               {advanced && (
                 <TrackerPartCard
                   onlyAssigned={onlyAssigned}
-                  roleError={rolesWithErrors[BodyPart.RIGHT_SHOULDER]?.label}
-                  td={trackerPartGrouped[BodyPart.RIGHT_SHOULDER]}
-                  role={BodyPart.RIGHT_SHOULDER}
-                  onClick={() => onRoleSelected(BodyPart.RIGHT_SHOULDER)}
+                  roleError={rolesWithErrors[SIDES[right].shoulder]?.label}
+                  td={trackerPartGrouped[SIDES[right].shoulder]}
+                  role={SIDES[right].shoulder}
+                  onClick={() => onRoleSelected(SIDES[right].shoulder)}
                   direction="left"
                 />
               )}
 
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
-                roleError={rolesWithErrors[BodyPart.RIGHT_UPPER_ARM]?.label}
-                td={trackerPartGrouped[BodyPart.RIGHT_UPPER_ARM]}
-                role={BodyPart.RIGHT_UPPER_ARM}
-                onClick={() => onRoleSelected(BodyPart.RIGHT_UPPER_ARM)}
+                roleError={rolesWithErrors[SIDES[right].upperArm]?.label}
+                td={trackerPartGrouped[SIDES[right].upperArm]}
+                role={SIDES[right].upperArm}
+                onClick={() => onRoleSelected(SIDES[right].upperArm)}
                 direction="left"
               />
             </div>
@@ -255,19 +255,19 @@ export function BodyAssignment({
             <div className="flex flex-col gap-2">
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
-                roleError={rolesWithErrors[BodyPart.RIGHT_LOWER_ARM]?.label}
-                td={trackerPartGrouped[BodyPart.RIGHT_LOWER_ARM]}
-                role={BodyPart.RIGHT_LOWER_ARM}
-                onClick={() => onRoleSelected(BodyPart.RIGHT_LOWER_ARM)}
+                roleError={rolesWithErrors[SIDES[right].lowerArm]?.label}
+                td={trackerPartGrouped[SIDES[right].lowerArm]}
+                role={SIDES[right].lowerArm}
+                onClick={() => onRoleSelected(SIDES[right].lowerArm)}
                 direction="left"
               />
               {advanced && (
                 <TrackerPartCard
                   onlyAssigned={onlyAssigned}
-                  roleError={rolesWithErrors[BodyPart.RIGHT_HAND]?.label}
-                  td={trackerPartGrouped[BodyPart.RIGHT_HAND]}
-                  onClick={() => onRoleSelected(BodyPart.RIGHT_HAND)}
-                  role={BodyPart.RIGHT_HAND}
+                  roleError={rolesWithErrors[SIDES[right].hand]?.label}
+                  td={trackerPartGrouped[SIDES[right].hand]}
+                  onClick={() => onRoleSelected(SIDES[right].hand)}
+                  role={SIDES[right].hand}
                   direction="left"
                 />
               )}
@@ -276,27 +276,27 @@ export function BodyAssignment({
             <div className="flex flex-col gap-2">
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
-                roleError={rolesWithErrors[BodyPart.RIGHT_UPPER_LEG]?.label}
-                td={trackerPartGrouped[BodyPart.RIGHT_UPPER_LEG]}
-                role={BodyPart.RIGHT_UPPER_LEG}
-                onClick={() => onRoleSelected(BodyPart.RIGHT_UPPER_LEG)}
+                roleError={rolesWithErrors[SIDES[right].upperLeg]?.label}
+                td={trackerPartGrouped[SIDES[right].upperLeg]}
+                role={SIDES[right].upperLeg}
+                onClick={() => onRoleSelected(SIDES[right].upperLeg)}
                 direction="left"
               />
 
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
-                roleError={rolesWithErrors[BodyPart.RIGHT_LOWER_LEG]?.label}
-                td={trackerPartGrouped[BodyPart.RIGHT_LOWER_LEG]}
-                role={BodyPart.RIGHT_LOWER_LEG}
-                onClick={() => onRoleSelected(BodyPart.RIGHT_LOWER_LEG)}
+                roleError={rolesWithErrors[SIDES[right].lowerLeg]?.label}
+                td={trackerPartGrouped[SIDES[right].lowerLeg]}
+                role={SIDES[right].lowerLeg}
+                onClick={() => onRoleSelected(SIDES[right].lowerLeg)}
                 direction="left"
               />
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
-                roleError={rolesWithErrors[BodyPart.RIGHT_FOOT]?.label}
-                td={trackerPartGrouped[BodyPart.RIGHT_FOOT]}
-                role={BodyPart.RIGHT_FOOT}
-                onClick={() => onRoleSelected(BodyPart.RIGHT_FOOT)}
+                roleError={rolesWithErrors[SIDES[right].foot]?.label}
+                td={trackerPartGrouped[SIDES[right].foot]}
+                role={SIDES[right].foot}
+                onClick={() => onRoleSelected(SIDES[right].foot)}
                 direction="left"
               />
             </div>
