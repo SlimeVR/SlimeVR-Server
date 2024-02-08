@@ -10,6 +10,7 @@ import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
 import dev.slimevr.desktop.serial.DesktopSerialHandler
+import dev.slimevr.desktop.tracking.trackers.hid.TrackersHID
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.OperatingSystem
 import io.eiren.util.collections.FastList
@@ -124,6 +125,12 @@ fun main(args: Array<String>) {
 			configDir
 		)
 		vrServer.start()
+		
+		// Start service for USB HID trackers
+		TrackersHID(
+			"Sensors HID service"
+		) { tracker: Tracker -> vrServer.registerTracker(tracker) }
+
 		Keybinding(vrServer)
 		val scanner = thread {
 			while (true) {
