@@ -78,9 +78,11 @@ export function WifiCredsPage() {
               <Input
                 control={control}
                 rules={{
-                  required: true,
                   validate: {
-                    validPassword: (v) => new Blob([v]).size >= 8,
+                    validPassword: (v: string | undefined) =>
+                      v === undefined ||
+                      v.length === 0 ||
+                      new Blob([v]).size >= 8,
                   },
                 }}
                 name="password"
