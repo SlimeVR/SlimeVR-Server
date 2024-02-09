@@ -89,7 +89,7 @@ export function ToggleableSkeletonVisualizerWidget(
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    const state = localStorage.getItem('modelPreview');
+    const state = localStorage.getItem('skeletonModelPreview');
     if (state) setEnabled(state === 'true');
   }, []);
 
