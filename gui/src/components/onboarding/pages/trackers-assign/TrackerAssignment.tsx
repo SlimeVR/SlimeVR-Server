@@ -26,6 +26,7 @@ import { Typography } from '@/components/commons/Typography';
 import {
   ASSIGNMENT_RULES,
   BodyAssignment,
+  LOWER_BODY,
 } from '@/components/onboarding/BodyAssignment';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
@@ -158,6 +159,14 @@ export function TrackersAssignPage() {
           ? trackerRoles.some((tr) => part.includes(tr))
           : trackerRoles.includes(part),
       ]);
+
+      // Special exception for waist/hip: https://github.com/SlimeVR/SlimeVR-Server/issues/612
+      if (
+        (assignedRole === BodyPart.HIP || assignedRole === BodyPart.WAIST) &&
+        !trackerRoles.some((t) => LOWER_BODY.has(t))
+      ) {
+        return;
+      }
 
       if (unassignedRoles.every(([, state]) => state)) return;
 

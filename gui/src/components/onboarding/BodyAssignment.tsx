@@ -7,6 +7,14 @@ import { TrackerPartCard } from '@/components/tracker/TrackerPartCard';
 import { BodyPartError } from './pages/trackers-assign/TrackerAssignment';
 import { SIDES } from '@/components/commons/PersonFrontIcon';
 
+export const LOWER_BODY = new Set([
+  BodyPart.LEFT_FOOT,
+  BodyPart.RIGHT_FOOT,
+  BodyPart.LEFT_LOWER_LEG,
+  BodyPart.RIGHT_LOWER_LEG,
+  BodyPart.LEFT_UPPER_LEG,
+  BodyPart.RIGHT_UPPER_LEG,
+]);
 export const SPINE_PARTS = [
   BodyPart.UPPER_CHEST,
   BodyPart.CHEST,
