@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = 미리보기
 widget-imu_visualizer-rotation_hide = 숨기기
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = 골격 비율 미리보기
+widget-skeleton_visualizer-hide = 숨기기
+
 ## Tracker status
 
 tracker-status-none = 알 수 없음
@@ -152,6 +157,7 @@ tracker-status-error = 오류
 tracker-status-disconnected = 연결되지 않음
 tracker-status-occluded = 사용할 수 없음
 tracker-status-ok = 연결됨
+tracker-status-timed_out = 시간 초과
 
 ## Tracker status columns
 
@@ -330,7 +336,7 @@ settings-general-tracker_mechanics-drift_compensation-max_resets-label = 보정�
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = FK 설정
+settings-general-fk_settings = 트래킹 설정
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -348,12 +354,34 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 플로어 클립
 settings-general-fk_settings-leg_tweak-toe_snap-description = 토 스냅은 발 트래커가 없을 때, 발 트래커가 있는 것처럼 예측해서 움직여주는 기능이에요.
 settings-general-fk_settings-leg_tweak-foot_plant-description = 풋 플랜트는 발이 바닥에 닿았을 때 바닥과 평평하게 회전시켜 줘요.
 settings-general-fk_settings-leg_fk = 발 트래킹
-settings-general-fk_settings-arm_fk = 팔 운동학
-settings-general-fk_settings-arm_fk-description = 팔이 추적되는 방식을 변경할 수 있어요.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = 까치발을 들어 발 트래커의 착용 방향 정렬을 활성화하기
+settings-general-fk_settings-leg_fk-reset_mounting_feet = 발 트래커 착용 방향 정렬
+settings-general-fk_settings-arm_fk = 팔 트래킹
+settings-general-fk_settings-arm_fk-description = 손 컨트롤러 위치 데이터를 사용할 수 없는 경우에도 VR 헤드셋(HMD)으로부터 팔을 추적하도록 할 수 있어요.
 settings-general-fk_settings-arm_fk-force_arms = 팔을 HMD에서만 받아오기
 settings-general-fk_settings-arm_fk-reset_mode-description = 착용 방향 정렬에 사용되는 팔 자세 설정
+settings-general-fk_settings-arm_fk-back = 뒤쪽
+settings-general-fk_settings-arm_fk-back-description = 기본값. 위쪽 팔은 뒤를 향하고 아래쪽 팔은 앞을 향하게 하는 자세.
+settings-general-fk_settings-arm_fk-tpose_up = T-포즈(올리기)
+settings-general-fk_settings-arm_fk-tpose_up-description = 전체 정렬을 수행할 때에는 팔을 차렷 자세로 내리고, 착용 방향 정렬 중에는 팔을 좌우로 나란히 동작으로 펼치는 자세.
+settings-general-fk_settings-arm_fk-tpose_down = T-포즈(내리기)
+settings-general-fk_settings-arm_fk-tpose_down-description = 전체 정렬에서는 좌우로 나란히 자세, 착용 방향 정렬에서는 팔을 차렷 동작으로 내리는 자세
+settings-general-fk_settings-arm_fk-forward = 앞쪽
+settings-general-fk_settings-arm_fk-forward-description = 앞으로 나란히 자세. 앉아있거나 버튜버 활동 등에서 유용해요.
+settings-general-fk_settings-skeleton_settings-toggles = 골격 설정 제어
 settings-general-fk_settings-skeleton_settings-description = 골격 설정을 설정하거나 해제해요. 이것들은 켜두는 게 좋아요.
+settings-general-fk_settings-skeleton_settings-extended_spine_model = 확장된 척추 모델
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = 확장된 골반 모델
+settings-general-fk_settings-skeleton_settings-extended_knees_model = 확장된 무릎 모델
 settings-general-fk_settings-skeleton_settings-ratios = 골격 비율
+settings-general-fk_settings-skeleton_settings-ratios-description = 골격 비율을 변경하면 신체 비율 설정을 다시 조절해야 할 수 있어요.
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = 가슴, 골반으로부터 추측한 허리 데이터
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = 가슴, 다리로부터 추측한 허리 데이터
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = 다리로부터 추측한 골반 데이터
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = 허리, 다리로부터 추측한 골반 데이터
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = 골반 각도를 계산할 때 다리 각도를 합산
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = 무릎 트래커 각도를 계산할 때 발목 각도를 합산
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = 무릎 각도를 계산할 때 발목 각도를 합산
 settings-general-fk_settings-self_localization-title = Mocap 모드
 settings-general-fk_settings-self_localization-description = Mocap 모드에서는 헤드셋이나 다른 트래커 없이 골격이 자신의 위치를 대략적으로 추적할 수 있어요. 발과 머리 트래커가 필요하고 아직 실험적이에요.
 settings-general-fk_settings-vive_emulation-title = VIVE 에뮬레이션
@@ -416,6 +444,9 @@ settings-general-interface-feedback_sound = 피드백 사운드
 settings-general-interface-feedback_sound-description = 이 옵션을 켜면 트래커를 정렬할 때 효과음을 재생해요
 settings-general-interface-feedback_sound-label = 피드백 사운드
 settings-general-interface-feedback_sound-volume = 피드백 사운드 음량
+settings-general-interface-connected_trackers_warning = 작동 중인 트래커 경고
+settings-general-interface-connected_trackers_warning-description = 이 옵션은 트래커가 연결되어 있는 채로 SlimeVR을 종료하려고 할 때 팝업을 표시합니다. 그렇게 하면 실수로 트래커를 끄지 않아 배터리가 방전되는 일을 예방할 수 있어요.
+settings-general-interface-connected_trackers_warning-label = 종료 시 작동 중인 트래커 경고 활성화
 
 ## Serial settings
 
@@ -634,7 +665,11 @@ onboarding-calibration_tutorial-subtitle = 트래커 틀어짐을 줄이는 데 
 onboarding-calibration_tutorial-description =
     매번 트래커의 전원을 켤 때마다 평평한 바닥에 트래커를 두고 잠시 기다려서 보정을 수행해야 해요. <b>(트래커를 움직이지 마세요!)</b>
     어떻게 하면 되는지 "{ onboarding-calibration_tutorial-calibrate }"를 눌러 같이 따라해보죠!
+onboarding-calibration_tutorial-calibrate = 트래커들을 책상에 올려놓았습니다
+onboarding-calibration_tutorial-status-waiting = 대기 중
 onboarding-calibration_tutorial-status-calibrating = 캘리브레이팅
+onboarding-calibration_tutorial-status-success = 좋아요!
+onboarding-calibration_tutorial-status-error = 트래커가 움직였습니다
 
 ## Tracker assignment tutorial
 
@@ -642,6 +677,8 @@ onboarding-assignment_tutorial = 슬라임 트래커를 착용하기 전에 준�
 onboarding-assignment_tutorial-first_step = 1. 신체 부위가 적힌 스티커를 가지고 있다면 트래커에 붙여보세요
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = 스티커
+onboarding-assignment_tutorial-second_step-v2 = 스트랩의 벨크로 접착면이 Slime 얼굴 그림 쪽을 향하게 끼워주세요:
+onboarding-assignment_tutorial-second_step-continuation-v2 = 확장 모듈의 벨크로 접착면이 다음 이미지처럼 위를 바라봐야 합니다:
 onboarding-assignment_tutorial-done = 스트랩과 스티커를 트래커에 잘 부착했어요!
 
 ## Tracker assignment setup
@@ -730,9 +767,18 @@ onboarding-choose_mounting = 착용 방향을 정렬하기 위해 어떤 방법�
 # Multiline text
 onboarding-choose_mounting-description = 착용 방향 정렬은 트래커가 몸에 착용된 방향을 찾아 수정하도록 도와줘요.
 onboarding-choose_mounting-auto_mounting = 자동으로 방향 설정
+# Italized text
+onboarding-choose_mounting-auto_mounting-label = 실험적
 onboarding-choose_mounting-auto_mounting-description = 이렇게 하면 두 가지 자세로 모든 트래커의 착용 방향을 자동으로 설정할 수 있어요
 onboarding-choose_mounting-manual_mounting = 수동으로 방향 설정
+# Italized text
+onboarding-choose_mounting-manual_mounting-label = 권장됨
 onboarding-choose_mounting-manual_mounting-description = 이렇게 하면 각 트래커의 착용 방향을 직접 고를 수 있어요
+# Multiline text
+onboarding-choose_mounting-manual_modal-title = 자동으로 착용 방향을 설정하시겠어요?
+onboarding-choose_mounting-manual_modal-description = 자동 착용 방향 정렬은 복잡한 자세와 올바르게 설정된 트래커가 필요하기 때문에 처음 사용하시는 분에게는 조금 어려울 수 있어요. 그래서 <b>수동 착용 방향 정렬을 추천드려요!</b>
+onboarding-choose_mounting-manual_modal-confirm = 네, 알고 있어요!
+onboarding-choose_mounting-manual_modal-cancel = 취소
 
 ## Tracker manual mounting setup
 
@@ -766,14 +812,25 @@ onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용�
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = 신체 비율을 설정하기 위해 어떤 방법을 사용할래요?
+# Multiline string
+onboarding-choose_proportions-description =
+    신체 비율은 신체 각 부분의 길이를 파악하는데 사용됩니다. 이 값은 트래커의 위치를 정확히 계산하기 위해 필수적입니다.
+    신체 비율이 저장된 비율과 일치하지 않으면 추적 정밀도가 떨어지고 스케이트를 타거나 미끄러지는 것처럼 보이고 아바타와 실제 몸이 잘 일치하지 않을 수 있어요.
 onboarding-choose_proportions-auto_proportions = 자동으로 비율 설정
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = 권장
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
+    몸을 이리저리 움직여 샘플을 기록한 다음 알고리즘을 통해 연산하는 방식으로 신체 비율을 추산합니다.
+    <b>사용하기 위해서는 VR 헤드셋이 SlimeVR과 연결되어 있어야 해요</b>
 onboarding-choose_proportions-manual_proportions = 수동으로 비율 설정
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = 정밀하게 설정하고 싶다면
-onboarding-choose_proportions-manual_proportions-description = 이렇게 하면 신체 비율을 직접 수정하여 수동으로 조절할 수 있어요
+onboarding-choose_proportions-manual_proportions-description = 이 옵션을 사용하면 신체 비율을 직접 입력해 수동으로 조절할 수 있어요.
 onboarding-choose_proportions-export = 다른 이름으로 저장
+onboarding-choose_proportions-import = 신체 비율 가져오기
+onboarding-choose_proportions-import-success = 가져오기 완료
+onboarding-choose_proportions-import-failed = 가져오기 실패
+onboarding-choose_proportions-file_type = 신체 비율 파일
 
 ## Tracker manual proportions setup
 
@@ -792,18 +849,29 @@ onboarding-automatic_proportions-manual = 수동 신체 비율 설정
 onboarding-automatic_proportions-prev_step = 뒤로
 onboarding-automatic_proportions-put_trackers_on-title = 트래커를 착용하세요
 onboarding-automatic_proportions-put_trackers_on-description = 비율을 조정하기 위해 방금 할당한 트래커를 사용할 거예요. 모든 트래커를 착용하면 오른쪽 그림에서 어떤 것이 있는지 알 수 있어요.
-onboarding-automatic_proportions-put_trackers_on-next = 트래커를 다 착용했어요
+onboarding-automatic_proportions-put_trackers_on-next = 트래커를 모두 착용했어요
 onboarding-automatic_proportions-requirements-title = 요구사항
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
-    발까지 추적할 수 있는 적어도 5개의 트래커가 있어야 해요.
-    전원이 켜진 트래커와 헤드셋이 필요해요.
-    트래커와 헤드셋을 착용하고 있어야 해요.
-    트래커와 헤드셋이 SlimeVR 서버와 연결되어 있어야 해요.
-    트래커와 헤드셋이 SlimeVR 서버에서 제대로 작동하고 있어야 해요.
-    헤드셋이 SlimeVR 서버에 위치 데이터를 보고하고 있어야 해요. (SteamVR이 실행 중이고 SlimeVR의 SteamVR 드라이버를 사용하여 SlimeVR에 연결되어 있어야 해요).
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    다리를 추적하기 위해 최소 5개 이상의 트래커를 착용하세요.
+    VR 헤드셋을 착용하세요.
+    VR 헤드셋과 컨트롤러의 위치 정보가 SlimeVR 서버에 실시간으로 표시되는지 확인하세요.
+    SlimeVR 서버에 연결된 트래커와 VR 헤드셋이 끊김이나 렉 없이 제대로 표시되는지 확인하세요. (이것은 SteamVR이 실행 중이며 SlimeVR의 SteamVR 드라이버를 사용하여 SlimeVR에 올바르게 연결되어 있다는 것을 의미합니다)
+    트래커의 제대로 작동하고 나의 움직임을 올바르게 반영중인지 확인하세요. (예: 전체 정렬을 수행했으며 발차기, 허리 숙이기, 앉기 등 올바른 방향으로 움직임)
 onboarding-automatic_proportions-requirements-next = 요구사항을 모두 읽었어요
-onboarding-automatic_proportions-start_recording-title = 움직일 준비
+onboarding-automatic_proportions-check_height-title = 키를 확인하세요
+onboarding-automatic_proportions-check_height-description = 이 과정에서는 VR 헤드셋(HMD)의 높이를 사용하여 실제 키의 대략적인 값으로 삼고, 이를 측정의 기준으로 활용합니다. 하지만 직접 확인하는 것이 더 정확해요!
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = 버튼을 누른 후 3초 이내에 <u>바르게 서서</u> 키를 측정해 주세요!
+onboarding-automatic_proportions-check_height-fetch_height = 서 있어요!
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = 알 수 없음
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height1 = VR 헤드셋(HMD) 높이
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height1 = 실제 키
+onboarding-automatic_proportions-check_height-next_step = 괜찮아 보여요
+onboarding-automatic_proportions-start_recording-title = 움직일 준비를 해요
 onboarding-automatic_proportions-start_recording-description = 이제 몇 가지 특정 포즈와 동작을 기록할 거예요. 다음 화면에서 메시지가 표시되면 버튼을 눌러서 시작하세요!
 onboarding-automatic_proportions-start_recording-next = 기록 시작하기
 onboarding-automatic_proportions-recording-title = REC
@@ -831,18 +899,28 @@ onboarding-automatic_proportions-verify_results-redo = 다시 기록하기
 onboarding-automatic_proportions-verify_results-confirm = 정확해요!
 onboarding-automatic_proportions-done-title = 몸을 측정하고 저장했어요
 onboarding-automatic_proportions-done-description = 신체 비율 보정이 완료되었어요!
+onboarding-automatic_proportions-error_modal =
+    <b>경고:</b> 신체 비율을 계산하는 동안 오류가 발생했습니다!
+     <docs>도움말</docs>을 확인하거나 <discord>디스코드</discord> 서버에서 도움을 받으세요 ^_^
 onboarding-automatic_proportions-error_modal-confirm = 이해했어요!
 
 ## Home
 
 home-no_trackers = 감지되거나 할당된 트래커가 없어요.
 
+## Trackers Still On notification
+
+trackers_still_on-modal-title = 트래커가 아직 켜져 있어요!
+trackers_still_on-modal-description = 하나 이상의 트래커가 여전히 켜져 있는 것으로 보여요. SlimeVR을 종료할까요?
+trackers_still_on-modal-confirm = SlimeVR 종료
+trackers_still_on-modal-cancel = 돌아가기
+
 ## Status system
 
-status_system-StatusTrackerReset = 아직 정렬되지 않은 트래커가 있어서 전체 정렬을 수행해주세요.
+status_system-StatusTrackerReset = 전체 정렬을 수행해 아직 정렬되지 않은 트래커를 정렬해주세요.
 status_system-StatusSteamVRDisconnected =
     { $type ->
-        [steamvr_feeder] SlimeVR 피더와 통신할 수 없어요.
-       *[other] SlimeVR 드라이버를 통해 SteamVR과 통신할 수 없어요.
+        [steamvr_feeder] SlimeVR 피더와 연결되지 않음
+       *[other] SlimeVR 드라이버가 SteamVR과 연결되지 않음
     }
 status_system-StatusTrackerError = { $trackerName } 트래커에 문제가 발생했어요.

@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = Käsittelemätön
 widget-imu_visualizer-rotation_preview = Esikatselu
 widget-imu_visualizer-rotation_hide = Piilota
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = Luurangon esikatselu
+widget-skeleton_visualizer-hide = Piilota
+
 ## Tracker status
 
 tracker-status-none = Ei tilaa
@@ -152,6 +157,7 @@ tracker-status-error = Virhe
 tracker-status-disconnected = Katkaistu
 tracker-status-occluded = Peittynyt
 tracker-status-ok = OK
+tracker-status-timed_out = Aikakatkaistiin
 
 ## Tracker status columns
 
@@ -348,9 +354,14 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor clip voi v
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe snap yrittää arvata varpaiden asennon jos jalkaterän jäljitintä ei ole käytössä.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot plant asettaa jalkateräsi yhdensuuntaisesti maan kanssa kosketuksessa.
 settings-general-fk_settings-leg_fk = Jalkojen jäljitys
+settings-general-fk_settings-leg_fk-reset_mounting_feet = Jalkojen asennuksen nollaus
 settings-general-fk_settings-arm_fk = Käsivarsien jäljitys
 settings-general-fk_settings-arm_fk-description = Muuta tapaa, jolla käsivarsia jäljitetään.
 settings-general-fk_settings-arm_fk-force_arms = Pakota kädet HMD:ltä
+settings-general-fk_settings-arm_fk-back = Takaisin
+settings-general-fk_settings-arm_fk-tpose_up = T-asento (ylös)
+settings-general-fk_settings-arm_fk-tpose_down = T-asento (alas)
+settings-general-fk_settings-arm_fk-forward = Eteenpäin
 settings-general-fk_settings-skeleton_settings-toggles = Luurankoasetuksia
 settings-general-fk_settings-skeleton_settings-description = Ota tai poista käytöstä luurankoasetukset. On suositeltavaa jättää nämä päälle.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Laajennettu selkärankamalli
@@ -659,6 +670,7 @@ onboarding-assignment_tutorial = Kuinka valmistellaan Slime-jäljitin ennen käy
 onboarding-assignment_tutorial-first_step = 1. Aseta kehonosatarra (jos sinulla on) jäljittimeen valintasi mukaan
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Tarra
+onboarding-assignment_tutorial-second_step-v2 = 2. Kiinnitä hihna jäljittimeen pitäen hihnan tarranauhaa samaan suuntaan kuin jäljittimen etupuoli:
 onboarding-assignment_tutorial-second_step-continuation-v2 = Jatkeen tarranauhapuolen tulee olla ylöspäin seuraavan kuvan mukaisesti:
 onboarding-assignment_tutorial-done = Laitoin tarrat ja hihnat!
 
@@ -759,6 +771,8 @@ onboarding-choose_mounting-manual_mounting = Manuaalinen asennus
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Suositeltu
 onboarding-choose_mounting-manual_mounting-description = Näin voit valita asennussuunnan manuaalisesti kullekin jäljittimelle
+onboarding-choose_mounting-manual_modal-confirm = Tiedän mitä teen
+onboarding-choose_mounting-manual_modal-cancel = Peruuta
 
 ## Tracker manual mounting setup
 
@@ -794,6 +808,8 @@ onboarding-automatic_mounting-put_trackers_on-next = Minulla on kaikki jäljitti
 onboarding-choose_proportions = Mitä kalibrointimenetelmää käytetään?
 onboarding-choose_proportions-auto_proportions = Automaattiset mittasuhteet
 onboarding-choose_proportions-manual_proportions = Manuaaliset mittasuhteet
+onboarding-choose_proportions-import-failed = Epäonnistui
+onboarding-choose_proportions-file_type = Kehon mittasuhteet -tiedosto
 
 ## Tracker manual proportions setup
 
@@ -812,6 +828,9 @@ onboarding-automatic_proportions-put_trackers_on-next = Minulla on kaikki jälji
 onboarding-automatic_proportions-requirements-title = Vaatimukset
 onboarding-automatic_proportions-requirements-next = Olen lukenut vaatimukset
 onboarding-automatic_proportions-check_height-title = Tarkista pituutesi
+onboarding-automatic_proportions-check_height-description = Käytämme pituuttasi mittaustemme perustana käyttämällä HMD:n pituutta likiarvona todellisesta pituudestasi, mutta on parempi tarkistaa itse, ovatko ne oikein!
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = Paina painiketta <u>pystyasennossa</u> laskeaksesi pituutesi. Sinulla on 3 sekuntia painikkeen painamisen jälkeen!
 onboarding-automatic_proportions-check_height-fetch_height = Seison
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Tuntematon
@@ -821,7 +840,9 @@ onboarding-automatic_proportions-check_height-hmd_height1 = HMD-korkeus on
 onboarding-automatic_proportions-check_height-height1 = Joten todellinen pituutesi on
 onboarding-automatic_proportions-check_height-next_step = Ne ovat hyvät
 onboarding-automatic_proportions-start_recording-title = Valmistaudu liikkumaan
+onboarding-automatic_proportions-start_recording-description = Aiomme nyt tallentaa joitain tiettyä asentoja ja liikkeitä. Näitä kysytään seuraavassa näytössä. Ole valmis aloittamaan, kun painat nappia!
 onboarding-automatic_proportions-start_recording-next = Aloita tallennus
+onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Tallennus käynnissä...
 onboarding-automatic_proportions-recording-description-p1 = Tee alla esitetyt liikkeet:
 onboarding-automatic_proportions-recording-processing = Käsitellään tuloksia
@@ -835,14 +856,27 @@ onboarding-automatic_proportions-verify_results-title = Vahvista tulokset
 onboarding-automatic_proportions-verify_results-description = Tarkista alla olevat tulokset, näyttävätkö ne oikeilta?
 onboarding-automatic_proportions-verify_results-results = Tallennuksen tulokset
 onboarding-automatic_proportions-verify_results-processing = Käsitellään tuloksia
+onboarding-automatic_proportions-verify_results-redo = Tee tallennus uudelleen
 onboarding-automatic_proportions-verify_results-confirm = Nämä ovat oikein
 onboarding-automatic_proportions-done-title = Keho mitattu ja tallennettu.
 onboarding-automatic_proportions-done-description = Kehosi mittasuhteiden kalibrointi on valmis!
+onboarding-automatic_proportions-error_modal =
+    <b>Varoitus:</b> Mittasuhteita arvioitaessa havaittiin virhe!
+     <docs>Tarkista dokumentit</docs> tai liity <discord>Discordiin</discord> saadaksesi apua ^_^
 onboarding-automatic_proportions-error_modal-confirm = Ymmäretty!
 
 ## Home
 
 home-no_trackers = Jäjittimiä ei havaittu tai määritetty
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = Jäljittimet ovat vielä päällä
+trackers_still_on-modal-description =
+    Yksi tai useampi jäljitin on edelleen päällä.
+    Haluatko silti poistua SlimeVR:stä?
+trackers_still_on-modal-confirm = Poistu SlimeVR:stä
+trackers_still_on-modal-cancel = Odota...
 
 ## Status system
 

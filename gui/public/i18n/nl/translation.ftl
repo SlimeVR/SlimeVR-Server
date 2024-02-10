@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = Rauw
 widget-imu_visualizer-rotation_preview = Preview
 widget-imu_visualizer-rotation_hide = Verbergen
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = Skelet voorbeeld
+widget-skeleton_visualizer-hide = Verbergen
+
 ## Tracker status
 
 tracker-status-none = Geen status
@@ -152,6 +157,7 @@ tracker-status-error = Fout
 tracker-status-disconnected = Verbinding verbroken
 tracker-status-occluded = Verborgen
 tracker-status-ok = OK
+tracker-status-timed_out = Timed Out
 
 ## Tracker status columns
 
@@ -445,6 +451,8 @@ settings-general-interface-feedback_sound = Feedback geluid
 settings-general-interface-feedback_sound-description = Speelt een geluid telkens de reset wordt uitgevoerd
 settings-general-interface-feedback_sound-label = Feedback geluid
 settings-general-interface-feedback_sound-volume = Feedback geluid volume
+settings-general-interface-connected_trackers_warning = Waarschuwing voor verbonden trackers
+settings-general-interface-connected_trackers_warning-label = Waarschuwing voor verbonden trackers bij het afsluiten
 
 ## Serial settings
 
@@ -774,6 +782,8 @@ onboarding-choose_mounting-manual_mounting = Handmatige bevestiging
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Aanbevolen
 onboarding-choose_mounting-manual_mounting-description = Hiermee kunt u de montagerichting handmatig kiezen voor elke tracker
+onboarding-choose_mounting-manual_modal-confirm = Ik weet zeker wat ik doe
+onboarding-choose_mounting-manual_modal-cancel = Annuleren
 
 ## Tracker manual mounting setup
 
@@ -812,9 +822,6 @@ onboarding-choose_proportions-description = Lichaamsverhoudingen worden gebruikt
 onboarding-choose_proportions-auto_proportions = Automatische verhoudingen
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Aanbevolen
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
-    Dit zal je proporties gokken met jouw bewegingen op basis van een opname, waarna deze door een algoritme gehaald worden.
-    <b>Hiervoor moet een HMD verbonden zijn aan SlimeVR!</b>
 onboarding-choose_proportions-manual_proportions = Handmatige lichaamsverhoudingen
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Voor kleine details
@@ -844,14 +851,6 @@ onboarding-automatic_proportions-put_trackers_on-title = Doe je trackers aan
 onboarding-automatic_proportions-put_trackers_on-description = Om je verhoudingen te kalibreren, gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
 onboarding-automatic_proportions-put_trackers_on-next = Ik heb al mijn trackers aan
 onboarding-automatic_proportions-requirements-title = Vereisten
-# Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
-    Je hebt in ieder geval genoeg trackers om je voeten te volgen (over het algemeen 5 trackers).
-    Je hebt je trackers en headset op.
-    Je draagt je trackers en headset.
-    Je trackers en headset zijn verbonden met de SlimeVR server.
-    Je trackers en headset werken goed binnen de SlimeVR server.
-    Je headset rapporteert positiegegevens aan de SlimeVR-server (dit betekent over het algemeen dat SteamVR wordt uitgevoerd en verbonden met SlimeVR met behulp van SlimeVR's SteamVR-stuurprogramma).
 onboarding-automatic_proportions-requirements-next = Ik heb de vereisten gelezen
 onboarding-automatic_proportions-check_height-title = Controleer je lengte
 onboarding-automatic_proportions-check_height-description =
@@ -904,6 +903,15 @@ onboarding-automatic_proportions-error_modal-confirm = Begrepen!
 ## Home
 
 home-no_trackers = Geen trackers gedetecteerd of toegewezen
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = Trackers staan nog steeds aan
+trackers_still_on-modal-description =
+    Een of meer trackers staan nog aan.
+    Wil je SlimeVR toch afsluiten?
+trackers_still_on-modal-confirm = SlimeVR afsluiten
+trackers_still_on-modal-cancel = Wacht even...
 
 ## Status system
 

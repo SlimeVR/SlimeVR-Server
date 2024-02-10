@@ -5,6 +5,7 @@ import {
   RpcMessage,
   ServerInfosRequestT,
   ServerInfosResponseT,
+  TrackerStatus,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { CloseIcon } from './commons/icon/CloseIcon';
@@ -24,6 +25,8 @@ import { invoke } from '@tauri-apps/api';
 import { useTrackers } from '@/hooks/tracker';
 import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
+import { listen } from '@tauri-apps/api/event';
+import { TrayOrExitModal } from './TrayOrExitModal';
 
 export function VersionTag() {
   return (
@@ -54,18 +57,52 @@ export function TopBar({
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const { useConnectedIMUTrackers } = useTrackers();
   const connectedIMUTrackers = useConnectedIMUTrackers();
-  const { config } = useConfig();
+  const { config, setConfig } = useConfig();
   const version = useContext(VersionContext);
   const [localIp, setLocalIp] = useState<string | null>(null);
   const [showConnectedTrackersWarning, setConnectedTrackerWarning] =
     useState(false);
+  const [showTrayOrExitModal, setShowTrayOrExitModal] = useState(false);
   const doesMatchSettings = useMatch({
     path: '/settings/*',
   });
   const closeApp = async () => {
     await invoke('update_window_state');
-    getCurrent().close();
+    await getCurrent().close();
   };
+  const tryCloseApp = async (dontTray = false) => {
+    if (isTauri && config?.useTray === null) {
+      setShowTrayOrExitModal(true);
+      return;
+    }
+
+    if (config?.useTray && !dontTray) {
+      await getCurrent().hide();
+      await invoke('update_tray_text');
+    } else if (
+      config?.connectedTrackersWarning &&
+      connectedIMUTrackers.filter(
+        (t) => t.tracker.status !== TrackerStatus.TIMED_OUT
+      ).length > 0
+    ) {
+      setConnectedTrackerWarning(true);
+    } else {
+      await closeApp();
+    }
+  };
+
+  useEffect(() => {
+    const unlisten = listen('try-close', async () => {
+      const window = getCurrent();
+      await window.show();
+      await window.setFocus();
+      await invoke('update_tray_text');
+      await tryCloseApp(true);
+    });
+    return () => {
+      unlisten.then((fn) => fn());
+    };
+  }, []);
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.ServerInfosRequest, new ServerInfosRequestT());
@@ -209,16 +246,7 @@ export function TopBar({
                 </div>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => {
-                    if (
-                      config?.connectedTrackersWarning &&
-                      connectedIMUTrackers.length > 0
-                    ) {
-                      setConnectedTrackerWarning(true);
-                    } else {
-                      closeApp();
-                    }
-                  }}
+                  onClick={() => tryCloseApp()}
                 >
                   <CloseIcon></CloseIcon>
                 </div>
@@ -232,6 +260,27 @@ export function TopBar({
           </div>
         )}
       </div>
+      <TrayOrExitModal
+        isOpen={showTrayOrExitModal}
+        accept={async (useTray) => {
+          await setConfig({ useTray });
+          setShowTrayOrExitModal(false);
+
+          // Doing this in here just in case config doesn't get updated in time
+          if (useTray) {
+            await getCurrent().hide();
+            await invoke('update_tray_text');
+          } else if (
+            config?.connectedTrackersWarning &&
+            connectedIMUTrackers.length > 0
+          ) {
+            setConnectedTrackerWarning(true);
+          } else {
+            await closeApp();
+          }
+        }}
+        cancel={() => setShowTrayOrExitModal(false)}
+      />
       <TrackersStillOnModal
         isOpen={showConnectedTrackersWarning}
         accept={() => closeApp()}
