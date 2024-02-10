@@ -11,6 +11,7 @@ import {
 } from 'react';
 import { exists, readTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
+import { invoke } from '@tauri-apps/api';
 
 export const defaultNS = 'translation';
 export const DEFAULT_LOCALE = 'en';
@@ -152,6 +153,8 @@ interface i18n {
   changeLocales: (userLocales: string[]) => Promise<void>;
 }
 
+const TRAY_MENU_KEYS = ['tray_menu-show', 'tray_menu-hide', 'tray_menu-quit'];
+
 export const LangContext = createContext<i18n>(undefined as never);
 export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
   const [currentLocales, setCurrentLocales] = useState([DEFAULT_LOCALE]);
@@ -195,6 +198,20 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
       import.meta.hot.on('locales-update', () => changeLocales(currentLocales));
     }
   }, []);
+
+  useEffect(() => {
+    if (l10n === null) return;
+
+    const newI18n: Record<string, string> = {};
+    TRAY_MENU_KEYS.forEach((key) => {
+      newI18n[key] = l10n.getString(key);
+    });
+    const promise = invoke('update_translations', { newI18n });
+    return () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      promise.then(() => {});
+    };
+  }, [l10n]);
 
   if (l10n === null) {
     return <></>;
