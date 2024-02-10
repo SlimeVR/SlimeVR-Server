@@ -4,6 +4,7 @@ import { createContext, useContext, useState } from 'react';
 import { DeveloperModeWidgetForm } from '@/components/widgets/DeveloperModeWidget';
 import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
+import { waitUntil } from '@/utils/a11y';
 
 export interface WindowConfig {
   width: number;
@@ -25,6 +26,7 @@ export interface Config {
   textSize: number;
   fonts: string[];
   advancedAssign: boolean;
+  useTray: boolean | null;
   doneManualMounting: boolean;
 }
 
@@ -47,6 +49,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   textSize: 12,
   fonts: ['poppins'],
   advancedAssign: false,
+  useTray: null,
   doneManualMounting: false,
 };
 
@@ -76,6 +79,18 @@ export function useConfigProvider(): ConfigContext {
             ...config,
           } as Config)
         : null
+    );
+    await waitUntil(
+      () => {
+        const newConfig: Partial<Config> = JSON.parse(
+          localStorage.getItem('config.json') ?? '{}'
+        );
+        return Object.entries(config).every(
+          ([key, value]) => newConfig[key as keyof Config] === value
+        );
+      },
+      100,
+      10
     );
   };
 
