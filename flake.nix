@@ -94,6 +94,7 @@
               librsvg
               freetype
               expat
+              libayatana-appindicator
               libusb1
             ])
             ++ lib.optionals pkgs.stdenv.isDarwin [
