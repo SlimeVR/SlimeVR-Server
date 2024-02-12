@@ -156,7 +156,7 @@ export function Recording({
         <video
           preload=""
           ref={videoRef}
-          src="/images/autobone.webm"
+          src="/videos/autobone.webm"
           className="min-w-[12rem] w-[12rem]"
           muted
           loop
