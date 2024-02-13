@@ -37,7 +37,7 @@ enum class TrackerPosition(
 	;
 
 	/**
-	 * Returns the default mounting position for the body part
+	 * Returns the default mounting orientation for the body part
 	 */
 	fun defaultMounting(): Quaternion = when (this) {
 		LEFT_LOWER_ARM, LEFT_HAND -> Quaternion.SLIMEVR.LEFT
