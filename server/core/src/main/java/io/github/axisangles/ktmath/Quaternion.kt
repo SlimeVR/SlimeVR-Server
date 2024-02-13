@@ -343,6 +343,24 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	}
 
 	/**
+	 * Produces angles such that
+	 * Quaternion.fromRotationVector(angles[0]*axisA) * Quaternion.fromRotationVector(angles[1]*axisB)
+	 * is as close to rot as possible
+	 */
+	fun biAlign(rot: Quaternion, axisA: Vector3, axisB: Vector3): FloatArray {
+		val aQ = axisA.dot(rot.xyz)
+		val bQ = axisA.dot(rot.xyz)
+		val abQ = axisA.cross(axisB).dot(rot.xyz)
+
+		val angleA = atan2(2 * (abQ * bQ + aQ * rot.w), abQ * abQ + aQ * aQ - bQ * bQ - rot.w * rot.w)
+		val cosA = cos(angleA / 2)
+		val sinA = sin(angleA / 2)
+		val angleB = 2 * atan2(aQ * cosA - rot.w * sinA, bQ * sinA - abQ * cosA)
+
+		return floatArrayOf(angleA, angleB)
+	}
+
+	/**
 	 * applies this quaternion's rotation to that vector
 	 * @param that the vector to be transformed
 	 * @return that vector transformed by this quaternion
