@@ -13,14 +13,14 @@ import { MountingSelectionMenu } from './MountingSelectionMenu';
 import { useLocalization } from '@fluent/react';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { Quaternion } from 'three';
-import { useConfig } from '@/hooks/config';
+import { defaultConfig, useConfig } from '@/hooks/config';
 
 export function ManualMountingPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
-  const { setConfig } = useConfig();
+  const { setConfig, config } = useConfig();
 
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
 
@@ -102,6 +102,7 @@ export function ManualMountingPage() {
           <div className="flex flex-row justify-center">
             <BodyAssignment
               width={isMobile ? 160 : undefined}
+              mirror={config?.mirrorView ?? defaultConfig.mirrorView}
               onlyAssigned={true}
               advanced={true}
               onRoleSelected={setSelectRole}

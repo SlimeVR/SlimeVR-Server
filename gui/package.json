@@ -50,7 +50,7 @@
     "skipbundler": "tauri build -b none",
     "tauri": "tauri",
     "lint": "tsc --noEmit && eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && prettier --check \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
-    "lint:fix": "tsc --noEmit && eslint --fix --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && npm run format",
+    "lint:fix": "tsc --noEmit && eslint --fix --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && pnpm run format",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
     "preview-vite": "vite preview",
     "javaversion-build": "cd src-tauri/src/ && javac JavaVersion.java && jar cvfe JavaVersion.jar JavaVersion JavaVersion.class"
@@ -81,6 +81,7 @@
     "@types/react-dom": "^18.0.5",
     "@types/react-helmet": "^6.1.6",
     "@types/react-modal": "3.13.1",
+    "@types/semver": "^7.5.4",
     "@types/three": "^0.155.0",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",

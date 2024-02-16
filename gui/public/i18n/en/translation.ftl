@@ -19,6 +19,7 @@ tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
 tips-tap_setup = You can slowly tap 2 times your tracker to choose it instead of selecting it from the menu.
+tips-turn_on_tracker = Using official SlimeVR trackers? Remember to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 
 ## Body parts
 body_part-NONE = Unassigned
@@ -182,7 +183,7 @@ tracker-settings-title = Tracker settings
 tracker-settings-assignment_section = Assignment
 tracker-settings-assignment_section-description = What part of the body the tracker is assigned to.
 tracker-settings-assignment_section-edit = Edit assignment
-tracker-settings-mounting_section = Mounting position
+tracker-settings-mounting_section = Mounting orientation
 tracker-settings-mounting_section-description = Where is the tracker mounted?
 tracker-settings-mounting_section-edit = Edit mounting
 tracker-settings-drift_compensation_section = Allow drift compensation
@@ -422,6 +423,9 @@ settings-general-interface-feedback_sound-volume = Feedback sound volume
 settings-general-interface-connected_trackers_warning = Connected trackers warning
 settings-general-interface-connected_trackers_warning-description = This option will show a pop-up every time you try exiting SlimeVR while having one or more connected trackers. It reminds you to turn off your trackers when you are done to preserve battery life.
 settings-general-interface-connected_trackers_warning-label = Connected trackers warning on exit
+settings-general-interface-use_tray = Minimize to system tray
+settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bothering you.
+settings-general-interface-use_tray-label = Minimize to system tray
 
 ## Serial settings
 settings-serial = Serial Console
@@ -650,6 +654,7 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
 } assigned
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
+onboarding-assign_trackers-mirror_view = Mirror view
 
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.
@@ -717,11 +722,11 @@ onboarding-choose_mounting-description = Mounting orientation corrects for the p
 onboarding-choose_mounting-auto_mounting = Automatic mounting
 # Italized text
 onboarding-choose_mounting-auto_mounting-label = Experimental
-onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting directions for all of your trackers from 2 poses
+onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting orientations for all of your trackers from 2 poses
 onboarding-choose_mounting-manual_mounting = Manual mounting
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Recommended
-onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting direction manually for each tracker
+onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting orientation manually for each tracker
 # Multiline text
 onboarding-choose_mounting-manual_modal-title = Are you sure you want to do
     the automatic mounting calibration?
@@ -739,28 +744,29 @@ onboarding-manual_mounting-next = Next step
 ## Tracker automatic mounting setup
 onboarding-automatic_mounting-back = Go Back to Enter VR
 onboarding-automatic_mounting-title = Mounting Calibration
-onboarding-automatic_mounting-description = For SlimeVR trackers to work, we need to assign a mounting rotation to your trackers to align them with your physical tracker mounting.
+onboarding-automatic_mounting-description = For SlimeVR trackers to work, we need to assign a mounting orientation to your trackers to align them with your physical tracker mounting.
 onboarding-automatic_mounting-manual_mounting = Manual mounting
 onboarding-automatic_mounting-next = Next step
 onboarding-automatic_mounting-prev_step = Previous step
-onboarding-automatic_mounting-done-title = Mounting rotations calibrated.
+onboarding-automatic_mounting-done-title = Mounting orientations calibrated.
 onboarding-automatic_mounting-done-description = Your mounting calibration is complete!
 onboarding-automatic_mounting-done-restart = Try again
 onboarding-automatic_mounting-mounting_reset-title = Mounting Reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pose with your legs bent, your upper body tilted forwards, and your arms bent.
-onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Reset Mounting" button and wait for 3 seconds before the trackers' mounting rotations will reset.
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Reset Mounting" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 onboarding-automatic_mounting-preparation-title = Preparation
 onboarding-automatic_mounting-preparation-step-0 = 1. Stand upright with your arms to your sides.
 onboarding-automatic_mounting-preparation-step-1 = 2. Press the "Full Reset" button and wait for 3 seconds before the trackers will reset.
 onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
-onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting rotations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
+onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting orientations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 
 ## Tracker proportions method choose
 onboarding-choose_proportions = What proportion calibration method to use?
 # Multiline string
-onboarding-choose_proportions-description = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
+onboarding-choose_proportions-description-v1 = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
     When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
+    <b>You only need to measure your body once!</b> Unless they are wrong or your body has changed, then you don't need to do them again.
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
@@ -866,3 +872,19 @@ status_system-StatusSteamVRDisconnected = { $type ->
     [steamvr_feeder] Currently not connected to the SlimeVR Feeder App.
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
+
+## Tray Menu
+tray_menu-show = Show
+tray_menu-hide = Hide
+tray_menu-quit = Quit
+
+## First exit modal
+tray_or_exit_modal-title = What should the close button do?
+# Multiline text
+tray_or_exit_modal-description = This lets you choose whether you want to exit the server or to minimize it to the tray when pressing the close button.
+
+    You can change this later in the interface settings!
+tray_or_exit_modal-radio-exit = Exit on close
+tray_or_exit_modal-radio-tray = Minimize to system tray
+tray_or_exit_modal-submit = Save
+tray_or_exit_modal-cancel = Cancel

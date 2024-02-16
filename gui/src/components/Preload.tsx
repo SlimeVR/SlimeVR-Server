@@ -8,6 +8,8 @@ export function Preload() {
       <link rel="preload" href="/images/reset-pose.webp" as="image" />
       <link rel="preload" href="/images/slimes.webp" as="image" />
 
+      <link rel="preload" href="/videos/autobone.webm" as="video" />
+
       <link
         rel="preload"
         href="/sounds/quick-reset-started-sound.mp3"
