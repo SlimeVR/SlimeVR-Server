@@ -58,6 +58,7 @@ dependencies {
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
 	implementation("com.fazecast:jSerialComm:2.10.2")
+	implementation("org.hid4java:hid4java:0.7.0")
 }
 
 tasks.shadowJar {
