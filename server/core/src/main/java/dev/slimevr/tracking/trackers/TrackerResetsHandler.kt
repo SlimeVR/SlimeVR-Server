@@ -113,17 +113,15 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * and drift compensation, with the HMD as the reference.
 	 */
 	fun getReferenceAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion {
-		var rot = adjustToReference(rotation)
-		rot = adjustToDrift(rot)
-		return rot
+		return adjustToDrift(adjustToReference(rotation))
 	}
 
 	/**
 	 * Takes a rotation and adjusts it to resets and mounting,
 	 * with the identity Quaternion as the reference.
 	 */
-	fun getIdentityAdjustedRotationFrom(rotation: Quaternion): Quaternion {
-		return adjustToIdentity(rotation)
+	fun getIdentityAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion {
+		return adjustToDrift(adjustToIdentity(rotation))
 	}
 
 	/**
@@ -235,8 +233,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		calculateDrift(rot)
 
-		// Let's just remove the status if you do yaw reset if the tracker was
-		// disconnected and then connected back
+		// Remove the status if yaw reset was performed after the tracker
+		// was disconnected and connected.
 		if (this.tracker.lastResetStatus != 0u && this.tracker.statusResetRecently) {
 			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
 			this.tracker.statusResetRecently = false
