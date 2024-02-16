@@ -32,11 +32,13 @@ enum class OperatingSystem(
 			}
 		}
 
-		val tempDirectory: String
+		val socketDirectory: String
 			get() {
+				var dir = System.getenv("SLIMEVR_SOCKET_DIR")
+				if (dir != null) return dir
 				if (currentPlatform == LINUX) {
-					val tmp = System.getenv("XDG_RUNTIME_DIR")
-					if (tmp != null) return tmp
+					dir = System.getenv("XDG_RUNTIME_DIR")
+					if (dir != null) return dir
 				}
 				return System.getProperty("java.io.tmpdir")
 			}

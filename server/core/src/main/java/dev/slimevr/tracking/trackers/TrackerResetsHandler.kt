@@ -113,17 +113,15 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * and drift compensation, with the HMD as the reference.
 	 */
 	fun getReferenceAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion {
-		var rot = adjustToReference(rotation)
-		rot = adjustToDrift(rot)
-		return rot
+		return adjustToDrift(adjustToReference(rotation))
 	}
 
 	/**
 	 * Takes a rotation and adjusts it to resets and mounting,
 	 * with the identity Quaternion as the reference.
 	 */
-	fun getIdentityAdjustedRotationFrom(rotation: Quaternion): Quaternion {
-		return adjustToIdentity(rotation)
+	fun getIdentityAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion {
+		return adjustToDrift(adjustToIdentity(rotation))
 	}
 
 	/**
@@ -235,8 +233,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		calculateDrift(rot)
 
-		// Let's just remove the status if you do yaw reset if the tracker was
-		// disconnected and then connected back
+		// Remove the status if yaw reset was performed after the tracker
+		// was disconnected and connected.
 		if (this.tracker.lastResetStatus != 0u && this.tracker.statusResetRecently) {
 			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
 			this.tracker.statusResetRecently = false
@@ -323,7 +321,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		rot *= attachmentFix
 		rot *= mountRotFix
 		rot = getYawQuaternion(rot)
-		// rot = Quaternion.fromRotationVector(0f, biAlign(rot, Vector3.POS_Y, Vector3.POS_X), 0f)
 		return rot.inv() * reference.project(Vector3.POS_Y).unit()
 	}
 
@@ -334,20 +331,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	// with the tracker's roll when pointing forward.
 	private fun getYawQuaternion(rot: Quaternion): Quaternion {
 		return EulerAngles(EulerOrder.YZX, 0f, rot.toEulerAngles(EulerOrder.YZX).y, 0f).toQuaternion()
-	}
-
-	// TODO
-	private fun biAlign(rot: Quaternion, axisA: Vector3, axisB: Vector3): Float {
-		val aQ = axisA.dot(rot.xyz)
-		val bQ = axisA.dot(rot.xyz)
-		val abQ = axisA.cross(axisB).dot(rot.xyz)
-
-		val angleA = atan2(2 * (abQ * bQ + aQ * rot.w), abQ * abQ + aQ * aQ - bQ * bQ - rot.w * rot.w)
-		val cosA = cos(angleA / 2)
-		val sinA = sin(angleA / 2)
-		val angleB = 2 * atan2(aQ * cosA - rot.w * sinA, bQ * sinA - abQ * cosA)
-
-		return angleA
 	}
 
 	private fun makeIdentityAdjustmentQuatsFull() {
