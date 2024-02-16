@@ -19,6 +19,7 @@ tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
 tips-tap_setup = You can slowly tap 2 times your tracker to choose it instead of selecting it from the menu.
+tips-turn_on_tracker = Using official SlimeVR trackers? Remember to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 
 ## Body parts
 body_part-NONE = Unassigned
@@ -652,6 +653,7 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
 } assigned
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
+onboarding-assign_trackers-mirror_view = Mirror view
 
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.
@@ -761,8 +763,9 @@ onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 ## Tracker proportions method choose
 onboarding-choose_proportions = What proportion calibration method to use?
 # Multiline string
-onboarding-choose_proportions-description = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
+onboarding-choose_proportions-description-v1 = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
     When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
+    <b>You only need to measure your body once!</b> Unless they are wrong or your body has changed, then you don't need to do them again.
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended

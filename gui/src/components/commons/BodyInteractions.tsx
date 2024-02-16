@@ -12,6 +12,7 @@ export function BodyInteractions({
   width = 228,
   dotsSize = 15,
   variant = 'tracker-select',
+  mirror,
   onSelectRole,
 }: {
   leftControls?: ReactNode;
@@ -22,6 +23,7 @@ export function BodyInteractions({
   assignedRoles: BodyPart[];
   onSelectRole: (role: BodyPart) => void;
   highlightedRoles: BodyPart[];
+  mirror: boolean;
 }) {
   const { isMobile } = useBreakpoint('mobile');
 
@@ -166,7 +168,7 @@ export function BodyInteractions({
             variant === 'tracker-select' && 'mobile:mx-0 xs:mx-10'
           )}
         >
-          <PersonFrontIcon width={width}></PersonFrontIcon>
+          <PersonFrontIcon width={width} mirror={mirror}></PersonFrontIcon>
           {slotsButtonsPos.map(
             ({ top, left, height, width, id, hidden, buttonOffset }) => (
               <div

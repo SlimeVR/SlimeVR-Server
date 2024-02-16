@@ -52,8 +52,8 @@ enum class OperatingSystem(
 		}
 
 		fun resolveLogDirectory(identifier: String): Path? = when (currentPlatform) {
-			LINUX -> System.getenv("XDG_CONFIG_HOME")?.let { Path(it, identifier, "logs") }
-				?: System.getenv("HOME")?.let { Path(it, ".config", identifier, "logs") }
+			LINUX -> System.getenv("XDG_DATA_HOME")?.let { Path(it, identifier, "logs") }
+				?: System.getenv("HOME")?.let { Path(it, ".local", "share", identifier, "logs") }
 			WINDOWS -> System.getenv("AppData")?.let { Path(it, identifier, "logs") }
 			OSX -> System.getenv("HOME")?.let { Path(it, "Library", "Logs", identifier) }
 			UNKNOWN -> null
