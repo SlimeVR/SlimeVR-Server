@@ -228,8 +228,7 @@ export default function App() {
         }
       );
       return () => {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        unlisten.then(() => {});
+        unlisten.then((fn) => fn());
       };
     }, []);
   }

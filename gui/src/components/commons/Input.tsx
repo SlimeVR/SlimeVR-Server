@@ -98,10 +98,10 @@ export const InputInside = forwardRef<
         ></input>
         {type === 'password' && (
           <div
-            className="fill-background-10 absolute top-0 h-full flex flex-col justify-center right-0 p-4"
+            className="fill-background-10 absolute inset-y-0 right-0 pr-6 z-10 my-auto w-[16px] h-[16px]"
             onClick={togglePassword}
           >
-            <EyeIcon></EyeIcon>
+            <EyeIcon width={16} closed={forceText}></EyeIcon>
           </div>
         )}
         {error?.message && (

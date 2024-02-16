@@ -12,6 +12,7 @@ import {
   SerialTrackerGetInfoRequestT,
   SerialTrackerRebootRequestT,
   SerialUpdateResponseT,
+  SerialTrackerGetWifiScanRequestT,
 } from 'solarxr-protocol';
 import { useElemSize, useLayout } from '@/hooks/layout';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -159,6 +160,12 @@ export function Serial() {
       new SerialTrackerGetInfoRequestT()
     );
   };
+  const getWifiScan = () => {
+    sendRPCPacket(
+      RpcMessage.SerialTrackerGetWifiScanRequest,
+      new SerialTrackerGetWifiScanRequestT()
+    );
+  };
 
   return (
     <>
@@ -231,6 +238,9 @@ export function Serial() {
                 </Button>
                 <Button variant="quaternary" onClick={getInfos}>
                   {l10n.getString('settings-serial-get_infos')}
+                </Button>
+                <Button variant="quaternary" onClick={getWifiScan}>
+                  {l10n.getString('settings-serial-get_wifi_scan')}
                 </Button>
                 {isMobile && (
                   <Dropdown

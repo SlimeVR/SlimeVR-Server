@@ -88,6 +88,11 @@ export function ToggleableSkeletonVisualizerWidget(
   const { l10n } = useLocalization();
   const [enabled, setEnabled] = useState(false);
 
+  useEffect(() => {
+    const state = localStorage.getItem('skeletonModelPreview');
+    if (state) setEnabled(state === 'true');
+  }, []);
+
   return (
     <>
       {!enabled && (
@@ -96,7 +101,7 @@ export function ToggleableSkeletonVisualizerWidget(
           className="w-full"
           onClick={() => {
             setEnabled(true);
-            localStorage.setItem('modelPreview', 'true');
+            localStorage.setItem('skeletonModelPreview', 'true');
           }}
         >
           {l10n.getString('widget-skeleton_visualizer-preview')}
@@ -109,7 +114,7 @@ export function ToggleableSkeletonVisualizerWidget(
             variant="secondary"
             onClick={() => {
               setEnabled(false);
-              localStorage.setItem('modelPreview', 'false');
+              localStorage.setItem('skeletonModelPreview', 'false');
             }}
           >
             {l10n.getString('widget-skeleton_visualizer-hide')}

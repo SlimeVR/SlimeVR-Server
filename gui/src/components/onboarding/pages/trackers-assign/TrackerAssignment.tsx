@@ -26,6 +26,7 @@ import { Typography } from '@/components/commons/Typography';
 import {
   ASSIGNMENT_RULES,
   BodyAssignment,
+  LOWER_BODY,
 } from '@/components/onboarding/BodyAssignment';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
@@ -52,14 +53,20 @@ export function TrackersAssignPage() {
   const { useAssignedTrackers, trackers } = useTrackers();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const defaultValues = { advanced: config?.advancedAssign ?? false };
-  const { control, watch } = useForm<{ advanced: boolean }>({ defaultValues });
-  const { advanced } = watch();
+  const defaultValues = {
+    advanced: config?.advancedAssign ?? false,
+    mirrorView: config?.mirrorView ?? true,
+  };
+  const { control, watch } = useForm<{
+    advanced: boolean;
+    mirrorView: boolean;
+  }>({ defaultValues });
+  const { advanced, mirrorView } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
   useEffect(() => {
-    setConfig({ advancedAssign: advanced });
-  }, [advanced]);
+    setConfig({ advancedAssign: advanced, mirrorView });
+  }, [advanced, mirrorView]);
 
   const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
     TapDetectionSettingsT,
@@ -150,6 +157,14 @@ export function TrackersAssignPage() {
           ? trackerRoles.some((tr) => part.includes(tr))
           : trackerRoles.includes(part),
       ]);
+
+      // Special exception for waist/hip: https://github.com/SlimeVR/SlimeVR-Server/issues/612
+      if (
+        (assignedRole === BodyPart.HIP || assignedRole === BodyPart.WAIST) &&
+        !trackerRoles.some((t) => LOWER_BODY.has(t))
+      ) {
+        return;
+      }
 
       if (unassignedRoles.every(([, state]) => state)) return;
 
@@ -275,12 +290,22 @@ export function TrackersAssignPage() {
                 </Typography>
               </div>
               <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
-              <CheckBox
-                control={control}
-                label={l10n.getString('onboarding-assign_trackers-advanced')}
-                name="advanced"
-                variant="toggle"
-              ></CheckBox>
+              <div>
+                <CheckBox
+                  control={control}
+                  label={l10n.getString('onboarding-assign_trackers-advanced')}
+                  name="advanced"
+                  variant="toggle"
+                ></CheckBox>
+                <CheckBox
+                  control={control}
+                  label={l10n.getString(
+                    'onboarding-assign_trackers-mirror_view'
+                  )}
+                  name="mirrorView"
+                  variant="toggle"
+                ></CheckBox>
+              </div>
               {!!firstError && (
                 <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
                   <div className="flex flex-col gap-1 whitespace-normal">
@@ -318,6 +343,7 @@ export function TrackersAssignPage() {
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
                 advanced={advanced ?? defaultValues.advanced}
+                mirror={mirrorView ?? defaultValues.mirrorView}
                 onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
             </div>

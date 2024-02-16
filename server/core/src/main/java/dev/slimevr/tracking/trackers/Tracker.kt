@@ -111,7 +111,7 @@ class Tracker @JvmOverloads constructor(
 		if (old == new) return@observable
 
 		if (!isInternal) {
-			// Set default mounting position for that body part
+			// Set default mounting orientation for that body part
 			new?.let { resetsHandler.mountingOrientation = it.defaultMounting() }
 
 			checkReportRequireReset()
@@ -284,7 +284,7 @@ class Tracker @JvmOverloads constructor(
 	 * Gets the adjusted tracker rotation after all corrections
 	 * (filtering, reset, mounting and drift compensation).
 	 * This is the rotation that is applied on the SlimeVR skeleton bones.
-	 * Warning: This may perform several Quaternion multiplications, so calling
+	 * Warning: This performs several Quaternion multiplications, so calling
 	 * it too much should be avoided for performance reasons.
 	 */
 	fun getRotation(): Quaternion {
@@ -316,8 +316,8 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
-	 * Gets the identity-adjusted tracker rotation after some corrections
-	 * (filtering, identity reset and identity mounting).
+	 * Gets the identity-adjusted tracker rotation after corrections
+	 * (filtering, identity reset, drift and identity mounting).
 	 * This is used for debugging/visualizing tracker data
 	 */
 	fun getIdentityAdjustedRotation(): Quaternion {
@@ -331,7 +331,7 @@ class Tracker @JvmOverloads constructor(
 
 		if (needsReset && trackerPosition != TrackerPosition.HEAD) {
 			// Adjust to reset and mounting
-			rot = resetsHandler.getIdentityAdjustedRotationFrom(rot)
+			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		}
 
 		return rot

@@ -10,6 +10,7 @@ import { useLocalization } from '@fluent/react';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { useChokerWarning } from '@/hooks/choker-warning';
 import { useBreakpoint } from '@/hooks/breakpoint';
+import { defaultConfig, useConfig } from '@/hooks/config';
 
 export function SingleTrackerBodyAssignmentMenu({
   isOpen,
@@ -22,6 +23,7 @@ export function SingleTrackerBodyAssignmentMenu({
 }) {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
+  const { config } = useConfig();
   const defaultValues = { advanced: false };
   const { control, watch } = useForm<{ advanced: boolean }>({ defaultValues });
   const { advanced } = watch();
@@ -74,6 +76,7 @@ export function SingleTrackerBodyAssignmentMenu({
             </div>
             <div className="flex flex-col xs:flex-grow gap-3 rounded-xl fill-background-50 py-2">
               <BodyAssignment
+                mirror={config?.mirrorView ?? defaultConfig.mirrorView}
                 width={isMobile ? 160 : undefined}
                 onlyAssigned={false}
                 advanced={advanced ?? defaultValues.advanced}
