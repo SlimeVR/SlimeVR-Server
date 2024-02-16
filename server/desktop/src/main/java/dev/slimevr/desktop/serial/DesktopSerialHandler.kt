@@ -144,6 +144,10 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 		writeSerial("GET INFO")
 	}
 
+	override fun wifiScanRequest() {
+		writeSerial("GET WIFISCAN")
+	}
+
 	@Synchronized
 	override fun closeSerial() {
 		try {

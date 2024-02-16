@@ -204,6 +204,10 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		writeSerial("GET INFO")
 	}
 
+	override fun wifiScanRequest() {
+		writeSerial("GET WIFISCAN")
+	}
+
 	override fun closeSerial() {
 		try {
 			if (isConnected) {
