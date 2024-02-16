@@ -111,7 +111,7 @@ class Tracker @JvmOverloads constructor(
 		if (old == new) return@observable
 
 		if (!isInternal) {
-			// Set default mounting position for that body part
+			// Set default mounting orientation for that body part
 			new?.let { resetsHandler.mountingOrientation = it.defaultMounting() }
 
 			checkReportRequireReset()

@@ -1094,7 +1094,7 @@ class HumanSkeleton(
 	fun resetTrackersMounting(resetSourceName: String?) {
 		val trackersToReset = humanPoseManager.getTrackersToReset()
 
-		// Resets the mounting rotation of the trackers with the HMD as
+		// Resets the mounting orientation of the trackers with the HMD as
 		// reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
