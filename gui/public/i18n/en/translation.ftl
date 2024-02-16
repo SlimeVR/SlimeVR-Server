@@ -765,7 +765,7 @@ onboarding-choose_proportions = What proportion calibration method to use?
 # Multiline string
 onboarding-choose_proportions-description-v1 = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
     When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
-    <b>You only need to measure your body once!</b> Unless they are wrong, you grew or got shorter, you don't need to do them again.
+    <b>You only need to measure your body once!</b> Unless they are wrong or your body has changed, then you don't need to do them again.
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
