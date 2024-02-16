@@ -28,6 +28,7 @@ export interface Config {
   advancedAssign: boolean;
   useTray: boolean | null;
   doneManualMounting: boolean;
+  mirrorView: boolean;
 }
 
 export interface ConfigContext {
@@ -51,6 +52,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   advancedAssign: false,
   useTray: null,
   doneManualMounting: false,
+  mirrorView: true,
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {

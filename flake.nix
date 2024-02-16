@@ -95,6 +95,7 @@
               freetype
               expat
               libayatana-appindicator
+              libusb1
             ])
             ++ lib.optionals pkgs.stdenv.isDarwin [
               pkgs.darwin.apple_sdk.frameworks.Security
