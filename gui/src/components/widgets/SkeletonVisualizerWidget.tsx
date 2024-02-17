@@ -19,6 +19,7 @@ import classNames from 'classnames';
 import { Button } from '@/components/commons/Button';
 import { useLocalization } from '@fluent/react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Typography } from '@/components/commons/Typography';
 
 extend({ BasedSkeletonHelper });
 
@@ -121,7 +122,11 @@ export function ToggleableSkeletonVisualizerWidget(
             {l10n.getString('widget-skeleton_visualizer-hide')}
           </Button>
           <ErrorBoundary
-            fallback={<p>{l10n.getString('tips-failed_webgl')}</p>}
+            fallback={
+              <Typography color="primary" textAlign="text-center">
+                {l10n.getString('tips-failed_webgl')}
+              </Typography>
+            }
           >
             <SkeletonVisualizerWidget {...props} />
           </ErrorBoundary>

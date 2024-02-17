@@ -160,7 +160,11 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
             {l10n.getString('widget-imu_visualizer-rotation_hide')}
           </Button>
           <ErrorBoundary
-            fallback={<p>{l10n.getString('tips-failed_webgl')}</p>}
+            fallback={
+              <Typography color="primary" textAlign="text-center">
+                {l10n.getString('tips-failed_webgl')}
+              </Typography>
+            }
           >
             <SceneRenderer
               quat={{ ...quat }}
