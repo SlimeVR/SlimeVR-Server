@@ -102,7 +102,7 @@ export function TopBar({
     return () => {
       unlisten.then((fn) => fn());
     };
-  }, []);
+  }, [config?.useTray, config?.connectedTrackersWarning]);
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.ServerInfosRequest, new ServerInfosRequestT());
@@ -265,6 +265,7 @@ export function TopBar({
         accept={async (useTray) => {
           await setConfig({ useTray });
           setShowTrayOrExitModal(false);
+          // forceUpdate()
 
           // Doing this in here just in case config doesn't get updated in time
           if (useTray) {
