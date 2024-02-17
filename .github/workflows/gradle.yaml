@@ -256,7 +256,7 @@ jobs:
       - name: Build
         run: |
           pnpm i
-          pnpm run tauri build -- "--target universal-apple-darwin"
+          pnpm run tauri build -- --target universal-apple-darwin
 
       - name: Modify Application
         run: |
