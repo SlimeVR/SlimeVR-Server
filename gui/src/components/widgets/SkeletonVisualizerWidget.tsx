@@ -18,6 +18,7 @@ import { QuaternionFromQuatT, isIdentity } from '@/maths/quaternion';
 import classNames from 'classnames';
 import { Button } from '@/components/commons/Button';
 import { useLocalization } from '@fluent/react';
+import { ErrorBoundary } from 'react-error-boundary';
 
 extend({ BasedSkeletonHelper });
 
@@ -119,7 +120,11 @@ export function ToggleableSkeletonVisualizerWidget(
           >
             {l10n.getString('widget-skeleton_visualizer-hide')}
           </Button>
-          <SkeletonVisualizerWidget {...props} />
+          <ErrorBoundary
+            fallback={<p>{l10n.getString('tips-failed_webgl')}</p>}
+          >
+            <SkeletonVisualizerWidget {...props} />
+          </ErrorBoundary>
         </>
       )}
     </>

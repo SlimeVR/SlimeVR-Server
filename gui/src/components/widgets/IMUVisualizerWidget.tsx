@@ -11,6 +11,7 @@ import { QuatObject } from '@/maths/quaternion';
 import { useLocalization } from '@fluent/react';
 import { Vector3Object } from '@/maths/vector3';
 import { Gltf } from '@react-three/drei';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const groundColor = '#4444aa';
 
@@ -158,13 +159,17 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
           >
             {l10n.getString('widget-imu_visualizer-rotation_hide')}
           </Button>
-          <SceneRenderer
-            quat={{ ...quat }}
-            vec={{ ...vec }}
-            model={
-              isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'
-            }
-          ></SceneRenderer>
+          <ErrorBoundary
+            fallback={<p>{l10n.getString('tips-failed_webgl')}</p>}
+          >
+            <SceneRenderer
+              quat={{ ...quat }}
+              vec={{ ...vec }}
+              model={
+                isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'
+              }
+            ></SceneRenderer>
+          </ErrorBoundary>
         </>
       )}
     </div>
