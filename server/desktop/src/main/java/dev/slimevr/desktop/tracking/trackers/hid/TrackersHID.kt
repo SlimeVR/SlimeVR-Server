@@ -209,7 +209,6 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						tracker.setRotation(rot)
 						// TODO: I think the acceleration is wrong???
 						var acceleration = Vector3(a[0], a[1], a[2])
-						acceleration = tracker.getRotation().sandwich(acceleration)
 						tracker.setAcceleration(acceleration)
 						tracker.dataTick()
 						i += 20
