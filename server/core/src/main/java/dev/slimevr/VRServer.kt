@@ -281,7 +281,7 @@ class VRServer @JvmOverloads constructor(
 		queueTask {
 			humanPoseManager.updateSkeletonModelFromServer()
 			updateDriverSharedTrackers()
-			RPCSettingsHandler.sendUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
+			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 		}
 		vrcOSCHandler.setHeadTracker(
 			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD)

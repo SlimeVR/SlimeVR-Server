@@ -13,7 +13,8 @@ import dev.slimevr.tracking.trackers.TrackerRole
 import solarxr_protocol.rpc.ChangeSettingsRequest
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
-import kotlin.math.max
+import solarxr_protocol.rpc.SettingsResponse
+import kotlin.math.*
 
 class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	init {
@@ -345,10 +346,16 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	}
 
 	companion object {
-		fun sendUpdatedSettings(api: ProtocolAPI, rpcHandler: RPCHandler) {
+		fun sendSteamVRUpdatedSettings(api: ProtocolAPI, rpcHandler: RPCHandler) {
 			val fbb = FlatBufferBuilder(32)
+			val bridge: ISteamVRBridge =
+				api.server.getVRBridge(ISteamVRBridge::class.java) ?: return
 
-			val settings = RPCSettingsBuilder.createSettingsResponse(fbb, api.server)
+			val settings = SettingsResponse
+				.createSettingsResponse(
+					fbb,
+					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0
+				)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)
 			fbb.finish(outbound)
