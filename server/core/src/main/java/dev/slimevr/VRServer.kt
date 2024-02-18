@@ -11,6 +11,7 @@ import dev.slimevr.osc.VMCHandler
 import dev.slimevr.osc.VRCOSCHandler
 import dev.slimevr.posestreamer.BVHRecorder
 import dev.slimevr.protocol.ProtocolAPI
+import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
 import dev.slimevr.reset.ResetHandler
 import dev.slimevr.serial.ProvisioningHandler
 import dev.slimevr.serial.SerialHandler
@@ -19,10 +20,7 @@ import dev.slimevr.setup.TapSetupHandler
 import dev.slimevr.status.StatusSystem
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
-import dev.slimevr.tracking.trackers.DeviceManager
-import dev.slimevr.tracking.trackers.Tracker
-import dev.slimevr.tracking.trackers.TrackerPosition
-import dev.slimevr.tracking.trackers.TrackerUtils
+import dev.slimevr.tracking.trackers.*
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
 import dev.slimevr.util.ann.VRServerThread
 import dev.slimevr.websocketapi.WebSocketVRBridge
@@ -173,6 +171,9 @@ class VRServer @JvmOverloads constructor(
 		return false
 	}
 
+	// FIXME: Code using this function normally uses this to get the SteamVR driver but
+	// 		that's because we first save the SteamVR driver bridge and then the feeder in the array.
+	// 		Not really a great thing to have.
 	@ThreadSafe
 	fun <E : Bridge?> getVRBridge(bridgeClass: Class<E>): E? {
 		for (bridge in bridges) {
@@ -277,10 +278,49 @@ class VRServer @JvmOverloads constructor(
 
 	@ThreadSafe
 	fun updateSkeletonModel() {
-		queueTask { humanPoseManager.updateSkeletonModelFromServer() }
+		queueTask {
+			humanPoseManager.updateSkeletonModelFromServer()
+			updateDriverSharedTrackers()
+			RPCSettingsHandler.sendUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
+		}
 		vrcOSCHandler.setHeadTracker(
 			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD)
 		)
+	}
+
+	@ThreadSafe
+	private fun updateDriverSharedTrackers() {
+		val bridge: ISteamVRBridge = this.getVRBridge(ISteamVRBridge::class.java) ?: return
+		// Enable waist if skeleton has an spine tracker
+		bridge.changeShareSettings(TrackerRole.WAIST, humanPoseManager.skeleton.hasSpineTracker)
+
+		// hasChest if waist and/or hip is on, and chest and/or upper chest is also on
+		val hasChest = humanPoseManager.skeleton.let {
+			(it.hipTracker != null || it.waistTracker != null) &&
+				(it.upperChestTracker != null || it.chestTracker != null)
+		}
+		bridge.changeShareSettings(TrackerRole.CHEST, hasChest)
+
+		// hasFeet if lower and/or upper leg tracker is on
+		val hasFeet = humanPoseManager.skeleton.let {
+			(it.leftUpperLegTracker != null || it.leftLowerLegTracker != null) &&
+				(it.rightUpperLegTracker != null || it.rightLowerLegTracker != null)
+		}
+		bridge.changeShareSettings(TrackerRole.LEFT_FOOT, hasFeet)
+		bridge.changeShareSettings(TrackerRole.RIGHT_FOOT, hasFeet)
+
+		// hasKnees if feet trackers are on (maybe check for at least 1 leg tracker?)
+		val hasKnees = hasFeet &&
+			humanPoseManager.skeleton.let { it.hasLeftFootTracker && it.hasRightFootTracker }
+		bridge.changeShareSettings(TrackerRole.LEFT_KNEE, hasKnees)
+		bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, hasKnees)
+
+		// hasElbows if an upper arm or a lower arm tracker is on
+		val hasElbows = humanPoseManager.skeleton.let { it.hasLeftArmTracker && it.hasRightArmTracker }
+		bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, hasElbows)
+		bridge.changeShareSettings(TrackerRole.RIGHT_ELBOW, hasElbows)
+
+		// Hands aren't touched as they will override the controller's tracking
 	}
 
 	fun resetTrackersFull(resetSourceName: String?) {

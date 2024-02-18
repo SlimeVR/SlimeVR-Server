@@ -39,12 +39,12 @@ public abstract class SteamVRBridge extends ProtobufBridge implements Runnable {
 	@Override
 	@VRServerThread
 	public void startBridge() {
-		for (TrackerRole role : defaultRoles) {
-			changeShareSettings(
-				role,
-				this.config.getBridgeTrackerRole(role, true)
-			);
-		}
+//		for (TrackerRole role : defaultRoles) {
+//			changeShareSettings(
+//				role,
+//				this.config.getBridgeTrackerRole(role, true)
+//			);
+//		}
 		for (Tracker tr : shareableTrackers) {
 			TrackerRole role = tr.getTrackerPosition().getTrackerRole();
 			changeShareSettings(

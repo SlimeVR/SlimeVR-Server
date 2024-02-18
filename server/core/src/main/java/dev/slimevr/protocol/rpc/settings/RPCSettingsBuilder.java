@@ -1,6 +1,7 @@
 package dev.slimevr.protocol.rpc.settings;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import dev.slimevr.VRServer;
 import dev.slimevr.bridge.ISteamVRBridge;
 import dev.slimevr.config.*;
 import dev.slimevr.filtering.TrackerFilters;
@@ -337,6 +338,62 @@ public class RPCSettingsBuilder {
 				fbb,
 				resetsConfig.getResetMountingFeet(),
 				resetsConfig.getMode().getId()
+			);
+	}
+
+	public static int createSettingsResponse(FlatBufferBuilder fbb, VRServer server) {
+		ISteamVRBridge bridge = server.getVRBridge(ISteamVRBridge.class);
+
+		return SettingsResponse
+			.createSettingsResponse(
+				fbb,
+				RPCSettingsBuilder.createSteamVRSettings(fbb, bridge),
+				RPCSettingsBuilder
+					.createFilterSettings(
+						fbb,
+						server.configManager.getVrConfig().getFilters()
+					),
+				RPCSettingsBuilder
+					.createDriftCompensationSettings(
+						fbb,
+						server.configManager.getVrConfig().getDriftCompensation()
+					),
+				RPCSettingsBuilder
+					.createOSCRouterSettings(
+						fbb,
+						server.configManager.getVrConfig().getOscRouter()
+					),
+				RPCSettingsBuilder
+					.createVRCOSCSettings(
+						fbb,
+						server.configManager.getVrConfig().getVrcOSC()
+					),
+				RPCSettingsBuilder
+					.createVMCOSCSettings(
+						fbb,
+						server.configManager.getVrConfig().getVMC()
+					),
+				RPCSettingsBuilder
+					.createModelSettings(
+						fbb,
+						server.humanPoseManager,
+						server.configManager.getVrConfig().getLegTweaks()
+					),
+				RPCSettingsBuilder
+					.createTapDetectionSettings(
+						fbb,
+						server.configManager.getVrConfig().getTapDetection()
+					),
+				RPCSettingsBuilder
+					.createAutoBoneSettings(
+						fbb,
+						server.configManager.getVrConfig().getAutoBone()
+					),
+				RPCSettingsBuilder
+					.createArmsResetModeSettings(
+						fbb,
+						server.configManager.getVrConfig().getResetsConfig()
+					)
 			);
 	}
 }
