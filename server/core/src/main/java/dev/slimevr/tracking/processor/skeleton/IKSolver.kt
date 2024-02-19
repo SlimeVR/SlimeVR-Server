@@ -11,7 +11,7 @@ import dev.slimevr.tracking.trackers.Tracker
 
 class IKSolver(private val root: Bone) {
 	companion object {
-		private const val TOLERANCE_SQR = 1e-8 // == 0.01 cm
+		const val TOLERANCE_SQR = 1e-8 // == 0.01 cm
 		private const val MAX_ITERATIONS = 100
 	}
 
