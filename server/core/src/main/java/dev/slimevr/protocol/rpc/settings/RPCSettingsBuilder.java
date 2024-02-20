@@ -163,7 +163,8 @@ public class RPCSettingsBuilder {
 					bridge.getShareSetting(TrackerRole.LEFT_ELBOW)
 						&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW),
 					bridge.getShareSetting(TrackerRole.LEFT_HAND)
-						&& bridge.getShareSetting(TrackerRole.RIGHT_HAND)
+						&& bridge.getShareSetting(TrackerRole.RIGHT_HAND),
+					bridge.getAutomaticSharedTrackers()
 				);
 		}
 		return steamvrTrackerSettings;

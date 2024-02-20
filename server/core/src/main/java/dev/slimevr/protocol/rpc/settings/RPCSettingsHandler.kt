@@ -63,6 +63,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				bridge.changeShareSettings(TrackerRole.RIGHT_ELBOW, req.steamVrTrackers().elbows())
 				bridge.changeShareSettings(TrackerRole.LEFT_HAND, req.steamVrTrackers().hands())
 				bridge.changeShareSettings(TrackerRole.RIGHT_HAND, req.steamVrTrackers().hands())
+				bridge.setAutomaticSharedTrackers(req.steamVrTrackers().automaticTrackerToggle())
 			}
 		}
 

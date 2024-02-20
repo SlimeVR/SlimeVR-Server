@@ -51,5 +51,6 @@ interface ISteamVRBridge : Bridge {
 
 	fun updateShareSettingsAutomatically(): Boolean
 
+	fun getAutomaticSharedTrackers(): Boolean
 	fun setAutomaticSharedTrackers(value: Boolean)
 }

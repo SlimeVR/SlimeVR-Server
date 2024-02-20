@@ -51,7 +51,6 @@ abstract class SteamVRBridge(
 	}
 
 	override fun updateShareSettingsAutomatically(): Boolean {
-		println(config.automaticSharedTrackersToggling)
 		if (!config.automaticSharedTrackersToggling) return false
 		// Enable waist if skeleton has an spine tracker
 		changeShareSettings(TrackerRole.WAIST, instance.humanPoseManager.skeleton.hasSpineTracker)
@@ -86,8 +85,10 @@ abstract class SteamVRBridge(
 		return true
 	}
 
+	override fun getAutomaticSharedTrackers(): Boolean = config.automaticSharedTrackersToggling
+
 	override fun setAutomaticSharedTrackers(value: Boolean) {
-		config.automaticSharedTrackersToggling = false
+		config.automaticSharedTrackersToggling = value
 		instance.configManager.saveConfig()
 	}
 

@@ -39,6 +39,7 @@ interface SettingsForm {
     knees: boolean;
     elbows: boolean;
     hands: boolean;
+    automaticTrackerToggle: boolean;
   };
   filtering: {
     type: number;
@@ -163,6 +164,9 @@ export function GeneralSettings() {
     useForm<SettingsForm>({
       defaultValues: defaultValues,
     });
+  const {
+    trackers: { automaticTrackerToggle },
+  } = watch();
 
   const onSubmit = (values: SettingsForm) => {
     const settings = new ChangeSettingsRequestT();
@@ -175,6 +179,7 @@ export function GeneralSettings() {
       trackers.knees = values.trackers.knees;
       trackers.elbows = values.trackers.elbows;
       trackers.hands = values.trackers.hands;
+      trackers.automaticTrackerToggle = values.trackers.automaticTrackerToggle;
       settings.steamVrTrackers = trackers;
     }
 
@@ -396,6 +401,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.chest"
                 label={l10n.getString(
@@ -405,6 +411,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.waist"
                 label={l10n.getString(
@@ -414,6 +421,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.knees"
                 label={l10n.getString(
@@ -423,6 +431,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.feet"
                 label={l10n.getString('settings-general-steamvr-trackers-feet')}
@@ -430,6 +439,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.elbows"
                 label={l10n.getString(
@@ -446,6 +456,33 @@ export function GeneralSettings() {
                 )}
               />
             </div>
+            <div className="flex flex-col pt-4 pb-4"></div>
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-steamvr-trackers-tracker_toggling'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-2 pb-4">
+              {l10n
+                .getString(
+                  'settings-general-steamvr-trackers-tracker_toggling-description'
+                )
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="trackers.automaticTrackerToggle"
+              label={l10n.getString(
+                'settings-general-steamvr-trackers-tracker_toggling-label'
+              )}
+            />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">

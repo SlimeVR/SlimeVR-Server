@@ -283,6 +283,9 @@ settings-general-steamvr-trackers-feet = Feet
 settings-general-steamvr-trackers-knees = Knees
 settings-general-steamvr-trackers-elbows = Elbows
 settings-general-steamvr-trackers-hands = Hands
+settings-general-steamvr-trackers-tracker_toggling = Automatic tracker switching
+settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles the turning on and off of SteamVR trackers depending on your current body assignment of trackers
+settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker switching
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Tracker mechanics
