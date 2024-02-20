@@ -280,47 +280,13 @@ class VRServer @JvmOverloads constructor(
 	fun updateSkeletonModel() {
 		queueTask {
 			humanPoseManager.updateSkeletonModelFromServer()
-			updateDriverSharedTrackers()
-			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
+			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
+				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
+			}
 		}
 		vrcOSCHandler.setHeadTracker(
 			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD)
 		)
-	}
-
-	@ThreadSafe
-	private fun updateDriverSharedTrackers() {
-		val bridge: ISteamVRBridge = this.getVRBridge(ISteamVRBridge::class.java) ?: return
-		// Enable waist if skeleton has an spine tracker
-		bridge.changeShareSettings(TrackerRole.WAIST, humanPoseManager.skeleton.hasSpineTracker)
-
-		// hasChest if waist and/or hip is on, and chest and/or upper chest is also on
-		val hasChest = humanPoseManager.skeleton.let {
-			(it.hipTracker != null || it.waistTracker != null) &&
-				(it.upperChestTracker != null || it.chestTracker != null)
-		}
-		bridge.changeShareSettings(TrackerRole.CHEST, hasChest)
-
-		// hasFeet if lower and/or upper leg tracker is on
-		val hasFeet = humanPoseManager.skeleton.let {
-			(it.leftUpperLegTracker != null || it.leftLowerLegTracker != null) &&
-				(it.rightUpperLegTracker != null || it.rightLowerLegTracker != null)
-		}
-		bridge.changeShareSettings(TrackerRole.LEFT_FOOT, hasFeet)
-		bridge.changeShareSettings(TrackerRole.RIGHT_FOOT, hasFeet)
-
-		// hasKnees if feet trackers are on (maybe check for at least 1 leg tracker?)
-		val hasKnees = hasFeet &&
-			humanPoseManager.skeleton.let { it.hasLeftFootTracker && it.hasRightFootTracker }
-		bridge.changeShareSettings(TrackerRole.LEFT_KNEE, hasKnees)
-		bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, hasKnees)
-
-		// hasElbows if an upper arm or a lower arm tracker is on
-		val hasElbows = humanPoseManager.skeleton.let { it.hasLeftArmTracker && it.hasRightArmTracker }
-		bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, hasElbows)
-		bridge.changeShareSettings(TrackerRole.RIGHT_ELBOW, hasElbows)
-
-		// Hands aren't touched as they will override the controller's tracking
 	}
 
 	fun resetTrackersFull(resetSourceName: String?) {
