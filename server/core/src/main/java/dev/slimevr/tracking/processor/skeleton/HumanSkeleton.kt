@@ -38,10 +38,10 @@ class HumanSkeleton(
 	// Upper body bones
 	val headBone = Bone(BoneType.HEAD, CompleteConstraint())
 	val neckBone = Bone(BoneType.NECK, CompleteConstraint())
-	val upperChestBone = Bone(BoneType.UPPER_CHEST, TwistSwingConstraint(180f, 60f))
-	val chestBone = Bone(BoneType.CHEST, TwistSwingConstraint(180f, 60f))
-	val waistBone = Bone(BoneType.WAIST, TwistSwingConstraint(180f, 60f))
-	val hipBone = Bone(BoneType.HIP, TwistSwingConstraint(180f, 90f))
+	val upperChestBone = Bone(BoneType.UPPER_CHEST, CompleteConstraint())
+	val chestBone = Bone(BoneType.CHEST, CompleteConstraint())
+	val waistBone = Bone(BoneType.WAIST, CompleteConstraint())
+	val hipBone = Bone(BoneType.HIP, CompleteConstraint())
 
 	// Lower body bones
 	val leftHipBone = Bone(BoneType.LEFT_HIP, TwistSwingConstraint(180f, 7f))
