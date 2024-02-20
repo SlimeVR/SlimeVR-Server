@@ -159,9 +159,10 @@ export function GeneralSettings() {
   });
 
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const { reset, control, watch, handleSubmit } = useForm<SettingsForm>({
-    defaultValues: defaultValues,
-  });
+  const { reset, control, watch, handleSubmit, getValues } =
+    useForm<SettingsForm>({
+      defaultValues: defaultValues,
+    });
 
   const onSubmit = (values: SettingsForm) => {
     const settings = new ChangeSettingsRequestT();
@@ -283,7 +284,7 @@ export function GeneralSettings() {
     }
 
     if (settings.modelSettings?.toggles) {
-      formData.toggles = Object.keys(settings.modelSettings?.toggles).reduce(
+      formData.toggles = Object.keys(settings.modelSettings.toggles).reduce(
         (curr, key: string) => ({
           ...curr,
           [key]:
@@ -296,7 +297,7 @@ export function GeneralSettings() {
     }
 
     if (settings.modelSettings?.ratios) {
-      formData.ratios = Object.keys(settings.modelSettings?.ratios).reduce(
+      formData.ratios = Object.keys(settings.modelSettings.ratios).reduce(
         (curr, key: string) => ({
           ...curr,
           [key]:
@@ -346,7 +347,7 @@ export function GeneralSettings() {
     if (settings.modelSettings?.legTweaks) {
       formData.legTweaks = {
         correctionStrength:
-          settings.modelSettings?.legTweaks.correctionStrength ||
+          settings.modelSettings.legTweaks.correctionStrength ||
           defaultValues.legTweaks.correctionStrength,
       };
     }
@@ -355,7 +356,7 @@ export function GeneralSettings() {
       formData.resetsSettings = settings.resetsSettings;
     }
 
-    reset(formData);
+    reset({ ...getValues(), ...formData });
   });
 
   // Handle scrolling to selected page
