@@ -181,17 +181,17 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						val battery_mV = dataReceived[i + 5].toInt() and 255 shl 8 or (dataReceived[i + 4].toInt() and 255)
 						val q = floatArrayOf(0f, 0f, 0f, 0f)
 						val a = floatArrayOf(0f, 0f, 0f)
-						for (j in 0..3) {
+						for (j in 0..3) { // quat received as fixed 14
 							var buf =
 								dataReceived[i + 6 + j * 2 + 1].toInt() and 255 shl 8 or (dataReceived[i + 6 + j * 2].toInt() and 255)
 							buf -= 32768 // uint to int
 							q[j] = buf / (1 shl 14).toFloat() // fixed 14 to float
 						}
-						for (j in 0..2) {
+						for (j in 0..2) { // accel received as fixed 7, in m/s
 							var buf =
 								dataReceived[i + 14 + j * 2 + 1].toInt() and 255 shl 8 or (dataReceived[i + 14 + j * 2].toInt() and 255)
 							buf -= 32768 // uint to int
-							a[j] = buf / (1 shl 10).toFloat() // fixed 10 to float
+							a[j] = buf / (1 shl 7).toFloat() // fixed 7 to float
 						}
 						val trackerId = idCombination and 0b1111
 						val deviceId = (idCombination shr 4) and 0b1111
@@ -209,7 +209,6 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						tracker.setRotation(rot)
 						// TODO: I think the acceleration is wrong???
 						var acceleration = Vector3(a[0], a[1], a[2])
-						acceleration = tracker.getRotation().sandwich(acceleration)
 						tracker.setAcceleration(acceleration)
 						tracker.dataTick()
 						i += 20
