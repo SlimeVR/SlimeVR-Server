@@ -20,6 +20,8 @@ class IKChain(
 	}
 
 	// State variables
+	val computedBasePosition = baseConstraint?.let { IKConstraint(it) }
+	val computedTailPosition = tailConstraint?.let { IKConstraint(it) }
 	var children = mutableListOf<IKChain>()
 	var target = Vector3.NULL
 	var distToTargetSqr = Float.POSITIVE_INFINITY
@@ -27,8 +29,6 @@ class IKChain(
 	var solved = true
 	private var centroidWeight = 1f
 	private var positions = getPositionList()
-	private var tailConstrainPosOffset = Vector3.NULL
-	private var baseConstraintPosOffset = Vector3.NULL
 
 	private fun getPositionList(): MutableList<Vector3> {
 		val posList = mutableListOf<Vector3>()
@@ -44,10 +44,10 @@ class IKChain(
 		if (!trySolve) return
 
 		// Start at the constraint or the centroid of the children
-		if (tailConstraint == null && children.size > 1) {
+		if (computedTailPosition == null && children.size > 1) {
 			target /= getChildrenCentroidWeightSum()
 		} else {
-			target = (tailConstraint?.position?.plus(tailConstrainPosOffset)) ?: Vector3.NULL
+			target = (computedTailPosition?.getPosition()) ?: Vector3.NULL
 		}
 
 		// Set the end node to target
@@ -61,7 +61,7 @@ class IKChain(
 			positions[i] = positions[i + 1] + (direction * nodes[i].length)
 		}
 
-		if (parent != null && parent!!.tailConstraint == null) {
+		if (parent != null && parent!!.computedTailPosition == null) {
 			parent!!.target += positions[0] * centroidWeight
 		}
 	}
@@ -71,8 +71,8 @@ class IKChain(
 
 		if (parent != null) {
 			positions[0] = parent!!.positions.last()
-		} else if (baseConstraint != null) {
-			positions[0] = baseConstraint.position + baseConstraintPosOffset
+		} else if (computedBasePosition != null) {
+			positions[0] = computedBasePosition.getPosition()
 		}
 
 		for (i in 1 until positions.size - 1) {
@@ -121,12 +121,8 @@ class IKChain(
 	}
 
 	fun resetTrackerOffsets() {
-		if (tailConstraint != null) {
-			tailConstrainPosOffset = nodes.last().getTailPosition() - tailConstraint.position
-		}
-		if (baseConstraint != null) {
-			baseConstraintPosOffset = nodes.first().getPosition() - baseConstraint.position
-		}
+		computedTailPosition?.reset(nodes.last().getTailPosition())
+		computedBasePosition?.reset(nodes.first().getPosition())
 	}
 
 	/**
@@ -154,8 +150,8 @@ class IKChain(
 	 * distances
 	 */
 	fun computeTargetDistance() {
-		distToTargetSqr = if (tailConstraint != null) {
-			(positions.last() - (tailConstraint.position + tailConstrainPosOffset)).lenSq()
+		distToTargetSqr = if (computedTailPosition != null) {
+			(positions.last() - computedTailPosition.getPosition()).lenSq()
 		} else {
 			0.0f
 		}
