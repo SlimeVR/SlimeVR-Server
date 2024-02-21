@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
@@ -30,6 +30,7 @@ import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
+import { HandsWarningModal } from '@/components/settings/HandsWarningModal';
 
 interface SettingsForm {
   trackers: {
@@ -160,12 +161,12 @@ export function GeneralSettings() {
   });
 
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const { reset, control, watch, handleSubmit, getValues } =
+  const { reset, control, watch, handleSubmit, getValues, setValue } =
     useForm<SettingsForm>({
       defaultValues: defaultValues,
     });
   const {
-    trackers: { automaticTrackerToggle },
+    trackers: { automaticTrackerToggle, hands: steamVrHands },
   } = watch();
 
   const onSubmit = (values: SettingsForm) => {
@@ -273,6 +274,9 @@ export function GeneralSettings() {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
   }, []);
 
+  // If null, we still haven't shown the hands warning
+  // if false then initially the hands warning was disabled
+  const [handsWarning, setHandsWarning] = useState<boolean | null>(null);
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     const formData: DefaultValues<SettingsForm> = {};
 
@@ -286,6 +290,9 @@ export function GeneralSettings() {
 
     if (settings.steamVrTrackers) {
       formData.trackers = settings.steamVrTrackers;
+      if (settings.steamVrTrackers.hands) {
+        setHandsWarning(false);
+      }
     }
 
     if (settings.modelSettings?.toggles) {
@@ -364,6 +371,14 @@ export function GeneralSettings() {
     reset({ ...getValues(), ...formData });
   });
 
+  useEffect(() => {
+    if (steamVrHands && handsWarning === null) {
+      setHandsWarning(true);
+    } else if (!steamVrHands && handsWarning === false) {
+      setHandsWarning(null);
+    }
+  }, [steamVrHands, handsWarning]);
+
   // Handle scrolling to selected page
   // useEffect(() => {
   //   const typedState: { scrollTo: string } = state as any;
@@ -378,6 +393,17 @@ export function GeneralSettings() {
 
   return (
     <SettingsPageLayout>
+      <HandsWarningModal
+        isOpen={!!handsWarning}
+        onClose={() => {
+          setValue('trackers.hands', false);
+          setHandsWarning(null);
+        }}
+        accept={() => {
+          setValue('trackers.hands', true);
+          setHandsWarning(false);
+        }}
+      />
       <form className="flex flex-col gap-2 w-full">
         <SettingsPagePaneLayout icon={<SteamIcon></SteamIcon>} id="steamvr">
           <>

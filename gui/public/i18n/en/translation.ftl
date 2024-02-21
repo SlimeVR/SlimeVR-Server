@@ -286,6 +286,10 @@ settings-general-steamvr-trackers-hands = Hands
 settings-general-steamvr-trackers-tracker_toggling = Automatic tracker switching
 settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles the turning on and off of SteamVR trackers depending on your current body assignment of trackers
 settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker switching
+settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> Hands trackers will replace the tracking
+    of your controllers, are you sure?
+settings-general-steamvr-trackers-hands-warning-cancel = Cancel
+settings-general-steamvr-trackers-hands-warning-done = Yes
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Tracker mechanics
