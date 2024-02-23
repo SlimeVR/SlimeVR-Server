@@ -94,7 +94,7 @@ abstract class SteamVRBridge(
 		config.automaticSharedTrackersToggling = value
 		if (value) {
 			updateShareSettingsAutomatically()
-			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
+			RPCSettingsHandler.sendSteamVRUpdatedSettings(instance.protocolAPI, instance.protocolAPI.rpcHandler)
 		}
 		instance.configManager.saveConfig()
 	}
