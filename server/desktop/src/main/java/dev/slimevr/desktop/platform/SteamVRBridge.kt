@@ -89,10 +89,10 @@ abstract class SteamVRBridge(
 	override fun getAutomaticSharedTrackers(): Boolean = config.automaticSharedTrackersToggling
 
 	override fun setAutomaticSharedTrackers(value: Boolean) {
-		if (value == config.automaticSharedTrackersToggling) return;
+		if (value == config.automaticSharedTrackersToggling) return
 
 		config.automaticSharedTrackersToggling = value
-		if(value) {
+		if (value) {
 			updateShareSettingsAutomatically()
 			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 		}
