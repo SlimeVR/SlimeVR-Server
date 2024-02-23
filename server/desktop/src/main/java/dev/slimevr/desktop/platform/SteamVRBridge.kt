@@ -71,7 +71,7 @@ abstract class SteamVRBridge(
 		changeShareSettings(TrackerRole.LEFT_FOOT, hasFeet)
 		changeShareSettings(TrackerRole.RIGHT_FOOT, hasFeet)
 
-		// hasKnees if feet trackers are on (maybe check for at least 1 leg tracker?)
+		// hasKnees if foot tracker and lower and/or upper leg tracker is on
 		val hasKnees = hasFeet &&
 			instance.humanPoseManager.skeleton.let { it.hasLeftFootTracker && it.hasRightFootTracker }
 		changeShareSettings(TrackerRole.LEFT_KNEE, hasKnees)
