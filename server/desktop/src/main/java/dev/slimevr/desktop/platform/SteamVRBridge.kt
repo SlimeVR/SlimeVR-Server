@@ -6,6 +6,7 @@ import dev.slimevr.VRServer.Companion.instance
 import dev.slimevr.bridge.BridgeThread
 import dev.slimevr.config.BridgeConfig
 import dev.slimevr.desktop.platform.ProtobufMessages.*
+import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByTrackerRole
@@ -88,7 +89,13 @@ abstract class SteamVRBridge(
 	override fun getAutomaticSharedTrackers(): Boolean = config.automaticSharedTrackersToggling
 
 	override fun setAutomaticSharedTrackers(value: Boolean) {
+		if (value == config.automaticSharedTrackersToggling) return;
+
 		config.automaticSharedTrackersToggling = value
+		if(value) {
+			updateShareSettingsAutomatically()
+			RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
+		}
 		instance.configManager.saveConfig()
 	}
 
