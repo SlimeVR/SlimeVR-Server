@@ -837,10 +837,6 @@ onboarding-automatic_mounting-put_trackers_on-next = ارتديت جميع أج�
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = ما هي طريقة معايرة النسب التي يجب استخدامها؟
-# Multiline string
-onboarding-choose_proportions-description =
-    تستخدم نسب الجسم لمعرفة قياسات جسمك. هم مطلوبون لحساب مواقع أجهزة التعقب.
-    عندما لا تتطابق نسب جسمك مع تلك المحفوظة ، ستكون دقة التتبع لديك أسوأ وستلاحظ أشياء مثل التزلج أو الانزلاق ، أو أن جسمك لا يتطابق مع الصورة الرمزية بشكل جيد.
 onboarding-choose_proportions-auto_proportions = النسب التلقائية
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = الموصى به
@@ -957,3 +953,13 @@ status_system-StatusSteamVRDisconnected =
        *[other] حاليًا غير متصل بـ SteamVR عبر برنامج تشغيل SlimeVR.
     }
 status_system-StatusTrackerError = يحتوي جهاز التعقب { $trackerName } على خطأ.
+
+## Tray Menu
+
+tray_menu-show = عرض
+tray_menu-hide = إخفاء
+tray_menu-quit = انهاء
+
+## First exit modal
+
+tray_or_exit_modal-cancel = إلغاء
