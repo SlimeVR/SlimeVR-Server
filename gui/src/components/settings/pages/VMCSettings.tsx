@@ -15,6 +15,7 @@ import { FileInput } from '@/components/commons/FileInput';
 import { VMCIcon } from '@/components/commons/icon/VMCIcon';
 import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
+import { Button } from '@/components/commons/Button';
 import { magic } from '@/utils/formatting';
 import {
   SettingsPageLayout,
@@ -58,7 +59,7 @@ export function VMCSettings() {
     setTimeout(() => setFlashLoaded(!bool), 1000);
   };
 
-  const { reset, control, watch, handleSubmit } = useForm<VMCSettingsForm>({
+  const { reset, control, watch, handleSubmit, resetField } = useForm<VMCSettingsForm>({
     defaultValues: defaultValues,
   });
 
@@ -84,6 +85,11 @@ export function VMCSettings() {
       settings.vmcOsc = vmcOsc;
     }
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
+  };
+
+  const clearModel = () => {
+    resetField('vmc.vrmJson');
+    setModelName(null);
   };
 
   useEffect(() => {
@@ -241,6 +247,11 @@ export function VMCSettings() {
                       titled: (!!modelName).toString(),
                     })}
               </Typography>
+              {modelName !== null && (
+                <Button variant="quaternary" onClick={clearModel}>
+                  {l10n.getString('tracker_selection_menu-dont_assign')}
+                </Button>
+              )}
             </div>
             <div className="grid gap-3 pb-5">
               <FileInput
