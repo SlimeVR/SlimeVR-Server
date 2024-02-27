@@ -59,9 +59,10 @@ export function VMCSettings() {
     setTimeout(() => setFlashLoaded(!bool), 1000);
   };
 
-  const { reset, control, watch, handleSubmit, resetField } = useForm<VMCSettingsForm>({
-    defaultValues: defaultValues,
-  });
+  const { reset, control, watch, handleSubmit, resetField } =
+    useForm<VMCSettingsForm>({
+      defaultValues: defaultValues,
+    });
 
   const onSubmit = async (values: VMCSettingsForm) => {
     const settings = new ChangeSettingsRequestT();
