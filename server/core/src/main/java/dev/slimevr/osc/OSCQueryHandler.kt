@@ -1,13 +1,11 @@
 package dev.slimevr.osc
 
-import OSCQueryWebsocket
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.slimevr.protocol.rpc.setup.RPCUtil
 import io.eiren.util.logging.LogManager
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.InetAddress
-import java.net.InetSocketAddress
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -52,9 +50,6 @@ class OSCQueryHandler(
 	fun updateWebsocket(service: ServiceEvent) {
 		val ip = service.info.inetAddresses[0]
 		val port = service.info.port
-		val websocket = OSCQueryWebsocket(InetSocketAddress(ip, port), queryText)
-		// websocket.run() //just does nothing
-		// websocket.start() //NullPointerException
 	}
 
 	/**
