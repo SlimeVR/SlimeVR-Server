@@ -1,83 +1,76 @@
 package dev.slimevr.osc
 
+import OSCQueryService
+import ServiceInfo
 import com.fasterxml.jackson.databind.ObjectMapper
-import dev.slimevr.protocol.rpc.setup.RPCUtil
 import io.eiren.util.logging.LogManager
 import java.io.IOException
 import java.net.HttpURLConnection
-import java.net.InetAddress
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
-import javax.jmdns.JmDNS
-import javax.jmdns.ServiceEvent
-import javax.jmdns.ServiceListener
 
 class OSCQueryHandler(
 	private val oscHandler: OSCHandler,
 	private val queryText: String,
-	serviceStartsWith: String,
+	private val serviceStartsWith: String,
 ) {
-
-	private class OSCQueryListener(private val oscQueryHandler: OSCQueryHandler, private val serviceStartsWith: String) : ServiceListener {
-
-		override fun serviceAdded(event: ServiceEvent) {}
-
-		override fun serviceRemoved(event: ServiceEvent) {}
-
-		override fun serviceResolved(event: ServiceEvent) {
-			if (event.name.startsWith(serviceStartsWith)) {
-				LogManager.debug("[OSCQueryHandler] Service resolved: ${event.name}, ${event.info.inetAddresses[0]}")
-				oscQueryHandler.updateWebsocket(event)
-				oscQueryHandler.updateOSCSendingInfo(event)
-			}
-		}
-	}
+	private val service: OSCQueryService = OSCQueryService()
 
 	init {
 		try {
-			val jmdns = JmDNS.create(InetAddress.getByName(RPCUtil.getLocalIp()), "SlimeVR-Server-" + RPCUtil.getLocalIp())
-
 			// Add OSCQuery service listeners for local and non-local
-			jmdns.addServiceListener("_oscjson._tcp.local.", OSCQueryListener(this, serviceStartsWith))
-			jmdns.addServiceListener("_oscjson._tcp.", OSCQueryListener(this, serviceStartsWith))
+			service.addServiceListener("_oscjson._tcp.local.") { serviceResolved(it) }
+			service.addServiceListener("_oscjson._tcp.") { serviceResolved(it) }
 		} catch (e: IOException) {
 			LogManager.warning("[OSCQueryHandler] " + e.message)
 		}
 	}
 
-	fun updateWebsocket(service: ServiceEvent) {
-		val ip = service.info.inetAddresses[0]
-		val port = service.info.port
+	private fun serviceResolved(info: ServiceInfo) {
+		LogManager.debug("[OSCQueryHandler] Resolved: " + info.name)
+		if (!info.name.startsWith(serviceStartsWith)) return
+
+		val ip = info.inetAddresses[0].hostAddress
+		val port = info.port
+
+		LogManager.debug("[OSCQueryHandler] URL: http://$ip:$port")
+		updateOSCSendingInfo("http://$ip:$port")
+
+		// val service = service.createService(
+		// 	"_oscjson._tcp.",
+		// 	"SlimeVR-Server-" + RPCUtil.getLocalIp(),
+		// 	7357.toUShort(),
+		// 	"test"
+		// )
+		// TODO: request node queryText {"COMMAND":"LISTEN","DATA":"/tracking/vrsystem"}
 	}
 
 	/**
 	 * Retrieves the OSC Port and IP from the remote OSCQuery service.
 	 * These tell us where to send our OSC packets to.
 	 */
-	fun updateOSCSendingInfo(service: ServiceEvent) {
+	private fun updateOSCSendingInfo(address: String) {
 		// Request HOST_INFO via http
-		val remoteAddress = service.info.urLs[0]
-		val hostInfoRequest = HttpRequest.newBuilder().uri(URI.create("$remoteAddress?HOST_INFO")).build()
-		LogManager.debug("[OSCQueryHandler] OSCQuery's service's address: $remoteAddress")
+		val hostInfoRequest = HttpRequest.newBuilder().uri(URI.create("$address?HOST_INFO")).build()
 
 		// Get http response
 		val hostInfoResponse = HttpClient.newHttpClient().send(hostInfoRequest, HttpResponse.BodyHandlers.ofString())
 
+		// Check HTTP status
 		if (hostInfoResponse.statusCode() != HttpURLConnection.HTTP_OK) {
 			LogManager.warning("[OSCQueryHandler] Received HTTP status code ${hostInfoResponse.statusCode()}")
 			return
 		}
 
 		// map to json
-		val objectMapper = ObjectMapper()
-		val hostInfoJson = objectMapper.readTree(hostInfoResponse.body())
+		val hostInfoJson = ObjectMapper().readTree(hostInfoResponse.body())
 
-		// Get data from HOST_INFO
+		// Get data from Json
 		val oscIP = hostInfoJson.get("OSC_IP").asText()
 		val oscPort = hostInfoJson.get("OSC_PORT").asInt()
-		LogManager.info("[OSCQueryHandler] Found OSC address = $oscIP and port = $oscPort for ${service.name}")
+		LogManager.info("[OSCQueryHandler] Found OSC address = $oscIP and port = $oscPort")
 
 		// Update the oscHandler
 		oscHandler.updateOscSender(oscPort, oscIP)

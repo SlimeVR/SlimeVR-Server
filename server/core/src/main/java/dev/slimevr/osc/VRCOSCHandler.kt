@@ -95,7 +95,7 @@ class VRCOSCHandler(
 		oscQueryHandler = if (config.enabled) {
 			// Use OSCQuery
 			val queryText = "{\"COMMAND\":\"LISTEN\",\"DATA\":\"/tracking/vrsystem\"}"
-			OSCQueryHandler(this, queryText, "VRChat")
+			OSCQueryHandler(this, queryText, "VRChat-Client")
 		} else {
 			// Disable OSCQuery
 			null
