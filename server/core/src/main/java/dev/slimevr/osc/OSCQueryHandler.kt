@@ -1,9 +1,13 @@
 package dev.slimevr.osc
 
+import OSCQueryNodeImpl
+import OSCQueryServer
 import OSCQueryService
 import ServiceInfo
 import com.fasterxml.jackson.databind.ObjectMapper
+import dev.slimevr.protocol.rpc.setup.RPCUtil
 import io.eiren.util.logging.LogManager
+import randomFreePort
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URI
@@ -13,8 +17,8 @@ import java.net.http.HttpResponse
 
 class OSCQueryHandler(
 	private val oscHandler: OSCHandler,
-	private val queryText: String,
 	private val serviceStartsWith: String,
+	private val queryPath: String,
 ) {
 	private val service: OSCQueryService = OSCQueryService()
 
@@ -29,22 +33,37 @@ class OSCQueryHandler(
 	}
 
 	private fun serviceResolved(info: ServiceInfo) {
-		LogManager.debug("[OSCQueryHandler] Resolved: " + info.name)
-		if (!info.name.startsWith(serviceStartsWith)) return
+		// Check the service name
+		if (!info.name.startsWith(serviceStartsWith)) {
+			LogManager.debug("[OSCQueryHandler] Resolved but rejected (name must start with \"$serviceStartsWith\"): " + info.name)
+			return
+		}
+		LogManager.debug("[OSCQueryHandler] Resolved and accepted: " + info.name)
 
+		// Get data from ServiceInfo
 		val ip = info.inetAddresses[0].hostAddress
 		val port = info.port
 
+		// Update our OSC Sender
 		LogManager.debug("[OSCQueryHandler] URL: http://$ip:$port")
 		updateOSCSendingInfo("http://$ip:$port")
 
-		// val service = service.createService(
-		// 	"_oscjson._tcp.",
-		// 	"SlimeVR-Server-" + RPCUtil.getLocalIp(),
-		// 	7357.toUShort(),
-		// 	"test"
-		// )
-		// TODO: request node queryText {"COMMAND":"LISTEN","DATA":"/tracking/vrsystem"}
+		// Request data
+		val localIp = RPCUtil.getLocalIp()
+		val freePort = randomFreePort()
+		val server = OSCQueryServer(
+			"SlimeVR-Server-$localIp",
+			OscTransport.UDP,
+			oscHandler.portIn.toUShort(),
+			localIp,
+			freePort,
+			localIp
+		)
+		val node = OSCQueryNodeImpl(queryPath, null, null)
+		server.rootNode.addNode(node)
+		server.init()
+
+		LogManager.debug("[OSCQueryHandler] SlimeVR OSCQueryServer started at http://$localIp:$freePort")
 	}
 
 	/**

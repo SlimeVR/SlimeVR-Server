@@ -94,8 +94,8 @@ class VRCOSCHandler(
 
 		oscQueryHandler = if (config.enabled) {
 			// Use OSCQuery
-			val queryText = "{\"COMMAND\":\"LISTEN\",\"DATA\":\"/tracking/vrsystem\"}"
-			OSCQueryHandler(this, queryText, "VRChat-Client")
+			val queryPath = "/tracking/vrsystem"
+			OSCQueryHandler(this, "VRChat-Client", queryPath)
 		} else {
 			// Disable OSCQuery
 			null
@@ -214,7 +214,7 @@ class VRCOSCHandler(
 			vrcHmd!!.dataTick()
 		} else if (vrsystemTrackersAddresses.contains(event.message.address)) {
 			// Receiving Head and Wrist pose data thanks to OSCQuery
-			LogManager.debug("received: " + event.message.address)
+			LogManager.debug("Received: " + event.message.address)
 			// TODO
 		} else {
 			// Receiving OSC Trackers data. This is not receiving from VRChat.
