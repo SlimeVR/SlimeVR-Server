@@ -157,6 +157,7 @@ tracker-status-error = Error
 tracker-status-disconnected = Desconectado
 tracker-status-occluded = Ocluido
 tracker-status-ok = Conectado
+tracker-status-timed_out = Conexión interrumpida
 
 ## Tracker status columns
 
@@ -362,7 +363,9 @@ settings-general-fk_settings-arm_fk-reset_mode-description = Cambiar que pose de
 settings-general-fk_settings-arm_fk-back = Detrás
 settings-general-fk_settings-arm_fk-back-description = El modo predeterminado, con el brazo yendo por detrás y el antebrazo yendo para adelante.
 settings-general-fk_settings-arm_fk-tpose_up = T-pose (arriba)
+settings-general-fk_settings-arm_fk-tpose_up-description = Espera que tus brazos estén abajo hacia los lados durante un reinicio completo, y 90 grados hacia los lados durante un reinicio de montura.
 settings-general-fk_settings-arm_fk-tpose_down = T-pose (abajo)
+settings-general-fk_settings-arm_fk-tpose_down-description = Espera que tus brazos estén 90 grados arriba hacia los lados durante un reinicio completo, y abajo hacia los lados durante un reinicio de montura.
 settings-general-fk_settings-arm_fk-forward = Delante
 settings-general-fk_settings-arm_fk-forward-description = Espera que tus brazos estén 90 grados para delante. Útil para VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Interruptores del esqueleto
@@ -778,6 +781,13 @@ onboarding-choose_mounting-manual_mounting = Montura manual
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Recomendado
 onboarding-choose_mounting-manual_mounting-description = Esto te permitirá elegir la dirección de montura manualmente para cada tracker.
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    ¿Está seguro de que quiere
+    hacer la calibración automática de montura?
+onboarding-choose_mounting-manual_modal-description = <b>Está recomendado para nuevos usuarios el uso de la calibración manual de montura</b>, ya que las poses de la calibración automática pueden ser difíciles de hacer correctamente en el primer intento y requieran un poco de práctica.
+onboarding-choose_mounting-manual_modal-confirm = Estoy seguro de lo que hago
+onboarding-choose_mounting-manual_modal-cancel = Cancelar
 
 ## Tracker manual mounting setup
 
@@ -818,9 +828,10 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = Proporciones automáticas
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recomendado
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
-    Esto adivinará tus proporciones grabando una muestra de tus movimientos y pasándola por un algoritmo.
-    <b>¡Esto requiere tener tu VR conectado a SlimeVR!</b>
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
+    Esto estimará tus proporciones grabando una muestra de tus movimientos y pasándolos a través de un algoritmo.
+    
+    <b>¡Esto requiere tener tu visor (HMD) conectado a SlimeVR y en tu cabeza!</b>
 onboarding-choose_proportions-manual_proportions = Proporciones manuales
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Para toques pequeños
@@ -851,13 +862,12 @@ onboarding-automatic_proportions-put_trackers_on-description = Para calibrar tus
 onboarding-automatic_proportions-put_trackers_on-next = Tengo puestos todos mis sensores
 onboarding-automatic_proportions-requirements-title = Requisitos
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
-    Tienes al menos suficientes trackers para rastrear tus pies (generalmente 5 trackers).
-    Tienes tus trackers y VR encendidos.
-    Tienes tus trackers y VR puestos.
-    Tus trackers y VR están conectados al servidor de SlimeVR.
-    Tus trackers y VR están funcionando correctamente con el servidor de SlimeVR.
-    Tu VR está reportando datos posicionales al servidor de SlimeVR (esto generalmente implica que SteamVR esté corriendo y conectado a SlimeVR usando el driver de SlimeVR para SteamVR).
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    Tienes suficientes sensores para mover tus pies (generalmente 5 sensores).
+    Tienes tus sensores y visor encendidos y los tienes puestos.
+    Tus sensores y visor están conectados al servidor de SlimeVR y están funcionando correctamente (ej: no se congela, no se desconecta, etc).
+    Tu visor esta reportando datos posicionales al servidor de SlimeVR (esto generalmente significa tener SteamVR abierto y conectado a SlimeVR usando el driver de SlimeVR para SteamVR).
+    Tus sensores están funcionando y están representando tus movimientos con precisión (ej: Realizaste un reinicio completo y se mueven en la dirección correcta cuando pateas, te agachas, te sientas, etc).
 onboarding-automatic_proportions-requirements-next = He leído los requisitos
 onboarding-automatic_proportions-check_height-title = Compruebe su altura
 onboarding-automatic_proportions-check_height-description = Utilizamos tu altura como base de nuestras mediciones utilizando la altura del VR como aproximación a tu altura real, ¡Pero es mejor que compruebes tú mismo si son correctas!

@@ -19,6 +19,7 @@ tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
 tips-tap_setup = You can slowly tap 2 times your tracker to choose it instead of selecting it from the menu.
+tips-turn_on_tracker = Using official SlimeVR trackers? Remember to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 
 ## Body parts
 body_part-NONE = Unassigned
@@ -117,7 +118,7 @@ widget-developer_mode = Developer Mode
 widget-developer_mode-high_contrast = High contrast
 widget-developer_mode-precise_rotation = Precise rotation
 widget-developer_mode-fast_data_feed = Fast data feed
-widget-developer_mode-filter_slimes_and_hmd = Filter slimes and HMD
+widget-developer_mode-filter_slimes_and_hmd = Filter Slimes and HMD
 widget-developer_mode-sort_by_name = Sort by name
 widget-developer_mode-raw_slime_rotation = Raw rotation
 widget-developer_mode-more_info = More info
@@ -139,6 +140,7 @@ tracker-status-error = Error
 tracker-status-disconnected = Disconnected
 tracker-status-occluded = Occluded
 tracker-status-ok = OK
+tracker-status-timed_out = Timed out
 
 ## Tracker status columns
 tracker-table-column-name = Name
@@ -181,7 +183,7 @@ tracker-settings-title = Tracker settings
 tracker-settings-assignment_section = Assignment
 tracker-settings-assignment_section-description = What part of the body the tracker is assigned to.
 tracker-settings-assignment_section-edit = Edit assignment
-tracker-settings-mounting_section = Mounting position
+tracker-settings-mounting_section = Mounting orientation
 tracker-settings-mounting_section-description = Where is the tracker mounted?
 tracker-settings-mounting_section-edit = Edit mounting
 tracker-settings-drift_compensation_section = Allow drift compensation
@@ -332,7 +334,7 @@ settings-general-fk_settings-leg_fk = Leg tracking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Enable feet Mounting Reset by tiptoeing.
 settings-general-fk_settings-leg_fk-reset_mounting_feet = Feet Mounting Reset
 settings-general-fk_settings-arm_fk = Arm tracking
-settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the HMD even if positional hand data is available.
+settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the headset (HMD) even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
 settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for mounting reset.
 settings-general-fk_settings-arm_fk-back = Back
@@ -424,6 +426,9 @@ settings-general-interface-feedback_sound-volume = Feedback sound volume
 settings-general-interface-connected_trackers_warning = Connected trackers warning
 settings-general-interface-connected_trackers_warning-description = This option will show a pop-up every time you try exiting SlimeVR while having one or more connected trackers. It reminds you to turn off your trackers when you are done to preserve battery life.
 settings-general-interface-connected_trackers_warning-label = Connected trackers warning on exit
+settings-general-interface-use_tray = Minimize to system tray
+settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bothering you.
+settings-general-interface-use_tray-label = Minimize to system tray
 
 ## Serial settings
 settings-serial = Serial Console
@@ -444,6 +449,7 @@ settings-serial-factory_reset-warning-cancel = Cancel
 settings-serial-get_infos = Get Infos
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
+settings-serial-get_wifi_scan = Get WiFi Scan
 
 ## OSC router settings
 settings-osc-router = OSC router
@@ -473,7 +479,7 @@ settings-osc-router-network-address-placeholder = IPV4 address
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description =
-    Change VRChat-specific settings to receive HMD data and send
+    Change VRChat-specific settings to receive headset (HMD) data and send
     tracker data for FBT without SteamVR (ex. Quest standalone).
 settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
@@ -564,7 +570,7 @@ onboarding-reset_tutorial-skip = Skip step
 # Cares about multiline
 onboarding-reset_tutorial-0 = Tap { $taps } times the highlighted tracker for triggering yaw reset.
 
-    This will make the trackers face the same direction as your HMD.
+    This will make the trackers face the same direction as your headset (HMD).
 # Cares about multiline
 onboarding-reset_tutorial-1 = Tap { $taps } times the highlighted tracker for triggering full reset.
 
@@ -651,6 +657,7 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
 } assigned
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
+onboarding-assign_trackers-mirror_view = Mirror view
 
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.
@@ -718,11 +725,11 @@ onboarding-choose_mounting-description = Mounting orientation corrects for the p
 onboarding-choose_mounting-auto_mounting = Automatic mounting
 # Italized text
 onboarding-choose_mounting-auto_mounting-label = Experimental
-onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting directions for all of your trackers from 2 poses
+onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting orientations for all of your trackers from 2 poses
 onboarding-choose_mounting-manual_mounting = Manual mounting
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Recommended
-onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting direction manually for each tracker
+onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting orientation manually for each tracker
 # Multiline text
 onboarding-choose_mounting-manual_modal-title = Are you sure you want to do
     the automatic mounting calibration?
@@ -740,35 +747,36 @@ onboarding-manual_mounting-next = Next step
 ## Tracker automatic mounting setup
 onboarding-automatic_mounting-back = Go Back to Enter VR
 onboarding-automatic_mounting-title = Mounting Calibration
-onboarding-automatic_mounting-description = For SlimeVR trackers to work, we need to assign a mounting rotation to your trackers to align them with your physical tracker mounting.
+onboarding-automatic_mounting-description = For SlimeVR trackers to work, we need to assign a mounting orientation to your trackers to align them with your physical tracker mounting.
 onboarding-automatic_mounting-manual_mounting = Manual mounting
 onboarding-automatic_mounting-next = Next step
 onboarding-automatic_mounting-prev_step = Previous step
-onboarding-automatic_mounting-done-title = Mounting rotations calibrated.
+onboarding-automatic_mounting-done-title = Mounting orientations calibrated.
 onboarding-automatic_mounting-done-description = Your mounting calibration is complete!
 onboarding-automatic_mounting-done-restart = Try again
 onboarding-automatic_mounting-mounting_reset-title = Mounting Reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pose with your legs bent, your upper body tilted forwards, and your arms bent.
-onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Reset Mounting" button and wait for 3 seconds before the trackers' mounting rotations will reset.
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Reset Mounting" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 onboarding-automatic_mounting-preparation-title = Preparation
 onboarding-automatic_mounting-preparation-step-0 = 1. Stand upright with your arms to your sides.
 onboarding-automatic_mounting-preparation-step-1 = 2. Press the "Full Reset" button and wait for 3 seconds before the trackers will reset.
 onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
-onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting rotations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
+onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting orientations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 
 ## Tracker proportions method choose
 onboarding-choose_proportions = What proportion calibration method to use?
 # Multiline string
-onboarding-choose_proportions-description = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
+onboarding-choose_proportions-description-v1 = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
     When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
+    <b>You only need to measure your body once!</b> Unless they are wrong or your body has changed, then you don't need to do them again.
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
     This will guess your proportions by recording a sample of your movements and passing it through an algorithm.
 
-    <b>This requires having your HMD connected to SlimeVR!</b>
+    <b>This requires having your headset (HMD) connected to SlimeVR and on your head!</b>
 onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
@@ -797,16 +805,15 @@ onboarding-automatic_proportions-put_trackers_on-description = To calibrate your
 onboarding-automatic_proportions-put_trackers_on-next = I have all my trackers on
 onboarding-automatic_proportions-requirements-title = Requirements
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
+onboarding-automatic_proportions-requirements-descriptionv2 =
     You have at least enough trackers to track your feet (generally 5 trackers).
-    You have your trackers and headset on.
-    You are wearing your trackers and headset.
-    Your trackers and headset are connected to the SlimeVR server.
-    Your trackers and headset are working properly within the SlimeVR server.
+    You have your trackers and headset on and are wearing them.
+    Your trackers and headset are connected to the SlimeVR server and are working properly (ex. no stuttering, disconnecting, etc).
     Your headset is reporting positional data to the SlimeVR server (this generally means having SteamVR running and connected to SlimeVR using SlimeVR's SteamVR driver).
+    Your tracking is working and is accurately representing your movements (ex. you have performed a full reset and they move the right direction when kicking, bending over, sitting, etc).
 onboarding-automatic_proportions-requirements-next = I have read the requirements
 onboarding-automatic_proportions-check_height-title = Check your height
-onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the HMD's height as an approximation of your actual height, but it's better to check if they are right yourself!
+onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the headset's (HMD) height as an approximation of your actual height, but it's better to check if they are right yourself!
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = Please press the button while standing <u>upright</u> to calculate your height. You have 3 seconds after you press the button!
 onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
@@ -869,6 +876,23 @@ status_system-StatusSteamVRDisconnected = { $type ->
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
 
+## Tray Menu
+tray_menu-show = Show
+tray_menu-hide = Hide
+tray_menu-quit = Quit
+
+## First exit modal
+tray_or_exit_modal-title = What should the close button do?
+# Multiline text
+tray_or_exit_modal-description = This lets you choose whether you want to exit the server or to minimize it to the tray when pressing the close button.
+
+    You can change this later in the interface settings!
+tray_or_exit_modal-radio-exit = Exit on close
+tray_or_exit_modal-radio-tray = Minimize to system tray
+tray_or_exit_modal-submit = Save
+tray_or_exit_modal-cancel = Cancel
+
+## Unknown device modal
 unknown_device-modal-title = A new Slime was found!
 unknown_device-modal-description = There is a new Slime with MAC address <b>{$deviceId}</b>.
     Do you want to connect it to SlimeVR?

@@ -146,6 +146,8 @@ widget-imu_visualizer-rotation_hide = 隱藏
 
 ## Widget: Skeleton Visualizer
 
+widget-skeleton_visualizer-preview = 骨架預覽
+widget-skeleton_visualizer-hide = 隱藏
 
 ## Tracker status
 
@@ -155,6 +157,7 @@ tracker-status-error = 錯誤
 tracker-status-disconnected = 連線中斷
 tracker-status-occluded = 被遮擋
 tracker-status-ok = 已連線
+tracker-status-timed_out = 已逾時
 
 ## Tracker status columns
 
@@ -441,6 +444,9 @@ settings-general-interface-feedback_sound = 聲音回饋
 settings-general-interface-feedback_sound-description = 啟用本選項後，觸發重置時會發出提示音。
 settings-general-interface-feedback_sound-label = 聲音回饋
 settings-general-interface-feedback_sound-volume = 聲音回饋音量
+settings-general-interface-connected_trackers_warning = 已連接追蹤器警告
+settings-general-interface-connected_trackers_warning-description = 啟用本選項後，每次當退出 SlimeVR 時仍有追蹤器連接著會顯示通知，提醒你在使用完畢時關閉追蹤器電源來節省電池電量。
+settings-general-interface-connected_trackers_warning-label = 當退出程式時，有追蹤器連接中則顯示警告
 
 ## Serial settings
 
@@ -763,6 +769,11 @@ onboarding-choose_mounting-manual_mounting = 手動配戴校正
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = 推薦使用
 onboarding-choose_mounting-manual_mounting-description = 本選項可以讓你選擇每個追蹤器的配戴方位
+# Multiline text
+onboarding-choose_mounting-manual_modal-title = 確定要進行自動配戴校正？
+onboarding-choose_mounting-manual_modal-description = <b>我們建議新手使用手動配戴校正</b>，因為自動配戴校正的姿勢要一次做正確比較困難，可能需要一些練習。
+onboarding-choose_mounting-manual_modal-confirm = 我確定要這樣做
+onboarding-choose_mounting-manual_modal-cancel = 取消
 
 ## Tracker manual mounting setup
 
@@ -803,10 +814,10 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = 自動軀幹比例校正
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = 推薦使用
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
     本選項會從您的身體動作錄製一段樣本，並通過演算法來推算您的軀幹比例。
     
-    <b>使用本功能需要連接頭戴顯示器到 SlimeVR！</b>
+    <b>使用本功能需要連接頭戴顯示器到 SlimeVR，並且配戴在頭部！</b>
 onboarding-choose_proportions-manual_proportions = 手動軀幹比例校正
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = 適合進行微調
@@ -837,13 +848,14 @@ onboarding-automatic_proportions-put_trackers_on-description = 為了校準你�
 onboarding-automatic_proportions-put_trackers_on-next = 我所有的追蹤器都戴好了！
 onboarding-automatic_proportions-requirements-title = 使用需求
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
+onboarding-automatic_proportions-requirements-descriptionv2 =
     你需要足夠的追蹤器以進行足部追蹤（通常為 5 個）。
-    你已經打開追蹤器與頭戴顯示器的電源。
+    追蹤器的電源已經打開並已經穿著在身上。
     你需要穿戴上追蹤器與頭戴顯示器。
-    你的追蹤器與頭戴顯示器都已經連接到 SlimeVR 伺服器。
-    你的追蹤器與頭戴顯示器在 SlimeVR 伺服器中運作正常。
-    你的頭戴顯示器會回報定位資料給 SlimeVR 伺服器（通常為執行 SteamVR 並透過 SlimeVR 的 SteamVR 驅動程式來連接 SlimeVR）。
+    追蹤器與頭戴顯示器都已經連接到 SlimeVR 伺服器，並且正常運作（亦即沒有卡頓或斷線等狀況）。
+    追蹤器與頭戴顯示器在 SlimeVR 伺服器中運作正常。
+    頭戴顯示器會回報定位資料給 SlimeVR 伺服器（通常為執行 SteamVR 並透過 SlimeVR 的 SteamVR 驅動程式來連接 SlimeVR）。
+    追蹤狀態正常且能反映你的移動姿態（例如，進行完全重置後，踢腿、彎曲、坐下時的肢體方向是正確的）。
 onboarding-automatic_proportions-requirements-next = 我已閱讀使用需求
 onboarding-automatic_proportions-check_height-title = 檢查您的身高
 onboarding-automatic_proportions-check_height-description = 我們會透過頭戴顯示器回報的高度來推算您的實際身高，但我們仍建議您檢查一下數值是否正確。
@@ -893,6 +905,12 @@ home-no_trackers = 未偵測到或未分配追蹤器
 
 ## Trackers Still On notification
 
+trackers_still_on-modal-title = 有追蹤器的電源還開著
+trackers_still_on-modal-description =
+    至少有一個追蹤器的電源還開著。
+    確定要退出 SlimeVR 嗎？
+trackers_still_on-modal-confirm = 退出 SlimeVR
+trackers_still_on-modal-cancel = 先不要…
 
 ## Status system
 

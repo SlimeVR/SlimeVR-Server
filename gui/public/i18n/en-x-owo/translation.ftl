@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = waw
 widget-imu_visualizer-rotation_preview = pwewiew
 widget-imu_visualizer-rotation_hide = hoide
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = Skeweton pweview
+widget-skeleton_visualizer-hide = hoide
+
 ## Tracker status
 
 tracker-status-none = no stawtus
@@ -152,6 +157,7 @@ tracker-status-error = ewwow
 tracker-status-disconnected = disconnyected
 tracker-status-occluded = occwuded
 tracker-status-ok = oki
+tracker-status-timed_out = Timed owt
 
 ## Tracker status columns
 
@@ -348,9 +354,20 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = fwoow-cwip can r
 settings-general-fk_settings-leg_tweak-toe_snap-description = toe-snap atempts to gwess da wotation of ur fweet if fweet tracker thingys arewnt in use
 settings-general-fk_settings-leg_tweak-foot_plant-description = pawb-pwant wotates youw feet to be pawawwew to the gwound wen in cawntact.
 settings-general-fk_settings-leg_fk = leg twacking
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Enyabwe pawb Meownting Weset by tiptoeing.
+settings-general-fk_settings-leg_fk-reset_mounting_feet = Pawb Meownting Weset
 settings-general-fk_settings-arm_fk = awm twacking
 settings-general-fk_settings-arm_fk-description = chawnge teh way teh awms awe twacked.
 settings-general-fk_settings-arm_fk-force_arms = fowce awms fwom hmd
+settings-general-fk_settings-arm_fk-reset_mode-description = Change which awm pose is expected fow meownting weset.
+settings-general-fk_settings-arm_fk-back = bak
+settings-general-fk_settings-arm_fk-back-description = The defauwt mode, wit da uppew awms going back and wowew awms going fowwawd.
+settings-general-fk_settings-arm_fk-tpose_up = T-pose (up)
+settings-general-fk_settings-arm_fk-tpose_up-description = Expects youw awms to be down on the sides duwing Fuww Weset, and 90 degwees up to the sides duwing Meownting Weset.
+settings-general-fk_settings-arm_fk-tpose_down = T-pose (down)
+settings-general-fk_settings-arm_fk-tpose_down-description = Expects youw awms to be 90 degwees up to the sides duwing Fuww Weset, and down on the sides duwing Meownting Weset.
+settings-general-fk_settings-arm_fk-forward = Fowwawd
+settings-general-fk_settings-arm_fk-forward-description = Expects youw awms to be up 90 degwees fowwawd. Usefuw fow VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = skeweton toggews
 settings-general-fk_settings-skeleton_settings-description = toggwe skeweton sewttings on owow off. is wowcommended to weawve these on~
 settings-general-fk_settings-skeleton_settings-extended_spine_model = extwended spine modew
@@ -364,6 +381,7 @@ settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = impu
 settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = impute hip fwom waist to wegs
 settings-general-fk_settings-skeleton_settings-interp_hip_legs = awewage da hip's yaw and woll wiff da legs'
 settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = awewage da knee twackews' yaw and woll wiff da ankews'
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Avewage the knees' yaw and woww with the ankews'
 settings-general-fk_settings-self_localization-title = mocap mowd
 settings-general-fk_settings-self_localization-description = mocap mowd awwows da skeweton to wuffly twack is own posishun without a hedset or other twackews. note dat dis wequiwes feet and hed twackews to wowk and is stiwll expewimentaw.
 settings-general-fk_settings-vive_emulation-title = vive emuwation
@@ -431,6 +449,9 @@ settings-general-interface-feedback_sound = feeback sownd
 settings-general-interface-feedback_sound-description = dis awptshun wiww pway a sownd wen a weset is twiggered (meow~!)
 settings-general-interface-feedback_sound-label = feeback sownd
 settings-general-interface-feedback_sound-volume = feedback sownd volyume
+settings-general-interface-connected_trackers_warning = Connected twackews wawning
+settings-general-interface-connected_trackers_warning-description = This option wiww show a pop-up evewy time you twy exiting SwimeVR whiwe having one ow mowe connected twackews. It weminds you to tuwn off youw twackews when you awe done to pwesewve battewy wife.
+settings-general-interface-connected_trackers_warning-label = Connected twackews wawning on exit
 
 ## Serial settings
 
@@ -513,7 +534,7 @@ settings-osc-vmc = viwtuaw motion captuwe
 # This cares about multilines
 settings-osc-vmc-description =
     change settings specific to the vmc (viwtuaw motion captuwe) pwotocow
-            to send swimevr's twacking data and weceive twacking data fwom othew apps.
+            to send SwimeVR's twacking data and weceive twacking data fwom othew apps.
 settings-osc-vmc-enable = enaybwe
 settings-osc-vmc-enable-description = toggle teh sending awnd wweceiving of data
 settings-osc-vmc-enable-label = enaybwe
@@ -597,7 +618,7 @@ onboarding-reset_tutorial-2 =
 
 ## Setup start
 
-onboarding-home = wewcome to swimevr
+onboarding-home = wewcome to SwimeVR
 onboarding-home-start = wets get set up!
 
 ## Enter VR part of setup
@@ -760,6 +781,13 @@ onboarding-choose_mounting-manual_mounting = manyul meownting
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = wecommended
 onboarding-choose_mounting-manual_mounting-description = dis will let u chose da meownting diwecshun manuwawwy fow eech twackew
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    Awe you suwe you want to do
+    the automatic mounting cawibwation?
+onboarding-choose_mounting-manual_modal-description = <b>The manuaw mounting cawibwation is wecommended fow new usews</b>, as the automatic mounting cawibwation's poses can be hawd to get wight fiwst and may wequiwe some pwactice.
+onboarding-choose_mounting-manual_modal-confirm = I'm suwe of what I'm doing
+onboarding-choose_mounting-manual_modal-cancel = cancew :o
 
 ## Tracker manual mounting setup
 
@@ -800,15 +828,18 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = awtomatic pwopowtions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = wecommended
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
-    dis wiww guess youw pwopowshuns by wecowding a sampwe of youw movement and passing it thru an algowithm.
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
+    This wiww guess youw pwopowtions by wecowding a sampwe of youw movements and passing it thwough an awgowithm.
     
-    <b>dis wequiwes having youw hmd connected to SwimeVR!</b>
+    <b>This wequiwes having youw headset (HMD) connected to SwimeVR and on youw head!</b>
 onboarding-choose_proportions-manual_proportions = manuwal pwopowtions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = fow smol touchies
 onboarding-choose_proportions-manual_proportions-description = dis will let u ajust ur pwopowtions manuwally by modifying dem diwectwy
 onboarding-choose_proportions-export = expowt pawpowshuns
+onboarding-choose_proportions-import = Impowt pwopowtions
+onboarding-choose_proportions-import-success = Impowted
+onboarding-choose_proportions-import-failed = Faiwed
 onboarding-choose_proportions-file_type = body pawpowshuns file
 
 ## Tracker manual proportions setup
@@ -831,13 +862,12 @@ onboarding-automatic_proportions-put_trackers_on-description = to cawybwate yowu
 onboarding-automatic_proportions-put_trackers_on-next = i have awl my twackaws on
 onboarding-automatic_proportions-requirements-title = wequiyements
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
-    u have at weast enyough twackews to twack youw pawbs (genyewawwy 5 twackews).
-    u have youw twackews and headset on.
-    u awe weawing youw twackews and headset.
-    ur twackews and headset awe connyected to da SwimeVR sewvew.
-    ur twackews and headset awe wowking pwopewwy within the SwimeVR sewvew.
-    ur headset is wepowting positionyaw data to the SwimeVR sewvew (this genyewawwy wenyewawwy means having SteamVR wunnying and connyected to SwimeVR using SwimeVR's SteamVR dwivew).
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    You have at weast enough twackews to twack youw pawbs (genewawwy 5 twackews).
+    You have youw twackews and headset on and awe weawing them.
+    Youw twackews and headset awe connected to the SwimeVR sewvew and awe wowking pwopewwy (ex. no stuttewing, disconnecting, etc).
+    Youw headset is wepowting positionaw data to the SwimeVR sewvew (this genewawwy means having SteamVR wunning and connected to SwimeVR using SwimeVR's SteamVR dwivew).
+    Youw twacking is wowking and is accuwatewy wepwesenting youw movements (ex. you have pewfowmed a fuww weset and they move the wight diwection when kicking, bending ovew, sitting, etc).
 onboarding-automatic_proportions-requirements-next = i have wed da wequiwemens
 onboarding-automatic_proportions-check_height-title = check youw height
 onboarding-automatic_proportions-check_height-description = we use youw height as a basis of ouw measuwements by using da hmd's height as an appwoximashun of youw actuwaw height, but is better to check if they are right youwsewf!
@@ -888,6 +918,15 @@ onboarding-automatic_proportions-error_modal-confirm = undewstood!
 ## Home
 
 home-no_trackers = no twackaws detecyted owo wowigned
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = Twackews stiww on
+trackers_still_on-modal-description =
+    One ow mowe twackews awe stiww on.
+    Do you stiww want to exit SwimeVR?
+trackers_still_on-modal-confirm = Exit SwimeVR
+trackers_still_on-modal-cancel = Howd on...
 
 ## Status system
 

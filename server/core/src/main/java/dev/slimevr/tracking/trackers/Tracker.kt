@@ -15,7 +15,8 @@ import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
 import kotlin.properties.Delegates
 
-const val TIMEOUT_MS = 2000L
+const val TIMEOUT_MS = 2_000L
+const val DISCONNECT_MS = 3_000L + TIMEOUT_MS
 
 /**
  * Generic tracker class for input and output tracker,
@@ -65,7 +66,7 @@ class Tracker @JvmOverloads constructor(
 	val needsMounting: Boolean = false,
 ) {
 	private val timer = BufferedTimer(1f)
-	private var timeAtLastUpdate: Long = 0
+	private var timeAtLastUpdate: Long = System.currentTimeMillis()
 	private var rotation = Quaternion.IDENTITY
 	private var acceleration = Vector3.NULL
 	var position = Vector3.NULL
@@ -110,7 +111,7 @@ class Tracker @JvmOverloads constructor(
 		if (old == new) return@observable
 
 		if (!isInternal) {
-			// Set default mounting position for that body part
+			// Set default mounting orientation for that body part
 			new?.let { resetsHandler.mountingOrientation = it.defaultMounting() }
 
 			checkReportRequireReset()
@@ -254,11 +255,13 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun tick() {
 		if (usesTimeout) {
-			if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
+			if (System.currentTimeMillis() - timeAtLastUpdate > DISCONNECT_MS) {
 				status = TrackerStatus.DISCONNECTED
+			} else if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
+				status = TrackerStatus.TIMED_OUT
 			}
 		}
-		filteringHandler.tick()
+		filteringHandler.update()
 	}
 
 	/**
@@ -271,10 +274,17 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
+	 * A way to delay the timeout of the tracker
+	 */
+	fun heartbeat() {
+		timeAtLastUpdate = System.currentTimeMillis()
+	}
+
+	/**
 	 * Gets the adjusted tracker rotation after all corrections
 	 * (filtering, reset, mounting and drift compensation).
 	 * This is the rotation that is applied on the SlimeVR skeleton bones.
-	 * Warning: This may perform several Quaternion multiplications, so calling
+	 * Warning: This performs several Quaternion multiplications, so calling
 	 * it too much should be avoided for performance reasons.
 	 */
 	fun getRotation(): Quaternion {
@@ -306,8 +316,8 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
-	 * Gets the identity-adjusted tracker rotation after some corrections
-	 * (filtering, identity reset and identity mounting).
+	 * Gets the identity-adjusted tracker rotation after corrections
+	 * (filtering, identity reset, drift and identity mounting).
 	 * This is used for debugging/visualizing tracker data
 	 */
 	fun getIdentityAdjustedRotation(): Quaternion {
@@ -321,7 +331,7 @@ class Tracker @JvmOverloads constructor(
 
 		if (needsReset && trackerPosition != TrackerPosition.HEAD) {
 			// Adjust to reset and mounting
-			rot = resetsHandler.getIdentityAdjustedRotationFrom(rot)
+			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		}
 
 		return rot
