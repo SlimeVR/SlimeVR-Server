@@ -45,7 +45,7 @@ allprojects {
 		// Use jcenter for resolving dependencies.
 		// You can declare any Maven/Ivy/file repository here.
 		mavenCentral()
-		maven { url = uri("https://jitpack.io") }
+		maven(url = "https://jitpack.io")
 	}
 }
 
@@ -60,7 +60,9 @@ dependencies {
 	implementation("net.java.dev.jna:jna-platform:5.+")
 	implementation("com.fazecast:jSerialComm:2.10.2")
 	implementation("org.hid4java:hid4java:0.7.0")
-	implementation("com.github.SlimeVR.oscquery-kt:oscquery-kt:4ef18d9946")
+
+	// Jitpack
+	implementation("com.github.SlimeVR.oscquery-kt:oscquery-kt:0a6216f676")
 }
 
 tasks.shadowJar {

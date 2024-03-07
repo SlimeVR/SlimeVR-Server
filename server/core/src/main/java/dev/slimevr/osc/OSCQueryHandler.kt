@@ -1,6 +1,6 @@
 package dev.slimevr.osc
 
-import OSCQueryNodeImpl
+import OSCQueryNode
 import OSCQueryServer
 import OSCQueryService
 import ServiceInfo
@@ -27,6 +27,21 @@ class OSCQueryHandler(
 			// Add OSCQuery service listeners for local and non-local
 			service.addServiceListener("_oscjson._tcp.local.") { serviceResolved(it) }
 			service.addServiceListener("_oscjson._tcp.") { serviceResolved(it) }
+			// Request data
+			val localIp = RPCUtil.getLocalIp()
+			val freePort = randomFreePort()
+			val server = OSCQueryServer(
+				"SlimeVR-Server-$localIp",
+				OscTransport.UDP,
+				oscHandler.portIn.toUShort(),
+				localIp,
+				freePort,
+				localIp
+			)
+			val node = OSCQueryNode(queryPath, null, null)
+			server.rootNode.addNode(node)
+			server.init()
+			LogManager.debug("[OSCQueryHandler] SlimeVR OSCQueryServer started at http://$localIp:$freePort")
 		} catch (e: IOException) {
 			LogManager.warning("[OSCQueryHandler] " + e.message)
 		}
@@ -59,10 +74,9 @@ class OSCQueryHandler(
 			freePort,
 			localIp
 		)
-		val node = OSCQueryNodeImpl(queryPath, null, null)
+		val node = OSCQueryNode(queryPath, null, null)
 		server.rootNode.addNode(node)
 		server.init()
-
 		LogManager.debug("[OSCQueryHandler] SlimeVR OSCQueryServer started at http://$localIp:$freePort")
 	}
 
