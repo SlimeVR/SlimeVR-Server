@@ -117,13 +117,13 @@ export function useConfigProvider(): ConfigContext {
     loadConfig: async () => {
       setLoading(true);
       try {
-        const migrated = await localStorage.getItem('configMigratedToTauri');
+        const migrated = await store.get('configMigratedToTauri');
         if (!migrated) {
           const oldConfig = localStorage.getItem('config.json');
 
           if (oldConfig) await store.set('config.json', oldConfig);
 
-          localStorage.setItem('configMigratedToTauri', 'true');
+          store.set('configMigratedToTauri', 'true');
         }
 
         const json = await store.get('config.json');
