@@ -4,6 +4,7 @@ import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
 import { Store } from '@tauri-apps/plugin-store';
 import { useIsTauri } from './breakpoint';
+import { waitUntil } from '@/utils/a11y';
 
 export interface WindowConfig {
   width: number;
@@ -25,7 +26,9 @@ export interface Config {
   textSize: number;
   fonts: string[];
   advancedAssign: boolean;
+  useTray: boolean | null;
   doneManualMounting: boolean;
+  mirrorView: boolean;
 }
 
 export interface ConfigContext {
@@ -47,7 +50,9 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   textSize: 12,
   fonts: ['poppins'],
   advancedAssign: false,
+  useTray: null,
   doneManualMounting: false,
+  mirrorView: true,
 };
 
 interface CrossStorage {
@@ -90,6 +95,18 @@ export function useConfigProvider(): ConfigContext {
             ...config,
           } as Config)
         : null
+    );
+    await waitUntil(
+      () => {
+        const newConfig: Partial<Config> = JSON.parse(
+          localStorage.getItem('config.json') ?? '{}'
+        );
+        return Object.entries(config).every(
+          ([key, value]) => newConfig[key as keyof Config] === value
+        );
+      },
+      100,
+      10
     );
   };
 

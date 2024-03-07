@@ -31,7 +31,7 @@ tasks.register<Copy>("copyGuiAssets") {
 	from(rootProject.layout.projectDirectory.dir("gui/dist"))
 	into(layout.projectDirectory.dir("src/main/resources/web-gui"))
 	if (inputs.sourceFiles.isEmpty) {
-		throw GradleException("You need to run \"npm run build\" on the gui folder first!")
+		throw GradleException("You need to run \"pnpm run build\" on the gui folder first!")
 	}
 }
 tasks.preBuild {
