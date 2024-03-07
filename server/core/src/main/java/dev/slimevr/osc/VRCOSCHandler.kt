@@ -26,7 +26,6 @@ import io.github.axisangles.ktmath.Vector3
 import java.io.IOException
 import java.net.InetAddress
 import java.net.InetSocketAddress
-import java.util.Timer
 
 private const val OFFSET_SLERP_FACTOR = 0.5f // Guessed from eyeing VRChat
 
@@ -51,6 +50,7 @@ class VRCOSCHandler(
 	private val uprightAddress = "/avatar/parameters/Upright"
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
+	private var addtionalOscSenders = FastList<OSCPortOut>()
 	private var oscMessage: OSCMessage? = null
 	private var vrcHmd: Tracker? = null
 	private var headTracker: Tracker? = null
@@ -61,7 +61,6 @@ class VRCOSCHandler(
 	private var lastPortOut = 0
 	private var lastAddress: InetAddress? = null
 	private var timeAtLastError: Long = 0
-	private val timer = Timer()
 	private var receivingPositionOffset = Vector3.NULL
 	private var postReceivingPositionOffset = Vector3.NULL
 	private var receivingRotationOffset = Quaternion.IDENTITY
@@ -69,7 +68,7 @@ class VRCOSCHandler(
 	private val postReceivingOffset = EulerAngles(EulerOrder.YXZ, 0f, FastMath.PI, 0f).toQuaternion()
 	private var timeAtLastReceivedRotationOffset = System.currentTimeMillis()
 	private var fpsTimer: NanoTimer? = null
-	private var oscQueryHandler: OSCQueryHandler? = null
+	private var vrcOscQueryHandler: VRCOSCQueryHandler? = null
 
 	init {
 		refreshSettings(false)
@@ -89,13 +88,15 @@ class VRCOSCHandler(
 			}
 		}
 
+		// Close OSCQuery and its related senders
+		vrcOscQueryHandler?.close()
+
 		updateOscReceiver(config.portIn, vrsystemTrackersAddresses + oscTrackersAddresses + uprightAddress)
 		updateOscSender(config.portOut, config.address)
 
-		oscQueryHandler = if (config.enabled) {
-			// Use OSCQuery
-			val queryPath = "/tracking/vrsystem"
-			OSCQueryHandler(this, "VRChat-Client", queryPath)
+		vrcOscQueryHandler = if (config.enabled) {
+			// New OSCQuery
+			VRCOSCQueryHandler(this)
 		} else {
 			// Disable OSCQuery
 			null
@@ -104,6 +105,43 @@ class VRCOSCHandler(
 		if (refreshRouterSettings) {
 			server.oSCRouter.refreshSettings(false)
 		}
+	}
+
+	/**
+	 * Adds an OSC Sender from OSCQuery
+	 */
+	fun addOSCSender(oscPortOut: Int, oscIP: String) {
+		if (config.enabled) {
+			// Instantiate the OSC sender
+			try {
+				val addr = InetAddress.getByName(oscIP)
+				val newSender = OSCPortOut(InetSocketAddress(addr, oscPortOut))
+				LogManager.info("[VRCOSCHandler] New sender sending to port $oscPortOut at address $oscIP")
+				newSender.connect()
+				addtionalOscSenders.add(newSender)
+			} catch (e: IOException) {
+				LogManager
+					.severe(
+						"[VRCOSCHandler] Error connecting to port $portOut at the address $address: $e"
+					)
+			}
+		}
+	}
+
+	/**
+	 * Removes OSCQuery senders
+	 */
+	fun removeAdditionalOscSenders() {
+		if (addtionalOscSenders.isNotEmpty()) LogManager.debug("[VRCOSCHandler] Removing additional OSC Senders.")
+
+		for (sender in addtionalOscSenders) {
+			try {
+				sender.close()
+			} catch (e: IOException) {
+				LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: $e")
+			}
+		}
+		addtionalOscSenders.clear()
 	}
 
 	override fun updateOscReceiver(portIn: Int, args: Array<String>) {
@@ -214,7 +252,7 @@ class VRCOSCHandler(
 			vrcHmd!!.dataTick()
 		} else if (vrsystemTrackersAddresses.contains(event.message.address)) {
 			// Receiving Head and Wrist pose data thanks to OSCQuery
-			LogManager.debug("Received: " + event.message.address)
+			LogManager.debug("Received VRSystem data: " + event.message.address)
 			// TODO
 		} else {
 			// Receiving OSC Trackers data. This is not receiving from VRChat.
@@ -382,7 +420,9 @@ class VRCOSCHandler(
 			}
 
 			try {
-				oscSender!!.send(bundle)
+				for (sender in addtionalOscSenders + oscSender) {
+					sender?.send(bundle)
+				}
 			} catch (e: IOException) {
 				// Avoid spamming AsynchronousCloseException too many
 				// times per second
@@ -435,7 +475,9 @@ class VRCOSCHandler(
 				oscArgs
 			)
 			try {
-				oscSender!!.send(oscMessage)
+				for (sender in addtionalOscSenders + oscSender) {
+					sender?.send(oscMessage)
+				}
 			} catch (e: IOException) {
 				LogManager
 					.warning("[VRCOSCHandler] Error sending OSC message to VRChat: $e")
