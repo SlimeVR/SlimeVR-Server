@@ -85,7 +85,7 @@ final public class FastMath {
 	 * value.
 	 */
 	public static boolean isApproxZero(float value, float tolerance) {
-		return value < tolerance && value > tolerance;
+		return value < tolerance && value > -tolerance;
 	}
 
 	/**
