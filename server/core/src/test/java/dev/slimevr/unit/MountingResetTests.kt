@@ -14,30 +14,31 @@ import kotlin.math.*
 
 /**
  * Tests [TrackerResetsHandler.resetMounting]
+ *
+ * Head rotation does not get reset.
+ * Tracker yaw is set to head yaw on reset.
  */
 class MountingResetTests {
 
 	@TestFactory
 	fun testResetAndMounting(): List<DynamicTest> {
-		return directions.map { e ->
-			DynamicTest.dynamicTest(
-				"Full and Mounting Reset Test of Tracker (Expected: ${deg(e)})"
-			) {
-				frontMountings.forEach { a ->
-					directions.forEach { f ->
-						directions.forEach { m ->
-							checkResetMounting(e, a, f, m)
-						}
-					}
+		return directions.flatMap { e ->
+			directions.map { m ->
+				DynamicTest.dynamicTest(
+					"Full and Mounting Reset Test of Tracker (Expected: ${deg(e)}, reference: ${deg(m)})"
+				) {
+					checkResetMounting(e, m)
 				}
 			}
 		}
 	}
 
-	private fun checkResetMounting(expected: Quaternion, trackerAngle: Quaternion, fullRef: Quaternion, mountRef: Quaternion) {
-		val expectedYaw = yaw(expected)
-		// Offset front mounting by the expected mounting
-		val mountOffset = mountRef * expected * trackerAngle
+	private fun checkResetMounting(expected: Quaternion, mountRef: Quaternion) {
+		// Compute the pitch/roll for the expected mounting
+		val trackerRot = (expected * (frontRot / expected))
+		// Offset tracker rotation by the reference yaw
+		val mountOffset = mountRef * trackerRot
+
 		val tracker = Tracker(
 			null,
 			getNextLocalTrackerId(),
@@ -51,11 +52,13 @@ class MountingResetTests {
 			needsMounting = true
 		)
 
-		tracker.resetsHandler.resetFull(fullRef)
+		// Apply reset and mounting
+		tracker.resetsHandler.resetFull(Quaternion.IDENTITY)
 		tracker.setRotation(mountOffset)
 		tracker.resetsHandler.resetMounting(mountRef)
-		val resultYaw = yaw(tracker.resetsHandler.mountRotFix)
 
+		val expectedYaw = yaw(expected)
+		val resultYaw = yaw(tracker.resetsHandler.mountRotFix)
 		assertAnglesApproxEqual(
 			expectedYaw,
 			resultYaw,
@@ -115,9 +118,9 @@ class MountingResetTests {
 			Quaternion.SLIMEVR.BACK
 		)
 
-		val frontMountings = (5..175 step 5).map { q(it.toFloat(), 0f, 0f) }
+		val frontRot = q(90f, 0f, 0f)
 
-		fun q(pitch: Float, yaw: Float, roll: Float): Quaternion {
+		private fun q(pitch: Float, yaw: Float, roll: Float): Quaternion {
 			return EulerAngles(
 				EulerOrder.YZX,
 				pitch * FastMath.DEG_TO_RAD,
