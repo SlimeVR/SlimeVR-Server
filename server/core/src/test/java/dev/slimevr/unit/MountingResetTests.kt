@@ -161,15 +161,6 @@ class MountingResetTests {
 			Quaternion.SLIMEVR.BACK
 		)
 
-		val frontRot = q(90f, 0f, 0f)
-
-		private fun q(pitch: Float, yaw: Float, roll: Float): Quaternion {
-			return EulerAngles(
-				EulerOrder.YZX,
-				pitch * FastMath.DEG_TO_RAD,
-				yaw * FastMath.DEG_TO_RAD,
-				roll * FastMath.DEG_TO_RAD
-			).toQuaternion()
-		}
+		val frontRot = EulerAngles(EulerOrder.YZX, FastMath.HALF_PI, 0f, 0f).toQuaternion()
 	}
 }
