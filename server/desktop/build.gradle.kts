@@ -62,7 +62,7 @@ dependencies {
 	implementation("org.hid4java:hid4java:0.7.0")
 
 	// Jitpack
-	implementation("com.github.SlimeVR.oscquery-kt:oscquery-kt:0a6216f676")
+	implementation("com.github.SlimeVR.oscquery-kt:oscquery-kt:b779d0759b")
 }
 
 tasks.shadowJar {

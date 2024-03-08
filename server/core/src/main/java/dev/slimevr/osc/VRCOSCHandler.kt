@@ -440,9 +440,9 @@ class VRCOSCHandler(
 	}
 
 	private fun getVRCOSCTrackersId(trackerPosition: TrackerPosition?): Int {
-		// The order doesn't matter and changing it
-		// won't break anything except make debugging harder
-		// between different versions. They just need to range from 1-8
+		// Needs to range from 1-8.
+		// Don't change as third party applications may rely
+		// on this for mapping trackers to body parts.
 		return when (trackerPosition) {
 			TrackerPosition.HIP -> 1
 			TrackerPosition.LEFT_FOOT -> 2
