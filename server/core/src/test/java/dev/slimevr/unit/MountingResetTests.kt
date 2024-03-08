@@ -9,6 +9,7 @@ import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.AssertionFailureBuilder
 import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import kotlin.math.*
 
@@ -112,6 +113,52 @@ class MountingResetTests {
 			expectedYaw3,
 			resultYaw3,
 			"Resulting mounting yaw after yaw reset with offset is not equal to reference yaw (${deg(expectedYaw4)} vs ${deg(resultYaw4)})"
+		)
+	}
+
+	@Test
+	fun testYawAfter() {
+		val expected = Quaternion.SLIMEVR.RIGHT
+		val reference = EulerAngles(EulerOrder.YZX, FastMath.PI / 8f, FastMath.HALF_PI, 0f).toQuaternion()
+		// Compute the pitch/roll for the expected mounting
+		val trackerRot = (expected * (frontRot / expected))
+
+		val tracker = Tracker(
+			null,
+			getNextLocalTrackerId(),
+			"test",
+			"test",
+			null,
+			hasRotation = true,
+			isInternal = true,
+			imuType = IMUType.UNKNOWN,
+			needsReset = true,
+			needsMounting = true
+		)
+
+		// Apply full reset and mounting
+		tracker.setRotation(Quaternion.IDENTITY)
+		tracker.resetsHandler.resetFull(Quaternion.IDENTITY)
+		tracker.setRotation(trackerRot)
+		tracker.resetsHandler.resetMounting(Quaternion.IDENTITY)
+
+		val expectedYaw = yaw(expected)
+		val resultYaw = yaw(tracker.resetsHandler.mountRotFix)
+		assertAnglesApproxEqual(
+			expectedYaw,
+			resultYaw,
+			"Resulting mounting yaw after full reset is not equal to reference yaw (${deg(expectedYaw)} vs ${deg(resultYaw)})"
+		)
+
+		tracker.setRotation(reference * reference)
+		tracker.resetsHandler.resetYaw(reference)
+
+		val expectedYaw2 = yaw(reference)
+		val resultYaw2 = yaw(tracker.getRotation())
+		assertAnglesApproxEqual(
+			expectedYaw2,
+			resultYaw2,
+			"Resulting rotation after yaw reset is not equal to reference yaw (${deg(expectedYaw2)} vs ${deg(resultYaw2)})"
 		)
 	}
 
