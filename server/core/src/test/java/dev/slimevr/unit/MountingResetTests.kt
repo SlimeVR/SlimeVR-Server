@@ -33,11 +33,9 @@ class MountingResetTests {
 		}
 	}
 
-	private fun checkResetMounting(expected: Quaternion, mountRef: Quaternion) {
+	private fun checkResetMounting(expected: Quaternion, reference: Quaternion) {
 		// Compute the pitch/roll for the expected mounting
 		val trackerRot = (expected * (frontRot / expected))
-		// Offset tracker rotation by the reference yaw
-		val mountOffset = mountRef * trackerRot
 
 		val tracker = Tracker(
 			null,
@@ -52,17 +50,62 @@ class MountingResetTests {
 			needsMounting = true
 		)
 
-		// Apply reset and mounting
+		// Apply full reset and mounting
+		tracker.setRotation(Quaternion.IDENTITY)
 		tracker.resetsHandler.resetFull(Quaternion.IDENTITY)
-		tracker.setRotation(mountOffset)
-		tracker.resetsHandler.resetMounting(mountRef)
+		tracker.setRotation(trackerRot)
+		tracker.resetsHandler.resetMounting(Quaternion.IDENTITY)
 
 		val expectedYaw = yaw(expected)
 		val resultYaw = yaw(tracker.resetsHandler.mountRotFix)
 		assertAnglesApproxEqual(
 			expectedYaw,
 			resultYaw,
-			"Resulting mounting yaw is not equal to reference yaw (${deg(expectedYaw)} vs ${deg(resultYaw)})"
+			"Resulting mounting yaw after full reset is not equal to reference yaw (${deg(expectedYaw)} vs ${deg(resultYaw)})"
+		)
+
+		// Apply full reset and mounting plus offset
+		tracker.setRotation(Quaternion.IDENTITY)
+		tracker.resetsHandler.resetFull(reference)
+		tracker.setRotation(reference * trackerRot)
+		tracker.resetsHandler.resetMounting(reference * reference)
+
+		val expectedYaw2 = yaw(expected)
+		val resultYaw2 = yaw(tracker.resetsHandler.mountRotFix)
+		assertAnglesApproxEqual(
+			expectedYaw2,
+			resultYaw2,
+			"Resulting mounting yaw after full reset with offset is not equal to reference yaw (${deg(expectedYaw2)} vs ${deg(resultYaw2)})"
+		)
+
+		// Apply yaw reset and mounting
+		tracker.setRotation(Quaternion.IDENTITY)
+		tracker.resetsHandler.resetFull(reference)
+		tracker.resetsHandler.resetYaw(Quaternion.IDENTITY)
+		tracker.setRotation(trackerRot)
+		tracker.resetsHandler.resetMounting(Quaternion.IDENTITY)
+
+		val expectedYaw3 = yaw(expected)
+		val resultYaw3 = yaw(tracker.resetsHandler.mountRotFix)
+		assertAnglesApproxEqual(
+			expectedYaw3,
+			resultYaw3,
+			"Resulting mounting yaw after yaw reset is not equal to reference yaw (${deg(expectedYaw3)} vs ${deg(resultYaw3)})"
+		)
+
+		// Apply yaw reset and mounting plus offset
+		tracker.setRotation(Quaternion.IDENTITY)
+		tracker.resetsHandler.resetFull(Quaternion.IDENTITY)
+		tracker.resetsHandler.resetYaw(reference)
+		tracker.setRotation(reference * trackerRot)
+		tracker.resetsHandler.resetMounting(reference * reference)
+
+		val expectedYaw4 = yaw(expected)
+		val resultYaw4 = yaw(tracker.resetsHandler.mountRotFix)
+		assertAnglesApproxEqual(
+			expectedYaw3,
+			resultYaw3,
+			"Resulting mounting yaw after yaw reset with offset is not equal to reference yaw (${deg(expectedYaw4)} vs ${deg(resultYaw4)})"
 		)
 	}
 
