@@ -141,8 +141,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		rot *= mountingOrientation
 		rot = gyroFix * rot
 		rot *= attachmentFix
-		rot = yawFix * rot
 		rot = mountRotFix.inv() * (rot * mountRotFix)
+		rot = yawFix * rot
 		return rot * tposeFix
 	}
 
@@ -310,6 +310,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private fun fixYaw(sensorRotation: Quaternion, reference: Quaternion): Quaternion {
 		var rot = gyroFix * sensorRotation
 		rot *= attachmentFix
+		rot = mountRotFix.inv() * (rot * mountRotFix)
 		rot = getYawQuaternion(rot)
 		return rot.inv() * reference.project(Vector3.POS_Y).unit()
 	}
