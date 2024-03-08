@@ -23,19 +23,21 @@ class MountingResetTests {
 			DynamicTest.dynamicTest(
 				"Full and Mounting Reset Test of Tracker (Expected: ${deg(e)})"
 			) {
-				directions.forEach { f ->
-					directions.forEach { m ->
-						checkResetMounting(e, f, m)
+				frontMountings.forEach { a ->
+					directions.forEach { f ->
+						directions.forEach { m ->
+							checkResetMounting(e, a, f, m)
+						}
 					}
 				}
 			}
 		}
 	}
 
-	private fun checkResetMounting(expected: Quaternion, fullRef: Quaternion, mountRef: Quaternion) {
+	private fun checkResetMounting(expected: Quaternion, trackerAngle: Quaternion, fullRef: Quaternion, mountRef: Quaternion) {
 		val expectedYaw = yaw(expected)
 		// Offset front mounting by the expected mounting
-		val mountOffset = mountRef * expected * frontMounting
+		val mountOffset = mountRef * expected * trackerAngle
 		val tracker = Tracker(
 			null,
 			getNextLocalTrackerId(),
@@ -113,7 +115,7 @@ class MountingResetTests {
 			Quaternion.SLIMEVR.BACK
 		)
 
-		val frontMounting = q(90f, 0f, 0f)
+		val frontMountings = (5..175 step 5).map { q(it.toFloat(), 0f, 0f) }
 
 		fun q(pitch: Float, yaw: Float, roll: Float): Quaternion {
 			return EulerAngles(
