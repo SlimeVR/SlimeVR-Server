@@ -67,7 +67,10 @@ class MountingResetTests {
 		// Apply full reset and mounting plus offset
 		tracker.setRotation(Quaternion.IDENTITY)
 		tracker.resetsHandler.resetFull(reference)
+		// Apply an offset of reference to the rotation
 		tracker.setRotation(reference * trackerRot)
+		// Since reference is the offset from quat identity (reset) and the rotation,
+		// it needs to be applied twice
 		tracker.resetsHandler.resetMounting(reference * reference)
 
 		val expectedYaw2 = yaw(expected)
@@ -97,7 +100,10 @@ class MountingResetTests {
 		tracker.setRotation(Quaternion.IDENTITY)
 		tracker.resetsHandler.resetFull(Quaternion.IDENTITY)
 		tracker.resetsHandler.resetYaw(reference)
+		// Apply an offset of reference to the rotation
 		tracker.setRotation(reference * trackerRot)
+		// Since reference is the offset from quat identity (reset) and the rotation,
+		// it needs to be applied twice
 		tracker.resetsHandler.resetMounting(reference * reference)
 
 		val expectedYaw4 = yaw(expected)
