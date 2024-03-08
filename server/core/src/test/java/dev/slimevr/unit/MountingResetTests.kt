@@ -10,6 +10,7 @@ import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
+import kotlin.math.*
 
 /**
  * Tests [TrackerResetsHandler.resetMounting]
@@ -68,7 +69,9 @@ class MountingResetTests {
 	 * Makes a radian angle positive
 	 */
 	private fun posRad(rot: Float): Float {
-		return (if (rot < 0f) FastMath.TWO_PI + rot else rot) % FastMath.TWO_PI
+		// Reduce the rotation to the smallest form
+		val redRot = rot % FastMath.TWO_PI
+		return abs(if (rot < 0f) FastMath.TWO_PI + redRot else redRot)
 	}
 
 	/**
