@@ -257,7 +257,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		buffer = gyroFix * buffer
 		buffer *= attachmentFix
 
-		// TODO adjust buffer to reference
+		// Adjust buffer to reference
+		buffer = reference.project(Vector3.POS_Y).inv().unit() * buffer
 
 		// Rotate a vector pointing up by the quat
 		val rotVector = buffer.sandwich(Vector3.POS_Y)
