@@ -7,7 +7,7 @@ import dev.slimevr.tracking.trackers.udp.IMUType
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.AssertionFailureBuilder
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.TestFactory
 import kotlin.math.*
@@ -54,8 +54,9 @@ class MountingResetTests {
 		tracker.resetsHandler.resetMounting(mountRef)
 		val resultYaw = yaw(tracker.resetsHandler.mountRotFix)
 
-		Assertions.assertTrue(
-			angleApproxEqual(expectedYaw, resultYaw),
+		assertAnglesApproxEqual(
+			expectedYaw,
+			resultYaw,
 			"Resulting mounting yaw is not equal to reference yaw (${deg(expectedYaw)} vs ${deg(resultYaw)})"
 		)
 	}
@@ -87,10 +88,17 @@ class MountingResetTests {
 		return deg(yaw(rot))
 	}
 
-	private fun angleApproxEqual(a: Float, b: Float): Boolean {
+	private fun anglesApproxEqual(a: Float, b: Float): Boolean {
 		return FastMath.isApproxEqual(a, b) ||
 			FastMath.isApproxEqual(a - FastMath.TWO_PI, b) ||
 			FastMath.isApproxEqual(a, b - FastMath.TWO_PI)
+	}
+
+	private fun assertAnglesApproxEqual(expected: Float, actual: Float, message: String?) {
+		if (!anglesApproxEqual(expected, actual)) {
+			AssertionFailureBuilder.assertionFailure().message(message)
+				.expected(expected).actual(actual).buildAndThrow()
+		}
 	}
 
 	companion object {
