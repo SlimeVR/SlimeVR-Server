@@ -18,28 +18,24 @@ import kotlin.math.*
 class MountingResetTests {
 
 	@TestFactory
-	fun testMounting(): List<DynamicTest> {
-		return arrayOf(
-			MountTest(Quaternion.SLIMEVR.FRONT, Quaternion.IDENTITY),
-			MountTest(Quaternion.SLIMEVR.BACK, Quaternion.IDENTITY),
-			MountTest(Quaternion.SLIMEVR.FRONT, q(0f, 90f, 0f)),
-			MountTest(Quaternion.SLIMEVR.LEFT, q(0f, 42f, 0f)),
-			MountTest(Quaternion.SLIMEVR.FRONT, q(0f, 90f, 0f)),
-			MountTest(Quaternion.SLIMEVR.FRONT, q(10f, 90f, 0f)),
-			MountTest(Quaternion.SLIMEVR.FRONT, q(0f, 90f, 20f))
-		).map { test: MountTest ->
+	fun testResetAndMounting(): List<DynamicTest> {
+		return directions.map { e ->
 			DynamicTest.dynamicTest(
-				"Mounting Reset Test of Tracker (Expected: ${deg(yaw(test.expected))}, reference: ${deg(yaw(test.reference))})"
+				"Full and Mounting Reset Test of Tracker (Expected: ${deg(e)})"
 			) {
-				checkMounting(test.expected, test.reference)
+				directions.forEach { f ->
+					directions.forEach { m ->
+						checkResetMounting(e, f, m)
+					}
+				}
 			}
 		}
 	}
 
-	private fun checkMounting(expected: Quaternion, reference: Quaternion) {
+	private fun checkResetMounting(expected: Quaternion, fullRef: Quaternion, mountRef: Quaternion) {
 		val expectedYaw = yaw(expected)
 		// Offset front mounting by the expected mounting
-		val mountOffset = reference * Quaternion.SLIMEVR.FRONT.inv() * expected * frontMounting
+		val mountOffset = mountRef * expected * frontMounting
 		val tracker = Tracker(
 			null,
 			getNextLocalTrackerId(),
@@ -53,14 +49,13 @@ class MountingResetTests {
 			needsMounting = true
 		)
 
+		tracker.resetsHandler.resetFull(fullRef)
 		tracker.setRotation(mountOffset)
-		tracker.resetsHandler.resetMounting(reference)
+		tracker.resetsHandler.resetMounting(mountRef)
 		val resultYaw = yaw(tracker.resetsHandler.mountRotFix)
 
-		Assertions.assertEquals(
-			expectedYaw,
-			resultYaw,
-			FastMath.ZERO_TOLERANCE,
+		Assertions.assertTrue(
+			angleApproxEqual(expectedYaw, resultYaw),
 			"Resulting mounting yaw is not equal to reference yaw (${deg(expectedYaw)} vs ${deg(resultYaw)})"
 		)
 	}
@@ -88,7 +83,28 @@ class MountingResetTests {
 		return rot * FastMath.RAD_TO_DEG
 	}
 
+	private fun deg(rot: Quaternion): Float {
+		return deg(yaw(rot))
+	}
+
+	private fun angleApproxEqual(a: Float, b: Float): Boolean {
+		return FastMath.isApproxEqual(a, b) ||
+			FastMath.isApproxEqual(a - FastMath.TWO_PI, b) ||
+			FastMath.isApproxEqual(a, b - FastMath.TWO_PI)
+	}
+
 	companion object {
+		val directions = arrayOf(
+			Quaternion.SLIMEVR.FRONT,
+			Quaternion.SLIMEVR.FRONT_LEFT,
+			Quaternion.SLIMEVR.LEFT,
+			Quaternion.SLIMEVR.BACK_LEFT,
+			Quaternion.SLIMEVR.FRONT_RIGHT,
+			Quaternion.SLIMEVR.RIGHT,
+			Quaternion.SLIMEVR.BACK_RIGHT,
+			Quaternion.SLIMEVR.BACK
+		)
+
 		val frontMounting = q(90f, 0f, 0f)
 
 		fun q(pitch: Float, yaw: Float, roll: Float): Quaternion {
@@ -100,6 +116,4 @@ class MountingResetTests {
 			).toQuaternion()
 		}
 	}
-
-	data class MountTest(val expected: Quaternion, val reference: Quaternion)
 }
