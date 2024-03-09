@@ -435,8 +435,9 @@ public class VMCHandler implements OSCHandler {
 					// Add Unity humanoid bones transforms
 					for (UnityBone bone : UnityBone.getEntries()) {
 						if (
-							!(humanPoseManager.isTrackingLeftArmFromController()
-								&& isLeftArmUnityBone(bone))
+							bone.getBoneType() != null
+								&& !(humanPoseManager.isTrackingLeftArmFromController()
+									&& isLeftArmUnityBone(bone))
 								&& !(humanPoseManager.isTrackingRightArmFromController()
 									&& isRightArmUnityBone(bone))
 						) {
