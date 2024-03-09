@@ -16,7 +16,8 @@ private const val queryPath = "/tracking/vrsystem"
 class VRCOSCQueryHandler(
 	private val vrcOscHandler: VRCOSCHandler,
 ) {
-	private val service: OSCQueryService = OSCQueryService()
+	// TODO: Use server.service in OSCQueryServer instead
+	private val service: OSCQueryService = OSCQueryService(RPCUtil.getLocalIp())
 	private val remoteAddresses = FastList<String>()
 	private val oscQueryServers = FastList<OSCQueryServer>()
 
@@ -54,14 +55,14 @@ class VRCOSCQueryHandler(
 		remoteAddresses.add(url)
 
 		LogManager.debug("[OSCQueryHandler] Resolved and accepted: $serviceName")
-		LogManager.debug("[OSCQueryHandler] $serviceName URL: $url")k
+		LogManager.debug("[OSCQueryHandler] $serviceName URL: $url")
 
-			// create a new VRCOSCHandler for this service
-			if (port != vrcOscHandler.portOut || ip != vrcOscHandler.address.hostName) {
-				vrcOscHandler.addOSCSender(port, ip)
-			} else {
-				LogManager.debug("[OSCQueryHandler] An OSC Sender already exists with this address and port!")
-			}
+		// create a new VRCOSCHandler for this service
+		if (port != vrcOscHandler.portOut || ip != vrcOscHandler.address.hostName) {
+			vrcOscHandler.addOSCSender(port, ip)
+		} else {
+			LogManager.debug("[OSCQueryHandler] An OSC Sender already exists with this address and port!")
+		}
 
 		// Request data
 		val localIp = RPCUtil.getLocalIp()
@@ -69,12 +70,11 @@ class VRCOSCQueryHandler(
 		val server = OSCQueryServer(
 			"SlimeVR-Server-$localIp",
 			OscTransport.UDP,
-			vrcOscHandler.portIn.toUShort(),
 			localIp,
-			httpPort,
-			localIp
+			vrcOscHandler.portIn.toUShort(),
+			httpPort
 		)
-		val node = OSCQueryNode(queryPath, null, null)
+		val node = OSCQueryNode(queryPath)
 		server.rootNode.addNode(node)
 		server.init()
 		oscQueryServers.add(server)
