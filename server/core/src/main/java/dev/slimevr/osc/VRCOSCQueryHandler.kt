@@ -2,7 +2,6 @@ package dev.slimevr.osc
 
 import OSCQueryNode
 import OSCQueryServer
-import OSCQueryService
 import ServiceInfo
 import dev.slimevr.protocol.rpc.setup.RPCUtil
 import io.eiren.util.collections.FastList
@@ -16,16 +15,28 @@ private const val queryPath = "/tracking/vrsystem"
 class VRCOSCQueryHandler(
 	private val vrcOscHandler: VRCOSCHandler,
 ) {
-	// TODO: Use server.service in OSCQueryServer instead
-	private val service: OSCQueryService = OSCQueryService(RPCUtil.getLocalIp())
+	private val server: OSCQueryServer
 	private val remoteAddresses = FastList<String>()
-	private val oscQueryServers = FastList<OSCQueryServer>()
 
 	init {
+		// Request data
+		val localIp = RPCUtil.getLocalIp()
+		val httpPort = randomFreePort()
+		server = OSCQueryServer(
+			"SlimeVR-Server-$httpPort",
+			OscTransport.UDP,
+			localIp,
+			vrcOscHandler.portIn.toUShort(),
+			httpPort
+		)
+		server.rootNode.addNode(OSCQueryNode(queryPath))
+		server.init()
+		LogManager.debug("[OSCQueryHandler] SlimeVR OSCQueryServer started at http://$localIp:$httpPort")
+
 		try {
 			// Add service listener
 			LogManager.info("[OSCQueryHandler] Listening for VRChat OSCQuery")
-			service.addServiceListener(
+			server.service.addServiceListener(
 				"_osc._udp.local.",
 				onServiceResolved = {}, // TODO lib doesn't support it being optional
 				onServiceAdded = ::serviceAdded,
@@ -63,22 +74,6 @@ class VRCOSCQueryHandler(
 		} else {
 			LogManager.debug("[OSCQueryHandler] An OSC Sender already exists with this address and port!")
 		}
-
-		// Request data
-		val localIp = RPCUtil.getLocalIp()
-		val httpPort = randomFreePort()
-		val server = OSCQueryServer(
-			"SlimeVR-Server-$localIp",
-			OscTransport.UDP,
-			localIp,
-			vrcOscHandler.portIn.toUShort(),
-			httpPort
-		)
-		val node = OSCQueryNode(queryPath)
-		server.rootNode.addNode(node)
-		server.init()
-		oscQueryServers.add(server)
-		LogManager.debug("[OSCQueryHandler] SlimeVR OSCQueryServer started at http://$localIp:$httpPort")
 	}
 
 	private fun serviceRemoved(type: String, name: String) {
@@ -87,9 +82,7 @@ class VRCOSCQueryHandler(
 
 	fun close() {
 		vrcOscHandler.removeAdditionalOscSenders()
-		for (server in oscQueryServers) {
-			// TODO close async/in a thread
-			// server.close()
-		}
+		// TODO close async/in a thread
+// 		server.close()
 	}
 }

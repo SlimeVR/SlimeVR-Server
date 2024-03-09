@@ -88,18 +88,14 @@ class VRCOSCHandler(
 			}
 		}
 
-		// Close OSCQuery and its related senders
-		vrcOscQueryHandler?.close()
-
 		updateOscReceiver(config.portIn, vrsystemTrackersAddresses + oscTrackersAddresses + uprightAddress)
 		updateOscSender(config.portOut, config.address)
 
-		vrcOscQueryHandler = if (config.enabled) {
-			// New OSCQuery
-			VRCOSCQueryHandler(this)
-		} else {
-			// Disable OSCQuery
-			null
+		if (vrcOscQueryHandler == null && config.enabled) {
+			vrcOscQueryHandler = VRCOSCQueryHandler(this)
+		} else if (vrcOscQueryHandler != null && !config.enabled) {
+			vrcOscQueryHandler?.close()
+			vrcOscQueryHandler = null
 		}
 
 		if (refreshRouterSettings) {
