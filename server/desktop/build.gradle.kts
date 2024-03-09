@@ -60,9 +60,6 @@ dependencies {
 	implementation("net.java.dev.jna:jna-platform:5.+")
 	implementation("com.fazecast:jSerialComm:2.10.2")
 	implementation("org.hid4java:hid4java:0.7.0")
-
-	// Jitpack
-	implementation("com.github.SlimeVR.oscquery-kt:oscquery-kt:b779d0759b")
 }
 
 tasks.shadowJar {

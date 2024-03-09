@@ -142,7 +142,6 @@ class VRServer @JvmOverloads constructor(
 		// Initialize OSC handlers
 		vrcOSCHandler = VRCOSCHandler(
 			this,
-			humanPoseManager,
 			configManager.vrConfig.vrcOSC,
 			computedTrackers
 		)

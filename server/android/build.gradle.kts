@@ -82,9 +82,6 @@ dependencies {
 
 	// Serial
 	implementation("com.github.mik3y:usb-serial-for-android:3.7.0")
-
-	// Jitpack
-	implementation("com.github.SlimeVR.oscquery-kt:oscquery-kt:b779d0759b")
 }
 
 /**
