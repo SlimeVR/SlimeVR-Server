@@ -184,7 +184,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	fun tweakLegs() {
 		// If user doesn't have knees or legtweaks is disabled,
 		// don't spend time doing calculations!
-		if (!skeleton.hasKneeTrackers && !alwaysUseFloorclip || !enabled) return
+		if ((!skeleton.hasKneeTrackers && !alwaysUseFloorclip) || !enabled) return
 
 		// update the class with the latest data from the skeleton
 		// if false is returned something indicated that the legs should not

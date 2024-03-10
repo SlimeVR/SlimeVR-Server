@@ -84,36 +84,26 @@ dependencies {
 	implementation("com.github.mik3y:usb-serial-for-android:3.7.0")
 }
 
-/**
- * The android block is where you configure all your Android-specific
- * build options.
- */
-
+// The android block is where you configure all your Android-specific build options.
 extra.apply {
 	set("gitVersionCode", grgit.tag.list().size)
 	set("gitVersionName", grgit.describe(mapOf("tags" to true, "always" to true)))
 }
 android {
-	/**
-	 * The app's namespace. Used primarily to access app resources.
-	 */
+	// The app's namespace. Used primarily to access app resources.
 
 	namespace = "dev.slimevr.android"
 
-	/**
-	 * compileSdk specifies the Android API level Gradle should use to
-	 * compile your app. This means your app can use the API features included in
-	 * this API level and lower.
-	 */
+	/* compileSdk specifies the Android API level Gradle should use to
+		compile your app. This means your app can use the API features included in
+		this API level and lower. */
 
 	compileSdk = 33
 
-	/**
-	 * The defaultConfig block encapsulates default settings and entries for all
-	 * build variants and can override some attributes in main/AndroidManifest.xml
-	 * dynamically from the build system. You can configure product flavors to override
-	 * these values for different versions of your app.
-	 */
+	/* The defaultConfig block encapsulates default settings and entries for all
+		build variants and can override some attributes in main/AndroidManifest.xml
+		dynamically from the build system. You can configure product flavors to override
+		these values for different versions of your app. */
 
 	packaging {
 		resources.excludes.add("META-INF/*")
@@ -139,20 +129,16 @@ android {
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
 
-	/**
-	 * The buildTypes block is where you can configure multiple build types.
-	 * By default, the build system defines two build types: debug and release. The
-	 * debug build type is not explicitly shown in the default build configuration,
-	 * but it includes debugging tools and is signed with the debug key. The release
-	 * build type applies ProGuard settings and is not signed by default.
-	 */
+	/*	The buildTypes block is where you can configure multiple build types.
+		By default, the build system defines two build types: debug and release. The
+		debug build type is not explicitly shown in the default build configuration,
+		but it includes debugging tools and is signed with the debug key. The release
+		build type applies ProGuard settings and is not signed by default. */
 
 	buildTypes {
 
-		/**
-		 * By default, Android Studio configures the release build type to enable code
-		 * shrinking, using minifyEnabled, and specifies the default ProGuard rules file.
-		 */
+		/*	By default, Android Studio configures the release build type to enable code
+			shrinking, using minifyEnabled, and specifies the default ProGuard rules file. */
 
 		getByName("release") {
 			isMinifyEnabled = true // Enables code shrinking for the release build type.

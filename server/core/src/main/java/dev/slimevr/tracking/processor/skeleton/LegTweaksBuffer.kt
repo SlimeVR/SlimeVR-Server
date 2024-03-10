@@ -19,7 +19,7 @@ import io.github.axisangles.ktmath.Vector3
  * large range of actions and body types.
  */
 
-class LegTweaksBuffer {
+class LegTweaksBuffer @Suppress("ktlint") constructor() {
 	// hyperparameters / constants
 	companion object {
 		const val STATE_UNKNOWN = 0

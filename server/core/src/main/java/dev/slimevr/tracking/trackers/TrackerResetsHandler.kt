@@ -93,7 +93,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * a computed head tracker exists.
 	 */
 	fun refreshDriftCompensationEnabled() {
-		driftCompensationEnabled = compensateDrift && allowDriftCompensation &&
+		driftCompensationEnabled = compensateDrift &&
+			allowDriftCompensation &&
 			TrackerUtils.getNonInternalNonImuTrackerForBodyPosition(
 				VRServer.instance.allTrackers,
 				TrackerPosition.HEAD,

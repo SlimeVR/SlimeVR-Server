@@ -32,7 +32,6 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 			"max_line_length" to "off",
 			"ktlint_experimental" to "enabled",
 			"ktlint_standard_condition-wrapping" to "disabled",
-			"ktlint_standard_kdoc" to "disabled",
 			"ktlint_standard_property-naming" to "disabled",
 			"ij_kotlin_packages_to_use_import_on_demand" to
 				"java.util.*,kotlin.math.*,dev.slimevr.autobone.errors.*,io.github.axisangles.ktmath.*,kotlinx.atomicfu.*",
@@ -46,7 +45,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 	}
 	kotlin {
 		target("**/*.kt")
-		targetExclude("**/build/**/**.kt")
+		targetExclude("**/build/**/**.kt", "bin/")
 		ktlint(ktlintVersion)
 			.editorConfigOverride(editorConfig)
 	}
