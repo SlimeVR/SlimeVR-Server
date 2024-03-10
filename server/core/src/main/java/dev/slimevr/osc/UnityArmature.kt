@@ -170,33 +170,31 @@ class UnityArmature(localRot: Boolean) {
 		}
 	}
 
-	fun getHeadNodeOfBone(unityBone: UnityBone?): TransformNode? {
-		return if (unityBone == null) {
-			null
-		} else {
-			when (unityBone) {
-				UnityBone.HEAD -> neckTailNode
-				UnityBone.NECK -> neckHeadNode
-				UnityBone.UPPER_CHEST -> chestNode
-				UnityBone.CHEST -> spineTailNode
-				UnityBone.SPINE -> spineHeadNode
-				UnityBone.HIPS -> hipsNode
-				UnityBone.LEFT_UPPER_LEG -> leftHipNode
-				UnityBone.RIGHT_UPPER_LEG -> rightHipNode
-				UnityBone.LEFT_LOWER_LEG -> leftKneeNode
-				UnityBone.RIGHT_LOWER_LEG -> rightKneeNode
-				UnityBone.LEFT_FOOT -> leftAnkleNode
-				UnityBone.RIGHT_FOOT -> rightAnkleNode
-				UnityBone.LEFT_SHOULDER -> leftShoulderHeadNode
-				UnityBone.RIGHT_SHOULDER -> rightShoulderHeadNode
-				UnityBone.LEFT_UPPER_ARM -> leftShoulderTailNode
-				UnityBone.RIGHT_UPPER_ARM -> rightShoulderTailNode
-				UnityBone.LEFT_LOWER_ARM -> leftElbowNode
-				UnityBone.RIGHT_LOWER_ARM -> rightElbowNode
-				UnityBone.LEFT_HAND -> leftWristNode
-				UnityBone.RIGHT_HAND -> rightWristNode
-				else -> null
-			}
+	fun getHeadNodeOfBone(unityBone: UnityBone?): TransformNode? = if (unityBone == null) {
+		null
+	} else {
+		when (unityBone) {
+			UnityBone.HEAD -> neckTailNode
+			UnityBone.NECK -> neckHeadNode
+			UnityBone.UPPER_CHEST -> chestNode
+			UnityBone.CHEST -> spineTailNode
+			UnityBone.SPINE -> spineHeadNode
+			UnityBone.HIPS -> hipsNode
+			UnityBone.LEFT_UPPER_LEG -> leftHipNode
+			UnityBone.RIGHT_UPPER_LEG -> rightHipNode
+			UnityBone.LEFT_LOWER_LEG -> leftKneeNode
+			UnityBone.RIGHT_LOWER_LEG -> rightKneeNode
+			UnityBone.LEFT_FOOT -> leftAnkleNode
+			UnityBone.RIGHT_FOOT -> rightAnkleNode
+			UnityBone.LEFT_SHOULDER -> leftShoulderHeadNode
+			UnityBone.RIGHT_SHOULDER -> rightShoulderHeadNode
+			UnityBone.LEFT_UPPER_ARM -> leftShoulderTailNode
+			UnityBone.RIGHT_UPPER_ARM -> rightShoulderTailNode
+			UnityBone.LEFT_LOWER_ARM -> leftElbowNode
+			UnityBone.RIGHT_LOWER_ARM -> rightElbowNode
+			UnityBone.LEFT_HAND -> leftWristNode
+			UnityBone.RIGHT_HAND -> rightWristNode
+			else -> null
 		}
 	}
 

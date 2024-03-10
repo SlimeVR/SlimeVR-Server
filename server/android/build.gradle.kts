@@ -158,7 +158,7 @@ android {
 			isMinifyEnabled = true // Enables code shrinking for the release build type.
 			proguardFiles(
 				getDefaultProguardFile("proguard-android.txt"),
-				"proguard-rules.pro"
+				"proguard-rules.pro",
 			)
 		}
 	}

@@ -19,7 +19,7 @@ import io.github.axisangles.ktmath.Vector3
  * large range of actions and body types.
  */
 
-class LegTweaksBuffer() {
+class LegTweaksBuffer {
 	// hyperparameters / constants
 	companion object {
 		const val STATE_UNKNOWN = 0
@@ -92,9 +92,7 @@ class LegTweaksBuffer() {
 				)
 		}
 
-		fun getSkatingVelocityThreshold(): Float {
-			return SKATING_VELOCITY_THRESHOLD
-		}
+		fun getSkatingVelocityThreshold(): Float = SKATING_VELOCITY_THRESHOLD
 
 		fun setSkatingAccelerationThreshold(value: Float) {
 			SKATING_ACCELERATION_THRESHOLD = value
@@ -104,9 +102,7 @@ class LegTweaksBuffer() {
 				)
 		}
 
-		fun getSkatingAccelerationThreshold(): Float {
-			return SKATING_ACCELERATION_THRESHOLD
-		}
+		fun getSkatingAccelerationThreshold(): Float = SKATING_ACCELERATION_THRESHOLD
 	}
 
 	// states for the legs
@@ -267,9 +263,7 @@ class LegTweaksBuffer() {
 	}
 
 	// returns 1 / delta time
-	fun getTimeDelta(): Float {
-		return if (parent == null) 0.0f else 1.0f / ((timeOfFrame - parent!!.timeOfFrame) / NS_CONVERT)
-	}
+	fun getTimeDelta(): Float = if (parent == null) 0.0f else 1.0f / ((timeOfFrame - parent!!.timeOfFrame) / NS_CONVERT)
 
 	// calculate movement attributes
 	private fun calculateFootAttributes(active: Boolean) {
@@ -322,7 +316,7 @@ class LegTweaksBuffer() {
 			leftFootAngleDiff,
 			leftFloorLevel,
 			accelerationAboveThresholdLeft,
-			leftFootPosition
+			leftFootPosition,
 		)
 		rightLegState = checkState(
 			parent!!.rightLegState,
@@ -332,7 +326,7 @@ class LegTweaksBuffer() {
 			rightFootAngleDiff,
 			rightFloorLevel,
 			accelerationAboveThresholdRight,
-			rightFootPosition
+			rightFootPosition,
 		)
 
 		computeNumericalState()
@@ -381,13 +375,13 @@ class LegTweaksBuffer() {
 			leftFootVelocityMagnitude,
 			leftFootAccelerationMagnitude,
 			leftFootSensitivityAccel,
-			leftFootSensitivityVel
+			leftFootSensitivityVel,
 		)
 		rightLegNumericalState = computeNumericalState(
 			rightFootVelocityMagnitude,
 			rightFootAccelerationMagnitude,
 			rightFootSensitivityAccel,
-			rightFootSensitivityVel
+			rightFootSensitivityVel,
 		)
 	}
 
@@ -417,14 +411,12 @@ class LegTweaksBuffer() {
 		return Vector3(
 			diff.x,
 			0f,
-			diff.z
+			diff.z,
 		).len()
 	}
 
 	// get the angular velocity of the left foot (kinda we just want a scalar)
-	private fun getFootAngularVelocity(oldRot: Quaternion, rot: Quaternion): Float {
-		return (rot.toMatrix().z.unit() - oldRot.toMatrix().z.unit()).len()
-	}
+	private fun getFootAngularVelocity(oldRot: Quaternion, rot: Quaternion): Float = (rot.toMatrix().z.unit() - oldRot.toMatrix().z.unit()).len()
 
 	// compute the velocity of the feet from the position in the last frames
 	private fun computeVelocity() {
@@ -438,9 +430,7 @@ class LegTweaksBuffer() {
 	}
 
 	// get the nth parent of this frame
-	private fun getNParent(n: Int): LegTweaksBuffer? {
-		return if (n == 0 || parent == null) this else parent!!.getNParent(n - 1)
-	}
+	private fun getNParent(n: Int): LegTweaksBuffer? = if (n == 0 || parent == null) this else parent!!.getNParent(n - 1)
 
 	// compute the acceleration magnitude of the feet from the acceleration
 	// given by the imus
@@ -459,11 +449,11 @@ class LegTweaksBuffer() {
 	private fun computeAccelerationAboveThresholdFootTrackers() {
 		accelerationAboveThresholdLeft = (
 			leftFootAccelerationMagnitude
-			> SKATING_ACCELERATION_CUTOFF_ENGAGE * leftFootSensitivityAccel
+				> SKATING_ACCELERATION_CUTOFF_ENGAGE * leftFootSensitivityAccel
 			)
 		accelerationAboveThresholdRight = (
 			rightFootAccelerationMagnitude
-			> SKATING_ACCELERATION_CUTOFF_ENGAGE * rightFootSensitivityAccel
+				> SKATING_ACCELERATION_CUTOFF_ENGAGE * rightFootSensitivityAccel
 			)
 	}
 
@@ -472,11 +462,11 @@ class LegTweaksBuffer() {
 	private fun computeAccelerationAboveThresholdAnkleTrackers() {
 		accelerationAboveThresholdLeft = (
 			leftFootAccelerationMagnitude
-			> (SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * leftFootSensitivityAccel
+				> (SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * leftFootSensitivityAccel
 			)
 		accelerationAboveThresholdRight = (
 			rightFootAccelerationMagnitude
-			> (SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * rightFootSensitivityAccel
+				> (SKATING_ACCELERATION_THRESHOLD + SIX_TRACKER_TOLERANCE) * rightFootSensitivityAccel
 			)
 	}
 
@@ -494,13 +484,13 @@ class LegTweaksBuffer() {
 			leftFootVelocity,
 			rightFootVelocity,
 			leftFootVelocityMagnitude,
-			rightFootVelocityMagnitude
+			rightFootVelocityMagnitude,
 		)
 		val rightFootScalarVel: Float = getFootLockLikelihood(
 			rightFootVelocity,
 			leftFootVelocity,
 			rightFootVelocityMagnitude,
-			leftFootVelocityMagnitude
+			leftFootVelocityMagnitude,
 		)
 
 		// get the third set of scalars that is based on where the COM is
@@ -515,7 +505,7 @@ class LegTweaksBuffer() {
 				FastMath.clamp(
 					pressureScalars[0] * 2.0f,
 					PRESSURE_SCALAR_MIN,
-					PRESSURE_SCALAR_MAX
+					PRESSURE_SCALAR_MAX,
 				)
 			)
 		rightFootSensitivityVel = (
@@ -526,7 +516,7 @@ class LegTweaksBuffer() {
 				FastMath.clamp(
 					pressureScalars[1] * 2.0f,
 					PRESSURE_SCALAR_MIN,
-					PRESSURE_SCALAR_MAX
+					PRESSURE_SCALAR_MAX,
 				)
 			)
 
@@ -728,7 +718,5 @@ class LegTweaksBuffer() {
 	}
 
 	// simple error function for the force vector gradient descent
-	private fun getForceVectorError(testForce: Vector3, otherForce: Vector3): Vector3 {
-		return centerOfMassAcceleration - (testForce + otherForce + GRAVITY)
-	}
+	private fun getForceVectorError(testForce: Vector3, otherForce: Vector3): Vector3 = centerOfMassAcceleration - (testForce + otherForce + GRAVITY)
 }
