@@ -3,10 +3,10 @@ package dev.slimevr.osc
 import OSCQueryNode
 import OSCQueryServer
 import ServiceInfo
-import dev.slimevr.protocol.rpc.setup.RPCUtil
 import io.eiren.util.logging.LogManager
 import randomFreePort
 import java.io.IOException
+import java.net.InetAddress
 
 private const val serviceStartsWith = "VRChat-Client"
 private const val queryPath = "/tracking/vrsystem"
@@ -18,13 +18,13 @@ class VRCOSCQueryHandler(
 
 	init {
 		// Request data
-		val localIp = RPCUtil.getLocalIp()
+		val localIp = InetAddress.getLocalHost().hostAddress
 		val httpPort = randomFreePort()
 		oscQueryServer = OSCQueryServer(
 			"SlimeVR-Server-$httpPort",
 			OscTransport.UDP,
 			localIp,
-			vrcOscHandler.portIn.toUShort(), // TODO modify this alongside VRCOSCHandler when the lib supports it
+			vrcOscHandler.portIn.toUShort(),
 			httpPort
 		)
 		oscQueryServer.rootNode.addNode(OSCQueryNode(queryPath))
@@ -36,7 +36,6 @@ class VRCOSCQueryHandler(
 			LogManager.info("[OSCQueryHandler] Listening for VRChat OSCQuery")
 			oscQueryServer.service.addServiceListener(
 				"_osc._udp.local.",
-				onServiceResolved = {}, // TODO lib doesn't support it being optional
 				onServiceAdded = ::serviceAdded,
 				onServiceRemoved = ::serviceRemoved
 			)
@@ -68,6 +67,11 @@ class VRCOSCQueryHandler(
 	private fun serviceRemoved(type: String, name: String) {
 		LogManager.debug("Service removed: $name")
 		// TODO call close() if no more services
+	}
+
+	fun updatePortIn(portIn: Int) {
+		// TODO
+		// oscQueryServer.oscPort = portIn
 	}
 
 	fun close() {
