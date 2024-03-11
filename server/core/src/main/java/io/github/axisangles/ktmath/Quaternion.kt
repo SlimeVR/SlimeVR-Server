@@ -4,7 +4,8 @@ package io.github.axisangles.ktmath
 
 import kotlin.math.*
 
-data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
+@JvmInline
+value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	companion object {
 		val NULL = Quaternion(0f, 0f, 0f, 0f)
 		val IDENTITY = Quaternion(1f, 0f, 0f, 0f)
@@ -170,6 +171,11 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * computes right division, this * that^-1
 	 **/
 	operator fun div(that: Quaternion): Quaternion = this * that.inv()
+
+	operator fun component1(): Float = w
+	operator fun component2(): Float = x
+	operator fun component3(): Float = y
+	operator fun component4(): Float = z
 
 	/**
 	 * @return the conjugate of this quaternion
