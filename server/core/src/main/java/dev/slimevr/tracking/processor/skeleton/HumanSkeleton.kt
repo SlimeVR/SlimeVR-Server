@@ -144,9 +144,7 @@ class HumanSkeleton(
 	// Constructors
 	init {
 		assembleSkeleton()
-		if (humanPoseManager.computedTrackers != null) {
-			setComputedTrackers(humanPoseManager.computedTrackers)
-		}
+		setComputedTrackers(humanPoseManager.computedTrackers)
 	}
 
 	constructor(
@@ -1041,7 +1039,7 @@ class HumanSkeleton(
 		)
 
 	fun resetTrackersFull(resetSourceName: String?) {
-		val trackersToReset = humanPoseManager.getTrackersToReset()
+		val trackersToReset = humanPoseManager.trackersToReset
 
 		// Resets all axis of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
@@ -1070,7 +1068,7 @@ class HumanSkeleton(
 
 	@VRServerThread
 	fun resetTrackersYaw(resetSourceName: String?) {
-		val trackersToReset = humanPoseManager.getTrackersToReset()
+		val trackersToReset = humanPoseManager.trackersToReset
 
 		// Resets the yaw of the trackers with the head as reference.
 		var referenceRotation = IDENTITY
@@ -1092,7 +1090,7 @@ class HumanSkeleton(
 
 	@VRServerThread
 	fun resetTrackersMounting(resetSourceName: String?) {
-		val trackersToReset = humanPoseManager.getTrackersToReset()
+		val trackersToReset = humanPoseManager.trackersToReset
 
 		// Resets the mounting orientation of the trackers with the HMD as
 		// reference.
@@ -1116,7 +1114,7 @@ class HumanSkeleton(
 
 	@VRServerThread
 	fun clearTrackersMounting(resetSourceName: String?) {
-		val trackersToReset = humanPoseManager.getTrackersToReset()
+		val trackersToReset = humanPoseManager.trackersToReset
 		headTracker?.let {
 			if (it.needsMounting) it.resetsHandler.clearMounting()
 		}

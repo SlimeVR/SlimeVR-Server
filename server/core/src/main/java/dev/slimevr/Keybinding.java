@@ -23,7 +23,7 @@ public class Keybinding implements HotkeyListener {
 	public Keybinding(VRServer server) {
 		this.server = server;
 
-		this.config = server.configManager.getVrConfig().getKeybindings();
+		this.config = server.configManager.getVrConfig().keybindings;
 
 		if (OperatingSystem.Companion.getCurrentPlatform() != OperatingSystem.WINDOWS) {
 			LogManager

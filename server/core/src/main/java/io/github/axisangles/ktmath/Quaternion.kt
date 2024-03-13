@@ -2,9 +2,11 @@
 
 package io.github.axisangles.ktmath
 
+import kotlinx.serialization.Serializable
 import kotlin.math.*
 
 @JvmInline
+@Serializable
 value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	companion object {
 		val NULL = Quaternion(0f, 0f, 0f, 0f)
@@ -406,6 +408,12 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun toEulerAngles(order: EulerOrder): EulerAngles =
 		this.toMatrix().toEulerAnglesAssumingOrthonormal(order)
+
+	fun toObject() = ObjectQuaternion(w, x, y, z)
+}
+
+data class ObjectQuaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
+	fun toValue() = Quaternion(w, x, y, z)
 }
 
 operator fun Float.plus(that: Quaternion): Quaternion = that + this

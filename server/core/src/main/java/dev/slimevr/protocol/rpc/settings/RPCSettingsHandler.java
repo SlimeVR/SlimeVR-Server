@@ -45,22 +45,22 @@ public class RPCSettingsHandler {
 				RPCSettingsBuilder
 					.createFilterSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().getFilters()
+						this.api.server.configManager.getVrConfig().filters
 					),
 				RPCSettingsBuilder
 					.createDriftCompensationSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().getDriftCompensation()
+						this.api.server.configManager.getVrConfig().driftCompensation
 					),
 				RPCSettingsBuilder
 					.createOSCRouterSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().getOscRouter()
+						this.api.server.configManager.getVrConfig().oscRouter
 					),
 				RPCSettingsBuilder
 					.createVRCOSCSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().getVrcOSC()
+						this.api.server.configManager.getVrConfig().vrcOSC
 					),
 				RPCSettingsBuilder
 					.createVMCOSCSettings(
@@ -71,22 +71,22 @@ public class RPCSettingsHandler {
 					.createModelSettings(
 						fbb,
 						this.api.server.humanPoseManager,
-						this.api.server.configManager.getVrConfig().getLegTweaks()
+						this.api.server.configManager.getVrConfig().legTweaks
 					),
 				RPCSettingsBuilder
 					.createTapDetectionSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().getTapDetection()
+						this.api.server.configManager.getVrConfig().tapDetection
 					),
 				RPCSettingsBuilder
 					.createAutoBoneSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().getAutoBone()
+						this.api.server.configManager.getVrConfig().autoBone
 					),
 				RPCSettingsBuilder
 					.createArmsResetModeSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().getResetsConfig()
+						this.api.server.configManager.getVrConfig().resetsConfig
 					)
 			);
 		int outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
@@ -122,8 +122,7 @@ public class RPCSettingsHandler {
 			TrackerFilters type = TrackerFilters.fromId(req.filtering().type());
 			if (type != null) {
 				FiltersConfig filtersConfig = this.api.server.configManager
-					.getVrConfig()
-					.getFilters();
+					.getVrConfig().filters;
 				filtersConfig.setType(type.getConfigKey());
 				filtersConfig.setAmount(req.filtering().amount());
 				filtersConfig.updateTrackersFilters();
@@ -132,8 +131,7 @@ public class RPCSettingsHandler {
 
 		if (req.driftCompensation() != null) {
 			DriftCompensationConfig driftCompensationConfig = this.api.server.configManager
-				.getVrConfig()
-				.getDriftCompensation();
+				.getVrConfig().driftCompensation;
 			driftCompensationConfig.setEnabled(req.driftCompensation().enabled());
 			driftCompensationConfig.setAmount(req.driftCompensation().amount());
 			driftCompensationConfig.setMaxResets(req.driftCompensation().maxResets());
@@ -142,8 +140,7 @@ public class RPCSettingsHandler {
 
 		if (req.oscRouter() != null) {
 			OSCConfig oscRouterConfig = this.api.server.configManager
-				.getVrConfig()
-				.getOscRouter();
+				.getVrConfig().oscRouter;
 			if (oscRouterConfig != null) {
 				OSCRouter oscRouter = this.api.server.getOSCRouter();
 				var osc = req.oscRouter().oscSettings();
@@ -160,8 +157,7 @@ public class RPCSettingsHandler {
 
 		if (req.vrcOsc() != null) {
 			VRCOSCConfig vrcOSCConfig = this.api.server.configManager
-				.getVrConfig()
-				.getVrcOSC();
+				.getVrConfig().vrcOSC;
 			if (vrcOSCConfig != null) {
 				VRCOSCHandler VRCOSCHandler = this.api.server.vrcOSCHandler;
 				var osc = req.vrcOsc().oscSettings();
@@ -215,8 +211,7 @@ public class RPCSettingsHandler {
 
 		if (req.tapDetectionSettings() != null) {
 			TapDetectionConfig tapDetectionConfig = this.api.server.configManager
-				.getVrConfig()
-				.getTapDetection();
+				.getVrConfig().tapDetection;
 			var tapDetectionSettings = req.tapDetectionSettings();
 
 			if (tapDetectionSettings != null) {
@@ -269,7 +264,7 @@ public class RPCSettingsHandler {
 		var modelSettings = req.modelSettings();
 		if (modelSettings != null) {
 			var hpm = this.api.server.humanPoseManager;
-			var legTweaksConfig = this.api.server.configManager.getVrConfig().getLegTweaks();
+			var legTweaksConfig = this.api.server.configManager.getVrConfig().legTweaks;
 			var toggles = modelSettings.toggles();
 			var ratios = modelSettings.ratios();
 			var legTweaks = modelSettings.legTweaks();
@@ -379,16 +374,14 @@ public class RPCSettingsHandler {
 		var autoBoneSettings = req.autoBoneSettings();
 		if (autoBoneSettings != null) {
 			AutoBoneConfig autoBoneConfig = this.api.server.configManager
-				.getVrConfig()
-				.getAutoBone();
+				.getVrConfig().autoBone;
 
 			RPCSettingsBuilder.readAutoBoneSettings(autoBoneSettings, autoBoneConfig);
 		}
 
 		if (req.resetsSettings() != null) {
 			ResetsConfig resetsConfig = this.api.server.configManager
-				.getVrConfig()
-				.getResetsConfig();
+				.getVrConfig().resetsConfig;
 			ArmsResetModes mode = ArmsResetModes
 				.fromId(Math.max(req.resetsSettings().armsMountingResetMode(), 0));
 			if (mode != null) {

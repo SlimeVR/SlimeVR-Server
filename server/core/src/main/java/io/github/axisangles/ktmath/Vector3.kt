@@ -2,9 +2,12 @@
 
 package io.github.axisangles.ktmath
 
+import kotlinx.serialization.Serializable
 import kotlin.math.*
 
-data class Vector3(val x: Float, val y: Float, val z: Float) {
+@JvmInline
+@Serializable
+value class Vector3(val x: Float, val y: Float, val z: Float) {
 	companion object {
 		val NULL = Vector3(0f, 0f, 0f)
 		val POS_X = Vector3(1f, 0f, 0f)
@@ -14,6 +17,10 @@ data class Vector3(val x: Float, val y: Float, val z: Float) {
 		val NEG_Y = Vector3(0f, -1f, 0f)
 		val NEG_Z = Vector3(0f, 0f, -1f)
 	}
+
+	operator fun component1() = x
+	operator fun component2() = y
+	operator fun component3() = z
 
 	operator fun unaryMinus() = Vector3(-x, -y, -z)
 

@@ -5,7 +5,9 @@ package io.github.axisangles.ktmath
 import kotlin.math.*
 
 /* ktlint-disable */
-data class Matrix3(
+@JvmInline
+@Serializable
+value class Matrix3(
 	val xx: Float, val yx: Float, val zx: Float,
 	val xy: Float, val yy: Float, val zy: Float,
 	val xz: Float, val yz: Float, val zz: Float
@@ -42,6 +44,16 @@ data class Matrix3(
 	val xRow get() = Vector3(xx, yx, zx)
 	val yRow get() = Vector3(xy, yy, zy)
 	val zRow get() = Vector3(xz, yz, zz)
+
+	operator fun component1(): Float = xx
+	operator fun component2(): Float = yx
+	operator fun component3(): Float = zx
+	operator fun component4(): Float = xy
+	operator fun component5(): Float = yy
+	operator fun component6(): Float = zy
+	operator fun component7(): Float = xz
+	operator fun component8(): Float = yz
+	operator fun component9(): Float = zz
 
 	operator fun unaryMinus(): Matrix3 = Matrix3(
 		-xx, -yx, -zx,
