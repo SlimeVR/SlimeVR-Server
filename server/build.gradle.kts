@@ -36,7 +36,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 // 			"max_line_length" to 88,
 			"ktlint_experimental" to "enabled",
 			"ij_kotlin_packages_to_use_import_on_demand" to
-				"java.util.*,kotlin.math.*,dev.slimevr.autobone.errors.*,io.github.axisangles.ktmath.*,kotlinx.atomicfu.*",
+				"java.util.*,kotlin.math.*,dev.slimevr.autobone.errors.*,io.github.axisangles.ktmath.*,kotlinx.atomicfu.*,dev.slimevr.desktop.platform.ProtobufMessages.*",
 			"ij_kotlin_allow_trailing_comma" to true
 		)
 	val ktlintVersion = "0.47.1"

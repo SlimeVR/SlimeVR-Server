@@ -34,15 +34,17 @@ class SkeletonConfigManager(
 		private set
 
 	init {
-		updateSettingsInSkeleton()
+		if (humanPoseManager?.isSkeletonPresent != false) {
+			updateSettingsInSkeleton()
 
-		if (autoUpdateOffsets) {
-			computeAllNodeOffsets()
+			if (autoUpdateOffsets) {
+				computeAllNodeOffsets()
+			}
 		}
 	}
 
 	fun updateSettingsInSkeleton() {
-		if (humanPoseManager == null || !humanPoseManager.isSkeletonPresent) return
+		if (humanPoseManager == null) return
 
 		for (config in SkeletonConfigToggles.values) {
 			val configToggle = configToggles[config]

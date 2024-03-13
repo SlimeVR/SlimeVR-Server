@@ -13,8 +13,9 @@ import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.collections.FastList
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import java.util.*
+import java.util.Queue
 import java.util.concurrent.LinkedBlockingQueue
+import kotlin.collections.HashMap
 
 abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISteamVRBridge {
 	@JvmField
