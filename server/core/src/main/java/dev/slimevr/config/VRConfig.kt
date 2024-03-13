@@ -17,35 +17,26 @@ import dev.slimevr.tracking.trackers.TrackerRole
 class VRConfig {
 	val server: ServerConfig = ServerConfig()
 
-	@JvmField
 	val filters: FiltersConfig = FiltersConfig()
 
-	@JvmField
 	val driftCompensation: DriftCompensationConfig = DriftCompensationConfig()
 
-	@JvmField
 	val oscRouter: OSCConfig = OSCConfig()
 
-	@JvmField
 	val vrcOSC: VRCOSCConfig = VRCOSCConfig()
 
 	val vMC: VMCConfig = VMCConfig()
 
-	@JvmField
 	val autoBone: AutoBoneConfig = AutoBoneConfig()
 
-	@JvmField
 	val keybindings: KeybindingsConfig = KeybindingsConfig()
 
 	val skeleton: SkeletonConfig = SkeletonConfig()
 
-	@JvmField
 	val legTweaks: LegTweaksConfig = LegTweaksConfig()
 
-	@JvmField
 	val tapDetection: TapDetectionConfig = TapDetectionConfig()
 
-	@JvmField
 	val resetsConfig: ResetsConfig = ResetsConfig()
 
 	@JsonDeserialize(using = TrackerConfigMapDeserializer::class)
@@ -56,7 +47,6 @@ class VRConfig {
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer::class)
 	private val bridges: MutableMap<String, BridgeConfig> = HashMap()
 
-	@JvmField
 	val overlay: OverlayConfig = OverlayConfig()
 
 	init {

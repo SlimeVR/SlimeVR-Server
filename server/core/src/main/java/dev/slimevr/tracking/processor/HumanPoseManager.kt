@@ -507,6 +507,7 @@ constructor(val server: VRServer?) {
 	 */
 	@ThreadSafe
 	fun updateNodeOffset(boneType: BoneType, offset: Vector3) {
+		if (!isSkeletonPresent) return
 		skeleton.updateNodeOffset(boneType, offset)
 	}
 

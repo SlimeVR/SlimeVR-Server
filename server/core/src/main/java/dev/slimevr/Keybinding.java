@@ -23,7 +23,7 @@ public class Keybinding implements HotkeyListener {
 	public Keybinding(VRServer server) {
 		this.server = server;
 
-		this.config = server.configManager.getVrConfig().keybindings;
+		this.config = server.configManager.getVrConfig().getKeybindings();
 
 		if (OperatingSystem.Companion.getCurrentPlatform() != OperatingSystem.WINDOWS) {
 			LogManager
@@ -34,7 +34,7 @@ public class Keybinding implements HotkeyListener {
 		}
 
 		try {
-			if (JIntellitype.getInstance() instanceof JIntellitype) {
+			if (JIntellitype.getInstance() != null) {
 				JIntellitype.getInstance().addHotKeyListener(this);
 
 				String fullResetBinding = this.config.getFullResetBinding();

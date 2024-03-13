@@ -45,22 +45,22 @@ public class RPCSettingsHandler {
 				RPCSettingsBuilder
 					.createFilterSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().filters
+						this.api.server.configManager.getVrConfig().getFilters()
 					),
 				RPCSettingsBuilder
 					.createDriftCompensationSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().driftCompensation
+						this.api.server.configManager.getVrConfig().getDriftCompensation()
 					),
 				RPCSettingsBuilder
 					.createOSCRouterSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().oscRouter
+						this.api.server.configManager.getVrConfig().getOscRouter()
 					),
 				RPCSettingsBuilder
 					.createVRCOSCSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().vrcOSC
+						this.api.server.configManager.getVrConfig().getVrcOSC()
 					),
 				RPCSettingsBuilder
 					.createVMCOSCSettings(
@@ -71,22 +71,22 @@ public class RPCSettingsHandler {
 					.createModelSettings(
 						fbb,
 						this.api.server.humanPoseManager,
-						this.api.server.configManager.getVrConfig().legTweaks
+						this.api.server.configManager.getVrConfig().getLegTweaks()
 					),
 				RPCSettingsBuilder
 					.createTapDetectionSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().tapDetection
+						this.api.server.configManager.getVrConfig().getTapDetection()
 					),
 				RPCSettingsBuilder
 					.createAutoBoneSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().autoBone
+						this.api.server.configManager.getVrConfig().getAutoBone()
 					),
 				RPCSettingsBuilder
 					.createArmsResetModeSettings(
 						fbb,
-						this.api.server.configManager.getVrConfig().resetsConfig
+						this.api.server.configManager.getVrConfig().getResetsConfig()
 					)
 			);
 		int outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings);
@@ -122,7 +122,8 @@ public class RPCSettingsHandler {
 			TrackerFilters type = TrackerFilters.fromId(req.filtering().type());
 			if (type != null) {
 				FiltersConfig filtersConfig = this.api.server.configManager
-					.getVrConfig().filters;
+					.getVrConfig()
+					.getFilters();
 				filtersConfig.setType(type.getConfigKey());
 				filtersConfig.setAmount(req.filtering().amount());
 				filtersConfig.updateTrackersFilters();
@@ -131,7 +132,8 @@ public class RPCSettingsHandler {
 
 		if (req.driftCompensation() != null) {
 			DriftCompensationConfig driftCompensationConfig = this.api.server.configManager
-				.getVrConfig().driftCompensation;
+				.getVrConfig()
+				.getDriftCompensation();
 			driftCompensationConfig.setEnabled(req.driftCompensation().enabled());
 			driftCompensationConfig.setAmount(req.driftCompensation().amount());
 			driftCompensationConfig.setMaxResets(req.driftCompensation().maxResets());
@@ -140,7 +142,8 @@ public class RPCSettingsHandler {
 
 		if (req.oscRouter() != null) {
 			OSCConfig oscRouterConfig = this.api.server.configManager
-				.getVrConfig().oscRouter;
+				.getVrConfig()
+				.getOscRouter();
 			if (oscRouterConfig != null) {
 				OSCRouter oscRouter = this.api.server.getOSCRouter();
 				var osc = req.oscRouter().oscSettings();
@@ -157,61 +160,59 @@ public class RPCSettingsHandler {
 
 		if (req.vrcOsc() != null) {
 			VRCOSCConfig vrcOSCConfig = this.api.server.configManager
-				.getVrConfig().vrcOSC;
-			if (vrcOSCConfig != null) {
-				VRCOSCHandler VRCOSCHandler = this.api.server.vrcOSCHandler;
-				var osc = req.vrcOsc().oscSettings();
-				var trackers = req.vrcOsc().trackers();
+				.getVrConfig()
+				.getVrcOSC();
+			VRCOSCHandler VRCOSCHandler = this.api.server.vrcOSCHandler;
+			var osc = req.vrcOsc().oscSettings();
+			var trackers = req.vrcOsc().trackers();
 
-				if (osc != null) {
-					vrcOSCConfig.setEnabled(osc.enabled());
-					vrcOSCConfig.setPortIn(osc.portIn());
-					vrcOSCConfig.setPortOut(osc.portOut());
-					vrcOSCConfig.setAddress(osc.address());
-				}
-				if (trackers != null) {
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
-				}
-
-				VRCOSCHandler.refreshSettings(true);
+			if (osc != null) {
+				vrcOSCConfig.setEnabled(osc.enabled());
+				vrcOSCConfig.setPortIn(osc.portIn());
+				vrcOSCConfig.setPortOut(osc.portOut());
+				vrcOSCConfig.setAddress(osc.address());
 			}
+			if (trackers != null) {
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
+			}
+
+			VRCOSCHandler.refreshSettings(true);
 		}
 
 		if (req.vmcOsc() != null) {
 			VMCConfig vmcConfig = this.api.server.configManager
 				.getVrConfig()
 				.getVMC();
-			if (vmcConfig != null) {
-				VMCHandler VMCHandler = this.api.server.getVMCHandler();
-				var osc = req.vmcOsc().oscSettings();
+			VMCHandler VMCHandler = this.api.server.getVMCHandler();
+			var osc = req.vmcOsc().oscSettings();
 
-				if (osc != null) {
-					vmcConfig.setEnabled(osc.enabled());
-					vmcConfig.setPortIn(osc.portIn());
-					vmcConfig.setPortOut(osc.portOut());
-					vmcConfig.setAddress(osc.address());
-				}
-				if (req.vmcOsc().vrmJson() != null)
-					vmcConfig.setVrmJson(req.vmcOsc().vrmJson());
-				vmcConfig.setAnchorHip(req.vmcOsc().anchorHip());
-
-				VMCHandler.refreshSettings(true);
+			if (osc != null) {
+				vmcConfig.setEnabled(osc.enabled());
+				vmcConfig.setPortIn(osc.portIn());
+				vmcConfig.setPortOut(osc.portOut());
+				vmcConfig.setAddress(osc.address());
 			}
+			if (req.vmcOsc().vrmJson() != null)
+				vmcConfig.setVrmJson(req.vmcOsc().vrmJson());
+			vmcConfig.setAnchorHip(req.vmcOsc().anchorHip());
+
+			VMCHandler.refreshSettings(true);
 		}
 
 		if (req.tapDetectionSettings() != null) {
 			TapDetectionConfig tapDetectionConfig = this.api.server.configManager
-				.getVrConfig().tapDetection;
+				.getVrConfig()
+				.getTapDetection();
 			var tapDetectionSettings = req.tapDetectionSettings();
 
 			if (tapDetectionSettings != null) {
@@ -264,7 +265,7 @@ public class RPCSettingsHandler {
 		var modelSettings = req.modelSettings();
 		if (modelSettings != null) {
 			var hpm = this.api.server.humanPoseManager;
-			var legTweaksConfig = this.api.server.configManager.getVrConfig().legTweaks;
+			var legTweaksConfig = this.api.server.configManager.getVrConfig().getLegTweaks();
 			var toggles = modelSettings.toggles();
 			var ratios = modelSettings.ratios();
 			var legTweaks = modelSettings.legTweaks();
@@ -374,14 +375,16 @@ public class RPCSettingsHandler {
 		var autoBoneSettings = req.autoBoneSettings();
 		if (autoBoneSettings != null) {
 			AutoBoneConfig autoBoneConfig = this.api.server.configManager
-				.getVrConfig().autoBone;
+				.getVrConfig()
+				.getAutoBone();
 
 			RPCSettingsBuilder.readAutoBoneSettings(autoBoneSettings, autoBoneConfig);
 		}
 
 		if (req.resetsSettings() != null) {
 			ResetsConfig resetsConfig = this.api.server.configManager
-				.getVrConfig().resetsConfig;
+				.getVrConfig()
+				.getResetsConfig();
 			ArmsResetModes mode = ArmsResetModes
 				.fromId(Math.max(req.resetsSettings().armsMountingResetMode(), 0));
 			if (mode != null) {
