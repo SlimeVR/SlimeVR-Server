@@ -48,7 +48,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 	}
 	kotlin {
 		target("**/*.kt")
-		targetExclude("**/build/**/**.kt")
+		targetExclude("**/build/**/**.kt", "bin/")
 		ktlint(ktlintVersion)
 			.setUseExperimental(true)
 			.editorConfigOverride(editorConfig)
