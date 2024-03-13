@@ -57,7 +57,6 @@ dependencies {
 	implementation("commons-cli:commons-cli:1.5.0")
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.15.1")
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.1")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.+")
 
 	implementation("com.github.jonpeterson:jackson-module-model-versioning:1.2.2")
 	implementation("org.apache.commons:commons-math3:3.6.1")
