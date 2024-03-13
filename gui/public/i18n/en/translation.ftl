@@ -476,8 +476,9 @@ settings-osc-router-network-address-placeholder = IPV4 address
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description =
-    Change VRChat-specific settings to receive headset (HMD) data and send
-    tracker data for FBT without SteamVR (ex. Quest standalone).
+    Change settings specific to the OSC Trackers standard, allowing you to send
+    tracker data for FBT without SteamVR (ex. Quest standalone). OSCQuery is
+    supported, so the ports and network address can be left untouched for VRChat.
 settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
 settings-osc-vrchat-enable-label = Enable

@@ -14,7 +14,7 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-	}
+    }
 
 	val kotlinVersion: String by settings
 	val spotlessVersion: String by settings
