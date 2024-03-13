@@ -153,18 +153,20 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 					currentThread().interrupt()
 					break
 				}
-				dataRead()
+				dataRead() // not in try catch?
 			}
 		}
 
 	private fun dataRead() {
 		synchronized(devicesByHID) {
+			var devicesPresent = false
 			for ((hidDevice, deviceList) in devicesByHID) {
 				val dataReceived: Array<Byte> = try {
 					hidDevice.read(80, 1) // Read up to 80 bytes, timeout 1ms
 				} catch (e: NegativeArraySizeException) {
 					continue // Skip devices with read error (Maybe disconnected)
 				}
+				devicesPresent = true // Even if the device has no data
 				if (dataReceived.isNotEmpty()) {
 					// Process data
 					// TODO: make this less bad
@@ -215,6 +217,9 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 					}
 					// LogManager.info("[TrackerServer] HID received $packetCount tracker packets")
 				}
+			}
+			if (!devicesPresent) {
+				sleep(10) // No hid device, "empty loop" so sleep to save the poor cpu
 			}
 		}
 	}
