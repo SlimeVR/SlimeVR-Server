@@ -208,7 +208,6 @@ class VRCOSCHandler(
 
 	private fun handleReceivedMessage(event: OSCMessageEvent) {
 		if (vrsystemTrackersAddresses.contains(event.message.address)) {
-			LogManager.debug("Receving vrsystem data " + event.message.address)
 			// Receiving Head and Wrist pose data thanks to OSCQuery
 			// Create device if it doesn't exist
 			if (vrsystemTrackersDevice == null) {
@@ -247,7 +246,7 @@ class VRCOSCHandler(
 					needsReset = true,
 					usesTimeout = true
 				)
-				oscTrackersDevice!!.trackers[trackerPosition.ordinal] = tracker
+				vrsystemTrackersDevice!!.trackers[trackerPosition.ordinal] = tracker
 				server.registerTracker(tracker)
 			}
 
