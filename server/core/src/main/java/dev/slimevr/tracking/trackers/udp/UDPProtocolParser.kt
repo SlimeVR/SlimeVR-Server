@@ -13,7 +13,7 @@ class UDPProtocolParser {
 			if (!connection.isNextPacket(packetNumber)) {
 				// Skip packet because it's not next
 				throw IOException(
-					"Out of order packet received: id $packetId, number $packetNumber, last ${connection.lastPacketNumber}, from $connection"
+					"Out of order packet received: id $packetId, number $packetNumber, last ${connection.lastPacketNumber}, from $connection",
 				)
 			}
 			connection.lastPacket = System.currentTimeMillis()
@@ -77,28 +77,26 @@ class UDPProtocolParser {
 		buf.put(packet.sensorStatus.toByte())
 	}
 
-	protected fun getNewPacket(packetId: Int): UDPPacket? {
-		return when (packetId) {
-			PACKET_HEARTBEAT -> UDPPacket0Heartbeat
-			PACKET_ROTATION -> UDPPacket1Rotation()
-			PACKET_HANDSHAKE -> UDPPacket3Handshake()
-			PACKET_PING_PONG -> UDPPacket10PingPong()
-			PACKET_ACCEL -> UDPPacket4Acceleration()
-			PACKET_SERIAL -> UDPPacket11Serial()
-			PACKET_BATTERY_LEVEL -> UDPPacket12BatteryLevel()
-			PACKET_TAP -> UDPPacket13Tap()
-			PACKET_ERROR -> UDPPacket14Error()
-			PACKET_SENSOR_INFO -> UDPPacket15SensorInfo()
-			PACKET_ROTATION_2 -> UDPPacket16Rotation2()
-			PACKET_ROTATION_DATA -> UDPPacket17RotationData()
-			PACKET_MAGNETOMETER_ACCURACY -> UDPPacket18MagnetometerAccuracy()
-			PACKET_SIGNAL_STRENGTH -> UDPPacket19SignalStrength()
-			PACKET_TEMPERATURE -> UDPPacket20Temperature()
-			PACKET_USER_ACTION -> UDPPacket21UserAction()
-			PACKET_FEATURE_FLAGS -> UDPPacket22FeatureFlags()
-			PACKET_PROTOCOL_CHANGE -> UDPPacket200ProtocolChange()
-			else -> null
-		}
+	protected fun getNewPacket(packetId: Int): UDPPacket? = when (packetId) {
+		PACKET_HEARTBEAT -> UDPPacket0Heartbeat
+		PACKET_ROTATION -> UDPPacket1Rotation()
+		PACKET_HANDSHAKE -> UDPPacket3Handshake()
+		PACKET_PING_PONG -> UDPPacket10PingPong()
+		PACKET_ACCEL -> UDPPacket4Acceleration()
+		PACKET_SERIAL -> UDPPacket11Serial()
+		PACKET_BATTERY_LEVEL -> UDPPacket12BatteryLevel()
+		PACKET_TAP -> UDPPacket13Tap()
+		PACKET_ERROR -> UDPPacket14Error()
+		PACKET_SENSOR_INFO -> UDPPacket15SensorInfo()
+		PACKET_ROTATION_2 -> UDPPacket16Rotation2()
+		PACKET_ROTATION_DATA -> UDPPacket17RotationData()
+		PACKET_MAGNETOMETER_ACCURACY -> UDPPacket18MagnetometerAccuracy()
+		PACKET_SIGNAL_STRENGTH -> UDPPacket19SignalStrength()
+		PACKET_TEMPERATURE -> UDPPacket20Temperature()
+		PACKET_USER_ACTION -> UDPPacket21UserAction()
+		PACKET_FEATURE_FLAGS -> UDPPacket22FeatureFlags()
+		PACKET_PROTOCOL_CHANGE -> UDPPacket200ProtocolChange()
+		else -> null
 	}
 
 	companion object {

@@ -22,7 +22,9 @@ import kotlin.experimental.and
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
  */
-class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>) : Thread(name), HidServicesListener {
+class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>) :
+	Thread(name),
+	HidServicesListener {
 	private val devices: MutableList<HIDDevice> = mutableListOf()
 	private val devicesBySerial: MutableMap<String, MutableList<Int>> = HashMap()
 	private val devicesByHID: MutableMap<HidDevice, MutableList<Int>> = HashMap()
@@ -107,7 +109,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 				allowFiltering = true,
 				needsReset = true,
 				needsMounting = true,
-				usesTimeout = false
+				usesTimeout = false,
 			)
 			// usesTimeout false because HID trackers aren't "Disconnected" unless receiver is physically removed probably
 			// TODO: Could tracker maybe use "Timed out" status without marking as disconnecting?
@@ -116,7 +118,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			imuTracker.status = sensorStatus
 			LogManager
 				.info(
-					"[TrackerServer] Added sensor $trackerId for ${device.name}, type $sensorType"
+					"[TrackerServer] Added sensor $trackerId for ${device.name}, type $sensorType",
 				)
 		}
 	}
@@ -227,9 +229,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	override fun run() { // Doesn't seem to run
 	}
 
-	fun getDevices(): List<Device> {
-		return devices
-	}
+	fun getDevices(): List<Device> = devices
 
 	override fun hidDeviceAttached(event: HidServicesEvent) {
 		checkConfigureDevice(event.hidDevice)

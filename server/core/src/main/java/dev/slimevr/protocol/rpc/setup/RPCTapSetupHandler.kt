@@ -13,8 +13,7 @@ import solarxr_protocol.rpc.TapDetectionSetupNotification
 class RPCTapSetupHandler(
 	private val rpcHandler: RPCHandler,
 	val api: ProtocolAPI,
-) :
-	TapSetupListener {
+) : TapSetupListener {
 	init {
 		this.api.server.tapSetupHandler.addListener(this)
 	}
@@ -29,7 +28,7 @@ class RPCTapSetupHandler(
 
 		forAllListeners {
 			it.send(
-				fbb.dataBuffer()
+				fbb.dataBuffer(),
 			)
 		}
 	}

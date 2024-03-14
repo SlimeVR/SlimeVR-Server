@@ -45,27 +45,25 @@ enum class BoardType(val id: UInt) {
 	DEV_RESERVED(250u),
 	;
 
-	override fun toString(): String {
-		return when (this) {
-			UNKNOWN -> "Unknown"
-			SLIMEVR_LEGACY -> "SlimeVR Legacy"
-			SLIMEVR_DEV -> "SlimeVR Dev"
-			NODEMCU -> "NodeMCU"
-			CUSTOM -> "Custom Board"
-			WROOM32 -> "WROOM32"
-			WEMOSD1MINI -> "Wemos D1 Mini"
-			TTGO_TBASE -> "TTGO T-Base"
-			ESP01 -> "ESP-01"
-			SLIMEVR -> "SlimeVR"
-			LOLIN_C3_MINI -> "Lolin C3 Mini"
-			BEETLE32C32 -> "Beetle ESP32-C3"
-			ES32C3DEVKITM1 -> "Espressif ESP32-C3 DevKitM-1"
-			OWOTRACK -> "owoTrack"
-			WRANGLER -> "Wrangler Joycons"
-			MOCOPI -> "Sony Mocopi"
-			WEMOSWROOM02 -> "Wemos Wroom-02 D1 Mini"
-			DEV_RESERVED -> "Prototype"
-		}
+	override fun toString(): String = when (this) {
+		UNKNOWN -> "Unknown"
+		SLIMEVR_LEGACY -> "SlimeVR Legacy"
+		SLIMEVR_DEV -> "SlimeVR Dev"
+		NODEMCU -> "NodeMCU"
+		CUSTOM -> "Custom Board"
+		WROOM32 -> "WROOM32"
+		WEMOSD1MINI -> "Wemos D1 Mini"
+		TTGO_TBASE -> "TTGO T-Base"
+		ESP01 -> "ESP-01"
+		SLIMEVR -> "SlimeVR"
+		LOLIN_C3_MINI -> "Lolin C3 Mini"
+		BEETLE32C32 -> "Beetle ESP32-C3"
+		ES32C3DEVKITM1 -> "Espressif ESP32-C3 DevKitM-1"
+		OWOTRACK -> "owoTrack"
+		WRANGLER -> "Wrangler Joycons"
+		MOCOPI -> "Sony Mocopi"
+		WEMOSWROOM02 -> "Wemos Wroom-02 D1 Mini"
+		DEV_RESERVED -> "Prototype"
 	}
 
 	companion object {

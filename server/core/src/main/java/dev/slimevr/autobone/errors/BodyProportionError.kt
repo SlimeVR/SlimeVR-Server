@@ -10,13 +10,11 @@ import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 // The distance from average human proportions
 class BodyProportionError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
-	override fun getStepError(trainingStep: AutoBoneStep): Float {
-		return getBodyProportionError(
-			trainingStep.skeleton1,
-			// Skeletons are now normalized to reduce bias, so height is always 1
-			1f
-		)
-	}
+	override fun getStepError(trainingStep: AutoBoneStep): Float = getBodyProportionError(
+		trainingStep.skeleton1,
+		// Skeletons are now normalized to reduce bias, so height is always 1
+		1f,
+	)
 
 	fun getBodyProportionError(humanPoseManager: HumanPoseManager, fullHeight: Float): Float {
 		var sum = 0f
@@ -54,7 +52,7 @@ class BodyProportionError : IAutoBoneError {
 			RangeProportionLimiter(
 				0.059f,
 				SkeletonConfigOffsets.HEAD,
-				0.01f
+				0.01f,
 			),
 			// Neck
 			// Expected: 0.052
@@ -62,35 +60,35 @@ class BodyProportionError : IAutoBoneError {
 			RangeProportionLimiter(
 				0.054f,
 				SkeletonConfigOffsets.NECK,
-				0.0015f
+				0.0015f,
 			),
 			// Upper Chest
 			// Experimental: 0.0945
 			RangeProportionLimiter(
 				0.0945f,
 				SkeletonConfigOffsets.UPPER_CHEST,
-				0.01f
+				0.01f,
 			),
 			// Chest
 			// Experimental: 0.0945
 			RangeProportionLimiter(
 				0.0945f,
 				SkeletonConfigOffsets.CHEST,
-				0.01f
+				0.01f,
 			),
 			// Waist
 			// Experimental: 0.118
 			RangeProportionLimiter(
 				0.118f,
 				SkeletonConfigOffsets.WAIST,
-				0.05f
+				0.05f,
 			),
 			// Hip
 			// Experimental: 0.0237
 			RangeProportionLimiter(
 				0.0237f,
 				SkeletonConfigOffsets.HIP,
-				0.01f
+				0.01f,
 			),
 			// Hip Width
 			// Expected: 0.191
@@ -98,14 +96,14 @@ class BodyProportionError : IAutoBoneError {
 			RangeProportionLimiter(
 				0.184f,
 				SkeletonConfigOffsets.HIPS_WIDTH,
-				0.04f
+				0.04f,
 			),
 			// Upper Leg
 			// Expected: 0.245
 			RangeProportionLimiter(
 				0.245f,
 				SkeletonConfigOffsets.UPPER_LEG,
-				0.015f
+				0.015f,
 			),
 			// Lower Leg
 			// Expected: 0.246 (0.285 including below ankle, could use a separate
@@ -113,8 +111,8 @@ class BodyProportionError : IAutoBoneError {
 			RangeProportionLimiter(
 				0.285f,
 				SkeletonConfigOffsets.LOWER_LEG,
-				0.02f
-			)
+				0.02f,
+			),
 		)
 
 		@JvmStatic

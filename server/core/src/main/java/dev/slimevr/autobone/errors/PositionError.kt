@@ -14,12 +14,12 @@ class PositionError : IAutoBoneError {
 				getPositionError(
 					trackers,
 					trainingStep.cursor1,
-					trainingStep.skeleton1.skeleton
+					trainingStep.skeleton1.skeleton,
 				) +
 					getPositionError(
 						trackers,
 						trainingStep.cursor2,
-						trainingStep.skeleton2.skeleton
+						trainingStep.skeleton2.skeleton,
 					)
 				) /
 				2f
