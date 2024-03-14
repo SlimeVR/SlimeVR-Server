@@ -346,7 +346,10 @@ class UDPUtils {
 			val z = byteBuffer.getFloat()
 			val w = byteBuffer.getFloat()
 
-			return if (x.isNaN() || y.isNaN() || z.isNaN() || w.isNaN()) {
+			return if (
+				(x.isNaN() || y.isNaN() || z.isNaN() || w.isNaN()) ||
+				(x == 0f && y == 0f && z == 0f && w == 0f)
+			) {
 				Quaternion.IDENTITY
 			} else {
 				Quaternion(w, x, y, z)
