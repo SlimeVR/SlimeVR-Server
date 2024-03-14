@@ -28,7 +28,7 @@ export function StartRecording({
       videoRef.current.play();
     } else {
       videoRef.current.pause();
-      videoRef.current.fastSeek(0);
+      videoRef.current.currentTime = 0;
     }
     setPaused(videoRef.current.paused);
   }

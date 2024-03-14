@@ -26,8 +26,7 @@ import java.util.function.Consumer
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
  */
-class TrackersUDPServer(private val port: Int, name: String, private val trackersConsumer: Consumer<Tracker>) :
-	Thread(name) {
+class TrackersUDPServer(private val port: Int, name: String, private val trackersConsumer: Consumer<Tracker>) : Thread(name) {
 	private val random = Random()
 	private val connections: MutableList<UDPDevice> = FastList()
 	private val connectionsByAddress: MutableMap<SocketAddress, UDPDevice> = HashMap()
@@ -92,7 +91,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						firmware: ${handshake.firmware} ($firmwareBuild),
 						mac: ${handshake.macString},
 						name: $name
-						""".trimIndent()
+						""".trimIndent(),
 					)
 			} ?: connectionsByAddress[socketAddr]?.apply {
 				// Look for an existing connection by the socket address (IP and port)
@@ -113,7 +112,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						firmware: ${handshake.firmware} ($firmwareBuild),
 						mac: ${handshake.macString},
 						name: $name
-						""".trimIndent()
+						""".trimIndent(),
 					)
 			}
 		} ?: run {
@@ -124,7 +123,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				addr,
 				handshake.macString ?: addr.hostAddress,
 				handshake.boardType,
-				handshake.mcuType
+				handshake.mcuType,
 			)
 			VRServer.instance.deviceManager.addDevice(connection)
 			connection.firmwareBuild = handshake.firmwareBuild
@@ -158,7 +157,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						firmware: ${handshake.firmware} (${connection.firmwareBuild}),
 						mac: ${handshake.macString},
 						name: ${connection.name}
-						""".trimIndent()
+						""".trimIndent(),
 					)
 			}
 			if (connection.protocol == NetworkProtocol.OWO_LEGACY || connection.firmwareBuild < 9) {
@@ -199,7 +198,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				allowFiltering = true,
 				needsReset = true,
 				needsMounting = true,
-				usesTimeout = true
+				usesTimeout = true,
 			)
 			connection.trackers[trackerId] = imuTracker
 			trackersConsumer.accept(imuTracker)
@@ -243,7 +242,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				} catch (e: Exception) {
 					LogManager.warning(
 						"[TrackerServer] Error parsing packet ${packetToString(received)}",
-						e
+						e,
 					)
 				}
 				if (lastKeepup + 500 < System.currentTimeMillis()) {
@@ -308,7 +307,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		val tracker: Tracker?
 		when (packet) {
 			is UDPPacket0Heartbeat, is UDPPacket1Heartbeat -> {}
+
 			is UDPPacket3Handshake -> setUpNewConnection(received, packet)
+
 			is RotationPacket -> {
 				var rot = packet.rotation
 				rot = AXES_OFFSET.times(rot)
@@ -317,6 +318,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				tracker.setRotation(rot)
 				tracker.dataTick()
 			}
+
 			is UDPPacket17RotationData -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
@@ -338,13 +340,16 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					}
 				}
 			}
+
 			is UDPPacket18MagnetometerAccuracy -> {}
+
 			is UDPPacket4Acceleration -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
 				// Switch x and y around to adjust for different axes
 				tracker.setAcceleration(Vector3(packet.acceleration.y, packet.acceleration.x, packet.acceleration.z))
 			}
+
 			is UDPPacket10PingPong -> {
 				if (connection == null) return
 				if (connection.lastPingPacketId == packet.pingId) {
@@ -354,7 +359,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					}
 				} else {
 					LogManager.debug(
-						"[TrackerServer] Wrong ping id ${packet.pingId} != ${connection.lastPingPacketId}"
+						"[TrackerServer] Wrong ping id ${packet.pingId} != ${connection.lastPingPacketId}",
 					)
 				}
 			}
@@ -373,13 +378,13 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
 				LogManager.info(
-					"[TrackerServer] Tap packet received from ${tracker.name}: ${packet.tap}"
+					"[TrackerServer] Tap packet received from ${tracker.name}: ${packet.tap}",
 				)
 			}
 
 			is UDPPacket14Error -> {
 				LogManager.severe(
-					"[TrackerServer] Error received from ${received.socketAddress}: ${packet.errorNumber}"
+					"[TrackerServer] Error received from ${received.socketAddress}: ${packet.errorNumber}",
 				)
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
@@ -395,7 +400,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				parser.writeSensorInfoResponse(bb, connection, packet)
 				socket.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
 				LogManager.info(
-					"[TrackerServer] Sensor info for ${connection.descriptiveName}/${packet.sensorId}: ${packet.sensorStatus}"
+					"[TrackerServer] Sensor info for ${connection.descriptiveName}/${packet.sensorId}: ${packet.sensorStatus}",
 				)
 			}
 
@@ -416,13 +421,13 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					UDPPacket21UserAction.RESET_FULL -> {
 						name = "Full reset"
 						VRServer.instance.resetHandler.sendStarted(ResetType.Full)
-						VRServer.instance.resetTrackersFull(resetSourceName)
+						VRServer.instance.resetTrackersFull(RESET_SOURCE_NAME)
 					}
 
 					UDPPacket21UserAction.RESET_YAW -> {
 						name = "Yaw reset"
 						VRServer.instance.resetHandler.sendStarted(ResetType.Yaw)
-						VRServer.instance.resetTrackersYaw(resetSourceName)
+						VRServer.instance.resetTrackersYaw(RESET_SOURCE_NAME)
 					}
 
 					UDPPacket21UserAction.RESET_MOUNTING -> {
@@ -431,17 +436,17 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							.instance
 							.resetHandler
 							.sendStarted(ResetType.Mounting)
-						VRServer.instance.resetTrackersMounting(resetSourceName)
+						VRServer.instance.resetTrackersMounting(RESET_SOURCE_NAME)
 					}
 
 					UDPPacket21UserAction.PAUSE_TRACKING -> {
 						name = "Pause tracking toggle"
-						VRServer.instance.togglePauseTracking(resetSourceName)
+						VRServer.instance.togglePauseTracking(RESET_SOURCE_NAME)
 					}
 				}
 
 				LogManager.info(
-					"[TrackerServer] User action from ${connection.descriptiveName } received. $name performed."
+					"[TrackerServer] User action from ${connection.descriptiveName } received. $name performed.",
 				)
 			}
 
@@ -459,9 +464,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		}
 	}
 
-	fun getConnections(): List<UDPDevice?> {
-		return connections
-	}
+	fun getConnections(): List<UDPDevice?> = connections
 
 	// FIXME: for some reason it ends up disconnecting after 30 seconds have passed instead of immediately
 	fun disconnectDevice(device: UDPDevice) {
@@ -487,7 +490,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		 * Change between IMU axes and OpenGL/SteamVR axes
 		 */
 		private val AXES_OFFSET = fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
-		private const val resetSourceName = "TrackerServer"
+		private const val RESET_SOURCE_NAME = "TrackerServer"
 		private fun packetToString(packet: DatagramPacket?): String {
 			val sb = StringBuilder()
 			sb.append("DatagramPacket{")

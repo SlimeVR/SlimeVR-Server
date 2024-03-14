@@ -20,6 +20,7 @@ tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
 tips-tap_setup = You can slowly tap 2 times your tracker to choose it instead of selecting it from the menu.
 tips-turn_on_tracker = Using official SlimeVR trackers? Remember to <b><em>turn on your tracker</em></b> after connecting it to the PC!
+tips-failed_webgl = Failed to initialize WebGL.
 
 ## Body parts
 body_part-NONE = Unassigned

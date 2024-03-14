@@ -120,7 +120,7 @@ class VRServer @JvmOverloads constructor(
 		LogManager.info("Starting the tracker server on port $trackerPort...")
 		trackersServer = TrackersUDPServer(
 			trackerPort,
-			"Sensors UDP server"
+			"Sensors UDP server",
 		) { tracker: Tracker -> registerTracker(tracker) }
 
 		// Start bridges for SteamVR and Feeder
@@ -146,13 +146,13 @@ class VRServer @JvmOverloads constructor(
 			humanPoseManager,
 			driverBridge,
 			configManager.vrConfig.vrcOSC,
-			computedTrackers
+			computedTrackers,
 		)
 		vMCHandler = VMCHandler(
 			this,
 			humanPoseManager,
 			configManager.vrConfig.vmc,
-			computedTrackers
+			computedTrackers,
 		)
 
 		// Initialize OSC router
@@ -282,7 +282,7 @@ class VRServer @JvmOverloads constructor(
 	fun updateSkeletonModel() {
 		queueTask { humanPoseManager.updateSkeletonModelFromServer() }
 		vrcOSCHandler.setHeadTracker(
-			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD)
+			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD),
 		)
 	}
 
@@ -401,9 +401,7 @@ class VRServer @JvmOverloads constructor(
 			get() = ::instance.isInitialized
 
 		@JvmStatic
-		fun getNextLocalTrackerId(): Int {
-			return nextLocalTrackerId.incrementAndGet()
-		}
+		fun getNextLocalTrackerId(): Int = nextLocalTrackerId.incrementAndGet()
 
 		@JvmStatic
 		val currentLocalTrackerId: Int

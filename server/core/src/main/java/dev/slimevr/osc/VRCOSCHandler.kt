@@ -75,7 +75,7 @@ class VRCOSCHandler(
 				trackersEnabled[i] = config
 					.getOSCTrackerRole(
 						computedTrackers[i].trackerPosition!!.trackerRole!!,
-						false
+						false,
 					)
 			} else {
 				trackersEnabled[i] = false
@@ -110,7 +110,7 @@ class VRCOSCHandler(
 						"[VRCOSCHandler] Error listening to the port " +
 							config.portIn +
 							": " +
-							e
+							e,
 					)
 			}
 
@@ -118,13 +118,13 @@ class VRCOSCHandler(
 			if (oscReceiver != null) {
 				val listener = OSCMessageListener { event: OSCMessageEvent -> handleReceivedMessage(event) }
 				val vrcSelector: MessageSelector = OSCPatternAddressMessageSelector(
-					"/avatar/parameters/Upright"
+					"/avatar/parameters/Upright",
 				)
 				val trackersPositionSelector: MessageSelector = OSCPatternAddressMessageSelector(
-					"/tracking/trackers/*/position"
+					"/tracking/trackers/*/position",
 				)
 				val trackersRotationSelector: MessageSelector = OSCPatternAddressMessageSelector(
-					"/tracking/trackers/*/rotation"
+					"/tracking/trackers/*/rotation",
 				)
 				oscReceiver!!.dispatcher.addListener(vrcSelector, listener)
 				oscReceiver!!.dispatcher.addListener(trackersPositionSelector, listener)
@@ -140,13 +140,13 @@ class VRCOSCHandler(
 				val address = InetAddress.getByName(config.address)
 				val port = config.portOut
 				oscSender = OSCPortOut(InetSocketAddress(address, port))
-				if (lastPortOut != port && lastAddress !== address || !wasConnected) {
+				if ((lastPortOut != port && lastAddress !== address) || !wasConnected) {
 					LogManager
 						.info(
 							"[VRCOSCHandler] Sending to port " +
 								port +
 								" at address " +
-								address.toString()
+								address.toString(),
 						)
 				}
 				lastPortOut = port
@@ -160,7 +160,7 @@ class VRCOSCHandler(
 							" at the address " +
 							config.address +
 							": " +
-							e
+							e,
 					)
 			}
 		}
@@ -194,7 +194,7 @@ class VRCOSCHandler(
 							hasPosition = true,
 							userEditable = false,
 							isComputed = true,
-							usesTimeout = true
+							usesTimeout = true,
 						)
 						vrcDevice.trackers[0] = vrcHmd!!
 						server.registerTracker(vrcHmd!!)
@@ -211,7 +211,7 @@ class VRCOSCHandler(
 						event
 							.message
 							.arguments[0] as Float * humanPoseManager.userHeightFromConfig,
-						0f
+						0f,
 					)
 					vrcHmd!!.dataTick()
 				}
@@ -233,7 +233,7 @@ class VRCOSCHandler(
 						receivingPositionOffset = Vector3(
 							event.message.arguments[0] as Float,
 							event.message.arguments[1] as Float,
-							-(event.message.arguments[2] as Float)
+							-(event.message.arguments[2] as Float),
 						)
 
 						if (slimeHead != null && slimeHead.hasPosition) {
@@ -276,7 +276,7 @@ class VRCOSCHandler(
 							userEditable = true,
 							isComputed = true,
 							needsReset = true,
-							usesTimeout = true
+							usesTimeout = true,
 						)
 						oscTrackersDevice!!.trackers[trackerId] = tracker
 						server.registerTracker(tracker)
@@ -290,8 +290,8 @@ class VRCOSCHandler(
 							Vector3(
 								event.message.arguments[0] as Float,
 								event.message.arguments[1] as Float,
-								-(event.message.arguments[2] as Float)
-							) - receivingPositionOffset
+								-(event.message.arguments[2] as Float),
+							) - receivingPositionOffset,
 						) + postReceivingPositionOffset
 					} else {
 						val (w, x, y, z) = EulerAngles(EulerOrder.YXZ, event.message.arguments[0] as Float * FastMath.DEG_TO_RAD, event.message.arguments[1] as Float * FastMath.DEG_TO_RAD, event.message.arguments[2] as Float * FastMath.DEG_TO_RAD).toQuaternion()
@@ -334,8 +334,8 @@ class VRCOSCHandler(
 					bundle.addPacket(
 						OSCMessage(
 							"/tracking/trackers/${getVRCOSCTrackersId(computedTrackers[i].trackerPosition)}/position",
-							oscArgs.clone()
-						)
+							oscArgs.clone(),
+						),
 					)
 
 					// Send regular trackers' rotations
@@ -351,7 +351,7 @@ class VRCOSCHandler(
 						w,
 						-x1,
 						-y1,
-						z1
+						z1,
 					).toEulerAngles(EulerOrder.YXZ)
 					oscArgs.clear()
 					oscArgs.add(x2 * FastMath.RAD_TO_DEG)
@@ -360,8 +360,8 @@ class VRCOSCHandler(
 					bundle.addPacket(
 						OSCMessage(
 							"/tracking/trackers/${getVRCOSCTrackersId(computedTrackers[i].trackerPosition)}/rotation",
-							oscArgs.clone()
-						)
+							oscArgs.clone(),
+						),
 					)
 				}
 				if (computedTrackers[i].trackerPosition === TrackerPosition.HEAD) {
@@ -374,8 +374,8 @@ class VRCOSCHandler(
 					bundle.addPacket(
 						OSCMessage(
 							"/tracking/trackers/head/position",
-							oscArgs.clone()
-						)
+							oscArgs.clone(),
+						),
 					)
 				}
 			}
@@ -431,7 +431,7 @@ class VRCOSCHandler(
 			oscArgs.add(0f)
 			oscMessage = OSCMessage(
 				"/tracking/trackers/head/rotation",
-				oscArgs
+				oscArgs,
 			)
 			try {
 				oscSender!!.send(oscMessage)
@@ -445,23 +445,13 @@ class VRCOSCHandler(
 		}
 	}
 
-	override fun getOscSender(): OSCPortOut {
-		return oscSender!!
-	}
+	override fun getOscSender(): OSCPortOut = oscSender!!
 
-	override fun getPortOut(): Int {
-		return lastPortOut
-	}
+	override fun getPortOut(): Int = lastPortOut
 
-	override fun getAddress(): InetAddress {
-		return lastAddress!!
-	}
+	override fun getAddress(): InetAddress = lastAddress!!
 
-	override fun getOscReceiver(): OSCPortIn {
-		return oscReceiver!!
-	}
+	override fun getOscReceiver(): OSCPortIn = oscReceiver!!
 
-	override fun getPortIn(): Int {
-		return lastPortIn
-	}
+	override fun getPortIn(): Int = lastPortIn
 }
