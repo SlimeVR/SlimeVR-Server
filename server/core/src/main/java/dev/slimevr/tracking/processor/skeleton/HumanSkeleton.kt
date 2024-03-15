@@ -158,7 +158,7 @@ class HumanSkeleton(
 			server.configManager.vrConfig.tapDetection,
 			server.resetHandler,
 			server.tapSetupHandler,
-			server.allTrackers
+			server.allTrackers,
 		)
 		legTweaks.setConfig(server.configManager.vrConfig.legTweaks)
 		localizer.setEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION))
@@ -334,21 +334,19 @@ class HumanSkeleton(
 	/**
 	 * Get output tracker from TrackerRole
 	 */
-	fun getComputedTracker(trackerRole: TrackerRole): Tracker {
-		return when (trackerRole) {
-			TrackerRole.HEAD -> computedHeadTracker!!
-			TrackerRole.CHEST -> computedChestTracker!!
-			TrackerRole.WAIST -> computedHipTracker!!
-			TrackerRole.LEFT_KNEE -> computedLeftKneeTracker!!
-			TrackerRole.LEFT_FOOT -> computedLeftFootTracker!!
-			TrackerRole.RIGHT_KNEE -> computedRightKneeTracker!!
-			TrackerRole.RIGHT_FOOT -> computedRightFootTracker!!
-			TrackerRole.LEFT_ELBOW -> computedLeftElbowTracker!!
-			TrackerRole.RIGHT_ELBOW -> computedRightElbowTracker!!
-			TrackerRole.LEFT_HAND -> computedLeftHandTracker!!
-			TrackerRole.RIGHT_HAND -> computedRightHandTracker!!
-			else -> throw IllegalArgumentException("Unsupported computed tracker's TrackerRole in HumanSkeleton")
-		}
+	fun getComputedTracker(trackerRole: TrackerRole): Tracker = when (trackerRole) {
+		TrackerRole.HEAD -> computedHeadTracker!!
+		TrackerRole.CHEST -> computedChestTracker!!
+		TrackerRole.WAIST -> computedHipTracker!!
+		TrackerRole.LEFT_KNEE -> computedLeftKneeTracker!!
+		TrackerRole.LEFT_FOOT -> computedLeftFootTracker!!
+		TrackerRole.RIGHT_KNEE -> computedRightKneeTracker!!
+		TrackerRole.RIGHT_FOOT -> computedRightFootTracker!!
+		TrackerRole.LEFT_ELBOW -> computedLeftElbowTracker!!
+		TrackerRole.RIGHT_ELBOW -> computedRightElbowTracker!!
+		TrackerRole.LEFT_HAND -> computedLeftHandTracker!!
+		TrackerRole.RIGHT_HAND -> computedRightHandTracker!!
+		else -> throw IllegalArgumentException("Unsupported computed tracker's TrackerRole in HumanSkeleton")
 	}
 
 	/**
@@ -401,7 +399,7 @@ class HumanSkeleton(
 			leftFootTrackerBone,
 			leftUpperLegTracker,
 			leftLowerLegTracker,
-			leftFootTracker
+			leftFootTracker,
 		)
 		// Right leg
 		updateLegTransforms(
@@ -412,7 +410,7 @@ class HumanSkeleton(
 			rightFootTrackerBone,
 			rightUpperLegTracker,
 			rightLowerLegTracker,
-			rightFootTracker
+			rightFootTracker,
 		)
 		// Left arm
 		updateArmTransforms(
@@ -426,7 +424,7 @@ class HumanSkeleton(
 			leftShoulderTracker,
 			leftUpperArmTracker,
 			leftLowerArmTracker,
-			leftHandTracker
+			leftHandTracker,
 		)
 		// Right arm
 		updateArmTransforms(
@@ -440,7 +438,7 @@ class HumanSkeleton(
 			rightShoulderTracker,
 			rightUpperArmTracker,
 			rightLowerArmTracker,
-			rightHandTracker
+			rightHandTracker,
 		)
 	}
 
@@ -475,7 +473,7 @@ class HumanSkeleton(
 				upperChestTracker,
 				chestTracker,
 				waistTracker,
-				hipTracker
+				hipTracker,
 			)?.let { headRot = it.getRotation() }
 
 			headBone.setRotation(headRot)
@@ -838,18 +836,27 @@ class HumanSkeleton(
 	fun updateToggleState(configToggle: SkeletonConfigToggles, newValue: Boolean) {
 		when (configToggle) {
 			SkeletonConfigToggles.EXTENDED_SPINE_MODEL -> extendedSpineModel = newValue
+
 			SkeletonConfigToggles.EXTENDED_PELVIS_MODEL -> extendedPelvisModel = newValue
+
 			SkeletonConfigToggles.EXTENDED_KNEE_MODEL -> extendedKneeModel = newValue
+
 			SkeletonConfigToggles.FORCE_ARMS_FROM_HMD -> {
 				forceArmsFromHMD = newValue
 				assembleSkeletonArms(true) // Rebuilds the arm skeleton nodes attachments
 				computeDependentArmOffsets() // Refresh node offsets for arms
 			}
+
 			SkeletonConfigToggles.SKATING_CORRECTION -> legTweaks.setSkatingCorrectionEnabled(newValue)
+
 			SkeletonConfigToggles.FLOOR_CLIP -> legTweaks.setFloorClipEnabled(newValue)
+
 			SkeletonConfigToggles.VIVE_EMULATION -> viveEmulation.enabled = newValue
+
 			SkeletonConfigToggles.TOE_SNAP -> legTweaks.toeSnapEnabled = newValue
+
 			SkeletonConfigToggles.FOOT_PLANT -> legTweaks.footPlantEnabled = newValue
+
 			SkeletonConfigToggles.SELF_LOCALIZATION -> localizer.setEnabled(newValue)
 		}
 	}
@@ -910,42 +917,40 @@ class HumanSkeleton(
 		humanPoseManager.computeNodeOffset(BoneType.RIGHT_HAND)
 	}
 
-	fun getBone(bone: BoneType): Bone {
-		return when (bone) {
-			BoneType.HEAD -> headBone
-			BoneType.HEAD_TRACKER -> headTrackerBone
-			BoneType.NECK -> neckBone
-			BoneType.UPPER_CHEST -> upperChestBone
-			BoneType.CHEST_TRACKER -> chestTrackerBone
-			BoneType.CHEST -> chestBone
-			BoneType.WAIST -> waistBone
-			BoneType.HIP -> hipBone
-			BoneType.HIP_TRACKER -> hipTrackerBone
-			BoneType.LEFT_HIP -> leftHipBone
-			BoneType.RIGHT_HIP -> rightHipBone
-			BoneType.LEFT_UPPER_LEG -> leftUpperLegBone
-			BoneType.RIGHT_UPPER_LEG -> rightUpperLegBone
-			BoneType.LEFT_KNEE_TRACKER -> leftKneeTrackerBone
-			BoneType.RIGHT_KNEE_TRACKER -> rightKneeTrackerBone
-			BoneType.LEFT_LOWER_LEG -> leftLowerLegBone
-			BoneType.RIGHT_LOWER_LEG -> rightLowerLegBone
-			BoneType.LEFT_FOOT -> leftFootBone
-			BoneType.RIGHT_FOOT -> rightFootBone
-			BoneType.LEFT_FOOT_TRACKER -> leftFootTrackerBone
-			BoneType.RIGHT_FOOT_TRACKER -> rightFootTrackerBone
-			BoneType.LEFT_SHOULDER -> leftShoulderBone
-			BoneType.RIGHT_SHOULDER -> rightShoulderBone
-			BoneType.LEFT_UPPER_ARM -> leftUpperArmBone
-			BoneType.RIGHT_UPPER_ARM -> rightUpperArmBone
-			BoneType.LEFT_ELBOW_TRACKER -> leftElbowTrackerBone
-			BoneType.RIGHT_ELBOW_TRACKER -> rightElbowTrackerBone
-			BoneType.LEFT_LOWER_ARM -> leftLowerArmBone
-			BoneType.RIGHT_LOWER_ARM -> rightLowerArmBone
-			BoneType.LEFT_HAND -> leftHandBone
-			BoneType.RIGHT_HAND -> rightHandBone
-			BoneType.LEFT_HAND_TRACKER -> leftHandTrackerBone
-			BoneType.RIGHT_HAND_TRACKER -> rightHandTrackerBone
-		}
+	fun getBone(bone: BoneType): Bone = when (bone) {
+		BoneType.HEAD -> headBone
+		BoneType.HEAD_TRACKER -> headTrackerBone
+		BoneType.NECK -> neckBone
+		BoneType.UPPER_CHEST -> upperChestBone
+		BoneType.CHEST_TRACKER -> chestTrackerBone
+		BoneType.CHEST -> chestBone
+		BoneType.WAIST -> waistBone
+		BoneType.HIP -> hipBone
+		BoneType.HIP_TRACKER -> hipTrackerBone
+		BoneType.LEFT_HIP -> leftHipBone
+		BoneType.RIGHT_HIP -> rightHipBone
+		BoneType.LEFT_UPPER_LEG -> leftUpperLegBone
+		BoneType.RIGHT_UPPER_LEG -> rightUpperLegBone
+		BoneType.LEFT_KNEE_TRACKER -> leftKneeTrackerBone
+		BoneType.RIGHT_KNEE_TRACKER -> rightKneeTrackerBone
+		BoneType.LEFT_LOWER_LEG -> leftLowerLegBone
+		BoneType.RIGHT_LOWER_LEG -> rightLowerLegBone
+		BoneType.LEFT_FOOT -> leftFootBone
+		BoneType.RIGHT_FOOT -> rightFootBone
+		BoneType.LEFT_FOOT_TRACKER -> leftFootTrackerBone
+		BoneType.RIGHT_FOOT_TRACKER -> rightFootTrackerBone
+		BoneType.LEFT_SHOULDER -> leftShoulderBone
+		BoneType.RIGHT_SHOULDER -> rightShoulderBone
+		BoneType.LEFT_UPPER_ARM -> leftUpperArmBone
+		BoneType.RIGHT_UPPER_ARM -> rightUpperArmBone
+		BoneType.LEFT_ELBOW_TRACKER -> leftElbowTrackerBone
+		BoneType.RIGHT_ELBOW_TRACKER -> rightElbowTrackerBone
+		BoneType.LEFT_LOWER_ARM -> leftLowerArmBone
+		BoneType.RIGHT_LOWER_ARM -> rightLowerArmBone
+		BoneType.LEFT_HAND -> leftHandBone
+		BoneType.RIGHT_HAND -> rightHandBone
+		BoneType.LEFT_HAND_TRACKER -> leftHandTrackerBone
+		BoneType.RIGHT_HAND_TRACKER -> rightHandTrackerBone
 	}
 
 	/**
@@ -974,7 +979,7 @@ class HumanSkeleton(
 			leftLowerArmBone,
 			rightLowerArmBone,
 			leftHandBone,
-			rightHandBone
+			rightHandBone,
 		)
 
 	/**
@@ -993,28 +998,30 @@ class HumanSkeleton(
 			leftHandBone,
 			rightHandBone,
 			leftHandTrackerBone,
-			rightHandTrackerBone
+			rightHandTrackerBone,
 		)
 
 	val hmdHeight: Float
 		get() = headTracker?.position?.y ?: 0f
+
+	/**
+	 * Runs checks to know if we should (and are) performing the tracking of the
+	 * left arm from the controller.
+	 *
+	 * @return a bool telling us if we are tracking the left arm from the
+	 * controller or not.
+	 */
 	val isTrackingLeftArmFromController: Boolean
-		/**
-		 * Runs checks to know if we should (and are) performing the tracking of the
-		 * left arm from the controller.
-		 *
-		 * @return a bool telling us if we are tracking the left arm from the
-		 * controller or not.
-		 */
 		get() = leftHandTracker != null && leftHandTracker!!.hasPosition && !forceArmsFromHMD
+
+	/**
+	 * Runs checks to know if we should (and are) performing the tracking of the
+	 * right arm from the controller.
+	 *
+	 * @return a bool telling us if we are tracking the right arm from the
+	 * controller or not.
+	 */
 	val isTrackingRightArmFromController: Boolean
-		/**
-		 * Runs checks to know if we should (and are) performing the tracking of the
-		 * right arm from the controller.
-		 *
-		 * @return a bool telling us if we are tracking the right arm from the
-		 * controller or not.
-		 */
 		get() = rightHandTracker != null && rightHandTracker!!.hasPosition && !forceArmsFromHMD
 	val localTrackers: List<Tracker?>
 		get() = listOf(
@@ -1035,7 +1042,7 @@ class HumanSkeleton(
 			leftHandTracker,
 			rightHandTracker,
 			leftShoulderTracker,
-			rightShoulderTracker
+			rightShoulderTracker,
 		)
 
 	fun resetTrackersFull(resetSourceName: String?) {
@@ -1165,7 +1172,7 @@ class HumanSkeleton(
 		if (skatingCorrection) {
 			legTweaks
 				.setSkatingCorrectionEnabled(
-					humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION)
+					humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
 				)
 		}
 		if (floorClip) {
@@ -1204,9 +1211,7 @@ class HumanSkeleton(
 		humanPoseManager.setToggle(SkeletonConfigToggles.SKATING_CORRECTION, value)
 	}
 
-	fun getPauseTracking(): Boolean {
-		return pauseTracking
-	}
+	fun getPauseTracking(): Boolean = pauseTracking
 
 	fun setPauseTracking(pauseTracking: Boolean, sourceName: String?) {
 		if (!pauseTracking && this.pauseTracking) {
@@ -1230,7 +1235,7 @@ class HumanSkeleton(
 			EulerOrder.YZX,
 			FastMath.HALF_PI,
 			0f,
-			0f
+			0f,
 		).toQuaternion()
 	}
 }

@@ -10,20 +10,20 @@ class TrackerFramesPlayer(vararg val frameHolders: TrackerFrames) {
 	val playerTrackers: Array<PlayerTracker> = frameHolders.map { trackerFrames ->
 		PlayerTracker(
 			trackerFrames,
-			trackerFrames.toTracker()
+			trackerFrames.toTracker(),
 		)
 	}.toTypedArray()
 
 	val trackers: Array<Tracker> =
 		playerTrackers.map { playerTracker -> playerTracker.tracker }.toTypedArray()
 
+	/**
+	 * @return The maximum number of [TrackerFrame]s contained within each
+	 * [TrackerFrames] in the internal [TrackerFrames] array.
+	 * @see [TrackerFrames.frames]
+	 * @see [List.size]
+	 */
 	val maxFrameCount: Int
-		/**
-		 * @return The maximum number of [TrackerFrame]s contained within each
-		 * [TrackerFrames] in the internal [TrackerFrames] array.
-		 * @see [TrackerFrames.frames]
-		 * @see [List.size]
-		 */
 		get() {
 			return frameHolders.maxOfOrNull { tracker -> tracker.frames.size } ?: 0
 		}

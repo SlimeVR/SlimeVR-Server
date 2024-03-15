@@ -34,8 +34,9 @@ class PoseFrames : Iterable<Array<TrackerFrame?>> {
 	 * index [index].
 	 */
 	fun getTrackerForPosition(position: TrackerPosition, index: Int = 0): TrackerFrames? {
-		for (tracker in frameHolders)
+		for (tracker in frameHolders) {
 			if (tracker.tryGetFrame(index)?.trackerPosition == position) return tracker
+		}
 		return null
 	}
 
@@ -51,7 +52,7 @@ class PoseFrames : Iterable<Array<TrackerFrame?>> {
 		get() {
 			return getMaxHeight(
 				getTrackerForPosition(TrackerPosition.HEAD)
-					?: return 0f
+					?: return 0f,
 			)
 		}
 
@@ -74,13 +75,13 @@ class PoseFrames : Iterable<Array<TrackerFrame?>> {
 	}
 	// endregion
 
+	/**
+	 * @return The maximum number of [TrackerFrame]s contained within each
+	 * [TrackerFrames] in the internal [TrackerFrames] list.
+	 * @see [TrackerFrames.frames]
+	 * @see [List.size]
+	 */
 	val maxFrameCount: Int
-		/**
-		 * @return The maximum number of [TrackerFrame]s contained within each
-		 * [TrackerFrames] in the internal [TrackerFrames] list.
-		 * @see [TrackerFrames.frames]
-		 * @see [List.size]
-		 */
 		get() {
 			return frameHolders.maxOfOrNull { tracker -> tracker.frames.size } ?: 0
 		}
@@ -137,18 +138,14 @@ class PoseFrames : Iterable<Array<TrackerFrame?>> {
 		return trackerFrames
 	}
 
-	override fun iterator(): Iterator<Array<TrackerFrame?>> {
-		return PoseFrameIterator(this)
-	}
+	override fun iterator(): Iterator<Array<TrackerFrame?>> = PoseFrameIterator(this)
 
 	inner class PoseFrameIterator(private val poseFrame: PoseFrames) : Iterator<Array<TrackerFrame?>> {
 		private val trackerFrameBuffer: Array<TrackerFrame?> = arrayOfNulls(poseFrame.frameHolders.size)
 		private val maxCursor = poseFrame.maxFrameCount
 		private var cursor = 0
 
-		override fun hasNext(): Boolean {
-			return frameHolders.isNotEmpty() && cursor < maxCursor
-		}
+		override fun hasNext(): Boolean = frameHolders.isNotEmpty() && cursor < maxCursor
 
 		override fun next(): Array<TrackerFrame?> {
 			if (!hasNext()) {

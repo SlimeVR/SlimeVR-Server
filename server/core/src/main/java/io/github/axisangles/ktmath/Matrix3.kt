@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("ktlint", "unused")
 
 package io.github.axisangles.ktmath
 

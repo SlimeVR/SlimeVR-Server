@@ -49,7 +49,7 @@ fun main(activity: AppCompatActivity) {
 		try {
 			vrServer = VRServer(
 				configPath = File(activity.filesDir, "vrconfig.yml").absolutePath,
-				serialHandlerProvider = { _ -> AndroidSerialHandler(activity) }
+				serialHandlerProvider = { _ -> AndroidSerialHandler(activity) },
 			)
 			vrServer.start()
 			Keybinding(vrServer)

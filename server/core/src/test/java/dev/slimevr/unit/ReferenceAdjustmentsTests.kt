@@ -26,14 +26,14 @@ class ReferenceAdjustmentsTests {
 		get() = anglesSet
 			.map { p: AnglesSet ->
 				DynamicTest.dynamicTest(
-					"Adjustment Yaw Test of Tracker(${p.pitch},${p.yaw},${p.roll})"
+					"Adjustment Yaw Test of Tracker(${p.pitch},${p.yaw},${p.roll})",
 				) {
 					yaws.forEach {
 						checkReferenceAdjustmentYaw(
 							q(p.pitch.toFloat(), p.yaw.toFloat(), p.roll.toFloat()),
 							0,
 							it,
-							0
+							0,
 						)
 					}
 				}
@@ -44,7 +44,7 @@ class ReferenceAdjustmentsTests {
 		get() = anglesSet
 			.map { p: AnglesSet ->
 				DynamicTest.dynamicTest(
-					"Adjustment Full Test of Tracker(${p.pitch},${p.yaw},${p.roll})"
+					"Adjustment Full Test of Tracker(${p.pitch},${p.yaw},${p.roll})",
 				) {
 					anglesSet
 						.forEach {
@@ -52,7 +52,7 @@ class ReferenceAdjustmentsTests {
 								q(p.pitch.toFloat(), p.yaw.toFloat(), p.roll.toFloat()),
 								it.pitch,
 								it.yaw,
-								it.roll
+								it.roll,
 							)
 						}
 				}
@@ -66,13 +66,13 @@ class ReferenceAdjustmentsTests {
 			.flatMap { p: AnglesSet ->
 				yaws.asSequence().map {
 					DynamicTest.dynamicTest(
-						"Adjustment Rotation Test of Tracker(${p.pitch},${p.yaw},${p.roll}), Ref $it"
+						"Adjustment Rotation Test of Tracker(${p.pitch},${p.yaw},${p.roll}), Ref $it",
 					) {
 						testAdjustedTrackerRotation(
 							q(p.pitch.toFloat(), p.yaw.toFloat(), p.roll.toFloat()),
 							0,
 							it,
-							0
+							0,
 						)
 					}
 				}.asStream()
@@ -94,7 +94,7 @@ class ReferenceAdjustmentsTests {
 			hasRotation = true,
 			isInternal = true,
 			imuType = IMUType.UNKNOWN,
-			needsReset = true
+			needsReset = true,
 		)
 		tracker.setRotation(trackerQuat)
 		tracker.resetsHandler.resetFull(referenceQuat)
@@ -106,7 +106,7 @@ class ReferenceAdjustmentsTests {
 		Assertions.assertEquals(
 			QuatEqualFullWithEpsilon(referenceQuat),
 			QuatEqualFullWithEpsilon(read),
-			"Adjusted quat is not equal to reference quat (${toDegs(referenceQuat)} vs ${toDegs(read)})"
+			"Adjusted quat is not equal to reference quat (${toDegs(referenceQuat)} vs ${toDegs(read)})",
 		)
 	}
 
@@ -127,7 +127,7 @@ class ReferenceAdjustmentsTests {
 			hasRotation = true,
 			isInternal = true,
 			imuType = IMUType.UNKNOWN,
-			needsReset = true
+			needsReset = true,
 		)
 		tracker.setRotation(trackerQuat)
 		tracker.resetsHandler.resetYaw(referenceQuat)
@@ -136,7 +136,7 @@ class ReferenceAdjustmentsTests {
 		Assertions.assertEquals(
 			QuatEqualYawWithEpsilon(referenceQuat),
 			QuatEqualYawWithEpsilon(read),
-			"Adjusted quat is not equal to reference quat (${toDegs(referenceQuat)} vs ${toDegs(read)})"
+			"Adjusted quat is not equal to reference quat (${toDegs(referenceQuat)} vs ${toDegs(read)})",
 		)
 	}
 
@@ -156,7 +156,7 @@ class ReferenceAdjustmentsTests {
 			hasRotation = true,
 			isInternal = true,
 			imuType = IMUType.UNKNOWN,
-			needsReset = true
+			needsReset = true,
 		)
 		tracker.setRotation(trackerQuat)
 		tracker.resetsHandler.resetFull(referenceQuat)
@@ -177,13 +177,13 @@ class ReferenceAdjustmentsTests {
 						EulerOrder.YZX,
 						pitch * FastMath.DEG_TO_RAD,
 						yaw * FastMath.DEG_TO_RAD,
-						roll * FastMath.DEG_TO_RAD
+						roll * FastMath.DEG_TO_RAD,
 					).toQuaternion()
 					val rotationCompare = EulerAngles(
 						EulerOrder.YZX,
 						pitch * FastMath.DEG_TO_RAD,
 						(yaw + refYaw) * FastMath.DEG_TO_RAD,
-						roll * FastMath.DEG_TO_RAD
+						roll * FastMath.DEG_TO_RAD,
 					).toQuaternion()
 					rotationNode.localTransform.rotation = rotation
 					rotationNode.update()
@@ -200,7 +200,7 @@ class ReferenceAdjustmentsTests {
 							FloatMath.equalsToZero(anglesDiff.x) &&
 								FloatMath.equalsToZero(anglesDiff.y) &&
 								FloatMath.equalsToZero(anglesDiff.z),
-							name(yaw, pitch, roll, angles, anglesAdj, anglesDiff)
+							name(yaw, pitch, roll, angles, anglesAdj, anglesDiff),
 						)
 					} else {
 						if (FloatMath.equalsToZero(anglesDiff.x) &&
@@ -237,7 +237,7 @@ class ReferenceAdjustmentsTests {
 					EulerOrder.YZX,
 					degs1.x,
 					degs1.y + FastMath.TWO_PI,
-					degs1.z
+					degs1.z,
 				)
 			}
 			if (degs2.y < -FloatMath.ANGLE_EPSILON_RAD) {
@@ -245,21 +245,17 @@ class ReferenceAdjustmentsTests {
 					EulerOrder.YZX,
 					degs2.x,
 					degs2.y + FastMath.TWO_PI,
-					degs2.z
+					degs2.z,
 				)
 			}
 			return FloatMath.equalsWithEpsilon(degs1.y, degs2.y)
 		}
 
-		override fun hashCode(): Int {
-			return q.hashCode()
-		}
+		override fun hashCode(): Int = q.hashCode()
 	}
 
 	data class QuatEqualFullWithEpsilon(val q: Quaternion) {
-		override fun hashCode(): Int {
-			return q.hashCode()
-		}
+		override fun hashCode(): Int = q.hashCode()
 
 		override fun equals(other: Any?): Boolean {
 			if (other == null) return false
@@ -275,7 +271,7 @@ class ReferenceAdjustmentsTests {
 					EulerOrder.YZX,
 					degs1.x,
 					degs1.y + FastMath.TWO_PI,
-					degs1.z
+					degs1.z,
 				)
 			}
 			if (degs2.y < -FloatMath.ANGLE_EPSILON_RAD) {
@@ -283,7 +279,7 @@ class ReferenceAdjustmentsTests {
 					EulerOrder.YZX,
 					degs2.x,
 					degs2.y + FastMath.TWO_PI,
-					degs2.z
+					degs2.z,
 				)
 			}
 			return (
@@ -305,8 +301,7 @@ class ReferenceAdjustmentsTests {
 		val anglesSet: Stream<AnglesSet>
 			get() = yaws.asSequence()
 				.zip(pitches.asSequence())
-				.zip(rolls.asSequence()) {
-						(yaw, pitch), roll ->
+				.zip(rolls.asSequence()) { (yaw, pitch), roll ->
 					AnglesSet(pitch, yaw, roll)
 				}.asStream()
 
@@ -317,8 +312,7 @@ class ReferenceAdjustmentsTests {
 			angles: EulerAngles,
 			anglesAdj: EulerAngles,
 			anglesDiff: EulerAngles,
-		): String {
-			return """Rot: $yaw/$pitch/$roll.
+		): String = """Rot: $yaw/$pitch/$roll.
 				Angles: ${prettyNumber(angles.x * FastMath.RAD_TO_DEG, 1)}/${prettyNumber(anglesAdj.x * FastMath.RAD_TO_DEG, 1)},
 				${prettyNumber(angles.y * FastMath.RAD_TO_DEG, 1)}/${prettyNumber(anglesAdj.y * FastMath.RAD_TO_DEG, 1)},
 				${prettyNumber(angles.z * FastMath.RAD_TO_DEG, 1)}/${prettyNumber(anglesAdj.z * FastMath.RAD_TO_DEG, 1)}.
@@ -326,16 +320,13 @@ class ReferenceAdjustmentsTests {
 				${prettyNumber(anglesDiff.y * FastMath.RAD_TO_DEG, 1)},
 				${prettyNumber(anglesDiff.z * FastMath.RAD_TO_DEG, 1)}
 				""".replace('\n', ' ')
-		}
 
-		fun q(pitch: Float, yaw: Float, roll: Float): Quaternion {
-			return EulerAngles(
-				EulerOrder.YZX,
-				pitch * FastMath.DEG_TO_RAD,
-				yaw * FastMath.DEG_TO_RAD,
-				roll * FastMath.DEG_TO_RAD
-			).toQuaternion()
-		}
+		fun q(pitch: Float, yaw: Float, roll: Float): Quaternion = EulerAngles(
+			EulerOrder.YZX,
+			pitch * FastMath.DEG_TO_RAD,
+			yaw * FastMath.DEG_TO_RAD,
+			roll * FastMath.DEG_TO_RAD,
+		).toQuaternion()
 
 		fun toDegs(q: Quaternion): String {
 			val (_, x, y, z) = q.toEulerAngles(EulerOrder.YZX)

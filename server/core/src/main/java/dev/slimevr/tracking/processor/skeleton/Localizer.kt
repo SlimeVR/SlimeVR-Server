@@ -59,9 +59,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	private var comTravel: Vector3 = Vector3.NULL
 	private var sittingTravel: Vector3 = Vector3.NULL
 
-	fun getEnabled(): Boolean {
-		return enabled
-	}
+	fun getEnabled(): Boolean = enabled
 
 	fun setEnabled(enabled: Boolean) {
 		this.enabled = enabled
@@ -126,7 +124,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			finalTravel = Vector3(
 				finalTravel.x,
 				comTravel.y,
-				finalTravel.z
+				finalTravel.z,
 			)
 		}
 
@@ -207,9 +205,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	}
 
 	// get the travel of a foot over a frame
-	private fun getFootTravel(loc: Vector3): Vector3 {
-		return loc - targetFoot
-	}
+	private fun getFootTravel(loc: Vector3): Vector3 = loc - targetFoot
 
 	// update the target position of the foot
 	private fun updateTargetPos(loc: Vector3, foot: MovementStates) {
@@ -312,7 +308,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			comAccel = Vector3(
 				comAccel.x,
 				FastMath.clamp(comAccel.y, -9999.0f, 0.0f),
-				comAccel.z
+				comAccel.z,
 			)
 		}
 
@@ -324,19 +320,17 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		comVelocity = Vector3(
 			comVelocity.x,
 			comY + (gravity / bufCur.getTimeDelta()),
-			comVelocity.z
+			comVelocity.z,
 		)
 
 		return comVelocity
 	}
 
 	// returns true if either foot is below 0.0
-	private fun isFootOnGround(): Boolean {
-		return (
-			bufCur.leftFootPosition.y <= floor ||
-				bufCur.rightFootPosition.y <= floor
-			)
-	}
+	private fun isFootOnGround(): Boolean = (
+		bufCur.leftFootPosition.y <= floor ||
+			bufCur.rightFootPosition.y <= floor
+		)
 
 	// returns the tracker closest to or the furthest in the ground
 	private fun getLowestTracker(): Tracker? {
@@ -351,7 +345,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			skeleton.computedLeftKneeTracker,
 			skeleton.computedRightKneeTracker,
 			skeleton.computedLeftFootTracker,
-			skeleton.computedRightFootTracker
+			skeleton.computedRightFootTracker,
 		)
 
 		var minVal = trackerList[0]?.position?.y

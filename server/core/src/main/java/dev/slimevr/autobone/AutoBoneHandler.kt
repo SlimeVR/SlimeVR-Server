@@ -59,24 +59,25 @@ class AutoBoneHandler(private val server: VRServer) {
 				total,
 				eta,
 				completed,
-				success
+				success,
 			)
 		}
 	}
 
 	@Throws(AutoBoneException::class)
-	private fun processFrames(frames: PoseFrames): AutoBoneResults {
-		return autoBone
-			.processFrames(frames) { epoch ->
-				listeners.forEach { listener -> listener.onAutoBoneEpoch(epoch) }
-			}
-	}
+	private fun processFrames(frames: PoseFrames): AutoBoneResults = autoBone
+		.processFrames(frames) { epoch ->
+			listeners.forEach { listener -> listener.onAutoBoneEpoch(epoch) }
+		}
 
 	fun startProcessByType(processType: AutoBoneProcessType?): Boolean {
 		when (processType) {
 			AutoBoneProcessType.RECORD -> startRecording()
+
 			AutoBoneProcessType.SAVE -> saveRecording()
+
 			AutoBoneProcessType.PROCESS -> processRecording()
+
 			else -> {
 				return false
 			}
@@ -108,13 +109,13 @@ class AutoBoneHandler(private val server: VRServer) {
 				val framesFuture = poseRecorder
 					.startFrameRecording(
 						sampleCount,
-						sampleRate
+						sampleRate,
 					) { progress: RecordingProgress ->
 						announceProcessStatus(
 							AutoBoneProcessType.RECORD,
 							current = progress.frame.toLong(),
 							total = progress.totalFrames.toLong(),
-							eta = totalTime - (progress.frame * totalTime / progress.totalFrames)
+							eta = totalTime - (progress.frame * totalTime / progress.totalFrames),
 						)
 					}
 				val frames = framesFuture.get()
@@ -126,7 +127,7 @@ class AutoBoneHandler(private val server: VRServer) {
 				if (autoBone.globalConfig.saveRecordings) {
 					announceProcessStatus(
 						AutoBoneProcessType.RECORD,
-						"Saving recording (from config option)..."
+						"Saving recording (from config option)...",
 					)
 					autoBone.saveRecording(frames)
 				}
@@ -135,14 +136,14 @@ class AutoBoneHandler(private val server: VRServer) {
 					AutoBoneProcessType.RECORD,
 					"Done recording!",
 					completed = true,
-					success = true
+					success = true,
 				)
 			} else {
 				announceProcessStatus(
 					AutoBoneProcessType.RECORD,
 					"The server is not ready to record",
 					completed = true,
-					success = false
+					success = false,
 				)
 				LogManager.severe("[AutoBone] Unable to record...")
 				return
@@ -152,7 +153,7 @@ class AutoBoneHandler(private val server: VRServer) {
 				AutoBoneProcessType.RECORD,
 				String.format("Recording failed: %s", e.message),
 				completed = true,
-				success = false
+				success = false,
 			)
 			LogManager.severe("[AutoBone] Failed recording!", e)
 		} finally {
@@ -196,14 +197,14 @@ class AutoBoneHandler(private val server: VRServer) {
 					AutoBoneProcessType.SAVE,
 					"Recording saved!",
 					completed = true,
-					success = true
+					success = true,
 				)
 			} else {
 				announceProcessStatus(
 					AutoBoneProcessType.SAVE,
 					"No recording found",
 					completed = true,
-					success = false
+					success = false,
 				)
 				LogManager.severe("[AutoBone] Unable to save, no recording was done...")
 				return
@@ -213,7 +214,7 @@ class AutoBoneHandler(private val server: VRServer) {
 				AutoBoneProcessType.SAVE,
 				String.format("Failed to save recording: %s", e.message),
 				completed = true,
-				success = false
+				success = false,
 			)
 			LogManager.severe("[AutoBone] Failed to save recording!", e)
 		} finally {
@@ -250,11 +251,11 @@ class AutoBoneHandler(private val server: VRServer) {
 						AutoBoneProcessType.PROCESS,
 						"No recordings found...",
 						completed = true,
-						success = false
+						success = false,
 					)
 					LogManager
 						.severe(
-							"[AutoBone] No recordings found in \"${loadDir.path}\" and no recording was done..."
+							"[AutoBone] No recordings found in \"${loadDir.path}\" and no recording was done...",
 						)
 					return
 				}
@@ -263,7 +264,7 @@ class AutoBoneHandler(private val server: VRServer) {
 			LogManager.info("[AutoBone] Processing frames...")
 			val errorStats = StatsCalculator()
 			val offsetStats = EnumMap<SkeletonConfigOffsets, StatsCalculator>(
-				SkeletonConfigOffsets::class.java
+				SkeletonConfigOffsets::class.java,
 			)
 			val skeletonConfigManagerBuffer = SkeletonConfigManager(false)
 			for ((key, value) in frameRecordings) {
@@ -314,8 +315,8 @@ class AutoBoneHandler(private val server: VRServer) {
 			LogManager
 				.info(
 					"[AutoBone] Average height error: ${
-					StringUtils.prettyNumber(errorStats.mean, 6)
-					} (SD ${StringUtils.prettyNumber(errorStats.standardDeviation, 6)})"
+						StringUtils.prettyNumber(errorStats.mean, 6)
+					} (SD ${StringUtils.prettyNumber(errorStats.standardDeviation, 6)})",
 				)
 			// #endregion
 			listeners.forEach { listener: AutoBoneListener -> listener.onAutoBoneEnd(autoBone.offsets) }
@@ -323,14 +324,14 @@ class AutoBoneHandler(private val server: VRServer) {
 				AutoBoneProcessType.PROCESS,
 				"Done processing!",
 				completed = true,
-				success = true
+				success = true,
 			)
 		} catch (e: Exception) {
 			announceProcessStatus(
 				AutoBoneProcessType.PROCESS,
 				String.format("Processing failed: %s", e.message),
 				completed = true,
-				success = false
+				success = false,
 			)
 			LogManager.severe("[AutoBone] Failed adjustment!", e)
 		} finally {
@@ -394,12 +395,12 @@ class AutoBoneHandler(private val server: VRServer) {
 
 		LogManager.info(
 			"[AutoBone] Ratios: [{Neck-Torso: ${
-			StringUtils.prettyNumber(neckTorso)}}, {Chest-Torso: ${
-			StringUtils.prettyNumber(chestTorso)}}, {Torso-Waist: ${
-			StringUtils.prettyNumber(torsoWaist)}}, {Leg-Torso: ${
-			StringUtils.prettyNumber(legTorso)}}, {Leg-Body: ${
-			StringUtils.prettyNumber(legBody)}}, {Knee-Leg: ${
-			StringUtils.prettyNumber(kneeLeg)}}]"
+				StringUtils.prettyNumber(neckTorso)}}, {Chest-Torso: ${
+				StringUtils.prettyNumber(chestTorso)}}, {Torso-Waist: ${
+				StringUtils.prettyNumber(torsoWaist)}}, {Leg-Torso: ${
+				StringUtils.prettyNumber(legTorso)}}, {Leg-Body: ${
+				StringUtils.prettyNumber(legBody)}}, {Knee-Leg: ${
+				StringUtils.prettyNumber(kneeLeg)}}]",
 		)
 	}
 

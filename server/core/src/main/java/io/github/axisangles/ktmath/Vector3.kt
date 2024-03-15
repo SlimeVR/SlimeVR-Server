@@ -27,13 +27,13 @@ value class Vector3(val x: Float, val y: Float, val z: Float) {
 	operator fun plus(that: Vector3) = Vector3(
 		this.x + that.x,
 		this.y + that.y,
-		this.z + that.z
+		this.z + that.z,
 	)
 
 	operator fun minus(that: Vector3) = Vector3(
 		this.x - that.x,
 		this.y - that.y,
-		this.z - that.z
+		this.z - that.z,
 	)
 
 	/**
@@ -51,13 +51,13 @@ value class Vector3(val x: Float, val y: Float, val z: Float) {
 	infix fun cross(that: Vector3) = Vector3(
 		this.y * that.z - this.z * that.y,
 		this.z * that.x - this.x * that.z,
-		this.x * that.y - this.y * that.x
+		this.x * that.y - this.y * that.x,
 	)
 
 	infix fun hadamard(that: Vector3) = Vector3(
 		this.x * that.x,
 		this.y * that.y,
-		this.z * that.z
+		this.z * that.z,
 	)
 
 	/**
@@ -83,14 +83,14 @@ value class Vector3(val x: Float, val y: Float, val z: Float) {
 	operator fun times(that: Float) = Vector3(
 		this.x * that,
 		this.y * that,
-		this.z * that
+		this.z * that,
 	)
 
 	// computes division of this vector3 by a float
 	operator fun div(that: Float) = Vector3(
 		this.x / that,
 		this.y / that,
-		this.z / that
+		this.z / that,
 	)
 
 	/**

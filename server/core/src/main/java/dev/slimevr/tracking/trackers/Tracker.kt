@@ -84,8 +84,7 @@ class Tracker @JvmOverloads constructor(
 	 */
 	var statusResetRecently = false
 	private var alreadyInitialized = false
-	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) {
-			_, old, new ->
+	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) { _, old, new ->
 		if (old == new) return@observable
 
 		if (!new.reset) {
@@ -106,8 +105,7 @@ class Tracker @JvmOverloads constructor(
 		}
 	}
 
-	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) {
-			_, old, new ->
+	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) { _, old, new ->
 		if (old == new) return@observable
 
 		if (!isInternal) {
@@ -359,9 +357,7 @@ class Tracker @JvmOverloads constructor(
 		this._acceleration = vec
 	}
 
-	fun isImu(): Boolean {
-		return imuType != null
-	}
+	fun isImu(): Boolean = imuType != null
 
 	/**
 	 * Gets the current TPS of the tracker
