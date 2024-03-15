@@ -125,7 +125,7 @@ class VRConfig {
 		return config
 	}
 
-	fun isKnownDevice(mac: String): Boolean = knownDevices.contains(mac)
+	fun isKnownDevice(mac: String?): Boolean = knownDevices.contains(mac)
 
 	fun addKnownDevice(mac: String): Boolean = knownDevices.add(mac)
 
