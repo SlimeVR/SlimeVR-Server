@@ -58,141 +58,141 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCTrackingPause(this, api)
 
 		registerPacketListener(
-			RpcMessage.ResetRequest
+			RpcMessage.ResetRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onResetRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 		registerPacketListener(
-			RpcMessage.ClearMountingResetRequest
+			RpcMessage.ClearMountingResetRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onClearMountingResetRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 		registerPacketListener(
-			RpcMessage.AssignTrackerRequest
+			RpcMessage.AssignTrackerRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onAssignTrackerRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 
 		registerPacketListener(
-			RpcMessage.ClearDriftCompensationRequest
+			RpcMessage.ClearDriftCompensationRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onClearDriftCompensationRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 
 		registerPacketListener(
-			RpcMessage.RecordBVHRequest
+			RpcMessage.RecordBVHRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onRecordBVHRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 
 		registerPacketListener(
-			RpcMessage.SkeletonResetAllRequest
+			RpcMessage.SkeletonResetAllRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onSkeletonResetAllRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 		registerPacketListener(
-			RpcMessage.SkeletonConfigRequest
+			RpcMessage.SkeletonConfigRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onSkeletonConfigRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 		registerPacketListener(
-			RpcMessage.ChangeSkeletonConfigRequest
+			RpcMessage.ChangeSkeletonConfigRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onChangeSkeletonConfigRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 
 		registerPacketListener(
-			RpcMessage.OverlayDisplayModeChangeRequest
+			RpcMessage.OverlayDisplayModeChangeRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onOverlayDisplayModeChangeRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 		registerPacketListener(
-			RpcMessage.OverlayDisplayModeRequest
+			RpcMessage.OverlayDisplayModeRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onOverlayDisplayModeRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 
 		registerPacketListener(
-			RpcMessage.ServerInfosRequest
+			RpcMessage.ServerInfosRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onServerInfosRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 
 		registerPacketListener(
-			RpcMessage.LegTweaksTmpChange
+			RpcMessage.LegTweaksTmpChange,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onLegTweaksTmpChange(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 
 		registerPacketListener(
-			RpcMessage.LegTweaksTmpClear
+			RpcMessage.LegTweaksTmpClear,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onLegTweaksTmpClear(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 
 		registerPacketListener(
-			RpcMessage.StatusSystemRequest
+			RpcMessage.StatusSystemRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onStatusSystemRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 
 		registerPacketListener(
-			RpcMessage.SetPauseTrackingRequest
+			RpcMessage.SetPauseTrackingRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onSetPauseTrackingRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 
 		registerPacketListener(
-			RpcMessage.HeightRequest
+			RpcMessage.HeightRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onHeightRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 	}
@@ -239,7 +239,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 	fun onSkeletonResetAllRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		if (messageHeader
-			.message(SkeletonResetAllRequest()) !is SkeletonResetAllRequest
+				.message(SkeletonResetAllRequest()) !is SkeletonResetAllRequest
 		) {
 			return
 		}
@@ -258,7 +258,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 	fun onSkeletonConfigRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		if (messageHeader
-			.message(SkeletonConfigRequest()) !is SkeletonConfigRequest
+				.message(SkeletonConfigRequest()) !is SkeletonConfigRequest
 		) {
 			return
 		}
@@ -314,7 +314,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		messageHeader: RpcMessageHeader,
 	) {
 		if (messageHeader
-			.message(ClearMountingResetRequest()) !is ClearMountingResetRequest
+				.message(ClearMountingResetRequest()) !is ClearMountingResetRequest
 		) {
 			return
 		}
@@ -349,7 +349,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 					req.mountingOrientation().w(),
 					req.mountingOrientation().x(),
 					req.mountingOrientation().y(),
-					req.mountingOrientation().z()
+					req.mountingOrientation().z(),
 				)
 			}
 		}
@@ -370,7 +370,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		messageHeader: RpcMessageHeader,
 	) {
 		if (messageHeader
-			.message(ClearDriftCompensationRequest()) !is ClearDriftCompensationRequest
+				.message(ClearDriftCompensationRequest()) !is ClearDriftCompensationRequest
 		) {
 			return
 		}
@@ -390,7 +390,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 				req.skatingCorrection(),
 				req.floorClip(),
 				req.toeSnap(),
-				req.footPlant()
+				req.footPlant(),
 			)
 	}
 
@@ -406,7 +406,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 				req.skatingCorrection(),
 				req.floorClip(),
 				req.toeSnap(),
-				req.footPlant()
+				req.footPlant(),
 			)
 	}
 
@@ -436,9 +436,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		return MessageBundle.endMessageBundle(fbb)
 	}
 
-	override fun messagesCount(): Int {
-		return RpcMessage.names.size
-	}
+	override fun messagesCount(): Int = RpcMessage.names.size
 
 	fun onStatusSystemRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = messageHeader
@@ -447,7 +445,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val statuses = api.server.statusSystem.getStatuses()
 
 		val fbb = FlatBufferBuilder(
-			statuses.size * RPCStatusHandler.STATUS_EXPECTED_SIZE
+			statuses.size * RPCStatusHandler.STATUS_EXPECTED_SIZE,
 		)
 		val response = StatusSystemResponseT()
 		response.currentStatuses = statuses
@@ -472,7 +470,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			.createHeightResponse(
 				fbb,
 				hmdHeight,
-				hmdHeight / BodyProportionError.eyeHeightToHeightRatio
+				hmdHeight / BodyProportionError.eyeHeightToHeightRatio,
 			)
 		fbb.finish(createRPCMessage(fbb, RpcMessage.HeightResponse, response))
 		conn.send(fbb.dataBuffer())

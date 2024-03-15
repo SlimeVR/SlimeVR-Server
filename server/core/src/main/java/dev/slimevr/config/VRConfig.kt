@@ -12,7 +12,7 @@ import dev.slimevr.tracking.trackers.TrackerRole
 @JsonVersionedModel(
 	currentVersion = "12",
 	defaultDeserializeToVersion = "12",
-	toCurrentConverterClass = CurrentVRConfigConverter::class
+	toCurrentConverterClass = CurrentVRConfigConverter::class,
 )
 class VRConfig {
 	val server: ServerConfig = ServerConfig()
@@ -60,17 +60,17 @@ class VRConfig {
 		vrcOSC
 			.setOSCTrackerRole(
 				TrackerRole.WAIST,
-				vrcOSC.getOSCTrackerRole(TrackerRole.WAIST, true)
+				vrcOSC.getOSCTrackerRole(TrackerRole.WAIST, true),
 			)
 		vrcOSC
 			.setOSCTrackerRole(
 				TrackerRole.LEFT_FOOT,
-				vrcOSC.getOSCTrackerRole(TrackerRole.WAIST, true)
+				vrcOSC.getOSCTrackerRole(TrackerRole.WAIST, true),
 			)
 		vrcOSC
 			.setOSCTrackerRole(
 				TrackerRole.RIGHT_FOOT,
-				vrcOSC.getOSCTrackerRole(TrackerRole.WAIST, true)
+				vrcOSC.getOSCTrackerRole(TrackerRole.WAIST, true),
 			)
 
 		// Initialize default settings for VMC
@@ -78,13 +78,9 @@ class VRConfig {
 		vMC.portOut = 39539
 	}
 
-	fun getTrackers(): Map<String, TrackerConfig> {
-		return trackers
-	}
+	fun getTrackers(): Map<String, TrackerConfig> = trackers
 
-	fun getBridges(): Map<String, BridgeConfig> {
-		return bridges
-	}
+	fun getBridges(): Map<String, BridgeConfig> = bridges
 
 	fun getTracker(tracker: Tracker): TrackerConfig {
 		var config = trackers[tracker.name]

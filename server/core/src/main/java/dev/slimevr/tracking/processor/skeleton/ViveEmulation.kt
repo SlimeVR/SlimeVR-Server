@@ -90,7 +90,7 @@ class ViveEmulation(
 			flyDirection = Vector3(
 				random.nextFloat() - 0.5f,
 				random.nextFloat() - 0.5f,
-				random.nextFloat() - 0.5f
+				random.nextFloat() - 0.5f,
 			)
 				.unit()
 			flyTime = (
@@ -103,7 +103,7 @@ class ViveEmulation(
 				random.nextFloat(),
 				random.nextFloat(),
 				random.nextFloat(),
-				random.nextFloat()
+				random.nextFloat(),
 			).unit()
 			lastRotation = skeleton.computedHipTracker!!.getRotation()
 			lastPosition = skeleton.computedHipTracker!!.position

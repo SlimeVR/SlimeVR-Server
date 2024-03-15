@@ -21,7 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 class WebSocketVRBridge(
 	computedTrackers: List<Tracker>,
 	server: VRServer,
-) : WebsocketAPI(server, server.protocolAPI), Bridge {
+) : WebsocketAPI(server, server.protocolAPI),
+	Bridge {
 	private val computedTrackers: List<Tracker> = FastList(computedTrackers)
 	private val internalTrackers: MutableList<Tracker> = FastList(computedTrackers.size)
 	private val newHMDData = AtomicBoolean(false)
@@ -35,7 +36,7 @@ class WebSocketVRBridge(
 		hasPosition = true,
 		hasRotation = true,
 		isInternal = true,
-		isComputed = true
+		isComputed = true,
 	)
 	private var hmdTracker: Tracker? = null
 
@@ -50,7 +51,7 @@ class WebSocketVRBridge(
 				hasPosition = true,
 				hasRotation = true,
 				userEditable = true,
-				isInternal = true
+				isInternal = true,
 			)
 			ct.status = TrackerStatus.OK
 			internalTrackers.add(ct)
@@ -72,7 +73,7 @@ class WebSocketVRBridge(
 					hasPosition = true,
 					hasRotation = true,
 					userEditable = true,
-					isComputed = true
+					isComputed = true,
 				)
 				hmdDevice.trackers[0] = hmdTracker!!
 				server.registerTracker(hmdTracker!!)
@@ -107,7 +108,7 @@ class WebSocketVRBridge(
 						.trackerPosition
 						?.trackerRole
 						?.name
-						?.lowercase(Locale.getDefault())
+						?.lowercase(Locale.getDefault()),
 				)
 			message.put("tracker_type", message["location"].asText())
 			conn.send(message.toString())
@@ -142,7 +143,7 @@ class WebSocketVRBridge(
 					"[WebSocket] Unrecognized message from " +
 						conn.remoteSocketAddress.address.hostAddress +
 						": " +
-						message
+						message,
 				)
 		} catch (e: Exception) {
 			LogManager
@@ -151,7 +152,7 @@ class WebSocketVRBridge(
 						conn.remoteSocketAddress.address.hostAddress +
 						". Message: " +
 						message,
-					e
+					e,
 				)
 		}
 	}
@@ -163,7 +164,7 @@ class WebSocketVRBridge(
 				.position = Vector3(
 				json["x"].asDouble().toFloat(),
 				json["y"].asDouble().toFloat() + 0.2f,
-				json["z"].asDouble().toFloat()
+				json["z"].asDouble().toFloat(),
 			)
 			// TODO Wtf is this hack? VRWorkout issue?
 			internalHMDTracker
@@ -172,8 +173,8 @@ class WebSocketVRBridge(
 						json["qw"].asDouble().toFloat(),
 						json["qx"].asDouble().toFloat(),
 						json["qy"].asDouble().toFloat(),
-						json["qz"].asDouble().toFloat()
-					)
+						json["qz"].asDouble().toFloat(),
+					),
 				)
 			internalHMDTracker.dataTick()
 			newHMDData.set(true)
@@ -226,9 +227,7 @@ class WebSocketVRBridge(
 		start()
 	}
 
-	override fun isConnected(): Boolean {
-		return super.getConnections().isNotEmpty()
-	}
+	override fun isConnected(): Boolean = super.getConnections().isNotEmpty()
 
 	companion object {
 		private const val RESET_SOURCE_NAME = "WebSocketVRBridge"

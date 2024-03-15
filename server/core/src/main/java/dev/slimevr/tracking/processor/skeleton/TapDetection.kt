@@ -145,7 +145,7 @@ class TapDetection {
 			skeleton.upperChestTracker != trackerToExclude
 		) {
 			if (skeleton.upperChestTracker!!.getAcceleration().lenSq()
-			> ALLOWED_BODY_ACCEL_SQUARED
+				> ALLOWED_BODY_ACCEL_SQUARED
 			) {
 				num++
 			}
@@ -168,7 +168,7 @@ class TapDetection {
 			skeleton.leftUpperLegTracker != trackerToExclude
 		) {
 			if (skeleton.leftUpperLegTracker!!.getAcceleration().lenSq()
-			> ALLOWED_BODY_ACCEL_SQUARED
+				> ALLOWED_BODY_ACCEL_SQUARED
 			) {
 				num++
 			}
@@ -177,7 +177,7 @@ class TapDetection {
 			skeleton.rightUpperLegTracker != trackerToExclude
 		) {
 			if (skeleton.rightUpperLegTracker!!.getAcceleration().lenSq()
-			> ALLOWED_BODY_ACCEL_SQUARED
+				> ALLOWED_BODY_ACCEL_SQUARED
 			) {
 				num++
 			}
@@ -194,7 +194,7 @@ class TapDetection {
 			skeleton.rightFootTracker != trackerToExclude
 		) {
 			if (skeleton.rightFootTracker!!.getAcceleration().lenSq()
-			> ALLOWED_BODY_ACCEL_SQUARED
+				> ALLOWED_BODY_ACCEL_SQUARED
 			) {
 				num++
 			}

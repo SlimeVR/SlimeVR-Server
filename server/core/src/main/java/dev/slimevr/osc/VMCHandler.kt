@@ -96,7 +96,7 @@ class VMCHandler(
 			} catch (e: IOException) {
 				LogManager
 					.severe(
-						"[VMCHandler] Error listening to the port ${config.portIn}: $e"
+						"[VMCHandler] Error listening to the port ${config.portIn}: $e",
 					)
 			}
 
@@ -108,7 +108,7 @@ class VMCHandler(
 					"/VMC/Ext/Hmd/Pos",
 					"/VMC/Ext/Con/Pos",
 					"/VMC/Ext/Tra/Pos",
-					"/VMC/Ext/Root/Pos"
+					"/VMC/Ext/Root/Pos",
 				)
 
 				for (address in listenAddresses) {
@@ -128,7 +128,7 @@ class VMCHandler(
 				if ((lastPortOut != port && lastAddress !== address) || !wasConnected) {
 					LogManager
 						.info(
-							"[VMCHandler] Sending to port $port at address $address"
+							"[VMCHandler] Sending to port $port at address $address",
 						)
 				}
 				lastPortOut = port
@@ -139,7 +139,7 @@ class VMCHandler(
 			} catch (e: IOException) {
 				LogManager
 					.severe(
-						"[VMCHandler] Error connecting to port ${config.portOut} at the address ${config.address}: $e"
+						"[VMCHandler] Error connecting to port ${config.portOut} at the address ${config.address}: $e",
 					)
 			}
 
@@ -186,12 +186,12 @@ class VMCHandler(
 							-(event.message.arguments[7] as Float),
 							event.message.arguments[4] as Float,
 							event.message.arguments[5] as Float,
-							-(event.message.arguments[6] as Float)
+							-(event.message.arguments[6] as Float),
 						),
 						true,
 						getByStringVal(
-							event.message.arguments[0].toString()
-						)
+							event.message.arguments[0].toString(),
+						),
 					)
 				}
 			}
@@ -204,16 +204,16 @@ class VMCHandler(
 					Vector3(
 						event.message.arguments[1] as Float,
 						event.message.arguments[2] as Float,
-						-(event.message.arguments[3] as Float)
+						-(event.message.arguments[3] as Float),
 					),
 					Quaternion(
 						-(event.message.arguments[7] as Float),
 						event.message.arguments[4] as Float,
 						event.message.arguments[5] as Float,
-						-(event.message.arguments[6] as Float)
+						-(event.message.arguments[6] as Float),
 					),
 					false,
-					null
+					null,
 				)
 
 			// Is VMC tracking root (offsets all rotations)
@@ -224,14 +224,14 @@ class VMCHandler(
 							Vector3(
 								event.message.arguments[1] as Float,
 								event.message.arguments[2] as Float,
-								-(event.message.arguments[3] as Float)
+								-(event.message.arguments[3] as Float),
 							),
 							Quaternion(
 								-(event.message.arguments[7] as Float),
 								event.message.arguments[4] as Float,
 								event.message.arguments[5] as Float,
-								-(event.message.arguments[6] as Float)
-							)
+								-(event.message.arguments[6] as Float),
+							),
 						)
 				}
 			}
@@ -274,7 +274,7 @@ class VMCHandler(
 				null,
 				true,
 				false,
-				position != null
+				position != null,
 			)
 			trackerDevice!!.trackers[trackerDevice!!.trackers.size] = tracker
 			byTrackerNameTracker[name] = tracker
@@ -327,22 +327,22 @@ class VMCHandler(
 						.addPacket(
 							OSCMessage(
 								"/VMC/Ext/OK",
-								oscArgs.clone()
-							)
+								oscArgs.clone(),
+							),
 						)
 
 					oscArgs.clear()
 					oscArgs.add("root")
 					addTransformToArgs(
 						NULL,
-						IDENTITY
+						IDENTITY,
 					)
 					oscBundle
 						.addPacket(
 							OSCMessage(
 								"/VMC/Ext/Root/Pos",
-								oscArgs.clone()
-							)
+								oscArgs.clone(),
+							),
 						)
 
 					for (unityBone in UnityBone.entries) {
@@ -355,7 +355,7 @@ class VMCHandler(
 						outputUnityArmature
 							?.setGlobalRotationForBone(
 								unityBone,
-								bone!!.getGlobalRotation() * bone.rotationOffset.inv()
+								bone!!.getGlobalRotation() * bone.rotationOffset.inv(),
 							)
 					}
 					if (!anchorHip) {
@@ -391,7 +391,7 @@ class VMCHandler(
 										.worldTransform
 										.translation
 										.minus(upperLegsAverage)
-									)
+									),
 							)
 
 						outputUnityArmature!!
@@ -406,9 +406,9 @@ class VMCHandler(
 					// Add Unity humanoid bones transforms
 					for (bone in UnityBone.entries) {
 						if (bone.boneType != null && !(
-							humanPoseManager.isTrackingLeftArmFromController &&
-								isLeftArmUnityBone(bone)
-							) &&
+								humanPoseManager.isTrackingLeftArmFromController &&
+									isLeftArmUnityBone(bone)
+								) &&
 							!(
 								humanPoseManager.isTrackingRightArmFromController &&
 									isRightArmUnityBone(bone)
@@ -418,14 +418,14 @@ class VMCHandler(
 							oscArgs.add(bone.stringVal)
 							addTransformToArgs(
 								outputUnityArmature!!.getLocalTranslationForBone(bone),
-								outputUnityArmature!!.getLocalRotationForBone(bone)
+								outputUnityArmature!!.getLocalRotationForBone(bone),
 							)
 							oscBundle
 								.addPacket(
 									OSCMessage(
 										"/VMC/Ext/Bone/Pos",
-										oscArgs.clone()
-									)
+										oscArgs.clone(),
+									),
 								)
 						}
 					}
@@ -440,7 +440,7 @@ class VMCHandler(
 
 						addTransformToArgs(
 							tracker.position,
-							tracker.getRotation()
+							tracker.getRotation(),
 						)
 
 						var address: String
@@ -457,8 +457,8 @@ class VMCHandler(
 							.addPacket(
 								OSCMessage(
 									address,
-									oscArgs.clone()
-								)
+									oscArgs.clone(),
+								),
 							)
 					}
 				}
@@ -474,7 +474,7 @@ class VMCHandler(
 						LogManager
 							.warning(
 								"[VMCHandler] Error sending OSC packets: " +
-									e
+									e,
 							)
 					}
 				} catch (e: OSCSerializeException) {
@@ -483,7 +483,7 @@ class VMCHandler(
 						LogManager
 							.warning(
 								"[VMCHandler] Error sending OSC packets: " +
-									e
+									e,
 							)
 					}
 				}
@@ -519,31 +519,17 @@ class VMCHandler(
 		oscArgs.add(-rot.w)
 	}
 
-	private fun isLeftArmUnityBone(bone: UnityBone): Boolean {
-		return bone == UnityBone.LEFT_UPPER_ARM || bone == UnityBone.LEFT_LOWER_ARM || bone == UnityBone.LEFT_HAND
-	}
+	private fun isLeftArmUnityBone(bone: UnityBone): Boolean = bone == UnityBone.LEFT_UPPER_ARM || bone == UnityBone.LEFT_LOWER_ARM || bone == UnityBone.LEFT_HAND
 
-	private fun isRightArmUnityBone(bone: UnityBone): Boolean {
-		return bone == UnityBone.RIGHT_UPPER_ARM || bone == UnityBone.RIGHT_LOWER_ARM || bone == UnityBone.RIGHT_HAND
-	}
+	private fun isRightArmUnityBone(bone: UnityBone): Boolean = bone == UnityBone.RIGHT_UPPER_ARM || bone == UnityBone.RIGHT_LOWER_ARM || bone == UnityBone.RIGHT_HAND
 
-	override fun getOscSender(): OSCPortOut {
-		return oscSender!!
-	}
+	override fun getOscSender(): OSCPortOut = oscSender!!
 
-	override fun getPortOut(): Int {
-		return lastPortOut
-	}
+	override fun getPortOut(): Int = lastPortOut
 
-	override fun getAddress(): InetAddress {
-		return lastAddress!!
-	}
+	override fun getAddress(): InetAddress = lastAddress!!
 
-	override fun getOscReceiver(): OSCPortIn {
-		return oscReceiver!!
-	}
+	override fun getOscReceiver(): OSCPortIn = oscReceiver!!
 
-	override fun getPortIn(): Int {
-		return lastPortIn
-	}
+	override fun getPortIn(): Int = lastPortIn
 }

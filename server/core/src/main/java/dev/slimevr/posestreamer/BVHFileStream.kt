@@ -51,9 +51,7 @@ class BVHFileStream : PoseDataStream {
 		return if (bufferCount > 0) frameString + StringUtils.repeat(' ', bufferCount) else frameString
 	}
 
-	private fun isEndBone(bone: Bone?): Boolean {
-		return bone == null || (!bvhSettings.shouldWriteEndNodes() && bone.children.isEmpty())
-	}
+	private fun isEndBone(bone: Bone?): Boolean = bone == null || (!bvhSettings.shouldWriteEndNodes() && bone.children.isEmpty())
 
 	@Throws(IOException::class)
 	private fun writeBoneHierarchy(bone: Bone?, level: Int = 0) {
@@ -93,7 +91,7 @@ class BVHFileStream : PoseDataStream {
 							" "
 						) + -bone.parent!!.length * offsetScale + " " +
 						0 +
-						"\n"
+						"\n",
 				)
 		} else {
 			writer.write(nextIndentLevel + "OFFSET 0.0 0.0 0.0\n")
@@ -108,7 +106,7 @@ class BVHFileStream : PoseDataStream {
 				writer
 					.write(
 						nextIndentLevel +
-							"CHANNELS 6 Xposition Yposition Zposition Zrotation Xrotation Yrotation\n"
+							"CHANNELS 6 Xposition Yposition Zposition Zrotation Xrotation Yrotation\n",
 					)
 			}
 

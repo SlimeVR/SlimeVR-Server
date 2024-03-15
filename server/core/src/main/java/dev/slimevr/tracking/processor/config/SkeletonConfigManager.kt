@@ -14,20 +14,20 @@ class SkeletonConfigManager(
 	private val humanPoseManager: HumanPoseManager? = null,
 ) {
 	private val configOffsets: EnumMap<SkeletonConfigOffsets, Float> = EnumMap(
-		SkeletonConfigOffsets::class.java
+		SkeletonConfigOffsets::class.java,
 	)
 	private val configToggles: EnumMap<SkeletonConfigToggles, Boolean?> = EnumMap(
-		SkeletonConfigToggles::class.java
+		SkeletonConfigToggles::class.java,
 	)
 	private val configValues: EnumMap<SkeletonConfigValues, Float?> = EnumMap(
-		SkeletonConfigValues::class.java
+		SkeletonConfigValues::class.java,
 	)
 
 	private var changedToggles: BooleanArray = BooleanArray(SkeletonConfigToggles.values.size)
 	private var changedValues: BooleanArray = BooleanArray(SkeletonConfigValues.values.size)
 
 	private val nodeOffsets: EnumMap<BoneType, Vector3> = EnumMap(
-		BoneType::class.java
+		BoneType::class.java,
 	)
 
 	var userHeightFromOffsets: Float = calculateUserHeight()
@@ -172,12 +172,14 @@ class SkeletonConfigManager(
 	fun computeNodeOffset(nodeOffset: BoneType) {
 		when (nodeOffset) {
 			BoneType.HEAD -> setNodeOffset(nodeOffset, 0f, 0f, getOffset(SkeletonConfigOffsets.HEAD))
+
 			BoneType.NECK -> setNodeOffset(nodeOffset, 0f, -getOffset(SkeletonConfigOffsets.NECK), 0f)
+
 			BoneType.UPPER_CHEST -> setNodeOffset(
 				nodeOffset,
 				0f,
 				-getOffset(SkeletonConfigOffsets.UPPER_CHEST),
-				0f
+				0f,
 			)
 
 			BoneType.CHEST_TRACKER -> setNodeOffset(
@@ -185,101 +187,104 @@ class SkeletonConfigManager(
 				0f,
 				-getOffset(SkeletonConfigOffsets.CHEST_OFFSET) -
 					getOffset(SkeletonConfigOffsets.CHEST),
-				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
+				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET),
 			)
 
 			BoneType.CHEST -> setNodeOffset(nodeOffset, 0f, -getOffset(SkeletonConfigOffsets.CHEST), 0f)
+
 			BoneType.WAIST -> setNodeOffset(nodeOffset, 0f, -getOffset(SkeletonConfigOffsets.WAIST), 0f)
+
 			BoneType.HIP -> setNodeOffset(nodeOffset, 0f, -getOffset(SkeletonConfigOffsets.HIP), 0f)
+
 			BoneType.HIP_TRACKER -> setNodeOffset(
 				nodeOffset,
 				0f,
 				-getOffset(SkeletonConfigOffsets.HIP_OFFSET),
-				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
+				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET),
 			)
 
 			BoneType.LEFT_HIP -> setNodeOffset(
 				nodeOffset,
 				-getOffset(SkeletonConfigOffsets.HIPS_WIDTH) / 2f,
 				0f,
-				0f
+				0f,
 			)
 
 			BoneType.RIGHT_HIP -> setNodeOffset(
 				nodeOffset,
 				getOffset(SkeletonConfigOffsets.HIPS_WIDTH) / 2f,
 				0f,
-				0f
+				0f,
 			)
 
 			BoneType.LEFT_UPPER_LEG, BoneType.RIGHT_UPPER_LEG -> setNodeOffset(
 				nodeOffset,
 				0f,
 				-getOffset(SkeletonConfigOffsets.UPPER_LEG),
-				0f
+				0f,
 			)
 
 			BoneType.LEFT_KNEE_TRACKER, BoneType.RIGHT_KNEE_TRACKER, BoneType.LEFT_FOOT_TRACKER, BoneType.RIGHT_FOOT_TRACKER -> setNodeOffset(
 				nodeOffset,
 				0f,
 				0f,
-				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET)
+				-getOffset(SkeletonConfigOffsets.SKELETON_OFFSET),
 			)
 
 			BoneType.LEFT_LOWER_LEG, BoneType.RIGHT_LOWER_LEG -> setNodeOffset(
 				nodeOffset,
 				0f,
 				-getOffset(SkeletonConfigOffsets.LOWER_LEG),
-				-getOffset(SkeletonConfigOffsets.FOOT_SHIFT)
+				-getOffset(SkeletonConfigOffsets.FOOT_SHIFT),
 			)
 
 			BoneType.LEFT_FOOT, BoneType.RIGHT_FOOT -> setNodeOffset(
 				nodeOffset,
 				0f,
 				0f,
-				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH)
+				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH),
 			)
 
 			BoneType.LEFT_SHOULDER -> setNodeOffset(
 				nodeOffset,
 				-getOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH) / 2f,
 				-getOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE),
-				0f
+				0f,
 			)
 
 			BoneType.RIGHT_SHOULDER -> setNodeOffset(
 				nodeOffset,
 				getOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH) / 2f,
 				-getOffset(SkeletonConfigOffsets.SHOULDERS_DISTANCE),
-				0f
+				0f,
 			)
 
 			BoneType.LEFT_UPPER_ARM, BoneType.RIGHT_UPPER_ARM -> setNodeOffset(
 				nodeOffset,
 				0f,
 				-getOffset(SkeletonConfigOffsets.UPPER_ARM),
-				0f
+				0f,
 			)
 
 			BoneType.LEFT_LOWER_ARM, BoneType.RIGHT_LOWER_ARM -> setNodeOffset(
 				nodeOffset,
 				0f,
 				-getOffset(SkeletonConfigOffsets.LOWER_ARM),
-				0f
+				0f,
 			)
 
 			BoneType.LEFT_HAND, BoneType.RIGHT_HAND -> setNodeOffset(
 				nodeOffset,
 				0f,
 				-getOffset(SkeletonConfigOffsets.HAND_Y),
-				-getOffset(SkeletonConfigOffsets.HAND_Z)
+				-getOffset(SkeletonConfigOffsets.HAND_Z),
 			)
 
 			BoneType.LEFT_ELBOW_TRACKER, BoneType.RIGHT_ELBOW_TRACKER -> setNodeOffset(
 				nodeOffset,
 				0f,
 				-getOffset(SkeletonConfigOffsets.ELBOW_OFFSET),
-				0f
+				0f,
 			)
 
 			else -> {}
@@ -317,7 +322,7 @@ class SkeletonConfigManager(
 		// Don't recalculate node offsets, just re-use them from skeletonConfig
 		setOffsets(
 			skeletonConfigManager.configOffsets,
-			false
+			false,
 		)
 
 		// Copy skeletonConfig's nodeOffsets as the configs are all the same
@@ -407,7 +412,7 @@ class SkeletonConfigManager(
 					if (proportionLimiter != null) {
 						setOffset(
 							config,
-							height * proportionLimiter.targetRatio
+							height * proportionLimiter.targetRatio,
 						)
 					} else {
 						setOffset(config, null)
@@ -492,7 +497,7 @@ class SkeletonConfigManager(
 			SkeletonConfigOffsets.WAIST,
 			SkeletonConfigOffsets.HIP,
 			SkeletonConfigOffsets.UPPER_LEG,
-			SkeletonConfigOffsets.LOWER_LEG
+			SkeletonConfigOffsets.LOWER_LEG,
 		)
 
 		const val FLOOR_OFFSET: Float = 0.05f

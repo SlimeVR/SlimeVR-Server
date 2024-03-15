@@ -27,14 +27,9 @@ import kotlin.math.abs
 
 /**
  * Class to handle communicate between classes in "skeleton" package and outside
- */
-class HumanPoseManager
-/**
- * Creates a new HumanPoseManager that uses the VRServer
- *
  * @param server the used VRServer
  */
-constructor(val server: VRServer?) {
+class HumanPoseManager(val server: VRServer?) {
 	val computedTrackers: MutableList<Tracker> = FastList()
 	private val onSkeletonUpdated: MutableList<Consumer<HumanSkeleton>> = FastList()
 	private val skeletonConfigManager = SkeletonConfigManager(true, this)
@@ -135,8 +130,8 @@ constructor(val server: VRServer?) {
 					hasPosition = true,
 					hasRotation = true,
 					isInternal = true,
-					isComputed = true
-				)
+					isComputed = true,
+				),
 			)
 		computedTrackers
 			.add(
@@ -149,8 +144,8 @@ constructor(val server: VRServer?) {
 					hasPosition = true,
 					hasRotation = true,
 					isInternal = true,
-					isComputed = true
-				)
+					isComputed = true,
+				),
 			)
 		computedTrackers
 			.add(
@@ -163,8 +158,8 @@ constructor(val server: VRServer?) {
 					hasPosition = true,
 					hasRotation = true,
 					isInternal = true,
-					isComputed = true
-				)
+					isComputed = true,
+				),
 			)
 		computedTrackers
 			.add(
@@ -177,8 +172,8 @@ constructor(val server: VRServer?) {
 					hasPosition = true,
 					hasRotation = true,
 					isInternal = true,
-					isComputed = true
-				)
+					isComputed = true,
+				),
 			)
 		computedTrackers
 			.add(
@@ -191,8 +186,8 @@ constructor(val server: VRServer?) {
 					hasPosition = true,
 					hasRotation = true,
 					isInternal = true,
-					isComputed = true
-				)
+					isComputed = true,
+				),
 			)
 		computedTrackers
 			.add(
@@ -205,8 +200,8 @@ constructor(val server: VRServer?) {
 					hasPosition = true,
 					hasRotation = true,
 					isInternal = true,
-					isComputed = true
-				)
+					isComputed = true,
+				),
 			)
 		computedTrackers
 			.add(
@@ -219,8 +214,8 @@ constructor(val server: VRServer?) {
 					hasPosition = true,
 					hasRotation = true,
 					isInternal = true,
-					isComputed = true
-				)
+					isComputed = true,
+				),
 			)
 		computedTrackers
 			.add(
@@ -233,8 +228,8 @@ constructor(val server: VRServer?) {
 					hasPosition = true,
 					hasRotation = true,
 					isInternal = true,
-					isComputed = true
-				)
+					isComputed = true,
+				),
 			)
 		computedTrackers
 			.add(
@@ -247,8 +242,8 @@ constructor(val server: VRServer?) {
 					hasPosition = true,
 					hasRotation = true,
 					isInternal = true,
-					isComputed = true
-				)
+					isComputed = true,
+				),
 			)
 		computedTrackers
 			.add(
@@ -261,9 +256,9 @@ constructor(val server: VRServer?) {
 					hasPosition = true,
 					hasRotation = true,
 					isInternal = true,
-					isComputed = true
+					isComputed = true,
 
-				)
+				),
 			)
 		computedTrackers
 			.add(
@@ -276,8 +271,8 @@ constructor(val server: VRServer?) {
 					hasPosition = true,
 					hasRotation = true,
 					isInternal = true,
-					isComputed = true
-				)
+					isComputed = true,
+				),
 			)
 
 		connectComputedHumanPoseTrackers()
@@ -337,9 +332,7 @@ constructor(val server: VRServer?) {
 	 * @return the corresponding computed tracker for the trackerRole
 	 */
 	@ThreadSafe
-	fun getComputedTracker(trackerRole: TrackerRole): Tracker {
-		return skeleton.getComputedTracker(trackerRole)
-	}
+	fun getComputedTracker(trackerRole: TrackerRole): Tracker = skeleton.getComputedTracker(trackerRole)
 
 	/**
 	 * Returns all trackers if VRServer is non-null. Else, returns the
@@ -410,9 +403,7 @@ constructor(val server: VRServer?) {
 	 * @return the offset in config corresponding to the key
 	 */
 	@ThreadSafe
-	fun getOffset(key: SkeletonConfigOffsets?): Float {
-		return skeletonConfigManager.getOffset(key)
-	}
+	fun getOffset(key: SkeletonConfigOffsets?): Float = skeletonConfigManager.getOffset(key)
 
 	/**
 	 * @param key the offset to set the length to
@@ -436,9 +427,7 @@ constructor(val server: VRServer?) {
 	 * @return the toggle in config corresponding to the key
 	 */
 	@ThreadSafe
-	fun getToggle(key: SkeletonConfigToggles?): Boolean {
-		return skeletonConfigManager.getToggle(key)
-	}
+	fun getToggle(key: SkeletonConfigToggles?): Boolean = skeletonConfigManager.getToggle(key)
 
 	/**
 	 * @param key the toggle to set the value to
@@ -462,9 +451,7 @@ constructor(val server: VRServer?) {
 	 * @return the value in config corresponding to the key
 	 */
 	@ThreadSafe
-	fun getValue(key: SkeletonConfigValues): Float {
-		return skeletonConfigManager.getValue(key)
-	}
+	fun getValue(key: SkeletonConfigValues): Float = skeletonConfigManager.getValue(key)
 
 	/**
 	 * @param key the value to set the value to
@@ -550,7 +537,7 @@ constructor(val server: VRServer?) {
 			} else {
 				server.vrcOSCHandler
 					.yawAlign(
-						headBone.getGlobalRotation().project(POS_Y)
+						headBone.getGlobalRotation().project(POS_Y),
 					)
 			}
 			server.vMCHandler.alignVMCTracking(headBone.getGlobalRotation())
@@ -566,7 +553,7 @@ constructor(val server: VRServer?) {
 			} else {
 				server.vrcOSCHandler
 					.yawAlign(
-						headBone.getGlobalRotation().project(POS_Y)
+						headBone.getGlobalRotation().project(POS_Y),
 					)
 			}
 			server.vMCHandler.alignVMCTracking(headBone.getGlobalRotation())
@@ -585,9 +572,9 @@ constructor(val server: VRServer?) {
 		val trackersDriftText = StringBuilder()
 		for (tracker in server!!.allTrackers) {
 			if ((
-				tracker.isImu() &&
-					tracker.needsReset
-				) && tracker.resetsHandler.lastResetQuaternion != null
+					tracker.isImu() &&
+						tracker.needsReset
+					) && tracker.resetsHandler.lastResetQuaternion != null
 			) {
 				if (trackersDriftText.isNotEmpty()) {
 					trackersDriftText.append(" | ")
@@ -602,7 +589,7 @@ constructor(val server: VRServer?) {
 						FastMath.atan2(difference.y, difference.w) *
 							2 *
 							FastMath.RAD_TO_DEG
-						)
+						),
 				)
 				// Fix for polarity or something
 				if (trackerDriftAngle > 180) trackerDriftAngle = abs((trackerDriftAngle - 360))
@@ -626,7 +613,7 @@ constructor(val server: VRServer?) {
 		if (trackersDriftText.isNotEmpty()) {
 			LogManager
 				.info(
-					"[HumanPoseManager] $timeSinceLastReset seconds since last reset. Tracker yaw drifts: $trackersDriftText"
+					"[HumanPoseManager] $timeSinceLastReset seconds since last reset. Tracker yaw drifts: $trackersDriftText",
 				)
 		}
 	}
@@ -707,7 +694,5 @@ constructor(val server: VRServer?) {
 		skeleton.setPauseTracking(pauseTracking, sourceName)
 	}
 
-	fun togglePauseTracking(sourceName: String?): Boolean {
-		return skeleton.togglePauseTracking(sourceName)
-	} // #endregion
+	fun togglePauseTracking(sourceName: String?): Boolean = skeleton.togglePauseTracking(sourceName) // #endregion
 }

@@ -45,109 +45,57 @@ object FloatMath {
 	const val TWO_BITS_MAX: Int = (0.inv() shl 1).inv()
 	const val TWO_BITS_MAX_UNSIGNED: Int = (0.inv() shl 2).inv()
 
-	fun roundIfZero(x: Float): Float {
-		return if (kotlin.math.abs(x.toDouble()) < ZERO_TOLERANCE_F) 0.0f else x
-	}
+	fun roundIfZero(x: Float): Float = if (kotlin.math.abs(x.toDouble()) < ZERO_TOLERANCE_F) 0.0f else x
 
-	fun equalsToZero(x: Float): Boolean {
-		return kotlin.math.abs(x.toDouble()) < ZERO_TOLERANCE_F
-	}
+	fun equalsToZero(x: Float): Boolean = kotlin.math.abs(x.toDouble()) < ZERO_TOLERANCE_F
 
-	fun lessThanZero(x: Float): Boolean {
-		return (x < -ZERO_TOLERANCE_F)
-	}
+	fun lessThanZero(x: Float): Boolean = (x < -ZERO_TOLERANCE_F)
 
-	fun lessOrEqualsToZero(x: Float): Boolean {
-		return (x < ZERO_TOLERANCE_F)
-	}
+	fun lessOrEqualsToZero(x: Float): Boolean = (x < ZERO_TOLERANCE_F)
 
-	fun greaterThanZero(x: Float): Boolean {
-		return (x > ZERO_TOLERANCE_F)
-	}
+	fun greaterThanZero(x: Float): Boolean = (x > ZERO_TOLERANCE_F)
 
-	fun greaterOrEqualsToZero(x: Float): Boolean {
-		return (x > -ZERO_TOLERANCE_F)
-	}
+	fun greaterOrEqualsToZero(x: Float): Boolean = (x > -ZERO_TOLERANCE_F)
 
-	fun equalsToZero(x: Float, epsilon: Float): Boolean {
-		return kotlin.math.abs(x.toDouble()) < epsilon
-	}
+	fun equalsToZero(x: Float, epsilon: Float): Boolean = kotlin.math.abs(x.toDouble()) < epsilon
 
-	fun equalsWithEpsilon(x: Float, y: Float): Boolean {
-		return kotlin.math.abs((x - y).toDouble()) < ZERO_TOLERANCE_F
-	}
+	fun equalsWithEpsilon(x: Float, y: Float): Boolean = kotlin.math.abs((x - y).toDouble()) < ZERO_TOLERANCE_F
 
-	fun equalsWithEpsilon(x: Float, y: Float, epsilon: Float): Boolean {
-		return kotlin.math.abs((x - y).toDouble()) < epsilon
-	}
+	fun equalsWithEpsilon(x: Float, y: Float, epsilon: Float): Boolean = kotlin.math.abs((x - y).toDouble()) < epsilon
 
-	fun lessWithEpsilon(x: Float, y: Float): Boolean {
-		return (x < y - ZERO_TOLERANCE_F)
-	}
+	fun lessWithEpsilon(x: Float, y: Float): Boolean = (x < y - ZERO_TOLERANCE_F)
 
-	fun lessOrEqualsWithEpsilon(x: Float, y: Float): Boolean {
-		return (x < y + ZERO_TOLERANCE_F)
-	}
+	fun lessOrEqualsWithEpsilon(x: Float, y: Float): Boolean = (x < y + ZERO_TOLERANCE_F)
 
-	fun lessWithEpsilon(x: Float, y: Float, epsilon: Float): Boolean {
-		return (x < y - epsilon)
-	}
+	fun lessWithEpsilon(x: Float, y: Float, epsilon: Float): Boolean = (x < y - epsilon)
 
-	fun lessOrEqualsWithEpsilon(x: Float, y: Float, epsilon: Float): Boolean {
-		return (x < y + epsilon)
-	}
+	fun lessOrEqualsWithEpsilon(x: Float, y: Float, epsilon: Float): Boolean = (x < y + epsilon)
 
-	fun greaterWithEpsilon(x: Float, y: Float): Boolean {
-		return (x > y + ZERO_TOLERANCE_F)
-	}
+	fun greaterWithEpsilon(x: Float, y: Float): Boolean = (x > y + ZERO_TOLERANCE_F)
 
-	fun greaterOrEqualsWithEpsilon(x: Float, y: Float): Boolean {
-		return (x > y - ZERO_TOLERANCE_F)
-	}
+	fun greaterOrEqualsWithEpsilon(x: Float, y: Float): Boolean = (x > y - ZERO_TOLERANCE_F)
 
-	fun greaterWithEpsilon(x: Float, y: Float, epsilon: Float): Boolean {
-		return (x > y + epsilon)
-	}
+	fun greaterWithEpsilon(x: Float, y: Float, epsilon: Float): Boolean = (x > y + epsilon)
 
-	fun greaterOrEqualsWithEpsilon(x: Float, y: Float, epsilon: Float): Boolean {
-		return (x > y - epsilon)
-	}
+	fun greaterOrEqualsWithEpsilon(x: Float, y: Float, epsilon: Float): Boolean = (x > y - epsilon)
 
-	fun roundIfZero(x: Double): Double {
-		return if (kotlin.math.abs(x) < ZERO_TOLERANCE_D) 0.0 else x
-	}
+	fun roundIfZero(x: Double): Double = if (kotlin.math.abs(x) < ZERO_TOLERANCE_D) 0.0 else x
 
-	fun equalsToZero(x: Double): Boolean {
-		return kotlin.math.abs(x) < ZERO_TOLERANCE_D
-	}
+	fun equalsToZero(x: Double): Boolean = kotlin.math.abs(x) < ZERO_TOLERANCE_D
 
-	fun equalsWithEpsilon(x: Double, y: Double): Boolean {
-		return kotlin.math.abs(x - y) < ZERO_TOLERANCE_D
-	}
+	fun equalsWithEpsilon(x: Double, y: Double): Boolean = kotlin.math.abs(x - y) < ZERO_TOLERANCE_D
 
-	fun lessWithEpsilon(x: Double, y: Double): Boolean {
-		return (x < y - ZERO_TOLERANCE_D)
-	}
+	fun lessWithEpsilon(x: Double, y: Double): Boolean = (x < y - ZERO_TOLERANCE_D)
 
-	fun lessOrEqualsWithEpsilon(x: Double, y: Double): Boolean {
-		return (x < y + ZERO_TOLERANCE_D)
-	}
+	fun lessOrEqualsWithEpsilon(x: Double, y: Double): Boolean = (x < y + ZERO_TOLERANCE_D)
 
-	fun greaterWithEpsilon(x: Double, y: Double): Boolean {
-		return (x > y + ZERO_TOLERANCE_D)
-	}
+	fun greaterWithEpsilon(x: Double, y: Double): Boolean = (x > y + ZERO_TOLERANCE_D)
 
-	fun greaterOrEqualsWithEpsilon(x: Double, y: Double): Boolean {
-		return (x > y - ZERO_TOLERANCE_D)
-	}
+	fun greaterOrEqualsWithEpsilon(x: Double, y: Double): Boolean = (x > y - ZERO_TOLERANCE_D)
 
-	fun toDegrees(angrad: Float): Float {
-		return angrad * 180.0f / PI
-	}
+	fun toDegrees(angrad: Float): Float = angrad * 180.0f / PI
 
-	fun toRad(deg: Float): Float {
-		return deg / 180.0f * PI
-	}
+	fun toRad(deg: Float): Float = deg / 180.0f * PI
 
 	fun radEqual(angle1: Float, angle2: Float): Boolean {
 		val diff = clampRad(angle1 - angle2)
@@ -161,36 +109,26 @@ object FloatMath {
 
 	@Deprecated(
 		"use {@link #normalizeRad(float)}",
-		ReplaceWith("normalizeRad(angle)", "io.eiren.math.FloatMath.normalizeRad")
+		ReplaceWith("normalizeRad(angle)", "io.eiren.math.FloatMath.normalizeRad"),
 	)
-	fun clampRad(angle: Float): Float {
-		return normalizeRad(angle)
-	}
+	fun clampRad(angle: Float): Float = normalizeRad(angle)
 
-	fun normalizeRad(angle: Float): Float {
-		return normalize(angle, -FastMath.PI, FastMath.PI)
-	}
+	fun normalizeRad(angle: Float): Float = normalize(angle, -FastMath.PI, FastMath.PI)
 
 	@Deprecated(
 		"use {@link #normalizeDegrees(float)}",
-		ReplaceWith("normalizeDegrees(angle)", "io.eiren.math.FloatMath.normalizeDegrees")
+		ReplaceWith("normalizeDegrees(angle)", "io.eiren.math.FloatMath.normalizeDegrees"),
 	)
-	fun clampDegrees(angle: Float): Float {
-		return normalizeDegrees(angle)
-	}
+	fun clampDegrees(angle: Float): Float = normalizeDegrees(angle)
 
-	fun normalizeDegrees(angle: Float): Float {
-		return normalize(angle, -180f, 180f)
-	}
+	fun normalizeDegrees(angle: Float): Float = normalize(angle, -180f, 180f)
 
 	fun animateEase(t: Float): Float {
 		// Special case of Bezier interpolation (p0 = p1 = 0, p2 = p3 = 1)
 		return (3.0f - 2.0f * t) * t * t
 	}
 
-	fun animateEaseIn(t: Float): Float {
-		return t * t
-	}
+	fun animateEaseIn(t: Float): Float = t * t
 
 	/**
 	 * Lineary remaps value from the source interval to the target interval.
@@ -202,12 +140,10 @@ object FloatMath {
 		sourceEnd: Float,
 		targetStart: Float,
 		targetEnd: Float,
-	): Float {
-		return (
-			targetStart +
-				(value - sourceStart) * (targetEnd - targetStart) / (sourceEnd - sourceStart)
-			)
-	}
+	): Float = (
+		targetStart +
+			(value - sourceStart) * (targetEnd - targetStart) / (sourceEnd - sourceStart)
+		)
 
 	/**
 	 * Clamps the given value and remaps to the target interval.
@@ -221,15 +157,13 @@ object FloatMath {
 		sourceTop: Float,
 		targetBottom: Float,
 		targetTop: Float,
-	): Float {
-		return mapValue(
-			clamp(value, sourceBottom, sourceTop),
-			sourceBottom,
-			sourceTop,
-			targetBottom,
-			targetTop
-		)
-	}
+	): Float = mapValue(
+		clamp(value, sourceBottom, sourceTop),
+		sourceBottom,
+		sourceTop,
+		targetBottom,
+		targetTop,
+	)
 
 	/**
 	 * Remaps the given value to the target interval and clamps.
@@ -243,13 +177,11 @@ object FloatMath {
 		sourceTop: Float,
 		targetBottom: Float,
 		targetTop: Float,
-	): Float {
-		return clamp(
-			mapValue(value, sourceBottom, sourceTop, targetBottom, targetTop),
-			targetBottom,
-			targetTop
-		)
-	}
+	): Float = clamp(
+		mapValue(value, sourceBottom, sourceTop, targetBottom, targetTop),
+		targetBottom,
+		targetTop,
+	)
 
 	fun smoothstep(edge0: Float, edge1: Float, x: Float): Float {
 		// Scale, bias and saturate x to 0..1 range
@@ -365,127 +297,75 @@ object FloatMath {
 		return 0.5f * (f + 1f) // 0..1
 	}
 
-	fun fraction(f: Float): Float {
-		return f - f.toInt()
-	}
+	fun fraction(f: Float): Float = f - f.toInt()
 
-	fun fraction(d: Double): Double {
-		return d - d.toLong()
-	}
+	fun fraction(d: Double): Double = d - d.toLong()
 
 	@Deprecated(
 		"Do not copy {@link Math} methods.",
-		ReplaceWith("min(a, b)", "kotlin.math.min")
+		ReplaceWith("min(a, b)", "kotlin.math.min"),
 	)
-	fun min(a: Float, b: Float): Float {
-		return if (a > b) b else a
-	}
+	fun min(a: Float, b: Float): Float = if (a > b) b else a
 
-	fun min(a: Float, b: Float, c: Float): Float {
-		return kotlin.math.min(kotlin.math.min(a.toDouble(), b.toDouble()), c.toDouble()).toFloat()
-	}
+	fun min(a: Float, b: Float, c: Float): Float = kotlin.math.min(kotlin.math.min(a.toDouble(), b.toDouble()), c.toDouble()).toFloat()
 
-	fun min(a: Float, b: Float, c: Float, d: Float): Float {
-		return kotlin.math.min(kotlin.math.min(a.toDouble(), b.toDouble()), kotlin.math.min(c.toDouble(), d.toDouble()))
-			.toFloat()
-	}
+	fun min(a: Float, b: Float, c: Float, d: Float): Float = kotlin.math.min(kotlin.math.min(a.toDouble(), b.toDouble()), kotlin.math.min(c.toDouble(), d.toDouble()))
+		.toFloat()
 
 	@Deprecated("Do not copy {@link Math} methods.", ReplaceWith("max(a, b)", "kotlin.math.max"))
-	fun max(a: Float, b: Float): Float {
-		return if (a > b) a else b
-	}
+	fun max(a: Float, b: Float): Float = if (a > b) a else b
 
-	fun max(a: Float, b: Float, c: Float): Float {
-		return kotlin.math.max(kotlin.math.max(a.toDouble(), b.toDouble()), c.toDouble()).toFloat()
-	}
+	fun max(a: Float, b: Float, c: Float): Float = kotlin.math.max(kotlin.math.max(a.toDouble(), b.toDouble()), c.toDouble()).toFloat()
 
-	fun max(a: Float, b: Float, c: Float, d: Float): Float {
-		return kotlin.math.max(kotlin.math.max(a.toDouble(), b.toDouble()), kotlin.math.max(c.toDouble(), d.toDouble()))
-			.toFloat()
-	}
+	fun max(a: Float, b: Float, c: Float, d: Float): Float = kotlin.math.max(kotlin.math.max(a.toDouble(), b.toDouble()), kotlin.math.max(c.toDouble(), d.toDouble()))
+		.toFloat()
 
-	fun cos(value: Float): Float {
-		return kotlin.math.cos(value.toDouble()).toFloat()
-	}
+	fun cos(value: Float): Float = kotlin.math.cos(value.toDouble()).toFloat()
 
-	fun sin(value: Float): Float {
-		return kotlin.math.sin(value.toDouble()).toFloat()
-	}
+	fun sin(value: Float): Float = kotlin.math.sin(value.toDouble()).toFloat()
 
-	fun ceil(value: Float): Float {
-		return kotlin.math.ceil(value.toDouble()).toFloat()
-	}
+	fun ceil(value: Float): Float = kotlin.math.ceil(value.toDouble()).toFloat()
 
-	fun floor(value: Float): Float {
-		return kotlin.math.floor(value.toDouble()).toFloat()
-	}
+	fun floor(value: Float): Float = kotlin.math.floor(value.toDouble()).toFloat()
 
-	fun pow(value: Float, power: Float): Float {
-		return value.pow(power)
-	}
+	fun pow(value: Float, power: Float): Float = value.pow(power)
 
 	@Deprecated(
 		"Do not copy {@link Math} methods.",
-		ReplaceWith("abs(value)", "kotlin.math.abs")
+		ReplaceWith("abs(value)", "kotlin.math.abs"),
 	)
-	fun abs(value: Float): Float {
-		return kotlin.math.abs(value.toDouble()).toFloat()
-	}
+	fun abs(value: Float): Float = kotlin.math.abs(value.toDouble()).toFloat()
 
 	@Deprecated(
 		"Do not copy {@link Math} methods.",
-		ReplaceWith("round(value)", "kotlin.math.round")
+		ReplaceWith("round(value)", "kotlin.math.round"),
 	)
-	fun round(value: Float): Float {
-		return kotlin.math.round(value)
-	}
+	fun round(value: Float): Float = kotlin.math.round(value)
 
-	fun sqrt(value: Float): Float {
-		return kotlin.math.sqrt(value.toDouble()).toFloat()
-	}
+	fun sqrt(value: Float): Float = kotlin.math.sqrt(value.toDouble()).toFloat()
 
-	fun distance(x0: Float, y0: Float, z0: Float, x1: Float, y1: Float, z1: Float): Float {
-		return distance(x1 - x0, y1 - y0, z1 - z0)
-	}
+	fun distance(x0: Float, y0: Float, z0: Float, x1: Float, y1: Float, z1: Float): Float = distance(x1 - x0, y1 - y0, z1 - z0)
 
-	fun distance(x: Float, y: Float, z: Float): Float {
-		return sqrt(sqrDistance(x, y, z))
-	}
+	fun distance(x: Float, y: Float, z: Float): Float = sqrt(sqrDistance(x, y, z))
 
-	fun sqrDistance(x: Float, y: Float, z: Float): Float {
-		return x * x + y * y + z * z
-	}
+	fun sqrDistance(x: Float, y: Float, z: Float): Float = x * x + y * y + z * z
 
-	fun distance(x: Float, y: Float): Float {
-		return sqrt(sqrDistance(x, y))
-	}
+	fun distance(x: Float, y: Float): Float = sqrt(sqrDistance(x, y))
 
-	fun sqrDistance(x: Float, y: Float): Float {
-		return x * x + y * y
-	}
+	fun sqrDistance(x: Float, y: Float): Float = x * x + y * y
 
-	fun sqrDistance(v: Vector3, x1: Float, y1: Float, z1: Float): Float {
-		return sqrDistance(x1 - v.x, y1 - v.y, z1 - v.z)
-	}
+	fun sqrDistance(v: Vector3, x1: Float, y1: Float, z1: Float): Float = sqrDistance(x1 - v.x, y1 - v.y, z1 - v.z)
 
-	fun sqrDistance(x0: Float, y0: Float, z0: Float, x1: Float, y1: Float, z1: Float): Float {
-		return sqrDistance(x1 - x0, y1 - y0, z1 - z0)
-	}
+	fun sqrDistance(x0: Float, y0: Float, z0: Float, x1: Float, y1: Float, z1: Float): Float = sqrDistance(x1 - x0, y1 - y0, z1 - z0)
 
-	fun hypot(x: Float, y: Float): Float {
-		return FastMath.sqrt(x * x + y * y)
-	}
+	fun hypot(x: Float, y: Float): Float = FastMath.sqrt(x * x + y * y)
 
-	fun hypot(x: Float, y: Float, z: Float): Float {
-		return FastMath.sqrt(x * x + y * y + z * z)
-	}
+	fun hypot(x: Float, y: Float, z: Float): Float = FastMath.sqrt(x * x + y * y + z * z)
 
 	/**
 	 * The same as FastMath.clamp
 	 */
-	fun clamp(value: Float, min: Float, max: Float): Float {
-		return kotlin.math.max(min.toDouble(), kotlin.math.min(max.toDouble(), value.toDouble())).toFloat()
-	}
+	fun clamp(value: Float, min: Float, max: Float): Float = kotlin.math.max(min.toDouble(), kotlin.math.min(max.toDouble(), value.toDouble())).toFloat()
 
 	fun int2101010RevToFloats(packedValue: Int, source: Vector3): Vector3 {
 		var x = source.x

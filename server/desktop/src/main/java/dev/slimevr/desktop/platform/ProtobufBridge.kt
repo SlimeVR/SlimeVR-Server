@@ -100,7 +100,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	@VRServerThread
 	protected fun writeTrackerUpdate(localTracker: Tracker?) {
 		val builder = ProtobufMessages.Position.newBuilder().setTrackerId(
-			localTracker!!.id
+			localTracker!!.id,
 		)
 		if (localTracker.hasPosition) {
 			val pos = localTracker.position
@@ -149,7 +149,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 					.position = Vector3(
 					positionMessage.x,
 					positionMessage.y,
-					positionMessage.z
+					positionMessage.z,
 				)
 			}
 
@@ -159,8 +159,8 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 						positionMessage.qw,
 						positionMessage.qx,
 						positionMessage.qy,
-						positionMessage.qz
-					)
+						positionMessage.qz,
+					),
 
 				)
 			tracker.dataTick()
@@ -200,6 +200,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 				instance.resetTrackersFull(resetSourceName)
 
 			"fast_reset" -> instance.resetTrackersYaw(resetSourceName)
+
 			"pause_tracking" ->
 				instance
 					.togglePauseTracking(resetSourceName)

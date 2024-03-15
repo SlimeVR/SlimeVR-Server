@@ -92,9 +92,7 @@ object FastMath {
 	 * @return True if the number is within the specified `tolerance`
 	 * value.
 	 */
-	fun isApproxZero(value: Float, tolerance: Float): Boolean {
-		return value < tolerance && value > -tolerance
-	}
+	fun isApproxZero(value: Float, tolerance: Float): Boolean = value < tolerance && value > -tolerance
 
 	/**
 	 * Returns true if the number is within the [.ZERO_TOLERANCE] value.
@@ -102,9 +100,7 @@ object FastMath {
 	 * @param value The number to check.
 	 * @return True if the number is within the [.ZERO_TOLERANCE] value.
 	 */
-	fun isApproxZero(value: Float): Boolean {
-		return isApproxZero(value, ZERO_TOLERANCE)
-	}
+	fun isApproxZero(value: Float): Boolean = isApproxZero(value, ZERO_TOLERANCE)
 
 	/**
 	 * Returns true if the two numbers are equal within the specified
@@ -116,9 +112,7 @@ object FastMath {
 	 * @return True if the numbers are approximately equal within the specified
 	 * `tolerance` value.
 	 */
-	fun isApproxEqual(valueOne: Float, valueTwo: Float, tolerance: Float): Boolean {
-		return isApproxZero(valueTwo - valueOne, tolerance)
-	}
+	fun isApproxEqual(valueOne: Float, valueTwo: Float, tolerance: Float): Boolean = isApproxZero(valueTwo - valueOne, tolerance)
 
 	/**
 	 * Returns true if the two numbers are equal within the
@@ -129,9 +123,7 @@ object FastMath {
 	 * @return True if the numbers are approximately equal within the
 	 * [.ZERO_TOLERANCE] value.
 	 */
-	fun isApproxEqual(valueOne: Float, valueTwo: Float): Boolean {
-		return isApproxEqual(valueOne, valueTwo, ZERO_TOLERANCE)
-	}
+	fun isApproxEqual(valueOne: Float, valueTwo: Float): Boolean = isApproxEqual(valueOne, valueTwo, ZERO_TOLERANCE)
 
 	/**
 	 * Returns true if the number is a power of 2 (2,4,8,16...)
@@ -145,13 +137,9 @@ object FastMath {
 	 * @param number The number to test.
 	 * @return True if it is a power of two.
 	 */
-	fun isPowerOfTwo(number: Int): Boolean {
-		return (number > 0) && (number and (number - 1)) == 0
-	}
+	fun isPowerOfTwo(number: Int): Boolean = (number > 0) && (number and (number - 1)) == 0
 
-	fun nearestPowerOfTwo(number: Int): Int {
-		return 2.0.pow(kotlin.math.ceil(ln(number.toDouble()) / ln(2.0))).toInt()
-	}
+	fun nearestPowerOfTwo(number: Int): Int = 2.0.pow(kotlin.math.ceil(ln(number.toDouble()) / ln(2.0))).toInt()
 
 	/**
 	 * Linear interpolation from startValue to endValue by the given percent.
@@ -470,9 +458,7 @@ object FastMath {
 	 * @return fValue's atan
 	 * @see java.lang.Math.atan
 	 */
-	fun atan(fValue: Float): Float {
-		return kotlin.math.atan(fValue.toDouble()).toFloat()
-	}
+	fun atan(fValue: Float): Float = kotlin.math.atan(fValue.toDouble()).toFloat()
 
 	/**
 	 * A direct call to Math.atan2.
@@ -482,9 +468,7 @@ object FastMath {
 	 * @return Math.atan2(fY,fX)
 	 * @see java.lang.Math.atan2
 	 */
-	fun atan2(fY: Float, fX: Float): Float {
-		return kotlin.math.atan2(fY.toDouble(), fX.toDouble()).toFloat()
-	}
+	fun atan2(fY: Float, fX: Float): Float = kotlin.math.atan2(fY.toDouble(), fX.toDouble()).toFloat()
 
 	/**
 	 * Rounds a fValue up. A call to Math.ceil
@@ -493,9 +477,7 @@ object FastMath {
 	 * @return The fValue rounded up
 	 * @see java.lang.Math.ceil
 	 */
-	fun ceil(fValue: Float): Float {
-		return kotlin.math.ceil(fValue.toDouble()).toFloat()
-	}
+	fun ceil(fValue: Float): Float = kotlin.math.ceil(fValue.toDouble()).toFloat()
 
 	/**
 	 * Returns cosine of an angle. Direct call to java.lang.Math
@@ -504,9 +486,7 @@ object FastMath {
 	 * @param v The angle to cosine.
 	 * @return the cosine of the angle.
 	 */
-	fun cos(v: Float): Float {
-		return kotlin.math.cos(v.toDouble()).toFloat()
-	}
+	fun cos(v: Float): Float = kotlin.math.cos(v.toDouble()).toFloat()
 
 	/**
 	 * Returns the sine of an angle. Direct call to java.lang.Math
@@ -515,9 +495,7 @@ object FastMath {
 	 * @param v The angle to sine.
 	 * @return the sine of the angle.
 	 */
-	fun sin(v: Float): Float {
-		return kotlin.math.sin(v.toDouble()).toFloat()
-	}
+	fun sin(v: Float): Float = kotlin.math.sin(v.toDouble()).toFloat()
 
 	/**
 	 * Returns E^fValue
@@ -526,9 +504,7 @@ object FastMath {
 	 * @return The value E^fValue
 	 * @see java.lang.Math.exp
 	 */
-	fun exp(fValue: Float): Float {
-		return kotlin.math.exp(fValue.toDouble()).toFloat()
-	}
+	fun exp(fValue: Float): Float = kotlin.math.exp(fValue.toDouble()).toFloat()
 
 	/**
 	 * Returns Absolute value of a float.
@@ -552,9 +528,7 @@ object FastMath {
 	 * @return The given number rounded down
 	 * @see java.lang.Math.floor
 	 */
-	fun floor(fValue: Float): Float {
-		return kotlin.math.floor(fValue.toDouble()).toFloat()
-	}
+	fun floor(fValue: Float): Float = kotlin.math.floor(fValue.toDouble()).toFloat()
 
 	/**
 	 * Returns 1/sqrt(fValue)
@@ -563,9 +537,7 @@ object FastMath {
 	 * @return 1/sqrt(fValue)
 	 * @see java.lang.Math.sqrt
 	 */
-	fun invSqrt(fValue: Float): Float {
-		return (1.0f / kotlin.math.sqrt(fValue.toDouble())).toFloat()
-	}
+	fun invSqrt(fValue: Float): Float = (1.0f / kotlin.math.sqrt(fValue.toDouble())).toFloat()
 
 	fun fastInvSqrt(x: Float): Float {
 		var x = x
@@ -585,9 +557,7 @@ object FastMath {
 	 * @return The log of fValue base E
 	 * @see java.lang.Math.log
 	 */
-	fun log(fValue: Float): Float {
-		return ln(fValue.toDouble()).toFloat()
-	}
+	fun log(fValue: Float): Float = ln(fValue.toDouble()).toFloat()
 
 	/**
 	 * Returns the logarithm of value with given base, calculated as
@@ -598,9 +568,7 @@ object FastMath {
 	 * @param base Base of logarithm.
 	 * @return The logarithm of value with given base
 	 */
-	fun log(value: Float, base: Float): Float {
-		return (ln(value.toDouble()) / ln(base.toDouble())).toFloat()
-	}
+	fun log(value: Float, base: Float): Float = (ln(value.toDouble()) / ln(base.toDouble())).toFloat()
 
 	/**
 	 * Returns a number raised to an exponent power. fBase^fExponent
@@ -611,9 +579,7 @@ object FastMath {
 	 * @see java.lang.Math.pow
 	 */
 	@JvmStatic
-	fun pow(fBase: Float, fExponent: Float): Float {
-		return fBase.pow(fExponent)
-	}
+	fun pow(fBase: Float, fExponent: Float): Float = fBase.pow(fExponent)
 
 	/**
 	 * Returns the value squared. fValue ^ 2
@@ -621,9 +587,7 @@ object FastMath {
 	 * @param fValue The value to square.
 	 * @return The square of the given value.
 	 */
-	fun sqr(fValue: Float): Float {
-		return fValue * fValue
-	}
+	fun sqr(fValue: Float): Float = fValue * fValue
 
 	/**
 	 * Returns the square root of a given value.
@@ -633,9 +597,7 @@ object FastMath {
 	 * @see java.lang.Math.sqrt
 	 */
 	@JvmStatic
-	fun sqrt(fValue: Float): Float {
-		return kotlin.math.sqrt(fValue.toDouble()).toFloat()
-	}
+	fun sqrt(fValue: Float): Float = kotlin.math.sqrt(fValue.toDouble()).toFloat()
 
 	/**
 	 * Returns the tangent of a value. If USE_FAST_TRIG is enabled, an
@@ -645,9 +607,7 @@ object FastMath {
 	 * @return The tangent of fValue.
 	 * @see java.lang.Math.tan
 	 */
-	fun tan(fValue: Float): Float {
-		return kotlin.math.tan(fValue.toDouble()).toFloat()
-	}
+	fun tan(fValue: Float): Float = kotlin.math.tan(fValue.toDouble()).toFloat()
 
 	/**
 	 * Returns 1 if the number is positive, -1 if the number is negative, and 0
@@ -674,9 +634,7 @@ object FastMath {
 	 * @return The float's sign.
 	 */
 	@JvmStatic
-	fun sign(fValue: Float): Float {
-		return kotlin.math.sign(fValue.toDouble()).toFloat()
-	}
+	fun sign(fValue: Float): Float = kotlin.math.sign(fValue.toDouble()).toFloat()
 
 	/**
 	 * A method that computes normal for a triangle defined by three vertices.
@@ -736,9 +694,7 @@ object FastMath {
 	 * @return A random float between <tt>0.0f</tt> (inclusive) to <tt>1.0f</tt>
 	 * (exclusive).
 	 */
-	fun nextRandomFloat(): Float {
-		return rand.nextFloat()
-	}
+	fun nextRandomFloat(): Float = rand.nextFloat()
 
 	/**
 	 * Returns a random integer between min and max.
@@ -746,13 +702,9 @@ object FastMath {
 	 * @return A random int between <tt>min</tt> (inclusive) to <tt>max</tt>
 	 * (inclusive).
 	 */
-	fun nextRandomInt(min: Int, max: Int): Int {
-		return (nextRandomFloat() * (max - min + 1)).toInt() + min
-	}
+	fun nextRandomInt(min: Int, max: Int): Int = (nextRandomFloat() * (max - min + 1)).toInt() + min
 
-	fun nextRandomInt(): Int {
-		return rand.nextInt()
-	}
+	fun nextRandomInt(): Int = rand.nextInt()
 
 	/**
 	 * Converts a point from Spherical coordinates to Cartesian (using positive
@@ -780,7 +732,7 @@ object FastMath {
 		val vx = sqrt(
 			(x * x) +
 				(cartCoords.y * cartCoords.y) +
-				(cartCoords.z * cartCoords.z)
+				(cartCoords.z * cartCoords.z),
 		)
 		var vy = atan(cartCoords.z / x)
 		if (x < 0) {
@@ -816,7 +768,7 @@ object FastMath {
 		val vx = sqrt(
 			(x * x) +
 				(cartCoords.y * cartCoords.y) +
-				(cartCoords.z * cartCoords.z)
+				(cartCoords.z * cartCoords.z),
 		)
 		var vz = atan(cartCoords.z / x)
 		if (x < 0) {
@@ -854,14 +806,12 @@ object FastMath {
 	 * @param y the value whose sign is to be used.
 	 * @return x with its sign changed to match the sign of y.
 	 */
-	fun copysign(x: Float, y: Float): Float {
-		return if (y >= 0 && x <= -0) {
-			-x
-		} else if (y < 0 && x >= 0) {
-			-x
-		} else {
-			x
-		}
+	fun copysign(x: Float, y: Float): Float = if (y >= 0 && x <= -0) {
+		-x
+	} else if (y < 0 && x >= 0) {
+		-x
+	} else {
+		x
 	}
 
 	/**
@@ -873,8 +823,12 @@ object FastMath {
 	 * @return clamped input
 	 */
 	@JvmStatic
-	fun clamp(input: Float, min: Float, max: Float): Float {
-		return if ((input < min)) min else if ((input > max)) max else input
+	fun clamp(input: Float, min: Float, max: Float): Float = if ((input < min)) {
+		min
+	} else if ((input > max)) {
+		max
+	} else {
+		input
 	}
 
 	/**
@@ -883,9 +837,7 @@ object FastMath {
 	 * @param input
 	 * @return input clamped between 0 and 1.
 	 */
-	fun saturate(input: Float): Float {
-		return clamp(input, 0f, 1f)
-	}
+	fun saturate(input: Float): Float = clamp(input, 0f, 1f)
 
 	/**
 	 * Converts a single precision (32 bit) floating point value into half
@@ -901,20 +853,22 @@ object FastMath {
 	 * @param half The half floating point value as a short.
 	 * @return floating point value of the half.
 	 */
-	fun convertHalfToFloat(half: Short): Float {
-		return when (half.toInt()) {
-			0x0000 -> 0f
-			0x8000 -> -0f
-			0x7c00 -> Float.POSITIVE_INFINITY
-			0xfc00 -> Float.NEGATIVE_INFINITY
-			else ->
-				java.lang.Float
-					.intBitsToFloat(
-						((half.toInt() and 0x8000) shl 16)
-							or (((half.toInt() and 0x7c00) + 0x1C000) shl 13)
-							or ((half.toInt() and 0x03FF) shl 13)
-					)
-		}
+	fun convertHalfToFloat(half: Short): Float = when (half.toInt()) {
+		0x0000 -> 0f
+
+		0x8000 -> -0f
+
+		0x7c00 -> Float.POSITIVE_INFINITY
+
+		0xfc00 -> Float.NEGATIVE_INFINITY
+
+		else ->
+			java.lang.Float
+				.intBitsToFloat(
+					((half.toInt() and 0x8000) shl 16)
+						or (((half.toInt() and 0x7c00) + 0x1C000) shl 13)
+						or ((half.toInt() and 0x03FF) shl 13),
+				)
 	}
 
 	fun convertFloatToHalf(flt: Float): Short {

@@ -305,12 +305,10 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * Gets the world-adjusted acceleration
 	 */
-	fun getAcceleration(): Vector3 {
-		return if (needsReset) {
-			resetsHandler.getReferenceAdjustedAccel(_rotation, _acceleration)
-		} else {
-			_acceleration
-		}
+	fun getAcceleration(): Vector3 = if (needsReset) {
+		resetsHandler.getReferenceAdjustedAccel(_rotation, _acceleration)
+	} else {
+		_acceleration
 	}
 
 	/**
@@ -339,9 +337,7 @@ class Tracker @JvmOverloads constructor(
 	 * Gets the raw (unadjusted) rotation of the tracker.
 	 * If this is an IMU, this will be the raw sensor rotation.
 	 */
-	fun getRawRotation(): Quaternion {
-		return _rotation
-	}
+	fun getRawRotation(): Quaternion = _rotation
 
 	/**
 	 * Sets the raw (unadjusted) rotation of the tracker.
