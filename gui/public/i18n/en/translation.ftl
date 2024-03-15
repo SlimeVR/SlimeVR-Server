@@ -195,9 +195,9 @@ tracker-settings-drift_compensation_section-edit = Allow drift compensation
 tracker-settings-name_section = Tracker name
 tracker-settings-name_section-description = Give it a cute nickname :)
 tracker-settings-name_section-placeholder = NightyBeast's left leg
-tracker-settings-forget = Forget Slime
-tracker-settings-forget-description = Removes Slime from SlimeVR so it stops connecting to this PC. The configuration of the tracker will be saved but it will stop trying to connect until this session of SlimeVR is closed.
-tracker-settings-forget-label = Forget Slime
+tracker-settings-forget = Forget tracker
+tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevent it from connecting to it until the server is restarted. The configuration of the tracker won't be lost.
+tracker-settings-forget-label = Forget tracker
 
 ## Tracker part card info
 tracker-part_card-no_name = No name
@@ -894,8 +894,8 @@ tray_or_exit_modal-submit = Save
 tray_or_exit_modal-cancel = Cancel
 
 ## Unknown device modal
-unknown_device-modal-title = A new Slime was found!
-unknown_device-modal-description = There is a new Slime with MAC address <b>{$deviceId}</b>.
+unknown_device-modal-title = A new tracker was found!
+unknown_device-modal-description = There is a new tracker with MAC address <b>{$deviceId}</b>.
     Do you want to connect it to SlimeVR?
 unknown_device-modal-confirm = Sure!
 unknown_device-modal-forget = Ignore it
