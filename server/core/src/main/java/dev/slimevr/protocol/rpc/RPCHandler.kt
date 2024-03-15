@@ -10,6 +10,7 @@ import dev.slimevr.protocol.rpc.reset.RPCResetHandler
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
+import dev.slimevr.protocol.rpc.setup.RPCHandshakeHandler
 import dev.slimevr.protocol.rpc.setup.RPCTapSetupHandler
 import dev.slimevr.protocol.rpc.setup.RPCUtil.getLocalIp
 import dev.slimevr.protocol.rpc.status.RPCStatusHandler
@@ -55,6 +56,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCTapSetupHandler(this, api)
 		RPCStatusHandler(this, api)
 		RPCAutoBoneHandler(this, api)
+		RPCHandshakeHandler(this, api)
 		RPCTrackingPause(this, api)
 
 		registerPacketListener(

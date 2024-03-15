@@ -10,8 +10,8 @@ import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
 
 @JsonVersionedModel(
-	currentVersion = "12",
-	defaultDeserializeToVersion = "12",
+	currentVersion = "13",
+	defaultDeserializeToVersion = "13",
 	toCurrentConverterClass = CurrentVRConfigConverter::class,
 )
 class VRConfig {
@@ -47,6 +47,8 @@ class VRConfig {
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer::class)
 	private val bridges: MutableMap<String, BridgeConfig> = HashMap()
 
+	private val knownDevices: MutableSet<String> = mutableSetOf()
+
 	val overlay: OverlayConfig = OverlayConfig()
 
 	init {
@@ -81,6 +83,8 @@ class VRConfig {
 	fun getTrackers(): Map<String, TrackerConfig> = trackers
 
 	fun getBridges(): Map<String, BridgeConfig> = bridges
+
+	fun hasTrackerByName(name: String): Boolean = trackers.containsKey(name)
 
 	fun getTracker(tracker: Tracker): TrackerConfig {
 		var config = trackers[tracker.name]
@@ -120,4 +124,10 @@ class VRConfig {
 		}
 		return config
 	}
+
+	fun isKnownDevice(mac: String): Boolean = knownDevices.contains(mac)
+
+	fun addKnownDevice(mac: String): Boolean = knownDevices.add(mac)
+
+	fun forgetKnownDevice(mac: String): Boolean = knownDevices.remove(mac)
 }
