@@ -473,7 +473,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		}
 		synchronized(connectionsByAddress) {
 			connectionsByAddress.filter { (_, dev) -> dev.id == device.id }.keys.forEach(
-				connectionsByAddress::remove
+				connectionsByAddress::remove,
 			)
 		}
 		device.trackers.forEach { (_, tracker) ->
@@ -481,7 +481,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		}
 
 		LogManager.info(
-			"[TrackerServer] Forcefully disconnected ${device.hardwareIdentifier} device."
+			"[TrackerServer] Forcefully disconnected ${device.hardwareIdentifier} device.",
 		)
 	}
 

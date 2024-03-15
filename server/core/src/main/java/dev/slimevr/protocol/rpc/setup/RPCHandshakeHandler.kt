@@ -19,12 +19,12 @@ class RPCHandshakeHandler(
 	init {
 		rpcHandler.registerPacketListener(
 			RpcMessage.AddUnknownDeviceRequest,
-			::onAddUnknownDevice
+			::onAddUnknownDevice,
 		)
 
 		rpcHandler.registerPacketListener(
 			RpcMessage.ForgetDeviceRequest,
-			::onForgetDevice
+			::onForgetDevice,
 		)
 
 		this.api.server.handshakeHandler.addListener(this)
@@ -36,12 +36,12 @@ class RPCHandshakeHandler(
 		val update =
 			UnknownDeviceHandshakeNotification.createUnknownDeviceHandshakeNotification(
 				fbb,
-				string
+				string,
 			)
 		val outbound = rpcHandler.createRPCMessage(
 			fbb,
 			RpcMessage.UnknownDeviceHandshakeNotification,
-			update
+			update,
 		)
 		fbb.finish(outbound)
 
@@ -61,7 +61,7 @@ class RPCHandshakeHandler(
 				?: return
 
 		this.api.server.configManager.vrConfig.addKnownDevice(
-			req.macAddress() ?: return
+			req.macAddress() ?: return,
 		)
 		this.api.server.configManager.saveConfig()
 	}
@@ -74,7 +74,7 @@ class RPCHandshakeHandler(
 			?: return
 
 		this.api.server.configManager.vrConfig.forgetKnownDevice(
-			req.macAddress() ?: return
+			req.macAddress() ?: return,
 		)
 		val device =
 			this.api.server.deviceManager.devices.find { it.hardwareIdentifier == req.macAddress() }
