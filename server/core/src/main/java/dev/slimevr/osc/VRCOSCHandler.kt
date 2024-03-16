@@ -47,16 +47,18 @@ class VRCOSCHandler(
 	)
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
-	private var addtionalOscSenders = FastList<OSCPortOut>()
+	private var oscQuerySender: OSCPortOut? = null
 	private var oscMessage: OSCMessage? = null
 	private var headTracker: Tracker? = null
 	private var oscTrackersDevice: Device? = null
 	private var vrsystemTrackersDevice: Device? = null
 	private val oscArgs = FastList<Float?>(3)
 	private val trackersEnabled: BooleanArray = BooleanArray(computedTrackers.size)
-	private var lastPortIn = 0
-	private var lastPortOut = 0
-	private var lastAddress: InetAddress? = null
+	private var oscPortIn = 0
+	private var oscPortOut = 0
+	private var oscIp: InetAddress? = null
+	private var oscQueryPortOut = 0
+	private var oscQueryIp: InetAddress? = null
 	private var timeAtLastError: Long = 0
 	private var receivingPositionOffset = Vector3.NULL
 	private var postReceivingPositionOffset = Vector3.NULL
@@ -103,38 +105,33 @@ class VRCOSCHandler(
 	/**
 	 * Adds an OSC Sender from OSCQuery
 	 */
-	fun addOSCSender(oscPortOut: Int, oscIP: String) {
-		if (config.enabled) {
-			// Instantiate the OSC sender
-			try {
-				val addr = InetAddress.getByName(oscIP)
-				val newSender = OSCPortOut(InetSocketAddress(addr, oscPortOut))
-				LogManager.info("[VRCOSCHandler] New sender sending to port $oscPortOut at address $oscIP")
-				newSender.connect()
-				addtionalOscSenders.add(newSender)
-			} catch (e: IOException) {
-				LogManager
-					.severe(
-						"[VRCOSCHandler] Error connecting to port $portOut at the address $address: $e"
-					)
-			}
+	fun addOSCQuerySender(oscPortOut: Int, oscIP: String) {
+		try {
+			val addr = InetAddress.getByName(oscIP)
+			oscQueryIp = addr
+			oscQueryPortOut = oscPortOut
+			oscQuerySender = OSCPortOut(InetSocketAddress(addr, oscPortOut))
+			oscQuerySender?.connect()
+			LogManager.info("[VRCOSCHandler] OSCQuery sender sending to port $oscPortOut at address $oscIP")
+		} catch (e: IOException) {
+			LogManager.severe("[VRCOSCHandler] Error connecting to port $oscPortOut at the address $oscIP: $e")
 		}
 	}
 
 	/**
-	 * Removes OSCQuery senders
+	 * Close/remove the osc query sender
 	 */
-	fun removeAdditionalOscSenders() {
-		if (addtionalOscSenders.isNotEmpty()) LogManager.debug("[VRCOSCHandler] Removing additional OSC Senders.")
-
-		for (sender in addtionalOscSenders) {
+	fun closeOscQuerySender() {
+		oscQuerySender?.let {
 			try {
-				sender.close()
+				it.close()
+				oscQuerySender = null
 			} catch (e: IOException) {
 				LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: $e")
 			}
+
+			LogManager.debug("[VRCOSCHandler] Closed OSCQuery Sender.")
 		}
-		addtionalOscSenders.clear()
 	}
 
 	override fun updateOscReceiver(portIn: Int, args: Array<String>) {
@@ -148,10 +145,10 @@ class VRCOSCHandler(
 			// Instantiates the OSC receiver
 			try {
 				oscReceiver = OSCPortIn(portIn)
-				if (lastPortIn != portIn || !wasListening) {
+				if (oscPortIn != portIn || !wasListening) {
 					LogManager.info("[VRCOSCHandler] Listening to port $portIn")
 				}
-				lastPortIn = portIn
+				oscPortIn = portIn
 			} catch (e: IOException) {
 				LogManager
 					.severe(
@@ -175,7 +172,7 @@ class VRCOSCHandler(
 		}
 	}
 
-	override fun updateOscSender(portOut: Int, address: String) {
+	override fun updateOscSender(portOut: Int, ip: String) {
 		// Stop sending
 		val wasConnected = oscSender != null && oscSender!!.isConnected
 		if (wasConnected) {
@@ -189,19 +186,29 @@ class VRCOSCHandler(
 		if (config.enabled) {
 			// Instantiate the OSC sender
 			try {
-				val addr = InetAddress.getByName(address)
+				val addr = InetAddress.getByName(ip)
 				oscSender = OSCPortOut(InetSocketAddress(addr, portOut))
-				if (lastPortOut != portOut && lastAddress !== addr || !wasConnected) {
-					LogManager.info("[VRCOSCHandler] Sending to port $portOut at address $address")
+				if (oscPortOut != portOut && oscIp !== addr || !wasConnected) {
+					LogManager.info("[VRCOSCHandler] Sending to port $portOut at address $ip")
 				}
-				lastPortOut = portOut
-				lastAddress = addr
-				oscSender!!.connect()
+				oscPortOut = portOut
+				oscIp = addr
+				oscSender?.connect()
 			} catch (e: IOException) {
 				LogManager
 					.severe(
-						"[VRCOSCHandler] Error connecting to port $portOut at the address $address: $e"
+						"[VRCOSCHandler] Error connecting to port $portOut at the address $ip: $e"
 					)
+			}
+
+			// TODO: Close the oscQuerySender if it has the same port/ip
+			// TODO: if oscQuerySender could not be instantiated, instantiate.
+			oscQuerySender?.let {
+				// val localIp = InetAddress.getLocalHost().hostAddress
+				// val loopbackIp = InetAddress.getLoopbackAddress().hostAddress
+				// if (oscQueryPortOut == portOut && (oscQueryIp?.hostName === ip || (oscQueryIp?.hostName == localIp && ip == loopbackIp))) {
+				// 	closeOscQuerySender()
+				// }
 			}
 		}
 	}
@@ -243,7 +250,7 @@ class VRCOSCHandler(
 					hasPosition = true,
 					userEditable = true,
 					isComputed = true,
-					needsReset = true,
+					needsReset = trackerPosition != TrackerPosition.HEAD,
 					usesTimeout = true
 				)
 				vrsystemTrackersDevice!!.trackers[trackerPosition.ordinal] = tracker
@@ -448,9 +455,8 @@ class VRCOSCHandler(
 			}
 
 			try {
-				for (sender in addtionalOscSenders + oscSender) {
-					sender?.send(bundle)
-				}
+				oscSender?.send(bundle)
+				oscQuerySender?.send(bundle)
 			} catch (e: IOException) {
 				// Avoid spamming AsynchronousCloseException too many
 				// times per second
@@ -503,9 +509,8 @@ class VRCOSCHandler(
 				oscArgs
 			)
 			try {
-				for (sender in addtionalOscSenders + oscSender) {
-					sender?.send(oscMessage)
-				}
+				oscSender?.send(oscMessage)
+				oscQuerySender?.send(oscMessage)
 			} catch (e: IOException) {
 				LogManager
 					.warning("[VRCOSCHandler] Error sending OSC message to VRChat: $e")
@@ -521,11 +526,11 @@ class VRCOSCHandler(
 	}
 
 	override fun getPortOut(): Int {
-		return lastPortOut
+		return oscPortOut
 	}
 
 	override fun getAddress(): InetAddress {
-		return lastAddress!!
+		return oscIp!!
 	}
 
 	override fun getOscReceiver(): OSCPortIn {
@@ -533,6 +538,6 @@ class VRCOSCHandler(
 	}
 
 	override fun getPortIn(): Int {
-		return lastPortIn
+		return oscPortIn
 	}
 }

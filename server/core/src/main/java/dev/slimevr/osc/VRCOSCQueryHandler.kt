@@ -7,6 +7,7 @@ import io.eiren.util.logging.LogManager
 import randomFreePort
 import java.io.IOException
 import java.net.InetAddress
+import kotlin.concurrent.thread
 
 private const val serviceStartsWith = "VRChat-Client"
 private const val queryPath = "/tracking/vrsystem"
@@ -15,10 +16,11 @@ class VRCOSCQueryHandler(
 	private val vrcOscHandler: VRCOSCHandler,
 ) {
 	private val oscQueryServer: OSCQueryServer
+	private val localIp = InetAddress.getLocalHost().hostAddress
+	private val loopbackIp = InetAddress.getLoopbackAddress().hostAddress
 
 	init {
 		// Request data
-		val localIp = InetAddress.getLocalHost().hostAddress
 		val httpPort = randomFreePort()
 		oscQueryServer = OSCQueryServer(
 			"SlimeVR-Server-$httpPort",
@@ -29,54 +31,56 @@ class VRCOSCQueryHandler(
 		)
 		oscQueryServer.rootNode.addNode(OSCQueryNode(queryPath))
 		oscQueryServer.init()
-		LogManager.debug("[OSCQueryHandler] SlimeVR OSCQueryServer started at http://$localIp:$httpPort")
+		LogManager.debug("[VRCOSCQueryHandler] SlimeVR OSCQueryServer started at http://$localIp:$httpPort")
 
 		try {
 			// Add service listener
-			LogManager.info("[OSCQueryHandler] Listening for VRChat OSCQuery")
+			LogManager.info("[VRCOSCQueryHandler] Listening for VRChat OSCQuery")
 			oscQueryServer.service.addServiceListener(
 				"_osc._udp.local.",
-				onServiceAdded = ::serviceAdded,
-				onServiceRemoved = ::serviceRemoved
+				onServiceAdded = ::serviceAdded
 			)
 		} catch (e: IOException) {
-			LogManager.warning("[OSCQueryHandler] " + e.message)
+			LogManager.warning("[VRCOSCQueryHandler] " + e.message)
 		}
 	}
 
+	/**
+	 * Called when a service is added
+	 */
 	private fun serviceAdded(info: ServiceInfo) {
 		// Check the service name
-		val serviceName = info.name
-		if (!serviceName.startsWith(serviceStartsWith)) {
-			LogManager.debug("[OSCQueryHandler] Rejected (name must start with \"$serviceStartsWith\"): $serviceName")
-			return
-		}
+		if (!info.name.startsWith(serviceStartsWith)) return
 
 		// Get url from ServiceInfo
 		val ip = info.inetAddresses[0].hostAddress
 		val port = info.port
 
 		// create a new OSCHandler for this service
-		if (port != vrcOscHandler.portOut || ip != vrcOscHandler.address.hostName) {
-			vrcOscHandler.addOSCSender(port, ip)
+		val handlerIp = vrcOscHandler.address.hostName
+		val handlerPort = vrcOscHandler.portOut
+		if (port != handlerPort || (ip != handlerIp && !(ip == localIp && handlerIp == loopbackIp))) {
+			vrcOscHandler.addOSCQuerySender(port, ip)
 		} else {
-			LogManager.debug("[OSCQueryHandler] An OSC Sender already exists with the port $port and address $ip")
+			LogManager.debug("[VRCOSCQueryHandler] An OSC Sender already exists for the port $port and address $ip")
 		}
 	}
 
-	private fun serviceRemoved(type: String, name: String) {
-		LogManager.debug("Service removed: $name")
-		// TODO call close() if no more services
-	}
-
+	/**
+	 * Updates the advertised OSC port of the OSCQueryServer
+	 */
 	fun updatePortIn(portIn: Int) {
 		// TODO
 		// oscQueryServer.oscPort = portIn
 	}
 
+	/**
+	 * Closes the OSCQueryServer and the associated OSC sender.
+	 */
 	fun close() {
-		vrcOscHandler.removeAdditionalOscSenders()
-		// TODO close async/in a thread
-// 		server.close()
+		vrcOscHandler.closeOscQuerySender()
+		thread(start = true) {
+			oscQueryServer.close()
+		}
 	}
 }
