@@ -224,10 +224,20 @@ class VRCOSCHandler(
 			}
 
 			// Look at xxx in "/tracking/vrsystem/xxx/pose" to know TrackerPosition
+			var name = "VRChat "
 			val trackerPosition = when (event.message.address.split('/')[3]) {
-				"head" -> TrackerPosition.HEAD
-				"leftwrist" -> TrackerPosition.LEFT_HAND
-				"rightwrist" -> TrackerPosition.RIGHT_HAND
+				"head" -> {
+					name += "head"
+					TrackerPosition.HEAD
+				}
+				"leftwrist" -> {
+					name += "left hand"
+					TrackerPosition.LEFT_HAND
+				}
+				"rightwrist" -> {
+					name += "right hand"
+					TrackerPosition.RIGHT_HAND
+				}
 				else -> {
 					LogManager.warning("[VRCOSCHandler] Received invalid body part in message \"" + event.message.address + "\"")
 					return
@@ -242,8 +252,8 @@ class VRCOSCHandler(
 				tracker = Tracker(
 					device = vrsystemTrackersDevice,
 					id = VRServer.getNextLocalTrackerId(),
-					name = "VRChat ${trackerPosition.name}",
-					displayName = "VRChat ${trackerPosition.name}",
+					name = name,
+					displayName = name,
 					trackerNum = trackerPosition.ordinal,
 					trackerPosition = trackerPosition,
 					hasRotation = true,
