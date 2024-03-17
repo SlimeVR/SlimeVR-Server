@@ -42,7 +42,7 @@ class RPCStatusHandler(
 		val outbound = this.rpcHandler.createRPCMessage(
 			fbb,
 			RpcMessage.StatusSystemUpdate,
-			update
+			update,
 		)
 		fbb.finish(outbound)
 
@@ -61,7 +61,7 @@ class RPCStatusHandler(
 		val outbound = this.rpcHandler.createRPCMessage(
 			fbb,
 			RpcMessage.StatusSystemFixed,
-			update
+			update,
 		)
 		fbb.finish(outbound)
 

@@ -24,13 +24,9 @@ data class TrackerFrames(val name: String = "", val frames: FastList<TrackerFram
 		return trackerFrame
 	}
 
-	fun tryGetFrame(index: Int): TrackerFrame? {
-		return if (index < 0 || index >= frames.size) null else frames[index]
-	}
+	fun tryGetFrame(index: Int): TrackerFrame? = if (index < 0 || index >= frames.size) null else frames[index]
 
-	fun tryGetFirstNotNullFrame(): TrackerFrame? {
-		return frames.firstOrNull { frame -> frame != null }
-	}
+	fun tryGetFirstNotNullFrame(): TrackerFrame? = frames.firstOrNull { frame -> frame != null }
 
 	fun toTracker(): Tracker {
 		val firstFrame = tryGetFirstNotNullFrame() ?: TrackerFrame.empty
@@ -44,7 +40,7 @@ data class TrackerFrames(val name: String = "", val frames: FastList<TrackerFram
 			hasAcceleration = firstFrame.hasAcceleration(),
 			// Make sure this is false!! Otherwise HumanSkeleton ignores it
 			isInternal = false,
-			isComputed = true
+			isComputed = true,
 		)
 
 		tracker.status = TrackerStatus.OK

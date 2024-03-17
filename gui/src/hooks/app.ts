@@ -29,10 +29,13 @@ export interface FlatDeviceTracker {
   tracker: TrackerDataT;
 }
 
-type AppStateAction = { type: 'datafeed'; value: DataFeedUpdateT };
+export type AppStateAction =
+  | { type: 'datafeed'; value: DataFeedUpdateT }
+  | { type: 'ignoreTracker'; value: string };
 
 export interface AppState {
   datafeed?: DataFeedUpdateT;
+  ignoredTrackers: Set<string>;
 }
 
 export interface AppContext {
@@ -47,8 +50,13 @@ export function reducer(state: AppState, action: AppStateAction) {
   switch (action.type) {
     case 'datafeed':
       return { ...state, datafeed: action.value };
+    case 'ignoreTracker':
+      return {
+        ...state,
+        ignoredTrackers: new Set([...state.ignoredTrackers, action.value]),
+      };
     default:
-      throw new Error(`unhandled state action ${action.type}`);
+      throw new Error(`unhandled state action ${(action as AppStateAction).type}`);
   }
 }
 
@@ -59,6 +67,7 @@ export function useProvideAppContext(): AppContext {
   const { dataFeedConfig } = useDataFeedConfig();
   const [state, dispatch] = useReducer<Reducer<AppState, AppStateAction>>(reducer, {
     datafeed: new DataFeedUpdateT(),
+    ignoredTrackers: new Set(),
   });
 
   useEffect(() => {
