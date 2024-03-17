@@ -27,7 +27,7 @@ class VRCOSCQueryHandler(
 			OscTransport.UDP,
 			localIp,
 			vrcOscHandler.portIn.toUShort(),
-			httpPort
+			httpPort,
 		)
 		oscQueryServer.rootNode.addNode(OSCQueryNode(queryPath))
 		oscQueryServer.init()
@@ -38,7 +38,7 @@ class VRCOSCQueryHandler(
 			LogManager.info("[VRCOSCQueryHandler] Listening for VRChat OSCQuery")
 			oscQueryServer.service.addServiceListener(
 				"_osc._udp.local.",
-				onServiceAdded = ::serviceAdded
+				onServiceAdded = ::serviceAdded,
 			)
 		} catch (e: IOException) {
 			LogManager.warning("[VRCOSCQueryHandler] " + e.message)

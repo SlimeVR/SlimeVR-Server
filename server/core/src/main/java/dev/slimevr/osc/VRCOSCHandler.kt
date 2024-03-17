@@ -39,11 +39,11 @@ class VRCOSCHandler(
 	private val vrsystemTrackersAddresses = arrayOf(
 		"/tracking/vrsystem/head/pose",
 		"/tracking/vrsystem/leftwrist/pose",
-		"/tracking/vrsystem/rightwrist/pose"
+		"/tracking/vrsystem/rightwrist/pose",
 	)
 	private val oscTrackersAddresses = arrayOf(
 		"/tracking/trackers/*/position",
-		"/tracking/trackers/*/rotation"
+		"/tracking/trackers/*/rotation",
 	)
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
@@ -80,7 +80,7 @@ class VRCOSCHandler(
 				trackersEnabled[i] = config
 					.getOSCTrackerRole(
 						computedTrackers[i].trackerPosition!!.trackerRole!!,
-						false
+						false,
 					)
 			} else {
 				trackersEnabled[i] = false
@@ -152,7 +152,7 @@ class VRCOSCHandler(
 			} catch (e: IOException) {
 				LogManager
 					.severe(
-						"[VRCOSCHandler] Error listening to the port $portIn: $e"
+						"[VRCOSCHandler] Error listening to the port $portIn: $e",
 					)
 			}
 
@@ -164,7 +164,7 @@ class VRCOSCHandler(
 				for (address in args) {
 					it.dispatcher.addListener(
 						OSCPatternAddressMessageSelector(address),
-						listener
+						listener,
 					)
 				}
 				it.startListening()
@@ -197,7 +197,7 @@ class VRCOSCHandler(
 			} catch (e: IOException) {
 				LogManager
 					.severe(
-						"[VRCOSCHandler] Error connecting to port $portOut at the address $ip: $e"
+						"[VRCOSCHandler] Error connecting to port $portOut at the address $ip: $e",
 					)
 			}
 
@@ -230,14 +230,17 @@ class VRCOSCHandler(
 					name += "head"
 					TrackerPosition.HEAD
 				}
+
 				"leftwrist" -> {
 					name += "left hand"
 					TrackerPosition.LEFT_HAND
 				}
+
 				"rightwrist" -> {
 					name += "right hand"
 					TrackerPosition.RIGHT_HAND
 				}
+
 				else -> {
 					LogManager.warning("[VRCOSCHandler] Received invalid body part in message \"" + event.message.address + "\"")
 					return
@@ -261,7 +264,7 @@ class VRCOSCHandler(
 					userEditable = true,
 					isComputed = true,
 					needsReset = trackerPosition != TrackerPosition.HEAD,
-					usesTimeout = true
+					usesTimeout = true,
 				)
 				vrsystemTrackersDevice!!.trackers[trackerPosition.ordinal] = tracker
 				server.registerTracker(tracker)
@@ -274,7 +277,7 @@ class VRCOSCHandler(
 			tracker.position = Vector3(
 				event.message.arguments[0] as Float,
 				event.message.arguments[1] as Float,
-				-(event.message.arguments[2] as Float)
+				-(event.message.arguments[2] as Float),
 			)
 
 			// Update tracker rotation
@@ -282,7 +285,7 @@ class VRCOSCHandler(
 				EulerOrder.YXZ,
 				event.message.arguments[3] as Float * FastMath.DEG_TO_RAD,
 				event.message.arguments[4] as Float * FastMath.DEG_TO_RAD,
-				event.message.arguments[5] as Float * FastMath.DEG_TO_RAD
+				event.message.arguments[5] as Float * FastMath.DEG_TO_RAD,
 			).toQuaternion()
 			val rot = Quaternion(w, -x, -y, z)
 			tracker.setRotation(rot)
@@ -307,7 +310,7 @@ class VRCOSCHandler(
 					receivingPositionOffset = Vector3(
 						event.message.arguments[0] as Float,
 						event.message.arguments[1] as Float,
-						-(event.message.arguments[2] as Float)
+						-(event.message.arguments[2] as Float),
 					)
 
 					headTracker?.let {
@@ -354,7 +357,7 @@ class VRCOSCHandler(
 						userEditable = true,
 						isComputed = true,
 						needsReset = true,
-						usesTimeout = true
+						usesTimeout = true,
 					)
 					oscTrackersDevice!!.trackers[trackerId] = tracker
 					server.registerTracker(tracker)
@@ -369,8 +372,8 @@ class VRCOSCHandler(
 						Vector3(
 							event.message.arguments[0] as Float,
 							event.message.arguments[1] as Float,
-							-(event.message.arguments[2] as Float)
-						) - receivingPositionOffset
+							-(event.message.arguments[2] as Float),
+						) - receivingPositionOffset,
 					) + postReceivingPositionOffset
 				} else {
 					// Update tracker rotation
@@ -378,7 +381,7 @@ class VRCOSCHandler(
 						EulerOrder.YXZ,
 						event.message.arguments[0] as Float * FastMath.DEG_TO_RAD,
 						event.message.arguments[1] as Float * FastMath.DEG_TO_RAD,
-						event.message.arguments[2] as Float * FastMath.DEG_TO_RAD
+						event.message.arguments[2] as Float * FastMath.DEG_TO_RAD,
 					).toQuaternion()
 					val rot = Quaternion(w, -x, -y, z)
 					tracker.setRotation(receivingRotationOffset * rot * postReceivingOffset)
@@ -418,8 +421,8 @@ class VRCOSCHandler(
 					bundle.addPacket(
 						OSCMessage(
 							"/tracking/trackers/${getVRCOSCTrackersId(computedTrackers[i].trackerPosition)}/position",
-							oscArgs.clone()
-						)
+							oscArgs.clone(),
+						),
 					)
 
 					// Send regular trackers' rotations
@@ -435,7 +438,7 @@ class VRCOSCHandler(
 						w,
 						-x1,
 						-y1,
-						z1
+						z1,
 					).toEulerAngles(EulerOrder.YXZ)
 					oscArgs.clear()
 					oscArgs.add(x2 * FastMath.RAD_TO_DEG)
@@ -444,8 +447,8 @@ class VRCOSCHandler(
 					bundle.addPacket(
 						OSCMessage(
 							"/tracking/trackers/${getVRCOSCTrackersId(computedTrackers[i].trackerPosition)}/rotation",
-							oscArgs.clone()
-						)
+							oscArgs.clone(),
+						),
 					)
 				}
 				if (computedTrackers[i].trackerPosition === TrackerPosition.HEAD) {
@@ -458,8 +461,8 @@ class VRCOSCHandler(
 					bundle.addPacket(
 						OSCMessage(
 							"/tracking/trackers/head/position",
-							oscArgs.clone()
-						)
+							oscArgs.clone(),
+						),
 					)
 				}
 			}
@@ -516,7 +519,7 @@ class VRCOSCHandler(
 			oscArgs.add(0f)
 			oscMessage = OSCMessage(
 				"/tracking/trackers/head/rotation",
-				oscArgs
+				oscArgs,
 			)
 			try {
 				oscSender?.send(oscMessage)
@@ -531,23 +534,13 @@ class VRCOSCHandler(
 		}
 	}
 
-	override fun getOscSender(): OSCPortOut {
-		return oscSender!!
-	}
+	override fun getOscSender(): OSCPortOut = oscSender!!
 
-	override fun getPortOut(): Int {
-		return oscPortOut
-	}
+	override fun getPortOut(): Int = oscPortOut
 
-	override fun getAddress(): InetAddress {
-		return oscIp!!
-	}
+	override fun getAddress(): InetAddress = oscIp!!
 
-	override fun getOscReceiver(): OSCPortIn {
-		return oscReceiver!!
-	}
+	override fun getOscReceiver(): OSCPortIn = oscReceiver!!
 
-	override fun getPortIn(): Int {
-		return oscPortIn
-	}
+	override fun getPortIn(): Int = oscPortIn
 }
