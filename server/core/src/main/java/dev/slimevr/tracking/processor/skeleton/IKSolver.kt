@@ -12,7 +12,9 @@ import dev.slimevr.tracking.trackers.Tracker
 class IKSolver(private val root: Bone) {
 	companion object {
 		const val TOLERANCE_SQR = 1e-8 // == 0.01 cm
-		private const val MAX_ITERATIONS = 100
+		const val MAX_ITERATIONS = 100
+		const val ITERATIONS_BEFORE_STEP = MAX_ITERATIONS / 8
+		const val TOLERANCE_STEP = 2f
 	}
 
 	private var chainList = mutableListOf<IKChain>()
@@ -24,7 +26,7 @@ class IKSolver(private val root: Bone) {
 	 * should be rebuilt.
 	 */
 	fun buildChains(trackers: List<Tracker>) {
-		chainList = mutableListOf()
+		chainList.clear()
 
 		// Extract the positional constraints
 		val positionalConstraints = extractPositionalConstraints(trackers)
@@ -191,6 +193,8 @@ class IKSolver(private val root: Bone) {
 	}
 
 	fun solve() {
+		if (rootChain == null) return
+
 		var solved: Boolean
 		if (needsReset) {
 			for (c in chainList) {
@@ -210,22 +214,11 @@ class IKSolver(private val root: Bone) {
 
 			rootChain?.computeTargetDistance()
 
-			// Stop solving chains after one iteration for chains that
-			// failed to solve last tick this prevents some extreme jitter
-			if (i == 0) {
-				for (chain in chainList) {
-					chain.trySolve = chain.solved
-				}
-			}
-
 			// If all chains have reached their target the chain is solved
 			solved = true
 			for (chain in chainList) {
-				if (chain.distToTargetSqr > TOLERANCE_SQR && chain.trySolve) {
-					chain.solved = false
+				if (chain.distToTargetSqr > TOLERANCE_SQR) {
 					solved = false
-				} else if (chain.distToTargetSqr <= TOLERANCE_SQR) {
-					chain.solved = true
 				}
 			}
 
@@ -234,6 +227,15 @@ class IKSolver(private val root: Bone) {
 			// Help the chains out of a deadlock
 			for (chain in chainList) {
 				chain.updateChildCentroidWeight()
+			}
+
+			// Loosen rotational constraints
+			// TODO only do this if a positional tracker down the chain is actually
+			// tracking accurately
+			if (i % ITERATIONS_BEFORE_STEP == 0 && i != 0) {
+				for (chain in chainList) {
+					chain.decreaseConstraints()
+				}
 			}
 		}
 
