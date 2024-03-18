@@ -22,6 +22,10 @@ import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import org.apache.commons.math3.util.Precision
+import solarxr_protocol.rpc.StatusData
+import solarxr_protocol.rpc.StatusDataUnion
+import solarxr_protocol.rpc.StatusUnassignedHMD
+import solarxr_protocol.rpc.StatusUnassignedHMDT
 import java.util.function.Consumer
 import kotlin.math.*
 
@@ -694,5 +698,35 @@ class HumanPoseManager(val server: VRServer?) {
 		skeleton.setPauseTracking(pauseTracking, sourceName)
 	}
 
-	fun togglePauseTracking(sourceName: String?): Boolean = skeleton.togglePauseTracking(sourceName) // #endregion
+	fun togglePauseTracking(sourceName: String?): Boolean = skeleton.togglePauseTracking(sourceName)
+
+	private var lastMissingHmdStatus = 0u
+	fun checkReportMissingHmd() {
+		if (server == null) return
+		if (skeleton.headTracker == null &&
+			lastMissingHmdStatus == 0u &&
+			VRServer.instance.allTrackers.any { it.isHmd }
+		) {
+			reportMissingHmd()
+		} else if (lastMissingHmdStatus != 0u &&
+			(skeleton.headTracker != null || !VRServer.instance.allTrackers.any { it.isHmd })
+		) {
+			server.statusSystem.removeStatus(lastMissingHmdStatus)
+			lastMissingHmdStatus = 0u
+		}
+	}
+
+	private fun reportMissingHmd() {
+		require(lastMissingHmdStatus == 0u) {
+			"${::lastMissingHmdStatus.name} must be 0u, but was $lastMissingHmdStatus"
+		}
+
+		val status = StatusDataUnion().apply {
+			type = StatusData.StatusUnassignedHMD
+			value = StatusUnassignedHMDT()
+		}
+		lastMissingHmdStatus = server!!.statusSystem.addStatus(status, true)
+	}
+
+	// #endregion
 }
