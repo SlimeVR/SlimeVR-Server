@@ -27,6 +27,7 @@ import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import java.lang.IllegalArgumentException
+import kotlin.properties.Delegates
 
 class HumanSkeleton(
 	val humanPoseManager: HumanPoseManager,
@@ -83,7 +84,9 @@ class HumanSkeleton(
 	var hasRightArmTracker = false
 
 	// Input trackers
-	var headTracker: Tracker? = null
+	var headTracker: Tracker? by Delegates.observable(null) { _, old, new ->
+		if (old == new) return@observable
+	}
 	var neckTracker: Tracker? = null
 	var upperChestTracker: Tracker? = null
 	var chestTracker: Tracker? = null
