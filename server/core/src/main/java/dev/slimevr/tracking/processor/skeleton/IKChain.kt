@@ -20,13 +20,12 @@ class IKChain(
 	}
 
 	// State variables
-	val computedBasePosition = baseConstraint?.let { IKConstraint(it) }
-	val computedTailPosition = tailConstraint?.let { IKConstraint(it) }
+	private val computedBasePosition = baseConstraint?.let { IKConstraint(it) }
+	private val computedTailPosition = tailConstraint?.let { IKConstraint(it) }
 	var children = mutableListOf<IKChain>()
+	private var targetSum = Vector3.NULL
 	var target = Vector3.NULL
 	var distToTargetSqr = Float.POSITIVE_INFINITY
-	var trySolve = true
-	var solved = true
 	private var centroidWeight = 1f
 	private var positions = getPositionList()
 
@@ -41,13 +40,11 @@ class IKChain(
 	}
 
 	fun backwards() {
-		if (!trySolve) return
-
 		// Start at the constraint or the centroid of the children
-		if (computedTailPosition == null && children.size > 1) {
-			target /= getChildrenCentroidWeightSum()
+		target = if (computedTailPosition == null && children.size > 1) {
+			targetSum / getChildrenCentroidWeightSum()
 		} else {
-			target = (computedTailPosition?.getPosition()) ?: Vector3.NULL
+			(computedTailPosition?.getPosition()) ?: Vector3.NULL
 		}
 
 		// Set the end node to target
@@ -62,17 +59,15 @@ class IKChain(
 		}
 
 		if (parent != null && parent!!.computedTailPosition == null) {
-			parent!!.target += positions[0] * centroidWeight
+			parent!!.targetSum += positions[0] * centroidWeight
 		}
 	}
 
 	private fun forwards() {
-		if (!trySolve) return
-
-		if (parent != null) {
-			positions[0] = parent!!.positions.last()
-		} else if (computedBasePosition != null) {
-			positions[0] = computedBasePosition.getPosition()
+		positions[0] = if (parent != null) {
+			parent!!.nodes.last().getTailPosition()
+		} else {
+			(computedBasePosition?.getPosition()) ?: positions[0]
 		}
 
 		for (i in 1 until positions.size - 1) {
@@ -87,7 +82,7 @@ class IKChain(
 		positions[positions.size - 1] = positions[positions.size - 2] + (direction * nodes.last().length)
 
 		// reset sub-base target
-		target = Vector3.NULL
+		targetSum = Vector3.NULL
 	}
 
 	/**
@@ -113,7 +108,11 @@ class IKChain(
 	fun resetChain() {
 		distToTargetSqr = Float.POSITIVE_INFINITY
 		centroidWeight = 1f
-		trySolve = true
+
+		for (bone in nodes) {
+			bone.rotationConstraint.tolerance = 0.0f
+			bone.rotationConstraint.originalRotation = bone.getGlobalRotation()
+		}
 
 		for (child in children) {
 			child.resetChain()
@@ -145,6 +144,15 @@ class IKChain(
 	}
 
 	/**
+	 * Allow constrained bones to deviate more per step
+	 */
+	fun decreaseConstraints() {
+		for (bone in nodes) {
+			bone.rotationConstraint.tolerance += IKSolver.TOLERANCE_STEP
+		}
+	}
+
+	/**
 	 * Updates the distance to target and other fields
 	 * Call on the root chain only returns the sum of the
 	 * distances
@@ -170,7 +178,7 @@ class IKChain(
 		bone.setRotationRaw(rotation)
 
 		// TODO optimize (this is required to update the world translation for the next bone as it uses the world
-		//  rotation of the parent)
+		//  rotation of the parent. We only need to update this bones translation though so this is very wasteful)
 		bone.update()
 
 		return rotation.sandwich(Vector3.NEG_Y)
