@@ -311,7 +311,7 @@ class HumanPoseManager(val server: VRServer?) {
 	}
 
 	/**
-	 * @return True if the skeleton isn't yet initialized
+	 * @return False if the skeleton isn't yet initialized
 	 */
 	@get:ThreadSafe
 	val isSkeletonPresent: Boolean
