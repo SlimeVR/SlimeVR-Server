@@ -40,6 +40,7 @@ tasks.preBuild {
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions.jvmTarget = "17"
+	kotlinOptions.freeCompilerArgs += "-Xvalue-classes"
 }
 
 // Set compiler to use UTF-8

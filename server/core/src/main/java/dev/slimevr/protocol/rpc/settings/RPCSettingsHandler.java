@@ -162,55 +162,51 @@ public class RPCSettingsHandler {
 			VRCOSCConfig vrcOSCConfig = this.api.server.configManager
 				.getVrConfig()
 				.getVrcOSC();
-			if (vrcOSCConfig != null) {
-				VRCOSCHandler VRCOSCHandler = this.api.server.vrcOSCHandler;
-				var osc = req.vrcOsc().oscSettings();
-				var trackers = req.vrcOsc().trackers();
+			VRCOSCHandler VRCOSCHandler = this.api.server.vrcOSCHandler;
+			var osc = req.vrcOsc().oscSettings();
+			var trackers = req.vrcOsc().trackers();
 
-				if (osc != null) {
-					vrcOSCConfig.setEnabled(osc.enabled());
-					vrcOSCConfig.setPortIn(osc.portIn());
-					vrcOSCConfig.setPortOut(osc.portOut());
-					vrcOSCConfig.setAddress(osc.address());
-				}
-				if (trackers != null) {
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
-				}
-
-				VRCOSCHandler.refreshSettings(true);
+			if (osc != null) {
+				vrcOSCConfig.setEnabled(osc.enabled());
+				vrcOSCConfig.setPortIn(osc.portIn());
+				vrcOSCConfig.setPortOut(osc.portOut());
+				vrcOSCConfig.setAddress(osc.address());
 			}
+			if (trackers != null) {
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands());
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands());
+			}
+
+			VRCOSCHandler.refreshSettings(true);
 		}
 
 		if (req.vmcOsc() != null) {
 			VMCConfig vmcConfig = this.api.server.configManager
 				.getVrConfig()
 				.getVMC();
-			if (vmcConfig != null) {
-				VMCHandler VMCHandler = this.api.server.getVMCHandler();
-				var osc = req.vmcOsc().oscSettings();
+			VMCHandler VMCHandler = this.api.server.getVMCHandler();
+			var osc = req.vmcOsc().oscSettings();
 
-				if (osc != null) {
-					vmcConfig.setEnabled(osc.enabled());
-					vmcConfig.setPortIn(osc.portIn());
-					vmcConfig.setPortOut(osc.portOut());
-					vmcConfig.setAddress(osc.address());
-				}
-				if (req.vmcOsc().vrmJson() != null)
-					vmcConfig.setVrmJson(req.vmcOsc().vrmJson());
-				vmcConfig.setAnchorHip(req.vmcOsc().anchorHip());
-
-				VMCHandler.refreshSettings(true);
+			if (osc != null) {
+				vmcConfig.setEnabled(osc.enabled());
+				vmcConfig.setPortIn(osc.portIn());
+				vmcConfig.setPortOut(osc.portOut());
+				vmcConfig.setAddress(osc.address());
 			}
+			if (req.vmcOsc().vrmJson() != null)
+				vmcConfig.setVrmJson(req.vmcOsc().vrmJson());
+			vmcConfig.setAnchorHip(req.vmcOsc().anchorHip());
+
+			VMCHandler.refreshSettings(true);
 		}
 
 		if (req.tapDetectionSettings() != null) {

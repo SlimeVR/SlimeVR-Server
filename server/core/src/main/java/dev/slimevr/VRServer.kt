@@ -151,7 +151,7 @@ class VRServer @JvmOverloads constructor(
 		vMCHandler = VMCHandler(
 			this,
 			humanPoseManager,
-			configManager.vrConfig.vmc,
+			configManager.vrConfig.vMC,
 			computedTrackers,
 		)
 
@@ -212,7 +212,7 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	@ThreadSafe
-	fun addSkeletonUpdatedCallback(consumer: Consumer<HumanSkeleton?>?) {
+	fun addSkeletonUpdatedCallback(consumer: Consumer<HumanSkeleton>) {
 		queueTask { humanPoseManager.addSkeletonUpdatedCallback(consumer) }
 	}
 

@@ -34,7 +34,7 @@ public class Keybinding implements HotkeyListener {
 		}
 
 		try {
-			if (JIntellitype.getInstance() instanceof JIntellitype) {
+			if (JIntellitype.getInstance() != null) {
 				JIntellitype.getInstance().addHotKeyListener(this);
 
 				String fullResetBinding = this.config.getFullResetBinding();

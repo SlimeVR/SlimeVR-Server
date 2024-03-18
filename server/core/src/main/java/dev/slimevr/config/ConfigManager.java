@@ -10,7 +10,7 @@ import dev.slimevr.config.serializers.QuaternionDeserializer;
 import dev.slimevr.config.serializers.QuaternionSerializer;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
-import io.github.axisangles.ktmath.Quaternion;
+import io.github.axisangles.ktmath.ObjectQuaternion;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,8 +33,8 @@ public class ConfigManager {
 		om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		om.registerModule(new VersioningModule());
 		SimpleModule quaternionModule = new SimpleModule();
-		quaternionModule.addSerializer(Quaternion.class, new QuaternionSerializer());
-		quaternionModule.addDeserializer(Quaternion.class, new QuaternionDeserializer());
+		quaternionModule.addSerializer(ObjectQuaternion.class, new QuaternionSerializer());
+		quaternionModule.addDeserializer(ObjectQuaternion.class, new QuaternionDeserializer());
 		om.registerModule(quaternionModule);
 	}
 
