@@ -86,6 +86,8 @@ class HumanSkeleton(
 	// Input trackers
 	var headTracker: Tracker? by Delegates.observable(null) { _, old, new ->
 		if (old == new) return@observable
+
+		humanPoseManager.checkReportMissingHmd()
 	}
 	var neckTracker: Tracker? = null
 	var upperChestTracker: Tracker? = null
