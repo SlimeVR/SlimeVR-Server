@@ -137,6 +137,8 @@ public class DataFeedBuilder {
 			TrackerInfo.addMountingResetOrientation(fbb, createQuat(fbb, mountResetFix));
 		}
 
+		TrackerInfo.addIsHmd(fbb, tracker.isHmd());
+
 		return TrackerInfo.endTrackerInfo(fbb);
 	}
 
