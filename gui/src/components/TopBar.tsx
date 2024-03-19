@@ -1,4 +1,4 @@
-import { getCurrent } from '@tauri-apps/api/window';
+import { getCurrent } from '@tauri-apps/api/webviewWindow';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {

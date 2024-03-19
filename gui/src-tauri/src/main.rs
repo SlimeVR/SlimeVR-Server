@@ -70,20 +70,19 @@ fn main() -> Result<()> {
 		use flexi_logger::{
 			Age, Cleanup, Criterion, Duplicate, FileSpec, Logger, Naming, WriteMode,
 		};
-		use tauri::path::Error;
+		use tauri::Error;
 
 		// Based on https://docs.rs/tauri/2.0.0-alpha.10/src/tauri/path/desktop.rs.html#238-256
 		#[cfg(target_os = "macos")]
 		let path = dirs_next::home_dir().ok_or(Error::UnknownPath).map(|dir| {
 			dir.join("Library/Logs")
-				.join(&tauri_context.config().tauri.bundle.identifier)
+				.join(&tauri_context.config().identifier)
 		});
 
 		#[cfg(not(target_os = "macos"))]
-		let path = dirs_next::data_dir().ok_or(Error::UnknownPath).map(|dir| {
-			dir.join(&tauri_context.config().tauri.bundle.identifier)
-				.join("logs")
-		});
+		let path = dirs_next::data_dir()
+			.ok_or(Error::UnknownPath)
+			.map(|dir| dir.join(&tauri_context.config().identifier).join("logs"));
 
 		Logger::try_with_env_or_str("info")?
 			.log_to_file(
@@ -184,10 +183,10 @@ fn main() -> Result<()> {
 				WindowState::open_state(app.path().app_config_dir().unwrap())
 					.unwrap_or_default();
 
-			let window = tauri::WindowBuilder::new(
+			let window = tauri::WebviewWindowBuilder::new(
 				app,
 				"main",
-				tauri::WindowUrl::App("index.html".into()),
+				tauri::WebviewUrl::App("index.html".into()),
 			)
 			.title("SlimeVR")
 			.inner_size(1289.0, 709.0)
@@ -196,10 +195,9 @@ fn main() -> Result<()> {
 			.visible(true)
 			.decorations(false)
 			.fullscreen(false)
-			.disable_file_drop_handler()
 			.build()?;
 			if window_state.is_old() {
-				window_state.update_window(&window, false)?;
+				window_state.update_window(&window.as_ref().window(), false)?;
 			}
 
 			#[cfg(desktop)]

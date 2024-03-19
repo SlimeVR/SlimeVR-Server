@@ -21,20 +21,20 @@ default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
 
 [build-dependencies]
-tauri-build = { version = "=2.0.0-alpha.14", features = [] }
+tauri-build = { version = "=2.0.0-beta.10", features = [] }
 cfg_aliases = "0.2"
-shadow-rs = "0.26"
+shadow-rs = "0.27"
 
 [dependencies]
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
-tauri = { version = "=2.0.0-alpha.21", features = ["devtools", "tray-icon", "icon-png"] }
-tauri-runtime = "=1.0.0-alpha.8"
-tauri-plugin-dialog = "=2.0.0-alpha.7"
-tauri-plugin-fs = "=2.0.0-alpha.7"
-tauri-plugin-os = "=2.0.0-alpha.6"
-tauri-plugin-shell = "=2.0.0-alpha.6"
-flexi_logger = "0.27"
+tauri = { version = "=2.0.0-beta.12", features = ["devtools", "tray-icon", "image-png"] }
+tauri-runtime = "=2.0.0-beta.10"
+tauri-plugin-dialog = "=2.0.0-beta.2"
+tauri-plugin-fs = "=2.0.0-beta.2"
+tauri-plugin-os = "=2.0.0-beta.2"
+tauri-plugin-shell = "=2.0.0-beta.2"
+flexi_logger = "0.28"
 log-panics = { version = "2", features = ["with-backtrace"] }
 log = "0.4"
 clap = { version = "4.0.29", features = ["derive"] }
@@ -44,13 +44,13 @@ tempfile = "3"
 which = "6.0"
 glob = "0.3"
 open = "5"
-shadow-rs = { version = "0.26", default-features = false }
+shadow-rs = { version = "0.27", default-features = false }
 const_format = "0.2.30"
 cfg-if = "1"
 color-eyre = "0.6"
-rfd = "0.12"
+rfd = { version = "0.14", features = ["gtk3"], default-features = false }
 dirs-next = "2.0.0"
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"
-winreg = "0.50"
+winreg = "0.52"

@@ -1,9 +1,10 @@
 use std::{collections::HashMap, sync::Mutex};
 
 use tauri::{
-	menu::{Menu, MenuItem, MenuItemKind},
+	image::Image,
+	menu::{Menu, MenuBuilder, MenuItemBuilder, MenuItemKind},
 	tray::{ClickType, TrayIconBuilder},
-	AppHandle, Icon, Manager, Runtime, State,
+	AppHandle, Manager, Runtime, State,
 };
 
 pub struct TrayMenu<R: Runtime>(Menu<R>);
@@ -46,7 +47,7 @@ pub fn update_tray_text<R: Runtime>(
 	menu: State<TrayMenu<R>>,
 ) -> color_eyre::Result<(), String> {
 	if let Some((window, MenuItemKind::MenuItem(toggle_i))) =
-		app.get_window("main").zip(menu.0.get("toggle"))
+		app.get_webview_window("main").zip(menu.0.get("toggle"))
 	{
 		let new_title = if window.is_visible().unwrap_or_default() {
 			i18n.get("tray_menu-hide")
@@ -66,9 +67,9 @@ pub fn update_tray_text<R: Runtime>(
 }
 
 pub fn create_tray<R: Runtime>(app: &tauri::AppHandle<R>) -> tauri::Result<()> {
-	let toggle_i = MenuItem::with_id(app, "toggle", "Hide", true, None);
-	let quit_i = MenuItem::with_id(app, "quit", "Quit", true, None);
-	let menu1 = Menu::with_items(app, &[&toggle_i, &quit_i])?;
+	let toggle_i = MenuItemBuilder::with_id("toggle", "Hide").build(app)?;
+	let quit_i = MenuItemBuilder::with_id("quit", "Quit").build(app)?;
+	let menu1 = MenuBuilder::new(app).items(&[&toggle_i, &quit_i]).build()?;
 
 	let _ = TrayIconBuilder::with_id("tray-1")
 		.menu(&menu1)
@@ -77,15 +78,15 @@ pub fn create_tray<R: Runtime>(app: &tauri::AppHandle<R>) -> tauri::Result<()> {
 		.icon_as_template(true)
 		.menu_on_left_click(false)
 		.icon(if cfg!(target_os = "macos") {
-			Icon::Raw(include_bytes!("../icons/appleTrayIcon.png").to_vec())
+			Image::from_bytes(include_bytes!("../icons/appleTrayIcon.png"))
 		} else {
-			Icon::Raw(include_bytes!("../icons/128x128.png").to_vec())
-		})
+			Image::from_bytes(include_bytes!("../icons/128x128.png"))
+		}?)
 		.on_menu_event(move |app, event| match event.id.as_ref() {
 			"quit" => app.emit("try-close", "tray").unwrap(),
 			"toggle" => {
 				let i18n = app.state::<TrayTranslations>();
-				if let Some(window) = app.get_window("main") {
+				if let Some(window) = app.get_webview_window("main") {
 					let new_title = if window.is_visible().unwrap_or_default() {
 						let _ = window.hide();
 						i18n.get("tray_menu-show")
@@ -102,7 +103,7 @@ pub fn create_tray<R: Runtime>(app: &tauri::AppHandle<R>) -> tauri::Result<()> {
 		.on_tray_icon_event(|tray, event| {
 			if event.click_type == ClickType::Left {
 				let app = tray.app_handle();
-				if let Some(window) = app.get_window("main") {
+				if let Some(window) = app.get_webview_window("main") {
 					let _ = window.show();
 					let _ = window.set_focus();
 				}
