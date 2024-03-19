@@ -113,7 +113,7 @@ class PoseRecorder(private val server: VRServer) {
 
 		LogManager
 			.info(
-				"[PoseRecorder] Recording $numFrames samples at a $intervalMs ms frame interval"
+				"[PoseRecorder] Recording $numFrames samples at a $intervalMs ms frame interval",
 			)
 
 		currentFrameCallback = frameCallback
@@ -161,9 +161,7 @@ class PoseRecorder(private val server: VRServer) {
 		get() = numFrames > frameCursor
 
 	@Synchronized
-	fun hasRecording(): Boolean {
-		return currentRecording != null
-	}
+	fun hasRecording(): Boolean = currentRecording != null
 
 	@get:Synchronized
 	val framesAsync: Future<PoseFrames>?
