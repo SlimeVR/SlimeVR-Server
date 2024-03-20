@@ -46,7 +46,7 @@
     "start": "vite --force",
     "build": "vite build",
     "dev": "tauri dev",
-    "skipbundler": "tauri build -b none",
+    "skipbundler": "tauri build --no-bundle",
     "tauri": "tauri",
     "lint": "tsc --noEmit && eslint --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && prettier --check \"src/**/*.{js,jsx,ts,tsx,css,md,json}\"",
     "lint:fix": "tsc --noEmit && eslint --fix --max-warnings=0 \"src/**/*.{js,jsx,ts,tsx,json}\" && pnpm run format",
