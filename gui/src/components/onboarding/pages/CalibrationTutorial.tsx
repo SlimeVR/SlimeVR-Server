@@ -102,8 +102,8 @@ export function CalibrationTutorialPage() {
                     isCounting
                       ? (IMU_CALIBRATION_TIME - timer) / IMU_CALIBRATION_TIME
                       : calibrationStatus === CalibrationStatus.SUCCESS
-                      ? 1
-                      : 0
+                        ? 1
+                        : 0
                   }
                   height={14}
                   animated={true}

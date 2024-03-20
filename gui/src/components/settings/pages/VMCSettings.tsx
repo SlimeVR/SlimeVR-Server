@@ -59,7 +59,7 @@ export function VMCSettings() {
   };
 
   const { reset, control, watch, handleSubmit } = useForm<VMCSettingsForm>({
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   const onSubmit = async (values: VMCSettingsForm) => {

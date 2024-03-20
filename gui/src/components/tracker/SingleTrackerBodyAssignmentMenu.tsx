@@ -24,9 +24,8 @@ export function SingleTrackerBodyAssignmentMenu({
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { config } = useConfig();
-  const { control, watch } = useForm<{ advanced: boolean }>({
-    defaultValues: { advanced: false },
-  });
+  const defaultValues = { advanced: false };
+  const { control, watch } = useForm<{ advanced: boolean }>({ defaultValues });
   const { advanced } = watch();
 
   const { closeChokerWarning, tryOpenChokerWarning, shouldShowChokerWarn } =
@@ -80,7 +79,7 @@ export function SingleTrackerBodyAssignmentMenu({
                 mirror={config?.mirrorView ?? defaultConfig.mirrorView}
                 width={isMobile ? 160 : undefined}
                 onlyAssigned={false}
-                advanced={advanced}
+                advanced={advanced ?? defaultValues.advanced}
                 onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
               <div className="flex justify-center">

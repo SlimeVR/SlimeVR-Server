@@ -78,8 +78,8 @@ export const InputInside = forwardRef<
   const computedValue = disabled
     ? placeholder
     : value !== undefined
-    ? value
-    : '';
+      ? value
+      : '';
 
   return (
     <label className="flex flex-col gap-1">

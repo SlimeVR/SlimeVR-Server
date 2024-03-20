@@ -53,13 +53,15 @@ export function ManualProportionsPage() {
 
   const savedValue = useMemo(() => localStorage.getItem('ratioMode'), []);
 
+  const defaultValues = { precise: false, ratio: savedValue !== 'false' };
+
   const { control, watch } = useForm<{ precise: boolean; ratio: boolean }>({
-    defaultValues: { precise: false, ratio: savedValue !== 'false' },
+    defaultValues,
   });
   const { precise, ratio } = watch();
 
   useEffect(() => {
-    localStorage.setItem('ratioMode', ratio.toString());
+    localStorage.setItem('ratioMode', ratio?.toString() ?? 'true');
   }, [ratio]);
 
   return (
@@ -94,7 +96,7 @@ export function ManualProportionsPage() {
               </div>
               <div className="w-full px-2">
                 <BodyProportions
-                  precise={precise}
+                  precise={precise ?? defaultValues.precise}
                   type={ratio ? 'ratio' : 'linear'}
                   variant={state.alonePage ? 'alone' : 'onboarding'}
                 ></BodyProportions>
