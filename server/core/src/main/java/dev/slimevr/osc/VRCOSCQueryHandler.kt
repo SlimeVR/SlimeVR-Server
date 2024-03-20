@@ -46,6 +46,14 @@ class VRCOSCQueryHandler(
 	}
 
 	/**
+	 * Updates the OSCQuery OSC service
+	 */
+	fun updateOSCQuery() {
+		// TODO add support in the lib
+		// oscQueryServer.updateOSCService(vrcOscHandler.portIn.toUShort())
+	}
+
+	/**
 	 * Called when a service is added
 	 */
 	private fun serviceAdded(info: ServiceInfo) {
@@ -57,28 +65,14 @@ class VRCOSCQueryHandler(
 		val port = info.port
 
 		// create a new OSCHandler for this service
-		val handlerIp = vrcOscHandler.address.hostName
-		val handlerPort = vrcOscHandler.portOut
-		if (port != handlerPort || (ip != handlerIp && !(ip == localIp && handlerIp == loopbackIp))) {
-			vrcOscHandler.addOSCQuerySender(port, ip)
-		} else {
-			LogManager.debug("[VRCOSCQueryHandler] An OSC Sender already exists for the port $port and address $ip")
-		}
-	}
-
-	/**
-	 * Updates the advertised OSC port of the OSCQueryServer
-	 */
-	fun updatePortIn(portIn: Int) {
-		// TODO
-		// oscQueryServer.oscPort = portIn
+		vrcOscHandler.addOSCQuerySender(port, ip)
 	}
 
 	/**
 	 * Closes the OSCQueryServer and the associated OSC sender.
 	 */
 	fun close() {
-		vrcOscHandler.closeOscQuerySender()
+		vrcOscHandler.closeOscQuerySender(false)
 		thread(start = true) {
 			oscQueryServer.close()
 		}
