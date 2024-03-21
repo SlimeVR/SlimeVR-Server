@@ -23,6 +23,7 @@ tips-find_tracker = Não tem certeza qual tracker é qual? Balance o tracker e e
 tips-do_not_move_heels = Tenha certeza de não mexer seus calcanhares durante a gravação!
 tips-file_select = Arraste e solte arquivos para usar, ou <u>pesquise</u>.
 tips-tap_setup = Pode tocar lentamente 2 vezes no seu tracker para o escolher em vez de o selecionar no menu.
+tips-turn_on_tracker = Está usando trackers oficiais do SlimeVR? Lembre-se de <b><em> ligar o seu tracker </em></b> após conecta-lo ao computador!
 
 ## Body parts
 
@@ -453,6 +454,7 @@ settings-general-interface-feedback_sound-volume = Volume do som de feedback
 settings-general-interface-connected_trackers_warning = Aviso de trackers conectados
 settings-general-interface-connected_trackers_warning-description = Essa opção exibirá um pop-up toda vez que você tentar fechar o SlimeVR enquanto tiver um ou mais trackers conectados. Ela o lembrará de desligar os trackers quando você terminar para preservar a vida útil da bateria.
 settings-general-interface-connected_trackers_warning-label = Aviso de trackers conectados ao fechar
+settings-general-interface-use_tray = Minimizar para bandeja do sistema
 
 ## Serial settings
 
@@ -821,10 +823,6 @@ onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trac
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = Qual método de calibração de proporções você deseja usar?
-# Multiline string
-onboarding-choose_proportions-description =
-    As proporções do corpo são usadas para conhecer as medidas do seu corpo. Elas são necessárias para calcular as posições dos trackers.
-    Quando as proporções do seu corpo não correspondem às salvas, a precisão do rastreamento será prejudicada, e você notará coisas como patinação ou deslizamento, ou seu corpo não correspondendo bem ao seu avatar.
 onboarding-choose_proportions-auto_proportions = Proporções automáticas
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recomendado
@@ -937,3 +935,12 @@ status_system-StatusSteamVRDisconnected =
        *[other] Atualmente não conectado ao SteamVR via driver SlimeVR.
     }
 status_system-StatusTrackerError = O tracker { $trackerName } tem um erro.
+
+## Tray Menu
+
+
+## First exit modal
+
+
+## Unknown device modal
+
