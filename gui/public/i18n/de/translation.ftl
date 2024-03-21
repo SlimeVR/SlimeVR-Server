@@ -816,9 +816,17 @@ onboarding-automatic_mounting-put_trackers_on-next = Ich habe alle meine Tracker
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = Welche Kalibrierungsmethode ist zu verwenden?
+# Multiline string
+onboarding-choose_proportions-description =
+    Die Körperproportionen werden benutzt um die Maße Ihres Körpers zu kennen. Diese werden benötigt um die Positionen der Tracker zu berechnen.
+    Wenn die Körperproportionen nicht mit denen Ihres Körpers übereinstimmen, wird die Tracking-Präzision schlechter sein und Sie werden ein rutschen/gleiten der Fuß-Tracker feststellen oder die Bewegungen des Avatars stimmen nicht gut mit denen von Ihnen überein.
 onboarding-choose_proportions-auto_proportions = Automatische Proportionen
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Empfohlen
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
+    Dies wird versuchen, Ihre Proportionen mit Hilfe einer Bewegungsaufnahme zu bestimmen, welche von einem Algorithmus verarbeitet wird.
+    
+    <b>Dazu muss Ihr Headset (HMD) mit SlimeVR verbunden sein und Sie müssen es an haben!</b>
 onboarding-choose_proportions-manual_proportions = Manuelle Körperproportionen
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Für kleine Anpassungen
@@ -848,11 +856,26 @@ onboarding-automatic_proportions-put_trackers_on-title = Legen Sie Ihre Tracker 
 onboarding-automatic_proportions-put_trackers_on-description = Um Ihre Proportionen zu kalibrieren, werden wir die Tracker verwenden, die Sie gerade zugewiesen haben. Legen Sie alle Ihre Tracker an. Sie können rechts in der Abbildung sehen, welche welche sind.
 onboarding-automatic_proportions-put_trackers_on-next = Ich habe alle meine Tracker angelegt
 onboarding-automatic_proportions-requirements-title = Anforderungen
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    Sie haben genug Tracken, um Ihre Füße zu tracken (in der Regel 5 Tracker).
+    Sie haben Ihre Tracker an und Ihr Headset auf.
+    Ihre Tracker und Ihr Headset ist mit dem SlimeVR-Server verbunden und funktionieren ordnunsgemäß (z.B. kein Stottern, kein Trennen der Verbindung, usw.).
+    Ihr Headset sendet Positionsdaten an den SlimeVR-Server (das bedeutet allgemein, dass SteamVR läuft und über den SlimeVR-SteamVR Treiber mit SteamVR verbunden ist).
+    Ihr Tracking funktioniert und stellt Ihre Bewegungen akkurat dar (z.B.: Sie haben einen Reset durchgeführt und Ihre Tracker bewegen sich beim Treten, Bücken, Sitzen, usw. richtig).
 onboarding-automatic_proportions-requirements-next = Ich habe die Anforderungen gelesen
 onboarding-automatic_proportions-check_height-title = Überprüfen Sie Ihre Körpergröße
+onboarding-automatic_proportions-check_height-description = Wir benutzen die Höhe des Headsets (HMD) als eine Schätzung für Ihre tatsächliche Grösse, doch es ist besser dass Sie diese selbst überprüfen!
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = Bitte betätigen Sie auf den Knopf während Sie <u>aufrecht</u> stehen, um Ihre Körpergröße zu berechnen. Sie haben 3 Sekunden Zeit, nachdem Sie auf den Knopf gedrückt haben.
 onboarding-automatic_proportions-check_height-fetch_height = Ich stehe!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Unbekannt
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height1 = Ihre Headset-Höhe ist
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height1 = Ihre tatsächliche Körpergröße ist
+onboarding-automatic_proportions-check_height-next_step = Werte sind korrekt
 onboarding-automatic_proportions-start_recording-title = Bereiten Sie sich auf ein paar Bewegungen vor
 onboarding-automatic_proportions-start_recording-description = Wir werden nun einige bestimmte Posen und Bewegungen aufnehmen. Diese werden im nächsten Bildschirm angezeigt. Bereiten Sie sicht darauf vor, wenn Sie den Knopf drücken!
 onboarding-automatic_proportions-start_recording-next = Aufnahme starten
@@ -882,6 +905,9 @@ onboarding-automatic_proportions-verify_results-redo = Aufnahme wiederholen
 onboarding-automatic_proportions-verify_results-confirm = Ergebnisse sind korrekt
 onboarding-automatic_proportions-done-title = Körper gemessen und gespeichert.
 onboarding-automatic_proportions-done-description = Ihre Körperproportionen-Kalibrierung ist abgeschlossen!
+onboarding-automatic_proportions-error_modal =
+    <b>Warnung:</b> Beim Schätzen der Proportionen wurde ein Fehler festgestellt!
+    Bitte <docs>prüfen Sie die Dokumentation</docs> oder treten sie unserem <discord>Discord Server</discord> bei, um Hilfe zu bekommen. ^_^
 onboarding-automatic_proportions-error_modal-confirm = Verstanden!
 
 ## Home
@@ -890,6 +916,10 @@ home-no_trackers = Keine Tracker erkannt oder zugewiesen
 
 ## Trackers Still On notification
 
+trackers_still_on-modal-title = Es sind noch Tracker eingeschaltet
+trackers_still_on-modal-description =
+    Ein oder mehrere Tracker sind noch eingeschaltet.
+    Möchten Sie SlimeVR trotzdem beenden?
 trackers_still_on-modal-confirm = SlimeVR beenden
 trackers_still_on-modal-cancel = Bitte warten...
 

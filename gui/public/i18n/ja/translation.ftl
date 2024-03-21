@@ -36,6 +36,7 @@ body_part-RIGHT_HAND = 右手
 body_part-RIGHT_UPPER_LEG = 右膝
 body_part-RIGHT_LOWER_LEG = 右足
 body_part-RIGHT_FOOT = 右足先
+body_part-UPPER_CHEST = 上胸
 body_part-CHEST = 胸
 body_part-WAIST = 腰
 body_part-HIP = ヒップ
@@ -53,6 +54,7 @@ skeleton_bone-NONE = 無し
 skeleton_bone-HEAD = ヘッドシフト
 skeleton_bone-NECK = 首長さ
 skeleton_bone-torso_group = 胴体の長さ
+skeleton_bone-UPPER_CHEST = 上胸の長さ
 skeleton_bone-CHEST_OFFSET = 胸オフセット
 skeleton_bone-CHEST = 胸囲
 skeleton_bone-WAIST = ウエスト長さ
@@ -122,6 +124,7 @@ widget-drift_compensation-clear = ドリフト補正をクリアする
 
 ## Widget: Clear Reset Mounting
 
+widget-clear_mounting = リセットマウンティングをクリア
 
 ## Widget: Developer settings
 
@@ -141,6 +144,11 @@ widget-imu_visualizer-rotation_raw = 生
 widget-imu_visualizer-rotation_preview = 生
 widget-imu_visualizer-rotation_hide = 隠す
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = スケルトンプレビュー
+widget-skeleton_visualizer-hide = 非表示
+
 ## Tracker status
 
 tracker-status-none = ステータスなし
@@ -149,6 +157,7 @@ tracker-status-error = エラー
 tracker-status-disconnected = 切断
 tracker-status-occluded = Occluded
 tracker-status-ok = 接続中
+tracker-status-timed_out = タイムアウト
 
 ## Tracker status columns
 
@@ -166,10 +175,15 @@ tracker-table-column-url = URL
 ## Tracker rotation
 
 tracker-rotation-front = 前
+tracker-rotation-front_left = 左前
+tracker-rotation-front_right = 右前
 tracker-rotation-left = 左
 tracker-rotation-right = 右
 tracker-rotation-back = 後
+tracker-rotation-back_left = 左後
+tracker-rotation-back_right = 右後
 tracker-rotation-custom = カスタム
+tracker-rotation-overriden = (マウンティングリセットによる上書き)
 
 ## Tracker information
 
@@ -234,6 +248,7 @@ tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part(body-part: "�
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part(body-part: "右足首") }
 tracker_selection_menu-RIGHT_FOOT = { -tracker_selection-part(body-part: "右足先") }
 tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part(body-part: "右コントローラ") }
+tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } 上胸？
 tracker_selection_menu-CHEST = { -tracker_selection-part(body-part: "胸") }
 tracker_selection_menu-WAIST = { -tracker_selection-part(body-part: "腰") }
 tracker_selection_menu-HIP = { -tracker_selection-part(body-part: "ヒップ") }
@@ -271,6 +286,7 @@ settings-sidebar-osc_router = OSCルーター
 settings-sidebar-osc_trackers = VRChatOSCトラッカー
 settings-sidebar-utils = ユーティリティ
 settings-sidebar-serial = シリアルコンソール
+settings-sidebar-appearance = 外観
 settings-sidebar-notifications = 通知
 
 ## SteamVR settings
@@ -328,12 +344,35 @@ settings-general-fk_settings-leg_tweak-floor_clip = フロアクリップ
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = スケーティング補正
+settings-general-fk_settings-leg_tweak-foot_plant = 足の着地
 settings-general-fk_settings-leg_tweak-skating_correction-amount = スケーティング補正の強さ
+settings-general-fk_settings-leg_tweak-skating_correction-description = スケート補正はアイススケートを補正しますが、特定の動きでは精度が低下する場合があります。これを有効にする際は、フルリセットし、ゲーム内で再校正してください。
+settings-general-fk_settings-leg_tweak-floor_clip-description = フロアクリップを有効にすると、床を通り抜けることを減少させるか、完全に排除できます。これを有効にする際は、フルリセットし、ゲーム内で再校正してください。
+settings-general-fk_settings-leg_tweak-toe_snap-description = 足指スナップは足トラッカーを使用していない場合、足の回転を推測しようとします。
+settings-general-fk_settings-leg_tweak-foot_plant-description = 足の着地は足が地面に接触したときに足を地面に平行に回転させます。
 settings-general-fk_settings-leg_fk = 足のトラッキング
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = つま先立ちで足のマウンティングリセットを有効にします。
+settings-general-fk_settings-leg_fk-reset_mounting_feet = 足のマウンティングリセット
 settings-general-fk_settings-arm_fk = アームトラッキング
 settings-general-fk_settings-arm_fk-description = 腕の追従方法を変更する。
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
+settings-general-fk_settings-arm_fk-reset_mode-description = マウンティングリセットのために期待される腕のポーズを変更します。
+settings-general-fk_settings-arm_fk-back = 後ろ
+settings-general-fk_settings-arm_fk-back-description = デフォルトモードで、上腕を後ろに、下腕を前にします。
+settings-general-fk_settings-arm_fk-tpose_up = Tポーズ(上げ)
+settings-general-fk_settings-arm_fk-tpose_up-description = 完全リセット時は腕を下げて立っている姿勢、マウンティングリセット時は腕を体の両側に90度上げる。
+settings-general-fk_settings-arm_fk-tpose_down = Tポーズ(下げ)
+settings-general-fk_settings-arm_fk-tpose_down-description = 完全リセット時は腕を体の両側に90度上げ、マウンティングリセット時は腕を下げて立っている姿勢。
+settings-general-fk_settings-arm_fk-forward = 前方ポーズ
+settings-general-fk_settings-arm_fk-forward-description = リセット時に腕を前方に90度上げる。Vチューバーとして座っている時に便利。
+settings-general-fk_settings-skeleton_settings-toggles = スケルトン設定
 settings-general-fk_settings-skeleton_settings-description = スケルトン設定のオン/オフを切り替えます。これらはオンのままにしておくことをお勧めします。
+settings-general-fk_settings-skeleton_settings-extended_spine_model = 拡張脊椎モデル
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = 拡張骨盤モデル
+settings-general-fk_settings-skeleton_settings-extended_knees_model = 拡張膝モデル
+settings-general-fk_settings-skeleton_settings-ratios = スケルトン比率
+settings-general-fk_settings-skeleton_settings-ratios-description = スケルトン設定の値を変更する。これらを変更した後、体の比率を調整する必要があるかもしれません。
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = 胸から腰への推定
 settings-general-fk_settings-self_localization-title = モーションキャプチャモード
 settings-general-fk_settings-vive_emulation-title = Viveエミュレーション
 settings-general-fk_settings-vive_emulation-description = Viveトラッカーが抱える腰トラッカーの問題をエミュレートします。
@@ -634,8 +673,6 @@ onboarding-automatic_proportions-put_trackers_on-description = プロポーシ�
 onboarding-automatic_proportions-put_trackers_on-next = すべてのトラッカーを装着しました
 onboarding-automatic_proportions-requirements-title = 要件
 onboarding-automatic_proportions-requirements-next = 要件を読みました
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height = あなたの身長は
 onboarding-automatic_proportions-start_recording-title = 測定の準備をする
 onboarding-automatic_proportions-start_recording-description = これから具体的なポーズや動きを記録します。これらは次の画面に表示されます。ボタンが押されたらすぐに始められるように準備しておいてください！
 onboarding-automatic_proportions-start_recording-next = レコーディングスタート
@@ -661,6 +698,9 @@ onboarding-automatic_proportions-done-description = ボディプロポーショ�
 ## Home
 
 home-no_trackers = トラッカーを検出できません。もしくは割り当てられていません。
+
+## Trackers Still On notification
+
 
 ## Status system
 
