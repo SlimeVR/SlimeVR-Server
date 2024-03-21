@@ -10,11 +10,13 @@ import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerRole;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 @JsonVersionedModel(
-	currentVersion = "12", defaultDeserializeToVersion = "12", toCurrentConverterClass = CurrentVRConfigConverter.class
+	currentVersion = "13", defaultDeserializeToVersion = "13", toCurrentConverterClass = CurrentVRConfigConverter.class
 )
 public class VRConfig {
 
@@ -49,6 +51,8 @@ public class VRConfig {
 	@JsonDeserialize(using = BridgeConfigMapDeserializer.class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer.class)
 	private final Map<String, BridgeConfig> bridges = new HashMap<>();
+
+	private final Set<String> knownDevices = new HashSet<>();
 
 	private final OverlayConfig overlay = new OverlayConfig();
 
@@ -142,6 +146,14 @@ public class VRConfig {
 		return overlay;
 	}
 
+	public Set<String> getKnownDevices() {
+		return knownDevices;
+	}
+
+	public boolean hasTrackerByName(String name) {
+		return trackers.containsKey(name);
+	}
+
 	public TrackerConfig getTracker(Tracker tracker) {
 		TrackerConfig config = trackers.get(tracker.getName());
 		if (config == null) {
@@ -180,6 +192,18 @@ public class VRConfig {
 			bridges.put(bridgeKey, config);
 		}
 		return config;
+	}
+
+	public boolean isKnownDevice(String mac) {
+		return knownDevices.contains(mac);
+	}
+
+	public boolean addKnownDevice(String mac) {
+		return knownDevices.add(mac);
+	}
+
+	public boolean forgetKnownDevice(String mac) {
+		return knownDevices.remove(mac);
 	}
 }
 

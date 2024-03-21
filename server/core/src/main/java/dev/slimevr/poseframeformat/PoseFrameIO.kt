@@ -85,7 +85,7 @@ object PoseFrameIO {
 
 	fun writeToFile(file: File, frames: PoseFrames) {
 		DataOutputStream(
-			BufferedOutputStream(FileOutputStream(file))
+			BufferedOutputStream(FileOutputStream(file)),
 		).use { outputStream -> writeFrames(outputStream, frames) }
 	}
 
@@ -100,13 +100,11 @@ object PoseFrameIO {
 	}
 
 	@Throws(IOException::class)
-	private fun readVector3f(inputStream: DataInputStream): Vector3 {
-		return Vector3(
-			inputStream.readFloat(),
-			inputStream.readFloat(),
-			inputStream.readFloat()
-		)
-	}
+	private fun readVector3f(inputStream: DataInputStream): Vector3 = Vector3(
+		inputStream.readFloat(),
+		inputStream.readFloat(),
+		inputStream.readFloat(),
+	)
 
 	@Throws(IOException::class)
 	private fun readQuaternion(inputStream: DataInputStream): Quaternion {
@@ -125,7 +123,7 @@ object PoseFrameIO {
 			val name = inputStream.readUTF()
 			val trackerFrameCount = inputStream.readInt()
 			val trackerFrames = FastList<TrackerFrame?>(
-				trackerFrameCount
+				trackerFrameCount,
 			)
 			for (j in 0 until trackerFrameCount) {
 				val dataFlags = inputStream.readInt()
@@ -159,8 +157,8 @@ object PoseFrameIO {
 							rotation,
 							position,
 							acceleration,
-							rawRotation
-						)
+							rawRotation,
+						),
 					)
 			}
 			trackers.add(TrackerFrames(name, trackerFrames))
@@ -177,16 +175,14 @@ object PoseFrameIO {
 		}
 	}
 
-	fun readFromFile(file: File): PoseFrames {
-		return readFrames(
-			DataInputStream(BufferedInputStream(FileInputStream(file)))
-		)
-	}
+	fun readFromFile(file: File): PoseFrames = readFrames(
+		DataInputStream(BufferedInputStream(FileInputStream(file))),
+	)
 
 	fun tryReadFromFile(file: File): PoseFrames? {
 		return try {
 			return readFrames(
-				DataInputStream(BufferedInputStream(FileInputStream(file)))
+				DataInputStream(BufferedInputStream(FileInputStream(file))),
 			)
 		} catch (e: Exception) {
 			LogManager.severe("Error reading frames from file", e)

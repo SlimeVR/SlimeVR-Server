@@ -64,9 +64,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		startWatchingNewDevices()
 	}
 
-	private fun getPorts(): List<UsbSerialDriver> {
-		return UsbSerialProber.getDefaultProber().findAllDrivers(manager)
-	}
+	private fun getPorts(): List<UsbSerialDriver> = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
 
 	private fun startWatchingNewDevices() {
 		if (watchingNewDevices) return
@@ -78,13 +76,13 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 				} catch (t: Throwable) {
 					LogManager.severe(
 						"[SerialHandler] Error while watching for new devices, cancelling the \"getDevicesTimer\".",
-						t
+						t,
 					)
 					getDevicesTimer.cancel()
 				}
 			},
 			0,
-			3000
+			3000,
 		)
 	}
 
@@ -116,7 +114,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 
 		if (newPort == null) {
 			LogManager.info(
-				"[SerialHandler] No serial ports found to connect to (${lastKnownPorts.size}) total ports"
+				"[SerialHandler] No serial ports found to connect to (${lastKnownPorts.size}) total ports",
 			)
 			return false
 		}
@@ -126,7 +124,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 			if (newPort != port) {
 				LogManager.info(
 					"[SerialHandler] Closing current serial port " +
-						port.descriptivePortName
+						port.descriptivePortName,
 				)
 				closeSerial()
 			} else {
@@ -138,7 +136,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 
 		LogManager.info(
 			"[SerialHandler] Trying to connect to new serial port " +
-				newPort.descriptivePortName
+				newPort.descriptivePortName,
 		)
 
 		if (!manager.hasPermission(newPort.port.device)) {
@@ -147,7 +145,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 				activity,
 				0,
 				Intent(ACTION_USB_PERMISSION),
-				flags
+				flags,
 			)
 			if (requestingPermission != newPort.portLocation) {
 				println("Requesting permission for ${newPort.portLocation}")
@@ -155,7 +153,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 				requestingPermission = newPort.portLocation
 			}
 			LogManager.warning(
-				"[SerialHandler] Can't open serial port ${newPort.descriptivePortName}, invalid permissions"
+				"[SerialHandler] Can't open serial port ${newPort.descriptivePortName}, invalid permissions",
 			)
 			return false
 		}
@@ -163,7 +161,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		val connection = manager.openDevice(newPort.port.device)
 		if (connection == null) {
 			LogManager.warning(
-				"[SerialHandler] Can't open serial port ${newPort.descriptivePortName}, connection failed"
+				"[SerialHandler] Can't open serial port ${newPort.descriptivePortName}, connection failed",
 
 			)
 			return false
@@ -215,7 +213,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 			}
 			listeners.forEach { it.onSerialDisconnected() }
 			LogManager.info(
-				"[SerialHandler] Port ${currentPort?.descriptivePortName} closed okay"
+				"[SerialHandler] Port ${currentPort?.descriptivePortName} closed okay",
 			)
 			usbIoManager?.stop()
 			usbIoManager = null
@@ -223,7 +221,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		} catch (e: Exception) {
 			LogManager.warning(
 				"[SerialHandler] Error closing port ${currentPort?.descriptivePortName}",
-				e
+				e,
 			)
 		}
 	}

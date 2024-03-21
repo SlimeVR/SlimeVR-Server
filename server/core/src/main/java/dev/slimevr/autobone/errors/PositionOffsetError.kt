@@ -15,7 +15,7 @@ class PositionOffsetError : IAutoBoneError {
 			trainingStep.cursor1,
 			trainingStep.cursor2,
 			trainingStep.skeleton1.skeleton,
-			trainingStep.skeleton2.skeleton
+			trainingStep.skeleton2.skeleton,
 		)
 	}
 

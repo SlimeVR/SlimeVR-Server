@@ -255,12 +255,13 @@ jobs:
 
       - name: Build
         run: |
+          rustup target add aarch64-apple-darwin
           pnpm i
-          pnpm run tauri build -- "--target universal-apple-darwin"
+          pnpm run tauri build --target universal-apple-darwin
 
       - name: Modify Application
         run: |
-          cd target/release/bundle/macos/slimevr.app/Contents/MacOS
+          cd target/universal-apple-darwin/release/bundle/macos/slimevr.app/Contents/MacOS
           cp $( git rev-parse --show-toplevel )/server/desktop/build/libs/slimevr.jar ./
           cd ../../../../dmg/
           ./bundle_dmg.sh --volname slimevr --icon slimevr 180 170 --app-drop-link 480 170 \
@@ -271,17 +272,17 @@ jobs:
       - uses: actions/upload-artifact@v3.1.0
         with:
           name: SlimeVR-GUI-MacApp
-          path: target/release/bundle/macos/slimevr*.app
+          path: target/universal-apple-darwin/release/bundle/macos/slimevr*.app
 
       - uses: actions/upload-artifact@v3.1.0
         with:
           name: SlimeVR-GUI-MacDmg
-          path: target/release/bundle/dmg/slimevr.dmg
+          path: target/universal-apple-darwin/release/bundle/dmg/slimevr.dmg
 
       - name: Prepare for release
         if: startsWith(github.ref, 'refs/tags/')
         run: |
-          cp target/release/bundle/dmg/slimevr.dmg ./SlimeVR-mac.dmg
+          cp target/universal-apple-darwin/release/bundle/dmg/slimevr.dmg ./SlimeVR-mac.dmg
 
       - name: Upload to draft release
         uses: softprops/action-gh-release@v1

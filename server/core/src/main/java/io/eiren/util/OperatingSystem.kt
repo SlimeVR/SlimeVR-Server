@@ -14,6 +14,7 @@ enum class OperatingSystem(
 	OSX("osx", arrayOf("mac")),
 	UNKNOWN("unknown", arrayOf()),
 	;
+
 	companion object {
 		val currentPlatform: OperatingSystem by lazy {
 			val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
@@ -46,16 +47,22 @@ enum class OperatingSystem(
 		fun resolveConfigDirectory(identifier: String): Path? = when (currentPlatform) {
 			LINUX -> System.getenv("XDG_CONFIG_HOME")?.let { Path(it, identifier) }
 				?: System.getenv("HOME")?.let { Path(it, ".config", identifier) }
+
 			WINDOWS -> System.getenv("AppData")?.let { Path(it, identifier) }
+
 			OSX -> System.getenv("HOME")?.let { Path(it, "Library", "Application Support", identifier) }
+
 			UNKNOWN -> null
 		}
 
 		fun resolveLogDirectory(identifier: String): Path? = when (currentPlatform) {
 			LINUX -> System.getenv("XDG_DATA_HOME")?.let { Path(it, identifier, "logs") }
 				?: System.getenv("HOME")?.let { Path(it, ".local", "share", identifier, "logs") }
+
 			WINDOWS -> System.getenv("AppData")?.let { Path(it, identifier, "logs") }
+
 			OSX -> System.getenv("HOME")?.let { Path(it, "Library", "Logs", identifier) }
+
 			UNKNOWN -> null
 		}
 	}

@@ -72,9 +72,7 @@ sealed interface SensorSpecificPacket {
 		 * @param sensorId
 		 * @return
 		 */
-		fun isGlobal(sensorId: Int): Boolean {
-			return sensorId == 255
-		}
+		fun isGlobal(sensorId: Int): Boolean = sensorId == 255
 	}
 }
 
@@ -85,7 +83,8 @@ sealed interface RotationPacket : SensorSpecificPacket {
 data object UDPPacket0Heartbeat : UDPPacket(0)
 data object UDPPacket1Heartbeat : UDPPacket(1)
 data class UDPPacket1Rotation(override var rotation: Quaternion = Quaternion.IDENTITY) :
-	UDPPacket(1), RotationPacket {
+	UDPPacket(1),
+	RotationPacket {
 	override val sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		rotation = UDPUtils.getSafeBufferQuaternion(buf)
@@ -112,7 +111,9 @@ data class UDPPacket3Handshake(
 			mcuType = MCUType.getById(buf.int.toUInt()) ?: MCUType.UNKNOWN
 		} // MCU TYPE
 		if (buf.remaining() > 11) {
-			buf.int; buf.int; buf.int // IMU info
+			buf.int
+			buf.int
+			buf.int // IMU info
 		}
 		if (buf.remaining() > 3) firmwareBuild = buf.int
 		var length = 0
@@ -130,7 +131,7 @@ data class UDPPacket3Handshake(
 				mac[2],
 				mac[3],
 				mac[4],
-				mac[5]
+				mac[5],
 			)
 			if (macString == "00:00:00:00:00:00") macString = null
 		}
@@ -146,7 +147,8 @@ data class UDPPacket3Handshake(
 }
 
 data class UDPPacket4Acceleration(var acceleration: Vector3 = Vector3.NULL) :
-	UDPPacket(4), SensorSpecificPacket {
+	UDPPacket(4),
+	SensorSpecificPacket {
 	override var sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		acceleration = Vector3(UDPUtils.getSafeBufferFloat(buf), UDPUtils.getSafeBufferFloat(buf), UDPUtils.getSafeBufferFloat(buf))
@@ -199,7 +201,8 @@ data class UDPPacket12BatteryLevel(
 }
 
 data class UDPPacket13Tap(var tap: SensorTap = SensorTap(0)) :
-	UDPPacket(13), SensorSpecificPacket {
+	UDPPacket(13),
+	SensorSpecificPacket {
 	override var sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		sensorId = buf.get().toInt() and 0xFF
@@ -208,7 +211,8 @@ data class UDPPacket13Tap(var tap: SensorTap = SensorTap(0)) :
 }
 
 data class UDPPacket14Error(var errorNumber: Int = 0) :
-	UDPPacket(14), SensorSpecificPacket {
+	UDPPacket(14),
+	SensorSpecificPacket {
 	override var sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		sensorId = buf.get().toInt() and 0xFF
@@ -219,7 +223,8 @@ data class UDPPacket14Error(var errorNumber: Int = 0) :
 data class UDPPacket15SensorInfo(
 	var sensorStatus: Int = 0,
 	var sensorType: IMUType = IMUType.UNKNOWN,
-) : UDPPacket(15), SensorSpecificPacket {
+) : UDPPacket(15),
+	SensorSpecificPacket {
 	override var sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		sensorId = buf.get().toInt() and 0xFF
@@ -231,19 +236,18 @@ data class UDPPacket15SensorInfo(
 	}
 
 	companion object {
-		fun getStatus(sensorStatus: Int): TrackerStatus? {
-			return when (sensorStatus) {
-				0 -> TrackerStatus.DISCONNECTED
-				1 -> TrackerStatus.OK
-				2 -> TrackerStatus.ERROR
-				else -> null
-			}
+		fun getStatus(sensorStatus: Int): TrackerStatus? = when (sensorStatus) {
+			0 -> TrackerStatus.DISCONNECTED
+			1 -> TrackerStatus.OK
+			2 -> TrackerStatus.ERROR
+			else -> null
 		}
 	}
 }
 
 data class UDPPacket16Rotation2(override var rotation: Quaternion = Quaternion.IDENTITY) :
-	UDPPacket(16), RotationPacket {
+	UDPPacket(16),
+	RotationPacket {
 	override val sensorId = 1
 	override fun readData(buf: ByteBuffer) {
 		rotation = UDPUtils.getSafeBufferQuaternion(buf)
@@ -254,7 +258,8 @@ data class UDPPacket17RotationData(
 	var rotation: Quaternion = Quaternion.IDENTITY,
 	var dataType: Int = 0,
 	var calibrationInfo: Int = 0,
-) : UDPPacket(17), SensorSpecificPacket {
+) : UDPPacket(17),
+	SensorSpecificPacket {
 	override var sensorId: Int = 0
 	override fun readData(buf: ByteBuffer) {
 		sensorId = buf.get().toInt() and 0xFF
@@ -270,7 +275,8 @@ data class UDPPacket17RotationData(
 }
 
 data class UDPPacket18MagnetometerAccuracy(var accuracyInfo: Float = 0.0f) :
-	UDPPacket(18), SensorSpecificPacket {
+	UDPPacket(18),
+	SensorSpecificPacket {
 	override var sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		sensorId = buf.get().toInt() and 0xFF
@@ -279,7 +285,8 @@ data class UDPPacket18MagnetometerAccuracy(var accuracyInfo: Float = 0.0f) :
 }
 
 data class UDPPacket19SignalStrength(var signalStrength: Int = 0) :
-	UDPPacket(19), SensorSpecificPacket {
+	UDPPacket(19),
+	SensorSpecificPacket {
 	override var sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		sensorId = buf.get().toInt() and 0xFF
@@ -288,7 +295,8 @@ data class UDPPacket19SignalStrength(var signalStrength: Int = 0) :
 }
 
 data class UDPPacket20Temperature(var temperature: Float = 0.0f) :
-	UDPPacket(20), SensorSpecificPacket {
+	UDPPacket(20),
+	SensorSpecificPacket {
 	override var sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		sensorId = buf.get().toInt() and 0xFF
@@ -311,8 +319,7 @@ data class UDPPacket21UserAction(var type: Int = 0) : UDPPacket(21) {
 
 class UDPPacket22FeatureFlags(
 	var firmwareFeatures: FirmwareFeatures = FirmwareFeatures(),
-) :
-	UDPPacket(22) {
+) : UDPPacket(22) {
 	override fun readData(buf: ByteBuffer) {
 		firmwareFeatures = FirmwareFeatures.from(buf, buf.remaining())
 	}
@@ -325,8 +332,7 @@ class UDPPacket22FeatureFlags(
 data class UDPPacket200ProtocolChange(
 	var targetProtocol: Int = 0,
 	var targetProtocolVersion: Int = 0,
-) :
-	UDPPacket(200) {
+) : UDPPacket(200) {
 	override fun readData(buf: ByteBuffer) {
 		targetProtocol = buf.get().toInt() and 0xFF
 		targetProtocolVersion = buf.get().toInt() and 0xFF
@@ -346,7 +352,10 @@ class UDPUtils {
 			val z = byteBuffer.getFloat()
 			val w = byteBuffer.getFloat()
 
-			return if (x.isNaN() || y.isNaN() || z.isNaN() || w.isNaN()) {
+			return if (
+				(x.isNaN() || y.isNaN() || z.isNaN() || w.isNaN()) ||
+				(x == 0f && y == 0f && z == 0f && w == 0f)
+			) {
 				Quaternion.IDENTITY
 			} else {
 				Quaternion(w, x, y, z)

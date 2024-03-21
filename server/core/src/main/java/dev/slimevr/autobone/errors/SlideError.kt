@@ -8,12 +8,10 @@ import dev.slimevr.tracking.trackers.TrackerRole
 // The change in position of the ankle over time
 class SlideError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
-	override fun getStepError(trainingStep: AutoBoneStep): Float {
-		return getSlideError(
-			trainingStep.skeleton1.skeleton,
-			trainingStep.skeleton2.skeleton
-		)
-	}
+	override fun getStepError(trainingStep: AutoBoneStep): Float = getSlideError(
+		trainingStep.skeleton1.skeleton,
+		trainingStep.skeleton2.skeleton,
+	)
 
 	companion object {
 		fun getSlideError(skeleton1: HumanSkeleton, skeleton2: HumanSkeleton): Float {
@@ -32,7 +30,7 @@ class SlideError : IAutoBoneError {
 			// Calculate and average between both feet
 			return getSlideError(
 				skeleton1.getComputedTracker(trackerRole),
-				skeleton2.getComputedTracker(trackerRole)
+				skeleton2.getComputedTracker(trackerRole),
 			)
 		}
 

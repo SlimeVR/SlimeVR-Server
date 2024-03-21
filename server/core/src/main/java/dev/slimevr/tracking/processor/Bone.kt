@@ -61,16 +61,12 @@ class Bone(val boneType: BoneType) {
 	/**
 	 * Returns the world-aligned rotation of the bone
 	 */
-	fun getGlobalRotation(): Quaternion {
-		return headNode.worldTransform.rotation
-	}
+	fun getGlobalRotation(): Quaternion = headNode.worldTransform.rotation
 
 	/**
 	 * Returns the rotation of the bone relative to its parent
 	 */
-	fun getLocalRotation(): Quaternion {
-		return headNode.localTransform.rotation
-	}
+	fun getLocalRotation(): Quaternion = headNode.localTransform.rotation
 
 	/**
 	 * Sets the global rotation of the bone
@@ -82,16 +78,12 @@ class Bone(val boneType: BoneType) {
 	/**
 	 * Returns the global position of the head of the bone
 	 */
-	fun getPosition(): Vector3 {
-		return headNode.worldTransform.translation
-	}
+	fun getPosition(): Vector3 = headNode.worldTransform.translation
 
 	/**
 	 * Returns the global position of the tail of the bone
 	 */
-	fun getTailPosition(): Vector3 {
-		return tailNode.worldTransform.translation
-	}
+	fun getTailPosition(): Vector3 = tailNode.worldTransform.translation
 
 	/**
 	 * Sets the global position of the head of the bone.
