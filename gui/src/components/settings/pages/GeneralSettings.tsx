@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
@@ -582,11 +582,12 @@ export function GeneralSettings() {
               )}
             </Typography>
             <div className="flex flex-col pt-2 pb-3">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-tracker_mechanics-save_mounting_reset-description'
-                )}
-              </Typography>
+              <Localized
+                id="settings-general-tracker_mechanics-save_mounting_reset-description"
+                elems={{ b: <b></b> }}
+              >
+                <Typography color="secondary"></Typography>
+              </Localized>
             </div>
             <CheckBox
               variant="toggle"
