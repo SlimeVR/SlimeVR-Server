@@ -218,6 +218,7 @@ tracker-settings-name_section = 트래커 이름
 tracker-settings-name_section-description = 귀여운 이름을 지어주세요! >_<
 tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-forget = 트래커 삭제
+tracker-settings-forget-description = SlimeVR 서버에서 트래커를 제거하고 서버를 다시 시작할 때까지 자동으로 연결하지 않아요. 트래커의 설정은 지워지지 않아요.
 tracker-settings-forget-label = 트래커 삭제
 
 ## Tracker part card info
@@ -451,6 +452,9 @@ settings-general-interface-feedback_sound-volume = 피드백 사운드 음량
 settings-general-interface-connected_trackers_warning = 작동 중인 트래커 경고
 settings-general-interface-connected_trackers_warning-description = 이 옵션은 트래커가 연결되어 있는 채로 SlimeVR을 종료하려고 할 때 팝업을 표시합니다. 그렇게 하면 실수로 트래커를 끄지 않아 배터리가 방전되는 일을 예방할 수 있어요.
 settings-general-interface-connected_trackers_warning-label = 종료 시 작동 중인 트래커 경고 활성화
+settings-general-interface-use_tray = 작업 표시줄로 최소화
+settings-general-interface-use_tray-description = SlimeVR 서버를 닫지 않고 창만 닫을 수 있게 하여 사용 시 항상 GUI를 띄워 놓을 필요가 없게 해요.
+settings-general-interface-use_tray-label = 작업 표시줄로 최소화
 
 ## Serial settings
 
@@ -472,6 +476,7 @@ settings-serial-factory_reset-warning-cancel = 취소
 settings-serial-get_infos = 정보 가져오기
 settings-serial-serial_select = 시리얼 포트 선택
 settings-serial-auto_dropdown_item = 자동
+settings-serial-get_wifi_scan = WiFi 검색
 
 ## OSC router settings
 
@@ -696,6 +701,7 @@ onboarding-assign_trackers-description = 이제, 어떤 트래커가 어디에 �
 onboarding-assign_trackers-assigned = 트래커 { $trackers }개 중 { $assigned }개 연결됨
 onboarding-assign_trackers-advanced = 고급 할당 위치 보기
 onboarding-assign_trackers-next = 모든 트래커를 배치했어요
+onboarding-assign_trackers-mirror_view = 좌우 반전
 
 ## Tracker assignment warnings
 
@@ -816,6 +822,11 @@ onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용�
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = 신체 비율을 설정하기 위해 어떤 방법을 사용할래요?
+# Multiline string
+onboarding-choose_proportions-description-v1 =
+    신체 비율은 사용자의 신체 치수를 추산하기 위해 사용됩니다. 계산된 신체 치수는 트래커의 위치를 계산하는 데 사용됩니다.
+    설정된 신체 비율과 실제 신체 비율이 다를 경우, 트래킹 정확도가 훨씬 낮아질 수 있으며 사용 중 스케이팅, 슬라이딩, 또는 아바타와 신체 동작이 일치하지 않게 되는 경우가 발생할 수 있어요.
+    <b>신체 비율 측정은 한 번이면 충분해요!</b> 측정치가 부정확하거나 신체 비율이 달라진 경우를 제외하고는 다시 측정할 필요가 없어요.
 onboarding-choose_proportions-auto_proportions = 자동으로 비율 설정
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = 권장
@@ -927,9 +938,28 @@ status_system-StatusTrackerError = { $trackerName } 트래커에 문제가 발�
 
 ## Tray Menu
 
+tray_menu-show = 열기
+tray_menu-hide = 숨기기
+tray_menu-quit = 종료
 
 ## First exit modal
 
+tray_or_exit_modal-title = 닫기 버튼이 무엇을 하도록 할까요?
+# Multiline text
+tray_or_exit_modal-description =
+    이 옵션은 닫기 버튼을 누를 때 서버를 종료할지 또는 시스템 트레이로 최소화할지를 결정합니다.
+    
+    언제든지 설정의 인터페이스 탭에서 변경하실 수 있어요!
+tray_or_exit_modal-radio-exit = SlimeVR 종료하기
+tray_or_exit_modal-radio-tray = 작업 표시줄로 최소화
+tray_or_exit_modal-submit = 저장
+tray_or_exit_modal-cancel = 취소
 
 ## Unknown device modal
 
+unknown_device-modal-title = 새로운 트래커를 찾았어요!
+unknown_device-modal-description =
+    <b>{ $deviceID }</b>의 MAC 주소를 가진 새로운 트래커를 발견했어요.
+    SlimeVR에 연결할까요?
+unknown_device-modal-confirm = 당연하죠!
+unknown_device-modal-forget = 무시할게요
