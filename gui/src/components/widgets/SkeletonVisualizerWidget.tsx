@@ -18,6 +18,8 @@ import { QuaternionFromQuatT, isIdentity } from '@/maths/quaternion';
 import classNames from 'classnames';
 import { Button } from '@/components/commons/Button';
 import { useLocalization } from '@fluent/react';
+import { ErrorBoundary } from 'react-error-boundary';
+import { Typography } from '@/components/commons/Typography';
 
 extend({ BasedSkeletonHelper });
 
@@ -119,6 +121,7 @@ export function ToggleableSkeletonVisualizerWidget(
           >
             {l10n.getString('widget-skeleton_visualizer-hide')}
           </Button>
+
           <SkeletonVisualizerWidget {...props} />
         </>
       )}
@@ -132,6 +135,7 @@ export function SkeletonVisualizerWidget({
 }: SkeletonVisualizerWidgetProps) {
   const { bones: _bones } = useAppContext();
 
+  const { l10n } = useLocalization();
   const bones = useMemo(
     () => new Map(_bones.map((b) => [b.bodyPart, b])),
     [JSON.stringify(_bones)]
@@ -194,27 +198,35 @@ export function SkeletonVisualizerWidget({
   if (!skeleton.current) return <></>;
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
-      <Canvas
-        className={classNames('container mx-auto')}
-        style={{ height, background: 'transparent', maxHeight }}
+      <ErrorBoundary
+        fallback={
+          <Typography color="primary" textAlign="text-center">
+            {l10n.getString('tips-failed_webgl')}
+          </Typography>
+        }
       >
-        <gridHelper args={[10, 50, GROUND_COLOR, GROUND_COLOR]} />
-        <group position={[0, heightOffset, 0]} quaternion={yawReset}>
-          <SkeletonHelper object={skeleton.current[0]}></SkeletonHelper>
-        </group>
-        <primitive object={skeleton.current[0]} />
-        <PerspectiveCamera
-          makeDefault
-          position={[3, 2.5, -3]}
-          fov={20}
-          zoom={1 / scale}
-        />
-        <OrbitControls
-          target={[0, targetCamera, 0]}
-          maxDistance={20}
-          maxPolarAngle={Math.PI / 2}
-        />
-      </Canvas>
+        <Canvas
+          className={classNames('container mx-auto')}
+          style={{ height, background: 'transparent', maxHeight }}
+        >
+          <gridHelper args={[10, 50, GROUND_COLOR, GROUND_COLOR]} />
+          <group position={[0, heightOffset, 0]} quaternion={yawReset}>
+            <SkeletonHelper object={skeleton.current[0]}></SkeletonHelper>
+          </group>
+          <primitive object={skeleton.current[0]} />
+          <PerspectiveCamera
+            makeDefault
+            position={[3, 2.5, -3]}
+            fov={20}
+            zoom={1 / scale}
+          />
+          <OrbitControls
+            target={[0, targetCamera, 0]}
+            maxDistance={20}
+            maxPolarAngle={Math.PI / 2}
+          />
+        </Canvas>
+      </ErrorBoundary>
     </div>
   );
 }

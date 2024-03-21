@@ -84,8 +84,7 @@ class Tracker @JvmOverloads constructor(
 	 */
 	var statusResetRecently = false
 	private var alreadyInitialized = false
-	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) {
-			_, old, new ->
+	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) { _, old, new ->
 		if (old == new) return@observable
 
 		if (!new.reset) {
@@ -106,8 +105,7 @@ class Tracker @JvmOverloads constructor(
 		}
 	}
 
-	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) {
-			_, old, new ->
+	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) { _, old, new ->
 		if (old == new) return@observable
 
 		if (!isInternal) {
@@ -307,12 +305,10 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * Gets the world-adjusted acceleration
 	 */
-	fun getAcceleration(): Vector3 {
-		return if (needsReset) {
-			resetsHandler.getReferenceAdjustedAccel(rotation, acceleration)
-		} else {
-			acceleration
-		}
+	fun getAcceleration(): Vector3 = if (needsReset) {
+		resetsHandler.getReferenceAdjustedAccel(rotation, acceleration)
+	} else {
+		acceleration
 	}
 
 	/**
@@ -341,9 +337,7 @@ class Tracker @JvmOverloads constructor(
 	 * Gets the raw (unadjusted) rotation of the tracker.
 	 * If this is an IMU, this will be the raw sensor rotation.
 	 */
-	fun getRawRotation(): Quaternion {
-		return rotation
-	}
+	fun getRawRotation(): Quaternion = rotation
 
 	/**
 	 * Sets the raw (unadjusted) rotation of the tracker.
@@ -359,9 +353,7 @@ class Tracker @JvmOverloads constructor(
 		this.acceleration = vec
 	}
 
-	fun isImu(): Boolean {
-		return imuType != null
-	}
+	fun isImu(): Boolean = imuType != null
 
 	/**
 	 * Gets the current TPS of the tracker

@@ -29,8 +29,6 @@ enum class TrackerFilters(val id: Int, val configKey: String) {
 		}
 
 		@JvmStatic
-		fun getByConfigkey(configKey: String?): TrackerFilters? {
-			return if (configKey == null) null else byConfigkey[configKey.lowercase(Locale.getDefault())]
-		}
+		fun getByConfigkey(configKey: String?): TrackerFilters? = if (configKey == null) null else byConfigkey[configKey.lowercase(Locale.getDefault())]
 	}
 }

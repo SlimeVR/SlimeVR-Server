@@ -27,9 +27,17 @@ class StatsCalculator {
 	}
 
 	val variance: Float
-		get() = if (count < 1) { Float.NaN } else { m2 / count }
+		get() = if (count < 1) {
+			Float.NaN
+		} else {
+			m2 / count
+		}
 	val sampleVariance: Float
-		get() = if (count < 2) { Float.NaN } else { m2 / (count - 1) }
+		get() = if (count < 2) {
+			Float.NaN
+		} else {
+			m2 / (count - 1)
+		}
 	val standardDeviation: Float
 		get() = FastMath.sqrt(variance)
 }
