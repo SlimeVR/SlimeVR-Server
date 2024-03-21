@@ -32,6 +32,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var driftCompensationEnabled = false
 	private var resetMountingFeet = false
 	private var armsResetMode = ArmsResetModes.BACK
+	var saveMountingReset = false
 	var allowDriftCompensation = false
 	var lastResetQuaternion: Quaternion? = null
 
@@ -102,11 +103,19 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	/**
-	 * Reads/loads arms reset mode settings from given config
+	 * Reads/loads reset settings from the given config
 	 */
-	fun readArmsResetModeConfig(config: ResetsConfig) {
+	fun readResetConfig(config: ResetsConfig) {
 		resetMountingFeet = config.resetMountingFeet
 		armsResetMode = config.mode
+		saveMountingReset = config.saveMountingReset
+	}
+
+	fun trySetMountingReset(quat: Quaternion) {
+		if (saveMountingReset) {
+			mountRotFix = quat
+			yawFix = quat.inv()
+		}
 	}
 
 	/**
@@ -291,6 +300,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		// the difference to the yaw fix quaternion to correct for the rotation change
 		yawFix /= (buffer / mountRotFix)
 		mountRotFix = buffer
+
+		if (saveMountingReset) tracker.saveMountingResetOrientation(mountRotFix)
 	}
 
 	fun clearMounting() {
