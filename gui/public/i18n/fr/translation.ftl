@@ -23,6 +23,8 @@ tips-find_tracker = Impossible de différencier vos capteurs ? Secouez-en un pou
 tips-do_not_move_heels = Assurez-vous de ne pas bouger vos pieds pendant l'enregistrement !
 tips-file_select = Glissez et déposez des fichiers à utiliser, ou <u>parcourir</u>.
 tips-tap_setup = Vous pouvez tapoter lentement votre capteur 2 fois pour le choisir au lieu de le sélectionner depuis le menu.
+tips-turn_on_tracker = Vous utilisez des capteurs officiels SlimeVR ? N’oubliez pas <b><em>d’allumer votre capteur</em></b> après l’avoir connecté au PC !
+tips-failed_webgl = Échec de l’initialisation de WebGL.
 
 ## Body parts
 
@@ -215,6 +217,9 @@ tracker-settings-drift_compensation_section-edit = Permettre la compensation de 
 tracker-settings-name_section = Nom personalisé
 tracker-settings-name_section-description = Donnez-lui un joli surnom :3
 tracker-settings-name_section-placeholder = Patte gauche d'Erimel
+tracker-settings-forget = Oublier capteur
+tracker-settings-forget-description = Supprime le capteur du serveur SlimeVR et l’empêche de s’y connecter jusqu’à ce que le serveur soit redémarré. La configuration du capteur ne sera pas perdue.
+tracker-settings-forget-label = Oublier capteur
 
 ## Tracker part card info
 
@@ -452,6 +457,9 @@ settings-general-interface-feedback_sound-volume = Volume du son de retour
 settings-general-interface-connected_trackers_warning = Avertissement de capteurs connectés
 settings-general-interface-connected_trackers_warning-description = Cette option affichera une fenêtre contextuelle chaque fois que vous essaierez de quitter SlimeVR tout en ayant un ou plusieurs capteurs connectés. Il vous rappelle d’éteindre vos capteurs lorsque vous avez terminé pour préserver la durée de vie de la batterie.
 settings-general-interface-connected_trackers_warning-label = Avertissement de capteurs connectés en quittant
+settings-general-interface-use_tray = Minimiser dans la zone de notifications
+settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l’utiliser sans l’interface graphique.
+settings-general-interface-use_tray-label = Minimiser dans la zone de notifications
 
 ## Serial settings
 
@@ -473,6 +481,7 @@ settings-serial-factory_reset-warning-cancel = Annuler
 settings-serial-get_infos = Obtenir des informations
 settings-serial-serial_select = Sélectionnez un port série
 settings-serial-auto_dropdown_item = Automatique
+settings-serial-get_wifi_scan = Obtenir scan WiFi
 
 ## OSC router settings
 
@@ -699,6 +708,7 @@ onboarding-assign_trackers-assigned =
     }
 onboarding-assign_trackers-advanced = Afficher les emplacements d'attribution avancés
 onboarding-assign_trackers-next = J'ai attribué tous mes capteurs
+onboarding-assign_trackers-mirror_view = Vue miroir
 
 ## Tracker assignment warnings
 
@@ -822,9 +832,10 @@ onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
 
 onboarding-choose_proportions = Quelle méthode de calibration des proportions utiliser ?
 # Multiline string
-onboarding-choose_proportions-description =
-    Les proportions corporelles sont utilisées pour connaître les mesures de votre corps. Elles sont nécéssaires pour calculer les positions des capteurs.
-    Lorsque les proportions de votre corps ne correspondent pas à celles enregistrées, la précision des capteurs sera moins bonne et vous remarquerez des problèmes tel que le patinage, le glissage ou votre corps ne correspondant pas bien à votre avatar.
+onboarding-choose_proportions-description-v1 =
+    Les proportions du corps sont utilisées pour connaître les mesures de votre corps. Elles sont requises pour calculer les positions des capteurs.
+    Lorsque les proportions de votre corps ne correspondent pas à celles enregistrées, la précision du suivi sera moins bonne et vous remarquerez certains problèmes comme du patinage ou de la glisse, ou votre corps ne correspondra pas bien à votre avatar.
+    <b>Vous n’avez besoin de mesurer les proportions de votre corps qu’une seule fois !</b> À moins qu’elle ne soient incorrectes ou que votre corps ait changé, vous n’avez pas besoin de les refaire.
 onboarding-choose_proportions-auto_proportions = Proportions automatiques
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommendée
@@ -937,3 +948,30 @@ status_system-StatusSteamVRDisconnected =
        *[other] Impossible de se connecter à SteamVR via le pilote SlimeVR.
     }
 status_system-StatusTrackerError = Le capteur { $trackerName } a une erreur.
+
+## Tray Menu
+
+tray_menu-show = Afficher
+tray_menu-hide = Masquer
+tray_menu-quit = Quitter
+
+## First exit modal
+
+tray_or_exit_modal-title = Que devrait faire le bouton de fermeture ?
+# Multiline text
+tray_or_exit_modal-description =
+    Cela permet de choisir entre quitter le serveur ou le réduire à la barre de notifications lorsque le bouton de fermeture est enfoncé.
+    Vous pouvez modifier cela plus tard dans les paramètres d'interface !
+tray_or_exit_modal-radio-exit = Quitter à la fermeture
+tray_or_exit_modal-radio-tray = Minimiser dans la zone de notifications
+tray_or_exit_modal-submit = Sauvegarder
+tray_or_exit_modal-cancel = Annuler
+
+## Unknown device modal
+
+unknown_device-modal-title = Un nouveau capteur a été trouvé !
+unknown_device-modal-description =
+    Il y a un nouveau capteur avec l’adresse MAC <b>{ $deviceId }</b>.
+    Voulez-vous le connecter à SlimeVR ?
+unknown_device-modal-confirm = Oui!
+unknown_device-modal-forget = Ignorer
