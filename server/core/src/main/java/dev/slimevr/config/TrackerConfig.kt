@@ -17,9 +17,7 @@ class TrackerConfig {
 
 	var allowDriftCompensation: Boolean? = null
 
-	constructor()
-
-	constructor(tracker: Tracker) {
+	constructor(tracker: Tracker) : this() {
 		designation = if (tracker.trackerPosition
 			!= null
 		) {
