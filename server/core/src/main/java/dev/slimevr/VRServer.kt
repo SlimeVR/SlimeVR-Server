@@ -15,6 +15,7 @@ import dev.slimevr.reset.ResetHandler
 import dev.slimevr.serial.ProvisioningHandler
 import dev.slimevr.serial.SerialHandler
 import dev.slimevr.serial.SerialHandlerStub
+import dev.slimevr.setup.HandshakeHandler
 import dev.slimevr.setup.TapSetupHandler
 import dev.slimevr.status.StatusSystem
 import dev.slimevr.tracking.processor.HumanPoseManager
@@ -48,7 +49,6 @@ class VRServer @JvmOverloads constructor(
 	driverBridgeProvider: SteamBridgeProvider = { _, _ -> null },
 	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _ -> null },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
-	// configPath is used by VRWorkout, do not remove!
 	configPath: String,
 ) : Thread("VRServer") {
 	@JvmField
@@ -96,6 +96,9 @@ class VRServer @JvmOverloads constructor(
 
 	@JvmField
 	val statusSystem = StatusSystem()
+
+	@JvmField
+	val handshakeHandler = HandshakeHandler()
 
 	init {
 		// UwU
