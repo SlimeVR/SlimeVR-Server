@@ -25,7 +25,8 @@ abstract class SteamVRBridge(
 	bridgeName: String?,
 	protected val bridgeSettingsKey: String,
 	protected val shareableTrackers: List<Tracker>,
-) : ProtobufBridge(bridgeName), Runnable {
+) : ProtobufBridge(bridgeName),
+	Runnable {
 	protected val runnerThread: Thread = Thread(this, threadName)
 	protected val config: BridgeConfig = server.configManager.vrConfig.getBridge(bridgeSettingsKey)
 
@@ -35,7 +36,7 @@ abstract class SteamVRBridge(
 			val role = tr.trackerPosition?.trackerRole
 			changeShareSettings(
 				role,
-				config.getBridgeTrackerRole(role, false)
+				config.getBridgeTrackerRole(role, false),
 			)
 		}
 		runnerThread.start()
@@ -121,7 +122,7 @@ abstract class SteamVRBridge(
 			.createDevice(
 				trackerAdded.trackerName,
 				trackerAdded.trackerSerial,
-				"OpenVR" // TODO : We need the manufacturer
+				"OpenVR", // TODO : We need the manufacturer
 			)
 
 		val displayName: String
@@ -150,7 +151,7 @@ abstract class SteamVRBridge(
 			hasRotation = true,
 			userEditable = true,
 			isComputed = true,
-			needsReset = needsReset
+			needsReset = needsReset,
 		)
 
 		device.trackers[0] = tracker
@@ -187,8 +188,8 @@ abstract class SteamVRBridge(
 			.add(
 				getTrackerForSkeleton(
 					allTrackers,
-					getByTrackerRole(role) ?: return
-				)
+					getByTrackerRole(role) ?: return,
+				),
 			)
 		when (role) {
 			TrackerRole.WAIST -> {
@@ -197,8 +198,8 @@ abstract class SteamVRBridge(
 					.add(
 						getTrackerForSkeleton(
 							allTrackers,
-							TrackerPosition.WAIST
-						)
+							TrackerPosition.WAIST,
+						),
 					)
 				// When the chest SteamVR tracking point is disabled, aggregate
 				// its battery level alongside waist and hip.
@@ -207,15 +208,15 @@ abstract class SteamVRBridge(
 						.add(
 							getTrackerForSkeleton(
 								allTrackers,
-								TrackerPosition.CHEST
-							)
+								TrackerPosition.CHEST,
+							),
 						)
 					batteryTrackers
 						.add(
 							getTrackerForSkeleton(
 								allTrackers,
-								TrackerPosition.UPPER_CHEST
-							)
+								TrackerPosition.UPPER_CHEST,
+							),
 						)
 				}
 			}
@@ -226,8 +227,8 @@ abstract class SteamVRBridge(
 					.add(
 						getTrackerForSkeleton(
 							allTrackers,
-							TrackerPosition.CHEST
-						)
+							TrackerPosition.CHEST,
+						),
 					)
 				// When the waist SteamVR tracking point is disabled, aggregate
 				// waist and hip battery level with the chest.
@@ -236,15 +237,15 @@ abstract class SteamVRBridge(
 						.add(
 							getTrackerForSkeleton(
 								allTrackers,
-								TrackerPosition.WAIST
-							)
+								TrackerPosition.WAIST,
+							),
 						)
 					batteryTrackers
 						.add(
 							getTrackerForSkeleton(
 								allTrackers,
-								TrackerPosition.HIP
-							)
+								TrackerPosition.HIP,
+							),
 						)
 				}
 			}
@@ -254,8 +255,8 @@ abstract class SteamVRBridge(
 					.add(
 						getTrackerForSkeleton(
 							allTrackers,
-							TrackerPosition.LEFT_LOWER_LEG
-						)
+							TrackerPosition.LEFT_LOWER_LEG,
+						),
 					)
 				// When the left knee SteamVR tracking point is disabled,
 				// aggregate its battery level with left ankle and left foot.
@@ -264,8 +265,8 @@ abstract class SteamVRBridge(
 						.add(
 							getTrackerForSkeleton(
 								allTrackers,
-								TrackerPosition.LEFT_UPPER_LEG
-							)
+								TrackerPosition.LEFT_UPPER_LEG,
+							),
 						)
 				}
 			}
@@ -275,8 +276,8 @@ abstract class SteamVRBridge(
 					.add(
 						getTrackerForSkeleton(
 							allTrackers,
-							TrackerPosition.RIGHT_LOWER_LEG
-						)
+							TrackerPosition.RIGHT_LOWER_LEG,
+						),
 					)
 				// When the right knee SteamVR tracking point is disabled,
 				// aggregate its battery level with right ankle and right foot.
@@ -285,8 +286,8 @@ abstract class SteamVRBridge(
 						.add(
 							getTrackerForSkeleton(
 								allTrackers,
-								TrackerPosition.RIGHT_UPPER_LEG
-							)
+								TrackerPosition.RIGHT_UPPER_LEG,
+							),
 						)
 				}
 			}
@@ -296,15 +297,15 @@ abstract class SteamVRBridge(
 					.add(
 						getTrackerForSkeleton(
 							allTrackers,
-							TrackerPosition.LEFT_LOWER_ARM
-						)
+							TrackerPosition.LEFT_LOWER_ARM,
+						),
 					)
 				batteryTrackers
 					.add(
 						getTrackerForSkeleton(
 							allTrackers,
-							TrackerPosition.LEFT_SHOULDER
-						)
+							TrackerPosition.LEFT_SHOULDER,
+						),
 					)
 			}
 
@@ -313,15 +314,15 @@ abstract class SteamVRBridge(
 					.add(
 						getTrackerForSkeleton(
 							allTrackers,
-							TrackerPosition.RIGHT_LOWER_ARM
-						)
+							TrackerPosition.RIGHT_LOWER_ARM,
+						),
 					)
 				batteryTrackers
 					.add(
 						getTrackerForSkeleton(
 							allTrackers,
-							TrackerPosition.RIGHT_SHOULDER
-						)
+							TrackerPosition.RIGHT_SHOULDER,
+						),
 					)
 			}
 

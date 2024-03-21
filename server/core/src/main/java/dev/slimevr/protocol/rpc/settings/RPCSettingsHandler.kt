@@ -21,16 +21,16 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		rpcHandler.registerPacketListener(RpcMessage.SettingsRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
 			this.onSettingsRequest(
 				conn,
-				messageHeader
+				messageHeader,
 			)
 		}
 		rpcHandler
 			.registerPacketListener(
-				RpcMessage.ChangeSettingsRequest
+				RpcMessage.ChangeSettingsRequest,
 			) { conn: GenericConnection?, messageHeader: RpcMessageHeader ->
 				this.onChangeSettingsRequest(
 					conn,
-					messageHeader
+					messageHeader,
 				)
 			}
 	}
@@ -227,31 +227,31 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				hpm
 					.setToggle(
 						SkeletonConfigToggles.EXTENDED_PELVIS_MODEL,
-						toggles.extendedPelvis()
+						toggles.extendedPelvis(),
 					)
 				hpm.setToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL, toggles.extendedKnee())
 				hpm
 					.setToggle(
 						SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
-						toggles.forceArmsFromHmd()
+						toggles.forceArmsFromHmd(),
 					)
 				hpm.setToggle(SkeletonConfigToggles.EXTENDED_SPINE_MODEL, toggles.extendedSpine())
 				hpm
 					.setToggle(
 						SkeletonConfigToggles.EXTENDED_PELVIS_MODEL,
-						toggles.extendedPelvis()
+						toggles.extendedPelvis(),
 					)
 				hpm.setToggle(SkeletonConfigToggles.EXTENDED_KNEE_MODEL, toggles.extendedKnee())
 				hpm
 					.setToggle(
 						SkeletonConfigToggles.FORCE_ARMS_FROM_HMD,
-						toggles.forceArmsFromHmd()
+						toggles.forceArmsFromHmd(),
 					)
 				hpm.setToggle(SkeletonConfigToggles.FLOOR_CLIP, toggles.floorClip())
 				hpm
 					.setToggle(
 						SkeletonConfigToggles.SKATING_CORRECTION,
-						toggles.skatingCorrection()
+						toggles.skatingCorrection(),
 					)
 				hpm.setToggle(SkeletonConfigToggles.VIVE_EMULATION, toggles.viveEmulation())
 				hpm.setToggle(SkeletonConfigToggles.TOE_SNAP, toggles.toeSnap())
@@ -264,49 +264,49 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING,
-							max(0.0, ratios.imputeWaistFromChestHip().toDouble()).toFloat()
+							max(0.0, ratios.imputeWaistFromChestHip().toDouble()).toFloat(),
 						)
 				}
 				if (ratios.hasImputeWaistFromChestLegs()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING,
-							max(0.0, ratios.imputeWaistFromChestLegs().toDouble()).toFloat()
+							max(0.0, ratios.imputeWaistFromChestLegs().toDouble()).toFloat(),
 						)
 				}
 				if (ratios.hasImputeHipFromChestLegs()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING,
-							max(0.0, ratios.imputeHipFromChestLegs().toDouble()).toFloat()
+							max(0.0, ratios.imputeHipFromChestLegs().toDouble()).toFloat(),
 						)
 				}
 				if (ratios.hasImputeHipFromWaistLegs()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING,
-							max(0.0, ratios.imputeHipFromWaistLegs().toDouble()).toFloat()
+							max(0.0, ratios.imputeHipFromWaistLegs().toDouble()).toFloat(),
 						)
 				}
 				if (ratios.hasInterpHipLegs()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.HIP_LEGS_AVERAGING,
-							max(0.0, ratios.interpHipLegs().toDouble()).toFloat()
+							max(0.0, ratios.interpHipLegs().toDouble()).toFloat(),
 						)
 				}
 				if (ratios.hasInterpKneeTrackerAnkle()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING,
-							max(0.0, ratios.interpKneeTrackerAnkle().toDouble()).toFloat()
+							max(0.0, ratios.interpKneeTrackerAnkle().toDouble()).toFloat(),
 						)
 				}
 				if (ratios.hasInterpKneeAnkle()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.KNEE_ANKLE_AVERAGING,
-							max(0.0, ratios.interpKneeAnkle().toDouble()).toFloat()
+							max(0.0, ratios.interpKneeAnkle().toDouble()).toFloat(),
 						)
 				}
 			}
@@ -355,7 +355,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val settings = SettingsResponse
 				.createSettingsResponse(
 					fbb,
-					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0
+					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)
