@@ -88,6 +88,7 @@ interface SettingsForm {
   resetsSettings: {
     resetMountingFeet: boolean;
     armsMountingResetMode: number;
+    saveMountingReset: boolean;
   };
 }
 
@@ -143,6 +144,7 @@ const defaultValues = {
   resetsSettings: {
     resetMountingFeet: false,
     armsMountingResetMode: 0,
+    saveMountingReset: false,
   },
 };
 
@@ -252,6 +254,8 @@ export function GeneralSettings() {
         values.resetsSettings.resetMountingFeet;
       resetsSettings.armsMountingResetMode =
         values.resetsSettings.armsMountingResetMode;
+      resetsSettings.saveMountingReset =
+        values.resetsSettings.saveMountingReset;
       settings.resetsSettings = resetsSettings;
     }
 
@@ -560,7 +564,7 @@ export function GeneralSettings() {
                 step={0.1}
               />
             </div>
-            <div className="flex gap-5 pt-5 md:flex-row flex-col">
+            <div className="flex gap-5 pt-5 pb-7 md:flex-row flex-col">
               <NumberSelector
                 control={control}
                 name="driftCompensation.maxResets"
@@ -572,6 +576,27 @@ export function GeneralSettings() {
                 step={1}
               />
             </div>
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-tracker_mechanics-save_mounting_reset'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-tracker_mechanics-save_mounting_reset-description'
+                )}
+              </Typography>
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="resetsSettings.saveMountingReset"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
+              )}
+            />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout

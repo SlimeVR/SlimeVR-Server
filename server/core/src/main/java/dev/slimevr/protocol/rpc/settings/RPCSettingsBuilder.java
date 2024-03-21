@@ -336,7 +336,8 @@ public class RPCSettingsBuilder {
 			.createResetsSettings(
 				fbb,
 				resetsConfig.getResetMountingFeet(),
-				resetsConfig.getMode().getId()
+				resetsConfig.getMode().getId(),
+				resetsConfig.getSaveMountingReset()
 			);
 	}
 }
