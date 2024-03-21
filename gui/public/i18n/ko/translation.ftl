@@ -23,6 +23,8 @@ tips-find_tracker = 내 트래커가 어떤 트래커인지 모르시겠다구�
 tips-do_not_move_heels = 기록하는 동안 발뒤꿈치가 움직이지 않도록 조심하세요!
 tips-file_select = 파일을 <u>열거나,</u> 여기에 드래그&드롭하세요.
 tips-tap_setup = 목록에서 트래커를 선택하는 대신 할당할 트래커를 천천히 2번 탭해서 선택할 수 있어요.
+tips-turn_on_tracker = 공식 SlimeVR 트래커를 사용 중이신가요? 트래커를 <b><em>PC에 연결</em></b>하고 <b><em>전원을 키셔야</em></b> 해요.
+tips-failed_webgl = WebGL 초기화에 실패했습니다.
 
 ## Body parts
 
@@ -215,6 +217,8 @@ tracker-settings-drift_compensation_section-edit = 틀어짐 보정 사용
 tracker-settings-name_section = 트래커 이름
 tracker-settings-name_section-description = 귀여운 이름을 지어주세요! >_<
 tracker-settings-name_section-placeholder = NightyBeast's left leg
+tracker-settings-forget = 트래커 삭제
+tracker-settings-forget-label = 트래커 삭제
 
 ## Tracker part card info
 
@@ -812,10 +816,6 @@ onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용�
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = 신체 비율을 설정하기 위해 어떤 방법을 사용할래요?
-# Multiline string
-onboarding-choose_proportions-description =
-    신체 비율은 신체 각 부분의 길이를 파악하는데 사용됩니다. 이 값은 트래커의 위치를 정확히 계산하기 위해 필수적입니다.
-    신체 비율이 저장된 비율과 일치하지 않으면 추적 정밀도가 떨어지고 스케이트를 타거나 미끄러지는 것처럼 보이고 아바타와 실제 몸이 잘 일치하지 않을 수 있어요.
 onboarding-choose_proportions-auto_proportions = 자동으로 비율 설정
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = 권장
@@ -924,3 +924,12 @@ status_system-StatusSteamVRDisconnected =
        *[other] SlimeVR 드라이버가 SteamVR과 연결되지 않음
     }
 status_system-StatusTrackerError = { $trackerName } 트래커에 문제가 발생했어요.
+
+## Tray Menu
+
+
+## First exit modal
+
+
+## Unknown device modal
+
