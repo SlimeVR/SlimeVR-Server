@@ -157,6 +157,7 @@ class VRCOSCHandler(
 					LogManager.info("[VRCOSCHandler] Listening to port $portIn")
 				}
 				oscPortIn = portIn
+				vrcOscQueryHandler?.updateOSCQuery(portIn.toUShort())
 			} catch (e: IOException) {
 				LogManager
 					.severe(

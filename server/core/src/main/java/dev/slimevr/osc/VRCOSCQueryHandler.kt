@@ -12,15 +12,18 @@ import kotlin.concurrent.thread
 private const val serviceStartsWith = "VRChat-Client"
 private const val queryPath = "/tracking/vrsystem"
 
+/**
+ * Handler for OSCQuery for VRChat using our library
+ * https://github.com/SlimeVR/oscquery-kt
+ */
 class VRCOSCQueryHandler(
 	private val vrcOscHandler: VRCOSCHandler,
 ) {
 	private val oscQueryServer: OSCQueryServer
-	private val localIp = InetAddress.getLocalHost().hostAddress
-	private val loopbackIp = InetAddress.getLoopbackAddress().hostAddress
 
 	init {
 		// Request data
+		val localIp = InetAddress.getLocalHost().hostAddress
 		val httpPort = randomFreePort()
 		oscQueryServer = OSCQueryServer(
 			"SlimeVR-Server-$httpPort",
@@ -46,11 +49,14 @@ class VRCOSCQueryHandler(
 	}
 
 	/**
-	 * Updates the OSCQuery OSC service
+	 * Updates the OSC service's port
 	 */
-	fun updateOSCQuery() {
-		// TODO add support in the lib
-		// oscQueryServer.updateOSCService(vrcOscHandler.portIn.toUShort())
+	fun updateOSCQuery(port: UShort) {
+		if (oscQueryServer.oscPort != port) {
+			thread(start = true) {
+				oscQueryServer.updateOscService(port)
+			}
+		}
 	}
 
 	/**
