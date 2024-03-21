@@ -27,30 +27,26 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 	// 	indentWithSpaces(2)  // YAML cannot contain tabs: https://yaml.org/faq.html
 	// }
 
-	// .editorconfig doesn't work so, manual override
-	// https://github.com/diffplug/spotless/issues/142
 	val editorConfig =
 		mapOf(
-			"indent_size" to 4,
-			"indent_style" to "tab",
-// 			"max_line_length" to 88,
+			"max_line_length" to "off",
 			"ktlint_experimental" to "enabled",
+			"ktlint_standard_condition-wrapping" to "disabled",
+			"ktlint_standard_property-naming" to "disabled",
 			"ij_kotlin_packages_to_use_import_on_demand" to
 				"java.util.*,kotlin.math.*,dev.slimevr.autobone.errors.*,io.github.axisangles.ktmath.*,kotlinx.atomicfu.*",
-			"ij_kotlin_allow_trailing_comma" to true
+			"ij_kotlin_allow_trailing_comma" to true,
 		)
-	val ktlintVersion = "0.47.1"
+	val ktlintVersion = "1.2.1"
 	kotlinGradle {
 		target("**/*.gradle.kts") // default target for kotlinGradle
 		ktlint(ktlintVersion)
-			.setUseExperimental(true)
 			.editorConfigOverride(editorConfig)
 	}
 	kotlin {
 		target("**/*.kt")
-		targetExclude("**/build/**/**.kt")
+		targetExclude("**/build/**/**.kt", "bin/")
 		ktlint(ktlintVersion)
-			.setUseExperimental(true)
 			.editorConfigOverride(editorConfig)
 	}
 	java {

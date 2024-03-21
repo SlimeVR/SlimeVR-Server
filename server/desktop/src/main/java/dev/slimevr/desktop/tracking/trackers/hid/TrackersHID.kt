@@ -22,7 +22,9 @@ import kotlin.experimental.and
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
  */
-class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>) : Thread(name), HidServicesListener {
+class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>) :
+	Thread(name),
+	HidServicesListener {
 	private val devices: MutableList<HIDDevice> = mutableListOf()
 	private val devicesBySerial: MutableMap<String, MutableList<Int>> = HashMap()
 	private val devicesByHID: MutableMap<HidDevice, MutableList<Int>> = HashMap()
@@ -107,7 +109,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 				allowFiltering = true,
 				needsReset = true,
 				needsMounting = true,
-				usesTimeout = false
+				usesTimeout = false,
 			)
 			// usesTimeout false because HID trackers aren't "Disconnected" unless receiver is physically removed probably
 			// TODO: Could tracker maybe use "Timed out" status without marking as disconnecting?
@@ -116,7 +118,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			imuTracker.status = sensorStatus
 			LogManager
 				.info(
-					"[TrackerServer] Added sensor $trackerId for ${device.name}, type $sensorType"
+					"[TrackerServer] Added sensor $trackerId for ${device.name}, type $sensorType",
 				)
 		}
 	}
@@ -153,18 +155,20 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 					currentThread().interrupt()
 					break
 				}
-				dataRead()
+				dataRead() // not in try catch?
 			}
 		}
 
 	private fun dataRead() {
 		synchronized(devicesByHID) {
+			var devicesPresent = false
 			for ((hidDevice, deviceList) in devicesByHID) {
 				val dataReceived: Array<Byte> = try {
 					hidDevice.read(80, 1) // Read up to 80 bytes, timeout 1ms
 				} catch (e: NegativeArraySizeException) {
 					continue // Skip devices with read error (Maybe disconnected)
 				}
+				devicesPresent = true // Even if the device has no data
 				if (dataReceived.isNotEmpty()) {
 					// Process data
 					// TODO: make this less bad
@@ -216,15 +220,16 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 					// LogManager.info("[TrackerServer] HID received $packetCount tracker packets")
 				}
 			}
+			if (!devicesPresent) {
+				sleep(10) // No hid device, "empty loop" so sleep to save the poor cpu
+			}
 		}
 	}
 
 	override fun run() { // Doesn't seem to run
 	}
 
-	fun getDevices(): List<Device> {
-		return devices
-	}
+	fun getDevices(): List<Device> = devices
 
 	override fun hidDeviceAttached(event: HidServicesEvent) {
 		checkConfigureDevice(event.hidDevice)

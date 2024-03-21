@@ -4,7 +4,5 @@ import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 
 class HIDDevice(val hidId: Int) : Device() {
-	fun getTracker(id: Int): Tracker? {
-		return trackers[id]
-	}
+	fun getTracker(id: Int): Tracker? = trackers[id]
 }

@@ -1,16 +1,14 @@
-@file:Suppress("unused")
+@file:Suppress("ktlint", "unused")
 
 package io.github.axisangles.ktmath
 
 import kotlin.math.*
 
-/* ktlint-disable */
 data class Matrix3(
 	val xx: Float, val yx: Float, val zx: Float,
 	val xy: Float, val yy: Float, val zy: Float,
 	val xz: Float, val yz: Float, val zz: Float
 ) {
-/* ktlint-enable */
 	companion object {
 		val NULL = Matrix3(
 			0f, 0f, 0f,

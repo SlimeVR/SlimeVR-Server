@@ -26,19 +26,19 @@ class RPCAutoBoneHandler(
 	init {
 		rpcHandler.registerPacketListener(
 			RpcMessage.AutoBoneProcessRequest,
-			::onAutoBoneProcessRequest
+			::onAutoBoneProcessRequest,
 		)
 		rpcHandler.registerPacketListener(
 			RpcMessage.AutoBoneApplyRequest,
-			::onAutoBoneApplyRequest
+			::onAutoBoneApplyRequest,
 		)
 		rpcHandler.registerPacketListener(
 			RpcMessage.AutoBoneStopRecordingRequest,
-			::onAutoBoneStopRecordingRequest
+			::onAutoBoneStopRecordingRequest,
 		)
 		rpcHandler.registerPacketListener(
 			RpcMessage.AutoBoneCancelRecordingRequest,
-			::onAutoBoneCancelRecordingRequest
+			::onAutoBoneCancelRecordingRequest,
 		)
 
 		this.api.server.autoBoneHandler.addListener(this)
@@ -76,7 +76,7 @@ class RPCAutoBoneHandler(
 			AutoBoneProcessStatusResponse.startAutoBoneProcessStatusResponse(fbb)
 			AutoBoneProcessStatusResponse.addProcessType(
 				fbb,
-				processType.id
+				processType.id,
 			)
 
 			AutoBoneProcessStatusResponse.addCurrent(fbb, current)
@@ -90,7 +90,7 @@ class RPCAutoBoneHandler(
 			val outbound: Int = rpcHandler.createRPCMessage(
 				fbb,
 				RpcMessage.AutoBoneProcessStatusResponse,
-				update
+				update,
 			)
 			fbb.finish(outbound)
 			conn.send(fbb.dataBuffer())
@@ -117,7 +117,7 @@ class RPCAutoBoneHandler(
 					fbb,
 					epoch.configValues.map { (key, value) ->
 						SkeletonPart.createSkeletonPart(fbb, key.id, value)
-					}.toIntArray()
+					}.toIntArray(),
 				)
 			val update = AutoBoneEpochResponse
 				.createAutoBoneEpochResponse(
@@ -125,12 +125,12 @@ class RPCAutoBoneHandler(
 					epoch.epoch.toLong(),
 					epoch.totalEpochs.toLong(),
 					epoch.epochError.mean,
-					skeletonPartsOffset
+					skeletonPartsOffset,
 				)
 			val outbound: Int = rpcHandler.createRPCMessage(
 				fbb,
 				RpcMessage.AutoBoneEpochResponse,
-				update
+				update,
 			)
 			fbb.finish(outbound)
 			conn.send(fbb.dataBuffer())
@@ -153,7 +153,7 @@ class RPCAutoBoneHandler(
 		val outbound = rpcHandler.createRPCMessage(
 			fbb,
 			RpcMessage.SkeletonConfigResponse,
-			RPCBuilder.createSkeletonConfig(fbb, api.server.humanPoseManager)
+			RPCBuilder.createSkeletonConfig(fbb, api.server.humanPoseManager),
 		)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())

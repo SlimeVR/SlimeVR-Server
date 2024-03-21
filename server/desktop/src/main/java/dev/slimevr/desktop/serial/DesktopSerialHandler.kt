@@ -31,7 +31,9 @@ class SerialPortWrapper(val port: SerialPort) : SlimeSerialPort() {
 		get() = port.productID
 }
 
-class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
+class DesktopSerialHandler :
+	SerialHandler(),
+	SerialPortMessageListener {
 	private val listeners: MutableList<SerialListener> = CopyOnWriteArrayList()
 	private val getDevicesTimer = Timer("GetDevicesTimer")
 	private var currentPort: SerialPort? = null
@@ -52,13 +54,13 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 				} catch (t: Throwable) {
 					LogManager.severe(
 						"[SerialHandler] Error while watching for new devices, cancelling the \"getDevicesTimer\".",
-						t
+						t,
 					)
 					getDevicesTimer.cancel()
 				}
 			},
 			0,
-			3000
+			3000,
 		)
 	}
 
@@ -92,7 +94,7 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 		}
 		if (newPort == null) {
 			LogManager.info(
-				"[SerialHandler] No serial ports found to connect to (${ports.size}) total ports"
+				"[SerialHandler] No serial ports found to connect to (${ports.size}) total ports",
 			)
 			return false
 		}
@@ -100,7 +102,7 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 			if (SerialPortWrapper(newPort) != currentPort?.let { SerialPortWrapper(it) }) {
 				LogManager.info(
 					"[SerialHandler] Closing current serial port " +
-						currentPort!!.descriptivePortName
+						currentPort!!.descriptivePortName,
 				)
 				currentPort!!.removeDataListener()
 				currentPort!!.closePort()
@@ -113,14 +115,14 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 		currentPort = newPort
 		LogManager.info(
 			"[SerialHandler] Trying to connect to new serial port " +
-				currentPort!!.descriptivePortName
+				currentPort!!.descriptivePortName,
 		)
 		currentPort?.setBaudRate(115200)
 		currentPort?.clearRTS()
 		currentPort?.clearDTR()
 		if (currentPort?.openPort(1000) == false) {
 			LogManager.warning(
-				"[SerialHandler] Can't open serial port ${currentPort?.descriptivePortName}, last error: ${currentPort?.lastErrorCode}"
+				"[SerialHandler] Can't open serial port ${currentPort?.descriptivePortName}, last error: ${currentPort?.lastErrorCode}",
 
 			)
 			currentPort = null
@@ -154,13 +156,13 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 			currentPort?.closePort()
 			listeners.forEach { it.onSerialDisconnected() }
 			LogManager.info(
-				"[SerialHandler] Port ${currentPort?.descriptivePortName} closed okay"
+				"[SerialHandler] Port ${currentPort?.descriptivePortName} closed okay",
 			)
 			currentPort = null
 		} catch (e: Exception) {
 			LogManager.warning(
 				"[SerialHandler] Error closing port ${currentPort?.descriptivePortName}",
-				e
+				e,
 			)
 		}
 	}
@@ -198,12 +200,10 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 		listeners.forEach { it.onSerialLog(str) }
 	}
 
-	override fun getListeningEvents(): Int {
-		return (
-			SerialPort.LISTENING_EVENT_PORT_DISCONNECTED
-				or SerialPort.LISTENING_EVENT_DATA_RECEIVED
-			)
-	}
+	override fun getListeningEvents(): Int = (
+		SerialPort.LISTENING_EVENT_PORT_DISCONNECTED
+			or SerialPort.LISTENING_EVENT_DATA_RECEIVED
+		)
 
 	override fun serialEvent(event: SerialPortEvent) {
 		when (event.eventType) {
@@ -212,6 +212,7 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 				val s = StandardCharsets.UTF_8.decode(ByteBuffer.wrap(newData)).toString()
 				addLog(s)
 			}
+
 			SerialPort.LISTENING_EVENT_PORT_DISCONNECTED -> {
 				closeSerial()
 			}
@@ -222,13 +223,9 @@ class DesktopSerialHandler : SerialHandler(), SerialPortMessageListener {
 	override val isConnected: Boolean
 		get() = currentPort?.isOpen ?: false
 
-	override fun getMessageDelimiter(): ByteArray {
-		return byteArrayOf(0x0A.toByte())
-	}
+	override fun getMessageDelimiter(): ByteArray = byteArrayOf(0x0A.toByte())
 
-	override fun delimiterIndicatesEndOfMessage(): Boolean {
-		return true
-	}
+	override fun delimiterIndicatesEndOfMessage(): Boolean = true
 
 	override val knownPorts: Stream<SerialPortWrapper>
 		get() = SerialPort.getCommPorts()

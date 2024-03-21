@@ -102,7 +102,7 @@ export function TopBar({
     return () => {
       unlisten.then((fn) => fn());
     };
-  }, []);
+  }, [config?.useTray, config?.connectedTrackersWarning]);
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.ServerInfosRequest, new ServerInfosRequestT());

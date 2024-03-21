@@ -16,9 +16,7 @@ object TrackerUtils {
 	fun getTrackerForSkeleton(
 		allTrackers: List<Tracker>,
 		position: TrackerPosition,
-	): Tracker? {
-		return getNonInternalTrackerForBodyPosition(allTrackers, position)
-	}
+	): Tracker? = getNonInternalTrackerForBodyPosition(allTrackers, position)
 
 	/**
 	 * Finds the first non-internal tracker from allTrackers

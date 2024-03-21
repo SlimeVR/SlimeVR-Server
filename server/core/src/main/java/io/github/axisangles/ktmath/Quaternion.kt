@@ -44,11 +44,11 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		 * @return Q
 		 **/
 		fun fromTo(u: Vector3, v: Vector3): Quaternion {
-			val U = Quaternion(0f, u)
-			val V = Quaternion(0f, v)
-			val D = V / U
+			val u = Quaternion(0f, u)
+			val v = Quaternion(0f, v)
+			val d = v / u
 
-			return (D + D.len()).unit()
+			return (d + d.len()).unit()
 		}
 
 		/**
@@ -92,7 +92,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		this.w + that.w,
 		this.x + that.x,
 		this.y + that.y,
-		this.z + that.z
+		this.z + that.z,
 	)
 
 	operator fun plus(that: Float): Quaternion =
@@ -102,7 +102,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		this.w - that.w,
 		this.x - that.x,
 		this.y - that.y,
-		this.z - that.z
+		this.z - that.z,
 	)
 
 	operator fun minus(that: Float): Quaternion =
@@ -140,14 +140,14 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		this.w * that,
 		this.x * that,
 		this.y * that,
-		this.z * that
+		this.z * that,
 	)
 
 	operator fun times(that: Quaternion): Quaternion = Quaternion(
 		this.w * that.w - this.x * that.x - this.y * that.y - this.z * that.z,
 		this.x * that.w + this.w * that.x - this.z * that.y + this.y * that.z,
 		this.y * that.w + this.z * that.x + this.w * that.y - this.x * that.z,
-		this.z * that.w - this.y * that.x + this.x * that.y + this.w * that.z
+		this.z * that.w - this.y * that.x + this.x * that.y + this.w * that.z,
 	)
 
 	/**
@@ -160,7 +160,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 			w / lenSq,
 			-x / lenSq,
 			-y / lenSq,
-			-z / lenSq
+			-z / lenSq,
 		)
 	}
 
@@ -336,10 +336,10 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @return Q
 	 **/
 	fun align(u: Vector3, v: Vector3): Quaternion {
-		val U = Quaternion(0f, u)
-		val V = Quaternion(0f, v)
+		val u = Quaternion(0f, u)
+		val v = Quaternion(0f, v)
 
-		return (V * this / U + (V / U).len() * this) / 2f
+		return (v * this / u + (v / u).len() * this) / 2f
 	}
 
 	/**
@@ -379,18 +379,17 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun toRotationVector(): Vector3 = 2f * twinNearest(IDENTITY).log().xyz
 
+	@Suppress("ktlint")
 	/**
 	 * computes the matrix representing this quaternion's rotation
 	 * @return rotation matrix
 	 **/
 	fun toMatrix(): Matrix3 {
 		val d = lenSq()
-		/* ktlint-disable */
 		return Matrix3(
 			(w*w + x*x - y*y - z*z)/d ,      2f*(x*y - w*z)/d     ,      2f*(w*y + x*z)/d     ,
 			     2f*(x*y + w*z)/d     , (w*w - x*x + y*y - z*z)/d ,      2f*(y*z - w*x)/d     ,
 			     2f*(x*z - w*y)/d     ,      2f*(w*x + y*z)/d     , (w*w - x*x - y*y + z*z)/d )
-		/* ktlint-enable */
 	}
 
 	/**

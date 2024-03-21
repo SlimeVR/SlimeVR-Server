@@ -9,12 +9,10 @@ import dev.slimevr.tracking.trackers.TrackerRole
 // The change in distance between both of the ankles over time
 class OffsetSlideError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
-	override fun getStepError(trainingStep: AutoBoneStep): Float {
-		return getSlideError(
-			trainingStep.skeleton1.skeleton,
-			trainingStep.skeleton2.skeleton
-		)
-	}
+	override fun getStepError(trainingStep: AutoBoneStep): Float = getSlideError(
+		trainingStep.skeleton1.skeleton,
+		trainingStep.skeleton2.skeleton,
+	)
 
 	companion object {
 		fun getSlideError(skeleton1: HumanSkeleton, skeleton2: HumanSkeleton): Float {

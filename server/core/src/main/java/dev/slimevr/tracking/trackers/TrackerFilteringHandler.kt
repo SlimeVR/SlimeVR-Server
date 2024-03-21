@@ -24,7 +24,7 @@ class TrackerFilteringHandler {
 			movingAverage = QuaternionMovingAverage(
 				type,
 				config.amount,
-				currentRawRotation
+				currentRawRotation,
 			)
 			enabled = true
 		} else {
@@ -50,7 +50,5 @@ class TrackerFilteringHandler {
 	/**
 	 * Get the filtered rotation from the moving average
 	 */
-	fun getFilteredRotation(): Quaternion {
-		return movingAverage?.filteredQuaternion ?: Quaternion.IDENTITY
-	}
+	fun getFilteredRotation(): Quaternion = movingAverage?.filteredQuaternion ?: Quaternion.IDENTITY
 }

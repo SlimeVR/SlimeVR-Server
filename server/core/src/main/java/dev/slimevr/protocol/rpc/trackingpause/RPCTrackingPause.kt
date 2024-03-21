@@ -18,7 +18,7 @@ class RPCTrackingPause(private val rpcHandler: RPCHandler, private val api: Prot
 	init {
 		rpcHandler.registerPacketListener(
 			RpcMessage.TrackingPauseStateRequest,
-			::onTrackingPauseStateRequest
+			::onTrackingPauseStateRequest,
 		)
 
 		// HumanPoseManager might not be immediately available, so queue the server

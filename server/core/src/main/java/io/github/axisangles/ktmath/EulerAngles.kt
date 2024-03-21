@@ -25,37 +25,42 @@ data class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z:
 				cX * cY * cZ - sX * sY * sZ,
 				cY * cZ * sX + cX * sY * sZ,
 				cX * cZ * sY - cY * sX * sZ,
-				cZ * sX * sY + cX * cY * sZ
+				cZ * sX * sY + cX * cY * sZ,
 			)
+
 			EulerOrder.YZX -> Quaternion(
 				cX * cY * cZ - sX * sY * sZ,
 				cY * cZ * sX + cX * sY * sZ,
 				cX * cZ * sY + cY * sX * sZ,
-				cX * cY * sZ - cZ * sX * sY
+				cX * cY * sZ - cZ * sX * sY,
 			)
+
 			EulerOrder.ZXY -> Quaternion(
 				cX * cY * cZ - sX * sY * sZ,
 				cY * cZ * sX - cX * sY * sZ,
 				cX * cZ * sY + cY * sX * sZ,
-				cZ * sX * sY + cX * cY * sZ
+				cZ * sX * sY + cX * cY * sZ,
 			)
+
 			EulerOrder.ZYX -> Quaternion(
 				cX * cY * cZ + sX * sY * sZ,
 				cY * cZ * sX - cX * sY * sZ,
 				cX * cZ * sY + cY * sX * sZ,
-				cX * cY * sZ - cZ * sX * sY
+				cX * cY * sZ - cZ * sX * sY,
 			)
+
 			EulerOrder.YXZ -> Quaternion(
 				cX * cY * cZ + sX * sY * sZ,
 				cY * cZ * sX + cX * sY * sZ,
 				cX * cZ * sY - cY * sX * sZ,
-				cX * cY * sZ - cZ * sX * sY
+				cX * cY * sZ - cZ * sX * sY,
 			)
+
 			EulerOrder.XZY -> Quaternion(
 				cX * cY * cZ + sX * sY * sZ,
 				cY * cZ * sX - cX * sY * sZ,
 				cX * cZ * sY - cY * sX * sZ,
-				cZ * sX * sY + cX * cY * sZ
+				cZ * sX * sY + cX * cY * sZ,
 			)
 		}
 	}
@@ -74,9 +79,9 @@ data class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z:
 		val sY = sin(y)
 		val sZ = sin(z)
 
+		@Suppress("ktlint")
 		return when (order) {
 			// ktlint ruining spacing
-			/* ktlint-disable */
 			EulerOrder.XYZ -> Matrix3(
 					  cY*cZ      ,      -cY*sZ      ,        sY        ,
 				cZ*sX*sY + cX*sZ , cX*cZ - sX*sY*sZ ,      -cY*sX      ,
@@ -106,7 +111,6 @@ data class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z:
 					  cY*cZ      ,       -sZ        ,       cZ*sY      ,
 				sX*sY + cX*cY*sZ ,       cX*cZ      , cX*sY*sZ - cY*sX ,
 				cY*sX*sZ - cX*sY ,       cZ*sX      , cX*cY + sX*sY*sZ )
-			/* ktlint-enable */
 		}
 	}
 }
