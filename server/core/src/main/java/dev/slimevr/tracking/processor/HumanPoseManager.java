@@ -12,6 +12,7 @@ import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
 import dev.slimevr.tracking.trackers.TrackerRole;
 import dev.slimevr.tracking.trackers.TrackerStatus;
+import dev.slimevr.trackingpause.TrackingPauseHandler;
 import dev.slimevr.util.ann.VRServerThread;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.collections.FastList;
@@ -36,6 +37,7 @@ public class HumanPoseManager {
 	private final SkeletonConfigManager skeletonConfigManager;
 	private HumanSkeleton skeleton;
 	private long timeAtLastReset;
+	public final TrackingPauseHandler trackingPauseHandler = new TrackingPauseHandler();
 
 	// #region Constructors
 	private HumanPoseManager() {
@@ -813,9 +815,15 @@ public class HumanPoseManager {
 	}
 	// #endregion
 
-	public void setPauseTracking(boolean pauseTracking) {
+	public void setPauseTracking(boolean pauseTracking, String sourceName) {
 		if (isSkeletonPresent())
-			skeleton.setPauseTracking(pauseTracking);
+			skeleton.setPauseTracking(pauseTracking, sourceName);
+	}
+
+	public boolean togglePauseTracking(String sourceName) {
+		if (isSkeletonPresent())
+			return skeleton.togglePauseTracking(sourceName);
+		return false;
 	}
 	// #endregion
 }

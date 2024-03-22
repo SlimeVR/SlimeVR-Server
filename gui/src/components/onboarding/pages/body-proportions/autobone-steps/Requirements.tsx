@@ -26,7 +26,7 @@ export function RequirementsStep({
             <>
               {l10n
                 .getString(
-                  'onboarding-automatic_proportions-requirements-description'
+                  'onboarding-automatic_proportions-requirements-descriptionv2'
                 )
                 .split('\n')
                 .map((line, i) => (

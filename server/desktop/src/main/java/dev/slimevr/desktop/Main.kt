@@ -11,6 +11,7 @@ import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
 import dev.slimevr.desktop.serial.DesktopSerialHandler
+import dev.slimevr.desktop.tracking.trackers.hid.TrackersHID
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.OperatingSystem
 import io.eiren.util.collections.FastList
@@ -88,7 +89,7 @@ fun main(args: Array<String>) {
 				null,
 				"SlimeVR start-up error! A minimum of Java 17 is required.",
 				"SlimeVR: Java Runtime Mismatch",
-				JOptionPane.ERROR_MESSAGE
+				JOptionPane.ERROR_MESSAGE,
 			)
 		LogManager.closeLogger()
 		return
@@ -102,7 +103,7 @@ fun main(args: Array<String>) {
 		LogManager
 			.severe(
 				"SlimeVR start-up error! Required ports are busy. " +
-					"Make sure there is no other instance of SlimeVR Server running."
+					"Make sure there is no other instance of SlimeVR Server running.",
 			)
 		JOptionPane
 			.showMessageDialog(
@@ -110,7 +111,7 @@ fun main(args: Array<String>) {
 				"SlimeVR start-up error! Required ports are busy. " +
 					"Make sure there is no other instance of SlimeVR Server running.",
 				"SlimeVR: Ports are busy",
-				JOptionPane.ERROR_MESSAGE
+				JOptionPane.ERROR_MESSAGE,
 			)
 		LogManager.closeLogger()
 		return
@@ -126,6 +127,12 @@ fun main(args: Array<String>) {
 			configDir
 		)
 		vrServer.start()
+
+		// Start service for USB HID trackers
+		TrackersHID(
+			"Sensors HID service",
+		) { tracker: Tracker -> vrServer.registerTracker(tracker) }
+
 		Keybinding(vrServer)
 		val scanner = thread {
 			while (true) {
@@ -157,7 +164,7 @@ fun provideSteamVRBridge(
 			"steamvr",
 			"SteamVR Driver Bridge",
 			"""\\.\pipe\SlimeVRDriver""",
-			computedTrackers
+			computedTrackers,
 		)
 	} else if (OperatingSystem.currentPlatform == OperatingSystem.LINUX) {
 		var linuxBridge: SteamVRBridge? = null
@@ -166,14 +173,14 @@ fun provideSteamVRBridge(
 				server,
 				"steamvr",
 				"SteamVR Driver Bridge",
-				Paths.get(OperatingSystem.tempDirectory, "SlimeVRDriver")
+				Paths.get(OperatingSystem.socketDirectory, "SlimeVRDriver")
 					.toString(),
-				computedTrackers
+				computedTrackers,
 			)
 		} catch (ex: Exception) {
 			LogManager.severe(
 				"Failed to initiate Unix socket, disabling driver bridge...",
-				ex
+				ex,
 			)
 		}
 		driverBridge = linuxBridge
@@ -186,7 +193,7 @@ fun provideSteamVRBridge(
 					} catch (e: Exception) {
 						throw RuntimeException(e)
 					}
-				}
+				},
 			)
 		}
 	} else {
@@ -208,19 +215,21 @@ fun provideFeederBridge(
 				"steamvr_feeder",
 				"SteamVR Feeder Bridge",
 				"""\\.\pipe\SlimeVRInput""",
-				FastList()
+				FastList(),
 			)
 		}
+
 		OperatingSystem.LINUX -> {
 			feederBridge = UnixSocketBridge(
 				server,
 				"steamvr_feeder",
 				"SteamVR Feeder Bridge",
-				Paths.get(OperatingSystem.tempDirectory, "SlimeVRInput")
+				Paths.get(OperatingSystem.socketDirectory, "SlimeVRInput")
 					.toString(),
-				FastList()
+				FastList(),
 			)
 		}
+
 		else -> {
 			feederBridge = null
 		}

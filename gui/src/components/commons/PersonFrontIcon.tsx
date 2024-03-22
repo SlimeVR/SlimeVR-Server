@@ -1,7 +1,36 @@
 import { BodyPart } from 'solarxr-protocol';
 
-export function PersonFrontIcon({ width }: { width?: number }) {
+export const SIDES = [
+  {
+    shoulder: BodyPart.LEFT_SHOULDER,
+    upperArm: BodyPart.LEFT_UPPER_ARM,
+    lowerArm: BodyPart.LEFT_LOWER_ARM,
+    hand: BodyPart.LEFT_HAND,
+    upperLeg: BodyPart.LEFT_UPPER_LEG,
+    lowerLeg: BodyPart.LEFT_LOWER_LEG,
+    foot: BodyPart.LEFT_FOOT,
+  },
+  {
+    shoulder: BodyPart.RIGHT_SHOULDER,
+    upperArm: BodyPart.RIGHT_UPPER_ARM,
+    lowerArm: BodyPart.RIGHT_LOWER_ARM,
+    hand: BodyPart.RIGHT_HAND,
+    upperLeg: BodyPart.RIGHT_UPPER_LEG,
+    lowerLeg: BodyPart.RIGHT_LOWER_LEG,
+    foot: BodyPart.RIGHT_FOOT,
+  },
+];
+
+export function PersonFrontIcon({
+  width,
+  mirror = true,
+}: {
+  width?: number;
+  mirror?: boolean;
+}) {
   const CIRCLE_RADIUS = 0.0001;
+  const left = +!mirror;
+  const right = +mirror;
 
   return (
     <svg
@@ -62,49 +91,49 @@ export function PersonFrontIcon({ width }: { width?: number }) {
         cx="128"
         cy="218"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.RIGHT_HAND]}
+        id={BodyPart[SIDES[right].hand]}
       />
       <circle
         className="body-part-circle"
         cx="115"
         cy="140"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.RIGHT_UPPER_ARM]}
+        id={BodyPart[SIDES[right].upperArm]}
       />
       <circle
         className="body-part-circle"
         cx="105"
         cy="105"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.RIGHT_SHOULDER]}
+        id={BodyPart[SIDES[right].shoulder]}
       />
       <circle
         className="body-part-circle"
         cx="125"
         cy="194"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.RIGHT_LOWER_ARM]}
+        id={BodyPart[SIDES[right].lowerArm]}
       />
       <circle
         className="body-part-circle"
         cx="97.004"
         cy="360"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.RIGHT_LOWER_LEG]}
+        id={BodyPart[SIDES[right].lowerLeg]}
       />
       <circle
         className="body-part-circle"
         cx="97"
         cy="250"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.RIGHT_UPPER_LEG]}
+        id={BodyPart[SIDES[right].upperLeg]}
       />
       <circle
         className="body-part-circle"
         cx="97.004"
         cy="380"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.RIGHT_FOOT]}
+        id={BodyPart[SIDES[right].foot]}
       />
 
       <circle
@@ -112,7 +141,7 @@ export function PersonFrontIcon({ width }: { width?: number }) {
         cx="36"
         cy="218"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_HAND]}
+        id={BodyPart[SIDES[left].hand]}
       />
 
       <circle
@@ -120,28 +149,28 @@ export function PersonFrontIcon({ width }: { width?: number }) {
         cx="50"
         cy="140"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_UPPER_ARM]}
+        id={BodyPart[SIDES[left].upperArm]}
       />
       <circle
         className="body-part-circle"
         cx="58"
         cy="105"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_SHOULDER]}
+        id={BodyPart[SIDES[left].shoulder]}
       />
       <circle
         className="body-part-circle"
         cx="39"
         cy="194"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_LOWER_ARM]}
+        id={BodyPart[SIDES[left].lowerArm]}
       />
       <circle
         className="body-part-circle"
         cx="67.004"
         cy="360"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_LOWER_LEG]}
+        id={BodyPart[SIDES[left].lowerLeg]}
       />
 
       <circle
@@ -149,14 +178,14 @@ export function PersonFrontIcon({ width }: { width?: number }) {
         cx="67"
         cy="250"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_UPPER_LEG]}
+        id={BodyPart[SIDES[left].upperLeg]}
       />
       <circle
         className="body-part-circle"
         cx="67.004"
         cy="380"
         r={CIRCLE_RADIUS}
-        id={BodyPart[BodyPart.LEFT_FOOT]}
+        id={BodyPart[SIDES[left].foot]}
       />
     </svg>
   );

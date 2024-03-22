@@ -1,20 +1,24 @@
 # Global code owner
 * @Eirenliel
 
+# Make everyone be able to approve SolarXR submodule changes
+/solarxr-protocol @ButterscotchV @Louka3000 @ImUrX
+
 # Make Loucas and Uriel the owners of all GUI stuff
-/gui/ @loucass003 @ImUrX
-/package-lock.json @loucass003 @ImUrX
+/gui/ @ImUrX
+/pnpm-lock.yaml @ImUrX
+/pnpm-workspace.yaml @ImUrX
 
 # Uriel and Erimel responsible for i18n
 /gui/public/i18n/ @ImUrX @Louka3000
 /gui/src/i18n/ @ImUrX @Louka3000
 /l10n.toml @ImUrX @Louka3000
 
-/gui/src/components/settings/ @Louka3000 @loucass003 @ImUrX
+/gui/src/components/settings/ @Louka3000 @ImUrX
 
 # Rust part of the GUI
-/gui/src-tauri/ @ImUrX @TheButlah
-/Cargo.lock @ImUrX @TheButlah
+/gui/src-tauri/ @ImUrX
+/Cargo.lock @ImUrX
 
 # Some server code~
 /server/ @ButterscotchV @Eirenliel @Louka3000
@@ -27,4 +31,8 @@
 /server/src/main/java/dev/slimevr/tracking/processor/ @Louka3000
 /server/src/main/java/dev/slimevr/filtering/ @Louka3000
 
-server/src/main/java/dev/slimevr/config/ @loucass003
+# Linux files
+*.nix @ImUrX
+/flake.lock @ImUrX
+/dev.slimevr.SlimeVR.metainfo.xml @ImUrX
+/.envrc @ImUrX

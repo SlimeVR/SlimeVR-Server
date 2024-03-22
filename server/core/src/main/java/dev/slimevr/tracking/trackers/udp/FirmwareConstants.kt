@@ -11,6 +11,7 @@ enum class IMUType(val id: UInt) {
 	BNO086(7u),
 	BMI160(8u),
 	ICM20948(9u),
+	ICM42688(10u),
 	;
 
 	fun getSolarType(): Int = this.id.toInt()
@@ -37,26 +38,32 @@ enum class BoardType(val id: UInt) {
 	LOLIN_C3_MINI(10u),
 	BEETLE32C32(11u),
 	ES32C3DEVKITM1(12u),
+	OWOTRACK(13u),
+	WRANGLER(14u),
+	MOCOPI(15u),
+	WEMOSWROOM02(16u),
+	DEV_RESERVED(250u),
 	;
 
-	fun getSolarType(): Int = this.id.toInt()
-
-	override fun toString(): String {
-		return when (this) {
-			UNKNOWN -> "Unknown"
-			SLIMEVR_LEGACY -> "SlimeVR Legacy"
-			SLIMEVR_DEV -> "SlimeVR Dev"
-			NODEMCU -> "NodeMCU"
-			CUSTOM -> "Custom Board"
-			WROOM32 -> "WROOM32"
-			WEMOSD1MINI -> "Wemos D1 Mini"
-			TTGO_TBASE -> "TTGO T-Base"
-			ESP01 -> "ESP-01"
-			SLIMEVR -> "SlimeVR"
-			LOLIN_C3_MINI -> "Lolin C3 Mini"
-			BEETLE32C32 -> "Beetle ESP32-C3"
-			ES32C3DEVKITM1 -> "Espressif ESP32-C3 DevKitM-1"
-		}
+	override fun toString(): String = when (this) {
+		UNKNOWN -> "Unknown"
+		SLIMEVR_LEGACY -> "SlimeVR Legacy"
+		SLIMEVR_DEV -> "SlimeVR Dev"
+		NODEMCU -> "NodeMCU"
+		CUSTOM -> "Custom Board"
+		WROOM32 -> "WROOM32"
+		WEMOSD1MINI -> "Wemos D1 Mini"
+		TTGO_TBASE -> "TTGO T-Base"
+		ESP01 -> "ESP-01"
+		SLIMEVR -> "SlimeVR"
+		LOLIN_C3_MINI -> "Lolin C3 Mini"
+		BEETLE32C32 -> "Beetle ESP32-C3"
+		ES32C3DEVKITM1 -> "Espressif ESP32-C3 DevKitM-1"
+		OWOTRACK -> "owoTrack"
+		WRANGLER -> "Wrangler Joycons"
+		MOCOPI -> "Sony Mocopi"
+		WEMOSWROOM02 -> "Wemos Wroom-02 D1 Mini"
+		DEV_RESERVED -> "Prototype"
 	}
 
 	companion object {
@@ -71,6 +78,12 @@ enum class MCUType(val id: UInt) {
 	UNKNOWN(0u),
 	ESP8266(1u),
 	ESP32(2u),
+	OWOTRACK_ANDROID(3u),
+	WRANGLER(4u),
+	OWOTRACK_IOS(5u),
+	ESP32_C3(6u),
+	MOCOPI(7u),
+	DEV_RESERVED(250u),
 	;
 
 	fun getSolarType(): Int = this.id.toInt()

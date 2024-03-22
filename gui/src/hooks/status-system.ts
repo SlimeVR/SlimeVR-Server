@@ -138,9 +138,8 @@ export function parseStatusToLocale(
 
       const tracker = trackers.find(
         ({ tracker }) =>
-          data.trackerId?.trackerNum &&
-          tracker?.trackerId?.trackerNum == data.trackerId.trackerNum &&
-          tracker?.trackerId?.deviceId?.id == data.trackerId.deviceId?.id
+          tracker?.trackerId?.trackerNum == data.trackerId?.trackerNum &&
+          tracker?.trackerId?.deviceId?.id == data.trackerId?.deviceId?.id
       );
       if (!tracker)
         return {

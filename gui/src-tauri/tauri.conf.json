@@ -6,8 +6,8 @@
   "build": {
     "distDir": "../dist",
     "devPath": "http://localhost:5173",
-    "beforeDevCommand": "npm run start",
-    "beforeBuildCommand": "npm run build"
+    "beforeDevCommand": "pnpm run start",
+    "beforeBuildCommand": "pnpm run build"
   },
   "plugins": {
     "shell": {

@@ -17,6 +17,7 @@ type StepComponentType = FC<{
   prevStep: () => void;
   resetSteps: () => void;
   variant: 'alone' | 'onboarding';
+  active: boolean;
 }>;
 export type Step = {
   type: 'numbered' | 'fullsize';
@@ -160,6 +161,7 @@ export function StepperSlider({
                 nextStep={nextStep}
                 prevStep={prevStep}
                 resetSteps={resetSteps}
+                active={index === step}
               />
             </StepContainer>
           ))}

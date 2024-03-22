@@ -11,9 +11,7 @@ use std::time::Instant;
 use clap::Parser;
 use color_eyre::Result;
 use state::WindowState;
-use tauri::Manager;
-use tauri::RunEvent;
-use tauri::WindowEvent;
+use tauri::{Manager, RunEvent, WindowEvent};
 use tauri_plugin_shell::process::CommandChild;
 
 use crate::util::{
@@ -21,6 +19,7 @@ use crate::util::{
 };
 
 mod state;
+mod tray;
 mod util;
 
 #[tauri::command]
@@ -175,7 +174,9 @@ fn main() -> Result<()> {
 			update_window_state,
 			logging,
 			erroring,
-			warning
+			warning,
+			tray::update_translations,
+			tray::update_tray_text
 		])
 		.setup(move |app| {
 			let window_state =
@@ -198,6 +199,12 @@ fn main() -> Result<()> {
 			.build()?;
 			if window_state.is_old() {
 				window_state.update_window(&window, false)?;
+			}
+
+			#[cfg(desktop)]
+			{
+				let handle = app.handle();
+				tray::create_tray(&handle)?;
 			}
 
 			app.manage(Mutex::new(window_state));

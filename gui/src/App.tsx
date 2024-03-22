@@ -54,6 +54,7 @@ import { error, log } from './utils/logging';
 import { FirmwareToolSettings } from './components/firmware-tool/FirmwareTool';
 import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
+import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -67,6 +68,7 @@ function Layout() {
     <>
       <SerialDetectionModal></SerialDetectionModal>
       <VersionUpdateModal></VersionUpdateModal>
+      <UnknownDeviceModal></UnknownDeviceModal>
       <Routes>
         <Route element={<AppLayout />}>
           <Route
@@ -229,8 +231,7 @@ export default function App() {
         }
       );
       return () => {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        unlisten.then(() => {});
+        unlisten.then((fn) => fn());
       };
     }, []);
   }

@@ -2,7 +2,7 @@ package dev.slimevr.autobone.errors.proportions
 
 import com.jme3.math.FastMath
 import dev.slimevr.tracking.processor.HumanPoseManager
-import java.util.function.Function
+import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 
 class RangeProportionLimiter : HardProportionLimiter {
 	private val targetPositiveRange: Float
@@ -10,15 +10,14 @@ class RangeProportionLimiter : HardProportionLimiter {
 
 	/**
 	 * @param targetRatio The bone to height ratio to target
-	 * @param boneLengthFunction A function that takes a SkeletonConfig object
-	 * and returns the bone length
+	 * @param skeletonConfigOffset The SkeletonConfigOffset to use for the length
 	 * @param range The range from the target ratio to accept (ex. 0.1)
 	 */
 	constructor(
 		targetRatio: Float,
-		boneLengthFunction: Function<HumanPoseManager, Float>,
+		skeletonConfigOffset: SkeletonConfigOffsets,
 		range: Float,
-	) : super(targetRatio, boneLengthFunction) {
+	) : super(targetRatio, skeletonConfigOffset) {
 		val absRange = FastMath.abs(range)
 
 		// Handle if someone puts in a negative value
@@ -28,8 +27,7 @@ class RangeProportionLimiter : HardProportionLimiter {
 
 	/**
 	 * @param targetRatio The bone to height ratio to target
-	 * @param boneLengthFunction A function that takes a SkeletonConfig object
-	 * and returns the bone length
+	 * @param skeletonConfigOffset The SkeletonConfigOffset to use for the length
 	 * @param positiveRange The positive range from the target ratio to accept
 	 * (ex. 0.1)
 	 * @param negativeRange The negative range from the target ratio to accept
@@ -37,10 +35,10 @@ class RangeProportionLimiter : HardProportionLimiter {
 	 */
 	constructor(
 		targetRatio: Float,
-		boneLengthFunction: Function<HumanPoseManager, Float>,
+		skeletonConfigOffset: SkeletonConfigOffsets,
 		positiveRange: Float,
 		negativeRange: Float,
-	) : super(targetRatio, boneLengthFunction) {
+	) : super(targetRatio, skeletonConfigOffset) {
 
 		// If the positive range is less than the negative range, something is
 		// wrong
@@ -50,7 +48,7 @@ class RangeProportionLimiter : HardProportionLimiter {
 	}
 
 	override fun getProportionError(humanPoseManager: HumanPoseManager, height: Float): Float {
-		val boneLength = boneLengthFunction.apply(humanPoseManager)
+		val boneLength = humanPoseManager.getOffset(skeletonConfigOffset)
 		val ratioOffset = targetRatio - boneLength / height
 
 		// If the range is exceeded, return the offset from the range limit

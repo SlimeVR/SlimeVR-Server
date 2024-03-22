@@ -15,6 +15,7 @@ public class Keybinding implements HotkeyListener {
 	private static final int FULL_RESET = 1;
 	private static final int YAW_RESET = 2;
 	private static final int MOUNTING_RESET = 3;
+	private static final int PAUSE_TRACKING = 4;
 	public final VRServer server;
 	public final KeybindingsConfig config;
 
@@ -47,6 +48,10 @@ public class Keybinding implements HotkeyListener {
 				String mountingResetBinding = this.config.getMountingResetBinding();
 				JIntellitype.getInstance().registerHotKey(MOUNTING_RESET, mountingResetBinding);
 				LogManager.info("[Keybinding] Bound reset mounting to " + mountingResetBinding);
+
+				String pauseTrackingBinding = this.config.getPauseTrackingBinding();
+				JIntellitype.getInstance().registerHotKey(PAUSE_TRACKING, pauseTrackingBinding);
+				LogManager.info("[Keybinding] Bound pause tracking to " + pauseTrackingBinding);
 			}
 		} catch (Throwable e) {
 			LogManager
@@ -74,6 +79,13 @@ public class Keybinding implements HotkeyListener {
 					.scheduleResetTrackersMounting(
 						resetSourceName,
 						this.config.getMountingResetDelay()
+					);
+			}
+			case PAUSE_TRACKING -> {
+				server
+					.scheduleTogglePauseTracking(
+						resetSourceName,
+						this.config.getPauseTrackingDelay()
 					);
 			}
 		}

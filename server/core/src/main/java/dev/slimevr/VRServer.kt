@@ -17,6 +17,7 @@ import dev.slimevr.reset.ResetHandler
 import dev.slimevr.serial.ProvisioningHandler
 import dev.slimevr.serial.SerialHandler
 import dev.slimevr.serial.SerialHandlerStub
+import dev.slimevr.setup.HandshakeHandler
 import dev.slimevr.setup.TapSetupHandler
 import dev.slimevr.status.StatusSystem
 import dev.slimevr.tracking.processor.HumanPoseManager
@@ -34,6 +35,7 @@ import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
+import kotlin.concurrent.schedule
 
 typealias SteamBridgeProvider = (
 	server: VRServer,
@@ -102,6 +104,9 @@ class VRServer @JvmOverloads constructor(
 	@JvmField
 	val statusSystem = StatusSystem()
 
+	@JvmField
+	val handshakeHandler = HandshakeHandler()
+
 	init {
 		// UwU
 		configManager = ConfigManager(configPath)
@@ -112,10 +117,11 @@ class VRServer @JvmOverloads constructor(
 		provisioningHandler = ProvisioningHandler(this)
 		resetHandler = ResetHandler()
 		tapSetupHandler = TapSetupHandler()
+		humanPoseManager = HumanPoseManager(this)
+		// AutoBone requires HumanPoseManager first
 		autoBoneHandler = AutoBoneHandler(this)
 		firmwareUpdateHandler = FirmwareUpdateHandler(this)
 		protocolAPI = ProtocolAPI(this)
-		humanPoseManager = HumanPoseManager(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 
 		// Start server for SlimeVR trackers
@@ -123,7 +129,7 @@ class VRServer @JvmOverloads constructor(
 		LogManager.info("Starting the tracker server on port $trackerPort...")
 		trackersServer = TrackersUDPServer(
 			trackerPort,
-			"Sensors UDP server"
+			"Sensors UDP server",
 		) { tracker: Tracker -> registerTracker(tracker) }
 
 		// Start bridges for SteamVR and Feeder
@@ -149,13 +155,13 @@ class VRServer @JvmOverloads constructor(
 			humanPoseManager,
 			driverBridge,
 			configManager.vrConfig.vrcOSC,
-			computedTrackers
+			computedTrackers,
 		)
 		vMCHandler = VMCHandler(
 			this,
 			humanPoseManager,
 			configManager.vrConfig.vmc,
-			computedTrackers
+			computedTrackers,
 		)
 
 		// Initialize OSC router
@@ -285,7 +291,7 @@ class VRServer @JvmOverloads constructor(
 	fun updateSkeletonModel() {
 		queueTask { humanPoseManager.updateSkeletonModelFromServer() }
 		vrcOSCHandler.setHeadTracker(
-			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD)
+			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD),
 		)
 	}
 
@@ -305,31 +311,42 @@ class VRServer @JvmOverloads constructor(
 		queueTask { humanPoseManager.clearTrackersMounting(resetSourceName) }
 	}
 
+	fun setPauseTracking(pauseTracking: Boolean, sourceName: String?) {
+		queueTask { humanPoseManager.setPauseTracking(pauseTracking, sourceName) }
+	}
+
+	fun togglePauseTracking(sourceName: String?) {
+		queueTask { humanPoseManager.togglePauseTracking(sourceName) }
+	}
+
 	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
-		val resetTask: TimerTask = object : TimerTask() {
-			override fun run() {
-				queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
-			}
+		timer.schedule(delay) {
+			queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
 		}
-		timer.schedule(resetTask, delay)
 	}
 
 	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long) {
-		val yawResetTask: TimerTask = object : TimerTask() {
-			override fun run() {
-				queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
-			}
+		timer.schedule(delay) {
+			queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
 		}
-		timer.schedule(yawResetTask, delay)
 	}
 
 	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long) {
-		val resetMountingTask: TimerTask = object : TimerTask() {
-			override fun run() {
-				queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
-			}
+		timer.schedule(delay) {
+			queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
 		}
-		timer.schedule(resetMountingTask, delay)
+	}
+
+	fun scheduleSetPauseTracking(pauseTracking: Boolean, sourceName: String?, delay: Long) {
+		timer.schedule(delay) {
+			queueTask { humanPoseManager.setPauseTracking(pauseTracking, sourceName) }
+		}
+	}
+
+	fun scheduleTogglePauseTracking(sourceName: String?, delay: Long) {
+		timer.schedule(delay) {
+			queueTask { humanPoseManager.togglePauseTracking(sourceName) }
+		}
 	}
 
 	fun setLegTweaksEnabled(value: Boolean) {
@@ -405,9 +422,7 @@ class VRServer @JvmOverloads constructor(
 			get() = ::instance.isInitialized
 
 		@JvmStatic
-		fun getNextLocalTrackerId(): Int {
-			return nextLocalTrackerId.incrementAndGet()
-		}
+		fun getNextLocalTrackerId(): Int = nextLocalTrackerId.incrementAndGet()
 
 		@JvmStatic
 		val currentLocalTrackerId: Int

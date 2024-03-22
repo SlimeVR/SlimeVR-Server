@@ -28,6 +28,8 @@ interface InterfaceSettingsForm {
     watchNewDevices: boolean;
     feedbackSound: boolean;
     feedbackSoundVolume: number;
+    connectedTrackersWarning: boolean;
+    useTray: boolean;
   };
 }
 
@@ -49,6 +51,10 @@ export function InterfaceSettings() {
         feedbackSound: config?.feedbackSound ?? defaultConfig.feedbackSound,
         feedbackSoundVolume:
           config?.feedbackSoundVolume ?? defaultConfig.feedbackSoundVolume,
+        connectedTrackersWarning:
+          config?.connectedTrackersWarning ??
+          defaultConfig.connectedTrackersWarning,
+        useTray: config?.useTray ?? defaultConfig.useTray ?? false,
       },
     },
   });
@@ -62,6 +68,8 @@ export function InterfaceSettings() {
       theme: values.appearance.theme,
       fonts: values.appearance.fonts.split(','),
       textSize: values.appearance.textSize,
+      connectedTrackersWarning: values.notifications.connectedTrackersWarning,
+      useTray: values.notifications.useTray,
     });
   };
 
@@ -171,6 +179,28 @@ export function InterfaceSettings() {
                 name="notifications.connectedTrackersWarning"
                 label={l10n.getString(
                   'settings-general-interface-connected_trackers_warning-label'
+                )}
+              />
+            </div>
+
+            <Typography bold>
+              {l10n.getString('settings-general-interface-use_tray')}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-interface-use_tray-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                variant="toggle"
+                control={control}
+                outlined
+                name="notifications.useTray"
+                label={l10n.getString(
+                  'settings-general-interface-use_tray-label'
                 )}
               />
             </div>

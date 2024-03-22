@@ -12,9 +12,11 @@ import dev.slimevr.protocol.rpc.reset.RPCResetHandler;
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler;
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler;
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler;
+import dev.slimevr.protocol.rpc.setup.RPCHandshakeHandler;
 import dev.slimevr.protocol.rpc.setup.RPCTapSetupHandler;
 import dev.slimevr.protocol.rpc.setup.RPCUtil;
 import dev.slimevr.protocol.rpc.status.RPCStatusHandler;
+import dev.slimevr.protocol.rpc.trackingpause.RPCTrackingPause;
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.tracking.trackers.TrackerPosition;
@@ -48,6 +50,8 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 		new RPCStatusHandler(this, api);
 		new RPCAutoBoneHandler(this, api);
 		new RPCFirmwareUpdateHandler(this, api);
+		new RPCHandshakeHandler(this, api);
+		new RPCTrackingPause(this, api);
 
 		registerPacketListener(RpcMessage.ResetRequest, this::onResetRequest);
 		registerPacketListener(
@@ -381,7 +385,7 @@ public class RPCHandler extends ProtocolHandler<RpcMessageHeader> {
 		if (req == null)
 			return;
 
-		this.api.server.humanPoseManager.setPauseTracking(req.pauseTracking());
+		this.api.server.humanPoseManager.setPauseTracking(req.pauseTracking(), resetSourceName);
 	}
 
 	public void onHeightRequest(GenericConnection conn, RpcMessageHeader messageHeader) {
