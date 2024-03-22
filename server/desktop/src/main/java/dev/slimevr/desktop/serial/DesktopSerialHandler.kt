@@ -182,7 +182,7 @@ class DesktopSerialHandler :
 	}
 
 	override fun write(buff: ByteArray) {
-		println("WRITING $buff")
+		LogManager.info("[SerialHandler] WRITING $buff")
 		currentPort?.outputStream?.write(buff)
 	}
 

@@ -226,11 +226,18 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		}
 	}
 
+	override fun write(buff: ByteArray) {
+		LogManager.info("[SerialHandler] WRITING $buff")
+		usbIoManager?.writeAsync(buff)
+	}
+
 	@Synchronized
 	override fun setWifi(ssid: String, passwd: String) {
 		writeSerial("SET WIFI \"${ssid}\" \"${passwd}\"")
 		addLog("-> SET WIFI \"$ssid\" \"${passwd.replace(".".toRegex(), "*")}\"\n")
 	}
+
+	override fun getCurrentPort(): SlimeSerialPort? = this.currentPort
 
 	private fun addLog(str: String) {
 		LogManager.info("[Serial] $str")
