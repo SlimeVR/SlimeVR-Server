@@ -98,8 +98,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			onStatusChange(
 				UpdateStatusEvent(
 					deviceId,
-					FirmwareUpdateStatus.ERROR_DEVICE_NOT_FOUND
-				)
+					FirmwareUpdateStatus.ERROR_DEVICE_NOT_FOUND,
+				),
 			)
 			return
 		}
@@ -107,7 +107,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			part.firmware,
 			deviceId,
 			udpDevice.ipAddress,
-			this::onStatusChange
+			this::onStatusChange,
 		).run()
 	}
 
@@ -124,8 +124,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			onStatusChange(
 				UpdateStatusEvent(
 					deviceId,
-					FirmwareUpdateStatus.ERROR_DEVICE_NOT_FOUND
-				)
+					FirmwareUpdateStatus.ERROR_DEVICE_NOT_FOUND,
+				),
 			)
 			return
 		}
@@ -136,8 +136,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			onStatusChange(
 				UpdateStatusEvent(
 					deviceId,
-					FirmwareUpdateStatus.ERROR_UNSUPPORTED_METHOD
-				)
+					FirmwareUpdateStatus.ERROR_UNSUPPORTED_METHOD,
+				),
 			)
 			return
 		}
@@ -158,8 +158,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 						UpdateStatusEvent(
 							deviceId,
 							FirmwareUpdateStatus.UPLOADING,
-							(progress * 100).toInt()
-						)
+							(progress * 100).toInt(),
+						),
 					)
 				}
 			})
@@ -167,8 +167,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			onStatusChange(
 				UpdateStatusEvent(
 					deviceId,
-					FirmwareUpdateStatus.SYNCING_WITH_MCU
-				)
+					FirmwareUpdateStatus.SYNCING_WITH_MCU,
+				),
 			)
 			flasher.flash(serialPort)
 			onStatusChange(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.REBOOTING))
@@ -178,8 +178,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			onStatusChange(
 				UpdateStatusEvent(
 					deviceId,
-					FirmwareUpdateStatus.ERROR_UPLOAD_FAILED
-				)
+					FirmwareUpdateStatus.ERROR_UPLOAD_FAILED,
+				),
 			)
 			server.provisioningHandler.stop()
 		}
@@ -201,8 +201,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			onStatusChange(
 				UpdateStatusEvent(
 					deviceId,
-					FirmwareUpdateStatus.WAITING_FOR_REBOOT
-				)
+					FirmwareUpdateStatus.WAITING_FOR_REBOOT,
+				),
 			)
 			watchRestartQueue.add(
 				Pair(deviceId) {
@@ -212,10 +212,10 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 							method,
 							deviceId,
 							ssid,
-							password
+							password,
 						)
 					}
-				}
+				},
 			)
 		} else {
 			if (updatingDevicesStatus[deviceId] != null) {
@@ -247,8 +247,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		onStatusChange(
 			UpdateStatusEvent(
 				deviceId,
-				FirmwareUpdateStatus.DOWNLOADING
-			)
+				FirmwareUpdateStatus.DOWNLOADING,
+			),
 		)
 
 		try {
@@ -262,7 +262,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 								?: error("unable to download firmware part")
 							DownloadedFirmwarePart(
 								firmware,
-								it.offset
+								it.offset,
 							)
 						}.toTypedArray()
 					}
@@ -274,14 +274,15 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 						onStatusChange(
 							UpdateStatusEvent(
 								deviceId,
-								FirmwareUpdateStatus.ERROR_DOWNLOAD_FAILED
-							)
+								FirmwareUpdateStatus.ERROR_DOWNLOAD_FAILED,
+							),
 						)
 						return@withTimeout
 					}
 
 					when (method) {
 						FirmwareUpdateMethod.NONE -> error("unsupported method")
+
 						FirmwareUpdateMethod.OTA -> {
 							if (deviceId.id !is Int) {
 								error("invalid state, the device id is not an int")
@@ -293,8 +294,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 								firmwareParts.first(),
 								UpdateDeviceId(
 									FirmwareUpdateMethod.OTA,
-									deviceId.id
-								)
+									deviceId.id,
+								),
 							)
 						}
 
@@ -309,10 +310,10 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 								firmwareParts,
 								UpdateDeviceId(
 									FirmwareUpdateMethod.SERIAL,
-									deviceId.id
+									deviceId.id,
 								),
 								ssid,
-								password
+								password,
 							)
 						}
 					}
@@ -323,8 +324,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			onStatusChange(
 				UpdateStatusEvent(
 					deviceId,
-					if (e is TimeoutCancellationException) FirmwareUpdateStatus.ERROR_TIMEOUT else FirmwareUpdateStatus.ERROR_UNKNOWN
-				)
+					if (e is TimeoutCancellationException) FirmwareUpdateStatus.ERROR_TIMEOUT else FirmwareUpdateStatus.ERROR_UNKNOWN,
+				),
 			)
 			if (e !is TimeoutCancellationException) {
 				e.printStackTrace()
@@ -352,8 +353,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 				onStatusChange(
 					UpdateStatusEvent(
 						id,
-						FirmwareUpdateStatus.ERROR_TIMEOUT
-					)
+						FirmwareUpdateStatus.ERROR_TIMEOUT,
+					),
 				)
 			}
 		}
@@ -387,8 +388,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 				onStatusChange(
 					UpdateStatusEvent(
 						updateStatus.deviceId,
-						FirmwareUpdateStatus.DONE
-					)
+						FirmwareUpdateStatus.DONE,
+					),
 				)
 			}
 		}

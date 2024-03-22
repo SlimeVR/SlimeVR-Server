@@ -78,8 +78,8 @@ class OTAUpdateTask(
 						authMessage.toByteArray(),
 						authMessage.length,
 						deviceIp,
-						PORT
-					)
+						PORT,
+					),
 				)
 
 				val authResponsePacket = DatagramPacket(receiveBuffer, receiveBuffer.size)
@@ -114,8 +114,8 @@ class OTAUpdateTask(
 						UpdateStatusEvent(
 							deviceId,
 							FirmwareUpdateStatus.UPLOADING,
-							((offset.toDouble() / firmware.size) * 100).toInt()
-						)
+							((offset.toDouble() / firmware.size) * 100).toInt(),
+						),
 					)
 
 					val chunkLen = min(chunkSize, (firmware.size - offset))

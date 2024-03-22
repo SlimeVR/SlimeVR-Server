@@ -71,7 +71,5 @@ class SerialHandlerStub : SerialHandler() {
 
 	override fun setWifi(ssid: String, passwd: String) {}
 
-	override fun getCurrentPort(): SerialPort? {
-		return null
-	}
+	override fun getCurrentPort(): SerialPort? = null
 }

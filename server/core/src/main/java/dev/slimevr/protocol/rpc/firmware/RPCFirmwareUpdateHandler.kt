@@ -28,11 +28,11 @@ class RPCFirmwareUpdateHandler(
 		api.server.firmwareUpdateHandler.addListener(this)
 		rpcHandler.registerPacketListener(
 			RpcMessage.FirmwareUpdateRequest,
-			this::onFirmwareUpdateRequest
+			this::onFirmwareUpdateRequest,
 		)
 		rpcHandler.registerPacketListener(
 			RpcMessage.FirmwareUpdateStopQueuesRequest,
-			this::onFirmwareUpdateStopQueuesRequest
+			this::onFirmwareUpdateStopQueuesRequest,
 		)
 	}
 
@@ -58,7 +58,7 @@ class RPCFirmwareUpdateHandler(
 			method,
 			updateDeviceId,
 			req.ssid,
-			req.password
+			req.password,
 		)
 	}
 
@@ -81,7 +81,7 @@ class RPCFirmwareUpdateHandler(
 		val outbound = rpcHandler.createRPCMessage(
 			fbb,
 			RpcMessage.FirmwareUpdateStatusResponse,
-			update
+			update,
 		)
 		fbb.finish(outbound)
 
@@ -98,41 +98,40 @@ class RPCFirmwareUpdateHandler(
 			FirmwareUpdateDeviceId.solarxr_protocol_datatypes_DeviceIdTable -> {
 				return UpdateDeviceId(
 					FirmwareUpdateMethod.OTA,
-					req.deviceId.assolarxr_protocol_datatypes_DeviceIdTable().id.id
+					req.deviceId.assolarxr_protocol_datatypes_DeviceIdTable().id.id,
 				)
 			}
 
 			FirmwareUpdateDeviceId.SerialDevicePort -> {
 				return UpdateDeviceId(
 					FirmwareUpdateMethod.SERIAL,
-					req.deviceId.asSerialDevicePort().port
+					req.deviceId.asSerialDevicePort().port,
 				)
 			}
 		}
 		return null
 	}
 
-	private fun createUpdateDeviceId(data: UpdateDeviceId<*>): Any {
-		return when (data.type) {
-			FirmwareUpdateMethod.NONE -> error("Unsupported method")
-			FirmwareUpdateMethod.OTA -> {
-				if (data.id !is Int) {
-					error("Invalid state, the id type should be Int")
-				}
-				DeviceIdTableT().apply {
-					id = DeviceIdT().apply {
-						id = data.id
-					}
+	private fun createUpdateDeviceId(data: UpdateDeviceId<*>): Any = when (data.type) {
+		FirmwareUpdateMethod.NONE -> error("Unsupported method")
+
+		FirmwareUpdateMethod.OTA -> {
+			if (data.id !is Int) {
+				error("Invalid state, the id type should be Int")
+			}
+			DeviceIdTableT().apply {
+				id = DeviceIdT().apply {
+					id = data.id
 				}
 			}
+		}
 
-			FirmwareUpdateMethod.SERIAL -> {
-				if (data.id !is String) {
-					error("Invalid state, the id type should be String")
-				}
-				SerialDevicePortT().apply {
-					port = data.id
-				}
+		FirmwareUpdateMethod.SERIAL -> {
+			if (data.id !is String) {
+				error("Invalid state, the id type should be String")
+			}
+			SerialDevicePortT().apply {
+				port = data.id
 			}
 		}
 	}

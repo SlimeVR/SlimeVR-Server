@@ -19,9 +19,7 @@ enum class FirmwareUpdateStatus(val id: Int) {
 	ERROR_UNKNOWN(solarxr_protocol.rpc.FirmwareUpdateStatus.ERROR_UNKNOWN),
 	;
 
-	fun isError(): Boolean {
-		return id in ERROR_DEVICE_NOT_FOUND.id..ERROR_UNKNOWN.id
-	}
+	fun isError(): Boolean = id in ERROR_DEVICE_NOT_FOUND.id..ERROR_UNKNOWN.id
 
 	companion object {
 		fun getById(id: Int): FirmwareUpdateStatus? = byId[id]

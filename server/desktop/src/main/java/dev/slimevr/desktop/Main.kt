@@ -124,7 +124,7 @@ fun main(args: Array<String>) {
 			::provideFeederBridge,
 			{ _ -> DesktopSerialHandler() },
 			{ _ -> DesktopSerialFlashingHandler() },
-			configDir
+			configDir,
 		)
 		vrServer.start()
 
