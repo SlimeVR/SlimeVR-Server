@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.trackers
 
 import com.jme3.math.FastMath
+import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
 import dev.slimevr.config.ArmsResetModes
 import dev.slimevr.config.DriftCompensationConfig
@@ -10,6 +11,7 @@ import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import io.eiren.math.FloatMath.animateEase
 import kotlin.math.*
 
 private const val DRIFT_COOLDOWN_MS = 50000L
@@ -32,6 +34,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var driftCompensationEnabled = false
 	private var resetMountingFeet = false
 	private var armsResetMode = ArmsResetModes.BACK
+	private var yawResetSmoothTime = 0.3f
+	private lateinit var fpsTimer: NanoTimer
 	var allowDriftCompensation = false
 	var lastResetQuaternion: Quaternion? = null
 
@@ -54,6 +58,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	var mountRotFix = Quaternion.IDENTITY
 		private set
 	private var yawFix = Quaternion.IDENTITY
+
+	// Yaw reset smoothing vars
+	private var yawFixOld = Quaternion.IDENTITY
+	private var yawFixNew = Quaternion.IDENTITY
+	private var yawResetSmoothTimeRemain = 0.0f
 
 	// Zero-reference/identity adjustment quats for IMU debugging
 	private var gyroFixNoMounting = Quaternion.IDENTITY
@@ -107,6 +116,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun readArmsResetModeConfig(config: ResetsConfig) {
 		resetMountingFeet = config.resetMountingFeet
 		armsResetMode = config.mode
+		if (!::fpsTimer.isInitialized) {
+			fpsTimer = VRServer.instance.fpsTimer
+		}
 	}
 
 	/**
@@ -222,11 +234,19 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		val rot: Quaternion = adjustToReference(tracker.getRawRotation())
 
+		yawFixOld = yawFix
 		yawFix = fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
+		yawFixNew = yawFix
 
 		makeIdentityAdjustmentQuatsYaw()
 
 		calculateDrift(rot)
+
+		// Start at yaw before reset if smoothing enabled
+		if (yawResetSmoothTime != 0.0f) {
+			yawResetSmoothTimeRemain = yawResetSmoothTime
+			yawFix = yawFixOld
+		}
 
 		// Remove the status if yaw reset was performed after the tracker
 		// was disconnected and connected.
@@ -430,6 +450,28 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			totalMatrix += (qn[i].toMatrix() * tn[i])
 		}
 		return totalMatrix.toQuaternion()
+	}
+
+	/**
+	 * Update the yaw reset smoothing time 
+	 */
+	@Synchronized
+	fun update() {
+		if (yawResetSmoothTimeRemain != 0.0f) {
+			var deltaTime = 0.001f
+			if (::fpsTimer.isInitialized) {
+				deltaTime = fpsTimer.timePerFrame
+			}
+			yawResetSmoothTimeRemain = max(0.0f, yawResetSmoothTimeRemain - deltaTime)
+			if (yawResetSmoothTimeRemain == 0.0f) {
+				yawFix = yawFixNew
+			} else {
+				yawFix = yawFixOld.interpR(
+					yawFixNew, 
+					animateEase( (yawResetSmoothTime - yawResetSmoothTimeRemain) / yawResetSmoothTime)
+				) 
+			}
+		}
 	}
 
 	private fun isThighTracker(): Boolean {

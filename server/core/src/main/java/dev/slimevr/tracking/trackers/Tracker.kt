@@ -260,6 +260,7 @@ class Tracker @JvmOverloads constructor(
 			}
 		}
 		filteringHandler.update()
+		resetsHandler.update()
 	}
 
 	/**
