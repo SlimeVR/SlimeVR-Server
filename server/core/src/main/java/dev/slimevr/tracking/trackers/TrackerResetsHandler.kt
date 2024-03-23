@@ -34,7 +34,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var driftCompensationEnabled = false
 	private var resetMountingFeet = false
 	private var armsResetMode = ArmsResetModes.BACK
-	private var yawResetSmoothTime = 0.3f
+	private var yawResetSmoothTime = 0.0f
 	private lateinit var fpsTimer: NanoTimer
 	var allowDriftCompensation = false
 	var lastResetQuaternion: Quaternion? = null
@@ -113,9 +113,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	/**
 	 * Reads/loads arms reset mode settings from given config
 	 */
-	fun readArmsResetModeConfig(config: ResetsConfig) {
+	fun readResetConfig(config: ResetsConfig) {
 		resetMountingFeet = config.resetMountingFeet
 		armsResetMode = config.mode
+		yawResetSmoothTime = config.yawResetSmoothTime
 		if (!::fpsTimer.isInitialized) {
 			fpsTimer = VRServer.instance.fpsTimer
 		}

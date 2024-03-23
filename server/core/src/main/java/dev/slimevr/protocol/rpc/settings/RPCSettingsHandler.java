@@ -395,6 +395,8 @@ public class RPCSettingsHandler {
 				resetsConfig.setMode(mode);
 			}
 			resetsConfig.setResetMountingFeet(req.resetsSettings().resetMountingFeet());
+			resetsConfig
+				.setYawResetSmoothTime(req.resetsSettings().yawResetSmoothTime());
 			resetsConfig.updateTrackersResetsSettings();
 		}
 
