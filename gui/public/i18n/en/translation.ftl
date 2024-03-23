@@ -602,8 +602,8 @@ onboarding-done-close = Close setup
 ## Tracker connection setup
 onboarding-connect_tracker-back = Go Back to Wi-Fi credentials
 onboarding-connect_tracker-title = Connect trackers
-onboarding-connect_tracker-description-p0 = Now onto the fun part, connecting all the trackers!
-onboarding-connect_tracker-description-p1 = Simply connect all that aren't connected yet, through a USB port.
+onboarding-connect_tracker-description-p0 = Now onto the fun part, connecting trackers!
+onboarding-connect_tracker-description-p1 = Connect one tracker at a time through a USB port and turn it on.
 onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-none = Looking for trackers
