@@ -13,7 +13,9 @@ class IKSolver(private val root: Bone) {
 	companion object {
 		const val TOLERANCE_SQR = 1e-8 // == 0.01 cm
 		const val MAX_ITERATIONS = 100
-		const val ITERATIONS_BEFORE_STEP = MAX_ITERATIONS / 8
+		const val ITERATIONS_BEFORE_STEP = 20
+		const val ITERATIONS_BETWEEN_STEP = 5
+		const val MAX_LOOSENS = 5
 		const val TOLERANCE_STEP = 2f
 	}
 
@@ -35,6 +37,7 @@ class IKSolver(private val root: Bone) {
 		// Build the system of chains
 		rootChain = chainBuilder(root, null, 0, positionalConstraints, rotationalConstraints)
 		populateChainList(rootChain!!)
+		addConstraints()
 
 		// Check if there is any constraints (other than the head) in the model
 		rootChain = if (neededChain(rootChain!!)) rootChain else null
@@ -74,15 +77,15 @@ class IKSolver(private val root: Bone) {
 		} else {
 			parent.tailConstraint
 		}
-		var tailConstraint: Tracker? = null
+		var tailConstraint = getConstraint(currentBone, positionalConstraints)
 
 		// Add bones until there is a reason to make a new chain
 		while (currentBone.children.size == 1 && tailConstraint == null) {
-			currentBone = currentBone.children[0]
+			currentBone = currentBone.children.first()
 			currentBone.rotationConstraint.allowModifications =
 				getConstraint(currentBone, rotationalConstraints) == null
 			boneList.add(currentBone)
-			tailConstraint = getConstraint(boneList.last(), positionalConstraints)
+			tailConstraint = getConstraint(currentBone, positionalConstraints)
 		}
 
 		var chain = IKChain(boneList, parent, level, baseConstraint, tailConstraint)
@@ -102,7 +105,7 @@ class IKSolver(private val root: Bone) {
 
 		// If the chain has only one child and no tail constraint combine the chains
 		if (chain.children.size == 1 && chain.tailConstraint == null) {
-			chain = combineChains(chain, chain.children[0])
+			chain = combineChains(chain, chain.children.first())
 		}
 
 		return chain
@@ -135,6 +138,12 @@ class IKSolver(private val root: Bone) {
 		}
 
 		return newChain
+	}
+
+	private fun addConstraints() {
+		fun constrainChain(chain: IKChain) =
+			chain.nodes.forEach { it.rotationConstraint.allowModifications = false }
+		chainList.forEach { if (it.tailConstraint == null) constrainChain(it) }
 	}
 
 	private fun neededChain(chain: IKChain): Boolean {
@@ -192,6 +201,24 @@ class IKSolver(private val root: Bone) {
 		return null
 	}
 
+	/**
+	 * Loosen rotational constraints gradually
+	 */
+	private fun loosenConstraints(iter: Int) {
+		if (iter < ITERATIONS_BEFORE_STEP && iter % ITERATIONS_BETWEEN_STEP != 0) return
+
+		var maxDist = Float.NEGATIVE_INFINITY
+		var maxDistChain = chainList.first()
+		for (chain in chainList) {
+			if (chain.distToTargetSqr > maxDist) {
+				maxDist = chain.distToTargetSqr
+				maxDistChain = chain
+			}
+		}
+
+		if (maxDistChain.loosense < MAX_LOOSENS) maxDistChain.decreaseConstraints()
+	}
+
 	fun solve() {
 		if (rootChain == null) return
 
@@ -205,7 +232,6 @@ class IKSolver(private val root: Bone) {
 
 		rootChain?.resetChain()
 
-		// run up to MAX_ITERATIONS per tick
 		for (i in 0 until MAX_ITERATIONS) {
 			for (chain in chainList) {
 				chain.backwards()
@@ -229,14 +255,7 @@ class IKSolver(private val root: Bone) {
 				chain.updateChildCentroidWeight()
 			}
 
-			// Loosen rotational constraints
-			// TODO only do this if a positional tracker down the chain is actually
-			// tracking accurately
-			if (i % ITERATIONS_BEFORE_STEP == 0 && i != 0) {
-				for (chain in chainList) {
-					chain.decreaseConstraints()
-				}
-			}
+			loosenConstraints(i)
 		}
 
 		root.update()
