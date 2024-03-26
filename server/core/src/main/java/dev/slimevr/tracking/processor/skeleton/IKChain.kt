@@ -26,6 +26,7 @@ class IKChain(
 	private var targetSum = Vector3.NULL
 	var target = Vector3.NULL
 	var distToTargetSqr = Float.POSITIVE_INFINITY
+	var loosense = 0
 	private var centroidWeight = 1f
 	private var positions = getPositionList()
 
@@ -108,6 +109,7 @@ class IKChain(
 	fun resetChain() {
 		distToTargetSqr = Float.POSITIVE_INFINITY
 		centroidWeight = 1f
+		loosense = 0
 
 		for (bone in nodes) {
 			bone.rotationConstraint.tolerance = 0.0f
@@ -147,6 +149,7 @@ class IKChain(
 	 * Allow constrained bones to deviate more per step
 	 */
 	fun decreaseConstraints() {
+		loosense++
 		for (bone in nodes) {
 			bone.rotationConstraint.tolerance += IKSolver.TOLERANCE_STEP
 		}
