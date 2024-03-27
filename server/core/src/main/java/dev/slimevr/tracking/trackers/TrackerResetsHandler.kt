@@ -138,7 +138,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		rot *= attachmentFix
 		rot *= mountRotFix
 		rot = yawFix * rot
-		return rot * tposeFix
+		rot = tposeFix * rot
+		return rot
 	}
 
 	/**
@@ -146,7 +147,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * applying quaternions produced after full reset and yaw reset only
 	 */
 	private fun adjustToIdentity(rotation: Quaternion): Quaternion {
-		var rot = gyroFixNoMounting * rotation
+		var rot = rotation
+		rot = gyroFixNoMounting * rot
 		rot *= attachmentFixNoMounting
 		rot = yawFixZeroReference * rot
 		return rot
@@ -172,18 +174,13 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * 0). This allows the tracker to be strapped to body at any pitch and roll.
 	 */
 	fun resetFull(reference: Quaternion) {
-		// Adjust for T-Pose
-		if ((isLeftArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
-			tposeFix = EulerAngles(
-				EulerOrder.YZX,
-				0f,
-				0f,
-				-FastMath.HALF_PI,
-			).toQuaternion()
+		// Adjust for T-Pose (down)
+		tposeFix = if ((isLeftArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
+			EulerAngles(EulerOrder.YZX, 0f, 0f, -FastMath.HALF_PI).toQuaternion()
 		} else if ((isRightArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
-			tposeFix = EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
+			EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
 		} else {
-			tposeFix = Quaternion.IDENTITY
+			Quaternion.IDENTITY
 		}
 
 		lastResetQuaternion = adjustToReference(tracker.getRawRotation())
@@ -191,7 +188,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		val oldRot = adjustToReference(tracker.getRawRotation())
 
 		if (tracker.needsMounting) {
-			gyroFix = fixGyroscope(tposeFix * tracker.getRawRotation() * mountingOrientation)
+			gyroFix = fixGyroscope(tracker.getRawRotation() * mountingOrientation)
 		} else {
 			// Set mounting to the HMD's yaw so that the non-mounting-adjusted
 			// tracker goes forward.
@@ -248,7 +245,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Get the current calibrated rotation
 		var buffer = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
-		buffer *= tposeFix
 		buffer = gyroFix * buffer
 		buffer *= attachmentFix
 
