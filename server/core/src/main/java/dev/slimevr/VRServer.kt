@@ -102,6 +102,8 @@ class VRServer @JvmOverloads constructor(
 
 	init {
 		// UwU
+		instance = this
+
 		configManager = ConfigManager(configPath)
 		configManager.loadConfig()
 		deviceManager = DeviceManager(this)
@@ -143,8 +145,6 @@ class VRServer @JvmOverloads constructor(
 		// Initialize OSC handlers
 		vrcOSCHandler = VRCOSCHandler(
 			this,
-			humanPoseManager,
-			driverBridge,
 			configManager.vrConfig.vrcOSC,
 			computedTrackers,
 		)
@@ -164,7 +164,6 @@ class VRServer @JvmOverloads constructor(
 		for (tracker in computedTrackers) {
 			registerTracker(tracker)
 		}
-		instance = this
 	}
 
 	fun hasBridge(bridgeClass: Class<out Bridge?>): Boolean {
@@ -280,10 +279,10 @@ class VRServer @JvmOverloads constructor(
 
 	@ThreadSafe
 	fun updateSkeletonModel() {
-		queueTask { humanPoseManager.updateSkeletonModelFromServer() }
-		vrcOSCHandler.setHeadTracker(
-			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD),
-		)
+		queueTask {
+			humanPoseManager.updateSkeletonModelFromServer()
+			vrcOSCHandler.setHeadTracker(TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD))
+		}
 	}
 
 	fun resetTrackersFull(resetSourceName: String?) {
