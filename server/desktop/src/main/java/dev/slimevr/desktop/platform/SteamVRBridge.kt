@@ -56,30 +56,27 @@ abstract class SteamVRBridge(
 		if (!config.automaticSharedTrackersToggling) return false
 		// Enable waist if skeleton has an spine tracker
 		changeShareSettings(TrackerRole.WAIST, instance.humanPoseManager.skeleton.hasSpineTracker)
+		val skeleton = instance.humanPoseManager.skeleton
 
 		// hasChest if waist and/or hip is on, and chest and/or upper chest is also on
-		val hasChest = instance.humanPoseManager.skeleton.let {
-			(it.hipTracker != null || it.waistTracker != null) &&
-				(it.upperChestTracker != null || it.chestTracker != null)
-		}
+		val hasChest = (skeleton.hipTracker != null || skeleton.waistTracker != null) &&
+			(skeleton.upperChestTracker != null || skeleton.chestTracker != null)
 		changeShareSettings(TrackerRole.CHEST, hasChest)
 
 		// hasFeet if lower and/or upper leg tracker is on
-		val hasFeet = instance.humanPoseManager.skeleton.let {
-			(it.leftUpperLegTracker != null || it.leftLowerLegTracker != null) &&
-				(it.rightUpperLegTracker != null || it.rightLowerLegTracker != null)
-		}
+		val hasFeet =
+			(skeleton.leftUpperLegTracker != null || skeleton.leftLowerLegTracker != null) &&
+				(skeleton.rightUpperLegTracker != null || skeleton.rightLowerLegTracker != null)
 		changeShareSettings(TrackerRole.LEFT_FOOT, hasFeet)
 		changeShareSettings(TrackerRole.RIGHT_FOOT, hasFeet)
 
 		// hasKnees if foot tracker and lower and/or upper leg tracker is on
-		val hasKnees = hasFeet &&
-			instance.humanPoseManager.skeleton.let { it.hasLeftFootTracker && it.hasRightFootTracker }
+		val hasKnees = hasFeet && skeleton.hasLeftFootTracker && skeleton.hasRightFootTracker
 		changeShareSettings(TrackerRole.LEFT_KNEE, hasKnees)
 		changeShareSettings(TrackerRole.RIGHT_KNEE, hasKnees)
 
 		// hasElbows if an upper arm or a lower arm tracker is on
-		val hasElbows = instance.humanPoseManager.skeleton.let { it.hasLeftArmTracker && it.hasRightArmTracker }
+		val hasElbows = skeleton.hasLeftArmTracker && skeleton.hasRightArmTracker
 		changeShareSettings(TrackerRole.LEFT_ELBOW, hasElbows)
 		changeShareSettings(TrackerRole.RIGHT_ELBOW, hasElbows)
 
