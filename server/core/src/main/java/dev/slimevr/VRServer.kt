@@ -49,6 +49,7 @@ class VRServer @JvmOverloads constructor(
 	driverBridgeProvider: SteamBridgeProvider = { _, _ -> null },
 	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _ -> null },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
+	acquireMulticastLock: () -> Any? = { null },
 	configPath: String,
 ) : Thread("VRServer") {
 	@JvmField
@@ -62,6 +63,7 @@ class VRServer @JvmOverloads constructor(
 	private val tasks: Queue<Runnable> = LinkedBlockingQueue()
 	private val newTrackersConsumers: MutableList<Consumer<Tracker>> = FastList()
 	private val onTick: MutableList<Runnable> = FastList()
+	private val lock = acquireMulticastLock()
 	val oSCRouter: OSCRouter
 
 	@JvmField
