@@ -153,10 +153,10 @@ export function ConnectTrackersPage() {
             {l10n.getString('onboarding-connect_tracker-title')}
           </Typography>
           <Typography color="secondary">
-            {l10n.getString('onboarding-connect_tracker-description-p0')}
+            {l10n.getString('onboarding-connect_tracker-description-p0-v1')}
           </Typography>
           <Typography color="secondary">
-            {l10n.getString('onboarding-connect_tracker-description-p1')}
+            {l10n.getString('onboarding-connect_tracker-description-p1-v1')}
           </Typography>
           <div className="flex flex-col gap-2 py-5">
             {/* <ArrowLink
