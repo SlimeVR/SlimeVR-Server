@@ -14,6 +14,7 @@ public class BridgeConfig {
 	@JsonDeserialize(using = BooleanMapDeserializer.class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer.class)
 	public Map<String, Boolean> trackers = new HashMap<>();
+	public boolean automaticSharedTrackersToggling = true;
 
 	public BridgeConfig() {
 	}
