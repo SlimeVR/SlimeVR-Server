@@ -264,49 +264,49 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.WAIST_FROM_CHEST_HIP_AVERAGING,
-							max(0.0, ratios.imputeWaistFromChestHip().toDouble()).toFloat(),
+							max(0f, ratios.imputeWaistFromChestHip()),
 						)
 				}
 				if (ratios.hasImputeWaistFromChestLegs()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.WAIST_FROM_CHEST_LEGS_AVERAGING,
-							max(0.0, ratios.imputeWaistFromChestLegs().toDouble()).toFloat(),
+							max(0f, ratios.imputeWaistFromChestLegs()),
 						)
 				}
 				if (ratios.hasImputeHipFromChestLegs()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.HIP_FROM_CHEST_LEGS_AVERAGING,
-							max(0.0, ratios.imputeHipFromChestLegs().toDouble()).toFloat(),
+							max(0f, ratios.imputeHipFromChestLegs()),
 						)
 				}
 				if (ratios.hasImputeHipFromWaistLegs()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.HIP_FROM_WAIST_LEGS_AVERAGING,
-							max(0.0, ratios.imputeHipFromWaistLegs().toDouble()).toFloat(),
+							max(0f, ratios.imputeHipFromWaistLegs()),
 						)
 				}
 				if (ratios.hasInterpHipLegs()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.HIP_LEGS_AVERAGING,
-							max(0.0, ratios.interpHipLegs().toDouble()).toFloat(),
+							max(0f, ratios.interpHipLegs()),
 						)
 				}
 				if (ratios.hasInterpKneeTrackerAnkle()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.KNEE_TRACKER_ANKLE_AVERAGING,
-							max(0.0, ratios.interpKneeTrackerAnkle().toDouble()).toFloat(),
+							max(0f, ratios.interpKneeTrackerAnkle()),
 						)
 				}
 				if (ratios.hasInterpKneeAnkle()) {
 					hpm
 						.setValue(
 							SkeletonConfigValues.KNEE_ANKLE_AVERAGING,
-							max(0.0, ratios.interpKneeAnkle().toDouble()).toFloat(),
+							max(0f, ratios.interpKneeAnkle()),
 						)
 				}
 			}
@@ -335,7 +335,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				.vrConfig
 				.resetsConfig
 			val mode = ArmsResetModes
-				.fromId(max(req.resetsSettings().armsMountingResetMode().toDouble(), 0.0).toInt())
+				.fromId(max(req.resetsSettings().armsMountingResetMode(), 0))
 			if (mode != null) {
 				resetsConfig.mode = mode
 			}
