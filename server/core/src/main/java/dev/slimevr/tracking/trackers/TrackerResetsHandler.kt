@@ -186,20 +186,20 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		val oldRot = adjustToReference(tracker.getRawRotation())
 		lastResetQuaternion = oldRot
 
-		val adjustedRotation = tracker.getRawRotation() * mountingOrientation
+		val mountingAdjustedRotation = tracker.getRawRotation() * mountingOrientation
 
 		if (tracker.needsMounting) {
-			gyroFix = fixGyroscope(adjustedRotation)
+			gyroFix = fixGyroscope(mountingAdjustedRotation * tposeDownFix)
 		} else {
 			// Set mounting to the HMD's yaw so that the non-mounting-adjusted
 			// tracker goes forward.
 			mountRotFix = getYawQuaternion(reference)
 		}
-		attachmentFix = fixAttachment(adjustedRotation)
+		attachmentFix = fixAttachment(mountingAdjustedRotation)
 
 		makeIdentityAdjustmentQuatsFull()
 
-		yawFix = fixYaw(adjustedRotation, reference)
+		yawFix = fixYaw(mountingAdjustedRotation, reference)
 
 		calculateDrift(oldRot)
 
