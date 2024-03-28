@@ -1,9 +1,9 @@
 package dev.slimevr.autobone.errors
 
-import com.jme3.math.FastMath
 import dev.slimevr.autobone.AutoBoneStep
 import dev.slimevr.poseframeformat.trackerdata.TrackerFrames
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
+import kotlin.math.*
 
 // The difference between offset of absolute position and the corresponding point over time
 class PositionOffsetError : IAutoBoneError {
@@ -42,7 +42,7 @@ class PositionOffsetError : IAutoBoneError {
 
 			val dist1 = (position1 - computedTracker1.position).len()
 			val dist2 = (position2 - computedTracker2.position).len()
-			offset += FastMath.abs(dist2 - dist1)
+			offset += abs(dist2 - dist1)
 			offsetCount++
 		}
 		return if (offsetCount > 0) offset / offsetCount else 0f

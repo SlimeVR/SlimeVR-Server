@@ -1,11 +1,11 @@
 package dev.slimevr.autobone.errors
 
-import com.jme3.math.FastMath
 import dev.slimevr.autobone.AutoBoneStep
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter
 import dev.slimevr.autobone.errors.proportions.RangeProportionLimiter
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
+import kotlin.math.*
 
 // The distance from average human proportions
 class BodyProportionError : IAutoBoneError {
@@ -19,7 +19,7 @@ class BodyProportionError : IAutoBoneError {
 	fun getBodyProportionError(humanPoseManager: HumanPoseManager, fullHeight: Float): Float {
 		var sum = 0f
 		for (limiter in proportionLimits) {
-			sum += FastMath.abs(limiter.getProportionError(humanPoseManager, fullHeight))
+			sum += abs(limiter.getProportionError(humanPoseManager, fullHeight))
 		}
 		return sum
 	}

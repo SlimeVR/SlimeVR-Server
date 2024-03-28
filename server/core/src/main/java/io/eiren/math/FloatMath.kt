@@ -2,8 +2,6 @@ package io.eiren.math
 
 import com.jme3.math.FastMath
 import com.jme3.math.FastMath.normalize
-import com.jme3.math.FastMath.pow
-import com.jme3.math.FastMath.sign
 import io.github.axisangles.ktmath.Vector3
 import kotlin.math.*
 
@@ -233,7 +231,7 @@ object FloatMath {
 	fun contrastPower(t: Float, k: Float): Float {
 		val x = 2f * t - 1f // -1..1
 		val gamma = (1f - k) / (1f + k)
-		val f = sign(x) * FastMath.pow(FastMath.abs(x), gamma) // -1..1
+		val f = sign(x) * abs(x).pow(gamma) // -1..1
 		return 0.5f * (f + 1f) // 0..1
 	}
 
@@ -251,7 +249,7 @@ object FloatMath {
 	 */
 	fun contrastQuadricSpline(t: Float, k: Float): Float {
 		val x = 2f * t - 1f // -1..1
-		val f = x * (1f + k * (1f - FastMath.abs(x))) // -1..1
+		val f = x * (1f + k * (1f - abs(x))) // -1..1
 		return 0.5f * (f + 1f) // 0..1
 	}
 
@@ -270,9 +268,9 @@ object FloatMath {
 	fun contrastInvertQuadricSpline(t: Float, k: Float): Float {
 		val x = 2f * t - 1f // -1..1
 		val g = if (k > 0) {
-			sign(x) * FastMath.sqrt(FastMath.abs(x)) - 2f * x
+			sign(x) * sqrt(abs(x)) - 2f * x
 		} else {
-			sign(x) * (FastMath.sqrt(1f - FastMath.abs(x)) - 1f)
+			sign(x) * (sqrt(1f - abs(x)) - 1f)
 		}
 		val f = (1f + k) * x + k * g // -1..1
 		return 0.5f * (f + 1f) // 0..1
@@ -292,57 +290,14 @@ object FloatMath {
 	 */
 	fun contrastCubicSpline(t: Float, k: Float): Float {
 		val x = 2f * t - 1f // -1..1
-		var f = x * (1f + FastMath.abs(k) * (x * x - 1f))
-		if (k < 0) f -= x * 3f * k * (1f - FastMath.abs(x))
+		var f = x * (1f + abs(k) * (x * x - 1f))
+		if (k < 0) f -= x * 3f * k * (1f - abs(x))
 		return 0.5f * (f + 1f) // 0..1
 	}
 
 	fun fraction(f: Float): Float = f - f.toInt()
 
 	fun fraction(d: Double): Double = d - d.toLong()
-
-	@Deprecated(
-		"Do not copy {@link Math} methods.",
-		ReplaceWith("min(a, b)", "kotlin.math.min"),
-	)
-	fun min(a: Float, b: Float): Float = if (a > b) b else a
-
-	fun min(a: Float, b: Float, c: Float): Float = kotlin.math.min(kotlin.math.min(a.toDouble(), b.toDouble()), c.toDouble()).toFloat()
-
-	fun min(a: Float, b: Float, c: Float, d: Float): Float = kotlin.math.min(kotlin.math.min(a.toDouble(), b.toDouble()), kotlin.math.min(c.toDouble(), d.toDouble()))
-		.toFloat()
-
-	@Deprecated("Do not copy {@link Math} methods.", ReplaceWith("max(a, b)", "kotlin.math.max"))
-	fun max(a: Float, b: Float): Float = if (a > b) a else b
-
-	fun max(a: Float, b: Float, c: Float): Float = kotlin.math.max(kotlin.math.max(a.toDouble(), b.toDouble()), c.toDouble()).toFloat()
-
-	fun max(a: Float, b: Float, c: Float, d: Float): Float = kotlin.math.max(kotlin.math.max(a.toDouble(), b.toDouble()), kotlin.math.max(c.toDouble(), d.toDouble()))
-		.toFloat()
-
-	fun cos(value: Float): Float = kotlin.math.cos(value.toDouble()).toFloat()
-
-	fun sin(value: Float): Float = kotlin.math.sin(value.toDouble()).toFloat()
-
-	fun ceil(value: Float): Float = kotlin.math.ceil(value.toDouble()).toFloat()
-
-	fun floor(value: Float): Float = kotlin.math.floor(value.toDouble()).toFloat()
-
-	fun pow(value: Float, power: Float): Float = value.pow(power)
-
-	@Deprecated(
-		"Do not copy {@link Math} methods.",
-		ReplaceWith("abs(value)", "kotlin.math.abs"),
-	)
-	fun abs(value: Float): Float = kotlin.math.abs(value.toDouble()).toFloat()
-
-	@Deprecated(
-		"Do not copy {@link Math} methods.",
-		ReplaceWith("round(value)", "kotlin.math.round"),
-	)
-	fun round(value: Float): Float = kotlin.math.round(value)
-
-	fun sqrt(value: Float): Float = kotlin.math.sqrt(value.toDouble()).toFloat()
 
 	fun distance(x0: Float, y0: Float, z0: Float, x1: Float, y1: Float, z1: Float): Float = distance(x1 - x0, y1 - y0, z1 - z0)
 
@@ -357,10 +312,6 @@ object FloatMath {
 	fun sqrDistance(v: Vector3, x1: Float, y1: Float, z1: Float): Float = sqrDistance(x1 - v.x, y1 - v.y, z1 - v.z)
 
 	fun sqrDistance(x0: Float, y0: Float, z0: Float, x1: Float, y1: Float, z1: Float): Float = sqrDistance(x1 - x0, y1 - y0, z1 - z0)
-
-	fun hypot(x: Float, y: Float): Float = FastMath.sqrt(x * x + y * y)
-
-	fun hypot(x: Float, y: Float, z: Float): Float = FastMath.sqrt(x * x + y * y + z * z)
 
 	/**
 	 * The same as FastMath.clamp

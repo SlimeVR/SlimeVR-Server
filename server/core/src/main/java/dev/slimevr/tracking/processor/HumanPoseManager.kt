@@ -23,7 +23,7 @@ import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import org.apache.commons.math3.util.Precision
 import java.util.function.Consumer
-import kotlin.math.abs
+import kotlin.math.*
 
 /**
  * Class to handle communicate between classes in "skeleton" package and outside
@@ -586,7 +586,7 @@ class HumanPoseManager(val server: VRServer?) {
 				// Get the pure yaw
 				var trackerDriftAngle = abs(
 					(
-						FastMath.atan2(difference.y, difference.w) *
+						atan2(difference.y, difference.w) *
 							2 *
 							FastMath.RAD_TO_DEG
 						),

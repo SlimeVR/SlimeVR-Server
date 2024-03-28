@@ -31,7 +31,6 @@
  */
 package com.jme3.math
 
-import com.jme3.math.FastMath.ceil
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import java.util.*
@@ -139,7 +138,7 @@ object FastMath {
 	 */
 	fun isPowerOfTwo(number: Int): Boolean = (number > 0) && (number and (number - 1)) == 0
 
-	fun nearestPowerOfTwo(number: Int): Int = 2.0.pow(kotlin.math.ceil(ln(number.toDouble()) / ln(2.0))).toInt()
+	fun nearestPowerOfTwo(number: Int): Int = 2.0.pow(ceil(ln(number.toDouble()) / ln(2.0))).toInt()
 
 	/**
 	 * Linear interpolation from startValue to endValue by the given percent.
@@ -403,238 +402,16 @@ object FastMath {
 		return result
 	}
 
-	/**
-	 * Returns the arc cosine of a value.<br></br>
-	 * Special cases:
-	 *
-	 *  * If fValue is smaller than -1, then the result is PI.
-	 *  * If the argument is greater than 1, then the result is 0.
-	 *
-	 *
-	 * @param fValue The value to arc cosine.
-	 * @return The angle, in radians.
-	 * @see java.lang.Math.acos
-	 */
-	fun acos(fValue: Float): Float {
-		if (-1.0f < fValue) {
-			if (fValue < 1.0f) {
-				return kotlin.math.acos(fValue.toDouble()).toFloat()
-			}
-
-			return 0.0f
-		}
-
-		return PI
-	}
-
-	/**
-	 * Returns the arc sine of a value.<br></br>
-	 * Special cases:
-	 *
-	 *  * If fValue is smaller than -1, then the result is -HALF_PI.
-	 *  * If the argument is greater than 1, then the result is HALF_PI.
-	 *
-	 *
-	 * @param fValue The value to arc sine.
-	 * @return the angle in radians.
-	 * @see java.lang.Math.asin
-	 */
-	fun asin(fValue: Float): Float {
-		if (-1.0f < fValue) {
-			if (fValue < 1.0f) {
-				return kotlin.math.asin(fValue.toDouble()).toFloat()
-			}
-
-			return HALF_PI
-		}
-
-		return -HALF_PI
-	}
-
-	/**
-	 * Returns the arc tangent of an angle given in radians.<br></br>
-	 *
-	 * @param fValue The angle, in radians.
-	 * @return fValue's atan
-	 * @see java.lang.Math.atan
-	 */
-	fun atan(fValue: Float): Float = kotlin.math.atan(fValue.toDouble()).toFloat()
-
-	/**
-	 * A direct call to Math.atan2.
-	 *
-	 * @param fY
-	 * @param fX
-	 * @return Math.atan2(fY,fX)
-	 * @see java.lang.Math.atan2
-	 */
-	fun atan2(fY: Float, fX: Float): Float = kotlin.math.atan2(fY.toDouble(), fX.toDouble()).toFloat()
-
-	/**
-	 * Rounds a fValue up. A call to Math.ceil
-	 *
-	 * @param fValue The value.
-	 * @return The fValue rounded up
-	 * @see java.lang.Math.ceil
-	 */
-	fun ceil(fValue: Float): Float = kotlin.math.ceil(fValue.toDouble()).toFloat()
-
-	/**
-	 * Returns cosine of an angle. Direct call to java.lang.Math
-	 *
-	 * @see Math.cos
-	 * @param v The angle to cosine.
-	 * @return the cosine of the angle.
-	 */
-	fun cos(v: Float): Float = kotlin.math.cos(v.toDouble()).toFloat()
-
-	/**
-	 * Returns the sine of an angle. Direct call to java.lang.Math
-	 *
-	 * @see Math.sin
-	 * @param v The angle to sine.
-	 * @return the sine of the angle.
-	 */
-	fun sin(v: Float): Float = kotlin.math.sin(v.toDouble()).toFloat()
-
-	/**
-	 * Returns E^fValue
-	 *
-	 * @param fValue Value to raise to a power.
-	 * @return The value E^fValue
-	 * @see java.lang.Math.exp
-	 */
-	fun exp(fValue: Float): Float = kotlin.math.exp(fValue.toDouble()).toFloat()
-
-	/**
-	 * Returns Absolute value of a float.
-	 *
-	 * @param fValue The value to abs.
-	 * @return The abs of the value.
-	 * @see java.lang.Math.abs
-	 */
-	@JvmStatic
-	fun abs(fValue: Float): Float {
-		if (fValue < 0) {
-			return -fValue
-		}
-		return fValue
-	}
-
-	/**
-	 * Returns a number rounded down.
-	 *
-	 * @param fValue The value to round
-	 * @return The given number rounded down
-	 * @see java.lang.Math.floor
-	 */
-	fun floor(fValue: Float): Float = kotlin.math.floor(fValue.toDouble()).toFloat()
-
-	/**
-	 * Returns 1/sqrt(fValue)
-	 *
-	 * @param fValue The value to process.
-	 * @return 1/sqrt(fValue)
-	 * @see java.lang.Math.sqrt
-	 */
-	fun invSqrt(fValue: Float): Float = (1.0f / kotlin.math.sqrt(fValue.toDouble())).toFloat()
-
 	fun fastInvSqrt(x: Float): Float {
 		var x = x
 		val xhalf = 0.5f * x
 		var i = java.lang.Float.floatToIntBits(x) // get bits for floating value
 		i = 0x5f375a86 - (i shr 1) // gives initial guess y0
 		x = java.lang.Float.intBitsToFloat(i) // convert bits back to float
-		x = x * (1.5f - xhalf * x * x) // Newton step, repeating increases
+		x *= (1.5f - xhalf * x * x) // Newton step, repeating increases
 		// accuracy
 		return x
 	}
-
-	/**
-	 * Returns the log base E of a value.
-	 *
-	 * @param fValue The value to log.
-	 * @return The log of fValue base E
-	 * @see java.lang.Math.log
-	 */
-	fun log(fValue: Float): Float = ln(fValue.toDouble()).toFloat()
-
-	/**
-	 * Returns the logarithm of value with given base, calculated as
-	 * log(value)/log(base), so that pow(base, return)==value (contributed by
-	 * vear)
-	 *
-	 * @param value The value to log.
-	 * @param base Base of logarithm.
-	 * @return The logarithm of value with given base
-	 */
-	fun log(value: Float, base: Float): Float = (ln(value.toDouble()) / ln(base.toDouble())).toFloat()
-
-	/**
-	 * Returns a number raised to an exponent power. fBase^fExponent
-	 *
-	 * @param fBase The base value (IE 2)
-	 * @param fExponent The exponent value (IE 3)
-	 * @return base raised to exponent (IE 8)
-	 * @see java.lang.Math.pow
-	 */
-	@JvmStatic
-	fun pow(fBase: Float, fExponent: Float): Float = fBase.pow(fExponent)
-
-	/**
-	 * Returns the value squared. fValue ^ 2
-	 *
-	 * @param fValue The value to square.
-	 * @return The square of the given value.
-	 */
-	fun sqr(fValue: Float): Float = fValue * fValue
-
-	/**
-	 * Returns the square root of a given value.
-	 *
-	 * @param fValue The value to sqrt.
-	 * @return The square root of the given value.
-	 * @see java.lang.Math.sqrt
-	 */
-	@JvmStatic
-	fun sqrt(fValue: Float): Float = kotlin.math.sqrt(fValue.toDouble()).toFloat()
-
-	/**
-	 * Returns the tangent of a value. If USE_FAST_TRIG is enabled, an
-	 * approximate value is returned. Otherwise, a direct value is used.
-	 *
-	 * @param fValue The value to tangent, in radians.
-	 * @return The tangent of fValue.
-	 * @see java.lang.Math.tan
-	 */
-	fun tan(fValue: Float): Float = kotlin.math.tan(fValue.toDouble()).toFloat()
-
-	/**
-	 * Returns 1 if the number is positive, -1 if the number is negative, and 0
-	 * otherwise
-	 *
-	 * @param iValue The integer to examine.
-	 * @return The integer's sign.
-	 */
-	fun sign(iValue: Int): Int {
-		if (iValue > 0) {
-			return 1
-		}
-		if (iValue < 0) {
-			return -1
-		}
-		return 0
-	}
-
-	/**
-	 * Returns 1 if the number is positive, -1 if the number is negative, and 0
-	 * otherwise
-	 *
-	 * @param fValue The float to examine.
-	 * @return The float's sign.
-	 */
-	@JvmStatic
-	fun sign(fValue: Float): Float = kotlin.math.sign(fValue.toDouble()).toFloat()
 
 	/**
 	 * A method that computes normal for a triangle defined by three vertices.
@@ -687,24 +464,6 @@ object FastMath {
 				* (m10 * det12 - m11 * det02 + m12 * det01)
 			).toFloat()
 	}
-
-	/**
-	 * Returns a random float between 0 and 1.
-	 *
-	 * @return A random float between <tt>0.0f</tt> (inclusive) to <tt>1.0f</tt>
-	 * (exclusive).
-	 */
-	fun nextRandomFloat(): Float = rand.nextFloat()
-
-	/**
-	 * Returns a random integer between min and max.
-	 *
-	 * @return A random int between <tt>min</tt> (inclusive) to <tt>max</tt>
-	 * (inclusive).
-	 */
-	fun nextRandomInt(min: Int, max: Int): Int = (nextRandomFloat() * (max - min + 1)).toInt() + min
-
-	fun nextRandomInt(): Int = rand.nextInt()
 
 	/**
 	 * Converts a point from Spherical coordinates to Cartesian (using positive
@@ -782,23 +541,23 @@ object FastMath {
 	/**
 	 * Takes an value and expresses it in terms of min to max.
 	 *
-	 * @param val - the angle to normalize (in radians)
+	 * @param `val` - the angle to normalize (in radians)
 	 * @return the normalized angle (also in radians)
 	 */
 	@JvmStatic
-	fun normalize(`val`: Float, min: Float, max: Float): Float {
-		var `val` = `val`
-		if (java.lang.Float.isInfinite(`val`) || java.lang.Float.isNaN(`val`)) {
+	fun normalize(value: Float, min: Float, max: Float): Float {
+		var v = value
+		if (v.isInfinite() || v.isNaN()) {
 			return 0f
 		}
 		val range = max - min
-		while (`val` > max) {
-			`val` -= range
+		while (v > max) {
+			v -= range
 		}
-		while (`val` < min) {
-			`val` += range
+		while (v < min) {
+			v += range
 		}
-		return `val`
+		return v
 	}
 
 	/**
@@ -872,7 +631,7 @@ object FastMath {
 	}
 
 	fun convertFloatToHalf(flt: Float): Short {
-		if (java.lang.Float.isNaN(flt)) {
+		if (flt.isNaN()) {
 			throw UnsupportedOperationException("NaN to half conversion not supported!")
 		} else if (flt == Float.POSITIVE_INFINITY) {
 			return 0x7c00.toShort()
