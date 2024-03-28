@@ -1,10 +1,10 @@
 package dev.slimevr.autobone.errors
 
-import com.jme3.math.FastMath
 import dev.slimevr.autobone.AutoBoneStep
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
+import kotlin.math.*
 
 // The change in distance between both of the ankles over time
 class OffsetSlideError : IAutoBoneError {
@@ -39,12 +39,12 @@ class OffsetSlideError : IAutoBoneError {
 			val slideDist4 = (rightFoot1 - leftFoot2).len()
 
 			// Compute all combinations of distances
-			val dist1 = FastMath.abs(slideDist1 - slideDist2)
-			val dist2 = FastMath.abs(slideDist1 - slideDist3)
-			val dist3 = FastMath.abs(slideDist1 - slideDist4)
-			val dist4 = FastMath.abs(slideDist2 - slideDist3)
-			val dist5 = FastMath.abs(slideDist2 - slideDist4)
-			val dist6 = FastMath.abs(slideDist3 - slideDist4)
+			val dist1 = abs(slideDist1 - slideDist2)
+			val dist2 = abs(slideDist1 - slideDist3)
+			val dist3 = abs(slideDist1 - slideDist4)
+			val dist4 = abs(slideDist2 - slideDist3)
+			val dist5 = abs(slideDist2 - slideDist4)
+			val dist6 = abs(slideDist3 - slideDist4)
 
 			// Divide by 12 (6 values * 2 to halve) to halve and average, it's
 			// halved because you want to approach a midpoint, not the other point

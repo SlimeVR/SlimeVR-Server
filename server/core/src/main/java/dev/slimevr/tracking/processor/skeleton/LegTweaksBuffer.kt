@@ -3,6 +3,7 @@ package dev.slimevr.tracking.processor.skeleton
 import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlin.math.*
 
 /**
  * class that holds data related to the state and other various attributes of
@@ -38,7 +39,7 @@ class LegTweaksBuffer @Suppress("ktlint") constructor() {
 		private const val FLOOR_DISTANCE_CUTOFF = 0.065f
 		private const val SIX_TRACKER_TOLERANCE = -0.10f
 		private val FORCE_VECTOR_TO_PRESSURE: Vector3 = Vector3(0.25f, 1.0f, 0.25f)
-		private val FORCE_ERROR_TOLERANCE_SQR: Float = FastMath.sqr(4.0f)
+		private val FORCE_ERROR_TOLERANCE_SQR: Float = 4.0f.pow(2)
 		private val FORCE_VECTOR_FALLBACK = floatArrayOf(0.1f, 0.1f)
 
 		var SKATING_VELOCITY_THRESHOLD = 2.4f
@@ -570,8 +571,7 @@ class LegTweaksBuffer @Suppress("ktlint") constructor() {
 		// calculate the 'unlockedness factor' and use that to
 		// determine the scalar (go as low as 0.5 and as high as
 		// param_scalar_max)
-		val velocityDiffAbs: Float = FastMath
-			.abs(primaryFootVelMagnitude - otherFootVelMagnitude)
+		val velocityDiffAbs: Float = abs(primaryFootVelMagnitude - otherFootVelMagnitude)
 		if (velocityDiffAbs > MIN_SCALAR_ACTIVE) {
 			return PARAM_SCALAR_MIN
 		} else if (velocityDiffAbs < MAX_SCALAR_ACTIVE) {

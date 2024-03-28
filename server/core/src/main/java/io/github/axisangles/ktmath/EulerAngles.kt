@@ -2,12 +2,20 @@
 
 package io.github.axisangles.ktmath
 
+import kotlinx.serialization.Serializable
 import kotlin.math.cos
 import kotlin.math.sin
 
 enum class EulerOrder { XYZ, YZX, ZXY, ZYX, YXZ, XZY }
 
-data class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z: Float) {
+@JvmInline
+@Serializable
+value class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z: Float) {
+	operator fun component1(): EulerOrder = order
+	operator fun component2(): Float = x
+	operator fun component3(): Float = y
+	operator fun component4(): Float = z
+
 	/**
 	 * creates a quaternion which represents the same rotation as this eulerAngles
 	 * @return the quaternion

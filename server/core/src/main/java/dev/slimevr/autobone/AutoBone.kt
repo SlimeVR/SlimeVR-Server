@@ -1,6 +1,5 @@
 package dev.slimevr.autobone
 
-import com.jme3.math.FastMath
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
 import dev.slimevr.autobone.errors.*
@@ -21,6 +20,7 @@ import java.io.File
 import java.util.*
 import java.util.function.Consumer
 import java.util.function.Function
+import kotlin.math.*
 
 class AutoBone(server: VRServer) {
 	// This is filled by loadConfigValues()
@@ -742,7 +742,7 @@ class AutoBone(server: VRServer) {
 		val configValues: EnumMap<SkeletonConfigOffsets, Float>,
 	) {
 		val heightDifference: Float
-			get() = FastMath.abs(targetHeight - finalHeight)
+			get() = abs(targetHeight - finalHeight)
 	}
 
 	companion object {
