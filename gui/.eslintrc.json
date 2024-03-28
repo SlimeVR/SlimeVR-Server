@@ -13,6 +13,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
+  "ignorePatterns": ["src/firmware-tool-api"],
   "plugins": ["react-hooks", "@typescript-eslint"],
   "rules": {
     "react/react-in-jsx-scope": "off",
@@ -28,7 +29,8 @@
       "warn",
       {
         "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_"
+        "varsIgnorePattern": "^_",
+        "ignoreRestSiblings": true
       }
     ],
     "@dword-design/import-alias/prefer-alias": [

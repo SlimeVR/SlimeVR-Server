@@ -53,12 +53,8 @@ tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
 
-allprojects {
-	repositories {
-		google()
-		mavenCentral()
-		maven(url = "https://jitpack.io")
-	}
+repositories {
+	google()
 }
 
 dependencies {

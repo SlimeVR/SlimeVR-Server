@@ -40,14 +40,6 @@ tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
 
-allprojects {
-	repositories {
-		// Use jcenter for resolving dependencies.
-		// You can declare any Maven/Ivy/file repository here.
-		mavenCentral()
-	}
-}
-
 dependencies {
 	implementation(project(":server:core"))
 	implementation(project(":solarxr-protocol"))

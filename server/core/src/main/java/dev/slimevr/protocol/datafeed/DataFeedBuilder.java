@@ -38,8 +38,6 @@ public class DataFeedBuilder {
 			? fbb.createString(device.getManufacturer())
 			: 0;
 
-		int boardTypeOffset = fbb.createString(device.getBoardType().toString());
-
 		int hardwareIdentifierOffset = fbb.createString(device.getHardwareIdentifier());
 
 		HardwareInfo.startHardwareInfo(fbb);
@@ -66,7 +64,7 @@ public class DataFeedBuilder {
 		// TODO need support: HardwareInfo.addDisplayName(fbb, de);
 
 		HardwareInfo.addMcuId(fbb, device.getMcuType().getSolarType());
-		HardwareInfo.addBoardType(fbb, boardTypeOffset);
+		HardwareInfo.addOfficialBoardType(fbb, device.getBoardType().getSolarType());
 		return HardwareInfo.endHardwareInfo(fbb);
 	}
 
@@ -344,7 +342,7 @@ public class DataFeedBuilder {
 		for (int i = 0; i < devices.size(); i++) {
 			Device device = devices.get(i);
 			devicesDataOffsets[i] = DataFeedBuilder
-				.createDeviceData(fbb, i, deviceDataMaskT, device);
+				.createDeviceData(fbb, device.getId(), deviceDataMaskT, device);
 		}
 
 		return DataFeedUpdate.createDevicesVector(fbb, devicesDataOffsets);

@@ -181,6 +181,11 @@ class DesktopSerialHandler :
 		}
 	}
 
+	override fun write(buff: ByteArray) {
+		LogManager.info("[SerialHandler] WRITING $buff")
+		currentPort?.outputStream?.write(buff)
+	}
+
 	@Synchronized
 	override fun setWifi(ssid: String, passwd: String) {
 		val os = currentPort?.outputStream ?: return
@@ -244,5 +249,10 @@ class DesktopSerialHandler :
 				.severe("[SerialHandler] Using serial ports is not supported on this platform", e)
 			throw RuntimeException("Serial unsupported")
 		}
+	}
+
+	override fun getCurrentPort(): dev.slimevr.serial.SerialPort? {
+		val port = this.currentPort ?: return null
+		return SerialPortWrapper(port)
 	}
 }
