@@ -20,6 +20,12 @@ private const val DRIFT_COOLDOWN_MS = 50000L
  */
 class TrackerResetsHandler(val tracker: Tracker) {
 
+	private val HalfHorizontal = EulerAngles(
+		EulerOrder.YZX,
+		0f,
+		Math.PI.toFloat(),
+		0f,
+	).toQuaternion()
 	private var driftAmount = 0f
 	private var averagedDriftQuat = Quaternion.IDENTITY
 	private var rotationSinceReset = Quaternion.IDENTITY
@@ -36,12 +42,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	var lastResetQuaternion: Quaternion? = null
 
 	// Manual mounting orientation
-	var mountingOrientation: Quaternion = EulerAngles(
-		EulerOrder.YZX,
-		0f,
-		Math.PI.toFloat(),
-		0f,
-	).toQuaternion()
+	var mountingOrientation = HalfHorizontal
 		set(value) {
 			field = value
 			// Clear the mounting reset now that it's been set manually
@@ -196,6 +197,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			mountRotFix = getYawQuaternion(reference)
 		}
 		attachmentFix = fixAttachment(mountingAdjustedRotation)
+
+		// Rotate attachmentFix by 180 degrees as a workaround for tpose (down)
+		if (tposeDownFix != Quaternion.IDENTITY && tracker.needsMounting) {
+			attachmentFix *= HalfHorizontal
+		}
 
 		makeIdentityAdjustmentQuatsFull()
 
