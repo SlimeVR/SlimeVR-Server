@@ -88,6 +88,7 @@ interface SettingsForm {
   resetsSettings: {
     resetMountingFeet: boolean;
     armsMountingResetMode: number;
+    yawResetSmoothTime: number;
   };
 }
 
@@ -143,6 +144,7 @@ const defaultValues = {
   resetsSettings: {
     resetMountingFeet: false,
     armsMountingResetMode: 0,
+    yawResetSmoothTime: 0.0,
   },
 };
 
@@ -252,6 +254,8 @@ export function GeneralSettings() {
         values.resetsSettings.resetMountingFeet;
       resetsSettings.armsMountingResetMode =
         values.resetsSettings.armsMountingResetMode;
+      resetsSettings.yawResetSmoothTime =
+        values.resetsSettings.yawResetSmoothTime;
       settings.resetsSettings = resetsSettings;
     }
 
@@ -570,6 +574,19 @@ export function GeneralSettings() {
                 min={1}
                 max={25}
                 step={1}
+              />
+            </div>
+            <div className="flex gap-5 pt-5 md:flex-row flex-col">
+              <NumberSelector
+                control={control}
+                name="resetsSettings.yawResetSmoothTime"
+                label={l10n.getString(
+                  'settings-general-tracker_mechanics-yaw-reset-smooth-time'
+                )}
+                valueLabelFormat={(value) => `${Math.round(value * 20) / 20} s`}
+                min={0.0}
+                max={0.5}
+                step={0.05}
               />
             </div>
           </>
