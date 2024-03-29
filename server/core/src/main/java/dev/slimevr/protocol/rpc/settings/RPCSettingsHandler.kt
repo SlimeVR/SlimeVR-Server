@@ -93,72 +93,66 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val oscRouterConfig = api.server.configManager
 				.vrConfig
 				.oscRouter
-			if (oscRouterConfig != null) {
-				val oscRouter = api.server.oSCRouter
-				val osc = req.oscRouter().oscSettings()
-				if (osc != null) {
-					oscRouterConfig.enabled = osc.enabled()
-					oscRouterConfig.portIn = osc.portIn()
-					oscRouterConfig.portOut = osc.portOut()
-					oscRouterConfig.address = osc.address()
-				}
-
-				oscRouter.refreshSettings(true)
+			val oscRouter = api.server.oSCRouter
+			val osc = req.oscRouter().oscSettings()
+			if (osc != null) {
+				oscRouterConfig.enabled = osc.enabled()
+				oscRouterConfig.portIn = osc.portIn()
+				oscRouterConfig.portOut = osc.portOut()
+				oscRouterConfig.address = osc.address()
 			}
+
+			oscRouter.refreshSettings(true)
 		}
 
 		if (req.vrcOsc() != null) {
 			val vrcOSCConfig = api.server.configManager
 				.vrConfig
 				.vrcOSC
-			if (vrcOSCConfig != null) {
-				val VRCOSCHandler = api.server.vrcOSCHandler
-				val osc = req.vrcOsc().oscSettings()
-				val trackers = req.vrcOsc().trackers()
+			val vrcOscHandler = api.server.vrcOSCHandler
+			val osc = req.vrcOsc().oscSettings()
+			val trackers = req.vrcOsc().trackers()
 
-				if (osc != null) {
-					vrcOSCConfig.enabled = osc.enabled()
-					vrcOSCConfig.portIn = osc.portIn()
-					vrcOSCConfig.portOut = osc.portOut()
-					vrcOSCConfig.address = osc.address()
-				}
-				if (trackers != null) {
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head())
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest())
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist())
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees())
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees())
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet())
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet())
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows())
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows())
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands())
-					vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands())
-				}
-
-				VRCOSCHandler.refreshSettings(true)
+			if (osc != null) {
+				vrcOSCConfig.enabled = osc.enabled()
+				vrcOSCConfig.portIn = osc.portIn()
+				vrcOSCConfig.portOut = osc.portOut()
+				vrcOSCConfig.address = osc.address()
 			}
+			if (trackers != null) {
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.HEAD, trackers.head())
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.CHEST, trackers.chest())
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.WAIST, trackers.waist())
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_KNEE, trackers.knees())
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_KNEE, trackers.knees())
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_FOOT, trackers.feet())
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet())
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows())
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows())
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands())
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands())
+			}
+
+			vrcOscHandler.refreshSettings(true)
 		}
 
 		if (req.vmcOsc() != null) {
 			val vmcConfig = api.server.configManager
 				.vrConfig
 				.vmc
-			if (vmcConfig != null) {
-				val VMCHandler = api.server.vMCHandler
-				val osc = req.vmcOsc().oscSettings()
+			val vmcHandler = api.server.vMCHandler
+			val osc = req.vmcOsc().oscSettings()
 
-				if (osc != null) {
-					vmcConfig.enabled = osc.enabled()
-					vmcConfig.portIn = osc.portIn()
-					vmcConfig.portOut = osc.portOut()
-					vmcConfig.address = osc.address()
-				}
-				if (req.vmcOsc().vrmJson() != null) vmcConfig.vrmJson = req.vmcOsc().vrmJson()
-				vmcConfig.anchorHip = req.vmcOsc().anchorHip()
-
-				VMCHandler.refreshSettings(true)
+			if (osc != null) {
+				vmcConfig.enabled = osc.enabled()
+				vmcConfig.portIn = osc.portIn()
+				vmcConfig.portOut = osc.portOut()
+				vmcConfig.address = osc.address()
 			}
+			if (req.vmcOsc().vrmJson() != null) vmcConfig.vrmJson = req.vmcOsc().vrmJson()
+			vmcConfig.anchorHip = req.vmcOsc().anchorHip()
+
+			vmcHandler.refreshSettings(true)
 		}
 
 		if (req.tapDetectionSettings() != null) {

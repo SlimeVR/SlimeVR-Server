@@ -1,6 +1,6 @@
 package dev.slimevr.autobone
 
-import com.jme3.math.FastMath
+import kotlin.math.*
 
 /**
  * This is a stat calculator based on Welford's online algorithm
@@ -39,5 +39,5 @@ class StatsCalculator {
 			m2 / (count - 1)
 		}
 	val standardDeviation: Float
-		get() = FastMath.sqrt(variance)
+		get() = sqrt(variance)
 }
