@@ -54,9 +54,9 @@ abstract class SteamVRBridge(
 
 	override fun updateShareSettingsAutomatically(): Boolean {
 		if (!config.automaticSharedTrackersToggling) return false
-		// Enable waist if skeleton has an spine tracker
-		changeShareSettings(TrackerRole.WAIST, instance.humanPoseManager.skeleton.hasSpineTracker)
 		val skeleton = instance.humanPoseManager.skeleton
+		// Enable waist if skeleton has an spine tracker
+		changeShareSettings(TrackerRole.WAIST, skeleton.hasSpineTracker)
 
 		// hasChest if waist and/or hip is on, and chest and/or upper chest is also on
 		val hasChest = (skeleton.hipTracker != null || skeleton.waistTracker != null) &&
