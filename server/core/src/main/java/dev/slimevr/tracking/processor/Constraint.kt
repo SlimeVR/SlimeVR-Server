@@ -43,11 +43,11 @@ abstract class Constraint {
 	fun applyConstraint(direction: Vector3, thisBone: Bone): Quaternion {
 		val rotation = Quaternion.fromTo(Vector3.NEG_Y, direction)
 		if (allowModifications) {
-			return constraintRotation(rotation, thisBone)
+			return constraintRotation(rotation, thisBone).unit()
 		}
 
 		val constrainedRotation = applyLimits(rotation, originalRotation)
-		return constraintRotation(constrainedRotation, thisBone)
+		return constraintRotation(constrainedRotation, thisBone).unit()
 	}
 
 	/**
@@ -56,9 +56,8 @@ abstract class Constraint {
 	 * This is used for constraining direction vectors on the backwards pass
 	 * of the FABRIK solver.
 	 */
-	fun applyConstraintInverse(direction: Vector3, thisBone: Bone): Vector3 {
-		return -applyConstraint(-direction, thisBone).sandwich(Vector3.NEG_Y)
-	}
+	fun applyConstraintInverse(direction: Vector3, thisBone: Bone): Vector3 =
+		-applyConstraint(-direction, thisBone).sandwich(Vector3.NEG_Y)
 
 	/**
 	 * Limit the rotation to tolerance away from the initialRotation
@@ -101,7 +100,7 @@ abstract class Constraint {
 				FastMath.sqrt(1.0f - magnitudeSqr) * FastMath.sign(rot.w),
 				vector.x,
 				vector.y,
-				vector.z
+				vector.z,
 			)
 		}
 

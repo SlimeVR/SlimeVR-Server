@@ -38,14 +38,14 @@ class HumanSkeleton(
 	// Upper body bones
 	val headBone = Bone(BoneType.HEAD, CompleteConstraint())
 	val neckBone = Bone(BoneType.NECK, CompleteConstraint())
-	val upperChestBone = Bone(BoneType.UPPER_CHEST, TwistSwingConstraint(180f, 180f))
-	val chestBone = Bone(BoneType.CHEST, TwistSwingConstraint(180f, 180f))
-	val waistBone = Bone(BoneType.WAIST, TwistSwingConstraint(180f, 180f))
-	val hipBone = Bone(BoneType.HIP, TwistSwingConstraint(180f, 180f))
+	val upperChestBone = Bone(BoneType.UPPER_CHEST, TwistSwingConstraint(10f, 80f))
+	val chestBone = Bone(BoneType.CHEST, TwistSwingConstraint(10f, 80f))
+	val waistBone = Bone(BoneType.WAIST, TwistSwingConstraint(10f, 80f))
+	val hipBone = Bone(BoneType.HIP, TwistSwingConstraint(10f, 80f))
 
 	// Lower body bones
-	val leftHipBone = Bone(BoneType.LEFT_HIP, TwistSwingConstraint(180f, 7f))
-	val rightHipBone = Bone(BoneType.RIGHT_HIP, TwistSwingConstraint(180f, 7f))
+	val leftHipBone = Bone(BoneType.LEFT_HIP, TwistSwingConstraint(10f, 7f))
+	val rightHipBone = Bone(BoneType.RIGHT_HIP, TwistSwingConstraint(10f, 7f))
 	val leftUpperLegBone = Bone(BoneType.LEFT_UPPER_LEG, TwistSwingConstraint(180f, 120f))
 	val rightUpperLegBone = Bone(BoneType.RIGHT_UPPER_LEG, TwistSwingConstraint(180f, 120f))
 	val leftLowerLegBone = Bone(BoneType.LEFT_LOWER_LEG, TwistSwingConstraint(110f, 180f))
@@ -58,8 +58,10 @@ class HumanSkeleton(
 	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER, TwistSwingConstraint(180f, 7f))
 	val leftUpperArmBone = Bone(BoneType.LEFT_UPPER_ARM, TwistSwingConstraint(180f, 180f))
 	val rightUpperArmBone = Bone(BoneType.RIGHT_UPPER_ARM, TwistSwingConstraint(180f, 180f))
-	val leftLowerArmBone = Bone(BoneType.LEFT_LOWER_ARM, TwistSwingConstraint(90f, 180f))
-	val rightLowerArmBone = Bone(BoneType.RIGHT_LOWER_ARM, TwistSwingConstraint(90f, 180f))
+	val leftLowerArmBone =
+		Bone(BoneType.LEFT_LOWER_ARM, TwistSwingConstraint(180f, 180f))
+	val rightLowerArmBone =
+		Bone(BoneType.RIGHT_LOWER_ARM, TwistSwingConstraint(180f, 180f))
 	val leftHandBone = Bone(BoneType.LEFT_HAND, TwistSwingConstraint(180f, 180f))
 	val rightHandBone = Bone(BoneType.RIGHT_HAND, TwistSwingConstraint(180f, 180f))
 
