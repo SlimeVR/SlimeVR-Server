@@ -26,7 +26,7 @@ class IKChain(
 	private var targetSum = Vector3.NULL
 	var target = Vector3.NULL
 	var distToTargetSqr = Float.POSITIVE_INFINITY
-	var loosense = 0
+	var loosens = 0
 	private var centroidWeight = 1f
 	private var positions = getPositionList()
 
@@ -109,7 +109,7 @@ class IKChain(
 	fun resetChain() {
 		distToTargetSqr = Float.POSITIVE_INFINITY
 		centroidWeight = 1f
-		loosense = 0
+		loosens = 0
 
 		for (bone in nodes) {
 			bone.rotationConstraint.tolerance = 0.0f
@@ -149,7 +149,7 @@ class IKChain(
 	 * Allow constrained bones to deviate more per step
 	 */
 	fun decreaseConstraints() {
-		loosense++
+		loosens++
 		for (bone in nodes) {
 			bone.rotationConstraint.tolerance += IKSolver.TOLERANCE_STEP
 		}
@@ -167,8 +167,9 @@ class IKChain(
 			0.0f
 		}
 
-		for (chain in children)
+		for (chain in children) {
 			chain.computeTargetDistance()
+		}
 	}
 
 	/**
@@ -180,9 +181,7 @@ class IKChain(
 		val rotation = bone.rotationConstraint.applyConstraint(rotationVector, bone)
 		bone.setRotationRaw(rotation)
 
-		// TODO optimize (this is required to update the world translation for the next bone as it uses the world
-		//  rotation of the parent. We only need to update this bones translation though so this is very wasteful)
-		bone.update()
+		bone.updateThisNode()
 
 		return rotation.sandwich(Vector3.NEG_Y)
 	}
