@@ -50,6 +50,9 @@ importers:
       '@tauri-apps/plugin-shell':
         specifier: '=2.0.0-beta.2'
         version: 2.0.0-beta.2
+      '@tauri-apps/plugin-store':
+        specifier: '=2.0.0-beta.2'
+        version: 2.0.0-beta.2
       '@vitejs/plugin-react':
         specifier: ^4.2.1
         version: 4.2.1(vite@5.1.3)
@@ -3052,6 +3055,12 @@ packages:
 
   /@tauri-apps/plugin-shell@2.0.0-beta.2:
     resolution: {integrity: sha512-9rWsfN7Wt+EuWmpmNnK8bCs+04fzhEYrHtWyLIAYxb9diFdcJrEoctCP9YM2v+Uf8/y8qFC7VCbZ/9VQHANymQ==}
+    dependencies:
+      '@tauri-apps/api': 2.0.0-beta.4
+    dev: false
+
+  /@tauri-apps/plugin-store@2.0.0-beta.2:
+    resolution: {integrity: sha512-9TdMLLYEPqRSABRX3GtwFNWiulfW+SUHdi+5dVgdk73B8PtGf457gdtwvgrP/O2k9Vt/ET2X6Nurimx1185AzA==}
     dependencies:
       '@tauri-apps/api': 2.0.0-beta.4
     dev: false
