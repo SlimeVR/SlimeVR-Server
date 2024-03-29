@@ -25,7 +25,8 @@ class VRConfig {
 
 	val vrcOSC: VRCOSCConfig = VRCOSCConfig()
 
-	val vMC: VMCConfig = VMCConfig()
+	@get:JvmName("getVMC")
+	val vmc: VMCConfig = VMCConfig()
 
 	val autoBone: AutoBoneConfig = AutoBoneConfig()
 
@@ -76,8 +77,8 @@ class VRConfig {
 			)
 
 		// Initialize default settings for VMC
-		vMC.portIn = 39540
-		vMC.portOut = 39539
+		vmc.portIn = 39540
+		vmc.portOut = 39539
 	}
 
 	fun getTrackers(): Map<String, TrackerConfig> = trackers

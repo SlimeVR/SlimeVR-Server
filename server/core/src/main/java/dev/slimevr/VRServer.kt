@@ -151,7 +151,7 @@ class VRServer @JvmOverloads constructor(
 		vMCHandler = VMCHandler(
 			this,
 			humanPoseManager,
-			configManager.vrConfig.vMC,
+			configManager.vrConfig.vmc,
 			computedTrackers,
 		)
 

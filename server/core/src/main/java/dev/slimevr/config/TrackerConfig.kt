@@ -8,7 +8,9 @@ import io.github.axisangles.ktmath.ObjectQuaternion
 class TrackerConfig {
 	var customName: String? = null
 	var designation: String? = null
-	var isHide: Boolean = false
+
+	@get:JvmName("isHide")
+	var hide: Boolean = false
 	var adjustment: ObjectQuaternion? = null
 	var mountingOrientation: ObjectQuaternion? = null
 	var allowDriftCompensation: Boolean? = null
