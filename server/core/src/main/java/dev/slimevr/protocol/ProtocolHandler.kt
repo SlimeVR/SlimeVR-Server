@@ -14,12 +14,12 @@ abstract class ProtocolHandler<H> {
 
 	abstract fun messagesCount(): Int
 
-	fun registerPacketListener(packetType: Byte, consumer: BiConsumer<GenericConnection, H>?) {
-		if (handlers[packetType.toInt()] != null) {
-			handlers[packetType.toInt()] =
-				consumer?.let { handlers[packetType.toInt()]!!.andThen(it) }
+	fun registerPacketListener(packetType: Byte, consumer: BiConsumer<GenericConnection, H>) {
+		val packetInt = packetType.toInt()
+		if (handlers[packetInt] != null) {
+			handlers[packetInt] = handlers[packetInt]!!.andThen(consumer)
 		} else {
-			handlers[packetType.toInt()] = consumer
+			handlers[packetInt] = consumer
 		}
 	}
 }
