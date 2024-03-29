@@ -21,8 +21,8 @@ import solarxr_protocol.rpc.StatusSteamVRDisconnectedT
 
 abstract class SteamVRBridge(
 	server: VRServer,
-	threadName: String?,
-	bridgeName: String?,
+	threadName: String,
+	bridgeName: String,
 	protected val bridgeSettingsKey: String,
 	protected val shareableTrackers: List<Tracker>,
 ) : ProtobufBridge(bridgeName),

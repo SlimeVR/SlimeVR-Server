@@ -119,7 +119,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	}
 
 	@VRServerThread
-	protected open fun writeBatteryUpdate(localTracker: Tracker?) {
+	protected open fun writeBatteryUpdate(localTracker: Tracker) {
 		return
 	}
 
@@ -168,12 +168,12 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	}
 
 	@VRServerThread
-	protected open fun batteryReceived(batteryMessage: Battery?) {
+	protected open fun batteryReceived(batteryMessage: Battery) {
 		return
 	}
 
 	@VRServerThread
-	protected abstract fun createNewTracker(trackerAdded: TrackerAdded?): Tracker?
+	protected abstract fun createNewTracker(trackerAdded: TrackerAdded): Tracker
 
 	@VRServerThread
 	protected fun trackerAddedReceived(trackerAdded: TrackerAdded) {
