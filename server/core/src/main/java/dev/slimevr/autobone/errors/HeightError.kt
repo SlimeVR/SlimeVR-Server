@@ -1,7 +1,7 @@
 package dev.slimevr.autobone.errors
 
-import com.jme3.math.FastMath
 import dev.slimevr.autobone.AutoBoneStep
+import kotlin.math.*
 
 // The difference from the current height to the target height
 class HeightError : IAutoBoneError {
@@ -11,5 +11,5 @@ class HeightError : IAutoBoneError {
 		trainingStep.targetHmdHeight,
 	)
 
-	fun getHeightError(currentHeight: Float, targetHeight: Float): Float = FastMath.abs(targetHeight - currentHeight)
+	fun getHeightError(currentHeight: Float, targetHeight: Float): Float = abs(targetHeight - currentHeight)
 }

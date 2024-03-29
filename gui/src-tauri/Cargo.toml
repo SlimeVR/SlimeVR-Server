@@ -34,6 +34,7 @@ tauri-plugin-dialog = "=2.0.0-beta.2"
 tauri-plugin-fs = "=2.0.0-beta.2"
 tauri-plugin-os = "=2.0.0-beta.2"
 tauri-plugin-shell = "=2.0.0-beta.2"
+tauri-plugin-store = "=2.0.0-beta.2"
 flexi_logger = "0.28"
 log-panics = { version = "2", features = ["with-backtrace"] }
 log = "0.4"
