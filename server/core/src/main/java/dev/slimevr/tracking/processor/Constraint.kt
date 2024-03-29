@@ -1,6 +1,8 @@
 package dev.slimevr.tracking.processor
 
-import com.jme3.math.FastMath
+import com.jme3.math.FastMath.sign
+import com.jme3.math.FastMath.sqrt
+import com.jme3.math.FastMath.sin
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
@@ -89,7 +91,7 @@ abstract class Constraint {
 	}
 
 	protected fun constrain(rotation: Quaternion, angle: Float): Quaternion {
-		val magnitude = FastMath.sin(angle * 0.5f)
+		val magnitude = sin(angle * 0.5f)
 		val magnitudeSqr = magnitude * magnitude
 		var vector = rotation.xyz
 		var rot = rotation
@@ -97,7 +99,7 @@ abstract class Constraint {
 		if (vector.lenSq() > magnitudeSqr) {
 			vector = vector.unit() * magnitude
 			rot = Quaternion(
-				FastMath.sqrt(1.0f - magnitudeSqr) * FastMath.sign(rot.w),
+				sqrt(1.0f - magnitudeSqr) * sign(rot.w),
 				vector.x,
 				vector.y,
 				vector.z,
