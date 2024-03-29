@@ -15,6 +15,7 @@
     "@tauri-apps/plugin-fs": "=2.0.0-alpha.1",
     "@tauri-apps/plugin-os": "=2.0.0-alpha.2",
     "@tauri-apps/plugin-shell": "=2.0.0-alpha.1",
+    "@tauri-apps/plugin-store": "=2.0.0-alpha.1",
     "@tauri-apps/plugin-window": "=2.0.0-alpha.1",
     "@vitejs/plugin-react": "^3.0.0",
     "browser-fs-access": "^0.34.1",
