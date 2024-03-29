@@ -6,7 +6,6 @@ import io.github.axisangles.ktmath.Quaternion
  * A constraint type that allows no modifications to the rotation
  */
 class CompleteConstraint : Constraint() {
-	override fun constraintRotation(rotation: Quaternion, thisBone: Bone): Quaternion {
-		return thisBone.getGlobalRotation()
-	}
+	override fun constraintRotation(rotation: Quaternion, thisBone: Bone): Quaternion =
+		thisBone.getGlobalRotation()
 }
