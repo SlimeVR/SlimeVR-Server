@@ -1,8 +1,8 @@
 package dev.slimevr.tracking.processor
 
 import com.jme3.math.FastMath.sign
-import com.jme3.math.FastMath.sqrt
 import com.jme3.math.FastMath.sin
+import com.jme3.math.FastMath.sqrt
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 
