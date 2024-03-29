@@ -128,7 +128,7 @@ class IKSolver(private val root: Bone) {
 			chain.parent,
 			chain.level,
 			chain.baseConstraint,
-			childChain.tailConstraint
+			childChain.tailConstraint,
 		)
 
 		newChain.children = childChain.children
@@ -216,7 +216,7 @@ class IKSolver(private val root: Bone) {
 			}
 		}
 
-		if (maxDistChain.loosense < MAX_LOOSENS) maxDistChain.decreaseConstraints()
+		if (maxDistChain.loosens < MAX_LOOSENS) maxDistChain.decreaseConstraints()
 	}
 
 	fun solve() {
@@ -229,7 +229,7 @@ class IKSolver(private val root: Bone) {
 			}
 			needsReset = false
 		}
-
+		
 		rootChain?.resetChain()
 
 		for (i in 0 until MAX_ITERATIONS) {

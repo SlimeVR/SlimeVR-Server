@@ -59,6 +59,14 @@ class Bone(val boneType: BoneType, val rotationConstraint: Constraint) {
 	}
 
 	/**
+	 * Computes the rotations and positions of this bone.
+	 */
+	fun updateThisNode() {
+		headNode.updateThisNode()
+		tailNode.updateThisNode()
+	}
+
+	/**
 	 * Returns the world-aligned rotation of the bone
 	 */
 	fun getGlobalRotation(): Quaternion = headNode.worldTransform.rotation
