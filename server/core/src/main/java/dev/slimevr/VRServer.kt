@@ -13,6 +13,7 @@ import dev.slimevr.osc.VMCHandler
 import dev.slimevr.osc.VRCOSCHandler
 import dev.slimevr.posestreamer.BVHRecorder
 import dev.slimevr.protocol.ProtocolAPI
+import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
 import dev.slimevr.reset.ResetHandler
 import dev.slimevr.serial.ProvisioningHandler
 import dev.slimevr.serial.SerialHandler
@@ -185,6 +186,9 @@ class VRServer @JvmOverloads constructor(
 		return false
 	}
 
+	// FIXME: Code using this function normally uses this to get the SteamVR driver but
+	// 		that's because we first save the SteamVR driver bridge and then the feeder in the array.
+	// 		Not really a great thing to have.
 	@ThreadSafe
 	fun <E : Bridge?> getVRBridge(bridgeClass: Class<E>): E? {
 		for (bridge in bridges) {
@@ -221,7 +225,7 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	@ThreadSafe
-	fun addSkeletonUpdatedCallback(consumer: Consumer<HumanSkeleton?>?) {
+	fun addSkeletonUpdatedCallback(consumer: Consumer<HumanSkeleton>) {
 		queueTask { humanPoseManager.addSkeletonUpdatedCallback(consumer) }
 	}
 
@@ -289,7 +293,12 @@ class VRServer @JvmOverloads constructor(
 
 	@ThreadSafe
 	fun updateSkeletonModel() {
-		queueTask { humanPoseManager.updateSkeletonModelFromServer() }
+		queueTask {
+			humanPoseManager.updateSkeletonModelFromServer()
+			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
+				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
+			}
+		}
 		vrcOSCHandler.setHeadTracker(
 			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD),
 		)

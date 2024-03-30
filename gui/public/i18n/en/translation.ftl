@@ -304,6 +304,13 @@ settings-general-steamvr-trackers-feet = Feet
 settings-general-steamvr-trackers-knees = Knees
 settings-general-steamvr-trackers-elbows = Elbows
 settings-general-steamvr-trackers-hands = Hands
+settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
+settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments
+settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
+settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> hand trackers will override your controllers. 
+    Are you sure?
+settings-general-steamvr-trackers-hands-warning-cancel = Cancel
+settings-general-steamvr-trackers-hands-warning-done = Yes
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Tracker mechanics
@@ -620,8 +627,8 @@ onboarding-done-close = Close setup
 ## Tracker connection setup
 onboarding-connect_tracker-back = Go Back to Wi-Fi credentials
 onboarding-connect_tracker-title = Connect trackers
-onboarding-connect_tracker-description-p0 = Now onto the fun part, connecting all the trackers!
-onboarding-connect_tracker-description-p1 = Simply connect all that aren't connected yet, through a USB port.
+onboarding-connect_tracker-description-p0-v1 = Now onto the fun part, connecting trackers!
+onboarding-connect_tracker-description-p1-v1 = Connect each tracker one at a time through a USB port.
 onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-none = Looking for trackers
@@ -835,6 +842,8 @@ onboarding-automatic_proportions-check_height-title = Check your height
 onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the headset's (HMD) height as an approximation of your actual height, but it's better to check if they are right yourself!
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = Please press the button while standing <u>upright</u> to calculate your height. You have 3 seconds after you press the button!
+onboarding-automatic_proportions-check_height-guardian_tip = If you are using a standalone VR headset, make sure to have your guardian/
+    boundary turned on so that your height is correct!
 onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Unknown
