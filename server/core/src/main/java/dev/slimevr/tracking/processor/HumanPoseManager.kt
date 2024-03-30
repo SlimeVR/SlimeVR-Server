@@ -706,8 +706,10 @@ class HumanPoseManager(val server: VRServer?) {
 	fun checkTrackersRequiringReset() {
 		// Checks if this is main human pose manager (having server) or
 		// skeleton doesn't have a head tracker or not an HMD one
+		// TODO: Should this be ran anyways if headTracker is null or is not an HMD?
 		if (server == null ||
-			skeleton.headTracker == null || skeleton.headTracker?.isHmd != true
+			skeleton.headTracker == null ||
+			skeleton.headTracker?.isHmd != true
 		) {
 			return
 		}
@@ -722,8 +724,10 @@ class HumanPoseManager(val server: VRServer?) {
 
 	private var lastMissingHmdStatus = 0u
 	fun checkReportMissingHmd() {
+		// Check if this is main skeleton, there is no head tracker currently,
+		// and there is an available HMD one
 		if (server == null) return
-		val tracker = VRServer.instance.allTrackers.firstOrNull { it.isHmd && !it.isInternal }
+		val tracker = VRServer.instance.allTrackers.firstOrNull { it.isHmd && !it.isInternal && it.status.sendData }
 		if (skeleton.headTracker == null &&
 			lastMissingHmdStatus == 0u &&
 			tracker != null

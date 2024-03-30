@@ -101,6 +101,9 @@ class Tracker @JvmOverloads constructor(
 			VRServer.instance.updateSkeletonModel()
 			VRServer.instance.refreshTrackersDriftCompensationEnabled()
 
+			if (isHmd) {
+				VRServer.instance.humanPoseManager.checkReportMissingHmd()
+			}
 			checkReportErrorStatus()
 			checkReportRequireReset()
 		}
