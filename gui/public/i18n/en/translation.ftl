@@ -287,6 +287,13 @@ settings-general-steamvr-trackers-feet = Feet
 settings-general-steamvr-trackers-knees = Knees
 settings-general-steamvr-trackers-elbows = Elbows
 settings-general-steamvr-trackers-hands = Hands
+settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
+settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments
+settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
+settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> hand trackers will override your controllers. 
+    Are you sure?
+settings-general-steamvr-trackers-hands-warning-cancel = Cancel
+settings-general-steamvr-trackers-hands-warning-done = Yes
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Tracker mechanics

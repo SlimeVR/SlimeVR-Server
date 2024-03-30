@@ -1,8 +1,8 @@
 package dev.slimevr.autobone.errors.proportions
 
-import com.jme3.math.FastMath
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
+import kotlin.math.*
 
 class RangeProportionLimiter : HardProportionLimiter {
 	private val targetPositiveRange: Float
@@ -18,7 +18,7 @@ class RangeProportionLimiter : HardProportionLimiter {
 		skeletonConfigOffset: SkeletonConfigOffsets,
 		range: Float,
 	) : super(targetRatio, skeletonConfigOffset) {
-		val absRange = FastMath.abs(range)
+		val absRange = abs(range)
 
 		// Handle if someone puts in a negative value
 		targetPositiveRange = absRange
