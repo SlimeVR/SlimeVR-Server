@@ -93,13 +93,14 @@ abstract class Constraint {
 	protected fun constrain(rotation: Quaternion, angle: Float): Quaternion {
 		val magnitude = sin(angle * 0.5f)
 		val magnitudeSqr = magnitude * magnitude
+		val sign = if (rotation.w != 0f) sign(rotation.w) else 1f
 		var vector = rotation.xyz
 		var rot = rotation
 
 		if (vector.lenSq() > magnitudeSqr) {
 			vector = vector.unit() * magnitude
 			rot = Quaternion(
-				sqrt(1.0f - magnitudeSqr) * sign(rot.w),
+				sqrt(1.0f - magnitudeSqr) * sign,
 				vector.x,
 				vector.y,
 				vector.z,
