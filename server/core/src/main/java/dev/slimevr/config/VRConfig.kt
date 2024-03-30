@@ -48,7 +48,7 @@ class VRConfig {
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer::class)
 	private val bridges: MutableMap<String, BridgeConfig> = HashMap()
 
-	private val knownDevices: MutableSet<String> = mutableSetOf()
+	val knownDevices: MutableSet<String> = mutableSetOf()
 
 	val overlay: OverlayConfig = OverlayConfig()
 
