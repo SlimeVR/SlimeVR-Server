@@ -303,7 +303,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Smooth
 settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
 settings-general-tracker_mechanics-filtering-amount = Amount
-settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time (0.0 for disable smoothing)
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time (0.0 disables smoothing)
 settings-general-tracker_mechanics-drift_compensation = Drift compensation
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =

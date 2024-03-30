@@ -244,7 +244,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		calculateDrift(rot)
 
 		// Start at yaw before reset if smoothing enabled
-		if (yawResetSmoothTime != 0.0f) {
+		if (yawResetSmoothTime > 0.0f) {
 			yawResetSmoothTimeRemain = yawResetSmoothTime
 			yawFix = yawFixOld
 		}
@@ -458,18 +458,18 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	@Synchronized
 	fun update() {
-		if (yawResetSmoothTimeRemain != 0.0f) {
+		if (yawResetSmoothTimeRemain > 0.0f) {
 			var deltaTime = 0.001f
 			if (::fpsTimer.isInitialized) {
 				deltaTime = fpsTimer.timePerFrame
 			}
-			yawResetSmoothTimeRemain = max(0.0f, yawResetSmoothTimeRemain - deltaTime)
-			if (yawResetSmoothTimeRemain == 0.0f) {
+			yawResetSmoothTimeRemain = yawResetSmoothTimeRemain - deltaTime
+			if (yawResetSmoothTimeRemain <= 0.0f) {
 				yawFix = yawFixNew
 			} else {
-				yawFix = yawFixOld.interpR(
-					yawFixNew, 
-					animateEase( (yawResetSmoothTime - yawResetSmoothTimeRemain) / yawResetSmoothTime)
+				yawFix = yawFixNew.interpR(
+					yawFixOld,
+					animateEase(yawResetSmoothTimeRemain / yawResetSmoothTime)
 				) 
 			}
 		}
