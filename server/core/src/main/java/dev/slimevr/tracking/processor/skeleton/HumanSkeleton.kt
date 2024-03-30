@@ -508,7 +508,9 @@ class HumanSkeleton(
 
 		updateTransforms()
 		updateBones()
-		ikSolver.solve()
+
+		if (!pauseTracking) ikSolver.solve()
+
 		updateComputedTrackers()
 
 		// Don't run post-processing if the tracking is paused
