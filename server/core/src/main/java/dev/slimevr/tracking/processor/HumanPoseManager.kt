@@ -704,9 +704,15 @@ class HumanPoseManager(val server: VRServer?) {
 
 	// This should be executed when the head tracker is changed
 	fun checkTrackersRequiringReset() {
-		if (server == null || skeleton.headTracker == null && skeleton.headTracker?.isHmd != true) return
+		// Checks if this is main human pose manager (having server) or
+		// skeleton doesn't have a head tracker or not an HMD one
+		if (server == null ||
+			skeleton.headTracker == null || skeleton.headTracker?.isHmd != true
+		) {
+			return
+		}
 		server.allTrackers
-			.filter { !it.isInternal && it.trackerPosition != null && it.isImu() }
+			.filter { !it.isInternal && it.trackerPosition != null }
 			.forEach {
 				// This can't be solved with a yaw reset, it requires a full reset
 				it.statusResetRecently = false
