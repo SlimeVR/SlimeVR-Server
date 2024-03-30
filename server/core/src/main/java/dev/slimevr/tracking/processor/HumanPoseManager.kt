@@ -702,6 +702,18 @@ class HumanPoseManager(val server: VRServer?) {
 
 	fun togglePauseTracking(sourceName: String?): Boolean = skeleton.togglePauseTracking(sourceName)
 
+	// This should be executed when the head tracker is changed
+	fun checkTrackersRequiringReset() {
+		if (server == null || skeleton.headTracker == null && skeleton.headTracker?.isHmd != true) return
+		server.allTrackers
+			.filter { !it.isInternal && it.trackerPosition != null && it.isImu() }
+			.forEach {
+				// This can't be solved with a yaw reset, it requires a full reset
+				it.statusResetRecently = false
+				it.checkReportRequireReset()
+			}
+	}
+
 	private var lastMissingHmdStatus = 0u
 	fun checkReportMissingHmd() {
 		if (server == null) return

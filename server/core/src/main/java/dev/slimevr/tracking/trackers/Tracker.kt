@@ -141,7 +141,7 @@ class Tracker @JvmOverloads constructor(
 // 		}
 	}
 
-	private fun checkReportRequireReset() {
+	fun checkReportRequireReset() {
 		if (needsReset && trackerPosition != null && lastResetStatus == 0u &&
 			!status.reset && (isImu() || !statusResetRecently)
 		) {
