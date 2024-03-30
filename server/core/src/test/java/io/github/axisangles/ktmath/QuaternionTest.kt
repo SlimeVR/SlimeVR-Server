@@ -201,14 +201,13 @@ class QuaternionTest {
 		assertEquals(v2, v1)
 	}
 
+	@Suppress("ktlint")
 	@Test
 	fun toMatrix() {
-		/* ktlint-disable */
 		val m1 = Matrix3(
 			-1f,  0f,  0f,
 			 0f, -1f,  0f,
 			 0f,  0f,  1f)
-		/* ktlint-enable */
 		val m2 = Quaternion(0f, 0f, 0f, 2f).toMatrix()
 		assertEquals(m1, m2)
 	}
@@ -262,7 +261,7 @@ class QuaternionTest {
 			val squareSum = expected.lenSq() + actual.lenSq()
 			assertTrue(
 				len <= tolerance * tolerance * squareSum,
-				"Expected: $expected but got: $actual"
+				"Expected: $expected but got: $actual",
 			)
 		}
 	}
@@ -274,9 +273,7 @@ fun randInt(): Int {
 	return randSeed
 }
 
-fun randFloat(): Float {
-	return randInt().toFloat() / 2147483648
-}
+fun randFloat(): Float = randInt().toFloat() / 2147483648
 
 fun randGaussian(): Float {
 	var thing = 1f - randFloat()
@@ -287,22 +284,14 @@ fun randGaussian(): Float {
 	return sqrt(-2f * ln(thing)) * cos(PI.toFloat() * randFloat())
 }
 
-fun randMatrix(): Matrix3 {
-	return Matrix3(
-		randGaussian(), randGaussian(), randGaussian(),
-		randGaussian(), randGaussian(), randGaussian(),
-		randGaussian(), randGaussian(), randGaussian()
-	)
-}
+fun randMatrix(): Matrix3 = Matrix3(
+	randGaussian(), randGaussian(), randGaussian(),
+	randGaussian(), randGaussian(), randGaussian(),
+	randGaussian(), randGaussian(), randGaussian(),
+)
 
-fun randQuaternion(): Quaternion {
-	return Quaternion(randGaussian(), randGaussian(), randGaussian(), randGaussian())
-}
+fun randQuaternion(): Quaternion = Quaternion(randGaussian(), randGaussian(), randGaussian(), randGaussian())
 
-fun randRotMatrix(): Matrix3 {
-	return randQuaternion().toMatrix()
-}
+fun randRotMatrix(): Matrix3 = randQuaternion().toMatrix()
 
-fun randVector(): Vector3 {
-	return Vector3(randGaussian(), randGaussian(), randGaussian())
-}
+fun randVector(): Vector3 = Vector3(randGaussian(), randGaussian(), randGaussian())

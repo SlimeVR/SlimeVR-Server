@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
@@ -30,6 +30,7 @@ import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
+import { HandsWarningModal } from '@/components/settings/HandsWarningModal';
 
 interface SettingsForm {
   trackers: {
@@ -39,6 +40,7 @@ interface SettingsForm {
     knees: boolean;
     elbows: boolean;
     hands: boolean;
+    automaticTrackerToggle: boolean;
   };
   filtering: {
     type: number;
@@ -159,9 +161,13 @@ export function GeneralSettings() {
   });
 
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const { reset, control, watch, handleSubmit } = useForm<SettingsForm>({
-    defaultValues: defaultValues,
-  });
+  const { reset, control, watch, handleSubmit, getValues, setValue } =
+    useForm<SettingsForm>({
+      defaultValues: defaultValues,
+    });
+  const {
+    trackers: { automaticTrackerToggle, hands: steamVrHands },
+  } = watch();
 
   const onSubmit = (values: SettingsForm) => {
     const settings = new ChangeSettingsRequestT();
@@ -174,6 +180,7 @@ export function GeneralSettings() {
       trackers.knees = values.trackers.knees;
       trackers.elbows = values.trackers.elbows;
       trackers.hands = values.trackers.hands;
+      trackers.automaticTrackerToggle = values.trackers.automaticTrackerToggle;
       settings.steamVrTrackers = trackers;
     }
 
@@ -267,6 +274,9 @@ export function GeneralSettings() {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
   }, []);
 
+  // If null, we still haven't shown the hands warning
+  // if false then initially the hands warning was disabled
+  const [handsWarning, setHandsWarning] = useState<boolean | null>(null);
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     const formData: DefaultValues<SettingsForm> = {};
 
@@ -280,10 +290,13 @@ export function GeneralSettings() {
 
     if (settings.steamVrTrackers) {
       formData.trackers = settings.steamVrTrackers;
+      if (settings.steamVrTrackers.hands) {
+        setHandsWarning(false);
+      }
     }
 
     if (settings.modelSettings?.toggles) {
-      formData.toggles = Object.keys(settings.modelSettings?.toggles).reduce(
+      formData.toggles = Object.keys(settings.modelSettings.toggles).reduce(
         (curr, key: string) => ({
           ...curr,
           [key]:
@@ -296,7 +309,7 @@ export function GeneralSettings() {
     }
 
     if (settings.modelSettings?.ratios) {
-      formData.ratios = Object.keys(settings.modelSettings?.ratios).reduce(
+      formData.ratios = Object.keys(settings.modelSettings.ratios).reduce(
         (curr, key: string) => ({
           ...curr,
           [key]:
@@ -346,7 +359,7 @@ export function GeneralSettings() {
     if (settings.modelSettings?.legTweaks) {
       formData.legTweaks = {
         correctionStrength:
-          settings.modelSettings?.legTweaks.correctionStrength ||
+          settings.modelSettings.legTweaks.correctionStrength ||
           defaultValues.legTweaks.correctionStrength,
       };
     }
@@ -355,8 +368,16 @@ export function GeneralSettings() {
       formData.resetsSettings = settings.resetsSettings;
     }
 
-    reset(formData);
+    reset({ ...getValues(), ...formData });
   });
+
+  useEffect(() => {
+    if (steamVrHands && handsWarning === null) {
+      setHandsWarning(true);
+    } else if (!steamVrHands && handsWarning === false) {
+      setHandsWarning(null);
+    }
+  }, [steamVrHands, handsWarning]);
 
   // Handle scrolling to selected page
   // useEffect(() => {
@@ -372,6 +393,17 @@ export function GeneralSettings() {
 
   return (
     <SettingsPageLayout>
+      <HandsWarningModal
+        isOpen={!!handsWarning}
+        onClose={() => {
+          setValue('trackers.hands', false);
+          setHandsWarning(null);
+        }}
+        accept={() => {
+          setValue('trackers.hands', true);
+          setHandsWarning(false);
+        }}
+      />
       <form className="flex flex-col gap-2 w-full">
         <SettingsPagePaneLayout icon={<SteamIcon></SteamIcon>} id="steamvr">
           <>
@@ -395,6 +427,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.chest"
                 label={l10n.getString(
@@ -404,6 +437,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.waist"
                 label={l10n.getString(
@@ -413,6 +447,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.knees"
                 label={l10n.getString(
@@ -422,6 +457,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.feet"
                 label={l10n.getString('settings-general-steamvr-trackers-feet')}
@@ -429,6 +465,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.elbows"
                 label={l10n.getString(
@@ -445,6 +482,33 @@ export function GeneralSettings() {
                 )}
               />
             </div>
+            <div className="flex flex-col pt-4 pb-4"></div>
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-steamvr-trackers-tracker_toggling'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-2 pb-4">
+              {l10n
+                .getString(
+                  'settings-general-steamvr-trackers-tracker_toggling-description'
+                )
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="trackers.automaticTrackerToggle"
+              label={l10n.getString(
+                'settings-general-steamvr-trackers-tracker_toggling-label'
+              )}
+            />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">

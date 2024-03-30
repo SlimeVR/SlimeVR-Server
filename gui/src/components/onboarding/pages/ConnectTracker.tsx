@@ -1,11 +1,13 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  AddUnknownDeviceRequestT,
   RpcMessage,
   StartWifiProvisioningRequestT,
   StopWifiProvisioningRequestT,
+  UnknownDeviceHandshakeNotificationT,
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
 } from 'solarxr-protocol';
@@ -97,6 +99,15 @@ export function ConnectTrackersPage() {
     }
   );
 
+  useRPCPacket(
+    RpcMessage.UnknownDeviceHandshakeNotification,
+    ({ macAddress }: UnknownDeviceHandshakeNotificationT) =>
+      sendRPCPacket(
+        RpcMessage.AddUnknownDeviceRequest,
+        new AddUnknownDeviceRequestT(macAddress)
+      )
+  );
+
   const isError =
     provisioningStatus === WifiProvisioningStatus.CONNECTION_ERROR ||
     provisioningStatus === WifiProvisioningStatus.COULD_NOT_FIND_SERVER;
@@ -125,6 +136,14 @@ export function ConnectTrackersPage() {
         return SlimeState.JUMPY;
     }
   }, [provisioningStatus]);
+
+  const currentTip = useMemo(
+    () =>
+      connectedIMUTrackers.length > 0
+        ? 'tips-find_tracker'
+        : 'tips-turn_on_tracker',
+    [connectedIMUTrackers.length]
+  );
 
   return (
     <div className="flex flex-col h-full items-center px-4 pb-4">
@@ -156,7 +175,12 @@ export function ConnectTrackersPage() {
               {l10n.getString('onboarding-connect_tracker-issue-serial')}
             </ArrowLink>
           </div>
-          <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
+          <Localized
+            id={currentTip}
+            elems={{ em: <em className="italic"></em>, b: <b></b> }}
+          >
+            <TipBox>Conditional tip</TipBox>
+          </Localized>
 
           <div
             className={classNames(

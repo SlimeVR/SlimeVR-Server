@@ -6,7 +6,7 @@ This document describes essential knowledge required to contribute to the SlimeV
 
 - [Git](https://git-scm.com/downloads)
 - [Java v17+](https://adoptium.net/temurin/releases/)
-- [Node.js v16+](https://nodejs.org) (We recommend the use of `nvm` instead of installing Node.js directly)
+- [Node.js v16.9+](https://nodejs.org) (We recommend the use of `nvm` instead of installing Node.js directly)
 - [Microsoft Edge WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section) or `webkit2gtk` for Linux
 - [Rust](https://rustup.rs)
 
@@ -34,9 +34,10 @@ be at `server/build/libs/slimevr.jar` (you can ignore `server.jar`).
 
 ### Tauri (gui)
 
-- Run `npm install` in your IDE's terminal to download and install dependencies.
-- To launch the GUI in dev mode, run `npm run gui`.
-- Finally, to compile for production, run `npm run tauri build`. The result
+- Activate corepack (included with Node.JS) via `corepack enable` (might require administrator permissions)
+- Run `pnpm i` in your IDE's terminal to download and install dependencies.
+- To launch the GUI in dev mode, run `pnpm gui`.
+- Finally, to compile for production, run `pnpm run tauri build`. The result
 will be at `target/release/slimevr.exe`.
 
 ## Code style
@@ -87,8 +88,8 @@ Eclipse will only do a subset of the checks in `spotless`, so you may still want
 
 We use ESLint and Prettier to format GUI code.
 - First, go into the GUI's directory with your terminal by running `cd gui`.
-- To check code formatting, run `npm run lint`.
-- To fix code formatting, run `npm run lint:fix` and `npm run format`
+- To check code formatting, run `pnpm run lint`.
+- To fix code formatting, run `pnpm run lint:fix` and `pnpm run format`
 
 Don't forget to run `cd ..` to return to the root directory.
 

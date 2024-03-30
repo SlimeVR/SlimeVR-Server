@@ -1,6 +1,5 @@
 package dev.slimevr.autobone
 
-import com.jme3.math.FastMath
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
 import dev.slimevr.autobone.errors.*
@@ -20,11 +19,13 @@ import org.apache.commons.lang3.tuple.Pair
 import java.io.File
 import java.util.*
 import java.util.function.Consumer
+import java.util.function.Function
+import kotlin.math.*
 
 class AutoBone(server: VRServer) {
 	// This is filled by loadConfigValues()
 	val offsets = EnumMap<SkeletonConfigOffsets, Float>(
-		SkeletonConfigOffsets::class.java
+		SkeletonConfigOffsets::class.java,
 	)
 	val adjustOffsets = FastList(
 		arrayOf(
@@ -38,8 +39,8 @@ class AutoBone(server: VRServer) {
 			// best still, but it is somewhat functional
 			SkeletonConfigOffsets.HIPS_WIDTH,
 			SkeletonConfigOffsets.UPPER_LEG,
-			SkeletonConfigOffsets.LOWER_LEG
-		)
+			SkeletonConfigOffsets.LOWER_LEG,
+		),
 	)
 
 	var estimatedHeight: Float = 1f
@@ -97,6 +98,7 @@ class AutoBone(server: VRServer) {
 			SkeletonConfigOffsets.LOWER_LEG, SkeletonConfigOffsets.FOOT_LENGTH,
 			->
 				if (rightSide) configOffset.affectedOffsets[1] else configOffset.affectedOffsets[0]
+
 			else -> configOffset.affectedOffsets[0]
 		}
 		return skeleton.getBone(boneType).getGlobalRotation().toRotationVector()
@@ -146,7 +148,7 @@ class AutoBone(server: VRServer) {
 			targetHeight = humanPoseManager.userHeightFromConfig
 			LogManager
 				.warning(
-					"[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): $targetHeight"
+					"[AutoBone] Target height loaded from skeleton (Make sure you reset before running!): $targetHeight",
 				)
 		} else {
 			// Otherwise, attempt to get the max HMD height from the recording
@@ -154,7 +156,7 @@ class AutoBone(server: VRServer) {
 			if (hmdHeight <= 0.4f) {
 				LogManager
 					.warning(
-						"[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): $hmdHeight"
+						"[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): $hmdHeight",
 					)
 			} else {
 				LogManager.info("[AutoBone] Max headset height detected: $hmdHeight")
@@ -202,7 +204,7 @@ class AutoBone(server: VRServer) {
 			targetFullHeight = targetFullHeight,
 			frames = frames,
 			epochCallback = epochCallback,
-			serverConfig = server.configManager
+			serverConfig = server.configManager,
 		)
 
 		// Initialize the frame order randomizer with a repeatable seed
@@ -237,7 +239,7 @@ class AutoBone(server: VRServer) {
 					trainingStep.setCursors(
 						i,
 						j,
-						updatePlayerCursors = true
+						updatePlayerCursors = true,
 					)
 
 					frameStats.addValue(getErrorDeriv(trainingStep))
@@ -272,7 +274,7 @@ class AutoBone(server: VRServer) {
 					trainingStep.setCursors(
 						i,
 						j,
-						updatePlayerCursors = true
+						updatePlayerCursors = true,
 					)
 
 					frameStats.addValue(getErrorDeriv(trainingStep))
@@ -298,14 +300,14 @@ class AutoBone(server: VRServer) {
 
 		LogManager
 			.info(
-				"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, Final height: $estimatedHeight"
+				"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, Final height: $estimatedHeight",
 			)
 
 		return AutoBoneResults(
 			estimatedHeight,
 			trainingStep.targetHmdHeight,
 			trainingStep.errorStats,
-			offsets
+			offsets,
 		)
 	}
 
@@ -352,13 +354,13 @@ class AutoBone(server: VRServer) {
 						.setCursors(
 							randomFrameIndices[frameCursor],
 							randomFrameIndices[frameCursor2],
-							updatePlayerCursors = true
+							updatePlayerCursors = true,
 						)
 				} else {
 					trainingStep.setCursors(
 						frameCursor,
 						frameCursor2,
-						updatePlayerCursors = true
+						updatePlayerCursors = true,
 					)
 				}
 
@@ -375,11 +377,11 @@ class AutoBone(server: VRServer) {
 		if (epoch <= 0 || epoch >= config.numEpochs - 1 || (epoch + 1) % config.printEveryNumEpochs == 0) {
 			LogManager
 				.info(
-					"[AutoBone] Epoch: ${epoch + 1}, Mean error: ${errorStats.mean} (SD ${errorStats.standardDeviation}), Adjust rate: ${trainingStep.curAdjustRate}"
+					"[AutoBone] Epoch: ${epoch + 1}, Mean error: ${errorStats.mean} (SD ${errorStats.standardDeviation}), Adjust rate: ${trainingStep.curAdjustRate}",
 				)
 			LogManager
 				.info(
-					"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, Estimated height: $estimatedHeight"
+					"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, Estimated height: $estimatedHeight",
 				)
 		}
 
@@ -444,7 +446,7 @@ class AutoBone(server: VRServer) {
 			// Extinguish
 			LogManager
 				.warning(
-					"[AutoBone] Error value is invalid, resetting variables to recover"
+					"[AutoBone] Error value is invalid, resetting variables to recover",
 				)
 			// Reset adjustable config values
 			loadConfigValues()
@@ -487,14 +489,14 @@ class AutoBone(server: VRServer) {
 				skeleton2,
 				entry.key,
 				false,
-				slideLeft
+				slideLeft,
 			)
 			val rightDotProduct = getDotProductDiff(
 				skeleton1,
 				skeleton2,
 				entry.key,
 				true,
-				slideRight
+				slideRight,
 			)
 
 			// Calculate the total effect of the bone based on change in rotation
@@ -660,18 +662,18 @@ class AutoBone(server: VRServer) {
 			if (PoseFrameIO.tryWriteToFile(recordingFile, frames)) {
 				LogManager
 					.info(
-						"[AutoBone] Done exporting! Recording can be found at \"${recordingFile.path}\"."
+						"[AutoBone] Done exporting! Recording can be found at \"${recordingFile.path}\".",
 					)
 			} else {
 				LogManager
 					.severe(
-						"[AutoBone] Failed to export the recording to \"${recordingFile.path}\"."
+						"[AutoBone] Failed to export the recording to \"${recordingFile.path}\".",
 					)
 			}
 		} else {
 			LogManager
 				.severe(
-					"[AutoBone] Failed to create the recording directory \"${saveDir.path}\"."
+					"[AutoBone] Failed to create the recording directory \"${saveDir.path}\".",
 				)
 		}
 	}
@@ -698,7 +700,7 @@ class AutoBone(server: VRServer) {
 
 			LogManager
 				.info(
-					"[AutoBone] Detected recording at \"${file.path}\", loading frames..."
+					"[AutoBone] Detected recording at \"${file.path}\", loading frames...",
 				)
 			val frames = PoseFrameIO.tryReadFromFile(file)
 			if (frames == null) {
@@ -716,9 +718,7 @@ class AutoBone(server: VRServer) {
 		val epochError: StatsCalculator,
 		val configValues: EnumMap<SkeletonConfigOffsets, Float>,
 	) {
-		override fun toString(): String {
-			return "Epoch: $epoch, Epoch error: $epochError"
-		}
+		override fun toString(): String = "Epoch: $epoch, Epoch error: $epochError"
 	}
 
 	inner class AutoBoneResults(
@@ -728,7 +728,7 @@ class AutoBone(server: VRServer) {
 		val configValues: EnumMap<SkeletonConfigOffsets, Float>,
 	) {
 		val heightDifference: Float
-			get() = FastMath.abs(targetHeight - finalHeight)
+			get() = abs(targetHeight - finalHeight)
 	}
 
 	companion object {
@@ -738,22 +738,18 @@ class AutoBone(server: VRServer) {
 		// FIXME: Won't work on iOS and Android, maybe fix resolveConfigDirectory more than this
 		val saveDir = File(
 			OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(
-				AUTOBONE_FOLDER
-			)?.toString() ?: AUTOBONE_FOLDER
+				AUTOBONE_FOLDER,
+			)?.toString() ?: AUTOBONE_FOLDER,
 		)
 		val loadDir = File(
 			OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(
-				LOADAUTOBONE_FOLDER
-			)?.toString() ?: LOADAUTOBONE_FOLDER
+				LOADAUTOBONE_FOLDER,
+			)?.toString() ?: LOADAUTOBONE_FOLDER,
 		)
 
 		// Mean square error function
-		private fun errorFunc(errorDeriv: Float): Float {
-			return 0.5f * (errorDeriv * errorDeriv)
-		}
+		private fun errorFunc(errorDeriv: Float): Float = 0.5f * (errorDeriv * errorDeriv)
 
-		private fun decayFunc(initialAdjustRate: Float, adjustRateDecay: Float, epoch: Int): Float {
-			return if (epoch >= 0) initialAdjustRate / (1 + (adjustRateDecay * epoch)) else 0.0f
-		}
+		private fun decayFunc(initialAdjustRate: Float, adjustRateDecay: Float, epoch: Int): Float = if (epoch >= 0) initialAdjustRate / (1 + (adjustRateDecay * epoch)) else 0.0f
 	}
 }

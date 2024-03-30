@@ -53,6 +53,7 @@ import { InterfaceSettings } from './components/settings/pages/InterfaceSettings
 import { error, log } from './utils/logging';
 import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
+import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -66,6 +67,7 @@ function Layout() {
     <>
       <SerialDetectionModal></SerialDetectionModal>
       <VersionUpdateModal></VersionUpdateModal>
+      <UnknownDeviceModal></UnknownDeviceModal>
       <Routes>
         <Route element={<AppLayout />}>
           <Route

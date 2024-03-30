@@ -11,18 +11,17 @@ import dev.slimevr.osc.VMCHandler
 import dev.slimevr.osc.VRCOSCHandler
 import dev.slimevr.posestreamer.BVHRecorder
 import dev.slimevr.protocol.ProtocolAPI
+import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
 import dev.slimevr.reset.ResetHandler
 import dev.slimevr.serial.ProvisioningHandler
 import dev.slimevr.serial.SerialHandler
 import dev.slimevr.serial.SerialHandlerStub
+import dev.slimevr.setup.HandshakeHandler
 import dev.slimevr.setup.TapSetupHandler
 import dev.slimevr.status.StatusSystem
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
-import dev.slimevr.tracking.trackers.DeviceManager
-import dev.slimevr.tracking.trackers.Tracker
-import dev.slimevr.tracking.trackers.TrackerPosition
-import dev.slimevr.tracking.trackers.TrackerUtils
+import dev.slimevr.tracking.trackers.*
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
 import dev.slimevr.util.ann.VRServerThread
 import dev.slimevr.websocketapi.WebSocketVRBridge
@@ -48,7 +47,6 @@ class VRServer @JvmOverloads constructor(
 	driverBridgeProvider: SteamBridgeProvider = { _, _ -> null },
 	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _ -> null },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
-	// configPath is used by VRWorkout, do not remove!
 	configPath: String,
 ) : Thread("VRServer") {
 	@JvmField
@@ -97,6 +95,9 @@ class VRServer @JvmOverloads constructor(
 	@JvmField
 	val statusSystem = StatusSystem()
 
+	@JvmField
+	val handshakeHandler = HandshakeHandler()
+
 	init {
 		// UwU
 		configManager = ConfigManager(configPath)
@@ -117,7 +118,7 @@ class VRServer @JvmOverloads constructor(
 		LogManager.info("Starting the tracker server on port $trackerPort...")
 		trackersServer = TrackersUDPServer(
 			trackerPort,
-			"Sensors UDP server"
+			"Sensors UDP server",
 		) { tracker: Tracker -> registerTracker(tracker) }
 
 		// Start bridges for SteamVR and Feeder
@@ -143,13 +144,13 @@ class VRServer @JvmOverloads constructor(
 			humanPoseManager,
 			driverBridge,
 			configManager.vrConfig.vrcOSC,
-			computedTrackers
+			computedTrackers,
 		)
 		vMCHandler = VMCHandler(
 			this,
 			humanPoseManager,
 			configManager.vrConfig.vmc,
-			computedTrackers
+			computedTrackers,
 		)
 
 		// Initialize OSC router
@@ -173,6 +174,9 @@ class VRServer @JvmOverloads constructor(
 		return false
 	}
 
+	// FIXME: Code using this function normally uses this to get the SteamVR driver but
+	// 		that's because we first save the SteamVR driver bridge and then the feeder in the array.
+	// 		Not really a great thing to have.
 	@ThreadSafe
 	fun <E : Bridge?> getVRBridge(bridgeClass: Class<E>): E? {
 		for (bridge in bridges) {
@@ -209,7 +213,7 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	@ThreadSafe
-	fun addSkeletonUpdatedCallback(consumer: Consumer<HumanSkeleton?>?) {
+	fun addSkeletonUpdatedCallback(consumer: Consumer<HumanSkeleton>) {
 		queueTask { humanPoseManager.addSkeletonUpdatedCallback(consumer) }
 	}
 
@@ -277,9 +281,14 @@ class VRServer @JvmOverloads constructor(
 
 	@ThreadSafe
 	fun updateSkeletonModel() {
-		queueTask { humanPoseManager.updateSkeletonModelFromServer() }
+		queueTask {
+			humanPoseManager.updateSkeletonModelFromServer()
+			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
+				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
+			}
+		}
 		vrcOSCHandler.setHeadTracker(
-			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD)
+			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD),
 		)
 	}
 
@@ -398,9 +407,7 @@ class VRServer @JvmOverloads constructor(
 			get() = ::instance.isInitialized
 
 		@JvmStatic
-		fun getNextLocalTrackerId(): Int {
-			return nextLocalTrackerId.incrementAndGet()
-		}
+		fun getNextLocalTrackerId(): Int = nextLocalTrackerId.incrementAndGet()
 
 		@JvmStatic
 		val currentLocalTrackerId: Int

@@ -67,8 +67,8 @@ class Tracker @JvmOverloads constructor(
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
-	private var rotation = Quaternion.IDENTITY
-	private var acceleration = Vector3.NULL
+	private var _rotation = Quaternion.IDENTITY
+	private var _acceleration = Vector3.NULL
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
@@ -84,8 +84,7 @@ class Tracker @JvmOverloads constructor(
 	 */
 	var statusResetRecently = false
 	private var alreadyInitialized = false
-	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) {
-			_, old, new ->
+	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) { _, old, new ->
 		if (old == new) return@observable
 
 		if (!new.reset) {
@@ -106,8 +105,7 @@ class Tracker @JvmOverloads constructor(
 		}
 	}
 
-	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) {
-			_, old, new ->
+	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) { _, old, new ->
 		if (old == new) return@observable
 
 		if (!isInternal) {
@@ -217,7 +215,7 @@ class Tracker @JvmOverloads constructor(
 			getByDesignation(designation)?.let { trackerPosition = it }
 		} ?: run { trackerPosition = null }
 		if (needsMounting) {
-			config.mountingOrientation?.let { resetsHandler.mountingOrientation = it }
+			config.mountingOrientation?.let { resetsHandler.mountingOrientation = it.toValue() }
 		}
 		if (this.isImu() && config.allowDriftCompensation == null) {
 			// If value didn't exist, default to true and save
@@ -243,7 +241,7 @@ class Tracker @JvmOverloads constructor(
 		trackerPosition?.let { config.designation = it.designation } ?: run { config.designation = null }
 		customName?.let { config.customName = it }
 		if (needsMounting) {
-			config.mountingOrientation = resetsHandler.mountingOrientation
+			config.mountingOrientation = resetsHandler.mountingOrientation.toObject()
 		}
 		if (this.isImu()) {
 			config.allowDriftCompensation = resetsHandler.allowDriftCompensation
@@ -270,7 +268,7 @@ class Tracker @JvmOverloads constructor(
 	fun dataTick() {
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
-		filteringHandler.dataTick(rotation)
+		filteringHandler.dataTick(_rotation)
 	}
 
 	/**
@@ -293,7 +291,7 @@ class Tracker @JvmOverloads constructor(
 			filteringHandler.getFilteredRotation()
 		} else {
 			// Get unfiltered rotation
-			rotation
+			_rotation
 		}
 
 		if (needsReset && !(isComputed && trackerPosition == TrackerPosition.HEAD)) {
@@ -307,12 +305,10 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * Gets the world-adjusted acceleration
 	 */
-	fun getAcceleration(): Vector3 {
-		return if (needsReset) {
-			resetsHandler.getReferenceAdjustedAccel(rotation, acceleration)
-		} else {
-			acceleration
-		}
+	fun getAcceleration(): Vector3 = if (needsReset) {
+		resetsHandler.getReferenceAdjustedAccel(_rotation, _acceleration)
+	} else {
+		_acceleration
 	}
 
 	/**
@@ -326,7 +322,7 @@ class Tracker @JvmOverloads constructor(
 			filteringHandler.getFilteredRotation()
 		} else {
 			// Get unfiltered rotation
-			rotation
+			_rotation
 		}
 
 		if (needsReset && trackerPosition != TrackerPosition.HEAD) {
@@ -341,27 +337,23 @@ class Tracker @JvmOverloads constructor(
 	 * Gets the raw (unadjusted) rotation of the tracker.
 	 * If this is an IMU, this will be the raw sensor rotation.
 	 */
-	fun getRawRotation(): Quaternion {
-		return rotation
-	}
+	fun getRawRotation(): Quaternion = _rotation
 
 	/**
 	 * Sets the raw (unadjusted) rotation of the tracker.
 	 */
 	fun setRotation(rotation: Quaternion) {
-		this.rotation = rotation
+		this._rotation = rotation
 	}
 
 	/**
 	 * Sets the raw (unadjusted) acceleration of the tracker.
 	 */
 	fun setAcceleration(vec: Vector3) {
-		this.acceleration = vec
+		this._acceleration = vec
 	}
 
-	fun isImu(): Boolean {
-		return imuType != null
-	}
+	fun isImu(): Boolean = imuType != null
 
 	/**
 	 * Gets the current TPS of the tracker

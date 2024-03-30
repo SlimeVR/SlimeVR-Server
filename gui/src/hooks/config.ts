@@ -1,9 +1,9 @@
-import { BaseDirectory, readTextFile } from '@tauri-apps/plugin-fs';
-
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import { DeveloperModeWidgetForm } from '@/components/widgets/DeveloperModeWidget';
 import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
+import { Store } from '@tauri-apps/plugin-store';
+import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
 
 export interface WindowConfig {
@@ -28,6 +28,7 @@ export interface Config {
   advancedAssign: boolean;
   useTray: boolean | null;
   doneManualMounting: boolean;
+  mirrorView: boolean;
 }
 
 export interface ConfigContext {
@@ -51,6 +52,19 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   advancedAssign: false,
   useTray: null,
   doneManualMounting: false,
+  mirrorView: true,
+};
+
+interface CrossStorage {
+  set(key: string, value: string): Promise<void>;
+  get(key: string): Promise<string | null>;
+}
+
+const tauriStore: CrossStorage = new Store('gui-settings.dat');
+
+const localStore: CrossStorage = {
+  get: async (key) => localStorage.getItem(key),
+  set: async (key, value) => localStorage.setItem(key, value),
 };
 
 function fallbackToDefaults(loadedConfig: any): Config {
@@ -60,12 +74,14 @@ function fallbackToDefaults(loadedConfig: any): Config {
 export function useConfigProvider(): ConfigContext {
   const [currConfig, set] = useState<Config | null>(null);
   const [loading, setLoading] = useState(false);
+  const tauri = useIsTauri();
+  const store = useMemo(() => (tauri ? tauriStore : localStore), [tauri]);
 
   useDebouncedEffect(
     () => {
       if (!currConfig) return;
 
-      localStorage.setItem('config.json', JSON.stringify(currConfig));
+      store.set('config.json', JSON.stringify(currConfig));
     },
     [currConfig],
     100
@@ -101,18 +117,16 @@ export function useConfigProvider(): ConfigContext {
     loadConfig: async () => {
       setLoading(true);
       try {
-        const migrated = localStorage.getItem('configMigrated');
+        const migrated = await store.get('configMigratedToTauri');
         if (!migrated) {
-          const oldConfig = await readTextFile('config.json', {
-            dir: BaseDirectory.AppConfig,
-          }).catch(() => null);
+          const oldConfig = localStorage.getItem('config.json');
 
-          if (oldConfig) localStorage.setItem('config.json', oldConfig);
+          if (oldConfig) await store.set('config.json', oldConfig);
 
-          localStorage.setItem('configMigrated', 'true');
+          store.set('configMigratedToTauri', 'true');
         }
 
-        const json = localStorage.getItem('config.json');
+        const json = await store.get('config.json');
 
         if (!json) throw new Error('Config has ceased existing for some reason');
 

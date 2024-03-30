@@ -32,17 +32,10 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		private const val CONSTANT_ACCELERATION: Float = 2.0f
 	}
 
-	private val skeleton: HumanSkeleton
-	private val legTweaks: LegTweaks
-	private var bufCur: LegTweaksBuffer
-	private var bufPrev: LegTweaksBuffer
-
-	init {
-		skeleton = humanSkeleton
-		legTweaks = skeleton.legTweaks
-		bufCur = legTweaks.bufferHead
-		bufPrev = LegTweaksBuffer()
-	}
+	private val skeleton: HumanSkeleton = humanSkeleton
+	private val legTweaks: LegTweaks = skeleton.legTweaks
+	private var bufCur: LegTweaksBuffer = legTweaks.bufferHead
+	private var bufPrev: LegTweaksBuffer = LegTweaksBuffer()
 
 	// state variables
 	private var enabled: Boolean = false
@@ -66,9 +59,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	private var comTravel: Vector3 = Vector3.NULL
 	private var sittingTravel: Vector3 = Vector3.NULL
 
-	fun getEnabled(): Boolean {
-		return enabled
-	}
+	fun getEnabled(): Boolean = enabled
 
 	fun setEnabled(enabled: Boolean) {
 		this.enabled = enabled
@@ -109,7 +100,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		// get the movement of the skeleton by the previous COM velocity
 		comTravel = getCOMTravel()
 
-		sittingTravel = getSittingTravel()
+		sittingTravel = computeSittingTravel()
 
 		// get the metric that this frame should rely on
 		worldReference = getWorldReference()
@@ -133,7 +124,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			finalTravel = Vector3(
 				finalTravel.x,
 				comTravel.y,
-				finalTravel.z
+				finalTravel.z,
 			)
 		}
 
@@ -214,9 +205,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	}
 
 	// get the travel of a foot over a frame
-	private fun getFootTravel(loc: Vector3): Vector3 {
-		return loc - targetFoot
-	}
+	private fun getFootTravel(loc: Vector3): Vector3 = loc - targetFoot
 
 	// update the target position of the foot
 	private fun updateTargetPos(loc: Vector3, foot: MovementStates) {
@@ -231,7 +220,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	}
 
 	// get the sitting travel (emulates hip lock)
-	private fun getSittingTravel(): Vector3 {
+	private fun computeSittingTravel(): Vector3 {
 		val hip = skeleton.computedHipTracker?.position ?: Vector3.NULL
 
 		// get the distance to move the waist to the target waist
@@ -319,7 +308,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			comAccel = Vector3(
 				comAccel.x,
 				FastMath.clamp(comAccel.y, -9999.0f, 0.0f),
-				comAccel.z
+				comAccel.z,
 			)
 		}
 
@@ -331,19 +320,17 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		comVelocity = Vector3(
 			comVelocity.x,
 			comY + (gravity / bufCur.getTimeDelta()),
-			comVelocity.z
+			comVelocity.z,
 		)
 
 		return comVelocity
 	}
 
 	// returns true if either foot is below 0.0
-	private fun isFootOnGround(): Boolean {
-		return (
-			bufCur.leftFootPosition.y <= floor ||
-				bufCur.rightFootPosition.y <= floor
-			)
-	}
+	private fun isFootOnGround(): Boolean = (
+		bufCur.leftFootPosition.y <= floor ||
+			bufCur.rightFootPosition.y <= floor
+		)
 
 	// returns the tracker closest to or the furthest in the ground
 	private fun getLowestTracker(): Tracker? {
@@ -358,7 +345,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 			skeleton.computedLeftKneeTracker,
 			skeleton.computedRightKneeTracker,
 			skeleton.computedLeftFootTracker,
-			skeleton.computedRightFootTracker
+			skeleton.computedRightFootTracker,
 		)
 
 		var minVal = trackerList[0]?.position?.y

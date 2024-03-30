@@ -40,62 +40,44 @@ data class TrackerFrame(
 		dataFlags = initDataFlags
 	}
 
-	fun hasData(flag: TrackerFrameData): Boolean {
-		return flag.check(dataFlags)
-	}
+	fun hasData(flag: TrackerFrameData): Boolean = flag.check(dataFlags)
 
 	// region Tracker Try Getters
-	fun tryGetTrackerPosition(): TrackerPosition? {
-		return if (hasData(TrackerFrameData.TRACKER_POSITION_ENUM) || hasData(TrackerFrameData.DESIGNATION_STRING)) {
-			trackerPosition
-		} else {
-			null
-		}
+	fun tryGetTrackerPosition(): TrackerPosition? = if (hasData(TrackerFrameData.TRACKER_POSITION_ENUM) || hasData(TrackerFrameData.DESIGNATION_STRING)) {
+		trackerPosition
+	} else {
+		null
 	}
 
-	fun tryGetRotation(): Quaternion? {
-		return if (hasData(TrackerFrameData.ROTATION)) {
-			rotation
-		} else {
-			null
-		}
+	fun tryGetRotation(): Quaternion? = if (hasData(TrackerFrameData.ROTATION)) {
+		rotation
+	} else {
+		null
 	}
 
-	fun tryGetRawRotation(): Quaternion? {
-		return if (hasData(TrackerFrameData.RAW_ROTATION)) {
-			rawRotation
-		} else {
-			null
-		}
+	fun tryGetRawRotation(): Quaternion? = if (hasData(TrackerFrameData.RAW_ROTATION)) {
+		rawRotation
+	} else {
+		null
 	}
 
-	fun tryGetPosition(): Vector3? {
-		return if (hasData(TrackerFrameData.POSITION)) {
-			position
-		} else {
-			null
-		}
+	fun tryGetPosition(): Vector3? = if (hasData(TrackerFrameData.POSITION)) {
+		position
+	} else {
+		null
 	}
 
-	fun tryGetAcceleration(): Vector3? {
-		return if (hasData(TrackerFrameData.ACCELERATION)) {
-			acceleration
-		} else {
-			null
-		}
+	fun tryGetAcceleration(): Vector3? = if (hasData(TrackerFrameData.ACCELERATION)) {
+		acceleration
+	} else {
+		null
 	}
 
-	fun hasRotation(): Boolean {
-		return hasData(TrackerFrameData.ROTATION)
-	}
+	fun hasRotation(): Boolean = hasData(TrackerFrameData.ROTATION)
 
-	fun hasPosition(): Boolean {
-		return hasData(TrackerFrameData.POSITION)
-	}
+	fun hasPosition(): Boolean = hasData(TrackerFrameData.POSITION)
 
-	fun hasAcceleration(): Boolean {
-		return hasData(TrackerFrameData.ACCELERATION)
-	}
+	fun hasAcceleration(): Boolean = hasData(TrackerFrameData.ACCELERATION)
 	// endregion
 
 	companion object {
@@ -128,7 +110,7 @@ data class TrackerFrame(
 				rotation,
 				position,
 				acceleration,
-				rawRotation
+				rawRotation,
 			)
 		}
 	}

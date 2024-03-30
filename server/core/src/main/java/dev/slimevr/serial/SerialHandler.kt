@@ -13,6 +13,7 @@ abstract class SerialHandler {
 	abstract fun rebootRequest()
 	abstract fun factoryResetRequest()
 	abstract fun infoRequest()
+	abstract fun wifiScanRequest()
 	abstract fun closeSerial()
 	abstract fun setWifi(ssid: String, passwd: String)
 
@@ -37,14 +38,14 @@ abstract class SerialHandler {
 			// FT232RL/Q, FT245RL/Q
 			// VNC1L with VDPS Firmware
 			// VNC2 with FT232Slave
-			Pair(0x0403, 0x6001)
+			Pair(0x0403, 0x6001),
 		)
 		fun isKnownBoard(port: SerialPort): Boolean =
 			supportedSerial.contains(Pair(port.vendorId, port.productId))
 	}
 }
 
-class SerialHandlerStub() : SerialHandler() {
+class SerialHandlerStub : SerialHandler() {
 	override val isConnected: Boolean = false
 	override val knownPorts: Stream<out SerialPort> = Stream.empty()
 
@@ -52,15 +53,15 @@ class SerialHandlerStub() : SerialHandler() {
 
 	override fun removeListener(channel: SerialListener) {}
 
-	override fun openSerial(portLocation: String?, auto: Boolean): Boolean {
-		return false
-	}
+	override fun openSerial(portLocation: String?, auto: Boolean): Boolean = false
 
 	override fun rebootRequest() {}
 
 	override fun factoryResetRequest() {}
 
 	override fun infoRequest() {}
+
+	override fun wifiScanRequest() {}
 
 	override fun closeSerial() {}
 

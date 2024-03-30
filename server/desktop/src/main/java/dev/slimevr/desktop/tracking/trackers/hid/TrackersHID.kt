@@ -22,7 +22,9 @@ import kotlin.experimental.and
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
  */
-class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>) : Thread(name), HidServicesListener {
+class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>) :
+	Thread(name),
+	HidServicesListener {
 	private val devices: MutableList<HIDDevice> = mutableListOf()
 	private val devicesBySerial: MutableMap<String, MutableList<Int>> = HashMap()
 	private val devicesByHID: MutableMap<HidDevice, MutableList<Int>> = HashMap()
@@ -107,7 +109,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 				allowFiltering = true,
 				needsReset = true,
 				needsMounting = true,
-				usesTimeout = false
+				usesTimeout = false,
 			)
 			// usesTimeout false because HID trackers aren't "Disconnected" unless receiver is physically removed probably
 			// TODO: Could tracker maybe use "Timed out" status without marking as disconnecting?
@@ -116,7 +118,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			imuTracker.status = sensorStatus
 			LogManager
 				.info(
-					"[TrackerServer] Added sensor $trackerId for ${device.name}, type $sensorType"
+					"[TrackerServer] Added sensor $trackerId for ${device.name}, type $sensorType",
 				)
 		}
 	}
@@ -153,18 +155,20 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 					currentThread().interrupt()
 					break
 				}
-				dataRead()
+				dataRead() // not in try catch?
 			}
 		}
 
 	private fun dataRead() {
 		synchronized(devicesByHID) {
+			var devicesPresent = false
 			for ((hidDevice, deviceList) in devicesByHID) {
 				val dataReceived: Array<Byte> = try {
 					hidDevice.read(80, 1) // Read up to 80 bytes, timeout 1ms
 				} catch (e: NegativeArraySizeException) {
 					continue // Skip devices with read error (Maybe disconnected)
 				}
+				devicesPresent = true // Even if the device has no data
 				if (dataReceived.isNotEmpty()) {
 					// Process data
 					// TODO: make this less bad
@@ -181,17 +185,17 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						val battery_mV = dataReceived[i + 5].toInt() and 255 shl 8 or (dataReceived[i + 4].toInt() and 255)
 						val q = floatArrayOf(0f, 0f, 0f, 0f)
 						val a = floatArrayOf(0f, 0f, 0f)
-						for (j in 0..3) {
+						for (j in 0..3) { // quat received as fixed 14
 							var buf =
 								dataReceived[i + 6 + j * 2 + 1].toInt() and 255 shl 8 or (dataReceived[i + 6 + j * 2].toInt() and 255)
 							buf -= 32768 // uint to int
 							q[j] = buf / (1 shl 14).toFloat() // fixed 14 to float
 						}
-						for (j in 0..2) {
+						for (j in 0..2) { // accel received as fixed 7, in m/s
 							var buf =
 								dataReceived[i + 14 + j * 2 + 1].toInt() and 255 shl 8 or (dataReceived[i + 14 + j * 2].toInt() and 255)
 							buf -= 32768 // uint to int
-							a[j] = buf / (1 shl 10).toFloat() // fixed 10 to float
+							a[j] = buf / (1 shl 7).toFloat() // fixed 7 to float
 						}
 						val trackerId = idCombination and 0b1111
 						val deviceId = (idCombination shr 4) and 0b1111
@@ -209,7 +213,6 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						tracker.setRotation(rot)
 						// TODO: I think the acceleration is wrong???
 						var acceleration = Vector3(a[0], a[1], a[2])
-						acceleration = tracker.getRotation().sandwich(acceleration)
 						tracker.setAcceleration(acceleration)
 						tracker.dataTick()
 						i += 20
@@ -217,15 +220,16 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 					// LogManager.info("[TrackerServer] HID received $packetCount tracker packets")
 				}
 			}
+			if (!devicesPresent) {
+				sleep(10) // No hid device, "empty loop" so sleep to save the poor cpu
+			}
 		}
 	}
 
 	override fun run() { // Doesn't seem to run
 	}
 
-	fun getDevices(): List<Device> {
-		return devices
-	}
+	fun getDevices(): List<Device> = devices
 
 	override fun hidDeviceAttached(event: HidServicesEvent) {
 		checkConfigureDevice(event.hidDevice)

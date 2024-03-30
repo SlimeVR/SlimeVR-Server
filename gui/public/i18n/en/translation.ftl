@@ -19,6 +19,8 @@ tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
 tips-tap_setup = You can slowly tap 2 times your tracker to choose it instead of selecting it from the menu.
+tips-turn_on_tracker = Using official SlimeVR trackers? Remember to <b><em>turn on your tracker</em></b> after connecting it to the PC!
+tips-failed_webgl = Failed to initialize WebGL.
 
 ## Body parts
 body_part-NONE = Unassigned
@@ -193,6 +195,9 @@ tracker-settings-drift_compensation_section-edit = Allow drift compensation
 tracker-settings-name_section = Tracker name
 tracker-settings-name_section-description = Give it a cute nickname :)
 tracker-settings-name_section-placeholder = NightyBeast's left leg
+tracker-settings-forget = Forget tracker
+tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevent it from connecting to it until the server is restarted. The configuration of the tracker won't be lost.
+tracker-settings-forget-label = Forget tracker
 
 ## Tracker part card info
 tracker-part_card-no_name = No name
@@ -282,6 +287,13 @@ settings-general-steamvr-trackers-feet = Feet
 settings-general-steamvr-trackers-knees = Knees
 settings-general-steamvr-trackers-elbows = Elbows
 settings-general-steamvr-trackers-hands = Hands
+settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
+settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments
+settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
+settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> hand trackers will override your controllers. 
+    Are you sure?
+settings-general-steamvr-trackers-hands-warning-cancel = Cancel
+settings-general-steamvr-trackers-hands-warning-done = Yes
 
 ## Tracker mechanics
 settings-general-tracker_mechanics = Tracker mechanics
@@ -445,6 +457,7 @@ settings-serial-factory_reset-warning-cancel = Cancel
 settings-serial-get_infos = Get Infos
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
+settings-serial-get_wifi_scan = Get WiFi Scan
 
 ## OSC router settings
 settings-osc-router = OSC router
@@ -596,8 +609,8 @@ onboarding-done-close = Close setup
 ## Tracker connection setup
 onboarding-connect_tracker-back = Go Back to Wi-Fi credentials
 onboarding-connect_tracker-title = Connect trackers
-onboarding-connect_tracker-description-p0 = Now onto the fun part, connecting all the trackers!
-onboarding-connect_tracker-description-p1 = Simply connect all that aren't connected yet, through a USB port.
+onboarding-connect_tracker-description-p0-v1 = Now onto the fun part, connecting trackers!
+onboarding-connect_tracker-description-p1-v1 = Connect each tracker one at a time through a USB port.
 onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-none = Looking for trackers
@@ -652,6 +665,7 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
 } assigned
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
+onboarding-assign_trackers-mirror_view = Mirror view
 
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.
@@ -761,8 +775,9 @@ onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 ## Tracker proportions method choose
 onboarding-choose_proportions = What proportion calibration method to use?
 # Multiline string
-onboarding-choose_proportions-description = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
+onboarding-choose_proportions-description-v1 = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
     When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
+    <b>You only need to measure your body once!</b> Unless they are wrong or your body has changed, then you don't need to do them again.
 onboarding-choose_proportions-auto_proportions = Automatic proportions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
@@ -809,6 +824,8 @@ onboarding-automatic_proportions-check_height-title = Check your height
 onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the headset's (HMD) height as an approximation of your actual height, but it's better to check if they are right yourself!
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = Please press the button while standing <u>upright</u> to calculate your height. You have 3 seconds after you press the button!
+onboarding-automatic_proportions-check_height-guardian_tip = If you are using a standalone VR headset, make sure to have your guardian/
+    boundary turned on so that your height is correct!
 onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Unknown
@@ -884,3 +901,10 @@ tray_or_exit_modal-radio-exit = Exit on close
 tray_or_exit_modal-radio-tray = Minimize to system tray
 tray_or_exit_modal-submit = Save
 tray_or_exit_modal-cancel = Cancel
+
+## Unknown device modal
+unknown_device-modal-title = A new tracker was found!
+unknown_device-modal-description = There is a new tracker with MAC address <b>{$deviceId}</b>.
+    Do you want to connect it to SlimeVR?
+unknown_device-modal-confirm = Sure!
+unknown_device-modal-forget = Ignore it

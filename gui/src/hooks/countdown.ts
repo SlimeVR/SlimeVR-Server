@@ -11,7 +11,7 @@ export function useCountdown({
 }) {
   const [isCounting, setIsCounting] = useState(false);
   const [timer, setDisplayTimer] = useState(0);
-  const countdownTimer = useRef<NodeJS.Timeout>();
+  const countdownTimer = useRef<ReturnType<typeof setInterval>>();
   const counter = useRef(0);
 
   const startCountdown = () => {

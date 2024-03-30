@@ -184,7 +184,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	fun tweakLegs() {
 		// If user doesn't have knees or legtweaks is disabled,
 		// don't spend time doing calculations!
-		if (!skeleton.hasKneeTrackers && !alwaysUseFloorclip || !enabled) return
+		if ((!skeleton.hasKneeTrackers && !alwaysUseFloorclip) || !enabled) return
 
 		// update the class with the latest data from the skeleton
 		// if false is returned something indicated that the legs should not
@@ -203,14 +203,12 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		// determine if either leg is in a position to activate or
 		// deactivate
 		// (use the buffer to get the positions before corrections)
-		val leftFootDif = FastMath
-			.abs(
-				(bufferHead.leftFootPosition - leftFootPosition).y
-			)
-		val rightFootDif = FastMath
-			.abs(
-				(bufferHead.rightFootPosition - rightFootPosition).y
-			)
+		val leftFootDif = abs(
+			(bufferHead.leftFootPosition - leftFootPosition).y,
+		)
+		val rightFootDif = abs(
+			(bufferHead.rightFootPosition - rightFootPosition).y,
+		)
 
 		if (!active && leftFootDif < NEARLY_ZERO) {
 			leftLegActive = false
@@ -228,24 +226,24 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			leftFootPosition = Vector3(
 				leftFootPosition.x,
 				bufferHead.leftFootPosition.y,
-				leftFootPosition.z
+				leftFootPosition.z,
 			)
 			leftKneePosition = Vector3(
 				leftKneePosition.x,
 				bufferHead.leftKneePosition.y,
-				leftKneePosition.z
+				leftKneePosition.z,
 			)
 		}
 		if (!rightLegActive) {
 			rightFootPosition = Vector3(
 				rightFootPosition.x,
 				bufferHead.rightFootPosition.y,
-				rightFootPosition.z
+				rightFootPosition.z,
 			)
 			rightKneePosition = Vector3(
 				rightKneePosition.x,
 				bufferHead.rightKneePosition.y,
-				rightKneePosition.z
+				rightKneePosition.z,
 			)
 		}
 
@@ -259,7 +257,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 				rightFootPosition,
 				leftKneePosition,
 				rightKneePosition,
-				hipPosition
+				hipPosition,
 			)
 
 		// Set the corrected positions in the skeleton
@@ -275,21 +273,19 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		LegTweaksBuffer.setSkatingVelocityThreshold(
 			getScaledHyperParameter(
 				newStrength,
-				LegTweaksBuffer.getSkatingVelocityThreshold()
-			)
+				LegTweaksBuffer.getSkatingVelocityThreshold(),
+			),
 		)
 		LegTweaksBuffer.setSkatingAccelerationThreshold(
 			getScaledHyperParameter(
 				newStrength,
-				LegTweaksBuffer.getSkatingAccelerationThreshold()
-			)
+				LegTweaksBuffer.getSkatingAccelerationThreshold(),
+			),
 		)
 		currentCorrectionStrength = newStrength
 	}
 
-	private fun getScaledHyperParameter(newStrength: Float, currentValue: Float): Float {
-		return currentValue - currentCorrectionStrength * MAX_CORRECTION_STRENGTH_DELTA + newStrength * MAX_CORRECTION_STRENGTH_DELTA
-	}
+	private fun getScaledHyperParameter(newStrength: Float, currentValue: Float): Float = currentValue - currentCorrectionStrength * MAX_CORRECTION_STRENGTH_DELTA + newStrength * MAX_CORRECTION_STRENGTH_DELTA
 
 	private fun setFloorLevel(floorLevel: Float) {
 		this.floorLevel = floorLevel
@@ -350,7 +346,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 					rightFootPosition,
 					leftKneePosition,
 					rightKneePosition,
-					hipPosition
+					hipPosition,
 				)
 
 			// if active correct clipping before populating corrected positions
@@ -364,7 +360,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 					rightFootPosition,
 					leftKneePosition,
 					rightKneePosition,
-					hipPosition
+					hipPosition,
 				)
 			bufferHead.leftLegState = LegTweaksBuffer.UNLOCKED
 			bufferHead.rightLegState = LegTweaksBuffer.UNLOCKED
@@ -404,7 +400,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			hipPosition,
 			centerOfMass,
 			bufferHead,
-			active
+			active,
 		)
 
 		// update the lock duration counters
@@ -412,12 +408,10 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	}
 
 	// returns true if the foot is clipped and false if it is not
-	private fun isClipped(leftOffset: Float, rightOffset: Float): Boolean {
-		return (
-			leftFootPosition.y < floorLevel + leftOffset * footLength ||
-				rightFootPosition.y < floorLevel + rightOffset * footLength
-			)
-	}
+	private fun isClipped(leftOffset: Float, rightOffset: Float): Boolean = (
+		leftFootPosition.y < floorLevel + leftOffset * footLength ||
+			rightFootPosition.y < floorLevel + rightOffset * footLength
+		)
 
 	// corrects the foot position to be above the floor level that is calculated
 	// on calibration
@@ -440,17 +434,17 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 				(
 					floorLevel + footLength * leftOffset - leftFootPosition.y -
 						currentDisengagementOffset
-					)
+					),
 			)
 			leftFootPosition = Vector3(
 				leftFootPosition.x,
 				leftFootPosition.y + displacement,
-				leftFootPosition.z
+				leftFootPosition.z,
 			)
 			leftKneePosition = Vector3(
 				leftKneePosition.x,
 				leftKneePosition.y + displacement,
-				leftKneePosition.z
+				leftKneePosition.z,
 			)
 			avgOffset += displacement
 		}
@@ -463,17 +457,17 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 				(
 					floorLevel + footLength * rightOffset - rightFootPosition.y -
 						currentDisengagementOffset
-					)
+					),
 			)
 			rightFootPosition = Vector3(
 				rightFootPosition.x,
 				rightFootPosition.y + displacement,
-				rightFootPosition.z
+				rightFootPosition.z,
 			)
 			rightKneePosition = Vector3(
 				rightKneePosition.x,
 				rightKneePosition.y + displacement,
-				rightKneePosition.z
+				rightKneePosition.z,
 			)
 			avgOffset += displacement
 		}
@@ -481,7 +475,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		hipPosition = Vector3(
 			hipPosition.x,
 			hipPosition.y + avgOffset / 2 * WAIST_PUSH_WEIGHT,
-			hipPosition.z
+			hipPosition.z,
 		)
 	}
 
@@ -500,7 +494,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 				leftFootPosition.y,
 				bufPrev
 					.leftFootPositionCorrected
-					.z
+					.z,
 			)
 		}
 		if (bufferHead.rightLegState == LegTweaksBuffer.LOCKED) {
@@ -511,7 +505,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 				rightFootPosition.y,
 				bufPrev
 					.rightFootPositionCorrected
-					.z
+					.z,
 			)
 		}
 
@@ -549,7 +543,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			// applied
 			val weight: Float = calculateCorrectionWeight(
 				newFootPosition,
-				previousFootPositionCorrected
+				previousFootPositionCorrected,
 			)
 			val constantCorrection = getConstantCorrectionQuantity(framesUnlocked)
 			var newX = newFootPosition.x
@@ -598,7 +592,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			if (checkOverShoot(
 					footPosition.x,
 					previousFootPositionCorrected.x,
-					newX
+					newX,
 				)
 			) {
 				newX = footPosition.x
@@ -606,7 +600,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			if (checkOverShoot(
 					footPosition.z,
 					previousFootPositionCorrected.z,
-					newZ
+					newZ,
 				)
 			) {
 				newZ = footPosition.z
@@ -618,15 +612,13 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	}
 
 	// get the amount of the constant correction to apply.
-	private fun getConstantCorrectionQuantity(framesUnlocked: Int): Float {
-		return if (framesUnlocked >= CONTINUOUS_CORRECTION_WARMUP) {
+	private fun getConstantCorrectionQuantity(framesUnlocked: Int): Float = if (framesUnlocked >= CONTINUOUS_CORRECTION_WARMUP) {
+		CONTINUOUS_CORRECTION_DIST
+	} else {
+		(
 			CONTINUOUS_CORRECTION_DIST
-		} else {
-			(
-				CONTINUOUS_CORRECTION_DIST
-					* (leftFramesUnlocked.toFloat() / CONTINUOUS_CORRECTION_WARMUP)
-				)
-		}
+				* (leftFramesUnlocked.toFloat() / CONTINUOUS_CORRECTION_WARMUP)
+			)
 	}
 
 	// correct the rotations of the feet
@@ -660,12 +652,12 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			// if foot trackers exist add to the weights
 			if (leftFootTracker) {
 				weightL *= getRotationalDistanceToPlant(
-					leftFootRotation
+					leftFootRotation,
 				)
 			}
 			if (rightFootTracker) {
 				weightR *= getRotationalDistanceToPlant(
-					rightFootRotation
+					rightFootRotation,
 				)
 			}
 
@@ -673,12 +665,12 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			leftFootRotation = leftFootRotation
 				.interpR(
 					isolateYaw(leftFootRotation),
-					weightL * masterWeightL
+					weightL * masterWeightL,
 				)
 			rightFootRotation = rightFootRotation
 				.interpR(
 					isolateYaw(rightFootRotation),
-					weightR * masterWeightR
+					weightR * masterWeightR,
 				)
 		}
 
@@ -711,14 +703,14 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 				leftFootRotation = leftFootRotation
 					.interpR(
 						replacePitch(leftFootRotation, -angleL),
-						weightL * masterWeightL
+						weightL * masterWeightL,
 					)
 			}
 			if (!rightFootTracker) {
 				rightFootRotation = rightFootRotation
 					.interpR(
 						replacePitch(rightFootRotation, -angleR),
-						weightR * masterWeightR
+						weightR * masterWeightR,
 					)
 			}
 
@@ -795,12 +787,12 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	private fun getToeSnapAngle(footPos: Vector3): Float {
 		val angle = FastMath.clamp(footPos.y - floorLevel, 0.0f, footLength)
 		return if (angle > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
-			FastMath.asin(
-				footLength * MAXIMUM_TOE_DOWN_ANGLE / footLength
+			asin(
+				footLength * MAXIMUM_TOE_DOWN_ANGLE / footLength,
 			)
 		} else {
-			FastMath.asin(
-				angle / footLength
+			asin(
+				angle / footLength,
 			)
 		}
 	}
@@ -820,7 +812,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		angle = FastMath.clamp(
 			angle,
 			MIN_DISTANCE_FOR_PLANT,
-			MAX_DISTANCE_FOR_PLANT
+			MAX_DISTANCE_FOR_PLANT,
 		)
 		return (
 			1 -
@@ -955,16 +947,16 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 		if (armsAvailable) {
 			val leftUpperArm: Vector3 = getCenterOfJoint(
-				skeleton.leftUpperArmBone
+				skeleton.leftUpperArmBone,
 			)
 			val rightUpperArm: Vector3 = getCenterOfJoint(
-				skeleton.rightUpperArmBone
+				skeleton.rightUpperArmBone,
 			)
 			val leftForearm: Vector3 = getCenterOfJoint(
-				skeleton.leftLowerArmBone
+				skeleton.leftLowerArmBone,
 			)
 			val rightForearm: Vector3 = getCenterOfJoint(
-				skeleton.rightLowerArmBone
+				skeleton.rightLowerArmBone,
 			)
 			centerOfMass += leftUpperArm * UPPER_ARM_MASS
 			centerOfMass += rightUpperArm * UPPER_ARM_MASS
@@ -974,7 +966,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			// if the arms are not available put them slightly in front
 			// of the upper chest.
 			val chestUnitVector: Vector3 = computeUnitVector(
-				skeleton.upperChestBone.getGlobalRotation()
+				skeleton.upperChestBone.getGlobalRotation(),
 			)
 			val armLocation =
 				abdomen + (chestUnitVector * DEFAULT_ARM_DISTANCE)
@@ -989,13 +981,11 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	}
 
 	// get the center of two joints
-	private fun getCenterOfJoint(bone: Bone): Vector3 {
-		return (
-			bone.getPosition() +
-				bone.getTailPosition()
-			) *
-			0.5f
-	}
+	private fun getCenterOfJoint(bone: Bone): Vector3 = (
+		bone.getPosition() +
+			bone.getTailPosition()
+		) *
+		0.5f
 
 	// update counters for the lock state of the feet
 	private fun updateLockStateCounters() {
@@ -1016,14 +1006,12 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	}
 
 	// remove the x and z components of the given quaternion
-	private fun isolateYaw(quaternion: Quaternion): Quaternion {
-		return Quaternion(
-			quaternion.w,
-			0f,
-			quaternion.y,
-			0f
-		)
-	}
+	private fun isolateYaw(quaternion: Quaternion): Quaternion = Quaternion(
+		quaternion.w,
+		0f,
+		quaternion.y,
+		0f,
+	)
 
 	// return a quaternion that has been rotated by the new pitch amount
 	private fun replacePitch(quaternion: Quaternion, newPitch: Float): Quaternion {
@@ -1032,7 +1020,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			EulerOrder.YZX,
 			newPitch,
 			y,
-			z
+			z,
 		)
 		return newAngs.toQuaternion()
 	}
@@ -1043,12 +1031,8 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		trueVal: Float,
 		valBefore: Float,
 		valAfter: Float,
-	): Boolean {
-		return (trueVal - valBefore) * (trueVal - valAfter) < 0
-	}
+	): Boolean = (trueVal - valBefore) * (trueVal - valAfter) < 0
 
 	// get the unit vector of the given rotation
-	private fun computeUnitVector(quaternion: Quaternion): Vector3 {
-		return quaternion.toMatrix().z.unit()
-	}
+	private fun computeUnitVector(quaternion: Quaternion): Vector3 = quaternion.toMatrix().z.unit()
 }

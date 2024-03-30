@@ -159,13 +159,18 @@ export function ProportionsChoose() {
             {l10n.getString('onboarding-choose_proportions')}
           </Typography>
           <div className="xs:w-10/12 xs:max-w-[666px]">
-            <Typography
-              variant="standard"
-              color="secondary"
-              whitespace="whitespace-pre-line"
+            <Localized
+              id="onboarding-choose_proportions-description-v1"
+              elems={{ b: <b className="text-base underline"></b> }}
             >
-              {l10n.getString('onboarding-choose_proportions-description')}
-            </Typography>
+              <Typography
+                variant="standard"
+                color="secondary"
+                whitespace="whitespace-pre-line"
+              >
+                How to measure your body!
+              </Typography>
+            </Localized>
           </div>
           <div
             className={classNames(

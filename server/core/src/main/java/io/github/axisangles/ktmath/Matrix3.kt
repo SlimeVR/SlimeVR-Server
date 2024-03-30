@@ -1,16 +1,18 @@
-@file:Suppress("unused")
+@file:Suppress("ktlint", "unused")
 
 package io.github.axisangles.ktmath
 
+import kotlinx.serialization.Serializable
 import kotlin.math.*
 
-/* ktlint-disable */
-data class Matrix3(
+@JvmInline
+@Serializable
+value class Matrix3
+@Suppress("ktlint") constructor(
 	val xx: Float, val yx: Float, val zx: Float,
 	val xy: Float, val yy: Float, val zy: Float,
 	val xz: Float, val yz: Float, val zz: Float
 ) {
-/* ktlint-enable */
 	companion object {
 		val NULL = Matrix3(
 			0f, 0f, 0f,
@@ -42,6 +44,16 @@ data class Matrix3(
 	val xRow get() = Vector3(xx, yx, zx)
 	val yRow get() = Vector3(xy, yy, zy)
 	val zRow get() = Vector3(xz, yz, zz)
+
+	operator fun component1(): Float = xx
+	operator fun component2(): Float = yx
+	operator fun component3(): Float = zx
+	operator fun component4(): Float = xy
+	operator fun component5(): Float = yy
+	operator fun component6(): Float = zy
+	operator fun component7(): Float = xz
+	operator fun component8(): Float = yz
+	operator fun component9(): Float = zz
 
 	operator fun unaryMinus(): Matrix3 = Matrix3(
 		-xx, -yx, -zx,
@@ -91,8 +103,8 @@ data class Matrix3(
 	 */
 	fun normSq(): Float =
 		xx * xx + yx * yx + zx * zx +
-	    xy * xy + yy * yy + zy * zy +
-	    xz * xz + yz * yz + zz * zz
+			xy * xy + yy * yy + zy * zy +
+			xz * xz + yz * yz + zz * zz
 
 	/**
 	 * computes the frobenius norm of this matrix
@@ -106,8 +118,8 @@ data class Matrix3(
 	 */
 	fun det(): Float =
 		(xz * yx - xx * yz) * zy +
-		(xx * yy - xy * yx) * zz +
-		(xy * yz - xz * yy) * zx
+			(xx * yy - xy * yx) * zz +
+			(xy * yz - xz * yy) * zx
 
 	/**
 	 * computes the trace of this matrix
@@ -179,7 +191,7 @@ data class Matrix3(
 		This converges exponentially (one digit per iteration) when it is far from a
 		rotation matrix, and quadratically (double the digits each iteration) when it
 		is close to a rotation matrix.
-	*/
+	 */
 	/**
 	 * computes the nearest orthonormal matrix to this matrix
 	 * @return the rotation matrix
@@ -331,8 +343,14 @@ data class Matrix3(
 		when (order) {
 			EulerOrder.XYZ -> {
 				val kc = sqrt(zy * zy + zz * zz)
-				if (kc < 1e-7f) return EulerAngles(EulerOrder.XYZ,
-					atan2(yz, yy), ETA.withSign(zx), 0f)
+				if (kc < 1e-7f) {
+					return EulerAngles(
+						EulerOrder.XYZ,
+						atan2(yz, yy),
+						ETA.withSign(zx),
+						0f
+					)
+				}
 
 				return EulerAngles(
 					EulerOrder.XYZ,
@@ -343,8 +361,14 @@ data class Matrix3(
 			}
 			EulerOrder.YZX -> {
 				val kc = sqrt(xx * xx + xz * xz)
-				if (kc < 1e-7f) return EulerAngles(EulerOrder.YZX,
-					0f, atan2(zx, zz), ETA.withSign(xy))
+				if (kc < 1e-7f) {
+					return EulerAngles(
+						EulerOrder.YZX,
+						0f,
+						atan2(zx, zz),
+						ETA.withSign(xy)
+					)
+				}
 
 				return EulerAngles(
 					EulerOrder.YZX,
@@ -355,8 +379,14 @@ data class Matrix3(
 			}
 			EulerOrder.ZXY -> {
 				val kc = sqrt(yy * yy + yx * yx)
-				if (kc < 1e-7f) return EulerAngles(EulerOrder.ZXY,
-					ETA.withSign(yz), 0f, atan2(xy, xx))
+				if (kc < 1e-7f) {
+					return EulerAngles(
+						EulerOrder.ZXY,
+						ETA.withSign(yz),
+						0f,
+						atan2(xy, xx)
+					)
+				}
 
 				return EulerAngles(
 					EulerOrder.ZXY,
@@ -367,8 +397,14 @@ data class Matrix3(
 			}
 			EulerOrder.ZYX -> {
 				val kc = sqrt(xy * xy + xx * xx)
-				if (kc < 1e-7f) return EulerAngles(EulerOrder.ZYX,
-					0f, ETA.withSign(-xz), atan2(-yx, yy))
+				if (kc < 1e-7f) {
+					return EulerAngles(
+						EulerOrder.ZYX,
+						0f,
+						ETA.withSign(-xz),
+						atan2(-yx, yy)
+					)
+				}
 
 				return EulerAngles(
 					EulerOrder.ZYX,
@@ -380,8 +416,14 @@ data class Matrix3(
 
 			EulerOrder.YXZ -> {
 				val kc = sqrt(zx * zx + zz * zz)
-				if (kc < 1e-7f) return EulerAngles(EulerOrder.YXZ,
-					ETA.withSign(-zy), atan2(-xz, xx), 0f)
+				if (kc < 1e-7f) {
+					return EulerAngles(
+						EulerOrder.YXZ,
+						ETA.withSign(-zy),
+						atan2(-xz, xx),
+						0f
+					)
+				}
 
 				return EulerAngles(
 					EulerOrder.YXZ,
@@ -392,8 +434,14 @@ data class Matrix3(
 			}
 			EulerOrder.XZY -> {
 				val kc = sqrt(yz * yz + yy * yy)
-				if (kc < 1e-7f) return EulerAngles(EulerOrder.XZY,
-					atan2(-zy, zz), 0f, ETA.withSign(-yx))
+				if (kc < 1e-7f) {
+					return EulerAngles(
+						EulerOrder.XZY,
+						atan2(-zy, zz),
+						0f,
+						ETA.withSign(-yx)
+					)
+				}
 
 				return EulerAngles(
 					EulerOrder.XZY,

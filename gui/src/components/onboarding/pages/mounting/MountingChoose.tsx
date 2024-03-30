@@ -7,7 +7,7 @@ import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
 import { TryManualFirstModal } from './TryManualFirstModal';
 import { useConfig } from '@/hooks/config';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 export function MountingChoose() {
   const { l10n } = useLocalization();

@@ -47,5 +47,10 @@ interface Bridge {
 interface ISteamVRBridge : Bridge {
 	fun getShareSetting(role: TrackerRole): Boolean
 
-	fun changeShareSettings(role: TrackerRole, share: Boolean)
+	fun changeShareSettings(role: TrackerRole?, share: Boolean)
+
+	fun updateShareSettingsAutomatically(): Boolean
+
+	fun getAutomaticSharedTrackers(): Boolean
+	fun setAutomaticSharedTrackers(value: Boolean)
 }
