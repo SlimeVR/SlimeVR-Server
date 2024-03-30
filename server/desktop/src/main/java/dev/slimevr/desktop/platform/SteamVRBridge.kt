@@ -131,7 +131,6 @@ abstract class SteamVRBridge(
 			}
 			// TODO support needsReset = true for VTubing (GUI toggle?)
 			false to true
-
 		} else {
 			displayName = trackerAdded.trackerName
 			true to false
@@ -149,7 +148,7 @@ abstract class SteamVRBridge(
 			userEditable = true,
 			isComputed = true,
 			needsReset = needsReset,
-			isHmd = isHmd
+			isHmd = isHmd,
 		)
 
 		device.trackers[0] = tracker

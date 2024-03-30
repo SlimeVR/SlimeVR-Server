@@ -22,6 +22,8 @@ import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import org.apache.commons.math3.util.Precision
+import solarxr_protocol.datatypes.DeviceIdT
+import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusUnassignedHMD
@@ -703,29 +705,40 @@ class HumanPoseManager(val server: VRServer?) {
 	private var lastMissingHmdStatus = 0u
 	fun checkReportMissingHmd() {
 		if (server == null) return
+		val tracker = VRServer.instance.allTrackers.firstOrNull { it.isHmd && !it.isInternal }
 		if (skeleton.headTracker == null &&
 			lastMissingHmdStatus == 0u &&
-			VRServer.instance.allTrackers.any { it.isHmd }
+			tracker != null
 		) {
-			reportMissingHmd()
+			reportMissingHmd(tracker)
 		} else if (lastMissingHmdStatus != 0u &&
-			(skeleton.headTracker != null || !VRServer.instance.allTrackers.any { it.isHmd })
+			(skeleton.headTracker != null || tracker == null)
 		) {
 			server.statusSystem.removeStatus(lastMissingHmdStatus)
 			lastMissingHmdStatus = 0u
 		}
 	}
 
-	private fun reportMissingHmd() {
+	private fun reportMissingHmd(tracker: Tracker) {
 		require(lastMissingHmdStatus == 0u) {
 			"${::lastMissingHmdStatus.name} must be 0u, but was $lastMissingHmdStatus"
+		}
+		require(server != null) {
+			"${::server.name} must not be null"
 		}
 
 		val status = StatusDataUnion().apply {
 			type = StatusData.StatusUnassignedHMD
-			value = StatusUnassignedHMDT()
+			value = StatusUnassignedHMDT().apply {
+				trackerId = TrackerIdT().apply {
+					if (tracker.device != null) {
+						deviceId = DeviceIdT().apply { id = tracker.device.id }
+					}
+					trackerNum = tracker.trackerNum
+				}
+			}
 		}
-		lastMissingHmdStatus = server!!.statusSystem.addStatus(status, true)
+		lastMissingHmdStatus = server.statusSystem.addStatus(status, true)
 	}
 
 	// #endregion
