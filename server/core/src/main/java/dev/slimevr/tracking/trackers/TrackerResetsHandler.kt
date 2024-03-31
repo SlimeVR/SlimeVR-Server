@@ -482,8 +482,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				// Remaining time decreases to 0, so the interpolation is reversed
 				yawFixSmoothIncremental = yawFix
 					.interpR(
-						yawFixOld, 
-						animateEase(yawResetSmoothTimeRemain / yawResetSmoothTime)
+						yawFixOld,
+						animateEase(yawResetSmoothTimeRemain / yawResetSmoothTime),
 					)
 				yawFixSmoothIncremental /= yawFix
 			}
