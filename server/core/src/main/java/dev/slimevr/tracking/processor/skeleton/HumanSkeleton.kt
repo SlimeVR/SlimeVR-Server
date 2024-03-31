@@ -88,6 +88,7 @@ class HumanSkeleton(
 		if (old == new) return@observable
 
 		humanPoseManager.checkReportMissingHmd()
+		humanPoseManager.checkTrackersRequiringReset()
 	}
 	var neckTracker: Tracker? = null
 	var upperChestTracker: Tracker? = null
