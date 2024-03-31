@@ -7,11 +7,11 @@ import dev.slimevr.config.ArmsResetModes
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.filtering.CircularArrayList
+import io.eiren.math.FloatMath.animateEase
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import io.eiren.math.FloatMath.animateEase
 import kotlin.math.*
 
 private const val DRIFT_COOLDOWN_MS = 50000L
@@ -61,7 +61,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 	// Yaw reset smoothing vars
 	private var yawFixOld = Quaternion.IDENTITY
-	private var yawFixNew = Quaternion.IDENTITY
+	private var yawFixSmoothIncremental = Quaternion.IDENTITY
 	private var yawResetSmoothTimeRemain = 0.0f
 
 	// Zero-reference/identity adjustment quats for IMU debugging
@@ -126,7 +126,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Takes a rotation and adjusts it to resets, mounting,
 	 * and drift compensation, with the HMD as the reference.
 	 */
-	fun getReferenceAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion = adjustToDrift(adjustToReference(rotation))
+	fun getReferenceAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion = adjustToDrift(adjustToYawResetSmoothing(adjustToReference(rotation)))
 
 	/**
 	 * Takes a rotation and adjusts it to resets and mounting,
@@ -181,6 +181,17 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	/**
+	 * Apply yaw reset smoothing to quaternion rotated to new yaw
+	 * fix and returns smoothed quaternion
+	 */
+	private fun adjustToYawResetSmoothing(rotation: Quaternion): Quaternion {
+		if (yawResetSmoothTime > 0.0f) {
+			return rotation * yawFixSmoothIncremental
+		}
+		return rotation
+	}
+
+	/**
 	 * Reset the tracker so that its current rotation is counted as (0, HMD Yaw,
 	 * 0). This allows the tracker to be strapped to body at any pitch and roll.
 	 */
@@ -215,6 +226,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		makeIdentityAdjustmentQuatsFull()
 
 		yawFix = fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
+		yawResetSmoothTimeRemain = 0.0f
 
 		calculateDrift(oldRot)
 
@@ -237,7 +249,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		yawFixOld = yawFix
 		yawFix = fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
-		yawFixNew = yawFix
+		yawResetSmoothTimeRemain = 0.0f
 
 		makeIdentityAdjustmentQuatsYaw()
 
@@ -246,7 +258,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		// Start at yaw before reset if smoothing enabled
 		if (yawResetSmoothTime > 0.0f) {
 			yawResetSmoothTimeRemain = yawResetSmoothTime
-			yawFix = yawFixOld
+			yawFixSmoothIncremental = yawFixOld / yawFix
 		}
 
 		// Remove the status if yaw reset was performed after the tracker
@@ -311,6 +323,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		// Get the difference from the last mounting to the current mounting and apply
 		// the difference to the yaw fix quaternion to correct for the rotation change
 		yawFix /= (buffer / mountRotFix)
+		yawResetSmoothTimeRemain = 0.0f
 		mountRotFix = buffer
 	}
 
@@ -320,6 +333,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Undo the effect on yaw fix
 		yawFix *= mountRotFix.inv()
+		yawResetSmoothTimeRemain = 0.0f
 		// Clear the mounting reset
 		mountRotFix = Quaternion.IDENTITY
 	}
@@ -454,7 +468,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	/**
-	 * Update the yaw reset smoothing time 
+	 * Update yaw reset smoothing time
 	 */
 	@Synchronized
 	fun update() {
@@ -464,13 +478,14 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				deltaTime = fpsTimer.timePerFrame
 			}
 			yawResetSmoothTimeRemain = yawResetSmoothTimeRemain - deltaTime
-			if (yawResetSmoothTimeRemain <= 0.0f) {
-				yawFix = yawFixNew
-			} else {
-				yawFix = yawFixNew.interpR(
-					yawFixOld,
-					animateEase(yawResetSmoothTimeRemain / yawResetSmoothTime)
-				) 
+			if (yawResetSmoothTimeRemain > 0.0f) {
+				// Remaining time decreases to 0, so the interpolation is reversed
+				yawFixSmoothIncremental = yawFix
+					.interpR(
+						yawFixOld, 
+						animateEase(yawResetSmoothTimeRemain / yawResetSmoothTime)
+					)
+				yawFixSmoothIncremental /= yawFix
 			}
 		}
 	}
