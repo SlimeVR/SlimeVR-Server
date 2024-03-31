@@ -68,11 +68,8 @@ class UDPDevice(
 		set(manufacturer) {
 			super.manufacturer = manufacturer
 		}
-	override var firmwareVersion: String?
-		get() = "v$firmwareBuild"
-		set(firmwareVersion) {
-			super.firmwareVersion = firmwareVersion
-		}
+	override var firmwareVersion: String? = null
+		get() = field?.let { "v$it" }
 
 	fun getTracker(id: Int): Tracker? = trackers[id]
 }

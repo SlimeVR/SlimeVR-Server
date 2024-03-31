@@ -177,6 +177,7 @@ tracker-infos-hardware_rev = Hardware Revision
 tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-imu = IMU Sensor
 tracker-infos-board_type = Main board
+tracker-infos-network_version = Protocol Version
 
 ## Tracker settings
 tracker-settings-back = Go back to trackers list
@@ -290,7 +291,7 @@ settings-general-steamvr-trackers-hands = Hands
 settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
 settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments
 settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
-settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> hand trackers will override your controllers. 
+settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> hand trackers will override your controllers.
     Are you sure?
 settings-general-steamvr-trackers-hands-warning-cancel = Cancel
 settings-general-steamvr-trackers-hands-warning-done = Yes
