@@ -3,10 +3,10 @@ package dev.slimevr.osc
 import OSCQueryNode
 import OSCQueryServer
 import ServiceInfo
+import dev.slimevr.protocol.rpc.setup.RPCUtil
 import io.eiren.util.logging.LogManager
 import randomFreePort
 import java.io.IOException
-import java.net.InetAddress
 import kotlin.concurrent.thread
 
 private const val serviceStartsWith = "VRChat-Client"
@@ -23,7 +23,7 @@ class VRCOSCQueryHandler(
 
 	init {
 		// Request data
-		val localIp = InetAddress.getLocalHost().hostAddress
+		val localIp = RPCUtil.getLocalIp()
 		val httpPort = randomFreePort()
 		oscQueryServer = OSCQueryServer(
 			"SlimeVR-Server-$httpPort",
