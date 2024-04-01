@@ -185,8 +185,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * fix and returns smoothed quaternion
 	 */
 	private fun adjustToYawResetSmoothing(rotation: Quaternion): Quaternion {
-		if (yawResetSmoothTime > 0.0f) {
-			return rotation * yawFixSmoothIncremental
+		if (yawResetSmoothTimeRemain > 0.0f) {
+			return yawFixSmoothIncremental * rotation
 		}
 		return rotation
 	}
@@ -480,12 +480,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			yawResetSmoothTimeRemain = yawResetSmoothTimeRemain - deltaTime
 			if (yawResetSmoothTimeRemain > 0.0f) {
 				// Remaining time decreases to 0, so the interpolation is reversed
-				yawFixSmoothIncremental = yawFix
+				yawFixSmoothIncremental = yawFix.inv() * yawFix
 					.interpR(
 						yawFixOld,
 						animateEase(yawResetSmoothTimeRemain / yawResetSmoothTime),
 					)
-				yawFixSmoothIncremental /= yawFix
 			}
 		}
 	}
