@@ -18,6 +18,7 @@ import {
 } from '@/components/onboarding/pages/body-proportions/ProportionsChoose';
 import { useLocaleConfig } from '@/i18n/config';
 import { useCountdown } from '@/hooks/countdown';
+import { TipBox } from '@/components/commons/TipBox';
 
 interface HeightForm {
   height: number;
@@ -104,18 +105,24 @@ export function CheckHeight({
               </Typography>
             </Localized>
 
-            <Button
-              variant="primary"
-              className="mt-2"
-              onClick={startCountdown}
-              disabled={isCounting}
-            >
-              {isCounting
-                ? sFormat.format(timer, 'second')
-                : l10n.getString(
-                    'onboarding-automatic_proportions-check_height-fetch_height'
-                  )}
-            </Button>
+            <div className="flex flex-row items-center mt-2 gap-2">
+              <Button
+                variant="primary"
+                onClick={startCountdown}
+                disabled={isCounting}
+              >
+                {isCounting
+                  ? sFormat.format(timer, 'second')
+                  : l10n.getString(
+                      'onboarding-automatic_proportions-check_height-fetch_height'
+                    )}
+              </Button>
+              <TipBox whitespace={true}>
+                {l10n.getString(
+                  'onboarding-automatic_proportions-check_height-guardian_tip'
+                )}
+              </TipBox>
+            </div>
           </div>
           <form className="flex flex-col self-center items-center justify-center">
             <NumberSelector

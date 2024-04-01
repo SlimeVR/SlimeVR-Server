@@ -203,14 +203,12 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		// determine if either leg is in a position to activate or
 		// deactivate
 		// (use the buffer to get the positions before corrections)
-		val leftFootDif = FastMath
-			.abs(
-				(bufferHead.leftFootPosition - leftFootPosition).y,
-			)
-		val rightFootDif = FastMath
-			.abs(
-				(bufferHead.rightFootPosition - rightFootPosition).y,
-			)
+		val leftFootDif = abs(
+			(bufferHead.leftFootPosition - leftFootPosition).y,
+		)
+		val rightFootDif = abs(
+			(bufferHead.rightFootPosition - rightFootPosition).y,
+		)
 
 		if (!active && leftFootDif < NEARLY_ZERO) {
 			leftLegActive = false
@@ -789,11 +787,11 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	private fun getToeSnapAngle(footPos: Vector3): Float {
 		val angle = FastMath.clamp(footPos.y - floorLevel, 0.0f, footLength)
 		return if (angle > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
-			FastMath.asin(
+			asin(
 				footLength * MAXIMUM_TOE_DOWN_ANGLE / footLength,
 			)
 		} else {
-			FastMath.asin(
+			asin(
 				angle / footLength,
 			)
 		}
