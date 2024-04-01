@@ -250,8 +250,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		val oldRot = adjustToReference(tracker.getRawRotation())
 		lastResetQuaternion = oldRot
 
-
-
 		yawFixOld = yawFix
 		yawFix = fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
 		yawResetSmoothTimeRemain = 0.0f
