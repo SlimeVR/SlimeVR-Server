@@ -188,12 +188,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private fun adjustToDrift(rotation: Quaternion): Quaternion {
 		if (driftCompensationEnabled && totalDriftTime > 0) {
-			val driftTimeRatio = driftAmount * ((System.currentTimeMillis() - driftSince).toFloat() / totalDriftTime)
-			if (!driftPrediction && driftTimeRatio >= 1.0f) {
-				return averagedDriftQuat * rotation
-			} else {
-				return averagedDriftQuat.pow(driftTimeRatio) * rotation
+			var driftTimeRatio = ((System.currentTimeMillis() - driftSince).toFloat() / totalDriftTime)
+			if (!driftPrediction) {
+				driftTimeRatio = min(1.0f, driftTimeRatio)
 			}
+			return averagedDriftQuat.pow(driftAmount * driftTimeRatio) * rotation
 		}
 		return rotation
 	}
