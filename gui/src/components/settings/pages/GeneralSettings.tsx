@@ -161,6 +161,12 @@ export function GeneralSettings() {
     style: 'percent',
     maximumFractionDigits: 0,
   });
+  const secondsFormat = new Intl.NumberFormat(currentLocales, {
+    style: 'unit',
+    unit: 'second',
+    unitDisplay: 'narrow',
+    maximumFractionDigits: 2,
+  });
 
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { reset, control, watch, handleSubmit, getValues, setValue } =
@@ -647,7 +653,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-tracker_mechanics-yaw-reset-smooth-time'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 20) / 20} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.0}
                 max={0.5}
                 step={0.05}
@@ -1103,7 +1109,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-yawResetDelay'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.2}
                 max={3.0}
                 step={0.2}
@@ -1114,7 +1120,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-fullResetDelay'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.2}
                 max={3.0}
                 step={0.2}
@@ -1125,7 +1131,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-mountingResetDelay'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.2}
                 max={3.0}
                 step={0.2}
