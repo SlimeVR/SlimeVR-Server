@@ -322,6 +322,12 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Compensates IMU yaw drift by applying an inverse rotation.
     Change amount of compensation and up to how many resets are taken into account.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-prediction = Drift compensation prediction
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    Predicts yaw drift compensation beyond previously measured range.
+    Enable this if the tracker is continuously spinning on yaw axis.
+settings-general-tracker_mechanics-drift_compensation-prediction-label = Drift compensation prediction
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting reset calibration
