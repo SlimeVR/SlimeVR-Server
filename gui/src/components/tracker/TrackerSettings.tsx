@@ -275,6 +275,14 @@ export function TrackerSettingsPage() {
                 {tracker?.device?.hardwareInfo?.boardType || '--'}
               </Typography>
             </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-network_version')}
+              </Typography>
+              <Typography>
+                {tracker?.device?.hardwareInfo?.networkProtocolVersion || '--'}
+              </Typography>
+            </div>
           </div>
           {tracker?.tracker && (
             <IMUVisualizerWidget
