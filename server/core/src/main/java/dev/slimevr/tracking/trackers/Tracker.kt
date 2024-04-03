@@ -256,7 +256,7 @@ class Tracker @JvmOverloads constructor(
 	fun saveMountingResetOrientation(config: TrackerConfig) {
 		// Load automatic mounting
 		config.mountingResetOrientation?.let {
-			resetsHandler.trySetMountingReset(it)
+			resetsHandler.trySetMountingReset(it.toValue())
 		}
 	}
 
@@ -265,7 +265,7 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun saveMountingResetOrientation(quat: Quaternion?) {
 		val configManager = VRServer.instance.configManager
-		configManager.vrConfig.getTracker(this).mountingResetOrientation = quat
+		configManager.vrConfig.getTracker(this).mountingResetOrientation = quat?.toObject()
 		configManager.saveConfig()
 	}
 
