@@ -3,32 +3,24 @@ package dev.slimevr.config
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import dev.slimevr.tracking.trackers.Tracker
-import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.ObjectQuaternion
 
 class TrackerConfig {
-
 	var customName: String? = null
-
 	var designation: String? = null
 
-	var mountingOrientation: Quaternion? = null
-
-	var mountingResetOrientation: Quaternion? = null
-
+	@get:JvmName("isHide")
+	var hide: Boolean = false
+	var adjustment: ObjectQuaternion? = null
+	var mountingOrientation: ObjectQuaternion? = null
+	var mountingResetOrientation: ObjectQuaternion? = null
 	var allowDriftCompensation: Boolean? = null
 
-	// Keep for jackson
 	constructor()
 
 	constructor(tracker: Tracker) {
-		designation = if (tracker.trackerPosition
-			!= null
-		) {
-			tracker.trackerPosition!!.designation
-		} else {
-			null
-		}
-		customName = tracker.customName
+		this.designation = if (tracker.trackerPosition != null) tracker.trackerPosition!!.designation else null
+		this.customName = tracker.customName
 		allowDriftCompensation = tracker.isImu()
 	}
 

@@ -67,8 +67,8 @@ class Tracker @JvmOverloads constructor(
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
-	private var rotation = Quaternion.IDENTITY
-	private var acceleration = Vector3.NULL
+	private var _rotation = Quaternion.IDENTITY
+	private var _acceleration = Vector3.NULL
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
@@ -216,7 +216,7 @@ class Tracker @JvmOverloads constructor(
 		} ?: run { trackerPosition = null }
 		if (needsMounting) {
 			// Load manual mounting
-			config.mountingOrientation?.let { resetsHandler.mountingOrientation = it }
+			config.mountingOrientation?.let { resetsHandler.mountingOrientation = it.toValue() }
 		}
 		if (this.isImu() && config.allowDriftCompensation == null) {
 			// If value didn't exist, default to true and save
@@ -243,7 +243,7 @@ class Tracker @JvmOverloads constructor(
 		customName?.let { config.customName = it }
 		if (needsMounting) {
 			// Save manual mounting
-			config.mountingOrientation = resetsHandler.mountingOrientation
+			config.mountingOrientation = resetsHandler.mountingOrientation.toObject()
 		}
 		if (this.isImu()) {
 			config.allowDriftCompensation = resetsHandler.allowDriftCompensation
@@ -289,7 +289,7 @@ class Tracker @JvmOverloads constructor(
 	fun dataTick() {
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
-		filteringHandler.dataTick(rotation)
+		filteringHandler.dataTick(_rotation)
 	}
 
 	/**
@@ -312,7 +312,7 @@ class Tracker @JvmOverloads constructor(
 			filteringHandler.getFilteredRotation()
 		} else {
 			// Get unfiltered rotation
-			rotation
+			_rotation
 		}
 
 		if (needsReset && !(isComputed && trackerPosition == TrackerPosition.HEAD)) {
@@ -327,9 +327,9 @@ class Tracker @JvmOverloads constructor(
 	 * Gets the world-adjusted acceleration
 	 */
 	fun getAcceleration(): Vector3 = if (needsReset) {
-		resetsHandler.getReferenceAdjustedAccel(rotation, acceleration)
+		resetsHandler.getReferenceAdjustedAccel(_rotation, _acceleration)
 	} else {
-		acceleration
+		_acceleration
 	}
 
 	/**
@@ -343,7 +343,7 @@ class Tracker @JvmOverloads constructor(
 			filteringHandler.getFilteredRotation()
 		} else {
 			// Get unfiltered rotation
-			rotation
+			_rotation
 		}
 
 		if (needsReset && trackerPosition != TrackerPosition.HEAD) {
@@ -358,20 +358,20 @@ class Tracker @JvmOverloads constructor(
 	 * Gets the raw (unadjusted) rotation of the tracker.
 	 * If this is an IMU, this will be the raw sensor rotation.
 	 */
-	fun getRawRotation(): Quaternion = rotation
+	fun getRawRotation(): Quaternion = _rotation
 
 	/**
 	 * Sets the raw (unadjusted) rotation of the tracker.
 	 */
 	fun setRotation(rotation: Quaternion) {
-		this.rotation = rotation
+		this._rotation = rotation
 	}
 
 	/**
 	 * Sets the raw (unadjusted) acceleration of the tracker.
 	 */
 	fun setAcceleration(vec: Vector3) {
-		this.acceleration = vec
+		this._acceleration = vec
 	}
 
 	fun isImu(): Boolean = imuType != null
