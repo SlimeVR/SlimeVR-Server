@@ -39,7 +39,6 @@ class VMCHandler(
 	private val server: VRServer,
 	private val humanPoseManager: HumanPoseManager,
 	private val config: VMCConfig,
-	computedTrackers: List<Tracker?>?,
 ) : OSCHandler {
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
