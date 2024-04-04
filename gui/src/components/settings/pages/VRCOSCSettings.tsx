@@ -65,7 +65,7 @@ export function VRCOSCSettings() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const { reset, control, watch, handleSubmit } = useForm<VRCOSCSettingsForm>({
-    defaultValues: defaultValues,
+    defaultValues,
   });
 
   const onSubmit = (values: VRCOSCSettingsForm) => {

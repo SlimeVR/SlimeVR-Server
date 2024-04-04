@@ -171,7 +171,7 @@ export function GeneralSettings() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { reset, control, watch, handleSubmit, getValues, setValue } =
     useForm<SettingsForm>({
-      defaultValues: defaultValues,
+      defaultValues,
     });
   const {
     trackers: { automaticTrackerToggle, hands: steamVrHands },
