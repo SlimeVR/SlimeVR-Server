@@ -9,7 +9,7 @@
     "@formatjs/intl-localematcher": "^0.5.4",
     "@react-three/drei": "^9.97.0",
     "@react-three/fiber": "^8.15.16",
-    "@tauri-apps/api": "=2.0.0-beta.6",
+    "@tauri-apps/api": "=2.0.0-beta.7",
     "@tauri-apps/plugin-dialog": "=2.0.0-beta.2",
     "@tauri-apps/plugin-fs": "=2.0.0-beta.2",
     "@tauri-apps/plugin-os": "=2.0.0-beta.2",
@@ -75,7 +75,7 @@
   "devDependencies": {
     "@dword-design/eslint-plugin-import-alias": "^4.0.9",
     "@tailwindcss/forms": "^0.5.7",
-    "@tauri-apps/cli": "=2.0.0-beta.11",
+    "@tauri-apps/cli": "=2.0.0-beta.12",
     "@types/file-saver": "^2.0.7",
     "@types/react": "^18.2.73",
     "@types/react-dom": "^18.2.23",
