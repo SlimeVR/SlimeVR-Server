@@ -23,6 +23,8 @@ tips-find_tracker = 分不清哪个追踪器是哪个了？摇一摇它，对应
 tips-do_not_move_heels = 确保你的脚跟在录制的时候不会发生移动!
 tips-file_select = 拖放文档或 <u>浏览文档</u> 以使用
 tips-tap_setup = 你可以缓慢地敲击2次追踪器来选中它，而不是从菜单中选取。
+tips-turn_on_tracker = 如果使用的是 SlimeVR 官方的追踪器，请在将追踪器连接到电脑后再<b><em>打开追踪器的电源</em></b>！
+tips-failed_webgl = WebGL初始化失败
 
 ## Body parts
 
@@ -157,6 +159,7 @@ tracker-status-error = 错误
 tracker-status-disconnected = 断开连接
 tracker-status-occluded = 被遮挡
 tracker-status-ok = 已连接
+tracker-status-timed_out = 连接超时
 
 ## Tracker status columns
 
@@ -195,6 +198,7 @@ tracker-infos-hardware_rev = 硬件版本
 tracker-infos-hardware_identifier = 硬件ID
 tracker-infos-imu = IMU型号
 tracker-infos-board_type = 主板型号
+tracker-infos-network_version = 协议版本
 
 ## Tracker settings
 
@@ -214,6 +218,9 @@ tracker-settings-drift_compensation_section-edit = 允许漂移补偿
 tracker-settings-name_section = 追踪器名称
 tracker-settings-name_section-description = 给它起一个可爱的名字吧=w=~
 tracker-settings-name_section-placeholder = CC 封印着漆黑之力的漆黑左臂
+tracker-settings-forget = 忘记追踪器
+tracker-settings-forget-description = 从 SlimeVR 服务器中移除该追踪器，并在服务器重启前不再连接这一追踪器。追踪器的配置信息不会被清除。
+tracker-settings-forget-label = 忘记追踪器
 
 ## Tracker part card info
 
@@ -303,10 +310,22 @@ settings-general-steamvr-description =
     对于只支持特定追踪器的游戏或应用会很有用。
 settings-general-steamvr-trackers-waist = 腰部
 settings-general-steamvr-trackers-chest = 胸部
-settings-general-steamvr-trackers-feet = 脚部
-settings-general-steamvr-trackers-knees = 膝盖
-settings-general-steamvr-trackers-elbows = 肘部
-settings-general-steamvr-trackers-hands = 手部
+settings-general-steamvr-trackers-left_foot = 左脚
+settings-general-steamvr-trackers-right_foot = 右脚
+settings-general-steamvr-trackers-left_knee = 左膝
+settings-general-steamvr-trackers-right_knee = 右膝
+settings-general-steamvr-trackers-left_elbow = 左手肘
+settings-general-steamvr-trackers-right_elbow = 右手肘
+settings-general-steamvr-trackers-left_hand = 左手
+settings-general-steamvr-trackers-right_hand = 右手
+settings-general-steamvr-trackers-tracker_toggling = 自动开关追踪器
+settings-general-steamvr-trackers-tracker_toggling-description = 根据当前已分配的追踪器，自动选择可用的SteamVR虚拟追踪器
+settings-general-steamvr-trackers-tracker_toggling-label = 自动开关追踪器
+settings-general-steamvr-trackers-hands-warning =
+    <b>警告：</b>开启手部虚拟追踪器将覆盖手柄的追踪信息。
+    是否确定？
+settings-general-steamvr-trackers-hands-warning-cancel = 取消
+settings-general-steamvr-trackers-hands-warning-done = 是
 
 ## Tracker mechanics
 
@@ -324,6 +343,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = 让运
 settings-general-tracker_mechanics-filtering-type-prediction = 预测型
 settings-general-tracker_mechanics-filtering-type-prediction-description = 减少延迟并使移动更敏捷，但可能会增加一些抖动。
 settings-general-tracker_mechanics-filtering-amount = 滤波强度
+settings-general-tracker_mechanics-yaw-reset-smooth-time = 重置航向轴平滑过渡时长（0s时关闭平滑瞬移到位）
 settings-general-tracker_mechanics-drift_compensation = 漂移补偿
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
@@ -332,6 +352,11 @@ settings-general-tracker_mechanics-drift_compensation-description =
 settings-general-tracker_mechanics-drift_compensation-enabled-label = 漂移补偿
 settings-general-tracker_mechanics-drift_compensation-amount-label = 补偿量
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = 使用几次的重置结果？
+settings-general-tracker_mechanics-save_mounting_reset = 保存佩戴重置结果
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    在SlimeVR服务器关闭时保留追踪器自动佩戴重置结果。适用于一体式动捕服等
+    追踪器佩戴位置保持不变的场景。<b>不建议普通用户使用！</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = 保存佩戴重置
 
 ## FK/Tracking settings
 
@@ -446,6 +471,9 @@ settings-general-interface-feedback_sound-volume = 提示音音量
 settings-general-interface-connected_trackers_warning = 已连接追踪器警告
 settings-general-interface-connected_trackers_warning-description = 启用本选项后，每次当退出 SlimeVR 时仍有追踪器连接着会显示通知，提醒你在使用完毕时关闭追踪器电源来节省电池电量。
 settings-general-interface-connected_trackers_warning-label = 退出时，有追踪器连接中则显示警告
+settings-general-interface-use_tray = 最小化至任务栏
+settings-general-interface-use_tray-description = 关闭 SlimeVR 窗口时，SlimeVR 服务器将会隐藏至任务栏图标而不会直接退出，可以继续使用。
+settings-general-interface-use_tray-label = 最小化至任务栏
 
 ## Serial settings
 
@@ -467,6 +495,7 @@ settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-get_infos = 获取信息
 settings-serial-serial_select = 选择串行端口
 settings-serial-auto_dropdown_item = 自动
+settings-serial-get_wifi_scan = 扫描可用WiFi
 
 ## OSC router settings
 
@@ -632,8 +661,8 @@ onboarding-done-close = 关闭向导
 
 onboarding-connect_tracker-back = 返回到 Wi-Fi 凭据设置
 onboarding-connect_tracker-title = 连接追踪器
-onboarding-connect_tracker-description-p0 = 来到了我第二喜欢的环节，连接所有的追踪器！
-onboarding-connect_tracker-description-p1 = 只需通过 USB 连接所有尚未连接的设备即可。
+onboarding-connect_tracker-description-p0-v1 = 来到了我第二喜欢的环节，连接追踪器！
+onboarding-connect_tracker-description-p1-v1 = 一次一个，将所有追踪器依次通过USB口连接至电脑。
 onboarding-connect_tracker-issue-serial = QAQ 我在连接时遇到问题！
 onboarding-connect_tracker-usb = USB 追踪器
 onboarding-connect_tracker-connection_status-none = 正在寻找追踪器
@@ -688,6 +717,7 @@ onboarding-assign_trackers-description = 让我们选择哪个追踪器在哪里
 onboarding-assign_trackers-assigned = { $assigned }/{ $trackers } 个追踪器已分配
 onboarding-assign_trackers-advanced = 显示高级分配部位
 onboarding-assign_trackers-next = 所有的追踪器都分配好了
+onboarding-assign_trackers-mirror_view = 镜像显示
 
 ## Tracker assignment warnings
 
@@ -809,16 +839,17 @@ onboarding-automatic_mounting-put_trackers_on-next = 所有的追踪器都已开
 
 onboarding-choose_proportions = 使用哪种方法校准身体比例？
 # Multiline string
-onboarding-choose_proportions-description =
-    身体比例校准用于了解您身体的测量值。它们被需要用于计算追踪器的位置。
-    当你的身体比例与保存的不匹配时，你的追踪精度会变差，而且你会注意到诸如脚滑溜冰、不正常的滑动等情况，或者是你的身体与你的虚拟形象对不上。
+onboarding-choose_proportions-description-v1 =
+    身体比例记录了你身体各部分的尺寸。它们被用来计算虚拟追踪器的位置。
+    如果保存的身体比例和实际身体尺寸不匹配，追踪精度将会下降，并且会出现脚在地面滑动，或是身体和虚拟形象动作不一致的情况。
+    <b>身体比例设置只要进行一次！</b> 除非身体比例存在错误或是身体尺寸发生了改变，否则不需要重复进行身体比例设置。
 onboarding-choose_proportions-auto_proportions = 自动调整身体比例
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = 推荐
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
     这将录制你的运动样本并通过算法来推测你的身体比例。
     
-    <b>需要连接头戴设备到 SlimeVR！</b>
+    <b>需要戴上头戴设备，并确保设备已连接到 SlimeVR！</b>
 onboarding-choose_proportions-manual_proportions = 手动调整身体比例
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = 用于精细调整
@@ -849,18 +880,20 @@ onboarding-automatic_proportions-put_trackers_on-description = 为了校准你�
 onboarding-automatic_proportions-put_trackers_on-next = 所有的追踪器都已开启！
 onboarding-automatic_proportions-requirements-title = 准备工作
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
-    你需要足够的追踪器以追踪脚部（通常为 5 个）。
-    你已经打开追踪器和头戴设备的电源。
-    你已经穿戴好追踪器和头戴设备。
-    你的追踪器和头戴设备都已经连接到 SlimeVR 服务器。
-    你的追踪器和头戴设备在 SlimeVR 服务器中工作正常。
-    你的头戴设备在回报位置信息给 SlimeVR 服务器（通常需要 SteamVR 正在运行且通过 SlimeVR 的 SteamVR 驱动连接到 SlimeVR）。
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    你需要足够的追踪器以追踪脚部（通常至少为 5 个）。
+    你已经穿戴好并打开追踪器和头戴设备的电源。
+    你的追踪器和头戴设备都已经连接到 SlimeVR 服务器并正常工作（没有卡顿、断联等问题）。
+    你的头戴设备正在向 SlimeVR 服务器回报位置信息（通常需要 SteamVR 正在运行且通过 SlimeVR 的 SteamVR 驱动连接到 SlimeVR）。
+    你的追踪器正常工作并能反应实际运动（进行过完整重置和佩戴重置，踢腿、弯腰、坐下等动作时虚拟骨骼向正确的方向弯曲）。
 onboarding-automatic_proportions-requirements-next = 我已阅读
 onboarding-automatic_proportions-check_height-title = 检查你的身高
 onboarding-automatic_proportions-check_height-description = 我们会使用头戴设备回报的高度来推算您的实际身高，但我们仍建议您检查一下数值是否正确。
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = 请<u>站直</u>后按下按钮以计算身高，按下后您有 3 秒钟来调整姿势。
+onboarding-automatic_proportions-check_height-guardian_tip =
+    如果你正在使用一体机进行串流，请确保开启并设置了安全边界，
+    以获取正确的高度信息。
 onboarding-automatic_proportions-check_height-fetch_height = 我站好了！
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 未知
@@ -921,3 +954,30 @@ status_system-StatusSteamVRDisconnected =
        *[other] 尚未通过 SlimeVR 驱动程序连接到 SteamVR
     }
 status_system-StatusTrackerError = { $trackerName } 追踪器发生错误
+
+## Tray Menu
+
+tray_menu-show = 显示窗口
+tray_menu-hide = 隐藏窗口
+tray_menu-quit = 退出 SlimeVR
+
+## First exit modal
+
+tray_or_exit_modal-title = 选择关闭按钮的功能
+# Multiline text
+tray_or_exit_modal-description =
+    你可以选择在按下关闭按钮时，是退出 SlimeVR 服务器，还是仅将窗口最小化至任务栏图标。
+    你也可以在设置-交互界面中修改这个选项
+tray_or_exit_modal-radio-exit = 退出 SlimeVR
+tray_or_exit_modal-radio-tray = 最小化至任务栏
+tray_or_exit_modal-submit = 保存
+tray_or_exit_modal-cancel = 取消
+
+## Unknown device modal
+
+unknown_device-modal-title = 发现了一个新的追踪器！
+unknown_device-modal-description =
+    发现一个MAC地址为 <b>{ $deviceId }</b> 的新追踪器。
+    要将它连接到 SlimeVR 吗？
+unknown_device-modal-confirm = 是的！
+unknown_device-modal-forget = 忽略它
