@@ -118,7 +118,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun readResetConfig(config: ResetsConfig) {
 		resetMountingFeet = config.resetMountingFeet
 		armsResetMode = config.mode
-		awResetSmoothTime = config.yawResetSmoothTime
+		yawResetSmoothTime = config.yawResetSmoothTime
 		if (!::fpsTimer.isInitialized) {
 			fpsTimer = VRServer.instance.fpsTimer
 		}
