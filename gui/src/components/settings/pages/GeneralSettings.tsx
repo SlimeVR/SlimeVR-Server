@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
@@ -91,6 +91,7 @@ interface SettingsForm {
     resetMountingFeet: boolean;
     armsMountingResetMode: number;
     yawResetSmoothTime: number;
+    saveMountingReset: boolean;
   };
 }
 
@@ -147,6 +148,7 @@ const defaultValues = {
     resetMountingFeet: false,
     armsMountingResetMode: 0,
     yawResetSmoothTime: 0.0,
+    saveMountingReset: false,
   },
 };
 
@@ -269,6 +271,8 @@ export function GeneralSettings() {
         values.resetsSettings.armsMountingResetMode;
       resetsSettings.yawResetSmoothTime =
         values.resetsSettings.yawResetSmoothTime;
+      resetsSettings.saveMountingReset =
+        values.resetsSettings.saveMountingReset;
       settings.resetsSettings = resetsSettings;
     }
 
@@ -659,6 +663,28 @@ export function GeneralSettings() {
                 step={0.05}
               />
             </div>
+            <div className="flex flex-col pt-5 pb-3">
+              <Typography bold>
+                {l10n.getString(
+                  'settings-general-tracker_mechanics-save_mounting_reset'
+                )}
+              </Typography>
+              <Localized
+                id="settings-general-tracker_mechanics-save_mounting_reset-description"
+                elems={{ b: <b></b> }}
+              >
+                <Typography color="secondary"></Typography>
+              </Localized>
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="resetsSettings.saveMountingReset"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
+              )}
+            />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout

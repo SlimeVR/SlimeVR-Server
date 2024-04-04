@@ -13,6 +13,7 @@ class TrackerConfig {
 	var hide: Boolean = false
 	var adjustment: ObjectQuaternion? = null
 	var mountingOrientation: ObjectQuaternion? = null
+	var mountingResetOrientation: ObjectQuaternion? = null
 	var allowDriftCompensation: Boolean? = null
 
 	constructor()

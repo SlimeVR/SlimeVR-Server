@@ -40,6 +40,9 @@ class ResetsConfig {
 	// Yaw reset smoothing time in seconds
 	var yawResetSmoothTime = 0.0f
 
+	// Save automatic mounting reset calibration
+	var saveMountingReset = false
+
 	fun updateTrackersResetsSettings() {
 		for (t in VRServer.instance.allTrackers) {
 			if (t.needsReset) {

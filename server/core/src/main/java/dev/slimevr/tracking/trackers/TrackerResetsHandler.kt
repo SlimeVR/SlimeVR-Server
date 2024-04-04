@@ -42,6 +42,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var armsResetMode = ArmsResetModes.BACK
 	private var yawResetSmoothTime = 0.0f
 	private lateinit var fpsTimer: NanoTimer
+	var saveMountingReset = false
 	var allowDriftCompensation = false
 	var lastResetQuaternion: Quaternion? = null
 
@@ -112,7 +113,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	/**
-	 * Reads/loads arms reset mode settings from given config
+	 * Reads/loads reset settings from the given config
 	 */
 	fun readResetConfig(config: ResetsConfig) {
 		resetMountingFeet = config.resetMountingFeet
@@ -120,6 +121,13 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		yawResetSmoothTime = config.yawResetSmoothTime
 		if (!::fpsTimer.isInitialized) {
 			fpsTimer = VRServer.instance.fpsTimer
+		}
+		saveMountingReset = config.saveMountingReset
+	}
+
+	fun trySetMountingReset(quat: Quaternion) {
+		if (saveMountingReset) {
+			mountRotFix = quat
 		}
 	}
 
@@ -323,6 +331,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Make an adjustment quaternion from the angle
 		mountRotFix = EulerAngles(EulerOrder.YZX, 0f, yawAngle, 0f).toQuaternion()
+
+		// save mounting reset
+		if (saveMountingReset) tracker.saveMountingResetOrientation(mountRotFix)
 	}
 
 	fun clearMounting() {

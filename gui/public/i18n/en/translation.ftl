@@ -320,6 +320,11 @@ settings-general-tracker_mechanics-drift_compensation-description =
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
+settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting reset calibration
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    Saves the automatic mounting reset calibrations for the trackers between restarts. Useful
+    when wearing a suit where trackers don't move between sessions. <b>Not recommended for normal users!</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Save mounting reset
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings
