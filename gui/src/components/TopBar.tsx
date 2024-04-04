@@ -263,7 +263,8 @@ export function TopBar({
       <TrayOrExitModal
         isOpen={showTrayOrExitModal}
         accept={async (useTray) => {
-          await setConfig({ useTray });
+          console.log(useTray);
+          await setConfig({ useTray }).catch((res) => console.error(res));
           setShowTrayOrExitModal(false);
 
           // Doing this in here just in case config doesn't get updated in time

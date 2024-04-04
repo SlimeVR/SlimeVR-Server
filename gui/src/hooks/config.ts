@@ -96,18 +96,33 @@ export function useConfigProvider(): ConfigContext {
           } as Config)
         : null
     );
-    await waitUntil(
-      () => {
-        const newConfig: Partial<Config> = JSON.parse(
-          localStorage.getItem('config.json') ?? '{}'
-        );
-        return Object.entries(config).every(
-          ([key, value]) => newConfig[key as keyof Config] === value
-        );
-      },
-      100,
-      10
-    );
+    if (tauri) {
+      await waitUntil(
+        async () => {
+          const newConfig: Partial<Config> = JSON.parse(
+            (await store.get('config.json')) ?? '{}'
+          );
+          return Object.entries(config).every(
+            ([key, value]) => newConfig[key as keyof Config] === value
+          );
+        },
+        100,
+        10
+      );
+    } else {
+      await waitUntil(
+        () => {
+          const newConfig: Partial<Config> = JSON.parse(
+            localStorage.getItem('config.json') ?? '{}'
+          );
+          return Object.entries(config).every(
+            ([key, value]) => newConfig[key as keyof Config] === value
+          );
+        },
+        100,
+        10
+      );
+    }
   };
 
   return {
