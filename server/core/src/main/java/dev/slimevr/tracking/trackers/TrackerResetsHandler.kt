@@ -128,7 +128,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun trySetMountingReset(quat: Quaternion) {
 		if (saveMountingReset) {
 			mountRotFix = quat
-			yawFix = quat.inv()
 		}
 	}
 
