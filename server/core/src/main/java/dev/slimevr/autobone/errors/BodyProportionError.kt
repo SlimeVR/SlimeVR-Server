@@ -33,8 +33,8 @@ class BodyProportionError : IAutoBoneError {
 		@JvmField
 		var eyeHeightToHeightRatio = 0.936f
 
-		val defaultHeight = SkeletonConfigManager.HEIGHT_OFFSETS.sumOf { it.defaultValue.toDouble() }.toFloat() / eyeHeightToHeightRatio
-		fun makeLimiter(offset: SkeletonConfigOffsets, range: Float): RangeProportionLimiter = RangeProportionLimiter(
+		private val defaultHeight = SkeletonConfigManager.HEIGHT_OFFSETS.sumOf { it.defaultValue.toDouble() }.toFloat()
+		private fun makeLimiter(offset: SkeletonConfigOffsets, range: Float): RangeProportionLimiter = RangeProportionLimiter(
 			offset.defaultValue / defaultHeight,
 			offset,
 			range,
@@ -42,6 +42,10 @@ class BodyProportionError : IAutoBoneError {
 
 		// "Expected" are values from Drillis and Contini (1966)
 		// Default are values from experimentation by the SlimeVR community
+		/**
+		 * Proportions are based off the headset height (or eye height), not the total height of the user.
+		 * To use the total height of the user, multiply it by [eyeHeightToHeightRatio] and use that in the limiters.
+		 */
 		val proportionLimits = arrayOf<ProportionLimiter>(
 			makeLimiter(
 				SkeletonConfigOffsets.HEAD,

@@ -204,18 +204,12 @@ class AutoBone(server: VRServer) {
 		} else {
 			calcTargetHmdHeight(frames, config)
 		}
-		val targetFullHeight = if (config.targetFullHeight > 0f) {
-			config.targetFullHeight
-		} else {
-			targetHmdHeight / BodyProportionError.eyeHeightToHeightRatio
-		}
 
 		// Set up the current state, making all required players and setting up the
 		// skeletons appropriately
 		val trainingStep = AutoBoneStep(
 			config = config,
 			targetHmdHeight = targetHmdHeight,
-			targetFullHeight = targetFullHeight,
 			frames = frames,
 			epochCallback = epochCallback,
 			serverConfig = server.configManager,

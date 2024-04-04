@@ -173,7 +173,8 @@ public class RPCSettingsBuilder {
 	public static int createModelSettings(
 		FlatBufferBuilder fbb,
 		HumanPoseManager humanPoseManager,
-		LegTweaksConfig legTweaksConfig
+		LegTweaksConfig legTweaksConfig,
+		SkeletonConfig skeletonConfig
 	) {
 		int togglesOffset = ModelToggles
 			.createModelToggles(
@@ -205,7 +206,14 @@ public class RPCSettingsBuilder {
 				fbb,
 				legTweaksConfig.getCorrectionStrength()
 			);
-		return ModelSettings.createModelSettings(fbb, togglesOffset, ratiosOffset, legTweaksOffset);
+		return ModelSettings
+			.createModelSettings(
+				fbb,
+				togglesOffset,
+				ratiosOffset,
+				legTweaksOffset,
+				skeletonConfig.getHmdHeight()
+			);
 	}
 
 	public static int createAutoBoneSettings(FlatBufferBuilder fbb, AutoBoneConfig autoBoneConfig) {
@@ -227,8 +235,6 @@ public class RPCSettingsBuilder {
 				autoBoneConfig.getPositionErrorFactor(),
 				autoBoneConfig.getPositionOffsetErrorFactor(),
 				autoBoneConfig.getCalcInitError(),
-				autoBoneConfig.getTargetHmdHeight(),
-				autoBoneConfig.getTargetFullHeight(),
 				autoBoneConfig.getRandomizeFrameOrder(),
 				autoBoneConfig.getScaleEachStep(),
 				autoBoneConfig.getSampleCount(),
@@ -298,12 +304,6 @@ public class RPCSettingsBuilder {
 		}
 		if (autoBoneSettings.hasCalcInitError()) {
 			autoBoneConfig.setCalcInitError(autoBoneSettings.calcInitError());
-		}
-		if (autoBoneSettings.hasTargetHmdHeight()) {
-			autoBoneConfig.setTargetHmdHeight(autoBoneSettings.targetHmdHeight());
-		}
-		if (autoBoneSettings.hasTargetFullHeight()) {
-			autoBoneConfig.setTargetFullHeight(autoBoneSettings.targetFullHeight());
 		}
 		if (autoBoneSettings.hasRandomizeFrameOrder()) {
 			autoBoneConfig.setRandomizeFrameOrder(autoBoneSettings.randomizeFrameOrder());
@@ -378,7 +378,8 @@ public class RPCSettingsBuilder {
 					.createModelSettings(
 						fbb,
 						server.humanPoseManager,
-						server.configManager.getVrConfig().getLegTweaks()
+						server.configManager.getVrConfig().getLegTweaks(),
+						server.configManager.getVrConfig().getSkeleton()
 					),
 				RPCSettingsBuilder
 					.createTapDetectionSettings(
