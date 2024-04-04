@@ -1,10 +1,10 @@
 package dev.slimevr.tracking.processor
 
-import com.jme3.math.FastMath.sign
-import com.jme3.math.FastMath.sin
-import com.jme3.math.FastMath.sqrt
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlin.math.sign
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 /**
  * Represents the rotational limits of a Bone relative to its parent
