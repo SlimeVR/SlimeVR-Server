@@ -48,7 +48,6 @@ class IKChain(
 			(computedTailPosition?.getPosition()) ?: Vector3.NULL
 		}
 
-		// Set the end node to target
 		positions[positions.size - 1] = target
 
 		for (i in positions.size - 2 downTo 0) {
@@ -77,7 +76,6 @@ class IKChain(
 			positions[i] = positions[i - 1] + (direction * nodes[i - 1].length)
 		}
 
-		// Point the last bone at the target
 		var direction = (target - positions[positions.size - 2]).unit()
 		direction = setBoneRotation(nodes.last(), direction)
 		positions[positions.size - 1] = positions[positions.size - 2] + (direction * nodes.last().length)
@@ -106,6 +104,9 @@ class IKChain(
 		return sum
 	}
 
+	/**
+	 * Resets the chain to its default state
+	 */
 	fun resetChain() {
 		distToTargetSqr = Float.POSITIVE_INFINITY
 		centroidWeight = 1f
@@ -146,7 +147,7 @@ class IKChain(
 	}
 
 	/**
-	 * Allow constrained bones to deviate more per step
+	 * Allow constrained bones to deviate more
 	 */
 	fun decreaseConstraints() {
 		loosens++

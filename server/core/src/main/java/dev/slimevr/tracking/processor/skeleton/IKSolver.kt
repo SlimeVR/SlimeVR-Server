@@ -4,7 +4,7 @@ import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.trackers.Tracker
 
 /*
- * Implements FABRIK (Forwards And Backwards Reaching Inverse Kinematics) and allows
+ * Implements FABRIK (Forwards And Backwards Reaching Inverse Kinematics) to allow
  * positional trackers such as vive/tundra trackers to be used in conjunction with
  * IMU trackers
  */
@@ -30,11 +30,9 @@ class IKSolver(private val root: Bone) {
 	fun buildChains(trackers: List<Tracker>) {
 		chainList.clear()
 
-		// Extract the positional constraints
 		val positionalConstraints = extractPositionalConstraints(trackers)
 		val rotationalConstraints = extractRotationalConstraints(trackers)
 
-		// Build the system of chains
 		rootChain = chainBuilder(root, null, 0, positionalConstraints, rotationalConstraints)
 		populateChainList(rootChain!!)
 		addConstraints()
@@ -45,8 +43,7 @@ class IKSolver(private val root: Bone) {
 	}
 
 	/**
-	 * Reset the offsets of positional trackers. Should only be called right after a full reset
-	 * is performed.
+	 * Reset the offsets of positional trackers.
 	 */
 	fun resetOffsets() {
 		needsReset = true
@@ -91,9 +88,8 @@ class IKSolver(private val root: Bone) {
 		var chain = IKChain(boneList, parent, level, baseConstraint, tailConstraint)
 
 		if (currentBone.children.isNotEmpty()) {
-			val childrenList = mutableListOf<IKChain>()
-
 			// Build child chains
+			val childrenList = mutableListOf<IKChain>()
 			for (child in currentBone.children) {
 				val childChain = chainBuilder(child, chain, level + 1, positionalConstraints, rotationalConstraints)
 				if (neededChain(childChain)) {
@@ -229,7 +225,7 @@ class IKSolver(private val root: Bone) {
 			}
 			needsReset = false
 		}
-		
+
 		rootChain?.resetChain()
 
 		for (i in 0 until MAX_ITERATIONS) {
