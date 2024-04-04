@@ -269,10 +269,10 @@ export function GeneralSettings() {
         values.resetsSettings.resetMountingFeet;
       resetsSettings.armsMountingResetMode =
         values.resetsSettings.armsMountingResetMode;
-        resetsSettings.yawResetSmoothTime =
+      resetsSettings.yawResetSmoothTime =
         values.resetsSettings.yawResetSmoothTime;
-        resetsSettings.saveMountingReset =
-          values.resetsSettings.saveMountingReset;
+      resetsSettings.saveMountingReset =
+        values.resetsSettings.saveMountingReset;
       settings.resetsSettings = resetsSettings;
     }
 
@@ -685,7 +685,6 @@ export function GeneralSettings() {
                 'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
               )}
             />
-            
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout

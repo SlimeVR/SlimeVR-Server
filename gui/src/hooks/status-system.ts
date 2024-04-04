@@ -157,6 +157,8 @@ export function parseStatusToLocale(
       }
       return { trackerName: name };
     }
+    case StatusData.StatusUnassignedHMD:
+      return { trackerName: 'Not implemented.' }; // TODO
   }
 }
 
