@@ -640,7 +640,7 @@ export function GeneralSettings() {
                 step={1}
               />
             </div>
-            <div className="flex flex-col pt-2 pb-3">
+            <div className="flex flex-col pt-5 pb-3">
               <Typography bold>
                 {l10n.getString(
                   'settings-general-tracker_mechanics-save_mounting_reset'
