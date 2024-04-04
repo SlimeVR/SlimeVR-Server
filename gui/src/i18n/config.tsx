@@ -11,7 +11,7 @@ import {
 } from 'react';
 import { exists, readTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
-import { invoke } from '@tauri-apps/api';
+import { invoke } from '@tauri-apps/api/core';
 
 export const defaultNS = 'translation';
 export const DEFAULT_LOCALE = 'en';
@@ -172,7 +172,7 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
       ? [
           currentLocale,
           await readTextFile(OVERRIDE_FILENAME, {
-            dir: BaseDirectory.AppConfig,
+            baseDir: BaseDirectory.AppConfig,
           }),
         ]
       : await fetchMessages(currentLocale);

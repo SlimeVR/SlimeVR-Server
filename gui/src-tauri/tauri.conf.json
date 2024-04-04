@@ -1,87 +1,85 @@
 {
-  "package": {
-    "productName": "slimevr",
-    "version": "../package.json"
-  },
   "build": {
-    "distDir": "../dist",
-    "devPath": "http://localhost:5173",
+    "beforeBuildCommand": "pnpm run build",
     "beforeDevCommand": "pnpm run start",
-    "beforeBuildCommand": "pnpm run build"
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5173"
   },
-  "plugins": {
-    "shell": {
-      "open": true
-    },
-    "fs": {
-      "scope": ["$APP/*", "$APP"],
-      "all": true
-    },
-    "os": {
-      "all": true
-    },
-    "window": {
-      "setResizable": true,
-      "setTitle": true,
-      "maximize": true,
-      "unmaximize": true,
-      "minimize": true,
-      "unminimize": true,
-      "close": true,
-      "startDragging": true,
-      "setSize": true
-    }
-  },
-  "tauri": {
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "dev.slimevr.SlimeVR",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ],
-      "resources": [],
-      "externalBin": [],
-      "copyright": "",
-      "category": "DeveloperTool",
-      "shortDescription": "",
-      "longDescription": "",
+  "bundle": {
+    "active": true,
+    "linux": {
       "deb": {
-        "depends": ["openjdk-17-jre-headless"],
+        "depends": [
+          "openjdk-17-jre-headless"
+        ],
         "files": {
           "/usr/share/slimevr/slimevr.jar": "../../server/desktop/build/libs/slimevr.jar"
         }
       },
       "appimage": {
         "bundleMediaFramework": true
-      },
-      "macOS": {
-        "frameworks": [],
-        "exceptionDomain": "localhost",
-        "signingIdentity": null,
-        "providerShortName": null,
-        "entitlements": null,
-        "license": "../../LICENSE-MIT"
-      },
-      "windows": {
-        "certificateThumbprint": null,
-        "digestAlgorithm": "sha256",
-        "timestampUrl": ""
       }
     },
-    "security": {
-      "csp": null,
-      "dangerousRemoteDomainIpcAccess": [
-        {
-          "domain": "tauri.localhost",
-          "windows": ["main"],
-          "plugins": ["dialog", "fs", "os", "shell", "window"]
-        }
+    "category": "DeveloperTool",
+    "copyright": "",
+    "targets": "all",
+    "externalBin": [],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    },
+    "longDescription": "",
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "localhost",
+      "frameworks": [],
+      "signingIdentity": null,
+      "providerShortName": null
+    },
+    "resources": [],
+    "shortDescription": "",
+    "licenseFile": "../../LICENSE-MIT"
+  },
+  "plugins": {
+    "fs": {
+      "all": true,
+      "scope": [
+        "$APP/*",
+        "$APP"
       ]
+    },
+    "os": {
+      "all": true
+    },
+    "shell": {
+      "open": true
+    },
+    "window": {
+      "close": true,
+      "maximize": true,
+      "minimize": true,
+      "setResizable": true,
+      "setSize": true,
+      "setTitle": true,
+      "startDragging": true,
+      "unmaximize": true,
+      "unminimize": true
+    }
+  },
+  "productName": "slimevr",
+  "version": "../package.json",
+  "identifier": "dev.slimevr.SlimeVR",
+  "app": {
+    "security": {
+      "csp": null
     }
   }
 }

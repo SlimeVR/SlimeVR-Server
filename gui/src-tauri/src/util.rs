@@ -95,17 +95,17 @@ pub fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> 
 #[cfg(desktop)]
 pub fn show_error(text: &str) -> bool {
 	use rand::{seq::SliceRandom, thread_rng};
-	use rfd::{MessageButtons, MessageDialog, MessageLevel};
+	use rfd::{MessageButtons, MessageDialog, MessageDialogResult, MessageLevel};
 
 	MessageDialog::new()
-		.set_title(&format!(
+		.set_title(format!(
 			"SlimeVR GUI crashed - {}",
 			POSSIBLE_TITLES.choose(&mut thread_rng()).unwrap()
 		))
 		.set_description(text)
 		.set_buttons(MessageButtons::Ok)
 		.set_level(MessageLevel::Error)
-		.show()
+		.show() == MessageDialogResult::Ok
 }
 
 #[cfg(mobile)]
