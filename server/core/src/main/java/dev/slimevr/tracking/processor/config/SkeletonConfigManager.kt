@@ -396,17 +396,12 @@ class SkeletonConfigManager(
 		resetValues()
 	}
 
-	fun resetOffset(config: SkeletonConfigOffsets?) {
-		if (config == null) {
-			return
-		}
-
+	fun resetOffset(config: SkeletonConfigOffsets) {
 		when (config) {
 			SkeletonConfigOffsets.UPPER_CHEST, SkeletonConfigOffsets.CHEST, SkeletonConfigOffsets.WAIST, SkeletonConfigOffsets.HIP, SkeletonConfigOffsets.UPPER_LEG, SkeletonConfigOffsets.LOWER_LEG -> {
-				val height = (
-					humanPoseManager!!.hmdHeight /
+				val height =
+					(humanPoseManager?.hmdHeight ?: 0f) /
 						BodyProportionError.eyeHeightToHeightRatio
-					)
 				if (height > 0.5f) { // Reset only if floor level seems right,
 					val proportionLimiter = proportionLimitMap[config]
 					if (proportionLimiter != null) {
