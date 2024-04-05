@@ -162,10 +162,13 @@ export default function App() {
   const isTauri = useIsTauri();
 
   useEffect(() => {
-    window.addEventListener('keydown', function (e) {
+    const onKeydown: (arg0: KeyboardEvent) => void = function (e) {
       // seems to be sufficient to prevent most default shortcuts
       e.preventDefault();
-    });
+    };
+
+    window.addEventListener('keydown', onKeydown);
+    return () => window.removeEventListener('keydown', onKeydown);
   }, []);
 
   useEffect(() => {
