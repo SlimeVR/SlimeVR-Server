@@ -321,7 +321,6 @@ jobs:
           cache: 'pnpm'
 
       - name: Clean cache in Windows (Fixes tauri-apps/tauri#9045)
-        if: matrix.os == 'windows-latest'
         run: cargo clean
 
       - name: Build
