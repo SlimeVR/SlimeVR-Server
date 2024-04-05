@@ -5,6 +5,7 @@ import { Control, Controller } from 'react-hook-form';
 export function CheckBox({
   label,
   variant = 'checkbox',
+  color = 'primary',
   control,
   outlined,
   name,
@@ -16,6 +17,7 @@ export function CheckBox({
   control: Control<any>;
   name: string;
   variant?: 'checkbox' | 'toggle';
+  color?: 'primary' | 'secondary' | 'tertiary';
   outlined?: boolean;
 } & React.HTMLProps<HTMLInputElement>) {
   const classes = useMemo(() => {
@@ -44,8 +46,11 @@ export function CheckBox({
         <div
           className={classNames(
             {
-              'bg-background-60 rounded-lg text-background-10': outlined,
-              'text-background-30': !outlined,
+              'rounded-lg': outlined,
+              'text-background-30': !outlined || disabled,
+              'bg-background-60': outlined && color === 'primary',
+              'bg-background-70': outlined && color === 'secondary',
+              'bg-background-50': outlined && color === 'tertiary',
             },
             'flex items-center gap-2 w-full'
           )}
@@ -66,19 +71,24 @@ export function CheckBox({
               name={name}
               className={classes.checkbox}
               type="checkbox"
+              disabled={disabled}
               {...props}
             />
             {variant === 'toggle' && (
               <div
                 className={classNames(classes.toggle, {
-                  'bg-accent-background-30': value,
-                  'bg-background-50': !value,
+                  'bg-accent-background-30': value && !disabled,
+                  'bg-accent-background-50': value && disabled,
+                  'bg-background-50':
+                    (!value && color == 'primary') || color == 'secondary',
+                  'bg-background-40': !value && color == 'tertiary',
                 })}
               >
                 <div
                   className={classNames(classes.pin, {
                     'left-0': !value,
                     'right-0': value,
+                    'bg-background-30': disabled,
                   })}
                 ></div>
               </div>

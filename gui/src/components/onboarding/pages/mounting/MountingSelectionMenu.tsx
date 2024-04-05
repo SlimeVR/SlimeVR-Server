@@ -28,6 +28,8 @@ export const mapPart: Record<
   [BodyPart.CHEST]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.HEAD]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.HIP]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.LEFT_HIP]: ({ width }) => <FootIcon width={width}></FootIcon>, // Unused
+  [BodyPart.RIGHT_HIP]: ({ width }) => <FootIcon width={width}></FootIcon>, // Unused
   [BodyPart.LEFT_FOOT]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon

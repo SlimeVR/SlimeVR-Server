@@ -36,7 +36,7 @@ export function ClearMountingButton() {
   return (
     <BigButton
       text={l10n.getString('widget-clear_mounting')}
-      icon={<TrashIcon width={20} />}
+      icon={<TrashIcon size={20} />}
       onClick={clearMounting}
       disabled={!trackerWithMounting}
     />

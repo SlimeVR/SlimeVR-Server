@@ -4,12 +4,12 @@ import { useOnboarding } from '@/hooks/onboarding';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';
-import { PersonFrontIcon } from '@/components/commons/PersonFrontIcon';
 import { Typography } from '@/components/commons/Typography';
 import { BodyProportions } from './BodyProportions';
 import { useLocalization } from '@fluent/react';
 import { useEffect, useMemo } from 'react';
 import { useBreakpoint } from '@/hooks/breakpoint';
+import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
 
 export function ButtonsControl() {
   const { l10n } = useLocalization();
@@ -53,13 +53,15 @@ export function ManualProportionsPage() {
 
   const savedValue = useMemo(() => localStorage.getItem('ratioMode'), []);
 
+  const defaultValues = { precise: false, ratio: savedValue !== 'false' };
+
   const { control, watch } = useForm<{ precise: boolean; ratio: boolean }>({
-    defaultValues: { precise: false, ratio: savedValue !== 'false' },
+    defaultValues,
   });
   const { precise, ratio } = watch();
 
   useEffect(() => {
-    localStorage.setItem('ratioMode', ratio.toString());
+    localStorage.setItem('ratioMode', ratio?.toString() ?? 'true');
   }, [ratio]);
 
   return (
@@ -94,14 +96,14 @@ export function ManualProportionsPage() {
               </div>
               <div className="w-full px-2">
                 <BodyProportions
-                  precise={precise}
+                  precise={precise ?? defaultValues.precise}
                   type={ratio ? 'ratio' : 'linear'}
                   variant={state.alonePage ? 'alone' : 'onboarding'}
                 ></BodyProportions>
               </div>
             </div>
             <div className="flex-col flex-grow gap-3 rounded-xl fill-background-50 items-center hidden md:flex">
-              <PersonFrontIcon width={200}></PersonFrontIcon>
+              <SkeletonVisualizerWidget height="65vh" maxHeight={600} />
             </div>
           </div>
           {!isMobile && (

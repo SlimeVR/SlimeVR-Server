@@ -47,12 +47,13 @@ import { CalibrationTutorialPage } from './components/onboarding/pages/Calibrati
 import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
 import { open } from '@tauri-apps/plugin-shell';
 import semver from 'semver';
-import { useBreakpoint } from './hooks/breakpoint';
+import { useBreakpoint, useIsTauri } from './hooks/breakpoint';
 import { VRModePage } from './components/vr-mode/VRModePage';
 import { InterfaceSettings } from './components/settings/pages/InterfaceSettings';
 import { error, log } from './utils/logging';
 import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
+import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -66,6 +67,7 @@ function Layout() {
     <>
       <SerialDetectionModal></SerialDetectionModal>
       <VersionUpdateModal></VersionUpdateModal>
+      <UnknownDeviceModal></UnknownDeviceModal>
       <Routes>
         <Route element={<AppLayout />}>
           <Route
@@ -157,6 +159,7 @@ export default function App() {
   const websocketAPI = useProvideWebsocketApi();
   const { l10n } = useLocalization();
   const [updateFound, setUpdateFound] = useState('');
+  const isTauri = useIsTauri();
   useEffect(() => {
     async function fetchReleases() {
       const releases = await fetch(
@@ -176,7 +179,7 @@ export default function App() {
     fetchReleases().catch(() => error('failed to fetch releases'));
   }, []);
 
-  if (window.__TAURI_METADATA__) {
+  if (isTauri) {
     useEffect(() => {
       os.type()
         .then((type) => document.body.classList.add(type.toLowerCase()))
@@ -190,7 +193,7 @@ export default function App() {
     }, []);
   }
 
-  if (window.__TAURI_METADATA__) {
+  if (isTauri) {
     useEffect(() => {
       const unlisten = listen(
         'server-status',
@@ -227,8 +230,7 @@ export default function App() {
         }
       );
       return () => {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        unlisten.then(() => {});
+        unlisten.then((fn) => fn());
       };
     }, []);
   }

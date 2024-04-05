@@ -1,26 +1,25 @@
 package dev.slimevr.autobone.errors
 
-import com.jme3.math.FastMath
 import dev.slimevr.autobone.AutoBoneStep
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter
 import dev.slimevr.autobone.errors.proportions.RangeProportionLimiter
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
+import kotlin.math.*
 
 // The distance from average human proportions
 class BodyProportionError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
-	override fun getStepError(trainingStep: AutoBoneStep): Float {
-		return getBodyProportionError(
-			trainingStep.skeleton1,
-			trainingStep.currentHmdHeight / trainingStep.eyeHeightToHeightRatio
-		)
-	}
+	override fun getStepError(trainingStep: AutoBoneStep): Float = getBodyProportionError(
+		trainingStep.skeleton1,
+		// Skeletons are now normalized to reduce bias, so height is always 1
+		1f,
+	)
 
 	fun getBodyProportionError(humanPoseManager: HumanPoseManager, fullHeight: Float): Float {
 		var sum = 0f
 		for (limiter in proportionLimits) {
-			sum += FastMath.abs(limiter.getProportionError(humanPoseManager, fullHeight))
+			sum += abs(limiter.getProportionError(humanPoseManager, fullHeight))
 		}
 		return sum
 	}
@@ -52,84 +51,71 @@ class BodyProportionError : IAutoBoneError {
 			// Experimental: 0.059
 			RangeProportionLimiter(
 				0.059f,
-				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.HEAD) },
-				0.01f
+				SkeletonConfigOffsets.HEAD,
+				0.01f,
 			),
 			// Neck
 			// Expected: 0.052
 			// Experimental: 0.059
 			RangeProportionLimiter(
 				0.054f,
-				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.NECK) },
-				0.0015f
+				SkeletonConfigOffsets.NECK,
+				0.0015f,
 			),
 			// Upper Chest
 			// Experimental: 0.0945
 			RangeProportionLimiter(
 				0.0945f,
-				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.UPPER_CHEST) },
-				0.01f
+				SkeletonConfigOffsets.UPPER_CHEST,
+				0.01f,
 			),
 			// Chest
 			// Experimental: 0.0945
 			RangeProportionLimiter(
 				0.0945f,
-				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.CHEST) },
-				0.01f
+				SkeletonConfigOffsets.CHEST,
+				0.01f,
 			),
 			// Waist
 			// Experimental: 0.118
 			RangeProportionLimiter(
 				0.118f,
-				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.WAIST) },
-				0.05f
+				SkeletonConfigOffsets.WAIST,
+				0.05f,
 			),
 			// Hip
 			// Experimental: 0.0237
 			RangeProportionLimiter(
 				0.0237f,
-				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.HIP) },
-				0.01f
+				SkeletonConfigOffsets.HIP,
+				0.01f,
 			),
 			// Hip Width
 			// Expected: 0.191
 			// Experimental: 0.154
 			RangeProportionLimiter(
 				0.184f,
-				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.HIPS_WIDTH) },
-				0.04f
+				SkeletonConfigOffsets.HIPS_WIDTH,
+				0.04f,
 			),
 			// Upper Leg
 			// Expected: 0.245
 			RangeProportionLimiter(
 				0.245f,
-				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.UPPER_LEG) },
-				0.015f
+				SkeletonConfigOffsets.UPPER_LEG,
+				0.015f,
 			),
 			// Lower Leg
 			// Expected: 0.246 (0.285 including below ankle, could use a separate
 			// offset?)
 			RangeProportionLimiter(
 				0.285f,
-				{ config: HumanPoseManager -> config.getOffset(SkeletonConfigOffsets.LOWER_LEG) },
-				0.02f
-			)
+				SkeletonConfigOffsets.LOWER_LEG,
+				0.02f,
+			),
 		)
 
 		@JvmStatic
-		fun getProportionLimitForOffset(offset: SkeletonConfigOffsets): ProportionLimiter? {
-			return when (offset) {
-				SkeletonConfigOffsets.HEAD -> proportionLimits[0]
-				SkeletonConfigOffsets.NECK -> proportionLimits[1]
-				SkeletonConfigOffsets.UPPER_CHEST -> proportionLimits[2]
-				SkeletonConfigOffsets.CHEST -> proportionLimits[3]
-				SkeletonConfigOffsets.WAIST -> proportionLimits[4]
-				SkeletonConfigOffsets.HIP -> proportionLimits[5]
-				SkeletonConfigOffsets.HIPS_WIDTH -> proportionLimits[6]
-				SkeletonConfigOffsets.UPPER_LEG -> proportionLimits[7]
-				SkeletonConfigOffsets.LOWER_LEG -> proportionLimits[8]
-				else -> null
-			}
-		}
+		val proportionLimitMap = proportionLimits.associateBy { it.skeletonConfigOffset }
 	}
 }

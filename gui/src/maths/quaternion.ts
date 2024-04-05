@@ -61,6 +61,11 @@ export function compareQuatT(a: QuatT | null, b: QuatT | null): boolean {
   return a.w === b.w && a.x === b.x && a.y === b.y && a.z === b.z;
 }
 
+export function isIdentity(a?: QuatT | null): boolean {
+  if (!a) return false;
+  return a.w === 1 && a.x === 0 && a.y === 0 && a.z === 0;
+}
+
 export function similarQuaternions(
   a: Quaternion | null,
   b: Quaternion | null,

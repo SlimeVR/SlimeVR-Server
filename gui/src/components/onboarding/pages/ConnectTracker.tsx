@@ -1,11 +1,13 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  AddUnknownDeviceRequestT,
   RpcMessage,
   StartWifiProvisioningRequestT,
   StopWifiProvisioningRequestT,
+  UnknownDeviceHandshakeNotificationT,
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
 } from 'solarxr-protocol';
@@ -97,6 +99,15 @@ export function ConnectTrackersPage() {
     }
   );
 
+  useRPCPacket(
+    RpcMessage.UnknownDeviceHandshakeNotification,
+    ({ macAddress }: UnknownDeviceHandshakeNotificationT) =>
+      sendRPCPacket(
+        RpcMessage.AddUnknownDeviceRequest,
+        new AddUnknownDeviceRequestT(macAddress)
+      )
+  );
+
   const isError =
     provisioningStatus === WifiProvisioningStatus.CONNECTION_ERROR ||
     provisioningStatus === WifiProvisioningStatus.COULD_NOT_FIND_SERVER;
@@ -126,6 +137,14 @@ export function ConnectTrackersPage() {
     }
   }, [provisioningStatus]);
 
+  const currentTip = useMemo(
+    () =>
+      connectedIMUTrackers.length > 0
+        ? 'tips-find_tracker'
+        : 'tips-turn_on_tracker',
+    [connectedIMUTrackers.length]
+  );
+
   return (
     <div className="flex flex-col h-full items-center px-4 pb-4">
       <div className="flex gap-10 mobile:flex-col w-full xs:max-w-7xl">
@@ -134,10 +153,10 @@ export function ConnectTrackersPage() {
             {l10n.getString('onboarding-connect_tracker-title')}
           </Typography>
           <Typography color="secondary">
-            {l10n.getString('onboarding-connect_tracker-description-p0')}
+            {l10n.getString('onboarding-connect_tracker-description-p0-v1')}
           </Typography>
           <Typography color="secondary">
-            {l10n.getString('onboarding-connect_tracker-description-p1')}
+            {l10n.getString('onboarding-connect_tracker-description-p1-v1')}
           </Typography>
           <div className="flex flex-col gap-2 py-5">
             {/* <ArrowLink
@@ -156,7 +175,12 @@ export function ConnectTrackersPage() {
               {l10n.getString('onboarding-connect_tracker-issue-serial')}
             </ArrowLink>
           </div>
-          <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
+          <Localized
+            id={currentTip}
+            elems={{ em: <em className="italic"></em>, b: <b></b> }}
+          >
+            <TipBox>Conditional tip</TipBox>
+          </Localized>
 
           <div
             className={classNames(
@@ -210,8 +234,8 @@ export function ConnectTrackersPage() {
                 state.alonePage
                   ? '/'
                   : bnoExists
-                  ? '/onboarding/calibration-tutorial'
-                  : '/onboarding/assign-tutorial'
+                    ? '/onboarding/calibration-tutorial'
+                    : '/onboarding/assign-tutorial'
               }
               className="ml-auto"
             >

@@ -1,4 +1,4 @@
-export function QuestionIcon({ width = 35 }: { width?: number }) {
+export function QuestionIcon({ width = 23 }: { width?: number }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

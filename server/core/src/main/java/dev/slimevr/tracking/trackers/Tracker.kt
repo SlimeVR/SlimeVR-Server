@@ -15,7 +15,8 @@ import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
 import kotlin.properties.Delegates
 
-const val TIMEOUT_MS = 2000L
+const val TIMEOUT_MS = 2_000L
+const val DISCONNECT_MS = 3_000L + TIMEOUT_MS
 
 /**
  * Generic tracker class for input and output tracker,
@@ -65,9 +66,9 @@ class Tracker @JvmOverloads constructor(
 	val needsMounting: Boolean = false,
 ) {
 	private val timer = BufferedTimer(1f)
-	private var timeAtLastUpdate: Long = 0
-	private var rotation = Quaternion.IDENTITY
-	private var acceleration = Vector3.NULL
+	private var timeAtLastUpdate: Long = System.currentTimeMillis()
+	private var _rotation = Quaternion.IDENTITY
+	private var _acceleration = Vector3.NULL
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
@@ -83,8 +84,7 @@ class Tracker @JvmOverloads constructor(
 	 */
 	var statusResetRecently = false
 	private var alreadyInitialized = false
-	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) {
-			_, old, new ->
+	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) { _, old, new ->
 		if (old == new) return@observable
 
 		if (!new.reset) {
@@ -105,11 +105,13 @@ class Tracker @JvmOverloads constructor(
 		}
 	}
 
-	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) {
-			_, old, new ->
+	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) { _, old, new ->
 		if (old == new) return@observable
 
 		if (!isInternal) {
+			// Set default mounting orientation for that body part
+			new?.let { resetsHandler.mountingOrientation = it.defaultMounting() }
+
 			checkReportRequireReset()
 		}
 	}
@@ -213,7 +215,8 @@ class Tracker @JvmOverloads constructor(
 			getByDesignation(designation)?.let { trackerPosition = it }
 		} ?: run { trackerPosition = null }
 		if (needsMounting) {
-			config.mountingOrientation?.let { resetsHandler.mountingOrientation = it }
+			// Load manual mounting
+			config.mountingOrientation?.let { resetsHandler.mountingOrientation = it.toValue() }
 		}
 		if (this.isImu() && config.allowDriftCompensation == null) {
 			// If value didn't exist, default to true and save
@@ -239,7 +242,8 @@ class Tracker @JvmOverloads constructor(
 		trackerPosition?.let { config.designation = it.designation } ?: run { config.designation = null }
 		customName?.let { config.customName = it }
 		if (needsMounting) {
-			config.mountingOrientation = resetsHandler.mountingOrientation
+			// Save manual mounting
+			config.mountingOrientation = resetsHandler.mountingOrientation.toObject()
 		}
 		if (this.isImu()) {
 			config.allowDriftCompensation = resetsHandler.allowDriftCompensation
@@ -247,15 +251,37 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
+	 * Loads the mounting reset quaternion from disk
+	 */
+	fun saveMountingResetOrientation(config: TrackerConfig) {
+		// Load automatic mounting
+		config.mountingResetOrientation?.let {
+			resetsHandler.trySetMountingReset(it.toValue())
+		}
+	}
+
+	/**
+	 * Saves the mounting reset quaternion to disk
+	 */
+	fun saveMountingResetOrientation(quat: Quaternion?) {
+		val configManager = VRServer.instance.configManager
+		configManager.vrConfig.getTracker(this).mountingResetOrientation = quat?.toObject()
+		configManager.saveConfig()
+	}
+
+	/**
 	 * Synchronized with the VRServer's 1000hz while loop
 	 */
 	fun tick() {
 		if (usesTimeout) {
-			if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
+			if (System.currentTimeMillis() - timeAtLastUpdate > DISCONNECT_MS) {
 				status = TrackerStatus.DISCONNECTED
+			} else if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
+				status = TrackerStatus.TIMED_OUT
 			}
 		}
-		filteringHandler.tick()
+		filteringHandler.update()
+		resetsHandler.update()
 	}
 
 	/**
@@ -264,14 +290,21 @@ class Tracker @JvmOverloads constructor(
 	fun dataTick() {
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
-		filteringHandler.dataTick(rotation)
+		filteringHandler.dataTick(_rotation)
+	}
+
+	/**
+	 * A way to delay the timeout of the tracker
+	 */
+	fun heartbeat() {
+		timeAtLastUpdate = System.currentTimeMillis()
 	}
 
 	/**
 	 * Gets the adjusted tracker rotation after all corrections
 	 * (filtering, reset, mounting and drift compensation).
 	 * This is the rotation that is applied on the SlimeVR skeleton bones.
-	 * Warning: This may perform several Quaternion multiplications, so calling
+	 * Warning: This performs several Quaternion multiplications, so calling
 	 * it too much should be avoided for performance reasons.
 	 */
 	fun getRotation(): Quaternion {
@@ -280,7 +313,7 @@ class Tracker @JvmOverloads constructor(
 			filteringHandler.getFilteredRotation()
 		} else {
 			// Get unfiltered rotation
-			rotation
+			_rotation
 		}
 
 		if (needsReset && !(isComputed && trackerPosition == TrackerPosition.HEAD)) {
@@ -294,17 +327,15 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * Gets the world-adjusted acceleration
 	 */
-	fun getAcceleration(): Vector3 {
-		return if (needsReset) {
-			resetsHandler.getReferenceAdjustedAccel(rotation, acceleration)
-		} else {
-			acceleration
-		}
+	fun getAcceleration(): Vector3 = if (needsReset) {
+		resetsHandler.getReferenceAdjustedAccel(_rotation, _acceleration)
+	} else {
+		_acceleration
 	}
 
 	/**
-	 * Gets the identity-adjusted tracker rotation after some corrections
-	 * (filtering, identity reset and identity mounting).
+	 * Gets the identity-adjusted tracker rotation after corrections
+	 * (filtering, identity reset, drift and identity mounting).
 	 * This is used for debugging/visualizing tracker data
 	 */
 	fun getIdentityAdjustedRotation(): Quaternion {
@@ -313,12 +344,12 @@ class Tracker @JvmOverloads constructor(
 			filteringHandler.getFilteredRotation()
 		} else {
 			// Get unfiltered rotation
-			rotation
+			_rotation
 		}
 
 		if (needsReset && trackerPosition != TrackerPosition.HEAD) {
 			// Adjust to reset and mounting
-			rot = resetsHandler.getIdentityAdjustedRotationFrom(rot)
+			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		}
 
 		return rot
@@ -328,27 +359,23 @@ class Tracker @JvmOverloads constructor(
 	 * Gets the raw (unadjusted) rotation of the tracker.
 	 * If this is an IMU, this will be the raw sensor rotation.
 	 */
-	fun getRawRotation(): Quaternion {
-		return rotation
-	}
+	fun getRawRotation(): Quaternion = _rotation
 
 	/**
 	 * Sets the raw (unadjusted) rotation of the tracker.
 	 */
 	fun setRotation(rotation: Quaternion) {
-		this.rotation = rotation
+		this._rotation = rotation
 	}
 
 	/**
 	 * Sets the raw (unadjusted) acceleration of the tracker.
 	 */
 	fun setAcceleration(vec: Vector3) {
-		this.acceleration = vec
+		this._acceleration = vec
 	}
 
-	fun isImu(): Boolean {
-		return imuType != null
-	}
+	fun isImu(): Boolean = imuType != null
 
 	/**
 	 * Gets the current TPS of the tracker

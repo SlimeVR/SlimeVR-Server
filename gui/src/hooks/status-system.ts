@@ -138,9 +138,8 @@ export function parseStatusToLocale(
 
       const tracker = trackers.find(
         ({ tracker }) =>
-          data.trackerId?.trackerNum &&
-          tracker?.trackerId?.trackerNum == data.trackerId.trackerNum &&
-          tracker?.trackerId?.deviceId?.id == data.trackerId.deviceId?.id
+          tracker?.trackerId?.trackerNum == data.trackerId?.trackerNum &&
+          tracker?.trackerId?.deviceId?.id == data.trackerId?.deviceId?.id
       );
       if (!tracker)
         return {
@@ -149,8 +148,8 @@ export function parseStatusToLocale(
       const name = tracker.tracker.info?.customName
         ? tracker.tracker.info?.customName
         : tracker.tracker.info?.bodyPart
-        ? l10n.getString('body_part-' + BodyPart[tracker.tracker.info?.bodyPart])
-        : tracker.tracker.info?.displayName || 'unknown';
+          ? l10n.getString('body_part-' + BodyPart[tracker.tracker.info?.bodyPart])
+          : tracker.tracker.info?.displayName || 'unknown';
       if (typeof name !== 'string') {
         return {
           trackerName: new TextDecoder().decode(name),
@@ -158,6 +157,8 @@ export function parseStatusToLocale(
       }
       return { trackerName: name };
     }
+    case StatusData.StatusUnassignedHMD:
+      return { trackerName: 'Not implemented.' }; // TODO
   }
 }
 

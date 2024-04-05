@@ -144,6 +144,11 @@ widget-imu_visualizer-rotation_raw = Brute
 widget-imu_visualizer-rotation_preview = Aperçu
 widget-imu_visualizer-rotation_hide = Masquer
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = Aperçu du squelette
+widget-skeleton_visualizer-hide = Masquer
+
 ## Tracker status
 
 tracker-status-none = Pas de statut
@@ -152,6 +157,7 @@ tracker-status-error = Erreur
 tracker-status-disconnected = Déconnecté
 tracker-status-occluded = Obstrué
 tracker-status-ok = OK
+tracker-status-timed_out = Délai expiré
 
 ## Tracker status columns
 
@@ -443,6 +449,9 @@ settings-general-interface-feedback_sound = Son de retour
 settings-general-interface-feedback_sound-description = Cette option va jouer un son lorsqu'une réanitilisation est enclenchée.
 settings-general-interface-feedback_sound-label = Son de retour
 settings-general-interface-feedback_sound-volume = Volume du son de retour
+settings-general-interface-connected_trackers_warning = Avertissement de capteurs connectés
+settings-general-interface-connected_trackers_warning-description = Cette option affichera une fenêtre contextuelle chaque fois que vous essaierez de quitter SlimeVR tout en ayant un ou plusieurs capteurs connectés. Il vous rappelle d’éteindre vos capteurs lorsque vous avez terminé pour préserver la durée de vie de la batterie.
+settings-general-interface-connected_trackers_warning-label = Avertissement de capteurs connectés en quittant
 
 ## Serial settings
 
@@ -772,6 +781,13 @@ onboarding-choose_mounting-manual_mounting = Alignement manuel
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Recommendée
 onboarding-choose_mounting-manual_mounting-description = Ceci vous permettra de choisir la direction de chaque capteur manuellement
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    Êtes-vous sûr de vouloir faire
+    la calibration automatique de l'alignement ?
+onboarding-choose_mounting-manual_modal-description = <b>La calibration manuel de l'alignement est recommandé pour les nouveaux utilisateurs</b>, car les poses de calibration automatique de l'alignement peuvent être difficiles à reproduire au départ et peuvent nécessiter un peu de pratique.
+onboarding-choose_mounting-manual_modal-confirm = Je suis sûr de ce que je fais
+onboarding-choose_mounting-manual_modal-cancel = Annuler
 
 ## Tracker manual mounting setup
 
@@ -812,10 +828,10 @@ onboarding-choose_proportions-description =
 onboarding-choose_proportions-auto_proportions = Proportions automatiques
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommendée
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
     Cela permettra d'estimer vos proportions en enregistrant un échantillon de vos mouvements et en le faisant passer par un algorithme.
     
-    <b>Cela nécessite d’avoir votre casque VR connecté à SlimeVR !</b>
+    <b>Cela nécessite d’avoir votre casque VR connecté à SlimeVR et sur votre tête !</b>
 onboarding-choose_proportions-manual_proportions = Proportions manuelles
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Pour les retouches
@@ -846,13 +862,12 @@ onboarding-automatic_proportions-put_trackers_on-description = Pour calibrer vos
 onboarding-automatic_proportions-put_trackers_on-next = J'ai tous mes capteurs
 onboarding-automatic_proportions-requirements-title = Exigences
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
+onboarding-automatic_proportions-requirements-descriptionv2 =
     Vous avez au moins assez de capteurs pour capturer vos pieds (généralement 5 capteurs).
-    Vos capteurs et votre casque VR sont allumés.
-    Vous portez vos capteurs et votre casque VR.
-    Vos capteurs et votre casque VR sont connectés au serveur SlimeVR.
-    Vos capteurs et votre casque VR fonctionnent correctement au sein du serveur SlimeVR.
-    Votre casque envoie sa position au serveur SlimeVR (cela signifie généralement que SteamVR est ouvert et connecté à SlimeVR en utilisant le driver SteamVR de SlimeVR).
+    Vos capteurs et votre casque VR sont allumés et sur vous.
+    Vos capteurs et votre casque VR sont connectés au serveur SlimeVR et fonctionnent correctement (ex. pas de lag, déconnexions, etc).
+    Votre casque envoie sa position au serveur SlimeVR (cela signifie généralement que SteamVR est ouvert et connecté à SlimeVR en utilisant le pilote SteamVR de SlimeVR).
+    La capture des mouvements fonctionne et représente correctement vos mouvements (ex. vous avez effectué une réinitialisation complète des capteurs et ils bougent dans le bon sens lorsque vous donnez des coups de pieds, vous penchez, vous assoyez, etc).
 onboarding-automatic_proportions-requirements-next = J'ai lu les exigences
 onboarding-automatic_proportions-check_height-title = Vérifiez votre taille
 onboarding-automatic_proportions-check_height-description = Nous utilisons votre taille comme la base de nos mesures en utilisant la hauteur de votre casque comme approximation de votre taille réelle, mais il est préférable de vérifier si elles sont correctes vous-même !
@@ -903,6 +918,15 @@ onboarding-automatic_proportions-error_modal-confirm = Compris !
 ## Home
 
 home-no_trackers = Aucun capteur détecté ou attribué
+
+## Trackers Still On notification
+
+trackers_still_on-modal-title = Capteurs encore allumés
+trackers_still_on-modal-description =
+    Un ou plusieurs capteurs sont encore allumés.
+    Voulez-vous quand même quitter SlimeVR ?
+trackers_still_on-modal-confirm = Quitter SlimeVR
+trackers_still_on-modal-cancel = Annuler...
 
 ## Status system
 

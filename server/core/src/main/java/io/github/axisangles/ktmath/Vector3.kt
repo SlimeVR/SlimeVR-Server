@@ -2,9 +2,12 @@
 
 package io.github.axisangles.ktmath
 
+import kotlinx.serialization.Serializable
 import kotlin.math.*
 
-data class Vector3(val x: Float, val y: Float, val z: Float) {
+@JvmInline
+@Serializable
+value class Vector3(val x: Float, val y: Float, val z: Float) {
 	companion object {
 		val NULL = Vector3(0f, 0f, 0f)
 		val POS_X = Vector3(1f, 0f, 0f)
@@ -15,18 +18,22 @@ data class Vector3(val x: Float, val y: Float, val z: Float) {
 		val NEG_Z = Vector3(0f, 0f, -1f)
 	}
 
+	operator fun component1() = x
+	operator fun component2() = y
+	operator fun component3() = z
+
 	operator fun unaryMinus() = Vector3(-x, -y, -z)
 
 	operator fun plus(that: Vector3) = Vector3(
 		this.x + that.x,
 		this.y + that.y,
-		this.z + that.z
+		this.z + that.z,
 	)
 
 	operator fun minus(that: Vector3) = Vector3(
 		this.x - that.x,
 		this.y - that.y,
-		this.z - that.z
+		this.z - that.z,
 	)
 
 	/**
@@ -44,13 +51,13 @@ data class Vector3(val x: Float, val y: Float, val z: Float) {
 	infix fun cross(that: Vector3) = Vector3(
 		this.y * that.z - this.z * that.y,
 		this.z * that.x - this.x * that.z,
-		this.x * that.y - this.y * that.x
+		this.x * that.y - this.y * that.x,
 	)
 
 	infix fun hadamard(that: Vector3) = Vector3(
 		this.x * that.x,
 		this.y * that.y,
-		this.z * that.z
+		this.z * that.z,
 	)
 
 	/**
@@ -76,14 +83,14 @@ data class Vector3(val x: Float, val y: Float, val z: Float) {
 	operator fun times(that: Float) = Vector3(
 		this.x * that,
 		this.y * that,
-		this.z * that
+		this.z * that,
 	)
 
 	// computes division of this vector3 by a float
 	operator fun div(that: Float) = Vector3(
 		this.x / that,
 		this.y / that,
-		this.z / that
+		this.z / that,
 	)
 
 	/**

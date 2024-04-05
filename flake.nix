@@ -7,6 +7,8 @@
     nix2container.url = "github:nlewo/nix2container";
     nix2container.inputs.nixpkgs.follows = "nixpkgs";
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
+    nixgl.url = "github:guibou/nixGL";
+    fenix.url = "github:nix-community/fenix";
   };
 
   nixConfig = {
@@ -14,7 +16,12 @@
     extra-substituters = "https://devenv.cachix.org";
   };
 
-  outputs = inputs @ {flake-parts, ...}:
+  outputs = inputs @ {
+    self,
+    flake-parts,
+    nixgl,
+    ...
+  }:
     flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         inputs.devenv.flakeModule
@@ -36,8 +43,15 @@
 
         # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
         # packages.default = pkgs.hello;
+        _module.args.pkgs = import self.inputs.nixpkgs {
+          inherit system;
+          overlays = [nixgl.overlay];
+        };
 
-        devenv.shells.default = {
+        devenv.shells.default = let
+          fenixpkgs = inputs'.fenix.packages;
+          rust_toolchain = lib.importTOML ./rust-toolchain.toml;
+        in {
           name = "slimevr";
 
           imports = [
@@ -48,8 +62,10 @@
 
           # https://devenv.sh/reference/options/
           packages =
-            [
-            ]
+            (with pkgs; [
+              pkgs.nixgl.nixGLIntel
+              cacert
+            ])
             ++ lib.optionals pkgs.stdenv.isLinux (with pkgs; [
               appimagekit
               atk
@@ -59,6 +75,7 @@
               dprint
               gdk-pixbuf
               glib.out
+              glib-networking
               gobject-introspection
               gtk3
               harfbuzz
@@ -77,6 +94,8 @@
               librsvg
               freetype
               expat
+              libayatana-appindicator
+              libusb1
             ])
             ++ lib.optionals pkgs.stdenv.isDarwin [
               pkgs.darwin.apple_sdk.frameworks.Security
@@ -94,7 +113,18 @@
             corepack.enable = true;
           };
 
-          languages.rust.enable = true;
+          languages.rust = {
+            enable = true;
+            toolchain = fenixpkgs.fromToolchainName {
+              name = rust_toolchain.toolchain.channel;
+              sha256 = "sha256-3St/9/UKo/6lz2Kfq2VmlzHyufduALpiIKaaKX4Pq0g=";
+            };
+            components = rust_toolchain.toolchain.components;
+          };
+
+          env = {
+            GIO_EXTRA_MODULES = "${pkgs.glib-networking}/lib/gio/modules:${pkgs.dconf.lib}/lib/gio/modules";
+          };
 
           enterShell = with pkgs; ''
           '';

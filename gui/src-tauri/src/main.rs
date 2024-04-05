@@ -11,9 +11,7 @@ use std::time::Instant;
 use clap::Parser;
 use color_eyre::Result;
 use state::WindowState;
-use tauri::Manager;
-use tauri::RunEvent;
-use tauri::WindowEvent;
+use tauri::{Manager, RunEvent, WindowEvent};
 use tauri_plugin_shell::process::CommandChild;
 
 use crate::util::{
@@ -21,6 +19,7 @@ use crate::util::{
 };
 
 mod state;
+mod tray;
 mod util;
 
 #[tauri::command]
@@ -71,22 +70,19 @@ fn main() -> Result<()> {
 		use flexi_logger::{
 			Age, Cleanup, Criterion, Duplicate, FileSpec, Logger, Naming, WriteMode,
 		};
-		use tauri::path::Error;
+		use tauri::Error;
 
 		// Based on https://docs.rs/tauri/2.0.0-alpha.10/src/tauri/path/desktop.rs.html#238-256
 		#[cfg(target_os = "macos")]
 		let path = dirs_next::home_dir().ok_or(Error::UnknownPath).map(|dir| {
 			dir.join("Library/Logs")
-				.join(&tauri_context.config().tauri.bundle.identifier)
+				.join(&tauri_context.config().identifier)
 		});
 
 		#[cfg(not(target_os = "macos"))]
 		let path = dirs_next::data_dir()
 			.ok_or(Error::UnknownPath)
-			.map(|dir| {
-				dir.join(&tauri_context.config().tauri.bundle.identifier)
-					.join("logs")
-			});
+			.map(|dir| dir.join(&tauri_context.config().identifier).join("logs"));
 
 		Logger::try_with_env_or_str("info")?
 			.log_to_file(
@@ -124,7 +120,9 @@ fn main() -> Result<()> {
 		if !webview2_exists() {
 			// This makes a dialog appear which let's you press Ok or Cancel
 			// If you press Ok it will open the SlimeVR installer documentation
-			use rfd::{MessageButtons, MessageDialog, MessageLevel};
+			use rfd::{
+				MessageButtons, MessageDialog, MessageDialogResult, MessageLevel,
+			};
 
 			let confirm = MessageDialog::new()
 				.set_title("SlimeVR")
@@ -132,7 +130,7 @@ fn main() -> Result<()> {
 				.set_buttons(MessageButtons::OkCancel)
 				.set_level(MessageLevel::Error)
 				.show();
-			if confirm {
+			if confirm == MessageDialogResult::Ok {
 				open::that("https://docs.slimevr.dev/server-setup/installing-and-connecting.html#install-the-latest-slimevr-installer").unwrap();
 			}
 			return Ok(());
@@ -172,22 +170,24 @@ fn main() -> Result<()> {
 		.plugin(tauri_plugin_fs::init())
 		.plugin(tauri_plugin_os::init())
 		.plugin(tauri_plugin_shell::init())
-		.plugin(tauri_plugin_window::init())
+		.plugin(tauri_plugin_store::Builder::default().build())
 		.invoke_handler(tauri::generate_handler![
 			update_window_state,
 			logging,
 			erroring,
-			warning
+			warning,
+			tray::update_translations,
+			tray::update_tray_text
 		])
 		.setup(move |app| {
 			let window_state =
 				WindowState::open_state(app.path().app_config_dir().unwrap())
 					.unwrap_or_default();
 
-			let window = tauri::WindowBuilder::new(
+			let window = tauri::WebviewWindowBuilder::new(
 				app,
 				"main",
-				tauri::WindowUrl::App("index.html".into()),
+				tauri::WebviewUrl::App("index.html".into()),
 			)
 			.title("SlimeVR")
 			.inner_size(1289.0, 709.0)
@@ -196,16 +196,21 @@ fn main() -> Result<()> {
 			.visible(true)
 			.decorations(false)
 			.fullscreen(false)
-			.disable_file_drop_handler()
 			.build()?;
 			if window_state.is_old() {
-				window_state.update_window(&window, false)?;
+				window_state.update_window(&window.as_ref().window(), false)?;
+			}
+
+			#[cfg(desktop)]
+			{
+				let handle = app.handle();
+				tray::create_tray(&handle)?;
 			}
 
 			app.manage(Mutex::new(window_state));
 
 			if let Some((java_bin, p)) = server_info {
-				let app_handle = app.app_handle();
+				let app_handle = app.app_handle().clone();
 				tauri::async_runtime::spawn(async move {
 					use tauri_plugin_shell::{process::CommandEvent, ShellExt};
 
@@ -238,21 +243,21 @@ fn main() -> Result<()> {
 							_ => ("other", "".to_string()),
 						};
 						app_handle
-							.emit_all("server-status", emit_me)
+							.emit("server-status", emit_me)
 							.expect("Check server log files. \nFailed to emit");
 					}
 					log::error!("Java server receiver died");
 					app_handle
-						.emit_all("server-status", ("other", "receiver cancelled"))
+						.emit("server-status", ("other", "receiver cancelled"))
 						.expect("Failed to emit");
 				});
 			}
 			Ok(())
 		})
-		.on_window_event(|e| match e.event() {
+		.on_window_event(|w, e| match e {
 			WindowEvent::CloseRequested { .. } => {
-				let window_state = e.window().state::<Mutex<WindowState>>();
-				if let Err(e) = update_window_state(e.window().clone(), window_state) {
+				let window_state = w.state::<Mutex<WindowState>>();
+				if let Err(e) = update_window_state(w.clone(), window_state) {
 					log::error!("failed to update window state {}", e)
 				}
 			}
@@ -300,7 +305,9 @@ fn main() -> Result<()> {
 			// I should log this anyways, don't want to dig a grave by not logging the error.
 			log::error!("CreateWebview error {}", error);
 
-			use rfd::{MessageButtons, MessageDialog, MessageLevel};
+			use rfd::{
+				MessageButtons, MessageDialog, MessageDialogResult, MessageLevel,
+			};
 
 			let confirm = MessageDialog::new()
 				.set_title("SlimeVR")
@@ -308,7 +315,7 @@ fn main() -> Result<()> {
 				.set_buttons(MessageButtons::OkCancel)
 				.set_level(MessageLevel::Error)
 				.show();
-			if confirm {
+			if confirm == MessageDialogResult::Ok {
 				open::that("https://docs.slimevr.dev/common-issues.html#webview2-is-missing--slimevr-gui-crashes-immediately--panicked-at--webview2error").unwrap();
 			}
 		}

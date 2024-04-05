@@ -1,5 +1,5 @@
-import { useLocalization } from '@fluent/react';
-import { useEffect } from 'react';
+import { Localized, useLocalization } from '@fluent/react';
+import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
@@ -30,6 +30,7 @@ import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
+import { HandsWarningModal } from '@/components/settings/HandsWarningModal';
 
 interface SettingsForm {
   trackers: {
@@ -39,6 +40,7 @@ interface SettingsForm {
     knees: boolean;
     elbows: boolean;
     hands: boolean;
+    automaticTrackerToggle: boolean;
   };
   filtering: {
     type: number;
@@ -88,6 +90,8 @@ interface SettingsForm {
   resetsSettings: {
     resetMountingFeet: boolean;
     armsMountingResetMode: number;
+    yawResetSmoothTime: number;
+    saveMountingReset: boolean;
   };
 }
 
@@ -143,6 +147,8 @@ const defaultValues = {
   resetsSettings: {
     resetMountingFeet: false,
     armsMountingResetMode: 0,
+    yawResetSmoothTime: 0.0,
+    saveMountingReset: false,
   },
 };
 
@@ -157,11 +163,21 @@ export function GeneralSettings() {
     style: 'percent',
     maximumFractionDigits: 0,
   });
+  const secondsFormat = new Intl.NumberFormat(currentLocales, {
+    style: 'unit',
+    unit: 'second',
+    unitDisplay: 'narrow',
+    maximumFractionDigits: 2,
+  });
 
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const { reset, control, watch, handleSubmit } = useForm<SettingsForm>({
-    defaultValues: defaultValues,
-  });
+  const { reset, control, watch, handleSubmit, getValues, setValue } =
+    useForm<SettingsForm>({
+      defaultValues,
+    });
+  const {
+    trackers: { automaticTrackerToggle, hands: steamVrHands },
+  } = watch();
 
   const onSubmit = (values: SettingsForm) => {
     const settings = new ChangeSettingsRequestT();
@@ -174,6 +190,7 @@ export function GeneralSettings() {
       trackers.knees = values.trackers.knees;
       trackers.elbows = values.trackers.elbows;
       trackers.hands = values.trackers.hands;
+      trackers.automaticTrackerToggle = values.trackers.automaticTrackerToggle;
       settings.steamVrTrackers = trackers;
     }
 
@@ -252,6 +269,10 @@ export function GeneralSettings() {
         values.resetsSettings.resetMountingFeet;
       resetsSettings.armsMountingResetMode =
         values.resetsSettings.armsMountingResetMode;
+      resetsSettings.yawResetSmoothTime =
+        values.resetsSettings.yawResetSmoothTime;
+      resetsSettings.saveMountingReset =
+        values.resetsSettings.saveMountingReset;
       settings.resetsSettings = resetsSettings;
     }
 
@@ -267,6 +288,9 @@ export function GeneralSettings() {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
   }, []);
 
+  // If null, we still haven't shown the hands warning
+  // if false then initially the hands warning was disabled
+  const [handsWarning, setHandsWarning] = useState<boolean | null>(null);
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
     const formData: DefaultValues<SettingsForm> = {};
 
@@ -280,10 +304,13 @@ export function GeneralSettings() {
 
     if (settings.steamVrTrackers) {
       formData.trackers = settings.steamVrTrackers;
+      if (settings.steamVrTrackers.hands) {
+        setHandsWarning(false);
+      }
     }
 
     if (settings.modelSettings?.toggles) {
-      formData.toggles = Object.keys(settings.modelSettings?.toggles).reduce(
+      formData.toggles = Object.keys(settings.modelSettings.toggles).reduce(
         (curr, key: string) => ({
           ...curr,
           [key]:
@@ -296,7 +323,7 @@ export function GeneralSettings() {
     }
 
     if (settings.modelSettings?.ratios) {
-      formData.ratios = Object.keys(settings.modelSettings?.ratios).reduce(
+      formData.ratios = Object.keys(settings.modelSettings.ratios).reduce(
         (curr, key: string) => ({
           ...curr,
           [key]:
@@ -346,7 +373,7 @@ export function GeneralSettings() {
     if (settings.modelSettings?.legTweaks) {
       formData.legTweaks = {
         correctionStrength:
-          settings.modelSettings?.legTweaks.correctionStrength ||
+          settings.modelSettings.legTweaks.correctionStrength ||
           defaultValues.legTweaks.correctionStrength,
       };
     }
@@ -355,8 +382,16 @@ export function GeneralSettings() {
       formData.resetsSettings = settings.resetsSettings;
     }
 
-    reset(formData);
+    reset({ ...getValues(), ...formData });
   });
+
+  useEffect(() => {
+    if (steamVrHands && handsWarning === null) {
+      setHandsWarning(true);
+    } else if (!steamVrHands && handsWarning === false) {
+      setHandsWarning(null);
+    }
+  }, [steamVrHands, handsWarning]);
 
   // Handle scrolling to selected page
   // useEffect(() => {
@@ -372,6 +407,17 @@ export function GeneralSettings() {
 
   return (
     <SettingsPageLayout>
+      <HandsWarningModal
+        isOpen={!!handsWarning}
+        onClose={() => {
+          setValue('trackers.hands', false);
+          setHandsWarning(null);
+        }}
+        accept={() => {
+          setValue('trackers.hands', true);
+          setHandsWarning(false);
+        }}
+      />
       <form className="flex flex-col gap-2 w-full">
         <SettingsPagePaneLayout icon={<SteamIcon></SteamIcon>} id="steamvr">
           <>
@@ -395,6 +441,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.chest"
                 label={l10n.getString(
@@ -404,6 +451,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.waist"
                 label={l10n.getString(
@@ -413,6 +461,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.knees"
                 label={l10n.getString(
@@ -422,6 +471,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.feet"
                 label={l10n.getString('settings-general-steamvr-trackers-feet')}
@@ -429,6 +479,7 @@ export function GeneralSettings() {
               <CheckBox
                 variant="toggle"
                 outlined
+                disabled={automaticTrackerToggle}
                 control={control}
                 name="trackers.elbows"
                 label={l10n.getString(
@@ -445,6 +496,33 @@ export function GeneralSettings() {
                 )}
               />
             </div>
+            <div className="flex flex-col pt-4 pb-4"></div>
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-steamvr-trackers-tracker_toggling'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-2 pb-4">
+              {l10n
+                .getString(
+                  'settings-general-steamvr-trackers-tracker_toggling-description'
+                )
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="trackers.automaticTrackerToggle"
+              label={l10n.getString(
+                'settings-general-steamvr-trackers-tracker_toggling-label'
+              )}
+            />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">
@@ -479,10 +557,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-tracker_mechanics-filtering-type-none'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-tracker_mechanics-filtering-type-none-description'
                 )}
-                value={FilteringType.NONE}
+                value={FilteringType.NONE.toString()}
               ></Radio>
               <Radio
                 control={control}
@@ -490,10 +568,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-tracker_mechanics-filtering-type-smoothing'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-tracker_mechanics-filtering-type-smoothing-description'
                 )}
-                value={FilteringType.SMOOTHING}
+                value={FilteringType.SMOOTHING.toString()}
               ></Radio>
               <Radio
                 control={control}
@@ -501,10 +579,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-tracker_mechanics-filtering-type-prediction'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-tracker_mechanics-filtering-type-prediction-description'
                 )}
-                value={FilteringType.PREDICTION}
+                value={FilteringType.PREDICTION.toString()}
               ></Radio>
             </div>
             <div className="flex gap-5 pt-5 md:flex-row flex-col">
@@ -572,6 +650,41 @@ export function GeneralSettings() {
                 step={1}
               />
             </div>
+            <div className="flex gap-5 pt-5 md:flex-row flex-col">
+              <NumberSelector
+                control={control}
+                name="resetsSettings.yawResetSmoothTime"
+                label={l10n.getString(
+                  'settings-general-tracker_mechanics-yaw-reset-smooth-time'
+                )}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
+                min={0.0}
+                max={0.5}
+                step={0.05}
+              />
+            </div>
+            <div className="flex flex-col pt-5 pb-3">
+              <Typography bold>
+                {l10n.getString(
+                  'settings-general-tracker_mechanics-save_mounting_reset'
+                )}
+              </Typography>
+              <Localized
+                id="settings-general-tracker_mechanics-save_mounting_reset-description"
+                elems={{ b: <b></b> }}
+              >
+                <Typography color="secondary"></Typography>
+              </Localized>
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="resetsSettings.saveMountingReset"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
+              )}
+            />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout
@@ -729,10 +842,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-fk_settings-arm_fk-back'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-fk_settings-arm_fk-back-description'
                 )}
-                value={0}
+                value={'0'}
               ></Radio>
               <Radio
                 control={control}
@@ -740,10 +853,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-fk_settings-arm_fk-forward'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-fk_settings-arm_fk-forward-description'
                 )}
-                value={1}
+                value={'1'}
               ></Radio>
               <Radio
                 control={control}
@@ -751,10 +864,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-fk_settings-arm_fk-tpose_up'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-fk_settings-arm_fk-tpose_up-description'
                 )}
-                value={2}
+                value={'2'}
               ></Radio>
               <Radio
                 control={control}
@@ -762,10 +875,10 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-fk_settings-arm_fk-tpose_down'
                 )}
-                desciption={l10n.getString(
+                description={l10n.getString(
                   'settings-general-fk_settings-arm_fk-tpose_down-description'
                 )}
-                value={3}
+                value={'3'}
               ></Radio>
             </div>
             {config?.debug && (
@@ -1022,7 +1135,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-yawResetDelay'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.2}
                 max={3.0}
                 step={0.2}
@@ -1033,7 +1146,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-fullResetDelay'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.2}
                 max={3.0}
                 step={0.2}
@@ -1044,7 +1157,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-mountingResetDelay'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.2}
                 max={3.0}
                 step={0.2}
@@ -1112,6 +1225,9 @@ export function GeneralSettings() {
                 <NumberSelector
                   control={control}
                   name="tapDetection.numberTrackersOverThreshold"
+                  label={l10n.getString(
+                    'settings-general-gesture_control-numberTrackersOverThreshold'
+                  )}
                   valueLabelFormat={(value) =>
                     l10n.getString(
                       'settings-general-gesture_control-trackers',

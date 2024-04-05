@@ -13,7 +13,7 @@ export function ThemeSelector({
   control: Control<any>;
   name: string;
   colors: string | undefined;
-  value: string | number;
+  value: string;
 } & React.HTMLProps<HTMLInputElement>) {
   return (
     <Controller

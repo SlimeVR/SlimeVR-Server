@@ -12,6 +12,7 @@ import {
   SerialTrackerGetInfoRequestT,
   SerialTrackerRebootRequestT,
   SerialUpdateResponseT,
+  SerialTrackerGetWifiScanRequestT,
 } from 'solarxr-protocol';
 import { useElemSize, useLayout } from '@/hooks/layout';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -51,10 +52,10 @@ export function Serial() {
 
   const [tryFactoryReset, setTryFactoryReset] = useState(false);
 
-  const { control, watch, handleSubmit, reset, getValues } =
-    useForm<SerialForm>({
-      defaultValues: { port: 'Auto' },
-    });
+  const defaultValues = { port: 'Auto' };
+  const { control, watch, handleSubmit, reset } = useForm<SerialForm>({
+    defaultValues,
+  });
 
   const { port } = watch();
 
@@ -128,7 +129,7 @@ export function Serial() {
   useEffect(() => {
     const id = setInterval(() => {
       if (!isSerialOpen) {
-        openSerial(port);
+        openSerial(port ?? defaultValues.port);
       } else {
         clearInterval(id);
       }
@@ -157,6 +158,12 @@ export function Serial() {
     sendRPCPacket(
       RpcMessage.SerialTrackerGetInfoRequest,
       new SerialTrackerGetInfoRequestT()
+    );
+  };
+  const getWifiScan = () => {
+    sendRPCPacket(
+      RpcMessage.SerialTrackerGetWifiScanRequest,
+      new SerialTrackerGetWifiScanRequestT()
     );
   };
 
@@ -232,10 +239,12 @@ export function Serial() {
                 <Button variant="quaternary" onClick={getInfos}>
                   {l10n.getString('settings-serial-get_infos')}
                 </Button>
+                <Button variant="quaternary" onClick={getWifiScan}>
+                  {l10n.getString('settings-serial-get_wifi_scan')}
+                </Button>
                 {isMobile && (
                   <Dropdown
                     control={control}
-                    getValues={getValues}
                     name="port"
                     display="block"
                     placeholder={l10n.getString(
@@ -252,7 +261,6 @@ export function Serial() {
               {!isMobile && (
                 <Dropdown
                   control={control}
-                  getValues={getValues}
                   name="port"
                   display="fit"
                   placeholder={l10n.getString('settings-serial-serial_select')}

@@ -61,22 +61,15 @@ class UDPDevice(
 		return true
 	}
 
-	override fun toString(): String {
-		return "udp:/$ipAddress"
-	}
+	override fun toString(): String = "udp:/$ipAddress"
 
 	override var manufacturer: String?
 		get() = "SlimeVR"
 		set(manufacturer) {
 			super.manufacturer = manufacturer
 		}
-	override var firmwareVersion: String?
-		get() = "v$firmwareBuild"
-		set(firmwareVersion) {
-			super.firmwareVersion = firmwareVersion
-		}
+	override var firmwareVersion: String? = null
+		get() = field?.let { "v$it" }
 
-	fun getTracker(id: Int): Tracker? {
-		return trackers[id]
-	}
+	fun getTracker(id: Int): Tracker? = trackers[id]
 }

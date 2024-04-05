@@ -18,8 +18,11 @@ export function useLayout<T extends HTMLElement>() {
 
   useLayoutEffect(() => {
     window.addEventListener('resize', onWindowResize);
+    // Fix a bug where the layout would not update when the window is unfocused then focused again
+    window.addEventListener('focus', onWindowResize);
     computeLayoutHeight(window.innerHeight, window.innerWidth);
     return () => {
+      window.removeEventListener('focus', onWindowResize);
       window.removeEventListener('resize', onWindowResize);
     };
   });

@@ -47,7 +47,7 @@ export function Button({
   rounded = false,
   ...props
 }: {
-  children: ReactNode;
+  children?: ReactNode;
   icon?: ReactNode;
   variant: 'primary' | 'secondary' | 'tertiary' | 'quaternary';
   to?: string;

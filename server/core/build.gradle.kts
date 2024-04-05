@@ -26,6 +26,7 @@ java {
 }
 tasks.withType<KotlinCompile> {
 	kotlinOptions.jvmTarget = "17"
+	kotlinOptions.freeCompilerArgs += "-Xvalue-classes"
 }
 
 // Set compiler to use UTF-8
@@ -65,7 +66,7 @@ dependencies {
 	implementation("com.illposed.osc:javaosc-core:0.8")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
-	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 	implementation("it.unimi.dsi:fastutil:8.5.12")
 	implementation(kotlin("reflect"))
 

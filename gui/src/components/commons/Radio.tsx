@@ -7,7 +7,7 @@ export function Radio({
   name,
   label,
   value,
-  desciption,
+  description,
   // input props
   disabled,
   ...props
@@ -15,8 +15,8 @@ export function Radio({
   control: Control<any>;
   name: string;
   label: string;
-  value: string | number;
-  desciption?: string | null;
+  value: string;
+  description?: string | null;
 } & React.HTMLProps<HTMLInputElement>) {
   return (
     <Controller
@@ -24,14 +24,12 @@ export function Radio({
       name={name}
       render={({ field: { onChange, ref, name, value: checked } }) => (
         <label
-          className={classNames(
-            'w-full bg-background-60 p-3 rounded-md flex gap-3 border-2',
-            {
-              'border-accent-background-30': value == checked,
-              'border-transparent': value != checked,
-              'cursor-pointer': !disabled,
-            }
-          )}
+          className={classNames('w-full p-3 rounded-md flex gap-3 border-2', {
+            'border-accent-background-30': value == checked,
+            'border-transparent': value != checked,
+            'bg-background-60 cursor-pointer': !disabled,
+            'bg-background-80 cursor-not-allowed': disabled,
+          })}
         >
           <input
             type="radio"
@@ -43,14 +41,15 @@ export function Radio({
             ref={ref}
             onChange={onChange}
             value={value}
+            disabled={disabled}
             checked={value == checked}
             {...props}
           />
           <div className="flex flex-col gap-2">
             <Typography bold>{label}</Typography>
-            {desciption && (
+            {description && (
               <Typography variant="standard" color="secondary">
-                {desciption}
+                {description}
               </Typography>
             )}
           </div>

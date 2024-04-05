@@ -3,24 +3,24 @@ import { TrackerDataT } from 'solarxr-protocol';
 import { useTracker } from '@/hooks/tracker';
 import { Typography } from '@/components/commons/Typography';
 import { formatVector3 } from '@/utils/formatting';
-import { Canvas, useLoader } from '@react-three/fiber';
+import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
 import { PerspectiveCamera, Vector3 } from 'three';
 import { Button } from '@/components/commons/Button';
 import { QuatObject } from '@/maths/quaternion';
 import { useLocalization } from '@fluent/react';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Vector3Object } from '@/maths/vector3';
+import { Gltf } from '@react-three/drei';
+import { ErrorBoundary } from 'react-error-boundary';
 
 const groundColor = '#4444aa';
 
 const scale = 6.5;
 
 export function TrackerModel({ model }: { model: string }) {
-  const gltf = useLoader(GLTFLoader, model);
   return (
     <group scale={scale} rotation={[Math.PI / 2, 0, 0]}>
-      <primitive object={gltf.scene} />
+      <Gltf src={model} />
     </group>
   );
 }
@@ -42,9 +42,14 @@ function SceneRenderer({
         (camera as PerspectiveCamera).fov = 60;
       }}
     >
-      <ambientLight intensity={0.5} />
-      <spotLight position={[20, 20, 20]} angle={0.09} penumbra={1} />
-      <group quaternion={new THREE.Quaternion(quat.x, quat.y, quat.z, quat.w)}>
+      <ambientLight intensity={0.5 * Math.PI} />
+      <spotLight
+        position={[20, 20, 20]}
+        angle={0.09}
+        penumbra={1}
+        intensity={4000}
+      />
+      <group quaternion={[quat.x, quat.y, quat.z, quat.w]}>
         <TrackerModel model={model}></TrackerModel>
         <axesHelper args={[10]} />
       </group>
@@ -154,13 +159,21 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
           >
             {l10n.getString('widget-imu_visualizer-rotation_hide')}
           </Button>
-          <SceneRenderer
-            quat={{ ...quat }}
-            vec={{ ...vec }}
-            model={
-              isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'
+          <ErrorBoundary
+            fallback={
+              <Typography color="primary" textAlign="text-center">
+                {l10n.getString('tips-failed_webgl')}
+              </Typography>
             }
-          ></SceneRenderer>
+          >
+            <SceneRenderer
+              quat={{ ...quat }}
+              vec={{ ...vec }}
+              model={
+                isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'
+              }
+            ></SceneRenderer>
+          </ErrorBoundary>
         </>
       )}
     </div>

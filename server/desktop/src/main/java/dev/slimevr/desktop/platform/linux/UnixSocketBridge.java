@@ -82,12 +82,10 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 					try {
 						boolean updated = this.updateSocket();
 						updateMessageQueue();
-						if (!updated) {
+						if (updated) {
+							reportConnected();
+						} else {
 							this.waitForData(10);
-						} else if (lastSteamVRStatus != 0) {
-							VRServer.Companion.getInstance().statusSystem
-								.removeStatusInt(lastSteamVRStatus);
-							lastSteamVRStatus = 0;
 						}
 					} catch (IOException ioError) {
 						this.resetChannel();

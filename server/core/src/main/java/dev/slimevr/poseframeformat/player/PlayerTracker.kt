@@ -3,7 +3,7 @@ package dev.slimevr.poseframeformat.player
 import dev.slimevr.poseframeformat.trackerdata.TrackerFrames
 import dev.slimevr.tracking.trackers.Tracker
 
-class PlayerTracker(val trackerFrames: TrackerFrames, val tracker: Tracker, private var internalCursor: Int = 0) {
+class PlayerTracker(val trackerFrames: TrackerFrames, val tracker: Tracker, private var internalCursor: Int = 0, private var internalScale: Float = 1f) {
 
 	var cursor: Int
 		get() = internalCursor
@@ -11,6 +11,13 @@ class PlayerTracker(val trackerFrames: TrackerFrames, val tracker: Tracker, priv
 			val limitedCursor = limitCursor(value)
 			internalCursor = limitedCursor
 			setTrackerStateFromIndex(limitedCursor)
+		}
+
+	var scale: Float
+		get() = internalScale
+		set(value) {
+			internalScale = value
+			setTrackerStateFromIndex()
 		}
 
 	init {
@@ -54,12 +61,12 @@ class PlayerTracker(val trackerFrames: TrackerFrames, val tracker: Tracker, priv
 
 		val position = frame.tryGetPosition()
 		if (position != null) {
-			tracker.position = position
+			tracker.position = position * internalScale
 		}
 
 		val acceleration = frame.tryGetAcceleration()
 		if (acceleration != null) {
-			tracker.setAcceleration(acceleration)
+			tracker.setAcceleration(acceleration * internalScale)
 		}
 	}
 }

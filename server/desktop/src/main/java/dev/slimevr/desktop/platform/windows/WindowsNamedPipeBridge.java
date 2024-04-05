@@ -79,10 +79,8 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 				}
 				if (pipe.state == PipeState.OPEN) {
 					pipesUpdated = updatePipe();
-					if (lastSteamVRStatus != 0 && pipesUpdated) {
-						VRServer.Companion.getInstance().statusSystem
-							.removeStatusInt(lastSteamVRStatus);
-						lastSteamVRStatus = 0;
+					if (pipesUpdated) {
+						reportConnected();
 					}
 					updateMessageQueue();
 				}

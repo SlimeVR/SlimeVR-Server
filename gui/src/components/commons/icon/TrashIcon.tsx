@@ -1,10 +1,10 @@
-export function TrashIcon({ width = 33 }: { width: number }) {
+export function TrashIcon({ size = 33 }: { size?: number }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      width={width}
-      height="29"
+      width={size}
+      height={size}
     >
       <path
         fillRule="evenodd"

@@ -14,6 +14,7 @@ import { StartRecording } from './autobone-steps/StartRecording';
 import { VerifyResultsStep } from './autobone-steps/VerifyResults';
 import { useCountdown } from '@/hooks/countdown';
 import { CheckHeight } from './autobone-steps/СheckHeight';
+import { PreparationStep } from './autobone-steps/Preparation';
 
 export function AutomaticProportionsPage() {
   const { l10n } = useLocalization();
@@ -50,6 +51,7 @@ export function AutomaticProportionsPage() {
               variant={state.alonePage ? 'alone' : 'onboarding'}
               steps={[
                 { type: 'numbered', component: PutTrackersOnStep },
+                { type: 'numbered', component: PreparationStep },
                 { type: 'numbered', component: RequirementsStep },
                 { type: 'numbered', component: CheckHeight },
                 { type: 'numbered', component: StartRecording },

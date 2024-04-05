@@ -2,15 +2,23 @@
 
 package io.github.axisangles.ktmath
 
+import kotlinx.serialization.Serializable
 import kotlin.math.*
 
-data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
+@JvmInline
+@Serializable
+value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	companion object {
 		val NULL = Quaternion(0f, 0f, 0f, 0f)
 		val IDENTITY = Quaternion(1f, 0f, 0f, 0f)
 		val I = Quaternion(0f, 1f, 0f, 0f)
 		val J = Quaternion(0f, 0f, 1f, 0f)
 		val K = Quaternion(0f, 0f, 0f, 1f)
+
+		/**
+		 * SlimeVR-specific constants and utils
+		 */
+		val SLIMEVR: SlimeVR = SlimeVR
 
 		/**
 		 * creates a new quaternion representing the rotation about v's axis
@@ -39,11 +47,25 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		 * @return Q
 		 **/
 		fun fromTo(u: Vector3, v: Vector3): Quaternion {
-			val U = Quaternion(0f, u)
-			val V = Quaternion(0f, v)
-			val D = V / U
+			val u = Quaternion(0f, u)
+			val v = Quaternion(0f, v)
+			val d = v / u
 
-			return (D + D.len()).unit()
+			return (d + d.len()).unit()
+		}
+
+		/**
+		 * SlimeVR-specific constants and utils
+		 */
+		object SlimeVR {
+			val FRONT = Quaternion(0f, 0f, 1f, 0f)
+			val FRONT_LEFT = Quaternion(0.383f, 0f, 0.924f, 0f)
+			val LEFT = Quaternion(0.707f, 0f, 0.707f, 0f)
+			val BACK_LEFT = Quaternion(0.924f, 0f, 0.383f, 0f)
+			val FRONT_RIGHT = Quaternion(0.383f, 0f, -0.924f, 0f)
+			val RIGHT = Quaternion(0.707f, 0f, -0.707f, 0f)
+			val BACK_RIGHT = Quaternion(0.924f, 0f, -0.383f, 0f)
+			val BACK = Quaternion(1f, 0f, 0f, 0f)
 		}
 	}
 
@@ -73,7 +95,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		this.w + that.w,
 		this.x + that.x,
 		this.y + that.y,
-		this.z + that.z
+		this.z + that.z,
 	)
 
 	operator fun plus(that: Float): Quaternion =
@@ -83,7 +105,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		this.w - that.w,
 		this.x - that.x,
 		this.y - that.y,
-		this.z - that.z
+		this.z - that.z,
 	)
 
 	operator fun minus(that: Float): Quaternion =
@@ -121,14 +143,14 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		this.w * that,
 		this.x * that,
 		this.y * that,
-		this.z * that
+		this.z * that,
 	)
 
 	operator fun times(that: Quaternion): Quaternion = Quaternion(
 		this.w * that.w - this.x * that.x - this.y * that.y - this.z * that.z,
 		this.x * that.w + this.w * that.x - this.z * that.y + this.y * that.z,
 		this.y * that.w + this.z * that.x + this.w * that.y - this.x * that.z,
-		this.z * that.w - this.y * that.x + this.x * that.y + this.w * that.z
+		this.z * that.w - this.y * that.x + this.x * that.y + this.w * that.z,
 	)
 
 	/**
@@ -141,7 +163,7 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 			w / lenSq,
 			-x / lenSq,
 			-y / lenSq,
-			-z / lenSq
+			-z / lenSq,
 		)
 	}
 
@@ -151,6 +173,11 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * computes right division, this * that^-1
 	 **/
 	operator fun div(that: Quaternion): Quaternion = this * that.inv()
+
+	operator fun component1(): Float = w
+	operator fun component2(): Float = x
+	operator fun component3(): Float = y
+	operator fun component4(): Float = z
 
 	/**
 	 * @return the conjugate of this quaternion
@@ -317,10 +344,28 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @return Q
 	 **/
 	fun align(u: Vector3, v: Vector3): Quaternion {
-		val U = Quaternion(0f, u)
-		val V = Quaternion(0f, v)
+		val u = Quaternion(0f, u)
+		val v = Quaternion(0f, v)
 
-		return (V * this / U + (V / U).len() * this) / 2f
+		return (v * this / u + (v / u).len() * this) / 2f
+	}
+
+	/**
+	 * Produces angles such that
+	 * Quaternion.fromRotationVector(angles[0]*axisA) * Quaternion.fromRotationVector(angles[1]*axisB)
+	 * is as close to rot as possible
+	 */
+	fun biAlign(rot: Quaternion, axisA: Vector3, axisB: Vector3): FloatArray {
+		val aQ = axisA.dot(rot.xyz)
+		val bQ = axisA.dot(rot.xyz)
+		val abQ = axisA.cross(axisB).dot(rot.xyz)
+
+		val angleA = atan2(2 * (abQ * bQ + aQ * rot.w), abQ * abQ + aQ * aQ - bQ * bQ - rot.w * rot.w)
+		val cosA = cos(angleA / 2)
+		val sinA = sin(angleA / 2)
+		val angleB = 2 * atan2(aQ * cosA - rot.w * sinA, bQ * sinA - abQ * cosA)
+
+		return floatArrayOf(angleA, angleB)
 	}
 
 	/**
@@ -342,18 +387,17 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun toRotationVector(): Vector3 = 2f * twinNearest(IDENTITY).log().xyz
 
+	@Suppress("ktlint")
 	/**
 	 * computes the matrix representing this quaternion's rotation
 	 * @return rotation matrix
 	 **/
 	fun toMatrix(): Matrix3 {
 		val d = lenSq()
-		/* ktlint-disable */
 		return Matrix3(
 			(w*w + x*x - y*y - z*z)/d ,      2f*(x*y - w*z)/d     ,      2f*(w*y + x*z)/d     ,
 			     2f*(x*y + w*z)/d     , (w*w - x*x + y*y - z*z)/d ,      2f*(y*z - w*x)/d     ,
 			     2f*(x*z - w*y)/d     ,      2f*(w*x + y*z)/d     , (w*w - x*x - y*y + z*z)/d )
-		/* ktlint-enable */
 	}
 
 	/**
@@ -363,6 +407,12 @@ data class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 **/
 	fun toEulerAngles(order: EulerOrder): EulerAngles =
 		this.toMatrix().toEulerAnglesAssumingOrthonormal(order)
+
+	fun toObject() = ObjectQuaternion(w, x, y, z)
+}
+
+data class ObjectQuaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
+	fun toValue() = Quaternion(w, x, y, z)
 }
 
 operator fun Float.plus(that: Quaternion): Quaternion = that + this
