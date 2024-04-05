@@ -25,7 +25,7 @@ export function useLayout<T extends HTMLElement>() {
       window.removeEventListener('focus', onWindowResize);
       window.removeEventListener('resize', onWindowResize);
     };
-  });
+  }, []);
 
   return {
     layoutHeight,
