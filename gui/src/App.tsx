@@ -160,6 +160,17 @@ export default function App() {
   const { l10n } = useLocalization();
   const [updateFound, setUpdateFound] = useState('');
   const isTauri = useIsTauri();
+
+  useEffect(() => {
+    const onKeydown: (arg0: KeyboardEvent) => void = function (e) {
+      // seems to be sufficient to prevent most default shortcuts
+      e.preventDefault();
+    };
+
+    window.addEventListener('keydown', onKeydown);
+    return () => window.removeEventListener('keydown', onKeydown);
+  }, []);
+
   useEffect(() => {
     async function fetchReleases() {
       const releases = await fetch(
