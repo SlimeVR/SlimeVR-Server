@@ -36,6 +36,7 @@ export interface ConfigContext {
   loading: boolean;
   setConfig: (config: Partial<Config>) => Promise<void>;
   loadConfig: () => Promise<Config | null>;
+  saveConfig: () => Promise<void>;
 }
 
 export const defaultConfig: Omit<Config, 'devSettings'> = {
@@ -156,6 +157,10 @@ export function useConfigProvider(): ConfigContext {
         setLoading(false);
         return null;
       }
+    },
+    saveConfig: async () => {
+      if (!tauri) return;
+      await (store as Store).save();
     },
   };
 }

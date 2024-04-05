@@ -21,8 +21,12 @@
     "window:allow-toggle-maximize",
     "window:allow-minimize",
     "window:allow-start-dragging",
+    "window:allow-hide",
+    "window:allow-show",
+    "window:allow-set-focus",
     "shell:allow-open",
     "store:allow-get",
-    "store:allow-set"
+    "store:allow-set",
+    "store:allow-save"
   ]
 }
