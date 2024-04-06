@@ -21,6 +21,9 @@ open class Device {
 
 	open val hardwareIdentifier: String = "Unknown"
 
+	val isOpenVrDevice: Boolean
+		get() = manufacturer == "OpenVR"
+
 	companion object {
 		@JvmStatic
 		protected val nextLocalDeviceId = AtomicInteger()
