@@ -177,6 +177,7 @@ tracker-infos-hardware_rev = Hardware Revision
 tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-imu = IMU Sensor
 tracker-infos-board_type = Main board
+tracker-infos-network_version = Protocol Version
 
 ## Tracker settings
 tracker-settings-back = Go back to trackers list
@@ -310,6 +311,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Smooth
 settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
 settings-general-tracker_mechanics-filtering-amount = Amount
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time (0s disables smoothing)
 settings-general-tracker_mechanics-drift_compensation = Drift compensation
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
@@ -318,6 +320,11 @@ settings-general-tracker_mechanics-drift_compensation-description =
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
+settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting reset calibration
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    Saves the automatic mounting reset calibrations for the trackers between restarts. Useful
+    when wearing a suit where trackers don't move between sessions. <b>Not recommended for normal users!</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Save mounting reset
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings

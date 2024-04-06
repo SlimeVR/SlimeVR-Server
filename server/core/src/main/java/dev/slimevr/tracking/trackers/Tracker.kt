@@ -222,6 +222,7 @@ class Tracker @JvmOverloads constructor(
 			getByDesignation(designation)?.let { trackerPosition = it }
 		} ?: run { trackerPosition = null }
 		if (needsMounting) {
+			// Load manual mounting
 			config.mountingOrientation?.let { resetsHandler.mountingOrientation = it.toValue() }
 		}
 		if (this.isImu() && config.allowDriftCompensation == null) {
@@ -248,11 +249,31 @@ class Tracker @JvmOverloads constructor(
 		trackerPosition?.let { config.designation = it.designation } ?: run { config.designation = null }
 		customName?.let { config.customName = it }
 		if (needsMounting) {
+			// Save manual mounting
 			config.mountingOrientation = resetsHandler.mountingOrientation.toObject()
 		}
 		if (this.isImu()) {
 			config.allowDriftCompensation = resetsHandler.allowDriftCompensation
 		}
+	}
+
+	/**
+	 * Loads the mounting reset quaternion from disk
+	 */
+	fun saveMountingResetOrientation(config: TrackerConfig) {
+		// Load automatic mounting
+		config.mountingResetOrientation?.let {
+			resetsHandler.trySetMountingReset(it.toValue())
+		}
+	}
+
+	/**
+	 * Saves the mounting reset quaternion to disk
+	 */
+	fun saveMountingResetOrientation(quat: Quaternion?) {
+		val configManager = VRServer.instance.configManager
+		configManager.vrConfig.getTracker(this).mountingResetOrientation = quat?.toObject()
+		configManager.saveConfig()
 	}
 
 	/**
@@ -267,6 +288,7 @@ class Tracker @JvmOverloads constructor(
 			}
 		}
 		filteringHandler.update()
+		resetsHandler.update()
 	}
 
 	/**

@@ -79,6 +79,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				name = handshake.macString?.let { "udp://$it" }
 				descriptiveName = "udp:/$addr"
 				firmwareBuild = handshake.firmwareBuild
+				firmwareVersion = handshake.firmware
 				connectionsByAddress[address] = this
 
 				val i = connections.indexOf(this)
@@ -102,6 +103,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					?: "udp:/$addr"
 				descriptiveName = "udp:/$addr"
 				firmwareBuild = handshake.firmwareBuild
+				firmwareVersion = handshake.firmware
 				val i = connections.indexOf(this)
 				LogManager
 					.info(
@@ -140,6 +142,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			// 		string it just looks like "/address" lol.
 			// 		Fixing this would break config!
 			connection.descriptiveName = "udp:/$addr"
+			connection.firmwareVersion = handshake.firmware
 			synchronized(connections) {
 				// Register the new connection
 				val i = connections.size
