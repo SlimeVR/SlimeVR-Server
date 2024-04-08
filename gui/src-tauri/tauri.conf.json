@@ -20,7 +20,7 @@
       "appimage": {
         "bundleMediaFramework": true,
         "files": {
-          "/slimevr.jar": "../../server/desktop/build/libs/slimevr.jar"
+          "/usr/share/slimevr/slimevr.jar": "../../server/desktop/build/libs/slimevr.jar"
         }
       },
       "rpm": {
