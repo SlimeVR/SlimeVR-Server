@@ -96,7 +96,7 @@ abstract class SteamVRBridge(
 		val isLeftKneeSteamVr = skeleton.leftUpperLegTracker?.device?.isOpenVrDevice == true
 
 		val hasRightKnee = hasRightFoot && skeleton.hasRightFootTracker
-		val isRightKneeSteamVr = skeleton.leftUpperLegTracker?.device?.isOpenVrDevice == true
+		val isRightKneeSteamVr = skeleton.rightUpperLegTracker?.device?.isOpenVrDevice == true
 		changeShareSettings(TrackerRole.LEFT_KNEE, hasLeftKnee && !isLeftKneeSteamVr)
 		changeShareSettings(TrackerRole.RIGHT_KNEE, hasRightKnee && !isRightKneeSteamVr)
 
