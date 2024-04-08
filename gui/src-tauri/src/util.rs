@@ -50,9 +50,6 @@ pub struct Cli {
 	launch_from_path: Option<PathBuf>,
 	#[clap(flatten)]
 	verbose: clap_verbosity_flag::Verbosity,
-	#[cfg(target_os = "linux")]
-	#[clap(long)]
-	pub x11: bool,
 }
 
 pub fn is_valid_path(path: &Path) -> bool {

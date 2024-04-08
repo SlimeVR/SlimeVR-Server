@@ -1,6 +1,4 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
-#[cfg(target_os = "linux")]
-use std::env;
 use std::panic;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
@@ -101,12 +99,6 @@ fn main() -> Result<()> {
 			.write_mode(WriteMode::BufferAndFlush)
 			.start()?
 	};
-
-	// Enforce wayland unless specified not to in Appimage (bypass for https://github.com/tauri-apps/linuxdeploy-plugin-gtk/commit/b5eb8d05b4c0ed40107fe2158c5d8527f94568ef)
-	#[cfg(target_os = "linux")]
-	if cli.x11 && env::var_os("APPDIR").is_some() {
-		env::set_var("GDK_BACKEND", "wayland,x11")
-	}
 
 	// Ensure child processes die when spawned on windows
 	// and then check for WebView2's existence
