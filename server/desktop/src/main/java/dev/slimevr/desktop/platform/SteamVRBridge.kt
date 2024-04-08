@@ -55,16 +55,16 @@ abstract class SteamVRBridge(
 	override fun updateShareSettingsAutomatically(): Boolean {
 		if (!config.automaticSharedTrackersToggling) return false
 		val skeleton = instance.humanPoseManager.skeleton
-		val isChestSteamVr = skeleton.upperChestTracker?.device?.isOpenVrDevice == true ||
-			skeleton.chestTracker?.device?.isOpenVrDevice == true
-		val isSpineSteamVr = isChestSteamVr || skeleton.hipTracker?.device?.isOpenVrDevice == true ||
+		val isWaistSteamVr = skeleton.hipTracker?.device?.isOpenVrDevice == true ||
 			skeleton.waistTracker?.device?.isOpenVrDevice == true
 		// Enable waist if skeleton has an spine tracker
-		changeShareSettings(TrackerRole.WAIST, skeleton.hasSpineTracker && !isSpineSteamVr)
+		changeShareSettings(TrackerRole.WAIST, skeleton.hasSpineTracker && !isWaistSteamVr)
 
 		// hasChest if waist and/or hip is on, and chest and/or upper chest is also on
 		val hasChest = (skeleton.hipTracker != null || skeleton.waistTracker != null) &&
 			(skeleton.upperChestTracker != null || skeleton.chestTracker != null)
+		val isChestSteamVr = skeleton.upperChestTracker?.device?.isOpenVrDevice == true ||
+			skeleton.chestTracker?.device?.isOpenVrDevice == true
 		changeShareSettings(
 			TrackerRole.CHEST,
 			hasChest && !isChestSteamVr,
@@ -73,13 +73,15 @@ abstract class SteamVRBridge(
 		// hasFeet if lower and/or upper leg tracker is on
 		val hasLeftFoot =
 			(skeleton.leftUpperLegTracker != null || skeleton.leftLowerLegTracker != null)
-		val isLeftFootSteamVr = skeleton.leftUpperLegTracker?.device?.isOpenVrDevice == true ||
-			skeleton.leftLowerLegTracker?.device?.isOpenVrDevice == true
+		val isLeftFootSteamVr =
+			skeleton.leftLowerLegTracker?.device?.isOpenVrDevice == true ||
+				skeleton.leftFootTracker?.device?.isOpenVrDevice == true
 
 		val hasRightFoot =
 			(skeleton.rightUpperLegTracker != null || skeleton.rightLowerLegTracker != null)
-		val isRightFootSteamVr = skeleton.rightUpperLegTracker?.device?.isOpenVrDevice == true ||
-			skeleton.rightLowerLegTracker?.device?.isOpenVrDevice == true
+		val isRightFootSteamVr =
+			skeleton.rightLowerLegTracker?.device?.isOpenVrDevice == true ||
+				skeleton.rightFootTracker?.device?.isOpenVrDevice == true
 		changeShareSettings(
 			TrackerRole.LEFT_FOOT,
 			hasLeftFoot && !isLeftFootSteamVr,
@@ -91,12 +93,10 @@ abstract class SteamVRBridge(
 
 		// hasKnees if foot tracker and lower and/or upper leg tracker is on
 		val hasLeftKnee = hasLeftFoot && skeleton.hasLeftFootTracker
-		val isLeftKneeSteamVr = isLeftFootSteamVr ||
-			skeleton.leftFootTracker?.device?.isOpenVrDevice == true
+		val isLeftKneeSteamVr = skeleton.leftUpperLegTracker?.device?.isOpenVrDevice == true
 
 		val hasRightKnee = hasRightFoot && skeleton.hasRightFootTracker
-		val isRightKneeSteamVr = isRightFootSteamVr ||
-			skeleton.rightFootTracker?.device?.isOpenVrDevice == true
+		val isRightKneeSteamVr = skeleton.leftUpperLegTracker?.device?.isOpenVrDevice == true
 		changeShareSettings(TrackerRole.LEFT_KNEE, hasLeftKnee && !isLeftKneeSteamVr)
 		changeShareSettings(TrackerRole.RIGHT_KNEE, hasRightKnee && !isRightKneeSteamVr)
 
