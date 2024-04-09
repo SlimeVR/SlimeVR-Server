@@ -14,6 +14,8 @@ enum class TrackerPosition(
 	val trackerRole: TrackerRole?,
 	val bodyPart: Int,
 ) {
+	// If updating BodyPart of a TrackerRole,
+	// please also update SteamVRBridge#updateShareSettingsAutomatically()
 	HEAD("body:head", TrackerRole.HMD, BodyPart.HEAD),
 	NECK("body:neck", TrackerRole.NECK, BodyPart.NECK),
 	UPPER_CHEST("body:upper_chest", TrackerRole.CHEST, BodyPart.UPPER_CHEST),
@@ -50,12 +52,12 @@ enum class TrackerPosition(
 	companion object {
 		/** Indexed by `BodyPart` int value. EFFICIENCY FTW  */
 		private val byBodyPart: Array<out TrackerPosition?> = arrayOfNulls<TrackerPosition>(BodyPart.names.size).apply {
-			for (position in values()) {
+			for (position in entries) {
 				this[position.bodyPart] = position
 			}
 		}
-		private val byDesignation = values().associateBy { it.designation.lowercase() }
-		private val byTrackerRole = values().filter { it.trackerRole != null }.associateBy { it.trackerRole!! }
+		private val byDesignation = entries.associateBy { it.designation.lowercase() }
+		private val byTrackerRole = entries.filter { it.trackerRole != null }.associateBy { it.trackerRole!! }
 
 		/**
 		 * Gets the `TrackerPosition` by its string designation.
