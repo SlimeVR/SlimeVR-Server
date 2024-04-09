@@ -118,7 +118,7 @@ export function TrackerSettingsPage() {
       ? MountingOrientationDegreesToQuatT(currRotation)
       : null;
 
-    assignreq.displayName = trackerName;
+    assignreq.displayName = trackerName ?? null;
     assignreq.trackerId = tracker?.tracker.trackerId;
     assignreq.allowDriftCompensation = allowDriftCompensation;
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
@@ -292,6 +292,14 @@ export function TrackerSettingsPage() {
                 {l10n.getString('tracker-infos-board_type')}
               </Typography>
               <Typography>{boarType}</Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-network_version')}
+              </Typography>
+              <Typography>
+                {tracker?.device?.hardwareInfo?.networkProtocolVersion || '--'}
+              </Typography>
             </div>
           </div>
           {tracker?.tracker && (

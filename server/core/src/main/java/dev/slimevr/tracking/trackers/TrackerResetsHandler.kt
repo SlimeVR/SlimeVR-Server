@@ -1,11 +1,13 @@
 package dev.slimevr.tracking.trackers
 
 import com.jme3.math.FastMath
+import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
 import dev.slimevr.config.ArmsResetModes
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.filtering.CircularArrayList
+import io.eiren.math.FloatMath.animateEase
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -38,6 +40,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var driftCompensationEnabled = false
 	private var resetMountingFeet = false
 	private var armsResetMode = ArmsResetModes.BACK
+	private var yawResetSmoothTime = 0.0f
+	private lateinit var fpsTimer: NanoTimer
+	var saveMountingReset = false
 	var allowDriftCompensation = false
 	var lastResetQuaternion: Quaternion? = null
 
@@ -55,6 +60,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	var mountRotFix = Quaternion.IDENTITY
 		private set
 	private var yawFix = Quaternion.IDENTITY
+
+	// Yaw reset smoothing vars
+	private var yawFixOld = Quaternion.IDENTITY
+	private var yawFixSmoothIncremental = Quaternion.IDENTITY
+	private var yawResetSmoothTimeRemain = 0.0f
 
 	// Zero-reference/identity adjustment quats for IMU debugging
 	private var gyroFixNoMounting = Quaternion.IDENTITY
@@ -103,18 +113,29 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	/**
-	 * Reads/loads arms reset mode settings from given config
+	 * Reads/loads reset settings from the given config
 	 */
-	fun readArmsResetModeConfig(config: ResetsConfig) {
+	fun readResetConfig(config: ResetsConfig) {
 		resetMountingFeet = config.resetMountingFeet
 		armsResetMode = config.mode
+		yawResetSmoothTime = config.yawResetSmoothTime
+		if (!::fpsTimer.isInitialized) {
+			fpsTimer = VRServer.instance.fpsTimer
+		}
+		saveMountingReset = config.saveMountingReset
+	}
+
+	fun trySetMountingReset(quat: Quaternion) {
+		if (saveMountingReset) {
+			mountRotFix = quat
+		}
 	}
 
 	/**
 	 * Takes a rotation and adjusts it to resets, mounting,
 	 * and drift compensation, with the HMD as the reference.
 	 */
-	fun getReferenceAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion = adjustToDrift(adjustToReference(rotation))
+	fun getReferenceAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion = adjustToDrift(adjustToYawResetSmoothing(adjustToReference(rotation)))
 
 	/**
 	 * Takes a rotation and adjusts it to resets and mounting,
@@ -171,6 +192,17 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	/**
+	 * Apply yaw reset smoothing to quaternion rotated to new yaw
+	 * fix and returns smoothed quaternion
+	 */
+	private fun adjustToYawResetSmoothing(rotation: Quaternion): Quaternion {
+		if (yawResetSmoothTimeRemain > 0.0f) {
+			return yawFixSmoothIncremental * rotation
+		}
+		return rotation
+	}
+
+	/**
 	 * Reset the tracker so that its current rotation is counted as (0, HMD Yaw,
 	 * 0). This allows the tracker to be strapped to body at any pitch and roll.
 	 */
@@ -206,6 +238,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		makeIdentityAdjustmentQuatsFull()
 
 		yawFix = fixYaw(mountingAdjustedRotation, reference)
+		yawResetSmoothTimeRemain = 0.0f
 
 		calculateDrift(oldRot)
 
@@ -225,11 +258,19 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		val oldRot = adjustToReference(tracker.getRawRotation())
 		lastResetQuaternion = oldRot
 
+		yawFixOld = yawFix
 		yawFix = fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
+		yawResetSmoothTimeRemain = 0.0f
 
 		makeIdentityAdjustmentQuatsYaw()
 
 		calculateDrift(oldRot)
+
+		// Start at yaw before reset if smoothing enabled
+		if (yawResetSmoothTime > 0.0f) {
+			yawResetSmoothTimeRemain = yawResetSmoothTime
+			yawFixSmoothIncremental = yawFixOld / yawFix
+		}
 
 		// Remove the status if yaw reset was performed after the tracker
 		// was disconnected and connected.
@@ -290,6 +331,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Make an adjustment quaternion from the angle
 		mountRotFix = EulerAngles(EulerOrder.YZX, 0f, yawAngle, 0f).toQuaternion()
+
+		// save mounting reset
+		if (saveMountingReset) tracker.saveMountingResetOrientation(mountRotFix)
 	}
 
 	fun clearMounting() {
@@ -423,6 +467,28 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			totalMatrix += (qn[i].toMatrix() * tn[i])
 		}
 		return totalMatrix.toQuaternion()
+	}
+
+	/**
+	 * Update yaw reset smoothing time
+	 */
+	@Synchronized
+	fun update() {
+		if (yawResetSmoothTimeRemain > 0.0f) {
+			var deltaTime = 0.001f
+			if (::fpsTimer.isInitialized) {
+				deltaTime = fpsTimer.timePerFrame
+			}
+			yawResetSmoothTimeRemain = yawResetSmoothTimeRemain - deltaTime
+			if (yawResetSmoothTimeRemain > 0.0f) {
+				// Remaining time decreases to 0, so the interpolation is reversed
+				yawFixSmoothIncremental = yawFix.inv() * yawFix
+					.interpR(
+						yawFixOld,
+						animateEase(yawResetSmoothTimeRemain / yawResetSmoothTime),
+					)
+			}
+		}
 	}
 
 	private fun isThighTracker(): Boolean {

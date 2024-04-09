@@ -48,7 +48,7 @@ class VRConfig {
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer::class)
 	private val bridges: MutableMap<String, BridgeConfig> = HashMap()
 
-	private val knownDevices: MutableSet<String> = mutableSetOf()
+	val knownDevices: MutableSet<String> = mutableSetOf()
 
 	val overlay: OverlayConfig = OverlayConfig()
 
@@ -101,7 +101,10 @@ class VRConfig {
 			val config = getTracker(tracker)
 			tracker.readConfig(config)
 			if (tracker.isImu()) tracker.resetsHandler.readDriftCompensationConfig(driftCompensation)
-			if (tracker.needsReset) tracker.resetsHandler.readArmsResetModeConfig(resetsConfig)
+			if (tracker.needsReset) {
+				tracker.resetsHandler.readResetConfig(resetsConfig)
+				tracker.saveMountingResetOrientation(config)
+			}
 			if (tracker.allowFiltering) {
 				tracker
 					.filteringHandler

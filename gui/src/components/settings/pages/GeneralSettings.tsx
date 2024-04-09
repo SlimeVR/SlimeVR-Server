@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
@@ -90,6 +90,8 @@ interface SettingsForm {
   resetsSettings: {
     resetMountingFeet: boolean;
     armsMountingResetMode: number;
+    yawResetSmoothTime: number;
+    saveMountingReset: boolean;
   };
 }
 
@@ -145,6 +147,8 @@ const defaultValues = {
   resetsSettings: {
     resetMountingFeet: false,
     armsMountingResetMode: 0,
+    yawResetSmoothTime: 0.0,
+    saveMountingReset: false,
   },
 };
 
@@ -159,11 +163,17 @@ export function GeneralSettings() {
     style: 'percent',
     maximumFractionDigits: 0,
   });
+  const secondsFormat = new Intl.NumberFormat(currentLocales, {
+    style: 'unit',
+    unit: 'second',
+    unitDisplay: 'narrow',
+    maximumFractionDigits: 2,
+  });
 
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { reset, control, watch, handleSubmit, getValues, setValue } =
     useForm<SettingsForm>({
-      defaultValues: defaultValues,
+      defaultValues,
     });
   const {
     trackers: { automaticTrackerToggle, hands: steamVrHands },
@@ -259,6 +269,10 @@ export function GeneralSettings() {
         values.resetsSettings.resetMountingFeet;
       resetsSettings.armsMountingResetMode =
         values.resetsSettings.armsMountingResetMode;
+      resetsSettings.yawResetSmoothTime =
+        values.resetsSettings.yawResetSmoothTime;
+      resetsSettings.saveMountingReset =
+        values.resetsSettings.saveMountingReset;
       settings.resetsSettings = resetsSettings;
     }
 
@@ -636,6 +650,41 @@ export function GeneralSettings() {
                 step={1}
               />
             </div>
+            <div className="flex gap-5 pt-5 md:flex-row flex-col">
+              <NumberSelector
+                control={control}
+                name="resetsSettings.yawResetSmoothTime"
+                label={l10n.getString(
+                  'settings-general-tracker_mechanics-yaw-reset-smooth-time'
+                )}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
+                min={0.0}
+                max={0.5}
+                step={0.05}
+              />
+            </div>
+            <div className="flex flex-col pt-5 pb-3">
+              <Typography bold>
+                {l10n.getString(
+                  'settings-general-tracker_mechanics-save_mounting_reset'
+                )}
+              </Typography>
+              <Localized
+                id="settings-general-tracker_mechanics-save_mounting_reset-description"
+                elems={{ b: <b></b> }}
+              >
+                <Typography color="secondary"></Typography>
+              </Localized>
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="resetsSettings.saveMountingReset"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
+              )}
+            />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout
@@ -1086,7 +1135,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-yawResetDelay'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.2}
                 max={3.0}
                 step={0.2}
@@ -1097,7 +1146,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-fullResetDelay'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.2}
                 max={3.0}
                 step={0.2}
@@ -1108,7 +1157,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-mountingResetDelay'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.2}
                 max={3.0}
                 step={0.2}

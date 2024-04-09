@@ -56,6 +56,8 @@ public class DataFeedBuilder {
 							ByteBuffer.wrap(address).getInt()
 						)
 				);
+
+			HardwareInfo.addNetworkProtocolVersion(fbb, udpDevice.firmwareBuild);
 		}
 
 		// BRUH MOMENT
