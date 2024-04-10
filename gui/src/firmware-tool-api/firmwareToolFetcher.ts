@@ -23,7 +23,7 @@ export async function firmwareToolFetch<
   TBody extends {} | FormData | undefined | null,
   THeaders extends {},
   TQueryParams extends {},
-  TPathParams extends {}
+  TPathParams extends {},
 >({
   url,
   method,

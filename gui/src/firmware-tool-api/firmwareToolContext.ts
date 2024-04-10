@@ -34,7 +34,7 @@ export function useFirmwareToolContext<
   TQueryFnData = unknown,
   TError = unknown,
   TData = TQueryFnData,
-  TQueryKey extends QueryKey = QueryKey
+  TQueryKey extends QueryKey = QueryKey,
 >(
   _queryOptions?: Omit<
     UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,

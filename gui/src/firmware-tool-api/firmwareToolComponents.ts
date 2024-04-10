@@ -358,7 +358,7 @@ export const fetchGetFirmwaresDefaultConfigBoard = (
  * Gives the default pins / configuration of a given board
  */
 export const useGetFirmwaresDefaultConfigBoard = <
-  TData = Schemas.DefaultBuildConfigDTO
+  TData = Schemas.DefaultBuildConfigDTO,
 >(
   variables: GetFirmwaresDefaultConfigBoardVariables,
   options?: Omit<
