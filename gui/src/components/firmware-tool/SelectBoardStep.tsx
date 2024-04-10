@@ -39,7 +39,7 @@ export function SelectBoardStep({
                     className={classNames(
                       'p-3 rounded-md hover:bg-background-50',
                       {
-                        'bg-background-50':
+                        'bg-background-50 text-background-10':
                           newConfig?.boardConfig?.type === board,
                         'bg-background-60':
                           newConfig?.boardConfig?.type !== board,

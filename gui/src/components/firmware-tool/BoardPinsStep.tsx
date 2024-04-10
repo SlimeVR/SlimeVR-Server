@@ -51,7 +51,7 @@ export function BoardPinsStep({
 
   return (
     <>
-      <div className="flex flex-col w-full justify-between">
+      <div className="flex flex-col w-full justify-between text-background-10">
         <div className="flex flex-col gap-4">
           <Typography color="secondary">
             {l10n.getString('firmware-tool-board-pins-step-description')}

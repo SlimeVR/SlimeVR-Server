@@ -35,7 +35,7 @@ export function SelectFirmwareStep({
                     className={classNames(
                       'p-3 rounded-md hover:bg-background-50',
                       {
-                        'bg-background-50':
+                        'bg-background-50 text-background-10':
                           newConfig?.version === firmwares.name,
                         'bg-background-60':
                           newConfig?.version !== firmwares.name,

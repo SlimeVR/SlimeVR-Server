@@ -40,7 +40,7 @@ function IMUCard({
   const { height } = useElemSize(ref);
 
   return (
-    <div className="rounded-lg flex flex-col">
+    <div className="rounded-lg flex flex-col text-background-10">
       <div className="flex gap-3 p-4 shadow-md bg-background-50 rounded-md">
         <div className="bg-accent-background-40 rounded-full h-8 w-9 mt-[28px] flex flex-col items-center justify-center">
           <Typography variant="section-title" bold>
@@ -137,7 +137,7 @@ function IMUCard({
                   ></Input>
                 </Localized>
               )}
-              <label className="flex flex-col justify-end gap-1">
+              <label className="flex flex-col justify-end gap-1 md:pt-3 sm:pt-3">
                 <Localized
                   id="firmware-tool-add-imus-optional-tracker"
                   attrs={{ label: true }}

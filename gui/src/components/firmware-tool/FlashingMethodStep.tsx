@@ -125,7 +125,7 @@ function SerialDevicesList({
       <Localized id="firmware-tool-flash-method-serial-wifi">
         <Typography variant="section-title"></Typography>
       </Localized>
-      <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3">
+      <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3 text-background-10">
         <Localized
           id="onboarding-wifi_creds-ssid"
           attrs={{ placeholder: true, label: true }}

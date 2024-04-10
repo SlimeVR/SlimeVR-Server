@@ -92,7 +92,7 @@ export function useFirmwareToolContext(): FirmwareToolContext {
   const [selectedDevices, selectDevices] = useState<SelectedDevice[] | null>(null);
   const [newConfig, setNewConfig] = useState<PartialBuildFirmware>({});
   const [isLoading, setLoading] = useState(false);
-  const { isError, isInitialLoading, refetch } = useGetHealth({});
+  const { isError, isLoading: isInitialLoading, refetch } = useGetHealth({});
   const [buildStatus, setBuildStatus] = useState<FirmwareBuildStatus>({
     status: 'CREATING_BUILD_FOLDER',
     id: '',
