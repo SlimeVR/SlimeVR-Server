@@ -156,15 +156,16 @@ public class RPCSettingsBuilder {
 					fbb,
 					bridge.getShareSetting(TrackerRole.WAIST),
 					bridge.getShareSetting(TrackerRole.CHEST),
-					bridge.getShareSetting(TrackerRole.LEFT_FOOT)
-						&& bridge.getShareSetting(TrackerRole.RIGHT_FOOT),
-					bridge.getShareSetting(TrackerRole.LEFT_KNEE)
-						&& bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
-					bridge.getShareSetting(TrackerRole.LEFT_ELBOW)
-						&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW),
-					bridge.getShareSetting(TrackerRole.LEFT_HAND)
-						&& bridge.getShareSetting(TrackerRole.RIGHT_HAND),
-					bridge.getAutomaticSharedTrackers()
+					bridge.getAutomaticSharedTrackers(),
+
+					bridge.getShareSetting(TrackerRole.LEFT_FOOT),
+					bridge.getShareSetting(TrackerRole.RIGHT_FOOT),
+					bridge.getShareSetting(TrackerRole.LEFT_KNEE),
+					bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
+					bridge.getShareSetting(TrackerRole.LEFT_ELBOW),
+					bridge.getShareSetting(TrackerRole.RIGHT_ELBOW),
+					bridge.getShareSetting(TrackerRole.LEFT_HAND),
+					bridge.getShareSetting(TrackerRole.RIGHT_HAND)
 				);
 		}
 		return steamvrTrackerSettings;
@@ -338,7 +339,9 @@ public class RPCSettingsBuilder {
 			.createResetsSettings(
 				fbb,
 				resetsConfig.getResetMountingFeet(),
-				resetsConfig.getMode().getId()
+				resetsConfig.getMode().getId(),
+				resetsConfig.getYawResetSmoothTime(),
+				resetsConfig.getSaveMountingReset()
 			);
 	}
 

@@ -48,12 +48,12 @@ export function HandsWarningModal({
           </Localized>
 
           <div className="flex flex-row gap-3 pt-5 place-content-center">
-            <Button variant="secondary" onClick={onClose}>
+            <Button variant="primary" onClick={onClose}>
               {l10n.getString(
                 'settings-general-steamvr-trackers-hands-warning-cancel'
               )}
             </Button>
-            <Button variant="primary" onClick={accept}>
+            <Button variant="tertiary" onClick={accept}>
               {l10n.getString(
                 'settings-general-steamvr-trackers-hands-warning-done'
               )}

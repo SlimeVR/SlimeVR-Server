@@ -37,10 +37,16 @@ class ResetsConfig {
 	// Reset mode used for the arms
 	var mode = ArmsResetModes.BACK
 
+	// Yaw reset smoothing time in seconds
+	var yawResetSmoothTime = 0.0f
+
+	// Save automatic mounting reset calibration
+	var saveMountingReset = false
+
 	fun updateTrackersResetsSettings() {
 		for (t in VRServer.instance.allTrackers) {
 			if (t.needsReset) {
-				t.resetsHandler.readArmsResetModeConfig(this)
+				t.resetsHandler.readResetConfig(this)
 			}
 		}
 	}
