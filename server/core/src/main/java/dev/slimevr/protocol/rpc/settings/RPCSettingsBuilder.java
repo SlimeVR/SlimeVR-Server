@@ -212,7 +212,8 @@ public class RPCSettingsBuilder {
 				togglesOffset,
 				ratiosOffset,
 				legTweaksOffset,
-				skeletonConfig.getHmdHeight()
+				skeletonConfig.getHmdHeight(),
+				skeletonConfig.getFloorHeight()
 			);
 	}
 

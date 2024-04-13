@@ -25,6 +25,7 @@ public class SkeletonConfig {
 	public Map<String, Float> offsets = new HashMap<>();
 
 	private float hmdHeight = -1f;
+	private float floorHeight = -1f;
 
 	public Map<String, Boolean> getToggles() {
 		return toggles;
@@ -44,5 +45,13 @@ public class SkeletonConfig {
 
 	public void setHmdHeight(float hmdHeight) {
 		this.hmdHeight = hmdHeight;
+	}
+
+	public float getFloorHeight() {
+		return floorHeight;
+	}
+
+	public void setFloorHeight(float hmdHeight) {
+		this.floorHeight = hmdHeight;
 	}
 }
