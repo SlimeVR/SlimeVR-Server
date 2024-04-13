@@ -91,14 +91,12 @@ abstract class SteamVRBridge(
 			hasRightFoot && !isRightFootSteamVr,
 		)
 
-		// hasKnees if foot tracker and lower and/or upper leg tracker is on
-		val hasLeftKnee = hasLeftFoot && skeleton.hasLeftFootTracker
+		// hasKnees is just hasFeet
 		val isLeftKneeSteamVr = skeleton.leftUpperLegTracker?.device?.isOpenVrDevice == true
 
-		val hasRightKnee = hasRightFoot && skeleton.hasRightFootTracker
 		val isRightKneeSteamVr = skeleton.rightUpperLegTracker?.device?.isOpenVrDevice == true
-		changeShareSettings(TrackerRole.LEFT_KNEE, hasLeftKnee && !isLeftKneeSteamVr)
-		changeShareSettings(TrackerRole.RIGHT_KNEE, hasRightKnee && !isRightKneeSteamVr)
+		changeShareSettings(TrackerRole.LEFT_KNEE, hasLeftFoot && !isLeftKneeSteamVr)
+		changeShareSettings(TrackerRole.RIGHT_KNEE, hasRightFoot && !isRightKneeSteamVr)
 
 		// hasElbows if an upper arm or a lower arm tracker is on
 		val hasLeftElbow = skeleton.hasLeftArmTracker
