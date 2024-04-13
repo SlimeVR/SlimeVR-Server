@@ -13,7 +13,7 @@ import { Recording } from './autobone-steps/Recording';
 import { StartRecording } from './autobone-steps/StartRecording';
 import { VerifyResultsStep } from './autobone-steps/VerifyResults';
 import { useCountdown } from '@/hooks/countdown';
-import { CheckHeight } from './autobone-steps/СheckHeight';
+import { CheckHeight } from './autobone-steps/CheckHeight';
 import { PreparationStep } from './autobone-steps/Preparation';
 
 export function AutomaticProportionsPage() {
