@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
@@ -36,11 +36,15 @@ interface SettingsForm {
   trackers: {
     waist: boolean;
     chest: boolean;
-    feet: boolean;
-    knees: boolean;
-    elbows: boolean;
-    hands: boolean;
     automaticTrackerToggle: boolean;
+    leftFoot: boolean;
+    rightFoot: boolean;
+    leftKnee: boolean;
+    rightKnee: boolean;
+    leftElbow: boolean;
+    rightElbow: boolean;
+    leftHand: boolean;
+    rightHand: boolean;
   };
   filtering: {
     type: number;
@@ -90,17 +94,24 @@ interface SettingsForm {
   resetsSettings: {
     resetMountingFeet: boolean;
     armsMountingResetMode: number;
+    yawResetSmoothTime: number;
+    saveMountingReset: boolean;
   };
 }
 
-const defaultValues = {
+const defaultValues: SettingsForm = {
   trackers: {
     waist: false,
     chest: false,
-    elbows: false,
-    knees: false,
-    feet: false,
-    hands: false,
+    automaticTrackerToggle: true,
+    leftFoot: false,
+    rightFoot: false,
+    leftElbow: false,
+    rightElbow: false,
+    leftHand: false,
+    rightHand: false,
+    leftKnee: false,
+    rightKnee: false,
   },
   toggles: {
     extendedSpine: true,
@@ -145,6 +156,8 @@ const defaultValues = {
   resetsSettings: {
     resetMountingFeet: false,
     armsMountingResetMode: 0,
+    yawResetSmoothTime: 0.0,
+    saveMountingReset: false,
   },
 };
 
@@ -159,14 +172,24 @@ export function GeneralSettings() {
     style: 'percent',
     maximumFractionDigits: 0,
   });
+  const secondsFormat = new Intl.NumberFormat(currentLocales, {
+    style: 'unit',
+    unit: 'second',
+    unitDisplay: 'narrow',
+    maximumFractionDigits: 2,
+  });
 
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { reset, control, watch, handleSubmit, getValues, setValue } =
     useForm<SettingsForm>({
-      defaultValues: defaultValues,
+      defaultValues,
     });
   const {
-    trackers: { automaticTrackerToggle, hands: steamVrHands },
+    trackers: {
+      automaticTrackerToggle,
+      leftHand: steamVrLeftHand,
+      rightHand: steamVrRightHand,
+    },
   } = watch();
 
   const onSubmit = (values: SettingsForm) => {
@@ -176,10 +199,18 @@ export function GeneralSettings() {
       const trackers = new SteamVRTrackersSettingT();
       trackers.waist = values.trackers.waist;
       trackers.chest = values.trackers.chest;
-      trackers.feet = values.trackers.feet;
-      trackers.knees = values.trackers.knees;
-      trackers.elbows = values.trackers.elbows;
-      trackers.hands = values.trackers.hands;
+      trackers.leftFoot = values.trackers.leftFoot;
+      trackers.rightFoot = values.trackers.rightFoot;
+
+      trackers.leftKnee = values.trackers.leftKnee;
+      trackers.rightKnee = values.trackers.rightKnee;
+
+      trackers.leftElbow = values.trackers.leftElbow;
+      trackers.rightElbow = values.trackers.rightElbow;
+
+      trackers.leftHand = values.trackers.leftHand;
+      trackers.rightHand = values.trackers.rightHand;
+
       trackers.automaticTrackerToggle = values.trackers.automaticTrackerToggle;
       settings.steamVrTrackers = trackers;
     }
@@ -259,6 +290,10 @@ export function GeneralSettings() {
         values.resetsSettings.resetMountingFeet;
       resetsSettings.armsMountingResetMode =
         values.resetsSettings.armsMountingResetMode;
+      resetsSettings.yawResetSmoothTime =
+        values.resetsSettings.yawResetSmoothTime;
+      resetsSettings.saveMountingReset =
+        values.resetsSettings.saveMountingReset;
       settings.resetsSettings = resetsSettings;
     }
 
@@ -290,7 +325,10 @@ export function GeneralSettings() {
 
     if (settings.steamVrTrackers) {
       formData.trackers = settings.steamVrTrackers;
-      if (settings.steamVrTrackers.hands) {
+      if (
+        settings.steamVrTrackers.leftHand &&
+        settings.steamVrTrackers.rightHand
+      ) {
         setHandsWarning(false);
       }
     }
@@ -372,12 +410,15 @@ export function GeneralSettings() {
   });
 
   useEffect(() => {
-    if (steamVrHands && handsWarning === null) {
+    if ((steamVrLeftHand || steamVrRightHand) && handsWarning === null) {
       setHandsWarning(true);
-    } else if (!steamVrHands && handsWarning === false) {
+    } else if (
+      !(steamVrLeftHand || steamVrRightHand) &&
+      handsWarning === false
+    ) {
       setHandsWarning(null);
     }
-  }, [steamVrHands, handsWarning]);
+  }, [steamVrLeftHand, steamVrRightHand, handsWarning]);
 
   // Handle scrolling to selected page
   // useEffect(() => {
@@ -396,11 +437,13 @@ export function GeneralSettings() {
       <HandsWarningModal
         isOpen={!!handsWarning}
         onClose={() => {
-          setValue('trackers.hands', false);
+          setValue('trackers.leftHand', false);
+          setValue('trackers.rightHand', false);
           setHandsWarning(null);
         }}
         accept={() => {
-          setValue('trackers.hands', true);
+          setValue('trackers.leftHand', true);
+          setValue('trackers.rightHand', true);
           setHandsWarning(false);
         }}
       />
@@ -449,9 +492,9 @@ export function GeneralSettings() {
                 outlined
                 disabled={automaticTrackerToggle}
                 control={control}
-                name="trackers.knees"
+                name="trackers.leftKnee"
                 label={l10n.getString(
-                  'settings-general-steamvr-trackers-knees'
+                  'settings-general-steamvr-trackers-left_knee'
                 )}
               />
               <CheckBox
@@ -459,26 +502,67 @@ export function GeneralSettings() {
                 outlined
                 disabled={automaticTrackerToggle}
                 control={control}
-                name="trackers.feet"
-                label={l10n.getString('settings-general-steamvr-trackers-feet')}
+                name="trackers.rightKnee"
+                label={l10n.getString(
+                  'settings-general-steamvr-trackers-right_knee'
+                )}
               />
               <CheckBox
                 variant="toggle"
                 outlined
                 disabled={automaticTrackerToggle}
                 control={control}
-                name="trackers.elbows"
+                name="trackers.leftFoot"
                 label={l10n.getString(
-                  'settings-general-steamvr-trackers-elbows'
+                  'settings-general-steamvr-trackers-left_foot'
+                )}
+              />
+              <CheckBox
+                variant="toggle"
+                outlined
+                disabled={automaticTrackerToggle}
+                control={control}
+                name="trackers.rightFoot"
+                label={l10n.getString(
+                  'settings-general-steamvr-trackers-right_foot'
+                )}
+              />
+              <CheckBox
+                variant="toggle"
+                outlined
+                disabled={automaticTrackerToggle}
+                control={control}
+                name="trackers.leftElbow"
+                label={l10n.getString(
+                  'settings-general-steamvr-trackers-left_elbow'
+                )}
+              />
+              <CheckBox
+                variant="toggle"
+                outlined
+                disabled={automaticTrackerToggle}
+                control={control}
+                name="trackers.rightElbow"
+                label={l10n.getString(
+                  'settings-general-steamvr-trackers-right_elbow'
                 )}
               />
               <CheckBox
                 variant="toggle"
                 outlined
                 control={control}
-                name="trackers.hands"
+                name="trackers.leftHand"
                 label={l10n.getString(
-                  'settings-general-steamvr-trackers-hands'
+                  'settings-general-steamvr-trackers-left_hand'
+                )}
+              />
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="trackers.rightHand"
+                label={l10n.getString(
+                  'settings-general-steamvr-trackers-right_hand'
                 )}
               />
             </div>
@@ -636,6 +720,41 @@ export function GeneralSettings() {
                 step={1}
               />
             </div>
+            <div className="flex gap-5 pt-5 md:flex-row flex-col">
+              <NumberSelector
+                control={control}
+                name="resetsSettings.yawResetSmoothTime"
+                label={l10n.getString(
+                  'settings-general-tracker_mechanics-yaw-reset-smooth-time'
+                )}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
+                min={0.0}
+                max={0.5}
+                step={0.05}
+              />
+            </div>
+            <div className="flex flex-col pt-5 pb-3">
+              <Typography bold>
+                {l10n.getString(
+                  'settings-general-tracker_mechanics-save_mounting_reset'
+                )}
+              </Typography>
+              <Localized
+                id="settings-general-tracker_mechanics-save_mounting_reset-description"
+                elems={{ b: <b></b> }}
+              >
+                <Typography color="secondary"></Typography>
+              </Localized>
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="resetsSettings.saveMountingReset"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
+              )}
+            />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout
@@ -1086,7 +1205,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-yawResetDelay'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.2}
                 max={3.0}
                 step={0.2}
@@ -1097,7 +1216,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-fullResetDelay'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.2}
                 max={3.0}
                 step={0.2}
@@ -1108,7 +1227,7 @@ export function GeneralSettings() {
                 label={l10n.getString(
                   'settings-general-gesture_control-mountingResetDelay'
                 )}
-                valueLabelFormat={(value) => `${Math.round(value * 10) / 10} s`}
+                valueLabelFormat={(value) => secondsFormat.format(value)}
                 min={0.2}
                 max={3.0}
                 step={0.2}

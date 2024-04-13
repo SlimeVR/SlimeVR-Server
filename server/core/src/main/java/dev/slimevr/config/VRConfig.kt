@@ -101,7 +101,10 @@ class VRConfig {
 			val config = getTracker(tracker)
 			tracker.readConfig(config)
 			if (tracker.isImu()) tracker.resetsHandler.readDriftCompensationConfig(driftCompensation)
-			if (tracker.needsReset) tracker.resetsHandler.readArmsResetModeConfig(resetsConfig)
+			if (tracker.needsReset) {
+				tracker.resetsHandler.readResetConfig(resetsConfig)
+				tracker.saveMountingResetOrientation(config)
+			}
 			if (tracker.allowFiltering) {
 				tracker
 					.filteringHandler

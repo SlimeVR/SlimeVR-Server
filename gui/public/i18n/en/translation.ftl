@@ -284,10 +284,14 @@ settings-general-steamvr-description =
     Useful for games or apps that only support certain trackers.
 settings-general-steamvr-trackers-waist = Waist
 settings-general-steamvr-trackers-chest = Chest
-settings-general-steamvr-trackers-feet = Feet
-settings-general-steamvr-trackers-knees = Knees
-settings-general-steamvr-trackers-elbows = Elbows
-settings-general-steamvr-trackers-hands = Hands
+settings-general-steamvr-trackers-left_foot = Left foot
+settings-general-steamvr-trackers-right_foot = Right foot
+settings-general-steamvr-trackers-left_knee = Left knee
+settings-general-steamvr-trackers-right_knee = Right knee
+settings-general-steamvr-trackers-left_elbow = Left elbow
+settings-general-steamvr-trackers-right_elbow = Right elbow
+settings-general-steamvr-trackers-left_hand = Left hand
+settings-general-steamvr-trackers-right_hand = Right hand
 settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
 settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments
 settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
@@ -311,6 +315,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Smooth
 settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Reduces latency and makes movements more snappy, but may increase jitter.
 settings-general-tracker_mechanics-filtering-amount = Amount
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time (0s disables smoothing)
 settings-general-tracker_mechanics-drift_compensation = Drift compensation
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
@@ -319,6 +324,11 @@ settings-general-tracker_mechanics-drift_compensation-description =
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
+settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting reset calibration
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    Saves the automatic mounting reset calibrations for the trackers between restarts. Useful
+    when wearing a suit where trackers don't move between sessions. <b>Not recommended for normal users!</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Save mounting reset
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings

@@ -53,16 +53,14 @@ export function TrackersAssignPage() {
   const { useAssignedTrackers, trackers } = useTrackers();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-
+  const defaultValues = {
+    advanced: config?.advancedAssign ?? false,
+    mirrorView: config?.mirrorView ?? true,
+  };
   const { control, watch } = useForm<{
     advanced: boolean;
     mirrorView: boolean;
-  }>({
-    defaultValues: {
-      advanced: config?.advancedAssign ?? false,
-      mirrorView: config?.mirrorView ?? true,
-    },
-  });
+  }>({ defaultValues });
   const { advanced, mirrorView } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
@@ -344,8 +342,8 @@ export function TrackersAssignPage() {
                 onlyAssigned={false}
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
-                advanced={advanced}
-                mirror={mirrorView}
+                advanced={advanced ?? defaultValues.advanced}
+                mirror={mirrorView ?? defaultValues.mirrorView}
                 onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
             </div>

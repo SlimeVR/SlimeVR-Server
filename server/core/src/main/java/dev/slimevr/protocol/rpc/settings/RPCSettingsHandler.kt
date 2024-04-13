@@ -55,14 +55,14 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			if (bridge != null) {
 				bridge.changeShareSettings(TrackerRole.WAIST, req.steamVrTrackers().waist())
 				bridge.changeShareSettings(TrackerRole.CHEST, req.steamVrTrackers().chest())
-				bridge.changeShareSettings(TrackerRole.LEFT_FOOT, req.steamVrTrackers().feet())
-				bridge.changeShareSettings(TrackerRole.RIGHT_FOOT, req.steamVrTrackers().feet())
-				bridge.changeShareSettings(TrackerRole.LEFT_KNEE, req.steamVrTrackers().knees())
-				bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, req.steamVrTrackers().knees())
-				bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, req.steamVrTrackers().elbows())
-				bridge.changeShareSettings(TrackerRole.RIGHT_ELBOW, req.steamVrTrackers().elbows())
-				bridge.changeShareSettings(TrackerRole.LEFT_HAND, req.steamVrTrackers().hands())
-				bridge.changeShareSettings(TrackerRole.RIGHT_HAND, req.steamVrTrackers().hands())
+				bridge.changeShareSettings(TrackerRole.LEFT_FOOT, req.steamVrTrackers().leftFoot())
+				bridge.changeShareSettings(TrackerRole.RIGHT_FOOT, req.steamVrTrackers().rightFoot())
+				bridge.changeShareSettings(TrackerRole.LEFT_KNEE, req.steamVrTrackers().leftKnee())
+				bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, req.steamVrTrackers().rightKnee())
+				bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, req.steamVrTrackers().leftElbow())
+				bridge.changeShareSettings(TrackerRole.RIGHT_ELBOW, req.steamVrTrackers().rightElbow())
+				bridge.changeShareSettings(TrackerRole.LEFT_HAND, req.steamVrTrackers().leftHand())
+				bridge.changeShareSettings(TrackerRole.RIGHT_HAND, req.steamVrTrackers().rightHand())
 				bridge.setAutomaticSharedTrackers(req.steamVrTrackers().automaticTrackerToggle())
 			}
 		}
@@ -338,6 +338,8 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				resetsConfig.mode = mode
 			}
 			resetsConfig.resetMountingFeet = req.resetsSettings().resetMountingFeet()
+			resetsConfig.saveMountingReset = req.resetsSettings().saveMountingReset()
+			resetsConfig.yawResetSmoothTime = req.resetsSettings().yawResetSmoothTime()
 			resetsConfig.updateTrackersResetsSettings()
 		}
 
