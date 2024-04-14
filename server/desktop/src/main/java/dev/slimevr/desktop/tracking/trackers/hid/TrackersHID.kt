@@ -243,6 +243,10 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 		// TODO:
 	}
 
+	override fun hidDataReceived(p0: HidServicesEvent?) {
+		// TODO: Use this instead of TrackersHID#dataRead
+	}
+
 	companion object {
 		/**
 		 * Change between IMU axes and OpenGL/SteamVR axes
