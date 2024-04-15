@@ -85,6 +85,7 @@ jobs:
         run: cargo clean
 
       - name: Build
+        shell: bash
         run: |
           pnpm i
           pnpm run skipbundler --config $( ./gui/scripts/gitversion.mjs )
