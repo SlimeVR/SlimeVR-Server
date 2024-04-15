@@ -191,7 +191,7 @@ fn main() -> Result<()> {
 			)
 			.title("SlimeVR")
 			.inner_size(1289.0, 709.0)
-			.min_inner_size(393.0, 667.0)
+			.min_inner_size(util::MIN_WINDOW_SIZE_WIDTH, util::MIN_WINDOW_SIZE_HEIGHT)
 			.resizable(true)
 			.visible(true)
 			.decorations(false)
