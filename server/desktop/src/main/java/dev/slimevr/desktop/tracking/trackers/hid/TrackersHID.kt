@@ -32,7 +32,9 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	private val hidServices: HidServices
 
 	init {
-		hidServicesSpecification.isAutoStart = false
+		hidServicesSpecification.setAutoStart(false)
+		hidServicesSpecification.setAutoDataRead(true)
+		hidServicesSpecification.setDataReadInterval(0)
 		hidServices = HidManager.getHidServices(hidServicesSpecification)
 		hidServices.addHidServicesListener(this)
 		val dataReadThread = Thread(dataReadRunnable)
@@ -43,7 +45,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 
 	private fun checkConfigureDevice(hidDevice: HidDevice) {
 		if (hidDevice.vendorId == 0x2FE3 && hidDevice.productId == 0x5652) { // TODO: Use correct ids
-			if (!hidDevice.isOpen) {
+			if (hidDevice.isClosed) {
 				check(hidDevice.open()) { "Unable to open device" }
 			}
 			// TODO: Configure the device here
@@ -148,83 +150,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 				return@Runnable
 			}
 			hidServices.start()
-			while (true) {
-				try {
-					sleep(0) // Possible performance impact
-				} catch (e: InterruptedException) {
-					currentThread().interrupt()
-					break
-				}
-				dataRead() // not in try catch?
-			}
 		}
-
-	private fun dataRead() {
-		synchronized(devicesByHID) {
-			var devicesPresent = false
-			for ((hidDevice, deviceList) in devicesByHID) {
-				val dataReceived: Array<Byte> = try {
-					hidDevice.read(80, 1) // Read up to 80 bytes, timeout 1ms
-				} catch (e: NegativeArraySizeException) {
-					continue // Skip devices with read error (Maybe disconnected)
-				}
-				devicesPresent = true // Even if the device has no data
-				if (dataReceived.isNotEmpty()) {
-					// Process data
-					// TODO: make this less bad
-					if (dataReceived.size % 20 != 0) {
-						LogManager.info("[TrackerServer] Malformed HID packet, ignoring")
-					}
-					val packetCount = dataReceived.size / 20
-					var i = 0
-					while (i < packetCount * 20) {
-						// dataReceived[i] //for later
-						val idCombination = dataReceived[i + 1].toInt()
-						val rssi = -dataReceived[i + 2].toInt()
-						val battery = dataReceived[i + 3].toInt()
-						val battery_mV = dataReceived[i + 5].toInt() and 255 shl 8 or (dataReceived[i + 4].toInt() and 255)
-						val q = floatArrayOf(0f, 0f, 0f, 0f)
-						val a = floatArrayOf(0f, 0f, 0f)
-						for (j in 0..3) { // quat received as fixed 14
-							var buf =
-								dataReceived[i + 6 + j * 2 + 1].toInt() and 255 shl 8 or (dataReceived[i + 6 + j * 2].toInt() and 255)
-							buf -= 32768 // uint to int
-							q[j] = buf / (1 shl 14).toFloat() // fixed 14 to float
-						}
-						for (j in 0..2) { // accel received as fixed 7, in m/s
-							var buf =
-								dataReceived[i + 14 + j * 2 + 1].toInt() and 255 shl 8 or (dataReceived[i + 14 + j * 2].toInt() and 255)
-							buf -= 32768 // uint to int
-							a[j] = buf / (1 shl 7).toFloat() // fixed 7 to float
-						}
-						val trackerId = idCombination and 0b1111
-						val deviceId = (idCombination shr 4) and 0b1111
-						val device = deviceIdLookup(hidDevice, deviceId, deviceList)
-						// server wants tracker to be unique, so use combination of hid serial and full id
-						setUpSensor(device, trackerId, IMUType.UNKNOWN, TrackerStatus.OK)
-						val tracker = device.getTracker(trackerId)!!
-
-						tracker.signalStrength = rssi
-						// tracker.batteryVoltage = if (battery and 128 == 128) 5f else 0f // Charge status
-						tracker.batteryVoltage = battery_mV.toFloat() * 0.001f
-						tracker.batteryLevel = (battery and 127).toFloat()
-						var rot = Quaternion(q[0], q[1], q[2], q[3])
-						rot = AXES_OFFSET.times(rot)
-						tracker.setRotation(rot)
-						// TODO: I think the acceleration is wrong???
-						var acceleration = Vector3(a[0], a[1], a[2])
-						tracker.setAcceleration(acceleration)
-						tracker.dataTick()
-						i += 20
-					}
-					// LogManager.info("[TrackerServer] HID received $packetCount tracker packets")
-				}
-			}
-			if (!devicesPresent) {
-				sleep(10) // No hid device, "empty loop" so sleep to save the poor cpu
-			}
-		}
-	}
 
 	override fun run() { // Doesn't seem to run
 	}
@@ -244,7 +170,57 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	}
 
 	override fun hidDataReceived(p0: HidServicesEvent?) {
-		// TODO: Use this instead of TrackersHID#dataRead
+		synchronized(devicesByHID) {
+			val hidDevice: HidDevice = p0?.getHidDevice()!!
+			val dataReceived: ByteArray = p0.getDataReceived()
+			// Process data
+			// TODO: make this less bad
+			if (dataReceived.size % 20 != 0) {
+				LogManager.info("[TrackerServer] Malformed HID packet (${dataReceived.size}), ignoring")
+			}
+			val packetCount = dataReceived.size / 20
+			var i = 0
+			while (i < packetCount * 20) {
+				// dataReceived[i] //for later
+				val idCombination = dataReceived[i + 1].toInt()
+				val rssi = -dataReceived[i + 2].toInt()
+				val battery = dataReceived[i + 3].toInt()
+				val battery_mV = dataReceived[i + 5].toInt() and 255 shl 8 or (dataReceived[i + 4].toInt() and 255)
+				val q = floatArrayOf(0f, 0f, 0f, 0f)
+				val a = floatArrayOf(0f, 0f, 0f)
+				for (j in 0..3) { // quat received as fixed 14
+					var buf =
+						dataReceived[i + 6 + j * 2 + 1].toInt() and 255 shl 8 or (dataReceived[i + 6 + j * 2].toInt() and 255)
+					buf -= 32768 // uint to int
+					q[j] = buf / (1 shl 14).toFloat() // fixed 14 to float
+				}
+				for (j in 0..2) { // accel received as fixed 7, in m/s
+					var buf =
+						dataReceived[i + 14 + j * 2 + 1].toInt() and 255 shl 8 or (dataReceived[i + 14 + j * 2].toInt() and 255)
+					buf -= 32768 // uint to int
+					a[j] = buf / (1 shl 7).toFloat() // fixed 7 to float
+				}
+				val trackerId = idCombination and 0b1111
+				val deviceId = (idCombination shr 4) and 0b1111
+				val device = deviceIdLookup(hidDevice, deviceId, devicesByHID.get(hidDevice)!!)
+				// server wants tracker to be unique, so use combination of hid serial and full id
+				setUpSensor(device, trackerId, IMUType.UNKNOWN, TrackerStatus.OK)
+				val tracker = device.getTracker(trackerId)!!
+				tracker.signalStrength = rssi
+				// tracker.batteryVoltage = if (battery and 128 == 128) 5f else 0f // Charge status
+				tracker.batteryVoltage = battery_mV.toFloat() * 0.001f
+				tracker.batteryLevel = (battery and 127).toFloat()
+				var rot = Quaternion(q[0], q[1], q[2], q[3])
+				rot = AXES_OFFSET.times(rot)
+				tracker.setRotation(rot)
+				// TODO: I think the acceleration is wrong???
+				var acceleration = Vector3(a[0], a[1], a[2])
+				tracker.setAcceleration(acceleration)
+				tracker.dataTick()
+				i += 20
+			}
+			// LogManager.info("[TrackerServer] HID received $packetCount tracker packets")
+		}
 	}
 
 	companion object {
