@@ -46,8 +46,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		emptyList()
 	}
 	private val parser = UDPProtocolParser()
-	// 1500 is a common network MTU
-	// 1472 is the maximum size of a UDP packet (1500 - 20 for IPv4 header - 8 for UDP header)
+
+	// 1500 is a common network MTU. 1472 is the maximum size of a UDP packet (1500 - 20 for IPv4 header - 8 for UDP header)
 	private val rcvBuffer = ByteArray(1500 - 20 - 8)
 	private val bb = ByteBuffer.wrap(rcvBuffer).order(ByteOrder.BIG_ENDIAN)
 
