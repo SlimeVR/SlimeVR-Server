@@ -207,7 +207,9 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						// tracker.batteryVoltage = if (battery and 128 == 128) 5f else 0f // Charge status
 						tracker.batteryVoltage = battery_mV.toFloat() * 0.001f
 						tracker.batteryLevel = (battery and 127).toFloat()
-						var rot = Quaternion(q[0].toFloat(), q[1].toFloat(), q[2].toFloat(), q[3].toFloat())
+						// The data comes in the same order as in the UDP protocol
+						// x y z w -> w x y z
+						var rot = Quaternion(q[3].toFloat(), q[0].toFloat(), q[1].toFloat(), q[2].toFloat())
 						val scaleRot = 1 / (1 shl 15).toFloat() // compile time evaluation
 						rot = AXES_OFFSET.times(scaleRot).times(rot) // no division
 						tracker.setRotation(rot)
