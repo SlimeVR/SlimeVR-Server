@@ -329,6 +329,27 @@ class UDPPacket22FeatureFlags(
 	}
 }
 
+data class UDPPacket23RotationAndAcceleration(
+	override var rotation: Quaternion = Quaternion.IDENTITY,
+	var acceleration: Vector3 = Vector3.NULL,
+) : UDPPacket(23),
+	RotationPacket {
+	override var sensorId: Int = 0
+	override fun readData(buf: ByteBuffer) {
+		// s16 s16 s16 s16 s16 s16 s16
+		// qX  qY  qZ  qW  aX  aY  aZ
+		sensorId = buf.get().toInt() and 0xFF
+		val scaleR = 1 / (1 shl 15).toFloat() // Q15: 1 is represented as 0x7FFF and -1 as 0x8000
+		val x = buf.short * scaleR
+		val y = buf.short * scaleR
+		val z = buf.short * scaleR
+		val w = buf.short * scaleR
+		rotation = Quaternion(w, x, y, z).unit()
+		val scaleA = 1 / (1 shl 7).toFloat() // The same as the HID scale
+		acceleration = Vector3(buf.short * scaleA, buf.short * scaleA, buf.short * scaleA)
+	}
+}
+
 data class UDPPacket200ProtocolChange(
 	var targetProtocol: Int = 0,
 	var targetProtocolVersion: Int = 0,
