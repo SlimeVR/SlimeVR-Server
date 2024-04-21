@@ -319,6 +319,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
 				tracker.setRotation(rot)
+				if (packet is UDPPacket23RotationAndAcceleration) {
+					tracker.setAcceleration(packet.acceleration)
+				}
 				tracker.dataTick()
 			}
 
