@@ -245,7 +245,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	}
 
 	override fun hidDataReceived(p0: HidServicesEvent?) {
-		// TODO: Use this instead of TrackersHID#dataRead
+		// Seems to have issues with the size of data returned
 	}
 
 	companion object {
