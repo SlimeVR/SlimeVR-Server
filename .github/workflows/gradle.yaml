@@ -195,7 +195,7 @@ jobs:
           name: SlimeVR-GUI-AppImage
           path: target/release/bundle/appimage/slimevr*.AppImage
 
-      - uses: actions/upload-artifact@v3.1.0
+      - uses: actions/upload-artifact@v4
         with:
             name: SlimeVR-GUI-RPM
             path: target/release/bundle/rpm/slimevr*.rpm
