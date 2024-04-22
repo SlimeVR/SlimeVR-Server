@@ -21,13 +21,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
@@ -51,7 +51,7 @@ jobs:
       CI: false
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -72,9 +72,9 @@ jobs:
         with:
           shared-key: "${{ matrix.os }}"
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
@@ -91,7 +91,7 @@ jobs:
 
       - if: matrix.os == 'windows-latest'
         name: Upload a Build Artifact (Windows)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           # Artifact name
           name: SlimeVR-GUI-Windows
@@ -100,7 +100,7 @@ jobs:
 
       - if: matrix.os == 'ubuntu-22.04'
         name: Upload a Build Artifact (Linux)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           # Artifact name
           name: SlimeVR-GUI-Linux
@@ -109,7 +109,7 @@ jobs:
 
       - if: matrix.os == 'macos-latest'
         name: Upload a Build Artifact (macOS)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           # Artifact name
           name: SlimeVR-GUI-macOS
