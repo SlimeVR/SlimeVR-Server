@@ -7,7 +7,7 @@ Icon={{icon}}
 Name=SlimeVR
 GenericName=Full-body tracking
 Comment=An app for facilitating full-body tracking in virtual reality
-Keywords=FBT;VR;Steam;
+Keywords=FBT;VR;Steam;VRChat;IMU
 
 Terminal=false
 Type=Application
