@@ -45,8 +45,8 @@ enum class ServerFeatureFlags {
 	PROTOCOL_BUNDLE_SUPPORT,
 
 	/** Server can parse bundle packets with compact headers and packed IMU rotation/acceleration frames:
-	- `PACKET_BUNDLE_COMPACT` = 101 (0x65),
-	- `PACKET_ROTATION_AND_ACCELERATION` = 23 (0x17). */
+	 - `PACKET_BUNDLE_COMPACT` = 101 (0x65),
+	 - `PACKET_ROTATION_AND_ACCELERATION` = 23 (0x17). */
 	PROTOCOL_BUNDLE_COMPACT_SUPPORT,
 
 	// Add new flags here
