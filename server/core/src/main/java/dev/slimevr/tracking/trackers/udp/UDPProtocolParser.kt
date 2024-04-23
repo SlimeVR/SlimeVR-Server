@@ -148,7 +148,7 @@ class UDPProtocolParser {
 		const val PACKET_FEATURE_FLAGS = 22
 		const val PACKET_ROTATION_AND_ACCELERATION = 23
 		const val PACKET_BUNDLE = 100
-		const val PACKET_BUNDLE_V2 = 101
+		const val PACKET_BUNDLE_COMPACT = 101
 		const val PACKET_PROTOCOL_CHANGE = 200
 		private val HANDSHAKE_BUFFER = ByteArray(64)
 		private val bundlePackets = ArrayList<UDPPacket>(128)
