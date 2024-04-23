@@ -40,7 +40,7 @@ class UDPProtocolParser {
 				buf.position(bundlePacketStart + bundlePacketLen)
 			}
 			return bundlePackets.toTypedArray()
-		} else if (packetId == PACKET_BUNDLE_V2) {
+		} else if (packetId == PACKET_BUNDLE_COMPACT) {
 			bundlePackets.clear()
 			while (buf.hasRemaining()) {
 				val bundlePacketLen = Math.min(buf.get().toUByte().toInt(), buf.remaining()) // 1 byte
