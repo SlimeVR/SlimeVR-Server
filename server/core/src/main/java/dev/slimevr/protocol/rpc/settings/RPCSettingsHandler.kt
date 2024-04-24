@@ -256,6 +256,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				hpm.setToggle(SkeletonConfigToggles.TOE_SNAP, toggles.toeSnap())
 				hpm.setToggle(SkeletonConfigToggles.FOOT_PLANT, toggles.footPlant())
 				hpm.setToggle(SkeletonConfigToggles.SELF_LOCALIZATION, toggles.selfLocalization())
+				hpm.setToggle(SkeletonConfigToggles.USE_POSITION, toggles.usePosition())
 			}
 
 			if (ratios != null) {

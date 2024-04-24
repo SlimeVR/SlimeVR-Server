@@ -191,7 +191,7 @@ public class RPCSettingsBuilder {
 				humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP),
 				humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT),
 				humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION),
-				false
+				humanPoseManager.getToggle(SkeletonConfigToggles.USE_POSITION)
 			);
 		int ratiosOffset = ModelRatios
 			.createModelRatios(
