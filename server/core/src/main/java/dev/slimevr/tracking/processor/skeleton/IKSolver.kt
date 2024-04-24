@@ -19,6 +19,7 @@ class IKSolver(private val root: Bone) {
 		const val TOLERANCE_STEP = 2f
 	}
 
+	var enabled = true
 	private var chainList = mutableListOf<IKChain>()
 	private var rootChain: IKChain? = null
 	private var needsReset = false
@@ -216,7 +217,7 @@ class IKSolver(private val root: Bone) {
 	}
 
 	fun solve() {
-		if (rootChain == null) return
+		if (rootChain == null || !enabled) return
 
 		var solved: Boolean
 		if (needsReset) {
