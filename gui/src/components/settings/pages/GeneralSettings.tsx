@@ -69,6 +69,7 @@ interface SettingsForm {
     toeSnap: boolean;
     footPlant: boolean;
     selfLocalization: boolean;
+    usePosition: boolean;
   };
   ratios: {
     imputeWaistFromChestHip: number;
@@ -128,6 +129,7 @@ const defaultValues: SettingsForm = {
     toeSnap: false,
     footPlant: true,
     selfLocalization: false,
+    usePosition: true,
   },
   ratios: {
     imputeWaistFromChestHip: 0.3,
@@ -235,6 +237,7 @@ export function GeneralSettings() {
       toggles.toeSnap = values.toggles.toeSnap;
       toggles.footPlant = values.toggles.footPlant;
       toggles.selfLocalization = values.toggles.selfLocalization;
+      toggles.usePosition = values.toggles.usePosition;
       modelSettings.toggles = toggles;
     }
 
@@ -981,6 +984,32 @@ export function GeneralSettings() {
                 )}
               />
             </div>
+
+
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography bold>
+                {l10n.getString('settings-general-fk_settings-ik')}
+              </Typography>
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-fk_settings-ik-use_position-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-1 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="toggles.usePosition"
+                label={l10n.getString(
+                  'settings-general-fk_settings-ik-use_position'
+                )}
+              />
+            </div>
+
+
+
             <Typography color="secondary">
               {l10n.getString(
                 'settings-general-fk_settings-arm_fk-reset_mode-description'

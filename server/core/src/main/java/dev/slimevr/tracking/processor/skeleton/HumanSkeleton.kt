@@ -1192,6 +1192,8 @@ class HumanSkeleton(
 			SkeletonConfigToggles.FOOT_PLANT -> legTweaks.footPlantEnabled = newValue
 
 			SkeletonConfigToggles.SELF_LOCALIZATION -> localizer.setEnabled(newValue)
+
+			SkeletonConfigToggles.USE_POSITION -> ikSolver.enabled = newValue
 		}
 	}
 
