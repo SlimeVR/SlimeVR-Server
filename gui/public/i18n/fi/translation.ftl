@@ -354,10 +354,12 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor clip voi v
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe snap yrittää arvata varpaiden asennon jos jalkaterän jäljitintä ei ole käytössä.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot plant asettaa jalkateräsi yhdensuuntaisesti maan kanssa kosketuksessa.
 settings-general-fk_settings-leg_fk = Jalkojen jäljitys
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Ota käyttöön jalkojen asennuksen nollaus varpaillaan.
 settings-general-fk_settings-leg_fk-reset_mounting_feet = Jalkojen asennuksen nollaus
 settings-general-fk_settings-arm_fk = Käsivarsien jäljitys
 settings-general-fk_settings-arm_fk-description = Muuta tapaa, jolla käsivarsia jäljitetään.
 settings-general-fk_settings-arm_fk-force_arms = Pakota kädet HMD:ltä
+settings-general-fk_settings-arm_fk-reset_mode-description = Muuta, mikä käsivarren asentoa odotetaan asennuksen nollaukselle.
 settings-general-fk_settings-arm_fk-back = Takaisin
 settings-general-fk_settings-arm_fk-tpose_up = T-asento (ylös)
 settings-general-fk_settings-arm_fk-tpose_down = T-asento (alas)
@@ -442,6 +444,8 @@ settings-general-interface-feedback_sound = Palaute ääni
 settings-general-interface-feedback_sound-description = Tämä asetus toistaa äänen nollauksen tapahtuessa.
 settings-general-interface-feedback_sound-label = Palaute ääni
 settings-general-interface-feedback_sound-volume = Palaute äänen voimakkuus
+settings-general-interface-connected_trackers_warning = Yhdistettyjen jäljittimien varoitus
+settings-general-interface-connected_trackers_warning-description = Tämä vaihtoehto näyttää ponnahdusikkunan aina, kun yrität poistua SlimeVR:stä, kun sinulla on yksi tai useampi yhdistetty jäljitin. Se muistuttaa sinua sammuttamaan jäljittimet, kun olet valmis, akun käyttöiän säästämiseksi.
 
 ## Serial settings
 
@@ -771,6 +775,10 @@ onboarding-choose_mounting-manual_mounting = Manuaalinen asennus
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Suositeltu
 onboarding-choose_mounting-manual_mounting-description = Näin voit valita asennussuunnan manuaalisesti kullekin jäljittimelle
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    Oletko varma, että haluat tehdä
+    automaattisen asennuksen kalibroinnin?
 onboarding-choose_mounting-manual_modal-confirm = Tiedän mitä teen
 onboarding-choose_mounting-manual_modal-cancel = Peruuta
 

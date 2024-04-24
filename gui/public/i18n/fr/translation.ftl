@@ -23,6 +23,8 @@ tips-find_tracker = Impossible de différencier vos capteurs ? Secouez-en un pou
 tips-do_not_move_heels = Assurez-vous de ne pas bouger vos pieds pendant l'enregistrement !
 tips-file_select = Glissez et déposez des fichiers à utiliser, ou <u>parcourir</u>.
 tips-tap_setup = Vous pouvez tapoter lentement votre capteur 2 fois pour le choisir au lieu de le sélectionner depuis le menu.
+tips-turn_on_tracker = Vous utilisez des capteurs officiels SlimeVR ? N’oubliez pas <b><em>d’allumer votre capteur</em></b> après l’avoir connecté au PC !
+tips-failed_webgl = Échec de l’initialisation de WebGL.
 
 ## Body parts
 
@@ -196,6 +198,7 @@ tracker-infos-hardware_rev = Révision du hardware
 tracker-infos-hardware_identifier = ID Matériel
 tracker-infos-imu = Capteur IMU
 tracker-infos-board_type = Carte principale
+tracker-infos-network_version = Version du protocole
 
 ## Tracker settings
 
@@ -215,6 +218,9 @@ tracker-settings-drift_compensation_section-edit = Permettre la compensation de 
 tracker-settings-name_section = Nom personalisé
 tracker-settings-name_section-description = Donnez-lui un joli surnom :3
 tracker-settings-name_section-placeholder = Patte gauche d'Erimel
+tracker-settings-forget = Oublier capteur
+tracker-settings-forget-description = Supprime le capteur du serveur SlimeVR et l’empêche de s’y connecter jusqu’à ce que le serveur soit redémarré. La configuration du capteur ne sera pas perdue.
+tracker-settings-forget-label = Oublier capteur
 
 ## Tracker part card info
 
@@ -308,6 +314,14 @@ settings-general-steamvr-trackers-feet = Pieds
 settings-general-steamvr-trackers-knees = Genoux
 settings-general-steamvr-trackers-elbows = Coudes
 settings-general-steamvr-trackers-hands = Mains
+settings-general-steamvr-trackers-tracker_toggling = Assignation automatique des capteurs
+settings-general-steamvr-trackers-tracker_toggling-description = Gère automatiquement l’activation ou la désactivation des capteurs SteamVR en fonction de vos capteurs actuellement affectés
+settings-general-steamvr-trackers-tracker_toggling-label = Assignation automatique des capteurs
+settings-general-steamvr-trackers-hands-warning =
+    <b>Attention :</b> les capteurs de mains remplaceront vos manettes.
+    Êtes-vous sûr?
+settings-general-steamvr-trackers-hands-warning-cancel = Annuler
+settings-general-steamvr-trackers-hands-warning-done = Oui
 
 ## Tracker mechanics
 
@@ -325,6 +339,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Fluidi
 settings-general-tracker_mechanics-filtering-type-prediction = Prédiction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Réduit la latence et rend les mouvements plus vifs, mais moins fluides.
 settings-general-tracker_mechanics-filtering-amount = Intensité du filtrage
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Temps de fluidification de la réinitialisation horizontale (0s désactive la fluidification)
 settings-general-tracker_mechanics-drift_compensation = Compensation de la dérive
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
@@ -333,6 +348,11 @@ settings-general-tracker_mechanics-drift_compensation-description =
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensation de la dérive
 settings-general-tracker_mechanics-drift_compensation-amount-label = Force de la compensation
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nombre de réinitialisations prises en compte
+settings-general-tracker_mechanics-save_mounting_reset = Enregistrer la calibration de la réinitialisation automatique de l'alignement
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    Enregistre les calibrations des réinitialisation automatiques d'alignement pour les capteurs entre les redémarrages.
+    Utile lorsque vous portez une combinaison où les capteurs ne bougent pas entre les sessions. <b>Non recommandé pour les utilisateurs normaux !</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Enregistrer la réinitialisation de l'alignement
 
 ## FK/Tracking settings
 
@@ -452,6 +472,9 @@ settings-general-interface-feedback_sound-volume = Volume du son de retour
 settings-general-interface-connected_trackers_warning = Avertissement de capteurs connectés
 settings-general-interface-connected_trackers_warning-description = Cette option affichera une fenêtre contextuelle chaque fois que vous essaierez de quitter SlimeVR tout en ayant un ou plusieurs capteurs connectés. Il vous rappelle d’éteindre vos capteurs lorsque vous avez terminé pour préserver la durée de vie de la batterie.
 settings-general-interface-connected_trackers_warning-label = Avertissement de capteurs connectés en quittant
+settings-general-interface-use_tray = Minimiser dans la zone de notifications
+settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l’utiliser sans l’interface graphique.
+settings-general-interface-use_tray-label = Minimiser dans la zone de notifications
 
 ## Serial settings
 
@@ -473,6 +496,7 @@ settings-serial-factory_reset-warning-cancel = Annuler
 settings-serial-get_infos = Obtenir des informations
 settings-serial-serial_select = Sélectionnez un port série
 settings-serial-auto_dropdown_item = Automatique
+settings-serial-get_wifi_scan = Obtenir scan WiFi
 
 ## OSC router settings
 
@@ -638,8 +662,8 @@ onboarding-done-close = Fermer le guide
 
 onboarding-connect_tracker-back = Revenir aux informations d'identification Wi-Fi
 onboarding-connect_tracker-title = Connecter les capteurs
-onboarding-connect_tracker-description-p0 = Passons maintenant à la partie amusante: connecter tous les capteurs !
-onboarding-connect_tracker-description-p1 = Connectez chaque capteur qui n'est pas encore connecté via un port USB.
+onboarding-connect_tracker-description-p0-v1 = Passons maintenant à la partie amusante, connecter les capteurs!
+onboarding-connect_tracker-description-p1-v1 = Connectez chaque capteur un par un via un port USB.
 onboarding-connect_tracker-issue-serial = J'ai des problèmes de connexion !
 onboarding-connect_tracker-usb = Capteur USB
 onboarding-connect_tracker-connection_status-none = Recherche de capteurs
@@ -699,6 +723,7 @@ onboarding-assign_trackers-assigned =
     }
 onboarding-assign_trackers-advanced = Afficher les emplacements d'attribution avancés
 onboarding-assign_trackers-next = J'ai attribué tous mes capteurs
+onboarding-assign_trackers-mirror_view = Vue miroir
 
 ## Tracker assignment warnings
 
@@ -822,9 +847,10 @@ onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
 
 onboarding-choose_proportions = Quelle méthode de calibration des proportions utiliser ?
 # Multiline string
-onboarding-choose_proportions-description =
-    Les proportions corporelles sont utilisées pour connaître les mesures de votre corps. Elles sont nécéssaires pour calculer les positions des capteurs.
-    Lorsque les proportions de votre corps ne correspondent pas à celles enregistrées, la précision des capteurs sera moins bonne et vous remarquerez des problèmes tel que le patinage, le glissage ou votre corps ne correspondant pas bien à votre avatar.
+onboarding-choose_proportions-description-v1 =
+    Les proportions du corps sont utilisées pour connaître les mesures de votre corps. Elles sont requises pour calculer les positions des capteurs.
+    Lorsque les proportions de votre corps ne correspondent pas à celles enregistrées, la précision du suivi sera moins bonne et vous remarquerez certains problèmes comme du patinage ou de la glisse, ou votre corps ne correspondra pas bien à votre avatar.
+    <b>Vous n’avez besoin de mesurer les proportions de votre corps qu’une seule fois !</b> À moins qu’elle ne soient incorrectes ou que votre corps ait changé, vous n’avez pas besoin de les refaire.
 onboarding-choose_proportions-auto_proportions = Proportions automatiques
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommendée
@@ -873,6 +899,9 @@ onboarding-automatic_proportions-check_height-title = Vérifiez votre taille
 onboarding-automatic_proportions-check_height-description = Nous utilisons votre taille comme la base de nos mesures en utilisant la hauteur de votre casque comme approximation de votre taille réelle, mais il est préférable de vérifier si elles sont correctes vous-même !
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = Veuillez appuyer sur le bouton en vous <u>tenant debout</u> pour calculer votre taille. Vous avez un délais de 3 secondes après avoir appuyé sur le bouton !
+onboarding-automatic_proportions-check_height-guardian_tip =
+    Si vous utilisez un casque VR sans-fil, assurez-vous d’avoir votre guardien/
+    limite activée pour que votre hauteur soit correcte !
 onboarding-automatic_proportions-check_height-fetch_height = Je suis debout !
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Inconnu
@@ -937,3 +966,30 @@ status_system-StatusSteamVRDisconnected =
        *[other] Impossible de se connecter à SteamVR via le pilote SlimeVR.
     }
 status_system-StatusTrackerError = Le capteur { $trackerName } a une erreur.
+
+## Tray Menu
+
+tray_menu-show = Afficher
+tray_menu-hide = Masquer
+tray_menu-quit = Quitter
+
+## First exit modal
+
+tray_or_exit_modal-title = Que devrait faire le bouton de fermeture ?
+# Multiline text
+tray_or_exit_modal-description =
+    Cela permet de choisir entre quitter le serveur ou le réduire à la barre de notifications lorsque le bouton de fermeture est enfoncé.
+    Vous pouvez modifier cela plus tard dans les paramètres d'interface !
+tray_or_exit_modal-radio-exit = Quitter à la fermeture
+tray_or_exit_modal-radio-tray = Minimiser dans la zone de notifications
+tray_or_exit_modal-submit = Sauvegarder
+tray_or_exit_modal-cancel = Annuler
+
+## Unknown device modal
+
+unknown_device-modal-title = Un nouveau capteur a été trouvé !
+unknown_device-modal-description =
+    Il y a un nouveau capteur avec l’adresse MAC <b>{ $deviceId }</b>.
+    Voulez-vous le connecter à SlimeVR ?
+unknown_device-modal-confirm = Oui!
+unknown_device-modal-forget = Ignorer

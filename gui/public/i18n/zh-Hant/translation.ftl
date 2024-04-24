@@ -23,6 +23,8 @@ tips-find_tracker = 若你不確定手上的追蹤器是哪一個，搖一搖它
 tips-do_not_move_heels = 確保你的腳跟在測量過程時不會發生移動！
 tips-file_select = 拖曳檔案或 <u>瀏覽檔案</u> 以使用
 tips-tap_setup = 除了從列表挑選追蹤器以外，您也可以慢慢敲擊 2 次追蹤器來選擇它。
+tips-turn_on_tracker = 您使用的是官方的 SlimeVR 追蹤器嗎？記得要在連接到電腦以後<b><em>打開追蹤器的電源</em></b>喔！
+tips-failed_webgl = 初始化 WebGL 失敗。
 
 ## Body parts
 
@@ -196,6 +198,7 @@ tracker-infos-hardware_rev = 硬體版本
 tracker-infos-hardware_identifier = 硬體 ID
 tracker-infos-imu = 慣性測量單元 (IMU)
 tracker-infos-board_type = 主板
+tracker-infos-network_version = 通訊協定版本
 
 ## Tracker settings
 
@@ -215,6 +218,9 @@ tracker-settings-drift_compensation_section-edit = 允許偏移補償
 tracker-settings-name_section = 追蹤器名稱
 tracker-settings-name_section-description = 給它起一個可愛的名字吧 ^^
 tracker-settings-name_section-placeholder = ↖★煞氣a黑貓☆↘的美味右腿
+tracker-settings-forget = 忘記追蹤器
+tracker-settings-forget-description = 從 SlimeVR 伺服器程式中移除該追蹤器，且直到重新啟動伺服器前不會再次連接。該追蹤器的設定不會遺失。
+tracker-settings-forget-label = 忘記追蹤器
 
 ## Tracker part card info
 
@@ -304,10 +310,22 @@ settings-general-steamvr-description =
     對於只支援特定追蹤器的遊戲或應用程式，本功能會有所幫助。
 settings-general-steamvr-trackers-waist = 腰部
 settings-general-steamvr-trackers-chest = 胸部
-settings-general-steamvr-trackers-feet = 腳部
-settings-general-steamvr-trackers-knees = 膝蓋
-settings-general-steamvr-trackers-elbows = 肘部
-settings-general-steamvr-trackers-hands = 手部
+settings-general-steamvr-trackers-left_foot = 左腳
+settings-general-steamvr-trackers-right_foot = 右腳
+settings-general-steamvr-trackers-left_knee = 左膝
+settings-general-steamvr-trackers-right_knee = 右膝
+settings-general-steamvr-trackers-left_elbow = 左手肘
+settings-general-steamvr-trackers-right_elbow = 右手肘
+settings-general-steamvr-trackers-left_hand = 左手
+settings-general-steamvr-trackers-right_hand = 右手
+settings-general-steamvr-trackers-tracker_toggling = 自動追蹤器分配
+settings-general-steamvr-trackers-tracker_toggling-description = 根據目前的追蹤器分配，自動處理 SteamVR 的追蹤器的啟用與停用
+settings-general-steamvr-trackers-tracker_toggling-label = 自動追蹤器分配
+settings-general-steamvr-trackers-hands-warning =
+    <b>警告：</b>手部追蹤器將會取代控制器的追蹤。
+    您確定嗎？
+settings-general-steamvr-trackers-hands-warning-cancel = 取消
+settings-general-steamvr-trackers-hands-warning-done = 確定
 
 ## Tracker mechanics
 
@@ -325,6 +343,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = 讓運
 settings-general-tracker_mechanics-filtering-type-prediction = 預測型
 settings-general-tracker_mechanics-filtering-type-prediction-description = 減少延遲並使移動更敏捷，但可能會增加一些抖動。
 settings-general-tracker_mechanics-filtering-amount = 濾波強度
+settings-general-tracker_mechanics-yaw-reset-smooth-time = 左右偏擺重置平滑過渡時間（0秒為關閉）
 settings-general-tracker_mechanics-drift_compensation = 偏移補償
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
@@ -333,6 +352,11 @@ settings-general-tracker_mechanics-drift_compensation-description =
 settings-general-tracker_mechanics-drift_compensation-enabled-label = 偏移補償
 settings-general-tracker_mechanics-drift_compensation-amount-label = 補償量
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = 使用幾次的重置結果？
+settings-general-tracker_mechanics-save_mounting_reset = 儲存自動配戴重置的校正
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    儲存自動配戴重置的校正，重新啟動 SlimeVR 後不需要再進行校正。
+    本設定適用於動捕服，因為多次穿戴後追蹤器的位置不會變化。<b>不建議一般使用者使用！</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = 儲存自動配戴重置的校正
 
 ## FK/Tracking settings
 
@@ -447,6 +471,9 @@ settings-general-interface-feedback_sound-volume = 聲音回饋音量
 settings-general-interface-connected_trackers_warning = 已連接追蹤器警告
 settings-general-interface-connected_trackers_warning-description = 啟用本選項後，每次當退出 SlimeVR 時仍有追蹤器連接著會顯示通知，提醒你在使用完畢時關閉追蹤器電源來節省電池電量。
 settings-general-interface-connected_trackers_warning-label = 當退出程式時，有追蹤器連接中則顯示警告
+settings-general-interface-use_tray = 最小化到系統列
+settings-general-interface-use_tray-description = 本選項可以讓您在關閉視窗時不會關閉 SlimeVR 的伺服器程式，讓您在不受圖形介面的打擾下繼續使用追蹤器。
+settings-general-interface-use_tray-label = 最小化到系統列
 
 ## Serial settings
 
@@ -466,6 +493,7 @@ settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-get_infos = 取得資訊
 settings-serial-serial_select = 選擇串列埠
 settings-serial-auto_dropdown_item = 自動
+settings-serial-get_wifi_scan = 取得 Wi-Fi 掃描
 
 ## OSC router settings
 
@@ -631,8 +659,8 @@ onboarding-done-close = 關閉設定
 
 onboarding-connect_tracker-back = 返回到 Wi-Fi 認證資訊設定
 onboarding-connect_tracker-title = 連接追蹤器
-onboarding-connect_tracker-description-p0 = 來到了我第二喜歡的環節，連線所有的追蹤器！
-onboarding-connect_tracker-description-p1 = 只需透過 USB 連線所有尚未連線的裝置即可。
+onboarding-connect_tracker-description-p0-v1 = 來到了我第二喜歡的環節，連接追蹤器！
+onboarding-connect_tracker-description-p1-v1 = 透過 USB，一次連接一個追蹤器。
 onboarding-connect_tracker-issue-serial = 我在連接時碰到問題了！
 onboarding-connect_tracker-usb = USB 追蹤器
 onboarding-connect_tracker-connection_status-none = 正在尋找追蹤器
@@ -687,6 +715,7 @@ onboarding-assign_trackers-description = 這些追蹤器要放在身上的哪個
 onboarding-assign_trackers-assigned = { $assigned }/{ $trackers } 個追蹤器已分配
 onboarding-assign_trackers-advanced = 顯示進階分配部位
 onboarding-assign_trackers-next = 所有的追蹤器都分配好了
+onboarding-assign_trackers-mirror_view = 鏡像顯示
 
 ## Tracker assignment warnings
 
@@ -808,9 +837,10 @@ onboarding-automatic_mounting-put_trackers_on-next = 我所有的追蹤器都戴
 
 onboarding-choose_proportions = 要使用哪一種軀幹比例的校正方式？
 # Multiline string
-onboarding-choose_proportions-description =
+onboarding-choose_proportions-description-v1 =
     軀幹比例用於取得身體各個部位的長短，為計算追蹤器的位置而有所必要。
     當您的軀幹比例與設定的比例有差異時，追蹤精確度會變差，您可能會注意到出現腳滑溜冰的情形，或者你的身體與你的虛擬角色對不太上。
+    <b>軀幹比例的測量只需要進行一次！</b>除非設定有誤，或是身材有明顯變化，本設定不需要重複進行。
 onboarding-choose_proportions-auto_proportions = 自動軀幹比例校正
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = 推薦使用
@@ -861,6 +891,7 @@ onboarding-automatic_proportions-check_height-title = 檢查您的身高
 onboarding-automatic_proportions-check_height-description = 我們會透過頭戴顯示器回報的高度來推算您的實際身高，但我們仍建議您檢查一下數值是否正確。
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = 請<u>站直</u>並按下按鈕以計算身高，按下按鈕後您有 3 秒鐘來調整姿勢。
+onboarding-automatic_proportions-check_height-guardian_tip = 如果您使用的是一體式 VR 頭盔，請確認頭盔的守護神/邊界設定已經開啟，以確保身高能正確測量。
 onboarding-automatic_proportions-check_height-fetch_height = 我站著了！
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 不明
@@ -885,7 +916,7 @@ onboarding-automatic_proportions-recording-steps =
     如果進度條還沒走完，可以重複以上動作直到錄製結束。
 onboarding-automatic_proportions-recording-processing = 正在處理結果
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
-onboarding-automatic_proportions-recording-timer = 剩下 { $time } 秒
+onboarding-automatic_proportions-recording-timer = 倒數 { $time } 秒
 onboarding-automatic_proportions-verify_results-title = 檢查結果
 onboarding-automatic_proportions-verify_results-description = 檢查下面的結果，它們看起來是正確的嗎？
 onboarding-automatic_proportions-verify_results-results = 錄製結果
@@ -921,3 +952,31 @@ status_system-StatusSteamVRDisconnected =
        *[other] 尚未透過 SlimeVR 驅動程式連接到 SteamVR
     }
 status_system-StatusTrackerError = { $trackerName } 追蹤器發生錯誤
+
+## Tray Menu
+
+tray_menu-show = 顯示
+tray_menu-hide = 隱藏
+tray_menu-quit = 離開
+
+## First exit modal
+
+tray_or_exit_modal-title = 關閉視窗的動作是什麼？
+# Multiline text
+tray_or_exit_modal-description =
+    您可以選擇在關閉視窗時，一併退出伺服器程式，或是將視窗最小化到系統列圖示中。
+    
+    本設定之後也可以在使用者介面設定中更改。
+tray_or_exit_modal-radio-exit = 退出 SlimeVR
+tray_or_exit_modal-radio-tray = 最小化到系統列
+tray_or_exit_modal-submit = 儲存
+tray_or_exit_modal-cancel = 取消
+
+## Unknown device modal
+
+unknown_device-modal-title = 找到了新的追蹤器！
+unknown_device-modal-description =
+    偵測到新的追蹤器，其 MAC 位址為 <b>{ $deviceId }</b>。
+    要將它連接到 SlimeVR 嗎？
+unknown_device-modal-confirm = 好喔！
+unknown_device-modal-forget = 別管它
