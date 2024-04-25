@@ -13,6 +13,14 @@ export interface WindowConfig {
   y: number;
 }
 
+export enum AssignMode {
+  Deluxe = 'deluxe',
+  Advanced = 'advanced',
+  LowerBody = 'lower-body',
+  EnhancedCore = 'enhanced-core',
+  FullBody = 'full-body',
+}
+
 export interface Config {
   debug: boolean;
   lang: string;
@@ -25,10 +33,10 @@ export interface Config {
   theme: string;
   textSize: number;
   fonts: string[];
-  advancedAssign: boolean;
   useTray: boolean | null;
   doneManualMounting: boolean;
   mirrorView: boolean;
+  assignMode: AssignMode;
 }
 
 export interface ConfigContext {
@@ -50,10 +58,10 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   theme: 'slime',
   textSize: 12,
   fonts: ['poppins'],
-  advancedAssign: false,
   useTray: null,
   doneManualMounting: false,
   mirrorView: true,
+  assignMode: AssignMode.FullBody,
 };
 
 interface CrossStorage {

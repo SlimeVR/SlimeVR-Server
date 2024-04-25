@@ -24,15 +24,17 @@ import { CheckBox } from '@/components/commons/Checkbox';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import {
+  ASSIGNMENT_MODES,
   ASSIGNMENT_RULES,
   BodyAssignment,
   LOWER_BODY,
 } from '@/components/onboarding/BodyAssignment';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
-import { useConfig } from '@/hooks/config';
+import { AssignMode, useConfig } from '@/hooks/config';
 import { playTapSetupSound } from '@/sounds/sounds';
 import { useBreakpoint } from '@/hooks/breakpoint';
+import { Radio } from '@/components/commons/Radio';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -46,6 +48,14 @@ interface FlatDeviceTrackerDummy {
   };
 }
 
+const assignModeOptions = [
+  { value: AssignMode.LowerBody, label: 'Lower-Body Set', description: 'Set of trackers for lower body' },
+  { value: AssignMode.EnhancedCore, label: 'Enhanced Core Set', description: 'Enhanced set of core trackers' },
+  { value: AssignMode.FullBody, label: 'Full Body Tracking (FBT)', description: 'Universal set of trackers, suitable for most users' },
+  { value: AssignMode.Deluxe, label: 'Deluxe Tracker Set', description: 'Enhanced experience with additional trackers' },
+  { value: AssignMode.Advanced, label: 'Advanced', description: 'Full set of trackers for advanced users' },
+];
+
 export function TrackersAssignPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
@@ -54,19 +64,19 @@ export function TrackersAssignPage() {
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const defaultValues = {
-    advanced: config?.advancedAssign ?? false,
+    assignMode: config?.assignMode ?? AssignMode.FullBody,
     mirrorView: config?.mirrorView ?? true,
   };
   const { control, watch } = useForm<{
-    advanced: boolean;
+    assignMode: AssignMode;
     mirrorView: boolean;
   }>({ defaultValues });
-  const { advanced, mirrorView } = watch();
+  const { assignMode, mirrorView } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
   useEffect(() => {
-    setConfig({ advancedAssign: advanced, mirrorView });
-  }, [advanced, mirrorView]);
+    setConfig({ assignMode, mirrorView });
+  }, [assignMode, mirrorView]);
 
   const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
     TapDetectionSettingsT,
@@ -290,13 +300,25 @@ export function TrackersAssignPage() {
                 </Typography>
               </div>
               <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
-              <div>
-                <CheckBox
+              <div className="flex flex-col md:gap-4 mobile:gap-4">
+                {assignModeOptions.map((mode) => (<Radio
                   control={control}
-                  label={l10n.getString('onboarding-assign_trackers-advanced')}
-                  name="advanced"
-                  variant="toggle"
-                ></CheckBox>
+                  name="assignMode"
+                  value={mode.value}
+                  className="hidden"
+                >
+                  <div className="flex flex-row md:gap-4 sm:gap-2 mobile:gap-2">
+                    <div style={{ width: '2.5rem', textAlign: 'right' }}>
+                      <Typography variant="main-title">x{ASSIGNMENT_MODES[mode.value].length}</Typography>
+                    </div>
+                    <div className="flex flex-col">
+                      <Typography>{mode.label}</Typography>
+                      <Typography variant="standard" color="secondary">
+                        {mode.description}
+                      </Typography>
+                    </div>
+                  </div>
+                </Radio>))}
                 <CheckBox
                   control={control}
                   label={l10n.getString(
@@ -342,14 +364,14 @@ export function TrackersAssignPage() {
                 onlyAssigned={false}
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
-                advanced={advanced ?? defaultValues.advanced}
+                assignMode={assignMode ?? defaultValues.assignMode}
                 mirror={mirrorView ?? defaultValues.mirrorView}
                 onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
             </div>
           </div>
         </div>
-      </div>
+      </div >
     </>
   );
 }

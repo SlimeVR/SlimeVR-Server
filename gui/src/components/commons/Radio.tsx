@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { Control, Controller } from 'react-hook-form';
 import { Typography } from './Typography';
+import { ReactNode } from 'react';
 
 export function Radio({
   control,
@@ -8,15 +9,17 @@ export function Radio({
   label,
   value,
   description,
+  children,
   // input props
   disabled,
   ...props
 }: {
   control: Control<any>;
   name: string;
-  label: string;
+  label?: string | null;
   value: string;
   description?: string | null;
+  children?: ReactNode;
 } & React.HTMLProps<HTMLInputElement>) {
   return (
     <Controller
@@ -46,7 +49,7 @@ export function Radio({
             {...props}
           />
           <div className="flex flex-col gap-2">
-            <Typography bold>{label}</Typography>
+            <Typography bold>{children ?? label}</Typography>
             {description && (
               <Typography variant="standard" color="secondary">
                 {description}
