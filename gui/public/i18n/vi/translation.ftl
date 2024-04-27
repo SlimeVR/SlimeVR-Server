@@ -195,6 +195,7 @@ tracker-infos-version = Phiên bản firmware
 tracker-infos-hardware_rev = Revision phần cứng
 tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-imu = Cảm biến IMU (IMU Sensor)
+tracker-infos-board_type = Bảng mạch chính
 
 ## Tracker settings
 
@@ -346,10 +347,12 @@ settings-general-fk_settings-leg_tweak-floor_clip = Ngăn xuyên sàn
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
 settings-general-fk_settings-leg_tweak-skating_correction = Sửa trượt
 settings-general-fk_settings-leg_tweak-toe_snap = Đoán hướng xoay chân
+settings-general-fk_settings-leg_tweak-foot_plant = Cân bằng chân
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Mức độ sửa
 settings-general-fk_settings-leg_tweak-skating_correction-description = Sửa trượt sẽ điều chỉnh nhằm giảm thiểu hiện tượng trượt băng nhưng có thể làm giảm độ chính xác trong một vài kiểu chuyển động nhất định. Khi bật tính năng này, vui lòng đảm bảo thực hiện thao tác đặt lại hoàn toàn và hiệu chỉnh lại trong trò chơi.
 settings-general-fk_settings-leg_tweak-floor_clip-description = Ngăn xuyên sàn có thể giảm hoặc loại bỏ khả năng tracker của bạn đi xuyên sàn nhà. Khi bật tính năng này, vui lòng đảm bảo thực hiện thao tác đặt lại hoàn toàn và hiệu chỉnh lại trong trò chơi.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Đoán hướng xoay chân sẽ đoán hướng xoay của chân đồng thời khóa ngón chân của bạn vào mặt sàn bạn nếu bạn không sử dụng tracker cho chân.
+settings-general-fk_settings-leg_tweak-foot_plant-description = Cân bằng chân sẽ xoay chân song song với mặt đất khi lại gần.
 settings-general-fk_settings-leg_fk = Track chân
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Đặt lại hướng gắn tracker bàn chân bằng cách nhón chân.
 settings-general-fk_settings-leg_fk-reset_mounting_feet = Đặt lại hướng gắn tracker bàn chân
@@ -486,10 +489,30 @@ settings-osc-vrchat-network-trackers-elbows = Khuỷu tay
 
 ## VMC OSC settings
 
+settings-osc-vmc = Virtual Motion Capture
 settings-osc-vmc-enable = Bật
 settings-osc-vmc-enable-description = Cho phép nhận và gửi dữ liệu OSC
 settings-osc-vmc-enable-label = Chuyển tiếp dữ liệu OSC
+settings-osc-vmc-network = Cổng mạng (Network ports)
+settings-osc-vmc-network-description = Đặt các cổng để nghe và gửi dữ liệu qua VMC.
+settings-osc-vmc-network-port_in =
+    .label = Cổng vào (Port In)
+    .placeholder = Port in (default: 39540)
+settings-osc-vmc-network-port_out =
+    .label = Cổng ra (Port out)
+    .placeholder = Port out (default: 39539)
+settings-osc-vmc-network-address = Địa chỉ mạng (Network address)
+settings-osc-vmc-network-address-description = Chọn địa chỉ để gửi dữ liệu qua VMC.
+settings-osc-vmc-network-address-placeholder = Địa chỉ IPV4
 settings-osc-vmc-vrm = Model VRM
+settings-osc-vmc-vrm-description = Tải mô hình VRM để cho phép neo đầu và cho phép khả năng tương thích cao hơn với các ứng dụng khác.
+settings-osc-vmc-vrm-model_unloaded = Chưa có mô hình tải lên
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] Mô hình đã được tải: { $name }
+       *[other] Mô hình chưa có tiêu đề đã được tải
+    }
+settings-osc-vmc-vrm-file_select = Kéo và thả mô hình để sử dụng hoặc <u>duyệt file</u>
 
 ## Setup/onboarding menu
 

@@ -32,7 +32,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	private val hidServices: HidServices
 
 	init {
-		hidServicesSpecification.isAutoStart = false
+		hidServicesSpecification.setAutoStart(false)
 		hidServices = HidManager.getHidServices(hidServicesSpecification)
 		hidServices.addHidServicesListener(this)
 		val dataReadThread = Thread(dataReadRunnable)
@@ -43,7 +43,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 
 	private fun checkConfigureDevice(hidDevice: HidDevice) {
 		if (hidDevice.vendorId == 0x2FE3 && hidDevice.productId == 0x5652) { // TODO: Use correct ids
-			if (!hidDevice.isOpen) {
+			if (hidDevice.isClosed) {
 				check(hidDevice.open()) { "Unable to open device" }
 			}
 			// TODO: Configure the device here
@@ -166,7 +166,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			val a = intArrayOf(0, 0, 0)
 			for ((hidDevice, deviceList) in devicesByHID) {
 				val dataReceived: Array<Byte> = try {
-					hidDevice.read(80, 1) // Read up to 80 bytes, timeout 1ms
+					hidDevice.read(80, 0) // Read up to 80 bytes
 				} catch (e: NegativeArraySizeException) {
 					continue // Skip devices with read error (Maybe disconnected)
 				}
@@ -176,6 +176,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 					// TODO: make this less bad
 					if (dataReceived.size % 20 != 0) {
 						LogManager.info("[TrackerServer] Malformed HID packet, ignoring")
+						continue // Don't continue with this data
 					}
 					val packetCount = dataReceived.size / 20
 					var i = 0
@@ -246,6 +247,10 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 
 	override fun hidFailure(event: HidServicesEvent) {
 		// TODO:
+	}
+
+	override fun hidDataReceived(p0: HidServicesEvent?) {
+		// Seems to have issues with the size of data returned
 	}
 
 	companion object {
