@@ -125,11 +125,14 @@ fun main(args: Array<String>) {
 			configDir,
 		)
 		vrServer.start()
-		
+
 		// Start service for USB HID trackers
+		// Because of a bug with the hid4java library, this is currently disabled
+		/*
 		TrackersHID(
 			"Sensors HID service",
 		) { tracker: Tracker -> vrServer.registerTracker(tracker) }
+		 */
 
 		Keybinding(vrServer)
 		val scanner = thread {
