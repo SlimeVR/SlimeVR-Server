@@ -16,6 +16,8 @@ import org.hid4java.HidServices
 import org.hid4java.HidServicesListener
 import org.hid4java.HidServicesSpecification
 import org.hid4java.event.HidServicesEvent
+import org.hid4java.jna.HidApi
+import org.hid4java.jna.HidDeviceInfoStructure
 import java.util.function.Consumer
 import kotlin.experimental.and
 
@@ -39,6 +41,12 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 		dataReadThread.isDaemon = true
 		dataReadThread.name = "hid4java data reader"
 		dataReadThread.start()
+		// We use hid4java but actually do not start the service ever, because it will just enumerate everything and cause problems
+		// Do enumeration ourself
+		val deviceEnumerateThread = Thread(deviceEnumerateRunnable)
+		deviceEnumerateThread.isDaemon = true
+		deviceEnumerateThread.name = "hid4java device enumerator"
+		deviceEnumerateThread.start()
 	}
 
 	private fun checkConfigureDevice(hidDevice: HidDevice) {
@@ -141,13 +149,6 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	@get:Synchronized
 	private val dataReadRunnable: Runnable
 		get() = Runnable {
-			try {
-				sleep(100) // Delayed start
-			} catch (e: InterruptedException) {
-				currentThread().interrupt()
-				return@Runnable
-			}
-			hidServices.start()
 			while (true) {
 				try {
 					sleep(0) // Possible performance impact
@@ -156,6 +157,26 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 					break
 				}
 				dataRead() // not in try catch?
+			}
+		}
+
+	@get:Synchronized
+	private val deviceEnumerateRunnable: Runnable
+		get() = Runnable {
+			try {
+				sleep(100) // Delayed start
+			} catch (e: InterruptedException) {
+				currentThread().interrupt()
+				return@Runnable
+			}
+			while (true) {
+				try {
+					sleep(1000)
+				} catch (e: InterruptedException) {
+					currentThread().interrupt()
+					break
+				}
+				deviceEnumerate() // not in try catch?
 			}
 		}
 
@@ -227,25 +248,48 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 		}
 	}
 
+	private fun deviceEnumerate() {
+		var root: HidDeviceInfoStructure? = null
+		try {
+			root = HidApi.enumerateDevices(0x2FE3, 0x5652) // TODO: change to proper vendorId and productId, need to enum all appropriate productId
+		} catch (e: Throwable) {
+			// i dont know enough kotlin for this
+		}
+		val hidDeviceList: MutableList<HidDevice> = mutableListOf()
+		if (root != null) {
+			var hidDeviceInfoStructure: HidDeviceInfoStructure? = root
+			do {
+				hidDeviceList.add(HidDevice(hidDeviceInfoStructure, null, hidServicesSpecification))
+				hidDeviceInfoStructure = hidDeviceInfoStructure?.next()
+			} while (hidDeviceInfoStructure != null)
+			HidApi.freeEnumeration(root)
+		}
+		synchronized(devicesByHID) { // Work on devicesByHid and add/remove as necessary
+			val removeList: MutableList<HidDevice> = devicesByHID.keys.toMutableList()
+			removeList.removeAll(hidDeviceList)
+			hidDeviceList.removeAll(devicesByHID.keys) // addList
+			for (device in removeList)
+				removeDevice(device)
+			for (device in hidDeviceList)
+				checkConfigureDevice(device)
+		}
+	}
+
 	override fun run() { // Doesn't seem to run
 	}
 
 	fun getDevices(): List<Device> = devices
 
-	override fun hidDeviceAttached(event: HidServicesEvent) {
-		checkConfigureDevice(event.hidDevice)
+	override fun hidDeviceAttached(event: HidServicesEvent) { // We dont use these
 	}
 
 	override fun hidDeviceDetached(event: HidServicesEvent) {
-		removeDevice(event.hidDevice)
 	}
 
 	override fun hidFailure(event: HidServicesEvent) {
-		// TODO:
 	}
 
 	override fun hidDataReceived(p0: HidServicesEvent?) {
-		// Seems to have issues with the size of data returned
 	}
 
 	companion object {
