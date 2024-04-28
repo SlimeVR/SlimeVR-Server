@@ -283,7 +283,8 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 
 	fun getDevices(): List<Device> = devices
 
-	override fun hidDeviceAttached(event: HidServicesEvent) { // We dont use these
+	// We don't use these
+	override fun hidDeviceAttached(event: HidServicesEvent) {
 	}
 
 	override fun hidDeviceDetached(event: HidServicesEvent) {
