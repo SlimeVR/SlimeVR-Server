@@ -264,14 +264,17 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			} while (hidDeviceInfoStructure != null)
 			HidApi.freeEnumeration(root)
 		}
-		synchronized(devicesByHID) { // Work on devicesByHid and add/remove as necessary
+		synchronized(devicesByHID) {
+			// Work on devicesByHid and add/remove as necessary
 			val removeList: MutableList<HidDevice> = devicesByHID.keys.toMutableList()
 			removeList.removeAll(hidDeviceList)
 			hidDeviceList.removeAll(devicesByHID.keys) // addList
-			for (device in removeList)
+			for (device in removeList) {
 				removeDevice(device)
-			for (device in hidDeviceList)
+			}
+			for (device in hidDeviceList) {
 				checkConfigureDevice(device)
+			}
 		}
 	}
 
