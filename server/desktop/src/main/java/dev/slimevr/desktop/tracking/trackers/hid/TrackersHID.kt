@@ -253,7 +253,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 		try {
 			root = HidApi.enumerateDevices(0x2FE3, 0x5652) // TODO: change to proper vendorId and productId, need to enum all appropriate productId
 		} catch (e: Throwable) {
-			// i dont know enough kotlin for this
+			LogManager.severe("[TrackerServer] Couldn't enumerate HID devices", e)
 		}
 		val hidDeviceList: MutableList<HidDevice> = mutableListOf()
 		if (root != null) {
