@@ -21,6 +21,9 @@ import org.hid4java.jna.HidDeviceInfoStructure
 import java.util.function.Consumer
 import kotlin.experimental.and
 
+private const val HID_TRACKER_RECEIVER_VID = 0x2FE3
+private const val HID_TRACKER_RECEIVER_PID = 0x5652
+
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
  */
@@ -50,7 +53,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	}
 
 	private fun checkConfigureDevice(hidDevice: HidDevice) {
-		if (hidDevice.vendorId == 0x2FE3 && hidDevice.productId == 0x5652) { // TODO: Use correct ids
+		if (hidDevice.vendorId == HID_TRACKER_RECEIVER_VID && hidDevice.productId == HID_TRACKER_RECEIVER_PID) { // TODO: Use correct ids
 			if (hidDevice.isClosed) {
 				check(hidDevice.open()) { "Unable to open device" }
 			}
@@ -251,7 +254,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	private fun deviceEnumerate() {
 		var root: HidDeviceInfoStructure? = null
 		try {
-			root = HidApi.enumerateDevices(0x2FE3, 0x5652) // TODO: change to proper vendorId and productId, need to enum all appropriate productId
+			root = HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_RECEIVER_PID) // TODO: change to proper vendorId and productId, need to enum all appropriate productId
 		} catch (e: Throwable) {
 			LogManager.severe("[TrackerServer] Couldn't enumerate HID devices", e)
 		}
