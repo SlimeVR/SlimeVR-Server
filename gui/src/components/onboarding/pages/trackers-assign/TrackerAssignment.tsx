@@ -90,7 +90,7 @@ export function TrackersAssignPage() {
     const selectedAssignMode = Object
       .entries(ASSIGN_MODE_OPTIONS)
       .find(([_, count]) => count >= connectedIMUTrackers)
-      ?.[0] as AssignMode ?? AssignMode.Core;
+      ?.[0] as AssignMode ?? AssignMode.All;
 
     if (assignMode !== selectedAssignMode) {
       setValue('assignMode', selectedAssignMode);
@@ -325,7 +325,7 @@ export function TrackersAssignPage() {
                   name="assignMode"
                   control={control}
                   value={mode}
-                  disabled={connectedIMUTrackers > trackersCount}
+                  disabled={connectedIMUTrackers > trackersCount && mode !== AssignMode.All}
                   className="hidden"
                 >
                   <div className="flex flex-row md:gap-4 sm:gap-2 mobile:gap-2">
