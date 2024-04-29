@@ -71,7 +71,7 @@ dependencies {
 	implementation("it.unimi.dsi:fastutil:8.5.12")
 
 	// Jitpack
-	implementation("com.github.SlimeVR:oscquery-kt:3f0c25a72e")
+	implementation("com.github.SlimeVR:oscquery-kt:566a0cba58")
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework

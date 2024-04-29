@@ -34,7 +34,7 @@ class VRCOSCQueryHandler(
 		)
 		oscQueryServer.rootNode.addNode(OSCQueryNode(queryPath))
 		oscQueryServer.init()
-		LogManager.debug("[VRCOSCQueryHandler] SlimeVR OSCQueryServer started at http://$localIp:$httpPort")
+		LogManager.info("[VRCOSCQueryHandler] SlimeVR OSCQueryServer started at http://$localIp:$httpPort")
 
 		try {
 			// Add service listener

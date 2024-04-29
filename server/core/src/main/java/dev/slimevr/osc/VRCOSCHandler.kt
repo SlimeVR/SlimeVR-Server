@@ -121,8 +121,6 @@ class VRCOSCHandler(
 			} catch (e: IOException) {
 				LogManager.severe("[VRCOSCHandler] Error connecting to port $oscPortOut at the address $oscIP: $e")
 			}
-		} else {
-			LogManager.debug("[VRCOSCQueryHandler] An OSC Sender already exists for the port $oscPortOut and address $oscIP")
 		}
 	}
 
@@ -135,7 +133,6 @@ class VRCOSCHandler(
 				it.close()
 				oscQuerySender = null
 				oscQuerySenderState = newState
-				LogManager.debug("[VRCOSCHandler] Closed OSCQuery Sender.")
 			} catch (e: IOException) {
 				LogManager.severe("[VRCOSCHandler] Error closing the OSC sender: $e")
 			}
