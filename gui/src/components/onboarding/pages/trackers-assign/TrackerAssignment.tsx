@@ -57,14 +57,15 @@ const ASSIGN_MODE_OPTIONS = [
   AssignMode.All,
 ].reduce(
   (options, mode) => ({ ...options, [mode]: ASSIGNMENT_MODES[mode].length }),
-  {} as Record<AssignMode, number>,
+  {} as Record<AssignMode, number>
 );
 
 export function TrackersAssignPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { useAssignedTrackers, useConnectedIMUTrackers, trackers } = useTrackers();
+  const { useAssignedTrackers, useConnectedIMUTrackers, trackers } =
+    useTrackers();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const defaultValues = {
@@ -84,13 +85,12 @@ export function TrackersAssignPage() {
 
   const connectedIMUTrackers = useConnectedIMUTrackers().length;
   useEffect(() => {
-    if (connectedIMUTrackers <= ASSIGN_MODE_OPTIONS[assignMode])
-      return;
+    if (connectedIMUTrackers <= ASSIGN_MODE_OPTIONS[assignMode]) return;
 
-    const selectedAssignMode = Object
-      .entries(ASSIGN_MODE_OPTIONS)
-      .find(([_, count]) => count >= connectedIMUTrackers)
-      ?.[0] as AssignMode ?? AssignMode.All;
+    const selectedAssignMode =
+      (Object.entries(ASSIGN_MODE_OPTIONS).find(
+        ([_, count]) => count >= connectedIMUTrackers
+      )?.[0] as AssignMode) ?? AssignMode.All;
 
     if (assignMode !== selectedAssignMode) {
       setValue('assignMode', selectedAssignMode);
@@ -320,30 +320,43 @@ export function TrackersAssignPage() {
               </div>
               <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
               <div className="flex flex-col md:gap-4 mobile:gap-4">
-                {Object.entries(ASSIGN_MODE_OPTIONS).map(([mode, trackersCount]) => (<Radio
-                  key={mode}
-                  name="assignMode"
-                  control={control}
-                  value={mode}
-                  disabled={connectedIMUTrackers > trackersCount && mode !== AssignMode.All}
-                  className="hidden"
-                >
-                  <div className="flex flex-row md:gap-4 sm:gap-2 mobile:gap-2">
-                    <div style={{ width: '2.5rem', textAlign: 'right' }}>
-                      <Typography variant="mobile-title">
-                        {`x${trackersCount}`}
-                      </Typography>
-                    </div>
-                    <div className="flex flex-col">
-                      <Typography>
-                        {l10n.getString('onboarding-assign_trackers-option_labels', { mode })}
-                      </Typography>
-                      <Typography variant="standard" color="secondary">
-                        {l10n.getString('onboarding-assign_trackers-option_descriptions', { mode })}
-                      </Typography>
-                    </div>
-                  </div>
-                </Radio>))}
+                {Object.entries(ASSIGN_MODE_OPTIONS).map(
+                  ([mode, trackersCount]) => (
+                    <Radio
+                      key={mode}
+                      name="assignMode"
+                      control={control}
+                      value={mode}
+                      disabled={
+                        connectedIMUTrackers > trackersCount &&
+                        mode !== AssignMode.All
+                      }
+                      className="hidden"
+                    >
+                      <div className="flex flex-row md:gap-4 sm:gap-2 mobile:gap-2">
+                        <div style={{ width: '2.5rem', textAlign: 'right' }}>
+                          <Typography variant="mobile-title">
+                            {`x${trackersCount}`}
+                          </Typography>
+                        </div>
+                        <div className="flex flex-col">
+                          <Typography>
+                            {l10n.getString(
+                              'onboarding-assign_trackers-option_labels',
+                              { mode }
+                            )}
+                          </Typography>
+                          <Typography variant="standard" color="secondary">
+                            {l10n.getString(
+                              'onboarding-assign_trackers-option_descriptions',
+                              { mode }
+                            )}
+                          </Typography>
+                        </div>
+                      </div>
+                    </Radio>
+                  )
+                )}
                 <CheckBox
                   control={control}
                   label={l10n.getString(
@@ -396,7 +409,7 @@ export function TrackersAssignPage() {
             </div>
           </div>
         </div>
-      </div >
+      </div>
     </>
   );
 }

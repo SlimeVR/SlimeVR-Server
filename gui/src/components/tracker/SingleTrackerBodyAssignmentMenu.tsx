@@ -10,7 +10,7 @@ import { useLocalization } from '@fluent/react';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { useChokerWarning } from '@/hooks/choker-warning';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { defaultConfig, useConfig } from '@/hooks/config';
+import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
 
 export function SingleTrackerBodyAssignmentMenu({
   isOpen,
@@ -79,7 +79,11 @@ export function SingleTrackerBodyAssignmentMenu({
                 mirror={config?.mirrorView ?? defaultConfig.mirrorView}
                 width={isMobile ? 160 : undefined}
                 onlyAssigned={false}
-                advanced={advanced ?? defaultValues.advanced}
+                assignMode={
+                  advanced ?? defaultValues.advanced
+                    ? AssignMode.All
+                    : AssignMode.FullBody
+                }
                 onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
               <div className="flex justify-center">

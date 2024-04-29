@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '@/hooks/app';
+import { AssignMode } from '@/hooks/config';
 import { useTrackers } from '@/hooks/tracker';
 import { BodyInteractions } from '@/components/commons/BodyInteractions';
 import { TrackerPartCard } from '@/components/tracker/TrackerPartCard';
 import { BodyPartError } from './pages/trackers-assign/TrackerAssignment';
 import { SIDES } from '@/components/commons/PersonFrontIcon';
-import { AssignMode } from '../../hooks/config';
 
 export const ARMS_PARTS = new Set([
   BodyPart.LEFT_UPPER_ARM,
@@ -54,32 +54,31 @@ export const ASSIGNMENT_RULES: Partial<
   //  Also don't warn if no legs.
 };
 
-export const ASSIGNMENT_MODES:
-  Record<AssignMode, BodyPart[]>
-  = {
-  [AssignMode.LowerBody]: [    //  x5
+export const ASSIGNMENT_MODES: Record<AssignMode, BodyPart[]> = {
+  //  x5
+  [AssignMode.LowerBody]: [BodyPart.CHEST, ...LEGS_PARTS],
+  //  x6 (5 + 1)
+  [AssignMode.Core]: [BodyPart.CHEST, BodyPart.HIP, ...LEGS_PARTS],
+  //  x8 (5 + 3)
+  [AssignMode.EnhancedCore]: [
     BodyPart.CHEST,
-    ...LEGS_PARTS,
-  ],
-  [AssignMode.Core]: [         //  x6 (5 + 1)
-    BodyPart.CHEST, BodyPart.HIP,
-    ...LEGS_PARTS,
-  ],
-  [AssignMode.EnhancedCore]: [ //  x8 (5 + 3)
-    BodyPart.CHEST, BodyPart.HIP,
+    BodyPart.HIP,
     ...LEGS_PARTS,
     BodyPart.LEFT_FOOT,
     BodyPart.RIGHT_FOOT,
   ],
-  [AssignMode.FullBody]: [     // x10 (7 + 3)
-    BodyPart.CHEST, BodyPart.HIP,
+  // x10 (7 + 3)
+  [AssignMode.FullBody]: [
+    BodyPart.CHEST,
+    BodyPart.HIP,
     BodyPart.LEFT_UPPER_ARM,
     BodyPart.RIGHT_UPPER_ARM,
     ...LEGS_PARTS,
     BodyPart.LEFT_FOOT,
     BodyPart.RIGHT_FOOT,
   ],
-  [AssignMode.All]: [          // special case with all body parts
+  // special case with all body parts
+  [AssignMode.All]: [
     BodyPart.HEAD,
     BodyPart.NECK,
     BodyPart.LEFT_SHOULDER,
@@ -145,7 +144,8 @@ export function BodyAssignment({
   const right = +mirror;
 
   const hasBodyPart = (part: BodyPart) =>
-    assignMode === AssignMode.All || ASSIGNMENT_MODES[assignMode].indexOf(part) > -1;
+    assignMode === AssignMode.All ||
+    ASSIGNMENT_MODES[assignMode].indexOf(part) > -1;
 
   return (
     <>
