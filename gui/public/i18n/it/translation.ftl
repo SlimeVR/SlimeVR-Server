@@ -23,6 +23,8 @@ tips-find_tracker = Non sei sicurə quale tracker è quale? Agitalo e l'oggetto 
 tips-do_not_move_heels = Assicurati di non muovere i tuoi talloni durante la registrazione!
 tips-file_select = Trascina qui i file da usare, o <u>sfoglia</u>.
 tips-tap_setup = Puoi toccare lentamente 2 volte il tracker per sceglierlo invece di selezionarlo dal menu.
+tips-turn_on_tracker = Stai utilizzando i tracker ufficiali di SlimeVR? Ricordati di <b><em>accendere il tuo tracker</em></b> dopo averlo collegato al PC!
+tips-failed_webgl = Inizializzazione WebGL fallita.
 
 ## Body parts
 
@@ -132,7 +134,7 @@ widget-developer_mode = Modalità sviluppatore
 widget-developer_mode-high_contrast = Contrasto alto
 widget-developer_mode-precise_rotation = Rotazione precisa
 widget-developer_mode-fast_data_feed = Trasmissione veloce dei dati
-widget-developer_mode-filter_slimes_and_hmd = Filtra gli slime e HMD
+widget-developer_mode-filter_slimes_and_hmd = Filtra gli Slime e il visore
 widget-developer_mode-sort_by_name = Ordina per nome
 widget-developer_mode-raw_slime_rotation = Rotazione non processata
 widget-developer_mode-more_info = Ulteriori informazioni
@@ -157,7 +159,7 @@ tracker-status-error = Errore
 tracker-status-disconnected = Disconnesso
 tracker-status-occluded = Ostruito
 tracker-status-ok = OK
-tracker-status-timed_out = Tempo esaurito
+tracker-status-timed_out = Tempo scaduto
 
 ## Tracker status columns
 
@@ -196,6 +198,7 @@ tracker-infos-hardware_rev = Versione hardware
 tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-imu = Sensore IMU
 tracker-infos-board_type = Scheda principale
+tracker-infos-network_version = Versione del protocollo
 
 ## Tracker settings
 
@@ -215,6 +218,9 @@ tracker-settings-drift_compensation_section-edit = Consenti compensazione per il
 tracker-settings-name_section = Nome del tracker
 tracker-settings-name_section-description = Scegli un soprannome carino :)
 tracker-settings-name_section-placeholder = Gamba destra di NightyQueer
+tracker-settings-forget = Dimentica il tracker
+tracker-settings-forget-description = Rimuove il tracker dal SlimeVR server e impedisce che si riconnetta ad fino al riavvio del server. Le impostazioni del tracker non andranno perse.
+tracker-settings-forget-label = Dimentica il tracker
 
 ## Tracker part card info
 
@@ -304,10 +310,22 @@ settings-general-steamvr-description =
     Utile per alcuni giochi che utilizzano solo alcuni tracker di SteamVR.
 settings-general-steamvr-trackers-waist = Girovita
 settings-general-steamvr-trackers-chest = Petto
-settings-general-steamvr-trackers-feet = Piedi
-settings-general-steamvr-trackers-knees = Ginocchia
-settings-general-steamvr-trackers-elbows = Gomiti
-settings-general-steamvr-trackers-hands = Mani
+settings-general-steamvr-trackers-left_foot = Piede sinistro
+settings-general-steamvr-trackers-right_foot = Piede destro
+settings-general-steamvr-trackers-left_knee = Ginocchio sinistro
+settings-general-steamvr-trackers-right_knee = Ginocchio destro
+settings-general-steamvr-trackers-left_elbow = Gomito sinistro
+settings-general-steamvr-trackers-right_elbow = Gomito destro
+settings-general-steamvr-trackers-left_hand = Mano sinistra
+settings-general-steamvr-trackers-right_hand = Mano destra
+settings-general-steamvr-trackers-tracker_toggling = Assegnazione tracker automatica
+settings-general-steamvr-trackers-tracker_toggling-description = Gestisce automaticamente l'attivazione o la disattivazione dei tracker SteamVR a seconda delle assegnazioni correnti dei tracker
+settings-general-steamvr-trackers-tracker_toggling-label = Assegnazione tracker automatica
+settings-general-steamvr-trackers-hands-warning =
+    <b>Attenzione:</b> i tracker delle mani sostituiranno i controller.
+    Sei sicurə?
+settings-general-steamvr-trackers-hands-warning-cancel = Annulla
+settings-general-steamvr-trackers-hands-warning-done = Sì
 
 ## Tracker mechanics
 
@@ -325,12 +343,18 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Attenu
 settings-general-tracker_mechanics-filtering-type-prediction = Predizione
 settings-general-tracker_mechanics-filtering-type-prediction-description = Riduce ritardo e rende movimenti più istantanei, ma può introdurre tremolio.
 settings-general-tracker_mechanics-filtering-amount = Quantità
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Tempo di attenuazione del reset orientamento (0 secondi disabilita l'attenuazione)
 settings-general-tracker_mechanics-drift_compensation = Compensazione per il drift
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description = Compensa il drift degli IMU applicando una rotazione inversa. Modifica la forza della compensazione e il massimo numero di reset che sono presi in considerazione.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensazione per il drift
 settings-general-tracker_mechanics-drift_compensation-amount-label = Grado di compensazione
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Utilizza fino a x ultimi reset
+settings-general-tracker_mechanics-save_mounting_reset = Salva automaticamente la calibrazione del posizionamento
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    Salva in automatico la calibrazione del posizionamento per i tracker tra un riavvio e l'altro. Utile
+    quando si indossa una tuta in cui la posizione e orientamento dei tracker non cambia tra una sessione e l'altra. <b>Non raccomandato per gli utenti standard!</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Salva reset posizionamento
 
 ## FK/Tracking settings
 
@@ -355,8 +379,8 @@ settings-general-fk_settings-leg_fk = Tracking delle gambe
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Abilita Reset posizionamento dei piedi mettendosi in punta di piedi.
 settings-general-fk_settings-leg_fk-reset_mounting_feet = Reset posizionamento dei piedi
 settings-general-fk_settings-arm_fk = Tracking delle braccia
-settings-general-fk_settings-arm_fk-description = Cambia la modalità di tracking delle braccia.
-settings-general-fk_settings-arm_fk-force_arms = Forza il calcolo della posizione delle braccia a utilizzare il HMD
+settings-general-fk_settings-arm_fk-description = Forza il calcolo della posizione delle braccia a utilizzare il visore anche se la posizione delle mani é disponibile.
+settings-general-fk_settings-arm_fk-force_arms = Forza il calcolo delle braccia dal visore
 settings-general-fk_settings-arm_fk-reset_mode-description = Cambia la posa delle braccia usata per il reset posizionamento.
 settings-general-fk_settings-arm_fk-back = Indietro
 settings-general-fk_settings-arm_fk-back-description = La modalità predefinita, con la parte superiori delle braccia che vanno indietro e le parte inferiori delle braccia che vanno avanti.
@@ -451,6 +475,9 @@ settings-general-interface-feedback_sound-volume = Volume del suono di feedback
 settings-general-interface-connected_trackers_warning = Avviso di tracker connessi
 settings-general-interface-connected_trackers_warning-description = Questa opzione mostrerà un pop-up ogni volta che proverai ad uscire da SmileVR mentre uno o più tracker sono connessi. Ció ti permetterà di ricordarti di spegnere i tuoi tracker per preservarne la durata delle batterie.
 settings-general-interface-connected_trackers_warning-label = Avviso di tracker connessi alla chiusura dell'applicazione
+settings-general-interface-use_tray = Riduci a icona nella barra delle applicazioni
+settings-general-interface-use_tray-description = Ti consente di chiudere la finestra senza chiudere il server SlimeVR in modo da poter continuare a usarlo senza che la GUI ti infastidisca.
+settings-general-interface-use_tray-label = Riduci a icona nella barra delle applicazioni
 
 ## Serial settings
 
@@ -472,6 +499,7 @@ settings-serial-factory_reset-warning-cancel = Annulla
 settings-serial-get_infos = Ottieni informazioni
 settings-serial-serial_select = Seleziona una porta seriale
 settings-serial-auto_dropdown_item = Automatico
+settings-serial-get_wifi_scan = Elenca WiFi Network
 
 ## OSC router settings
 
@@ -637,8 +665,8 @@ onboarding-done-close = Chiudi la configurazione
 
 onboarding-connect_tracker-back = Torna alle credenziali Wi-Fi
 onboarding-connect_tracker-title = Connetti i tracker
-onboarding-connect_tracker-description-p0 = Ora passiamo alla parte divertente, colleghiamo tutti i tracker!
-onboarding-connect_tracker-description-p1 = Collega semplicemente tutti i tracker che non sono ancora collegati tramite una porta USB.
+onboarding-connect_tracker-description-p0-v1 = Ora passiamo alla parte divertente, colleghiamo i tracker!
+onboarding-connect_tracker-description-p1-v1 = Collega ogni tracker uno alla volta tramite una porta USB.
 onboarding-connect_tracker-issue-serial = Sto avendo problemi nel connettermi!
 onboarding-connect_tracker-usb = Tracker USB
 onboarding-connect_tracker-connection_status-none = Ricerca dei tracker in corso
@@ -698,6 +726,7 @@ onboarding-assign_trackers-assigned =
     }
 onboarding-assign_trackers-advanced = Mostra impostazioni avanzate di assegnazione
 onboarding-assign_trackers-next = Ho assegnato tutti i miei tracker
+onboarding-assign_trackers-mirror_view = Inverti interfaccia
 
 ## Tracker assignment warnings
 
@@ -821,9 +850,10 @@ onboarding-automatic_mounting-put_trackers_on-next = Sto indossando tutti i miei
 
 onboarding-choose_proportions = Quale metodo di calibrazione delle proporzioni vuoi usare?
 # Multiline string
-onboarding-choose_proportions-description =
-    "Proporzioni del corpo" vengono utilizzate per conoscere le misure del tuo corpo. Sono necessarie per calcolare le posizioni dei tracker.
-    Quando le proporzioni del tuo corpo non corrispondono a quelle salvate, la tua precisione di tracciamento sarà peggiore e noterai cose come slittamento o la posizione del tuo corpo non corrisponderá bene alla posizione del tuo avatar.
+onboarding-choose_proportions-description-v1 =
+    Le "Proporzioni del corpo" sono utilizzate per conoscere le esatte misure del tuo corpo. Sono necessarie per calcolare le posizioni dei tracker.
+    Quando le proporzioni del tuo corpo non corrispondono a quelle salvate, la precisione di tracciamento sarà peggiore e noterai cose come slittamento o come la posizione del tuo corpo che no corrisponde con quella del tuo avatar.
+    <b>Devi misurare il tuo corpo solo una volta!</b> A meno che non siano sbagliate o il tuo corpo non sia cambiato, non è necessario rifarlo.
 onboarding-choose_proportions-auto_proportions = Proporzioni automatiche
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Raccomandato
@@ -873,6 +903,9 @@ onboarding-automatic_proportions-check_height-title = Controlla la tua altezza
 onboarding-automatic_proportions-check_height-description = Usiamo la tua altezza come base delle nostre misurazioni utilizzando l'altezza dell'HMD come approssimazione della tua altezza effettiva, ma è meglio controllare se il valore è giusto!
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = Si prega di premere il pulsante stando in piedi <u>in posizione eretta</u> per calcolare l'altezza. Hai 3 secondi dopo aver premuto il pulsante!
+onboarding-automatic_proportions-check_height-guardian_tip =
+    Se stai utilizzando un visore VR standalone, assicurati di avere il tuo guardiano/
+    limiti attivato in modo che la tua altezza sia corretta!
 onboarding-automatic_proportions-check_height-fetch_height = Sono in piedi!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Sconosciuto
@@ -937,3 +970,31 @@ status_system-StatusSteamVRDisconnected =
        *[other] Attualmente non è connesso a SteamVR tramite il driver SlimeVR.
     }
 status_system-StatusTrackerError = Il tracker { $trackerName } ha un errore.
+
+## Tray Menu
+
+tray_menu-show = Mostra
+tray_menu-hide = Nascondi
+tray_menu-quit = Esci
+
+## First exit modal
+
+tray_or_exit_modal-title = Cosa dovrebbe fare il pulsante di chiusura?
+# Multiline text
+tray_or_exit_modal-description =
+    Questa opzione ti permette di scegliere se si desidera uscire dal server o ridurlo a icona nella barra delle applicationi quando si preme il pulsante di chiusura.
+    
+    Puoi cambiare la tua scelta in seguito nelle impostazioni dell'interfaccia!
+tray_or_exit_modal-radio-exit = Termina alla chiusura
+tray_or_exit_modal-radio-tray = Riduci a icona nella barra delle applicazioni
+tray_or_exit_modal-submit = Salva
+tray_or_exit_modal-cancel = Annulla
+
+## Unknown device modal
+
+unknown_device-modal-title = È stato trovato un nuovo tracker!
+unknown_device-modal-description =
+    C'è un nuovo tracker con indirizzo MAC <b>{ $deviceId }</b>.
+    Vuoi collegarlo a SlimeVR?
+unknown_device-modal-confirm = Certo!
+unknown_device-modal-forget = Ignoralo

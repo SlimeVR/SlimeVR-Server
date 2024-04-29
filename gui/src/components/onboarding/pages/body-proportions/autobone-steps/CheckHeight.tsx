@@ -117,7 +117,7 @@ export function CheckHeight({
                       'onboarding-automatic_proportions-check_height-fetch_height'
                     )}
               </Button>
-              <TipBox whitespace={true}>
+              <TipBox className="break-words">
                 {l10n.getString(
                   'onboarding-automatic_proportions-check_height-guardian_tip'
                 )}
