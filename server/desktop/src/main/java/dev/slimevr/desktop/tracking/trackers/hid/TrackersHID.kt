@@ -186,6 +186,8 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	private fun dataRead() {
 		synchronized(devicesByHID) {
 			var devicesPresent = false
+			val q = intArrayOf(0, 0, 0, 0)
+			val a = intArrayOf(0, 0, 0)
 			for ((hidDevice, deviceList) in devicesByHID) {
 				val dataReceived: Array<Byte> = try {
 					hidDevice.read(80, 0) // Read up to 80 bytes
@@ -207,20 +209,17 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						val idCombination = dataReceived[i + 1].toInt()
 						val rssi = -dataReceived[i + 2].toInt()
 						val battery = dataReceived[i + 3].toInt()
-						val battery_mV = dataReceived[i + 5].toInt() and 255 shl 8 or (dataReceived[i + 4].toInt() and 255)
-						val q = floatArrayOf(0f, 0f, 0f, 0f)
-						val a = floatArrayOf(0f, 0f, 0f)
-						for (j in 0..3) { // quat received as fixed 14
-							var buf =
-								dataReceived[i + 6 + j * 2 + 1].toInt() and 255 shl 8 or (dataReceived[i + 6 + j * 2].toInt() and 255)
-							buf -= 32768 // uint to int
-							q[j] = buf / (1 shl 14).toFloat() // fixed 14 to float
+						// ushort big endian
+						val battery_mV = dataReceived[i + 5].toUByte().toInt() shl 8 or dataReceived[i + 4].toUByte().toInt()
+						// Q15: 1 is represented as 0x7FFF, -1 as 0x8000
+						// The sender can use integer saturation to avoid overflow
+						for (j in 0..3) { // quat received as fixed Q15
+							// Q15 as short big endian
+							q[j] = dataReceived[i + 6 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 6 + j * 2].toUByte().toInt()
 						}
 						for (j in 0..2) { // accel received as fixed 7, in m/s
-							var buf =
-								dataReceived[i + 14 + j * 2 + 1].toInt() and 255 shl 8 or (dataReceived[i + 14 + j * 2].toInt() and 255)
-							buf -= 32768 // uint to int
-							a[j] = buf / (1 shl 7).toFloat() // fixed 7 to float
+							// Q15 as short big endian
+							a[j] = dataReceived[i + 14 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 14 + j * 2].toUByte().toInt()
 						}
 						val trackerId = idCombination and 0b1111
 						val deviceId = (idCombination shr 4) and 0b1111
@@ -233,11 +232,17 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						// tracker.batteryVoltage = if (battery and 128 == 128) 5f else 0f // Charge status
 						tracker.batteryVoltage = battery_mV.toFloat() * 0.001f
 						tracker.batteryLevel = (battery and 127).toFloat()
-						var rot = Quaternion(q[0], q[1], q[2], q[3])
-						rot = AXES_OFFSET.times(rot)
+						// The data comes in the same order as in the UDP protocol
+						// x y z w -> w x y z
+						var rot = Quaternion(q[3].toFloat(), q[0].toFloat(), q[1].toFloat(), q[2].toFloat())
+						val scaleRot = 1 / (1 shl 15).toFloat() // compile time evaluation
+						rot = AXES_OFFSET.times(scaleRot).times(rot) // no division
 						tracker.setRotation(rot)
 						// TODO: I think the acceleration is wrong???
-						var acceleration = Vector3(a[0], a[1], a[2])
+						// Yes it was. And rotation was wrong too.
+						// At lease we have fixed the fixed point decoding.
+						val scaleAccel = 1 / (1 shl 7).toFloat() // compile time evaluation
+						var acceleration = Vector3(a[0].toFloat(), a[1].toFloat(), a[2].toFloat()).times(scaleAccel) // no division
 						tracker.setAcceleration(acceleration)
 						tracker.dataTick()
 						i += 20
