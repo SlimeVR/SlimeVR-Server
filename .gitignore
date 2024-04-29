@@ -46,3 +46,4 @@ local.properties
 
 # Ignore temporary config
 vrconfig.yml.tmp
+*.DS_Store
