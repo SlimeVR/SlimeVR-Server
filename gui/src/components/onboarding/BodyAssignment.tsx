@@ -8,13 +8,22 @@ import { BodyPartError } from './pages/trackers-assign/TrackerAssignment';
 import { SIDES } from '@/components/commons/PersonFrontIcon';
 import { AssignMode } from '../../hooks/config';
 
+export const ARMS_PARTS = new Set([
+  BodyPart.LEFT_UPPER_ARM,
+  BodyPart.RIGHT_UPPER_ARM,
+  BodyPart.LEFT_LOWER_ARM,
+  BodyPart.RIGHT_LOWER_ARM,
+]);
+export const LEGS_PARTS = new Set([
+  BodyPart.LEFT_UPPER_LEG,
+  BodyPart.RIGHT_UPPER_LEG,
+  BodyPart.LEFT_LOWER_LEG,
+  BodyPart.RIGHT_LOWER_LEG,
+]);
 export const LOWER_BODY = new Set([
   BodyPart.LEFT_FOOT,
   BodyPart.RIGHT_FOOT,
-  BodyPart.LEFT_LOWER_LEG,
-  BodyPart.RIGHT_LOWER_LEG,
-  BodyPart.LEFT_UPPER_LEG,
-  BodyPart.RIGHT_UPPER_LEG,
+  ...LEGS_PARTS,
 ]);
 export const SPINE_PARTS = [
   BodyPart.UPPER_CHEST,
@@ -45,43 +54,43 @@ export const ASSIGNMENT_RULES: Partial<
   //  Also don't warn if no legs.
 };
 
-export const ASSIGNMENT_MODES = {
-  [AssignMode.LowerBody]: [
-    BodyPart.WAIST,
-    BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG,
-    BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG,
+export const ASSIGNMENT_MODES:
+  Record<AssignMode, BodyPart[]>
+  = {
+  [AssignMode.LowerBody]: [    //  x5
+    BodyPart.CHEST,
+    ...LEGS_PARTS,
   ],
-  [AssignMode.EnhancedCore]: [
-    BodyPart.WAIST, BodyPart.CHEST,
-    BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG,
-    BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG,
-    BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT,
+  [AssignMode.Core]: [         //  x6 (5 + 1)
+    BodyPart.CHEST, BodyPart.HIP,
+    ...LEGS_PARTS,
   ],
-  [AssignMode.FullBody]: [
-    BodyPart.WAIST, BodyPart.CHEST,
-    BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM,
-    BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG,
-    BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG,
-    BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT,
+  [AssignMode.EnhancedCore]: [ //  x8 (5 + 3)
+    BodyPart.CHEST, BodyPart.HIP,
+    ...LEGS_PARTS,
+    BodyPart.LEFT_FOOT,
+    BodyPart.RIGHT_FOOT,
   ],
-  [AssignMode.Deluxe]: [
-    BodyPart.WAIST, BodyPart.HIP, BodyPart.CHEST,
-    BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM,
-    BodyPart.LEFT_LOWER_ARM, BodyPart.RIGHT_LOWER_ARM,
-    BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG,
-    BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG,
-    BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT,
+  [AssignMode.FullBody]: [     // x10 (7 + 3)
+    BodyPart.CHEST, BodyPart.HIP,
+    BodyPart.LEFT_UPPER_ARM,
+    BodyPart.RIGHT_UPPER_ARM,
+    ...LEGS_PARTS,
+    BodyPart.LEFT_FOOT,
+    BodyPart.RIGHT_FOOT,
   ],
-  [AssignMode.Advanced]: [
-    BodyPart.WAIST, BodyPart.HIP, BodyPart.CHEST, BodyPart.UPPER_CHEST,
-    BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG,
-    BodyPart.LEFT_LOWER_LEG, BodyPart.RIGHT_LOWER_LEG,
-    BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT,
-    BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND,
-    BodyPart.LEFT_LOWER_ARM, BodyPart.RIGHT_LOWER_ARM,
-    BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM,
-    BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER,
-    BodyPart.NECK, BodyPart.HEAD,
+  [AssignMode.All]: [          // special case with all body parts
+    BodyPart.HEAD,
+    BodyPart.NECK,
+    BodyPart.LEFT_SHOULDER,
+    BodyPart.RIGHT_SHOULDER,
+    BodyPart.LEFT_HAND,
+    BodyPart.RIGHT_HAND,
+    BodyPart.LEFT_FOOT,
+    BodyPart.RIGHT_FOOT,
+    ...SPINE_PARTS,
+    ...ARMS_PARTS,
+    ...LEGS_PARTS,
   ],
 };
 
@@ -136,7 +145,7 @@ export function BodyAssignment({
   const right = +mirror;
 
   const hasBodyPart = (part: BodyPart) =>
-    ASSIGNMENT_MODES[assignMode].indexOf(part) > -1;
+    assignMode === AssignMode.All || ASSIGNMENT_MODES[assignMode].indexOf(part) > -1;
 
   return (
     <>

@@ -14,11 +14,11 @@ export interface WindowConfig {
 }
 
 export enum AssignMode {
-  Deluxe = 'deluxe',
-  Advanced = 'advanced',
   LowerBody = 'lower-body',
+  Core = 'core',
   EnhancedCore = 'enhanced-core',
   FullBody = 'full-body',
+  All = 'all',
 }
 
 export interface Config {

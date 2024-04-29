@@ -677,6 +677,20 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
 onboarding-assign_trackers-mirror_view = Mirror view
+onboarding-assign_trackers-option_labels = { $mode ->
+    [lower-body] Lower-Body Set
+    [core] Core Set
+    [enhanced-core] Enhanced Core Set
+    [full-body] Full Body Tracking (FBT)
+    *[all] Complete Set
+}
+onboarding-assign_trackers-option_descriptions = { $mode ->
+    [lower-body] Set of trackers for lower body tracking
+    [core] Most commonly recommended set of trackers
+    [enhanced-core] Enhanced set of core trackers
+    [full-body] Advanced set of trackers, for dancers
+    *[all] Complete set of all available trackers
+}
 
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.

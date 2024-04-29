@@ -48,26 +48,30 @@ interface FlatDeviceTrackerDummy {
   };
 }
 
-const assignModeOptions = [
-  { value: AssignMode.LowerBody, label: 'Lower-Body Set', description: 'Set of trackers for lower body' },
-  { value: AssignMode.EnhancedCore, label: 'Enhanced Core Set', description: 'Enhanced set of core trackers' },
-  { value: AssignMode.FullBody, label: 'Full Body Tracking (FBT)', description: 'Universal set of trackers, suitable for most users' },
-  { value: AssignMode.Deluxe, label: 'Deluxe Tracker Set', description: 'Enhanced experience with additional trackers' },
-  { value: AssignMode.Advanced, label: 'Advanced', description: 'Full set of trackers for advanced users' },
-];
+// Ordered collection of assign modes with the number of IMU trackers
+const ASSIGN_MODE_OPTIONS = [
+  AssignMode.LowerBody,
+  AssignMode.Core,
+  AssignMode.EnhancedCore,
+  AssignMode.FullBody,
+  AssignMode.All,
+].reduce(
+  (options, mode) => ({ ...options, [mode]: ASSIGNMENT_MODES[mode].length }),
+  {} as Record<AssignMode, number>,
+);
 
 export function TrackersAssignPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { useAssignedTrackers, trackers } = useTrackers();
+  const { useAssignedTrackers, useConnectedIMUTrackers, trackers } = useTrackers();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const defaultValues = {
-    assignMode: config?.assignMode ?? AssignMode.FullBody,
+    assignMode: config?.assignMode ?? AssignMode.Core,
     mirrorView: config?.mirrorView ?? true,
   };
-  const { control, watch } = useForm<{
+  const { control, watch, setValue } = useForm<{
     assignMode: AssignMode;
     mirrorView: boolean;
   }>({ defaultValues });
@@ -77,6 +81,21 @@ export function TrackersAssignPage() {
   useEffect(() => {
     setConfig({ assignMode, mirrorView });
   }, [assignMode, mirrorView]);
+
+  const connectedIMUTrackers = useConnectedIMUTrackers().length;
+  useEffect(() => {
+    if (connectedIMUTrackers <= ASSIGN_MODE_OPTIONS[assignMode])
+      return;
+
+    const selectedAssignMode = Object
+      .entries(ASSIGN_MODE_OPTIONS)
+      .find(([_, count]) => count >= connectedIMUTrackers)
+      ?.[0] as AssignMode ?? AssignMode.Core;
+
+    if (assignMode !== selectedAssignMode) {
+      setValue('assignMode', selectedAssignMode);
+    }
+  }, [connectedIMUTrackers]);
 
   const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
     TapDetectionSettingsT,
@@ -301,20 +320,26 @@ export function TrackersAssignPage() {
               </div>
               <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
               <div className="flex flex-col md:gap-4 mobile:gap-4">
-                {assignModeOptions.map((mode) => (<Radio
-                  control={control}
+                {Object.entries(ASSIGN_MODE_OPTIONS).map(([mode, trackersCount]) => (<Radio
+                  key={mode}
                   name="assignMode"
-                  value={mode.value}
+                  control={control}
+                  value={mode}
+                  disabled={connectedIMUTrackers > trackersCount}
                   className="hidden"
                 >
                   <div className="flex flex-row md:gap-4 sm:gap-2 mobile:gap-2">
                     <div style={{ width: '2.5rem', textAlign: 'right' }}>
-                      <Typography variant="main-title">x{ASSIGNMENT_MODES[mode.value].length}</Typography>
+                      <Typography variant="mobile-title">
+                        {`x${trackersCount}`}
+                      </Typography>
                     </div>
                     <div className="flex flex-col">
-                      <Typography>{mode.label}</Typography>
+                      <Typography>
+                        {l10n.getString('onboarding-assign_trackers-option_labels', { mode })}
+                      </Typography>
                       <Typography variant="standard" color="secondary">
-                        {mode.description}
+                        {l10n.getString('onboarding-assign_trackers-option_descriptions', { mode })}
                       </Typography>
                     </div>
                   </div>
