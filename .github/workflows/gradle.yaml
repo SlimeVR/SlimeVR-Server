@@ -338,9 +338,6 @@ jobs:
           cp target/release/slimevr.exe ./SlimeVR/
           7z a -tzip SlimeVR-win64.zip ./SlimeVR/
 
-          mv ./SlimeVR/slimevr.exe ./SlimeVR/slimevr-ui.exe
-          7z a -tzip SlimeVR.zip ./SlimeVR/
-
       - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-Windows
@@ -352,6 +349,4 @@ jobs:
         with:
           draft: true
           generate_release_notes: true
-          files: |
-            ./SlimeVR-win64.zip
-            ./SlimeVR.zip
+          files: ./SlimeVR-win64.zip
