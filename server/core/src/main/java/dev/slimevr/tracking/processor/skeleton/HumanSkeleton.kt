@@ -1053,6 +1053,9 @@ class HumanSkeleton(
 		headTracker?.let {
 			if (it.needsReset) {
 				it.resetsHandler.resetFull(referenceRotation)
+				if (true) { // TODO
+					referenceRotation = it.getRotation()
+				}
 			} else {
 				referenceRotation = it.getRotation()
 			}
@@ -1082,6 +1085,9 @@ class HumanSkeleton(
 		headTracker?.let {
 			if (it.needsReset) {
 				it.resetsHandler.resetYaw(referenceRotation)
+				if (true) { // TODO
+					referenceRotation = it.getRotation()
+				}
 			} else {
 				referenceRotation = it.getRotation()
 			}
@@ -1103,8 +1109,11 @@ class HumanSkeleton(
 		// reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			if (it.needsMounting) {
+			if (it.needsMounting || (it.isComputed && true)) { // TODO
 				it.resetsHandler.resetMounting(referenceRotation)
+				if (true) { // TODO
+					referenceRotation = it.getRotation()
+				}
 			} else {
 				referenceRotation = it.getRotation()
 			}

@@ -154,21 +154,18 @@ abstract class SteamVRBridge(
 				"OpenVR", // TODO : We need the manufacturer
 			)
 
-		val displayName: String
-		val needsReset: Boolean
-		if (trackerAdded.trackerId == 0) {
-			displayName = if (trackerAdded.trackerName == "HMD") {
+		// Get the tracker's display name
+		val displayName = if (trackerAdded.trackerId == 0) {
+			if (trackerAdded.trackerName == "HMD") {
 				"SteamVR Driver HMD"
 			} else {
 				"Feeder App HMD"
 			}
-			// TODO support needsReset = true for VTubing (GUI toggle?)
-			needsReset = false
 		} else {
-			displayName = trackerAdded.trackerName
-			needsReset = true
+			trackerAdded.trackerName
 		}
 
+		// Make the tracker
 		val tracker = Tracker(
 			device,
 			getNextLocalTrackerId(),
@@ -180,7 +177,7 @@ abstract class SteamVRBridge(
 			hasRotation = true,
 			userEditable = true,
 			isComputed = true,
-			needsReset = needsReset,
+			needsReset = true, // Always true; special case
 		)
 
 		device.trackers[0] = tracker

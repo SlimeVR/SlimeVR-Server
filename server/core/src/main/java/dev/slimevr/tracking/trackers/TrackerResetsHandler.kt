@@ -216,19 +216,26 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			Quaternion.IDENTITY
 		}
 
+		// Old rot for drift compensation
 		val oldRot = adjustToReference(tracker.getRawRotation())
 		lastResetQuaternion = oldRot
 
 		val mountingAdjustedRotation = tracker.getRawRotation() * mountingOrientation
 
-		if (tracker.needsMounting) {
+		// If tracker needsMounting or is a computed head tracker
+		if (tracker.needsMounting || (tracker.trackerPosition == TrackerPosition.HEAD && tracker.isComputed)) {
 			gyroFix = fixGyroscope(mountingAdjustedRotation * tposeDownFix)
 		} else {
 			// Set mounting to the HMD's yaw so that the non-mounting-adjusted
 			// tracker goes forward.
 			mountRotFix = getYawQuaternion(reference)
 		}
+
 		attachmentFix = fixAttachment(mountingAdjustedRotation)
+		if (tracker.trackerPosition == TrackerPosition.HEAD && !tracker.needsMounting) {
+			// Restore the yaw if tracker is computed head tracker
+			attachmentFix *= getYawQuaternion(mountRotFix.inv() * (mountingAdjustedRotation * mountRotFix))
+		}
 
 		// Rotate attachmentFix by 180 degrees as a workaround for tpose (down)
 		if (tposeDownFix != Quaternion.IDENTITY && tracker.needsMounting) {
@@ -237,8 +244,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		makeIdentityAdjustmentQuatsFull()
 
-		yawFix = fixYaw(mountingAdjustedRotation, reference)
-		yawResetSmoothTimeRemain = 0.0f
+		if (tracker.trackerPosition != TrackerPosition.HEAD || tracker.needsMounting) {
+			yawFix = fixYaw(mountingAdjustedRotation, reference)
+			yawResetSmoothTimeRemain = 0.0f
+		}
 
 		calculateDrift(oldRot)
 
@@ -255,6 +264,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * position should be corrected in the source.
 	 */
 	fun resetYaw(reference: Quaternion) {
+		// Don't reset a computed head tracker
+		if (tracker.trackerPosition == TrackerPosition.HEAD && tracker.isComputed) return
+
+		// Old rot for drift compensation
 		val oldRot = adjustToReference(tracker.getRawRotation())
 		lastResetQuaternion = oldRot
 
@@ -331,6 +344,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Make an adjustment quaternion from the angle
 		mountRotFix = EulerAngles(EulerOrder.YZX, 0f, yawAngle, 0f).toQuaternion()
+		if (tracker.trackerPosition == TrackerPosition.HEAD && tracker.isComputed) {
+			// If computed head tracker, use full reset yaw
+			mountRotFix *= getYawQuaternion(gyroFix)
+		}
 
 		// save mounting reset
 		if (saveMountingReset) tracker.saveMountingResetOrientation(mountRotFix)
