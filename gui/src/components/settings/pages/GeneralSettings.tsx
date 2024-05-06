@@ -930,7 +930,6 @@ export function GeneralSettings() {
               />
             </div>
 
-
             <div className="flex flex-col pt-2 pb-3">
               <Typography bold>
                 {l10n.getString('settings-general-fk_settings-ik')}
@@ -952,8 +951,6 @@ export function GeneralSettings() {
                 )}
               />
             </div>
-
-
 
             <Typography color="secondary">
               {l10n.getString(
