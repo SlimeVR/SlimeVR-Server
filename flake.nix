@@ -125,7 +125,7 @@
             enable = true;
             toolchain = fenixpkgs.fromToolchainName {
               name = rust_toolchain.toolchain.channel;
-              sha256 = "sha256-3St/9/UKo/6lz2Kfq2VmlzHyufduALpiIKaaKX4Pq0g=";
+              sha256 = "sha256-opUgs6ckUQCyDxcB9Wy51pqhd0MPGHUVbwRKKPGiwZU=";
             };
             components = rust_toolchain.toolchain.components;
           };
@@ -137,7 +137,7 @@
           enterShell = with pkgs; ''
             # Export a LD_LIBRARY_PATH without libudev-zero as libgudev not likey
             export SLIMEVR_RUST_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
-            export LD_LIBRARY_PATH="${pkgs.libudev-zero}/lib:$LD_LIBRARY_PATH"
+            export LD_LIBRARY_PATH="${libudev-zero}/lib:$LD_LIBRARY_PATH"
           '';
         };
       };
