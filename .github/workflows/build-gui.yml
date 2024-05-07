@@ -79,11 +79,6 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
 
-      # Tauri has a broken cache issue in windows, let's clean it for now
-      - name: Clean cache in Windows (Fixes tauri-apps/tauri#9045)
-        if: matrix.os == 'windows-latest'
-        run: cargo clean
-
       - name: Build
         run: |
           pnpm i

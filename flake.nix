@@ -4,11 +4,19 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     devenv.url = "github:cachix/devenv";
-    nix2container.url = "github:nlewo/nix2container";
-    nix2container.inputs.nixpkgs.follows = "nixpkgs";
+    nix2container = {
+      url = "github:nlewo/nix2container";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
-    nixgl.url = "github:guibou/nixGL";
-    fenix.url = "github:nix-community/fenix";
+    nixgl = {
+      url = "github:guibou/nixGL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
@@ -96,7 +104,6 @@
               expat
               libayatana-appindicator
               libusb1
-              libudev-zero
             ])
             ++ lib.optionals pkgs.stdenv.isDarwin [
               pkgs.darwin.apple_sdk.frameworks.Security
@@ -128,6 +135,9 @@
           };
 
           enterShell = with pkgs; ''
+            # Export a LD_LIBRARY_PATH without libudev-zero as libgudev not likey
+            export SLIMEVR_RUST_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+            export LD_LIBRARY_PATH="${pkgs.libudev-zero}/lib:$LD_LIBRARY_PATH"
           '';
         };
       };
