@@ -20,7 +20,7 @@ import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusSteamVRDisconnectedT
 
 abstract class SteamVRBridge(
-	server: VRServer,
+	protected val server: VRServer,
 	threadName: String,
 	bridgeName: String,
 	protected val bridgeSettingsKey: String,
@@ -53,7 +53,9 @@ abstract class SteamVRBridge(
 	}
 
 	override fun updateShareSettingsAutomatically(): Boolean {
-		if (!config.automaticSharedTrackersToggling) return false
+		// Return false if automatic trackers is disabled or if tracking is paused
+		if (!config.automaticSharedTrackersToggling || server.getPauseTracking()) return false
+
 		val skeleton = instance.humanPoseManager.skeleton
 		val isWaistSteamVr = skeleton.hipTracker?.device?.isOpenVrDevice == true ||
 			skeleton.waistTracker?.device?.isOpenVrDevice == true
@@ -110,6 +112,7 @@ abstract class SteamVRBridge(
 		changeShareSettings(TrackerRole.RIGHT_ELBOW, hasRightElbow && !isRightElbowSteamVr)
 
 		// Hands aren't touched as they will override the controller's tracking
+		// Return true to say that trackers were successfully toggled automatically
 		return true
 	}
 
