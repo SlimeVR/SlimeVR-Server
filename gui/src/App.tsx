@@ -54,6 +54,7 @@ import { error, log } from './utils/logging';
 import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
+import { invoke } from '@tauri-apps/api/core';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -207,6 +208,12 @@ export default function App() {
           .then((type) => document.body.classList.remove(type.toLowerCase()))
           .catch(error);
       };
+    }, []);
+
+    useEffect(() => {
+      invoke('update_presence', { details: 'Using 69 trackers' })
+        .then(() => log('we did it'))
+        .catch(() => log('we didnt do it'));
     }, []);
   }
 
