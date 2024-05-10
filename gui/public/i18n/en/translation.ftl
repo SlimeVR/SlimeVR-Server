@@ -448,6 +448,13 @@ settings-general-interface-connected_trackers_warning-label = Connected trackers
 settings-general-interface-use_tray = Minimize to system tray
 settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bothering you.
 settings-general-interface-use_tray-label = Minimize to system tray
+settings-general-interface-discord_presence = Share activity in Discord
+settings-general-interface-discord_presence-description = This will tell your Discord client that you are using SlimeVR and the number of IMU trackers you have connected
+settings-general-interface-discord_presence-label = Share activity in Discord
+settings-general-interface-discord_presence-message = Using { $amount ->
+    [one] 1 tracker
+    *[other] { $amount } trackers
+}
 
 ## Serial settings
 settings-serial = Serial Console

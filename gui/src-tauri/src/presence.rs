@@ -1,4 +1,4 @@
-use std::time::SystemTime;
+use std::time::{Duration, SystemTime};
 
 use color_eyre::{eyre::bail, Result};
 use discord_sdk as ds;
@@ -16,7 +16,7 @@ pub struct DiscordTimestamp(SystemTime);
 
 pub struct ExposedClient(Mutex<Option<DiscordClient>>);
 
-async fn make_client(subs: ds::Subscriptions) -> Result<DiscordClient> {
+async fn make_client(subs: ds::Subscriptions) -> Result<Option<DiscordClient>> {
 	let (wheel, handler) = ds::wheel::Wheel::new(Box::new(|err| {
 		log::error!(target: "discord_presence", "encountered a discord presence error: {err}");
 	}));
@@ -26,8 +26,12 @@ async fn make_client(subs: ds::Subscriptions) -> Result<DiscordClient> {
 	let discord =
 		ds::Discord::new(ds::DiscordApp::PlainId(APP_ID), subs, Box::new(handler))?;
 
-	log::info!(target: "discord_presence", "waiting for handshake...");
-	user.0.changed().await?;
+	log::debug!(target: "discord_presence", "waiting for handshake...");
+	let Ok(e) = tokio::time::timeout(Duration::from_secs(5), user.0.changed()).await
+	else {
+		return Ok(None);
+	};
+	e?;
 
 	let user = match &*user.0.borrow() {
 		ds::wheel::UserState::Connected(user) => user.clone(),
@@ -38,11 +42,11 @@ async fn make_client(subs: ds::Subscriptions) -> Result<DiscordClient> {
 
 	log::info!(target: "discord_presence", "connected to Discord, local user name is {}", user.username);
 
-	Ok(DiscordClient {
+	Ok(Some(DiscordClient {
 		discord,
 		user,
 		wheel,
-	})
+	}))
 }
 
 async fn client_exists(client: &State<'_, ExposedClient>) -> bool {
@@ -132,11 +136,17 @@ pub async fn create_discord_client(
 		return Err("Trying to create a client when there is one already".to_owned());
 	}
 
-	let discord_client = make_client(ds::Subscriptions::ACTIVITY)
+	let Some(discord_client) = make_client(ds::Subscriptions::ACTIVITY)
 		.await
-		.map_err(|e| e.to_string())?;
-	let mut lock = client.0.lock().await;
-	*lock = Some(discord_client);
+		.map_err(|e| e.to_string())?
+	else {
+		log::debug!(target: "discord_presence", "discord took too long to answer (probably not open)");
+		return Ok(());
+	};
+	{
+		let mut lock = client.0.lock().await;
+		*lock = Some(discord_client);
+	}
 	Ok(())
 }
 
@@ -151,7 +161,10 @@ pub fn create_presence<R: Runtime>(app: &tauri::AppHandle<R>) -> tauri::Result<(
 				log::error!(target: "discord_presence", "couldn't initialize discord client: {e}");
 				return;
 			}
-			let client = client.unwrap();
+			let Some(client) = client.unwrap() else {
+				log::debug!(target: "discord_presence", "discord took too long to answer (probably not open)");
+				return;
+			};
 			let mutex = app.state::<ExposedClient>();
 			{
 				let mut lock = mutex.0.lock().await;

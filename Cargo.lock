@@ -3641,6 +3641,7 @@ dependencies = [
  "tauri-plugin-store",
  "tauri-runtime",
  "tempfile",
+ "tokio",
  "which",
  "win32job",
  "winreg 0.52.0",

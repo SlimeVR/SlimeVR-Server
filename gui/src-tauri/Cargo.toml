@@ -52,6 +52,7 @@ color-eyre = "0.6"
 rfd = { version = "0.14", features = ["gtk3"], default-features = false }
 dirs-next = "2.0.0"
 discord-sdk = "0.3.6"
+tokio = { version = "1.37.0", features = ["time"] }
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"

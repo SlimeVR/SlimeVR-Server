@@ -29,6 +29,7 @@ export interface Config {
   useTray: boolean | null;
   doneManualMounting: boolean;
   mirrorView: boolean;
+  discordPresence: boolean;
 }
 
 export interface ConfigContext {
@@ -54,6 +55,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   useTray: null,
   doneManualMounting: false,
   mirrorView: true,
+  discordPresence: false,
 };
 
 interface CrossStorage {
