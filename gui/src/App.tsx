@@ -160,6 +160,23 @@ export default function App() {
   const { l10n } = useLocalization();
   const [updateFound, setUpdateFound] = useState('');
   const isTauri = useIsTauri();
+
+  useEffect(() => {
+    const onKeydown: (arg0: KeyboardEvent) => void = function (event) {
+      // prevent search bar keybind
+      if (
+        event.key === 'F3' ||
+        (event.ctrlKey && event.key === 'f') ||
+        (event.metaKey && event.key === 'f')
+      ) {
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener('keydown', onKeydown);
+    return () => window.removeEventListener('keydown', onKeydown);
+  }, []);
+
   useEffect(() => {
     async function fetchReleases() {
       const releases = await fetch(

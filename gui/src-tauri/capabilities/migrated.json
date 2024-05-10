@@ -27,6 +27,7 @@
     "shell:allow-open",
     "store:allow-get",
     "store:allow-set",
-    "store:allow-save"
+    "store:allow-save",
+    "fs:allow-write-text-file"
   ]
 }

@@ -44,6 +44,11 @@ enum class ServerFeatureFlags {
 	/** Server can parse bundle packets: `PACKET_BUNDLE` = 100 (0x64). */
 	PROTOCOL_BUNDLE_SUPPORT,
 
+	/** Server can parse bundle packets with compact headers and packed IMU rotation/acceleration frames:
+	 - `PACKET_BUNDLE_COMPACT` = 101 (0x65),
+	 - `PACKET_ROTATION_AND_ACCELERATION` = 23 (0x17). */
+	PROTOCOL_BUNDLE_COMPACT_SUPPORT,
+
 	// Add new flags here
 
 	BITS_TOTAL, ;
@@ -51,6 +56,7 @@ enum class ServerFeatureFlags {
 	companion object {
 		val flagsEnabled: Set<ServerFeatureFlags> = setOf(
 			PROTOCOL_BUNDLE_SUPPORT,
+			PROTOCOL_BUNDLE_COMPACT_SUPPORT,
 
 			// Add enabled flags here
 		)

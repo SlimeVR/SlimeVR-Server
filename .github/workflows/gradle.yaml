@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -27,13 +27,13 @@ jobs:
         run: git fetch --tags origin --recurse-submodules=no --force
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "adopt"
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
 
       - run: mkdir ./gui/dist && touch ./gui/dist/somefile
         shell: bash
@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -57,19 +57,19 @@ jobs:
         run: git fetch --tags origin --recurse-submodules=no --force
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "adopt"
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Build with Gradle
         run: ./gradlew shadowJar
 
       - name: Upload the Server JAR as a Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           # Artifact name
           name: "SlimeVR-Server" # optional, default is artifact
@@ -77,7 +77,7 @@ jobs:
           path: server/desktop/build/libs/*
 
       - name: Upload to draft release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           draft: true
@@ -89,7 +89,7 @@ jobs:
   bundle-android:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -97,17 +97,17 @@ jobs:
         run: git fetch --tags origin --recurse-submodules=no --force
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: "17"
           distribution: "adopt"
 
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
@@ -121,7 +121,7 @@ jobs:
         run: ./gradlew :server:android:assembleDebug
 
       - name: Upload the Android Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           # Artifact name
           name: "SlimeVR-Android" # optional, default is artifact
@@ -134,7 +134,7 @@ jobs:
           cp server/android/build/outputs/apk/debug/android-debug.apk ./SlimeVR-android.apk
 
       - name: Upload to draft release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           draft: true
@@ -148,11 +148,11 @@ jobs:
     needs: [build, test]
     if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: "SlimeVR-Server"
           path: server/desktop/build/libs/
@@ -173,9 +173,9 @@ jobs:
         with:
           shared-key: "ubuntu-22.04"
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
@@ -185,7 +185,7 @@ jobs:
           pnpm i
           pnpm run tauri build
 
-      - uses: actions/upload-artifact@v3.1.0
+      - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-Deb
           path: target/release/bundle/deb/slimevr*.deb
@@ -205,7 +205,7 @@ jobs:
           chmod 644 squashfs-root/slimevr.jar
           appimagetool squashfs-root slimevr*.AppImage
 
-      - uses: actions/upload-artifact@v3.1.0
+      - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-AppImage
           path: target/release/bundle/appimage/slimevr*.AppImage
@@ -217,7 +217,7 @@ jobs:
           cp target/release/bundle/deb/slimevr*.deb ./SlimeVR-amd64.deb
 
       - name: Upload to draft release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           draft: true
@@ -232,11 +232,11 @@ jobs:
     needs: [build, test]
     if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: "SlimeVR-Server"
           path: server/desktop/build/libs/
@@ -246,16 +246,16 @@ jobs:
         with:
           shared-key: "macos-latest"
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
 
       - name: Build
         run: |
-          rustup target add aarch64-apple-darwin
+          rustup target add x86_64-apple-darwin
           pnpm i
           pnpm run tauri build --target universal-apple-darwin
 
@@ -269,12 +269,12 @@ jobs:
           --volicon ../macos/slimevr.app/Contents/Resources/icon.icns --skip-jenkins \
           --eula ../../../../LICENSE-MIT slimevr.dmg ../macos/slimevr.app
 
-      - uses: actions/upload-artifact@v3.1.0
+      - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-MacApp
           path: target/universal-apple-darwin/release/bundle/macos/slimevr*.app
 
-      - uses: actions/upload-artifact@v3.1.0
+      - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-MacDmg
           path: target/universal-apple-darwin/release/bundle/dmg/slimevr.dmg
@@ -285,7 +285,7 @@ jobs:
           cp target/universal-apple-darwin/release/bundle/dmg/slimevr.dmg ./SlimeVR-mac.dmg
 
       - name: Upload to draft release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           draft: true
@@ -299,11 +299,11 @@ jobs:
     needs: [build, test]
     if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: "SlimeVR-Server"
           path: server/desktop/build/libs/
@@ -313,15 +313,14 @@ jobs:
         with:
           shared-key: "windows-latest"
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
 
       - name: Clean cache in Windows (Fixes tauri-apps/tauri#9045)
-        if: matrix.os == 'windows-latest'
         run: cargo clean
 
       - name: Build
@@ -342,13 +341,13 @@ jobs:
           mv ./SlimeVR/slimevr.exe ./SlimeVR/slimevr-ui.exe
           7z a -tzip SlimeVR.zip ./SlimeVR/
 
-      - uses: actions/upload-artifact@v3.1.0
+      - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-Windows
           path: ./SlimeVR*.zip
 
       - name: Upload to draft release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           draft: true

@@ -20,7 +20,7 @@ import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusSteamVRDisconnectedT
 
 abstract class SteamVRBridge(
-	server: VRServer,
+	protected val server: VRServer,
 	threadName: String,
 	bridgeName: String,
 	protected val bridgeSettingsKey: String,
@@ -53,34 +53,66 @@ abstract class SteamVRBridge(
 	}
 
 	override fun updateShareSettingsAutomatically(): Boolean {
-		if (!config.automaticSharedTrackersToggling) return false
+		// Return false if automatic trackers is disabled or if tracking is paused
+		if (!config.automaticSharedTrackersToggling || server.getPauseTracking()) return false
+
 		val skeleton = instance.humanPoseManager.skeleton
+		val isWaistSteamVr = skeleton.hipTracker?.device?.isOpenVrDevice == true ||
+			skeleton.waistTracker?.device?.isOpenVrDevice == true
 		// Enable waist if skeleton has an spine tracker
-		changeShareSettings(TrackerRole.WAIST, skeleton.hasSpineTracker)
+		changeShareSettings(TrackerRole.WAIST, skeleton.hasSpineTracker && !isWaistSteamVr)
 
 		// hasChest if waist and/or hip is on, and chest and/or upper chest is also on
 		val hasChest = (skeleton.hipTracker != null || skeleton.waistTracker != null) &&
 			(skeleton.upperChestTracker != null || skeleton.chestTracker != null)
-		changeShareSettings(TrackerRole.CHEST, hasChest)
+		val isChestSteamVr = skeleton.upperChestTracker?.device?.isOpenVrDevice == true ||
+			skeleton.chestTracker?.device?.isOpenVrDevice == true
+		changeShareSettings(
+			TrackerRole.CHEST,
+			hasChest && !isChestSteamVr,
+		)
 
 		// hasFeet if lower and/or upper leg tracker is on
-		val hasFeet =
-			(skeleton.leftUpperLegTracker != null || skeleton.leftLowerLegTracker != null) &&
-				(skeleton.rightUpperLegTracker != null || skeleton.rightLowerLegTracker != null)
-		changeShareSettings(TrackerRole.LEFT_FOOT, hasFeet)
-		changeShareSettings(TrackerRole.RIGHT_FOOT, hasFeet)
+		val hasLeftFoot =
+			(skeleton.leftUpperLegTracker != null || skeleton.leftLowerLegTracker != null)
+		val isLeftFootSteamVr =
+			skeleton.leftLowerLegTracker?.device?.isOpenVrDevice == true ||
+				skeleton.leftFootTracker?.device?.isOpenVrDevice == true
 
-		// hasKnees if foot tracker and lower and/or upper leg tracker is on
-		val hasKnees = hasFeet && skeleton.hasLeftFootTracker && skeleton.hasRightFootTracker
-		changeShareSettings(TrackerRole.LEFT_KNEE, hasKnees)
-		changeShareSettings(TrackerRole.RIGHT_KNEE, hasKnees)
+		val hasRightFoot =
+			(skeleton.rightUpperLegTracker != null || skeleton.rightLowerLegTracker != null)
+		val isRightFootSteamVr =
+			skeleton.rightLowerLegTracker?.device?.isOpenVrDevice == true ||
+				skeleton.rightFootTracker?.device?.isOpenVrDevice == true
+		changeShareSettings(
+			TrackerRole.LEFT_FOOT,
+			hasLeftFoot && !isLeftFootSteamVr,
+		)
+		changeShareSettings(
+			TrackerRole.RIGHT_FOOT,
+			hasRightFoot && !isRightFootSteamVr,
+		)
+
+		// hasKnees is just hasFeet
+		val isLeftKneeSteamVr = skeleton.leftUpperLegTracker?.device?.isOpenVrDevice == true
+
+		val isRightKneeSteamVr = skeleton.rightUpperLegTracker?.device?.isOpenVrDevice == true
+		changeShareSettings(TrackerRole.LEFT_KNEE, hasLeftFoot && !isLeftKneeSteamVr)
+		changeShareSettings(TrackerRole.RIGHT_KNEE, hasRightFoot && !isRightKneeSteamVr)
 
 		// hasElbows if an upper arm or a lower arm tracker is on
-		val hasElbows = skeleton.hasLeftArmTracker && skeleton.hasRightArmTracker
-		changeShareSettings(TrackerRole.LEFT_ELBOW, hasElbows)
-		changeShareSettings(TrackerRole.RIGHT_ELBOW, hasElbows)
+		val hasLeftElbow = skeleton.hasLeftArmTracker
+		val isLeftElbowSteamVr = skeleton.leftUpperArmTracker?.device?.isOpenVrDevice == true ||
+			skeleton.leftLowerArmTracker?.device?.isOpenVrDevice == true
+
+		val hasRightElbow = skeleton.hasRightArmTracker
+		val isRightElbowSteamVr = skeleton.rightUpperArmTracker?.device?.isOpenVrDevice == true ||
+			skeleton.rightLowerArmTracker?.device?.isOpenVrDevice == true
+		changeShareSettings(TrackerRole.LEFT_ELBOW, hasLeftElbow && !isLeftElbowSteamVr)
+		changeShareSettings(TrackerRole.RIGHT_ELBOW, hasRightElbow && !isRightElbowSteamVr)
 
 		// Hands aren't touched as they will override the controller's tracking
+		// Return true to say that trackers were successfully toggled automatically
 		return true
 	}
 
