@@ -2,7 +2,8 @@ use std::time::{Duration, SystemTime};
 
 use color_eyre::{eyre::bail, Result};
 use discord_sdk as ds;
-use tauri::{async_runtime::Mutex, Manager, Runtime, State};
+use ds::wheel::{UserSpoke, UserState};
+use tauri::{async_runtime::Mutex, AppHandle, Manager, Runtime, State};
 
 const APP_ID: ds::AppId = 1237970689009647639;
 
@@ -129,7 +130,8 @@ pub async fn clear_presence(client: State<'_, ExposedClient>) -> Result<(), Stri
 }
 
 #[tauri::command]
-pub async fn create_discord_client(
+pub async fn create_discord_client<R: Runtime>(
+	app: AppHandle<R>,
 	client: State<'_, ExposedClient>,
 ) -> Result<(), String> {
 	if client_exists(&client).await {
@@ -143,11 +145,45 @@ pub async fn create_discord_client(
 		log::debug!(target: "discord_presence", "discord took too long to answer (probably not open)");
 		return Ok(());
 	};
+	let user_wheel = discord_client.wheel.user();
 	{
 		let mut lock = client.0.lock().await;
 		*lock = Some(discord_client);
 	}
+
+	tauri::async_runtime::spawn(async move {
+		drop_client_on_loss(app, user_wheel).await;
+	});
 	Ok(())
+}
+
+async fn drop_client_on_loss<R: Runtime>(
+	app: tauri::AppHandle<R>,
+	mut user_wheel: UserSpoke,
+) {
+	while let Ok(_) = user_wheel.0.changed().await {
+		if let UserState::Disconnected(e) = &*user_wheel.0.borrow() {
+			match e {
+				ds::Error::NoConnection
+				| ds::Error::TimedOut
+				| ds::Error::Close(_)
+				| ds::Error::CorruptConnection => break,
+				_ => {
+					log::error!(target: "discord_presence", "unhandled discord error: {e}")
+				}
+			}
+		}
+	}
+	log::info!(target: "discord_presence", "lost connection to discord, dropping client...");
+	let mutex = app.state::<ExposedClient>();
+	let opt = {
+		let mut lock = mutex.0.lock().await;
+		lock.take()
+	};
+	let Some(client) = opt else {
+		return;
+	};
+	client.discord.disconnect().await;
 }
 
 pub fn create_presence<R: Runtime>(app: &tauri::AppHandle<R>) -> tauri::Result<()> {
@@ -165,11 +201,15 @@ pub fn create_presence<R: Runtime>(app: &tauri::AppHandle<R>) -> tauri::Result<(
 				log::debug!(target: "discord_presence", "discord took too long to answer (probably not open)");
 				return;
 			};
-			let mutex = app.state::<ExposedClient>();
+			let user_wheel = client.wheel.user();
 			{
+				let mutex = app.state::<ExposedClient>();
 				let mut lock = mutex.0.lock().await;
 				*lock = Some(client)
 			}
+			tauri::async_runtime::spawn(async move {
+				drop_client_on_loss(app, user_wheel).await;
+			});
 		});
 	}
 
