@@ -182,6 +182,7 @@ fn main() -> Result<()> {
 			presence::discord_client_exists,
 			presence::update_presence,
 			presence::clear_presence,
+			presence::create_discord_client,
 		])
 		.setup(move |app| {
 			let window_state =

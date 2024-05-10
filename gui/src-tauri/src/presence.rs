@@ -36,7 +36,7 @@ async fn make_client(subs: ds::Subscriptions) -> Result<DiscordClient> {
 		}
 	};
 
-	log::info!(target: "discord_presence", "connected to Discord, local user is {:#?}", user);
+	log::info!(target: "discord_presence", "connected to Discord, local user name is {}", user.username);
 
 	Ok(DiscordClient {
 		discord,
@@ -121,6 +121,22 @@ pub async fn clear_presence(client: State<'_, ExposedClient>) -> Result<(), Stri
 		.await
 		.map_err(|e| e.to_string())?;
 
+	Ok(())
+}
+
+#[tauri::command]
+pub async fn create_discord_client(
+	client: State<'_, ExposedClient>,
+) -> Result<(), String> {
+	if client_exists(&client).await {
+		return Err("Trying to create a client when there is one already".to_owned());
+	}
+
+	let discord_client = make_client(ds::Subscriptions::ACTIVITY)
+		.await
+		.map_err(|e| e.to_string())?;
+	let mut lock = client.0.lock().await;
+	*lock = Some(discord_client);
 	Ok(())
 }
 

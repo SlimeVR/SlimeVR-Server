@@ -96,7 +96,7 @@
               expat
               libayatana-appindicator
               libusb1
-              libudev-zero
+              # libudev-zero
             ])
             ++ lib.optionals pkgs.stdenv.isDarwin [
               pkgs.darwin.apple_sdk.frameworks.Security
