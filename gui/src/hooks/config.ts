@@ -103,14 +103,11 @@ export function useConfigProvider(): ConfigContext {
           const newConfig: Partial<Config> = JSON.parse(
             (await store.get('config.json')) ?? '{}'
           );
-          return Object.entries(config).every(([key, value]) => {
-            if (Array.isArray(value) || typeof value === 'object') {
-              return (
-                JSON.stringify(newConfig[key as keyof Config]) === JSON.stringify(value)
-              );
-            }
-            return newConfig[key as keyof Config] === value;
-          });
+          return Object.entries(config).every(([key, value]) =>
+            typeof value === 'object'
+              ? JSON.stringify(newConfig[key as keyof Config]) === JSON.stringify(value)
+              : newConfig[key as keyof Config] === value
+          );
         },
         100,
         10
@@ -121,14 +118,11 @@ export function useConfigProvider(): ConfigContext {
           const newConfig: Partial<Config> = JSON.parse(
             localStorage.getItem('config.json') ?? '{}'
           );
-          return Object.entries(config).every(([key, value]) => {
-            if (Array.isArray(value) || typeof value === 'object') {
-              return (
-                JSON.stringify(newConfig[key as keyof Config]) === JSON.stringify(value)
-              );
-            }
-            return newConfig[key as keyof Config] === value;
-          });
+          return Object.entries(config).every(([key, value]) =>
+            typeof value === 'object'
+              ? JSON.stringify(newConfig[key as keyof Config]) === JSON.stringify(value)
+              : newConfig[key as keyof Config] === value
+          );
         },
         100,
         10
