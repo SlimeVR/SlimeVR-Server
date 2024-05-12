@@ -3,11 +3,11 @@ name = "slimevr"
 version = "0.0.0"
 
 description = "SlimeVR GUI Application"
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/SlimeVR/SlimeVR-Server"
+license.workspace = true
+repository.workspace = true
 
-edition = "2021"
-rust-version = "1.65"
+edition.workspace = true
+rust-version.workspace = true
 default-run = "slimevr"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
