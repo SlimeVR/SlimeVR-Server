@@ -61,7 +61,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   useTray: null,
   doneManualMounting: false,
   mirrorView: true,
-  assignMode: AssignMode.FullBody,
+  assignMode: AssignMode.Core,
 };
 
 interface CrossStorage {
