@@ -31,7 +31,7 @@ import {
 } from '@/components/onboarding/BodyAssignment';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
-import { AssignMode, useConfig } from '@/hooks/config';
+import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
 import { playTapSetupSound } from '@/sounds/sounds';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { Radio } from '@/components/commons/Radio';
@@ -69,8 +69,8 @@ export function TrackersAssignPage() {
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const defaultValues = {
-    assignMode: config?.assignMode ?? AssignMode.Core,
-    mirrorView: config?.mirrorView ?? true,
+    assignMode: config?.assignMode ?? defaultConfig.assignMode,
+    mirrorView: config?.mirrorView ?? defaultConfig.mirrorView,
   };
   const { control, watch, setValue } = useForm<{
     assignMode: AssignMode;
@@ -95,7 +95,7 @@ export function TrackersAssignPage() {
     if (assignMode !== selectedAssignMode) {
       setValue('assignMode', selectedAssignMode);
     }
-  }, [connectedIMUTrackers]);
+  }, [connectedIMUTrackers, assignMode]);
 
   const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
     TapDetectionSettingsT,
@@ -336,19 +336,22 @@ export function TrackersAssignPage() {
                       <div className="flex flex-row md:gap-4 sm:gap-2 mobile:gap-2">
                         <div style={{ width: '2.5rem', textAlign: 'right' }}>
                           <Typography variant="mobile-title">
-                            {`x${trackersCount}`}
+                            {l10n.getString(
+                              'onboarding-assign_trackers-option-amount',
+                              { trackersCount }
+                            )}
                           </Typography>
                         </div>
                         <div className="flex flex-col">
                           <Typography>
                             {l10n.getString(
-                              'onboarding-assign_trackers-option_labels',
+                              'onboarding-assign_trackers-option-label',
                               { mode }
                             )}
                           </Typography>
                           <Typography variant="standard" color="secondary">
                             {l10n.getString(
-                              'onboarding-assign_trackers-option_descriptions',
+                              'onboarding-assign_trackers-option-description',
                               { mode }
                             )}
                           </Typography>

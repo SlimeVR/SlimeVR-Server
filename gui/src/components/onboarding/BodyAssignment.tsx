@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '@/hooks/app';
 import { AssignMode } from '@/hooks/config';
@@ -143,9 +143,12 @@ export function BodyAssignment({
   const left = +!mirror;
   const right = +mirror;
 
-  const hasBodyPart = (part: BodyPart) =>
-    assignMode === AssignMode.All ||
-    ASSIGNMENT_MODES[assignMode].indexOf(part) > -1;
+  const hasBodyPart = useCallback(
+    (part: BodyPart) =>
+      assignMode === AssignMode.All ||
+      ASSIGNMENT_MODES[assignMode].indexOf(part) > -1,
+    [assignMode]
+  );
 
   return (
     <>
@@ -168,6 +171,7 @@ export function BodyAssignment({
                   direction="right"
                 />
               )}
+
               {hasBodyPart(BodyPart.NECK) && (
                 <TrackerPartCard
                   onlyAssigned={onlyAssigned}
@@ -190,6 +194,7 @@ export function BodyAssignment({
                   direction="right"
                 />
               )}
+
               {hasBodyPart(SIDES[left].upperArm) && (
                 <TrackerPartCard
                   onlyAssigned={onlyAssigned}
@@ -212,6 +217,7 @@ export function BodyAssignment({
                   direction="right"
                 />
               )}
+
               {hasBodyPart(SIDES[left].hand) && (
                 <TrackerPartCard
                   onlyAssigned={onlyAssigned}
@@ -234,6 +240,7 @@ export function BodyAssignment({
                   direction="right"
                 />
               )}
+
               {hasBodyPart(SIDES[left].lowerLeg) && (
                 <TrackerPartCard
                   onlyAssigned={onlyAssigned}
@@ -244,6 +251,7 @@ export function BodyAssignment({
                   direction="right"
                 />
               )}
+
               {hasBodyPart(SIDES[left].foot) && (
                 <TrackerPartCard
                   onlyAssigned={onlyAssigned}
@@ -269,6 +277,7 @@ export function BodyAssignment({
                 direction="left"
               />
             )}
+
             {hasBodyPart(BodyPart.CHEST) && (
               <TrackerPartCard
                 onlyAssigned={onlyAssigned}
@@ -279,6 +288,7 @@ export function BodyAssignment({
                 direction="left"
               />
             )}
+
             <div className="flex flex-col gap-2">
               {hasBodyPart(SIDES[right].shoulder) && (
                 <TrackerPartCard
@@ -290,6 +300,7 @@ export function BodyAssignment({
                   direction="left"
                 />
               )}
+
               {hasBodyPart(SIDES[right].upperArm) && (
                 <TrackerPartCard
                   onlyAssigned={onlyAssigned}
@@ -312,6 +323,7 @@ export function BodyAssignment({
                   direction="left"
                 />
               )}
+
               {hasBodyPart(BodyPart.HIP) && (
                 <TrackerPartCard
                   onlyAssigned={onlyAssigned}
@@ -334,6 +346,7 @@ export function BodyAssignment({
                   direction="left"
                 />
               )}
+
               {hasBodyPart(SIDES[right].hand) && (
                 <TrackerPartCard
                   onlyAssigned={onlyAssigned}
@@ -356,6 +369,7 @@ export function BodyAssignment({
                   direction="left"
                 />
               )}
+
               {hasBodyPart(SIDES[right].lowerLeg) && (
                 <TrackerPartCard
                   onlyAssigned={onlyAssigned}
@@ -366,6 +380,7 @@ export function BodyAssignment({
                   direction="left"
                 />
               )}
+
               {hasBodyPart(SIDES[right].foot) && (
                 <TrackerPartCard
                   onlyAssigned={onlyAssigned}

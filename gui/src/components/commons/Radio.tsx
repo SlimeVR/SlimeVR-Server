@@ -16,7 +16,7 @@ export function Radio({
 }: {
   control: Control<any>;
   name: string;
-  label?: string | null;
+  label?: string;
   value: string;
   description?: string | null;
   children?: ReactNode;
