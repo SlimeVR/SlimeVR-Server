@@ -7,7 +7,7 @@ if %errorlevel% == 0 (
     echo Requesting administrative privileges - Needed for firewall modification! 
     :: Temp script to request admin... Works and doesn't leave a mess.
     echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
-    echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
+    echo UAC.ShellExecute "%~s0", "", "%~dp0", "runas", 1 >> "%temp%\getadmin.vbs"
     "%temp%\getadmin.vbs"
     exit /B
 )
