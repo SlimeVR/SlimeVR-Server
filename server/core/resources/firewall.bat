@@ -14,18 +14,14 @@ if %errorlevel% == 0 (
 
 echo Installing firewall rules...
 
-rem Discovery default port
-call :AddRule "SlimeVR UDP 35903 incoming" "dir=in action=allow protocol=UDP localport=35903 enable=yes"
-call :AddRule "SlimeVR UDP 35903 outgoing" "dir=out action=allow protocol=UDP localport=35903 enable=yes"
-rem Rotational data default port
-call :AddRule "SlimeVR UDP 6969 incoming" "dir=in action=allow protocol=UDP localport=6969 enable=yes"
-call :AddRule "SlimeVR UDP 6969 outgoing" "dir=out action=allow protocol=UDP localport=6969 enable=yes"
-rem WebSocket server default port
-call :AddRule "SlimeVR TCP 21110 incoming" "dir=in action=allow protocol=TCP localport=21110 enable=yes"
-call :AddRule "SlimeVR TCP 21110 outgoing" "dir=out action=allow protocol=TCP localport=21110 enable=yes"
-rem OpenJDK Platform Binary access
-call :AddRule "SlimeVR OpenJDK Platform incoming" "dir=in action=allow program=%~dp0jre\bin\java.exe enable=yes"
-call :AddRule "SlimeVR OpenJDK Platform outgoing" "dir=out action=allow program=%~dp0jre\bin\java.exe enable=yes"
+rem Discovery default port (In/Out)
+call :AddRule "SlimeVR UDP 35903" "dir=in,out action=allow protocol=UDP localport=35903 enable=yes"
+rem Rotational data default port (In/Out)
+call :AddRule "SlimeVR UDP 6969" "dir=in,out action=allow protocol=UDP localport=6969 enable=yes"
+rem WebSocket server default port (In/Out)
+call :AddRule "SlimeVR TCP 21110" "dir=in,out action=allow protocol=TCP localport=21110 enable=yes"
+rem OpenJDK Platform Binary access (In/Out)
+call :AddRule "SlimeVR OpenJDK Platform" "dir=in,out action=allow program=%~dp0jre\bin\java.exe enable=yes"
 
 echo Done!
 pause
