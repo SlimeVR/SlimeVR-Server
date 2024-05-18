@@ -553,6 +553,9 @@ settings-osc-vmc-vrm-file_select = Drag & drop a model to use, or <u>browse</u>
 settings-osc-vmc-anchor_hip = Anchor at hips
 settings-osc-vmc-anchor_hip-description = Anchor the tracking at the hips, useful for seated VTubing. If disabling, load a VRM model.
 settings-osc-vmc-anchor_hip-label = Anchor at hips
+settings-osc-vmc-mirror_tracking = Mirror tracking
+settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
+settings-osc-vmc-mirror_tracking-label = Mirror tracking
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
