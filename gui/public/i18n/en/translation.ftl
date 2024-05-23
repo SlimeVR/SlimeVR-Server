@@ -451,9 +451,10 @@ settings-general-interface-use_tray-label = Minimize to system tray
 settings-general-interface-discord_presence = Share activity in Discord
 settings-general-interface-discord_presence-description = This will tell your Discord client that you are using SlimeVR and the number of IMU trackers you have connected
 settings-general-interface-discord_presence-label = Share activity in Discord
-settings-general-interface-discord_presence-message = Using { $amount ->
-    [one] 1 tracker
-    *[other] { $amount } trackers
+settings-general-interface-discord_presence-message = { $amount ->
+    [0] Sliming around
+    [one] Using 1 tracker
+    *[other] Using { $amount } trackers
 }
 
 ## Serial settings
