@@ -11,7 +11,6 @@ import com.illposed.osc.transport.OSCPortOut
 import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.currentLocalTrackerId
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
-import dev.slimevr.autobone.errors.BodyProportionError
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.osc.UnityBone.Companion.getByStringVal
 import dev.slimevr.tracking.processor.BoneType
@@ -355,49 +354,24 @@ class VMCHandler(
 						outputUnityArmature
 							?.setGlobalRotationForBone(
 								unityBone,
-								bone!!.getGlobalRotation() * bone.rotationOffset.inv(),
+								bone.getGlobalRotation() * bone.rotationOffset.inv(),
 							)
 					}
 					if (!anchorHip) {
 						// Anchor from head
-						// Gets the SlimeVR head position, scales it to the VRM,
-						// and subtracts the difference between the VRM's
-						// head and hip
-						// FIXME this way isn't perfect, but I give up - Erimel
-						val upperLegsAverage = (
-							outputUnityArmature!!.getHeadNodeOfBone(UnityBone.LEFT_UPPER_LEG)!!.worldTransform
-								.translation +
-								outputUnityArmature!!.getHeadNodeOfBone(UnityBone.RIGHT_UPPER_LEG)!!
-									.worldTransform
-									.translation
-							) * 0.5f
+						//
+						outputUnityArmature?.let { unityArmature ->
+							val slimevrScaledHeadPos = humanPoseManager.getBone(BoneType.HEAD).getPosition() *
+								(vrmHeight / humanPoseManager.userHeightFromConfig)
 
-						val scaledHead = humanPoseManager
-							.getBone(BoneType.HEAD)!!
-							.getTailPosition() * (
-							vrmHeight /
-								(
-									humanPoseManager.userHeightFromConfig
-										* BodyProportionError.eyeHeightToHeightRatio
-									)
-							)
+							val vrmHeadPos = unityArmature.getHeadNodeOfBone(UnityBone.HEAD)!!.parent!!.worldTransform.translation
+							val vrmHipPos = unityArmature.getHeadNodeOfBone(UnityBone.HIPS)!!.worldTransform.translation
 
-						val pos = scaledHead
-							.minus(
-								(
-									outputUnityArmature!!
-										.getHeadNodeOfBone(UnityBone.HEAD)!!
-										.parent!!
-										.worldTransform
-										.translation
-										.minus(upperLegsAverage)
-									),
-							)
+							val calculatedVrmHipPos = slimevrScaledHeadPos - (vrmHeadPos - vrmHipPos)
 
-						outputUnityArmature!!
-							.getHeadNodeOfBone(UnityBone.HIPS)!!
-							.localTransform
-							.translation = pos
+							// Set the VRM's hip position
+							unityArmature.getHeadNodeOfBone(UnityBone.HIPS)!!.localTransform.translation = calculatedVrmHipPos
+						}
 					}
 
 					// Update Unity skeleton
