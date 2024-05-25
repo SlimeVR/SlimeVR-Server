@@ -351,14 +351,17 @@ class VMCHandler(
 					}
 					if (!anchorHip) {
 						// Anchor from head
-						//
+						// TODO : test with HMD
 						outputUnityArmature?.let { unityArmature ->
+							// Scale the SlimeVR head position with the VRM model
 							val slimevrScaledHeadPos = humanPoseManager.getBone(BoneType.HEAD).getPosition() *
-								(vrmHeight / humanPoseManager.userHeightFromConfig)
+								(vrmHeight / humanPoseManager.userHeightFromConfig * 0.9f) // FIXME : Static offset
 
+							// Get the VRM head and hip positions
 							val vrmHeadPos = unityArmature.getHeadNodeOfBone(UnityBone.HEAD)!!.parent!!.worldTransform.translation
 							val vrmHipPos = unityArmature.getHeadNodeOfBone(UnityBone.HIPS)!!.worldTransform.translation
 
+							// Calculate the new VRM hip position by subtracting the difference head-hip distance from the SlimeVR head
 							val calculatedVrmHipPos = slimevrScaledHeadPos - (vrmHeadPos - vrmHipPos)
 
 							// Set the VRM's hip position
