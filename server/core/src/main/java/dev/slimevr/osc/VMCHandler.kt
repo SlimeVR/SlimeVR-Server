@@ -42,7 +42,6 @@ class VMCHandler(
 	private val server: VRServer,
 	private val humanPoseManager: HumanPoseManager,
 	private val config: VMCConfig,
-	computedTrackers: List<Tracker>?,
 ) : OSCHandler {
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
@@ -160,11 +159,11 @@ class VMCHandler(
 					.plus(vrmReader.getOffsetForBone(UnityBone.UPPER_CHEST))
 					.plus(vrmReader.getOffsetForBone(UnityBone.NECK))
 					.plus(vrmReader.getOffsetForBone(UnityBone.HEAD))
-					.len()
+					.y
 			}
 		}
 
-		if (refreshRouterSettings && server.oSCRouter != null) server.oSCRouter.refreshSettings(false)
+		if (refreshRouterSettings) server.oSCRouter.refreshSettings(false)
 	}
 
 	private fun handleReceivedMessage(event: OSCMessageEvent) {
@@ -246,7 +245,7 @@ class VMCHandler(
 		unityBone: UnityBone?,
 	) {
 		// Create device if it doesn't exist
-		var rotation: Quaternion? = rotation
+		var rot = rotation
 		if (trackerDevice == null) {
 			trackerDevice = server.deviceManager.createDevice("VMC receiver", "1.0", "VMC")
 			server.deviceManager.addDevice(trackerDevice!!)
@@ -261,19 +260,14 @@ class VMCHandler(
 				trackerDevice,
 				getNextLocalTrackerId(),
 				name,
-				"VMC Tracker #" + currentLocalTrackerId,
+				"VMC Tracker #$currentLocalTrackerId",
 				trackerPosition,
-				null,
-				position != null,
-				rotation != null,
-				false,
-				true,
-				false,
-				position != null,
-				null,
-				true,
-				false,
-				position != null,
+				hasPosition = position != null,
+				hasRotation = true,
+				userEditable = true,
+				isComputed = position != null,
+				usesTimeout = true,
+				needsReset = position != null,
 			)
 			trackerDevice!!.trackers[trackerDevice!!.trackers.size] = tracker
 			byTrackerNameTracker[name] = tracker
@@ -287,16 +281,14 @@ class VMCHandler(
 		}
 
 		// Set rotation
-		if (rotation != null) {
-			if (localRotation) {
-				// Instantiate unityHierarchy if not done
-				if (inputUnityArmature == null) inputUnityArmature = UnityArmature(true)
-				inputUnityArmature!!.setLocalRotationForBone(unityBone!!, rotation)
-				rotation = inputUnityArmature!!.getGlobalRotationForBone(unityBone)
-				rotation = yawOffset.times(rotation)
-			}
-			tracker.setRotation(rotation)
+		if (localRotation) {
+			// Instantiate unityHierarchy if not done
+			if (inputUnityArmature == null) inputUnityArmature = UnityArmature(true)
+			inputUnityArmature!!.setLocalRotationForBone(unityBone!!, rot)
+			rot = inputUnityArmature!!.getGlobalRotationForBone(unityBone)
+			rot = yawOffset.times(rot)
 		}
+		tracker.setRotation(rot)
 
 		tracker.dataTick()
 	}
@@ -370,7 +362,7 @@ class VMCHandler(
 							val calculatedVrmHipPos = slimevrScaledHeadPos - (vrmHeadPos - vrmHipPos)
 
 							// Set the VRM's hip position
-							unityArmature.getHeadNodeOfBone(UnityBone.HIPS)!!.localTransform.translation = calculatedVrmHipPos
+							unityArmature.getHeadNodeOfBone(UnityBone.HIPS)?.localTransform?.translation = calculatedVrmHipPos
 						}
 					}
 
