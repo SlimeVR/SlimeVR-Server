@@ -147,19 +147,27 @@ class VMCHandler(
 				for (unityBone in UnityBone.entries) {
 					val node = outputUnityArmature!!.getHeadNodeOfBone(unityBone)
 					if (node != null) {
-						node
-							.localTransform
-							.translation = vrmReader.getOffsetForBone(unityBone)
+						val offset = if (unityBone == UnityBone.HIPS) {
+							// For the hip bone, add average of upper leg offsets (which are negative). The hip bone's offset is global.
+							vrmReader.getOffsetForBone(UnityBone.HIPS) +
+								((vrmReader.getOffsetForBone(UnityBone.LEFT_UPPER_LEG) + vrmReader.getOffsetForBone(UnityBone.RIGHT_UPPER_LEG)) / 2f)
+						} else {
+							vrmReader.getOffsetForBone(unityBone)
+						}
+
+						node.localTransform.translation = offset
 					}
 				}
-				vrmHeight = vrmReader
-					.getOffsetForBone(UnityBone.HIPS)
-					.plus(vrmReader.getOffsetForBone(UnityBone.SPINE))
-					.plus(vrmReader.getOffsetForBone(UnityBone.CHEST))
-					.plus(vrmReader.getOffsetForBone(UnityBone.UPPER_CHEST))
-					.plus(vrmReader.getOffsetForBone(UnityBone.NECK))
-					.plus(vrmReader.getOffsetForBone(UnityBone.HEAD))
-					.y
+				// Make sure to account for the upper legs because of the hip.
+				vrmHeight = (
+					vrmReader.getOffsetForBone(UnityBone.HIPS) +
+						((vrmReader.getOffsetForBone(UnityBone.LEFT_UPPER_LEG) + vrmReader.getOffsetForBone(UnityBone.RIGHT_UPPER_LEG))) +
+						vrmReader.getOffsetForBone(UnityBone.SPINE) +
+						vrmReader.getOffsetForBone(UnityBone.CHEST) +
+						vrmReader.getOffsetForBone(UnityBone.UPPER_CHEST) +
+						vrmReader.getOffsetForBone(UnityBone.NECK) +
+						vrmReader.getOffsetForBone(UnityBone.HEAD)
+					).y
 			}
 		}
 
@@ -314,48 +322,32 @@ class VMCHandler(
 					// Indicate tracking is available
 					oscArgs.clear()
 					oscArgs.add(1)
-					oscBundle
-						.addPacket(
-							OSCMessage(
-								"/VMC/Ext/OK",
-								oscArgs.clone(),
-							),
-						)
+					oscBundle.addPacket(OSCMessage("/VMC/Ext/OK", oscArgs.clone()))
 
 					oscArgs.clear()
 					oscArgs.add("root")
-					addTransformToArgs(
-						NULL,
-						IDENTITY,
-					)
-					oscBundle
-						.addPacket(
-							OSCMessage(
-								"/VMC/Ext/Root/Pos",
-								oscArgs.clone(),
-							),
-						)
+					addTransformToArgs(NULL, IDENTITY)
+					oscBundle.addPacket(OSCMessage("/VMC/Ext/Root/Pos", oscArgs.clone()))
 
 					for (unityBone in UnityBone.entries) {
 						val boneType = unityBone.boneType ?: continue
 						// Get SlimeVR bone
 						val bone = humanPoseManager.getBone(boneType)
 
-						// Update unity hierarchy from bone's global
-						// rotation
+						// Update unity hierarchy from bone's global rotation
 						outputUnityArmature
 							?.setGlobalRotationForBone(
 								unityBone,
 								bone.getGlobalRotation() * bone.rotationOffset.inv(),
 							)
 					}
+
 					if (!anchorHip) {
 						// Anchor from head
-						// TODO : test with HMD
 						outputUnityArmature?.let { unityArmature ->
 							// Scale the SlimeVR head position with the VRM model
 							val slimevrScaledHeadPos = humanPoseManager.getBone(BoneType.HEAD).getPosition() *
-								(vrmHeight / humanPoseManager.userHeightFromConfig * 0.9f) // FIXME : Static offset
+								(vrmHeight / humanPoseManager.userHeightFromConfig)
 
 							// Get the VRM head and hip positions
 							val vrmHeadPos = unityArmature.getHeadNodeOfBone(UnityBone.HEAD)!!.parent!!.worldTransform.translation
