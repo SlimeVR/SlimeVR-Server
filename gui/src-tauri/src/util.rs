@@ -28,6 +28,8 @@ pub static POSSIBLE_TITLES: &[&str] = &[
 	"never gonna let you down",
 	"uwu sowwy",
 ];
+pub const MIN_WINDOW_SIZE_WIDTH: f64 = 393.0;
+pub const MIN_WINDOW_SIZE_HEIGHT: f64 = 667.0;
 
 shadow!(build);
 // Tauri has a way to return the package.json version, but it's not a constant...

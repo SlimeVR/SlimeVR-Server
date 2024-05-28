@@ -23,6 +23,8 @@ tips-find_tracker = Weet je niet welke tracker welke is? Schud een tracker en he
 tips-do_not_move_heels = Zorg ervoor dat je hielen niet bewegen tijdens de opname!
 tips-file_select = Sleep bestanden naar hier om ze te gebruiken of <u>blader</u>.
 tips-tap_setup = Je kan langzaam 2 keer op je tracker tikken om deze te kiezen in plaats van deze in het menu te selecteren.
+tips-turn_on_tracker = Gebruik je officiële SlimeVR-trackers? Vergeet niet om <b><em>je tracker aan te zetten</em></b> nadat je deze op de pc hebt aangesloten!
+tips-failed_webgl = WebGL initialiseren is gefaald.
 
 ## Body parts
 
@@ -196,6 +198,7 @@ tracker-infos-hardware_rev = Hardware revisie
 tracker-infos-hardware_identifier = Hardware-id
 tracker-infos-imu = IMU-sensor
 tracker-infos-board_type = Mainbord
+tracker-infos-network_version = Protocol Versie
 
 ## Tracker settings
 
@@ -215,6 +218,9 @@ tracker-settings-drift_compensation_section-edit = Laat drift compensatie toe
 tracker-settings-name_section = Trackernaam
 tracker-settings-name_section-description = Geef een schattige bijnaam :)
 tracker-settings-name_section-placeholder = NightyBeast's linkerbeen
+tracker-settings-forget = Vergeet tracker
+tracker-settings-forget-description = Verwijdert de tracker van de SlimeVR Server en voorkomt dat deze verbinding kan maken totdat de server opnieuw wordt opgestart. De configuratie van de tracker blijft behouden.
+tracker-settings-forget-label = Vergeet tracker
 
 ## Tracker part card info
 
@@ -304,10 +310,12 @@ settings-general-steamvr-description =
     Handig voor games of apps die alleen bepaalde trackers ondersteunen.
 settings-general-steamvr-trackers-waist = Taille
 settings-general-steamvr-trackers-chest = Borst
-settings-general-steamvr-trackers-feet = Voeten
-settings-general-steamvr-trackers-knees = Knieën
-settings-general-steamvr-trackers-elbows = Ellebogen
-settings-general-steamvr-trackers-hands = Handen
+settings-general-steamvr-trackers-tracker_toggling = Automatische tracker toewijzing
+settings-general-steamvr-trackers-tracker_toggling-description = Zorgt automatisch voor het in- en uitschakelen van SteamVR-trackers, afhankelijk van je huidige tracker toewijzingen.
+settings-general-steamvr-trackers-tracker_toggling-label = Automatische tracker toewijzing
+settings-general-steamvr-trackers-hands-warning = <b>Waarschuwing:</b> hand trackers negeren je controllers. Weet je zeker dat je wilt doorgaan?
+settings-general-steamvr-trackers-hands-warning-cancel = Annuleren
+settings-general-steamvr-trackers-hands-warning-done = Ja
 
 ## Tracker mechanics
 
@@ -325,6 +333,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Maakt 
 settings-general-tracker_mechanics-filtering-type-prediction = Voorspelling
 settings-general-tracker_mechanics-filtering-type-prediction-description = Verlaagt latentie en maakt bewegingen snappier, maar kan jitter verhogen.
 settings-general-tracker_mechanics-filtering-amount = Hoeveelheid
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset vertraging (0s schakelt afvlakking uit)
 settings-general-tracker_mechanics-drift_compensation = Drift compensatie
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
@@ -333,6 +342,8 @@ settings-general-tracker_mechanics-drift_compensation-description =
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensate
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensatiesterkte
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Gebruik de laatste x resets
+settings-general-tracker_mechanics-save_mounting_reset = Sla automatische mounting reset kalibratie op
+settings-general-tracker_mechanics-save_mounting_reset-description = Slaat de automatische mounting reset kalibraties van de trackers op tussen herstarts. Nuttig als je een pak draagt waarbij trackers niet bewegen tussen sessies. <b>Niet aanbevolen voor normale gebruikers!</b>
 
 ## FK/Tracking settings
 
@@ -453,6 +464,9 @@ settings-general-interface-feedback_sound-label = Feedback geluid
 settings-general-interface-feedback_sound-volume = Feedback geluid volume
 settings-general-interface-connected_trackers_warning = Waarschuwing voor verbonden trackers
 settings-general-interface-connected_trackers_warning-label = Waarschuwing voor verbonden trackers bij het afsluiten
+settings-general-interface-use_tray = Minimaliseren naar systeem vak
+settings-general-interface-use_tray-description = Hiermee kun je het venster sluiten zonder de SlimeVR server te beëindigen, zodat je deze op de achtergrond kunt blijven gebruiken zonder dat de GUI in de weg zit.
+settings-general-interface-use_tray-label = Minimaliseren naar systeem vak
 
 ## Serial settings
 
@@ -474,6 +488,7 @@ settings-serial-factory_reset-warning-cancel = Annuleren
 settings-serial-get_infos = Informatie ophalen
 settings-serial-serial_select = Selecteer een seriële poort
 settings-serial-auto_dropdown_item = Automatisch
+settings-serial-get_wifi_scan = WiFi-scan uitvoeren
 
 ## OSC router settings
 
@@ -639,8 +654,8 @@ onboarding-done-close = Sluit de gids
 
 onboarding-connect_tracker-back = Ga terug naar de instellingen voor WiFi-configuratie
 onboarding-connect_tracker-title = Trackers verbinden
-onboarding-connect_tracker-description-p0 = Nu het leuke gedeelte, verbind al je trackers!
-onboarding-connect_tracker-description-p1 = Gebruik een USB-kabel om alle trackers te verbinden die nog niet verbonden zijn.
+onboarding-connect_tracker-description-p0-v1 = Op naar het leukste gedeelte, trackers verbinden!
+onboarding-connect_tracker-description-p1-v1 = Sluit elke tracker één voor één aan via een USB poort.
 onboarding-connect_tracker-issue-serial = Ik heb problemen met verbinden!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-none = Op zoek naar trackers
@@ -700,6 +715,7 @@ onboarding-assign_trackers-assigned =
     } toegewezen
 onboarding-assign_trackers-advanced = Geavanceerde toewijzingslocaties weergeven
 onboarding-assign_trackers-next = Ik heb alle trackers toegewezen
+onboarding-assign_trackers-mirror_view = Gespiegelde weergave
 
 ## Tracker assignment warnings
 
@@ -782,6 +798,8 @@ onboarding-choose_mounting-manual_mounting = Handmatige bevestiging
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = Aanbevolen
 onboarding-choose_mounting-manual_mounting-description = Hiermee kunt u de montagerichting handmatig kiezen voor elke tracker
+# Multiline text
+onboarding-choose_mounting-manual_modal-title = Ben je zeker dat je de automatische kalibratie wilt uitvoeren?
 onboarding-choose_mounting-manual_modal-confirm = Ik weet zeker wat ik doe
 onboarding-choose_mounting-manual_modal-cancel = Annuleren
 
@@ -818,10 +836,16 @@ onboarding-automatic_mounting-put_trackers_on-next = Ik heb al mijn trackers aan
 
 onboarding-choose_proportions = Welke verhoudingskalibratiemethode moet worden gebruikt?
 # Multiline string
-onboarding-choose_proportions-description = Lichaamsverhoudingen worden gebruikt om de maten van je lichaam te kennen. Die zijn nodig om de posities van de trackers te berekenen. Wanneer de verhoudingen van uw lichaam niet overeenkomen met de opgeslagen verhoudingen, zal je trackingprecisie slechter zijn en zal je dingen opmerken zoals schaatsen of glijden, of je lichaam past niet goed bij je avatar.
+onboarding-choose_proportions-description-v1 =
+    Lichaamsverhoudingen worden gebruikt om de afmetingen van je lichaam te bepalen. Deze informatie is nodig om de posities van de trackers te berekenen.
+    Als de verhoudingen van je lichaam niet overeenkomen met de opgeslagen waarden, zal de tracking-precisie slechter zijn. Je kunt dan last krijgen van ongemakkelijke effecten zoals schuiven of glijden, of kan je lichaam niet goed overeenkomen met je avatar in VR.
+    <b>Je hoeft je lichaam maar één keer te meten!</b> Tenzij de metingen onjuist zijn of je lichaam is veranderd, hoef je dit niet opnieuw te doen.
 onboarding-choose_proportions-auto_proportions = Automatische verhoudingen
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Aanbevolen
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
+    Deze functie zal je lichaamsverhoudingen schatten door een sample van je bewegingen op te nemen en deze door een algoritme te laten analyseren. 
+    <b>Hiervoor moet je headset (HMD) verbonden zijn met SlimeVR en op je hoofd zitten!</b>
 onboarding-choose_proportions-manual_proportions = Handmatige lichaamsverhoudingen
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Voor kleine details
@@ -922,3 +946,29 @@ status_system-StatusSteamVRDisconnected =
        *[other] Momenteel niet verbonden naar SteamVR via de SlimeVR driver.
     }
 status_system-StatusTrackerError = De { $trackerName } tracker heeft een error.
+
+## Tray Menu
+
+tray_menu-show = Weergeven
+tray_menu-hide = Verbergen
+tray_menu-quit = Beëindigen
+
+## First exit modal
+
+tray_or_exit_modal-title = Wat is de actie van de sluitknop?
+# Multiline text
+tray_or_exit_modal-description =
+    Hiermee kun je kiezen wat er gebeurt als je op de sluitknop klikt: het programma afsluiten of minimaliseren naar het systeemvak.
+    
+    Deze instelling kun je later altijd nog wijzigen in de interface instellingen!
+tray_or_exit_modal-radio-exit = Afsluiten bij sluiten
+tray_or_exit_modal-radio-tray = Minimaliseren naar systeemvak
+tray_or_exit_modal-submit = Opslaan
+tray_or_exit_modal-cancel = Annuleren
+
+## Unknown device modal
+
+unknown_device-modal-title = Er is een nieuwe tracker gevonden!
+unknown_device-modal-description = Er is een nieuwe tracker gevonden met MAC-adres <b>{ $deviceId }</b>. Wil je deze verbinden met SlimeVR?
+unknown_device-modal-confirm = Tuurlijk!
+unknown_device-modal-forget = Negeer het

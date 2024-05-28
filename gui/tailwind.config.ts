@@ -1,7 +1,7 @@
-import plugin from 'tailwindcss/plugin'
-import forms from '@tailwindcss/forms'
-import gradient from 'tailwind-gradient-mask-image'
-import type { Config } from 'tailwindcss'
+import plugin from 'tailwindcss/plugin';
+import forms from '@tailwindcss/forms';
+import gradient from 'tailwind-gradient-mask-image';
+import type { Config } from 'tailwindcss';
 
 const colors = {
   'blue-gray': {
@@ -157,6 +157,8 @@ const config = {
   theme: {
     screens: {
       'mobile-settings': { raw: 'not (min-width: 900px)' },
+      nsmol: { raw: 'not (min-width: 525px)' },
+      smol: '525px',
       mobile: { raw: 'not (min-width: 800px)' },
       'xs-settings': '900px',
       xs: '800px',
@@ -165,7 +167,7 @@ const config = {
       'md-max': { raw: 'not (min-width: 1100px)' },
       lg: '1300px',
       xl: '1600px',
-      tall: { raw: '(min-height: 800px)' }
+      tall: { raw: '(min-height: 800px)' },
     },
     extend: {
       colors: {
@@ -231,14 +233,13 @@ const config = {
       },
     },
     data: {
-      checked: 'checked=true'
-    }
+      checked: 'checked=true',
+    },
   },
   plugins: [
     forms,
     gradient,
     plugin(function ({ addUtilities }) {
-
       const textConfig = (fontSize: any, fontWeight: any) => ({
         fontSize,
         fontWeight,
@@ -254,9 +255,9 @@ const config = {
       });
     }),
     plugin(function ({ addVariant }) {
-      addVariant('checked-hover', ['&:hover', '&[data-checked=true]'])
-    })
+      addVariant('checked-hover', ['&:hover', '&[data-checked=true]']);
+    }),
   ],
-} satisfies Config
+} satisfies Config;
 
 export default config;
