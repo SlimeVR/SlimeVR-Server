@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useOnboarding } from './onboarding';
-import { useWifiNetworks } from '@/hooks/wifi-scan'
+import { useWifiNetworks } from './wifi-scan';
 
 export interface WifiFormData {
   ssid: string;
@@ -23,7 +23,7 @@ export function useWifiForm() {
 
   const ssidSelect = watch('ssidSelect');
   useEffect(() => {
-    if(ssidSelect === 'other') {
+    if (ssidSelect === 'other') {
       setValue('ssid', '');
       setValue('password', '');
       return;
@@ -31,8 +31,7 @@ export function useWifiForm() {
 
     const network = wifiNetworks.find((network) => network.ssid === ssidSelect);
 
-    if(!network)
-      return;
+    if (!network) return;
 
     setValue('ssid', network.ssid);
     setValue('password', network.password);

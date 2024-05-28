@@ -13,7 +13,14 @@ import { useBnoExists } from '@/hooks/imu-logic';
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
-  const { control, handleSubmit, submitWifiCreds, formState, wifiNetworks, watch } = useWifiForm();
+  const {
+    control,
+    handleSubmit,
+    submitWifiCreds,
+    formState,
+    wifiNetworks,
+    watch,
+  } = useWifiForm();
   const { useConnectedIMUTrackers } = useTrackers();
   const connectedIMUTrackers = useConnectedIMUTrackers();
 
@@ -27,10 +34,7 @@ export function WifiCredsPage() {
       value: network.ssid,
     }));
 
-    return [
-      ...networksMapped,
-      { label: 'Other', value: 'other' },
-    ];
+    return [...networksMapped, { label: 'Other', value: 'other' }];
   }, [wifiNetworks]);
 
   return (
@@ -71,42 +75,45 @@ export function WifiCredsPage() {
               state.alonePage && 'bg-background-60'
             )}
           >
+            {wifiNetworks.length > 0 && (
+              <>
+                <Typography bold>
+                  {l10n.getString('onboarding-wifi_creds-ssidSelect-label')}
+                </Typography>
+                <Localized
+                  id="onboarding-wifi_creds-ssidSelect"
+                  attrs={{ placeholder: true }}
+                >
+                  <Dropdown
+                    control={control}
+                    rules={{ required: true }}
+                    name="ssidSelect"
+                    variant="primary"
+                    placeholder="SSID"
+                    direction="down"
+                    display="block"
+                    items={wifiNetworksDropdownItems}
+                  />
+                </Localized>
+              </>
+            )}
 
-          {wifiNetworks.length > 0 && <>
-            <Typography bold>
-              {l10n.getString('onboarding-wifi_creds-ssidSelect-label')}
-            </Typography>
-            <Localized
-              id="onboarding-wifi_creds-ssidSelect"
-              attrs={{ placeholder: true }}
-            >
-              <Dropdown
-                control={control}
-                rules={{ required: true }}
-                name="ssidSelect"
-                variant="primary"
-                placeholder="SSID"
-                direction="down"
-                display="block"
-                items={wifiNetworksDropdownItems}
-              />
-            </Localized>
-            </>}
-
-            {(wifiNetworks.length === 0 || watch('ssidSelect') == 'other') && <Localized
-              id="onboarding-wifi_creds-ssid"
-              attrs={{ placeholder: true, label: true }}
-            >
-              <Input
-                control={control}
-                rules={{ required: true }}
-                name="ssid"
-                type="text"
-                label="SSID"
-                placeholder="ssid"
-                variant="secondary"
-              />
-            </Localized>}
+            {(wifiNetworks.length === 0 || watch('ssidSelect') == 'other') && (
+              <Localized
+                id="onboarding-wifi_creds-ssid"
+                attrs={{ placeholder: true, label: true }}
+              >
+                <Input
+                  control={control}
+                  rules={{ required: true }}
+                  name="ssid"
+                  type="text"
+                  label="SSID"
+                  placeholder="ssid"
+                  variant="secondary"
+                />
+              </Localized>
+            )}
 
             <Localized
               id="onboarding-wifi_creds-password"

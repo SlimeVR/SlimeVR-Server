@@ -1,12 +1,11 @@
-import { Command } from "@tauri-apps/plugin-shell";
+import { Command } from '@tauri-apps/plugin-shell';
 import * as os from '@tauri-apps/plugin-os';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useWebsocketAPI } from './websocket-api';
 import {
   RpcMessage,
   SerialTrackerGetWifiScanRequestT,
   SerialUpdateResponseT,
-  CloseSerialRequestT,
-  OpenSerialRequestT
+  OpenSerialRequestT,
 } from 'solarxr-protocol';
 import { useEffect, useState, useMemo } from 'react';
 
@@ -15,8 +14,8 @@ export interface WifiNetwork {
   source: string;
   password: string;
   connected: boolean;
-  signalStrength: number|null;
-};
+  signalStrength: number | null;
+}
 
 async function getWifiNetworksLinux(): Promise<WifiNetwork[]> {
   // TODO
@@ -29,18 +28,17 @@ async function getWifiNetworksMac(): Promise<WifiNetwork[]> {
 }
 
 async function getWifiNetworksWindows(): Promise<WifiNetwork[]> {
-  let ret:WifiNetwork[] = [];
+  const ret: WifiNetwork[] = [];
 
   const networksResponse = await Command.create('netsh-list', [
     'wlan',
     'show',
-    'profile'
+    'profile',
   ]).execute();
 
-  networksResponse.stdout.split('\n').forEach(line => {
+  networksResponse.stdout.split('\n').forEach((line) => {
     const ssidMatch = line.match(/All User Profile\s+:\s+(.+)/);
-    if(!ssidMatch)
-      return;
+    if (!ssidMatch) return;
 
     const ssid = ssidMatch[1];
     ret.push({
@@ -58,7 +56,7 @@ async function getWifiNetworksWindows(): Promise<WifiNetwork[]> {
       'show',
       'profile',
       `name=${network.ssid}`,
-      'key=clear'
+      'key=clear',
     ]).execute();
 
     const passwordMatch = profileResponse.stdout.match(/Key Content\s+:\s+(.+)/);
@@ -69,24 +67,23 @@ async function getWifiNetworksWindows(): Promise<WifiNetwork[]> {
     'wlan',
     'show',
     'network',
-    "mode=Bssid"
+    'mode=Bssid',
   ]).execute();
 
-  let lastSsid:string|null = null;
+  let lastSsid: string | null = null;
 
-  scanResponse.stdout.split('\n').forEach(line => {
+  scanResponse.stdout.split('\n').forEach((line) => {
     const ssidMatch = line.match(/SSID\s+:\s+(.+)/);
-    if(ssidMatch) {
+    if (ssidMatch) {
       lastSsid = ssidMatch[1];
     }
 
     const signalMatch = line.match(/Signal\s+:\s+(.+)/);
-    if(!signalMatch)
-      return;
+    if (!signalMatch) return;
 
-    if(lastSsid) {
+    if (lastSsid) {
       let network = ret.find((network) => network.ssid === lastSsid);
-      if(network === undefined) {
+      if (network === undefined) {
         network = {
           ssid: lastSsid,
           source: 'windows',
@@ -105,14 +102,14 @@ async function getWifiNetworksWindows(): Promise<WifiNetwork[]> {
   const connectedResponse = await Command.create('netsh-connected', [
     'wlan',
     'show',
-    'interfaces'
+    'interfaces',
   ]).execute();
 
   const connectedMatch = connectedResponse.stdout.match(/SSID\s+:\s+(.+)/);
-  if(connectedMatch) {
-    let connectedNetwork = ret.filter((network) => network.ssid === connectedMatch[1]);
-    if(connectedNetwork.length > 0) {
-      connectedNetwork[0].connected = true;
+  if (connectedMatch) {
+    const connectedNetwork = ret.find((network) => network.ssid === connectedMatch[1]);
+    if (connectedNetwork) {
+      connectedNetwork.connected = true;
     }
   }
 
@@ -122,11 +119,11 @@ async function getWifiNetworksWindows(): Promise<WifiNetwork[]> {
 function useWifiNetworksSlimes() {
   const [slimeWifiNetworks, setSlimeWifiNetworks] = useState<WifiNetwork[]>([]);
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const [isSerialOpen, setSerialOpen] = useState<boolean|null>(false);
+  const [isSerialOpen, setSerialOpen] = useState<boolean | null>(false);
   const [scanStarted, setScanStarted] = useState(false);
 
   useEffect(() => {
-    if(isSerialOpen === false) {
+    if (isSerialOpen === false) {
       setSerialOpen(null);
       // sendRPCPacket(RpcMessage.CloseSerialRequest, new CloseSerialRequestT());
       const req = new OpenSerialRequestT();
@@ -135,8 +132,8 @@ function useWifiNetworksSlimes() {
       sendRPCPacket(RpcMessage.OpenSerialRequest, req);
     }
 
-    if(isSerialOpen === true) {
-      if(scanStarted === false) {
+    if (isSerialOpen === true) {
+      if (scanStarted === false) {
         setScanStarted(true);
         setTimeout(() => {
           sendRPCPacket(
@@ -148,40 +145,34 @@ function useWifiNetworksSlimes() {
     }
   }, [isSerialOpen]);
 
-  useRPCPacket(
-    RpcMessage.SerialUpdateResponse,
-    (data: SerialUpdateResponseT) => {
-      if (data.closed) {
-        if(isSerialOpen !== false)
-          setSerialOpen(false);
-        return;
-      } else {
-        if(isSerialOpen !== true)
-          setSerialOpen(true);
-      }
-
-      const logString:string = <string>data.log;
-
-      const regex = /\d+:\s+\d+\s+(.+)\t\(-\d+\)/gm;
-      const match = regex.exec(logString);
-      if(!match)
-        return;
-
-      const exists = slimeWifiNetworks.find((network) => network.ssid === match[1]);
-      if(!exists) {
-        setSlimeWifiNetworks([
-          ...slimeWifiNetworks,
-          {
-            ssid: match[1],
-            source: 'slime',
-            password: '',
-            connected: false,
-            signalStrength: null,
-          }
-        ]);
-      }
+  useRPCPacket(RpcMessage.SerialUpdateResponse, (data: SerialUpdateResponseT) => {
+    if (data.closed) {
+      if (isSerialOpen !== false) setSerialOpen(false);
+      return;
+    } else {
+      if (isSerialOpen !== true) setSerialOpen(true);
     }
-  );
+
+    const logString: string = <string>data.log;
+
+    const regex = /\d+:\s+\d+\s+(.+)\t\(-\d+\)/gm;
+    const match = regex.exec(logString);
+    if (!match) return;
+
+    const exists = slimeWifiNetworks.find((network) => network.ssid === match[1]);
+    if (!exists) {
+      setSlimeWifiNetworks([
+        ...slimeWifiNetworks,
+        {
+          ssid: match[1],
+          source: 'slime',
+          password: '',
+          connected: false,
+          signalStrength: null,
+        },
+      ]);
+    }
+  });
 
   return slimeWifiNetworks;
 }
@@ -208,13 +199,13 @@ function useWifiNetworksInternal() {
           });
           break;
         default:
-          console.log("Unsupported platform: ", platformName);
+          console.log('Unsupported platform: ', platformName);
       }
     });
   }, []);
 
   return wifiNetworks;
-};
+}
 
 export function useWifiNetworks() {
   const wifiNetworksSlimes = useWifiNetworksSlimes();
@@ -226,13 +217,12 @@ export function useWifiNetworks() {
     const ret = networksConcat.reduce((acc, network) => {
       const exists = acc.find((accNetwork) => accNetwork.ssid === network.ssid);
 
-      if(!exists) {
+      if (!exists) {
         acc.push({
-          ...network
+          ...network,
         });
       } else {
-        console.log("Exists", exists, network)
-        if(!exists.password && network.password) {
+        if (!exists.password && network.password) {
           exists.password = network.password;
         }
       }
@@ -246,6 +236,6 @@ export function useWifiNetworks() {
   }, [wifiNetworksInternal, wifiNetworksSlimes]);
 
   return {
-    wifiNetworks
+    wifiNetworks,
   };
 }
