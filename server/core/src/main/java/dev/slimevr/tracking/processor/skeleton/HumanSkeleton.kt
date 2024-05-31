@@ -103,6 +103,7 @@ class HumanSkeleton(
 	var rightHandTracker: Tracker? = null
 	var leftShoulderTracker: Tracker? = null
 	var rightShoulderTracker: Tracker? = null
+	var playspaceTracker: Tracker? = null
 
 	// Output trackers
 	var computedHeadTracker: Tracker? = null
@@ -278,6 +279,7 @@ class HumanSkeleton(
 		rightHandTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_HAND)
 		leftShoulderTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_SHOULDER)
 		rightShoulderTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_SHOULDER)
+		playspaceTracker = getTrackerForSkeleton(trackers, TrackerPosition.PLAYSPACE)
 
 		// Check for specific conditions and store them in booleans.
 		hasSpineTracker = upperChestTracker != null || chestTracker != null || waistTracker != null || hipTracker != null
@@ -390,6 +392,7 @@ class HumanSkeleton(
 
 		// Spine
 		updateSpineTransforms()
+
 		// Left leg
 		updateLegTransforms(
 			leftUpperLegBone,
@@ -401,6 +404,7 @@ class HumanSkeleton(
 			leftLowerLegTracker,
 			leftFootTracker,
 		)
+
 		// Right leg
 		updateLegTransforms(
 			rightUpperLegBone,
@@ -412,6 +416,7 @@ class HumanSkeleton(
 			rightLowerLegTracker,
 			rightFootTracker,
 		)
+
 		// Left arm
 		updateArmTransforms(
 			isTrackingLeftArmFromController,
@@ -426,6 +431,7 @@ class HumanSkeleton(
 			leftLowerArmTracker,
 			leftHandTracker,
 		)
+
 		// Right arm
 		updateArmTransforms(
 			isTrackingRightArmFromController,
@@ -440,6 +446,20 @@ class HumanSkeleton(
 			rightLowerArmTracker,
 			rightHandTracker,
 		)
+
+		// Playspace motion compensation
+		playspaceTracker?.let {
+			if (it.hasRotation) {
+				val motionCompensationRotOffset = it.getRotation().inv()
+				for (bone in allBones) {
+					bone.setRawRotation(motionCompensationRotOffset * bone.getLocalRotation())
+				}
+			}
+			if (it.hasPosition) {
+				// TODO
+				// headBone.setPosition(headBone.getPosition() - it.position)
+			}
+		}
 	}
 
 	/**
@@ -981,6 +1001,34 @@ class HumanSkeleton(
 			leftHandBone,
 			rightHandBone,
 		)
+
+	/**
+	 * Returns an array of all the bones, trackers or not
+	 */
+	private val allBones: Array<Bone>
+		get() = arrayOf(
+			headBone,
+			neckBone,
+			headTrackerBone,
+			upperChestBone,
+			chestBone,
+			chestTrackerBone,
+			waistBone,
+			hipBone,
+			hipTrackerBone,
+			leftHipBone,
+			rightHipBone,
+			leftUpperLegBone,
+			leftKneeTrackerBone,
+			rightUpperLegBone,
+			rightKneeTrackerBone,
+			leftLowerLegBone,
+			rightLowerLegBone,
+			leftFootBone,
+			leftFootTrackerBone,
+			rightFootBone,
+			rightFootTrackerBone,
+		) + allArmBones
 
 	/**
 	 * Returns all the arm bones, tracker or not.
