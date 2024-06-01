@@ -387,7 +387,7 @@ class HumanSkeleton(
 				}
 			}
 			if (it.hasPosition) {
-				// TODO
+				// TODO motion compensate for position as well?
 				// headBone.setPosition(headBone.getPosition() - it.position)
 			}
 
