@@ -51,7 +51,7 @@ export function VersionUpdateModal() {
           <Button
             variant="primary"
             onClick={async () => {
-              const url = document.body.classList.contains('windows_nt')
+              const url = document.body.classList.contains('windows')
                 ? 'https://slimevr.dev/download'
                 : `https://github.com/${GH_REPO}/releases/latest`;
               await open(url).catch(() => window.open(url, '_blank'));
