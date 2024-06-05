@@ -33,8 +33,8 @@ export function useDiscordPresence() {
     })();
   }, [imuTrackers.length, l10n]);
 
-  // Update presence every 7 seconds
-  useInterval(updatePresence, config?.discordPresence ? 7000 : null);
+  // Update presence every 6.9 seconds
+  useInterval(updatePresence, config?.discordPresence ? 6900 : null);
 
   // Clear presence on config being disabled
   useEffect(() => {
