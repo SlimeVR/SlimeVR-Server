@@ -262,8 +262,8 @@ fn main() -> Result<()> {
 				}
 			}
 			// See https://github.com/tauri-apps/tauri/issues/4012#issuecomment-1449499149
-			#[cfg(windows)]
-			WindowEvent::Resized(_) => std::thread::sleep(std::time::Duration::from_nanos(1)),
+			// #[cfg(windows)]
+			// WindowEvent::Resized(_) => std::thread::sleep(std::time::Duration::from_nanos(1)),
 			_ => (),
 		})
 		.build(tauri_context);
