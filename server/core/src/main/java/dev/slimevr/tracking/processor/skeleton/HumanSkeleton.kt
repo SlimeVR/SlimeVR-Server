@@ -622,7 +622,11 @@ class HumanSkeleton(
 			val extendedPelvisRot = extendedPelvisYawRoll(leftLegRot, rightLegRot, hipRot)
 
 			// Interpolate between the hipRot and extendedPelvisRot
-			val newHipRot = hipRot.interpR(extendedPelvisRot, hipLegsAveraging)
+			val newHipRot = if (extendedPelvisRot.lenSq() != 0.0f) {
+				hipRot.interpR(extendedPelvisRot, hipLegsAveraging)
+			} else {
+				Quaternion.IDENTITY
+			}
 
 			// Set new hip rotation
 			hipBone.setRotation(newHipRot)
