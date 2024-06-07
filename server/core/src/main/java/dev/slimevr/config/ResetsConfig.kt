@@ -43,8 +43,8 @@ class ResetsConfig {
 	// Save automatic mounting reset calibration
 	var saveMountingReset = false
 
-	// Reset a computed head tracker's pitch and roll
-	var resetComputedHeadPitchRoll = false
+	// Reset the HMD's pitch and roll upon full reset
+	var resetHmdPitchRoll = false
 
 	fun updateTrackersResetsSettings() {
 		for (t in VRServer.instance.allTrackers) {

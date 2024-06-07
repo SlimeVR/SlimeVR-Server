@@ -336,6 +336,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			resetsConfig.resetMountingFeet = req.resetsSettings().resetMountingFeet()
 			resetsConfig.saveMountingReset = req.resetsSettings().saveMountingReset()
 			resetsConfig.yawResetSmoothTime = req.resetsSettings().yawResetSmoothTime()
+			resetsConfig.resetHmdPitchRoll = req.resetsSettings().resetHmdPitchRoll()
 			resetsConfig.updateTrackersResetsSettings()
 		}
 
