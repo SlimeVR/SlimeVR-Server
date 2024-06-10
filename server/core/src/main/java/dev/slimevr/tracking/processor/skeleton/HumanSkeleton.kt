@@ -784,8 +784,8 @@ class HumanSkeleton(
 	}
 
 	/**
-	 * Rotates the first Quaternion to match its yaw and roll to the rotation of
-	 * the average of the second and third quaternions.
+	 * Rotates the third Quaternion to match its yaw and roll to the rotation of
+	 * the average of the first and second quaternions.
 	 *
 	 * @param leftKnee the first Quaternion
 	 * @param rightKnee the second Quaternion
@@ -1058,15 +1058,15 @@ class HumanSkeleton(
 	fun resetTrackersFull(resetSourceName: String?) {
 		val trackersToReset = humanPoseManager.trackersToReset
 
-		// Resets all axis of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			if (it.needsReset) {
-				it.resetsHandler.resetFull(referenceRotation)
-			}
+			// Always reset the head (ifs in resetsHandler)
+			it.resetsHandler.resetFull(referenceRotation)
 			referenceRotation = it.getRotation()
 		}
+		// Resets all axes of the trackers with the HMD as reference.
 		for (tracker in trackersToReset) {
+			// Only reset if tracker needsReset
 			if (tracker != null && tracker.needsReset) {
 				tracker.resetsHandler.resetFull(referenceRotation)
 			}
@@ -1089,12 +1089,14 @@ class HumanSkeleton(
 		// Resets the yaw of the trackers with the head as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
+			// Only reset if head needsReset
 			if (it.needsReset) {
 				it.resetsHandler.resetYaw(referenceRotation)
 			}
 			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
+			// Only reset if tracker needsReset
 			if (tracker != null && tracker.needsReset) {
 				tracker.resetsHandler.resetYaw(referenceRotation)
 			}
@@ -1110,12 +1112,14 @@ class HumanSkeleton(
 		// Resets the mounting orientation of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
+			// Only reset if head needsMounting or is computed but not HMD
 			if (it.needsMounting || (it.isComputed && !it.isHmd)) {
 				it.resetsHandler.resetMounting(referenceRotation)
 			}
 			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
+			// Only reset if tracker needsMounting
 			if (tracker != null && tracker.needsMounting) {
 				tracker.resetsHandler.resetMounting(referenceRotation)
 			}

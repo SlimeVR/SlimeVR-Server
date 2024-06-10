@@ -157,7 +157,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private fun adjustToReference(rotation: Quaternion): Quaternion {
 		var rot = rotation
-		rot *= mountingOrientation
+		if (tracker.needsReset) rot *= mountingOrientation
 		rot = gyroFix * rot
 		rot *= attachmentFix
 		rot = mountRotFix.inv() * (rot * mountRotFix)
@@ -224,28 +224,39 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		val mountingAdjustedRotation = tracker.getRawRotation() * mountingOrientation
 
-		// If tracker needsMounting or is a computed head tracker
-		if (tracker.needsMounting || (tracker.trackerPosition == TrackerPosition.HEAD && tracker.isComputed)) {
+		// If tracker needsMounting
+		if (tracker.needsMounting) {
 			gyroFix = fixGyroscope(mountingAdjustedRotation * tposeDownFix)
 		} else {
-			// Set mounting to the HMD's yaw so that the non-mounting-adjusted
-			// tracker goes forward.
+			// Set mounting to the reference's yaw so that a non-mounting-adjusted
+			// (computed) tracker goes forward.
 			mountRotFix = getYawQuaternion(reference)
 		}
 
-		attachmentFix = fixAttachment(mountingAdjustedRotation)
-		if (tracker.trackerPosition == TrackerPosition.HEAD && !tracker.needsMounting) {
-			// Restore the yaw if tracker is computed head tracker
-			attachmentFix *= getYawQuaternion(mountRotFix.inv() * (mountingAdjustedRotation * mountRotFix))
+		// Attachment fix
+		attachmentFix = if (tracker.trackerPosition == TrackerPosition.HEAD && tracker.isHmd) {
+			if (resetHmdPitch) {
+				// Reset the HMD's pitch if it's assigned to head and resetHmdPitch is true
+				// Get rotation without yaw (make sure to use the raw rotation directly!)
+				val rotBuf = getYawQuaternion(tracker.getRawRotation()).inv() * tracker.getRawRotation()
+				// Isolate pitch
+				Quaternion(rotBuf.w, -rotBuf.x, 0f, 0f).unit()
+			} else {
+				// Don't reset the HMD at all
+				Quaternion.IDENTITY
+			}
+		} else {
+			fixAttachment(mountingAdjustedRotation)
 		}
 
-		// Rotate attachmentFix by 180 degrees as a workaround for tpose (down)
+		// Rotate attachmentFix by 180 degrees as a workaround for t-pose (down)
 		if (tposeDownFix != Quaternion.IDENTITY && tracker.needsMounting) {
 			attachmentFix *= HalfHorizontal
 		}
 
 		makeIdentityAdjustmentQuatsFull()
 
+		// Don't adjust yaw if head and doesn't need mounting
 		if (tracker.trackerPosition != TrackerPosition.HEAD || tracker.needsMounting) {
 			yawFix = fixYaw(mountingAdjustedRotation, reference)
 			yawResetSmoothTimeRemain = 0.0f
@@ -301,7 +312,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * and stores it in mountRotFix, and adjusts yawFix
 	 */
 	fun resetMounting(reference: Quaternion) {
-		if ((!resetMountingFeet && isFootTracker())) { // todo
+		if ((!resetMountingFeet && isFootTracker())) {
 			return
 		}
 

@@ -323,7 +323,7 @@ class Tracker @JvmOverloads constructor(
 			_rotation
 		}
 
-		if (needsReset) { //  && !(isComputed && trackerPosition == TrackerPosition.HEAD)
+		if (needsReset || (isComputed && trackerPosition == TrackerPosition.HEAD)) {
 			// Adjust to reset, mounting and drift compensation
 			rot = resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
 		}
@@ -354,7 +354,7 @@ class Tracker @JvmOverloads constructor(
 			_rotation
 		}
 
-		if (needsReset) { //  && !(isComputed && trackerPosition == TrackerPosition.HEAD)
+		if (needsReset || (isComputed && trackerPosition == TrackerPosition.HEAD)) {
 			// Adjust to reset and mounting
 			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		}

@@ -342,7 +342,7 @@ public class RPCSettingsBuilder {
 				resetsConfig.getMode().getId(),
 				resetsConfig.getYawResetSmoothTime(),
 				resetsConfig.getSaveMountingReset(),
-				resetsConfig.getResetHmdPitchRoll()
+				resetsConfig.getResetHmdPitch()
 			);
 	}
 
