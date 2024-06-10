@@ -319,7 +319,14 @@ export function TrackersAssignPage() {
                 </Typography>
               </div>
               <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
-              <div className="flex flex-col md:gap-4 mobile:gap-4">
+              {!!firstError && (
+                <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
+                  <div className="flex flex-col gap-1 whitespace-normal">
+                    <span>{firstError.label}</span>
+                  </div>
+                </div>
+              )}
+              <div className="flex flex-col md:gap-4 sm:gap-2 mobile:gap-4">
                 {Object.entries(ASSIGN_MODE_OPTIONS).map(
                   ([mode, trackersCount]) => (
                     <Radio
@@ -369,13 +376,6 @@ export function TrackersAssignPage() {
                   variant="toggle"
                 ></CheckBox>
               </div>
-              {!!firstError && (
-                <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
-                  <div className="flex flex-col gap-1 whitespace-normal">
-                    <span>{firstError.label}</span>
-                  </div>
-                </div>
-              )}
               <div className="flex flex-row">
                 {!state.alonePage && (
                   <>

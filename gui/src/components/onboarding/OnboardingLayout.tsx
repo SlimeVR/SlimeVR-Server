@@ -38,7 +38,7 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
     </>
   ) : (
     <MainLayoutRoute widgets={false} isMobile={isMobile}>
-      <div className="flex-grow xs:pt-10 mobile:pt-2">{children}</div>
+      <div className="flex-grow xs:pt-10 mobile:pt-2 overflow-y-auto">{children}</div>
     </MainLayoutRoute>
   );
 }
