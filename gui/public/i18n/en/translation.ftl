@@ -685,15 +685,15 @@ onboarding-assign_trackers-option-label = { $mode ->
     [lower-body] Lower-Body Set
     [core] Core Set
     [enhanced-core] Enhanced Core Set
-    [full-body] Full Body Tracking (FBT)
-    *[all] Complete Set
+    [full-body] Full-Body Set
+    *[all] All Trackers
 }
 onboarding-assign_trackers-option-description = { $mode ->
-    [lower-body] Set of trackers for lower body tracking
-    [core] Most commonly recommended set of trackers
-    [enhanced-core] Enhanced set of core trackers
-    [full-body] Advanced set of trackers, for dancers
-    *[all] Complete set of all available trackers
+    [lower-body] Minimum for VR full-body tracking
+    [core] + Enhanced spine tracking
+    [enhanced-core] + Foot rotation
+    [full-body] + Elbow tracking
+    *[all] All available tracker assignments
 }
 
 ## Tracker assignment warnings
