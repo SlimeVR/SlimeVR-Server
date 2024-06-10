@@ -43,6 +43,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var yawResetSmoothTime = 0.0f
 	private lateinit var fpsTimer: NanoTimer
 	var saveMountingReset = false
+	var resetHmdPitch = false
 	var allowDriftCompensation = false
 	var lastResetQuaternion: Quaternion? = null
 
@@ -123,6 +124,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			fpsTimer = VRServer.instance.fpsTimer
 		}
 		saveMountingReset = config.saveMountingReset
+		resetHmdPitch = config.resetHmdPitch
 	}
 
 	fun trySetMountingReset(quat: Quaternion) {
@@ -299,7 +301,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * and stores it in mountRotFix, and adjusts yawFix
 	 */
 	fun resetMounting(reference: Quaternion) {
-		if (!resetMountingFeet && isFootTracker()) {
+		if ((!resetMountingFeet && isFootTracker())) { // todo
 			return
 		}
 

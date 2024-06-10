@@ -43,8 +43,8 @@ class ResetsConfig {
 	// Save automatic mounting reset calibration
 	var saveMountingReset = false
 
-	// Reset the HMD's pitch and roll upon full reset
-	var resetHmdPitchRoll = false
+	// Reset the HMD's pitch upon full reset
+	var resetHmdPitch = false
 
 	fun updateTrackersResetsSettings() {
 		for (t in VRServer.instance.allTrackers) {

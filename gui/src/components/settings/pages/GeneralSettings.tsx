@@ -96,7 +96,7 @@ interface SettingsForm {
     armsMountingResetMode: number;
     yawResetSmoothTime: number;
     saveMountingReset: boolean;
-    resetHmdPitchRoll: boolean;
+    resetHmdPitch: boolean;
   };
 }
 
@@ -159,7 +159,7 @@ const defaultValues: SettingsForm = {
     armsMountingResetMode: 0,
     yawResetSmoothTime: 0.0,
     saveMountingReset: false,
-    resetHmdPitchRoll: false,
+    resetHmdPitch: false,
   },
 };
 
@@ -296,8 +296,7 @@ export function GeneralSettings() {
         values.resetsSettings.yawResetSmoothTime;
       resetsSettings.saveMountingReset =
         values.resetsSettings.saveMountingReset;
-      resetsSettings.resetHmdPitchRoll =
-        values.resetsSettings.resetHmdPitchRoll;
+      resetsSettings.resetHmdPitch = values.resetsSettings.resetHmdPitch;
       settings.resetsSettings = resetsSettings;
     }
 
@@ -894,7 +893,7 @@ export function GeneralSettings() {
             <div className="flex flex-col pt-2 pb-3">
               <Typography color="secondary">
                 {l10n.getString(
-                  'settings-general-fk_settings-reset_settings-reset_hmd_pitch_roll-description'
+                  'settings-general-fk_settings-reset_settings-reset_hmd_pitch-description'
                 )}
               </Typography>
             </div>
@@ -903,9 +902,9 @@ export function GeneralSettings() {
                 variant="toggle"
                 outlined
                 control={control}
-                name="resetsSettings.resetHmdPitchRoll"
+                name="resetsSettings.resetHmdPitch"
                 label={l10n.getString(
-                  'settings-general-fk_settings-reset_settings-reset_hmd_pitch_roll'
+                  'settings-general-fk_settings-reset_settings-reset_hmd_pitch'
                 )}
               />
             </div>

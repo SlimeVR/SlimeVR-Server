@@ -1057,12 +1057,8 @@ class HumanSkeleton(
 		headTracker?.let {
 			if (it.needsReset) {
 				it.resetsHandler.resetFull(referenceRotation)
-				if (true) { // TODO
-					referenceRotation = it.getRotation()
-				}
-			} else {
-				referenceRotation = it.getRotation()
 			}
+			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
 			if (tracker != null && tracker.needsReset) {
@@ -1089,12 +1085,8 @@ class HumanSkeleton(
 		headTracker?.let {
 			if (it.needsReset) {
 				it.resetsHandler.resetYaw(referenceRotation)
-				if (true) { // TODO
-					referenceRotation = it.getRotation()
-				}
-			} else {
-				referenceRotation = it.getRotation()
 			}
+			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
 			if (tracker != null && tracker.needsReset) {
@@ -1109,18 +1101,13 @@ class HumanSkeleton(
 	fun resetTrackersMounting(resetSourceName: String?) {
 		val trackersToReset = humanPoseManager.trackersToReset
 
-		// Resets the mounting orientation of the trackers with the HMD as
-		// reference.
+		// Resets the mounting orientation of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			if (it.needsMounting || (it.isComputed && true)) { // TODO
+			if (it.needsMounting || (it.isComputed && !it.isHmd)) {
 				it.resetsHandler.resetMounting(referenceRotation)
-				if (true) { // TODO
-					referenceRotation = it.getRotation()
-				}
-			} else {
-				referenceRotation = it.getRotation()
 			}
+			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
 			if (tracker != null && tracker.needsMounting) {
