@@ -1067,7 +1067,7 @@ class HumanSkeleton(
 		// Resets all axes of the trackers with the HMD as reference.
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsReset
-			if (tracker != null && tracker.needsReset) {
+			if (tracker != null && (tracker.needsReset || tracker.isHmd)) {
 				tracker.resetsHandler.resetFull(referenceRotation)
 			}
 		}

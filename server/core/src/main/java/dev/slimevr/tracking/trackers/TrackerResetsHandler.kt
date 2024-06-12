@@ -157,7 +157,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private fun adjustToReference(rotation: Quaternion): Quaternion {
 		var rot = rotation
-		if (tracker.needsReset) rot *= mountingOrientation
+		if (!tracker.isComputed || tracker.trackerPosition != TrackerPosition.HEAD) {
+			rot *= mountingOrientation
+		}
 		rot = gyroFix * rot
 		rot *= attachmentFix
 		rot = mountRotFix.inv() * (rot * mountRotFix)
@@ -227,9 +229,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		// If tracker needsMounting
 		if (tracker.needsMounting) {
 			gyroFix = fixGyroscope(mountingAdjustedRotation * tposeDownFix)
-		} else {
+		} else if (tracker.needsReset) {
 			// Set mounting to the reference's yaw so that a non-mounting-adjusted
-			// (computed) tracker goes forward.
+			// (normally computed) tracker goes forward.
 			mountRotFix = getYawQuaternion(reference)
 		}
 

@@ -48,9 +48,7 @@ class ResetsConfig {
 
 	fun updateTrackersResetsSettings() {
 		for (t in VRServer.instance.allTrackers) {
-			if (t.needsReset) {
-				t.resetsHandler.readResetConfig(this)
-			}
+			t.resetsHandler.readResetConfig(this)
 		}
 	}
 }
