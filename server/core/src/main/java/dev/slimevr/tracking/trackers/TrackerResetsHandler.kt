@@ -157,7 +157,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private fun adjustToReference(rotation: Quaternion): Quaternion {
 		var rot = rotation
-		if (!tracker.isComputed || tracker.trackerPosition != TrackerPosition.HEAD) {
+		if (!tracker.isHmd || tracker.trackerPosition != TrackerPosition.HEAD) {
 			rot *= mountingOrientation
 		}
 		rot = gyroFix * rot
@@ -224,14 +224,22 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		val oldRot = adjustToReference(tracker.getRawRotation())
 		lastResetQuaternion = oldRot
 
+		// Adjust raw rotation to mountingOrientation
 		val mountingAdjustedRotation = tracker.getRawRotation() * mountingOrientation
 
-		// If tracker needsMounting
-		if (tracker.needsMounting) {
-			gyroFix = fixGyroscope(mountingAdjustedRotation * tposeDownFix)
-		} else if (tracker.needsReset) {
-			// Set mounting to the reference's yaw so that a non-mounting-adjusted
-			// (normally computed) tracker goes forward.
+		// Gyrofix
+		if (tracker.needsMounting || (tracker.trackerPosition == TrackerPosition.HEAD && !tracker.isHmd)) {
+			gyroFix = if (tracker.isComputed) {
+				fixGyroscope(tracker.getRawRotation())
+			} else {
+				fixGyroscope(mountingAdjustedRotation * tposeDownFix)
+			}
+		}
+
+		// Mounting for computed trackers
+		if (tracker.isComputed && tracker.trackerPosition != TrackerPosition.HEAD) {
+			// Set mounting to the reference's yaw so that a computed
+			// tracker goes forward according to the head tracker.
 			mountRotFix = getYawQuaternion(reference)
 		}
 
@@ -258,9 +266,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		makeIdentityAdjustmentQuatsFull()
 
-		// Don't adjust yaw if head and doesn't need mounting
-		if (tracker.trackerPosition != TrackerPosition.HEAD || tracker.needsMounting) {
-			yawFix = fixYaw(mountingAdjustedRotation, reference)
+		// (don't adjust yaw if head and computed)
+		if (tracker.trackerPosition != TrackerPosition.HEAD || tracker.isComputed) {
+			fixYaw(mountingAdjustedRotation, reference)
 			yawResetSmoothTimeRemain = 0.0f
 		}
 
@@ -279,9 +287,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * position should be corrected in the source.
 	 */
 	fun resetYaw(reference: Quaternion) {
-		// Don't reset a computed head tracker
-		if (tracker.trackerPosition == TrackerPosition.HEAD && tracker.isComputed) return
-
 		// Old rot for drift compensation
 		val oldRot = adjustToReference(tracker.getRawRotation())
 		lastResetQuaternion = oldRot

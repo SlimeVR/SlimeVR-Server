@@ -26,7 +26,6 @@ import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
-import solarxr_protocol.rpc.StatusUnassignedHMD
 import solarxr_protocol.rpc.StatusUnassignedHMDT
 import java.util.function.Consumer
 import kotlin.math.*
@@ -339,16 +338,6 @@ class HumanPoseManager(val server: VRServer?) {
 	 */
 	@ThreadSafe
 	fun getComputedTracker(trackerRole: TrackerRole): Tracker = skeleton.getComputedTracker(trackerRole)
-
-	/**
-	 * Returns all trackers if VRServer is non-null. Else, returns the
-	 * skeleton's assigned trackers.
-	 *
-	 * @return a list of trackers to use for reset.
-	 */
-	val trackersToReset: List<Tracker?>
-		get() =
-			server?.allTrackers ?: skeleton.localTrackers
 
 	/**
 	 * @return the head bone, which is the root of the skeleton

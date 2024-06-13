@@ -1033,7 +1033,8 @@ class HumanSkeleton(
 	 */
 	val isTrackingRightArmFromController: Boolean
 		get() = rightHandTracker != null && rightHandTracker!!.hasPosition && !forceArmsFromHMD
-	val localTrackers: List<Tracker?>
+
+	val trackersToReset: List<Tracker?>
 		get() = listOf(
 			neckTracker,
 			chestTracker,
@@ -1056,8 +1057,6 @@ class HumanSkeleton(
 		)
 
 	fun resetTrackersFull(resetSourceName: String?) {
-		val trackersToReset = humanPoseManager.trackersToReset
-
 		var referenceRotation = IDENTITY
 		headTracker?.let {
 			// Always reset the head (ifs in resetsHandler)
@@ -1084,13 +1083,11 @@ class HumanSkeleton(
 
 	@VRServerThread
 	fun resetTrackersYaw(resetSourceName: String?) {
-		val trackersToReset = humanPoseManager.trackersToReset
-
 		// Resets the yaw of the trackers with the head as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			// Only reset if head needsReset
-			if (it.needsReset) {
+			// Only reset if head needsReset and isn't computed
+			if (it.needsReset && !it.isComputed) {
 				it.resetsHandler.resetYaw(referenceRotation)
 			}
 			referenceRotation = it.getRotation()
@@ -1107,8 +1104,6 @@ class HumanSkeleton(
 
 	@VRServerThread
 	fun resetTrackersMounting(resetSourceName: String?) {
-		val trackersToReset = humanPoseManager.trackersToReset
-
 		// Resets the mounting orientation of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
@@ -1131,7 +1126,6 @@ class HumanSkeleton(
 
 	@VRServerThread
 	fun clearTrackersMounting(resetSourceName: String?) {
-		val trackersToReset = humanPoseManager.trackersToReset
 		headTracker?.let {
 			if (it.needsMounting) it.resetsHandler.clearMounting()
 		}
