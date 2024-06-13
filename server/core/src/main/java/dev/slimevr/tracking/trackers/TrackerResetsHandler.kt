@@ -268,7 +268,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// (don't adjust yaw if head and computed)
 		if (tracker.trackerPosition != TrackerPosition.HEAD || tracker.isComputed) {
-			fixYaw(mountingAdjustedRotation, reference)
+			yawFix = fixYaw(mountingAdjustedRotation, reference)
 			yawResetSmoothTimeRemain = 0.0f
 		}
 
