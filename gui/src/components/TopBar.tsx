@@ -160,7 +160,7 @@ export function TopBar({
                 <div
                   className="cursor-pointer"
                   onClick={() => {
-                    const url = document.body.classList.contains('windows_nt')
+                    const url = document.body.classList.contains('windows')
                       ? 'https://slimevr.dev/download'
                       : `https://github.com/${GH_REPO}/releases/latest`;
                     open(url).catch(() => window.open(url, '_blank'));
