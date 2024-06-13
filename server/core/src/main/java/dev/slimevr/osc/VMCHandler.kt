@@ -11,7 +11,6 @@ import com.illposed.osc.transport.OSCPortOut
 import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.currentLocalTrackerId
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
-import dev.slimevr.autobone.errors.BodyProportionError
 import dev.slimevr.config.VMCConfig
 import dev.slimevr.osc.UnityBone.Companion.getByStringVal
 import dev.slimevr.tracking.processor.BoneType
@@ -43,7 +42,6 @@ class VMCHandler(
 	private val server: VRServer,
 	private val humanPoseManager: HumanPoseManager,
 	private val config: VMCConfig,
-	computedTrackers: List<Tracker>?,
 ) : OSCHandler {
 	private var oscReceiver: OSCPortIn? = null
 	private var oscSender: OSCPortOut? = null
@@ -151,23 +149,31 @@ class VMCHandler(
 				for (unityBone in UnityBone.entries) {
 					val node = outputUnityArmature!!.getHeadNodeOfBone(unityBone)
 					if (node != null) {
-						node
-							.localTransform
-							.translation = vrmReader.getOffsetForBone(unityBone)
+						val offset = if (unityBone == UnityBone.HIPS) {
+							// For the hip bone, add average of upper leg offsets (which are negative). The hip bone's offset is global.
+							vrmReader.getOffsetForBone(UnityBone.HIPS) +
+								((vrmReader.getOffsetForBone(UnityBone.LEFT_UPPER_LEG) + vrmReader.getOffsetForBone(UnityBone.RIGHT_UPPER_LEG)) / 2f)
+						} else {
+							vrmReader.getOffsetForBone(unityBone)
+						}
+
+						node.localTransform.translation = offset
 					}
 				}
-				vrmHeight = vrmReader
-					.getOffsetForBone(UnityBone.HIPS)
-					.plus(vrmReader.getOffsetForBone(UnityBone.SPINE))
-					.plus(vrmReader.getOffsetForBone(UnityBone.CHEST))
-					.plus(vrmReader.getOffsetForBone(UnityBone.UPPER_CHEST))
-					.plus(vrmReader.getOffsetForBone(UnityBone.NECK))
-					.plus(vrmReader.getOffsetForBone(UnityBone.HEAD))
-					.len()
+				// Make sure to account for the upper legs because of the hip.
+				vrmHeight = (
+					vrmReader.getOffsetForBone(UnityBone.HIPS) +
+						((vrmReader.getOffsetForBone(UnityBone.LEFT_UPPER_LEG) + vrmReader.getOffsetForBone(UnityBone.RIGHT_UPPER_LEG))) +
+						vrmReader.getOffsetForBone(UnityBone.SPINE) +
+						vrmReader.getOffsetForBone(UnityBone.CHEST) +
+						vrmReader.getOffsetForBone(UnityBone.UPPER_CHEST) +
+						vrmReader.getOffsetForBone(UnityBone.NECK) +
+						vrmReader.getOffsetForBone(UnityBone.HEAD)
+					).y
 			}
 		}
 
-		if (refreshRouterSettings && server.oSCRouter != null) server.oSCRouter.refreshSettings(false)
+		if (refreshRouterSettings) server.oSCRouter.refreshSettings(false)
 	}
 
 	private fun handleReceivedMessage(event: OSCMessageEvent) {
@@ -249,7 +255,7 @@ class VMCHandler(
 		unityBone: UnityBone?,
 	) {
 		// Create device if it doesn't exist
-		var rotation: Quaternion? = rotation
+		var rot = rotation
 		if (trackerDevice == null) {
 			trackerDevice = server.deviceManager.createDevice("VMC receiver", "1.0", "VMC")
 			server.deviceManager.addDevice(trackerDevice!!)
@@ -264,19 +270,14 @@ class VMCHandler(
 				trackerDevice,
 				getNextLocalTrackerId(),
 				name,
-				"VMC Tracker #" + currentLocalTrackerId,
+				"VMC Tracker #$currentLocalTrackerId",
 				trackerPosition,
-				null,
-				position != null,
-				rotation != null,
-				false,
-				true,
-				false,
-				position != null,
-				null,
-				true,
-				false,
-				position != null,
+				hasPosition = position != null,
+				hasRotation = true,
+				userEditable = true,
+				isComputed = position != null,
+				usesTimeout = true,
+				needsReset = position != null,
 			)
 			trackerDevice!!.trackers[trackerDevice!!.trackers.size] = tracker
 			byTrackerNameTracker[name] = tracker
@@ -290,16 +291,14 @@ class VMCHandler(
 		}
 
 		// Set rotation
-		if (rotation != null) {
-			if (localRotation) {
-				// Instantiate unityHierarchy if not done
-				if (inputUnityArmature == null) inputUnityArmature = UnityArmature(true)
-				inputUnityArmature!!.setLocalRotationForBone(unityBone!!, rotation)
-				rotation = inputUnityArmature!!.getGlobalRotationForBone(unityBone)
-				rotation = yawOffset.times(rotation)
-			}
-			tracker.setRotation(rotation)
+		if (localRotation) {
+			// Instantiate unityHierarchy if not done
+			if (inputUnityArmature == null) inputUnityArmature = UnityArmature(true)
+			inputUnityArmature!!.setLocalRotationForBone(unityBone!!, rot)
+			rot = inputUnityArmature!!.getGlobalRotationForBone(unityBone)
+			rot = yawOffset.times(rot)
 		}
+		tracker.setRotation(rot)
 
 		tracker.dataTick()
 	}
@@ -325,27 +324,12 @@ class VMCHandler(
 					// Indicate tracking is available
 					oscArgs.clear()
 					oscArgs.add(1)
-					oscBundle
-						.addPacket(
-							OSCMessage(
-								"/VMC/Ext/OK",
-								oscArgs.clone(),
-							),
-						)
+					oscBundle.addPacket(OSCMessage("/VMC/Ext/OK", oscArgs.clone()))
 
 					oscArgs.clear()
 					oscArgs.add("root")
-					addTransformToArgs(
-						NULL,
-						IDENTITY,
-					)
-					oscBundle
-						.addPacket(
-							OSCMessage(
-								"/VMC/Ext/Root/Pos",
-								oscArgs.clone(),
-							),
-						)
+					addTransformToArgs(NULL, IDENTITY)
+					oscBundle.addPacket(OSCMessage("/VMC/Ext/Root/Pos", oscArgs.clone()))
 
 					for (unityBone in UnityBone.entries) {
 						if (unityBone.boneType == null) continue
@@ -366,46 +350,24 @@ class VMCHandler(
 						}
 						outputUnityArmature?.setGlobalRotationForBone(unityBone, boneRotation)
 					}
+
 					if (!anchorHip) {
 						// Anchor from head
-						// Gets the SlimeVR head position, scales it to the VRM,
-						// and subtracts the difference between the VRM's
-						// head and hip
-						// FIXME this way isn't perfect, but I give up - Erimel
-						val upperLegsAverage = (
-							outputUnityArmature!!.getHeadNodeOfBone(UnityBone.LEFT_UPPER_LEG)!!.worldTransform
-								.translation +
-								outputUnityArmature!!.getHeadNodeOfBone(UnityBone.RIGHT_UPPER_LEG)!!
-									.worldTransform
-									.translation
-							) * 0.5f
+						outputUnityArmature?.let { unityArmature ->
+							// Scale the SlimeVR head position with the VRM model
+							val slimevrScaledHeadPos = humanPoseManager.getBone(BoneType.HEAD).getPosition() *
+								(vrmHeight / humanPoseManager.userHeightFromConfig)
 
-						val scaledHead = humanPoseManager
-							.getBone(BoneType.HEAD)!!
-							.getTailPosition() * (
-							vrmHeight /
-								(
-									humanPoseManager.userHeightFromConfig
-										* BodyProportionError.eyeHeightToHeightRatio
-									)
-							)
+							// Get the VRM head and hip positions
+							val vrmHeadPos = unityArmature.getHeadNodeOfBone(UnityBone.HEAD)!!.parent!!.worldTransform.translation
+							val vrmHipPos = unityArmature.getHeadNodeOfBone(UnityBone.HIPS)!!.worldTransform.translation
 
-						val pos = scaledHead
-							.minus(
-								(
-									outputUnityArmature!!
-										.getHeadNodeOfBone(UnityBone.HEAD)!!
-										.parent!!
-										.worldTransform
-										.translation
-										.minus(upperLegsAverage)
-									),
-							)
+							// Calculate the new VRM hip position by subtracting the difference head-hip distance from the SlimeVR head
+							val calculatedVrmHipPos = slimevrScaledHeadPos - (vrmHeadPos - vrmHipPos)
 
-						outputUnityArmature!!
-							.getHeadNodeOfBone(UnityBone.HIPS)!!
-							.localTransform
-							.translation = pos
+							// Set the VRM's hip position
+							unityArmature.getHeadNodeOfBone(UnityBone.HIPS)?.localTransform?.translation = calculatedVrmHipPos
+						}
 					}
 
 					// Update Unity skeleton
