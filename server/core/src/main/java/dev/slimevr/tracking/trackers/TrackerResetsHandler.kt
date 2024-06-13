@@ -319,9 +319,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * and stores it in mountRotFix, and adjusts yawFix
 	 */
 	fun resetMounting(reference: Quaternion) {
-		if ((!resetMountingFeet && isFootTracker())) {
-			return
-		}
+		if (!resetMountingFeet && isFootTracker()) return
 
 		// Get the current calibrated rotation
 		var rotBuf = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
@@ -353,10 +351,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 		// Adjust for forward/back arms and thighs
-		val isLowerArmBack =
-			armsResetMode == ArmsResetModes.BACK && (isLeftLowerArmTracker() || isRightLowerArmTracker())
-		val isArmForward =
-			armsResetMode == ArmsResetModes.FORWARD && (isLeftArmTracker() || isRightArmTracker())
+		val isLowerArmBack = armsResetMode == ArmsResetModes.BACK && (isLeftLowerArmTracker() || isRightLowerArmTracker())
+		val isArmForward = armsResetMode == ArmsResetModes.FORWARD && (isLeftArmTracker() || isRightArmTracker())
 		if (!isThighTracker() && !isArmForward && !isLowerArmBack) {
 			// Tracker goes back
 			yawAngle -= FastMath.PI
@@ -364,10 +360,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Make an adjustment quaternion from the angle
 		mountRotFix = EulerAngles(EulerOrder.YZX, 0f, yawAngle, 0f).toQuaternion()
-		if (tracker.trackerPosition == TrackerPosition.HEAD && tracker.isComputed) {
-			// If computed head tracker, use full reset yaw
-			mountRotFix *= getYawQuaternion(gyroFix)
-		}
 
 		// save mounting reset
 		if (saveMountingReset) tracker.saveMountingResetOrientation(mountRotFix)
