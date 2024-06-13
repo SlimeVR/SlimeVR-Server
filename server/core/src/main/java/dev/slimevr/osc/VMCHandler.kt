@@ -57,6 +57,7 @@ class VMCHandler(
 	private var timeAtLastError: Long = 0
 	private var timeAtLastSend: Long = 0
 	private var anchorHip = false
+	private var mirrorTracking = false
 	private var lastPortIn = 0
 	private var lastPortOut = 0
 	private var lastAddress: InetAddress? = null
@@ -67,6 +68,7 @@ class VMCHandler(
 
 	override fun refreshSettings(refreshRouterSettings: Boolean) {
 		anchorHip = config.anchorHip
+		mirrorTracking = config.mirrorTracking
 
 		// Stops listening and closes OSC port
 		val wasListening = oscReceiver != null && oscReceiver!!.isListening
@@ -330,16 +332,23 @@ class VMCHandler(
 					oscBundle.addPacket(OSCMessage("/VMC/Ext/Root/Pos", oscArgs.clone()))
 
 					for (unityBone in UnityBone.entries) {
-						val boneType = unityBone.boneType ?: continue
+						if (unityBone.boneType == null) continue
+
+						// Get opposite bone if tracking must be mirrored
+						val boneType = (if (mirrorTracking) tryGetOppositeArmBone(unityBone) else unityBone).boneType
+
 						// Get SlimeVR bone
-						val bone = humanPoseManager.getBone(boneType)
+						val bone = humanPoseManager.getBone(boneType!!)
 
 						// Update unity hierarchy from bone's global rotation
-						outputUnityArmature
-							?.setGlobalRotationForBone(
-								unityBone,
-								bone.getGlobalRotation() * bone.rotationOffset.inv(),
-							)
+						val boneRotation = if (mirrorTracking) {
+							// Mirror tracking horizontally
+							val rotBuf = bone.getGlobalRotation() * bone.rotationOffset.inv()
+							Quaternion(rotBuf.w, rotBuf.x, -rotBuf.y, -rotBuf.z)
+						} else {
+							bone.getGlobalRotation() * bone.rotationOffset.inv()
+						}
+						outputUnityArmature?.setGlobalRotationForBone(unityBone, boneRotation)
 					}
 
 					if (!anchorHip) {
@@ -366,14 +375,9 @@ class VMCHandler(
 
 					// Add Unity humanoid bones transforms
 					for (bone in UnityBone.entries) {
-						if (bone.boneType != null && !(
-								humanPoseManager.isTrackingLeftArmFromController &&
-									isLeftArmUnityBone(bone)
-								) &&
-							!(
-								humanPoseManager.isTrackingRightArmFromController &&
-									isRightArmUnityBone(bone)
-								)
+						if (bone.boneType != null &&
+							!(humanPoseManager.isTrackingLeftArmFromController && isLeftArmUnityBone(bone)) &&
+							!(humanPoseManager.isTrackingRightArmFromController && isRightArmUnityBone(bone))
 						) {
 							oscArgs.clear()
 							oscArgs.add(bone.stringVal)
@@ -381,13 +385,7 @@ class VMCHandler(
 								outputUnityArmature!!.getLocalTranslationForBone(bone),
 								outputUnityArmature!!.getLocalRotationForBone(bone),
 							)
-							oscBundle
-								.addPacket(
-									OSCMessage(
-										"/VMC/Ext/Bone/Pos",
-										oscArgs.clone(),
-									),
-								)
+							oscBundle.addPacket(OSCMessage("/VMC/Ext/Bone/Pos", oscArgs.clone()))
 						}
 					}
 				}
@@ -480,9 +478,31 @@ class VMCHandler(
 		oscArgs.add(-rot.w)
 	}
 
-	private fun isLeftArmUnityBone(bone: UnityBone): Boolean = bone == UnityBone.LEFT_UPPER_ARM || bone == UnityBone.LEFT_LOWER_ARM || bone == UnityBone.LEFT_HAND
+	/**
+	 * Returns the bone on the opposite limb, or the original bone if
+	 * it not a limb bone.
+	 */
+	private fun tryGetOppositeArmBone(bone: UnityBone): UnityBone = when (bone) {
+		UnityBone.LEFT_SHOULDER -> UnityBone.RIGHT_SHOULDER
+		UnityBone.LEFT_UPPER_ARM -> UnityBone.RIGHT_UPPER_ARM
+		UnityBone.LEFT_LOWER_ARM -> UnityBone.RIGHT_LOWER_ARM
+		UnityBone.LEFT_HAND -> UnityBone.RIGHT_HAND
+		UnityBone.RIGHT_SHOULDER -> UnityBone.LEFT_SHOULDER
+		UnityBone.RIGHT_UPPER_ARM -> UnityBone.LEFT_UPPER_ARM
+		UnityBone.RIGHT_LOWER_ARM -> UnityBone.LEFT_LOWER_ARM
+		UnityBone.RIGHT_HAND -> UnityBone.LEFT_HAND
+		UnityBone.LEFT_UPPER_LEG -> UnityBone.RIGHT_UPPER_LEG
+		UnityBone.LEFT_LOWER_LEG -> UnityBone.RIGHT_LOWER_LEG
+		UnityBone.LEFT_FOOT -> UnityBone.RIGHT_FOOT
+		UnityBone.RIGHT_UPPER_LEG -> UnityBone.LEFT_UPPER_LEG
+		UnityBone.RIGHT_LOWER_LEG -> UnityBone.LEFT_LOWER_LEG
+		UnityBone.RIGHT_FOOT -> UnityBone.LEFT_FOOT
+		else -> bone
+	}
 
-	private fun isRightArmUnityBone(bone: UnityBone): Boolean = bone == UnityBone.RIGHT_UPPER_ARM || bone == UnityBone.RIGHT_LOWER_ARM || bone == UnityBone.RIGHT_HAND
+	private fun isLeftArmUnityBone(bone: UnityBone): Boolean = bone == UnityBone.LEFT_SHOULDER || bone == UnityBone.LEFT_UPPER_ARM || bone == UnityBone.LEFT_LOWER_ARM || bone == UnityBone.LEFT_HAND
+
+	private fun isRightArmUnityBone(bone: UnityBone): Boolean = bone == UnityBone.RIGHT_SHOULDER || bone == UnityBone.RIGHT_UPPER_ARM || bone == UnityBone.RIGHT_LOWER_ARM || bone == UnityBone.RIGHT_HAND
 
 	override fun getOscSender(): OSCPortOut = oscSender!!
 
