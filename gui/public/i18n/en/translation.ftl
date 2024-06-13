@@ -454,7 +454,7 @@ settings-serial = Serial Console
 # This cares about multilines
 settings-serial-description =
     This is a live information feed for serial communication.
-    May be useful if you need to know the firmware is acting up.
+    May be useful to debug firmware or hardware issues.
 settings-serial-connection_lost = Connection to serial lost, Reconnecting...
 settings-serial-reboot = Reboot
 settings-serial-factory_reset = Factory Reset
