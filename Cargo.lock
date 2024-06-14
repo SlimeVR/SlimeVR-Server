@@ -111,6 +111,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0952808a6c2afd1aa8947271f3a60f1a6763c7b912d210184c5149b5cf147247"
 
 [[package]]
+name = "app_dirs2"
+version = "2.5.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a7e7b35733e3a8c1ccb90385088dd5b6eaa61325cb4d1ad56e683b5224ff352e"
+dependencies = [
+ "jni",
+ "ndk-context",
+ "winapi",
+ "xdg",
+]
+
+[[package]]
 name = "ashpd"
 version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -874,6 +886,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "data-encoding"
+version = "2.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e8566979429cf69b49a5c740c60791108e86440e8be149bbea4fe54d2c32d6e2"
+
+[[package]]
 name = "deranged"
 version = "0.3.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -936,6 +954,31 @@ dependencies = [
  "libc",
  "redox_users",
  "winapi",
+]
+
+[[package]]
+name = "discord-sdk"
+version = "0.3.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dc3d7a4f9bc39006b732a01d63b34ff1518313313d707cb18cf6187d2124f7f4"
+dependencies = [
+ "anyhow",
+ "app_dirs2",
+ "async-trait",
+ "bitflags 2.5.0",
+ "crossbeam-channel",
+ "data-encoding",
+ "num-traits",
+ "parking_lot",
+ "serde",
+ "serde_json",
+ "serde_repr",
+ "thiserror",
+ "time",
+ "tokio",
+ "tracing",
+ "url",
+ "winreg 0.52.0",
 ]
 
 [[package]]
@@ -3578,6 +3621,7 @@ dependencies = [
  "color-eyre",
  "const_format",
  "dirs-next",
+ "discord-sdk",
  "flexi_logger",
  "glob",
  "log",
@@ -3597,6 +3641,7 @@ dependencies = [
  "tauri-plugin-store",
  "tauri-runtime",
  "tempfile",
+ "tokio",
  "which",
  "win32job",
  "winreg 0.52.0",
@@ -5373,6 +5418,12 @@ dependencies = [
  "once_cell",
  "pkg-config",
 ]
+
+[[package]]
+name = "xdg"
+version = "2.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "213b7324336b53d2414b2db8537e56544d981803139155afa84f76eeebb7a546"
 
 [[package]]
 name = "xdg-home"

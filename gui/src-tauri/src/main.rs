@@ -18,6 +18,7 @@ use crate::util::{
 	get_launch_path, show_error, valid_java_paths, Cli, JAVA_BIN, MINIMUM_JAVA_VERSION,
 };
 
+mod presence;
 mod state;
 mod tray;
 mod util;
@@ -177,7 +178,11 @@ fn main() -> Result<()> {
 			erroring,
 			warning,
 			tray::update_translations,
-			tray::update_tray_text
+			tray::update_tray_text,
+			presence::discord_client_exists,
+			presence::update_presence,
+			presence::clear_presence,
+			presence::create_discord_client,
 		])
 		.setup(move |app| {
 			let window_state =
@@ -204,7 +209,8 @@ fn main() -> Result<()> {
 			#[cfg(desktop)]
 			{
 				let handle = app.handle();
-				tray::create_tray(&handle)?;
+				tray::create_tray(handle)?;
+				presence::create_presence(handle)?;
 			}
 
 			app.manage(Mutex::new(window_state));
