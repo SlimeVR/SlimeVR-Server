@@ -185,6 +185,15 @@ jobs:
           pnpm i
           pnpm run tauri build
 
+      - name: Make GUI tarball
+        run: |
+          tar czf slimevr-gui-dist.tar.gz -C gui/dist/ .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SlimeVR-GUI-Dist
+          path: ./slimevr-gui-dist.tar.gz
+
       - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-Deb
@@ -214,6 +223,7 @@ jobs:
           draft: true
           generate_release_notes: true
           files: |
+            ./slimevr-gui-dist.tar.gz
             ./SlimeVR-amd64.appimage
             ./SlimeVR-amd64.deb
             ./SlimeVR-amd64.rpm
