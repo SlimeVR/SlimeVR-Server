@@ -462,7 +462,7 @@ settings-serial = Serial Console
 # This cares about multilines
 settings-serial-description =
     This is a live information feed for serial communication.
-    May be useful if you need to know the firmware is acting up.
+    May be useful to debug firmware or hardware issues.
 settings-serial-connection_lost = Connection to serial lost, Reconnecting...
 settings-serial-reboot = Reboot
 settings-serial-factory_reset = Factory Reset
@@ -561,6 +561,9 @@ settings-osc-vmc-vrm-file_select = Drag & drop a model to use, or <u>browse</u>
 settings-osc-vmc-anchor_hip = Anchor at hips
 settings-osc-vmc-anchor_hip-description = Anchor the tracking at the hips, useful for seated VTubing. If disabling, load a VRM model.
 settings-osc-vmc-anchor_hip-label = Anchor at hips
+settings-osc-vmc-mirror_tracking = Mirror tracking
+settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
+settings-osc-vmc-mirror_tracking-label = Mirror tracking
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
