@@ -150,7 +150,6 @@ class VRServer @JvmOverloads constructor(
 			this,
 			humanPoseManager,
 			configManager.vrConfig.vmc,
-			computedTrackers,
 		)
 
 		// Initialize OSC router
@@ -308,12 +307,26 @@ class VRServer @JvmOverloads constructor(
 		queueTask { humanPoseManager.clearTrackersMounting(resetSourceName) }
 	}
 
+	fun getPauseTracking(): Boolean = humanPoseManager.getPauseTracking()
+
 	fun setPauseTracking(pauseTracking: Boolean, sourceName: String?) {
-		queueTask { humanPoseManager.setPauseTracking(pauseTracking, sourceName) }
+		queueTask {
+			humanPoseManager.setPauseTracking(pauseTracking, sourceName)
+			// Toggle trackers as they don't toggle when tracking is paused
+			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
+				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
+			}
+		}
 	}
 
 	fun togglePauseTracking(sourceName: String?) {
-		queueTask { humanPoseManager.togglePauseTracking(sourceName) }
+		queueTask {
+			humanPoseManager.togglePauseTracking(sourceName)
+			// Toggle trackers as they don't toggle when tracking is paused
+			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
+				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
+			}
+		}
 	}
 
 	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
