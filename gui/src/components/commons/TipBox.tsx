@@ -8,13 +8,20 @@ export function TipBox({
   children,
   hideIcon = false,
   whitespace = false,
+  className,
 }: {
   children: ReactNode;
   hideIcon?: boolean;
   whitespace?: boolean;
+  className?: string;
 }) {
   return (
-    <div className="flex flex-row gap-4 bg-accent-background-50 p-4 rounded-md">
+    <div
+      className={classNames(
+        'flex flex-row gap-4 bg-accent-background-50 p-4 rounded-md',
+        className
+      )}
+    >
       <div
         className={classNames(
           'fill-accent-background-20 flex flex-col justify-center',

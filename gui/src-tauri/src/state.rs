@@ -4,6 +4,8 @@ use color_eyre::Result;
 use serde::{Deserialize, Serialize};
 use tauri::{LogicalSize, Monitor, PhysicalPosition, PhysicalSize, Window};
 
+use crate::util;
+
 static STATE_FILENAME: &str = ".window-state.json";
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -73,7 +75,11 @@ impl WindowState {
 			window.unmaximize()?;
 		}
 
-		window.set_size(LogicalSize::new(self.width, self.height))?;
+		if self.width > util::MIN_WINDOW_SIZE_WIDTH
+			&& self.height > util::MIN_WINDOW_SIZE_HEIGHT
+		{
+			window.set_size(LogicalSize::new(self.width, self.height))?;
+		}
 
 		let pos = PhysicalPosition::new(self.x, self.y);
 		for monitor in window.available_monitors()? {

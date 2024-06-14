@@ -36,11 +36,15 @@ interface SettingsForm {
   trackers: {
     waist: boolean;
     chest: boolean;
-    feet: boolean;
-    knees: boolean;
-    elbows: boolean;
-    hands: boolean;
     automaticTrackerToggle: boolean;
+    leftFoot: boolean;
+    rightFoot: boolean;
+    leftKnee: boolean;
+    rightKnee: boolean;
+    leftElbow: boolean;
+    rightElbow: boolean;
+    leftHand: boolean;
+    rightHand: boolean;
   };
   filtering: {
     type: number;
@@ -95,14 +99,19 @@ interface SettingsForm {
   };
 }
 
-const defaultValues = {
+const defaultValues: SettingsForm = {
   trackers: {
     waist: false,
     chest: false,
-    elbows: false,
-    knees: false,
-    feet: false,
-    hands: false,
+    automaticTrackerToggle: true,
+    leftFoot: false,
+    rightFoot: false,
+    leftElbow: false,
+    rightElbow: false,
+    leftHand: false,
+    rightHand: false,
+    leftKnee: false,
+    rightKnee: false,
   },
   toggles: {
     extendedSpine: true,
@@ -176,7 +185,11 @@ export function GeneralSettings() {
       defaultValues,
     });
   const {
-    trackers: { automaticTrackerToggle, hands: steamVrHands },
+    trackers: {
+      automaticTrackerToggle,
+      leftHand: steamVrLeftHand,
+      rightHand: steamVrRightHand,
+    },
   } = watch();
 
   const onSubmit = (values: SettingsForm) => {
@@ -186,10 +199,18 @@ export function GeneralSettings() {
       const trackers = new SteamVRTrackersSettingT();
       trackers.waist = values.trackers.waist;
       trackers.chest = values.trackers.chest;
-      trackers.feet = values.trackers.feet;
-      trackers.knees = values.trackers.knees;
-      trackers.elbows = values.trackers.elbows;
-      trackers.hands = values.trackers.hands;
+      trackers.leftFoot = values.trackers.leftFoot;
+      trackers.rightFoot = values.trackers.rightFoot;
+
+      trackers.leftKnee = values.trackers.leftKnee;
+      trackers.rightKnee = values.trackers.rightKnee;
+
+      trackers.leftElbow = values.trackers.leftElbow;
+      trackers.rightElbow = values.trackers.rightElbow;
+
+      trackers.leftHand = values.trackers.leftHand;
+      trackers.rightHand = values.trackers.rightHand;
+
       trackers.automaticTrackerToggle = values.trackers.automaticTrackerToggle;
       settings.steamVrTrackers = trackers;
     }
@@ -304,7 +325,10 @@ export function GeneralSettings() {
 
     if (settings.steamVrTrackers) {
       formData.trackers = settings.steamVrTrackers;
-      if (settings.steamVrTrackers.hands) {
+      if (
+        settings.steamVrTrackers.leftHand &&
+        settings.steamVrTrackers.rightHand
+      ) {
         setHandsWarning(false);
       }
     }
@@ -386,12 +410,15 @@ export function GeneralSettings() {
   });
 
   useEffect(() => {
-    if (steamVrHands && handsWarning === null) {
+    if ((steamVrLeftHand || steamVrRightHand) && handsWarning === null) {
       setHandsWarning(true);
-    } else if (!steamVrHands && handsWarning === false) {
+    } else if (
+      !(steamVrLeftHand || steamVrRightHand) &&
+      handsWarning === false
+    ) {
       setHandsWarning(null);
     }
-  }, [steamVrHands, handsWarning]);
+  }, [steamVrLeftHand, steamVrRightHand, handsWarning]);
 
   // Handle scrolling to selected page
   // useEffect(() => {
@@ -410,11 +437,13 @@ export function GeneralSettings() {
       <HandsWarningModal
         isOpen={!!handsWarning}
         onClose={() => {
-          setValue('trackers.hands', false);
+          setValue('trackers.leftHand', false);
+          setValue('trackers.rightHand', false);
           setHandsWarning(null);
         }}
         accept={() => {
-          setValue('trackers.hands', true);
+          setValue('trackers.leftHand', true);
+          setValue('trackers.rightHand', true);
           setHandsWarning(false);
         }}
       />
@@ -463,9 +492,9 @@ export function GeneralSettings() {
                 outlined
                 disabled={automaticTrackerToggle}
                 control={control}
-                name="trackers.knees"
+                name="trackers.leftKnee"
                 label={l10n.getString(
-                  'settings-general-steamvr-trackers-knees'
+                  'settings-general-steamvr-trackers-left_knee'
                 )}
               />
               <CheckBox
@@ -473,26 +502,67 @@ export function GeneralSettings() {
                 outlined
                 disabled={automaticTrackerToggle}
                 control={control}
-                name="trackers.feet"
-                label={l10n.getString('settings-general-steamvr-trackers-feet')}
+                name="trackers.rightKnee"
+                label={l10n.getString(
+                  'settings-general-steamvr-trackers-right_knee'
+                )}
               />
               <CheckBox
                 variant="toggle"
                 outlined
                 disabled={automaticTrackerToggle}
                 control={control}
-                name="trackers.elbows"
+                name="trackers.leftFoot"
                 label={l10n.getString(
-                  'settings-general-steamvr-trackers-elbows'
+                  'settings-general-steamvr-trackers-left_foot'
+                )}
+              />
+              <CheckBox
+                variant="toggle"
+                outlined
+                disabled={automaticTrackerToggle}
+                control={control}
+                name="trackers.rightFoot"
+                label={l10n.getString(
+                  'settings-general-steamvr-trackers-right_foot'
+                )}
+              />
+              <CheckBox
+                variant="toggle"
+                outlined
+                disabled={automaticTrackerToggle}
+                control={control}
+                name="trackers.leftElbow"
+                label={l10n.getString(
+                  'settings-general-steamvr-trackers-left_elbow'
+                )}
+              />
+              <CheckBox
+                variant="toggle"
+                outlined
+                disabled={automaticTrackerToggle}
+                control={control}
+                name="trackers.rightElbow"
+                label={l10n.getString(
+                  'settings-general-steamvr-trackers-right_elbow'
                 )}
               />
               <CheckBox
                 variant="toggle"
                 outlined
                 control={control}
-                name="trackers.hands"
+                name="trackers.leftHand"
                 label={l10n.getString(
-                  'settings-general-steamvr-trackers-hands'
+                  'settings-general-steamvr-trackers-left_hand'
+                )}
+              />
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="trackers.rightHand"
+                label={l10n.getString(
+                  'settings-general-steamvr-trackers-right_hand'
                 )}
               />
             </div>

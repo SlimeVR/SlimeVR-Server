@@ -98,6 +98,7 @@ public class RPCSettingsBuilder {
 		if (vrmJson != null)
 			VMCOSCSettings.addVrmJson(fbb, vrmJsonOffset);
 		VMCOSCSettings.addAnchorHip(fbb, config.getAnchorHip());
+		VMCOSCSettings.addMirrorTracking(fbb, config.getMirrorTracking());
 
 		return VMCOSCSettings.endVMCOSCSettings(fbb);
 	}
@@ -156,15 +157,16 @@ public class RPCSettingsBuilder {
 					fbb,
 					bridge.getShareSetting(TrackerRole.WAIST),
 					bridge.getShareSetting(TrackerRole.CHEST),
-					bridge.getShareSetting(TrackerRole.LEFT_FOOT)
-						&& bridge.getShareSetting(TrackerRole.RIGHT_FOOT),
-					bridge.getShareSetting(TrackerRole.LEFT_KNEE)
-						&& bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
-					bridge.getShareSetting(TrackerRole.LEFT_ELBOW)
-						&& bridge.getShareSetting(TrackerRole.RIGHT_ELBOW),
-					bridge.getShareSetting(TrackerRole.LEFT_HAND)
-						&& bridge.getShareSetting(TrackerRole.RIGHT_HAND),
-					bridge.getAutomaticSharedTrackers()
+					bridge.getAutomaticSharedTrackers(),
+
+					bridge.getShareSetting(TrackerRole.LEFT_FOOT),
+					bridge.getShareSetting(TrackerRole.RIGHT_FOOT),
+					bridge.getShareSetting(TrackerRole.LEFT_KNEE),
+					bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
+					bridge.getShareSetting(TrackerRole.LEFT_ELBOW),
+					bridge.getShareSetting(TrackerRole.RIGHT_ELBOW),
+					bridge.getShareSetting(TrackerRole.LEFT_HAND),
+					bridge.getShareSetting(TrackerRole.RIGHT_HAND)
 				);
 		}
 		return steamvrTrackerSettings;
