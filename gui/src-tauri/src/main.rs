@@ -270,7 +270,7 @@ fn main() -> Result<()> {
 	match build_result {
 		Ok(app) => {
 			app.run(move |app_handle, event| match event {
-				RunEvent::ExitRequested { .. } => {
+				RunEvent::Exit => {
 					let window_state = app_handle.state::<Mutex<WindowState>>();
 					let lock = window_state.lock().unwrap();
 					let config_dir = app_handle.path().app_config_dir().unwrap();

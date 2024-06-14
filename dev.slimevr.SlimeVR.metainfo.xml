@@ -13,7 +13,7 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
   <id>dev.slimevr.SlimeVR</id>
 
   <name>SlimeVR</name>
-  <summary>An app for facilitating full-body tracking in virtual reality</summary>
+  <summary>Accessible full-body tracking in VR</summary>
   <developer_name>SlimeVR Team</developer_name>
 
   <!-- CC0 so attribution is not required -->
@@ -40,7 +40,8 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
   </supports>
 
   <branding>
-    <color type="primary">#663499</color>
+    <color type="primary" scheme_preference="light">#BB8AE5</color>
+    <color type="primary" scheme_preference="dark">#663499</color>
   </branding>
 
   <description>
@@ -53,7 +54,7 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
   <launchable type="desktop-id">dev.slimevr.SlimeVR.desktop</launchable>
   <screenshots>
-    <screenshot type="default">
+    <screenshot type="default" xml:lang="en">
       <caption>The onboarding for the GUI</caption>
       <image>https://raw.githubusercontent.com/SlimeVR/SlimeVR-Server/main/assets/img/onboarding.png</image>
     </screenshot>
