@@ -191,7 +191,7 @@ fn main() -> Result<()> {
 			)
 			.title("SlimeVR")
 			.inner_size(1289.0, 709.0)
-			.min_inner_size(393.0, 667.0)
+			.min_inner_size(util::MIN_WINDOW_SIZE_WIDTH, util::MIN_WINDOW_SIZE_HEIGHT)
 			.resizable(true)
 			.visible(true)
 			.decorations(false)
@@ -270,7 +270,7 @@ fn main() -> Result<()> {
 	match build_result {
 		Ok(app) => {
 			app.run(move |app_handle, event| match event {
-				RunEvent::ExitRequested { .. } => {
+				RunEvent::Exit => {
 					let window_state = app_handle.state::<Mutex<WindowState>>();
 					let lock = window_state.lock().unwrap();
 					let config_dir = app_handle.path().app_config_dir().unwrap();

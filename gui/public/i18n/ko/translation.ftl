@@ -19,10 +19,12 @@ version_update-close = 닫기
 
 ## Tips
 
-tips-find_tracker = 내 트래커가 어떤 트래커인지 모르시겠다구요? 트래커를 흔들면 해당 항목이 빛날 거예요.
+tips-find_tracker = 어떤 트래커가 어디에 대응되는지 모르겠나요? 트래커를 흔들면 해당 트래커에 해당되는 항목이 강조 표시됩니다.
 tips-do_not_move_heels = 기록하는 동안 발뒤꿈치가 움직이지 않도록 조심하세요!
-tips-file_select = 파일을 <u>열거나,</u> 여기에 드래그&드롭하세요.
-tips-tap_setup = 목록에서 트래커를 선택하는 대신 할당할 트래커를 천천히 2번 탭해서 선택할 수 있어요.
+tips-file_select = 파일을 <u>열거나</u>, 여기에 드래그&드롭하세요.
+tips-tap_setup = 목록에서 트래커를 선택하는 대신 트래커를 천천히 2번 탭해서 선택할 수 있어요.
+tips-turn_on_tracker = 공식 SlimeVR 트래커를 사용 중이신가요? 트래커를 <b><em>PC에 연결</em></b>하고 <b><em>전원을 키셔야</em></b> 해요.
+tips-failed_webgl = WebGL 초기화에 실패했습니다.
 
 ## Body parts
 
@@ -85,7 +87,7 @@ reset-yaw = Yaw 정렬
 
 ## Serial detection stuff
 
-serial_detection-new_device-p0 = 새로운 시리얼 디바이스를 찾았어요!
+serial_detection-new_device-p0 = 새로운 시리얼 디바이스 감지됨!
 serial_detection-new_device-p1 = Wi-Fi 자격 증명을 입력해주세요!
 serial_detection-new_device-p2 = 원하는 작업을 선택하세요
 serial_detection-open_wifi = Wi-Fi 연결
@@ -196,6 +198,7 @@ tracker-infos-hardware_rev = 하드웨어 리비전
 tracker-infos-hardware_identifier = 하드웨어 ID
 tracker-infos-imu = IMU 센서
 tracker-infos-board_type = 메인보드
+tracker-infos-network_version = 프로토콜 버전
 
 ## Tracker settings
 
@@ -215,6 +218,9 @@ tracker-settings-drift_compensation_section-edit = 틀어짐 보정 사용
 tracker-settings-name_section = 트래커 이름
 tracker-settings-name_section-description = 귀여운 이름을 지어주세요! >_<
 tracker-settings-name_section-placeholder = NightyBeast's left leg
+tracker-settings-forget = 트래커 삭제
+tracker-settings-forget-description = SlimeVR 서버에서 트래커를 제거하고 서버를 다시 시작할 때까지 자동으로 연결하지 않아요. 트래커의 설정은 지워지지 않아요.
+tracker-settings-forget-label = 트래커 삭제
 
 ## Tracker part card info
 
@@ -281,7 +287,7 @@ mounting_selection_menu-close = 닫기
 settings-sidebar-title = 설정
 settings-sidebar-general = 일반
 settings-sidebar-tracker_mechanics = 트래커 역학
-settings-sidebar-fk_settings = FK 설정
+settings-sidebar-fk_settings = 트래킹 설정
 settings-sidebar-gesture_control = 제스처 제어
 settings-sidebar-interface = 인터페이스
 settings-sidebar-osc_router = OSC 라우터
@@ -302,12 +308,24 @@ settings-general-steamvr-subtitle = SteamVR 트래커
 settings-general-steamvr-description =
     SteamVR 트래커를 켜거나 끄세요
     특정 트래커 구성만 허용하는 게임 또는 앱에서 유용해요.
-settings-general-steamvr-trackers-waist = Waist
-settings-general-steamvr-trackers-chest = Chest
-settings-general-steamvr-trackers-feet = Feet
-settings-general-steamvr-trackers-knees = Knees
-settings-general-steamvr-trackers-elbows = Elbows
-settings-general-steamvr-trackers-hands = Hands
+settings-general-steamvr-trackers-waist = 허리
+settings-general-steamvr-trackers-chest = 가슴
+settings-general-steamvr-trackers-left_foot = 왼발
+settings-general-steamvr-trackers-right_foot = 오른발
+settings-general-steamvr-trackers-left_knee = 왼쪽 무릎
+settings-general-steamvr-trackers-right_knee = 오른쪽 무릎
+settings-general-steamvr-trackers-left_elbow = 왼쪽 팔꿈치
+settings-general-steamvr-trackers-right_elbow = 오른쪽 팔꿈치
+settings-general-steamvr-trackers-left_hand = 왼손
+settings-general-steamvr-trackers-right_hand = 오른손
+settings-general-steamvr-trackers-tracker_toggling = 자동 트래커 할당
+settings-general-steamvr-trackers-tracker_toggling-description = 지정한 트래커 할당 상태에 따라 SteamVR 트래커를 자동으로 켜고 끄기
+settings-general-steamvr-trackers-tracker_toggling-label = 자동 트래커 할당
+settings-general-steamvr-trackers-hands-warning =
+    <b>경고:</b> 핸드 트래커를 사용하면 VR 컨트롤러가 작동하지 않아요. 
+    그래도 사용할까요?
+settings-general-steamvr-trackers-hands-warning-cancel = 취소
+settings-general-steamvr-trackers-hands-warning-done = 확인
 
 ## Tracker mechanics
 
@@ -325,6 +343,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = 움직
 settings-general-tracker_mechanics-filtering-type-prediction = Prediction
 settings-general-tracker_mechanics-filtering-type-prediction-description = 대기 시간이 줄어들고 움직임이 더 빨라지지만 지터가 증가할 수 있어요.
 settings-general-tracker_mechanics-filtering-amount = 강도
+settings-general-tracker_mechanics-yaw-reset-smooth-time = 부드러운 Yaw 리셋 작용 시간 (0초는 부드러운 Yaw 리셋을 비활성화 합니다)
 settings-general-tracker_mechanics-drift_compensation = 틀어짐 보정
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
@@ -333,6 +352,11 @@ settings-general-tracker_mechanics-drift_compensation-description =
 settings-general-tracker_mechanics-drift_compensation-enabled-label = 틀어짐 보정
 settings-general-tracker_mechanics-drift_compensation-amount-label = 보정 강도
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = 보정에 사용할 최근 정렬 횟수
+settings-general-tracker_mechanics-save_mounting_reset = 자동 착용 방향 정렬 보정값 저장
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    트래커의 자동 마운팅 리셋 보정값을 저장합니다. 트래커들의 위치가 고정된 
+    모션 캡처 슈트 같은 것을 사용할 때 유용합니다. <b>일반 사용자들에게는 권장되지 않아요!</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = 착용 방향 정렬 저장
 
 ## FK/Tracking settings
 
@@ -447,6 +471,9 @@ settings-general-interface-feedback_sound-volume = 피드백 사운드 음량
 settings-general-interface-connected_trackers_warning = 작동 중인 트래커 경고
 settings-general-interface-connected_trackers_warning-description = 이 옵션은 트래커가 연결되어 있는 채로 SlimeVR을 종료하려고 할 때 팝업을 표시합니다. 그렇게 하면 실수로 트래커를 끄지 않아 배터리가 방전되는 일을 예방할 수 있어요.
 settings-general-interface-connected_trackers_warning-label = 종료 시 작동 중인 트래커 경고 활성화
+settings-general-interface-use_tray = 작업 표시줄로 최소화
+settings-general-interface-use_tray-description = SlimeVR 서버를 닫지 않고 창만 닫을 수 있게 하여 사용 시 항상 GUI를 띄워 놓을 필요가 없게 해요.
+settings-general-interface-use_tray-label = 작업 표시줄로 최소화
 
 ## Serial settings
 
@@ -468,6 +495,7 @@ settings-serial-factory_reset-warning-cancel = 취소
 settings-serial-get_infos = 정보 가져오기
 settings-serial-serial_select = 시리얼 포트 선택
 settings-serial-auto_dropdown_item = 자동
+settings-serial-get_wifi_scan = WiFi 검색
 
 ## OSC router settings
 
@@ -483,7 +511,7 @@ settings-osc-router-network = 네트워크 포트
 # This cares about multilines
 settings-osc-router-network-description =
     데이터 수신 및 전송을 위한 포트 설정
-    이들은 SlimeVR 서버에서 사용되는 다른 포트와 동일할 수 있어요.
+    이들은 SlimeVR 서버에서 사용되는 다른 포트와 동일해도 돼요.
 settings-osc-router-network-port_in =
     .label = 들어오는 포트
     .placeholder = Port in (기본값: 9002)
@@ -499,10 +527,10 @@ settings-osc-router-network-address-placeholder = IPV4 주소
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
 settings-osc-vrchat-description =
-    HMD 데이터 수신 및 전송을 위한 VRChat 관련 설정 변경
-    FBT용 트래커 데이터(Quest 단독에서 작동)
+    헤드셋 (HMD) 데이터를 수신하고 SteamVR 없이도 (예: Quest 단독 사용)
+    트래커 정보를 전송하도록 VRChat 관련 설정을 변경
 settings-osc-vrchat-enable = 활성화
-settings-osc-vrchat-enable-description = 활성화해서 데이터 송수신
+settings-osc-vrchat-enable-description = 데이터 송/수신 활성화
 settings-osc-vrchat-enable-label = 활성화
 settings-osc-vrchat-network = 네트워크 포트
 settings-osc-vrchat-network-description = VRChat과 데이터를 주고받는 포트 설정
@@ -516,7 +544,7 @@ settings-osc-vrchat-network-address = 네트워크 주소
 settings-osc-vrchat-network-address-description = VRChat으로 데이터를 보낼 주소를 선택하세요(장치의 Wi-Fi 설정 확인).
 settings-osc-vrchat-network-address-placeholder = VRChat IP 주소
 settings-osc-vrchat-network-trackers = 트래커
-settings-osc-vrchat-network-trackers-description = 활성화해서 데이터 송수신
+settings-osc-vrchat-network-trackers-description = OSC를 통한 특정 트래커의 전송 여부 설정
 settings-osc-vrchat-network-trackers-chest = Chest
 settings-osc-vrchat-network-trackers-hip = 골반
 settings-osc-vrchat-network-trackers-knees = Knees
@@ -528,8 +556,8 @@ settings-osc-vrchat-network-trackers-elbows = Elbows
 settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
-    SlimeVR의 본 데이터를 보내고 다른 앱에서 본 데이터를 수신하려면
-    VMC(Virtual Motion Capture) 프로토콜 설정을 변경하세요.
+    SlimeVR의 골격 데이터를 보내고 다른 앱에서 이 데이터를 수신하기 위해
+    VMC(Virtual Motion Capture) 프로토콜 설정을 변경합니다.
 settings-osc-vmc-enable = 활성화
 settings-osc-vmc-enable-description = 활성화해서 데이터 송수신
 settings-osc-vmc-enable-label = 활성화
@@ -545,7 +573,7 @@ settings-osc-vmc-network-address = 네트워크 주소
 settings-osc-vmc-network-address-description = 데이터를 받을 VMC 클라이언트의 주소
 settings-osc-vmc-network-address-placeholder = IPV4 주소
 settings-osc-vmc-vrm = VRM 모델
-settings-osc-vmc-vrm-description = VRM 모델을 로드할 때 헤드 앵커를 허용하고 다른 애플리케이션과 더 높은 호환성을 가능하게 해요.
+settings-osc-vmc-vrm-description = VRM 모델을 로드할 때 헤드 앵커를 허용하고 다른 애플리케이션과의 호환성을 높여줘요.
 settings-osc-vmc-vrm-model_unloaded = 로드된 모델이 없어요
 settings-osc-vmc-vrm-model_loaded =
     { $titled ->
@@ -564,8 +592,8 @@ onboarding-continue = 계속하기
 onboarding-wip = 아직 공사중이에요!
 onboarding-previous_step = 이전 단계
 onboarding-setup_warning =
-    <b>주의:</b> SlimeVR을 처음 설정하고 계시다면...
-    트래커가 올바르게 움직이기 위해 이 초기 설정이 필요해요
+    <b>주의:</b> 더 좋은 추적을 위해서는 초기 설정이 필요해요.
+    SlimeVR을 처음 사용하는 경우에도 필요합니다.
 onboarding-setup_warning-skip = 설정 건너뛰기
 onboarding-setup_warning-cancel = 설정 계속하기
 
@@ -590,13 +618,12 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = 착용 방향 정렬로 돌아가기
 onboarding-reset_tutorial = 정렬 튜토리얼
-onboarding-reset_tutorial-explanation =
-    트래커를 사용하다 보면 Yaw 드리프트 또는 트래커가 미끄러져서 틀어짐이 발생할 수 있어요. 
-    지금부터 그런 문제를 해결하는 방법을 알려 드릴게요.
+onboarding-reset_tutorial-explanation = 트래커를 사용하다 보면 IMU의 yaw 드리프트 또는 트래커의 위치가 달라져서 틀어짐이 발생할 수 있어요. 이러한 문제들을 해결하는 몇 가지 방법을 알려 드릴게요.
 onboarding-reset_tutorial-skip = 무시하고 건너뛰기
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Yaw 정렬을 시도하려면 강조된 트래커를 { $taps }번 탭하세요.
+    
     그러면 트래커는 HMD가 바라보는 면과 같은 방향으로 정렬될 거예요.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
@@ -634,17 +661,17 @@ onboarding-done-close = 마법사 닫기
 
 onboarding-connect_tracker-back = Wi-Fi 자격 증명으로 돌아가기
 onboarding-connect_tracker-title = 트래커 연결
-onboarding-connect_tracker-description-p0 = 이제 모든 트래커를 연결하는 재미있는 부분으로 가봐요!
-onboarding-connect_tracker-description-p1 = 그냥 모든 트래커를 USB 포트에 연결하기만 하면 돼요
+onboarding-connect_tracker-description-p0-v1 = 이제 트래커를 연결하는 재미있는 부분으로 가봐요!
+onboarding-connect_tracker-description-p1-v1 = USB 포트를 통해 트래커들을 한 개씩 컴퓨터에 연결해 주세요.
 onboarding-connect_tracker-issue-serial = 연결하는 데 문제가 생겼어요!
 onboarding-connect_tracker-usb = USB 트래커
 onboarding-connect_tracker-connection_status-none = 트래커 찾는 중
 onboarding-connect_tracker-connection_status-serial_init = 시리얼 디바이스에 연결 중
 onboarding-connect_tracker-connection_status-provisioning = Wi-Fi 자격 증명 전송 중
-onboarding-connect_tracker-connection_status-connecting = Wi-Fi 자격증명 전송 중
+onboarding-connect_tracker-connection_status-connecting = Wi-Fi 연결 시도 중
 onboarding-connect_tracker-connection_status-looking_for_server = 서버 찾는 중
 onboarding-connect_tracker-connection_status-connection_error = Wi-Fi에 연결할 수 없음
-onboarding-connect_tracker-connection_status-could_not_find_server = 서버를 찾을 수 없어요
+onboarding-connect_tracker-connection_status-could_not_find_server = 서버를 찾을 수 없음
 onboarding-connect_tracker-connection_status-done = 서버에 연결됨
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
@@ -656,28 +683,26 @@ onboarding-connect_tracker-connected_trackers =
         [0] 연결된 트래커가 없어요.
        *[other] 트래커 { $amount }개가 연결되었어요.
     }
-onboarding-connect_tracker-next = 모든 트래커를 잘 연결했어요
+onboarding-connect_tracker-next = 트래커를 모두 연결했어요
 
 ## Tracker calibration tutorial
 
-onboarding-calibration_tutorial = IMU 캘리브레이션 튜토리얼
+onboarding-calibration_tutorial = IMU 보정 튜토리얼
 onboarding-calibration_tutorial-subtitle = 트래커 틀어짐을 줄이는 데 도움이 될 거예요!
-onboarding-calibration_tutorial-description =
-    매번 트래커의 전원을 켤 때마다 평평한 바닥에 트래커를 두고 잠시 기다려서 보정을 수행해야 해요. <b>(트래커를 움직이지 마세요!)</b>
-    어떻게 하면 되는지 "{ onboarding-calibration_tutorial-calibrate }"를 눌러 같이 따라해보죠!
-onboarding-calibration_tutorial-calibrate = 트래커들을 책상에 올려놓았습니다
+onboarding-calibration_tutorial-description = 매번 트래커의 전원을 켤 때마다 평평한 바닥에 트래커를 두고 잠시 기다려서 트래커를 보정해야 해요. 이번엔 "{ onboarding-calibration_tutorial-calibrate }"를 눌러서 직접 보정해 보죠. <b>(트래커를 움직이지 마세요!)</b>
+onboarding-calibration_tutorial-calibrate = 트래커들을 모두 올려뒀어요
 onboarding-calibration_tutorial-status-waiting = 대기 중
-onboarding-calibration_tutorial-status-calibrating = 캘리브레이팅
+onboarding-calibration_tutorial-status-calibrating = 보정 중
 onboarding-calibration_tutorial-status-success = 좋아요!
 onboarding-calibration_tutorial-status-error = 트래커가 움직였습니다
 
 ## Tracker assignment tutorial
 
-onboarding-assignment_tutorial = 슬라임 트래커를 착용하기 전에 준비하는 방법
+onboarding-assignment_tutorial = Slime 트래커를 착용하기 전에 준비하는 방법
 onboarding-assignment_tutorial-first_step = 1. 신체 부위가 적힌 스티커를 가지고 있다면 트래커에 붙여보세요
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = 스티커
-onboarding-assignment_tutorial-second_step-v2 = 스트랩의 벨크로 접착면이 Slime 얼굴 그림 쪽을 향하게 끼워주세요:
+onboarding-assignment_tutorial-second_step-v2 = 2. 스트랩을 트래커에 장착하되, 벨크로 접착면이 트래커의 Slime 얼굴과 같은 방향을 바라보도록 해 주세요:
 onboarding-assignment_tutorial-second_step-continuation-v2 = 확장 모듈의 벨크로 접착면이 다음 이미지처럼 위를 바라봐야 합니다:
 onboarding-assignment_tutorial-done = 스트랩과 스티커를 트래커에 잘 부착했어요!
 
@@ -692,6 +717,7 @@ onboarding-assign_trackers-description = 이제, 어떤 트래커가 어디에 �
 onboarding-assign_trackers-assigned = 트래커 { $trackers }개 중 { $assigned }개 연결됨
 onboarding-assign_trackers-advanced = 고급 할당 위치 보기
 onboarding-assign_trackers-next = 모든 트래커를 배치했어요
+onboarding-assign_trackers-mirror_view = 좌우 반전
 
 ## Tracker assignment warnings
 
@@ -763,20 +789,20 @@ onboarding-assign_trackers-warning-WAIST =
 
 ## Tracker mounting method choose
 
-onboarding-choose_mounting = 착용 방향을 정렬하기 위해 어떤 방법을 사용할래요?
+onboarding-choose_mounting = 착용 방향 보정을 위해 어떤 방법을 사용할까요?
 # Multiline text
 onboarding-choose_mounting-description = 착용 방향 정렬은 트래커가 몸에 착용된 방향을 찾아 수정하도록 도와줘요.
 onboarding-choose_mounting-auto_mounting = 자동으로 방향 설정
 # Italized text
 onboarding-choose_mounting-auto_mounting-label = 실험적
-onboarding-choose_mounting-auto_mounting-description = 이렇게 하면 두 가지 자세로 모든 트래커의 착용 방향을 자동으로 설정할 수 있어요
+onboarding-choose_mounting-auto_mounting-description = 이렇게 하면 2가지 자세로 모든 트래커의 착용 방향을 자동으로 설정할 수 있어요
 onboarding-choose_mounting-manual_mounting = 수동으로 방향 설정
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = 권장됨
 onboarding-choose_mounting-manual_mounting-description = 이렇게 하면 각 트래커의 착용 방향을 직접 고를 수 있어요
 # Multiline text
 onboarding-choose_mounting-manual_modal-title = 자동으로 착용 방향을 설정하시겠어요?
-onboarding-choose_mounting-manual_modal-description = 자동 착용 방향 정렬은 복잡한 자세와 올바르게 설정된 트래커가 필요하기 때문에 처음 사용하시는 분에게는 조금 어려울 수 있어요. 그래서 <b>수동 착용 방향 정렬을 추천드려요!</b>
+onboarding-choose_mounting-manual_modal-description = 자동 착용 방향 정렬은 복잡한 자세와 올바르게 설정된 트래커가 필요하기 때문에 처음 사용하시는 분에게는 조금 어려울 수 있어요. <b>처음 이용하시는 분들께는 수동 착용 방향 정렬을 추천드려요!</b>
 onboarding-choose_mounting-manual_modal-confirm = 네, 알고 있어요!
 onboarding-choose_mounting-manual_modal-cancel = 취소
 
@@ -792,7 +818,7 @@ onboarding-manual_mounting-next = 다음 단계
 
 onboarding-automatic_mounting-back = VR 입장 페이지로 돌아가기
 onboarding-automatic_mounting-title = 착용 방향 정렬
-onboarding-automatic_mounting-description = SlimeVR 트래커가 작동하려면, 착용 방향을 정해야 해요. 이 단계에서는 실제 트래커의 회전과 맞게 착용 방향을 정렬할 거예요.
+onboarding-automatic_mounting-description = SlimeVR 트래커가 작동하려면, 실제 트래커의 장착 위치와 맞게 트래커의 착용 방향을 설정해야 해요.
 onboarding-automatic_mounting-manual_mounting = 수동으로 착용 방향 설정
 onboarding-automatic_mounting-next = 다음 단계
 onboarding-automatic_mounting-prev_step = 이전 단계
@@ -800,22 +826,23 @@ onboarding-automatic_mounting-done-title = 착용 방향이 정렬되었어요
 onboarding-automatic_mounting-done-description = 트래커의 착용 방향이 잘 설정되었어요!
 onboarding-automatic_mounting-done-restart = 다시 처음으로 돌아가기
 onboarding-automatic_mounting-mounting_reset-title = 착용 방향 정렬
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. 팔, 다리를 구부린 다음 상체를 앞으로 기울여서 마치 스키를 타는 것처럼 쪼그리고 앉으세요.
+onboarding-automatic_mounting-mounting_reset-step-0 = 1. 팔, 다리를 구부린 다음 상체를 앞으로 기울여서 마치 스키를 타는 것처럼 몸을 굽혀 낮추세요.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. "착용 방향 재설정" 버튼을 누르고 착용 방향이 재설정될 때 까지 3초간 기다려주세요.
 onboarding-automatic_mounting-preparation-title = 준비
 onboarding-automatic_mounting-preparation-step-0 = 1. 팔을 몸에 붙이고 똑바로 서 주세요
 onboarding-automatic_mounting-preparation-step-1 = 2. "전체 정렬" 버튼을 누르고 트래커가 정렬될 때까지 3초간 기다려주세요.
 onboarding-automatic_mounting-put_trackers_on-title = 트래커를 착용해주세요
-onboarding-automatic_mounting-put_trackers_on-description = 트래커의 착용 방향이 돌아가는 것을 보정하기 위해 방금 할당한 트래커를 사용할 거예요. 모든 트래커를 착용했다면 오른쪽 그림에서 어떤 트래커인지 확인할 수 있어요.
+onboarding-automatic_mounting-put_trackers_on-description = 트래커의 착용 방향을 보정하기 위해 방금 할당한 트래커들을 사용할 거예요. 모든 트래커를 착용했다면 오른쪽 그림에서 각각의 트래커가 어떤 위치에 있는지 확인할 수 있어요.
 onboarding-automatic_mounting-put_trackers_on-next = 모든 트래커를 착용했어요
 
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = 신체 비율을 설정하기 위해 어떤 방법을 사용할래요?
 # Multiline string
-onboarding-choose_proportions-description =
-    신체 비율은 신체 각 부분의 길이를 파악하는데 사용됩니다. 이 값은 트래커의 위치를 정확히 계산하기 위해 필수적입니다.
-    신체 비율이 저장된 비율과 일치하지 않으면 추적 정밀도가 떨어지고 스케이트를 타거나 미끄러지는 것처럼 보이고 아바타와 실제 몸이 잘 일치하지 않을 수 있어요.
+onboarding-choose_proportions-description-v1 =
+    신체 비율은 사용자의 신체 치수를 추산하기 위해 사용됩니다. 계산된 신체 치수는 트래커의 위치를 계산하는 데 사용됩니다.
+    설정된 신체 비율과 실제 신체 비율이 다를 경우, 트래킹 정확도가 훨씬 낮아질 수 있으며 사용 중 스케이팅, 슬라이딩, 또는 아바타와 신체 동작이 일치하지 않게 되는 경우가 발생할 수 있어요.
+    <b>신체 비율 측정은 한 번이면 충분해요!</b> 측정치가 부정확하거나 신체 비율이 달라진 경우를 제외하고는 다시 측정할 필요가 없어요.
 onboarding-choose_proportions-auto_proportions = 자동으로 비율 설정
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = 권장
@@ -857,12 +884,15 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     VR 헤드셋을 착용하세요.
     VR 헤드셋과 컨트롤러의 위치 정보가 SlimeVR 서버에 실시간으로 표시되는지 확인하세요.
     SlimeVR 서버에 연결된 트래커와 VR 헤드셋이 끊김이나 렉 없이 제대로 표시되는지 확인하세요. (이것은 SteamVR이 실행 중이며 SlimeVR의 SteamVR 드라이버를 사용하여 SlimeVR에 올바르게 연결되어 있다는 것을 의미합니다)
-    트래커의 제대로 작동하고 나의 움직임을 올바르게 반영중인지 확인하세요. (예: 전체 정렬을 수행했으며 발차기, 허리 숙이기, 앉기 등 올바른 방향으로 움직임)
+    트래커가 제대로 작동하고 나의 움직임을 올바르게 반영중인지 확인하세요. (예: 전체 정렬을 수행했으며 발차기, 허리 숙이기, 앉기 등 올바른 방향으로 움직임)
 onboarding-automatic_proportions-requirements-next = 요구사항을 모두 읽었어요
 onboarding-automatic_proportions-check_height-title = 키를 확인하세요
 onboarding-automatic_proportions-check_height-description = 이 과정에서는 VR 헤드셋(HMD)의 높이를 사용하여 실제 키의 대략적인 값으로 삼고, 이를 측정의 기준으로 활용합니다. 하지만 직접 확인하는 것이 더 정확해요!
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = 버튼을 누른 후 3초 이내에 <u>바르게 서서</u> 키를 측정해 주세요!
+onboarding-automatic_proportions-check_height-guardian_tip =
+    독립형 VR 헤드셋을 사용하는 경우, 꼭 보호자와 함께하셔야 하고
+    높이가 정확하도록 플레이 영역을 설정하는 것을 잊지 말아주세요!
 onboarding-automatic_proportions-check_height-fetch_height = 서 있어요!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 알 수 없음
@@ -880,7 +910,7 @@ onboarding-automatic_proportions-recording-description-p1 = 아래에 표시된 
 # Each line of text is a different list item
 onboarding-automatic_proportions-recording-steps =
     자리에서 똑바로 일어나서, 머리를 원을 그리듯이 움직이세요. 
-    등을 앞으로 구부리고 쪼그리고 앉으세요. 그대로 왼쪽을 바라본 다음 오른쪽을 바라보세요.
+    등을 앞으로 구부리고 스쿼트를 하듯이 몸을 낮추세요. 그대로 왼쪽을 바라본 다음 오른쪽을 바라보세요.
     상체를 왼쪽(시계 반대 방향)으로 비틀어서 바닥을 향해 손을 뻗으세요.
     상체를 오른쪽(시계 방향)으로 비틀어서 바닥을 향해 손을 뻗으세요.
     훌라후프를 사용하는 것처럼 골반을 원을 그리며 굴리세요.
@@ -924,3 +954,31 @@ status_system-StatusSteamVRDisconnected =
        *[other] SlimeVR 드라이버가 SteamVR과 연결되지 않음
     }
 status_system-StatusTrackerError = { $trackerName } 트래커에 문제가 발생했어요.
+
+## Tray Menu
+
+tray_menu-show = 열기
+tray_menu-hide = 숨기기
+tray_menu-quit = 종료
+
+## First exit modal
+
+tray_or_exit_modal-title = 닫기 버튼이 무엇을 하도록 할까요?
+# Multiline text
+tray_or_exit_modal-description =
+    이 옵션은 닫기 버튼을 누를 때 서버를 종료할지 또는 시스템 트레이로 최소화할지를 결정합니다.
+    
+    언제든지 설정의 인터페이스 탭에서 변경하실 수 있어요!
+tray_or_exit_modal-radio-exit = SlimeVR 종료하기
+tray_or_exit_modal-radio-tray = 작업 표시줄로 최소화
+tray_or_exit_modal-submit = 저장
+tray_or_exit_modal-cancel = 취소
+
+## Unknown device modal
+
+unknown_device-modal-title = 새로운 트래커를 찾았어요!
+unknown_device-modal-description =
+    <b>{ $deviceID }</b>의 MAC 주소를 가진 새로운 트래커를 발견했어요.
+    SlimeVR에 연결할까요?
+unknown_device-modal-confirm = 당연하죠!
+unknown_device-modal-forget = 무시할게요
