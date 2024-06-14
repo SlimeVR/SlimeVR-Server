@@ -185,36 +185,36 @@ jobs:
           pnpm i
           pnpm run tauri build
 
+      - name: Make GUI tarball
+        run: |
+          tar czf slimevr-gui-dist.tar.gz -C gui/dist/ .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SlimeVR-GUI-Dist
+          path: ./slimevr-gui-dist.tar.gz
+
       - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-Deb
           path: target/release/bundle/deb/slimevr*.deb
-
-      - name: Install appimage-builder
-        run: |
-          wget "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
-          chmod a+x appimagetool-x86_64.AppImage
-          sudo mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
-
-      - name: Modify and Build AppImage
-        run: |
-          cd target/release/bundle/appimage
-          chmod a+x slimevr*.AppImage
-          ./slimevr*.AppImage --appimage-extract
-          cp $( git rev-parse --show-toplevel )/server/desktop/build/libs/slimevr.jar squashfs-root/slimevr.jar
-          chmod 644 squashfs-root/slimevr.jar
-          appimagetool squashfs-root slimevr*.AppImage
 
       - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-AppImage
           path: target/release/bundle/appimage/slimevr*.AppImage
 
+      - uses: actions/upload-artifact@v4
+        with:
+            name: SlimeVR-GUI-RPM
+            path: target/release/bundle/rpm/slimevr*.rpm
+
       - name: Prepare for release
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           cp target/release/bundle/appimage/slimevr*.AppImage ./SlimeVR-amd64.appimage
           cp target/release/bundle/deb/slimevr*.deb ./SlimeVR-amd64.deb
+          cp target/release/bundle/rpm/slimevr*.rpm ./SlimeVR-amd64.rpm
 
       - name: Upload to draft release
         uses: softprops/action-gh-release@v2
@@ -223,8 +223,10 @@ jobs:
           draft: true
           generate_release_notes: true
           files: |
+            ./slimevr-gui-dist.tar.gz
             ./SlimeVR-amd64.appimage
             ./SlimeVR-amd64.deb
+            ./SlimeVR-amd64.rpm
 
 
   bundle-mac:
@@ -338,9 +340,6 @@ jobs:
           cp target/release/slimevr.exe ./SlimeVR/
           7z a -tzip SlimeVR-win64.zip ./SlimeVR/
 
-          mv ./SlimeVR/slimevr.exe ./SlimeVR/slimevr-ui.exe
-          7z a -tzip SlimeVR.zip ./SlimeVR/
-
       - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-Windows
@@ -352,6 +351,4 @@ jobs:
         with:
           draft: true
           generate_release_notes: true
-          files: |
-            ./SlimeVR-win64.zip
-            ./SlimeVR.zip
+          files: ./SlimeVR-win64.zip
