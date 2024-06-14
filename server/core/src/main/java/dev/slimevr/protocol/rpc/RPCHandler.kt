@@ -461,7 +461,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val req = messageHeader
 			.message(SetPauseTrackingRequest()) as? SetPauseTrackingRequest ?: return
 
-		api.server.humanPoseManager.setPauseTracking(req.pauseTracking(), RESET_SOURCE_NAME)
+		api.server.setPauseTracking(req.pauseTracking(), RESET_SOURCE_NAME)
 	}
 
 	fun onHeightRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {

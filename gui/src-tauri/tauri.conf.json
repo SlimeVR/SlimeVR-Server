@@ -14,10 +14,23 @@
         ],
         "files": {
           "/usr/share/slimevr/slimevr.jar": "../../server/desktop/build/libs/slimevr.jar"
-        }
+        },
+        "desktopTemplate": "./dev.slimevr.SlimeVR.desktop"
       },
       "appimage": {
-        "bundleMediaFramework": true
+        "bundleMediaFramework": true,
+        "files": {
+          "/usr/share/slimevr/slimevr.jar": "../../server/desktop/build/libs/slimevr.jar"
+        }
+      },
+      "rpm": {
+        "depends": [
+          "java-17-openjdk"
+        ],
+        "files": {
+          "/usr/share/slimevr/slimevr.jar": "../../server/desktop/build/libs/slimevr.jar"
+        },
+        "desktopTemplate": "./dev.slimevr.SlimeVR.desktop"
       }
     },
     "category": "DeveloperTool",

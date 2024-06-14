@@ -62,7 +62,7 @@ pub fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 	let paths = [
 		cli.launch_from_path,
 		// AppImage passes the fakeroot in `APPDIR` env var.
-		env::var_os("APPDIR").map(PathBuf::from),
+		env::var_os("APPDIR").map(|a| PathBuf::from(a).join("usr/share/slimevr/")),
 		env::current_dir().ok(),
 		// getcwd in Mac can't be trusted, so let's get the executable's path
 		env::current_exe()
