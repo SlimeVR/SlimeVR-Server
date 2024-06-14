@@ -183,7 +183,7 @@ jobs:
       - name: Build
         run: |
           pnpm i
-          pnpm run tauri build
+          pnpm run tauri build --config $( ./gui/scripts/gitversion.mjs )
 
       - name: Make GUI tarball
         run: |
@@ -259,7 +259,7 @@ jobs:
         run: |
           rustup target add x86_64-apple-darwin
           pnpm i
-          pnpm run tauri build --target universal-apple-darwin
+          pnpm run tauri build --target universal-apple-darwin --config $( ./gui/scripts/gitversion.mjs )
 
       - name: Modify Application
         run: |
@@ -331,9 +331,10 @@ jobs:
         run: cargo clean
 
       - name: Build
+        shell: bash
         run: |
           pnpm i
-          pnpm run skipbundler
+          pnpm run skipbundler --config $( ./gui/scripts/gitversion.mjs )
 
       - name: Bundle to zips
         shell: bash
