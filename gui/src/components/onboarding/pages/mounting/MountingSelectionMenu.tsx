@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import { useMemo } from 'react';
 import ReactModal from 'react-modal';
 import { useElemSize, useLayout } from '@/hooks/layout';
 import { Button } from '@/components/commons/Button';
@@ -142,7 +141,7 @@ function PieSliceOfFeet({
         d={d}
         className={classNames(
           'fill-background-40 opacity-50 stroke-background-90',
-          'group-hover:fill-background-30 group-active:fill-background-20',
+          'group-hover:fill-background-30 group-active:fill-background-20'
         )}
         transform="translate(125 125)"
         id={id}
@@ -158,7 +157,7 @@ function PieSliceOfFeet({
           'stroke-none group-hover:fill-accent-background-20',
           currRotation && similarQuaternions(currRotation, direction)
             ? 'fill-background-90'
-            : 'fill-none',
+            : 'fill-none'
         )}
       >
         <SlimeUpIcon width={trackerWidth}></SlimeUpIcon>
