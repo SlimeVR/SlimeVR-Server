@@ -201,6 +201,8 @@ fn main() -> Result<()> {
 			.visible(true)
 			.decorations(false)
 			.fullscreen(false)
+			// This allows drag & drop via HTML5 for Windows
+			.disable_drag_drop_handler()
 			.build()?;
 			if window_state.is_old() {
 				window_state.update_window(&window.as_ref().window(), false)?;
