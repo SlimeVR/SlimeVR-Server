@@ -201,6 +201,8 @@ fn main() -> Result<()> {
 			.visible(true)
 			.decorations(false)
 			.fullscreen(false)
+			// This allows drag & drop via HTML5 for Windows
+			.disable_drag_drop_handler()
 			.build()?;
 			if window_state.is_old() {
 				window_state.update_window(&window.as_ref().window(), false)?;
@@ -268,8 +270,8 @@ fn main() -> Result<()> {
 				}
 			}
 			// See https://github.com/tauri-apps/tauri/issues/4012#issuecomment-1449499149
-			#[cfg(windows)]
-			WindowEvent::Resized(_) => std::thread::sleep(std::time::Duration::from_nanos(1)),
+			// #[cfg(windows)]
+			// WindowEvent::Resized(_) => std::thread::sleep(std::time::Duration::from_nanos(1)),
 			_ => (),
 		})
 		.build(tauri_context);
