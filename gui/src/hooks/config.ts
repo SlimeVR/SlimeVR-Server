@@ -13,6 +13,14 @@ export interface WindowConfig {
   y: number;
 }
 
+export enum AssignMode {
+  LowerBody = 'lower-body',
+  Core = 'core',
+  EnhancedCore = 'enhanced-core',
+  FullBody = 'full-body',
+  All = 'all',
+}
+
 export interface Config {
   debug: boolean;
   lang: string;
@@ -25,10 +33,11 @@ export interface Config {
   theme: string;
   textSize: number;
   fonts: string[];
-  advancedAssign: boolean;
   useTray: boolean | null;
   doneManualMounting: boolean;
   mirrorView: boolean;
+  assignMode: AssignMode;
+  discordPresence: boolean;
 }
 
 export interface ConfigContext {
@@ -50,10 +59,11 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   theme: 'slime',
   textSize: 12,
   fonts: ['poppins'],
-  advancedAssign: false,
   useTray: null,
   doneManualMounting: false,
   mirrorView: true,
+  assignMode: AssignMode.Core,
+  discordPresence: false,
 };
 
 interface CrossStorage {
@@ -103,8 +113,10 @@ export function useConfigProvider(): ConfigContext {
           const newConfig: Partial<Config> = JSON.parse(
             (await store.get('config.json')) ?? '{}'
           );
-          return Object.entries(config).every(
-            ([key, value]) => newConfig[key as keyof Config] === value
+          return Object.entries(config).every(([key, value]) =>
+            typeof value === 'object'
+              ? JSON.stringify(newConfig[key as keyof Config]) === JSON.stringify(value)
+              : newConfig[key as keyof Config] === value
           );
         },
         100,
@@ -116,8 +128,10 @@ export function useConfigProvider(): ConfigContext {
           const newConfig: Partial<Config> = JSON.parse(
             localStorage.getItem('config.json') ?? '{}'
           );
-          return Object.entries(config).every(
-            ([key, value]) => newConfig[key as keyof Config] === value
+          return Object.entries(config).every(([key, value]) =>
+            typeof value === 'object'
+              ? JSON.stringify(newConfig[key as keyof Config]) === JSON.stringify(value)
+              : newConfig[key as keyof Config] === value
           );
         },
         100,

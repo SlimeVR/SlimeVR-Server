@@ -7,4 +7,7 @@ class VMCConfig : OSCConfig() {
 
 	// JSON part of the VRM to be used
 	var vrmJson: String? = null
+
+	// Mirror the tracking before sending it (turn left <=> turn right, left leg <=> right leg)
+	var mirrorTracking = false
 }

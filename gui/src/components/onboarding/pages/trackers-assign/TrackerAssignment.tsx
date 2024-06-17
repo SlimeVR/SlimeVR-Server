@@ -24,15 +24,17 @@ import { CheckBox } from '@/components/commons/Checkbox';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import {
+  ASSIGNMENT_MODES,
   ASSIGNMENT_RULES,
   BodyAssignment,
   LOWER_BODY,
 } from '@/components/onboarding/BodyAssignment';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
-import { useConfig } from '@/hooks/config';
+import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
 import { playTapSetupSound } from '@/sounds/sounds';
 import { useBreakpoint } from '@/hooks/breakpoint';
+import { Radio } from '@/components/commons/Radio';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -46,27 +48,54 @@ interface FlatDeviceTrackerDummy {
   };
 }
 
+// Ordered collection of assign modes with the number of IMU trackers
+const ASSIGN_MODE_OPTIONS = [
+  AssignMode.LowerBody,
+  AssignMode.Core,
+  AssignMode.EnhancedCore,
+  AssignMode.FullBody,
+  AssignMode.All,
+].reduce(
+  (options, mode) => ({ ...options, [mode]: ASSIGNMENT_MODES[mode].length }),
+  {} as Record<AssignMode, number>
+);
+
 export function TrackersAssignPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { useAssignedTrackers, trackers } = useTrackers();
+  const { useAssignedTrackers, useConnectedIMUTrackers, trackers } =
+    useTrackers();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const defaultValues = {
-    advanced: config?.advancedAssign ?? false,
-    mirrorView: config?.mirrorView ?? true,
+    assignMode: config?.assignMode ?? defaultConfig.assignMode,
+    mirrorView: config?.mirrorView ?? defaultConfig.mirrorView,
   };
-  const { control, watch } = useForm<{
-    advanced: boolean;
+  const { control, watch, setValue } = useForm<{
+    assignMode: AssignMode;
     mirrorView: boolean;
   }>({ defaultValues });
-  const { advanced, mirrorView } = watch();
+  const { assignMode, mirrorView } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
   useEffect(() => {
-    setConfig({ advancedAssign: advanced, mirrorView });
-  }, [advanced, mirrorView]);
+    setConfig({ assignMode, mirrorView });
+  }, [assignMode, mirrorView]);
+
+  const connectedIMUTrackers = useConnectedIMUTrackers().length;
+  useEffect(() => {
+    if (connectedIMUTrackers <= ASSIGN_MODE_OPTIONS[assignMode]) return;
+
+    const selectedAssignMode =
+      (Object.entries(ASSIGN_MODE_OPTIONS).find(
+        ([_, count]) => count >= connectedIMUTrackers
+      )?.[0] as AssignMode) ?? AssignMode.All;
+
+    if (assignMode !== selectedAssignMode) {
+      setValue('assignMode', selectedAssignMode);
+    }
+  }, [connectedIMUTrackers, assignMode]);
 
   const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
     TapDetectionSettingsT,
@@ -290,13 +319,54 @@ export function TrackersAssignPage() {
                 </Typography>
               </div>
               <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
-              <div>
-                <CheckBox
-                  control={control}
-                  label={l10n.getString('onboarding-assign_trackers-advanced')}
-                  name="advanced"
-                  variant="toggle"
-                ></CheckBox>
+              {!!firstError && (
+                <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
+                  <div className="flex flex-col gap-1 whitespace-normal">
+                    <span>{firstError.label}</span>
+                  </div>
+                </div>
+              )}
+              <div className="flex flex-col md:gap-4 sm:gap-2 mobile:gap-4">
+                {Object.entries(ASSIGN_MODE_OPTIONS).map(
+                  ([mode, trackersCount]) => (
+                    <Radio
+                      key={mode}
+                      name="assignMode"
+                      control={control}
+                      value={mode}
+                      disabled={
+                        connectedIMUTrackers > trackersCount &&
+                        mode !== AssignMode.All
+                      }
+                      className="hidden"
+                    >
+                      <div className="flex flex-row md:gap-4 sm:gap-2 mobile:gap-2">
+                        <div style={{ width: '2.5rem', textAlign: 'right' }}>
+                          <Typography variant="mobile-title">
+                            {l10n.getString(
+                              'onboarding-assign_trackers-option-amount',
+                              { trackersCount }
+                            )}
+                          </Typography>
+                        </div>
+                        <div className="flex flex-col">
+                          <Typography>
+                            {l10n.getString(
+                              'onboarding-assign_trackers-option-label',
+                              { mode }
+                            )}
+                          </Typography>
+                          <Typography variant="standard" color="secondary">
+                            {l10n.getString(
+                              'onboarding-assign_trackers-option-description',
+                              { mode }
+                            )}
+                          </Typography>
+                        </div>
+                      </div>
+                    </Radio>
+                  )
+                )}
                 <CheckBox
                   control={control}
                   label={l10n.getString(
@@ -306,13 +376,6 @@ export function TrackersAssignPage() {
                   variant="toggle"
                 ></CheckBox>
               </div>
-              {!!firstError && (
-                <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
-                  <div className="flex flex-col gap-1 whitespace-normal">
-                    <span>{firstError.label}</span>
-                  </div>
-                </div>
-              )}
               <div className="flex flex-row">
                 {!state.alonePage && (
                   <>
@@ -342,7 +405,7 @@ export function TrackersAssignPage() {
                 onlyAssigned={false}
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
-                advanced={advanced ?? defaultValues.advanced}
+                assignMode={assignMode ?? defaultValues.assignMode}
                 mirror={mirrorView ?? defaultValues.mirrorView}
                 onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
