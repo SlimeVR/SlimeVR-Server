@@ -183,38 +183,38 @@ jobs:
       - name: Build
         run: |
           pnpm i
-          pnpm run tauri build
+          pnpm run tauri build --config $( ./gui/scripts/gitversion.mjs )
+
+      - name: Make GUI tarball
+        run: |
+          tar czf slimevr-gui-dist.tar.gz -C gui/dist/ .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SlimeVR-GUI-Dist
+          path: ./slimevr-gui-dist.tar.gz
 
       - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-Deb
           path: target/release/bundle/deb/slimevr*.deb
 
-      - name: Install appimage-builder
-        run: |
-          wget "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
-          chmod a+x appimagetool-x86_64.AppImage
-          sudo mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
-
-      - name: Modify and Build AppImage
-        run: |
-          cd target/release/bundle/appimage
-          chmod a+x slimevr*.AppImage
-          ./slimevr*.AppImage --appimage-extract
-          cp $( git rev-parse --show-toplevel )/server/desktop/build/libs/slimevr.jar squashfs-root/slimevr.jar
-          chmod 644 squashfs-root/slimevr.jar
-          appimagetool squashfs-root slimevr*.AppImage
-
       - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-AppImage
           path: target/release/bundle/appimage/slimevr*.AppImage
+
+      - uses: actions/upload-artifact@v4
+        with:
+            name: SlimeVR-GUI-RPM
+            path: target/release/bundle/rpm/slimevr*.rpm
 
       - name: Prepare for release
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           cp target/release/bundle/appimage/slimevr*.AppImage ./SlimeVR-amd64.appimage
           cp target/release/bundle/deb/slimevr*.deb ./SlimeVR-amd64.deb
+          cp target/release/bundle/rpm/slimevr*.rpm ./SlimeVR-amd64.rpm
 
       - name: Upload to draft release
         uses: softprops/action-gh-release@v2
@@ -223,8 +223,10 @@ jobs:
           draft: true
           generate_release_notes: true
           files: |
+            ./slimevr-gui-dist.tar.gz
             ./SlimeVR-amd64.appimage
             ./SlimeVR-amd64.deb
+            ./SlimeVR-amd64.rpm
 
 
   bundle-mac:
@@ -257,22 +259,27 @@ jobs:
         run: |
           rustup target add x86_64-apple-darwin
           pnpm i
-          pnpm run tauri build --target universal-apple-darwin
+          pnpm run tauri build --target universal-apple-darwin --config $( ./gui/scripts/gitversion.mjs )
 
       - name: Modify Application
         run: |
           cd target/universal-apple-darwin/release/bundle/macos/slimevr.app/Contents/MacOS
           cp $( git rev-parse --show-toplevel )/server/desktop/build/libs/slimevr.jar ./
-          cd ../../../../dmg/
-          ./bundle_dmg.sh --volname slimevr --icon slimevr 180 170 --app-drop-link 480 170 \
-          --window-size 660 400 --hide-extension ../macos/slimevr.app \
-          --volicon ../macos/slimevr.app/Contents/Resources/icon.icns --skip-jenkins \
-          --eula ../../../../LICENSE-MIT slimevr.dmg ../macos/slimevr.app
+          cd ../../../
+          /usr/libexec/PlistBuddy -c "Set :CFBundleDisplayName SlimeVR" slimevr.app/Contents/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleName SlimeVR" slimevr.app/Contents/Info.plist
+          codesign --sign - --deep --force slimevr.app
+          mv slimevr.app SlimeVR.app
+          cd ../dmg/
+          ./bundle_dmg.sh --volname SlimeVR --icon slimevr 180 170 --app-drop-link 480 170 \
+          --window-size 660 400 --hide-extension ../macos/SlimeVR.app \
+          --volicon ../macos/SlimeVR.app/Contents/Resources/icon.icns --skip-jenkins \
+          --eula ../../../../LICENSE-MIT slimevr.dmg ../macos/SlimeVR.app
 
       - uses: actions/upload-artifact@v4
         with:
           name: SlimeVR-GUI-MacApp
-          path: target/universal-apple-darwin/release/bundle/macos/slimevr*.app
+          path: target/universal-apple-darwin/release/bundle/macos/SlimeVR*.app
 
       - uses: actions/upload-artifact@v4
         with:
@@ -324,9 +331,10 @@ jobs:
         run: cargo clean
 
       - name: Build
+        shell: bash
         run: |
           pnpm i
-          pnpm run skipbundler
+          pnpm run skipbundler --config $( ./gui/scripts/gitversion.mjs )
 
       - name: Bundle to zips
         shell: bash

@@ -37,6 +37,7 @@ export interface Config {
   doneManualMounting: boolean;
   mirrorView: boolean;
   assignMode: AssignMode;
+  discordPresence: boolean;
 }
 
 export interface ConfigContext {
@@ -62,6 +63,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   doneManualMounting: false,
   mirrorView: true,
   assignMode: AssignMode.Core,
+  discordPresence: false,
 };
 
 interface CrossStorage {
@@ -111,8 +113,10 @@ export function useConfigProvider(): ConfigContext {
           const newConfig: Partial<Config> = JSON.parse(
             (await store.get('config.json')) ?? '{}'
           );
-          return Object.entries(config).every(
-            ([key, value]) => newConfig[key as keyof Config] === value
+          return Object.entries(config).every(([key, value]) =>
+            typeof value === 'object'
+              ? JSON.stringify(newConfig[key as keyof Config]) === JSON.stringify(value)
+              : newConfig[key as keyof Config] === value
           );
         },
         100,
@@ -124,8 +128,10 @@ export function useConfigProvider(): ConfigContext {
           const newConfig: Partial<Config> = JSON.parse(
             localStorage.getItem('config.json') ?? '{}'
           );
-          return Object.entries(config).every(
-            ([key, value]) => newConfig[key as keyof Config] === value
+          return Object.entries(config).every(([key, value]) =>
+            typeof value === 'object'
+              ? JSON.stringify(newConfig[key as keyof Config]) === JSON.stringify(value)
+              : newConfig[key as keyof Config] === value
           );
         },
         100,
