@@ -187,6 +187,9 @@ class BVHFileStream : PoseDataStream {
 		val positionScale = bvhSettings.positionScale
 		writer
 			.write("${rootPos.x * positionScale} ${rootPos.y * positionScale} ${rootPos.z * positionScale}")
+
+		// Add spacing
+		writer.write(" ")
 		writeBoneHierarchyRotation(rootBone, null)
 
 		writer.newLine()

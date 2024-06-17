@@ -44,7 +44,7 @@ export function StartRecording({
 
   return (
     <>
-      <div className="flex flex-col flex-grow">
+      <div className="flex flex-col flex-grow gap-3">
         <div className="flex flex-row flex-grow">
           <div className="flex flex-grow flex-col gap-4">
             <Typography variant="main-title" bold>
@@ -59,7 +59,7 @@ export function StartRecording({
                 )}
               </Typography>
             </div>
-            <ol className="list-decimal mobile:px-4">
+            <ol className="list-decimal mobile:px-4 nsmol:hidden">
               <>
                 {l10n
                   .getString('onboarding-automatic_proportions-recording-steps')
@@ -71,7 +71,7 @@ export function StartRecording({
                   ))}
               </>
             </ol>
-            <div className="flex">
+            <div className="flex nsmol:hidden">
               <TipBox>{l10n.getString('tips-do_not_move_heels')}</TipBox>
             </div>
           </div>
@@ -100,6 +100,9 @@ export function StartRecording({
           </button>
         </div>
 
+        <div className="flex smol:hidden">
+          <TipBox>{l10n.getString('tips-do_not_move_heels')}</TipBox>
+        </div>
         <div className="flex gap-3 mobile:justify-between">
           <Button
             variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}

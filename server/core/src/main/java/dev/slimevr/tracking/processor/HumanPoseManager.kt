@@ -690,6 +690,8 @@ class HumanPoseManager(val server: VRServer?) {
 		get() = skeletonConfigManager.userHeightFromOffsets
 
 	// #endregion
+	fun getPauseTracking(): Boolean = skeleton.getPauseTracking()
+
 	fun setPauseTracking(pauseTracking: Boolean, sourceName: String?) {
 		skeleton.setPauseTracking(pauseTracking, sourceName)
 	}
