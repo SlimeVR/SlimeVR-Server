@@ -28,6 +28,8 @@ pub static POSSIBLE_TITLES: &[&str] = &[
 	"never gonna let you down",
 	"uwu sowwy",
 ];
+pub const MIN_WINDOW_SIZE_WIDTH: f64 = 393.0;
+pub const MIN_WINDOW_SIZE_HEIGHT: f64 = 667.0;
 
 shadow!(build);
 // Tauri has a way to return the package.json version, but it's not a constant...
@@ -60,7 +62,7 @@ pub fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 	let paths = [
 		cli.launch_from_path,
 		// AppImage passes the fakeroot in `APPDIR` env var.
-		env::var_os("APPDIR").map(PathBuf::from),
+		env::var_os("APPDIR").map(|a| PathBuf::from(a).join("usr/share/slimevr/")),
 		env::current_dir().ok(),
 		// getcwd in Mac can't be trusted, so let's get the executable's path
 		env::current_exe()

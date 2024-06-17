@@ -29,6 +29,7 @@ export interface Config {
   useTray: boolean | null;
   doneManualMounting: boolean;
   mirrorView: boolean;
+  discordPresence: boolean;
 }
 
 export interface ConfigContext {
@@ -54,6 +55,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   useTray: null,
   doneManualMounting: false,
   mirrorView: true,
+  discordPresence: false,
 };
 
 interface CrossStorage {
@@ -103,8 +105,10 @@ export function useConfigProvider(): ConfigContext {
           const newConfig: Partial<Config> = JSON.parse(
             (await store.get('config.json')) ?? '{}'
           );
-          return Object.entries(config).every(
-            ([key, value]) => newConfig[key as keyof Config] === value
+          return Object.entries(config).every(([key, value]) =>
+            typeof value === 'object'
+              ? JSON.stringify(newConfig[key as keyof Config]) === JSON.stringify(value)
+              : newConfig[key as keyof Config] === value
           );
         },
         100,
@@ -116,8 +120,10 @@ export function useConfigProvider(): ConfigContext {
           const newConfig: Partial<Config> = JSON.parse(
             localStorage.getItem('config.json') ?? '{}'
           );
-          return Object.entries(config).every(
-            ([key, value]) => newConfig[key as keyof Config] === value
+          return Object.entries(config).every(([key, value]) =>
+            typeof value === 'object'
+              ? JSON.stringify(newConfig[key as keyof Config]) === JSON.stringify(value)
+              : newConfig[key as keyof Config] === value
           );
         },
         100,

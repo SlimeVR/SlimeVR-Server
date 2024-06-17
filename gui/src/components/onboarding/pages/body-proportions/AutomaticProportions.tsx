@@ -13,7 +13,7 @@ import { Recording } from './autobone-steps/Recording';
 import { StartRecording } from './autobone-steps/StartRecording';
 import { VerifyResultsStep } from './autobone-steps/VerifyResults';
 import { useCountdown } from '@/hooks/countdown';
-import { CheckHeight } from './autobone-steps/СheckHeight';
+import { CheckHeight } from './autobone-steps/CheckHeight';
 import { PreparationStep } from './autobone-steps/Preparation';
 
 export function AutomaticProportionsPage() {
@@ -62,7 +62,7 @@ export function AutomaticProportionsPage() {
             ></StepperSlider>
           </div>
         </div>
-        <div className="w-full pb-4 flex flex-grow flex-row mobile:justify-center">
+        <div className="w-full pb-4 flex flex-row mobile:justify-center">
           <Button
             variant="secondary"
             onClick={startCountdown}

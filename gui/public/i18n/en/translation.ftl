@@ -284,10 +284,14 @@ settings-general-steamvr-description =
     Useful for games or apps that only support certain trackers.
 settings-general-steamvr-trackers-waist = Waist
 settings-general-steamvr-trackers-chest = Chest
-settings-general-steamvr-trackers-feet = Feet
-settings-general-steamvr-trackers-knees = Knees
-settings-general-steamvr-trackers-elbows = Elbows
-settings-general-steamvr-trackers-hands = Hands
+settings-general-steamvr-trackers-left_foot = Left foot
+settings-general-steamvr-trackers-right_foot = Right foot
+settings-general-steamvr-trackers-left_knee = Left knee
+settings-general-steamvr-trackers-right_knee = Right knee
+settings-general-steamvr-trackers-left_elbow = Left elbow
+settings-general-steamvr-trackers-right_elbow = Right elbow
+settings-general-steamvr-trackers-left_hand = Left hand
+settings-general-steamvr-trackers-right_hand = Right hand
 settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
 settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments
 settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
@@ -444,13 +448,21 @@ settings-general-interface-connected_trackers_warning-label = Connected trackers
 settings-general-interface-use_tray = Minimize to system tray
 settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bothering you.
 settings-general-interface-use_tray-label = Minimize to system tray
+settings-general-interface-discord_presence = Share activity on Discord
+settings-general-interface-discord_presence-description = Tells your Discord client that you are using SlimeVR along with the number of IMU trackers you are using.
+settings-general-interface-discord_presence-label = Share activity on Discord
+settings-general-interface-discord_presence-message = { $amount ->
+    [0] Sliming around
+    [one] Using 1 tracker
+    *[other] Using { $amount } trackers
+}
 
 ## Serial settings
 settings-serial = Serial Console
 # This cares about multilines
 settings-serial-description =
     This is a live information feed for serial communication.
-    May be useful if you need to know the firmware is acting up.
+    May be useful to debug firmware or hardware issues.
 settings-serial-connection_lost = Connection to serial lost, Reconnecting...
 settings-serial-reboot = Reboot
 settings-serial-factory_reset = Factory Reset
@@ -549,6 +561,9 @@ settings-osc-vmc-vrm-file_select = Drag & drop a model to use, or <u>browse</u>
 settings-osc-vmc-anchor_hip = Anchor at hips
 settings-osc-vmc-anchor_hip-description = Anchor the tracking at the hips, useful for seated VTubing. If disabling, load a VRM model.
 settings-osc-vmc-anchor_hip-label = Anchor at hips
+settings-osc-vmc-mirror_tracking = Mirror tracking
+settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
+settings-osc-vmc-mirror_tracking-label = Mirror tracking
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
@@ -831,7 +846,7 @@ onboarding-automatic_proportions-check_height-title = Check your height
 onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the headset's (HMD) height as an approximation of your actual height, but it's better to check if they are right yourself!
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = Please press the button while standing <u>upright</u> to calculate your height. You have 3 seconds after you press the button!
-onboarding-automatic_proportions-check_height-guardian_tip = If you are using a standalone VR headset, make sure to have your guardian/
+onboarding-automatic_proportions-check_height-guardian_tip = If you are using a standalone VR headset, make sure to have your guardian /
     boundary turned on so that your height is correct!
 onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
 # Context is that the height is unknown

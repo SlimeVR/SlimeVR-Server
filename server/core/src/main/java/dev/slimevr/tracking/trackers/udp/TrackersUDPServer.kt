@@ -46,7 +46,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		emptyList()
 	}
 	private val parser = UDPProtocolParser()
-	private val rcvBuffer = ByteArray(512)
+
+	// 1500 is a common network MTU. 1472 is the maximum size of a UDP packet (1500 - 20 for IPv4 header - 8 for UDP header)
+	private val rcvBuffer = ByteArray(1500 - 20 - 8)
 	private val bb = ByteBuffer.wrap(rcvBuffer).order(ByteOrder.BIG_ENDIAN)
 
 	// Gets initialized in this.run()
@@ -319,6 +321,10 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
 				tracker.setRotation(rot)
+				if (packet is UDPPacket23RotationAndAcceleration) {
+					// Switch x and y around to adjust for different axes
+					tracker.setAcceleration(Vector3(packet.acceleration.y, packet.acceleration.x, packet.acceleration.z))
+				}
 				tracker.dataTick()
 			}
 

@@ -18,6 +18,7 @@ use crate::util::{
 	get_launch_path, show_error, valid_java_paths, Cli, JAVA_BIN, MINIMUM_JAVA_VERSION,
 };
 
+mod presence;
 mod state;
 mod tray;
 mod util;
@@ -177,7 +178,11 @@ fn main() -> Result<()> {
 			erroring,
 			warning,
 			tray::update_translations,
-			tray::update_tray_text
+			tray::update_tray_text,
+			presence::discord_client_exists,
+			presence::update_presence,
+			presence::clear_presence,
+			presence::create_discord_client,
 		])
 		.setup(move |app| {
 			let window_state =
@@ -191,7 +196,7 @@ fn main() -> Result<()> {
 			)
 			.title("SlimeVR")
 			.inner_size(1289.0, 709.0)
-			.min_inner_size(393.0, 667.0)
+			.min_inner_size(util::MIN_WINDOW_SIZE_WIDTH, util::MIN_WINDOW_SIZE_HEIGHT)
 			.resizable(true)
 			.visible(true)
 			.decorations(false)
@@ -204,7 +209,8 @@ fn main() -> Result<()> {
 			#[cfg(desktop)]
 			{
 				let handle = app.handle();
-				tray::create_tray(&handle)?;
+				tray::create_tray(handle)?;
+				presence::create_presence(handle)?;
 			}
 
 			app.manage(Mutex::new(window_state));
@@ -270,7 +276,7 @@ fn main() -> Result<()> {
 	match build_result {
 		Ok(app) => {
 			app.run(move |app_handle, event| match event {
-				RunEvent::ExitRequested { .. } => {
+				RunEvent::Exit => {
 					let window_state = app_handle.state::<Mutex<WindowState>>();
 					let lock = window_state.lock().unwrap();
 					let config_dir = app_handle.path().app_config_dir().unwrap();

@@ -93,7 +93,7 @@ export function Recording({
             )}
           </Typography>
         </div>
-        <ol className="list-decimal mobile:px-4">
+        <ol className="list-decimal mobile:px-4 nsmol:hidden">
           <>
             {l10n
               .getString('onboarding-automatic_proportions-recording-steps')

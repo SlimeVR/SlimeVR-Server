@@ -54,6 +54,7 @@ import { error, log } from './utils/logging';
 import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
+import { useDiscordPresence } from './hooks/discord-presence';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -62,6 +63,7 @@ export const SLIMEVR_DISCORD = 'https://discord.gg/slimevr';
 
 function Layout() {
   const { isMobile } = useBreakpoint('mobile');
+  useDiscordPresence();
 
   return (
     <>
@@ -162,9 +164,15 @@ export default function App() {
   const isTauri = useIsTauri();
 
   useEffect(() => {
-    const onKeydown: (arg0: KeyboardEvent) => void = function (e) {
-      // seems to be sufficient to prevent most default shortcuts
-      e.preventDefault();
+    const onKeydown: (arg0: KeyboardEvent) => void = function (event) {
+      // prevent search bar keybind
+      if (
+        event.key === 'F3' ||
+        (event.ctrlKey && event.key === 'f') ||
+        (event.metaKey && event.key === 'f')
+      ) {
+        event.preventDefault();
+      }
     };
 
     window.addEventListener('keydown', onKeydown);

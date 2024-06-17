@@ -23,6 +23,8 @@ tips-find_tracker = Sie sind sich nicht sicher, welcher Tracker welcher ist? Sch
 tips-do_not_move_heels = Stellen Sie sicher, dass Sie Ihre Fersen während der Aufnahme nicht bewegen!
 tips-file_select = Dateien per Drag & Drop verwenden oder <u>durchsuchen</u>
 tips-tap_setup = Sie können langsam 2 Mal auf Ihren Tracker tippen, um ihn auszuwählen, anstatt ihn aus dem Menü auszuwählen.
+tips-turn_on_tracker = Verwenden Sie offizielle SlimeVR-Tracker? Vergessen Sie nicht den <b><em>Tracker einzuschalten</em></b>, nachdem Sie ihn an den PC angeschlossen haben!
+tips-failed_webgl = Fehler beim Initialisieren von WebGL.
 
 ## Body parts
 
@@ -196,6 +198,7 @@ tracker-infos-hardware_rev = Hardware-Version
 tracker-infos-hardware_identifier = Hardware-ID
 tracker-infos-imu = IMU-Sensor
 tracker-infos-board_type = Platine
+tracker-infos-network_version = Protokoll Version
 
 ## Tracker settings
 
@@ -215,6 +218,9 @@ tracker-settings-drift_compensation_section-edit = Erlaube Drift Kompensierung
 tracker-settings-name_section = Trackername
 tracker-settings-name_section-description = Geben Sie ihm einen süßen Spitznamen :)
 tracker-settings-name_section-placeholder = NightyBeast's linkes Bein
+tracker-settings-forget = Tracker Vergessen
+tracker-settings-forget-description = Entfernt den Tracker vom SlimeVR Server und verhindert, dass er sich wieder verbindet, bis der Server neu gestartet wurde. Die Konfiguration des Trackers geht nicht verloren.
+tracker-settings-forget-label = Tracker Vergessen
 
 ## Tracker part card info
 
@@ -304,10 +310,22 @@ settings-general-steamvr-description =
     Nützlich für Spiele oder Apps, die nur bestimmte Tracker unterstützen.
 settings-general-steamvr-trackers-waist = Taille
 settings-general-steamvr-trackers-chest = Brust
-settings-general-steamvr-trackers-feet = Füße
-settings-general-steamvr-trackers-knees = Knie
-settings-general-steamvr-trackers-elbows = Ellbogen
-settings-general-steamvr-trackers-hands = Hände
+settings-general-steamvr-trackers-left_foot = Linker Fuß
+settings-general-steamvr-trackers-right_foot = Rechter Fuß
+settings-general-steamvr-trackers-left_knee = Linkes Knie
+settings-general-steamvr-trackers-right_knee = Rechtes Knie
+settings-general-steamvr-trackers-left_elbow = Linker Ellenbogen
+settings-general-steamvr-trackers-right_elbow = Rechter Ellenbogen
+settings-general-steamvr-trackers-left_hand = Linke Hand
+settings-general-steamvr-trackers-right_hand = Rechte Hand
+settings-general-steamvr-trackers-tracker_toggling = Automatische Tracker Zuweisung
+settings-general-steamvr-trackers-tracker_toggling-description = Automatisches Aktivieren und Deaktivieren von SteamVR Trackern, in Abhängigkeit von der aktuellen Tracker-Zuordnung.
+settings-general-steamvr-trackers-tracker_toggling-label = Automatische Tracker Zuweisung
+settings-general-steamvr-trackers-hands-warning =
+    <b>Warnung:</b> Handtracker übersteuern Ihre Controller.
+    Sind Sie sich sicher?
+settings-general-steamvr-trackers-hands-warning-cancel = Abbrechen
+settings-general-steamvr-trackers-hands-warning-done = Ja
 
 ## Tracker mechanics
 
@@ -325,6 +343,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Glätt
 settings-general-tracker_mechanics-filtering-type-prediction = Vorhersage
 settings-general-tracker_mechanics-filtering-type-prediction-description = Verringert die Latenz und macht die Bewegungen schneller, kann aber Zittern erhöhen.
 settings-general-tracker_mechanics-filtering-amount = Stärke
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Horizontaler Reset Glättungszeit (0s deaktiviert die Glättung)
 settings-general-tracker_mechanics-drift_compensation = Drift-Kompensierung
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
@@ -333,6 +352,11 @@ settings-general-tracker_mechanics-drift_compensation-description =
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift-Kompensierung
 settings-general-tracker_mechanics-drift_compensation-amount-label = Kompensierungsmenge
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nutze die letzten x Resets
+settings-general-tracker_mechanics-save_mounting_reset = Automatische Befestigungs-Reset Kalibrierung speichern
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    Speichert die automatische Befestigungs-Reset Kalibrierung für die Tracker zwischen den Neustarts. Nützlich 
+    wenn Sie einen Anzug tragen, bei dem sich die Tracker zwischen den Sitzungen nicht bewegen. <b>Für normale Benutzer nicht zu empfehlen!</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Befestigungs-Reset speichern
 
 ## FK/Tracking settings
 
@@ -452,6 +476,9 @@ settings-general-interface-feedback_sound-volume = Feedback-Sound-Lautstärke
 settings-general-interface-connected_trackers_warning = Warnung zu verbundenen Trackern
 settings-general-interface-connected_trackers_warning-description = Diese Option zeigt jedes Mal ein Pop-up-Fenster an, wenn Sie versuchen, SlimeVR zu beenden, während ein oder mehrere Tracker verbunden sind. Es erinnert Sie daran, die Tracker auszuschalten, um die Akkulaufzeit zu verlängern.
 settings-general-interface-connected_trackers_warning-label = Warnung vor verbundenen Trackern beim Verlassen
+settings-general-interface-use_tray = In den Infobereich minimieren
+settings-general-interface-use_tray-description = Erlaubt Ihnen, das Fenster zu schließen, ohne den SlimeVR-Server zu beenden. Dies erlaubt Ihnen diesen weiterzuverwenden, ohne dass das Fenster stört.
+settings-general-interface-use_tray-label = In den Infobereich minimieren
 
 ## Serial settings
 
@@ -473,6 +500,7 @@ settings-serial-factory_reset-warning-cancel = Abbruch
 settings-serial-get_infos = Informationen abrufen
 settings-serial-serial_select = Wählen Sie einen seriellen Anschluss
 settings-serial-auto_dropdown_item = Auto
+settings-serial-get_wifi_scan = WLAN-Scan
 
 ## OSC router settings
 
@@ -633,8 +661,8 @@ onboarding-done-close = Einrichtung schließen
 
 onboarding-connect_tracker-back = Zurück zu WLAN-Zugangsdaten
 onboarding-connect_tracker-title = Verbinde Tracker
-onboarding-connect_tracker-description-p0 = Nun zum unterhaltsamen Teil, verbinde alle Tracker!
-onboarding-connect_tracker-description-p1 = Verbinden Sie einfach alle Tracker, die noch nicht verbunden sind, über einen USB-Anschluss.
+onboarding-connect_tracker-description-p0-v1 = Kommen wir nun zum spaßigen Teil, dem Verbinden von Trackern!
+onboarding-connect_tracker-description-p1-v1 = Schließen Sie jeden Tracker nacheinander und einzeln über einen USB-Anschluss an.
 onboarding-connect_tracker-issue-serial = Ich habe Schwierigkeiten die Tracker zu verbinden!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-none = Suche nach Trackern
@@ -694,6 +722,7 @@ onboarding-assign_trackers-assigned =
     } zugewiesen
 onboarding-assign_trackers-advanced = Erweiterte Zuweisungspositionen anzeigen
 onboarding-assign_trackers-next = Ich habe alle Tracker zugewiesen
+onboarding-assign_trackers-mirror_view = Ansicht spiegeln
 
 ## Tracker assignment warnings
 
@@ -816,9 +845,17 @@ onboarding-automatic_mounting-put_trackers_on-next = Ich habe alle meine Tracker
 ## Tracker proportions method choose
 
 onboarding-choose_proportions = Welche Kalibrierungsmethode ist zu verwenden?
+# Multiline string
+onboarding-choose_proportions-description-v1 =
+    Wenn die Proportionen Ihres Körpers nicht mit den Gespeicherten übereinstimmen, ist die Präzision des Trackings schlechter. Außerdem können Probleme wie Skaten oder Rutschen auftreten oder, dass die Bewegungen Ihres Avatars nicht gut mit den Bewegungen Ihres Körpers übereinstimmen.
+    <b>Sie müssen Ihren Körper nur einmal messen!</b> Es sei denn, die Messwerte sind falsch oder Ihr Körper hat sich verändert, dann müssen Sie die Körperproportionen nochmal bestimmen.
 onboarding-choose_proportions-auto_proportions = Automatische Proportionen
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Empfohlen
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
+    Dies wird versuchen, Ihre Proportionen mit Hilfe einer Bewegungsaufnahme zu bestimmen, welche von einem Algorithmus verarbeitet wird.
+    
+    <b>Dazu muss Ihr Headset (HMD) mit SlimeVR verbunden sein und Sie müssen es an haben!</b>
 onboarding-choose_proportions-manual_proportions = Manuelle Körperproportionen
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = Für kleine Anpassungen
@@ -848,11 +885,27 @@ onboarding-automatic_proportions-put_trackers_on-title = Legen Sie Ihre Tracker 
 onboarding-automatic_proportions-put_trackers_on-description = Um Ihre Proportionen zu kalibrieren, werden wir die Tracker verwenden, die Sie gerade zugewiesen haben. Legen Sie alle Ihre Tracker an. Sie können rechts in der Abbildung sehen, welche welche sind.
 onboarding-automatic_proportions-put_trackers_on-next = Ich habe alle meine Tracker angelegt
 onboarding-automatic_proportions-requirements-title = Anforderungen
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    Sie haben genug Tracken, um Ihre Füße zu tracken (in der Regel 5 Tracker).
+    Sie haben Ihre Tracker an und Ihr Headset auf.
+    Ihre Tracker und Ihr Headset ist mit dem SlimeVR-Server verbunden und funktionieren ordnunsgemäß (z.B. kein Stottern, kein Trennen der Verbindung, usw.).
+    Ihr Headset sendet Positionsdaten an den SlimeVR-Server (das bedeutet allgemein, dass SteamVR läuft und über den SlimeVR-SteamVR Treiber mit SteamVR verbunden ist).
+    Ihr Tracking funktioniert und stellt Ihre Bewegungen akkurat dar (z.B.: Sie haben einen Reset durchgeführt und Ihre Tracker bewegen sich beim Treten, Bücken, Sitzen, usw. richtig).
 onboarding-automatic_proportions-requirements-next = Ich habe die Anforderungen gelesen
 onboarding-automatic_proportions-check_height-title = Überprüfen Sie Ihre Körpergröße
+onboarding-automatic_proportions-check_height-description = Wir benutzen die Höhe des Headsets (HMD) als eine Schätzung für Ihre tatsächliche Grösse, doch es ist besser dass Sie diese selbst überprüfen!
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = Bitte betätigen Sie auf den Knopf während Sie <u>aufrecht</u> stehen, um Ihre Körpergröße zu berechnen. Sie haben 3 Sekunden Zeit, nachdem Sie auf den Knopf gedrückt haben.
+onboarding-automatic_proportions-check_height-guardian_tip = Wenn Sie ein eigenständiges VR Headset verwenden, stellen Sie sicher, dass Ihr Guardian Begrenzung aktiviert ist und damit Ihre Größe korrekt ist!
 onboarding-automatic_proportions-check_height-fetch_height = Ich stehe!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Unbekannt
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height1 = Ihre Headset-Höhe ist
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height1 = Ihre tatsächliche Körpergröße ist
+onboarding-automatic_proportions-check_height-next_step = Werte sind korrekt
 onboarding-automatic_proportions-start_recording-title = Bereiten Sie sich auf ein paar Bewegungen vor
 onboarding-automatic_proportions-start_recording-description = Wir werden nun einige bestimmte Posen und Bewegungen aufnehmen. Diese werden im nächsten Bildschirm angezeigt. Bereiten Sie sicht darauf vor, wenn Sie den Knopf drücken!
 onboarding-automatic_proportions-start_recording-next = Aufnahme starten
@@ -882,6 +935,9 @@ onboarding-automatic_proportions-verify_results-redo = Aufnahme wiederholen
 onboarding-automatic_proportions-verify_results-confirm = Ergebnisse sind korrekt
 onboarding-automatic_proportions-done-title = Körper gemessen und gespeichert.
 onboarding-automatic_proportions-done-description = Ihre Körperproportionen-Kalibrierung ist abgeschlossen!
+onboarding-automatic_proportions-error_modal =
+    <b>Warnung:</b> Beim Schätzen der Proportionen wurde ein Fehler festgestellt!
+    Bitte <docs>prüfen Sie die Dokumentation</docs> oder treten sie unserem <discord>Discord Server</discord> bei, um Hilfe zu bekommen. ^_^
 onboarding-automatic_proportions-error_modal-confirm = Verstanden!
 
 ## Home
@@ -890,6 +946,10 @@ home-no_trackers = Keine Tracker erkannt oder zugewiesen
 
 ## Trackers Still On notification
 
+trackers_still_on-modal-title = Es sind noch Tracker eingeschaltet
+trackers_still_on-modal-description =
+    Ein oder mehrere Tracker sind noch eingeschaltet.
+    Möchten Sie SlimeVR trotzdem beenden?
 trackers_still_on-modal-confirm = SlimeVR beenden
 trackers_still_on-modal-cancel = Bitte warten...
 
@@ -902,3 +962,31 @@ status_system-StatusSteamVRDisconnected =
        *[other] Derzeit nicht über den SlimeVR-Treiber mit SteamVR verbunden.
     }
 status_system-StatusTrackerError = Der Tracker "{ $trackerName }" weist einen Fehler auf.
+
+## Tray Menu
+
+tray_menu-show = Anzeigen
+tray_menu-hide = Ausblenden
+tray_menu-quit = Beenden
+
+## First exit modal
+
+tray_or_exit_modal-title = Was soll der Schließen-Knopf tun?
+# Multiline text
+tray_or_exit_modal-description =
+    Hier können Sie auswählen, ob sich der Server beim Schließen beenden oder in den Infobereich minimiert werden soll.
+    
+    Sie können dies später in den Einstellungen der Bedienoberfläche ändern!
+tray_or_exit_modal-radio-exit = Beenden
+tray_or_exit_modal-radio-tray = In den Infobereich minimieren
+tray_or_exit_modal-submit = Speichern
+tray_or_exit_modal-cancel = Abbruch
+
+## Unknown device modal
+
+unknown_device-modal-title = Ein neuer Tracker wurde gefunden!
+unknown_device-modal-description =
+    Es gibt einen neuen Tracker mit der MAC-Adresse <b>{ $deviceId }</b>.
+    Möchten Sie diesen mit SlimeVR verbinden?
+unknown_device-modal-confirm = Sicher!
+unknown_device-modal-forget = Ignorieren

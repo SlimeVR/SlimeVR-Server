@@ -23,6 +23,8 @@ tips-find_tracker = لست متأكد من أجهزة التعقب؟ قم بتح
 tips-do_not_move_heels = يرجى عدم تحريك كاحليك أثناء التسجيل!
 tips-file_select = اسحب الملفات وأفلتها لاستخدامها أو <u> تصفح </ u>
 tips-tap_setup = يمكنك النقر ببطء مرتين على جهاز التعقب لاختياره بدلاً من تحديده من القائمة.
+tips-turn_on_tracker = هل تستخدم أجهزة تعقب SlimeVR الرسمية؟ تذكر  <b><em> أن تشغل أجهزة التعقب </em></b> بعد توصيلها بالكمبيوتر!
+tips-failed_webgl = فشل تهيئة WebGL.
 
 ## Body parts
 
@@ -144,6 +146,11 @@ widget-imu_visualizer-rotation_raw = صافي
 widget-imu_visualizer-rotation_preview = عرض مسبق
 widget-imu_visualizer-rotation_hide = إخفاء
 
+## Widget: Skeleton Visualizer
+
+widget-skeleton_visualizer-preview = إظهار الهيكل العظمي
+widget-skeleton_visualizer-hide = إخفاء
+
 ## Tracker status
 
 tracker-status-none = لا توجد حالة
@@ -152,6 +159,7 @@ tracker-status-error = خطأ
 tracker-status-disconnected = فقد الاتصال
 tracker-status-occluded = محجوب
 tracker-status-ok = حسنًا
+tracker-status-timed_out = انتهت المهله
 
 ## Tracker status columns
 
@@ -190,6 +198,7 @@ tracker-infos-hardware_rev = مراجعة الأجهزة
 tracker-infos-hardware_identifier = معرف الجهاز
 tracker-infos-imu = مستشعر IMU
 tracker-infos-board_type = اللوحة الرئيسية
+tracker-infos-network_version = نسخة البروتوكول
 
 ## Tracker settings
 
@@ -209,6 +218,9 @@ tracker-settings-drift_compensation_section-edit = السماح بتعويض ا�
 tracker-settings-name_section = اسم جهاز التعقب
 tracker-settings-name_section-description = أعطها لقب لطيف :)
 tracker-settings-name_section-placeholder = ساق نايتي بيست اليسرى
+tracker-settings-forget = انسي جهاز التعقب
+tracker-settings-forget-description = يزيل جهاز التعقب من خادم SlimeVR ويمنعه من الاتصال به حتى يتم إعادة تشغيل الخادم. لن تضيع تكوين جهاز التعقب.
+tracker-settings-forget-label = ننسى جهاز التعقب
 
 ## Tracker part card info
 
@@ -302,6 +314,14 @@ settings-general-steamvr-trackers-feet = القدمين
 settings-general-steamvr-trackers-knees = الركبتين
 settings-general-steamvr-trackers-elbows = الكوعين
 settings-general-steamvr-trackers-hands = اليدين
+settings-general-steamvr-trackers-tracker_toggling = تعيين جهاز التعقب تلقائي
+settings-general-steamvr-trackers-tracker_toggling-description = يتعامل تلقائيا مع تبديل أجهزة تعقب SteamVR أو إيقاف تشغيلها اعتمادا على مهام التعقب الحالية
+settings-general-steamvr-trackers-tracker_toggling-label = تعيين جهاز التعقب التلقائي
+settings-general-steamvr-trackers-hands-warning =
+    <b>تحذير:</b> ستتجاوز أجهزة تعقب اليد وحدات التحكم الخاصة بك.
+    هل أنت متأكد؟
+settings-general-steamvr-trackers-hands-warning-cancel = إلغاء
+settings-general-steamvr-trackers-hands-warning-done = نعم
 
 ## Tracker mechanics
 
@@ -451,6 +471,12 @@ settings-general-interface-feedback_sound = صوت ردود الفعل
 settings-general-interface-feedback_sound-description = سيصدر هذا الخيار صوتًا عند تشغيل إعادة الضبط
 settings-general-interface-feedback_sound-label = صوت ردود الفعل
 settings-general-interface-feedback_sound-volume = حجم صوت ردود الفعل
+settings-general-interface-connected_trackers_warning = تحذير عن أجهزة التعقب المتصلة
+settings-general-interface-connected_trackers_warning-description = سيعرض هذا الخيار نافذة كل مرة تحاول فيها الخروج من SlimeVR أثناء وجود جهاز أو أكثر من أجهزة التعقب المتصلة. سيذكرك بإيقاف تشغيل أجهزة التعقب عند الانتهاء للحفاظ على عمر البطارية.
+settings-general-interface-connected_trackers_warning-label = تحذير عن أجهزة التعقب المتصلة عند الخروج
+settings-general-interface-use_tray = تصغير إلى علبة النظام
+settings-general-interface-use_tray-description = يتيح لك إغلاق النافذة دون إغلاق خادم SlimeVR حتى تتمكن من الاستمرار في استخدامه دون إزعاجك من واجهة المستخدم الرسومية.
+settings-general-interface-use_tray-label = تصغير إلى علبة النظام
 
 ## Serial settings
 
@@ -472,6 +498,7 @@ settings-serial-factory_reset-warning-cancel = إلغاء
 settings-serial-get_infos = احصل على معلومات
 settings-serial-serial_select = اختر منفذ تسلسلي
 settings-serial-auto_dropdown_item = تلقائي
+settings-serial-get_wifi_scan = احصل على فحص WiFi
 
 ## OSC router settings
 
@@ -637,8 +664,8 @@ onboarding-done-close = إغلاق الدليل
 
 onboarding-connect_tracker-back = العودة إلى بيانات اعتماد الواي فاي
 onboarding-connect_tracker-title = ربط أجهزة التعقب
-onboarding-connect_tracker-description-p0 = ننتقل الآن إلى الجزء الممتع ، ربط جميع أجهزة التعقب!
-onboarding-connect_tracker-description-p1 = ما عليك سوى توصيل كل ما لم يتم توصيله بعد من خلال منفذ يو أس بي.
+onboarding-connect_tracker-description-p0-v1 = ننتقل الآن إلى الجزء الممتع ، ربط أجهزة التعقب!
+onboarding-connect_tracker-description-p1-v1 = قم بتوصيل كل جهاز تعقب  واحدا تلو الآخر من خلال منفذ USB.
 onboarding-connect_tracker-issue-serial = أواجه مشكلة في الاتصال!
 onboarding-connect_tracker-usb = جهاز تعقب يو أس بي
 onboarding-connect_tracker-connection_status-none = نبحث عن أجهزة التعقب
@@ -706,6 +733,7 @@ onboarding-assign_trackers-assigned =
     }
 onboarding-assign_trackers-advanced = إظهار مواقع التعيين المتقدمة
 onboarding-assign_trackers-next = لقد عينت جميع أجهزة التعقب
+onboarding-assign_trackers-mirror_view = عرض المرآة
 
 ## Tracker assignment warnings
 
@@ -788,6 +816,13 @@ onboarding-choose_mounting-manual_mounting = التركيب اليدوي
 # Italized text
 onboarding-choose_mounting-manual_mounting-label = المستحسن
 onboarding-choose_mounting-manual_mounting-description = سيسمح لك باختيار اتجاه التثبيت يدويًا لكل جهاز تعقب
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    هل أنت متأكد من أنك تريد 
+    معايرة التركيب التلقائي؟
+onboarding-choose_mounting-manual_modal-description = <b>يوصى بمعايرة التركيب اليدوي للمستخدمين الجدد</b> ، حيث قد يكون من الصعب الحصول على أوضاع معايرة التركيب التلقائي الصحيحة من اول مرة وقد تتطلب بعض التمرين.
+onboarding-choose_mounting-manual_modal-confirm = أنا أعرف ماذا أفعل
+onboarding-choose_mounting-manual_modal-cancel = إلغاء
 
 ## Tracker manual mounting setup
 
@@ -822,16 +857,17 @@ onboarding-automatic_mounting-put_trackers_on-next = ارتديت جميع أج�
 
 onboarding-choose_proportions = ما هي طريقة معايرة النسب التي يجب استخدامها؟
 # Multiline string
-onboarding-choose_proportions-description =
-    تستخدم نسب الجسم لمعرفة قياسات جسمك. هم مطلوبون لحساب مواقع أجهزة التعقب.
-    عندما لا تتطابق نسب جسمك مع تلك المحفوظة ، ستكون دقة التتبع لديك أسوأ وستلاحظ أشياء مثل التزلج أو الانزلاق ، أو أن جسمك لا يتطابق مع الصورة الرمزية بشكل جيد.
+onboarding-choose_proportions-description-v1 =
+    تستخدم نسب الجسم لمعرفة قياسات جسمك. إنهم مطالبون لحساب مواقع أجهزة التعقب.
+    عندما لا تتطابق نسب جسمك مع تلك المحفوظة ، ستكون دقة التعقب أسوأ وستلاحظ أشياء مثل التزلج أو الانزلاق ، أو أن جسمك لا يتطابق مع صورتك الرمزية جيدا.
+    <b>ما عليك سوى قياس جسمك مرة واحدة!</b> إن لم تكن خاطئة أو تغير جسمك ، فلن تحتاج إلى القيام بها مرة أخرى.
 onboarding-choose_proportions-auto_proportions = النسب التلقائية
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = الموصى به
-onboarding-choose_proportions-auto_proportions-descriptionv2 =
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
     سيؤدي ذلك إلى تخمين نسبك عن طريق تسجيل عينة من تحركاتك وتمريرها عبر خوارزمية.
     
-    <b>هذا يتطلب توصيل HMD الخاص بك ب SlimeVR!</b>
+    <b>يتطلب ذلك توصيل جهاز الواقع الافتراضي (HMD) ب SlimeVR و وضعها  على رأسك!</b>
 onboarding-choose_proportions-manual_proportions = النسب اليدوية
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = للمسات الصغيرة
@@ -862,18 +898,20 @@ onboarding-automatic_proportions-put_trackers_on-description = لمعايرة ن
 onboarding-automatic_proportions-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
 onboarding-automatic_proportions-requirements-title = المتطلبات
 # Each line of text is a different list item
-onboarding-automatic_proportions-requirements-description =
-    لديك على الأقل ما يكفي من أجهزة تعقب لتعقب قدميك (بشكل عام 5 أجهزة تعقب).
-    ارتديت أجهزة التعقب وسماعة الرأس.
-    شغلت أجهزة التعقب وسماعة الرأس.
-    أجهزة التعقب وسماعات الرأس متصلة بسرفر سلايم في ار.
-    تعمل أجهزة التتبع وسماعات الرأس بشكل صحيح داخل سرفر سلايم في ار .
-    تقوم سماعة الرأس الخاصة بك بالإبلاغ عن بيانات الموقع إلى  سرفر سلايم في ار (وهذا يعني بشكل عام تشغيل سلايم في ار وتوصيله بـ سلايم في ار باستخدام برنامج تشغيل ستيم في ار  من سلايم في ار ).
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    لديك على الأقل ما يكفي من أجهزة التعقب لتتبع قدميك (بشكل عام 5 أجهزة تعقب).
+    لديك أجهزة التعقب  وجهاز الواقع الافتراضي الخاص بك وترتديهم.
+    أجهزة التعقب وجهاز الواقع الافتراضي متصلة بخادم SlimeVR وتعمل بشكل صحيح (مثلاً، لا يوجد تأتأة أو قطع اتصال ، إلخ).
+    يقوم جهاز الواقع الافتراضي بالإبلاغ عن البيانات الموضعية إلى خادم SlimeVR (وهذا يعني عموما تشغيل SteamVR وتوصيله ب SlimeVR باستخدام برنامج تشغيل SteamVR الخاص ب SlimeVR).
+    يعمل التتبع الخاص بك ويمثل تحركاتك بدقة (على سبيل المثال ، لقد أجريت إعادة تعيين كاملة وتتحرك في الاتجاه الصحيح عند الركل, الانحناء, الجلوس, إلخ).
 onboarding-automatic_proportions-requirements-next = لقد قرأت المتطلبات
 onboarding-automatic_proportions-check_height-title = تحقق من طولك
 onboarding-automatic_proportions-check_height-description = نستخدم طولك كأساس لقياساتنا باستخدام ارتفاع HMD كتقريب لطولك الفعلي ، ولكن من الأفضل التحقق مما إذا كانت صحيحة بنفسك!
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = يرجى الضغط على الزر أثناء الوقوف <u>في وضع مستقيم</u> لحساب طولك. لديك 3 ثوان بعد الضغط على الزر!
+onboarding-automatic_proportions-check_height-guardian_tip =
+    إذا كنت تستخدم سماعة رأس VR مستقلة ، فتأكد من تشغيل حدود الحارس /
+    لكي يكون طولك صحيحا!
 onboarding-automatic_proportions-check_height-fetch_height = أنا واقف!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = مجهول
@@ -924,6 +962,15 @@ onboarding-automatic_proportions-error_modal-confirm = مفهوم!
 
 home-no_trackers = لم يتم الكشف أو تعيين عن أي جهاز تعقب
 
+## Trackers Still On notification
+
+trackers_still_on-modal-title = أجهزة التعقب لا تزال قيد التشغيل
+trackers_still_on-modal-description =
+    لا يزال واحد أو أكثر من أجهزة التعقب قيد التشغيل.
+    هل مازلت تريد الخروج من SlimeVR؟
+trackers_still_on-modal-confirm = الخروج من SlimeVR
+trackers_still_on-modal-cancel = انتظر...
+
 ## Status system
 
 status_system-StatusTrackerReset = يوصى بإجراء إعادة تعيين كاملة نظرًا لعدم تعديل واحد أو أكثر من أجهزة التعقب.
@@ -933,3 +980,31 @@ status_system-StatusSteamVRDisconnected =
        *[other] حاليًا غير متصل بـ SteamVR عبر برنامج تشغيل SlimeVR.
     }
 status_system-StatusTrackerError = يحتوي جهاز التعقب { $trackerName } على خطأ.
+
+## Tray Menu
+
+tray_menu-show = عرض
+tray_menu-hide = إخفاء
+tray_menu-quit = انهاء
+
+## First exit modal
+
+tray_or_exit_modal-title = ماذا يجب أن يفعل زر الإغلاق؟
+# Multiline text
+tray_or_exit_modal-description =
+    يتيح لك ذلك اختيار ما إذا كنت تريد الخروج من الخادم أو تصغيره إلى علبة النظام عند الضغط على زر الإغلاق.
+    
+    يمكنك تغيير هذا لاحقا في إعدادات الواجهة!
+tray_or_exit_modal-radio-exit = الخروج عند الإغلاق
+tray_or_exit_modal-radio-tray = تصغير إلى علبة النظام
+tray_or_exit_modal-submit = احفظ
+tray_or_exit_modal-cancel = إلغاء
+
+## Unknown device modal
+
+unknown_device-modal-title = تم العثور على جهاز تعقب جديد!
+unknown_device-modal-description =
+    هناك جهاز تعقب جديد مع عنوان MAC <b>{ $deviceId }</b>.
+    هل تريد توصيله ب SlimeVR؟
+unknown_device-modal-confirm = أكيد
+unknown_device-modal-forget = تجاهلها
