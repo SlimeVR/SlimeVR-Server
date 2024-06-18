@@ -51,7 +51,7 @@ export function Home() {
       <div className="h-full overflow-y-auto">
         <div
           className={classNames(
-            'px-2 pt-4 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1',
+            'px-2 pt-2 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1',
             filteredStatuses.filter(([, status]) => status.prioritized)
               .length === 0 && 'hidden'
           )}

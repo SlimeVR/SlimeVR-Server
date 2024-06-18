@@ -300,9 +300,7 @@ export function TrackersAssignPage() {
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}
       ></NeckWarningModal>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
-        <div className="flex flex-col w-full overflow-y-auto px-4 xs:items-center">
-          <div className="flex mobile:flex-col md:gap-8 mobile:gap-4 mobile:pb-4">
+        <div className="flex mobile:flex-col w-full md:gap-8 mobile:gap-4 p-4 justify-center">
             <div className="flex flex-col xs:max-w-sm gap-3">
               <Typography variant="main-title">
                 {l10n.getString('onboarding-assign_trackers-title')}
@@ -326,7 +324,7 @@ export function TrackersAssignPage() {
                   </div>
                 </div>
               )}
-              <div className="flex flex-col md:gap-4 sm:gap-2 mobile:gap-4">
+              <div className="flex flex-col gap-4">
                 {Object.entries(ASSIGN_MODE_OPTIONS).map(
                   ([mode, trackersCount]) => (
                     <Radio
@@ -340,8 +338,8 @@ export function TrackersAssignPage() {
                       }
                       className="hidden"
                     >
-                      <div className="flex flex-row md:gap-4 sm:gap-2 mobile:gap-2">
-                        <div style={{ width: '2.5rem', textAlign: 'right' }}>
+                      <div className="flex flex-row gap-2">
+                        <div className='text-right'>
                           <Typography variant="mobile-title">
                             {l10n.getString(
                               'onboarding-assign_trackers-option-amount',
@@ -399,9 +397,9 @@ export function TrackersAssignPage() {
                 )}
               </div>
             </div>
-            <div className="flex flex-col rounded-xl fill-background-50">
+            <div className="flex flex-col justify-center rounded-xl fill-background-50">
               <BodyAssignment
-                width={isMobile ? 150 : undefined}
+                width={isMobile ? 150 : 180}
                 onlyAssigned={false}
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
@@ -410,9 +408,7 @@ export function TrackersAssignPage() {
                 onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
             </div>
-          </div>
         </div>
-      </div>
     </>
   );
 }

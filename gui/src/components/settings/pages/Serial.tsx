@@ -14,7 +14,6 @@ import {
   SerialUpdateResponseT,
   SerialTrackerGetWifiScanRequestT,
 } from 'solarxr-protocol';
-import { useElemSize, useLayout } from '@/hooks/layout';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
 import { Dropdown } from '@/components/commons/Dropdown';
@@ -29,20 +28,12 @@ export interface SerialForm {
 }
 
 export function Serial() {
-  const {
-    layoutHeight,
-    layoutWidth,
-    ref: consoleRef,
-  } = useLayout<HTMLDivElement>();
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { state } = useLocation();
 
-  const toolbarRef = useRef<HTMLDivElement>(null);
-  const { height } = useElemSize(toolbarRef);
-
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  // const consoleRef = useRef<HTMLPreElement>(null);
+  const consoleRef = useRef<HTMLDivElement>(null);
   const [consoleContent, setConsole] = useState('');
 
   const [isSerialOpen, setSerialOpen] = useState(false);
@@ -100,7 +91,8 @@ export function Serial() {
         setSerialOpen(true);
       }
 
-      if (data.log && consoleRef.current) {
+      if (data.log) {
+        console.log(data.log)
         setConsole((console) => console + data.log);
       }
     }
@@ -124,6 +116,8 @@ export function Serial() {
       consoleRef.current.scrollTo({
         top: consoleRef.current.scrollHeight,
       });
+
+    console.log(consoleContent)
   }, [consoleContent]);
 
   useEffect(() => {
@@ -191,8 +185,8 @@ export function Serial() {
           </Button>
         </div>
       </BaseModal>
-      <div className="flex flex-col bg-background-70 h-full p-5 rounded-md">
-        <div className="flex flex-col pb-2">
+      <div className="flex flex-col bg-background-70 h-full p-4 mobile:p-2 rounded-md">
+        <div className="flex flex-col pb-2 mobile:pt-4">
           <Typography variant="main-title">
             {l10n.getString('settings-serial')}
           </Typography>
@@ -207,16 +201,12 @@ export function Serial() {
               ))}
           </>
         </div>
-        <div className="bg-background-80 rounded-lg flex flex-col p-2">
+        <div className="bg-background-80 rounded-lg flex-grow h-0 flex flex-col p-2">
           <div
+            className="flex-grow overflow-x-auto overflow-y-auto"
             ref={consoleRef}
-            className="overflow-x-auto overflow-y-auto"
-            style={{
-              height: layoutHeight - height - 30 - (isMobile ? 88 : 0),
-              width: layoutWidth - 24,
-            }}
           >
-            <div className="flex select-text px-3">
+            <div className="flex select-text">
               <pre>
                 {isSerialOpen
                   ? consoleContent
@@ -224,9 +214,8 @@ export function Serial() {
               </pre>
             </div>
           </div>
-          <div className="" ref={toolbarRef}>
-            <div className="border-t-2 pt-2  border-background-60 border-solid m-2 gap-2 flex flex-row">
-              <div className="flex flex-grow flex-wrap gap-2 mobile:grid mobile:grid-cols-2 mobile:grid-rows-2">
+            <div className="border-t-2 pt-2 border-background-60 border-solid gap-2 flex flex-row">
+              <div className="xs:flex flex-grow xs:flex-wrap gap-2 grid grid-cols-2">
                 <Button variant="quaternary" onClick={reboot}>
                   {l10n.getString('settings-serial-reboot')}
                 </Button>
@@ -242,23 +231,26 @@ export function Serial() {
                 <Button variant="quaternary" onClick={getWifiScan}>
                   {l10n.getString('settings-serial-get_wifi_scan')}
                 </Button>
-                {isMobile && (
-                  <Dropdown
-                    control={control}
-                    name="port"
-                    display="block"
-                    placeholder={l10n.getString(
-                      'settings-serial-serial_select'
-                    )}
-                    items={serialDevices.map((device) => ({
-                      label: device.name?.toString() || 'error',
-                      value: device.port?.toString() || 'error',
-                    }))}
-                  ></Dropdown>
-                )}
+                {/* {isMobile && ( */}
+                <div className='w-full mobile:col-span-2'>
+                    <Dropdown
+                      control={control}
+                      name="port"
+                      display="block"
+                      placeholder={l10n.getString(
+                        'settings-serial-serial_select'
+                      )}
+                      items={serialDevices.map((device) => ({
+                        label: device.name?.toString() || 'error',
+                        value: device.port?.toString() || 'error',
+                      }))}
+                    ></Dropdown>
+                </div>
+
+                {/* )} */}
               </div>
 
-              {!isMobile && (
+              {/* {!isMobile && (
                 <Dropdown
                   control={control}
                   name="port"
@@ -269,9 +261,8 @@ export function Serial() {
                     value: device.port?.toString() || 'error',
                   }))}
                 ></Dropdown>
-              )}
+              )} */}
             </div>
-          </div>
         </div>
       </div>
     </>

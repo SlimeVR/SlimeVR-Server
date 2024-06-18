@@ -55,7 +55,7 @@ importers:
         version: 2.0.0-beta.5
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(vite@5.3.1(@types/node@20.14.2)(terser@5.31.1))
+        version: 4.3.1(vite@5.3.1(@types/node@20.14.2)(sass@1.77.6)(terser@5.31.1))
       browser-fs-access:
         specifier: ^0.35.0
         version: 0.35.0
@@ -210,6 +210,9 @@ importers:
       rollup-plugin-visualizer:
         specifier: ^5.12.0
         version: 5.12.0(rollup@4.18.0)
+      sass:
+        specifier: ^1.77.5
+        version: 1.77.6
       tailwind-gradient-mask-image:
         specifier: ^1.2.0
         version: 1.2.0
@@ -218,7 +221,7 @@ importers:
         version: 3.4.4(ts-node@9.1.1(typescript@5.4.5))
       vite:
         specifier: ^5.3.1
-        version: 5.3.1(@types/node@20.14.2)(terser@5.31.1)
+        version: 5.3.1(@types/node@20.14.2)(sass@1.77.6)(terser@5.31.1)
 
   solarxr-protocol:
     dependencies:
@@ -3011,6 +3014,9 @@ packages:
   immer@9.0.21:
     resolution: {integrity: sha512-bc4NBHqOqSfRW7POMkHd51LvClaeMXpm8dx0e8oE2GORbq5aRK7Bxl4FyzVLdGtLmvLKL7BTDBG5ACQm4HWjTA==}
 
+  immutable@4.3.6:
+    resolution: {integrity: sha512-Ju0+lEMyzMVZarkTn/gqRpdqd5dOPaz1mCZ0SH3JV6iFw81PldE/PEB1hWVEA288HPt4WXW8O7AWxB10M+03QQ==}
+
   import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
     engines: {node: '>=6'}
@@ -4124,6 +4130,11 @@ packages:
 
   sanitize.css@13.0.0:
     resolution: {integrity: sha512-ZRwKbh/eQ6w9vmTjkuG0Ioi3HBwPFce0O+v//ve+aOq1oeCy7jMV2qzzAlpsNuqpqCBjjriM1lbtZbF/Q8jVyA==}
+
+  sass@1.77.6:
+    resolution: {integrity: sha512-ByXE1oLD79GVq9Ht1PeHWCPMPB8XHpBuz1r85oByKHjZY6qV6rWnQovQzXJXuQ/XyE1Oj3iPk3lo28uzaRA2/Q==}
+    engines: {node: '>=14.0.0'}
+    hasBin: true
 
   scheduler@0.21.0:
     resolution: {integrity: sha512-1r87x5fz9MXqswA2ERLo0EbOAU74DpIUO090gIasYTqlVoJeMcl+Z1Rg7WHz+qtPujhS/hGIt9kxZOYBV3faRQ==}
@@ -6578,14 +6589,14 @@ snapshots:
       '@use-gesture/core': 10.3.1
       react: 18.3.1
 
-  '@vitejs/plugin-react@4.3.1(vite@5.3.1(@types/node@20.14.2)(terser@5.31.1))':
+  '@vitejs/plugin-react@4.3.1(vite@5.3.1(@types/node@20.14.2)(sass@1.77.6)(terser@5.31.1))':
     dependencies:
       '@babel/core': 7.24.7
       '@babel/plugin-transform-react-jsx-self': 7.24.7(@babel/core@7.24.7)
       '@babel/plugin-transform-react-jsx-source': 7.24.7(@babel/core@7.24.7)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.3.1(@types/node@20.14.2)(terser@5.31.1)
+      vite: 5.3.1(@types/node@20.14.2)(sass@1.77.6)(terser@5.31.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -8007,6 +8018,8 @@ snapshots:
 
   immer@9.0.21: {}
 
+  immutable@4.3.6: {}
+
   import-fresh@3.3.0:
     dependencies:
       parent-module: 1.0.1
@@ -9165,6 +9178,12 @@ snapshots:
 
   sanitize.css@13.0.0: {}
 
+  sass@1.77.6:
+    dependencies:
+      chokidar: 3.6.0
+      immutable: 4.3.6
+      source-map-js: 1.2.0
+
   scheduler@0.21.0:
     dependencies:
       loose-envify: 1.4.0
@@ -9615,7 +9634,7 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  vite@5.3.1(@types/node@20.14.2)(terser@5.31.1):
+  vite@5.3.1(@types/node@20.14.2)(sass@1.77.6)(terser@5.31.1):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.38
@@ -9623,6 +9642,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 20.14.2
       fsevents: 2.3.3
+      sass: 1.77.6
       terser: 5.31.1
 
   warning@4.0.3:

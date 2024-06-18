@@ -4,15 +4,14 @@
 
 body {
   font-variant-numeric: tabular-nums;
-  font-family: var(--font-name), 'Noto Sans CJK', sans-serif, 'Twemoji Chromium',
-    emoji;
+  font-family: var(--font-name), 'Noto Sans CJK', sans-serif, 'Twemoji Chromium', emoji;
   width: 100vw;
   height: 100vh;
   user-select: none;
   background: theme('colors.background.20');
 
   /*Scrollbar for firefox */
-  scrollbar-color: theme('colors.background.50') theme('colors.background.60');
+  scrollbar-color: theme('colors.background.50') transparent;
   scrollbar-width: thin;
 }
 
@@ -86,6 +85,16 @@ body {
 :root {
   overflow: hidden;
   background: theme('colors.background.20');
+
+  --navbar-w: 101px;
+  --widget-w: 274px;
+  --topbar-h: 38px;
+
+
+  @screen mobile {
+    --topbar-h: 44px;
+    --navbar-h: 90px;
+  }
 }
 
 /* Colors have to be in RGB format currently */
@@ -338,6 +347,7 @@ body {
   border-radius: 50px;
 }
 
+
 ::-webkit-scrollbar-thumb {
   background: theme('colors.background.50');
   border-radius: 50px;
@@ -368,3 +378,5 @@ input::-ms-clear {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
 }
+
+

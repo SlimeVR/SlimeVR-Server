@@ -11,7 +11,6 @@ import {
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
 } from 'solarxr-protocol';
-import { useLayout } from '@/hooks/layout';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useTrackers } from '@/hooks/tracker';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -23,7 +22,7 @@ import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';
 import { useBnoExists } from '@/hooks/imu-logic';
-import { useBreakpoint } from '@/hooks/breakpoint';
+import './ConnectTracker.scss';
 
 const BOTTOM_HEIGHT = 80;
 
@@ -58,9 +57,7 @@ const statusProgressMap = {
 };
 
 export function ConnectTrackersPage() {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
-  const { layoutHeight, ref } = useLayout<HTMLDivElement>();
   const { useConnectedIMUTrackers } = useTrackers();
   const { applyProgress, state } = useOnboarding();
   const navigate = useNavigate();
@@ -146,9 +143,9 @@ export function ConnectTrackersPage() {
   );
 
   return (
-    <div className="flex flex-col h-full items-center px-4 pb-4">
-      <div className="flex gap-10 mobile:flex-col w-full xs:max-w-7xl">
-        <div className="flex flex-col w-full xs:max-w-sm">
+    <>
+      <div className="connect-tracker-layout h-full">
+        <div style={{ gridArea: 's' }} className="p-4">
           <Typography variant="main-title">
             {l10n.getString('onboarding-connect_tracker-title')}
           </Typography>
@@ -159,13 +156,6 @@ export function ConnectTrackersPage() {
             {l10n.getString('onboarding-connect_tracker-description-p1-v1')}
           </Typography>
           <div className="flex flex-col gap-2 py-5">
-            {/* <ArrowLink
-              to="/onboarding/connect"
-              direction="right"
-              variant="boxed"
-            >
-              I have other types of trackers
-            </ArrowLink> */}
             <ArrowLink
               to="/settings/serial"
               state={{ SerialPort: 'Auto' }}
@@ -203,9 +193,6 @@ export function ConnectTrackersPage() {
                 {l10n.getString('onboarding-connect_tracker-usb')}
               </Typography>
               <div className="flex fill-background-10 gap-1">
-                {/* <SpinIcon
-                  youSpinMeRightRoundBabyRightRound={!isError}
-                ></SpinIcon> */}
                 <Typography color="secondary">
                   {l10n.getString(statusLabelMap[provisioningStatus])}
                 </Typography>
@@ -243,51 +230,40 @@ export function ConnectTrackersPage() {
             </Button>
           </div>
         </div>
-        <div className="flex flex-col xs:flex-grow">
+        <div style={{ gridArea: 't' }} className="flex items-center px-5">
           <Typography color="secondary" bold>
             {l10n.getString('onboarding-connect_tracker-connected_trackers', {
               amount: connectedIMUTrackers.length,
             })}
           </Typography>
-
-          <div
-            className="overflow-y-scroll mt-2 p-5"
-            ref={ref}
-            style={
-              isMobile && state.alonePage
-                ? { height: layoutHeight - BOTTOM_HEIGHT }
-                : { height: layoutHeight }
-            }
-          >
-            <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-2 pr-1">
-              {Array.from({
-                ...connectedIMUTrackers,
-                length: Math.max(connectedIMUTrackers.length, 1),
-              }).map((tracker, index) => (
-                <div key={index}>
-                  {!tracker && (
-                    <div
-                      className={classNames(
-                        'rounded-xl h-16 animate-pulse',
-                        state.alonePage
-                          ? 'bg-background-80'
-                          : 'bg-background-70'
-                      )}
-                    ></div>
-                  )}
-                  {tracker && (
-                    <TrackerCard
-                      tracker={tracker.tracker}
-                      device={tracker.device}
-                      smol
-                    ></TrackerCard>
-                  )}
-                </div>
-              ))}
-            </div>
+        </div>
+        <div style={{ gridArea: 'c' }} className="xs:overflow-y-auto">
+          <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-2 pr-1 mx-5 py-4">
+            {Array.from({
+              ...connectedIMUTrackers,
+              length: Math.max(connectedIMUTrackers.length, 1),
+            }).map((tracker, index) => (
+              <div key={index}>
+                {!tracker && (
+                  <div
+                    className={classNames(
+                      'rounded-xl h-16 animate-pulse',
+                      state.alonePage ? 'bg-background-80' : 'bg-background-70'
+                    )}
+                  ></div>
+                )}
+                {tracker && (
+                  <TrackerCard
+                    tracker={tracker.tracker}
+                    device={tracker.device}
+                    smol
+                  ></TrackerCard>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
