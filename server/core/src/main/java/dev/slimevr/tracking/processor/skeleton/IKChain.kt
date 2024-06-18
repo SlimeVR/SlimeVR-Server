@@ -110,12 +110,12 @@ class IKChain(
 	fun resetChain() {
 		distToTargetSqr = Float.POSITIVE_INFINITY
 		centroidWeight = 1f
-		loosens = 0
 
 		for (bone in nodes) {
-			bone.rotationConstraint.tolerance = 0.0f
+			if (loosens > 0) bone.rotationConstraint.tolerance -= IKSolver.TOLERANCE_STEP
 			bone.rotationConstraint.originalRotation = bone.getGlobalRotation()
 		}
+		loosens -= if (loosens > 0) 1 else 0
 
 		for (child in children) {
 			child.resetChain()
