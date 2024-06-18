@@ -12,10 +12,10 @@ import dev.slimevr.tracking.trackers.Tracker
 class IKSolver(private val root: Bone) {
 	companion object {
 		const val TOLERANCE_SQR = 1e-8 // == 0.01 cm
-		const val MAX_ITERATIONS = 100
+		const val MAX_ITERATIONS = 200
 		const val ITERATIONS_BEFORE_STEP = 20
-		const val ITERATIONS_BETWEEN_STEP = 5
-		const val MAX_LOOSENS = 5
+		const val ITERATIONS_BETWEEN_STEP = 20
+		const val MAX_LOOSENS = 10
 		const val TOLERANCE_STEP = 2f
 	}
 
@@ -202,18 +202,11 @@ class IKSolver(private val root: Bone) {
 	 * Loosen rotational constraints gradually
 	 */
 	private fun loosenConstraints(iter: Int) {
-		if (iter < ITERATIONS_BEFORE_STEP && iter % ITERATIONS_BETWEEN_STEP != 0) return
+		if (iter < ITERATIONS_BEFORE_STEP || iter % ITERATIONS_BETWEEN_STEP != 0) return
 
-		var maxDist = Float.NEGATIVE_INFINITY
-		var maxDistChain = chainList.first()
 		for (chain in chainList) {
-			if (chain.distToTargetSqr > maxDist) {
-				maxDist = chain.distToTargetSqr
-				maxDistChain = chain
-			}
+			if (chain.loosens < MAX_LOOSENS) chain.decreaseConstraints()
 		}
-
-		if (maxDistChain.loosens < MAX_LOOSENS) maxDistChain.decreaseConstraints()
 	}
 
 	fun solve() {
