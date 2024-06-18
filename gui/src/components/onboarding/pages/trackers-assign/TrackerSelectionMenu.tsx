@@ -105,10 +105,7 @@ export function TrackerSelectionMenu({
                 ))}
               </div>
             </div>
-            <div
-              className="flex w-full justify-end"
-              onClick={onClose}
-            >
+            <div className="flex w-full justify-end" onClick={onClose}>
               <div className="flex flex-col justify-end pointer-events-auto">
                 <Button
                   variant="primary"

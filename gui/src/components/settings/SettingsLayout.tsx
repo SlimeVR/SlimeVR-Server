@@ -7,7 +7,7 @@ import { Dropdown } from '@/components/commons/Dropdown';
 import { useForm } from 'react-hook-form';
 import { useLocalization } from '@fluent/react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './SettingsLayout.scss'
+import './SettingsLayout.scss';
 
 export function SettingSelectorMobile() {
   const { l10n } = useLocalization();
@@ -95,10 +95,13 @@ export function SettingsLayout({ children }: { children: ReactNode }) {
         <div style={{ gridArea: 'n' }}>
           <Navbar></Navbar>
         </div>
-        <div style={{ gridArea: 's' }} className='my-2'>
+        <div style={{ gridArea: 's' }} className="my-2">
           <SettingsSidebar></SettingsSidebar>
         </div>
-        <div style={{ gridArea: 'c' }} className='xs:pl-2 xs:pb-2 xs:mt-2 mobile:mt-7 overflow-y-auto'>
+        <div
+          style={{ gridArea: 'c' }}
+          className="xs:pl-2 xs:pb-2 xs:mt-2 mobile:mt-7 overflow-y-auto"
+        >
           {isMobile && <SettingSelectorMobile></SettingSelectorMobile>}
           {children}
         </div>

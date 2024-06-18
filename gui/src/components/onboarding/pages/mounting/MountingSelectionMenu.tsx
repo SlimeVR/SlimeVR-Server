@@ -184,87 +184,79 @@ export function MountingSelectionMenu({
       )}
     >
       <div className="flex flex-col p-4">
-        <Typography variant="main-title" bold textAlign='text-center'>
+        <Typography variant="main-title" bold textAlign="text-center">
           {l10n.getString('mounting_selection_menu')}
         </Typography>
-        <div
-          className="flex w-full flex-col flex-grow items-center gap-3 justify-center"
-        >
-            <svg
-              width="400"
-              viewBox="0 0 250 250"
-              className="fill-background-40"
-            >
-              <g transform="translate(80, 0)" className="fill-background-10">
-                <MountingBodyPartIcon width={100} bodyPart={bodyPart} />
-              </g>
-              <g strokeWidth="4" className="stroke-background-90">
-                <PieSliceOfFeet
-                  d="M0 0-89 44A99 99 0 0 1-89-44Z"
-                  onClick={() => onDirectionSelected(rotationToQuatMap.LEFT)}
-                  id="tracker-rotation-left"
-                  trackerTransform="translate(75, 0) scale(-1, 1)"
-                ></PieSliceOfFeet>
-                <PieSliceOfFeet
-                  d="M0 0-89-44A99 99 0 0 1-44-89Z"
-                  onClick={() =>
-                    onDirectionSelected(rotationToQuatMap.FRONT_LEFT)
-                  }
-                  id="tracker-rotation_left_front"
-                  noText={true}
-                  trackerTransform="translate(-2, 175) rotate(-135)"
-                  trackerWidth={7}
-                ></PieSliceOfFeet>
-                <PieSliceOfFeet
-                  onClick={() => onDirectionSelected(rotationToQuatMap.FRONT)}
-                  d="M0 0-44-89A99 99 0 0 1 44-89Z"
-                  id="tracker-rotation-front"
-                  trackerTransform="translate(0, 75) rotate(-90)"
-                ></PieSliceOfFeet>
-                <PieSliceOfFeet
-                  d="M0 0 44-89A99 99 0 0 1 89-44Z"
-                  onClick={() =>
-                    onDirectionSelected(rotationToQuatMap.FRONT_RIGHT)
-                  }
-                  id="tracker-rotation-front_right"
-                  noText={true}
-                  trackerTransform="translate(73, 0) rotate(-45)"
-                  trackerWidth={7}
-                ></PieSliceOfFeet>
-                <PieSliceOfFeet
-                  d="M0 0 89-44A99 99 0 0 1 89 44Z"
-                  onClick={() => onDirectionSelected(rotationToQuatMap.RIGHT)}
-                  id="tracker-rotation-right"
-                  trackerTransform="translate(175,0)"
-                ></PieSliceOfFeet>
-                <PieSliceOfFeet
-                  d="M0 0 89 44A99 99 0 0 1 44 89Z"
-                  onClick={() =>
-                    onDirectionSelected(rotationToQuatMap.BACK_RIGHT)
-                  }
-                  id="tracker-rotation-back_right"
-                  noText={true}
-                  trackerTransform="translate(252, 75) rotate(45)"
-                  trackerWidth={7}
-                ></PieSliceOfFeet>
-                <PieSliceOfFeet
-                  d="M0 0 44 89A99 99 0 0 1-44 89Z"
-                  onClick={() => onDirectionSelected(rotationToQuatMap.BACK)}
-                  id="tracker-rotation-back"
-                  trackerTransform="translate(250, 175) rotate(90)"
-                ></PieSliceOfFeet>
-                <PieSliceOfFeet
-                  d="M0 0-44 89A99 99 0 0 1-89 44Z"
-                  onClick={() =>
-                    onDirectionSelected(rotationToQuatMap.BACK_LEFT)
-                  }
-                  id="tracker-rotation-back_left"
-                  noText={true}
-                  trackerTransform="translate(177, 250) rotate(135)"
-                  trackerWidth={7}
-                ></PieSliceOfFeet>
-              </g>
-            </svg>
+        <div className="flex w-full flex-col flex-grow items-center gap-3 justify-center">
+          <svg width="400" viewBox="0 0 250 250" className="fill-background-40">
+            <g transform="translate(80, 0)" className="fill-background-10">
+              <MountingBodyPartIcon width={100} bodyPart={bodyPart} />
+            </g>
+            <g strokeWidth="4" className="stroke-background-90">
+              <PieSliceOfFeet
+                d="M0 0-89 44A99 99 0 0 1-89-44Z"
+                onClick={() => onDirectionSelected(rotationToQuatMap.LEFT)}
+                id="tracker-rotation-left"
+                trackerTransform="translate(75, 0) scale(-1, 1)"
+              ></PieSliceOfFeet>
+              <PieSliceOfFeet
+                d="M0 0-89-44A99 99 0 0 1-44-89Z"
+                onClick={() =>
+                  onDirectionSelected(rotationToQuatMap.FRONT_LEFT)
+                }
+                id="tracker-rotation_left_front"
+                noText={true}
+                trackerTransform="translate(-2, 175) rotate(-135)"
+                trackerWidth={7}
+              ></PieSliceOfFeet>
+              <PieSliceOfFeet
+                onClick={() => onDirectionSelected(rotationToQuatMap.FRONT)}
+                d="M0 0-44-89A99 99 0 0 1 44-89Z"
+                id="tracker-rotation-front"
+                trackerTransform="translate(0, 75) rotate(-90)"
+              ></PieSliceOfFeet>
+              <PieSliceOfFeet
+                d="M0 0 44-89A99 99 0 0 1 89-44Z"
+                onClick={() =>
+                  onDirectionSelected(rotationToQuatMap.FRONT_RIGHT)
+                }
+                id="tracker-rotation-front_right"
+                noText={true}
+                trackerTransform="translate(73, 0) rotate(-45)"
+                trackerWidth={7}
+              ></PieSliceOfFeet>
+              <PieSliceOfFeet
+                d="M0 0 89-44A99 99 0 0 1 89 44Z"
+                onClick={() => onDirectionSelected(rotationToQuatMap.RIGHT)}
+                id="tracker-rotation-right"
+                trackerTransform="translate(175,0)"
+              ></PieSliceOfFeet>
+              <PieSliceOfFeet
+                d="M0 0 89 44A99 99 0 0 1 44 89Z"
+                onClick={() =>
+                  onDirectionSelected(rotationToQuatMap.BACK_RIGHT)
+                }
+                id="tracker-rotation-back_right"
+                noText={true}
+                trackerTransform="translate(252, 75) rotate(45)"
+                trackerWidth={7}
+              ></PieSliceOfFeet>
+              <PieSliceOfFeet
+                d="M0 0 44 89A99 99 0 0 1-44 89Z"
+                onClick={() => onDirectionSelected(rotationToQuatMap.BACK)}
+                id="tracker-rotation-back"
+                trackerTransform="translate(250, 175) rotate(90)"
+              ></PieSliceOfFeet>
+              <PieSliceOfFeet
+                d="M0 0-44 89A99 99 0 0 1-89 44Z"
+                onClick={() => onDirectionSelected(rotationToQuatMap.BACK_LEFT)}
+                id="tracker-rotation-back_left"
+                noText={true}
+                trackerTransform="translate(177, 250) rotate(135)"
+                trackerWidth={7}
+              ></PieSliceOfFeet>
+            </g>
+          </svg>
         </div>
       </div>
       <div

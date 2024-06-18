@@ -24,8 +24,6 @@ import { TrackerCard } from '@/components/tracker/TrackerCard';
 import { useBnoExists } from '@/hooks/imu-logic';
 import './ConnectTracker.scss';
 
-const BOTTOM_HEIGHT = 80;
-
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
     'onboarding-connect_tracker-connection_status-none',

@@ -21,14 +21,12 @@ import { Typography } from '@/components/commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { WarningBox } from '@/components/commons/TipBox';
-import { useBreakpoint } from '@/hooks/breakpoint';
 
 export interface SerialForm {
   port: string;
 }
 
 export function Serial() {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { state } = useLocation();
 
@@ -92,7 +90,7 @@ export function Serial() {
       }
 
       if (data.log) {
-        console.log(data.log)
+        console.log(data.log);
         setConsole((console) => console + data.log);
       }
     }
@@ -117,7 +115,7 @@ export function Serial() {
         top: consoleRef.current.scrollHeight,
       });
 
-    console.log(consoleContent)
+    console.log(consoleContent);
   }, [consoleContent]);
 
   useEffect(() => {
@@ -214,55 +212,38 @@ export function Serial() {
               </pre>
             </div>
           </div>
-            <div className="border-t-2 pt-2 border-background-60 border-solid gap-2 flex flex-row">
-              <div className="xs:flex flex-grow xs:flex-wrap gap-2 grid grid-cols-2">
-                <Button variant="quaternary" onClick={reboot}>
-                  {l10n.getString('settings-serial-reboot')}
-                </Button>
-                <Button
-                  variant="quaternary"
-                  onClick={() => setTryFactoryReset(true)}
-                >
-                  {l10n.getString('settings-serial-factory_reset')}
-                </Button>
-                <Button variant="quaternary" onClick={getInfos}>
-                  {l10n.getString('settings-serial-get_infos')}
-                </Button>
-                <Button variant="quaternary" onClick={getWifiScan}>
-                  {l10n.getString('settings-serial-get_wifi_scan')}
-                </Button>
-                {/* {isMobile && ( */}
-                <div className='w-full mobile:col-span-2'>
-                    <Dropdown
-                      control={control}
-                      name="port"
-                      display="block"
-                      placeholder={l10n.getString(
-                        'settings-serial-serial_select'
-                      )}
-                      items={serialDevices.map((device) => ({
-                        label: device.name?.toString() || 'error',
-                        value: device.port?.toString() || 'error',
-                      }))}
-                    ></Dropdown>
-                </div>
-
-                {/* )} */}
-              </div>
-
-              {/* {!isMobile && (
+          <div className="border-t-2 pt-2 border-background-60 border-solid gap-2 flex flex-row">
+            <div className="xs:flex flex-grow xs:flex-wrap gap-2 grid grid-cols-2">
+              <Button variant="quaternary" onClick={reboot}>
+                {l10n.getString('settings-serial-reboot')}
+              </Button>
+              <Button
+                variant="quaternary"
+                onClick={() => setTryFactoryReset(true)}
+              >
+                {l10n.getString('settings-serial-factory_reset')}
+              </Button>
+              <Button variant="quaternary" onClick={getInfos}>
+                {l10n.getString('settings-serial-get_infos')}
+              </Button>
+              <Button variant="quaternary" onClick={getWifiScan}>
+                {l10n.getString('settings-serial-get_wifi_scan')}
+              </Button>
+              {/* {isMobile && ( */}
+              <div className="w-full mobile:col-span-2">
                 <Dropdown
                   control={control}
                   name="port"
-                  display="fit"
+                  display="block"
                   placeholder={l10n.getString('settings-serial-serial_select')}
                   items={serialDevices.map((device) => ({
                     label: device.name?.toString() || 'error',
                     value: device.port?.toString() || 'error',
                   }))}
                 ></Dropdown>
-              )} */}
+              </div>
             </div>
+          </div>
         </div>
       </div>
     </>

@@ -10,7 +10,7 @@ import { MainLayout } from './components/MainLayout';
 import { AppContextProvider } from './components/providers/AppContext';
 import { GeneralSettings } from './components/settings/pages/GeneralSettings';
 import { Serial } from './components/settings/pages/Serial';
-import { SettingsLayout} from './components/settings/SettingsLayout';
+import { SettingsLayout } from './components/settings/SettingsLayout';
 import {
   useProvideWebsocketApi,
   WebSocketApiContext,
