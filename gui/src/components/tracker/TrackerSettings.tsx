@@ -170,6 +170,7 @@ export function TrackerSettingsPage() {
       ></SingleTrackerBodyAssignmentMenu>
       <MountingSelectionMenu
         bodyPart={tracker?.tracker.info?.bodyPart}
+        currRotation={currRotation}
         isOpen={selectRotation}
         onClose={() => setSelectRotation(false)}
         onDirectionSelected={onDirectionSelected}
