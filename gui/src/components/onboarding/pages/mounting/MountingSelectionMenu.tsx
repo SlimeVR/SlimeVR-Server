@@ -1,12 +1,11 @@
 import classNames from 'classnames';
-import { MouseEventHandler } from 'react';
 import ReactModal from 'react-modal';
 import { useElemSize, useLayout } from '@/hooks/layout';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { FootIcon } from '@/components/commons/icon/FootIcon';
-import { rotationToQuatMap } from '@/maths/quaternion';
+import { rotationToQuatMap, similarQuaternions } from '@/maths/quaternion';
 import { Quaternion } from 'three';
 import { SlimeUpIcon } from '@/components/commons/icon/SlimeUpIcon';
 import { BodyPart } from 'solarxr-protocol';
@@ -113,14 +112,18 @@ export function MountingBodyPartIcon({
 }
 
 function PieSliceOfFeet({
-  onClick,
+  direction,
+  onDirectionSelected,
+  currRotation,
   id,
   d,
   noText = false,
   trackerTransform,
   trackerWidth = 10,
 }: {
-  onClick?: MouseEventHandler<SVGGElement>;
+  direction: Quaternion;
+  onDirectionSelected: (direction: Quaternion) => void;
+  currRotation?: Quaternion;
   id: string;
   d: string;
   noText?: boolean;
@@ -131,7 +134,7 @@ function PieSliceOfFeet({
 
   return (
     <g
-      onClick={onClick}
+      onClick={() => onDirectionSelected(direction)}
       className={classNames('group fill-background-10 stroke-background-10')}
     >
       <path
@@ -150,7 +153,12 @@ function PieSliceOfFeet({
       </text>
       <g
         transform={trackerTransform}
-        className="fill-none stroke-none group-hover:fill-accent-background-20"
+        className={classNames(
+          'stroke-none group-hover:fill-accent-background-20',
+          currRotation && similarQuaternions(currRotation, direction)
+            ? 'fill-background-90'
+            : 'fill-none'
+        )}
       >
         <SlimeUpIcon width={trackerWidth}></SlimeUpIcon>
       </g>
@@ -163,11 +171,13 @@ export function MountingSelectionMenu({
   onClose,
   onDirectionSelected,
   bodyPart,
+  currRotation,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onDirectionSelected: (direction: Quaternion) => void;
   bodyPart?: BodyPart;
+  currRotation?: Quaternion;
 }) {
   const { l10n } = useLocalization();
   const { ref: refTrackers, layoutHeight: trackersHeight } =
@@ -209,31 +219,35 @@ export function MountingSelectionMenu({
               <g strokeWidth="4" className="stroke-background-90">
                 <PieSliceOfFeet
                   d="M0 0-89 44A99 99 0 0 1-89-44Z"
-                  onClick={() => onDirectionSelected(rotationToQuatMap.LEFT)}
+                  direction={rotationToQuatMap.LEFT}
+                  onDirectionSelected={onDirectionSelected}
+                  currRotation={currRotation}
                   id="tracker-rotation-left"
                   trackerTransform="translate(75, 0) scale(-1, 1)"
                 ></PieSliceOfFeet>
                 <PieSliceOfFeet
                   d="M0 0-89-44A99 99 0 0 1-44-89Z"
-                  onClick={() =>
-                    onDirectionSelected(rotationToQuatMap.FRONT_LEFT)
-                  }
+                  direction={rotationToQuatMap.FRONT_LEFT}
+                  onDirectionSelected={onDirectionSelected}
+                  currRotation={currRotation}
                   id="tracker-rotation_left_front"
                   noText={true}
                   trackerTransform="translate(-2, 175) rotate(-135)"
                   trackerWidth={7}
                 ></PieSliceOfFeet>
                 <PieSliceOfFeet
-                  onClick={() => onDirectionSelected(rotationToQuatMap.FRONT)}
                   d="M0 0-44-89A99 99 0 0 1 44-89Z"
+                  direction={rotationToQuatMap.FRONT}
+                  onDirectionSelected={onDirectionSelected}
+                  currRotation={currRotation}
                   id="tracker-rotation-front"
                   trackerTransform="translate(0, 75) rotate(-90)"
                 ></PieSliceOfFeet>
                 <PieSliceOfFeet
                   d="M0 0 44-89A99 99 0 0 1 89-44Z"
-                  onClick={() =>
-                    onDirectionSelected(rotationToQuatMap.FRONT_RIGHT)
-                  }
+                  direction={rotationToQuatMap.FRONT_RIGHT}
+                  onDirectionSelected={onDirectionSelected}
+                  currRotation={currRotation}
                   id="tracker-rotation-front_right"
                   noText={true}
                   trackerTransform="translate(73, 0) rotate(-45)"
@@ -241,15 +255,17 @@ export function MountingSelectionMenu({
                 ></PieSliceOfFeet>
                 <PieSliceOfFeet
                   d="M0 0 89-44A99 99 0 0 1 89 44Z"
-                  onClick={() => onDirectionSelected(rotationToQuatMap.RIGHT)}
+                  direction={rotationToQuatMap.RIGHT}
+                  onDirectionSelected={onDirectionSelected}
+                  currRotation={currRotation}
                   id="tracker-rotation-right"
                   trackerTransform="translate(175,0)"
                 ></PieSliceOfFeet>
                 <PieSliceOfFeet
                   d="M0 0 89 44A99 99 0 0 1 44 89Z"
-                  onClick={() =>
-                    onDirectionSelected(rotationToQuatMap.BACK_RIGHT)
-                  }
+                  direction={rotationToQuatMap.BACK_RIGHT}
+                  onDirectionSelected={onDirectionSelected}
+                  currRotation={currRotation}
                   id="tracker-rotation-back_right"
                   noText={true}
                   trackerTransform="translate(252, 75) rotate(45)"
@@ -257,15 +273,17 @@ export function MountingSelectionMenu({
                 ></PieSliceOfFeet>
                 <PieSliceOfFeet
                   d="M0 0 44 89A99 99 0 0 1-44 89Z"
-                  onClick={() => onDirectionSelected(rotationToQuatMap.BACK)}
+                  direction={rotationToQuatMap.BACK}
+                  onDirectionSelected={onDirectionSelected}
+                  currRotation={currRotation}
                   id="tracker-rotation-back"
                   trackerTransform="translate(250, 175) rotate(90)"
                 ></PieSliceOfFeet>
                 <PieSliceOfFeet
                   d="M0 0-44 89A99 99 0 0 1-89 44Z"
-                  onClick={() =>
-                    onDirectionSelected(rotationToQuatMap.BACK_LEFT)
-                  }
+                  direction={rotationToQuatMap.BACK_LEFT}
+                  onDirectionSelected={onDirectionSelected}
+                  currRotation={currRotation}
                   id="tracker-rotation-back_left"
                   noText={true}
                   trackerTransform="translate(177, 250) rotate(135)"

@@ -54,6 +54,7 @@ import { error, log } from './utils/logging';
 import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
+import { useDiscordPresence } from './hooks/discord-presence';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -62,6 +63,7 @@ export const SLIMEVR_DISCORD = 'https://discord.gg/slimevr';
 
 function Layout() {
   const { isMobile } = useBreakpoint('mobile');
+  useDiscordPresence();
 
   return (
     <>

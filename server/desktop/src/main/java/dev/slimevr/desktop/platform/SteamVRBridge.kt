@@ -63,8 +63,7 @@ abstract class SteamVRBridge(
 		changeShareSettings(TrackerRole.WAIST, skeleton.hasSpineTracker && !isWaistSteamVr)
 
 		// hasChest if waist and/or hip is on, and chest and/or upper chest is also on
-		val hasChest = (skeleton.hipTracker != null || skeleton.waistTracker != null) &&
-			(skeleton.upperChestTracker != null || skeleton.chestTracker != null)
+		val hasChest = skeleton.upperChestTracker != null || skeleton.chestTracker != null
 		val isChestSteamVr = skeleton.upperChestTracker?.device?.isOpenVrDevice == true ||
 			skeleton.chestTracker?.device?.isOpenVrDevice == true
 		changeShareSettings(
