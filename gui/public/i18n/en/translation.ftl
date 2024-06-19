@@ -925,6 +925,7 @@ status_system-StatusSteamVRDisconnected = { $type ->
     [steamvr_feeder] Currently not connected to the SlimeVR Feeder App.
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
+status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
 
 ## Tray Menu
 tray_menu-show = Show

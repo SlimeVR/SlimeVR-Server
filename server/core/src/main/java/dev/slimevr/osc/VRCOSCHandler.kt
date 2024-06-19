@@ -195,6 +195,7 @@ class VRCOSCHandler(
 							userEditable = false,
 							isComputed = true,
 							usesTimeout = true,
+							isHmd = true,
 						)
 						vrcDevice.trackers[0] = vrcHmd!!
 						server.registerTracker(vrcHmd!!)
