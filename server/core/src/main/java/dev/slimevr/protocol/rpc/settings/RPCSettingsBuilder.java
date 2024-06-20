@@ -98,6 +98,7 @@ public class RPCSettingsBuilder {
 		if (vrmJson != null)
 			VMCOSCSettings.addVrmJson(fbb, vrmJsonOffset);
 		VMCOSCSettings.addAnchorHip(fbb, config.getAnchorHip());
+		VMCOSCSettings.addMirrorTracking(fbb, config.getMirrorTracking());
 
 		return VMCOSCSettings.endVMCOSCSettings(fbb);
 	}

@@ -205,6 +205,15 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 					val packetCount = dataReceived.size / 20
 					var i = 0
 					while (i < packetCount * 20) {
+						if (i > 0) {
+							val currSlice: Array<Byte> = dataReceived.copyOfRange(i, (i + 19))
+							val prevSlice: Array<Byte> = dataReceived.copyOfRange((i - 20), (i - 1))
+							if (currSlice contentEquals prevSlice) {
+								i += 20
+								continue
+							}
+						}
+
 						// dataReceived[i] //for later
 						val idCombination = dataReceived[i + 1].toInt()
 						val rssi = -dataReceived[i + 2].toInt()

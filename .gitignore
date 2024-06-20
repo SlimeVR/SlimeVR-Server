@@ -17,6 +17,7 @@
 
 # VSCode stuff
 /.vscode/settings.json
+/.vscode/launch.json
 
 # Ignore eclipse stuff
 .project

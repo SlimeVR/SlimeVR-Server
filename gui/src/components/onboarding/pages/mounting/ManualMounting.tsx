@@ -13,7 +13,7 @@ import { MountingSelectionMenu } from './MountingSelectionMenu';
 import { useLocalization } from '@fluent/react';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { Quaternion } from 'three';
-import { defaultConfig, useConfig } from '@/hooks/config';
+import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
 
 export function ManualMountingPage() {
   const { isMobile } = useBreakpoint('mobile');
@@ -104,7 +104,7 @@ export function ManualMountingPage() {
               width={isMobile ? 160 : undefined}
               mirror={config?.mirrorView ?? defaultConfig.mirrorView}
               onlyAssigned={true}
-              advanced={true}
+              assignMode={AssignMode.All}
               onRoleSelected={setSelectRole}
             ></BodyAssignment>
           </div>
