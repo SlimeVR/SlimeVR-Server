@@ -61,6 +61,38 @@ class HumanSkeleton(
 	val leftHandBone = Bone(BoneType.LEFT_HAND)
 	val rightHandBone = Bone(BoneType.RIGHT_HAND)
 
+	// Finger bones
+	val leftThumbProximalBone = Bone(BoneType.LEFT_THUMB_PROXIMAL)
+	val leftThumbIntermediateBone = Bone(BoneType.LEFT_THUMB_INTERMEDIATE)
+	val leftThumbDistalBone = Bone(BoneType.LEFT_THUMB_DISTAL)
+	val leftIndexProximalBone = Bone(BoneType.LEFT_INDEX_PROXIMAL)
+	val leftIndexIntermediateBone = Bone(BoneType.LEFT_INDEX_INTERMEDIATE)
+	val leftIndexDistalBone = Bone(BoneType.LEFT_INDEX_DISTAL)
+	val leftMiddleProximalBone = Bone(BoneType.LEFT_MIDDLE_PROXIMAL)
+	val leftMiddleIntermediateBone = Bone(BoneType.LEFT_MIDDLE_INTERMEDIATE)
+	val leftMiddleDistalBone = Bone(BoneType.LEFT_MIDDLE_DISTAL)
+	val leftRingProximalBone = Bone(BoneType.LEFT_RING_PROXIMAL)
+	val leftRingIntermediateBone = Bone(BoneType.LEFT_RING_INTERMEDIATE)
+	val leftRingDistalBone = Bone(BoneType.LEFT_RING_DISTAL)
+	val leftLittleProximalBone = Bone(BoneType.LEFT_LITTLE_PROXIMAL)
+	val leftLittleIntermediateBone = Bone(BoneType.LEFT_LITTLE_INTERMEDIATE)
+	val leftLittleDistalBone = Bone(BoneType.LEFT_LITTLE_DISTAL)
+	val rightThumbProximalBone = Bone(BoneType.RIGHT_THUMB_PROXIMAL)
+	val rightThumbIntermediateBone = Bone(BoneType.RIGHT_THUMB_INTERMEDIATE)
+	val rightThumbDistalBone = Bone(BoneType.RIGHT_THUMB_DISTAL)
+	val rightIndexProximalBone = Bone(BoneType.RIGHT_INDEX_PROXIMAL)
+	val rightIndexIntermediateBone = Bone(BoneType.RIGHT_INDEX_INTERMEDIATE)
+	val rightIndexDistalBone = Bone(BoneType.RIGHT_INDEX_DISTAL)
+	val rightMiddleProximalBone = Bone(BoneType.RIGHT_MIDDLE_PROXIMAL)
+	val rightMiddleIntermediateBone = Bone(BoneType.RIGHT_MIDDLE_INTERMEDIATE)
+	val rightMiddleDistalBone = Bone(BoneType.RIGHT_MIDDLE_DISTAL)
+	val rightRingProximalBone = Bone(BoneType.RIGHT_RING_PROXIMAL)
+	val rightRingIntermediateBone = Bone(BoneType.RIGHT_RING_INTERMEDIATE)
+	val rightRingDistalBone = Bone(BoneType.RIGHT_RING_DISTAL)
+	val rightLittleProximalBone = Bone(BoneType.RIGHT_LITTLE_PROXIMAL)
+	val rightLittleIntermediateBone = Bone(BoneType.RIGHT_LITTLE_INTERMEDIATE)
+	val rightLittleDistalBone = Bone(BoneType.RIGHT_LITTLE_DISTAL)
+
 	// Tracker bones
 	val headTrackerBone = Bone(BoneType.HEAD_TRACKER)
 	val chestTrackerBone = Bone(BoneType.CHEST_TRACKER)
@@ -110,6 +142,36 @@ class HumanSkeleton(
 	var rightHandTracker: Tracker? = null
 	var leftShoulderTracker: Tracker? = null
 	var rightShoulderTracker: Tracker? = null
+	var leftThumbProximalTracker: Tracker? = null
+	var leftThumbIntermediateTracker: Tracker? = null
+	var leftThumbDistalTracker: Tracker? = null
+	var leftIndexProximalTracker: Tracker? = null
+	var leftIndexIntermediateTracker: Tracker? = null
+	var leftIndexDistalTracker: Tracker? = null
+	var leftMiddleProximalTracker: Tracker? = null
+	var leftMiddleIntermediateTracker: Tracker? = null
+	var leftMiddleDistalTracker: Tracker? = null
+	var leftRingProximalTracker: Tracker? = null
+	var leftRingIntermediateTracker: Tracker? = null
+	var leftRingDistalTracker: Tracker? = null
+	var leftLittleProximalTracker: Tracker? = null
+	var leftLittleIntermediateTracker: Tracker? = null
+	var leftLittleDistalTracker: Tracker? = null
+	var rightThumbProximalTracker: Tracker? = null
+	var rightThumbIntermediateTracker: Tracker? = null
+	var rightThumbDistalTracker: Tracker? = null
+	var rightIndexProximalTracker: Tracker? = null
+	var rightIndexIntermediateTracker: Tracker? = null
+	var rightIndexDistalTracker: Tracker? = null
+	var rightMiddleProximalTracker: Tracker? = null
+	var rightMiddleIntermediateTracker: Tracker? = null
+	var rightMiddleDistalTracker: Tracker? = null
+	var rightRingProximalTracker: Tracker? = null
+	var rightRingIntermediateTracker: Tracker? = null
+	var rightRingDistalTracker: Tracker? = null
+	var rightLittleProximalTracker: Tracker? = null
+	var rightLittleIntermediateTracker: Tracker? = null
+	var rightLittleDistalTracker: Tracker? = null
 
 	// Output trackers
 	var computedHeadTracker: Tracker? = null
