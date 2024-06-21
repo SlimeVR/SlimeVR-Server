@@ -47,13 +47,11 @@ interface FlatDeviceTrackerDummy {
   };
 }
 
-
 export function TrackersAssignPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { useAssignedTrackers, trackers } =
-    useTrackers();
+  const { useAssignedTrackers, trackers } = useTrackers();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const defaultValues = {
@@ -299,7 +297,9 @@ export function TrackersAssignPage() {
                 </div>
               )}
               <div className="flex flex-col md:gap-4 sm:gap-2 mobile:gap-4">
-                <TrackerAssignOptions variant={isMobile ? 'dropdown' : 'radio'}/>
+                <TrackerAssignOptions
+                  variant={isMobile ? 'dropdown' : 'radio'}
+                />
                 <CheckBox
                   control={control}
                   label={l10n.getString(

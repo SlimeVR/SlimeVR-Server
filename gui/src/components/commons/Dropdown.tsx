@@ -28,7 +28,6 @@ type DropdownItemsProps = Pick<
   dropdownBounds: DOMRect;
 };
 
-
 export interface DropdownItem {
   label?: string;
   component?: ReactNode;
@@ -59,7 +58,7 @@ export function DropdownItems({
   };
 
   useLayoutEffect(() => {
-    updateBounds()
+    updateBounds();
   }, []);
 
   const GAP = 8;
@@ -85,7 +84,9 @@ export function DropdownItems({
           left:
             alignment === 'left'
               ? dropdownBounds.left
-              : dropdownBounds.left + dropdownBounds.width - (itemBounds?.width ?? 0),
+              : dropdownBounds.left +
+                dropdownBounds.width -
+                (itemBounds?.width ?? 0),
           top:
             direction == 'down'
               ? dropdownBounds.bottom + GAP
@@ -196,7 +197,9 @@ export function Dropdown({
             tabIndex={0}
           >
             <div className="flex-grow text-standard first:pointer-events-none">
-              {items.find((i) => i.value == value)?.component || items.find((i) => i.value == value)?.label || placeholder}
+              {items.find((i) => i.value == value)?.component ||
+                items.find((i) => i.value == value)?.label ||
+                placeholder}
             </div>
             <div
               className={classNames(
