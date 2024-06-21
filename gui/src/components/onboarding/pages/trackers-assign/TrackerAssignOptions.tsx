@@ -95,7 +95,7 @@ export function TrackerAssignOptions({
         items={Object.entries(ASSIGN_MODE_OPTIONS).map(
           ([mode, trackersCount]) => ({
             component: (
-              <div className="flex flex-row gap-2 py-1 text-left pointer-events-none">
+              <div className="flex flex-row gap-2 py-1 text-left">
                 <ItemContent
                   mode={mode}
                   trackersCount={trackersCount}
