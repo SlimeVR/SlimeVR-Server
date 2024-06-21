@@ -99,7 +99,7 @@ export function DropdownItems({
             <li
               style={item.fontName ? { fontFamily: item.fontName } : {}}
               className={classNames(
-                'py-2 px-4 min-w-max cursor-pointer',
+                'py-2 px-4 min-w-max cursor-pointer first-of-type:*:pointer-events-none',
                 variant == 'primary' &&
                   'checked-hover:bg-background-50 text-background-20 ' +
                     'checked-hover:text-background-10',
