@@ -21,7 +21,6 @@ import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.I
 import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
-import io.github.axisangles.ktmath.Quaternion.Companion.J
 import io.github.axisangles.ktmath.Quaternion.Companion.fromTo
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
@@ -958,7 +957,11 @@ class HumanSkeleton(
 		intermediateTracker: Tracker?,
 		distalTracker: Tracker?,
 	) {
-		intermediateBone.setRotation(J)
+		rightUpperArmTracker?.let {
+			proximalBone.setRotation(it.getRotation())
+			intermediateBone.setRotation(it.getRotation())
+			distalBone.setRotation(it.getRotation())
+		}
 	}
 
 	/**
