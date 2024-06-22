@@ -251,7 +251,7 @@ export function ConnectTrackersPage() {
           </Typography>
 
           <div
-            className="overflow-y-scroll mt-2"
+            className="overflow-y-scroll mt-2 p-5"
             ref={ref}
             style={
               isMobile && state.alonePage

@@ -40,6 +40,11 @@ tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
 
+tasks.withType<Jar> {
+	from("../../LICENSE-APACHE")
+	from("../../LICENSE-MIT")
+}
+
 allprojects {
 	repositories {
 		// Use jcenter for resolving dependencies.

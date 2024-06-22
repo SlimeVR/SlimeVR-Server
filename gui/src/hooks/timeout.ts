@@ -1,17 +1,31 @@
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 
-export function useTimeout(fn: () => void, delay: number) {
+export function useTimeout(fn: () => void, delay: number | null) {
+  const saved = useRef(fn);
+
+  useLayoutEffect(() => {
+    saved.current = fn;
+  }, [fn]);
+
   useEffect(() => {
-    const id = setTimeout(fn, delay);
+    if (delay === null) return;
+    const id = setTimeout(() => saved.current(), delay);
     return () => clearTimeout(id);
-  });
+  }, [delay]);
 }
 
-export function useInterval(fn: () => void, delay: number) {
+export function useInterval(fn: () => void, delay: number | null) {
+  const saved = useRef(fn);
+
+  useLayoutEffect(() => {
+    saved.current = fn;
+  }, [fn]);
+
   useEffect(() => {
-    const id = setInterval(fn, delay);
+    if (delay === null) return;
+    const id = setInterval(() => saved.current(), delay);
     return () => clearInterval(id);
-  });
+  }, [delay]);
 }
 
 export const useDebouncedEffect = (effect: () => void, deps: any[], delay: number) => {
