@@ -35,6 +35,8 @@ import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
 import { playTapSetupSound } from '@/sounds/sounds';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { Radio } from '@/components/commons/Radio';
+import { Dropdown } from '@/components/commons/Dropdown';
+import { TrackersAssignOption } from './TrackerAssignmentOption';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -326,46 +328,49 @@ export function TrackersAssignPage() {
                   </div>
                 </div>
               )}
-              <div className="flex flex-col md:gap-4 sm:gap-2 mobile:gap-4">
-                {Object.entries(ASSIGN_MODE_OPTIONS).map(
-                  ([mode, trackersCount]) => (
-                    <Radio
-                      key={mode}
-                      name="assignMode"
-                      control={control}
-                      value={mode}
-                      disabled={
-                        connectedIMUTrackers > trackersCount &&
-                        mode !== AssignMode.All
-                      }
-                      className="hidden"
-                    >
-                      <div className="flex flex-row md:gap-4 sm:gap-2 mobile:gap-2">
-                        <div style={{ width: '2.5rem', textAlign: 'right' }}>
-                          <Typography variant="mobile-title">
-                            {l10n.getString(
-                              'onboarding-assign_trackers-option-amount',
-                              { trackersCount }
-                            )}
-                          </Typography>
-                        </div>
-                        <div className="flex flex-col">
-                          <Typography>
-                            {l10n.getString(
-                              'onboarding-assign_trackers-option-label',
-                              { mode }
-                            )}
-                          </Typography>
-                          <Typography variant="standard" color="secondary">
-                            {l10n.getString(
-                              'onboarding-assign_trackers-option-description',
-                              { mode }
-                            )}
-                          </Typography>
-                        </div>
-                      </div>
-                    </Radio>
-                  )
+              <div className="flex flex-col sm:gap-2">
+                {!isMobile &&
+                  Object.entries(ASSIGN_MODE_OPTIONS).map(
+                    ([mode, trackersCount]) => (
+                      <Radio
+                        key={mode}
+                        name="assignMode"
+                        control={control}
+                        value={mode}
+                        disabled={
+                          connectedIMUTrackers > trackersCount &&
+                          mode !== AssignMode.All
+                        }
+                        className="hidden"
+                      >
+                        <TrackersAssignOption
+                          mode={mode}
+                          trackersCount={trackersCount}
+                        />
+                      </Radio>
+                    )
+                  )}
+                {isMobile && (
+                  <Dropdown
+                    control={control}
+                    name="assignMode"
+                    display="block"
+                    placeholder={l10n.getString(
+                      'settings-serial-serial_select'
+                    )}
+                    direction="down"
+                    items={Object.entries(ASSIGN_MODE_OPTIONS).map(
+                      ([mode, trackersCount]) => ({
+                        label: (
+                          <TrackersAssignOption
+                            mode={mode}
+                            trackersCount={trackersCount}
+                          />
+                        ),
+                        value: mode,
+                      })
+                    )}
+                  ></Dropdown>
                 )}
                 <CheckBox
                   control={control}

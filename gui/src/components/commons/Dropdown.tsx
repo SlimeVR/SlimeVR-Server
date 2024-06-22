@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Control, Controller, UseControllerProps } from 'react-hook-form';
 import { a11yClick } from '@/utils/a11y';
 import { createPortal } from 'react-dom';
@@ -30,7 +30,7 @@ type DropdownItemsProps = Pick<
 };
 
 export interface DropdownItem {
-  label: string;
+  label: string | ReactNode;
   value: string;
   fontName?: string;
 }
@@ -189,7 +189,7 @@ export function Dropdown({
             </div>
             <div
               className={classNames(
-                'ml-2 fill-background-10',
+                'flex flex-col ml-2 fill-background-10 justify-center',
                 direction == 'up' && 'rotate-180',
                 direction == 'down' && 'rotate-0'
               )}
