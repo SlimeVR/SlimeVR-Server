@@ -384,7 +384,7 @@ class VMCHandler(
 					}
 
 					// Update Unity skeleton
-					outputUnityArmature!!.update()
+					outputUnityArmature?.update()
 
 					// Add Unity humanoid bones transforms
 					for (bone in UnityBone.entries) {
@@ -394,10 +394,13 @@ class VMCHandler(
 						) {
 							oscArgs.clear()
 							oscArgs.add(bone.stringVal)
-							addTransformToArgs(
-								outputUnityArmature!!.getLocalTranslationForBone(bone),
-								outputUnityArmature!!.getLocalRotationForBone(bone),
-							)
+							outputUnityArmature?.let {
+								addTransformToArgs(
+									it.getLocalTranslationForBone(bone),
+									it.getLocalRotationForBone(bone),
+								)
+							}
+
 							oscBundle.addPacket(OSCMessage("/VMC/Ext/Bone/Pos", oscArgs.clone()))
 						}
 					}

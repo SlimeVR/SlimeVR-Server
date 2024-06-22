@@ -12,9 +12,12 @@ import io.github.axisangles.ktmath.Vector3
  */
 class UnityArmature(localRot: Boolean) {
 
+	// Head
 	private val headNode = TransformNode(localRotation = localRot)
 	private val neckTailNode = TransformNode(localRotation = localRot)
 	private val neckHeadNode = TransformNode(localRotation = localRot)
+
+	// Spine
 	private val upperChestNode = TransformNode(localRotation = localRot)
 	private val chestNode = TransformNode(localRotation = localRot)
 	private val spineTailNode = TransformNode(localRotation = localRot)
@@ -22,12 +25,16 @@ class UnityArmature(localRot: Boolean) {
 	private val hipsNode = TransformNode(localRotation = localRot)
 	private val leftHipNode = TransformNode(localRotation = localRot)
 	private val rightHipNode = TransformNode(localRotation = localRot)
+
+	// Legs
 	private val leftKneeNode = TransformNode(localRotation = localRot)
 	private val leftAnkleNode = TransformNode(localRotation = localRot)
 	private val leftFootNode = TransformNode(localRotation = localRot)
 	private val rightKneeNode = TransformNode(localRotation = localRot)
 	private val rightAnkleNode = TransformNode(localRotation = localRot)
 	private val rightFootNode = TransformNode(localRotation = localRot)
+
+	// Arms
 	private val leftShoulderHeadNode = TransformNode(localRotation = localRot)
 	private val rightShoulderHeadNode = TransformNode(localRotation = localRot)
 	private val leftShoulderTailNode = TransformNode(localRotation = localRot)
@@ -38,6 +45,48 @@ class UnityArmature(localRot: Boolean) {
 	private val rightWristNode = TransformNode(localRotation = localRot)
 	private val leftHandNode = TransformNode(localRotation = localRot)
 	private val rightHandNode = TransformNode(localRotation = localRot)
+
+	// Fingers
+	val leftThumbProximalHeadNode = TransformNode(localRotation = localRot)
+	val leftThumbProximalTailNode = TransformNode(localRotation = localRot)
+	val leftThumbIntermediateNode = TransformNode(localRotation = localRot)
+	val leftThumbDistalNode = TransformNode(localRotation = localRot)
+	val leftIndexProximalHeadNode = TransformNode(localRotation = localRot)
+	val leftIndexProximalTailNode = TransformNode(localRotation = localRot)
+	val leftIndexIntermediateNode = TransformNode(localRotation = localRot)
+	val leftIndexDistalNode = TransformNode(localRotation = localRot)
+	val leftMiddleProximalHeadNode = TransformNode(localRotation = localRot)
+	val leftMiddleProximalTailNode = TransformNode(localRotation = localRot)
+	val leftMiddleIntermediateNode = TransformNode(localRotation = localRot)
+	val leftMiddleDistalNode = TransformNode(localRotation = localRot)
+	val leftRingProximalHeadNode = TransformNode(localRotation = localRot)
+	val leftRingProximalTailNode = TransformNode(localRotation = localRot)
+	val leftRingIntermediateNode = TransformNode(localRotation = localRot)
+	val leftRingDistalNode = TransformNode(localRotation = localRot)
+	val leftLittleProximalHeadNode = TransformNode(localRotation = localRot)
+	val leftLittleProximalTailNode = TransformNode(localRotation = localRot)
+	val leftLittleIntermediateNode = TransformNode(localRotation = localRot)
+	val leftLittleDistalNode = TransformNode(localRotation = localRot)
+	val rightThumbProximalHeadNode = TransformNode(localRotation = localRot)
+	val rightThumbProximalTailNode = TransformNode(localRotation = localRot)
+	val rightThumbIntermediateNode = TransformNode(localRotation = localRot)
+	val rightThumbDistalNode = TransformNode(localRotation = localRot)
+	val rightIndexProximalHeadNode = TransformNode(localRotation = localRot)
+	val rightIndexProximalTailNode = TransformNode(localRotation = localRot)
+	val rightIndexIntermediateNode = TransformNode(localRotation = localRot)
+	val rightIndexDistalNode = TransformNode(localRotation = localRot)
+	val rightMiddleProximalHeadNode = TransformNode(localRotation = localRot)
+	val rightMiddleProximalTailNode = TransformNode(localRotation = localRot)
+	val rightMiddleIntermediateNode = TransformNode(localRotation = localRot)
+	val rightMiddleDistalNode = TransformNode(localRotation = localRot)
+	val rightRingProximalHeadNode = TransformNode(localRotation = localRot)
+	val rightRingProximalTailNode = TransformNode(localRotation = localRot)
+	val rightRingIntermediateNode = TransformNode(localRotation = localRot)
+	val rightRingDistalNode = TransformNode(localRotation = localRot)
+	val rightLittleProximalHeadNode = TransformNode(localRotation = localRot)
+	val rightLittleProximalTailNode = TransformNode(localRotation = localRot)
+	val rightLittleIntermediateNode = TransformNode(localRotation = localRot)
+	val rightLittleDistalNode = TransformNode(localRotation = localRot)
 
 	private var rootPosition = Vector3.NULL
 	private var rootRotation = Quaternion.IDENTITY
@@ -74,6 +123,48 @@ class UnityArmature(localRot: Boolean) {
 		rightElbowNode.attachChild(rightWristNode)
 		leftWristNode.attachChild(leftHandNode)
 		rightWristNode.attachChild(rightHandNode)
+
+		// Fingers
+		leftHandNode.attachChild(leftThumbProximalHeadNode)
+		leftThumbProximalHeadNode.attachChild(leftThumbProximalTailNode)
+		leftThumbProximalTailNode.attachChild(leftThumbIntermediateNode)
+		leftThumbIntermediateNode.attachChild(leftThumbDistalNode)
+		leftHandNode.attachChild(leftIndexProximalHeadNode)
+		leftIndexProximalHeadNode.attachChild(leftIndexProximalTailNode)
+		leftIndexProximalTailNode.attachChild(leftIndexIntermediateNode)
+		leftIndexIntermediateNode.attachChild(leftIndexDistalNode)
+		leftHandNode.attachChild(leftMiddleProximalHeadNode)
+		leftMiddleProximalHeadNode.attachChild(leftMiddleProximalTailNode)
+		leftMiddleProximalTailNode.attachChild(leftMiddleIntermediateNode)
+		leftMiddleIntermediateNode.attachChild(leftMiddleDistalNode)
+		leftHandNode.attachChild(leftRingProximalHeadNode)
+		leftRingProximalHeadNode.attachChild(leftRingProximalTailNode)
+		leftRingProximalTailNode.attachChild(leftRingIntermediateNode)
+		leftRingIntermediateNode.attachChild(leftRingDistalNode)
+		leftHandNode.attachChild(leftLittleProximalHeadNode)
+		leftLittleProximalHeadNode.attachChild(leftLittleProximalTailNode)
+		leftLittleProximalTailNode.attachChild(leftLittleIntermediateNode)
+		leftLittleIntermediateNode.attachChild(leftLittleDistalNode)
+		rightHandNode.attachChild(rightThumbProximalHeadNode)
+		rightThumbProximalHeadNode.attachChild(rightThumbProximalTailNode)
+		rightThumbProximalTailNode.attachChild(rightThumbIntermediateNode)
+		rightThumbIntermediateNode.attachChild(rightThumbDistalNode)
+		rightHandNode.attachChild(rightIndexProximalHeadNode)
+		rightIndexProximalHeadNode.attachChild(rightIndexProximalTailNode)
+		rightIndexProximalTailNode.attachChild(rightIndexIntermediateNode)
+		rightIndexIntermediateNode.attachChild(rightIndexDistalNode)
+		rightHandNode.attachChild(rightMiddleProximalHeadNode)
+		rightMiddleProximalHeadNode.attachChild(rightMiddleProximalTailNode)
+		rightMiddleProximalTailNode.attachChild(rightMiddleIntermediateNode)
+		rightMiddleIntermediateNode.attachChild(rightMiddleDistalNode)
+		rightHandNode.attachChild(rightRingProximalHeadNode)
+		rightRingProximalHeadNode.attachChild(rightRingProximalTailNode)
+		rightRingProximalTailNode.attachChild(rightRingIntermediateNode)
+		rightRingIntermediateNode.attachChild(rightRingDistalNode)
+		rightHandNode.attachChild(rightLittleProximalHeadNode)
+		rightLittleProximalHeadNode.attachChild(rightLittleProximalTailNode)
+		rightLittleProximalTailNode.attachChild(rightLittleIntermediateNode)
+		rightLittleIntermediateNode.attachChild(rightLittleDistalNode)
 	}
 
 	fun update() {
@@ -194,6 +285,36 @@ class UnityArmature(localRot: Boolean) {
 			UnityBone.RIGHT_LOWER_ARM -> rightElbowNode
 			UnityBone.LEFT_HAND -> leftWristNode
 			UnityBone.RIGHT_HAND -> rightWristNode
+			UnityBone.LEFT_THUMB_PROXIMAL -> leftThumbProximalHeadNode
+			UnityBone.LEFT_THUMB_INTERMEDIATE -> leftThumbProximalTailNode
+			UnityBone.LEFT_THUMB_DISTAL -> leftThumbIntermediateNode
+			UnityBone.LEFT_INDEX_PROXIMAL -> leftIndexProximalHeadNode
+			UnityBone.LEFT_INDEX_INTERMEDIATE -> leftIndexProximalTailNode
+			UnityBone.LEFT_INDEX_DISTAL -> leftIndexIntermediateNode
+			UnityBone.LEFT_MIDDLE_PROXIMAL -> leftMiddleProximalHeadNode
+			UnityBone.LEFT_MIDDLE_INTERMEDIATE -> leftMiddleProximalTailNode
+			UnityBone.LEFT_MIDDLE_DISTAL -> leftMiddleIntermediateNode
+			UnityBone.LEFT_RING_PROXIMAL -> leftRingProximalHeadNode
+			UnityBone.LEFT_RING_INTERMEDIATE -> leftRingProximalTailNode
+			UnityBone.LEFT_RING_DISTAL -> leftRingIntermediateNode
+			UnityBone.LEFT_LITTLE_PROXIMAL -> leftLittleProximalHeadNode
+			UnityBone.LEFT_LITTLE_INTERMEDIATE -> leftLittleProximalTailNode
+			UnityBone.LEFT_LITTLE_DISTAL -> leftLittleIntermediateNode
+			UnityBone.RIGHT_THUMB_PROXIMAL -> rightThumbProximalHeadNode
+			UnityBone.RIGHT_THUMB_INTERMEDIATE -> rightThumbProximalTailNode
+			UnityBone.RIGHT_THUMB_DISTAL -> rightThumbIntermediateNode
+			UnityBone.RIGHT_INDEX_PROXIMAL -> rightIndexProximalHeadNode
+			UnityBone.RIGHT_INDEX_INTERMEDIATE -> rightIndexProximalTailNode
+			UnityBone.RIGHT_INDEX_DISTAL -> rightIndexIntermediateNode
+			UnityBone.RIGHT_MIDDLE_PROXIMAL -> rightMiddleProximalHeadNode
+			UnityBone.RIGHT_MIDDLE_INTERMEDIATE -> rightMiddleProximalTailNode
+			UnityBone.RIGHT_MIDDLE_DISTAL -> rightMiddleIntermediateNode
+			UnityBone.RIGHT_RING_PROXIMAL -> rightRingProximalHeadNode
+			UnityBone.RIGHT_RING_INTERMEDIATE -> rightRingProximalTailNode
+			UnityBone.RIGHT_RING_DISTAL -> rightRingIntermediateNode
+			UnityBone.RIGHT_LITTLE_PROXIMAL -> rightLittleProximalHeadNode
+			UnityBone.RIGHT_LITTLE_INTERMEDIATE -> rightLittleProximalTailNode
+			UnityBone.RIGHT_LITTLE_DISTAL -> rightLittleIntermediateNode
 			else -> null
 		}
 	}
