@@ -223,6 +223,8 @@ export class BoneKind extends Bone {
       case BodyPart.LEFT_HIP:
       case BodyPart.RIGHT_HIP:
         return new Color('pink');
+      default:
+        return new Color('pink'); // TODO
     }
   }
 
@@ -278,6 +280,8 @@ export class BoneKind extends Bone {
         return [];
       case BodyPart.RIGHT_HAND:
         return [];
+      default:
+        return []; // TODO
     }
   }
 
@@ -329,6 +333,8 @@ export class BoneKind extends Bone {
         return BodyPart.LEFT_LOWER_ARM;
       case BodyPart.RIGHT_HAND:
         return BodyPart.RIGHT_LOWER_ARM;
+      default:
+        return BodyPart.CHEST; // TODO
     }
   }
 }

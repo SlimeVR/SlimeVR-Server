@@ -593,6 +593,9 @@ class HumanSkeleton(
 			rightHandTracker,
 		)
 
+		// Stop if no finger tracker
+		if (!hasFingerTracker) return
+
 		// Left thumb
 		updateFingerTransforms(
 			leftThumbProximalBone,
@@ -949,21 +952,6 @@ class HumanSkeleton(
 		}
 	}
 
-	private fun updateFingerTransforms(
-		proximalBone: Bone,
-		intermediateBone: Bone,
-		distalBone: Bone,
-		proximalTracker: Tracker?,
-		intermediateTracker: Tracker?,
-		distalTracker: Tracker?,
-	) {
-		rightUpperArmTracker?.let {
-			proximalBone.setRotation(it.getRotation())
-			intermediateBone.setRotation(it.getRotation())
-			distalBone.setRotation(it.getRotation())
-		}
-	}
-
 	/**
 	 * Update an arm's transforms, from its shoulder to its hand
 	 */
@@ -1027,6 +1015,35 @@ class HumanSkeleton(
 			// Set hand, and hand tracker rotation
 			handBone.setRotation(armRot)
 			handTrackerBone.setRotation(armRot)
+		}
+	}
+
+	/**
+	 * Update a finger's 3 bones' transforms
+	 */
+	private fun updateFingerTransforms(
+		proximalBone: Bone,
+		intermediateBone: Bone,
+		distalBone: Bone,
+		proximalTracker: Tracker?,
+		intermediateTracker: Tracker?,
+		distalTracker: Tracker?,
+	) {
+		// TODO allow up to 270-90 degrees of bending instead of 180-180 and fine tune values
+		distalTracker?.let {
+			if (proximalTracker == null) proximalBone.setRotation(IDENTITY.interpQ(it.getRotation(), 0.4f))
+			if (intermediateTracker == null) intermediateBone.setRotation(IDENTITY.interpQ(it.getRotation(), 0.6f))
+			distalBone.setRotation(it.getRotation())
+		}
+		intermediateTracker?.let {
+			if (proximalTracker == null) proximalBone.setRotation(IDENTITY.interpR(it.getRotation(), 0.5f))
+			intermediateBone.setRotation(it.getRotation())
+			if (distalTracker == null) distalBone.setRotation(IDENTITY.interpR(it.getRotation(), 1.25f))
+		}
+		proximalTracker?.let {
+			proximalBone.setRotation(it.getRotation())
+			if (intermediateTracker == null) intermediateBone.setRotation(IDENTITY.interpR(it.getRotation(), 1.25f))
+			if (distalTracker == null) distalBone.setRotation(IDENTITY.interpR(it.getRotation(), 1.5f))
 		}
 	}
 

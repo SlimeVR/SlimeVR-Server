@@ -36,46 +36,64 @@ enum class TrackerPosition(
 	RIGHT_HAND("body:right_hand", TrackerRole.RIGHT_HAND, BodyPart.RIGHT_HAND),
 	LEFT_SHOULDER("body:left_shoulder", TrackerRole.LEFT_SHOULDER, BodyPart.LEFT_SHOULDER),
 	RIGHT_SHOULDER("body:right_shoulder", TrackerRole.RIGHT_SHOULDER, BodyPart.RIGHT_SHOULDER),
-	LEFT_THUMB_PROXIMAL("body:left_ThumbProximal", null, BodyPart.LEFT_THUMB_PROXIMAL),
-	LEFT_THUMB_INTERMEDIATE("body:left_ThumbIntermediate", null, BodyPart.LEFT_THUMB_INTERMEDIATE),
-	LEFT_THUMB_DISTAL("body:left_ThumbDistal", null, BodyPart.LEFT_THUMB_DISTAL),
-	LEFT_INDEX_PROXIMAL("body:left_IndexProximal", null, BodyPart.LEFT_INDEX_PROXIMAL),
-	LEFT_INDEX_INTERMEDIATE("body:left_IndexIntermediate", null, BodyPart.LEFT_INDEX_INTERMEDIATE),
-	LEFT_INDEX_DISTAL("body:left_IndexDistal", null, BodyPart.LEFT_INDEX_DISTAL),
-	LEFT_MIDDLE_PROXIMAL("body:left_MiddleProximal", null, BodyPart.LEFT_MIDDLE_PROXIMAL),
-	LEFT_MIDDLE_INTERMEDIATE("body:left_MiddleIntermediate", null, BodyPart.LEFT_MIDDLE_INTERMEDIATE),
-	LEFT_MIDDLE_DISTAL("body:left_MiddleDistal", null, BodyPart.LEFT_MIDDLE_DISTAL),
-	LEFT_RING_PROXIMAL("body:left_RingProximal", null, BodyPart.LEFT_RING_PROXIMAL),
-	LEFT_RING_INTERMEDIATE("body:left_RingIntermediate", null, BodyPart.LEFT_RING_INTERMEDIATE),
-	LEFT_RING_DISTAL("body:left_RingDistal", null, BodyPart.LEFT_RING_DISTAL),
-	LEFT_LITTLE_PROXIMAL("body:left_LittleProximal", null, BodyPart.LEFT_LITTLE_PROXIMAL),
-	LEFT_LITTLE_INTERMEDIATE("body:left_LittleIntermediate", null, BodyPart.LEFT_LITTLE_INTERMEDIATE),
-	LEFT_LITTLE_DISTAL("body:left_LittleDistal", null, BodyPart.LEFT_LITTLE_DISTAL),
-	RIGHT_THUMB_PROXIMAL("body:right_ThumbProximal", null, BodyPart.RIGHT_THUMB_PROXIMAL),
-	RIGHT_THUMB_INTERMEDIATE("body:right_ThumbIntermediate", null, BodyPart.RIGHT_THUMB_INTERMEDIATE),
-	RIGHT_THUMB_DISTAL("body:right_ThumbDistal", null, BodyPart.RIGHT_THUMB_DISTAL),
-	RIGHT_INDEX_PROXIMAL("body:right_IndexProximal", null, BodyPart.RIGHT_INDEX_PROXIMAL),
-	RIGHT_INDEX_INTERMEDIATE("body:right_IndexIntermediate", null, BodyPart.RIGHT_INDEX_INTERMEDIATE),
-	RIGHT_INDEX_DISTAL("body:right_IndexDistal", null, BodyPart.RIGHT_INDEX_DISTAL),
-	RIGHT_MIDDLE_PROXIMAL("body:right_MiddleProximal", null, BodyPart.RIGHT_MIDDLE_PROXIMAL),
-	RIGHT_MIDDLE_INTERMEDIATE("body:right_MiddleIntermediate", null, BodyPart.RIGHT_MIDDLE_INTERMEDIATE),
-	RIGHT_MIDDLE_DISTAL("body:right_MiddleDistal", null, BodyPart.RIGHT_MIDDLE_DISTAL),
-	RIGHT_RING_PROXIMAL("body:right_RingProximal", null, BodyPart.RIGHT_RING_PROXIMAL),
-	RIGHT_RING_INTERMEDIATE("body:right_RingIntermediate", null, BodyPart.RIGHT_RING_INTERMEDIATE),
-	RIGHT_RING_DISTAL("body:right_RingDistal", null, BodyPart.RIGHT_RING_DISTAL),
-	RIGHT_LITTLE_PROXIMAL("body:right_LittleProximal", null, BodyPart.RIGHT_LITTLE_PROXIMAL),
-	RIGHT_LITTLE_INTERMEDIATE("body:right_LittleIntermediate", null, BodyPart.RIGHT_LITTLE_INTERMEDIATE),
-	RIGHT_LITTLE_DISTAL("body:right_LittleDistal", null, BodyPart.RIGHT_LITTLE_DISTAL),
+	LEFT_THUMB_PROXIMAL("body:left_thumb_proximal", null, BodyPart.LEFT_THUMB_PROXIMAL),
+	LEFT_THUMB_INTERMEDIATE("body:left_thumb_intermediate", null, BodyPart.LEFT_THUMB_INTERMEDIATE),
+	LEFT_THUMB_DISTAL("body:left_thumb_distal", null, BodyPart.LEFT_THUMB_DISTAL),
+	LEFT_INDEX_PROXIMAL("body:left_index_proximal", null, BodyPart.LEFT_INDEX_PROXIMAL),
+	LEFT_INDEX_INTERMEDIATE("body:left_index_intermediate", null, BodyPart.LEFT_INDEX_INTERMEDIATE),
+	LEFT_INDEX_DISTAL("body:left_index_distal", null, BodyPart.LEFT_INDEX_DISTAL),
+	LEFT_MIDDLE_PROXIMAL("body:left_middle_proximal", null, BodyPart.LEFT_MIDDLE_PROXIMAL),
+	LEFT_MIDDLE_INTERMEDIATE("body:left_middle_intermediate", null, BodyPart.LEFT_MIDDLE_INTERMEDIATE),
+	LEFT_MIDDLE_DISTAL("body:left_middle_distal", null, BodyPart.LEFT_MIDDLE_DISTAL),
+	LEFT_RING_PROXIMAL("body:left_ring_proximal", null, BodyPart.LEFT_RING_PROXIMAL),
+	LEFT_RING_INTERMEDIATE("body:left_ring_intermediate", null, BodyPart.LEFT_RING_INTERMEDIATE),
+	LEFT_RING_DISTAL("body:left_ring_distal", null, BodyPart.LEFT_RING_DISTAL),
+	LEFT_LITTLE_PROXIMAL("body:left_little_proximal", null, BodyPart.LEFT_LITTLE_PROXIMAL),
+	LEFT_LITTLE_INTERMEDIATE("body:left_little_intermediate", null, BodyPart.LEFT_LITTLE_INTERMEDIATE),
+	LEFT_LITTLE_DISTAL("body:left_little_distal", null, BodyPart.LEFT_LITTLE_DISTAL),
+	RIGHT_THUMB_PROXIMAL("body:right_thumb_proximal", null, BodyPart.RIGHT_THUMB_PROXIMAL),
+	RIGHT_THUMB_INTERMEDIATE("body:right_thumb_intermediate", null, BodyPart.RIGHT_THUMB_INTERMEDIATE),
+	RIGHT_THUMB_DISTAL("body:right_thumb_distal", null, BodyPart.RIGHT_THUMB_DISTAL),
+	RIGHT_INDEX_PROXIMAL("body:right_index_proximal", null, BodyPart.RIGHT_INDEX_PROXIMAL),
+	RIGHT_INDEX_INTERMEDIATE("body:right_index_intermediate", null, BodyPart.RIGHT_INDEX_INTERMEDIATE),
+	RIGHT_INDEX_DISTAL("body:right_index_distal", null, BodyPart.RIGHT_INDEX_DISTAL),
+	RIGHT_MIDDLE_PROXIMAL("body:right_middle_proximal", null, BodyPart.RIGHT_MIDDLE_PROXIMAL),
+	RIGHT_MIDDLE_INTERMEDIATE("body:right_middle_intermediate", null, BodyPart.RIGHT_MIDDLE_INTERMEDIATE),
+	RIGHT_MIDDLE_DISTAL("body:right_middle_distal", null, BodyPart.RIGHT_MIDDLE_DISTAL),
+	RIGHT_RING_PROXIMAL("body:right_ring_proximal", null, BodyPart.RIGHT_RING_PROXIMAL),
+	RIGHT_RING_INTERMEDIATE("body:right_ring_intermediate", null, BodyPart.RIGHT_RING_INTERMEDIATE),
+	RIGHT_RING_DISTAL("body:right_ring_distal", null, BodyPart.RIGHT_RING_DISTAL),
+	RIGHT_LITTLE_PROXIMAL("body:right_little_proximal", null, BodyPart.RIGHT_LITTLE_PROXIMAL),
+	RIGHT_LITTLE_INTERMEDIATE("body:right_little_intermediate", null, BodyPart.RIGHT_LITTLE_INTERMEDIATE),
+	RIGHT_LITTLE_DISTAL("body:right_little_distal", null, BodyPart.RIGHT_LITTLE_DISTAL),
 	;
 
 	/**
 	 * Returns the default mounting orientation for the body part
 	 */
 	fun defaultMounting(): Quaternion = when (this) {
-		LEFT_LOWER_ARM, LEFT_HAND -> Quaternion.SLIMEVR.LEFT
-		RIGHT_LOWER_ARM, RIGHT_HAND -> Quaternion.SLIMEVR.RIGHT
+		LEFT_LOWER_ARM, LEFT_HAND,
+		LEFT_INDEX_PROXIMAL, LEFT_INDEX_INTERMEDIATE,
+		LEFT_INDEX_DISTAL, LEFT_MIDDLE_PROXIMAL,
+		LEFT_MIDDLE_INTERMEDIATE, LEFT_MIDDLE_DISTAL,
+		LEFT_RING_PROXIMAL, LEFT_RING_INTERMEDIATE,
+		LEFT_RING_DISTAL, LEFT_LITTLE_PROXIMAL,
+		LEFT_LITTLE_INTERMEDIATE, LEFT_LITTLE_DISTAL,
+		-> Quaternion.SLIMEVR.LEFT
+
+		RIGHT_LOWER_ARM, RIGHT_HAND,
+		RIGHT_INDEX_PROXIMAL, RIGHT_INDEX_INTERMEDIATE,
+		RIGHT_INDEX_DISTAL, RIGHT_MIDDLE_PROXIMAL,
+		RIGHT_MIDDLE_INTERMEDIATE, RIGHT_MIDDLE_DISTAL,
+		RIGHT_RING_PROXIMAL, RIGHT_RING_INTERMEDIATE,
+		RIGHT_RING_DISTAL, RIGHT_LITTLE_PROXIMAL,
+		RIGHT_LITTLE_INTERMEDIATE, RIGHT_LITTLE_DISTAL,
+		-> Quaternion.SLIMEVR.RIGHT
+
 		LEFT_UPPER_ARM, LEFT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_LEFT
+
 		RIGHT_UPPER_ARM, RIGHT_LOWER_LEG -> Quaternion.SLIMEVR.FRONT_RIGHT
+
 		else -> Quaternion.SLIMEVR.FRONT
 	}
 
