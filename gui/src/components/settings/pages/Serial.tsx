@@ -90,7 +90,6 @@ export function Serial() {
       }
 
       if (data.log) {
-        console.log(data.log);
         setConsole((console) => console + data.log);
       }
     }
@@ -114,8 +113,6 @@ export function Serial() {
       consoleRef.current.scrollTo({
         top: consoleRef.current.scrollHeight,
       });
-
-    console.log(consoleContent);
   }, [consoleContent]);
 
   useEffect(() => {
@@ -229,7 +226,6 @@ export function Serial() {
               <Button variant="quaternary" onClick={getWifiScan}>
                 {l10n.getString('settings-serial-get_wifi_scan')}
               </Button>
-              {/* {isMobile && ( */}
               <div className="w-full mobile:col-span-2">
                 <Dropdown
                   control={control}
