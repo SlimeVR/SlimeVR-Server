@@ -95,3 +95,6 @@ enum class MCUType(val id: UInt) {
 		fun getById(id: UInt): MCUType? = byId[id]
 	}
 }
+
+@JvmInline
+value class ConfigTypeId(val id: UShort)

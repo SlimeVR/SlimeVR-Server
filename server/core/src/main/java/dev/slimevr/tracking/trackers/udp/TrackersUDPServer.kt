@@ -311,7 +311,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 	private fun processPacket(received: DatagramPacket, packet: UDPPacket, connection: UDPDevice?) {
 		val tracker: Tracker?
 		when (packet) {
-			is UDPPacket0Heartbeat, is UDPPacket1Heartbeat -> {}
+			is UDPPacket0Heartbeat, is UDPPacket1Heartbeat, is UDPPacket25SetConfigFlag -> {}
 
 			is UDPPacket3Handshake -> setUpNewConnection(received, packet)
 
@@ -418,8 +418,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			}
 
 			is UDPPacket20Temperature -> {
-				tracker = connection?.getTracker(packet.sensorId)
-				if (tracker == null) return
+				tracker = connection?.getTracker(packet.sensorId) ?: return
 				tracker.temperature = packet.temperature
 			}
 
@@ -455,7 +454,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				}
 
 				LogManager.info(
-					"[TrackerServer] User action from ${connection.descriptiveName } received. $name performed.",
+					"[TrackerServer] User action from ${connection.descriptiveName} received. $name performed.",
 				)
 			}
 
@@ -467,6 +466,16 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				parser.write(bb, connection, packet)
 				socket.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
 				connection.firmwareFeatures = packet.firmwareFeatures
+			}
+
+			is UDPPacket24AckConfigChange -> {
+				if (connection == null) return
+				val trackers = if (SensorSpecificPacket.isGlobal(packet.sensorId)) {
+					connection.trackers.values.toList()
+				} else {
+					listOf(connection.getTracker(packet.sensorId) ?: return)
+				}
+				LogManager.info("[TrackerServer] Acknowledged config change on ${connection.descriptiveName} (${trackers.map { it.id }.joinToString()}). Config changed on ${packet.configType}")
 			}
 
 			is UDPPacket200ProtocolChange -> {}
