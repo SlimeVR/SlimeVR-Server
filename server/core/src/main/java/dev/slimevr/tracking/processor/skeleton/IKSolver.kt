@@ -190,7 +190,7 @@ class IKSolver(private val root: Bone) {
 
 	private fun getConstraint(bone: Bone, constraints: MutableList<Tracker>): Tracker? {
 		for (c in constraints) {
-			if (bone.boneType.bodyPart == (c.trackerPosition?.bodyPart ?: 0)) {
+			if (c.trackerPosition != null && bone.boneType.bodyPart == (c.trackerPosition?.bodyPart ?: 0)) {
 				constraints.remove(c)
 				return c
 			}
