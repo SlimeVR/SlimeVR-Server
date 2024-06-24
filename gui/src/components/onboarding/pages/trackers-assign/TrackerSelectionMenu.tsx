@@ -69,20 +69,6 @@ export function TrackerSelectionMenu({
                         }
                       ></TrackerCard>
                     ))}
-                    {unassignedTrackers.map((fd, index) => (
-                      <TrackerCard
-                        key={index}
-                        tracker={fd.tracker}
-                        device={fd.device}
-                        onClick={() => onTrackerSelected(fd)}
-                        smol
-                        interactable
-                        outlined={
-                          bodyPart ===
-                          (fd.tracker.info?.bodyPart || BodyPart.NONE)
-                        }
-                      ></TrackerCard>
-                    ))}
                   </div>
                 </>
               )}
