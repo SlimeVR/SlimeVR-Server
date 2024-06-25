@@ -64,7 +64,7 @@ export function TrackerAssignOptions({
     trackersCount: number;
   }) => (
     <>
-      <Typography variant="mobile-title" textAlign="text-right">
+      <Typography variant="main-title" textAlign="text-right">
         {l10n.getString('onboarding-assign_trackers-option-amount', {
           trackersCount,
         })}
