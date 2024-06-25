@@ -223,8 +223,37 @@ export class BoneKind extends Bone {
       case BodyPart.LEFT_HIP:
       case BodyPart.RIGHT_HIP:
         return new Color('pink');
-      default:
-        return new Color('pink'); // TODO
+      case BodyPart.LEFT_THUMB_PROXIMAL:
+      case BodyPart.LEFT_THUMB_INTERMEDIATE:
+      case BodyPart.LEFT_THUMB_DISTAL:
+      case BodyPart.LEFT_INDEX_PROXIMAL:
+      case BodyPart.LEFT_INDEX_INTERMEDIATE:
+      case BodyPart.LEFT_INDEX_DISTAL:
+      case BodyPart.LEFT_MIDDLE_PROXIMAL:
+      case BodyPart.LEFT_MIDDLE_INTERMEDIATE:
+      case BodyPart.LEFT_MIDDLE_DISTAL:
+      case BodyPart.LEFT_RING_PROXIMAL:
+      case BodyPart.LEFT_RING_INTERMEDIATE:
+      case BodyPart.LEFT_RING_DISTAL:
+      case BodyPart.LEFT_LITTLE_PROXIMAL:
+      case BodyPart.LEFT_LITTLE_INTERMEDIATE:
+      case BodyPart.LEFT_LITTLE_DISTAL:
+      case BodyPart.RIGHT_THUMB_PROXIMAL:
+      case BodyPart.RIGHT_THUMB_INTERMEDIATE:
+      case BodyPart.RIGHT_THUMB_DISTAL:
+      case BodyPart.RIGHT_INDEX_PROXIMAL:
+      case BodyPart.RIGHT_INDEX_INTERMEDIATE:
+      case BodyPart.RIGHT_INDEX_DISTAL:
+      case BodyPart.RIGHT_MIDDLE_PROXIMAL:
+      case BodyPart.RIGHT_MIDDLE_INTERMEDIATE:
+      case BodyPart.RIGHT_MIDDLE_DISTAL:
+      case BodyPart.RIGHT_RING_PROXIMAL:
+      case BodyPart.RIGHT_RING_INTERMEDIATE:
+      case BodyPart.RIGHT_RING_DISTAL:
+      case BodyPart.RIGHT_LITTLE_PROXIMAL:
+      case BodyPart.RIGHT_LITTLE_INTERMEDIATE:
+      case BodyPart.RIGHT_LITTLE_DISTAL:
+        return new Color('pink');
     }
   }
 
@@ -277,11 +306,82 @@ export class BoneKind extends Bone {
       case BodyPart.RIGHT_LOWER_ARM:
         return [BodyPart.RIGHT_HAND];
       case BodyPart.LEFT_HAND:
-        return [];
+        return [
+          BodyPart.LEFT_THUMB_PROXIMAL,
+          BodyPart.LEFT_INDEX_PROXIMAL,
+          BodyPart.LEFT_MIDDLE_PROXIMAL,
+          BodyPart.LEFT_RING_PROXIMAL,
+          BodyPart.LEFT_LITTLE_PROXIMAL,
+        ];
       case BodyPart.RIGHT_HAND:
+        return [
+          BodyPart.RIGHT_THUMB_PROXIMAL,
+          BodyPart.RIGHT_INDEX_PROXIMAL,
+          BodyPart.RIGHT_MIDDLE_PROXIMAL,
+          BodyPart.RIGHT_RING_PROXIMAL,
+          BodyPart.RIGHT_LITTLE_PROXIMAL,
+        ];
+
+      case BodyPart.LEFT_THUMB_PROXIMAL:
+        return [BodyPart.LEFT_THUMB_INTERMEDIATE];
+      case BodyPart.LEFT_THUMB_INTERMEDIATE:
+        return [BodyPart.LEFT_THUMB_DISTAL];
+      case BodyPart.LEFT_THUMB_DISTAL:
         return [];
-      default:
-        return []; // TODO
+      case BodyPart.LEFT_INDEX_PROXIMAL:
+        return [BodyPart.LEFT_INDEX_INTERMEDIATE];
+      case BodyPart.LEFT_INDEX_INTERMEDIATE:
+        return [BodyPart.LEFT_INDEX_DISTAL];
+      case BodyPart.LEFT_INDEX_DISTAL:
+        return [];
+      case BodyPart.LEFT_MIDDLE_PROXIMAL:
+        return [BodyPart.LEFT_MIDDLE_INTERMEDIATE];
+      case BodyPart.LEFT_MIDDLE_INTERMEDIATE:
+        return [BodyPart.LEFT_MIDDLE_DISTAL];
+      case BodyPart.LEFT_MIDDLE_DISTAL:
+        return [];
+      case BodyPart.LEFT_RING_PROXIMAL:
+        return [BodyPart.LEFT_RING_INTERMEDIATE];
+      case BodyPart.LEFT_RING_INTERMEDIATE:
+        return [BodyPart.LEFT_RING_DISTAL];
+      case BodyPart.LEFT_RING_DISTAL:
+        return [];
+      case BodyPart.LEFT_LITTLE_PROXIMAL:
+        return [BodyPart.LEFT_LITTLE_INTERMEDIATE];
+      case BodyPart.LEFT_LITTLE_INTERMEDIATE:
+        return [BodyPart.LEFT_LITTLE_DISTAL];
+      case BodyPart.LEFT_LITTLE_DISTAL:
+        return [];
+      case BodyPart.RIGHT_THUMB_PROXIMAL:
+        return [BodyPart.RIGHT_THUMB_INTERMEDIATE];
+      case BodyPart.RIGHT_THUMB_INTERMEDIATE:
+        return [BodyPart.RIGHT_THUMB_DISTAL];
+      case BodyPart.RIGHT_THUMB_DISTAL:
+        return [];
+      case BodyPart.RIGHT_INDEX_PROXIMAL:
+        return [BodyPart.RIGHT_INDEX_INTERMEDIATE];
+      case BodyPart.RIGHT_INDEX_INTERMEDIATE:
+        return [BodyPart.RIGHT_INDEX_DISTAL];
+      case BodyPart.RIGHT_INDEX_DISTAL:
+        return [];
+      case BodyPart.RIGHT_MIDDLE_PROXIMAL:
+        return [BodyPart.RIGHT_MIDDLE_INTERMEDIATE];
+      case BodyPart.RIGHT_MIDDLE_INTERMEDIATE:
+        return [BodyPart.RIGHT_MIDDLE_DISTAL];
+      case BodyPart.RIGHT_MIDDLE_DISTAL:
+        return [];
+      case BodyPart.RIGHT_RING_PROXIMAL:
+        return [BodyPart.RIGHT_RING_INTERMEDIATE];
+      case BodyPart.RIGHT_RING_INTERMEDIATE:
+        return [BodyPart.RIGHT_RING_DISTAL];
+      case BodyPart.RIGHT_RING_DISTAL:
+        return [];
+      case BodyPart.RIGHT_LITTLE_PROXIMAL:
+        return [BodyPart.RIGHT_LITTLE_INTERMEDIATE];
+      case BodyPart.RIGHT_LITTLE_INTERMEDIATE:
+        return [BodyPart.RIGHT_LITTLE_DISTAL];
+      case BodyPart.RIGHT_LITTLE_DISTAL:
+        return [];
     }
   }
 
@@ -333,8 +433,67 @@ export class BoneKind extends Bone {
         return BodyPart.LEFT_LOWER_ARM;
       case BodyPart.RIGHT_HAND:
         return BodyPart.RIGHT_LOWER_ARM;
-      default:
-        return BodyPart.CHEST; // TODO
+
+      case BodyPart.LEFT_THUMB_PROXIMAL:
+        return BodyPart.LEFT_HAND;
+      case BodyPart.LEFT_THUMB_INTERMEDIATE:
+        return BodyPart.LEFT_THUMB_PROXIMAL;
+      case BodyPart.LEFT_THUMB_DISTAL:
+        return BodyPart.LEFT_THUMB_INTERMEDIATE;
+      case BodyPart.LEFT_INDEX_PROXIMAL:
+        return BodyPart.LEFT_HAND;
+      case BodyPart.LEFT_INDEX_INTERMEDIATE:
+        return BodyPart.LEFT_INDEX_PROXIMAL;
+      case BodyPart.LEFT_INDEX_DISTAL:
+        return BodyPart.LEFT_INDEX_INTERMEDIATE;
+      case BodyPart.LEFT_MIDDLE_PROXIMAL:
+        return BodyPart.LEFT_HAND;
+      case BodyPart.LEFT_MIDDLE_INTERMEDIATE:
+        return BodyPart.LEFT_MIDDLE_PROXIMAL;
+      case BodyPart.LEFT_MIDDLE_DISTAL:
+        return BodyPart.LEFT_MIDDLE_INTERMEDIATE;
+      case BodyPart.LEFT_RING_PROXIMAL:
+        return BodyPart.LEFT_HAND;
+      case BodyPart.LEFT_RING_INTERMEDIATE:
+        return BodyPart.LEFT_RING_PROXIMAL;
+      case BodyPart.LEFT_RING_DISTAL:
+        return BodyPart.LEFT_RING_INTERMEDIATE;
+      case BodyPart.LEFT_LITTLE_PROXIMAL:
+        return BodyPart.LEFT_HAND;
+      case BodyPart.LEFT_LITTLE_INTERMEDIATE:
+        return BodyPart.LEFT_LITTLE_PROXIMAL;
+      case BodyPart.LEFT_LITTLE_DISTAL:
+        return BodyPart.LEFT_LITTLE_INTERMEDIATE;
+      case BodyPart.RIGHT_THUMB_PROXIMAL:
+        return BodyPart.RIGHT_HAND;
+      case BodyPart.RIGHT_THUMB_INTERMEDIATE:
+        return BodyPart.RIGHT_THUMB_PROXIMAL;
+      case BodyPart.RIGHT_THUMB_DISTAL:
+        return BodyPart.RIGHT_THUMB_INTERMEDIATE;
+      case BodyPart.RIGHT_INDEX_PROXIMAL:
+        return BodyPart.RIGHT_HAND;
+      case BodyPart.RIGHT_INDEX_INTERMEDIATE:
+        return BodyPart.RIGHT_INDEX_PROXIMAL;
+      case BodyPart.RIGHT_INDEX_DISTAL:
+        return BodyPart.RIGHT_INDEX_INTERMEDIATE;
+      case BodyPart.RIGHT_MIDDLE_PROXIMAL:
+        return BodyPart.RIGHT_HAND;
+      case BodyPart.RIGHT_MIDDLE_INTERMEDIATE:
+        return BodyPart.RIGHT_MIDDLE_PROXIMAL;
+      case BodyPart.RIGHT_MIDDLE_DISTAL:
+        return BodyPart.RIGHT_MIDDLE_INTERMEDIATE;
+      case BodyPart.RIGHT_RING_PROXIMAL:
+        return BodyPart.RIGHT_HAND;
+      case BodyPart.RIGHT_RING_INTERMEDIATE:
+        return BodyPart.RIGHT_RING_PROXIMAL;
+      case BodyPart.RIGHT_RING_DISTAL:
+        return BodyPart.RIGHT_RING_INTERMEDIATE;
+      case BodyPart.RIGHT_LITTLE_PROXIMAL:
+        return BodyPart.RIGHT_HAND;
+      case BodyPart.RIGHT_LITTLE_INTERMEDIATE:
+        return BodyPart.RIGHT_LITTLE_PROXIMAL;
+      case BodyPart.RIGHT_LITTLE_DISTAL:
+        return BodyPart.RIGHT_LITTLE_INTERMEDIATE;
     }
   }
 }
