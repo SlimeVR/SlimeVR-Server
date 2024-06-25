@@ -110,7 +110,7 @@ export function Navbar() {
       <MainLinks></MainLinks>
     </div>
   ) : (
-    <div className="flex flex-col px-2 pt-2">
+    <div className="flex flex-col h-full p-2 gap-2">
       <div className="flex flex-col flex-grow gap-2">
         <MainLinks></MainLinks>
       </div>

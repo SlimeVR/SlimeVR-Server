@@ -6,11 +6,11 @@ import {
   Routes,
 } from 'react-router-dom';
 import { Home } from './components/home/Home';
-import { MainLayoutRoute } from './components/MainLayout';
+import { MainLayout } from './components/MainLayout';
 import { AppContextProvider } from './components/providers/AppContext';
 import { GeneralSettings } from './components/settings/pages/GeneralSettings';
 import { Serial } from './components/settings/pages/Serial';
-import { SettingsLayoutRoute } from './components/settings/SettingsLayout';
+import { SettingsLayout } from './components/settings/SettingsLayout';
 import {
   useProvideWebsocketApi,
   WebSocketApiContext,
@@ -75,33 +75,33 @@ function Layout() {
           <Route
             path="/"
             element={
-              <MainLayoutRoute isMobile={isMobile}>
+              <MainLayout isMobile={isMobile}>
                 <Home />
-              </MainLayoutRoute>
+              </MainLayout>
             }
           />
           <Route
             path="/vr-mode"
             element={
-              <MainLayoutRoute isMobile={isMobile}>
+              <MainLayout isMobile={isMobile}>
                 <VRModePage />
-              </MainLayoutRoute>
+              </MainLayout>
             }
           />
           <Route
             path="/tracker/:trackernum/:deviceid"
             element={
-              <MainLayoutRoute background={false} isMobile={isMobile}>
+              <MainLayout background={false} isMobile={isMobile}>
                 <TrackerSettingsPage />
-              </MainLayoutRoute>
+              </MainLayout>
             }
           />
           <Route
             path="/settings"
             element={
-              <SettingsLayoutRoute>
+              <SettingsLayout>
                 <Outlet />
-              </SettingsLayoutRoute>
+              </SettingsLayout>
             }
           >
             <Route path="trackers" element={<GeneralSettings />} />
