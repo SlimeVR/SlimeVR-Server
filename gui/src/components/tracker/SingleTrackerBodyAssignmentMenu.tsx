@@ -1,9 +1,7 @@
 import classNames from 'classnames';
-import { useForm } from 'react-hook-form';
 import ReactModal from 'react-modal';
 import { BodyPart } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
-import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import { BodyAssignment } from '@/components/onboarding/BodyAssignment';
 import { useLocalization } from '@fluent/react';
@@ -24,9 +22,6 @@ export function SingleTrackerBodyAssignmentMenu({
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { config } = useConfig();
-  const defaultValues = { advanced: false };
-  const { control, watch } = useForm<{ advanced: boolean }>({ defaultValues });
-  const { advanced } = watch();
 
   const { closeChokerWarning, tryOpenChokerWarning, shouldShowChokerWarn } =
     useChokerWarning({
@@ -56,14 +51,6 @@ export function SingleTrackerBodyAssignmentMenu({
               <Typography color="secondary">
                 {l10n.getString('body_assignment_menu-description')}
               </Typography>
-              <CheckBox
-                control={control}
-                label={l10n.getString(
-                  'body_assignment_menu-show_advanced_locations'
-                )}
-                name="advanced"
-                variant="toggle"
-              ></CheckBox>
               <div className="flex">
                 <Button
                   variant="secondary"
@@ -79,7 +66,7 @@ export function SingleTrackerBodyAssignmentMenu({
                 mirror={config?.mirrorView ?? defaultConfig.mirrorView}
                 width={isMobile ? 160 : undefined}
                 onlyAssigned={false}
-                advanced={advanced ?? defaultValues.advanced}
+                assignMode={config?.assignMode ?? defaultConfig.assignMode}
                 onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
               <div className="flex justify-center">

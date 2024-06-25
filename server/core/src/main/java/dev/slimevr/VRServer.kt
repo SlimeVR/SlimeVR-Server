@@ -162,7 +162,6 @@ class VRServer @JvmOverloads constructor(
 			this,
 			humanPoseManager,
 			configManager.vrConfig.vmc,
-			computedTrackers,
 		)
 
 		// Initialize OSC router

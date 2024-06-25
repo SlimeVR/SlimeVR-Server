@@ -40,6 +40,22 @@ tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
 
+<<<<<<< HEAD
+=======
+tasks.withType<Jar> {
+	from("../../LICENSE-APACHE")
+	from("../../LICENSE-MIT")
+}
+
+allprojects {
+	repositories {
+		// Use jcenter for resolving dependencies.
+		// You can declare any Maven/Ivy/file repository here.
+		mavenCentral()
+	}
+}
+
+>>>>>>> 94aec1f4ba0b7a13697a07038a3057ccf4197725
 dependencies {
 	implementation(project(":solarxr-protocol"))
 

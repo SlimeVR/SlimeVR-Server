@@ -6,13 +6,13 @@ import {
   RpcMessage,
   SettingsRequestT,
 } from 'solarxr-protocol';
-import { useElemSize, useLayout } from '@/hooks/layout';
 import { Navbar } from './Navbar';
 import { TopBar } from './TopBar';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { WidgetsComponent } from './WidgetsComponent';
+import './MainLayout.scss';
 
-export function MainLayoutRoute({
+export function MainLayout({
   children,
   background = true,
   widgets = true,
@@ -23,9 +23,6 @@ export function MainLayoutRoute({
   isMobile?: boolean;
   widgets?: boolean;
 }) {
-  const { height, ref: navRef } = useElemSize<HTMLDivElement>();
-  const { layoutHeight, ref } = useLayout<HTMLDivElement>();
-  const { layoutWidth, ref: refw } = useLayout<HTMLDivElement>();
   const { sendRPCPacket } = useWebsocketAPI();
   const [ProportionsLastPageOpen, setProportionsLastPageOpen] = useState(true);
 
@@ -61,37 +58,33 @@ export function MainLayoutRoute({
   });
 
   return (
-    <>
-      <TopBar></TopBar>
-      <div
-        ref={ref}
-        className="flex-grow"
-        style={{ height: layoutHeight - height }}
-      >
-        <div className="flex h-full xs:pb-3">
-          {!isMobile && <Navbar></Navbar>}
-          <div
-            className="flex gap-2 xs:pr-3  w-full"
-            ref={refw}
-            style={{ minWidth: layoutWidth }}
-          >
-            <div
-              className={classNames(
-                'flex flex-col rounded-xl w-full overflow-clip mobile:overflow-y-auto',
-                background && 'bg-background-70'
-              )}
-            >
-              {children}
-            </div>
-            {!isMobile && widgets && (
-              <div className="flex flex-col px-2 min-w-[274px] w-[274px] gap-2 pt-2 rounded-xl overflow-y-auto bg-background-70">
-                <WidgetsComponent></WidgetsComponent>
-              </div>
-            )}
-          </div>
+    <div className="">
+      <div className="main-layout w-full h-screen">
+        <div style={{ gridArea: 't' }}>
+          <TopBar></TopBar>
         </div>
-        <div ref={navRef}>{isMobile && <Navbar></Navbar>}</div>
+        <div style={{ gridArea: 's' }} className="overflow-y-auto">
+          <Navbar></Navbar>
+        </div>
+        <div
+          style={{ gridArea: 'c' }}
+          className={classNames(
+            'overflow-y-auto mr-2 my-2 mobile:m-0',
+            'flex flex-col rounded-xl',
+            background && 'bg-background-70'
+          )}
+        >
+          {children}
+        </div>
+        {!isMobile && widgets && (
+          <div
+            style={{ gridArea: 'w' }}
+            className="overflow-y-auto mr-2 my-2 rounded-xl bg-background-70 flex flex-col gap-2 p-2 widgets"
+          >
+            <WidgetsComponent></WidgetsComponent>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
