@@ -300,117 +300,108 @@ export function TrackersAssignPage() {
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}
       ></NeckWarningModal>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
-        <div className="flex flex-col w-full overflow-y-auto px-4 xs:items-center">
-          <div className="flex mobile:flex-col md:gap-8 mobile:gap-4 mobile:pb-4">
-            <div className="flex flex-col xs:max-w-sm gap-3">
-              <Typography variant="main-title">
-                {l10n.getString('onboarding-assign_trackers-title')}
-              </Typography>
-              <Typography color="secondary">
-                {l10n.getString('onboarding-assign_trackers-description')}
-              </Typography>
-              <div className="flex gap-1">
-                <Typography color="secondary">
-                  {l10n.getString('onboarding-assign_trackers-assigned', {
-                    assigned: assignedTrackers.length,
-                    trackers: trackers.length,
-                  })}
-                </Typography>
-              </div>
-              <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
-              {!!firstError && (
-                <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
-                  <div className="flex flex-col gap-1 whitespace-normal">
-                    <span>{firstError.label}</span>
-                  </div>
-                </div>
-              )}
-              <div className="flex flex-col md:gap-4 sm:gap-2 mobile:gap-4">
-                {Object.entries(ASSIGN_MODE_OPTIONS).map(
-                  ([mode, trackersCount]) => (
-                    <Radio
-                      key={mode}
-                      name="assignMode"
-                      control={control}
-                      value={mode}
-                      disabled={
-                        connectedIMUTrackers > trackersCount &&
-                        mode !== AssignMode.All
-                      }
-                      className="hidden"
-                    >
-                      <div className="flex flex-row md:gap-4 sm:gap-2 mobile:gap-2">
-                        <div style={{ width: '2.5rem', textAlign: 'right' }}>
-                          <Typography variant="mobile-title">
-                            {l10n.getString(
-                              'onboarding-assign_trackers-option-amount',
-                              { trackersCount }
-                            )}
-                          </Typography>
-                        </div>
-                        <div className="flex flex-col">
-                          <Typography>
-                            {l10n.getString(
-                              'onboarding-assign_trackers-option-label',
-                              { mode }
-                            )}
-                          </Typography>
-                          <Typography variant="standard" color="secondary">
-                            {l10n.getString(
-                              'onboarding-assign_trackers-option-description',
-                              { mode }
-                            )}
-                          </Typography>
-                        </div>
-                      </div>
-                    </Radio>
-                  )
-                )}
-                <CheckBox
-                  control={control}
-                  label={l10n.getString(
-                    'onboarding-assign_trackers-mirror_view'
-                  )}
-                  name="mirrorView"
-                  variant="toggle"
-                ></CheckBox>
-              </div>
-              <div className="flex flex-row">
-                {!state.alonePage && (
-                  <>
-                    <Button
-                      variant="secondary"
-                      to="/onboarding/assign-tutorial"
-                    >
-                      {l10n.getString('onboarding-previous_step')}
-                    </Button>
-                    <Button
-                      variant="primary"
-                      to="/onboarding/mounting/choose"
-                      disabled={
-                        assignedTrackers.length === 0 && trackers.length > 0
-                      }
-                      className="ml-auto"
-                    >
-                      {l10n.getString('onboarding-enter_vr-ready')}
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-            <div className="flex flex-col rounded-xl fill-background-50">
-              <BodyAssignment
-                width={isMobile ? 150 : undefined}
-                onlyAssigned={false}
-                highlightedRoles={firstError?.affectedRoles || []}
-                rolesWithErrors={rolesWithErrors}
-                assignMode={assignMode ?? defaultValues.assignMode}
-                mirror={mirrorView ?? defaultValues.mirrorView}
-                onRoleSelected={tryOpenChokerWarning}
-              ></BodyAssignment>
-            </div>
+      <div className="flex mobile:flex-col w-full md:gap-8 mobile:gap-4 p-4 justify-center">
+        <div className="flex flex-col xs:max-w-sm gap-3">
+          <Typography variant="main-title">
+            {l10n.getString('onboarding-assign_trackers-title')}
+          </Typography>
+          <Typography color="secondary">
+            {l10n.getString('onboarding-assign_trackers-description')}
+          </Typography>
+          <div className="flex gap-1">
+            <Typography color="secondary">
+              {l10n.getString('onboarding-assign_trackers-assigned', {
+                assigned: assignedTrackers.length,
+                trackers: trackers.length,
+              })}
+            </Typography>
           </div>
+          <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
+          {!!firstError && (
+            <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
+              <div className="flex flex-col gap-1 whitespace-normal">
+                <span>{firstError.label}</span>
+              </div>
+            </div>
+          )}
+          <div className="flex flex-col gap-4">
+            {Object.entries(ASSIGN_MODE_OPTIONS).map(
+              ([mode, trackersCount]) => (
+                <Radio
+                  key={mode}
+                  name="assignMode"
+                  control={control}
+                  value={mode}
+                  disabled={
+                    connectedIMUTrackers > trackersCount &&
+                    mode !== AssignMode.All
+                  }
+                  className="hidden"
+                >
+                  <div className="flex flex-row gap-2">
+                    <div className="text-right">
+                      <Typography variant="mobile-title">
+                        {l10n.getString(
+                          'onboarding-assign_trackers-option-amount',
+                          { trackersCount }
+                        )}
+                      </Typography>
+                    </div>
+                    <div className="flex flex-col">
+                      <Typography>
+                        {l10n.getString(
+                          'onboarding-assign_trackers-option-label',
+                          { mode }
+                        )}
+                      </Typography>
+                      <Typography variant="standard" color="secondary">
+                        {l10n.getString(
+                          'onboarding-assign_trackers-option-description',
+                          { mode }
+                        )}
+                      </Typography>
+                    </div>
+                  </div>
+                </Radio>
+              )
+            )}
+            <CheckBox
+              control={control}
+              label={l10n.getString('onboarding-assign_trackers-mirror_view')}
+              name="mirrorView"
+              variant="toggle"
+            ></CheckBox>
+          </div>
+          <div className="flex flex-row">
+            {!state.alonePage && (
+              <>
+                <Button variant="secondary" to="/onboarding/assign-tutorial">
+                  {l10n.getString('onboarding-previous_step')}
+                </Button>
+                <Button
+                  variant="primary"
+                  to="/onboarding/mounting/choose"
+                  disabled={
+                    assignedTrackers.length === 0 && trackers.length > 0
+                  }
+                  className="ml-auto"
+                >
+                  {l10n.getString('onboarding-enter_vr-ready')}
+                </Button>
+              </>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col justify-center rounded-xl fill-background-50">
+          <BodyAssignment
+            width={isMobile ? 150 : 180}
+            onlyAssigned={false}
+            highlightedRoles={firstError?.affectedRoles || []}
+            rolesWithErrors={rolesWithErrors}
+            assignMode={assignMode ?? defaultValues.assignMode}
+            mirror={mirrorView ?? defaultValues.mirrorView}
+            onRoleSelected={tryOpenChokerWarning}
+          ></BodyAssignment>
         </div>
       </div>
     </>
