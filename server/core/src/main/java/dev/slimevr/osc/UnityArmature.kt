@@ -43,8 +43,8 @@ class UnityArmature(localRot: Boolean) {
 	private val rightElbowNode = TransformNode(localRotation = localRot)
 	private val leftWristNode = TransformNode(localRotation = localRot)
 	private val rightWristNode = TransformNode(localRotation = localRot)
-	private val leftHandNode = TransformNode(localRotation = localRot)
-	private val rightHandNode = TransformNode(localRotation = localRot)
+	private val leftHandNode = TransformNode(localRotation = !localRot)
+	private val rightHandNode = TransformNode(localRotation = !localRot)
 
 	// Fingers
 	val leftThumbProximalHeadNode = TransformNode(localRotation = localRot)
@@ -182,10 +182,12 @@ class UnityArmature(localRot: Boolean) {
 	fun setGlobalRotationForBone(unityBone: UnityBone, globalRot: Quaternion) {
 		val node = getHeadNodeOfBone(unityBone)
 		if (node != null) {
-			node.localTransform.rotation = when (unityBone) {
-				UnityBone.LEFT_UPPER_ARM, UnityBone.LEFT_LOWER_ARM, UnityBone.LEFT_HAND -> globalRot * LEFT_SHOULDER_OFFSET
-				UnityBone.RIGHT_UPPER_ARM, UnityBone.RIGHT_LOWER_ARM, UnityBone.RIGHT_HAND -> globalRot * RIGHT_SHOULDER_OFFSET
-				else -> globalRot
+			node.localTransform.rotation = if (UnityBone.isLeftArmBone(unityBone)) {
+				globalRot * LEFT_SHOULDER_OFFSET
+			} else if (UnityBone.isRightArmBone(unityBone)) {
+				globalRot * RIGHT_SHOULDER_OFFSET
+			} else {
+				globalRot
 			}
 		}
 	}

@@ -115,7 +115,6 @@ class HumanSkeleton(
 	var hasRightFootTracker = false
 	var hasLeftArmTracker = false
 	var hasRightArmTracker = false
-	var hasFingerTracker = false
 
 	// Input trackers
 	var headTracker: Tracker? by Delegates.observable(null) { _, old, new ->
@@ -429,16 +428,6 @@ class HumanSkeleton(
 		hasRightFootTracker = rightFootTracker != null
 		hasLeftArmTracker = leftLowerArmTracker != null || leftUpperArmTracker != null
 		hasRightArmTracker = rightLowerArmTracker != null || rightUpperArmTracker != null
-		hasFingerTracker = leftThumbProximalTracker != null || leftThumbIntermediateTracker != null || leftThumbDistalTracker != null ||
-			leftIndexProximalTracker != null || leftIndexIntermediateTracker != null || leftIndexDistalTracker != null ||
-			leftMiddleProximalTracker != null || leftMiddleIntermediateTracker != null || leftMiddleDistalTracker != null ||
-			leftRingProximalTracker != null || leftRingIntermediateTracker != null || leftRingDistalTracker != null ||
-			leftLittleProximalTracker != null || leftLittleIntermediateTracker != null || leftLittleDistalTracker != null ||
-			rightThumbProximalTracker != null || rightThumbIntermediateTracker != null || rightThumbDistalTracker != null ||
-			rightIndexProximalTracker != null || rightIndexIntermediateTracker != null || rightIndexDistalTracker != null ||
-			rightMiddleProximalTracker != null || rightMiddleIntermediateTracker != null || rightMiddleDistalTracker != null ||
-			rightRingProximalTracker != null || rightRingIntermediateTracker != null || rightRingDistalTracker != null ||
-			rightLittleProximalTracker != null || rightLittleIntermediateTracker != null || rightLittleDistalTracker != null
 
 		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true)
@@ -593,11 +582,9 @@ class HumanSkeleton(
 			rightHandTracker,
 		)
 
-		// Stop if no finger tracker
-		if (!hasFingerTracker) return
-
 		// Left thumb
 		updateFingerTransforms(
+			leftHandBone,
 			leftThumbProximalBone,
 			leftThumbIntermediateBone,
 			leftThumbDistalBone,
@@ -608,6 +595,7 @@ class HumanSkeleton(
 
 		// Left index
 		updateFingerTransforms(
+			leftHandBone,
 			leftIndexProximalBone,
 			leftIndexIntermediateBone,
 			leftIndexDistalBone,
@@ -618,6 +606,7 @@ class HumanSkeleton(
 
 		// Left middle
 		updateFingerTransforms(
+			leftHandBone,
 			leftMiddleProximalBone,
 			leftMiddleIntermediateBone,
 			leftMiddleDistalBone,
@@ -628,6 +617,7 @@ class HumanSkeleton(
 
 		// Left ring
 		updateFingerTransforms(
+			leftHandBone,
 			leftRingProximalBone,
 			leftRingIntermediateBone,
 			leftRingDistalBone,
@@ -638,6 +628,7 @@ class HumanSkeleton(
 
 		// Left little
 		updateFingerTransforms(
+			leftHandBone,
 			leftLittleProximalBone,
 			leftLittleIntermediateBone,
 			leftLittleDistalBone,
@@ -648,6 +639,7 @@ class HumanSkeleton(
 
 		// Right thumb
 		updateFingerTransforms(
+			rightHandBone,
 			rightThumbProximalBone,
 			rightThumbIntermediateBone,
 			rightThumbDistalBone,
@@ -658,6 +650,7 @@ class HumanSkeleton(
 
 		// Right index
 		updateFingerTransforms(
+			rightHandBone,
 			rightIndexProximalBone,
 			rightIndexIntermediateBone,
 			rightIndexDistalBone,
@@ -668,6 +661,7 @@ class HumanSkeleton(
 
 		// Right middle
 		updateFingerTransforms(
+			rightHandBone,
 			rightMiddleProximalBone,
 			rightMiddleIntermediateBone,
 			rightMiddleDistalBone,
@@ -678,6 +672,7 @@ class HumanSkeleton(
 
 		// Right ring
 		updateFingerTransforms(
+			rightHandBone,
 			rightRingProximalBone,
 			rightRingIntermediateBone,
 			rightRingDistalBone,
@@ -688,6 +683,7 @@ class HumanSkeleton(
 
 		// Right little
 		updateFingerTransforms(
+			rightHandBone,
 			rightLittleProximalBone,
 			rightLittleIntermediateBone,
 			rightLittleDistalBone,
@@ -1022,6 +1018,7 @@ class HumanSkeleton(
 	 * Update a finger's 3 bones' transforms
 	 */
 	private fun updateFingerTransforms(
+		handBone: Bone,
 		proximalBone: Bone,
 		intermediateBone: Bone,
 		distalBone: Bone,
@@ -1029,21 +1026,32 @@ class HumanSkeleton(
 		intermediateTracker: Tracker?,
 		distalTracker: Tracker?,
 	) {
-		// TODO allow up to 270-90 degrees of bending instead of 180-180 and fine tune values
-		distalTracker?.let {
-			if (proximalTracker == null) proximalBone.setRotation(IDENTITY.interpQ(it.getRotation(), 0.4f))
-			if (intermediateTracker == null) intermediateBone.setRotation(IDENTITY.interpQ(it.getRotation(), 0.6f))
-			distalBone.setRotation(it.getRotation())
+		// TODO: when using flex data, work off the handBone's rotation
+		if (distalTracker == null && intermediateTracker == null && proximalTracker == null) {
+			// Set fingers' rotations to the hand's if no finger tracker
+			proximalBone.setRotation(handBone.getGlobalRotation())
+			intermediateBone.setRotation(handBone.getGlobalRotation())
+			distalBone.setRotation(handBone.getGlobalRotation())
 		}
+
+		// TODO allow up to 270-90 degrees of bending instead of 180-180 and fine tune interpolation values
+		// Start of finger
+		proximalTracker?.let {
+			proximalBone.setRotation(it.getRotation())
+			if (intermediateTracker == null) intermediateBone.setRotation(IDENTITY.interpR(it.getRotation(), 1.25f))
+			if (distalTracker == null) distalBone.setRotation(IDENTITY.interpR(it.getRotation(), 1.5f))
+		}
+		// Middle of finger
 		intermediateTracker?.let {
 			if (proximalTracker == null) proximalBone.setRotation(IDENTITY.interpR(it.getRotation(), 0.5f))
 			intermediateBone.setRotation(it.getRotation())
 			if (distalTracker == null) distalBone.setRotation(IDENTITY.interpR(it.getRotation(), 1.25f))
 		}
-		proximalTracker?.let {
-			proximalBone.setRotation(it.getRotation())
-			if (intermediateTracker == null) intermediateBone.setRotation(IDENTITY.interpR(it.getRotation(), 1.25f))
-			if (distalTracker == null) distalBone.setRotation(IDENTITY.interpR(it.getRotation(), 1.5f))
+		// Tip of finger
+		distalTracker?.let {
+			if (proximalTracker == null) proximalBone.setRotation(IDENTITY.interpQ(it.getRotation(), 0.4f))
+			if (intermediateTracker == null) intermediateBone.setRotation(IDENTITY.interpQ(it.getRotation(), 0.6f))
+			distalBone.setRotation(it.getRotation())
 		}
 	}
 
