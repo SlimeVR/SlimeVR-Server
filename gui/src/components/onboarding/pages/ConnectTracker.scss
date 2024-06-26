@@ -1,0 +1,26 @@
+:root {
+  --connect-tracker-layout-sidebar: 350px;
+  --connect-tracker-layout-top: 20px;
+
+  @screen lg {
+    --connect-tracker-layout-sidebar: 400px;
+  }
+}
+
+.connect-tracker-layout {
+  display: grid;
+  grid-template:
+    's t' var(--connect-tracker-layout-top)
+    's c' calc(100% - var(--connect-tracker-layout-top))
+    / calc(var(--connect-tracker-layout-sidebar)) calc(100% - var(
+          --connect-tracker-layout-sidebar
+        ));
+
+  @screen mobile {
+    grid-template:
+      's' auto
+      't' auto
+      'c' auto
+      / 100%;
+  }
+}

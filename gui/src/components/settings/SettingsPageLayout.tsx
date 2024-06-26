@@ -29,8 +29,8 @@ export function SettingsPageLayout({
         '.overflow-y-auto'
       ) as HTMLElement | null;
       if (closestScroll) {
-        // The 40 is just enough padding for making the scroll look perfect
-        const topPadding = isMobile ? 80 : 40;
+        // The 45 is just enough padding for making the scroll look perfect
+        const topPadding = isMobile ? 80 : 45;
         closestScroll.scroll({
           top: elem.offsetTop - topPadding,
           behavior: 'smooth',
@@ -58,7 +58,7 @@ export function SettingsPagePaneLayout({
   return (
     <div
       className={classNames(
-        'mobile:scroll-mt-7 bg-background-70 rounded-lg px-4 py-8 flex xs:gap-4 w-full relative',
+        'bg-background-70 rounded-lg px-4 py-8 flex xs:gap-4 w-full relative',
         className
       )}
       {...props}
