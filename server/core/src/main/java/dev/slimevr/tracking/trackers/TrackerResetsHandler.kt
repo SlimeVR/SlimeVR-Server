@@ -535,7 +535,22 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			return it == TrackerPosition.LEFT_SHOULDER ||
 				it == TrackerPosition.LEFT_UPPER_ARM ||
 				it == TrackerPosition.LEFT_LOWER_ARM ||
-				it == TrackerPosition.LEFT_HAND
+				it == TrackerPosition.LEFT_HAND ||
+				it == TrackerPosition.LEFT_THUMB_PROXIMAL ||
+				it == TrackerPosition.LEFT_THUMB_INTERMEDIATE ||
+				it == TrackerPosition.LEFT_THUMB_DISTAL ||
+				it == TrackerPosition.LEFT_INDEX_PROXIMAL ||
+				it == TrackerPosition.LEFT_INDEX_INTERMEDIATE ||
+				it == TrackerPosition.LEFT_INDEX_DISTAL ||
+				it == TrackerPosition.LEFT_MIDDLE_PROXIMAL ||
+				it == TrackerPosition.LEFT_MIDDLE_INTERMEDIATE ||
+				it == TrackerPosition.LEFT_MIDDLE_DISTAL ||
+				it == TrackerPosition.LEFT_RING_PROXIMAL ||
+				it == TrackerPosition.LEFT_RING_INTERMEDIATE ||
+				it == TrackerPosition.LEFT_RING_DISTAL ||
+				it == TrackerPosition.LEFT_LITTLE_PROXIMAL ||
+				it == TrackerPosition.LEFT_LITTLE_INTERMEDIATE ||
+				it == TrackerPosition.LEFT_LITTLE_DISTAL
 		}
 		return false
 	}
@@ -545,7 +560,22 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			return it == TrackerPosition.RIGHT_SHOULDER ||
 				it == TrackerPosition.RIGHT_UPPER_ARM ||
 				it == TrackerPosition.RIGHT_LOWER_ARM ||
-				it == TrackerPosition.RIGHT_HAND
+				it == TrackerPosition.RIGHT_HAND ||
+				it == TrackerPosition.RIGHT_THUMB_PROXIMAL ||
+				it == TrackerPosition.RIGHT_THUMB_INTERMEDIATE ||
+				it == TrackerPosition.RIGHT_THUMB_DISTAL ||
+				it == TrackerPosition.RIGHT_INDEX_PROXIMAL ||
+				it == TrackerPosition.RIGHT_INDEX_INTERMEDIATE ||
+				it == TrackerPosition.RIGHT_INDEX_DISTAL ||
+				it == TrackerPosition.RIGHT_MIDDLE_PROXIMAL ||
+				it == TrackerPosition.RIGHT_MIDDLE_INTERMEDIATE ||
+				it == TrackerPosition.RIGHT_MIDDLE_DISTAL ||
+				it == TrackerPosition.RIGHT_RING_PROXIMAL ||
+				it == TrackerPosition.RIGHT_RING_INTERMEDIATE ||
+				it == TrackerPosition.RIGHT_RING_DISTAL ||
+				it == TrackerPosition.RIGHT_LITTLE_PROXIMAL ||
+				it == TrackerPosition.RIGHT_LITTLE_INTERMEDIATE ||
+				it == TrackerPosition.RIGHT_LITTLE_DISTAL
 		}
 		return false
 	}
