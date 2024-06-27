@@ -15,8 +15,6 @@ if %errorlevel% == 0 (
 echo Installing firewall rules...
 
 rem Discovery default port
-call :AddRule "SlimeVR UDP 35903 incoming" "dir=in action=allow protocol=UDP localport=35903 enable=yes"
-call :AddRule "SlimeVR UDP 35903 outgoing" "dir=out action=allow protocol=UDP localport=35903 enable=yes"
 rem Rotational data default port
 call :AddRule "SlimeVR UDP 6969 incoming" "dir=in action=allow protocol=UDP localport=6969 enable=yes"
 call :AddRule "SlimeVR UDP 6969 outgoing" "dir=out action=allow protocol=UDP localport=6969 enable=yes"
