@@ -148,5 +148,17 @@ enum class UnityBone(
 			bone == RIGHT_MIDDLE_PROXIMAL || bone == RIGHT_MIDDLE_INTERMEDIATE || bone == RIGHT_MIDDLE_DISTAL ||
 			bone == RIGHT_RING_PROXIMAL || bone == RIGHT_RING_INTERMEDIATE || bone == RIGHT_RING_DISTAL ||
 			bone == RIGHT_LITTLE_PROXIMAL || bone == RIGHT_LITTLE_INTERMEDIATE || bone == RIGHT_LITTLE_DISTAL
+
+		/**
+		 * Returns true if the bone is the left upper arm or proximal left finger bone
+		 */
+		fun isLeftStartOfArmOrFingerBone(bone: UnityBone): Boolean = bone == LEFT_UPPER_ARM || bone == LEFT_THUMB_PROXIMAL ||
+			bone == LEFT_INDEX_PROXIMAL || bone == LEFT_MIDDLE_PROXIMAL || bone == LEFT_RING_PROXIMAL || bone == LEFT_LITTLE_PROXIMAL
+
+		/**
+		 * Returns true if the bone is the right upper arm or proximal right finger bone
+		 */
+		fun isRightStartOfArmOrFingerBone(bone: UnityBone): Boolean = bone == RIGHT_UPPER_ARM || bone == RIGHT_THUMB_PROXIMAL ||
+			bone == RIGHT_INDEX_PROXIMAL || bone == RIGHT_MIDDLE_PROXIMAL || bone == RIGHT_RING_PROXIMAL || bone == RIGHT_LITTLE_PROXIMAL
 	}
 }

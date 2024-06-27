@@ -198,10 +198,12 @@ class UnityArmature(localRot: Boolean) {
 			if (unityBone === UnityBone.HIPS) {
 				node.worldTransform.rotation = localRot
 			} else {
-				node.localTransform.rotation = when (unityBone) {
-					UnityBone.LEFT_UPPER_ARM -> localRot * RIGHT_SHOULDER_OFFSET
-					UnityBone.RIGHT_UPPER_ARM -> localRot * LEFT_SHOULDER_OFFSET
-					else -> localRot
+				node.localTransform.rotation = if (UnityBone.isLeftStartOfArmOrFingerBone(unityBone)) {
+					localRot * RIGHT_SHOULDER_OFFSET
+				} else if (UnityBone.isRightStartOfArmOrFingerBone(unityBone)) {
+					localRot * LEFT_SHOULDER_OFFSET
+				} else {
+					localRot
 				}
 			}
 		}
