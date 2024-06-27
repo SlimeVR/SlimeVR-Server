@@ -1,5 +1,4 @@
 import { ReactNode, useEffect } from 'react';
-import { useElemSize, useLayout } from '@/hooks/layout';
 import { Navbar } from '@/components/Navbar';
 import { TopBar } from '@/components/TopBar';
 import { SettingsSidebar } from './SettingsSidebar';
@@ -8,6 +7,7 @@ import { Dropdown } from '@/components/commons/Dropdown';
 import { useForm } from 'react-hook-form';
 import { useLocalization } from '@fluent/react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import './SettingsLayout.scss';
 
 export function SettingSelectorMobile() {
   const { l10n } = useLocalization();
@@ -84,29 +84,26 @@ export function SettingSelectorMobile() {
   );
 }
 
-export function SettingsLayoutRoute({ children }: { children: ReactNode }) {
-  const { layoutHeight, ref } = useLayout<HTMLDivElement>();
-  const { height, ref: navRef } = useElemSize<HTMLDivElement>();
+export function SettingsLayout({ children }: { children: ReactNode }) {
   const { isMobile } = useBreakpoint('mobile');
   return (
     <>
-      <TopBar></TopBar>
-      <div ref={ref} className="flex-grow" style={{ height: layoutHeight }}>
-        <div className="flex h-full xs:pb-3">
-          {!isMobile && <Navbar></Navbar>}
-          <div className="h-full w-full gap-2 flex">
-            {!isMobile && <SettingsSidebar></SettingsSidebar>}
-            <div className="w-full flex flex-col">
-              {isMobile && <SettingSelectorMobile></SettingSelectorMobile>}
-              <div
-                className="flex flex-col overflow-y-auto xs:pr-1 xs:mr-1 mobile:pt-7 pb-3"
-                style={{ minHeight: layoutHeight - height }}
-              >
-                {children}
-              </div>
-              <div ref={navRef}>{isMobile && <Navbar></Navbar>}</div>
-            </div>
-          </div>
+      <div className="settings-layout h-full">
+        <div style={{ gridArea: 't' }}>
+          <TopBar></TopBar>
+        </div>
+        <div style={{ gridArea: 'n' }}>
+          <Navbar></Navbar>
+        </div>
+        <div style={{ gridArea: 's' }} className="my-2">
+          <SettingsSidebar></SettingsSidebar>
+        </div>
+        <div
+          style={{ gridArea: 'c' }}
+          className="xs:pl-2 xs:pb-2 xs:mt-2 mobile:mt-7 overflow-y-auto"
+        >
+          {isMobile && <SettingSelectorMobile></SettingSelectorMobile>}
+          {children}
         </div>
       </div>
     </>
