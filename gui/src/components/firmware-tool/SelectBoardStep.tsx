@@ -13,12 +13,14 @@ import { BoardType } from 'solarxr-protocol';
 
 export function SelectBoardStep({
   nextStep,
+  goTo,
 }: {
   nextStep: () => void;
   prevStep: () => void;
+  goTo: (id: string) => void;
 }) {
   const { l10n } = useLocalization();
-  const { selectBoard, newConfig } = useFirmwareTool();
+  const { selectBoard, newConfig, defaultConfig } = useFirmwareTool();
   const { isFetching, data: boards } = useGetFirmwaresBoards({});
 
   return (
@@ -66,7 +68,9 @@ export function SelectBoardStep({
                   variant="primary"
                   disabled={!newConfig?.boardConfig?.type}
                   onClick={() => {
-                    nextStep();
+                    if (defaultConfig?.shouldOnlyUseDefaults)
+                      goTo('SelectFirmware');
+                    else nextStep();
                   }}
                 >
                   Next Step

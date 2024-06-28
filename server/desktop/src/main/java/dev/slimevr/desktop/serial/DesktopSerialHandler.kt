@@ -71,9 +71,14 @@ class DesktopSerialHandler :
 		getDevicesTimer.purge()
 	}
 
-	fun onNewDevice(port: SerialPort) {
+	private fun onNewDevice(port: SerialPort) {
 		listeners.forEach { it.onNewSerialDevice(SerialPortWrapper(port)) }
 	}
+
+	private fun onDeviceDel(port: SerialPort) {
+		listeners.forEach { it.onSerialDeviceDeleted(SerialPortWrapper(port)) }
+	}
+
 
 	override fun addListener(channel: SerialListener) {
 		listeners.add(channel)
@@ -241,9 +246,11 @@ class DesktopSerialHandler :
 
 	private fun detectNewPorts() {
 		try {
-			val differences = knownPorts.asSequence() - lastKnownPorts
+			val addDifferences = knownPorts.asSequence() - lastKnownPorts
+			val delDifferences = lastKnownPorts - knownPorts.asSequence().toSet()
 			lastKnownPorts = SerialPort.getCommPorts().map { SerialPortWrapper(it) }.toSet()
-			differences.forEach { onNewDevice(it.port) }
+			addDifferences.forEach { onNewDevice(it.port) }
+			delDifferences.forEach { onDeviceDel(it.port) }
 		} catch (e: Throwable) {
 			LogManager
 				.severe("[SerialHandler] Using serial ports is not supported on this platform", e)

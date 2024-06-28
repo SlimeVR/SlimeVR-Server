@@ -49,16 +49,11 @@ class RPCFirmwareUpdateHandler(
 	) {
 		val req =
 			(messageHeader.message(FirmwareUpdateRequest()) as FirmwareUpdateRequest).unpack()
-
-		val method = FirmwareUpdateMethod.getById(req.flashingMethod) ?: return
 		val updateDeviceId = buildUpdateDeviceId(req) ?: return
 
 		api.server.firmwareUpdateHandler.queueFirmwareUpdate(
-			req.firmwarePart,
-			method,
+			req,
 			updateDeviceId,
-			req.ssid,
-			req.password,
 		)
 	}
 
@@ -66,7 +61,7 @@ class RPCFirmwareUpdateHandler(
 		val fbb = FlatBufferBuilder(32)
 
 		val dataUnion = FirmwareUpdateDeviceIdUnion()
-		dataUnion.type = event.deviceId.type.id.toByte()
+		dataUnion.type = event.deviceId.type.id
 		dataUnion.value = createUpdateDeviceId(event.deviceId)
 
 		val deviceIdOffset = FirmwareUpdateDeviceIdUnion.pack(fbb, dataUnion)
@@ -94,18 +89,18 @@ class RPCFirmwareUpdateHandler(
 	}
 
 	private fun buildUpdateDeviceId(req: FirmwareUpdateRequestT): UpdateDeviceId<Any>? {
-		when (req.deviceId.type) {
+		when (req.method.type) {
 			FirmwareUpdateDeviceId.solarxr_protocol_datatypes_DeviceIdTable -> {
 				return UpdateDeviceId(
 					FirmwareUpdateMethod.OTA,
-					req.deviceId.assolarxr_protocol_datatypes_DeviceIdTable().id.id,
+					req.method.asOTAFirmwareUpdate().deviceId.id.id,
 				)
 			}
 
 			FirmwareUpdateDeviceId.SerialDevicePort -> {
 				return UpdateDeviceId(
 					FirmwareUpdateMethod.SERIAL,
-					req.deviceId.asSerialDevicePort().port,
+					req.method.asSerialFirmwareUpdate().deviceId.port,
 				)
 			}
 		}

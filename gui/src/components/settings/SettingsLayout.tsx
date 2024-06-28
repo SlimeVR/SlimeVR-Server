@@ -99,7 +99,7 @@ export function SettingsLayout({ children }: { children: ReactNode }) {
         <div style={{ gridArea: 'n' }}>
           <Navbar></Navbar>
         </div>
-        <div style={{ gridArea: 's' }} className="my-2">
+        <div style={{ gridArea: 's' }} className="my-2 mobile:hidden">
           <SettingsSidebar></SettingsSidebar>
         </div>
         <div

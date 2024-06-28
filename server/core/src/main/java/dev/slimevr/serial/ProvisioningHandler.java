@@ -190,4 +190,6 @@ public class ProvisioningHandler implements SerialListener {
 		listeners.removeIf(listener -> l == listener);
 	}
 
+	@Override
+	public void onSerialDeviceDeleted(@NotNull SerialPort port) {}
 }

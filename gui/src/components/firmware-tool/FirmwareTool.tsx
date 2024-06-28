@@ -23,7 +23,7 @@ function FirmwareToolContent() {
 
   return (
     <FirmwareToolContextC.Provider value={context}>
-      <div className="flex flex-col bg-background-70 p-4 rounded-md overflow-y-auto h-full">
+      <div className="flex flex-col bg-background-70 p-4 rounded-md">
         <Typography variant="main-title">
           {l10n.getString('firmware-tool')}
         </Typography>
@@ -63,6 +63,7 @@ function FirmwareToolContent() {
             <VerticalStepper
               steps={[
                 {
+                  id: 'SelectBoard',
                   component: SelectBoardStep,
                   title: l10n.getString('firmware-tool-board-step'),
                 },
@@ -75,6 +76,7 @@ function FirmwareToolContent() {
                   title: l10n.getString('firmware-tool-add-imus-step'),
                 },
                 {
+                  id: 'SelectFirmware',
                   component: SelectFirmwareStep,
                   title: l10n.getString('firmware-tool-select-firmware-step'),
                 },

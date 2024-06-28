@@ -25,4 +25,7 @@ interface SerialListener {
 	fun onSerialDisconnected()
 	fun onSerialLog(str: String)
 	fun onNewSerialDevice(port: SerialPort)
+
+	// This is called when the serial diver does not see the device anymore
+	fun onSerialDeviceDeleted(port: SerialPort)
 }

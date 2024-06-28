@@ -15,7 +15,7 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
 } from '@/components/commons/icon/ArrowIcons';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { useElemSize } from '@/hooks/layout';
 import { useGetFirmwaresImus } from '@/firmware-tool-api/firmwareToolComponents';
@@ -181,9 +181,12 @@ function IMUCard({
 export function AddImusStep({
   nextStep,
   prevStep,
+  isActive
 }: {
   nextStep: () => void;
   prevStep: () => void;
+  goTo: (id: string) => void;
+  isActive: boolean
 }) {
   const { l10n } = useLocalization();
   const {
@@ -200,11 +203,17 @@ export function AddImusStep({
     watch,
   } = useForm<{ imus: CreateImuConfigDTO[] }>({
     defaultValues: {
-      imus: newConfig?.imusConfig || [],
+      imus: [],
     },
     reValidateMode: 'onChange',
     mode: 'onChange',
   });
+
+  useEffect(() => {
+    reset({
+      imus: newConfig?.imusConfig || [],
+    });
+  }, [isActive])
 
   const { isFetching, data: imuTypes } = useGetFirmwaresImus({});
 
@@ -215,7 +224,7 @@ export function AddImusStep({
     if (!newConfig || !defaultConfig) throw new Error('unreachable');
 
     const imuPinToAdd =
-      defaultConfig.imuPins[form.imus.length ?? 0] ?? defaultConfig.imuPins[0];
+      defaultConfig.imuDefaults[form.imus.length ?? 0] ?? defaultConfig.imuDefaults[0];
     const imuTypeToAdd: CreateImuConfigDTO['type'] =
       form.imus[0]?.type ?? 'IMU_BNO085';
     reset({

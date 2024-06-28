@@ -40,8 +40,6 @@ tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
 
-<<<<<<< HEAD
-=======
 tasks.withType<Jar> {
 	from("../../LICENSE-APACHE")
 	from("../../LICENSE-MIT")
@@ -55,7 +53,6 @@ allprojects {
 	}
 }
 
->>>>>>> 94aec1f4ba0b7a13697a07038a3057ccf4197725
 dependencies {
 	implementation(project(":solarxr-protocol"))
 
@@ -79,7 +76,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 	implementation("com.mayakapps.kache:kache:2.0.0-rc02")
 
-	api("com.github.loucass003:EspflashKotlin:v0.6.1")
+	api("com.github.loucass003:EspflashKotlin:v0.8.0")
 
 	// Allow the use of reflection
 	implementation(kotlin("reflect"))

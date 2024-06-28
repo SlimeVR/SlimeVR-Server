@@ -90,10 +90,16 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		listeners.forEach { it.onNewSerialDevice(port) }
 	}
 
+	private fun onDeviceDel(port: SerialPortWrapper) {
+		listeners.forEach { it.onSerialDeviceDeleted(port) }
+	}
+
 	private fun detectNewPorts() {
-		val differences = knownPorts.asSequence() - lastKnownPorts
+		val addDifferences = knownPorts.asSequence() - lastKnownPorts
+		val delDifferences = lastKnownPorts - knownPorts.asSequence().toSet()
 		lastKnownPorts = knownPorts.asSequence().toSet()
-		differences.forEach { onNewDevice(it) }
+		addDifferences.forEach { onNewDevice(it) }
+		delDifferences.forEach { onDeviceDel(it) }
 	}
 
 	override fun addListener(channel: SerialListener) {

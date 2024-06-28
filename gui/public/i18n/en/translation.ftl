@@ -1059,7 +1059,7 @@ firmware-tool-build-ERROR = Unable to build the firmware
 
 ## Firmware update status
 firmware-update-status-DOWNLOADING = Downloading the firmware
-firmware-update-status-WAITING_FOR_REBOOT = Waiting for the user to reboot the tracker
+firmware-update-status-NEED_MANUAL_REBOOT = Waiting for the user to reboot the tracker
 firmware-update-status-AUTHENTICATING = Authenticating with the mcu
 firmware-update-status-UPLOADING = Uploading the firmware
 firmware-update-status-SYNCING_WITH_MCU = Syncing with the mcu

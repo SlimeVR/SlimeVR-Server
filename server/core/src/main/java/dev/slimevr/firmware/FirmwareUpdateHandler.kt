@@ -15,11 +15,12 @@ import dev.slimevr.tracking.trackers.udp.UDPDevice
 import io.eiren.util.logging.LogManager
 import kotlinx.coroutines.*
 import solarxr_protocol.rpc.FirmwarePartT
+import solarxr_protocol.rpc.FirmwareUpdateRequestT
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
-import java.util.Timer
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.concurrent.scheduleAtFixedRate
@@ -49,7 +50,7 @@ data class DownloadedFirmwarePart(
 
 class FirmwareUpdateHandler(private val server: VRServer) :
 	TrackerStatusListener,
-	ProvisioningListener {
+	ProvisioningListener, SerialRebootListener {
 
 	private val provisioningTickTimer = Timer("StatusUpdateTimer")
 	private val runningJobs: MutableList<Job> = CopyOnWriteArrayList()
@@ -65,6 +66,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		}
 	private val mainScope: CoroutineScope = CoroutineScope(SupervisorJob())
 	private var clearJob: Deferred<Unit>? = null
+
+	private var serialRebootHandler: SerialRebootHandler = SerialRebootHandler(watchRestartQueue, this)
 
 	fun addListener(channel: FirmwareUpdateListener) {
 		listeners.add(channel)
@@ -114,6 +117,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 	private fun startSerialUpdate(
 		firmwares: Array<DownloadedFirmwarePart>,
 		deviceId: UpdateDeviceId<String>,
+		needManualReboot: Boolean,
 		ssid: String,
 		password: String,
 	) {
@@ -171,8 +175,22 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 				),
 			)
 			flasher.flash(serialPort)
-			onStatusChange(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.REBOOTING))
-			server.provisioningHandler.start(ssid, password, serialPort.portLocation)
+			if (needManualReboot) {
+				if (watchRestartQueue.find { it.first == deviceId } != null) {
+					LogManager.info("[FirmwareUpdateHandler] Device is already updating, Skipping")
+				}
+
+				onStatusChange(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.NEED_MANUAL_REBOOT))
+				watchRestartQueue.add(
+					Pair(deviceId) {
+						onStatusChange(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.REBOOTING))
+						server.provisioningHandler.start(ssid, password, serialPort.portLocation)
+					}
+				);
+			} else {
+				onStatusChange(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.REBOOTING))
+				server.provisioningHandler.start(ssid, password, serialPort.portLocation)
+			}
 		} catch (e: Exception) {
 			e.printStackTrace()
 			onStatusChange(
@@ -186,12 +204,11 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 	}
 
 	fun queueFirmwareUpdate(
-		toDownloadParts: Array<FirmwarePartT>,
-		method: FirmwareUpdateMethod,
+		request: FirmwareUpdateRequestT,
 		deviceId: UpdateDeviceId<*>,
-		ssid: String?,
-		password: String?,
 	) = mainScope.launch {
+		val method = FirmwareUpdateMethod.getById(request.method.type) ?: error("Unknown method")
+
 		clearJob?.await()
 		if (method == FirmwareUpdateMethod.OTA) {
 			if (watchRestartQueue.find { it.first == deviceId } != null) {
@@ -201,18 +218,15 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			onStatusChange(
 				UpdateStatusEvent(
 					deviceId,
-					FirmwareUpdateStatus.WAITING_FOR_REBOOT,
+					FirmwareUpdateStatus.NEED_MANUAL_REBOOT,
 				),
 			)
 			watchRestartQueue.add(
 				Pair(deviceId) {
 					mainScope.launch {
 						startFirmwareUpdateJob(
-							toDownloadParts,
-							method,
-							deviceId,
-							ssid,
-							password,
+							request,
+							deviceId
 						)
 					}
 				},
@@ -223,7 +237,10 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 				return@launch
 			}
 
-			startFirmwareUpdateJob(toDownloadParts, method, deviceId, ssid, password)
+			startFirmwareUpdateJob(
+				request,
+				deviceId
+			)
 		}
 	}
 
@@ -237,12 +254,26 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		}
 	}
 
+	private fun getFirmwareParts(request: FirmwareUpdateRequestT): ArrayList<FirmwarePartT> {
+		val parts = ArrayList<FirmwarePartT>()
+		val method = FirmwareUpdateMethod.getById(request.method.type) ?: error("Unknown method")
+		when (method) {
+			FirmwareUpdateMethod.OTA -> {
+				val updateReq = request.method.asOTAFirmwareUpdate();
+				parts.add(updateReq.firmwarePart)
+			}
+			FirmwareUpdateMethod.SERIAL -> {
+				val updateReq = request.method.asSerialFirmwareUpdate();
+				parts.addAll(updateReq.firmwarePart)
+			}
+			FirmwareUpdateMethod.NONE -> error("Method should not be NONE")
+		}
+		return parts
+	}
+
 	private suspend fun startFirmwareUpdateJob(
-		toDownloadParts: Array<FirmwarePartT>,
-		method: FirmwareUpdateMethod,
+		request: FirmwareUpdateRequestT,
 		deviceId: UpdateDeviceId<*>,
-		ssid: String?,
-		password: String?,
 	) = coroutineScope {
 		onStatusChange(
 			UpdateStatusEvent(
@@ -253,7 +284,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 
 		try {
 			// We add the firmware to an LRU cache
-
+			val toDownloadParts = getFirmwareParts(request)
 			val firmwareParts =
 				firmwareCache.getOrPut(toDownloadParts.joinToString("|") { "${it.url}#${it.offset}" }) {
 					withTimeoutOrNull(30_000) {
@@ -280,40 +311,35 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 						return@withTimeout
 					}
 
+					val method = FirmwareUpdateMethod.getById(request.method.type) ?: error("Unknown method")
 					when (method) {
 						FirmwareUpdateMethod.NONE -> error("unsupported method")
-
 						FirmwareUpdateMethod.OTA -> {
 							if (deviceId.id !is Int) {
 								error("invalid state, the device id is not an int")
-							}
-							if (firmwareParts.size > 1) {
-								error("Invalid state, there should never be more than one firmware file doing OTA updates")
 							}
 							startOtaUpdate(
 								firmwareParts.first(),
 								UpdateDeviceId(
 									FirmwareUpdateMethod.OTA,
-									deviceId.id,
+									deviceId.id
 								),
 							)
 						}
-
 						FirmwareUpdateMethod.SERIAL -> {
+							val req = request.method.asSerialFirmwareUpdate()
 							if (deviceId.id !is String) {
-								error("invalid state, the device id is not an string")
-							}
-							if (ssid == null || password == null) {
-								error("invalid state, wifi credentials not set")
+								error("invalid state, the device id is not a string")
 							}
 							startSerialUpdate(
 								firmwareParts,
 								UpdateDeviceId(
 									FirmwareUpdateMethod.SERIAL,
-									deviceId.id,
+									deviceId.id
 								),
-								ssid,
-								password,
+								req.needManualReboot,
+								req.ssid,
+								req.password,
 							)
 						}
 					}
@@ -339,6 +365,9 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 
 		if (event.status == FirmwareUpdateStatus.DONE || event.status.isError()) {
 			this.updatingDevicesStatus.remove(event.deviceId)
+
+			// We make sure to stop the provisioning routine if the tracker is done
+			// flashing
 			if (event.deviceId.type === FirmwareUpdateMethod.SERIAL) {
 				this.server.provisioningHandler.stop()
 			}
@@ -346,7 +375,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		listeners.forEach { l -> l.onUpdateStatusChange(event) }
 	}
 
-	fun checkUpdateTimeout() {
+	private fun checkUpdateTimeout() {
 		updatingDevicesStatus.forEach { (id, device) ->
 			// if more than 30s between two events, consider the update as stuck
 			if (!device.status.isError() && device.status != FirmwareUpdateStatus.DONE && System.currentTimeMillis() - device.time > 30 * 1000) {
@@ -360,7 +389,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		}
 	}
 
-	// this only works for OTA trackers as the device id will
+	// this only works for OTA trackers as the device id
+	// only exists when a udb connection is created
 	override fun onTrackerStatusChanged(
 		tracker: Tracker,
 		oldStatus: TrackerStatus,
@@ -421,6 +451,12 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			update(FirmwareUpdateStatus.ERROR_PROVISIONING_FAILED)
 		}
 	}
+
+	override fun onSerialDeviceReconnect(deviceHandle: Pair<UpdateDeviceId<*>, () -> Unit>) {
+		deviceHandle.second()
+		watchRestartQueue.remove(deviceHandle);
+	}
+
 }
 
 fun downloadFirmware(url: String): ByteArray? {

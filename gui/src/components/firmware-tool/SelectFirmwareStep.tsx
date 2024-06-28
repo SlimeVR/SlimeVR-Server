@@ -9,12 +9,14 @@ import { Button } from '@/components/commons/Button';
 export function SelectFirmwareStep({
   nextStep,
   prevStep,
+  goTo
 }: {
   nextStep: () => void;
   prevStep: () => void;
+  goTo: (id: string) => void;
 }) {
   const { l10n } = useLocalization();
-  const { selectVersion, newConfig } = useFirmwareTool();
+  const { selectVersion, newConfig, defaultConfig } = useFirmwareTool();
   const { isFetching, data: firmwares } = useGetFirmwaresVersions({});
 
   return (
@@ -51,7 +53,11 @@ export function SelectFirmwareStep({
               </div>
               <div className="flex justify-between">
                 <Localized id="firmware-tool-previous-step">
-                  <Button variant="tertiary" onClick={prevStep}></Button>
+                  <Button variant="tertiary" onClick={() => {
+                    if (defaultConfig?.shouldOnlyUseDefaults)
+                      goTo('SelectBoard')
+                    else prevStep();
+                  }}></Button>
                 </Localized>
                 <Localized id="firmware-tool-next-step">
                   <Button

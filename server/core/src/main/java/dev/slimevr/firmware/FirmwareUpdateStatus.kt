@@ -2,11 +2,11 @@ package dev.slimevr.firmware
 
 enum class FirmwareUpdateStatus(val id: Int) {
 	DOWNLOADING(solarxr_protocol.rpc.FirmwareUpdateStatus.DOWNLOADING),
-	WAITING_FOR_REBOOT(solarxr_protocol.rpc.FirmwareUpdateStatus.WAITING_FOR_REBOOT),
 	AUTHENTICATING(solarxr_protocol.rpc.FirmwareUpdateStatus.AUTHENTICATING),
 	UPLOADING(solarxr_protocol.rpc.FirmwareUpdateStatus.UPLOADING),
 	SYNCING_WITH_MCU(solarxr_protocol.rpc.FirmwareUpdateStatus.SYNCING_WITH_MCU),
 	REBOOTING(solarxr_protocol.rpc.FirmwareUpdateStatus.REBOOTING),
+	NEED_MANUAL_REBOOT(solarxr_protocol.rpc.FirmwareUpdateStatus.NEED_MANUAL_REBOOT),
 	PROVISIONING(solarxr_protocol.rpc.FirmwareUpdateStatus.PROVISIONING),
 	DONE(solarxr_protocol.rpc.FirmwareUpdateStatus.DONE),
 	ERROR_DEVICE_NOT_FOUND(solarxr_protocol.rpc.FirmwareUpdateStatus.ERROR_DEVICE_NOT_FOUND),

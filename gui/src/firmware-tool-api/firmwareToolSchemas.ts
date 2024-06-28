@@ -128,7 +128,11 @@ export type CreateBoardConfigDTO = {
    * @x-typia-required true
    * @x-typia-optional false
    */
-  batteryType: 'BAT_EXTERNAL' | 'BAT_INTERNAL' | 'BAT_MCP3021' | 'BAT_INTERNAL_MCP3021';
+  batteryType:
+    | 'BAT_EXTERNAL'
+    | 'BAT_INTERNAL'
+    | 'BAT_MCP3021'
+    | 'BAT_INTERNAL_MCP3021';
   /**
    * Array of the different battery resistors, [indicator, SHIELD_R1, SHIELD_R2]
    *
@@ -356,16 +360,55 @@ export type ImuType =
 export type DefaultBuildConfigDTO = {
   boardConfig: CreateBoardConfigDTO;
   /**
+   * Inform the flashing utility that the board will need a reboot after
+   * being flashed
+   *
+   * @x-typia-required false
+   * @x-typia-optional true
+   */
+  needManualReboot?: boolean;
+  /**
+   * Will use the default values and skip the customisation options
+   *
+   * @x-typia-required false
+   * @x-typia-optional true
+   */
+  shouldOnlyUseDefaults?: boolean;
+  /**
    * List of the possible imus pins, usually only two items will be sent
    *
    * @x-typia-required true
    * @x-typia-optional false
    * @minItems 1
    */
-  imuPins: IMUDefaultPinsDTO[];
+  imuDefaults: IMUDefaultDTO[];
 };
 
-export type IMUDefaultPinsDTO = {
+export type IMUDefaultDTO = {
+  /**
+   * Type of the imu
+   *
+   * @x-typia-required false
+   * @x-typia-optional false
+   */
+  type?:
+    | 'IMU_MPU9250'
+    | 'IMU_MPU6500'
+    | 'IMU_BNO080'
+    | 'IMU_BNO085'
+    | 'IMU_BNO055'
+    | 'IMU_BNO086'
+    | 'IMU_MPU6050'
+    | 'IMU_BMI160'
+    | 'IMU_ICM20948'
+    | 'IMU_BMI270';
+  /**
+   * Rotation of the imu in degrees
+   *
+   * @x-typia-required false
+   * @x-typia-optional false
+   */
+  rotation?: number;
   /**
    * Pin address of the imu int pin
    * not all imus use it

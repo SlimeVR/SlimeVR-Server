@@ -11,14 +11,15 @@ import {
   DeviceIdT,
   DeviceIdTableT,
   FirmwarePartT,
-  FirmwareUpdateDeviceId,
+  FirmwareUpdateMethod,
   FirmwareUpdateRequestT,
   FirmwareUpdateStatus,
   FirmwareUpdateStatusResponseT,
   FirmwareUpdateStopQueuesRequestT,
-  FlashingMethod,
+  OTAFirmwareUpdateT,
   RpcMessage,
   SerialDevicePortT,
+  SerialFirmwareUpdateT,
 } from 'solarxr-protocol';
 import { firmwareToolS3BaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
 import { useOnboarding } from '@/hooks/onboarding';
@@ -38,13 +39,13 @@ export function FlashingStep({
 }) {
   const nav = useNavigate();
   const { l10n } = useLocalization();
-  const { selectedDevices, buildStatus, selectDevices } = useFirmwareTool();
+  const { selectedDevices, buildStatus, selectDevices, defaultConfig } = useFirmwareTool();
   const { state: onboardingState } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [status, setStatus] = useState<{
     [key: string]: {
       status: FirmwareUpdateStatus;
-      type: FlashingMethod;
+      type: FirmwareUpdateMethod;
       progress: number;
       deviceNames: string[];
     };
@@ -71,7 +72,8 @@ export function FlashingStep({
 
     for (const device of devices) {
       switch (device.type) {
-        case FlashingMethod.OTA: {
+        case FirmwareUpdateMethod.OTAFirmwareUpdate: {
+
           const id = new DeviceIdTableT();
           const dId = new DeviceIdT();
           dId.id = +device.deviceId;
@@ -81,30 +83,30 @@ export function FlashingStep({
           part.offset = 0;
           part.url = firmwareToolS3BaseUrl + '/' + firmware.url;
 
-          const req = new FirmwareUpdateRequestT();
-          req.flashingMethod = device.type;
-          req.deviceIdType =
-            FirmwareUpdateDeviceId.solarxr_protocol_datatypes_DeviceIdTable;
-          req.deviceId = id;
-          req.firmwarePart = [part];
+          const method = new OTAFirmwareUpdateT();
+          method.deviceId = id;
+          method.firmwarePart = part;
+
+          const req = new FirmwareUpdateRequestT()
+          req.method = method;
+          req.methodType = FirmwareUpdateMethod.OTAFirmwareUpdate;
           sendRPCPacket(RpcMessage.FirmwareUpdateRequest, req);
           break;
         }
-        case FlashingMethod.SERIAL: {
+        case FirmwareUpdateMethod.SerialFirmwareUpdate: {
           const id = new SerialDevicePortT();
           id.port = device.deviceId.toString();
 
           if (!onboardingState.wifi?.ssid || !onboardingState.wifi?.password)
             throw new Error('invalid state, wifi should be set');
 
-          const req = new FirmwareUpdateRequestT();
-          req.flashingMethod = device.type;
-          req.deviceIdType = FirmwareUpdateDeviceId.SerialDevicePort;
-          req.deviceId = id;
-          req.ssid = onboardingState.wifi.ssid;
-          req.password = onboardingState.wifi.password;
+          const method = new SerialFirmwareUpdateT();
+          method.deviceId = id;
+          method.ssid = onboardingState.wifi.ssid;
+          method.password = onboardingState.wifi.password;
+          method.needManualReboot = defaultConfig?.needManualReboot ?? false
 
-          req.firmwarePart = buildStatus.firmwareFiles.map(
+          method.firmwarePart = buildStatus.firmwareFiles.map(
             ({ offset, url }) => {
               const part = new FirmwarePartT();
               part.offset = offset;
@@ -112,6 +114,10 @@ export function FlashingStep({
               return part;
             }
           );
+
+          const req = new FirmwareUpdateRequestT()
+          req.method = method;
+          req.methodType = FirmwareUpdateMethod.SerialFirmwareUpdate;
           sendRPCPacket(RpcMessage.FirmwareUpdateRequest, req);
           break;
         }

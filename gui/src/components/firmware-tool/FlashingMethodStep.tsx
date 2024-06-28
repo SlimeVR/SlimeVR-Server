@@ -14,7 +14,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import {
   BoardType,
   DeviceDataT,
-  FlashingMethod,
+  FirmwareUpdateMethod,
   NewSerialDeviceResponseT,
   RpcMessage,
   SerialDeviceT,
@@ -62,7 +62,7 @@ function SerialDevicesList({
     sendRPCPacket(RpcMessage.SerialDevicesRequest, new SerialDevicesRequestT());
     selectDevices(null);
     reset({
-      flashingMethod: FlashingMethod.SERIAL.toString(),
+      flashingMethod: FirmwareUpdateMethod.SerialFirmwareUpdate.toString(),
       serial: {
         ...state.wifi,
         selectedDevicePort: undefined,
@@ -108,7 +108,7 @@ function SerialDevicesList({
       ) {
         selectDevices([
           {
-            type: FlashingMethod.SERIAL,
+            type: FirmwareUpdateMethod.SerialFirmwareUpdate,
             deviceId: serialValues.selectedDevicePort,
             deviceNames: [
               devices[serialValues.selectedDevicePort].name?.toString() ??
@@ -207,7 +207,7 @@ function OTADevicesList({
 
   useLayoutEffect(() => {
     reset({
-      flashingMethod: FlashingMethod.OTA.toString(),
+      flashingMethod: FirmwareUpdateMethod.OTAFirmwareUpdate.toString(),
       ota: {
         selectedDevices: devices.reduce(
           (curr, { id }) => ({ ...curr, [id?.id ?? 0]: false }),
@@ -232,7 +232,7 @@ function OTADevicesList({
 
             if (!device) throw new Error('no device found');
             return {
-              type: FlashingMethod.OTA,
+              type: FirmwareUpdateMethod.OTAFirmwareUpdate,
               deviceId: id,
               deviceNames: deviceNames(device),
             };
@@ -288,7 +288,7 @@ export function FlashingMethodStep({
       object({
         flashingMethod: string().optional(),
         serial: object().when('flashingMethod', {
-          is: FlashingMethod.SERIAL.toString(),
+          is: FirmwareUpdateMethod.SerialFirmwareUpdate.toString(),
           then: (s) =>
             s
               .shape({
@@ -302,7 +302,7 @@ export function FlashingMethodStep({
           otherwise: (s) => s.optional(),
         }),
         ota: object().when('flashingMethod', {
-          is: FlashingMethod.OTA.toString(),
+          is: FirmwareUpdateMethod.OTAFirmwareUpdate.toString(),
           then: (s) =>
             s
               .shape({
@@ -336,7 +336,7 @@ export function FlashingMethodStep({
                   <Radio
                     control={control}
                     name="flashingMethod"
-                    value={FlashingMethod.OTA.toString()}
+                    value={FirmwareUpdateMethod.OTAFirmwareUpdate.toString()}
                     label=""
                   ></Radio>
                 </Localized>
@@ -347,19 +347,19 @@ export function FlashingMethodStep({
                   <Radio
                     control={control}
                     name="flashingMethod"
-                    value={FlashingMethod.SERIAL.toString()}
+                    value={FirmwareUpdateMethod.SerialFirmwareUpdate.toString()}
                     label=""
                   ></Radio>
                 </Localized>
               </div>
-              {flashingMethod == FlashingMethod.SERIAL.toString() && (
+              {flashingMethod == FirmwareUpdateMethod.SerialFirmwareUpdate.toString() && (
                 <SerialDevicesList
                   control={control}
                   watch={watch}
                   reset={reset}
                 ></SerialDevicesList>
               )}
-              {flashingMethod == FlashingMethod.OTA.toString() && (
+              {flashingMethod == FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
                 <OTADevicesList
                   control={control}
                   watch={watch}

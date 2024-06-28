@@ -1,15 +1,13 @@
 package dev.slimevr.firmware
 
-import solarxr_protocol.rpc.FlashingMethod
-
-enum class FirmwareUpdateMethod(val id: Int) {
-	NONE(FlashingMethod.NONE),
-	OTA(FlashingMethod.OTA),
-	SERIAL(FlashingMethod.SERIAL),
+enum class FirmwareUpdateMethod(val id: Byte) {
+	NONE(solarxr_protocol.rpc.FirmwareUpdateMethod.NONE),
+	OTA(solarxr_protocol.rpc.FirmwareUpdateMethod.OTAFirmwareUpdate),
+	SERIAL(solarxr_protocol.rpc.FirmwareUpdateMethod.SerialFirmwareUpdate),
 	;
 
 	companion object {
-		fun getById(id: Int): FirmwareUpdateMethod? = byId[id]
+		fun getById(id: Byte): FirmwareUpdateMethod? = byId[id]
 	}
 }
 

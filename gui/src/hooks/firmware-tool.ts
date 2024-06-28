@@ -11,12 +11,12 @@ import {
 } from '@/firmware-tool-api/firmwareToolSchemas';
 import { BoardPinsForm } from '@/components/firmware-tool/BoardPinsStep';
 import { DeepPartial } from 'react-hook-form';
-import { BoardType, FirmwareUpdateStatus, FlashingMethod } from 'solarxr-protocol';
+import { BoardType, FirmwareUpdateMethod, FirmwareUpdateStatus } from 'solarxr-protocol';
 
 export type PartialBuildFirmware = DeepPartial<CreateBuildFirmwareDTO>;
 export type FirmwareBuildStatus = BuildResponseDTO;
 export type SelectedDevice = {
-  type: FlashingMethod;
+  type: FirmwareUpdateMethod;
   deviceId: string | number;
   deviceNames: string[];
 };
@@ -105,10 +105,20 @@ export function useFirmwareToolContext(): FirmwareToolContext {
         pathParams: { board: boardType },
       });
       setDefaultConfig(boardDefaults);
-      setNewConfig((currConfig) => ({
-        ...currConfig,
-        boardConfig: { ...currConfig.boardConfig, type: boardType },
-      }));
+      if (boardDefaults.shouldOnlyUseDefaults) {
+        setNewConfig((currConfig) => ({
+          ...currConfig,
+          ...boardDefaults,
+          imusConfig: boardDefaults.imuDefaults,
+        }));
+
+      } else {
+        setNewConfig((currConfig) => ({
+          ...currConfig,
+          boardConfig: { ...currConfig.boardConfig, type: boardType },
+          imusConfig: [],
+        }));
+      }
       setLoading(false);
     },
     updatePins: (form: BoardPinsForm) => {
