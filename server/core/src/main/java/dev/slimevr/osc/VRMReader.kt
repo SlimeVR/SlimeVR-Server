@@ -22,10 +22,8 @@ class VRMReader(vrmJson: String) {
 		}
 
 		val translationNode = data.nodes[bone.node].translation ?: return Vector3.NULL
-		if (unityBone != UnityBone.LEFT_FOOT && unityBone != UnityBone.RIGHT_FOOT) {
-			return Vector3(translationNode[0].toFloat(), translationNode[1].toFloat(), translationNode[2].toFloat())
-		}
-		return Vector3(translationNode[0].toFloat(), translationNode[1].toFloat(), -translationNode[2].toFloat())
+
+		return Vector3(translationNode[0].toFloat(), translationNode[1].toFloat(), translationNode[2].toFloat())
 	}
 }
 
