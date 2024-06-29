@@ -316,6 +316,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			this.tracker.statusResetRecently = false
 			this.tracker.lastResetStatus = 0u
 		}
+
+		tracker.resetFilteringQuats()
 	}
 
 	/**
@@ -369,6 +371,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// save mounting reset
 		if (saveMountingReset) tracker.saveMountingResetOrientation(mountRotFix)
+
+		tracker.resetFilteringQuats()
 	}
 
 	fun clearMounting() {

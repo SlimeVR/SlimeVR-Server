@@ -1,5 +1,6 @@
 package dev.slimevr.filtering
 
+import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
@@ -25,7 +26,7 @@ class QuaternionMovingAverage(
 	private lateinit var rotBuffer: CircularArrayList<Quaternion>
 	private var latestQuaternion = IDENTITY
 	private var smoothingQuaternion = IDENTITY
-	private val fpsTimer = VRServer.instance.fpsTimer
+	private val fpsTimer = if (VRServer.instanceInitialized) VRServer.instance.fpsTimer else NanoTimer()
 	private var frameCounter = 0
 	private var lastAmt = 0f
 	var filteredQuaternion = IDENTITY
