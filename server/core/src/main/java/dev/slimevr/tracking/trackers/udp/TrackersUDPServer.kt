@@ -469,6 +469,20 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				connection.firmwareFeatures = packet.firmwareFeatures
 			}
 
+			is UDPPacket24FlexResistance -> {
+				tracker = connection?.getTracker(packet.sensorId)
+				if (tracker == null) return
+				tracker.setFlexResistance(packet.resistance)
+				tracker.dataTick()
+			}
+
+			is UDPPacket25FlexAngle -> {
+				tracker = connection?.getTracker(packet.sensorId)
+				if (tracker == null) return
+				tracker.setFlexAngle(packet.angle)
+				tracker.dataTick()
+			}
+
 			is UDPPacket200ProtocolChange -> {}
 		}
 	}
