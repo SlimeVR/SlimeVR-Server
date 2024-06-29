@@ -30,6 +30,7 @@ interface InterfaceSettingsForm {
     feedbackSoundVolume: number;
     connectedTrackersWarning: boolean;
     useTray: boolean;
+    discordPresence: boolean;
   };
 }
 
@@ -55,6 +56,8 @@ export function InterfaceSettings() {
           config?.connectedTrackersWarning ??
           defaultConfig.connectedTrackersWarning,
         useTray: config?.useTray ?? defaultConfig.useTray ?? false,
+        discordPresence:
+          config?.discordPresence ?? defaultConfig.discordPresence,
       },
     },
   });
@@ -70,6 +73,7 @@ export function InterfaceSettings() {
       textSize: values.appearance.textSize,
       connectedTrackersWarning: values.notifications.connectedTrackersWarning,
       useTray: values.notifications.useTray,
+      discordPresence: values.notifications.discordPresence,
     });
   };
 
@@ -201,6 +205,28 @@ export function InterfaceSettings() {
                 name="notifications.useTray"
                 label={l10n.getString(
                   'settings-general-interface-use_tray-label'
+                )}
+              />
+            </div>
+
+            <Typography bold>
+              {l10n.getString('settings-general-interface-discord_presence')}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-interface-discord_presence-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                variant="toggle"
+                control={control}
+                outlined
+                name="notifications.discordPresence"
+                label={l10n.getString(
+                  'settings-general-interface-discord_presence-label'
                 )}
               />
             </div>

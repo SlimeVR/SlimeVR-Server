@@ -151,6 +151,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			}
 			if (req.vmcOsc().vrmJson() != null) vmcConfig.vrmJson = req.vmcOsc().vrmJson()
 			vmcConfig.anchorHip = req.vmcOsc().anchorHip()
+			vmcConfig.mirrorTracking = req.vmcOsc().mirrorTracking()
 
 			vmcHandler.refreshSettings(true)
 		}
