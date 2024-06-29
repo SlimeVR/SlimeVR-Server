@@ -69,7 +69,7 @@ dependencies {
 	implementation("org.apache.commons:commons-lang3:3.12.0")
 	implementation("org.apache.commons:commons-collections4:4.4")
 
-	implementation("com.illposed.osc:javaosc-core:0.8")
+	implementation("com.illposed.osc:javaosc-core:0.9")
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
