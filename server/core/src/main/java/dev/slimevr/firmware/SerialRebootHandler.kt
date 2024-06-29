@@ -1,0 +1,44 @@
+package dev.slimevr.firmware
+
+import dev.slimevr.serial.SerialListener
+import dev.slimevr.serial.SerialPort
+import java.util.concurrent.CopyOnWriteArrayList
+
+interface SerialRebootListener {
+	fun onSerialDeviceReconnect(deviceHandle: Pair<UpdateDeviceId<*>, () -> Unit>);
+}
+
+/**
+ * This class watch for a serial device to disconnect then reconnect.
+ * This is used to watch the user progress through the firmware update process
+ */
+class SerialRebootHandler(
+	private val watchRestartQueue: MutableList<Pair<UpdateDeviceId<*>, () -> Unit>>,
+	// Could be moved to a list of listeners later
+	private val serialRebootListener: SerialRebootListener
+): SerialListener {
+
+	private val disconnectedDevices: MutableList<SerialPort> = CopyOnWriteArrayList()
+
+	override fun onSerialConnected(port: SerialPort) {}
+
+	override fun onSerialDisconnected() {}
+
+	override fun onSerialLog(str: String) {}
+
+	override fun onNewSerialDevice(port: SerialPort) {
+		val foundPort = watchRestartQueue.find { it.first.id == port.portLocation }
+		if (foundPort !== null && disconnectedDevices.contains(port)) {
+			disconnectedDevices.remove(port)
+			serialRebootListener.onSerialDeviceReconnect(foundPort)
+		}
+	}
+
+	override fun onSerialDeviceDeleted(port: SerialPort) {
+		val foundPort = watchRestartQueue.find { it.first.id === port.portLocation }
+		if (foundPort != null) {
+			disconnectedDevices.add(port)
+		}
+	}
+
+}

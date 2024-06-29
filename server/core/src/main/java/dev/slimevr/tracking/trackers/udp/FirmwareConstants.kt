@@ -45,6 +45,8 @@ enum class BoardType(val id: UInt) {
 	DEV_RESERVED(250u),
 	;
 
+	fun getSolarType(): Int = this.id.toInt()
+
 	override fun toString(): String = when (this) {
 		UNKNOWN -> "Unknown"
 		SLIMEVR_LEGACY -> "SlimeVR Legacy"
