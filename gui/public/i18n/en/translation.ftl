@@ -355,6 +355,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Feet Mounting Reset
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the headset (HMD) even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
+settings-general-fk_settings-reset_settings = Reset settings
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Reset the HMD's pitch (vertical rotation) upon doing a full reset. Useful if wearing an HMD on the forehead for VTubing or mocap. Do not enable for VR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = Reset HMD pitch
 settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for mounting reset.
 settings-general-fk_settings-arm_fk-back = Back
 settings-general-fk_settings-arm_fk-back-description = The default mode, with the upper arms going back and lower arms going forward.
@@ -925,6 +928,7 @@ status_system-StatusSteamVRDisconnected = { $type ->
     [steamvr_feeder] Currently not connected to the SlimeVR Feeder App.
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
+status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
 
 ## Tray Menu
 tray_menu-show = Show

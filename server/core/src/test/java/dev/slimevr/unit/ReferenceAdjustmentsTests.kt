@@ -92,7 +92,6 @@ class ReferenceAdjustmentsTests {
 			"test",
 			null,
 			hasRotation = true,
-			isInternal = true,
 			imuType = IMUType.UNKNOWN,
 			needsReset = true,
 		)
@@ -125,7 +124,6 @@ class ReferenceAdjustmentsTests {
 			"test",
 			null,
 			hasRotation = true,
-			isInternal = true,
 			imuType = IMUType.UNKNOWN,
 			needsReset = true,
 		)
@@ -154,7 +152,6 @@ class ReferenceAdjustmentsTests {
 			"test",
 			null,
 			hasRotation = true,
-			isInternal = true,
 			imuType = IMUType.UNKNOWN,
 			needsReset = true,
 		)

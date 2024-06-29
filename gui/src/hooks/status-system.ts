@@ -11,6 +11,7 @@ import {
   StatusSystemUpdateT,
   StatusTrackerErrorT,
   StatusTrackerResetT,
+  StatusUnassignedHMDT,
   TrackerDataT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
@@ -122,6 +123,7 @@ export function parseStatusToLocale(
   switch (status.dataType) {
     case StatusData.NONE:
     case StatusData.StatusTrackerReset:
+    case StatusData.StatusUnassignedHMD:
       return {};
     case StatusData.StatusSteamVRDisconnected: {
       const data = status.data as StatusSteamVRDisconnectedT;
@@ -157,8 +159,6 @@ export function parseStatusToLocale(
       }
       return { trackerName: name };
     }
-    case StatusData.StatusUnassignedHMD:
-      return { trackerName: 'Not implemented.' }; // TODO
   }
 }
 
@@ -181,6 +181,13 @@ export function trackerStatusRelated(
     }
     case StatusData.StatusTrackerError: {
       const data = status.data as StatusTrackerErrorT;
+      return (
+        data.trackerId?.trackerNum == tracker.trackerId?.trackerNum &&
+        data.trackerId?.deviceId?.id === tracker.trackerId?.deviceId?.id
+      );
+    }
+    case StatusData.StatusUnassignedHMD: {
+      const data = status.data as StatusUnassignedHMDT;
       return (
         data.trackerId?.trackerNum == tracker.trackerId?.trackerNum &&
         data.trackerId?.deviceId?.id === tracker.trackerId?.deviceId?.id
