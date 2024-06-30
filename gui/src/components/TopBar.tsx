@@ -27,7 +27,6 @@ import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
 import { listen } from '@tauri-apps/api/event';
 import { TrayOrExitModal } from './TrayOrExitModal';
-import { useDoubleTap } from 'use-double-tap';
 
 export function VersionTag() {
   return (
@@ -63,7 +62,6 @@ export function TopBar({
   const [localIp, setLocalIp] = useState<string | null>(null);
   const [showConnectedTrackersWarning, setConnectedTrackerWarning] =
     useState(false);
-  const [showVersionMobile, setShowVersionMobile] = useState(false);
   const [showTrayOrExitModal, setShowTrayOrExitModal] = useState(false);
   const doesMatchSettings = useMatch({
     path: '/settings/*',
@@ -92,8 +90,6 @@ export function TopBar({
       await closeApp();
     }
   };
-  const showVersionBind = useDoubleTap(() => setShowVersionMobile(true));
-  const unshowVersionBind = useDoubleTap(() => setShowVersionMobile(false));
 
   useEffect(() => {
     const unlisten = listen('try-close', async () => {
@@ -128,7 +124,7 @@ export function TopBar({
             className="flex px-2 pb-1 mt-3 justify-around z-50"
             data-tauri-drag-region
           >
-            <div className="flex gap-2" data-tauri-drag-region>
+            <div className="flex gap-2 mobile:w-5" data-tauri-drag-region>
               <NavLink
                 to="/"
                 className="flex justify-around flex-col select-all"
@@ -144,7 +140,7 @@ export function TopBar({
                   <Typography>SlimeVR</Typography>
                 </div>
               )}
-              {(!isMobile || showVersionMobile) && (
+              {!isMobile && (
                 <>
                   <VersionTag></VersionTag>
                   {doesMatchSettings && (
@@ -153,7 +149,6 @@ export function TopBar({
                         'flex justify-around flex-col text-standard-bold text-status-special',
                         'bg-status-special bg-opacity-20 rounded-lg px-3 select-text'
                       )}
-                      {...unshowVersionBind}
                     >
                       {localIp || 'unknown local ip'}
                     </div>
@@ -197,11 +192,8 @@ export function TopBar({
               </>
             )}
 
-            {!isTauri && !showVersionMobile && (
-              <div
-                className="flex flex-row gap-2"
-                {...(doesMatchSettings ? showVersionBind : {})}
-              >
+            {!isTauri && (
+              <div className="flex flex-row gap-2">
                 <div
                   className="flex justify-around flex-col xs:hidden"
                   data-tauri-drag-region

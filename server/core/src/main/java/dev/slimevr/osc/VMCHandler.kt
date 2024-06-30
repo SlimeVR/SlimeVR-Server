@@ -1,6 +1,10 @@
 package dev.slimevr.osc
 
-import com.illposed.osc.*
+import com.illposed.osc.OSCBundle
+import com.illposed.osc.OSCMessage
+import com.illposed.osc.OSCMessageEvent
+import com.illposed.osc.OSCMessageListener
+import com.illposed.osc.OSCSerializeException
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector
 import com.illposed.osc.transport.OSCPortIn
 import com.illposed.osc.transport.OSCPortOut
@@ -45,13 +49,6 @@ class VMCHandler(
 	private val oscArgs = FastList<Any?>()
 	private val startTime = System.currentTimeMillis()
 	private val byTrackerNameTracker: MutableMap<String, Tracker> = HashMap()
-	private val listenAddresses = arrayOf(
-		"/VMC/Ext/Bone/Pos",
-		"/VMC/Ext/Hmd/Pos",
-		"/VMC/Ext/Con/Pos",
-		"/VMC/Ext/Tra/Pos",
-		"/VMC/Ext/Root/Pos",
-	)
 	private var yawOffset = IDENTITY
 	private var inputUnityArmature: UnityArmature? = null
 	private var outputUnityArmature: UnityArmature? = null
@@ -73,7 +70,16 @@ class VMCHandler(
 		anchorHip = config.anchorHip
 		mirrorTracking = config.mirrorTracking
 
-		updateOscReceiver(config.portIn, listenAddresses)
+		updateOscReceiver(
+			config.portIn,
+			arrayOf(
+				"/VMC/Ext/Bone/Pos",
+				"/VMC/Ext/Hmd/Pos",
+				"/VMC/Ext/Con/Pos",
+				"/VMC/Ext/Tra/Pos",
+				"/VMC/Ext/Root/Pos",
+			),
+		)
 		updateOscSender(config.portOut, config.address)
 
 		if (config.enabled) {
@@ -111,7 +117,7 @@ class VMCHandler(
 	}
 
 	override fun updateOscReceiver(portIn: Int, args: Array<String>) {
-		// Stop listening
+		// Stops listening and closes OSC port
 		val wasListening = oscReceiver != null && oscReceiver!!.isListening
 		if (wasListening) {
 			oscReceiver!!.stopListening()
@@ -128,16 +134,14 @@ class VMCHandler(
 			} catch (e: IOException) {
 				LogManager
 					.severe(
-						"[VMCHandler] Error listening to the port " +
-							portIn +
-							": " +
-							e,
+						"[VMCHandler] Error listening to the port $portIn: $e",
 					)
 			}
 
 			// Starts listening for VMC messages
 			if (oscReceiver != null) {
 				val listener = OSCMessageListener { event: OSCMessageEvent -> this.handleReceivedMessage(event) }
+
 				for (address in args) {
 					oscReceiver!!
 						.dispatcher
@@ -149,7 +153,7 @@ class VMCHandler(
 		}
 	}
 
-	override fun updateOscSender(portOut: Int, address: String) {
+	override fun updateOscSender(portOut: Int, ip: String) {
 		// Stop sending
 		val wasConnected = oscSender != null && oscSender!!.isConnected
 		if (wasConnected) {
@@ -163,15 +167,12 @@ class VMCHandler(
 		if (config.enabled) {
 			// Instantiate the OSC sender
 			try {
-				val addr = InetAddress.getByName(address)
+				val addr = InetAddress.getByName(ip)
 				oscSender = OSCPortOut(InetSocketAddress(addr, portOut))
 				if ((lastPortOut != portOut && lastAddress !== addr) || !wasConnected) {
 					LogManager
 						.info(
-							"[VMCHandler] Sending to port " +
-								portOut +
-								" at address " +
-								address,
+							"[VMCHandler] Sending to port $portOut at address $ip",
 						)
 				}
 				lastPortOut = portOut
@@ -182,12 +183,7 @@ class VMCHandler(
 			} catch (e: IOException) {
 				LogManager
 					.severe(
-						"[VMCHandler] Error connecting to port " +
-							portOut +
-							" at the address " +
-							address +
-							": " +
-							e,
+						"[VMCHandler] Error connecting to port $portOut at the address $ip: $e",
 					)
 			}
 		}
@@ -195,8 +191,8 @@ class VMCHandler(
 
 	private fun handleReceivedMessage(event: OSCMessageEvent) {
 		when (event.message.address) {
+			// Is bone (rotation)
 			"/VMC/Ext/Bone/Pos" -> {
-				// Is bone (rotation)
 				var trackerPosition: TrackerPosition? = null
 				val bone = getByStringVal(event.message.arguments[0].toString())
 				if (bone != null) trackerPosition = bone.trackerPosition
@@ -221,7 +217,8 @@ class VMCHandler(
 				}
 			}
 
-			"/VMC/Ext/Hmd/Pos", "/VMC/Ext/Con/Pos", "/VMC/Ext/Tra/Pos" -> // Is tracker (position + rotation)
+			// Is tracker (position + rotation)
+			"/VMC/Ext/Hmd/Pos", "/VMC/Ext/Con/Pos", "/VMC/Ext/Tra/Pos" ->
 				handleReceivedTracker(
 					"VMC-Tracker-" + event.message.arguments[0],
 					null,
@@ -240,8 +237,8 @@ class VMCHandler(
 					null,
 				)
 
+			// Is VMC tracking root (offsets all rotations)
 			"/VMC/Ext/Root/Pos" -> {
-				// Is VMC tracking root (offsets all rotations)
 				if (inputUnityArmature != null) {
 					inputUnityArmature!!
 						.setRootPose(
