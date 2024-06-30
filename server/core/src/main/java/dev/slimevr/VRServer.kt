@@ -47,6 +47,7 @@ class VRServer @JvmOverloads constructor(
 	driverBridgeProvider: SteamBridgeProvider = { _, _ -> null },
 	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _ -> null },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
+	acquireMulticastLock: () -> Any? = { null },
 	configPath: String,
 ) : Thread("VRServer") {
 	@JvmField
@@ -60,6 +61,7 @@ class VRServer @JvmOverloads constructor(
 	private val tasks: Queue<Runnable> = LinkedBlockingQueue()
 	private val newTrackersConsumers: MutableList<Consumer<Tracker>> = FastList()
 	private val onTick: MutableList<Runnable> = FastList()
+	private val lock = acquireMulticastLock()
 	val oSCRouter: OSCRouter
 
 	@JvmField
@@ -141,8 +143,6 @@ class VRServer @JvmOverloads constructor(
 		// Initialize OSC handlers
 		vrcOSCHandler = VRCOSCHandler(
 			this,
-			humanPoseManager,
-			driverBridge,
 			configManager.vrConfig.vrcOSC,
 			computedTrackers,
 		)
@@ -282,13 +282,11 @@ class VRServer @JvmOverloads constructor(
 	fun updateSkeletonModel() {
 		queueTask {
 			humanPoseManager.updateSkeletonModelFromServer()
+			vrcOSCHandler.setHeadTracker(TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD))
 			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
 				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 			}
 		}
-		vrcOSCHandler.setHeadTracker(
-			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD),
-		)
 	}
 
 	fun resetTrackersFull(resetSourceName: String?) {
