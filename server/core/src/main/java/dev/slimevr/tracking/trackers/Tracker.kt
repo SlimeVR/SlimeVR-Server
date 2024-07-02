@@ -1,10 +1,14 @@
 package dev.slimevr.tracking.trackers
 
+import com.jme3.math.FastMath
 import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
 import io.eiren.util.BufferedTimer
+import io.eiren.util.logging.LogManager
+import io.github.axisangles.ktmath.EulerAngles
+import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.DeviceIdT
@@ -13,6 +17,7 @@ import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
+import kotlin.math.*
 import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2_000L
@@ -64,6 +69,8 @@ class Tracker @JvmOverloads constructor(
 	val allowFiltering: Boolean = false,
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
+	val hasFlexResistance: Boolean = false,
+	val hasFlexAngle: Boolean = false,
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
@@ -131,6 +138,15 @@ class Tracker @JvmOverloads constructor(
 		}
 		require(!needsMounting || (needsReset && needsMounting)) {
 			"If ${::needsMounting.name} is true, then ${::needsReset.name} must also be true"
+		}
+		require(!(hasFlexAngle && hasFlexResistance)) {
+			"If ${::hasFlexAngle.name} is true, then ${::hasFlexResistance.name} can't be true"
+		}
+		require(!(hasFlexAngle && hasRotation)) {
+			"If ${::hasFlexAngle.name} is true, then ${::hasRotation.name} can't be true"
+		}
+		require(!(hasRotation && hasFlexResistance)) {
+			"If ${::hasRotation.name} is true, then ${::hasFlexResistance.name} can't be true"
 		}
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
@@ -373,6 +389,27 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun setAcceleration(vec: Vector3) {
 		this._acceleration = vec
+	}
+
+	// TODO should this be in its own class
+	private var minResistance = 0f
+	private var maxResistance = 1f
+	fun setFlexResistance(resistance: Float) {
+		LogManager.debug("Set flex resistance: $resistance")
+
+		minResistance = min(minResistance, resistance)
+		maxResistance = max(maxResistance, resistance)
+
+		val maxBend = FastMath.PI // 180 degrees TODO change with trackerPosition
+		val angle = maxBend * (resistance - minResistance) / (maxResistance - minResistance)
+
+		setFlexAngle(angle)
+	}
+
+	fun setFlexAngle(angle: Float) {
+		LogManager.debug("Set flex angle: $angle rads")
+		// Create a rotation out of the given angle
+		setRotation(EulerAngles(EulerOrder.YZX, angle, 0f, 0f).toQuaternion())
 	}
 
 	fun isImu(): Boolean = imuType != null

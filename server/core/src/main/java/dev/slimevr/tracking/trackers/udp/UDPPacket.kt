@@ -350,6 +350,30 @@ data class UDPPacket23RotationAndAcceleration(
 	}
 }
 
+data class UDPPacket24FlexResistance(
+	var resistance: Float = 0f,
+) : UDPPacket(24),
+	SensorSpecificPacket {
+
+	override var sensorId = 0
+	override fun readData(buf: ByteBuffer) {
+		sensorId = buf.get().toInt() and 0xFF
+		resistance = buf.getFloat()
+	}
+}
+
+data class UDPPacket25FlexAngle(
+	var angle: Float = 0f,
+) : UDPPacket(25),
+	SensorSpecificPacket {
+
+	override var sensorId = 0
+	override fun readData(buf: ByteBuffer) {
+		sensorId = buf.get().toInt() and 0xFF
+		angle = buf.getFloat()
+	}
+}
+
 data class UDPPacket200ProtocolChange(
 	var targetProtocol: Int = 0,
 	var targetProtocolVersion: Int = 0,
