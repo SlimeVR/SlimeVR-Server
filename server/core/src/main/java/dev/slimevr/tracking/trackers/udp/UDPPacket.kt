@@ -351,8 +351,8 @@ data class UDPPacket23RotationAndAcceleration(
 }
 
 data class UDPPacket24AckConfigChange(
-	override var sensorId: Int,
-	var configType: ConfigTypeId,
+	override var sensorId: Int = 0,
+	var configType: ConfigTypeId = ConfigTypeId(0u),
 ) : UDPPacket(24),
 	SensorSpecificPacket {
 	override fun readData(buf: ByteBuffer) {
@@ -369,7 +369,7 @@ data class UDPPacket25SetConfigFlag(
 	SensorSpecificPacket {
 	override fun writeData(buf: ByteBuffer) {
 		buf.put(sensorId.toByte())
-		buf.putShort(configType.id.toShort())
+		buf.putShort(configType.v.toShort())
 		buf.put(if (state) 1 else 0)
 	}
 }

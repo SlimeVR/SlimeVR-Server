@@ -213,6 +213,15 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		if (status != null) imuTracker.status = status
 	}
 
+	fun toggleMagnetometer(state: Boolean) {
+		val firstAddress = connections.firstOrNull()?.address ?: return
+		bb.limit(bb.capacity())
+		bb.rewind()
+		val packet = UDPPacket25SetConfigFlag(configType = ConfigTypeId(1u), state = state)
+		parser.write(bb, null, packet)
+		socket.send(DatagramPacket(rcvBuffer, bb.position(), firstAddress))
+	}
+
 	override fun run() {
 		val serialBuffer2 = StringBuilder()
 		try {

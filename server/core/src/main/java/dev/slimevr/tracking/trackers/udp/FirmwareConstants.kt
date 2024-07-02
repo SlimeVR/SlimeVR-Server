@@ -97,4 +97,35 @@ enum class MCUType(val id: UInt) {
 }
 
 @JvmInline
-value class ConfigTypeId(val id: UShort)
+value class ConfigTypeId(val v: UShort)
+
+sealed class IMUConfig(private val configValues: ULongArray) {
+	fun setConfig(id: ConfigTypeId, value: Boolean) {
+	}
+
+	fun getConfig(id: ConfigTypeId) = configValues[id.v.toInt()]
+
+	var magnetometer: Boolean
+		get() = getConfig(MAG_ID)
+		set(v) = setConfig(MAG_ID, v)
+
+	class BNO0XXIMUConfig(configValues: ULong) : IMUConfig(configValues)
+
+	class UnknownIMUConfig(configValues: ULong) : IMUConfig(configValues)
+
+	companion object {
+		val MAG_ID = ConfigTypeId(1u)
+
+		fun of(type: IMUType, configValues: ULong): IMUConfig =
+			when (type) {
+				IMUType.UNKNOWN, IMUType.MPU9250, IMUType.MPU6500,
+				IMUType.MPU6050, IMUType.BMI160, IMUType.ICM20948,
+				IMUType.ICM42688,
+				-> UnknownIMUConfig(configValues)
+
+				IMUType.BNO080, IMUType.BNO085, IMUType.BNO055,
+				IMUType.BNO086,
+				-> BNO0XXIMUConfig(configValues)
+			}
+	}
+}

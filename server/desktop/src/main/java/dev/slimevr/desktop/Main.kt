@@ -125,7 +125,7 @@ fun main(args: Array<String>) {
 			configDir,
 		)
 		vrServer.start()
-		
+
 		// Start service for USB HID trackers
 		TrackersHID(
 			"Sensors HID service",
@@ -134,6 +134,10 @@ fun main(args: Array<String>) {
 		Keybinding(vrServer)
 		val scanner = thread {
 			while (true) {
+				if (readln() == "mag") {
+					vrServer.trackersServer.toggleMagnetometer(true)
+					continue
+				}
 				if (readln() == "exit") {
 					vrServer.interrupt()
 					break
