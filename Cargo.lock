@@ -991,7 +991,7 @@ dependencies = [
  "tokio",
  "tracing",
  "url",
- "winreg 0.52.0",
+ "winreg",
 ]
 
 [[package]]
