@@ -477,7 +477,7 @@ settings-serial-get_infos = Get Infos
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Get WiFi Scan
-settings-serial-file_type = Serial log
+settings-serial-file_type = Plain text
 settings-serial-save_logs = Save Logs
 
 ## OSC router settings
