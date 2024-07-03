@@ -48,7 +48,7 @@ export function Radio({
             checked={value == checked}
             {...props}
           />
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 pointer-events-none">
             {children ? children : <Typography bold>{label}</Typography>}
             {description && (
               <Typography variant="standard" color="secondary">

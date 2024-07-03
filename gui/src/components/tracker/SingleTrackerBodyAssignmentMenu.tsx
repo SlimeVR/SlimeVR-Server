@@ -9,6 +9,7 @@ import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { useChokerWarning } from '@/hooks/choker-warning';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { defaultConfig, useConfig } from '@/hooks/config';
+import { TrackerAssignOptions } from '@/components/onboarding/pages/trackers-assign/TrackerAssignOptions';
 
 export function SingleTrackerBodyAssignmentMenu({
   isOpen,
@@ -60,6 +61,7 @@ export function SingleTrackerBodyAssignmentMenu({
                   {l10n.getString('body_assignment_menu-manage_trackers')}
                 </Button>
               </div>
+              <TrackerAssignOptions variant={isMobile ? 'dropdown' : 'radio'} />
             </div>
             <div className="flex flex-col xs:flex-grow gap-3 rounded-xl fill-background-50 py-2">
               <BodyAssignment
