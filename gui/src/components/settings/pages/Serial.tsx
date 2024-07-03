@@ -277,12 +277,12 @@ export function Serial() {
                 {l10n.getString('settings-serial-get_wifi_scan')}
               </Button>
               <Button
-                  variant="quaternary"
-                  onClick={saveLogToFile}
-                  disabled={!isSerialOpen || !consoleContent.trim()}
-                >
-                  {l10n.getString('settings-serial-save_logs')}
-                </Button>
+                variant="quaternary"
+                onClick={saveLogToFile}
+                disabled={!isSerialOpen || !consoleContent.trim()}
+              >
+                {l10n.getString('settings-serial-save_logs')}
+              </Button>
               <div className="w-full mobile:col-span-2">
                 <Dropdown
                   control={control}
