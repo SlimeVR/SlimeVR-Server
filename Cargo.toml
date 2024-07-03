@@ -9,7 +9,7 @@ members = ["gui/src-tauri"]
 [workspace.package]
 edition = "2021"
 license = "MIT OR Apache-2.0"
-rust-version = "1.75" # This version stabilized GATs and let-else
+rust-version = "1.75" # Tauri's MSRV
 repository = "https://github.com/SlimeVR/SlimeVR-Server"
 
 [profile.release]

@@ -84,7 +84,7 @@ export function Button({
     };
     return classNames(
       variantsMap[variant],
-      'focus:ring-4 text-center relative',
+      'focus:ring-4 text-center relative flex items-center justify-center',
       {
         'rounded-full p-2 text-center min-h-[35px] min-w-[35px]': rounded,
         'rounded-md px-5 py-2.5': !rounded,
