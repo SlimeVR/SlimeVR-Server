@@ -478,6 +478,9 @@ settings-general-interface-connected_trackers_warning-label = Avviso di tracker 
 settings-general-interface-use_tray = Riduci a icona nella barra delle applicazioni
 settings-general-interface-use_tray-description = Ti consente di chiudere la finestra senza chiudere il server SlimeVR in modo da poter continuare a usarlo senza che la GUI ti infastidisca.
 settings-general-interface-use_tray-label = Riduci a icona nella barra delle applicazioni
+settings-general-interface-discord_presence = Condividi attività su Discord
+settings-general-interface-discord_presence-description = Dice al tuo client di Discord che stai utilizzando SlimeVR insieme al numero di tracker IMU che stai utilizzando.
+settings-general-interface-discord_presence-label = Condividi attività su Discord
 
 ## Serial settings
 
@@ -588,6 +591,9 @@ settings-osc-vmc-vrm-file_select = Trascina qui un modello da usare, o <u>sfogli
 settings-osc-vmc-anchor_hip = Ancoraggio sul bacino
 settings-osc-vmc-anchor_hip-description = Ancora la posizione del tracciamento del bacino; utile per VTubing da seduti. Se disabilitato, carica un modello VRM.
 settings-osc-vmc-anchor_hip-label = Ancoraggio sul bacino
+settings-osc-vmc-mirror_tracking = Tracciamento speculare
+settings-osc-vmc-mirror_tracking-description = Specchia il tracciamento orizzontalmente.
+settings-osc-vmc-mirror_tracking-label = Tracciamento speculare
 
 ## Setup/onboarding menu
 
@@ -727,6 +733,27 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = Mostra impostazioni avanzate di assegnazione
 onboarding-assign_trackers-next = Ho assegnato tutti i miei tracker
 onboarding-assign_trackers-mirror_view = Inverti interfaccia
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+       *[other] x{ $trackersCount }
+    }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] Pacchetto "Lower-Body"
+        [core] Pacchetto "Core"
+        [enhanced-core] Pacchetto "Enhanced Core"
+        [full-body] Pacchetto "Full-Body"
+       *[all] Tutti i tracker
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] Il minimo per full-body tracking in VR
+        [core] + Miglior tracciamento della spina dorsale
+        [enhanced-core] + Rotazione dei piedi
+        [full-body] + Tracciamento dei gomiti
+       *[all] Tutte le assegnazioni di tracker disponibili
+    }
 
 ## Tracker assignment warnings
 
