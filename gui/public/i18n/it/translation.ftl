@@ -481,6 +481,12 @@ settings-general-interface-use_tray-label = Riduci a icona nella barra delle app
 settings-general-interface-discord_presence = Condividi attività su Discord
 settings-general-interface-discord_presence-description = Dice al tuo client di Discord che stai utilizzando SlimeVR insieme al numero di tracker IMU che stai utilizzando.
 settings-general-interface-discord_presence-label = Condividi attività su Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Slimeggiando qua e là
+        [one] Sta usando 1 tracker
+       *[other] Sta usando { $amount } tracker
+    }
 
 ## Serial settings
 
