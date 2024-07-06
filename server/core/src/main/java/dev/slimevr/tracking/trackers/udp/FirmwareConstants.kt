@@ -17,7 +17,6 @@ enum class IMUType(val id: UInt) {
 	LSM6DSV(13u),
 	LSM6DSO(14u),
 	LSM6DSR(15u),
-	MPU6050_SF(16u),
 	DEV_RESERVED(250u),
 	;
 
