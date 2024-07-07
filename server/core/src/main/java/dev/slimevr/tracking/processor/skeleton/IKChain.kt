@@ -16,7 +16,7 @@ class IKChain(
 	val tailConstraint: Tracker?,
 ) {
 	companion object {
-		const val CENTROID_PULL_ADJUSTMENT = 0.1f
+		const val CENTROID_PULL_ADJUSTMENT = 0.01f
 	}
 
 	// State variables
@@ -42,11 +42,8 @@ class IKChain(
 
 	fun backwards() {
 		// Start at the constraint or the centroid of the children
-		target = if (computedTailPosition == null && children.size > 1) {
-			targetSum / getChildrenCentroidWeightSum()
-		} else {
-			(computedTailPosition?.getPosition()) ?: Vector3.NULL
-		}
+		//target = computedTailPosition?.getPosition() ?: nodes.last().getTailPosition()
+		target = computedTailPosition?.getPosition() ?: (targetSum / getChildrenCentroidWeightSum())
 
 		positions[positions.size - 1] = target
 
