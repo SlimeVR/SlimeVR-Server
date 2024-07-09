@@ -24,6 +24,15 @@ open class Device {
 	val isOpenVrDevice: Boolean
 		get() = manufacturer == "OpenVR"
 
+	/**
+	 * Enables or disables magnetometers in all the trackers of the device
+	 * if `sensorId` null or in the specified tracker
+	 * @param sensorId If null, every sensor will be modified
+	 */
+	open fun setMag(state: Boolean, sensorId: Int = 255) {
+		TODO()
+	}
+
 	companion object {
 		@JvmStatic
 		protected val nextLocalDeviceId = AtomicInteger()

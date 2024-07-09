@@ -17,7 +17,7 @@ enum class IMUType(val id: UInt) {
 	fun getSolarType(): Int = this.id.toInt()
 
 	companion object {
-		private val byId = IMUType.values().associateBy { it.id }
+		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
 		fun getById(id: UInt): IMUType? = byId[id]
@@ -67,7 +67,7 @@ enum class BoardType(val id: UInt) {
 	}
 
 	companion object {
-		private val byId = BoardType.values().associateBy { it.id }
+		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
 		fun getById(id: UInt): BoardType? = byId[id]
@@ -89,7 +89,7 @@ enum class MCUType(val id: UInt) {
 	fun getSolarType(): Int = this.id.toInt()
 
 	companion object {
-		private val byId = MCUType.values().associateBy { it.id }
+		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
 		fun getById(id: UInt): MCUType? = byId[id]
@@ -99,33 +99,16 @@ enum class MCUType(val id: UInt) {
 @JvmInline
 value class ConfigTypeId(val v: UShort)
 
-sealed class IMUConfig(private val configValues: ULongArray) {
-	fun setConfig(id: ConfigTypeId, value: Boolean) {
-	}
-
-	fun getConfig(id: ConfigTypeId) = configValues[id.v.toInt()]
-
-	var magnetometer: Boolean
-		get() = getConfig(MAG_ID)
-		set(v) = setConfig(MAG_ID, v)
-
-	class BNO0XXIMUConfig(configValues: ULong) : IMUConfig(configValues)
-
-	class UnknownIMUConfig(configValues: ULong) : IMUConfig(configValues)
+enum class MagnetometerStatus {
+	NOT_SUPPORTED,
+	DISABLED,
+	ENABLED,
+	;
 
 	companion object {
-		val MAG_ID = ConfigTypeId(1u)
+		private val byId = entries.associateBy { it.ordinal.toUByte() }
 
-		fun of(type: IMUType, configValues: ULong): IMUConfig =
-			when (type) {
-				IMUType.UNKNOWN, IMUType.MPU9250, IMUType.MPU6500,
-				IMUType.MPU6050, IMUType.BMI160, IMUType.ICM20948,
-				IMUType.ICM42688,
-				-> UnknownIMUConfig(configValues)
-
-				IMUType.BNO080, IMUType.BNO085, IMUType.BNO055,
-				IMUType.BNO086,
-				-> BNO0XXIMUConfig(configValues)
-			}
+		@JvmStatic
+		fun getById(id: UByte): MagnetometerStatus? = byId[id]
 	}
 }

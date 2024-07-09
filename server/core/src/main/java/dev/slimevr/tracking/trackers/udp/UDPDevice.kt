@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.trackers.udp
 
 import dev.slimevr.NetworkProtocol
+import dev.slimevr.VRServer
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import java.net.InetAddress
@@ -52,6 +53,19 @@ class UDPDevice(
 	@JvmField
 	var timedOut = false
 	override val trackers = ConcurrentHashMap<Int, Tracker>()
+
+	override fun setMag(state: Boolean, sensorId: Int) {
+		if (sensorId == 255) {
+			VRServer.instance.trackersServer.setConfigFlag(this, ConfigTypeId(1u), state, {
+				trackers.forEach { (_, t) -> t.setMagPrivate(state) }
+			})
+		} else {
+			require(trackers[sensorId] != null) { "There is no tracker $sensorId in device ${toString()}" }
+			VRServer.instance.trackersServer.setConfigFlag(this, ConfigTypeId(1u), state, {
+				trackers[sensorId]!!.setMagPrivate(state)
+			}, sensorId)
+		}
+	}
 
 	var firmwareFeatures = FirmwareFeatures()
 
