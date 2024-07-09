@@ -381,7 +381,10 @@ class Tracker @JvmOverloads constructor(
 
 	fun isImu(): Boolean = imuType != null
 
-	fun setMagPrivate(mag: Boolean) {
+	/**
+	 * Please don't use this and instead set it via [Device.setMag]
+	 */
+	internal fun setMagPrivate(mag: Boolean) {
 		magStatus = if (mag) {
 			MagnetometerStatus.ENABLED
 		} else {
