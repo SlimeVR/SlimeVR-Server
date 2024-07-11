@@ -66,11 +66,11 @@ export function ManualProportionsPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center overflow-y-auto relative">
+      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative">
         <div className="flex flex-col w-full h-full xs:max-w-5xl xs:justify-center">
           <div className="flex gap-8 justify-center h-full xs:items-center">
             <div className="flex flex-col w-full xs:max-w-2xl gap-3 items-center mobile:justify-around">
-              <div className="flex flex-col">
+              <div className="flex flex-col mx-4">
                 <Typography variant="main-title">
                   {l10n.getString('onboarding-manual_proportions-title')}
                 </Typography>

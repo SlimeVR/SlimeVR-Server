@@ -5,7 +5,7 @@ import * as ReactDOMClient from 'react-dom/client';
 import Modal from 'react-modal';
 import App from './App';
 import { AppLocalizationProvider } from './i18n/config';
-import './index.css';
+import './index.scss';
 
 Modal.setAppElement('#root');
 

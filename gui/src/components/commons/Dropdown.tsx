@@ -1,9 +1,8 @@
 import classNames from 'classnames';
-import { useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Control, Controller, UseControllerProps } from 'react-hook-form';
 import { a11yClick } from '@/utils/a11y';
 import { createPortal } from 'react-dom';
-import { useElemSize } from '@/hooks/layout';
 import { ArrowDownIcon } from './icon/ArrowIcons';
 
 interface DropdownProps {
@@ -30,7 +29,8 @@ type DropdownItemsProps = Pick<
 };
 
 export interface DropdownItem {
-  label: string;
+  label?: string;
+  component?: ReactNode;
   value: string;
   fontName?: string;
 }
@@ -49,7 +49,17 @@ export function DropdownItems({
   onSelectItem,
   onBackdropClick,
 }: DropdownItemsProps) {
-  const { height, width, ref } = useElemSize<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [itemBounds, setItemBounds] = useState<DOMRect>();
+
+  const updateBounds = () => {
+    if (!ref.current) return;
+    setItemBounds(ref.current?.getBoundingClientRect());
+  };
+
+  useLayoutEffect(() => {
+    updateBounds();
+  }, []);
 
   const GAP = 8;
 
@@ -67,18 +77,20 @@ export function DropdownItems({
           variant == 'primary' && 'bg-background-60',
           variant == 'secondary' && 'bg-background-70',
           variant == 'tertiary' && 'bg-accent-background-30',
-          height == 0 && 'opacity-0' // Avoid flicker while the component find its position
+          itemBounds?.height == 0 && 'opacity-0' // Avoid flicker while the component find its position
         )}
         style={{
           maxHeight: maxHeight,
           left:
             alignment === 'left'
               ? dropdownBounds.left
-              : dropdownBounds.left + dropdownBounds.width - width,
+              : dropdownBounds.left +
+                dropdownBounds.width -
+                (itemBounds?.width ?? 0),
           top:
             direction == 'down'
               ? dropdownBounds.bottom + GAP
-              : dropdownBounds.top - height - GAP,
+              : dropdownBounds.top - (itemBounds?.height ?? 0) - GAP,
           minWidth: display === 'block' ? dropdownBounds.width : 'inherit',
         }}
       >
@@ -87,7 +99,7 @@ export function DropdownItems({
             <li
               style={item.fontName ? { fontFamily: item.fontName } : {}}
               className={classNames(
-                'py-2 px-4 min-w-max cursor-pointer',
+                'py-2 px-4 min-w-max cursor-pointer first-of-type:*:pointer-events-none',
                 variant == 'primary' &&
                   'checked-hover:bg-background-50 text-background-20 ' +
                     'checked-hover:text-background-10',
@@ -108,7 +120,7 @@ export function DropdownItems({
               tabIndex={0}
               data-checked={item.value === value}
             >
-              {item.label}
+              {item.component || item.label}
             </li>
           ))}
         </ul>
@@ -184,12 +196,14 @@ export function Dropdown({
             onKeyDown={(ev) => a11yClick(ev) && setOpen((open) => !open)}
             tabIndex={0}
           >
-            <div className="flex-grow text-standard">
-              {items.find((i) => i.value == value)?.label || placeholder}
+            <div className="flex-grow text-standard first:pointer-events-none">
+              {items.find((i) => i.value == value)?.component ||
+                items.find((i) => i.value == value)?.label ||
+                placeholder}
             </div>
             <div
               className={classNames(
-                'ml-2 fill-background-10',
+                'ml-2 fill-background-10 flex items-center',
                 direction == 'up' && 'rotate-180',
                 direction == 'down' && 'rotate-0'
               )}

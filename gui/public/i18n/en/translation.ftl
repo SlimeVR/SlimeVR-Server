@@ -688,6 +688,24 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
 onboarding-assign_trackers-mirror_view = Mirror view
+onboarding-assign_trackers-option-amount = { $trackersCount ->
+    [one] x{ $trackersCount }
+    *[other] x{ $trackersCount }
+}
+onboarding-assign_trackers-option-label = { $mode ->
+    [lower-body] Lower-Body Set
+    [core] Core Set
+    [enhanced-core] Enhanced Core Set
+    [full-body] Full-Body Set
+    *[all] All Trackers
+}
+onboarding-assign_trackers-option-description = { $mode ->
+    [lower-body] Minimum for VR full-body tracking
+    [core] + Enhanced spine tracking
+    [enhanced-core] + Foot rotation
+    [full-body] + Elbow tracking
+    *[all] All available tracker assignments
+}
 
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.
