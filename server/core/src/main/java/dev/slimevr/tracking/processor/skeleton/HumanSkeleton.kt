@@ -6,6 +6,7 @@ import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.Constraint
 import dev.slimevr.tracking.processor.Constraint.Companion.completeConstraint
+import dev.slimevr.tracking.processor.Constraint.Companion.hingeConstraint
 import dev.slimevr.tracking.processor.Constraint.Companion.twistSwingConstraint
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
@@ -45,12 +46,12 @@ class HumanSkeleton(
 	val hipBone = Bone(BoneType.HIP, Constraint(twistSwingConstraint, 10f, 80f))
 
 	// Lower body bones
-	val leftHipBone = Bone(BoneType.LEFT_HIP, Constraint(completeConstraint))
-	val rightHipBone = Bone(BoneType.RIGHT_HIP, Constraint(completeConstraint))
+	val leftHipBone = Bone(BoneType.LEFT_HIP, Constraint(twistSwingConstraint, 180f, 8f))
+	val rightHipBone = Bone(BoneType.RIGHT_HIP, Constraint(twistSwingConstraint, 180f, 8f))
 	val leftUpperLegBone = Bone(BoneType.LEFT_UPPER_LEG, Constraint(twistSwingConstraint, 180f, 120f))
 	val rightUpperLegBone = Bone(BoneType.RIGHT_UPPER_LEG, Constraint(twistSwingConstraint, 180f, 120f))
-	val leftLowerLegBone = Bone(BoneType.LEFT_LOWER_LEG, Constraint(twistSwingConstraint, 110f, 180f))
-	val rightLowerLegBone = Bone(BoneType.RIGHT_LOWER_LEG, Constraint(twistSwingConstraint, 110f, 180f))
+	val leftLowerLegBone = Bone(BoneType.LEFT_LOWER_LEG, Constraint(hingeConstraint, 180f, 0f))
+	val rightLowerLegBone = Bone(BoneType.RIGHT_LOWER_LEG, Constraint(hingeConstraint, 180f, 0f))
 	val leftFootBone = Bone(BoneType.LEFT_FOOT, Constraint(twistSwingConstraint, 180f, 120f))
 	val rightFootBone = Bone(BoneType.RIGHT_FOOT, Constraint(twistSwingConstraint, 180f, 120f))
 
@@ -59,8 +60,8 @@ class HumanSkeleton(
 	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(twistSwingConstraint, 180f, 8f))
 	val leftUpperArmBone = Bone(BoneType.LEFT_UPPER_ARM, Constraint(twistSwingConstraint, 180f, 180f))
 	val rightUpperArmBone = Bone(BoneType.RIGHT_UPPER_ARM, Constraint(twistSwingConstraint, 180f, 180f))
-	val leftLowerArmBone = Bone(BoneType.LEFT_LOWER_ARM, Constraint(twistSwingConstraint, 180f, 180f))
-	val rightLowerArmBone = Bone(BoneType.RIGHT_LOWER_ARM, Constraint(twistSwingConstraint, 180f, 180f))
+	val leftLowerArmBone = Bone(BoneType.LEFT_LOWER_ARM, Constraint(hingeConstraint, 0f, -180f))
+	val rightLowerArmBone = Bone(BoneType.RIGHT_LOWER_ARM, Constraint(hingeConstraint, 0f, -180f))
 	val leftHandBone = Bone(BoneType.LEFT_HAND, Constraint(twistSwingConstraint, 180f, 180f))
 	val rightHandBone = Bone(BoneType.RIGHT_HAND, Constraint(twistSwingConstraint, 180f, 180f))
 
