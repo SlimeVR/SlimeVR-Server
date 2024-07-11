@@ -387,17 +387,22 @@ class VMCHandler(
 					outputUnityArmature?.update()
 
 					// Add Unity humanoid bones transforms
-					for (bone in UnityBone.entries) {
-						if (bone.boneType != null &&
-							!(humanPoseManager.isTrackingLeftArmFromController && (UnityBone.isLeftArmBone(bone) || bone == UnityBone.LEFT_SHOULDER)) &&
-							!(humanPoseManager.isTrackingRightArmFromController && (UnityBone.isRightArmBone(bone) || bone == UnityBone.RIGHT_SHOULDER))
+					for (unityBone in UnityBone.entries) {
+						// Don't send bones for which we don't have an equivalent
+						// Don't send fingers if we don't have any tracker for them
+						// Don't send arm bones if we're tracking from the controller
+						if (unityBone.boneType != null &&
+							(!UnityBone.isLeftFingerBone(unityBone) || humanPoseManager.skeleton.hasLeftFingerTracker) &&
+							(!UnityBone.isRightFingerBone(unityBone) || humanPoseManager.skeleton.hasRightFingerTracker) &&
+							!(humanPoseManager.isTrackingLeftArmFromController && (UnityBone.isLeftArmBone(unityBone) || unityBone == UnityBone.LEFT_SHOULDER)) &&
+							!(humanPoseManager.isTrackingRightArmFromController && (UnityBone.isRightArmBone(unityBone) || unityBone == UnityBone.RIGHT_SHOULDER))
 						) {
 							oscArgs.clear()
-							oscArgs.add(bone.stringVal)
+							oscArgs.add(unityBone.stringVal)
 							outputUnityArmature?.let {
 								addTransformToArgs(
-									it.getLocalTranslationForBone(bone),
-									it.getLocalRotationForBone(bone),
+									it.getLocalTranslationForBone(unityBone),
+									it.getLocalRotationForBone(unityBone),
 								)
 							}
 

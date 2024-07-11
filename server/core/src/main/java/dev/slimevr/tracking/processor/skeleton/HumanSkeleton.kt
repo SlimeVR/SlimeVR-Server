@@ -109,12 +109,10 @@ class HumanSkeleton(
 	// Buffers
 	var hasSpineTracker = false
 	var hasKneeTrackers = false
-	var hasLeftLegTracker = false
-	var hasRightLegTracker = false
-	var hasLeftFootTracker = false
-	var hasRightFootTracker = false
 	var hasLeftArmTracker = false
 	var hasRightArmTracker = false
+	var hasLeftFingerTracker = false
+	var hasRightFingerTracker = false
 
 	// Input trackers
 	var headTracker: Tracker? by Delegates.observable(null) { _, old, new ->
@@ -422,12 +420,18 @@ class HumanSkeleton(
 		// Check for specific conditions and cache them
 		hasSpineTracker = upperChestTracker != null || chestTracker != null || waistTracker != null || hipTracker != null
 		hasKneeTrackers = leftUpperLegTracker != null && rightUpperLegTracker != null
-		hasLeftLegTracker = leftUpperLegTracker != null || leftLowerLegTracker != null || leftFootTracker != null
-		hasRightLegTracker = rightUpperLegTracker != null || rightLowerLegTracker != null || rightFootTracker != null
-		hasLeftFootTracker = leftFootTracker != null
-		hasRightFootTracker = rightFootTracker != null
 		hasLeftArmTracker = leftLowerArmTracker != null || leftUpperArmTracker != null
 		hasRightArmTracker = rightLowerArmTracker != null || rightUpperArmTracker != null
+		hasLeftFingerTracker = leftThumbProximalTracker != null || leftThumbIntermediateTracker != null || leftThumbDistalTracker != null ||
+			leftIndexProximalTracker != null || leftIndexIntermediateTracker != null || leftIndexDistalTracker != null ||
+			leftMiddleProximalTracker != null || leftMiddleIntermediateTracker != null || leftMiddleDistalTracker != null ||
+			leftRingProximalTracker != null || leftRingIntermediateTracker != null || leftRingDistalTracker != null ||
+			leftLittleProximalTracker != null || leftLittleIntermediateTracker != null || leftLittleDistalTracker != null
+		hasRightFingerTracker = rightThumbProximalTracker != null || rightThumbIntermediateTracker != null || rightThumbDistalTracker != null ||
+			rightIndexProximalTracker != null || rightIndexIntermediateTracker != null || rightIndexDistalTracker != null ||
+			rightMiddleProximalTracker != null || rightMiddleIntermediateTracker != null || rightMiddleDistalTracker != null ||
+			rightRingProximalTracker != null || rightRingIntermediateTracker != null || rightRingDistalTracker != null ||
+			rightLittleProximalTracker != null || rightLittleIntermediateTracker != null || rightLittleDistalTracker != null
 
 		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true)
