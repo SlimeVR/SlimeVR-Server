@@ -4,7 +4,7 @@ import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.trackers.Tracker
 
 /*
- * Implements FABRIK (Forwards And Backwards Reaching Inverse Kinematics) to allow
+ * Implements CCDIK (Cyclic Coordinate Descent Inverse Kinematics) to allow
  * positional trackers such as vive/tundra trackers to be used in conjunction with
  * IMU trackers
  */
@@ -14,9 +14,9 @@ class IKSolver(private val root: Bone) {
 		const val TOLERANCE_SQR = 1e-8 // == 0.01 cm
 		const val MAX_ITERATIONS = 200
 		const val ITERATIONS_BEFORE_STEP = 20
-		const val ITERATIONS_BETWEEN_STEP = 20
-		const val MAX_LOOSENS = 10
-		const val TOLERANCE_STEP = 2f
+		const val ITERATIONS_BETWEEN_STEP = 10
+		const val MAX_LOOSENS = 20
+		const val TOLERANCE_STEP = 1f
 	}
 
 	var enabled = true
@@ -41,12 +41,6 @@ class IKSolver(private val root: Bone) {
 		// Check if there is any constraints (other than the head) in the model
 		rootChain = if (neededChain(rootChain!!)) rootChain else null
 		chainList.sortBy { -it.level }
-
-		println("ChainList length ${chainList.size}")
-		for (chain in chainList) {
-			println("Start = ${chain.nodes.first().boneType.name}")
-			println("End = ${chain.nodes.last().boneType.name}\n")
-		}
 	}
 
 	/**
@@ -123,8 +117,8 @@ class IKSolver(private val root: Bone) {
 
 	private fun combineChains(chain: IKChain, childChain: IKChain): IKChain {
 		val boneList = mutableListOf<Bone>()
-		boneList.addAll(chain.nodes)
-		boneList.addAll(childChain.nodes)
+		boneList.addAll(chain.bones)
+		boneList.addAll(childChain.bones)
 
 		val newChain = IKChain(
 			boneList,
@@ -145,7 +139,8 @@ class IKSolver(private val root: Bone) {
 
 	private fun addConstraints() {
 		fun constrainChain(chain: IKChain) {
-			chain.nodes.forEach { it.rotationConstraint.allowModifications = false }
+			chain.locked = true
+			chain.bones.forEach { it.rotationConstraint.allowModifications = false }
 		}
 		chainList.forEach { if (it.tailConstraint == null) constrainChain(it) }
 	}
@@ -231,7 +226,6 @@ class IKSolver(private val root: Bone) {
 			for (chain in chainList) {
 				chain.backwards()
 			}
-			rootChain?.forwardsMulti()
 
 			rootChain?.computeTargetDistance()
 

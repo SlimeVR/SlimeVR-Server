@@ -2,6 +2,7 @@ package dev.slimevr.tracking.processor
 
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlin.math.abs
 import kotlin.math.sign
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -49,8 +50,7 @@ class Constraint(
 	 * Apply rotational constraints and if applicable force the rotation
 	 * to be unchanged unless it violates the constraints
 	 */
-	fun applyConstraint(direction: Vector3, thisBone: Bone): Quaternion {
-		val rotation = Quaternion.fromTo(Vector3.NEG_Y, direction)
+	fun applyConstraint(rotation: Quaternion, thisBone: Bone): Quaternion {
 		if (allowModifications) {
 			return constraintFunction(rotation, thisBone, swingRad, twistRad).unit()
 		}
@@ -58,15 +58,6 @@ class Constraint(
 		val constrainedRotation = applyLimits(rotation, originalRotation)
 		return constraintFunction(constrainedRotation, thisBone, swingRad, twistRad).unit()
 	}
-
-	/**
-	 * Apply constraints to the direction vector such that when
-	 * inverted the vector would be within the constraints.
-	 * This is used for constraining direction vectors on the backwards pass
-	 * of the FABRIK solver.
-	 */
-	fun applyConstraintInverse(direction: Vector3, thisBone: Bone): Vector3 =
-		-applyConstraint(-direction, thisBone).sandwich(Vector3.NEG_Y)
 
 	/**
 	 * Limit the rotation to tolerance away from the initialRotation
@@ -86,7 +77,7 @@ class Constraint(
 	}
 
 	companion object {
-		fun decompose(
+		private fun decompose(
 			rotation: Quaternion,
 			twistAxis: Vector3,
 		): Pair<Quaternion, Quaternion> {
@@ -98,7 +89,7 @@ class Constraint(
 			return Pair(swing, twist)
 		}
 
-		fun constrain(rotation: Quaternion, angle: Float): Quaternion {
+		private fun constrain(rotation: Quaternion, angle: Float): Quaternion {
 			val magnitude = sin(angle * 0.5f)
 			val magnitudeSqr = magnitude * magnitude
 			val sign = if (rotation.w != 0f) sign(rotation.w) else 1f
@@ -118,21 +109,64 @@ class Constraint(
 			return rot
 		}
 
-		// Constraint function for TwistSwingConstraint
-		val twistSwingConstraint: ConstraintFunction = { rotation: Quaternion, thisBone: Bone, swingRad: Float, twistRad: Float ->
-			if (thisBone.parent == null) {
-				rotation
-			} else {
-				val parent = thisBone.parent!!
-				val rotationLocal = (parent.getGlobalRotation() * thisBone.rotationOffset).inv() * rotation
-				var (swingQ, twistQ) = decompose(rotationLocal, Vector3.NEG_Y)
+		private fun constrain(rotation: Quaternion, minAngle: Float, maxAngle: Float, axis: Vector3): Quaternion {
+			val magnitudeMin = sin(minAngle * 0.5f)
+			val magnitudeMax = sin(maxAngle * 0.5f)
+			val magnitudeSqrMin = magnitudeMin * magnitudeMin * if (minAngle != 0f) sign(minAngle) else 1f
+			val magnitudeSqrMax = magnitudeMax * magnitudeMax * if (maxAngle != 0f) sign(maxAngle) else 1f
+			var vector = rotation.xyz
+			var rot = rotation
 
-				swingQ = constrain(swingQ, swingRad)
-				twistQ = constrain(twistQ, twistRad)
-
-				parent.getGlobalRotation() * thisBone.rotationOffset * (swingQ * twistQ)
+			val rotMagnitude = vector.lenSq() * if (vector.dot(axis) < 0) -1f else 1f
+			if (rotMagnitude < magnitudeSqrMin || rotMagnitude > magnitudeSqrMax) {
+				val magnitude = if (rotMagnitude < magnitudeSqrMin) magnitudeMin else magnitudeMax
+				val magnitudeSqr = abs(if (rotMagnitude < magnitudeSqrMin) magnitudeSqrMin else magnitudeSqrMax)
+				vector = vector.unit() * magnitude
+				rot = Quaternion(
+					sqrt(1.0f - magnitudeSqr),
+					vector.x,
+					vector.y,
+					vector.z,
+				)
 			}
+
+			return rot
 		}
+
+		// Constraint function for TwistSwingConstraint
+		val twistSwingConstraint: ConstraintFunction =
+			{ rotation: Quaternion, thisBone: Bone, swingRad: Float, twistRad: Float ->
+				if (thisBone.parent == null) {
+					rotation
+				} else {
+					val parent = thisBone.parent!!
+					val rotationLocal =
+						(parent.getGlobalRotation() * thisBone.rotationOffset).inv() * rotation
+					var (swingQ, twistQ) = decompose(rotationLocal, Vector3.NEG_Y)
+
+					swingQ = constrain(swingQ, swingRad)
+					twistQ = constrain(twistQ, twistRad)
+
+					parent.getGlobalRotation() * thisBone.rotationOffset * (swingQ * twistQ)
+				}
+			}
+
+		// Constraint function for a hinge constraint with min and max angles
+		val hingeConstraint: ConstraintFunction =
+			{ rotation: Quaternion, thisBone: Bone, min: Float, max: Float ->
+				if (thisBone.parent == null) {
+					rotation
+				} else {
+					val parent = thisBone.parent!!
+					val rotationLocal =
+						(parent.getGlobalRotation() * thisBone.rotationOffset).inv() * rotation
+					var (_, hingeAxisRot) = decompose(rotationLocal, Vector3.NEG_X)
+
+					hingeAxisRot = constrain(hingeAxisRot, min, max, Vector3.NEG_X)
+
+					parent.getGlobalRotation() * thisBone.rotationOffset * hingeAxisRot
+				}
+			}
 
 		// Constraint function for CompleteConstraint
 		val completeConstraint: ConstraintFunction = { _: Quaternion, thisBone: Bone, _: Float, _: Float ->

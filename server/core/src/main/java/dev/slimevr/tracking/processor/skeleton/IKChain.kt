@@ -2,14 +2,19 @@ package dev.slimevr.tracking.processor.skeleton
 
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.trackers.Tracker
+import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlin.math.acos
+import kotlin.math.cos
+import kotlin.math.sign
+import kotlin.math.sin
 
 /*
- * This class implements a chain of Bones for use by the FABRIK solver
+ * This class implements a chain of Bones
  */
 
 class IKChain(
-	val nodes: MutableList<Bone>,
+	val bones: MutableList<Bone>,
 	var parent: IKChain?,
 	val level: Int,
 	val baseConstraint: Tracker?,
@@ -23,82 +28,46 @@ class IKChain(
 	private val computedBasePosition = baseConstraint?.let { IKConstraint(it) }
 	private val computedTailPosition = tailConstraint?.let { IKConstraint(it) }
 	var children = mutableListOf<IKChain>()
-	private var targetSum = Vector3.NULL
 	var target = Vector3.NULL
 	var distToTargetSqr = Float.POSITIVE_INFINITY
 	var loosens = 0
+	var locked = false
 	private var centroidWeight = 1f
-	private var positions = getPositionList()
-
-	private fun getPositionList(): MutableList<Vector3> {
-		val posList = mutableListOf<Vector3>()
-		for (n in nodes) {
-			posList.add(n.getPosition())
-		}
-		posList.add(nodes.last().getTailPosition())
-
-		return posList
-	}
 
 	fun backwards() {
 		// Start at the constraint or the centroid of the children
-		//target = computedTailPosition?.getPosition() ?: nodes.last().getTailPosition()
-		target = computedTailPosition?.getPosition() ?: (targetSum / getChildrenCentroidWeightSum())
+		target = computedTailPosition?.getPosition() ?: getWeightedChildTarget()
 
-		positions[positions.size - 1] = target
+		for (i in bones.size - 1 downTo 0) {
+			val currentBone = bones[i]
 
-		for (i in positions.size - 2 downTo 0) {
-			var direction = (positions[i] - positions[i + 1]).unit()
-			direction = nodes[i].rotationConstraint
-				.applyConstraintInverse(direction, nodes[i])
+			// Get the local position of the end effector and the target relative to the current node
+			val endEffectorLocal = (bones.last().getTailPosition() - currentBone.getPosition()).unit()
+			val targetLocal = (target - currentBone.getPosition()).unit()
 
-			positions[i] = positions[i + 1] + (direction * nodes[i].length)
-		}
+			// Compute the axis of rotation and angle for this bone
+			val cross = endEffectorLocal.cross(targetLocal).unit()
+			if (cross.lenSq() == 0.0f) continue
+			val baseAngle = acos(endEffectorLocal.dot(targetLocal).coerceIn(-1.0f, 1.0f))
+			val angle = baseAngle * sign(cross.dot(cross))
 
-		if (parent != null && parent!!.computedTailPosition == null) {
-			parent!!.targetSum += positions[0] * centroidWeight
-		}
-	}
+			val sinHalfAngle = sin(angle / 2)
+			val adjustment = Quaternion(cos(angle / 2), cross.x * sinHalfAngle, cross.y * sinHalfAngle, cross.z * sinHalfAngle)
+			val correctedRot = (adjustment * currentBone.getGlobalRotation()).unit()
 
-	private fun forwards() {
-		positions[0] = if (parent != null) {
-			parent!!.nodes.last().getTailPosition()
-		} else {
-			(computedBasePosition?.getPosition()) ?: positions[0]
-		}
-
-		for (i in 1 until positions.size - 1) {
-			var direction = (positions[i] - positions[i - 1]).unit()
-			direction = setBoneRotation(nodes[i - 1], direction)
-			positions[i] = positions[i - 1] + (direction * nodes[i - 1].length)
-		}
-
-		var direction = (target - positions[positions.size - 2]).unit()
-		direction = setBoneRotation(nodes.last(), direction)
-		positions[positions.size - 1] = positions[positions.size - 2] + (direction * nodes.last().length)
-
-		// reset sub-base target
-		targetSum = Vector3.NULL
-	}
-
-	/**
-	 * Run the forward pass
-	 */
-	fun forwardsMulti() {
-		forwards()
-
-		for (c in children) {
-			c.forwardsMulti()
+			setBoneRotation(currentBone, correctedRot)
 		}
 	}
 
-	private fun getChildrenCentroidWeightSum(): Float {
-		var sum = 0.0f
+	private fun getWeightedChildTarget(): Vector3 {
+		var weightSum = 0.0f
+		var sum = Vector3.NULL
 		for (child in children) {
-			sum += child.centroidWeight
+			weightSum += child.centroidWeight
+			sum += child.target
 		}
 
-		return sum
+		return sum / weightSum
 	}
 
 	/**
@@ -108,7 +77,7 @@ class IKChain(
 		distToTargetSqr = Float.POSITIVE_INFINITY
 		centroidWeight = 1f
 
-		for (bone in nodes) {
+		for (bone in bones) {
 			if (loosens > 0) bone.rotationConstraint.tolerance -= IKSolver.TOLERANCE_STEP
 			bone.rotationConstraint.originalRotation = bone.getGlobalRotation()
 		}
@@ -120,8 +89,8 @@ class IKChain(
 	}
 
 	fun resetTrackerOffsets() {
-		computedTailPosition?.reset(nodes.last().getTailPosition())
-		computedBasePosition?.reset(nodes.first().getPosition())
+		computedTailPosition?.reset(bones.last().getTailPosition())
+		computedBasePosition?.reset(bones.first().getPosition())
 	}
 
 	/**
@@ -147,20 +116,20 @@ class IKChain(
 	 * Allow constrained bones to deviate more
 	 */
 	fun decreaseConstraints() {
+		if (locked) return
 		loosens++
-		for (bone in nodes) {
+		for (bone in bones) {
 			bone.rotationConstraint.tolerance += IKSolver.TOLERANCE_STEP
 		}
 	}
 
 	/**
 	 * Updates the distance to target and other fields
-	 * Call on the root chain only returns the sum of the
-	 * distances
+	 * Call on the root chain
 	 */
 	fun computeTargetDistance() {
 		distToTargetSqr = if (computedTailPosition != null) {
-			(positions.last() - computedTailPosition.getPosition()).lenSq()
+			(bones.last().getTailPosition() - computedTailPosition.getPosition()).lenSq()
 		} else {
 			0.0f
 		}
@@ -173,14 +142,13 @@ class IKChain(
 	/**
 	 * Sets a bones rotation from a rotation vector after constraining the rotation
 	 * vector with the bone's rotational constraint
-	 * returns the constrained rotation as a vector
+	 * returns the constrained rotation
 	 */
-	private fun setBoneRotation(bone: Bone, rotationVector: Vector3): Vector3 {
-		val rotation = bone.rotationConstraint.applyConstraint(rotationVector, bone)
-		bone.setRotationRaw(rotation)
+	private fun setBoneRotation(bone: Bone, rotation: Quaternion): Quaternion {
+		val newRotation = bone.rotationConstraint.applyConstraint(rotation, bone)
+		bone.setRotationRaw(newRotation)
+		bone.update()
 
-		bone.updateThisNode()
-
-		return rotation.sandwich(Vector3.NEG_Y)
+		return newRotation
 	}
 }
