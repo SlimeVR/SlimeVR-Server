@@ -112,7 +112,7 @@ export function ToggleableSkeletonVisualizerWidget(
       {enabled && (
         <div className="flex flex-col gap-2">
           <Button
-            className="w-full "
+            className="w-full"
             variant="secondary"
             onClick={() => {
               setEnabled(false);
