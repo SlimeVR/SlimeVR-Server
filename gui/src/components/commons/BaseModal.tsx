@@ -4,10 +4,12 @@ import ReactModal from 'react-modal';
 
 export function BaseModal({
   children,
+  important = false,
   ...props
 }: {
   isOpen: boolean;
   children: ReactNode;
+  important?: boolean;
 } & ReactModal.Props) {
   return (
     <ReactModal
@@ -18,7 +20,8 @@ export function BaseModal({
         props.overlayClassName ||
         classNames(
           'fixed top-0 right-0 left-0 bottom-0 flex flex-col justify-center',
-          'items-center w-full h-full bg-background-90 bg-opacity-60 z-20'
+          'items-center w-full h-full bg-background-90 bg-opacity-60',
+          important ? 'z-50' : 'z-40'
         )
       }
       className={
