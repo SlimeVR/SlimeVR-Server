@@ -16,7 +16,7 @@ class IKSolver(private val root: Bone) {
 		const val ITERATIONS_BEFORE_STEP = 20
 		const val ITERATIONS_BETWEEN_STEP = 10
 		const val MAX_LOOSENS = 20
-		const val TOLERANCE_STEP = 1f
+		const val TOLERANCE_STEP = 0.2f
 	}
 
 	var enabled = true
