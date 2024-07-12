@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import {
   AssignTrackerRequestT,
+  BoardType,
   BodyPart,
   ForgetDeviceRequestT,
   ImuType,
@@ -146,6 +147,25 @@ export function TrackerSettingsPage() {
     }
   }, [firstLoad]);
 
+  const boarType = useMemo(() => {
+    if (tracker?.device?.hardwareInfo?.officialBoardType) {
+      return l10n.getString(
+        'board_type-' +
+          BoardType[
+            tracker?.device?.hardwareInfo?.officialBoardType ??
+              BoardType.UNKNOWN
+          ]
+      );
+    } else if (tracker?.device?.hardwareInfo?.boardType) {
+      return tracker?.device?.hardwareInfo?.boardType;
+    } else {
+      return '--';
+    }
+  }, [
+    tracker?.device?.hardwareInfo?.officialBoardType,
+    tracker?.device?.hardwareInfo?.boardType,
+  ]);
+
   const macAddress = useMemo(() => {
     if (
       /(?:[a-zA-Z\d]{2}:){5}[a-zA-Z\d]{2}/.test(
@@ -272,9 +292,7 @@ export function TrackerSettingsPage() {
               <Typography color="secondary">
                 {l10n.getString('tracker-infos-board_type')}
               </Typography>
-              <Typography>
-                {tracker?.device?.hardwareInfo?.boardType || '--'}
-              </Typography>
+              <Typography>{boarType}</Typography>
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">

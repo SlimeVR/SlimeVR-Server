@@ -7,6 +7,7 @@ import dev.slimevr.protocol.rpc.RPCHandler;
 import dev.slimevr.serial.SerialListener;
 import dev.slimevr.serial.SerialPort;
 import io.eiren.util.logging.LogManager;
+import org.jetbrains.annotations.NotNull;
 import solarxr_protocol.rpc.*;
 
 import java.util.ArrayList;
@@ -274,4 +275,6 @@ public class RPCSerialHandler implements SerialListener {
 			);
 	}
 
+	@Override
+	public void onSerialDeviceDeleted(@NotNull SerialPort port) {}
 }
