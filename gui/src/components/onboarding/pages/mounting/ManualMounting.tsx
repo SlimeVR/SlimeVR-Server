@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '@/hooks/app';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useTrackers } from '@/hooks/tracker';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { MountingOrientationDegreesToQuatT } from '@/maths/quaternion';
+import {
+  MountingOrientationDegreesToQuatT,
+  QuaternionFromQuatT,
+} from '@/maths/quaternion';
 import { Button } from '@/components/commons/Button';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
@@ -66,10 +69,20 @@ export function ManualMountingPage() {
     setSelectRole(BodyPart.NONE);
   };
 
+  const getCurrRotation = useCallback(
+    (role: BodyPart) => {
+      const trackers = trackerPartGrouped[role] || [];
+      if (!trackers.length || role === BodyPart.NONE) return undefined;
+      return QuaternionFromQuatT(trackers[0].tracker.info?.mountingOrientation);
+    },
+    [trackerPartGrouped]
+  );
+
   return (
     <>
       <MountingSelectionMenu
         bodyPart={selectedRole}
+        currRotation={getCurrRotation(selectedRole)}
         isOpen={selectedRole !== BodyPart.NONE}
         onClose={() => setSelectRole(BodyPart.NONE)}
         onDirectionSelected={onDirectionSelected}

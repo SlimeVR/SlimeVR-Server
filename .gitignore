@@ -41,3 +41,5 @@ build/
 
 # Ignore Android local properties
 local.properties
+/server/core/bin
+/server/desktop/bin
