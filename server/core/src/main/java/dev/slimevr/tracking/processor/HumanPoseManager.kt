@@ -22,6 +22,12 @@ import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import org.apache.commons.math3.util.Precision
+import solarxr_protocol.datatypes.DeviceIdT
+import solarxr_protocol.datatypes.TrackerIdT
+import solarxr_protocol.rpc.StatusData
+import solarxr_protocol.rpc.StatusDataUnion
+import solarxr_protocol.rpc.StatusUnassignedHMD
+import solarxr_protocol.rpc.StatusUnassignedHMDT
 import java.util.function.Consumer
 import kotlin.math.*
 
@@ -696,5 +702,64 @@ class HumanPoseManager(val server: VRServer?) {
 		skeleton.setPauseTracking(pauseTracking, sourceName)
 	}
 
-	fun togglePauseTracking(sourceName: String?): Boolean = skeleton.togglePauseTracking(sourceName) // #endregion
+	fun togglePauseTracking(sourceName: String?): Boolean = skeleton.togglePauseTracking(sourceName)
+
+	// This should be executed when the head tracker is changed
+	fun checkTrackersRequiringReset() {
+		// Checks if this is main human pose manager (having server) or
+		// skeleton doesn't have a head tracker or not an HMD one
+		if (server == null ||
+			skeleton.headTracker?.isComputed != true
+		) {
+			return
+		}
+		server.allTrackers
+			.filter { !it.isInternal && it.trackerPosition != null }
+			.forEach {
+				it.checkReportRequireReset()
+			}
+	}
+
+	private var lastMissingHmdStatus = 0u
+	fun checkReportMissingHmd() {
+		// Check if this is main skeleton, there is no head tracker currently,
+		// and there is an available HMD one
+		if (server == null) return
+		val tracker = VRServer.instance.allTrackers.firstOrNull { it.isHmd && !it.isInternal && it.status.sendData }
+		if (skeleton.headTracker == null &&
+			lastMissingHmdStatus == 0u &&
+			tracker != null
+		) {
+			reportMissingHmd(tracker)
+		} else if (lastMissingHmdStatus != 0u &&
+			(skeleton.headTracker != null || tracker == null)
+		) {
+			server.statusSystem.removeStatus(lastMissingHmdStatus)
+			lastMissingHmdStatus = 0u
+		}
+	}
+
+	private fun reportMissingHmd(tracker: Tracker) {
+		require(lastMissingHmdStatus == 0u) {
+			"${::lastMissingHmdStatus.name} must be 0u, but was $lastMissingHmdStatus"
+		}
+		require(server != null) {
+			"${::server.name} must not be null"
+		}
+
+		val status = StatusDataUnion().apply {
+			type = StatusData.StatusUnassignedHMD
+			value = StatusUnassignedHMDT().apply {
+				trackerId = TrackerIdT().apply {
+					if (tracker.device != null) {
+						deviceId = DeviceIdT().apply { id = tracker.device.id }
+					}
+					trackerNum = tracker.trackerNum
+				}
+			}
+		}
+		lastMissingHmdStatus = server.statusSystem.addStatus(status, true)
+	}
+
+	// #endregion
 }
