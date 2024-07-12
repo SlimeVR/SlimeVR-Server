@@ -1,14 +1,10 @@
 package dev.slimevr.tracking.trackers
 
-import com.jme3.math.FastMath
 import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
 import io.eiren.util.BufferedTimer
-import io.eiren.util.logging.LogManager
-import io.github.axisangles.ktmath.EulerAngles
-import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.DeviceIdT
@@ -80,6 +76,7 @@ class Tracker @JvmOverloads constructor(
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
+	val trackerFlexHandler: TrackerFlexHandler = TrackerFlexHandler(this)
 	var batteryVoltage: Float? = null
 	var batteryLevel: Float? = null
 	var ping: Int? = null
@@ -398,27 +395,6 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun setAcceleration(vec: Vector3) {
 		this._acceleration = vec
-	}
-
-	// TODO should this be in its own class
-	private var minResistance = 0f
-	private var maxResistance = 1f
-	fun setFlexResistance(resistance: Float) {
-		LogManager.debug("Set flex resistance: $resistance")
-
-		minResistance = min(minResistance, resistance)
-		maxResistance = max(maxResistance, resistance)
-
-		val maxBend = FastMath.PI // 180 degrees TODO change with trackerPosition
-		val angle = maxBend * (resistance - minResistance) / (maxResistance - minResistance)
-
-		setFlexAngle(angle)
-	}
-
-	fun setFlexAngle(angle: Float) {
-		LogManager.debug("Set flex angle: $angle rads")
-		// Create a rotation out of the given angle
-		setRotation(EulerAngles(EulerOrder.YZX, angle, 0f, 0f).toQuaternion())
 	}
 
 	fun isImu(): Boolean = imuType != null
