@@ -73,6 +73,7 @@ dependencies {
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 	implementation("it.unimi.dsi:fastutil:8.5.12")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework

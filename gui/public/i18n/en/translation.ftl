@@ -178,6 +178,12 @@ tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-imu = IMU Sensor
 tracker-infos-board_type = Main board
 tracker-infos-network_version = Protocol Version
+tracker-infos-magnetometer = Magnetometer
+tracker-infos-magnetometer-status = { $status ->
+    *[0] Not supported
+    [1] Disabled
+    [2] Enabled
+}
 
 ## Tracker settings
 tracker-settings-back = Go back to trackers list

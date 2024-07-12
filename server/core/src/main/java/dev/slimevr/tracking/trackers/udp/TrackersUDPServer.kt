@@ -10,6 +10,8 @@ import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import io.github.axisangles.ktmath.Vector3
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.apache.commons.lang3.ArrayUtils
 import solarxr_protocol.rpc.ResetType
 import java.net.DatagramPacket
@@ -24,6 +26,7 @@ import java.util.*
 import java.util.function.Consumer
 import kotlin.collections.ArrayDeque
 import kotlin.collections.HashMap
+import kotlin.coroutines.resume
 
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
@@ -216,12 +219,25 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		if (status != null) imuTracker.status = status
 	}
 
-	private val queues: MutableMap<Triple<SocketAddress, ConfigTypeId, Int>, ArrayDeque<Pair<Boolean, () -> Unit>>> = mutableMapOf()
-	fun setConfigFlag(device: UDPDevice, configTypeId: ConfigTypeId, state: Boolean, ack: () -> Unit, sensorId: Int = 255) {
+	private data class ConfigStateWaiter(
+		val expectedState: Boolean,
+		val channel: CancellableContinuation<Boolean>,
+		var ran: Boolean = false,
+	)
+
+	private val queues: MutableMap<Triple<SocketAddress, ConfigTypeId, Int>, ArrayDeque<ConfigStateWaiter>> = mutableMapOf()
+	suspend fun setConfigFlag(device: UDPDevice, configTypeId: ConfigTypeId, state: Boolean, sensorId: Int = 255) {
+		if (device.timedOut) return
 		val triple = Triple(device.address, configTypeId, sensorId)
 		val queue = queues.computeIfAbsent(triple) { _ -> ArrayDeque() }
 
-		queue.add(Pair(state, ack))
+		suspendCancellableCoroutine {
+			val waiter = ConfigStateWaiter(state, it)
+			queue.add(waiter)
+			it.invokeOnCancellation {
+				queue.remove(waiter)
+			}
+		}
 	}
 
 	private fun actualSetConfigFlag(device: UDPDevice, configTypeId: ConfigTypeId, state: Boolean, sensorId: Int) {
@@ -265,7 +281,15 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 
 					queues.forEach { (t, p) ->
 						val q = p.firstOrNull() ?: return@forEach
-						actualSetConfigFlag(connectionsByAddress[t.first] ?: return, t.second, q.first, t.third)
+						if (q.ran) return@forEach
+
+						val device = connectionsByAddress[t.first] ?: run {
+							p.removeFirst()
+							LogManager.info("[TrackerServer] Device ${t.first} not connected, so can't communicate with it")
+							return@forEach
+						}
+						actualSetConfigFlag(device, t.second, q.expectedState, t.third)
+						if (!device.timedOut) q.ran = true
 					}
 				} catch (ignored: SocketTimeoutException) {
 				} catch (e: Exception) {
@@ -498,14 +522,14 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					LogManager.severe("[TrackerServer] Error, acknowledgment of config change that we don't have in our queue.")
 					return
 				}
-				val change = queue.removeFirst()
-				change.second.invoke()
+				val changed = queue.removeFirst()
+				changed.channel.resume(true)
 				val trackers = if (SensorSpecificPacket.isGlobal(packet.sensorId)) {
 					connection.trackers.values.toList()
 				} else {
 					listOf(connection.getTracker(packet.sensorId) ?: return)
 				}
-				LogManager.info("[TrackerServer] Acknowledged config change on ${connection.descriptiveName} (${trackers.map { it.id }.joinToString()}). Config changed on ${packet.configType}")
+				LogManager.info("[TrackerServer] Acknowledged config change on ${connection.descriptiveName} (${trackers.map { it.trackerNum }.joinToString()}). Config changed on ${packet.configType}")
 			}
 
 			is UDPPacket200ProtocolChange -> {}

@@ -12,8 +12,6 @@ import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
 import dev.slimevr.desktop.serial.DesktopSerialHandler
 import dev.slimevr.desktop.tracking.trackers.hid.TrackersHID
 import dev.slimevr.tracking.trackers.Tracker
-import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
-import dev.slimevr.tracking.trackers.udp.UDPDevice
 import io.eiren.util.OperatingSystem
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
@@ -136,11 +134,6 @@ fun main(args: Array<String>) {
 		Keybinding(vrServer)
 		val scanner = thread {
 			while (true) {
-				if (readln() == "mag") {
-					val device = vrServer.deviceManager.devices.first { it is UDPDevice }
-					device.setMag(device.trackers[0]?.magStatus != MagnetometerStatus.ENABLED)
-					continue
-				}
 				if (readln() == "exit") {
 					vrServer.interrupt()
 					break

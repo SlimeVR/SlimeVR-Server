@@ -14,7 +14,7 @@ class UDPDevice(
 	override val hardwareIdentifier: String,
 	override val boardType: BoardType = BoardType.UNKNOWN,
 	override val mcuType: MCUType = MCUType.UNKNOWN,
-) : Device() {
+) : Device(true) {
 
 	override val id: Int = nextLocalDeviceId.incrementAndGet()
 
@@ -54,16 +54,14 @@ class UDPDevice(
 	var timedOut = false
 	override val trackers = ConcurrentHashMap<Int, Tracker>()
 
-	override fun setMag(state: Boolean, sensorId: Int) {
+	override suspend fun setMag(state: Boolean, sensorId: Int) {
 		if (sensorId == 255) {
-			VRServer.instance.trackersServer.setConfigFlag(this, ConfigTypeId(1u), state, {
-				trackers.forEach { (_, t) -> t.setMagPrivate(state) }
-			})
+			VRServer.instance.trackersServer.setConfigFlag(this, ConfigTypeId(1u), state)
+			trackers.forEach { (_, t) -> t.setMagPrivate(state) }
 		} else {
 			require(trackers[sensorId] != null) { "There is no tracker $sensorId in device ${toString()}" }
-			VRServer.instance.trackersServer.setConfigFlag(this, ConfigTypeId(1u), state, {
-				trackers[sensorId]!!.setMagPrivate(state)
-			}, sensorId)
+			VRServer.instance.trackersServer.setConfigFlag(this, ConfigTypeId(1u), state, sensorId)
+			trackers[sensorId]!!.setMagPrivate(state)
 		}
 	}
 

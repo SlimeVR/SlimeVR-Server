@@ -105,6 +105,8 @@ enum class MagnetometerStatus {
 	ENABLED,
 	;
 
+	fun getSolarType(): Int = this.ordinal
+
 	companion object {
 		private val byId = entries.associateBy { it.ordinal.toUByte() }
 

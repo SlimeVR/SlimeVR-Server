@@ -277,6 +277,18 @@ export function TrackerSettingsPage() {
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">
+                {l10n.getString('tracker-infos-magnetometer')}
+              </Typography>
+              <Typography>
+                {tracker?.tracker.info?.magnetometer === undefined
+                  ? '--'
+                  : l10n.getString('tracker-infos-magnetometer-status', {
+                      status: tracker.tracker.info.magnetometer,
+                    })}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
                 {l10n.getString('tracker-infos-network_version')}
               </Typography>
               <Typography>

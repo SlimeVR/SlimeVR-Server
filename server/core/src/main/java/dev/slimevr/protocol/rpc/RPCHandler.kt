@@ -2,9 +2,11 @@ package dev.slimevr.protocol.rpc
 
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.autobone.errors.BodyProportionError
+import dev.slimevr.config.config
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.ProtocolHandler
+import dev.slimevr.protocol.datafeed.DataFeedBuilder
 import dev.slimevr.protocol.rpc.autobone.RPCAutoBoneHandler
 import dev.slimevr.protocol.rpc.reset.RPCResetHandler
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler
@@ -20,33 +22,16 @@ import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByBodyPart
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.datatypes.TransactionId
-import solarxr_protocol.rpc.AssignTrackerRequest
-import solarxr_protocol.rpc.ChangeSkeletonConfigRequest
-import solarxr_protocol.rpc.ClearDriftCompensationRequest
-import solarxr_protocol.rpc.ClearMountingResetRequest
-import solarxr_protocol.rpc.HeightResponse
-import solarxr_protocol.rpc.LegTweaksTmpChange
-import solarxr_protocol.rpc.LegTweaksTmpClear
-import solarxr_protocol.rpc.OverlayDisplayModeChangeRequest
-import solarxr_protocol.rpc.OverlayDisplayModeResponse
-import solarxr_protocol.rpc.RecordBVHRequest
-import solarxr_protocol.rpc.RecordBVHStatus
-import solarxr_protocol.rpc.ResetRequest
-import solarxr_protocol.rpc.ResetType
-import solarxr_protocol.rpc.RpcMessage
-import solarxr_protocol.rpc.RpcMessageHeader
-import solarxr_protocol.rpc.ServerInfosResponse
-import solarxr_protocol.rpc.SetPauseTrackingRequest
-import solarxr_protocol.rpc.SkeletonConfigRequest
-import solarxr_protocol.rpc.SkeletonResetAllRequest
-import solarxr_protocol.rpc.StatusSystemRequest
-import solarxr_protocol.rpc.StatusSystemResponse
-import solarxr_protocol.rpc.StatusSystemResponseT
+import solarxr_protocol.rpc.*
 
 class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeader>() {
 	private var currTransactionId: Long = 0
+	private val mainScope = CoroutineScope(SupervisorJob())
 
 	init {
 		RPCResetHandler(this, api)
@@ -476,6 +461,72 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			)
 		fbb.finish(createRPCMessage(fbb, RpcMessage.HeightResponse, response))
 		conn.send(fbb.dataBuffer())
+	}
+
+	fun onMagToggleRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val req = messageHeader
+			.message(MagToggleRequest()) as? MagToggleRequest ?: return
+		val fbb = FlatBufferBuilder(32)
+
+		if (req.trackerId() == null) {
+			val response = MagToggleResponse.createMagToggleResponse(
+				fbb,
+				0,
+				api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers,
+			)
+			fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+			conn.send(fbb.dataBuffer())
+			return
+		}
+
+		val tracker = api.server.getTrackerById(req.trackerId().unpack()) ?: return
+		val trackerId = DataFeedBuilder.createTrackerId(fbb, tracker)
+		val response = MagToggleResponse.createMagToggleResponse(
+			fbb,
+			trackerId,
+			api.server.configManager.vrConfig.getTracker(tracker).shouldHaveMagEnabled == true,
+		)
+		fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+		conn.send(fbb.dataBuffer())
+	}
+
+	fun onChangeMagToggleRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val req = messageHeader
+			.message(ChangeMagToggleRequest()) as? ChangeMagToggleRequest ?: return
+
+		if (req.trackerId() == null) {
+			mainScope.launch {
+				api.server.configManager.vrConfig.server.defineMagOnAllTrackers(req.enable())
+
+				val fbb = FlatBufferBuilder(32)
+				val response = MagToggleResponse.createMagToggleResponse(
+					fbb,
+					0,
+					api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers,
+				)
+				fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+				conn.send(fbb.dataBuffer())
+			}
+			return
+		}
+
+		val tracker = api.server.getTrackerById(req.trackerId().unpack()) ?: return
+		if (tracker.device == null || tracker.config.shouldHaveMagEnabled == req.enable()) return
+		mainScope.launch {
+			val state = req.enable()
+			tracker.config.shouldHaveMagEnabled = state
+			tracker.device.setMag(state, tracker.trackerNum)
+
+			val fbb = FlatBufferBuilder(32)
+			val trackerId = DataFeedBuilder.createTrackerId(fbb, tracker)
+			val response = MagToggleResponse.createMagToggleResponse(
+				fbb,
+				trackerId,
+				state,
+			)
+			fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+			conn.send(fbb.dataBuffer())
+		}
 	}
 
 	companion object {
