@@ -73,7 +73,10 @@ export function ManualMountingPage() {
     (role: BodyPart) => {
       const trackers = trackerPartGrouped[role] || [];
       if (!trackers.length || role === BodyPart.NONE) return undefined;
-      return QuaternionFromQuatT(trackers[0].tracker.info?.mountingOrientation);
+      const mountingOrientation = trackers[0].tracker.info?.mountingOrientation;
+      return mountingOrientation
+        ? QuaternionFromQuatT(mountingOrientation)
+        : undefined;
     },
     [trackerPartGrouped]
   );
