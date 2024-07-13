@@ -20,10 +20,6 @@ class IKChain(
 	val baseConstraint: Tracker?,
 	val tailConstraint: Tracker?,
 ) {
-	companion object {
-		const val CENTROID_PULL_ADJUSTMENT = 0.01f
-	}
-
 	// State variables
 	private val computedBasePosition = baseConstraint?.let { IKConstraint(it) }
 	private val computedTailPosition = tailConstraint?.let { IKConstraint(it) }
@@ -42,7 +38,7 @@ class IKChain(
 			val currentBone = bones[i]
 
 			// Get the local position of the end effector and the target relative to the current node
-			val endEffectorLocal = (bones.last().getTailPosition() - currentBone.getPosition()).unit()
+			val endEffectorLocal = (getEndEffectorsAvg() - currentBone.getPosition()).unit()
 			val targetLocal = (target - currentBone.getPosition()).unit()
 
 			// Compute the axis of rotation and angle for this bone
@@ -57,6 +53,17 @@ class IKChain(
 
 			setBoneRotation(currentBone, correctedRot)
 		}
+	}
+
+	private fun getEndEffectorsAvg(): Vector3 {
+		if (children.size == 0) return bones.last().getTailPosition()
+
+		var sum = Vector3.NULL
+		for (c in children) {
+			sum += c.getEndEffectorsAvg()
+		}
+
+		return sum / children.size.toFloat()
 	}
 
 	private fun getWeightedChildTarget(): Vector3 {
@@ -76,9 +83,10 @@ class IKChain(
 	fun resetChain() {
 		distToTargetSqr = Float.POSITIVE_INFINITY
 		centroidWeight = 1f
+		val lockedReduction = if (locked)IKSolver.LOCKED_REDUCTION else 1f
 
 		for (bone in bones) {
-			if (loosens > 0) bone.rotationConstraint.tolerance -= IKSolver.TOLERANCE_STEP
+			if (loosens > 0) bone.rotationConstraint.tolerance -= IKSolver.TOLERANCE_STEP * lockedReduction
 			bone.rotationConstraint.originalRotation = bone.getGlobalRotation()
 		}
 		loosens -= if (loosens > 0) 1 else 0
@@ -94,32 +102,13 @@ class IKChain(
 	}
 
 	/**
-	 * Prevent deadlocks where the centroid becomes stuck
-	 * due to two or more chains pulling equally on the centroid
-	 */
-	fun updateChildCentroidWeight() {
-		if (children.size <= 1) return
-
-		var closestToSolved = children.first()
-		for (child in children) {
-			if (child.distToTargetSqr < closestToSolved.distToTargetSqr) {
-				closestToSolved = child
-			}
-		}
-
-		if (closestToSolved.centroidWeight > CENTROID_PULL_ADJUSTMENT) {
-			closestToSolved.centroidWeight -= CENTROID_PULL_ADJUSTMENT
-		}
-	}
-
-	/**
 	 * Allow constrained bones to deviate more
 	 */
 	fun decreaseConstraints() {
-		if (locked) return
+		val lockedReduction = if (locked)IKSolver.LOCKED_REDUCTION else 1f
 		loosens++
 		for (bone in bones) {
-			bone.rotationConstraint.tolerance += IKSolver.TOLERANCE_STEP
+			bone.rotationConstraint.tolerance += IKSolver.TOLERANCE_STEP * lockedReduction
 		}
 	}
 
