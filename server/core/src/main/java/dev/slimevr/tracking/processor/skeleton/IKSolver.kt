@@ -12,11 +12,12 @@ import dev.slimevr.tracking.trackers.Tracker
 class IKSolver(private val root: Bone) {
 	companion object {
 		const val TOLERANCE_SQR = 1e-8 // == 0.01 cm
-		const val MAX_ITERATIONS = 200
+		const val MAX_ITERATIONS = 100
 		const val ITERATIONS_BEFORE_STEP = 20
 		const val ITERATIONS_BETWEEN_STEP = 10
-		const val MAX_LOOSENS = 20
-		const val TOLERANCE_STEP = 0.2f
+		const val MAX_LOOSENS = 40
+		const val TOLERANCE_STEP = 0.5f
+		const val LOCKED_REDUCTION = 0.1f
 	}
 
 	var enabled = true
@@ -240,10 +241,6 @@ class IKSolver(private val root: Bone) {
 			if (solved) break
 
 			if (i > ITERATIONS_BEFORE_STEP && i % ITERATIONS_BETWEEN_STEP == 0) {
-				// Help the chains out of a deadlock
-				for (chain in chainList) {
-					chain.updateChildCentroidWeight()
-				}
 				loosenConstraints()
 			}
 		}
