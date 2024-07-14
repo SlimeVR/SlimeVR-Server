@@ -1224,6 +1224,14 @@ class HumanSkeleton(
 		legTweaks.enabled = value
 	}
 
+	/**
+	 * enable/disable IK solver (for Autobone)
+	 */
+	@VRServerThread
+	fun setIKSolverEnabled(value: Boolean) {
+		ikSolver.enabled = value
+	}
+
 	@VRServerThread
 	fun setFloorclipEnabled(value: Boolean) {
 		humanPoseManager.setToggle(SkeletonConfigToggles.FLOOR_CLIP, value)
