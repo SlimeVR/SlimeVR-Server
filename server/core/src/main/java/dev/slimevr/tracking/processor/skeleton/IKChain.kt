@@ -56,7 +56,7 @@ class IKChain(
 	}
 
 	private fun getEndEffectorsAvg(): Vector3 {
-		if (children.size == 0) return bones.last().getTailPosition()
+		if (children.size <= 1 || computedTailPosition != null) return bones.last().getTailPosition()
 
 		var sum = Vector3.NULL
 		for (c in children) {
