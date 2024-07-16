@@ -13,7 +13,6 @@ import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
-import kotlin.math.*
 import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2_000L
@@ -68,6 +67,7 @@ class Tracker @JvmOverloads constructor(
 	val isHmd: Boolean = false,
 	val hasFlexResistance: Boolean = false,
 	val hasFlexAngle: Boolean = false,
+	val flexSupport: FlexSupport = FlexSupport.NONE,
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()

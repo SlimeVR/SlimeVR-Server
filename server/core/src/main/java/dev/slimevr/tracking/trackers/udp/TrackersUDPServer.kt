@@ -3,8 +3,7 @@ package dev.slimevr.tracking.trackers.udp
 import com.jme3.math.FastMath
 import dev.slimevr.NetworkProtocol
 import dev.slimevr.VRServer
-import dev.slimevr.tracking.trackers.Tracker
-import dev.slimevr.tracking.trackers.TrackerStatus
+import dev.slimevr.tracking.trackers.*
 import io.eiren.util.Util
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
@@ -161,7 +160,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						imu type: ${handshake.imuType},
 						firmware: ${handshake.firmware} (${connection.firmwareBuild}),
 						mac: ${handshake.macString},
-						name: ${connection.name}
+						name: ${connection.name},
+						trackerPosition: ${handshake.trackerPosition},
+						flexSupport: ${handshake.flexSupport}
 						""".trimIndent(),
 					)
 			}
@@ -169,7 +170,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				// Set up new sensor for older firmware.
 				// Firmware after 7 should send sensor status packet and sensor
 				// will be created when it's received
-				setUpSensor(connection, 0, handshake.imuType, 1)
+				setUpSensor(connection, 0, handshake.imuType, 1, handshake.trackerPosition, handshake.flexSupport)
 			}
 			connection
 		}
@@ -180,7 +181,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		socket.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
 	}
 
-	private fun setUpSensor(connection: UDPDevice, trackerId: Int, sensorType: IMUType, sensorStatus: Int) {
+	private fun setUpSensor(connection: UDPDevice, trackerId: Int, sensorType: IMUType, sensorStatus: Int, trackerPosition: TrackerPosition?, flexSupport: FlexSupport) {
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
@@ -194,7 +195,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				VRServer.getNextLocalTrackerId(),
 				connection.name + "/" + trackerId,
 				"IMU Tracker $formattedHWID",
-				null,
+				trackerPosition,
 				trackerNum = trackerId,
 				hasRotation = true,
 				hasAcceleration = true,
@@ -204,10 +205,11 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				needsReset = true,
 				needsMounting = true,
 				usesTimeout = true,
+				flexSupport = flexSupport,
 			)
 			connection.trackers[trackerId] = imuTracker
 			trackersConsumer.accept(imuTracker)
-			LogManager.info("[TrackerServer] Added sensor $trackerId for ${connection.name}, type $sensorType")
+			LogManager.info("[TrackerServer] Added sensor $trackerId for ${connection.name}, type $sensorType, trackerPosition $trackerPosition, flexSupport $flexSupport")
 		}
 		val status = UDPPacket15SensorInfo.getStatus(sensorStatus)
 		if (status != null) imuTracker.status = status
@@ -402,7 +404,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 
 			is UDPPacket15SensorInfo -> {
 				if (connection == null) return
-				setUpSensor(connection, packet.sensorId, packet.sensorType, packet.sensorStatus)
+				setUpSensor(connection, packet.sensorId, packet.sensorType, packet.sensorStatus, packet.trackerPosition, packet.flexSupport)
 				// Send ack
 				bb.limit(bb.capacity())
 				bb.rewind()
@@ -469,17 +471,14 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				connection.firmwareFeatures = packet.firmwareFeatures
 			}
 
-			is UDPPacket24FlexResistance -> {
+			is UDPPacket24FlexData -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				tracker.trackerFlexHandler.setFlexResistance(packet.resistance)
-				tracker.dataTick()
-			}
-
-			is UDPPacket25FlexAngle -> {
-				tracker = connection?.getTracker(packet.sensorId)
-				if (tracker == null) return
-				tracker.trackerFlexHandler.setFlexAngle(packet.angle)
+				if (tracker.flexSupport == FlexSupport.RESISTANCE) {
+					tracker.trackerFlexHandler.setFlexResistance(packet.flexData)
+				} else if (tracker.flexSupport == FlexSupport.ANGLE) {
+					tracker.trackerFlexHandler.setFlexAngle(packet.flexData)
+				}
 				tracker.dataTick()
 			}
 

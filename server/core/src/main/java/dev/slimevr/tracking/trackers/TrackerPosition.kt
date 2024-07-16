@@ -13,59 +13,60 @@ enum class TrackerPosition(
 	val designation: String,
 	val trackerRole: TrackerRole?,
 	val bodyPart: Int,
+	val id: Int,
 ) {
 	// If updating BodyPart of a TrackerRole,
 	// please also update SteamVRBridge#updateShareSettingsAutomatically()
-	HEAD("body:head", TrackerRole.HMD, BodyPart.HEAD),
-	NECK("body:neck", TrackerRole.NECK, BodyPart.NECK),
-	UPPER_CHEST("body:upper_chest", TrackerRole.CHEST, BodyPart.UPPER_CHEST),
-	CHEST("body:chest", null, BodyPart.CHEST),
-	WAIST("body:waist", null, BodyPart.WAIST),
-	HIP("body:hip", TrackerRole.WAIST, BodyPart.HIP),
-	LEFT_UPPER_LEG("body:left_upper_leg", TrackerRole.LEFT_KNEE, BodyPart.LEFT_UPPER_LEG),
-	RIGHT_UPPER_LEG("body:right_upper_leg", TrackerRole.RIGHT_KNEE, BodyPart.RIGHT_UPPER_LEG),
-	LEFT_LOWER_LEG("body:left_lower_leg", null, BodyPart.LEFT_LOWER_LEG),
-	RIGHT_LOWER_LEG("body:right_lower_leg", null, BodyPart.RIGHT_LOWER_LEG),
-	LEFT_FOOT("body:left_foot", TrackerRole.LEFT_FOOT, BodyPart.LEFT_FOOT),
-	RIGHT_FOOT("body:right_foot", TrackerRole.RIGHT_FOOT, BodyPart.RIGHT_FOOT),
-	LEFT_LOWER_ARM("body:left_lower_arm", null, BodyPart.LEFT_LOWER_ARM),
-	RIGHT_LOWER_ARM("body:right_lower_arm", null, BodyPart.RIGHT_LOWER_ARM),
-	LEFT_UPPER_ARM("body:left_upper_arm", TrackerRole.LEFT_ELBOW, BodyPart.LEFT_UPPER_ARM),
-	RIGHT_UPPER_ARM("body:right_upper_arm", TrackerRole.RIGHT_ELBOW, BodyPart.RIGHT_UPPER_ARM),
-	LEFT_HAND("body:left_hand", TrackerRole.LEFT_HAND, BodyPart.LEFT_HAND),
-	RIGHT_HAND("body:right_hand", TrackerRole.RIGHT_HAND, BodyPart.RIGHT_HAND),
-	LEFT_SHOULDER("body:left_shoulder", TrackerRole.LEFT_SHOULDER, BodyPart.LEFT_SHOULDER),
-	RIGHT_SHOULDER("body:right_shoulder", TrackerRole.RIGHT_SHOULDER, BodyPart.RIGHT_SHOULDER),
-	LEFT_THUMB_PROXIMAL("body:left_thumb_proximal", null, BodyPart.LEFT_THUMB_PROXIMAL),
-	LEFT_THUMB_INTERMEDIATE("body:left_thumb_intermediate", null, BodyPart.LEFT_THUMB_INTERMEDIATE),
-	LEFT_THUMB_DISTAL("body:left_thumb_distal", null, BodyPart.LEFT_THUMB_DISTAL),
-	LEFT_INDEX_PROXIMAL("body:left_index_proximal", null, BodyPart.LEFT_INDEX_PROXIMAL),
-	LEFT_INDEX_INTERMEDIATE("body:left_index_intermediate", null, BodyPart.LEFT_INDEX_INTERMEDIATE),
-	LEFT_INDEX_DISTAL("body:left_index_distal", null, BodyPart.LEFT_INDEX_DISTAL),
-	LEFT_MIDDLE_PROXIMAL("body:left_middle_proximal", null, BodyPart.LEFT_MIDDLE_PROXIMAL),
-	LEFT_MIDDLE_INTERMEDIATE("body:left_middle_intermediate", null, BodyPart.LEFT_MIDDLE_INTERMEDIATE),
-	LEFT_MIDDLE_DISTAL("body:left_middle_distal", null, BodyPart.LEFT_MIDDLE_DISTAL),
-	LEFT_RING_PROXIMAL("body:left_ring_proximal", null, BodyPart.LEFT_RING_PROXIMAL),
-	LEFT_RING_INTERMEDIATE("body:left_ring_intermediate", null, BodyPart.LEFT_RING_INTERMEDIATE),
-	LEFT_RING_DISTAL("body:left_ring_distal", null, BodyPart.LEFT_RING_DISTAL),
-	LEFT_LITTLE_PROXIMAL("body:left_little_proximal", null, BodyPart.LEFT_LITTLE_PROXIMAL),
-	LEFT_LITTLE_INTERMEDIATE("body:left_little_intermediate", null, BodyPart.LEFT_LITTLE_INTERMEDIATE),
-	LEFT_LITTLE_DISTAL("body:left_little_distal", null, BodyPart.LEFT_LITTLE_DISTAL),
-	RIGHT_THUMB_PROXIMAL("body:right_thumb_proximal", null, BodyPart.RIGHT_THUMB_PROXIMAL),
-	RIGHT_THUMB_INTERMEDIATE("body:right_thumb_intermediate", null, BodyPart.RIGHT_THUMB_INTERMEDIATE),
-	RIGHT_THUMB_DISTAL("body:right_thumb_distal", null, BodyPart.RIGHT_THUMB_DISTAL),
-	RIGHT_INDEX_PROXIMAL("body:right_index_proximal", null, BodyPart.RIGHT_INDEX_PROXIMAL),
-	RIGHT_INDEX_INTERMEDIATE("body:right_index_intermediate", null, BodyPart.RIGHT_INDEX_INTERMEDIATE),
-	RIGHT_INDEX_DISTAL("body:right_index_distal", null, BodyPart.RIGHT_INDEX_DISTAL),
-	RIGHT_MIDDLE_PROXIMAL("body:right_middle_proximal", null, BodyPart.RIGHT_MIDDLE_PROXIMAL),
-	RIGHT_MIDDLE_INTERMEDIATE("body:right_middle_intermediate", null, BodyPart.RIGHT_MIDDLE_INTERMEDIATE),
-	RIGHT_MIDDLE_DISTAL("body:right_middle_distal", null, BodyPart.RIGHT_MIDDLE_DISTAL),
-	RIGHT_RING_PROXIMAL("body:right_ring_proximal", null, BodyPart.RIGHT_RING_PROXIMAL),
-	RIGHT_RING_INTERMEDIATE("body:right_ring_intermediate", null, BodyPart.RIGHT_RING_INTERMEDIATE),
-	RIGHT_RING_DISTAL("body:right_ring_distal", null, BodyPart.RIGHT_RING_DISTAL),
-	RIGHT_LITTLE_PROXIMAL("body:right_little_proximal", null, BodyPart.RIGHT_LITTLE_PROXIMAL),
-	RIGHT_LITTLE_INTERMEDIATE("body:right_little_intermediate", null, BodyPart.RIGHT_LITTLE_INTERMEDIATE),
-	RIGHT_LITTLE_DISTAL("body:right_little_distal", null, BodyPart.RIGHT_LITTLE_DISTAL),
+	HEAD("body:head", TrackerRole.HMD, BodyPart.HEAD, 1),
+	NECK("body:neck", TrackerRole.NECK, BodyPart.NECK, 2),
+	UPPER_CHEST("body:upper_chest", TrackerRole.CHEST, BodyPart.UPPER_CHEST, 3),
+	CHEST("body:chest", null, BodyPart.CHEST, 4),
+	WAIST("body:waist", null, BodyPart.WAIST, 5),
+	HIP("body:hip", TrackerRole.WAIST, BodyPart.HIP, 6),
+	LEFT_UPPER_LEG("body:left_upper_leg", TrackerRole.LEFT_KNEE, BodyPart.LEFT_UPPER_LEG, 7),
+	RIGHT_UPPER_LEG("body:right_upper_leg", TrackerRole.RIGHT_KNEE, BodyPart.RIGHT_UPPER_LEG, 8),
+	LEFT_LOWER_LEG("body:left_lower_leg", null, BodyPart.LEFT_LOWER_LEG, 9),
+	RIGHT_LOWER_LEG("body:right_lower_leg", null, BodyPart.RIGHT_LOWER_LEG, 10),
+	LEFT_FOOT("body:left_foot", TrackerRole.LEFT_FOOT, BodyPart.LEFT_FOOT, 11),
+	RIGHT_FOOT("body:right_foot", TrackerRole.RIGHT_FOOT, BodyPart.RIGHT_FOOT, 12),
+	LEFT_LOWER_ARM("body:left_lower_arm", null, BodyPart.LEFT_LOWER_ARM, 13),
+	RIGHT_LOWER_ARM("body:right_lower_arm", null, BodyPart.RIGHT_LOWER_ARM, 14),
+	LEFT_UPPER_ARM("body:left_upper_arm", TrackerRole.LEFT_ELBOW, BodyPart.LEFT_UPPER_ARM, 15),
+	RIGHT_UPPER_ARM("body:right_upper_arm", TrackerRole.RIGHT_ELBOW, BodyPart.RIGHT_UPPER_ARM, 16),
+	LEFT_HAND("body:left_hand", TrackerRole.LEFT_HAND, BodyPart.LEFT_HAND, 17),
+	RIGHT_HAND("body:right_hand", TrackerRole.RIGHT_HAND, BodyPart.RIGHT_HAND, 18),
+	LEFT_SHOULDER("body:left_shoulder", TrackerRole.LEFT_SHOULDER, BodyPart.LEFT_SHOULDER, 19),
+	RIGHT_SHOULDER("body:right_shoulder", TrackerRole.RIGHT_SHOULDER, BodyPart.RIGHT_SHOULDER, 20),
+	LEFT_THUMB_PROXIMAL("body:left_thumb_proximal", null, BodyPart.LEFT_THUMB_PROXIMAL, 21),
+	LEFT_THUMB_INTERMEDIATE("body:left_thumb_intermediate", null, BodyPart.LEFT_THUMB_INTERMEDIATE, 22),
+	LEFT_THUMB_DISTAL("body:left_thumb_distal", null, BodyPart.LEFT_THUMB_DISTAL, 23),
+	LEFT_INDEX_PROXIMAL("body:left_index_proximal", null, BodyPart.LEFT_INDEX_PROXIMAL, 24),
+	LEFT_INDEX_INTERMEDIATE("body:left_index_intermediate", null, BodyPart.LEFT_INDEX_INTERMEDIATE, 25),
+	LEFT_INDEX_DISTAL("body:left_index_distal", null, BodyPart.LEFT_INDEX_DISTAL, 26),
+	LEFT_MIDDLE_PROXIMAL("body:left_middle_proximal", null, BodyPart.LEFT_MIDDLE_PROXIMAL, 27),
+	LEFT_MIDDLE_INTERMEDIATE("body:left_middle_intermediate", null, BodyPart.LEFT_MIDDLE_INTERMEDIATE, 28),
+	LEFT_MIDDLE_DISTAL("body:left_middle_distal", null, BodyPart.LEFT_MIDDLE_DISTAL, 29),
+	LEFT_RING_PROXIMAL("body:left_ring_proximal", null, BodyPart.LEFT_RING_PROXIMAL, 30),
+	LEFT_RING_INTERMEDIATE("body:left_ring_intermediate", null, BodyPart.LEFT_RING_INTERMEDIATE, 31),
+	LEFT_RING_DISTAL("body:left_ring_distal", null, BodyPart.LEFT_RING_DISTAL, 32),
+	LEFT_LITTLE_PROXIMAL("body:left_little_proximal", null, BodyPart.LEFT_LITTLE_PROXIMAL, 33),
+	LEFT_LITTLE_INTERMEDIATE("body:left_little_intermediate", null, BodyPart.LEFT_LITTLE_INTERMEDIATE, 34),
+	LEFT_LITTLE_DISTAL("body:left_little_distal", null, BodyPart.LEFT_LITTLE_DISTAL, 35),
+	RIGHT_THUMB_PROXIMAL("body:right_thumb_proximal", null, BodyPart.RIGHT_THUMB_PROXIMAL, 36),
+	RIGHT_THUMB_INTERMEDIATE("body:right_thumb_intermediate", null, BodyPart.RIGHT_THUMB_INTERMEDIATE, 37),
+	RIGHT_THUMB_DISTAL("body:right_thumb_distal", null, BodyPart.RIGHT_THUMB_DISTAL, 38),
+	RIGHT_INDEX_PROXIMAL("body:right_index_proximal", null, BodyPart.RIGHT_INDEX_PROXIMAL, 39),
+	RIGHT_INDEX_INTERMEDIATE("body:right_index_intermediate", null, BodyPart.RIGHT_INDEX_INTERMEDIATE, 40),
+	RIGHT_INDEX_DISTAL("body:right_index_distal", null, BodyPart.RIGHT_INDEX_DISTAL, 41),
+	RIGHT_MIDDLE_PROXIMAL("body:right_middle_proximal", null, BodyPart.RIGHT_MIDDLE_PROXIMAL, 42),
+	RIGHT_MIDDLE_INTERMEDIATE("body:right_middle_intermediate", null, BodyPart.RIGHT_MIDDLE_INTERMEDIATE, 43),
+	RIGHT_MIDDLE_DISTAL("body:right_middle_distal", null, BodyPart.RIGHT_MIDDLE_DISTAL, 44),
+	RIGHT_RING_PROXIMAL("body:right_ring_proximal", null, BodyPart.RIGHT_RING_PROXIMAL, 45),
+	RIGHT_RING_INTERMEDIATE("body:right_ring_intermediate", null, BodyPart.RIGHT_RING_INTERMEDIATE, 46),
+	RIGHT_RING_DISTAL("body:right_ring_distal", null, BodyPart.RIGHT_RING_DISTAL, 47),
+	RIGHT_LITTLE_PROXIMAL("body:right_little_proximal", null, BodyPart.RIGHT_LITTLE_PROXIMAL, 48),
+	RIGHT_LITTLE_INTERMEDIATE("body:right_little_intermediate", null, BodyPart.RIGHT_LITTLE_INTERMEDIATE, 49),
+	RIGHT_LITTLE_DISTAL("body:right_little_distal", null, BodyPart.RIGHT_LITTLE_DISTAL, 50),
 	;
 
 	/**
@@ -104,6 +105,7 @@ enum class TrackerPosition(
 				this[position.bodyPart] = position
 			}
 		}
+		private val byId = entries.associateBy { it.id }
 		private val byDesignation = entries.associateBy { it.designation.lowercase() }
 		private val byTrackerRole = entries.filter { it.trackerRole != null }.associateBy { it.trackerRole!! }
 
@@ -130,5 +132,11 @@ enum class TrackerPosition(
 
 		@JvmStatic
 		fun getByBodyPart(bodyPart: Int): TrackerPosition? = byBodyPart[bodyPart]
+
+		@JvmStatic
+		fun getById(id: Int): TrackerPosition? {
+			if (id == 0) return null
+			return byId[id]
+		}
 	}
 }

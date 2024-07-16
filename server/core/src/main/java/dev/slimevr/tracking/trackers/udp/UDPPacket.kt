@@ -1,5 +1,7 @@
 package dev.slimevr.tracking.trackers.udp
 
+import dev.slimevr.tracking.trackers.FlexSupport
+import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -98,6 +100,8 @@ data class UDPPacket3Handshake(
 	var firmwareBuild: Int = 0,
 	var firmware: String? = null,
 	var macString: String? = null,
+	var trackerPosition: TrackerPosition? = null,
+	var flexSupport: FlexSupport = FlexSupport.NONE,
 ) : UDPPacket(3) {
 	override fun readData(buf: ByteBuffer) {
 		if (buf.remaining() == 0) return
@@ -135,6 +139,8 @@ data class UDPPacket3Handshake(
 			)
 			if (macString == "00:00:00:00:00:00") macString = null
 		}
+		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.get().toInt())
+		if (buf.remaining() > 0) flexSupport = FlexSupport.getById(buf.get().toInt()) ?: FlexSupport.NONE
 	}
 
 	override fun writeData(buf: ByteBuffer) {
@@ -223,6 +229,8 @@ data class UDPPacket14Error(var errorNumber: Int = 0) :
 data class UDPPacket15SensorInfo(
 	var sensorStatus: Int = 0,
 	var sensorType: IMUType = IMUType.UNKNOWN,
+	var trackerPosition: TrackerPosition? = null,
+	var flexSupport: FlexSupport = FlexSupport.NONE,
 ) : UDPPacket(15),
 	SensorSpecificPacket {
 	override var sensorId = 0
@@ -233,6 +241,8 @@ data class UDPPacket15SensorInfo(
 			sensorType =
 				IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
 		}
+		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.get().toInt())
+		if (buf.remaining() > 0) flexSupport = FlexSupport.getById(buf.get().toInt()) ?: FlexSupport.NONE
 	}
 
 	companion object {
@@ -350,27 +360,15 @@ data class UDPPacket23RotationAndAcceleration(
 	}
 }
 
-data class UDPPacket24FlexResistance(
-	var resistance: Float = 0f,
+data class UDPPacket24FlexData(
+	var flexData: Float = 0f,
 ) : UDPPacket(24),
 	SensorSpecificPacket {
 
 	override var sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		sensorId = buf.get().toInt() and 0xFF
-		resistance = buf.getFloat()
-	}
-}
-
-data class UDPPacket25FlexAngle(
-	var angle: Float = 0f,
-) : UDPPacket(25),
-	SensorSpecificPacket {
-
-	override var sensorId = 0
-	override fun readData(buf: ByteBuffer) {
-		sensorId = buf.get().toInt() and 0xFF
-		angle = buf.getFloat()
+		flexData = buf.getFloat()
 	}
 }
 
