@@ -31,6 +31,7 @@ import {
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
 import { HandsWarningModal } from '@/components/settings/HandsWarningModal';
+import { MagnetometerToggleSetting } from './MagnetometerToggleSetting';
 
 interface SettingsForm {
   trackers: {
@@ -755,6 +756,7 @@ export function GeneralSettings() {
                 'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
               )}
             />
+            <MagnetometerToggleSetting settingType="general" />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout

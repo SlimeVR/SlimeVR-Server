@@ -33,6 +33,7 @@ import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMe
 import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
+import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -413,6 +414,13 @@ export function TrackerSettingsPage() {
                 />
               </div>
             </div>
+          )}
+          {tracker?.tracker.info?.isImu && (
+            <MagnetometerToggleSetting
+              settingType="tracker"
+              trackerNum={tracker.tracker.trackerId?.trackerNum}
+              deviceId={tracker.tracker.trackerId?.deviceId?.id}
+            />
           )}
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">

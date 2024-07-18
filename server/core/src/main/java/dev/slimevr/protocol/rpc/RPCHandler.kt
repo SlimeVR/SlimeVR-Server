@@ -182,6 +182,18 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 				messageHeader,
 			)
 		}
+
+		registerPacketListener(
+			RpcMessage.MagToggleRequest,
+		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
+			this.onMagToggleRequest(conn, messageHeader)
+		}
+
+		registerPacketListener(
+			RpcMessage.ChangeMagToggleRequest,
+		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
+			this.onChangeMagToggleRequest(conn, messageHeader)
+		}
 	}
 
 	private fun onServerInfosRequest(
@@ -484,7 +496,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val response = MagToggleResponse.createMagToggleResponse(
 			fbb,
 			trackerId,
-			api.server.configManager.vrConfig.getTracker(tracker).shouldHaveMagEnabled == true,
+			tracker.config.shouldHaveMagEnabled == true,
 		)
 		fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
 		conn.send(fbb.dataBuffer())
@@ -512,9 +524,11 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		val tracker = api.server.getTrackerById(req.trackerId().unpack()) ?: return
 		if (tracker.device == null || tracker.config.shouldHaveMagEnabled == req.enable()) return
+		val state = req.enable()
+		tracker.config.shouldHaveMagEnabled = state
+		// Don't apply magnetometer setting if use magnetometer global setting is not enabled
+		if (!api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers) return
 		mainScope.launch {
-			val state = req.enable()
-			tracker.config.shouldHaveMagEnabled = state
 			tracker.device.setMag(state, tracker.trackerNum)
 
 			val fbb = FlatBufferBuilder(32)
