@@ -65,9 +65,11 @@ class Tracker @JvmOverloads constructor(
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
 	val isHmd: Boolean = false,
-	val hasFlexResistance: Boolean = false,
-	val hasFlexAngle: Boolean = false,
-	val flexSupport: FlexSupport = FlexSupport.NONE,
+	/**
+	 * Rotation by default.
+	 * NOT the same as hasRotation (other data types emulate rotation)
+	 */
+	val trackerDataSupport: TrackerDataSupport = TrackerDataSupport.ROTATION,
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
@@ -397,7 +399,11 @@ class Tracker @JvmOverloads constructor(
 		this._acceleration = vec
 	}
 
-	fun isImu(): Boolean = imuType != null
+	/**
+	 * True if the raw rotation is coming directly from an IMU (no cameras or lighthouses)
+	 * For example, flex sensor trackers are not considered as IMU trackers (see trackerDataSupport)
+	 */
+	fun isImu(): Boolean = imuType != null && trackerDataSupport == TrackerDataSupport.ROTATION
 
 	/**
 	 * Gets the current TPS of the tracker

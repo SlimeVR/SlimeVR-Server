@@ -1,7 +1,6 @@
 package dev.slimevr.tracking.trackers
 
 import com.jme3.math.FastMath
-import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import kotlin.math.*
@@ -32,8 +31,6 @@ class TrackerFlexHandler(val tracker: Tracker) {
 	 * Sets the flex resistance which is then calculated into an angle
 	 */
 	fun setFlexResistance(resistance: Float) {
-		LogManager.debug("Test")
-
 		// Update min and max if needed
 		minResistance = min(minResistance, resistance)
 		maxResistance = max(maxResistance, resistance)

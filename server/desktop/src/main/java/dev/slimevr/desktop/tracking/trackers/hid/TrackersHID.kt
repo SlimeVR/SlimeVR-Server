@@ -19,7 +19,6 @@ import org.hid4java.event.HidServicesEvent
 import org.hid4java.jna.HidApi
 import org.hid4java.jna.HidDeviceInfoStructure
 import java.util.function.Consumer
-import kotlin.experimental.and
 
 private const val HID_TRACKER_RECEIVER_VID = 0x1209
 private const val HID_TRACKER_RECEIVER_PID = 0x7690

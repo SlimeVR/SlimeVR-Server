@@ -134,9 +134,6 @@ enum class TrackerPosition(
 		fun getByBodyPart(bodyPart: Int): TrackerPosition? = byBodyPart[bodyPart]
 
 		@JvmStatic
-		fun getById(id: Int): TrackerPosition? {
-			if (id == 0) return null
-			return byId[id]
-		}
+		fun getById(id: Int): TrackerPosition? = byId[id]
 	}
 }

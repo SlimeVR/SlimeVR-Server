@@ -1,6 +1,6 @@
 package dev.slimevr.tracking.trackers.udp
 
-import dev.slimevr.tracking.trackers.FlexSupport
+import dev.slimevr.tracking.trackers.TrackerDataSupport
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
 import io.github.axisangles.ktmath.Quaternion
@@ -101,7 +101,7 @@ data class UDPPacket3Handshake(
 	var firmware: String? = null,
 	var macString: String? = null,
 	var trackerPosition: TrackerPosition? = null,
-	var flexSupport: FlexSupport = FlexSupport.NONE,
+	var trackerDataSupport: TrackerDataSupport = TrackerDataSupport.ROTATION,
 ) : UDPPacket(3) {
 	override fun readData(buf: ByteBuffer) {
 		if (buf.remaining() == 0) return
@@ -139,8 +139,8 @@ data class UDPPacket3Handshake(
 			)
 			if (macString == "00:00:00:00:00:00") macString = null
 		}
-		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.get().toInt())
-		if (buf.remaining() > 0) flexSupport = FlexSupport.getById(buf.get().toInt()) ?: FlexSupport.NONE
+		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.int)
+		if (buf.remaining() > 0) trackerDataSupport = TrackerDataSupport.getById(buf.int) ?: TrackerDataSupport.ROTATION
 	}
 
 	override fun writeData(buf: ByteBuffer) {
@@ -230,7 +230,7 @@ data class UDPPacket15SensorInfo(
 	var sensorStatus: Int = 0,
 	var sensorType: IMUType = IMUType.UNKNOWN,
 	var trackerPosition: TrackerPosition? = null,
-	var flexSupport: FlexSupport = FlexSupport.NONE,
+	var trackerDataSupport: TrackerDataSupport = TrackerDataSupport.ROTATION,
 ) : UDPPacket(15),
 	SensorSpecificPacket {
 	override var sensorId = 0
@@ -241,8 +241,8 @@ data class UDPPacket15SensorInfo(
 			sensorType =
 				IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
 		}
-		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.get().toInt())
-		if (buf.remaining() > 0) flexSupport = FlexSupport.getById(buf.get().toInt()) ?: FlexSupport.NONE
+		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.int)
+		if (buf.remaining() > 0) trackerDataSupport = TrackerDataSupport.getById(buf.int) ?: TrackerDataSupport.ROTATION
 	}
 
 	companion object {
