@@ -252,7 +252,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 
 	private void createPipe() throws IOException {
 		try {
-			WinNT.SECURITY_DESCRIPTOR descriptor = new WinNT.SECURITY_DESCRIPTOR(1);
+			WinNT.SECURITY_DESCRIPTOR descriptor = new WinNT.SECURITY_DESCRIPTOR(64 * 1024);
 			adv32.InitializeSecurityDescriptor(descriptor, WinNT.SECURITY_DESCRIPTOR_REVISION);
 			adv32.SetSecurityDescriptorDacl(descriptor, true, null, false);
 			adv32
