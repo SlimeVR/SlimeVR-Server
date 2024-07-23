@@ -200,15 +200,10 @@ export default function App() {
 
   if (isTauri) {
     useEffect(() => {
-      os.type()
-        .then((type) => document.body.classList.add(type.toLowerCase()))
-        .catch(error);
+      const type = os.type();
+      document.body.classList.add(type.toLowerCase());
 
-      return () => {
-        os.type()
-          .then((type) => document.body.classList.remove(type.toLowerCase()))
-          .catch(error);
-      };
+      return () => document.body.classList.remove(type.toLowerCase());
     }, []);
   }
 

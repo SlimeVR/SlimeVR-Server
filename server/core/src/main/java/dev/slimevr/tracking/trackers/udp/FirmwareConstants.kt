@@ -12,6 +12,12 @@ enum class IMUType(val id: UInt) {
 	BMI160(8u),
 	ICM20948(9u),
 	ICM42688(10u),
+	BMI270(11u),
+	LSM6DS3TRC(12u),
+	LSM6DSV(13u),
+	LSM6DSO(14u),
+	LSM6DSR(15u),
+	DEV_RESERVED(250u),
 	;
 
 	fun getSolarType(): Int = this.id.toInt()
@@ -42,6 +48,8 @@ enum class BoardType(val id: UInt) {
 	WRANGLER(14u),
 	MOCOPI(15u),
 	WEMOSWROOM02(16u),
+	XIAO_ESP32C3(17u),
+	HARITORA(18u),
 	DEV_RESERVED(250u),
 	;
 
@@ -63,6 +71,8 @@ enum class BoardType(val id: UInt) {
 		WRANGLER -> "Wrangler Joycons"
 		MOCOPI -> "Sony Mocopi"
 		WEMOSWROOM02 -> "Wemos Wroom-02 D1 Mini"
+		XIAO_ESP32C3 -> "Seeed Studio XIAO ESP32C3"
+		HARITORA -> "Haritora"
 		DEV_RESERVED -> "Prototype"
 	}
 
@@ -83,6 +93,7 @@ enum class MCUType(val id: UInt) {
 	OWOTRACK_IOS(5u),
 	ESP32_C3(6u),
 	MOCOPI(7u),
+	HARITORA(8u),
 	DEV_RESERVED(250u),
 	;
 
