@@ -75,6 +75,7 @@ class WebSocketVRBridge(
 					userEditable = true,
 					isComputed = true,
 				)
+				hmdTracker!!.status = TrackerStatus.OK
 				hmdDevice.trackers[0] = hmdTracker!!
 				server.registerTracker(hmdTracker!!)
 			}
@@ -118,7 +119,7 @@ class WebSocketVRBridge(
 	override fun onMessage(conn: WebSocket, message: String) {
 		// LogManager.info(message);
 		try {
-			val json = mapper.nodeFactory.objectNode()
+			val json = mapper.readTree(message) as ObjectNode
 			if (json.has("type")) {
 				when (json["type"].asText()) {
 					"pos" -> {

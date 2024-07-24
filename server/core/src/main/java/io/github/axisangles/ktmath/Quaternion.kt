@@ -352,19 +352,20 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 
 	/**
 	 * Produces angles such that
-	 * Quaternion.fromRotationVector(angles[0]*axisA) * Quaternion.fromRotationVector(angles[1]*axisB)
+	 * Quaternion.fromRotationVector(angles[0]*axisA.unit()) * Quaternion.fromRotationVector(angles[1]*axisB.unit())
 	 * is as close to rot as possible
 	 */
 	fun biAlign(rot: Quaternion, axisA: Vector3, axisB: Vector3): FloatArray {
-		val aQ = axisA.dot(rot.xyz)
-		val bQ = axisA.dot(rot.xyz)
-		val abQ = axisA.cross(axisB).dot(rot.xyz)
+		val a = axisA.unit()
+		val b = axisB.unit()
 
-		val angleA = atan2(2 * (abQ * bQ + aQ * rot.w), abQ * abQ + aQ * aQ - bQ * bQ - rot.w * rot.w)
-		val cosA = cos(angleA / 2)
-		val sinA = sin(angleA / 2)
-		val angleB = 2 * atan2(aQ * cosA - rot.w * sinA, bQ * sinA - abQ * cosA)
+		val aQ = a.dot(rot.xyz)
+		val bQ = b.dot(rot.xyz)
+		val abQ = a.cross(b).dot(rot.xyz) - a.dot(b) * rot.w
 
+		val angleA = atan2(2f * (abQ * bQ + aQ * rot.w), rot.w * rot.w - aQ * aQ + bQ * bQ - abQ * abQ)
+		val angleB = atan2(2f * (abQ * aQ + bQ * rot.w), rot.w * rot.w + aQ * aQ - bQ * bQ - abQ * abQ)
+		
 		return floatArrayOf(angleA, angleB)
 	}
 

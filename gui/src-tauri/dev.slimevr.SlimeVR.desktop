@@ -1,13 +1,13 @@
 [Desktop Entry]
 Version=1.5
 Categories=Game;Development;GTK;
-Exec=slimevr
-Icon=dev.slimevr.SlimeVR
+Exec={{exec}}
+Icon={{icon}}
 
 Name=SlimeVR
 GenericName=Full-body tracking
 Comment=An app for facilitating full-body tracking in virtual reality
-Keywords=FBT
+Keywords=FBT;VR;Steam;VRChat;IMU
 
 Terminal=false
 Type=Application

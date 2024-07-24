@@ -1,9 +1,7 @@
 import classNames from 'classnames';
-import { useForm } from 'react-hook-form';
 import ReactModal from 'react-modal';
 import { BodyPart } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
-import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import { BodyAssignment } from '@/components/onboarding/BodyAssignment';
 import { useLocalization } from '@fluent/react';
@@ -11,6 +9,7 @@ import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { useChokerWarning } from '@/hooks/choker-warning';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { defaultConfig, useConfig } from '@/hooks/config';
+import { TrackerAssignOptions } from '@/components/onboarding/pages/trackers-assign/TrackerAssignOptions';
 
 export function SingleTrackerBodyAssignmentMenu({
   isOpen,
@@ -24,9 +23,6 @@ export function SingleTrackerBodyAssignmentMenu({
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { config } = useConfig();
-  const defaultValues = { advanced: false };
-  const { control, watch } = useForm<{ advanced: boolean }>({ defaultValues });
-  const { advanced } = watch();
 
   const { closeChokerWarning, tryOpenChokerWarning, shouldShowChokerWarn } =
     useChokerWarning({
@@ -41,7 +37,7 @@ export function SingleTrackerBodyAssignmentMenu({
         shouldCloseOnEsc
         onRequestClose={onClose}
         overlayClassName={classNames(
-          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20'
+          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-background-90 bg-opacity-90 z-20'
         )}
         className={classNames(
           'focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent outline-none mt-12 z-10 overflow-y-auto'
@@ -56,14 +52,6 @@ export function SingleTrackerBodyAssignmentMenu({
               <Typography color="secondary">
                 {l10n.getString('body_assignment_menu-description')}
               </Typography>
-              <CheckBox
-                control={control}
-                label={l10n.getString(
-                  'body_assignment_menu-show_advanced_locations'
-                )}
-                name="advanced"
-                variant="toggle"
-              ></CheckBox>
               <div className="flex">
                 <Button
                   variant="secondary"
@@ -73,13 +61,14 @@ export function SingleTrackerBodyAssignmentMenu({
                   {l10n.getString('body_assignment_menu-manage_trackers')}
                 </Button>
               </div>
+              <TrackerAssignOptions variant={isMobile ? 'dropdown' : 'radio'} />
             </div>
             <div className="flex flex-col xs:flex-grow gap-3 rounded-xl fill-background-50 py-2">
               <BodyAssignment
                 mirror={config?.mirrorView ?? defaultConfig.mirrorView}
                 width={isMobile ? 160 : undefined}
                 onlyAssigned={false}
-                advanced={advanced ?? defaultValues.advanced}
+                assignMode={config?.assignMode ?? defaultConfig.assignMode}
                 onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
               <div className="flex justify-center">
@@ -98,7 +87,7 @@ export function SingleTrackerBodyAssignmentMenu({
       <NeckWarningModal
         isOpen={shouldShowChokerWarn}
         overlayClassName={classNames(
-          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20'
+          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-background-90 bg-opacity-90 z-20'
         )}
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}

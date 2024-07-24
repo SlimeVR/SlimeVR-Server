@@ -57,7 +57,7 @@ export const FileInputInside = forwardRef<
       className={classNames(
         'flex justify-center w-full h-32 px-4 transition border-2',
         'border-background-20 border-dashed rounded-md appearance-none cursor-pointer',
-        'hover:border-background-40 focus:outline-none'
+        'hover:border-accent-background-20 focus:outline-none'
       )}
       onClick={() => typeof ref !== 'function' && ref?.current?.click()}
       onDragOver={(ev) => ev.preventDefault()}

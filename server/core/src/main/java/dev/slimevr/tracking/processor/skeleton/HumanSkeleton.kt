@@ -27,6 +27,7 @@ import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import java.lang.IllegalArgumentException
+import kotlin.properties.Delegates
 
 class HumanSkeleton(
 	val humanPoseManager: HumanPoseManager,
@@ -83,7 +84,12 @@ class HumanSkeleton(
 	var hasRightArmTracker = false
 
 	// Input trackers
-	var headTracker: Tracker? = null
+	var headTracker: Tracker? by Delegates.observable(null) { _, old, new ->
+		if (old == new) return@observable
+
+		humanPoseManager.checkReportMissingHmd()
+		humanPoseManager.checkTrackersRequiringReset()
+	}
 	var neckTracker: Tracker? = null
 	var upperChestTracker: Tracker? = null
 	var chestTracker: Tracker? = null
@@ -622,7 +628,11 @@ class HumanSkeleton(
 			val extendedPelvisRot = extendedPelvisYawRoll(leftLegRot, rightLegRot, hipRot)
 
 			// Interpolate between the hipRot and extendedPelvisRot
-			val newHipRot = hipRot.interpR(extendedPelvisRot, hipLegsAveraging)
+			val newHipRot = if (extendedPelvisRot.lenSq() != 0.0f) {
+				hipRot.interpR(extendedPelvisRot, hipLegsAveraging)
+			} else {
+				Quaternion.IDENTITY
+			}
 
 			// Set new hip rotation
 			hipBone.setRotation(newHipRot)
@@ -878,8 +888,8 @@ class HumanSkeleton(
 	fun updateNodeOffset(boneType: BoneType, offset: Vector3) {
 		var transOffset = offset
 
-		// If no head position + rotation, headShift == 0
-		if (boneType == BoneType.HEAD && (headTracker == null || !(headTracker!!.hasPosition && headTracker!!.hasRotation))) {
+		// If no head position, headShift and neckLength = 0
+		if (boneType == BoneType.HEAD || boneType == BoneType.NECK && (headTracker == null || !(headTracker!!.hasPosition && headTracker!!.hasRotation))) {
 			transOffset = NULL
 		}
 		// If trackingArmFromController, reverse

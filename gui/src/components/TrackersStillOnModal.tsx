@@ -24,7 +24,7 @@ export function TrackersStillOnModal({
   const { l10n } = useLocalization();
 
   return (
-    <BaseModal isOpen={isOpen} onRequestClose={cancel}>
+    <BaseModal isOpen={isOpen} onRequestClose={cancel} important>
       <div className="flex flex-col gap-3">
         <>
           <div className="flex flex-col items-center gap-3 fill-accent-background-20">

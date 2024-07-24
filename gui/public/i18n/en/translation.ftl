@@ -448,13 +448,21 @@ settings-general-interface-connected_trackers_warning-label = Connected trackers
 settings-general-interface-use_tray = Minimize to system tray
 settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bothering you.
 settings-general-interface-use_tray-label = Minimize to system tray
+settings-general-interface-discord_presence = Share activity on Discord
+settings-general-interface-discord_presence-description = Tells your Discord client that you are using SlimeVR along with the number of IMU trackers you are using.
+settings-general-interface-discord_presence-label = Share activity on Discord
+settings-general-interface-discord_presence-message = { $amount ->
+    [0] Sliming around
+    [one] Using 1 tracker
+    *[other] Using { $amount } trackers
+}
 
 ## Serial settings
 settings-serial = Serial Console
 # This cares about multilines
 settings-serial-description =
     This is a live information feed for serial communication.
-    May be useful if you need to know the firmware is acting up.
+    May be useful to debug firmware or hardware issues.
 settings-serial-connection_lost = Connection to serial lost, Reconnecting...
 settings-serial-reboot = Reboot
 settings-serial-factory_reset = Factory Reset
@@ -553,6 +561,9 @@ settings-osc-vmc-vrm-file_select = Drag & drop a model to use, or <u>browse</u>
 settings-osc-vmc-anchor_hip = Anchor at hips
 settings-osc-vmc-anchor_hip-description = Anchor the tracking at the hips, useful for seated VTubing. If disabling, load a VRM model.
 settings-osc-vmc-anchor_hip-label = Anchor at hips
+settings-osc-vmc-mirror_tracking = Mirror tracking
+settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
+settings-osc-vmc-mirror_tracking-label = Mirror tracking
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
@@ -677,6 +688,24 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
 onboarding-assign_trackers-mirror_view = Mirror view
+onboarding-assign_trackers-option-amount = { $trackersCount ->
+    [one] x{ $trackersCount }
+    *[other] x{ $trackersCount }
+}
+onboarding-assign_trackers-option-label = { $mode ->
+    [lower-body] Lower-Body Set
+    [core] Core Set
+    [enhanced-core] Enhanced Core Set
+    [full-body] Full-Body Set
+    *[all] All Trackers
+}
+onboarding-assign_trackers-option-description = { $mode ->
+    [lower-body] Minimum for VR full-body tracking
+    [core] + Enhanced spine tracking
+    [enhanced-core] + Foot rotation
+    [full-body] + Elbow tracking
+    *[all] All available tracker assignments
+}
 
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.
@@ -896,6 +925,7 @@ status_system-StatusSteamVRDisconnected = { $type ->
     [steamvr_feeder] Currently not connected to the SlimeVR Feeder App.
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
+status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
 
 ## Tray Menu
 tray_menu-show = Show
