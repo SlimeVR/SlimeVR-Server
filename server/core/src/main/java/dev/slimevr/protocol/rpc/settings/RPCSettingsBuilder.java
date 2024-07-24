@@ -10,10 +10,7 @@ import dev.slimevr.tracking.processor.config.SkeletonConfigToggles;
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues;
 import dev.slimevr.tracking.trackers.TrackerRole;
 import solarxr_protocol.rpc.*;
-import solarxr_protocol.rpc.settings.LegTweaksSettings;
-import solarxr_protocol.rpc.settings.ModelRatios;
-import solarxr_protocol.rpc.settings.ModelSettings;
-import solarxr_protocol.rpc.settings.ModelToggles;
+import solarxr_protocol.rpc.settings.*;
 
 
 public class RPCSettingsBuilder {
@@ -208,14 +205,19 @@ public class RPCSettingsBuilder {
 				fbb,
 				legTweaksConfig.getCorrectionStrength()
 			);
+		int skeletonConfigOffset = SkeletonHeight
+			.createSkeletonHeight(
+				fbb,
+				skeletonConfig.getHmdHeight(),
+				skeletonConfig.getFloorHeight()
+			);
 		return ModelSettings
 			.createModelSettings(
 				fbb,
 				togglesOffset,
 				ratiosOffset,
 				legTweaksOffset,
-				skeletonConfig.getHmdHeight(),
-				skeletonConfig.getFloorHeight()
+				skeletonConfigOffset
 			);
 	}
 

@@ -51,8 +51,8 @@ export function AutomaticProportionsPage() {
               variant={state.alonePage ? 'alone' : 'onboarding'}
               steps={[
                 { type: 'numbered', component: PutTrackersOnStep },
-                { type: 'numbered', component: PreparationStep },
                 { type: 'numbered', component: RequirementsStep },
+                { type: 'numbered', component: PreparationStep },
                 { type: 'numbered', component: CheckHeight },
                 { type: 'numbered', component: StartRecording },
                 { type: 'fullsize', component: Recording },
