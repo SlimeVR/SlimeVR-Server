@@ -2,10 +2,7 @@ package dev.slimevr.tracking.processor
 
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import kotlin.math.abs
-import kotlin.math.sign
-import kotlin.math.sin
-import kotlin.math.sqrt
+import kotlin.math.*
 
 /**
  * Represents a function that applies a rotational constraint to a direction vector.
@@ -16,10 +13,11 @@ typealias ConstraintFunction = (Quaternion, Bone, Float, Float) -> Quaternion
  * Represents the rotational limits of a Bone relative to its parent
  */
 class Constraint(
-	val constraintFunction: ConstraintFunction,
+	val constraintType: ConstraintType,
 	twist: Float = 0.0f,
 	swing: Float = 0.0f,
 ) {
+	private val constraintFunction = constraintTypeToFunc(constraintType)
 	private val twistRad = Math.toRadians(twist.toDouble()).toFloat()
 	private val swingRad = Math.toRadians(swing.toDouble()).toFloat()
 
@@ -30,53 +28,25 @@ class Constraint(
 	var allowModifications = true
 
 	/**
-	 * If allowModifications is false this is the
-	 * allowed deviation from the original rotation
-	 */
-	var tolerance = 0.0f
-		set(value) {
-			field = value
-			updateComposedFields()
-		}
-
-	private var toleranceRad = 0.0f
-	var originalRotation = Quaternion.IDENTITY
-
-	private fun updateComposedFields() {
-		toleranceRad = Math.toRadians(tolerance.toDouble()).toFloat()
-	}
-
-	/**
 	 * Apply rotational constraints and if applicable force the rotation
 	 * to be unchanged unless it violates the constraints
 	 */
-	fun applyConstraint(rotation: Quaternion, thisBone: Bone): Quaternion {
-		if (allowModifications) {
-			return constraintFunction(rotation, thisBone, swingRad, twistRad).unit()
-		}
-
-		val constrainedRotation = applyLimits(rotation, originalRotation)
-		return constraintFunction(constrainedRotation, thisBone, swingRad, twistRad).unit()
-	}
-
-	/**
-	 * Limit the rotation to tolerance away from the initialRotation
-	 */
-	private fun applyLimits(
-		rotation: Quaternion,
-		initialRotation: Quaternion,
-	): Quaternion {
-		val localRotation = initialRotation.inv() * rotation
-
-		var (swingQ, twistQ) = decompose(localRotation, Vector3.NEG_Y)
-
-		twistQ = constrain(twistQ, toleranceRad)
-		swingQ = constrain(swingQ, toleranceRad)
-
-		return initialRotation * (swingQ * twistQ)
-	}
+	fun applyConstraint(rotation: Quaternion, thisBone: Bone): Quaternion = constraintFunction(rotation, thisBone, swingRad, twistRad).unit()
 
 	companion object {
+		enum class ConstraintType {
+			TWIST_SWING,
+			HINGE,
+			COMPLETE,
+		}
+
+		private fun constraintTypeToFunc(type: ConstraintType) =
+			when (type) {
+				ConstraintType.COMPLETE -> completeConstraint
+				ConstraintType.TWIST_SWING -> twistSwingConstraint
+				ConstraintType.HINGE -> hingeConstraint
+			}
+
 		private fun decompose(
 			rotation: Quaternion,
 			twistAxis: Vector3,
@@ -119,9 +89,13 @@ class Constraint(
 
 			val rotMagnitude = vector.lenSq() * if (vector.dot(axis) < 0) -1f else 1f
 			if (rotMagnitude < magnitudeSqrMin || rotMagnitude > magnitudeSqrMax) {
-				val magnitude = if (rotMagnitude < magnitudeSqrMin) magnitudeMin else magnitudeMax
-				val magnitudeSqr = abs(if (rotMagnitude < magnitudeSqrMin) magnitudeSqrMin else magnitudeSqrMax)
-				vector = vector.unit() * magnitude
+				val distToMin = min(abs(rotMagnitude - magnitudeSqrMin), abs(rotMagnitude + magnitudeSqrMin))
+				val distToMax = min(abs(rotMagnitude - magnitudeSqrMax), abs(rotMagnitude + magnitudeSqrMax))
+
+				val magnitude = if (distToMin < distToMax) magnitudeMin else magnitudeMax
+				val magnitudeSqr = abs(if (distToMin < distToMax) magnitudeSqrMin else magnitudeSqrMax)
+				vector = vector.unit() * -magnitude
+
 				rot = Quaternion(
 					sqrt(1.0f - magnitudeSqr),
 					vector.x,
@@ -130,7 +104,7 @@ class Constraint(
 				)
 			}
 
-			return rot
+			return rot.unit()
 		}
 
 		// Constraint function for TwistSwingConstraint
