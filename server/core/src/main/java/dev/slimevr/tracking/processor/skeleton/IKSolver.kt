@@ -13,11 +13,11 @@ class IKSolver(private val root: Bone) {
 	companion object {
 		const val TOLERANCE_SQR = 1e-8 // == 0.01 cm
 		const val MAX_ITERATIONS = 100
-		const val ITERATIONS_BEFORE_STEP = 20
-		const val ITERATIONS_BETWEEN_STEP = 10
-		const val MAX_LOOSENS = 40
-		const val TOLERANCE_STEP = 0.5f
-		const val LOCKED_REDUCTION = 0.1f
+		const val ANNEALING_STEP = 20
+		const val ANNEALING_ITERATIONS = 5
+		const val ANNEALING_MAX = 60
+		const val DAMPENING_FACTOR = 0.5f
+		const val STATIC_DAMPENING = 0.25f
 	}
 
 	var enabled = true
@@ -140,7 +140,6 @@ class IKSolver(private val root: Bone) {
 
 	private fun addConstraints() {
 		fun constrainChain(chain: IKChain) {
-			chain.locked = true
 			chain.bones.forEach { it.rotationConstraint.allowModifications = false }
 		}
 		chainList.forEach { if (it.tailConstraint == null) constrainChain(it) }
@@ -201,31 +200,11 @@ class IKSolver(private val root: Bone) {
 		return null
 	}
 
-	/**
-	 * Loosen rotational constraints gradually
-	 */
-	private fun loosenConstraints() {
-		for (chain in chainList) {
-			if (chain.loosens < MAX_LOOSENS) chain.decreaseConstraints()
-		}
-	}
-
-	fun solve() {
-		if (rootChain == null || !enabled) return
-
+	private fun solve(iterations: Int, useConstraints: Boolean = true): Boolean {
 		var solved: Boolean
-		if (needsReset) {
-			for (c in chainList) {
-				c.resetTrackerOffsets()
-			}
-			needsReset = false
-		}
-
-		rootChain?.resetChain()
-
-		for (i in 0 until MAX_ITERATIONS) {
+		for (i in 0..iterations) {
 			for (chain in chainList) {
-				chain.backwards()
+				chain.backwardsCCDIK(useConstraints)
 			}
 
 			rootChain?.computeTargetDistance()
@@ -238,11 +217,30 @@ class IKSolver(private val root: Bone) {
 				}
 			}
 
-			if (solved) break
+			if (solved && useConstraints) return true
+		}
 
-			if (i > ITERATIONS_BEFORE_STEP && i % ITERATIONS_BETWEEN_STEP == 0) {
-				loosenConstraints()
+		return false
+	}
+
+	fun solve() {
+		if (rootChain == null || !enabled) return
+
+		if (needsReset) {
+			for (c in chainList) {
+				c.resetTrackerOffsets()
 			}
+			needsReset = false
+		}
+
+		rootChain?.resetChain()
+		root.update()
+
+		for (i in 0 until MAX_ITERATIONS step ANNEALING_STEP) {
+			solve(ANNEALING_ITERATIONS, (i > ANNEALING_MAX))
+			val solved = solve(ANNEALING_STEP - ANNEALING_ITERATIONS)
+
+			if (solved) break
 		}
 
 		root.update()
