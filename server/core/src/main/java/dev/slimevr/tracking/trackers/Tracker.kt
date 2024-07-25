@@ -339,7 +339,7 @@ class Tracker @JvmOverloads constructor(
 		}
 
 		// Reset if needed and is not computed and internal
-		if (needsReset && !(isComputed && isInternal)) {
+		if (needsReset && !(isComputed && isInternal) && trackerDataSupport == TrackerDataSupport.ROTATION) {
 			// Adjust to reset, mounting and drift compensation
 			rot = resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
 		}
@@ -371,7 +371,7 @@ class Tracker @JvmOverloads constructor(
 		}
 
 		// Reset if needed or is a computed tracker besides head
-		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD)) {
+		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataSupport == TrackerDataSupport.ROTATION) {
 			// Adjust to reset and mounting
 			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		}
