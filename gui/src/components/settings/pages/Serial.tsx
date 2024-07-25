@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 import {
@@ -21,6 +21,12 @@ import { Typography } from '@/components/commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { WarningBox } from '@/components/commons/TipBox';
+import { useIsTauri } from '@/hooks/breakpoint';
+import { fileSave } from 'browser-fs-access';
+import { save } from '@tauri-apps/plugin-dialog';
+import { writeTextFile } from '@tauri-apps/plugin-fs';
+import { error } from '@/utils/logging';
+import { waitUntil } from '@/utils/a11y';
 
 export interface SerialForm {
   port: string;
@@ -156,6 +162,50 @@ export function Serial() {
     );
   };
 
+  const isTauri = useIsTauri();
+  const consoleContentRef = useRef(consoleContent);
+  useLayoutEffect(() => {
+    consoleContentRef.current = consoleContent;
+  }, [consoleContent]);
+
+  const saveLogToFile = async () => {
+    // Check if we have getInfos and fetch them if we don't
+    if (!consoleContentRef.current.includes('GET INFO')) {
+      getInfos();
+      await waitUntil(
+        () => consoleContentRef.current.includes('GET INFO'),
+        100,
+        10
+      );
+    }
+
+    if (isTauri) {
+      save({
+        filters: [
+          {
+            name: l10n.getString('settings-serial-file_type'),
+            extensions: ['txt'],
+          },
+        ],
+        defaultPath: 'serial-logs.txt',
+      })
+        .then((path) =>
+          path ? writeTextFile(path, consoleContentRef.current) : undefined
+        )
+        .catch((err) => {
+          error(err);
+        });
+    } else {
+      const blob = new Blob([consoleContentRef.current], {
+        type: 'text/plain',
+      });
+      fileSave(blob, {
+        fileName: 'serial-logs.txt',
+        extensions: ['.txt'],
+      });
+    }
+  };
+
   return (
     <>
       <BaseModal
@@ -225,6 +275,13 @@ export function Serial() {
               </Button>
               <Button variant="quaternary" onClick={getWifiScan}>
                 {l10n.getString('settings-serial-get_wifi_scan')}
+              </Button>
+              <Button
+                variant="quaternary"
+                onClick={saveLogToFile}
+                disabled={!isSerialOpen || !consoleContent.trim()}
+              >
+                {l10n.getString('settings-serial-save_logs')}
               </Button>
               <div className="w-full mobile:col-span-2">
                 <Dropdown
