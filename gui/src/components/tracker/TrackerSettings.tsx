@@ -171,6 +171,7 @@ export function TrackerSettingsPage() {
       ></SingleTrackerBodyAssignmentMenu>
       <MountingSelectionMenu
         bodyPart={tracker?.tracker.info?.bodyPart}
+        currRotation={currRotation}
         isOpen={selectRotation}
         onClose={() => setSelectRotation(false)}
         onDirectionSelected={onDirectionSelected}
@@ -320,7 +321,7 @@ export function TrackerSettingsPage() {
               )}
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
-              <div className="flex gap-3 items-center">
+              <div className="flex gap-3 items-center fill-background-10">
                 {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
                   <BodyPartIcon
                     bodyPart={tracker?.tracker.info?.bodyPart}

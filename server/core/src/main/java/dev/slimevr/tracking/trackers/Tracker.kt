@@ -65,6 +65,7 @@ class Tracker @JvmOverloads constructor(
 	val allowFiltering: Boolean = false,
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
+	val isHmd: Boolean = false,
 	magStatus: MagnetometerStatus = MagnetometerStatus.NOT_SUPPORTED,
 ) {
 	private val timer = BufferedTimer(1f)
@@ -104,6 +105,9 @@ class Tracker @JvmOverloads constructor(
 			VRServer.instance.updateSkeletonModel()
 			VRServer.instance.refreshTrackersDriftCompensationEnabled()
 
+			if (isHmd) {
+				VRServer.instance.humanPoseManager.checkReportMissingHmd()
+			}
 			checkReportErrorStatus()
 			checkReportRequireReset()
 		}
@@ -136,12 +140,15 @@ class Tracker @JvmOverloads constructor(
 		require(!needsMounting || (needsReset && needsMounting)) {
 			"If ${::needsMounting.name} is true, then ${::needsReset.name} must also be true"
 		}
+		require(!isHmd || (hasPosition && isHmd)) {
+			"If ${::isHmd.name} is true, then ${::hasPosition.name} must also be true"
+		}
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
 	}
 
-	private fun checkReportRequireReset() {
+	fun checkReportRequireReset() {
 		if (needsReset && trackerPosition != null && lastResetStatus == 0u &&
 			!status.reset && (isImu() || !statusResetRecently)
 		) {

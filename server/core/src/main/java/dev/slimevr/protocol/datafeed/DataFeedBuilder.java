@@ -140,6 +140,7 @@ public class DataFeedBuilder {
 		}
 
 		TrackerInfo.addMagnetometer(fbb, tracker.getMagStatus().getSolarType());
+		TrackerInfo.addIsHmd(fbb, tracker.isHmd());
 
 		return TrackerInfo.endTrackerInfo(fbb);
 	}

@@ -1,0 +1,25 @@
+:root {
+  --settings-sidebar-w: 200px;
+}
+
+.settings-layout {
+  display: grid;
+  grid-template:
+    't t t' var(--topbar-h)
+    'n s c' calc(100% - var(--topbar-h))
+    / var(--navbar-w) var(--settings-sidebar-w) calc(100% - var(--navbar-w) - var(
+          --settings-sidebar-w
+        ));
+
+  @screen lg {
+    --settings-sidebar-w: 270px;
+  }
+
+  @screen mobile {
+    grid-template:
+      't' var(--topbar-h)
+      'c' calc(100% - var(--topbar-h) - var(--navbar-h))
+      'n' calc(var(--navbar-h))
+      / 100%;
+  }
+}

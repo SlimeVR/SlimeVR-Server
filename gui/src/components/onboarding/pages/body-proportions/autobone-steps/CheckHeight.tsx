@@ -105,7 +105,7 @@ export function CheckHeight({
               </Typography>
             </Localized>
 
-            <div className="flex flex-row items-center mt-2 gap-2">
+            <div className="flex flex-row items-center mt-2 gap-2 mobile:flex-col">
               <Button
                 variant="primary"
                 onClick={startCountdown}
