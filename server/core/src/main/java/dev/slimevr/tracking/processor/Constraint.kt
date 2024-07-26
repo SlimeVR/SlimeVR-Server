@@ -96,12 +96,7 @@ class Constraint(
 				val magnitudeSqr = abs(if (distToMin < distToMax) magnitudeSqrMin else magnitudeSqrMax)
 				vector = vector.unit() * -magnitude
 
-				rot = Quaternion(
-					sqrt(1.0f - magnitudeSqr),
-					vector.x,
-					vector.y,
-					vector.z,
-				)
+				rot = Quaternion(sqrt(1.0f - magnitudeSqr), vector)
 			}
 
 			return rot.unit()
