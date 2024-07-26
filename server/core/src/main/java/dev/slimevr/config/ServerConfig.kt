@@ -17,7 +17,6 @@ class ServerConfig {
 		magMutex.lock()
 		try {
 			if (useMagnetometerOnAllTrackers == state) return@coroutineScope
-			useMagnetometerOnAllTrackers = state
 
 			VRServer.instance.deviceManager.devices.filter { it.magSupport }.map {
 				async {
@@ -41,6 +40,8 @@ class ServerConfig {
 						}.awaitAll()
 				}
 			}.awaitAll()
+
+			useMagnetometerOnAllTrackers = state
 		} finally {
 			magMutex.unlock()
 		}

@@ -22,9 +22,7 @@ import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByBodyPart
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.datatypes.TransactionId
 import solarxr_protocol.rpc.*
@@ -508,7 +506,9 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		if (req.trackerId() == null) {
 			mainScope.launch {
-				api.server.configManager.vrConfig.server.defineMagOnAllTrackers(req.enable())
+				withTimeoutOrNull(5000L) {
+					api.server.configManager.vrConfig.server.defineMagOnAllTrackers(req.enable())
+				}
 
 				val fbb = FlatBufferBuilder(32)
 				val response = MagToggleResponse.createMagToggleResponse(
@@ -529,7 +529,9 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		// Don't apply magnetometer setting if use magnetometer global setting is not enabled
 		if (!api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers) return
 		mainScope.launch {
-			tracker.device.setMag(state, tracker.trackerNum)
+			withTimeoutOrNull(5000L) {
+				tracker.device.setMag(state, tracker.trackerNum)
+			}
 
 			val fbb = FlatBufferBuilder(32)
 			val trackerId = DataFeedBuilder.createTrackerId(fbb, tracker)
