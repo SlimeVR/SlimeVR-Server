@@ -23,6 +23,8 @@ tips-find_tracker = nawt suwe whicsh twayckyaw is whicsh? shayke a twackaw and i
 tips-do_not_move_heels = ensuwe yoowr pawsies do nawt mowve duwing wecowding! ^w^
 tips-file_select = dwag & dwop fiwes to use OwO, ow <u>bwowse</u>.
 tips-tap_setup = u can swowly tap youw twackew 2 times to choose it insted of sewecting it fwom the menyu.
+tips-turn_on_tracker = erm.. are u using offishal SlaiemVR twackews??! rember to <b><em>tuwn on yuor twackew</em></b> aftwew coneccting it to teh PC!
+tips-failed_webgl = oh nooooo :( faiwled to initiawizwe WebGL...
 
 ## Body parts
 
@@ -196,6 +198,7 @@ tracker-infos-hardware_rev = hawdwawe revision
 tracker-infos-hardware_identifier = hawdwawe id
 tracker-infos-imu = imu sensow
 tracker-infos-board_type = mane bored
+tracker-infos-network_version = pwotocol vewsiowon
 
 ## Tracker settings
 
@@ -215,6 +218,9 @@ tracker-settings-drift_compensation_section-edit = awwow dwift compensation
 tracker-settings-name_section = twackaw name
 tracker-settings-name_section-description = owo whats dis?
 tracker-settings-name_section-placeholder = ewimewl's weft pawb
+tracker-settings-forget = *forgors the tracker*
+tracker-settings-forget-description = remooves teh twackew fwom da SwimeVR sewvew n pwevent it frum conecting to it til fhe sewvew iz westawtied. the cowonfigyuwatsin of da twackew woant b wost.
+tracker-settings-forget-label = *forgors the tracker*
 
 ## Tracker part card info
 
@@ -304,10 +310,22 @@ settings-general-steamvr-description =
     usefuw if yew want mowwe contwoww owew what swimevr does.
 settings-general-steamvr-trackers-waist = wyayst~
 settings-general-steamvr-trackers-chest = chwest~
-settings-general-steamvr-trackers-feet = pweets~
-settings-general-steamvr-trackers-knees = knyees~
-settings-general-steamvr-trackers-elbows = ewbows~
-settings-general-steamvr-trackers-hands = pawbsies~
+settings-general-steamvr-trackers-left_foot = weft lower pawb
+settings-general-steamvr-trackers-right_foot = wight lower pawb
+settings-general-steamvr-trackers-left_knee = weft knee
+settings-general-steamvr-trackers-right_knee = wight knee
+settings-general-steamvr-trackers-left_elbow = weft elbow
+settings-general-steamvr-trackers-right_elbow = wight elbow
+settings-general-steamvr-trackers-left_hand = weft upper pawb
+settings-general-steamvr-trackers-right_hand = wight upper pawb
+settings-general-steamvr-trackers-tracker_toggling = awtomawtic twackaws assigwment
+settings-general-steamvr-trackers-tracker_toggling-description = aUwUtomaticawwy handels tawggling SteemVR twackews on oar off depening on yoar cuwwent twackew assaingmentz
+settings-general-steamvr-trackers-tracker_toggling-label = awtomawtic twackaws assigwment
+settings-general-steamvr-trackers-hands-warning =
+    <b>OwOarning:</b> paw twackows wiww owovewwide youw contwowworz.
+    r u sure??
+settings-general-steamvr-trackers-hands-warning-cancel = cancew :o
+settings-general-steamvr-trackers-hands-warning-done = yes!!
 
 ## Tracker mechanics
 
@@ -325,6 +343,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = smowth
 settings-general-tracker_mechanics-filtering-type-prediction = pwediction~
 settings-general-tracker_mechanics-filtering-type-prediction-description = wowduces wowcyancy and makes wowvements mowe wowappy, but may incwease jiwitty
 settings-general-tracker_mechanics-filtering-amount = amownt
+settings-general-tracker_mechanics-yaw-reset-smooth-time = nyaw weset smootse taim (0s disaeblez smooting)
 settings-general-tracker_mechanics-drift_compensation = dwift compensation
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
@@ -333,6 +352,11 @@ settings-general-tracker_mechanics-drift_compensation-description =
 settings-general-tracker_mechanics-drift_compensation-enabled-label = dwift compensation
 settings-general-tracker_mechanics-drift_compensation-amount-label = compensation amownt
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = nuwmbew of wesets uwsed
+settings-general-tracker_mechanics-save_mounting_reset = saiv awtomatic meownting weset calibwaytion
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    saves the auwtoemyatic meownting weset cawybwationz for da twackews betwean westawts. useful
+    wen weawing a sUwUit whewe twackews dont  move between sesshuns. <b>nawt wecomended for noarmal UwUsews!</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = save meownting weset
 
 ## FK/Tracking settings
 
@@ -452,6 +476,18 @@ settings-general-interface-feedback_sound-volume = feedback sownd volyume
 settings-general-interface-connected_trackers_warning = Connected twackews wawning
 settings-general-interface-connected_trackers_warning-description = This option wiww show a pop-up evewy time you twy exiting SwimeVR whiwe having one ow mowe connected twackews. It weminds you to tuwn off youw twackews when you awe done to pwesewve battewy wife.
 settings-general-interface-connected_trackers_warning-label = Connected twackews wawning on exit
+settings-general-interface-use_tray = minimaize to systewm tway
+settings-general-interface-use_tray-description = wets u cwose the wimdOwOw wifhout cwosing da SwimeVR Sewvew so uou can keep using it withowt da GUI bohtewing u.
+settings-general-interface-use_tray-label = minimaize to systewm tway
+settings-general-interface-discord_presence = shaer activitey on discowd
+settings-general-interface-discord_presence-description = tewws ur discoard cwient dat ur using SlyimeVR awong wif teh nuhmbew of IMU twackewrz u r using.
+settings-general-interface-discord_presence-label = shaer activitey on discowd
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] slimin awaound :3
+        [one] using 1 twackew
+       *[other] using { $amount } twackewz
+    }
 
 ## Serial settings
 
@@ -473,6 +509,9 @@ settings-serial-factory_reset-warning-cancel = cancew
 settings-serial-get_infos = get infows
 settings-serial-serial_select = sewect a shewyaw pawt
 settings-serial-auto_dropdown_item = awto
+settings-serial-get_wifi_scan = get wifi scan uwu
+settings-serial-file_type = plane text
+settings-serial-save_logs = saeve to file
 
 ## OSC router settings
 
@@ -561,6 +600,9 @@ settings-osc-vmc-vrm-file_select = dwag & dwop a modew to use OwO, ow <u>bwowse<
 settings-osc-vmc-anchor_hip = anchow at hips
 settings-osc-vmc-anchor_hip-description = anchow the twacking at the hips, usefuw fow seated vtubing
 settings-osc-vmc-anchor_hip-label = anchow at hips
+settings-osc-vmc-mirror_tracking = miwwow twacking
+settings-osc-vmc-mirror_tracking-description = miwwow da twacking howizawntawwy.
+settings-osc-vmc-mirror_tracking-label = miwwow twacking
 
 ## Setup/onboarding menu
 
@@ -638,8 +680,8 @@ onboarding-done-close = cwose the guide
 
 onboarding-connect_tracker-back = gaww bawwk to wi-fi cwedentials
 onboarding-connect_tracker-title = connect twackaws
-onboarding-connect_tracker-description-p0 = now onto teh fun pawwt, connecting awe teh twackaws!
-onboarding-connect_tracker-description-p1 = simply connect awe that awe nawt cownyected yet, through a usb powwt.
+onboarding-connect_tracker-description-p0-v1 = now onto teh fun pawrt, connyecting twackews!1! :D
+onboarding-connect_tracker-description-p1-v1 = conect each twackew wun at a taim thru a USB pawrt.
 onboarding-connect_tracker-issue-serial = i'm having twouble connecting!
 onboarding-connect_tracker-usb = usb twackew
 onboarding-connect_tracker-connection_status-none = wooking fow twackaws
@@ -699,6 +741,28 @@ onboarding-assign_trackers-assigned =
     } assigned
 onboarding-assign_trackers-advanced = show advanced assign wocations
 onboarding-assign_trackers-next = i assigned awe the twackaws
+onboarding-assign_trackers-mirror_view = miwwow vyew
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+       *[other] x{ $trackersCount }
+    }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] wower-bawdy set
+        [core] coar set
+        [enhanced-core] enhaynced coar set
+        [full-body] fuww-bawdy set
+       *[all] all twackewz
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] minimum fow VR fuww-bawdy twacking
+        [core] + enhanced spine twacking
+        [enhanced-core] + paw wowtation
+        [full-body] + ewbOwOw twacking
+       *[all] all awvaiwabule twackew assaignments
+    }
 
 ## Tracker assignment warnings
 
@@ -822,9 +886,10 @@ onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
 
 onboarding-choose_proportions = wut pwopowshun cawibwation mefod to use?
 # Multiline string
-onboarding-choose_proportions-description =
-    body pawpowtions awe used to know the measuwements of uw body. dey wequiwed to cawcuwate the twackews' pawsitions.
-    wen pawpowtions of youw body dun mach da onyes saved, youw twacking pwecision wiwl be wowse and you wiwl nyotice tings wike skating or swiding, ow youw body nyot matching youw avataw wewl.
+onboarding-choose_proportions-description-v1 =
+    bawdy pwopowotions r used to knwo da mehsuwementz of youw bawdy. they'we wequiewed to cawcuwate da twackews' pawsitshons.
+    wen pwopowotiosn of ur bawdey don match teh ones saeved, yow twacking pwecisiown wiww b wowse and u wiww nowotice tingz wike skayting ow slaiding, ow yor bodiey matching uor avataw wel.
+    <b>u only need to mewhsuwe your bawdee once!!</b> unwess dey awe rong ow yer boady haz chaenged, you dont need to do them agen. UwU
 onboarding-choose_proportions-auto_proportions = awtomatic pwopowtions
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = wecommended
@@ -873,6 +938,9 @@ onboarding-automatic_proportions-check_height-title = check youw height
 onboarding-automatic_proportions-check_height-description = we use youw height as a basis of ouw measuwements by using da hmd's height as an appwoximashun of youw actuwaw height, but is better to check if they are right youwsewf!
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = pwease pwess da button while standing <u>upwight</u> to cawcuwate youw height. you hav 3 second aftew you pwess da button! >w<
+onboarding-automatic_proportions-check_height-guardian_tip =
+    if u r using a standowone VR hedset, make suwe to have youw gawrdian /
+    bowndawy tuwned on so ur heit iz cowwect!!
 onboarding-automatic_proportions-check_height-fetch_height = am standing!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = unnown
@@ -937,3 +1005,32 @@ status_system-StatusSteamVRDisconnected =
        *[other] cuwwentwly nawt conected to SwimeVR wiff da SwimeVR dwiver.
     }
 status_system-StatusTrackerError = da { $trackerName } twackew has ewwow. >~<
+status_system-StatusUnassignedHMD = teh VR hedset shud be awssaignd as a hed twackew.
+
+## Tray Menu
+
+tray_menu-show = show
+tray_menu-hide = hoide
+tray_menu-quit = qwit
+
+## First exit modal
+
+tray_or_exit_modal-title = owo wat shud da cwose button do?
+# Multiline text
+tray_or_exit_modal-description =
+    dis lets u choose wether u wanna exit te sewvew ow to minimaize it to da tway wen pwessing teh cwose buttin.
+    
+    yuow can cheange dis latew in da intewfayce setings! :D
+tray_or_exit_modal-radio-exit = exit on cwose
+tray_or_exit_modal-radio-tray = minimaize to systehm tway
+tray_or_exit_modal-submit = save :3
+tray_or_exit_modal-cancel = cancew :o
+
+## Unknown device modal
+
+unknown_device-modal-title = da twackew was find owo
+unknown_device-modal-description =
+    therwe is a nyew twackew wif MAC addwess <b>{ $deviceId }</b>..
+    d-do u wanna conect it to SwimeVR?
+unknown_device-modal-confirm = sure!!
+unknown_device-modal-forget = ignowe it
