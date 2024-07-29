@@ -1,13 +1,11 @@
 package dev.slimevr.tracking.processor.skeleton
 
 import dev.slimevr.tracking.processor.Bone
-import dev.slimevr.tracking.processor.Constraint
+import dev.slimevr.tracking.processor.Constraint.Companion.ConstraintType
 import dev.slimevr.tracking.trackers.Tracker
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import kotlin.math.acos
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlin.math.*
 
 /*
  * This class implements a chain of Bones
@@ -42,7 +40,7 @@ class IKChain(
 	 */
 	private fun prepBones() {
 		for (i in 0..<bones.size) {
-			if (bones[i].rotationConstraint.allowModifications && bones[i].rotationConstraint.constraintType != Constraint.Companion.ConstraintType.COMPLETE) {
+			if (bones[i].rotationConstraint.allowModifications && bones[i].rotationConstraint.constraintType != ConstraintType.COMPLETE) {
 				bones[i].setRotationRaw(rotations[i])
 			}
 		}
@@ -66,7 +64,7 @@ class IKChain(
 			val angle = baseAngle * IKSolver.DAMPENING_FACTOR * if (currentBone.rotationConstraint.allowModifications) 1f else IKSolver.STATIC_DAMPENING
 
 			val sinHalfAngle = sin(angle / 2)
-			val adjustment = Quaternion(cos(angle / 2), cross.x * sinHalfAngle, cross.y * sinHalfAngle, cross.z * sinHalfAngle)
+			val adjustment = Quaternion(cos(angle / 2), cross * sinHalfAngle)
 			val correctedRot = (adjustment * currentBone.getGlobalRotation()).unit()
 
 			rotations[i] = setBoneRotation(currentBone, correctedRot, useConstraints)
@@ -99,7 +97,6 @@ class IKChain(
 	 * Resets the chain to its default state
 	 */
 	fun resetChain() {
-		// prepBones()
 		distToTargetSqr = Float.POSITIVE_INFINITY
 
 		for (child in children) {
@@ -134,7 +131,7 @@ class IKChain(
 	 * returns the constrained rotation
 	 */
 	private fun setBoneRotation(bone: Bone, rotation: Quaternion, useConstraints: Boolean): Quaternion {
-		val newRotation = if (useConstraints || bone.rotationConstraint.constraintType == Constraint.Companion.ConstraintType.COMPLETE) {
+		val newRotation = if (useConstraints || bone.rotationConstraint.constraintType == ConstraintType.COMPLETE) {
 			bone.rotationConstraint.applyConstraint(rotation, bone)
 		} else {
 			rotation
