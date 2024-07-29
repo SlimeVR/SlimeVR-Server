@@ -198,7 +198,7 @@ tracker-settings-drift_compensation_section = Allow drift compensation
 tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
 tracker-settings-drift_compensation_section-edit = Allow drift compensation
 tracker-settings-use_mag = Use magnetometer on this tracker
-tracker-settings-use_mag-description = Placehoder
+tracker-settings-use_mag-description = Should this tracker use magnetometer to reduce drift when magnetometer usage is allowed? <b>Please don't shutdown your tracker while toggling this!</b>
 tracker-settings-use_mag-label = Use magnetometer
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
@@ -340,7 +340,8 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Save mounting reset
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Use magnetometer on all IMU trackers that support it
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Placeholder
+    Uses magnetometer on all trackers that have a compatible firmware for it, reducing drift in stable magnetic environments.
+    Can be disabled per tracker in the tracker's settings. <b>Please don't shutdown any of the trackers while toggling this!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetometer on trackers
 
 ## FK/Tracking settings
