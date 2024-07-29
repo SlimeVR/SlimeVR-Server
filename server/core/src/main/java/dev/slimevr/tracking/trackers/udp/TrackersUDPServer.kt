@@ -3,6 +3,8 @@ package dev.slimevr.tracking.trackers.udp
 import com.jme3.math.FastMath
 import dev.slimevr.NetworkProtocol
 import dev.slimevr.VRServer
+import dev.slimevr.config.config
+import dev.slimevr.protocol.rpc.MAG_TIMEOUT
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
 import io.eiren.util.Util
@@ -10,8 +12,7 @@ import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import io.github.axisangles.ktmath.Vector3
-import kotlinx.coroutines.CancellableContinuation
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.*
 import org.apache.commons.lang3.ArrayUtils
 import solarxr_protocol.rpc.ResetType
 import java.net.DatagramPacket
@@ -185,6 +186,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		socket.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
 	}
 
+	private val mainScope = CoroutineScope(SupervisorJob())
 	private fun setUpSensor(connection: UDPDevice, trackerId: Int, sensorType: IMUType, sensorStatus: Int, magStatus: MagnetometerStatus) {
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
@@ -217,6 +219,25 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		}
 		val status = UDPPacket15SensorInfo.getStatus(sensorStatus)
 		if (status != null) imuTracker.status = status
+
+		if (magStatus == MagnetometerStatus.NOT_SUPPORTED) return
+		if (magStatus == MagnetometerStatus.ENABLED &&
+			(!VRServer.instance.configManager.vrConfig.server.useMagnetometerOnAllTrackers || imuTracker.config.shouldHaveMagEnabled == false)
+		) {
+			mainScope.launch {
+				withTimeoutOrNull(MAG_TIMEOUT) {
+					connection.setMag(false, trackerId)
+				}	
+			}
+		} else if (magStatus == MagnetometerStatus.DISABLED &&
+			VRServer.instance.configManager.vrConfig.server.useMagnetometerOnAllTrackers && imuTracker.config.shouldHaveMagEnabled == true
+		) {
+			mainScope.launch {
+				withTimeoutOrNull(MAG_TIMEOUT) {
+					connection.setMag(true, trackerId)
+				}
+			}
+		}
 	}
 
 	private data class ConfigStateWaiter(

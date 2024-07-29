@@ -506,7 +506,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		if (req.trackerId() == null) {
 			mainScope.launch {
-				withTimeoutOrNull(5000L) {
+				withTimeoutOrNull(MAG_TIMEOUT) {
 					api.server.configManager.vrConfig.server.defineMagOnAllTrackers(req.enable())
 				}
 
@@ -529,7 +529,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		// Don't apply magnetometer setting if use magnetometer global setting is not enabled
 		if (!api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers) return
 		mainScope.launch {
-			withTimeoutOrNull(5000L) {
+			withTimeoutOrNull(MAG_TIMEOUT) {
 				tracker.device.setMag(state, tracker.trackerNum)
 			}
 
@@ -549,3 +549,4 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		private const val RESET_SOURCE_NAME = "WebSocketAPI"
 	}
 }
+const val MAG_TIMEOUT: Long = 5000L
