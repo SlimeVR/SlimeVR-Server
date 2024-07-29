@@ -5,9 +5,9 @@ import io.github.axisangles.ktmath.Vector3
 import kotlin.math.*
 
 /**
- * Represents a function that applies a rotational constraint to a direction vector.
+ * Represents a function that applies a rotational constraint.
  */
-typealias ConstraintFunction = (Quaternion, Bone, Float, Float) -> Quaternion
+typealias ConstraintFunction = (inputRotation: Quaternion, thisBone: Bone, limit1: Float, limit2: Float) -> Quaternion
 
 /**
  * Represents the rotational limits of a Bone relative to its parent
@@ -103,7 +103,7 @@ class Constraint(
 		}
 
 		// Constraint function for TwistSwingConstraint
-		val twistSwingConstraint: ConstraintFunction =
+		private val twistSwingConstraint: ConstraintFunction =
 			{ rotation: Quaternion, thisBone: Bone, swingRad: Float, twistRad: Float ->
 				if (thisBone.parent == null) {
 					rotation
@@ -121,7 +121,7 @@ class Constraint(
 			}
 
 		// Constraint function for a hinge constraint with min and max angles
-		val hingeConstraint: ConstraintFunction =
+		private val hingeConstraint: ConstraintFunction =
 			{ rotation: Quaternion, thisBone: Bone, min: Float, max: Float ->
 				if (thisBone.parent == null) {
 					rotation
@@ -138,7 +138,7 @@ class Constraint(
 			}
 
 		// Constraint function for CompleteConstraint
-		val completeConstraint: ConstraintFunction = { _: Quaternion, thisBone: Bone, _: Float, _: Float ->
+		private val completeConstraint: ConstraintFunction = { _: Quaternion, thisBone: Bone, _: Float, _: Float ->
 			thisBone.getGlobalRotation()
 		}
 	}
