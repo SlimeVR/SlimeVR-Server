@@ -343,7 +343,8 @@ public class RPCSettingsBuilder {
 				resetsConfig.getResetMountingFeet(),
 				resetsConfig.getMode().getId(),
 				resetsConfig.getYawResetSmoothTime(),
-				resetsConfig.getSaveMountingReset()
+				resetsConfig.getSaveMountingReset(),
+				false
 			);
 	}
 
