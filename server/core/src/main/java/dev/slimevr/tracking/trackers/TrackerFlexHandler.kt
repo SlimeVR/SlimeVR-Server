@@ -10,8 +10,8 @@ import kotlin.math.*
  * Resistance is expected to go up with bend by default, but a mounting reset allows the contrary
  */
 class TrackerFlexHandler(val tracker: Tracker) {
-	private var minResistance = 0f
-	private var maxResistance = 0f
+	private var minResistance = Float.MIN_VALUE
+	private var maxResistance = Float.MAX_VALUE
 	private var lastResistance = 0f
 
 	/**
@@ -38,15 +38,17 @@ class TrackerFlexHandler(val tracker: Tracker) {
 	 * Sets the flex resistance which is then calculated into an angle
 	 */
 	fun setFlexResistance(resistance: Float) {
-		// TODO fix prediction filtering and first packet
-
 		// Update min and max if needed
-		minResistance = if (minResistance > maxResistance) {
+		minResistance = if (minResistance == Float.MIN_VALUE) {
+			resistance
+		} else if (minResistance > maxResistance) {
 			max(minResistance, resistance)
 		} else {
 			min(minResistance, resistance)
 		}
-		maxResistance = if (maxResistance < minResistance) {
+		maxResistance = if (maxResistance == Float.MAX_VALUE) {
+			resistance
+		} else if (maxResistance < minResistance) {
 			min(maxResistance, resistance)
 		} else {
 			max(maxResistance, resistance)
@@ -74,6 +76,8 @@ class TrackerFlexHandler(val tracker: Tracker) {
 	/**
 	 * Gets the max pitch angle for a TrackerPosition
 	 */
+	// TODO direction changes depending on TrackerPosition. Default should be around X axis.
+	// Fingers and shoulders are around Z axis.
 	private fun getMaxAngleForTrackerPosition(trackerPosition: TrackerPosition?): Float {
 		if (trackerPosition == null) return FastMath.PI // 180 degrees
 
