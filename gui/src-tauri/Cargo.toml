@@ -21,20 +21,20 @@ default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
 
 [build-dependencies]
-tauri-build = { version = "=2.0.0-beta.17", features = [] }
+tauri-build = { version = "=2.0.0-beta.18", features = [] }
 cfg_aliases = "0.2"
 shadow-rs = "0.27"
 
 [dependencies]
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
-tauri = { version = "=2.0.0-beta.22", features = ["devtools", "tray-icon", "image-png"] }
-tauri-runtime = "=2.0.0-beta.18"
-tauri-plugin-dialog = "=2.0.0-beta.9"
-tauri-plugin-fs = "=2.0.0-beta.9"
-tauri-plugin-os = "=2.0.0-beta.6"
-tauri-plugin-shell = "=2.0.0-beta.7"
-tauri-plugin-store = "=2.0.0-beta.8"
+tauri = { version = "=2.0.0-beta.23", features = ["devtools", "tray-icon", "image-png"] }
+tauri-runtime = "=2.0.0-beta.19"
+tauri-plugin-dialog = "=2.0.0-beta.10"
+tauri-plugin-fs = "=2.0.0-beta.10"
+tauri-plugin-os = "=2.0.0-beta.7"
+tauri-plugin-shell = "=2.0.0-beta.8"
+tauri-plugin-store = "=2.0.0-beta.9"
 flexi_logger = "0.28"
 log-panics = { version = "2", features = ["with-backtrace"] }
 log = "0.4"

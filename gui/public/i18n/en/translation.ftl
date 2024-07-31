@@ -477,6 +477,8 @@ settings-serial-get_infos = Get Infos
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Get WiFi Scan
+settings-serial-file_type = Plain text
+settings-serial-save_logs = Save To File
 
 ## OSC router settings
 settings-osc-router = OSC router
@@ -928,6 +930,7 @@ status_system-StatusSteamVRDisconnected = { $type ->
     [steamvr_feeder] Currently not connected to the SlimeVR Feeder App.
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
+status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
 
 ## Tray Menu
 tray_menu-show = Show
