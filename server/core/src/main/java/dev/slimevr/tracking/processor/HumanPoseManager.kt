@@ -26,6 +26,7 @@ import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
+import solarxr_protocol.rpc.StatusUnassignedHMD
 import solarxr_protocol.rpc.StatusUnassignedHMDT
 import java.util.function.Consumer
 import kotlin.math.*
@@ -697,18 +698,14 @@ class HumanPoseManager(val server: VRServer?) {
 	fun checkTrackersRequiringReset() {
 		// Checks if this is main human pose manager (having server) or
 		// skeleton doesn't have a head tracker or not an HMD one
-		// TODO: Should this be ran anyways if headTracker is null or is not an HMD?
 		if (server == null ||
-			skeleton.headTracker == null ||
-			skeleton.headTracker?.isHmd != true
+			skeleton.headTracker?.isComputed != true
 		) {
 			return
 		}
 		server.allTrackers
 			.filter { !it.isInternal && it.trackerPosition != null }
 			.forEach {
-				// This can't be solved with a yaw reset, it requires a full reset
-				it.statusResetRecently = false
 				it.checkReportRequireReset()
 			}
 	}

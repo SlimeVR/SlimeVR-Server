@@ -101,6 +101,7 @@ export function BodyAssignment({
   highlightedRoles = [],
   onlyAssigned = false,
   width,
+  dotSize,
 }: {
   assignMode: AssignMode;
   mirror: boolean;
@@ -109,6 +110,7 @@ export function BodyAssignment({
   highlightedRoles?: BodyPart[];
   onRoleSelected: (role: BodyPart) => void;
   width?: number;
+  dotSize?: number;
 }) {
   const { useAssignedTrackers } = useTrackers();
 
@@ -155,6 +157,7 @@ export function BodyAssignment({
       <BodyInteractions
         width={width}
         mirror={mirror}
+        dotsSize={dotSize}
         assignedRoles={assignedRoles}
         highlightedRoles={highlightedRoles}
         onSelectRole={onRoleSelected}
