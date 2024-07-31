@@ -249,7 +249,7 @@ class VRCOSCHandler(
 				}
 
 				else -> {
-					LogManager.warning("[VRCOSCHandler] Received invalid body part in message \"" + event.message.address + "\"")
+					LogManager.warning("[VRCOSCHandler] Received invalid body part in message \"${event.message.address}\"")
 					return
 				}
 			}
