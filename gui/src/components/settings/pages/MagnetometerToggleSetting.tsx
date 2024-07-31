@@ -129,6 +129,7 @@ export function MagnetometerToggleSetting({
         <CheckBox
           variant="toggle"
           outlined
+          loading={waitingMag}
           name="magToggle"
           control={control}
           label={l10n.getString('tracker-settings-use_mag-label')}
