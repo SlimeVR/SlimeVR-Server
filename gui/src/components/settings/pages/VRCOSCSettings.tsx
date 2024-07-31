@@ -131,7 +131,7 @@ export function VRCOSCSettings() {
             <div className="flex flex-col pt-2 pb-4">
               <>
                 {l10n
-                  .getString('settings-osc-vrchat-description')
+                  .getString('settings-osc-vrchat-description-v1')
                   .split('\n')
                   .map((line, i) => (
                     <Typography color="secondary" key={i}>
@@ -162,7 +162,7 @@ export function VRCOSCSettings() {
             </Typography>
             <div className="flex flex-col pb-2">
               <Typography color="secondary">
-                {l10n.getString('settings-osc-vrchat-network-description')}
+                {l10n.getString('settings-osc-vrchat-network-description-v1')}
               </Typography>
             </div>
             <div className="grid grid-cols-2 gap-3 pb-5">
@@ -199,7 +199,7 @@ export function VRCOSCSettings() {
             <div className="flex flex-col pb-2">
               <Typography color="secondary">
                 {l10n.getString(
-                  'settings-osc-vrchat-network-address-description'
+                  'settings-osc-vrchat-network-address-description-v1'
                 )}
               </Typography>
             </div>

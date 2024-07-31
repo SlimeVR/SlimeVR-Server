@@ -70,79 +70,19 @@ class VMCHandler(
 		anchorHip = config.anchorHip
 		mirrorTracking = config.mirrorTracking
 
-		// Stops listening and closes OSC port
-		val wasListening = oscReceiver != null && oscReceiver!!.isListening
-		if (wasListening) {
-			oscReceiver!!.stopListening()
-		}
-		val wasConnected = oscSender != null && oscSender!!.isConnected
-		if (wasConnected) {
-			try {
-				oscSender!!.close()
-			} catch (e: IOException) {
-				LogManager.severe("[VMCHandler] Error closing the OSC sender: $e")
-			}
-		}
+		updateOscReceiver(
+			config.portIn,
+			arrayOf(
+				"/VMC/Ext/Bone/Pos",
+				"/VMC/Ext/Hmd/Pos",
+				"/VMC/Ext/Con/Pos",
+				"/VMC/Ext/Tra/Pos",
+				"/VMC/Ext/Root/Pos",
+			),
+		)
+		updateOscSender(config.portOut, config.address)
 
 		if (config.enabled) {
-			// Instantiates the OSC receiver
-			try {
-				val port = config.portIn
-				oscReceiver = OSCPortIn(port)
-				if (lastPortIn != port || !wasListening) {
-					LogManager.info("[VMCHandler] Listening to port $port")
-				}
-				lastPortIn = port
-			} catch (e: IOException) {
-				LogManager
-					.severe(
-						"[VMCHandler] Error listening to the port ${config.portIn}: $e",
-					)
-			}
-
-			// Starts listening for VMC messages
-			if (oscReceiver != null) {
-				val listener = OSCMessageListener { event: OSCMessageEvent -> this.handleReceivedMessage(event) }
-				val listenAddresses = arrayOf(
-					"/VMC/Ext/Bone/Pos",
-					"/VMC/Ext/Hmd/Pos",
-					"/VMC/Ext/Con/Pos",
-					"/VMC/Ext/Tra/Pos",
-					"/VMC/Ext/Root/Pos",
-				)
-
-				for (address in listenAddresses) {
-					oscReceiver!!
-						.dispatcher
-						.addListener(OSCPatternAddressMessageSelector(address), listener)
-				}
-
-				oscReceiver!!.startListening()
-			}
-
-			// Instantiate the OSC sender
-			try {
-				val address = InetAddress.getByName(config.address)
-				val port = config.portOut
-				oscSender = OSCPortOut(InetSocketAddress(address, port))
-				if ((lastPortOut != port && lastAddress !== address) || !wasConnected) {
-					LogManager
-						.info(
-							"[VMCHandler] Sending to port $port at address $address",
-						)
-				}
-				lastPortOut = port
-				lastAddress = address
-
-				oscSender!!.connect()
-				outputUnityArmature = UnityArmature(false)
-			} catch (e: IOException) {
-				LogManager
-					.severe(
-						"[VMCHandler] Error connecting to port ${config.portOut} at the address ${config.address}: $e",
-					)
-			}
-
 			// Load VRM data
 			if (outputUnityArmature != null && config.vrmJson != null) {
 				val vrmReader = VRMReader(config.vrmJson!!)
@@ -174,6 +114,79 @@ class VMCHandler(
 		}
 
 		if (refreshRouterSettings) server.oSCRouter.refreshSettings(false)
+	}
+
+	override fun updateOscReceiver(portIn: Int, args: Array<String>) {
+		// Stops listening and closes OSC port
+		val wasListening = oscReceiver != null && oscReceiver!!.isListening
+		if (wasListening) {
+			oscReceiver!!.stopListening()
+		}
+
+		if (config.enabled) {
+			// Instantiates the OSC receiver
+			try {
+				oscReceiver = OSCPortIn(portIn)
+				if (lastPortIn != portIn || !wasListening) {
+					LogManager.info("[VMCHandler] Listening to port $portIn")
+				}
+				lastPortIn = portIn
+			} catch (e: IOException) {
+				LogManager
+					.severe(
+						"[VMCHandler] Error listening to the port $portIn: $e",
+					)
+			}
+
+			// Starts listening for VMC messages
+			if (oscReceiver != null) {
+				val listener = OSCMessageListener { event: OSCMessageEvent -> this.handleReceivedMessage(event) }
+
+				for (address in args) {
+					oscReceiver!!
+						.dispatcher
+						.addListener(OSCPatternAddressMessageSelector(address), listener)
+				}
+
+				oscReceiver!!.startListening()
+			}
+		}
+	}
+
+	override fun updateOscSender(portOut: Int, ip: String) {
+		// Stop sending
+		val wasConnected = oscSender != null && oscSender!!.isConnected
+		if (wasConnected) {
+			try {
+				oscSender!!.close()
+			} catch (e: IOException) {
+				LogManager.severe("[VMCHandler] Error closing the OSC sender: $e")
+			}
+		}
+
+		if (config.enabled) {
+			// Instantiate the OSC sender
+			try {
+				val addr = InetAddress.getByName(ip)
+				oscSender = OSCPortOut(InetSocketAddress(addr, portOut))
+				if ((lastPortOut != portOut && lastAddress !== addr) || !wasConnected) {
+					LogManager
+						.info(
+							"[VMCHandler] Sending to port $portOut at address $ip",
+						)
+				}
+				lastPortOut = portOut
+				lastAddress = addr
+
+				oscSender!!.connect()
+				outputUnityArmature = UnityArmature(false)
+			} catch (e: IOException) {
+				LogManager
+					.severe(
+						"[VMCHandler] Error connecting to port $portOut at the address $ip: $e",
+					)
+			}
+		}
 	}
 
 	private fun handleReceivedMessage(event: OSCMessageEvent) {

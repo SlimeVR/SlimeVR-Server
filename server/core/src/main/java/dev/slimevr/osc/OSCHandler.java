@@ -10,6 +10,10 @@ public interface OSCHandler {
 
 	public void refreshSettings(boolean refreshRouterSettings);
 
+	public void updateOscReceiver(int portIn, String[] args);
+
+	public void updateOscSender(int portOut, String address);
+
 	public void update();
 
 	public OSCPortOut getOscSender();
