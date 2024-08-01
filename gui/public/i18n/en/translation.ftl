@@ -848,9 +848,11 @@ onboarding-automatic_proportions-title = Measure your body
 onboarding-automatic_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.
 onboarding-automatic_proportions-manual = Manual proportions
 onboarding-automatic_proportions-prev_step = Previous step
+
 onboarding-automatic_proportions-put_trackers_on-title = Put on your trackers
 onboarding-automatic_proportions-put_trackers_on-description = To calibrate your proportions, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_proportions-put_trackers_on-next = I have all my trackers on
+
 onboarding-automatic_proportions-requirements-title = Requirements
 # Each line of text is a different list item
 onboarding-automatic_proportions-requirements-descriptionv2 =
@@ -860,23 +862,38 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Your headset is reporting positional data to the SlimeVR server (this generally means having SteamVR running and connected to SlimeVR using SlimeVR's SteamVR driver).
     Your tracking is working and is accurately representing your movements (ex. you have performed a full reset and they move the right direction when kicking, bending over, sitting, etc).
 onboarding-automatic_proportions-requirements-next = I have read the requirements
-onboarding-automatic_proportions-check_height-title = Check your height
+
+onboarding-automatic_proportions-check_height-title-v2 = Let's measure your height
 onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the headset's (HMD) height as an approximation of your actual height, but it's better to check if they are right yourself!
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = Please press the button while standing <u>upright</u> to calculate your height. You have 3 seconds after you press the button!
+onboarding-automatic_proportions-check_height-calculation_warning-v2 = Please press the button while standing <u>upright</u> to calculate your height. Be careful to not raise your arms higher than your headset!
 onboarding-automatic_proportions-check_height-guardian_tip = If you are using a standalone VR headset, make sure to have your guardian /
     boundary turned on so that your height is correct!
-onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Unknown
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height2 = Your headset height is
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height2 = and your floor height is
+onboarding-automatic_proportions-check_height-hmd_height2 = Your headset height is:
+onboarding-automatic_proportions-check_height-measure-start = Start measuring!
+onboarding-automatic_proportions-check_height-measure-stop = Stop measuring
+onboarding-automatic_proportions-check_height-measure-reset = Try measuring again!
 onboarding-automatic_proportions-check_height-next_step = They are fine
+
+onboarding-automatic_proportions-check_floor_height-title = Measure your floor height (optional)
+onboarding-automatic_proportions-check_floor_height-description = In some very special setups, your floor might not be set to 0m by your headset, so we need to get the "height" of your floor when that happens.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning = You can skip this step! You are not forced to do it.
+# Shows an element below it
+onboarding-automatic_proportions-check_floor_height-floor_height = Your floor height is:
+onboarding-automatic_proportions-check_floor_height-measure-start = Start measuring!
+onboarding-automatic_proportions-check_floor_height-measure-stop = Stop measuring
+onboarding-automatic_proportions-check_floor_height-measure-reset = Try measuring again!
+onboarding-automatic_proportions-check_floor_height-skip_step = Skip step
+onboarding-automatic_proportions-check_floor_height-next_step = It is fine
+
 onboarding-automatic_proportions-start_recording-title = Get ready to move
 onboarding-automatic_proportions-start_recording-description = We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!
 onboarding-automatic_proportions-start_recording-next = Start Recording
+
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Recording in progress...
 onboarding-automatic_proportions-recording-description-p1 = Make the moves shown below:
@@ -894,12 +911,14 @@ onboarding-automatic_proportions-recording-timer = { $time ->
     [one] 1 second left
     *[other] { $time } seconds left
 }
+
 onboarding-automatic_proportions-verify_results-title = Verify results
 onboarding-automatic_proportions-verify_results-description = Check the results below, do they look correct?
 onboarding-automatic_proportions-verify_results-results = Recording results
 onboarding-automatic_proportions-verify_results-processing = Processing the result
 onboarding-automatic_proportions-verify_results-redo = Redo recording
 onboarding-automatic_proportions-verify_results-confirm = They're correct
+
 onboarding-automatic_proportions-done-title = Body measured and saved.
 onboarding-automatic_proportions-done-description = Your body proportions' calibration is complete!
 onboarding-automatic_proportions-error_modal =
