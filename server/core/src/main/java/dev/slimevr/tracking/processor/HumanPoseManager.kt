@@ -341,16 +341,6 @@ class HumanPoseManager(val server: VRServer?) {
 	fun getComputedTracker(trackerRole: TrackerRole): Tracker = skeleton.getComputedTracker(trackerRole)
 
 	/**
-	 * Returns all trackers if VRServer is non-null. Else, returns the
-	 * skeleton's assigned trackers.
-	 *
-	 * @return a list of trackers to use for reset.
-	 */
-	val trackersToReset: List<Tracker?>
-		get() =
-			server?.allTrackers ?: skeleton.localTrackers
-
-	/**
 	 * @return the head bone, which is the root of the skeleton
 	 */
 	@get:ThreadSafe
