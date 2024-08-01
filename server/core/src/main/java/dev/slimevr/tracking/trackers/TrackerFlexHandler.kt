@@ -13,6 +13,7 @@ class TrackerFlexHandler(val tracker: Tracker) {
 	private var minResistance = Float.MIN_VALUE
 	private var maxResistance = Float.MAX_VALUE
 	private var lastResistance = 0f
+	private val thumbInitialOffset = FastMath.PI / 8 // 22.5 deg
 
 	/**
 	 * Resets the min resistance from the last resistance value received
@@ -96,10 +97,10 @@ class TrackerFlexHandler(val tracker: Tracker) {
 			-> tracker.setRotation(EulerAngles(EulerOrder.YZX, 0f, 0f, -angle).toQuaternion())
 
 			TrackerPosition.LEFT_THUMB_PROXIMAL, TrackerPosition.LEFT_THUMB_INTERMEDIATE, TrackerPosition.LEFT_THUMB_DISTAL,
-			-> tracker.setRotation(EulerAngles(EulerOrder.YZX, -angle, 0f, 0f).toQuaternion())
+			-> tracker.setRotation(EulerAngles(EulerOrder.YZX, thumbInitialOffset - angle, -angle * 0.05f, angle * 0.1f).toQuaternion())
 
 			TrackerPosition.RIGHT_THUMB_PROXIMAL, TrackerPosition.RIGHT_THUMB_INTERMEDIATE, TrackerPosition.RIGHT_THUMB_DISTAL,
-			-> tracker.setRotation(EulerAngles(EulerOrder.YZX, angle, 0f, 0f).toQuaternion())
+			-> tracker.setRotation(EulerAngles(EulerOrder.YZX, thumbInitialOffset - angle, angle * 0.05f, -angle * 0.1f).toQuaternion())
 
 			// Default to X axis (pitch)
 			else -> tracker.setRotation(EulerAngles(EulerOrder.YZX, angle, 0f, 0f).toQuaternion())
@@ -120,25 +121,34 @@ class TrackerFlexHandler(val tracker: Tracker) {
 			TrackerPosition.RIGHT_RING_DISTAL, TrackerPosition.RIGHT_LITTLE_DISTAL,
 			-> FastMath.PI + FastMath.HALF_PI
 
+			// 202.5 degrees
+			TrackerPosition.LEFT_THUMB_DISTAL, TrackerPosition.RIGHT_THUMB_DISTAL,
+			-> FastMath.PI + thumbInitialOffset
+
 			// 180 degrees
-			TrackerPosition.LEFT_THUMB_DISTAL, TrackerPosition.LEFT_INDEX_INTERMEDIATE,
-			TrackerPosition.LEFT_MIDDLE_INTERMEDIATE, TrackerPosition.LEFT_RING_INTERMEDIATE,
-			TrackerPosition.LEFT_LITTLE_INTERMEDIATE, TrackerPosition.RIGHT_THUMB_DISTAL,
+			TrackerPosition.LEFT_INDEX_INTERMEDIATE, TrackerPosition.LEFT_MIDDLE_INTERMEDIATE,
+			TrackerPosition.LEFT_RING_INTERMEDIATE, TrackerPosition.LEFT_LITTLE_INTERMEDIATE,
 			TrackerPosition.RIGHT_INDEX_INTERMEDIATE, TrackerPosition.RIGHT_MIDDLE_INTERMEDIATE,
 			TrackerPosition.RIGHT_RING_INTERMEDIATE, TrackerPosition.RIGHT_LITTLE_INTERMEDIATE,
 			-> FastMath.PI
 
+			// 112.5 degrees
+			TrackerPosition.LEFT_THUMB_INTERMEDIATE, TrackerPosition.RIGHT_THUMB_INTERMEDIATE,
+			-> FastMath.HALF_PI + thumbInitialOffset
+
 			// 90 degrees
-			TrackerPosition.LEFT_THUMB_INTERMEDIATE, TrackerPosition.LEFT_INDEX_PROXIMAL,
-			TrackerPosition.LEFT_MIDDLE_PROXIMAL, TrackerPosition.LEFT_RING_PROXIMAL,
-			TrackerPosition.LEFT_LITTLE_PROXIMAL, TrackerPosition.RIGHT_THUMB_INTERMEDIATE,
+			TrackerPosition.LEFT_INDEX_PROXIMAL, TrackerPosition.LEFT_MIDDLE_PROXIMAL,
+			TrackerPosition.LEFT_RING_PROXIMAL, TrackerPosition.LEFT_LITTLE_PROXIMAL,
 			TrackerPosition.RIGHT_INDEX_PROXIMAL, TrackerPosition.RIGHT_MIDDLE_PROXIMAL,
 			TrackerPosition.RIGHT_RING_PROXIMAL, TrackerPosition.RIGHT_LITTLE_PROXIMAL,
 			-> FastMath.HALF_PI
 
+			// 67.5 degrees
+			TrackerPosition.LEFT_THUMB_PROXIMAL, TrackerPosition.RIGHT_THUMB_PROXIMAL,
+			-> FastMath.QUARTER_PI + thumbInitialOffset
+
 			// 45 degrees
 			TrackerPosition.LEFT_SHOULDER, TrackerPosition.RIGHT_SHOULDER,
-			TrackerPosition.LEFT_THUMB_PROXIMAL, TrackerPosition.RIGHT_THUMB_PROXIMAL,
 			-> FastMath.QUARTER_PI
 
 			// 135 degrees
