@@ -2,7 +2,7 @@ import { Localized, useLocalization } from '@fluent/react';
 import { useOnboarding } from '@/hooks/onboarding';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { useCountdown } from '@/hooks/countdown';
@@ -10,7 +10,8 @@ import classNames from 'classnames';
 import { TaybolIcon } from '@/components/commons/icon/TaybolIcon';
 import { useTrackers } from '@/hooks/tracker';
 import { useRestCalibrationTrackers } from '@/hooks/imu-logic';
-import { solarVectorLength } from '@/maths/vector3';
+import { averageVector, Vector3FromVec3fT } from '@/maths/vector3';
+import { Vector3 } from 'three';
 
 export enum CalibrationStatus {
   SUCCESS,
@@ -20,6 +21,7 @@ export enum CalibrationStatus {
 }
 
 export const IMU_CALIBRATION_TIME = 4;
+const ACCEL_TOLERANCE = 0.2; // m/s^2
 
 export function CalibrationTutorialPage() {
   const { l10n } = useLocalization();
@@ -36,10 +38,32 @@ export function CalibrationTutorialPage() {
   const restCalibrationTrackers =
     useRestCalibrationTrackers(connectedIMUTrackers);
   const [rested, setRested] = useState(false);
+  const lastValueMap = useRef(new Map<number, Vector3[]>());
   useEffect(() => {
-    const accelLength = restCalibrationTrackers.every(
-      (x) => solarVectorLength(x.tracker.linearAcceleration) < 0.2
-    );
+    const accelLength = restCalibrationTrackers.every((x) => {
+      if (
+        x.tracker.trackerId?.trackerNum === undefined ||
+        x.tracker.trackerId.deviceId?.id === undefined ||
+        !x.tracker.linearAcceleration
+      )
+        return false;
+
+      const trackerId =
+        x.tracker.trackerId.trackerNum + (x.tracker.trackerId.trackerNum << 8);
+      const lastValues = lastValueMap.current.get(trackerId) ?? [];
+      lastValueMap.current.set(trackerId, lastValues);
+
+      const vec3 = Vector3FromVec3fT(x.tracker.linearAcceleration);
+      if (lastValues.length > 5) {
+        lastValues.shift();
+        const avg = averageVector(lastValues).lengthSq();
+        lastValues.push(vec3);
+        return vec3.lengthSq() <= avg + ACCEL_TOLERANCE ** 2;
+      }
+      lastValues.push(vec3);
+      return false;
+    });
+
     setRested(accelLength || restCalibrationTrackers.length === 0);
   }, [restCalibrationTrackers]);
 

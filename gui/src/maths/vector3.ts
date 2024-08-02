@@ -3,8 +3,10 @@ import { Vector3 } from 'three';
 
 export type Vector3Object = { x: number; y: number; z: number };
 
-export function solarVectorLength(vec?: Vec3fT | null) {
-  return vec ? Math.sqrt(vec.x ** 2 + vec.y ** 2 + vec.z ** 2) : 0;
+export function averageVector(vecs: Vector3[]) {
+  if (vecs.length === 0) return new Vector3();
+  const sum = vecs.reduce((prev, curr) => prev.add(curr), new Vector3());
+  return sum.divideScalar(vecs.length);
 }
 
 export function Vector3FromVec3fT(vec?: Vector3Object | null) {
