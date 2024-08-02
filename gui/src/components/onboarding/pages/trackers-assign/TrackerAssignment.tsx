@@ -296,7 +296,7 @@ export function TrackersAssignPage() {
                   </div>
                 </div>
               )}
-              <div className="flex flex-col md:gap-4 sm:gap-2 mobile:gap-4">
+              <div className="flex flex-col md:gap-4 sm:gap-2 xs:gap-1 mobile:gap-4">
                 <TrackerAssignOptions
                   variant={isMobile ? 'dropdown' : 'radio'}
                 />

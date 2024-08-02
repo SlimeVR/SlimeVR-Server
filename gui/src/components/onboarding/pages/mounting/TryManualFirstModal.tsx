@@ -31,7 +31,7 @@ export function TryManualFirstModal({
             <div className="flex flex-col items-center gap-2">
               <Typography
                 variant="main-title"
-                whitespace="whitespace-pre"
+                whitespace="whitespace-pre-line"
                 textAlign="text-center"
               >
                 {l10n.getString(

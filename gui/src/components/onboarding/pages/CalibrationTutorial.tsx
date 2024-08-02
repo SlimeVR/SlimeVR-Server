@@ -2,12 +2,15 @@ import { Localized, useLocalization } from '@fluent/react';
 import { useOnboarding } from '@/hooks/onboarding';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { useCountdown } from '@/hooks/countdown';
 import classNames from 'classnames';
 import { TaybolIcon } from '@/components/commons/icon/TaybolIcon';
+import { useTrackers } from '@/hooks/tracker';
+import { useRestCalibrationTrackers } from '@/hooks/imu-logic';
+import { solarVectorLength } from '@/maths/vector3';
 
 export enum CalibrationStatus {
   SUCCESS,
@@ -24,10 +27,28 @@ export function CalibrationTutorialPage() {
   const [calibrationStatus, setCalibrationStatus] = useState(
     CalibrationStatus.WAITING
   );
-  const { timer, isCounting, startCountdown } = useCountdown({
+  const { timer, isCounting, startCountdown, abortCountdown } = useCountdown({
     duration: IMU_CALIBRATION_TIME,
     onCountdownEnd: () => setCalibrationStatus(CalibrationStatus.SUCCESS),
   });
+  const { useConnectedIMUTrackers } = useTrackers();
+  const connectedIMUTrackers = useConnectedIMUTrackers();
+  const restCalibrationTrackers =
+    useRestCalibrationTrackers(connectedIMUTrackers);
+  const [rested, setRested] = useState(false);
+  useEffect(() => {
+    const accelLength = restCalibrationTrackers.every(
+      (x) => solarVectorLength(x.tracker.linearAcceleration) < 0.2
+    );
+    setRested(accelLength || restCalibrationTrackers.length === 0);
+  }, [restCalibrationTrackers]);
+
+  useEffect(() => {
+    if (calibrationStatus === CalibrationStatus.CALIBRATING && !rested) {
+      setCalibrationStatus(CalibrationStatus.ERROR);
+      abortCountdown();
+    }
+  }, [calibrationStatus, rested]);
 
   const progressBarClass = useMemo(() => {
     switch (calibrationStatus) {
@@ -101,7 +122,8 @@ export function CalibrationTutorialPage() {
                   progress={
                     isCounting
                       ? (IMU_CALIBRATION_TIME - timer) / IMU_CALIBRATION_TIME
-                      : calibrationStatus === CalibrationStatus.SUCCESS
+                      : calibrationStatus === CalibrationStatus.SUCCESS ||
+                          calibrationStatus === CalibrationStatus.ERROR
                         ? 1
                         : 0
                   }
@@ -127,9 +149,11 @@ export function CalibrationTutorialPage() {
                     setCalibrationStatus(CalibrationStatus.CALIBRATING);
                     startCountdown();
                   }}
-                  disabled={isCounting}
-                  hidden={CalibrationStatus.SUCCESS === calibrationStatus}
-                  className="xs:ml-auto"
+                  disabled={isCounting || !rested}
+                  className={classNames(
+                    'xs:ml-auto',
+                    CalibrationStatus.SUCCESS === calibrationStatus && 'hidden'
+                  )}
                 >
                   {l10n.getString('onboarding-calibration_tutorial-calibrate')}
                 </Button>
@@ -148,7 +172,7 @@ export function CalibrationTutorialPage() {
           </div>
           <div className="mobile:hidden flex self-center w-[32rem] mobile:absolute">
             <div className="stroke-none xs:fill-background-10 mobile:fill-background-50 mobile:blur-sm">
-              <TaybolIcon width="500"></TaybolIcon>
+              <TaybolIcon width="450"></TaybolIcon>
             </div>
           </div>
         </div>
