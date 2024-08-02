@@ -77,7 +77,9 @@ export function TrackersAssignPage() {
   }, []);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    setTapDetectionSettings(settings.tapDetectionSettings);
+    if (settings.tapDetectionSettings) {
+      setTapDetectionSettings(settings.tapDetectionSettings);
+    }
   });
 
   useEffect(() => {
