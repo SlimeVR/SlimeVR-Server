@@ -24,6 +24,7 @@ tips-do_not_move_heels = Không di chuyển gót chân trong khi đo
 tips-file_select = Kéo và thả tệp để sử dụng hoặc <u>duyệt</u>.
 tips-tap_setup = Bạn có thể từ từ nhấn vào 2 lần trình theo dõi của mình để chọn nó thay vì chọn nó từ menu.
 tips-turn_on_tracker = Sử dụng thiết bị SlimeVR chính thức? Hãy nhớ <b><em>bật trình theo dõi của bạn</em></b> sau khi kết nối thiết bị với máy tính!
+tips-failed_webgl = Không thể khởi tạo WebGL.
 
 ## Body parts
 
@@ -197,6 +198,7 @@ tracker-infos-hardware_rev = Revision phần cứng
 tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-imu = Cảm biến IMU (IMU Sensor)
 tracker-infos-board_type = Bảng mạch chính
+tracker-infos-network_version = Phiên bản giao thức
 
 ## Tracker settings
 
@@ -217,6 +219,7 @@ tracker-settings-name_section = Tên tracker
 tracker-settings-name_section-description = Đặt cho nó một cái tên đẹp :3
 tracker-settings-name_section-placeholder = Chân trái của JINODK
 tracker-settings-forget = Quên thiết bị
+tracker-settings-forget-description = Xóa thiết bị khỏi phần mềm SlimeVR và ngăn nó kết nối với nó cho đến khi máy chủ được khởi động lại. Cấu hình của trình theo dõi sẽ không bị mất.
 tracker-settings-forget-label = Quên thiết bị
 
 ## Tracker part card info
@@ -436,6 +439,7 @@ settings-general-gesture_control-fullResetTaps = Số lần chạm để đặt 
 settings-general-gesture_control-mountingResetEnabled = Chạm để đặt lại hướng gắn tracker
 settings-general-gesture_control-mountingResetDelay = Thời gian delay trước khi đặt lại hướng gắn tracker
 settings-general-gesture_control-mountingResetTaps = Số lần chạm cho đặt lại hướng gắn tracker
+settings-general-gesture_control-numberTrackersOverThreshold-description = Tăng số này nếu tính năng chạm thiết bị không hoạt động. Không tăng nó quá trên mức cần thiết để làm cho phát hiện chạm hoạt động vì nó sẽ gây ra nhiều kết quả sai hơn.
 
 ## Appearance settings
 
@@ -449,9 +453,12 @@ settings-general-interface-lang-description = Đổi ngôn ngữ hiển thị (C
 settings-general-interface-lang-placeholder = Chọn ngôn ngữ để sử dụng (Select the language to use)
 # Keep the font name untranslated
 settings-interface-appearance-font = Phông chữ cho GUI
+settings-interface-appearance-font-description = Cài đặt này thay đổi phông chữ được sử dụng bởi giao diện.
 settings-interface-appearance-font-placeholder = Phông chữ mặc định
 settings-interface-appearance-font-os_font = Phông chữ hệ điều hành
 settings-interface-appearance-font-slime_font = Phông chữ mặc định
+settings-interface-appearance-font_size = Tỷ lệ phông chữ cơ bản
+settings-interface-appearance-font_size-description = Điều này ảnh hưởng đến kích thước phông chữ của toàn bộ giao diện ngoại trừ bảng cài đặt này.
 
 ## Notification settings
 
@@ -459,7 +466,24 @@ settings-interface-notifications = Thông báo
 settings-general-interface-serial_detection = Nhận dạng thiết bị Serial mới
 settings-general-interface-serial_detection-description = Hiển thị pop-up mỗi lần một thiết bị Serial mới được kết nối qua USB (có thể là tracker), giúp cải thiện quá trình thiết lập tracker
 settings-general-interface-serial_detection-label = Nhận dạng thiết bị Serial mới
+settings-general-interface-feedback_sound = Âm thanh phản hồi
 settings-general-interface-feedback_sound-description = Tùy chọn này sẽ phát âm thanh khi thiết lập lại được kích hoạt.
+settings-general-interface-feedback_sound-label = Âm thanh phản hồi
+settings-general-interface-feedback_sound-volume = Âm lượng phản hồi
+settings-general-interface-connected_trackers_warning = Cảnh báo với thiết bị đã kết nối
+settings-general-interface-connected_trackers_warning-description = Tùy chọn này sẽ hiển thị cửa sổ bật lên mỗi khi bạn thử thoát khỏi SlimeVR trong khi có một hoặc nhiều thiết bị theo dõi được kết nối. Nó nhắc nhở bạn tắt trình theo dõi khi bạn hoàn tất để duy trì tuổi thọ pin.
+settings-general-interface-connected_trackers_warning-label = Cảnh báo thiết bị đã kết nối khi thoát chương trình
+settings-general-interface-use_tray = Thu nhỏ vào khay hệ thống
+settings-general-interface-use_tray-description = Cho phép bạn đóng cửa sổ mà không cần đóng máy chủ SlimeVR để bạn có thể tiếp tục sử dụng nó mà không bị GUI làm phiền.
+settings-general-interface-use_tray-label = Thu nhỏ vào khay hệ thống
+settings-general-interface-discord_presence = Chia sẻ hoạt động trên Discord
+settings-general-interface-discord_presence-description = Cho Discord của bạn biết rằng bạn đang sử dụng SlimeVR cùng với số lượng trình theo dõi IMU bạn đang sử dụng.
+settings-general-interface-discord_presence-label = Chia sẻ hoạt động trên Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Đang quay trên Slime
+       *[other] Đang dùng { $amount } điểm full body
+    }
 
 ## Serial settings
 
