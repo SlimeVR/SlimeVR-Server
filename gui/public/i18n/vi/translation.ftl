@@ -505,6 +505,9 @@ settings-serial-factory_reset-warning-cancel = Hủy
 settings-serial-get_infos = Lấy thông tin
 settings-serial-serial_select = Chọn cổng Serial
 settings-serial-auto_dropdown_item = Tự động
+settings-serial-get_wifi_scan = Quét WiFi
+settings-serial-file_type = Văn bản thô
+settings-serial-save_logs = Lưu vào tệp
 
 ## OSC router settings
 
@@ -580,6 +583,8 @@ settings-osc-vmc-vrm-model_loaded =
        *[other] Mô hình chưa có tiêu đề đã được tải
     }
 settings-osc-vmc-vrm-file_select = Kéo và thả mô hình để sử dụng hoặc <u>duyệt file</u>
+settings-osc-vmc-anchor_hip = Cố định ở hông
+settings-osc-vmc-anchor_hip-description = Cố định theo dõi ở hông, hữu ích cho VTubing ngồi. Nếu tắt, hãy tải mô hình VRM.
 
 ## Setup/onboarding menu
 
@@ -698,8 +703,14 @@ onboarding-assign_trackers-next = Hoàn thành
 
 ## Tracker mounting method choose
 
+onboarding-choose_mounting-auto_mounting = Cân chỉnh tự động
 # Italized text
 onboarding-choose_mounting-auto_mounting-label = Thử nghiệm
+onboarding-choose_mounting-auto_mounting-description = Điều này sẽ tự động phát hiện các hướng lắp đặt cho tất cả các thiết bị của bạn từ 2 tư thế
+onboarding-choose_mounting-manual_mounting = Cân chỉnh thủ công
+# Italized text
+onboarding-choose_mounting-manual_mounting-label = Khuyến khích dùng
+onboarding-choose_mounting-manual_modal-confirm = Tôi chắc chắn về những gì tôi đang làm
 onboarding-choose_mounting-manual_modal-cancel = Hủy
 
 ## Tracker manual mounting setup
@@ -733,6 +744,7 @@ onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
 
 ## Tracker proportions method choose
 
+onboarding-choose_proportions = Phương pháp hiệu chuẩn tỷ lệ nào để sử dụng?
 onboarding-choose_proportions-auto_proportions = Đo kích thước cơ thể tự động
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Khuyến khích dùng
@@ -756,6 +768,7 @@ onboarding-manual_proportions-back = Quay lại cân chỉnh hướng gắn
 onboarding-manual_proportions-title = Đo kích thước cơ thể thủ công
 onboarding-manual_proportions-precision = Cân chỉnh cụ thể (giảm hệ số chỉnh)
 onboarding-manual_proportions-auto = Đo kích thước cơ thể tự động
+onboarding-manual_proportions-ratio = Điều chỉnh theo nhóm tỷ lệ
 
 ## Tracker automatic proportions setup
 
@@ -780,6 +793,9 @@ onboarding-automatic_proportions-check_height-title = Kiểm tra chiều cao c�
 onboarding-automatic_proportions-check_height-description = Chúng tôi sử dụng chiều cao của bạn làm cơ sở cho các phép đo của chúng tôi bằng cách sử dụng chiều cao của headset (HMD) làm chiều cao ước tính thực tế của bạn, nhưng tốt hơn hết bạn nên tự kiểm tra xem chúng có đúng không!
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = Vui lòng nhấn nút trong khi đứng <u>thẳng</u> để tính chiều cao của bạn. Bạn có 3 giây sau khi nhấn nút!
+onboarding-automatic_proportions-check_height-guardian_tip =
+    Nếu bạn đang sử dụng Kính VR Standalone, hãy đảm bảo có guardian /
+    Ranh giới được bật để chiều cao của bạn là chính xác!
 onboarding-automatic_proportions-check_height-fetch_height = Tôi đang đứng!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Không rõ
@@ -844,12 +860,32 @@ status_system-StatusSteamVRDisconnected =
        *[other] Chưa kết nối với SteamVR thông qua driver SlimeVR.
     }
 status_system-StatusTrackerError = Tracker { $trackerName } có lỗi.
+status_system-StatusUnassignedHMD = Kính thực tế ảo VR này nên được giao là bộ theo dõi đầu.
 
 ## Tray Menu
 
+tray_menu-show = Xem
+tray_menu-hide = Ẩn
+tray_menu-quit = Thoát
 
 ## First exit modal
 
+tray_or_exit_modal-title = Nút đóng nên làm gì?
+# Multiline text
+tray_or_exit_modal-description =
+    Điều này cho phép bạn chọn xem bạn muốn thoát khỏi chương trình hoặc thu nhỏ nó vào khay khi nhấn nút đóng.
+    
+    Bạn có thể thay đổi điều này sau trong cài đặt giao diện.
+tray_or_exit_modal-radio-exit = Thoát khi đóng
+tray_or_exit_modal-radio-tray = Thu nhỏ vào khay hệ thống
+tray_or_exit_modal-submit = Lưu
+tray_or_exit_modal-cancel = Hủy
 
 ## Unknown device modal
 
+unknown_device-modal-title = Thiết bị mới đã được tìm thấy!
+unknown_device-modal-description =
+    Có thiết bị mới với địa chỉ MAC <b>{ $deviceId }</b>.
+    Bạn có muốn kết nối nó với SlimeVR không?
+unknown_device-modal-confirm = Chắc!
+unknown_device-modal-forget = Bỏ qua
