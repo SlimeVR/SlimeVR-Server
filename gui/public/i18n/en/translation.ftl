@@ -355,6 +355,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Feet Mounting Reset
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the headset (HMD) even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
+settings-general-fk_settings-reset_settings = Reset settings
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Reset the HMD's pitch (vertical rotation) upon doing a full reset. Useful if wearing an HMD on the forehead for VTubing or mocap. Do not enable for VR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = Reset HMD pitch
 settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for mounting reset.
 settings-general-fk_settings-arm_fk-back = Back
 settings-general-fk_settings-arm_fk-back-description = The default mode, with the upper arms going back and lower arms going forward.
@@ -477,6 +480,8 @@ settings-serial-get_infos = Get Infos
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Get WiFi Scan
+settings-serial-file_type = Plain text
+settings-serial-save_logs = Save To File
 
 ## OSC router settings
 settings-osc-router = OSC router
@@ -505,14 +510,17 @@ settings-osc-router-network-address-placeholder = IPV4 address
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
-settings-osc-vrchat-description =
-    Change VRChat-specific settings to receive headset (HMD) data and send
-    tracker data for FBT without SteamVR (ex. Quest standalone).
+settings-osc-vrchat-description-v1 =
+    Change settings specific to the OSC Trackers standard used for sending
+    tracking data to applications without SteamVR (ex. Quest standalone).
+    Make sure to enable OSC in VRChat via the Action Menu under OSC > Enabled.
+    To allow receiving HMD and controller data from VRChat, go in your main menu's
+    settings under Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
 settings-osc-vrchat-enable-label = Enable
 settings-osc-vrchat-network = Network ports
-settings-osc-vrchat-network-description = Set the ports for listening and sending data to VRChat.
+settings-osc-vrchat-network-description-v1 = Set the ports for listening and sending data. Can be left untouched for VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Port In
     .placeholder = Port in (default: 9001)
@@ -520,7 +528,7 @@ settings-osc-vrchat-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-vrchat-network-address = Network address
-settings-osc-vrchat-network-address-description = Choose which address to send out data to VRChat (check your Wi-Fi settings on your device).
+settings-osc-vrchat-network-address-description-v1 = Choose which address to send out data to. Can be left untouched for VRChat.
 settings-osc-vrchat-network-address-placeholder = VRChat ip address
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Toggle the sending of specific trackers via OSC.
