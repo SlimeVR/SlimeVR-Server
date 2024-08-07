@@ -780,11 +780,11 @@ onboarding-choose_mounting = What mounting calibration method to use?
 onboarding-choose_mounting-description = Mounting orientation corrects for the placement of trackers on your body.
 onboarding-choose_mounting-auto_mounting = Automatic mounting
 # Italized text
-onboarding-choose_mounting-auto_mounting-label = Experimental
+onboarding-choose_mounting-auto_mounting-label-v2 = Recommended
 onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting orientations for all of your trackers from 2 poses
 onboarding-choose_mounting-manual_mounting = Manual mounting
 # Italized text
-onboarding-choose_mounting-manual_mounting-label = Recommended
+onboarding-choose_mounting-manual_mounting-label-v2 = Might not be precise enough
 onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting orientation manually for each tracker
 # Multiline text
 onboarding-choose_mounting-manual_modal-title = Are you sure you want to do

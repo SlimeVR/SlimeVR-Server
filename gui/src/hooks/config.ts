@@ -34,7 +34,6 @@ export interface Config {
   textSize: number;
   fonts: string[];
   useTray: boolean | null;
-  doneManualMounting: boolean;
   mirrorView: boolean;
   assignMode: AssignMode;
   discordPresence: boolean;
@@ -60,7 +59,6 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   textSize: 12,
   fonts: ['poppins'],
   useTray: null,
-  doneManualMounting: false,
   mirrorView: true,
   assignMode: AssignMode.Core,
   discordPresence: false,
