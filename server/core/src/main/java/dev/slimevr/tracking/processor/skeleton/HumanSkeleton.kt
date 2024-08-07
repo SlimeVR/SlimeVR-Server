@@ -889,7 +889,7 @@ class HumanSkeleton(
 		var transOffset = offset
 
 		// If no head position, headShift and neckLength = 0
-		if (boneType == BoneType.HEAD || boneType == BoneType.NECK && (headTracker == null || !(headTracker!!.hasPosition && headTracker!!.hasRotation))) {
+		if ((boneType == BoneType.HEAD || boneType == BoneType.NECK) && (headTracker == null || !(headTracker!!.hasPosition && headTracker!!.hasRotation))) {
 			transOffset = NULL
 		}
 		// If trackingArmFromController, reverse
