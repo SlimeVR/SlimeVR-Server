@@ -298,11 +298,8 @@ class HumanSkeleton(
 		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true)
 
-		// Refresh headShift
-		humanPoseManager.computeNodeOffset(BoneType.HEAD)
-
-		// Refresh node offsets for arms
-		computeDependentArmOffsets()
+		// Refresh all skeleton node offsets based on new trackers
+		humanPoseManager.updateNodeOffsetsInSkeleton()
 
 		// Update tap detection's trackers
 		tapDetectionManager.updateConfig(trackers)
