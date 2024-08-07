@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 		guiWebView.clearCache(true)
 
 		// Load GUI page
-		guiWebView.loadUrl("http://127.0.0.1:8080/")
+		guiWebView.loadUrl("http://127.0.0.1:34536/")
 		LogManager.info("[MainActivity] GUI WebView has been initialized and loaded.")
 	}
 }

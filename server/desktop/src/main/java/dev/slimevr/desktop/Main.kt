@@ -122,7 +122,7 @@ fun main(args: Array<String>) {
 			::provideSteamVRBridge,
 			::provideFeederBridge,
 			{ _ -> DesktopSerialHandler() },
-			configDir,
+			configPath = configDir,
 		)
 		vrServer.start()
 

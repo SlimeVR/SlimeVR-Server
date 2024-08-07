@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '@/hooks/app';
 import { useOnboarding } from '@/hooks/onboarding';
@@ -20,7 +20,7 @@ export function ManualMountingPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
-  const { setConfig, config } = useConfig();
+  const { config } = useConfig();
 
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
 
@@ -28,10 +28,6 @@ export function ManualMountingPage() {
 
   const { useAssignedTrackers } = useTrackers();
   const assignedTrackers = useAssignedTrackers();
-
-  useEffect(() => {
-    setConfig({ doneManualMounting: true });
-  }, []);
 
   const trackerPartGrouped = useMemo(
     () =>

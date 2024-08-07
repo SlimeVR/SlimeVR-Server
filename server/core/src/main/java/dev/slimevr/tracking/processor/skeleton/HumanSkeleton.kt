@@ -298,11 +298,8 @@ class HumanSkeleton(
 		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true)
 
-		// Refresh headShift
-		humanPoseManager.computeNodeOffset(BoneType.HEAD)
-
-		// Refresh node offsets for arms
-		computeDependentArmOffsets()
+		// Refresh all skeleton node offsets based on new trackers
+		humanPoseManager.updateNodeOffsetsInSkeleton()
 
 		// Update tap detection's trackers
 		tapDetectionManager.updateConfig(trackers)
@@ -784,8 +781,8 @@ class HumanSkeleton(
 	}
 
 	/**
-	 * Rotates the first Quaternion to match its yaw and roll to the rotation of
-	 * the average of the second and third quaternions.
+	 * Rotates the third Quaternion to match its yaw and roll to the rotation of
+	 * the average of the first and second quaternions.
 	 *
 	 * @param leftKnee the first Quaternion
 	 * @param rightKnee the second Quaternion
@@ -889,7 +886,7 @@ class HumanSkeleton(
 		var transOffset = offset
 
 		// If no head position, headShift and neckLength = 0
-		if (boneType == BoneType.HEAD || boneType == BoneType.NECK && (headTracker == null || !(headTracker!!.hasPosition && headTracker!!.hasRotation))) {
+		if ((boneType == BoneType.HEAD || boneType == BoneType.NECK) && (headTracker == null || !(headTracker!!.hasPosition && headTracker!!.hasRotation))) {
 			transOffset = NULL
 		}
 		// If trackingArmFromController, reverse
@@ -1033,7 +1030,8 @@ class HumanSkeleton(
 	 */
 	val isTrackingRightArmFromController: Boolean
 		get() = rightHandTracker != null && rightHandTracker!!.hasPosition && !forceArmsFromHMD
-	val localTrackers: List<Tracker?>
+
+	val trackersToReset: List<Tracker?>
 		get() = listOf(
 			neckTracker,
 			chestTracker,
@@ -1056,19 +1054,16 @@ class HumanSkeleton(
 		)
 
 	fun resetTrackersFull(resetSourceName: String?) {
-		val trackersToReset = humanPoseManager.trackersToReset
-
-		// Resets all axis of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			if (it.needsReset) {
-				it.resetsHandler.resetFull(referenceRotation)
-			} else {
-				referenceRotation = it.getRotation()
-			}
+			// Always reset the head (ifs in resetsHandler)
+			it.resetsHandler.resetFull(referenceRotation)
+			referenceRotation = it.getRotation()
 		}
+		// Resets all axes of the trackers with the HMD as reference.
 		for (tracker in trackersToReset) {
-			if (tracker != null && tracker.needsReset) {
+			// Only reset if tracker needsReset
+			if (tracker != null && (tracker.needsReset || tracker.isHmd)) {
 				tracker.resetsHandler.resetFull(referenceRotation)
 			}
 		}
@@ -1080,58 +1075,54 @@ class HumanSkeleton(
 		}
 		legTweaks.resetBuffer()
 		localizer.reset()
-		LogManager.info(String.format("[HumanSkeleton] Reset: full (%s)", resetSourceName))
+		LogManager.info("[HumanSkeleton] Reset: full ($resetSourceName)")
 	}
 
 	@VRServerThread
 	fun resetTrackersYaw(resetSourceName: String?) {
-		val trackersToReset = humanPoseManager.trackersToReset
-
 		// Resets the yaw of the trackers with the head as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			if (it.needsReset) {
+			// Only reset if head needsReset and isn't computed
+			if (it.needsReset && !it.isComputed) {
 				it.resetsHandler.resetYaw(referenceRotation)
-			} else {
-				referenceRotation = it.getRotation()
 			}
+			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
+			// Only reset if tracker needsReset
 			if (tracker != null && tracker.needsReset) {
 				tracker.resetsHandler.resetYaw(referenceRotation)
 			}
 		}
 		legTweaks.resetBuffer()
-		LogManager.info(String.format("[HumanSkeleton] Reset: yaw (%s)", resetSourceName))
+		LogManager.info("[HumanSkeleton] Reset: yaw ($resetSourceName)")
 	}
 
 	@VRServerThread
 	fun resetTrackersMounting(resetSourceName: String?) {
-		val trackersToReset = humanPoseManager.trackersToReset
-
-		// Resets the mounting orientation of the trackers with the HMD as
-		// reference.
+		// Resets the mounting orientation of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			if (it.needsMounting) {
+			// Only reset if head needsMounting or is computed but not HMD
+			if (it.needsMounting || (it.isComputed && !it.isHmd)) {
 				it.resetsHandler.resetMounting(referenceRotation)
-			} else {
-				referenceRotation = it.getRotation()
 			}
+			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
+			// Only reset if tracker needsMounting
 			if (tracker != null && tracker.needsMounting) {
 				tracker.resetsHandler.resetMounting(referenceRotation)
 			}
 		}
 		legTweaks.resetBuffer()
 		localizer.reset()
-		LogManager.info(String.format("[HumanSkeleton] Reset: mounting (%s)", resetSourceName))
+		LogManager.info("[HumanSkeleton] Reset: mounting ($resetSourceName)")
 	}
 
 	@VRServerThread
 	fun clearTrackersMounting(resetSourceName: String?) {
-		val trackersToReset = humanPoseManager.trackersToReset
 		headTracker?.let {
 			if (it.needsMounting) it.resetsHandler.clearMounting()
 		}
@@ -1143,7 +1134,7 @@ class HumanSkeleton(
 			}
 		}
 		legTweaks.resetBuffer()
-		LogManager.info(String.format("[HumanSkeleton] Clear: mounting (%s)", resetSourceName))
+		LogManager.info("[HumanSkeleton] Clear: mounting ($resetSourceName)")
 	}
 
 	fun updateTapDetectionConfig() {
@@ -1229,7 +1220,7 @@ class HumanSkeleton(
 			legTweaks.resetBuffer()
 		}
 		this.pauseTracking = pauseTracking
-		LogManager.info(String.format("[HumanSkeleton] ${if (pauseTracking) "Pause" else "Unpause"} tracking (%s)", sourceName))
+		LogManager.info("[HumanSkeleton] ${if (pauseTracking) "Pause" else "Unpause"} tracking ($sourceName)")
 		// Report the new state of tracking pause
 		humanPoseManager.trackingPauseHandler.sendTrackingPauseState(pauseTracking)
 	}

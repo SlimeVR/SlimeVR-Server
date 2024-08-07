@@ -134,9 +134,11 @@ export function ResetTutorialPage() {
             </Button>
 
             <Button
-              hidden={curIndex + 1 >= order.length}
               variant="secondary"
-              className="ml-auto"
+              className={classNames(
+                'ml-auto',
+                curIndex + 1 >= order.length && 'hidden'
+              )}
               onClick={() => {
                 setCurIndex(curIndex + 1);
               }}
