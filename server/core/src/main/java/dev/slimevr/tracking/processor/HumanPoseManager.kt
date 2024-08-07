@@ -495,6 +495,14 @@ class HumanPoseManager(val server: VRServer?) {
 	}
 
 	/**
+	 * Updates all the node offsets in the skeleton
+	 */
+	fun updateNodeOffsetsInSkeleton() {
+		if (!isSkeletonPresent) return
+		skeletonConfigManager.updateNodeOffsetsInSkeleton()
+	}
+
+	/**
 	 * Update the given toggle to the new given value in the skeleton
 	 *
 	 * @param configToggle the toggle to update

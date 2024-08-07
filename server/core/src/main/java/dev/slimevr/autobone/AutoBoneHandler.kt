@@ -151,7 +151,7 @@ class AutoBoneHandler(private val server: VRServer) {
 		} catch (e: Exception) {
 			announceProcessStatus(
 				AutoBoneProcessType.RECORD,
-				String.format("Recording failed: %s", e.message),
+				"Recording failed: ${e.message}",
 				completed = true,
 				success = false,
 			)
@@ -212,7 +212,7 @@ class AutoBoneHandler(private val server: VRServer) {
 		} catch (e: Exception) {
 			announceProcessStatus(
 				AutoBoneProcessType.SAVE,
-				String.format("Failed to save recording: %s", e.message),
+				"Failed to save recording: ${e.message}",
 				completed = true,
 				success = false,
 			)
@@ -329,7 +329,7 @@ class AutoBoneHandler(private val server: VRServer) {
 		} catch (e: Exception) {
 			announceProcessStatus(
 				AutoBoneProcessType.PROCESS,
-				String.format("Processing failed: %s", e.message),
+				"Processing failed: ${e.message}",
 				completed = true,
 				success = false,
 			)
