@@ -298,11 +298,8 @@ class HumanSkeleton(
 		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true)
 
-		// Refresh headShift
-		humanPoseManager.computeNodeOffset(BoneType.HEAD)
-
-		// Refresh node offsets for arms
-		computeDependentArmOffsets()
+		// Refresh all skeleton node offsets based on new trackers
+		humanPoseManager.updateNodeOffsetsInSkeleton()
 
 		// Update tap detection's trackers
 		tapDetectionManager.updateConfig(trackers)
@@ -889,7 +886,7 @@ class HumanSkeleton(
 		var transOffset = offset
 
 		// If no head position, headShift and neckLength = 0
-		if (boneType == BoneType.HEAD || boneType == BoneType.NECK && (headTracker == null || !(headTracker!!.hasPosition && headTracker!!.hasRotation))) {
+		if ((boneType == BoneType.HEAD || boneType == BoneType.NECK) && (headTracker == null || !(headTracker!!.hasPosition && headTracker!!.hasRotation))) {
 			transOffset = NULL
 		}
 		// If trackingArmFromController, reverse
@@ -1078,7 +1075,7 @@ class HumanSkeleton(
 		}
 		legTweaks.resetBuffer()
 		localizer.reset()
-		LogManager.info(String.format("[HumanSkeleton] Reset: full (%s)", resetSourceName))
+		LogManager.info("[HumanSkeleton] Reset: full ($resetSourceName)")
 	}
 
 	@VRServerThread
@@ -1099,7 +1096,7 @@ class HumanSkeleton(
 			}
 		}
 		legTweaks.resetBuffer()
-		LogManager.info(String.format("[HumanSkeleton] Reset: yaw (%s)", resetSourceName))
+		LogManager.info("[HumanSkeleton] Reset: yaw ($resetSourceName)")
 	}
 
 	@VRServerThread
@@ -1121,7 +1118,7 @@ class HumanSkeleton(
 		}
 		legTweaks.resetBuffer()
 		localizer.reset()
-		LogManager.info(String.format("[HumanSkeleton] Reset: mounting (%s)", resetSourceName))
+		LogManager.info("[HumanSkeleton] Reset: mounting ($resetSourceName)")
 	}
 
 	@VRServerThread
@@ -1137,7 +1134,7 @@ class HumanSkeleton(
 			}
 		}
 		legTweaks.resetBuffer()
-		LogManager.info(String.format("[HumanSkeleton] Clear: mounting (%s)", resetSourceName))
+		LogManager.info("[HumanSkeleton] Clear: mounting ($resetSourceName)")
 	}
 
 	fun updateTapDetectionConfig() {
@@ -1223,7 +1220,7 @@ class HumanSkeleton(
 			legTweaks.resetBuffer()
 		}
 		this.pauseTracking = pauseTracking
-		LogManager.info(String.format("[HumanSkeleton] ${if (pauseTracking) "Pause" else "Unpause"} tracking (%s)", sourceName))
+		LogManager.info("[HumanSkeleton] ${if (pauseTracking) "Pause" else "Unpause"} tracking ($sourceName)")
 		// Report the new state of tracking pause
 		humanPoseManager.trackingPauseHandler.sendTrackingPauseState(pauseTracking)
 	}
