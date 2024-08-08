@@ -12,6 +12,9 @@ class FirmwareFeatures {
 		// EXAMPLE_FEATURE,
 
 		// Add new flags here
+		REMOTE_COMMAND,
+		B64_WIFI_SCANNING,
+		SENSOR_CONFIG,
 
 		BITS_TOTAL,
 	}
@@ -32,7 +35,7 @@ class FirmwareFeatures {
 		fun from(received: ByteBuffer, length: Int): FirmwareFeatures {
 			val res = FirmwareFeatures()
 			res.available = true
-			received.get(res.flags, 0, Math.min(res.flags.size, length))
+			received.get(res.flags, 0, res.flags.size.coerceAtMost(length))
 			return res
 		}
 	}
