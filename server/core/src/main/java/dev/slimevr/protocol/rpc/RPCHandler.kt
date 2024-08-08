@@ -549,4 +549,4 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		private const val RESET_SOURCE_NAME = "WebSocketAPI"
 	}
 }
-const val MAG_TIMEOUT: Long = 5000L
+const val MAG_TIMEOUT: Long = 10_000L
