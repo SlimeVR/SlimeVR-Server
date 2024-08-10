@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.trackers
 
 import com.jme3.math.FastMath
+import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import kotlin.math.*
@@ -12,24 +13,41 @@ import kotlin.math.*
 class TrackerFlexHandler(val tracker: Tracker) {
 	private var minResistance = Float.MIN_VALUE
 	private var maxResistance = Float.MAX_VALUE
+
+	// Used to support resistance going both ways.
+	// Default is higher = more bend, but can change after a full and mounting reset.
+	private var lastMinResetResistance = Float.MIN_VALUE
+	private var resistanceReversed = false
 	private var lastResistance = 0f
 	private val thumbInitialOffset = FastMath.PI / 8 // 22.5 deg
 
 	/**
-	 * Resets the min resistance from the last resistance value received
+	 * Resets the min resistance from the last resistance value received.
+	 * Triggered from full reset
 	 */
 	fun resetMin() {
 		minResistance = lastResistance
+		lastMinResetResistance = lastResistance
 
 		setFlexResistance(lastResistance)
 		tracker.dataTick()
 	}
 
 	/**
-	 * Resets the max resistance from the last resistance value received
+	 * Resets the max resistance from the last resistance value received.
+	 * Triggered from mounting reset
 	 */
 	fun resetMax() {
-		maxResistance = lastResistance
+		// Account for the resistance being able to be reversed
+		if (resistanceReversed != lastResistance < lastMinResetResistance) {
+			// Switching
+			resistanceReversed = lastResistance < lastMinResetResistance
+			minResistance = maxResistance
+			maxResistance = lastMinResetResistance
+		} else {
+			// Not switching
+			maxResistance = lastResistance
+		}
 
 		setFlexResistance(lastResistance)
 		tracker.dataTick()
@@ -38,23 +56,28 @@ class TrackerFlexHandler(val tracker: Tracker) {
 	/**
 	 * Sets the flex resistance which is then calculated into an angle
 	 */
-	// TODO support resistance going both ways
 	fun setFlexResistance(resistance: Float) {
-		// Update min and max if needed
+		// Dynamically calibrate the minimum resistance
 		minResistance = if (minResistance == Float.MIN_VALUE) {
 			resistance
-		} else if (minResistance > maxResistance) {
-			max(minResistance, resistance)
-		} else {
+		} else if (!resistanceReversed) {
 			min(minResistance, resistance)
+		} else {
+			max(minResistance, resistance)
 		}
+
+		// Dynamically calibrate the maximum resistance
 		maxResistance = if (maxResistance == Float.MAX_VALUE) {
 			resistance
-		} else if (maxResistance < minResistance) {
-			min(maxResistance, resistance)
-		} else {
+		} else if (!resistanceReversed) {
 			max(maxResistance, resistance)
+		} else {
+			min(maxResistance, resistance)
 		}
+
+		LogManager.debug("Min = $minResistance")
+		LogManager.debug("Max = $maxResistance")
+		LogManager.debug("Reversed = $resistanceReversed")
 
 		// Get max angle
 		val maxBend = getMaxAngleForTrackerPosition(tracker.trackerPosition)
