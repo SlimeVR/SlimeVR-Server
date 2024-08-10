@@ -1,9 +1,11 @@
 package dev.slimevr.tracking.trackers
 
+// Note: there is a -1 offset when receiving via UDP, thus ROTATION must be sent as 0 from firmware.
 enum class TrackerDataSupport(val id: Int) {
-	ROTATION(0),
-	FLEX_RESISTANCE(1),
-	FLEX_ANGLE(2),
+	OTHER(0),
+	ROTATION(1),
+	FLEX_RESISTANCE(2),
+	FLEX_ANGLE(3),
 	;
 
 	companion object {

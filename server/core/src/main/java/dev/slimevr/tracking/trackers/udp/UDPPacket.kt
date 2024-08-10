@@ -140,7 +140,7 @@ data class UDPPacket3Handshake(
 			if (macString == "00:00:00:00:00:00") macString = null
 		}
 		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.int)
-		if (buf.remaining() > 0) trackerDataSupport = TrackerDataSupport.getById(buf.int) ?: TrackerDataSupport.ROTATION
+		if (buf.remaining() > 0) trackerDataSupport = TrackerDataSupport.getById(buf.int + 1) ?: TrackerDataSupport.ROTATION
 	}
 
 	override fun writeData(buf: ByteBuffer) {
@@ -242,7 +242,7 @@ data class UDPPacket15SensorInfo(
 				IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
 		}
 		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.int)
-		if (buf.remaining() > 0) trackerDataSupport = TrackerDataSupport.getById(buf.int) ?: TrackerDataSupport.ROTATION
+		if (buf.remaining() > 0) trackerDataSupport = TrackerDataSupport.getById(buf.int + 1) ?: TrackerDataSupport.ROTATION
 	}
 
 	companion object {
