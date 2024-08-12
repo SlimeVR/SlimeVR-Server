@@ -5,18 +5,12 @@ import { SkipSetupWarningModal } from '@/components/onboarding/SkipSetupWarningM
 import classNames from 'classnames';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
-import { TryManualFirstModal } from './TryManualFirstModal';
-import { useConfig } from '@/hooks/config';
-import { useNavigate } from 'react-router-dom';
 
 export function MountingChoose() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
-  const navigate = useNavigate();
-  const { config, setConfig } = useConfig();
   const [animated, setAnimated] = useState(false);
   const [skipWarning, setSkipWarning] = useState(false);
-  const [manualModal, setManualModal] = useState(false);
 
   applyProgress(0.65);
 
@@ -58,7 +52,7 @@ export function MountingChoose() {
                     </Typography>
                     <Typography variant="vr-accessible" italic>
                       {l10n.getString(
-                        'onboarding-choose_mounting-auto_mounting-label'
+                        'onboarding-choose_mounting-auto_mounting-label-v2'
                       )}
                     </Typography>
                   </div>
@@ -71,17 +65,8 @@ export function MountingChoose() {
                   </div>
                 </div>
                 <Button
-                  variant={!state.alonePage ? 'secondary' : 'tertiary'}
-                  to={
-                    config?.doneManualMounting
-                      ? '/onboarding/mounting/auto'
-                      : undefined
-                  }
-                  onClick={
-                    !config?.doneManualMounting
-                      ? () => setManualModal(true)
-                      : undefined
-                  }
+                  variant="primary"
+                  to={'/onboarding/mounting/auto'}
                   className="self-start mt-auto"
                   state={{ alonePage: state.alonePage }}
                 >
@@ -115,7 +100,7 @@ export function MountingChoose() {
                     </Typography>
                     <Typography variant="vr-accessible" italic>
                       {l10n.getString(
-                        'onboarding-choose_mounting-manual_mounting-label'
+                        'onboarding-choose_mounting-manual_mounting-label-v2'
                       )}
                     </Typography>
                   </div>
@@ -129,7 +114,7 @@ export function MountingChoose() {
                 </div>
 
                 <Button
-                  variant="primary"
+                  variant={!state.alonePage ? 'secondary' : 'tertiary'}
                   to="/onboarding/mounting/manual"
                   className="self-start mt-auto"
                   state={{ alonePage: state.alonePage }}
@@ -152,14 +137,6 @@ export function MountingChoose() {
           )}
         </div>
       </div>
-      <TryManualFirstModal
-        isOpen={manualModal}
-        accept={() => {
-          setConfig({ doneManualMounting: true });
-          navigate('/onboarding/mounting/auto');
-        }}
-        cancel={() => setManualModal(false)}
-      ></TryManualFirstModal>
       <SkipSetupWarningModal
         accept={skipSetup}
         onClose={() => setSkipWarning(false)}

@@ -34,6 +34,7 @@ interface Kernel32IO extends Kernel32 {
 public class WindowsNamedPipeBridge extends SteamVRBridge {
 	private static final Kernel32 k32 = Kernel32.INSTANCE;
 	private static final Kernel32IO k32io = Kernel32IO.INSTANCE;
+	private static final Advapi32 adv32 = Advapi32.INSTANCE;
 
 	protected final String pipeName;
 	private final byte[] buffArray = new byte[2048];
@@ -251,6 +252,20 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 
 	private void createPipe() throws IOException {
 		try {
+			WinNT.SECURITY_DESCRIPTOR descriptor = new WinNT.SECURITY_DESCRIPTOR(64 * 1024);
+			adv32.InitializeSecurityDescriptor(descriptor, WinNT.SECURITY_DESCRIPTOR_REVISION);
+			adv32.SetSecurityDescriptorDacl(descriptor, true, null, false);
+			adv32
+				.SetSecurityDescriptorControl(
+					descriptor,
+					(short) WinNT.SE_DACL_PROTECTED,
+					(short) WinNT.SE_DACL_PROTECTED
+				);
+
+			WinBase.SECURITY_ATTRIBUTES attributes = new WinBase.SECURITY_ATTRIBUTES();
+			attributes.lpSecurityDescriptor = descriptor.getPointer();
+			attributes.bInheritHandle = false;
+
 			pipe = new WindowsPipe(
 				k32
 					.CreateNamedPipe(
@@ -261,7 +276,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 						1024 * 16, // nOutBufferSize,
 						1024 * 16, // nInBufferSize,
 						0, // nDefaultTimeOut,
-						null // lpSecurityAttributes
+						attributes // lpSecurityAttributes
 					),
 				pipeName
 			);
