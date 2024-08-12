@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '@/hooks/app';
 import { useOnboarding } from '@/hooks/onboarding';
@@ -7,6 +7,7 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
   MountingOrientationDegreesToQuatT,
   QuaternionFromQuatT,
+  similarQuaternions,
 } from '@/maths/quaternion';
 import { Button } from '@/components/commons/Button';
 import { TipBox } from '@/components/commons/TipBox';
@@ -67,12 +68,20 @@ export function ManualMountingPage() {
 
   const getCurrRotation = useCallback(
     (role: BodyPart) => {
+      if (role === BodyPart.NONE) return undefined;
+
       const trackers = trackerPartGrouped[role] || [];
-      if (!trackers.length || role === BodyPart.NONE) return undefined;
-      const mountingOrientation = trackers[0].tracker.info?.mountingOrientation;
-      return mountingOrientation
-        ? QuaternionFromQuatT(mountingOrientation)
-        : undefined;
+      const [mountingOrientation, ...orientation] = trackers
+        .map((td) => td.tracker.info?.mountingOrientation)
+        .filter((orientation) => !!orientation)
+        .map((orientation) => QuaternionFromQuatT(orientation));
+
+      const identicalOrientations =
+        mountingOrientation !== undefined &&
+        orientation.every((quat) =>
+          similarQuaternions(quat, mountingOrientation)
+        );
+      return identicalOrientations ? mountingOrientation : undefined;
     },
     [trackerPartGrouped]
   );
