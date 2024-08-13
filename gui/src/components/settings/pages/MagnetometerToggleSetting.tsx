@@ -12,6 +12,7 @@ import {
   RpcMessage,
   TrackerIdT,
 } from 'solarxr-protocol';
+import { Link } from 'react-router-dom';
 
 interface MagnetometerToggleForm {
   magToggle: boolean;
@@ -21,14 +22,18 @@ export function MagnetometerToggleSetting({
   trackerNum,
   deviceId,
   settingType,
+  id,
 }: {
   trackerNum?: number;
   deviceId?: number;
   settingType: 'general' | 'tracker';
+  id?: string;
 }) {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const originalValue = useRef<boolean | null>(null);
+  // used to disable the tracker specific toggle if false
+  const [globalToggle, setGlobalToggle] = useState(false);
   const [waitingMag, setWaitingMag] = useState(false);
   const { control, watch, handleSubmit, reset } =
     useForm<MagnetometerToggleForm>({
@@ -67,19 +72,21 @@ export function MagnetometerToggleSetting({
         trackerNum
       );
       req.trackerId = id;
+      sendRPCPacket(RpcMessage.MagToggleRequest, new MagToggleRequestT());
     }
     sendRPCPacket(RpcMessage.MagToggleRequest, req);
   }, [trackerNum, deviceId]);
 
   useRPCPacket(RpcMessage.MagToggleResponse, (mag: MagToggleResponseT) => {
-    console.log(mag);
+    if (trackerNum !== undefined && mag.trackerId?.trackerNum === undefined) {
+      setGlobalToggle(mag.enable);
+    }
     if (
       mag.trackerId?.trackerNum !== trackerNum ||
       mag.trackerId?.deviceId?.id !== deviceId
     ) {
       return;
     }
-    console.log('yay');
     originalValue.current = mag.enable;
     setWaitingMag(false);
     reset({ magToggle: mag.enable });
@@ -87,7 +94,7 @@ export function MagnetometerToggleSetting({
 
   return settingType === 'general' ? (
     <>
-      <div className="flex flex-col pt-5 pb-3">
+      <div className="flex flex-col pt-5 pb-3" id={id}>
         <Typography bold>
           {l10n.getString(
             'settings-general-tracker_mechanics-use_mag_on_all_trackers'
@@ -115,21 +122,34 @@ export function MagnetometerToggleSetting({
       />
     </>
   ) : (
-    <div className="flex flex-col gap-2 w-full mt-3">
+    <div className="flex flex-col gap-2 w-full mt-3" id={id}>
       <Typography variant="section-title">
         {l10n.getString('tracker-settings-use_mag')}
       </Typography>
       <Localized
         id="tracker-settings-use_mag-description"
-        elems={{ b: <b></b> }}
+        elems={{
+          b: <b></b>,
+          magSetting: (
+            <Link
+              to="/settings/trackers"
+              state={{ scrollTo: 'mechanics-magnetometer' }}
+              className="underline"
+            ></Link>
+          ),
+        }}
       >
-        <Typography color="secondary"></Typography>
+        <Typography
+          color="secondary"
+          whitespace="whitespace-pre-line"
+        ></Typography>
       </Localized>
       <div className="flex">
         <CheckBox
           variant="toggle"
           outlined
           loading={waitingMag}
+          disabled={!globalToggle}
           name="magToggle"
           control={control}
           label={l10n.getString('tracker-settings-use_mag-label')}

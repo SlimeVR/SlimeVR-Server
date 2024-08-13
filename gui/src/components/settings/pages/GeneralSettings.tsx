@@ -759,7 +759,10 @@ export function GeneralSettings() {
                 'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
               )}
             />
-            <MagnetometerToggleSetting settingType="general" />
+            <MagnetometerToggleSetting
+              settingType="general"
+              id="mechanics-magnetometer"
+            />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout
