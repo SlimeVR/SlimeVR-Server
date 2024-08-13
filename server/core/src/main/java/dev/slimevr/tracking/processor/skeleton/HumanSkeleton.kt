@@ -1034,6 +1034,7 @@ class HumanSkeleton(
 	val trackersToReset: List<Tracker?>
 		get() = listOf(
 			neckTracker,
+			upperChestTracker,
 			chestTracker,
 			waistTracker,
 			hipTracker,

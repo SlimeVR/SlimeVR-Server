@@ -24,6 +24,9 @@
 -dontwarn org.apache.logging.log4j.message.MessageFactory
 -dontwarn org.apache.logging.log4j.spi.ExtendedLogger
 -dontwarn org.apache.logging.log4j.spi.ExtendedLoggerWrapper
+-dontwarn org.apache.log4j.Level
+-dontwarn org.apache.log4j.Logger
+-dontwarn org.apache.log4j.Priority
 -dontwarn org.conscrypt.BufferAllocator
 -dontwarn org.conscrypt.Conscrypt
 -dontwarn org.conscrypt.HandshakeListener
