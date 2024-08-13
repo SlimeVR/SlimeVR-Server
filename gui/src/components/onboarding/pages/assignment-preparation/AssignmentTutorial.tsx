@@ -3,7 +3,7 @@ import { useOnboarding } from '@/hooks/onboarding';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { useTrackers } from '@/hooks/tracker';
-import { useBnoExists } from '@/hooks/imu-logic';
+import { useIsRestCalibrationTrackers } from '@/hooks/imu-logic';
 import { StickerSlime } from './StickerSlime';
 import { TrackerArrow } from './TrackerArrow';
 import { ExtensionArrow } from './ExtensionArrow';
@@ -13,7 +13,7 @@ export function AssignmentTutorialPage() {
   const { applyProgress } = useOnboarding();
   const { useConnectedIMUTrackers } = useTrackers();
   const connectedIMUTrackers = useConnectedIMUTrackers();
-  const bnoExists = useBnoExists(connectedIMUTrackers);
+  const isRestCalibration = useIsRestCalibrationTrackers(connectedIMUTrackers);
 
   applyProgress(0.46);
 
@@ -67,7 +67,7 @@ export function AssignmentTutorialPage() {
               <Button
                 variant="secondary"
                 to={
-                  bnoExists
+                  isRestCalibration
                     ? '/onboarding/calibration-tutorial'
                     : '/onboarding/wifi-creds'
                 }

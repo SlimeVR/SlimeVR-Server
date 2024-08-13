@@ -110,7 +110,7 @@ export function ToggleableSkeletonVisualizerWidget(
         </Button>
       )}
       {enabled && (
-        <>
+        <div className="flex flex-col gap-2">
           <Button
             className="w-full"
             variant="secondary"
@@ -121,9 +121,8 @@ export function ToggleableSkeletonVisualizerWidget(
           >
             {l10n.getString('widget-skeleton_visualizer-hide')}
           </Button>
-
           <SkeletonVisualizerWidget {...props} />
-        </>
+        </div>
       )}
     </>
   );
@@ -197,7 +196,7 @@ export function SkeletonVisualizerWidget({
 
   if (!skeleton.current) return <></>;
   return (
-    <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
+    <div className="bg-background-60 flex flex-col p-3 rounded-lg gap-2">
       <ErrorBoundary
         fallback={
           <Typography color="primary" textAlign="text-center">

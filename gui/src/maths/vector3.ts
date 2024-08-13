@@ -3,6 +3,12 @@ import { Vector3 } from 'three';
 
 export type Vector3Object = { x: number; y: number; z: number };
 
+export function averageVector(vecs: Vector3[]) {
+  if (vecs.length === 0) return new Vector3();
+  const sum = vecs.reduce((prev, curr) => prev.add(curr), new Vector3());
+  return sum.divideScalar(vecs.length);
+}
+
 export function Vector3FromVec3fT(vec?: Vector3Object | null) {
   return vec ? new Vector3(vec.x, vec.y, vec.z) : new Vector3();
 }

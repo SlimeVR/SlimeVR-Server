@@ -117,7 +117,7 @@ export function TrackerAssignOptions({
       disabled={connectedIMUTrackers > trackersCount && mode !== AssignMode.All}
       className="hidden"
     >
-      <div className="flex flex-row md:gap-4 sm:gap-2 mobile:gap-2">
+      <div className="flex flex-row md:gap-4 gap-2">
         <ItemContent mode={mode} trackersCount={trackersCount}></ItemContent>
       </div>
     </Radio>

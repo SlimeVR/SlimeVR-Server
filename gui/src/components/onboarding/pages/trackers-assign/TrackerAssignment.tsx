@@ -77,7 +77,9 @@ export function TrackersAssignPage() {
   }, []);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    setTapDetectionSettings(settings.tapDetectionSettings);
+    if (settings.tapDetectionSettings) {
+      setTapDetectionSettings(settings.tapDetectionSettings);
+    }
   });
 
   useEffect(() => {
@@ -265,7 +267,7 @@ export function TrackersAssignPage() {
       <NeckWarningModal
         isOpen={shouldShowChokerWarn}
         overlayClassName={classNames(
-          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20'
+          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-background-90 bg-opacity-90 z-20'
         )}
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}
@@ -296,7 +298,7 @@ export function TrackersAssignPage() {
                   </div>
                 </div>
               )}
-              <div className="flex flex-col md:gap-4 sm:gap-2 mobile:gap-4">
+              <div className="flex flex-col md:gap-4 sm:gap-2 xs:gap-1 mobile:gap-4">
                 <TrackerAssignOptions
                   variant={isMobile ? 'dropdown' : 'radio'}
                 />

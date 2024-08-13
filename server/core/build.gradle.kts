@@ -50,6 +50,7 @@ allprojects {
 		// Use jcenter for resolving dependencies.
 		// You can declare any Maven/Ivy/file repository here.
 		mavenCentral()
+		maven(url = "https://jitpack.io")
 	}
 }
 
@@ -73,6 +74,9 @@ dependencies {
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 	implementation("it.unimi.dsi:fastutil:8.5.12")
+
+	// Jitpack
+	implementation("com.github.SlimeVR:oscquery-kt:566a0cba58")
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework
