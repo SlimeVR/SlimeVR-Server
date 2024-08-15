@@ -329,7 +329,7 @@ export function GeneralSettings() {
     if (settings.steamVrTrackers) {
       formData.trackers = settings.steamVrTrackers;
       if (
-        settings.steamVrTrackers.leftHand &&
+        settings.steamVrTrackers.leftHand ||
         settings.steamVrTrackers.rightHand
       ) {
         setHandsWarning(false);

@@ -266,8 +266,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		makeIdentityAdjustmentQuatsFull()
 
-		// (don't adjust yaw if head and computed)
-		if (tracker.trackerPosition != TrackerPosition.HEAD || tracker.isComputed) {
+		// Don't adjust yaw if head and computed
+		if (tracker.trackerPosition != TrackerPosition.HEAD || !tracker.isComputed) {
 			yawFix = fixYaw(mountingAdjustedRotation, reference)
 			yawResetSmoothTimeRemain = 0.0f
 		}

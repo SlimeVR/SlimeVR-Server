@@ -5,6 +5,7 @@ import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { useEffect, useRef, useState } from 'react';
 import { PlayCircleIcon } from '@/components/commons/icon/PlayIcon';
+import { useDebouncedEffect } from '@/hooks/timeout';
 
 export function StartRecording({
   nextStep,
@@ -32,6 +33,14 @@ export function StartRecording({
     }
     setPaused(videoRef.current.paused);
   }
+
+  useDebouncedEffect(
+    () => {
+      if (paused) videoRef.current?.pause();
+    },
+    [paused],
+    250
+  );
 
   useEffect(() => {
     if (!active && !paused) toggleVideo();
@@ -87,7 +96,7 @@ export function StartRecording({
             </div>
 
             <video
-              preload=""
+              preload="auto"
               ref={videoRef}
               src="/videos/autobone.webm"
               className="min-w-[12rem] w-[12rem]"

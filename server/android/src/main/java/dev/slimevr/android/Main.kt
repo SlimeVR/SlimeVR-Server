@@ -30,7 +30,7 @@ val vrServerInitialized: Boolean
 
 fun main(activity: AppCompatActivity) {
 	// Host the web GUI server
-	embeddedServer(Netty, port = 8080) {
+	embeddedServer(Netty, port = 34536) {
 		routing {
 			install(CachingHeaders) {
 				options { _, _ ->

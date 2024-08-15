@@ -21,7 +21,7 @@ import { ProgressBar } from '@/components/commons/ProgressBar';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';
-import { useBnoExists } from '@/hooks/imu-logic';
+import { useIsRestCalibrationTrackers } from '@/hooks/imu-logic';
 import './ConnectTracker.scss';
 
 const statusLabelMap = {
@@ -67,7 +67,7 @@ export function ConnectTrackersPage() {
 
   const connectedIMUTrackers = useConnectedIMUTrackers();
 
-  const bnoExists = useBnoExists(connectedIMUTrackers);
+  const bnoExists = useIsRestCalibrationTrackers(connectedIMUTrackers);
 
   useEffect(() => {
     if (!state.wifi) {
