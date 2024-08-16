@@ -40,7 +40,7 @@ async fn make_client(subs: ds::Subscriptions) -> Result<Option<DiscordClient>> {
 		}
 	};
 
-	log::info!(target: "discord_presence", "connected to Discord, local user name is {}", user.username);
+	log::info!(target: "discord_presence", "connected to Discord!");
 
 	Ok(Some(DiscordClient { discord, wheel }))
 }
