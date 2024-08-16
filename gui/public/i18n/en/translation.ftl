@@ -837,6 +837,15 @@ onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
+onboarding-choose_proportions-scaled_proportions = Scaled proportions
+# Italized text
+onboarding-choose_proportions-scaled_proportions-subtitle = Recommended for new users
+# Multiline string
+onboarding-choose_proportions-scaled_proportions-description =
+    This will scale the proportions of an average human body based on your height, this will help for basic full-body tracking.
+
+    <b>This requires having your headset (HMD) connected to SlimeVR and on your head!</b>
+onboarding-choose_proportions-scaled_proportions-button = Scaled proportions
 onboarding-choose_proportions-export = Export proportions
 onboarding-choose_proportions-import = Import proportions
 onboarding-choose_proportions-import-success = Imported

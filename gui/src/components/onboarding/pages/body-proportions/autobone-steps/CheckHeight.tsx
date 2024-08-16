@@ -31,7 +31,7 @@ export function CheckHeight({
     if (fetchHeight) {
       sendRPCPacket(RpcMessage.HeightRequest, new HeightRequestT());
     }
-  }, 500);
+  }, 100);
 
   const mFormat = useMemo(
     () =>

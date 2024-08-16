@@ -1,4 +1,11 @@
-import { HeightRequestT, HeightResponseT, RpcMessage } from 'solarxr-protocol';
+import {
+  ChangeSettingsRequestT,
+  HeightRequestT,
+  HeightResponseT,
+  ModelSettingsT,
+  RpcMessage,
+  SkeletonHeightT,
+} from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
@@ -18,7 +25,7 @@ export function CheckFloorHeight({
   variant: 'onboarding' | 'alone';
 }) {
   const { l10n } = useLocalization();
-  const { floorHeight, setFloorHeight } = useHeightContext();
+  const { floorHeight, hmdHeight, setFloorHeight } = useHeightContext();
   const [fetchedHeight, setFetchedHeight] = useState(false);
   const [fetchHeight, setFetchHeight] = useState(false);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
@@ -31,7 +38,7 @@ export function CheckFloorHeight({
       console.log('test ');
       sendRPCPacket(RpcMessage.HeightRequest, new HeightRequestT());
     }
-  }, 500);
+  }, 100);
 
   const mFormat = useMemo(
     () =>
@@ -149,6 +156,15 @@ export function CheckFloorHeight({
             disabled={fetchHeight}
             onClick={() => {
               setFloorHeight(0);
+              const settingsRequest = new ChangeSettingsRequestT();
+              settingsRequest.modelSettings = new ModelSettingsT(
+                null,
+                null,
+                null,
+                new SkeletonHeightT(hmdHeight, 0)
+              );
+              sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsRequest);
+
               nextStep();
             }}
           >
@@ -158,7 +174,18 @@ export function CheckFloorHeight({
           </Button>
           <Button
             variant="primary"
-            onClick={nextStep}
+            onClick={() => {
+              const settingsRequest = new ChangeSettingsRequestT();
+              settingsRequest.modelSettings = new ModelSettingsT(
+                null,
+                null,
+                null,
+                new SkeletonHeightT(hmdHeight, 0)
+              );
+              sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsRequest);
+
+              nextStep();
+            }}
             disabled={!fetchedHeight}
           >
             {l10n.getString(
