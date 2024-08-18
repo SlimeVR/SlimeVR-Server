@@ -17,7 +17,7 @@ class IKSolver(private val root: Bone) {
 		const val ANNEALING_ITERATIONS = 5
 		const val ANNEALING_MAX = 60
 		const val DAMPENING_FACTOR = 0.5f
-		const val STATIC_DAMPENING = 0.25f
+		const val STATIC_DAMPENING = 0.1f
 	}
 
 	var enabled = true
@@ -66,8 +66,9 @@ class IKSolver(private val root: Bone) {
 	): IKChain {
 		val boneList = mutableListOf<Bone>()
 		var currentBone = root
-		currentBone.rotationConstraint.allowModifications =
-			getConstraint(currentBone, rotationalConstraints) == null
+		var constraint = getConstraint(currentBone, rotationalConstraints)
+		currentBone.rotationConstraint.allowModifications = constraint == null
+		currentBone.rotationConstraint.hasTrackerRotation = constraint != null
 		boneList.add(currentBone)
 
 		// Get constraints
@@ -81,8 +82,9 @@ class IKSolver(private val root: Bone) {
 		// Add bones until there is a reason to make a new chain
 		while (currentBone.children.size == 1 && tailConstraint == null) {
 			currentBone = currentBone.children.first()
-			currentBone.rotationConstraint.allowModifications =
-				getConstraint(currentBone, rotationalConstraints) == null
+			constraint = getConstraint(currentBone, rotationalConstraints)
+			currentBone.rotationConstraint.allowModifications = constraint == null
+			currentBone.rotationConstraint.hasTrackerRotation = constraint != null
 			boneList.add(currentBone)
 			tailConstraint = getConstraint(currentBone, positionalConstraints)
 		}
