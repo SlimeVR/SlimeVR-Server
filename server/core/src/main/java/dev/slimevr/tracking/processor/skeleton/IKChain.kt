@@ -40,7 +40,7 @@ class IKChain(
 	 */
 	private fun prepBones() {
 		for (i in 0..<bones.size) {
-			if (bones[i].rotationConstraint.allowModifications && bones[i].rotationConstraint.constraintType != ConstraintType.COMPLETE) {
+			if (!bones[i].rotationConstraint.hasTrackerRotation && bones[i].rotationConstraint.constraintType != ConstraintType.COMPLETE) {
 				bones[i].setRotationRaw(rotations[i])
 			}
 		}
@@ -51,6 +51,7 @@ class IKChain(
 
 		for (i in bones.size - 1 downTo 0) {
 			val currentBone = bones[i]
+			val childBone = if (bones.size - 1 < i) bones[i + 1] else null
 
 			// Get the local position of the end effector and the target relative to the current node
 			val endEffectorLocal = (getEndEffectorsAvg() - currentBone.getPosition()).unit()
@@ -67,7 +68,7 @@ class IKChain(
 			val adjustment = Quaternion(cos(angle / 2), cross * sinHalfAngle)
 			val correctedRot = (adjustment * currentBone.getGlobalRotation()).unit()
 
-			rotations[i] = setBoneRotation(currentBone, correctedRot, useConstraints)
+			rotations[i] = setBoneRotation(currentBone, childBone, correctedRot, useConstraints)
 		}
 	}
 
@@ -130,15 +131,25 @@ class IKChain(
 	 * vector with the bone's rotational constraint
 	 * returns the constrained rotation
 	 */
-	private fun setBoneRotation(bone: Bone, rotation: Quaternion, useConstraints: Boolean): Quaternion {
-		val newRotation = if (useConstraints || bone.rotationConstraint.constraintType == ConstraintType.COMPLETE) {
+	private fun setBoneRotation(bone: Bone, childBone: Bone?, rotation: Quaternion, useConstraints: Boolean): Quaternion {
+		// Constrain relative to the parent
+		val newRotation = if ((useConstraints || bone.rotationConstraint.constraintType == ConstraintType.COMPLETE) && !bone.rotationConstraint.hasTrackerRotation) {
 			bone.rotationConstraint.applyConstraint(rotation, bone)
 		} else {
 			rotation
 		}
+
 		bone.setRotationRaw(newRotation)
 		bone.update()
 
-		return newRotation
+		// Constrain relative to the child
+		if (childBone != null && useConstraints && !bone.rotationConstraint.hasTrackerRotation) {
+			val newChildRot = childBone.rotationConstraint.applyConstraint(childBone.getGlobalRotation(), childBone)
+			val correctionInv = (newChildRot * rotation.inv()).inv()
+			bone.setRotationRaw(newRotation * correctionInv)
+			bone.update()
+		}
+
+		return bone.getGlobalRotation()
 	}
 }

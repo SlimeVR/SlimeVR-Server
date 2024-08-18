@@ -20,10 +20,10 @@ class Constraint(
 	private val constraintFunction = constraintTypeToFunc(constraintType)
 	private val twistRad = Math.toRadians(twist.toDouble()).toFloat()
 	private val swingRad = Math.toRadians(swing.toDouble()).toFloat()
+	var hasTrackerRotation = false
 
 	/**
-	 * If false don't allow the rotation of the bone
-	 * to be modified except to satisfy a constraint
+	 * If false solve with minimal movement applied to this link
 	 */
 	var allowModifications = true
 
