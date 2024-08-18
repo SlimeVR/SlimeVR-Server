@@ -3,6 +3,7 @@ package dev.slimevr.tracking.processor.skeleton
 import dev.slimevr.tracking.trackers.Tracker
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
 
 class IKConstraint(val tracker: Tracker) {
 	private var offset = Vector3.NULL
@@ -12,7 +13,10 @@ class IKConstraint(val tracker: Tracker) {
 		tracker.position + (tracker.getRotation() * rotationOffset).sandwich(offset)
 
 	fun reset(nodePosition: Vector3) {
-		offset = nodePosition - tracker.position
+		val bodyPartsToSkip = setOf(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND)
+
 		rotationOffset = tracker.getRotation().inv()
+		if (tracker.trackerPosition?.bodyPart in bodyPartsToSkip) return
+		offset = nodePosition - tracker.position
 	}
 }
