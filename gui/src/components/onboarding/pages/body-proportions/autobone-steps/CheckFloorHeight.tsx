@@ -15,7 +15,7 @@ import { useLocaleConfig } from '@/i18n/config';
 import { useHeightContext } from '@/hooks/height';
 import { useInterval } from '@/hooks/timeout';
 
-export function CheckFloorHeight({
+export function CheckFloorHeightStep({
   nextStep,
   prevStep,
   variant,
@@ -35,7 +35,6 @@ export function CheckFloorHeight({
 
   useInterval(() => {
     if (fetchHeight) {
-      console.log('test ');
       sendRPCPacket(RpcMessage.HeightRequest, new HeightRequestT());
     }
   }, 100);

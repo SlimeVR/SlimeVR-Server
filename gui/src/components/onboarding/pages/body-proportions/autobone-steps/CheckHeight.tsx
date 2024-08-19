@@ -10,7 +10,7 @@ import { useBreakpoint } from '@/hooks/breakpoint';
 import { useHeightContext } from '@/hooks/height';
 import { useInterval } from '@/hooks/timeout';
 
-export function CheckHeight({
+export function CheckHeightStep({
   nextStep,
   prevStep,
   variant,

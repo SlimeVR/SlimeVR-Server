@@ -1,30 +1,19 @@
 import { useLocalization } from '@fluent/react';
-import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import { useOnboarding } from '@/hooks/onboarding';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { StepperSlider } from '@/components/onboarding/StepperSlider';
 import { PutTrackersOnStep } from './autobone-steps/PutTrackersOn';
-import { useCountdown } from '@/hooks/countdown';
-import { CheckHeight } from './autobone-steps/CheckHeight';
+import { CheckHeightStep } from './autobone-steps/CheckHeight';
 import { PreparationStep } from './autobone-steps/Preparation';
 import { HeightContextC, useProvideHeightContext } from '@/hooks/height';
-import { CheckFloorHeight } from './autobone-steps/CheckFloorHeight';
+import { CheckFloorHeightStep } from './autobone-steps/CheckFloorHeight';
+import { ResetProportionsStep } from './scaled-steps/ResetProportions';
+import { DoneStep } from './scaled-steps/Done';
 
 export function ScaledProportionsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
-  const { sendRPCPacket } = useWebsocketAPI();
   const heightContext = useProvideHeightContext();
-  const { isCounting, startCountdown, timer } = useCountdown({
-    onCountdownEnd: () => {
-      sendRPCPacket(
-        RpcMessage.SkeletonResetAllRequest,
-        new SkeletonResetAllRequestT()
-      );
-    },
-  });
 
   applyProgress(0.9);
 
@@ -48,25 +37,13 @@ export function ScaledProportionsPage() {
               steps={[
                 { type: 'numbered', component: PutTrackersOnStep },
                 { type: 'numbered', component: PreparationStep },
-                { type: 'numbered', component: CheckHeight },
-                { type: 'numbered', component: CheckFloorHeight },
+                { type: 'numbered', component: CheckHeightStep },
+                { type: 'numbered', component: CheckFloorHeightStep },
+                { type: 'numbered', component: ResetProportionsStep },
+                { type: 'fullsize', component: DoneStep },
               ]}
             ></StepperSlider>
           </div>
-        </div>
-        <div className="w-full pb-4 flex flex-row mobile:justify-center">
-          <Button
-            variant="secondary"
-            onClick={startCountdown}
-            disabled={isCounting}
-          >
-            <div className="relative">
-              <div className="opacity-0 h-0">
-                {l10n.getString('reset-reset_all')}
-              </div>
-              {!isCounting ? l10n.getString('reset-reset_all') : timer}
-            </div>
-          </Button>
         </div>
       </div>
     </HeightContextC.Provider>
