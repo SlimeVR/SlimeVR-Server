@@ -334,7 +334,7 @@ export function TrackersAssignPage() {
                 )}
               </div>
             </div>
-            <div className="flex flex-col rounded-xl fill-background-50">
+            <div className="flex flex-col rounded-xl fill-background-50 pt-1">
               <BodyAssignment
                 width={isMobile ? 150 : undefined}
                 dotSize={isMobile ? 10 : undefined}
