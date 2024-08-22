@@ -37,6 +37,7 @@ export interface Config {
   mirrorView: boolean;
   assignMode: AssignMode;
   discordPresence: boolean;
+  dataCollection: boolean;
 }
 
 export interface ConfigContext {
@@ -62,6 +63,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   mirrorView: true,
   assignMode: AssignMode.Core,
   discordPresence: false,
+  dataCollection: false,
 };
 
 interface CrossStorage {
@@ -69,9 +71,9 @@ interface CrossStorage {
   get(key: string): Promise<string | null>;
 }
 
-const tauriStore: CrossStorage = new Store('gui-settings.dat');
+export const TAURI_STORE: CrossStorage = new Store('gui-settings.dat');
 
-const localStore: CrossStorage = {
+export const LOCAL_STORE: CrossStorage = {
   get: async (key) => localStorage.getItem(key),
   set: async (key, value) => localStorage.setItem(key, value),
 };
@@ -84,7 +86,7 @@ export function useConfigProvider(): ConfigContext {
   const [currConfig, set] = useState<Config | null>(null);
   const [loading, setLoading] = useState(false);
   const tauri = useIsTauri();
-  const store = useMemo(() => (tauri ? tauriStore : localStore), [tauri]);
+  const store = useMemo(() => (tauri ? TAURI_STORE : LOCAL_STORE), [tauri]);
 
   useDebouncedEffect(
     () => {

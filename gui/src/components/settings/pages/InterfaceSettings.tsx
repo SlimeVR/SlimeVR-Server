@@ -16,21 +16,25 @@ import { LangSelector } from '@/components/commons/LangSelector';
 import { BellIcon } from '@/components/commons/icon/BellIcon';
 import { Range } from '@/components/commons/Range';
 import { Dropdown } from '@/components/commons/Dropdown';
+import { ArrowRightLeftIcon } from '@/components/commons/icon/ArrowIcons';
 
 interface InterfaceSettingsForm {
   appearance: {
-    devmode: boolean;
     theme: string;
     textSize: number;
     fonts: string;
+  };
+  behavior: {
+    devmode: boolean;
+    useTray: boolean;
+    discordPresence: boolean;
+    dataCollection: boolean;
   };
   notifications: {
     watchNewDevices: boolean;
     feedbackSound: boolean;
     feedbackSoundVolume: number;
     connectedTrackersWarning: boolean;
-    useTray: boolean;
-    discordPresence: boolean;
   };
 }
 
@@ -41,7 +45,6 @@ export function InterfaceSettings() {
   const { control, watch, handleSubmit } = useForm<InterfaceSettingsForm>({
     defaultValues: {
       appearance: {
-        devmode: config?.debug ?? defaultConfig.debug,
         theme: config?.theme ?? defaultConfig.theme,
         textSize: config?.textSize ?? defaultConfig.textSize,
         fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
@@ -55,25 +58,32 @@ export function InterfaceSettings() {
         connectedTrackersWarning:
           config?.connectedTrackersWarning ??
           defaultConfig.connectedTrackersWarning,
+      },
+      behavior: {
+        devmode: config?.debug ?? defaultConfig.debug,
         useTray: config?.useTray ?? defaultConfig.useTray ?? false,
         discordPresence:
           config?.discordPresence ?? defaultConfig.discordPresence,
+        dataCollection: config?.dataCollection ?? defaultConfig.dataCollection,
       },
     },
   });
 
   const onSubmit = (values: InterfaceSettingsForm) => {
     setConfig({
-      debug: values.appearance.devmode,
       watchNewDevices: values.notifications.watchNewDevices,
       feedbackSound: values.notifications.feedbackSound,
       feedbackSoundVolume: values.notifications.feedbackSoundVolume,
+      connectedTrackersWarning: values.notifications.connectedTrackersWarning,
+
       theme: values.appearance.theme,
       fonts: values.appearance.fonts.split(','),
       textSize: values.appearance.textSize,
-      connectedTrackersWarning: values.notifications.connectedTrackersWarning,
-      useTray: values.notifications.useTray,
-      discordPresence: values.notifications.discordPresence,
+
+      useTray: values.behavior.useTray,
+      discordPresence: values.behavior.discordPresence,
+      debug: values.behavior.devmode,
+      dataCollection: values.behavior.dataCollection,
     });
   };
 
@@ -186,6 +196,17 @@ export function InterfaceSettings() {
                 )}
               />
             </div>
+          </>
+        </SettingsPagePaneLayout>
+
+        <SettingsPagePaneLayout
+          icon={<ArrowRightLeftIcon></ArrowRightLeftIcon>}
+          id="behavior"
+        >
+          <>
+            <Typography variant="main-title">
+              {l10n.getString('settings-interface-behavior')}
+            </Typography>
 
             <Typography bold>
               {l10n.getString('settings-general-interface-use_tray')}
@@ -202,7 +223,7 @@ export function InterfaceSettings() {
                 variant="toggle"
                 control={control}
                 outlined
-                name="notifications.useTray"
+                name="behavior.useTray"
                 label={l10n.getString(
                   'settings-general-interface-use_tray-label'
                 )}
@@ -224,23 +245,12 @@ export function InterfaceSettings() {
                 variant="toggle"
                 control={control}
                 outlined
-                name="notifications.discordPresence"
+                name="behavior.discordPresence"
                 label={l10n.getString(
                   'settings-general-interface-discord_presence-label'
                 )}
               />
             </div>
-          </>
-        </SettingsPagePaneLayout>
-
-        <SettingsPagePaneLayout
-          icon={<SquaresIcon></SquaresIcon>}
-          id="appearance"
-        >
-          <>
-            <Typography variant="main-title">
-              {l10n.getString('settings-interface-appearance')}
-            </Typography>
 
             <Typography bold>
               {l10n.getString('settings-general-interface-dev_mode')}
@@ -257,12 +267,45 @@ export function InterfaceSettings() {
                 variant="toggle"
                 control={control}
                 outlined
-                name="appearance.devmode"
+                name="behavior.devmode"
                 label={l10n.getString(
                   'settings-general-interface-dev_mode-label'
                 )}
               />
             </div>
+
+            <Typography bold>
+              {l10n.getString('settings-interface-behavior-data_collection')}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-interface-behavior-data_collection-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                variant="toggle"
+                control={control}
+                outlined
+                name="behavior.dataCollection"
+                label={l10n.getString(
+                  'settings-interface-behavior-data_collection-label'
+                )}
+              />
+            </div>
+          </>
+        </SettingsPagePaneLayout>
+
+        <SettingsPagePaneLayout
+          icon={<SquaresIcon></SquaresIcon>}
+          id="appearance"
+        >
+          <>
+            <Typography variant="main-title">
+              {l10n.getString('settings-interface-appearance')}
+            </Typography>
 
             <div className="pb-4">
               <Typography bold>

@@ -1,6 +1,8 @@
-import { useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { useConfig } from './hooks/config';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { getSentryOrCompute } from './utils/sentry';
+import { log } from './utils/logging';
 
 export function AppLayout() {
   const { loading, config } = useConfig();
@@ -32,6 +34,15 @@ export function AppLayout() {
       navigate('/onboarding/home');
     }
   }, [config?.doneOnboarding]);
+
+  useEffect(() => {
+    if (config?.dataCollection !== undefined) {
+      log(
+        `${config.dataCollection ? 'Enabled' : 'Disabled'} error logging with Sentry.`
+      );
+      getSentryOrCompute(config.dataCollection);
+    }
+  }, [config?.dataCollection]);
 
   // const location = useLocation();
   // const navigationType = useNavigationType();
