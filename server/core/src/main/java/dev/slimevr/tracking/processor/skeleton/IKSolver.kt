@@ -2,6 +2,7 @@ package dev.slimevr.tracking.processor.skeleton
 
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.trackers.Tracker
+import solarxr_protocol.datatypes.BodyPart
 
 /*
  * Implements CCDIK (Cyclic Coordinate Descent Inverse Kinematics) to allow
@@ -12,12 +13,15 @@ import dev.slimevr.tracking.trackers.Tracker
 class IKSolver(private val root: Bone) {
 	companion object {
 		const val TOLERANCE_SQR = 1e-8 // == 0.01 cm
+		const val ROTATIONAL_TOLERANCE = 0.000745329 // == 0.5 degrees
 		const val MAX_ITERATIONS = 100
 		const val ANNEALING_STEP = 20
 		const val ANNEALING_ITERATIONS = 5
 		const val ANNEALING_MAX = 60
 		const val DAMPENING_FACTOR = 0.5f
 		const val STATIC_DAMPENING = 0.1f
+		// Short limbs positioned on the end of the skeleton are prone to over rotation
+		val LOCK_ROTATION = setOf(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND, BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 	}
 
 	var enabled = true
