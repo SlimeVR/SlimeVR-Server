@@ -11,6 +11,7 @@ import {
 export function getSentryOrCompute(enabled = false) {
   const client = Sentry.getClient();
   if (client) {
+    log(`${enabled ? 'Enabled' : 'Disabled'} error logging with Sentry.`);
     client.getOptions().enabled = enabled;
     return client;
   }
@@ -33,6 +34,7 @@ export function getSentryOrCompute(enabled = false) {
         blockAllMedia: false,
       }),
     ],
+    beforeSend: (ev) => (newClient?.getOptions().enabled ? ev : null),
     environment: import.meta.env.MODE,
     release: (__VERSION_TAG__ || __COMMIT_HASH__) + (__GIT_CLEAN__ ? '' : '-dirty'),
     // Tracing
@@ -57,7 +59,7 @@ export function getSentryOrCompute(enabled = false) {
   });
 
   if (!newClient) {
-    error('Couldn\'t initialize Sentry for error logging');
+    error('Couldnt initialize Sentry for error logging');
   } else {
     log('Initialized the Sentry client');
   }
