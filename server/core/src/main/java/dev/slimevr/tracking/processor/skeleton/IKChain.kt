@@ -53,6 +53,8 @@ class IKChain(
 			val currentBone = bones[i]
 			val childBone = if (bones.size - 1 < i) bones[i + 1] else null
 
+			if (currentBone.boneType.bodyPart in IKSolver.LOCK_ROTATION) continue
+
 			// Get the local position of the end effector and the target relative to the current node
 			val endEffectorLocal = (getEndEffectorsAvg() - currentBone.getPosition()).unit()
 			val targetLocal = (target - currentBone.getPosition()).unit()
@@ -99,6 +101,7 @@ class IKChain(
 	 */
 	fun resetChain() {
 		distToTargetSqr = Float.POSITIVE_INFINITY
+		// prepBones()
 
 		for (child in children) {
 			child.resetChain()
