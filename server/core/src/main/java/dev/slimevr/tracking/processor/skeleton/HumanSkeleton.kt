@@ -53,8 +53,10 @@ class HumanSkeleton(
 	val rightFootBone = Bone(BoneType.RIGHT_FOOT, Constraint(ConstraintType.TWIST_SWING, 60f, 90f))
 
 	// Arm bones
-	val leftShoulderBone = Bone(BoneType.LEFT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 180f, 20f))
-	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 180f, 20f))
+	val leftUpperShoulderBone = Bone(BoneType.LEFT_SHOULDER, Constraint(ConstraintType.COMPLETE))
+	val rightUpperShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(ConstraintType.COMPLETE))
+	val leftShoulderBone = Bone(BoneType.LEFT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 180f, 10f))
+	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 180f, 10f))
 	val leftUpperArmBone = Bone(BoneType.LEFT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 180f, 180f))
 	val rightUpperArmBone = Bone(BoneType.RIGHT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 180f, 180f))
 	val leftLowerArmBone = Bone(BoneType.LEFT_LOWER_ARM, Constraint(ConstraintType.HINGE, 0f, -180f))
@@ -233,8 +235,10 @@ class HumanSkeleton(
 		}
 
 		// Shoulders
-		neckBone.attachChild(leftShoulderBone)
-		neckBone.attachChild(rightShoulderBone)
+		neckBone.attachChild(leftUpperShoulderBone)
+		neckBone.attachChild(rightUpperShoulderBone)
+		leftUpperShoulderBone.attachChild(leftShoulderBone)
+		rightUpperShoulderBone.attachChild(rightShoulderBone)
 
 		// Upper arm
 		leftShoulderBone.attachChild(leftUpperArmBone)
@@ -427,6 +431,7 @@ class HumanSkeleton(
 		// Left arm
 		updateArmTransforms(
 			isTrackingLeftArmFromController,
+			leftUpperShoulderBone,
 			leftShoulderBone,
 			leftUpperArmBone,
 			leftElbowTrackerBone,
@@ -441,6 +446,7 @@ class HumanSkeleton(
 		// Right arm
 		updateArmTransforms(
 			isTrackingRightArmFromController,
+			rightUpperShoulderBone,
 			rightShoulderBone,
 			rightUpperArmBone,
 			rightElbowTrackerBone,
@@ -714,6 +720,7 @@ class HumanSkeleton(
 	 */
 	private fun updateArmTransforms(
 		isTrackingFromController: Boolean,
+		upperShoulderBone: Bone,
 		shoulderBone: Bone,
 		upperArmBone: Bone,
 		elbowTrackerBone: Bone,
@@ -746,6 +753,7 @@ class HumanSkeleton(
 			// Get shoulder rotation
 			var armRot = shoulderTracker?.getRotation() ?: upperChestBone.getLocalRotation()
 			// Set shoulder rotation
+			upperShoulderBone.setRotation(upperChestBone.getLocalRotation())
 			shoulderBone.setRotation(armRot)
 
 			if (upperArmTracker != null || lowerArmTracker != null) {
@@ -957,6 +965,8 @@ class HumanSkeleton(
 		BoneType.RIGHT_FOOT -> rightFootBone
 		BoneType.LEFT_FOOT_TRACKER -> leftFootTrackerBone
 		BoneType.RIGHT_FOOT_TRACKER -> rightFootTrackerBone
+		BoneType.LEFT_UPPER_SHOULDER -> leftUpperShoulderBone
+		BoneType.RIGHT_UPPER_SHOULDER -> rightUpperShoulderBone
 		BoneType.LEFT_SHOULDER -> leftShoulderBone
 		BoneType.RIGHT_SHOULDER -> rightShoulderBone
 		BoneType.LEFT_UPPER_ARM -> leftUpperArmBone
@@ -1005,6 +1015,8 @@ class HumanSkeleton(
 	 */
 	private val allArmBones: Array<Bone>
 		get() = arrayOf(
+			leftUpperShoulderBone,
+			rightUpperShoulderBone,
 			leftShoulderBone,
 			rightShoulderBone,
 			leftUpperArmBone,
