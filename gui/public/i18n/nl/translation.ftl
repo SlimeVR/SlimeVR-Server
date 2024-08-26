@@ -100,7 +100,7 @@ serial_detection-close = Sluiten
 navbar-home = Startpagina
 navbar-body_proportions = Lichaamsverhoudingen
 navbar-trackers_assign = Tracker-toewijzing
-navbar-mounting = Bevestigings-kalibratie
+navbar-mounting = Montage-kalibratie
 navbar-onboarding = Installatiewizard
 navbar-settings = Instellingen
 
@@ -207,9 +207,9 @@ tracker-settings-title = Trackersinstellingen
 tracker-settings-assignment_section = Toewijzing
 tracker-settings-assignment_section-description = Aan welk lichaamsdeel de tracker is toegewezen.
 tracker-settings-assignment_section-edit = Toewijzing bewerken
-tracker-settings-mounting_section = Bevestigingsorientatie
+tracker-settings-mounting_section = Montage oriëntatie
 tracker-settings-mounting_section-description = Waar is de tracker gemonteerd?
-tracker-settings-mounting_section-edit = Bevestiging bewerken
+tracker-settings-mounting_section-edit = Montage bewerken
 tracker-settings-drift_compensation_section = Laat drift compensatie toe
 tracker-settings-drift_compensation_section-description = Moet deze tracker compenseren voor drift wanneer drift compensatie is ingeschakeld?
 tracker-settings-drift_compensation_section-edit = Laat drift compensatie toe
@@ -310,6 +310,14 @@ settings-general-steamvr-description =
     Handig voor games of apps die alleen bepaalde trackers ondersteunen.
 settings-general-steamvr-trackers-waist = Taille
 settings-general-steamvr-trackers-chest = Borst
+settings-general-steamvr-trackers-left_foot = Linkervoet
+settings-general-steamvr-trackers-right_foot = Rechtervoet
+settings-general-steamvr-trackers-left_knee = Linkerknie
+settings-general-steamvr-trackers-right_knee = Rechterknie
+settings-general-steamvr-trackers-left_elbow = Linker elleboog
+settings-general-steamvr-trackers-right_elbow = Rechter elleboog
+settings-general-steamvr-trackers-left_hand = Linkerhand
+settings-general-steamvr-trackers-right_hand = Rechterhand
 settings-general-steamvr-trackers-tracker_toggling = Automatische tracker toewijzing
 settings-general-steamvr-trackers-tracker_toggling-description = Zorgt automatisch voor het in- en uitschakelen van SteamVR-trackers, afhankelijk van je huidige tracker toewijzingen.
 settings-general-steamvr-trackers-tracker_toggling-label = Automatische tracker toewijzing
@@ -342,8 +350,9 @@ settings-general-tracker_mechanics-drift_compensation-description =
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensate
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensatiesterkte
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Gebruik de laatste x resets
-settings-general-tracker_mechanics-save_mounting_reset = Sla automatische mounting reset kalibratie op
-settings-general-tracker_mechanics-save_mounting_reset-description = Slaat de automatische mounting reset kalibraties van de trackers op tussen herstarts. Nuttig als je een pak draagt waarbij trackers niet bewegen tussen sessies. <b>Niet aanbevolen voor normale gebruikers!</b>
+settings-general-tracker_mechanics-save_mounting_reset = Sla de automatische montage reset kalibratie op
+settings-general-tracker_mechanics-save_mounting_reset-description = Slaat de automatische montage reset kalibraties van de trackers op tussen herstarts. Nuttig als je een pak draagt waarbij trackers niet bewegen tussen sessies. <b>Niet aanbevolen voor normale gebruikers!</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Montage configuratie opslaan
 
 ## FK/Tracking settings
 
@@ -372,6 +381,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Voeten montage reset.
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Verander de manier waarop de armen worden getrackt.
 settings-general-fk_settings-arm_fk-force_arms = Dwing armen vanuit HMD
+settings-general-fk_settings-reset_settings = Instellingen resetten
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Reset de pitch (verticale rotatie) van de HMD na een volledige reset. Dit is handig als je de HMD op je voorhoofd draagt voor VTubing of mocap. Niet inschakelen voor VR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = HMD pitch resetten
 settings-general-fk_settings-arm_fk-reset_mode-description = Pas de verwachte armhouding aan voor het resetten van de montage.
 settings-general-fk_settings-arm_fk-back = Achterzijde
 settings-general-fk_settings-arm_fk-back-description = De standaardmodus, waarbij de bovenarmen  naar achteren gaan en de onderarmen naar voren.
@@ -405,7 +417,7 @@ settings-general-fk_settings-vive_emulation-label = Vive-emulatie inschakelen
 
 settings-general-gesture_control = Gesture control
 settings-general-gesture_control-subtitle = Op tik gebaseerde resets
-settings-general-gesture_control-description = Maakt het mogelijk om resets te activeren door op een tracker te tikken. De tracker het hoogst op je bovenlichaam wordt gebruikt voor Quick Reset, de tracker het hoogst op je linkerbeen voor Reset en de tracker het hoogst op je rechterbeen voor Mounting Reset. Het moet worden vermeld dat tikken binnen 0,6 seconden moeten gebeuren om geregistreerd te worden.
+settings-general-gesture_control-description = Maakt het mogelijk om resets te activeren door op een tracker te tikken. De tracker het hoogst op je bovenlichaam wordt gebruikt voor Quick Reset, de tracker het hoogst op je linkerbeen voor Reset en de tracker het hoogst op je rechterbeen voor Montage Reset. Het moet worden vermeld dat tikken binnen 0,6 seconden moeten gebeuren om geregistreerd te worden.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
@@ -426,9 +438,9 @@ settings-general-gesture_control-yawResetTaps = Hoeveelheid tikken voor horizont
 settings-general-gesture_control-fullResetEnabled = Activeer tikken voor volledige reset
 settings-general-gesture_control-fullResetDelay = Vertraging volledige reset
 settings-general-gesture_control-fullResetTaps = Hoeveelheid tikken voor volledige reset
-settings-general-gesture_control-mountingResetEnabled = Activeer tikken voor bevestigingskalibratie
-settings-general-gesture_control-mountingResetDelay = Vertraging bevestigingskalibratie
-settings-general-gesture_control-mountingResetTaps = Hoeveelheid tikken voor bevestigingskalibratie
+settings-general-gesture_control-mountingResetEnabled = Activeer tikken voor montage-kalibratie
+settings-general-gesture_control-mountingResetDelay = Vertraging montage-kalibratie
+settings-general-gesture_control-mountingResetTaps = Hoeveelheid tikken voor montage-kalibratie
 # The number of trackers that can have higher acceleration before a tap is rejected
 settings-general-gesture_control-numberTrackersOverThreshold = Trackers over drempelwaarde
 settings-general-gesture_control-numberTrackersOverThreshold-description = Verhoog deze waarde als de tik detectie niet werkt. Zet deze waarde niet te hoog om tik detectie te laten werken, dit kan vals positieve resultaten creëren.
@@ -463,10 +475,20 @@ settings-general-interface-feedback_sound-description = Speelt een geluid telken
 settings-general-interface-feedback_sound-label = Feedback geluid
 settings-general-interface-feedback_sound-volume = Feedback geluid volume
 settings-general-interface-connected_trackers_warning = Waarschuwing voor verbonden trackers
+settings-general-interface-connected_trackers_warning-description = Deze optie toont een pop-up bericht telkens wanneer je SlimeVR probeert af te sluiten terwijl er nog trackers verbonden zijn. Dit bericht herinnert je eraan om je trackers uit te schakelen wanneer je klaar bent om de batterijduur te sparen.
 settings-general-interface-connected_trackers_warning-label = Waarschuwing voor verbonden trackers bij het afsluiten
 settings-general-interface-use_tray = Minimaliseren naar systeem vak
 settings-general-interface-use_tray-description = Hiermee kun je het venster sluiten zonder de SlimeVR server te beëindigen, zodat je deze op de achtergrond kunt blijven gebruiken zonder dat de GUI in de weg zit.
 settings-general-interface-use_tray-label = Minimaliseren naar systeem vak
+settings-general-interface-discord_presence = Activiteit delen op Discord
+settings-general-interface-discord_presence-description = Deelt op Discord dat je de SlimeVR server gebruikt, tezamen met het aantal IMU-Trackers.
+settings-general-interface-discord_presence-label = Activiteit delen op Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Aan het slimen
+        [one] Gebruikt 1 tracker
+       *[other] Gebruikt { $amount } trackers
+    }
 
 ## Serial settings
 
@@ -489,6 +511,8 @@ settings-serial-get_infos = Informatie ophalen
 settings-serial-serial_select = Selecteer een seriële poort
 settings-serial-auto_dropdown_item = Automatisch
 settings-serial-get_wifi_scan = WiFi-scan uitvoeren
+settings-serial-file_type = Gewone tekst
+settings-serial-save_logs = Opslaan in bestand
 
 ## OSC router settings
 
@@ -519,14 +543,12 @@ settings-osc-router-network-address-placeholder = IPV4-adres
 
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
-settings-osc-vrchat-description =
-    Wijzig VRChat-specifieke instellingen om HMD-data te ontvangen en te verzenden
-    trackergegevens voor FBT (werkt op Quest standalone).
+settings-osc-vrchat-description-v1 = Wijzig instellingen die specifiek zijn voor de OSC Trackers-standaard die wordt gebruikt voor het verzenden van trackinggegevens naar applicaties zonder SteamVR (bijv. Quest standalone). Zorg ervoor dat OSC is ingeschakeld in VRChat via het Actiemenu onder OSC > Ingeschakeld. Om het ontvangen van HMD- en controllergegevens van VRChat mogelijk te maken, ga in je hoofdmenu naar Instellingen onder Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Inschakelen
 settings-osc-vrchat-enable-description = Schakel het verzenden en ontvangen van gegevens in en uit.
 settings-osc-vrchat-enable-label = Inschakelen
 settings-osc-vrchat-network = Netwerkpoorten
-settings-osc-vrchat-network-description = Stel de poorten in voor het zenden en ontvangen van OSC-gegevens naar VRChat.
+settings-osc-vrchat-network-description-v1 = Stel de poorten in voor het ontvangen en verzenden van tracking data. Kan op standaardinstellingen blijven voor VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Poort In
     .placeholder = Poort in (standaard: 9001)
@@ -534,7 +556,7 @@ settings-osc-vrchat-network-port_out =
     .label = Poort Out
     .placeholder = Poort uit (standaard: 9000)
 settings-osc-vrchat-network-address = Netwerkadres
-settings-osc-vrchat-network-address-description = Kies naar welk adres je gegevens naar VRChat wilt verzenden (controleer de wifi-instellingen op je apparaat).
+settings-osc-vrchat-network-address-description-v1 = Kies naar welk adres u gegevens wilt verzenden. Kan op standaardinstellingen blijven voor VRChat.
 settings-osc-vrchat-network-address-placeholder = VRChat IP-adres
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Schakel het verzenden van specifieke trackers via OSC in en uit.
@@ -577,6 +599,9 @@ settings-osc-vmc-vrm-file_select = Sleep een modelbestand naar hier om ze te geb
 settings-osc-vmc-anchor_hip = Heupverankering
 settings-osc-vmc-anchor_hip-description = Veranker de tracking aan de heupen, handig voor zittende VTubing. Als u deze uitschakelt, laadt u een VRM-model.
 settings-osc-vmc-anchor_hip-label = Heupverankering
+settings-osc-vmc-mirror_tracking = Gespiegelde tracking
+settings-osc-vmc-mirror_tracking-description = De tracking horizontaal spiegelen.
+settings-osc-vmc-mirror_tracking-label = Gespiegelde tracking
 
 ## Setup/onboarding menu
 
@@ -609,7 +634,7 @@ onboarding-wifi_creds-password =
 
 ## Mounting setup
 
-onboarding-reset_tutorial-back = Ga terug naar de bevestigingskalibratie
+onboarding-reset_tutorial-back = Ga terug naar de montage-kalibratie
 onboarding-reset_tutorial = Reset tutorial
 onboarding-reset_tutorial-explanation = Terwijl je jouw trackers gebruikt, kunnen ze uit de lijn raken vanwege IMU-yaw-drift, of omdat je ze fysiek hebt verplaatst. Je hebt verschillende manieren om dit op te lossen.
 onboarding-reset_tutorial-skip = Stap overslaan
@@ -716,6 +741,27 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = Geavanceerde toewijzingslocaties weergeven
 onboarding-assign_trackers-next = Ik heb alle trackers toegewezen
 onboarding-assign_trackers-mirror_view = Gespiegelde weergave
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+       *[other] x{ $trackersCount }
+    }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] Lower-Body Set
+        [core] Core Set
+        [enhanced-core] Enhanced Core Set
+        [full-body] Full-Body Set
+       *[all] Alle trackers
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] Minimaal aantal voor VR full-body tracking
+        [core] + betere torso tracking
+        [enhanced-core] + voeten rotatie
+        [full-body] + elleboog tracking
+       *[all] Alle beschikbare tracker locaties
+    }
 
 ## Tracker assignment warnings
 
@@ -792,44 +838,45 @@ onboarding-choose_mounting = Welke montagekalibratiemethode moet worden gebruikt
 onboarding-choose_mounting-description = De oriëntatie van de montage corrigeert de plaatsing van trackers op uw lichaam.
 onboarding-choose_mounting-auto_mounting = Automatische bevestiging
 # Italized text
-onboarding-choose_mounting-auto_mounting-label = Experimenteel
+onboarding-choose_mounting-auto_mounting-label-v2 = Aanbevolen
 onboarding-choose_mounting-auto_mounting-description = Dit detecteert automatisch de montagerichtingen voor al uw trackers door middel van 2 poses
 onboarding-choose_mounting-manual_mounting = Handmatige bevestiging
 # Italized text
-onboarding-choose_mounting-manual_mounting-label = Aanbevolen
+onboarding-choose_mounting-manual_mounting-label-v2 = Misschien niet precies genoeg
 onboarding-choose_mounting-manual_mounting-description = Hiermee kunt u de montagerichting handmatig kiezen voor elke tracker
 # Multiline text
 onboarding-choose_mounting-manual_modal-title = Ben je zeker dat je de automatische kalibratie wilt uitvoeren?
+onboarding-choose_mounting-manual_modal-description = <b>De handmatige montagekalibratie word aangeraden voor nieuwe gebruikers.</b>, De posities die je moet doen voor de automatische kalibratie kunnen lastig zijn om in één keer goed te krijgen en vereisen mogelijk wat oefening.
 onboarding-choose_mounting-manual_modal-confirm = Ik weet zeker wat ik doe
 onboarding-choose_mounting-manual_modal-cancel = Annuleren
 
 ## Tracker manual mounting setup
 
 onboarding-manual_mounting-back = Ga terug naar de VR sectie
-onboarding-manual_mounting = Handmatige bevestiging
+onboarding-manual_mounting = Handmatige montage
 onboarding-manual_mounting-description = Klik op elke tracker en selecteer op welke manier ze zijn bevestigd
-onboarding-manual_mounting-auto_mounting = Automatische bevestiging
+onboarding-manual_mounting-auto_mounting = Automatische montage
 onboarding-manual_mounting-next = Volgende stap
 
 ## Tracker automatic mounting setup
 
 onboarding-automatic_mounting-back = Ga terug naar de VR sectie
-onboarding-automatic_mounting-title = Bevestigingskalibratie
+onboarding-automatic_mounting-title = Montage-kalibratie
 onboarding-automatic_mounting-description = Om je trackers te laten werken, moet de rotatie worden ingesteld hoe deze zijn bevestigd op je lichaam.
-onboarding-automatic_mounting-manual_mounting = Bevestiging handmatig instellen
+onboarding-automatic_mounting-manual_mounting = Montage handmatig instellen
 onboarding-automatic_mounting-next = Volgende stap
 onboarding-automatic_mounting-prev_step = Vorige stap
-onboarding-automatic_mounting-done-title = Bevestigingsrotaties gekalibreerd.
-onboarding-automatic_mounting-done-description = Je bevestigingskalibratie is compleet!
+onboarding-automatic_mounting-done-title = Montagerichtingen gekalibreerd.
+onboarding-automatic_mounting-done-description = Je montage-kalibratie is compleet!
 onboarding-automatic_mounting-done-restart = Terug naar start
-onboarding-automatic_mounting-mounting_reset-title = Bevestiging kalibreren
+onboarding-automatic_mounting-mounting_reset-title = Montage-reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Ga staan in een "skie"-houding met gebogen benen, je bovenlichaam naar voren gekanteld en armen gebogen.
-onboarding-automatic_mounting-mounting_reset-step-1 = 2. Druk op de knop "Bevestiging resetten" en wacht 3 seconden voordat de bevestigingsrotaties van de trackers opnieuw worden ingesteld.
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. Druk op de knop "Reset montage" en wacht 3 seconden voordat de montagerichtingen van de trackers opnieuw worden ingesteld.
 onboarding-automatic_mounting-preparation-title = Voorbereiding
 onboarding-automatic_mounting-preparation-step-0 = 1. Sta rechtop met je armen langs je zij.
 onboarding-automatic_mounting-preparation-step-1 = 2. Druk op de knop "Resetten" en wacht 3 seconden voordat de trackers opnieuw worden ingesteld.
 onboarding-automatic_mounting-put_trackers_on-title = Doe je trackers aan
-onboarding-automatic_mounting-put_trackers_on-description = Om bevestigingsrotaties te kalibreren, gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
+onboarding-automatic_mounting-put_trackers_on-description = Om montagerichtingen te kalibreren gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
 onboarding-automatic_mounting-put_trackers_on-next = Ik heb al mijn trackers aan
 
 ## Tracker proportions method choose
@@ -875,6 +922,8 @@ onboarding-automatic_proportions-put_trackers_on-title = Doe je trackers aan
 onboarding-automatic_proportions-put_trackers_on-description = Om je verhoudingen te kalibreren, gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
 onboarding-automatic_proportions-put_trackers_on-next = Ik heb al mijn trackers aan
 onboarding-automatic_proportions-requirements-title = Vereisten
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-descriptionv2 = Je hebt voldaan aan de minimale vereisten om je voeten te tracken (over het algemeen 5 trackers). Je hebt je trackers en headset aan en draagt ze. Je trackers en headset zijn verbonden met de SlimeVR server en werken naar behoren (zonder haperingen, loskoppelingen etc.). Je headset stuurt positiedata naar de SlimeVR server (dit vereist doorgaans dat SteamVR draait en verbonden is met SlimeVR via de SlimeVR SteamVR-driver). De tracking werkt en registreert je bewegingen nauwkeurig (je hebt bijvoorbeeld een volledige reset uitgevoerd en de trackers bewegen in de juiste richting bij schoppen, bukken, zitten etc.).
 onboarding-automatic_proportions-requirements-next = Ik heb de vereisten gelezen
 onboarding-automatic_proportions-check_height-title = Controleer je lengte
 onboarding-automatic_proportions-check_height-description =
@@ -882,6 +931,7 @@ onboarding-automatic_proportions-check_height-description =
     Maar het is beter om zelf te controleren of dit klopt.
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = Druk op de knop terwijl je <u>rechtop</u> staat om je lengte te berekenen. Je hebt 3 seconden na dat je op de knop drukt!
+onboarding-automatic_proportions-check_height-guardian_tip = Als je een losse VR-bril gebruikt, zorg er dan voor dat je guardian/veilige zone is ingeschakeld zodat je lengte correct is gekalibreerd!
 onboarding-automatic_proportions-check_height-fetch_height = Ik sta!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Onbekend
@@ -946,6 +996,7 @@ status_system-StatusSteamVRDisconnected =
        *[other] Momenteel niet verbonden naar SteamVR via de SlimeVR driver.
     }
 status_system-StatusTrackerError = De { $trackerName } tracker heeft een error.
+status_system-StatusUnassignedHMD = De VR-headset moet worden toegewezen als hoofdtracker.
 
 ## Tray Menu
 
