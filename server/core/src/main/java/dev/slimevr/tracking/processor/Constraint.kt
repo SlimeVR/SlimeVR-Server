@@ -16,10 +16,12 @@ class Constraint(
 	val constraintType: ConstraintType,
 	twist: Float = 0.0f,
 	swing: Float = 0.0f,
+	allowedDeviation: Float = 0f
 ) {
 	private val constraintFunction = constraintTypeToFunc(constraintType)
 	private val twistRad = Math.toRadians(twist.toDouble()).toFloat()
 	private val swingRad = Math.toRadians(swing.toDouble()).toFloat()
+	private val allowedDeviationRad = Math.toRadians(allowedDeviation.toDouble()).toFloat()
 	var hasTrackerRotation = false
 
 	/**
@@ -27,11 +29,25 @@ class Constraint(
 	 */
 	var allowModifications = true
 
+	var initialRotation = Quaternion.IDENTITY
+
 	/**
 	 * Apply rotational constraints and if applicable force the rotation
 	 * to be unchanged unless it violates the constraints
 	 */
 	fun applyConstraint(rotation: Quaternion, thisBone: Bone): Quaternion = constraintFunction(rotation, thisBone, swingRad, twistRad).unit()
+
+	/**
+	 * Force the given rotation to be within allowedDeviation degrees away from
+	 * initialRotation on both the twist and swing axis
+	 */
+	fun constrainToInitialRotation(rotation: Quaternion): Quaternion {
+		val rotationLocal = rotation * initialRotation.inv()
+		var (swingQ, twistQ) = decompose(rotationLocal, Vector3.NEG_Y)
+		swingQ = constrain(swingQ, allowedDeviationRad)
+		twistQ = constrain(twistQ, allowedDeviationRad)
+		return initialRotation * (swingQ * twistQ)
+	}
 
 	companion object {
 		enum class ConstraintType {
@@ -51,10 +67,10 @@ class Constraint(
 			rotation: Quaternion,
 			twistAxis: Vector3,
 		): Pair<Quaternion, Quaternion> {
-			val projection = rotation.project(twistAxis)
+			val projection = rotation.project(twistAxis).unit()
 
 			val twist = Quaternion(rotation.w, projection.xyz).unit()
-			val swing = rotation * twist.inv()
+			val swing = (rotation * twist.inv()).unit()
 
 			return Pair(swing, twist)
 		}
@@ -76,7 +92,7 @@ class Constraint(
 				)
 			}
 
-			return rot
+			return rot.unit()
 		}
 
 		private fun constrain(rotation: Quaternion, minAngle: Float, maxAngle: Float, axis: Vector3): Quaternion {
@@ -109,14 +125,15 @@ class Constraint(
 					rotation
 				} else {
 					val parent = thisBone.parent!!
+					val localRotationOffset = parent.rotationOffset.inv() * thisBone.rotationOffset
 					val rotationLocal =
-						(parent.getGlobalRotation() * thisBone.rotationOffset).inv() * rotation
+						(parent.getGlobalRotation() * localRotationOffset).inv() * rotation
 					var (swingQ, twistQ) = decompose(rotationLocal, Vector3.NEG_Y)
 
 					swingQ = constrain(swingQ, swingRad)
 					twistQ = constrain(twistQ, twistRad)
 
-					parent.getGlobalRotation() * thisBone.rotationOffset * (swingQ * twistQ)
+					(parent.getGlobalRotation() * localRotationOffset * (swingQ * twistQ)).unit()
 				}
 			}
 
@@ -127,13 +144,15 @@ class Constraint(
 					rotation
 				} else {
 					val parent = thisBone.parent!!
+					val localRotationOffset = parent.rotationOffset.inv() * thisBone.rotationOffset
 					val rotationLocal =
-						(parent.getGlobalRotation() * thisBone.rotationOffset).inv() * rotation
+						(parent.getGlobalRotation() * localRotationOffset).inv() * rotation
+
 					var (_, hingeAxisRot) = decompose(rotationLocal, Vector3.NEG_X)
 
 					hingeAxisRot = constrain(hingeAxisRot, min, max, Vector3.NEG_X)
 
-					parent.getGlobalRotation() * thisBone.rotationOffset * hingeAxisRot
+					(parent.getGlobalRotation() * localRotationOffset * hingeAxisRot).unit()
 				}
 			}
 

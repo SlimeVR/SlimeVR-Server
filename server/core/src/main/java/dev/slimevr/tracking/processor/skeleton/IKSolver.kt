@@ -13,7 +13,6 @@ import solarxr_protocol.datatypes.BodyPart
 class IKSolver(private val root: Bone) {
 	companion object {
 		const val TOLERANCE_SQR = 1e-8 // == 0.01 cm
-		const val ROTATIONAL_TOLERANCE = 0.000745329 // == 0.5 degrees
 		const val MAX_ITERATIONS = 100
 		const val ANNEALING_STEP = 20
 		const val ANNEALING_ITERATIONS = 5
@@ -223,6 +222,7 @@ class IKSolver(private val root: Bone) {
 				}
 			}
 
+			// Terminate if using constraints and the chain is solved
 			if (solved && useConstraints) return true
 		}
 
