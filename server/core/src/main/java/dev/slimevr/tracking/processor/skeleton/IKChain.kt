@@ -40,7 +40,7 @@ class IKChain(
 	 */
 	private fun prepBones() {
 		for (i in 0..<bones.size) {
-			if (!bones[i].rotationConstraint.hasTrackerRotation && bones[i].rotationConstraint.constraintType != ConstraintType.COMPLETE) {
+			if (bones[i].rotationConstraint.constraintType != ConstraintType.COMPLETE && bones[i].rotationConstraint.allowModifications) {
 				bones[i].setRotationRaw(rotations[i])
 			}
 		}
@@ -53,21 +53,18 @@ class IKChain(
 			val currentBone = bones[i]
 			val childBone = if (bones.size - 1 < i) bones[i + 1] else null
 
-			if (currentBone.boneType.bodyPart in IKSolver.LOCK_ROTATION) continue
+			if (currentBone.boneType.bodyPart in IKSolver.LOCK_ROTATION) {
+				rotations[i] = currentBone.getGlobalRotation()
+				continue
+			}
 
 			// Get the local position of the end effector and the target relative to the current node
 			val endEffectorLocal = (getEndEffectorsAvg() - currentBone.getPosition()).unit()
 			val targetLocal = (target - currentBone.getPosition()).unit()
 
 			// Compute the axis of rotation and angle for this bone
-			val cross = endEffectorLocal.cross(targetLocal).unit()
-			if (cross.lenSq() < 1e-9) continue
-			val baseAngle = acos(endEffectorLocal.dot(targetLocal).coerceIn(-1.0f, 1.0f))
-
-			val angle = baseAngle * IKSolver.DAMPENING_FACTOR * if (currentBone.rotationConstraint.allowModifications) 1f else IKSolver.STATIC_DAMPENING
-
-			val sinHalfAngle = sin(angle / 2)
-			val adjustment = Quaternion(cos(angle / 2), cross * sinHalfAngle)
+			val scalar = IKSolver.DAMPENING_FACTOR * if (currentBone.rotationConstraint.allowModifications) 1f else IKSolver.STATIC_DAMPENING
+			val adjustment = Quaternion.fromTo(endEffectorLocal, targetLocal).pow(scalar).unit()
 			val correctedRot = (adjustment * currentBone.getGlobalRotation()).unit()
 
 			rotations[i] = setBoneRotation(currentBone, childBone, correctedRot, useConstraints)
@@ -101,7 +98,11 @@ class IKChain(
 	 */
 	fun resetChain() {
 		distToTargetSqr = Float.POSITIVE_INFINITY
-		// prepBones()
+
+		for (b in bones) {
+			b.rotationConstraint.initialRotation = b.getGlobalRotation()
+		}
+		//prepBones()
 
 		for (child in children) {
 			child.resetChain()
@@ -136,7 +137,9 @@ class IKChain(
 	 */
 	private fun setBoneRotation(bone: Bone, childBone: Bone?, rotation: Quaternion, useConstraints: Boolean): Quaternion {
 		// Constrain relative to the parent
-		val newRotation = if ((useConstraints || bone.rotationConstraint.constraintType == ConstraintType.COMPLETE) && !bone.rotationConstraint.hasTrackerRotation) {
+		val newRotation = if (bone.rotationConstraint.constraintType == ConstraintType.COMPLETE) {
+			bone.rotationConstraint.applyConstraint(rotation, bone)
+		} else if (useConstraints && !bone.rotationConstraint.hasTrackerRotation) {
 			bone.rotationConstraint.applyConstraint(rotation, bone)
 		} else {
 			rotation
