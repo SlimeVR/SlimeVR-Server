@@ -102,7 +102,7 @@ class IKChain(
 		for (b in bones) {
 			b.rotationConstraint.initialRotation = b.getGlobalRotation()
 		}
-		//prepBones()
+		// prepBones()
 
 		for (child in children) {
 			child.resetChain()
