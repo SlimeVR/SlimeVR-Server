@@ -19,6 +19,7 @@ class IKSolver(private val root: Bone) {
 		const val ANNEALING_MAX = 60
 		const val DAMPENING_FACTOR = 0.5f
 		const val STATIC_DAMPENING = 0.1f
+
 		// Short limbs positioned on the end of the skeleton are prone to over rotation
 		val LOCK_ROTATION = setOf(BodyPart.LEFT_HAND, BodyPart.RIGHT_HAND, BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT)
 	}

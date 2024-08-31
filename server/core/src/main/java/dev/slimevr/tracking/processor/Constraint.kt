@@ -16,7 +16,7 @@ class Constraint(
 	val constraintType: ConstraintType,
 	twist: Float = 0.0f,
 	swing: Float = 0.0f,
-	allowedDeviation: Float = 0f
+	allowedDeviation: Float = 0f,
 ) {
 	private val constraintFunction = constraintTypeToFunc(constraintType)
 	private val twistRad = Math.toRadians(twist.toDouble()).toFloat()
