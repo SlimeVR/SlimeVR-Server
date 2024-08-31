@@ -510,6 +510,8 @@ class HumanSkeleton(
 
 		updateTransforms()
 		updateBones()
+		enforceConstraints()
+		updateBones()
 
 		if (!pauseTracking) ikSolver.solve()
 
@@ -521,6 +523,17 @@ class HumanSkeleton(
 		legTweaks.tweakLegs()
 		localizer.update()
 		viveEmulation.update()
+	}
+
+	/**
+	 * Enforce rotation constraints on all bones
+	 */
+	private fun enforceConstraints() {
+		for (bone in allHumanBones) {
+			val initialRot = bone.getGlobalRotation()
+			val newRot = bone.rotationConstraint.applyConstraint(initialRot, bone)
+			bone.setRotationRaw(newRot)
+		}
 	}
 
 	/**
