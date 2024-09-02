@@ -47,7 +47,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     esbuildOptions: {
-      target: 'es2020',
+      target: 'es2022',
     },
     needsInterop: ['solarxr-protocol'],
     include: ['solarxr-protocol'],
