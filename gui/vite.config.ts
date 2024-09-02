@@ -39,7 +39,7 @@ export default defineConfig({
   },
   plugins: [react(), i18nHotReload(), visualizer() as PluginOption],
   build: {
-    target: 'es2020',
+    target: 'es2022',
     emptyOutDir: true,
     commonjsOptions: {
       include: [/solarxr-protocol/, /node_modules/],
