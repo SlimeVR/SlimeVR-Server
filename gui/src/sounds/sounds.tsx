@@ -1,19 +1,36 @@
+import { fetchResourceUrl } from '@/utils/tauri';
 import { ResetType } from 'solarxr-protocol';
 
 const quickResetStartedSound = new Audio(
-  '/sounds/quick-reset-started-sound.mp3'
+  await fetchResourceUrl('/sounds/quick-reset-started-sound.mp3')
 );
-const fullResetStartedSound = new Audio('/sounds/full-reset-started-sound.mp3');
+const fullResetStartedSound = new Audio(
+  await fetchResourceUrl('/sounds/full-reset-started-sound.mp3')
+);
 const mountingResetStartedSound = new Audio(
-  '/sounds/mounting-reset-started-sound.mp3'
+  await fetchResourceUrl('/sounds/mounting-reset-started-sound.mp3')
 );
-const tapSetupSound1 = new Audio('/sounds/first-tap.mp3');
-const tapSetupSound2 = new Audio('/sounds/second-tap.mp3');
-const tapSetupSound3 = new Audio('/sounds/third-tap.mp3');
-const tapSetupSound4 = new Audio('/sounds/fourth-tap.mp3');
-const tapSetupSound5 = new Audio('/sounds/fifth-tap.mp3');
-const tapSetupSoundEnd = new Audio('/sounds/end-tap.mp3');
-const tapSetupExtraSound = new Audio('/sounds/tapextrasetup.mp3');
+const tapSetupSound1 = new Audio(
+  await fetchResourceUrl('/sounds/first-tap.mp3')
+);
+const tapSetupSound2 = new Audio(
+  await fetchResourceUrl('/sounds/second-tap.mp3')
+);
+const tapSetupSound3 = new Audio(
+  await fetchResourceUrl('/sounds/third-tap.mp3')
+);
+const tapSetupSound4 = new Audio(
+  await fetchResourceUrl('/sounds/fourth-tap.mp3')
+);
+const tapSetupSound5 = new Audio(
+  await fetchResourceUrl('/sounds/fifth-tap.mp3')
+);
+const tapSetupSoundEnd = new Audio(
+  await fetchResourceUrl('/sounds/end-tap.mp3')
+);
+const tapSetupExtraSound = new Audio(
+  await fetchResourceUrl('/sounds/tapextrasetup.mp3')
+);
 
 function restartAndPlay(audio: HTMLAudioElement, volume: number) {
   audio.volume = Math.min(1, Math.pow(volume, Math.E) + 0.05);
