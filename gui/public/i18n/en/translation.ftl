@@ -271,6 +271,7 @@ settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 settings-sidebar-appearance = Appearance
 settings-sidebar-notifications = Notifications
+settings-sidebar-reset = Reset settings
 
 ## SteamVR settings
 settings-general-steamvr = SteamVR
@@ -572,6 +573,14 @@ settings-osc-vmc-anchor_hip-label = Anchor at hips
 settings-osc-vmc-mirror_tracking = Mirror tracking
 settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
 settings-osc-vmc-mirror_tracking-label = Mirror tracking
+
+## Settings reset settings
+settings-reset = Reset settings
+settings-reset_warning =
+        <b>Warning:</b> This will reset all your settings to the defaults.
+        Are you sure you want to do this?
+settings-reset_warning-reset = Reset settings
+settings-reset_warning-cancel = Cancel
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup

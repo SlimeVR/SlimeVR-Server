@@ -1,8 +1,10 @@
 import classNames from 'classnames';
-import { ReactNode, useMemo } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 import { NavLink, useLocation, useMatch } from 'react-router-dom';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
+import { Button } from '../commons/Button';
+import { SettingsResetModal } from './SettingsResetModal';
 
 export function SettingsLink({
   to,
@@ -41,6 +43,7 @@ export function SettingsLink({
 
 export function SettingsSidebar() {
   const { l10n } = useLocalization();
+  const [skipWarning, setSkipWarning] = useState(false);
   return (
     <div className="flex flex-col px-5 py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg h-full">
       <Typography variant="main-title">
@@ -99,6 +102,16 @@ export function SettingsSidebar() {
             <SettingsLink to="/settings/serial">
               {l10n.getString('settings-sidebar-serial')}
             </SettingsLink>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Button variant="primary" onClick={() => setSkipWarning(true)}>
+              {l10n.getString('settings-sidebar-reset')}
+            </Button>
+            <SettingsResetModal
+              accept={() => {}}
+              onClose={() => setSkipWarning(false)}
+              isOpen={skipWarning}
+            ></SettingsResetModal>
           </div>
         </div>
       </div>
