@@ -9,7 +9,7 @@ import { RulerIcon } from './commons/icon/RulerIcon';
 import { SparkleIcon } from './commons/icon/SparkleIcon';
 import { WrenchIcon } from './commons/icon/WrenchIcons';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { useConfig } from '@/hooks/config'
+import { useConfig } from '@/hooks/config';
 
 export function NavButton({
   to,

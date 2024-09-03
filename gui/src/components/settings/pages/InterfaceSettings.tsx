@@ -44,7 +44,8 @@ export function InterfaceSettings() {
       appearance: {
         devmode: config?.debug ?? defaultConfig.debug,
         theme: config?.theme ?? defaultConfig.theme,
-        showNavbarOnboarding: config?.showNavbarOnboarding ?? defaultConfig.showNavbarOnboarding,
+        showNavbarOnboarding:
+          config?.showNavbarOnboarding ?? defaultConfig.showNavbarOnboarding,
         textSize: config?.textSize ?? defaultConfig.textSize,
         fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
       },
@@ -324,7 +325,9 @@ export function InterfaceSettings() {
             </div>
 
             <Typography bold>
-              {l10n.getString('settings-general-interface-show-navbar-onboarding')}
+              {l10n.getString(
+                'settings-general-interface-show-navbar-onboarding'
+              )}
             </Typography>
             <div className="flex flex-col pt-1 pb-2">
               <Typography color="secondary">
