@@ -16,7 +16,7 @@ export interface DeveloperModeWidgetForm {
   moreInfo: boolean;
 }
 
-export const DefaultDeveloperModeWidgetForm: DeveloperModeWidgetForm = {
+export const defaultValues: DeveloperModeWidgetForm = {
   highContrast: false,
   preciseRotation: false,
   fastDataFeed: false,
@@ -33,7 +33,7 @@ export function DeveloperModeWidget() {
 
   const { reset, control, handleSubmit, watch } =
     useForm<DeveloperModeWidgetForm>({
-      defaultValues: DefaultDeveloperModeWidgetForm,
+      defaultValues: defaultValues,
     });
 
   useEffect(() => {

@@ -3,7 +3,6 @@ import { WarningBox } from '@/components/commons/TipBox';
 import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from '@/components/commons/BaseModal';
 import ReactModal from 'react-modal';
-import { useNavigate } from 'react-router-dom';
 
 export function SettingsResetModal({
   isOpen = true,
@@ -25,7 +24,6 @@ export function SettingsResetModal({
   accept: () => void;
 } & ReactModal.Props) {
   const { l10n } = useLocalization();
-  const navigate = useNavigate();
 
   return (
     <BaseModal
@@ -52,7 +50,6 @@ export function SettingsResetModal({
               variant="tertiary"
               onClick={() => {
                 accept();
-                navigate('/');
               }}
             >
               {l10n.getString('settings-reset_warning-reset')}
