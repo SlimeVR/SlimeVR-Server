@@ -252,7 +252,6 @@ function getServerDefaults() {
 function getGUIDefaults() {
   return {
     debug: defaultGUIConfig.debug,
-    lang: defaultGUIConfig.lang,
     doneOnboarding: defaultGUIConfig.doneOnboarding,
     watchNewDevices: defaultGUIConfig.watchNewDevices,
     devSettings: defaultDevConfig,
