@@ -5,6 +5,8 @@ import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { Button } from '../commons/Button';
 import { SettingsResetModal } from './SettingsResetModal';
+import { defaultConfig, useConfig } from '@/hooks/config';
+import { DefaultDeveloperModeWidgetForm } from '@/components/widgets/DeveloperModeWidget';
 
 export function SettingsLink({
   to,
@@ -44,6 +46,7 @@ export function SettingsLink({
 export function SettingsSidebar() {
   const { l10n } = useLocalization();
   const [skipWarning, setSkipWarning] = useState(false);
+  const { setConfig } = useConfig();
   return (
     <div className="flex flex-col px-5 py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg h-full">
       <Typography variant="main-title">
@@ -108,7 +111,31 @@ export function SettingsSidebar() {
               {l10n.getString('settings-sidebar-reset')}
             </Button>
             <SettingsResetModal
-              accept={() => {}}
+              accept={() => {
+                // TODO: Server settings
+
+
+                // GUI settings
+                setConfig({
+                  debug: defaultConfig.debug,
+                  lang: defaultConfig.lang,
+                  doneOnboarding: defaultConfig.doneOnboarding,
+                  watchNewDevices: defaultConfig.watchNewDevices,
+                  devSettings: DefaultDeveloperModeWidgetForm,
+                  feedbackSound: defaultConfig.feedbackSound,
+                  feedbackSoundVolume: defaultConfig.feedbackSoundVolume,
+                  connectedTrackersWarning: defaultConfig.connectedTrackersWarning,
+                  // uncomment after #1152 is merged
+                  // showNavbarOnboarding: defaultConfig.showNavbarOnboarding,
+                  theme: defaultConfig.theme,
+                  textSize: defaultConfig.textSize,
+                  fonts: defaultConfig.fonts,
+                  useTray: defaultConfig.useTray,
+                  mirrorView: defaultConfig.mirrorView,
+                  assignMode: defaultConfig.assignMode,
+                  discordPresence: defaultConfig.discordPresence,
+                });
+              }}
               onClose={() => setSkipWarning(false)}
               isOpen={skipWarning}
             ></SettingsResetModal>
