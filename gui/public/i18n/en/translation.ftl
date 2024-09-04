@@ -271,6 +271,7 @@ settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 settings-sidebar-appearance = Appearance
 settings-sidebar-notifications = Notifications
+settings-sidebar-advanced = Advanced
 settings-sidebar-reset = Reset settings
 
 ## SteamVR settings
@@ -574,13 +575,27 @@ settings-osc-vmc-mirror_tracking = Mirror tracking
 settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
 settings-osc-vmc-mirror_tracking-label = Mirror tracking
 
-## Settings reset settings
-settings-reset = Reset settings
-settings-reset_warning =
-        <b>Warning:</b> This will reset all your settings to the defaults.
+## Advanced settings
+settings-utils-advanced = Advanced
+
+settings-utils-advanced-reset-gui = Reset GUI settings
+settings-utils-advanced-reset-gui-description = Restore the default settings for the interface.
+settings-utils-advanced-reset-gui-label = Reset GUI
+settings-utils-advanced-reset-server = Reset tracking settings
+settings-utils-advanced-reset-server-description = Restore the default settings for the tracking.
+settings-utils-advanced-reset-server-label = Reset tracking
+settings-utils-advanced-reset-all = Reset all settings
+settings-utils-advanced-reset-all-description = Restore the default settings for both the interface and tracking.
+settings-utils-advanced-reset-all-label = Reset all
+settings-utils-advanced-reset_warning =
+        <b>Warning:</b> This will reset your settings to the defaults.
         Are you sure you want to do this?
-settings-reset_warning-reset = Reset settings
-settings-reset_warning-cancel = Cancel
+settings-utils-advanced-reset_warning-reset = Reset settings
+settings-utils-advanced-reset_warning-cancel = Cancel
+
+settings-utils-advanced-open_config = Config folder
+settings-utils-advanced-open_config-description = Open the location of SlimeVR's settings in your file explorer.
+settings-utils-advanced-open_config-label = Open folder
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup

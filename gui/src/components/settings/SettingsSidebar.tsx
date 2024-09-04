@@ -1,27 +1,8 @@
 import classNames from 'classnames';
-import { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { NavLink, useLocation, useMatch } from 'react-router-dom';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
-import { Button } from '../commons/Button';
-import { SettingsResetModal } from './SettingsResetModal';
-import { defaultConfig as defaultGUIConfig, useConfig } from '@/hooks/config';
-import { defaultValues as defaultServerConfig } from './pages/GeneralSettings';
-import { defaultValues as defaultDevConfig } from '@/components/widgets/DeveloperModeWidget';
-import {
-  ChangeSettingsRequestT,
-  DriftCompensationSettingsT,
-  FilteringSettingsT,
-  LegTweaksSettingsT,
-  ModelRatiosT,
-  ModelSettingsT,
-  ModelTogglesT,
-  ResetsSettingsT,
-  RpcMessage,
-  SteamVRTrackersSettingT,
-  TapDetectionSettingsT,
-} from 'solarxr-protocol';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
 
 export function SettingsLink({
   to,
@@ -60,9 +41,6 @@ export function SettingsLink({
 
 export function SettingsSidebar() {
   const { l10n } = useLocalization();
-  const [skipWarning, setSkipWarning] = useState(false);
-  const { setConfig } = useConfig();
-  const { sendRPCPacket } = useWebsocketAPI();
 
   return (
     <div className="flex flex-col px-5 py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg h-full">
@@ -124,148 +102,12 @@ export function SettingsSidebar() {
             </SettingsLink>
           </div>
           <div className="flex flex-col gap-2">
-            <Button variant="primary" onClick={() => setSkipWarning(true)}>
-              {l10n.getString('settings-sidebar-reset')}
-            </Button>
-            <SettingsResetModal
-              accept={() => {
-                const guiSettings = getGUIDefaults();
-                const serverSettings = getServerDefaults();
-
-                // Server settings
-                sendRPCPacket(RpcMessage.ChangeSettingsRequest, serverSettings);
-
-                // GUI settings
-                setConfig(guiSettings);
-              }}
-              onClose={() => setSkipWarning(false)}
-              isOpen={skipWarning}
-            ></SettingsResetModal>
+            <SettingsLink to="/settings/advanced">
+              {l10n.getString('settings-sidebar-advanced')}
+            </SettingsLink>
           </div>
         </div>
       </div>
     </div>
   );
-}
-
-function getServerDefaults() {
-  const settings = new ChangeSettingsRequestT();
-
-  const trackers = new SteamVRTrackersSettingT();
-  trackers.waist = defaultServerConfig.trackers.waist;
-  trackers.chest = defaultServerConfig.trackers.chest;
-  trackers.leftFoot = defaultServerConfig.trackers.leftFoot;
-  trackers.rightFoot = defaultServerConfig.trackers.rightFoot;
-  trackers.leftKnee = defaultServerConfig.trackers.leftKnee;
-  trackers.rightKnee = defaultServerConfig.trackers.rightKnee;
-  trackers.leftElbow = defaultServerConfig.trackers.leftElbow;
-  trackers.rightElbow = defaultServerConfig.trackers.rightElbow;
-  trackers.leftHand = defaultServerConfig.trackers.leftHand;
-  trackers.rightHand = defaultServerConfig.trackers.rightHand;
-  trackers.automaticTrackerToggle =
-    defaultServerConfig.trackers.automaticTrackerToggle;
-  settings.steamVrTrackers = trackers;
-
-  const modelSettings = new ModelSettingsT();
-  const toggles = new ModelTogglesT();
-  toggles.floorClip = defaultServerConfig.toggles.floorClip;
-  toggles.skatingCorrection = defaultServerConfig.toggles.skatingCorrection;
-  toggles.extendedKnee = defaultServerConfig.toggles.extendedKnee;
-  toggles.extendedPelvis = defaultServerConfig.toggles.extendedPelvis;
-  toggles.extendedSpine = defaultServerConfig.toggles.extendedSpine;
-  toggles.forceArmsFromHmd = defaultServerConfig.toggles.forceArmsFromHmd;
-  toggles.viveEmulation = defaultServerConfig.toggles.viveEmulation;
-  toggles.toeSnap = defaultServerConfig.toggles.toeSnap;
-  toggles.footPlant = defaultServerConfig.toggles.footPlant;
-  toggles.selfLocalization = defaultServerConfig.toggles.selfLocalization;
-  modelSettings.toggles = toggles;
-
-  const ratios = new ModelRatiosT();
-  ratios.imputeWaistFromChestHip =
-    defaultServerConfig.ratios.imputeWaistFromChestHip;
-  ratios.imputeWaistFromChestLegs =
-    defaultServerConfig.ratios.imputeWaistFromChestLegs;
-  ratios.imputeHipFromChestLegs =
-    defaultServerConfig.ratios.imputeHipFromChestLegs;
-  ratios.imputeHipFromWaistLegs =
-    defaultServerConfig.ratios.imputeHipFromWaistLegs;
-  ratios.interpHipLegs = defaultServerConfig.ratios.interpHipLegs;
-  ratios.interpKneeTrackerAnkle =
-    defaultServerConfig.ratios.interpKneeTrackerAnkle;
-  ratios.interpKneeAnkle = defaultServerConfig.ratios.interpKneeAnkle;
-  modelSettings.ratios = ratios;
-
-  const legTweaks = new LegTweaksSettingsT();
-  legTweaks.correctionStrength =
-    defaultServerConfig.legTweaks.correctionStrength;
-  modelSettings.legTweaks = legTweaks;
-
-  settings.modelSettings = modelSettings;
-
-  const tapDetection = new TapDetectionSettingsT();
-  tapDetection.fullResetDelay = defaultServerConfig.tapDetection.fullResetDelay;
-  tapDetection.fullResetEnabled =
-    defaultServerConfig.tapDetection.fullResetEnabled;
-  tapDetection.fullResetTaps = defaultServerConfig.tapDetection.fullResetTaps;
-  tapDetection.yawResetDelay = defaultServerConfig.tapDetection.yawResetDelay;
-  tapDetection.yawResetEnabled =
-    defaultServerConfig.tapDetection.yawResetEnabled;
-  tapDetection.yawResetTaps = defaultServerConfig.tapDetection.yawResetTaps;
-  tapDetection.mountingResetEnabled =
-    defaultServerConfig.tapDetection.mountingResetEnabled;
-  tapDetection.mountingResetDelay =
-    defaultServerConfig.tapDetection.mountingResetDelay;
-  tapDetection.mountingResetTaps =
-    defaultServerConfig.tapDetection.mountingResetTaps;
-  tapDetection.numberTrackersOverThreshold =
-    defaultServerConfig.tapDetection.numberTrackersOverThreshold;
-  tapDetection.setupMode = false;
-  settings.tapDetectionSettings = tapDetection;
-
-  const filtering = new FilteringSettingsT();
-  filtering.type = defaultServerConfig.filtering.type;
-  filtering.amount = defaultServerConfig.filtering.amount;
-  settings.filtering = filtering;
-
-  const driftCompensation = new DriftCompensationSettingsT();
-  driftCompensation.enabled = defaultServerConfig.driftCompensation.enabled;
-  driftCompensation.amount = defaultServerConfig.driftCompensation.amount;
-  driftCompensation.maxResets = defaultServerConfig.driftCompensation.maxResets;
-  settings.driftCompensation = driftCompensation;
-
-  const resetsSettings = new ResetsSettingsT();
-  resetsSettings.resetMountingFeet =
-    defaultServerConfig.resetsSettings.resetMountingFeet;
-  resetsSettings.armsMountingResetMode =
-    defaultServerConfig.resetsSettings.armsMountingResetMode;
-  resetsSettings.yawResetSmoothTime =
-    defaultServerConfig.resetsSettings.yawResetSmoothTime;
-  resetsSettings.saveMountingReset =
-    defaultServerConfig.resetsSettings.saveMountingReset;
-  resetsSettings.resetHmdPitch =
-    defaultServerConfig.resetsSettings.resetHmdPitch;
-  settings.resetsSettings = resetsSettings;
-
-  return settings;
-}
-
-function getGUIDefaults() {
-  return {
-    debug: defaultGUIConfig.debug,
-    doneOnboarding: defaultGUIConfig.doneOnboarding,
-    watchNewDevices: defaultGUIConfig.watchNewDevices,
-    devSettings: defaultDevConfig,
-    feedbackSound: defaultGUIConfig.feedbackSound,
-    feedbackSoundVolume: defaultGUIConfig.feedbackSoundVolume,
-    connectedTrackersWarning: defaultGUIConfig.connectedTrackersWarning,
-    // uncomment after #1152 is merged
-    // showNavbarOnboarding: defaultGUIConfig.showNavbarOnboarding,
-    theme: defaultGUIConfig.theme,
-    textSize: defaultGUIConfig.textSize,
-    fonts: defaultGUIConfig.fonts,
-    useTray: defaultGUIConfig.useTray,
-    mirrorView: defaultGUIConfig.mirrorView,
-    assignMode: defaultGUIConfig.assignMode,
-    discordPresence: defaultGUIConfig.discordPresence,
-  };
 }
