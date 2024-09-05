@@ -133,6 +133,11 @@ public class ConfigManager {
 		}
 	}
 
+	public void resetConfig() {
+		this.vrConfig = new VRConfig();
+		saveConfig();
+	}
+
 	public VRConfig getVrConfig() {
 		return vrConfig;
 	}

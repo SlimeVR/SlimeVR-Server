@@ -100,7 +100,7 @@ interface SettingsForm {
   };
 }
 
-export const defaultValues: SettingsForm = {
+const defaultValues: SettingsForm = {
   trackers: {
     waist: false,
     chest: false,
