@@ -97,113 +97,133 @@ export function AdvancedSettings() {
           } as React.CSSProperties
         }
       >
-        <SettingsPagePaneLayout
-          icon={<WrenchIcon></WrenchIcon>}
-          id="notifications"
-        >
+        <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="advanced">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-utils-advanced')}
             </Typography>
 
-            <Typography bold>
-              {l10n.getString('settings-utils-advanced-reset-gui')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString('settings-utils-advanced-reset-gui-description')}
-              </Typography>
-            </div>
-            <div className="grid pb-4 gap-4">
-              <div className="flex flex-col gap-2">
-                <Button variant="secondary" onClick={() => setSkipWarning(true)}>
-                  {l10n.getString('settings-utils-advanced-reset-gui-label')}
-                </Button>
-                <SettingsResetModal
-                  accept={() => {
-                    const guiSettings = getGUIDefaults();
-                    setConfig(guiSettings);
-                  }}
-                  onClose={() => setSkipWarning(false)}
-                  isOpen={skipWarning}
-                ></SettingsResetModal>
+            <div className="grid grid-cols-2 gap-2 mobile:grid-cols-1">
+              <div>
+                <Typography bold>
+                  {l10n.getString('settings-utils-advanced-reset-gui')}
+                </Typography>
+                <div className="flex flex-col pt-1 pb-2">
+                  <Typography color="secondary">
+                    {l10n.getString(
+                      'settings-utils-advanced-reset-gui-description'
+                    )}
+                  </Typography>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="secondary"
+                    onClick={() => setSkipWarning(true)}
+                  >
+                    {l10n.getString('settings-utils-advanced-reset-gui-label')}
+                  </Button>
+                  <SettingsResetModal
+                    accept={() => {
+                      const guiSettings = getGUIDefaults();
+                      setConfig(guiSettings);
+                    }}
+                    onClose={() => setSkipWarning(false)}
+                    isOpen={skipWarning}
+                  ></SettingsResetModal>
+                </div>
               </div>
-            </div>
 
-            <Typography bold>
-              {l10n.getString('settings-utils-advanced-reset-server')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString('settings-utils-advanced-reset-server-description')}
-              </Typography>
-            </div>
-            <div className="grid pb-4 gap-4">
-              <div className="flex flex-col gap-2">
-                <Button variant="secondary" onClick={() => setSkipWarning(true)}>
-                  {l10n.getString('settings-utils-advanced-reset-server-label')}
-                </Button>
-                <SettingsResetModal
-                  accept={() => {
-                    const serverSettings = getServerDefaults();
-                    sendRPCPacket(
-                      RpcMessage.ChangeSettingsRequest,
-                      serverSettings
-                    );
-                  }}
-                  onClose={() => setSkipWarning(false)}
-                  isOpen={skipWarning}
-                ></SettingsResetModal>
+              <div>
+                <Typography bold>
+                  {l10n.getString('settings-utils-advanced-reset-server')}
+                </Typography>
+                <div className="flex flex-col pt-1 pb-2">
+                  <Typography color="secondary">
+                    {l10n.getString(
+                      'settings-utils-advanced-reset-server-description'
+                    )}
+                  </Typography>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="secondary"
+                    onClick={() => setSkipWarning(true)}
+                  >
+                    {l10n.getString(
+                      'settings-utils-advanced-reset-server-label'
+                    )}
+                  </Button>
+                  <SettingsResetModal
+                    accept={() => {
+                      const serverSettings = getServerDefaults();
+                      sendRPCPacket(
+                        RpcMessage.ChangeSettingsRequest,
+                        serverSettings
+                      );
+                    }}
+                    onClose={() => setSkipWarning(false)}
+                    isOpen={skipWarning}
+                  ></SettingsResetModal>
+                </div>
               </div>
-            </div>
 
-            <Typography bold>
-              {l10n.getString('settings-utils-advanced-reset-all')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString('settings-utils-advanced-reset-all-description')}
-              </Typography>
-            </div>
-            <div className="grid pb-4 gap-4">
-              <div className="flex flex-col gap-2">
-                <Button variant="secondary" onClick={() => setSkipWarning(true)}>
-                  {l10n.getString('settings-utils-advanced-reset-all-label')}
-                </Button>
-                <SettingsResetModal
-                  accept={() => {
-                    const guiSettings = getGUIDefaults();
-                    const serverSettings = getServerDefaults();
+              <div>
+                <Typography bold>
+                  {l10n.getString('settings-utils-advanced-reset-all')}
+                </Typography>
+                <div className="flex flex-col pt-1 pb-2">
+                  <Typography color="secondary">
+                    {l10n.getString(
+                      'settings-utils-advanced-reset-all-description'
+                    )}
+                  </Typography>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="secondary"
+                    onClick={() => setSkipWarning(true)}
+                  >
+                    {l10n.getString('settings-utils-advanced-reset-all-label')}
+                  </Button>
+                  <SettingsResetModal
+                    accept={() => {
+                      const guiSettings = getGUIDefaults();
+                      const serverSettings = getServerDefaults();
 
-                    // Server settings
-                    sendRPCPacket(
-                      RpcMessage.ChangeSettingsRequest,
-                      serverSettings
-                    );
+                      // Server settings
+                      sendRPCPacket(
+                        RpcMessage.ChangeSettingsRequest,
+                        serverSettings
+                      );
 
-                    // GUI settings
-                    setConfig(guiSettings);
-                  }}
-                  onClose={() => setSkipWarning(false)}
-                  isOpen={skipWarning}
-                ></SettingsResetModal>
+                      // GUI settings
+                      setConfig(guiSettings);
+                    }}
+                    onClose={() => setSkipWarning(false)}
+                    isOpen={skipWarning}
+                  ></SettingsResetModal>
+                </div>
               </div>
-            </div>
 
-            <Typography bold>
-              {l10n.getString('settings-utils-advanced-open_config')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString('settings-utils-advanced-open_config-description')}
-              </Typography>
-            </div>
-            <div className="grid pb-4 gap-4">
-              <div className="flex flex-col gap-2">
-                <Button variant="secondary" onClick={() => {}}>
-                  {l10n.getString('settings-utils-advanced-open_config-label')}
-                </Button>
-                {/* TODO: open config folder */}
+              <div>
+                <Typography bold>
+                  {l10n.getString('settings-utils-advanced-open_config')}
+                </Typography>
+                <div className="flex flex-col pt-1 pb-2">
+                  <Typography color="secondary">
+                    {l10n.getString(
+                      'settings-utils-advanced-open_config-description'
+                    )}
+                  </Typography>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Button variant="secondary" onClick={() => {}}>
+                    {l10n.getString(
+                      'settings-utils-advanced-open_config-label'
+                    )}
+                  </Button>
+                  {/* TODO: open config folder */}
+                </div>
               </div>
             </div>
           </>
