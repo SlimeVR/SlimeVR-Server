@@ -32,22 +32,16 @@ interface InterfaceSettingsForm {
   };
 }
 
-const guiDefaults = {
-  debug: defaultGUIConfig.debug,
-  watchNewDevices: defaultGUIConfig.watchNewDevices,
-  devSettings: defaultDevConfig,
-  feedbackSound: defaultGUIConfig.feedbackSound,
-  feedbackSoundVolume: defaultGUIConfig.feedbackSoundVolume,
-  connectedTrackersWarning: defaultGUIConfig.connectedTrackersWarning,
-  // uncomment after #1152 is merged
-  // showNavbarOnboarding: defaultGUIConfig.showNavbarOnboarding,
-  theme: defaultGUIConfig.theme,
-  textSize: defaultGUIConfig.textSize,
-  fonts: defaultGUIConfig.fonts,
-  useTray: defaultGUIConfig.useTray,
-  mirrorView: defaultGUIConfig.mirrorView,
-  assignMode: defaultGUIConfig.assignMode,
-  discordPresence: defaultGUIConfig.discordPresence,
+function guiDefaults() {
+  // Destructure the properties to exclude "lang" and "doneOnboarding"
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { lang, doneOnboarding, ...guiDefaults } = defaultGUIConfig;
+
+  // Include "devSettings" which has all the properties of "defaultDevConfig"
+  // @ts-expect-error "devSettings" is not in the "guiDefaults" object but we want to include it (from "defaultDevConfig")
+  guiDefaults.devSettings = defaultDevConfig;
+
+  return guiDefaults;
 }
 
 export function AdvancedSettings() {
@@ -57,7 +51,9 @@ export function AdvancedSettings() {
     defaultValues: {},
   });
 
-  const [skipWarning, setSkipWarning] = useState(false);
+  const [skipWarningGui, setSkipWarningGui] = useState(false);
+  const [skipWarningServer, setSkipWarningServer] = useState(false);
+  const [skipWarningAll, setSkipWarningAll] = useState(false);
   const { sendRPCPacket } = useWebsocketAPI();
 
   const onSubmit = (values: InterfaceSettingsForm) => {
@@ -114,16 +110,17 @@ export function AdvancedSettings() {
                 <div className="flex flex-col gap-2">
                   <Button
                     variant="secondary"
-                    onClick={() => setSkipWarning(true)}
+                    onClick={() => setSkipWarningGui(true)}
                   >
                     {l10n.getString('settings-utils-advanced-reset-gui-label')}
                   </Button>
                   <SettingsResetModal
                     accept={() => {
-                      setConfig(guiDefaults);
+                      setConfig(guiDefaults());
+                      setSkipWarningGui(false);
                     }}
-                    onClose={() => setSkipWarning(false)}
-                    isOpen={skipWarning}
+                    onClose={() => setSkipWarningGui(false)}
+                    isOpen={skipWarningGui}
                   ></SettingsResetModal>
                 </div>
               </div>
@@ -142,7 +139,7 @@ export function AdvancedSettings() {
                 <div className="flex flex-col gap-2">
                   <Button
                     variant="secondary"
-                    onClick={() => setSkipWarning(true)}
+                    onClick={() => setSkipWarningServer(true)}
                   >
                     {l10n.getString(
                       'settings-utils-advanced-reset-server-label'
@@ -155,10 +152,10 @@ export function AdvancedSettings() {
                         new SettingsResetRequestT()
                       );
 
-                      console.log('reset server settings');
+                      setSkipWarningServer(false);
                     }}
-                    onClose={() => setSkipWarning(false)}
-                    isOpen={skipWarning}
+                    onClose={() => setSkipWarningServer(false)}
+                    isOpen={skipWarningServer}
                   ></SettingsResetModal>
                 </div>
               </div>
@@ -177,23 +174,22 @@ export function AdvancedSettings() {
                 <div className="flex flex-col gap-2">
                   <Button
                     variant="secondary"
-                    onClick={() => setSkipWarning(true)}
+                    onClick={() => setSkipWarningAll(true)}
                   >
                     {l10n.getString('settings-utils-advanced-reset-all-label')}
                   </Button>
                   <SettingsResetModal
                     accept={() => {
-                      console.log('reset all settings');
                       sendRPCPacket(
                         RpcMessage.SettingsResetRequest,
                         new SettingsResetRequestT()
                       );
-                      setConfig(guiDefaults);
+                      setConfig(guiDefaults());
 
-                      setSkipWarning(false);
+                      setSkipWarningAll(false);
                     }}
-                    onClose={() => setSkipWarning(false)}
-                    isOpen={skipWarning}
+                    onClose={() => setSkipWarningAll(false)}
+                    isOpen={skipWarningAll}
                   ></SettingsResetModal>
                 </div>
               </div>
