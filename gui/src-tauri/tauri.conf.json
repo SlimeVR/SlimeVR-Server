@@ -73,7 +73,7 @@
       "all": true
     },
     "shell": {
-      "open": true
+      "open": "^((https?://\\w+)|(file://)).+"
     },
     "window": {
       "close": true,

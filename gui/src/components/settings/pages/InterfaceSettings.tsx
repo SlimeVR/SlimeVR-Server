@@ -91,6 +91,7 @@ export function InterfaceSettings() {
     <SettingsPageLayout>
       <form
         className="flex flex-col gap-2 w-full"
+        // Don't resize the font size for this page
         style={
           {
             '--font-size': '12rem',

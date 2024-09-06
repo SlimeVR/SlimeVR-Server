@@ -593,9 +593,9 @@ settings-utils-advanced-reset_warning =
 settings-utils-advanced-reset_warning-reset = Reset settings
 settings-utils-advanced-reset_warning-cancel = Cancel
 
-settings-utils-advanced-open_config = Config folder
-settings-utils-advanced-open_config-description = Open the location of SlimeVR's settings in your file explorer.
-settings-utils-advanced-open_config-label = Open folder
+settings-utils-advanced-open_data = Data folder
+settings-utils-advanced-open_data-description = Open SlimeVR's data folder in file explorer, containing config and log files.
+settings-utils-advanced-open_data-label = Open folder
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup

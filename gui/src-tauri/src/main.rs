@@ -40,6 +40,19 @@ fn update_window_state(
 }
 
 #[tauri::command]
+fn get_config_path(app_handle: tauri::AppHandle) -> Result<String, String> {
+    match app_handle.path().app_config_dir() {
+        Ok(path) => {
+            Ok(path.to_string_lossy().to_string())
+        },
+        Err(err) => {
+            log::error!("Could not find config directory: {}", err.to_string());
+            Err("Could not find config directory".to_string() + err.to_string().as_str())
+        },
+    }
+}
+
+#[tauri::command]
 fn logging(msg: String) {
 	log::info!(target: "webview", "{}", msg)
 }
@@ -173,6 +186,7 @@ fn main() -> Result<()> {
 		.plugin(tauri_plugin_shell::init())
 		.plugin(tauri_plugin_store::Builder::default().build())
 		.invoke_handler(tauri::generate_handler![
+			get_config_path,
 			update_window_state,
 			logging,
 			erroring,
