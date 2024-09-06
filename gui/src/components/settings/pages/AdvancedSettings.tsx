@@ -7,7 +7,7 @@ import {
 } from '@/components/settings/SettingsPageLayout';
 import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { Button } from '@/components/commons/Button';
-import { SettingsResetModal } from '../SettingsResetModal';
+import { SettingsResetModal } from '@/components/settings/SettingsResetModal';
 
 import { invoke } from '@tauri-apps/api/core';
 import { open } from '@tauri-apps/plugin-shell';
