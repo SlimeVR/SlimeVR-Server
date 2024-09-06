@@ -174,9 +174,7 @@ export function AdvancedSettings() {
                 </div>
                 <div className="flex flex-col">
                   <Button variant="secondary" onClick={openConfigFolder}>
-                    {l10n.getString(
-                      'settings-utils-advanced-open_data-label'
-                    )}
+                    {l10n.getString('settings-utils-advanced-open_data-label')}
                   </Button>
                 </div>
               </div>

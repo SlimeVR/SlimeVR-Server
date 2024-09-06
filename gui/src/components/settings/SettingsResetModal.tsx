@@ -35,9 +35,13 @@ export function SettingsResetModal({
     >
       <div className="flex w-full h-full flex-col ">
         <div className="flex flex-col flex-grow items-center gap-3">
-          <Localized id="settings-utils-advanced-reset_warning" elems={{ b: <b></b> }}>
+          <Localized
+            id="settings-utils-advanced-reset_warning"
+            elems={{ b: <b></b> }}
+          >
             <WarningBox>
-              <b>Warning:</b> This will reset all your settings to the defaults.<br />
+              <b>Warning:</b> This will reset all your settings to the defaults.
+              <br />
               Are you sure you want to do this?
             </WarningBox>
           </Localized>
