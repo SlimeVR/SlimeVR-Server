@@ -463,9 +463,9 @@ settings-general-interface-discord_presence-message = { $amount ->
     [one] Using 1 tracker
     *[other] Using { $amount } trackers
 }
-settings-interface-behavior-data_collection = Data collection
-settings-interface-behavior-data_collection-description = Data collection
-settings-interface-behavior-data_collection-label = Data collection
+settings-interface-behavior-error_tracking = Error tracking via Sentry
+settings-interface-behavior-error_tracking-description = we need to write comprehensive and easy to read text for this!
+settings-interface-behavior-error_tracking-label = Error tracking
 
 ## Serial settings
 settings-serial = Serial Console

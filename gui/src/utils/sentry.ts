@@ -39,13 +39,6 @@ export function getSentryOrCompute(enabled = false) {
     release: (__VERSION_TAG__ || __COMMIT_HASH__) + (__GIT_CLEAN__ ? '' : '-dirty'),
     // Tracing
     tracesSampleRate: import.meta.env.PROD ? 0.5 : 1.0, // Capture 50% of the transactions
-    // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
-    tracePropagationTargets: [
-      'localhost',
-      /^https:\/\/fw-tool-(?:api|bucket)\.slimevr\.io/,
-      /^tauri:\/\/localhost/,
-      /^http:\/\/tauri.localhost/,
-    ],
     // Set profilesSampleRate to 1.0 to profile every transaction.
     // Since profilesSampleRate is relative to tracesSampleRate,
     // the final profiling rate can be computed as tracesSampleRate * profilesSampleRate

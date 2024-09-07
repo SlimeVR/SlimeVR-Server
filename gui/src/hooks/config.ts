@@ -37,7 +37,7 @@ export interface Config {
   mirrorView: boolean;
   assignMode: AssignMode;
   discordPresence: boolean;
-  dataCollection: boolean;
+  errorTracking: boolean;
 }
 
 export interface ConfigContext {
@@ -63,7 +63,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   mirrorView: true,
   assignMode: AssignMode.Core,
   discordPresence: false,
-  dataCollection: false,
+  errorTracking: false,
 };
 
 interface CrossStorage {

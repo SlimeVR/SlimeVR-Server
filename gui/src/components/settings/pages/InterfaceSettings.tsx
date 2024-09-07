@@ -28,7 +28,7 @@ interface InterfaceSettingsForm {
     devmode: boolean;
     useTray: boolean;
     discordPresence: boolean;
-    dataCollection: boolean;
+    errorTracking: boolean;
   };
   notifications: {
     watchNewDevices: boolean;
@@ -64,7 +64,7 @@ export function InterfaceSettings() {
         useTray: config?.useTray ?? defaultConfig.useTray ?? false,
         discordPresence:
           config?.discordPresence ?? defaultConfig.discordPresence,
-        dataCollection: config?.dataCollection ?? defaultConfig.dataCollection,
+        errorTracking: config?.errorTracking ?? defaultConfig.errorTracking,
       },
     },
   });
@@ -83,7 +83,7 @@ export function InterfaceSettings() {
       useTray: values.behavior.useTray,
       discordPresence: values.behavior.discordPresence,
       debug: values.behavior.devmode,
-      dataCollection: values.behavior.dataCollection,
+      errorTracking: values.behavior.errorTracking,
     });
   };
 
@@ -275,12 +275,12 @@ export function InterfaceSettings() {
             </div>
 
             <Typography bold>
-              {l10n.getString('settings-interface-behavior-data_collection')}
+              {l10n.getString('settings-interface-behavior-error_tracking')}
             </Typography>
             <div className="flex flex-col pt-1 pb-2">
               <Typography color="secondary">
                 {l10n.getString(
-                  'settings-interface-behavior-data_collection-description'
+                  'settings-interface-behavior-error_tracking-description'
                 )}
               </Typography>
             </div>
@@ -289,9 +289,9 @@ export function InterfaceSettings() {
                 variant="toggle"
                 control={control}
                 outlined
-                name="behavior.dataCollection"
+                name="behavior.errorTracking"
                 label={l10n.getString(
-                  'settings-interface-behavior-data_collection-label'
+                  'settings-interface-behavior-error_tracking-label'
                 )}
               />
             </div>

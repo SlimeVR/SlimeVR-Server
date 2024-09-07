@@ -35,10 +35,10 @@ export function AppLayout() {
   }, [config?.doneOnboarding]);
 
   useEffect(() => {
-    if (config?.dataCollection !== undefined) {
-      getSentryOrCompute(config.dataCollection);
+    if (config?.errorTracking !== undefined) {
+      getSentryOrCompute(config.errorTracking);
     }
-  }, [config?.dataCollection]);
+  }, [config?.errorTracking]);
 
   // const location = useLocation();
   // const navigationType = useNavigationType();
