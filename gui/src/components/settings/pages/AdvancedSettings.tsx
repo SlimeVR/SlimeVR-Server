@@ -84,7 +84,7 @@ export function AdvancedSettings() {
                     }}
                     onClose={() => setSkipWarningGui(false)}
                     isOpen={skipWarningGui}
-                    variant='gui'
+                    variant="gui"
                   ></SettingsResetModal>
                 </div>
               </div>
@@ -121,7 +121,7 @@ export function AdvancedSettings() {
                     }}
                     onClose={() => setSkipWarningServer(false)}
                     isOpen={skipWarningServer}
-                    variant='server'
+                    variant="server"
                   ></SettingsResetModal>
                 </div>
               </div>
@@ -157,7 +157,7 @@ export function AdvancedSettings() {
                     }}
                     onClose={() => setSkipWarningAll(false)}
                     isOpen={skipWarningAll}
-                    variant='all'
+                    variant="all"
                   ></SettingsResetModal>
                 </div>
               </div>
