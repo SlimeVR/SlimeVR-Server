@@ -4,7 +4,7 @@ export function Preload() {
     <Helmet>
       <link rel="preload" href="/images/front-standing-pose.webp" as="image" />
       <link rel="preload" href="/images/slime-girl.webp" as="image" />
-      <link rel="preload" href="/images/mounting-reset-pose.avif" as="image" />
+      <link rel="preload" href="/images/mounting-reset-pose.webp" as="image" />
       <link rel="preload" href="/images/reset-pose.webp" as="image" />
       <link rel="preload" href="/images/slimes.webp" as="image" />
 
