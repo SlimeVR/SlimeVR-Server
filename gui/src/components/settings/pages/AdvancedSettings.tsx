@@ -5,13 +5,13 @@ import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
-import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
+import { BugIcon } from '@/components/commons/icon/BugIcon';
 import { Button } from '@/components/commons/Button';
 import { SettingsResetModal } from '@/components/settings/SettingsResetModal';
 
-import { invoke } from '@tauri-apps/api/core';
 import { open } from '@tauri-apps/plugin-shell';
 import { error } from '@/utils/logging';
+import { appConfigDir } from '@tauri-apps/api/path';
 import { defaultConfig as defaultGUIConfig, useConfig } from '@/hooks/config';
 import { defaultValues as defaultDevConfig } from '@/components/widgets/DeveloperModeWidget';
 import { RpcMessage, SettingsResetRequestT } from 'solarxr-protocol';
@@ -40,7 +40,7 @@ export function AdvancedSettings() {
 
   const openConfigFolder = async () => {
     try {
-      const configPath = await invoke<string>('get_config_path');
+      const configPath = await appConfigDir();
       await open('file://' + configPath);
     } catch (err) {
       error('Failed to open config folder:', err);
@@ -50,19 +50,19 @@ export function AdvancedSettings() {
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="advanced">
+        <SettingsPagePaneLayout icon={<BugIcon></BugIcon>} id="advanced">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-utils-advanced')}
             </Typography>
 
-            <div className="grid gap-2 mobile:gap-6">
+            <div className="grid gap-4 mobile:gap-6">
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
                   <Typography bold>
                     {l10n.getString('settings-utils-advanced-reset-gui')}
                   </Typography>
-                  <div className="flex flex-col pt-1 pb-2">
+                  <div className="flex flex-col pt-1">
                     <Typography color="secondary">
                       {l10n.getString(
                         'settings-utils-advanced-reset-gui-description'
@@ -84,6 +84,7 @@ export function AdvancedSettings() {
                     }}
                     onClose={() => setSkipWarningGui(false)}
                     isOpen={skipWarningGui}
+                    variant='gui'
                   ></SettingsResetModal>
                 </div>
               </div>
@@ -93,7 +94,7 @@ export function AdvancedSettings() {
                   <Typography bold>
                     {l10n.getString('settings-utils-advanced-reset-server')}
                   </Typography>
-                  <div className="flex flex-col pt-1 pb-2">
+                  <div className="flex flex-col pt-1">
                     <Typography color="secondary">
                       {l10n.getString(
                         'settings-utils-advanced-reset-server-description'
@@ -120,6 +121,7 @@ export function AdvancedSettings() {
                     }}
                     onClose={() => setSkipWarningServer(false)}
                     isOpen={skipWarningServer}
+                    variant='server'
                   ></SettingsResetModal>
                 </div>
               </div>
@@ -129,7 +131,7 @@ export function AdvancedSettings() {
                   <Typography bold>
                     {l10n.getString('settings-utils-advanced-reset-all')}
                   </Typography>
-                  <div className="flex flex-col pt-1 pb-2">
+                  <div className="flex flex-col pt-1">
                     <Typography color="secondary">
                       {l10n.getString(
                         'settings-utils-advanced-reset-all-description'
@@ -155,6 +157,7 @@ export function AdvancedSettings() {
                     }}
                     onClose={() => setSkipWarningAll(false)}
                     isOpen={skipWarningAll}
+                    variant='all'
                   ></SettingsResetModal>
                 </div>
               </div>
@@ -164,7 +167,7 @@ export function AdvancedSettings() {
                   <Typography bold>
                     {l10n.getString('settings-utils-advanced-open_data')}
                   </Typography>
-                  <div className="flex flex-col pt-1 pb-2">
+                  <div className="flex flex-col pt-1">
                     <Typography color="secondary">
                       {l10n.getString(
                         'settings-utils-advanced-open_data-description'

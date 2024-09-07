@@ -588,8 +588,11 @@ settings-utils-advanced-reset-all = Reset all settings
 settings-utils-advanced-reset-all-description = Restore the default settings for both the interface and tracking.
 settings-utils-advanced-reset-all-label = Reset all
 settings-utils-advanced-reset_warning =
-        <b>Warning:</b> This will reset your settings to the defaults.
+        <b>Warning:</b> This will reset your { $type } settings to the defaults.
         Are you sure you want to do this?
+settings-utils-advanced-reset_warning-gui = GUI
+settings-utils-advanced-reset_warning-server = tracking
+settings-utils-advanced-reset_warning-all = all
 settings-utils-advanced-reset_warning-reset = Reset settings
 settings-utils-advanced-reset_warning-cancel = Cancel
 

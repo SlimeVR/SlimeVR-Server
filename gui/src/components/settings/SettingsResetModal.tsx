@@ -8,6 +8,7 @@ export function SettingsResetModal({
   isOpen = true,
   onClose,
   accept,
+  variant,
   ...props
 }: {
   /**
@@ -22,6 +23,10 @@ export function SettingsResetModal({
    * Function when you press `Reset settings`
    */
   accept: () => void;
+  /**
+   * Type of reset
+   */
+  variant: 'server' | 'gui' | 'all';
 } & ReactModal.Props) {
   const { l10n } = useLocalization();
 
@@ -38,9 +43,10 @@ export function SettingsResetModal({
           <Localized
             id="settings-utils-advanced-reset_warning"
             elems={{ b: <b></b> }}
+            vars={{ type: l10n.getString(`settings-utils-advanced-reset_warning-${variant}`) }}
           >
             <WarningBox>
-              <b>Warning:</b> This will reset all your settings to the defaults.
+              <b>Warning:</b> This will reset your {variant} settings to the defaults.
               <br />
               Are you sure you want to do this?
             </WarningBox>
