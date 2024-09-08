@@ -588,11 +588,13 @@ settings-utils-advanced-reset-all = Reset all settings
 settings-utils-advanced-reset-all-description = Restore the default settings for both the interface and tracking.
 settings-utils-advanced-reset-all-label = Reset all
 settings-utils-advanced-reset_warning =
-        <b>Warning:</b> This will reset your { $type } settings to the defaults.
+        <b>Warning:</b> This will reset { $type ->
+            [gui] your GUI
+            [server] your tracking
+            [all] all your
+            *[unknown] unknown
+        } settings to the defaults.
         Are you sure you want to do this?
-settings-utils-advanced-reset_warning-gui = GUI
-settings-utils-advanced-reset_warning-server = tracking
-settings-utils-advanced-reset_warning-all = all
 settings-utils-advanced-reset_warning-reset = Reset settings
 settings-utils-advanced-reset_warning-cancel = Cancel
 
@@ -806,11 +808,11 @@ onboarding-choose_mounting = What mounting calibration method to use?
 # Multiline text
 onboarding-choose_mounting-description = Mounting orientation corrects for the placement of trackers on your body.
 onboarding-choose_mounting-auto_mounting = Automatic mounting
-# Italized text
+# Italicized text
 onboarding-choose_mounting-auto_mounting-label-v2 = Recommended
 onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting orientations for all of your trackers from 2 poses
 onboarding-choose_mounting-manual_mounting = Manual mounting
-# Italized text
+# Italicized text
 onboarding-choose_mounting-manual_mounting-label-v2 = Might not be precise enough
 onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting orientation manually for each tracker
 # Multiline text
@@ -854,14 +856,14 @@ onboarding-choose_proportions-description-v1 = Body proportions are used to know
     When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
     <b>You only need to measure your body once!</b> Unless they are wrong or your body has changed, then you don't need to do them again.
 onboarding-choose_proportions-auto_proportions = Automatic proportions
-# Italized text
+# Italicized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
 onboarding-choose_proportions-auto_proportions-descriptionv3 =
     This will guess your proportions by recording a sample of your movements and passing it through an algorithm.
 
     <b>This requires having your headset (HMD) connected to SlimeVR and on your head!</b>
 onboarding-choose_proportions-manual_proportions = Manual proportions
-# Italized text
+# Italicized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
 onboarding-choose_proportions-export = Export proportions

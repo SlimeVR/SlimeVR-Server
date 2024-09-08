@@ -26,7 +26,7 @@ export function SettingsResetModal({
   /**
    * Type of reset
    */
-  variant: 'server' | 'gui' | 'all';
+  variant: 'gui' | 'server' | 'all';
 } & ReactModal.Props) {
   const { l10n } = useLocalization();
 
@@ -43,11 +43,7 @@ export function SettingsResetModal({
           <Localized
             id="settings-utils-advanced-reset_warning"
             elems={{ b: <b></b> }}
-            vars={{
-              type: l10n.getString(
-                `settings-utils-advanced-reset_warning-${variant}`
-              ),
-            }}
+            vars={{ type: variant }}
           >
             <WarningBox>
               <b>Warning:</b> This will reset your {variant} settings to the
