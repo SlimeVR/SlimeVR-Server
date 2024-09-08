@@ -1,5 +1,6 @@
 package dev.slimevr.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
@@ -53,5 +54,10 @@ public class SkeletonConfig {
 
 	public void setFloorHeight(float hmdHeight) {
 		this.floorHeight = hmdHeight;
+	}
+
+	@JsonIgnore
+	public float getUserHeight() {
+		return hmdHeight - floorHeight;
 	}
 }

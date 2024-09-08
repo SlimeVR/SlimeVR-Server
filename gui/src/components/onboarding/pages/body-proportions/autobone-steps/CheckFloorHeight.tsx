@@ -179,7 +179,7 @@ export function CheckFloorHeightStep({
                 null,
                 null,
                 null,
-                new SkeletonHeightT(hmdHeight, 0)
+                new SkeletonHeightT(hmdHeight, floorHeight)
               );
               sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsRequest);
 

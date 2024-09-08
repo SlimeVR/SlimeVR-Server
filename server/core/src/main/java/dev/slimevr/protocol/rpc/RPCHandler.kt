@@ -468,12 +468,21 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val fbb = FlatBufferBuilder(32)
 
 		val posTrackers = api.server.allTrackers.filter { !it.isInternal && it.status == TrackerStatus.OK && it.hasPosition && it.trackerPosition != null }
-		val response = HeightResponse
-			.createHeightResponse(
-				fbb,
-				posTrackers.minOf { it.position.y },
-				posTrackers.maxOf { it.position.y },
-			)
+		val response = if (posTrackers.isNotEmpty()) {
+			HeightResponse
+				.createHeightResponse(
+					fbb,
+					posTrackers.minOf { it.position.y },
+					posTrackers.maxOf { it.position.y },
+				)
+		} else {
+			HeightResponse
+				.createHeightResponse(
+					fbb,
+					0f,
+					0f,
+				)
+		}
 		fbb.finish(createRPCMessage(fbb, RpcMessage.HeightResponse, response))
 		conn.send(fbb.dataBuffer())
 	}
