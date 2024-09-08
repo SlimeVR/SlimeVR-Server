@@ -155,16 +155,16 @@ abstract class SteamVRBridge(
 
 		// Display name, needsReset and isHmd
 		val displayName: String
-		val (needsReset, isHmd) = if (trackerAdded.trackerId == 0) {
+		val isHmd = if (trackerAdded.trackerId == 0) {
 			displayName = if (trackerAdded.trackerName == "HMD") {
 				"SteamVR Driver HMD"
 			} else {
 				"Feeder App HMD"
 			}
-			false to true
+			true
 		} else {
 			displayName = trackerAdded.trackerName
-			true to false
+			false
 		}
 
 		// trackerPosition
@@ -187,7 +187,7 @@ abstract class SteamVRBridge(
 			hasRotation = true,
 			userEditable = true,
 			isComputed = true,
-			needsReset = needsReset,
+			needsReset = true,
 			isHmd = isHmd,
 		)
 
