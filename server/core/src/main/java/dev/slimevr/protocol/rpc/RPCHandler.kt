@@ -467,7 +467,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 	fun onHeightRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
 		val fbb = FlatBufferBuilder(32)
 
-		val posTrackers = api.server.allTrackers.filter { it.status == TrackerStatus.OK && it.hasPosition && it.trackerPosition != null }
+		val posTrackers = api.server.allTrackers.filter { !it.isInternal && it.status == TrackerStatus.OK && it.hasPosition && it.trackerPosition != null }
 		val response = HeightResponse
 			.createHeightResponse(
 				fbb,

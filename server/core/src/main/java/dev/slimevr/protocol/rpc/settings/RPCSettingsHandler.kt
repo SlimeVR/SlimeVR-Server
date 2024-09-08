@@ -314,11 +314,11 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			}
 
 			modelSettings.skeletonHeight()?.let {
-				if(it.hasHmdHeight()) {
+				if (it.hasHmdHeight()) {
 					api.server.configManager.vrConfig.skeleton.hmdHeight = it.hmdHeight()
 				}
 
-				if(it.hasFloorHeight()) {
+				if (it.hasFloorHeight()) {
 					api.server.configManager.vrConfig.skeleton.floorHeight = it.floorHeight()
 				}
 			}
