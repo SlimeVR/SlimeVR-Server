@@ -153,6 +153,7 @@ class AutoBone(private val server: VRServer) {
 		// Get the current skeleton from the server
 		val humanPoseManager = server.humanPoseManager
 		// Still compensate for a null skeleton, as it may not be initialized yet
+		@Suppress("SENSELESS_COMPARISON")
 		if (config.useSkeletonHeight && humanPoseManager != null) {
 			// If there is a skeleton available, calculate the target height
 			// from its configs
@@ -165,7 +166,7 @@ class AutoBone(private val server: VRServer) {
 			// Otherwise if there is no skeleton available, attempt to get the
 			// max HMD height from the recording
 			val hmdHeight = frames.maxHmdHeight
-			if (hmdHeight <= 0.4f) {
+			if (hmdHeight < 0.4f) {
 				LogManager
 					.warning(
 						"[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): $hmdHeight",
@@ -198,7 +199,7 @@ class AutoBone(private val server: VRServer) {
 		loadConfigValues()
 
 		// Set the target heights either from config or calculate them
-		val targetHmdHeight = if (skeletonConfig.userHeight > 0f) {
+		val targetHmdHeight = if (skeletonConfig.userHeight >= 0.4f) {
 			skeletonConfig.userHeight
 		} else {
 			calcTargetHmdHeight(frames, config)
