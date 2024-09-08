@@ -2,7 +2,6 @@ import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
-import { useCountdown } from '@/hooks/countdown';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 
 export function ResetProportionsStep({
@@ -16,15 +15,6 @@ export function ResetProportionsStep({
 }) {
   const { l10n } = useLocalization();
   const { sendRPCPacket } = useWebsocketAPI();
-  const { isCounting, startCountdown, timer } = useCountdown({
-    onCountdownEnd: () => {
-      sendRPCPacket(
-        RpcMessage.SkeletonResetAllRequest,
-        new SkeletonResetAllRequestT()
-      );
-      nextStep();
-    },
-  });
 
   return (
     <>
@@ -54,15 +44,15 @@ export function ResetProportionsStep({
             </Button>
             <Button
               variant="secondary"
-              onClick={startCountdown}
-              disabled={isCounting}
+              onClick={() => {
+                sendRPCPacket(
+                  RpcMessage.SkeletonResetAllRequest,
+                  new SkeletonResetAllRequestT()
+                );
+                nextStep();
+              }}
             >
-              <div className="relative">
-                <div className="opacity-0 h-0">
-                  {l10n.getString('reset-reset_all')}
-                </div>
-                {!isCounting ? l10n.getString('reset-reset_all') : timer}
-              </div>
+              {l10n.getString('reset-reset_all')}
             </Button>
           </div>
         </div>

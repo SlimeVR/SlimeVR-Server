@@ -399,7 +399,7 @@ class SkeletonConfigManager(
 		when (config) {
 			SkeletonConfigOffsets.UPPER_CHEST, SkeletonConfigOffsets.CHEST, SkeletonConfigOffsets.WAIST, SkeletonConfigOffsets.HIP, SkeletonConfigOffsets.UPPER_LEG, SkeletonConfigOffsets.LOWER_LEG -> {
 				val height = humanPoseManager?.server?.configManager?.vrConfig?.skeleton?.userHeight ?: -1f
-				if (height > 0.5f) { // Reset only if floor level seems right,
+				if (height >= 0.4f) { // Reset only if floor level seems right,
 					val proportionLimiter = proportionLimitMap[config]
 					if (proportionLimiter != null) {
 						setOffset(

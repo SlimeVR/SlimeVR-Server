@@ -2,9 +2,7 @@ import { useLocalization } from '@fluent/react';
 import { useOnboarding } from '@/hooks/onboarding';
 import { Typography } from '@/components/commons/Typography';
 import { StepperSlider } from '@/components/onboarding/StepperSlider';
-import { PutTrackersOnStep } from './autobone-steps/PutTrackersOn';
 import { CheckHeightStep } from './autobone-steps/CheckHeight';
-import { PreparationStep } from './autobone-steps/Preparation';
 import { HeightContextC, useProvideHeightContext } from '@/hooks/height';
 import { CheckFloorHeightStep } from './autobone-steps/CheckFloorHeight';
 import { ResetProportionsStep } from './scaled-steps/ResetProportions';
@@ -35,8 +33,6 @@ export function ScaledProportionsPage() {
             <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
               steps={[
-                { type: 'numbered', component: PutTrackersOnStep },
-                { type: 'numbered', component: PreparationStep },
                 { type: 'numbered', component: CheckHeightStep },
                 { type: 'numbered', component: CheckFloorHeightStep },
                 { type: 'numbered', component: ResetProportionsStep },

@@ -12,7 +12,6 @@ import { PutTrackersOnStep } from './autobone-steps/PutTrackersOn';
 import { Recording } from './autobone-steps/Recording';
 import { StartRecording } from './autobone-steps/StartRecording';
 import { VerifyResultsStep } from './autobone-steps/VerifyResults';
-import { useCountdown } from '@/hooks/countdown';
 import { CheckHeightStep } from './autobone-steps/CheckHeight';
 import { PreparationStep } from './autobone-steps/Preparation';
 import { HeightContextC, useProvideHeightContext } from '@/hooks/height';
@@ -24,14 +23,6 @@ export function AutomaticProportionsPage() {
   const { sendRPCPacket } = useWebsocketAPI();
   const context = useProvideAutobone();
   const heightContext = useProvideHeightContext();
-  const { isCounting, startCountdown, timer } = useCountdown({
-    onCountdownEnd: () => {
-      sendRPCPacket(
-        RpcMessage.SkeletonResetAllRequest,
-        new SkeletonResetAllRequestT()
-      );
-    },
-  });
 
   applyProgress(0.9);
 
@@ -72,15 +63,14 @@ export function AutomaticProportionsPage() {
           <div className="w-full pb-4 flex flex-row mobile:justify-center">
             <Button
               variant="secondary"
-              onClick={startCountdown}
-              disabled={isCounting}
+              onClick={() => {
+                sendRPCPacket(
+                  RpcMessage.SkeletonResetAllRequest,
+                  new SkeletonResetAllRequestT()
+                );
+              }}
             >
-              <div className="relative">
-                <div className="opacity-0 h-0">
-                  {l10n.getString('reset-reset_all')}
-                </div>
-                {!isCounting ? l10n.getString('reset-reset_all') : timer}
-              </div>
+              {l10n.getString('reset-reset_all')}
             </Button>
           </div>
         </div>
