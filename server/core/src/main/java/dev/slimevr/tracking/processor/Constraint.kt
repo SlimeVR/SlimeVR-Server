@@ -78,18 +78,13 @@ class Constraint(
 		private fun constrain(rotation: Quaternion, angle: Float): Quaternion {
 			val magnitude = sin(angle * 0.5f)
 			val magnitudeSqr = magnitude * magnitude
-			val sign = if (rotation.w != 0f) sign(rotation.w) else 1f
+			val sign = if (rotation.w >= 0f) 1f else -1f
 			var vector = rotation.xyz
 			var rot = rotation
 
 			if (vector.lenSq() > magnitudeSqr) {
 				vector = vector.unit() * magnitude
-				rot = Quaternion(
-					sqrt(1.0f - magnitudeSqr) * sign,
-					vector.x,
-					vector.y,
-					vector.z,
-				)
+				rot = Quaternion(sqrt(1.0f - magnitudeSqr) * sign, vector)
 			}
 
 			return rot.unit()
@@ -98,12 +93,12 @@ class Constraint(
 		private fun constrain(rotation: Quaternion, minAngle: Float, maxAngle: Float, axis: Vector3): Quaternion {
 			val magnitudeMin = sin(minAngle * 0.5f)
 			val magnitudeMax = sin(maxAngle * 0.5f)
-			val magnitudeSqrMin = magnitudeMin * magnitudeMin * if (minAngle != 0f) sign(minAngle) else 1f
-			val magnitudeSqrMax = magnitudeMax * magnitudeMax * if (maxAngle != 0f) sign(maxAngle) else 1f
+			val magnitudeSqrMin = magnitudeMin * magnitudeMin * if (minAngle >= 0f) 1f else -1f
+			val magnitudeSqrMax = magnitudeMax * magnitudeMax * if (maxAngle >= 0f) 1f else -1f
 			var vector = rotation.xyz
 			var rot = rotation
 
-			val rotMagnitude = vector.lenSq() * if (vector.dot(axis) < 0) -1f else 1f
+			val rotMagnitude = vector.lenSq() * if (vector.dot(axis) * sign(rot.w) < 0) -1f else 1f
 			if (rotMagnitude < magnitudeSqrMin || rotMagnitude > magnitudeSqrMax) {
 				val distToMin = min(abs(rotMagnitude - magnitudeSqrMin), abs(rotMagnitude + magnitudeSqrMin))
 				val distToMax = min(abs(rotMagnitude - magnitudeSqrMax), abs(rotMagnitude + magnitudeSqrMax))
@@ -128,7 +123,7 @@ class Constraint(
 					val localRotationOffset = parent.rotationOffset.inv() * thisBone.rotationOffset
 					val rotationLocal =
 						(parent.getGlobalRotation() * localRotationOffset).inv() * rotation
-					var (swingQ, twistQ) = decompose(rotationLocal, Vector3.NEG_Y)
+					var (swingQ, twistQ) = decompose(rotationLocal, Vector3.POS_Y)
 
 					swingQ = constrain(swingQ, swingRad)
 					twistQ = constrain(twistQ, twistRad)
