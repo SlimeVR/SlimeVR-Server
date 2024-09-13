@@ -21,13 +21,21 @@ class StatusSystem {
 		listeners.remove(listener)
 	}
 
-	fun getStatuses(): Array<StatusMessageT> = statuses.map { (id, message) ->
-		val status = StatusMessageT()
-		status.id = id.toUInt().toLong()
-		status.data = message
-		status.prioritized = prioritizedStatuses.contains(id)
-		status
-	}.toTypedArray()
+	// For some reason Int2ObjectOpenHashMap can report a size of -1... isEmpty does not
+	// consider this and will not function, and if the size is -1 then it will crash immediately,
+	// so please do not touch this workaround!
+	@Suppress("ReplaceSizeCheckWithIsNotEmpty")
+	fun getStatuses(): Array<StatusMessageT> = if (statuses.size > 0) {
+		statuses.map { (id, message) ->
+			val status = StatusMessageT()
+			status.id = id.toUInt().toLong()
+			status.data = message
+			status.prioritized = prioritizedStatuses.contains(id)
+			status
+		}.toTypedArray()
+	} else {
+		emptyArray()
+	}
 
 	/**
 	 * @return the ID of the status, 0 is not a valid ID, can be used as replacement of null
