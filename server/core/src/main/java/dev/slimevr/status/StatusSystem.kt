@@ -1,7 +1,5 @@
 package dev.slimevr.status
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet
 import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusMessageT
 import java.util.concurrent.CopyOnWriteArrayList
@@ -9,8 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class StatusSystem {
 	private val listeners: MutableList<StatusListener> = CopyOnWriteArrayList()
-	private val statuses: MutableMap<Int, StatusDataUnion> = Int2ObjectOpenHashMap()
-	private val prioritizedStatuses: MutableSet<Int> = IntOpenHashSet()
+	private val statuses: MutableMap<Int, StatusDataUnion> = HashMap()
+	private val prioritizedStatuses: MutableSet<Int> = HashSet()
 	private val idCounter = AtomicInteger(1)
 
 	fun addListener(listener: StatusListener) {
