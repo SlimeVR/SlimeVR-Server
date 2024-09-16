@@ -7,10 +7,11 @@ import kotlin.math.*
 /**
  * Represents a function that applies a rotational constraint.
  */
-typealias ConstraintFunction = (inputRotation: Quaternion, thisBone: Bone, limit1: Float, limit2: Float) -> Quaternion
+typealias ConstraintFunction = (inputRotation: Quaternion, thisBone: Bone, limit1: Float, limit2: Float, limit3: Float) -> Quaternion
 
 /**
- * Represents the rotational limits of a Bone relative to its parent
+ * Represents the rotational limits of a Bone relative to its parent,
+ * twist and swing are the max and min when constraintType is a hinge.
  */
 class Constraint(
 	val constraintType: ConstraintType,
@@ -35,7 +36,7 @@ class Constraint(
 	 * Apply rotational constraints and if applicable force the rotation
 	 * to be unchanged unless it violates the constraints
 	 */
-	fun applyConstraint(rotation: Quaternion, thisBone: Bone): Quaternion = constraintFunction(rotation, thisBone, swingRad, twistRad).unit()
+	fun applyConstraint(rotation: Quaternion, thisBone: Bone): Quaternion = constraintFunction(rotation, thisBone, swingRad, twistRad, allowedDeviationRad).unit()
 
 	/**
 	 * Force the given rotation to be within allowedDeviation degrees away from
@@ -53,6 +54,7 @@ class Constraint(
 		enum class ConstraintType {
 			TWIST_SWING,
 			HINGE,
+			LOOSE_HINGE,
 			COMPLETE,
 		}
 
@@ -61,6 +63,7 @@ class Constraint(
 				ConstraintType.COMPLETE -> completeConstraint
 				ConstraintType.TWIST_SWING -> twistSwingConstraint
 				ConstraintType.HINGE -> hingeConstraint
+				ConstraintType.LOOSE_HINGE -> looseHingeConstraint
 			}
 
 		private fun decompose(
@@ -68,7 +71,6 @@ class Constraint(
 			twistAxis: Vector3,
 		): Pair<Quaternion, Quaternion> {
 			val projection = rotation.project(twistAxis).unit()
-
 			val twist = Quaternion(rotation.w, projection.xyz).unit()
 			val swing = (rotation * twist.inv()).unit()
 
@@ -115,7 +117,7 @@ class Constraint(
 
 		// Constraint function for TwistSwingConstraint
 		private val twistSwingConstraint: ConstraintFunction =
-			{ rotation: Quaternion, thisBone: Bone, swingRad: Float, twistRad: Float ->
+			{ rotation: Quaternion, thisBone: Bone, swingRad: Float, twistRad: Float, _ : Float ->
 				if (thisBone.parent == null) {
 					rotation
 				} else {
@@ -123,7 +125,7 @@ class Constraint(
 					val localRotationOffset = parent.rotationOffset.inv() * thisBone.rotationOffset
 					val rotationLocal =
 						(parent.getGlobalRotation() * localRotationOffset).inv() * rotation
-					var (swingQ, twistQ) = decompose(rotationLocal, Vector3.POS_Y)
+					var (swingQ, twistQ) = decompose(rotationLocal, Vector3.NEG_Y)
 
 					swingQ = constrain(swingQ, swingRad)
 					twistQ = constrain(twistQ, twistRad)
@@ -134,7 +136,7 @@ class Constraint(
 
 		// Constraint function for a hinge constraint with min and max angles
 		private val hingeConstraint: ConstraintFunction =
-			{ rotation: Quaternion, thisBone: Bone, min: Float, max: Float ->
+			{ rotation: Quaternion, thisBone: Bone, min: Float, max: Float, _: Float ->
 				if (thisBone.parent == null) {
 					rotation
 				} else {
@@ -151,8 +153,29 @@ class Constraint(
 				}
 			}
 
+		// Constraint function for a hinge constraint with min and max angles that allows nonHingeDeviation
+		// rotation on all axis but the hinge
+		private val looseHingeConstraint: ConstraintFunction =
+			{ rotation: Quaternion, thisBone: Bone, min: Float, max: Float, nonHingeDeviation: Float ->
+				if (thisBone.parent == null) {
+					rotation
+				} else {
+					val parent = thisBone.parent!!
+					val localRotationOffset = parent.rotationOffset.inv() * thisBone.rotationOffset
+					val rotationLocal =
+						(parent.getGlobalRotation() * localRotationOffset).inv() * rotation
+
+					var (nonHingeRot, hingeAxisRot) = decompose(rotationLocal, Vector3.NEG_X)
+
+					hingeAxisRot = constrain(hingeAxisRot, min, max, Vector3.NEG_X)
+					nonHingeRot = constrain(nonHingeRot, nonHingeDeviation)
+
+					(parent.getGlobalRotation() * localRotationOffset * (nonHingeRot * hingeAxisRot)).unit()
+				}
+			}
+
 		// Constraint function for CompleteConstraint
-		private val completeConstraint: ConstraintFunction = { _: Quaternion, thisBone: Bone, _: Float, _: Float ->
+		private val completeConstraint: ConstraintFunction = { _: Quaternion, thisBone: Bone, _: Float, _: Float, _: Float ->
 			thisBone.getGlobalRotation()
 		}
 	}

@@ -168,7 +168,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		rot = mountRotFix.inv() * (rot * mountRotFix)
 		rot *= tposeDownFix
 		rot = yawFix * rot
-		rot *= dynamicFix
+		rot = dynamicFix * rot
 		return rot
 	}
 
