@@ -16,7 +16,7 @@ public enum SkeletonConfigToggles {
 	TOE_SNAP(8, "Toe Snap", "toeSnap", false),
 	FOOT_PLANT(9, "Foot Plant", "footPlant", true),
 	SELF_LOCALIZATION(10, "Self Localization", "selfLocalization", false),
-	USE_POSITION(11, "Use Position", "usePosition", true),;
+	USE_POSITION(11, "Use Position", "usePosition", false),;
 
 	public static final SkeletonConfigToggles[] values = values();
 	private static final Map<String, SkeletonConfigToggles> byStringVal = new HashMap<>();
