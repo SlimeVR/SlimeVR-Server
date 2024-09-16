@@ -117,7 +117,7 @@ class Constraint(
 
 		// Constraint function for TwistSwingConstraint
 		private val twistSwingConstraint: ConstraintFunction =
-			{ rotation: Quaternion, thisBone: Bone, swingRad: Float, twistRad: Float, _ : Float ->
+			{ rotation: Quaternion, thisBone: Bone, swingRad: Float, twistRad: Float, _: Float ->
 				if (thisBone.parent == null) {
 					rotation
 				} else {
