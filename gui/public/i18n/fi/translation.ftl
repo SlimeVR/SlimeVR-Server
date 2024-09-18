@@ -196,6 +196,7 @@ tracker-infos-hardware_rev = Laitteston Tarkistus
 tracker-infos-hardware_identifier = Laitteiston ID
 tracker-infos-imu = IMU-Sensor
 tracker-infos-board_type = Päälevy
+tracker-infos-network_version = Protokollan versio
 
 ## Tracker settings
 
@@ -304,10 +305,16 @@ settings-general-steamvr-description =
     Hyödyllinen peleille tai sovelluksille, jotka tukevat vain tiettyjä jäljittimiä.
 settings-general-steamvr-trackers-waist = Vyötärö
 settings-general-steamvr-trackers-chest = Rinta
-settings-general-steamvr-trackers-feet = Jalat
-settings-general-steamvr-trackers-knees = Polvet
-settings-general-steamvr-trackers-elbows = Kyynärpäät
-settings-general-steamvr-trackers-hands = Kädet
+settings-general-steamvr-trackers-left_foot = Vasen jalkaterä
+settings-general-steamvr-trackers-right_foot = Oikea jalkaterä
+settings-general-steamvr-trackers-left_knee = Vasen polvi
+settings-general-steamvr-trackers-right_knee = Oikea polvi
+settings-general-steamvr-trackers-left_elbow = Vasen kyynärpää
+settings-general-steamvr-trackers-right_elbow = Oikea kyynärpää
+settings-general-steamvr-trackers-left_hand = Vasen käsi
+settings-general-steamvr-trackers-right_hand = Oikea käsi
+settings-general-steamvr-trackers-hands-warning-cancel = Peruuta
+settings-general-steamvr-trackers-hands-warning-done = Kyllä
 
 ## Tracker mechanics
 
@@ -359,6 +366,8 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Jalkojen asennuksen no
 settings-general-fk_settings-arm_fk = Käsivarsien jäljitys
 settings-general-fk_settings-arm_fk-description = Muuta tapaa, jolla käsivarsia jäljitetään.
 settings-general-fk_settings-arm_fk-force_arms = Pakota kädet HMD:ltä
+settings-general-fk_settings-reset_settings = Palauta asetukset
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = Nollaa HMD-sävelkorkeus
 settings-general-fk_settings-arm_fk-reset_mode-description = Muuta, mikä käsivarren asentoa odotetaan asennuksen nollaukselle.
 settings-general-fk_settings-arm_fk-back = Takaisin
 settings-general-fk_settings-arm_fk-tpose_up = T-asento (ylös)
@@ -446,6 +455,12 @@ settings-general-interface-feedback_sound-label = Palaute ääni
 settings-general-interface-feedback_sound-volume = Palaute äänen voimakkuus
 settings-general-interface-connected_trackers_warning = Yhdistettyjen jäljittimien varoitus
 settings-general-interface-connected_trackers_warning-description = Tämä vaihtoehto näyttää ponnahdusikkunan aina, kun yrität poistua SlimeVR:stä, kun sinulla on yksi tai useampi yhdistetty jäljitin. Se muistuttaa sinua sammuttamaan jäljittimet, kun olet valmis, akun käyttöiän säästämiseksi.
+settings-general-interface-use_tray = Pienennä ilmaisinalueelle
+settings-general-interface-use_tray-description = Voit sulkea ikkunan sulkematta SlimeVR-palvelinta, jotta voit jatkaa sen käyttöä ilman, että graafinen käyttöliittymä häiritsee sinua.
+settings-general-interface-use_tray-label = Pienennä ilmaisinalueelle
+settings-general-interface-discord_presence = Jaa toiminta Discordissa
+settings-general-interface-discord_presence-description = Kertoo Discordille, että käytät SlimeVR:ää, sekä käyttämiesi IMU-seurantalaitteiden määrän.
+settings-general-interface-discord_presence-label = Jaa toiminta Discordissa
 
 ## Serial settings
 
@@ -467,6 +482,8 @@ settings-serial-factory_reset-warning-cancel = Peruuta
 settings-serial-get_infos = Hanki tietoja
 settings-serial-serial_select = Valitse sarjaportti
 settings-serial-auto_dropdown_item = Autom.
+settings-serial-file_type = Teksti
+settings-serial-save_logs = Tallenna tiedostoon
 
 ## OSC router settings
 
@@ -496,15 +513,11 @@ settings-osc-router-network-address-placeholder = IPV4-osoite
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC -jäljittimet
-# This cares about multilines
-settings-osc-vrchat-description =
-    Muuta VRChat-kohtaisia asetuksia vastaanottamaan HMD-dataa ja
-    lähettämään jäljitindataa FBT:tä varten (toimii Quest-standalone:ssa).
 settings-osc-vrchat-enable = Käytä
 settings-osc-vrchat-enable-description = Vaihda tietojen lähettäminen ja vastaanottaminen.
 settings-osc-vrchat-enable-label = Käytä
 settings-osc-vrchat-network = Verkkoportit
-settings-osc-vrchat-network-description = Aseta portit kuuntelua ja tietojen lähettämistä varten VRChatiin.
+settings-osc-vrchat-network-description-v1 = Aseta portit tietojen kuuntelua ja lähettämistä varten. Voidaan jättää koskematta VRChatille.
 settings-osc-vrchat-network-port_in =
     .label = Portti sisään
     .placeholder = Portti sisään (oletus: 9001)
@@ -512,7 +525,7 @@ settings-osc-vrchat-network-port_out =
     .label = Portti ulos
     .placeholder = Portti ulos (oletus: 9000)
 settings-osc-vrchat-network-address = Verkon osoite
-settings-osc-vrchat-network-address-description = Valitse, mikä osoite lähettää tietoja VRChatiin (tarkista laitteesi Wi-Fi-asetukset).
+settings-osc-vrchat-network-address-description-v1 = Valitse, mihin osoitteeseen tiedot lähetetään. Voidaan jättää koskematta VRChatille.
 settings-osc-vrchat-network-address-placeholder = VRChat IP-osoite
 settings-osc-vrchat-network-trackers = Jäljittimet
 settings-osc-vrchat-network-trackers-description = Vaihda tiettyjen jäljittimien lähettäminen OSC:n kautta.
@@ -632,8 +645,6 @@ onboarding-done-close = Sulje opas
 
 onboarding-connect_tracker-back = Palaa Wi-Fi-tunnistetietoihin
 onboarding-connect_tracker-title = Yhdistä jäljittimet
-onboarding-connect_tracker-description-p0 = Nyt hauskaan osaan, kaikkien jäljittimien yhdistämiseen!
-onboarding-connect_tracker-description-p1 = Yhdistä vain kaikki, joita ei ole vielä yhdistetty, USB-portin kautta.
 onboarding-connect_tracker-issue-serial = Minulla on ongelmia yhteyden muodostamisessa!
 onboarding-connect_tracker-usb = USB-jäljitin
 onboarding-connect_tracker-connection_status-none = Etsitään jäljittimiä
@@ -768,12 +779,8 @@ onboarding-choose_mounting = Mitä asennuskalibrointimenetelmää käytetään?
 # Multiline text
 onboarding-choose_mounting-description = Asennussuuntaus korjaa jäljittimien sijoittelun kehossasi.
 onboarding-choose_mounting-auto_mounting = Automaattinen asennus
-# Italized text
-onboarding-choose_mounting-auto_mounting-label = Kokeellinen
 onboarding-choose_mounting-auto_mounting-description = Tämä tunnistaa automaattisesti kaikkien jäljittimiesi asennussuunnat 2 asennosta
 onboarding-choose_mounting-manual_mounting = Manuaalinen asennus
-# Italized text
-onboarding-choose_mounting-manual_mounting-label = Suositeltu
 onboarding-choose_mounting-manual_mounting-description = Näin voit valita asennussuunnan manuaalisesti kullekin jäljittimelle
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
@@ -895,3 +902,12 @@ status_system-StatusSteamVRDisconnected =
        *[other] Tällä hetkellä ei ole yhdistetty SteamVR:ään SlimeVR-ajurin kautta.
     }
 status_system-StatusTrackerError = { $trackerName } jäljittimessä on virhe
+
+## Tray Menu
+
+
+## First exit modal
+
+
+## Unknown device modal
+
