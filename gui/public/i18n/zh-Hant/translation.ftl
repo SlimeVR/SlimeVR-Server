@@ -383,6 +383,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = 腳部配戴重置
 settings-general-fk_settings-arm_fk = 手臂追蹤
 settings-general-fk_settings-arm_fk-description = 強制透過頭戴顯示器來追蹤手臂，即使有手部的定位資料。
 settings-general-fk_settings-arm_fk-force_arms = 強制從頭戴顯示器進行手臂追蹤
+settings-general-fk_settings-reset_settings = 重置設定
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = 進行完整重置時，也重置頭戴顯示器的仰角（垂直旋轉），適用於將頭顯戴在額頭上，以進行虛擬直播或是動作捕捉的情境。若用於 VR 請勿啟用本設定。
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = 重置頭戴顯示器仰角
 settings-general-fk_settings-arm_fk-reset_mode-description = 更改配戴重置時，手臂需要做出的姿勢。
 settings-general-fk_settings-arm_fk-back = 收肘姿勢
 settings-general-fk_settings-arm_fk-back-description = 預設模式，重置時手肘朝後，前臂向前。
@@ -474,6 +477,14 @@ settings-general-interface-connected_trackers_warning-label = 當退出程式時
 settings-general-interface-use_tray = 最小化到系統列
 settings-general-interface-use_tray-description = 本選項可以讓您在關閉視窗時不會關閉 SlimeVR 的伺服器程式，讓您在不受圖形介面的打擾下繼續使用追蹤器。
 settings-general-interface-use_tray-label = 最小化到系統列
+settings-general-interface-discord_presence = 在 Discord 上分享活動
+settings-general-interface-discord_presence-description = 在 Discord 上顯示您正在使用 SlimeVR，以及使用中的追蹤器的數量。
+settings-general-interface-discord_presence-label = 在 Discord 上分享活動
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] 正在捕捉史萊姆
+       *[other] 正在使用 { $amount } 個追蹤器
+    }
 
 ## Serial settings
 
@@ -494,6 +505,8 @@ settings-serial-get_infos = 取得資訊
 settings-serial-serial_select = 選擇串列埠
 settings-serial-auto_dropdown_item = 自動
 settings-serial-get_wifi_scan = 取得 Wi-Fi 掃描
+settings-serial-file_type = 純文字格式
+settings-serial-save_logs = 儲存到檔案
 
 ## OSC router settings
 
@@ -524,14 +537,15 @@ settings-osc-router-network-address-placeholder = IPV4 地址
 
 settings-osc-vrchat = VRChat OSC 追蹤器
 # This cares about multilines
-settings-osc-vrchat-description =
-    此處可更改 VRChat 專用的設定以取得頭戴顯示器的資料，並傳送追蹤器
-    資料以進行全身追蹤，不須透過 SteamVR（例如 Quest 單機版本）。
+settings-osc-vrchat-description-v1 =
+    變更 OSC 追蹤器標準的設定，該標準可用於傳送追蹤器資料到不使用 SteamVR 的應用程式（例如 Quest 單機版）。
+    請確保 VRChat 中的動作選單內，OSC 設定「選項→OSC→已啟用」已經開啟。
+    SlimeVR 若要能透過 VRChat 接收頭戴顯示器以及控制器的資料，請進入主選單的設定，並開啟「追蹤 & IK→允許透過 OSC 發送頭部與腕部的 VR 追蹤數據」。
 settings-osc-vrchat-enable = 啟用
 settings-osc-vrchat-enable-description = 切換資料的傳送和接收。
 settings-osc-vrchat-enable-label = 啟用
 settings-osc-vrchat-network = 連接埠
-settings-osc-vrchat-network-description = 設定與 VRChat 監聽和傳送資料的連接埠。
+settings-osc-vrchat-network-description-v1 = 設定收發追蹤器資料的連接埠埠號，使用 VRChat 不須更改。
 settings-osc-vrchat-network-port_in =
     .label = 輸入埠
     .placeholder = 輸入埠（預設：9001）
@@ -539,7 +553,7 @@ settings-osc-vrchat-network-port_out =
     .label = 輸出埠
     .placeholder = 輸出埠（預設：9000）
 settings-osc-vrchat-network-address = 網路位址
-settings-osc-vrchat-network-address-description = 設定用來發送資料到 VRChat 的位址（請檢查裝置的 Wi-Fi 設定）。
+settings-osc-vrchat-network-address-description-v1 = 設定收發追蹤器資料的 IP 位址，使用 VRChat 不須更改。
 settings-osc-vrchat-network-address-placeholder = VRChat IP 位址
 settings-osc-vrchat-network-trackers = 追蹤器
 settings-osc-vrchat-network-trackers-description = 切換傳送指定追蹤器的資料。
@@ -582,6 +596,9 @@ settings-osc-vmc-vrm-file_select = 拖曳檔案或 <u>瀏覽檔案</u> 以載入
 settings-osc-vmc-anchor_hip = 臀部錨定
 settings-osc-vmc-anchor_hip-description = 將追蹤錨定在臀部，有利於坐姿進行虛擬直播。若本選項無法切換，請載入 VRM 模型。
 settings-osc-vmc-anchor_hip-label = 臀部錨定
+settings-osc-vmc-mirror_tracking = 鏡像追蹤
+settings-osc-vmc-mirror_tracking-description = 將追蹤的結果水平鏡像。
+settings-osc-vmc-mirror_tracking-label = 鏡像追蹤
 
 ## Setup/onboarding menu
 
@@ -660,7 +677,7 @@ onboarding-done-close = 關閉設定
 onboarding-connect_tracker-back = 返回到 Wi-Fi 認證資訊設定
 onboarding-connect_tracker-title = 連接追蹤器
 onboarding-connect_tracker-description-p0-v1 = 來到了我第二喜歡的環節，連接追蹤器！
-onboarding-connect_tracker-description-p1-v1 = 透過 USB，一次連接一個追蹤器。
+onboarding-connect_tracker-description-p1-v1 = 透過 USB 埠，一次連接一個追蹤器。
 onboarding-connect_tracker-issue-serial = 我在連接時碰到問題了！
 onboarding-connect_tracker-usb = USB 追蹤器
 onboarding-connect_tracker-connection_status-none = 正在尋找追蹤器
@@ -716,6 +733,23 @@ onboarding-assign_trackers-assigned = { $assigned }/{ $trackers } 個追蹤器�
 onboarding-assign_trackers-advanced = 顯示進階分配部位
 onboarding-assign_trackers-next = 所有的追蹤器都分配好了
 onboarding-assign_trackers-mirror_view = 鏡像顯示
+onboarding-assign_trackers-option-amount = { $trackersCount } 點
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] 腿部追蹤套裝
+        [core] 核心套裝
+        [enhanced-core] 核心套裝加強版
+        [full-body] 全身追蹤套裝
+       *[all] 全部部位
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] VR 全身追蹤的基本需求
+        [core] + 強化脊椎追蹤
+        [enhanced-core] + 腳部旋轉
+        [full-body] + 手肘追蹤
+       *[all] 顯示全部可供追蹤器分配的部位
+    }
 
 ## Tracker assignment warnings
 
@@ -792,11 +826,11 @@ onboarding-choose_mounting = 要使用哪一種配戴校正方式？
 onboarding-choose_mounting-description = 配戴校正可以校正追蹤器放在身上的位置。
 onboarding-choose_mounting-auto_mounting = 自動配戴校正
 # Italized text
-onboarding-choose_mounting-auto_mounting-label = 實驗功能
+onboarding-choose_mounting-auto_mounting-label-v2 = 推薦使用
 onboarding-choose_mounting-auto_mounting-description = 本選項會透過兩個身體姿勢，判斷所有追蹤器的配戴方位
 onboarding-choose_mounting-manual_mounting = 手動配戴校正
 # Italized text
-onboarding-choose_mounting-manual_mounting-label = 推薦使用
+onboarding-choose_mounting-manual_mounting-label-v2 = 可能不夠精確
 onboarding-choose_mounting-manual_mounting-description = 本選項可以讓你選擇每個追蹤器的配戴方位
 # Multiline text
 onboarding-choose_mounting-manual_modal-title = 確定要進行自動配戴校正？
@@ -888,10 +922,10 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     追蹤狀態正常且能反映你的移動姿態（例如，進行完全重置後，踢腿、彎曲、坐下時的肢體方向是正確的）。
 onboarding-automatic_proportions-requirements-next = 我已閱讀使用需求
 onboarding-automatic_proportions-check_height-title = 檢查您的身高
-onboarding-automatic_proportions-check_height-description = 我們會透過頭戴顯示器回報的高度來推算您的實際身高，但我們仍建議您檢查一下數值是否正確。
+onboarding-automatic_proportions-check_height-description = 我們會透過頭戴顯示器回報的高度來推算您的實際身高，但仍建議檢查數值是否正確。
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = 請<u>站直</u>並按下按鈕以計算身高，按下按鈕後您有 3 秒鐘來調整姿勢。
-onboarding-automatic_proportions-check_height-guardian_tip = 如果您使用的是一體式 VR 頭盔，請確認頭盔的守護神/邊界設定已經開啟，以確保身高能正確測量。
+onboarding-automatic_proportions-check_height-guardian_tip = 如果您使用的是一體式 VR 頭顯，請確認頭盔的守護神/邊界設定已經開啟，以確保身高能正確測量。
 onboarding-automatic_proportions-check_height-fetch_height = 我站著了！
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 不明
@@ -918,11 +952,11 @@ onboarding-automatic_proportions-recording-processing = 正在處理結果
 # $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer = 倒數 { $time } 秒
 onboarding-automatic_proportions-verify_results-title = 檢查結果
-onboarding-automatic_proportions-verify_results-description = 檢查下面的結果，它們看起來是正確的嗎？
+onboarding-automatic_proportions-verify_results-description = 請檢查以下測量結果，看起來是正確的嗎？
 onboarding-automatic_proportions-verify_results-results = 錄製結果
 onboarding-automatic_proportions-verify_results-processing = 正在處理結果
 onboarding-automatic_proportions-verify_results-redo = 重新錄製
-onboarding-automatic_proportions-verify_results-confirm = 他們是正確的！
+onboarding-automatic_proportions-verify_results-confirm = 看起來沒問題
 onboarding-automatic_proportions-done-title = 身體資料已測量並儲存。
 onboarding-automatic_proportions-done-description = 你的身體比例校正已完成！
 onboarding-automatic_proportions-error_modal =
@@ -948,10 +982,11 @@ trackers_still_on-modal-cancel = 先不要…
 status_system-StatusTrackerReset = 有至少一個追蹤器尚未進行調整，建議執行完整重置。
 status_system-StatusSteamVRDisconnected =
     { $type ->
-        [steamvr_feeder] 尚未連接 SlimeVR 資料迴送程式
-       *[other] 尚未透過 SlimeVR 驅動程式連接到 SteamVR
+        [steamvr_feeder] 尚未連接 SlimeVR 資料迴送程式。
+       *[other] 尚未透過 SlimeVR 驅動程式連接到 SteamVR。
     }
 status_system-StatusTrackerError = { $trackerName } 追蹤器發生錯誤
+status_system-StatusUnassignedHMD = VR 頭戴顯示器應被分配為頭部追蹤器。
 
 ## Tray Menu
 
