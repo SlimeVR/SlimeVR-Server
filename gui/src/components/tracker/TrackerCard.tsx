@@ -139,7 +139,7 @@ export function TrackerCard({
     <div
       onClick={onClick}
       className={classNames(
-        'rounded-lg overflow-hidden shadow-accent-background-30',
+        'rounded-lg overflow-hidden',
         interactable && 'hover:bg-background-50 cursor-pointer',
         outlined && 'outline outline-2 outline-accent-background-40',
         warning && 'border-status-warning border-solid border-2',
