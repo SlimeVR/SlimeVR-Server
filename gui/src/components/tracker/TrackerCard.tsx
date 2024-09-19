@@ -78,7 +78,7 @@ function TrackerSmol({
       <div className="flex flex-col justify-center items-center fill-background-10">
         <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
       </div>
-      <div className="flex flex-col flex-grow ">
+      <div className="flex flex-col flex-grow justify-center">
         <Typography bold truncate>
           {trackerName}
         </Typography>
@@ -139,7 +139,7 @@ export function TrackerCard({
     <div
       onClick={onClick}
       className={classNames(
-        'rounded-lg overflow-hidden',
+        'rounded-lg overflow-hidden shadow-accent-background-30',
         interactable && 'hover:bg-background-50 cursor-pointer',
         outlined && 'outline outline-2 outline-accent-background-40',
         warning && 'border-status-warning border-solid border-2',
@@ -150,7 +150,7 @@ export function TrackerCard({
           ? {
               boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
                 velocity * 8
-              )}px #BB8AE5`,
+              )}px var(--tw-shadow-color)`,
             }
           : {}
       }
