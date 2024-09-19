@@ -199,6 +199,7 @@ public class TapDetectionManager {
 		// Don't allow mounting if tracker needs reset
 		VRServer server = humanPoseManager.getServer();
 		if (server != null && server.statusSystem.hasStatusType(StatusData.StatusTrackerReset)) {
+			mountingResetDetector.resetDetector();
 			return;
 		}
 
