@@ -150,7 +150,7 @@ export function TrackerCard({
           ? {
               boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
                 velocity * 8
-              )}px var(--tw-shadow-color)`,
+              )}px var(--accent-background-30)`,
             }
           : {}
       }
