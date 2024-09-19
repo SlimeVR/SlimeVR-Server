@@ -194,14 +194,14 @@ public class TapDetectionManager {
 	}
 
 	private void checkMountingReset() {
-		boolean tapped = (mountingResetTaps <= mountingResetDetector.getTaps());
-
 		// Don't allow mounting if tracker needs reset
 		VRServer server = humanPoseManager.getServer();
 		if (server != null && server.statusSystem.hasStatusType(StatusData.StatusTrackerReset)) {
 			mountingResetDetector.resetDetector();
 			return;
 		}
+
+		boolean tapped = (mountingResetTaps <= mountingResetDetector.getTaps());
 
 		if (tapped && mountingResetAllowPlaySound) {
 			this.resetHandler.sendStarted(ResetType.Mounting);
