@@ -489,6 +489,13 @@ settings-general-interface-use_tray-label = Minimalizuj do zasobnika systemowego
 settings-general-interface-discord_presence = Udostępniaj aktywność na Discordzie
 settings-general-interface-discord_presence-description = Informuje Twojego klienta Discord o korzystaniu ze SlimeVR oraz o liczbie używanych trackerów IMU.
 settings-general-interface-discord_presence-label = Udostępniaj aktywność na Discordzie
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Brak trackerów
+        [one] Użwanie 1 trackera
+        [few] Używanie { $amount } trackerów
+       *[many] Używanie { $amount } trackerów
+    }
 
 ## Serial settings
 
@@ -743,6 +750,12 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = Pokaż zaawansowane ustawienia pozycji
 onboarding-assign_trackers-next = Przydzieliłem już wszystkie trackery
 onboarding-assign_trackers-mirror_view = Widok lustrzany
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+        [few] x{ $trackersCount }
+       *[many] x{ $trackersCount }
+    }
 onboarding-assign_trackers-option-label =
     { $mode ->
         [lower-body] Zestaw na dolną część ciała
