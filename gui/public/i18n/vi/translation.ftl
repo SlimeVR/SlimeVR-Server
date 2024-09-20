@@ -23,6 +23,8 @@ tips-find_tracker = Không rõ tracker nào đang được chọn? Di chuyển n
 tips-do_not_move_heels = Không di chuyển gót chân trong khi đo
 tips-file_select = Kéo và thả tệp để sử dụng hoặc <u>duyệt</u>.
 tips-tap_setup = Bạn có thể từ từ nhấn vào 2 lần trình theo dõi của mình để chọn nó thay vì chọn nó từ menu.
+tips-turn_on_tracker = Sử dụng thiết bị SlimeVR chính thức? Hãy nhớ <b><em>bật trình theo dõi của bạn</em></b> sau khi kết nối thiết bị với máy tính!
+tips-failed_webgl = Không thể khởi tạo WebGL.
 
 ## Body parts
 
@@ -81,7 +83,7 @@ skeleton_bone-ELBOW_OFFSET = Sai số khuỷu tay
 reset-reset_all = Đặt lại tất cả bộ phận
 reset-full = Đặt lại
 reset-mounting = Đặt lại hướng gắn tracker
-reset-yaw = Reset Yaw
+reset-yaw = Đặt lại chiều quay lệch
 
 ## Serial detection stuff
 
@@ -196,6 +198,7 @@ tracker-infos-hardware_rev = Revision phần cứng
 tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-imu = Cảm biến IMU (IMU Sensor)
 tracker-infos-board_type = Bảng mạch chính
+tracker-infos-network_version = Phiên bản giao thức
 
 ## Tracker settings
 
@@ -215,6 +218,9 @@ tracker-settings-drift_compensation_section-edit = Cho phép bù trừ sai số
 tracker-settings-name_section = Tên tracker
 tracker-settings-name_section-description = Đặt cho nó một cái tên đẹp :3
 tracker-settings-name_section-placeholder = Chân trái của JINODK
+tracker-settings-forget = Quên thiết bị
+tracker-settings-forget-description = Xóa thiết bị khỏi phần mềm SlimeVR và ngăn nó kết nối với nó cho đến khi máy chủ được khởi động lại. Cấu hình của trình theo dõi sẽ không bị mất.
+tracker-settings-forget-label = Quên thiết bị
 
 ## Tracker part card info
 
@@ -304,10 +310,22 @@ settings-general-steamvr-description =
     Hữu dụng nếu game chỉ hỗ trợ số lượng tracker giới hạn.
 settings-general-steamvr-trackers-waist = Eo
 settings-general-steamvr-trackers-chest = Ngực
-settings-general-steamvr-trackers-feet = Bàn chân
-settings-general-steamvr-trackers-knees = Đầu gối
-settings-general-steamvr-trackers-elbows = Khuỷu tay
-settings-general-steamvr-trackers-hands = Tay
+settings-general-steamvr-trackers-left_foot = Bàn chân trái
+settings-general-steamvr-trackers-right_foot = Bàn chân phải
+settings-general-steamvr-trackers-left_knee = Đầu gối trái
+settings-general-steamvr-trackers-right_knee = Đầu gối phải
+settings-general-steamvr-trackers-left_elbow = Khuỷu tay trái
+settings-general-steamvr-trackers-right_elbow = Khuỷu tay phải
+settings-general-steamvr-trackers-left_hand = Tay trái
+settings-general-steamvr-trackers-right_hand = Tay phải
+settings-general-steamvr-trackers-tracker_toggling = Tự động giao thiết bị
+settings-general-steamvr-trackers-tracker_toggling-description = Tự động xử lý bật hoặc tắt thiết bị đo SteamVR chuyển đổi tùy thuộc vào thiết bị đã giao của bạn
+settings-general-steamvr-trackers-tracker_toggling-label = Tự động giao thiết bị
+settings-general-steamvr-trackers-hands-warning =
+    <b>Lưu ý:</b> bộ theo dõi tay sẽ dùng đè tay cầm điều khiển của bạn.
+    Bạn có chắc không?
+settings-general-steamvr-trackers-hands-warning-cancel = Hủy
+settings-general-steamvr-trackers-hands-warning-done = Có
 
 ## Tracker mechanics
 
@@ -325,6 +343,7 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Làm c
 settings-general-tracker_mechanics-filtering-type-prediction = Dự đoán
 settings-general-tracker_mechanics-filtering-type-prediction-description = Giảm độ trễ và làm chuyển động chân thật hơn, có thể khiến chuyển động không mượt mà
 settings-general-tracker_mechanics-filtering-amount = Mức độ lọc
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Thời gian thiết lập lại chiều quay lệch (0s tắt làm mượt)
 settings-general-tracker_mechanics-drift_compensation = Bù trừ sai số
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
@@ -333,6 +352,11 @@ settings-general-tracker_mechanics-drift_compensation-description =
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Bù trừ sai số
 settings-general-tracker_mechanics-drift_compensation-amount-label = Mức độ bù trừ
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Số lần đặt lại được áp dụng bù trừ
+settings-general-tracker_mechanics-save_mounting_reset = Lưu thiết bị đã giao tự động
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    Lưu thiết bị đã giao tự động cho các thiết bị giữa các lần khởi động lại. Có ích
+    khi mặc một bộ đồ SlimeVR mà trình theo dõi không di chuyển giữa các phiên. <b>Không được khuyến khích cho người dùng bình thường!</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Đặt lại hướng gắn thiết bị
 
 ## FK/Tracking settings
 
@@ -359,6 +383,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Đặt lại hướng 
 settings-general-fk_settings-arm_fk = Track cánh tay
 settings-general-fk_settings-arm_fk-description = Thay đổi cách cánh tay được track
 settings-general-fk_settings-arm_fk-force_arms = Lấy dữ liệu cánh tay từ kính
+settings-general-fk_settings-reset_settings = Đặt lại cài đặt
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Đặt lại cao độ của HMD (xoay dọc) khi thiết lập lại toàn bộ. Hữu ích nếu đeo HMD trên trán cho VTubing hoặc mocap. Lưu ý không bật VR khi sử dụng.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = Đặt lại cao độ HMD
 settings-general-fk_settings-arm_fk-reset_mode-description = Thay đổi tư thế cánh tay để đặt lại hướng gắn tracker.
 settings-general-fk_settings-arm_fk-back = Khuỷu tay ra sau
 settings-general-fk_settings-arm_fk-back-description = Chế độ mặc định, với cánh tay trên trỏ về phía sau và cánh tay dưới hướng về phía trước.
@@ -368,8 +395,22 @@ settings-general-fk_settings-arm_fk-tpose_down = T-pose (ngược lại)
 settings-general-fk_settings-arm_fk-tpose_down-description = Hai tay của bạn sẽ đưa lên 90 độ sang hai bên khi đặt lại hoàn toàn, và hai tay hướng xuống hai bên khi đặt lại hướng gắn tracker.
 settings-general-fk_settings-arm_fk-forward = Hai tay ra trước
 settings-general-fk_settings-arm_fk-forward-description = Hai cánh tay của bạn nâng lên 90 độ về phía trước. Hữu dụng cho việc VTubing.
+settings-general-fk_settings-skeleton_settings-toggles = Bật tắt bộ xương
 settings-general-fk_settings-skeleton_settings-description = Bật hoặc tắt các cài đặt về khung cơ thể. Các lựa chọn này nên được giữ bật
+settings-general-fk_settings-skeleton_settings-extended_spine_model = Mô hình cột sống mở rộng
+settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Mô hình xương chậu mở rộng
+settings-general-fk_settings-skeleton_settings-extended_knees_model = Mô hình đầu gối mở rộng
+settings-general-fk_settings-skeleton_settings-ratios = Tỷ lệ khung xương
+settings-general-fk_settings-skeleton_settings-ratios-description = Thay đổi các giá trị của cài đặt bộ xương. Bạn có thể cần phải điều chỉnh tỷ lệ của bạn sau khi thay đổi những điều này.
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Quy kết eo từ ngực đến hông
+settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Quy kết eo từ ngực đến hông
+settings-general-fk_settings-skeleton_settings-impute_hip_from_chest_legs = Gán hông từ ngực đến chân
+settings-general-fk_settings-skeleton_settings-impute_hip_from_waist_legs = Gán hông từ eo đến chân
+settings-general-fk_settings-skeleton_settings-interp_hip_legs = Tính trung bình số quay hông và lăn bằng chân.
+settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Tính trung bình của máy theo dõi đầu gối ngáp và lăn bằng mắt cá chân '
+settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Tính trung bình của chiều quay đầu gối ngáp và lăn bằng mắt cá chân '
 settings-general-fk_settings-self_localization-title = Chế độ Mocap
+settings-general-fk_settings-self_localization-description = Chế độ Mocap cho phép bộ xương theo dõi đại khái vị trí của chính nó mà không cần kính VR hoặc các thiết bị theo dõi khác. Lưu ý rằng điều này yêu cầu bộ theo dõi chân và đầu để hoạt động và chức năng này vẫn đang trong quá trình thử nghiệm.
 settings-general-fk_settings-vive_emulation-title = Giả lập tracker Vive
 settings-general-fk_settings-vive_emulation-description = Giả lập cách tracker của Vive gặp vấn đề với việc theo dõi eo, đây là 1 tính năng được làm cho vui và sẽ làm giảm độ chính xác
 settings-general-fk_settings-vive_emulation-label = Giả lập tracker Vive
@@ -389,9 +430,18 @@ settings-general-gesture_control-taps =
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
 settings-general-gesture_control-trackers = { $amount } trackers
+settings-general-gesture_control-yawResetEnabled = Bật chạm để đặt lại chiều quay
+settings-general-gesture_control-yawResetDelay = Thời gian delay trước khi đặt lại
+settings-general-gesture_control-yawResetTaps = Số lần chạm để đặt lại chiều quay
+settings-general-gesture_control-fullResetEnabled = Bật chạm để đặt lại chiều quay
+settings-general-gesture_control-fullResetDelay = Thời gian delay trước khi đặt lại full
+settings-general-gesture_control-fullResetTaps = Số lần chạm để đặt lại full
 settings-general-gesture_control-mountingResetEnabled = Chạm để đặt lại hướng gắn tracker
 settings-general-gesture_control-mountingResetDelay = Thời gian delay trước khi đặt lại hướng gắn tracker
 settings-general-gesture_control-mountingResetTaps = Số lần chạm cho đặt lại hướng gắn tracker
+# The number of trackers that can have higher acceleration before a tap is rejected
+settings-general-gesture_control-numberTrackersOverThreshold = Số thiết bị có thể vượt phát hiện
+settings-general-gesture_control-numberTrackersOverThreshold-description = Tăng số này nếu tính năng chạm thiết bị không hoạt động. Không tăng nó quá trên mức cần thiết để làm cho phát hiện chạm hoạt động vì nó sẽ gây ra nhiều kết quả sai hơn.
 
 ## Appearance settings
 
@@ -405,9 +455,12 @@ settings-general-interface-lang-description = Đổi ngôn ngữ hiển thị (C
 settings-general-interface-lang-placeholder = Chọn ngôn ngữ để sử dụng (Select the language to use)
 # Keep the font name untranslated
 settings-interface-appearance-font = Phông chữ cho GUI
+settings-interface-appearance-font-description = Cài đặt này thay đổi phông chữ được sử dụng bởi giao diện.
 settings-interface-appearance-font-placeholder = Phông chữ mặc định
 settings-interface-appearance-font-os_font = Phông chữ hệ điều hành
 settings-interface-appearance-font-slime_font = Phông chữ mặc định
+settings-interface-appearance-font_size = Tỷ lệ phông chữ cơ bản
+settings-interface-appearance-font_size-description = Điều này ảnh hưởng đến kích thước phông chữ của toàn bộ giao diện ngoại trừ bảng cài đặt này.
 
 ## Notification settings
 
@@ -415,7 +468,24 @@ settings-interface-notifications = Thông báo
 settings-general-interface-serial_detection = Nhận dạng thiết bị Serial mới
 settings-general-interface-serial_detection-description = Hiển thị pop-up mỗi lần một thiết bị Serial mới được kết nối qua USB (có thể là tracker), giúp cải thiện quá trình thiết lập tracker
 settings-general-interface-serial_detection-label = Nhận dạng thiết bị Serial mới
+settings-general-interface-feedback_sound = Âm thanh phản hồi
 settings-general-interface-feedback_sound-description = Tùy chọn này sẽ phát âm thanh khi thiết lập lại được kích hoạt.
+settings-general-interface-feedback_sound-label = Âm thanh phản hồi
+settings-general-interface-feedback_sound-volume = Âm lượng phản hồi
+settings-general-interface-connected_trackers_warning = Cảnh báo với thiết bị đã kết nối
+settings-general-interface-connected_trackers_warning-description = Tùy chọn này sẽ hiển thị cửa sổ bật lên mỗi khi bạn thử thoát khỏi SlimeVR trong khi có một hoặc nhiều thiết bị theo dõi được kết nối. Nó nhắc nhở bạn tắt trình theo dõi khi bạn hoàn tất để duy trì tuổi thọ pin.
+settings-general-interface-connected_trackers_warning-label = Cảnh báo thiết bị đã kết nối khi thoát chương trình
+settings-general-interface-use_tray = Thu nhỏ vào khay hệ thống
+settings-general-interface-use_tray-description = Cho phép bạn đóng cửa sổ mà không cần đóng máy chủ SlimeVR để bạn có thể tiếp tục sử dụng nó mà không bị GUI làm phiền.
+settings-general-interface-use_tray-label = Thu nhỏ vào khay hệ thống
+settings-general-interface-discord_presence = Chia sẻ hoạt động trên Discord
+settings-general-interface-discord_presence-description = Cho Discord của bạn biết rằng bạn đang sử dụng SlimeVR cùng với số lượng trình theo dõi IMU bạn đang sử dụng.
+settings-general-interface-discord_presence-label = Chia sẻ hoạt động trên Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Đang quay trên Slime
+       *[other] Đang dùng { $amount } điểm full body
+    }
 
 ## Serial settings
 
@@ -427,11 +497,19 @@ settings-serial-description =
 settings-serial-connection_lost = Kết nối đến Serial đã mất, đang kết nối lại...
 settings-serial-reboot = Khởi động lại
 settings-serial-factory_reset = Khôi phục cài đặt gốc
+# This cares about multilines
+# <b>text</b> means that the text should be bold
+settings-serial-factory_reset-warning =
+    <b>Lưu ý:</b> Thao tác này sẽ đặt lại trình theo dõi về cài đặt gốc.
+    Đặt lại bao gồm tất cả các cài đặt Wi-Fi và hiệu chuẩn (Calibrate) <b>sẽ bị mất!</b>
 settings-serial-factory_reset-warning-ok = Tôi biết mình đang làm gì
 settings-serial-factory_reset-warning-cancel = Hủy
 settings-serial-get_infos = Lấy thông tin
 settings-serial-serial_select = Chọn cổng Serial
 settings-serial-auto_dropdown_item = Tự động
+settings-serial-get_wifi_scan = Quét WiFi
+settings-serial-file_type = Văn bản thô
+settings-serial-save_logs = Lưu vào tệp
 
 ## OSC router settings
 
@@ -462,14 +540,17 @@ settings-osc-router-network-address-placeholder = Địa chỉ IPv4
 
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
-settings-osc-vrchat-description =
-    Thay đổi các cài đặt liên quan đến VRChat để nhận dữ liệu từ kính và
-    gửi dữ liệu tracker cho Full-body tracking (hoạt động với kính ở chế độ standalone)
+settings-osc-vrchat-description-v1 =
+    Thay đổi cài đặt cụ thể cho OSC Trackers được sử dụng để gửi
+    dữ liệu đo đến các ứng dụng không có SteamVR (ví dụ: Quest Standalone).
+    Hãy đảm bảo bật OSC trong VRChat thông qua Menu hành động trong OSC > Enabled.
+    Để cho phép nhận kính thực tế ảo HMD và dữ liệu bộ điều khiển từ VRChat, hãy vào menu chính của bạn
+    cài đặt trong Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Dữ liệu OSC
 settings-osc-vrchat-enable-description = Cho phép nhận và gửi dữ liệu OSC
 settings-osc-vrchat-enable-label = Giao tiếp dữ liệu OSC
 settings-osc-vrchat-network = Cổng mạng
-settings-osc-vrchat-network-description = Chọn cổng mạng để nhận và gửi dữ liệu OSC đến VRChat
+settings-osc-vrchat-network-description-v1 = Đặt các cổng để lấy và gửi dữ liệu. Có thể giữ nguyên cho VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Cổng vào
     .placeholder = Cổng vào (Mặc định: 9001)
@@ -477,7 +558,7 @@ settings-osc-vrchat-network-port_out =
     .label = Cổng ra
     .placeholder = Cổng ra (Mặc định: 9000)
 settings-osc-vrchat-network-address = Địa chỉ mạng
-settings-osc-vrchat-network-address-description = Địa chỉ mạng mà SlimeVR sẽ gửi dữ liệu OSC đến VRChat (có thể tìm thấy địa chỉ mạng trong menu cài đặt Wi-Fi)
+settings-osc-vrchat-network-address-description-v1 = Chọn địa chỉ để gửi dữ liệu đến. Có thể giữ nguyên cho VRChat.
 settings-osc-vrchat-network-address-placeholder = Địa chỉ IP của thiết bị chơi VRChat
 settings-osc-vrchat-network-trackers = Cấu hình Tracker
 settings-osc-vrchat-network-trackers-description = Chọn các tracker mà SlimeVR sẽ gửi dữ liệu OSC đến VRChat
@@ -490,6 +571,10 @@ settings-osc-vrchat-network-trackers-elbows = Khuỷu tay
 ## VMC OSC settings
 
 settings-osc-vmc = Virtual Motion Capture
+# This cares about multilines
+settings-osc-vmc-description =
+    Thay đổi cài đặt cụ thể cho giao thức VMC (Virtual Motion Capture)
+        để gửi dữ liệu thân của SlimeVR và nhận dữ liệu thân từ các ứng dụng khác.
 settings-osc-vmc-enable = Bật
 settings-osc-vmc-enable-description = Cho phép nhận và gửi dữ liệu OSC
 settings-osc-vmc-enable-label = Chuyển tiếp dữ liệu OSC
@@ -513,6 +598,12 @@ settings-osc-vmc-vrm-model_loaded =
        *[other] Mô hình chưa có tiêu đề đã được tải
     }
 settings-osc-vmc-vrm-file_select = Kéo và thả mô hình để sử dụng hoặc <u>duyệt file</u>
+settings-osc-vmc-anchor_hip = Cố định ở hông
+settings-osc-vmc-anchor_hip-description = Cố định theo dõi ở hông, hữu ích cho VTubing ngồi. Nếu tắt, hãy tải mô hình VRM.
+settings-osc-vmc-anchor_hip-label = Cố định ở hông
+settings-osc-vmc-mirror_tracking = Phản chiếu ngược theo dõi cơ thể
+settings-osc-vmc-mirror_tracking-description = Phản chiếu theo dõi theo chiều ngang.
+settings-osc-vmc-mirror_tracking-label = Phản chiếu ngược theo dõi cơ thể
 
 ## Setup/onboarding menu
 
@@ -520,6 +611,9 @@ onboarding-skip = Bỏ qua cài đặt
 onboarding-continue = Tiếp tục
 onboarding-wip = Chưa hoàn thiện
 onboarding-previous_step = Quay lại
+onboarding-setup_warning =
+    <b>Lưu ý:</b> Trình thiết lập ban đầu là cần thiết để theo dõi tốt,
+    bước này cần thiết nếu đây là lần đầu tiên bạn sử dụng SlimeVR.
 onboarding-setup_warning-skip = Bỏ qua cài đặt
 onboarding-setup_warning-cancel = Tiếp tục thiết lập
 
@@ -546,6 +640,24 @@ onboarding-reset_tutorial-back = Quay lại cân chỉnh vị trí gắn tracker
 onboarding-reset_tutorial = Làm lại
 onboarding-reset_tutorial-explanation = Trong khi bạn sử dụng trình theo dõi của mình, tracker có thể bị lệch khỏi căn chỉnh do IMU bị trượt, trôi dạt hoặc vì bạn có thể đã di chuyển chúng về mặt vật lý. Bạn có một số cách để khắc phục điều này.
 onboarding-reset_tutorial-skip = Bỏ qua bước
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    Nhấn { $taps } lần thiết bị được đánh dấu để kích hoạt đặt lại chiều quay.
+    
+    Điều này sẽ làm cho các trình theo dõi quay mặt về cùng hướng với kính thực thế ảo (HMD) của bạn.
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    Nhấn vào { $taps } lần thiết bị được đánh dấu để kích hoạt đặt lại toàn bộ.
+    
+    Bạn cần phải đứng thẳng tay để làm việc này (i-pose). Có độ trễ 3 giây (có thể định cấu hình) trước khi nó thực sự xảy ra.
+    Điều này đặt lại hoàn toàn vị trí và xoay của tất cả các trình theo dõi của bạn. Nó sẽ khắc phục hầu hết các vấn đề.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    Nhấn vào { $taps } lần thiết bị được đánh dấu để kích hoạt đặt lại lắp.
+    
+    Thiết lập lại gắn kết giúp ích cho cách các trình theo dõi thực sự được đặt vào bạn, vì vậy nếu bạn vô tình di chuyển chúng và thay đổi cách chúng được định hướng với số lượng lớn, điều này sẽ hữu ích.
+    
+    Bạn cần phải ở trên một tư thế như bạn đang trượt tuyết như nó được hiển thị trên trình hướng dẫn gắn tự động và bạn có độ trễ 3 giây (có thể định cấu hình) trước khi nó được kích hoạt.
 
 ## Setup start
 
@@ -569,8 +681,8 @@ onboarding-done-close = Đóng hướng dẫn
 
 onboarding-connect_tracker-back = Quay lại cài đặt Wi-Fi
 onboarding-connect_tracker-title = Kết nối tracker
-onboarding-connect_tracker-description-p0 = Cập nhật thông tin Wi-Fi cho tracker
-onboarding-connect_tracker-description-p1 = Hãy kết nối các tracker chưa thiết lập qua cổng USB
+onboarding-connect_tracker-description-p0-v1 = Bây giờ vào phần thú vị, kết nối thiết bị!
+onboarding-connect_tracker-description-p1-v1 = Kết nối từng thiết bị một lần thông qua cổng USB.
 onboarding-connect_tracker-issue-serial = Có vấn đề với việc kết nối? Kiểm tra thông tin qua cổng Serial
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-none = Đang tìm tracker
@@ -596,10 +708,14 @@ onboarding-connect_tracker-next = Đã kết nối với tất cả tracker
 
 ## Tracker calibration tutorial
 
+onboarding-calibration_tutorial = Hướng dẫn hiệu chuẩn IMU
 onboarding-calibration_tutorial-subtitle = Cái này sẽ giúp giảm trôi trượt theo dõi!
+onboarding-calibration_tutorial-description = Mỗi khi bạn bật thiết bị theo dõi, chúng cần nghỉ ngơi một lúc trên bề mặt phẳng để hiệu chỉnh. Hãy làm điều tương tự bằng cách nhấp vào nút "{ onboarding-calibration_tutorial-calibrate }", <b>và không di chuyển chúng!</b>
 onboarding-calibration_tutorial-calibrate = Tôi đã đặt thiết bị theo dõi của mình lên bàn
 onboarding-calibration_tutorial-status-waiting = Đang chờ bạn hoàn thành
+onboarding-calibration_tutorial-status-calibrating = Đang hiệu chuẩn
 onboarding-calibration_tutorial-status-success = Nice!
+onboarding-calibration_tutorial-status-error = Thiết bị đã di chuyển
 
 ## Tracker assignment tutorial
 
@@ -607,6 +723,8 @@ onboarding-assignment_tutorial = Làm thế nào để chuẩn bị một Slime 
 onboarding-assignment_tutorial-first_step = 1. Đặt nhãn dán bộ phận cơ thể (nếu có) trên tracker theo lựa chọn của bạn
 # This text has a character limit of around 11 characters, so please keep it short
 onboarding-assignment_tutorial-sticker = Sticker
+onboarding-assignment_tutorial-second_step-v2 = 2. Gắn dây đeo vào thiết bị theo dõi của bạn, giữ cho mặt Velcro của dây đeo hướng cùng hướng với hướng thiết bị của trình theo dõi của bạn:
+onboarding-assignment_tutorial-second_step-continuation-v2 = Mặt Velcro cho extension phải hướng lên như hình ảnh sau:
 onboarding-assignment_tutorial-done = Tôi đã dán nhãn dán và dây đai!
 
 ## Tracker assignment setup
@@ -624,14 +742,112 @@ onboarding-assign_trackers-assigned =
     } đã giao
 onboarding-assign_trackers-advanced = Xem thêm vị trí đặt
 onboarding-assign_trackers-next = Hoàn thành
+onboarding-assign_trackers-mirror_view = Xem hình phản chiếu
+onboarding-assign_trackers-option-amount = x{ $trackersCount }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] Tất cả thiết bị
+        [core] { "" }
+        [enhanced-core] { "" }
+        [full-body] { "" }
+       *[all] { "" }
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] Tối thiều để có full body tracking
+        [core] + Thân eo
+        [enhanced-core] + Quay bàn chân
+        [full-body] + Khửu tay
+       *[all] Tất cả thiết bị được giao
+    }
 
 ## Tracker assignment warnings
 
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [6] Bàn chân trái được xác định nhưng bạn cần thêm chân dưới kèm theo để hoạt động!
+        [5] Bàn chân trái được xác định nhưng bạn cần thêm chân trên kèm theo để hoạt động!
+        [4] Bàn chân trái được xác định nhưng bạn cần thêm chân trên và chân dưới kèm theo để hoạt động!
+        [3] Bàn chân trái được xác định nhưng bạn cần thêm ngực, eo hoặc bụng kèm theo để hoạt động!
+        [2] Bàn chân trái được xác định nhưng bạn cần thêm chân trên, ngực, eo hoặc bụng kèm theo để hoạt động!
+        [1] Bàn chân trái được xác định nhưng bạn cần thêm chân dưới, ngực, eo hoặc bụng kèm theo để hoạt động!
+        [0] Bàn chân trái được xác định nhưng bạn cần thêm chân trên, chân dưới, ngực, eo hoặc bụng kèm theo để hoạt động!
+       *[unknown] Bàn chân trái được xác định nhưng cần thêm bộ phận cơ thể thiếu!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] Bàn chân phải được xác định nhưng bạn cần thêm chân trên, chân dưới, ngực, eo hoặc bụng kèm theo để hoạt động!
+        [1] Bàn chân phải được xác định nhưng bạn cần thêm chân dưới, ngực, eo hoặc bụng kèm theo để hoạt động!
+        [2] Bàn chân phải được xác định nhưng bạn cần thêm chân trên, ngực, eo hoặc bụng kèm theo để hoạt động!
+        [3] Bàn chân phải được xác định nhưng bạn cần thêm ngực, eo hoặc bụng kèm theo để hoạt động!
+        [4] Bàn chân phải được xác định nhưng bạn cần thêm chân trên và chân dưới kèm theo để hoạt động!
+        [5] Bàn chân phải được xác định nhưng bạn cần thêm chân trên kèm theo để hoạt động!
+        [6] Bàn chân phải được xác định nhưng bạn cần thêm chân dưới kèm theo để hoạt động!
+       *[unknown] Bàn chân phải được xác định nhưng cần thêm bộ phận cơ thể thiếu!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] Chân trên trái được xác định nhưng cần thêm chân trên!
+        [1] Chân trên trái được xác định nhưng cần thêm ngực, eo và bụng được giao!
+        [2] Chân trên trái được xác định nhưng cần thêm chân trên!
+       *[unknown] Chân trên trái được xác định nhưng cần thêm bộ phận cơ thể thiếu!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [0] Chân trên phải được xác định nhưng cần thêm chân trên!
+        [1] Chân trên phải được xác định nhưng cần thêm ngực, eo và bụng được giao!
+        [2] Chân trên phải được xác định nhưng cần thêm chân trên!
+       *[unknown] Chân trên phải được xác định nhưng cần thêm bộ phận cơ thể thiếu!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] Chân trái trên được xác định nhưng cần thêm ngực, eo hoặc bụng!
+       *[unknown] Chân trái trên được xác định nhưng cần thêm bộ phận cơ thể thiếu!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] Chân phải trên được xác định nhưng cần thêm ngực, eo hoặc bụng!
+       *[unknown] Chân phải trên được xác định nhưng cần thêm bộ phận cơ thể thiếu!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] Eo được xác định được xác định nhưng cần thêm ngực!
+       *[unknown] Eo được xác định được xác định nhưng cần thêm bộ phận cơ thể thiếu!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] Bụng được xác định nhưng cần thêm ngực!
+       *[unknown] Bụng được xác định được xác định nhưng cần thêm bộ phận cơ thể thiếu!
+    }
 
 ## Tracker mounting method choose
 
+onboarding-choose_mounting = Bạn muốn dùng phương pháp hiểu chuần nào?
+# Multiline text
+onboarding-choose_mounting-description = Hướng lắp đặt chính xác cho vị trí của thiết bị theo dõi trên cơ thể của bạn.
+onboarding-choose_mounting-auto_mounting = Cân chỉnh tự động
 # Italized text
-onboarding-choose_mounting-auto_mounting-label = Thử nghiệm
+onboarding-choose_mounting-auto_mounting-label-v2 = Khuyến khích dùng
+onboarding-choose_mounting-auto_mounting-description = Điều này sẽ tự động phát hiện các hướng lắp đặt cho tất cả các thiết bị của bạn từ 2 tư thế
+onboarding-choose_mounting-manual_mounting = Cân chỉnh thủ công
+# Italized text
+onboarding-choose_mounting-manual_mounting-label-v2 = Có thể không đủ chính xác
+onboarding-choose_mounting-manual_mounting-description = Điều này sẽ cho phép bạn chọn hướng lắp theo cách thủ công cho từng thiết bị
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    Bạn có chắc chắn muốn 
+    đo hướng quay tự động?
+onboarding-choose_mounting-manual_modal-description = <b>Hiệu chuẩn lắp thủ công được khuyến nghị cho người dùng mới</b>, vì các tư thế của hiệu chuẩn lắp tự động có thể khó thực hiện ngay trước và có thể cần một số thực hành.
+onboarding-choose_mounting-manual_modal-confirm = Tôi chắc chắn về những gì tôi đang làm
 onboarding-choose_mounting-manual_modal-cancel = Hủy
 
 ## Tracker manual mounting setup
@@ -665,6 +881,12 @@ onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
 
 ## Tracker proportions method choose
 
+onboarding-choose_proportions = Phương pháp hiệu chuẩn tỷ lệ nào để sử dụng?
+# Multiline string
+onboarding-choose_proportions-description-v1 =
+    Tỷ lệ cơ thể được sử dụng để biết các số đo của cơ thể bạn. Họ được yêu cầu tính toán vị trí của trình theo dõi.
+    Khi tỷ lệ cơ thể của bạn không khớp với tỷ lệ được lưu, độ chính xác theo dõi của bạn sẽ kém hơn và bạn sẽ nhận thấy những thứ như trượt băng hoặc trượt, hoặc cơ thể của bạn không khớp với hình đại diện của bạn.
+    <b>Bạn chỉ cần đo cơ thể của bạn một lần!</b> Trừ khi chúng sai hoặc cơ thể bạn đã thay đổi, thì bạn không cần phải làm lại.
 onboarding-choose_proportions-auto_proportions = Đo kích thước cơ thể tự động
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Khuyến khích dùng
@@ -688,6 +910,7 @@ onboarding-manual_proportions-back = Quay lại cân chỉnh hướng gắn
 onboarding-manual_proportions-title = Đo kích thước cơ thể thủ công
 onboarding-manual_proportions-precision = Cân chỉnh cụ thể (giảm hệ số chỉnh)
 onboarding-manual_proportions-auto = Đo kích thước cơ thể tự động
+onboarding-manual_proportions-ratio = Điều chỉnh theo nhóm tỷ lệ
 
 ## Tracker automatic proportions setup
 
@@ -712,6 +935,9 @@ onboarding-automatic_proportions-check_height-title = Kiểm tra chiều cao c�
 onboarding-automatic_proportions-check_height-description = Chúng tôi sử dụng chiều cao của bạn làm cơ sở cho các phép đo của chúng tôi bằng cách sử dụng chiều cao của headset (HMD) làm chiều cao ước tính thực tế của bạn, nhưng tốt hơn hết bạn nên tự kiểm tra xem chúng có đúng không!
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning = Vui lòng nhấn nút trong khi đứng <u>thẳng</u> để tính chiều cao của bạn. Bạn có 3 giây sau khi nhấn nút!
+onboarding-automatic_proportions-check_height-guardian_tip =
+    Nếu bạn đang sử dụng Kính VR Standalone, hãy đảm bảo có guardian /
+    Ranh giới được bật để chiều cao của bạn là chính xác!
 onboarding-automatic_proportions-check_height-fetch_height = Tôi đang đứng!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Không rõ
@@ -750,13 +976,13 @@ onboarding-automatic_proportions-verify_results-confirm = Kết quả tương đ
 onboarding-automatic_proportions-done-title = Đã lưu chỉ số đo
 onboarding-automatic_proportions-done-description = Quá trình đo đã hoàn tất
 onboarding-automatic_proportions-error_modal =
-    <b>Cảnh báo:</b> Một lỗi đã được tìm thấy trong khi ước tính tỷ lệ cơ thể!
-    Vui lòng <docs>kiểm tra tài liệu</docs> hoặc tham gia <discord>Discord</discord> của chúng tôi để được trợ giúp ^_^
+    <b>Lưu ý:</b> Một lỗi đã được tìm thấy trong khi ước tính tỷ lệ cơ thể!
+    Vui lòng <docs>kiểm tra hướng dẫn</docs> hoặc tham gia <discord>Discord</discord> của chúng tôi để được trợ giúp ^_^
 onboarding-automatic_proportions-error_modal-confirm = Đã hiểu!
 
 ## Home
 
-home-no_trackers = Không tìm thấy tracker / Tracker chưa được gán
+home-no_trackers = Chưa có thiết bị nào được phát hiện hoặc điều ra
 
 ## Trackers Still On notification
 
@@ -772,7 +998,36 @@ trackers_still_on-modal-cancel = Vui lòng đợi...
 status_system-StatusTrackerReset = Bạn nên thực hiện thiết lập lại toàn bộ vì một hoặc nhiều trình theo dõi không được điều chỉnh.
 status_system-StatusSteamVRDisconnected =
     { $type ->
-        [steamvr_feeder] Hiện đang không kết nối với SteamVR thông qua trình điều khiển SlimeVR Feeder App.
-       *[other] Hiện đang không kết nối với SteamVR thông qua driver SlimeVR.
+        [steamvr_feeder] Chưa kết nối với SteamVR thông qua trình điều khiển SlimeVR Feeder App.
+       *[other] Chưa kết nối với SteamVR thông qua driver SlimeVR.
     }
 status_system-StatusTrackerError = Tracker { $trackerName } có lỗi.
+status_system-StatusUnassignedHMD = Kính thực tế ảo VR này nên được giao là bộ theo dõi đầu.
+
+## Tray Menu
+
+tray_menu-show = Xem
+tray_menu-hide = Ẩn
+tray_menu-quit = Thoát
+
+## First exit modal
+
+tray_or_exit_modal-title = Nút đóng nên làm gì?
+# Multiline text
+tray_or_exit_modal-description =
+    Điều này cho phép bạn chọn xem bạn muốn thoát khỏi chương trình hoặc thu nhỏ nó vào khay khi nhấn nút đóng.
+    
+    Bạn có thể thay đổi điều này sau trong cài đặt giao diện.
+tray_or_exit_modal-radio-exit = Thoát khi đóng
+tray_or_exit_modal-radio-tray = Thu nhỏ vào khay hệ thống
+tray_or_exit_modal-submit = Lưu
+tray_or_exit_modal-cancel = Hủy
+
+## Unknown device modal
+
+unknown_device-modal-title = Thiết bị mới đã được tìm thấy!
+unknown_device-modal-description =
+    Có thiết bị mới với địa chỉ MAC <b>{ $deviceId }</b>.
+    Bạn có muốn kết nối nó với SlimeVR không?
+unknown_device-modal-confirm = Chắc!
+unknown_device-modal-forget = Bỏ qua
