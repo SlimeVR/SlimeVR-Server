@@ -4,10 +4,16 @@ import java.net.NetworkInterface
 
 object RPCUtil {
 	@JvmStatic
-	fun getLocalIp(): String =
-		NetworkInterface.getNetworkInterfaces().asSequence().first { netInt ->
-			netInt.isUp && !netInt.isLoopback && !netInt.isVirtual && netInt.interfaceAddresses.any { it.address.isSiteLocalAddress && it.broadcast != null }
-		}.interfaceAddresses.first {
-			it.address.isSiteLocalAddress && it.broadcast != null
-		}.address.hostAddress
+	fun getLocalIp(): String? {
+		for (netInt in NetworkInterface.getNetworkInterfaces()) {
+			if (netInt.isUp && !netInt.isLoopback && !netInt.isVirtual) {
+				for (netAddr in netInt.interfaceAddresses) {
+					if (netAddr.address.isSiteLocalAddress && netAddr.broadcast != null) {
+						return netAddr.address.hostAddress
+					}
+				}
+			}
+		}
+		return null
+	}
 }

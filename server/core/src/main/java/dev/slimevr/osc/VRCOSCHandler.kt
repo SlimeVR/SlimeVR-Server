@@ -94,7 +94,11 @@ class VRCOSCHandler(
 		updateOscSender(config.portOut, config.address)
 
 		if (vrcOscQueryHandler == null && config.enabled) {
-			vrcOscQueryHandler = VRCOSCQueryHandler(this)
+			try {
+				vrcOscQueryHandler = VRCOSCQueryHandler(this)
+			} catch (e: Throwable) {
+				LogManager.severe("Unable to initialize OSCQuery: $e", e)
+			}
 		} else if (vrcOscQueryHandler != null && !config.enabled) {
 			vrcOscQueryHandler?.close()
 			vrcOscQueryHandler = null
