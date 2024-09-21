@@ -293,7 +293,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		val comPosStart: Vector3 = buf.centerOfMass
 
 		// get the buffer that occurred VELOCITY_SAMPLE_RATE ago in time
-		while (buf.timeOfFrame > timeEnd && buf.parent !== null) {
+		while (buf.timeOfFrame > timeEnd && buf.parent != null) {
 			buf = buf.parent!!
 		}
 
