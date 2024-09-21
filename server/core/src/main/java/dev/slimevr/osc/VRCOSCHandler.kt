@@ -79,7 +79,7 @@ class VRCOSCHandler(
 	override fun refreshSettings(refreshRouterSettings: Boolean) {
 		// Sets which trackers are enabled and force head and hands to false
 		for (i in computedTrackers.indices) {
-			if (computedTrackers[i].trackerPosition !== TrackerPosition.HEAD || computedTrackers[i].trackerPosition !== TrackerPosition.LEFT_HAND || computedTrackers[i].trackerPosition !== TrackerPosition.RIGHT_HAND) {
+			if (computedTrackers[i].trackerPosition != TrackerPosition.HEAD || computedTrackers[i].trackerPosition != TrackerPosition.LEFT_HAND || computedTrackers[i].trackerPosition != TrackerPosition.RIGHT_HAND) {
 				trackersEnabled[i] = config
 					.getOSCTrackerRole(
 						computedTrackers[i].trackerPosition!!.trackerRole!!,
@@ -458,7 +458,7 @@ class VRCOSCHandler(
 						),
 					)
 				}
-				if (computedTrackers[i].trackerPosition === TrackerPosition.HEAD) {
+				if (computedTrackers[i].trackerPosition == TrackerPosition.HEAD) {
 					// Send HMD position
 					val (x, y, z) = computedTrackers[i].position
 					oscArgs.clear()
