@@ -19,7 +19,7 @@ version_update-close = 關閉
 
 ## Tips
 
-tips-find_tracker = 若你不確定手上的追蹤器是哪一個，搖一搖它，對應的項目就會顯示出來。
+tips-find_tracker = 若你不確定手上的追蹤器是哪一個，搖一搖它，對應的項目會被高亮顯示出來。
 tips-do_not_move_heels = 確保你的腳跟在測量過程時不會發生移動！
 tips-file_select = 拖曳檔案或 <u>瀏覽檔案</u> 以使用
 tips-tap_setup = 除了從列表挑選追蹤器以外，您也可以慢慢敲擊 2 次追蹤器來選擇它。
@@ -676,7 +676,7 @@ onboarding-done-close = 關閉設定
 
 onboarding-connect_tracker-back = 返回到 Wi-Fi 認證資訊設定
 onboarding-connect_tracker-title = 連接追蹤器
-onboarding-connect_tracker-description-p0-v1 = 來到了我第二喜歡的環節，連接追蹤器！
+onboarding-connect_tracker-description-p0-v1 = 現在來到有趣的部分，連接追蹤器！
 onboarding-connect_tracker-description-p1-v1 = 透過 USB 埠，一次連接一個追蹤器。
 onboarding-connect_tracker-issue-serial = 我在連接時碰到問題了！
 onboarding-connect_tracker-usb = USB 追蹤器
@@ -985,7 +985,7 @@ status_system-StatusSteamVRDisconnected =
         [steamvr_feeder] 尚未連接 SlimeVR 資料迴送程式。
        *[other] 尚未透過 SlimeVR 驅動程式連接到 SteamVR。
     }
-status_system-StatusTrackerError = { $trackerName } 追蹤器發生錯誤
+status_system-StatusTrackerError = 追蹤器{ $trackerName }發生錯誤
 status_system-StatusUnassignedHMD = VR 頭戴顯示器應被分配為頭部追蹤器。
 
 ## Tray Menu
