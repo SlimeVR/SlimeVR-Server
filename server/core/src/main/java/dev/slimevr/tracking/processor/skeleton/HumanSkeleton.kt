@@ -40,15 +40,15 @@ class HumanSkeleton(
 	val headBone = Bone(BoneType.HEAD, Constraint(ConstraintType.COMPLETE))
 	val neckBone = Bone(BoneType.NECK, Constraint(ConstraintType.COMPLETE))
 	val upperChestBone = Bone(BoneType.UPPER_CHEST, Constraint(ConstraintType.TWIST_SWING, 90f, 120f))
-	val chestBone = Bone(BoneType.CHEST, Constraint(ConstraintType.TWIST_SWING, 30f, 120f))
-	val waistBone = Bone(BoneType.WAIST, Constraint(ConstraintType.TWIST_SWING, 30f, 120f))
-	val hipBone = Bone(BoneType.HIP, Constraint(ConstraintType.TWIST_SWING, 20f, 120f))
+	val chestBone = Bone(BoneType.CHEST, Constraint(ConstraintType.TWIST_SWING, 60f, 120f))
+	val waistBone = Bone(BoneType.WAIST, Constraint(ConstraintType.TWIST_SWING, 60f, 120f))
+	val hipBone = Bone(BoneType.HIP, Constraint(ConstraintType.TWIST_SWING, 60f, 120f))
 
 	// Lower body bones
 	val leftHipBone = Bone(BoneType.LEFT_HIP, Constraint(ConstraintType.TWIST_SWING, 0f, 15f))
 	val rightHipBone = Bone(BoneType.RIGHT_HIP, Constraint(ConstraintType.TWIST_SWING, 0f, 15f))
-	val leftUpperLegBone = Bone(BoneType.LEFT_UPPER_LEG, Constraint(ConstraintType.TWIST_SWING, 180f, 180f))
-	val rightUpperLegBone = Bone(BoneType.RIGHT_UPPER_LEG, Constraint(ConstraintType.TWIST_SWING, 180f, 180f))
+	val leftUpperLegBone = Bone(BoneType.LEFT_UPPER_LEG, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
+	val rightUpperLegBone = Bone(BoneType.RIGHT_UPPER_LEG, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
 	val leftLowerLegBone = Bone(BoneType.LEFT_LOWER_LEG, Constraint(ConstraintType.LOOSE_HINGE, 180f, 0f, 50f))
 	val rightLowerLegBone = Bone(BoneType.RIGHT_LOWER_LEG, Constraint(ConstraintType.LOOSE_HINGE, 180f, 0f, 50f))
 	val leftFootBone = Bone(BoneType.LEFT_FOOT, Constraint(ConstraintType.TWIST_SWING, 60f, 60f))
@@ -59,8 +59,8 @@ class HumanSkeleton(
 	val rightUpperShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(ConstraintType.COMPLETE))
 	val leftShoulderBone = Bone(BoneType.LEFT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 10f))
 	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 10f))
-	val leftUpperArmBone = Bone(BoneType.LEFT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 180f, 180f))
-	val rightUpperArmBone = Bone(BoneType.RIGHT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 180f, 180f))
+	val leftUpperArmBone = Bone(BoneType.LEFT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
+	val rightUpperArmBone = Bone(BoneType.RIGHT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
 	val leftLowerArmBone = Bone(BoneType.LEFT_LOWER_ARM, Constraint(ConstraintType.LOOSE_HINGE, 0f, -180f, 40f))
 	val rightLowerArmBone = Bone(BoneType.RIGHT_LOWER_ARM, Constraint(ConstraintType.LOOSE_HINGE, 0f, -180f, 40f))
 	val leftHandBone = Bone(BoneType.LEFT_HAND, Constraint(ConstraintType.TWIST_SWING, 90f, 90f))
@@ -194,6 +194,8 @@ class HumanSkeleton(
 	private var extendedPelvisModel = false
 	private var extendedKneeModel = false
 	private var forceArmsFromHMD = true
+	private var enforceConstraints = true
+	private var correctConstraints = true
 
 	// Ratios
 	private var waistFromChestHipAveraging = 0f
@@ -511,7 +513,6 @@ class HumanSkeleton(
 		updateTransforms()
 		updateBones()
 		enforceConstraints()
-		updateBones()
 
 		if (!pauseTracking) ikSolver.solve()
 
@@ -529,13 +530,16 @@ class HumanSkeleton(
 	 * Enforce rotation constraints on all bones
 	 */
 	private fun enforceConstraints() {
+		if (!enforceConstraints) return
+
 		for (bone in allHumanBones) {
 			// Correct the rotation if it violates a constraint
 			val initialRot = bone.getGlobalRotation()
 			val newRot = bone.rotationConstraint.applyConstraint(initialRot, bone)
 			bone.setRotationRaw(newRot)
+			bone.updateThisNode()
 
-			if (bone.rotationConstraint.constraintType == ConstraintType.HINGE || bone.rotationConstraint.constraintType == ConstraintType.LOOSE_HINGE) continue
+			if (!correctConstraints || bone.rotationConstraint.constraintType == ConstraintType.HINGE || bone.rotationConstraint.constraintType == ConstraintType.LOOSE_HINGE) continue
 
 			// Apply a correction to the tracker rotation if filtering is not greatly affecting the output rotation
 			val deltaRot = newRot * initialRot.inv()
@@ -1232,6 +1236,10 @@ class HumanSkeleton(
 			SkeletonConfigToggles.SELF_LOCALIZATION -> localizer.setEnabled(newValue)
 
 			SkeletonConfigToggles.USE_POSITION -> ikSolver.enabled = newValue
+
+			SkeletonConfigToggles.ENFORCE_CONSTRAINTS -> enforceConstraints = newValue
+
+			SkeletonConfigToggles.CORRECT_CONSTRAINTS -> correctConstraints = newValue
 		}
 	}
 
