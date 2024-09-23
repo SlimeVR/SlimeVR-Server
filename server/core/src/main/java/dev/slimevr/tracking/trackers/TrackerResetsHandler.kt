@@ -181,6 +181,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		rot = gyroFixNoMounting * rot
 		rot *= attachmentFixNoMounting
 		rot = yawFixZeroReference * rot
+		rot = dynamicFix * rot
 		return rot
 	}
 
