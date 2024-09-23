@@ -70,10 +70,9 @@ class Constraint(
 			rotation: Quaternion,
 			twistAxis: Vector3,
 		): Pair<Quaternion, Quaternion> {
-			val projection = rotation.project(twistAxis).unit()
-			val twist = Quaternion(rotation.w, projection.xyz).unit()
+			val projection = rotation.project(twistAxis)
+			val twist = Quaternion(sqrt(1.0f - projection.xyz.lenSq()) * if (rotation.w >= 0f) 1f else -1f, projection.xyz).unit()
 			val swing = (rotation * twist.inv()).unit()
-
 			return Pair(swing, twist)
 		}
 
