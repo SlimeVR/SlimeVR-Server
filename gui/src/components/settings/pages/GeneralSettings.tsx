@@ -1045,7 +1045,9 @@ export function GeneralSettings() {
 
             <div className="flex flex-col pt-2 pb-3">
               <Typography bold>
-                {l10n.getString('settings-general-fk_settings-enforce_joint_constraints')}
+                {l10n.getString(
+                  'settings-general-fk_settings-enforce_joint_constraints'
+                )}
               </Typography>
               <Typography color="secondary">
                 {l10n.getString(
