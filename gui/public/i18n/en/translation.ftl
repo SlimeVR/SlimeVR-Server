@@ -75,7 +75,7 @@ skeleton_bone-ELBOW_OFFSET = Elbow Offset
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
 reset-reset_all_warning =
-    <b>Warning:</b> This will reset your proportions to the defaults.
+    <b>Warning:</b> This will reset your proportions to being just based on your height.
     Are you sure you want to do this?
 reset-reset_all_warning-reset = Reset proportions
 reset-reset_all_warning-cancel = Cancel
