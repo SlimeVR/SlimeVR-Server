@@ -27,19 +27,19 @@ async function getWifiNetworksMac(): Promise<WifiNetwork[]> {
   return [];
 }
 
-async function getWifiNetworksWindows(): Promise<WifiNetwork[]> {
+async function getWifiNetworksWindowsSaved(): Promise<WifiNetwork[]> {
   const ret: WifiNetwork[] = [];
 
   const networksResponse = await Command.create('netsh-list', [
     'wlan',
     'show',
-    'profile',
+    'profile'
   ]).execute();
 
-  networksResponse.stdout.split('\n').forEach((line) => {
+  networksResponse.stdout.split('\n').forEach(line => {
     const ssidMatch = line.match(/All User Profile\s+:\s+(.+)/);
-    if (!ssidMatch) return;
-
+    if(!ssidMatch)
+      return;
     const ssid = ssidMatch[1];
     ret.push({
       ssid: ssid,
@@ -56,12 +56,17 @@ async function getWifiNetworksWindows(): Promise<WifiNetwork[]> {
       'show',
       'profile',
       `name=${network.ssid}`,
-      'key=clear',
+      'key=clear'
     ]).execute();
-
     const passwordMatch = profileResponse.stdout.match(/Key Content\s+:\s+(.+)/);
     network.password = passwordMatch ? passwordMatch[1] : '';
   });
+
+  return ret;
+}
+
+async function getWifiNetworksWindowsScan(): Promise<WifiNetwork[]> {
+  const ret: WifiNetwork[] = [];
 
   const scanResponse = await Command.create('netsh-scan', [
     'wlan',
@@ -119,12 +124,13 @@ async function getWifiNetworksWindows(): Promise<WifiNetwork[]> {
 function useWifiNetworksSlimes() {
   const [slimeWifiNetworks, setSlimeWifiNetworks] = useState<WifiNetwork[]>([]);
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const [isSerialOpen, setSerialOpen] = useState<boolean | null>(false);
+  const [isSerialOpen, setSerialOpen] = useState<boolean>(false);
+  const [isSerialOpening, setSerialOpening] = useState<boolean>(false);
   const [scanStarted, setScanStarted] = useState(false);
 
   useEffect(() => {
-    if (isSerialOpen === false) {
-      setSerialOpen(null);
+    if(isSerialOpening === false) {
+      setSerialOpening(true);
       // sendRPCPacket(RpcMessage.CloseSerialRequest, new CloseSerialRequestT());
       const req = new OpenSerialRequestT();
       req.port = 'Auto';
@@ -177,16 +183,30 @@ function useWifiNetworksSlimes() {
   return slimeWifiNetworks;
 }
 
+function populateNetworksWindows(setWifiNetworks: (networks: WifiNetwork[]) => void)
+{
+  let networksSaved: WifiNetwork[] = [];
+  let networksScanned: WifiNetwork[] = [];
+
+  getWifiNetworksWindowsSaved().then((networks) => {
+    networksSaved = networks;
+    setWifiNetworks([...networksSaved, ...networksScanned]);
+  });
+
+  getWifiNetworksWindowsScan().then((networks) => {
+    networksScanned = networks;
+    setWifiNetworks([...networksSaved, ...networksScanned]);
+  });
+}
+
 function useWifiNetworksInternal() {
   const [wifiNetworks, setWifiNetworks] = useState<WifiNetwork[]>([]);
 
   useEffect(() => {
-    os.type().then((platformName) => {
+    os.type().then(async (platformName) => {
       switch (platformName) {
         case 'windows':
-          getWifiNetworksWindows().then((networks) => {
-            setWifiNetworks(networks);
-          });
+          populateNetworksWindows(setWifiNetworks);
           break;
         case 'linux':
           getWifiNetworksLinux().then((networks) => {
