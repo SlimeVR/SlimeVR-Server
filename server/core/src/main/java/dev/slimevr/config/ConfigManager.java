@@ -115,6 +115,12 @@ public class ConfigManager {
 
 		// Serialize config
 		try {
+			var file = cfgFile.toFile();
+			if (!file.getAbsoluteFile().getParentFile().exists() && !file.mkdirs()) {
+				LogManager
+					.severe("Unable to create folders for config on path \"" + cfgFile + "\"");
+				return;
+			}
 			om.writeValue(tmpCfgFile.toFile(), this.vrConfig);
 		} catch (IOException e) {
 			LogManager.severe("Unable to write serialized config to \"" + tmpCfgFile + "\"", e);
