@@ -6,9 +6,7 @@ import { useLocalization } from '@fluent/react';
 import { useEffect, useRef, useState } from 'react';
 import { PlayCircleIcon } from '@/components/commons/icon/PlayIcon';
 import { useDebouncedEffect } from '@/hooks/timeout';
-import { fetchResourceUrl } from '@/utils/tauri';
-
-export const AUTOBONE_VIDEO = await fetchResourceUrl('/videos/autobone.webm');
+import { AUTOBONE_VIDEO } from '@/utils/tauri';
 
 export function StartRecording({
   nextStep,
