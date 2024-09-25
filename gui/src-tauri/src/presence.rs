@@ -33,14 +33,14 @@ async fn make_client(subs: ds::Subscriptions) -> Result<Option<DiscordClient>> {
 	};
 	e?;
 
-	let user = match &*user.0.borrow() {
+	let _ = match &*user.0.borrow() {
 		ds::wheel::UserState::Connected(user) => user.clone(),
 		ds::wheel::UserState::Disconnected(err) => {
 			bail!("failed to connect to Discord: {err}");
 		}
 	};
 
-	log::info!(target: "discord_presence", "connected to Discord, local user name is {}", user.username);
+	log::info!(target: "discord_presence", "connected to Discord!");
 
 	Ok(Some(DiscordClient { discord, wheel }))
 }

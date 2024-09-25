@@ -23,6 +23,8 @@ tips-find_tracker = どのトラッカーがどれだかわからない？トラ
 tips-do_not_move_heels = レコーディング中にかかとが動かないように注意しましょう！
 tips-file_select = 使用するファイルをドラッグ&ドロップするか、 <u>参照</u>します。
 tips-tap_setup = 追跡装置をゆっくり2回軽くタップして選択することができます、メニューから選ぶ必要はありません
+tips-turn_on_tracker = SlimeVRの公式トラッカーを使っていますか？トラッカーをPCに接続した後は<b><em>必ず電源を入れて</em></b>ください!
+tips-failed_webgl = WebGLの初期化に失敗しました。
 
 ## Body parts
 
@@ -161,8 +163,8 @@ tracker-status-timed_out = タイムアウト
 
 ## Tracker status columns
 
-tracker-table-column-name = Name
-tracker-table-column-type = Type
+tracker-table-column-name = 名前
+tracker-table-column-type = タイプ
 tracker-table-column-battery = バッテリー
 tracker-table-column-ping = Ping
 tracker-table-column-tps = TPS
@@ -196,6 +198,7 @@ tracker-infos-hardware_rev = ハードウエアのリビジョン
 tracker-infos-hardware_identifier = ハードウェアID
 tracker-infos-imu = 慣性計測センサー
 tracker-infos-board_type = メインボード
+tracker-infos-network_version = プロトコル・バージョン
 
 ## Tracker settings
 
@@ -215,6 +218,8 @@ tracker-settings-drift_compensation_section-edit = ドリフト補正を行う
 tracker-settings-name_section = トラッカー名称
 tracker-settings-name_section-description = 自由に名称をつけてください
 tracker-settings-name_section-placeholder = NightyBeast's left leg
+tracker-settings-forget = フォーゲット・トラッカー
+tracker-settings-forget-label = フォーゲット・トラッカー
 
 ## Tracker part card info
 
@@ -302,10 +307,8 @@ settings-general-steamvr-description =
     SlimeVRが行うことをよりコントロールしたい場合に便利です。
 settings-general-steamvr-trackers-waist = 腰
 settings-general-steamvr-trackers-chest = 胸
-settings-general-steamvr-trackers-feet = 足
-settings-general-steamvr-trackers-knees = 膝
-settings-general-steamvr-trackers-elbows = 肘
-settings-general-steamvr-trackers-hands = 手
+settings-general-steamvr-trackers-hands-warning-cancel = キャンセル
+settings-general-steamvr-trackers-hands-warning-done = はい
 
 ## Tracker mechanics
 
@@ -390,6 +393,9 @@ settings-general-gesture_control-taps =
         [one] 1 tap
        *[other] { $amount } タップ
     }
+# This is a unit: 3 trackers, 2 trackers, 1 tracker
+# $amount (Number) - Amount of trackers
+settings-general-gesture_control-trackers = { $amount } トラッカー
 settings-general-gesture_control-yawResetEnabled = タップによるヨーリセットを有効にします
 settings-general-gesture_control-yawResetDelay = ヨーリセット遅延
 settings-general-gesture_control-yawResetTaps = ヨーリセット用のタップ
@@ -402,6 +408,7 @@ settings-general-gesture_control-mountingResetTaps = タップによるマウン
 
 ## Appearance settings
 
+settings-interface-appearance = 外観
 settings-general-interface-dev_mode = 開発者モード
 settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
 settings-general-interface-dev_mode-label = 開発者モード
@@ -411,7 +418,9 @@ settings-general-interface-lang-description = 使用したいデフォルトの�
 settings-general-interface-lang-placeholder = 使用する言語を選択する
 # Keep the font name untranslated
 settings-interface-appearance-font = GUIフォント
+settings-interface-appearance-font-placeholder = デフォルトフォント
 settings-interface-appearance-font-os_font = OSフォント
+settings-interface-appearance-font-slime_font = デフォルトフォント
 
 ## Notification settings
 
@@ -422,6 +431,8 @@ settings-general-interface-serial_detection-label = シリアルデバイスの�
 settings-general-interface-feedback_sound = フィードバック音
 settings-general-interface-feedback_sound-label = フィードバック音
 settings-general-interface-feedback_sound-volume = フィードバック音量
+settings-general-interface-connected_trackers_warning = 接続されたトラッカー警告
+settings-general-interface-use_tray-label = システムトレイに最小化する
 
 ## Serial settings
 
@@ -467,15 +478,10 @@ settings-osc-router-network-address-placeholder = IPV4アドレス
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSCトラッカー
-# This cares about multilines
-settings-osc-vrchat-description =
-    HMDのデータを受信して送信するためにVRChat固有の設定を変更する。
-    FBT用のトラッカーデータ（Questスタンドアロンで動作します）
 settings-osc-vrchat-enable = 有効
 settings-osc-vrchat-enable-description = データの送受信を切り替える。
 settings-osc-vrchat-enable-label = 有効
 settings-osc-vrchat-network = ネットワークポート
-settings-osc-vrchat-network-description = VRChatへのデータを送受信するためのポートを設定します。
 settings-osc-vrchat-network-port_in =
     .label = ポートイン
     .placeholder = ポートイン (デフォルト: 9001)
@@ -483,7 +489,6 @@ settings-osc-vrchat-network-port_out =
     .label = ポートアウト
     .placeholder = ポートアウト (デフォルト: 9000)
 settings-osc-vrchat-network-address = ネットワークアドレス
-settings-osc-vrchat-network-address-description = VRChatにデータを送信するアドレスを選択してください（デバイスのWi-Fi設定を確認してください）
 settings-osc-vrchat-network-address-placeholder = VRChatのIPアドレス
 settings-osc-vrchat-network-trackers = トラッカー
 settings-osc-vrchat-network-trackers-description = データの送受信を切り替える。
@@ -587,7 +592,9 @@ onboarding-connect_tracker-next = すべてのトラッカーを接続しまし�
 
 onboarding-calibration_tutorial = IMU校正チュートリアル
 onboarding-calibration_tutorial-subtitle = これにより、センサーのドリフトを減らすことが役立ちます
+onboarding-calibration_tutorial-status-waiting = あなたを待っている...
 onboarding-calibration_tutorial-status-calibrating = 校正中
+onboarding-calibration_tutorial-status-success = ナイス!
 
 ## Tracker assignment tutorial
 
@@ -615,8 +622,7 @@ onboarding-assign_trackers-next = すべてのトラッカーを割り当てま�
 
 ## Tracker mounting method choose
 
-# Italized text
-onboarding-choose_mounting-auto_mounting-label = 実験的な
+onboarding-choose_mounting-manual_modal-cancel = キャンセル
 
 ## Tracker manual mounting setup
 
@@ -651,6 +657,7 @@ onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカー
 
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = おすすめされた
+onboarding-choose_proportions-import-failed = 失敗
 
 ## Tracker manual proportions setup
 
@@ -671,6 +678,8 @@ onboarding-automatic_proportions-put_trackers_on-description = プロポーシ�
 onboarding-automatic_proportions-put_trackers_on-next = すべてのトラッカーを装着しました
 onboarding-automatic_proportions-requirements-title = 要件
 onboarding-automatic_proportions-requirements-next = 要件を読みました
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = 不明
 onboarding-automatic_proportions-start_recording-title = 測定の準備をする
 onboarding-automatic_proportions-start_recording-description = これから具体的なポーズや動きを記録します。これらは次の画面に表示されます。ボタンが押されたらすぐに始められるように準備しておいてください！
 onboarding-automatic_proportions-start_recording-next = レコーディングスタート
@@ -692,6 +701,7 @@ onboarding-automatic_proportions-verify_results-redo = レコーディングや�
 onboarding-automatic_proportions-verify_results-confirm = 正確です
 onboarding-automatic_proportions-done-title = 体を測定して保存
 onboarding-automatic_proportions-done-description = ボディプロポーションのキャリブレーションが完了しました！
+onboarding-automatic_proportions-error_modal-confirm = 了解!
 
 ## Home
 
@@ -699,6 +709,8 @@ home-no_trackers = トラッカーを検出できません。もしくは割り�
 
 ## Trackers Still On notification
 
+trackers_still_on-modal-confirm = SlimeVRを終了する
+trackers_still_on-modal-cancel = ちょっと待って...
 
 ## Status system
 
@@ -712,9 +724,16 @@ status_system-StatusTrackerError = { $trackerName } トラッカーにエラー�
 
 ## Tray Menu
 
+tray_menu-show = ショー
+tray_menu-hide = 隠す
+tray_menu-quit = 辞める
 
 ## First exit modal
 
+tray_or_exit_modal-submit = セーブ
+tray_or_exit_modal-cancel = キャンセル
 
 ## Unknown device modal
 
+unknown_device-modal-confirm = もちろん!
+unknown_device-modal-forget = 無視する
