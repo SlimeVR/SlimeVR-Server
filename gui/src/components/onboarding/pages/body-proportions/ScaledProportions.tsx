@@ -7,11 +7,37 @@ import { HeightContextC, useProvideHeightContext } from '@/hooks/height';
 import { CheckFloorHeightStep } from './autobone-steps/CheckFloorHeight';
 import { ResetProportionsStep } from './scaled-steps/ResetProportions';
 import { DoneStep } from './scaled-steps/Done';
+import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '@/hooks/app';
+import { useMemo } from 'react';
+import { MIN_HEIGHT } from './ProportionsChoose';
+import { ManualHeightStep } from './scaled-steps/ManualHeightStep';
 
 export function ScaledProportionsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const heightContext = useProvideHeightContext();
+  const navigate = useNavigate();
+  const { computedTrackers } = useAppContext();
+
+  const hmdTracker = useMemo(
+    () =>
+      computedTrackers.find(
+        (tracker) =>
+          tracker.tracker.trackerId?.trackerNum === 1 &&
+          tracker.tracker.trackerId.deviceId?.id === undefined
+      ),
+    [computedTrackers]
+  );
+
+  const beneathFloor = useMemo(
+    () =>
+      !(
+        hmdTracker?.tracker.position &&
+        hmdTracker.tracker.position.y >= MIN_HEIGHT
+      ),
+    [hmdTracker?.tracker.position?.y]
+  );
 
   applyProgress(0.9);
 
@@ -32,12 +58,23 @@ export function ScaledProportionsPage() {
           <div className="flex">
             <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
-              steps={[
-                { type: 'numbered', component: CheckHeightStep },
-                { type: 'numbered', component: CheckFloorHeightStep },
-                { type: 'numbered', component: ResetProportionsStep },
-                { type: 'fullsize', component: DoneStep },
-              ]}
+              steps={
+                beneathFloor
+                  ? [
+                      { type: 'numbered', component: ManualHeightStep },
+                      { type: 'numbered', component: ResetProportionsStep },
+                      { type: 'fullsize', component: DoneStep },
+                    ]
+                  : [
+                      { type: 'numbered', component: CheckHeightStep },
+                      { type: 'numbered', component: CheckFloorHeightStep },
+                      { type: 'numbered', component: ResetProportionsStep },
+                      { type: 'fullsize', component: DoneStep },
+                    ]
+              }
+              back={() =>
+                navigate('/onboarding/body-proportions/choose', { state })
+              }
             ></StepperSlider>
           </div>
         </div>

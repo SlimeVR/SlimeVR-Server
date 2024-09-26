@@ -60,7 +60,7 @@ export function AutomaticProportionsPage() {
               ></StepperSlider>
             </div>
           </div>
-          <div className="w-full pb-4 flex flex-row mobile:justify-center">
+          <div className="w-full flex flex-row mobile:justify-center">
             <Button
               variant="secondary"
               onClick={() => {

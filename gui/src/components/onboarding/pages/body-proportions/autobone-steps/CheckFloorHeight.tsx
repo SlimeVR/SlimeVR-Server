@@ -14,6 +14,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
 import { useHeightContext } from '@/hooks/height';
 import { useInterval } from '@/hooks/timeout';
+import { TooSmolModal } from './TooSmolModal';
+import { MIN_HEIGHT } from '@/components/onboarding/pages/body-proportions/ProportionsChoose';
 
 export function CheckFloorHeightStep({
   nextStep,
@@ -29,6 +31,7 @@ export function CheckFloorHeightStep({
   const [fetchedHeight, setFetchedHeight] = useState(false);
   const [fetchHeight, setFetchHeight] = useState(false);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const [isOpen, setOpen] = useState(false);
   const { currentLocales } = useLocaleConfig();
 
   useEffect(() => setFloorHeight(0), []);
@@ -154,6 +157,10 @@ export function CheckFloorHeightStep({
             variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
             disabled={fetchHeight}
             onClick={() => {
+              if (!hmdHeight || hmdHeight < MIN_HEIGHT) {
+                setOpen(true);
+                return;
+              }
               setFloorHeight(0);
               const settingsRequest = new ChangeSettingsRequestT();
               settingsRequest.modelSettings = new ModelSettingsT(
@@ -174,6 +181,14 @@ export function CheckFloorHeightStep({
           <Button
             variant="primary"
             onClick={() => {
+              if (
+                !hmdHeight ||
+                !floorHeight ||
+                hmdHeight - floorHeight < MIN_HEIGHT
+              ) {
+                setOpen(true);
+                return;
+              }
               const settingsRequest = new ChangeSettingsRequestT();
               settingsRequest.modelSettings = new ModelSettingsT(
                 null,
@@ -193,6 +208,7 @@ export function CheckFloorHeightStep({
           </Button>
         </div>
       </div>
+      <TooSmolModal isOpen={isOpen} onClose={() => setOpen(false)} />
     </>
   );
 }

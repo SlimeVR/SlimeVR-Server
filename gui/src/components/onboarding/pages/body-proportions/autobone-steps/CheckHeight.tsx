@@ -9,6 +9,7 @@ import { TipBox } from '@/components/commons/TipBox';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { useHeightContext } from '@/hooks/height';
 import { useInterval } from '@/hooks/timeout';
+import classNames from 'classnames';
 
 export function CheckHeightStep({
   nextStep,
@@ -138,7 +139,10 @@ export function CheckHeightStep({
           <div className="self-center">
             <img
               src="/images/front-standing-pose.webp"
-              width={isMobile ? 400 : 300}
+              className={classNames(
+                isMobile && 'min-w-[120px] w-[150px]',
+                !isMobile && 'min-w-[120px] w-[34vh]'
+              )}
               alt="Reset position"
             />
           </div>

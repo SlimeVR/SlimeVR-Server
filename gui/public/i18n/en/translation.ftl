@@ -943,6 +943,20 @@ onboarding-automatic_proportions-error_modal =
     Please <docs>check the docs</docs> or join our <discord>Discord</discord> for help ^_^
 onboarding-automatic_proportions-error_modal-confirm = Understood!
 
+onboarding-automatic_proportions-smol_warning =
+    The height you entered is { $height }, and it's smaller than the minimum accepted one which is { $minHeight },
+    <b>please redo the calibration and get your correct height.</b>
+onboarding-automatic_proportions-smol_warning-cancel = Understandable
+
+## Tracker scaled proportions setup
+onboarding-scaled_proportions-title = Scaled proportions
+onboarding-scaled_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This will use an average proportion and scale it based on your height.
+onboarding-scaled_proportions-manual_height-title = Let's get your height
+onboarding-scaled_proportions-manual_height-description = a
+onboarding-scaled_proportions-manual_height-missing_steamvr = You don't have SteamVR connected to SlimeVR currently, which doesn't allow you to use measurements based on your headset, <b>proceed by your own caution or check docs!</b>
+onboarding-scaled_proportions-manual_height-height = Your height is
+onboarding-scaled_proportions-manual_height-next_step = Continue
+
 ## Home
 home-no_trackers = No trackers detected or assigned
 
