@@ -261,6 +261,8 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			}
 			if (!devicesPresent) {
 				sleep(10) // No hid device, "empty loop" so sleep to save the poor cpu
+			} else {
+				sleep(1) // read has no timeout, no data also causes an "empty loop"
 			}
 		}
 	}
