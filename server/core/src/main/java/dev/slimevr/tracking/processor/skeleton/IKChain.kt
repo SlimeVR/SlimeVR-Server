@@ -40,7 +40,7 @@ class IKChain(
 	 */
 	private fun prepBones() {
 		for (i in 0..<bones.size) {
-			if (bones[i].rotationConstraint.constraintType != ConstraintType.COMPLETE && bones[i].rotationConstraint.allowModifications) {
+			if (bones[i].rotationConstraint.constraintType != ConstraintType.COMPLETE && bones[i].boneType.bodyPart !in IKSolver.LOCK_ROTATION) {
 				bones[i].setRotationRaw(rotations[i])
 			}
 		}
@@ -51,7 +51,6 @@ class IKChain(
 
 		for (i in bones.size - 1 downTo 0) {
 			val currentBone = bones[i]
-			val childBone = if (bones.size - 1 < i) bones[i + 1] else null
 
 			if (currentBone.boneType.bodyPart in IKSolver.LOCK_ROTATION) {
 				rotations[i] = currentBone.getGlobalRotation()
@@ -64,10 +63,17 @@ class IKChain(
 
 			// Compute the axis of rotation and angle for this bone
 			val scalar = IKSolver.DAMPENING_FACTOR * if (currentBone.rotationConstraint.allowModifications) 1f else IKSolver.STATIC_DAMPENING
-			val adjustment = Quaternion.fromTo(endEffectorLocal, targetLocal).pow(scalar).unit()
-			val correctedRot = (adjustment * currentBone.getGlobalRotation()).unit()
+			var adjustment = Quaternion.fromTo(endEffectorLocal, targetLocal).pow(scalar).unit()
 
-			rotations[i] = setBoneRotation(currentBone, childBone, correctedRot, useConstraints)
+			// Bones that are not supposed to be modified should tend towards their origin
+			val rotation = currentBone.getGlobalRotation()
+			if (!currentBone.rotationConstraint.allowModifications) {
+				adjustment *= rotation.interpR(currentBone.rotationConstraint.initialRotation, IKSolver.CORRECTION_FACTOR) * rotation.inv()
+			}
+
+			val correctedRot = (adjustment * rotation).unit()
+
+			rotations[i] = setBoneRotation(currentBone, correctedRot, useConstraints)
 		}
 	}
 
@@ -102,7 +108,7 @@ class IKChain(
 		for (b in bones) {
 			b.rotationConstraint.initialRotation = b.getGlobalRotation()
 		}
-		// prepBones()
+		prepBones()
 
 		for (child in children) {
 			child.resetChain()
@@ -131,11 +137,11 @@ class IKChain(
 	}
 
 	/**
-	 * Sets a bones rotation from a rotation vector after constraining the rotation
-	 * vector with the bone's rotational constraint
+	 * Sets a bones rotation after constraining the rotation
+	 * to the bone's rotational constraint
 	 * returns the constrained rotation
 	 */
-	private fun setBoneRotation(bone: Bone, childBone: Bone?, rotation: Quaternion, useConstraints: Boolean): Quaternion {
+	private fun setBoneRotation(bone: Bone, rotation: Quaternion, useConstraints: Boolean): Quaternion {
 		// Constrain relative to the parent
 		val newRotation = if (bone.rotationConstraint.constraintType == ConstraintType.COMPLETE) {
 			bone.rotationConstraint.applyConstraint(rotation, bone)
@@ -148,14 +154,6 @@ class IKChain(
 		bone.setRotationRaw(newRotation)
 		bone.update()
 
-		// Constrain relative to the child
-		if (childBone != null && useConstraints && !bone.rotationConstraint.hasTrackerRotation) {
-			val newChildRot = childBone.rotationConstraint.applyConstraint(childBone.getGlobalRotation(), childBone)
-			val correctionInv = (newChildRot * rotation.inv()).inv()
-			bone.setRotationRaw(newRotation * correctionInv)
-			bone.update()
-		}
-
-		return bone.getGlobalRotation()
+		return newRotation
 	}
 }
