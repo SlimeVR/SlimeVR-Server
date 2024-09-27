@@ -13,7 +13,7 @@ plugins {
 	kotlin("plugin.serialization")
 	id("com.github.gmazzo.buildconfig")
 
-	id("com.android.application") version "8.5.2"
+	id("com.android.application") version "8.6.1"
 	id("org.ajoberstar.grgit")
 }
 
