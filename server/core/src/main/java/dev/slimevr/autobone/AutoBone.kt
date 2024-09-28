@@ -195,6 +195,9 @@ class AutoBone(server: VRServer) {
 		config: AutoBoneConfig = globalConfig,
 		epochCallback: Consumer<Epoch>? = null,
 	): AutoBoneResults {
+		check(frames.frameHolders.isNotEmpty()) { "Recording has no trackers" }
+		check(frames.maxFrameCount > 0) { "Recording has no frames" }
+
 		// Load current values for adjustable configs
 		loadConfigValues()
 
@@ -316,6 +319,9 @@ class AutoBone(server: VRServer) {
 			.info(
 				"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, Final height: $estimatedHeight",
 			)
+		if (trainingStep.errorStats.mean > config.maxFinalError) {
+			throw AutoBoneException("The final epoch error value (${trainingStep.errorStats.mean}) has exceeded the maximum allowed value (${config.maxFinalError}).")
+		}
 
 		return AutoBoneResults(
 			estimatedHeight,
