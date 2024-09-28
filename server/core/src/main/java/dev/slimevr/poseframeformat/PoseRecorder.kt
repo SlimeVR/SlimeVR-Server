@@ -86,7 +86,6 @@ class PoseRecorder(private val server: VRServer) {
 		require(numFrames >= 1) { "numFrames must at least have a value of 1." }
 		require(intervalMs >= 1) { "intervalMs must at least have a value of 1." }
 		require(trackers.isNotEmpty()) { "trackers must have at least one entry." }
-		check(isReadyToRecord) { "PoseRecorder isn't ready to record!" }
 		cancelFrameRecording()
 		val poseFrame = PoseFrames(trackers.size)
 
@@ -105,6 +104,7 @@ class PoseRecorder(private val server: VRServer) {
 			// Pair tracker with recording
 			this.trackers.add(Pair.of(tracker, trackerFrames))
 		}
+		require(this.trackers.isNotEmpty()) { "trackers must have at least one valid tracker." }
 
 		this.poseFrame = poseFrame
 		frameCursor = 0
