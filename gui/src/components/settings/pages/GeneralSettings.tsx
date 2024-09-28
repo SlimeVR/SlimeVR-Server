@@ -701,7 +701,7 @@ export function GeneralSettings() {
                 'settings-general-tracker_mechanics-drift_compensation-enabled-label'
               )}
             />
-            <div className="flex flex-col pt-2 pb-4"></div>            
+            <div className="flex flex-col pt-2 pb-4"></div>
             <Typography bold>
               {l10n.getString(
                 'settings-general-tracker_mechanics-drift_compensation-prediction'
