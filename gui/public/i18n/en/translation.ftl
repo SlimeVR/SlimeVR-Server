@@ -672,6 +672,7 @@ onboarding-calibration_tutorial-status-waiting = Waiting for you
 onboarding-calibration_tutorial-status-calibrating = Calibrating
 onboarding-calibration_tutorial-status-success = Nice!
 onboarding-calibration_tutorial-status-error = The tracker was moved
+onboarding-calibration_tutorial-skip = Skip tutorial
 
 ## Tracker assignment tutorial
 onboarding-assignment_tutorial = How to prepare a Slime Tracker before putting it on

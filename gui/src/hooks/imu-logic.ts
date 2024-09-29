@@ -1,11 +1,22 @@
 import { useMemo } from 'react';
 import { FlatDeviceTracker } from './app';
 
+const IGNORED_BOARDS = new Set(['Sony Mocopi', 'Haritora']);
+
 export function useIsRestCalibrationTrackers(
   connectedTrackers: FlatDeviceTracker[]
 ): boolean {
   const imuExists = useMemo(
-    () => connectedTrackers.some((tracker) => tracker.tracker.info?.isImu),
+    () =>
+      true ||
+      connectedTrackers.some(
+        (tracker) =>
+          tracker.tracker.info?.isImu &&
+          !(
+            tracker.device?.hardwareInfo?.boardType &&
+            IGNORED_BOARDS.has(tracker.device?.hardwareInfo?.boardType as string)
+          )
+      ),
     [connectedTrackers]
   );
 
