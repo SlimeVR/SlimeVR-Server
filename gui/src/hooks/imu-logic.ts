@@ -8,7 +8,6 @@ export function useIsRestCalibrationTrackers(
 ): boolean {
   const imuExists = useMemo(
     () =>
-      true ||
       connectedTrackers.some(
         (tracker) =>
           tracker.tracker.info?.isImu &&
