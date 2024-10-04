@@ -36,7 +36,7 @@ enum class BoardType(val id: UInt) {
 	ESP01(8u),
 	SLIMEVR(9u),
 	LOLIN_C3_MINI(10u),
-	BEETLE32C32(11u),
+	BEETLE32C3(11u),
 	ES32C3DEVKITM1(12u),
 	OWOTRACK(13u),
 	WRANGLER(14u),
@@ -59,7 +59,7 @@ enum class BoardType(val id: UInt) {
 		ESP01 -> "ESP-01"
 		SLIMEVR -> "SlimeVR"
 		LOLIN_C3_MINI -> "Lolin C3 Mini"
-		BEETLE32C32 -> "Beetle ESP32-C3"
+		BEETLE32C3 -> "Beetle ESP32-C3"
 		ES32C3DEVKITM1 -> "Espressif ESP32-C3 DevKitM-1"
 		OWOTRACK -> "owoTrack"
 		WRANGLER -> "Wrangler Joycons"

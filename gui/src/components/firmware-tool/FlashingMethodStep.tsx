@@ -193,7 +193,11 @@ function OTADevicesList({
       ({ trackers, hardwareInfo }) =>
         trackers.length > 0 &&
         boardTypeToFirmwareToolBoardType[
-          hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN
+          (hardwareInfo?.officialBoardType !== BoardType.SLIMEVR_LEGACY &&
+            hardwareInfo?.officialBoardType !== BoardType.SLIMEVR_DEV &&
+            hardwareInfo?.officialBoardType !== BoardType.CUSTOM &&
+            hardwareInfo?.officialBoardType) ||
+            BoardType.UNKNOWN
         ] == newConfig?.boardConfig?.type &&
         trackers.every(({ status }) => status == TrackerStatus.OK)
     ) || [];
@@ -352,14 +356,16 @@ export function FlashingMethodStep({
                   ></Radio>
                 </Localized>
               </div>
-              {flashingMethod == FirmwareUpdateMethod.SerialFirmwareUpdate.toString() && (
+              {flashingMethod ==
+                FirmwareUpdateMethod.SerialFirmwareUpdate.toString() && (
                 <SerialDevicesList
                   control={control}
                   watch={watch}
                   reset={reset}
                 ></SerialDevicesList>
               )}
-              {flashingMethod == FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
+              {flashingMethod ==
+                FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
                 <OTADevicesList
                   control={control}
                   watch={watch}

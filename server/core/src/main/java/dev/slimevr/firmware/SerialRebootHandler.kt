@@ -18,13 +18,26 @@ class SerialRebootHandler(
 	private val serialRebootListener: SerialRebootListener
 ): SerialListener {
 
+	private var currentPort: SerialPort? = null
 	private val disconnectedDevices: MutableList<SerialPort> = CopyOnWriteArrayList()
 
-	override fun onSerialConnected(port: SerialPort) {}
+	override fun onSerialConnected(port: SerialPort) {
+		currentPort = port;
+	}
 
-	override fun onSerialDisconnected() {}
+	override fun onSerialDisconnected() {
+		currentPort = null;
+	}
 
-	override fun onSerialLog(str: String) {}
+	override fun onSerialLog(str: String) {
+		if (str.contains("starting up...")) {
+			val foundPort = watchRestartQueue.find { it.first.id == currentPort?.portLocation }
+			if (foundPort !== null) {
+				disconnectedDevices.remove(currentPort)
+				serialRebootListener.onSerialDeviceReconnect(foundPort)
+			}
+		}
+	}
 
 	override fun onNewSerialDevice(port: SerialPort) {
 		val foundPort = watchRestartQueue.find { it.first.id == port.portLocation }

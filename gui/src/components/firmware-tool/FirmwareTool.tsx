@@ -15,11 +15,63 @@ import { SelectFirmwareStep } from './SelectFirmwareStep';
 import { BuildStep } from './BuildStep';
 import { FlashingMethodStep } from './FlashingMethodStep';
 import { FlashingStep } from './FlashingStep';
+import { FlashBtnStep } from './FlashBtnStep';
+import { FirmwareUpdateMethod } from 'solarxr-protocol';
+import { useMemo } from 'react';
 
 function FirmwareToolContent() {
   const { l10n } = useLocalization();
   const context = useFirmwareToolContext();
-  const { isError, isGlobalLoading: isLoading, retry } = context;
+  const { isError, isGlobalLoading: isLoading, retry, isCompatible } = context;
+
+  const steps = useMemo(() => {
+    const steps = [
+      {
+        id: 'SelectBoard',
+        component: SelectBoardStep,
+        title: l10n.getString('firmware-tool-board-step'),
+      },
+      {
+        component: BoardPinsStep,
+        title: l10n.getString('firmware-tool-board-pins-step'),
+      },
+      {
+        component: AddImusStep,
+        title: l10n.getString('firmware-tool-add-imus-step'),
+      },
+      {
+        id: 'SelectFirmware',
+        component: SelectFirmwareStep,
+        title: l10n.getString('firmware-tool-select-firmware-step'),
+      },
+      {
+        component: FlashingMethodStep,
+        id: 'FlashingMethod',
+        title: l10n.getString('firmware-tool-flash-method-step'),
+      },
+      {
+        component: BuildStep,
+        title: l10n.getString('firmware-tool-build-step'),
+      },
+      {
+        component: FlashingStep,
+        title: l10n.getString('firmware-tool-flashing-step'),
+      },
+    ];
+
+    if (
+      context.defaultConfig?.needBootPress &&
+      context.selectedDevices?.find(
+        ({ type }) => type === FirmwareUpdateMethod.SerialFirmwareUpdate
+      )
+    ) {
+      steps.splice(5, 0, {
+        component: FlashBtnStep,
+        title: l10n.getString('firmware-tool-flashbtn-step'),
+      });
+    }
+    return steps;
+  }, [context.defaultConfig?.needBootPress, context.selectedDevices]);
 
   return (
     <FirmwareToolContextC.Provider value={context}>
@@ -41,11 +93,17 @@ function FirmwareToolContent() {
         </div>
         <div className="m-4 h-full">
           {isError && (
-            <div className="w-full flex flex-col justify-center items-center gap-3 h-full ">
+            <div className="w-full flex flex-col justify-center items-center gap-3 h-full">
               <LoaderIcon slimeState={SlimeState.SAD}></LoaderIcon>
-              <Localized id="firmware-tool-not-available">
-                <Typography variant="section-title"></Typography>
-              </Localized>
+              {!isCompatible ? (
+                <Localized id="firmware-tool-not-compatible">
+                  <Typography variant="section-title"></Typography>
+                </Localized>
+              ) : (
+                <Localized id="firmware-tool-not-available">
+                  <Typography variant="section-title"></Typography>
+                </Localized>
+              )}
               <Localized id="firmware-tool-retry">
                 <Button variant="primary" onClick={retry}></Button>
               </Localized>
@@ -59,43 +117,7 @@ function FirmwareToolContent() {
               </Localized>
             </div>
           )}
-          {!isError && !isLoading && (
-            <VerticalStepper
-              steps={[
-                {
-                  id: 'SelectBoard',
-                  component: SelectBoardStep,
-                  title: l10n.getString('firmware-tool-board-step'),
-                },
-                {
-                  component: BoardPinsStep,
-                  title: l10n.getString('firmware-tool-board-pins-step'),
-                },
-                {
-                  component: AddImusStep,
-                  title: l10n.getString('firmware-tool-add-imus-step'),
-                },
-                {
-                  id: 'SelectFirmware',
-                  component: SelectFirmwareStep,
-                  title: l10n.getString('firmware-tool-select-firmware-step'),
-                },
-                {
-                  component: FlashingMethodStep,
-                  id: 'FlashingMethod',
-                  title: l10n.getString('firmware-tool-flash-method-step'),
-                },
-                {
-                  component: BuildStep,
-                  title: l10n.getString('firmware-tool-build-step'),
-                },
-                {
-                  component: FlashingStep,
-                  title: l10n.getString('firmware-tool-flashing-step'),
-                },
-              ]}
-            />
-          )}
+          {!isError && !isLoading && <VerticalStepper steps={steps} />}
         </div>
       </div>
     </FirmwareToolContextC.Provider>

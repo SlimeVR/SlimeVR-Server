@@ -47,8 +47,6 @@ body_part-LEFT_FOOT = Left foot
 
 ## BoardType
 board_type-UNKNOWN = Unknown
-board_type-SLIMEVR_LEGACY = SlimeVR Legacy
-board_type-SLIMEVR_DEV = SlimeVR Dev
 board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = Custom Board
 board_type-WROOM32 = WROOM32
@@ -57,7 +55,7 @@ board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
-board_type-BEETLE32C32 = Beetle ESP32-C3
+board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
 
 ## Proportions
@@ -958,6 +956,7 @@ firmware-tool = DIY Firmware tool
 firmware-tool-description =
     Allows to configure and flash your DIY trackers
 firmware-tool-not-available = Oops the firmware tool is not available at the moment. Come back later!
+firmware-tool-not-compatible = The firmware tool is not compatible with this version of the server. Please update your server!
 
 firmware-tool-board-step = Select your Board
 firmware-tool-board-step-description = Select one of the boards listed below.
@@ -1028,6 +1027,23 @@ firmware-tool-flash-method-step-ota =
 firmware-tool-flash-method-step-serial =
     .label = Serial
     .description = Use a USB cable to update your tracker.
+
+firmware-tool-flashbtn-step = Press the boot btn
+firmware-tool-flashbtn-step-description = Before going into the next step there is a few things you need to do
+
+firmware-tool-flashbtn-step-board-SLIMEVR = Press the flash button on the pcb before inserting turning on the tracker.
+    If the tracker was already on, simply turn it off and back on while pressing the button or shorting the flash pads.
+    Here are a few pictures on how to do it according to the different revisions of the slimevr tracker
+firmware-tool-flashbtn-step-board-SLIMEVR-r11 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board, and the metal shield of the microcontroller
+firmware-tool-flashbtn-step-board-SLIMEVR-r12 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board, and the metal shield of the microcontroller
+firmware-tool-flashbtn-step-board-SLIMEVR-r14 = Turn on the tracker while pushing in the FLASH button on the top side of the board
+
+firmware-tool-flashbtn-step-board-OTHER = Before flashing you will probably need to put the tracker into bootloader mode.
+    Most of the time it means pressing the boot button on the board before the flashing process starts.
+    If the flashing process timeout at the begining of the flashing it probably means that the tracker was not in bootloader mode
+    Please refer to the flashing instructions of your board to know how to turn on the boatloader mode
+
+
 
 firmware-tool-flash-method-ota-devices = Detected OTA Devices:
 firmware-tool-flash-method-ota-no-devices = There are no boards that can be updated using OTA, make sure you selected the correct board type

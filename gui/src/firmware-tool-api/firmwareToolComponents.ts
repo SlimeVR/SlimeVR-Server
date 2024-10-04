@@ -12,6 +12,65 @@ import type * as Fetcher from './firmwareToolFetcher';
 import { firmwareToolFetch } from './firmwareToolFetcher';
 import type * as Schemas from './firmwareToolSchemas';
 
+export type GetIsCompatibleVersionPathParams = {
+  version: string;
+};
+
+export type GetIsCompatibleVersionError = Fetcher.ErrorWrapper<undefined>;
+
+export type GetIsCompatibleVersionVariables = {
+  pathParams: GetIsCompatibleVersionPathParams;
+} & FirmwareToolContext['fetcherOptions'];
+
+/**
+ * Is this api compatible with the server version given
+ */
+export const fetchGetIsCompatibleVersion = (
+  variables: GetIsCompatibleVersionVariables,
+  signal?: AbortSignal
+) =>
+  firmwareToolFetch<
+    Schemas.VerionCheckResponse,
+    GetIsCompatibleVersionError,
+    undefined,
+    {},
+    {},
+    GetIsCompatibleVersionPathParams
+  >({ url: '/is-compatible/{version}', method: 'get', ...variables, signal });
+
+/**
+ * Is this api compatible with the server version given
+ */
+export const useGetIsCompatibleVersion = <TData = Schemas.VerionCheckResponse,>(
+  variables: GetIsCompatibleVersionVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.VerionCheckResponse,
+      GetIsCompatibleVersionError,
+      TData
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useFirmwareToolContext(options);
+  return reactQuery.useQuery<
+    Schemas.VerionCheckResponse,
+    GetIsCompatibleVersionError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: '/is-compatible/{version}',
+      operationId: 'getIsCompatibleVersion',
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetIsCompatibleVersion({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
 export type GetFirmwaresError = Fetcher.ErrorWrapper<undefined>;
 
 export type GetFirmwaresResponse = Schemas.FirmwareDTO[];
@@ -106,6 +165,77 @@ export const usePostFirmwaresBuild = (
     mutationFn: (variables: PostFirmwaresBuildVariables) =>
       fetchPostFirmwaresBuild({ ...fetcherOptions, ...variables }),
     ...options,
+  });
+};
+
+export type GetFirmwaresBuildStatusIdPathParams = {
+  id: string;
+};
+
+export type GetFirmwaresBuildStatusIdError = Fetcher.ErrorWrapper<undefined>;
+
+export type GetFirmwaresBuildStatusIdVariables = {
+  pathParams: GetFirmwaresBuildStatusIdPathParams;
+} & FirmwareToolContext['fetcherOptions'];
+
+/**
+ * Get the build status of a firmware
+ * This is a SSE (Server Sent Event)
+ * you can use the web browser api to check for the build status and update the ui in real time
+ */
+export const fetchGetFirmwaresBuildStatusId = (
+  variables: GetFirmwaresBuildStatusIdVariables,
+  signal?: AbortSignal
+) =>
+  firmwareToolFetch<
+    Schemas.ObservableType,
+    GetFirmwaresBuildStatusIdError,
+    undefined,
+    {},
+    {},
+    GetFirmwaresBuildStatusIdPathParams
+  >({
+    url: '/firmwares/build-status/{id}',
+    method: 'get',
+    ...variables,
+    signal,
+  });
+
+/**
+ * Get the build status of a firmware
+ * This is a SSE (Server Sent Event)
+ * you can use the web browser api to check for the build status and update the ui in real time
+ */
+export const useGetFirmwaresBuildStatusId = <TData = Schemas.ObservableType,>(
+  variables: GetFirmwaresBuildStatusIdVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ObservableType,
+      GetFirmwaresBuildStatusIdError,
+      TData
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useFirmwareToolContext(options);
+  return reactQuery.useQuery<
+    Schemas.ObservableType,
+    GetFirmwaresBuildStatusIdError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: '/firmwares/build-status/{id}',
+      operationId: 'getFirmwaresBuildStatusId',
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetFirmwaresBuildStatusId(
+        { ...fetcherOptions, ...variables },
+        signal
+      ),
+    ...options,
+    ...queryOptions,
   });
 };
 
@@ -336,16 +466,13 @@ export const useGetFirmwaresBatteries = <
 export type GetFirmwaresDefaultConfigBoardPathParams = {
   board:
     | 'BOARD_SLIMEVR'
-    | 'BOARD_SLIMEVR_DEV'
-    | 'BOARD_SLIMEVR_LEGACY'
-    | 'BOARD_CUSTOM'
     | 'BOARD_NODEMCU'
     | 'BOARD_WROOM32'
     | 'BOARD_WEMOSD1MINI'
     | 'BOARD_TTGO_TBASE'
     | 'BOARD_ESP01'
     | 'BOARD_LOLIN_C3_MINI'
-    | 'BOARD_BEETLE32C32'
+    | 'BOARD_BEETLE32C3'
     | 'BOARD_ES32C3DEVKITM1';
 };
 
@@ -526,9 +653,19 @@ export const useGetHealth = <TData = boolean,>(
 
 export type QueryOperation =
   | {
+      path: '/is-compatible/{version}';
+      operationId: 'getIsCompatibleVersion';
+      variables: GetIsCompatibleVersionVariables;
+    }
+  | {
       path: '/firmwares';
       operationId: 'getFirmwares';
       variables: GetFirmwaresVariables;
+    }
+  | {
+      path: '/firmwares/build-status/{id}';
+      operationId: 'getFirmwaresBuildStatusId';
+      variables: GetFirmwaresBuildStatusIdVariables;
     }
   | {
       path: '/firmwares/boards';

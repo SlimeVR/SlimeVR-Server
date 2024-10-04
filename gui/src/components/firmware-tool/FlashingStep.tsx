@@ -5,7 +5,7 @@ import {
   firmwareUpdateErrorStatus,
   useFirmwareTool,
 } from '@/hooks/firmware-tool';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
   DeviceIdT,
@@ -39,7 +39,8 @@ export function FlashingStep({
 }) {
   const nav = useNavigate();
   const { l10n } = useLocalization();
-  const { selectedDevices, buildStatus, selectDevices, defaultConfig } = useFirmwareTool();
+  const { selectedDevices, buildStatus, selectDevices, defaultConfig } =
+    useFirmwareTool();
   const { state: onboardingState } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [status, setStatus] = useState<{
@@ -73,7 +74,6 @@ export function FlashingStep({
     for (const device of devices) {
       switch (device.type) {
         case FirmwareUpdateMethod.OTAFirmwareUpdate: {
-
           const id = new DeviceIdTableT();
           const dId = new DeviceIdT();
           dId.id = +device.deviceId;
@@ -87,7 +87,7 @@ export function FlashingStep({
           method.deviceId = id;
           method.firmwarePart = part;
 
-          const req = new FirmwareUpdateRequestT()
+          const req = new FirmwareUpdateRequestT();
           req.method = method;
           req.methodType = FirmwareUpdateMethod.OTAFirmwareUpdate;
           sendRPCPacket(RpcMessage.FirmwareUpdateRequest, req);
@@ -104,7 +104,7 @@ export function FlashingStep({
           method.deviceId = id;
           method.ssid = onboardingState.wifi.ssid;
           method.password = onboardingState.wifi.password;
-          method.needManualReboot = defaultConfig?.needManualReboot ?? false
+          method.needManualReboot = defaultConfig?.needManualReboot ?? false;
 
           method.firmwarePart = buildStatus.firmwareFiles.map(
             ({ offset, url }) => {
@@ -115,7 +115,7 @@ export function FlashingStep({
             }
           );
 
-          const req = new FirmwareUpdateRequestT()
+          const req = new FirmwareUpdateRequestT();
           req.method = method;
           req.methodType = FirmwareUpdateMethod.SerialFirmwareUpdate;
           sendRPCPacket(RpcMessage.FirmwareUpdateRequest, req);
@@ -185,17 +185,31 @@ export function FlashingStep({
     queueFlashing(devices);
   };
 
-  const hasPendingTrackers =
-    Object.keys(status).filter((id) =>
-      [
-        FirmwareUpdateStatus.DOWNLOADING,
-        FirmwareUpdateStatus.AUTHENTICATING,
-        FirmwareUpdateStatus.REBOOTING,
-        FirmwareUpdateStatus.SYNCING_WITH_MCU,
-        FirmwareUpdateStatus.UPLOADING,
-        FirmwareUpdateStatus.PROVISIONING,
-      ].includes(status[id].status)
-    ).length > 0;
+  const hasPendingTrackers = useMemo(
+    () =>
+      Object.keys(status).filter((id) =>
+        [
+          FirmwareUpdateStatus.DOWNLOADING,
+          FirmwareUpdateStatus.AUTHENTICATING,
+          FirmwareUpdateStatus.REBOOTING,
+          FirmwareUpdateStatus.SYNCING_WITH_MCU,
+          FirmwareUpdateStatus.UPLOADING,
+          FirmwareUpdateStatus.PROVISIONING,
+        ].includes(status[id].status)
+      ).length > 0,
+    [status]
+  );
+
+  const shouldShowRebootWarning = useMemo(
+    () =>
+      Object.keys(status).find((id) =>
+        [
+          FirmwareUpdateStatus.REBOOTING,
+          FirmwareUpdateStatus.UPLOADING,
+        ].includes(status[id].status)
+      ),
+    [status]
+  );
 
   return (
     <>
@@ -207,9 +221,12 @@ export function FlashingStep({
         </div>
 
         <div className="my-4 flex gap-2 flex-col">
-          <Localized id="firmware-tool-flashing-step-warning">
-            <WarningBox>Warning</WarningBox>
-          </Localized>
+          {shouldShowRebootWarning && (
+            <Localized id="firmware-tool-flashing-step-warning">
+              <WarningBox>Warning</WarningBox>
+            </Localized>
+          )}
+
           {Object.keys(status).map((id) => {
             const val = status[id];
 

@@ -7,15 +7,18 @@ import {
   BuildResponseDTO,
   CreateBuildFirmwareDTO,
 } from '@/firmware-tool-api/firmwareToolSchemas';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { firmwareToolBaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
+import { Button } from '../commons/Button';
 
 export function BuildStep({
   isActive,
+  goTo,
   nextStep,
 }: {
   nextStep: () => void;
   prevStep: () => void;
+  goTo: (id: string) => void;
   isActive: boolean;
 }) {
   const { l10n } = useLocalization();
@@ -49,10 +52,16 @@ export function BuildStep({
   }, [isActive]);
 
   useEffect(() => {
+    if (!isActive) return;
     if (buildStatus.status === 'DONE') {
       nextStep();
     }
   }, [buildStatus]);
+
+  const hasPendingBuild = useMemo(
+    () => !['DONE', 'ERROR'].includes(buildStatus.status),
+    [buildStatus.status]
+  );
 
   return (
     <>
@@ -85,6 +94,15 @@ export function BuildStep({
               </Localized>
             </div>
           )}
+        </div>
+        <div className="flex justify-end">
+          <Localized id="firmware-tool-retry">
+            <Button
+              variant="secondary"
+              disabled={hasPendingBuild}
+              onClick={() => goTo('FlashingMethod')}
+            ></Button>
+          </Localized>
         </div>
       </div>
     </>

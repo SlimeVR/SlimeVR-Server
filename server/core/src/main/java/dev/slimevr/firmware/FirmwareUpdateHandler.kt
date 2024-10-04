@@ -50,9 +50,10 @@ data class DownloadedFirmwarePart(
 
 class FirmwareUpdateHandler(private val server: VRServer) :
 	TrackerStatusListener,
-	ProvisioningListener, SerialRebootListener {
+	ProvisioningListener,
+	SerialRebootListener {
 
-	private val provisioningTickTimer = Timer("StatusUpdateTimer")
+	private val updateTickTimer = Timer("StatusUpdateTimer")
 	private val runningJobs: MutableList<Job> = CopyOnWriteArrayList()
 	private val watchRestartQueue: MutableList<Pair<UpdateDeviceId<*>, () -> Unit>> =
 		CopyOnWriteArrayList()
@@ -84,8 +85,9 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 	init {
 		server.addTrackerStatusListener(this)
 		server.provisioningHandler.addListener(this)
+		server.serialHandler.addListener(serialRebootHandler)
 
-		this.provisioningTickTimer.scheduleAtFixedRate(0, 1000) {
+		this.updateTickTimer.scheduleAtFixedRate(0, 1000) {
 			checkUpdateTimeout()
 		}
 	}
@@ -181,12 +183,22 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 				}
 
 				onStatusChange(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.NEED_MANUAL_REBOOT))
+				server.serialHandler.openSerial(deviceId.id, false)
 				watchRestartQueue.add(
 					Pair(deviceId) {
-						onStatusChange(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.REBOOTING))
-						server.provisioningHandler.start(ssid, password, serialPort.portLocation)
-					}
-				);
+						onStatusChange(
+							UpdateStatusEvent(
+								deviceId,
+								FirmwareUpdateStatus.REBOOTING,
+							),
+						)
+						server.provisioningHandler.start(
+							ssid,
+							password,
+							serialPort.portLocation,
+						)
+					},
+				)
 			} else {
 				onStatusChange(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.REBOOTING))
 				server.provisioningHandler.start(ssid, password, serialPort.portLocation)
@@ -199,7 +211,6 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 					FirmwareUpdateStatus.ERROR_UPLOAD_FAILED,
 				),
 			)
-			server.provisioningHandler.stop()
 		}
 	}
 
@@ -226,7 +237,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 					mainScope.launch {
 						startFirmwareUpdateJob(
 							request,
-							deviceId
+							deviceId,
 						)
 					}
 				},
@@ -239,7 +250,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 
 			startFirmwareUpdateJob(
 				request,
-				deviceId
+				deviceId,
 			)
 		}
 	}
@@ -259,13 +270,15 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		val method = FirmwareUpdateMethod.getById(request.method.type) ?: error("Unknown method")
 		when (method) {
 			FirmwareUpdateMethod.OTA -> {
-				val updateReq = request.method.asOTAFirmwareUpdate();
+				val updateReq = request.method.asOTAFirmwareUpdate()
 				parts.add(updateReq.firmwarePart)
 			}
+
 			FirmwareUpdateMethod.SERIAL -> {
-				val updateReq = request.method.asSerialFirmwareUpdate();
+				val updateReq = request.method.asSerialFirmwareUpdate()
 				parts.addAll(updateReq.firmwarePart)
 			}
+
 			FirmwareUpdateMethod.NONE -> error("Method should not be NONE")
 		}
 		return parts
@@ -314,18 +327,23 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 					val method = FirmwareUpdateMethod.getById(request.method.type) ?: error("Unknown method")
 					when (method) {
 						FirmwareUpdateMethod.NONE -> error("unsupported method")
+
 						FirmwareUpdateMethod.OTA -> {
 							if (deviceId.id !is Int) {
 								error("invalid state, the device id is not an int")
+							}
+							if (firmwareParts.size > 1) {
+								error("invalid state, ota only use one firmware file")
 							}
 							startOtaUpdate(
 								firmwareParts.first(),
 								UpdateDeviceId(
 									FirmwareUpdateMethod.OTA,
-									deviceId.id
+									deviceId.id,
 								),
 							)
 						}
+
 						FirmwareUpdateMethod.SERIAL -> {
 							val req = request.method.asSerialFirmwareUpdate()
 							if (deviceId.id !is String) {
@@ -335,7 +353,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 								firmwareParts,
 								UpdateDeviceId(
 									FirmwareUpdateMethod.SERIAL,
-									deviceId.id
+									deviceId.id,
 								),
 								req.needManualReboot,
 								req.ssid,
@@ -366,6 +384,15 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		if (event.status == FirmwareUpdateStatus.DONE || event.status.isError()) {
 			this.updatingDevicesStatus.remove(event.deviceId)
 
+			// we remove the device from the restart queue
+			val queuedDevice = watchRestartQueue.find { it.first.id == event.deviceId }
+			if (queuedDevice != null) {
+				watchRestartQueue.remove(queuedDevice)
+				if (event.deviceId.type === FirmwareUpdateMethod.SERIAL && server.serialHandler.isConnected) {
+					server.serialHandler.closeSerial()
+				}
+			}
+
 			// We make sure to stop the provisioning routine if the tracker is done
 			// flashing
 			if (event.deviceId.type === FirmwareUpdateMethod.SERIAL) {
@@ -378,7 +405,9 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 	private fun checkUpdateTimeout() {
 		updatingDevicesStatus.forEach { (id, device) ->
 			// if more than 30s between two events, consider the update as stuck
-			if (!device.status.isError() && device.status != FirmwareUpdateStatus.DONE && System.currentTimeMillis() - device.time > 30 * 1000) {
+			// We do not timeout on the Downloading step as it has it own timeout
+			// We do not timeout on the Done step as it is the end of the update process
+			if (!device.status.isError() && !intArrayOf(FirmwareUpdateStatus.DONE.id, FirmwareUpdateStatus.DOWNLOADING.id).contains(device.status.id) && System.currentTimeMillis() - device.time > 30 * 1000) {
 				onStatusChange(
 					UpdateStatusEvent(
 						id,
@@ -390,7 +419,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 	}
 
 	// this only works for OTA trackers as the device id
-	// only exists when a udb connection is created
+	// only exists when the usb connection is created
 	override fun onTrackerStatusChanged(
 		tracker: Tracker,
 		oldStatus: TrackerStatus,
@@ -442,21 +471,21 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		}
 
 		if (status == ProvisioningStatus.DONE) {
-			this.server.provisioningHandler.stop()
 			update(FirmwareUpdateStatus.DONE)
 		}
 
 		if (status == ProvisioningStatus.CONNECTION_ERROR || status == ProvisioningStatus.COULD_NOT_FIND_SERVER) {
-			this.server.provisioningHandler.stop()
 			update(FirmwareUpdateStatus.ERROR_PROVISIONING_FAILED)
 		}
 	}
 
 	override fun onSerialDeviceReconnect(deviceHandle: Pair<UpdateDeviceId<*>, () -> Unit>) {
 		deviceHandle.second()
-		watchRestartQueue.remove(deviceHandle);
+		watchRestartQueue.remove(deviceHandle)
+		if (server.serialHandler.isConnected) {
+			server.serialHandler.closeSerial()
+		}
 	}
-
 }
 
 fun downloadFirmware(url: String): ByteArray? {

@@ -21,9 +21,6 @@ class OTAUpdateTask(
 ) {
 	private val receiveBuffer: ByteArray = ByteArray(38)
 
-	// Could be better, good for now
-	private val localPort = 10000 + (deviceId.id % 1000)
-
 	@Throws(NoSuchAlgorithmException::class)
 	private fun bytesToMd5(bytes: ByteArray): String {
 		val md5 = MessageDigest.getInstance("MD5")
@@ -36,7 +33,7 @@ class OTAUpdateTask(
 		return md5str.toString()
 	}
 
-	private fun authenticate(): Boolean {
+	private fun authenticate(localPort: Int): Boolean {
 		try {
 			DatagramSocket().use { socket ->
 				statusCallback.accept(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.AUTHENTICATING))
@@ -94,51 +91,49 @@ class OTAUpdateTask(
 		}
 	}
 
-	private fun upload(): Boolean {
+	private fun upload(serverSocket: ServerSocket): Boolean {
 		try {
-			ServerSocket(localPort).use { serverSocket ->
-				LogManager.info("[OTAUpdate] Starting on :$localPort")
-				LogManager.info("[OTAUpdate] Waiting for device...")
+			LogManager.info("[OTAUpdate] Starting on: ${serverSocket.localPort}")
+			LogManager.info("[OTAUpdate] Waiting for device...")
 
-				val connection = serverSocket.accept()
-				connection.setSoTimeout(1000)
+			val connection = serverSocket.accept()
+			connection.setSoTimeout(1000)
 
-				val dos = DataOutputStream(connection.getOutputStream())
-				val dis = DataInputStream(connection.getInputStream())
+			val dos = DataOutputStream(connection.getOutputStream())
+			val dis = DataInputStream(connection.getInputStream())
 
-				LogManager.info("[OTAUpdate] Upload size: ${firmware.size} bytes")
-				var offset = 0
-				val chunkSize = 2048
-				while (offset != firmware.size) {
-					statusCallback.accept(
-						UpdateStatusEvent(
-							deviceId,
-							FirmwareUpdateStatus.UPLOADING,
-							((offset.toDouble() / firmware.size) * 100).toInt(),
-						),
-					)
+			LogManager.info("[OTAUpdate] Upload size: ${firmware.size} bytes")
+			var offset = 0
+			val chunkSize = 2048
+			while (offset != firmware.size) {
+				statusCallback.accept(
+					UpdateStatusEvent(
+						deviceId,
+						FirmwareUpdateStatus.UPLOADING,
+						((offset.toDouble() / firmware.size) * 100).toInt(),
+					),
+				)
 
-					val chunkLen = min(chunkSize, (firmware.size - offset))
-					dos.write(firmware, offset, chunkLen)
-					dos.flush()
-					offset += chunkLen
+				val chunkLen = min(chunkSize, (firmware.size - offset))
+				dos.write(firmware, offset, chunkLen)
+				dos.flush()
+				offset += chunkLen
 
-					// Those skipped bytes are the size written to the MCU. We do not really need that information,
-					// so we simply skip it.
-					// The reason those bytes are skipped here is to not have to skip all of them when checking
-					// for the OK response. Saving time
-					dis.skipNBytes(4)
-				}
-
-				LogManager.info("[OTAUpdate] Waiting for result...")
-				// We set the timeout of the connection bigger as it can take some time for the MCU
-				// to confirm that everything is ok
-				connection.setSoTimeout(10000)
-				val responseBytes = dis.readAllBytes()
-				val response = String(responseBytes)
-
-				return response.contains("OK")
+				// Those skipped bytes are the size written to the MCU. We do not really need that information,
+				// so we simply skip it.
+				// The reason those bytes are skipped here is to not have to skip all of them when checking
+				// for the OK response. Saving time
+				dis.skipNBytes(4)
 			}
+
+			LogManager.info("[OTAUpdate] Waiting for result...")
+			// We set the timeout of the connection bigger as it can take some time for the MCU
+			// to confirm that everything is ok
+			connection.setSoTimeout(10000)
+			val responseBytes = dis.readAllBytes()
+			val response = String(responseBytes)
+
+			return response.contains("OK")
 		} catch (e: Exception) {
 			e.printStackTrace()
 			return false
@@ -146,17 +141,34 @@ class OTAUpdateTask(
 	}
 
 	fun run() {
-		if (!authenticate()) {
-			statusCallback.accept(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.ERROR_AUTHENTICATION_FAILED))
-			return
-		}
+		ServerSocket(0).use { serverSocket ->
+			if (!authenticate(serverSocket.localPort)) {
+				statusCallback.accept(
+					UpdateStatusEvent(
+						deviceId,
+						FirmwareUpdateStatus.ERROR_AUTHENTICATION_FAILED,
+					),
+				)
+				return
+			}
 
-		if (!upload()) {
-			statusCallback.accept(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.ERROR_UPLOAD_FAILED))
-			return
-		}
+			if (!upload(serverSocket)) {
+				statusCallback.accept(
+					UpdateStatusEvent(
+						deviceId,
+						FirmwareUpdateStatus.ERROR_UPLOAD_FAILED,
+					),
+				)
+				return
+			}
 
-		statusCallback.accept(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.REBOOTING))
+			statusCallback.accept(
+				UpdateStatusEvent(
+					deviceId,
+					FirmwareUpdateStatus.REBOOTING,
+				),
+			)
+		}
 	}
 
 	companion object {

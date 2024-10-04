@@ -1,0 +1,86 @@
+import { useLocalization } from '@fluent/react';
+import { Typography } from '../commons/Typography';
+import { Button } from '../commons/Button';
+import {
+  boardTypeToFirmwareToolBoardType,
+  useFirmwareTool,
+} from '@/hooks/firmware-tool';
+import { BoardType } from 'solarxr-protocol';
+
+export function FlashBtnStep({
+  nextStep,
+}: {
+  nextStep: () => void;
+  prevStep: () => void;
+  goTo: (id: string) => void;
+  isActive: boolean;
+}) {
+  const { l10n } = useLocalization();
+  const { defaultConfig } = useFirmwareTool();
+
+  return (
+    <>
+      <div className="flex flex-col w-full">
+        <div className="flex flex-grow flex-col gap-4">
+          <Typography color="secondary">
+            {l10n.getString('firmware-tool-flashbtn-step-description')}
+          </Typography>
+          {defaultConfig?.boardConfig.type ===
+          boardTypeToFirmwareToolBoardType[BoardType.SLIMEVR] ? (
+            <>
+              <Typography variant="standard" whitespace="whitespace-pre">
+                {l10n.getString('firmware-tool-flashbtn-step-board-SLIMEVR')}
+              </Typography>
+              <div className="gap-2 grid lg:grid-cols-3 md:grid-cols-2 mobile:grid-cols-1">
+                <div className="bg-background-80 p-2 rounded-lg gap-2 flex flex-col justify-between">
+                  <Typography variant="main-title">R11</Typography>
+                  <Typography variant="standard">
+                    {l10n.getString(
+                      'firmware-tool-flashbtn-step-board-SLIMEVR-r11'
+                    )}
+                  </Typography>
+                  <img src="/images/R11_board_reset.png"></img>
+                </div>
+                <div className="bg-background-80 p-2 rounded-lg gap-2 flex flex-col justify-between">
+                  <Typography variant="main-title">R12</Typography>
+                  <Typography variant="standard">
+                    {l10n.getString(
+                      'firmware-tool-flashbtn-step-board-SLIMEVR-r12'
+                    )}
+                  </Typography>
+                  <img src="/images/R12_board_reset.png"></img>
+                </div>
+
+                <div className="bg-background-80 p-2 rounded-lg gap-2 flex flex-col justify-between">
+                  <Typography variant="main-title">R14</Typography>
+                  <Typography variant="standard">
+                    {l10n.getString(
+                      'firmware-tool-flashbtn-step-board-SLIMEVR-r14'
+                    )}
+                  </Typography>
+                  <img src="/images/R14_board_reset_sw.png"></img>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <Typography variant="standard" whitespace="whitespace-pre">
+                {l10n.getString('firmware-tool-flashbtn-step-board-OTHER')}
+              </Typography>
+            </>
+          )}
+          <div className="flex justify-end">
+            <Button
+              variant="primary"
+              onClick={() => {
+                nextStep();
+              }}
+            >
+              Next Step
+            </Button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

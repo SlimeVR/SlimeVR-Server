@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from 'react';
 import {
   fetchGetFirmwaresDefaultConfigBoard,
   useGetHealth,
+  useGetIsCompatibleVersion,
 } from '@/firmware-tool-api/firmwareToolComponents';
 import {
   BuildResponseDTO,
@@ -11,7 +12,11 @@ import {
 } from '@/firmware-tool-api/firmwareToolSchemas';
 import { BoardPinsForm } from '@/components/firmware-tool/BoardPinsStep';
 import { DeepPartial } from 'react-hook-form';
-import { BoardType, FirmwareUpdateMethod, FirmwareUpdateStatus } from 'solarxr-protocol';
+import {
+  BoardType,
+  FirmwareUpdateMethod,
+  FirmwareUpdateStatus,
+} from 'solarxr-protocol';
 
 export type PartialBuildFirmware = DeepPartial<CreateBuildFirmwareDTO>;
 export type FirmwareBuildStatus = BuildResponseDTO;
@@ -22,21 +27,23 @@ export type SelectedDevice = {
 };
 
 export const boardTypeToFirmwareToolBoardType: Record<
-  BoardType,
+  Exclude<
+    BoardType,
+    // This boards will not be handled by the firmware tool.
+    // These are either impossible to compile automatically or deprecated
+    BoardType.CUSTOM | BoardType.SLIMEVR_DEV | BoardType.SLIMEVR_LEGACY
+  >,
   CreateBoardConfigDTO['type'] | null
 > = {
   [BoardType.UNKNOWN]: null,
-  [BoardType.SLIMEVR_LEGACY]: 'BOARD_SLIMEVR_LEGACY',
-  [BoardType.SLIMEVR_DEV]: 'BOARD_SLIMEVR_DEV',
   [BoardType.NODEMCU]: 'BOARD_NODEMCU',
-  [BoardType.CUSTOM]: 'BOARD_CUSTOM',
   [BoardType.WROOM32]: 'BOARD_WROOM32',
   [BoardType.WEMOSD1MINI]: 'BOARD_WEMOSD1MINI',
   [BoardType.TTGO_TBASE]: 'BOARD_TTGO_TBASE',
   [BoardType.ESP01]: 'BOARD_ESP01',
   [BoardType.SLIMEVR]: 'BOARD_SLIMEVR',
   [BoardType.LOLIN_C3_MINI]: 'BOARD_LOLIN_C3_MINI',
-  [BoardType.BEETLE32C32]: 'BOARD_BEETLE32C32',
+  [BoardType.BEETLE32C3]: 'BOARD_BEETLE32C3',
   [BoardType.ES32C3DEVKITM1]: 'BOARD_ES32C3DEVKITM1',
 };
 
@@ -70,6 +77,7 @@ export interface FirmwareToolContext {
   selectedDevices: SelectedDevice[] | null;
   isStepLoading: boolean;
   isGlobalLoading: boolean;
+  isCompatible: boolean;
   isError: boolean;
 }
 
@@ -93,6 +101,12 @@ export function useFirmwareToolContext(): FirmwareToolContext {
   const [newConfig, setNewConfig] = useState<PartialBuildFirmware>({});
   const [isLoading, setLoading] = useState(false);
   const { isError, isLoading: isInitialLoading, refetch } = useGetHealth({});
+  const compatibilityCheckEnabled = !!__VERSION_TAG__ || __VERSION_TAG__ !== '';
+  const { isLoading: isCompatibilityLoading, data: compatibilityData } =
+    useGetIsCompatibleVersion(
+      { pathParams: { version: __VERSION_TAG__ } },
+      { enabled: compatibilityCheckEnabled }
+    );
   const [buildStatus, setBuildStatus] = useState<FirmwareBuildStatus>({
     status: 'CREATING_BUILD_FOLDER',
     id: '',
@@ -111,7 +125,6 @@ export function useFirmwareToolContext(): FirmwareToolContext {
           ...boardDefaults,
           imusConfig: boardDefaults.imuDefaults,
         }));
-
       } else {
         setNewConfig((currConfig) => ({
           ...currConfig,
@@ -159,7 +172,8 @@ export function useFirmwareToolContext(): FirmwareToolContext {
     defaultConfig,
     newConfig,
     isStepLoading: isLoading,
-    isGlobalLoading: isInitialLoading,
-    isError,
+    isGlobalLoading: isInitialLoading && isCompatibilityLoading,
+    isCompatible: compatibilityData?.success || false,
+    isError: isError || (!compatibilityData?.success && compatibilityCheckEnabled),
   };
 }
