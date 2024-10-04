@@ -36,7 +36,7 @@ export function TrayOrExitModal({
   });
 
   return (
-    <BaseModal isOpen={isOpen} onRequestClose={cancel}>
+    <BaseModal isOpen={isOpen} onRequestClose={cancel} important>
       <form
         className="flex flex-col gap-3 w-[27rem]"
         onSubmit={handleSubmit((form) => accept(form.exitType === '1'))}

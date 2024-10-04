@@ -50,6 +50,7 @@ class VRServer @JvmOverloads constructor(
 	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _ -> null },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
 	flashingHandlerProvider: (VRServer) -> SerialFlashingHandler? = { _ -> null },
+	acquireMulticastLock: () -> Any? = { null },
 	// configPath is used by VRWorkout, do not remove!
 	configPath: String,
 ) : Thread("VRServer") {
@@ -66,6 +67,7 @@ class VRServer @JvmOverloads constructor(
 	private val newTrackersConsumers: MutableList<Consumer<Tracker>> = FastList()
 	private val trackerStatusListeners: MutableList<TrackerStatusListener> = FastList()
 	private val onTick: MutableList<Runnable> = FastList()
+	private val lock = acquireMulticastLock()
 	val oSCRouter: OSCRouter
 
 	@JvmField
@@ -110,6 +112,8 @@ class VRServer @JvmOverloads constructor(
 
 	init {
 		// UwU
+		instance = this
+
 		configManager = ConfigManager(configPath)
 		configManager.loadConfig()
 		deviceManager = DeviceManager(this)
@@ -153,8 +157,6 @@ class VRServer @JvmOverloads constructor(
 		// Initialize OSC handlers
 		vrcOSCHandler = VRCOSCHandler(
 			this,
-			humanPoseManager,
-			driverBridge,
 			configManager.vrConfig.vrcOSC,
 			computedTrackers,
 		)
@@ -173,7 +175,6 @@ class VRServer @JvmOverloads constructor(
 		for (tracker in computedTrackers) {
 			registerTracker(tracker)
 		}
-		instance = this
 	}
 
 	fun hasBridge(bridgeClass: Class<out Bridge?>): Boolean {
@@ -294,13 +295,11 @@ class VRServer @JvmOverloads constructor(
 	fun updateSkeletonModel() {
 		queueTask {
 			humanPoseManager.updateSkeletonModelFromServer()
+			vrcOSCHandler.setHeadTracker(TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD))
 			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
 				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 			}
 		}
-		vrcOSCHandler.setHeadTracker(
-			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD),
-		)
 	}
 
 	fun resetTrackersFull(resetSourceName: String?) {

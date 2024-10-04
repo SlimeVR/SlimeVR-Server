@@ -383,6 +383,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = 발 트래커 착용 �
 settings-general-fk_settings-arm_fk = 팔 트래킹
 settings-general-fk_settings-arm_fk-description = 손 컨트롤러 위치 데이터를 사용할 수 없는 경우에도 VR 헤드셋(HMD)으로부터 팔을 추적하도록 할 수 있어요.
 settings-general-fk_settings-arm_fk-force_arms = 팔을 HMD에서만 받아오기
+settings-general-fk_settings-reset_settings = 정렬 설정
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = 전체 정렬을 수행하면 HMD의 피치(앞뒤 회전각)도 재설정해요. VTubing 또는 모션 캡처에서 이마에 HMD를 걸쳐두거나 할 때 유용해요. VR에서는 사용하지 마세요.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = HMD 피치 정렬
 settings-general-fk_settings-arm_fk-reset_mode-description = 착용 방향 정렬에 사용되는 팔 자세 설정
 settings-general-fk_settings-arm_fk-back = 뒤쪽
 settings-general-fk_settings-arm_fk-back-description = 기본값. 위쪽 팔은 뒤를 향하고 아래쪽 팔은 앞을 향하게 하는 자세.
@@ -474,6 +477,14 @@ settings-general-interface-connected_trackers_warning-label = 종료 시 작동 
 settings-general-interface-use_tray = 작업 표시줄로 최소화
 settings-general-interface-use_tray-description = SlimeVR 서버를 닫지 않고 창만 닫을 수 있게 하여 사용 시 항상 GUI를 띄워 놓을 필요가 없게 해요.
 settings-general-interface-use_tray-label = 작업 표시줄로 최소화
+settings-general-interface-discord_presence = Discord에서 활동 공유
+settings-general-interface-discord_presence-description = Discord 활동 상태에 SlimeVR을 사용 중이라는 것과 사용 중인 트래커의 개수를 같이 표시합니다.
+settings-general-interface-discord_presence-label = DIscord에서 활동 공유
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] 슬라임 갖고 노는 중
+       *[other] 트래커 { $amount } 개 사용 중
+    }
 
 ## Serial settings
 
@@ -496,6 +507,8 @@ settings-serial-get_infos = 정보 가져오기
 settings-serial-serial_select = 시리얼 포트 선택
 settings-serial-auto_dropdown_item = 자동
 settings-serial-get_wifi_scan = WiFi 검색
+settings-serial-file_type = 텍스트 문서
+settings-serial-save_logs = 파일에 저장
 
 ## OSC router settings
 
@@ -526,14 +539,15 @@ settings-osc-router-network-address-placeholder = IPV4 주소
 
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
-settings-osc-vrchat-description =
-    헤드셋 (HMD) 데이터를 수신하고 SteamVR 없이도 (예: Quest 단독 사용)
-    트래커 정보를 전송하도록 VRChat 관련 설정을 변경
+settings-osc-vrchat-description-v1 =
+    SteamVR이 없는 애플리케이션(예: Quest 단독 실행)에 추적 데이터를 전송하는 데 사용되는 OSC 트래커 표준에 관한 설정.
+    VRChat에서 OSC를 사용하려면 액션 메뉴에서 '옵션' > 'OSC' > '활성화됨' 토글 스위치를 켜 주세요.
+    그리고 HMD 및 컨트롤러 데이터를 수신하려면 '트래킹 및 IK' > 'OSC를 통한 머리와 손목 트래킹 데이터 전송'을 활성화 해주세요.
 settings-osc-vrchat-enable = 활성화
 settings-osc-vrchat-enable-description = 데이터 송/수신 활성화
 settings-osc-vrchat-enable-label = 활성화
 settings-osc-vrchat-network = 네트워크 포트
-settings-osc-vrchat-network-description = VRChat과 데이터를 주고받는 포트 설정
+settings-osc-vrchat-network-description-v1 = 들어오는 포트와 나가는 포트 설정하기, VRChat에서 사용하려면 그냥 두세요.
 settings-osc-vrchat-network-port_in =
     .label = 들어오는 포트
     .placeholder = Port in (기본값: 9001)
@@ -541,7 +555,7 @@ settings-osc-vrchat-network-port_out =
     .label = 나가는 포트
     .placeholder = Port out (기본값: 9000)
 settings-osc-vrchat-network-address = 네트워크 주소
-settings-osc-vrchat-network-address-description = VRChat으로 데이터를 보낼 주소를 선택하세요(장치의 Wi-Fi 설정 확인).
+settings-osc-vrchat-network-address-description-v1 = OSC 데이터를 보낼 주소, VRChat에서 사용하려면 그냥 두세요.
 settings-osc-vrchat-network-address-placeholder = VRChat IP 주소
 settings-osc-vrchat-network-trackers = 트래커
 settings-osc-vrchat-network-trackers-description = OSC를 통한 특정 트래커의 전송 여부 설정
@@ -584,6 +598,9 @@ settings-osc-vmc-vrm-file_select = 모델을 <u>열거나,</u> 여기에 드래�
 settings-osc-vmc-anchor_hip = 골반에 앵커 설정
 settings-osc-vmc-anchor_hip-description = 추적을 엉덩이에 고정해요. 앉은 자세로 VTubing할 때 유용해요. 비활성화하는 경우 VRM 모델에서 가져와요.
 settings-osc-vmc-anchor_hip-label = 골반에 앵커 설정
+settings-osc-vmc-mirror_tracking = 움직임 좌우 반전
+settings-osc-vmc-mirror_tracking-description = 움직임을 수평 방향으로 반전시킵니다.
+settings-osc-vmc-mirror_tracking-label = 움직임 좌우 반전
 
 ## Setup/onboarding menu
 
@@ -619,7 +636,7 @@ onboarding-wifi_creds-password =
 onboarding-reset_tutorial-back = 착용 방향 정렬로 돌아가기
 onboarding-reset_tutorial = 정렬 튜토리얼
 onboarding-reset_tutorial-explanation = 트래커를 사용하다 보면 IMU의 yaw 드리프트 또는 트래커의 위치가 달라져서 틀어짐이 발생할 수 있어요. 이러한 문제들을 해결하는 몇 가지 방법을 알려 드릴게요.
-onboarding-reset_tutorial-skip = 무시하고 건너뛰기
+onboarding-reset_tutorial-skip = 단계 건너뛰기
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Yaw 정렬을 시도하려면 강조된 트래커를 { $taps }번 탭하세요.
@@ -718,6 +735,23 @@ onboarding-assign_trackers-assigned = 트래커 { $trackers }개 중 { $assigned
 onboarding-assign_trackers-advanced = 고급 할당 위치 보기
 onboarding-assign_trackers-next = 모든 트래커를 배치했어요
 onboarding-assign_trackers-mirror_view = 좌우 반전
+onboarding-assign_trackers-option-amount = x{ $trackersCount }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] 하반신 세트
+        [core] 코어 세트
+        [enhanced-core] 향상된 코어 세트
+        [full-body] 풀 바디 세트
+       *[all] 전부 다
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] VR 신체 추적에 필요한 최소 할당
+        [core] + 골반 추적 향상
+        [enhanced-core] + 발 회전 감지
+        [full-body] + 팔꿈치 추적
+       *[all] 가능한 모든 트래커 할당
+    }
 
 ## Tracker assignment warnings
 
@@ -794,11 +828,11 @@ onboarding-choose_mounting = 착용 방향 보정을 위해 어떤 방법을 사
 onboarding-choose_mounting-description = 착용 방향 정렬은 트래커가 몸에 착용된 방향을 찾아 수정하도록 도와줘요.
 onboarding-choose_mounting-auto_mounting = 자동으로 방향 설정
 # Italized text
-onboarding-choose_mounting-auto_mounting-label = 실험적
+onboarding-choose_mounting-auto_mounting-label-v2 = 권장됨
 onboarding-choose_mounting-auto_mounting-description = 이렇게 하면 2가지 자세로 모든 트래커의 착용 방향을 자동으로 설정할 수 있어요
 onboarding-choose_mounting-manual_mounting = 수동으로 방향 설정
 # Italized text
-onboarding-choose_mounting-manual_mounting-label = 권장됨
+onboarding-choose_mounting-manual_mounting-label-v2 = 정확하지 않을 수도 있어요
 onboarding-choose_mounting-manual_mounting-description = 이렇게 하면 각 트래커의 착용 방향을 직접 고를 수 있어요
 # Multiline text
 onboarding-choose_mounting-manual_modal-title = 자동으로 착용 방향을 설정하시겠어요?
@@ -954,6 +988,7 @@ status_system-StatusSteamVRDisconnected =
        *[other] SlimeVR 드라이버가 SteamVR과 연결되지 않음
     }
 status_system-StatusTrackerError = { $trackerName } 트래커에 문제가 발생했어요.
+status_system-StatusUnassignedHMD = VR 헤드셋은 머리 트래커로 할당되어야 해요.
 
 ## Tray Menu
 

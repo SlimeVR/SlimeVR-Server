@@ -33,7 +33,7 @@ jobs:
           distribution: "adopt"
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - run: mkdir ./gui/dist && touch ./gui/dist/somefile
         shell: bash
@@ -63,7 +63,7 @@ jobs:
           distribution: "adopt"
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build with Gradle
         run: ./gradlew shadowJar
@@ -103,9 +103,9 @@ jobs:
           distribution: "adopt"
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -173,7 +173,7 @@ jobs:
         with:
           shared-key: "ubuntu-22.04"
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -248,7 +248,7 @@ jobs:
         with:
           shared-key: "macos-latest"
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -320,7 +320,7 @@ jobs:
         with:
           shared-key: "windows-latest"
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:

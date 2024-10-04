@@ -21,7 +21,7 @@ version_update-close = Закрыть
 
 tips-find_tracker = Не уверены, какой трекер какой? Встряхните его, и трекер выделится в списке.
 tips-do_not_move_heels = Убедитесь, что ваши пятки не двигаются во время записи!
-tips-file_select = Выберите или перетащите файлы для использования <u>выбрать</u>.
+tips-file_select = Выберите и перетащите файлы, чтобы использовать, или нажмите <u>выбрать</u>.
 tips-tap_setup = Вы можете медленно нажать 2 раза на свой трекер, чтобы выбрать его, вместо того чтобы выбирать его из меню.
 tips-turn_on_tracker = Используете официальные трекеры SlimeVR? Не забудьте <b><em>включить трекер</em></b> после его подключения к ПК!
 tips-failed_webgl = Не удалось инициализировать WebGL.
@@ -310,6 +310,14 @@ settings-general-steamvr-description =
     Полезно для игр или приложений, которые поддерживают только определенные трекеры.
 settings-general-steamvr-trackers-waist = Талия
 settings-general-steamvr-trackers-chest = Грудь
+settings-general-steamvr-trackers-left_foot = Левая ступня
+settings-general-steamvr-trackers-right_foot = Правая ступня
+settings-general-steamvr-trackers-left_knee = Левое колено
+settings-general-steamvr-trackers-right_knee = Правое колено
+settings-general-steamvr-trackers-left_elbow = Левый локоть
+settings-general-steamvr-trackers-right_elbow = Правый локоть
+settings-general-steamvr-trackers-left_hand = Левая рука
+settings-general-steamvr-trackers-right_hand = Правая рука
 settings-general-steamvr-trackers-tracker_toggling = Автоматическое назначение трекеров
 settings-general-steamvr-trackers-tracker_toggling-description = Автоматически занимается включением и выключением трекеров SlimeVR в зависимости от текущих назначений ваших трекеров
 settings-general-steamvr-trackers-tracker_toggling-label = Автоматическое назначение трекеров
@@ -375,6 +383,7 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Сброс крепл�
 settings-general-fk_settings-arm_fk = Отслеживание рук
 settings-general-fk_settings-arm_fk-description = Измените способ отслеживания рук.
 settings-general-fk_settings-arm_fk-force_arms = Руки от HMD
+settings-general-fk_settings-reset_settings = Сбросить настройки
 settings-general-fk_settings-arm_fk-reset_mode-description = Изменение ожидаемой позы руки для сброса крепления.
 settings-general-fk_settings-arm_fk-back = Назад
 settings-general-fk_settings-arm_fk-back-description = Режим по умолчанию, в котором плечи идут назад, а предплечья — вперед.
@@ -474,6 +483,16 @@ settings-general-interface-connected_trackers_warning-label = Предупреж
 settings-general-interface-use_tray = Свернуть в системный трей
 settings-general-interface-use_tray-description = Позволяет закрыть окно, не закрывая сервер SlimeVR, так что вы можете продолжать использовать его, не беспокоясь о графическом интерфейсе.
 settings-general-interface-use_tray-label = Свернуть в системный трей
+settings-general-interface-discord_presence = Поделиться активностью в Discord
+settings-general-interface-discord_presence-description = Сообщает вашему приложению Discord, что вы используете SlimeVR, вместе с количеством IMU трекеров, которые вы используете.
+settings-general-interface-discord_presence-label = Поделиться активностью в Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Чиллим со Слаймами
+        [one] Используется { $amount } трекер
+        [few] Используется { $amount } трекера
+       *[many] Используется { $amount } трекеров
+    }
 
 ## Serial settings
 
@@ -496,6 +515,8 @@ settings-serial-get_infos = Получить информацию
 settings-serial-serial_select = Выбрать серийный порт
 settings-serial-auto_dropdown_item = Авто
 settings-serial-get_wifi_scan = Получить сканирование Wi-Fi
+settings-serial-file_type = Обычный текст
+settings-serial-save_logs = Сохранить в файл
 
 ## OSC router settings
 
@@ -526,14 +547,17 @@ settings-osc-router-network-address-placeholder = IPV4 адрес
 
 settings-osc-vrchat = VRChat OSC Трекеры
 # This cares about multilines
-settings-osc-vrchat-description =
-    Измените настройки, специфичные для VRChat, чтобы получать данные HMD и отправлять
-    данные трекеров для FBT (работает с Quest).
+settings-osc-vrchat-description-v1 =
+    Изменение настроек, специфичных для стандарта OSC Трекеров, используемых для отправки
+    данных о трекинге приложениям без SteamVR (например, Oculus Quest).
+    Убедитесь, что вы включили OSC в VRChat через меню действия в OSC > Включено.
+    Чтобы разрешить получение данных об HMD и контроллерах от VRChat, перейдите в настройки в главном меню,
+    и далее перейдите в Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Включить
 settings-osc-vrchat-enable-description = Переключайте отправку и получение данных.
 settings-osc-vrchat-enable-label = Включить
 settings-osc-vrchat-network = Порты сети
-settings-osc-vrchat-network-description = Установите порты для прослушивания и отправки данных в VRChat.
+settings-osc-vrchat-network-description-v1 = Настройте порты для прослушивания и отправки данных. Можно оставить нетронутым для VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Порт вход
     .placeholder = Порт вход (default: 9001)
@@ -541,7 +565,7 @@ settings-osc-vrchat-network-port_out =
     .label = Порт выход
     .placeholder = Порт выход (default: 9000)
 settings-osc-vrchat-network-address = Адрес сети
-settings-osc-vrchat-network-address-description = Выберите, на какой адрес отправлять данные в VRChat (проверьте настройки Wi-Fi на вашем устройстве).
+settings-osc-vrchat-network-address-description-v1 = Выберите, на какой адрес отправлять данные. Можно оставить нетронутым для VRChat.
 settings-osc-vrchat-network-address-placeholder = VRChat ip адрес
 settings-osc-vrchat-network-trackers = Трекеры
 settings-osc-vrchat-network-trackers-description = Переключите отправку определенных трекеров через OSC.
@@ -584,6 +608,9 @@ settings-osc-vmc-vrm-file_select = Перетащите модель для ис
 settings-osc-vmc-anchor_hip = Привязать к бедрам
 settings-osc-vmc-anchor_hip-description = Привязать трекинг к бедрам, полезно для сидячего VTubing'а. Если выключено, загрузите VRM модель.
 settings-osc-vmc-anchor_hip-label = Привязать к бедрам
+settings-osc-vmc-mirror_tracking = Отзеркалить отслеживание
+settings-osc-vmc-mirror_tracking-description = Отзеркалить отслеживание горизонтально.
+settings-osc-vmc-mirror_tracking-label = Отзеркалить отслеживание
 
 ## Setup/onboarding menu
 
@@ -727,6 +754,28 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = Показать дополнительные места привязки
 onboarding-assign_trackers-next = Я привязал все трекеры
 onboarding-assign_trackers-mirror_view = Зеркальный вид
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+        [few] x{ $trackersCount }
+       *[many] x{ $trackersCount }
+    }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] Комплект нижней части тела
+        [core] Базовый комплект
+        [enhanced-core] Улучшенный базовый комплект
+        [full-body] Комплект для всего тела
+       *[all] Все трекеры
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] Минимум для отслеживания тела в VR
+        [core] + Улучшенное отслеживание позвоночника
+        [enhanced-core] + Отслеживание поворота ступней
+        [full-body] + Отслеживание локтей
+       *[all] Все доступные привязки для трекеров
+    }
 
 ## Tracker assignment warnings
 
@@ -803,11 +852,11 @@ onboarding-choose_mounting = Какой метод калибровки креп
 onboarding-choose_mounting-description = Ориентация крепления корректирует размещение трекеров на вашем теле.
 onboarding-choose_mounting-auto_mounting = Автоматическая привязка
 # Italized text
-onboarding-choose_mounting-auto_mounting-label = Экспериментальный
+onboarding-choose_mounting-auto_mounting-label-v2 = Рекомендуется
 onboarding-choose_mounting-auto_mounting-description = Это автоматически определит направления монтажа для всех ваших трекеров из 2 поз
 onboarding-choose_mounting-manual_mounting = Ручная привязка
 # Italized text
-onboarding-choose_mounting-manual_mounting-label = Рекомендованный
+onboarding-choose_mounting-manual_mounting-label-v2 = Может быть недостаточно точным
 onboarding-choose_mounting-manual_mounting-description = Это позволит вам выбрать направление монтажа вручную для каждого трекера
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
@@ -969,6 +1018,7 @@ status_system-StatusSteamVRDisconnected =
        *[other] В настоящее время не подключен к SteamVR через драйвер SlimeVR.
     }
 status_system-StatusTrackerError = В трекере { $trackerName } обнаружена ошибка.
+status_system-StatusUnassignedHMD = VR гарнитура должна быть назначена как трекер головы.
 
 ## Tray Menu
 

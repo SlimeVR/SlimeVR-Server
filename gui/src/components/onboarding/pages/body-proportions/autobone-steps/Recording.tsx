@@ -7,6 +7,8 @@ import { useLocalization } from '@fluent/react';
 import { P, match } from 'ts-pattern';
 import { AutoboneErrorModal } from './AutoboneErrorModal';
 import { PlayCircleIcon } from '@/components/commons/icon/PlayIcon';
+import { useDebouncedEffect } from '@/hooks/timeout';
+import { AUTOBONE_VIDEO } from '@/utils/tauri';
 
 export function Recording({
   nextStep,
@@ -51,6 +53,14 @@ export function Recording({
     }
     setPaused(videoRef.current.paused);
   }
+
+  useDebouncedEffect(
+    () => {
+      if (paused) videoRef.current?.pause();
+    },
+    [paused],
+    250
+  );
 
   useEffect(() => {
     if (!active && !paused) {
@@ -154,9 +164,9 @@ export function Recording({
         </div>
 
         <video
-          preload=""
+          preload="auto"
           ref={videoRef}
-          src="/videos/autobone.webm"
+          src={AUTOBONE_VIDEO}
           className="min-w-[12rem] w-[12rem]"
           muted
           loop

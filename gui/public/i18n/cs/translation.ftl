@@ -244,7 +244,7 @@ body_assignment_menu-unassign_tracker = Zrušit přiřazení trackeru
 -tracker_selection-part = { "Který tracker přiřadit k" }
 tracker_selection_menu-NONE = Který tracker chcete aby byl nezařazený?
 tracker_selection_menu-HEAD = { -tracker_selection-part } hlavě?
-tracker_selection_menu-NECK = Který tracker přiřadit ke krku?
+tracker_selection_menu-NECK = { -tracker_selection-part } krku?
 tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } pravému rameni?
 tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } pravýmu nadloktí?
 tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } pravýmu podloktí?
@@ -256,7 +256,7 @@ tracker_selection_menu-RIGHT_CONTROLLER = { -tracker_selection-part } pravému o
 tracker_selection_menu-UPPER_CHEST = { -tracker_selection-part } k horní část hrudníku?
 tracker_selection_menu-CHEST = { -tracker_selection-part } hrudníku?
 tracker_selection_menu-WAIST = { -tracker_selection-part } pasu?
-tracker_selection_menu-HIP = Který tracker přiřadit ke kyčli?
+tracker_selection_menu-HIP = { -tracker_selection-part } kyčle?
 tracker_selection_menu-LEFT_SHOULDER = { -tracker_selection-part } levému rameni?
 tracker_selection_menu-LEFT_UPPER_ARM = { -tracker_selection-part } levýmu nadloktí?
 tracker_selection_menu-LEFT_LOWER_ARM = { -tracker_selection-part } levýmu podloktí?
@@ -492,15 +492,10 @@ settings-osc-router-network-address-placeholder = Adresa IPV4
 ## OSC VRChat settings
 
 settings-osc-vrchat = Trackery VRChat OSC
-# This cares about multilines
-settings-osc-vrchat-description =
-    Úprava nastavení specifických pro VRChat pro příjem dat HMD a odesílání
-    data trackerů pro FBT (funguje na samostatném Questu).
 settings-osc-vrchat-enable = Zapnout
 settings-osc-vrchat-enable-description = Vypnutí a zapnutí odesílání a přijímání dat.
 settings-osc-vrchat-enable-label = Zapnout
 settings-osc-vrchat-network = Síťové porty
-settings-osc-vrchat-network-description = Nastavení portů pro naslouchání a odesílání dat do VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Vstup portu
     .placeholder = Vstup portu (výchozí: 9001)
@@ -508,7 +503,6 @@ settings-osc-vrchat-network-port_out =
     .label = Výstup portu
     .placeholder = Výstup portu (výchozí: 9000)
 settings-osc-vrchat-network-address = Síťová adresa
-settings-osc-vrchat-network-address-description = Zvolte adresu, ze které se mají odesílat data na VRChat (zkontrolujte nastavení Wi-Fi v zařízení).
 settings-osc-vrchat-network-address-placeholder = VRChat ip adresa
 settings-osc-vrchat-network-trackers = Trackery
 settings-osc-vrchat-network-trackers-description = Vypnuti a zapnutí odesílání konkrétních trackerů přes OSC.
@@ -702,12 +696,8 @@ onboarding-choose_mounting = Jakou metodu nasazení trackerů použít?
 # Multiline text
 onboarding-choose_mounting-description = Správná orientace nasazení zajistí přesné sledování trackerů na těle.
 onboarding-choose_mounting-auto_mounting = Automatická detekce nasazení
-# Italized text
-onboarding-choose_mounting-auto_mounting-label = Experimentální
 onboarding-choose_mounting-auto_mounting-description = Orientace nasazení všech trackerů bude automaticky rozpoznána ze 2 pozic.
 onboarding-choose_mounting-manual_mounting = Manuální nastavení
-# Italized text
-onboarding-choose_mounting-manual_mounting-label = Doporučeno
 onboarding-choose_mounting-manual_mounting-description = Ručně zadejte orientaci nasazení každého trackeru.
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =

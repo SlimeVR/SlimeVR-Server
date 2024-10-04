@@ -9,7 +9,6 @@ const APP_ID: ds::AppId = 1237970689009647639;
 
 pub struct DiscordClient {
 	pub discord: ds::Discord,
-	pub user: ds::user::User,
 	pub wheel: ds::wheel::Wheel,
 }
 
@@ -34,20 +33,16 @@ async fn make_client(subs: ds::Subscriptions) -> Result<Option<DiscordClient>> {
 	};
 	e?;
 
-	let user = match &*user.0.borrow() {
+	let _ = match &*user.0.borrow() {
 		ds::wheel::UserState::Connected(user) => user.clone(),
 		ds::wheel::UserState::Disconnected(err) => {
 			bail!("failed to connect to Discord: {err}");
 		}
 	};
 
-	log::info!(target: "discord_presence", "connected to Discord, local user name is {}", user.username);
+	log::info!(target: "discord_presence", "connected to Discord!");
 
-	Ok(Some(DiscordClient {
-		discord,
-		user,
-		wheel,
-	}))
+	Ok(Some(DiscordClient { discord, wheel }))
 }
 
 async fn client_exists(client: &State<'_, ExposedClient>) -> bool {

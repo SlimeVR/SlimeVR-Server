@@ -9,6 +9,7 @@ import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { useChokerWarning } from '@/hooks/choker-warning';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { defaultConfig, useConfig } from '@/hooks/config';
+import { TrackerAssignOptions } from '@/components/onboarding/pages/trackers-assign/TrackerAssignOptions';
 
 export function SingleTrackerBodyAssignmentMenu({
   isOpen,
@@ -36,7 +37,7 @@ export function SingleTrackerBodyAssignmentMenu({
         shouldCloseOnEsc
         onRequestClose={onClose}
         overlayClassName={classNames(
-          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20'
+          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-background-90 bg-opacity-90 z-20'
         )}
         className={classNames(
           'focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent outline-none mt-12 z-10 overflow-y-auto'
@@ -60,6 +61,7 @@ export function SingleTrackerBodyAssignmentMenu({
                   {l10n.getString('body_assignment_menu-manage_trackers')}
                 </Button>
               </div>
+              <TrackerAssignOptions variant={isMobile ? 'dropdown' : 'radio'} />
             </div>
             <div className="flex flex-col xs:flex-grow gap-3 rounded-xl fill-background-50 py-2">
               <BodyAssignment
@@ -85,7 +87,7 @@ export function SingleTrackerBodyAssignmentMenu({
       <NeckWarningModal
         isOpen={shouldShowChokerWarn}
         overlayClassName={classNames(
-          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20'
+          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-background-90 bg-opacity-90 z-20'
         )}
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}

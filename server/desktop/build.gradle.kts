@@ -41,6 +41,15 @@ tasks.withType<Javadoc> {
 	options.encoding = "UTF-8"
 }
 
+allprojects {
+	repositories {
+		// Use jcenter for resolving dependencies.
+		// You can declare any Maven/Ivy/file repository here.
+		mavenCentral()
+		maven(url = "https://jitpack.io")
+	}
+}
+
 dependencies {
 	implementation(project(":server:core"))
 	implementation(project(":solarxr-protocol"))
@@ -50,7 +59,7 @@ dependencies {
 	implementation("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
-	implementation("com.fazecast:jSerialComm:2.10.2")
+	implementation("com.fazecast:jSerialComm:2.11.0")
 	implementation("org.hid4java:hid4java:0.8.0")
 }
 

@@ -50,6 +50,7 @@ allprojects {
 		// Use jcenter for resolving dependencies.
 		// You can declare any Maven/Ivy/file repository here.
 		mavenCentral()
+		maven(url = "https://jitpack.io")
 	}
 }
 
@@ -80,6 +81,9 @@ dependencies {
 
 	// Allow the use of reflection
 	implementation(kotlin("reflect"))
+
+	// Jitpack
+	implementation("com.github.SlimeVR:oscquery-kt:566a0cba58")
 
 	testImplementation(kotlin("test"))
 	// Use JUnit test framework
