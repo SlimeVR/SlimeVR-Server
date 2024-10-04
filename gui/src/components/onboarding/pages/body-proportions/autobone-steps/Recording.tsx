@@ -8,7 +8,7 @@ import { P, match } from 'ts-pattern';
 import { AutoboneErrorModal } from './AutoboneErrorModal';
 import { PlayCircleIcon } from '@/components/commons/icon/PlayIcon';
 import { useDebouncedEffect } from '@/hooks/timeout';
-import { AUTOBONE_VIDEO } from './StartRecording';
+import { AUTOBONE_VIDEO } from '@/utils/tauri';
 
 export function Recording({
   nextStep,
