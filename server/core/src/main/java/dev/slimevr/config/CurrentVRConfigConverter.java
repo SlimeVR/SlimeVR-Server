@@ -304,6 +304,17 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					}
 				}
 			}
+			if (version < 14) {
+				// Move HMD height to skeleton
+				ObjectNode autoBoneNode = (ObjectNode) modelData.get("autoBone");
+				ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
+				if (autoBoneNode != null && skeletonNode != null) {
+					JsonNode targetHmdHeight = autoBoneNode.get("targetHmdHeight");
+					if (targetHmdHeight != null) {
+						skeletonNode.set("hmdHeight", targetHmdHeight);
+					}
+				}
+			}
 		} catch (Exception e) {
 			LogManager.severe("Error during config migration: " + e);
 		}

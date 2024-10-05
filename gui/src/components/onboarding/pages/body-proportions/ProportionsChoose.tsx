@@ -217,62 +217,122 @@ export function ProportionsChoose() {
                 </Button>
               </div>
             </div>
-            <div
-              className={classNames(
-                'rounded-lg p-4 flex flex-row relative',
-                !state.alonePage && 'bg-background-70',
-                state.alonePage && 'bg-background-60'
-              )}
-            >
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-grow flex-col gap-4 max-w-sm">
-                  <img
-                    onMouseEnter={() => setAnimated(() => true)}
-                    onAnimationEnd={() => setAnimated(() => false)}
-                    src="/images/slimetower.webp"
-                    className={classNames(
-                      'absolute w-[100px] -right-2 -top-24',
-                      animated && 'animate-[bounce_1s_1]'
-                    )}
-                  ></img>
-                  <div>
-                    <Typography variant="main-title" bold>
-                      {l10n.getString(
-                        'onboarding-choose_proportions-auto_proportions'
+            {state.alonePage && (
+              <div
+                className={classNames(
+                  'rounded-lg p-4 flex flex-row relative',
+                  !state.alonePage && 'bg-background-70',
+                  state.alonePage && 'bg-background-60'
+                )}
+              >
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-grow flex-col gap-4 max-w-sm">
+                    <img
+                      onMouseEnter={() => setAnimated(() => true)}
+                      onAnimationEnd={() => setAnimated(() => false)}
+                      src="/images/slimetower.webp"
+                      className={classNames(
+                        'absolute w-[100px] -right-2 -top-24',
+                        animated && 'animate-[bounce_1s_1]'
                       )}
-                    </Typography>
-                    <Typography variant="vr-accessible" italic>
-                      {l10n.getString(
-                        'onboarding-choose_proportions-auto_proportions-subtitle'
-                      )}
-                    </Typography>
-                  </div>
-                  <div>
-                    <Localized
-                      id="onboarding-choose_proportions-auto_proportions-descriptionv3"
-                      elems={{ b: <b></b> }}
-                    >
-                      <Typography
-                        color="secondary"
-                        whitespace="whitespace-pre-line"
-                      >
-                        Description for autobone
+                    ></img>
+                    <div>
+                      <Typography variant="main-title" bold>
+                        {l10n.getString(
+                          'onboarding-choose_proportions-auto_proportions'
+                        )}
                       </Typography>
-                    </Localized>
+                      <Typography variant="vr-accessible" italic>
+                        {l10n.getString(
+                          'onboarding-choose_proportions-auto_proportions-subtitle'
+                        )}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Localized
+                        id="onboarding-choose_proportions-auto_proportions-descriptionv3"
+                        elems={{ b: <b></b> }}
+                      >
+                        <Typography
+                          color="secondary"
+                          whitespace="whitespace-pre-line"
+                        >
+                          Description for autobone
+                        </Typography>
+                      </Localized>
+                    </div>
                   </div>
+                  <Button
+                    variant="primary"
+                    // Check if we are in dev mode and just let it be used
+                    disabled={beneathFloor && import.meta.env.PROD}
+                    to="/onboarding/body-proportions/auto"
+                    className="self-start mt-auto"
+                    state={{ alonePage: state.alonePage }}
+                  >
+                    {l10n.getString('onboarding-manual_proportions-auto')}
+                  </Button>
                 </div>
-                <Button
-                  variant="primary"
-                  // Check if we are in dev mode and just let it be used
-                  disabled={beneathFloor && import.meta.env.PROD}
-                  to="/onboarding/body-proportions/auto"
-                  className="self-start mt-auto"
-                  state={{ alonePage: state.alonePage }}
-                >
-                  {l10n.getString('onboarding-manual_proportions-auto')}
-                </Button>
               </div>
-            </div>
+            )}
+            {!state.alonePage && (
+              <div
+                className={classNames(
+                  'rounded-lg p-4 flex flex-row relative',
+                  !state.alonePage && 'bg-background-70',
+                  state.alonePage && 'bg-background-60'
+                )}
+              >
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-grow flex-col gap-4 max-w-sm">
+                    <img
+                      onMouseEnter={() => setAnimated(() => true)}
+                      onAnimationEnd={() => setAnimated(() => false)}
+                      src="/images/slimetower.webp"
+                      className={classNames(
+                        'absolute w-[100px] -right-2 -top-24',
+                        animated && 'animate-[bounce_1s_1]'
+                      )}
+                    ></img>
+                    <div>
+                      <Typography variant="main-title" bold>
+                        {l10n.getString(
+                          'onboarding-choose_proportions-scaled_proportions'
+                        )}
+                      </Typography>
+                      <Typography variant="vr-accessible" italic>
+                        {l10n.getString(
+                          'onboarding-choose_proportions-scaled_proportions-subtitle'
+                        )}
+                      </Typography>
+                    </div>
+                    <div>
+                      <Localized
+                        id="onboarding-choose_proportions-scaled_proportions-description"
+                        elems={{ b: <b></b> }}
+                      >
+                        <Typography
+                          color="secondary"
+                          whitespace="whitespace-pre-line"
+                        >
+                          Description for scaled proportions
+                        </Typography>
+                      </Localized>
+                    </div>
+                  </div>
+                  <Button
+                    variant="primary"
+                    to="/onboarding/body-proportions/scaled"
+                    className="self-start mt-auto"
+                    state={{ alonePage: state.alonePage }}
+                  >
+                    {l10n.getString(
+                      'onboarding-choose_proportions-scaled_proportions-button'
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
           <div className="flex flex-row gap-3">
             {!state.alonePage && (

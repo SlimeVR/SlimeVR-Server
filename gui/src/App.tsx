@@ -55,6 +55,7 @@ import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
+import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -147,6 +148,10 @@ function Layout() {
             <Route
               path="body-proportions/manual"
               element={<ManualProportionsPage />}
+            />
+            <Route
+              path="body-proportions/scaled"
+              element={<ScaledProportionsPage />}
             />
             <Route path="done" element={<DonePage />} />
           </Route>

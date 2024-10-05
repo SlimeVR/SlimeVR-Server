@@ -4,6 +4,7 @@ import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
 import dev.slimevr.autobone.errors.*
 import dev.slimevr.config.AutoBoneConfig
+import dev.slimevr.config.SkeletonConfig
 import dev.slimevr.poseframeformat.PoseFrameIO
 import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.tracking.processor.HumanPoseManager
@@ -22,7 +23,7 @@ import java.util.function.Consumer
 import java.util.function.Function
 import kotlin.math.*
 
-class AutoBone(server: VRServer) {
+class AutoBone(private val server: VRServer) {
 	// This is filled by loadConfigValues()
 	val offsets = EnumMap<SkeletonConfigOffsets, Float>(
 		SkeletonConfigOffsets::class.java,
@@ -48,8 +49,6 @@ class AutoBone(server: VRServer) {
 	// The total height of the normalized adjusted offsets
 	var adjustedHeightNormalized: Float = 1f
 
-	private val server: VRServer
-
 	// #region Error functions
 	var slideError = SlideError()
 	var offsetSlideError = OffsetSlideError()
@@ -62,11 +61,10 @@ class AutoBone(server: VRServer) {
 
 	private val rand = Random()
 
-	val globalConfig: AutoBoneConfig
+	val globalConfig: AutoBoneConfig = server.configManager.vrConfig.autoBone
+	val globalSkeletonConfig: SkeletonConfig = server.configManager.vrConfig.skeleton
 
 	init {
-		globalConfig = server.configManager.vrConfig.autoBone
-		this.server = server
 		loadConfigValues()
 	}
 
@@ -155,6 +153,7 @@ class AutoBone(server: VRServer) {
 		// Get the current skeleton from the server
 		val humanPoseManager = server.humanPoseManager
 		// Still compensate for a null skeleton, as it may not be initialized yet
+		@Suppress("SENSELESS_COMPARISON")
 		if (config.useSkeletonHeight && humanPoseManager != null) {
 			// If there is a skeleton available, calculate the target height
 			// from its configs
@@ -167,7 +166,7 @@ class AutoBone(server: VRServer) {
 			// Otherwise if there is no skeleton available, attempt to get the
 			// max HMD height from the recording
 			val hmdHeight = frames.maxHmdHeight
-			if (hmdHeight <= 0.4f) {
+			if (hmdHeight < 0.4f) {
 				LogManager
 					.warning(
 						"[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): $hmdHeight",
@@ -193,21 +192,17 @@ class AutoBone(server: VRServer) {
 	fun processFrames(
 		frames: PoseFrames,
 		config: AutoBoneConfig = globalConfig,
+		skeletonConfig: SkeletonConfig = globalSkeletonConfig,
 		epochCallback: Consumer<Epoch>? = null,
 	): AutoBoneResults {
 		// Load current values for adjustable configs
 		loadConfigValues()
 
 		// Set the target heights either from config or calculate them
-		val targetHmdHeight = if (config.targetHmdHeight > 0f) {
-			config.targetHmdHeight
+		val targetHmdHeight = if (skeletonConfig.userHeight >= 0.4f) {
+			skeletonConfig.userHeight
 		} else {
 			calcTargetHmdHeight(frames, config)
-		}
-		val targetFullHeight = if (config.targetFullHeight > 0f) {
-			config.targetFullHeight
-		} else {
-			targetHmdHeight / BodyProportionError.eyeHeightToHeightRatio
 		}
 
 		// Set up the current state, making all required players and setting up the
@@ -215,7 +210,6 @@ class AutoBone(server: VRServer) {
 		val trainingStep = AutoBoneStep(
 			config = config,
 			targetHmdHeight = targetHmdHeight,
-			targetFullHeight = targetFullHeight,
 			frames = frames,
 			epochCallback = epochCallback,
 			serverConfig = server.configManager,
