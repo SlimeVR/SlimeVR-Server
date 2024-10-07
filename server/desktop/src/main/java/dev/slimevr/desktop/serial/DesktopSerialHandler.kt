@@ -79,7 +79,6 @@ class DesktopSerialHandler :
 		listeners.forEach { it.onSerialDeviceDeleted(SerialPortWrapper(port)) }
 	}
 
-
 	override fun addListener(channel: SerialListener) {
 		listeners.add(channel)
 	}

@@ -181,12 +181,12 @@ function IMUCard({
 export function AddImusStep({
   nextStep,
   prevStep,
-  isActive
+  isActive,
 }: {
   nextStep: () => void;
   prevStep: () => void;
   goTo: (id: string) => void;
-  isActive: boolean
+  isActive: boolean;
 }) {
   const { l10n } = useLocalization();
   const {
@@ -213,7 +213,7 @@ export function AddImusStep({
     reset({
       imus: newConfig?.imusConfig || [],
     });
-  }, [isActive])
+  }, [isActive]);
 
   const { isFetching, data: imuTypes } = useGetFirmwaresImus({});
 
@@ -224,7 +224,8 @@ export function AddImusStep({
     if (!newConfig || !defaultConfig) throw new Error('unreachable');
 
     const imuPinToAdd =
-      defaultConfig.imuDefaults[form.imus.length ?? 0] ?? defaultConfig.imuDefaults[0];
+      defaultConfig.imuDefaults[form.imus.length ?? 0] ??
+      defaultConfig.imuDefaults[0];
     const imuTypeToAdd: CreateImuConfigDTO['type'] =
       form.imus[0]?.type ?? 'IMU_BNO085';
     reset({

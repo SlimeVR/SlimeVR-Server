@@ -155,11 +155,7 @@ export type CreateBoardConfigDTO = {
   /**
    * Type of battery
    */
-  batteryType:
-    | 'BAT_EXTERNAL'
-    | 'BAT_INTERNAL'
-    | 'BAT_MCP3021'
-    | 'BAT_INTERNAL_MCP3021';
+  batteryType: 'BAT_EXTERNAL' | 'BAT_INTERNAL' | 'BAT_MCP3021' | 'BAT_INTERNAL_MCP3021';
   /**
    * Array of the different battery resistors, [indicator, SHIELD_R1, SHIELD_R2]
    *
@@ -421,11 +417,7 @@ export type BoardConfigDTONullable = {
   /**
    * Type of battery
    */
-  batteryType:
-    | 'BAT_EXTERNAL'
-    | 'BAT_INTERNAL'
-    | 'BAT_MCP3021'
-    | 'BAT_INTERNAL_MCP3021';
+  batteryType: 'BAT_EXTERNAL' | 'BAT_INTERNAL' | 'BAT_MCP3021' | 'BAT_INTERNAL_MCP3021';
   /**
    * Array of the different battery resistors, [indicator, SHIELD_R1, SHIELD_R2]
    *
@@ -536,11 +528,7 @@ export type BoardConfigDTO = {
   /**
    * Type of battery
    */
-  batteryType:
-    | 'BAT_EXTERNAL'
-    | 'BAT_INTERNAL'
-    | 'BAT_MCP3021'
-    | 'BAT_INTERNAL_MCP3021';
+  batteryType: 'BAT_EXTERNAL' | 'BAT_INTERNAL' | 'BAT_MCP3021' | 'BAT_INTERNAL_MCP3021';
   /**
    * Array of the different battery resistors, [indicator, SHIELD_R1, SHIELD_R2]
    *

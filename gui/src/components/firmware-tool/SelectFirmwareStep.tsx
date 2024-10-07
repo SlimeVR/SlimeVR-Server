@@ -6,7 +6,7 @@ import { useFirmwareTool } from '@/hooks/firmware-tool';
 import classNames from 'classnames';
 import { Button } from '@/components/commons/Button';
 import { useMemo } from 'react';
-import { CheckBox } from '../commons/Checkbox';
+import { CheckBox } from '@/components/commons/Checkbox';
 import { useForm } from 'react-hook-form';
 
 export function SelectFirmwareStep({

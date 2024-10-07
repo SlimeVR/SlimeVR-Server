@@ -9,7 +9,7 @@ import {
 } from '@/firmware-tool-api/firmwareToolSchemas';
 import { useEffect, useMemo } from 'react';
 import { firmwareToolBaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
-import { Button } from '../commons/Button';
+import { Button } from '@/components/commons/Button';
 
 export function BuildStep({
   isActive,
@@ -42,6 +42,7 @@ export function BuildStep({
         };
       }
     } catch (e) {
+      console.error(e);
       setBuildStatus({ id: '', status: 'ERROR' });
     }
   };

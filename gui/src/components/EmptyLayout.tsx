@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { TopBar } from '@/components/TopBar';
+import { TopBar } from './TopBar';
 import './EmptyLayout.scss';
 
 export function EmptyLayout({ children }: { children: ReactNode }) {
@@ -12,5 +12,5 @@ export function EmptyLayout({ children }: { children: ReactNode }) {
         {children}
       </div>
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 import { useLocalization } from '@fluent/react';
-import { Typography } from '../commons/Typography';
-import { Button } from '../commons/Button';
+import { Typography } from '@/components/commons/Typography';
+import { Button } from '@/components/commons/Button';
 import {
   boardTypeToFirmwareToolBoardType,
   useFirmwareTool,

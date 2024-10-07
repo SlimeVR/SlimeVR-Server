@@ -5,7 +5,7 @@ import dev.slimevr.serial.SerialPort
 import java.util.concurrent.CopyOnWriteArrayList
 
 interface SerialRebootListener {
-	fun onSerialDeviceReconnect(deviceHandle: Pair<UpdateDeviceId<*>, () -> Unit>);
+	fun onSerialDeviceReconnect(deviceHandle: Pair<UpdateDeviceId<*>, () -> Unit>)
 }
 
 /**
@@ -15,18 +15,18 @@ interface SerialRebootListener {
 class SerialRebootHandler(
 	private val watchRestartQueue: MutableList<Pair<UpdateDeviceId<*>, () -> Unit>>,
 	// Could be moved to a list of listeners later
-	private val serialRebootListener: SerialRebootListener
-): SerialListener {
+	private val serialRebootListener: SerialRebootListener,
+) : SerialListener {
 
 	private var currentPort: SerialPort? = null
 	private val disconnectedDevices: MutableList<SerialPort> = CopyOnWriteArrayList()
 
 	override fun onSerialConnected(port: SerialPort) {
-		currentPort = port;
+		currentPort = port
 	}
 
 	override fun onSerialDisconnected() {
-		currentPort = null;
+		currentPort = null
 	}
 
 	override fun onSerialLog(str: String) {
@@ -53,5 +53,4 @@ class SerialRebootHandler(
 			disconnectedDevices.add(port)
 		}
 	}
-
 }

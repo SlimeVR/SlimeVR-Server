@@ -16,14 +16,12 @@ export function MainLayout({
   children,
   background = true,
   widgets = true,
-  navbar = true,
   isMobile = undefined,
 }: {
   children: ReactNode;
   background?: boolean;
   isMobile?: boolean;
   widgets?: boolean;
-  navbar?: boolean;
 }) {
   const { sendRPCPacket } = useWebsocketAPI();
   const [ProportionsLastPageOpen, setProportionsLastPageOpen] = useState(true);

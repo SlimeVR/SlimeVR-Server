@@ -276,5 +276,6 @@ public class RPCSerialHandler implements SerialListener {
 	}
 
 	@Override
-	public void onSerialDeviceDeleted(@NotNull SerialPort port) {}
+	public void onSerialDeviceDeleted(@NotNull SerialPort port) {
+	}
 }
