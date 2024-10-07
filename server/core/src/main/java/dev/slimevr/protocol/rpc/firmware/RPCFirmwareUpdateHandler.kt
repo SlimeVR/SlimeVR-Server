@@ -93,7 +93,7 @@ class RPCFirmwareUpdateHandler(
 			FirmwareUpdateDeviceId.solarxr_protocol_datatypes_DeviceIdTable -> {
 				return UpdateDeviceId(
 					FirmwareUpdateMethod.OTA,
-					req.method.asOTAFirmwareUpdate().deviceId.id.id,
+					req.method.asOTAFirmwareUpdate().deviceId.id,
 				)
 			}
 

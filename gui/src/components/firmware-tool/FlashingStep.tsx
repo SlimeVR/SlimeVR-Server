@@ -74,17 +74,15 @@ export function FlashingStep({
     for (const device of devices) {
       switch (device.type) {
         case FirmwareUpdateMethod.OTAFirmwareUpdate: {
-          const id = new DeviceIdTableT();
           const dId = new DeviceIdT();
           dId.id = +device.deviceId;
-          id.id = dId;
 
           const part = new FirmwarePartT();
           part.offset = 0;
           part.url = firmwareToolS3BaseUrl + '/' + firmware.url;
 
           const method = new OTAFirmwareUpdateT();
-          method.deviceId = id;
+          method.deviceId = dId;
           method.firmwarePart = part;
 
           const req = new FirmwareUpdateRequestT();
