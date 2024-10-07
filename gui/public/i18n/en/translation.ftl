@@ -125,10 +125,13 @@ widget-developer_mode-raw_slime_rotation = Raw rotation
 widget-developer_mode-more_info = More info
 
 ## Widget: IMU Visualizer
-widget-imu_visualizer = Rotation
-widget-imu_visualizer-rotation_raw = Raw
-widget-imu_visualizer-rotation_preview = Preview
-widget-imu_visualizer-rotation_hide = Hide
+widget-imu_visualizer = Tracking data
+widget-imu_visualizer-preview = Preview
+widget-imu_visualizer-hide = Hide
+widget-imu_visualizer-rotation_raw = Raw rotation
+widget-imu_visualizer-rotation_preview = Preview rotation
+widget-imu_visualizer-acceleration = Acceleration
+widget-imu_visualizer-position = Position
 
 ## Widget: Skeleton Visualizer
 widget-skeleton_visualizer-preview = Skeleton preview
