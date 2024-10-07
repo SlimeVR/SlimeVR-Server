@@ -172,8 +172,8 @@ export function useFirmwareToolContext(): FirmwareToolContext {
     defaultConfig,
     newConfig,
     isStepLoading: isLoading,
-    isGlobalLoading: isInitialLoading && isCompatibilityLoading,
-    isCompatible: compatibilityData?.success || false,
+    isGlobalLoading: isInitialLoading || isCompatibilityLoading,
+    isCompatible: !compatibilityCheckEnabled || (compatibilityData?.success ?? false),
     isError: isError || (!compatibilityData?.success && compatibilityCheckEnabled),
   };
 }
