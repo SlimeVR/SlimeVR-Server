@@ -114,6 +114,7 @@ class UDPProtocolParser {
 		PACKET_TEMPERATURE -> UDPPacket20Temperature()
 		PACKET_USER_ACTION -> UDPPacket21UserAction()
 		PACKET_FEATURE_FLAGS -> UDPPacket22FeatureFlags()
+		PACKET_ACK_CONFIG_CHANGE -> UDPPacket24AckConfigChange()
 		PACKET_PROTOCOL_CHANGE -> UDPPacket200ProtocolChange()
 		else -> null
 	}
@@ -147,6 +148,8 @@ class UDPProtocolParser {
 		const val PACKET_USER_ACTION = 21
 		const val PACKET_FEATURE_FLAGS = 22
 		const val PACKET_ROTATION_AND_ACCELERATION = 23
+		const val PACKET_ACK_CONFIG_CHANGE = 24
+		const val PACKET_SET_CONFIG_FLAG = 25
 		const val PACKET_BUNDLE = 100
 		const val PACKET_BUNDLE_COMPACT = 101
 		const val PACKET_PROTOCOL_CHANGE = 200
