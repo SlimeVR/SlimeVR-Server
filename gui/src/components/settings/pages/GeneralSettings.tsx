@@ -32,6 +32,7 @@ import {
 } from '@/components/settings/SettingsPageLayout';
 import { HandsWarningModal } from '@/components/settings/HandsWarningModal';
 import { MagnetometerToggleSetting } from './MagnetometerToggleSetting';
+import { DriftCompensationModal } from '@/components/settings/DriftCompensationModal';
 
 interface SettingsForm {
   trackers: {
@@ -436,6 +437,8 @@ export function GeneralSettings() {
   //   }
   // }, [state]);
 
+  const [showDriftCompWarning, setShowDriftCompWarning] = useState(false);
+
   return (
     <SettingsPageLayout>
       <HandsWarningModal
@@ -698,7 +701,24 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-tracker_mechanics-drift_compensation-enabled-label'
               )}
+              onClick={() => {
+                if (getValues('driftCompensation.enabled')) {
+                  return;
+                }
+
+                setShowDriftCompWarning(true);
+              }}
             />
+            <DriftCompensationModal
+              accept={() => {
+                setShowDriftCompWarning(false);
+              }}
+              onClose={() => {
+                setShowDriftCompWarning(false);
+                setValue('driftCompensation.enabled', false);
+              }}
+              isOpen={showDriftCompWarning}
+            ></DriftCompensationModal>
             <div className="flex gap-5 pt-5 md:flex-row flex-col">
               <NumberSelector
                 control={control}

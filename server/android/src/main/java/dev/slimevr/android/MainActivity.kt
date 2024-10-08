@@ -1,5 +1,6 @@
 package dev.slimevr.android
 
+import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -51,5 +52,10 @@ class MainActivity : AppCompatActivity() {
 		// Load GUI page
 		guiWebView.loadUrl("http://127.0.0.1:34536/")
 		LogManager.info("[MainActivity] GUI WebView has been initialized and loaded.")
+
+		// Start a foreground service to notify the user the SlimeVR Server is running
+		// This also helps prevent Android from ejecting the process unexpectedly
+		val serviceIntent = Intent(this, ForegroundService::class.java)
+		startForegroundService(serviceIntent)
 	}
 }
