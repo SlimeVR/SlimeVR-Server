@@ -13,14 +13,14 @@ websocket-connection_lost = Połączenie z serwerem zostało utracone. Próba po
 ## Update notification
 
 version_update-title = Dostępna jest nowa wersja: { $version }
-version_update-description = Kliknięcie „Aktualizuj” spowoduje pobranie instalatora SlimeVR.
+version_update-description = Kliknięcie "{ version_update-update }" spowoduje pobranie instalatora SlimeVR.
 version_update-update = Aktualizacja
 version_update-close = Zamknij
 
 ## Tips
 
-tips-find_tracker = Nie wiesz który tracker to który? Poruszaj trackerem, a będzie sie on podświetlał na serwerze.
-tips-do_not_move_heels = Upewnij się, aby pięty pozostały w bezruchu podczas nagrywania.
+tips-find_tracker = Nie jesteś pewien, który tracker jest który? Potrząśnij trackerem, a podświetli on odpowiedni element.
+tips-do_not_move_heels = Upewnij się, aby pięty nie ruszały się podczas nagrywania.
 tips-file_select = Przeciągnij i upuść pliki, których chcesz użyć, lub <u>przeglądaj</u>.
 tips-tap_setup = Możesz powoli stuknąć 2 razy tracker, aby go wybrać, zamiast wybierać go z menu.
 tips-turn_on_tracker = Używasz oficjalnych trackerów SlimeVR? Pamiętaj, <b><em>aby włączyć tracker</em></b> po podłączeniu go do komputera!
@@ -107,7 +107,7 @@ navbar-settings = Ustawienia
 ## Biovision hierarchy recording
 
 bvh-start_recording = Nagraj BVH
-bvh-recording = Nagrywam...
+bvh-recording = Nagrywanie...
 
 ## Tracking pause
 
@@ -141,7 +141,7 @@ widget-developer_mode-more_info = Więcej info
 
 ## Widget: IMU Visualizer
 
-widget-imu_visualizer = Obrót
+widget-imu_visualizer = Rotacja
 widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = Podgląd
 widget-imu_visualizer-rotation_hide = Ukryj
@@ -169,7 +169,7 @@ tracker-table-column-battery = Bateria
 tracker-table-column-ping = Ping
 tracker-table-column-tps = TPS
 tracker-table-column-temperature = Temp. °C
-tracker-table-column-linear-acceleration = Accel. X/Y/Z
+tracker-table-column-linear-acceleration = Akceleracja X/Y/Z
 tracker-table-column-rotation = Rotacja X/Y/Z
 tracker-table-column-position = Pozycja X/Y/Z
 tracker-table-column-url = URL
@@ -244,7 +244,7 @@ body_assignment_menu-unassign_tracker = Usuń przydzielenie
 # maybe your language does.
 -tracker_selection-part = Which tracker to assign to your
 tracker_selection_menu-NONE = Któremu trackerowi chcesz cofnąć przypisanie?
-tracker_selection_menu-HEAD = { -tracker_selection-part } head?
+tracker_selection_menu-HEAD = { -tracker_selection-part } głowa?
 tracker_selection_menu-NECK = { -tracker_selection-part } szyja?
 tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } prawe ramię?
 tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
@@ -483,6 +483,9 @@ settings-general-interface-connected_trackers_warning-label = Ostrzeżenie o pod
 settings-general-interface-use_tray = Minimalizuj do zasobnika systemowego
 settings-general-interface-use_tray-description = Pozwala zamknąć okno bez wyłączania serwera SlimeVR, aby używać trackerów bez interfejsu graficznego.
 settings-general-interface-use_tray-label = Minimalizuj do zasobnika systemowego
+settings-general-interface-discord_presence = Udostępniaj aktywność na Discordzie
+settings-general-interface-discord_presence-description = Informuje Twojego klienta Discord o korzystaniu ze SlimeVR oraz o liczbie używanych trackerów IMU.
+settings-general-interface-discord_presence-label = Udostępniaj aktywność na Discordzie
 
 ## Serial settings
 
@@ -505,6 +508,8 @@ settings-serial-get_infos = Uzyskaj informacje
 settings-serial-serial_select = Wybierz port szeregowy
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skanuj sieci WiFi
+settings-serial-file_type = Zwykły tekst
+settings-serial-save_logs = Zapisz do pliku
 
 ## OSC router settings
 
@@ -534,15 +539,10 @@ settings-osc-router-network-address-placeholder = IPV4 address
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC Trackers
-# This cares about multilines
-settings-osc-vrchat-description =
-    Zmień ustawienia specyficzne dla VRChat, aby odbierać i wysyłać dane HMD
-    dane trackerów dla FBT (działa na samodzielnym Quest).
 settings-osc-vrchat-enable = Zezwól
 settings-osc-vrchat-enable-description = Zezwól na wysyłanie i odbieranie danych.
 settings-osc-vrchat-enable-label = Zezwól
 settings-osc-vrchat-network = Porty sieciowe
-settings-osc-vrchat-network-description = Ustaw porty do odbierania i wysyłania danych do VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Port In
     .placeholder = Port in (default: 9001)
@@ -550,7 +550,6 @@ settings-osc-vrchat-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-vrchat-network-address = Adres sieciowy
-settings-osc-vrchat-network-address-description = Wybierz adres, na który chcesz wysłać dane do VRChat (sprawdź ustawienia Wi-Fi na swoim urządzeniu).
 settings-osc-vrchat-network-address-placeholder = Adres IP VRChata
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Przełącz wysyłanie określonych trackerów przez OSC.
@@ -736,6 +735,22 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = Pokaż zaawansowane ustawienia pozycji
 onboarding-assign_trackers-next = Przydzieliłem już wszystkie trackery
 onboarding-assign_trackers-mirror_view = Widok lustrzany
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] Zestaw na dolną część ciała
+        [core] Zestaw podstawowy
+        [enhanced-core] Rozszerzony zestaw podstawowy
+        [full-body] Pełny zestaw
+       *[all] Wszystkie trackery
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] Minimum do śledzenia ciała w rzeczywistości wirtualnej
+        [core] + Ulepszone śledzenie kręgosłupa
+        [enhanced-core] + Śledzenie stóp
+        [full-body] + Śledzenie łokci
+       *[all] Wszystkie możliwe przypisania trackerów
+    }
 
 ## Tracker assignment warnings
 
@@ -812,11 +827,9 @@ onboarding-choose_mounting = Jakiej metody kalibracji montażu użyć?
 onboarding-choose_mounting-description = Orientacja montażu koryguje umieszczenie trackerów na ciele.
 onboarding-choose_mounting-auto_mounting = Automatyczne mocowanie
 # Italized text
-onboarding-choose_mounting-auto_mounting-label = Eksperymentalny
+onboarding-choose_mounting-auto_mounting-label-v2 = Zalecane
 onboarding-choose_mounting-auto_mounting-description = To automatycznie wykryje kierunki montażu dla wszystkich twoich trackerów z 2 pozycji
 onboarding-choose_mounting-manual_mounting = Montaż ręczny
-# Italized text
-onboarding-choose_mounting-manual_mounting-label = Zalecany
 onboarding-choose_mounting-manual_mounting-description = Umożliwi to ręczne wybranie kierunku montażu dla każdego trackera
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
@@ -969,7 +982,7 @@ trackers_still_on-modal-description =
     Jeden lub więcej modułów śledzących jest nadal włączonych.
     Czy nadal chcesz wyjść ze SlimeVR?
 trackers_still_on-modal-confirm = Wyjdź ze SlimeVR
-trackers_still_on-modal-cancel = Poczekaj!
+trackers_still_on-modal-cancel = Poczekaj...
 
 ## Status system
 
@@ -980,6 +993,7 @@ status_system-StatusSteamVRDisconnected =
        *[other] Nie można połączyć się ze SteamVR przez sterownik SlimeVR.
     }
 status_system-StatusTrackerError = Tracker { $trackerName } ma błąd.
+status_system-StatusUnassignedHMD = Headset powinien być przypisany do śledzenia głowy.
 
 ## Tray Menu
 
@@ -1004,7 +1018,7 @@ tray_or_exit_modal-cancel = Anuluj
 
 unknown_device-modal-title = Znaleziono nowy tracker!
 unknown_device-modal-description =
-    Dostępny jest nowy tracker z adresem MAC b { $deviceId } /b .¶
+    Dostępny jest nowy tracker z adresem MAC <b> { $deviceId } </b> .¶
     Czy chcesz podłączyć go do SlimeVR?
 unknown_device-modal-confirm = Jasne!
 unknown_device-modal-forget = Ignoruj
