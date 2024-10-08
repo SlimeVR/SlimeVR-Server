@@ -3,11 +3,9 @@ import classNames from 'classnames';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  AddUnknownDeviceRequestT,
   RpcMessage,
   StartWifiProvisioningRequestT,
   StopWifiProvisioningRequestT,
-  UnknownDeviceHandshakeNotificationT,
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
 } from 'solarxr-protocol';

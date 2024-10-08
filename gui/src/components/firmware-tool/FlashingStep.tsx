@@ -8,7 +8,6 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
-  AddUnknownDeviceRequestT,
   DeviceIdT,
   DeviceIdTableT,
   FirmwarePartT,
@@ -21,7 +20,6 @@ import {
   RpcMessage,
   SerialDevicePortT,
   SerialFirmwareUpdateT,
-  UnknownDeviceHandshakeNotificationT,
 } from 'solarxr-protocol';
 import { firmwareToolS3BaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
 import { useOnboarding } from '@/hooks/onboarding';

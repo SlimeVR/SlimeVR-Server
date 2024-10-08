@@ -21,7 +21,6 @@
     "browser-fs-access": "^0.35.0",
     "classnames": "^2.5.1",
     "flatbuffers": "22.10.26",
-    "globals": "^15.10.0",
     "intl-pluralrules": "^2.0.1",
     "ip-num": "^1.5.1",
     "prompts": "^2.4.2",
@@ -38,7 +37,6 @@
     "three": "^0.163.0",
     "ts-pattern": "^5.2.0",
     "typescript": "^5.4.5",
-    "typescript-eslint": "^8.8.0",
     "yup": "^1.4.0"
   },
   "scripts": {
@@ -87,6 +85,8 @@
     "spdx-satisfies": "^5.0.1",
     "tailwind-gradient-mask-image": "^1.2.0",
     "tailwindcss": "^3.4.4",
-    "vite": "^5.3.1"
+    "vite": "^5.3.1",
+    "globals": "^15.10.0",
+    "typescript-eslint": "^8.8.0"
   }
 }
