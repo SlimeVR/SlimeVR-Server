@@ -310,10 +310,14 @@ settings-general-steamvr-description =
     Utile pour les jeux ou applications qui ne supportent que certains capteurs.
 settings-general-steamvr-trackers-waist = Taille
 settings-general-steamvr-trackers-chest = Poitrine
-settings-general-steamvr-trackers-feet = Pieds
-settings-general-steamvr-trackers-knees = Genoux
-settings-general-steamvr-trackers-elbows = Coudes
-settings-general-steamvr-trackers-hands = Mains
+settings-general-steamvr-trackers-left_foot = Pied gauche
+settings-general-steamvr-trackers-right_foot = Pied droit
+settings-general-steamvr-trackers-left_knee = Genou gauche
+settings-general-steamvr-trackers-right_knee = Genou droit
+settings-general-steamvr-trackers-left_elbow = Coude gauche
+settings-general-steamvr-trackers-right_elbow = Coude droit
+settings-general-steamvr-trackers-left_hand = Main gauche
+settings-general-steamvr-trackers-right_hand = Main droite
 settings-general-steamvr-trackers-tracker_toggling = Assignation automatique des capteurs
 settings-general-steamvr-trackers-tracker_toggling-description = Gère automatiquement l’activation ou la désactivation des capteurs SteamVR en fonction de vos capteurs actuellement affectés
 settings-general-steamvr-trackers-tracker_toggling-label = Assignation automatique des capteurs
@@ -379,6 +383,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Réinitialisation de l
 settings-general-fk_settings-arm_fk = Capture des bras
 settings-general-fk_settings-arm_fk-description = Changez la façon dont les bras sont captés.
 settings-general-fk_settings-arm_fk-force_arms = Forcer les bras en provenance du casque VR
+settings-general-fk_settings-reset_settings = Paramètres de réinitialisations
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Réinitialisez la rotation verticale du casque VR lors d’une réinitialisation complète. Utile pour porter un casque VR sur le front pour le VTubing ou l'animation. Ne pas activer pour la VR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = Réinitialiser la rotation verticale du casque VR
 settings-general-fk_settings-arm_fk-reset_mode-description = Changer la pose des bras attendue pour la réinitialisation de l'alignement.
 settings-general-fk_settings-arm_fk-back = En arrière
 settings-general-fk_settings-arm_fk-back-description = Le mode par défaut, avec les bras vers l’arrière et les avant-bras vers l’avant.
@@ -475,6 +482,15 @@ settings-general-interface-connected_trackers_warning-label = Avertissement de c
 settings-general-interface-use_tray = Minimiser dans la zone de notifications
 settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l’utiliser sans l’interface graphique.
 settings-general-interface-use_tray-label = Minimiser dans la zone de notifications
+settings-general-interface-discord_presence = Partager l'activité sur Discord
+settings-general-interface-discord_presence-description = Indique à votre client Discord que vous utilisez SlimeVR avec le nombre de capteurs IMU que vous utilisez.
+settings-general-interface-discord_presence-label = Partager l'activité sur Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Aucun capteur
+        [one] Utilise { $amount } capteur
+       *[other] Utilise { $amount } capteurs
+    }
 
 ## Serial settings
 
@@ -497,6 +513,8 @@ settings-serial-get_infos = Obtenir des informations
 settings-serial-serial_select = Sélectionnez un port série
 settings-serial-auto_dropdown_item = Automatique
 settings-serial-get_wifi_scan = Obtenir scan WiFi
+settings-serial-file_type = Texte brut
+settings-serial-save_logs = Enregistrer dans un fichier
 
 ## OSC router settings
 
@@ -527,14 +545,17 @@ settings-osc-router-network-address-placeholder = Adresse IPv4
 
 settings-osc-vrchat = Capteurs OSC VRChat
 # This cares about multilines
-settings-osc-vrchat-description =
-    Modifiez les paramètres spécifiques à VRChat pour recevoir et envoyer
-    des capteurs par OSC (fonctionne sur Quest sans PC).
+settings-osc-vrchat-description-v1 =
+    Modifier les paramètres spécifiques à la norme « OSC Trackers » utilisée pour l’envoi
+    des données de suivi vers des applications sans SteamVR (par exemple, sur Quest).
+    Assurez-vous d’activer le protocole OSC dans VRChat via le menu d'action (rond) sous OSC > Enabled.
+    Pour permettre de recevoir les données de suivi du casque VR et des manettes à partir de VRChat,
+    allez dans le menu principal sous Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Activer
 settings-osc-vrchat-enable-description = Activer/désactiver l'envoi et la réception de données.
 settings-osc-vrchat-enable-label = Activer
 settings-osc-vrchat-network = Ports réseau
-settings-osc-vrchat-network-description = Définissez les ports pour écouter et envoyer des données à VRChat.
+settings-osc-vrchat-network-description-v1 = Définissez les ports d'écoute et d'envoi des données. Peut être laissé intact pour VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Port d'entrée
     .placeholder = Port d'entrée (par défaut : 9001)
@@ -542,7 +563,7 @@ settings-osc-vrchat-network-port_out =
     .label = Port de sortie
     .placeholder = Port de sortie (par défaut : 9000)
 settings-osc-vrchat-network-address = Adresse réseau
-settings-osc-vrchat-network-address-description = Choisissez l'adresse à laquelle envoyer les données à VRChat (vérifiez les réseaux Wi-Fi de votre appareil).
+settings-osc-vrchat-network-address-description-v1 = Choisissez l'adresse à laquelle envoyer des données. Peut être laissé intact pour VRChat.
 settings-osc-vrchat-network-address-placeholder = Adresse IP VRChat
 settings-osc-vrchat-network-trackers = capteurs
 settings-osc-vrchat-network-trackers-description = Sélectionner quels capteurs envoyer via OSC.
@@ -585,6 +606,9 @@ settings-osc-vmc-vrm-file_select = Glissez et déposez un modèle à utiliser, o
 settings-osc-vmc-anchor_hip = Ancrage aux hanches
 settings-osc-vmc-anchor_hip-description = Ancrer la capture des mouvements aux hanches, utile pour le VTubing assis.
 settings-osc-vmc-anchor_hip-label = Ancrage aux hanches
+settings-osc-vmc-mirror_tracking = Inverser les mouvements
+settings-osc-vmc-mirror_tracking-description = Inverse les mouvements horizontalement
+settings-osc-vmc-mirror_tracking-label = Inverser les mouvements
 
 ## Setup/onboarding menu
 
@@ -724,6 +748,27 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = Afficher les emplacements d'attribution avancés
 onboarding-assign_trackers-next = J'ai attribué tous mes capteurs
 onboarding-assign_trackers-mirror_view = Vue miroir
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+       *[other] x{ $trackersCount }
+    }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] Kit du bas du corps
+        [core] Kit de base
+        [enhanced-core] Kit de base renforcé
+        [full-body] Kit du corps complet
+       *[all] Tous les capteurs
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] Minimum pour le suivi du corps en réalité virtuelle
+        [core] + Suivi amélioré de la colonne vertébrale
+        [enhanced-core] + Rotation des pieds
+        [full-body] + Suivi des coudes
+       *[all] Toutes les attributions de capteurs disponibles
+    }
 
 ## Tracker assignment warnings
 
@@ -800,11 +845,11 @@ onboarding-choose_mounting = Quelle méthode de calibration de l’alignement ut
 onboarding-choose_mounting-description = La calibration de l'alignement ajuste pour l'orientation des capteurs sur votre corps.
 onboarding-choose_mounting-auto_mounting = Alignement automatique
 # Italized text
-onboarding-choose_mounting-auto_mounting-label = Expérimentale
+onboarding-choose_mounting-auto_mounting-label-v2 = Recommendée
 onboarding-choose_mounting-auto_mounting-description = Ceci permettra de détecter automatiquement la direction de tous vos capteurs à partir de 2 poses
 onboarding-choose_mounting-manual_mounting = Alignement manuel
 # Italized text
-onboarding-choose_mounting-manual_mounting-label = Recommendée
+onboarding-choose_mounting-manual_mounting-label-v2 = Peut manquer de précision
 onboarding-choose_mounting-manual_mounting-description = Ceci vous permettra de choisir la direction de chaque capteur manuellement
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
@@ -966,6 +1011,7 @@ status_system-StatusSteamVRDisconnected =
        *[other] Impossible de se connecter à SteamVR via le pilote SlimeVR.
     }
 status_system-StatusTrackerError = Le capteur { $trackerName } a une erreur.
+status_system-StatusUnassignedHMD = Le casque VR devrait être attribué en tant que capteur de la tête.
 
 ## Tray Menu
 

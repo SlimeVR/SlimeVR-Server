@@ -381,6 +381,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Reset posizionamento d
 settings-general-fk_settings-arm_fk = Tracking delle braccia
 settings-general-fk_settings-arm_fk-description = Forza il calcolo della posizione delle braccia a utilizzare il visore anche se la posizione delle mani é disponibile.
 settings-general-fk_settings-arm_fk-force_arms = Forza il calcolo delle braccia dal visore
+settings-general-fk_settings-reset_settings = Ripristina impostazioni
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Ripristina l'inclinazione dell'HMD (rotazione verticale) dopo un reset completo. Utile se si indossa un HMD sulla fronte per VTubing o mocap. Non abilitare per VR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = Ripristina l'inclinazione dell'HMD
 settings-general-fk_settings-arm_fk-reset_mode-description = Cambia la posa delle braccia usata per il reset posizionamento.
 settings-general-fk_settings-arm_fk-back = Indietro
 settings-general-fk_settings-arm_fk-back-description = La modalità predefinita, con la parte superiori delle braccia che vanno indietro e le parte inferiori delle braccia che vanno avanti.
@@ -478,6 +481,15 @@ settings-general-interface-connected_trackers_warning-label = Avviso di tracker 
 settings-general-interface-use_tray = Riduci a icona nella barra delle applicazioni
 settings-general-interface-use_tray-description = Ti consente di chiudere la finestra senza chiudere il server SlimeVR in modo da poter continuare a usarlo senza che la GUI ti infastidisca.
 settings-general-interface-use_tray-label = Riduci a icona nella barra delle applicazioni
+settings-general-interface-discord_presence = Condividi attività su Discord
+settings-general-interface-discord_presence-description = Dice al tuo client di Discord che stai utilizzando SlimeVR insieme al numero di tracker IMU che stai utilizzando.
+settings-general-interface-discord_presence-label = Condividi attività su Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Slimeggiando qua e là
+        [one] Sta usando 1 tracker
+       *[other] Sta usando { $amount } tracker
+    }
 
 ## Serial settings
 
@@ -500,6 +512,8 @@ settings-serial-get_infos = Ottieni informazioni
 settings-serial-serial_select = Seleziona una porta seriale
 settings-serial-auto_dropdown_item = Automatico
 settings-serial-get_wifi_scan = Elenca WiFi Network
+settings-serial-file_type = Testo normale
+settings-serial-save_logs = Salva su file
 
 ## OSC router settings
 
@@ -530,14 +544,17 @@ settings-osc-router-network-address-placeholder = Indirizzo IPV4
 
 settings-osc-vrchat = Tracker OSC per VRChat
 # This cares about multilines
-settings-osc-vrchat-description =
-    Modifica le impostazioni specifiche a VRChat per ricevere e inviare dati del HMD
-    Dati dei tracker per FBT (funziona su Quest standalone).
+settings-osc-vrchat-description-v1 =
+    Modifica impostazioni specifiche dello standard dei Tracker OSC utilizzato per l'invio
+    di dati di tracciamento alle applicazioni senza l'utlizzo di SteamVR (es. Quest standalone).
+    Assicurarsi di abilitare l'OSC in VRChat tramite il menu Azione alla voce OSC > Abilitato.
+    Per consentire la ricezione dei dati dell'HMD e del controller da VRChat, vai nella sezione impostazioni del menu principale
+    in Tracciamento e IK > Consenti invio dati OSC tracciamento VR testa e polso.
 settings-osc-vrchat-enable = Attiva
 settings-osc-vrchat-enable-description = Attiva o disattiva l'invio e la ricezione dei dati
 settings-osc-vrchat-enable-label = Attiva
 settings-osc-vrchat-network = Porte di rete
-settings-osc-vrchat-network-description = Impostare le porte di rete per ascoltare e inviare dati a VRChat
+settings-osc-vrchat-network-description-v1 = Imposta le porte per l'ascolto e l'invio dei dati. Può essere lasciato come predefinito per utilizzo con VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Porta in ingresso
     .placeholder = Porta in ingresso (predefinito: 9002)
@@ -545,7 +562,7 @@ settings-osc-vrchat-network-port_out =
     .label = Porta in uscita
     .placeholder = Porta in uscita (predefinito: 9000)
 settings-osc-vrchat-network-address = Indirizzo di rete
-settings-osc-vrchat-network-address-description = Scegli a quale indirizzo di rete inviare i dati di VRChat (controlla le impostazioni Wi-Fi sul tuo dispositivo)
+settings-osc-vrchat-network-address-description-v1 = Scegli a quale indirizzo inviare i dati. Può essere lasciato come predefinito per utilizzo con VRChat.
 settings-osc-vrchat-network-address-placeholder = Indirizzo IP di VRChat
 settings-osc-vrchat-network-trackers = Tracker
 settings-osc-vrchat-network-trackers-description = Attiva o disattiva l'invio e la ricezione dei dati
@@ -588,6 +605,9 @@ settings-osc-vmc-vrm-file_select = Trascina qui un modello da usare, o <u>sfogli
 settings-osc-vmc-anchor_hip = Ancoraggio sul bacino
 settings-osc-vmc-anchor_hip-description = Ancora la posizione del tracciamento del bacino; utile per VTubing da seduti. Se disabilitato, carica un modello VRM.
 settings-osc-vmc-anchor_hip-label = Ancoraggio sul bacino
+settings-osc-vmc-mirror_tracking = Tracciamento speculare
+settings-osc-vmc-mirror_tracking-description = Specchia il tracciamento orizzontalmente.
+settings-osc-vmc-mirror_tracking-label = Tracciamento speculare
 
 ## Setup/onboarding menu
 
@@ -727,6 +747,27 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = Mostra impostazioni avanzate di assegnazione
 onboarding-assign_trackers-next = Ho assegnato tutti i miei tracker
 onboarding-assign_trackers-mirror_view = Inverti interfaccia
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+       *[other] x{ $trackersCount }
+    }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] Pacchetto "Lower-Body"
+        [core] Pacchetto "Core"
+        [enhanced-core] Pacchetto "Enhanced Core"
+        [full-body] Pacchetto "Full-Body"
+       *[all] Tutti i tracker
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] Il minimo per full-body tracking in VR
+        [core] + Miglior tracciamento della spina dorsale
+        [enhanced-core] + Rotazione dei piedi
+        [full-body] + Tracciamento dei gomiti
+       *[all] Tutte le assegnazioni di tracker disponibili
+    }
 
 ## Tracker assignment warnings
 
@@ -803,11 +844,11 @@ onboarding-choose_mounting = Quale metodo di calibrazione del posizionamento vuo
 onboarding-choose_mounting-description = L'orientamento di posizionamento corregge la posizione dei tracker sul corpo.
 onboarding-choose_mounting-auto_mounting = Posizionamento automatico
 # Italized text
-onboarding-choose_mounting-auto_mounting-label = Sperimentale
+onboarding-choose_mounting-auto_mounting-label-v2 = Raccomandato
 onboarding-choose_mounting-auto_mounting-description = Questo processo identificherá automaticamente le direzioni per la posizione di montaggio di tutti i traker facendo 2 pose
 onboarding-choose_mounting-manual_mounting = Posizionamento manuale
 # Italized text
-onboarding-choose_mounting-manual_mounting-label = Raccomandato
+onboarding-choose_mounting-manual_mounting-label-v2 = Potrebbe non essere abbastanza preciso
 onboarding-choose_mounting-manual_mounting-description = Questo processo ti lascerá scegliere manualmente le direzioni per la posizione di montaggio di tutti i tracker
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
@@ -970,6 +1011,7 @@ status_system-StatusSteamVRDisconnected =
        *[other] Attualmente non è connesso a SteamVR tramite il driver SlimeVR.
     }
 status_system-StatusTrackerError = Il tracker { $trackerName } ha un errore.
+status_system-StatusUnassignedHMD = Il visore deve essere assegnato come tracker della testa.
 
 ## Tray Menu
 

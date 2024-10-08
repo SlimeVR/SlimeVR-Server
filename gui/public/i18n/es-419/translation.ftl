@@ -22,7 +22,7 @@ version_update-close = Cerrar
 tips-find_tracker = ¿No estás seguro de cuál sensor es cuál? Agita un sensor y se resaltará donde está asignado.
 tips-do_not_move_heels = ¡Asegúrate de no mover los talones en la grabación!
 tips-file_select = Arrastra y suelta archivos para usarlos, o <u>selecciónalos<u>.
-tips-tap_setup = Puedes tocar lentamente 2 veces el tracker para seleccionarlo en lugar de seleccionarlo desde el menú.
+tips-tap_setup = Puedes tocar lentamente 2 veces el sensor para seleccionarlo en lugar de seleccionarlo desde el menú.
 tips-turn_on_tracker = ¿Estas usando trackers de SlimeVR oficiales? ¡Recuerda <b><em>encender tus trackers<em><b> después de conectarlos al PC!
 tips-failed_webgl = Fallo al inicializar WebGL.
 
@@ -383,6 +383,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Reinicio de montura de
 settings-general-fk_settings-arm_fk = Trackeo de brazos
 settings-general-fk_settings-arm_fk-description = Cambia cómo el movimiento de los brazos es detectado.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
+settings-general-fk_settings-reset_settings = Reiniciar ajustes
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Restablece la inclinación del HMD (rotación vertical) al realizar un reinicio completo. Útil si se lleva un HMD en la frente para VTubing o mocap. No habilitar para VR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = Reiniciar la inclinación del HMD
 settings-general-fk_settings-arm_fk-reset_mode-description = Cambiar que pose de brazos es esperada para el reinicio de montura.
 settings-general-fk_settings-arm_fk-back = Detrás
 settings-general-fk_settings-arm_fk-back-description = El modo predeterminado, con el brazo yendo por detrás y el antebrazo yendo para adelante.
@@ -479,6 +482,16 @@ settings-general-interface-connected_trackers_warning-label = Advertencia de tra
 settings-general-interface-use_tray = Minimizar a la bandeja del sistema
 settings-general-interface-use_tray-description = Permite cerrar la ventana sin cerrar el servidor de SlimeVR para que puedas continuar usándolo sin que te moleste la interfaz.
 settings-general-interface-use_tray-label = Minimizar a la bandeja del sistema
+settings-general-interface-discord_presence = Compartir actividad en Discord
+settings-general-interface-discord_presence-description = Le dice a tu cliente de Discord que estás usando SlimeVR junto con la cantidad de sensores IMU que estás usando.
+settings-general-interface-discord_presence-label = Compartir actividad en Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Recolectando slimes
+        [one] Usando 1 sensor
+        [many] Usando { $amount } de sensores
+       *[other] Usando { $amount } sensores
+    }
 
 ## Serial settings
 
@@ -501,6 +514,8 @@ settings-serial-get_infos = Obtener información
 settings-serial-serial_select = Selecciona un puerto serial
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Obtener escaneo WiFi
+settings-serial-file_type = Texto sin formato
+settings-serial-save_logs = Guardar en archivo
 
 ## OSC router settings
 
@@ -531,14 +546,17 @@ settings-osc-router-network-address-placeholder = Dirección IPv4
 
 settings-osc-vrchat = Sensores OSC de VRChat
 # This cares about multilines
-settings-osc-vrchat-description =
-    Cambiar ajustes específicos de VRChat para recibir datos del HMD y enviar
-    datos de los sensores para seguimiento de cuerpo completo (funciona en Quest nativo).
+settings-osc-vrchat-description-v1 =
+    Cambia los ajustes específicos de los trackers OSC utilizados para enviar
+    datos de seguimiento a aplicaciones sin SteamVR (ej. VRChat en Quest).
+    Asegúrate de activar OSC en VRChat a través del menú Acción en OSC > Activado.
+    Para permitir la recepción de datos del HMD y de los mandos desde VRChat, ve a los ajustes de tu menú principal 
+    en Tracking & IK > Permitir el envío de datos OSC de seguimiento de RV de cabeza y muñeca.
 settings-osc-vrchat-enable = Habilitar
 settings-osc-vrchat-enable-description = Habilita el envio y recibo de datos.
 settings-osc-vrchat-enable-label = Habilitar
 settings-osc-vrchat-network = Puertos de conexión
-settings-osc-vrchat-network-description = Establece los puertos de entrada y salida de datos a VRChat.
+settings-osc-vrchat-network-description-v1 = Establece los puertos para recibir y enviar datos. Se puede dejar sin cambiar para VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Puerto de entrada
     .placeholder = Puerto de entrada (por defecto: 9001)
@@ -546,7 +564,7 @@ settings-osc-vrchat-network-port_out =
     .label = Puerto de salida
     .placeholder = Puerto de salida (por defecto: 9000)
 settings-osc-vrchat-network-address = Dirección de red
-settings-osc-vrchat-network-address-description = Establece la dirección donde se enviarán los datos de VRChat (revisa los ajustes de Wi-Fi de tu dispositivo que tenga el juego).
+settings-osc-vrchat-network-address-description-v1 = Elige a qué dirección enviar los datos. Se puede dejar sin cambiar para VRChat.
 settings-osc-vrchat-network-address-placeholder = Dirección IP de VRChat
 settings-osc-vrchat-network-trackers = Sensores
 settings-osc-vrchat-network-trackers-description = Habilita el envío de sensores específicos mediante OSC.
@@ -589,6 +607,9 @@ settings-osc-vmc-vrm-file_select = Arrastra y suelta un modelo para usar, o <u>s
 settings-osc-vmc-anchor_hip = Anclaje por cadera
 settings-osc-vmc-anchor_hip-description = Anclar el tracking a la cadera, útil para hacer de VTuber sentado. Si lo desactivas, carga un modelo VRM.
 settings-osc-vmc-anchor_hip-label = Anclaje por cadera
+settings-osc-vmc-mirror_tracking = Invertir el tracking
+settings-osc-vmc-mirror_tracking-description = invierte el tracking horizontalmente.
+settings-osc-vmc-mirror_tracking-label = Invertir el tracking
 
 ## Setup/onboarding menu
 
@@ -728,6 +749,28 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = Mostrar ubicación de asignaciones avanzados.
 onboarding-assign_trackers-next = He asignado todos los sensores
 onboarding-assign_trackers-mirror_view = Vista espejo
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+        [many] x{ $trackersCount }
+       *[other] x{ $trackersCount }
+    }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] Conjunto para inferior del cuerpo
+        [core] Conjunto básico
+        [enhanced-core] Conjunto básico mejorado
+        [full-body] Conjunto para cuerpo completo
+       *[all] Todos los sensores
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] El mínimo para el full-body tracking en RV
+        [core] + Mejor seguimiento de la columna vertebral
+        [enhanced-core] + Rotación de pies
+        [full-body] + Seguimiento de codos
+       *[all] Todas las asignaciones de sensores disponibles
+    }
 
 ## Tracker assignment warnings
 
@@ -804,11 +847,11 @@ onboarding-choose_mounting = ¿Qué método de calibración de montura quiere us
 onboarding-choose_mounting-description = La orientación de montura corrige la colocación (o orientación) de los trackers en tu cuerpo.
 onboarding-choose_mounting-auto_mounting = Montura automática
 # Italized text
-onboarding-choose_mounting-auto_mounting-label = Experimental
+onboarding-choose_mounting-auto_mounting-label-v2 = Recomendado
 onboarding-choose_mounting-auto_mounting-description = Esto detectará automáticamente las direcciones de montura para todos tus trackers a partir de 2 poses
 onboarding-choose_mounting-manual_mounting = Montura manual
 # Italized text
-onboarding-choose_mounting-manual_mounting-label = Recomendado
+onboarding-choose_mounting-manual_mounting-label-v2 = Puede que no sea lo suficientemente preciso
 onboarding-choose_mounting-manual_mounting-description = Esto te permitirá elegir la dirección de montura manualmente para cada tracker.
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
@@ -970,6 +1013,7 @@ status_system-StatusSteamVRDisconnected =
        *[other] Actualmente no está conectado a SteamVR a través del driver de SlimeVR.
     }
 status_system-StatusTrackerError = El tracker { $trackerName } tiene un error.
+status_system-StatusUnassignedHMD = El casco de RV debe ser asignado como un sensor de cabeza.
 
 ## Tray Menu
 

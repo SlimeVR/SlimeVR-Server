@@ -13,7 +13,7 @@ websocket-connection_lost = Verbindung zum Server verloren. Versuche Verbindung 
 ## Update notification
 
 version_update-title = Neue Version verfügbar: { $version }
-version_update-description = Wenn Sie auf "Aktualisieren" klicken, wird der SlimeVR-Installationsassistent für dich heruntergeladen.
+version_update-description = Wenn Sie auf "{ version_update-update }" klicken, wird das SlimeVR-Installationsprogramm heruntergeladen.
 version_update-update = Aktualisieren
 version_update-close = Schließen
 
@@ -383,6 +383,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Fußausrichtung zurüc
 settings-general-fk_settings-arm_fk = Arm-Tracking
 settings-general-fk_settings-arm_fk-description = Ändern Sie die Art und Weise, wie die Arme berechnet werden.
 settings-general-fk_settings-arm_fk-force_arms = Arme vom VR-Headset erzwingen
+settings-general-fk_settings-reset_settings = Einstellungen zurücksetzen
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Setzen Sie die Neigung (vertikale Drehung) Ihres Headsets zurück, wenn Sie einen vollständigen Reset durchführen. Nützlich, wenn Sie ein Headset auf der Stirn für VTubing oder Mocap tragen. Nicht für VR aktivieren.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = Headset-Nick (vertikale Drehung) zurücksetzen
 settings-general-fk_settings-arm_fk-reset_mode-description = Ändern Sie, welche Armhaltung für den Befestigungs-Reset erwartet wird.
 settings-general-fk_settings-arm_fk-back = nach Hinten
 settings-general-fk_settings-arm_fk-back-description = Der Standardmodus, bei dem die Oberarme nach hinten und die Unterarme nach vorne gehen.
@@ -479,6 +482,15 @@ settings-general-interface-connected_trackers_warning-label = Warnung vor verbun
 settings-general-interface-use_tray = In den Infobereich minimieren
 settings-general-interface-use_tray-description = Erlaubt Ihnen, das Fenster zu schließen, ohne den SlimeVR-Server zu beenden. Dies erlaubt Ihnen diesen weiterzuverwenden, ohne dass das Fenster stört.
 settings-general-interface-use_tray-label = In den Infobereich minimieren
+settings-general-interface-discord_presence = Aktivität auf Discord teilen
+settings-general-interface-discord_presence-description = Teilt Ihrem Discord-Client mit, dass Sie SlimeVR verwenden, zusammen mit der Anzahl der IMU-Tracker, die Sie benutzen.
+settings-general-interface-discord_presence-label = Aktivität auf Discord teilen
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Sliming around
+        [one] nutzt 1 Tracker
+       *[other] nutzt { $amount } Tracker
+    }
 
 ## Serial settings
 
@@ -501,6 +513,8 @@ settings-serial-get_infos = Informationen abrufen
 settings-serial-serial_select = Wählen Sie einen seriellen Anschluss
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = WLAN-Scan
+settings-serial-file_type = Klartext
+settings-serial-save_logs = In Datei speichern
 
 ## OSC router settings
 
@@ -531,12 +545,16 @@ settings-osc-router-network-address-placeholder = IPv4 Adresse
 
 settings-osc-vrchat = VRChat-OSC-Trackers
 # This cares about multilines
-settings-osc-vrchat-description = Ändern Sie VRChat-spezifische Einstellungen, um Headset- und Tracker-Daten für FBT zu empfangen und zu senden (funktioniert auch im Standalone-Modus auf der Meta Quest).
+settings-osc-vrchat-description-v1 =
+    Ändern Sie die Einstellungen, die speziell für den OSC-Trackers-Standard verwendet werden, um Tracking-Daten an Anwendungen ohne SteamVR zu senden (z. B. für Quest Standalone).
+    Stellen Sie sicher, dass Sie OSC in VRChat über das Aktionsmenü unter OSC > Aktiviert einschalten. 
+    Um das Empfangen von HMD- und Controller-Daten von VRChat zu ermöglichen, gehen Sie in Ihrem Hauptmenü
+    zu den Einstellungen unter Tracking & IK > Erlaube das Senden von Kopf- und Handgelenk-VR-Tracking-OSC-Daten.
 settings-osc-vrchat-enable = Aktivieren
 settings-osc-vrchat-enable-description = Ein- und Ausschalten des Sendens und Empfangen von Daten
 settings-osc-vrchat-enable-label = Aktivieren
 settings-osc-vrchat-network = Netzwerk-Ports
-settings-osc-vrchat-network-description = Festlegen der Ports zum Empfangen und Senden von Daten an VRChat
+settings-osc-vrchat-network-description-v1 = Legt die Ports für das Empfangen und Senden von Daten fest. Kann für VRChat unverändert bleiben.
 settings-osc-vrchat-network-port_in =
     .label = Eingangsport
     .placeholder = Eingangsport (Standard: 9001)
@@ -544,7 +562,7 @@ settings-osc-vrchat-network-port_out =
     .label = Ausgangsport
     .placeholder = Ausgangsport (Standard: 9000)
 settings-osc-vrchat-network-address = Netzwerkadresse
-settings-osc-vrchat-network-address-description = Wählen Sie, an welche Adresse die Daten an VRChat gesendet werden sollen (überprüfen Sie Ihre WLAN-Einstellungen auf Ihrem Gerät)
+settings-osc-vrchat-network-address-description-v1 = Wählen Sie die IP-Adresse, an die die Daten gesendet werden sollen. Kann für VRChat unverändert bleiben.
 settings-osc-vrchat-network-address-placeholder = VRChat-IP-Adresse
 settings-osc-vrchat-network-trackers = Tracker
 settings-osc-vrchat-network-trackers-description = Ein- und Ausschalten des Sendens und Empfangens von Daten
@@ -585,6 +603,9 @@ settings-osc-vmc-vrm-file_select = Modell per Drag & Drop laden oder <u>durchsuc
 settings-osc-vmc-anchor_hip = Hüftenverankerung
 settings-osc-vmc-anchor_hip-description = Die Hüften-Verankerung für das Tracking ist nützlich für VTubing im Sitzen. Beim Deaktivieren muss ein VRM-Model geladen werden.
 settings-osc-vmc-anchor_hip-label = Hüftenverankerung
+settings-osc-vmc-mirror_tracking = Tracking spiegeln
+settings-osc-vmc-mirror_tracking-description = Tracking horizontal spiegeln
+settings-osc-vmc-mirror_tracking-label = Tracking spiegeln
 
 ## Setup/onboarding menu
 
@@ -723,6 +744,27 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = Erweiterte Zuweisungspositionen anzeigen
 onboarding-assign_trackers-next = Ich habe alle Tracker zugewiesen
 onboarding-assign_trackers-mirror_view = Ansicht spiegeln
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+       *[other] x{ $trackersCount }
+    }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] Lower-Body Set
+        [core] Core Set
+        [enhanced-core] Enhanced Core Set
+        [full-body] Full-Body Set
+       *[all] Alle Tracker
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] Minimum für VR Full-Body Tracking
+        [core] + Erweitertes Rücken-Tracking
+        [enhanced-core] + Fuß-Rotation
+        [full-body] + Ellbogen-Tracking
+       *[all] Alle verfügbaren Tracker-Zuweisungen
+    }
 
 ## Tracker assignment warnings
 
@@ -799,11 +841,11 @@ onboarding-choose_mounting = Welche Kalibrierungsmethode ist zu verwenden?
 onboarding-choose_mounting-description = Die Montageausrichtung korrigiert die Platzierung von Trackern am Körper.
 onboarding-choose_mounting-auto_mounting = Befestigung automatisch ermitteln
 # Italized text
-onboarding-choose_mounting-auto_mounting-label = Experimentell
+onboarding-choose_mounting-auto_mounting-label-v2 = Empfohlen
 onboarding-choose_mounting-auto_mounting-description = Dadurch werden die Befestigungsausrichtungen für alle Ihrer Tracker automatisch aus 2 Posen erkannt
 onboarding-choose_mounting-manual_mounting = Manuelle Befestigungsposition
 # Italized text
-onboarding-choose_mounting-manual_mounting-label = Empfohlen
+onboarding-choose_mounting-manual_mounting-label-v2 = Möglicherweise nicht präzise genug
 onboarding-choose_mounting-manual_mounting-description = Auf diese Weise können Sie die Montagerichtung für jeden Tracker manuell auswählen
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
@@ -907,7 +949,7 @@ onboarding-automatic_proportions-check_height-hmd_height1 = Ihre Headset-Höhe i
 onboarding-automatic_proportions-check_height-height1 = Ihre tatsächliche Körpergröße ist
 onboarding-automatic_proportions-check_height-next_step = Werte sind korrekt
 onboarding-automatic_proportions-start_recording-title = Bereiten Sie sich auf ein paar Bewegungen vor
-onboarding-automatic_proportions-start_recording-description = Wir werden nun einige bestimmte Posen und Bewegungen aufnehmen. Diese werden im nächsten Bildschirm angezeigt. Bereiten Sie sicht darauf vor, wenn Sie den Knopf drücken!
+onboarding-automatic_proportions-start_recording-description = Wir werden nun einige bestimmte Posen und Bewegungen aufnehmen. Diese werden im nächsten Schritt angezeigt. Sei bereit damit zu beginnen, wenn du auf den Knopf drückst!
 onboarding-automatic_proportions-start_recording-next = Aufnahme starten
 onboarding-automatic_proportions-recording-title = Aufnahme
 onboarding-automatic_proportions-recording-description-p0 = Aufnahme läuft...
@@ -962,6 +1004,7 @@ status_system-StatusSteamVRDisconnected =
        *[other] Derzeit nicht über den SlimeVR-Treiber mit SteamVR verbunden.
     }
 status_system-StatusTrackerError = Der Tracker "{ $trackerName }" weist einen Fehler auf.
+status_system-StatusUnassignedHMD = Das VR-Headset sollte als Kopf-Tracker zugewiesen sein.
 
 ## Tray Menu
 
