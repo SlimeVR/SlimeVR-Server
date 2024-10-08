@@ -33,9 +33,9 @@ export function AdvancedSettings() {
   const { l10n } = useLocalization();
   const { setConfig } = useConfig();
 
-  const [skipWarningGui, setSkipWarningGui] = useState(false);
-  const [skipWarningServer, setSkipWarningServer] = useState(false);
-  const [skipWarningAll, setSkipWarningAll] = useState(false);
+  const [showWarningGUI, setShowWarningGUI] = useState(false);
+  const [showWarningServer, setShowWarningServer] = useState(false);
+  const [showWarningAll, setShowWarningAll] = useState(false);
   const { sendRPCPacket } = useWebsocketAPI();
 
   const openConfigFolder = async () => {
@@ -73,17 +73,17 @@ export function AdvancedSettings() {
                 <div className="flex flex-col">
                   <Button
                     variant="secondary"
-                    onClick={() => setSkipWarningGui(true)}
+                    onClick={() => setShowWarningGUI(true)}
                   >
                     {l10n.getString('settings-utils-advanced-reset-gui-label')}
                   </Button>
                   <SettingsResetModal
                     accept={() => {
                       setConfig(guiDefaults());
-                      setSkipWarningGui(false);
+                      setShowWarningGUI(false);
                     }}
-                    onClose={() => setSkipWarningGui(false)}
-                    isOpen={skipWarningGui}
+                    onClose={() => setShowWarningGUI(false)}
+                    isOpen={showWarningGUI}
                     variant="gui"
                   ></SettingsResetModal>
                 </div>
@@ -105,7 +105,7 @@ export function AdvancedSettings() {
                 <div className="flex flex-col">
                   <Button
                     variant="secondary"
-                    onClick={() => setSkipWarningServer(true)}
+                    onClick={() => setShowWarningServer(true)}
                   >
                     {l10n.getString(
                       'settings-utils-advanced-reset-server-label'
@@ -117,10 +117,10 @@ export function AdvancedSettings() {
                         RpcMessage.SettingsResetRequest,
                         new SettingsResetRequestT()
                       );
-                      setSkipWarningServer(false);
+                      setShowWarningServer(false);
                     }}
-                    onClose={() => setSkipWarningServer(false)}
-                    isOpen={skipWarningServer}
+                    onClose={() => setShowWarningServer(false)}
+                    isOpen={showWarningServer}
                     variant="server"
                   ></SettingsResetModal>
                 </div>
@@ -142,7 +142,7 @@ export function AdvancedSettings() {
                 <div className="flex flex-col">
                   <Button
                     variant="secondary"
-                    onClick={() => setSkipWarningAll(true)}
+                    onClick={() => setShowWarningAll(true)}
                   >
                     {l10n.getString('settings-utils-advanced-reset-all-label')}
                   </Button>
@@ -153,10 +153,10 @@ export function AdvancedSettings() {
                         new SettingsResetRequestT()
                       );
                       setConfig(guiDefaults());
-                      setSkipWarningAll(false);
+                      setShowWarningAll(false);
                     }}
-                    onClose={() => setSkipWarningAll(false)}
-                    isOpen={skipWarningAll}
+                    onClose={() => setShowWarningAll(false)}
+                    isOpen={showWarningAll}
                     variant="all"
                   ></SettingsResetModal>
                 </div>
