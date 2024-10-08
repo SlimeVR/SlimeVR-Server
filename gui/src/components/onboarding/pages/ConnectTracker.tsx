@@ -29,6 +29,8 @@ const statusLabelMap = {
     'onboarding-connect_tracker-connection_status-none',
   [WifiProvisioningStatus.SERIAL_INIT]:
     'onboarding-connect_tracker-connection_status-serial_init',
+  [WifiProvisioningStatus.OPTAINING_MAC_ADDRESS]:
+    'onboarding-connect_tracker-connection_status-optaining_mac_address',
   [WifiProvisioningStatus.PROVISIONING]:
     'onboarding-connect_tracker-connection_status-provisioning',
   [WifiProvisioningStatus.CONNECTING]:
@@ -46,12 +48,13 @@ const statusLabelMap = {
 const statusProgressMap = {
   [WifiProvisioningStatus.NONE]: 0,
   [WifiProvisioningStatus.SERIAL_INIT]: 0.2,
+  [WifiProvisioningStatus.OPTAINING_MAC_ADDRESS]: 0.3,
   [WifiProvisioningStatus.PROVISIONING]: 0.4,
   [WifiProvisioningStatus.CONNECTING]: 0.6,
   [WifiProvisioningStatus.LOOKING_FOR_SERVER]: 0.8,
   [WifiProvisioningStatus.DONE]: 1,
-  [WifiProvisioningStatus.CONNECTION_ERROR]: 0.6,
-  [WifiProvisioningStatus.COULD_NOT_FIND_SERVER]: 0.8,
+  [WifiProvisioningStatus.CONNECTION_ERROR]: 1,
+  [WifiProvisioningStatus.COULD_NOT_FIND_SERVER]: 1,
 };
 
 export function ConnectTrackersPage() {
@@ -92,15 +95,6 @@ export function ConnectTrackersPage() {
     ({ status }: WifiProvisioningStatusResponseT) => {
       setProvisioningStatus(status);
     }
-  );
-
-  useRPCPacket(
-    RpcMessage.UnknownDeviceHandshakeNotification,
-    ({ macAddress }: UnknownDeviceHandshakeNotificationT) =>
-      sendRPCPacket(
-        RpcMessage.AddUnknownDeviceRequest,
-        new AddUnknownDeviceRequestT(macAddress)
-      )
   );
 
   const isError =

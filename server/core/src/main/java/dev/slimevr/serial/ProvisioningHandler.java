@@ -2,6 +2,7 @@ package dev.slimevr.serial;
 
 import dev.slimevr.VRServer;
 import io.eiren.util.logging.LogManager;
+import kotlin.text.Regex;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -80,6 +81,10 @@ public class ProvisioningHandler implements SerialListener {
 
 	}
 
+	public void tryOptainMacAddress() {
+		this.changeStatus(ProvisioningStatus.OPTAINING_MAC_ADDRESS);
+		vrServer.serialHandler.infoRequest();
+	}
 
 	public void tryProvisioning() {
 		this.changeStatus(ProvisioningStatus.PROVISIONING);
@@ -97,12 +102,10 @@ public class ProvisioningHandler implements SerialListener {
 
 
 		if (System.currentTimeMillis() - this.lastStatusChange > 10000) {
-			if (this.provisioningStatus == ProvisioningStatus.NONE)
+			if (this.provisioningStatus == ProvisioningStatus.NONE || this.provisioningStatus == ProvisioningStatus.SERIAL_INIT)
 				this.initSerial(this.preferredPort);
-			else if (this.provisioningStatus == ProvisioningStatus.SERIAL_INIT)
-				initSerial(this.preferredPort);
-			else if (this.provisioningStatus == ProvisioningStatus.PROVISIONING)
-				this.tryProvisioning();
+			else if (this.provisioningStatus == ProvisioningStatus.OPTAINING_MAC_ADDRESS || this.provisioningStatus == ProvisioningStatus.PROVISIONING)
+				this.tryOptainMacAddress();
 			else if (this.provisioningStatus == ProvisioningStatus.LOOKING_FOR_SERVER)
 				this.changeStatus(ProvisioningStatus.COULD_NOT_FIND_SERVER);
 		}
@@ -113,7 +116,7 @@ public class ProvisioningHandler implements SerialListener {
 	public void onSerialConnected(@NotNull SerialPort port) {
 		if (!isRunning)
 			return;
-		this.tryProvisioning();
+		this.tryOptainMacAddress();
 	}
 
 	@Override
@@ -129,68 +132,82 @@ public class ProvisioningHandler implements SerialListener {
 		if (!isRunning)
 			return;
 
-		if (
-			provisioningStatus == ProvisioningStatus.PROVISIONING
-				&& str.contains("New wifi credentials set")
-		) {
-			this.changeStatus(ProvisioningStatus.CONNECTING);
-		}
+		if (provisioningStatus == ProvisioningStatus.OPTAINING_MAC_ADDRESS && str.contains("mac:")) {
+			var match = new Regex("mac: (?<mac>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})), ").find(str, str.indexOf("mac:"));
 
-		if (
-			provisioningStatus == ProvisioningStatus.CONNECTING
-				&& (str.contains("Looking for the server")
-					|| str.contains("Searching for the server"))
-		) {
-			this.changeStatus(ProvisioningStatus.LOOKING_FOR_SERVER);
-		}
-
-		if (
-			provisioningStatus == ProvisioningStatus.LOOKING_FOR_SERVER
-				&& str.contains("Handshake successful")
-		) {
-			this.changeStatus(ProvisioningStatus.DONE);
-		}
-
-		if (
-			provisioningStatus == ProvisioningStatus.CONNECTING
-				&& str.contains("Can't connect from any credentials")
-		) {
-			if (++connectRetries >= MAX_CONNECTION_RETRIES) {
-				this.changeStatus(ProvisioningStatus.CONNECTION_ERROR);
-			} else {
-				this.vrServer.serialHandler.rebootRequest();
+			if (match != null) {
+				var b = match.getGroups().get(1);
+				if (b != null) {
+					vrServer.configManager.getVrConfig().addKnownDevice(b.getValue());
+					vrServer.configManager.saveConfig();
+					this.tryProvisioning();
+				}
 			}
-		}
-	}
 
-	public void changeStatus(ProvisioningStatus status) {
-		this.lastStatusChange = System.currentTimeMillis();
-		if (this.provisioningStatus != status) {
-			this.listeners
-				.forEach(
-					(l) -> l
-						.onProvisioningStatusChange(status, vrServer.serialHandler.getCurrentPort())
-				);
-			this.provisioningStatus = status;
-		}
-	}
+	   }
 
-	@Override
-	public void onNewSerialDevice(SerialPort port) {
-		if (!isRunning)
-			return;
-		this.initSerial(this.preferredPort);
-	}
+	   if (
+		   provisioningStatus == ProvisioningStatus.PROVISIONING
+			   && str.contains("New wifi credentials set")
+	   ) {
+		   this.changeStatus(ProvisioningStatus.CONNECTING);
+	   }
 
-	public void addListener(ProvisioningListener channel) {
-		this.listeners.add(channel);
-	}
+	   if (
+		   provisioningStatus == ProvisioningStatus.CONNECTING
+			   && (str.contains("Looking for the server")
+				   || str.contains("Searching for the server"))
+	   ) {
+		   this.changeStatus(ProvisioningStatus.LOOKING_FOR_SERVER);
+	   }
 
-	public void removeListener(ProvisioningListener l) {
-		listeners.removeIf(listener -> l == listener);
-	}
+	   if (
+		   provisioningStatus == ProvisioningStatus.LOOKING_FOR_SERVER
+			   && str.contains("Handshake successful")
+	   ) {
+		   this.changeStatus(ProvisioningStatus.DONE);
+	   }
 
-	@Override
-	public void onSerialDeviceDeleted(@NotNull SerialPort port) {
-	}
+	   if (
+		   provisioningStatus == ProvisioningStatus.CONNECTING
+			   && str.contains("Can't connect from any credentials")
+	   ) {
+		   if (++connectRetries >= MAX_CONNECTION_RETRIES) {
+			   this.changeStatus(ProvisioningStatus.CONNECTION_ERROR);
+		   } else {
+			   this.vrServer.serialHandler.rebootRequest();
+		   }
+	   }
+   }
+
+   public void changeStatus(ProvisioningStatus status) {
+	   this.lastStatusChange = System.currentTimeMillis();
+	   if (this.provisioningStatus != status) {
+		   this.listeners
+			   .forEach(
+				   (l) -> l
+					   .onProvisioningStatusChange(status, vrServer.serialHandler.getCurrentPort())
+			   );
+		   this.provisioningStatus = status;
+	   }
+   }
+
+   @Override
+   public void onNewSerialDevice(SerialPort port) {
+	   if (!isRunning)
+		   return;
+	   this.initSerial(this.preferredPort);
+   }
+
+   public void addListener(ProvisioningListener channel) {
+	   this.listeners.add(channel);
+   }
+
+   public void removeListener(ProvisioningListener l) {
+	   listeners.removeIf(listener -> l == listener);
+   }
+
+   @Override
+   public void onSerialDeviceDeleted(@NotNull SerialPort port) {
+   }
 }

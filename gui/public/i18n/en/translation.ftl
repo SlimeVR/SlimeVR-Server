@@ -661,6 +661,7 @@ onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-none = Looking for trackers
 onboarding-connect_tracker-connection_status-serial_init = Connecting to serial device
+onboarding-connect_tracker-connection_status-optaining_mac_address = Optaining the tracker mac address
 onboarding-connect_tracker-connection_status-provisioning = Sending Wi-Fi credentials
 onboarding-connect_tracker-connection_status-connecting = Trying to connect to Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Looking for server

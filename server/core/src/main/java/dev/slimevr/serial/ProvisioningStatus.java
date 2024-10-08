@@ -1,15 +1,18 @@
 package dev.slimevr.serial;
 
+import solarxr_protocol.rpc.WifiProvisioningStatus;
+
 public enum ProvisioningStatus {
 
-	NONE(0),
-	SERIAL_INIT(1),
-	PROVISIONING(2),
-	CONNECTING(3),
-	CONNECTION_ERROR(4),
-	LOOKING_FOR_SERVER(5),
-	COULD_NOT_FIND_SERVER(6),
-	DONE(7);
+	NONE(WifiProvisioningStatus.NONE),
+	SERIAL_INIT(WifiProvisioningStatus.SERIAL_INIT),
+	PROVISIONING(WifiProvisioningStatus.PROVISIONING),
+	OPTAINING_MAC_ADDRESS(WifiProvisioningStatus.OPTAINING_MAC_ADDRESS),
+	CONNECTING(WifiProvisioningStatus.CONNECTING),
+	CONNECTION_ERROR(WifiProvisioningStatus.CONNECTION_ERROR),
+	LOOKING_FOR_SERVER(WifiProvisioningStatus.LOOKING_FOR_SERVER),
+	COULD_NOT_FIND_SERVER(WifiProvisioningStatus.COULD_NOT_FIND_SERVER),
+	DONE(WifiProvisioningStatus.DONE);
 
 	public final int id;
 
