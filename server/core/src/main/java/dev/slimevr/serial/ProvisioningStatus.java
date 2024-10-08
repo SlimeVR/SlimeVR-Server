@@ -2,6 +2,7 @@ package dev.slimevr.serial;
 
 import solarxr_protocol.rpc.WifiProvisioningStatus;
 
+
 public enum ProvisioningStatus {
 
 	NONE(WifiProvisioningStatus.NONE),

@@ -102,9 +102,15 @@ public class ProvisioningHandler implements SerialListener {
 
 
 		if (System.currentTimeMillis() - this.lastStatusChange > 10000) {
-			if (this.provisioningStatus == ProvisioningStatus.NONE || this.provisioningStatus == ProvisioningStatus.SERIAL_INIT)
+			if (
+				this.provisioningStatus == ProvisioningStatus.NONE
+					|| this.provisioningStatus == ProvisioningStatus.SERIAL_INIT
+			)
 				this.initSerial(this.preferredPort);
-			else if (this.provisioningStatus == ProvisioningStatus.OPTAINING_MAC_ADDRESS || this.provisioningStatus == ProvisioningStatus.PROVISIONING)
+			else if (
+				this.provisioningStatus == ProvisioningStatus.OPTAINING_MAC_ADDRESS
+					|| this.provisioningStatus == ProvisioningStatus.PROVISIONING
+			)
 				this.tryOptainMacAddress();
 			else if (this.provisioningStatus == ProvisioningStatus.LOOKING_FOR_SERVER)
 				this.changeStatus(ProvisioningStatus.COULD_NOT_FIND_SERVER);
@@ -132,8 +138,11 @@ public class ProvisioningHandler implements SerialListener {
 		if (!isRunning)
 			return;
 
-		if (provisioningStatus == ProvisioningStatus.OPTAINING_MAC_ADDRESS && str.contains("mac:")) {
-			var match = new Regex("mac: (?<mac>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})), ").find(str, str.indexOf("mac:"));
+		if (
+			provisioningStatus == ProvisioningStatus.OPTAINING_MAC_ADDRESS && str.contains("mac:")
+		) {
+			var match = new Regex("mac: (?<mac>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})), ")
+				.find(str, str.indexOf("mac:"));
 
 			if (match != null) {
 				var b = match.getGroups().get(1);
@@ -144,70 +153,70 @@ public class ProvisioningHandler implements SerialListener {
 				}
 			}
 
-	   }
+		}
 
-	   if (
-		   provisioningStatus == ProvisioningStatus.PROVISIONING
-			   && str.contains("New wifi credentials set")
-	   ) {
-		   this.changeStatus(ProvisioningStatus.CONNECTING);
-	   }
+		if (
+			provisioningStatus == ProvisioningStatus.PROVISIONING
+				&& str.contains("New wifi credentials set")
+		) {
+			this.changeStatus(ProvisioningStatus.CONNECTING);
+		}
 
-	   if (
-		   provisioningStatus == ProvisioningStatus.CONNECTING
-			   && (str.contains("Looking for the server")
-				   || str.contains("Searching for the server"))
-	   ) {
-		   this.changeStatus(ProvisioningStatus.LOOKING_FOR_SERVER);
-	   }
+		if (
+			provisioningStatus == ProvisioningStatus.CONNECTING
+				&& (str.contains("Looking for the server")
+					|| str.contains("Searching for the server"))
+		) {
+			this.changeStatus(ProvisioningStatus.LOOKING_FOR_SERVER);
+		}
 
-	   if (
-		   provisioningStatus == ProvisioningStatus.LOOKING_FOR_SERVER
-			   && str.contains("Handshake successful")
-	   ) {
-		   this.changeStatus(ProvisioningStatus.DONE);
-	   }
+		if (
+			provisioningStatus == ProvisioningStatus.LOOKING_FOR_SERVER
+				&& str.contains("Handshake successful")
+		) {
+			this.changeStatus(ProvisioningStatus.DONE);
+		}
 
-	   if (
-		   provisioningStatus == ProvisioningStatus.CONNECTING
-			   && str.contains("Can't connect from any credentials")
-	   ) {
-		   if (++connectRetries >= MAX_CONNECTION_RETRIES) {
-			   this.changeStatus(ProvisioningStatus.CONNECTION_ERROR);
-		   } else {
-			   this.vrServer.serialHandler.rebootRequest();
-		   }
-	   }
-   }
+		if (
+			provisioningStatus == ProvisioningStatus.CONNECTING
+				&& str.contains("Can't connect from any credentials")
+		) {
+			if (++connectRetries >= MAX_CONNECTION_RETRIES) {
+				this.changeStatus(ProvisioningStatus.CONNECTION_ERROR);
+			} else {
+				this.vrServer.serialHandler.rebootRequest();
+			}
+		}
+	}
 
-   public void changeStatus(ProvisioningStatus status) {
-	   this.lastStatusChange = System.currentTimeMillis();
-	   if (this.provisioningStatus != status) {
-		   this.listeners
-			   .forEach(
-				   (l) -> l
-					   .onProvisioningStatusChange(status, vrServer.serialHandler.getCurrentPort())
-			   );
-		   this.provisioningStatus = status;
-	   }
-   }
+	public void changeStatus(ProvisioningStatus status) {
+		this.lastStatusChange = System.currentTimeMillis();
+		if (this.provisioningStatus != status) {
+			this.listeners
+				.forEach(
+					(l) -> l
+						.onProvisioningStatusChange(status, vrServer.serialHandler.getCurrentPort())
+				);
+			this.provisioningStatus = status;
+		}
+	}
 
-   @Override
-   public void onNewSerialDevice(SerialPort port) {
-	   if (!isRunning)
-		   return;
-	   this.initSerial(this.preferredPort);
-   }
+	@Override
+	public void onNewSerialDevice(SerialPort port) {
+		if (!isRunning)
+			return;
+		this.initSerial(this.preferredPort);
+	}
 
-   public void addListener(ProvisioningListener channel) {
-	   this.listeners.add(channel);
-   }
+	public void addListener(ProvisioningListener channel) {
+		this.listeners.add(channel);
+	}
 
-   public void removeListener(ProvisioningListener l) {
-	   listeners.removeIf(listener -> l == listener);
-   }
+	public void removeListener(ProvisioningListener l) {
+		listeners.removeIf(listener -> l == listener);
+	}
 
-   @Override
-   public void onSerialDeviceDeleted(@NotNull SerialPort port) {
-   }
+	@Override
+	public void onSerialDeviceDeleted(@NotNull SerialPort port) {
+	}
 }
