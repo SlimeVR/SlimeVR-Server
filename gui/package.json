@@ -9,6 +9,8 @@
     "@formatjs/intl-localematcher": "^0.2.32",
     "@react-three/drei": "^9.107.0",
     "@react-three/fiber": "^8.16.8",
+    "@sentry/react": "^8.26.0",
+    "@sentry/vite-plugin": "^2.22.2",
     "@tauri-apps/api": "2.0.0-beta.14",
     "@tauri-apps/plugin-dialog": "2.0.0-beta.6",
     "@tauri-apps/plugin-fs": "2.0.0-beta.6",
