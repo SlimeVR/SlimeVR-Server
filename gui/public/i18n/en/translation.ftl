@@ -321,7 +321,16 @@ settings-general-tracker_mechanics-drift_compensation = Drift compensation
 settings-general-tracker_mechanics-drift_compensation-description =
     Compensates IMU yaw drift by applying an inverse rotation.
     Change amount of compensation and up to how many resets are taken into account.
+    This should only be used if you need to reset very often!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation_warning =
+    <b>Warning:</b> Only use drift compensation if you need to reset
+    very often (every ~5-10 minutes).
+
+    Some IMUs prone to frequent resets include:
+    Joy-Cons, owoTrack, and MPUs (without recent firmware).
+settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancel
+settings-general-tracker_mechanics-drift_compensation_warning-done = I understand
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting reset calibration
@@ -424,6 +433,9 @@ settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-theme = Color theme
+settings-general-interface-show-navbar-onboarding = Show "{ navbar-onboarding }" on navigation bar
+settings-general-interface-show-navbar-onboarding-description = This changes if the "{ navbar-onboarding }" button shows on the navigation bar.
+settings-general-interface-show-navbar-onboarding-label = Show "{ navbar-onboarding }"
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language you want to use.
 settings-general-interface-lang-placeholder = Select the language to use

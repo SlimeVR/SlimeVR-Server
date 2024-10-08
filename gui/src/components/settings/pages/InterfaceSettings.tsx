@@ -21,6 +21,7 @@ interface InterfaceSettingsForm {
   appearance: {
     devmode: boolean;
     theme: string;
+    showNavbarOnboarding: boolean;
     textSize: number;
     fonts: string;
   };
@@ -43,6 +44,8 @@ export function InterfaceSettings() {
       appearance: {
         devmode: config?.debug ?? defaultConfig.debug,
         theme: config?.theme ?? defaultConfig.theme,
+        showNavbarOnboarding:
+          config?.showNavbarOnboarding ?? defaultConfig.showNavbarOnboarding,
         textSize: config?.textSize ?? defaultConfig.textSize,
         fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
       },
@@ -69,6 +72,7 @@ export function InterfaceSettings() {
       feedbackSound: values.notifications.feedbackSound,
       feedbackSoundVolume: values.notifications.feedbackSoundVolume,
       theme: values.appearance.theme,
+      showNavbarOnboarding: values.appearance.showNavbarOnboarding,
       fonts: values.appearance.fonts.split(','),
       textSize: values.appearance.textSize,
       connectedTrackersWarning: values.notifications.connectedTrackersWarning,
@@ -318,6 +322,30 @@ export function InterfaceSettings() {
                   colors="!bg-trans-flag"
                 ></ThemeSelector>
               </div>
+            </div>
+
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-interface-show-navbar-onboarding'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-interface-show-navbar-onboarding-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                variant="toggle"
+                control={control}
+                outlined
+                name="appearance.showNavbarOnboarding"
+                label={l10n.getString(
+                  'settings-general-interface-show-navbar-onboarding-label'
+                )}
+              />
             </div>
 
             <Typography bold>
