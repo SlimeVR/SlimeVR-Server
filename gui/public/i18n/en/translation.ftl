@@ -682,6 +682,20 @@ onboarding-assignment_tutorial-second_step-v2 = 2. Attach the strap to your trac
 onboarding-assignment_tutorial-second_step-continuation-v2 = The velcro side for the extension should be facing up like the following image:
 onboarding-assignment_tutorial-done = I put stickers and straps!
 
+## Usage reason choose
+onboarding-usage_choose-title = What are you gonna use SlimeVR for?
+onboarding-usage_choose-description = What are you gonna use SlimeVR for?
+onboarding-usage_choose-option-title = { $mode ->
+    *[0] VR
+    [1] VTuber
+    [2] Mocap
+}
+onboarding-usage_choose-option-label = { $mode ->
+    *[0] For using with games
+    [1] For using with VMC apps
+    [2] For recording a whole body with precise tracking
+}
+
 ## Tracker assignment setup
 onboarding-assign_trackers-back = Go Back to Wi-Fi Credentials
 onboarding-assign_trackers-title = Assign trackers

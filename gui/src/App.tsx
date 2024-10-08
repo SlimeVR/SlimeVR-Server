@@ -55,6 +55,7 @@ import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
+import { UsageChoose } from './components/onboarding/pages/usage-reason/UsageChoose';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -130,6 +131,7 @@ function Layout() {
               path="assign-tutorial"
               element={<AssignmentTutorialPage />}
             />
+            <Route path="usage/choose" element={<UsageChoose />} />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
             <Route path="enter-vr" element={<EnterVRPage />} />
             <Route path="mounting/choose" element={<MountingChoose />}></Route>
