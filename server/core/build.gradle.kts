@@ -77,7 +77,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 	implementation("com.mayakapps.kache:kache:2.0.0-rc02")
 
-	implementation("com.github.loucass003:EspflashKotlin:v0.10.0")
+	api("com.github.loucass003:EspflashKotlin:v0.10.0")
 
 	// Allow the use of reflection
 	implementation(kotlin("reflect"))
