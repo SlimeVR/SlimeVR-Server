@@ -436,7 +436,7 @@ export function GeneralSettings() {
   //   }
   // }, [state]);
 
-  const [skipDriftCompWarning, setSkipDriftCompWarning] = useState(false);
+  const [showDriftCompWarning, setShowDriftCompWarning] = useState(false);
 
   return (
     <SettingsPageLayout>
@@ -705,18 +705,18 @@ export function GeneralSettings() {
                   return;
                 }
 
-                setSkipDriftCompWarning(true);
+                setShowDriftCompWarning(true);
               }}
             />
             <DriftCompensationModal
               accept={() => {
-                setSkipDriftCompWarning(false);
+                setShowDriftCompWarning(false);
               }}
               onClose={() => {
-                setSkipDriftCompWarning(false);
+                setShowDriftCompWarning(false);
                 setValue('driftCompensation.enabled', false);
               }}
-              isOpen={skipDriftCompWarning}
+              isOpen={showDriftCompWarning}
             ></DriftCompensationModal>
             <div className="flex gap-5 pt-5 md:flex-row flex-col">
               <NumberSelector
