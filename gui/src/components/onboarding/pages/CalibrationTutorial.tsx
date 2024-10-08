@@ -12,7 +12,7 @@ import { useTrackers } from '@/hooks/tracker';
 import { useRestCalibrationTrackers } from '@/hooks/imu-logic';
 import { averageVector, Vector3FromVec3fT } from '@/maths/vector3';
 import { Vector3 } from 'three';
-import { useDebouncedEffect } from '@/hooks/timeout';
+import { useTimeout } from '@/hooks/timeout';
 
 export enum CalibrationStatus {
   SUCCESS,
@@ -35,7 +35,7 @@ export function CalibrationTutorialPage() {
     duration: IMU_CALIBRATION_TIME,
     onCountdownEnd: () => setCalibrationStatus(CalibrationStatus.SUCCESS),
   });
-  useDebouncedEffect(() => setSkipButton(true), [], 10000);
+  useTimeout(() => setSkipButton(true), 10000);
   const { useConnectedIMUTrackers } = useTrackers();
   const connectedIMUTrackers = useConnectedIMUTrackers();
   const restCalibrationTrackers =
