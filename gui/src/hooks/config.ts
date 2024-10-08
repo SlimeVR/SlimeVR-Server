@@ -37,6 +37,7 @@ export interface Config {
   mirrorView: boolean;
   assignMode: AssignMode;
   discordPresence: boolean;
+  showNavbarOnboarding: boolean;
 }
 
 export interface ConfigContext {
@@ -62,6 +63,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   mirrorView: true,
   assignMode: AssignMode.Core,
   discordPresence: false,
+  showNavbarOnboarding: true,
 };
 
 interface CrossStorage {
