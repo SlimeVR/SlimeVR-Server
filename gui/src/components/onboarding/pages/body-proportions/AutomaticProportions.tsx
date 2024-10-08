@@ -32,7 +32,7 @@ export function AutomaticProportionsPage() {
     },
   });
 
-  const [skipWarning, setSkipWarning] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
 
   applyProgress(0.9);
 
@@ -69,7 +69,7 @@ export function AutomaticProportionsPage() {
         <div className="w-full pb-4 flex flex-row mobile:justify-center">
           <Button
             variant="secondary"
-            onClick={() => setSkipWarning(true)}
+            onClick={() => setShowWarning(true)}
             disabled={isCounting}
           >
             <div className="relative">
@@ -83,10 +83,10 @@ export function AutomaticProportionsPage() {
         <ProportionsResetModal
           accept={() => {
             startCountdown();
-            setSkipWarning(false);
+            setShowWarning(false);
           }}
-          onClose={() => setSkipWarning(false)}
-          isOpen={skipWarning}
+          onClose={() => setShowWarning(false)}
+          isOpen={showWarning}
         ></ProportionsResetModal>
       </div>
     </AutoboneContextC.Provider>

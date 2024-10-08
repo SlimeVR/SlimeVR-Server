@@ -37,7 +37,8 @@ export function ProportionsResetModal({
         <div className="flex flex-col flex-grow items-center gap-3">
           <Localized id="reset-reset_all_warning" elems={{ b: <b></b> }}>
             <WarningBox>
-              <b>Warning:</b> This will reset your proportions to the defaults.
+              <b>Warning:</b> This will reset your proportions to being just
+              based on your height.
               <br />
               Are you sure you want to do this?
             </WarningBox>

@@ -17,7 +17,7 @@ export function ButtonsControl() {
   const { state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
 
-  const [skipWarning, setSkipWarning] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
   const resetAll = () => {
     sendRPCPacket(
       RpcMessage.SkeletonResetAllRequest,
@@ -34,16 +34,16 @@ export function ButtonsControl() {
       >
         {l10n.getString('onboarding-previous_step')}
       </Button>
-      <Button variant="secondary" onClick={() => setSkipWarning(true)}>
+      <Button variant="secondary" onClick={() => setShowWarning(true)}>
         {l10n.getString('reset-reset_all')}
       </Button>
       <ProportionsResetModal
         accept={() => {
           resetAll();
-          setSkipWarning(false);
+          setShowWarning(false);
         }}
-        onClose={() => setSkipWarning(false)}
-        isOpen={skipWarning}
+        onClose={() => setShowWarning(false)}
+        isOpen={showWarning}
       ></ProportionsResetModal>
       {!state.alonePage && (
         <Button variant="primary" className="ml-auto" to="/onboarding/done">
