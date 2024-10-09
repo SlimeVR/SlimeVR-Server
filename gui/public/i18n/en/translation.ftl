@@ -275,7 +275,6 @@ settings-sidebar-serial = Serial console
 settings-sidebar-appearance = Appearance
 settings-sidebar-notifications = Notifications
 settings-sidebar-advanced = Advanced
-settings-sidebar-reset = Reset settings
 
 ## SteamVR settings
 settings-general-steamvr = SteamVR
