@@ -16,6 +16,7 @@ import { LangSelector } from '@/components/commons/LangSelector';
 import { BellIcon } from '@/components/commons/icon/BellIcon';
 import { Range } from '@/components/commons/Range';
 import { Dropdown } from '@/components/commons/Dropdown';
+import { isTrayAvailable } from '@/utils/tauri';
 
 interface InterfaceSettingsForm {
   appearance: {
@@ -187,27 +188,31 @@ export function InterfaceSettings() {
               />
             </div>
 
-            <Typography bold>
-              {l10n.getString('settings-general-interface-use_tray')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-interface-use_tray-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="notifications.useTray"
-                label={l10n.getString(
-                  'settings-general-interface-use_tray-label'
-                )}
-              />
-            </div>
+            {isTrayAvailable && (
+              <>
+                <Typography bold>
+                  {l10n.getString('settings-general-interface-use_tray')}
+                </Typography>
+                <div className="flex flex-col pt-1 pb-2">
+                  <Typography color="secondary">
+                    {l10n.getString(
+                      'settings-general-interface-use_tray-description'
+                    )}
+                  </Typography>
+                </div>
+                <div className="grid sm:grid-cols-2 pb-4">
+                  <CheckBox
+                    variant="toggle"
+                    control={control}
+                    outlined
+                    name="notifications.useTray"
+                    label={l10n.getString(
+                      'settings-general-interface-use_tray-label'
+                    )}
+                  />
+                </div>
+              </>
+            )}
 
             <Typography bold>
               {l10n.getString('settings-general-interface-discord_presence')}

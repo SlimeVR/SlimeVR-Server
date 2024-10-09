@@ -27,6 +27,7 @@ import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
 import { listen } from '@tauri-apps/api/event';
 import { TrayOrExitModal } from './TrayOrExitModal';
+import { isTrayAvailable } from '@/utils/tauri';
 
 export function VersionTag() {
   return (
@@ -71,7 +72,7 @@ export function TopBar({
     await getCurrent().close();
   };
   const tryCloseApp = async (dontTray = false) => {
-    if (isTauri && config?.useTray === null) {
+    if (isTrayAvailable && config?.useTray === null) {
       setShowTrayOrExitModal(true);
       return;
     }
@@ -96,7 +97,7 @@ export function TopBar({
       const window = getCurrent();
       await window.show();
       await window.setFocus();
-      await invoke('update_tray_text');
+      if (isTrayAvailable) await invoke('update_tray_text');
       await tryCloseApp(true);
     });
     return () => {
