@@ -21,7 +21,7 @@ export function i18nHotReload(): PluginOption {
     handleHotUpdate({ file, server }) {
       if (file.endsWith('.ftl')) {
         console.log('Fluent files updated');
-        server.ws.send({
+        server.hot.send({
           type: 'custom',
           event: 'locales-update',
         });

@@ -25,7 +25,9 @@ export function UnknownDeviceModal() {
     RpcMessage.UnknownDeviceHandshakeNotification,
     ({ macAddress }: UnknownDeviceHandshakeNotificationT) => {
       if (
-        ['/onboarding/connect-trackers'].includes(pathname) ||
+        ['/onboarding/connect-trackers', '/settings/firmware-tool'].includes(
+          pathname
+        ) ||
         state.ignoredTrackers.has(macAddress as string) ||
         (currentTracker !== null && currentTracker !== macAddress)
       )
