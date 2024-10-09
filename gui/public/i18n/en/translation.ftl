@@ -74,6 +74,12 @@ skeleton_bone-ELBOW_OFFSET = Elbow Offset
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
+reset-reset_all_warning =
+    <b>Warning:</b> This will reset your proportions to being just based on your height.
+    Are you sure you want to do this?
+reset-reset_all_warning-reset = Reset proportions
+reset-reset_all_warning-cancel = Cancel
+
 reset-full = Full Reset
 reset-mounting = Reset Mounting
 reset-yaw = Yaw Reset
@@ -327,6 +333,12 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Change amount of compensation and up to how many resets are taken into account.
     This should only be used if you need to reset very often!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-prediction = Drift compensation prediction
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    Predicts yaw drift compensation beyond previously measured range.
+    Enable this if the tracker is continuously spinning on yaw axis.
+settings-general-tracker_mechanics-drift_compensation-prediction-label = Drift compensation prediction
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Warning:</b> Only use drift compensation if you need to reset
     very often (every ~5-10 minutes).
@@ -717,6 +729,7 @@ onboarding-calibration_tutorial-status-waiting = Waiting for you
 onboarding-calibration_tutorial-status-calibrating = Calibrating
 onboarding-calibration_tutorial-status-success = Nice!
 onboarding-calibration_tutorial-status-error = The tracker was moved
+onboarding-calibration_tutorial-skip = Skip tutorial
 
 ## Tracker assignment tutorial
 onboarding-assignment_tutorial = How to prepare a Slime Tracker before putting it on

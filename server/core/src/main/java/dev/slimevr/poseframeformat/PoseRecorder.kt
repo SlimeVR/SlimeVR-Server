@@ -83,12 +83,11 @@ class PoseRecorder(private val server: VRServer) {
 		trackers: List<Tracker?> = server.allTrackers,
 		frameCallback: Consumer<RecordingProgress>? = null,
 	): Future<PoseFrames> {
-		require(numFrames >= 1) { "numFrames must at least have a value of 1" }
-		require(intervalMs >= 1) { "intervalMs must at least have a value of 1" }
-		require(trackers.isNotEmpty()) { "trackers must have at least one entry" }
-		check(isReadyToRecord) { "PoseRecorder isn't ready to record!" }
+		require(numFrames >= 1) { "numFrames must at least have a value of 1." }
+		require(intervalMs >= 1) { "intervalMs must at least have a value of 1." }
+		require(trackers.isNotEmpty()) { "trackers must have at least one entry." }
 		cancelFrameRecording()
-		poseFrame = PoseFrames(trackers.size)
+		val poseFrame = PoseFrames(trackers.size)
 
 		// Update tracker list
 		this.trackers.ensureCapacity(trackers.size)
@@ -100,12 +99,14 @@ class PoseRecorder(private val server: VRServer) {
 
 			// Create a tracker recording
 			val trackerFrames = TrackerFrames(tracker, numFrames)
-			poseFrame?.frameHolders?.add(trackerFrames)
+			poseFrame.frameHolders.add(trackerFrames)
 
 			// Pair tracker with recording
 			this.trackers.add(Pair.of(tracker, trackerFrames))
 		}
+		require(this.trackers.isNotEmpty()) { "trackers must have at least one valid tracker." }
 
+		this.poseFrame = poseFrame
 		frameCursor = 0
 		this.numFrames = numFrames
 		frameRecordingInterval = intervalMs
