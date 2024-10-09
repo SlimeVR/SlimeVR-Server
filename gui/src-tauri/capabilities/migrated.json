@@ -24,6 +24,7 @@
     "window:allow-hide",
     "window:allow-show",
     "window:allow-set-focus",
+    "window:allow-set-decorations",
     "shell:allow-open",
     "store:allow-get",
     "store:allow-set",
