@@ -33,7 +33,8 @@
     "solarxr-protocol": "file:../solarxr-protocol",
     "three": "^0.163.0",
     "ts-pattern": "^5.2.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "use-double-tap": "^1.3.6"
   },
   "scripts": {
     "start": "vite --force",
