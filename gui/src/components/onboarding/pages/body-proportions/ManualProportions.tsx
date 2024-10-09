@@ -7,15 +7,17 @@ import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import { BodyProportions } from './BodyProportions';
 import { useLocalization } from '@fluent/react';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
+import { ProportionsResetModal } from './ProportionsResetModal';
 
 export function ButtonsControl() {
   const { l10n } = useLocalization();
   const { state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
 
+  const [showWarning, setShowWarning] = useState(false);
   const resetAll = () => {
     sendRPCPacket(
       RpcMessage.SkeletonResetAllRequest,
@@ -32,9 +34,17 @@ export function ButtonsControl() {
       >
         {l10n.getString('onboarding-previous_step')}
       </Button>
-      <Button variant="secondary" onClick={resetAll}>
+      <Button variant="secondary" onClick={() => setShowWarning(true)}>
         {l10n.getString('reset-reset_all')}
       </Button>
+      <ProportionsResetModal
+        accept={() => {
+          resetAll();
+          setShowWarning(false);
+        }}
+        onClose={() => setShowWarning(false)}
+        isOpen={showWarning}
+      ></ProportionsResetModal>
       {!state.alonePage && (
         <Button variant="primary" className="ml-auto" to="/onboarding/done">
           {l10n.getString('onboarding-continue')}

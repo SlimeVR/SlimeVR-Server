@@ -37,6 +37,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var driftSince: Long = 0
 	private var timeAtLastReset: Long = 0
 	private var compensateDrift = false
+	private var driftPrediction = false
 	private var driftCompensationEnabled = false
 	private var resetMountingFeet = false
 	private var armsResetMode = ArmsResetModes.BACK
@@ -78,6 +79,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	fun readDriftCompensationConfig(config: DriftCompensationConfig) {
 		compensateDrift = config.enabled
+		driftPrediction = config.prediction
 		driftAmount = config.amount
 		val maxResets = config.maxResets
 
@@ -186,11 +188,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private fun adjustToDrift(rotation: Quaternion): Quaternion {
 		if (driftCompensationEnabled && totalDriftTime > 0) {
-			return rotation
-				.interpR(
-					averagedDriftQuat * rotation,
-					driftAmount * ((System.currentTimeMillis() - driftSince).toFloat() / totalDriftTime),
-				)
+			var driftTimeRatio = ((System.currentTimeMillis() - driftSince).toFloat() / totalDriftTime)
+			if (!driftPrediction) {
+				driftTimeRatio = min(1.0f, driftTimeRatio)
+			}
+			return averagedDriftQuat.pow(driftAmount * driftTimeRatio) * rotation
 		}
 		return rotation
 	}
