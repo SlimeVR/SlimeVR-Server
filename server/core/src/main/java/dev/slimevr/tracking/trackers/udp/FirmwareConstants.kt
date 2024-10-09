@@ -125,3 +125,15 @@ enum class MagnetometerStatus {
 		fun getById(id: UByte): MagnetometerStatus? = byId[id]
 	}
 }
+
+@JvmInline
+value class SensorConfig(val v: UShort) {
+	val magStatus
+		get(): MagnetometerStatus {
+			return if ((v and 1u) == 1u.toUShort()) {
+				MagnetometerStatus.ENABLED
+			} else {
+				MagnetometerStatus.DISABLED
+			}
+		}
+}

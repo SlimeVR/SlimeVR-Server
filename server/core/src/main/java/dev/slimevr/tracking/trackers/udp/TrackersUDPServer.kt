@@ -472,14 +472,14 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 
 			is UDPPacket15SensorInfo -> {
 				if (connection == null) return
-				setUpSensor(connection, packet.sensorId, packet.sensorType, packet.sensorStatus, packet.magStatus)
+				setUpSensor(connection, packet.sensorId, packet.sensorType, packet.sensorStatus, packet.sensorConfig.magStatus)
 				// Send ack
 				bb.limit(bb.capacity())
 				bb.rewind()
 				parser.writeSensorInfoResponse(bb, connection, packet)
 				socket.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
 				LogManager.info(
-					"[TrackerServer] Sensor info for ${connection.descriptiveName}/${packet.sensorId}: ${packet.sensorStatus}, mag ${packet.magStatus}",
+					"[TrackerServer] Sensor info for ${connection.descriptiveName}/${packet.sensorId}: ${packet.sensorStatus}, mag ${packet.sensorConfig.magStatus}",
 				)
 			}
 

@@ -223,7 +223,7 @@ data class UDPPacket14Error(var errorNumber: Int = 0) :
 data class UDPPacket15SensorInfo(
 	var sensorStatus: Int = 0,
 	var sensorType: IMUType = IMUType.UNKNOWN,
-	var magStatus: MagnetometerStatus = MagnetometerStatus.NOT_SUPPORTED,
+	var sensorConfig: SensorConfig = SensorConfig(0u),
 ) : UDPPacket(15),
 	SensorSpecificPacket {
 	override var sensorId = 0
@@ -235,8 +235,7 @@ data class UDPPacket15SensorInfo(
 				IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
 		}
 		if (buf.remaining() > 0) {
-			magStatus =
-				MagnetometerStatus.getById(buf.get().toUByte() and 0xFFu) ?: MagnetometerStatus.NOT_SUPPORTED
+			sensorConfig = SensorConfig(buf.getShort().toUShort())
 		}
 	}
 
