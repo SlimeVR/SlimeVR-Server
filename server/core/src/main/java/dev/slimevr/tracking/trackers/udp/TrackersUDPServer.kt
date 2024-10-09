@@ -160,9 +160,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						imu type: ${handshake.imuType},
 						firmware: ${handshake.firmware} (${connection.firmwareBuild}),
 						mac: ${handshake.macString},
-						name: ${connection.name},
-						trackerPosition: ${handshake.trackerPosition},
-						dataSupport: ${handshake.trackerDataSupport}
+						name: ${connection.name}
 						""".trimIndent(),
 					)
 			}
@@ -170,7 +168,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				// Set up new sensor for older firmware.
 				// Firmware after 7 should send sensor status packet and sensor
 				// will be created when it's received
-				setUpSensor(connection, 0, handshake.imuType, 1, handshake.trackerPosition, handshake.trackerDataSupport)
+				setUpSensor(connection, 0, handshake.imuType, 1, null, TrackerDataSupport.ROTATION)
 			}
 			connection
 		}

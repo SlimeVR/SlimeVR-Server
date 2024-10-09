@@ -100,8 +100,7 @@ data class UDPPacket3Handshake(
 	var firmwareBuild: Int = 0,
 	var firmware: String? = null,
 	var macString: String? = null,
-	var trackerPosition: TrackerPosition? = null,
-	var trackerDataSupport: TrackerDataSupport = TrackerDataSupport.ROTATION,
+	var trackerType: Int = 0,
 ) : UDPPacket(3) {
 	override fun readData(buf: ByteBuffer) {
 		if (buf.remaining() == 0) return
@@ -139,8 +138,7 @@ data class UDPPacket3Handshake(
 			)
 			if (macString == "00:00:00:00:00:00") macString = null
 		}
-		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.int)
-		if (buf.remaining() > 0) trackerDataSupport = TrackerDataSupport.getById(buf.int + 1) ?: TrackerDataSupport.ROTATION
+		if (buf.remaining() > 1) trackerType = buf.get().toInt()
 	}
 
 	override fun writeData(buf: ByteBuffer) {
@@ -229,8 +227,10 @@ data class UDPPacket14Error(var errorNumber: Int = 0) :
 data class UDPPacket15SensorInfo(
 	var sensorStatus: Int = 0,
 	var sensorType: IMUType = IMUType.UNKNOWN,
-	var trackerPosition: TrackerPosition? = null,
 	var trackerDataSupport: TrackerDataSupport = TrackerDataSupport.ROTATION,
+	var trackerPosition: TrackerPosition? = null,
+	var trackerAverageTps: float = 0,
+	var trackerAverageDataTps: float = 0
 ) : UDPPacket(15),
 	SensorSpecificPacket {
 	override var sensorId = 0
@@ -241,8 +241,10 @@ data class UDPPacket15SensorInfo(
 			sensorType =
 				IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
 		}
-		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.int)
-		if (buf.remaining() > 0) trackerDataSupport = TrackerDataSupport.getById(buf.int + 1) ?: TrackerDataSupport.ROTATION
+		if (buf.remaining() > 0) trackerDataSupport = TrackerDataSupport.getById(buf.get()) ?: TrackerDataSupport.ROTATION
+		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.short)
+		if (buf.remaining() > 0) trackerAverageTps = buf.float
+		if (buf.remaining() > 0) trackerAverageDataTps = buf.float
 	}
 
 	companion object {
