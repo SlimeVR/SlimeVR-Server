@@ -9,6 +9,7 @@ import { RulerIcon } from './commons/icon/RulerIcon';
 import { SparkleIcon } from './commons/icon/SparkleIcon';
 import { WrenchIcon } from './commons/icon/WrenchIcons';
 import { useBreakpoint } from '@/hooks/breakpoint';
+import { useConfig } from '@/hooks/config';
 
 export function NavButton({
   to,
@@ -64,6 +65,7 @@ export function NavButton({
 }
 
 export function MainLinks() {
+  const { config } = useConfig();
   const { l10n } = useLocalization();
 
   return (
@@ -94,9 +96,11 @@ export function MainLinks() {
       >
         {l10n.getString('navbar-body_proportions')}
       </NavButton>
-      <NavButton to="/onboarding/home" icon={<SparkleIcon></SparkleIcon>}>
-        {l10n.getString('navbar-onboarding')}
-      </NavButton>
+      {config?.showNavbarOnboarding && (
+        <NavButton to="/onboarding/home" icon={<SparkleIcon></SparkleIcon>}>
+          {l10n.getString('navbar-onboarding')}
+        </NavButton>
+      )}
     </>
   );
 }

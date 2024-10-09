@@ -84,6 +84,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				.vrConfig
 				.driftCompensation
 			driftCompensationConfig.enabled = req.driftCompensation().enabled()
+			driftCompensationConfig.prediction = req.driftCompensation().prediction()
 			driftCompensationConfig.amount = req.driftCompensation().amount()
 			driftCompensationConfig.maxResets = req.driftCompensation().maxResets()
 			driftCompensationConfig.updateTrackersDriftCompensation()
