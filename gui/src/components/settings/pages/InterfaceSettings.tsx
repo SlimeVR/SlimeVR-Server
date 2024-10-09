@@ -24,6 +24,7 @@ interface InterfaceSettingsForm {
     showNavbarOnboarding: boolean;
     textSize: number;
     fonts: string;
+    decorations: boolean;
   };
   notifications: {
     watchNewDevices: boolean;
@@ -48,6 +49,7 @@ export function InterfaceSettings() {
           config?.showNavbarOnboarding ?? defaultConfig.showNavbarOnboarding,
         textSize: config?.textSize ?? defaultConfig.textSize,
         fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
+        decorations: config?.decorations ?? defaultConfig.decorations,
       },
       notifications: {
         watchNewDevices:
@@ -78,6 +80,7 @@ export function InterfaceSettings() {
       connectedTrackersWarning: values.notifications.connectedTrackersWarning,
       useTray: values.notifications.useTray,
       discordPresence: values.notifications.discordPresence,
+      decorations: values.appearance.decorations,
     });
   };
 
@@ -264,6 +267,28 @@ export function InterfaceSettings() {
                 name="appearance.devmode"
                 label={l10n.getString(
                   'settings-general-interface-dev_mode-label'
+                )}
+              />
+            </div>
+
+            <Typography bold>
+              {l10n.getString('settings-interface-appearance-decorations')}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-interface-appearance-decorations-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                variant="toggle"
+                control={control}
+                outlined
+                name="appearance.decorations"
+                label={l10n.getString(
+                  'settings-interface-appearance-decorations-label'
                 )}
               />
             </div>

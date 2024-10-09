@@ -450,6 +450,9 @@ settings-interface-appearance-font-os_font = OS font
 settings-interface-appearance-font-slime_font = Default font
 settings-interface-appearance-font_size = Base font scaling
 settings-interface-appearance-font_size-description = This affects the font size of the whole interface except this settings panel.
+settings-interface-appearance-decorations = Use the system native decorations
+settings-interface-appearance-decorations-description = This will not render the top bar of the interface and will use the operating system's instead.
+settings-interface-appearance-decorations-label = Use native decorations
 
 ## Notification settings
 settings-interface-notifications = Notifications
