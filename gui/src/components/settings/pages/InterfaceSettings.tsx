@@ -98,6 +98,7 @@ export function InterfaceSettings() {
     <SettingsPageLayout>
       <form
         className="flex flex-col gap-2 w-full"
+        // Don't resize the font size for this page because you have access to font resizing on it and we don't want to break the layout just in case
         style={
           {
             '--font-size': '12rem',
