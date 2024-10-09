@@ -2,7 +2,7 @@ import { createContext, useContext, useMemo, useState } from 'react';
 import { DeveloperModeWidgetForm } from '@/components/widgets/DeveloperModeWidget';
 import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
-import { Store } from '@tauri-apps/plugin-store';
+import { createStore, Store } from '@tauri-apps/plugin-store';
 import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
 
@@ -73,7 +73,9 @@ interface CrossStorage {
   get(key: string): Promise<string | null>;
 }
 
-const tauriStore: CrossStorage = new Store('gui-settings.dat');
+const tauriStore: CrossStorage = await createStore('gui-settings.dat', {
+  autoSave: false,
+});
 
 const localStore: CrossStorage = {
   get: async (key) => localStorage.getItem(key),
