@@ -186,6 +186,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	private fun dataRead() {
 		synchronized(devicesByHID) {
 			var devicesPresent = false
+			var devicesDataReceived = false
 			val q = intArrayOf(0, 0, 0, 0)
 			val a = intArrayOf(0, 0, 0)
 			for ((hidDevice, deviceList) in devicesByHID) {
@@ -202,6 +203,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						LogManager.info("[TrackerServer] Malformed HID packet, ignoring")
 						continue // Don't continue with this data
 					}
+					devicesDataReceived = true // Data is received and is valid (not malformed)
 					val packetCount = dataReceived.size / 20
 					var i = 0
 					while (i < packetCount * 20) {
@@ -261,6 +263,8 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			}
 			if (!devicesPresent) {
 				sleep(10) // No hid device, "empty loop" so sleep to save the poor cpu
+			} else if (!devicesDataReceived) {
+				sleep(1) // read has no timeout, no data also causes an "empty loop"
 			}
 		}
 	}
