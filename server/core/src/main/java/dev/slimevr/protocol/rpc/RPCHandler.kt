@@ -205,7 +205,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 	) {
 		val fbb = FlatBufferBuilder(32)
 
-		val localIp = getLocalIp()
+		val localIp = getLocalIp() ?: return
 		val response = ServerInfosResponse
 			.createServerInfosResponse(fbb, fbb.createString(localIp))
 		val outbound = this.createRPCMessage(fbb, RpcMessage.ServerInfosResponse, response)

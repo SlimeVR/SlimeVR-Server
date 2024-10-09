@@ -23,7 +23,7 @@ class VRCOSCQueryHandler(
 
 	init {
 		// Request data
-		val localIp = RPCUtil.getLocalIp()
+		val localIp = RPCUtil.getLocalIp() ?: throw IllegalStateException("No local IP address found for OSCQuery to bind to")
 		val httpPort = randomFreePort()
 		oscQueryServer = OSCQueryServer(
 			"SlimeVR-Server-$httpPort",

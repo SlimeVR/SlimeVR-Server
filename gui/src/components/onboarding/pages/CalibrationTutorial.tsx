@@ -12,6 +12,7 @@ import { useTrackers } from '@/hooks/tracker';
 import { useRestCalibrationTrackers } from '@/hooks/imu-logic';
 import { averageVector, Vector3FromVec3fT } from '@/maths/vector3';
 import { Vector3 } from 'three';
+import { useTimeout } from '@/hooks/timeout';
 
 export enum CalibrationStatus {
   SUCCESS,
@@ -29,10 +30,12 @@ export function CalibrationTutorialPage() {
   const [calibrationStatus, setCalibrationStatus] = useState(
     CalibrationStatus.WAITING
   );
+  const [skipButton, setSkipButton] = useState(false);
   const { timer, isCounting, startCountdown, abortCountdown } = useCountdown({
     duration: IMU_CALIBRATION_TIME,
     onCountdownEnd: () => setCalibrationStatus(CalibrationStatus.SUCCESS),
   });
+  useTimeout(() => setSkipButton(true), 10000);
   const { useConnectedIMUTrackers } = useTrackers();
   const connectedIMUTrackers = useConnectedIMUTrackers();
   const restCalibrationTrackers =
@@ -192,6 +195,13 @@ export function CalibrationTutorialPage() {
                   {l10n.getString('onboarding-continue')}
                 </Button>
               </div>
+              <Button
+                variant="secondary"
+                to="/onboarding/assign-tutorial"
+                className={classNames('xs:ml-auto', !skipButton && 'hidden')}
+              >
+                {l10n.getString('onboarding-calibration_tutorial-skip')}
+              </Button>
             </div>
           </div>
           <div className="mobile:hidden flex self-center w-[32rem] mobile:absolute">

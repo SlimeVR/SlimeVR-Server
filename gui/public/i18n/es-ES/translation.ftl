@@ -381,6 +381,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Reinicio de montura de
 settings-general-fk_settings-arm_fk = Tracking de brazos
 settings-general-fk_settings-arm_fk-description = Forzar el seguimiento de los brazos desde el HMD incluso si hay datos de posición de la mano disponibles.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
+settings-general-fk_settings-reset_settings = Restablecer la configuración
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Restablecer la inclinación del HMD (rotación vertical) al realizar un reinicio completo. Útil si se lleva un HMD en la frente para VTubing o mocap. No habilitar para VR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = Reiniciar la inclinación del HMD
 settings-general-fk_settings-arm_fk-reset_mode-description = Cambia la posición por defecto para el restablecimiento de montura
 settings-general-fk_settings-arm_fk-back = Parte posterior del brazo
 settings-general-fk_settings-arm_fk-back-description = Modo predeterminado, con los brazos hacia atrás y los antebrazos hacia adelante.
@@ -479,6 +482,15 @@ settings-general-interface-connected_trackers_warning-label = Aviso de trackers 
 settings-general-interface-use_tray = Minimizar a la bandeja
 settings-general-interface-use_tray-description = Te permite cerrar la ventana sin cerrar SlimeVR para que pueda seguir usándolo sin que la interfaz te moleste.
 settings-general-interface-use_tray-label = Minimizar en la bandeja del sistema
+settings-general-interface-discord_presence = Compartir actividad en Discord
+settings-general-interface-discord_presence-description = Le indica a tu cliente de Discord que estás usando SlimeVR junto con el número de rastreadores IMU que estás usando.
+settings-general-interface-discord_presence-label = Compartir actividad en Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Recolectando slimes
+        [one] Usando 1 tracker
+       *[other] Usando { $amount } trackers
+    }
 
 ## Serial settings
 
@@ -501,6 +513,8 @@ settings-serial-get_infos = Obtener información
 settings-serial-serial_select = Selecciona un puerto serial
 settings-serial-auto_dropdown_item = Automático
 settings-serial-get_wifi_scan = Obtener escaneo WiFi
+settings-serial-file_type = Texto sin formato
+settings-serial-save_logs = Guardar en archivo
 
 ## OSC router settings
 
@@ -531,12 +545,17 @@ settings-osc-router-network-address-placeholder = Dirección IPV4
 
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
-settings-osc-vrchat-description = Cambia la configuración específica de VRChat para recibir datos del visor (HMD) y enviar datos a los trackers para FBT sin SteamVR (ej. Quest standalone).
+settings-osc-vrchat-description-v1 =
+    Change settings specific to the OSC Trackers standard used for sending
+    tracking data to applications without SteamVR (ex. Quest standalone).
+    Make sure to enable OSC in VRChat via the Action Menu under OSC > Enabled.
+    To allow receiving HMD and controller data from VRChat, go in your main menu's
+    settings under Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Habilitar
 settings-osc-vrchat-enable-description = Alternar el envío y la recepción de datos
 settings-osc-vrchat-enable-label = Habilitar
 settings-osc-vrchat-network = Puertos de red
-settings-osc-vrchat-network-description = Configura los puertos para escuchar y enviar datos a VRChat.
+settings-osc-vrchat-network-description-v1 = Establece los puertos para recibir y enviar datos. Se puede dejar sin modificar para VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Puerto de entrada
     .placeholder = Puerto de entrada (Por defecto: 9001)
@@ -544,7 +563,7 @@ settings-osc-vrchat-network-port_out =
     .label = Puerto de salida
     .placeholder = Puerto de salida (Por defecto: 9000)
 settings-osc-vrchat-network-address = Dirección de red
-settings-osc-vrchat-network-address-description = Elige a qué dirección enviar los datos a VRChat (Comprueba la configuración Wi-Fi de tu dispositivo).
+settings-osc-vrchat-network-address-description-v1 = Elige a qué dirección enviar los datos. Se puede dejar sin modificar para VRChat.
 settings-osc-vrchat-network-address-placeholder = Dirección IP de VRChat
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Activar el envío de trackers específicos a través de OSC.
@@ -563,12 +582,31 @@ settings-osc-vmc-enable = Habilitar
 settings-osc-vmc-enable-description = Alterna el envío y recepción de datos.
 settings-osc-vmc-enable-label = Habilitar
 settings-osc-vmc-network = Puertos de red
+settings-osc-vmc-network-description = Establece los puertos para escuchar y enviar datos via VMC.
+settings-osc-vmc-network-port_in =
+    .label = Puerto de entrada
+    .placeholder = Puerto de entrada (Por defecto: 39540)
+settings-osc-vmc-network-port_out =
+    .label = Puerto de salida
+    .placeholder = Puerto de salida (Por defecto: 39539)
 settings-osc-vmc-network-address = Dirección de red
+settings-osc-vmc-network-address-description = Elige la dirección a la que se enviarán los datos vía VMC.
 settings-osc-vmc-network-address-placeholder = Dirección IPV4
+settings-osc-vmc-vrm = Modelo VRM
+settings-osc-vmc-vrm-description = Cargar un modelo VRM para permitir el anclaje de la cabeza y posibilitar una mayor compatibilidad con otras aplicaciones.
 settings-osc-vmc-vrm-model_unloaded = No hay modelo cargado
+settings-osc-vmc-vrm-model_loaded =
+    { $titled ->
+        [true] Modelo cargado: { $name }
+       *[false] Modelo sin título cargado
+    }
+settings-osc-vmc-vrm-file_select = Arrastre y suelte un modelo para utilizarlo, o <u>busquelo</u>
 settings-osc-vmc-anchor_hip = Anclar a la cadera
 settings-osc-vmc-anchor_hip-description = Ancla el tracking a la cadera, útil para VTubing sentado. Si se deshabilita, carga un modelo VRM.
 settings-osc-vmc-anchor_hip-label = Anclar a la cadera
+settings-osc-vmc-mirror_tracking = Invertir el tracking
+settings-osc-vmc-mirror_tracking-description = Invierte el tracking horizontalmente.
+settings-osc-vmc-mirror_tracking-label = Invertir el tracking
 
 ## Setup/onboarding menu
 
@@ -576,6 +614,9 @@ onboarding-skip = Omitir configuración
 onboarding-continue = Continuar
 onboarding-wip = Trabajo en progreso
 onboarding-previous_step = Paso anterior
+onboarding-setup_warning =
+    <b>Advertencia:</b> La configuración inicial es necesaria para un buen tracking,
+    es necesaria si es la primera vez que usas SlimeVR
 onboarding-setup_warning-skip = Omitir configuración
 onboarding-setup_warning-cancel = Continuar con la configuración
 
@@ -598,9 +639,28 @@ onboarding-wifi_creds-password =
 
 ## Mounting setup
 
+onboarding-reset_tutorial-back = Volver a la calibración de montura
 onboarding-reset_tutorial = Tutorial para resetteo de trackers
 onboarding-reset_tutorial-explanation = Mientras usas tus trackers, es posible que se desalineen debido al balanceo de la IMU o porque es posible que se hayan movido físicamente. Tienes varias formas de solucionar este problema.
 onboarding-reset_tutorial-skip = Omitir paso
+# Cares about multiline
+onboarding-reset_tutorial-0 =
+    Toque { $taps } veces el rastreador resaltado para activar el restablecimiento horizontal.
+    
+    Esto hará que los trackers miren en la misma dirección que tu visor (HMD).
+# Cares about multiline
+onboarding-reset_tutorial-1 =
+    Toque { $taps } veces el rastreador resaltado para activar el reinicio completo.
+    
+    Para ello es necesario estar de pie (pose i). Hay un retraso de 3 segundos (configurable) antes de que realmente suceda.
+    Esto restablece completamente la posición y la rotación de todos sus trackers. Debería solucionar la mayoría de los problemas.
+# Cares about multiline
+onboarding-reset_tutorial-2 =
+    Toque { $taps } veces el tracker resaltado para activar el restablecimiento de montura.
+    
+    El restablecimiento de montura ayuda en cómo los trackers están realmente colocados en ti, así que si accidentalmente los moviste y cambiaste su orientación por una gran cantidad, esto ayudará.
+    
+    Necesitas estar en una pose como si estuvieras esquiando como se muestra en el asistente de montaje automático y tienes un retraso de 3 segundos (configurable) antes de que se active.
 
 ## Setup start
 
@@ -624,6 +684,8 @@ onboarding-done-close = Cerrar configuración
 
 onboarding-connect_tracker-back = Volver a credenciales de Wi-Fi
 onboarding-connect_tracker-title = Conectar trackers
+onboarding-connect_tracker-description-p0-v1 = ¡Ahora a la parte divertida, conectar los trackers!
+onboarding-connect_tracker-description-p1-v1 = Conecte cada tracker de uno en uno a través de un puerto USB.
 onboarding-connect_tracker-issue-serial = ¡Tengo problemas para conectarme!
 onboarding-connect_tracker-usb = Tracker USB
 onboarding-connect_tracker-connection_status-none = Buscando trackers
@@ -634,12 +696,24 @@ onboarding-connect_tracker-connection_status-looking_for_server = Buscando servi
 onboarding-connect_tracker-connection_status-connection_error = No se puede conectar al Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = No se pudo encontrar el servidor
 onboarding-connect_tracker-connection_status-done = Conectado al Server
+# $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
+# More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
+# English in this case only has 2 plural rules, which are "one" and "other",
+# we use 0 in an explicit way because there is no plural rule in english for 0, so we directly say
+# if $amount is 0 then we say "No trackers connected"
+onboarding-connect_tracker-connected_trackers =
+    { $amount ->
+        [0] No hay tracker conectados
+        [one] 1 tracker conectado
+       *[other] { $amount } trackers conectados
+    }
 onboarding-connect_tracker-next = He conectado todos mis trackers
 
 ## Tracker calibration tutorial
 
 onboarding-calibration_tutorial = Tutorial de calibración de IMU
 onboarding-calibration_tutorial-subtitle = ¡Esto ayudará a reducir el drift de los trackers!
+onboarding-calibration_tutorial-description = Cada vez que enciendas tus trackers, estos necesitan descansar sobre una superficie plana para calibrarse. Hagamos lo mismo pulsando el botón «{ onboarding-calibration_tutorial-calibrate }», <b>¡no los muevas!</b>
 onboarding-calibration_tutorial-calibrate = Mis trackers estan en una superficie plana
 onboarding-calibration_tutorial-status-waiting = Esperando por ti
 onboarding-calibration_tutorial-status-calibrating = Calibrando
@@ -661,8 +735,38 @@ onboarding-assignment_tutorial-done = ¡Le puse pegatinas y correas!
 onboarding-assign_trackers-back = Volver a credenciales de Wi-Fi
 onboarding-assign_trackers-title = Asignar trackers
 onboarding-assign_trackers-description = Elije qué tracker va a dónde. Haz clic en la ubicación donde deseas colocar un tracker
+# Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
+# $assigned (Number) - Trackers that have been assigned a body part
+# $trackers (Number) - Trackers connected to the server
+onboarding-assign_trackers-assigned =
+    { $trackers ->
+        [one] { $assigned } de 1 tracker asignado
+       *[other] { $assigned } de { $trackers } trackers asignados
+    }
 onboarding-assign_trackers-advanced = Mostrar ubicaciones de asignación avanzadas
 onboarding-assign_trackers-next = He asignado todos los trackers
+onboarding-assign_trackers-mirror_view = Vista en espejo
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+       *[other] x{ $trackersCount }
+    }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] Set de Cuerpo Inferior
+        [core] Set Básico
+        [enhanced-core] Set Básico Mejorado
+        [full-body] Set de Cuerpo Completo
+       *[all] Todos los Trackers
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] Mínimo para el seguimiento de cuerpo completo en RV
+        [core] + Tracking de columna mejorado
+        [enhanced-core] + Rotación de los pies
+        [full-body] + Tracking de codos
+       *[all] Todas las asignaciones de tracker disponibles
+    }
 
 ## Tracker assignment warnings
 
@@ -691,69 +795,246 @@ onboarding-assign_trackers-warning-RIGHT_FOOT =
         [6] El pie derecho está asignado, pero es necesario que también se asigne el tobillo derecho!
        *[other] Pie derecho asignado, pero necesitas asignar Desconocido
     }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [2] El tobillo izquierdo está asignado, ¡pero necesitas que el muslo izquierdo también lo esté!
+        [1] El tobillo izquierdo está asignado, ¡pero necesitas que el pecho, la cadera o la cintura también lo estén!
+        [0] El tobillo izquierdo está asignado, ¡pero necesitas que el muslo izquierdo y el pecho, la cadera o la cintura también lo estén!
+       *[unknown] El tobillo izquierdo está asignado, ¡pero necesitas que la parte del cuerpo desconocida no asignada también lo esté!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
+    { $unassigned ->
+        [2] El tobillo derecho está asignado, ¡pero necesitas que el muslo derecho también lo esté!
+        [1] El tobillo derecho está asignado, ¡pero necesitas que el pecho, la cadera o la cintura también lo estén!
+        [0] El tobillo derecho está asignado, ¡pero necesitas que el muslo derecho y el pecho, la cadera o la cintura también lo estén!
+       *[unknown] El tobillo derecho está asignado, ¡pero necesitas que la parte del cuerpo desconocida no asignada también lo esté!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
+    { $unassigned ->
+        [0] El muslo izquierdo está asignado, ¡pero necesitas que el pecho, la cadera o la cintura también lo estén!
+       *[unknown] El muslo izquierdo está asignado, ¡pero necesitas que la parte del cuerpo desconocida no asignada también lo esté!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_UPPER_LEG =
+    { $unassigned ->
+        [0] El muslo derecho está asignado, ¡pero necesitas que el pecho, la cadera o la cintura también lo estén!
+       *[unknown] El muslo derecho está asignado, ¡pero necesitas que la parte del cuerpo desconocida no asignada también lo esté!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-HIP =
+    { $unassigned ->
+        [0] La cadera está asignada, ¡pero necesitas que el pecho también lo esté!
+       *[unknown] La cadera está asignada, ¡pero necesitas que la parte del cuerpo desconocida no asignada también lo esté!
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-WAIST =
+    { $unassigned ->
+        [0] La cintura está asignada, ¡pero necesitas que el pecho también lo esté!
+       *[unknown] La cintura está asignada, ¡pero necesitas que la parte del cuerpo desconocida no asignada también lo esté!
+    }
 
 ## Tracker mounting method choose
 
+onboarding-choose_mounting = ¿Qué método de calibración de montura usara?
+# Multiline text
+onboarding-choose_mounting-description = La posición de montura corrige la colocación de los trackers en el cuerpo.
+onboarding-choose_mounting-auto_mounting = Calibración de montura automatica
 # Italized text
-onboarding-choose_mounting-auto_mounting-label = Experimental
+onboarding-choose_mounting-auto_mounting-label-v2 = Recomendada
+onboarding-choose_mounting-auto_mounting-description = Esto detectará automáticamente la posición de montura para todos sus trackers a partir de 2 poses
+onboarding-choose_mounting-manual_mounting = Calibración de montura manual
 # Italized text
-onboarding-choose_mounting-manual_mounting-label = Recomendado
+onboarding-choose_mounting-manual_mounting-label-v2 = Puede que no sea lo suficientemente precisa
+onboarding-choose_mounting-manual_mounting-description = Esto te permitirá elegir la posición de montura para cada tracker de manera manual
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    ¿Está seguro de que desea realizar
+    la calibración automática de montura?
+onboarding-choose_mounting-manual_modal-description = <b>La calibración de montaje manual se recomienda para nuevos usuarios</b>, ya que las poses de la calibración de montaje automática pueden ser difíciles de acertar a la primera y pueden requerir algo de práctica.
+onboarding-choose_mounting-manual_modal-confirm = Sé lo que estoy haciendo
 onboarding-choose_mounting-manual_modal-cancel = Cancelar
 
 ## Tracker manual mounting setup
 
+onboarding-manual_mounting-back = Volver atrás para entrar en VR
+onboarding-manual_mounting = Calibración de montura manual
+onboarding-manual_mounting-description = Haz clic en cada tracker y selecciona la forma en la que están montados
+onboarding-manual_mounting-auto_mounting = Calibración de montura automatica
 onboarding-manual_mounting-next = Siguiente paso
 
 ## Tracker automatic mounting setup
 
 onboarding-automatic_mounting-back = Volver para entrar en VR
+onboarding-automatic_mounting-title = Calibración de montura
+onboarding-automatic_mounting-description = Para que los trackers de SlimeVR funcionen, necesitamos asignar una posición de montura a tus trackers para alinearlos con la posicion física del tracker.
+onboarding-automatic_mounting-manual_mounting = Calibración de montura manual
 onboarding-automatic_mounting-next = Siguiente paso
 onboarding-automatic_mounting-prev_step = Paso anterior
+onboarding-automatic_mounting-done-title = Posiciones de monturas calibradas.
+onboarding-automatic_mounting-done-description = ¡Su calibración de montura está completa!
 onboarding-automatic_mounting-done-restart = Volver a intentarlo
+onboarding-automatic_mounting-mounting_reset-title = Reinicio de montura
+onboarding-automatic_mounting-mounting_reset-step-0 = 1. Ponte en cuclillas en postura de "esquí" con las piernas dobladas, la parte superior del cuerpo inclinada hacia adelante y los brazos doblados.
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. Presiona el botón "Restablecer montaje" y espera 3 segundos antes de que se restablezcan las orientaciones de montaje de los trackers.
 onboarding-automatic_mounting-preparation-title = Preparación
+onboarding-automatic_mounting-preparation-step-0 = 1. Mantente erguido con los brazos a los lados.
+onboarding-automatic_mounting-preparation-step-1 = 2. Pulse el botón "Reinicio completo" y espere 3 segundos antes de que los trackers se reinicien.
+onboarding-automatic_mounting-put_trackers_on-title = Ponte los trackers
+onboarding-automatic_mounting-put_trackers_on-description = Para calibrar la posiciones de montura, vamos a utilizar los trackers que acabas de asignar. Colocate todos tus trackers, puedes ver cuales son cuales en la figura de la derecha.
+onboarding-automatic_mounting-put_trackers_on-next = Tengo todos mis trackers en posicion
 
 ## Tracker proportions method choose
 
+onboarding-choose_proportions = ¿Qué método de calibración de proporciones utilizara?
+# Multiline string
+onboarding-choose_proportions-description-v1 =
+    Las proporciones corporales se utilizaran para conocer las medidas de tu cuerpo. Son necesarias para calcular las posiciones de los trackers. 
+    Cuando las proporciones de tu cuerpo no coincidan con las guardadas, la precisión del tracking será peor y notarás cosas como que patinas o te deslizas, o que tu cuerpo no se ajusta bien a tu avatar.
+    <b>¡Sólo necesitas medir tu cuerpo una vez!</b> A menos que estén mal o tu cuerpo haya cambiado, entonces no necesitas volver a hacerlo.
 onboarding-choose_proportions-auto_proportions = Proporciones automáticas
 # Italized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recomendado
+onboarding-choose_proportions-auto_proportions-descriptionv3 =
+    Adivinará tus proporciones grabando una muestra de tus movimientos y pasándola por un algoritmo.
+    
+    <b>¡Esto requiere tener tu visor (HMD) conectado a SlimeVR y en tu cabeza!</b>
 onboarding-choose_proportions-manual_proportions = Proporciones manuales
+# Italized text
+onboarding-choose_proportions-manual_proportions-subtitle = Para pequeños retoques
+onboarding-choose_proportions-manual_proportions-description = Esto te permitirá ajustar tus proporciones manualmente modificándolas directamente
 onboarding-choose_proportions-export = Exportar proporciones
+onboarding-choose_proportions-import = Importar proporciones
 onboarding-choose_proportions-import-success = Importado
+onboarding-choose_proportions-import-failed = Fallido
 onboarding-choose_proportions-file_type = Archivo de proporciones físicas
 
 ## Tracker manual proportions setup
 
+onboarding-manual_proportions-back = Volver al tutorial de reinicios
 onboarding-manual_proportions-title = Proporciones físicas manuales
+onboarding-manual_proportions-precision = Ajuste por precisión
 onboarding-manual_proportions-auto = Proporciones automáticas
+onboarding-manual_proportions-ratio = Ajustar por grupos de ratio
 
 ## Tracker automatic proportions setup
 
+onboarding-automatic_proportions-back = Volver al tutorial de reinicio
 onboarding-automatic_proportions-title = Mide tu cuerpo
+onboarding-automatic_proportions-description = Para que los trackers de SlimeVR funcionen, necesitamos saber tus proporciones corporales. Esta breve calibración lo medirá por ti.
+onboarding-automatic_proportions-manual = Proporciones manuales
 onboarding-automatic_proportions-prev_step = Paso anterior
+onboarding-automatic_proportions-put_trackers_on-title = Ponte los trackers
+onboarding-automatic_proportions-put_trackers_on-description = Para calibrar tus proporciones, vamos a utilizar los trackers que acabas de asignar. Ponte todos tus trackers, puedes ver cuáles son cuáles en la figura de la derecha.
+onboarding-automatic_proportions-put_trackers_on-next = Tengo todos mis trackers puestos
 onboarding-automatic_proportions-requirements-title = Requisitos
+# Each line of text is a different list item
+onboarding-automatic_proportions-requirements-descriptionv2 =
+    Tienes al menos suficientes trackers para trackear tus pies (generalmente 5 trackers).
+    Los trackers y tu visor están encendidos y los llevas puestos.
+    Tus trackers y visor está conectados al servidor de SlimeVR y funcionan correctamente (ej. sin cortes, sin desconexiones, etc).
+    Tu visor están reportando datos de posición al servidor de SlimeVR (esto generalmente significa tener SteamVR ejecutándose y conectado a SlimeVR usando el driver para SteamVR de SlimeVR).
+    Su tracking está funcionando y está representando con precisión sus movimientos (ej. usted ha realizado un reinicio completo y se mueven en la dirección correcta al patear, agacharse, sentarse, etc).
 onboarding-automatic_proportions-requirements-next = He leído los requisitos
+onboarding-automatic_proportions-check_height-title = Comprueba tu altura
+onboarding-automatic_proportions-check_height-description = Utilizamos tu estatura como base de nuestras mediciones utilizando la altura de tu visor (HMD) como aproximación a tu estatura real, ¡pero es mejor que compruebes tú mismo si son correctas!
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning = Por favor, pulse el botón mientras esté <u>derecho</u> para calcular su altura. ¡Tienes 3 segundos después de pulsar el botón!
+onboarding-automatic_proportions-check_height-guardian_tip =
+    Si usted está usando un visor VR standalone, ¡asegúrese de tener su guardián /
+    limite activado para que tu altura sea la correcta!
+onboarding-automatic_proportions-check_height-fetch_height = ¡Estoy de pie!
+# Context is that the height is unknown
+onboarding-automatic_proportions-check_height-unknown = Desconocida
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height1 = La altura de tu HMD es
+# Shows an element below it
+onboarding-automatic_proportions-check_height-height1 = por lo que tu altura real es
+onboarding-automatic_proportions-check_height-next_step = Están bien
+onboarding-automatic_proportions-start_recording-title = Prepárate para moverte
+onboarding-automatic_proportions-start_recording-description = Ahora vamos a grabar algunas poses y movimientos específicos. Se le indicarán en la siguiente pantalla. ¡Prepárate para empezar cuando pulse el botón!
+onboarding-automatic_proportions-start_recording-next = Iniciar grabación
 onboarding-automatic_proportions-recording-title = REC
+onboarding-automatic_proportions-recording-description-p0 = Grabación en curso...
+onboarding-automatic_proportions-recording-description-p1 = Realiza los movimientos que se muestran a continuación:
+# Each line of text is a different list item
+onboarding-automatic_proportions-recording-steps =
+    Parado derecho, gira tu cabeza en un circulo.
+    Dobla la espalda hacia delante y ponte en cuclillas. En cuclillas, mira a la izquierda y luego a la derecha.
+    Gira la parte superior de tu cuerpo hacia la izquierda (en el sentido contrario a las agujas del reloj) y luego estira los brazos hacia el suelo.
+    Gira la parte superior de tu cuerpo hacia la derecha (en el sentido de las agujas del reloj) y luego estira los brazos hacia el suelo.
+    Gira las caderas en un movimiento circular como si estuvieras usando un aro redondo.
+    Si queda tiempo de grabación, puedes repetir estos pasos hasta que termine.
 onboarding-automatic_proportions-recording-processing = Procesando los resultados
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
+onboarding-automatic_proportions-recording-timer =
+    { $time ->
+        [one] Queda 1 segundo
+       *[other] Quedan { $time } segundos
+    }
 onboarding-automatic_proportions-verify_results-title = Verificar resultados
+onboarding-automatic_proportions-verify_results-description = Revisa los resultados a continuación, ¿Son correctos?
+onboarding-automatic_proportions-verify_results-results = Resultados de la grabación
 onboarding-automatic_proportions-verify_results-processing = Procesando los resultados
+onboarding-automatic_proportions-verify_results-redo = Rehacer la grabación
+onboarding-automatic_proportions-verify_results-confirm = Estan correctas
 onboarding-automatic_proportions-done-title = Proporciones medidas y guardadas.
 onboarding-automatic_proportions-done-description = ¡Calibración de las proporciones físicas completada!
+onboarding-automatic_proportions-error_modal =
+    <b>Atención:</b> ¡Se ha encontrado un error al estimar las proporciones!
+    Por favor <docs>comprueba la documentación</docs> o únete a nuestro <discord>Discord</discord> para obtener ayuda ^_^
+onboarding-automatic_proportions-error_modal-confirm = ¡Entendido!
 
 ## Home
 
+home-no_trackers = No se han detectado ni asignado trackers
 
 ## Trackers Still On notification
 
+trackers_still_on-modal-title = Los trackers siguen encendidos
+trackers_still_on-modal-description =
+    Uno o más trackers siguen encendidos.
+    Aún quieres salir de SlimeVR?
+trackers_still_on-modal-confirm = Salir de SlimeVR
+trackers_still_on-modal-cancel = Un momento...
 
 ## Status system
 
+status_system-StatusTrackerReset = Se recomienda realizar un reinicio completo ya que uno o más trackers están desajustados.
+status_system-StatusSteamVRDisconnected =
+    { $type ->
+        [steamvr_feeder] Actualmente no está conectado a la SlimeVR Feeder App.
+       *[steamvr] Actualmente no está conectado a SteamVR a través del controlador de SlimeVR.
+    }
+status_system-StatusTrackerError = El tracker { $trackerName } tiene un error.
+status_system-StatusUnassignedHMD = El casco de RV debe asignarse como tracker de cabeza.
 
 ## Tray Menu
 
+tray_menu-show = Mostrar
+tray_menu-hide = Ocultar
+tray_menu-quit = Salir
 
 ## First exit modal
 
+tray_or_exit_modal-title = ¿Qué debe hacer el botón de cierre?
+# Multiline text
+tray_or_exit_modal-description =
+    Esto te permite elegir si quieres salir de la aplicación o minimizarlo a la bandeja al pulsar el botón de cerrar.
+    
+    ¡Puedes cambiar esto más tarde en la configuración de la interfaz!
+tray_or_exit_modal-radio-exit = Salir al cerrar
+tray_or_exit_modal-radio-tray = Minimizar a la bandeja
+tray_or_exit_modal-submit = Guardar
+tray_or_exit_modal-cancel = Cancelar
 
 ## Unknown device modal
 
+unknown_device-modal-title = ¡Se ha encontrado un nuevo tracker!
+unknown_device-modal-description =
+    Hay un nuevo tracker con dirección MAC <b>{ $deviceId }</b>.
+    ¿Quieres conectarlo a SlimeVR?
+unknown_device-modal-confirm = ¡Claro!
+unknown_device-modal-forget = Ignóralo
