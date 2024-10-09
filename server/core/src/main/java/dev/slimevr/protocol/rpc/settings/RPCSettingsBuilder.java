@@ -123,6 +123,7 @@ public class RPCSettingsBuilder {
 			.createDriftCompensationSettings(
 				fbb,
 				driftCompensationConfig.getEnabled(),
+				driftCompensationConfig.getPrediction(),
 				driftCompensationConfig.getAmount(),
 				driftCompensationConfig.getMaxResets()
 			);

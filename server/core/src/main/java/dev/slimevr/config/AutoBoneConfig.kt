@@ -26,4 +26,5 @@ class AutoBoneConfig {
 	var useSkeletonHeight = false
 	var randSeed = 4L
 	var useFrameFiltering = false
+	var maxFinalError = 0.03f
 }
