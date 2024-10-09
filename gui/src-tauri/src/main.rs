@@ -228,7 +228,7 @@ fn main() -> Result<()> {
 						.shell()
 						.command(java_bin.to_str().unwrap())
 						.current_dir(p)
-						.args(["-Xmx512M", "-jar", "slimevr.jar", "run"])
+						.args(["-Xmx128M", "-jar", "slimevr.jar", "run"])
 						.spawn()
 						.expect("Unable to start the server jar");
 

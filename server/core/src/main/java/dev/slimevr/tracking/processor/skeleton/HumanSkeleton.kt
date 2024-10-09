@@ -26,6 +26,7 @@ import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
+import solarxr_protocol.rpc.StatusData
 import java.lang.IllegalArgumentException
 import kotlin.properties.Delegates
 
@@ -1102,6 +1103,12 @@ class HumanSkeleton(
 
 	@VRServerThread
 	fun resetTrackersMounting(resetSourceName: String?) {
+		val server = humanPoseManager.server
+		if (server != null && server.statusSystem.hasStatusType(StatusData.StatusTrackerReset)) {
+			LogManager.info("[HumanSkeleton] Reset: mounting ($resetSourceName) failed, reset required")
+			return
+		}
+
 		// Resets the mounting orientation of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {

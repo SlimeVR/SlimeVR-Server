@@ -10,7 +10,7 @@ export function MountingChoose() {
   const { l10n } = useLocalization();
   const { applyProgress, skipSetup, state } = useOnboarding();
   const [animated, setAnimated] = useState(false);
-  const [skipWarning, setSkipWarning] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
 
   applyProgress(0.65);
 
@@ -139,8 +139,8 @@ export function MountingChoose() {
       </div>
       <SkipSetupWarningModal
         accept={skipSetup}
-        onClose={() => setSkipWarning(false)}
-        isOpen={skipWarning}
+        onClose={() => setShowWarning(false)}
+        isOpen={showWarning}
       ></SkipSetupWarningModal>
     </>
   );

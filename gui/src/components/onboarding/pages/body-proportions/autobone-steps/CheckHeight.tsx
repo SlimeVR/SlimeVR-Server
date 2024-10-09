@@ -12,16 +12,12 @@ import { Localized, useLocalization } from '@fluent/react';
 import { useForm } from 'react-hook-form';
 import { useMemo, useState } from 'react';
 import { NumberSelector } from '@/components/commons/NumberSelector';
-import {
-  DEFAULT_HEIGHT,
-  MIN_HEIGHT,
-} from '@/components/onboarding/pages/body-proportions/ProportionsChoose';
+import { MIN_HEIGHT } from '@/components/onboarding/pages/body-proportions/ProportionsChoose';
 import { useLocaleConfig } from '@/i18n/config';
 import { useCountdown } from '@/hooks/countdown';
 import { TipBox } from '@/components/commons/TipBox';
 
 interface HeightForm {
-  height: number;
   hmdHeight: number;
 }
 
@@ -62,18 +58,13 @@ export function CheckHeight({
     [currentLocales]
   );
 
-  useRPCPacket(
-    RpcMessage.HeightResponse,
-    ({ hmdHeight, estimatedFullHeight }: HeightResponseT) => {
-      setValue('height', estimatedFullHeight || DEFAULT_HEIGHT);
-      setValue('hmdHeight', hmdHeight);
-    }
-  );
+  useRPCPacket(RpcMessage.HeightResponse, ({ hmdHeight }: HeightResponseT) => {
+    setValue('hmdHeight', hmdHeight);
+  });
 
   const onSubmit = (values: HeightForm) => {
     const changeSettings = new ChangeSettingsRequestT();
     const autobone = new AutoBoneSettingsT();
-    autobone.targetFullHeight = values.height;
     autobone.targetHmdHeight = values.hmdHeight;
     changeSettings.autoBoneSettings = autobone;
 
@@ -142,23 +133,6 @@ export function CheckHeight({
               max={4}
               step={0.01}
               disabled={true}
-            />
-            <NumberSelector
-              control={control}
-              name="height"
-              label={l10n.getString(
-                'onboarding-automatic_proportions-check_height-height1'
-              )}
-              valueLabelFormat={(value) =>
-                isNaN(value)
-                  ? l10n.getString(
-                      'onboarding-automatic_proportions-check_height-unknown'
-                    )
-                  : mFormat.format(value)
-              }
-              min={MIN_HEIGHT}
-              max={4}
-              step={0.01}
             />
           </form>
         </div>

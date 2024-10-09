@@ -4,7 +4,7 @@ import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from '@/components/commons/BaseModal';
 import ReactModal from 'react-modal';
 
-export function HandsWarningModal({
+export function ProportionsResetModal({
   isOpen = true,
   onClose,
   accept,
@@ -15,11 +15,11 @@ export function HandsWarningModal({
    */
   isOpen: boolean;
   /**
-   * Function to trigger when the neck warning hasn't been accepted
+   * Function to trigger when the warning hasn't been accepted
    */
   onClose: () => void;
   /**
-   * Function when you press `Yes`
+   * Function when you press `Reset settings`
    */
   accept: () => void;
 } & ReactModal.Props) {
@@ -29,32 +29,32 @@ export function HandsWarningModal({
     <BaseModal
       isOpen={isOpen}
       shouldCloseOnOverlayClick
-      shouldCloseOnEsc
       onRequestClose={onClose}
       className={props.className}
       overlayClassName={props.overlayClassName}
     >
       <div className="flex w-full h-full flex-col ">
-        <div className="flex w-full flex-col flex-grow items-center gap-3">
-          <Localized
-            id="settings-general-steamvr-trackers-hands-warning"
-            elems={{ b: <b></b> }}
-          >
+        <div className="flex flex-col flex-grow items-center gap-3">
+          <Localized id="reset-reset_all_warning" elems={{ b: <b></b> }}>
             <WarningBox>
-              <b>Warning:</b> Please don't use hands if you have controllers!
+              <b>Warning:</b> This will reset your proportions to being just
+              based on your height.
+              <br />
+              Are you sure you want to do this?
             </WarningBox>
           </Localized>
 
           <div className="flex flex-row gap-3 pt-5 place-content-center">
             <Button variant="primary" onClick={onClose}>
-              {l10n.getString(
-                'settings-general-steamvr-trackers-hands-warning-cancel'
-              )}
+              {l10n.getString('reset-reset_all_warning-cancel')}
             </Button>
-            <Button variant="tertiary" onClick={accept}>
-              {l10n.getString(
-                'settings-general-steamvr-trackers-hands-warning-done'
-              )}
+            <Button
+              variant="tertiary"
+              onClick={() => {
+                accept();
+              }}
+            >
+              {l10n.getString('reset-reset_all_warning-reset')}
             </Button>
           </div>
         </div>

@@ -123,6 +123,15 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
         {l10n.getString('widget-imu_visualizer')}
       </Typography>
 
+      {tracker.position && (
+        <div className="flex justify-between">
+          <Typography color="secondary">
+            {l10n.getString('widget-imu_visualizer-position')}
+          </Typography>
+          <Typography>{formatVector3(tracker.position, 2)}</Typography>
+        </div>
+      )}
+
       <div className="flex justify-between">
         <Typography color="secondary">
           {l10n.getString('widget-imu_visualizer-rotation_raw')}
@@ -137,6 +146,17 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
         <Typography>{formatVector3(rotationIdent, 2)}</Typography>
       </div>
 
+      {tracker.linearAcceleration && (
+        <div className="flex justify-between">
+          <Typography color="secondary">
+            {l10n.getString('widget-imu_visualizer-acceleration')}
+          </Typography>
+          <Typography>
+            {formatVector3(tracker.linearAcceleration, 1)}
+          </Typography>
+        </div>
+      )}
+
       {!enabled && (
         <Button
           variant="secondary"
@@ -145,7 +165,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
             localStorage.setItem('modelPreview', 'true');
           }}
         >
-          {l10n.getString('widget-imu_visualizer-rotation_preview')}
+          {l10n.getString('widget-imu_visualizer-preview')}
         </Button>
       )}
       {enabled && (
@@ -157,7 +177,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
               localStorage.setItem('modelPreview', 'false');
             }}
           >
-            {l10n.getString('widget-imu_visualizer-rotation_hide')}
+            {l10n.getString('widget-imu_visualizer-hide')}
           </Button>
           <ErrorBoundary
             fallback={
