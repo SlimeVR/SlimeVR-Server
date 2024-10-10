@@ -41,3 +41,6 @@ build/
 
 # Ignore Android local properties
 local.properties
+
+# Ignore temporary config
+vrconfig.yml.tmp
