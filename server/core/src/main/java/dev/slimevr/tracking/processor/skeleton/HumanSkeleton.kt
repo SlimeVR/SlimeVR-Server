@@ -8,7 +8,7 @@ import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
 import dev.slimevr.tracking.trackers.Tracker
-import dev.slimevr.tracking.trackers.TrackerDataSupport
+import dev.slimevr.tracking.trackers.TrackerDataType
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerUtils.getFirstAvailableTracker
@@ -1041,8 +1041,8 @@ class HumanSkeleton(
 		// Note: we use interpQ instead of interpR in order to slerp over 180 degrees.
 		// Start of finger
 		proximalTracker?.let {
-			val fingerRot = if (it.trackerDataSupport == TrackerDataSupport.FLEX_RESISTANCE ||
-				it.trackerDataSupport == TrackerDataSupport.FLEX_ANGLE
+			val fingerRot = if (it.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
+				it.trackerDataType == TrackerDataType.FLEX_ANGLE
 			) {
 				handRotation * it.getRotation()
 			} else {
@@ -1055,8 +1055,8 @@ class HumanSkeleton(
 		}
 		// Middle of finger
 		intermediateTracker?.let {
-			val fingerRot = if (it.trackerDataSupport == TrackerDataSupport.FLEX_RESISTANCE ||
-				it.trackerDataSupport == TrackerDataSupport.FLEX_ANGLE
+			val fingerRot = if (it.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
+				it.trackerDataType == TrackerDataType.FLEX_ANGLE
 			) {
 				handRotation * it.getRotation()
 			} else {
@@ -1069,8 +1069,8 @@ class HumanSkeleton(
 		}
 		// Tip of finger
 		distalTracker?.let {
-			val fingerRot = if (it.trackerDataSupport == TrackerDataSupport.FLEX_RESISTANCE ||
-				it.trackerDataSupport == TrackerDataSupport.FLEX_ANGLE
+			val fingerRot = if (it.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
+				it.trackerDataType == TrackerDataType.FLEX_ANGLE
 			) {
 				handRotation * it.getRotation()
 			} else {

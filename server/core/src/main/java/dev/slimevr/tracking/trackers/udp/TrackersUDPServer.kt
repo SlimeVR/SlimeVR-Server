@@ -168,7 +168,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				// Set up new sensor for older firmware.
 				// Firmware after 7 should send sensor status packet and sensor
 				// will be created when it's received
-				setUpSensor(connection, 0, handshake.imuType, 1, null, TrackerDataSupport.ROTATION)
+				setUpSensor(connection, 0, handshake.imuType, 1, null, TrackerDataType.ROTATION)
 			}
 			connection
 		}
@@ -179,7 +179,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		socket.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
 	}
 
-	private fun setUpSensor(connection: UDPDevice, trackerId: Int, sensorType: IMUType, sensorStatus: Int, trackerPosition: TrackerPosition?, trackerDataSupport: TrackerDataSupport) {
+	private fun setUpSensor(connection: UDPDevice, trackerId: Int, sensorType: IMUType, sensorStatus: Int, trackerPosition: TrackerPosition?, trackerDataType: TrackerDataType) {
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
@@ -198,16 +198,16 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				hasRotation = true,
 				hasAcceleration = true,
 				userEditable = true,
-				imuType = if (trackerDataSupport == TrackerDataSupport.ROTATION) sensorType else null,
+				imuType = if (trackerDataType == TrackerDataType.ROTATION) sensorType else null,
 				allowFiltering = true,
 				needsReset = true,
 				needsMounting = true,
 				usesTimeout = true,
-				trackerDataSupport = trackerDataSupport,
+				trackerDataType = trackerDataType,
 			)
 			connection.trackers[trackerId] = imuTracker
 			trackersConsumer.accept(imuTracker)
-			LogManager.info("[TrackerServer] Added sensor $trackerId for ${connection.name}, imuType $sensorType, dataSupport $trackerDataSupport")
+			LogManager.info("[TrackerServer] Added sensor $trackerId for ${connection.name}, imuType $sensorType, dataSupport $trackerDataType")
 		}
 		val status = UDPPacket15SensorInfo.getStatus(sensorStatus)
 		if (status != null) imuTracker.status = status
@@ -402,7 +402,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 
 			is UDPPacket15SensorInfo -> {
 				if (connection == null) return
-				setUpSensor(connection, packet.sensorId, packet.sensorType, packet.sensorStatus, packet.trackerPosition, packet.trackerDataSupport)
+				setUpSensor(connection, packet.sensorId, packet.sensorType, packet.sensorStatus, packet.trackerPosition, packet.trackerDataType)
 				// Send ack
 				bb.limit(bb.capacity())
 				bb.rewind()
@@ -472,9 +472,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			is UDPPacket24FlexData -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				if (tracker.trackerDataSupport == TrackerDataSupport.FLEX_RESISTANCE) {
+				if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
 					tracker.trackerFlexHandler.setFlexResistance(packet.flexData)
-				} else if (tracker.trackerDataSupport == TrackerDataSupport.FLEX_ANGLE) {
+				} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
 					tracker.trackerFlexHandler.setFlexAngle(packet.flexData)
 				}
 				tracker.dataTick()

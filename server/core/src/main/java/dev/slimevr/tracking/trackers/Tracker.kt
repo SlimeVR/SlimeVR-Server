@@ -69,7 +69,7 @@ class Tracker @JvmOverloads constructor(
 	 * Rotation by default.
 	 * NOT the same as hasRotation (other data types emulate rotation)
 	 */
-	val trackerDataSupport: TrackerDataSupport = TrackerDataSupport.ROTATION,
+	val trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
@@ -161,7 +161,7 @@ class Tracker @JvmOverloads constructor(
 
 	fun checkReportRequireReset() {
 		if (needsReset && trackerPosition != null && lastResetStatus == 0u &&
-			!status.reset && (isImu() || !statusResetRecently && trackerDataSupport != TrackerDataSupport.FLEX_ANGLE)
+			!status.reset && (isImu() || !statusResetRecently && trackerDataType != TrackerDataType.FLEX_ANGLE)
 		) {
 			reportRequireReset()
 		} else if (lastResetStatus != 0u && (trackerPosition == null || status.reset)) {
@@ -339,7 +339,7 @@ class Tracker @JvmOverloads constructor(
 		}
 
 		// Reset if needed and is not computed and internal
-		if (needsReset && !(isComputed && isInternal) && trackerDataSupport == TrackerDataSupport.ROTATION) {
+		if (needsReset && !(isComputed && isInternal) && trackerDataType == trackerDataType.ROTATION) {
 			// Adjust to reset, mounting and drift compensation
 			rot = resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
 		}
@@ -371,7 +371,7 @@ class Tracker @JvmOverloads constructor(
 		}
 
 		// Reset if needed or is a computed tracker besides head
-		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataSupport == TrackerDataSupport.ROTATION) {
+		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == trackerDataType.ROTATION) {
 			// Adjust to reset and mounting
 			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		}
@@ -403,7 +403,7 @@ class Tracker @JvmOverloads constructor(
 	 * True if the raw rotation is coming directly from an IMU (no cameras or lighthouses)
 	 * For example, flex sensor trackers are not considered as IMU trackers (see trackerDataSupport)
 	 */
-	fun isImu(): Boolean = imuType != null && trackerDataSupport == TrackerDataSupport.ROTATION
+	fun isImu(): Boolean = imuType != null && trackerDataType == TrackerDataType.ROTATION
 
 	/**
 	 * Gets the current TPS of the tracker

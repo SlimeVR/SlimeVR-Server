@@ -1,6 +1,6 @@
 package dev.slimevr.tracking.trackers.udp
 
-import dev.slimevr.tracking.trackers.TrackerDataSupport
+import dev.slimevr.tracking.trackers.TrackerDataType
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
 import io.github.axisangles.ktmath.Quaternion
@@ -100,7 +100,10 @@ data class UDPPacket3Handshake(
 	var firmwareBuild: Int = 0,
 	var firmware: String? = null,
 	var macString: String? = null,
-	var trackerType: Int = 0,
+	var trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
+	var trackerPosition: TrackerPosition? = null,
+	var trackerAverageTps: Float = 0f,
+	var trackerAverageDataTps: Float = 0f,
 ) : UDPPacket(3) {
 	override fun readData(buf: ByteBuffer) {
 		if (buf.remaining() == 0) return
@@ -138,7 +141,11 @@ data class UDPPacket3Handshake(
 			)
 			if (macString == "00:00:00:00:00:00") macString = null
 		}
-		if (buf.remaining() > 1) trackerType = buf.get().toInt()
+
+		if (buf.remaining() > 0) trackerDataType = TrackerDataType.getById(buf.int) ?: TrackerDataType.ROTATION
+		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.int)
+		if (buf.remaining() > 0) trackerAverageTps = buf.float
+		if (buf.remaining() > 0) trackerAverageDataTps = buf.float
 	}
 
 	override fun writeData(buf: ByteBuffer) {
@@ -227,10 +234,10 @@ data class UDPPacket14Error(var errorNumber: Int = 0) :
 data class UDPPacket15SensorInfo(
 	var sensorStatus: Int = 0,
 	var sensorType: IMUType = IMUType.UNKNOWN,
-	var trackerDataSupport: TrackerDataSupport = TrackerDataSupport.ROTATION,
+	var trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
 	var trackerPosition: TrackerPosition? = null,
-	var trackerAverageTps: float = 0,
-	var trackerAverageDataTps: float = 0
+	var trackerAverageTps: Float = 0f,
+	var trackerAverageDataTps: Float = 0f,
 ) : UDPPacket(15),
 	SensorSpecificPacket {
 	override var sensorId = 0
@@ -241,8 +248,8 @@ data class UDPPacket15SensorInfo(
 			sensorType =
 				IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
 		}
-		if (buf.remaining() > 0) trackerDataSupport = TrackerDataSupport.getById(buf.get()) ?: TrackerDataSupport.ROTATION
-		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.short)
+		if (buf.remaining() > 0) trackerDataType = TrackerDataType.getById(buf.int) ?: TrackerDataType.ROTATION
+		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.int)
 		if (buf.remaining() > 0) trackerAverageTps = buf.float
 		if (buf.remaining() > 0) trackerAverageDataTps = buf.float
 	}
