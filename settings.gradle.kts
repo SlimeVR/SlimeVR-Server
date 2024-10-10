@@ -26,7 +26,7 @@ pluginManagement {
 		kotlin("jvm") version kotlinVersion
 		kotlin("android") version kotlinVersion
 		id("com.diffplug.spotless") version spotlessVersion
-		id("com.github.johnrengelman.shadow") version shadowJarVersion
+		id("com.gradleup.shadow") version shadowJarVersion
 		id("com.github.gmazzo.buildconfig") version buildconfigVersion
 		id("org.ajoberstar.grgit") version grgitVersion
 	}

@@ -37,7 +37,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 				"java.util.*,kotlin.math.*,dev.slimevr.autobone.errors.*" +
 				",io.github.axisangles.ktmath.*,kotlinx.atomicfu.*" +
 				",dev.slimevr.tracking.trackers.*,dev.slimevr.desktop.platform.ProtobufMessages.*" +
-				",com.illposed.osc.*",
+				",com.illposed.osc.*,android.app.*",
 			"ij_kotlin_allow_trailing_comma" to true,
 		)
 	val ktlintVersion = "1.2.1"

@@ -169,7 +169,7 @@ class VMCHandler(
 			try {
 				val addr = InetAddress.getByName(ip)
 				oscSender = OSCPortOut(InetSocketAddress(addr, portOut))
-				if ((lastPortOut != portOut && lastAddress !== addr) || !wasConnected) {
+				if ((lastPortOut != portOut && lastAddress != addr) || !wasConnected) {
 					LogManager
 						.info(
 							"[VMCHandler] Sending to port $portOut at address $ip",
