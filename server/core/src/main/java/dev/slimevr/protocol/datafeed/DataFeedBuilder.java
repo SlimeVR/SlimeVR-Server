@@ -141,6 +141,8 @@ public class DataFeedBuilder {
 
 		TrackerInfo.addIsHmd(fbb, tracker.isHmd());
 
+		TrackerInfo.addDataSupport(fbb, tracker.getTrackerDataType().getId());
+
 		return TrackerInfo.endTrackerInfo(fbb);
 	}
 
