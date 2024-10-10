@@ -206,7 +206,7 @@ tracker-settings-back = Wróć do listy trackerów
 tracker-settings-title = Ustawienia Trackerów
 tracker-settings-assignment_section = Przydzielanie
 tracker-settings-assignment_section-description = Do jakiej części ciała przydzielony jest tracker.
-tracker-settings-assignment_section-edit = Edytuj
+tracker-settings-assignment_section-edit = Edytuj przypisanie
 tracker-settings-mounting_section = Położenie Trackera
 tracker-settings-mounting_section-description = Gdzie zamontowany jest tracker?
 tracker-settings-mounting_section-edit = Edytuj
@@ -247,8 +247,8 @@ tracker_selection_menu-NONE = Któremu trackerowi chcesz cofnąć przypisanie?
 tracker_selection_menu-HEAD = { -tracker_selection-part } głowa?
 tracker_selection_menu-NECK = { -tracker_selection-part } szyja?
 tracker_selection_menu-RIGHT_SHOULDER = { -tracker_selection-part } prawe ramię?
-tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } right upper arm?
-tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part } right lower arm?
+tracker_selection_menu-RIGHT_UPPER_ARM = { -tracker_selection-part } prawe ramię?
+tracker_selection_menu-RIGHT_LOWER_ARM = { -tracker_selection-part }prawe przedramię?
 tracker_selection_menu-RIGHT_HAND = { -tracker_selection-part } prawa ręka?
 tracker_selection_menu-RIGHT_UPPER_LEG = { -tracker_selection-part } prawe udo?
 tracker_selection_menu-RIGHT_LOWER_LEG = { -tracker_selection-part } prawa kostka?
@@ -287,20 +287,20 @@ mounting_selection_menu-close = Zamknij
 settings-sidebar-title = Ustawienia
 settings-sidebar-general = Ogólne
 settings-sidebar-tracker_mechanics = Mechanika trackerów
-settings-sidebar-fk_settings = FK settings
+settings-sidebar-fk_settings = Ustawienia śledzenia
 settings-sidebar-gesture_control = Sterowanie gestami
 settings-sidebar-interface = Interfejs
 settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = Śledzenie VRChat OSC
 settings-sidebar-utils = Narzędzia
-settings-sidebar-serial = Konsola Seryjna
+settings-sidebar-serial = Konsola szeregowa
 settings-sidebar-appearance = Wygląd
 settings-sidebar-notifications = Powiadomienia
 
 ## SteamVR settings
 
 settings-general-steamvr = SteamVR
-settings-general-steamvr-subtitle = SteamVR trackers
+settings-general-steamvr-subtitle = Trackery SteamVR
 # Not all translation keys support multiline, only the ones that specify it will actually
 # split it in lines (that also means you can split in lines however you want in those).
 # The first spaces (not tabs) for indentation will be ignored, just to make the file look nice when writing.
@@ -318,7 +318,7 @@ settings-general-steamvr-trackers-left_elbow = Lewy łokieć
 settings-general-steamvr-trackers-right_elbow = Prawy łokieć
 settings-general-steamvr-trackers-left_hand = Lewa dłoń
 settings-general-steamvr-trackers-right_hand = Prawa dłoń
-settings-general-steamvr-trackers-tracker_toggling = Automatyczne przypisanie wirtualnych trackerów
+settings-general-steamvr-trackers-tracker_toggling = Automatyczne przypisanie trackerów
 settings-general-steamvr-trackers-tracker_toggling-description = Automatycznie obsługuje włączanie i wyłączanie wirtualnych trackerów SteamVR w zależności od bieżących przypisań fizycznych trackerów
 settings-general-steamvr-trackers-tracker_toggling-label = Automatyczne przypisanie wirtualnych trackerów SteamVR
 settings-general-steamvr-trackers-hands-warning =
@@ -350,7 +350,7 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Kompensuje dryf odchylenia IMU poprzez zastosowanie odwrotnej rotacji.
     Zmień wysokość kompensacji i do ilu resetów jest branych pod uwagę.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Kompensacja dryfu
-settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
+settings-general-tracker_mechanics-drift_compensation-amount-label = Ilość kompensacji
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Użyj maksymalnie x ostatnich resetów
 settings-general-tracker_mechanics-save_mounting_reset = Zapisz pozycję trackerów na ciele
 settings-general-tracker_mechanics-save_mounting_reset-description =
@@ -383,6 +383,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Reset mocowania stóp
 settings-general-fk_settings-arm_fk = Śledzenie ramienia
 settings-general-fk_settings-arm_fk-description = Zmień sposób śledzenia ramion.
 settings-general-fk_settings-arm_fk-force_arms = Śledź ramiona z gogli VR
+settings-general-fk_settings-reset_settings = Zresetuj ustawienia
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Resetuj kąt nachylenia headsetu (rotacja pionowa) podczas pełnego resetu. Przydatne, jeśli nosisz headset na czole do VTubingu lub mocapu. Nie włączaj do VR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = Resetuj kąt nachylenia headsetu
 settings-general-fk_settings-arm_fk-reset_mode-description = Zmień pozycję ramienia oczekiwaną przy resetowaniu montażu.
 settings-general-fk_settings-arm_fk-back = Wstecz
 settings-general-fk_settings-arm_fk-back-description = Tryb domyślny, w którym górne ramiona cofają się, a dolne ramiona przesuwają się do przodu.
@@ -397,7 +400,7 @@ settings-general-fk_settings-skeleton_settings-description = Włącz lub wyłąc
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Wydłużony model kręgosłupa
 settings-general-fk_settings-skeleton_settings-extended_pelvis_model = Rozszerzony model miednicy
 settings-general-fk_settings-skeleton_settings-extended_knees_model = Model z przedłużonym kolanem
-settings-general-fk_settings-skeleton_settings-ratios = Współczynniki szkieletu
+settings-general-fk_settings-skeleton_settings-ratios = Proporcje szkieletu
 settings-general-fk_settings-skeleton_settings-ratios-description = Zmień wartości ustawień szkieletu. Po zmianie może być konieczne dostosowanie proporcji.
 settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = Przypisz talię od klatki piersiowej do bioder
 settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_legs = Przypisz talię od klatki piersiowej do nóg
@@ -415,16 +418,16 @@ settings-general-fk_settings-vive_emulation-label = Włącz emulację Vive
 ## Gesture control settings (tracker tapping)
 
 settings-general-gesture_control = Kontrola Gestami
-settings-general-gesture_control-subtitle = Dotknij 2 razy by wykonać szybki reset
+settings-general-gesture_control-subtitle = Resetowanie na podstawie stuknięć
 settings-general-gesture_control-description = Umożliwia wyzwalanie resetów przez stuknięcie modułu śledzącego. Układ śledzący znajdujący się najwyżej na tułowiu służy do resetowania odchylenia, układ śledzący znajdujący się najwyżej na lewej nodze służy do pełnego resetu, a układ śledzący znajdujący się najwyżej na prawej nodze służy do resetowania montażu. Należy wspomnieć, że stuknięcia muszą nastąpić w ciągu 0,6 sekundy, aby zostały zarejestrowane.
 # This is a unit: 3 taps, 2 taps, 1 tap
 # $amount (Number) - Amount of taps (touches to the tracker's case)
 settings-general-gesture_control-taps =
     { $amount ->
-        [one] 1 dotknięcie
-        [few] { $amount } dotknięcia
-        [many] { $amount } dotknięć
-       *[other] { $amount } dotknięć
+        [one] 1 stuknięcie
+        [few] { $amount } stuknięcia
+        [many] { $amount } stuknięć
+       *[other] { $amount } stuknięć
     }
 # This is a unit: 3 trackers, 2 trackers, 1 tracker
 # $amount (Number) - Amount of trackers
@@ -437,10 +440,10 @@ settings-general-gesture_control-trackers =
     }
 settings-general-gesture_control-yawResetEnabled = Włącz stuknięcie, aby zresetować odchylanie
 settings-general-gesture_control-yawResetDelay = Opóźnienie resetowania odchylenia
-settings-general-gesture_control-yawResetTaps = Stuknięcie do resetowania odchylenia
+settings-general-gesture_control-yawResetTaps = Stuknięć do zresetowania odchylenia
 settings-general-gesture_control-fullResetEnabled = Włącz stuknięcie, aby całkowicie zresetować
 settings-general-gesture_control-fullResetDelay = Pełne opóźnienie resetu
-settings-general-gesture_control-fullResetTaps = Stuknij do pełnego resetu
+settings-general-gesture_control-fullResetTaps = Stuknięć do pełnego resetu
 settings-general-gesture_control-mountingResetEnabled = Włącz stuknięcie, aby zresetować położenie
 settings-general-gesture_control-mountingResetDelay = Opóźnienie resetowania położenia
 settings-general-gesture_control-mountingResetTaps = Stuknięcie do resetowania położenia
@@ -457,14 +460,14 @@ settings-general-interface-dev_mode-label = Tryb Dewelopera
 settings-general-interface-theme = Motyw kolorystyczny
 settings-general-interface-lang = Wybierz Język
 settings-general-interface-lang-description = Zmień podstawowy język jaki chcesz używać
-settings-general-interface-lang-placeholder = Wybierz Język który będziesz używać
+settings-general-interface-lang-placeholder = Wybierz język, który będziesz używać
 # Keep the font name untranslated
 settings-interface-appearance-font = Czcionka interfejsu użytkownika
 settings-interface-appearance-font-description = Spowoduje to zmianę czcionki używanej przez interfejs
 settings-interface-appearance-font-placeholder = Domyślna czcionka
 settings-interface-appearance-font-os_font = Czcionka systemu operacyjnego
 settings-interface-appearance-font-slime_font = Domyślna czcionka
-settings-interface-appearance-font_size = Skalowanie czcionki bazowej
+settings-interface-appearance-font_size = Skalowanie czcionki
 settings-interface-appearance-font_size-description = Wpływa to na rozmiar czcionki całego interfejsu z wyjątkiem tego panelu ustawień
 
 ## Notification settings
@@ -476,7 +479,7 @@ settings-general-interface-serial_detection-label = Wykrywanie urządzeń
 settings-general-interface-feedback_sound = Dźwięk zwrotny
 settings-general-interface-feedback_sound-description = Ta opcja odtworzy dźwięk, gdy reset zostanie uruchomiony
 settings-general-interface-feedback_sound-label = Dźwięk Informacji
-settings-general-interface-feedback_sound-volume = Poziom głośności sprzężenia zwrotnego
+settings-general-interface-feedback_sound-volume = Poziom głośności dzwięku zwrotnego
 settings-general-interface-connected_trackers_warning = Ostrzeżenie o podłączonych trackerach
 settings-general-interface-connected_trackers_warning-description = Ta opcja wyświetli wyskakujące okienko za każdym razem, gdy spróbujesz wyjść ze SlimeVR, mając jeden lub więcej podłączonych trackerów. Przypomina o wyłączeniu trackerów, gdy skończysz, aby wydłużyć żywotność baterii.
 settings-general-interface-connected_trackers_warning-label = Ostrzeżenie o podłączonych trackerach przy wyjściu
@@ -486,6 +489,13 @@ settings-general-interface-use_tray-label = Minimalizuj do zasobnika systemowego
 settings-general-interface-discord_presence = Udostępniaj aktywność na Discordzie
 settings-general-interface-discord_presence-description = Informuje Twojego klienta Discord o korzystaniu ze SlimeVR oraz o liczbie używanych trackerów IMU.
 settings-general-interface-discord_presence-label = Udostępniaj aktywność na Discordzie
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Brak trackerów
+        [one] Użwanie 1 trackera
+        [few] Używanie { $amount } trackerów
+       *[many] Używanie { $amount } trackerów
+    }
 
 ## Serial settings
 
@@ -543,6 +553,7 @@ settings-osc-vrchat-enable = Zezwól
 settings-osc-vrchat-enable-description = Zezwól na wysyłanie i odbieranie danych.
 settings-osc-vrchat-enable-label = Zezwól
 settings-osc-vrchat-network = Porty sieciowe
+settings-osc-vrchat-network-description-v1 = Ustaw porty do odbierania i wysyłania danych. Nie trzeba tego zmieniać dla VRChata.
 settings-osc-vrchat-network-port_in =
     .label = Port In
     .placeholder = Port in (default: 9001)
@@ -550,6 +561,7 @@ settings-osc-vrchat-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-vrchat-network-address = Adres sieciowy
+settings-osc-vrchat-network-address-description-v1 = Wybierz adres, na który mają być wysyłane dane. Można pozostawić domyślnie dla VRChata.
 settings-osc-vrchat-network-address-placeholder = Adres IP VRChata
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Przełącz wysyłanie określonych trackerów przez OSC.
@@ -592,6 +604,9 @@ settings-osc-vmc-vrm-file_select = Przeciągnij i upuść model, którego chcesz
 settings-osc-vmc-anchor_hip = Blokada na biodrach
 settings-osc-vmc-anchor_hip-description = Zablokuj śledzenie na biodrach, przydatne podczas siedzenia VTubing. W przypadku wyłączenia załaduj model VRM.
 settings-osc-vmc-anchor_hip-label = Blokada na biodrach
+settings-osc-vmc-mirror_tracking = Odbicie lustrzane śledzenia
+settings-osc-vmc-mirror_tracking-description = Odbij śledzenie w poziomie.
+settings-osc-vmc-mirror_tracking-label = Odbicie lustrzane śledzenia
 
 ## Setup/onboarding menu
 
@@ -735,6 +750,12 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = Pokaż zaawansowane ustawienia pozycji
 onboarding-assign_trackers-next = Przydzieliłem już wszystkie trackery
 onboarding-assign_trackers-mirror_view = Widok lustrzany
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+        [few] x{ $trackersCount }
+       *[many] x{ $trackersCount }
+    }
 onboarding-assign_trackers-option-label =
     { $mode ->
         [lower-body] Zestaw na dolną część ciała
@@ -830,6 +851,8 @@ onboarding-choose_mounting-auto_mounting = Automatyczne mocowanie
 onboarding-choose_mounting-auto_mounting-label-v2 = Zalecane
 onboarding-choose_mounting-auto_mounting-description = To automatycznie wykryje kierunki montażu dla wszystkich twoich trackerów z 2 pozycji
 onboarding-choose_mounting-manual_mounting = Montaż ręczny
+# Italized text
+onboarding-choose_mounting-manual_mounting-label-v2 = Może nie być wystarczająco dokładne
 onboarding-choose_mounting-manual_mounting-description = Umożliwi to ręczne wybranie kierunku montażu dla każdego trackera
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
@@ -973,7 +996,7 @@ onboarding-automatic_proportions-error_modal-confirm = Zrozumiano!
 
 ## Home
 
-home-no_trackers = Nie wykryto trackerów
+home-no_trackers = Nie wykryto ani nie przypisano żadnych trackerów
 
 ## Trackers Still On notification
 
