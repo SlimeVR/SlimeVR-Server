@@ -16,6 +16,16 @@ export interface DeveloperModeWidgetForm {
   moreInfo: boolean;
 }
 
+export const defaultValues: DeveloperModeWidgetForm = {
+  highContrast: false,
+  preciseRotation: false,
+  fastDataFeed: false,
+  filterSlimesAndHMD: false,
+  sortByName: false,
+  rawSlimeRotation: false,
+  moreInfo: false,
+};
+
 export function DeveloperModeWidget() {
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
@@ -23,15 +33,7 @@ export function DeveloperModeWidget() {
 
   const { reset, control, handleSubmit, watch } =
     useForm<DeveloperModeWidgetForm>({
-      defaultValues: {
-        highContrast: false,
-        preciseRotation: false,
-        fastDataFeed: false,
-        filterSlimesAndHMD: false,
-        sortByName: false,
-        rawSlimeRotation: false,
-        moreInfo: false,
-      },
+      defaultValues: defaultValues,
     });
 
   useEffect(() => {
