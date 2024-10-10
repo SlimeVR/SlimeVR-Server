@@ -10,7 +10,7 @@ import {
   ForgetDeviceRequestT,
   ImuType,
   RpcMessage,
-  TrackerDataSupport,
+  TrackerDataType,
 } from 'solarxr-protocol';
 import { useDebouncedEffect } from '@/hooks/timeout';
 import { useTrackerFromId } from '@/hooks/tracker';
@@ -265,7 +265,7 @@ export function TrackerSettingsPage() {
               </Typography>
               <Typography>
                 {tracker?.tracker.info?.dataSupport
-                  ? TrackerDataSupport[tracker?.tracker.info?.dataSupport]
+                  ? TrackerDataType[tracker?.tracker.info?.dataSupport]
                   : '--'}
               </Typography>
             </div>

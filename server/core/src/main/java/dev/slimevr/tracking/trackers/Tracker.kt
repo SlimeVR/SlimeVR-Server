@@ -145,15 +145,6 @@ class Tracker @JvmOverloads constructor(
 		require(!isHmd || (hasPosition && isHmd)) {
 			"If ${::isHmd.name} is true, then ${::hasPosition.name} must also be true"
 		}
-		require(!(hasFlexAngle && hasFlexResistance)) {
-			"If ${::hasFlexAngle.name} is true, then ${::hasFlexResistance.name} can't be true"
-		}
-		require(!(hasFlexAngle && hasRotation)) {
-			"If ${::hasFlexAngle.name} is true, then ${::hasRotation.name} can't be true"
-		}
-		require(!(hasRotation && hasFlexResistance)) {
-			"If ${::hasRotation.name} is true, then ${::hasFlexResistance.name} can't be true"
-		}
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
@@ -339,7 +330,7 @@ class Tracker @JvmOverloads constructor(
 		}
 
 		// Reset if needed and is not computed and internal
-		if (needsReset && !(isComputed && isInternal) && trackerDataType == trackerDataType.ROTATION) {
+		if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset, mounting and drift compensation
 			rot = resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
 		}
@@ -371,7 +362,7 @@ class Tracker @JvmOverloads constructor(
 		}
 
 		// Reset if needed or is a computed tracker besides head
-		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == trackerDataType.ROTATION) {
+		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset and mounting
 			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		}
@@ -401,7 +392,7 @@ class Tracker @JvmOverloads constructor(
 
 	/**
 	 * True if the raw rotation is coming directly from an IMU (no cameras or lighthouses)
-	 * For example, flex sensor trackers are not considered as IMU trackers (see trackerDataSupport)
+	 * For example, flex sensor trackers are not considered as IMU trackers (see TrackerDataType)
 	 */
 	fun isImu(): Boolean = imuType != null && trackerDataType == TrackerDataType.ROTATION
 
