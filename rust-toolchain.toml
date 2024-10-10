@@ -1,4 +1,4 @@
 [toolchain]
-channel = "1.79"
+channel = "1.81"
 profile = "default"
 components = ["rustc", "cargo", "clippy", "rustfmt", "rust-analyzer", "rust-src"]

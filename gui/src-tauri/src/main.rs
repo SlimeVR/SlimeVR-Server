@@ -11,6 +11,7 @@ use std::time::Instant;
 use clap::Parser;
 use color_eyre::Result;
 use state::WindowState;
+use tauri::Emitter;
 use tauri::{Manager, RunEvent, WindowEvent};
 use tauri_plugin_shell::process::CommandChild;
 

@@ -4,7 +4,7 @@ use tauri::{
 	image::Image,
 	menu::{Menu, MenuBuilder, MenuItemBuilder, MenuItemKind},
 	tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-	AppHandle, Manager, Runtime, State,
+	AppHandle, Emitter, Manager, Runtime, State,
 };
 
 pub struct TrayMenu<R: Runtime>(Menu<R>);
