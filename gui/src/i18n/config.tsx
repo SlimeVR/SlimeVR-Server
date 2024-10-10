@@ -12,6 +12,7 @@ import {
 import { exists, readTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
 import { invoke } from '@tauri-apps/api/core';
+import { isTrayAvailable } from '@/utils/tauri';
 
 export const defaultNS = 'translation';
 export const DEFAULT_LOCALE = 'en';
@@ -200,7 +201,7 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
   }, []);
 
   useEffect(() => {
-    if (l10n === null) return;
+    if (l10n === null || !isTrayAvailable) return;
 
     const newI18n: Record<string, string> = {};
     TRAY_MENU_KEYS.forEach((key) => {

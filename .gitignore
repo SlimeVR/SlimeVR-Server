@@ -28,6 +28,8 @@
 /node_modules
 .husky
 
+# kotlin stuff
+/.kotlin
 
 # ignore gradle build folder
 build/
