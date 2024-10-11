@@ -487,7 +487,7 @@ settings-interface-appearance-font-slime_font = 預設字體
 settings-interface-appearance-font_size = 文字縮放
 settings-interface-appearance-font_size-description = 本設定會影響整個 UI 的文字大小，除了本設定面板以外。
 settings-interface-appearance-decorations = 使用系統原生的視窗邊框
-settings-interface-appearance-decorations-description = 不顯示標題列 UI，替換成作業系統原生的標題列。
+settings-interface-appearance-decorations-description = 不顯示標題列 UI，替換成作業系統提供的標題列。
 settings-interface-appearance-decorations-label = 使用原生的視窗邊框
 
 ## Notification settings
