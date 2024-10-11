@@ -1,6 +1,5 @@
 package dev.slimevr.tracking.trackers.udp
 
-import dev.slimevr.tracking.trackers.TrackerDataType
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
 import io.github.axisangles.ktmath.Quaternion
@@ -97,7 +96,7 @@ data class UDPPacket3Handshake(
 	var boardType: BoardType = BoardType.UNKNOWN,
 	var imuType: IMUType = IMUType.UNKNOWN,
 	var mcuType: MCUType = MCUType.UNKNOWN,
-	var firmwareBuild: Int = 0,
+	var protocolVersion: Int = 0,
 	var firmware: String? = null,
 	var macString: String? = null,
 ) : UDPPacket(3) {
@@ -117,7 +116,7 @@ data class UDPPacket3Handshake(
 			buf.int
 			buf.int // IMU info
 		}
-		if (buf.remaining() > 3) firmwareBuild = buf.int
+		if (buf.remaining() > 3) protocolVersion = buf.int
 		var length = 0
 		if (buf.remaining() > 0) length = buf.get().toInt()
 		// firmware version length is 1 longer than

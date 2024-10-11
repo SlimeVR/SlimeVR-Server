@@ -8,11 +8,11 @@ import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
 import dev.slimevr.tracking.trackers.Tracker
-import dev.slimevr.tracking.trackers.TrackerDataType
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerUtils.getFirstAvailableTracker
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
+import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.collections.FastList

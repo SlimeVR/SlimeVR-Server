@@ -47,7 +47,7 @@ class UDPDevice(
 	var protocol: NetworkProtocol? = null
 
 	@JvmField
-	var firmwareBuild = 0
+	var protocolVersion = 0
 
 	@JvmField
 	var timedOut = false

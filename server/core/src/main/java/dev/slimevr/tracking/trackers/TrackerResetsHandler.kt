@@ -7,6 +7,7 @@ import dev.slimevr.config.ArmsResetModes
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.filtering.CircularArrayList
+import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import io.eiren.math.FloatMath.animateEase
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder

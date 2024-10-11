@@ -4,6 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
+import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3

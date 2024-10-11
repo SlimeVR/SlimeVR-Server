@@ -59,7 +59,7 @@ public class DataFeedBuilder {
 						)
 				);
 
-			HardwareInfo.addNetworkProtocolVersion(fbb, udpDevice.firmwareBuild);
+			HardwareInfo.addNetworkProtocolVersion(fbb, udpDevice.protocolVersion);
 		}
 
 		// BRUH MOMENT
