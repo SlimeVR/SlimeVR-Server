@@ -100,10 +100,6 @@ data class UDPPacket3Handshake(
 	var firmwareBuild: Int = 0,
 	var firmware: String? = null,
 	var macString: String? = null,
-	var trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
-	var trackerPosition: TrackerPosition? = null,
-	var trackerAverageTps: Float = 0f,
-	var trackerAverageDataTps: Float = 0f,
 ) : UDPPacket(3) {
 	override fun readData(buf: ByteBuffer) {
 		if (buf.remaining() == 0) return
@@ -141,11 +137,6 @@ data class UDPPacket3Handshake(
 			)
 			if (macString == "00:00:00:00:00:00") macString = null
 		}
-
-		if (buf.remaining() > 0) trackerDataType = TrackerDataType.getById(buf.int) ?: TrackerDataType.ROTATION
-		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.int)
-		if (buf.remaining() > 0) trackerAverageTps = buf.float
-		if (buf.remaining() > 0) trackerAverageDataTps = buf.float
 	}
 
 	override fun writeData(buf: ByteBuffer) {
