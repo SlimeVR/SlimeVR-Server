@@ -96,7 +96,6 @@ fun main(args: Array<String>) {
 	try {
 		// This is disabled because the config can't be read at this point
 		// new ServerSocket(6969).close();
-		ServerSocket(35903).close()
 		ServerSocket(21110).close()
 	} catch (e: IOException) {
 		LogManager
