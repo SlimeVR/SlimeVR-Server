@@ -23,7 +23,7 @@ enum class IMUType(val id: UInt) {
 	fun getSolarType(): Int = this.id.toInt()
 
 	companion object {
-		private val byId = IMUType.values().associateBy { it.id }
+		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
 		fun getById(id: UInt): IMUType? = byId[id]
@@ -77,7 +77,7 @@ enum class BoardType(val id: UInt) {
 	}
 
 	companion object {
-		private val byId = BoardType.values().associateBy { it.id }
+		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
 		fun getById(id: UInt): BoardType? = byId[id]
@@ -100,9 +100,25 @@ enum class MCUType(val id: UInt) {
 	fun getSolarType(): Int = this.id.toInt()
 
 	companion object {
-		private val byId = MCUType.values().associateBy { it.id }
+		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
 		fun getById(id: UInt): MCUType? = byId[id]
+	}
+}
+
+enum class TrackerDataType(val id: UInt) {
+	ROTATION(0u),
+	FLEX_RESISTANCE(1u),
+	FLEX_ANGLE(2u),
+	;
+
+	fun getSolarType(): Int = this.id.toInt()
+
+	companion object {
+		private val byId = entries.associateBy { it.id }
+
+		@JvmStatic
+		fun getById(id: UInt): TrackerDataType? = byId[id]
 	}
 }

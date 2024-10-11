@@ -12,6 +12,7 @@ import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerUtils.getFirstAvailableTracker
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
+import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.collections.FastList
@@ -588,7 +589,7 @@ class HumanSkeleton(
 
 		// Left thumb
 		updateFingerTransforms(
-			leftHandBone.getGlobalRotation(),
+			leftHandTrackerBone.getGlobalRotation(),
 			leftThumbProximalBone,
 			leftThumbIntermediateBone,
 			leftThumbDistalBone,
@@ -599,7 +600,7 @@ class HumanSkeleton(
 
 		// Left index
 		updateFingerTransforms(
-			leftHandBone.getGlobalRotation(),
+			leftHandTrackerBone.getGlobalRotation(),
 			leftIndexProximalBone,
 			leftIndexIntermediateBone,
 			leftIndexDistalBone,
@@ -610,7 +611,7 @@ class HumanSkeleton(
 
 		// Left middle
 		updateFingerTransforms(
-			leftHandBone.getGlobalRotation(),
+			leftHandTrackerBone.getGlobalRotation(),
 			leftMiddleProximalBone,
 			leftMiddleIntermediateBone,
 			leftMiddleDistalBone,
@@ -621,7 +622,7 @@ class HumanSkeleton(
 
 		// Left ring
 		updateFingerTransforms(
-			leftHandBone.getGlobalRotation(),
+			leftHandTrackerBone.getGlobalRotation(),
 			leftRingProximalBone,
 			leftRingIntermediateBone,
 			leftRingDistalBone,
@@ -632,7 +633,7 @@ class HumanSkeleton(
 
 		// Left little
 		updateFingerTransforms(
-			leftHandBone.getGlobalRotation(),
+			leftHandTrackerBone.getGlobalRotation(),
 			leftLittleProximalBone,
 			leftLittleIntermediateBone,
 			leftLittleDistalBone,
@@ -643,7 +644,7 @@ class HumanSkeleton(
 
 		// Right thumb
 		updateFingerTransforms(
-			rightHandBone.getGlobalRotation(),
+			rightHandTrackerBone.getGlobalRotation(),
 			rightThumbProximalBone,
 			rightThumbIntermediateBone,
 			rightThumbDistalBone,
@@ -654,7 +655,7 @@ class HumanSkeleton(
 
 		// Right index
 		updateFingerTransforms(
-			rightHandBone.getGlobalRotation(),
+			rightHandTrackerBone.getGlobalRotation(),
 			rightIndexProximalBone,
 			rightIndexIntermediateBone,
 			rightIndexDistalBone,
@@ -665,7 +666,7 @@ class HumanSkeleton(
 
 		// Right middle
 		updateFingerTransforms(
-			rightHandBone.getGlobalRotation(),
+			rightHandTrackerBone.getGlobalRotation(),
 			rightMiddleProximalBone,
 			rightMiddleIntermediateBone,
 			rightMiddleDistalBone,
@@ -676,7 +677,7 @@ class HumanSkeleton(
 
 		// Right ring
 		updateFingerTransforms(
-			rightHandBone.getGlobalRotation(),
+			rightHandTrackerBone.getGlobalRotation(),
 			rightRingProximalBone,
 			rightRingIntermediateBone,
 			rightRingDistalBone,
@@ -687,7 +688,7 @@ class HumanSkeleton(
 
 		// Right little
 		updateFingerTransforms(
-			rightHandBone.getGlobalRotation(),
+			rightHandTrackerBone.getGlobalRotation(),
 			rightLittleProximalBone,
 			rightLittleIntermediateBone,
 			rightLittleDistalBone,
@@ -1040,21 +1041,45 @@ class HumanSkeleton(
 		// Note: we use interpQ instead of interpR in order to slerp over 180 degrees.
 		// Start of finger
 		proximalTracker?.let {
-			proximalBone.setRotation(it.getRotation())
-			if (intermediateTracker == null) intermediateBone.setRotation(handRotation.interpQ(it.getRotation(), 2.12f))
-			if (distalTracker == null) distalBone.setRotation(handRotation.interpQ(it.getRotation(), 3.03f))
+			val fingerRot = if (it.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
+				it.trackerDataType == TrackerDataType.FLEX_ANGLE
+			) {
+				handRotation * it.getRotation()
+			} else {
+				it.getRotation()
+			}
+
+			proximalBone.setRotation(fingerRot)
+			if (intermediateTracker == null) intermediateBone.setRotation(handRotation.interpQ(fingerRot, 2.12f))
+			if (distalTracker == null) distalBone.setRotation(handRotation.interpQ(fingerRot, 3.03f))
 		}
 		// Middle of finger
 		intermediateTracker?.let {
-			if (proximalTracker == null) proximalBone.setRotation(handRotation.interpQ(it.getRotation(), 0.47f))
-			intermediateBone.setRotation(it.getRotation())
-			if (distalTracker == null) distalBone.setRotation(handRotation.interpQ(it.getRotation(), 1.43f))
+			val fingerRot = if (it.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
+				it.trackerDataType == TrackerDataType.FLEX_ANGLE
+			) {
+				handRotation * it.getRotation()
+			} else {
+				it.getRotation()
+			}
+
+			if (proximalTracker == null) proximalBone.setRotation(handRotation.interpQ(fingerRot, 0.47f))
+			intermediateBone.setRotation(fingerRot)
+			if (distalTracker == null) distalBone.setRotation(handRotation.interpQ(fingerRot, 1.43f))
 		}
 		// Tip of finger
 		distalTracker?.let {
-			if (proximalTracker == null && intermediateTracker == null) proximalBone.setRotation(handRotation.interpQ(it.getRotation(), 0.33f))
-			if (intermediateTracker == null) intermediateBone.setRotation(handRotation.interpQ(it.getRotation(), 0.7f))
-			distalBone.setRotation(it.getRotation())
+			val fingerRot = if (it.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
+				it.trackerDataType == TrackerDataType.FLEX_ANGLE
+			) {
+				handRotation * it.getRotation()
+			} else {
+				it.getRotation()
+			}
+
+			if (proximalTracker == null && intermediateTracker == null) proximalBone.setRotation(handRotation.interpQ(fingerRot, 0.33f))
+			if (intermediateTracker == null) intermediateBone.setRotation(handRotation.interpQ(fingerRot, 0.7f))
+			distalBone.setRotation(fingerRot)
 		}
 	}
 

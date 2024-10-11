@@ -4,6 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
+import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -65,6 +66,11 @@ class Tracker @JvmOverloads constructor(
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
 	val isHmd: Boolean = false,
+	/**
+	 * Rotation by default.
+	 * NOT the same as hasRotation (other data types emulate rotation)
+	 */
+	val trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
@@ -73,6 +79,7 @@ class Tracker @JvmOverloads constructor(
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
+	val trackerFlexHandler: TrackerFlexHandler = TrackerFlexHandler(this)
 	var batteryVoltage: Float? = null
 	var batteryLevel: Float? = null
 	var ping: Int? = null
@@ -146,7 +153,7 @@ class Tracker @JvmOverloads constructor(
 
 	fun checkReportRequireReset() {
 		if (needsReset && trackerPosition != null && lastResetStatus == 0u &&
-			!status.reset && (isImu() || !statusResetRecently)
+			!status.reset && (isImu() || !statusResetRecently && trackerDataType != TrackerDataType.FLEX_ANGLE)
 		) {
 			reportRequireReset()
 		} else if (lastResetStatus != 0u && (trackerPosition == null || status.reset)) {
@@ -324,7 +331,7 @@ class Tracker @JvmOverloads constructor(
 		}
 
 		// Reset if needed and is not computed and internal
-		if (needsReset && !(isComputed && isInternal)) {
+		if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset, mounting and drift compensation
 			rot = resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
 		}
@@ -356,7 +363,7 @@ class Tracker @JvmOverloads constructor(
 		}
 
 		// Reset if needed or is a computed tracker besides head
-		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD)) {
+		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset and mounting
 			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		}
@@ -384,7 +391,11 @@ class Tracker @JvmOverloads constructor(
 		this._acceleration = vec
 	}
 
-	fun isImu(): Boolean = imuType != null
+	/**
+	 * True if the raw rotation is coming directly from an IMU (no cameras or lighthouses)
+	 * For example, flex sensor trackers are not considered as IMU trackers (see TrackerDataType)
+	 */
+	fun isImu(): Boolean = imuType != null && trackerDataType == TrackerDataType.ROTATION
 
 	/**
 	 * Gets the current TPS of the tracker
