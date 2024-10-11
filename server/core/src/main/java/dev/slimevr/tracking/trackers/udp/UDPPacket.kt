@@ -235,13 +235,12 @@ data class UDPPacket15SensorInfo(
 		sensorId = buf.get().toInt() and 0xFF
 		sensorStatus = buf.get().toInt() and 0xFF
 		if (buf.remaining() > 0) {
-			sensorType =
-				IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
+			sensorType = IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
 		}
-		if (buf.remaining() > 0) trackerDataType = TrackerDataType.getById(buf.int) ?: TrackerDataType.ROTATION
-		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.int)
-		if (buf.remaining() > 0) trackerAverageTps = buf.float
-		if (buf.remaining() > 0) trackerAverageDataTps = buf.float
+		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.get().toInt() and 0xFF)
+		if (buf.remaining() > 0) trackerDataType = TrackerDataType.getById(buf.get().toUInt() and 0xFFu) ?: TrackerDataType.ROTATION
+		if (buf.remaining() > 0) trackerAverageTps = UDPUtils.getSafeBufferFloat(buf)
+		if (buf.remaining() > 0) trackerAverageDataTps = UDPUtils.getSafeBufferFloat(buf)
 	}
 
 	companion object {
@@ -367,7 +366,7 @@ data class UDPPacket24FlexData(
 	override var sensorId = 0
 	override fun readData(buf: ByteBuffer) {
 		sensorId = buf.get().toInt() and 0xFF
-		flexData = buf.getFloat()
+		flexData = UDPUtils.getSafeBufferFloat(buf)
 	}
 }
 

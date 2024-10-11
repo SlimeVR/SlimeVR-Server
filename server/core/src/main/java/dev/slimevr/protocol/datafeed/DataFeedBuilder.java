@@ -141,7 +141,7 @@ public class DataFeedBuilder {
 
 		TrackerInfo.addIsHmd(fbb, tracker.isHmd());
 
-		TrackerInfo.addDataSupport(fbb, tracker.getTrackerDataType().getId());
+		TrackerInfo.addDataSupport(fbb, tracker.getTrackerDataType().getSolarType());
 
 		return TrackerInfo.endTrackerInfo(fbb);
 	}

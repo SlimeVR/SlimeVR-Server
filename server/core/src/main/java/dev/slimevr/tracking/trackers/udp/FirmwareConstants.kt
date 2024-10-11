@@ -107,16 +107,18 @@ enum class MCUType(val id: UInt) {
 	}
 }
 
-enum class TrackerDataType(val id: Int) {
-	ROTATION(0),
-	FLEX_RESISTANCE(1),
-	FLEX_ANGLE(2),
+enum class TrackerDataType(val id: UInt) {
+	ROTATION(0u),
+	FLEX_RESISTANCE(1u),
+	FLEX_ANGLE(2u),
 	;
+
+	fun getSolarType(): Int = this.id.toInt()
 
 	companion object {
 		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
-		fun getById(id: Int): TrackerDataType? = byId[id]
+		fun getById(id: UInt): TrackerDataType? = byId[id]
 	}
 }

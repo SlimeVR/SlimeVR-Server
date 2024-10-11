@@ -89,8 +89,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						"""
 						[TrackerServer] Tracker $i handed over to address $socketAddr.
 						Board type: ${handshake.boardType},
-						imu type: ${handshake.imuType},
-						firmware: ${handshake.firmware} ($protocolVersion),
+						firmware name: ${handshake.firmware},
+						protocol version: $protocolVersion,
 						mac: ${handshake.macString},
 						name: $name
 						""".trimIndent(),
@@ -111,8 +111,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						"""
 						[TrackerServer] Tracker $i reconnected from address $socketAddr.
 						Board type: ${handshake.boardType},
-						imu type: ${handshake.imuType},
-						firmware: ${handshake.firmware} ($protocolVersion),
+						firmware name: ${handshake.firmware},
+						protocol version: $protocolVersion,
 						mac: ${handshake.macString},
 						name: $name
 						""".trimIndent(),
@@ -157,8 +157,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						"""
 						[TrackerServer] Tracker $i connected from address $socketAddr.
 						Board type: ${handshake.boardType},
-						imu type: ${handshake.imuType},
-						firmware: ${handshake.firmware} (${connection.protocolVersion}),
+						firmware name: ${handshake.firmware},
+						protocol version: ${connection.protocolVersion},
 						mac: ${handshake.macString},
 						name: ${connection.name}
 						""".trimIndent(),
@@ -207,7 +207,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			)
 			connection.trackers[trackerId] = imuTracker
 			trackersConsumer.accept(imuTracker)
-			LogManager.info("[TrackerServer] Added sensor $trackerId for ${connection.name}, imuType $sensorType, dataSupport $trackerDataType")
+			LogManager.info("[TrackerServer] Added sensor $trackerId for ${connection.name}, ImuType $sensorType, DataType $trackerDataType, default TrackerPosition $trackerPosition")
 		}
 		val status = UDPPacket15SensorInfo.getStatus(sensorStatus)
 		if (status != null) imuTracker.status = status
