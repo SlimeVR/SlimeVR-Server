@@ -622,6 +622,8 @@ settings-utils-advanced-reset-gui = Đặt lại cài đặt GUI
 settings-utils-advanced-reset-all-label = Đặt lại tất cả
 settings-utils-advanced-reset_warning-reset = Đặt lại cài đặt
 settings-utils-advanced-reset_warning-cancel = Hủy
+settings-utils-advanced-open_data = Thư mục dữ liệu
+settings-utils-advanced-open_data-description = Mở thư mục dữ liệu của SlimeVR trong tệp, chứa các tệp cấu hình và logs.
 settings-utils-advanced-open_data-label = Mở thư mục
 
 ## Setup/onboarding menu
