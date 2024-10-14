@@ -34,13 +34,13 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	private val devicesBySerial: MutableMap<String, MutableList<Int>> = HashMap()
 	private val devicesByHID: MutableMap<HidDevice, MutableList<Int>> = HashMap()
 	private val hidServicesSpecification = HidServicesSpecification()
-	private val hidServices: HidServices
+	private var hidServices: HidServices? = null
 
 	init {
+		hidServicesSpecification.setAutoStart(false)
 		try {
-			hidServicesSpecification.setAutoStart(false)
 			hidServices = HidManager.getHidServices(hidServicesSpecification)
-			hidServices.addHidServicesListener(this)
+			hidServices?.addHidServicesListener(this)
 			val dataReadThread = Thread(dataReadRunnable)
 			dataReadThread.isDaemon = true
 			dataReadThread.name = "hid4java data reader"
@@ -52,7 +52,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			deviceEnumerateThread.name = "hid4java device enumerator"
 			deviceEnumerateThread.start()
 		} catch (e: UnsatisfiedLinkError) {
-			LogManager.error("Error initializing HID services: ${e.message}", e)
+			LogManager.severe("Error initializing HID services: ${e.message}", e)
 		}
 	}
 
