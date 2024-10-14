@@ -28,6 +28,8 @@ import kotlin.math.*
 private const val HID_TRACKER_RECEIVER_VID = 0x1209
 private const val HID_TRACKER_RECEIVER_PID = 0x7690
 
+private const val PACKET_SIZE = 16
+
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
  */
@@ -212,19 +214,19 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 				if (dataReceived.isNotEmpty()) {
 					// Process data
 					// TODO: make this less bad
-					if (dataReceived.size % 16 != 0) { // TODO: packet size 20 is valid (old)
+					if (dataReceived.size % PACKET_SIZE != 0) { // TODO: packet size 20 is valid (old)
 						LogManager.info("[TrackerServer] Malformed HID packet, ignoring")
 						continue // Don't continue with this data
 					}
 					devicesDataReceived = true // Data is received and is valid (not malformed)
-					val packetCount = dataReceived.size / 16
+					val packetCount = dataReceived.size / PACKET_SIZE
 					var i = 0
-					while (i < packetCount * 16) {
+					while (i < packetCount * PACKET_SIZE) {
 						if (i > 0) {
-							val currSlice: Array<Byte> = dataReceived.copyOfRange(i, (i + 15))
-							val prevSlice: Array<Byte> = dataReceived.copyOfRange((i - 16), (i - 1))
+							val currSlice: Array<Byte> = dataReceived.copyOfRange(i, (i + PACKET_SIZE - 1))
+							val prevSlice: Array<Byte> = dataReceived.copyOfRange((i - PACKET_SIZE), (i - 1))
 							if (currSlice contentEquals prevSlice) {
-								i += 16
+								i += PACKET_SIZE
 								continue
 							}
 						}
@@ -244,13 +246,13 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							val device = deviceIdLookup(hidDevice, deviceId, deviceName, deviceList)!! // register device
 							// server wants tracker to be unique, so use combination of hid serial and full id
 							setUpSensor(device, trackerId, IMUType.UNKNOWN, TrackerStatus.DISCONNECTED)
-							i += 16
+							i += PACKET_SIZE
 							continue
 						}
 
 						val device: HIDDevice? = deviceIdLookup(hidDevice, deviceId, null, deviceList)
 						if (device == null) { // not registered yet
-							i += 16
+							i += PACKET_SIZE
 							continue
 						}
 						val tracker = device.getTracker(trackerId)!!
@@ -402,7 +404,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							tracker.dataTick() // only data tick if there is rotation data
 						}
 
-						i += 16
+						i += PACKET_SIZE
 					}
 					// LogManager.info("[TrackerServer] HID received $packetCount tracker packets")
 				}
