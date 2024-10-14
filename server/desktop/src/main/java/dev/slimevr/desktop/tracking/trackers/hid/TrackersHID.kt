@@ -11,6 +11,7 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import io.github.axisangles.ktmath.Vector3
 import org.hid4java.HidDevice
+import org.hid4java.HidException
 import org.hid4java.HidManager
 import org.hid4java.HidServices
 import org.hid4java.HidServicesListener
@@ -51,7 +52,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			deviceEnumerateThread.isDaemon = true
 			deviceEnumerateThread.name = "hid4java device enumerator"
 			deviceEnumerateThread.start()
-		} catch (e: UnsatisfiedLinkError) {
+		} catch (e: HidException) {
 			LogManager.severe("Error initializing HID services: ${e.message}", e)
 		}
 	}
