@@ -333,6 +333,12 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							}
 						}
 
+						// Leave disconnected state (if disconnected)
+						// otherwise the tracker will set its own state (cannot be disconnected?)
+						if (tracker.status == TrackerStatus.DISCONNECTED) {
+							tracker.status = TrackerStatus.OK
+						}
+
 						// Assign data
 						if (batt != null) {
 							tracker.batteryLevel = if (batt == 128) 0.1f else (batt and 127).toFloat()
