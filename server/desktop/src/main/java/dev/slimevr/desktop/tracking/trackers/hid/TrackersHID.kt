@@ -263,14 +263,14 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						var temp: Int? = null
 						var brd_id: Int? = null
 						var mcu_id: Int? = null
-						var imu_id: Int? = null
-// 						var mag_id: Int? = null // not used currently
+						// var imu_id: Int? = null
+						// var mag_id: Int? = null // not used currently
 						var fw_date: Int? = null
 						var fw_major: Int? = null
 						var fw_minor: Int? = null
 						var fw_patch: Int? = null
 						var svr_status: Int? = null
-// 						var status: Int? = null // raw status from tracker
+						// var status: Int? = null // raw status from tracker
 						var rssi: Int? = null
 
 						// Tracker packets
@@ -281,8 +281,8 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 								temp = dataReceived[i + 4].toUByte().toInt()
 								brd_id = dataReceived[i + 5].toUByte().toInt()
 								mcu_id = dataReceived[i + 6].toUByte().toInt()
-								imu_id = dataReceived[i + 8].toUByte().toInt()
-// 								mag_id = dataReceived[i + 9].toUByte().toInt()
+								// imu_id = dataReceived[i + 8].toUByte().toInt()
+								// mag_id = dataReceived[i + 9].toUByte().toInt()
 								// ushort big endian
 								fw_date = dataReceived[i + 11].toUByte().toInt() shl 8 or dataReceived[i + 10].toUByte().toInt()
 								fw_major = dataReceived[i + 12].toUByte().toInt()
@@ -325,7 +325,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 
 							3 -> { // status
 								svr_status = dataReceived[i + 2].toUByte().toInt()
-// 								status = dataReceived[i + 3].toUByte().toInt()
+								// status = dataReceived[i + 3].toUByte().toInt()
 								rssi = dataReceived[i + 15].toUByte().toInt()
 							}
 
