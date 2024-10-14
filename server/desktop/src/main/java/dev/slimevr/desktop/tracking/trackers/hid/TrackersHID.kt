@@ -20,6 +20,8 @@ import org.hid4java.jna.HidApi
 import org.hid4java.jna.HidDeviceInfoStructure
 import java.util.function.Consumer
 import kotlin.experimental.and
+import java.nio.ByteBuffer
+import kotlin.math.*
 
 private const val HID_TRACKER_RECEIVER_VID = 0x1209
 private const val HID_TRACKER_RECEIVER_PID = 0x7690
@@ -134,14 +136,21 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 		}
 	}
 
-	private fun deviceIdLookup(hidDevice: HidDevice, deviceId: Int, deviceList: MutableList<Int>): HIDDevice {
+	private fun deviceIdLookup(hidDevice: HidDevice, deviceId: Int, deviceName: String? = null, deviceList: MutableList<Int>): HIDDevice? {
 		synchronized(this.devices) {
 			deviceList.map { this.devices[it] }.find { it.hidId == deviceId }?.let { return it }
+			if (deviceName == null) { // not registered yet
+				return null
+			}
 			val device = HIDDevice(deviceId)
-			// server wants tracker to be unique, so use combination of hid serial and full id
-			device.name = hidDevice.serialNumber ?: "Unknown HID Device"
-			device.name += "-$deviceId"
+			// server wants tracker to be unique, so use combination of hid serial and full id // TODO: use the tracker "address" instead
+			// TODO: the server should not setup any device, only when the receiver associates the id with the tracker "address" and sends this packet (0xff?) which it will do occasionally
+			//device.name = hidDevice.serialNumber ?: "Unknown HID Device"
+			//device.name += "-$deviceId"
+			device.name = deviceName
 			device.manufacturer = "HID Device" // TODO:
+			//device.manufacturer = hidDevice.manufacturer ?: "HID Device"
+			device.hardwareIdentifier = deviceName
 			this.devices.add(device)
 			deviceList.add(this.devices.size - 1)
 			VRServer.instance.deviceManager.addDevice(device) // actually add device to the server
@@ -199,64 +208,174 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 				if (dataReceived.isNotEmpty()) {
 					// Process data
 					// TODO: make this less bad
-					if (dataReceived.size % 20 != 0) {
+					if (dataReceived.size % 16 != 0) { // TODO: packet size 20 is valid (old)
 						LogManager.info("[TrackerServer] Malformed HID packet, ignoring")
 						continue // Don't continue with this data
 					}
 					devicesDataReceived = true // Data is received and is valid (not malformed)
-					val packetCount = dataReceived.size / 20
+					val packetCount = dataReceived.size / 16
 					var i = 0
-					while (i < packetCount * 20) {
+					while (i < packetCount * 16) {
 						if (i > 0) {
-							val currSlice: Array<Byte> = dataReceived.copyOfRange(i, (i + 19))
-							val prevSlice: Array<Byte> = dataReceived.copyOfRange((i - 20), (i - 1))
+							val currSlice: Array<Byte> = dataReceived.copyOfRange(i, (i + 15))
+							val prevSlice: Array<Byte> = dataReceived.copyOfRange((i - 16), (i - 1))
 							if (currSlice contentEquals prevSlice) {
-								i += 20
+								i += 16
 								continue
 							}
 						}
 
-						// dataReceived[i] //for later
-						val idCombination = dataReceived[i + 1].toInt()
-						val rssi = -dataReceived[i + 2].toInt()
-						val battery = dataReceived[i + 3].toInt()
-						// ushort big endian
-						val battery_mV = dataReceived[i + 5].toUByte().toInt() shl 8 or dataReceived[i + 4].toUByte().toInt()
-						// Q15: 1 is represented as 0x7FFF, -1 as 0x8000
-						// The sender can use integer saturation to avoid overflow
-						for (j in 0..3) { // quat received as fixed Q15
-							// Q15 as short big endian
-							q[j] = dataReceived[i + 6 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 6 + j * 2].toUByte().toInt()
+						// Common packet data
+						val packetType = dataReceived[i].toInt()
+						val id = dataReceived[i + 1].toInt()
+						val trackerId = 0 // no concept of extensions
+						val deviceId = id
+
+						// Receiver packets
+						if (packetType == 255) { // device register packet from receiver
+							val addr = (ByteBuffer.wrap(dataReceived, i + 2, 8).getLong() shr 16) and 0xFFFFFFFFFFFF
+							val deviceName = String.format("%012X", addr)
+							val device = deviceIdLookup(hidDevice, deviceId, deviceName, deviceList)!! // register device
+							// server wants tracker to be unique, so use combination of hid serial and full id
+							setUpSensor(device, trackerId, IMUType.UNKNOWN, TrackerStatus.OK)
+							i += 16
+							continue
 						}
-						for (j in 0..2) { // accel received as fixed 7, in m/s
-							// Q15 as short big endian
-							a[j] = dataReceived[i + 14 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 14 + j * 2].toUByte().toInt()
+
+						val device? = deviceIdLookup(hidDevice, deviceId, null, deviceList)
+						if (device == null) { // not registered yet
+							i += 16
+							continue
 						}
-						val trackerId = idCombination and 0b1111
-						val deviceId = (idCombination shr 4) and 0b1111
-						val device = deviceIdLookup(hidDevice, deviceId, deviceList)
-						// server wants tracker to be unique, so use combination of hid serial and full id
-						setUpSensor(device, trackerId, IMUType.UNKNOWN, TrackerStatus.OK)
 						val tracker = device.getTracker(trackerId)!!
 
-						tracker.signalStrength = rssi
-						// tracker.batteryVoltage = if (battery and 128 == 128) 5f else 0f // Charge status
-						tracker.batteryVoltage = battery_mV.toFloat() * 0.001f
-						tracker.batteryLevel = (battery and 127).toFloat()
-						// The data comes in the same order as in the UDP protocol
-						// x y z w -> w x y z
-						var rot = Quaternion(q[3].toFloat(), q[0].toFloat(), q[1].toFloat(), q[2].toFloat())
-						val scaleRot = 1 / (1 shl 15).toFloat() // compile time evaluation
-						rot = AXES_OFFSET.times(scaleRot).times(rot) // no division
-						tracker.setRotation(rot)
-						// TODO: I think the acceleration is wrong???
-						// Yes it was. And rotation was wrong too.
-						// At lease we have fixed the fixed point decoding.
-						val scaleAccel = 1 / (1 shl 7).toFloat() // compile time evaluation
-						var acceleration = Vector3(a[0].toFloat(), a[1].toFloat(), a[2].toFloat()).times(scaleAccel) // no division
-						tracker.setAcceleration(acceleration)
-						tracker.dataTick()
-						i += 20
+						// Packet data
+						var proto: Int? = null
+						var batt: Int? = null
+						var batt_v: Int? = null
+						var temp: Int? = null
+						var brd_id: Int? = null
+						var mcu_id: Int? = null
+						var imu_id: Int? = null
+						var mag_id: Int? = null // not used currently
+						var fw_date: Int? = null
+						var fw_major: Int? = null
+						var fw_minor: Int? = null
+						var fw_patch: Int? = null
+						var svr_status: Int? = null
+						var status: Int? = null
+						var rssi: Int? = null
+
+						// Tracker packets
+						when (packetType) {
+							0 -> { // device info
+								battery = dataReceived[i + 3].toUByte().toInt()
+								batt_v = dataReceived[i + 4].toUByte().toInt()
+								temp = dataReceived[i + 5].toUByte().toInt()
+								brd_id = dataReceived[i + 6].toUByte().toInt()
+								mcu_id = dataReceived[i + 7].toUByte()toInt()
+								imu_id = dataReceived[i + 8].toUByte().toInt()
+								mag_id = dataReceived[i + 9].toUByte().toInt()
+								// ushort big endian
+								fw_date = dataReceived[i + 11].toUByte().toInt() shl 8 or dataReceived[i + 10].toUByte().toInt()
+								fw_major = dataReceived[i + 12].toUByte().toInt()
+								fw_minor = dataReceived[i + 13].toUByte().toInt()
+								fw_patch = dataReceived[i + 14].toUByte().toInt()
+								rssi = dataReceived[i + 15].toUByte().toInt()
+							}
+							1 -> { // full precision quat and accel, no extra data
+								// Q15: 1 is represented as 0x7FFF, -1 as 0x8000
+								// The sender can use integer saturation to avoid overflow
+								for (j in 0..3) { // quat received as fixed Q15
+									// Q15 as short big endian
+									q[j] = dataReceived[i + 2 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 2 + j * 2].toUByte().toInt()
+								}
+								for (j in 0..2) { // accel received as fixed 7, in m/s
+									// Q7 as short big endian
+									a[j] = dataReceived[i + 10 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 10 + j * 2].toUByte().toInt()
+								}
+							}
+							2 -> { // reduced precision quat and accel with data
+								battery = dataReceived[i + 2].toUByte().toInt()
+								batt_v = dataReceived[i + 3].toUByte().toInt()
+								temp = dataReceived[i + 4].toUByte().toInt()
+								// quaternion is quantized as exponential map
+								// X = 10 bits, Y/Z = 11 bits
+								val q_buf = ByteBuffer.wrap(dataReceived, i + 2, 4).getInt().toUInt()
+								q[0] = q_buf and 1023
+								q[1] = q_buf shr 10 and 2047
+								q[2] = q_buf shr 21 and 2047
+								for (j in 0..2) { // accel received as fixed 7, in m/s
+									// Q7 as short big endian
+									a[j] = dataReceived[i + 9 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 9 + j * 2].toUByte().toInt()
+								}
+								rssi = dataReceived[i + 15].toUByte().toInt()
+							}
+							3 -> { // status
+								svr_status = dataReceived[i + 2].toUByte().toInt()
+								status = dataReceived[i + 3].toUByte().toInt()
+								rssi = dataReceived[i + 15].toUByte().toInt()
+							}
+							else -> {
+							}
+						}
+
+						// Assign data
+						when {
+							batt != null -> tracker.batteryLevel = if (battery == 128) 0.1f else (battery and 127).toFloat() // force battery to display at 0%
+							batt_v != null -> tracker.batteryVoltage = (batt_v.toFloat() + 245) / 100
+							temp != null -> tracker.temperature = if (temp > 0) temp / 2 - 39 else null // range 1 - 255 -> -38.5 - +88.5 C
+							brd_id != null -> tracker.boardType = BoardType.getById(brd_id)
+							mcu_id != null -> tracker.mcuType = MCUType.getById(mcu_id)
+							imu_id != null -> tracker.imuType = IMUType.getById(imu_id)
+							fw_date != null && fw_major != null && fw_minor != null && fw_patch != null -> {
+								val firmwareYear = 2020 + (fw_date shr 9 and 127)
+								val firmwareMonth = fw_date shr 5 and 15
+								val firmwareDay = fw_date and 31
+								val firmwareDate = String.format("%04d-%02d-%02d", firmwareYear, firmwareMonth, firmwareDay)
+								tracker.firmwareVersion = "$fw_major.$fw_minor.$fw_patch (Build $firmwareDate)"
+							}
+							svr_status != null -> tracker.status = TrackerStatus.getById(svr_status)
+							rssi != null -> tracker.signalStrength = -rssi
+						}
+
+						// Assign rotation and acceleration
+						if (packetType == 1) {
+							// The data comes in the same order as in the UDP protocol
+							// x y z w -> w x y z
+							var rot = Quaternion(q[3].toFloat(), q[0].toFloat(), q[1].toFloat(), q[2].toFloat())
+							val scaleRot = 1 / (1 shl 15).toFloat() // compile time evaluation
+							rot = AXES_OFFSET.times(scaleRot).times(rot) // no division
+							tracker.setRotation(rot)
+						}
+						if (packetType == 2) {
+							val v = floatArrayOf(q[0].toFloat(), q[1].toFloat(), q[2].toFloat()) // used q array for quantized data
+							v[0] /= (1 shl 10).toFloat()
+							v[1] /= (1 shl 11).toFloat()
+							v[2] /= (1 shl 11).toFloat()
+							for (int i = 0; i < 3; i++) {
+								v[i] = v[i] * 2 - 1
+							}
+							// http://marc-b-reynolds.github.io/quaternions/2017/05/02/QuatQuantPart1.html#fnref:pos:3
+							// https://github.com/Marc-B-Reynolds/Stand-alone-junk/blob/559bd78893a3a95cdee1845834c632141b945a45/src/Posts/quatquant0.c#L898
+							val d = v[0] * v[0] + v[1] * v[1] + v[2] * v[2]
+							val invSqrtD = 1 / sqrt(d + 1e-6f)
+							val a = (PI.toFloat() / 2) * d * invSqrtD
+							val s = sin(a)
+							val k = s * invSqrtD
+							var rot = Quaternion(cos(a), qk * v[0], k * v[1], k * v[2])
+							rot = AXES_OFFSET.times(rot) // no division
+							tracker.setRotation(rot)
+						}
+						if (packetType == 1 || packetType == 2) {
+							// TODO: Acceleration "was" wrong
+							val scaleAccel = 1 / (1 shl 7).toFloat() // compile time evaluation
+							var acceleration = Vector3(a[0].toFloat(), a[1].toFloat(), a[2].toFloat()).times(scaleAccel) // no division
+							tracker.setAcceleration(acceleration)
+							tracker.dataTick() // only data tick if there is rotation data
+						}
+
+						i += 16
 					}
 					// LogManager.info("[TrackerServer] HID received $packetCount tracker packets")
 				}
