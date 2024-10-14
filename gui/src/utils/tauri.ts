@@ -1,4 +1,4 @@
-import { isTauri } from '@tauri-apps/api/core';
+import { invoke, isTauri } from '@tauri-apps/api/core';
 import { type } from '@tauri-apps/plugin-os';
 
 /**
@@ -14,3 +14,6 @@ export async function fetchResourceUrl(url: string) {
 // FIXME: For some fucking reason, you can't top-level await on a react component file
 // on Chromium on developments builds specifically -Uriel
 export const AUTOBONE_VIDEO = await fetchResourceUrl('/videos/autobone.webm');
+
+export const isTrayAvailable =
+  isTauri() && (await invoke<boolean>('is_tray_available'));
