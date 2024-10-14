@@ -237,7 +237,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						val trackerId = 0 // no concept of extensions
 						val deviceId = id
 
-						// Receiver packets
+						// Register device
 						if (packetType == 255) { // device register packet from receiver
 							val buffer = ByteBuffer.wrap(dataReceived.toByteArray(), i + 2, 8)
 							buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN)
@@ -245,7 +245,6 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							val deviceName = String.format("%012X", addr)
 							val device = deviceIdLookup(hidDevice, deviceId, deviceName, deviceList)!! // register device
 							// server wants tracker to be unique, so use combination of hid serial and full id
-							setUpSensor(device, trackerId, IMUType.UNKNOWN, TrackerStatus.DISCONNECTED)
 							i += PACKET_SIZE
 							continue
 						}
@@ -255,7 +254,18 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							i += PACKET_SIZE
 							continue
 						}
-						val tracker = device.getTracker(trackerId)!!
+
+						// Register tracker
+						if (packetType == 0) { // Tracker register packet (device info)
+							val imu_id = dataReceived[i + 8].toUByte().toInt()
+							setUpSensor(device, trackerId, IMUType.getById(imu_id.toUInt()), TrackerStatus.OK)
+						}
+
+						var tracker: Tracker? = device.getTracker(trackerId)
+						if (tracker == null) { // not registered yet
+							i += PACKET_SIZE
+							continue
+						}
 
 						// Packet data
 						var batt: Int? = null
@@ -333,12 +343,6 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							}
 						}
 
-						// Leave disconnected state (if disconnected)
-						// otherwise the tracker will set its own state (cannot be disconnected?)
-						if (tracker.status == TrackerStatus.DISCONNECTED) {
-							tracker.status = TrackerStatus.OK
-						}
-
 						// Assign data
 						if (batt != null) {
 							tracker.batteryLevel = if (batt == 128) 0.1f else (batt and 127).toFloat()
@@ -356,9 +360,6 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						}
 						if (mcu_id != null) {
 							device.mcuType = MCUType.getById(mcu_id.toUInt())!!
-						}
-						if (imu_id != null) {
-							tracker.imuType = IMUType.getById(imu_id.toUInt())
 						}
 						if (fw_date != null && fw_major != null && fw_minor != null && fw_patch != null) {
 							val firmwareYear = 2020 + (fw_date shr 9 and 127)
