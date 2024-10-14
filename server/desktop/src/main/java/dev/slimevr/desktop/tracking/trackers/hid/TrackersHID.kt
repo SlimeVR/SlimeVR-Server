@@ -258,7 +258,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						// Register tracker
 						if (packetType == 0) { // Tracker register packet (device info)
 							val imu_id = dataReceived[i + 8].toUByte().toInt()
-							setUpSensor(device, trackerId, IMUType.getById(imu_id.toUInt()), TrackerStatus.OK)
+							setUpSensor(device, trackerId, IMUType.getById(imu_id.toUInt())!!, TrackerStatus.OK)
 						}
 
 						var tracker: Tracker? = device.getTracker(trackerId)
