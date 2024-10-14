@@ -5,7 +5,9 @@ import dev.slimevr.VRServer
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
+import dev.slimevr.tracking.trackers.udp.BoardType
 import dev.slimevr.tracking.trackers.udp.IMUType
+import dev.slimevr.tracking.trackers.udp.MCUType
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
@@ -18,9 +20,9 @@ import org.hid4java.HidServicesSpecification
 import org.hid4java.event.HidServicesEvent
 import org.hid4java.jna.HidApi
 import org.hid4java.jna.HidDeviceInfoStructure
+import java.nio.ByteBuffer
 import java.util.function.Consumer
 import kotlin.experimental.and
-import java.nio.ByteBuffer
 import kotlin.math.*
 
 private const val HID_TRACKER_RECEIVER_VID = 0x1209
@@ -145,11 +147,11 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			val device = HIDDevice(deviceId)
 			// server wants tracker to be unique, so use combination of hid serial and full id // TODO: use the tracker "address" instead
 			// TODO: the server should not setup any device, only when the receiver associates the id with the tracker "address" and sends this packet (0xff?) which it will do occasionally
-			//device.name = hidDevice.serialNumber ?: "Unknown HID Device"
-			//device.name += "-$deviceId"
+			// device.name = hidDevice.serialNumber ?: "Unknown HID Device"
+			// device.name += "-$deviceId"
 			device.name = deviceName
 			device.manufacturer = "HID Device" // TODO:
-			//device.manufacturer = hidDevice.manufacturer ?: "HID Device"
+			// device.manufacturer = hidDevice.manufacturer ?: "HID Device"
 			device.hardwareIdentifier = deviceName
 			this.devices.add(device)
 			deviceList.add(this.devices.size - 1)
@@ -233,7 +235,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 
 						// Receiver packets
 						if (packetType == 255) { // device register packet from receiver
-							val addr = (ByteBuffer.wrap(dataReceived, i + 2, 8).getLong() shr 16) and 0xFFFFFFFFFFFF
+							val addr = (ByteBuffer.wrap(dataReceived.toByteArray(), i + 2, 8).getLong() shr 16) and 0xFFFFFFFFFFFF
 							val deviceName = String.format("%012X", addr)
 							val device = deviceIdLookup(hidDevice, deviceId, deviceName, deviceList)!! // register device
 							// server wants tracker to be unique, so use combination of hid serial and full id
@@ -242,7 +244,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							continue
 						}
 
-						val device? = deviceIdLookup(hidDevice, deviceId, null, deviceList)
+						val device: HIDDevice? = deviceIdLookup(hidDevice, deviceId, null, deviceList)
 						if (device == null) { // not registered yet
 							i += 16
 							continue
@@ -250,14 +252,14 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						val tracker = device.getTracker(trackerId)!!
 
 						// Packet data
-						var proto: Int? = null
+// 						var proto: Int? = null
 						var batt: Int? = null
 						var batt_v: Int? = null
 						var temp: Int? = null
 						var brd_id: Int? = null
 						var mcu_id: Int? = null
 						var imu_id: Int? = null
-						var mag_id: Int? = null // not used currently
+// 						var mag_id: Int? = null // not used currently
 						var fw_date: Int? = null
 						var fw_major: Int? = null
 						var fw_minor: Int? = null
@@ -269,13 +271,14 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						// Tracker packets
 						when (packetType) {
 							0 -> { // device info
-								battery = dataReceived[i + 3].toUByte().toInt()
+// 								proto = dataReceived[i + 2].toUByte().toInt()
+								batt = dataReceived[i + 3].toUByte().toInt()
 								batt_v = dataReceived[i + 4].toUByte().toInt()
 								temp = dataReceived[i + 5].toUByte().toInt()
 								brd_id = dataReceived[i + 6].toUByte().toInt()
-								mcu_id = dataReceived[i + 7].toUByte()toInt()
+								mcu_id = dataReceived[i + 7].toUByte().toInt()
 								imu_id = dataReceived[i + 8].toUByte().toInt()
-								mag_id = dataReceived[i + 9].toUByte().toInt()
+// 								mag_id = dataReceived[i + 9].toUByte().toInt()
 								// ushort big endian
 								fw_date = dataReceived[i + 11].toUByte().toInt() shl 8 or dataReceived[i + 10].toUByte().toInt()
 								fw_major = dataReceived[i + 12].toUByte().toInt()
@@ -283,6 +286,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 								fw_patch = dataReceived[i + 14].toUByte().toInt()
 								rssi = dataReceived[i + 15].toUByte().toInt()
 							}
+
 							1 -> { // full precision quat and accel, no extra data
 								// Q15: 1 is represented as 0x7FFF, -1 as 0x8000
 								// The sender can use integer saturation to avoid overflow
@@ -295,47 +299,60 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 									a[j] = dataReceived[i + 10 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 10 + j * 2].toUByte().toInt()
 								}
 							}
+
 							2 -> { // reduced precision quat and accel with data
-								battery = dataReceived[i + 2].toUByte().toInt()
+								batt = dataReceived[i + 2].toUByte().toInt()
 								batt_v = dataReceived[i + 3].toUByte().toInt()
 								temp = dataReceived[i + 4].toUByte().toInt()
 								// quaternion is quantized as exponential map
 								// X = 10 bits, Y/Z = 11 bits
-								val q_buf = ByteBuffer.wrap(dataReceived, i + 2, 4).getInt().toUInt()
-								q[0] = q_buf and 1023
-								q[1] = q_buf shr 10 and 2047
-								q[2] = q_buf shr 21 and 2047
+								val q_buf = ByteBuffer.wrap(dataReceived.toByteArray(), i + 2, 4).getInt().toUInt()
+								q[0] = (q_buf and 1023u).toInt()
+								q[1] = (q_buf shr 10 and 2047u).toInt()
+								q[2] = (q_buf shr 21 and 2047u).toInt()
 								for (j in 0..2) { // accel received as fixed 7, in m/s
 									// Q7 as short big endian
 									a[j] = dataReceived[i + 9 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 9 + j * 2].toUByte().toInt()
 								}
 								rssi = dataReceived[i + 15].toUByte().toInt()
 							}
+
 							3 -> { // status
 								svr_status = dataReceived[i + 2].toUByte().toInt()
 								status = dataReceived[i + 3].toUByte().toInt()
 								rssi = dataReceived[i + 15].toUByte().toInt()
 							}
+
 							else -> {
 							}
 						}
 
 						// Assign data
 						when {
-							batt != null -> tracker.batteryLevel = if (battery == 128) 0.1f else (battery and 127).toFloat() // force battery to display at 0%
-							batt_v != null -> tracker.batteryVoltage = (batt_v.toFloat() + 245) / 100
-							temp != null -> tracker.temperature = if (temp > 0) temp / 2 - 39 else null // range 1 - 255 -> -38.5 - +88.5 C
-							brd_id != null -> tracker.boardType = BoardType.getById(brd_id)
-							mcu_id != null -> tracker.mcuType = MCUType.getById(mcu_id)
-							imu_id != null -> tracker.imuType = IMUType.getById(imu_id)
+							batt != null -> tracker.batteryLevel = if (batt == 128) 0.1f else (batt and 127).toFloat()
+
+							// force battery to display at 0%
+							batt_v != null -> tracker.batteryVoltage = (batt_v.toFloat() + 245f) / 100f
+
+							temp != null -> tracker.temperature = if (temp > 0) temp.toFloat() / 2f - 39f else null
+
+							// range 1 - 255 -> -38.5 - +88.5 C
+							brd_id != null -> device.boardType = BoardType.getById(brd_id.toUInt())!!
+
+							mcu_id != null -> device.mcuType = MCUType.getById(mcu_id.toUInt())!!
+
+							imu_id != null -> tracker.imuType = IMUType.getById(imu_id.toUInt())
+
 							fw_date != null && fw_major != null && fw_minor != null && fw_patch != null -> {
 								val firmwareYear = 2020 + (fw_date shr 9 and 127)
 								val firmwareMonth = fw_date shr 5 and 15
 								val firmwareDay = fw_date and 31
 								val firmwareDate = String.format("%04d-%02d-%02d", firmwareYear, firmwareMonth, firmwareDay)
-								tracker.firmwareVersion = "$fw_major.$fw_minor.$fw_patch (Build $firmwareDate)"
+								device.firmwareVersion = "$fw_major.$fw_minor.$fw_patch (Build $firmwareDate)"
 							}
-							svr_status != null -> tracker.status = TrackerStatus.getById(svr_status)
+
+							svr_status != null -> tracker.status = TrackerStatus.getById(svr_status)!!
+
 							rssi != null -> tracker.signalStrength = -rssi
 						}
 
@@ -353,7 +370,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							v[0] /= (1 shl 10).toFloat()
 							v[1] /= (1 shl 11).toFloat()
 							v[2] /= (1 shl 11).toFloat()
-							for (int i = 0; i < 3; i++) {
+							for (i in 0..2) {
 								v[i] = v[i] * 2 - 1
 							}
 							// http://marc-b-reynolds.github.io/quaternions/2017/05/02/QuatQuantPart1.html#fnref:pos:3
@@ -363,7 +380,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							val a = (PI.toFloat() / 2) * d * invSqrtD
 							val s = sin(a)
 							val k = s * invSqrtD
-							var rot = Quaternion(cos(a), qk * v[0], k * v[1], k * v[2])
+							var rot = Quaternion(cos(a), k * v[0], k * v[1], k * v[2])
 							rot = AXES_OFFSET.times(rot) // no division
 							tracker.setRotation(rot)
 						}
