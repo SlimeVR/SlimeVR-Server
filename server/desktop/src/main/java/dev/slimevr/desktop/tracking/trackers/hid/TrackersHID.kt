@@ -152,7 +152,9 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			device.name = deviceName
 			device.manufacturer = "HID Device" // TODO:
 			// device.manufacturer = hidDevice.manufacturer ?: "HID Device"
-			device.hardwareIdentifier = deviceName
+//			device.hardwareIdentifier = hidDevice.serialNumber // hardwareIdentifier is not used to identify the tracker, so also display the receiver serial
+//			device.hardwareIdentifier += "-$deviceId/$deviceName" // receiver serial + assigned id in receiver + device address
+			device.hardwareIdentifier = deviceName // the rest of identifier wont fit in gui
 			this.devices.add(device)
 			deviceList.add(this.devices.size - 1)
 			VRServer.instance.deviceManager.addDevice(device) // actually add device to the server
@@ -228,18 +230,20 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						}
 
 						// Common packet data
-						val packetType = dataReceived[i].toInt()
-						val id = dataReceived[i + 1].toInt()
+						val packetType = dataReceived[i].toUByte().toInt()
+						val id = dataReceived[i + 1].toUByte().toInt()
 						val trackerId = 0 // no concept of extensions
 						val deviceId = id
 
 						// Receiver packets
 						if (packetType == 255) { // device register packet from receiver
-							val addr = (ByteBuffer.wrap(dataReceived.toByteArray(), i + 2, 8).getLong() shr 16) and 0xFFFFFFFFFFFF
+							val buffer = ByteBuffer.wrap(dataReceived.toByteArray(), i + 2, 8)
+							buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN)
+							val addr = buffer.getLong() and 0xFFFFFFFFFFFF
 							val deviceName = String.format("%012X", addr)
 							val device = deviceIdLookup(hidDevice, deviceId, deviceName, deviceList)!! // register device
 							// server wants tracker to be unique, so use combination of hid serial and full id
-							setUpSensor(device, trackerId, IMUType.UNKNOWN, TrackerStatus.OK)
+							setUpSensor(device, trackerId, IMUType.UNKNOWN, TrackerStatus.DISCONNECTED)
 							i += 16
 							continue
 						}
@@ -252,7 +256,6 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						val tracker = device.getTracker(trackerId)!!
 
 						// Packet data
-// 						var proto: Int? = null
 						var batt: Int? = null
 						var batt_v: Int? = null
 						var temp: Int? = null
@@ -265,18 +268,17 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						var fw_minor: Int? = null
 						var fw_patch: Int? = null
 						var svr_status: Int? = null
-						var status: Int? = null
+//						var status: Int? = null // raw status from tracker
 						var rssi: Int? = null
 
 						// Tracker packets
 						when (packetType) {
 							0 -> { // device info
-// 								proto = dataReceived[i + 2].toUByte().toInt()
-								batt = dataReceived[i + 3].toUByte().toInt()
-								batt_v = dataReceived[i + 4].toUByte().toInt()
-								temp = dataReceived[i + 5].toUByte().toInt()
-								brd_id = dataReceived[i + 6].toUByte().toInt()
-								mcu_id = dataReceived[i + 7].toUByte().toInt()
+								batt = dataReceived[i + 2].toUByte().toInt()
+								batt_v = dataReceived[i + 3].toUByte().toInt()
+								temp = dataReceived[i + 4].toUByte().toInt()
+								brd_id = dataReceived[i + 5].toUByte().toInt()
+								mcu_id = dataReceived[i + 6].toUByte().toInt()
 								imu_id = dataReceived[i + 8].toUByte().toInt()
 // 								mag_id = dataReceived[i + 9].toUByte().toInt()
 								// ushort big endian
@@ -306,7 +308,9 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 								temp = dataReceived[i + 4].toUByte().toInt()
 								// quaternion is quantized as exponential map
 								// X = 10 bits, Y/Z = 11 bits
-								val q_buf = ByteBuffer.wrap(dataReceived.toByteArray(), i + 2, 4).getInt().toUInt()
+								val buffer = ByteBuffer.wrap(dataReceived.toByteArray(), i + 5, 4)
+								buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN)
+								val q_buf = buffer.getInt().toUInt()
 								q[0] = (q_buf and 1023u).toInt()
 								q[1] = (q_buf shr 10 and 2047u).toInt()
 								q[2] = (q_buf shr 21 and 2047u).toInt()
@@ -319,7 +323,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 
 							3 -> { // status
 								svr_status = dataReceived[i + 2].toUByte().toInt()
-								status = dataReceived[i + 3].toUByte().toInt()
+//								status = dataReceived[i + 3].toUByte().toInt()
 								rssi = dataReceived[i + 15].toUByte().toInt()
 							}
 
@@ -328,32 +332,38 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						}
 
 						// Assign data
-						when {
-							batt != null -> tracker.batteryLevel = if (batt == 128) 0.1f else (batt and 127).toFloat()
-
-							// force battery to display at 0%
-							batt_v != null -> tracker.batteryVoltage = (batt_v.toFloat() + 245f) / 100f
-
-							temp != null -> tracker.temperature = if (temp > 0) temp.toFloat() / 2f - 39f else null
-
-							// range 1 - 255 -> -38.5 - +88.5 C
-							brd_id != null -> device.boardType = BoardType.getById(brd_id.toUInt())!!
-
-							mcu_id != null -> device.mcuType = MCUType.getById(mcu_id.toUInt())!!
-
-							imu_id != null -> tracker.imuType = IMUType.getById(imu_id.toUInt())
-
-							fw_date != null && fw_major != null && fw_minor != null && fw_patch != null -> {
-								val firmwareYear = 2020 + (fw_date shr 9 and 127)
-								val firmwareMonth = fw_date shr 5 and 15
-								val firmwareDay = fw_date and 31
-								val firmwareDate = String.format("%04d-%02d-%02d", firmwareYear, firmwareMonth, firmwareDay)
-								device.firmwareVersion = "$fw_major.$fw_minor.$fw_patch (Build $firmwareDate)"
-							}
-
-							svr_status != null -> tracker.status = TrackerStatus.getById(svr_status)!!
-
-							rssi != null -> tracker.signalStrength = -rssi
+						if (batt != null) {
+							tracker.batteryLevel = if (batt == 128) 0.1f else (batt and 127).toFloat()
+						}
+						// Force battery to display at 0%
+						if (batt_v != null) {
+							tracker.batteryVoltage = (batt_v.toFloat() + 245f) / 100f
+						}
+						if (temp != null) {
+							tracker.temperature = if (temp > 0) temp.toFloat() / 2f - 39f else null
+						}
+						// Range 1 - 255 -> -38.5 - +88.5 C
+						if (brd_id != null) {
+							device.boardType = BoardType.getById(brd_id.toUInt())!!
+						}
+						if (mcu_id != null) {
+							device.mcuType = MCUType.getById(mcu_id.toUInt())!!
+						}
+						if (imu_id != null) {
+							tracker.imuType = IMUType.getById(imu_id.toUInt())
+						}
+						if (fw_date != null && fw_major != null && fw_minor != null && fw_patch != null) {
+							val firmwareYear = 2020 + (fw_date shr 9 and 127)
+							val firmwareMonth = fw_date shr 5 and 15
+							val firmwareDay = fw_date and 31
+							val firmwareDate = String.format("%04d-%02d-%02d", firmwareYear, firmwareMonth, firmwareDay)
+							device.firmwareVersion = "$fw_major.$fw_minor.$fw_patch (Build $firmwareDate)"
+						}
+						if (svr_status != null) {
+							tracker.status = TrackerStatus.getById(svr_status)!!
+						}
+						if (rssi != null) {
+							tracker.signalStrength = -rssi
 						}
 
 						// Assign rotation and acceleration

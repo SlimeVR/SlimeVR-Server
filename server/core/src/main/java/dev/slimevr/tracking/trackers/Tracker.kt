@@ -56,7 +56,7 @@ class Tracker @JvmOverloads constructor(
 	 * Has solved position + rotation (Vive trackers)
 	 */
 	val isComputed: Boolean = false,
-	val imuType: IMUType? = null,
+	var imuType: IMUType? = null, // TrackersHID has to assign after the device is created
 	/**
 	 * Automatically set the status to DISCONNECTED
 	 */
