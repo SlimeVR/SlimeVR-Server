@@ -73,7 +73,7 @@ class TapDetection {
 		accelList.add(listval)
 
 		// remove old values from the list (if they are too old)
-		while (time - accelList.first[1] > CLUMP_TIME_NS) {
+		while (time - accelList.first()[1] > CLUMP_TIME_NS) {
 			accelList.removeFirst()
 		}
 
@@ -93,7 +93,7 @@ class TapDetection {
 
 		// remove old taps from the list (if they are too old)
 		if (!tapTimes.isEmpty()) {
-			while (time - tapTimes.first > timeWindowNS) {
+			while (time - tapTimes.first() > timeWindowNS) {
 				tapTimes.removeFirst()
 				if (tapTimes.isEmpty()) return
 			}

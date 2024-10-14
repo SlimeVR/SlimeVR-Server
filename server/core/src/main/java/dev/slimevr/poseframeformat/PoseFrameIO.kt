@@ -73,30 +73,26 @@ object PoseFrameIO {
 		}
 	}
 
-	fun tryWriteFrames(outputStream: DataOutputStream, frames: PoseFrames): Boolean {
-		try {
-			writeFrames(outputStream, frames)
-		} catch (e: Exception) {
-			LogManager.severe("Error writing frame to stream", e)
-			return false
-		}
-		return true
+	fun tryWriteFrames(outputStream: DataOutputStream, frames: PoseFrames): Boolean = try {
+		writeFrames(outputStream, frames)
+		true
+	} catch (e: Exception) {
+		LogManager.severe("Error writing frame to stream.", e)
+		false
 	}
 
 	fun writeToFile(file: File, frames: PoseFrames) {
 		DataOutputStream(
 			BufferedOutputStream(FileOutputStream(file)),
-		).use { outputStream -> writeFrames(outputStream, frames) }
+		).use { writeFrames(it, frames) }
 	}
 
-	fun tryWriteToFile(file: File, frames: PoseFrames): Boolean {
-		try {
-			writeToFile(file, frames)
-		} catch (e: Exception) {
-			LogManager.severe("Error writing frames to file", e)
-			return false
-		}
-		return true
+	fun tryWriteToFile(file: File, frames: PoseFrames): Boolean = try {
+		writeToFile(file, frames)
+		true
+	} catch (e: Exception) {
+		LogManager.severe("Error writing frames to file.", e)
+		false
 	}
 
 	@Throws(IOException::class)
@@ -166,27 +162,20 @@ object PoseFrameIO {
 		return PoseFrames(trackers)
 	}
 
-	fun tryReadFrames(inputStream: DataInputStream): PoseFrames? {
-		return try {
-			return readFrames(inputStream)
-		} catch (e: Exception) {
-			LogManager.severe("Error reading frames from stream", e)
-			null
-		}
+	fun tryReadFrames(inputStream: DataInputStream): PoseFrames? = try {
+		readFrames(inputStream)
+	} catch (e: Exception) {
+		LogManager.severe("Error reading frames from stream.", e)
+		null
 	}
 
-	fun readFromFile(file: File): PoseFrames = readFrames(
-		DataInputStream(BufferedInputStream(FileInputStream(file))),
-	)
+	fun readFromFile(file: File): PoseFrames =
+		DataInputStream(BufferedInputStream(FileInputStream(file))).use { readFrames(it) }
 
-	fun tryReadFromFile(file: File): PoseFrames? {
-		return try {
-			return readFrames(
-				DataInputStream(BufferedInputStream(FileInputStream(file))),
-			)
-		} catch (e: Exception) {
-			LogManager.severe("Error reading frames from file", e)
-			null
-		}
+	fun tryReadFromFile(file: File): PoseFrames? = try {
+		readFromFile(file)
+	} catch (e: Exception) {
+		LogManager.severe("Error reading frames from file.", e)
+		null
 	}
 }

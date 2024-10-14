@@ -5,6 +5,7 @@
  * For more details take a look at the Java Libraries chapter in the Gradle
  * User Manual available at https://docs.gradle.org/6.3/userguide/java_library_plugin.html
  */
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -12,7 +13,7 @@ plugins {
 	kotlin("plugin.serialization")
 	id("com.github.gmazzo.buildconfig")
 
-	id("com.android.application") version "8.0.2"
+	id("com.android.application") version "8.6.1"
 	id("org.ajoberstar.grgit")
 }
 
@@ -39,8 +40,10 @@ tasks.preBuild {
 }
 
 tasks.withType<KotlinCompile> {
-	kotlinOptions.jvmTarget = "17"
-	kotlinOptions.freeCompilerArgs += "-Xvalue-classes"
+	compilerOptions {
+		jvmTarget.set(JvmTarget.JVM_17)
+		freeCompilerArgs.set(listOf("-Xvalue-classes"))
+	}
 }
 
 // Set compiler to use UTF-8
@@ -65,21 +68,21 @@ allprojects {
 dependencies {
 	implementation(project(":server:core"))
 
-	implementation("commons-cli:commons-cli:1.5.0")
-	implementation("org.apache.commons:commons-lang3:3.12.0")
+	implementation("commons-cli:commons-cli:1.8.0")
+	implementation("org.apache.commons:commons-lang3:3.15.0")
 
 	// Android stuff
-	implementation("androidx.appcompat:appcompat:1.6.1")
-	implementation("androidx.core:core-ktx:1.10.1")
-	implementation("com.google.android.material:material:1.9.0")
+	implementation("androidx.appcompat:appcompat:1.7.0")
+	implementation("androidx.core:core-ktx:1.13.1")
+	implementation("com.google.android.material:material:1.12.0")
 	implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-	androidTestImplementation("androidx.test.ext:junit:1.1.5")
-	androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+	androidTestImplementation("androidx.test.ext:junit:1.2.1")
+	androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 	// For hosting web GUI
-	implementation("io.ktor:ktor-server-core:2.3.0")
-	implementation("io.ktor:ktor-server-netty:2.3.0")
-	implementation("io.ktor:ktor-server-caching-headers:2.3.0")
+	implementation("io.ktor:ktor-server-core:2.3.12")
+	implementation("io.ktor:ktor-server-netty:2.3.10")
+	implementation("io.ktor:ktor-server-caching-headers:2.3.12")
 
 	// Serial
 	implementation("com.github.mik3y:usb-serial-for-android:3.7.0")
@@ -99,7 +102,7 @@ android {
 		compile your app. This means your app can use the API features included in
 		this API level and lower. */
 
-	compileSdk = 33
+	compileSdk = 35
 
 	/* The defaultConfig block encapsulates default settings and entries for all
 		build variants and can override some attributes in main/AndroidManifest.xml
@@ -119,7 +122,7 @@ android {
 		minSdk = 26
 
 		// Specifies the API level used to test the app.
-		targetSdk = 33
+		targetSdk = 35
 
 		// Defines the version number of your app.
 		versionCode = extra["gitVersionCode"] as? Int

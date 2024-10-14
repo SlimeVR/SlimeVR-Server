@@ -102,7 +102,7 @@ class UnityArmature(localRot: Boolean) {
 	fun setLocalRotationForBone(unityBone: UnityBone, localRot: Quaternion) {
 		val node = getHeadNodeOfBone(unityBone)
 		if (node != null) {
-			if (unityBone === UnityBone.HIPS) {
+			if (unityBone == UnityBone.HIPS) {
 				node.worldTransform.rotation = localRot
 			} else {
 				node.localTransform.rotation = when (unityBone) {
@@ -117,7 +117,7 @@ class UnityArmature(localRot: Boolean) {
 	fun getGlobalTranslationForBone(unityBone: UnityBone): Vector3 {
 		val node = getHeadNodeOfBone(unityBone)
 		return if (node != null) {
-			if (unityBone === UnityBone.HIPS) {
+			if (unityBone == UnityBone.HIPS) {
 				val hipsAverage = (
 					leftHipNode.worldTransform.translation +
 						rightHipNode.worldTransform.translation
@@ -134,7 +134,7 @@ class UnityArmature(localRot: Boolean) {
 	fun getLocalTranslationForBone(unityBone: UnityBone): Vector3 {
 		val node = getHeadNodeOfBone(unityBone)
 		return if (node != null) {
-			if (unityBone === UnityBone.HIPS) {
+			if (unityBone == UnityBone.HIPS) {
 				val hipsAverage = (
 					leftHipNode.worldTransform.translation +
 						rightHipNode.worldTransform.translation
@@ -160,7 +160,7 @@ class UnityArmature(localRot: Boolean) {
 	fun getLocalRotationForBone(unityBone: UnityBone): Quaternion {
 		val node = getHeadNodeOfBone(unityBone)
 		return if (node != null) {
-			if (unityBone === UnityBone.HIPS) {
+			if (unityBone == UnityBone.HIPS) {
 				node.worldTransform.rotation * rootRotation
 			} else {
 				node.parent!!.worldTransform.rotation.inv() * node.worldTransform.rotation

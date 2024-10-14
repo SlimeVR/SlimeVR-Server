@@ -21,8 +21,10 @@ interface InterfaceSettingsForm {
   appearance: {
     devmode: boolean;
     theme: string;
+    showNavbarOnboarding: boolean;
     textSize: number;
     fonts: string;
+    decorations: boolean;
   };
   notifications: {
     watchNewDevices: boolean;
@@ -43,8 +45,11 @@ export function InterfaceSettings() {
       appearance: {
         devmode: config?.debug ?? defaultConfig.debug,
         theme: config?.theme ?? defaultConfig.theme,
+        showNavbarOnboarding:
+          config?.showNavbarOnboarding ?? defaultConfig.showNavbarOnboarding,
         textSize: config?.textSize ?? defaultConfig.textSize,
         fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
+        decorations: config?.decorations ?? defaultConfig.decorations,
       },
       notifications: {
         watchNewDevices:
@@ -69,11 +74,13 @@ export function InterfaceSettings() {
       feedbackSound: values.notifications.feedbackSound,
       feedbackSoundVolume: values.notifications.feedbackSoundVolume,
       theme: values.appearance.theme,
+      showNavbarOnboarding: values.appearance.showNavbarOnboarding,
       fonts: values.appearance.fonts.split(','),
       textSize: values.appearance.textSize,
       connectedTrackersWarning: values.notifications.connectedTrackersWarning,
       useTray: values.notifications.useTray,
       discordPresence: values.notifications.discordPresence,
+      decorations: values.appearance.decorations,
     });
   };
 
@@ -91,6 +98,7 @@ export function InterfaceSettings() {
     <SettingsPageLayout>
       <form
         className="flex flex-col gap-2 w-full"
+        // Don't resize the font size for this page because you have access to font resizing on it and we don't want to break the layout just in case
         style={
           {
             '--font-size': '12rem',
@@ -264,6 +272,28 @@ export function InterfaceSettings() {
               />
             </div>
 
+            <Typography bold>
+              {l10n.getString('settings-interface-appearance-decorations')}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-interface-appearance-decorations-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                variant="toggle"
+                control={control}
+                outlined
+                name="appearance.decorations"
+                label={l10n.getString(
+                  'settings-interface-appearance-decorations-label'
+                )}
+              />
+            </div>
+
             <div className="pb-4">
               <Typography bold>
                 {l10n.getString('settings-general-interface-theme')}
@@ -318,6 +348,30 @@ export function InterfaceSettings() {
                   colors="!bg-trans-flag"
                 ></ThemeSelector>
               </div>
+            </div>
+
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-interface-show-navbar-onboarding'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-interface-show-navbar-onboarding-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                variant="toggle"
+                control={control}
+                outlined
+                name="appearance.showNavbarOnboarding"
+                label={l10n.getString(
+                  'settings-general-interface-show-navbar-onboarding-label'
+                )}
+              />
             </div>
 
             <Typography bold>

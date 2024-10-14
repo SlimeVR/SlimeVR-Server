@@ -1,12 +1,14 @@
 package dev.slimevr.tracking.processor.skeleton;
 
 
+import dev.slimevr.VRServer;
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.setup.TapSetupHandler;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
 import solarxr_protocol.rpc.ResetType;
+import solarxr_protocol.rpc.StatusData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -192,6 +194,13 @@ public class TapDetectionManager {
 	}
 
 	private void checkMountingReset() {
+		// Don't allow mounting if tracker needs reset
+		VRServer server = humanPoseManager.getServer();
+		if (server != null && server.statusSystem.hasStatusType(StatusData.StatusTrackerReset)) {
+			mountingResetDetector.resetDetector();
+			return;
+		}
+
 		boolean tapped = (mountingResetTaps <= mountingResetDetector.getTaps());
 
 		if (tapped && mountingResetAllowPlaySound) {

@@ -35,7 +35,7 @@ class QuaternionMovingAverage(
 		// GUI should clamp it from 0.01 (1%) or 0.1 (10%)
 		// to 1 (100%).
 		amount = amount.coerceAtLeast(0f)
-		if (type === TrackerFilters.SMOOTHING) {
+		if (type == TrackerFilters.SMOOTHING) {
 			// lower smoothFactor = more smoothing
 			smoothFactor = SMOOTH_MULTIPLIER * (1 - amount.coerceAtMost(1f)) + SMOOTH_MIN
 			// Totally a hack
@@ -43,7 +43,7 @@ class QuaternionMovingAverage(
 				smoothFactor /= amount
 			}
 		}
-		if (type === TrackerFilters.PREDICTION) {
+		if (type == TrackerFilters.PREDICTION) {
 			// higher predictFactor = more prediction
 			predictFactor = PREDICT_MULTIPLIER * amount + PREDICT_MIN
 			rotBuffer = CircularArrayList(PREDICT_BUFFER)
@@ -95,7 +95,7 @@ class QuaternionMovingAverage(
 
 	@Synchronized
 	fun addQuaternion(q: Quaternion) {
-		if (type === TrackerFilters.PREDICTION) {
+		if (type == TrackerFilters.PREDICTION) {
 			if (rotBuffer.size == rotBuffer.capacity()) {
 				rotBuffer.removeLast()
 			}

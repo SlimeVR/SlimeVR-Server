@@ -74,6 +74,12 @@ skeleton_bone-ELBOW_OFFSET = Elbow Offset
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
+reset-reset_all_warning =
+    <b>Warning:</b> This will reset your proportions to being just based on your height.
+    Are you sure you want to do this?
+reset-reset_all_warning-reset = Reset proportions
+reset-reset_all_warning-cancel = Cancel
+
 reset-full = Full Reset
 reset-mounting = Reset Mounting
 reset-yaw = Yaw Reset
@@ -125,10 +131,13 @@ widget-developer_mode-raw_slime_rotation = Raw rotation
 widget-developer_mode-more_info = More info
 
 ## Widget: IMU Visualizer
-widget-imu_visualizer = Rotation
-widget-imu_visualizer-rotation_raw = Raw
-widget-imu_visualizer-rotation_preview = Preview
-widget-imu_visualizer-rotation_hide = Hide
+widget-imu_visualizer = Tracking data
+widget-imu_visualizer-preview = Preview
+widget-imu_visualizer-hide = Hide
+widget-imu_visualizer-rotation_raw = Raw rotation
+widget-imu_visualizer-rotation_preview = Preview rotation
+widget-imu_visualizer-acceleration = Acceleration
+widget-imu_visualizer-position = Position
 
 ## Widget: Skeleton Visualizer
 widget-skeleton_visualizer-preview = Skeleton preview
@@ -271,6 +280,7 @@ settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 settings-sidebar-appearance = Appearance
 settings-sidebar-notifications = Notifications
+settings-sidebar-advanced = Advanced
 
 ## SteamVR settings
 settings-general-steamvr = SteamVR
@@ -321,7 +331,22 @@ settings-general-tracker_mechanics-drift_compensation = Drift compensation
 settings-general-tracker_mechanics-drift_compensation-description =
     Compensates IMU yaw drift by applying an inverse rotation.
     Change amount of compensation and up to how many resets are taken into account.
+    This should only be used if you need to reset very often!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-prediction = Drift compensation prediction
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    Predicts yaw drift compensation beyond previously measured range.
+    Enable this if the tracker is continuously spinning on yaw axis.
+settings-general-tracker_mechanics-drift_compensation-prediction-label = Drift compensation prediction
+settings-general-tracker_mechanics-drift_compensation_warning =
+    <b>Warning:</b> Only use drift compensation if you need to reset
+    very often (every ~5-10 minutes).
+
+    Some IMUs prone to frequent resets include:
+    Joy-Cons, owoTrack, and MPUs (without recent firmware).
+settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancel
+settings-general-tracker_mechanics-drift_compensation_warning-done = I understand
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting reset calibration
@@ -424,6 +449,9 @@ settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-theme = Color theme
+settings-general-interface-show-navbar-onboarding = Show "{ navbar-onboarding }" on navigation bar
+settings-general-interface-show-navbar-onboarding-description = This changes if the "{ navbar-onboarding }" button shows on the navigation bar.
+settings-general-interface-show-navbar-onboarding-label = Show "{ navbar-onboarding }"
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language you want to use.
 settings-general-interface-lang-placeholder = Select the language to use
@@ -435,6 +463,9 @@ settings-interface-appearance-font-os_font = OS font
 settings-interface-appearance-font-slime_font = Default font
 settings-interface-appearance-font_size = Base font scaling
 settings-interface-appearance-font_size-description = This affects the font size of the whole interface except this settings panel.
+settings-interface-appearance-decorations = Use the system native decorations
+settings-interface-appearance-decorations-description = This will not render the top bar of the interface and will use the operating system's instead.
+settings-interface-appearance-decorations-label = Use native decorations
 
 ## Notification settings
 settings-interface-notifications = Notifications
@@ -573,6 +604,32 @@ settings-osc-vmc-mirror_tracking = Mirror tracking
 settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
 settings-osc-vmc-mirror_tracking-label = Mirror tracking
 
+## Advanced settings
+settings-utils-advanced = Advanced
+
+settings-utils-advanced-reset-gui = Reset GUI settings
+settings-utils-advanced-reset-gui-description = Restore the default settings for the interface.
+settings-utils-advanced-reset-gui-label = Reset GUI
+settings-utils-advanced-reset-server = Reset tracking settings
+settings-utils-advanced-reset-server-description = Restore the default settings for the tracking.
+settings-utils-advanced-reset-server-label = Reset tracking
+settings-utils-advanced-reset-all = Reset all settings
+settings-utils-advanced-reset-all-description = Restore the default settings for both the interface and tracking.
+settings-utils-advanced-reset-all-label = Reset all
+settings-utils-advanced-reset_warning =
+        <b>Warning:</b> This will reset { $type ->
+            [gui] your GUI
+            [server] your tracking
+            *[all] all your
+        } settings to the defaults.
+        Are you sure you want to do this?
+settings-utils-advanced-reset_warning-reset = Reset settings
+settings-utils-advanced-reset_warning-cancel = Cancel
+
+settings-utils-advanced-open_data = Data folder
+settings-utils-advanced-open_data-description = Open SlimeVR's data folder in file explorer, containing config and log files.
+settings-utils-advanced-open_data-label = Open folder
+
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
 onboarding-continue = Continue
@@ -672,6 +729,7 @@ onboarding-calibration_tutorial-status-waiting = Waiting for you
 onboarding-calibration_tutorial-status-calibrating = Calibrating
 onboarding-calibration_tutorial-status-success = Nice!
 onboarding-calibration_tutorial-status-error = The tracker was moved
+onboarding-calibration_tutorial-skip = Skip tutorial
 
 ## Tracker assignment tutorial
 onboarding-assignment_tutorial = How to prepare a Slime Tracker before putting it on
@@ -793,11 +851,11 @@ onboarding-choose_mounting = What mounting calibration method to use?
 # Multiline text
 onboarding-choose_mounting-description = Mounting orientation corrects for the placement of trackers on your body.
 onboarding-choose_mounting-auto_mounting = Automatic mounting
-# Italized text
+# Italicized text
 onboarding-choose_mounting-auto_mounting-label-v2 = Recommended
 onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting orientations for all of your trackers from 2 poses
 onboarding-choose_mounting-manual_mounting = Manual mounting
-# Italized text
+# Italicized text
 onboarding-choose_mounting-manual_mounting-label-v2 = Might not be precise enough
 onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting orientation manually for each tracker
 # Multiline text
@@ -841,14 +899,14 @@ onboarding-choose_proportions-description-v1 = Body proportions are used to know
     When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
     <b>You only need to measure your body once!</b> Unless they are wrong or your body has changed, then you don't need to do them again.
 onboarding-choose_proportions-auto_proportions = Automatic proportions
-# Italized text
+# Italicized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
 onboarding-choose_proportions-auto_proportions-descriptionv3 =
     This will guess your proportions by recording a sample of your movements and passing it through an algorithm.
 
     <b>This requires having your headset (HMD) connected to SlimeVR and on your head!</b>
 onboarding-choose_proportions-manual_proportions = Manual proportions
-# Italized text
+# Italicized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
 onboarding-choose_proportions-export = Export proportions
