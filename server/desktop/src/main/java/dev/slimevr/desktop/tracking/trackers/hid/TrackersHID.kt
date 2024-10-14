@@ -37,19 +37,23 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	private val hidServices: HidServices
 
 	init {
-		hidServicesSpecification.setAutoStart(false)
-		hidServices = HidManager.getHidServices(hidServicesSpecification)
-		hidServices.addHidServicesListener(this)
-		val dataReadThread = Thread(dataReadRunnable)
-		dataReadThread.isDaemon = true
-		dataReadThread.name = "hid4java data reader"
-		dataReadThread.start()
-		// We use hid4java but actually do not start the service ever, because it will just enumerate everything and cause problems
-		// Do enumeration ourself
-		val deviceEnumerateThread = Thread(deviceEnumerateRunnable)
-		deviceEnumerateThread.isDaemon = true
-		deviceEnumerateThread.name = "hid4java device enumerator"
-		deviceEnumerateThread.start()
+		try {
+			hidServicesSpecification.setAutoStart(false)
+			hidServices = HidManager.getHidServices(hidServicesSpecification)
+			hidServices.addHidServicesListener(this)
+			val dataReadThread = Thread(dataReadRunnable)
+			dataReadThread.isDaemon = true
+			dataReadThread.name = "hid4java data reader"
+			dataReadThread.start()
+			// We use hid4java but actually do not start the service ever, because it will just enumerate everything and cause problems
+			// Do enumeration ourself
+			val deviceEnumerateThread = Thread(deviceEnumerateRunnable)
+			deviceEnumerateThread.isDaemon = true
+			deviceEnumerateThread.name = "hid4java device enumerator"
+			deviceEnumerateThread.start()
+		} catch (e: UnsatisfiedLinkError) {
+			LogManager.error("Error initializing HID services: ${e.message}", e)
+		}
 	}
 
 	private fun checkConfigureDevice(hidDevice: HidDevice) {
