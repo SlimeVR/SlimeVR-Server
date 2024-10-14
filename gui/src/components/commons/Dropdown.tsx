@@ -14,7 +14,10 @@ interface DropdownProps {
   control: Control<any>;
   name: string;
   items: DropdownItem[];
+  minHeight?: string | number;
   maxHeight?: string | number;
+  paddingX?: string | number;
+  paddingY?: string | number;
   rules?: UseControllerProps<any>['rules'];
 }
 
@@ -134,6 +137,10 @@ export function Dropdown({
   variant = 'primary',
   alignment = 'right',
   display = 'fit',
+  // Used by the profile quick access in topbar, may be removed
+  paddingX = '5',
+  paddingY = '3',
+  minHeight = '42px',
   maxHeight = '50vh',
   placeholder,
   control,
@@ -156,7 +163,7 @@ export function Dropdown({
     //    Works but have a slight delay when resizing, kinda looks laggy
     // 2 - We close the dropdown on resize.
     //     We could consider this as the same as clicking outside of the dropdown
-    //     This is the approach choosen RN
+    //     This is the approach chosen RN
     setOpen(false);
   };
 
@@ -182,7 +189,7 @@ export function Dropdown({
           <div
             ref={ref}
             className={classNames(
-              'min-h-[42px] text-background-10 px-5 py-3 rounded-md focus:ring-4 text-center dropdown',
+              `min-h-[${minHeight}] text-background-10 px-${paddingX} py-${paddingY} rounded-md focus:ring-4 text-center dropdown`,
               'flex cursor-pointer',
               variant == 'primary' && 'bg-background-60 hover:bg-background-50',
               variant == 'secondary' &&

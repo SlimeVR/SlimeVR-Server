@@ -40,6 +40,7 @@ export interface Config {
   discordPresence: boolean;
   decorations: boolean;
   showNavbarOnboarding: boolean;
+  profile: string;
 }
 
 export interface ConfigContext {
@@ -67,6 +68,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   discordPresence: false,
   decorations: false,
   showNavbarOnboarding: true,
+  profile: 'default',
 };
 
 interface CrossStorage {
