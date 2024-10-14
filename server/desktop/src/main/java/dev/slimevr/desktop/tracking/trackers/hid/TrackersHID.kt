@@ -152,8 +152,8 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			device.name = deviceName
 			device.manufacturer = "HID Device" // TODO:
 			// device.manufacturer = hidDevice.manufacturer ?: "HID Device"
-//			device.hardwareIdentifier = hidDevice.serialNumber // hardwareIdentifier is not used to identify the tracker, so also display the receiver serial
-//			device.hardwareIdentifier += "-$deviceId/$deviceName" // receiver serial + assigned id in receiver + device address
+// 			device.hardwareIdentifier = hidDevice.serialNumber // hardwareIdentifier is not used to identify the tracker, so also display the receiver serial
+// 			device.hardwareIdentifier += "-$deviceId/$deviceName" // receiver serial + assigned id in receiver + device address
 			device.hardwareIdentifier = deviceName // the rest of identifier wont fit in gui
 			this.devices.add(device)
 			deviceList.add(this.devices.size - 1)
@@ -268,7 +268,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						var fw_minor: Int? = null
 						var fw_patch: Int? = null
 						var svr_status: Int? = null
-//						var status: Int? = null // raw status from tracker
+// 						var status: Int? = null // raw status from tracker
 						var rssi: Int? = null
 
 						// Tracker packets
@@ -323,7 +323,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 
 							3 -> { // status
 								svr_status = dataReceived[i + 2].toUByte().toInt()
-//								status = dataReceived[i + 3].toUByte().toInt()
+// 								status = dataReceived[i + 3].toUByte().toInt()
 								rssi = dataReceived[i + 15].toUByte().toInt()
 							}
 
