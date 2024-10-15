@@ -62,8 +62,8 @@ class HumanSkeleton(
 	val rightUpperArmBone = Bone(BoneType.RIGHT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
 	val leftLowerArmBone = Bone(BoneType.LEFT_LOWER_ARM, Constraint(ConstraintType.LOOSE_HINGE, 0f, -180f, 40f))
 	val rightLowerArmBone = Bone(BoneType.RIGHT_LOWER_ARM, Constraint(ConstraintType.LOOSE_HINGE, 0f, -180f, 40f))
-	val leftHandBone = Bone(BoneType.LEFT_HAND, Constraint(ConstraintType.TWIST_SWING, 90f, 90f))
-	val rightHandBone = Bone(BoneType.RIGHT_HAND, Constraint(ConstraintType.TWIST_SWING, 90f, 90f))
+	val leftHandBone = Bone(BoneType.LEFT_HAND, Constraint(ConstraintType.TWIST_SWING, 120f, 120f))
+	val rightHandBone = Bone(BoneType.RIGHT_HAND, Constraint(ConstraintType.TWIST_SWING, 120f, 120f))
 
 	// Tracker bones
 	val headTrackerBone = Bone(BoneType.HEAD_TRACKER, Constraint(ConstraintType.COMPLETE))
@@ -410,10 +410,10 @@ class HumanSkeleton(
 			val parentTracker = getTrackerForBone(bone.parent?.boneType)
 			if ((angle > 0.01f) && (
 					tracker?.filteringHandler?.getFilteringImpact()
-						?: 0f
+						?: 1f
 					) < 0.01f && (
 					parentTracker?.filteringHandler?.getFilteringImpact()
-						?: 0f
+						?: 1f
 					) < 0.01f
 			) {
 				tracker?.resetsHandler?.updateDynamicFix(deltaRot)
