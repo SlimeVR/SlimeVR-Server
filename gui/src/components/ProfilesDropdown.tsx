@@ -31,6 +31,8 @@ export function ProfilesDropdown({
   const onSubmit = (values: { profile: string }) => {
     log(`Setting profile to ${values.profile}`);
     // TODO: get profile's settings and set them
+    setConfig({ profile: values.profile });
+
     /* setConfig({
        debug: values.appearance.devmode,
           watchNewDevices: values.notifications.watchNewDevices,

@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Typography } from '@/components/commons/Typography';
 import {
   SettingsPageLayout,
@@ -14,12 +14,10 @@ import {
   defaultValues as defaultDevConfig,
   defaultValues,
 } from '@/components/widgets/DeveloperModeWidget';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { ProfilesDropdown } from '@/components/ProfilesDropdown';
 import { DeleteProfileModal } from '../DeleteProfileModal';
 import { Input } from '@/components/commons/Input';
 import { useForm } from 'react-hook-form';
-import { BugIcon } from '@/components/commons/icon/BugIcon';
 
 interface NewProfileForm {
   name: string;
@@ -31,14 +29,25 @@ export function ProfileSettings() {
 
   const [showWarning, setShowWarning] = useState(false);
 
-  const { reset, control, watch, handleSubmit } = useForm<NewProfileForm>({
+  const { control, handleSubmit } = useForm<NewProfileForm>({
     defaultValues: { name: '' },
   });
 
+  const onSubmit = (data: NewProfileForm) => {
+    log('Profile name: ' + data.name);
+
+    setConfig({
+      profile: data.name,
+    });
+  };
+
   return (
     <SettingsPageLayout>
-      <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="advanced">
+      <form
+        className="flex flex-col gap-2 w-full"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <SettingsPagePaneLayout icon={<WrenchIcon />} id="profiles">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-utils-profiles')}
@@ -87,7 +96,7 @@ export function ProfileSettings() {
                     <Input
                       control={control}
                       rules={{ required: true }}
-                      name="new-profile"
+                      name="name"
                       type="text"
                       placeholder="Enter name"
                       variant="secondary"
@@ -97,16 +106,9 @@ export function ProfileSettings() {
 
                   <Button
                     variant="secondary"
-                    onClick={() => {
-                      // TODO: ask for name, then create a new profile
-                      /* setConfig({
-                        ...defaultGUIConfig,
-                        devSettings: defaultDevConfig,
-                      });*/
-                      log('Creating new profile');
-                    }}
                     className="flex-grow"
                     style={{ flexBasis: '35%' }}
+                    type="submit"
                   >
                     {l10n.getString('settings-utils-profiles-new-label')}
                   </Button>
@@ -128,23 +130,23 @@ export function ProfileSettings() {
                   <div style={{ flexBasis: '65%' }}>
                     <ProfilesDropdown></ProfilesDropdown>
                   </div>
-                    <Button
-                      variant="secondary"
-                      onClick={() => setShowWarning(true)}
-                      style={{ flexBasis: '35%' }}
-                    >
-                      {l10n.getString('settings-utils-profiles-delete-label')}
-                    </Button>
-                    <DeleteProfileModal
-                      accept={() => {
-                        log('Deleting profile');
-                        // TODO: actually delete profile
-                        setShowWarning(false);
-                      }}
-                      onClose={() => setShowWarning(false)}
-                      isOpen={showWarning}
-                      profile="default"
-                    ></DeleteProfileModal>
+                  <Button
+                    variant="secondary"
+                    onClick={() => setShowWarning(true)}
+                    style={{ flexBasis: '35%' }}
+                  >
+                    {l10n.getString('settings-utils-profiles-delete-label')}
+                  </Button>
+                  <DeleteProfileModal
+                    accept={() => {
+                      log('Deleting profile');
+                      // TODO: actually delete profile
+                      setShowWarning(false);
+                    }}
+                    onClose={() => setShowWarning(false)}
+                    isOpen={showWarning}
+                    profile="default"
+                  ></DeleteProfileModal>
                 </div>
               </div>
             </div>
