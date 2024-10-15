@@ -81,6 +81,11 @@ skeleton_bone-ELBOW_OFFSET = 肘部偏移
 ## Tracker reset buttons
 
 reset-reset_all = 重置身体比例
+reset-reset_all_warning =
+    <b>警告：</b> 这会将您的身体比例重置为仅基于身高的默认比例。
+    您确定要执行此操作吗？
+reset-reset_all_warning-reset = 重置身体比例
+reset-reset_all_warning-cancel = 取消
 reset-full = 完整重置
 reset-mounting = 重置佩戴
 reset-yaw = 重置航向轴
@@ -142,9 +147,12 @@ widget-developer_mode-more_info = 显示更多信息
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = 旋转
+widget-imu_visualizer-preview = 预览
+widget-imu_visualizer-hide = 隐藏
 widget-imu_visualizer-rotation_raw = 原始旋转
 widget-imu_visualizer-rotation_preview = 预览
-widget-imu_visualizer-rotation_hide = 隐藏
+widget-imu_visualizer-acceleration = 加速度
+widget-imu_visualizer-position = 位置
 
 ## Widget: Skeleton Visualizer
 
@@ -296,6 +304,7 @@ settings-sidebar-utils = 工具
 settings-sidebar-serial = 串口控制台
 settings-sidebar-appearance = 外观
 settings-sidebar-notifications = 通知
+settings-sidebar-advanced = 高级选项
 
 ## SteamVR settings
 
@@ -350,6 +359,20 @@ settings-general-tracker_mechanics-drift_compensation-description =
     应用反向旋转以补偿IMU的偏航角漂移。
     更改补偿量和使用多少次的重置结果用于计算补偿量。
 settings-general-tracker_mechanics-drift_compensation-enabled-label = 漂移补偿
+settings-general-tracker_mechanics-drift_compensation-prediction = 预测式漂移补偿
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    预测超过先前测量范围的偏航角漂移，并进行补偿。
+    适用于追踪器在偏航轴上持续旋转的场景。
+settings-general-tracker_mechanics-drift_compensation-prediction-label = 预测式漂移补偿
+settings-general-tracker_mechanics-drift_compensation_warning =
+    <b>警告：</b> 仅在需要经常重置偏航角 
+    (大概5~10分钟左右需要重置一次) 时使用漂移补偿。
+    
+    一些可能需要此补偿的 IMU 包括：
+    Joy-Cons、owoTrack 和 MPU（使用旧DMP固件）。
+settings-general-tracker_mechanics-drift_compensation_warning-cancel = 取消
+settings-general-tracker_mechanics-drift_compensation_warning-done = 了解
 settings-general-tracker_mechanics-drift_compensation-amount-label = 补偿量
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = 使用几次的重置结果？
 settings-general-tracker_mechanics-save_mounting_reset = 保存佩戴重置结果
@@ -449,6 +472,9 @@ settings-general-interface-dev_mode = 开发者模式
 settings-general-interface-dev_mode-description = 如果你需要深入的资料或对连接的追踪器进行进阶调整，开启此模式将会非常有用。
 settings-general-interface-dev_mode-label = 开发者模式
 settings-general-interface-theme = 主题颜色
+settings-general-interface-show-navbar-onboarding = 在导航栏上显示 “{ navbar-onboarding }”
+settings-general-interface-show-navbar-onboarding-description = 本选项设置是否将 "{ navbar-onboarding }" 按钮显示在导航栏上。
+settings-general-interface-show-navbar-onboarding-label = 显示 “{ navbar-onboarding }”
 settings-general-interface-lang = 选择语言
 settings-general-interface-lang-description = 更改要使用的默认语言
 settings-general-interface-lang-placeholder = 选择要使用的语言
@@ -460,6 +486,9 @@ settings-interface-appearance-font-os_font = 系统字体
 settings-interface-appearance-font-slime_font = 默认字体
 settings-interface-appearance-font_size = 字体缩放
 settings-interface-appearance-font_size-description = 这会影响除此设置面板外所有界面的字体大小。
+settings-interface-appearance-decorations = 使用系统原生窗口标题栏
+settings-interface-appearance-decorations-description = 这个选项开启后，将不会显示SlimeVR的标题栏，而是显示使用系统原生标题栏。
+settings-interface-appearance-decorations-label = 使用系统原生窗口标题栏
 
 ## Notification settings
 
@@ -602,6 +631,35 @@ settings-osc-vmc-anchor_hip-label = 髋部锚定
 settings-osc-vmc-mirror_tracking = 镜像追踪
 settings-osc-vmc-mirror_tracking-description = 水平镜像追踪结果
 settings-osc-vmc-mirror_tracking-label = 镜像追踪
+
+## Advanced settings
+
+settings-utils-advanced = 高级选项
+settings-utils-advanced-reset-gui = 重置GUI设置
+settings-utils-advanced-reset-gui-description = 恢复界面设置的初始配置。
+settings-utils-advanced-reset-gui-label = 重置GUI设置
+settings-utils-advanced-reset-server = 重置追踪设置
+settings-utils-advanced-reset-server-description = 恢复追踪设置的初始配置。
+settings-utils-advanced-reset-server-label = 重置追踪设置
+settings-utils-advanced-reset-all = 重置所有设置
+settings-utils-advanced-reset-all-description = 恢复界面设置与追踪设置的初始配置。
+settings-utils-advanced-reset-all-label = 重置所有设置
+settings-utils-advanced-reset_warning =
+    { $type ->
+        [gui]
+            <b>警告：</b> 将要恢复界面设置为初始配置。
+            是否确认进行此操作？
+        [server]
+            <b>警告：</b> 将要恢复追踪设置为初始配置。
+            是否确认进行此操作？
+       *[all]
+            <b>警告：</b> 将要恢复所有设置为初始配置。
+            是否确认进行此操作？
+    }
+settings-utils-advanced-reset_warning-reset = 重置设置
+settings-utils-advanced-reset_warning-cancel = 取消
+settings-utils-advanced-open_data = 数据文件夹
+settings-utils-advanced-open_data-description = 在文件管理器中打开SlimeVR的数据文件夹，查看配置文件与日志文件。
 
 ## Setup/onboarding menu
 
@@ -828,11 +886,11 @@ onboarding-choose_mounting = 使用哪种方法校准佩戴朝向？
 # Multiline text
 onboarding-choose_mounting-description = 佩戴方向校准用于确定您身上的追踪器的朝向。
 onboarding-choose_mounting-auto_mounting = 自动设置佩戴方向
-# Italized text
+# Italicized text
 onboarding-choose_mounting-auto_mounting-label-v2 = 推荐使用
 onboarding-choose_mounting-auto_mounting-description = 这将需要你做2个动作以自动检测所有追踪器的佩戴方向
 onboarding-choose_mounting-manual_mounting = 手动设置佩戴方向
-# Italized text
+# Italicized text
 onboarding-choose_mounting-manual_mounting-label-v2 = 可能不够精确
 onboarding-choose_mounting-manual_mounting-description = 这将需要你手动选择每个追踪器的佩戴方向
 # Multiline text
@@ -879,14 +937,14 @@ onboarding-choose_proportions-description-v1 =
     如果保存的身体比例和实际身体尺寸不匹配，追踪精度将会下降，并且会出现脚在地面滑动，或是身体和虚拟形象动作不一致的情况。
     <b>身体比例设置只要进行一次！</b> 除非身体比例存在错误或是身体尺寸发生了改变，否则不需要重复进行身体比例设置。
 onboarding-choose_proportions-auto_proportions = 自动调整身体比例
-# Italized text
+# Italicized text
 onboarding-choose_proportions-auto_proportions-subtitle = 推荐
 onboarding-choose_proportions-auto_proportions-descriptionv3 =
     这将录制你的运动样本并通过算法来推测你的身体比例。
     
     <b>需要戴上头戴设备，并确保设备已连接到 SlimeVR！</b>
 onboarding-choose_proportions-manual_proportions = 手动调整身体比例
-# Italized text
+# Italicized text
 onboarding-choose_proportions-manual_proportions-subtitle = 用于精细调整
 onboarding-choose_proportions-manual_proportions-description = 这将需要你手动修改以调整你的身体比例
 onboarding-choose_proportions-export = 导出身体比例
