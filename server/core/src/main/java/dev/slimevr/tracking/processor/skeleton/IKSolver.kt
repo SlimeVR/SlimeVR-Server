@@ -2,7 +2,6 @@ package dev.slimevr.tracking.processor.skeleton
 
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.trackers.Tracker
-import solarxr_protocol.datatypes.BodyPart
 
 /*
  * Implements CCDIK (Cyclic Coordinate Descent Inverse Kinematics) to allow
