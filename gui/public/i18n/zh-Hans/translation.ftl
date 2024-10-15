@@ -660,6 +660,7 @@ settings-utils-advanced-reset_warning-reset = 重置设置
 settings-utils-advanced-reset_warning-cancel = 取消
 settings-utils-advanced-open_data = 数据文件夹
 settings-utils-advanced-open_data-description = 在文件管理器中打开SlimeVR的数据文件夹，查看配置文件与日志文件。
+settings-utils-advanced-open_data-label = 打开文件夹
 
 ## Setup/onboarding menu
 
@@ -771,6 +772,7 @@ onboarding-calibration_tutorial-status-waiting = 等待你的操作
 onboarding-calibration_tutorial-status-calibrating = 校准中
 onboarding-calibration_tutorial-status-success = 很好！
 onboarding-calibration_tutorial-status-error = 追踪器被移动！
+onboarding-calibration_tutorial-skip = 跳过教程
 
 ## Tracker assignment tutorial
 
