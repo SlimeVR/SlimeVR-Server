@@ -5,7 +5,7 @@ import dev.slimevr.tracking.processor.Constraint.Companion.ConstraintType
 import dev.slimevr.tracking.trackers.Tracker
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import kotlin.math.*
+import kotlin.math.pow
 
 /*
  * This class implements a chain of Bones
@@ -40,7 +40,7 @@ class IKChain(
 	 */
 	private fun prepBones() {
 		for (i in 0..<bones.size) {
-			if (bones[i].rotationConstraint.constraintType != ConstraintType.COMPLETE && bones[i].boneType.bodyPart !in IKSolver.LOCK_ROTATION) {
+			if (bones[i].rotationConstraint.constraintType != ConstraintType.COMPLETE) {
 				bones[i].setRotationRaw(rotations[i])
 			}
 		}
@@ -48,21 +48,18 @@ class IKChain(
 
 	fun backwardsCCDIK(useConstraints: Boolean) {
 		target = computedTailPosition?.getPosition() ?: getChildTargetAvg()
+		var offset = Vector3.NULL
 
 		for (i in bones.size - 1 downTo 0) {
 			val currentBone = bones[i]
 
-			if (currentBone.boneType.bodyPart in IKSolver.LOCK_ROTATION) {
-				rotations[i] = currentBone.getGlobalRotation()
-				continue
-			}
-
 			// Get the local position of the end effector and the target relative to the current node
-			val endEffectorLocal = (getEndEffectorsAvg() - currentBone.getPosition()).unit()
-			val targetLocal = (target - currentBone.getPosition()).unit()
+			val endEffectorLocal = ((getEndEffectorsAvg() - offset) - currentBone.getPosition()).unit()
+			val targetLocal = ((target - offset) - currentBone.getPosition()).unit()
 
 			// Compute the axis of rotation and angle for this bone
-			val scalar = IKSolver.DAMPENING_FACTOR * if (currentBone.rotationConstraint.allowModifications) 1f else IKSolver.STATIC_DAMPENING
+			var scalar = IKSolver.DAMPENING_FACTOR * if (currentBone.rotationConstraint.hasTrackerRotation) IKSolver.STATIC_DAMPENING else 1f
+			scalar *= ((bones.size - i).toFloat() / bones.size).pow(IKSolver.ANNEALING_EXPONENT)
 			var adjustment = Quaternion.fromTo(endEffectorLocal, targetLocal).pow(scalar).unit()
 
 			// Bones that are not supposed to be modified should tend towards their origin
@@ -74,6 +71,10 @@ class IKChain(
 			val correctedRot = (adjustment * rotation).unit()
 
 			rotations[i] = setBoneRotation(currentBone, correctedRot, useConstraints)
+
+			if (currentBone.rotationConstraint.hasTrackerRotation) {
+				offset += rotations[i].sandwich(Vector3.NEG_Y) * currentBone.length
+			}
 		}
 	}
 
