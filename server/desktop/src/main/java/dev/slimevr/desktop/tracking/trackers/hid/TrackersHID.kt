@@ -222,15 +222,6 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 					val packetCount = dataReceived.size / PACKET_SIZE
 					var i = 0
 					while (i < packetCount * PACKET_SIZE) {
-						if (i > 0) {
-							val currSlice: Array<Byte> = dataReceived.copyOfRange(i, (i + PACKET_SIZE - 1))
-							val prevSlice: Array<Byte> = dataReceived.copyOfRange((i - PACKET_SIZE), (i - 1))
-							if (currSlice contentEquals prevSlice) {
-								i += PACKET_SIZE
-								continue
-							}
-						}
-
 						// Common packet data
 						val packetType = dataReceived[i].toUByte().toInt()
 						val id = dataReceived[i + 1].toUByte().toInt()
