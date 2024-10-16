@@ -15,6 +15,7 @@ import { UpperArmIcon } from './icon/UpperArmIcon';
 import { UpperLegIcon } from './icon/UpperLegIcon';
 import { WaistIcon } from './icon/WaistIcon';
 import { UpperChestIcon } from './icon/UpperChestIcon';
+import { FingersIcon } from './icon/FingersIcon';
 
 // All body parts that are right or left, are by default left!
 export const mapPart: Record<
@@ -86,6 +87,96 @@ export const mapPart: Record<
     <UpperLegIcon width={width} flipped></UpperLegIcon>
   ),
   [BodyPart.WAIST]: ({ width }) => <WaistIcon width={width}></WaistIcon>,
+  [BodyPart.LEFT_THUMB_PROXIMAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_THUMB_INTERMEDIATE]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_THUMB_DISTAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_INDEX_PROXIMAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_INDEX_INTERMEDIATE]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_INDEX_DISTAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_MIDDLE_PROXIMAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_MIDDLE_INTERMEDIATE]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_MIDDLE_DISTAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_RING_PROXIMAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_RING_INTERMEDIATE]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_RING_DISTAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_LITTLE_PROXIMAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_LITTLE_INTERMEDIATE]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.LEFT_LITTLE_DISTAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_THUMB_PROXIMAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_THUMB_INTERMEDIATE]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_THUMB_DISTAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_INDEX_PROXIMAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_INDEX_INTERMEDIATE]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_INDEX_DISTAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_MIDDLE_PROXIMAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_MIDDLE_INTERMEDIATE]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_MIDDLE_DISTAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_RING_PROXIMAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_RING_INTERMEDIATE]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_RING_DISTAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_LITTLE_PROXIMAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_LITTLE_INTERMEDIATE]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
+  [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => (
+    <FingersIcon width={width}></FingersIcon>
+  ),
 };
 
 export function BodyPartIcon({
