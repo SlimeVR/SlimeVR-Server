@@ -205,16 +205,16 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			val q = intArrayOf(0, 0, 0, 0)
 			val a = intArrayOf(0, 0, 0)
 			for ((hidDevice, deviceList) in devicesByHID) {
-				val dataReceived: Array<Byte> = try {
-					hidDevice.read(80, 0) // Read up to 80 bytes
+				val dataReceived: ByteArray = try {
+					hidDevice.readAll(0) // multiples 64 bytes
 				} catch (e: NegativeArraySizeException) {
 					continue // Skip devices with read error (Maybe disconnected)
 				}
 				devicesPresent = true // Even if the device has no data
 				if (dataReceived.isNotEmpty()) {
 					// Process data
-					// TODO: make this less bad
-					if (dataReceived.size % PACKET_SIZE != 0) { // TODO: packet size 20 is valid (old)
+					// The data is always received as 64 bytes, this check no longer works
+					if (dataReceived.size % PACKET_SIZE != 0) {
 						LogManager.info("[TrackerServer] Malformed HID packet, ignoring")
 						continue // Don't continue with this data
 					}
@@ -230,7 +230,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 
 						// Register device
 						if (packetType == 255) { // device register packet from receiver
-							val buffer = ByteBuffer.wrap(dataReceived.toByteArray(), i + 2, 8)
+							val buffer = ByteBuffer.wrap(dataReceived, i + 2, 8)
 							buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN)
 							val addr = buffer.getLong() and 0xFFFFFFFFFFFF
 							val deviceName = String.format("%012X", addr)
@@ -311,7 +311,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 								temp = dataReceived[i + 4].toUByte().toInt()
 								// quaternion is quantized as exponential map
 								// X = 10 bits, Y/Z = 11 bits
-								val buffer = ByteBuffer.wrap(dataReceived.toByteArray(), i + 5, 4)
+								val buffer = ByteBuffer.wrap(dataReceived, i + 5, 4)
 								buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN)
 								val q_buf = buffer.getInt().toUInt()
 								q[0] = (q_buf and 1023u).toInt()
