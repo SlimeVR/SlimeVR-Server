@@ -11,6 +11,7 @@ use std::time::Instant;
 use clap::Parser;
 use color_eyre::Result;
 use state::WindowState;
+use tauri::Emitter;
 use tauri::{Manager, RunEvent, WindowEvent};
 use tauri_plugin_shell::process::CommandChild;
 
@@ -179,6 +180,7 @@ fn main() -> Result<()> {
 			warning,
 			tray::update_translations,
 			tray::update_tray_text,
+			tray::is_tray_available,
 			presence::discord_client_exists,
 			presence::update_presence,
 			presence::clear_presence,
@@ -208,11 +210,12 @@ fn main() -> Result<()> {
 				window_state.update_window(&window.as_ref().window(), false)?;
 			}
 
-			#[cfg(desktop)]
-			{
+			if cfg!(desktop) {
 				let handle = app.handle();
 				tray::create_tray(handle)?;
 				presence::create_presence(handle)?;
+			} else {
+				app.manage(tray::TrayAvailable(false));
 			}
 
 			app.manage(Mutex::new(window_state));
