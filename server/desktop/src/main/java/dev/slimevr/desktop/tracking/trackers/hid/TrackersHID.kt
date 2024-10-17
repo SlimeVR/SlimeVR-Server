@@ -249,7 +249,10 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						// Register tracker
 						if (packetType == 0) { // Tracker register packet (device info)
 							val imu_id = dataReceived[i + 8].toUByte().toInt()
-							setUpSensor(device, trackerId, IMUType.getById(imu_id.toUInt())!!, TrackerStatus.OK)
+							val sensorType = IMUType.getById(imu_id.toUInt())
+							if (sensorType != null) {
+								setUpSensor(device, trackerId, sensorType!!, TrackerStatus.OK)
+							}
 						}
 
 						var tracker: Tracker? = device.getTracker(trackerId)
@@ -347,10 +350,16 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						}
 						// Range 1 - 255 -> -38.5 - +88.5 C
 						if (brd_id != null) {
-							device.boardType = BoardType.getById(brd_id.toUInt())!!
+							val boardType = BoardType.getById(brd_id.toUInt())
+							if (boardType != null) {
+								device.boardType = boardType!!
+							}
 						}
 						if (mcu_id != null) {
-							device.mcuType = MCUType.getById(mcu_id.toUInt())!!
+							val mcuType = MCUType.getById(mcu_id.toUInt())
+							if (mcuType != null) {
+								device.mcuType = mcuType!!
+							}
 						}
 						if (fw_date != null && fw_major != null && fw_minor != null && fw_patch != null) {
 							val firmwareYear = 2020 + (fw_date shr 9 and 127)
@@ -360,7 +369,11 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							device.firmwareVersion = "$fw_major.$fw_minor.$fw_patch (Build $firmwareDate)"
 						}
 						if (svr_status != null) {
-							tracker.status = TrackerStatus.getById(svr_status)!!
+							val status = TrackerStatus.getById(svr_status)
+							if (status != null)
+							{
+								tracker.status = status!!
+							}
 						}
 						if (rssi != null) {
 							tracker.signalStrength = -rssi
