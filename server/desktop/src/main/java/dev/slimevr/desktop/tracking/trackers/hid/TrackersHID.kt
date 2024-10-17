@@ -234,7 +234,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN)
 							val addr = buffer.getLong() and 0xFFFFFFFFFFFF
 							val deviceName = String.format("%012X", addr)
-							val device = deviceIdLookup(hidDevice, deviceId, deviceName, deviceList)!! // register device
+							deviceIdLookup(hidDevice, deviceId, deviceName, deviceList) // register device
 							// server wants tracker to be unique, so use combination of hid serial and full id
 							i += PACKET_SIZE
 							continue
