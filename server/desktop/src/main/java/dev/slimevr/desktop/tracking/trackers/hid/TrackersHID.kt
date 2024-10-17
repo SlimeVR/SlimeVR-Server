@@ -370,8 +370,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						}
 						if (svr_status != null) {
 							val status = TrackerStatus.getById(svr_status)
-							if (status != null)
-							{
+							if (status != null) {
 								tracker.status = status!!
 							}
 						}
