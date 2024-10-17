@@ -30,7 +30,6 @@ import { TrayOrExitModal } from './TrayOrExitModal';
 import { error } from '@/utils/logging';
 import { useDoubleTap } from 'use-double-tap';
 import { isTrayAvailable } from '@/utils/tauri';
-import { ProfilesDropdown } from './ProfilesDropdown';
 
 export function VersionTag() {
   return (
@@ -170,10 +169,6 @@ export function TopBar({
                   )}
                 </>
               )}
-
-                <div className='flex items-center'>
-                  <ProfilesDropdown paddingX={2} paddingY={1} minHeight={'24px'}></ProfilesDropdown>
-                </div>
 
               {version && (
                 <div

@@ -6,7 +6,7 @@ import { createStore, Store } from '@tauri-apps/plugin-store';
 import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
 import { appConfigDir, resolve } from '@tauri-apps/api/path';
-import { mkdir, writeTextFile } from '@tauri-apps/plugin-fs';
+import { mkdir, readDir, writeTextFile } from '@tauri-apps/plugin-fs';
 import { isTauri } from '@tauri-apps/api/core';
 
 export interface WindowConfig {
@@ -52,6 +52,7 @@ export interface ConfigContext {
   loadConfig: () => Promise<Config | null>;
   saveConfig: () => Promise<void>;
   changeProfile: (profile: string) => Promise<void>;
+  getProfiles: () => Promise<string[]>;
 }
 
 export const defaultConfig: Omit<Config, 'devSettings'> = {
@@ -176,6 +177,14 @@ export function useConfigProvider(): ConfigContext {
     }
   };
 
+  const getProfiles = async () => {
+    const appDirectory = await appConfigDir();
+    const profilesDir = await resolve(`${appDirectory}/profiles`);
+    const profiles = await readDir(profilesDir);
+
+    return profiles.map((profile) => profile.name);
+  }
+
   const changeProfile = async (profile: string) => {
     // load default config, set profile to new profile, save config, then load new profile config
     // idk if this is the best way to do this lol
@@ -246,7 +255,8 @@ export function useConfigProvider(): ConfigContext {
       if (!tauri) return;
       await (store as Store).save();
     },
-    changeProfile,
+    getProfiles,
+    changeProfile
   };
 }
 

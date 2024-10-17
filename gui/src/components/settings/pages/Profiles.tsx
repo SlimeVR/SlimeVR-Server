@@ -14,89 +14,145 @@ import {
   defaultValues as defaultDevConfig,
   defaultValues,
 } from '@/components/widgets/DeveloperModeWidget';
-import { ProfilesDropdown } from '@/components/ProfilesDropdown';
 import { DeleteProfileModal } from '../DeleteProfileModal';
 import { Input } from '@/components/commons/Input';
 import { useForm } from 'react-hook-form';
-
-interface NewProfileForm {
-  name: string;
-}
+import { Dropdown } from '@/components/commons/Dropdown';
 
 export function ProfileSettings() {
   const { l10n } = useLocalization();
-  const { setConfig } = useConfig();
-
+  const { config, setConfig, changeProfile, getProfiles } = useConfig();
   const [showWarning, setShowWarning] = useState(false);
 
-  const { control, handleSubmit } = useForm<NewProfileForm>({
-    defaultValues: { name: '' },
+  // is there a better way to do this?
+  const { control: nameControl, handleSubmit: handleNameSubmit } = useForm<{
+    newName: string;
+  }>({
+    defaultValues: { newName: '' },
   });
 
-  const onSubmit = (data: NewProfileForm) => {
-    log('Profile name: ' + data.name);
+  const {
+    control: profileControl,
+    watch: watchProfileSubmit,
+    handleSubmit: handleProfileSubmit,
+  } = useForm<{
+    profile: string;
+  }>({
+    defaultValues: { profile: config?.profile },
+  });
 
+  const {
+    control: deleteControl,
+    handleSubmit: handleDeleteControl,
+  } = useForm<{
+    profile: string;
+  }>({
+    defaultValues: { profile: config?.profile || 'default' },
+  });
+
+  useEffect(() => {
+    const subscription = watchProfileSubmit(() =>
+      handleProfileSubmit(onSelectSubmit)()
+    );
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const onNameSubmit = async (data: { newName: string }) => {
+    if (!data.newName || data.newName === '' || data.newName === 'default')
+      return;
+
+    const profiles = await getProfiles();
+    if (profiles.includes(data.newName)) {
+      error(`Profile with name ${data.newName} already exists`);
+      return;
+    }
+
+    log(`Creating new profile with name ${data.newName}`);
     setConfig({
-      profile: data.name,
+      profile: data.newName,
     });
+    changeProfile(data.newName);
+  };
+
+  const onSelectSubmit = (data: { profile: string }) => {
+    log(`Switching to profile ${data.profile}`);
+    changeProfile(data.profile);
+  };
+
+  const onDeleteSelectSubmit = (data: { profile: string }) => {
+    if (data.profile === 'default') {
+      error('Cannot delete default profile');
+      return;
+    }
+    log(`Deleting profile ${data.profile}`);
   };
 
   return (
     <SettingsPageLayout>
-      <form
-        className="flex flex-col gap-2 w-full"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <SettingsPagePaneLayout icon={<WrenchIcon />} id="profiles">
-          <>
-            <Typography variant="main-title">
-              {l10n.getString('settings-utils-profiles')}
+      <SettingsPagePaneLayout icon={<WrenchIcon />} id="profiles">
+        <>
+          <Typography variant="main-title">
+            {l10n.getString('settings-utils-profiles')}
+          </Typography>
+          <div className="flex flex-col pt-2 pb-4">
+            <>
+              {l10n
+                .getString('settings-utils-profiles-description')
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </>
+          </div>
+          <div>
+            <Typography bold>
+              {l10n.getString('settings-utils-profiles-profile')}
             </Typography>
-            <div className="flex flex-col pt-2 pb-4">
-              <>
-                {l10n
-                  .getString('settings-utils-profiles-description')
-                  .split('\n')
-                  .map((line, i) => (
-                    <Typography color="secondary" key={i}>
-                      {line}
-                    </Typography>
-                  ))}
-              </>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString('settings-utils-profiles-profile-description')}
+              </Typography>
             </div>
+              <div className="grid sm:grid-cols-1 pb-4">
+                <Dropdown
+                  control={profileControl}
+                  name="profile"
+                  display="block"
+                  placeholder={l10n.getString(
+                    'settings-utils-profiles-default'
+                  )}
+                  direction="down"
+                  items={[
+                    {
+                      label: l10n.getString('settings-utils-profiles-default'),
+                      value: 'default',
+                    },
+                    { label: 'Lexend', value: 'Lexend' },
+                    { label: 'Ubuntu', value: 'Ubuntu' },
+                  ]}
+                ></Dropdown>
+              </div>
+          </div>
 
+          <div className="grid grid-cols-2 gap-2 mobile:grid-cols-1">
             <div>
               <Typography bold>
-                {l10n.getString('settings-utils-profiles-profile')}
+                {l10n.getString('settings-utils-profiles-new')}
               </Typography>
               <div className="flex flex-col pt-1 pb-2">
                 <Typography color="secondary">
-                  {l10n.getString(
-                    'settings-utils-profiles-profile-description'
-                  )}
+                  {l10n.getString('settings-utils-profiles-new-description')}
                 </Typography>
               </div>
-              <div className="grid sm:grid-cols-1 pb-4">
-                <ProfilesDropdown></ProfilesDropdown>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 mobile:grid-cols-1">
-              <div>
-                <Typography bold>
-                  {l10n.getString('settings-utils-profiles-new')}
-                </Typography>
-                <div className="flex flex-col pt-1 pb-2">
-                  <Typography color="secondary">
-                    {l10n.getString('settings-utils-profiles-new-description')}
-                  </Typography>
-                </div>
+              <form onSubmit={handleNameSubmit(onNameSubmit)}>
                 <div className="flex gap-2 mobile:flex-col">
                   <div style={{ flexBasis: '65%' }}>
                     <Input
-                      control={control}
+                      control={nameControl}
                       rules={{ required: true }}
-                      name="name"
+                      name="newName"
                       type="text"
                       placeholder="Enter name"
                       variant="secondary"
@@ -113,46 +169,62 @@ export function ProfileSettings() {
                     {l10n.getString('settings-utils-profiles-new-label')}
                   </Button>
                 </div>
-              </div>
+              </form>
+            </div>
 
-              <div>
-                <Typography bold>
-                  {l10n.getString('settings-utils-profiles-delete')}
+            <div>
+              <Typography bold>
+                {l10n.getString('settings-utils-profiles-delete')}
+              </Typography>
+              <div className="flex flex-col pt-1 pb-2">
+                <Typography color="secondary">
+                  {l10n.getString('settings-utils-profiles-delete-description')}
                 </Typography>
-                <div className="flex flex-col pt-1 pb-2">
-                  <Typography color="secondary">
-                    {l10n.getString(
-                      'settings-utils-profiles-delete-description'
+              </div>
+              <div className="flex gap-2 mobile:flex-col">
+                <div style={{ flexBasis: '65%' }}>
+                  <Dropdown
+                    control={deleteControl}
+                    name="profile"
+                    display="block"
+                    placeholder={l10n.getString(
+                      'settings-utils-profiles-default'
                     )}
-                  </Typography>
+                    direction="down"
+                    items={[
+                      {
+                        label: l10n.getString(
+                          'settings-utils-profiles-default'
+                        ),
+                        value: 'default',
+                      },
+                      { label: 'Lexend', value: 'Lexend' },
+                      { label: 'Ubuntu', value: 'Ubuntu' },
+                    ]}
+                  ></Dropdown>
                 </div>
-                <div className="flex gap-2 mobile:flex-col">
-                  <div style={{ flexBasis: '65%' }}>
-                    <ProfilesDropdown></ProfilesDropdown>
-                  </div>
-                  <Button
-                    variant="secondary"
-                    onClick={() => setShowWarning(true)}
-                    style={{ flexBasis: '35%' }}
-                  >
-                    {l10n.getString('settings-utils-profiles-delete-label')}
-                  </Button>
-                  <DeleteProfileModal
-                    accept={() => {
-                      log('Deleting profile');
-                      // TODO: actually delete profile
-                      setShowWarning(false);
-                    }}
-                    onClose={() => setShowWarning(false)}
-                    isOpen={showWarning}
-                    profile="default"
-                  ></DeleteProfileModal>
-                </div>
+                <Button
+                  variant="secondary"
+                  onClick={handleDeleteControl(onDeleteSelectSubmit)}
+                  style={{ flexBasis: '35%' }}
+                >
+                  {l10n.getString('settings-utils-profiles-delete-label')}
+                </Button>
+                <DeleteProfileModal
+                  accept={() => {
+                    log('Deleting profile');
+                    // TODO: actually delete profile
+                    setShowWarning(false);
+                  }}
+                  onClose={() => setShowWarning(false)}
+                  isOpen={showWarning}
+                  profile="default"
+                ></DeleteProfileModal>
               </div>
             </div>
-          </>
-        </SettingsPagePaneLayout>
-      </form>
+          </div>
+        </>
+      </SettingsPagePaneLayout>
     </SettingsPageLayout>
   );
 }
