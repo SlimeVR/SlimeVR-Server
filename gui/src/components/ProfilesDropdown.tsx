@@ -17,7 +17,7 @@ export function ProfilesDropdown({
   minHeight?: string | number;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const { l10n } = useLocalization();
-  const { config, setConfig } = useConfig();
+  const { config, changeProfile } = useConfig();
 
   const { control, watch, handleSubmit } = useForm<{ profile: string }>({
     defaultValues: { profile: config?.profile || 'default' },
@@ -30,23 +30,7 @@ export function ProfilesDropdown({
 
   const onSubmit = (values: { profile: string }) => {
     log(`Setting profile to ${values.profile}`);
-    // TODO: get profile's settings and set them
-    setConfig({ profile: values.profile });
-
-    /* setConfig({
-       debug: values.appearance.devmode,
-          watchNewDevices: values.notifications.watchNewDevices,
-          feedbackSound: values.notifications.feedbackSound,
-          feedbackSoundVolume: values.notifications.feedbackSoundVolume,
-          theme: values.appearance.theme,
-          showNavbarOnboarding: values.appearance.showNavbarOnboarding,
-          fonts: values.appearance.fonts.split(','),
-          textSize: values.appearance.textSize,
-          connectedTrackersWarning: values.notifications.connectedTrackersWarning,
-          useTray: values.notifications.useTray,
-          discordPresence: values.notifications.discordPresence,
-          decorations: values.appearance.decorations,
-    }); */
+    changeProfile(values.profile);
   };
 
   return (

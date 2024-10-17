@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { DeveloperModeWidgetForm } from '@/components/widgets/DeveloperModeWidget';
 import { error, log } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
@@ -6,7 +6,7 @@ import { createStore, Store } from '@tauri-apps/plugin-store';
 import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
 import { appConfigDir, resolve } from '@tauri-apps/api/path';
-import { exists, mkdir, writeTextFile } from '@tauri-apps/plugin-fs';
+import { mkdir, writeTextFile } from '@tauri-apps/plugin-fs';
 import { isTauri } from '@tauri-apps/api/core';
 
 export interface WindowConfig {
@@ -51,6 +51,7 @@ export interface ConfigContext {
   setConfig: (config: Partial<Config>) => Promise<void>;
   loadConfig: () => Promise<Config | null>;
   saveConfig: () => Promise<void>;
+  changeProfile: (profile: string) => Promise<void>;
 }
 
 export const defaultConfig: Omit<Config, 'devSettings'> = {
@@ -92,23 +93,14 @@ function fallbackToDefaults(loadedConfig: any): Config {
 }
 
 async function getProfileStore(profile: string): Promise<CrossStorage> {
+  if (profile === 'default') return await createStore('gui-settings.dat');
+
   const appDirectory = await appConfigDir();
   const profileDir = await resolve(`${appDirectory}/profiles/${profile}`);
   const profileFile = await resolve(`${profileDir}/gui-settings.dat`);
 
-  const profileDirExists = await exists(profileDir);
-  log(`Profile directory exists: ${profileDirExists}`);
-  const profileFileExists = await exists(profileFile);
-  log(`Profile file exists: ${profileFileExists}`);
-
-  if (profileDirExists && profileFileExists) {
-    log(`Profile ${profile} exists, loading profile config`);
-  } else {
-    log(`Profile ${profile} does not exist for some reason, creating profile config with defaults`);
-
-    await mkdir(profileDir, { recursive: true });
-    await writeTextFile(profileFile, JSON.stringify(defaultConfig));
-  }
+  await mkdir(profileDir, { recursive: true });
+  await writeTextFile(profileFile, JSON.stringify({ 'config.json': JSON.stringify(defaultConfig) }));
 
   return createStore(profileFile);
 }
@@ -116,6 +108,7 @@ async function getProfileStore(profile: string): Promise<CrossStorage> {
 export function useConfigProvider(): ConfigContext {
   const [currConfig, set] = useState<Config | null>(null);
   const [loading, setLoading] = useState(false);
+  const [currentProfile, setCurrentProfile] = useState<string>('default');
   const tauri = useIsTauri();
 
   useDebouncedEffect(
@@ -127,6 +120,18 @@ export function useConfigProvider(): ConfigContext {
     [currConfig],
     100
   );
+
+  useEffect(() => {
+    const loadProfileConfig = async () => {
+      const profileStore = await getProfileStore(currentProfile);
+      store = profileStore;
+      const json = await store.get('config.json');
+      const loadedConfig = fallbackToDefaults(JSON.parse(json ?? '{}'));
+      set(loadedConfig);
+    };
+
+    loadProfileConfig();
+  }, [currentProfile]);
 
   const setConfig = async (config: Partial<Config>) => {
     set((curr) =>
@@ -140,18 +145,9 @@ export function useConfigProvider(): ConfigContext {
     if (tauri) {
       await waitUntil(
         async () => {
-          let newConfig: Partial<Config> = JSON.parse(
+          const newConfig: Partial<Config> = JSON.parse(
             (await store.get('config.json')) ?? '{}'
           );
-
-          // Get profile, if not default profile, load profile config
-          const profile = newConfig.profile ?? 'default';
-          const profileConfig = JSON.parse(
-            (await store.get(`profiles/${profile}/config.json`)) ?? '{}'
-          );
-
-          // If profile config is empty, use default config
-          newConfig = profileConfig === '{}' ? profileConfig : newConfig;
 
           return Object.entries(config).every(([key, value]) =>
             typeof value === 'object'
@@ -180,6 +176,25 @@ export function useConfigProvider(): ConfigContext {
     }
   };
 
+  const changeProfile = async (profile: string) => {
+    // load default config, set profile to new profile, save config, then load new profile config
+    // idk if this is the best way to do this lol
+    const defaultStore = await createStore('gui-settings.dat');
+    const defaultConfig = fallbackToDefaults(
+      JSON.parse((await defaultStore.get('config.json')) ?? '{}')
+    );
+    await defaultStore.set(
+      'config.json',
+      JSON.stringify({
+        ...defaultConfig,
+        profile,
+      })
+    );
+    await defaultStore.save();
+
+    setCurrentProfile(profile);
+  };
+
   return {
     config: currConfig,
     loading,
@@ -196,26 +211,27 @@ export function useConfigProvider(): ConfigContext {
           store.set('configMigratedToTauri', 'true');
         }
 
-        const json = await store.get('config.json');
-
+        let json = await store.get('config.json');
         if (!json) throw new Error('Config has ceased existing for some reason');
 
         let loadedConfig = fallbackToDefaults(JSON.parse(json));
 
-        // Get profile and set the store to the profile's store if it exists
-        const profile = loadedConfig.profile ?? 'default';
-        const profileStore = await getProfileStore(profile);
-        store = profileStore;
+        if (currentProfile !== 'default') {
+          log('Profile detected, switching to profile config');
+          const profileStore = await getProfileStore(currentProfile);
+          store = profileStore;
+          json = await store.get('config.json');
 
-        const profileConfig = JSON.parse(
-          (await profileStore.get('config.json')) ?? '{}'
-        );
+          if (!json)
+            throw new Error('Profile config has ceased existing for some reason');
 
-        // If profile config is empty, use default config
-        loadedConfig = profileConfig === '{}' ? profileConfig : loadedConfig;
+          loadedConfig = fallbackToDefaults(JSON.parse(json));
+        } else {
+          store = isTauri() ? await createStore('gui-settings.dat') : localStore;
+        }
+
         set(loadedConfig);
-
-        log('Loaded config: ', JSON.stringify(loadedConfig, null, 2));
+        log('Loaded config: \r\n' + JSON.stringify(loadedConfig, null, 2));
 
         setLoading(false);
         return loadedConfig;
@@ -230,6 +246,7 @@ export function useConfigProvider(): ConfigContext {
       if (!tauri) return;
       await (store as Store).save();
     },
+    changeProfile,
   };
 }
 
