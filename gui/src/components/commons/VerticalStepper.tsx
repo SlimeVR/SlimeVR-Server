@@ -122,7 +122,7 @@ export default function VerticalStepper({ steps }: { steps: VerticalStep[] }) {
   };
 
   return (
-    <ol className="relative border-l border-gray-700 text-gray-400 ">
+    <ol className="relative border-l border-gray-700 text-gray-400">
       {steps.map(({ title, component: StepComponent }, index) => (
         <VerticalStep active={currStep} index={index} title={title} key={index}>
           <StepComponent
