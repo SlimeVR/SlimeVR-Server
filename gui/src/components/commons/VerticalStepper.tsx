@@ -71,7 +71,7 @@ export function VerticalStep({
           <Typography variant="section-title">{index + 1}</Typography>
         )}
       </span>
-      <div className="ml-7 pt-1.5 ">
+      <div className="ml-7 pt-1.5">
         <div className="px-1">
           <Typography variant="section-title">{title}</Typography>
         </div>
