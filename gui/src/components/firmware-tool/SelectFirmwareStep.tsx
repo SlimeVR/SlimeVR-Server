@@ -82,9 +82,11 @@ export function SelectFirmwareStep({
                   <Button
                     variant="tertiary"
                     onClick={() => {
-                      if (defaultConfig?.shouldOnlyUseDefaults)
+                      if (defaultConfig?.shouldOnlyUseDefaults) {
                         goTo('SelectBoard');
-                      else prevStep();
+                      } else {
+                        prevStep();
+                      }
                     }}
                   ></Button>
                 </Localized>
