@@ -45,6 +45,19 @@ body_part-LEFT_UPPER_LEG = Left thigh
 body_part-LEFT_LOWER_LEG = Left ankle
 body_part-LEFT_FOOT = Left foot
 
+## BoardType
+board_type-UNKNOWN = Unknown
+board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Custom Board
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+
 ## Proportions
 skeleton_bone-NONE = None
 skeleton_bone-HEAD = Head Shift
@@ -280,6 +293,7 @@ settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 settings-sidebar-appearance = Appearance
 settings-sidebar-notifications = Notifications
+settings-sidebar-firmware-tool = DIY Firmware Tool
 settings-sidebar-advanced = Advanced
 
 ## SteamVR settings
@@ -653,6 +667,7 @@ onboarding-wifi_creds-submit = Submit!
 onboarding-wifi_creds-ssid =
     .label = Wi-Fi name
     .placeholder = Enter Wi-Fi name
+onboarding-wifi_creds-ssid-required = Wi-Fi name is required
 onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
@@ -702,6 +717,7 @@ onboarding-connect_tracker-issue-serial = I'm having trouble connecting!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-none = Looking for trackers
 onboarding-connect_tracker-connection_status-serial_init = Connecting to serial device
+onboarding-connect_tracker-connection_status-optaining_mac_address = Optaining the tracker mac address
 onboarding-connect_tracker-connection_status-provisioning = Sending Wi-Fi credentials
 onboarding-connect_tracker-connection_status-connecting = Trying to connect to Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Looking for server
@@ -992,6 +1008,157 @@ status_system-StatusSteamVRDisconnected = { $type ->
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
 status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
+
+
+## Firmware tool globals
+firmware-tool-next-step = Next Step
+firmware-tool-previous-step = Previous Step
+firmware-tool-ok = Looks good
+firmware-tool-retry = Retry
+
+firmware-tool-loading = Loading...
+
+## Firmware tool Steps
+firmware-tool = DIY Firmware tool
+firmware-tool-description =
+    Allows to configure and flash your DIY trackers
+firmware-tool-not-available = Oops the firmware tool is not available at the moment. Come back later!
+firmware-tool-not-compatible = The firmware tool is not compatible with this version of the server. Please update your server!
+
+firmware-tool-board-step = Select your Board
+firmware-tool-board-step-description = Select one of the boards listed below.
+
+firmware-tool-board-pins-step = Check the pins
+firmware-tool-board-pins-step-description =
+    Please verify that the selected pins are correct.
+    If you followed the SlimeVR documentation the defaults values should be correct
+firmware-tool-board-pins-step-enable-led = Enable LED
+firmware-tool-board-pins-step-led-pin =
+    .label = LED Pin
+    .placeholder = Enter the pin address of the LED
+
+firmware-tool-board-pins-step-battery-type = Select a battery type
+firmware-tool-board-pins-step-battery-type-BAT_EXTERNAL = External battery
+firmware-tool-board-pins-step-battery-type-BAT_INTERNAL = Internal battery
+firmware-tool-board-pins-step-battery-type-BAT_INTERNAL_MCP3021 = Internal MCP3021
+firmware-tool-board-pins-step-battery-type-BAT_MCP3021 = MCP3021
+
+
+firmware-tool-board-pins-step-battery-sensor-pin =
+    .label = Battery sensor Pin
+    .placeholder = Enter the pin address of battery sensor
+firmware-tool-board-pins-step-battery-resistor =
+    .label = Battery Resistor (Ohms)
+    .placeholder = Enter the value of battery resistor
+firmware-tool-board-pins-step-battery-shield-resistor-0 =
+    .label = Battery Shield R1 (Ohms)
+    .placeholder = Enter the value of Battery Shield R1
+firmware-tool-board-pins-step-battery-shield-resistor-1 =
+    .label = Battery Shield R2 (Ohms)
+    .placeholder = Enter the value of Battery Shield R2
+
+firmware-tool-add-imus-step = Declare your IMUs
+firmware-tool-add-imus-step-description =
+    Please add the IMUs that your tracker has
+    If you followed the SlimeVR documentation the defaults values should be correct
+firmware-tool-add-imus-step-imu-type-label = IMU type
+firmware-tool-add-imus-step-imu-type-placeholder = Select the type of IMU
+firmware-tool-add-imus-step-imu-rotation  =
+    .label = IMU Rotation (deg)
+    .placeholder = Rotation angle of the IMU
+firmware-tool-add-imus-step-scl-pin  =
+    .label = SCL Pin
+    .placeholder = Pin address of SCL
+firmware-tool-add-imus-step-sda-pin  =
+    .label = SDA Pin
+    .placeholder = Pin address of SDA
+firmware-tool-add-imus-step-int-pin  =
+    .label = INT Pin
+    .placeholder = Pin address of INT
+firmware-tool-add-imus-optional-tracker  =
+    .label = Optional tracker
+firmware-tool-add-imus-show-less = Show Less
+firmware-tool-add-imus-show-more = Show More
+firmware-tool-add-imus-add-more = Add more IMUs
+
+firmware-tool-select-firmware-step = Select the firmware version
+firmware-tool-select-firmware-step-description =
+    Please choose what version of the firmware you want to use
+firmware-tool-select-firmware-step-show-third-party =
+    .label = Show third party firmwares
+
+firmware-tool-flash-method-step = Flashing Method
+firmware-tool-flash-method-step-description =
+    Please select the flashing method you want to use
+firmware-tool-flash-method-step-ota =
+    .label = OTA
+    .description = Use the over the air method. Your tracker will use the Wi-Fi to update it's firmware. Works only on already setup trackers.
+firmware-tool-flash-method-step-serial =
+    .label = Serial
+    .description = Use a USB cable to update your tracker.
+
+firmware-tool-flashbtn-step = Press the boot btn
+firmware-tool-flashbtn-step-description = Before going into the next step there is a few things you need to do
+
+firmware-tool-flashbtn-step-board-SLIMEVR = Press the flash button on the pcb before inserting turning on the tracker.
+    If the tracker was already on, simply turn it off and back on while pressing the button or shorting the flash pads.
+    Here are a few pictures on how to do it according to the different revisions of the slimevr tracker
+firmware-tool-flashbtn-step-board-SLIMEVR-r11 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board, and the metal shield of the microcontroller
+firmware-tool-flashbtn-step-board-SLIMEVR-r12 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board, and the metal shield of the microcontroller
+firmware-tool-flashbtn-step-board-SLIMEVR-r14 = Turn on the tracker while pushing in the FLASH button on the top side of the board
+
+firmware-tool-flashbtn-step-board-OTHER = Before flashing you will probably need to put the tracker into bootloader mode.
+    Most of the time it means pressing the boot button on the board before the flashing process starts.
+    If the flashing process timeout at the begining of the flashing it probably means that the tracker was not in bootloader mode
+    Please refer to the flashing instructions of your board to know how to turn on the boatloader mode
+
+
+
+firmware-tool-flash-method-ota-devices = Detected OTA Devices:
+firmware-tool-flash-method-ota-no-devices = There are no boards that can be updated using OTA, make sure you selected the correct board type
+firmware-tool-flash-method-serial-wifi = Wi-Fi Credentials:
+firmware-tool-flash-method-serial-devices-label = Detected Serial Devices:
+firmware-tool-flash-method-serial-devices-placeholder = Select a serial device
+firmware-tool-flash-method-serial-no-devices = There are no compatible serial devices detected, make sure the tracker is plugged in
+
+firmware-tool-build-step = Building
+firmware-tool-build-step-description =
+    The firmware is building, please wait
+
+firmware-tool-flashing-step = Flashing
+firmware-tool-flashing-step-description =
+    Your trackers are flashing, please follow the instructions on the screen
+firmware-tool-flashing-step-warning = Do not unplug or restart the tracker during the upload process unless told to, it may make your board unusable
+firmware-tool-flashing-step-flash-more = Flash more trackers
+firmware-tool-flashing-step-exit = Exit
+
+## firmware tool build status
+firmware-tool-build-CREATING_BUILD_FOLDER = Creating the build folder
+firmware-tool-build-DOWNLOADING_FIRMWARE = Downloading the firmware
+firmware-tool-build-EXTRACTING_FIRMWARE = Extracting the firmware
+firmware-tool-build-SETTING_UP_DEFINES = Configuring the defines
+firmware-tool-build-BUILDING = Building the firmware
+firmware-tool-build-SAVING = Saving the build
+firmware-tool-build-DONE = Build Complete
+firmware-tool-build-ERROR = Unable to build the firmware
+
+## Firmware update status
+firmware-update-status-DOWNLOADING = Downloading the firmware
+firmware-update-status-NEED_MANUAL_REBOOT = Waiting for the user to reboot the tracker
+firmware-update-status-AUTHENTICATING = Authenticating with the mcu
+firmware-update-status-UPLOADING = Uploading the firmware
+firmware-update-status-SYNCING_WITH_MCU = Syncing with the mcu
+firmware-update-status-REBOOTING = Rebooting the tracker
+firmware-update-status-PROVISIONING = Setting Wi-Fi credentials
+firmware-update-status-DONE = Update complete!
+firmware-update-status-ERROR_DEVICE_NOT_FOUND = Could not find the device
+firmware-update-status-ERROR_TIMEOUT = The update process timed out
+firmware-update-status-ERROR_DOWNLOAD_FAILED = Could not download the firmware
+firmware-update-status-ERROR_AUTHENTICATION_FAILED = Could not authenticate with the mcu
+firmware-update-status-ERROR_UPLOAD_FAILED = Could not upload the firmware
+firmware-update-status-ERROR_PROVISIONING_FAILED = Could not set the Wi-Fi credentials
+firmware-update-status-ERROR_UNSUPPORTED_METHOD = The update method is not supported
+firmware-update-status-ERROR_UNKNOWN = Unknown error
 
 ## Tray Menu
 tray_menu-show = Show

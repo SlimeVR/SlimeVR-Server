@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BodyPart, TrackerDataT, TrackerStatus } from 'solarxr-protocol';
+import { BodyPart, TrackerDataT, TrackerInfoT, TrackerStatus } from 'solarxr-protocol';
 import { QuaternionFromQuatT, QuaternionToEulerDegrees } from '@/maths/quaternion';
 import { useAppContext } from './app';
-import { useLocalization } from '@fluent/react';
+import { ReactLocalization, useLocalization } from '@fluent/react';
 import { useDataFeedConfig } from './datafeed-config';
 import { Quaternion, Vector3 } from 'three';
 import { Vector3FromVec3fT } from '@/maths/vector3';
@@ -36,18 +36,18 @@ export function useTrackers() {
   };
 }
 
+export function getTrackerName(l10n: ReactLocalization, info: TrackerInfoT | null) {
+  if (info?.customName) return info?.customName;
+  if (info?.bodyPart) return l10n.getString('body_part-' + BodyPart[info?.bodyPart]);
+  return info?.displayName || 'NONE';
+}
+
 export function useTracker(tracker: TrackerDataT) {
   const { l10n } = useLocalization();
   const { feedMaxTps } = useDataFeedConfig();
 
   return {
-    useName: () =>
-      useMemo(() => {
-        if (tracker.info?.customName) return tracker.info?.customName;
-        if (tracker.info?.bodyPart)
-          return l10n.getString('body_part-' + BodyPart[tracker.info?.bodyPart]);
-        return tracker.info?.displayName || 'NONE';
-      }, [tracker.info]),
+    useName: () => useMemo(() => getTrackerName(l10n, tracker.info), [tracker.info]),
     useRawRotationEulerDegrees: () =>
       useMemo(() => QuaternionToEulerDegrees(tracker?.rotation), [tracker.rotation]),
     useRefAdjRotationEulerDegrees: () =>
