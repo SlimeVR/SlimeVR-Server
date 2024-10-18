@@ -15,6 +15,8 @@ import { VerifyResultsStep } from './autobone-steps/VerifyResults';
 import { useCountdown } from '@/hooks/countdown';
 import { CheckHeight } from './autobone-steps/CheckHeight';
 import { PreparationStep } from './autobone-steps/Preparation';
+import { useState } from 'react';
+import { ProportionsResetModal } from './ProportionsResetModal';
 
 export function AutomaticProportionsPage() {
   const { l10n } = useLocalization();
@@ -29,6 +31,8 @@ export function AutomaticProportionsPage() {
       );
     },
   });
+
+  const [showWarning, setShowWarning] = useState(false);
 
   applyProgress(0.9);
 
@@ -65,7 +69,7 @@ export function AutomaticProportionsPage() {
         <div className="w-full pb-4 flex flex-row mobile:justify-center">
           <Button
             variant="secondary"
-            onClick={startCountdown}
+            onClick={() => setShowWarning(true)}
             disabled={isCounting}
           >
             <div className="relative">
@@ -76,6 +80,14 @@ export function AutomaticProportionsPage() {
             </div>
           </Button>
         </div>
+        <ProportionsResetModal
+          accept={() => {
+            startCountdown();
+            setShowWarning(false);
+          }}
+          onClose={() => setShowWarning(false)}
+          isOpen={showWarning}
+        ></ProportionsResetModal>
       </div>
     </AutoboneContextC.Provider>
   );

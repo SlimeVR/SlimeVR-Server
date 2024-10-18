@@ -44,6 +44,10 @@ export function SettingSelectorMobile() {
         label: l10n.getString('settings-sidebar-firmware-tool'),
         value: { url: '/settings/firmware-tool' },
       },
+      {
+        label: l10n.getString('settings-sidebar-advanced'),
+        value: { url: '/settings/advanced' },
+      },
     ];
 
   const { control, watch, handleSubmit, setValue } = useForm<{

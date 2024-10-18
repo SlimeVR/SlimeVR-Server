@@ -1,12 +1,15 @@
 package dev.slimevr.android
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
 import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.os.IBinder
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.ServiceCompat
+import io.eiren.util.logging.LogManager
 
 /**
  * ForegroundService helps to keep the SlimeVR Server on Android from being killed.
@@ -35,9 +38,26 @@ class ForegroundService : Service() {
 	}
 
 	override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-		val notification = createNotification()
-		startForeground(NOTIFICATION_ID, notification)
-
+		try {
+			val notification = createNotification()
+			ServiceCompat.startForeground(
+				this,
+				NOTIFICATION_ID, // Cannot be 0
+				notification,
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+					ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
+				} else {
+					0
+				},
+			)
+		} catch (e: Exception) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+				e is ForegroundServiceStartNotAllowedException
+			) {
+				LogManager.severe("Tried to start foreground service when not allowed:", e)
+			}
+			// ...
+		}
 		/*
 		 * Currently being a foreground process should be enough to keep the server running.
 		 * If it turns out to not be enough then the next option would be to return sticky here
@@ -51,13 +71,12 @@ class ForegroundService : Service() {
 	override fun onBind(intent: Intent?): IBinder? = null
 
 	private fun createNotificationChannel() {
-		val serviceChannel = NotificationChannel(
-			CHANNEL_ID,
-			"SlimeVR Foreground Service Channel",
-			NotificationManager.IMPORTANCE_LOW,
-		)
-		val manager = getSystemService(NotificationManager::class.java)
-		manager.createNotificationChannel(serviceChannel)
+		val serviceChannel = NotificationChannelCompat.Builder(CHANNEL_ID, NotificationManager.IMPORTANCE_LOW)
+			.setName("SlimeVR Foreground Service Channel")
+			.build()
+		NotificationManagerCompat
+			.from(this)
+			.createNotificationChannel(serviceChannel)
 	}
 
 	private fun createNotification(): Notification = NotificationCompat.Builder(this, CHANNEL_ID)

@@ -62,29 +62,8 @@
     "licenseFile": "../../LICENSE-MIT"
   },
   "plugins": {
-    "fs": {
-      "all": true,
-      "scope": [
-        "$APP/*",
-        "$APP"
-      ]
-    },
-    "os": {
-      "all": true
-    },
     "shell": {
-      "open": true
-    },
-    "window": {
-      "close": true,
-      "maximize": true,
-      "minimize": true,
-      "setResizable": true,
-      "setSize": true,
-      "setTitle": true,
-      "startDragging": true,
-      "unmaximize": true,
-      "unminimize": true
+      "open": "^((https?://\\w+)|(file://)).+"
     }
   },
   "productName": "slimevr",

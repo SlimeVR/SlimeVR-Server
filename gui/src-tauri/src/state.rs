@@ -15,6 +15,7 @@ pub struct WindowState {
 	height: f64,
 	x: i32,
 	y: i32,
+	decorated: bool,
 	#[serde(skip)]
 	old: bool,
 }
@@ -50,6 +51,8 @@ impl WindowState {
 		window: &Window,
 		ignore_maximized: bool,
 	) -> Result<()> {
+		self.decorated = window.is_decorated()?;
+
 		let maximized = window.is_maximized()?;
 		self.maximized = maximized || (self.maximized && ignore_maximized);
 		// We early return when it's maximized because we dont have to save the state
@@ -70,6 +73,8 @@ impl WindowState {
 	}
 
 	pub fn update_window(&self, window: &Window, ignore_maximized: bool) -> Result<()> {
+		window.set_decorations(self.decorated)?;
+
 		let maximized = !ignore_maximized && window.is_maximized()?;
 		if maximized && !self.maximized {
 			window.unmaximize()?;
