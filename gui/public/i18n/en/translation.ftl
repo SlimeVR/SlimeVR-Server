@@ -987,10 +987,10 @@ firmware-tool-board-pins-step = Check the pins
 firmware-tool-board-pins-step-description =
     Please verify that the selected pins are correct.
     If you followed the SlimeVR documentation the defaults values should be correct
-firmware-tool-board-pins-step-enable-led = Enable Led
+firmware-tool-board-pins-step-enable-led = Enable LED
 firmware-tool-board-pins-step-led-pin =
-    .label = Led Pin
-    .placeholder = Enter the pin address of the led
+    .label = LED Pin
+    .placeholder = Enter the pin address of the LED
 
 firmware-tool-board-pins-step-battery-type = Select a battery type
 firmware-tool-board-pins-step-battery-type-BAT_EXTERNAL = External battery
