@@ -53,7 +53,7 @@ export interface ConfigContext {
   saveConfig: () => Promise<void>;
   getCurrentProfile: () => string;
   getProfiles: () => Promise<string[]>;
-  changeProfile: (profile: string) => Promise<void>;
+  setProfile: (profile: string, config?: Config) => Promise<void>;
   deleteProfile: (profile: string) => Promise<void>;
 }
 
@@ -82,6 +82,8 @@ interface CrossStorage {
   get(key: string): Promise<string | null>;
 }
 
+let configToSet: Config | null | undefined = null;
+
 const localStore: CrossStorage = {
   get: async (key) => localStorage.getItem(key),
   set: async (key, value) => localStorage.setItem(key, value),
@@ -103,7 +105,10 @@ async function getProfileStore(profile: string): Promise<CrossStorage> {
   const profileFile = await resolve(`${profileDir}/gui-settings.dat`);
 
   await mkdir(profileDir, { recursive: true });
-  await writeTextFile(profileFile, JSON.stringify({ 'config.json': JSON.stringify(defaultConfig) }));
+  await writeTextFile(
+    profileFile,
+    JSON.stringify({ 'config.json': JSON.stringify(defaultConfig) })
+  );
 
   return createStore(profileFile);
 }
@@ -129,7 +134,11 @@ export function useConfigProvider(): ConfigContext {
       const profileStore = await getProfileStore(currentProfile);
       store = profileStore;
       const json = await store.get('config.json');
-      const loadedConfig = fallbackToDefaults(JSON.parse(json ?? '{}'));
+      let loadedConfig = fallbackToDefaults(JSON.parse(json ?? '{}'));
+      if (configToSet) {
+        loadedConfig = { ...configToSet };
+        configToSet = null;
+      }
       set(loadedConfig);
     };
 
@@ -184,12 +193,13 @@ export function useConfigProvider(): ConfigContext {
   const getProfiles = async () => {
     const appDirectory = await appConfigDir();
     const profilesDir = await resolve(`${appDirectory}/profiles`);
+    await mkdir(profilesDir, { recursive: true });
     const profiles = await readDir(profilesDir);
 
     return profiles.map((profile) => profile.name);
-  }
+  };
 
-  const changeProfile = async (profile: string) => {
+  const setProfile = async (profile: string, config?: Config) => {
     // load default config, set profile to new profile, save config, then load new profile config
     // idk if this is the best way to do this lol
     const defaultStore = await createStore('gui-settings.dat');
@@ -205,6 +215,7 @@ export function useConfigProvider(): ConfigContext {
     );
     await defaultStore.save();
 
+    configToSet = config;
     setCurrentProfile(profile);
   };
 
@@ -262,8 +273,8 @@ export function useConfigProvider(): ConfigContext {
     },
     getCurrentProfile,
     getProfiles,
-    changeProfile,
-    deleteProfile
+    setProfile,
+    deleteProfile,
   };
 }
 

@@ -9,29 +9,21 @@ import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { Button } from '@/components/commons/Button';
 
 import { error, log } from '@/utils/logging';
-import { defaultConfig as defaultGUIConfig, useConfig } from '@/hooks/config';
-import {
-  defaultValues as defaultDevConfig,
-  defaultValues,
-} from '@/components/widgets/DeveloperModeWidget';
-import { DeleteProfileModal } from '../DeleteProfileModal';
+import { useConfig } from '@/hooks/config';
+import { defaultValues as defaultDevConfig } from '@/components/widgets/DeveloperModeWidget';
+import { CreateProfileModal } from '@/components/settings/CreateProfileModal';
+import { DeleteProfileModal } from '@/components/settings/DeleteProfileModal';
 import { Input } from '@/components/commons/Input';
 import { useForm } from 'react-hook-form';
 import { Dropdown } from '@/components/commons/Dropdown';
 
 export function ProfileSettings() {
   const { l10n } = useLocalization();
-  const {
-    config,
-    setConfig,
-    getCurrentProfile,
-    getProfiles,
-    changeProfile,
-    deleteProfile,
-  } = useConfig();
+  const { config, getCurrentProfile, getProfiles, setProfile, deleteProfile } =
+    useConfig();
   const [profiles, setProfiles] = useState<string[]>([]);
-
-  const [showWarning, setShowWarning] = useState(false);
+  const [showCreatePrompt, setShowCreatePrompt] = useState(false);
+  const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -40,7 +32,6 @@ export function ProfileSettings() {
     };
     fetchProfiles();
 
-    // Set profile value for dropdown when it loads
     const profile = getCurrentProfile();
     setProfileValue('profile', profile);
 
@@ -48,7 +39,7 @@ export function ProfileSettings() {
       handleProfileSubmit(onSelectSubmit)()
     );
     return () => subscription.unsubscribe();
-  }, []);
+  });
 
   const profileItems = useMemo(() => {
     // Add default profile to dropdown
@@ -57,11 +48,16 @@ export function ProfileSettings() {
       label: profile,
       value: profile,
     }));
+
     return [defaultProfile, ...mappedProfiles];
   }, [profiles]);
 
-  // is there a better way to do this?
-  const { control: nameControl, handleSubmit: handleNameSubmit } = useForm<{
+  // is there a better way to do this, theres a bunch of stuff here lol
+  const {
+    control: nameControl,
+    watch: watchNameSubmit,
+    handleSubmit: handleNameSubmit,
+  } = useForm<{
     newName: string;
   }>({
     defaultValues: { newName: '' },
@@ -78,35 +74,32 @@ export function ProfileSettings() {
     defaultValues: { profile: config?.profile },
   });
 
-  const { control: deleteControl, handleSubmit: handleDeleteControl } =
-    useForm<{
-      profile: string;
-    }>({
-      defaultValues: { profile: config?.profile || 'default' },
-    });
+  const {
+    control: deleteControl,
+    handleSubmit: handleDeleteControl,
+    watch: watchDeleteControl,
+  } = useForm<{
+    profile: string;
+  }>({
+    defaultValues: { profile: config?.profile || 'default' },
+  });
 
+  const profileToCreate = watchNameSubmit('newName');
   const onNameSubmit = async (data: { newName: string }) => {
+    // TODO: add ui if invalid name, already exists, or 'default'
     if (!data.newName || data.newName === '' || data.newName === 'default')
       return;
 
-    const profiles = await getProfiles();
-    if (profiles.includes(data.newName)) {
-      error(`Profile with name ${data.newName} already exists`);
-      return;
-    }
-
     log(`Creating new profile with name ${data.newName}`);
-    setConfig({
-      profile: data.newName,
-    });
-    changeProfile(data.newName);
+    setShowCreatePrompt(true);
   };
 
   const onSelectSubmit = (data: { profile: string }) => {
     log(`Switching to profile ${data.profile}`);
-    changeProfile(data.profile);
+    setProfile(data.profile);
   };
 
+  const profileToDelete = watchDeleteControl('profile');
   const onDeleteSelectSubmit = async (data: { profile: string }) => {
     if (data.profile === 'default') {
       error('Cannot delete default profile');
@@ -118,6 +111,30 @@ export function ProfileSettings() {
     // Update profiles list
     const profiles = await getProfiles();
     setProfiles(profiles);
+  };
+
+  const createProfile = async (name: string, useDefault: boolean) => {
+    log(`Creating profile with name ${name} aaaaa`);
+    const profiles = await getProfiles();
+    log(`Profiles: ${profiles}`);
+    if (profiles.includes(name)) {
+      error(`Profile with name ${name} already exists`);
+      return;
+    }
+
+    log(`Creating new profile with name ${name} with defaults: ${useDefault}`);
+
+    if (!useDefault) {
+      const currentConfig = config;
+      if (!currentConfig)
+        throw new Error(
+          'cannot copy current settings because.. current config does not exist?'
+        );
+      await setProfile(name, currentConfig);
+    } else {
+      // config.ts automatically uses default config if no config is passed
+      await setProfile(name);
+    }
   };
 
   return (
@@ -194,6 +211,18 @@ export function ProfileSettings() {
                   </Button>
                 </div>
               </form>
+              <CreateProfileModal
+                primary={() => {
+                  setShowCreatePrompt(false);
+                  createProfile(profileToCreate, true);
+                }}
+                secondary={() => {
+                  setShowCreatePrompt(false);
+                  createProfile(profileToCreate, false);
+                }}
+                onClose={() => setShowCreatePrompt(false)}
+                isOpen={showCreatePrompt}
+              ></CreateProfileModal>
             </div>
 
             <div>
@@ -221,7 +250,7 @@ export function ProfileSettings() {
                 <Button
                   variant="secondary"
                   onClick={() => {
-                    setShowWarning(true);
+                    setShowDeleteWarning(true);
                   }}
                   style={{ flexBasis: '35%' }}
                 >
@@ -230,11 +259,11 @@ export function ProfileSettings() {
                 <DeleteProfileModal
                   accept={() => {
                     handleDeleteControl(onDeleteSelectSubmit)();
-                    setShowWarning(false);
+                    setShowDeleteWarning(false);
                   }}
-                  onClose={() => setShowWarning(false)}
-                  isOpen={showWarning}
-                  profile="default"
+                  onClose={() => setShowDeleteWarning(false)}
+                  isOpen={showDeleteWarning}
+                  profile={profileToDelete}
                 ></DeleteProfileModal>
               </div>
             </div>

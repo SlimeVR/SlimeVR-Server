@@ -35,7 +35,7 @@ export function DeleteProfileModal({
       className={props.className}
       overlayClassName={props.overlayClassName}
     >
-      <div className="flex w-full h-full flex-col ">
+      <div className="flex w-full h-full flex-col">
         <div className="flex flex-col flex-grow items-center gap-3">
           <Localized
             id="settings-utils-profiles-delete-warning"

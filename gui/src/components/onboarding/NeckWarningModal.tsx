@@ -26,7 +26,7 @@ export function NeckWarningModal({
   const { l10n } = useLocalization();
 
   // isOpen is checked by checking if the parent modal is opened + our bodyPart is the
-  // neck and we havent showed this warning yet
+  // neck and we haven't showed this warning yet
   return (
     <BaseModal
       isOpen={isOpen}

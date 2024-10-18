@@ -3,6 +3,7 @@ import { BulbIcon } from './icon/BulbIcon';
 import { WarningIcon } from './icon/WarningIcon';
 import { Typography } from './Typography';
 import classNames from 'classnames';
+import { QuestionIcon } from './icon/QuestionIcon';
 
 export function TipBox({
   children,
@@ -30,9 +31,40 @@ export function TipBox({
       >
         <BulbIcon></BulbIcon>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col justify-center">
         <Typography
           color="text-accent-background-10"
+          whitespace={whitespace ? 'whitespace-pre' : undefined}
+        >
+          {children}
+        </Typography>
+      </div>
+    </div>
+  );
+}
+
+export function QuestionBox({
+  children,
+  hideIcon = false,
+  whitespace = false,
+}: {
+  children: ReactNode;
+  hideIcon?: boolean;
+  whitespace?: boolean;
+}) {
+  return (
+    <div className="flex flex-row gap-4 bg-trans-blue-400 p-4 rounded-md">
+      <div
+        className={classNames(
+          'stroke-background-90 flex flex-col justify-center',
+          hideIcon && 'hidden'
+        )}
+      >
+        <QuestionIcon width={whitespace ? 36 : 24}></QuestionIcon>
+      </div>
+      <div className="flex flex-col justify-center">
+        <Typography
+          color="text-background-90"
           whitespace={whitespace ? 'whitespace-pre' : undefined}
         >
           {children}
@@ -64,7 +96,7 @@ export function WarningBox({
       >
         <WarningIcon></WarningIcon>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col justify-center">
         <Typography
           color="text-background-60"
           whitespace={whitespace ? 'whitespace-pre-line' : undefined}

@@ -615,8 +615,14 @@ settings-utils-profiles-profile = Current profile
 settings-utils-profiles-profile-description = Choose a profile to load or save your settings to.
 
 settings-utils-profiles-new = Create new profile
-settings-utils-profiles-new-description = Create a new profile with the current settings.
+settings-utils-profiles-new-description = Create a new profile with the defaults or your current settings.
 settings-utils-profiles-new-label = Create
+settings-utils-profiles-modal =
+    Would you like to use the default settings or copy your current
+    settings for your new profile?
+settings-utils-profiles-modal-default = Default settings
+settings-utils-profiles-modal-copy = Copy settings
+settings-utils-profiles-modal-cancel = Cancel
 
 settings-utils-profiles-delete = Delete profile
 settings-utils-profiles-delete-description = Delete the selected profile.
