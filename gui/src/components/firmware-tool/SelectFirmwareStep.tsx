@@ -92,9 +92,7 @@ export function SelectFirmwareStep({
                   <Button
                     variant="primary"
                     disabled={!newConfig?.version}
-                    onClick={() => {
-                      nextStep();
-                    }}
+                    onClick={nextStep}
                   ></Button>
                 </Localized>
               </div>
