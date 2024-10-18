@@ -24,17 +24,17 @@ export function SelectFirmwareStep({
 
   const { control, watch } = useForm<{ thirdParty: boolean }>({});
 
-  const showTirdParty = watch('thirdParty');
+  const showThirdParty = watch('thirdParty');
 
   const getName = (name: string) => {
-    return showTirdParty ? name : name.substring(name.indexOf('/') + 1);
+    return showThirdParty ? name : name.substring(name.indexOf('/') + 1);
   };
 
   const filteredFirmwares = useMemo(() => {
     return firmwares?.filter(
-      ({ name }) => name.split('/')[0] === 'SlimeVR' || showTirdParty
+      ({ name }) => name.split('/')[0] === 'SlimeVR' || showThirdParty
     );
-  }, [firmwares, showTirdParty]);
+  }, [firmwares, showThirdParty]);
 
   return (
     <>
@@ -44,11 +44,13 @@ export function SelectFirmwareStep({
             {l10n.getString('firmware-tool-select-firmware-step-description')}
           </Typography>
           <div>
-            <CheckBox
-              control={control}
-              name="thirdParty"
-              label="Show third party firmwares"
-            ></CheckBox>
+            <Localized id="firmware-tool-select-firmware-step-show-third-party">
+              <CheckBox
+                control={control}
+                name="thirdParty"
+                label="Show third party firmwares"
+              ></CheckBox>
+            </Localized>
           </div>
         </div>
         <div className="my-4">

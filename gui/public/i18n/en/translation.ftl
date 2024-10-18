@@ -1039,6 +1039,8 @@ firmware-tool-add-imus-add-more = Add more IMUs
 firmware-tool-select-firmware-step = Select the firmware version
 firmware-tool-select-firmware-step-description =
     Please choose what version of the firmware you want to use
+firmware-tool-select-firmware-step-show-third-party =
+    .label = Show third party firmwares
 
 firmware-tool-flash-method-step = Flashing Method
 firmware-tool-flash-method-step-description =
