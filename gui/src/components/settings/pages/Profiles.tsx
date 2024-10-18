@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Typography } from '@/components/commons/Typography';
 import {
   SettingsPageLayout,
@@ -21,8 +21,44 @@ import { Dropdown } from '@/components/commons/Dropdown';
 
 export function ProfileSettings() {
   const { l10n } = useLocalization();
-  const { config, setConfig, changeProfile, getProfiles } = useConfig();
+  const {
+    config,
+    setConfig,
+    getCurrentProfile,
+    getProfiles,
+    changeProfile,
+    deleteProfile,
+  } = useConfig();
+  const [profiles, setProfiles] = useState<string[]>([]);
+
   const [showWarning, setShowWarning] = useState(false);
+
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      const profiles = await getProfiles();
+      setProfiles(profiles);
+    };
+    fetchProfiles();
+
+    // Set profile value for dropdown when it loads
+    const profile = getCurrentProfile();
+    setProfileValue('profile', profile);
+
+    const subscription = watchProfileSubmit(() =>
+      handleProfileSubmit(onSelectSubmit)()
+    );
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const profileItems = useMemo(() => {
+    // Add default profile to dropdown
+    const defaultProfile = { label: 'Default profile', value: 'default' };
+    const mappedProfiles = profiles.map((profile) => ({
+      label: profile,
+      value: profile,
+    }));
+    return [defaultProfile, ...mappedProfiles];
+  }, [profiles]);
 
   // is there a better way to do this?
   const { control: nameControl, handleSubmit: handleNameSubmit } = useForm<{
@@ -35,27 +71,19 @@ export function ProfileSettings() {
     control: profileControl,
     watch: watchProfileSubmit,
     handleSubmit: handleProfileSubmit,
+    setValue: setProfileValue,
   } = useForm<{
     profile: string;
   }>({
     defaultValues: { profile: config?.profile },
   });
 
-  const {
-    control: deleteControl,
-    handleSubmit: handleDeleteControl,
-  } = useForm<{
-    profile: string;
-  }>({
-    defaultValues: { profile: config?.profile || 'default' },
-  });
-
-  useEffect(() => {
-    const subscription = watchProfileSubmit(() =>
-      handleProfileSubmit(onSelectSubmit)()
-    );
-    return () => subscription.unsubscribe();
-  }, []);
+  const { control: deleteControl, handleSubmit: handleDeleteControl } =
+    useForm<{
+      profile: string;
+    }>({
+      defaultValues: { profile: config?.profile || 'default' },
+    });
 
   const onNameSubmit = async (data: { newName: string }) => {
     if (!data.newName || data.newName === '' || data.newName === 'default')
@@ -79,12 +107,17 @@ export function ProfileSettings() {
     changeProfile(data.profile);
   };
 
-  const onDeleteSelectSubmit = (data: { profile: string }) => {
+  const onDeleteSelectSubmit = async (data: { profile: string }) => {
     if (data.profile === 'default') {
       error('Cannot delete default profile');
       return;
     }
     log(`Deleting profile ${data.profile}`);
+    await deleteProfile(data.profile);
+
+    // Update profiles list
+    const profiles = await getProfiles();
+    setProfiles(profiles);
   };
 
   return (
@@ -115,25 +148,16 @@ export function ProfileSettings() {
                 {l10n.getString('settings-utils-profiles-profile-description')}
               </Typography>
             </div>
-              <div className="grid sm:grid-cols-1 pb-4">
-                <Dropdown
-                  control={profileControl}
-                  name="profile"
-                  display="block"
-                  placeholder={l10n.getString(
-                    'settings-utils-profiles-default'
-                  )}
-                  direction="down"
-                  items={[
-                    {
-                      label: l10n.getString('settings-utils-profiles-default'),
-                      value: 'default',
-                    },
-                    { label: 'Lexend', value: 'Lexend' },
-                    { label: 'Ubuntu', value: 'Ubuntu' },
-                  ]}
-                ></Dropdown>
-              </div>
+            <div className="grid sm:grid-cols-1 pb-4">
+              <Dropdown
+                control={profileControl}
+                name="profile"
+                display="block"
+                placeholder={l10n.getString('settings-utils-profiles-default')}
+                direction="down"
+                items={profileItems}
+              ></Dropdown>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2 mobile:grid-cols-1">
@@ -191,29 +215,21 @@ export function ProfileSettings() {
                       'settings-utils-profiles-default'
                     )}
                     direction="down"
-                    items={[
-                      {
-                        label: l10n.getString(
-                          'settings-utils-profiles-default'
-                        ),
-                        value: 'default',
-                      },
-                      { label: 'Lexend', value: 'Lexend' },
-                      { label: 'Ubuntu', value: 'Ubuntu' },
-                    ]}
+                    items={profileItems}
                   ></Dropdown>
                 </div>
                 <Button
                   variant="secondary"
-                  onClick={handleDeleteControl(onDeleteSelectSubmit)}
+                  onClick={() => {
+                    setShowWarning(true);
+                  }}
                   style={{ flexBasis: '35%' }}
                 >
                   {l10n.getString('settings-utils-profiles-delete-label')}
                 </Button>
                 <DeleteProfileModal
                   accept={() => {
-                    log('Deleting profile');
-                    // TODO: actually delete profile
+                    handleDeleteControl(onDeleteSelectSubmit)();
                     setShowWarning(false);
                   }}
                   onClose={() => setShowWarning(false)}

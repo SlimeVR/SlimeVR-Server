@@ -43,16 +43,14 @@ export function DeleteProfileModal({
             vars={{ name: profile }}
           >
             <WarningBox>
-            <b>Warning:</b> This will delete the selected profile ({ profile }).
-            Are you sure you want to do this?
+              <b>Warning:</b> This will delete the selected profile ({profile}).
+              Are you sure you want to do this?
             </WarningBox>
           </Localized>
 
           <div className="flex flex-row gap-3 pt-5 place-content-center">
             <Button variant="primary" onClick={onClose}>
-              {l10n.getString(
-                'settings-utils-profiles-delete-warning-cancel'
-              )}
+              {l10n.getString('settings-utils-profiles-delete-warning-cancel')}
             </Button>
             <Button
               variant="tertiary"
@@ -60,9 +58,7 @@ export function DeleteProfileModal({
                 accept();
               }}
             >
-              {l10n.getString(
-                'settings-utils-profiles-delete-warning-done'
-              )}
+              {l10n.getString('settings-utils-profiles-delete-warning-done')}
             </Button>
           </div>
         </div>
