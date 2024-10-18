@@ -51,8 +51,8 @@ const statusProgressMap = {
   [WifiProvisioningStatus.CONNECTING]: 0.6,
   [WifiProvisioningStatus.LOOKING_FOR_SERVER]: 0.8,
   [WifiProvisioningStatus.DONE]: 1,
-  [WifiProvisioningStatus.CONNECTION_ERROR]: 1,
-  [WifiProvisioningStatus.COULD_NOT_FIND_SERVER]: 1,
+  [WifiProvisioningStatus.CONNECTION_ERROR]: 0.6,
+  [WifiProvisioningStatus.COULD_NOT_FIND_SERVER]: 0.8,
 };
 
 export function ConnectTrackersPage() {
