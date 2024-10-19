@@ -624,6 +624,11 @@ settings-utils-profiles-modal-default = Default settings
 settings-utils-profiles-modal-copy = Copy settings
 settings-utils-profiles-modal-cancel = Cancel
 
+settings-utils-profiles-new-cant =
+    This profile name contains invalid characters or already exists.
+    Please choose another name.
+settings-utils-profiles-new-cant-ok = OK
+
 settings-utils-profiles-delete = Delete profile
 settings-utils-profiles-delete-description = Delete the selected profile.
 settings-utils-profiles-delete-label = Delete profile
@@ -632,6 +637,11 @@ settings-utils-profiles-delete-warning =
     Are you sure you want to do this?
 settings-utils-profiles-delete-warning-done = Yes
 settings-utils-profiles-delete-warning-cancel = Cancel
+
+settings-utils-profiles-delete-cant =
+    You cannot delete this profile ({ $name }). Please select
+    another profile to delete.
+settings-utils-profiles-delete-cant-ok = OK
 
 ## Advanced settings
 settings-utils-advanced = Advanced

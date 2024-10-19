@@ -12,7 +12,9 @@ import { error, log } from '@/utils/logging';
 import { useConfig } from '@/hooks/config';
 import { defaultValues as defaultDevConfig } from '@/components/widgets/DeveloperModeWidget';
 import { CreateProfileModal } from '@/components/settings/CreateProfileModal';
+import { ProfileCreateErrorModal } from '@/components/settings/ProfileCreateErrorModal';
 import { DeleteProfileModal } from '@/components/settings/DeleteProfileModal';
+import { ProfileDeleteErrorModal } from '@/components/settings/ProfileDeleteErrorModal';
 import { Input } from '@/components/commons/Input';
 import { useForm } from 'react-hook-form';
 import { Dropdown } from '@/components/commons/Dropdown';
@@ -23,7 +25,20 @@ export function ProfileSettings() {
     useConfig();
   const [profiles, setProfiles] = useState<string[]>([]);
   const [showCreatePrompt, setShowCreatePrompt] = useState(false);
+  const [showCreateError, setShowCreateError] = useState(false);
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
+  const [showDeleteError, setShowDeleteError] = useState(false);
+
+    const profileItems = useMemo(() => {
+    // Add default profile to dropdown
+    const defaultProfile = { label: 'Default profile', value: 'default' };
+    const mappedProfiles = profiles.map((profile) => ({
+      label: profile,
+      value: profile,
+    }));
+
+    return [defaultProfile, ...mappedProfiles];
+  }, [profiles]);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -35,21 +50,10 @@ export function ProfileSettings() {
     const profile = getCurrentProfile();
     setProfileValue('profile', profile);
 
-    const subscription = watchProfileSubmit(() =>
-      handleProfileSubmit(onSelectSubmit)()
-    );
+    const subscription = watchProfileSubmit(() => {
+      handleProfileSubmit(onSelectSubmit)();
+    });
     return () => subscription.unsubscribe();
-  });
-
-  const profileItems = useMemo(() => {
-    // Add default profile to dropdown
-    const defaultProfile = { label: 'Default profile', value: 'default' };
-    const mappedProfiles = profiles.map((profile) => ({
-      label: profile,
-      value: profile,
-    }));
-
-    return [defaultProfile, ...mappedProfiles];
   }, [profiles]);
 
   // is there a better way to do this, theres a bunch of stuff here lol
@@ -86,9 +90,14 @@ export function ProfileSettings() {
 
   const profileToCreate = watchNameSubmit('newName');
   const onNameSubmit = async (data: { newName: string }) => {
-    // TODO: add ui if invalid name, already exists, or 'default'
-    if (!data.newName || data.newName === '' || data.newName === 'default')
+    if (!data.newName) return;
+
+    const invalidCharsRegex = /[<>:"/\\|?*]/;
+    if (data.newName === 'default' || invalidCharsRegex.test(data.newName)) {
+      error('Invalid profile name');
+      setShowCreateError(true);
       return;
+    }
 
     log(`Creating new profile with name ${data.newName}`);
     setShowCreatePrompt(true);
@@ -103,10 +112,19 @@ export function ProfileSettings() {
   const onDeleteSelectSubmit = async (data: { profile: string }) => {
     if (data.profile === 'default') {
       error('Cannot delete default profile');
+      setShowDeleteError(true);
       return;
     }
+
     log(`Deleting profile ${data.profile}`);
-    await deleteProfile(data.profile);
+
+    try {
+      await deleteProfile(data.profile);
+    } catch (e) {
+      error(e);
+      setShowDeleteError(true);
+      return;
+    }
 
     // Update profiles list
     const profiles = await getProfiles();
@@ -119,21 +137,28 @@ export function ProfileSettings() {
     log(`Profiles: ${profiles}`);
     if (profiles.includes(name)) {
       error(`Profile with name ${name} already exists`);
+      setShowCreateError(true);
       return;
     }
 
     log(`Creating new profile with name ${name} with defaults: ${useDefault}`);
 
-    if (!useDefault) {
-      const currentConfig = config;
-      if (!currentConfig)
-        throw new Error(
-          'cannot copy current settings because.. current config does not exist?'
-        );
-      await setProfile(name, currentConfig);
-    } else {
-      // config.ts automatically uses default config if no config is passed
-      await setProfile(name);
+    try {
+      if (!useDefault) {
+        const currentConfig = config;
+        if (!currentConfig)
+          throw new Error(
+            'cannot copy current settings because.. current config does not exist?'
+          );
+        await setProfile(name, currentConfig);
+      } else {
+        // config.ts automatically uses default config if no config is passed
+        await setProfile(name);
+      }
+    } catch (e) {
+      error(e);
+      setShowCreateError(true);
+      return;
     }
   };
 
@@ -265,6 +290,15 @@ export function ProfileSettings() {
                   isOpen={showDeleteWarning}
                   profile={profileToDelete}
                 ></DeleteProfileModal>
+                <ProfileCreateErrorModal
+                  isOpen={showCreateError}
+                  onClose={() => setShowCreateError(false)}
+                ></ProfileCreateErrorModal>
+                <ProfileDeleteErrorModal
+                  isOpen={showDeleteError}
+                  onClose={() => setShowDeleteError(false)}
+                  profile={profileToDelete}
+                ></ProfileDeleteErrorModal>
               </div>
             </div>
           </div>
