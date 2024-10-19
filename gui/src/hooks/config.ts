@@ -191,6 +191,10 @@ export function useConfigProvider(): ConfigContext {
   const getCurrentProfile = () => currentProfile;
 
   const getProfiles = async () => {
+    // artificial delay to let profile write to disk (when created) before we actually read it
+    // fixes "default" being selected when new profile is created (because folder hasn't been made)
+    // idk why this is necessary but it is
+    await new Promise((resolve) => setTimeout(resolve, 100));
     const appDirectory = await appConfigDir();
     const profilesDir = await resolve(`${appDirectory}/profiles`);
     await mkdir(profilesDir, { recursive: true });

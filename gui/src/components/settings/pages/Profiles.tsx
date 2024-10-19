@@ -10,7 +10,6 @@ import { Button } from '@/components/commons/Button';
 
 import { error, log } from '@/utils/logging';
 import { useConfig } from '@/hooks/config';
-import { defaultValues as defaultDevConfig } from '@/components/widgets/DeveloperModeWidget';
 import { CreateProfileModal } from '@/components/settings/CreateProfileModal';
 import { ProfileCreateErrorModal } from '@/components/settings/ProfileCreateErrorModal';
 import { DeleteProfileModal } from '@/components/settings/DeleteProfileModal';
@@ -29,7 +28,7 @@ export function ProfileSettings() {
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
   const [showDeleteError, setShowDeleteError] = useState(false);
 
-    const profileItems = useMemo(() => {
+  const profileItems = useMemo(() => {
     // Add default profile to dropdown
     const defaultProfile = { label: 'Default profile', value: 'default' };
     const mappedProfiles = profiles.map((profile) => ({
@@ -40,13 +39,18 @@ export function ProfileSettings() {
     return [defaultProfile, ...mappedProfiles];
   }, [profiles]);
 
+  // Fetch profiles on load
   useEffect(() => {
     const fetchProfiles = async () => {
       const profiles = await getProfiles();
       setProfiles(profiles);
     };
-    fetchProfiles();
 
+    fetchProfiles();
+  }, []);
+
+  // Set profile value on load, watch if profile switches
+  useEffect(() => {
     const profile = getCurrentProfile();
     setProfileValue('profile', profile);
 
@@ -160,6 +164,9 @@ export function ProfileSettings() {
       setShowCreateError(true);
       return;
     }
+
+    // Update profiles list
+    setProfiles(profiles.concat(name));
   };
 
   return (
