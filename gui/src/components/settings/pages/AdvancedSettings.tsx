@@ -56,13 +56,13 @@ export function AdvancedSettings() {
               {l10n.getString('settings-utils-advanced')}
             </Typography>
 
-            <div className="grid gap-4 mobile:gap-6">
+            <div className="grid gap-4">
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
                   <Typography bold>
                     {l10n.getString('settings-utils-advanced-reset-gui')}
                   </Typography>
-                  <div className="flex flex-col pt-1">
+                  <div className="flex flex-col">
                     <Typography color="secondary">
                       {l10n.getString(
                         'settings-utils-advanced-reset-gui-description'
@@ -70,7 +70,7 @@ export function AdvancedSettings() {
                     </Typography>
                   </div>
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col nsm:pt-2">
                   <Button
                     variant="secondary"
                     onClick={() => setShowWarningGUI(true)}
@@ -94,7 +94,7 @@ export function AdvancedSettings() {
                   <Typography bold>
                     {l10n.getString('settings-utils-advanced-reset-server')}
                   </Typography>
-                  <div className="flex flex-col pt-1">
+                  <div className="flex flex-col">
                     <Typography color="secondary">
                       {l10n.getString(
                         'settings-utils-advanced-reset-server-description'
@@ -102,7 +102,7 @@ export function AdvancedSettings() {
                     </Typography>
                   </div>
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col nsm:pt-2">
                   <Button
                     variant="secondary"
                     onClick={() => setShowWarningServer(true)}
@@ -131,7 +131,7 @@ export function AdvancedSettings() {
                   <Typography bold>
                     {l10n.getString('settings-utils-advanced-reset-all')}
                   </Typography>
-                  <div className="flex flex-col pt-1">
+                  <div className="flex flex-col">
                     <Typography color="secondary">
                       {l10n.getString(
                         'settings-utils-advanced-reset-all-description'
@@ -139,7 +139,7 @@ export function AdvancedSettings() {
                     </Typography>
                   </div>
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col nsm:pt-2">
                   <Button
                     variant="secondary"
                     onClick={() => setShowWarningAll(true)}
@@ -167,7 +167,7 @@ export function AdvancedSettings() {
                   <Typography bold>
                     {l10n.getString('settings-utils-advanced-open_data')}
                   </Typography>
-                  <div className="flex flex-col pt-1">
+                  <div className="flex flex-col">
                     <Typography color="secondary">
                       {l10n.getString(
                         'settings-utils-advanced-open_data-description'
@@ -175,7 +175,7 @@ export function AdvancedSettings() {
                     </Typography>
                   </div>
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col nsm:pt-2">
                   <Button variant="secondary" onClick={openConfigFolder}>
                     {l10n.getString('settings-utils-advanced-open_data-label')}
                   </Button>
