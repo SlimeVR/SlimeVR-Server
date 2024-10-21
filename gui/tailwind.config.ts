@@ -160,6 +160,7 @@ const config = {
       smol: '525px',
       mobile: { raw: 'not (min-width: 800px)' },
       xs: '800px',
+      nsm: { raw: 'not (min-width: 900px)' },
       sm: '900px',
       md: '1100px',
       'md-max': { raw: 'not (min-width: 1100px)' },
