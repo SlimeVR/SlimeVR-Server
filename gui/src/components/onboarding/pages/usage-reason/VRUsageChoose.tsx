@@ -82,9 +82,9 @@ export function VRUsageChoose() {
                   <img
                     onMouseEnter={() => setAnimated(() => true)}
                     onAnimationEnd={() => setAnimated(() => false)}
-                    src="/images/boxslime.webp"
+                    src="/images/vrslimes.webp"
                     className={classNames(
-                      'absolute w-[100px] -right-2 -top-10',
+                      'absolute w-[150px] -right-8 -top-16',
                       animated && 'animate-[bounce_1s_1]'
                     )}
                   ></img>
