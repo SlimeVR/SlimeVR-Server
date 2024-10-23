@@ -287,6 +287,51 @@ class SkeletonConfigManager(
 				0f,
 			)
 
+			BoneType.LEFT_THUMB_PROXIMAL, BoneType.LEFT_THUMB_INTERMEDIATE, BoneType.LEFT_THUMB_DISTAL,
+			BoneType.RIGHT_THUMB_PROXIMAL, BoneType.RIGHT_THUMB_INTERMEDIATE, BoneType.RIGHT_THUMB_DISTAL,
+			-> setNodeOffset(
+				nodeOffset,
+				0f,
+				-getOffset(SkeletonConfigOffsets.HAND_Y) * 0.2f,
+				-getOffset(SkeletonConfigOffsets.HAND_Y) * 0.1f,
+			)
+
+			BoneType.LEFT_INDEX_PROXIMAL, BoneType.LEFT_INDEX_INTERMEDIATE, BoneType.LEFT_INDEX_DISTAL,
+			BoneType.RIGHT_INDEX_PROXIMAL, BoneType.RIGHT_INDEX_INTERMEDIATE, BoneType.RIGHT_INDEX_DISTAL,
+			-> setNodeOffset(
+				nodeOffset,
+				0f,
+				-getOffset(SkeletonConfigOffsets.HAND_Y) * 0.25f,
+				0f,
+			)
+
+			BoneType.LEFT_MIDDLE_PROXIMAL, BoneType.LEFT_MIDDLE_INTERMEDIATE, BoneType.LEFT_MIDDLE_DISTAL,
+			BoneType.RIGHT_MIDDLE_PROXIMAL, BoneType.RIGHT_MIDDLE_INTERMEDIATE, BoneType.RIGHT_MIDDLE_DISTAL,
+			-> setNodeOffset(
+				nodeOffset,
+				0f,
+				-getOffset(SkeletonConfigOffsets.HAND_Y) * 0.3f,
+				0f,
+			)
+
+			BoneType.LEFT_RING_PROXIMAL, BoneType.LEFT_RING_INTERMEDIATE, BoneType.LEFT_RING_DISTAL,
+			BoneType.RIGHT_RING_PROXIMAL, BoneType.RIGHT_RING_INTERMEDIATE, BoneType.RIGHT_RING_DISTAL,
+			-> setNodeOffset(
+				nodeOffset,
+				0f,
+				-getOffset(SkeletonConfigOffsets.HAND_Y) * 0.28f,
+				0f,
+			)
+
+			BoneType.LEFT_LITTLE_PROXIMAL, BoneType.LEFT_LITTLE_INTERMEDIATE, BoneType.LEFT_LITTLE_DISTAL,
+			BoneType.RIGHT_LITTLE_PROXIMAL, BoneType.RIGHT_LITTLE_INTERMEDIATE, BoneType.RIGHT_LITTLE_DISTAL,
+			-> setNodeOffset(
+				nodeOffset,
+				0f,
+				-getOffset(SkeletonConfigOffsets.HAND_Y) * 0.2f,
+				0f,
+			)
+
 			else -> {}
 		}
 	}
