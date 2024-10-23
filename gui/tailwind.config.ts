@@ -236,6 +236,7 @@ const config = {
         light: `linear-gradient(135deg, ${colors['light-accent'][100]} 50%, ${colors['light-background'][700]} 50% 100%)`,
         'trans-flag': `linear-gradient(135deg, ${colors['trans-blue'][800]} 40%, ${colors['trans-blue'][700]} 40% 70%, ${colors['trans-blue'][600]} 70% 100%)`,
         'asexual-flag': `linear-gradient(135deg, ${colors['asexual'][100]} 30%, ${colors['asexual'][200]} 30% 50%, ${colors['asexual'][300]} 50% 70%, ${colors['asexual'][400]} 70% 100%)`,
+        'random': 'linear-gradient(135deg, #ff0000 20%, #ffa500 20% 40%, #ffff00 40% 60%, #008000 60% 80%, #0000ff 80% 100%)',
       },
     },
     data: {
