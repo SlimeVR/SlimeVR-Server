@@ -1,14 +1,31 @@
+import { DOCS_SITE } from '@/App';
+import { A } from '@/components/commons/A';
 import { Button } from '@/components/commons/Button';
+import { WarningBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { useOnboarding } from '@/hooks/onboarding';
-import { useLocalization } from '@fluent/react';
+import { useStatusContext } from '@/hooks/status-system';
+import { Localized, useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { StatusData, StatusSteamVRDisconnectedT } from 'solarxr-protocol';
 
 export function VRUsageChoose() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
+  const { statuses } = useStatusContext();
   const [animated, setAnimated] = useState(false);
+
+  const missingSteamVr = useMemo(
+    () =>
+      Object.values(statuses).some(
+        (x) =>
+          x.dataType === StatusData.StatusSteamVRDisconnected &&
+          (x.data as StatusSteamVRDisconnectedT).bridgeSettingsName ===
+            'steamvr'
+      ),
+    [statuses]
+  );
 
   applyProgress(0.7);
 
@@ -95,12 +112,26 @@ export function VRUsageChoose() {
                     {l10n.getString('onboarding-usage-vr-choose-steamvr-label')}
                   </Typography>
                 </div>
-                <div>
+                <div className="flex flex-col gap-3">
                   <Typography color="secondary">
                     {l10n.getString(
                       'onboarding-usage-vr-choose-steamvr-description'
                     )}
                   </Typography>
+                  {missingSteamVr && (
+                    <Localized
+                      id="onboarding-usage-vr-choose-steamvr-warning"
+                      elems={{
+                        docs: (
+                          <A
+                            href={`${DOCS_SITE}/common-issues.html#the-trackers-are-connected-to-the-slimevr-server-but-arent-turning-up-on-steam`}
+                          ></A>
+                        ),
+                      }}
+                    >
+                      <WarningBox>SteamVR driver not connected</WarningBox>
+                    </Localized>
+                  )}
                 </div>
               </div>
 
@@ -109,6 +140,7 @@ export function VRUsageChoose() {
                 to="/onboarding/mounting/manual"
                 className="self-start mt-auto"
                 state={{ alonePage: state.alonePage }}
+                disabled={missingSteamVr}
               >
                 {l10n.getString('onboarding-usage-vr-choose-steamvr')}
               </Button>
