@@ -352,6 +352,12 @@ export function InterfaceSettings() {
                   value={'trans'}
                   colors="!bg-trans-flag"
                 ></ThemeSelector>
+                <ThemeSelector
+                  control={control}
+                  name="appearance.theme"
+                  value={'asexual'}
+                  colors="!bg-asexual-flag"
+                ></ThemeSelector>
               </div>
             </div>
 
