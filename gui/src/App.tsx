@@ -199,7 +199,7 @@ export default function App() {
         setUpdateFound(releases[0].tag_name);
       }
     }
-    fetchReleases().catch(() => error('failed to fetch releases'));
+    fetchReleases().catch((e) => error('Failed to fetch releases: %s', e));
   }, []);
 
   if (isTauri) {
