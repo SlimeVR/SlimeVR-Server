@@ -315,11 +315,11 @@ export function TrackerSettingsPage() {
                   ></BodyPartIcon>
                 )}
                 {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
-                  <WarningIcon className="text-yellow-300" />
+                  <WarningIcon className="fill-status-warning" />
                 )}
                 <Typography
                   color={classNames({
-                    'text-yellow-300':
+                    'text-status-warning':
                       tracker?.tracker.info?.bodyPart === BodyPart.NONE,
                   })}
                 >

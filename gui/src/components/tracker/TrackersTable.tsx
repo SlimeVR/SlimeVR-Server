@@ -137,7 +137,7 @@ export function RowContainer({
         style={{
           boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
             velocity * 8
-          )}px  #BB8AE5`,
+          )}px rgb(var(--accent-background-30))`,
         }}
         className={classNames(
           'h-[50px]  flex flex-col justify-center px-3',
