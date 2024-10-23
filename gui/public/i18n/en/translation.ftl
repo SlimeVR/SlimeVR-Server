@@ -741,18 +741,28 @@ onboarding-assignment_tutorial-second_step-continuation-v2 = The velcro side for
 onboarding-assignment_tutorial-done = I put stickers and straps!
 
 ## Usage reason choose
-onboarding-usage_choose-title = What are you gonna use SlimeVR for?
-onboarding-usage_choose-description = What are you gonna use SlimeVR for?
-onboarding-usage_choose-option-title = { $mode ->
+onboarding-usage-choose = What are you gonna use SlimeVR for?
+onboarding-usage-choose-description = What are you gonna use SlimeVR for?
+onboarding-usage-choose-option-title = { $mode ->
     *[0] VR
     [1] VTuber
     [2] Mocap
 }
-onboarding-usage_choose-option-label = { $mode ->
+onboarding-usage-choose-option-label = { $mode ->
     *[0] For using with games
     [1] For using with VMC apps
     [2] For recording a whole body with precise tracking
 }
+
+## VR usage choose
+onboarding-usage-vr-choose = choose vr
+onboarding-usage-vr-choose-description = come on choose vr
+onboarding-usage-vr-choose-steamvr = i use steamvr
+onboarding-usage-vr-choose-steamvr-label = for pc vr
+onboarding-usage-vr-choose-steamvr-description = this happens if steamvr
+onboarding-usage-vr-choose-standalone = i use standalone
+onboarding-usage-vr-choose-standalone-label = for portable vr
+onboarding-usage-vr-choose-standalone-description = this happens if standalone
 
 ## Tracker assignment setup
 onboarding-assign_trackers-back = Go Back to Wi-Fi Credentials

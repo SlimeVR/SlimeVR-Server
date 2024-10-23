@@ -3,6 +3,7 @@ import { useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { useForm } from 'react-hook-form';
 import { Radio } from '@/components/commons/Radio';
+import { Button } from '@/components/commons/Button';
 
 export enum UsageReason {
   VR,
@@ -10,10 +11,16 @@ export enum UsageReason {
   MOCAP,
 }
 
+const REASON_TO_PATH: Record<UsageReason, string> = {
+  [UsageReason.MOCAP]: '/onboarding/usage/mocap/choose',
+  [UsageReason.VR]: '/onboarding/usage/vr/choose',
+  [UsageReason.VTUBING]: '/onboarding/usage/vtubing/choose',
+};
+
 export function UsageChoose() {
   const { l10n } = useLocalization();
   const { applyProgress } = useOnboarding();
-  const { control } = useForm<{
+  const { control, watch } = useForm<{
     usageReason: UsageReason;
   }>({
     defaultValues: {
@@ -21,21 +28,23 @@ export function UsageChoose() {
     },
   });
 
+  const usageReason = watch('usageReason');
+
   const ItemContent = ({ mode }: { mode: UsageReason }) => (
     <>
       <Typography variant="main-title" textAlign="text-right">
-        {l10n.getString('onboarding-usage_choose-option-title', {
+        {l10n.getString('onboarding-usage-choose-option-title', {
           mode,
         })}
       </Typography>
       <div className="flex flex-col">
         <Typography>
-          {l10n.getString('onboarding-usage_choose-option-label', {
+          {l10n.getString('onboarding-usage-choose-option-label', {
             mode,
           })}
         </Typography>
         <Typography variant="standard" color="secondary">
-          {l10n.getString('onboarding-usage_choose-option-description', {
+          {l10n.getString('onboarding-usage-choose-option-description', {
             mode,
           })}
         </Typography>
@@ -51,10 +60,10 @@ export function UsageChoose() {
         <div className="flex mobile:flex-col md:gap-8 mobile:gap-4 mobile:pb-4 w-full justify-evenly">
           <div className="flex flex-col xs:max-w-sm gap-3 justify-center">
             <Typography variant="main-title">
-              {l10n.getString('onboarding-usage_choose-title')}
+              {l10n.getString('onboarding-usage-choose')}
             </Typography>
             <Typography color="secondary">
-              {l10n.getString('onboarding-usage_choose-description')}
+              {l10n.getString('onboarding-usage-choose-description')}
             </Typography>
             {Object.values(UsageReason)
               .filter(checkIfUsageReason)
@@ -71,6 +80,18 @@ export function UsageChoose() {
                   </div>
                 </Radio>
               ))}
+            <div className="flex flex-row">
+              <Button variant="secondary" to="/onboarding/assign-tutorial">
+                {l10n.getString('onboarding-previous_step')}
+              </Button>
+              <Button
+                variant="primary"
+                to={REASON_TO_PATH[usageReason]}
+                className="ml-auto"
+              >
+                {l10n.getString('onboarding-enter_vr-ready')}
+              </Button>
+            </div>
           </div>
           <img
             className="mobile:hidden"
