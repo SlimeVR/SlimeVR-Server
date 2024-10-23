@@ -368,7 +368,7 @@ class VMCHandler(
 						// Anchor from head
 						outputUnityArmature?.let { unityArmature ->
 							// Scale the SlimeVR head position with the VRM model
-							val slimevrScaledHeadPos = humanPoseManager.getBone(BoneType.HEAD).getPosition() *
+							val slimevrScaledHeadPos = humanPoseManager.getBone(BoneType.HEAD).getTailPosition() *
 								(vrmHeight / humanPoseManager.userHeightFromConfig)
 
 							// Get the VRM head and hip positions
