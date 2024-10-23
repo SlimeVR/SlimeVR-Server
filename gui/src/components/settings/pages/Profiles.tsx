@@ -17,6 +17,8 @@ import { ProfileDeleteErrorModal } from '@/components/settings/ProfileDeleteErro
 import { Input } from '@/components/commons/Input';
 import { useForm } from 'react-hook-form';
 import { Dropdown } from '@/components/commons/Dropdown';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { RpcMessage, ChangeProfileRequestT } from 'solarxr-protocol';
 
 export function ProfileSettings() {
   const { l10n } = useLocalization();
@@ -27,6 +29,8 @@ export function ProfileSettings() {
   const [showCreateError, setShowCreateError] = useState(false);
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
   const [showDeleteError, setShowDeleteError] = useState(false);
+
+  const { sendRPCPacket } = useWebsocketAPI();
 
   const profileItems = useMemo(() => {
     // Add default profile to dropdown
@@ -110,6 +114,10 @@ export function ProfileSettings() {
   const onSelectSubmit = (data: { profile: string }) => {
     log(`Switching to profile ${data.profile}`);
     setProfile(data.profile);
+    sendRPCPacket(
+      RpcMessage.ChangeProfileRequest,
+      new ChangeProfileRequestT(data.profile)
+    );
   };
 
   const profileToDelete = watchDeleteControl('profile');

@@ -1,6 +1,7 @@
 package dev.slimevr.protocol.rpc.settings
 
 import com.google.flatbuffers.FlatBufferBuilder
+import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ArmsResetModes
 import dev.slimevr.filtering.TrackerFilters
@@ -10,10 +11,16 @@ import dev.slimevr.protocol.rpc.RPCHandler
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
 import dev.slimevr.tracking.trackers.TrackerRole
+import io.eiren.util.OperatingSystem
+import io.eiren.util.logging.LogManager
+import solarxr_protocol.rpc.ChangeProfileRequest
 import solarxr_protocol.rpc.ChangeSettingsRequest
 import solarxr_protocol.rpc.RpcMessage
 import solarxr_protocol.rpc.RpcMessageHeader
 import solarxr_protocol.rpc.SettingsResponse
+import kotlin.io.path.Path
+import kotlin.io.path.createDirectories
+import kotlin.io.path.exists
 import kotlin.math.*
 
 class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
@@ -35,6 +42,9 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			}
 		rpcHandler.registerPacketListener(RpcMessage.SettingsResetRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
 			this.onSettingsResetRequest(conn, messageHeader)
+		}
+		rpcHandler.registerPacketListener(RpcMessage.ChangeProfileRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
+			this.onChangeProfileRequest(conn, messageHeader)
 		}
 	}
 
@@ -350,6 +360,26 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 
 	fun onSettingsResetRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
 		api.server.configManager.resetConfig()
+	}
+
+	fun onChangeProfileRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
+		val req = messageHeader?.message(ChangeProfileRequest()) as? ChangeProfileRequest ?: return
+		val profile = req.profileName()
+		// TODO implement profile types (tracking/proportions)
+		val type = req.type()
+
+		val configDir = OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)
+		val profileDir = Path(configDir.toString() + "/profiles/$profile")
+
+		if (!profileDir.exists()) {
+			profileDir.createDirectories()
+			LogManager.info("Profile directory created: $profileDir")
+		}
+
+		// load profile
+		val profilePath = Path("$profileDir/vrconfig.yml").toString()
+		api.server.configManager.setConfigPath(profilePath)
+		LogManager.info("Loaded profile: $profile")
 	}
 
 	companion object {
