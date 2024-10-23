@@ -53,6 +53,8 @@ public class ConfigManager {
 
 		if (this.vrConfig == null) {
 			this.vrConfig = new VRConfig();
+			LogManager.info("VRConfig not found, using default values");
+			return;
 		}
 
 		LogManager.info("Config loaded from \"" + configPath + "\"");

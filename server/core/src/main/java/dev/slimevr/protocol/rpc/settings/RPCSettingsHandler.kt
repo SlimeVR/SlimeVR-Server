@@ -2,6 +2,7 @@ package dev.slimevr.protocol.rpc.settings
 
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.SLIMEVR_IDENTIFIER
+import dev.slimevr.CONFIG_FILENAME
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ArmsResetModes
 import dev.slimevr.filtering.TrackerFilters
@@ -48,7 +49,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		}
 	}
 
-	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
+	private fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
 		val fbb = FlatBufferBuilder(32)
 
 		val settings = RPCSettingsBuilder.createSettingsResponse(fbb, api.server)
@@ -57,7 +58,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		conn.send(fbb.dataBuffer())
 	}
 
-	fun onChangeSettingsRequest(conn: GenericConnection?, messageHeader: RpcMessageHeader) {
+	private fun onChangeSettingsRequest(conn: GenericConnection?, messageHeader: RpcMessageHeader) {
 		val req = messageHeader
 			.message(ChangeSettingsRequest()) as? ChangeSettingsRequest ?: return
 
@@ -358,15 +359,23 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		api.server.configManager.saveConfig()
 	}
 
-	fun onSettingsResetRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
+	private fun onSettingsResetRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
 		api.server.configManager.resetConfig()
 	}
 
-	fun onChangeProfileRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
+	private fun onChangeProfileRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
 		val req = messageHeader?.message(ChangeProfileRequest()) as? ChangeProfileRequest ?: return
 		val profile = req.profileName()
 		// TODO implement profile types (tracking/proportions)
 		val type = req.type()
+
+		// trim() is needed, for some reason?
+		if (profile.trim() == "default") {
+			val defaultPath = OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)?.resolve(CONFIG_FILENAME).toString()
+			api.server.configManager.setConfigPath(defaultPath)
+			LogManager.info("Loaded default profile")
+			return
+		}
 
 		val configDir = OperatingSystem.resolveConfigDirectory(SLIMEVR_IDENTIFIER)
 		val profileDir = Path(configDir.toString() + "/profiles/$profile")
