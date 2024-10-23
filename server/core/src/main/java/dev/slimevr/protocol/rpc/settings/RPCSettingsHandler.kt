@@ -386,7 +386,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		}
 
 		// load profile
-		val profilePath = Path("$profileDir/vrconfig.yml").toString()
+		val profilePath = Path("$profileDir/${CONFIG_FILENAME}").toString()
 		api.server.configManager.setConfigPath(profilePath)
 		LogManager.info("Loaded profile: $profile")
 	}
