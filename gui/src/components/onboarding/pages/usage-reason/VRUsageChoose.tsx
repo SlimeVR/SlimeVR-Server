@@ -27,7 +27,7 @@ export function VRUsageChoose() {
     [statuses]
   );
 
-  applyProgress(0.7);
+  applyProgress(0.55);
 
   return (
     <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative overflow-y-auto px-4 pb-4">
