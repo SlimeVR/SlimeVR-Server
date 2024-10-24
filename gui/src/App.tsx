@@ -199,7 +199,7 @@ export default function App() {
         setUpdateFound(releases[0].tag_name);
       }
     }
-    fetchReleases().catch((e) => error('Failed to fetch releases: %s', e));
+    fetchReleases().catch((e) => error(`Failed to fetch releases: ${e}`));
   }, []);
 
   if (isTauri) {
@@ -239,11 +239,11 @@ export default function App() {
               )
             );
           } else if (eventType === 'error') {
-            error('Error: %s', s);
+            error(`Error: ${s}`);
           } else if (eventType === 'terminated') {
-            error('Server Process Terminated: %s', s);
+            error(`Server Process Terminated: ${s}`);
           } else if (eventType === 'other') {
-            log('Other process event: %s', s);
+            log(`Other process event: ${s}`);
           }
         }
       );

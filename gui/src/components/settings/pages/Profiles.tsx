@@ -112,7 +112,6 @@ export function ProfileSettings() {
   };
 
   const onSelectSubmit = (data: { profile: string }) => {
-    log(`Switching to profile ${data.profile}`);
     setProfile(data.profile);
     sendRPCPacket(
       RpcMessage.ChangeProfileRequest,
