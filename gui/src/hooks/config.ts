@@ -6,7 +6,7 @@ import { createStore, Store } from '@tauri-apps/plugin-store';
 import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
 import { appConfigDir, resolve } from '@tauri-apps/api/path';
-import { mkdir, readDir, remove, writeTextFile } from '@tauri-apps/plugin-fs';
+import { exists, mkdir, readDir, remove, writeTextFile } from '@tauri-apps/plugin-fs';
 import { isTauri } from '@tauri-apps/api/core';
 
 export interface WindowConfig {
@@ -51,7 +51,7 @@ export interface ConfigContext {
   setConfig: (config: Partial<Config>) => Promise<void>;
   loadConfig: () => Promise<Config | null>;
   saveConfig: () => Promise<void>;
-  getCurrentProfile: () => string;
+  getCurrentProfile: () => Promise<string>;
   getProfiles: () => Promise<string[]>;
   setProfile: (profile: string, config?: Config) => Promise<void>;
   deleteProfile: (profile: string) => Promise<void>;
@@ -97,29 +97,6 @@ function fallbackToDefaults(loadedConfig: any): Config {
   return Object.assign({}, defaultConfig, loadedConfig);
 }
 
-async function getProfileStore(profile: string): Promise<CrossStorage> {
-  if (profile === 'default') return await createStore('gui-settings.dat');
-
-  const appDirectory = await appConfigDir();
-  const profileDir = await resolve(`${appDirectory}/profiles/${profile}`);
-  const profileFile = await resolve(`${profileDir}/gui-settings.dat`);
-
-  await mkdir(profileDir, { recursive: true });
-
-  // Check if profile file exists before writing defaults
-  const profileFileExists = await readDir(profileDir).then((files) =>
-    files.some((file) => file.name === 'gui-settings.dat')
-  );
-  if (!profileFileExists) {
-    await writeTextFile(
-      profileFile,
-      JSON.stringify({ 'config.json': JSON.stringify(defaultConfig) })
-    );
-  }
-
-  return createStore(profileFile);
-}
-
 export function useConfigProvider(): ConfigContext {
   const [currConfig, set] = useState<Config | null>(null);
   const [loading, setLoading] = useState(false);
@@ -141,16 +118,44 @@ export function useConfigProvider(): ConfigContext {
     loadProfileConfig(currentProfile);
   }, [currentProfile]);
 
+  const getStore = async (profile: string) => {
+    if (profile === 'default') return await createStore('gui-settings.dat');
+
+    const appDirectory = await appConfigDir();
+    const profileDir = await resolve(`${appDirectory}/profiles/${profile}`);
+    const profileFile = await resolve(`${profileDir}/gui-settings.dat`);
+
+    // Check if profile directory exists before creating it
+    const profileDirExists = await exists(profileDir);
+    if (!profileDirExists) {
+      await mkdir(profileDir, { recursive: true });
+    }
+
+    // Check if profile file exists before writing defaults
+    const profileFileExists = await exists(profileFile);
+    if (!profileFileExists) {
+      await writeTextFile(
+        profileFile,
+        JSON.stringify({ 'config.json': JSON.stringify(defaultConfig) })
+      );
+    }
+
+    return createStore(profileFile);
+  };
+
   const loadProfileConfig = async (profile: string) => {
-    const profileStore = await getProfileStore(profile);
+    const profileStore = await getStore(profile);
     store = profileStore;
     const json = await store.get('config.json');
     let loadedConfig = fallbackToDefaults(JSON.parse(json ?? '{}'));
     if (configToSet) {
+      // Used when user creates a profile in GUI and chose to copy their settings
       loadedConfig = { ...configToSet };
       configToSet = null;
     }
     set(loadedConfig);
+    // FIXME for some reason, this function is apparently ran multiple times and so this log is printed multiple times
+    // small, but kinda annoys me lol
     log(`Loaded profile: ${profile}`);
     return loadedConfig;
   };
@@ -198,7 +203,13 @@ export function useConfigProvider(): ConfigContext {
     }
   };
 
-  const getCurrentProfile = () => currentProfile;
+  const getCurrentProfile = async () => {
+    const defaultStore = await getStore('default');
+    const defaultConfig = fallbackToDefaults(
+      JSON.parse((await defaultStore.get('config.json')) ?? '{}')
+    );
+    return defaultConfig.profile ?? 'default';
+  };
 
   const getProfiles = async () => {
     // artificial delay to let profile write to disk (when created) before we actually read it
@@ -216,7 +227,7 @@ export function useConfigProvider(): ConfigContext {
   const setProfile = async (profile: string, config?: Config) => {
     // load default config, set profile to new profile, save config, then load new profile config
     // idk if this is the best way to do this lol
-    const defaultStore = await createStore('gui-settings.dat');
+    const defaultStore = await getStore('default');
     const defaultConfig = fallbackToDefaults(
       JSON.parse((await defaultStore.get('config.json')) ?? '{}')
     );
@@ -229,20 +240,34 @@ export function useConfigProvider(): ConfigContext {
     );
     await defaultStore.save();
 
-    configToSet = config;
+    // Used when user creates a profile in GUI and chose to copy their settings
+    if (config) configToSet = config;
     setCurrentProfile(profile);
   };
 
   const deleteProfile = async (profile: string) => {
     if (profile === 'default') return;
 
+    // Remove profile directory
     const appDirectory = await appConfigDir();
     const profileDir = await resolve(`${appDirectory}/profiles/${profile}`);
-    await store.set('config.json', JSON.stringify(defaultConfig));
     await remove(profileDir, { recursive: true });
 
-    const profiles = await getProfiles();
-    if (!profiles.includes(currentProfile)) {
+    // Set profile in default config
+    const defaultStore = await getStore('default');
+    const defaultConfig = fallbackToDefaults(
+      JSON.parse((await defaultStore.get('config.json')) ?? '{}')
+    );
+    await defaultStore.set(
+      'config.json',
+      JSON.stringify({
+        ...defaultConfig,
+        profile: 'default',
+      })
+    );
+
+    // Set to default if deleting current profile
+    if (profile === currentProfile) {
       setCurrentProfile('default');
     }
   };

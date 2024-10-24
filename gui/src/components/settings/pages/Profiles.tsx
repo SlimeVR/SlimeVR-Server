@@ -55,8 +55,11 @@ export function ProfileSettings() {
 
   // Set profile value on load, watch if profile switches
   useEffect(() => {
-    const profile = getCurrentProfile();
-    setProfileValue('profile', profile);
+    const getProfile = async () => {
+      const currentProfile = await getCurrentProfile();
+      setProfileValue('profile', currentProfile);
+    };
+    getProfile();
 
     const subscription = watchProfileSubmit(() => {
       handleProfileSubmit(onSelectSubmit)();
@@ -107,7 +110,6 @@ export function ProfileSettings() {
       return;
     }
 
-    log(`Creating new profile with name ${data.newName}`);
     setShowCreatePrompt(true);
   };
 
@@ -143,9 +145,7 @@ export function ProfileSettings() {
   };
 
   const createProfile = async (name: string, useDefault: boolean) => {
-    log(`Creating profile with name ${name} aaaaa`);
     const profiles = await getProfiles();
-    log(`Profiles: ${profiles}`);
     if (profiles.includes(name)) {
       error(`Profile with name ${name} already exists`);
       setShowCreateError(true);
