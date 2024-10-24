@@ -29,8 +29,8 @@ const statusLabelMap = {
     'onboarding-connect_tracker-connection_status-none',
   [WifiProvisioningStatus.SERIAL_INIT]:
     'onboarding-connect_tracker-connection_status-serial_init',
-  [WifiProvisioningStatus.OPTAINING_MAC_ADDRESS]:
-    'onboarding-connect_tracker-connection_status-optaining_mac_address',
+  [WifiProvisioningStatus.OBTAINING_MAC_ADDRESS]:
+    'onboarding-connect_tracker-connection_status-obtaining_mac_address',
   [WifiProvisioningStatus.PROVISIONING]:
     'onboarding-connect_tracker-connection_status-provisioning',
   [WifiProvisioningStatus.CONNECTING]:
@@ -48,7 +48,7 @@ const statusLabelMap = {
 const statusProgressMap = {
   [WifiProvisioningStatus.NONE]: 0,
   [WifiProvisioningStatus.SERIAL_INIT]: 0.2,
-  [WifiProvisioningStatus.OPTAINING_MAC_ADDRESS]: 0.3,
+  [WifiProvisioningStatus.OBTAINING_MAC_ADDRESS]: 0.3,
   [WifiProvisioningStatus.PROVISIONING]: 0.4,
   [WifiProvisioningStatus.CONNECTING]: 0.6,
   [WifiProvisioningStatus.LOOKING_FOR_SERVER]: 0.8,
