@@ -80,7 +80,7 @@ const localStore: CrossStorage = {
 };
 
 const store: CrossStorage = isTauri()
-  ? await createStore('gui-settings.dat')
+  ? await createStore('gui-settings.dat', { autoSave: 100 as never })
   : localStore;
 
 function fallbackToDefaults(loadedConfig: any): Config {
