@@ -105,10 +105,17 @@ async function getProfileStore(profile: string): Promise<CrossStorage> {
   const profileFile = await resolve(`${profileDir}/gui-settings.dat`);
 
   await mkdir(profileDir, { recursive: true });
-  await writeTextFile(
-    profileFile,
-    JSON.stringify({ 'config.json': JSON.stringify(defaultConfig) })
+
+  // Check if profile file exists before writing defaults
+  const profileFileExists = await readDir(profileDir).then((files) =>
+    files.some((file) => file.name === 'gui-settings.dat')
   );
+  if (!profileFileExists) {
+    await writeTextFile(
+      profileFile,
+      JSON.stringify({ 'config.json': JSON.stringify(defaultConfig) })
+    );
+  }
 
   return createStore(profileFile);
 }
@@ -129,21 +136,24 @@ export function useConfigProvider(): ConfigContext {
     100
   );
 
+  // Load profile when changed
   useEffect(() => {
-    const loadProfileConfig = async () => {
-      const profileStore = await getProfileStore(currentProfile);
-      store = profileStore;
-      const json = await store.get('config.json');
-      let loadedConfig = fallbackToDefaults(JSON.parse(json ?? '{}'));
-      if (configToSet) {
-        loadedConfig = { ...configToSet };
-        configToSet = null;
-      }
-      set(loadedConfig);
-    };
-
-    loadProfileConfig();
+    loadProfileConfig(currentProfile);
   }, [currentProfile]);
+
+  const loadProfileConfig = async (profile: string) => {
+    const profileStore = await getProfileStore(profile);
+    store = profileStore;
+    const json = await store.get('config.json');
+    let loadedConfig = fallbackToDefaults(JSON.parse(json ?? '{}'));
+    if (configToSet) {
+      loadedConfig = { ...configToSet };
+      configToSet = null;
+    }
+    set(loadedConfig);
+    log(`Loaded profile: ${profile}`);
+    return loadedConfig;
+  };
 
   const setConfig = async (config: Partial<Config>) => {
     set((curr) =>
@@ -250,18 +260,19 @@ export function useConfigProvider(): ConfigContext {
 
           if (oldConfig) await store.set('config.json', oldConfig);
 
-          store.set('configMigratedToTauri', 'true');
+          await store.set('configMigratedToTauri', 'true');
         }
 
         const json = await store.get('config.json');
         if (!json) throw new Error('Config has ceased existing for some reason');
 
-        const loadedConfig = fallbackToDefaults(JSON.parse(json));
-        setCurrentProfile(loadedConfig.profile);
-        log('Loaded profile: ' + loadedConfig.profile);
+        let loadedConfig = fallbackToDefaults(JSON.parse(json));
+        const profile = loadedConfig.profile;
+        if (profile && profile !== 'default') {
+          loadedConfig = await loadProfileConfig(profile);
+        }
 
         set(loadedConfig);
-
         setLoading(false);
         return loadedConfig;
       } catch (e) {
