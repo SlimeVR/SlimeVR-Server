@@ -339,9 +339,9 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 
 						// Assign data
 						if (batt != null) {
-							tracker.batteryLevel = if (batt == 128) 0.1f else (batt and 127).toFloat()
+							tracker.batteryLevel = if (batt == 128) 1f else (batt and 127).toFloat()
 						}
-						// Force battery to display at 0%
+						// Server still won't display battery at 0% at all
 						if (batt_v != null) {
 							tracker.batteryVoltage = (batt_v.toFloat() + 245f) / 100f
 						}
