@@ -541,9 +541,11 @@ settings-osc-router-network-address-placeholder = IPV4 address
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
-settings-osc-vrchat-description-v1 =
+settings-osc-vrchat-description-v2 =
     Change settings specific to the OSC Trackers standard used for sending
     tracking data to applications without SteamVR (ex. Quest standalone).
+# This cares about multilines
+settings-osc-vrchat-description-guide =
     Make sure to enable OSC in VRChat via the Action Menu under OSC > Enabled.
     To allow receiving HMD and controller data from VRChat, go in your main menu's
     settings under Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
@@ -764,6 +766,9 @@ onboarding-usage-vr-choose-steamvr-warning = The SlimeVR driver is currently not
 onboarding-usage-vr-choose-standalone = i use standalone
 onboarding-usage-vr-choose-standalone-label = for portable vr
 onboarding-usage-vr-choose-standalone-description = this happens if standalone
+
+onboarding-usage-vr-standalone-title = Setting up VRChat
+onboarding-usage-vr-standalone-next = Done!
 
 ## Tracker assignment setup
 onboarding-assign_trackers-back = Go Back to Wi-Fi Credentials

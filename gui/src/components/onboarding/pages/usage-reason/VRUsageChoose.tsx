@@ -78,7 +78,7 @@ export function VRUsageChoose() {
               </div>
               <Button
                 variant={!state.alonePage ? 'secondary' : 'tertiary'}
-                to={'/onboarding/mounting/auto'}
+                to={'/onboarding/usage/vr/standalone'}
                 className="self-start mt-auto"
                 state={{ alonePage: state.alonePage }}
               >
