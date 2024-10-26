@@ -74,7 +74,7 @@ jobs:
           # Artifact name
           name: "SlimeVR-Server" # optional, default is artifact
           # A file, directory or wildcard pattern that describes what to upload
-          path: server/desktop/build/libs/*
+          path: server/desktop/build/libs/slimevr.jar
 
       - name: Upload to draft release
         uses: softprops/action-gh-release@v2
@@ -83,7 +83,7 @@ jobs:
           draft: true
           generate_release_notes: true
           files: |
-            server/desktop/build/libs/*
+            server/desktop/build/libs/slimevr.jar
 
 
   bundle-android:
