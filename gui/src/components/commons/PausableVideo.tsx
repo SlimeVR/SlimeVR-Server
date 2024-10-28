@@ -1,16 +1,20 @@
 import { useRef, useState } from 'react';
 import { PlayCircleIcon } from './icon/PlayIcon';
 import { useDebouncedEffect } from '@/hooks/timeout';
+import classNames from 'classnames';
 
 export function PausableVideo({
   src,
   poster,
+  restartOnPause = false,
 }: {
   src?: string;
   poster?: string;
+  restartOnPause?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [paused, setPaused] = useState(true);
+  const [atStart, setAtStart] = useState(true);
 
   function toggleVideo() {
     if (!videoRef.current) return;
@@ -18,7 +22,10 @@ export function PausableVideo({
       videoRef.current.play();
     } else {
       videoRef.current.pause();
-      videoRef.current.currentTime = 0;
+      if (restartOnPause) {
+        videoRef.current.currentTime = 0;
+      }
+      setAtStart(videoRef.current.currentTime === 0);
     }
     setPaused(videoRef.current.paused);
   }
@@ -34,7 +41,11 @@ export function PausableVideo({
   return (
     <button className="relative appearance-none h-fit" onClick={toggleVideo}>
       <div
-        className="absolute w-[100px] h-[100px] top-0 bottom-0 left-0 right-0 m-auto fill-background-20"
+        className={classNames(
+          'absolute w-[100px] h-[100px] top-0 bottom-0 left-0 right-0 m-auto',
+          'fill-background-20',
+          paused && !atStart && 'opacity-50'
+        )}
         hidden={!paused}
       >
         <PlayCircleIcon width={100}></PlayCircleIcon>
