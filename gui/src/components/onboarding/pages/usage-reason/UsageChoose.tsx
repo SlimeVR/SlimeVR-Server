@@ -5,16 +5,30 @@ import { useForm } from 'react-hook-form';
 import { Radio } from '@/components/commons/Radio';
 import { Button } from '@/components/commons/Button';
 
-export enum UsageReason {
+enum UsageReason {
   VR,
   VTUBING,
   MOCAP,
 }
 
-const REASON_TO_PATH: Record<UsageReason, string> = {
-  [UsageReason.MOCAP]: '/onboarding/usage/mocap/choose',
-  [UsageReason.VR]: '/onboarding/usage/vr/choose',
-  [UsageReason.VTUBING]: '/onboarding/usage/vtubing/choose',
+interface UsageInfo {
+  path: string;
+  image: string;
+}
+
+const REASON_TO_PATH: Record<UsageReason, UsageInfo> = {
+  [UsageReason.MOCAP]: {
+    path: '/onboarding/usage/mocap/choose',
+    image: '/images/usage-mocap.png',
+  },
+  [UsageReason.VR]: {
+    path: '/onboarding/usage/vr/choose',
+    image: '/images/usage-vr.png',
+  },
+  [UsageReason.VTUBING]: {
+    path: '/onboarding/usage/vtubing/choose',
+    image: '/images/usage-vtuber.png',
+  },
 };
 
 export function UsageChoose() {
@@ -57,7 +71,7 @@ export function UsageChoose() {
   return (
     <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
       <div className="flex flex-col w-full overflow-y-auto px-4 xs:items-center">
-        <div className="flex mobile:flex-col md:gap-8 mobile:gap-4 mobile:pb-4 w-full justify-evenly">
+        <div className="flex mobile:flex-col xs:gap-8 mobile:gap-4 mobile:pb-4 w-full justify-center">
           <div className="flex flex-col xs:max-w-sm gap-3 justify-center">
             <Typography variant="main-title">
               {l10n.getString('onboarding-usage-choose')}
@@ -86,18 +100,20 @@ export function UsageChoose() {
               </Button>
               <Button
                 variant="primary"
-                to={REASON_TO_PATH[usageReason]}
+                to={REASON_TO_PATH[usageReason].path}
                 className="ml-auto"
               >
                 {l10n.getString('onboarding-enter_vr-ready')}
               </Button>
             </div>
           </div>
-          <img
-            className="mobile:hidden"
-            src="/images/reset-pose.webp"
-            width="100"
-          ></img>
+          <div className="flex flex-col justify-center">
+            <img
+              className="mobile:hidden"
+              src={REASON_TO_PATH[usageReason].image}
+              width="496"
+            ></img>
+          </div>
         </div>
       </div>
     </div>
