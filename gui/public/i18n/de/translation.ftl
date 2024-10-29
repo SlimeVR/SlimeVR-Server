@@ -81,6 +81,11 @@ skeleton_bone-ELBOW_OFFSET = Ellbogenversatz
 ## Tracker reset buttons
 
 reset-reset_all = Alle Proportionen zurücksetzen
+reset-reset_all_warning =
+    <b>Achtung:</b> Die Proportionen werden zurückgesetzt und auf Basis ihrer Körpergröße neu berechnet.
+    Sind sie sich sicher?
+reset-reset_all_warning-reset = Proportionen zurücksetzen
+reset-reset_all_warning-cancel = Abbrechen
 reset-full = Reset
 reset-mounting = Befestigungs-Reset
 reset-yaw = Horizontaler Reset
@@ -142,9 +147,12 @@ widget-developer_mode-more_info = Mehr Infos
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = Drehung
+widget-imu_visualizer-preview = Vorschau
+widget-imu_visualizer-hide = Ausblenden
 widget-imu_visualizer-rotation_raw = Rohe Drehung
 widget-imu_visualizer-rotation_preview = Vorschau
-widget-imu_visualizer-rotation_hide = Ausblenden
+widget-imu_visualizer-acceleration = Beschleunigung
+widget-imu_visualizer-position = Position
 
 ## Widget: Skeleton Visualizer
 
@@ -199,6 +207,7 @@ tracker-infos-hardware_identifier = Hardware-ID
 tracker-infos-imu = IMU-Sensor
 tracker-infos-board_type = Platine
 tracker-infos-network_version = Protokoll Version
+tracker-infos-magnetometer = Magnetometer
 
 ## Tracker settings
 
@@ -213,11 +222,14 @@ tracker-settings-mounting_section-edit = Befestigung bearbeiten
 tracker-settings-drift_compensation_section = Drift-Kompensierung
 tracker-settings-drift_compensation_section-description = Soll dieser Tracker Drift kompensieren, wenn die Drift-Kompensierung allgemein aktiviert ist?
 tracker-settings-drift_compensation_section-edit = Erlaube Drift Kompensierung
+tracker-settings-use_mag = Magnetometer auf diesem Tracker zulassen
+tracker-settings-use_mag-label = Magnetometer zulassen
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Trackername
 tracker-settings-name_section-description = Geben Sie ihm einen süßen Spitznamen :)
 tracker-settings-name_section-placeholder = NightyBeast's linkes Bein
+tracker-settings-name_section-label = Trackername
 tracker-settings-forget = Tracker Vergessen
 tracker-settings-forget-description = Entfernt den Tracker vom SlimeVR Server und verhindert, dass er sich wieder verbindet, bis der Server neu gestartet wurde. Die Konfiguration des Trackers geht nicht verloren.
 tracker-settings-forget-label = Tracker Vergessen
@@ -296,6 +308,7 @@ settings-sidebar-utils = Werkzeuge
 settings-sidebar-serial = Serielle Konsole
 settings-sidebar-appearance = Erscheinungsbild
 settings-sidebar-notifications = Benachrichtigungen
+settings-sidebar-advanced = Erweitert
 
 ## SteamVR settings
 
@@ -350,6 +363,8 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Kompensiert IMU Drift auf der Gier-Achse durch Anwenden einer invertierten Rotation.
     Ändern Sie die Menge der Kompensierung und die Anzahl der Resets, welche für die Berechnung genutzt werden.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift-Kompensierung
+settings-general-tracker_mechanics-drift_compensation_warning-cancel = Abbrechen
+settings-general-tracker_mechanics-drift_compensation_warning-done = Ich verstehe
 settings-general-tracker_mechanics-drift_compensation-amount-label = Kompensierungsmenge
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nutze die letzten x Resets
 settings-general-tracker_mechanics-save_mounting_reset = Automatische Befestigungs-Reset Kalibrierung speichern
@@ -357,6 +372,7 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Speichert die automatische Befestigungs-Reset Kalibrierung für die Tracker zwischen den Neustarts. Nützlich 
     wenn Sie einen Anzug tragen, bei dem sich die Tracker zwischen den Sitzungen nicht bewegen. <b>Für normale Benutzer nicht zu empfehlen!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Befestigungs-Reset speichern
+settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Magnetometer auf Trackern verwenden
 
 ## FK/Tracking settings
 
@@ -454,6 +470,9 @@ settings-general-interface-dev_mode = Entwicklermodus
 settings-general-interface-dev_mode-description = Der Entwicklermodus stellt mehr Daten dar und erlaubt auch erweiterte Einstellungen, so wie erweiterte Optionen bei verbundenen Trackern.
 settings-general-interface-dev_mode-label = Entwicklermodus
 settings-general-interface-theme = Farbschema
+settings-general-interface-show-navbar-onboarding = "{ navbar-onboarding }" in der Navigationsleiste anzeigen
+settings-general-interface-show-navbar-onboarding-description = Dies ändert die Sichtbarkeit der Schaltfläche "{ navbar-onboarding }" in der Navigationsleiste
+settings-general-interface-show-navbar-onboarding-label = Zeige "{ navbar-onboarding }"
 settings-general-interface-lang = Sprachauswahl
 settings-general-interface-lang-description = Ändern Sie die Standard-Sprache, die Sie verwenden möchten
 settings-general-interface-lang-placeholder = Wählen Sie die zu verwendende Sprache aus
@@ -465,6 +484,8 @@ settings-interface-appearance-font-os_font = Betriebssystem-Schriftart
 settings-interface-appearance-font-slime_font = Standard-Schriftart
 settings-interface-appearance-font_size = Standard-Schriftgröße
 settings-interface-appearance-font_size-description = Verändert die Schriftgröße der gesamten Oberfläche außer diesem Einstellungs-Panel.
+settings-interface-appearance-decorations = Verwenden Sie die systemeigenen Fensterdekorationen
+settings-interface-appearance-decorations-label = Verwenden der native Fensterdekorationen
 
 ## Notification settings
 
@@ -607,6 +628,21 @@ settings-osc-vmc-mirror_tracking = Tracking spiegeln
 settings-osc-vmc-mirror_tracking-description = Tracking horizontal spiegeln
 settings-osc-vmc-mirror_tracking-label = Tracking spiegeln
 
+## Advanced settings
+
+settings-utils-advanced = Erweitert
+settings-utils-advanced-reset-gui = Einstellungen der Benutzeroberfläche zurücksetzen
+settings-utils-advanced-reset-gui-label = Benutzeroberfläche zurücksetzen
+settings-utils-advanced-reset-server = Tracking-Einstellungen zurücksetzen
+settings-utils-advanced-reset-server-label = Tracking zurücksetzen
+settings-utils-advanced-reset-all = Alle Einstellungen zurücksetzen
+settings-utils-advanced-reset-all-label = Alles zurücksetzen
+settings-utils-advanced-reset_warning-reset = Einstellungen zurücksetzen
+settings-utils-advanced-reset_warning-cancel = Abbrechen
+settings-utils-advanced-open_data = Daten-Ordner
+settings-utils-advanced-open_data-description = Öffnet den Daten-Ordner von SlimeVR im Explorer, der Konfigurations- und Protokolldateien enthält.
+settings-utils-advanced-open_data-label = Ordner öffnen
+
 ## Setup/onboarding menu
 
 onboarding-skip = Einrichtung überspringen
@@ -717,6 +753,7 @@ onboarding-calibration_tutorial-status-waiting = Wir warten auf Sie
 onboarding-calibration_tutorial-status-calibrating = Kalibriere
 onboarding-calibration_tutorial-status-success = Gut!
 onboarding-calibration_tutorial-status-error = Der Tracker wurde bewegt
+onboarding-calibration_tutorial-skip = Tutorial überspringen
 
 ## Tracker assignment tutorial
 
@@ -840,11 +877,11 @@ onboarding-choose_mounting = Welche Kalibrierungsmethode ist zu verwenden?
 # Multiline text
 onboarding-choose_mounting-description = Die Montageausrichtung korrigiert die Platzierung von Trackern am Körper.
 onboarding-choose_mounting-auto_mounting = Befestigung automatisch ermitteln
-# Italized text
+# Italicized text
 onboarding-choose_mounting-auto_mounting-label-v2 = Empfohlen
 onboarding-choose_mounting-auto_mounting-description = Dadurch werden die Befestigungsausrichtungen für alle Ihrer Tracker automatisch aus 2 Posen erkannt
 onboarding-choose_mounting-manual_mounting = Manuelle Befestigungsposition
-# Italized text
+# Italicized text
 onboarding-choose_mounting-manual_mounting-label-v2 = Möglicherweise nicht präzise genug
 onboarding-choose_mounting-manual_mounting-description = Auf diese Weise können Sie die Montagerichtung für jeden Tracker manuell auswählen
 # Multiline text
@@ -892,14 +929,14 @@ onboarding-choose_proportions-description-v1 =
     Wenn die Proportionen Ihres Körpers nicht mit den Gespeicherten übereinstimmen, ist die Präzision des Trackings schlechter. Außerdem können Probleme wie Skaten oder Rutschen auftreten oder, dass die Bewegungen Ihres Avatars nicht gut mit den Bewegungen Ihres Körpers übereinstimmen.
     <b>Sie müssen Ihren Körper nur einmal messen!</b> Es sei denn, die Messwerte sind falsch oder Ihr Körper hat sich verändert, dann müssen Sie die Körperproportionen nochmal bestimmen.
 onboarding-choose_proportions-auto_proportions = Automatische Proportionen
-# Italized text
+# Italicized text
 onboarding-choose_proportions-auto_proportions-subtitle = Empfohlen
 onboarding-choose_proportions-auto_proportions-descriptionv3 =
     Dies wird versuchen, Ihre Proportionen mit Hilfe einer Bewegungsaufnahme zu bestimmen, welche von einem Algorithmus verarbeitet wird.
     
     <b>Dazu muss Ihr Headset (HMD) mit SlimeVR verbunden sein und Sie müssen es an haben!</b>
 onboarding-choose_proportions-manual_proportions = Manuelle Körperproportionen
-# Italized text
+# Italicized text
 onboarding-choose_proportions-manual_proportions-subtitle = Für kleine Anpassungen
 onboarding-choose_proportions-manual_proportions-description = Auf diese Weise können Sie Ihre Proportionen manuell anpassen, indem Sie diese direkt ändern
 onboarding-choose_proportions-export = Proportionen exportieren
@@ -977,9 +1014,6 @@ onboarding-automatic_proportions-verify_results-redo = Aufnahme wiederholen
 onboarding-automatic_proportions-verify_results-confirm = Ergebnisse sind korrekt
 onboarding-automatic_proportions-done-title = Körper gemessen und gespeichert.
 onboarding-automatic_proportions-done-description = Ihre Körperproportionen-Kalibrierung ist abgeschlossen!
-onboarding-automatic_proportions-error_modal =
-    <b>Warnung:</b> Beim Schätzen der Proportionen wurde ein Fehler festgestellt!
-    Bitte <docs>prüfen Sie die Dokumentation</docs> oder treten sie unserem <discord>Discord Server</discord> bei, um Hilfe zu bekommen. ^_^
 onboarding-automatic_proportions-error_modal-confirm = Verstanden!
 
 ## Home
