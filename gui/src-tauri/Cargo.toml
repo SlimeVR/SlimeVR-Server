@@ -21,21 +21,21 @@ default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
 
 [build-dependencies]
-tauri-build = { version = "=2.0.0-beta.18", features = [] }
+tauri-build = { version = "2.0", features = [] }
 cfg_aliases = "0.2"
-shadow-rs = "0.27"
+shadow-rs = "0.35"
 
 [dependencies]
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
-tauri = { version = "=2.0.0-beta.23", features = ["devtools", "tray-icon", "image-png"] }
-tauri-runtime = "=2.0.0-beta.19"
-tauri-plugin-dialog = "=2.0.0-beta.10"
-tauri-plugin-fs = "=2.0.0-beta.10"
-tauri-plugin-os = "=2.0.0-beta.7"
-tauri-plugin-shell = "=2.0.0-beta.8"
-tauri-plugin-store = "=2.0.0-beta.9"
-flexi_logger = "0.28"
+tauri = { version = "2.0", features = ["devtools", "tray-icon", "image-png"] }
+tauri-runtime = "2.0"
+tauri-plugin-dialog = "2.0"
+tauri-plugin-fs = "2.0"
+tauri-plugin-os = "2.0"
+tauri-plugin-shell = "2.0"
+tauri-plugin-store = "2.0"
+flexi_logger = "0.29"
 log-panics = { version = "2", features = ["with-backtrace"] }
 log = "0.4"
 clap = { version = "4.0.29", features = ["derive"] }
@@ -45,11 +45,11 @@ tempfile = "3"
 which = "6.0"
 glob = "0.3"
 open = "5"
-shadow-rs = { version = "0.27", default-features = false }
+shadow-rs = { version = "0.35", default-features = false }
 const_format = "0.2.30"
 cfg-if = "1"
 color-eyre = "0.6"
-rfd = { version = "0.14", features = ["gtk3"], default-features = false }
+rfd = { version = "0.15", features = ["gtk3"], default-features = false }
 dirs-next = "2.0.0"
 discord-sdk = "0.3.6"
 tokio = { version = "1.37.0", features = ["time"] }
@@ -57,3 +57,6 @@ tokio = { version = "1.37.0", features = ["time"] }
 [target.'cfg(windows)'.dependencies]
 win32job = "1"
 winreg = "0.52"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libloading = "0.8"

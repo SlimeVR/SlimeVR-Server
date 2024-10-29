@@ -7,6 +7,9 @@ class DriftCompensationConfig {
 	// Is drift compensation enabled
 	var enabled = false
 
+	// Is drift prediction enabled
+	var prediction = false
+
 	// Amount of drift compensation applied
 	var amount = 0.8f
 

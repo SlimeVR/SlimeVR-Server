@@ -16,6 +16,7 @@ import { LangSelector } from '@/components/commons/LangSelector';
 import { BellIcon } from '@/components/commons/icon/BellIcon';
 import { Range } from '@/components/commons/Range';
 import { Dropdown } from '@/components/commons/Dropdown';
+import { isTrayAvailable } from '@/utils/tauri';
 
 interface InterfaceSettingsForm {
   appearance: {
@@ -24,6 +25,7 @@ interface InterfaceSettingsForm {
     showNavbarOnboarding: boolean;
     textSize: number;
     fonts: string;
+    decorations: boolean;
   };
   notifications: {
     watchNewDevices: boolean;
@@ -48,6 +50,7 @@ export function InterfaceSettings() {
           config?.showNavbarOnboarding ?? defaultConfig.showNavbarOnboarding,
         textSize: config?.textSize ?? defaultConfig.textSize,
         fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
+        decorations: config?.decorations ?? defaultConfig.decorations,
       },
       notifications: {
         watchNewDevices:
@@ -78,6 +81,7 @@ export function InterfaceSettings() {
       connectedTrackersWarning: values.notifications.connectedTrackersWarning,
       useTray: values.notifications.useTray,
       discordPresence: values.notifications.discordPresence,
+      decorations: values.appearance.decorations,
     });
   };
 
@@ -95,6 +99,7 @@ export function InterfaceSettings() {
     <SettingsPageLayout>
       <form
         className="flex flex-col gap-2 w-full"
+        // Don't resize the font size for this page because you have access to font resizing on it and we don't want to break the layout just in case
         style={
           {
             '--font-size': '12rem',
@@ -191,27 +196,31 @@ export function InterfaceSettings() {
               />
             </div>
 
-            <Typography bold>
-              {l10n.getString('settings-general-interface-use_tray')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-interface-use_tray-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="notifications.useTray"
-                label={l10n.getString(
-                  'settings-general-interface-use_tray-label'
-                )}
-              />
-            </div>
+            {isTrayAvailable && (
+              <>
+                <Typography bold>
+                  {l10n.getString('settings-general-interface-use_tray')}
+                </Typography>
+                <div className="flex flex-col pt-1 pb-2">
+                  <Typography color="secondary">
+                    {l10n.getString(
+                      'settings-general-interface-use_tray-description'
+                    )}
+                  </Typography>
+                </div>
+                <div className="grid sm:grid-cols-2 pb-4">
+                  <CheckBox
+                    variant="toggle"
+                    control={control}
+                    outlined
+                    name="notifications.useTray"
+                    label={l10n.getString(
+                      'settings-general-interface-use_tray-label'
+                    )}
+                  />
+                </div>
+              </>
+            )}
 
             <Typography bold>
               {l10n.getString('settings-general-interface-discord_presence')}
@@ -268,6 +277,28 @@ export function InterfaceSettings() {
               />
             </div>
 
+            <Typography bold>
+              {l10n.getString('settings-interface-appearance-decorations')}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-interface-appearance-decorations-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                variant="toggle"
+                control={control}
+                outlined
+                name="appearance.decorations"
+                label={l10n.getString(
+                  'settings-interface-appearance-decorations-label'
+                )}
+              />
+            </div>
+
             <div className="pb-4">
               <Typography bold>
                 {l10n.getString('settings-general-interface-theme')}
@@ -320,6 +351,12 @@ export function InterfaceSettings() {
                   name="appearance.theme"
                   value={'trans'}
                   colors="!bg-trans-flag"
+                ></ThemeSelector>
+                <ThemeSelector
+                  control={control}
+                  name="appearance.theme"
+                  value={'asexual'}
+                  colors="!bg-asexual-flag"
                 ></ThemeSelector>
               </div>
             </div>

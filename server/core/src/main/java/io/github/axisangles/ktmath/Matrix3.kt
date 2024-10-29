@@ -221,15 +221,15 @@ value class Matrix3
 	 * finds the rotation matrix closest to all given rotation matrices.
 	 * multiply input matrices by a weight for weighted averaging.
 	 * WARNING: NOT ANGULAR
-	 * @param others a variable number of additional matrices to average
+	 * @param others a variable number of additional boxed matrices to average
 	 * @return the average rotation matrix
 	 */
-	fun average(vararg others: Matrix3): Matrix3 {
+	fun average(vararg others: ObjectMatrix3): Matrix3 {
 		var count = 1f
 		var sum = this
 		others.forEach {
 			count += 1f
-			sum += it
+			sum += it.toValue()
 		}
 		return (sum / count).orthonormalize()
 	}
@@ -460,6 +460,16 @@ value class Matrix3
 	 */
 	fun toEulerAngles(order: EulerOrder): EulerAngles =
 		orthonormalize().toEulerAnglesAssumingOrthonormal(order)
+
+	fun toObject() = ObjectMatrix3(xx, yx, zx, xy, yy, zy, xz, yz, zz)
+}
+
+data class ObjectMatrix3(
+	val xx: Float, val yx: Float, val zx: Float,
+	val xy: Float, val yy: Float, val zy: Float,
+	val xz: Float, val yz: Float, val zz: Float
+) {
+	fun toValue() = Matrix3(xx, yx, zx, xy, yy, zy, xz, yz, zz)
 }
 
 operator fun Float.times(that: Matrix3): Matrix3 = that * this

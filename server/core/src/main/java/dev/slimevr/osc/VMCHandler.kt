@@ -169,7 +169,7 @@ class VMCHandler(
 			try {
 				val addr = InetAddress.getByName(ip)
 				oscSender = OSCPortOut(InetSocketAddress(addr, portOut))
-				if ((lastPortOut != portOut && lastAddress !== addr) || !wasConnected) {
+				if ((lastPortOut != portOut && lastAddress != addr) || !wasConnected) {
 					LogManager
 						.info(
 							"[VMCHandler] Sending to port $portOut at address $ip",
@@ -368,7 +368,7 @@ class VMCHandler(
 						// Anchor from head
 						outputUnityArmature?.let { unityArmature ->
 							// Scale the SlimeVR head position with the VRM model
-							val slimevrScaledHeadPos = humanPoseManager.getBone(BoneType.HEAD).getPosition() *
+							val slimevrScaledHeadPos = humanPoseManager.getBone(BoneType.HEAD).getTailPosition() *
 								(vrmHeight / humanPoseManager.userHeightFromConfig)
 
 							// Get the VRM head and hip positions

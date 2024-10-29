@@ -150,6 +150,12 @@ const colors = {
     700: '#b3b3b3',
     900: '#d8d8d8',
   },
+  'asexual': {
+    100: '#000000',
+    200: '#A3A3A3',
+    300: '#FFFFFF',
+    400: '#800080',
+  },
 };
 
 const config = {
@@ -160,6 +166,7 @@ const config = {
       smol: '525px',
       mobile: { raw: 'not (min-width: 800px)' },
       xs: '800px',
+      nsm: { raw: 'not (min-width: 900px)' },
       sm: '900px',
       md: '1100px',
       'md-max': { raw: 'not (min-width: 1100px)' },
@@ -228,6 +235,7 @@ const config = {
         dark: `linear-gradient(135deg, ${colors['dark-accent'][100]} 50%, ${colors['dark-background'][700]} 50% 100%)`,
         light: `linear-gradient(135deg, ${colors['light-accent'][100]} 50%, ${colors['light-background'][700]} 50% 100%)`,
         'trans-flag': `linear-gradient(135deg, ${colors['trans-blue'][800]} 40%, ${colors['trans-blue'][700]} 40% 70%, ${colors['trans-blue'][600]} 70% 100%)`,
+        'asexual-flag': `linear-gradient(135deg, ${colors['asexual'][100]} 30%, ${colors['asexual'][200]} 30% 50%, ${colors['asexual'][300]} 50% 70%, ${colors['asexual'][400]} 70% 100%)`,
       },
     },
     data: {

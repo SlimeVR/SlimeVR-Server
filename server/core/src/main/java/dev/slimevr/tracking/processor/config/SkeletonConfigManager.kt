@@ -111,7 +111,7 @@ class SkeletonConfigManager(
 
 	fun setToggle(config: SkeletonConfigToggles, newValue: Boolean?) {
 		if (newValue != null) {
-			if (configToggles[config] != null && (newValue !== configToggles[config])) {
+			if (configToggles[config] != null && (newValue != configToggles[config])) {
 				changedToggles[config.id - 1] = true
 			}
 			configToggles[config] = newValue

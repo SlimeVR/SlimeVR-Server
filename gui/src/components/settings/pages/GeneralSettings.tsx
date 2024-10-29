@@ -54,6 +54,7 @@ interface SettingsForm {
   };
   driftCompensation: {
     enabled: boolean;
+    prediction: boolean;
     amount: number;
     maxResets: number;
   };
@@ -140,6 +141,7 @@ const defaultValues: SettingsForm = {
   filtering: { amount: 0.1, type: FilteringType.NONE },
   driftCompensation: {
     enabled: false,
+    prediction: false,
     amount: 0.1,
     maxResets: 1,
   },
@@ -284,6 +286,7 @@ export function GeneralSettings() {
 
     const driftCompensation = new DriftCompensationSettingsT();
     driftCompensation.enabled = values.driftCompensation.enabled;
+    driftCompensation.prediction = values.driftCompensation.prediction;
     driftCompensation.amount = values.driftCompensation.amount;
     driftCompensation.maxResets = values.driftCompensation.maxResets;
     settings.driftCompensation = driftCompensation;
@@ -708,6 +711,33 @@ export function GeneralSettings() {
 
                 setShowDriftCompWarning(true);
               }}
+            />
+            <div className="flex flex-col pt-2 pb-4"></div>
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-tracker_mechanics-drift_compensation-prediction'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-2 pb-4">
+              {l10n
+                .getString(
+                  'settings-general-tracker_mechanics-drift_compensation-prediction-description'
+                )
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="driftCompensation.prediction"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-drift_compensation-prediction-label'
+              )}
             />
             <DriftCompensationModal
               accept={() => {

@@ -278,7 +278,7 @@ export function BodyProportions({
               className={classNames(
                 'h-12 w-32 rounded-lg bg-background-60 flex flex-col justify-center',
                 'items-center fill-background-10',
-                scrollerRef?.current?.scrollTop ?? 0 > 0
+                (scrollerRef?.current?.scrollTop ?? 0 > 0)
                   ? 'opacity-100 active:bg-accent-background-30'
                   : 'opacity-50'
               )}
