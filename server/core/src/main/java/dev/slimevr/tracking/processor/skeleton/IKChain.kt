@@ -5,7 +5,7 @@ import dev.slimevr.tracking.processor.Constraint.Companion.ConstraintType
 import dev.slimevr.tracking.trackers.Tracker
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import kotlin.math.pow
+import kotlin.math.*
 
 /*
  * This class implements a chain of Bones
@@ -46,7 +46,7 @@ class IKChain(
 		}
 	}
 
-	fun backwardsCCDIK(useConstraints: Boolean) {
+	fun backwardsCCDIK() {
 		target = computedTailPosition?.getPosition() ?: getChildTargetAvg()
 		var offset = Vector3.NULL
 
@@ -60,17 +60,16 @@ class IKChain(
 			// Compute the axis of rotation and angle for this bone
 			var scalar = IKSolver.DAMPENING_FACTOR * if (currentBone.rotationConstraint.hasTrackerRotation) IKSolver.STATIC_DAMPENING else 1f
 			scalar *= ((bones.size - i).toFloat() / bones.size).pow(IKSolver.ANNEALING_EXPONENT)
-			var adjustment = Quaternion.fromTo(endEffectorLocal, targetLocal).pow(scalar).unit()
+			val adjustment = Quaternion.fromTo(endEffectorLocal, targetLocal).pow(scalar).unit()
+
+			val rotation = currentBone.getGlobalRotation()
+			var correctedRot = (adjustment * rotation).unit()
 
 			// Bones that are not supposed to be modified should tend towards their origin
-			val rotation = currentBone.getGlobalRotation()
 			if (!currentBone.rotationConstraint.allowModifications) {
-				adjustment *= rotation.interpR(currentBone.rotationConstraint.initialRotation, IKSolver.CORRECTION_FACTOR) * rotation.inv()
+				correctedRot = correctedRot.interpR(currentBone.rotationConstraint.initialRotation, IKSolver.CORRECTION_FACTOR)
 			}
-
-			val correctedRot = (adjustment * rotation).unit()
-
-			rotations[i] = setBoneRotation(currentBone, correctedRot, useConstraints)
+			rotations[i] = setBoneRotation(currentBone, correctedRot)
 
 			if (currentBone.rotationConstraint.hasTrackerRotation) {
 				offset += rotations[i].sandwich(Vector3.NEG_Y) * currentBone.length
@@ -142,14 +141,14 @@ class IKChain(
 	 * to the bone's rotational constraint
 	 * returns the constrained rotation
 	 */
-	private fun setBoneRotation(bone: Bone, rotation: Quaternion, useConstraints: Boolean): Quaternion {
+	private fun setBoneRotation(bone: Bone, rotation: Quaternion): Quaternion {
 		// Constrain relative to the parent
 		val newRotation = if (bone.rotationConstraint.constraintType == ConstraintType.COMPLETE) {
 			bone.rotationConstraint.applyConstraint(rotation, bone)
-		} else if (useConstraints && !bone.rotationConstraint.hasTrackerRotation) {
+		} else if (!bone.rotationConstraint.hasTrackerRotation) {
 			bone.rotationConstraint.applyConstraint(rotation, bone)
 		} else {
-			rotation
+			bone.rotationConstraint.constrainToInitialRotation(rotation)
 		}
 
 		bone.setRotationRaw(newRotation)

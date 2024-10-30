@@ -201,11 +201,11 @@ class IKSolver(private val root: Bone) {
 		return null
 	}
 
-	private fun solve(iterations: Int, useConstraints: Boolean = true): Boolean {
-		var solved: Boolean
+	private fun solve(iterations: Int): Boolean {
+		var solved = false
 		for (i in 0..iterations) {
 			for (chain in chainList) {
-				chain.backwardsCCDIK(useConstraints)
+				chain.backwardsCCDIK()
 			}
 
 			rootChain?.computeTargetDistance()
@@ -215,14 +215,14 @@ class IKSolver(private val root: Bone) {
 			for (chain in chainList) {
 				if (chain.distToTargetSqr > TOLERANCE_SQR) {
 					solved = false
+					break
 				}
 			}
 
-			// Terminate if using constraints and the chain is solved
-			if (solved && useConstraints) return true
+			if (solved) break
 		}
 
-		return false
+		return solved
 	}
 
 	fun solve() {

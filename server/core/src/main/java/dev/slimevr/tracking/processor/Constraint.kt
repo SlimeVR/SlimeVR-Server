@@ -18,11 +18,13 @@ class Constraint(
 	twist: Float = 0.0f,
 	swing: Float = 0.0f,
 	allowedDeviation: Float = 0f,
+	maxDeviationFromTracker: Float = 15f,
 ) {
 	private val constraintFunction = constraintTypeToFunc(constraintType)
 	private val twistRad = Math.toRadians(twist.toDouble()).toFloat()
 	private val swingRad = Math.toRadians(swing.toDouble()).toFloat()
 	private val allowedDeviationRad = Math.toRadians(allowedDeviation.toDouble()).toFloat()
+	private val maxDeviationFromTrackerRad = Math.toRadians(maxDeviationFromTracker.toDouble()).toFloat()
 	var hasTrackerRotation = false
 
 	/**
@@ -45,8 +47,8 @@ class Constraint(
 	fun constrainToInitialRotation(rotation: Quaternion): Quaternion {
 		val rotationLocal = rotation * initialRotation.inv()
 		var (swingQ, twistQ) = decompose(rotationLocal, Vector3.NEG_Y)
-		swingQ = constrain(swingQ, allowedDeviationRad)
-		twistQ = constrain(twistQ, allowedDeviationRad)
+		swingQ = constrain(swingQ, maxDeviationFromTrackerRad)
+		twistQ = constrain(twistQ, maxDeviationFromTrackerRad)
 		return initialRotation * (swingQ * twistQ)
 	}
 
