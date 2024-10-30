@@ -4,10 +4,11 @@ use tauri::{
 	image::Image,
 	menu::{Menu, MenuBuilder, MenuItemBuilder, MenuItemKind},
 	tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-	AppHandle, Manager, Runtime, State,
+	AppHandle, Emitter, Manager, Runtime, State,
 };
 
 pub struct TrayMenu<R: Runtime>(Menu<R>);
+pub struct TrayAvailable(pub bool);
 
 pub struct TrayTranslations {
 	store: Mutex<HashMap<String, String>>,
@@ -22,10 +23,15 @@ impl TrayTranslations {
 }
 
 #[tauri::command]
+pub fn is_tray_available(tray_available: State<TrayAvailable>) -> bool {
+	tray_available.0
+}
+
+#[tauri::command]
 pub fn update_translations<R: Runtime>(
 	app: AppHandle<R>,
 	i18n: State<TrayTranslations>,
-	menu: State<TrayMenu<R>>,
+	menu: State<Option<TrayMenu<R>>>,
 	new_i18n: HashMap<String, String>,
 ) -> color_eyre::Result<(), String> {
 	{
@@ -44,8 +50,11 @@ pub fn update_translations<R: Runtime>(
 pub fn update_tray_text<R: Runtime>(
 	app: AppHandle<R>,
 	i18n: State<TrayTranslations>,
-	menu: State<TrayMenu<R>>,
+	menu: State<Option<TrayMenu<R>>>,
 ) -> color_eyre::Result<(), String> {
+	let Some(menu) = menu.as_ref() else {
+		return Ok(());
+	};
 	if let Some((window, MenuItemKind::MenuItem(toggle_i))) =
 		app.get_webview_window("main").zip(menu.0.get("toggle"))
 	{
@@ -67,6 +76,26 @@ pub fn update_tray_text<R: Runtime>(
 }
 
 pub fn create_tray<R: Runtime>(app: &tauri::AppHandle<R>) -> tauri::Result<()> {
+	#[cfg(target_os = "linux")]
+	unsafe {
+		const LIBS_TO_CHECK: &[&str] = &[
+			"libayatana-appindicator3.so.1",
+			"libappindicator3.so.1",
+			"libayatana-appindicator3.so",
+			"libappindicator3.so",
+		];
+		let found = LIBS_TO_CHECK
+			.iter()
+			.any(|lib| libloading::Library::new(lib).is_ok());
+		if !found {
+			log::warn!(
+				"libappindicator couldn't be found so tray support has been disabled!"
+			);
+			app.manage(TrayAvailable(false));
+			return Ok(());
+		}
+	}
+
 	let toggle_i = MenuItemBuilder::with_id("toggle", "Hide").build(app)?;
 	let quit_i = MenuItemBuilder::with_id("quit", "Quit").build(app)?;
 	let menu1 = MenuBuilder::new(app).items(&[&toggle_i, &quit_i]).build()?;
@@ -120,7 +149,8 @@ pub fn create_tray<R: Runtime>(app: &tauri::AppHandle<R>) -> tauri::Result<()> {
 		.menu_on_left_click(false)
 		.build(app)?;
 
-	app.manage(TrayMenu(menu1));
+	app.manage(TrayAvailable(true));
+	app.manage(Some(TrayMenu(menu1)));
 	app.manage(TrayTranslations {
 		store: Default::default(),
 	});

@@ -1,4 +1,4 @@
-import { getCurrent } from '@tauri-apps/api/webviewWindow';
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {
@@ -29,6 +29,7 @@ import { listen } from '@tauri-apps/api/event';
 import { TrayOrExitModal } from './TrayOrExitModal';
 import { error } from '@/utils/logging';
 import { useDoubleTap } from 'use-double-tap';
+import { isTrayAvailable } from '@/utils/tauri';
 
 export function VersionTag() {
   return (
@@ -59,7 +60,7 @@ export function TopBar({
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const { useConnectedIMUTrackers } = useTrackers();
   const connectedIMUTrackers = useConnectedIMUTrackers();
-  const { config, setConfig } = useConfig();
+  const { config, setConfig, saveConfig } = useConfig();
   const version = useContext(VersionContext);
   const [localIp, setLocalIp] = useState<string | null>(null);
   const [showConnectedTrackersWarning, setConnectedTrackerWarning] =
@@ -70,17 +71,18 @@ export function TopBar({
     path: '/settings/*',
   });
   const closeApp = async () => {
+    await saveConfig();
     await invoke('update_window_state');
-    await getCurrent().close();
+    await getCurrentWebviewWindow().close();
   };
   const tryCloseApp = async (dontTray = false) => {
-    if (isTauri && config?.useTray === null) {
+    if (isTrayAvailable && config?.useTray === null) {
       setShowTrayOrExitModal(true);
       return;
     }
 
     if (config?.useTray && !dontTray) {
-      await getCurrent().hide();
+      await getCurrentWebviewWindow().hide();
       await invoke('update_tray_text');
     } else if (
       config?.connectedTrackersWarning &&
@@ -98,10 +100,10 @@ export function TopBar({
 
   useEffect(() => {
     const unlisten = listen('try-close', async () => {
-      const window = getCurrent();
+      const window = getCurrentWebviewWindow();
       await window.show();
       await window.setFocus();
-      await invoke('update_tray_text');
+      if (isTrayAvailable) await invoke('update_tray_text');
       await tryCloseApp(true);
     });
     return () => {
@@ -111,7 +113,7 @@ export function TopBar({
 
   useEffect(() => {
     if (config === null || !isTauri) return;
-    getCurrent().setDecorations(config?.decorations).catch(error);
+    getCurrentWebviewWindow().setDecorations(config?.decorations).catch(error);
   }, [config?.decorations]);
 
   useEffect(() => {
@@ -250,13 +252,13 @@ export function TopBar({
               <>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => getCurrent().minimize()}
+                  onClick={() => getCurrentWebviewWindow().minimize()}
                 >
                   <MinimiseIcon></MinimiseIcon>
                 </div>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => getCurrent().toggleMaximize()}
+                  onClick={() => getCurrentWebviewWindow().toggleMaximize()}
                 >
                   <MaximiseIcon></MaximiseIcon>
                 </div>
@@ -284,7 +286,7 @@ export function TopBar({
 
           // Doing this in here just in case config doesn't get updated in time
           if (useTray) {
-            await getCurrent().hide();
+            await getCurrentWebviewWindow().hide();
             await invoke('update_tray_text');
           } else if (
             config?.connectedTrackersWarning &&
