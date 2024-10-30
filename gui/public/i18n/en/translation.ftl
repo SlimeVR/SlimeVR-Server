@@ -187,6 +187,12 @@ tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-imu = IMU Sensor
 tracker-infos-board_type = Main board
 tracker-infos-network_version = Protocol Version
+tracker-infos-magnetometer = Magnetometer
+tracker-infos-magnetometer-status = { $status ->
+    *[0] Not supported
+    [1] Disabled
+    [2] Enabled
+}
 
 ## Tracker settings
 tracker-settings-back = Go back to trackers list
@@ -200,6 +206,13 @@ tracker-settings-mounting_section-edit = Edit mounting
 tracker-settings-drift_compensation_section = Allow drift compensation
 tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
 tracker-settings-drift_compensation_section-edit = Allow drift compensation
+tracker-settings-use_mag = Allow magnetometer on this tracker
+# Multiline!
+tracker-settings-use_mag-description =
+    Should this tracker use magnetometer to reduce drift when magnetometer usage is allowed? <b>Please don't shutdown your tracker while toggling this!</b>
+
+    You need to allow magnetometer usage first, <magSetting>click here to go to the setting</magSetting>.
+tracker-settings-use_mag-label = Allow magnetometer
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker name
@@ -354,6 +367,11 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Saves the automatic mounting reset calibrations for the trackers between restarts. Useful
     when wearing a suit where trackers don't move between sessions. <b>Not recommended for normal users!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Save mounting reset
+settings-general-tracker_mechanics-use_mag_on_all_trackers = Use magnetometer on all IMU trackers that support it
+settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
+    Uses magnetometer on all trackers that have a compatible firmware for it, reducing drift in stable magnetic environments.
+    Can be disabled per tracker in the tracker's settings. <b>Please don't shutdown any of the trackers while toggling this!</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetometer on trackers
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings

@@ -76,6 +76,7 @@ dependencies {
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 
 	// Jitpack
 	implementation("com.github.SlimeVR:oscquery-kt:566a0cba58")
