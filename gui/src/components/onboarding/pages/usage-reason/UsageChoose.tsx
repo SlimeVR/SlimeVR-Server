@@ -19,15 +19,15 @@ interface UsageInfo {
 const REASON_TO_PATH: Record<UsageReason, UsageInfo> = {
   [UsageReason.MOCAP]: {
     path: '/onboarding/usage/mocap/choose',
-    image: '/images/usage-mocap.png',
+    image: '/images/usage-mocap.webp',
   },
   [UsageReason.VR]: {
     path: '/onboarding/usage/vr/choose',
-    image: '/images/usage-vr.png',
+    image: '/images/usage-vr.webp',
   },
   [UsageReason.VTUBING]: {
     path: '/onboarding/usage/vtubing/choose',
-    image: '/images/usage-vtuber.png',
+    image: '/images/usage-vtuber.webp',
   },
 };
 

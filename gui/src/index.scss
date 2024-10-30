@@ -17,8 +17,9 @@ body {
 }
 
 @media (-webkit-animation) {
-  img {
+  img.uncrisp {
     // Webkit moment https://stackoverflow.com/questions/7908168/image-resize-gives-slight-brief-pixelation-in-webkit-browsers
+    // doesn't happen in newer versions, weird.
     -webkit-transform: translate3d(0, 0, 0);
   }
 
