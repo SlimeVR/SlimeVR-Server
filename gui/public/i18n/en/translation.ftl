@@ -218,6 +218,7 @@ tracker-settings-use_mag-label = Allow magnetometer
 tracker-settings-name_section = Tracker name
 tracker-settings-name_section-description = Give it a cute nickname :)
 tracker-settings-name_section-placeholder = NightyBeast's left leg
+tracker-settings-name_section-label = Tracker name
 tracker-settings-forget = Forget tracker
 tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevent it from connecting to it until the server is restarted. The configuration of the tracker won't be lost.
 tracker-settings-forget-label = Forget tracker
