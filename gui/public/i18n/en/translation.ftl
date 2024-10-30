@@ -350,7 +350,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction = Drift compens
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-prediction-description =
     Predicts yaw drift compensation beyond previously measured range.
-    Enable this if the tracker is continuously spinning on yaw axis.
+    Enable this if your trackers are continuously spinning on the yaw axis.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Drift compensation prediction
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Warning:</b> Only use drift compensation if you need to reset
