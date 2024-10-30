@@ -43,8 +43,6 @@ class AutoBoneStep(
 		// Disable leg tweaks and IK solver, these will mess with the resulting positions
 		skeleton1.setLegTweaksEnabled(false)
 		skeleton2.setLegTweaksEnabled(false)
-		skeleton1.setIKSolverEnabled(false)
-		skeleton2.setIKSolverEnabled(false)
 	}
 
 	fun setCursors(cursor1: Int, cursor2: Int, updatePlayerCursors: Boolean) {

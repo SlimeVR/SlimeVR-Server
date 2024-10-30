@@ -191,7 +191,7 @@ public class RPCSettingsBuilder {
 				humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP),
 				humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT),
 				humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION),
-				humanPoseManager.getToggle(SkeletonConfigToggles.USE_POSITION),
+				false,
 				humanPoseManager.getToggle(SkeletonConfigToggles.ENFORCE_CONSTRAINTS),
 				humanPoseManager.getToggle(SkeletonConfigToggles.CORRECT_CONSTRAINTS)
 			);
