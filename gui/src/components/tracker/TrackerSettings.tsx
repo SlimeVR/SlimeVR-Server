@@ -33,6 +33,7 @@ import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMe
 import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
+import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -278,6 +279,18 @@ export function TrackerSettingsPage() {
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">
+                {l10n.getString('tracker-infos-magnetometer')}
+              </Typography>
+              <Typography>
+                {tracker?.tracker.info?.magnetometer === undefined
+                  ? '--'
+                  : l10n.getString('tracker-infos-magnetometer-status', {
+                      status: tracker.tracker.info.magnetometer,
+                    })}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
                 {l10n.getString('tracker-infos-network_version')}
               </Typography>
               <Typography>
@@ -403,6 +416,13 @@ export function TrackerSettingsPage() {
               </div>
             </div>
           )}
+          {tracker?.tracker.info?.isImu && (
+            <MagnetometerToggleSetting
+              settingType="tracker"
+              trackerNum={tracker.tracker.trackerId?.trackerNum}
+              deviceId={tracker.tracker.trackerId?.deviceId?.id}
+            />
+          )}
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">
               {l10n.getString('tracker-settings-name_section')}
@@ -419,7 +439,7 @@ export function TrackerSettingsPage() {
               control={control}
               autocomplete="off"
               rules={undefined}
-              label="Tracker name"
+              label="tracker-settings-name_section-label"
             ></Input>
           </div>
           {macAddress && (

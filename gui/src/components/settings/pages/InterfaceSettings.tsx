@@ -409,7 +409,7 @@ export function InterfaceSettings() {
                       'settings-interface-appearance-font-slime_font'
                     ),
                     value: 'poppins',
-                    fontName: 'poppins',
+                    fontName: 'poppins, Noto Sans CJK',
                   },
                   {
                     label: 'OpenDyslexic',
