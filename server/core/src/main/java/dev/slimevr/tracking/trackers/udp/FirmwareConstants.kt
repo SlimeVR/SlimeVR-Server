@@ -130,6 +130,7 @@ enum class MagnetometerStatus {
 value class SensorConfig(val v: UShort) {
 	val magStatus
 		get(): MagnetometerStatus {
+			if ((v.toUInt() shr 1) and 1u == 0u) return MagnetometerStatus.NOT_SUPPORTED
 			return if ((v and 1u) == 1u.toUShort()) {
 				MagnetometerStatus.ENABLED
 			} else {
