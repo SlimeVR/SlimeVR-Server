@@ -439,7 +439,7 @@ export function TrackerSettingsPage() {
               control={control}
               autocomplete="off"
               rules={undefined}
-              label="tracker-settings-name_section-label"
+              label={l10n.getString('tracker-settings-name_section-label')}
             ></Input>
           </div>
           {macAddress && (
