@@ -452,7 +452,7 @@ export function TrackerSettingsPage() {
               </Typography>
               <Button
                 variant="secondary"
-                className="!bg-status-critical  self-start"
+                className="!bg-status-critical self-start"
                 onClick={() => {
                   sendRPCPacket(
                     RpcMessage.ForgetDeviceRequest,
