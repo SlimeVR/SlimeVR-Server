@@ -9,6 +9,7 @@ import {
   BodyPart,
   ForgetDeviceRequestT,
   ImuType,
+  MagnetometerStatus,
   RpcMessage,
 } from 'solarxr-protocol';
 import { useDebouncedEffect } from '@/hooks/timeout';
@@ -284,8 +285,9 @@ export function TrackerSettingsPage() {
               <Typography>
                 {tracker?.tracker.info?.magnetometer === undefined
                   ? '--'
-                  : l10n.getString('tracker-infos-magnetometer-status', {
-                      status: tracker.tracker.info.magnetometer,
+                  : l10n.getString('tracker-infos-magnetometer-status-v1', {
+                      status:
+                        MagnetometerStatus[tracker.tracker.info.magnetometer],
                     })}
               </Typography>
             </div>
