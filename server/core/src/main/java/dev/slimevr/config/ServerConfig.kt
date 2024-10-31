@@ -31,7 +31,7 @@ class ServerConfig {
 // 							it.setMag(false)
 // 						} else {
 						trackers.map { (_, t) ->
-							async { it.setMag(false, t.trackerNum) } 
+							async { it.setMag(false, t.trackerNum) }
 						}.awaitAll()
 // 						}
 						return@async
