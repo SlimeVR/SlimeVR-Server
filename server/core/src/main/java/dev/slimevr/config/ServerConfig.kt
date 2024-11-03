@@ -1,6 +1,7 @@
 package dev.slimevr.config
 
 import dev.slimevr.VRServer
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -20,18 +21,33 @@ class ServerConfig {
 
 			VRServer.instance.deviceManager.devices.filter { it.magSupport }.map {
 				async {
+					// Not using 255 as it sometimes could make one of the sensors go into
+					// error mode (if there is more than one sensor inside the device)
 					if (!state) {
-						it.setMag(false)
+						val trackers = it.trackers.filterValues {
+							it.magStatus != MagnetometerStatus.NOT_SUPPORTED
+						}
+// 						if(trackers.size == it.trackers.size) {
+// 							it.setMag(false)
+// 						} else {
+						trackers.map { (_, t) ->
+							async { it.setMag(false, t.trackerNum) }
+						}.awaitAll()
+// 						}
 						return@async
 					}
 
-					val every = it.trackers.all { (_, t) -> t.config.shouldHaveMagEnabled == true }
-					if (every) {
-						it.setMag(true)
-						return@async
-					}
+// 					val every = it.trackers.all { (_, t) -> t.config.shouldHaveMagEnabled == true
+// 						&& t.magStatus != MagnetometerStatus.NOT_SUPPORTED }
+// 					if (every) {
+// 						it.setMag(true)
+// 						return@async
+// 					}
 
-					it.trackers.filterValues { it.config.shouldHaveMagEnabled == true }
+					it.trackers.filterValues {
+						it.config.shouldHaveMagEnabled == true &&
+							it.magStatus != MagnetometerStatus.NOT_SUPPORTED
+					}
 						.map { (_, t) ->
 							async {
 								// FIXME: Tracker gets restarted after each setMag, what will happen for devices with 3 trackers?

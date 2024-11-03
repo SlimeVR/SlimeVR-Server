@@ -223,7 +223,7 @@ data class UDPPacket14Error(var errorNumber: Int = 0) :
 data class UDPPacket15SensorInfo(
 	var sensorStatus: Int = 0,
 	var sensorType: IMUType = IMUType.UNKNOWN,
-	var sensorConfig: SensorConfig = SensorConfig(0u),
+	var sensorConfig: SensorConfig? = null,
 ) : UDPPacket(15),
 	SensorSpecificPacket {
 	override var sensorId = 0
@@ -234,7 +234,7 @@ data class UDPPacket15SensorInfo(
 			sensorType =
 				IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
 		}
-		if (buf.remaining() > 0) {
+		if (buf.remaining() > 1) {
 			sensorConfig = SensorConfig(buf.getShort().toUShort())
 		}
 	}

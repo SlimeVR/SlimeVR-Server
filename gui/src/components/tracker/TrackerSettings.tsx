@@ -9,6 +9,7 @@ import {
   BodyPart,
   ForgetDeviceRequestT,
   ImuType,
+  MagnetometerStatus,
   RpcMessage,
 } from 'solarxr-protocol';
 import { useDebouncedEffect } from '@/hooks/timeout';
@@ -284,8 +285,9 @@ export function TrackerSettingsPage() {
               <Typography>
                 {tracker?.tracker.info?.magnetometer === undefined
                   ? '--'
-                  : l10n.getString('tracker-infos-magnetometer-status', {
-                      status: tracker.tracker.info.magnetometer,
+                  : l10n.getString('tracker-infos-magnetometer-status-v1', {
+                      status:
+                        MagnetometerStatus[tracker.tracker.info.magnetometer],
                     })}
               </Typography>
             </div>
@@ -416,13 +418,15 @@ export function TrackerSettingsPage() {
               </div>
             </div>
           )}
-          {tracker?.tracker.info?.isImu && (
-            <MagnetometerToggleSetting
-              settingType="tracker"
-              trackerNum={tracker.tracker.trackerId?.trackerNum}
-              deviceId={tracker.tracker.trackerId?.deviceId?.id}
-            />
-          )}
+          {tracker?.tracker.info?.isImu &&
+            tracker?.tracker.info?.magnetometer !==
+              MagnetometerStatus.NOT_SUPPORTED && (
+              <MagnetometerToggleSetting
+                settingType="tracker"
+                trackerNum={tracker.tracker.trackerId?.trackerNum}
+                deviceId={tracker.tracker.trackerId?.deviceId?.id}
+              />
+            )}
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">
               {l10n.getString('tracker-settings-name_section')}
