@@ -443,7 +443,7 @@ export function TrackerSettingsPage() {
               control={control}
               autocomplete="off"
               rules={undefined}
-              label="tracker-settings-name_section-label"
+              label={l10n.getString('tracker-settings-name_section-label')}
             ></Input>
           </div>
           {macAddress && (
@@ -456,7 +456,7 @@ export function TrackerSettingsPage() {
               </Typography>
               <Button
                 variant="secondary"
-                className="!bg-status-critical  self-start"
+                className="!bg-status-critical self-start"
                 onClick={() => {
                   sendRPCPacket(
                     RpcMessage.ForgetDeviceRequest,
