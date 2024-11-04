@@ -1,7 +1,6 @@
 package dev.slimevr.tracking.trackers
 
 import com.jme3.math.FastMath
-import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import kotlin.math.*
@@ -74,10 +73,6 @@ class TrackerFlexHandler(val tracker: Tracker) {
 		} else {
 			min(maxResistance, resistance)
 		}
-
-		LogManager.debug("Min = $minResistance")
-		LogManager.debug("Max = $maxResistance")
-		LogManager.debug("Reversed = $resistanceReversed")
 
 		// Get max angle
 		val maxBend = getMaxAngleForTrackerPosition(tracker.trackerPosition)
