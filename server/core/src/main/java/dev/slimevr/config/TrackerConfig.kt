@@ -2,6 +2,7 @@ package dev.slimevr.config
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
+import dev.slimevr.VRServer
 import dev.slimevr.tracking.trackers.Tracker
 import io.github.axisangles.ktmath.ObjectQuaternion
 
@@ -16,12 +17,18 @@ class TrackerConfig {
 	var mountingResetOrientation: ObjectQuaternion? = null
 	var allowDriftCompensation: Boolean? = null
 
+	/**
+	 * Only checked if [ServerConfig.useMagnetometerOnAllTrackers] enabled
+	 */
+	var shouldHaveMagEnabled: Boolean? = null
+
 	constructor()
 
 	constructor(tracker: Tracker) {
 		this.designation = if (tracker.trackerPosition != null) tracker.trackerPosition!!.designation else null
 		this.customName = tracker.customName
 		allowDriftCompensation = tracker.isImu()
+		shouldHaveMagEnabled = tracker.isImu()
 	}
 
 	companion object {
@@ -37,3 +44,6 @@ class TrackerConfig {
 		}
 	}
 }
+
+val Tracker.config: TrackerConfig
+	get() = VRServer.instance.configManager.vrConfig.getTracker(this)
