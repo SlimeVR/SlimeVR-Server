@@ -109,7 +109,7 @@ export function UsageChoose() {
           </div>
           <div className="flex flex-col justify-center">
             <img
-              className="mobile:hidden"
+              className="mobile:hidden rounded-3xl"
               src={REASON_TO_PATH[usageReason].image}
               width="496"
             ></img>

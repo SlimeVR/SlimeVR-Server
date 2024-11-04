@@ -127,6 +127,7 @@ export function VRUsageChoose() {
                             href={`${DOCS_SITE}/common-issues.html#the-trackers-are-connected-to-the-slimevr-server-but-arent-turning-up-on-steam`}
                           ></A>
                         ),
+                        b: <b></b>,
                       }}
                     >
                       <WarningBox>SteamVR driver not connected</WarningBox>
