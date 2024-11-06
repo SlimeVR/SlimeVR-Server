@@ -115,6 +115,18 @@ public class ConfigManager {
 
 		// Serialize config
 		try {
+			// delete accidental folder caused by PR
+			// https://github.com/SlimeVR/SlimeVR-Server/pull/1176
+			var cfgFileMaybeFolder = cfgFile.toFile();
+			if (cfgFileMaybeFolder.isDirectory() && cfgFileMaybeFolder.delete()) {
+				LogManager
+					.severe(
+						"Unable to delete folder that has same name as the config file on path \""
+							+ cfgFile
+							+ "\""
+					);
+				return;
+			}
 			var cfgFolder = cfgFile.getParent().toFile();
 			if (!cfgFolder.getAbsoluteFile().exists() && !cfgFolder.mkdirs()) {
 				LogManager
