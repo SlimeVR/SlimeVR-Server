@@ -36,7 +36,7 @@ body_part-RIGHT_UPPER_ARM = Rechter Oberarm
 body_part-RIGHT_LOWER_ARM = Rechter Unterarm
 body_part-RIGHT_HAND = Rechte Hand
 body_part-RIGHT_UPPER_LEG = Rechter Oberschenkel
-body_part-RIGHT_LOWER_LEG = Rechter Unterschenkel
+body_part-RIGHT_LOWER_LEG = Rechter Knöchel
 body_part-RIGHT_FOOT = Rechter Fuß
 body_part-UPPER_CHEST = Obere Brust
 body_part-CHEST = Brust
@@ -47,7 +47,7 @@ body_part-LEFT_UPPER_ARM = Linker Oberarm
 body_part-LEFT_LOWER_ARM = Linker Unterarm
 body_part-LEFT_HAND = Linke Hand
 body_part-LEFT_UPPER_LEG = Linker Oberschenkel
-body_part-LEFT_LOWER_LEG = Linker Unterschenkel
+body_part-LEFT_LOWER_LEG = Linker Knöchel
 body_part-LEFT_FOOT = Linker Fuß
 
 ## Proportions
@@ -208,6 +208,12 @@ tracker-infos-imu = IMU-Sensor
 tracker-infos-board_type = Platine
 tracker-infos-network_version = Protokoll Version
 tracker-infos-magnetometer = Magnetometer
+tracker-infos-magnetometer-status-v1 =
+    { $status ->
+        [DISABLED] Ausgeschalten
+        [ENABLED] Angeschalten
+       *[NOT_SUPPORTED] Nicht unterstützt
+    }
 
 ## Tracker settings
 
@@ -223,6 +229,11 @@ tracker-settings-drift_compensation_section = Drift-Kompensierung
 tracker-settings-drift_compensation_section-description = Soll dieser Tracker Drift kompensieren, wenn die Drift-Kompensierung allgemein aktiviert ist?
 tracker-settings-drift_compensation_section-edit = Erlaube Drift Kompensierung
 tracker-settings-use_mag = Magnetometer auf diesem Tracker zulassen
+# Multiline!
+tracker-settings-use_mag-description =
+    Soll dieser Tracker das Magnetometer verwenden um Drift zu reduzieren, wenn die Verwendung von Magnetometer erlaubt ist? <b> Bitten schalten Sie den Tracker nicht aus, während Sie diese Einstellung umschalten!</b>
+    
+    Sie müssen zuerst die Verwendung des Magnetometers zulassen, <magSetting>klicken Sie hier, um zu den Einstellungen zu gelangen</magSetting>.
 tracker-settings-use_mag-label = Magnetometer zulassen
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
@@ -363,6 +374,18 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Kompensiert IMU Drift auf der Gier-Achse durch Anwenden einer invertierten Rotation.
     Ändern Sie die Menge der Kompensierung und die Anzahl der Resets, welche für die Berechnung genutzt werden.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift-Kompensierung
+settings-general-tracker_mechanics-drift_compensation-prediction = Prognose der Driftkompensation
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    Prognostiziert die Driftkompensation basierend auf dem zuvor gemessenen Drift.
+    Aktivieren Sie diese Funktion, wenn sich der Tracker kontinuierlich um die gier-Achse dreht.
+settings-general-tracker_mechanics-drift_compensation-prediction-label = Prognose der Driftkompensation
+settings-general-tracker_mechanics-drift_compensation_warning =
+    <b>Warnung:</b> Verwenden Sie die Driftkompensation nur, wenn sie sehr oft 
+    reseten müssen (alle ~5-10 Minuten).
+    
+    Zu den IMUs, die häufig einen Reset benötigen, gehören:
+    Joy-Cons, owoTrack und MPUs (ohne aktuelle Firmware).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Abbrechen
 settings-general-tracker_mechanics-drift_compensation_warning-done = Ich verstehe
 settings-general-tracker_mechanics-drift_compensation-amount-label = Kompensierungsmenge
@@ -372,6 +395,10 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Speichert die automatische Befestigungs-Reset Kalibrierung für die Tracker zwischen den Neustarts. Nützlich 
     wenn Sie einen Anzug tragen, bei dem sich die Tracker zwischen den Sitzungen nicht bewegen. <b>Für normale Benutzer nicht zu empfehlen!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Befestigungs-Reset speichern
+settings-general-tracker_mechanics-use_mag_on_all_trackers = Verwende das Magnetometer auf allen IMU-Trackern, die dies unterstützen.
+settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
+    Verwendet das Magnetometer auf allen Trackern, die über eine kompatible Firmware verfügen, um den Drift in stabilen magnetischen Umgebungen zu reduzieren.
+    Kann pro Tracker in den Einstellungen des Trackers deaktiviert werden. <b>Bitte schalten Sie keinen der Tracker aus, während Sie dies umschalten!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Magnetometer auf Trackern verwenden
 
 ## FK/Tracking settings
@@ -485,6 +512,7 @@ settings-interface-appearance-font-slime_font = Standard-Schriftart
 settings-interface-appearance-font_size = Standard-Schriftgröße
 settings-interface-appearance-font_size-description = Verändert die Schriftgröße der gesamten Oberfläche außer diesem Einstellungs-Panel.
 settings-interface-appearance-decorations = Verwenden Sie die systemeigenen Fensterdekorationen
+settings-interface-appearance-decorations-description = Dadurch wird die obere Leiste der Benutzeroberfläche nicht gerendert, sondern die des Betriebssystems verwendet.
 settings-interface-appearance-decorations-label = Verwenden der native Fensterdekorationen
 
 ## Notification settings
@@ -632,11 +660,26 @@ settings-osc-vmc-mirror_tracking-label = Tracking spiegeln
 
 settings-utils-advanced = Erweitert
 settings-utils-advanced-reset-gui = Einstellungen der Benutzeroberfläche zurücksetzen
+settings-utils-advanced-reset-gui-description = Stellt die Standardeinstellungen für die Benutzeroberfläche wieder her.
 settings-utils-advanced-reset-gui-label = Benutzeroberfläche zurücksetzen
 settings-utils-advanced-reset-server = Tracking-Einstellungen zurücksetzen
+settings-utils-advanced-reset-server-description = Stellen Sie die Standardeinstellungen für das Tracking wieder her.
 settings-utils-advanced-reset-server-label = Tracking zurücksetzen
 settings-utils-advanced-reset-all = Alle Einstellungen zurücksetzen
+settings-utils-advanced-reset-all-description = Stellt die Standardeinstellungen für die Benutzeroberfläche und das Tracking wieder her.
 settings-utils-advanced-reset-all-label = Alles zurücksetzen
+settings-utils-advanced-reset_warning =
+    { $type ->
+        [gui]
+            <b>Warnung:</b> Dadurch werden Ihre Benutzeroberfläche-Einstellungen auf die Standardeinstellungen zurückgesetzt.
+            Möchten Sie das wirklich tun?
+        [server]
+            <b>Warnung:</b> Dadurch werden Ihre Tracking-Einstellungen auf die Standardeinstellungen zurückgesetzt.
+            Möchten Sie das wirklich tun?
+       *[all]
+            <b>Warnung:</b> Dadurch werden alle Ihre Einstellungen auf die Standardeinstellungen zurückgesetzt.
+            Möchten Sie das wirklich tun?
+    }
 settings-utils-advanced-reset_warning-reset = Einstellungen zurücksetzen
 settings-utils-advanced-reset_warning-cancel = Abbrechen
 settings-utils-advanced-open_data = Daten-Ordner
@@ -1014,6 +1057,10 @@ onboarding-automatic_proportions-verify_results-redo = Aufnahme wiederholen
 onboarding-automatic_proportions-verify_results-confirm = Ergebnisse sind korrekt
 onboarding-automatic_proportions-done-title = Körper gemessen und gespeichert.
 onboarding-automatic_proportions-done-description = Ihre Körperproportionen-Kalibrierung ist abgeschlossen!
+onboarding-automatic_proportions-error_modal-v2 =
+    <b>Warnung:</b> Bei der Schätzung der Proportionen ist ein Fehler aufgetreten!
+    Dies ist wahrscheinlich ein Problem mit der Tracker-Ausrichtung. Vergewissern Sie sich, dass Ihre Tracker ordnungsgemäß funktioniert, bevor Sie es erneut versuchen.
+    Bitte <docs>überprüfen Sie die Dokumentation</docs> oder treten Sie unserem <discord>Discord</discord> bei, um Hilfe zu erhalten ^_^
 onboarding-automatic_proportions-error_modal-confirm = Verstanden!
 
 ## Home
