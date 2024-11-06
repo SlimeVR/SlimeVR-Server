@@ -115,8 +115,8 @@ public class ConfigManager {
 
 		// Serialize config
 		try {
-			var file = cfgFile.toFile();
-			if (!file.getAbsoluteFile().getParentFile().exists() && !file.mkdirs()) {
+			var cfgFolder = cfgFile.getParent().toFile();
+			if (!cfgFolder.getAbsoluteFile().exists() && !cfgFolder.mkdirs()) {
 				LogManager
 					.severe("Unable to create folders for config on path \"" + cfgFile + "\"");
 				return;
