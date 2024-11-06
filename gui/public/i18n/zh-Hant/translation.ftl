@@ -231,9 +231,9 @@ tracker-settings-drift_compensation_section-edit = 允許偏移補償
 tracker-settings-use_mag = 允許使用這個追蹤器的磁力計
 # Multiline!
 tracker-settings-use_mag-description =
-    如果「允許追蹤器使用磁力計」已啟用，是否要在這個追蹤器上啟用它來減緩偏移？<b>切換本選項時請勿關閉追蹤器的電源！</b>
+    如果「在追蹤器上啟用磁力計」功能已開啟，是否要在這個追蹤器上啟用它來減緩偏移？<b>切換本選項時請勿關閉追蹤器的電源！</b>
     
-    請先開啟「允許追蹤器使用磁力計」功能，<magSetting>點選此處以移動至該設定</magSetting>。
+    請先開啟「在追蹤器上啟用磁力計」功能，<magSetting>點選此處以移動至該設定</magSetting>。
 tracker-settings-use_mag-label = 允許使用這個追蹤器的磁力計
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
@@ -397,9 +397,9 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = 儲存自動配戴重置的校正
 settings-general-tracker_mechanics-use_mag_on_all_trackers = 在有磁力計支援的 IMU 追蹤器上啟用磁力計
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    在所有有磁力計韌體支援的追蹤器上啟用磁力計，在磁場穩定的環境中可以減緩偏移。
-    可以依照個別追蹤器關閉本功能。<b>切換此選項時請勿關閉任何一個追蹤器的電源！</b>
-settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 允許追蹤器使用磁力計
+    在所有有韌體支援的追蹤器上使用磁力計，在磁場穩定的環境中可以減緩偏移。
+    開啟此選項後，可以個別在追蹤器選項內停用磁力計。<b>切換此選項時請勿關閉任何一個追蹤器的電源！</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 在追蹤器上啟用磁力計
 
 ## FK/Tracking settings
 
