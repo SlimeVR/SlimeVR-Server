@@ -352,6 +352,12 @@ export function InterfaceSettings() {
                   value={'trans'}
                   colors="!bg-trans-flag"
                 ></ThemeSelector>
+                <ThemeSelector
+                  control={control}
+                  name="appearance.theme"
+                  value={'asexual'}
+                  colors="!bg-asexual-flag"
+                ></ThemeSelector>
               </div>
             </div>
 
@@ -403,7 +409,7 @@ export function InterfaceSettings() {
                       'settings-interface-appearance-font-slime_font'
                     ),
                     value: 'poppins',
-                    fontName: 'poppins',
+                    fontName: 'poppins, Noto Sans CJK',
                   },
                   {
                     label: 'OpenDyslexic',

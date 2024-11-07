@@ -200,6 +200,12 @@ tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-imu = IMU Sensor
 tracker-infos-board_type = Main board
 tracker-infos-network_version = Protocol Version
+tracker-infos-magnetometer = Magnetometer
+tracker-infos-magnetometer-status-v1 = { $status ->
+    *[NOT_SUPPORTED] Not supported
+    [DISABLED] Disabled
+    [ENABLED] Enabled
+}
 
 ## Tracker settings
 tracker-settings-back = Go back to trackers list
@@ -213,11 +219,19 @@ tracker-settings-mounting_section-edit = Edit mounting
 tracker-settings-drift_compensation_section = Allow drift compensation
 tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
 tracker-settings-drift_compensation_section-edit = Allow drift compensation
+tracker-settings-use_mag = Allow magnetometer on this tracker
+# Multiline!
+tracker-settings-use_mag-description =
+    Should this tracker use magnetometer to reduce drift when magnetometer usage is allowed? <b>Please don't shutdown your tracker while toggling this!</b>
+
+    You need to allow magnetometer usage first, <magSetting>click here to go to the setting</magSetting>.
+tracker-settings-use_mag-label = Allow magnetometer
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker name
 tracker-settings-name_section-description = Give it a cute nickname :)
 tracker-settings-name_section-placeholder = NightyBeast's left leg
+tracker-settings-name_section-label = Tracker name
 tracker-settings-forget = Forget tracker
 tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevent it from connecting to it until the server is restarted. The configuration of the tracker won't be lost.
 tracker-settings-forget-label = Forget tracker
@@ -351,7 +365,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction = Drift compens
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-prediction-description =
     Predicts yaw drift compensation beyond previously measured range.
-    Enable this if the tracker is continuously spinning on yaw axis.
+    Enable this if your trackers are continuously spinning on the yaw axis.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Drift compensation prediction
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Warning:</b> Only use drift compensation if you need to reset
@@ -368,6 +382,11 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Saves the automatic mounting reset calibrations for the trackers between restarts. Useful
     when wearing a suit where trackers don't move between sessions. <b>Not recommended for normal users!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Save mounting reset
+settings-general-tracker_mechanics-use_mag_on_all_trackers = Use magnetometer on all IMU trackers that support it
+settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
+    Uses magnetometer on all trackers that have a compatible firmware for it, reducing drift in stable magnetic environments.
+    Can be disabled per tracker in the tracker's settings. <b>Please don't shutdown any of the trackers while toggling this!</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetometer on trackers
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings
@@ -984,8 +1003,9 @@ onboarding-automatic_proportions-verify_results-redo = Redo recording
 onboarding-automatic_proportions-verify_results-confirm = They're correct
 onboarding-automatic_proportions-done-title = Body measured and saved.
 onboarding-automatic_proportions-done-description = Your body proportions' calibration is complete!
-onboarding-automatic_proportions-error_modal =
-    <b>Warning:</b> An error was found while estimating proportions!
+onboarding-automatic_proportions-error_modal-v2 =
+    <b>Warning:</b> There was an error while estimating proportions!
+    This is likely a mounting calibration issue. Make sure your tracking works properly before trying again.
     Please <docs>check the docs</docs> or join our <discord>Discord</discord> for help ^_^
 onboarding-automatic_proportions-error_modal-confirm = Understood!
 

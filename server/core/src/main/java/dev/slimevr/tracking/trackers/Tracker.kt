@@ -4,6 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -65,6 +66,7 @@ class Tracker @JvmOverloads constructor(
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
 	val isHmd: Boolean = false,
+	magStatus: MagnetometerStatus = MagnetometerStatus.NOT_SUPPORTED,
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
@@ -79,6 +81,8 @@ class Tracker @JvmOverloads constructor(
 	var signalStrength: Int? = null
 	var temperature: Float? = null
 	var customName: String? = null
+	var magStatus: MagnetometerStatus = magStatus
+		private set
 
 	/**
 	 * If the tracker has gotten disconnected after it was initialized first time
@@ -387,6 +391,17 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	fun isImu(): Boolean = imuType != null
+
+	/**
+	 * Please don't use this and instead set it via [Device.setMag]
+	 */
+	internal fun setMagPrivate(mag: Boolean) {
+		magStatus = if (mag) {
+			MagnetometerStatus.ENABLED
+		} else {
+			MagnetometerStatus.DISABLED
+		}
+	}
 
 	/**
 	 * Gets the current TPS of the tracker

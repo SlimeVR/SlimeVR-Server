@@ -60,7 +60,7 @@ export function TopBar({
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const { useConnectedIMUTrackers } = useTrackers();
   const connectedIMUTrackers = useConnectedIMUTrackers();
-  const { config, setConfig } = useConfig();
+  const { config, setConfig, saveConfig } = useConfig();
   const version = useContext(VersionContext);
   const [localIp, setLocalIp] = useState<string | null>(null);
   const [showConnectedTrackersWarning, setConnectedTrackerWarning] =
@@ -71,6 +71,7 @@ export function TopBar({
     path: '/settings/*',
   });
   const closeApp = async () => {
+    await saveConfig();
     await invoke('update_window_state');
     await getCurrentWebviewWindow().close();
   };
