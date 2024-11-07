@@ -8,7 +8,7 @@ public enum ProvisioningStatus {
 	NONE(WifiProvisioningStatus.NONE),
 	SERIAL_INIT(WifiProvisioningStatus.SERIAL_INIT),
 	PROVISIONING(WifiProvisioningStatus.PROVISIONING),
-	OPTAINING_MAC_ADDRESS(WifiProvisioningStatus.OPTAINING_MAC_ADDRESS),
+	OBTAINING_MAC_ADDRESS(WifiProvisioningStatus.OBTAINING_MAC_ADDRESS),
 	CONNECTING(WifiProvisioningStatus.CONNECTING),
 	CONNECTION_ERROR(WifiProvisioningStatus.CONNECTION_ERROR),
 	LOOKING_FOR_SERVER(WifiProvisioningStatus.LOOKING_FOR_SERVER),

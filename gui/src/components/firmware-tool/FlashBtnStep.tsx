@@ -39,7 +39,7 @@ export function FlashBtnStep({
                       'firmware-tool-flashbtn-step-board-SLIMEVR-r11'
                     )}
                   </Typography>
-                  <img src="/images/R11_board_reset.png"></img>
+                  <img src="/images/R11_board_reset.webp"></img>
                 </div>
                 <div className="bg-background-80 p-2 rounded-lg gap-2 flex flex-col justify-between">
                   <Typography variant="main-title">R12</Typography>
@@ -48,7 +48,7 @@ export function FlashBtnStep({
                       'firmware-tool-flashbtn-step-board-SLIMEVR-r12'
                     )}
                   </Typography>
-                  <img src="/images/R12_board_reset.png"></img>
+                  <img src="/images/R12_board_reset.webp"></img>
                 </div>
 
                 <div className="bg-background-80 p-2 rounded-lg gap-2 flex flex-col justify-between">
@@ -58,7 +58,7 @@ export function FlashBtnStep({
                       'firmware-tool-flashbtn-step-board-SLIMEVR-r14'
                     )}
                   </Typography>
-                  <img src="/images/R14_board_reset_sw.png"></img>
+                  <img src="/images/R14_board_reset_sw.webp"></img>
                 </div>
               </div>
             </>

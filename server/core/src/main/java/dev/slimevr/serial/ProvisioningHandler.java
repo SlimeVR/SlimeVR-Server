@@ -82,7 +82,7 @@ public class ProvisioningHandler implements SerialListener {
 	}
 
 	public void tryOptainMacAddress() {
-		this.changeStatus(ProvisioningStatus.OPTAINING_MAC_ADDRESS);
+		this.changeStatus(ProvisioningStatus.OBTAINING_MAC_ADDRESS);
 		vrServer.serialHandler.infoRequest();
 	}
 
@@ -108,7 +108,7 @@ public class ProvisioningHandler implements SerialListener {
 			)
 				this.initSerial(this.preferredPort);
 			else if (
-				this.provisioningStatus == ProvisioningStatus.OPTAINING_MAC_ADDRESS
+				this.provisioningStatus == ProvisioningStatus.OBTAINING_MAC_ADDRESS
 					|| this.provisioningStatus == ProvisioningStatus.PROVISIONING
 			)
 				this.tryOptainMacAddress();
@@ -139,7 +139,7 @@ public class ProvisioningHandler implements SerialListener {
 			return;
 
 		if (
-			provisioningStatus == ProvisioningStatus.OPTAINING_MAC_ADDRESS && str.contains("mac:")
+			provisioningStatus == ProvisioningStatus.OBTAINING_MAC_ADDRESS && str.contains("mac:")
 		) {
 			var match = new Regex("mac: (?<mac>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})), ")
 				.find(str, str.indexOf("mac:"));
