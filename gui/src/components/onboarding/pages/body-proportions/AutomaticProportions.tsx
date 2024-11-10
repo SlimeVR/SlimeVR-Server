@@ -1,9 +1,6 @@
 import { useLocalization } from '@fluent/react';
-import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import { AutoboneContextC, useProvideAutobone } from '@/hooks/autobone';
 import { useOnboarding } from '@/hooks/onboarding';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { StepperSlider } from '@/components/onboarding/StepperSlider';
 import { DoneStep } from './autobone-steps/Done';
@@ -20,7 +17,6 @@ import { CheckFloorHeightStep } from './autobone-steps/CheckFloorHeight';
 export function AutomaticProportionsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
-  const { sendRPCPacket } = useWebsocketAPI();
   const context = useProvideAutobone();
   const heightContext = useProvideHeightContext();
 
@@ -59,19 +55,6 @@ export function AutomaticProportionsPage() {
                 ]}
               ></StepperSlider>
             </div>
-          </div>
-          <div className="w-full flex flex-row mobile:justify-center">
-            <Button
-              variant="secondary"
-              onClick={() => {
-                sendRPCPacket(
-                  RpcMessage.SkeletonResetAllRequest,
-                  new SkeletonResetAllRequestT()
-                );
-              }}
-            >
-              {l10n.getString('reset-reset_all')}
-            </Button>
           </div>
         </div>
       </HeightContextC.Provider>
