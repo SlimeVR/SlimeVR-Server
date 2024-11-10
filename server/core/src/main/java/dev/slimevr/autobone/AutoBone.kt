@@ -202,7 +202,7 @@ class AutoBone(private val server: VRServer) {
 		loadConfigValues()
 
 		// Set the target heights either from config or calculate them
-		val targetHmdHeight = if (skeletonConfig.userHeight >= 0.4f) {
+		val targetHmdHeight = if (skeletonConfig.userHeight > MIN_HEIGHT) {
 			skeletonConfig.userHeight
 		} else {
 			calcTargetHmdHeight(frames, config)

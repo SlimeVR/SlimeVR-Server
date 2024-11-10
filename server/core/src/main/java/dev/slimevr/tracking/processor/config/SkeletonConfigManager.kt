@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.processor.config
 
 import dev.slimevr.VRServer.Companion.instance
+import dev.slimevr.autobone.AutoBone
 import dev.slimevr.autobone.errors.BodyProportionError.Companion.proportionLimitMap
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.tracking.processor.BoneType
@@ -399,7 +400,7 @@ class SkeletonConfigManager(
 		when (config) {
 			SkeletonConfigOffsets.UPPER_CHEST, SkeletonConfigOffsets.CHEST, SkeletonConfigOffsets.WAIST, SkeletonConfigOffsets.HIP, SkeletonConfigOffsets.UPPER_LEG, SkeletonConfigOffsets.LOWER_LEG -> {
 				val height = humanPoseManager?.server?.configManager?.vrConfig?.skeleton?.userHeight ?: -1f
-				if (height >= 0.4f) { // Reset only if floor level seems right,
+				if (height > AutoBone.MIN_HEIGHT) { // Reset only if floor level seems right,
 					val proportionLimiter = proportionLimitMap[config]
 					if (proportionLimiter != null) {
 						setOffset(
