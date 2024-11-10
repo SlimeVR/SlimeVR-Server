@@ -34,7 +34,7 @@ export function AutoboneErrorModal({
       <div className="flex w-full h-full flex-col ">
         <div className="flex w-full flex-col flex-grow items-center gap-3">
           <Localized
-            id="onboarding-automatic_proportions-error_modal"
+            id="onboarding-automatic_proportions-error_modal-v2"
             elems={{
               b: <b></b>,
               docs: (

@@ -78,7 +78,7 @@ function TrackerSmol({
       <div className="flex flex-col justify-center items-center fill-background-10">
         <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
       </div>
-      <div className="flex flex-col flex-grow ">
+      <div className="flex flex-col flex-grow justify-center">
         <Typography bold truncate>
           {trackerName}
         </Typography>
@@ -150,7 +150,7 @@ export function TrackerCard({
           ? {
               boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
                 velocity * 8
-              )}px #BB8AE5`,
+              )}px rgb(var(--accent-background-30))`,
             }
           : {}
       }

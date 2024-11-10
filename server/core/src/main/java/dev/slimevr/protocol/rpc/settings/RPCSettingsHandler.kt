@@ -33,6 +33,9 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 					messageHeader,
 				)
 			}
+		rpcHandler.registerPacketListener(RpcMessage.SettingsResetRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
+			this.onSettingsResetRequest(conn, messageHeader)
+		}
 	}
 
 	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
@@ -84,6 +87,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				.vrConfig
 				.driftCompensation
 			driftCompensationConfig.enabled = req.driftCompensation().enabled()
+			driftCompensationConfig.prediction = req.driftCompensation().prediction()
 			driftCompensationConfig.amount = req.driftCompensation().amount()
 			driftCompensationConfig.maxResets = req.driftCompensation().maxResets()
 			driftCompensationConfig.updateTrackersDriftCompensation()
@@ -352,6 +356,10 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		}
 
 		api.server.configManager.saveConfig()
+	}
+
+	fun onSettingsResetRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
+		api.server.configManager.resetConfig()
 	}
 
 	companion object {

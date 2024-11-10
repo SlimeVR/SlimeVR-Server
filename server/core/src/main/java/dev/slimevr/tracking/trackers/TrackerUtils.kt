@@ -31,7 +31,7 @@ object TrackerUtils {
 		position: TrackerPosition,
 	): Tracker? {
 		val resetTrackers = allTrackers.filter {
-			it.trackerPosition === position &&
+			it.trackerPosition == position &&
 				!it.isInternal &&
 				!it.status.reset
 		}
@@ -51,7 +51,7 @@ object TrackerUtils {
 		position: TrackerPosition,
 	): Tracker? {
 		val resetTrackers = allTrackers.filter {
-			it.trackerPosition === position &&
+			it.trackerPosition == position &&
 				!it.isComputed &&
 				!it.isInternal &&
 				!it.status.reset
@@ -72,7 +72,7 @@ object TrackerUtils {
 		position: TrackerPosition,
 	): Tracker? {
 		val resetTrackers = allTrackers.filter {
-			it.trackerPosition === position &&
+			it.trackerPosition == position &&
 				!it.isImu() &&
 				!it.isInternal &&
 				!it.status.reset

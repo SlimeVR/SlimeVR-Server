@@ -166,7 +166,7 @@ class AutoBone(private val server: VRServer) {
 			// Otherwise if there is no skeleton available, attempt to get the
 			// max HMD height from the recording
 			val hmdHeight = frames.maxHmdHeight
-			if (hmdHeight < 0.4f) {
+			if (hmdHeight <= MIN_HEIGHT) {
 				LogManager
 					.warning(
 						"[AutoBone] Max headset height detected (Value seems too low, did you not stand up straight while measuring?): $hmdHeight",
@@ -195,6 +195,9 @@ class AutoBone(private val server: VRServer) {
 		skeletonConfig: SkeletonConfig = globalSkeletonConfig,
 		epochCallback: Consumer<Epoch>? = null,
 	): AutoBoneResults {
+		check(frames.frameHolders.isNotEmpty()) { "Recording has no trackers." }
+		check(frames.maxFrameCount > 0) { "Recording has no frames." }
+
 		// Load current values for adjustable configs
 		loadConfigValues()
 
@@ -204,6 +207,7 @@ class AutoBone(private val server: VRServer) {
 		} else {
 			calcTargetHmdHeight(frames, config)
 		}
+		check(targetHmdHeight > MIN_HEIGHT) { "Configured height ($targetHmdHeight) is too small (<= $MIN_HEIGHT)." }
 
 		// Set up the current state, making all required players and setting up the
 		// skeletons appropriately
@@ -310,6 +314,9 @@ class AutoBone(private val server: VRServer) {
 			.info(
 				"[AutoBone] Target height: ${trainingStep.targetHmdHeight}, Final height: $estimatedHeight",
 			)
+		if (trainingStep.errorStats.mean > config.maxFinalError) {
+			throw AutoBoneException("The final epoch error value (${trainingStep.errorStats.mean}) has exceeded the maximum allowed value (${config.maxFinalError}).")
+		}
 
 		return AutoBoneResults(
 			estimatedHeight,
@@ -740,6 +747,7 @@ class AutoBone(private val server: VRServer) {
 	}
 
 	companion object {
+		const val MIN_HEIGHT = 0.4f
 		const val AUTOBONE_FOLDER = "AutoBone Recordings"
 		const val LOADAUTOBONE_FOLDER = "Load AutoBone Recordings"
 
