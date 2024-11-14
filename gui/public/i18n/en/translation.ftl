@@ -1180,6 +1180,15 @@ firmware-update-status-ERROR_PROVISIONING_FAILED = Could not set the Wi-Fi crede
 firmware-update-status-ERROR_UNSUPPORTED_METHOD = The update method is not supported
 firmware-update-status-ERROR_UNKNOWN = Unknown error
 
+## Dedicated Firmware Update Page
+firmware-update-title = Firmware update
+firmware-update-devices = Available Devices
+firmware-update-devices-desc = Please select the trackers you want to update to the lastest version of slimevr
+firmware-update-no-devices = Plase make sure that the trackers you want to update are ON and connected to wifi!
+firmware-update-changelog-title = Upgrading to {$version}
+firmware-update-retry = Retry
+firmware-update-update = Update Selected Trackers
+
 ## Tray Menu
 tray_menu-show = Show
 tray_menu-hide = Hide

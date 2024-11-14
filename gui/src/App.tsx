@@ -58,6 +58,7 @@ import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
 import { EmptyLayout } from './components/EmptyLayout';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
+import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -80,6 +81,14 @@ function Layout() {
             element={
               <MainLayout isMobile={isMobile}>
                 <Home />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/firmware-update"
+            element={
+              <MainLayout isMobile={isMobile} widgets={false}>
+                <FirmwareUpdate />
               </MainLayout>
             }
           />

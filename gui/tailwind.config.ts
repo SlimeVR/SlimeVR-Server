@@ -1,5 +1,6 @@
 import plugin from 'tailwindcss/plugin';
 import forms from '@tailwindcss/forms';
+import typography from '@tailwindcss/typography';
 import gradient from 'tailwind-gradient-mask-image';
 import type { Config } from 'tailwindcss';
 
@@ -150,7 +151,7 @@ const colors = {
     700: '#b3b3b3',
     900: '#d8d8d8',
   },
-  'asexual': {
+  asexual: {
     100: '#000000',
     200: '#A3A3A3',
     300: '#FFFFFF',
@@ -247,6 +248,7 @@ const config = {
   plugins: [
     forms,
     gradient,
+    typography,
     plugin(function ({ addUtilities }) {
       const textConfig = (fontSize: any, fontWeight: any) => ({
         fontSize,

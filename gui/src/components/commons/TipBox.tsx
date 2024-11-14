@@ -49,13 +49,20 @@ export function WarningBox({
   children,
   whitespace = true,
   hideIcon = false,
+  className,
 }: {
   children: ReactNode;
+  className?: string;
   whitespace?: boolean;
   hideIcon?: boolean;
 }) {
   return (
-    <div className="flex flex-row gap-4 bg-status-warning p-4 rounded-md">
+    <div
+      className={classNames(
+        'flex flex-row gap-4 bg-status-warning p-4 rounded-md',
+        className
+      )}
+    >
       <div
         className={classNames(
           'text-background-60 flex flex-col justify-center',
@@ -64,7 +71,7 @@ export function WarningBox({
       >
         <WarningIcon></WarningIcon>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col justify-center">
         <Typography
           color="text-background-60"
           whitespace={whitespace ? 'whitespace-pre-line' : undefined}
