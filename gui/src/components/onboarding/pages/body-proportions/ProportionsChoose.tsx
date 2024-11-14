@@ -9,6 +9,7 @@ import {
   SkeletonConfigRequestT,
   SkeletonBone,
   ChangeSkeletonConfigRequestT,
+  SkeletonResetAllRequestT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { save } from '@tauri-apps/plugin-dialog';
@@ -18,6 +19,7 @@ import { useAppContext } from '@/hooks/app';
 import { error } from '@/utils/logging';
 import { fileOpen, fileSave } from 'browser-fs-access';
 import { useDebouncedEffect } from '@/hooks/timeout';
+import { ProportionsResetModal } from './ProportionsResetModal';
 
 export const MIN_HEIGHT = 0.4;
 export const MAX_HEIGHT = 4;
@@ -36,6 +38,7 @@ export function ProportionsChoose() {
   const { applyProgress, state } = useOnboarding();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [animated, setAnimated] = useState(false);
+  const [showProportionWarning, setShowProportionWarning] = useState(false);
   const [importState, setImportState] = useState(ImportStatus.OK);
   const { computedTrackers } = useAppContext();
 
@@ -149,6 +152,13 @@ export function ProportionsChoose() {
       sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, req)
     );
     setImportState(ImportStatus.SUCCESS);
+  };
+
+  const resetAll = () => {
+    sendRPCPacket(
+      RpcMessage.SkeletonResetAllRequest,
+      new SkeletonResetAllRequestT()
+    );
   };
 
   return (
@@ -340,6 +350,22 @@ export function ProportionsChoose() {
                 {l10n.getString('onboarding-previous_step')}
               </Button>
             )}
+            {state.alonePage && (
+              <Button
+                variant="secondary"
+                onClick={() => setShowProportionWarning(true)}
+              >
+                {l10n.getString('reset-reset_all')}
+              </Button>
+            )}
+            <ProportionsResetModal
+              accept={() => {
+                resetAll();
+                setShowProportionWarning(false);
+              }}
+              onClose={() => setShowProportionWarning(false)}
+              isOpen={showProportionWarning}
+            ></ProportionsResetModal>
             <Button
               variant={!state.alonePage ? 'secondary' : 'tertiary'}
               className="ml-auto"

@@ -79,6 +79,10 @@ reset-reset_all_warning =
     Are you sure you want to do this?
 reset-reset_all_warning-reset = Reset proportions
 reset-reset_all_warning-cancel = Cancel
+reset-reset_all_warning_default =
+    <b>Warning:</b> You currently don't have your height defined, which
+    will make the proportions be based on a default height.
+    Are you sure you want to do this?
 
 reset-full = Full Reset
 reset-mounting = Reset Mounting
