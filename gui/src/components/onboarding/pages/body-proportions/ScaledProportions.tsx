@@ -8,35 +8,26 @@ import { CheckFloorHeightStep } from './autobone-steps/CheckFloorHeight';
 import { ResetProportionsStep } from './scaled-steps/ResetProportions';
 import { DoneStep } from './scaled-steps/Done';
 import { useNavigate } from 'react-router-dom';
-import { useAppContext } from '@/hooks/app';
 import { useMemo } from 'react';
-import { MIN_HEIGHT } from './ProportionsChoose';
 import { ManualHeightStep } from './scaled-steps/ManualHeightStep';
+import { useTrackers } from '@/hooks/tracker';
+import { BodyPart } from 'solarxr-protocol';
 
 export function ScaledProportionsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const heightContext = useProvideHeightContext();
   const navigate = useNavigate();
-  const { computedTrackers } = useAppContext();
+  const { trackers } = useTrackers();
 
   const hmdTracker = useMemo(
     () =>
-      computedTrackers.find(
+      trackers.some(
         (tracker) =>
-          tracker.tracker.trackerId?.trackerNum === 1 &&
-          tracker.tracker.trackerId.deviceId?.id === undefined
+          tracker.tracker.info?.bodyPart === BodyPart.HEAD &&
+          tracker.tracker.info.isHmd
       ),
-    [computedTrackers]
-  );
-
-  const beneathFloor = useMemo(
-    () =>
-      !(
-        hmdTracker?.tracker.position &&
-        hmdTracker.tracker.position.y >= MIN_HEIGHT
-      ),
-    [hmdTracker?.tracker.position?.y]
+    [trackers]
   );
 
   applyProgress(0.9);
@@ -59,7 +50,7 @@ export function ScaledProportionsPage() {
             <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
               steps={
-                beneathFloor
+                !hmdTracker
                   ? [
                       { type: 'numbered', component: ManualHeightStep },
                       { type: 'numbered', component: ResetProportionsStep },
