@@ -79,6 +79,10 @@ reset-reset_all_warning =
     Are you sure you want to do this?
 reset-reset_all_warning-reset = Reset proportions
 reset-reset_all_warning-cancel = Cancel
+reset-reset_all_warning_default =
+    <b>Warning:</b> You currently don't have your height defined, which
+    will make the proportions be based on a default height.
+    Are you sure you want to do this?
 
 reset-full = Full Reset
 reset-mounting = Reset Mounting
@@ -914,6 +918,15 @@ onboarding-choose_proportions-manual_proportions = Manual proportions
 # Italicized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
+onboarding-choose_proportions-scaled_proportions = Scaled proportions
+# Italized text
+onboarding-choose_proportions-scaled_proportions-subtitle = Recommended for new users
+# Multiline string
+onboarding-choose_proportions-scaled_proportions-description =
+    This will scale the proportions of an average human body based on your height, this will help for basic full-body tracking.
+
+    <b>This requires having your headset (HMD) connected to SlimeVR and on your head!</b>
+onboarding-choose_proportions-scaled_proportions-button = Scaled proportions
 onboarding-choose_proportions-export = Export proportions
 onboarding-choose_proportions-import = Import proportions
 onboarding-choose_proportions-import-success = Imported
@@ -933,9 +946,11 @@ onboarding-automatic_proportions-title = Measure your body
 onboarding-automatic_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.
 onboarding-automatic_proportions-manual = Manual proportions
 onboarding-automatic_proportions-prev_step = Previous step
+
 onboarding-automatic_proportions-put_trackers_on-title = Put on your trackers
 onboarding-automatic_proportions-put_trackers_on-description = To calibrate your proportions, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_proportions-put_trackers_on-next = I have all my trackers on
+
 onboarding-automatic_proportions-requirements-title = Requirements
 # Each line of text is a different list item
 onboarding-automatic_proportions-requirements-descriptionv2 =
@@ -945,23 +960,38 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Your headset is reporting positional data to the SlimeVR server (this generally means having SteamVR running and connected to SlimeVR using SlimeVR's SteamVR driver).
     Your tracking is working and is accurately representing your movements (ex. you have performed a full reset and they move the right direction when kicking, bending over, sitting, etc).
 onboarding-automatic_proportions-requirements-next = I have read the requirements
-onboarding-automatic_proportions-check_height-title = Check your height
+
+onboarding-automatic_proportions-check_height-title-v2 = Let's measure your height
 onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the headset's (HMD) height as an approximation of your actual height, but it's better to check if they are right yourself!
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = Please press the button while standing <u>upright</u> to calculate your height. You have 3 seconds after you press the button!
+onboarding-automatic_proportions-check_height-calculation_warning-v2 = Please press the button while standing <u>upright</u> to calculate your height. Be careful to not raise your arms higher than your headset!
 onboarding-automatic_proportions-check_height-guardian_tip = If you are using a standalone VR headset, make sure to have your guardian /
     boundary turned on so that your height is correct!
-onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Unknown
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = Your HMD height is
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = so your actual height is
+onboarding-automatic_proportions-check_height-hmd_height2 = Your headset height is:
+onboarding-automatic_proportions-check_height-measure-start = Start measuring!
+onboarding-automatic_proportions-check_height-measure-stop = Stop measuring
+onboarding-automatic_proportions-check_height-measure-reset = Try measuring again!
 onboarding-automatic_proportions-check_height-next_step = They are fine
+
+onboarding-automatic_proportions-check_floor_height-title = Measure your floor height (optional)
+onboarding-automatic_proportions-check_floor_height-description = In some very special setups, your floor might not be set to 0m by your headset, so we need to get the "height" of your floor when that happens.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning = You can skip this step! You are not forced to do it.
+# Shows an element below it
+onboarding-automatic_proportions-check_floor_height-floor_height = Your floor height is:
+onboarding-automatic_proportions-check_floor_height-measure-start = Start measuring!
+onboarding-automatic_proportions-check_floor_height-measure-stop = Stop measuring
+onboarding-automatic_proportions-check_floor_height-measure-reset = Try measuring again!
+onboarding-automatic_proportions-check_floor_height-skip_step = Skip step
+onboarding-automatic_proportions-check_floor_height-next_step = It is fine
+
 onboarding-automatic_proportions-start_recording-title = Get ready to move
 onboarding-automatic_proportions-start_recording-description = We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!
 onboarding-automatic_proportions-start_recording-next = Start Recording
+
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Recording in progress...
 onboarding-automatic_proportions-recording-description-p1 = Make the moves shown below:
@@ -979,12 +1009,14 @@ onboarding-automatic_proportions-recording-timer = { $time ->
     [one] 1 second left
     *[other] { $time } seconds left
 }
+
 onboarding-automatic_proportions-verify_results-title = Verify results
 onboarding-automatic_proportions-verify_results-description = Check the results below, do they look correct?
 onboarding-automatic_proportions-verify_results-results = Recording results
 onboarding-automatic_proportions-verify_results-processing = Processing the result
 onboarding-automatic_proportions-verify_results-redo = Redo recording
 onboarding-automatic_proportions-verify_results-confirm = They're correct
+
 onboarding-automatic_proportions-done-title = Body measured and saved.
 onboarding-automatic_proportions-done-description = Your body proportions' calibration is complete!
 onboarding-automatic_proportions-error_modal-v2 =
@@ -992,6 +1024,20 @@ onboarding-automatic_proportions-error_modal-v2 =
     This is likely a mounting calibration issue. Make sure your tracking works properly before trying again.
     Please <docs>check the docs</docs> or join our <discord>Discord</discord> for help ^_^
 onboarding-automatic_proportions-error_modal-confirm = Understood!
+
+onboarding-automatic_proportions-smol_warning =
+    The height you entered is { $height }, and it's smaller than the minimum accepted one which is { $minHeight },
+    <b>please redo the calibration and get your correct height.</b>
+onboarding-automatic_proportions-smol_warning-cancel = Understandable
+
+## Tracker scaled proportions setup
+onboarding-scaled_proportions-title = Scaled proportions
+onboarding-scaled_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This will use an average proportion and scale it based on your height.
+onboarding-scaled_proportions-manual_height-title = Let's get your height
+onboarding-scaled_proportions-manual_height-description = a
+onboarding-scaled_proportions-manual_height-missing_steamvr = You don't have SteamVR connected to SlimeVR currently, which doesn't allow you to use measurements based on your headset, <b>proceed by your own caution or check docs!</b>
+onboarding-scaled_proportions-manual_height-height = Your height is
+onboarding-scaled_proportions-manual_height-next_step = Continue
 
 ## Home
 home-no_trackers = No trackers detected or assigned

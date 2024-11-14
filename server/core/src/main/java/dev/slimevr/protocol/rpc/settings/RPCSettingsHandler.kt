@@ -317,6 +317,16 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				api.server.humanPoseManager.updateLegTweaksConfig()
 			}
 
+			modelSettings.skeletonHeight()?.let {
+				if (it.hasHmdHeight()) {
+					api.server.configManager.vrConfig.skeleton.hmdHeight = it.hmdHeight()
+				}
+
+				if (it.hasFloorHeight()) {
+					api.server.configManager.vrConfig.skeleton.floorHeight = it.floorHeight()
+				}
+			}
+
 			hpm.saveConfig()
 		}
 
