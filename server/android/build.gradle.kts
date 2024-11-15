@@ -120,11 +120,14 @@ android {
 		// Specifies the API level used to test the app.
 		targetSdk = 35
 
+		// adds an offset of the version code as we might do apk releases in the middle of actual
+		// releases if we failed on bundling or stuff
+		val versionCodeOffset = 1
 		// Defines the version number of your app.
-		versionCode = extra["gitVersionCode"] as? Int
+		versionCode = (extra["gitVersionCode"] as? Int)?.plus(versionCodeOffset) ?: 0
 
 		// Defines a user-friendly version name for your app.
-		versionName = extra["gitVersionName"] as? String
+		versionName = extra["gitVersionName"] as? String ?: "v0.0.0"
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
