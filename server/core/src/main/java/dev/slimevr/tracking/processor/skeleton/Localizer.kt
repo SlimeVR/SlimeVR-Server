@@ -210,7 +210,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 	// update the target position of the foot
 	private fun updateTargetPos(loc: Vector3, foot: MovementStates) {
 		if (foot == plantedFoot) {
-			if (worldReference === MovementStates.FOLLOW_COM) {
+			if (worldReference == MovementStates.FOLLOW_COM) {
 				targetFoot = loc
 			}
 		} else {
@@ -255,16 +255,16 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 
 		// update how long the COM has been the reference and how long the foot
 		// has been
-		comFrames = if (worldReference === MovementStates.FOLLOW_COM) comFrames + 1 else 0
-		footFrames = if (worldReference === MovementStates.FOLLOW_FOOT) footFrames + 1 else 0
-		sittingFrames = if (worldReference === MovementStates.FOLLOW_SITTING) sittingFrames + 1 else 0
+		comFrames = if (worldReference == MovementStates.FOLLOW_COM) comFrames + 1 else 0
+		footFrames = if (worldReference == MovementStates.FOLLOW_FOOT) footFrames + 1 else 0
+		sittingFrames = if (worldReference == MovementStates.FOLLOW_SITTING) sittingFrames + 1 else 0
 	}
 
 	// gets the position the COM should be at based on the velocity of the com and
 	// the location of the floor
 	private fun updateTargetCOM() {
 		// if not in COM tracking mode, just use the current COM
-		if (worldReference === MovementStates.FOLLOW_FOOT || worldReference === MovementStates.FOLLOW_SITTING) {
+		if (worldReference == MovementStates.FOLLOW_FOOT || worldReference == MovementStates.FOLLOW_SITTING) {
 			targetCOM = bufCur.centerOfMass
 		} else {
 			currentCOM = targetCOM
@@ -293,7 +293,7 @@ class Localizer(humanSkeleton: HumanSkeleton) {
 		val comPosStart: Vector3 = buf.centerOfMass
 
 		// get the buffer that occurred VELOCITY_SAMPLE_RATE ago in time
-		while (buf.timeOfFrame > timeEnd && buf.parent !== null) {
+		while (buf.timeOfFrame > timeEnd && buf.parent != null) {
 			buf = buf.parent!!
 		}
 

@@ -19,3 +19,7 @@ Load AutoBone Recordings
 *.log.lck
 *.log
 logs/
+
+android/release
+android/debug
+

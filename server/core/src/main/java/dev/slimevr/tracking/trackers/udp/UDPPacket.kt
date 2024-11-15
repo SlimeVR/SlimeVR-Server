@@ -224,10 +224,9 @@ data class UDPPacket14Error(var errorNumber: Int = 0) :
 data class UDPPacket15SensorInfo(
 	var sensorStatus: Int = 0,
 	var sensorType: IMUType = IMUType.UNKNOWN,
+	var sensorConfig: SensorConfig? = null,
 	var trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
 	var trackerPosition: TrackerPosition? = null,
-	var trackerAverageTps: Float = 0f,
-	var trackerAverageDataTps: Float = 0f,
 ) : UDPPacket(15),
 	SensorSpecificPacket {
 	override var sensorId = 0
@@ -237,10 +236,11 @@ data class UDPPacket15SensorInfo(
 		if (buf.remaining() > 0) {
 			sensorType = IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
 		}
+		if (buf.remaining() > 1) {
+			sensorConfig = SensorConfig(buf.getShort().toUShort())
+		}
 		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.get().toInt() and 0xFF)
 		if (buf.remaining() > 0) trackerDataType = TrackerDataType.getById(buf.get().toUInt() and 0xFFu) ?: TrackerDataType.ROTATION
-		if (buf.remaining() > 0) trackerAverageTps = UDPUtils.getSafeBufferFloat(buf)
-		if (buf.remaining() > 0) trackerAverageDataTps = UDPUtils.getSafeBufferFloat(buf)
 	}
 
 	companion object {
@@ -358,9 +358,33 @@ data class UDPPacket23RotationAndAcceleration(
 	}
 }
 
-data class UDPPacket24FlexData(
-	var flexData: Float = 0f,
+data class UDPPacket24AckConfigChange(
+	override var sensorId: Int = 0,
+	var configType: ConfigTypeId = ConfigTypeId(0u),
 ) : UDPPacket(24),
+	SensorSpecificPacket {
+	override fun readData(buf: ByteBuffer) {
+		sensorId = buf.get().toInt() and 0xFF
+		configType = ConfigTypeId(buf.getShort().toUShort())
+	}
+}
+
+data class UDPPacket25SetConfigFlag(
+	override var sensorId: Int = 255,
+	var configType: ConfigTypeId,
+	var state: Boolean,
+) : UDPPacket(25),
+	SensorSpecificPacket {
+	override fun writeData(buf: ByteBuffer) {
+		buf.put(sensorId.toByte())
+		buf.putShort(configType.v.toShort())
+		buf.put(if (state) 1 else 0)
+	}
+}
+
+data class UDPPacket26FlexData(
+	var flexData: Float = 0f,
+) : UDPPacket(26),
 	SensorSpecificPacket {
 
 	override var sensorId = 0

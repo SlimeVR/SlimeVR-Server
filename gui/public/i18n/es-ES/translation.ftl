@@ -144,7 +144,6 @@ widget-developer_mode-more_info = Más información
 widget-imu_visualizer = Rotación
 widget-imu_visualizer-rotation_raw = Sin filtrar
 widget-imu_visualizer-rotation_preview = Previsualización
-widget-imu_visualizer-rotation_hide = Ocultar
 
 ## Widget: Skeleton Visualizer
 
@@ -348,6 +347,7 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Compensa la desviación horizontal del IMU aplicando una rotación inversa.
     Cambia la cantidad de compensación y de reinicios que se tienen en cuenta.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensación en la desviación
+settings-general-tracker_mechanics-drift_compensation_warning-done = Yo entiendo
 settings-general-tracker_mechanics-drift_compensation-amount-label = Cantidad de compensación
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Usar los últimos X reinicios.
 settings-general-tracker_mechanics-save_mounting_reset = Guardar la calibración de reajuste de montaje automático
@@ -454,6 +454,9 @@ settings-general-interface-dev_mode = Modo de desarrollador
 settings-general-interface-dev_mode-description = Este modo puede ser útil si necesitas datos en profundidad o para interactuar con los trackers conectados a un nivel más avanzado
 settings-general-interface-dev_mode-label = Modo de desarrollador
 settings-general-interface-theme = Temas
+settings-general-interface-show-navbar-onboarding = Enseñar ''{ navbar-onboarding }" en la barra de navegación
+settings-general-interface-show-navbar-onboarding-description = Esto cambia si el botón de  "{ navbar-onboarding }" enseña en la barra de navegación
+settings-general-interface-show-navbar-onboarding-label = Enseña "{ navbar-onboarding }"
 settings-general-interface-lang = Seleccionar idioma
 settings-general-interface-lang-description = Cambiar el idioma predeterminado que deseas utilizar.
 settings-general-interface-lang-placeholder = Seleccionar el idioma que desea utilizar
@@ -465,6 +468,7 @@ settings-interface-appearance-font-os_font = Fuente SO
 settings-interface-appearance-font-slime_font = Fuente predeterminada
 settings-interface-appearance-font_size = Escala de la fuente base
 settings-interface-appearance-font_size-description = Esto afecta al tamaño de la fuente de toda la interfaz excepto este panel de configuración
+settings-interface-appearance-decorations-label = Usar decoraciones nativos.
 
 ## Notification settings
 
@@ -607,6 +611,21 @@ settings-osc-vmc-anchor_hip-label = Anclar a la cadera
 settings-osc-vmc-mirror_tracking = Invertir el tracking
 settings-osc-vmc-mirror_tracking-description = Invierte el tracking horizontalmente.
 settings-osc-vmc-mirror_tracking-label = Invertir el tracking
+
+## Advanced settings
+
+settings-utils-advanced = Avanzado
+settings-utils-advanced-reset-gui = Restablecer configucación del GUI
+settings-utils-advanced-reset-gui-description = Restaurar la configuración predeterminado para el interfaz.
+settings-utils-advanced-reset-gui-label = Restablecer el GUI
+settings-utils-advanced-reset-server = Restablecer la configuración del tracking
+settings-utils-advanced-reset-server-description = Restaurar la configuración predeterminado para el tracking,
+settings-utils-advanced-reset-server-label = Restablecer el tracking,
+settings-utils-advanced-reset-all = Restablecer todas las configuraciónes
+settings-utils-advanced-reset-all-description = Restaurar la configuración predeterminada para el interfaz y el tracking.
+settings-utils-advanced-reset_warning-cancel = Cancelar
+settings-utils-advanced-open_data = Carpeta de datos
+settings-utils-advanced-open_data-label = Abrir carpeta
 
 ## Setup/onboarding menu
 
@@ -842,11 +861,11 @@ onboarding-choose_mounting = ¿Qué método de calibración de montura usara?
 # Multiline text
 onboarding-choose_mounting-description = La posición de montura corrige la colocación de los trackers en el cuerpo.
 onboarding-choose_mounting-auto_mounting = Calibración de montura automatica
-# Italized text
+# Italicized text
 onboarding-choose_mounting-auto_mounting-label-v2 = Recomendada
 onboarding-choose_mounting-auto_mounting-description = Esto detectará automáticamente la posición de montura para todos sus trackers a partir de 2 poses
 onboarding-choose_mounting-manual_mounting = Calibración de montura manual
-# Italized text
+# Italicized text
 onboarding-choose_mounting-manual_mounting-label-v2 = Puede que no sea lo suficientemente precisa
 onboarding-choose_mounting-manual_mounting-description = Esto te permitirá elegir la posición de montura para cada tracker de manera manual
 # Multiline text
@@ -895,14 +914,14 @@ onboarding-choose_proportions-description-v1 =
     Cuando las proporciones de tu cuerpo no coincidan con las guardadas, la precisión del tracking será peor y notarás cosas como que patinas o te deslizas, o que tu cuerpo no se ajusta bien a tu avatar.
     <b>¡Sólo necesitas medir tu cuerpo una vez!</b> A menos que estén mal o tu cuerpo haya cambiado, entonces no necesitas volver a hacerlo.
 onboarding-choose_proportions-auto_proportions = Proporciones automáticas
-# Italized text
+# Italicized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recomendado
 onboarding-choose_proportions-auto_proportions-descriptionv3 =
     Adivinará tus proporciones grabando una muestra de tus movimientos y pasándola por un algoritmo.
     
     <b>¡Esto requiere tener tu visor (HMD) conectado a SlimeVR y en tu cabeza!</b>
 onboarding-choose_proportions-manual_proportions = Proporciones manuales
-# Italized text
+# Italicized text
 onboarding-choose_proportions-manual_proportions-subtitle = Para pequeños retoques
 onboarding-choose_proportions-manual_proportions-description = Esto te permitirá ajustar tus proporciones manualmente modificándolas directamente
 onboarding-choose_proportions-export = Exportar proporciones
@@ -982,9 +1001,6 @@ onboarding-automatic_proportions-verify_results-redo = Rehacer la grabación
 onboarding-automatic_proportions-verify_results-confirm = Estan correctas
 onboarding-automatic_proportions-done-title = Proporciones medidas y guardadas.
 onboarding-automatic_proportions-done-description = ¡Calibración de las proporciones físicas completada!
-onboarding-automatic_proportions-error_modal =
-    <b>Atención:</b> ¡Se ha encontrado un error al estimar las proporciones!
-    Por favor <docs>comprueba la documentación</docs> o únete a nuestro <discord>Discord</discord> para obtener ayuda ^_^
 onboarding-automatic_proportions-error_modal-confirm = ¡Entendido!
 
 ## Home

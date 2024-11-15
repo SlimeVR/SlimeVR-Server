@@ -4,6 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
@@ -66,6 +67,7 @@ class Tracker @JvmOverloads constructor(
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
 	val isHmd: Boolean = false,
+	magStatus: MagnetometerStatus = MagnetometerStatus.NOT_SUPPORTED,
 	/**
 	 * Rotation by default.
 	 * NOT the same as hasRotation (other data types emulate rotation)
@@ -86,6 +88,8 @@ class Tracker @JvmOverloads constructor(
 	var signalStrength: Int? = null
 	var temperature: Float? = null
 	var customName: String? = null
+	var magStatus: MagnetometerStatus = magStatus
+		private set
 
 	/**
 	 * If the tracker has gotten disconnected after it was initialized first time
@@ -396,6 +400,17 @@ class Tracker @JvmOverloads constructor(
 	 * For example, flex sensor trackers are not considered as IMU trackers (see TrackerDataType)
 	 */
 	fun isImu(): Boolean = imuType != null && trackerDataType == TrackerDataType.ROTATION
+
+	/**
+	 * Please don't use this and instead set it via [Device.setMag]
+	 */
+	internal fun setMagPrivate(mag: Boolean) {
+		magStatus = if (mag) {
+			MagnetometerStatus.ENABLED
+		} else {
+			MagnetometerStatus.DISABLED
+		}
+	}
 
 	/**
 	 * Gets the current TPS of the tracker

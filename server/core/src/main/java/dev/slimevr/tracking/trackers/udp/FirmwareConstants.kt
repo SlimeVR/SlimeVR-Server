@@ -122,3 +122,35 @@ enum class TrackerDataType(val id: UInt) {
 		fun getById(id: UInt): TrackerDataType? = byId[id]
 	}
 }
+
+@JvmInline
+value class ConfigTypeId(val v: UShort)
+
+enum class MagnetometerStatus {
+	NOT_SUPPORTED,
+	DISABLED,
+	ENABLED,
+	;
+
+	fun getSolarType(): Int = this.ordinal
+
+	companion object {
+		private val byId = entries.associateBy { it.ordinal.toUByte() }
+
+		@JvmStatic
+		fun getById(id: UByte): MagnetometerStatus? = byId[id]
+	}
+}
+
+@JvmInline
+value class SensorConfig(val v: UShort) {
+	val magStatus
+		get(): MagnetometerStatus {
+			if ((v.toUInt() shr 1) and 1u == 0u) return MagnetometerStatus.NOT_SUPPORTED
+			return if ((v and 1u) == 1u.toUShort()) {
+				MagnetometerStatus.ENABLED
+			} else {
+				MagnetometerStatus.DISABLED
+			}
+		}
+}

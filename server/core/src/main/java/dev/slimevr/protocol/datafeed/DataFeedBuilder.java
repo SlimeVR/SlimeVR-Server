@@ -139,6 +139,7 @@ public class DataFeedBuilder {
 			TrackerInfo.addMountingResetOrientation(fbb, createQuat(fbb, mountResetFix));
 		}
 
+		TrackerInfo.addMagnetometer(fbb, tracker.getMagStatus().getSolarType());
 		TrackerInfo.addIsHmd(fbb, tracker.isHmd());
 
 		TrackerInfo.addDataSupport(fbb, tracker.getTrackerDataType().getSolarType());

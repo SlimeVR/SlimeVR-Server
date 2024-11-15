@@ -3,12 +3,15 @@ package dev.slimevr.tracking.trackers.udp
 import com.jme3.math.FastMath
 import dev.slimevr.NetworkProtocol
 import dev.slimevr.VRServer
+import dev.slimevr.config.config
+import dev.slimevr.protocol.rpc.MAG_TIMEOUT
 import dev.slimevr.tracking.trackers.*
 import io.eiren.util.Util
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import io.github.axisangles.ktmath.Vector3
+import kotlinx.coroutines.*
 import org.apache.commons.lang3.ArrayUtils
 import solarxr_protocol.rpc.ResetType
 import java.net.DatagramPacket
@@ -19,8 +22,12 @@ import java.net.SocketAddress
 import java.net.SocketTimeoutException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.util.Random
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.function.Consumer
+import kotlin.collections.HashMap
+import kotlin.coroutines.resume
 
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
@@ -168,7 +175,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				// Set up new sensor for older firmware.
 				// Firmware after 7 should send sensor status packet and sensor
 				// will be created when it's received
-				setUpSensor(connection, 0, handshake.imuType, 1, null, TrackerDataType.ROTATION)
+				setUpSensor(connection, 0, handshake.imuType, 1, MagnetometerStatus.NOT_SUPPORTED, null, TrackerDataType.ROTATION)
 			}
 			connection
 		}
@@ -179,7 +186,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		socket.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
 	}
 
-	private fun setUpSensor(connection: UDPDevice, trackerId: Int, sensorType: IMUType, sensorStatus: Int, trackerPosition: TrackerPosition?, trackerDataType: TrackerDataType) {
+	private val mainScope = CoroutineScope(SupervisorJob())
+	private fun setUpSensor(connection: UDPDevice, trackerId: Int, sensorType: IMUType, sensorStatus: Int, magStatus: MagnetometerStatus, trackerPosition: TrackerPosition?, trackerDataType: TrackerDataType) {
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
@@ -203,6 +211,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				needsReset = true,
 				needsMounting = true,
 				usesTimeout = true,
+				magStatus = magStatus,
 				trackerDataType = trackerDataType,
 			)
 			connection.trackers[trackerId] = imuTracker
@@ -211,6 +220,54 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		}
 		val status = UDPPacket15SensorInfo.getStatus(sensorStatus)
 		if (status != null) imuTracker.status = status
+
+		if (magStatus == MagnetometerStatus.NOT_SUPPORTED) return
+		if (magStatus == MagnetometerStatus.ENABLED &&
+			(!VRServer.instance.configManager.vrConfig.server.useMagnetometerOnAllTrackers || imuTracker.config.shouldHaveMagEnabled == false)
+		) {
+			mainScope.launch {
+				withTimeoutOrNull(MAG_TIMEOUT) {
+					connection.setMag(false, trackerId)
+				}
+			}
+		} else if (magStatus == MagnetometerStatus.DISABLED &&
+			VRServer.instance.configManager.vrConfig.server.useMagnetometerOnAllTrackers && imuTracker.config.shouldHaveMagEnabled == true
+		) {
+			mainScope.launch {
+				withTimeoutOrNull(MAG_TIMEOUT) {
+					connection.setMag(true, trackerId)
+				}
+			}
+		}
+	}
+
+	private data class ConfigStateWaiter(
+		val expectedState: Boolean,
+		val channel: CancellableContinuation<Boolean>,
+		var ran: Boolean = false,
+	)
+
+	private val queues: MutableMap<Triple<SocketAddress, ConfigTypeId, Int>, Deque<ConfigStateWaiter>> = ConcurrentHashMap()
+	suspend fun setConfigFlag(device: UDPDevice, configTypeId: ConfigTypeId, state: Boolean, sensorId: Int = 255) {
+		if (device.timedOut) return
+		val triple = Triple(device.address, configTypeId, sensorId)
+		val queue = queues.computeIfAbsent(triple) { _ -> ConcurrentLinkedDeque() }
+
+		suspendCancellableCoroutine {
+			val waiter = ConfigStateWaiter(state, it)
+			queue.add(waiter)
+			it.invokeOnCancellation {
+				queue.remove(waiter)
+			}
+		}
+	}
+
+	private fun actualSetConfigFlag(device: UDPDevice, configTypeId: ConfigTypeId, state: Boolean, sensorId: Int) {
+		val packet = UDPPacket25SetConfigFlag(sensorId, configTypeId, state)
+		bb.limit(bb.capacity())
+		bb.rewind()
+		parser.write(bb, null, packet)
+		socket.send(DatagramPacket(rcvBuffer, bb.position(), device.address))
 	}
 
 	override fun run() {
@@ -243,6 +300,19 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					parser.parse(bb, connection)
 						.filterNotNull()
 						.forEach { processPacket(received, it, connection) }
+
+					queues.forEach { (t, p) ->
+						val q = p.firstOrNull() ?: return@forEach
+						if (q.ran) return@forEach
+
+						val device = connectionsByAddress[t.first] ?: run {
+							p.removeFirst()
+							LogManager.info("[TrackerServer] Device ${t.first} not connected, so can't communicate with it")
+							return@forEach
+						}
+						actualSetConfigFlag(device, t.second, q.expectedState, t.third)
+						if (!device.timedOut) q.ran = true
+					}
 				} catch (ignored: SocketTimeoutException) {
 				} catch (e: Exception) {
 					LogManager.warning(
@@ -311,7 +381,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 	private fun processPacket(received: DatagramPacket, packet: UDPPacket, connection: UDPDevice?) {
 		val tracker: Tracker?
 		when (packet) {
-			is UDPPacket0Heartbeat, is UDPPacket1Heartbeat -> {}
+			is UDPPacket0Heartbeat, is UDPPacket1Heartbeat, is UDPPacket25SetConfigFlag -> {}
 
 			is UDPPacket3Handshake -> setUpNewConnection(received, packet)
 
@@ -402,14 +472,23 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 
 			is UDPPacket15SensorInfo -> {
 				if (connection == null) return
-				setUpSensor(connection, packet.sensorId, packet.sensorType, packet.sensorStatus, packet.trackerPosition, packet.trackerDataType)
+				val magStatus = packet.sensorConfig?.magStatus ?: MagnetometerStatus.NOT_SUPPORTED
+				setUpSensor(
+					connection,
+					packet.sensorId,
+					packet.sensorType,
+					packet.sensorStatus,
+					magStatus,
+					packet.trackerPosition, 
+					packet.trackerDataType,
+				)
 				// Send ack
 				bb.limit(bb.capacity())
 				bb.rewind()
 				parser.writeSensorInfoResponse(bb, connection, packet)
 				socket.send(DatagramPacket(rcvBuffer, bb.position(), connection.address))
 				LogManager.info(
-					"[TrackerServer] Sensor info for ${connection.descriptiveName}/${packet.sensorId}: ${packet.sensorStatus}",
+					"[TrackerServer] Sensor info for ${connection.descriptiveName}/${packet.sensorId}: ${packet.sensorStatus}, mag $magStatus",
 				)
 			}
 
@@ -418,8 +497,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			}
 
 			is UDPPacket20Temperature -> {
-				tracker = connection?.getTracker(packet.sensorId)
-				if (tracker == null) return
+				tracker = connection?.getTracker(packet.sensorId) ?: return
 				tracker.temperature = packet.temperature
 			}
 
@@ -455,7 +533,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				}
 
 				LogManager.info(
-					"[TrackerServer] User action from ${connection.descriptiveName } received. $name performed.",
+					"[TrackerServer] User action from ${connection.descriptiveName} received. $name performed.",
 				)
 			}
 
@@ -469,7 +547,23 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				connection.firmwareFeatures = packet.firmwareFeatures
 			}
 
-			is UDPPacket24FlexData -> {
+			is UDPPacket24AckConfigChange -> {
+				if (connection == null) return
+				val queue = queues[Triple(connection.address, packet.configType, packet.sensorId)] ?: run {
+					LogManager.severe("[TrackerServer] Error, acknowledgment of config change that we don't have in our queue.")
+					return
+				}
+				val changed = queue.removeFirst()
+				changed.channel.resume(true)
+				val trackers = if (SensorSpecificPacket.isGlobal(packet.sensorId)) {
+					connection.trackers.values.toList()
+				} else {
+					listOf(connection.getTracker(packet.sensorId) ?: return)
+				}
+				LogManager.info("[TrackerServer] Acknowledged config change on ${connection.descriptiveName} (${trackers.map { it.trackerNum }.joinToString()}). Config changed on ${packet.configType}")
+			}
+
+			is UDPPacket26FlexData -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
 				if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
