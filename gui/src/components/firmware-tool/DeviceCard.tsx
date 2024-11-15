@@ -34,7 +34,7 @@ export function DeviceCardContent({ deviceNames, status }: DeviceCardProps) {
           </span>
         ))}
       </div>
-      {status && (
+      {!!status && (
         <Typography color="secondary">
           {l10n.getString(
             'firmware-update-status-' + FirmwareUpdateStatus[status]
@@ -56,10 +56,14 @@ export function DeviceCardControl({
     <div
       className={classNames(
         'rounded-md bg-background-60 h-[86px] pt-2 flex flex-col justify-between border-2 ',
-        props.status && firmwareUpdateErrorStatus.includes(props.status)
-          ? 'border-status-critical'
-          : 'border-transparent',
-        props.status == FirmwareUpdateStatus.DONE && 'border-status-success'
+        props.status &&
+          firmwareUpdateErrorStatus.includes(props.status) &&
+          'border-status-critical',
+        props.status === FirmwareUpdateStatus.DONE && 'border-status-success',
+        (!props.status ||
+          (props.status !== FirmwareUpdateStatus.DONE &&
+            !firmwareUpdateErrorStatus.includes(props.status))) &&
+          'border-transparent'
       )}
     >
       {control && name ? (

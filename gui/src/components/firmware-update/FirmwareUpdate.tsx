@@ -1,7 +1,7 @@
 import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { getTrackerName } from '@/hooks/tracker';
-import { ComponentProps, useLayoutEffect, useMemo, useState } from 'react';
+import { ComponentProps, useEffect, useMemo, useState } from 'react';
 import {
   BoardType,
   DeviceDataT,
@@ -18,7 +18,6 @@ import classNames from 'classnames';
 import { Button } from '@/components/commons/Button';
 import Markdown from 'react-markdown';
 import remark from 'remark-gfm';
-import { useBreakpoint } from '@/hooks/breakpoint';
 import { WarningBox } from '@/components/commons/TipBox';
 import { useAppContext } from '@/hooks/app';
 import { DeviceCardControl } from '@/components/firmware-tool/DeviceCard';
@@ -32,6 +31,7 @@ import {
 } from '@/hooks/firmware-tool';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { object } from 'yup';
+import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 
 interface FirmwareUpdateForm {
   selectedDevices: { [key: string]: boolean };
@@ -56,58 +56,33 @@ const DeviceList = ({
   control: Control<any>;
   devices: DeviceDataT[];
 }) => {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
 
-  return Array.from({
-    ...devices,
-    length: Math.max(
-      devices.length,
-      isMobile ? 1 : devices.length === 0 ? 4 : 5
-    ),
-  }).map((device, index) => {
-    return device ? (
-      <DeviceCardControl
-        key={index}
-        control={control}
-        name={`selectedDevices.${device.id?.id ?? 0}`}
-        deviceNames={deviceNames(device, l10n)}
-      />
-    ) : (
-      <div
-        key={index}
-        className={classNames(
-          'rounded-xl h-[86px] bg-background-80 animate-pulse'
-        )}
-      ></div>
-    );
-  });
+  return devices.map((device, index) => (
+    <DeviceCardControl
+      key={index}
+      control={control}
+      name={`selectedDevices.${device.id?.id ?? 0}`}
+      deviceNames={deviceNames(device, l10n)}
+    />
+  ));
 };
 
 const StatusList = ({ status }: { status: Record<string, UpdateStatus> }) => {
   const statusKeys = Object.keys(status);
-  const { isMobile } = useBreakpoint('mobile');
 
-  return Array.from({
-    ...statusKeys,
-    length: Math.max(statusKeys.length, isMobile ? 1 : 5),
-  }).map((id, index) => {
+  return statusKeys.map((id, index) => {
     const val = status[id];
 
-    return val ? (
+    if (!val) throw new Error('there should always be a val');
+
+    return (
       <DeviceCardControl
         status={val.status}
         progress={val.progress}
         key={index}
         deviceNames={val.deviceNames}
       ></DeviceCardControl>
-    ) : (
-      <div
-        key={index}
-        className={classNames(
-          'rounded-xl h-[86px] bg-background-80 animate-pulse'
-        )}
-      ></div>
     );
   });
 };
@@ -208,7 +183,7 @@ export function FirmwareUpdate() {
     );
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!currentFirmwareRelease) {
       navigate('/');
     }
@@ -326,11 +301,13 @@ export function FirmwareUpdate() {
             <div
               className={'flex flex-col gap-4 overflow-y-auto xs:max-h-[530px]'}
             >
-              {devices.length === 0 && !hasPendingTrackers && (
-                <Localized id="firmware-update-no-devices">
-                  <WarningBox className="min-h-[86px]">Warning</WarningBox>
-                </Localized>
-              )}
+              {devices.length === 0 &&
+                !hasPendingTrackers &&
+                statusKeys.length == 0 && (
+                  <Localized id="firmware-update-no-devices">
+                    <WarningBox>Warning</WarningBox>
+                  </Localized>
+                )}
               {shouldShowRebootWarning && (
                 <Localized id="firmware-tool-flashing-step-warning">
                   <WarningBox>Warning</WarningBox>
@@ -342,6 +319,18 @@ export function FirmwareUpdate() {
                 ) : (
                   <DeviceList control={control} devices={devices}></DeviceList>
                 )}
+                {devices.length === 0 && statusKeys.length === 0 && (
+                  <div
+                    className={classNames(
+                      'rounded-xl bg-background-60 justify-center flex-col items-center flex pb-10 py-5 gap-5'
+                    )}
+                  >
+                    <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
+                    <Localized id="firmware-update-looking-for-devices">
+                      <Typography></Typography>
+                    </Localized>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -352,7 +341,7 @@ export function FirmwareUpdate() {
             >
               <Typography variant="main-title"></Typography>
             </Localized>
-            <div className="overflow-y-scroll max-h-[505px] md:h-[505px] bg-background-60 rounded-lg p-4">
+            <div className="overflow-y-scroll max-h-[430px] md:h-[430px] bg-background-60 rounded-lg p-4">
               <Markdown
                 remarkPlugins={[remark]}
                 components={{ a: MarkdownLink }}
