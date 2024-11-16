@@ -74,6 +74,14 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var yawFixZeroReference = Quaternion.IDENTITY
 	private var tposeDownFix = Quaternion.IDENTITY
 
+	// Spine yaw compensation
+	var spineYawCorrectionInRad: Float = 0.0f
+		set(value) {
+			field = value
+			spineYawCorrectionRot = EulerAngles(EulerOrder.YZX, 0.0f, value, 0.0f).toQuaternion()
+		}
+	private var spineYawCorrectionRot = Quaternion.IDENTITY
+
 	/**
 	 * Reads/loads drift compensation settings from given config
 	 */
@@ -151,6 +159,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Get the adjusted accel from yawFixZeroReference
 	 */
 	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 = (adjustToReference(rawRot) / yawFix).sandwich(accel)
+
+	/**
+	 * Gets the rotation after applying spine yaw correction
+	 */
+	fun applySpineYawCorrection(rotation: Quaternion): Quaternion = spineYawCorrectionRot * rotation
 
 	/**
 	 * Converts raw or filtered rotation into reference- and
@@ -274,6 +287,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			yawResetSmoothTimeRemain = 0.0f
 		}
 
+		spineYawCorrectionInRad = 0.0f
+
 		calculateDrift(oldRot)
 
 		if (this.tracker.lastResetStatus != 0u) {
@@ -300,6 +315,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		yawResetSmoothTimeRemain = 0.0f
 
 		makeIdentityAdjustmentQuatsYaw()
+
+		spineYawCorrectionInRad = 0.0f
 
 		calculateDrift(oldRot)
 

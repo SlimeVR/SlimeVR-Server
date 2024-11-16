@@ -333,6 +333,8 @@ class Tracker @JvmOverloads constructor(
 			rot = resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
 		}
 
+		rot = resetsHandler.applySpineYawCorrection(rot)
+
 		return rot
 	}
 
@@ -364,6 +366,8 @@ class Tracker @JvmOverloads constructor(
 			// Adjust to reset and mounting
 			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		}
+
+		rot = resetsHandler.applySpineYawCorrection(rot)
 
 		return rot
 	}
