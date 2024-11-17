@@ -879,7 +879,7 @@ class HumanSkeleton(
 			// Interpolate between the hipRot and extendedPelvisRot
 			val newHipRot = hipRot.interpR(
 				if (extendedPelvisRot.lenSq() != 0.0f) extendedPelvisRot else IDENTITY,
-				hipLegsAveraging
+				hipLegsAveraging,
 			)
 
 			// Set new hip rotation
