@@ -13,7 +13,7 @@
     "skipbundler": "cd gui && pnpm run skipbundler",
     "build": "pnpm run tauri build",
     "update-solarxr": "cd solarxr-protocol && pnpm run build",
-    "prepare": "husky install && pnpm run update-solarxr",
+    "prepare": "husky && pnpm run update-solarxr",
     "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {

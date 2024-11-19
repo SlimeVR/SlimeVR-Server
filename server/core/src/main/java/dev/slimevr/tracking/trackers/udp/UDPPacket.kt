@@ -234,7 +234,7 @@ data class UDPPacket15SensorInfo(
 			sensorType =
 				IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
 		}
-		if (buf.remaining() > 0) {
+		if (buf.remaining() > 1) {
 			sensorConfig = SensorConfig(buf.getShort().toUShort())
 		}
 	}
