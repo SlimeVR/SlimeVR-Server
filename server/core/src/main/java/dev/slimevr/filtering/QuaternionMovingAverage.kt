@@ -1,5 +1,6 @@
 package dev.slimevr.filtering
 
+import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
@@ -17,18 +18,18 @@ private const val PREDICT_BUFFER = 6
 
 class QuaternionMovingAverage(
 	val type: TrackerFilters,
-	var amount: Float,
-	initialRotation: Quaternion,
+	var amount: Float = 0f,
+	initialRotation: Quaternion = IDENTITY,
 ) {
-	var filteredQuaternion = IDENTITY
 	private var smoothFactor = 0f
 	private var predictFactor = 0f
 	private lateinit var rotBuffer: CircularArrayList<Quaternion>
 	private var latestQuaternion = IDENTITY
 	private var smoothingQuaternion = IDENTITY
-	private val fpsTimer = VRServer.instance.fpsTimer
+	private val fpsTimer = if (VRServer.instanceInitialized) VRServer.instance.fpsTimer else NanoTimer()
 	private var frameCounter = 0
 	private var lastAmt = 0f
+	var filteredQuaternion = IDENTITY
 
 	init {
 		// amount should range from 0 to 1.
@@ -48,9 +49,7 @@ class QuaternionMovingAverage(
 			predictFactor = PREDICT_MULTIPLIER * amount + PREDICT_MIN
 			rotBuffer = CircularArrayList(PREDICT_BUFFER)
 		}
-		filteredQuaternion = initialRotation
-		latestQuaternion = initialRotation
-		smoothingQuaternion = initialRotation
+		resetQuats(initialRotation)
 	}
 
 	// Runs at up to 1000hz. We use a timer to make it framerate-independent
@@ -70,7 +69,7 @@ class QuaternionMovingAverage(
 				// Slerps the target rotation to that predicted rotation by amt
 				filteredQuaternion = filteredQuaternion.interpR(quatBuf, amt)
 			}
-		} else { // Smoothing
+		} else if (type == TrackerFilters.SMOOTHING) {
 			// Increase every update for linear interpolation
 			frameCounter++
 
@@ -90,6 +89,9 @@ class QuaternionMovingAverage(
 
 			// Smooth towards the target rotation by the slerp factor
 			filteredQuaternion = smoothingQuaternion.interpR(latestQuaternion, amt)
+		} else {
+			// No filtering; just keep track of rotations (for going over 180 degrees)
+			filteredQuaternion = latestQuaternion.twinNearest(smoothingQuaternion)
 		}
 	}
 
@@ -102,12 +104,20 @@ class QuaternionMovingAverage(
 
 			// Gets and stores the rotation between the last 2 quaternions
 			rotBuffer.add(latestQuaternion.inv().times(q))
-		} else { // Smoothing
+		} else if (type == TrackerFilters.SMOOTHING) {
 			frameCounter = 0
 			lastAmt = 0f
+			smoothingQuaternion = filteredQuaternion
+		} else {
 			smoothingQuaternion = filteredQuaternion
 		}
 
 		latestQuaternion = q
+	}
+
+	fun resetQuats(q: Quaternion) {
+		filteredQuaternion = q
+		latestQuaternion = q
+		smoothingQuaternion = q
 	}
 }
