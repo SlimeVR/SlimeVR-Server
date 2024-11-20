@@ -56,6 +56,10 @@ class StatusSystem {
 			it.onStatusRemoved(id)
 		}
 	}
+
+	fun hasStatusType(dataType: Byte): Boolean = statuses.any {
+		it.value.type == dataType
+	}
 }
 
 interface StatusListener {

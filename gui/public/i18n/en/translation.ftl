@@ -44,6 +44,36 @@ body_part-LEFT_HAND = Left hand
 body_part-LEFT_UPPER_LEG = Left thigh
 body_part-LEFT_LOWER_LEG = Left ankle
 body_part-LEFT_FOOT = Left foot
+body_part-LEFT_THUMB_PROXIMAL = Left thumb proximal
+body_part-LEFT_THUMB_INTERMEDIATE = Left thumb intermediate
+body_part-LEFT_THUMB_DISTAL = Left thumb distal
+body_part-LEFT_INDEX_PROXIMAL = Left index proximal
+body_part-LEFT_INDEX_INTERMEDIATE = Left index intermediate
+body_part-LEFT_INDEX_DISTAL = Left index distal
+body_part-LEFT_MIDDLE_PROXIMAL = Left middle proximal
+body_part-LEFT_MIDDLE_INTERMEDIATE = Left middle intermediate
+body_part-LEFT_MIDDLE_DISTAL = Left middle distal
+body_part-LEFT_RING_PROXIMAL = Left ring proximal
+body_part-LEFT_RING_INTERMEDIATE = Left ring intermediate
+body_part-LEFT_RING_DISTAL = Left ring distal
+body_part-LEFT_LITTLE_PROXIMAL = Left little proximal
+body_part-LEFT_LITTLE_INTERMEDIATE = Left little intermediate
+body_part-LEFT_LITTLE_DISTAL = Left little distal
+body_part-RIGHT_THUMB_PROXIMAL = Right thumb proximal
+body_part-RIGHT_THUMB_INTERMEDIATE = Right thumb intermediate
+body_part-RIGHT_THUMB_DISTAL = Right thumb distal
+body_part-RIGHT_INDEX_PROXIMAL = Right index proximal
+body_part-RIGHT_INDEX_INTERMEDIATE = Right index intermediate
+body_part-RIGHT_INDEX_DISTAL = Right index distal
+body_part-RIGHT_MIDDLE_PROXIMAL = Right middle proximal
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Right middle intermediate
+body_part-RIGHT_MIDDLE_DISTAL = Right middle distal
+body_part-RIGHT_RING_PROXIMAL = Right ring proximal
+body_part-RIGHT_RING_INTERMEDIATE = Right ring intermediate
+body_part-RIGHT_RING_DISTAL = Right ring distal
+body_part-RIGHT_LITTLE_PROXIMAL = Right little proximal
+body_part-RIGHT_LITTLE_INTERMEDIATE = Right little intermediate
+body_part-RIGHT_LITTLE_DISTAL = Right little distal
 
 ## Proportions
 skeleton_bone-NONE = None
@@ -74,6 +104,12 @@ skeleton_bone-ELBOW_OFFSET = Elbow Offset
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
+reset-reset_all_warning =
+    <b>Warning:</b> This will reset your proportions to being just based on your height.
+    Are you sure you want to do this?
+reset-reset_all_warning-reset = Reset proportions
+reset-reset_all_warning-cancel = Cancel
+
 reset-full = Full Reset
 reset-mounting = Reset Mounting
 reset-yaw = Yaw Reset
@@ -125,10 +161,13 @@ widget-developer_mode-raw_slime_rotation = Raw rotation
 widget-developer_mode-more_info = More info
 
 ## Widget: IMU Visualizer
-widget-imu_visualizer = Rotation
-widget-imu_visualizer-rotation_raw = Raw
-widget-imu_visualizer-rotation_preview = Preview
-widget-imu_visualizer-rotation_hide = Hide
+widget-imu_visualizer = Tracking data
+widget-imu_visualizer-preview = Preview
+widget-imu_visualizer-hide = Hide
+widget-imu_visualizer-rotation_raw = Raw rotation
+widget-imu_visualizer-rotation_preview = Preview rotation
+widget-imu_visualizer-acceleration = Acceleration
+widget-imu_visualizer-position = Position
 
 ## Widget: Skeleton Visualizer
 widget-skeleton_visualizer-preview = Skeleton preview
@@ -178,6 +217,12 @@ tracker-infos-hardware_identifier = Hardware ID
 tracker-infos-imu = IMU Sensor
 tracker-infos-board_type = Main board
 tracker-infos-network_version = Protocol Version
+tracker-infos-magnetometer = Magnetometer
+tracker-infos-magnetometer-status-v1 = { $status ->
+    *[NOT_SUPPORTED] Not supported
+    [DISABLED] Disabled
+    [ENABLED] Enabled
+}
 
 ## Tracker settings
 tracker-settings-back = Go back to trackers list
@@ -191,11 +236,19 @@ tracker-settings-mounting_section-edit = Edit mounting
 tracker-settings-drift_compensation_section = Allow drift compensation
 tracker-settings-drift_compensation_section-description = Should this tracker compensate for its drift when drift compensation is enabled?
 tracker-settings-drift_compensation_section-edit = Allow drift compensation
+tracker-settings-use_mag = Allow magnetometer on this tracker
+# Multiline!
+tracker-settings-use_mag-description =
+    Should this tracker use magnetometer to reduce drift when magnetometer usage is allowed? <b>Please don't shutdown your tracker while toggling this!</b>
+
+    You need to allow magnetometer usage first, <magSetting>click here to go to the setting</magSetting>.
+tracker-settings-use_mag-label = Allow magnetometer
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker name
 tracker-settings-name_section-description = Give it a cute nickname :)
 tracker-settings-name_section-placeholder = NightyBeast's left leg
+tracker-settings-name_section-label = Tracker name
 tracker-settings-forget = Forget tracker
 tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevent it from connecting to it until the server is restarted. The configuration of the tracker won't be lost.
 tracker-settings-forget-label = Forget tracker
@@ -271,6 +324,7 @@ settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 settings-sidebar-appearance = Appearance
 settings-sidebar-notifications = Notifications
+settings-sidebar-advanced = Advanced
 
 ## SteamVR settings
 settings-general-steamvr = SteamVR
@@ -321,7 +375,22 @@ settings-general-tracker_mechanics-drift_compensation = Drift compensation
 settings-general-tracker_mechanics-drift_compensation-description =
     Compensates IMU yaw drift by applying an inverse rotation.
     Change amount of compensation and up to how many resets are taken into account.
+    This should only be used if you need to reset very often!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
+settings-general-tracker_mechanics-drift_compensation-prediction = Drift compensation prediction
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    Predicts yaw drift compensation beyond previously measured range.
+    Enable this if your trackers are continuously spinning on the yaw axis.
+settings-general-tracker_mechanics-drift_compensation-prediction-label = Drift compensation prediction
+settings-general-tracker_mechanics-drift_compensation_warning =
+    <b>Warning:</b> Only use drift compensation if you need to reset
+    very often (every ~5-10 minutes).
+
+    Some IMUs prone to frequent resets include:
+    Joy-Cons, owoTrack, and MPUs (without recent firmware).
+settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancel
+settings-general-tracker_mechanics-drift_compensation_warning-done = I understand
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensation amount
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Use up to x last resets
 settings-general-tracker_mechanics-save_mounting_reset = Save automatic mounting reset calibration
@@ -329,6 +398,11 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     Saves the automatic mounting reset calibrations for the trackers between restarts. Useful
     when wearing a suit where trackers don't move between sessions. <b>Not recommended for normal users!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Save mounting reset
+settings-general-tracker_mechanics-use_mag_on_all_trackers = Use magnetometer on all IMU trackers that support it
+settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
+    Uses magnetometer on all trackers that have a compatible firmware for it, reducing drift in stable magnetic environments.
+    Can be disabled per tracker in the tracker's settings. <b>Please don't shutdown any of the trackers while toggling this!</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetometer on trackers
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings
@@ -355,6 +429,9 @@ settings-general-fk_settings-leg_fk-reset_mounting_feet = Feet Mounting Reset
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the headset (HMD) even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
+settings-general-fk_settings-reset_settings = Reset settings
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Reset the HMD's pitch (vertical rotation) upon doing a full reset. Useful if wearing an HMD on the forehead for VTubing or mocap. Do not enable for VR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = Reset HMD pitch
 settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm pose is expected for mounting reset.
 settings-general-fk_settings-arm_fk-back = Back
 settings-general-fk_settings-arm_fk-back-description = The default mode, with the upper arms going back and lower arms going forward.
@@ -421,6 +498,9 @@ settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-theme = Color theme
+settings-general-interface-show-navbar-onboarding = Show "{ navbar-onboarding }" on navigation bar
+settings-general-interface-show-navbar-onboarding-description = This changes if the "{ navbar-onboarding }" button shows on the navigation bar.
+settings-general-interface-show-navbar-onboarding-label = Show "{ navbar-onboarding }"
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language you want to use.
 settings-general-interface-lang-placeholder = Select the language to use
@@ -432,6 +512,9 @@ settings-interface-appearance-font-os_font = OS font
 settings-interface-appearance-font-slime_font = Default font
 settings-interface-appearance-font_size = Base font scaling
 settings-interface-appearance-font_size-description = This affects the font size of the whole interface except this settings panel.
+settings-interface-appearance-decorations = Use the system native decorations
+settings-interface-appearance-decorations-description = This will not render the top bar of the interface and will use the operating system's instead.
+settings-interface-appearance-decorations-label = Use native decorations
 
 ## Notification settings
 settings-interface-notifications = Notifications
@@ -448,13 +531,21 @@ settings-general-interface-connected_trackers_warning-label = Connected trackers
 settings-general-interface-use_tray = Minimize to system tray
 settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bothering you.
 settings-general-interface-use_tray-label = Minimize to system tray
+settings-general-interface-discord_presence = Share activity on Discord
+settings-general-interface-discord_presence-description = Tells your Discord client that you are using SlimeVR along with the number of IMU trackers you are using.
+settings-general-interface-discord_presence-label = Share activity on Discord
+settings-general-interface-discord_presence-message = { $amount ->
+    [0] Sliming around
+    [one] Using 1 tracker
+    *[other] Using { $amount } trackers
+}
 
 ## Serial settings
 settings-serial = Serial Console
 # This cares about multilines
 settings-serial-description =
     This is a live information feed for serial communication.
-    May be useful if you need to know the firmware is acting up.
+    May be useful to debug firmware or hardware issues.
 settings-serial-connection_lost = Connection to serial lost, Reconnecting...
 settings-serial-reboot = Reboot
 settings-serial-factory_reset = Factory Reset
@@ -469,6 +560,8 @@ settings-serial-get_infos = Get Infos
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Get WiFi Scan
+settings-serial-file_type = Plain text
+settings-serial-save_logs = Save To File
 
 ## OSC router settings
 settings-osc-router = OSC router
@@ -497,14 +590,17 @@ settings-osc-router-network-address-placeholder = IPV4 address
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
-settings-osc-vrchat-description =
-    Change VRChat-specific settings to receive headset (HMD) data and send
-    tracker data for FBT without SteamVR (ex. Quest standalone).
+settings-osc-vrchat-description-v1 =
+    Change settings specific to the OSC Trackers standard used for sending
+    tracking data to applications without SteamVR (ex. Quest standalone).
+    Make sure to enable OSC in VRChat via the Action Menu under OSC > Enabled.
+    To allow receiving HMD and controller data from VRChat, go in your main menu's
+    settings under Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
 settings-osc-vrchat-enable-label = Enable
 settings-osc-vrchat-network = Network ports
-settings-osc-vrchat-network-description = Set the ports for listening and sending data to VRChat.
+settings-osc-vrchat-network-description-v1 = Set the ports for listening and sending data. Can be left untouched for VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Port In
     .placeholder = Port in (default: 9001)
@@ -512,7 +608,7 @@ settings-osc-vrchat-network-port_out =
     .label = Port Out
     .placeholder = Port out (default: 9000)
 settings-osc-vrchat-network-address = Network address
-settings-osc-vrchat-network-address-description = Choose which address to send out data to VRChat (check your Wi-Fi settings on your device).
+settings-osc-vrchat-network-address-description-v1 = Choose which address to send out data to. Can be left untouched for VRChat.
 settings-osc-vrchat-network-address-placeholder = VRChat ip address
 settings-osc-vrchat-network-trackers = Trackers
 settings-osc-vrchat-network-trackers-description = Toggle the sending of specific trackers via OSC.
@@ -553,6 +649,35 @@ settings-osc-vmc-vrm-file_select = Drag & drop a model to use, or <u>browse</u>
 settings-osc-vmc-anchor_hip = Anchor at hips
 settings-osc-vmc-anchor_hip-description = Anchor the tracking at the hips, useful for seated VTubing. If disabling, load a VRM model.
 settings-osc-vmc-anchor_hip-label = Anchor at hips
+settings-osc-vmc-mirror_tracking = Mirror tracking
+settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
+settings-osc-vmc-mirror_tracking-label = Mirror tracking
+
+## Advanced settings
+settings-utils-advanced = Advanced
+
+settings-utils-advanced-reset-gui = Reset GUI settings
+settings-utils-advanced-reset-gui-description = Restore the default settings for the interface.
+settings-utils-advanced-reset-gui-label = Reset GUI
+settings-utils-advanced-reset-server = Reset tracking settings
+settings-utils-advanced-reset-server-description = Restore the default settings for the tracking.
+settings-utils-advanced-reset-server-label = Reset tracking
+settings-utils-advanced-reset-all = Reset all settings
+settings-utils-advanced-reset-all-description = Restore the default settings for both the interface and tracking.
+settings-utils-advanced-reset-all-label = Reset all
+settings-utils-advanced-reset_warning =
+        <b>Warning:</b> This will reset { $type ->
+            [gui] your GUI
+            [server] your tracking
+            *[all] all your
+        } settings to the defaults.
+        Are you sure you want to do this?
+settings-utils-advanced-reset_warning-reset = Reset settings
+settings-utils-advanced-reset_warning-cancel = Cancel
+
+settings-utils-advanced-open_data = Data folder
+settings-utils-advanced-open_data-description = Open SlimeVR's data folder in file explorer, containing config and log files.
+settings-utils-advanced-open_data-label = Open folder
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
@@ -653,6 +778,7 @@ onboarding-calibration_tutorial-status-waiting = Waiting for you
 onboarding-calibration_tutorial-status-calibrating = Calibrating
 onboarding-calibration_tutorial-status-success = Nice!
 onboarding-calibration_tutorial-status-error = The tracker was moved
+onboarding-calibration_tutorial-skip = Skip tutorial
 
 ## Tracker assignment tutorial
 onboarding-assignment_tutorial = How to prepare a Slime Tracker before putting it on
@@ -677,6 +803,24 @@ onboarding-assign_trackers-assigned = { $assigned } of { $trackers ->
 onboarding-assign_trackers-advanced = Show advanced assign locations
 onboarding-assign_trackers-next = I assigned all the trackers
 onboarding-assign_trackers-mirror_view = Mirror view
+onboarding-assign_trackers-option-amount = { $trackersCount ->
+    [one] x{ $trackersCount }
+    *[other] x{ $trackersCount }
+}
+onboarding-assign_trackers-option-label = { $mode ->
+    [lower-body] Lower-Body Set
+    [core] Core Set
+    [enhanced-core] Enhanced Core Set
+    [full-body] Full-Body Set
+    *[all] All Trackers
+}
+onboarding-assign_trackers-option-description = { $mode ->
+    [lower-body] Minimum for VR full-body tracking
+    [core] + Enhanced spine tracking
+    [enhanced-core] + Foot rotation
+    [full-body] + Elbow tracking
+    *[all] All available tracker assignments
+}
 
 ## Tracker assignment warnings
 # Note for devs, number is used for representing boolean states per bit.
@@ -742,12 +886,12 @@ onboarding-choose_mounting = What mounting calibration method to use?
 # Multiline text
 onboarding-choose_mounting-description = Mounting orientation corrects for the placement of trackers on your body.
 onboarding-choose_mounting-auto_mounting = Automatic mounting
-# Italized text
-onboarding-choose_mounting-auto_mounting-label = Experimental
+# Italicized text
+onboarding-choose_mounting-auto_mounting-label-v2 = Recommended
 onboarding-choose_mounting-auto_mounting-description = This will automatically detect the mounting orientations for all of your trackers from 2 poses
 onboarding-choose_mounting-manual_mounting = Manual mounting
-# Italized text
-onboarding-choose_mounting-manual_mounting-label = Recommended
+# Italicized text
+onboarding-choose_mounting-manual_mounting-label-v2 = Might not be precise enough
 onboarding-choose_mounting-manual_mounting-description = This will let you choose the mounting orientation manually for each tracker
 # Multiline text
 onboarding-choose_mounting-manual_modal-title = Are you sure you want to do
@@ -790,14 +934,14 @@ onboarding-choose_proportions-description-v1 = Body proportions are used to know
     When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
     <b>You only need to measure your body once!</b> Unless they are wrong or your body has changed, then you don't need to do them again.
 onboarding-choose_proportions-auto_proportions = Automatic proportions
-# Italized text
+# Italicized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommended
 onboarding-choose_proportions-auto_proportions-descriptionv3 =
     This will guess your proportions by recording a sample of your movements and passing it through an algorithm.
 
     <b>This requires having your headset (HMD) connected to SlimeVR and on your head!</b>
 onboarding-choose_proportions-manual_proportions = Manual proportions
-# Italized text
+# Italicized text
 onboarding-choose_proportions-manual_proportions-subtitle = For small touches
 onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
 onboarding-choose_proportions-export = Export proportions
@@ -873,8 +1017,9 @@ onboarding-automatic_proportions-verify_results-redo = Redo recording
 onboarding-automatic_proportions-verify_results-confirm = They're correct
 onboarding-automatic_proportions-done-title = Body measured and saved.
 onboarding-automatic_proportions-done-description = Your body proportions' calibration is complete!
-onboarding-automatic_proportions-error_modal =
-    <b>Warning:</b> An error was found while estimating proportions!
+onboarding-automatic_proportions-error_modal-v2 =
+    <b>Warning:</b> There was an error while estimating proportions!
+    This is likely a mounting calibration issue. Make sure your tracking works properly before trying again.
     Please <docs>check the docs</docs> or join our <discord>Discord</discord> for help ^_^
 onboarding-automatic_proportions-error_modal-confirm = Understood!
 
@@ -896,6 +1041,7 @@ status_system-StatusSteamVRDisconnected = { $type ->
     [steamvr_feeder] Currently not connected to the SlimeVR Feeder App.
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
+status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
 
 ## Tray Menu
 tray_menu-show = Show

@@ -1,10 +1,14 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
 import { FlatDeviceTracker } from '@/hooks/app';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useTrackers } from '@/hooks/tracker';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { MountingOrientationDegreesToQuatT } from '@/maths/quaternion';
+import {
+  MountingOrientationDegreesToQuatT,
+  QuaternionFromQuatT,
+  similarQuaternions,
+} from '@/maths/quaternion';
 import { Button } from '@/components/commons/Button';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
@@ -13,14 +17,14 @@ import { MountingSelectionMenu } from './MountingSelectionMenu';
 import { useLocalization } from '@fluent/react';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { Quaternion } from 'three';
-import { defaultConfig, useConfig } from '@/hooks/config';
+import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
 
 export function ManualMountingPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
-  const { setConfig, config } = useConfig();
+  const { config } = useConfig();
 
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
 
@@ -28,10 +32,6 @@ export function ManualMountingPage() {
 
   const { useAssignedTrackers } = useTrackers();
   const assignedTrackers = useAssignedTrackers();
-
-  useEffect(() => {
-    setConfig({ doneManualMounting: true });
-  }, []);
 
   const trackerPartGrouped = useMemo(
     () =>
@@ -66,10 +66,31 @@ export function ManualMountingPage() {
     setSelectRole(BodyPart.NONE);
   };
 
+  const getCurrRotation = useCallback(
+    (role: BodyPart) => {
+      if (role === BodyPart.NONE) return undefined;
+
+      const trackers = trackerPartGrouped[role] || [];
+      const [mountingOrientation, ...orientation] = trackers
+        .map((td) => td.tracker.info?.mountingOrientation)
+        .filter((orientation) => !!orientation)
+        .map((orientation) => QuaternionFromQuatT(orientation));
+
+      const identicalOrientations =
+        mountingOrientation !== undefined &&
+        orientation.every((quat) =>
+          similarQuaternions(quat, mountingOrientation)
+        );
+      return identicalOrientations ? mountingOrientation : undefined;
+    },
+    [trackerPartGrouped]
+  );
+
   return (
     <>
       <MountingSelectionMenu
         bodyPart={selectedRole}
+        currRotation={getCurrRotation(selectedRole)}
         isOpen={selectedRole !== BodyPart.NONE}
         onClose={() => setSelectRole(BodyPart.NONE)}
         onDirectionSelected={onDirectionSelected}
@@ -104,7 +125,7 @@ export function ManualMountingPage() {
               width={isMobile ? 160 : undefined}
               mirror={config?.mirrorView ?? defaultConfig.mirrorView}
               onlyAssigned={true}
-              advanced={true}
+              assignMode={AssignMode.All}
               onRoleSelected={setSelectRole}
             ></BodyAssignment>
           </div>

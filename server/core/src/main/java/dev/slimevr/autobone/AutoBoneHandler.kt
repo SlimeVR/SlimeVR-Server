@@ -151,7 +151,7 @@ class AutoBoneHandler(private val server: VRServer) {
 		} catch (e: Exception) {
 			announceProcessStatus(
 				AutoBoneProcessType.RECORD,
-				String.format("Recording failed: %s", e.message),
+				"Recording failed: ${e.message}",
 				completed = true,
 				success = false,
 			)
@@ -189,8 +189,8 @@ class AutoBoneHandler(private val server: VRServer) {
 			if (framesFuture != null) {
 				announceProcessStatus(AutoBoneProcessType.SAVE, "Waiting for recording...")
 				val frames = framesFuture.get()
-				check(frames.frameHolders.isNotEmpty()) { "Recording has no trackers" }
-				check(frames.maxFrameCount > 0) { "Recording has no frames" }
+				check(frames.frameHolders.isNotEmpty()) { "Recording has no trackers." }
+				check(frames.maxFrameCount > 0) { "Recording has no frames." }
 				announceProcessStatus(AutoBoneProcessType.SAVE, "Saving recording...")
 				autoBone.saveRecording(frames)
 				announceProcessStatus(
@@ -212,7 +212,7 @@ class AutoBoneHandler(private val server: VRServer) {
 		} catch (e: Exception) {
 			announceProcessStatus(
 				AutoBoneProcessType.SAVE,
-				String.format("Failed to save recording: %s", e.message),
+				"Failed to save recording: ${e.message}",
 				completed = true,
 				success = false,
 			)
@@ -243,8 +243,6 @@ class AutoBoneHandler(private val server: VRServer) {
 				if (framesFuture != null) {
 					announceProcessStatus(AutoBoneProcessType.PROCESS, "Waiting for recording...")
 					val frames = framesFuture.get()
-					check(frames.frameHolders.isNotEmpty()) { "Recording has no trackers" }
-					check(frames.maxFrameCount > 0) { "Recording has no frames" }
 					frameRecordings.add(Pair.of("<Recording>", frames))
 				} else {
 					announceProcessStatus(
@@ -329,7 +327,7 @@ class AutoBoneHandler(private val server: VRServer) {
 		} catch (e: Exception) {
 			announceProcessStatus(
 				AutoBoneProcessType.PROCESS,
-				String.format("Processing failed: %s", e.message),
+				"Processing failed: ${e.message}",
 				completed = true,
 				success = false,
 			)

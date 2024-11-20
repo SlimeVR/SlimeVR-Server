@@ -11,6 +11,7 @@ use std::time::Instant;
 use clap::Parser;
 use color_eyre::Result;
 use state::WindowState;
+use tauri::Emitter;
 use tauri::{Manager, RunEvent, WindowEvent};
 use tauri_plugin_shell::process::CommandChild;
 
@@ -18,6 +19,7 @@ use crate::util::{
 	get_launch_path, show_error, valid_java_paths, Cli, JAVA_BIN, MINIMUM_JAVA_VERSION,
 };
 
+mod presence;
 mod state;
 mod tray;
 mod util;
@@ -177,7 +179,12 @@ fn main() -> Result<()> {
 			erroring,
 			warning,
 			tray::update_translations,
-			tray::update_tray_text
+			tray::update_tray_text,
+			tray::is_tray_available,
+			presence::discord_client_exists,
+			presence::update_presence,
+			presence::clear_presence,
+			presence::create_discord_client,
 		])
 		.setup(move |app| {
 			let window_state =
@@ -196,15 +203,19 @@ fn main() -> Result<()> {
 			.visible(true)
 			.decorations(false)
 			.fullscreen(false)
+			// This allows drag & drop via HTML5 for Windows
+			.disable_drag_drop_handler()
 			.build()?;
 			if window_state.is_old() {
 				window_state.update_window(&window.as_ref().window(), false)?;
 			}
 
-			#[cfg(desktop)]
-			{
+			if cfg!(desktop) {
 				let handle = app.handle();
-				tray::create_tray(&handle)?;
+				tray::create_tray(handle)?;
+				presence::create_presence(handle)?;
+			} else {
+				app.manage(tray::TrayAvailable(false));
 			}
 
 			app.manage(Mutex::new(window_state));
@@ -218,7 +229,7 @@ fn main() -> Result<()> {
 						.shell()
 						.command(java_bin.to_str().unwrap())
 						.current_dir(p)
-						.args(["-Xmx512M", "-jar", "slimevr.jar", "run"])
+						.args(["-Xmx128M", "-jar", "slimevr.jar", "run"])
 						.spawn()
 						.expect("Unable to start the server jar");
 
@@ -262,15 +273,15 @@ fn main() -> Result<()> {
 				}
 			}
 			// See https://github.com/tauri-apps/tauri/issues/4012#issuecomment-1449499149
-			#[cfg(windows)]
-			WindowEvent::Resized(_) => std::thread::sleep(std::time::Duration::from_nanos(1)),
+			// #[cfg(windows)]
+			// WindowEvent::Resized(_) => std::thread::sleep(std::time::Duration::from_nanos(1)),
 			_ => (),
 		})
 		.build(tauri_context);
 	match build_result {
 		Ok(app) => {
 			app.run(move |app_handle, event| match event {
-				RunEvent::ExitRequested { .. } => {
+				RunEvent::Exit => {
 					let window_state = app_handle.state::<Mutex<WindowState>>();
 					let lock = window_state.lock().unwrap();
 					let config_dir = app_handle.path().app_config_dir().unwrap();

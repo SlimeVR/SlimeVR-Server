@@ -12,12 +12,18 @@ enum class IMUType(val id: UInt) {
 	BMI160(8u),
 	ICM20948(9u),
 	ICM42688(10u),
+	BMI270(11u),
+	LSM6DS3TRC(12u),
+	LSM6DSV(13u),
+	LSM6DSO(14u),
+	LSM6DSR(15u),
+	DEV_RESERVED(250u),
 	;
 
 	fun getSolarType(): Int = this.id.toInt()
 
 	companion object {
-		private val byId = IMUType.values().associateBy { it.id }
+		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
 		fun getById(id: UInt): IMUType? = byId[id]
@@ -42,6 +48,8 @@ enum class BoardType(val id: UInt) {
 	WRANGLER(14u),
 	MOCOPI(15u),
 	WEMOSWROOM02(16u),
+	XIAO_ESP32C3(17u),
+	HARITORA(18u),
 	DEV_RESERVED(250u),
 	;
 
@@ -63,11 +71,13 @@ enum class BoardType(val id: UInt) {
 		WRANGLER -> "Wrangler Joycons"
 		MOCOPI -> "Sony Mocopi"
 		WEMOSWROOM02 -> "Wemos Wroom-02 D1 Mini"
+		XIAO_ESP32C3 -> "Seeed Studio XIAO ESP32C3"
+		HARITORA -> "Haritora"
 		DEV_RESERVED -> "Prototype"
 	}
 
 	companion object {
-		private val byId = BoardType.values().associateBy { it.id }
+		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
 		fun getById(id: UInt): BoardType? = byId[id]
@@ -83,15 +93,48 @@ enum class MCUType(val id: UInt) {
 	OWOTRACK_IOS(5u),
 	ESP32_C3(6u),
 	MOCOPI(7u),
+	HARITORA(8u),
 	DEV_RESERVED(250u),
 	;
 
 	fun getSolarType(): Int = this.id.toInt()
 
 	companion object {
-		private val byId = MCUType.values().associateBy { it.id }
+		private val byId = entries.associateBy { it.id }
 
 		@JvmStatic
 		fun getById(id: UInt): MCUType? = byId[id]
 	}
+}
+
+@JvmInline
+value class ConfigTypeId(val v: UShort)
+
+enum class MagnetometerStatus {
+	NOT_SUPPORTED,
+	DISABLED,
+	ENABLED,
+	;
+
+	fun getSolarType(): Int = this.ordinal
+
+	companion object {
+		private val byId = entries.associateBy { it.ordinal.toUByte() }
+
+		@JvmStatic
+		fun getById(id: UByte): MagnetometerStatus? = byId[id]
+	}
+}
+
+@JvmInline
+value class SensorConfig(val v: UShort) {
+	val magStatus
+		get(): MagnetometerStatus {
+			if ((v.toUInt() shr 1) and 1u == 0u) return MagnetometerStatus.NOT_SUPPORTED
+			return if ((v and 1u) == 1u.toUShort()) {
+				MagnetometerStatus.ENABLED
+			} else {
+				MagnetometerStatus.DISABLED
+			}
+		}
 }

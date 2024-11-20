@@ -3,12 +3,23 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    devenv.url = "github:cachix/devenv";
-    nix2container.url = "github:nlewo/nix2container";
-    nix2container.inputs.nixpkgs.follows = "nixpkgs";
+    devenv = {
+      url = "github:cachix/devenv";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix2container = {
+      url = "github:nlewo/nix2container";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
-    nixgl.url = "github:guibou/nixGL";
-    fenix.url = "github:nix-community/fenix";
+    nixgl = {
+      url = "github:guibou/nixGL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
@@ -81,7 +92,7 @@
               harfbuzz
               libffi
               libsoup_3
-              openssl.out
+              openssl
               pango
               pkg-config
               treefmt
@@ -96,7 +107,6 @@
               expat
               libayatana-appindicator
               libusb1
-              libudev-zero
             ])
             ++ lib.optionals pkgs.stdenv.isDarwin [
               pkgs.darwin.apple_sdk.frameworks.Security
@@ -118,7 +128,7 @@
             enable = true;
             toolchain = fenixpkgs.fromToolchainName {
               name = rust_toolchain.toolchain.channel;
-              sha256 = "sha256-3St/9/UKo/6lz2Kfq2VmlzHyufduALpiIKaaKX4Pq0g=";
+              sha256 = "sha256-VZZnlyP69+Y3crrLHQyJirqlHrTtGTsyiSnZB8jEvVo=";
             };
             components = rust_toolchain.toolchain.components;
           };
@@ -128,6 +138,11 @@
           };
 
           enterShell = with pkgs; ''
+            # Export a LD_LIBRARY_PATH without libudev-zero as libgudev not likey
+            export SLIMEVR_RUST_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+            export LD_LIBRARY_PATH="${libudev-zero}/lib:$LD_LIBRARY_PATH"
+            # GStreamer plugins won't be found without this
+            export GST_PLUGIN_SYSTEM_PATH_1_0="${pkgs.gst_all_1.gstreamer.out}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-base}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-good}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-bad}/lib/gstreamer-1.0"
           '';
         };
       };

@@ -11,7 +11,6 @@ import {
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
 } from 'solarxr-protocol';
-import { useLayout } from '@/hooks/layout';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useTrackers } from '@/hooks/tracker';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -22,16 +21,16 @@ import { ProgressBar } from '@/components/commons/ProgressBar';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';
-import { useBnoExists } from '@/hooks/imu-logic';
-import { useBreakpoint } from '@/hooks/breakpoint';
-
-const BOTTOM_HEIGHT = 80;
+import { useIsRestCalibrationTrackers } from '@/hooks/imu-logic';
+import './ConnectTracker.scss';
 
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
     'onboarding-connect_tracker-connection_status-none',
   [WifiProvisioningStatus.SERIAL_INIT]:
     'onboarding-connect_tracker-connection_status-serial_init',
+  [WifiProvisioningStatus.OBTAINING_MAC_ADDRESS]:
+    'onboarding-connect_tracker-connection_status-obtaining_mac_address',
   [WifiProvisioningStatus.PROVISIONING]:
     'onboarding-connect_tracker-connection_status-provisioning',
   [WifiProvisioningStatus.CONNECTING]:
@@ -49,6 +48,7 @@ const statusLabelMap = {
 const statusProgressMap = {
   [WifiProvisioningStatus.NONE]: 0,
   [WifiProvisioningStatus.SERIAL_INIT]: 0.2,
+  [WifiProvisioningStatus.OBTAINING_MAC_ADDRESS]: 0.3,
   [WifiProvisioningStatus.PROVISIONING]: 0.4,
   [WifiProvisioningStatus.CONNECTING]: 0.6,
   [WifiProvisioningStatus.LOOKING_FOR_SERVER]: 0.8,
@@ -58,9 +58,7 @@ const statusProgressMap = {
 };
 
 export function ConnectTrackersPage() {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
-  const { layoutHeight, ref } = useLayout<HTMLDivElement>();
   const { useConnectedIMUTrackers } = useTrackers();
   const { applyProgress, state } = useOnboarding();
   const navigate = useNavigate();
@@ -72,7 +70,7 @@ export function ConnectTrackersPage() {
 
   const connectedIMUTrackers = useConnectedIMUTrackers();
 
-  const bnoExists = useBnoExists(connectedIMUTrackers);
+  const bnoExists = useIsRestCalibrationTrackers(connectedIMUTrackers);
 
   useEffect(() => {
     if (!state.wifi) {
@@ -146,146 +144,123 @@ export function ConnectTrackersPage() {
   );
 
   return (
-    <div className="flex flex-col h-full items-center px-4 pb-4">
-      <div className="flex gap-10 mobile:flex-col w-full xs:max-w-7xl">
-        <div className="flex flex-col w-full xs:max-w-sm">
-          <Typography variant="main-title">
-            {l10n.getString('onboarding-connect_tracker-title')}
-          </Typography>
-          <Typography color="secondary">
-            {l10n.getString('onboarding-connect_tracker-description-p0-v1')}
-          </Typography>
-          <Typography color="secondary">
-            {l10n.getString('onboarding-connect_tracker-description-p1-v1')}
-          </Typography>
-          <div className="flex flex-col gap-2 py-5">
-            {/* <ArrowLink
-              to="/onboarding/connect"
-              direction="right"
-              variant="boxed"
-            >
-              I have other types of trackers
-            </ArrowLink> */}
-            <ArrowLink
-              to="/settings/serial"
-              state={{ SerialPort: 'Auto' }}
-              direction="right"
-              variant={state.alonePage ? 'boxed-2' : 'boxed'}
-            >
-              {l10n.getString('onboarding-connect_tracker-issue-serial')}
-            </ArrowLink>
-          </div>
-          <Localized
-            id={currentTip}
-            elems={{ em: <em className="italic"></em>, b: <b></b> }}
+    <div className="connect-tracker-layout h-full">
+      <div style={{ gridArea: 's' }} className="p-4">
+        <Typography variant="main-title">
+          {l10n.getString('onboarding-connect_tracker-title')}
+        </Typography>
+        <Typography color="secondary">
+          {l10n.getString('onboarding-connect_tracker-description-p0-v1')}
+        </Typography>
+        <Typography color="secondary">
+          {l10n.getString('onboarding-connect_tracker-description-p1-v1')}
+        </Typography>
+        <div className="flex flex-col gap-2 py-5">
+          <ArrowLink
+            to="/settings/serial"
+            state={{ SerialPort: 'Auto' }}
+            direction="right"
+            variant={state.alonePage ? 'boxed-2' : 'boxed'}
           >
-            <TipBox>Conditional tip</TipBox>
-          </Localized>
+            {l10n.getString('onboarding-connect_tracker-issue-serial')}
+          </ArrowLink>
+        </div>
+        <Localized
+          id={currentTip}
+          elems={{ em: <em className="italic"></em>, b: <b></b> }}
+        >
+          <TipBox>Conditional tip</TipBox>
+        </Localized>
 
+        <div
+          className={classNames(
+            'rounded-xl h-24 flex gap-2 p-3 lg:w-full mt-4 relative',
+            state.alonePage ? 'bg-background-60' : 'bg-background-70',
+            isError && 'border-2 border-status-critical'
+          )}
+        >
           <div
             className={classNames(
-              'rounded-xl h-24 flex gap-2 p-3 lg:w-full mt-4 relative',
-              state.alonePage ? 'bg-background-60' : 'bg-background-70',
-              isError && 'border-2 border-status-critical'
+              'flex flex-col justify-center fill-background-10 absolute',
+              'right-5 bottom-8'
             )}
           >
-            <div
-              className={classNames(
-                'flex flex-col justify-center fill-background-10 absolute',
-                'right-5 bottom-8'
-              )}
-            >
-              <LoaderIcon slimeState={slimeStatus}></LoaderIcon>
-            </div>
-
-            <div className="flex flex-col grow self-center">
-              <Typography bold>
-                {l10n.getString('onboarding-connect_tracker-usb')}
-              </Typography>
-              <div className="flex fill-background-10 gap-1">
-                {/* <SpinIcon
-                  youSpinMeRightRoundBabyRightRound={!isError}
-                ></SpinIcon> */}
-                <Typography color="secondary">
-                  {l10n.getString(statusLabelMap[provisioningStatus])}
-                </Typography>
-              </div>
-              <ProgressBar
-                progress={statusProgressMap[provisioningStatus]}
-                height={14}
-                animated={true}
-                colorClass={progressBarClass}
-              ></ProgressBar>
-            </div>
+            <LoaderIcon slimeState={slimeStatus}></LoaderIcon>
           </div>
-          <div className="flex flex-row mt-4 gap-3">
-            <Button
-              variant="secondary"
-              state={{ alonePage: state.alonePage }}
-              to="/onboarding/wifi-creds"
-            >
-              {state.alonePage
-                ? l10n.getString('onboarding-connect_tracker-back')
-                : l10n.getString('onboarding-previous_step')}
-            </Button>
-            <Button
-              variant="primary"
-              to={
-                state.alonePage
-                  ? '/'
-                  : bnoExists
-                    ? '/onboarding/calibration-tutorial'
-                    : '/onboarding/assign-tutorial'
-              }
-              className="ml-auto"
-            >
-              {l10n.getString('onboarding-connect_tracker-next')}
-            </Button>
+
+          <div className="flex flex-col grow self-center">
+            <Typography bold>
+              {l10n.getString('onboarding-connect_tracker-usb')}
+            </Typography>
+            <div className="flex fill-background-10 gap-1">
+              <Typography color="secondary">
+                {l10n.getString(statusLabelMap[provisioningStatus])}
+              </Typography>
+            </div>
+            <ProgressBar
+              progress={statusProgressMap[provisioningStatus]}
+              height={14}
+              animated={true}
+              colorClass={progressBarClass}
+            ></ProgressBar>
           </div>
         </div>
-        <div className="flex flex-col xs:flex-grow">
-          <Typography color="secondary" bold>
-            {l10n.getString('onboarding-connect_tracker-connected_trackers', {
-              amount: connectedIMUTrackers.length,
-            })}
-          </Typography>
-
-          <div
-            className="overflow-y-scroll mt-2"
-            ref={ref}
-            style={
-              isMobile && state.alonePage
-                ? { height: layoutHeight - BOTTOM_HEIGHT }
-                : { height: layoutHeight }
-            }
+        <div className="flex flex-row mt-4 gap-3">
+          <Button
+            variant="secondary"
+            state={{ alonePage: state.alonePage }}
+            to="/onboarding/wifi-creds"
           >
-            <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-2 pr-1">
-              {Array.from({
-                ...connectedIMUTrackers,
-                length: Math.max(connectedIMUTrackers.length, 1),
-              }).map((tracker, index) => (
-                <div key={index}>
-                  {!tracker && (
-                    <div
-                      className={classNames(
-                        'rounded-xl h-16 animate-pulse',
-                        state.alonePage
-                          ? 'bg-background-80'
-                          : 'bg-background-70'
-                      )}
-                    ></div>
+            {state.alonePage
+              ? l10n.getString('onboarding-connect_tracker-back')
+              : l10n.getString('onboarding-previous_step')}
+          </Button>
+          <Button
+            variant="primary"
+            to={
+              state.alonePage
+                ? '/'
+                : bnoExists
+                  ? '/onboarding/calibration-tutorial'
+                  : '/onboarding/assign-tutorial'
+            }
+            className="ml-auto"
+          >
+            {l10n.getString('onboarding-connect_tracker-next')}
+          </Button>
+        </div>
+      </div>
+      <div style={{ gridArea: 't' }} className="flex items-center px-5">
+        <Typography color="secondary" bold>
+          {l10n.getString('onboarding-connect_tracker-connected_trackers', {
+            amount: connectedIMUTrackers.length,
+          })}
+        </Typography>
+      </div>
+      <div style={{ gridArea: 'c' }} className="xs:overflow-y-auto">
+        <div className="grid lg:grid-cols-2 md:grid-cols-1 gap-2 pr-1 mx-5 py-4">
+          {Array.from({
+            ...connectedIMUTrackers,
+            length: Math.max(connectedIMUTrackers.length, 1),
+          }).map((tracker, index) => (
+            <div key={index}>
+              {!tracker && (
+                <div
+                  className={classNames(
+                    'rounded-xl h-16 animate-pulse',
+                    state.alonePage ? 'bg-background-80' : 'bg-background-70'
                   )}
-                  {tracker && (
-                    <TrackerCard
-                      tracker={tracker.tracker}
-                      device={tracker.device}
-                      smol
-                    ></TrackerCard>
-                  )}
-                </div>
-              ))}
+                ></div>
+              )}
+              {tracker && (
+                <TrackerCard
+                  tracker={tracker.tracker}
+                  device={tracker.device}
+                  smol
+                ></TrackerCard>
+              )}
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

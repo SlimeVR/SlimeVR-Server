@@ -98,6 +98,7 @@ public class RPCSettingsBuilder {
 		if (vrmJson != null)
 			VMCOSCSettings.addVrmJson(fbb, vrmJsonOffset);
 		VMCOSCSettings.addAnchorHip(fbb, config.getAnchorHip());
+		VMCOSCSettings.addMirrorTracking(fbb, config.getMirrorTracking());
 
 		return VMCOSCSettings.endVMCOSCSettings(fbb);
 	}
@@ -122,6 +123,7 @@ public class RPCSettingsBuilder {
 			.createDriftCompensationSettings(
 				fbb,
 				driftCompensationConfig.getEnabled(),
+				driftCompensationConfig.getPrediction(),
 				driftCompensationConfig.getAmount(),
 				driftCompensationConfig.getMaxResets()
 			);
@@ -188,7 +190,8 @@ public class RPCSettingsBuilder {
 				humanPoseManager.getToggle(SkeletonConfigToggles.VIVE_EMULATION),
 				humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP),
 				humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT),
-				humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION)
+				humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION),
+				false
 			);
 		int ratiosOffset = ModelRatios
 			.createModelRatios(
@@ -341,7 +344,8 @@ public class RPCSettingsBuilder {
 				resetsConfig.getResetMountingFeet(),
 				resetsConfig.getMode().getId(),
 				resetsConfig.getYawResetSmoothTime(),
-				resetsConfig.getSaveMountingReset()
+				resetsConfig.getSaveMountingReset(),
+				resetsConfig.getResetHmdPitch()
 			);
 	}
 

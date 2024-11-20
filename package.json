@@ -2,7 +2,7 @@
   "name": "slimevr-ui",
   "version": "0.5.1",
   "private": true,
-  "packageManager": "pnpm@8.15.5",
+  "packageManager": "pnpm@9.12.2",
   "workspaces": [
     "solarxr-protocol",
     "gui"
@@ -13,11 +13,11 @@
     "skipbundler": "cd gui && pnpm run skipbundler",
     "build": "pnpm run tauri build",
     "update-solarxr": "cd solarxr-protocol && pnpm run build",
-    "prepare": "husky install && pnpm run update-solarxr",
+    "prepare": "husky && pnpm run update-solarxr",
     "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {
-    "husky": "^8.0.3",
-    "lint-staged": "^13.3.0"
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10"
   }
 }

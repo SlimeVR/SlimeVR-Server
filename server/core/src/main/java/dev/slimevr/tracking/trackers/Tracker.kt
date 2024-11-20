@@ -4,6 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -64,6 +65,8 @@ class Tracker @JvmOverloads constructor(
 	val allowFiltering: Boolean = false,
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
+	val isHmd: Boolean = false,
+	magStatus: MagnetometerStatus = MagnetometerStatus.NOT_SUPPORTED,
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
@@ -78,6 +81,8 @@ class Tracker @JvmOverloads constructor(
 	var signalStrength: Int? = null
 	var temperature: Float? = null
 	var customName: String? = null
+	var magStatus: MagnetometerStatus = magStatus
+		private set
 
 	/**
 	 * If the tracker has gotten disconnected after it was initialized first time
@@ -100,6 +105,9 @@ class Tracker @JvmOverloads constructor(
 			VRServer.instance.updateSkeletonModel()
 			VRServer.instance.refreshTrackersDriftCompensationEnabled()
 
+			if (isHmd) {
+				VRServer.instance.humanPoseManager.checkReportMissingHmd()
+			}
 			checkReportErrorStatus()
 			checkReportRequireReset()
 		}
@@ -132,12 +140,15 @@ class Tracker @JvmOverloads constructor(
 		require(!needsMounting || (needsReset && needsMounting)) {
 			"If ${::needsMounting.name} is true, then ${::needsReset.name} must also be true"
 		}
+		require(!isHmd || (hasPosition && isHmd)) {
+			"If ${::isHmd.name} is true, then ${::hasPosition.name} must also be true"
+		}
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
 	}
 
-	private fun checkReportRequireReset() {
+	fun checkReportRequireReset() {
 		if (needsReset && trackerPosition != null && lastResetStatus == 0u &&
 			!status.reset && (isImu() || !statusResetRecently)
 		) {
@@ -308,15 +319,16 @@ class Tracker @JvmOverloads constructor(
 	 * it too much should be avoided for performance reasons.
 	 */
 	fun getRotation(): Quaternion {
-		var rot = if (allowFiltering && filteringHandler.enabled) {
+		var rot = if (allowFiltering && filteringHandler.filteringEnabled) {
 			// Get filtered rotation
 			filteringHandler.getFilteredRotation()
 		} else {
 			// Get unfiltered rotation
-			_rotation
+			filteringHandler.getTrackedRotation()
 		}
 
-		if (needsReset && !(isComputed && trackerPosition == TrackerPosition.HEAD)) {
+		// Reset if needed and is not computed and internal
+		if (needsReset && !(isComputed && isInternal)) {
 			// Adjust to reset, mounting and drift compensation
 			rot = resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
 		}
@@ -339,15 +351,16 @@ class Tracker @JvmOverloads constructor(
 	 * This is used for debugging/visualizing tracker data
 	 */
 	fun getIdentityAdjustedRotation(): Quaternion {
-		var rot = if (filteringHandler.enabled) {
+		var rot = if (filteringHandler.filteringEnabled) {
 			// Get filtered rotation
 			filteringHandler.getFilteredRotation()
 		} else {
 			// Get unfiltered rotation
-			_rotation
+			filteringHandler.getTrackedRotation()
 		}
 
-		if (needsReset && trackerPosition != TrackerPosition.HEAD) {
+		// Reset if needed or is a computed tracker besides head
+		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD)) {
 			// Adjust to reset and mounting
 			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		}
@@ -359,7 +372,7 @@ class Tracker @JvmOverloads constructor(
 	 * Gets the raw (unadjusted) rotation of the tracker.
 	 * If this is an IMU, this will be the raw sensor rotation.
 	 */
-	fun getRawRotation(): Quaternion = _rotation
+	fun getRawRotation() = _rotation
 
 	/**
 	 * Sets the raw (unadjusted) rotation of the tracker.
@@ -378,8 +391,26 @@ class Tracker @JvmOverloads constructor(
 	fun isImu(): Boolean = imuType != null
 
 	/**
+	 * Please don't use this and instead set it via [Device.setMag]
+	 */
+	internal fun setMagPrivate(mag: Boolean) {
+		magStatus = if (mag) {
+			MagnetometerStatus.ENABLED
+		} else {
+			MagnetometerStatus.DISABLED
+		}
+	}
+
+	/**
 	 * Gets the current TPS of the tracker
 	 */
 	val tps: Float
 		get() = timer.averageFPS
+
+	/**
+	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
+	 */
+	fun resetFilteringQuats() {
+		filteringHandler.resetQuats(_rotation)
+	}
 }

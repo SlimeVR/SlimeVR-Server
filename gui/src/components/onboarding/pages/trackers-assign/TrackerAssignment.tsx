@@ -30,9 +30,10 @@ import {
 } from '@/components/onboarding/BodyAssignment';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
 import { TrackerSelectionMenu } from './TrackerSelectionMenu';
-import { useConfig } from '@/hooks/config';
+import { defaultConfig, useConfig } from '@/hooks/config';
 import { playTapSetupSound } from '@/sounds/sounds';
 import { useBreakpoint } from '@/hooks/breakpoint';
+import { TrackerAssignOptions } from './TrackerAssignOptions';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -54,19 +55,17 @@ export function TrackersAssignPage() {
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const defaultValues = {
-    advanced: config?.advancedAssign ?? false,
-    mirrorView: config?.mirrorView ?? true,
+    mirrorView: config?.mirrorView ?? defaultConfig.mirrorView,
   };
   const { control, watch } = useForm<{
-    advanced: boolean;
     mirrorView: boolean;
   }>({ defaultValues });
-  const { advanced, mirrorView } = watch();
+  const { mirrorView } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
   const assignedTrackers = useAssignedTrackers();
   useEffect(() => {
-    setConfig({ advancedAssign: advanced, mirrorView });
-  }, [advanced, mirrorView]);
+    setConfig({ mirrorView });
+  }, [mirrorView]);
 
   const [tapDetectionSettings, setTapDetectionSettings] = useState<Omit<
     TapDetectionSettingsT,
@@ -78,7 +77,9 @@ export function TrackersAssignPage() {
   }, []);
 
   useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    setTapDetectionSettings(settings.tapDetectionSettings);
+    if (settings.tapDetectionSettings) {
+      setTapDetectionSettings(settings.tapDetectionSettings);
+    }
   });
 
   useEffect(() => {
@@ -266,7 +267,7 @@ export function TrackersAssignPage() {
       <NeckWarningModal
         isOpen={shouldShowChokerWarn}
         overlayClassName={classNames(
-          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-black bg-opacity-90 z-20'
+          'fixed top-0 right-0 left-0 bottom-0 flex flex-col items-center w-full h-full justify-center bg-background-90 bg-opacity-90 z-20'
         )}
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}
@@ -290,13 +291,17 @@ export function TrackersAssignPage() {
                 </Typography>
               </div>
               <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
-              <div>
-                <CheckBox
-                  control={control}
-                  label={l10n.getString('onboarding-assign_trackers-advanced')}
-                  name="advanced"
-                  variant="toggle"
-                ></CheckBox>
+              {!!firstError && (
+                <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
+                  <div className="flex flex-col gap-1 whitespace-normal">
+                    <span>{firstError.label}</span>
+                  </div>
+                </div>
+              )}
+              <div className="flex flex-col md:gap-4 sm:gap-2 xs:gap-1 mobile:gap-4">
+                <TrackerAssignOptions
+                  variant={isMobile ? 'dropdown' : 'radio'}
+                />
                 <CheckBox
                   control={control}
                   label={l10n.getString(
@@ -306,13 +311,6 @@ export function TrackersAssignPage() {
                   variant="toggle"
                 ></CheckBox>
               </div>
-              {!!firstError && (
-                <div className="bg-status-warning text-background-60 px-3 py-2 text-justify rounded-md">
-                  <div className="flex flex-col gap-1 whitespace-normal">
-                    <span>{firstError.label}</span>
-                  </div>
-                </div>
-              )}
               <div className="flex flex-row">
                 {!state.alonePage && (
                   <>
@@ -336,14 +334,15 @@ export function TrackersAssignPage() {
                 )}
               </div>
             </div>
-            <div className="flex flex-col rounded-xl fill-background-50">
+            <div className="flex flex-col rounded-xl fill-background-50 pt-1">
               <BodyAssignment
                 width={isMobile ? 150 : undefined}
+                dotSize={isMobile ? 10 : undefined}
                 onlyAssigned={false}
                 highlightedRoles={firstError?.affectedRoles || []}
                 rolesWithErrors={rolesWithErrors}
-                advanced={advanced ?? defaultValues.advanced}
-                mirror={mirrorView ?? defaultValues.mirrorView}
+                assignMode={config?.assignMode ?? defaultConfig.assignMode}
+                mirror={mirrorView}
                 onRoleSelected={tryOpenChokerWarning}
               ></BodyAssignment>
             </div>

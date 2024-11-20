@@ -33,6 +33,9 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 					messageHeader,
 				)
 			}
+		rpcHandler.registerPacketListener(RpcMessage.SettingsResetRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
+			this.onSettingsResetRequest(conn, messageHeader)
+		}
 	}
 
 	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
@@ -84,6 +87,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				.vrConfig
 				.driftCompensation
 			driftCompensationConfig.enabled = req.driftCompensation().enabled()
+			driftCompensationConfig.prediction = req.driftCompensation().prediction()
 			driftCompensationConfig.amount = req.driftCompensation().amount()
 			driftCompensationConfig.maxResets = req.driftCompensation().maxResets()
 			driftCompensationConfig.updateTrackersDriftCompensation()
@@ -151,6 +155,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			}
 			if (req.vmcOsc().vrmJson() != null) vmcConfig.vrmJson = req.vmcOsc().vrmJson()
 			vmcConfig.anchorHip = req.vmcOsc().anchorHip()
+			vmcConfig.mirrorTracking = req.vmcOsc().mirrorTracking()
 
 			vmcHandler.refreshSettings(true)
 		}
@@ -336,10 +341,15 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			resetsConfig.resetMountingFeet = req.resetsSettings().resetMountingFeet()
 			resetsConfig.saveMountingReset = req.resetsSettings().saveMountingReset()
 			resetsConfig.yawResetSmoothTime = req.resetsSettings().yawResetSmoothTime()
+			resetsConfig.resetHmdPitch = req.resetsSettings().resetHmdPitch()
 			resetsConfig.updateTrackersResetsSettings()
 		}
 
 		api.server.configManager.saveConfig()
+	}
+
+	fun onSettingsResetRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
+		api.server.configManager.resetConfig()
 	}
 
 	companion object {

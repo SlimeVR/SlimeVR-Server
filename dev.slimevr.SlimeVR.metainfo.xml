@@ -13,7 +13,7 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
   <id>dev.slimevr.SlimeVR</id>
 
   <name>SlimeVR</name>
-  <summary>An app for facilitating full-body tracking in virtual reality</summary>
+  <summary>Accessible full-body tracking in VR</summary>
   <developer_name>SlimeVR Team</developer_name>
 
   <!-- CC0 so attribution is not required -->
@@ -40,7 +40,8 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
   </supports>
 
   <branding>
-    <color type="primary">#663499</color>
+    <color type="primary" scheme_preference="light">#BB8AE5</color>
+    <color type="primary" scheme_preference="dark">#663499</color>
   </branding>
 
   <description>
@@ -53,7 +54,7 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
   <launchable type="desktop-id">dev.slimevr.SlimeVR.desktop</launchable>
   <screenshots>
-    <screenshot type="default">
+    <screenshot type="default" xml:lang="en">
       <caption>The onboarding for the GUI</caption>
       <image>https://raw.githubusercontent.com/SlimeVR/SlimeVR-Server/main/assets/img/onboarding.png</image>
     </screenshot>
@@ -64,6 +65,21 @@ work.  If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
   </provides>
 
   <releases>
+    <release version="0.13.1" date="2024-11-05"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.13.1</url></release>
+    <release version="0.13.1~rc.3" type="development" date="2024-10-31"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.13.1-rc.3</url></release>
+    <release version="0.13.1~rc.2" type="development" date="2024-10-26"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.13.1-rc.2</url></release>
+    <release version="0.13.1~rc.1" type="development" date="2024-10-16"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.13.1-rc.1</url></release>
+    <release version="0.13.0" date="2024-09-20"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.13.0</url></release>
+    <release version="0.13.0~rc.4" type="development" date="2024-09-13"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.13.0-rc.4</url></release>
+    <release version="0.13.0~rc.3" type="development" date="2024-08-14"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.13.0-rc.3</url></release>
+    <release version="0.13.0~rc.2" type="development" date="2024-08-08"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.13.0-rc.2</url></release>
+    <release version="0.13.0~rc.1" type="development" date="2024-08-02"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.13.0-rc.1</url></release>
+    <release version="0.12.1" date="2024-04-29"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.12.1</url></release>
+    <release version="0.12.0" date="2024-04-26"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.12.0</url></release>
+    <release version="0.12.0~rc.4" type="development" date="2024-04-21"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.12.0-rc.4</url></release>
+    <release version="0.12.0~rc.3" type="development" date="2024-04-14"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.12.0-rc.3</url></release>
+    <release version="0.12.0~rc.2" type="development" date="2024-04-09"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.12.0-rc.2</url></release>
+    <release version="0.12.0~rc.1" type="development" date="2024-04-04"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.12.0-rc.1</url></release>
     <release version="0.11.0" date="2023-12-23"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.11.0</url></release>
     <release version="0.11.0~rc.2" type="development" date="2023-12-08"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.11.0-rc.2</url></release>
     <release version="0.11.0~rc.1" type="development" date="2023-11-23"><url>https://github.com/SlimeVR/SlimeVR-Server/releases/tag/v0.11.0-rc.1</url></release>

@@ -223,6 +223,7 @@ data class UDPPacket14Error(var errorNumber: Int = 0) :
 data class UDPPacket15SensorInfo(
 	var sensorStatus: Int = 0,
 	var sensorType: IMUType = IMUType.UNKNOWN,
+	var sensorConfig: SensorConfig? = null,
 ) : UDPPacket(15),
 	SensorSpecificPacket {
 	override var sensorId = 0
@@ -232,6 +233,9 @@ data class UDPPacket15SensorInfo(
 		if (buf.remaining() > 0) {
 			sensorType =
 				IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
+		}
+		if (buf.remaining() > 1) {
+			sensorConfig = SensorConfig(buf.getShort().toUShort())
 		}
 	}
 
@@ -347,6 +351,30 @@ data class UDPPacket23RotationAndAcceleration(
 		rotation = Quaternion(w, x, y, z).unit()
 		val scaleA = 1 / (1 shl 7).toFloat() // The same as the HID scale
 		acceleration = Vector3(buf.short * scaleA, buf.short * scaleA, buf.short * scaleA)
+	}
+}
+
+data class UDPPacket24AckConfigChange(
+	override var sensorId: Int = 0,
+	var configType: ConfigTypeId = ConfigTypeId(0u),
+) : UDPPacket(24),
+	SensorSpecificPacket {
+	override fun readData(buf: ByteBuffer) {
+		sensorId = buf.get().toInt() and 0xFF
+		configType = ConfigTypeId(buf.getShort().toUShort())
+	}
+}
+
+data class UDPPacket25SetConfigFlag(
+	override var sensorId: Int = 255,
+	var configType: ConfigTypeId,
+	var state: Boolean,
+) : UDPPacket(25),
+	SensorSpecificPacket {
+	override fun writeData(buf: ByteBuffer) {
+		buf.put(sensorId.toByte())
+		buf.putShort(configType.v.toShort())
+		buf.put(if (state) 1 else 0)
 	}
 }
 

@@ -9,6 +9,7 @@ import {
   BodyPart,
   ForgetDeviceRequestT,
   ImuType,
+  MagnetometerStatus,
   RpcMessage,
 } from 'solarxr-protocol';
 import { useDebouncedEffect } from '@/hooks/timeout';
@@ -33,6 +34,7 @@ import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMe
 import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
+import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -170,6 +172,7 @@ export function TrackerSettingsPage() {
       ></SingleTrackerBodyAssignmentMenu>
       <MountingSelectionMenu
         bodyPart={tracker?.tracker.info?.bodyPart}
+        currRotation={currRotation}
         isOpen={selectRotation}
         onClose={() => setSelectRotation(false)}
         onDirectionSelected={onDirectionSelected}
@@ -277,6 +280,19 @@ export function TrackerSettingsPage() {
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">
+                {l10n.getString('tracker-infos-magnetometer')}
+              </Typography>
+              <Typography>
+                {tracker?.tracker.info?.magnetometer === undefined
+                  ? '--'
+                  : l10n.getString('tracker-infos-magnetometer-status-v1', {
+                      status:
+                        MagnetometerStatus[tracker.tracker.info.magnetometer],
+                    })}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
                 {l10n.getString('tracker-infos-network_version')}
               </Typography>
               <Typography>
@@ -307,18 +323,18 @@ export function TrackerSettingsPage() {
               )}
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
-              <div className="flex gap-3 items-center">
+              <div className="flex gap-3 items-center fill-background-10">
                 {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
                   <BodyPartIcon
                     bodyPart={tracker?.tracker.info?.bodyPart}
                   ></BodyPartIcon>
                 )}
                 {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
-                  <WarningIcon className="text-yellow-300" />
+                  <WarningIcon className="fill-status-warning" />
                 )}
                 <Typography
                   color={classNames({
-                    'text-yellow-300':
+                    'text-status-warning':
                       tracker?.tracker.info?.bodyPart === BodyPart.NONE,
                   })}
                 >
@@ -402,6 +418,15 @@ export function TrackerSettingsPage() {
               </div>
             </div>
           )}
+          {tracker?.tracker.info?.isImu &&
+            tracker?.tracker.info?.magnetometer !==
+              MagnetometerStatus.NOT_SUPPORTED && (
+              <MagnetometerToggleSetting
+                settingType="tracker"
+                trackerNum={tracker.tracker.trackerId?.trackerNum}
+                deviceId={tracker.tracker.trackerId?.deviceId?.id}
+              />
+            )}
           <div className="flex flex-col gap-2 w-full mt-3">
             <Typography variant="section-title">
               {l10n.getString('tracker-settings-name_section')}
@@ -418,7 +443,7 @@ export function TrackerSettingsPage() {
               control={control}
               autocomplete="off"
               rules={undefined}
-              label="Tracker name"
+              label={l10n.getString('tracker-settings-name_section-label')}
             ></Input>
           </div>
           {macAddress && (
@@ -431,7 +456,7 @@ export function TrackerSettingsPage() {
               </Typography>
               <Button
                 variant="secondary"
-                className="!bg-status-critical  self-start"
+                className="!bg-status-critical self-start"
                 onClick={() => {
                   sendRPCPacket(
                     RpcMessage.ForgetDeviceRequest,

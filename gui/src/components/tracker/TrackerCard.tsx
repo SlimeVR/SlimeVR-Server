@@ -29,7 +29,9 @@ function TrackerBig({
         <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
       </div>
       <div className="flex justify-center">
-        <Typography bold>{trackerName}</Typography>
+        <Typography bold truncate>
+          {trackerName}
+        </Typography>
       </div>
       <div className="flex justify-center">
         <TrackerStatus status={tracker.status}></TrackerStatus>
@@ -76,8 +78,10 @@ function TrackerSmol({
       <div className="flex flex-col justify-center items-center fill-background-10">
         <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
       </div>
-      <div className="flex flex-col flex-grow">
-        <Typography bold>{trackerName}</Typography>
+      <div className="flex flex-col flex-grow justify-center">
+        <Typography bold truncate>
+          {trackerName}
+        </Typography>
         <TrackerStatus status={tracker.status}></TrackerStatus>
       </div>
       {device && device.hardwareStatus && (
@@ -146,7 +150,7 @@ export function TrackerCard({
           ? {
               boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
                 velocity * 8
-              )}px #BB8AE5`,
+              )}px rgb(var(--accent-background-30))`,
             }
           : {}
       }

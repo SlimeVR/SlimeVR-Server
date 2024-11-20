@@ -41,8 +41,9 @@ export function SettingsLink({
 
 export function SettingsSidebar() {
   const { l10n } = useLocalization();
+
   return (
-    <div className="flex flex-col px-5 w-[280px] min-w-[280px] py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg">
+    <div className="flex flex-col px-5 py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg h-full">
       <Typography variant="main-title">
         {l10n.getString('settings-sidebar-title')}
       </Typography>
@@ -98,6 +99,11 @@ export function SettingsSidebar() {
           <div className="flex flex-col gap-2">
             <SettingsLink to="/settings/serial">
               {l10n.getString('settings-sidebar-serial')}
+            </SettingsLink>
+          </div>
+          <div className="flex flex-col gap-2">
+            <SettingsLink to="/settings/advanced">
+              {l10n.getString('settings-sidebar-advanced')}
             </SettingsLink>
           </div>
         </div>

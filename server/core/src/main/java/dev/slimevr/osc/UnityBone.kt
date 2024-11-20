@@ -38,36 +38,36 @@ enum class UnityBone(
 	LEFT_EYE("LeftEye", null, null),
 	RIGHT_EYE("RightEye", null, null),
 	JAW("Jaw", null, null),
-	LEFT_THUMB_PROXIMAL("LeftThumbProximal", null, null),
-	LEFT_THUMB_INTERMEDIATE("LeftThumbIntermediate", null, null),
-	LEFT_THUMB_DISTAL("LeftThumbDistal", null, null),
-	LEFT_INDEX_PROXIMAL("LeftIndexProximal", null, null),
-	LEFT_INDEX_INTERMEDIATE("LeftIndexIntermediate", null, null),
-	LEFT_INDEX_DISTAL("LeftIndexDistal", null, null),
-	LEFT_MIDDLE_PROXIMAL("LeftMiddleProximal", null, null),
-	LEFT_MIDDLE_INTERMEDIATE("LeftMiddleIntermediate", null, null),
-	LEFT_MIDDLE_DISTAL("LeftMiddleDistal", null, null),
-	LEFT_RING_PROXIMAL("LeftRingProximal", null, null),
-	LEFT_RING_INTERMEDIATE("LeftRingIntermediate", null, null),
-	LEFT_RING_DISTAL("LeftRingDistal", null, null),
-	LEFT_LITTLE_PROXIMAL("LeftLittleProximal", null, null),
-	LEFT_LITTLE_INTERMEDIATE("LeftLittleIntermediate", null, null),
-	LEFT_LITTLE_DISTAL("LeftLittleDistal", null, null),
-	RIGHT_THUMB_PROXIMAL("RightThumbProximal", null, null),
-	RIGHT_THUMB_INTERMEDIATE("RightThumbIntermediate", null, null),
-	RIGHT_THUMB_DISTAL("RightThumbDistal", null, null),
-	RIGHT_INDEX_PROXIMAL("RightIndexProximal", null, null),
-	RIGHT_INDEX_INTERMEDIATE("RightIndexIntermediate", null, null),
-	RIGHT_INDEX_DISTAL("RightIndexDistal", null, null),
-	RIGHT_MIDDLE_PROXIMAL("RightMiddleProximal", null, null),
-	RIGHT_MIDDLE_INTERMEDIATE("RightMiddleIntermediate", null, null),
-	RIGHT_MIDDLE_DISTAL("RightMiddleDistal", null, null),
-	RIGHT_RING_PROXIMAL("RightRingProximal", null, null),
-	RIGHT_RING_INTERMEDIATE("RightRingIntermediate", null, null),
-	RIGHT_RING_DISTAL("RightRingDistal", null, null),
-	RIGHT_LITTLE_PROXIMAL("RightLittleProximal", null, null),
-	RIGHT_LITTLE_INTERMEDIATE("RightLittleIntermediate", null, null),
-	RIGHT_LITTLE_DISTAL("RightLittleDistal", null, null),
+	LEFT_THUMB_PROXIMAL("LeftThumbProximal", BoneType.LEFT_THUMB_PROXIMAL, TrackerPosition.LEFT_THUMB_PROXIMAL),
+	LEFT_THUMB_INTERMEDIATE("LeftThumbIntermediate", BoneType.LEFT_THUMB_INTERMEDIATE, TrackerPosition.LEFT_THUMB_INTERMEDIATE),
+	LEFT_THUMB_DISTAL("LeftThumbDistal", BoneType.LEFT_THUMB_DISTAL, TrackerPosition.LEFT_THUMB_DISTAL),
+	LEFT_INDEX_PROXIMAL("LeftIndexProximal", BoneType.LEFT_INDEX_PROXIMAL, TrackerPosition.LEFT_INDEX_PROXIMAL),
+	LEFT_INDEX_INTERMEDIATE("LeftIndexIntermediate", BoneType.LEFT_INDEX_INTERMEDIATE, TrackerPosition.LEFT_INDEX_INTERMEDIATE),
+	LEFT_INDEX_DISTAL("LeftIndexDistal", BoneType.LEFT_INDEX_DISTAL, TrackerPosition.LEFT_INDEX_DISTAL),
+	LEFT_MIDDLE_PROXIMAL("LeftMiddleProximal", BoneType.LEFT_MIDDLE_PROXIMAL, TrackerPosition.LEFT_MIDDLE_PROXIMAL),
+	LEFT_MIDDLE_INTERMEDIATE("LeftMiddleIntermediate", BoneType.LEFT_MIDDLE_INTERMEDIATE, TrackerPosition.LEFT_MIDDLE_INTERMEDIATE),
+	LEFT_MIDDLE_DISTAL("LeftMiddleDistal", BoneType.LEFT_MIDDLE_DISTAL, TrackerPosition.LEFT_MIDDLE_DISTAL),
+	LEFT_RING_PROXIMAL("LeftRingProximal", BoneType.LEFT_RING_PROXIMAL, TrackerPosition.LEFT_RING_PROXIMAL),
+	LEFT_RING_INTERMEDIATE("LeftRingIntermediate", BoneType.LEFT_RING_INTERMEDIATE, TrackerPosition.LEFT_RING_INTERMEDIATE),
+	LEFT_RING_DISTAL("LeftRingDistal", BoneType.LEFT_RING_DISTAL, TrackerPosition.LEFT_RING_DISTAL),
+	LEFT_LITTLE_PROXIMAL("LeftLittleProximal", BoneType.LEFT_LITTLE_PROXIMAL, TrackerPosition.LEFT_LITTLE_PROXIMAL),
+	LEFT_LITTLE_INTERMEDIATE("LeftLittleIntermediate", BoneType.LEFT_LITTLE_INTERMEDIATE, TrackerPosition.LEFT_LITTLE_INTERMEDIATE),
+	LEFT_LITTLE_DISTAL("LeftLittleDistal", BoneType.LEFT_LITTLE_DISTAL, TrackerPosition.LEFT_LITTLE_DISTAL),
+	RIGHT_THUMB_PROXIMAL("RightThumbProximal", BoneType.RIGHT_THUMB_PROXIMAL, TrackerPosition.RIGHT_THUMB_PROXIMAL),
+	RIGHT_THUMB_INTERMEDIATE("RightThumbIntermediate", BoneType.RIGHT_THUMB_INTERMEDIATE, TrackerPosition.RIGHT_THUMB_INTERMEDIATE),
+	RIGHT_THUMB_DISTAL("RightThumbDistal", BoneType.RIGHT_THUMB_DISTAL, TrackerPosition.RIGHT_THUMB_DISTAL),
+	RIGHT_INDEX_PROXIMAL("RightIndexProximal", BoneType.RIGHT_INDEX_PROXIMAL, TrackerPosition.RIGHT_INDEX_PROXIMAL),
+	RIGHT_INDEX_INTERMEDIATE("RightIndexIntermediate", BoneType.RIGHT_INDEX_INTERMEDIATE, TrackerPosition.RIGHT_INDEX_INTERMEDIATE),
+	RIGHT_INDEX_DISTAL("RightIndexDistal", BoneType.RIGHT_INDEX_DISTAL, TrackerPosition.RIGHT_INDEX_DISTAL),
+	RIGHT_MIDDLE_PROXIMAL("RightMiddleProximal", BoneType.RIGHT_MIDDLE_PROXIMAL, TrackerPosition.RIGHT_MIDDLE_PROXIMAL),
+	RIGHT_MIDDLE_INTERMEDIATE("RightMiddleIntermediate", BoneType.RIGHT_MIDDLE_INTERMEDIATE, TrackerPosition.RIGHT_MIDDLE_INTERMEDIATE),
+	RIGHT_MIDDLE_DISTAL("RightMiddleDistal", BoneType.RIGHT_MIDDLE_DISTAL, TrackerPosition.RIGHT_MIDDLE_DISTAL),
+	RIGHT_RING_PROXIMAL("RightRingProximal", BoneType.RIGHT_RING_PROXIMAL, TrackerPosition.RIGHT_RING_PROXIMAL),
+	RIGHT_RING_INTERMEDIATE("RightRingIntermediate", BoneType.RIGHT_RING_INTERMEDIATE, TrackerPosition.RIGHT_RING_INTERMEDIATE),
+	RIGHT_RING_DISTAL("RightRingDistal", BoneType.RIGHT_RING_DISTAL, TrackerPosition.RIGHT_RING_DISTAL),
+	RIGHT_LITTLE_PROXIMAL("RightLittleProximal", BoneType.RIGHT_LITTLE_PROXIMAL, TrackerPosition.RIGHT_LITTLE_PROXIMAL),
+	RIGHT_LITTLE_INTERMEDIATE("RightLittleIntermediate", BoneType.RIGHT_LITTLE_INTERMEDIATE, TrackerPosition.RIGHT_LITTLE_INTERMEDIATE),
+	RIGHT_LITTLE_DISTAL("RightLittleDistal", BoneType.RIGHT_LITTLE_DISTAL, TrackerPosition.RIGHT_LITTLE_DISTAL),
 	LAST_BONE("LastBone", null, null),
 	;
 
@@ -76,5 +76,107 @@ enum class UnityBone(
 
 		@JvmStatic
 		fun getByStringVal(stringVal: String): UnityBone? = byStringVal[stringVal.lowercase()]
+
+		/**
+		 * Returns the bone on the opposite limb, or the original bone if
+		 * it not a limb bone.
+		 */
+		fun tryGetOppositeArmBone(bone: UnityBone): UnityBone = when (bone) {
+			LEFT_SHOULDER -> RIGHT_SHOULDER
+			LEFT_UPPER_ARM -> RIGHT_UPPER_ARM
+			LEFT_LOWER_ARM -> RIGHT_LOWER_ARM
+			LEFT_HAND -> RIGHT_HAND
+			RIGHT_SHOULDER -> LEFT_SHOULDER
+			RIGHT_UPPER_ARM -> LEFT_UPPER_ARM
+			RIGHT_LOWER_ARM -> LEFT_LOWER_ARM
+			RIGHT_HAND -> LEFT_HAND
+			LEFT_UPPER_LEG -> RIGHT_UPPER_LEG
+			LEFT_LOWER_LEG -> RIGHT_LOWER_LEG
+			LEFT_FOOT -> RIGHT_FOOT
+			RIGHT_UPPER_LEG -> LEFT_UPPER_LEG
+			RIGHT_LOWER_LEG -> LEFT_LOWER_LEG
+			RIGHT_FOOT -> LEFT_FOOT
+			LEFT_THUMB_PROXIMAL -> RIGHT_THUMB_PROXIMAL
+			LEFT_THUMB_INTERMEDIATE -> RIGHT_THUMB_INTERMEDIATE
+			LEFT_THUMB_DISTAL -> RIGHT_THUMB_DISTAL
+			LEFT_INDEX_PROXIMAL -> RIGHT_INDEX_PROXIMAL
+			LEFT_INDEX_INTERMEDIATE -> RIGHT_INDEX_INTERMEDIATE
+			LEFT_INDEX_DISTAL -> RIGHT_INDEX_DISTAL
+			LEFT_MIDDLE_PROXIMAL -> RIGHT_MIDDLE_PROXIMAL
+			LEFT_MIDDLE_INTERMEDIATE -> RIGHT_MIDDLE_INTERMEDIATE
+			LEFT_MIDDLE_DISTAL -> RIGHT_MIDDLE_DISTAL
+			LEFT_RING_PROXIMAL -> RIGHT_RING_PROXIMAL
+			LEFT_RING_INTERMEDIATE -> RIGHT_RING_INTERMEDIATE
+			LEFT_RING_DISTAL -> RIGHT_RING_DISTAL
+			LEFT_LITTLE_PROXIMAL -> RIGHT_LITTLE_PROXIMAL
+			LEFT_LITTLE_INTERMEDIATE -> RIGHT_LITTLE_INTERMEDIATE
+			LEFT_LITTLE_DISTAL -> RIGHT_LITTLE_DISTAL
+			RIGHT_THUMB_PROXIMAL -> LEFT_THUMB_PROXIMAL
+			RIGHT_THUMB_INTERMEDIATE -> LEFT_THUMB_INTERMEDIATE
+			RIGHT_THUMB_DISTAL -> LEFT_THUMB_DISTAL
+			RIGHT_INDEX_PROXIMAL -> LEFT_INDEX_PROXIMAL
+			RIGHT_INDEX_INTERMEDIATE -> LEFT_INDEX_INTERMEDIATE
+			RIGHT_INDEX_DISTAL -> LEFT_INDEX_DISTAL
+			RIGHT_MIDDLE_PROXIMAL -> LEFT_MIDDLE_PROXIMAL
+			RIGHT_MIDDLE_INTERMEDIATE -> LEFT_MIDDLE_INTERMEDIATE
+			RIGHT_MIDDLE_DISTAL -> LEFT_MIDDLE_DISTAL
+			RIGHT_RING_PROXIMAL -> LEFT_RING_PROXIMAL
+			RIGHT_RING_INTERMEDIATE -> LEFT_RING_INTERMEDIATE
+			RIGHT_RING_DISTAL -> LEFT_RING_DISTAL
+			RIGHT_LITTLE_PROXIMAL -> LEFT_LITTLE_PROXIMAL
+			RIGHT_LITTLE_INTERMEDIATE -> LEFT_LITTLE_INTERMEDIATE
+			RIGHT_LITTLE_DISTAL -> LEFT_LITTLE_DISTAL
+			else -> bone
+		}
+
+		/**
+		 * Returns true if the bone is part of the left arm (incl. fingers, excl. shoulder)
+		 */
+		fun isLeftArmBone(bone: UnityBone): Boolean = bone == LEFT_UPPER_ARM || bone == LEFT_LOWER_ARM || bone == LEFT_HAND ||
+			bone == LEFT_THUMB_PROXIMAL || bone == LEFT_THUMB_INTERMEDIATE || bone == LEFT_THUMB_DISTAL ||
+			bone == LEFT_INDEX_PROXIMAL || bone == LEFT_INDEX_INTERMEDIATE || bone == LEFT_INDEX_DISTAL ||
+			bone == LEFT_MIDDLE_PROXIMAL || bone == LEFT_MIDDLE_INTERMEDIATE || bone == LEFT_MIDDLE_DISTAL ||
+			bone == LEFT_RING_PROXIMAL || bone == LEFT_RING_INTERMEDIATE || bone == LEFT_RING_DISTAL ||
+			bone == LEFT_LITTLE_PROXIMAL || bone == LEFT_LITTLE_INTERMEDIATE || bone == LEFT_LITTLE_DISTAL
+
+		/**
+		 * Returns true if the bone is part of the right arm (incl. fingers, excl. shoulder)
+		 */
+		fun isRightArmBone(bone: UnityBone): Boolean = bone == RIGHT_UPPER_ARM || bone == RIGHT_LOWER_ARM || bone == RIGHT_HAND ||
+			bone == RIGHT_THUMB_PROXIMAL || bone == RIGHT_THUMB_INTERMEDIATE || bone == RIGHT_THUMB_DISTAL ||
+			bone == RIGHT_INDEX_PROXIMAL || bone == RIGHT_INDEX_INTERMEDIATE || bone == RIGHT_INDEX_DISTAL ||
+			bone == RIGHT_MIDDLE_PROXIMAL || bone == RIGHT_MIDDLE_INTERMEDIATE || bone == RIGHT_MIDDLE_DISTAL ||
+			bone == RIGHT_RING_PROXIMAL || bone == RIGHT_RING_INTERMEDIATE || bone == RIGHT_RING_DISTAL ||
+			bone == RIGHT_LITTLE_PROXIMAL || bone == RIGHT_LITTLE_INTERMEDIATE || bone == RIGHT_LITTLE_DISTAL
+
+		/**
+		 * Returns true if the bone is the left upper arm or proximal left finger bone
+		 */
+		fun isLeftStartOfArmOrFingerBone(bone: UnityBone): Boolean = bone == LEFT_UPPER_ARM || bone == LEFT_THUMB_PROXIMAL ||
+			bone == LEFT_INDEX_PROXIMAL || bone == LEFT_MIDDLE_PROXIMAL || bone == LEFT_RING_PROXIMAL || bone == LEFT_LITTLE_PROXIMAL
+
+		/**
+		 * Returns true if the bone is the right upper arm or proximal right finger bone
+		 */
+		fun isRightStartOfArmOrFingerBone(bone: UnityBone): Boolean = bone == RIGHT_UPPER_ARM || bone == RIGHT_THUMB_PROXIMAL ||
+			bone == RIGHT_INDEX_PROXIMAL || bone == RIGHT_MIDDLE_PROXIMAL || bone == RIGHT_RING_PROXIMAL || bone == RIGHT_LITTLE_PROXIMAL
+
+		/**
+		 * Returns true if the bone is part of the left fingers
+		 */
+		fun isLeftFingerBone(bone: UnityBone): Boolean = bone == LEFT_THUMB_PROXIMAL || bone == LEFT_THUMB_INTERMEDIATE || bone == LEFT_THUMB_DISTAL ||
+			bone == LEFT_INDEX_PROXIMAL || bone == LEFT_INDEX_INTERMEDIATE || bone == LEFT_INDEX_DISTAL ||
+			bone == LEFT_MIDDLE_PROXIMAL || bone == LEFT_MIDDLE_INTERMEDIATE || bone == LEFT_MIDDLE_DISTAL ||
+			bone == LEFT_RING_PROXIMAL || bone == LEFT_RING_INTERMEDIATE || bone == LEFT_RING_DISTAL ||
+			bone == LEFT_LITTLE_PROXIMAL || bone == LEFT_LITTLE_INTERMEDIATE || bone == LEFT_LITTLE_DISTAL
+
+		/**
+		 * Returns true if the bone part of the right fingers
+		 */
+		fun isRightFingerBone(bone: UnityBone): Boolean = bone == RIGHT_THUMB_PROXIMAL || bone == RIGHT_THUMB_INTERMEDIATE || bone == RIGHT_THUMB_DISTAL ||
+			bone == RIGHT_INDEX_PROXIMAL || bone == RIGHT_INDEX_INTERMEDIATE || bone == RIGHT_INDEX_DISTAL ||
+			bone == RIGHT_MIDDLE_PROXIMAL || bone == RIGHT_MIDDLE_INTERMEDIATE || bone == RIGHT_MIDDLE_DISTAL ||
+			bone == RIGHT_RING_PROXIMAL || bone == RIGHT_RING_INTERMEDIATE || bone == RIGHT_RING_DISTAL ||
+			bone == RIGHT_LITTLE_PROXIMAL || bone == RIGHT_LITTLE_INTERMEDIATE || bone == RIGHT_LITTLE_DISTAL
 	}
 }

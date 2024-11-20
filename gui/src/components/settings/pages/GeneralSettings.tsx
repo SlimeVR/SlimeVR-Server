@@ -31,6 +31,8 @@ import {
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
 import { HandsWarningModal } from '@/components/settings/HandsWarningModal';
+import { MagnetometerToggleSetting } from './MagnetometerToggleSetting';
+import { DriftCompensationModal } from '@/components/settings/DriftCompensationModal';
 
 interface SettingsForm {
   trackers: {
@@ -52,6 +54,7 @@ interface SettingsForm {
   };
   driftCompensation: {
     enabled: boolean;
+    prediction: boolean;
     amount: number;
     maxResets: number;
   };
@@ -96,6 +99,7 @@ interface SettingsForm {
     armsMountingResetMode: number;
     yawResetSmoothTime: number;
     saveMountingReset: boolean;
+    resetHmdPitch: boolean;
   };
 }
 
@@ -137,6 +141,7 @@ const defaultValues: SettingsForm = {
   filtering: { amount: 0.1, type: FilteringType.NONE },
   driftCompensation: {
     enabled: false,
+    prediction: false,
     amount: 0.1,
     maxResets: 1,
   },
@@ -158,6 +163,7 @@ const defaultValues: SettingsForm = {
     armsMountingResetMode: 0,
     yawResetSmoothTime: 0.0,
     saveMountingReset: false,
+    resetHmdPitch: false,
   },
 };
 
@@ -280,6 +286,7 @@ export function GeneralSettings() {
 
     const driftCompensation = new DriftCompensationSettingsT();
     driftCompensation.enabled = values.driftCompensation.enabled;
+    driftCompensation.prediction = values.driftCompensation.prediction;
     driftCompensation.amount = values.driftCompensation.amount;
     driftCompensation.maxResets = values.driftCompensation.maxResets;
     settings.driftCompensation = driftCompensation;
@@ -294,6 +301,7 @@ export function GeneralSettings() {
         values.resetsSettings.yawResetSmoothTime;
       resetsSettings.saveMountingReset =
         values.resetsSettings.saveMountingReset;
+      resetsSettings.resetHmdPitch = values.resetsSettings.resetHmdPitch;
       settings.resetsSettings = resetsSettings;
     }
 
@@ -326,7 +334,7 @@ export function GeneralSettings() {
     if (settings.steamVrTrackers) {
       formData.trackers = settings.steamVrTrackers;
       if (
-        settings.steamVrTrackers.leftHand &&
+        settings.steamVrTrackers.leftHand ||
         settings.steamVrTrackers.rightHand
       ) {
         setHandsWarning(false);
@@ -431,6 +439,8 @@ export function GeneralSettings() {
   //     elem.scrollIntoView({ behavior: 'smooth' });
   //   }
   // }, [state]);
+
+  const [showDriftCompWarning, setShowDriftCompWarning] = useState(false);
 
   return (
     <SettingsPageLayout>
@@ -694,7 +704,51 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-tracker_mechanics-drift_compensation-enabled-label'
               )}
+              onClick={() => {
+                if (getValues('driftCompensation.enabled')) {
+                  return;
+                }
+
+                setShowDriftCompWarning(true);
+              }}
             />
+            <div className="flex flex-col pt-2 pb-4"></div>
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-tracker_mechanics-drift_compensation-prediction'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-2 pb-4">
+              {l10n
+                .getString(
+                  'settings-general-tracker_mechanics-drift_compensation-prediction-description'
+                )
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="driftCompensation.prediction"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-drift_compensation-prediction-label'
+              )}
+            />
+            <DriftCompensationModal
+              accept={() => {
+                setShowDriftCompWarning(false);
+              }}
+              onClose={() => {
+                setShowDriftCompWarning(false);
+                setValue('driftCompensation.enabled', false);
+              }}
+              isOpen={showDriftCompWarning}
+            ></DriftCompensationModal>
             <div className="flex gap-5 pt-5 md:flex-row flex-col">
               <NumberSelector
                 control={control}
@@ -754,6 +808,10 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
               )}
+            />
+            <MagnetometerToggleSetting
+              settingType="general"
+              id="mechanics-magnetometer"
             />
           </>
         </SettingsPagePaneLayout>
@@ -859,24 +917,6 @@ export function GeneralSettings() {
                 )}
               />
             </div>
-            <div className="flex flex-col pt-2 pb-3">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-fk_settings-leg_fk-reset_mounting_feet-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-1 gap-3 pb-3">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="resetsSettings.resetMountingFeet"
-                label={l10n.getString(
-                  'settings-general-fk_settings-leg_fk-reset_mounting_feet'
-                )}
-              />
-            </div>
 
             <div className="flex flex-col pt-2 pb-3">
               <Typography bold>
@@ -900,12 +940,53 @@ export function GeneralSettings() {
               />
             </div>
 
+            <div className="flex flex-col pt-2">
+              <Typography bold>
+                {l10n.getString('settings-general-fk_settings-reset_settings')}
+              </Typography>
+            </div>
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-fk_settings-reset_settings-reset_hmd_pitch-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-1 gap-3 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="resetsSettings.resetHmdPitch"
+                label={l10n.getString(
+                  'settings-general-fk_settings-reset_settings-reset_hmd_pitch'
+                )}
+              />
+            </div>
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-fk_settings-leg_fk-reset_mounting_feet-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-1 gap-3 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="resetsSettings.resetMountingFeet"
+                label={l10n.getString(
+                  'settings-general-fk_settings-leg_fk-reset_mounting_feet'
+                )}
+              />
+            </div>
             <Typography color="secondary">
               {l10n.getString(
                 'settings-general-fk_settings-arm_fk-reset_mode-description'
               )}
             </Typography>
-            <div className="grid md:grid-cols-2 flex-col gap-3 pt-2">
+            <div className="grid md:grid-cols-2 flex-col gap-3 pt-2 pb-3">
               <Radio
                 control={control}
                 name="resetsSettings.armsMountingResetMode"
@@ -951,6 +1032,7 @@ export function GeneralSettings() {
                 value={'3'}
               ></Radio>
             </div>
+
             {config?.debug && (
               <>
                 <div className="flex flex-col pt-2 pb-3">

@@ -1,0 +1,22 @@
+.main-layout {
+  display: grid;
+  grid-template:
+    't t' var(--topbar-h)
+    's c' calc(100% - var(--topbar-h))
+    / var(--navbar-w) calc(100% - var(--navbar-w));
+
+  &:has(.widgets) {
+    grid-template:
+      't t t' var(--topbar-h)
+      's c w' calc(100% - var(--topbar-h))
+      / var(--navbar-w) calc(100% - var(--navbar-w) - var(--widget-w)) var(--widget-w);
+  }
+
+  @screen mobile {
+    grid-template:
+      't' var(--topbar-h)
+      'c' calc(100% - var(--topbar-h) - var(--navbar-h))
+      's' calc(var(--navbar-h))
+      / 100%;
+  }
+}

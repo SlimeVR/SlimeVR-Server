@@ -173,8 +173,7 @@ export function BodyInteractions({
             ({ top, left, height, width, id, hidden, buttonOffset }) => (
               <div
                 key={id}
-                hidden={hidden}
-                className="absolute z-10"
+                className={classNames('absolute z-10', hidden && 'hidden')}
                 onClick={() => onSelectRole((BodyPart as any)[id])}
                 style={{
                   top: top + height / 2 - dotsSize / 2 + buttonOffset.top,

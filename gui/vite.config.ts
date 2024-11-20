@@ -40,7 +40,7 @@ export default defineConfig({
   },
   plugins: [react(), i18nHotReload(), visualizer() as PluginOption],
   build: {
-    target: 'es2020',
+    target: 'es2022',
     emptyOutDir: true,
     commonjsOptions: {
       include: [/solarxr-protocol/, /node_modules/],
@@ -48,7 +48,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     esbuildOptions: {
-      target: 'es2020',
+      target: 'es2022',
     },
     needsInterop: ['solarxr-protocol'],
     include: ['solarxr-protocol'],
@@ -56,6 +56,13 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern',
+      },
     },
   },
 });
