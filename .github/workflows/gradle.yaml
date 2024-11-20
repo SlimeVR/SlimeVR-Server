@@ -176,7 +176,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew :server:ios:createIPA
 
-      - name: Upload the Android Build Artifact
+      - run: ls server/ios/build/
+
+      - name: Upload the iOS Build Artifact
         uses: actions/upload-artifact@v4
         with:
           # Artifact name
