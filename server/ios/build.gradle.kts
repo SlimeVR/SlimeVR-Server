@@ -12,6 +12,7 @@ allprojects {
 	repositories {
 		mavenCentral()
 // 		mavenLocal()
+		maven(url = "https://jitpack.io")
 		maven {
 			url = uri("https://oss.sonatype.org/content/repositories/snapshots")
 		}
