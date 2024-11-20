@@ -13,7 +13,7 @@
 "Area: GUI":
 - all:
   - changed-files:
-    - all-globs-to-any-files: ["gui/**/*", "!gui/public/i18n/**/*"]
+    - all-globs-to-any-file: ["gui/**/*", "!gui/public/i18n/**/*"]
 "Area: Hardware Protocol":
 - changed-files:
   - any-glob-to-any-file: "server/core/src/main/java/dev/slimevr/tracking/trackers/udp/**"
