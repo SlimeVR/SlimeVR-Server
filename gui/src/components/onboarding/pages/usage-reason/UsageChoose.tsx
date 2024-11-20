@@ -18,7 +18,7 @@ interface UsageInfo {
 
 const REASON_TO_PATH: Record<UsageReason, UsageInfo> = {
   [UsageReason.MOCAP]: {
-    path: '/onboarding/usage/mocap/choose',
+    path: '/onboarding/usage/mocap/head-choose',
     image: '/images/usage-mocap.webp',
   },
   [UsageReason.VR]: {

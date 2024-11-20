@@ -819,6 +819,20 @@ onboarding-usage-vr-choose-standalone-description = this happens if standalone
 onboarding-usage-vr-standalone-title = Setting up VRChat
 onboarding-usage-vr-standalone-next = Done!
 
+## Mocap head usage choose
+onboarding-usage-mocap-head_choose = What kind of head tracking do you want?
+onboarding-usage-mocap-head_choose-description = description
+
+onboarding-usage-mocap-head_choose-standalone = SlimeVR head tracker
+onboarding-usage-mocap-head_choose-standalone-label = Use an IMU tracker for tracking position
+onboarding-usage-mocap-head_choose-standalone-description = some description
+onboarding-usage-mocap-head_choose-standalone-button = Use IMU tracker
+
+onboarding-usage-mocap-head_choose-steamvr = SteamVR head tracking
+onboarding-usage-mocap-head_choose-steamvr-label = Use an HMD or a positional tracker for precision
+onboarding-usage-mocap-head_choose-steamvr-description = more description
+onboarding-usage-mocap-head_choose-steamvr-button = Use SteamVR
+
 ## Tracker assignment setup
 onboarding-assign_trackers-back = Go Back to Wi-Fi Credentials
 onboarding-assign_trackers-title = Assign trackers
