@@ -176,7 +176,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew :server:ios:createIPA
 
-      - run: ls server/ios/robovmx-build/
+      - run: ls server/ios/build/robovmx-build/
 
       - name: Upload the iOS Build Artifact
         uses: actions/upload-artifact@v4
