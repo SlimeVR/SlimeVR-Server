@@ -176,7 +176,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew :server:ios:createIPA
 
-      - run: ls server/ios/build/
+      - run: ls server/ios/robovmx-build/
 
       - name: Upload the iOS Build Artifact
         uses: actions/upload-artifact@v4
@@ -184,7 +184,7 @@ jobs:
           # Artifact name
           name: "SlimeVR-iOS" # optional, default is artifact
           # A file, directory or wildcard pattern that describes what to upload
-          path: server/ios/build/robovm/*
+          path: server/ios/build/robovmx-build/*
 
   bundle-linux:
     runs-on: ubuntu-22.04
