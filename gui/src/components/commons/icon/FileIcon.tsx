@@ -1,12 +1,4 @@
-import classNames from 'classnames';
-
-export function FileIcon({
-  width = 24,
-  isDragging = false,
-}: {
-  width?: number;
-  isDragging?: boolean;
-}) {
+export function FileIcon({ width = 24 }: { width?: number }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,7 +6,6 @@ export function FileIcon({
       width={width}
       height="24"
       fill="currentColor"
-      className={classNames('transition-transform', isDragging && 'scale-150')}
     >
       <path
         fillRule="evenodd"

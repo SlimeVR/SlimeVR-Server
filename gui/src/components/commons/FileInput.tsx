@@ -1,6 +1,12 @@
 import { Localized } from '@fluent/react';
 import classNames from 'classnames';
-import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import {
+  forwardRef,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Control, Controller, UseControllerProps } from 'react-hook-form';
 import { FileIcon } from './icon/FileIcon';
 import { UploadFileIcon } from './icon/UploadFileIcon';
@@ -13,13 +19,12 @@ interface InputProps {
   name: string;
 }
 
-
 const FileInputContentBlank = ({
   isDragging,
   label,
 }: {
-  isDragging: boolean,
-  label: string,
+  isDragging: boolean;
+  label: string;
 }) => {
   return (
     <div
@@ -52,10 +57,10 @@ const FileInputContentBlank = ({
 
 const FileInputContentFile = ({
   importedFileName,
-  onClearPicker
+  onClearPicker,
 }: {
-  importedFileName: string,
-  onClearPicker: () => any
+  importedFileName: string;
+  onClearPicker: () => any;
 }) => {
   return (
     <div
@@ -71,8 +76,17 @@ const FileInputContentFile = ({
           <span>{importedFileName}</span>
         </div>
         <span className="flex-grow"></span>
-        <a href="#" className="h-12 w-12 hover:bg-accent-background-20 cursor-pointer" onClick={() => {onClearPicker()}}>
-          <CloseIcon className="stroke-background-20 hover:stroke-background-90" size={48} />
+        <a
+          href="#"
+          className="h-12 w-12 hover:bg-accent-background-20 cursor-pointer"
+          onClick={() => {
+            onClearPicker();
+          }}
+        >
+          <CloseIcon
+            className="stroke-background-20 hover:stroke-background-90"
+            size={48}
+          />
         </a>
       </div>
     </div>
@@ -101,7 +115,7 @@ export const FileInputInside = forwardRef<
     accept,
     capture,
     multiple = false,
-    importedFileName
+    importedFileName,
   },
   ref
 ) {
@@ -116,7 +130,7 @@ export const FileInputInside = forwardRef<
 
   const onClearPicker = () => {
     onChange([]);
-    innerRef.current!.value = "";
+    innerRef.current!.value = '';
   };
 
   return (
@@ -147,15 +161,17 @@ export const FileInputInside = forwardRef<
         setDragging(false);
       }}
     >
-      {isFileImported ?
-        FileInputContentFile({importedFileName, onClearPicker}) :
-        FileInputContentBlank({isDragging, label})}
+      {isFileImported
+        ? FileInputContentFile({ importedFileName, onClearPicker })
+        : FileInputContentBlank({ isDragging, label })}
 
       <input
         type="file"
         className="hidden"
         onChange={(ev) => {
-          onChange(ev.target.files);
+          if(ev.target.files?.length) {
+            onChange(ev.target.files);
+          }
         }}
         name={name}
         ref={innerRef}
@@ -176,7 +192,7 @@ export const FileInput = ({
   accept,
   multiple,
   capture,
-  importedFileName
+  importedFileName,
 }: {
   rules: UseControllerProps<any>['rules'];
   control: Control<any>;
