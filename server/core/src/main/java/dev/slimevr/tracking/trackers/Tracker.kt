@@ -319,12 +319,12 @@ class Tracker @JvmOverloads constructor(
 	 * it too much should be avoided for performance reasons.
 	 */
 	fun getRotation(): Quaternion {
-		var rot = if (allowFiltering && filteringHandler.enabled) {
+		var rot = if (allowFiltering && filteringHandler.filteringEnabled) {
 			// Get filtered rotation
 			filteringHandler.getFilteredRotation()
 		} else {
 			// Get unfiltered rotation
-			_rotation
+			filteringHandler.getTrackedRotation()
 		}
 
 		// Reset if needed and is not computed and internal
@@ -351,12 +351,12 @@ class Tracker @JvmOverloads constructor(
 	 * This is used for debugging/visualizing tracker data
 	 */
 	fun getIdentityAdjustedRotation(): Quaternion {
-		var rot = if (filteringHandler.enabled) {
+		var rot = if (filteringHandler.filteringEnabled) {
 			// Get filtered rotation
 			filteringHandler.getFilteredRotation()
 		} else {
 			// Get unfiltered rotation
-			_rotation
+			filteringHandler.getTrackedRotation()
 		}
 
 		// Reset if needed or is a computed tracker besides head
@@ -372,7 +372,7 @@ class Tracker @JvmOverloads constructor(
 	 * Gets the raw (unadjusted) rotation of the tracker.
 	 * If this is an IMU, this will be the raw sensor rotation.
 	 */
-	fun getRawRotation(): Quaternion = _rotation
+	fun getRawRotation() = _rotation
 
 	/**
 	 * Sets the raw (unadjusted) rotation of the tracker.
@@ -406,4 +406,11 @@ class Tracker @JvmOverloads constructor(
 	 */
 	val tps: Float
 		get() = timer.averageFPS
+
+	/**
+	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
+	 */
+	fun resetFilteringQuats() {
+		filteringHandler.resetQuats(_rotation)
+	}
 }
