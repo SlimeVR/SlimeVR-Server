@@ -111,7 +111,6 @@ export const FileInputInside = forwardRef<
     label = 'tips-file_select',
     name,
     onChange,
-    variant = 'primary',
     accept,
     capture,
     multiple = false,
@@ -169,7 +168,7 @@ export const FileInputInside = forwardRef<
         type="file"
         className="hidden"
         onChange={(ev) => {
-          if(ev.target.files?.length) {
+          if (ev.target.files?.length) {
             onChange(ev.target.files);
           }
         }}
