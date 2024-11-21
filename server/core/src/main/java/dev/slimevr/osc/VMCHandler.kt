@@ -84,7 +84,7 @@ class VMCHandler(
 
 		if (config.enabled) {
 			// Load VRM data
-			if (outputUnityArmature != null && !config.vrmJson.isNullOrEmpty()) {
+			if (outputUnityArmature != null && config.vrmJson != null) {
 				val vrmReader = VRMReader(config.vrmJson!!)
 				for (unityBone in UnityBone.entries) {
 					val node = outputUnityArmature!!.getHeadNodeOfBone(unityBone)
