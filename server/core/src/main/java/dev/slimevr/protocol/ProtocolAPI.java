@@ -11,6 +11,7 @@ import solarxr_protocol.rpc.RpcMessageHeader;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -31,6 +32,10 @@ public class ProtocolAPI {
 	}
 
 	public void onMessage(GenericConnection conn, ByteBuffer message) {
+		if (message.position() != 0)
+			message = ByteBuffer
+				.wrap(Arrays.copyOfRange(message.array(), message.position(), message.limit()));
+
 		MessageBundle messageBundle = MessageBundle.getRootAsMessageBundle(message);
 
 		try {
