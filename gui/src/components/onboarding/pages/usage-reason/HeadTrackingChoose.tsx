@@ -8,6 +8,7 @@ import { useStatusContext } from '@/hooks/status-system';
 import { Localized, useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { StatusData, StatusSteamVRDisconnectedT } from 'solarxr-protocol';
 
 export function HeadTrackingChoose() {
@@ -15,6 +16,7 @@ export function HeadTrackingChoose() {
   const { applyProgress, state } = useOnboarding();
   const { statuses } = useStatusContext();
   const [animated, setAnimated] = useState(false);
+  const navigate = useNavigate();
 
   const missingSteamVr = useMemo(
     () =>
@@ -80,9 +82,13 @@ export function HeadTrackingChoose() {
               </div>
               <Button
                 variant={!state.alonePage ? 'secondary' : 'tertiary'}
-                to={'/onboarding/usage/vr/standalone'}
                 className="self-start mt-auto"
-                state={{ alonePage: state.alonePage }}
+                onClick={() => {
+                  // TODO: enable mocap
+                  navigate('/onboarding/usage/mocap/data-choose', {
+                    state: { alonePage: state.alonePage },
+                  });
+                }}
               >
                 {l10n.getString(
                   'onboarding-usage-mocap-head_choose-standalone-button'

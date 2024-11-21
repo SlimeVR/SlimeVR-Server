@@ -60,6 +60,7 @@ import { UsageChoose } from './components/onboarding/pages/usage-reason/UsageCho
 import { VRUsageChoose } from './components/onboarding/pages/usage-reason/VRUsageChoose';
 import { StandaloneUsageSetup } from './components/onboarding/pages/usage-reason/StandaloneUsageSetup';
 import { HeadTrackingChoose } from './components/onboarding/pages/usage-reason/HeadTrackingChoose';
+import { MocapDataChoose } from './components/onboarding/pages/usage-reason/MocapDataChoose';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -145,6 +146,10 @@ function Layout() {
             <Route
               path="usage/mocap/head-choose"
               element={<HeadTrackingChoose />}
+            />
+            <Route
+              path="usage/mocap/data-choose"
+              element={<MocapDataChoose />}
             />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
             <Route path="enter-vr" element={<EnterVRPage />} />
