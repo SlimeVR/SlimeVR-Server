@@ -6,6 +6,7 @@ import dev.slimevr.autobone.errors.*
 import dev.slimevr.config.AutoBoneConfig
 import dev.slimevr.poseframeformat.PoseFrameIO
 import dev.slimevr.poseframeformat.PoseFrames
+import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
@@ -96,22 +97,8 @@ class AutoBone(server: VRServer) {
 
 	fun getBoneDirection(
 		skeleton: HumanPoseManager,
-		configOffset: SkeletonConfigOffsets,
-		rightSide: Boolean,
+		boneType: BoneType,
 	): Vector3 {
-		// IMPORTANT: This assumption for acquiring BoneType only works if
-		// SkeletonConfigOffsets is set up to only affect one BoneType, make sure no
-		// changes to SkeletonConfigOffsets goes against this assumption, please!
-		val boneType = when (configOffset) {
-			SkeletonConfigOffsets.HIPS_WIDTH, SkeletonConfigOffsets.SHOULDERS_WIDTH,
-			SkeletonConfigOffsets.SHOULDERS_DISTANCE, SkeletonConfigOffsets.UPPER_ARM,
-			SkeletonConfigOffsets.LOWER_ARM, SkeletonConfigOffsets.UPPER_LEG,
-			SkeletonConfigOffsets.LOWER_LEG, SkeletonConfigOffsets.FOOT_LENGTH,
-			->
-				if (rightSide) configOffset.affectedOffsets[1] else configOffset.affectedOffsets[0]
-
-			else -> configOffset.affectedOffsets[0]
-		}
 		val bone = skeleton.getBone(boneType)
 		return bone.getTailPosition() - bone.getPosition()
 	}
@@ -119,14 +106,15 @@ class AutoBone(server: VRServer) {
 	fun getDotProductDiff(
 		skeleton1: HumanPoseManager,
 		skeleton2: HumanPoseManager,
-		configOffset: SkeletonConfigOffsets,
-		rightSide: Boolean,
+		boneType: BoneType,
+		offLen: Float,
 		offset: Vector3,
 	): Float {
-		val boneOffset = getBoneDirection(skeleton2, configOffset, rightSide) -
-			getBoneDirection(skeleton1, configOffset, rightSide)
-		val offLen = boneOffset.len()
-		return if (offLen > 0.001f) offset.dot(boneOffset / offLen) else 0f
+		if (offLen <= MIN_SLIDE_DIST) return 0f
+		val boneOffset = getBoneDirection(skeleton2, boneType) -
+			getBoneDirection(skeleton1, boneType)
+		val boneOffLen = boneOffset.len()
+		return if (boneOffLen > MIN_SLIDE_DIST) offset.dot(boneOffset / boneOffLen) else 0f
 	}
 
 	fun applyConfig(
@@ -489,17 +477,15 @@ class AutoBone(server: VRServer) {
 			return
 		}
 
-		val slideLeft = (
-			skeleton2
-				.getComputedTracker(TrackerRole.LEFT_FOOT).position -
-				skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position
-			).unit()
+		val slideL = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position -
+			skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position
+		val slideLLen = slideL.len()
+		val slideLUnit = if (slideLLen > MIN_SLIDE_DIST) slideL / slideLLen else Vector3.NULL
 
-		val slideRight = (
-			skeleton2
-				.getComputedTracker(TrackerRole.RIGHT_FOOT).position -
-				skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position
-			).unit()
+		val slideR = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position -
+			skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position
+		val slideRLen = slideR.len()
+		val slideRUnit = if (slideRLen > MIN_SLIDE_DIST) slideR / slideRLen else Vector3.NULL
 
 		val intermediateOffsets = EnumMap(offsets)
 		for (entry in intermediateOffsets.entries) {
@@ -513,17 +499,24 @@ class AutoBone(server: VRServer) {
 			val leftDotProduct = getDotProductDiff(
 				skeleton1,
 				skeleton2,
-				entry.key,
-				false,
-				slideLeft,
+				entry.key.affectedOffsets[0],
+				slideLLen,
+				slideLUnit,
 			)
-			val rightDotProduct = getDotProductDiff(
-				skeleton1,
-				skeleton2,
-				entry.key,
-				true,
-				slideRight,
-			)
+			// IMPORTANT: This assumption for acquiring BoneType only works if
+			// SkeletonConfigOffsets is set up to only affect one BoneType, make sure no
+			// changes to SkeletonConfigOffsets goes against this assumption, please!
+			val rightDotProduct = if (SYMM_CONFIGS.contains(entry.key)) {
+				getDotProductDiff(
+					skeleton1,
+					skeleton2,
+					entry.key.affectedOffsets[1],
+					slideRLen,
+					slideRUnit,
+				)
+			} else {
+				leftDotProduct
+			}
 
 			// Calculate the total effect of the bone based on change in rotation
 			val dotLength = originalLength * ((leftDotProduct + rightDotProduct) / 2f)
@@ -762,6 +755,7 @@ class AutoBone(server: VRServer) {
 
 	companion object {
 		const val MIN_HEIGHT = 0.4f
+		const val MIN_SLIDE_DIST = 0.002f
 		const val AUTOBONE_FOLDER = "AutoBone Recordings"
 		const val LOADAUTOBONE_FOLDER = "Load AutoBone Recordings"
 
@@ -781,5 +775,16 @@ class AutoBone(server: VRServer) {
 		private fun errorFunc(errorDeriv: Float): Float = 0.5f * (errorDeriv * errorDeriv)
 
 		private fun decayFunc(initialAdjustRate: Float, adjustRateDecay: Float, epoch: Int): Float = if (epoch >= 0) initialAdjustRate / (1 + (adjustRateDecay * epoch)) else 0.0f
+
+		private val SYMM_CONFIGS = arrayOf(
+			SkeletonConfigOffsets.HIPS_WIDTH,
+			SkeletonConfigOffsets.SHOULDERS_WIDTH,
+			SkeletonConfigOffsets.SHOULDERS_DISTANCE,
+			SkeletonConfigOffsets.UPPER_ARM,
+			SkeletonConfigOffsets.LOWER_ARM,
+			SkeletonConfigOffsets.UPPER_LEG,
+			SkeletonConfigOffsets.LOWER_LEG,
+			SkeletonConfigOffsets.FOOT_LENGTH,
+		)
 	}
 }
