@@ -112,7 +112,8 @@ class AutoBone(server: VRServer) {
 
 			else -> configOffset.affectedOffsets[0]
 		}
-		return skeleton.getBone(boneType).getGlobalRotation().toRotationVector()
+		val bone = skeleton.getBone(boneType)
+		return bone.getTailPosition() - bone.getPosition()
 	}
 
 	fun getDotProductDiff(
@@ -122,10 +123,9 @@ class AutoBone(server: VRServer) {
 		rightSide: Boolean,
 		offset: Vector3,
 	): Float {
-		val normalizedOffset = offset.unit()
-		val dot1 = normalizedOffset.dot(getBoneDirection(skeleton1, configOffset, rightSide))
-		val dot2 = normalizedOffset.dot(getBoneDirection(skeleton2, configOffset, rightSide))
-		return dot2 - dot1
+		val b1 = getBoneDirection(skeleton1, configOffset, rightSide)
+		val b2 = getBoneDirection(skeleton2, configOffset, rightSide)
+		return offset.dot((b2 - b1).unit())
 	}
 
 	fun applyConfig(
@@ -488,13 +488,17 @@ class AutoBone(server: VRServer) {
 			return
 		}
 
-		val slideLeft = skeleton2
-			.getComputedTracker(TrackerRole.LEFT_FOOT).position -
-			skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position
+		val slideLeft = (
+			skeleton2
+				.getComputedTracker(TrackerRole.LEFT_FOOT).position -
+				skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position
+			).unit()
 
-		val slideRight = skeleton2
-			.getComputedTracker(TrackerRole.RIGHT_FOOT).position -
-			skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position
+		val slideRight = (
+			skeleton2
+				.getComputedTracker(TrackerRole.RIGHT_FOOT).position -
+				skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position
+			).unit()
 
 		val intermediateOffsets = EnumMap(offsets)
 		for (entry in intermediateOffsets.entries) {
