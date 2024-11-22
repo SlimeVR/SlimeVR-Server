@@ -123,9 +123,10 @@ class AutoBone(server: VRServer) {
 		rightSide: Boolean,
 		offset: Vector3,
 	): Float {
-		val b1 = getBoneDirection(skeleton1, configOffset, rightSide)
-		val b2 = getBoneDirection(skeleton2, configOffset, rightSide)
-		return offset.dot((b2 - b1).unit())
+		val boneOffset = getBoneDirection(skeleton2, configOffset, rightSide) -
+			getBoneDirection(skeleton1, configOffset, rightSide)
+		val offLen = boneOffset.len()
+		return if (offLen > 0.001f) offset.dot(boneOffset / offLen) else 0f
 	}
 
 	fun applyConfig(
