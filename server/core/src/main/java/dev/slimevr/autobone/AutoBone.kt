@@ -530,8 +530,11 @@ class AutoBone(server: VRServer) {
 
 			// Scale by the total effect of the bone
 			val curAdjustVal = adjustVal * -dotLength
-			val newLength = originalLength + curAdjustVal
+			if (curAdjustVal == 0f) {
+				continue
+			}
 
+			val newLength = originalLength + curAdjustVal
 			// No small or negative numbers!!! Bad algorithm!
 			if (newLength < 0.01f) {
 				continue
