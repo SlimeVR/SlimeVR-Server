@@ -304,6 +304,28 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					}
 				}
 			}
+
+			if (version < 14) {
+				// Update AutoBone defaults
+				ObjectNode autoBoneNode = (ObjectNode) modelData.get("autoBone");
+				if (autoBoneNode != null) {
+					JsonNode offsetSlideNode = autoBoneNode.get("offsetSlideErrorFactor");
+					JsonNode slideNode = autoBoneNode.get("slideErrorFactor");
+					if (
+						offsetSlideNode != null
+							&& slideNode != null
+							&& offsetSlideNode.floatValue() == 1.0f
+							&& slideNode.floatValue() == 0.0f
+					) {
+						autoBoneNode.set("offsetSlideErrorFactor", new FloatNode(0.0f));
+						autoBoneNode.set("slideErrorFactor", new FloatNode(1.0f));
+					}
+					JsonNode bodyProportionsNode = autoBoneNode.get("bodyProportionErrorFactor");
+					if (bodyProportionsNode != null && bodyProportionsNode.floatValue() == 0.25f) {
+						autoBoneNode.set("bodyProportionErrorFactor", new FloatNode(0.05f));
+					}
+				}
+			}
 		} catch (Exception e) {
 			LogManager.severe("Error during config migration: " + e);
 		}

@@ -8,10 +8,10 @@ class AutoBoneConfig {
 	var printEveryNumEpochs = 25
 	var initialAdjustRate = 10.0f
 	var adjustRateDecay = 1.0f
-	var slideErrorFactor = 0.0f
-	var offsetSlideErrorFactor = 1.0f
+	var slideErrorFactor = 1.0f
+	var offsetSlideErrorFactor = 0.0f
 	var footHeightOffsetErrorFactor = 0.0f
-	var bodyProportionErrorFactor = 0.25f
+	var bodyProportionErrorFactor = 0.05f
 	var heightErrorFactor = 0.0f
 	var positionErrorFactor = 0.0f
 	var positionOffsetErrorFactor = 0.0f
