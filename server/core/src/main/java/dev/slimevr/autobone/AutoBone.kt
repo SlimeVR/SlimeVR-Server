@@ -95,7 +95,10 @@ class AutoBone(server: VRServer) {
 		}
 	}
 
-	fun getBoneDirection(
+	/**
+	 * Computes the local tail position of the bone after rotation.
+	 */
+	fun getBoneLocalTail(
 		skeleton: HumanPoseManager,
 		boneType: BoneType,
 	): Vector3 {
@@ -103,18 +106,59 @@ class AutoBone(server: VRServer) {
 		return bone.getTailPosition() - bone.getPosition()
 	}
 
-	fun getDotProductDiff(
+	/**
+	 * Computes the direction of the bone tail's movement between skeletons 1 and 2.
+	 */
+	fun getBoneLocalTailDir(
 		skeleton1: HumanPoseManager,
 		skeleton2: HumanPoseManager,
 		boneType: BoneType,
-		offLen: Float,
-		offset: Vector3,
+	): Vector3? {
+		val boneOff = getBoneLocalTail(skeleton2, boneType) - getBoneLocalTail(skeleton1, boneType)
+		val boneOffLen = boneOff.len()
+		return if (boneOffLen > MIN_SLIDE_DIST) boneOff / boneOffLen else null
+	}
+
+	/**
+	 * Predicts how much the provided config should be affecting the slide offsets
+	 * of the left and right ankles.
+	 */
+	fun getSlideDot(
+		skeleton1: HumanPoseManager,
+		skeleton2: HumanPoseManager,
+		config: SkeletonConfigOffsets,
+		slideL: Vector3?,
+		slideR: Vector3?,
 	): Float {
-		if (offLen <= MIN_SLIDE_DIST) return 0f
-		val boneOffset = getBoneDirection(skeleton2, boneType) -
-			getBoneDirection(skeleton1, boneType)
-		val boneOffLen = boneOffset.len()
-		return if (boneOffLen > MIN_SLIDE_DIST) offset.dot(boneOffset / boneOffLen) else 0f
+		var slideDot = 0f
+		// Used for right offset if not a symmetric bone
+		var boneOffL: Vector3? = null
+
+		if (slideL != null) {
+			boneOffL = getBoneLocalTailDir(skeleton1, skeleton2, config.affectedOffsets[0])
+
+			if (boneOffL != null) {
+				slideDot += slideL.dot(boneOffL)
+			}
+		}
+
+		if (slideR != null) {
+			// IMPORTANT: This assumption for acquiring BoneType only works if
+			// SkeletonConfigOffsets is set up to only affect one BoneType, make sure no
+			// changes to SkeletonConfigOffsets goes against this assumption, please!
+			val boneOffR = if (SYMM_CONFIGS.contains(config)) {
+				getBoneLocalTailDir(skeleton1, skeleton2, config.affectedOffsets[1])
+			} else {
+				// Use cached offset or compute if missing
+				boneOffL ?: getBoneLocalTailDir(skeleton1, skeleton2, config.affectedOffsets[0])
+			}
+
+			if (boneOffR != null) {
+				slideDot += slideR.dot(boneOffR)
+			}
+		}
+
+		return slideDot / 2f
 	}
 
 	fun applyConfig(
@@ -480,12 +524,12 @@ class AutoBone(server: VRServer) {
 		val slideL = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position -
 			skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position
 		val slideLLen = slideL.len()
-		val slideLUnit = if (slideLLen > MIN_SLIDE_DIST) slideL / slideLLen else Vector3.NULL
+		val slideLUnit: Vector3? = if (slideLLen > MIN_SLIDE_DIST) slideL / slideLLen else null
 
 		val slideR = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position -
 			skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position
 		val slideRLen = slideR.len()
-		val slideRUnit = if (slideRLen > MIN_SLIDE_DIST) slideR / slideRLen else Vector3.NULL
+		val slideRUnit: Vector3? = if (slideRLen > MIN_SLIDE_DIST) slideR / slideRLen else null
 
 		val intermediateOffsets = EnumMap(offsets)
 		for (entry in intermediateOffsets.entries) {
@@ -496,30 +540,15 @@ class AutoBone(server: VRServer) {
 			}
 			val originalLength = entry.value
 
-			val leftDotProduct = getDotProductDiff(
+			// Calculate the total effect of the bone based on change in rotation
+			val slideDot = getSlideDot(
 				skeleton1,
 				skeleton2,
-				entry.key.affectedOffsets[0],
-				slideLLen,
+				entry.key,
 				slideLUnit,
+				slideRUnit,
 			)
-			// IMPORTANT: This assumption for acquiring BoneType only works if
-			// SkeletonConfigOffsets is set up to only affect one BoneType, make sure no
-			// changes to SkeletonConfigOffsets goes against this assumption, please!
-			val rightDotProduct = if (SYMM_CONFIGS.contains(entry.key)) {
-				getDotProductDiff(
-					skeleton1,
-					skeleton2,
-					entry.key.affectedOffsets[1],
-					slideRLen,
-					slideRUnit,
-				)
-			} else {
-				leftDotProduct
-			}
-
-			// Calculate the total effect of the bone based on change in rotation
-			val dotLength = originalLength * ((leftDotProduct + rightDotProduct) / 2f)
+			val dotLength = originalLength * slideDot
 
 			// Scale by the total effect of the bone
 			val curAdjustVal = adjustVal * -dotLength
