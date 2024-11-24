@@ -324,6 +324,10 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					if (bodyProportionsNode != null && bodyProportionsNode.floatValue() == 0.25f) {
 						autoBoneNode.set("bodyProportionErrorFactor", new FloatNode(0.05f));
 					}
+					JsonNode numEpochsNode = autoBoneNode.get("numEpochs");
+					if (numEpochsNode != null && numEpochsNode.intValue() == 100) {
+						autoBoneNode.set("numEpochs", new IntNode(50));
+					}
 				}
 			}
 		} catch (Exception e) {

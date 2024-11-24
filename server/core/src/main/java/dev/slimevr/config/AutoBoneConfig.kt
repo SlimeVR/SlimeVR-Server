@@ -4,7 +4,7 @@ class AutoBoneConfig {
 	var cursorIncrement = 2
 	var minDataDistance = 1
 	var maxDataDistance = 1
-	var numEpochs = 100
+	var numEpochs = 50
 	var printEveryNumEpochs = 25
 	var initialAdjustRate = 10.0f
 	var adjustRateDecay = 1.0f
