@@ -148,9 +148,12 @@ class AutoBone(server: VRServer) {
 			// changes to SkeletonConfigOffsets goes against this assumption, please!
 			val boneOffR = if (SYMM_CONFIGS.contains(config)) {
 				getBoneLocalTailDir(skeleton1, skeleton2, config.affectedOffsets[1])
+			} else if (slideL != null) {
+				// Use cached offset if slideL was used
+				boneOffL
 			} else {
-				// Use cached offset or compute if missing
-				boneOffL ?: getBoneLocalTailDir(skeleton1, skeleton2, config.affectedOffsets[0])
+				// Compute offset if missing because of slideL
+				getBoneLocalTailDir(skeleton1, skeleton2, config.affectedOffsets[0])
 			}
 
 			if (boneOffR != null) {
