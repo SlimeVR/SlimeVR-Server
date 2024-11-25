@@ -1026,8 +1026,8 @@ onboarding-automatic_proportions-error_modal-v2 =
 onboarding-automatic_proportions-error_modal-confirm = Understood!
 
 onboarding-automatic_proportions-smol_warning =
-    The height you entered is { $height }, and it's smaller than the minimum accepted one which is { $minHeight },
-    <b>please redo the calibration and get your correct height.</b>
+    Your configured height of { $height } is smaller than the minimum accepted height of { $minHeight }.
+    <b>Please redo the measurements and ensure they are correct.</b>
 onboarding-automatic_proportions-smol_warning-cancel = Go back
 
 ## Tracker scaled proportions setup
