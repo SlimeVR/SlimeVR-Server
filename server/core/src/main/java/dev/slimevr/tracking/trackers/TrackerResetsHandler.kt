@@ -612,8 +612,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 	private fun isLeftFingerTracker(): Boolean {
 		tracker.trackerPosition?.let {
-			return it == TrackerPosition.LEFT_THUMB_PROXIMAL ||
-				it == TrackerPosition.LEFT_THUMB_INTERMEDIATE ||
+			return it == TrackerPosition.LEFT_THUMB_METACARPAL ||
+				it == TrackerPosition.LEFT_THUMB_PROXIMAL ||
 				it == TrackerPosition.LEFT_THUMB_DISTAL ||
 				it == TrackerPosition.LEFT_INDEX_PROXIMAL ||
 				it == TrackerPosition.LEFT_INDEX_INTERMEDIATE ||
@@ -633,8 +633,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 	private fun isRightFingerTracker(): Boolean {
 		tracker.trackerPosition?.let {
-			return it == TrackerPosition.RIGHT_THUMB_PROXIMAL ||
-				it == TrackerPosition.RIGHT_THUMB_INTERMEDIATE ||
+			return it == TrackerPosition.RIGHT_THUMB_METACARPAL ||
+				it == TrackerPosition.RIGHT_THUMB_PROXIMAL ||
 				it == TrackerPosition.RIGHT_THUMB_DISTAL ||
 				it == TrackerPosition.RIGHT_INDEX_PROXIMAL ||
 				it == TrackerPosition.RIGHT_INDEX_INTERMEDIATE ||

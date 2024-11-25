@@ -114,10 +114,10 @@ class TrackerFlexHandler(val tracker: Tracker) {
 			TrackerPosition.LEFT_SHOULDER,
 			-> tracker.setRotation(EulerAngles(EulerOrder.YZX, 0f, 0f, -angle).toQuaternion())
 
-			TrackerPosition.LEFT_THUMB_PROXIMAL, TrackerPosition.LEFT_THUMB_INTERMEDIATE, TrackerPosition.LEFT_THUMB_DISTAL,
+			TrackerPosition.LEFT_THUMB_METACARPAL, TrackerPosition.LEFT_THUMB_PROXIMAL, TrackerPosition.LEFT_THUMB_DISTAL,
 			-> tracker.setRotation(EulerAngles(EulerOrder.YZX, thumbInitialOffset - angle, -angle * 0.05f, angle * 0.1f).toQuaternion())
 
-			TrackerPosition.RIGHT_THUMB_PROXIMAL, TrackerPosition.RIGHT_THUMB_INTERMEDIATE, TrackerPosition.RIGHT_THUMB_DISTAL,
+			TrackerPosition.RIGHT_THUMB_METACARPAL, TrackerPosition.RIGHT_THUMB_PROXIMAL, TrackerPosition.RIGHT_THUMB_DISTAL,
 			-> tracker.setRotation(EulerAngles(EulerOrder.YZX, thumbInitialOffset - angle, angle * 0.05f, -angle * 0.1f).toQuaternion())
 
 			// Default to X axis (pitch)
@@ -151,7 +151,7 @@ class TrackerFlexHandler(val tracker: Tracker) {
 			-> FastMath.PI
 
 			// 112.5 degrees
-			TrackerPosition.LEFT_THUMB_INTERMEDIATE, TrackerPosition.RIGHT_THUMB_INTERMEDIATE,
+			TrackerPosition.LEFT_THUMB_PROXIMAL, TrackerPosition.RIGHT_THUMB_PROXIMAL,
 			-> FastMath.HALF_PI + thumbInitialOffset
 
 			// 90 degrees
@@ -162,7 +162,7 @@ class TrackerFlexHandler(val tracker: Tracker) {
 			-> FastMath.HALF_PI
 
 			// 67.5 degrees
-			TrackerPosition.LEFT_THUMB_PROXIMAL, TrackerPosition.RIGHT_THUMB_PROXIMAL,
+			TrackerPosition.LEFT_THUMB_METACARPAL, TrackerPosition.RIGHT_THUMB_METACARPAL,
 			-> FastMath.QUARTER_PI + thumbInitialOffset
 
 			// 45 degrees
