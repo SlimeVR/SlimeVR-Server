@@ -202,7 +202,6 @@ class HumanSkeleton(
 
 	// Others
 	private var pauseTracking = false // Pauses skeleton tracking if true, resumes skeleton tracking if false
-	var yawCorrectionInDegPerSec = 0.0f
 
 	// Modules
 	var legTweaks = LegTweaks(this)
