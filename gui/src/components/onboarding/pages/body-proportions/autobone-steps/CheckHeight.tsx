@@ -64,7 +64,7 @@ export function CheckHeightStep({
             <div>
               <Typography color="secondary">
                 {l10n.getString(
-                  'onboarding-automatic_proportions-check_height-description'
+                  'onboarding-automatic_proportions-check_height-description-v2'
                 )}
               </Typography>
               <Localized

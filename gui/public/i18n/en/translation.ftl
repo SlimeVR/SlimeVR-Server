@@ -961,10 +961,10 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Your tracking is working and is accurately representing your movements (ex. you have performed a full reset and they move the right direction when kicking, bending over, sitting, etc).
 onboarding-automatic_proportions-requirements-next = I have read the requirements
 
-onboarding-automatic_proportions-check_height-title-v2 = Let's measure your height
-onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the headset's (HMD) height as an approximation of your actual height, but it's better to check if they are right yourself!
+onboarding-automatic_proportions-check_height-title-v2 = Measure your height
+onboarding-automatic_proportions-check_height-description-v2 = Your headset (HMD) height should be slightly less than your full height, as headsets measure your eye height. This measurement will be used as a baseline for your body proportions.
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning-v2 = Please press the button while standing <u>upright</u> to calculate your height. Be careful to not raise your arms higher than your headset!
+onboarding-automatic_proportions-check_height-calculation_warning-v2 = Start measuring while standing <u>upright</u> to calculate your height. Be careful to not raise your hands higher than your headset, as they may affect the measurement!
 onboarding-automatic_proportions-check_height-guardian_tip = If you are using a standalone VR headset, make sure to have your guardian /
     boundary turned on so that your height is correct!
 # Context is that the height is unknown
@@ -977,9 +977,9 @@ onboarding-automatic_proportions-check_height-measure-reset = Retry measuring
 onboarding-automatic_proportions-check_height-next_step = Use headset height
 
 onboarding-automatic_proportions-check_floor_height-title = Measure your floor height (optional)
-onboarding-automatic_proportions-check_floor_height-description = In some very special setups, your floor might not be set to 0m by your headset, so we need to get the "height" of your floor when that happens.
+onboarding-automatic_proportions-check_floor_height-description = In some cases, your floor height may not be set correctly by your headset, causing the headset height to be measured as higher than it should be. You can measure the "height" of your floor to correct your headset height.
 # All the text is in bold!
-onboarding-automatic_proportions-check_floor_height-calculation_warning = You can skip this step! You are not forced to do it.
+onboarding-automatic_proportions-check_floor_height-calculation_warning = If you are sure that your floor height is correct, you can skip this step.
 # Shows an element below it
 onboarding-automatic_proportions-check_floor_height-floor_height = Your floor height is:
 onboarding-automatic_proportions-check_floor_height-measure-start = Start measuring
@@ -1028,7 +1028,7 @@ onboarding-automatic_proportions-error_modal-confirm = Understood!
 onboarding-automatic_proportions-smol_warning =
     The height you entered is { $height }, and it's smaller than the minimum accepted one which is { $minHeight },
     <b>please redo the calibration and get your correct height.</b>
-onboarding-automatic_proportions-smol_warning-cancel = Understandable
+onboarding-automatic_proportions-smol_warning-cancel = Go back
 
 ## Tracker scaled proportions setup
 onboarding-scaled_proportions-title = Scaled proportions
