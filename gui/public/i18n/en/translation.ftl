@@ -971,10 +971,10 @@ onboarding-automatic_proportions-check_height-guardian_tip = If you are using a 
 onboarding-automatic_proportions-check_height-unknown = Unknown
 # Shows an element below it
 onboarding-automatic_proportions-check_height-hmd_height2 = Your headset height is:
-onboarding-automatic_proportions-check_height-measure-start = Start measuring!
+onboarding-automatic_proportions-check_height-measure-start = Start measuring
 onboarding-automatic_proportions-check_height-measure-stop = Stop measuring
-onboarding-automatic_proportions-check_height-measure-reset = Try measuring again!
-onboarding-automatic_proportions-check_height-next_step = They are fine
+onboarding-automatic_proportions-check_height-measure-reset = Retry measuring
+onboarding-automatic_proportions-check_height-next_step = Use headset height
 
 onboarding-automatic_proportions-check_floor_height-title = Measure your floor height (optional)
 onboarding-automatic_proportions-check_floor_height-description = In some very special setups, your floor might not be set to 0m by your headset, so we need to get the "height" of your floor when that happens.
@@ -982,11 +982,11 @@ onboarding-automatic_proportions-check_floor_height-description = In some very s
 onboarding-automatic_proportions-check_floor_height-calculation_warning = You can skip this step! You are not forced to do it.
 # Shows an element below it
 onboarding-automatic_proportions-check_floor_height-floor_height = Your floor height is:
-onboarding-automatic_proportions-check_floor_height-measure-start = Start measuring!
+onboarding-automatic_proportions-check_floor_height-measure-start = Start measuring
 onboarding-automatic_proportions-check_floor_height-measure-stop = Stop measuring
-onboarding-automatic_proportions-check_floor_height-measure-reset = Try measuring again!
-onboarding-automatic_proportions-check_floor_height-skip_step = Skip step
-onboarding-automatic_proportions-check_floor_height-next_step = It is fine
+onboarding-automatic_proportions-check_floor_height-measure-reset = Retry measuring
+onboarding-automatic_proportions-check_floor_height-skip_step = Skip step and save
+onboarding-automatic_proportions-check_floor_height-next_step = Use floor height and save
 
 onboarding-automatic_proportions-start_recording-title = Get ready to move
 onboarding-automatic_proportions-start_recording-description = We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!
