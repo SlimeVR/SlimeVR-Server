@@ -7,6 +7,7 @@ import dev.slimevr.config.ArmsResetModes
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.filtering.CircularArrayList
+import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import io.eiren.math.FloatMath.animateEase
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
@@ -226,6 +227,15 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * 0). This allows the tracker to be strapped to body at any pitch and roll.
 	 */
 	fun resetFull(reference: Quaternion) {
+		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
+			tracker.trackerFlexHandler.resetMin()
+			postProcessResetFull()
+			return
+		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
+			postProcessResetFull()
+			return
+		}
+
 		// Adjust for T-Pose (down)
 		tposeDownFix = if (((isLeftArmTracker() || isLeftFingerTracker()) && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
 			EulerAngles(EulerOrder.YZX, 0f, 0f, -FastMath.HALF_PI).toQuaternion()
@@ -291,6 +301,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		calculateDrift(oldRot)
 
+		postProcessResetFull()
+	}
+
+	private fun postProcessResetFull() {
 		if (this.tracker.lastResetStatus != 0u) {
 			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
 			this.tracker.lastResetStatus = 0u
@@ -306,6 +320,12 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * position should be corrected in the source.
 	 */
 	fun resetYaw(reference: Quaternion) {
+		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
+			tracker.trackerDataType == TrackerDataType.FLEX_ANGLE
+		) {
+			return
+		}
+
 		// Old rot for drift compensation
 		val oldRot = adjustToReference(tracker.getRawRotation())
 		lastResetQuaternion = oldRot
@@ -342,7 +362,15 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * and stores it in mountRotFix, and adjusts yawFix
 	 */
 	fun resetMounting(reference: Quaternion) {
-		if (!resetMountingFeet && isFootTracker()) return
+		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
+			tracker.trackerFlexHandler.resetMax()
+			tracker.resetFilteringQuats()
+			return
+		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
+			return
+		} else if (!resetMountingFeet && isFootTracker()) {
+			return
+		}
 
 		// Get the current calibrated rotation
 		var rotBuf = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
@@ -601,8 +629,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 	private fun isLeftFingerTracker(): Boolean {
 		tracker.trackerPosition?.let {
-			return it == TrackerPosition.LEFT_THUMB_PROXIMAL ||
-				it == TrackerPosition.LEFT_THUMB_INTERMEDIATE ||
+			return it == TrackerPosition.LEFT_THUMB_METACARPAL ||
+				it == TrackerPosition.LEFT_THUMB_PROXIMAL ||
 				it == TrackerPosition.LEFT_THUMB_DISTAL ||
 				it == TrackerPosition.LEFT_INDEX_PROXIMAL ||
 				it == TrackerPosition.LEFT_INDEX_INTERMEDIATE ||
@@ -622,8 +650,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 	private fun isRightFingerTracker(): Boolean {
 		tracker.trackerPosition?.let {
-			return it == TrackerPosition.RIGHT_THUMB_PROXIMAL ||
-				it == TrackerPosition.RIGHT_THUMB_INTERMEDIATE ||
+			return it == TrackerPosition.RIGHT_THUMB_METACARPAL ||
+				it == TrackerPosition.RIGHT_THUMB_PROXIMAL ||
 				it == TrackerPosition.RIGHT_THUMB_DISTAL ||
 				it == TrackerPosition.RIGHT_INDEX_PROXIMAL ||
 				it == TrackerPosition.RIGHT_INDEX_INTERMEDIATE ||

@@ -87,10 +87,10 @@ export const mapPart: Record<
     <UpperLegIcon width={width} flipped></UpperLegIcon>
   ),
   [BodyPart.WAIST]: ({ width }) => <WaistIcon width={width}></WaistIcon>,
-  [BodyPart.LEFT_THUMB_PROXIMAL]: ({ width }) => (
+  [BodyPart.LEFT_THUMB_METACARPAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
-  [BodyPart.LEFT_THUMB_INTERMEDIATE]: ({ width }) => (
+  [BodyPart.LEFT_THUMB_PROXIMAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
   [BodyPart.LEFT_THUMB_DISTAL]: ({ width }) => (
@@ -132,10 +132,10 @@ export const mapPart: Record<
   [BodyPart.LEFT_LITTLE_DISTAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
-  [BodyPart.RIGHT_THUMB_PROXIMAL]: ({ width }) => (
+  [BodyPart.RIGHT_THUMB_METACARPAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
-  [BodyPart.RIGHT_THUMB_INTERMEDIATE]: ({ width }) => (
+  [BodyPart.RIGHT_THUMB_PROXIMAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
   [BodyPart.RIGHT_THUMB_DISTAL]: ({ width }) => (
