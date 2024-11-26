@@ -401,7 +401,8 @@ public class RPCSettingsBuilder {
 					.createArmsResetModeSettings(
 						fbb,
 						server.configManager.getVrConfig().getResetsConfig()
-					)
+					),
+				0
 			);
 	}
 }
