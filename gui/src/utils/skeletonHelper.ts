@@ -224,7 +224,7 @@ export class BoneKind extends Bone {
       case BodyPart.RIGHT_HIP:
         return new Color('pink');
       case BodyPart.LEFT_THUMB_PROXIMAL:
-      case BodyPart.LEFT_THUMB_INTERMEDIATE:
+      case BodyPart.LEFT_THUMB_METACARPAL:
       case BodyPart.LEFT_THUMB_DISTAL:
       case BodyPart.LEFT_INDEX_PROXIMAL:
       case BodyPart.LEFT_INDEX_INTERMEDIATE:
@@ -239,7 +239,7 @@ export class BoneKind extends Bone {
       case BodyPart.LEFT_LITTLE_INTERMEDIATE:
       case BodyPart.LEFT_LITTLE_DISTAL:
       case BodyPart.RIGHT_THUMB_PROXIMAL:
-      case BodyPart.RIGHT_THUMB_INTERMEDIATE:
+      case BodyPart.RIGHT_THUMB_METACARPAL:
       case BodyPart.RIGHT_THUMB_DISTAL:
       case BodyPart.RIGHT_INDEX_PROXIMAL:
       case BodyPart.RIGHT_INDEX_INTERMEDIATE:
@@ -323,8 +323,8 @@ export class BoneKind extends Bone {
         ];
 
       case BodyPart.LEFT_THUMB_PROXIMAL:
-        return [BodyPart.LEFT_THUMB_INTERMEDIATE];
-      case BodyPart.LEFT_THUMB_INTERMEDIATE:
+        return [BodyPart.LEFT_THUMB_METACARPAL];
+      case BodyPart.LEFT_THUMB_METACARPAL:
         return [BodyPart.LEFT_THUMB_DISTAL];
       case BodyPart.LEFT_THUMB_DISTAL:
         return [];
@@ -353,8 +353,8 @@ export class BoneKind extends Bone {
       case BodyPart.LEFT_LITTLE_DISTAL:
         return [];
       case BodyPart.RIGHT_THUMB_PROXIMAL:
-        return [BodyPart.RIGHT_THUMB_INTERMEDIATE];
-      case BodyPart.RIGHT_THUMB_INTERMEDIATE:
+        return [BodyPart.RIGHT_THUMB_METACARPAL];
+      case BodyPart.RIGHT_THUMB_METACARPAL:
         return [BodyPart.RIGHT_THUMB_DISTAL];
       case BodyPart.RIGHT_THUMB_DISTAL:
         return [];
@@ -436,10 +436,10 @@ export class BoneKind extends Bone {
 
       case BodyPart.LEFT_THUMB_PROXIMAL:
         return BodyPart.LEFT_HAND;
-      case BodyPart.LEFT_THUMB_INTERMEDIATE:
+      case BodyPart.LEFT_THUMB_METACARPAL:
         return BodyPart.LEFT_THUMB_PROXIMAL;
       case BodyPart.LEFT_THUMB_DISTAL:
-        return BodyPart.LEFT_THUMB_INTERMEDIATE;
+        return BodyPart.LEFT_THUMB_METACARPAL;
       case BodyPart.LEFT_INDEX_PROXIMAL:
         return BodyPart.LEFT_HAND;
       case BodyPart.LEFT_INDEX_INTERMEDIATE:
@@ -466,10 +466,10 @@ export class BoneKind extends Bone {
         return BodyPart.LEFT_LITTLE_INTERMEDIATE;
       case BodyPart.RIGHT_THUMB_PROXIMAL:
         return BodyPart.RIGHT_HAND;
-      case BodyPart.RIGHT_THUMB_INTERMEDIATE:
+      case BodyPart.RIGHT_THUMB_METACARPAL:
         return BodyPart.RIGHT_THUMB_PROXIMAL;
       case BodyPart.RIGHT_THUMB_DISTAL:
-        return BodyPart.RIGHT_THUMB_INTERMEDIATE;
+        return BodyPart.RIGHT_THUMB_METACARPAL;
       case BodyPart.RIGHT_INDEX_PROXIMAL:
         return BodyPart.RIGHT_HAND;
       case BodyPart.RIGHT_INDEX_INTERMEDIATE:

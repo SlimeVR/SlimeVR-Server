@@ -90,7 +90,7 @@ export const mapPart: Record<
   [BodyPart.LEFT_THUMB_PROXIMAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
-  [BodyPart.LEFT_THUMB_INTERMEDIATE]: ({ width }) => (
+  [BodyPart.LEFT_THUMB_METACARPAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
   [BodyPart.LEFT_THUMB_DISTAL]: ({ width }) => (
@@ -135,7 +135,7 @@ export const mapPart: Record<
   [BodyPart.RIGHT_THUMB_PROXIMAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
-  [BodyPart.RIGHT_THUMB_INTERMEDIATE]: ({ width }) => (
+  [BodyPart.RIGHT_THUMB_METACARPAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
   [BodyPart.RIGHT_THUMB_DISTAL]: ({ width }) => (
