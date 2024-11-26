@@ -287,7 +287,7 @@ class HumanPoseManager(val server: VRServer?) {
 
 	fun loadFromConfig(configManager: ConfigManager) {
 		skeletonConfigManager.loadFromConfig(configManager)
-		skeleton.setYawCorrectionConfig(configManager.vrConfig.yawCorrectionConfig)
+		skeleton.spineYawCorrection.setConfig(configManager.vrConfig.yawCorrectionConfig)
 	}
 
 	@VRServerThread
@@ -666,7 +666,7 @@ class HumanPoseManager(val server: VRServer?) {
 	}
 
 	fun setYawCorrection(yawCorrectionConfig: YawCorrectionConfig) {
-		skeleton.setYawCorrectionConfig(yawCorrectionConfig)
+		skeleton.spineYawCorrection.setConfig(yawCorrectionConfig)
 	}
 
 	fun setLegTweaksStateTemp(

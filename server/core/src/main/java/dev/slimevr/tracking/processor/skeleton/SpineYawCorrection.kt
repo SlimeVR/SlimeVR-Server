@@ -9,22 +9,28 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import kotlin.math.*
 
-class SpineYawCorrection(
-	val skeleton: HumanSkeleton,
-	private val yawCorrectionConfig: YawCorrectionConfig,
-) {
+class SpineYawCorrection {
 
-	private val upperBodyTrackers = filterImuTrackers(
-		skeleton.headTracker,
-		skeleton.neckTracker,
-		skeleton.upperChestTracker,
-		skeleton.chestTracker,
-		skeleton.waistTracker,
-		skeleton.hipTracker,
-	)
+	private var config = YawCorrectionConfig()
+	private var upperBodyTrackers: List<Tracker> = listOf()
+
+	fun setTrackers(skeleton: HumanSkeleton) {
+		upperBodyTrackers = filterImuTrackers(
+			skeleton.headTracker,
+			skeleton.neckTracker,
+			skeleton.upperChestTracker,
+			skeleton.chestTracker,
+			skeleton.waistTracker,
+			skeleton.hipTracker,
+		)
+	}
+
+	fun setConfig(config: YawCorrectionConfig) {
+		this.config = config
+	}
 
 	fun updateTrackers() {
-		if (!yawCorrectionConfig.enabled) {
+		if (!config.enabled) {
 			return
 		}
 
@@ -59,7 +65,7 @@ class SpineYawCorrection(
 		// is too small, the gyroscope will overpower the correction and the skeleton
 		// will drift. If it is too big, the player will notice that the skeleton is
 		// rotating when the player doesn't face forward for a long time.
-		val adjustYawInRad = -sign(deltaYawInRad) * (yawCorrectionConfig.amountInDegPerSec * FastMath.DEG_TO_RAD) * VRServer.instance.fpsTimer.timePerFrame
+		val adjustYawInRad = -sign(deltaYawInRad) * (config.amountInDegPerSec * FastMath.DEG_TO_RAD) * VRServer.instance.fpsTimer.timePerFrame
 
 		// Adjust the tracker's yaw towards the parent tracker's yaw
 		tracker.resetsHandler.spineYawCorrectionInRad += adjustYawInRad

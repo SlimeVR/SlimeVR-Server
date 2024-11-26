@@ -2,7 +2,6 @@ package dev.slimevr.tracking.processor.skeleton
 
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer
-import dev.slimevr.config.YawCorrectionConfig
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
@@ -208,7 +207,7 @@ class HumanSkeleton(
 	var tapDetectionManager = TapDetectionManager(this)
 	var viveEmulation = ViveEmulation(this)
 	var localizer = Localizer(this)
-	var spineYawCorrection = SpineYawCorrection(this, YawCorrectionConfig())
+	val spineYawCorrection = SpineYawCorrection()
 
 	// Constructors
 	init {
@@ -443,6 +442,9 @@ class HumanSkeleton(
 
 		// Update tap detection's trackers
 		tapDetectionManager.updateConfig(trackers)
+
+		// Update Spine Yaw Correction
+		spineYawCorrection.setTrackers(this)
 	}
 
 	/**
@@ -1652,10 +1654,6 @@ class HumanSkeleton(
 		val newState = !pauseTracking
 		setPauseTracking(newState, sourceName)
 		return newState
-	}
-
-	fun setYawCorrectionConfig(config: YawCorrectionConfig) {
-		spineYawCorrection = SpineYawCorrection(this, config)
 	}
 
 	companion object {
