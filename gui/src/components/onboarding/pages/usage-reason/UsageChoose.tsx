@@ -55,19 +55,19 @@ export function UsageChoose() {
       >
         <Typography variant="main-title">
           {l10n.getString('onboarding-usage-choose-option-title', {
-            mode,
+            mode: UsageReason[mode],
           })}
         </Typography>
       </div>
       <div className="flex flex-col bg-background-70 group-hover/radio:bg-background-60 rounded-b-md py-2 px-4">
         <Typography>
           {l10n.getString('onboarding-usage-choose-option-label', {
-            mode,
+            mode: UsageReason[mode],
           })}
         </Typography>
         <Typography variant="standard" color="secondary">
           {l10n.getString('onboarding-usage-choose-option-description', {
-            mode,
+            mode: UsageReason[mode],
           })}
         </Typography>
       </div>
@@ -92,7 +92,7 @@ export function UsageChoose() {
             </div>
           </Radio>
         )),
-    [control]
+    [control, l10n]
   );
 
   applyProgress(0.5);

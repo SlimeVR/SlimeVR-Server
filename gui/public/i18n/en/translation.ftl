@@ -792,14 +792,14 @@ onboarding-assignment_tutorial-done = I put stickers and straps!
 onboarding-usage-choose = What are you gonna use SlimeVR for?
 onboarding-usage-choose-description = What are you gonna use SlimeVR for?
 onboarding-usage-choose-option-title = { $mode ->
-    *[0] VR
-    [1] VTuber
-    [2] Mocap
+    *[VR] VR
+    [VTUBING] VTuber
+    [MOCAP] Mocap
 }
 onboarding-usage-choose-option-label = { $mode ->
-    *[0] For using with games
-    [1] For using with VMC apps
-    [2] For recording a whole body with precise tracking
+    *[VR] For using with games
+    [VTUBING] For using with VMC apps
+    [MOCAP] For recording a whole body with precise tracking
 }
 
 ## VR usage choose
@@ -829,6 +829,26 @@ onboarding-usage-mocap-head_choose-steamvr = SteamVR head tracking
 onboarding-usage-mocap-head_choose-steamvr-label = Use an HMD or a positional tracker for precision
 onboarding-usage-mocap-head_choose-steamvr-description = more description
 onboarding-usage-mocap-head_choose-steamvr-button = Use SteamVR
+
+## Mocap data mode choose
+onboarding-usage-mocap-data_choose = What kind of data format to use?
+onboarding-usage-mocap-data_choose-description = description
+
+onboarding-usage-mocap-data_choose-option-title = { $mode ->
+    *[BVH] BVH
+    [STEAMVR] SteamVR
+    [VMC] VMC
+}
+onboarding-usage-mocap-data_choose-option-label = { $mode ->
+    *[BVH] BVH
+    [STEAMVR] SteamVR
+    [VMC] VMC
+}
+onboarding-usage-mocap-data_choose-option-description = { $mode ->
+    *[BVH] BVH
+    [STEAMVR] SteamVR
+    [VMC] VMC
+}
 
 ## Tracker assignment setup
 onboarding-assign_trackers-back = Go Back to Wi-Fi Credentials

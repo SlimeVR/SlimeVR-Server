@@ -5,18 +5,54 @@ import { WarningBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useStatusContext } from '@/hooks/status-system';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Localized, useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { StatusData, StatusSteamVRDisconnectedT } from 'solarxr-protocol';
+import {
+  ChangeSettingsRequestT,
+  ModelSettingsT,
+  ModelTogglesT,
+  RpcMessage,
+  SettingsRequestT,
+  SettingsResponseT,
+  StatusData,
+  StatusSteamVRDisconnectedT,
+} from 'solarxr-protocol';
 
 export function HeadTrackingChoose() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const { statuses } = useStatusContext();
   const [animated, setAnimated] = useState(false);
+  const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const fetchedSettings = useRef<ModelTogglesT | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
+  }, []);
+
+  const toggleMocap = (bool: boolean) => {
+    const settings = new ChangeSettingsRequestT();
+    const modelSettings = new ModelSettingsT();
+
+    modelSettings.toggles = fetchedSettings.current ?? new ModelTogglesT();
+    modelSettings.toggles.selfLocalization = bool;
+
+    settings.modelSettings = modelSettings;
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);
+  };
+
+  useRPCPacket(
+    RpcMessage.SettingsResponse,
+    (oldSettings: SettingsResponseT) => {
+      fetchedSettings.current = oldSettings.modelSettings?.toggles ?? null;
+
+      toggleMocap(false);
+    }
+  );
 
   const missingSteamVr = useMemo(
     () =>
@@ -84,7 +120,8 @@ export function HeadTrackingChoose() {
                 variant={!state.alonePage ? 'secondary' : 'tertiary'}
                 className="self-start mt-auto"
                 onClick={() => {
-                  // TODO: enable mocap
+                  toggleMocap(true);
+
                   navigate('/onboarding/usage/mocap/data-choose', {
                     state: { alonePage: state.alonePage },
                   });
