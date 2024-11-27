@@ -4,6 +4,8 @@ import { Typography } from '@/components/commons/Typography';
 import { useForm } from 'react-hook-form';
 import { Radio } from '@/components/commons/Radio';
 import { Button } from '@/components/commons/Button';
+import classNames from 'classnames';
+import { useMemo } from 'react';
 
 enum UsageReason {
   VR,
@@ -46,12 +48,18 @@ export function UsageChoose() {
 
   const ItemContent = ({ mode }: { mode: UsageReason }) => (
     <>
-      <Typography variant="main-title" textAlign="text-right">
-        {l10n.getString('onboarding-usage-choose-option-title', {
-          mode,
-        })}
-      </Typography>
-      <div className="flex flex-col">
+      <div
+        className={classNames(
+          'flex bg-background-60 py-2 px-4 group-hover/radio:bg-background-50 rounded-t-md'
+        )}
+      >
+        <Typography variant="main-title">
+          {l10n.getString('onboarding-usage-choose-option-title', {
+            mode,
+          })}
+        </Typography>
+      </div>
+      <div className="flex flex-col bg-background-70 group-hover/radio:bg-background-60 rounded-b-md py-2 px-4">
         <Typography>
           {l10n.getString('onboarding-usage-choose-option-label', {
             mode,
@@ -64,6 +72,27 @@ export function UsageChoose() {
         </Typography>
       </div>
     </>
+  );
+
+  const usages = useMemo(
+    () =>
+      Object.values(UsageReason)
+        .filter(checkIfUsageReason)
+        .map((mode) => (
+          <Radio
+            key={mode}
+            name="usageReason"
+            control={control}
+            value={mode.toString()}
+            variant="none"
+            className="hidden"
+          >
+            <div>
+              <ItemContent mode={mode}></ItemContent>
+            </div>
+          </Radio>
+        )),
+    [control]
   );
 
   applyProgress(0.5);
@@ -79,21 +108,7 @@ export function UsageChoose() {
             <Typography color="secondary">
               {l10n.getString('onboarding-usage-choose-description')}
             </Typography>
-            {Object.values(UsageReason)
-              .filter(checkIfUsageReason)
-              .map((mode) => (
-                <Radio
-                  key={mode}
-                  name="usageReason"
-                  control={control}
-                  value={mode.toString()}
-                  className="hidden"
-                >
-                  <div className="flex flex-row md:gap-4 gap-2">
-                    <ItemContent mode={mode}></ItemContent>
-                  </div>
-                </Radio>
-              ))}
+            {usages}
             <div className="flex flex-row">
               <Button variant="secondary" to="/onboarding/assign-tutorial">
                 {l10n.getString('onboarding-previous_step')}
