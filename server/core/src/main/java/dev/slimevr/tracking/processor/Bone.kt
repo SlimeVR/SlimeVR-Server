@@ -3,6 +3,8 @@ package dev.slimevr.tracking.processor
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import java.util.concurrent.CopyOnWriteArrayList
+import dev.slimevr.tracking.processor.Constraint.Companion.ConstraintType
+import dev.slimevr.tracking.trackers.Tracker
 
 /**
  * Represents a bone composed of 2 joints: headNode and tailNode.
@@ -14,6 +16,7 @@ class Bone(val boneType: BoneType, val rotationConstraint: Constraint) {
 		private set
 	val children: MutableList<Bone> = CopyOnWriteArrayList()
 	var rotationOffset = Quaternion.IDENTITY
+	var attachedTracker: Tracker? = null
 
 	init {
 		headNode.attachChild(tailNode)
@@ -59,9 +62,40 @@ class Bone(val boneType: BoneType, val rotationConstraint: Constraint) {
 	}
 
 	/**
-	 * Computes the rotations and positions of this bone.
+	 * Computes the rotations and positions of
+	 * this bone and all of its children while
+	 * enforcing rotation constraints.
 	 */
-	fun updateThisNode() {
+	fun updateWithConstraints() {
+		val initialRot = getGlobalRotation()
+		val newRot = rotationConstraint.applyConstraint(initialRot, this)
+		setRotationRaw(newRot)
+		updateThisNode()
+
+		// Correct tracker if applicable.
+		if (rotationConstraint.constraintType != ConstraintType.HINGE &&
+			rotationConstraint.constraintType != ConstraintType.LOOSE_HINGE) {
+			val deltaRot = newRot * initialRot.inv()
+			val angle = deltaRot.angleR()
+
+			if (angle > 0.01f &&
+				(attachedTracker?.filteringHandler?.getFilteringImpact() ?: 1f) < 0.01f &&
+				(parent?.attachedTracker?.filteringHandler?.getFilteringImpact() ?: 0f) < 0.01f) {
+				attachedTracker?.resetsHandler?.updateConstraintFix(deltaRot)
+			}
+		}
+
+		// Recursively apply constraints and update children.
+		for (child in children) {
+			child.updateWithConstraints()
+		}
+	}
+
+	/**
+	 * Computes the rotations and positions of this bone.
+	 * Only to be used while traversing bones from top to bottom.
+	 */
+	private fun updateThisNode() {
 		headNode.updateThisNode()
 		tailNode.updateThisNode()
 	}

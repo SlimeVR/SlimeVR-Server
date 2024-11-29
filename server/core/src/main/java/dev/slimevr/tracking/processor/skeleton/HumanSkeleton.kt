@@ -55,8 +55,8 @@ class HumanSkeleton(
 	val rightFootBone = Bone(BoneType.RIGHT_FOOT, Constraint(ConstraintType.TWIST_SWING, 60f, 60f))
 
 	// Arm bones
-	val leftUpperShoulderBone = Bone(BoneType.LEFT_SHOULDER, Constraint(ConstraintType.COMPLETE))
-	val rightUpperShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(ConstraintType.COMPLETE))
+	val leftUpperShoulderBone = Bone(BoneType.LEFT_UPPER_SHOULDER, Constraint(ConstraintType.COMPLETE))
+	val rightUpperShoulderBone = Bone(BoneType.RIGHT_UPPER_SHOULDER, Constraint(ConstraintType.COMPLETE))
 	val leftShoulderBone = Bone(BoneType.LEFT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 10f))
 	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 10f))
 	val leftUpperArmBone = Bone(BoneType.LEFT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
@@ -450,6 +450,9 @@ class HumanSkeleton(
 
 		// Update tap detection's trackers
 		tapDetectionManager.updateConfig(trackers)
+
+		// Update bones tracker field
+		refreshBoneTracker()
 	}
 
 	/**
@@ -508,7 +511,7 @@ class HumanSkeleton(
 
 		updateTransforms()
 		updateBones()
-		enforceConstraints()
+		headBone.updateWithConstraints()
 		updateComputedTrackers()
 
 		// Don't run post-processing if the tracking is paused
@@ -520,35 +523,11 @@ class HumanSkeleton(
 	}
 
 	/**
-	 * Enforce rotation constraints on all bones
+	 * Refresh the attachedTracker field in each bone
 	 */
-	private fun enforceConstraints() {
-		if (!enforceConstraints) return
-
+	private fun refreshBoneTracker() {
 		for (bone in allHumanBones) {
-			// Correct the rotation if it violates a constraint
-			val initialRot = bone.getGlobalRotation()
-			val newRot = bone.rotationConstraint.applyConstraint(initialRot, bone)
-			bone.setRotationRaw(newRot)
-			bone.updateThisNode()
-
-			if (!correctConstraints || bone.rotationConstraint.constraintType == ConstraintType.HINGE || bone.rotationConstraint.constraintType == ConstraintType.LOOSE_HINGE) continue
-
-			// Apply a correction to the tracker rotation if filtering is not greatly affecting the output rotation
-			val deltaRot = newRot * initialRot.inv()
-			val angle = deltaRot.angleR()
-			val tracker = getTrackerForBone(bone.boneType)
-			val parentTracker = getTrackerForBone(bone.parent?.boneType)
-			if ((angle > 0.01f) && (
-					tracker?.filteringHandler?.getFilteringImpact()
-						?: 1f
-					) < 0.01f && (
-					parentTracker?.filteringHandler?.getFilteringImpact()
-						?: 1f
-					) < 0.01f
-			) {
-				tracker?.resetsHandler?.updateDynamicFix(deltaRot)
-			}
+			bone.attachedTracker = getTrackerForBone(bone.boneType)
 		}
 	}
 

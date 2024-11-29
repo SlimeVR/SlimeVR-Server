@@ -63,7 +63,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	var mountRotFix = Quaternion.IDENTITY
 		private set
 	private var yawFix = Quaternion.IDENTITY
-	private var dynamicFix = Quaternion.IDENTITY
+	private var constraintFix = Quaternion.IDENTITY
 
 	// Yaw reset smoothing vars
 	private var yawFixOld = Quaternion.IDENTITY
@@ -169,7 +169,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		rot = mountRotFix.inv() * (rot * mountRotFix)
 		rot *= tposeDownFix
 		rot = yawFix * rot
-		rot = dynamicFix * rot
+		rot = constraintFix * rot
 		return rot
 	}
 
@@ -182,7 +182,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		rot = gyroFixNoMounting * rot
 		rot *= attachmentFixNoMounting
 		rot = yawFixZeroReference * rot
-		rot = dynamicFix * rot
+		rot = constraintFix * rot
 		return rot
 	}
 
@@ -217,7 +217,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * 0). This allows the tracker to be strapped to body at any pitch and roll.
 	 */
 	fun resetFull(reference: Quaternion) {
-		dynamicFix = Quaternion.IDENTITY
+		constraintFix = Quaternion.IDENTITY
 
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
 			tracker.trackerFlexHandler.resetMin()
@@ -310,7 +310,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * position should be corrected in the source.
 	 */
 	fun resetYaw(reference: Quaternion) {
-		dynamicFix = Quaternion.IDENTITY
+		constraintFix = Quaternion.IDENTITY
 
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
 			tracker.trackerDataType == TrackerDataType.FLEX_ANGLE
@@ -362,7 +362,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			return
 		}
 
-		dynamicFix = Quaternion.IDENTITY
+		constraintFix = Quaternion.IDENTITY
 
 		// Get the current calibrated rotation
 		var rotBuf = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
@@ -415,8 +415,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	/**
 	 * Apply a corrective rotation to the gyroFix
 	 */
-	fun updateDynamicFix(correctedRotation: Quaternion) {
-		dynamicFix *= correctedRotation
+	fun updateConstraintFix(correctedRotation: Quaternion) {
+		constraintFix *= correctedRotation
 	}
 
 	fun clearMounting() {
