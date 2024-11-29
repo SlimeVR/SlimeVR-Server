@@ -6,10 +6,8 @@ import { Localized, useLocalization } from '@fluent/react';
 import { useMemo, useState } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
 import { TipBox } from '@/components/commons/TipBox';
-import { useBreakpoint } from '@/hooks/breakpoint';
 import { useHeightContext } from '@/hooks/height';
 import { useInterval } from '@/hooks/timeout';
-import classNames from 'classnames';
 
 export function CheckHeightStep({
   nextStep,
@@ -24,7 +22,6 @@ export function CheckHeightStep({
   const { hmdHeight, setHmdHeight } = useHeightContext();
   const [fetchedHeight, setFetchedHeight] = useState(false);
   const [fetchHeight, setFetchHeight] = useState(false);
-  const { isMobile } = useBreakpoint('mobile');
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
 
@@ -54,7 +51,7 @@ export function CheckHeightStep({
   return (
     <>
       <div className="flex flex-col flex-grow">
-        <div className="flex gap-1 flex-grow">
+        <div className="flex gap-2 flex-grow">
           <div className="flex flex-grow flex-col gap-4">
             <Typography variant="main-title" bold>
               {l10n.getString(
@@ -139,10 +136,7 @@ export function CheckHeightStep({
           <div className="self-center">
             <img
               src="/images/front-standing-pose.webp"
-              className={classNames(
-                isMobile && 'min-w-[120px] w-[150px]',
-                !isMobile && 'min-w-[120px] w-[34vh]'
-              )}
+              className="mobile:w-[150px] min-w-[120px] w-[34vh]"
               alt="Reset position"
             />
           </div>

@@ -69,7 +69,7 @@ export function ManualHeightStep({
   return (
     <>
       <div className="flex flex-col flex-grow">
-        <div className="flex gap-1 flex-grow">
+        <div className="flex gap-2 flex-grow">
           <div className="flex flex-grow flex-col gap-4">
             <Typography variant="main-title" bold>
               {l10n.getString(

@@ -8,7 +8,7 @@ export function DoneStep({ variant }: { variant: 'onboarding' | 'alone' }) {
 
   return (
     <div className="flex flex-col items-center w-full justify-center gap-5">
-      <div className="flex gap-1 flex-col justify-center items-center">
+      <div className="flex gap-2 flex-col justify-center items-center">
         <Typography variant="section-title">
           {l10n.getString('onboarding-scaled_proportions-done-title')}
         </Typography>
