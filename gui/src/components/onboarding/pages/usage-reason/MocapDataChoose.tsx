@@ -7,7 +7,7 @@ import { Button } from '@/components/commons/Button';
 import classNames from 'classnames';
 import { useMemo } from 'react';
 
-enum UsageReason {
+export enum MocapDataType {
   BVH,
   STEAMVR,
   VMC,
@@ -18,16 +18,16 @@ interface UsageInfo {
   image: string;
 }
 
-const REASON_TO_PATH: Record<UsageReason, UsageInfo> = {
-  [UsageReason.BVH]: {
+const REASON_TO_PATH: Record<MocapDataType, UsageInfo> = {
+  [MocapDataType.BVH]: {
     path: '/onboarding/usage/mocap/head-choose',
     image: '/images/usage-mocap.webp',
   },
-  [UsageReason.STEAMVR]: {
+  [MocapDataType.STEAMVR]: {
     path: '/onboarding/usage/vr/choose',
     image: '/images/usage-vr.webp',
   },
-  [UsageReason.VMC]: {
+  [MocapDataType.VMC]: {
     path: '/onboarding/usage/vtubing/choose',
     image: '/images/usage-vtuber.webp',
   },
@@ -37,16 +37,16 @@ export function MocapDataChoose() {
   const { l10n } = useLocalization();
   const { applyProgress } = useOnboarding();
   const { control, watch } = useForm<{
-    usageReason: UsageReason;
+    usageReason: MocapDataType;
   }>({
     defaultValues: {
-      usageReason: UsageReason.VMC,
+      usageReason: MocapDataType.VMC,
     },
   });
 
   const usageReason = watch('usageReason');
 
-  const ItemContent = ({ mode }: { mode: UsageReason }) => (
+  const ItemContent = ({ mode }: { mode: MocapDataType }) => (
     <>
       <div
         className={classNames(
@@ -55,21 +55,21 @@ export function MocapDataChoose() {
       >
         <Typography variant="main-title">
           {l10n.getString('onboarding-usage-mocap-data_choose-option-title', {
-            mode: UsageReason[mode],
+            mode: MocapDataType[mode],
           })}
         </Typography>
       </div>
       <div className="flex flex-col bg-background-70 group-hover/radio:bg-background-60 rounded-b-md py-2 px-4">
         <Typography>
           {l10n.getString('onboarding-usage-mocap-data_choose-option-label', {
-            mode: UsageReason[mode],
+            mode: MocapDataType[mode],
           })}
         </Typography>
         <Typography variant="standard" color="secondary">
           {l10n.getString(
             'onboarding-usage-mocap-data_choose-option-description',
             {
-              mode: UsageReason[mode],
+              mode: MocapDataType[mode],
             }
           )}
         </Typography>
@@ -79,7 +79,7 @@ export function MocapDataChoose() {
 
   const usages = useMemo(
     () =>
-      Object.values(UsageReason)
+      Object.values(MocapDataType)
         .filter(checkIfUsageReason)
         .map((mode) => (
           <Radio
@@ -141,6 +141,6 @@ export function MocapDataChoose() {
   );
 }
 
-function checkIfUsageReason(val: any): val is UsageReason {
+function checkIfUsageReason(val: any): val is MocapDataType {
   return typeof val === 'number';
 }
