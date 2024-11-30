@@ -152,7 +152,7 @@ export function CheckHeightStep({
           <Button
             variant="primary"
             onClick={nextStep}
-            disabled={!fetchedHeight}
+            disabled={!fetchedHeight && hmdHeight == null}
           >
             {l10n.getString(
               'onboarding-automatic_proportions-check_height-next_step'

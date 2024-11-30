@@ -22,9 +22,8 @@ export function useProvideHeightContext(): HeightContext {
   useRPCPacket(RpcMessage.SettingsResponse, (res: SettingsResponseT) => {
     if (
       !res.modelSettings?.skeletonHeight?.hmdHeight ||
-      !res.modelSettings.skeletonHeight.floorHeight ||
       res.modelSettings.skeletonHeight.hmdHeight -
-        res.modelSettings.skeletonHeight.floorHeight <=
+        (res.modelSettings.skeletonHeight.floorHeight ?? 0) <=
         MIN_HEIGHT
     ) {
       return;

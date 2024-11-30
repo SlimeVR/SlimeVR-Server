@@ -200,7 +200,7 @@ export function CheckFloorHeightStep({
 
               nextStep();
             }}
-            disabled={!fetchedHeight}
+            disabled={!fetchedHeight && floorHeight == null}
           >
             {l10n.getString(
               'onboarding-automatic_proportions-check_floor_height-next_step'
