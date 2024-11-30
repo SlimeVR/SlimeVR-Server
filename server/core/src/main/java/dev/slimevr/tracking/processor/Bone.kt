@@ -78,9 +78,9 @@ class Bone(val boneType: BoneType, val rotationConstraint: Constraint) {
 			val deltaRot = newRot * initialRot.inv()
 			val angle = deltaRot.angleR()
 
-			if (angle > 0.01f &&
-				(attachedTracker?.filteringHandler?.getFilteringImpact() ?: 1f) < 0.01f &&
-				(parent?.attachedTracker?.filteringHandler?.getFilteringImpact() ?: 0f) < 0.01f) {
+			if (angle > Constraint.ANGLE_THRESHOLD &&
+				(attachedTracker?.filteringHandler?.getFilteringImpact() ?: 1f) < Constraint.FILTER_IMPACT_THRESHOLD &&
+				(parent?.attachedTracker?.filteringHandler?.getFilteringImpact() ?: 0f) < Constraint.FILTER_IMPACT_THRESHOLD) {
 				attachedTracker?.resetsHandler?.updateConstraintFix(deltaRot)
 			}
 		}
