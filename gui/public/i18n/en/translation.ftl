@@ -1033,11 +1033,17 @@ onboarding-automatic_proportions-smol_warning-cancel = Go back
 ## Tracker scaled proportions setup
 onboarding-scaled_proportions-title = Scaled proportions
 onboarding-scaled_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This will use an average proportion and scale it based on your height.
-onboarding-scaled_proportions-manual_height-title = Let's get your height
-onboarding-scaled_proportions-manual_height-description = a
-onboarding-scaled_proportions-manual_height-missing_steamvr = You don't have SteamVR connected to SlimeVR currently, which doesn't allow you to use measurements based on your headset, <b>proceed by your own caution or check docs!</b>
-onboarding-scaled_proportions-manual_height-height = Your height is
-onboarding-scaled_proportions-manual_height-next_step = Continue
+onboarding-scaled_proportions-manual_height-title = Configure your height
+onboarding-scaled_proportions-manual_height-description = Your headset (HMD) height should be slightly less than your full height, as headsets measure your eye height. This height will be used as a baseline for your body proportions.
+onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR is not currently connected to SlimeVR, so measurements can't be based on your headset. <b>Proceed at your own risk or check the docs!</b>
+onboarding-scaled_proportions-manual_height-height = Your headset height is
+onboarding-scaled_proportions-manual_height-next_step = Continue and save
+
+## Tracker scaled proportions reset
+onboarding-scaled_proportions-reset_proportion-title = Reset your body proportions
+onboarding-scaled_proportions-reset_proportion-description = To set your body proportions based on your height, you need to now reset all of your proportions. This will clear any proportions you have configured and provide a baseline configuration.
+onboarding-scaled_proportions-done-title = Body proportions set
+onboarding-scaled_proportions-done-description = Your body proportions should now be configured based on your height.
 
 ## Home
 home-no_trackers = No trackers detected or assigned
