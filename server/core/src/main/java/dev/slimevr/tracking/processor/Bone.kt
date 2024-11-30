@@ -1,10 +1,10 @@
 package dev.slimevr.tracking.processor
 
+import dev.slimevr.tracking.processor.Constraint.Companion.ConstraintType
+import dev.slimevr.tracking.trackers.Tracker
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import java.util.concurrent.CopyOnWriteArrayList
-import dev.slimevr.tracking.processor.Constraint.Companion.ConstraintType
-import dev.slimevr.tracking.trackers.Tracker
 
 /**
  * Represents a bone composed of 2 joints: headNode and tailNode.
@@ -74,13 +74,15 @@ class Bone(val boneType: BoneType, val rotationConstraint: Constraint) {
 
 		// Correct tracker if applicable.
 		if (rotationConstraint.constraintType != ConstraintType.HINGE &&
-			rotationConstraint.constraintType != ConstraintType.LOOSE_HINGE) {
+			rotationConstraint.constraintType != ConstraintType.LOOSE_HINGE
+		) {
 			val deltaRot = newRot * initialRot.inv()
 			val angle = deltaRot.angleR()
 
 			if (angle > Constraint.ANGLE_THRESHOLD &&
 				(attachedTracker?.filteringHandler?.getFilteringImpact() ?: 1f) < Constraint.FILTER_IMPACT_THRESHOLD &&
-				(parent?.attachedTracker?.filteringHandler?.getFilteringImpact() ?: 0f) < Constraint.FILTER_IMPACT_THRESHOLD) {
+				(parent?.attachedTracker?.filteringHandler?.getFilteringImpact() ?: 0f) < Constraint.FILTER_IMPACT_THRESHOLD
+			) {
 				attachedTracker?.resetsHandler?.updateConstraintFix(deltaRot)
 			}
 		}

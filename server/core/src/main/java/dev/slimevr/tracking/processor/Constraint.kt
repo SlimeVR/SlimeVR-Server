@@ -1,8 +1,8 @@
 package dev.slimevr.tracking.processor
 
+import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import com.jme3.math.FastMath
 import kotlin.math.*
 
 /**
