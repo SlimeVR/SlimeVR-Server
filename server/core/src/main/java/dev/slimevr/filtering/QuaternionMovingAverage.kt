@@ -31,7 +31,6 @@ class QuaternionMovingAverage(
 	private val fpsTimer = if (VRServer.instanceInitialized) VRServer.instance.fpsTimer else NanoTimer()
 	private var frameCounter = 0
 	private var lastAmt = 0f
-	var filteredQuaternion = IDENTITY
 
 	init {
 		// amount should range from 0 to 1.
