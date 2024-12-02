@@ -792,27 +792,37 @@ onboarding-assignment_tutorial-done = I put stickers and straps!
 onboarding-usage-choose = What are you gonna use SlimeVR for?
 onboarding-usage-choose-description = What are you gonna use SlimeVR for?
 onboarding-usage-choose-option-title = { $mode ->
-    *[VR] VR
+    *[VR] Virtual Reality
     [VTUBING] VTuber
-    [MOCAP] Mocap
+    [MOCAP] Motion Capture
 }
 onboarding-usage-choose-option-label = { $mode ->
-    *[VR] For using with games
-    [VTUBING] For using with VMC apps
-    [MOCAP] For recording a whole body with precise tracking
+    *[VR] For use with games and applications that use a headset
+    [VTUBING] For use with VTubing programs that use the VMC protocol
+    [MOCAP] For recording a whole body with precise tracking.
+}
+onboarding-usage-choose-option-description = { $mode ->
+    *[VR] Users of SteamVR or VR programs that use OSC can select this option to get right to it.
+    [VTUBING] VTubing programs work with SlimeVR using VMC (Virtual Motion Capture), this is what to pick for that!
+    [MOCAP] Many 3D programs can record live mocap for use in animation, and BVH recording is also supported directly in the app.
 }
 
 ## VR usage choose
-onboarding-usage-vr-choose = choose vr
-onboarding-usage-vr-choose-description = come on choose vr
-onboarding-usage-vr-choose-steamvr = i use steamvr
-onboarding-usage-vr-choose-steamvr-label = for pc vr
-onboarding-usage-vr-choose-steamvr-description = this happens if steamvr
-onboarding-usage-vr-choose-steamvr-warning = The SteamVR driver is currently not connected, <b>please turn on SteamVR</b> or check <docs>the docs for more info</docs>.
-onboarding-usage-vr-choose-standalone = i use standalone
-onboarding-usage-vr-choose-standalone-label = for portable vr
-onboarding-usage-vr-choose-standalone-description = this happens if standalone
+onboarding-usage-vr-choose = Choose your VR setup
+onboarding-usage-vr-choose-description = There are different ways to connect SlimeVR to your virtual reality setup! You can decide which you will use here.
+onboarding-usage-vr-choose-steamvr = I use SteamVR
+onboarding-usage-vr-choose-steamvr-label = For PCVR
+# uses multiline
+onboarding-usage-vr-choose-steamvr-description =
+    SlimeVR emulates SteamVR trackers using the rotational data of the trackers and a human skeleton model, so SteamVR games and programs can use it for full body tracking.
 
+    SteamVR must be installed and a headset or positional head tracker connected to the SlimeVR server to use this method.
+onboarding-usage-vr-choose-steamvr-warning = The SteamVR driver is currently not connected, <b>please turn on SteamVR</b> or check <docs>the docs for more info</docs>.
+onboarding-usage-vr-choose-standalone = I use standalone
+onboarding-usage-vr-choose-standalone-label = For VRChat Quest/Pico users
+onboarding-usage-vr-choose-standalone-description =
+    Standalone use connects through OSC instead of SteamVR to provide full body tracking with SlimeVR.
+    Any PC that can run SlimeVR server can function like this, as well as phones, which are the recommended ways for best ergonomics.
 onboarding-usage-vr-standalone-title = Setting up VRChat
 onboarding-usage-vr-standalone-next = Done!
 

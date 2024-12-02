@@ -3,9 +3,10 @@ import { useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { useForm } from 'react-hook-form';
 import { Radio } from '@/components/commons/Radio';
-import { Button } from '@/components/commons/Button';
 import classNames from 'classnames';
 import { useMemo } from 'react';
+import { MocapVMCSetup } from './MocapVMCSetup';
+import { Button } from '@/components/commons/Button';
 
 export enum MocapDataType {
   BVH,
@@ -13,30 +14,10 @@ export enum MocapDataType {
   VMC,
 }
 
-interface UsageInfo {
-  path: string;
-  image: string;
-}
-
-const REASON_TO_PATH: Record<MocapDataType, UsageInfo> = {
-  [MocapDataType.BVH]: {
-    path: '/onboarding/usage/mocap/head-choose',
-    image: '/images/usage-mocap.webp',
-  },
-  [MocapDataType.STEAMVR]: {
-    path: '/onboarding/usage/vr/choose',
-    image: '/images/usage-vr.webp',
-  },
-  [MocapDataType.VMC]: {
-    path: '/onboarding/usage/vtubing/choose',
-    image: '/images/usage-vtuber.webp',
-  },
-};
-
 export function MocapDataChoose() {
   const { l10n } = useLocalization();
   const { applyProgress } = useOnboarding();
-  const { control, watch } = useForm<{
+  const { control } = useForm<{
     usageReason: MocapDataType;
   }>({
     defaultValues: {
@@ -44,7 +25,7 @@ export function MocapDataChoose() {
     },
   });
 
-  const usageReason = watch('usageReason');
+  // const usageReason = watch('usageReason');
 
   const ItemContent = ({ mode }: { mode: MocapDataType }) => (
     <>
@@ -119,22 +100,9 @@ export function MocapDataChoose() {
               >
                 {l10n.getString('onboarding-previous_step')}
               </Button>
-              <Button
-                variant="primary"
-                to={REASON_TO_PATH[usageReason].path}
-                className="ml-auto"
-              >
-                {l10n.getString('onboarding-enter_vr-ready')}
-              </Button>
             </div>
           </div>
-          <div className="flex flex-col justify-center">
-            <img
-              className="mobile:hidden rounded-3xl"
-              src={REASON_TO_PATH[usageReason].image}
-              width="496"
-            ></img>
-          </div>
+          <MocapVMCSetup />
         </div>
       </div>
     </div>
