@@ -1,6 +1,6 @@
 import { useOnboarding } from '@/hooks/onboarding';
 import { Localized, useLocalization } from '@fluent/react';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
@@ -40,6 +40,7 @@ export function ProportionsChoose() {
   const [animated, setAnimated] = useState(false);
   const [showProportionWarning, setShowProportionWarning] = useState(false);
   const [importState, setImportState] = useState(ImportStatus.OK);
+  const exporting = useRef(false);
   const { computedTrackers } = useAppContext();
 
   useDebouncedEffect(
@@ -81,6 +82,8 @@ export function ProportionsChoose() {
   useRPCPacket(
     RpcMessage.SkeletonConfigResponse,
     (data: SkeletonConfigExport) => {
+      if (!exporting.current) return;
+      exporting.current = false;
       // Convert the skeleton part enums into a string
       data.skeletonParts.forEach((x) => {
         if (typeof x.bone === 'number')
@@ -369,12 +372,14 @@ export function ProportionsChoose() {
             <Button
               variant={!state.alonePage ? 'secondary' : 'tertiary'}
               className="ml-auto"
-              onClick={() =>
+              onClick={() => {
+                exporting.current = true;
+
                 sendRPCPacket(
                   RpcMessage.SkeletonConfigRequest,
                   new SkeletonConfigRequestT()
-                )
-              }
+                );
+              }}
             >
               {l10n.getString('onboarding-choose_proportions-export')}
             </Button>
