@@ -591,9 +591,11 @@ settings-osc-router-network-address-placeholder = IPV4 address
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
 # This cares about multilines
-settings-osc-vrchat-description-v1 =
+settings-osc-vrchat-description-v2 =
     Change settings specific to the OSC Trackers standard used for sending
     tracking data to applications without SteamVR (ex. Quest standalone).
+# This cares about multilines
+settings-osc-vrchat-description-guide =
     Make sure to enable OSC in VRChat via the Action Menu under OSC > Enabled.
     To allow receiving HMD and controller data from VRChat, go in your main menu's
     settings under Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
@@ -785,6 +787,68 @@ onboarding-assignment_tutorial-sticker = Sticker
 onboarding-assignment_tutorial-second_step-v2 = 2. Attach the strap to your tracker, keeping the velcro side of the strap facing the same direction as the slime face of your tracker:
 onboarding-assignment_tutorial-second_step-continuation-v2 = The velcro side for the extension should be facing up like the following image:
 onboarding-assignment_tutorial-done = I put stickers and straps!
+
+## Usage reason choose
+onboarding-usage-choose = What are you gonna use SlimeVR for?
+onboarding-usage-choose-description = What are you gonna use SlimeVR for?
+onboarding-usage-choose-option-title = { $mode ->
+    *[VR] VR
+    [VTUBING] VTuber
+    [MOCAP] Mocap
+}
+onboarding-usage-choose-option-label = { $mode ->
+    *[VR] For using with games
+    [VTUBING] For using with VMC apps
+    [MOCAP] For recording a whole body with precise tracking
+}
+
+## VR usage choose
+onboarding-usage-vr-choose = choose vr
+onboarding-usage-vr-choose-description = come on choose vr
+onboarding-usage-vr-choose-steamvr = i use steamvr
+onboarding-usage-vr-choose-steamvr-label = for pc vr
+onboarding-usage-vr-choose-steamvr-description = this happens if steamvr
+onboarding-usage-vr-choose-steamvr-warning = The SteamVR driver is currently not connected, <b>please turn on SteamVR</b> or check <docs>the docs for more info</docs>.
+onboarding-usage-vr-choose-standalone = i use standalone
+onboarding-usage-vr-choose-standalone-label = for portable vr
+onboarding-usage-vr-choose-standalone-description = this happens if standalone
+
+onboarding-usage-vr-standalone-title = Setting up VRChat
+onboarding-usage-vr-standalone-next = Done!
+
+## Mocap head usage choose
+onboarding-usage-mocap-head_choose = What kind of head tracking do you want?
+onboarding-usage-mocap-head_choose-description = description
+
+onboarding-usage-mocap-head_choose-standalone = SlimeVR head tracker
+onboarding-usage-mocap-head_choose-standalone-label = Use an IMU tracker for tracking position
+onboarding-usage-mocap-head_choose-standalone-description = some description
+onboarding-usage-mocap-head_choose-standalone-button = Use IMU tracker
+
+onboarding-usage-mocap-head_choose-steamvr = SteamVR head tracking
+onboarding-usage-mocap-head_choose-steamvr-label = Use an HMD or a positional tracker for precision
+onboarding-usage-mocap-head_choose-steamvr-description = more description
+onboarding-usage-mocap-head_choose-steamvr-button = Use SteamVR
+
+## Mocap data mode choose
+onboarding-usage-mocap-data_choose = What kind of data format to use?
+onboarding-usage-mocap-data_choose-description = description
+
+onboarding-usage-mocap-data_choose-option-title = { $mode ->
+    *[BVH] BVH
+    [STEAMVR] SteamVR
+    [VMC] VMC
+}
+onboarding-usage-mocap-data_choose-option-label = { $mode ->
+    *[BVH] BVH
+    [STEAMVR] SteamVR
+    [VMC] VMC
+}
+onboarding-usage-mocap-data_choose-option-description = { $mode ->
+    *[BVH] BVH
+    [STEAMVR] SteamVR
+    [VMC] VMC
+}
 
 ## Tracker assignment setup
 onboarding-assign_trackers-back = Go Back to Wi-Fi Credentials

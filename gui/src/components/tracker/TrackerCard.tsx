@@ -41,6 +41,7 @@ function TrackerBig({
           <>
             {device.hardwareStatus.batteryPctEstimate && (
               <TrackerBattery
+                voltage={device.hardwareStatus.batteryVoltage}
                 value={device.hardwareStatus.batteryPctEstimate / 100}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />
@@ -89,6 +90,7 @@ function TrackerSmol({
           <div className="flex flex-col justify-center items-center">
             {device.hardwareStatus.batteryPctEstimate && (
               <TrackerBattery
+                voltage={device.hardwareStatus.batteryVoltage}
                 value={device.hardwareStatus.batteryPctEstimate / 100}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />
