@@ -25,7 +25,7 @@ export function ScaledProportionsPage() {
       trackers.some(
         (tracker) =>
           tracker.tracker.info?.bodyPart === BodyPart.HEAD &&
-          tracker.tracker.info.isHmd
+          (tracker.tracker.info.isHmd || tracker.tracker.position?.y)
       ),
     [trackers]
   );
