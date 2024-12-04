@@ -115,7 +115,8 @@ class Constraint(
 		private fun constrain(rotation: Quaternion, angle: Float): Quaternion {
 			// Use angle to get the maximum magnitude the vector part of rotation can be
 			// before it has violated a constraint.
-			// Multiplying by 0.5 uniquely maps angles 0-180 degrees to 0-1. since a quaternions
+			// Multiplying by 0.5 uniquely maps angles 0-180 degrees to 0-1 which works
+			// nicely with unit quaternions.
 			val magnitude = sin(angle * 0.5f)
 			val magnitudeSqr = magnitude * magnitude
 			val sign = if (rotation.w >= 0f) 1f else -1f
