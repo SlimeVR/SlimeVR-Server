@@ -73,7 +73,7 @@ class Constraint(
 
 	companion object {
 		const val ANGLE_THRESHOLD = 0.004f // == 0.25 degrees
-		const val FILTER_IMPACT_THRESHOLD = 0.0349 // == 2 degrees
+		const val FILTER_IMPACT_THRESHOLD = 0.0349f // == 2 degrees
 
 		enum class ConstraintType {
 			TWIST_SWING,
