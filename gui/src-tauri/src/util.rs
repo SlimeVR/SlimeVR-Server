@@ -107,7 +107,8 @@ pub fn show_error(text: &str) -> bool {
 		.set_description(text)
 		.set_buttons(MessageButtons::Ok)
 		.set_level(MessageLevel::Error)
-		.show() == MessageDialogResult::Ok
+		.show()
+		== MessageDialogResult::Ok
 }
 
 #[cfg(mobile)]
