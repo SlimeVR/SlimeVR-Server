@@ -308,7 +308,9 @@ class Tracker @JvmOverloads constructor(
 	fun dataTick() {
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
-		filteringHandler.dataTick(_rotation)
+		if (!isComputed) {
+			filteringHandler.dataTick(_rotation)
+		}
 	}
 
 	/**
@@ -329,9 +331,11 @@ class Tracker @JvmOverloads constructor(
 		var rot = if (allowFiltering && filteringHandler.filteringEnabled) {
 			// Get filtered rotation
 			filteringHandler.getFilteredRotation()
-		} else {
+		} else if (!isComputed) {
 			// Get unfiltered rotation
 			filteringHandler.getTrackedRotation()
+		} else {
+			_rotation
 		}
 
 		// Reset if needed and is not computed and internal
@@ -361,9 +365,11 @@ class Tracker @JvmOverloads constructor(
 		var rot = if (filteringHandler.filteringEnabled) {
 			// Get filtered rotation
 			filteringHandler.getFilteredRotation()
-		} else {
+		} else if (!isComputed) {
 			// Get unfiltered rotation
 			filteringHandler.getTrackedRotation()
+		} else {
+			_rotation
 		}
 
 		// Reset if needed or is a computed tracker besides head
