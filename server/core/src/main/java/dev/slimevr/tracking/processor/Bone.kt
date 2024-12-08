@@ -4,6 +4,7 @@ import dev.slimevr.tracking.processor.Constraint.Companion.ConstraintType
 import dev.slimevr.tracking.trackers.Tracker
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import solarxr_protocol.datatypes.BodyPart
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -72,9 +73,11 @@ class Bone(val boneType: BoneType, val rotationConstraint: Constraint) {
 		setRotationRaw(newRot)
 		updateThisNode()
 
-		// Correct tracker if applicable.
+		// Correct tracker if applicable. Do not adjust correction for hinge constraints
+		// or the upper chest tracker.
 		if (rotationConstraint.constraintType != ConstraintType.HINGE &&
-			rotationConstraint.constraintType != ConstraintType.LOOSE_HINGE
+			rotationConstraint.constraintType != ConstraintType.LOOSE_HINGE &&
+			boneType.bodyPart != BodyPart.UPPER_CHEST
 		) {
 			val deltaRot = newRot * initialRot.inv()
 			val angle = deltaRot.angleR()
