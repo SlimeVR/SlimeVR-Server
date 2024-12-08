@@ -3,9 +3,8 @@ import { useMediaQuery } from 'react-responsive';
 import tailwindConfig from '../../tailwind.config';
 
 const fullConfig = resolveConfig(tailwindConfig as any);
-const breakpoints = tailwindConfig.theme.screens;
 
-type BreakpointKey = keyof typeof breakpoints;
+type BreakpointKey = keyof typeof tailwindConfig.theme.screens;
 
 export function useBreakpoint<K extends BreakpointKey>(breakpointKey: K) {
   // FIXME There is a flickering issue caused by this, because isMobile is not resolved fast enough

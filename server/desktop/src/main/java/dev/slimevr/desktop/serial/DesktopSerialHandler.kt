@@ -71,8 +71,12 @@ class DesktopSerialHandler :
 		getDevicesTimer.purge()
 	}
 
-	fun onNewDevice(port: SerialPort) {
+	private fun onNewDevice(port: SerialPort) {
 		listeners.forEach { it.onNewSerialDevice(SerialPortWrapper(port)) }
+	}
+
+	private fun onDeviceDel(port: SerialPort) {
+		listeners.forEach { it.onSerialDeviceDeleted(SerialPortWrapper(port)) }
 	}
 
 	override fun addListener(channel: SerialListener) {
@@ -181,6 +185,11 @@ class DesktopSerialHandler :
 		}
 	}
 
+	override fun write(buff: ByteArray) {
+		LogManager.info("[SerialHandler] WRITING $buff")
+		currentPort?.outputStream?.write(buff)
+	}
+
 	@Synchronized
 	override fun setWifi(ssid: String, passwd: String) {
 		val os = currentPort?.outputStream ?: return
@@ -236,13 +245,20 @@ class DesktopSerialHandler :
 
 	private fun detectNewPorts() {
 		try {
-			val differences = knownPorts.asSequence() - lastKnownPorts
+			val addDifferences = knownPorts.asSequence() - lastKnownPorts
+			val delDifferences = lastKnownPorts - knownPorts.asSequence().toSet()
 			lastKnownPorts = SerialPort.getCommPorts().map { SerialPortWrapper(it) }.toSet()
-			differences.forEach { onNewDevice(it.port) }
+			addDifferences.forEach { onNewDevice(it.port) }
+			delDifferences.forEach { onDeviceDel(it.port) }
 		} catch (e: Throwable) {
 			LogManager
 				.severe("[SerialHandler] Using serial ports is not supported on this platform", e)
 			throw RuntimeException("Serial unsupported")
 		}
+	}
+
+	override fun getCurrentPort(): dev.slimevr.serial.SerialPort? {
+		val port = this.currentPort ?: return null
+		return SerialPortWrapper(port)
 	}
 }
