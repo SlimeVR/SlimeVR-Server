@@ -1,7 +1,7 @@
 use std::{collections::HashMap, sync::Mutex};
 
 use tauri::{
-	image::Image,
+	include_image,
 	menu::{Menu, MenuBuilder, MenuItemBuilder, MenuItemKind},
 	tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
 	AppHandle, Emitter, Manager, Runtime, State,
@@ -107,10 +107,10 @@ pub fn create_tray<R: Runtime>(app: &tauri::AppHandle<R>) -> tauri::Result<()> {
 		.icon_as_template(true)
 		.menu_on_left_click(false)
 		.icon(if cfg!(target_os = "macos") {
-			Image::from_bytes(include_bytes!("../icons/appleTrayIcon.png"))
+			include_image!("icons/appleTrayIcon.png")
 		} else {
-			Image::from_bytes(include_bytes!("../icons/128x128.png"))
-		}?)
+			include_image!("icons/128x128.png")
+		})
 		.on_menu_event(move |app, event| match event.id.as_ref() {
 			"quit" => app.emit("try-close", "tray").unwrap(),
 			"toggle" => {

@@ -28,7 +28,7 @@ shadow-rs = "0.35"
 [dependencies]
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
-tauri = { version = "2.0", features = ["devtools", "tray-icon", "image-png"] }
+tauri = { version = "2.0", features = ["devtools", "tray-icon", "image-png", "rustls-tls"] }
 tauri-runtime = "2.0"
 tauri-plugin-dialog = "2.0"
 tauri-plugin-fs = "2.0"
