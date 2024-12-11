@@ -106,7 +106,7 @@ fn setup_logger(context: &tauri::Context) -> Result<flexi_logger::LoggerHandle> 
 	#[cfg(target_os = "macos")]
 	let path = dirs_next::home_dir().ok_or(Error::UnknownPath).map(|dir| {
 		dir.join("Library/Logs")
-			.join(&tauri_context.config().identifier)
+			.join(&context.config().identifier)
 	});
 
 	#[cfg(not(target_os = "macos"))]
