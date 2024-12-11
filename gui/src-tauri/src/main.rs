@@ -127,7 +127,7 @@ fn setup_logger(context: &tauri::Context) -> Result<flexi_logger::LoggerHandle> 
 		.write_mode(WriteMode::BufferAndFlush)
 		.start()?)
 }
-
+#[cfg(windows)]
 fn setup_webview2() -> Result<()> {
 	use crate::util::webview2_exists;
 	use win32job::{ExtendedLimitInfo, Job};
