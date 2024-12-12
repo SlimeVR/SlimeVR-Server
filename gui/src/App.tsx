@@ -56,6 +56,11 @@ import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
+import { UsageChoose } from './components/onboarding/pages/usage-reason/UsageChoose';
+import { VRUsageChoose } from './components/onboarding/pages/usage-reason/VRUsageChoose';
+import { StandaloneUsageSetup } from './components/onboarding/pages/usage-reason/StandaloneUsageSetup';
+import { HeadTrackingChoose } from './components/onboarding/pages/usage-reason/HeadTrackingChoose';
+import { MocapDataChoose } from './components/onboarding/pages/usage-reason/MocapDataChoose';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -131,6 +136,20 @@ function Layout() {
             <Route
               path="assign-tutorial"
               element={<AssignmentTutorialPage />}
+            />
+            <Route path="usage/choose" element={<UsageChoose />} />
+            <Route path="usage/vr/choose" element={<VRUsageChoose />} />
+            <Route
+              path="usage/vr/standalone"
+              element={<StandaloneUsageSetup />}
+            />
+            <Route
+              path="usage/mocap/head-choose"
+              element={<HeadTrackingChoose />}
+            />
+            <Route
+              path="usage/mocap/data-choose"
+              element={<MocapDataChoose />}
             />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
             <Route path="enter-vr" element={<EnterVRPage />} />
