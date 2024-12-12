@@ -12,6 +12,7 @@ import com.jme3.math.FastMath
 import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
 import dev.slimevr.config.VRCOSCConfig
+import dev.slimevr.protocol.rpc.setup.RPCUtil
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
@@ -36,7 +37,7 @@ class VRCOSCHandler(
 	private val config: VRCOSCConfig,
 	private val computedTrackers: List<Tracker>,
 ) : OSCHandler {
-	private val localIp = InetAddress.getLocalHost().hostAddress
+	private val localIp = RPCUtil.getLocalIp()
 	private val loopbackIp = InetAddress.getLoopbackAddress().hostAddress
 	private val vrsystemTrackersAddresses = arrayOf(
 		"/tracking/vrsystem/head/pose",
@@ -79,7 +80,7 @@ class VRCOSCHandler(
 	override fun refreshSettings(refreshRouterSettings: Boolean) {
 		// Sets which trackers are enabled and force head and hands to false
 		for (i in computedTrackers.indices) {
-			if (computedTrackers[i].trackerPosition !== TrackerPosition.HEAD || computedTrackers[i].trackerPosition !== TrackerPosition.LEFT_HAND || computedTrackers[i].trackerPosition !== TrackerPosition.RIGHT_HAND) {
+			if (computedTrackers[i].trackerPosition != TrackerPosition.HEAD || computedTrackers[i].trackerPosition != TrackerPosition.LEFT_HAND || computedTrackers[i].trackerPosition != TrackerPosition.RIGHT_HAND) {
 				trackersEnabled[i] = config
 					.getOSCTrackerRole(
 						computedTrackers[i].trackerPosition!!.trackerRole!!,
@@ -94,7 +95,11 @@ class VRCOSCHandler(
 		updateOscSender(config.portOut, config.address)
 
 		if (vrcOscQueryHandler == null && config.enabled) {
-			vrcOscQueryHandler = VRCOSCQueryHandler(this)
+			try {
+				vrcOscQueryHandler = VRCOSCQueryHandler(this)
+			} catch (e: Throwable) {
+				LogManager.severe("Unable to initialize OSCQuery: $e", e)
+			}
 		} else if (vrcOscQueryHandler != null && !config.enabled) {
 			vrcOscQueryHandler?.close()
 			vrcOscQueryHandler = null
@@ -194,7 +199,7 @@ class VRCOSCHandler(
 			try {
 				val addr = InetAddress.getByName(ip)
 				oscSender = OSCPortOut(InetSocketAddress(addr, portOut))
-				if (oscPortOut != portOut && oscIp !== addr || !wasConnected) {
+				if (oscPortOut != portOut && oscIp != addr || !wasConnected) {
 					LogManager.info("[VRCOSCHandler] Sending to port $portOut at address $ip")
 				}
 				oscPortOut = portOut
@@ -458,7 +463,7 @@ class VRCOSCHandler(
 						),
 					)
 				}
-				if (computedTrackers[i].trackerPosition === TrackerPosition.HEAD) {
+				if (computedTrackers[i].trackerPosition == TrackerPosition.HEAD) {
 					// Send HMD position
 					val (x, y, z) = computedTrackers[i].position
 					oscArgs.clear()

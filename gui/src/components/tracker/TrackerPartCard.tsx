@@ -86,7 +86,7 @@ export function TrackerPartCard({
         style={{
           boxShadow: `0px 0px ${globalVelocity * 3}px ${
             globalVelocity * 3
-          }px  #BB8AE5`,
+          }px rgb(var(--accent-background-30))`,
         }}
       >
         {roleError && (

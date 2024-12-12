@@ -1,4 +1,4 @@
-import { getCurrent } from '@tauri-apps/api/webviewWindow';
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {
@@ -27,6 +27,9 @@ import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
 import { listen } from '@tauri-apps/api/event';
 import { TrayOrExitModal } from './TrayOrExitModal';
+import { error } from '@/utils/logging';
+import { useDoubleTap } from 'use-double-tap';
+import { isTrayAvailable } from '@/utils/tauri';
 
 export function VersionTag() {
   return (
@@ -57,27 +60,29 @@ export function TopBar({
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const { useConnectedIMUTrackers } = useTrackers();
   const connectedIMUTrackers = useConnectedIMUTrackers();
-  const { config, setConfig } = useConfig();
+  const { config, setConfig, saveConfig } = useConfig();
   const version = useContext(VersionContext);
   const [localIp, setLocalIp] = useState<string | null>(null);
   const [showConnectedTrackersWarning, setConnectedTrackerWarning] =
     useState(false);
+  const [showVersionMobile, setShowVersionMobile] = useState(false);
   const [showTrayOrExitModal, setShowTrayOrExitModal] = useState(false);
   const doesMatchSettings = useMatch({
     path: '/settings/*',
   });
   const closeApp = async () => {
+    await saveConfig();
     await invoke('update_window_state');
-    await getCurrent().close();
+    await getCurrentWebviewWindow().close();
   };
   const tryCloseApp = async (dontTray = false) => {
-    if (isTauri && config?.useTray === null) {
+    if (isTrayAvailable && config?.useTray === null) {
       setShowTrayOrExitModal(true);
       return;
     }
 
     if (config?.useTray && !dontTray) {
-      await getCurrent().hide();
+      await getCurrentWebviewWindow().hide();
       await invoke('update_tray_text');
     } else if (
       config?.connectedTrackersWarning &&
@@ -90,19 +95,26 @@ export function TopBar({
       await closeApp();
     }
   };
+  const showVersionBind = useDoubleTap(() => setShowVersionMobile(true));
+  const unshowVersionBind = useDoubleTap(() => setShowVersionMobile(false));
 
   useEffect(() => {
     const unlisten = listen('try-close', async () => {
-      const window = getCurrent();
+      const window = getCurrentWebviewWindow();
       await window.show();
       await window.setFocus();
-      await invoke('update_tray_text');
+      if (isTrayAvailable) await invoke('update_tray_text');
       await tryCloseApp(true);
     });
     return () => {
       unlisten.then((fn) => fn());
     };
   }, [config?.useTray, config?.connectedTrackersWarning]);
+
+  useEffect(() => {
+    if (config === null || !isTauri) return;
+    getCurrentWebviewWindow().setDecorations(config?.decorations).catch(error);
+  }, [config?.decorations]);
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.ServerInfosRequest, new ServerInfosRequestT());
@@ -121,18 +133,20 @@ export function TopBar({
         <div className="h-[3px]"></div>
         <div data-tauri-drag-region className="flex gap-2 h-[38px] z-50">
           <div
-            className="flex px-2 pb-1 mt-3 justify-around z-50"
+            className="flex px-2 py-2 justify-around z-50"
             data-tauri-drag-region
           >
-            <div className="flex gap-2 mobile:w-5" data-tauri-drag-region>
-              <NavLink
-                to="/"
-                className="flex justify-around flex-col select-all"
-                data-tauri-drag-region
-              >
-                <SlimeVRIcon></SlimeVRIcon>
-              </NavLink>
-              {(isTauri || !isMobile) && (
+            <div className="flex gap-2" data-tauri-drag-region>
+              {!config?.decorations && (
+                <NavLink
+                  to="/"
+                  className="flex justify-around flex-col select-all"
+                  data-tauri-drag-region
+                >
+                  <SlimeVRIcon></SlimeVRIcon>
+                </NavLink>
+              )}
+              {(isTauri || !isMobile) && !config?.decorations && (
                 <div
                   className={classNames('flex justify-around flex-col')}
                   data-tauri-drag-region
@@ -140,7 +154,7 @@ export function TopBar({
                   <Typography>SlimeVR</Typography>
                 </div>
               )}
-              {!isMobile && (
+              {(!(isMobile && !config?.decorations) || showVersionMobile) && (
                 <>
                   <VersionTag></VersionTag>
                   {doesMatchSettings && (
@@ -149,6 +163,7 @@ export function TopBar({
                         'flex justify-around flex-col text-standard-bold text-status-special',
                         'bg-status-special bg-opacity-20 rounded-lg px-3 select-text'
                       )}
+                      {...unshowVersionBind}
                     >
                       {localIp || 'unknown local ip'}
                     </div>
@@ -192,8 +207,11 @@ export function TopBar({
               </>
             )}
 
-            {!isTauri && (
-              <div className="flex flex-row gap-2">
+            {!isTauri && !showVersionMobile && !config?.decorations && (
+              <div
+                className="flex flex-row gap-2"
+                {...(doesMatchSettings ? showVersionBind : {})}
+              >
                 <div
                   className="flex justify-around flex-col xs:hidden"
                   data-tauri-drag-region
@@ -230,17 +248,17 @@ export function TopBar({
               </div>
             )}
 
-            {isTauri && (
+            {isTauri && !config?.decorations && (
               <>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => getCurrent().minimize()}
+                  onClick={() => getCurrentWebviewWindow().minimize()}
                 >
                   <MinimiseIcon></MinimiseIcon>
                 </div>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => getCurrent().toggleMaximize()}
+                  onClick={() => getCurrentWebviewWindow().toggleMaximize()}
                 >
                   <MaximiseIcon></MaximiseIcon>
                 </div>
@@ -268,7 +286,7 @@ export function TopBar({
 
           // Doing this in here just in case config doesn't get updated in time
           if (useTray) {
-            await getCurrent().hide();
+            await getCurrentWebviewWindow().hide();
             await invoke('update_tray_text');
           } else if (
             config?.connectedTrackersWarning &&

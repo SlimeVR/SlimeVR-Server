@@ -1,5 +1,6 @@
 package dev.slimevr.tracking.trackers.udp
 
+import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -95,7 +96,7 @@ data class UDPPacket3Handshake(
 	var boardType: BoardType = BoardType.UNKNOWN,
 	var imuType: IMUType = IMUType.UNKNOWN,
 	var mcuType: MCUType = MCUType.UNKNOWN,
-	var firmwareBuild: Int = 0,
+	var protocolVersion: Int = 0,
 	var firmware: String? = null,
 	var macString: String? = null,
 ) : UDPPacket(3) {
@@ -115,7 +116,7 @@ data class UDPPacket3Handshake(
 			buf.int
 			buf.int // IMU info
 		}
-		if (buf.remaining() > 3) firmwareBuild = buf.int
+		if (buf.remaining() > 3) protocolVersion = buf.int
 		var length = 0
 		if (buf.remaining() > 0) length = buf.get().toInt()
 		// firmware version length is 1 longer than
@@ -223,6 +224,9 @@ data class UDPPacket14Error(var errorNumber: Int = 0) :
 data class UDPPacket15SensorInfo(
 	var sensorStatus: Int = 0,
 	var sensorType: IMUType = IMUType.UNKNOWN,
+	var sensorConfig: SensorConfig? = null,
+	var trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
+	var trackerPosition: TrackerPosition? = null,
 ) : UDPPacket(15),
 	SensorSpecificPacket {
 	override var sensorId = 0
@@ -230,9 +234,13 @@ data class UDPPacket15SensorInfo(
 		sensorId = buf.get().toInt() and 0xFF
 		sensorStatus = buf.get().toInt() and 0xFF
 		if (buf.remaining() > 0) {
-			sensorType =
-				IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
+			sensorType = IMUType.getById(buf.get().toUInt() and 0xFFu) ?: IMUType.UNKNOWN
 		}
+		if (buf.remaining() > 1) {
+			sensorConfig = SensorConfig(buf.getShort().toUShort())
+		}
+		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.get().toInt() and 0xFF)
+		if (buf.remaining() > 0) trackerDataType = TrackerDataType.getById(buf.get().toUInt() and 0xFFu) ?: TrackerDataType.ROTATION
 	}
 
 	companion object {
@@ -347,6 +355,42 @@ data class UDPPacket23RotationAndAcceleration(
 		rotation = Quaternion(w, x, y, z).unit()
 		val scaleA = 1 / (1 shl 7).toFloat() // The same as the HID scale
 		acceleration = Vector3(buf.short * scaleA, buf.short * scaleA, buf.short * scaleA)
+	}
+}
+
+data class UDPPacket24AckConfigChange(
+	override var sensorId: Int = 0,
+	var configType: ConfigTypeId = ConfigTypeId(0u),
+) : UDPPacket(24),
+	SensorSpecificPacket {
+	override fun readData(buf: ByteBuffer) {
+		sensorId = buf.get().toInt() and 0xFF
+		configType = ConfigTypeId(buf.getShort().toUShort())
+	}
+}
+
+data class UDPPacket25SetConfigFlag(
+	override var sensorId: Int = 255,
+	var configType: ConfigTypeId,
+	var state: Boolean,
+) : UDPPacket(25),
+	SensorSpecificPacket {
+	override fun writeData(buf: ByteBuffer) {
+		buf.put(sensorId.toByte())
+		buf.putShort(configType.v.toShort())
+		buf.put(if (state) 1 else 0)
+	}
+}
+
+data class UDPPacket26FlexData(
+	var flexData: Float = 0f,
+) : UDPPacket(26),
+	SensorSpecificPacket {
+
+	override var sensorId = 0
+	override fun readData(buf: ByteBuffer) {
+		sensorId = buf.get().toInt() and 0xFF
+		flexData = UDPUtils.getSafeBufferFloat(buf)
 	}
 }
 

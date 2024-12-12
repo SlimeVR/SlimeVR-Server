@@ -123,6 +123,7 @@ public class RPCSettingsBuilder {
 			.createDriftCompensationSettings(
 				fbb,
 				driftCompensationConfig.getEnabled(),
+				driftCompensationConfig.getPrediction(),
 				driftCompensationConfig.getAmount(),
 				driftCompensationConfig.getMaxResets()
 			);
@@ -190,7 +191,9 @@ public class RPCSettingsBuilder {
 				humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP),
 				humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT),
 				humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION),
-				false
+				false,
+				true,
+				true
 			);
 		int ratiosOffset = ModelRatios
 			.createModelRatios(
@@ -400,7 +403,8 @@ public class RPCSettingsBuilder {
 					.createArmsResetModeSettings(
 						fbb,
 						server.configManager.getVrConfig().getResetsConfig()
-					)
+					),
+				0
 			);
 	}
 }

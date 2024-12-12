@@ -28,6 +28,8 @@
 /node_modules
 .husky
 
+# kotlin stuff
+/.kotlin
 
 # ignore gradle build folder
 build/
@@ -41,3 +43,6 @@ build/
 
 # Ignore Android local properties
 local.properties
+
+# Ignore temporary config
+vrconfig.yml.tmp

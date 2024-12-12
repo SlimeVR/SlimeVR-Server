@@ -33,6 +33,9 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 					messageHeader,
 				)
 			}
+		rpcHandler.registerPacketListener(RpcMessage.SettingsResetRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader? ->
+			this.onSettingsResetRequest(conn, messageHeader)
+		}
 	}
 
 	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
@@ -84,6 +87,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				.vrConfig
 				.driftCompensation
 			driftCompensationConfig.enabled = req.driftCompensation().enabled()
+			driftCompensationConfig.prediction = req.driftCompensation().prediction()
 			driftCompensationConfig.amount = req.driftCompensation().amount()
 			driftCompensationConfig.maxResets = req.driftCompensation().maxResets()
 			driftCompensationConfig.updateTrackersDriftCompensation()
@@ -149,7 +153,9 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				vmcConfig.portOut = osc.portOut()
 				vmcConfig.address = osc.address()
 			}
-			if (req.vmcOsc().vrmJson() != null) vmcConfig.vrmJson = req.vmcOsc().vrmJson()
+			if (req.vmcOsc().vrmJson() != null) {
+				vmcConfig.vrmJson = req.vmcOsc().vrmJson().ifEmpty { null }
+			}
 			vmcConfig.anchorHip = req.vmcOsc().anchorHip()
 			vmcConfig.mirrorTracking = req.vmcOsc().mirrorTracking()
 
@@ -344,6 +350,10 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 		api.server.configManager.saveConfig()
 	}
 
+	fun onSettingsResetRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
+		api.server.configManager.resetConfig()
+	}
+
 	companion object {
 		fun sendSteamVRUpdatedSettings(api: ProtocolAPI, rpcHandler: RPCHandler) {
 			val fbb = FlatBufferBuilder(32)
@@ -353,7 +363,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val settings = SettingsResponse
 				.createSettingsResponse(
 					fbb,
-					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)

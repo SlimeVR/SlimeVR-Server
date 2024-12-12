@@ -11,6 +11,7 @@ use std::time::Instant;
 use clap::Parser;
 use color_eyre::Result;
 use state::WindowState;
+use tauri::Emitter;
 use tauri::{Manager, RunEvent, WindowEvent};
 use tauri_plugin_shell::process::CommandChild;
 
@@ -89,8 +90,12 @@ fn main() -> Result<()> {
 			.log_to_file(
 				FileSpec::default().directory(path.expect("We need a log dir")),
 			)
-			.format_for_files(util::logger_format)
-			.format_for_stderr(util::logger_format)
+			.format_for_files(|w, now, record| {
+				util::logger_format(w, now, record, false)
+			})
+			.format_for_stderr(|w, now, record| {
+				util::logger_format(w, now, record, true)
+			})
 			.rotate(
 				Criterion::Age(Age::Day),
 				Naming::Timestamps,
@@ -179,6 +184,7 @@ fn main() -> Result<()> {
 			warning,
 			tray::update_translations,
 			tray::update_tray_text,
+			tray::is_tray_available,
 			presence::discord_client_exists,
 			presence::update_presence,
 			presence::clear_presence,
@@ -208,11 +214,12 @@ fn main() -> Result<()> {
 				window_state.update_window(&window.as_ref().window(), false)?;
 			}
 
-			#[cfg(desktop)]
-			{
+			if cfg!(desktop) {
 				let handle = app.handle();
 				tray::create_tray(handle)?;
 				presence::create_presence(handle)?;
+			} else {
+				app.manage(tray::TrayAvailable(false));
 			}
 
 			app.manage(Mutex::new(window_state));
@@ -226,7 +233,7 @@ fn main() -> Result<()> {
 						.shell()
 						.command(java_bin.to_str().unwrap())
 						.current_dir(p)
-						.args(["-Xmx512M", "-jar", "slimevr.jar", "run"])
+						.args(["-Xmx128M", "-jar", "slimevr.jar", "run"])
 						.spawn()
 						.expect("Unable to start the server jar");
 

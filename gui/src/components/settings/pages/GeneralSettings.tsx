@@ -31,6 +31,8 @@ import {
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
 import { HandsWarningModal } from '@/components/settings/HandsWarningModal';
+import { MagnetometerToggleSetting } from './MagnetometerToggleSetting';
+import { DriftCompensationModal } from '@/components/settings/DriftCompensationModal';
 
 interface SettingsForm {
   trackers: {
@@ -52,6 +54,7 @@ interface SettingsForm {
   };
   driftCompensation: {
     enabled: boolean;
+    prediction: boolean;
     amount: number;
     maxResets: number;
   };
@@ -138,6 +141,7 @@ const defaultValues: SettingsForm = {
   filtering: { amount: 0.1, type: FilteringType.NONE },
   driftCompensation: {
     enabled: false,
+    prediction: false,
     amount: 0.1,
     maxResets: 1,
   },
@@ -282,6 +286,7 @@ export function GeneralSettings() {
 
     const driftCompensation = new DriftCompensationSettingsT();
     driftCompensation.enabled = values.driftCompensation.enabled;
+    driftCompensation.prediction = values.driftCompensation.prediction;
     driftCompensation.amount = values.driftCompensation.amount;
     driftCompensation.maxResets = values.driftCompensation.maxResets;
     settings.driftCompensation = driftCompensation;
@@ -434,6 +439,8 @@ export function GeneralSettings() {
   //     elem.scrollIntoView({ behavior: 'smooth' });
   //   }
   // }, [state]);
+
+  const [showDriftCompWarning, setShowDriftCompWarning] = useState(false);
 
   return (
     <SettingsPageLayout>
@@ -697,7 +704,51 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-tracker_mechanics-drift_compensation-enabled-label'
               )}
+              onClick={() => {
+                if (getValues('driftCompensation.enabled')) {
+                  return;
+                }
+
+                setShowDriftCompWarning(true);
+              }}
             />
+            <div className="flex flex-col pt-2 pb-4"></div>
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-tracker_mechanics-drift_compensation-prediction'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-2 pb-4">
+              {l10n
+                .getString(
+                  'settings-general-tracker_mechanics-drift_compensation-prediction-description'
+                )
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="driftCompensation.prediction"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-drift_compensation-prediction-label'
+              )}
+            />
+            <DriftCompensationModal
+              accept={() => {
+                setShowDriftCompWarning(false);
+              }}
+              onClose={() => {
+                setShowDriftCompWarning(false);
+                setValue('driftCompensation.enabled', false);
+              }}
+              isOpen={showDriftCompWarning}
+            ></DriftCompensationModal>
             <div className="flex gap-5 pt-5 md:flex-row flex-col">
               <NumberSelector
                 control={control}
@@ -757,6 +808,10 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
               )}
+            />
+            <MagnetometerToggleSetting
+              settingType="general"
+              id="mechanics-magnetometer"
             />
           </>
         </SettingsPagePaneLayout>
