@@ -1,5 +1,5 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
-use std::env::var;
+use std::env;
 use std::panic;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
@@ -127,6 +127,7 @@ fn setup_logger(context: &tauri::Context) -> Result<flexi_logger::LoggerHandle> 
 		.write_mode(WriteMode::BufferAndFlush)
 		.start()?)
 }
+
 #[cfg(windows)]
 fn setup_webview2() -> Result<()> {
 	use crate::util::webview2_exists;
@@ -158,12 +159,12 @@ fn setup_webview2() -> Result<()> {
 		}
 		return Ok(());
 	}
-	return Ok(());
+	Ok(())
 }
 
 fn check_environment_variables() {
-	let java_options = var("_JAVA_OPTIONS").ok();
-	let java_tool_options = var("JAVA_TOOL_OPTIONS").ok();
+	let java_options = env::var("_JAVA_OPTIONS").ok();
+	let java_tool_options = env::var("JAVA_TOOL_OPTIONS").ok();
 
 	if java_options.is_some() || java_tool_options.is_some() {
 		let mut env_warn_msg = String::new();
@@ -208,7 +209,7 @@ fn execute_server(
 		};
 
 		log::info!("Using Java binary: {:?}", java_bin);
-		return Ok(Some((java_bin, p)));
+		Ok(Some((java_bin, p)))
 	} else {
 		log::warn!("No server found. We will not start the server.");
 		Ok(None)
