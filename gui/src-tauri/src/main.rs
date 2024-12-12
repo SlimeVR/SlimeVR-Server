@@ -90,8 +90,12 @@ fn main() -> Result<()> {
 			.log_to_file(
 				FileSpec::default().directory(path.expect("We need a log dir")),
 			)
-			.format_for_files(util::logger_format)
-			.format_for_stderr(util::logger_format)
+			.format_for_files(|w, now, record| {
+				util::logger_format(w, now, record, false)
+			})
+			.format_for_stderr(|w, now, record| {
+				util::logger_format(w, now, record, true)
+			})
 			.rotate(
 				Criterion::Age(Age::Day),
 				Naming::Timestamps,
