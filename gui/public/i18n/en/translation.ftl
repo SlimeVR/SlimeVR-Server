@@ -544,9 +544,12 @@ settings-general-interface-discord_presence-message = { $amount ->
     [one] Using 1 tracker
     *[other] Using { $amount } trackers
 }
-settings-interface-behavior-error_tracking = Error tracking via Sentry
-settings-interface-behavior-error_tracking-description = we need to write comprehensive and easy to read text for this!
-settings-interface-behavior-error_tracking-label = Error tracking
+settings-interface-behavior-error_tracking = Error collection via Sentry.io
+settings-interface-behavior-error_tracking-description =
+    We send errors, load times and operating system information to be able to fix issues found on SlimeVR, we collect these via Sentry.io.
+
+    We don't collect any of your personal information (not even your IP address), but we do care that you want to give your consent for it.
+settings-interface-behavior-error_tracking-label = Send errors to developers
 
 ## Serial settings
 settings-serial = Serial Console
@@ -1069,3 +1072,11 @@ unknown_device-modal-description = There is a new tracker with MAC address <b>{$
     Do you want to connect it to SlimeVR?
 unknown_device-modal-confirm = Sure!
 unknown_device-modal-forget = Ignore it
+
+## Error collection consent modal
+error_collection_modal-title = Can we collect errors?
+error_collection_modal-description = { settings-interface-behavior-error_tracking-description }
+
+    You can later change this on the interface section of settings
+error_collection_modal-confirm = I agree
+error_collection_modal-cancel = I don't want to

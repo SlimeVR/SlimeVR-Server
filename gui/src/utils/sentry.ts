@@ -21,7 +21,7 @@ export function getSentryOrCompute(enabled = false) {
     dsn: 'https://e9ef9f8541352c50cff8600ba520d348@o4507810483535872.ingest.de.sentry.io/4507810579284048',
     integrations: [
       Sentry.reactRouterV6BrowserTracingIntegration({
-        useEffect: useEffect,
+        useEffect,
         useLocation,
         useNavigationType,
         createRoutesFromChildren,
@@ -29,8 +29,8 @@ export function getSentryOrCompute(enabled = false) {
       }),
       Sentry.browserProfilingIntegration(),
       Sentry.replayIntegration({
-        maskAllText: false,
-        maskAllInputs: false,
+        maskAllText: true,
+        maskAllInputs: true,
         blockAllMedia: false,
       }),
     ],

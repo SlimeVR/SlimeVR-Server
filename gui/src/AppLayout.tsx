@@ -36,7 +36,7 @@ export function AppLayout() {
 
   useEffect(() => {
     if (config?.errorTracking !== undefined) {
-      getSentryOrCompute(config.errorTracking);
+      getSentryOrCompute(config.errorTracking ?? false);
     }
   }, [config?.errorTracking]);
 

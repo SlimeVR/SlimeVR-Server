@@ -30,6 +30,7 @@ import { TrayOrExitModal } from './TrayOrExitModal';
 import { error } from '@/utils/logging';
 import { useDoubleTap } from 'use-double-tap';
 import { isTrayAvailable } from '@/utils/tauri';
+import { ErrorConsentModal } from './ErrorConsentModal';
 
 export function VersionTag() {
   return (
@@ -304,6 +305,11 @@ export function TopBar({
         accept={() => closeApp()}
         cancel={() => setConnectedTrackerWarning(false)}
       ></TrackersStillOnModal>
+      <ErrorConsentModal
+        isOpen={config?.errorTracking === null}
+        accept={() => setConfig({ errorTracking: true })}
+        cancel={() => setConfig({ errorTracking: false })}
+      />
     </>
   );
 }

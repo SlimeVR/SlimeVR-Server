@@ -70,7 +70,7 @@ export function InterfaceSettings() {
         useTray: config?.useTray ?? defaultConfig.useTray ?? false,
         discordPresence:
           config?.discordPresence ?? defaultConfig.discordPresence,
-        errorTracking: config?.errorTracking ?? defaultConfig.errorTracking,
+        errorTracking: config?.errorTracking ?? false,
       },
     },
   });
@@ -80,7 +80,6 @@ export function InterfaceSettings() {
       watchNewDevices: values.notifications.watchNewDevices,
       feedbackSound: values.notifications.feedbackSound,
       feedbackSoundVolume: values.notifications.feedbackSoundVolume,
-      connectedTrackersWarning: values.notifications.connectedTrackersWarning,
       connectedTrackersWarning: values.notifications.connectedTrackersWarning,
 
       theme: values.appearance.theme,
@@ -292,7 +291,7 @@ export function InterfaceSettings() {
               {l10n.getString('settings-interface-behavior-error_tracking')}
             </Typography>
             <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
+              <Typography color="secondary" whitespace="whitespace-pre-line">
                 {l10n.getString(
                   'settings-interface-behavior-error_tracking-description'
                 )}
@@ -331,7 +330,7 @@ export function InterfaceSettings() {
               </Typography>
             </div>
             <div className="grid sm:grid-cols-2 pb-4">
-            <CheckBox
+              <CheckBox
                 variant="toggle"
                 control={control}
                 outlined
