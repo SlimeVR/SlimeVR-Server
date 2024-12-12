@@ -156,7 +156,6 @@ fn setup_webview2() -> Result<()> {
 		if confirm == MessageDialogResult::Ok {
 			open::that("https://docs.slimevr.dev/server-setup/installing-and-connecting.html#install-the-latest-slimevr-installer").unwrap();
 		}
-		return Ok(());
 	}
 	Ok(())
 }
@@ -174,6 +173,7 @@ fn check_environment_variables() {
 			Some(e)
 		})
 		.join(", ");
+
 	if !checked_envs.is_empty() {
 		rfd::MessageDialog::new()
 			.set_title("SlimeVR")
@@ -336,7 +336,6 @@ fn tauri_build_result(
 	exit_flag: Arc<AtomicBool>,
 	backend: Arc<Mutex<Option<CommandChild>>>,
 ) {
-	let backend_termination = backend.clone();
 	match build_result {
 		Ok(app) => {
 			app.run(move |app_handle, event| match event {
@@ -350,7 +349,7 @@ fn tauri_build_result(
 						Err(e) => log::error!("failed to save window state: {}", e),
 					}
 
-					let mut lock = backend_termination.lock().unwrap();
+					let mut lock = backend.lock().unwrap();
 					let Some(ref mut child) = *lock else { return };
 					let write_result = child.write(b"exit\n");
 					match write_result {
