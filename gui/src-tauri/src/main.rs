@@ -186,7 +186,7 @@ fn check_environment_variables() {
 fn execute_server(
 	cli: Cli,
 ) -> Result<Option<(std::ffi::OsString, std::path::PathBuf)>> {
-	use shadow_rs::formatcp;
+	use const_format::formatcp;
 	if let Some(p) = get_launch_path(cli) {
 		log::info!("Server found on path: {}", p.to_str().unwrap());
 
@@ -197,7 +197,7 @@ fn execute_server(
 			.then(|| jre.into_os_string())
 			.or_else(|| valid_java_paths().first().map(|x| x.0.to_owned()));
 		let Some(java_bin) = java_bin else {
-			show_error(&formatcp!(
+			show_error(formatcp!(
                 "Couldn't find a compatible Java version, please download Java {} or higher",
                 MINIMUM_JAVA_VERSION
             ));
