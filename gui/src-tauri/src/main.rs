@@ -177,7 +177,7 @@ fn check_environment_variables() {
 	if !checked_envs.is_empty() {
 		rfd::MessageDialog::new()
 			.set_title("SlimeVR")
-			.set_description(&format!("You have environment variables {} set, which may cause the SlimeVR Server to fail to launch properly.", checked_envs))
+			.set_description(format!("You have environment variables {} set, which may cause the SlimeVR Server to fail to launch properly.", checked_envs))
 			.set_level(rfd::MessageLevel::Warning)
 			.show();
 	}
