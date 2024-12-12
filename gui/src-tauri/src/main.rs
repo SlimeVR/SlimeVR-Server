@@ -104,10 +104,9 @@ fn setup_logger(context: &tauri::Context) -> Result<flexi_logger::LoggerHandle> 
 
 	// Based on https://docs.rs/tauri/2.0.0-alpha.10/src/tauri/path/desktop.rs.html#238-256
 	#[cfg(target_os = "macos")]
-	let path = dirs_next::home_dir().ok_or(Error::UnknownPath).map(|dir| {
-		dir.join("Library/Logs")
-			.join(&context.config().identifier)
-	});
+	let path = dirs_next::home_dir()
+		.ok_or(Error::UnknownPath)
+		.map(|dir| dir.join("Library/Logs").join(&context.config().identifier));
 
 	#[cfg(not(target_os = "macos"))]
 	let path = dirs_next::data_dir()
@@ -163,28 +162,24 @@ fn setup_webview2() -> Result<()> {
 }
 
 fn check_environment_variables() {
-	let java_options = env::var("_JAVA_OPTIONS").ok();
-	let java_tool_options = env::var("JAVA_TOOL_OPTIONS").ok();
-
-	if java_options.is_some() || java_tool_options.is_some() {
-		let mut env_warn_msg = String::new();
-
-		if let Some(env) = java_options {
-			string_append_list_style(&mut env_warn_msg, "_JAVA_OPTIONS");
-			log::warn!("_JAVA_OPTIONS is set: {}", env);
-		}
-
-		if let Some(env) = java_tool_options {
-			string_append_list_style(&mut env_warn_msg, "JAVA_TOOL_OPTIONS");
-			log::warn!("JAVA_TOOL_OPTIONS is set: {}", env);
-		}
-
-		// Display the warning dialog
+	use itertools::Itertools;
+	const ENVS_TO_CHECK: &[&str] = &["_JAVA_OPTIONS", "JAVA_TOOL_OPTIONS"];
+	let checked_envs = ENVS_TO_CHECK
+		.into_iter()
+		.filter_map(|e| {
+			let Ok(data) = env::var(e) else {
+				return None;
+			};
+			log::warn!("{e} is set to: {data}");
+			Some(e)
+		})
+		.join(", ");
+	if !checked_envs.is_empty() {
 		rfd::MessageDialog::new()
-            .set_title("SlimeVR")
-            .set_description(&format!("You have environment variables {} set, which may cause the SlimeVR Server to fail to launch properly.", env_warn_msg))
-            .set_level(rfd::MessageLevel::Warning)
-            .show();
+			.set_title("SlimeVR")
+			.set_description(&format!("You have environment variables {} set, which may cause the SlimeVR Server to fail to launch properly.", checked_envs))
+			.set_level(rfd::MessageLevel::Warning)
+			.show();
 	}
 }
 
@@ -399,12 +394,4 @@ fn tauri_build_result(
 			show_error(&error.to_string());
 		}
 	}
-}
-
-// Allows text to be added in a list style format.
-fn string_append_list_style(string: &mut String, append: &str) {
-	if !string.is_empty() {
-		string.push_str(", ");
-	}
-	string.push_str(append);
 }
