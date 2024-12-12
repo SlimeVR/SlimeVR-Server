@@ -51,7 +51,7 @@ export function Home() {
       <div className="h-full overflow-y-auto">
         <div
           className={classNames(
-            'px-2 pt-2 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1',
+            'px-3 pt-3 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1',
             filteredStatuses.filter(([, status]) => status.prioritized)
               .length === 0 && 'hidden'
           )}
@@ -70,7 +70,7 @@ export function Home() {
               </Localized>
             ))}
         </div>
-        <div className="overflow-y-auto flex flex-col gap-2">
+        <div className="overflow-y-auto flex flex-col gap-3">
           {trackers.length === 0 && (
             <div className="flex px-5 pt-5 justify-center">
               <Typography variant="standard">
@@ -80,7 +80,7 @@ export function Home() {
           )}
 
           {!config?.debug && trackers.length > 0 && (
-            <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-3 px-2 my-2">
+            <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-5 my-5">
               {trackers.map(({ tracker, device }, index) => (
                 <TrackerCard
                   key={index}
@@ -88,6 +88,7 @@ export function Home() {
                   device={device}
                   onClick={() => sendToSettings(tracker)}
                   smol
+                  showUpdates
                   interactable
                   warning={Object.values(statuses).some((status) =>
                     trackerStatusRelated(tracker, status)
