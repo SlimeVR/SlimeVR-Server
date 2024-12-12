@@ -83,8 +83,8 @@ export function MocapDataChoose() {
 
   return (
     <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
-      <div className="flex flex-col w-full overflow-y-auto px-4 xs:items-center">
-        <div className="flex mobile:flex-col xs:gap-8 mobile:gap-4 mobile:pb-4 w-full justify-center">
+      <div className="flex flex-col w-full overflow-y-auto px-4 py-4 xs:items-center">
+        <div className="flex mobile:flex-col xs:gap-8 mobile:gap-4 mobile:pb-4 w-full min-h-0 justify-center">
           <div className="flex flex-col xs:max-w-sm gap-3 justify-center">
             <Typography variant="main-title">
               {l10n.getString('onboarding-usage-mocap-data_choose')}
