@@ -1,5 +1,7 @@
 package io.eiren.util.logging;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -16,12 +18,32 @@ import java.util.logging.StreamHandler;
 
 public class FileLogHandler extends StreamHandler {
 
+	protected class DatedLogFile implements Comparable<DatedLogFile> {
+		public final File file;
+		public final LocalDateTime dateTime;
+		public final int count;
+
+		protected DatedLogFile(File file, LocalDateTime dateTime, int count) {
+			this.file = file;
+			this.dateTime = dateTime;
+			this.count = count;
+		}
+
+		@Override
+		public int compareTo(@NotNull DatedLogFile o) {
+			int dtCompare = dateTime.compareTo(o.dateTime);
+			return dtCompare != 0 ? dtCompare : Integer.compare(count, o.count);
+		}
+	}
+
 	private final String logSuffix = ".log";
 
-	private final ArrayList<File> logFiles = new ArrayList<>();
+	private final ArrayList<DatedLogFile> logFiles;
 
 	private final Path path;
 	private final String logTag;
+	private final DateTimeFormatter dateFormat;
+	private final LocalDateTime dateTime;
 	private final String date;
 	private final int limit;
 	private final int maxCount;
@@ -30,27 +52,21 @@ public class FileLogHandler extends StreamHandler {
 	private int fileCount = 0;
 
 	public FileLogHandler(
-		String path,
+		Path path,
 		String logTag,
 		DateTimeFormatter dateFormat,
 		int limit,
 		int count
 	) {
-		this.path = Path.of(path);
+		this.path = path;
 		this.logTag = logTag;
-		this.date = LocalDateTime.now().format(dateFormat);
+		this.dateFormat = dateFormat;
+		this.dateTime = LocalDateTime.now();
+		this.date = dateTime.format(dateFormat);
 		this.limit = limit;
 		this.maxCount = count;
 
-		File[] pathFiles = this.path.toFile().listFiles();
-		if (pathFiles != null) {
-			for (File file : pathFiles) {
-				String name = file.getName();
-				if (name.startsWith(logTag) && name.endsWith(logSuffix)) {
-					logFiles.add(file);
-				}
-			}
-		}
+		logFiles = findLogs(path);
 
 		newFile();
 	}
@@ -66,20 +82,64 @@ public class FileLogHandler extends StreamHandler {
 		}
 	}
 
-	private synchronized void deleteOldestFile() {
-		long oldestTime = Long.MAX_VALUE;
-		File oldestFile = null;
-		for (File file : logFiles) {
-			long lastModified = file.lastModified();
-			if (lastModified < oldestTime) {
-				oldestTime = lastModified;
-				oldestFile = file;
+	private DatedLogFile parseFileName(File file) {
+		String name = file.getName();
+
+		// Log name should have at least two '_', one integer, and at least one
+		// char for the datetime (4 chars)
+		if (
+			!name.startsWith(logTag)
+				|| !name.endsWith(logSuffix)
+				|| name.length() < (logTag.length() + logSuffix.length() + 4)
+		) {
+			// Ignore non-matching files
+			return null;
+		}
+
+		int dateEnd = name.lastIndexOf('_');
+		if (dateEnd < 0) {
+			// Ignore non-matching files
+			return null;
+		}
+
+		// Move past the tag, then between the two '_'
+		CharSequence dateTimeStr = name.substring(logTag.length() + 1, dateEnd);
+		LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, dateFormat);
+
+		int logNum = Integer.parseInt(name, dateEnd + 1, name.length() - logSuffix.length(), 10);
+
+		return new DatedLogFile(file, dateTime, logNum);
+	}
+
+	private ArrayList<DatedLogFile> findLogs(Path path) {
+		ArrayList<DatedLogFile> logFiles = new ArrayList<>();
+
+		File[] files = path.toFile().listFiles();
+		if (files == null)
+			return logFiles;
+
+		for (File log : files) {
+			DatedLogFile parsedFile = parseFileName(log);
+			if (parsedFile != null) {
+				logFiles.add(parsedFile);
 			}
 		}
 
-		if (oldestFile != null) {
-			logFiles.remove(oldestFile);
-			deleteFile(oldestFile);
+		return logFiles;
+	}
+
+	private synchronized void deleteOldestFile() {
+		DatedLogFile oldest = null;
+
+		for (DatedLogFile log : logFiles) {
+			if (oldest == null || oldest.compareTo(log) < 0) {
+				oldest = log;
+			}
+		}
+
+		if (oldest != null) {
+			logFiles.remove(oldest);
+			deleteFile(oldest.file);
 		}
 	}
 
@@ -92,12 +152,13 @@ public class FileLogHandler extends StreamHandler {
 		try {
 			Path logPath = path.resolve(logTag + "_" + date + "_" + fileCount + logSuffix);
 			File newFile = logPath.toFile();
+
 			curStream = new DataOutputStream(
 				new BufferedOutputStream(new FileOutputStream(newFile))
 			);
 			setOutputStream(curStream);
 
-			logFiles.add(newFile);
+			logFiles.add(new DatedLogFile(newFile, dateTime, fileCount));
 			fileCount += 1;
 		} catch (FileNotFoundException e) {
 			reportError(null, e, ErrorManager.OPEN_FAILURE);

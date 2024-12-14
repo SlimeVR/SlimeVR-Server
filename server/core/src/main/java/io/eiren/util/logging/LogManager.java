@@ -30,7 +30,7 @@ public class LogManager {
 				mainLogDir.mkdirs();
 
 			FileLogHandler fileHandler = new FileLogHandler(
-				mainLogDir.getPath(),
+				mainLogDir.toPath(),
 				"slimevr-server",
 				DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"),
 				25 * 1000000,
