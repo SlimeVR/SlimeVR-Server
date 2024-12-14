@@ -3,7 +3,6 @@ package io.eiren.util.logging;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.ConsoleHandler;
@@ -30,7 +29,6 @@ public class LogManager {
 			if (!mainLogDir.exists())
 				mainLogDir.mkdirs();
 
-			String lastLogPattern = Paths.get(mainLogDir.getPath(), "log_last_%g.log").toString();
 			FileLogHandler fileHandler = new FileLogHandler(
 				mainLogDir.getPath(),
 				"slimevr-server",

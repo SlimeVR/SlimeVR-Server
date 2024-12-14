@@ -55,6 +55,17 @@ public class FileLogHandler extends StreamHandler {
 		newFile();
 	}
 
+	private synchronized void deleteFile(File file) {
+		if (!file.delete()) {
+			file.deleteOnExit();
+			reportError(
+				"Failed to delete file, deleting on exit.",
+				null,
+				ErrorManager.GENERIC_FAILURE
+			);
+		}
+	}
+
 	private synchronized void deleteOldestFile() {
 		long oldestTime = Long.MAX_VALUE;
 		File oldestFile = null;
@@ -68,9 +79,7 @@ public class FileLogHandler extends StreamHandler {
 
 		if (oldestFile != null) {
 			logFiles.remove(oldestFile);
-			if (!oldestFile.delete()) {
-				oldestFile.deleteOnExit();
-			}
+			deleteFile(oldestFile);
 		}
 	}
 
@@ -102,6 +111,7 @@ public class FileLogHandler extends StreamHandler {
 		}
 
 		super.publish(record);
+		flush();
 
 		if (limit > 0 && curStream.size() >= limit) {
 			newFile();
