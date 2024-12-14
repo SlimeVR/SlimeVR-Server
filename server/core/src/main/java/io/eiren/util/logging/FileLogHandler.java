@@ -47,9 +47,11 @@ public class FileLogHandler extends StreamHandler {
 	private final String date;
 	private final int limit;
 	private final int maxCount;
+	private final long collectiveLimit;
 
 	private DataOutputStream curStream;
 	private int fileCount = 0;
+	private long collectiveSize = 0;
 
 	public FileLogHandler(
 		@NotNull Path path,
@@ -58,8 +60,17 @@ public class FileLogHandler extends StreamHandler {
 		int limit,
 		int count
 	) {
-		assert (count > 0);
+		this(path, logTag, dateFormat, limit, count, -1);
+	}
 
+	public FileLogHandler(
+		@NotNull Path path,
+		@NotNull String logTag,
+		@NotNull DateTimeFormatter dateFormat,
+		int limit,
+		int count,
+		long collectiveLimit
+	) {
 		this.path = path;
 		this.logTag = logTag;
 
@@ -69,9 +80,14 @@ public class FileLogHandler extends StreamHandler {
 
 		this.limit = limit;
 		this.maxCount = count;
+		this.collectiveLimit = collectiveLimit;
 
 		// Find old logs to manage
 		logFiles = findLogs(path);
+		if (collectiveLimit > 0) {
+			collectiveSize = sumFileSizes(logFiles);
+		}
+
 		// Create new log and delete over the count
 		newFile();
 	}
@@ -130,6 +146,14 @@ public class FileLogHandler extends StreamHandler {
 		return logFiles;
 	}
 
+	private long sumFileSizes(ArrayList<DatedLogFile> logFiles) {
+		long size = 0;
+		for (DatedLogFile log : logFiles) {
+			size += log.file.length();
+		}
+		return size;
+	}
+
 	private void deleteFile(File file) {
 		if (!file.delete()) {
 			file.deleteOnExit();
@@ -141,7 +165,7 @@ public class FileLogHandler extends StreamHandler {
 		}
 	}
 
-	private void deleteEarliestFile(ArrayList<DatedLogFile> logFiles) {
+	private DatedLogFile getEarliestFile(ArrayList<DatedLogFile> logFiles) {
 		DatedLogFile earliest = null;
 
 		for (DatedLogFile log : logFiles) {
@@ -150,16 +174,43 @@ public class FileLogHandler extends StreamHandler {
 			}
 		}
 
+		return earliest;
+	}
+
+	private synchronized void deleteEarliestFile() {
+		DatedLogFile earliest = getEarliestFile(logFiles);
 		if (earliest != null) {
+			// If we have a collective limit, update the current size and clamp
+			if (collectiveLimit > 0) {
+				collectiveSize -= earliest.file.length();
+				if (collectiveSize < 0)
+					collectiveSize = 0;
+			}
+
 			logFiles.remove(earliest);
 			deleteFile(earliest.file);
 		}
 	}
 
 	private synchronized void newFile() {
-		// Delete files over the count
-		while (logFiles.size() >= maxCount) {
-			deleteEarliestFile(logFiles);
+		// Clear the last log file
+		if (curStream != null) {
+			collectiveSize += curStream.size();
+			close();
+		}
+
+		if (maxCount > 0) {
+			// Delete files over the count
+			while (logFiles.size() >= maxCount) {
+				deleteEarliestFile();
+			}
+		}
+
+		if (collectiveLimit > 0) {
+			// Delete files over the collective size limit
+			while (!logFiles.isEmpty() && collectiveSize >= collectiveLimit) {
+				deleteEarliestFile();
+			}
 		}
 
 		try {
@@ -170,7 +221,7 @@ public class FileLogHandler extends StreamHandler {
 			curStream = new DataOutputStream(
 				new BufferedOutputStream(new FileOutputStream(newFile))
 			);
-			// Closes the last stream automatically
+			// Closes the last stream automatically if not already done
 			setOutputStream(curStream);
 
 			// Add log to the tracking list to be deleted if needed
@@ -189,6 +240,13 @@ public class FileLogHandler extends StreamHandler {
 
 		super.publish(record);
 		flush();
+
+		if (collectiveLimit > 0) {
+			// Delete files over the collective size limit
+			while (!logFiles.isEmpty() && collectiveSize + curStream.size() >= collectiveLimit) {
+				deleteEarliestFile();
+			}
+		}
 
 		// If written above the log limit, make a new file
 		if (limit > 0 && curStream.size() >= limit) {
