@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,9 +31,15 @@ public class LogManager {
 				mainLogDir.mkdirs();
 
 			String lastLogPattern = Paths.get(mainLogDir.getPath(), "log_last_%g.log").toString();
-			FileHandler filehandler = new FileHandler(lastLogPattern, 25 * 1000000, 2);
-			filehandler.setFormatter(loc);
-			global.addHandler(filehandler);
+			FileLogHandler fileHandler = new FileLogHandler(
+				mainLogDir.getPath(),
+				"slimevr-server",
+				DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"),
+				25 * 1000000,
+				2
+			);
+			fileHandler.setFormatter(loc);
+			global.addHandler(fileHandler);
 		}
 	}
 
