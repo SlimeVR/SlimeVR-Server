@@ -36,6 +36,7 @@ public class FileLogHandler extends StreamHandler {
 		}
 	}
 
+	private final char sectionSeparator = '_';
 	private final String logSuffix = ".log";
 
 	private final ArrayList<DatedLogFile> logFiles;
@@ -95,8 +96,8 @@ public class FileLogHandler extends StreamHandler {
 	private DatedLogFile parseFileName(File file) {
 		String name = file.getName();
 
-		// Log name should have at least two '_', one integer, and at least one
-		// char for the datetime (4 chars)
+		// Log name should have at least two separators, one integer, and at
+		// least one char for the datetime (4 chars)
 		if (
 			!name.startsWith(logTag)
 				|| !name.endsWith(logSuffix)
@@ -106,18 +107,18 @@ public class FileLogHandler extends StreamHandler {
 			return null;
 		}
 
-		int dateEnd = name.lastIndexOf('_');
+		int dateEnd = name.lastIndexOf(sectionSeparator);
 		if (dateEnd < 0) {
 			// Ignore non-matching files
 			return null;
 		}
 
 		try {
-			// Move past the tag, then between the two '_'
+			// Move past the tag, then between the two separators
 			String dateTimeStr = name.substring(logTag.length() + 1, dateEnd);
 			LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, dateFormat);
 
-			// Move past the date '_' and behind the suffix
+			// Move past the date separator and behind the suffix
 			int logNum = Integer
 				.parseInt(name, dateEnd + 1, name.length() - logSuffix.length(), 10);
 
@@ -214,7 +215,15 @@ public class FileLogHandler extends StreamHandler {
 		}
 
 		try {
-			Path logPath = path.resolve(logTag + "_" + date + "_" + fileCount + logSuffix);
+			Path logPath = path
+				.resolve(
+					logTag
+						+ sectionSeparator
+						+ date
+						+ sectionSeparator
+						+ fileCount
+						+ logSuffix
+				);
 			File newFile = logPath.toFile();
 
 			// Use DataOutputStream to count bytes written
