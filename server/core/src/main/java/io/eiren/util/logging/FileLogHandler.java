@@ -103,9 +103,10 @@ public class FileLogHandler extends StreamHandler {
 		}
 
 		// Move past the tag, then between the two '_'
-		CharSequence dateTimeStr = name.substring(logTag.length() + 1, dateEnd);
+		String dateTimeStr = name.substring(logTag.length() + 1, dateEnd);
 		LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, dateFormat);
 
+		// Move past the date '_' and behind the suffix
 		int logNum = Integer.parseInt(name, dateEnd + 1, name.length() - logSuffix.length(), 10);
 
 		return new DatedLogFile(file, dateTime, logNum);
