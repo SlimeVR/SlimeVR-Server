@@ -308,7 +308,9 @@ class Tracker @JvmOverloads constructor(
 	fun dataTick() {
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
-		filteringHandler.dataTick(_rotation)
+		if (allowFiltering) {
+			filteringHandler.dataTick(_rotation)
+		}
 	}
 
 	/**
@@ -316,6 +318,19 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun heartbeat() {
 		timeAtLastUpdate = System.currentTimeMillis()
+	}
+
+	private fun getFilteredRotation(): Quaternion = if (allowFiltering) {
+		if (filteringHandler.filteringEnabled) {
+			// Get filtered rotation
+			filteringHandler.getFilteredRotation()
+		} else {
+			// Get unfiltered rotation
+			filteringHandler.getTrackedRotation()
+		}
+	} else {
+		// Get raw rotation
+		_rotation
 	}
 
 	/**
@@ -326,13 +341,7 @@ class Tracker @JvmOverloads constructor(
 	 * it too much should be avoided for performance reasons.
 	 */
 	fun getRotation(): Quaternion {
-		var rot = if (allowFiltering && filteringHandler.filteringEnabled) {
-			// Get filtered rotation
-			filteringHandler.getFilteredRotation()
-		} else {
-			// Get unfiltered rotation
-			filteringHandler.getTrackedRotation()
-		}
+		var rot = getFilteredRotation()
 
 		// Reset if needed and is not computed and internal
 		if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
@@ -358,13 +367,7 @@ class Tracker @JvmOverloads constructor(
 	 * This is used for debugging/visualizing tracker data
 	 */
 	fun getIdentityAdjustedRotation(): Quaternion {
-		var rot = if (filteringHandler.filteringEnabled) {
-			// Get filtered rotation
-			filteringHandler.getFilteredRotation()
-		} else {
-			// Get unfiltered rotation
-			filteringHandler.getTrackedRotation()
-		}
+		var rot = getFilteredRotation()
 
 		// Reset if needed or is a computed tracker besides head
 		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
