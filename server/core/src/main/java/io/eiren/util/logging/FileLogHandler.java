@@ -129,25 +129,25 @@ public class FileLogHandler extends StreamHandler {
 		return logFiles;
 	}
 
-	private synchronized void deleteOldestFile() {
-		DatedLogFile oldest = null;
+	private synchronized void deleteEarliestFile() {
+		DatedLogFile earliest = null;
 
 		for (DatedLogFile log : logFiles) {
-			if (oldest == null || oldest.compareTo(log) < 0) {
-				oldest = log;
+			if (earliest == null || log.compareTo(earliest) < 0) {
+				earliest = log;
 			}
 		}
 
-		if (oldest != null) {
-			logFiles.remove(oldest);
-			deleteFile(oldest.file);
+		if (earliest != null) {
+			logFiles.remove(earliest);
+			deleteFile(earliest.file);
 		}
 	}
 
 	private synchronized void newFile() {
 		// Delete files over the count
 		while (logFiles.size() >= maxCount) {
-			deleteOldestFile();
+			deleteEarliestFile();
 		}
 
 		try {
