@@ -71,7 +71,7 @@ function FirmwareToolContent() {
       });
     }
     return steps;
-  }, [context.defaultConfig?.needBootPress, context.selectedDevices]);
+  }, [context.defaultConfig?.needBootPress, context.selectedDevices, l10n]);
 
   return (
     <FirmwareToolContextC.Provider value={context}>
