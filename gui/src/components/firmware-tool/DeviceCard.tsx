@@ -47,7 +47,7 @@ export function DeviceCardContent({ deviceNames, status }: DeviceCardProps) {
 export function DeviceCardControl({
   control,
   name,
-  progress = undefined,
+  progress,
   ...props
 }: DeviceCardControlProps & DeviceCardProps) {
   return (
