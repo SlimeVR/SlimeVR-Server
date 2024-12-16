@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
 import {
@@ -26,7 +26,7 @@ export function FlashBtnStep({
             {l10n.getString('firmware-tool-flashbtn-step-description')}
           </Typography>
           {defaultConfig?.boardConfig.type ===
-          boardTypeToFirmwareToolBoardType[BoardType.SLIMEVR] ? (
+            boardTypeToFirmwareToolBoardType[BoardType.SLIMEVR] ? (
             <>
               <Typography variant="standard" whitespace="whitespace-pre">
                 {l10n.getString('firmware-tool-flashbtn-step-board-SLIMEVR')}
@@ -70,14 +70,15 @@ export function FlashBtnStep({
             </>
           )}
           <div className="flex justify-end">
-            <Button
-              variant="primary"
-              onClick={() => {
-                nextStep();
-              }}
-            >
-              Next Step
-            </Button>
+            <Localized id='firmware-tool-next-step'>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  nextStep();
+                }}
+              >
+              </Button>
+            </Localized>
           </div>
         </div>
       </div>

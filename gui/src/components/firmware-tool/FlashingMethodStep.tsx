@@ -157,7 +157,7 @@ function SerialDevicesList({
       <Localized id="firmware-tool-flash-method-serial-devices-label">
         <Typography variant="section-title"></Typography>
       </Localized>
-      {Object.keys(devices).length == 0 ? (
+      {Object.keys(devices).length === 0 ? (
         <Localized id="firmware-tool-flash-method-serial-no-devices">
           <Typography variant="standard" color="secondary"></Typography>
         </Localized>
@@ -195,16 +195,28 @@ function OTADevicesList({
 
   const devices =
     state.datafeed?.devices.filter(
-      ({ trackers, hardwareInfo }) =>
-        trackers.length > 0 &&
-        boardTypeToFirmwareToolBoardType[
-        (hardwareInfo?.officialBoardType !== BoardType.SLIMEVR_LEGACY &&
-          hardwareInfo?.officialBoardType !== BoardType.SLIMEVR_DEV &&
-          hardwareInfo?.officialBoardType !== BoardType.CUSTOM &&
-          hardwareInfo?.officialBoardType) ||
-        BoardType.UNKNOWN
-        ] == newConfig?.boardConfig?.type &&
-        trackers.every(({ status }) => status == TrackerStatus.OK)
+      ({ trackers, hardwareInfo }) => {
+
+        // We make sure the device is not one of these types
+        if (
+          hardwareInfo?.officialBoardType === BoardType.SLIMEVR_LEGACY ||
+          hardwareInfo?.officialBoardType === BoardType.SLIMEVR_DEV ||
+          hardwareInfo?.officialBoardType === BoardType.CUSTOM
+        )
+          return false;
+
+        // if the device has no trackers it is prob misconfigured so we skip for safety
+        if (trackers.length <= 0)
+          return false;
+
+        // We make sure that the tracker is in working condition before doing ota as an error (that could be hardware)
+        // could cause an error during the update
+        if (!trackers.every(({ status }) => status === TrackerStatus.OK))
+          return false;
+
+        const boardType = hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN;
+        return boardTypeToFirmwareToolBoardType[boardType] === newConfig?.boardConfig?.type
+      }
     ) || [];
 
   const deviceNames = ({ trackers }: DeviceDataT) =>
@@ -236,7 +248,7 @@ function OTADevicesList({
           .map((id) => id.substring('id-'.length))
           .map((id) => {
             const device = devices.find(
-              ({ id: dId }) => id == dId?.id.toString()
+              ({ id: dId }) => id === dId?.id.toString()
             );
 
             if (!device) throw new Error('no device found');
@@ -255,7 +267,7 @@ function OTADevicesList({
       <Localized id="firmware-tool-flash-method-ota-devices">
         <Typography variant="section-title"></Typography>
       </Localized>
-      {devices.length == 0 && (
+      {devices.length === 0 && (
         <Localized id="firmware-tool-flash-method-ota-no-devices">
           <Typography color="secondary"></Typography>
         </Localized>
@@ -361,7 +373,7 @@ export function FlashingMethodStep({
                   ></Radio>
                 </Localized>
               </div>
-              {flashingMethod ==
+              {flashingMethod ===
                 FirmwareUpdateMethod.SerialFirmwareUpdate.toString() && (
                   <SerialDevicesList
                     control={control}
@@ -369,7 +381,7 @@ export function FlashingMethodStep({
                     reset={reset}
                   ></SerialDevicesList>
                 )}
-              {flashingMethod ==
+              {flashingMethod ===
                 FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
                   <OTADevicesList
                     control={control}
@@ -386,8 +398,8 @@ export function FlashingMethodStep({
                     variant="primary"
                     disabled={
                       !isValid ||
-                      selectedDevices == null ||
-                      selectedDevices.length == 0
+                      selectedDevices === null ||
+                      selectedDevices.length === 0
                     }
                     onClick={nextStep}
                   ></Button>

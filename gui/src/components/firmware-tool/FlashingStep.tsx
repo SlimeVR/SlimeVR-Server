@@ -165,9 +165,9 @@ export function FlashingStep({
     }
   );
 
-  const trackerWithErrors = Object.keys(status).filter((id) =>
+  const trackerWithErrors = useMemo(() => Object.keys(status).filter((id) =>
     firmwareUpdateErrorStatus.includes(status[id].status)
-  );
+  ), [status, firmwareUpdateErrorStatus]);
 
   const retryError = () => {
     const devices = trackerWithErrors.map((id) => {

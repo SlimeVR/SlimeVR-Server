@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import {
@@ -52,36 +52,39 @@ export function SelectBoardStep({
                     }}
                   >
                     {l10n.getString(
-                      `board_type-${
-                        BoardType[
-                          firmwareToolToBoardType[
-                            board as CreateBoardConfigDTO['type']
-                          ] ?? BoardType.UNKNOWN
-                        ]
+                      `board_type-${BoardType[
+                      firmwareToolToBoardType[
+                      board as CreateBoardConfigDTO['type']
+                      ] ?? BoardType.UNKNOWN
+                      ]
                       }`
                     )}
                   </div>
                 ))}
               </div>
               <div className="flex justify-end">
-                <Button
-                  variant="primary"
-                  disabled={!newConfig?.boardConfig?.type}
-                  onClick={() => {
-                    if (defaultConfig?.shouldOnlyUseDefaults)
-                      goTo('SelectFirmware');
-                    else nextStep();
-                  }}
-                >
-                  Next Step
-                </Button>
+                <Localized id='firmware-tool-next-step'>
+                  <Button
+                    variant="primary"
+                    disabled={!newConfig?.boardConfig?.type}
+                    onClick={() => {
+                      if (defaultConfig?.shouldOnlyUseDefaults)
+                        goTo('SelectFirmware');
+                      else nextStep();
+                    }}
+                  >
+                  </Button>
+                </Localized>
+
               </div>
             </div>
           )}
           {isFetching && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Typography color="secondary">Loading ...</Typography>
+              <Localized id='firmware-tool-loading'>
+                <Typography color="secondary"></Typography>
+              </Localized>
             </div>
           )}
         </div>

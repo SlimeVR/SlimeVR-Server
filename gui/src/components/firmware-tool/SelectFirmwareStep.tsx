@@ -44,7 +44,7 @@ export function SelectFirmwareStep({
             {l10n.getString('firmware-tool-select-firmware-step-description')}
           </Typography>
           <div>
-            <Localized id="firmware-tool-select-firmware-step-show-third-party">
+            <Localized id="firmware-tool-select-firmware-step-show-third-party" attrs={{ label: true }}>
               <CheckBox
                 control={control}
                 name="thirdParty"
