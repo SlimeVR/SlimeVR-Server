@@ -32,7 +32,7 @@ class SerialRebootHandler(
 	override fun onSerialLog(str: String) {
 		if (str.contains("starting up...")) {
 			val foundPort = watchRestartQueue.find { it.first.id == currentPort?.portLocation }
-			if (foundPort !== null) {
+			if (foundPort != null) {
 				disconnectedDevices.remove(currentPort)
 				serialRebootListener.onSerialDeviceReconnect(foundPort)
 			}
