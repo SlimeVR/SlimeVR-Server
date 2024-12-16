@@ -68,9 +68,11 @@ export function SelectBoardStep({
                   variant="primary"
                   disabled={!newConfig?.boardConfig?.type}
                   onClick={() => {
-                    if (defaultConfig?.shouldOnlyUseDefaults)
+                    if (defaultConfig?.shouldOnlyUseDefaults) {
                       goTo('SelectFirmware');
-                    else nextStep();
+                    } else {
+                      nextStep();
+                    }
                   }}
                 >
                   Next Step
