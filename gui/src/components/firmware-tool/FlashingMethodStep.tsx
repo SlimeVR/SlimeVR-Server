@@ -100,24 +100,29 @@ function SerialDevicesList({
   const serialValues = watch('serial');
 
   useEffect(() => {
-    if (serialValues) {
-      setWifiCredentials(serialValues.ssid, serialValues.password);
-      if (
-        serialValues.selectedDevicePort &&
-        devices[serialValues.selectedDevicePort]
-      ) {
-        selectDevices([
-          {
-            type: FirmwareUpdateMethod.SerialFirmwareUpdate,
-            deviceId: serialValues.selectedDevicePort,
-            deviceNames: [
-              devices[serialValues.selectedDevicePort].name?.toString() ??
-                'unknown',
-            ],
-          },
-        ]);
-      } else selectDevices(null);
-    } else selectDevices(null);
+    if (!serialValues) {
+      selectDevices(null)
+      return;
+    }
+
+    setWifiCredentials(serialValues.ssid, serialValues.password);
+    if (
+      serialValues.selectedDevicePort &&
+      devices[serialValues.selectedDevicePort]
+    ) {
+      selectDevices([
+        {
+          type: FirmwareUpdateMethod.SerialFirmwareUpdate,
+          deviceId: serialValues.selectedDevicePort,
+          deviceNames: [
+            devices[serialValues.selectedDevicePort].name?.toString() ??
+            'unknown',
+          ],
+        },
+      ]);
+    } else {
+      selectDevices(null)
+    };
   }, [JSON.stringify(serialValues), devices]);
 
   return (
@@ -193,11 +198,11 @@ function OTADevicesList({
       ({ trackers, hardwareInfo }) =>
         trackers.length > 0 &&
         boardTypeToFirmwareToolBoardType[
-          (hardwareInfo?.officialBoardType !== BoardType.SLIMEVR_LEGACY &&
-            hardwareInfo?.officialBoardType !== BoardType.SLIMEVR_DEV &&
-            hardwareInfo?.officialBoardType !== BoardType.CUSTOM &&
-            hardwareInfo?.officialBoardType) ||
-            BoardType.UNKNOWN
+        (hardwareInfo?.officialBoardType !== BoardType.SLIMEVR_LEGACY &&
+          hardwareInfo?.officialBoardType !== BoardType.SLIMEVR_DEV &&
+          hardwareInfo?.officialBoardType !== BoardType.CUSTOM &&
+          hardwareInfo?.officialBoardType) ||
+        BoardType.UNKNOWN
         ] == newConfig?.boardConfig?.type &&
         trackers.every(({ status }) => status == TrackerStatus.OK)
     ) || [];
@@ -358,20 +363,20 @@ export function FlashingMethodStep({
               </div>
               {flashingMethod ==
                 FirmwareUpdateMethod.SerialFirmwareUpdate.toString() && (
-                <SerialDevicesList
-                  control={control}
-                  watch={watch}
-                  reset={reset}
-                ></SerialDevicesList>
-              )}
+                  <SerialDevicesList
+                    control={control}
+                    watch={watch}
+                    reset={reset}
+                  ></SerialDevicesList>
+                )}
               {flashingMethod ==
                 FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
-                <OTADevicesList
-                  control={control}
-                  watch={watch}
-                  reset={reset}
-                ></OTADevicesList>
-              )}
+                  <OTADevicesList
+                    control={control}
+                    watch={watch}
+                    reset={reset}
+                  ></OTADevicesList>
+                )}
               <div className="flex justify-between">
                 <Localized id="firmware-tool-previous-step">
                   <Button variant="secondary" onClick={prevStep}></Button>
