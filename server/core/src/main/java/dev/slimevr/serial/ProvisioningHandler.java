@@ -81,7 +81,7 @@ public class ProvisioningHandler implements SerialListener {
 
 	}
 
-	public void tryOptainMacAddress() {
+	public void tryObtainMacAddress() {
 		this.changeStatus(ProvisioningStatus.OBTAINING_MAC_ADDRESS);
 		vrServer.serialHandler.infoRequest();
 	}
@@ -111,7 +111,7 @@ public class ProvisioningHandler implements SerialListener {
 				this.provisioningStatus == ProvisioningStatus.OBTAINING_MAC_ADDRESS
 					|| this.provisioningStatus == ProvisioningStatus.PROVISIONING
 			)
-				this.tryOptainMacAddress();
+				this.tryObtainMacAddress();
 			else if (this.provisioningStatus == ProvisioningStatus.LOOKING_FOR_SERVER)
 				this.changeStatus(ProvisioningStatus.COULD_NOT_FIND_SERVER);
 		}
@@ -122,7 +122,7 @@ public class ProvisioningHandler implements SerialListener {
 	public void onSerialConnected(@NotNull SerialPort port) {
 		if (!isRunning)
 			return;
-		this.tryOptainMacAddress();
+		this.tryObtainMacAddress();
 	}
 
 	@Override

@@ -135,7 +135,7 @@ class OTAUpdateTask(
 
 			return response.contains("OK")
 		} catch (e: Exception) {
-			e.printStackTrace()
+			LogManager.severe("Unable to upload the firmware using ota", e)
 			return false
 		}
 	}
