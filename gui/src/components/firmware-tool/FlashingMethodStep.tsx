@@ -127,7 +127,7 @@ function SerialDevicesList({
 
   return (
     <>
-      <Localized id="firmware-tool-flash-method-serial-wifi">
+      <Localized id="firmware-tool_flash-method-serial_wifi">
         <Typography variant="section-title"></Typography>
       </Localized>
       <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3 text-background-10">
@@ -154,11 +154,11 @@ function SerialDevicesList({
           />
         </Localized>
       </div>
-      <Localized id="firmware-tool-flash-method-serial-devices-label">
+      <Localized id="firmware-tool_flash-method-serial_devices-label">
         <Typography variant="section-title"></Typography>
       </Localized>
       {Object.keys(devices).length === 0 ? (
-        <Localized id="firmware-tool-flash-method-serial-no-devices">
+        <Localized id="firmware-tool_flash-method-serial_no-devices">
           <Typography variant="standard" color="secondary"></Typography>
         </Localized>
       ) : (
@@ -170,7 +170,7 @@ function SerialDevicesList({
             value: port,
           }))}
           placeholder={l10n.getString(
-            'firmware-tool-flash-method-serial-devices-placeholder'
+            'firmware-tool_flash-method-serial_devices-placeholder'
           )}
           display="block"
           direction="down"
@@ -264,11 +264,11 @@ function OTADevicesList({
 
   return (
     <>
-      <Localized id="firmware-tool-flash-method-ota-devices">
+      <Localized id="firmware-tool_flash-method-ota_devices">
         <Typography variant="section-title"></Typography>
       </Localized>
       {devices.length === 0 && (
-        <Localized id="firmware-tool-flash-method-ota-no-devices">
+        <Localized id="firmware-tool_flash-method-ota_no-devices">
           <Typography color="secondary"></Typography>
         </Localized>
       )}
@@ -343,7 +343,7 @@ export function FlashingMethodStep({
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware-tool-flash-method-step-description')}
+            {l10n.getString('firmware-tool_flash-method-step_description')}
           </Typography>
         </div>
         <div className="my-4">
@@ -351,7 +351,7 @@ export function FlashingMethodStep({
             <div className="flex flex-col gap-3">
               <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3">
                 <Localized
-                  id="firmware-tool-flash-method-step-ota"
+                  id="firmware-tool_flash-method-step_ota"
                   attrs={{ label: true, description: true }}
                 >
                   <Radio
@@ -362,7 +362,7 @@ export function FlashingMethodStep({
                   ></Radio>
                 </Localized>
                 <Localized
-                  id="firmware-tool-flash-method-step-serial"
+                  id="firmware-tool_flash-method-step_serial"
                   attrs={{ label: true, description: true }}
                 >
                   <Radio
@@ -390,10 +390,10 @@ export function FlashingMethodStep({
                   ></OTADevicesList>
                 )}
               <div className="flex justify-between">
-                <Localized id="firmware-tool-previous-step">
+                <Localized id="firmware-tool_previous-step">
                   <Button variant="secondary" onClick={prevStep}></Button>
                 </Localized>
-                <Localized id="firmware-tool-next-step">
+                <Localized id="firmware-tool_next-step">
                   <Button
                     variant="primary"
                     disabled={
@@ -410,7 +410,7 @@ export function FlashingMethodStep({
           {isGlobalLoading && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware-tool-loading">
+              <Localized id="firmware-tool_loading">
                 <Typography color="secondary"></Typography>
               </Localized>
             </div>
