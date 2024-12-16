@@ -110,7 +110,7 @@ function FirmwareToolContent() {
             </div>
           )}
           {isLoading && (
-            <div className="w-full flex flex-col justify-center items-center gap-3 h-full ">
+            <div className="w-full flex flex-col justify-center items-center gap-3 h-full">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
               <Localized id="firmware-tool-loading">
                 <Typography variant="section-title"></Typography>
