@@ -53,7 +53,7 @@ export function DeviceCardControl({
   return (
     <div
       className={classNames(
-        'rounded-md bg-background-60 pt-2 flex flex-col justify-between border-2 ',
+        'rounded-md bg-background-60 pt-2 flex flex-col justify-between border-2',
         props.status && firmwareUpdateErrorStatus.includes(props.status)
           ? 'border-status-critical'
           : 'border-transparent'
