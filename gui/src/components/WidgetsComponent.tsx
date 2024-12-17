@@ -49,7 +49,12 @@ export function WidgetsComponent() {
       <div className="grid grid-cols-2 gap-2 w-full [&>*:nth-child(odd):last-of-type]:col-span-full">
         <ResetButton type={ResetType.Yaw} variant="big"></ResetButton>
         <ResetButton type={ResetType.Full} variant="big"></ResetButton>
-        <ResetButton type={ResetType.Mounting} variant="big"></ResetButton>
+        <Tooltip
+          content={<div className="">I AM A TALL TOOLTIP</div>}
+          preferedDirection="bottom"
+        >
+          <ResetButton type={ResetType.Mounting} variant="big"></ResetButton>
+        </Tooltip>
         <ClearMountingButton></ClearMountingButton>
         <BVHButton></BVHButton>
         <TrackingPauseButton></TrackingPauseButton>
@@ -76,13 +81,11 @@ export function WidgetsComponent() {
           </Localized>
         ))}
       </div>
-      {
-        config?.debug && (
-          <div className="w-full">
-            <DeveloperModeWidget></DeveloperModeWidget>
-          </div>
-        )
-      }
+      {config?.debug && (
+        <div className="w-full">
+          <DeveloperModeWidget></DeveloperModeWidget>
+        </div>
+      )}
     </>
   );
 }

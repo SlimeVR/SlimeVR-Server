@@ -82,8 +82,8 @@ export function ResetButton({
     playSoundOnResetStarted(type, config?.feedbackSoundVolume);
   };
 
-  return (
-    variant === 'small' ? <Button
+  return variant === 'small' ? (
+    <Button
       icon={getIcon()}
       onClick={() => {
         startCountdown();
@@ -96,7 +96,9 @@ export function ResetButton({
         <div className="opacity-0 h-0">{text}</div>
         {!isCounting || type === ResetType.Yaw ? text : String(timer)}
       </div>
-    </Button> : <BigButton
+    </Button>
+  ) : (
+    <BigButton
       text={!isCounting || type === ResetType.Yaw ? text : String(timer)}
       icon={getIcon()}
       onClick={() => {
