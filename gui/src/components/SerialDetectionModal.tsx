@@ -39,12 +39,6 @@ export function SerialDetectionModal() {
 
   const openWifi = () => {
     setShowWifiForm(true);
-    // if (!hasWifiCreds) {
-    //   setShowWifiForm(true);
-    // } else {
-    //   closeModal();
-    //   nav('/onboarding/connect-trackers', { state: { alonePage: true } });
-    // }
   };
 
   const modalWifiSubmit = (form: WifiFormData) => {
@@ -58,7 +52,11 @@ export function SerialDetectionModal() {
     ({ device }: NewSerialDeviceResponseT) => {
       if (
         config?.watchNewDevices &&
-        !['/settings/serial', '/onboarding/connect-trackers'].includes(pathname)
+        ![
+          '/settings/serial',
+          '/onboarding/connect-trackers',
+          '/settings/firmware-tool',
+        ].includes(pathname)
       ) {
         setOpen(device);
       }

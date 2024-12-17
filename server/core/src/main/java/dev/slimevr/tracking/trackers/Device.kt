@@ -20,7 +20,7 @@ open class Device(val magSupport: Boolean = false) {
 	 * Implement toString() to return a string that uniquely identifies the board type
 	 * SHOULDN'T RETURN NULL WHEN toString() IS CALLED
 	 */
-	open val boardType: Any = BoardType.UNKNOWN
+	open val boardType: BoardType = BoardType.UNKNOWN
 	open val mcuType: MCUType = MCUType.UNKNOWN
 
 	open val hardwareIdentifier: String = "Unknown"

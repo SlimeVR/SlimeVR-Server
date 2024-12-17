@@ -41,6 +41,10 @@ export function SettingSelectorMobile() {
         value: { url: '/settings/serial' },
       },
       {
+        label: l10n.getString('settings-sidebar-firmware-tool'),
+        value: { url: '/settings/firmware-tool' },
+      },
+      {
         label: l10n.getString('settings-sidebar-advanced'),
         value: { url: '/settings/advanced' },
       },
@@ -99,7 +103,7 @@ export function SettingsLayout({ children }: { children: ReactNode }) {
         <div style={{ gridArea: 'n' }}>
           <Navbar></Navbar>
         </div>
-        <div style={{ gridArea: 's' }} className="my-2">
+        <div style={{ gridArea: 's' }} className="my-2 mobile:hidden">
           <SettingsSidebar></SettingsSidebar>
         </div>
         <div

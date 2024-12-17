@@ -2,6 +2,7 @@ package dev.slimevr.serial;
 
 import dev.slimevr.VRServer;
 import io.eiren.util.logging.LogManager;
+import kotlin.text.Regex;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -80,6 +81,10 @@ public class ProvisioningHandler implements SerialListener {
 
 	}
 
+	public void tryObtainMacAddress() {
+		this.changeStatus(ProvisioningStatus.OBTAINING_MAC_ADDRESS);
+		vrServer.serialHandler.infoRequest();
+	}
 
 	public void tryProvisioning() {
 		this.changeStatus(ProvisioningStatus.PROVISIONING);
@@ -97,12 +102,16 @@ public class ProvisioningHandler implements SerialListener {
 
 
 		if (System.currentTimeMillis() - this.lastStatusChange > 10000) {
-			if (this.provisioningStatus == ProvisioningStatus.NONE)
+			if (
+				this.provisioningStatus == ProvisioningStatus.NONE
+					|| this.provisioningStatus == ProvisioningStatus.SERIAL_INIT
+			)
 				this.initSerial(this.preferredPort);
-			else if (this.provisioningStatus == ProvisioningStatus.SERIAL_INIT)
-				initSerial(this.preferredPort);
-			else if (this.provisioningStatus == ProvisioningStatus.PROVISIONING)
-				this.tryProvisioning();
+			else if (
+				this.provisioningStatus == ProvisioningStatus.OBTAINING_MAC_ADDRESS
+					|| this.provisioningStatus == ProvisioningStatus.PROVISIONING
+			)
+				this.tryObtainMacAddress();
 			else if (this.provisioningStatus == ProvisioningStatus.LOOKING_FOR_SERVER)
 				this.changeStatus(ProvisioningStatus.COULD_NOT_FIND_SERVER);
 		}
@@ -113,7 +122,7 @@ public class ProvisioningHandler implements SerialListener {
 	public void onSerialConnected(@NotNull SerialPort port) {
 		if (!isRunning)
 			return;
-		this.tryProvisioning();
+		this.tryObtainMacAddress();
 	}
 
 	@Override
@@ -128,6 +137,23 @@ public class ProvisioningHandler implements SerialListener {
 	public void onSerialLog(@NotNull String str) {
 		if (!isRunning)
 			return;
+
+		if (
+			provisioningStatus == ProvisioningStatus.OBTAINING_MAC_ADDRESS && str.contains("mac:")
+		) {
+			var match = new Regex("mac: (?<mac>([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})), ")
+				.find(str, str.indexOf("mac:"));
+
+			if (match != null) {
+				var b = match.getGroups().get(1);
+				if (b != null) {
+					vrServer.configManager.getVrConfig().addKnownDevice(b.getValue());
+					vrServer.configManager.saveConfig();
+					this.tryProvisioning();
+				}
+			}
+
+		}
 
 		if (
 			provisioningStatus == ProvisioningStatus.PROVISIONING
@@ -166,7 +192,11 @@ public class ProvisioningHandler implements SerialListener {
 	public void changeStatus(ProvisioningStatus status) {
 		this.lastStatusChange = System.currentTimeMillis();
 		if (this.provisioningStatus != status) {
-			this.listeners.forEach((l) -> l.onProvisioningStatusChange(status));
+			this.listeners
+				.forEach(
+					(l) -> l
+						.onProvisioningStatusChange(status, vrServer.serialHandler.getCurrentPort())
+				);
 			this.provisioningStatus = status;
 		}
 	}
@@ -186,4 +216,7 @@ public class ProvisioningHandler implements SerialListener {
 		listeners.removeIf(listener -> l == listener);
 	}
 
+	@Override
+	public void onSerialDeviceDeleted(@NotNull SerialPort port) {
+	}
 }

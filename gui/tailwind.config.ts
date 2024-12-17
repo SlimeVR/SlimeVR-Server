@@ -162,9 +162,11 @@ const config = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     screens: {
+      'mobile-settings': { raw: 'not (min-width: 900px)' },
       nsmol: { raw: 'not (min-width: 525px)' },
       smol: '525px',
       mobile: { raw: 'not (min-width: 800px)' },
+      'xs-settings': '900px',
       xs: '800px',
       nsm: { raw: 'not (min-width: 900px)' },
       sm: '900px',
