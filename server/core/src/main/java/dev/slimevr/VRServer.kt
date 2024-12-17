@@ -112,8 +112,6 @@ class VRServer @JvmOverloads constructor(
 
 	init {
 		// UwU
-		instance = this
-
 		configManager = ConfigManager(configPath)
 		configManager.loadConfig()
 		deviceManager = DeviceManager(this)
@@ -175,6 +173,7 @@ class VRServer @JvmOverloads constructor(
 		for (tracker in computedTrackers) {
 			registerTracker(tracker)
 		}
+		instance = this
 	}
 
 	fun hasBridge(bridgeClass: Class<out Bridge?>): Boolean {
