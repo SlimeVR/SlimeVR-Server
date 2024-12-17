@@ -5,8 +5,7 @@ import dev.slimevr.NetworkProtocol
 import dev.slimevr.VRServer
 import dev.slimevr.config.config
 import dev.slimevr.protocol.rpc.MAG_TIMEOUT
-import dev.slimevr.tracking.trackers.Tracker
-import dev.slimevr.tracking.trackers.TrackerStatus
+import dev.slimevr.tracking.trackers.*
 import io.eiren.util.Util
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
@@ -87,7 +86,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				ipAddress = addr
 				name = handshake.macString?.let { "udp://$it" }
 				descriptiveName = "udp:/$addr"
-				firmwareBuild = handshake.firmwareBuild
+				protocolVersion = handshake.protocolVersion
 				firmwareVersion = handshake.firmware
 				connectionsByAddress[address] = this
 
@@ -97,8 +96,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						"""
 						[TrackerServer] Tracker $i handed over to address $socketAddr.
 						Board type: ${handshake.boardType},
-						imu type: ${handshake.imuType},
-						firmware: ${handshake.firmware} ($firmwareBuild),
+						firmware name: ${handshake.firmware},
+						protocol version: $protocolVersion,
 						mac: ${handshake.macString},
 						name: $name
 						""".trimIndent(),
@@ -111,7 +110,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				name = handshake.macString?.let { "udp://$it" }
 					?: "udp:/$addr"
 				descriptiveName = "udp:/$addr"
-				firmwareBuild = handshake.firmwareBuild
+				protocolVersion = handshake.protocolVersion
 				firmwareVersion = handshake.firmware
 				val i = connections.indexOf(this)
 				LogManager
@@ -119,8 +118,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						"""
 						[TrackerServer] Tracker $i reconnected from address $socketAddr.
 						Board type: ${handshake.boardType},
-						imu type: ${handshake.imuType},
-						firmware: ${handshake.firmware} ($firmwareBuild),
+						firmware name: ${handshake.firmware},
+						protocol version: $protocolVersion,
 						mac: ${handshake.macString},
 						name: $name
 						""".trimIndent(),
@@ -137,7 +136,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				handshake.mcuType,
 			)
 			VRServer.instance.deviceManager.addDevice(connection)
-			connection.firmwareBuild = handshake.firmwareBuild
+			connection.protocolVersion = handshake.protocolVersion
 			connection.protocol = if (handshake.firmware?.isEmpty() == true) {
 				// Only old owoTrack doesn't report firmware and have different packet IDs with SlimeVR
 				NetworkProtocol.OWO_LEGACY
@@ -165,18 +164,18 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 						"""
 						[TrackerServer] Tracker $i connected from address $socketAddr.
 						Board type: ${handshake.boardType},
-						imu type: ${handshake.imuType},
-						firmware: ${handshake.firmware} (${connection.firmwareBuild}),
+						firmware name: ${handshake.firmware},
+						protocol version: ${connection.protocolVersion},
 						mac: ${handshake.macString},
 						name: ${connection.name}
 						""".trimIndent(),
 					)
 			}
-			if (connection.protocol == NetworkProtocol.OWO_LEGACY || connection.firmwareBuild < 9) {
+			if (connection.protocol == NetworkProtocol.OWO_LEGACY || connection.protocolVersion < 9) {
 				// Set up new sensor for older firmware.
 				// Firmware after 7 should send sensor status packet and sensor
 				// will be created when it's received
-				setUpSensor(connection, 0, handshake.imuType, 1, MagnetometerStatus.NOT_SUPPORTED)
+				setUpSensor(connection, 0, handshake.imuType, 1, MagnetometerStatus.NOT_SUPPORTED, null, TrackerDataType.ROTATION)
 			}
 			connection
 		}
@@ -188,7 +187,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 	}
 
 	private val mainScope = CoroutineScope(SupervisorJob())
-	private fun setUpSensor(connection: UDPDevice, trackerId: Int, sensorType: IMUType, sensorStatus: Int, magStatus: MagnetometerStatus) {
+	private fun setUpSensor(connection: UDPDevice, trackerId: Int, sensorType: IMUType, sensorStatus: Int, magStatus: MagnetometerStatus, trackerPosition: TrackerPosition?, trackerDataType: TrackerDataType) {
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
@@ -202,21 +201,22 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				VRServer.getNextLocalTrackerId(),
 				connection.name + "/" + trackerId,
 				"IMU Tracker $formattedHWID",
-				null,
+				trackerPosition,
 				trackerNum = trackerId,
 				hasRotation = true,
 				hasAcceleration = true,
 				userEditable = true,
-				imuType = sensorType,
+				imuType = if (trackerDataType == TrackerDataType.ROTATION) sensorType else null,
 				allowFiltering = true,
 				needsReset = true,
 				needsMounting = true,
 				usesTimeout = true,
 				magStatus = magStatus,
+				trackerDataType = trackerDataType,
 			)
 			connection.trackers[trackerId] = imuTracker
 			trackersConsumer.accept(imuTracker)
-			LogManager.info("[TrackerServer] Added sensor $trackerId for ${connection.name}, type $sensorType")
+			LogManager.info("[TrackerServer] Added sensor $trackerId for ${connection.name}, ImuType $sensorType, DataType $trackerDataType, default TrackerPosition $trackerPosition")
 		}
 		val status = UDPPacket15SensorInfo.getStatus(sensorStatus)
 		if (status != null) imuTracker.status = status
@@ -479,6 +479,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					packet.sensorType,
 					packet.sensorStatus,
 					magStatus,
+					packet.trackerPosition,
+					packet.trackerDataType,
 				)
 				// Send ack
 				bb.limit(bb.capacity())
@@ -559,6 +561,17 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					listOf(connection.getTracker(packet.sensorId) ?: return)
 				}
 				LogManager.info("[TrackerServer] Acknowledged config change on ${connection.descriptiveName} (${trackers.map { it.trackerNum }.joinToString()}). Config changed on ${packet.configType}")
+			}
+
+			is UDPPacket26FlexData -> {
+				tracker = connection?.getTracker(packet.sensorId)
+				if (tracker == null) return
+				if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
+					tracker.trackerFlexHandler.setFlexResistance(packet.flexData)
+				} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
+					tracker.trackerFlexHandler.setFlexAngle(packet.flexData)
+				}
+				tracker.dataTick()
 			}
 
 			is UDPPacket200ProtocolChange -> {}
