@@ -4,28 +4,31 @@ import { Typography } from '@/components/commons/Typography';
 import { useForm } from 'react-hook-form';
 import { Radio } from '@/components/commons/Radio';
 import classNames from 'classnames';
-import { useMemo } from 'react';
-import { MocapVMCSetup } from './MocapVMCSetup';
+import { useEffect, useMemo } from 'react';
 import { Button } from '@/components/commons/Button';
+import { useNavigate } from 'react-router-dom';
 
 export enum MocapDataType {
-  BVH,
-  STEAMVR,
-  VMC,
+  BVH = 'BVH',
+  STEAMVR = 'STEAMVR',
+  VMC = 'VMC',
 }
+
+const TYPE_TO_NAV = {
+  [MocapDataType.BVH]: '/onboarding/usage/mocap/data/bvh',
+  [MocapDataType.STEAMVR]: '/onboarding/usage/mocap/data/steamvr',
+  [MocapDataType.VMC]: '/onboarding/usage/mocap/data/vmc',
+};
 
 export function MocapDataChoose() {
   const { l10n } = useLocalization();
   const { applyProgress } = useOnboarding();
-  const { control } = useForm<{
-    usageReason: MocapDataType;
-  }>({
-    defaultValues: {
-      usageReason: MocapDataType.VMC,
-    },
-  });
+  const navigate = useNavigate();
+  const { control, watch } = useForm<{
+    usageReason?: MocapDataType;
+  }>();
 
-  // const usageReason = watch('usageReason');
+  const usageReason = watch('usageReason');
 
   const ItemContent = ({ mode }: { mode: MocapDataType }) => (
     <>
@@ -46,37 +49,32 @@ export function MocapDataChoose() {
             mode: MocapDataType[mode],
           })}
         </Typography>
-        <Typography variant="standard" color="secondary">
-          {l10n.getString(
-            'onboarding-usage-mocap-data_choose-option-description',
-            {
-              mode: MocapDataType[mode],
-            }
-          )}
-        </Typography>
       </div>
     </>
   );
 
   const usages = useMemo(
     () =>
-      Object.values(MocapDataType)
-        .filter(checkIfUsageReason)
-        .map((mode) => (
-          <Radio
-            key={mode}
-            name="usageReason"
-            control={control}
-            value={mode.toString()}
-            variant="none"
-            className="hidden"
-          >
-            <div>
-              <ItemContent mode={mode}></ItemContent>
-            </div>
-          </Radio>
-        )),
+      Object.values(MocapDataType).map((mode) => (
+        <Radio
+          key={mode}
+          name="usageReason"
+          control={control}
+          value={mode.toString()}
+          variant="none"
+          className="hidden"
+        >
+          <div>
+            <ItemContent mode={mode}></ItemContent>
+          </div>
+        </Radio>
+      )),
     [control, l10n]
+  );
+
+  useEffect(
+    () => usageReason && navigate(TYPE_TO_NAV[usageReason]),
+    [usageReason]
   );
 
   applyProgress(0.6);
@@ -102,13 +100,8 @@ export function MocapDataChoose() {
               </Button>
             </div>
           </div>
-          <MocapVMCSetup />
         </div>
       </div>
     </div>
   );
-}
-
-function checkIfUsageReason(val: any): val is MocapDataType {
-  return typeof val === 'number';
 }

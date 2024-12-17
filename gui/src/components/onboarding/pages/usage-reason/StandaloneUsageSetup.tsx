@@ -58,32 +58,14 @@ export function StandaloneUsageSetup() {
   return (
     <div className="flex items-center justify-center h-full w-full mobile:pt-10">
       <div className="flex mobile:flex-col items-center xs:justify-center gap-5">
-        <div className="mb-auto">
+        <div className="mb-auto w-[512px] flex flex-col gap-2">
           <Typography variant="main-title">
             {l10n.getString('onboarding-usage-vr-standalone-title')}
           </Typography>
-        </div>
-        <div
-          className={classNames(
-            'flex flex-col rounded-lg p-6 gap-5 w-10/12 max-w-[600px]',
-            !state.alonePage && 'bg-background-70',
-            state.alonePage && 'bg-background-60'
-          )}
-        >
-          <div className="self-center">
-            {l10n
-              .getString('settings-osc-vrchat-description-guide')
-              .split('\n')
-              .map((line, i) => (
-                <Typography color="secondary" key={i}>
-                  {line}
-                </Typography>
-              ))}
-          </div>
-          <div className="self-center">
-            <PausableVideo src={VRCHAT_OSC_VIDEO} />
-          </div>
-          <div className="flex">
+          <Typography color="secondary" whitespace="whitespace-pre-line">
+            {l10n.getString('settings-osc-vrchat-description-guide')}
+          </Typography>
+          <div className="flex pt-2">
             <Button
               variant={!state.alonePage ? 'secondary' : 'tertiary'}
               className="self-start mt-auto"
@@ -104,6 +86,15 @@ export function StandaloneUsageSetup() {
             >
               {l10n.getString('onboarding-usage-vr-standalone-next')}
             </Button>
+          </div>
+        </div>
+        <div
+          className={classNames(
+            'flex gap-5 w-10/12 max-w-[600px] items-center'
+          )}
+        >
+          <div className="rounded-lg overflow-hidden aspect-square">
+            <PausableVideo src={VRCHAT_OSC_VIDEO} />
           </div>
         </div>
       </div>

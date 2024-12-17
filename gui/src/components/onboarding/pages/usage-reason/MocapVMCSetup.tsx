@@ -40,10 +40,10 @@ export function MocapVMCSetup() {
     if (values.vmc) {
       const vmcOsc = new VMCOSCSettingsT();
 
-      vmcOsc.oscSettings = Object.assign(
-        new OSCSettingsT(),
-        values.vmc.oscSettings
-      );
+      vmcOsc.oscSettings = Object.assign(new OSCSettingsT(), {
+        ...values.vmc.oscSettings,
+        vmc: { oscSettings: { enabled: true }, anchorHip: false },
+      });
 
       if (values.vmc.vrmJson !== undefined) {
         if (values.vmc.vrmJson.length > 0) {
@@ -102,7 +102,7 @@ export function MocapVMCSetup() {
   });
 
   return (
-    <div className="bg-background-70 w-[512px] rounded-md overflow-scroll">
+    <div className="bg-background-70 sm:w-[512px] rounded-md overflow-scroll">
       <SettingsPagePaneLayout icon={<VMCIcon></VMCIcon>} id="vmc">
         <Typography variant="main-title">
           {l10n.getString('settings-osc-vmc')}

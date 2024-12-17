@@ -7,13 +7,15 @@ export function PausableVideo({
   src,
   poster,
   restartOnPause = false,
+  autoPlay = false,
 }: {
   src?: string;
   poster?: string;
   restartOnPause?: boolean;
+  autoPlay?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [paused, setPaused] = useState(true);
+  const [paused, setPaused] = useState(!autoPlay);
   const [atStart, setAtStart] = useState(true);
 
   function toggleVideo() {
@@ -39,7 +41,7 @@ export function PausableVideo({
   );
 
   return (
-    <button className="relative appearance-none h-fit" onClick={toggleVideo}>
+    <button className="relative appearance-none" onClick={toggleVideo}>
       <div
         className={classNames(
           'absolute w-[100px] h-[100px] top-0 bottom-0 left-0 right-0 m-auto',
@@ -60,6 +62,7 @@ export function PausableVideo({
         muted
         loop
         playsInline
+        autoPlay={autoPlay}
         controls={false}
       ></video>
     </button>

@@ -109,7 +109,10 @@ export function HeadTrackingChoose() {
                   </Typography>
                 </div>
                 <div>
-                  <Typography color="secondary">
+                  <Typography
+                    color="secondary"
+                    whitespace="whitespace-pre-line"
+                  >
                     {l10n.getString(
                       'onboarding-usage-mocap-head_choose-standalone-description'
                     )}
@@ -122,7 +125,7 @@ export function HeadTrackingChoose() {
                 onClick={() => {
                   toggleMocap(true);
 
-                  navigate('/onboarding/usage/mocap/data-choose', {
+                  navigate('/onboarding/usage/mocap/data/choose', {
                     state: { alonePage: state.alonePage },
                   });
                 }}
@@ -164,7 +167,10 @@ export function HeadTrackingChoose() {
                   </Typography>
                 </div>
                 <div className="flex flex-col gap-3">
-                  <Typography color="secondary">
+                  <Typography
+                    color="secondary"
+                    whitespace="whitespace-pre-line"
+                  >
                     {l10n.getString(
                       'onboarding-usage-mocap-head_choose-steamvr-description'
                     )}
@@ -192,7 +198,7 @@ export function HeadTrackingChoose() {
 
               <Button
                 variant={'primary'}
-                to="/onboarding/mounting/manual"
+                to="/onboarding/usage/mocap/data/choose"
                 className="self-start mt-auto"
                 state={{ alonePage: state.alonePage }}
                 disabled={missingSteamVr}

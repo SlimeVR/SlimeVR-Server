@@ -597,8 +597,8 @@ settings-osc-vrchat-description-v2 =
 # This cares about multilines
 settings-osc-vrchat-description-guide =
     Make sure to enable OSC in VRChat via the Action Menu under OSC > Enabled.
-    To allow receiving HMD and controller data from VRChat, go in your main menu's
-    settings under Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
+
+    To allow receiving HMD and controller data from VRChat, go in your main menu's settings under Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
 settings-osc-vrchat-enable-label = Enable
@@ -828,16 +828,22 @@ onboarding-usage-vr-standalone-next = Done!
 
 ## Mocap head usage choose
 onboarding-usage-mocap-head_choose = What kind of head tracking do you want?
-onboarding-usage-mocap-head_choose-description = description
+onboarding-usage-mocap-head_choose-description = You can use either a tracker or a headset for the head!
 
 onboarding-usage-mocap-head_choose-standalone = SlimeVR head tracker
 onboarding-usage-mocap-head_choose-standalone-label = Use an IMU tracker for tracking position
-onboarding-usage-mocap-head_choose-standalone-description = some description
+onboarding-usage-mocap-head_choose-standalone-description =
+    This enables head tracking using a head mounted SlimeVR tracker.
+
+    This is much less precise in the way that if you walk and return to your starting point, you won't be on the same place on the recording.
 onboarding-usage-mocap-head_choose-standalone-button = Use IMU tracker
 
 onboarding-usage-mocap-head_choose-steamvr = SteamVR head tracking
 onboarding-usage-mocap-head_choose-steamvr-label = Use an HMD or a positional tracker for precision
-onboarding-usage-mocap-head_choose-steamvr-description = more description
+onboarding-usage-mocap-head_choose-steamvr-description =
+    Most accurate way to track the head, using true positional data as reference.
+
+    This allows for the best quality motion capture recordings as well as movements that require both feet to leave the floor at the same time.
 onboarding-usage-mocap-head_choose-steamvr-button = Use SteamVR
 
 ## Mocap data mode choose
@@ -850,14 +856,9 @@ onboarding-usage-mocap-data_choose-option-title = { $mode ->
     [VMC] VMC
 }
 onboarding-usage-mocap-data_choose-option-label = { $mode ->
-    *[BVH] BVH
-    [STEAMVR] SteamVR
-    [VMC] VMC
-}
-onboarding-usage-mocap-data_choose-option-description = { $mode ->
-    *[BVH] BVH
-    [STEAMVR] SteamVR
-    [VMC] VMC
+    *[BVH] Natively supported on most animation programs
+    [STEAMVR] For programs that support OpenVR as a source of data
+    [VMC] Popular data protocol for VTubing
 }
 
 ## Tracker assignment setup
