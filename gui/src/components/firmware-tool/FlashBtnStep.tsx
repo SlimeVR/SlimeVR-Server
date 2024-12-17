@@ -26,7 +26,7 @@ export function FlashBtnStep({
             {l10n.getString('firmware-tool_flashbtn-step_description')}
           </Typography>
           {defaultConfig?.boardConfig.type ===
-            boardTypeToFirmwareToolBoardType[BoardType.SLIMEVR] ? (
+          boardTypeToFirmwareToolBoardType[BoardType.SLIMEVR] ? (
             <>
               <Typography variant="standard" whitespace="whitespace-pre">
                 {l10n.getString('firmware-tool_flashbtn-step_board_SLIMEVR')}
@@ -70,14 +70,13 @@ export function FlashBtnStep({
             </>
           )}
           <div className="flex justify-end">
-            <Localized id='firmware-tool_next-step'>
+            <Localized id="firmware-tool_next-step">
               <Button
                 variant="primary"
                 onClick={() => {
                   nextStep();
                 }}
-              >
-              </Button>
+              ></Button>
             </Localized>
           </div>
         </div>

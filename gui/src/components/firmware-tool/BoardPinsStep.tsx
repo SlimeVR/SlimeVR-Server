@@ -91,7 +91,7 @@ export function BoardPinsStep({
               <div
                 className={classNames(
                   batteryType === 'BAT_EXTERNAL' &&
-                  'bg-background-80 p-2 rounded-md',
+                    'bg-background-80 p-2 rounded-md',
                   'transition-all duration-500 flex-col flex gap-2'
                 )}
               >

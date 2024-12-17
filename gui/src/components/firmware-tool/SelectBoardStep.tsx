@@ -52,18 +52,19 @@ export function SelectBoardStep({
                     }}
                   >
                     {l10n.getString(
-                      `board_type-${BoardType[
-                      firmwareToolToBoardType[
-                      board as CreateBoardConfigDTO['type']
-                      ] ?? BoardType.UNKNOWN
-                      ]
+                      `board_type-${
+                        BoardType[
+                          firmwareToolToBoardType[
+                            board as CreateBoardConfigDTO['type']
+                          ] ?? BoardType.UNKNOWN
+                        ]
                       }`
                     )}
                   </div>
                 ))}
               </div>
               <div className="flex justify-end">
-                <Localized id='firmware-tool_next-step'>
+                <Localized id="firmware-tool_next-step">
                   <Button
                     variant="primary"
                     disabled={!newConfig?.boardConfig?.type}
@@ -74,17 +75,15 @@ export function SelectBoardStep({
                         nextStep();
                       }
                     }}
-                  >
-                  </Button>
+                  ></Button>
                 </Localized>
-
               </div>
             </div>
           )}
           {isFetching && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id='firmware-tool_loading'>
+              <Localized id="firmware-tool_loading">
                 <Typography color="secondary"></Typography>
               </Localized>
             </div>

@@ -131,7 +131,7 @@ export function FlashingStep({
     if (!selectedDevices)
       throw new Error('invalid state - no selected devices');
     queueFlashing(selectedDevices);
-    return () => clear()
+    return () => clear();
   }, [isActive]);
 
   useRPCPacket(
@@ -163,9 +163,13 @@ export function FlashingStep({
     }
   );
 
-  const trackerWithErrors = useMemo(() => Object.keys(status).filter((id) =>
-    firmwareUpdateErrorStatus.includes(status[id].status)
-  ), [status, firmwareUpdateErrorStatus]);
+  const trackerWithErrors = useMemo(
+    () =>
+      Object.keys(status).filter((id) =>
+        firmwareUpdateErrorStatus.includes(status[id].status)
+      ),
+    [status, firmwareUpdateErrorStatus]
+  );
 
   const retryError = () => {
     const devices = trackerWithErrors.map((id) => {

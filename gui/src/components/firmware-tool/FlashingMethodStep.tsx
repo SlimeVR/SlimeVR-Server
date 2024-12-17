@@ -101,7 +101,7 @@ function SerialDevicesList({
 
   useEffect(() => {
     if (!serialValues) {
-      selectDevices(null)
+      selectDevices(null);
       return;
     }
 
@@ -116,12 +116,12 @@ function SerialDevicesList({
           deviceId: serialValues.selectedDevicePort,
           deviceNames: [
             devices[serialValues.selectedDevicePort].name?.toString() ??
-            'unknown',
+              'unknown',
           ],
         },
       ]);
     } else {
-      selectDevices(null)
+      selectDevices(null);
     }
   }, [JSON.stringify(serialValues), devices]);
 
@@ -194,30 +194,29 @@ function OTADevicesList({
   const { state } = useAppContext();
 
   const devices =
-    state.datafeed?.devices.filter(
-      ({ trackers, hardwareInfo }) => {
+    state.datafeed?.devices.filter(({ trackers, hardwareInfo }) => {
+      // We make sure the device is not one of these types
+      if (
+        hardwareInfo?.officialBoardType === BoardType.SLIMEVR_LEGACY ||
+        hardwareInfo?.officialBoardType === BoardType.SLIMEVR_DEV ||
+        hardwareInfo?.officialBoardType === BoardType.CUSTOM
+      )
+        return false;
 
-        // We make sure the device is not one of these types
-        if (
-          hardwareInfo?.officialBoardType === BoardType.SLIMEVR_LEGACY ||
-          hardwareInfo?.officialBoardType === BoardType.SLIMEVR_DEV ||
-          hardwareInfo?.officialBoardType === BoardType.CUSTOM
-        )
-          return false;
+      // if the device has no trackers it is prob misconfigured so we skip for safety
+      if (trackers.length <= 0) return false;
 
-        // if the device has no trackers it is prob misconfigured so we skip for safety
-        if (trackers.length <= 0)
-          return false;
+      // We make sure that the tracker is in working condition before doing ota as an error (that could be hardware)
+      // could cause an error during the update
+      if (!trackers.every(({ status }) => status === TrackerStatus.OK))
+        return false;
 
-        // We make sure that the tracker is in working condition before doing ota as an error (that could be hardware)
-        // could cause an error during the update
-        if (!trackers.every(({ status }) => status === TrackerStatus.OK))
-          return false;
-
-        const boardType = hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN;
-        return boardTypeToFirmwareToolBoardType[boardType] === newConfig?.boardConfig?.type
-      }
-    ) || [];
+      const boardType = hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN;
+      return (
+        boardTypeToFirmwareToolBoardType[boardType] ===
+        newConfig?.boardConfig?.type
+      );
+    }) || [];
 
   const deviceNames = ({ trackers }: DeviceDataT) =>
     trackers
@@ -375,20 +374,20 @@ export function FlashingMethodStep({
               </div>
               {flashingMethod ===
                 FirmwareUpdateMethod.SerialFirmwareUpdate.toString() && (
-                  <SerialDevicesList
-                    control={control}
-                    watch={watch}
-                    reset={reset}
-                  ></SerialDevicesList>
-                )}
+                <SerialDevicesList
+                  control={control}
+                  watch={watch}
+                  reset={reset}
+                ></SerialDevicesList>
+              )}
               {flashingMethod ===
                 FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
-                  <OTADevicesList
-                    control={control}
-                    watch={watch}
-                    reset={reset}
-                  ></OTADevicesList>
-                )}
+                <OTADevicesList
+                  control={control}
+                  watch={watch}
+                  reset={reset}
+                ></OTADevicesList>
+              )}
               <div className="flex justify-between">
                 <Localized id="firmware-tool_previous-step">
                   <Button variant="secondary" onClick={prevStep}></Button>
