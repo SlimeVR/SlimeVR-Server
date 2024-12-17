@@ -5,7 +5,6 @@ import {
   useState,
   ReactElement,
   useLayoutEffect,
-  useMemo,
 } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -20,15 +19,8 @@ interface TooltipPos {
   left: number;
   top: number;
   width: number;
+  height?: number;
 }
-
-type TooltipState =
-  | { open: false }
-  | {
-      open: true;
-      childrenRect: DOMRect;
-      tooltipRect: DOMRect;
-    };
 
 type Rect = {
   left: number;
@@ -42,14 +34,14 @@ function overlapArea(rect1: Rect, rect2: Rect) {
   const overlapWidth = Math.max(
     0,
     Math.min(rect1.left + rect1.width, rect2.left + rect2.width) -
-      Math.max(rect1.left, rect2.left)
+    Math.max(rect1.left, rect2.left)
   );
 
   // Find the overlap in the y direction (height)
   const overlapHeight = Math.max(
     0,
     Math.min(rect1.top + rect1.height, rect2.top + rect2.height) -
-      Math.max(rect1.top, rect2.top)
+    Math.max(rect1.top, rect2.top)
   );
 
   // If there is an overlap, return the area; otherwise, return 0
@@ -74,23 +66,18 @@ function isNotInside(rect1: Rect, rect2: Rect) {
   return !(rect1InsideRect2 || rect2InsideRect1);
 }
 
+const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v))
+
 export function Tooltip({
   content,
   children,
   preferedDirection,
   mode = 'center',
 }: TooltipProps) {
-  const resizeRef = useRef(
-    new ResizeObserver(([entry]) => {
-      setState((curr) => ({
-        ...curr,
-        tooltipRect: entry.target.getBoundingClientRect(),
-      }));
-    })
-  );
   const childRef = useRef<HTMLDivElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
-  const [state, setState] = useState<TooltipState>({ open: false });
+  // const [state, setState] = useState<TooltipState>({ open: false });
+  const [style, setTooltipStyle] = useState<TooltipPos | undefined>();
 
   const onMouseEnter = () => {
     if (!childRef.current || !tooltipRef.current)
@@ -99,25 +86,24 @@ export function Tooltip({
     const childrenRect = childRef.current.children[0].getBoundingClientRect();
     const tooltipRect = tooltipRef.current.getBoundingClientRect();
 
-    setState((curr) => ({ ...curr, open: true, childrenRect, tooltipRect }));
-    resizeRef.current.observe(tooltipRef.current);
+    setTooltipStyle(getTooltipPosition(childrenRect, tooltipRect))
   };
 
   const onMouseLeave = () => {
     if (!childRef.current || !tooltipRef.current)
       throw new Error('invalid state');
-    resizeRef.current.unobserve(tooltipRef.current);
-    setState({ open: false });
+    setTooltipStyle(undefined)
   };
 
   const onResize = () => {
-    setState({ open: false });
+    setTooltipStyle(undefined)
+
   };
 
   useLayoutEffect(() => {
     if (childRef.current && childRef.current.children[0]) {
       const elem = childRef.current.children[0] as HTMLElement;
-
+      console.log(elem)
       elem.addEventListener('mouseenter', onMouseEnter);
       elem.addEventListener('mouseleave', onMouseLeave);
 
@@ -135,9 +121,10 @@ export function Tooltip({
     };
   }, []);
 
-  const tooltipPosition = useMemo(() => {
-    if (!state.open) return;
-
+  const getTooltipPosition = (
+    childrenRect: DOMRect,
+    tooltipRect: DOMRect,
+  ) => {
     const spacing = 10;
 
     const getPosition = (
@@ -146,43 +133,43 @@ export function Tooltip({
       switch (direction) {
         case 'top':
           return {
-            top: state.childrenRect.y - state.tooltipRect.height - spacing,
+            top: childrenRect.y - tooltipRect.height - spacing,
             left:
-              state.childrenRect.x +
+              childrenRect.x +
               (mode === 'center'
-                ? state.childrenRect.width / 2 - state.tooltipRect.width / 2
+                ? childrenRect.width / 2 - tooltipRect.width / 2
                 : 0),
-            width: state.tooltipRect.width,
+            width: tooltipRect.width,
           };
         case 'left':
           return {
             top:
-              state.childrenRect.y +
+              childrenRect.y +
               (mode === 'center'
-                ? state.childrenRect.height / 2 - state.tooltipRect.height / 2
+                ? childrenRect.height / 2 - tooltipRect.height / 2
                 : 0),
-            left: state.childrenRect.x - state.tooltipRect.width - spacing,
-            width: state.tooltipRect.width,
+            left: childrenRect.x - tooltipRect.width - spacing,
+            width: tooltipRect.width,
           };
         case 'right':
           return {
             top:
-              state.childrenRect.y +
+              childrenRect.y +
               (mode === 'center'
-                ? state.childrenRect.height / 2 - state.tooltipRect.height / 2
+                ? childrenRect.height / 2 - tooltipRect.height / 2
                 : 0),
-            left: state.childrenRect.x + state.childrenRect.width + spacing,
-            width: state.tooltipRect.width,
+            left: childrenRect.x + childrenRect.width + spacing,
+            width: tooltipRect.width,
           };
         case 'bottom':
           return {
-            top: state.childrenRect.y + state.childrenRect.height + spacing,
+            top: childrenRect.y + childrenRect.height + spacing,
             left:
-              state.childrenRect.x +
+              childrenRect.x +
               (mode === 'center'
-                ? state.childrenRect.width / 2 - state.tooltipRect.width / 2
+                ? childrenRect.width / 2 - tooltipRect.width / 2
                 : 0),
-            width: state.tooltipRect.width,
+            width: tooltipRect.width,
           };
       }
     };
@@ -190,44 +177,71 @@ export function Tooltip({
     const windowRect = document.body.getBoundingClientRect();
 
     const pos = getPosition(preferedDirection);
-
-    if (isNotInside({ ...pos, height: state.tooltipRect.height }, windowRect)) {
-      const [firstPos] = ['left', 'right', 'top', 'left']
-        .map((dir) => getPosition(dir as TooltipProps['preferedDirection']))
+    if (isNotInside({ ...pos, height: tooltipRect.height }, windowRect)) {
+      const [firstPos] = ['left', 'top', 'right', 'bottom']
+        .map((dir) => ({ dir, area: getPosition(dir as TooltipProps['preferedDirection']) }))
         .toSorted(
           (a, b) =>
             overlapArea(
-              { ...b, height: state.tooltipRect.height },
+              { ...b.area, height: tooltipRect.height },
               windowRect
             ) -
-            overlapArea({ ...a, height: state.tooltipRect.height }, windowRect)
+            overlapArea({ ...a.area, height: tooltipRect.height }, windowRect)
         );
 
       if (
         isNotInside(
-          { ...firstPos, height: state.tooltipRect.height },
+          { ...firstPos.area, height: tooltipRect.height },
           windowRect
         )
       ) {
-        // TODO: clamp to maximum possible size
-        return;
+        switch (firstPos.dir) {
+          case 'top':
+            return {
+              top: clamp(firstPos.area.top, spacing, childrenRect.y - spacing),
+              left: clamp(firstPos.area.left, spacing, childrenRect.x - spacing),
+              width: clamp(firstPos.area.width, 0, windowRect.width - spacing * 2),
+              height: clamp(tooltipRect.height, spacing, childrenRect.y - spacing * 2)
+            };
+          case 'left':
+            return {
+              top: clamp(firstPos.area.top, spacing, windowRect.height - spacing),
+              left: clamp(firstPos.area.left, spacing, childrenRect.x - spacing),
+              width: clamp(firstPos.area.width, 0, childrenRect.x - spacing * 2),
+              height: clamp(tooltipRect.height, spacing, windowRect.height - spacing * 2)
+            };
+          case 'right':
+            return {
+              top: clamp(firstPos.area.top, spacing, windowRect.height - spacing),
+              left: clamp(firstPos.area.left, childrenRect.x + childrenRect.width + spacing, windowRect.width - spacing),
+              width: clamp(firstPos.area.width, 0, windowRect.width - spacing - firstPos.area.left),
+              height: clamp(tooltipRect.height, spacing, windowRect.height - spacing * 2)
+            };
+          case 'bottom':
+            return {
+              top: clamp(firstPos.area.top, childrenRect.y + childrenRect.height + spacing, windowRect.height - childrenRect.y + childrenRect.height + spacing),
+              left: clamp(firstPos.area.left, spacing, windowRect.width),
+              width: clamp(firstPos.area.width, 0, windowRect.width - spacing * 2),
+              height: clamp(tooltipRect.height, firstPos.area.top + childrenRect.height + spacing, windowRect.height - (childrenRect.y + childrenRect.height) - spacing * 2)
+            };
+        }
       }
 
-      return firstPos;
+      return firstPos.area;
     }
     return pos;
-  }, [state, preferedDirection]);
+  }
 
   return (
     <div className="contents" ref={childRef}>
       {children}
       {createPortal(
         <div
-          className={classNames('absolute z-50')}
+          className={classNames('absolute z-50 pointer-events-none')}
           ref={tooltipRef}
-          style={tooltipPosition}
+          style={style}
         >
-          <div className="bg-background-90 rounded-md p-2 text-background-10">
+          <div className="bg-background-90 rounded-md p-2 text-background-10 overflow-auto" style={style}>
             {content}
           </div>
         </div>,

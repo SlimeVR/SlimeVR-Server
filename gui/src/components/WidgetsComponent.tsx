@@ -47,31 +47,9 @@ export function WidgetsComponent() {
   return (
     <>
       <div className="grid grid-cols-2 gap-2 w-full [&>*:nth-child(odd):last-of-type]:col-span-full">
-        <Tooltip
-          content={
-            <div className="flex items-center flex-col">
-              <div>I AM A TEXT</div>
-              <textarea></textarea>
-            </div>
-          }
-          preferedDirection="top"
-          mode="center"
-        >
-          <ResetButton type={ResetType.Yaw} variant="big"></ResetButton>
-        </Tooltip>
-        <Tooltip
-          content={<div className="">I AM A TALL TOOLTIP</div>}
-          preferedDirection="right"
-          mode="center"
-        >
-          <ResetButton type={ResetType.Full} variant="big"></ResetButton>
-        </Tooltip>
-        <Tooltip
-          content={<div className="">I AM A TALL TOOLTIP</div>}
-          preferedDirection="bottom"
-        >
-          <ResetButton type={ResetType.Mounting} variant="big"></ResetButton>
-        </Tooltip>
+        <ResetButton type={ResetType.Yaw} variant="big"></ResetButton>
+        <ResetButton type={ResetType.Full} variant="big"></ResetButton>
+        <ResetButton type={ResetType.Mounting} variant="big"></ResetButton>
         <ClearMountingButton></ClearMountingButton>
         <BVHButton></BVHButton>
         <TrackingPauseButton></TrackingPauseButton>
@@ -98,11 +76,13 @@ export function WidgetsComponent() {
           </Localized>
         ))}
       </div>
-      {config?.debug && (
-        <div className="w-full">
-          <DeveloperModeWidget></DeveloperModeWidget>
-        </div>
-      )}
+      {
+        config?.debug && (
+          <div className="w-full">
+            <DeveloperModeWidget></DeveloperModeWidget>
+          </div>
+        )
+      }
     </>
   );
 }
