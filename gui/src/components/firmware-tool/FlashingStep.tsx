@@ -131,9 +131,7 @@ export function FlashingStep({
     if (!selectedDevices)
       throw new Error('invalid state - no selected devices');
     queueFlashing(selectedDevices);
-    return () => {
-      clear();
-    };
+    return () => clear()
   }, [isActive]);
 
   useRPCPacket(

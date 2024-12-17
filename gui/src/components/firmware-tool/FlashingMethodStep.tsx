@@ -122,7 +122,7 @@ function SerialDevicesList({
       ]);
     } else {
       selectDevices(null)
-    };
+    }
   }, [JSON.stringify(serialValues), devices]);
 
   return (

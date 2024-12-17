@@ -55,7 +55,7 @@ function FirmwareToolContent() {
       },
       {
         component: FlashingStep,
-        title: l10n.getString('firmware-tool_flashing_step'),
+        title: l10n.getString('firmware-tool_flashing-step'),
       },
     ];
 
