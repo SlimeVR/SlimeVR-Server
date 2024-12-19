@@ -1,5 +1,6 @@
 package dev.slimevr.firmware
 
+import dev.slimevr.VRServer
 import dev.slimevr.serial.SerialListener
 import dev.slimevr.serial.SerialPort
 import java.util.concurrent.CopyOnWriteArrayList
@@ -14,6 +15,7 @@ interface SerialRebootListener {
  */
 class SerialRebootHandler(
 	private val watchRestartQueue: MutableList<Pair<UpdateDeviceId<*>, () -> Unit>>,
+	private val server: VRServer,
 	// Could be moved to a list of listeners later
 	private val serialRebootListener: SerialRebootListener,
 ) : SerialListener {
@@ -35,6 +37,10 @@ class SerialRebootHandler(
 			if (foundPort != null) {
 				disconnectedDevices.remove(currentPort)
 				serialRebootListener.onSerialDeviceReconnect(foundPort)
+				// once the restart detected we close the connection
+				if (server.serialHandler.isConnected) {
+					server.serialHandler.closeSerial()
+				}
 			}
 		}
 	}
@@ -44,6 +50,10 @@ class SerialRebootHandler(
 		if (foundPort != null && disconnectedDevices.contains(port)) {
 			disconnectedDevices.remove(port)
 			serialRebootListener.onSerialDeviceReconnect(foundPort)
+			// once the restart detected we close the connection
+			if (server.serialHandler.isConnected) {
+				server.serialHandler.closeSerial()
+			}
 		}
 	}
 

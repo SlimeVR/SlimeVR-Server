@@ -431,7 +431,7 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	fun removeTrackerStatusListener(listener: TrackerStatusListener) {
-		trackerStatusListeners.removeIf { listener === it }
+		trackerStatusListeners.removeIf { listener == it }
 	}
 
 	companion object {

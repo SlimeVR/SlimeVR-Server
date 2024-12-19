@@ -61,23 +61,23 @@ export function SelectFirmwareStep({
             <div className="flex flex-col gap-4">
               <div className="xs-settings:max-h-96 xs-settings:overflow-y-auto xs-settings:px-2">
                 <div className="grid sm:grid-cols-2 mobile-settings:grid-cols-1 gap-2">
-                  {filteredFirmwares?.map((firmwares) => (
+                  {filteredFirmwares?.map((firmware) => (
                     <div
-                      key={firmwares.id}
+                      key={firmware.id}
                       className={classNames(
                         'p-3 rounded-md hover:bg-background-50',
                         {
                           'bg-background-50 text-background-10':
-                            newConfig?.version === firmwares.name,
+                            newConfig?.version === firmware.name,
                           'bg-background-60':
-                            newConfig?.version !== firmwares.name,
+                            newConfig?.version !== firmware.name,
                         }
                       )}
                       onClick={() => {
-                        selectVersion(firmwares.name);
+                        selectVersion(firmware.name);
                       }}
                     >
-                      {getName(firmwares.name)}
+                      {getName(firmware.name)}
                     </div>
                   ))}
                 </div>
