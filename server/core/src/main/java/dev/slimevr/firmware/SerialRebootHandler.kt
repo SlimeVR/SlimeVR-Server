@@ -58,7 +58,7 @@ class SerialRebootHandler(
 	}
 
 	override fun onSerialDeviceDeleted(port: SerialPort) {
-		val foundPort = watchRestartQueue.find { it.first.id === port.portLocation }
+		val foundPort = watchRestartQueue.find { it.first.id == port.portLocation }
 		if (foundPort != null) {
 			disconnectedDevices.add(port)
 		}
