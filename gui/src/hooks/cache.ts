@@ -56,7 +56,7 @@ export async function cacheWrap(
   const realItem = await store.get(key);
   if (!realItem) {
     const defaultItem = await orDefault();
-    cacheSet(key, defaultItem, ttl);
+    await cacheSet(key, defaultItem, ttl);
     return defaultItem;
   } else {
     return (await cacheGet(key))!;

@@ -10,6 +10,7 @@ import {
   FirmwareUpdateStatus,
   FirmwareUpdateStatusResponseT,
   FirmwareUpdateStopQueuesRequestT,
+  HardwareInfoT,
   RpcMessage,
   TrackerStatus,
 } from 'solarxr-protocol';
@@ -19,7 +20,7 @@ import { Button } from '@/components/commons/Button';
 import Markdown from 'react-markdown';
 import remark from 'remark-gfm';
 import { WarningBox } from '@/components/commons/TipBox';
-import { useAppContext } from '@/hooks/app';
+import { FirmwareRelease, useAppContext } from '@/hooks/app';
 import { DeviceCardControl } from '@/components/firmware-tool/DeviceCard';
 import { Control, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -32,6 +33,23 @@ import {
 import { yupResolver } from '@hookform/resolvers/yup';
 import { object } from 'yup';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
+import { A } from '@/components/commons/A';
+
+export function checkForUpdate(
+  currentFirmwareRelease: FirmwareRelease,
+  hardwareInfo: HardwareInfoT
+) {
+  return (
+    // TODO: This is temporary, end goal is to support all board types
+    hardwareInfo.officialBoardType === BoardType.SLIMEVR &&
+    semver.valid(currentFirmwareRelease.version) &&
+    semver.valid(hardwareInfo.firmwareVersion?.toString() ?? 'none') &&
+    semver.lt(
+      hardwareInfo.firmwareVersion?.toString() ?? 'none',
+      currentFirmwareRelease.version
+    )
+  );
+}
 
 interface FirmwareUpdateForm {
   selectedDevices: { [key: string]: boolean };
@@ -88,9 +106,7 @@ const StatusList = ({ status }: { status: Record<string, UpdateStatus> }) => {
 };
 
 const MarkdownLink = (props: ComponentProps<'a'>) => (
-  <a target="_blank" href={props.href}>
-    {props.children}
-  </a>
+  <A href={props.href}>{props.children}</A>
 );
 
 export function FirmwareUpdate() {
@@ -105,15 +121,10 @@ export function FirmwareUpdate() {
     state.datafeed?.devices.filter(
       ({ trackers, hardwareInfo }) =>
         trackers.length > 0 &&
-        hardwareInfo?.officialBoardType === BoardType.SLIMEVR &&
         currentFirmwareRelease &&
-        semver.valid(currentFirmwareRelease.version) &&
-        semver.valid(hardwareInfo?.firmwareVersion?.toString() ?? 'none') &&
-        semver.lt(
-          hardwareInfo?.firmwareVersion?.toString() ?? 'none',
-          currentFirmwareRelease.version
-        ) &&
-        trackers.every(({ status }) => status == TrackerStatus.OK)
+        hardwareInfo &&
+        checkForUpdate(currentFirmwareRelease, hardwareInfo) &&
+        trackers.every(({ status }) => status === TrackerStatus.OK)
     ) || [];
 
   useRPCPacket(
@@ -127,7 +138,7 @@ export function FirmwareUpdate() {
       if (!id) throw new Error('invalid device id');
 
       const selectedDevice = selectedDevices?.find(
-        ({ deviceId }) => deviceId == id.toString()
+        ({ deviceId }) => deviceId === id.toString()
       );
 
       // We skip the status as it can be old trackers still sending status
@@ -186,6 +197,7 @@ export function FirmwareUpdate() {
   useEffect(() => {
     if (!currentFirmwareRelease) {
       navigate('/');
+      return;
     }
     return () => {
       clear();
@@ -196,7 +208,6 @@ export function FirmwareUpdate() {
     clear();
     const firmwareFile = currentFirmwareRelease?.firmwareFile;
     if (!firmwareFile) throw new Error('invalid state - no firmware file');
-    console.log(firmwareFile);
     const requests = getFlashingRequests(
       selectedDevices,
       [{ isFirmware: true, firmwareId: '', url: firmwareFile, offset: 0 }],
@@ -209,8 +220,12 @@ export function FirmwareUpdate() {
     });
   };
 
-  const trackerWithErrors = Object.keys(status).filter((id) =>
-    firmwareUpdateErrorStatus.includes(status[id].status)
+  const trackerWithErrors = useMemo(
+    () =>
+      Object.keys(status).filter((id) =>
+        firmwareUpdateErrorStatus.includes(status[id].status)
+      ),
+    [status]
   );
 
   const hasPendingTrackers = useMemo(
@@ -252,7 +267,7 @@ export function FirmwareUpdate() {
 
     reset({
       selectedDevices: devices.reduce(
-        (curr, { deviceId }) => ({ ...curr, [deviceId]: false }),
+        (curr, { deviceId }) => ({ ...curr, [deviceId]: true }),
         {}
       ),
     });
@@ -263,7 +278,7 @@ export function FirmwareUpdate() {
     const selectedDevices = Object.keys(selectedDevicesForm)
       .filter((d) => selectedDevicesForm[d])
       .map((id) => {
-        const device = devices.find(({ id: dId }) => id == dId?.id.toString());
+        const device = devices.find(({ id: dId }) => id === dId?.id.toString());
 
         if (!device) throw new Error('no device found');
         return {
@@ -285,22 +300,20 @@ export function FirmwareUpdate() {
   const statusKeys = Object.keys(status);
 
   return (
-    <div className="flex flex-col p-4 w-full items-center justify-center h-screen">
-      <div className="mobile:w-full w-10/12 h-full  flex flex-col gap-2">
+    <div className="flex flex-col p-4 w-full items-center justify-center">
+      <div className="mobile:w-full w-10/12 h-full flex flex-col gap-2">
         <Localized id="firmware-update_title">
           <Typography variant="main-title"></Typography>
         </Localized>
         <div className="grid md:grid-cols-2 xs:grid-cols-1 gap-5">
-          <div className={'flex flex-col gap-2'}>
+          <div className="flex flex-col gap-2">
             <Localized id="firmware-update_devices">
               <Typography variant="section-title"></Typography>
             </Localized>
             <Localized id="firmware-update_devices_desc">
               <Typography variant="standard" color="secondary"></Typography>
             </Localized>
-            <div
-              className={'flex flex-col gap-4 overflow-y-auto xs:max-h-[530px]'}
-            >
+            <div className="flex flex-col gap-4 overflow-y-auto xs:max-h-[530px]">
               {devices.length === 0 &&
                 !hasPendingTrackers &&
                 statusKeys.length == 0 && (
@@ -309,7 +322,7 @@ export function FirmwareUpdate() {
                   </Localized>
                 )}
               {shouldShowRebootWarning && (
-                <Localized id="firmware-tool-flashing-step-warning">
+                <Localized id="firmware-tool_flashing-step_warning">
                   <WarningBox>Warning</WarningBox>
                 </Localized>
               )}
@@ -346,7 +359,9 @@ export function FirmwareUpdate() {
                 remarkPlugins={[remark]}
                 components={{ a: MarkdownLink }}
                 className={classNames(
-                  'w-full text-sm prose-xl prose text-background-10 prose-h1:text-background-10 prose-h2:text-background-10 prose-a:text-background-20 prose-strong:text-background-10 prose-code:text-background-20'
+                  'w-full text-sm prose-xl prose text-background-10 prose-h1:text-background-10',
+                  'prose-h2:text-background-10 prose-a:text-background-20 prose-strong:text-background-10',
+                  'prose-code:text-background-20'
                 )}
               >
                 {currentFirmwareRelease?.changelog}
@@ -354,7 +369,7 @@ export function FirmwareUpdate() {
             </div>
           </div>
         </div>
-        <div className="flex justify-end w-full pb-2 gap-2 mobile:flex-col">
+        <div className="flex justify-end pb-2 gap-2 mobile:flex-col">
           <Localized id="firmware-update_retry">
             <Button
               variant="secondary"
@@ -365,7 +380,6 @@ export function FirmwareUpdate() {
           <Localized id="firmware-update_update">
             <Button
               variant="primary"
-              className="mobile:w-full"
               disabled={!canStartUpdate}
               onClick={startUpdate}
             ></Button>
