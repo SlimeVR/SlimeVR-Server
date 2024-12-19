@@ -1084,7 +1084,7 @@ firmware-tool_board-pins-step_led-pin =
     .label = LED Pin
     .placeholder = Enter the pin address of the LED
 
-firmware-tool_board-pins-step_battery-type = Select a battery type
+firmware-tool_board-pins-step_battery-type = Select the battery type
 firmware-tool_board-pins-step_battery-type_BAT_EXTERNAL = External battery
 firmware-tool_board-pins-step_battery-type_BAT_INTERNAL = Internal battery
 firmware-tool_board-pins-step_battery-type_BAT_INTERNAL_MCP3021 = Internal MCP3021
