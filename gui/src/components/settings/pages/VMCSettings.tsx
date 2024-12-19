@@ -53,12 +53,6 @@ export function VMCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [modelName, setModelName] = useState<string | null>(null);
-  const [flashLoaded, setFlashLoaded] = useState(false);
-
-  const toggleFlash = (bool: boolean) => {
-    setFlashLoaded(bool);
-    setTimeout(() => setFlashLoaded(!bool), 1000);
-  };
 
   const { reset, control, watch, handleSubmit } = useForm<VMCSettingsForm>({
     defaultValues,
@@ -74,11 +68,17 @@ export function VMCSettings() {
         new OSCSettingsT(),
         values.vmc.oscSettings
       );
-      if (values.vmc.vrmJson?.length) {
-        vmcOsc.vrmJson = await parseVRMFile(values.vmc.vrmJson[0]);
-        if (vmcOsc.vrmJson) {
-          toggleFlash(true);
-          setModelName(JSON.parse(vmcOsc.vrmJson).extensions.VRM.meta.title);
+      if (values.vmc.vrmJson !== undefined) {
+        if (values.vmc.vrmJson.length > 0) {
+          vmcOsc.vrmJson = await parseVRMFile(values.vmc.vrmJson[0]);
+          if (vmcOsc.vrmJson) {
+            setModelName(
+              JSON.parse(vmcOsc.vrmJson)?.extensions?.VRM?.meta?.title || ''
+            );
+          }
+        } else {
+          vmcOsc.vrmJson = '';
+          setModelName(null);
         }
       }
       vmcOsc.anchorHip = values.vmc.anchorHip;
@@ -114,7 +114,7 @@ export function VMCSettings() {
       }
       const vrmJson = settings.vmcOsc.vrmJson?.toString();
       if (vrmJson) {
-        setModelName(JSON.parse(vrmJson).extensions.VRM.meta.title);
+        setModelName(JSON.parse(vrmJson)?.extensions?.VRM?.meta?.title || '');
       }
 
       formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
@@ -236,16 +236,6 @@ export function VMCSettings() {
                 {l10n.getString('settings-osc-vmc-vrm-description')}
               </Typography>
             </div>
-            <div className="flex flex-col pb-2">
-              <Typography color={flashLoaded ? 'primary' : 'secondary'}>
-                {modelName === null
-                  ? l10n.getString('settings-osc-vmc-vrm-model_unloaded')
-                  : l10n.getString('settings-osc-vmc-vrm-model_loaded', {
-                      name: modelName,
-                      titled: (!!modelName).toString(),
-                    })}
-              </Typography>
-            </div>
             <div className="grid gap-3 pb-5">
               <FileInput
                 control={control}
@@ -254,6 +244,12 @@ export function VMCSettings() {
                   required: false,
                 }}
                 value="help"
+                importedFileName={
+                  // if modelname is an empty string, it's an untitled model
+                  modelName === ''
+                    ? l10n.getString('settings-osc-vmc-vrm-untitled_model')
+                    : modelName
+                }
                 label="settings-osc-vmc-vrm-file_select"
                 accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
               ></FileInput>

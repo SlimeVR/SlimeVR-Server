@@ -275,7 +275,7 @@ function OTADevicesList({
         {devices.map((device) => (
           <DeviceCardControl
             control={control}
-            key={`${device.id?.id ?? 0}`}
+            key={device.id?.id ?? 0}
             name={`ota.selectedDevices.id-${device.id?.id ?? 0}`}
             deviceNames={deviceNames(device)}
           ></DeviceCardControl>

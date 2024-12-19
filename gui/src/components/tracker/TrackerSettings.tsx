@@ -12,6 +12,7 @@ import {
   ImuType,
   MagnetometerStatus,
   RpcMessage,
+  TrackerDataType,
 } from 'solarxr-protocol';
 import { useDebouncedEffect } from '@/hooks/timeout';
 import { useTrackerFromId } from '@/hooks/tracker';
@@ -279,6 +280,16 @@ export function TrackerSettingsPage() {
               </Typography>
               <Typography>
                 {tracker?.device?.hardwareInfo?.hardwareIdentifier || '--'}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-data_support')}
+              </Typography>
+              <Typography>
+                {tracker?.tracker.info?.dataSupport
+                  ? TrackerDataType[tracker?.tracker.info?.dataSupport]
+                  : '--'}
               </Typography>
             </div>
             <div className="flex justify-between">
