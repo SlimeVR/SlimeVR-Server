@@ -287,15 +287,15 @@ export function FirmwareUpdate() {
   return (
     <div className="flex flex-col p-4 w-full items-center justify-center h-screen">
       <div className="mobile:w-full w-10/12 h-full  flex flex-col gap-2">
-        <Localized id="firmware-update-title">
+        <Localized id="firmware-update_title">
           <Typography variant="main-title"></Typography>
         </Localized>
         <div className="grid md:grid-cols-2 xs:grid-cols-1 gap-5">
           <div className={'flex flex-col gap-2'}>
-            <Localized id="firmware-update-devices">
+            <Localized id="firmware-update_devices">
               <Typography variant="section-title"></Typography>
             </Localized>
-            <Localized id="firmware-update-devices-desc">
+            <Localized id="firmware-update_devices_desc">
               <Typography variant="standard" color="secondary"></Typography>
             </Localized>
             <div
@@ -304,7 +304,7 @@ export function FirmwareUpdate() {
               {devices.length === 0 &&
                 !hasPendingTrackers &&
                 statusKeys.length == 0 && (
-                  <Localized id="firmware-update-no-devices">
+                  <Localized id="firmware-update_no-devices">
                     <WarningBox>Warning</WarningBox>
                   </Localized>
                 )}
@@ -326,7 +326,7 @@ export function FirmwareUpdate() {
                     )}
                   >
                     <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-                    <Localized id="firmware-update-looking-for-devices">
+                    <Localized id="firmware-update_looking-for-devices">
                       <Typography></Typography>
                     </Localized>
                   </div>
@@ -336,7 +336,7 @@ export function FirmwareUpdate() {
           </div>
           <div className="h-fit w-full flex flex-col gap-2">
             <Localized
-              id="firmware-update-changelog-title"
+              id="firmware-update_changelog_title"
               vars={{ version: currentFirmwareRelease?.name ?? 'unknown' }}
             >
               <Typography variant="main-title"></Typography>
@@ -355,14 +355,14 @@ export function FirmwareUpdate() {
           </div>
         </div>
         <div className="flex justify-end w-full pb-2 gap-2 mobile:flex-col">
-          <Localized id="firmware-update-retry">
+          <Localized id="firmware-update_retry">
             <Button
               variant="secondary"
               disabled={!canRetry}
               onClick={retryError}
             ></Button>
           </Localized>
-          <Localized id="firmware-update-update">
+          <Localized id="firmware-update_update">
             <Button
               variant="primary"
               className="mobile:w-full"
