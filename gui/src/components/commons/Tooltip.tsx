@@ -1,3 +1,4 @@
+import { useBreakpoint } from '@/hooks/breakpoint';
 import classNames from 'classnames';
 import {
   ReactNode,
@@ -8,6 +9,8 @@ import {
   MutableRefObject,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { Typography } from './Typography';
+import { CloseIcon } from './icon/CloseIcon';
 
 interface TooltipProps {
   content: ReactNode;
@@ -35,14 +38,14 @@ function overlapArea(rect1: Rect, rect2: Rect) {
   const overlapWidth = Math.max(
     0,
     Math.min(rect1.left + rect1.width, rect2.left + rect2.width) -
-      Math.max(rect1.left, rect2.left)
+    Math.max(rect1.left, rect2.left)
   );
 
   // Find the overlap in the y direction (height)
   const overlapHeight = Math.max(
     0,
     Math.min(rect1.top + rect1.height, rect2.top + rect2.height) -
-      Math.max(rect1.top, rect2.top)
+    Math.max(rect1.top, rect2.top)
   );
 
   // If there is an overlap, return the area; otherwise, return 0
@@ -206,8 +209,8 @@ const getFloatingTooltipPosition = (
               tooltipRect.height,
               firstPos.area.top + childrenRect.height + spacing,
               windowRect.height -
-                (childrenRect.y + childrenRect.height) -
-                spacing * 2
+              (childrenRect.y + childrenRect.height) -
+              spacing * 2
             ),
           };
       }
@@ -260,7 +263,6 @@ export function FloatingTooltip({
   useLayoutEffect(() => {
     if (childRef.current && childRef.current.children[0]) {
       const elem = childRef.current.children[0] as HTMLElement;
-      console.log(elem);
       elem.addEventListener('mouseenter', onMouseEnter);
       elem.addEventListener('mouseleave', onMouseLeave);
 
@@ -294,6 +296,114 @@ export function FloatingTooltip({
   );
 }
 
+const TOOLTIP_DELAY = 500;
+
+interface DrawerStyle {
+  bottom: number;
+}
+
+export function DrawerTooltip({ children, childRef }: { children: ReactNode, childRef: MutableRefObject<HTMLDivElement | null>; }) {
+  const touchTimestamp = useRef<number>(0);
+  const touchTimeout = useRef<number>(0);
+  const drawerRef = useRef<HTMLDivElement | null>(null)
+  const [drawerStyle, setDrawerStyle] = useState<DrawerStyle | undefined>(undefined);
+
+  const touchStart = () => {
+    if (childRef.current && childRef.current.children[0]) {
+      touchTimestamp.current = Date.now()
+      const elem = childRef.current.children[0] as HTMLElement;
+      elem.classList.add(classNames('transition-all'))
+      elem.classList.add(classNames('animate-pulse'))
+      elem.classList.add(classNames('scale-[110%]'))
+      elem.classList.add(classNames('duration-500'))
+      touchTimeout.current = setTimeout(() => {
+        open()
+      }, TOOLTIP_DELAY)
+
+    }
+  }
+
+  const clearEffect = () => {
+    if (childRef.current && childRef.current.children[0]) {
+      const elem = childRef.current.children[0] as HTMLElement;
+      elem.classList.remove(classNames('animate-pulse'))
+      elem.classList.remove(classNames('scale-[110%]'))
+      elem.classList.remove(classNames('duration-500'))
+
+    }
+  }
+
+  const touchEnd = (e: MouseEvent | TouchEvent) => {
+    if (Date.now() - touchTimestamp.current > TOOLTIP_DELAY) {
+      // open drawer
+      e.preventDefault(); // cancel the click event
+      clearTimeout(touchTimeout.current);
+
+      open()
+    }
+
+  }
+
+  const open = () => {
+    if (drawerStyle) return;
+    clearEffect();
+
+    if (!drawerRef.current)
+      throw new Error('invalid state')
+
+    setDrawerStyle({ bottom: 0 })
+    console.log(drawerRef.current?.getBoundingClientRect().height)
+
+    console.log('open')
+  }
+
+  const close = () => {
+    setDrawerStyle(undefined)
+  }
+
+
+  useLayoutEffect(() => {
+    if (childRef.current && childRef.current.children[0]) {
+      const elem = childRef.current.children[0] as HTMLElement;
+
+      elem.addEventListener('mousedown', touchStart); // for debug on desktop
+      elem.addEventListener('mouseup', touchEnd);  // for debug on desktop
+      elem.addEventListener('click', touchEnd)
+      elem.addEventListener('touchstart', touchStart);
+      elem.addEventListener('touchend', touchEnd);
+
+
+      return () => {
+        elem.removeEventListener('mousedown', touchStart); // for debug on desktop
+        elem.removeEventListener('mouseup', touchEnd); // for debug on desktop
+        elem.removeEventListener('touchstart', touchStart);
+        elem.removeEventListener('touchend', touchEnd);
+        clearTimeout(touchTimeout.current);
+      }
+    }
+  }, [])
+
+
+  return (
+    <>
+      <div className="absolute top-[44px] rounded-t-lg h-screen z-50 w-full bg-background-90 opacity-50" onClick={() => close()} style={{ opacity: drawerStyle ? 0.5 : 0, 'pointerEvents': drawerStyle ? 'all' : 'none' }}></div>
+      <div className={classNames('absolute z-50 w-full text-background-10 max-h-full -bottom-full transition-all overflow-clip')} style={drawerStyle}>
+        <div className='bg-background-60 rounded-t-lg border-background-40 border-t-2' ref={drawerRef}>
+          <div className='h-12 rounded-t-lg relative flex justify-center items-center'>
+            <Typography variant='section-title' textAlign='text-center'>Pro tip</Typography>
+            <button className='absolute right-4 top-3 h-6 w-6 bg-background-70 rounded-full flex justify-center items-center' onClick={() => close()}>
+              <CloseIcon size={20} className='stroke-white'></CloseIcon>
+            </button>
+          </div>
+          <div className='p-2 overflow-y-auto' style={{ maxHeight: 'calc(100vh - 49px - 44px)' }}>
+            {children}
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
 export function Tooltip({
   content,
   children,
@@ -301,18 +411,21 @@ export function Tooltip({
   mode = 'center',
 }: TooltipProps) {
   const childRef = useRef<HTMLDivElement | null>(null);
+  const { isMobile } = useBreakpoint('mobile')
 
   return (
-    <div className="contents" ref={childRef}>
+    <div className="contents " ref={childRef}>
       {children}
       {createPortal(
-        <FloatingTooltip
-          preferedDirection={preferedDirection}
-          mode={mode}
-          childRef={childRef}
-        >
-          {content}
-        </FloatingTooltip>,
+        isMobile ?
+          <DrawerTooltip childRef={childRef}>{content}</DrawerTooltip> :
+          <FloatingTooltip
+            preferedDirection={preferedDirection}
+            mode={mode}
+            childRef={childRef}
+          >
+            {content}
+          </FloatingTooltip>,
         document.body
       )}
     </div>

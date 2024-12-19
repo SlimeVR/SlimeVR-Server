@@ -51,10 +51,11 @@ export function WidgetsComponent() {
         <ResetButton type={ResetType.Full} variant="big"></ResetButton>
         <Tooltip
           content={<div className="">I AM A TALL TOOLTIP</div>}
-          preferedDirection="bottom"
+          preferedDirection="right"
         >
           <ResetButton type={ResetType.Mounting} variant="big"></ResetButton>
         </Tooltip>
+        AAAAAAAAAAAA
         <ClearMountingButton></ClearMountingButton>
         <BVHButton></BVHButton>
         <TrackingPauseButton></TrackingPauseButton>
