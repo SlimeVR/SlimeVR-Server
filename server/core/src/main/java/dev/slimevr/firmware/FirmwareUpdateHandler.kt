@@ -78,10 +78,6 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		listeners.removeIf { channel == it }
 	}
 
-	fun destroy() {
-		mainScope.cancel()
-	}
-
 	init {
 		server.addTrackerStatusListener(this)
 		server.provisioningHandler.addListener(this)
