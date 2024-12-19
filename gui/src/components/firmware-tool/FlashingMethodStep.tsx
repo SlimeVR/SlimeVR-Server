@@ -127,7 +127,7 @@ function SerialDevicesList({
 
   return (
     <>
-      <Localized id="firmware-tool_flash-method-serial_wifi">
+      <Localized id="firmware_tool-flash_method_serial-wifi">
         <Typography variant="section-title"></Typography>
       </Localized>
       <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3 text-background-10">
@@ -154,11 +154,11 @@ function SerialDevicesList({
           />
         </Localized>
       </div>
-      <Localized id="firmware-tool_flash-method-serial_devices-label">
+      <Localized id="firmware_tool-flash_method_serial-devices-label">
         <Typography variant="section-title"></Typography>
       </Localized>
       {Object.keys(devices).length === 0 ? (
-        <Localized id="firmware-tool_flash-method-serial_no-devices">
+        <Localized id="firmware_tool-flash_method_serial-no_devices">
           <Typography variant="standard" color="secondary"></Typography>
         </Localized>
       ) : (
@@ -170,7 +170,7 @@ function SerialDevicesList({
             value: port,
           }))}
           placeholder={l10n.getString(
-            'firmware-tool_flash-method-serial_devices-placeholder'
+            'firmware_tool-flash_method_serial-devices-placeholder'
           )}
           display="block"
           direction="down"
@@ -263,11 +263,11 @@ function OTADevicesList({
 
   return (
     <>
-      <Localized id="firmware-tool_flash-method-ota_devices">
+      <Localized id="firmware_tool-flash_method_ota-devices">
         <Typography variant="section-title"></Typography>
       </Localized>
       {devices.length === 0 && (
-        <Localized id="firmware-tool_flash-method-ota_no-devices">
+        <Localized id="firmware_tool-flash_method_ota-no_devices">
           <Typography color="secondary"></Typography>
         </Localized>
       )}
@@ -342,7 +342,7 @@ export function FlashingMethodStep({
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware-tool_flash-method-step_description')}
+            {l10n.getString('firmware_tool-flash_method_step-description')}
           </Typography>
         </div>
         <div className="my-4">
@@ -350,7 +350,7 @@ export function FlashingMethodStep({
             <div className="flex flex-col gap-3">
               <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3">
                 <Localized
-                  id="firmware-tool_flash-method-step_ota"
+                  id="firmware_tool-flash_method_step-ota"
                   attrs={{ label: true, description: true }}
                 >
                   <Radio
@@ -361,7 +361,7 @@ export function FlashingMethodStep({
                   ></Radio>
                 </Localized>
                 <Localized
-                  id="firmware-tool_flash-method-step_serial"
+                  id="firmware_tool-flash_method_step-serial"
                   attrs={{ label: true, description: true }}
                 >
                   <Radio
@@ -389,10 +389,10 @@ export function FlashingMethodStep({
                 ></OTADevicesList>
               )}
               <div className="flex justify-between">
-                <Localized id="firmware-tool_previous-step">
+                <Localized id="firmware_tool-previous_step">
                   <Button variant="secondary" onClick={prevStep}></Button>
                 </Localized>
-                <Localized id="firmware-tool_next-step">
+                <Localized id="firmware_tool-next_step">
                   <Button
                     variant="primary"
                     disabled={
@@ -409,7 +409,7 @@ export function FlashingMethodStep({
           {isGlobalLoading && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware-tool_loading">
+              <Localized id="firmware_tool-loading">
                 <Typography color="secondary"></Typography>
               </Localized>
             </div>

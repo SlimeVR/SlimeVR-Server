@@ -50,7 +50,7 @@ function IMUCard({
         <div className={'w-full flex flex-col gap-2'}>
           <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3 fill-background-10">
             <label className="flex flex-col justify-end gap-1">
-              <Localized id="firmware-tool_add-imus-step_imu-type_label"></Localized>
+              <Localized id="firmware_tool-add_imus_step-imu_type-label"></Localized>
               <Dropdown
                 control={control}
                 name={`imus[${index}].type`}
@@ -61,14 +61,14 @@ function IMUCard({
                 variant="secondary"
                 maxHeight="25vh"
                 placeholder={l10n.getString(
-                  'firmware-tool_add-imus-step_imu-type_placeholder'
+                  'firmware_tool-add_imus_step-imu_type-placeholder'
                 )}
                 direction="down"
                 display="block"
               ></Dropdown>
             </label>
             <Localized
-              id="firmware-tool_add-imus-step_imu-rotation"
+              id="firmware_tool-add_imus_step-imu_rotation"
               attrs={{ label: true, placeholder: true }}
             >
               <Input
@@ -94,7 +94,7 @@ function IMUCard({
               className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-2"
             >
               <Localized
-                id="firmware-tool_add-imus-step_scl-pin"
+                id="firmware_tool-add_imus_step-scl_pin"
                 attrs={{ label: true, placeholder: true }}
               >
                 <Input
@@ -107,7 +107,7 @@ function IMUCard({
                 ></Input>
               </Localized>
               <Localized
-                id="firmware-tool_add-imus-step_sda-pin"
+                id="firmware_tool-add_imus_step-sda_pin"
                 attrs={{ label: true, placeholder: true }}
               >
                 <Input
@@ -124,7 +124,7 @@ function IMUCard({
 
               {hasIntPin && (
                 <Localized
-                  id="firmware-tool_add-imus-step_int-pin"
+                  id="firmware_tool-add_imus_step-int_pin"
                   attrs={{ label: true, placeholder: true }}
                 >
                   <Input
@@ -139,7 +139,7 @@ function IMUCard({
               )}
               <label className="flex flex-col justify-end gap-1 md:pt-3 sm:pt-3">
                 <Localized
-                  id="firmware-tool_add-imus-step_optional-tracker"
+                  id="firmware_tool-add_imus_step-optional_tracker"
                   attrs={{ label: true }}
                 >
                   <CheckBox
@@ -167,8 +167,8 @@ function IMUCard({
         <Typography>
           {l10n.getString(
             open
-              ? 'firmware-tool_add-imus-step_show-less'
-              : 'firmware-tool_add-imus-step_show-more'
+              ? 'firmware_tool-add_imus_step-show_less'
+              : 'firmware_tool-add_imus_step-show_more'
           )}
         </Typography>
         {!open && <ArrowDownIcon></ArrowDownIcon>}
@@ -241,7 +241,7 @@ export function AddImusStep({
       <div className="flex flex-col w-full">
         <div className="flex flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware-tool_board-pins-step_description')}
+            {l10n.getString('firmware_tool-board_pins_step-description')}
           </Typography>
         </div>
         <div className="my-4 flex flex-col gap-4">
@@ -271,16 +271,16 @@ export function AddImusStep({
                   ))}
                 </div>
                 <div className="flex justify-center">
-                  <Localized id="firmware-tool_add-imus-step_add-more">
+                  <Localized id="firmware_tool-add_imus_step-add_more">
                     <Button variant="primary" onClick={addImu}></Button>
                   </Localized>
                 </div>
               </div>
               <div className="flex justify-between">
-                <Localized id="firmware-tool_previous-step">
+                <Localized id="firmware_tool-previous_step">
                   <Button variant="tertiary" onClick={prevStep}></Button>
                 </Localized>
-                <Localized id="firmware-tool_next-step">
+                <Localized id="firmware_tool-next_step">
                   <Button
                     variant="primary"
                     disabled={!isValidState || form.imus.length === 0}
@@ -296,7 +296,7 @@ export function AddImusStep({
           {isAckchuallyLoading && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware-tool_loading">
+              <Localized id="firmware_tool-loading">
                 <Typography color="secondary"></Typography>
               </Localized>
             </div>

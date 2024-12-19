@@ -41,11 +41,11 @@ export function SelectFirmwareStep({
       <div className="flex flex-col w-full">
         <div className="flex justify-between items-center mobile:flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware-tool_select-firmware-step_description')}
+            {l10n.getString('firmware_tool-select_firmware_step-description')}
           </Typography>
           <div>
             <Localized
-              id="firmware-tool_select-firmware-step_show-third-party"
+              id="firmware_tool-select_firmware_step-show-third-party"
               attrs={{ label: true }}
             >
               <CheckBox
@@ -83,7 +83,7 @@ export function SelectFirmwareStep({
                 </div>
               </div>
               <div className="flex justify-between">
-                <Localized id="firmware-tool_previous-step">
+                <Localized id="firmware_tool-previous_step">
                   <Button
                     variant="tertiary"
                     onClick={() => {
@@ -95,7 +95,7 @@ export function SelectFirmwareStep({
                     }}
                   ></Button>
                 </Localized>
-                <Localized id="firmware-tool_next-step">
+                <Localized id="firmware_tool-next_step">
                   <Button
                     variant="primary"
                     disabled={!newConfig?.version}
@@ -108,7 +108,7 @@ export function SelectFirmwareStep({
           {isFetching && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware-tool_loading">
+              <Localized id="firmware_tool-loading">
                 <Typography color="secondary"></Typography>
               </Localized>
             </div>
