@@ -472,10 +472,6 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			ProvisioningStatus.CONNECTION_ERROR, ProvisioningStatus.COULD_NOT_FIND_SERVER -> update(FirmwareUpdateStatus.ERROR_PROVISIONING_FAILED)
 			else -> {}
 		}
-<<<<<<< HEAD
-
-=======
->>>>>>> 73cdc890f29ad15710b16e676013c374adba29ad
 	}
 
 	override fun onSerialDeviceReconnect(deviceHandle: Pair<UpdateDeviceId<*>, () -> Unit>) {
