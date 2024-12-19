@@ -1,6 +1,6 @@
 import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
-import { getTrackerName } from '@/hooks/tracker';
+import { getTrackerName, useTracker, useTrackerFromId } from '@/hooks/tracker';
 import { ComponentProps, useEffect, useMemo, useState } from 'react';
 import {
   BoardType,
@@ -93,6 +93,10 @@ const StatusList = ({ status }: { status: Record<string, UpdateStatus> }) => {
     const val = status[id];
 
     if (!val) throw new Error('there should always be a val');
+    const { state } = useAppContext();
+    const device = state.datafeed?.devices.find(
+      ({ id: dId }) => id === dId?.id.toString()
+    );
 
     return (
       <DeviceCardControl
@@ -100,6 +104,9 @@ const StatusList = ({ status }: { status: Record<string, UpdateStatus> }) => {
         progress={val.progress}
         key={index}
         deviceNames={val.deviceNames}
+        online={device?.trackers.some(
+          ({ status }) => status === TrackerStatus.OK
+        )}
       ></DeviceCardControl>
     );
   });
@@ -293,7 +300,11 @@ export function FirmwareUpdate() {
     queueFlashing(selectedDevices);
   };
 
-  const canStartUpdate = isValid && devices.length !== 0 && !hasPendingTrackers;
+  const canStartUpdate =
+    isValid &&
+    devices.length !== 0 &&
+    !hasPendingTrackers &&
+    trackerWithErrors.length === 0;
   const canRetry =
     isValid && devices.length !== 0 && trackerWithErrors.length !== 0;
 

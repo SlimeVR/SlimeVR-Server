@@ -1,15 +1,20 @@
-import { Control, Controller } from 'react-hook-form';
-import { Typography } from '@/components/commons/Typography';
-import { ProgressBar } from '@/components/commons/ProgressBar';
 import { CHECKBOX_CLASSES } from '@/components/commons/Checkbox';
-import classNames from 'classnames';
-import { FirmwareUpdateStatus } from 'solarxr-protocol';
-import { useLocalization } from '@fluent/react';
+import { ProgressBar } from '@/components/commons/ProgressBar';
+import { Typography } from '@/components/commons/Typography';
 import { firmwareUpdateErrorStatus } from '@/hooks/firmware-tool';
+import { useLocalization } from '@fluent/react';
+import classNames from 'classnames';
+import { Control, Controller } from 'react-hook-form';
+import {
+  FirmwareUpdateStatus,
+  TrackerStatus as TrackerStatusEnum,
+} from 'solarxr-protocol';
+import { TrackerStatus } from '@/components/tracker/TrackerStatus';
 
 interface DeviceCardProps {
   deviceNames: string[];
   status?: FirmwareUpdateStatus;
+  online?: boolean | null;
 }
 
 interface DeviceCardControlProps {
@@ -34,12 +39,14 @@ export function DeviceCardContent({ deviceNames, status }: DeviceCardProps) {
           </span>
         ))}
       </div>
-      {!!status && (
+      {status !== undefined ? (
         <Typography color="secondary">
           {l10n.getString(
             'firmware_update-status-' + FirmwareUpdateStatus[status]
           )}
         </Typography>
+      ) : (
+        <Typography> </Typography> // placeholder so the size of the component does not change if there is no status
       )}
     </div>
   );
@@ -50,12 +57,13 @@ export function DeviceCardControl({
   name,
   progress,
   disabled = false,
+  online = null,
   ...props
 }: DeviceCardControlProps & DeviceCardProps) {
   return (
     <div
       className={classNames(
-        'rounded-md bg-background-60 h-[86px] pt-2 flex flex-col justify-between border-2 ',
+        'rounded-md bg-background-60 h-[86px] pt-2 flex flex-col justify-between border-2 relative',
         props.status &&
           firmwareUpdateErrorStatus.includes(props.status) &&
           'border-status-critical',
@@ -110,6 +118,15 @@ export function DeviceCardControl({
           colorClass="bg-accent-background-20"
         ></ProgressBar>
       </div>
+      {online !== null && (
+        <div className="absolute top-2 right-2">
+          <TrackerStatus
+            status={
+              online ? TrackerStatusEnum.OK : TrackerStatusEnum.DISCONNECTED
+            }
+          ></TrackerStatus>
+        </div>
+      )}
     </div>
   );
 }
