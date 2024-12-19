@@ -45,7 +45,8 @@ const displayColumns: { [k: string]: boolean } = {
 };
 
 const isSlime = ({ device }: FlatDeviceTracker) =>
-  device?.hardwareInfo?.manufacturer === 'SlimeVR';
+  device?.hardwareInfo?.manufacturer === 'SlimeVR' ||
+  device?.hardwareInfo?.manufacturer === 'HID Device';
 
 const getDeviceName = ({ device }: FlatDeviceTracker) =>
   device?.customName?.toString() || '';

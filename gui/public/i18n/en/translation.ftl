@@ -44,6 +44,36 @@ body_part-LEFT_HAND = Left hand
 body_part-LEFT_UPPER_LEG = Left thigh
 body_part-LEFT_LOWER_LEG = Left ankle
 body_part-LEFT_FOOT = Left foot
+body_part-LEFT_THUMB_METACARPAL = Left thumb metacarpal
+body_part-LEFT_THUMB_PROXIMAL = Left thumb proximal
+body_part-LEFT_THUMB_DISTAL = Left thumb distal
+body_part-LEFT_INDEX_PROXIMAL = Left index proximal
+body_part-LEFT_INDEX_INTERMEDIATE = Left index intermediate
+body_part-LEFT_INDEX_DISTAL = Left index distal
+body_part-LEFT_MIDDLE_PROXIMAL = Left middle proximal
+body_part-LEFT_MIDDLE_INTERMEDIATE = Left middle intermediate
+body_part-LEFT_MIDDLE_DISTAL = Left middle distal
+body_part-LEFT_RING_PROXIMAL = Left ring proximal
+body_part-LEFT_RING_INTERMEDIATE = Left ring intermediate
+body_part-LEFT_RING_DISTAL = Left ring distal
+body_part-LEFT_LITTLE_PROXIMAL = Left little proximal
+body_part-LEFT_LITTLE_INTERMEDIATE = Left little intermediate
+body_part-LEFT_LITTLE_DISTAL = Left little distal
+body_part-RIGHT_THUMB_METACARPAL = Right thumb metacarpal
+body_part-RIGHT_THUMB_PROXIMAL = Right thumb proximal
+body_part-RIGHT_THUMB_DISTAL = Right thumb distal
+body_part-RIGHT_INDEX_PROXIMAL = Right index proximal
+body_part-RIGHT_INDEX_INTERMEDIATE = Right index intermediate
+body_part-RIGHT_INDEX_DISTAL = Right index distal
+body_part-RIGHT_MIDDLE_PROXIMAL = Right middle proximal
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Right middle intermediate
+body_part-RIGHT_MIDDLE_DISTAL = Right middle distal
+body_part-RIGHT_RING_PROXIMAL = Right ring proximal
+body_part-RIGHT_RING_INTERMEDIATE = Right ring intermediate
+body_part-RIGHT_RING_DISTAL = Right ring distal
+body_part-RIGHT_LITTLE_PROXIMAL = Right little proximal
+body_part-RIGHT_LITTLE_INTERMEDIATE = Right little intermediate
+body_part-RIGHT_LITTLE_DISTAL = Right little distal
 
 ## Proportions
 skeleton_bone-NONE = None
@@ -188,6 +218,7 @@ tracker-infos-url = Tracker URL
 tracker-infos-version = Firmware Version
 tracker-infos-hardware_rev = Hardware Revision
 tracker-infos-hardware_identifier = Hardware ID
+tracker-infos-data_support = Data support
 tracker-infos-imu = IMU Sensor
 tracker-infos-board_type = Main board
 tracker-infos-network_version = Protocol Version
@@ -614,11 +645,7 @@ settings-osc-vmc-network-address-description = Choose which address to send out 
 settings-osc-vmc-network-address-placeholder = IPV4 address
 settings-osc-vmc-vrm = VRM Model
 settings-osc-vmc-vrm-description = Load a VRM model to allow head anchor and enable a higher compatibility with other applications.
-settings-osc-vmc-vrm-model_unloaded = No model loaded
-settings-osc-vmc-vrm-model_loaded = { $titled ->
-    *[false] Untitled model loaded
-    [true] Model loaded: { $name }
-}
+settings-osc-vmc-vrm-untitled_model = Untitled model
 settings-osc-vmc-vrm-file_select = Drag & drop a model to use, or <u>browse</u>
 settings-osc-vmc-anchor_hip = Anchor at hips
 settings-osc-vmc-anchor_hip-description = Anchor the tracking at the hips, useful for seated VTubing. If disabling, load a VRM model.

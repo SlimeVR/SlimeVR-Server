@@ -5,6 +5,7 @@ import dev.slimevr.config.TrackerConfig
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
 import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
+import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -67,6 +68,11 @@ class Tracker @JvmOverloads constructor(
 	val needsMounting: Boolean = false,
 	val isHmd: Boolean = false,
 	magStatus: MagnetometerStatus = MagnetometerStatus.NOT_SUPPORTED,
+	/**
+	 * Rotation by default.
+	 * NOT the same as hasRotation (other data types emulate rotation)
+	 */
+	val trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
 ) {
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
@@ -75,6 +81,7 @@ class Tracker @JvmOverloads constructor(
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
+	val trackerFlexHandler: TrackerFlexHandler = TrackerFlexHandler(this)
 	var batteryVoltage: Float? = null
 	var batteryLevel: Float? = null
 	var ping: Int? = null
@@ -150,7 +157,7 @@ class Tracker @JvmOverloads constructor(
 
 	fun checkReportRequireReset() {
 		if (needsReset && trackerPosition != null && lastResetStatus == 0u &&
-			!status.reset && (isImu() || !statusResetRecently)
+			!status.reset && (isImu() || !statusResetRecently && trackerDataType != TrackerDataType.FLEX_ANGLE)
 		) {
 			reportRequireReset()
 		} else if (lastResetStatus != 0u && (trackerPosition == null || status.reset)) {
@@ -319,16 +326,16 @@ class Tracker @JvmOverloads constructor(
 	 * it too much should be avoided for performance reasons.
 	 */
 	fun getRotation(): Quaternion {
-		var rot = if (allowFiltering && filteringHandler.enabled) {
+		var rot = if (allowFiltering && filteringHandler.filteringEnabled) {
 			// Get filtered rotation
 			filteringHandler.getFilteredRotation()
 		} else {
 			// Get unfiltered rotation
-			_rotation
+			filteringHandler.getTrackedRotation()
 		}
 
 		// Reset if needed and is not computed and internal
-		if (needsReset && !(isComputed && isInternal)) {
+		if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset, mounting and drift compensation
 			rot = resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
 		}
@@ -351,16 +358,16 @@ class Tracker @JvmOverloads constructor(
 	 * This is used for debugging/visualizing tracker data
 	 */
 	fun getIdentityAdjustedRotation(): Quaternion {
-		var rot = if (filteringHandler.enabled) {
+		var rot = if (filteringHandler.filteringEnabled) {
 			// Get filtered rotation
 			filteringHandler.getFilteredRotation()
 		} else {
 			// Get unfiltered rotation
-			_rotation
+			filteringHandler.getTrackedRotation()
 		}
 
 		// Reset if needed or is a computed tracker besides head
-		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD)) {
+		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset and mounting
 			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		}
@@ -372,7 +379,7 @@ class Tracker @JvmOverloads constructor(
 	 * Gets the raw (unadjusted) rotation of the tracker.
 	 * If this is an IMU, this will be the raw sensor rotation.
 	 */
-	fun getRawRotation(): Quaternion = _rotation
+	fun getRawRotation() = _rotation
 
 	/**
 	 * Sets the raw (unadjusted) rotation of the tracker.
@@ -388,7 +395,11 @@ class Tracker @JvmOverloads constructor(
 		this._acceleration = vec
 	}
 
-	fun isImu(): Boolean = imuType != null
+	/**
+	 * True if the raw rotation is coming directly from an IMU (no cameras or lighthouses)
+	 * For example, flex sensor trackers are not considered as IMU trackers (see TrackerDataType)
+	 */
+	fun isImu(): Boolean = imuType != null && trackerDataType == TrackerDataType.ROTATION
 
 	/**
 	 * Please don't use this and instead set it via [Device.setMag]
@@ -406,4 +417,11 @@ class Tracker @JvmOverloads constructor(
 	 */
 	val tps: Float
 		get() = timer.averageFPS
+
+	/**
+	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
+	 */
+	fun resetFilteringQuats() {
+		filteringHandler.resetQuats(_rotation)
+	}
 }
