@@ -50,6 +50,7 @@ allprojects {
 		// You can declare any Maven/Ivy/file repository here.
 		mavenCentral()
 		maven(url = "https://jitpack.io")
+		maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
 	}
 }
 
@@ -62,7 +63,7 @@ dependencies {
 	implementation("com.google.protobuf:protobuf-java:3.21.12")
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
-	implementation("com.fazecast:jSerialComm:2.11.0")
+	implementation("com.fazecast:jSerialComm:2.11.1-SNAPSHOT")
 	implementation("org.hid4java:hid4java:0.8.0")
 }
 
