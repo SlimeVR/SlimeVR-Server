@@ -1,5 +1,6 @@
 import { MouseEventHandler } from 'react';
 import {
+  BoardType,
   DeviceDataT,
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
@@ -11,6 +12,10 @@ import { TrackerStatus } from './TrackerStatus';
 import classNames from 'classnames';
 import { useTracker } from '@/hooks/tracker';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
+import { DownloadIcon } from '@/components/commons/icon/DownloadIcon';
+import semver from 'semver';
+import { Link } from 'react-router-dom';
+import { useAppContext } from '@/hooks/app';
 
 function TrackerBig({
   device,
@@ -120,6 +125,7 @@ export function TrackerCard({
   bg = 'bg-background-60',
   shakeHighlight = true,
   warning = false,
+  showUpdates = false,
 }: {
   tracker: TrackerDataT;
   device?: DeviceDataT;
@@ -130,33 +136,59 @@ export function TrackerCard({
   shakeHighlight?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
   warning?: boolean;
+  showUpdates?: boolean;
 }) {
+  const { currentFirmwareRelease } = useAppContext();
   const { useVelocity } = useTracker(tracker);
 
   const velocity = useVelocity();
 
   return (
-    <div
-      onClick={onClick}
-      className={classNames(
-        'rounded-lg overflow-hidden',
-        interactable && 'hover:bg-background-50 cursor-pointer',
-        outlined && 'outline outline-2 outline-accent-background-40',
-        warning && 'border-status-warning border-solid border-2',
-        bg
-      )}
-      style={
-        shakeHighlight
-          ? {
-              boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
-                velocity * 8
-              )}px rgb(var(--accent-background-30))`,
-            }
-          : {}
-      }
-    >
-      {smol && <TrackerSmol tracker={tracker} device={device}></TrackerSmol>}
-      {!smol && <TrackerBig tracker={tracker} device={device}></TrackerBig>}
+    <div className="relative">
+      <div
+        onClick={onClick}
+        className={classNames(
+          'rounded-lg overflow-hidden',
+          interactable && 'hover:bg-background-50 cursor-pointer',
+          outlined && 'outline outline-2 outline-accent-background-40',
+          warning && 'border-status-warning border-solid border-2',
+          bg
+        )}
+        style={
+          shakeHighlight
+            ? {
+                boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
+                  velocity * 8
+                )}px rgb(var(--accent-background-30))`,
+              }
+            : {}
+        }
+      >
+        {smol && <TrackerSmol tracker={tracker} device={device}></TrackerSmol>}
+        {!smol && <TrackerBig tracker={tracker} device={device}></TrackerBig>}
+      </div>
+      {showUpdates &&
+        tracker.status !== TrackerStatusEnum.DISCONNECTED &&
+        // This is temporary, end goal is to support all board types
+        device?.hardwareInfo?.officialBoardType === BoardType.SLIMEVR &&
+        currentFirmwareRelease &&
+        semver.valid(currentFirmwareRelease.version) &&
+        semver.valid(
+          device?.hardwareInfo?.firmwareVersion?.toString() ?? 'none'
+        ) &&
+        semver.lt(
+          device?.hardwareInfo?.firmwareVersion?.toString() ?? 'none',
+          currentFirmwareRelease.version
+        ) && (
+          <Link to="/firmware-update" className="absolute right-5 -top-2.5">
+            <div className="relative">
+              <div className="absolute rounded-full h-6 w-6 left-1 top-1 bg-accent-background-10 animate-[ping_2s_linear_infinite]"></div>
+              <div className="absolute rounded-full h-8 w-8 hover:bg-background-40 hover:cursor-pointer bg-background-50 justify-center flex items-center">
+                <DownloadIcon width={15}></DownloadIcon>
+              </div>
+            </div>
+          </Link>
+        )}
     </div>
   );
 }

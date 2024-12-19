@@ -117,6 +117,8 @@ class Tracker @JvmOverloads constructor(
 			}
 			checkReportErrorStatus()
 			checkReportRequireReset()
+
+			VRServer.instance.trackerStatusChanged(this, old, new)
 		}
 	}
 
