@@ -68,7 +68,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 	private val mainScope: CoroutineScope = CoroutineScope(SupervisorJob())
 	private var clearJob: Deferred<Unit>? = null
 
-	private var serialRebootHandler: SerialRebootHandler = SerialRebootHandler(watchRestartQueue, server,this)
+	private var serialRebootHandler: SerialRebootHandler = SerialRebootHandler(watchRestartQueue, server, this)
 
 	fun addListener(channel: FirmwareUpdateListener) {
 		listeners.add(channel)
@@ -200,7 +200,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 				server.provisioningHandler.start(ssid, password, serialPort.portLocation)
 			}
 		} catch (e: Exception) {
-			LogManager.severe("[FirmwareUpdateHandler] Upload failed", e);
+			LogManager.severe("[FirmwareUpdateHandler] Upload failed", e)
 			onStatusChange(
 				UpdateStatusEvent(
 					deviceId,
@@ -368,7 +368,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 				),
 			)
 			if (e !is TimeoutCancellationException) {
-				LogManager.severe("[FirmwareUpdateHandler] Update process timed out", e);
+				LogManager.severe("[FirmwareUpdateHandler] Update process timed out", e)
 				e.printStackTrace()
 			}
 			return@coroutineScope
@@ -404,9 +404,10 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			// if more than 30s between two events, consider the update as stuck
 			// We do not timeout on the Downloading step as it has it own timeout
 			// We do not timeout on the Done step as it is the end of the update process
-			if (!device.status.isError()
-				&& !intArrayOf(FirmwareUpdateStatus.DONE.id, FirmwareUpdateStatus.DOWNLOADING.id).contains(device.status.id)
-				&& System.currentTimeMillis() - device.time > 30 * 1000) {
+			if (!device.status.isError() &&
+				!intArrayOf(FirmwareUpdateStatus.DONE.id, FirmwareUpdateStatus.DOWNLOADING.id).contains(device.status.id) &&
+				System.currentTimeMillis() - device.time > 30 * 1000
+			) {
 				onStatusChange(
 					UpdateStatusEvent(
 						id,
@@ -471,7 +472,10 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			ProvisioningStatus.CONNECTION_ERROR, ProvisioningStatus.COULD_NOT_FIND_SERVER -> update(FirmwareUpdateStatus.ERROR_PROVISIONING_FAILED)
 			else -> {}
 		}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 73cdc890f29ad15710b16e676013c374adba29ad
 	}
 
 	override fun onSerialDeviceReconnect(deviceHandle: Pair<UpdateDeviceId<*>, () -> Unit>) {
