@@ -179,7 +179,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			flasher.flash(serialPort)
 			if (needManualReboot) {
 				if (watchRestartQueue.find { it.first == deviceId } != null) {
-					LogManager.info("[FirmwareUpdateHandler] Device is already updating, Skipping")
+					LogManager.info("[FirmwareUpdateHandler] Device is already updating, skipping")
 				}
 
 				onStatusChange(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.NEED_MANUAL_REBOOT))
