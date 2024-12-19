@@ -41,10 +41,13 @@ export function SelectFirmwareStep({
       <div className="flex flex-col w-full">
         <div className="flex justify-between items-center mobile:flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware-tool-select-firmware-step-description')}
+            {l10n.getString('firmware-tool_select-firmware-step_description')}
           </Typography>
           <div>
-            <Localized id="firmware-tool-select-firmware-step-show-third-party">
+            <Localized
+              id="firmware-tool_select-firmware-step_show-third-party"
+              attrs={{ label: true }}
+            >
               <CheckBox
                 control={control}
                 name="thirdParty"
@@ -58,29 +61,29 @@ export function SelectFirmwareStep({
             <div className="flex flex-col gap-4">
               <div className="xs-settings:max-h-96 xs-settings:overflow-y-auto xs-settings:px-2">
                 <div className="grid sm:grid-cols-2 mobile-settings:grid-cols-1 gap-2">
-                  {filteredFirmwares?.map((firmwares) => (
+                  {filteredFirmwares?.map((firmware) => (
                     <div
-                      key={firmwares.id}
+                      key={firmware.id}
                       className={classNames(
                         'p-3 rounded-md hover:bg-background-50',
                         {
                           'bg-background-50 text-background-10':
-                            newConfig?.version === firmwares.name,
+                            newConfig?.version === firmware.name,
                           'bg-background-60':
-                            newConfig?.version !== firmwares.name,
+                            newConfig?.version !== firmware.name,
                         }
                       )}
                       onClick={() => {
-                        selectVersion(firmwares.name);
+                        selectVersion(firmware.name);
                       }}
                     >
-                      {getName(firmwares.name)}
+                      {getName(firmware.name)}
                     </div>
                   ))}
                 </div>
               </div>
               <div className="flex justify-between">
-                <Localized id="firmware-tool-previous-step">
+                <Localized id="firmware-tool_previous-step">
                   <Button
                     variant="tertiary"
                     onClick={() => {
@@ -92,7 +95,7 @@ export function SelectFirmwareStep({
                     }}
                   ></Button>
                 </Localized>
-                <Localized id="firmware-tool-next-step">
+                <Localized id="firmware-tool_next-step">
                   <Button
                     variant="primary"
                     disabled={!newConfig?.version}
@@ -105,7 +108,7 @@ export function SelectFirmwareStep({
           {isFetching && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware-tool-loading">
+              <Localized id="firmware-tool_loading">
                 <Typography color="secondary"></Typography>
               </Localized>
             </div>

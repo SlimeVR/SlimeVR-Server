@@ -76,9 +76,8 @@ dependencies {
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-	implementation("it.unimi.dsi:fastutil:8.5.12")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
-	implementation("com.mayakapps.kache:kache:2.0.0-rc02")
+	implementation("com.mayakapps.kache:kache:2.1.0")
 
 	api("com.github.loucass003:EspflashKotlin:v0.10.0")
 

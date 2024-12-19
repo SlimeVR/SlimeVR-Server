@@ -100,29 +100,34 @@ function SerialDevicesList({
   const serialValues = watch('serial');
 
   useEffect(() => {
-    if (serialValues) {
-      setWifiCredentials(serialValues.ssid, serialValues.password);
-      if (
-        serialValues.selectedDevicePort &&
-        devices[serialValues.selectedDevicePort]
-      ) {
-        selectDevices([
-          {
-            type: FirmwareUpdateMethod.SerialFirmwareUpdate,
-            deviceId: serialValues.selectedDevicePort,
-            deviceNames: [
-              devices[serialValues.selectedDevicePort].name?.toString() ??
-                'unknown',
-            ],
-          },
-        ]);
-      } else selectDevices(null);
-    } else selectDevices(null);
+    if (!serialValues) {
+      selectDevices(null);
+      return;
+    }
+
+    setWifiCredentials(serialValues.ssid, serialValues.password);
+    if (
+      serialValues.selectedDevicePort &&
+      devices[serialValues.selectedDevicePort]
+    ) {
+      selectDevices([
+        {
+          type: FirmwareUpdateMethod.SerialFirmwareUpdate,
+          deviceId: serialValues.selectedDevicePort,
+          deviceNames: [
+            devices[serialValues.selectedDevicePort].name?.toString() ??
+              'unknown',
+          ],
+        },
+      ]);
+    } else {
+      selectDevices(null);
+    }
   }, [JSON.stringify(serialValues), devices]);
 
   return (
     <>
-      <Localized id="firmware-tool-flash-method-serial-wifi">
+      <Localized id="firmware-tool_flash-method-serial_wifi">
         <Typography variant="section-title"></Typography>
       </Localized>
       <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3 text-background-10">
@@ -149,11 +154,11 @@ function SerialDevicesList({
           />
         </Localized>
       </div>
-      <Localized id="firmware-tool-flash-method-serial-devices-label">
+      <Localized id="firmware-tool_flash-method-serial_devices-label">
         <Typography variant="section-title"></Typography>
       </Localized>
-      {Object.keys(devices).length == 0 ? (
-        <Localized id="firmware-tool-flash-method-serial-no-devices">
+      {Object.keys(devices).length === 0 ? (
+        <Localized id="firmware-tool_flash-method-serial_no-devices">
           <Typography variant="standard" color="secondary"></Typography>
         </Localized>
       ) : (
@@ -165,7 +170,7 @@ function SerialDevicesList({
             value: port,
           }))}
           placeholder={l10n.getString(
-            'firmware-tool-flash-method-serial-devices-placeholder'
+            'firmware-tool_flash-method-serial_devices-placeholder'
           )}
           display="block"
           direction="down"
@@ -189,18 +194,29 @@ function OTADevicesList({
   const { state } = useAppContext();
 
   const devices =
-    state.datafeed?.devices.filter(
-      ({ trackers, hardwareInfo }) =>
-        trackers.length > 0 &&
-        boardTypeToFirmwareToolBoardType[
-          (hardwareInfo?.officialBoardType !== BoardType.SLIMEVR_LEGACY &&
-            hardwareInfo?.officialBoardType !== BoardType.SLIMEVR_DEV &&
-            hardwareInfo?.officialBoardType !== BoardType.CUSTOM &&
-            hardwareInfo?.officialBoardType) ||
-            BoardType.UNKNOWN
-        ] == newConfig?.boardConfig?.type &&
-        trackers.every(({ status }) => status == TrackerStatus.OK)
-    ) || [];
+    state.datafeed?.devices.filter(({ trackers, hardwareInfo }) => {
+      // We make sure the device is not one of these types
+      if (
+        hardwareInfo?.officialBoardType === BoardType.SLIMEVR_LEGACY ||
+        hardwareInfo?.officialBoardType === BoardType.SLIMEVR_DEV ||
+        hardwareInfo?.officialBoardType === BoardType.CUSTOM
+      )
+        return false;
+
+      // if the device has no trackers it is prob misconfigured so we skip for safety
+      if (trackers.length <= 0) return false;
+
+      // We make sure that the tracker is in working condition before doing ota as an error (that could be hardware)
+      // could cause an error during the update
+      if (!trackers.every(({ status }) => status === TrackerStatus.OK))
+        return false;
+
+      const boardType = hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN;
+      return (
+        boardTypeToFirmwareToolBoardType[boardType] ===
+        newConfig?.boardConfig?.type
+      );
+    }) || [];
 
   const deviceNames = ({ trackers }: DeviceDataT) =>
     trackers
@@ -231,7 +247,7 @@ function OTADevicesList({
           .map((id) => id.substring('id-'.length))
           .map((id) => {
             const device = devices.find(
-              ({ id: dId }) => id == dId?.id.toString()
+              ({ id: dId }) => id === dId?.id.toString()
             );
 
             if (!device) throw new Error('no device found');
@@ -247,11 +263,11 @@ function OTADevicesList({
 
   return (
     <>
-      <Localized id="firmware-tool-flash-method-ota-devices">
+      <Localized id="firmware-tool_flash-method-ota_devices">
         <Typography variant="section-title"></Typography>
       </Localized>
-      {devices.length == 0 && (
-        <Localized id="firmware-tool-flash-method-ota-no-devices">
+      {devices.length === 0 && (
+        <Localized id="firmware-tool_flash-method-ota_no-devices">
           <Typography color="secondary"></Typography>
         </Localized>
       )}
@@ -259,7 +275,7 @@ function OTADevicesList({
         {devices.map((device) => (
           <DeviceCardControl
             control={control}
-            key={`${device.id?.id ?? 0}`}
+            key={device.id?.id ?? 0}
             name={`ota.selectedDevices.id-${device.id?.id ?? 0}`}
             deviceNames={deviceNames(device)}
           ></DeviceCardControl>
@@ -326,7 +342,7 @@ export function FlashingMethodStep({
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware-tool-flash-method-step-description')}
+            {l10n.getString('firmware-tool_flash-method-step_description')}
           </Typography>
         </div>
         <div className="my-4">
@@ -334,7 +350,7 @@ export function FlashingMethodStep({
             <div className="flex flex-col gap-3">
               <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3">
                 <Localized
-                  id="firmware-tool-flash-method-step-ota"
+                  id="firmware-tool_flash-method-step_ota"
                   attrs={{ label: true, description: true }}
                 >
                   <Radio
@@ -345,7 +361,7 @@ export function FlashingMethodStep({
                   ></Radio>
                 </Localized>
                 <Localized
-                  id="firmware-tool-flash-method-step-serial"
+                  id="firmware-tool_flash-method-step_serial"
                   attrs={{ label: true, description: true }}
                 >
                   <Radio
@@ -356,7 +372,7 @@ export function FlashingMethodStep({
                   ></Radio>
                 </Localized>
               </div>
-              {flashingMethod ==
+              {flashingMethod ===
                 FirmwareUpdateMethod.SerialFirmwareUpdate.toString() && (
                 <SerialDevicesList
                   control={control}
@@ -364,7 +380,7 @@ export function FlashingMethodStep({
                   reset={reset}
                 ></SerialDevicesList>
               )}
-              {flashingMethod ==
+              {flashingMethod ===
                 FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
                 <OTADevicesList
                   control={control}
@@ -373,16 +389,16 @@ export function FlashingMethodStep({
                 ></OTADevicesList>
               )}
               <div className="flex justify-between">
-                <Localized id="firmware-tool-previous-step">
+                <Localized id="firmware-tool_previous-step">
                   <Button variant="secondary" onClick={prevStep}></Button>
                 </Localized>
-                <Localized id="firmware-tool-next-step">
+                <Localized id="firmware-tool_next-step">
                   <Button
                     variant="primary"
                     disabled={
                       !isValid ||
-                      selectedDevices == null ||
-                      selectedDevices.length == 0
+                      selectedDevices === null ||
+                      selectedDevices.length === 0
                     }
                     onClick={nextStep}
                   ></Button>
@@ -393,7 +409,7 @@ export function FlashingMethodStep({
           {isGlobalLoading && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware-tool-loading">
+              <Localized id="firmware-tool_loading">
                 <Typography color="secondary"></Typography>
               </Localized>
             </div>

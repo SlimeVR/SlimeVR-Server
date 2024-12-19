@@ -109,7 +109,7 @@ export function useFirmwareToolContext(): FirmwareToolContext {
   const [newConfig, setNewConfig] = useState<PartialBuildFirmware>({});
   const [isLoading, setLoading] = useState(false);
   const { isError, isLoading: isInitialLoading, refetch } = useGetHealth({});
-  const compatibilityCheckEnabled = !!__VERSION_TAG__ || __VERSION_TAG__ !== '';
+  const compatibilityCheckEnabled = !!__VERSION_TAG__;
   const { isLoading: isCompatibilityLoading, data: compatibilityData } =
     useGetIsCompatibleVersion(
       { pathParams: { version: __VERSION_TAG__ } },

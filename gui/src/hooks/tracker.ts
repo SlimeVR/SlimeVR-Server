@@ -47,7 +47,8 @@ export function useTracker(tracker: TrackerDataT) {
   const { feedMaxTps } = useDataFeedConfig();
 
   return {
-    useName: () => useMemo(() => getTrackerName(l10n, tracker.info), [tracker.info]),
+    useName: () =>
+      useMemo(() => getTrackerName(l10n, tracker.info), [tracker.info, l10n]),
     useRawRotationEulerDegrees: () =>
       useMemo(() => QuaternionToEulerDegrees(tracker?.rotation), [tracker.rotation]),
     useRefAdjRotationEulerDegrees: () =>

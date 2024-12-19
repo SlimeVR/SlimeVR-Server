@@ -79,9 +79,7 @@ export function FlashingStep({
     if (!selectedDevices)
       throw new Error('invalid state - no selected devices');
     queueFlashing(selectedDevices);
-    return () => {
-      clear();
-    };
+    return () => clear();
   }, [isActive]);
 
   useRPCPacket(
@@ -113,8 +111,12 @@ export function FlashingStep({
     }
   );
 
-  const trackerWithErrors = Object.keys(status).filter((id) =>
-    firmwareUpdateErrorStatus.includes(status[id].status)
+  const trackerWithErrors = useMemo(
+    () =>
+      Object.keys(status).filter((id) =>
+        firmwareUpdateErrorStatus.includes(status[id].status)
+      ),
+    [status, firmwareUpdateErrorStatus]
   );
 
   const retryError = () => {
@@ -163,13 +165,13 @@ export function FlashingStep({
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware-tool-flashing-step-description')}
+            {l10n.getString('firmware-tool_flashing-step_description')}
           </Typography>
         </div>
 
         <div className="my-4 flex gap-2 flex-col">
           {shouldShowRebootWarning && (
-            <Localized id="firmware-tool-flashing-step-warning">
+            <Localized id="firmware-tool_flashing-step_warning">
               <WarningBox>Warning</WarningBox>
             </Localized>
           )}
@@ -187,21 +189,21 @@ export function FlashingStep({
             );
           })}
           <div className="flex gap-2 self-end">
-            <Localized id="firmware-tool-retry">
+            <Localized id="firmware-tool_retry">
               <Button
                 variant="secondary"
                 disabled={trackerWithErrors.length === 0}
                 onClick={retryError}
               ></Button>
             </Localized>
-            <Localized id="firmware-tool-flashing-step-flash-more">
+            <Localized id="firmware-tool_flashing-step_flash-more">
               <Button
                 variant="secondary"
                 disabled={hasPendingTrackers}
                 onClick={() => goTo('FlashingMethod')}
               ></Button>
             </Localized>
-            <Localized id="firmware-tool-flashing-step-exit">
+            <Localized id="firmware-tool_flashing-step_exit">
               <Button
                 variant="primary"
                 onClick={() => {

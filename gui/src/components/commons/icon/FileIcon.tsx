@@ -1,12 +1,4 @@
-import classNames from 'classnames';
-
-export function FileIcon({
-  width = 24,
-  isDragging = false,
-}: {
-  width?: number;
-  isDragging?: boolean;
-}) {
+export function FileIcon({ width = 24 }: { width?: number }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,11 +6,10 @@ export function FileIcon({
       width={width}
       height="24"
       fill="currentColor"
-      className={classNames('transition-transform', isDragging && 'scale-150')}
     >
       <path
         fillRule="evenodd"
-        d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm6.905 9.97a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72V18a.75.75 0 001.5 0v-4.19l1.72 1.72a.75.75 0 101.06-1.06l-3-3z"
+        d="M 5.625 1.5 L 9 1.5 C 11.071 1.5 12.75 3.179 12.75 5.25 L 12.75 7.125 C 12.75 8.161 13.59 9 14.625 9 L 16.5 9 C 18.571 9 20.25 10.679 20.25 12.75 L 20.25 20.625 C 20.25 21.66 19.41 22.5 18.375 22.5 L 5.625 22.5 C 4.589 22.5 3.75 21.661 3.75 20.625 L 3.75 3.375 C 3.75 2.339 4.59 1.5 5.625 1.5 Z"
         clipRule="evenodd"
       />
       <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />

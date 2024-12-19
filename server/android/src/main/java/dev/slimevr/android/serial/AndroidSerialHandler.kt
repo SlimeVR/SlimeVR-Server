@@ -233,7 +233,6 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 	}
 
 	override fun write(buff: ByteArray) {
-		LogManager.info("[SerialHandler] WRITING $buff")
 		usbIoManager?.writeAsync(buff)
 	}
 

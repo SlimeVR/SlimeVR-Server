@@ -12,6 +12,7 @@ import {
   ImuType,
   MagnetometerStatus,
   RpcMessage,
+  TrackerDataType,
 } from 'solarxr-protocol';
 import { useDebouncedEffect } from '@/hooks/timeout';
 import { useTrackerFromId } from '@/hooks/tracker';
@@ -150,7 +151,7 @@ export function TrackerSettingsPage() {
     }
   }, [firstLoad]);
 
-  const boarType = useMemo(() => {
+  const boardType = useMemo(() => {
     if (tracker?.device?.hardwareInfo?.officialBoardType) {
       return l10n.getString(
         'board_type-' +
@@ -167,6 +168,7 @@ export function TrackerSettingsPage() {
   }, [
     tracker?.device?.hardwareInfo?.officialBoardType,
     tracker?.device?.hardwareInfo?.boardType,
+    l10n,
   ]);
 
   const macAddress = useMemo(() => {
@@ -303,6 +305,16 @@ export function TrackerSettingsPage() {
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">
+                {l10n.getString('tracker-infos-data_support')}
+              </Typography>
+              <Typography>
+                {tracker?.tracker.info?.dataSupport
+                  ? TrackerDataType[tracker?.tracker.info?.dataSupport]
+                  : '--'}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
                 {l10n.getString('tracker-infos-imu')}
               </Typography>
               <Typography>
@@ -315,7 +327,7 @@ export function TrackerSettingsPage() {
               <Typography color="secondary">
                 {l10n.getString('tracker-infos-board_type')}
               </Typography>
-              <Typography>{boarType}</Typography>
+              <Typography>{boardType}</Typography>
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">

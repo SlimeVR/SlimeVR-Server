@@ -12,8 +12,9 @@ import io.github.axisangles.ktmath.Quaternion
  */
 class TrackerFilteringHandler {
 
-	private var movingAverage: QuaternionMovingAverage? = null
-	var enabled = false
+	private var filteringMovingAverage: QuaternionMovingAverage? = null
+	private var trackingMovingAverage = QuaternionMovingAverage(TrackerFilters.NONE)
+	var filteringEnabled = false
 
 	/**
 	 * Reads/loads filtering settings from given config
@@ -21,15 +22,15 @@ class TrackerFilteringHandler {
 	fun readFilteringConfig(config: FiltersConfig, currentRawRotation: Quaternion) {
 		val type = TrackerFilters.getByConfigkey(config.type)
 		if (type == TrackerFilters.SMOOTHING || type == TrackerFilters.PREDICTION) {
-			movingAverage = QuaternionMovingAverage(
+			filteringMovingAverage = QuaternionMovingAverage(
 				type,
 				config.amount,
 				currentRawRotation,
 			)
-			enabled = true
+			filteringEnabled = true
 		} else {
-			movingAverage = null
-			enabled = false
+			filteringMovingAverage = null
+			filteringEnabled = false
 		}
 	}
 
@@ -37,18 +38,33 @@ class TrackerFilteringHandler {
 	 * Update the moving average to make it smooth
 	 */
 	fun update() {
-		movingAverage?.update()
+		trackingMovingAverage.update()
+		filteringMovingAverage?.update()
 	}
 
 	/**
 	 * Updates the latest rotation
 	 */
 	fun dataTick(currentRawRotation: Quaternion) {
-		movingAverage?.addQuaternion(currentRawRotation)
+		trackingMovingAverage.addQuaternion(currentRawRotation)
+		filteringMovingAverage?.addQuaternion(currentRawRotation)
 	}
+
+	/**
+	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
+	 */
+	fun resetQuats(currentRawRotation: Quaternion) {
+		trackingMovingAverage.resetQuats(currentRawRotation)
+		filteringMovingAverage?.resetQuats(currentRawRotation)
+	}
+
+	/**
+	 * Gets the tracked rotation from the moving average (allows >180 degrees)
+	 */
+	fun getTrackedRotation() = trackingMovingAverage.filteredQuaternion
 
 	/**
 	 * Get the filtered rotation from the moving average
 	 */
-	fun getFilteredRotation(): Quaternion = movingAverage?.filteredQuaternion ?: Quaternion.IDENTITY
+	fun getFilteredRotation() = filteringMovingAverage?.filteredQuaternion ?: Quaternion.IDENTITY
 }

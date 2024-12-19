@@ -57,7 +57,7 @@ public class DataFeedBuilder {
 						)
 				);
 
-			HardwareInfo.addNetworkProtocolVersion(fbb, udpDevice.firmwareBuild);
+			HardwareInfo.addNetworkProtocolVersion(fbb, udpDevice.protocolVersion);
 		}
 
 		// BRUH MOMENT
@@ -139,6 +139,8 @@ public class DataFeedBuilder {
 
 		TrackerInfo.addMagnetometer(fbb, tracker.getMagStatus().getSolarType());
 		TrackerInfo.addIsHmd(fbb, tracker.isHmd());
+
+		TrackerInfo.addDataSupport(fbb, tracker.getTrackerDataType().getSolarType());
 
 		return TrackerInfo.endTrackerInfo(fbb);
 	}

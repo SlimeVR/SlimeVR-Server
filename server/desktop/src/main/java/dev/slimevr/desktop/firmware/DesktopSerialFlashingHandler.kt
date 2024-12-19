@@ -2,6 +2,7 @@ package dev.slimevr.desktop.firmware
 
 import com.fazecast.jSerialComm.SerialPort
 import dev.slimevr.firmware.SerialFlashingHandler
+import io.eiren.util.logging.LogManager
 import dev.slimevr.serial.SerialPort as SerialPortWrapper
 
 class DesktopSerialFlashingHandler : SerialFlashingHandler {
@@ -27,7 +28,7 @@ class DesktopSerialFlashingHandler : SerialFlashingHandler {
 		val p = port ?: error("no port to close")
 		try {
 			p.closePort()
-			println("Port closed")
+			LogManager.info("Port closed")
 		} catch (e: Exception) {
 			error("unable to close port")
 		}

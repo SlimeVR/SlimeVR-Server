@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import {
@@ -28,7 +28,7 @@ export function SelectBoardStep({
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware-tool-board-step-description')}
+            {l10n.getString('firmware-tool_board-step_description')}
           </Typography>
         </div>
         <div className="my-4">
@@ -64,24 +64,28 @@ export function SelectBoardStep({
                 ))}
               </div>
               <div className="flex justify-end">
-                <Button
-                  variant="primary"
-                  disabled={!newConfig?.boardConfig?.type}
-                  onClick={() => {
-                    if (defaultConfig?.shouldOnlyUseDefaults)
-                      goTo('SelectFirmware');
-                    else nextStep();
-                  }}
-                >
-                  Next Step
-                </Button>
+                <Localized id="firmware-tool_next-step">
+                  <Button
+                    variant="primary"
+                    disabled={!newConfig?.boardConfig?.type}
+                    onClick={() => {
+                      if (defaultConfig?.shouldOnlyUseDefaults) {
+                        goTo('SelectFirmware');
+                      } else {
+                        nextStep();
+                      }
+                    }}
+                  ></Button>
+                </Localized>
               </div>
             </div>
           )}
           {isFetching && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Typography color="secondary">Loading ...</Typography>
+              <Localized id="firmware-tool_loading">
+                <Typography color="secondary"></Typography>
+              </Localized>
             </div>
           )}
         </div>
