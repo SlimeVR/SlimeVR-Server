@@ -1210,9 +1210,9 @@ firmware-update_status_ERROR_UNKNOWN = Unknown error
 ## Dedicated Firmware Update Page
 firmware-update_title = Firmware update
 firmware-update_devices = Available Devices
-firmware-update_devices_desc = Please select the trackers you want to update to the lastest version of slimevr
-firmware-update_no-devices = Plase make sure that the trackers you want to update are ON and connected to wifi!
-firmware-update_changelog_title = Upgrading to {$version}
+firmware-update_devices_desc = Please select the trackers you want to update to the lastest version of SlimeVR firmware
+firmware-update_no-devices = Plase make sure that the trackers you want to update are ON and connected to Wi-Fi!
+firmware-update_changelog_title = Updating to {$version}
 firmware-update_looking-for-devices = Looking for devices to update...
 firmware-update_retry = Retry
 firmware-update_update = Update Selected Trackers
