@@ -11,6 +11,7 @@
     "@hookform/resolvers": "^3.6.0",
     "@react-three/drei": "^9.114.3",
     "@react-three/fiber": "^8.17.10",
+    "@tailwindcss/typography": "^0.5.15",
     "@tanstack/react-query": "^5.48.0",
     "@tauri-apps/api": "^2.0.2",
     "@tauri-apps/plugin-dialog": "^2.0.0",
@@ -29,9 +30,11 @@
     "react-error-boundary": "^4.0.13",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.53.0",
+    "react-markdown": "^9.0.1",
     "react-modal": "^3.16.1",
     "react-responsive": "^10.0.0",
     "react-router-dom": "^6.26.2",
+    "remark-gfm": "^4.0.0",
     "semver": "^7.6.3",
     "solarxr-protocol": "file:../solarxr-protocol",
     "three": "^0.163.0",
@@ -80,6 +83,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint-plugin-react": "^7.37.1",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "globals": "^15.10.0",
     "prettier": "^3.3.3",
     "rollup-plugin-visualizer": "^5.12.0",
     "sass": "^1.79.4",
@@ -87,7 +91,6 @@
     "tailwind-gradient-mask-image": "^1.2.0",
     "tailwindcss": "^3.4.13",
     "vite": "^5.4.8",
-    "globals": "^15.10.0",
     "typescript-eslint": "^8.8.0"
   }
 }

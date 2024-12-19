@@ -9,14 +9,22 @@ import {
   CreateBoardConfigDTO,
   CreateBuildFirmwareDTO,
   DefaultBuildConfigDTO,
+  FirmwareFileDTO,
 } from '@/firmware-tool-api/firmwareToolSchemas';
 import { BoardPinsForm } from '@/components/firmware-tool/BoardPinsStep';
 import { DeepPartial } from 'react-hook-form';
 import {
   BoardType,
+  DeviceIdT,
+  FirmwarePartT,
   FirmwareUpdateMethod,
+  FirmwareUpdateRequestT,
   FirmwareUpdateStatus,
+  OTAFirmwareUpdateT,
+  SerialDevicePortT,
+  SerialFirmwareUpdateT,
 } from 'solarxr-protocol';
+import { OnboardingContext } from './onboarding';
 
 export type PartialBuildFirmware = DeepPartial<CreateBuildFirmwareDTO>;
 export type FirmwareBuildStatus = BuildResponseDTO;
@@ -177,3 +185,68 @@ export function useFirmwareToolContext(): FirmwareToolContext {
     isError: isError || (!compatibilityData?.success && compatibilityCheckEnabled),
   };
 }
+
+export const getFlashingRequests = (
+  devices: SelectedDevice[],
+  firmwareFiles: FirmwareFileDTO[],
+  onboardingState: OnboardingContext['state'],
+  defaultConfig: DefaultBuildConfigDTO | null
+) => {
+  const firmware = firmwareFiles.find(({ isFirmware }) => isFirmware);
+  if (!firmware) throw new Error('invalid state - no firmware to find');
+
+  const requests = [];
+
+  for (const device of devices) {
+    switch (device.type) {
+      case FirmwareUpdateMethod.OTAFirmwareUpdate: {
+        const dId = new DeviceIdT();
+        dId.id = +device.deviceId;
+
+        const part = new FirmwarePartT();
+        part.offset = 0;
+        part.url = firmware.url;
+
+        const method = new OTAFirmwareUpdateT();
+        method.deviceId = dId;
+        method.firmwarePart = part;
+
+        const req = new FirmwareUpdateRequestT();
+        req.method = method;
+        req.methodType = FirmwareUpdateMethod.OTAFirmwareUpdate;
+        requests.push(req);
+        break;
+      }
+      case FirmwareUpdateMethod.SerialFirmwareUpdate: {
+        const id = new SerialDevicePortT();
+        id.port = device.deviceId.toString();
+
+        if (!onboardingState.wifi?.ssid || !onboardingState.wifi?.password)
+          throw new Error('invalid state, wifi should be set');
+
+        const method = new SerialFirmwareUpdateT();
+        method.deviceId = id;
+        method.ssid = onboardingState.wifi.ssid;
+        method.password = onboardingState.wifi.password;
+        method.needManualReboot = defaultConfig?.needManualReboot ?? false;
+
+        method.firmwarePart = firmwareFiles.map(({ offset, url }) => {
+          const part = new FirmwarePartT();
+          part.offset = offset;
+          part.url = url;
+          return part;
+        });
+
+        const req = new FirmwareUpdateRequestT();
+        req.method = method;
+        req.methodType = FirmwareUpdateMethod.SerialFirmwareUpdate;
+        requests.push(req);
+        break;
+      }
+      default: {
+        throw new Error('unsupported flashing method');
+      }
+    }
+  }
+  return requests;
+};

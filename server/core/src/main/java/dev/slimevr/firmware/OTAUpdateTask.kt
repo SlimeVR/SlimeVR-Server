@@ -87,6 +87,7 @@ class OTAUpdateTask(
 				return authResponse == "OK"
 			}
 		} catch (e: Exception) {
+			LogManager.severe("OTA Authentication exception", e)
 			return false
 		}
 	}

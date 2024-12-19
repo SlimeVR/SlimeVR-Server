@@ -16,6 +16,7 @@ interface DeviceCardControlProps {
   control?: Control<any>;
   name?: string;
   progress?: number;
+  disabled?: boolean;
 }
 
 export function DeviceCardContent({ deviceNames, status }: DeviceCardProps) {
@@ -33,7 +34,7 @@ export function DeviceCardContent({ deviceNames, status }: DeviceCardProps) {
           </span>
         ))}
       </div>
-      {status && (
+      {!!status && (
         <Typography color="secondary">
           {l10n.getString(
             'firmware-update_status_' + FirmwareUpdateStatus[status]
@@ -48,15 +49,21 @@ export function DeviceCardControl({
   control,
   name,
   progress,
+  disabled = false,
   ...props
 }: DeviceCardControlProps & DeviceCardProps) {
   return (
     <div
       className={classNames(
-        'rounded-md bg-background-60 pt-2 flex flex-col justify-between border-2',
-        props.status && firmwareUpdateErrorStatus.includes(props.status)
-          ? 'border-status-critical'
-          : 'border-transparent'
+        'rounded-md bg-background-60 h-[86px] pt-2 flex flex-col justify-between border-2 ',
+        props.status &&
+          firmwareUpdateErrorStatus.includes(props.status) &&
+          'border-status-critical',
+        props.status === FirmwareUpdateStatus.DONE && 'border-status-success',
+        (!props.status ||
+          (props.status !== FirmwareUpdateStatus.DONE &&
+            !firmwareUpdateErrorStatus.includes(props.status))) &&
+          'border-transparent'
       )}
     >
       {control && name ? (
@@ -72,6 +79,7 @@ export function DeviceCardControl({
                   className={CHECKBOX_CLASSES}
                   checked={value || false}
                   type="checkbox"
+                  disabled={disabled}
                 ></input>
               </div>
 

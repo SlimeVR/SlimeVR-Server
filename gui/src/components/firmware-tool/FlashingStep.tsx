@@ -3,30 +3,25 @@ import { Typography } from '@/components/commons/Typography';
 import {
   SelectedDevice,
   firmwareUpdateErrorStatus,
+  getFlashingRequests,
   useFirmwareTool,
 } from '@/hooks/firmware-tool';
 import { useEffect, useMemo, useState } from 'react';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
-  DeviceIdT,
   DeviceIdTableT,
-  FirmwarePartT,
   FirmwareUpdateMethod,
-  FirmwareUpdateRequestT,
   FirmwareUpdateStatus,
   FirmwareUpdateStatusResponseT,
   FirmwareUpdateStopQueuesRequestT,
-  OTAFirmwareUpdateT,
   RpcMessage,
-  SerialDevicePortT,
-  SerialFirmwareUpdateT,
 } from 'solarxr-protocol';
-import { firmwareToolS3BaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
 import { useOnboarding } from '@/hooks/onboarding';
 import { DeviceCardControl } from './DeviceCard';
 import { WarningBox } from '@/components/commons/TipBox';
 import { Button } from '@/components/commons/Button';
 import { useNavigate } from 'react-router-dom';
+import { firmwareToolS3BaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
 
 export function FlashingStep({
   goTo,
@@ -60,70 +55,23 @@ export function FlashingStep({
     );
   };
 
-  const queueFlashing = (devices: SelectedDevice[]) => {
+  const queueFlashing = (selectedDevices: SelectedDevice[]) => {
     clear();
-
     if (!buildStatus.firmwareFiles)
       throw new Error('invalid state - no firmware files');
-
-    const firmware = buildStatus.firmwareFiles.find(
-      ({ isFirmware }) => isFirmware
+    const requests = getFlashingRequests(
+      selectedDevices,
+      buildStatus.firmwareFiles.map(({ url, ...fields }) => ({
+        url: `${firmwareToolS3BaseUrl}/${url}`,
+        ...fields,
+      })),
+      onboardingState,
+      defaultConfig
     );
-    if (!firmware) throw new Error('invalid state - no firmware to find');
 
-    for (const device of devices) {
-      switch (device.type) {
-        case FirmwareUpdateMethod.OTAFirmwareUpdate: {
-          const dId = new DeviceIdT();
-          dId.id = +device.deviceId;
-
-          const part = new FirmwarePartT();
-          part.offset = 0;
-          part.url = firmwareToolS3BaseUrl + '/' + firmware.url;
-
-          const method = new OTAFirmwareUpdateT();
-          method.deviceId = dId;
-          method.firmwarePart = part;
-
-          const req = new FirmwareUpdateRequestT();
-          req.method = method;
-          req.methodType = FirmwareUpdateMethod.OTAFirmwareUpdate;
-          sendRPCPacket(RpcMessage.FirmwareUpdateRequest, req);
-          break;
-        }
-        case FirmwareUpdateMethod.SerialFirmwareUpdate: {
-          const id = new SerialDevicePortT();
-          id.port = device.deviceId.toString();
-
-          if (!onboardingState.wifi?.ssid || !onboardingState.wifi?.password)
-            throw new Error('invalid state, wifi should be set');
-
-          const method = new SerialFirmwareUpdateT();
-          method.deviceId = id;
-          method.ssid = onboardingState.wifi.ssid;
-          method.password = onboardingState.wifi.password;
-          method.needManualReboot = defaultConfig?.needManualReboot ?? false;
-
-          method.firmwarePart = buildStatus.firmwareFiles.map(
-            ({ offset, url }) => {
-              const part = new FirmwarePartT();
-              part.offset = offset;
-              part.url = firmwareToolS3BaseUrl + '/' + url;
-              return part;
-            }
-          );
-
-          const req = new FirmwareUpdateRequestT();
-          req.method = method;
-          req.methodType = FirmwareUpdateMethod.SerialFirmwareUpdate;
-          sendRPCPacket(RpcMessage.FirmwareUpdateRequest, req);
-          break;
-        }
-        default: {
-          throw new Error('unsupported flashing method');
-        }
-      }
-    }
+    requests.forEach((req) => {
+      sendRPCPacket(RpcMessage.FirmwareUpdateRequest, req);
+    });
   };
 
   useEffect(() => {
@@ -189,6 +137,7 @@ export function FlashingStep({
     () =>
       Object.keys(status).filter((id) =>
         [
+          FirmwareUpdateStatus.NEED_MANUAL_REBOOT,
           FirmwareUpdateStatus.DOWNLOADING,
           FirmwareUpdateStatus.AUTHENTICATING,
           FirmwareUpdateStatus.REBOOTING,

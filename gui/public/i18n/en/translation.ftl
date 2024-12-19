@@ -1084,7 +1084,7 @@ firmware-tool_board-pins-step_led-pin =
     .label = LED Pin
     .placeholder = Enter the pin address of the LED
 
-firmware-tool_board-pins-step_battery-type = Select a battery type
+firmware-tool_board-pins-step_battery-type = Select the battery type
 firmware-tool_board-pins-step_battery-type_BAT_EXTERNAL = External battery
 firmware-tool_board-pins-step_battery-type_BAT_INTERNAL = Internal battery
 firmware-tool_board-pins-step_battery-type_BAT_INTERNAL_MCP3021 = Internal MCP3021
@@ -1206,6 +1206,16 @@ firmware-update_status_ERROR_UPLOAD_FAILED = Could not upload the firmware
 firmware-update_status_ERROR_PROVISIONING_FAILED = Could not set the Wi-Fi credentials
 firmware-update_status_ERROR_UNSUPPORTED_METHOD = The update method is not supported
 firmware-update_status_ERROR_UNKNOWN = Unknown error
+
+## Dedicated Firmware Update Page
+firmware-update_title = Firmware update
+firmware-update_devices = Available Devices
+firmware-update_devices_desc = Please select the trackers you want to update to the lastest version of SlimeVR firmware
+firmware-update_no-devices = Plase make sure that the trackers you want to update are ON and connected to Wi-Fi!
+firmware-update_changelog_title = Updating to {$version}
+firmware-update_looking-for-devices = Looking for devices to update...
+firmware-update_retry = Retry
+firmware-update_update = Update Selected Trackers
 
 ## Tray Menu
 tray_menu-show = Show
