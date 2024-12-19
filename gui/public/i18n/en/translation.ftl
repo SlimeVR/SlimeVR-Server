@@ -1068,8 +1068,8 @@ firmware-tool_loading = Loading...
 ## Firmware tool Steps
 firmware-tool = DIY Firmware tool
 firmware-tool_description =
-    Allows to configure and flash your DIY trackers
-firmware-tool_not-available = Oops the firmware tool is not available at the moment. Come back later!
+    Allows you to configure and flash your DIY trackers
+firmware-tool_not-available = Oops, the firmware tool is not available at the moment. Come back later!
 firmware-tool_not-compatible = The firmware tool is not compatible with this version of the server. Please update your server!
 
 firmware-tool_board-step = Select your Board
@@ -1149,7 +1149,7 @@ firmware-tool_flashbtn-step_description = Before going into the next step there 
 
 firmware-tool_flashbtn-step_board_SLIMEVR = Press the flash button on the pcb before inserting turning on the tracker.
     If the tracker was already on, simply turn it off and back on while pressing the button or shorting the flash pads.
-    Here are a few pictures on how to do it according to the different revisions of the slimevr tracker
+    Here are a few pictures on how to do it according to the different revisions of the SlimeVR tracker
 firmware-tool_flashbtn-step_board_SLIMEVR-r11 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board, and the metal shield of the microcontroller
 firmware-tool_flashbtn-step_board_SLIMEVR-r12 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board, and the metal shield of the microcontroller
 firmware-tool_flashbtn-step_board_SLIMEVR-r14 = Turn on the tracker while pushing in the FLASH button on the top side of the board

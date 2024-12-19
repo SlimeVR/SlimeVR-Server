@@ -175,7 +175,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			flasher.flash(serialPort)
 			if (needManualReboot) {
 				if (watchRestartQueue.find { it.first == deviceId } != null) {
-					LogManager.info("[FirmwareUpdateHandler] Device is already updating, Skipping")
+					LogManager.info("[FirmwareUpdateHandler] Device is already updating, skipping")
 				}
 
 				onStatusChange(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.NEED_MANUAL_REBOOT))
@@ -219,7 +219,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		clearJob?.await()
 		if (method == FirmwareUpdateMethod.OTA) {
 			if (watchRestartQueue.find { it.first == deviceId } != null) {
-				LogManager.info("[FirmwareUpdateHandler] Device is already updating, Skipping")
+				LogManager.info("[FirmwareUpdateHandler] Device is already updating, skipping")
 			}
 
 			onStatusChange(
@@ -240,7 +240,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 			)
 		} else {
 			if (updatingDevicesStatus[deviceId] != null) {
-				LogManager.info("[FirmwareUpdateHandler] Device is already updating, Skipping")
+				LogManager.info("[FirmwareUpdateHandler] Device is already updating, skipping")
 				return@launch
 			}
 
