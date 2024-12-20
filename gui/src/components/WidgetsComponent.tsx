@@ -20,7 +20,6 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useAppContext } from '@/hooks/app';
 import { ClearMountingButton } from './ClearMountingButton';
 import { ToggleableSkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
-import { Tooltip } from './commons/Tooltip';
 
 export function WidgetsComponent() {
   const { config } = useConfig();
