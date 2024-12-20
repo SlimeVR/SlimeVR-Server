@@ -103,6 +103,9 @@ export function SettingsSidebar() {
             <SettingsLink to="/settings/serial">
               {l10n.getString('settings-sidebar-serial')}
             </SettingsLink>
+            <SettingsLink to="/settings/firmware-tool">
+              {l10n.getString('settings-sidebar-firmware-tool')}
+            </SettingsLink>
           </div>
           <div className="flex flex-col gap-2">
             <SettingsLink to="/settings/advanced">

@@ -51,12 +51,15 @@ import { useBreakpoint, useIsTauri } from './hooks/breakpoint';
 import { VRModePage } from './components/vr-mode/VRModePage';
 import { InterfaceSettings } from './components/settings/pages/InterfaceSettings';
 import { error, log } from './utils/logging';
+import { FirmwareToolSettings } from './components/firmware-tool/FirmwareTool';
 import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
 import { withSentryReactRouterV6Routing } from '@sentry/react';
+import { EmptyLayout } from './components/EmptyLayout';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
+import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -85,6 +88,14 @@ function Layout() {
             }
           />
           <Route
+            path="/firmware-update"
+            element={
+              <MainLayout isMobile={isMobile} widgets={false}>
+                <FirmwareUpdate />
+              </MainLayout>
+            }
+          />
+          <Route
             path="/vr-mode"
             element={
               <MainLayout isMobile={isMobile}>
@@ -108,6 +119,7 @@ function Layout() {
               </SettingsLayout>
             }
           >
+            <Route path="firmware-tool" element={<FirmwareToolSettings />} />
             <Route path="trackers" element={<GeneralSettings />} />
             <Route path="serial" element={<Serial />} />
             <Route path="osc/router" element={<OSCRouterSettings />} />
@@ -275,19 +287,16 @@ export default function App() {
                 <VersionContext.Provider value={updateFound}>
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
                     <Preload />
-                    <div className="flex-col h-full">
-                      {!websocketAPI.isConnected && (
-                        <>
-                          <TopBar></TopBar>
-                          <div className="flex w-full h-full justify-center items-center p-2">
-                            {websocketAPI.isFirstConnection
-                              ? l10n.getString('websocket-connecting')
-                              : l10n.getString('websocket-connection_lost')}
-                          </div>
-                        </>
-                      )}
-                      {websocketAPI.isConnected && <Layout></Layout>}
-                    </div>
+                    {!websocketAPI.isConnected && (
+                      <EmptyLayout>
+                        <div className="flex w-full h-full justify-center items-center p-2">
+                          {websocketAPI.isFirstConnection
+                            ? l10n.getString('websocket-connecting')
+                            : l10n.getString('websocket-connection_lost')}
+                        </div>
+                      </EmptyLayout>
+                    )}
+                    {websocketAPI.isConnected && <Layout></Layout>}
                   </div>
                 </VersionContext.Provider>
               </StatusProvider>
