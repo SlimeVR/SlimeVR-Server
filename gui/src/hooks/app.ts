@@ -135,7 +135,7 @@ export function useProvideAppContext(): AppContext {
           () =>
             fetch('https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases')
               .then((res) => res.text())
-              .catch((_) => 'null'),
+              .catch(() => 'null'),
           1000 * 60 * 60
         )
       );
@@ -159,7 +159,7 @@ export function useProvideAppContext(): AppContext {
       if (firstRelease) {
         return {
           name: firstRelease.name,
-          version: version,
+          version,
           changelog: firstRelease.body,
           firmwareFile: firstRelease.assets.find(
             (asset: any) =>

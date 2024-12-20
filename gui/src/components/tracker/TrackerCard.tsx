@@ -1,6 +1,5 @@
 import { MouseEventHandler } from 'react';
 import {
-  BoardType,
   DeviceDataT,
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
@@ -13,9 +12,9 @@ import classNames from 'classnames';
 import { useTracker } from '@/hooks/tracker';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { DownloadIcon } from '@/components/commons/icon/DownloadIcon';
-import semver from 'semver';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '@/hooks/app';
+import { checkForUpdate } from '@/components/firmware-update/FirmwareUpdate';
 
 function TrackerBig({
   device,
@@ -169,17 +168,9 @@ export function TrackerCard({
       </div>
       {showUpdates &&
         tracker.status !== TrackerStatusEnum.DISCONNECTED &&
-        // This is temporary, end goal is to support all board types
-        device?.hardwareInfo?.officialBoardType === BoardType.SLIMEVR &&
         currentFirmwareRelease &&
-        semver.valid(currentFirmwareRelease.version) &&
-        semver.valid(
-          device?.hardwareInfo?.firmwareVersion?.toString() ?? 'none'
-        ) &&
-        semver.lt(
-          device?.hardwareInfo?.firmwareVersion?.toString() ?? 'none',
-          currentFirmwareRelease.version
-        ) && (
+        device?.hardwareInfo &&
+        checkForUpdate(currentFirmwareRelease, device.hardwareInfo) && (
           <Link to="/firmware-update" className="absolute right-5 -top-2.5">
             <div className="relative">
               <div className="absolute rounded-full h-6 w-6 left-1 top-1 bg-accent-background-10 animate-[ping_2s_linear_infinite]"></div>

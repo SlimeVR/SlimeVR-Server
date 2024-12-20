@@ -165,13 +165,13 @@ export function FlashingStep({
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware-tool_flashing-step_description')}
+            {l10n.getString('firmware_tool-flashing_step-description')}
           </Typography>
         </div>
 
         <div className="my-4 flex gap-2 flex-col">
           {shouldShowRebootWarning && (
-            <Localized id="firmware-tool_flashing-step_warning">
+            <Localized id="firmware_tool-flashing_step-warning">
               <WarningBox>Warning</WarningBox>
             </Localized>
           )}
@@ -189,21 +189,21 @@ export function FlashingStep({
             );
           })}
           <div className="flex gap-2 self-end">
-            <Localized id="firmware-tool_retry">
+            <Localized id="firmware_tool-retry">
               <Button
                 variant="secondary"
                 disabled={trackerWithErrors.length === 0}
                 onClick={retryError}
               ></Button>
             </Localized>
-            <Localized id="firmware-tool_flashing-step_flash-more">
+            <Localized id="firmware_tool-flashing_step-flash_more">
               <Button
                 variant="secondary"
                 disabled={hasPendingTrackers}
                 onClick={() => goTo('FlashingMethod')}
               ></Button>
             </Localized>
-            <Localized id="firmware-tool_flashing-step_exit">
+            <Localized id="firmware_tool-flashing_step-exit">
               <Button
                 variant="primary"
                 onClick={() => {

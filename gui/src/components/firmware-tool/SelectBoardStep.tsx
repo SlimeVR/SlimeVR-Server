@@ -28,7 +28,7 @@ export function SelectBoardStep({
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware-tool_board-step_description')}
+            {l10n.getString('firmware_tool-board_step-description')}
           </Typography>
         </div>
         <div className="my-4">
@@ -64,7 +64,7 @@ export function SelectBoardStep({
                 ))}
               </div>
               <div className="flex justify-end">
-                <Localized id="firmware-tool_next-step">
+                <Localized id="firmware_tool-next_step">
                   <Button
                     variant="primary"
                     disabled={!newConfig?.boardConfig?.type}
@@ -83,7 +83,7 @@ export function SelectBoardStep({
           {isFetching && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware-tool_loading">
+              <Localized id="firmware_tool-loading">
                 <Typography color="secondary"></Typography>
               </Localized>
             </div>
