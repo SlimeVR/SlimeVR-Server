@@ -49,13 +49,7 @@ export function WidgetsComponent() {
       <div className="grid grid-cols-2 gap-2 w-full [&>*:nth-child(odd):last-of-type]:col-span-full">
         <ResetButton type={ResetType.Yaw} variant="big"></ResetButton>
         <ResetButton type={ResetType.Full} variant="big"></ResetButton>
-        <Tooltip
-          content={<div className="">I AM A TALL TOOLTIP</div>}
-          preferedDirection="right"
-        >
-          <ResetButton type={ResetType.Mounting} variant="big"></ResetButton>
-        </Tooltip>
-        AAAAAAAAAAAA
+        <ResetButton type={ResetType.Mounting} variant="big"></ResetButton>
         <ClearMountingButton></ClearMountingButton>
         <BVHButton></BVHButton>
         <TrackingPauseButton></TrackingPauseButton>
