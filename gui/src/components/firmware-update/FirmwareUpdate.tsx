@@ -1,6 +1,6 @@
 import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
-import { getTrackerName, useTracker, useTrackerFromId } from '@/hooks/tracker';
+import { getTrackerName } from '@/hooks/tracker';
 import { ComponentProps, useEffect, useMemo, useState } from 'react';
 import {
   BoardType,
