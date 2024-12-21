@@ -67,6 +67,12 @@ class Tracker @JvmOverloads constructor(
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
 	val isHmd: Boolean = false,
+	/**
+	 * Whether to track the direction of the tracker's rotation
+	 * (positive vs negative rotation). This needs to be disabled for AutoBone and
+	 * unit tests, where the rotation is absolute and not temporal.
+	 */
+	val trackRotDirection: Boolean = true,
 	magStatus: MagnetometerStatus = MagnetometerStatus.NOT_SUPPORTED,
 	/**
 	 * Rotation by default.
@@ -308,7 +314,7 @@ class Tracker @JvmOverloads constructor(
 	fun dataTick() {
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
-		if (allowFiltering) {
+		if (trackRotDirection) {
 			filteringHandler.dataTick(_rotation)
 		}
 	}
@@ -320,7 +326,7 @@ class Tracker @JvmOverloads constructor(
 		timeAtLastUpdate = System.currentTimeMillis()
 	}
 
-	private fun getFilteredRotation(): Quaternion = if (allowFiltering) {
+	private fun getFilteredRotation(): Quaternion = if (trackRotDirection) {
 		if (filteringHandler.filteringEnabled) {
 			// Get filtered rotation
 			filteringHandler.getFilteredRotation()
