@@ -20,7 +20,6 @@ export function CheckHeightStep({
 }) {
   const { l10n } = useLocalization();
   const { hmdHeight, setHmdHeight } = useHeightContext();
-  const [fetchedHeight, setFetchedHeight] = useState(false);
   const [fetchHeight, setFetchHeight] = useState(false);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
@@ -88,13 +87,12 @@ export function CheckHeightStep({
                     variant="primary"
                     onClick={() => {
                       setHmdHeight(null);
-                      setFetchedHeight(false);
                       setFetchHeight(true);
                     }}
                   >
                     <Typography textAlign="text-center">
                       {l10n.getString(
-                        fetchedHeight
+                        hmdHeight !== null
                           ? 'onboarding-automatic_proportions-check_height-measure-reset'
                           : 'onboarding-automatic_proportions-check_height-measure-start'
                       )}
@@ -106,7 +104,6 @@ export function CheckHeightStep({
                     variant="primary"
                     onClick={() => {
                       setFetchHeight(false);
-                      setFetchedHeight(true);
                     }}
                   >
                     <Typography textAlign="text-center">
@@ -152,7 +149,7 @@ export function CheckHeightStep({
           <Button
             variant="primary"
             onClick={nextStep}
-            disabled={!fetchedHeight && hmdHeight == null}
+            disabled={hmdHeight === null || fetchHeight}
           >
             {l10n.getString(
               'onboarding-automatic_proportions-check_height-next_step'

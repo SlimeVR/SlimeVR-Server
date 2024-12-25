@@ -8,6 +8,10 @@ export interface HeightContext {
   setHmdHeight: React.Dispatch<React.SetStateAction<number | null>>;
   floorHeight: number | null;
   setFloorHeight: React.Dispatch<React.SetStateAction<number | null>>;
+  validateHeight: (
+    hmdHeight: number | null | undefined,
+    floorHeight: number | null | undefined
+  ) => boolean;
 }
 
 export function useProvideHeightContext(): HeightContext {
@@ -15,25 +19,32 @@ export function useProvideHeightContext(): HeightContext {
   const [floorHeight, setFloorHeight] = useState<number | null>(null);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
+  function validateHeight(
+    hmdHeight: number | null | undefined,
+    floorHeight: number | null | undefined
+  ) {
+    return (
+      hmdHeight !== undefined &&
+      hmdHeight !== null &&
+      hmdHeight - (floorHeight ?? 0) > MIN_HEIGHT
+    );
+  }
+
   useEffect(
     () => sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT()),
     []
   );
   useRPCPacket(RpcMessage.SettingsResponse, (res: SettingsResponseT) => {
-    if (
-      !res.modelSettings?.skeletonHeight?.hmdHeight ||
-      res.modelSettings.skeletonHeight.hmdHeight -
-        (res.modelSettings.skeletonHeight.floorHeight ?? 0) <=
-        MIN_HEIGHT
-    ) {
-      return;
-    }
+    const hmd = res.modelSettings?.skeletonHeight?.hmdHeight;
+    const floor = res.modelSettings?.skeletonHeight?.floorHeight;
 
-    setHmdHeight(res.modelSettings.skeletonHeight.hmdHeight);
-    setFloorHeight(res.modelSettings.skeletonHeight.floorHeight);
+    if (validateHeight(hmd, floor)) {
+      setHmdHeight(hmd ?? null);
+      setFloorHeight(floor ?? null);
+    }
   });
 
-  return { hmdHeight, setHmdHeight, floorHeight, setFloorHeight };
+  return { hmdHeight, setHmdHeight, floorHeight, setFloorHeight, validateHeight };
 }
 
 export const HeightContextC = createContext<HeightContext>(undefined as never);

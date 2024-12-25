@@ -15,7 +15,6 @@ import { useLocaleConfig } from '@/i18n/config';
 import { useHeightContext } from '@/hooks/height';
 import { useInterval } from '@/hooks/timeout';
 import { TooSmolModal } from './TooSmolModal';
-import { MIN_HEIGHT } from '@/components/onboarding/pages/body-proportions/ProportionsChoose';
 
 export function CheckFloorHeightStep({
   nextStep,
@@ -27,8 +26,8 @@ export function CheckFloorHeightStep({
   variant: 'onboarding' | 'alone';
 }) {
   const { l10n } = useLocalization();
-  const { floorHeight, hmdHeight, setFloorHeight } = useHeightContext();
-  const [fetchedHeight, setFetchedHeight] = useState(false);
+  const { floorHeight, hmdHeight, setFloorHeight, validateHeight } =
+    useHeightContext();
   const [fetchHeight, setFetchHeight] = useState(false);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [isOpen, setOpen] = useState(false);
@@ -91,13 +90,12 @@ export function CheckFloorHeightStep({
                     variant="primary"
                     onClick={() => {
                       setFloorHeight(null);
-                      setFetchedHeight(false);
                       setFetchHeight(true);
                     }}
                   >
                     <Typography textAlign="text-center">
                       {l10n.getString(
-                        fetchedHeight
+                        floorHeight !== null
                           ? 'onboarding-automatic_proportions-check_floor_height-measure-reset'
                           : 'onboarding-automatic_proportions-check_floor_height-measure-start'
                       )}
@@ -109,7 +107,6 @@ export function CheckFloorHeightStep({
                     variant="primary"
                     onClick={() => {
                       setFetchHeight(false);
-                      setFetchedHeight(true);
                     }}
                   >
                     <Typography textAlign="text-center">
@@ -155,9 +152,9 @@ export function CheckFloorHeightStep({
           </Button>
           <Button
             variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
-            disabled={fetchHeight}
+            disabled={hmdHeight === null || fetchHeight}
             onClick={() => {
-              if (!hmdHeight || hmdHeight < MIN_HEIGHT) {
+              if (!validateHeight(hmdHeight, 0)) {
                 setOpen(true);
                 return;
               }
@@ -181,11 +178,7 @@ export function CheckFloorHeightStep({
           <Button
             variant="primary"
             onClick={() => {
-              if (
-                !hmdHeight ||
-                !floorHeight ||
-                hmdHeight - floorHeight < MIN_HEIGHT
-              ) {
+              if (!validateHeight(hmdHeight, floorHeight)) {
                 setOpen(true);
                 return;
               }
@@ -200,7 +193,7 @@ export function CheckFloorHeightStep({
 
               nextStep();
             }}
-            disabled={!fetchedHeight && floorHeight == null}
+            disabled={floorHeight === null || hmdHeight === null || fetchHeight}
           >
             {l10n.getString(
               'onboarding-automatic_proportions-check_floor_height-next_step'
