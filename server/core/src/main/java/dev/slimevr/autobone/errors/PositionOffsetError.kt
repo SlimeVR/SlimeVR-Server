@@ -37,13 +37,17 @@ class PositionOffsetError : IAutoBoneError {
 			val position2 = trackerFrame2.tryGetPosition() ?: continue
 			val trackerRole2 = trackerFrame2.tryGetTrackerPosition()?.trackerRole ?: continue
 
-			val computedTracker1 = skeleton1.getComputedTracker(trackerRole1) ?: continue
-			val computedTracker2 = skeleton2.getComputedTracker(trackerRole2) ?: continue
+			try {
+				val computedTracker1 = skeleton1.getComputedTracker(trackerRole1)
+				val computedTracker2 = skeleton2.getComputedTracker(trackerRole2)
 
-			val dist1 = (position1 - computedTracker1.position).len()
-			val dist2 = (position2 - computedTracker2.position).len()
-			offset += abs(dist2 - dist1)
-			offsetCount++
+				val dist1 = (position1 - computedTracker1.position).len()
+				val dist2 = (position2 - computedTracker2.position).len()
+				offset += abs(dist2 - dist1)
+				offsetCount++
+			} catch (_: Exception) {
+				// Ignore unsupported positions
+			}
 		}
 		return if (offsetCount > 0) offset / offsetCount else 0f
 	}
