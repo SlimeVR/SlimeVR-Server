@@ -42,7 +42,7 @@ enum class BoardType(val id: UInt) {
 	ESP01(8u),
 	SLIMEVR(9u),
 	LOLIN_C3_MINI(10u),
-	BEETLE32C32(11u),
+	BEETLE32C3(11u),
 	ES32C3DEVKITM1(12u),
 	OWOTRACK(13u),
 	WRANGLER(14u),
@@ -52,6 +52,8 @@ enum class BoardType(val id: UInt) {
 	HARITORA(18u),
 	DEV_RESERVED(250u),
 	;
+
+	fun getSolarType(): Int = this.id.toInt()
 
 	override fun toString(): String = when (this) {
 		UNKNOWN -> "Unknown"
@@ -65,7 +67,7 @@ enum class BoardType(val id: UInt) {
 		ESP01 -> "ESP-01"
 		SLIMEVR -> "SlimeVR"
 		LOLIN_C3_MINI -> "Lolin C3 Mini"
-		BEETLE32C32 -> "Beetle ESP32-C3"
+		BEETLE32C3 -> "Beetle ESP32-C3"
 		ES32C3DEVKITM1 -> "Espressif ESP32-C3 DevKitM-1"
 		OWOTRACK -> "owoTrack"
 		WRANGLER -> "Wrangler Joycons"
@@ -104,6 +106,22 @@ enum class MCUType(val id: UInt) {
 
 		@JvmStatic
 		fun getById(id: UInt): MCUType? = byId[id]
+	}
+}
+
+enum class TrackerDataType(val id: UInt) {
+	ROTATION(0u),
+	FLEX_RESISTANCE(1u),
+	FLEX_ANGLE(2u),
+	;
+
+	fun getSolarType(): Int = this.id.toInt()
+
+	companion object {
+		private val byId = entries.associateBy { it.id }
+
+		@JvmStatic
+		fun getById(id: UInt): TrackerDataType? = byId[id]
 	}
 }
 
