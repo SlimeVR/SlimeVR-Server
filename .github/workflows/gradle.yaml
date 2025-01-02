@@ -285,7 +285,7 @@ jobs:
           ./bundle_dmg.sh --volname SlimeVR --icon slimevr 180 170 --app-drop-link 480 170 \
           --window-size 660 400 --hide-extension ../macos/SlimeVR.app \
           --volicon ../macos/SlimeVR.app/Contents/Resources/icon.icns --skip-jenkins \
-          --eula ../../../../LICENSE-MIT slimevr.dmg ../macos/SlimeVR.app
+          --eula ../../../../../LICENSE-MIT slimevr.dmg ../macos/SlimeVR.app
 
       - uses: actions/upload-artifact@v4
         with:
