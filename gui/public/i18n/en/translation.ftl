@@ -1152,8 +1152,7 @@ firmware_tool-flash_method_step-serial =
 firmware_tool-flashbtn_step = Press the boot btn
 firmware_tool-flashbtn_step-description = Before going into the next step there is a few things you need to do
 
-firmware_tool-flashbtn_step-board_SLIMEVR = Turn off the tracker, remove the case (if any), connect a USB cable to this computer,
-    then do one of the followings according to your SlimeVR board revision.
+firmware_tool-flashbtn_step-board_SLIMEVR = Turn off the tracker, remove the case (if any), connect a USB cable to this computer, then do one of the following steps according to your SlimeVR board revision:
 firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Short the second rectangular FLASH pad from the edge on the top side of the board and the metal shield of the microcontroller, then turn on the tracker
 firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Short the circular FLASH pad on the top side of the board and the metal shield of the microcontroller, then turn on the tracker
 firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Hold the FLASH button on the top side of the board, then turn on the tracker
