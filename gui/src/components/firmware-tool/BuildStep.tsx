@@ -69,7 +69,7 @@ export function BuildStep({
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware-tool_build-step_description')}
+            {l10n.getString('firmware_tool-build_step-description')}
           </Typography>
         </div>
         <div className="my-4">
@@ -83,21 +83,21 @@ export function BuildStep({
                 }
               ></LoaderIcon>
               <Typography variant="section-title" color="secondary">
-                {l10n.getString('firmware-tool_build_' + buildStatus.status)}
+                {l10n.getString('firmware_tool-build-' + buildStatus.status)}
               </Typography>
             </div>
           )}
           {isGlobalLoading && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware-tool_loading">
+              <Localized id="firmware_tool-loading">
                 <Typography color="secondary"></Typography>
               </Localized>
             </div>
           )}
         </div>
         <div className="flex justify-end">
-          <Localized id="firmware-tool_retry">
+          <Localized id="firmware_tool-retry">
             <Button
               variant="secondary"
               disabled={hasPendingBuild}

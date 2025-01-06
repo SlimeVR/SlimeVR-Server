@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { IPv4 } from 'ip-num/IPNumber';
 import { useEffect, useMemo, useState } from 'react';
@@ -38,6 +38,7 @@ import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
 import semver from 'semver';
+import { checkForUpdate } from '@/components/firmware-update/FirmwareUpdate';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -186,16 +187,9 @@ export function TrackerSettingsPage() {
   const { currentFirmwareRelease } = useAppContext();
 
   const needUpdate =
-    tracker?.device?.hardwareInfo?.officialBoardType === BoardType.SLIMEVR &&
     currentFirmwareRelease &&
-    semver.valid(currentFirmwareRelease.version) &&
-    semver.valid(
-      tracker?.device?.hardwareInfo?.firmwareVersion?.toString() ?? 'none'
-    ) &&
-    semver.lt(
-      tracker?.device?.hardwareInfo?.firmwareVersion?.toString() ?? 'none',
-      currentFirmwareRelease.version
-    );
+    tracker?.device?.hardwareInfo &&
+    checkForUpdate(currentFirmwareRelease, tracker?.device?.hardwareInfo);
   const updateUnavailable =
     tracker?.device?.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
     !semver.valid(
@@ -231,33 +225,50 @@ export function TrackerSettingsPage() {
           )}
           {
             <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
-              <Typography bold>Firmware version</Typography>
+              <Localized id="tracker-settings-update-title">
+                <Typography variant="section-title">
+                  Firmware version
+                </Typography>
+              </Localized>
               <div className="flex gap-2">
                 <Typography color="secondary">
                   v{tracker?.device?.hardwareInfo?.firmwareVersion}
                 </Typography>
                 <Typography color="secondary">-</Typography>
                 {updateUnavailable && (
-                  <Typography>Cannot be updated (DIY)</Typography>
+                  <Localized id="tracker-settings-update-unavailable">
+                    <Typography>Cannot be updated (DIY)</Typography>
+                  </Localized>
                 )}
                 {!updateUnavailable && (
                   <>
-                    {!needUpdate && <Typography>Up to date</Typography>}
+                    {!needUpdate && (
+                      <Localized id="tracker-settings-update-up_to_date">
+                        <Typography>Up to date</Typography>
+                      </Localized>
+                    )}
                     {needUpdate && (
-                      <Typography color="text-accent-background-10">
-                        New version available {currentFirmwareRelease?.name}
-                      </Typography>
+                      <Localized
+                        id="tracker-settings-update-available"
+                        vars={{ versionName: currentFirmwareRelease?.name }}
+                      >
+                        <Typography color="text-accent-background-10">
+                          New version available
+                        </Typography>
+                      </Localized>
                     )}
                   </>
                 )}
               </div>
-              <Button
-                variant={needUpdate ? 'primary' : 'secondary'}
-                disabled={!needUpdate}
-                to="/firmware-update"
-              >
-                Update now
-              </Button>
+              <Localized id="tracker-settings-update">
+                <Button
+                  variant={needUpdate ? 'primary' : 'secondary'}
+                  disabled={!needUpdate}
+                  to="/firmware-update"
+                >
+                  Update now
+                </Button>
+              </Localized>
             </div>
           }
 

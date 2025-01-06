@@ -29,33 +29,33 @@ function FirmwareToolContent() {
       {
         id: 'SelectBoard',
         component: SelectBoardStep,
-        title: l10n.getString('firmware-tool_board-step'),
+        title: l10n.getString('firmware_tool-board_step'),
       },
       {
         component: BoardPinsStep,
-        title: l10n.getString('firmware-tool_board-pins-step'),
+        title: l10n.getString('firmware_tool-board_pins_step'),
       },
       {
         component: AddImusStep,
-        title: l10n.getString('firmware-tool_add-imus-step'),
+        title: l10n.getString('firmware_tool-add_imus_step'),
       },
       {
         id: 'SelectFirmware',
         component: SelectFirmwareStep,
-        title: l10n.getString('firmware-tool_select-firmware-step'),
+        title: l10n.getString('firmware_tool-select_firmware_step'),
       },
       {
         component: FlashingMethodStep,
         id: 'FlashingMethod',
-        title: l10n.getString('firmware-tool_flash-method-step'),
+        title: l10n.getString('firmware_tool-flash_method_step'),
       },
       {
         component: BuildStep,
-        title: l10n.getString('firmware-tool_build-step'),
+        title: l10n.getString('firmware_tool-build_step'),
       },
       {
         component: FlashingStep,
-        title: l10n.getString('firmware-tool_flashing-step'),
+        title: l10n.getString('firmware_tool-flashing_step'),
       },
     ];
 
@@ -67,7 +67,7 @@ function FirmwareToolContent() {
     ) {
       steps.splice(5, 0, {
         component: FlashBtnStep,
-        title: l10n.getString('firmware-tool_flashbtn-step'),
+        title: l10n.getString('firmware_tool-flashbtn_step'),
       });
     }
     return steps;
@@ -77,12 +77,12 @@ function FirmwareToolContent() {
     <FirmwareToolContextC.Provider value={context}>
       <div className="flex flex-col bg-background-70 p-4 rounded-md">
         <Typography variant="main-title">
-          {l10n.getString('firmware-tool')}
+          {l10n.getString('firmware_tool')}
         </Typography>
         <div className="flex flex-col pt-2 pb-4">
           <>
             {l10n
-              .getString('firmware-tool_description')
+              .getString('firmware_tool-description')
               .split('\n')
               .map((line, i) => (
                 <Typography color="secondary" key={i}>
@@ -96,15 +96,15 @@ function FirmwareToolContent() {
             <div className="w-full flex flex-col justify-center items-center gap-3 h-full">
               <LoaderIcon slimeState={SlimeState.SAD}></LoaderIcon>
               {!isCompatible ? (
-                <Localized id="firmware-tool_not-compatible">
+                <Localized id="firmware_tool-not_compatible">
                   <Typography variant="section-title"></Typography>
                 </Localized>
               ) : (
-                <Localized id="firmware-tool_not-available">
+                <Localized id="firmware_tool-not_available">
                   <Typography variant="section-title"></Typography>
                 </Localized>
               )}
-              <Localized id="firmware-tool_retry">
+              <Localized id="firmware_tool-retry">
                 <Button variant="primary" onClick={retry}></Button>
               </Localized>
             </div>
@@ -112,7 +112,7 @@ function FirmwareToolContent() {
           {isLoading && (
             <div className="w-full flex flex-col justify-center items-center gap-3 h-full">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware-tool_loading">
+              <Localized id="firmware_tool-loading">
                 <Typography variant="section-title"></Typography>
               </Localized>
             </div>

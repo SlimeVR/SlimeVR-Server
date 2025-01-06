@@ -54,7 +54,7 @@ export function BoardPinsStep({
       <div className="flex flex-col w-full justify-between text-background-10">
         <div className="flex flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware-tool_board-pins-step_description')}
+            {l10n.getString('firmware_tool-board_pins_step-description')}
           </Typography>
         </div>
         <div className="my-4 p-2">
@@ -70,12 +70,12 @@ export function BoardPinsStep({
                     variant="toggle"
                     outlined
                     label={l10n.getString(
-                      'firmware-tool_board-pins-step_enable-led'
+                      'firmware_tool-board_pins_step-enable_led'
                     )}
                   ></CheckBox>
                 </label>
                 <Localized
-                  id="firmware-tool_board-pins-step_led-pin"
+                  id="firmware_tool-board_pins_step-led_pin"
                   attrs={{ placeholder: true, label: true }}
                 >
                   <Input
@@ -100,13 +100,13 @@ export function BoardPinsStep({
                   name="batteryType"
                   variant="primary"
                   placeholder={l10n.getString(
-                    'firmware-tool_board-pins-step_battery-type'
+                    'firmware_tool-board_pins_step-battery_type'
                   )}
                   direction="up"
                   display="block"
                   items={batteryTypes.map((battery) => ({
                     label: l10n.getString(
-                      'firmware-tool_board-pins-step_battery-type_' + battery
+                      'firmware_tool-board_pins_step-battery_type-' + battery
                     ),
                     value: battery,
                   }))}
@@ -114,7 +114,7 @@ export function BoardPinsStep({
                 {batteryType === 'BAT_EXTERNAL' && (
                   <div className="grid grid-cols-2 gap-2">
                     <Localized
-                      id="firmware-tool_board-pins-step_battery-sensor-pin"
+                      id="firmware_tool-board_pins_step-battery_sensor_pin"
                       attrs={{ placeholder: true, label: true }}
                     >
                       <Input
@@ -126,7 +126,7 @@ export function BoardPinsStep({
                       ></Input>
                     </Localized>
                     <Localized
-                      id="firmware-tool_board-pins-step_battery-resistor"
+                      id="firmware_tool-board_pins_step-battery_resistor"
                       attrs={{ placeholder: true, label: true }}
                     >
                       <Input
@@ -140,7 +140,7 @@ export function BoardPinsStep({
                       ></Input>
                     </Localized>
                     <Localized
-                      id="firmware-tool_board-pins-step_battery-shield-resistor_0"
+                      id="firmware_tool-board_pins_step-battery_shield_resistor-0"
                       attrs={{ placeholder: true, label: true }}
                     >
                       <Input
@@ -152,7 +152,7 @@ export function BoardPinsStep({
                       ></Input>
                     </Localized>
                     <Localized
-                      id="firmware-tool_board-pins-step_battery-shield-resistor_1"
+                      id="firmware_tool-board_pins_step-battery_shield_resistor-1"
                       attrs={{ placeholder: true, label: true }}
                     >
                       <Input
@@ -171,17 +171,17 @@ export function BoardPinsStep({
           {(isLoading || isFetching) && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware-tool_loading">
+              <Localized id="firmware_tool-loading">
                 <Typography color="secondary"></Typography>
               </Localized>
             </div>
           )}
         </div>
         <div className="flex justify-between">
-          <Localized id="firmware-tool_previous-step">
+          <Localized id="firmware_tool-previous_step">
             <Button variant="tertiary" onClick={prevStep}></Button>
           </Localized>
-          <Localized id="firmware-tool_ok">
+          <Localized id="firmware_tool-ok">
             <Button
               variant="primary"
               disabled={Object.keys(formState.errors).length !== 0}
