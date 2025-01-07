@@ -11,8 +11,8 @@ import io.github.axisangles.ktmath.Quaternion
  * See QuaternionMovingAverage.kt for the quaternion math.
  */
 class TrackerFilteringHandler {
-
-	private var movingAverage: QuaternionMovingAverage? = null
+	// Instantiated by default in case config doesn't get read (if tracker doesn't support filtering)
+	private var movingAverage = QuaternionMovingAverage(TrackerFilters.NONE)
 	var filteringEnabled = false
 
 	/**
@@ -37,25 +37,25 @@ class TrackerFilteringHandler {
 	 * Update the moving average to make it smooth
 	 */
 	fun update() {
-		movingAverage?.update()
+		movingAverage.update()
 	}
 
 	/**
 	 * Updates the latest rotation
 	 */
 	fun dataTick(currentRawRotation: Quaternion) {
-		movingAverage?.addQuaternion(currentRawRotation)
+		movingAverage.addQuaternion(currentRawRotation)
 	}
 
 	/**
 	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
 	 */
 	fun resetMovingAverage(currentRawRotation: Quaternion) {
-		movingAverage?.resetQuats(currentRawRotation)
+		movingAverage.resetQuats(currentRawRotation)
 	}
 
 	/**
 	 * Get the filtered rotation from the moving average (either prediction/smoothing or just >180 degs)
 	 */
-	fun getFilteredRotation() = movingAverage?.filteredQuaternion ?: Quaternion.IDENTITY
+	fun getFilteredRotation() = movingAverage.filteredQuaternion
 }
