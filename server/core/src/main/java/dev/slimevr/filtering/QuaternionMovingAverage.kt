@@ -23,7 +23,7 @@ class QuaternionMovingAverage(
 ) {
 	private var smoothFactor = 0f
 	private var predictFactor = 0f
-	private lateinit var rotBuffer: CircularArrayList<Quaternion>
+	private var rotBuffer: CircularArrayList<Quaternion>? = null
 	private var latestQuaternion = IDENTITY
 	private var smoothingQuaternion = IDENTITY
 	private val fpsTimer = if (VRServer.instanceInitialized) VRServer.instance.fpsTimer else NanoTimer()
@@ -57,11 +57,11 @@ class QuaternionMovingAverage(
 	@Synchronized
 	fun update() {
 		if (type == TrackerFilters.PREDICTION) {
-			if (rotBuffer.size > 0) {
+			if (rotBuffer!!.size > 0) {
 				var quatBuf = latestQuaternion
 
 				// Applies the past rotations to the current rotation
-				rotBuffer.forEach { quatBuf *= it }
+				rotBuffer?.forEach { quatBuf *= it }
 
 				// Calculate how much to slerp
 				val amt = predictFactor * fpsTimer.timePerFrame
@@ -98,12 +98,12 @@ class QuaternionMovingAverage(
 	@Synchronized
 	fun addQuaternion(q: Quaternion) {
 		if (type == TrackerFilters.PREDICTION) {
-			if (rotBuffer.size == rotBuffer.capacity()) {
-				rotBuffer.removeLast()
+			if (rotBuffer!!.size == rotBuffer!!.capacity()) {
+				rotBuffer?.removeLast()
 			}
 
 			// Gets and stores the rotation between the last 2 quaternions
-			rotBuffer.add(latestQuaternion.inv().times(q))
+			rotBuffer?.add(latestQuaternion.inv().times(q))
 		} else if (type == TrackerFilters.SMOOTHING) {
 			frameCounter = 0
 			lastAmt = 0f
@@ -116,8 +116,11 @@ class QuaternionMovingAverage(
 	}
 
 	fun resetQuats(q: Quaternion) {
+		if (type == TrackerFilters.PREDICTION) {
+			rotBuffer?.clear()
+			latestQuaternion = q
+		}
 		filteredQuaternion = q
-		latestQuaternion = q
-		smoothingQuaternion = q
+		addQuaternion(q)
 	}
 }
