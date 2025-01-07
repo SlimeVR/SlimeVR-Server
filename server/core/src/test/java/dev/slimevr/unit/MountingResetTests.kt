@@ -46,6 +46,7 @@ class MountingResetTests {
 			imuType = IMUType.UNKNOWN,
 			needsReset = true,
 			needsMounting = true,
+			trackRotDirection = false,
 		)
 
 		// Apply full reset and mounting
@@ -130,6 +131,7 @@ class MountingResetTests {
 			imuType = IMUType.UNKNOWN,
 			needsReset = true,
 			needsMounting = true,
+			trackRotDirection = false,
 		)
 
 		// Apply full reset and mounting
