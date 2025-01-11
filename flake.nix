@@ -92,7 +92,7 @@
               harfbuzz
               libffi
               libsoup_3
-              openssl
+              openssl.dev
               pango
               pkg-config
               treefmt

@@ -808,11 +808,6 @@ class HumanSkeleton(
 						var hipRot = it.getRotation()
 						var chestRot = chest.getRotation()
 
-						// Get the rotation relative to where we expect the hip to be
-						if (chestRot.times(FORWARD_QUATERNION).dot(hipRot) < 0.0f) {
-							hipRot = hipRot.unaryMinus()
-						}
-
 						// Interpolate between the chest and the hip
 						chestRot = chestRot.interpQ(hipRot, waistFromChestHipAveraging)
 
@@ -824,15 +819,6 @@ class HumanSkeleton(
 							var leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
 							var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
 							var chestRot = chest.getRotation()
-
-							// Get the rotation relative to where we expect the upper legs to be
-							val expectedUpperLegsRot = chestRot.times(FORWARD_QUATERNION)
-							if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
-								leftLegRot = leftLegRot.unaryMinus()
-							}
-							if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
-								rightLegRot = rightLegRot.unaryMinus()
-							}
 
 							// Interpolate between the pelvis, averaged from the legs, and the chest
 							chestRot = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), waistFromChestLegsAveraging).unit()
@@ -850,15 +836,6 @@ class HumanSkeleton(
 					var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
 					var waistRot = it.getRotation()
 
-					// Get the rotation relative to where we expect the upper legs to be
-					val expectedUpperLegsRot = waistRot.times(FORWARD_QUATERNION)
-					if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
-						leftLegRot = leftLegRot.unaryMinus()
-					}
-					if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
-						rightLegRot = rightLegRot.unaryMinus()
-					}
-
 					// Interpolate between the pelvis, averaged from the legs, and the chest
 					waistRot = waistRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromWaistLegsAveraging).unit()
 
@@ -871,15 +848,6 @@ class HumanSkeleton(
 						var leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
 						var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
 						var chestRot = it.getRotation()
-
-						// Get the rotation relative to where we expect the upper legs to be
-						val expectedUpperLegsRot = chestRot.times(FORWARD_QUATERNION)
-						if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
-							leftLegRot = leftLegRot.unaryMinus()
-						}
-						if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
-							rightLegRot = rightLegRot.unaryMinus()
-						}
 
 						// Interpolate between the pelvis, averaged from the legs, and the chest
 						chestRot = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromChestLegsAveraging).unit()
@@ -1135,24 +1103,11 @@ class HumanSkeleton(
 		rightKnee: Quaternion,
 		hip: Quaternion,
 	): Quaternion {
-		// Get the knees' rotation relative to where we expect them to be.
-		// The angle between your knees and hip can be over 180 degrees...
-		var leftKneeRot = leftKnee
-		var rightKneeRot = rightKnee
-
-		val kneeRot = hip.times(FORWARD_QUATERNION)
-		if (kneeRot.dot(leftKneeRot) < 0.0f) {
-			leftKneeRot = leftKneeRot.unaryMinus()
-		}
-		if (kneeRot.dot(rightKneeRot) < 0.0f) {
-			rightKneeRot = rightKneeRot.unaryMinus()
-		}
-
 		// R = InverseHip * (LeftLeft + RightLeg)
 		// C = Quaternion(R.w, -R.x, 0, 0)
 		// Pelvis = Hip * R * C
 		// normalize(Pelvis)
-		val r = hip.inv() * (leftKneeRot + rightKneeRot)
+		val r = hip.inv() * (leftKnee + rightKnee)
 		val c = Quaternion(r.w, -r.x, 0f, 0f)
 		return (hip * r * c).unit()
 	}
