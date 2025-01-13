@@ -11,9 +11,8 @@ import io.github.axisangles.ktmath.Quaternion
  * See QuaternionMovingAverage.kt for the quaternion math.
  */
 class TrackerFilteringHandler {
-
-	private var filteringMovingAverage: QuaternionMovingAverage? = null
-	private var trackingMovingAverage = QuaternionMovingAverage(TrackerFilters.NONE)
+	// Instantiated by default in case config doesn't get read (if tracker doesn't support filtering)
+	private var movingAverage = QuaternionMovingAverage(TrackerFilters.NONE)
 	var filteringEnabled = false
 
 	/**
@@ -22,14 +21,14 @@ class TrackerFilteringHandler {
 	fun readFilteringConfig(config: FiltersConfig, currentRawRotation: Quaternion) {
 		val type = TrackerFilters.getByConfigkey(config.type)
 		if (type == TrackerFilters.SMOOTHING || type == TrackerFilters.PREDICTION) {
-			filteringMovingAverage = QuaternionMovingAverage(
+			movingAverage = QuaternionMovingAverage(
 				type,
 				config.amount,
 				currentRawRotation,
 			)
 			filteringEnabled = true
 		} else {
-			filteringMovingAverage = null
+			movingAverage = QuaternionMovingAverage(TrackerFilters.NONE)
 			filteringEnabled = false
 		}
 	}
@@ -38,33 +37,25 @@ class TrackerFilteringHandler {
 	 * Update the moving average to make it smooth
 	 */
 	fun update() {
-		trackingMovingAverage.update()
-		filteringMovingAverage?.update()
+		movingAverage.update()
 	}
 
 	/**
 	 * Updates the latest rotation
 	 */
 	fun dataTick(currentRawRotation: Quaternion) {
-		trackingMovingAverage.addQuaternion(currentRawRotation)
-		filteringMovingAverage?.addQuaternion(currentRawRotation)
+		movingAverage.addQuaternion(currentRawRotation)
 	}
 
 	/**
 	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
 	 */
-	fun resetQuats(currentRawRotation: Quaternion) {
-		trackingMovingAverage.resetQuats(currentRawRotation)
-		filteringMovingAverage?.resetQuats(currentRawRotation)
+	fun resetMovingAverage(currentRawRotation: Quaternion) {
+		movingAverage.resetQuats(currentRawRotation)
 	}
 
 	/**
-	 * Gets the tracked rotation from the moving average (allows >180 degrees)
+	 * Get the filtered rotation from the moving average (either prediction/smoothing or just >180 degs)
 	 */
-	fun getTrackedRotation() = trackingMovingAverage.filteredQuaternion
-
-	/**
-	 * Get the filtered rotation from the moving average
-	 */
-	fun getFilteredRotation() = filteringMovingAverage?.filteredQuaternion ?: Quaternion.IDENTITY
+	fun getFilteredRotation() = movingAverage.filteredQuaternion
 }
