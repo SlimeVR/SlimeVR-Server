@@ -348,17 +348,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	fun resetMounting(reference: Quaternion) {
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
-			tracker.resetFilteringQuats()
 			tracker.trackerFlexHandler.resetMax()
 			return
-		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
-			return
-		} else if (!resetMountingFeet && isFootTracker()) {
+		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE || (!resetMountingFeet && isFootTracker())) {
 			return
 		}
-
-		// Reset the tracking of temporality before the reset
-		tracker.resetFilteringQuats()
 
 		// Get the current calibrated rotation
 		var rotBuf = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
