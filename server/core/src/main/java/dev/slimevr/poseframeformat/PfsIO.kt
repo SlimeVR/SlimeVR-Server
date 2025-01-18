@@ -35,7 +35,7 @@ object PfsIO {
 		stream.writeByte(id)
 		stream.writeInt(frameIndex)
 		// Write frame data (same format as PFR)
-		PoseFrameIO.writeFrame(stream, frame)
+		PfrIO.writeFrame(stream, frame)
 	}
 
 	private fun writeBodyProportions(stream: DataOutputStream, skeletonConfig: SkeletonConfig) {
