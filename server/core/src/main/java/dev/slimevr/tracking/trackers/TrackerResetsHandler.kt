@@ -215,13 +215,16 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	fun resetFull(reference: Quaternion) {
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
+			tracker.resetFilteringQuats()
 			tracker.trackerFlexHandler.resetMin()
-			postProcessResetFull()
+			clearRequireResetStatus()
 			return
 		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
-			postProcessResetFull()
 			return
 		}
+
+		// Reset the tracking of temporality before the reset
+		tracker.resetFilteringQuats()
 
 		// Adjust for T-Pose (down)
 		tposeDownFix = if (((isLeftArmTracker() || isLeftFingerTracker()) && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
@@ -286,16 +289,14 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		calculateDrift(oldRot)
 
-		postProcessResetFull()
+		clearRequireResetStatus()
 	}
 
-	private fun postProcessResetFull() {
+	private fun clearRequireResetStatus() {
 		if (this.tracker.lastResetStatus != 0u) {
 			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
 			this.tracker.lastResetStatus = 0u
 		}
-
-		tracker.resetFilteringQuats()
 	}
 
 	/**
@@ -310,6 +311,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		) {
 			return
 		}
+
+		// Reset the tracking of temporality before the reset
+		tracker.resetFilteringQuats()
 
 		// Old rot for drift compensation
 		val oldRot = adjustToReference(tracker.getRawRotation())
@@ -336,8 +340,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			this.tracker.statusResetRecently = false
 			this.tracker.lastResetStatus = 0u
 		}
-
-		tracker.resetFilteringQuats()
 	}
 
 	/**
@@ -346,14 +348,17 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	fun resetMounting(reference: Quaternion) {
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
-			tracker.trackerFlexHandler.resetMax()
 			tracker.resetFilteringQuats()
+			tracker.trackerFlexHandler.resetMax()
 			return
 		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
 			return
 		} else if (!resetMountingFeet && isFootTracker()) {
 			return
 		}
+
+		// Reset the tracking of temporality before the reset
+		tracker.resetFilteringQuats()
 
 		// Get the current calibrated rotation
 		var rotBuf = adjustToDrift(tracker.getRawRotation() * mountingOrientation)
@@ -399,8 +404,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// save mounting reset
 		if (saveMountingReset) tracker.saveMountingResetOrientation(mountRotFix)
-
-		tracker.resetFilteringQuats()
 	}
 
 	fun clearMounting() {
