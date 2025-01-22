@@ -25,11 +25,16 @@ import { invoke } from '@tauri-apps/api/core';
 import { useTrackers } from '@/hooks/tracker';
 import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
-import { listen } from '@tauri-apps/api/event';
+import { listen, TauriEvent } from '@tauri-apps/api/event';
 import { TrayOrExitModal } from './TrayOrExitModal';
 import { error } from '@/utils/logging';
 import { useDoubleTap } from 'use-double-tap';
 import { isTrayAvailable } from '@/utils/tauri';
+import {
+  CloseRequestedEvent,
+  getCurrentWindow,
+  UserAttentionType,
+} from '@tauri-apps/api/window';
 
 export function VersionTag() {
   return (
@@ -70,10 +75,11 @@ export function TopBar({
   const doesMatchSettings = useMatch({
     path: '/settings/*',
   });
+
   const closeApp = async () => {
     await saveConfig();
     await invoke('update_window_state');
-    await getCurrentWebviewWindow().close();
+    await getCurrentWebviewWindow().destroy();
   };
   const tryCloseApp = async (dontTray = false) => {
     if (isTrayAvailable && config?.useTray === null) {
@@ -95,21 +101,38 @@ export function TopBar({
       await closeApp();
     }
   };
+
   const showVersionBind = useDoubleTap(() => setShowVersionMobile(true));
   const unshowVersionBind = useDoubleTap(() => setShowVersionMobile(false));
 
   useEffect(() => {
-    const unlisten = listen('try-close', async () => {
+    const unlistenTrayClose = listen('try-close', async () => {
       const window = getCurrentWebviewWindow();
       await window.show();
+      await window.requestUserAttention(UserAttentionType.Critical);
       await window.setFocus();
       if (isTrayAvailable) await invoke('update_tray_text');
       await tryCloseApp(true);
     });
+
+    const unlistenCloseRequested = getCurrentWebviewWindow().listen(
+      TauriEvent.WINDOW_CLOSE_REQUESTED,
+      async (data) => {
+        const ev = new CloseRequestedEvent(data);
+        ev.preventDefault();
+        await tryCloseApp();
+      }
+    );
+
     return () => {
-      unlisten.then((fn) => fn());
+      unlistenTrayClose.then((fn) => fn());
+      unlistenCloseRequested.then((fn) => fn());
     };
-  }, [config?.useTray, config?.connectedTrackersWarning]);
+  }, [
+    config?.useTray,
+    config?.connectedTrackersWarning,
+    JSON.stringify(connectedIMUTrackers.map((t) => t.tracker.status)),
+  ]);
 
   useEffect(() => {
     if (config === null || !isTauri) return;
@@ -304,7 +327,10 @@ export function TopBar({
       <TrackersStillOnModal
         isOpen={showConnectedTrackersWarning}
         accept={() => closeApp()}
-        cancel={() => setConnectedTrackerWarning(false)}
+        cancel={() => {
+          setConnectedTrackerWarning(false);
+          getCurrentWindow().requestUserAttention(UserAttentionType.Critical);
+        }}
       ></TrackersStillOnModal>
     </>
   );
