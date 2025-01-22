@@ -1,4 +1,3 @@
-import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {
@@ -79,7 +78,7 @@ export function TopBar({
   const closeApp = async () => {
     await saveConfig();
     await invoke('update_window_state');
-    await getCurrentWebviewWindow().destroy();
+    await getCurrentWindow().destroy();
   };
   const tryCloseApp = async (dontTray = false) => {
     if (isTrayAvailable && config?.useTray === null) {
@@ -88,7 +87,7 @@ export function TopBar({
     }
 
     if (config?.useTray && !dontTray) {
-      await getCurrentWebviewWindow().hide();
+      await getCurrentWindow().hide();
       await invoke('update_tray_text');
     } else if (
       config?.connectedTrackersWarning &&
@@ -107,7 +106,7 @@ export function TopBar({
 
   useEffect(() => {
     const unlistenTrayClose = listen('try-close', async () => {
-      const window = getCurrentWebviewWindow();
+      const window = getCurrentWindow();
       await window.show();
       await window.requestUserAttention(UserAttentionType.Critical);
       await window.setFocus();
@@ -115,7 +114,7 @@ export function TopBar({
       await tryCloseApp(true);
     });
 
-    const unlistenCloseRequested = getCurrentWebviewWindow().listen(
+    const unlistenCloseRequested = getCurrentWindow().listen(
       TauriEvent.WINDOW_CLOSE_REQUESTED,
       async (data) => {
         const ev = new CloseRequestedEvent(data);
@@ -136,7 +135,7 @@ export function TopBar({
 
   useEffect(() => {
     if (config === null || !isTauri) return;
-    getCurrentWebviewWindow().setDecorations(config?.decorations).catch(error);
+    getCurrentWindow().setDecorations(config?.decorations).catch(error);
   }, [config?.decorations]);
 
   useEffect(() => {
@@ -275,13 +274,13 @@ export function TopBar({
               <>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => getCurrentWebviewWindow().minimize()}
+                  onClick={() => getCurrentWindow().minimize()}
                 >
                   <MinimiseIcon></MinimiseIcon>
                 </div>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
-                  onClick={() => getCurrentWebviewWindow().toggleMaximize()}
+                  onClick={() => getCurrentWindow().toggleMaximize()}
                 >
                   <MaximiseIcon></MaximiseIcon>
                 </div>
@@ -309,7 +308,7 @@ export function TopBar({
 
           // Doing this in here just in case config doesn't get updated in time
           if (useTray) {
-            await getCurrentWebviewWindow().hide();
+            await getCurrentWindow().hide();
             await invoke('update_tray_text');
           } else if (
             config?.connectedTrackersWarning &&
