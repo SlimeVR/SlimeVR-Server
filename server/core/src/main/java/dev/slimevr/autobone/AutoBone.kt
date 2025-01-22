@@ -6,6 +6,7 @@ import dev.slimevr.autobone.errors.*
 import dev.slimevr.config.AutoBoneConfig
 import dev.slimevr.poseframeformat.PoseFrameIO
 import dev.slimevr.poseframeformat.PoseFrames
+import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
@@ -94,38 +95,73 @@ class AutoBone(server: VRServer) {
 		}
 	}
 
-	fun getBoneDirection(
+	/**
+	 * Computes the local tail position of the bone after rotation.
+	 */
+	fun getBoneLocalTail(
 		skeleton: HumanPoseManager,
-		configOffset: SkeletonConfigOffsets,
-		rightSide: Boolean,
+		boneType: BoneType,
 	): Vector3 {
-		// IMPORTANT: This assumption for acquiring BoneType only works if
-		// SkeletonConfigOffsets is set up to only affect one BoneType, make sure no
-		// changes to SkeletonConfigOffsets goes against this assumption, please!
-		val boneType = when (configOffset) {
-			SkeletonConfigOffsets.HIPS_WIDTH, SkeletonConfigOffsets.SHOULDERS_WIDTH,
-			SkeletonConfigOffsets.SHOULDERS_DISTANCE, SkeletonConfigOffsets.UPPER_ARM,
-			SkeletonConfigOffsets.LOWER_ARM, SkeletonConfigOffsets.UPPER_LEG,
-			SkeletonConfigOffsets.LOWER_LEG, SkeletonConfigOffsets.FOOT_LENGTH,
-			->
-				if (rightSide) configOffset.affectedOffsets[1] else configOffset.affectedOffsets[0]
-
-			else -> configOffset.affectedOffsets[0]
-		}
-		return skeleton.getBone(boneType).getGlobalRotation().toRotationVector()
+		val bone = skeleton.getBone(boneType)
+		return bone.getTailPosition() - bone.getPosition()
 	}
 
-	fun getDotProductDiff(
+	/**
+	 * Computes the direction of the bone tail's movement between skeletons 1 and 2.
+	 */
+	fun getBoneLocalTailDir(
 		skeleton1: HumanPoseManager,
 		skeleton2: HumanPoseManager,
-		configOffset: SkeletonConfigOffsets,
-		rightSide: Boolean,
-		offset: Vector3,
+		boneType: BoneType,
+	): Vector3? {
+		val boneOff = getBoneLocalTail(skeleton2, boneType) - getBoneLocalTail(skeleton1, boneType)
+		val boneOffLen = boneOff.len()
+		return if (boneOffLen > MIN_SLIDE_DIST) boneOff / boneOffLen else null
+	}
+
+	/**
+	 * Predicts how much the provided config should be affecting the slide offsets
+	 * of the left and right ankles.
+	 */
+	fun getSlideDot(
+		skeleton1: HumanPoseManager,
+		skeleton2: HumanPoseManager,
+		config: SkeletonConfigOffsets,
+		slideL: Vector3?,
+		slideR: Vector3?,
 	): Float {
-		val normalizedOffset = offset.unit()
-		val dot1 = normalizedOffset.dot(getBoneDirection(skeleton1, configOffset, rightSide))
-		val dot2 = normalizedOffset.dot(getBoneDirection(skeleton2, configOffset, rightSide))
-		return dot2 - dot1
+		var slideDot = 0f
+		// Used for right offset if not a symmetric bone
+		var boneOffL: Vector3? = null
+
+		if (slideL != null) {
+			boneOffL = getBoneLocalTailDir(skeleton1, skeleton2, config.affectedOffsets[0])
+
+			if (boneOffL != null) {
+				slideDot += slideL.dot(boneOffL)
+			}
+		}
+
+		if (slideR != null) {
+			// IMPORTANT: This assumption for acquiring BoneType only works if
+			// SkeletonConfigOffsets is set up to only affect one BoneType, make sure no
+			// changes to SkeletonConfigOffsets goes against this assumption, please!
+			val boneOffR = if (SYMM_CONFIGS.contains(config)) {
+				getBoneLocalTailDir(skeleton1, skeleton2, config.affectedOffsets[1])
+			} else if (slideL != null) {
+				// Use cached offset if slideL was used
+				boneOffL
+			} else {
+				// Compute offset if missing because of slideL
+				getBoneLocalTailDir(skeleton1, skeleton2, config.affectedOffsets[0])
+			}
+
+			if (boneOffR != null) {
+				slideDot += slideR.dot(boneOffR)
+			}
+		}
+
+		return slideDot / 2f
 	}
 
 	fun applyConfig(
@@ -488,13 +524,15 @@ class AutoBone(server: VRServer) {
 			return
 		}
 
-		val slideLeft = skeleton2
-			.getComputedTracker(TrackerRole.LEFT_FOOT).position -
+		val slideL = skeleton2.getComputedTracker(TrackerRole.LEFT_FOOT).position -
 			skeleton1.getComputedTracker(TrackerRole.LEFT_FOOT).position
+		val slideLLen = slideL.len()
+		val slideLUnit: Vector3? = if (slideLLen > MIN_SLIDE_DIST) slideL / slideLLen else null
 
-		val slideRight = skeleton2
-			.getComputedTracker(TrackerRole.RIGHT_FOOT).position -
+		val slideR = skeleton2.getComputedTracker(TrackerRole.RIGHT_FOOT).position -
 			skeleton1.getComputedTracker(TrackerRole.RIGHT_FOOT).position
+		val slideRLen = slideR.len()
+		val slideRUnit: Vector3? = if (slideRLen > MIN_SLIDE_DIST) slideR / slideRLen else null
 
 		val intermediateOffsets = EnumMap(offsets)
 		for (entry in intermediateOffsets.entries) {
@@ -505,28 +543,23 @@ class AutoBone(server: VRServer) {
 			}
 			val originalLength = entry.value
 
-			val leftDotProduct = getDotProductDiff(
-				skeleton1,
-				skeleton2,
-				entry.key,
-				false,
-				slideLeft,
-			)
-			val rightDotProduct = getDotProductDiff(
-				skeleton1,
-				skeleton2,
-				entry.key,
-				true,
-				slideRight,
-			)
-
 			// Calculate the total effect of the bone based on change in rotation
-			val dotLength = originalLength * ((leftDotProduct + rightDotProduct) / 2f)
+			val slideDot = getSlideDot(
+				skeleton1,
+				skeleton2,
+				entry.key,
+				slideLUnit,
+				slideRUnit,
+			)
+			val dotLength = originalLength * slideDot
 
 			// Scale by the total effect of the bone
 			val curAdjustVal = adjustVal * -dotLength
-			val newLength = originalLength + curAdjustVal
+			if (curAdjustVal == 0f) {
+				continue
+			}
 
+			val newLength = originalLength + curAdjustVal
 			// No small or negative numbers!!! Bad algorithm!
 			if (newLength < 0.01f) {
 				continue
@@ -754,6 +787,7 @@ class AutoBone(server: VRServer) {
 
 	companion object {
 		const val MIN_HEIGHT = 0.4f
+		const val MIN_SLIDE_DIST = 0.002f
 		const val AUTOBONE_FOLDER = "AutoBone Recordings"
 		const val LOADAUTOBONE_FOLDER = "Load AutoBone Recordings"
 
@@ -773,5 +807,16 @@ class AutoBone(server: VRServer) {
 		private fun errorFunc(errorDeriv: Float): Float = 0.5f * (errorDeriv * errorDeriv)
 
 		private fun decayFunc(initialAdjustRate: Float, adjustRateDecay: Float, epoch: Int): Float = if (epoch >= 0) initialAdjustRate / (1 + (adjustRateDecay * epoch)) else 0.0f
+
+		private val SYMM_CONFIGS = arrayOf(
+			SkeletonConfigOffsets.HIPS_WIDTH,
+			SkeletonConfigOffsets.SHOULDERS_WIDTH,
+			SkeletonConfigOffsets.SHOULDERS_DISTANCE,
+			SkeletonConfigOffsets.UPPER_ARM,
+			SkeletonConfigOffsets.LOWER_ARM,
+			SkeletonConfigOffsets.UPPER_LEG,
+			SkeletonConfigOffsets.LOWER_LEG,
+			SkeletonConfigOffsets.FOOT_LENGTH,
+		)
 	}
 }

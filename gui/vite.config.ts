@@ -10,7 +10,9 @@ const versionTag = execSync('git --no-pager tag --sort -taggerdate --points-at H
   .split('\n')[0]
   .trim();
 // If not empty then it's not clean
-const gitClean = execSync('git status --porcelain').toString() ? false : true;
+const gitCleanString = execSync('git status --porcelain').toString();
+const gitClean = gitCleanString ? false : true;
+if (!gitClean) console.log('Git is dirty because of:\n' + gitCleanString);
 
 console.log(`version is ${versionTag || commitHash}${gitClean ? '' : '-dirty'}`);
 
@@ -21,7 +23,7 @@ export function i18nHotReload(): PluginOption {
     handleHotUpdate({ file, server }) {
       if (file.endsWith('.ftl')) {
         console.log('Fluent files updated');
-        server.ws.send({
+        server.hot.send({
           type: 'custom',
           event: 'locales-update',
         });

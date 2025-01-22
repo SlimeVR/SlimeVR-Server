@@ -1,4 +1,5 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
+use std::env;
 use std::panic;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
@@ -68,88 +69,125 @@ fn main() -> Result<()> {
 	let tauri_context = tauri::generate_context!();
 
 	// Set up loggers and global handlers
-	let _logger = {
-		use flexi_logger::{
-			Age, Cleanup, Criterion, Duplicate, FileSpec, Logger, Naming, WriteMode,
-		};
-		use tauri::Error;
-
-		// Based on https://docs.rs/tauri/2.0.0-alpha.10/src/tauri/path/desktop.rs.html#238-256
-		#[cfg(target_os = "macos")]
-		let path = dirs_next::home_dir().ok_or(Error::UnknownPath).map(|dir| {
-			dir.join("Library/Logs")
-				.join(&tauri_context.config().identifier)
-		});
-
-		#[cfg(not(target_os = "macos"))]
-		let path = dirs_next::data_dir()
-			.ok_or(Error::UnknownPath)
-			.map(|dir| dir.join(&tauri_context.config().identifier).join("logs"));
-
-		Logger::try_with_env_or_str("info")?
-			.log_to_file(
-				FileSpec::default().directory(path.expect("We need a log dir")),
-			)
-			.format_for_files(|w, now, record| {
-				util::logger_format(w, now, record, false)
-			})
-			.format_for_stderr(|w, now, record| {
-				util::logger_format(w, now, record, true)
-			})
-			.rotate(
-				Criterion::Age(Age::Day),
-				Naming::Timestamps,
-				Cleanup::KeepLogFiles(2),
-			)
-			.duplicate_to_stderr(Duplicate::All)
-			.write_mode(WriteMode::BufferAndFlush)
-			.start()?
-	};
+	let _logger = setup_logger(&tauri_context);
 
 	// Ensure child processes die when spawned on windows
 	// and then check for WebView2's existence
 	#[cfg(windows)]
-	{
-		use crate::util::webview2_exists;
-		use win32job::{ExtendedLimitInfo, Job};
+	setup_webview2()?;
 
-		let mut info = ExtendedLimitInfo::new();
-		info.limit_kill_on_job_close();
-		let job = Job::create_with_limit_info(&mut info).expect("Failed to create Job");
-		job.assign_current_process()
-			.expect("Failed to assign current process to Job");
-
-		// We don't do anything with the job anymore, but we shouldn't drop it because that would
-		// terminate our process tree. So we intentionally leak it instead.
-		std::mem::forget(job);
-
-		if !webview2_exists() {
-			// This makes a dialog appear which let's you press Ok or Cancel
-			// If you press Ok it will open the SlimeVR installer documentation
-			use rfd::{
-				MessageButtons, MessageDialog, MessageDialogResult, MessageLevel,
-			};
-
-			let confirm = MessageDialog::new()
-				.set_title("SlimeVR")
-				.set_description("Couldn't find WebView2 installed. You can install it with the SlimeVR installer")
-				.set_buttons(MessageButtons::OkCancel)
-				.set_level(MessageLevel::Error)
-				.show();
-			if confirm == MessageDialogResult::Ok {
-				open::that("https://docs.slimevr.dev/server-setup/installing-and-connecting.html#install-the-latest-slimevr-installer").unwrap();
-			}
-			return Ok(());
-		}
-	}
+	// Check for environment variables that can affect the server, and if so, warn in log and GUI
+	check_environment_variables();
 
 	// Spawn server process
 	let exit_flag = Arc::new(AtomicBool::new(false));
 	let backend = Arc::new(Mutex::new(Option::<CommandChild>::None));
-	let backend_termination = backend.clone();
-	let run_path = get_launch_path(cli);
 
-	let server_info = if let Some(p) = run_path {
+	let server_info = execute_server(cli)?;
+	let build_result = setup_tauri(
+		tauri_context,
+		server_info,
+		exit_flag.clone(),
+		backend.clone(),
+	);
+
+	tauri_build_result(build_result, exit_flag, backend);
+
+	Ok(())
+}
+
+fn setup_logger(context: &tauri::Context) -> Result<flexi_logger::LoggerHandle> {
+	use flexi_logger::{
+		Age, Cleanup, Criterion, Duplicate, FileSpec, Logger, Naming, WriteMode,
+	};
+	use tauri::Error;
+
+	// Based on https://docs.rs/tauri/2.0.0-alpha.10/src/tauri/path/desktop.rs.html#238-256
+	#[cfg(target_os = "macos")]
+	let path = dirs_next::home_dir()
+		.ok_or(Error::UnknownPath)
+		.map(|dir| dir.join("Library/Logs").join(&context.config().identifier));
+
+	#[cfg(not(target_os = "macos"))]
+	let path = dirs_next::data_dir()
+		.ok_or(Error::UnknownPath)
+		.map(|dir| dir.join(&context.config().identifier).join("logs"));
+
+	Ok(Logger::try_with_env_or_str("info")?
+		.log_to_file(FileSpec::default().directory(path.expect("We need a log dir")))
+		.format_for_files(|w, now, record| util::logger_format(w, now, record, false))
+		.format_for_stderr(|w, now, record| util::logger_format(w, now, record, true))
+		.rotate(
+			Criterion::Age(Age::Day),
+			Naming::Timestamps,
+			Cleanup::KeepLogFiles(2),
+		)
+		.duplicate_to_stderr(Duplicate::All)
+		.write_mode(WriteMode::BufferAndFlush)
+		.start()?)
+}
+
+#[cfg(windows)]
+fn setup_webview2() -> Result<()> {
+	use crate::util::webview2_exists;
+	use win32job::{ExtendedLimitInfo, Job};
+
+	let mut info = ExtendedLimitInfo::new();
+	info.limit_kill_on_job_close();
+	let job = Job::create_with_limit_info(&mut info).expect("Failed to create Job");
+	job.assign_current_process()
+		.expect("Failed to assign current process to Job");
+
+	// We don't do anything with the job anymore, but we shouldn't drop it because that would
+	// terminate our process tree. So we intentionally leak it instead.
+	std::mem::forget(job);
+
+	if !webview2_exists() {
+		// This makes a dialog appear which let's you press Ok or Cancel
+		// If you press Ok it will open the SlimeVR installer documentation
+		use rfd::{MessageButtons, MessageDialog, MessageDialogResult, MessageLevel};
+
+		let confirm = MessageDialog::new()
+			.set_title("SlimeVR")
+			.set_description("Couldn't find WebView2 installed. You can install it with the SlimeVR installer")
+			.set_buttons(MessageButtons::OkCancel)
+			.set_level(MessageLevel::Error)
+			.show();
+		if confirm == MessageDialogResult::Ok {
+			open::that("https://docs.slimevr.dev/server-setup/installing-and-connecting.html#install-the-latest-slimevr-installer").unwrap();
+		}
+	}
+	Ok(())
+}
+
+fn check_environment_variables() {
+	use itertools::Itertools;
+	const ENVS_TO_CHECK: &[&str] = &["_JAVA_OPTIONS", "JAVA_TOOL_OPTIONS"];
+	let checked_envs = ENVS_TO_CHECK
+		.into_iter()
+		.filter_map(|e| {
+			let Ok(data) = env::var(e) else {
+				return None;
+			};
+			log::warn!("{e} is set to: {data}");
+			Some(e)
+		})
+		.join(", ");
+
+	if !checked_envs.is_empty() {
+		rfd::MessageDialog::new()
+			.set_title("SlimeVR")
+			.set_description(format!("You have environment variables {} set, which may cause the SlimeVR Server to fail to launch properly.", checked_envs))
+			.set_level(rfd::MessageLevel::Warning)
+			.show();
+	}
+}
+
+fn execute_server(
+	cli: Cli,
+) -> Result<Option<(std::ffi::OsString, std::path::PathBuf)>> {
+	use const_format::formatcp;
+	if let Some(p) = get_launch_path(cli) {
 		log::info!("Server found on path: {}", p.to_str().unwrap());
 
 		// Check if any Java already installed is compatible
@@ -159,19 +197,29 @@ fn main() -> Result<()> {
 			.then(|| jre.into_os_string())
 			.or_else(|| valid_java_paths().first().map(|x| x.0.to_owned()));
 		let Some(java_bin) = java_bin else {
-			show_error(&format!("Couldn't find a compatible Java version, please download Java {} or higher", MINIMUM_JAVA_VERSION));
-			return Ok(());
+			show_error(formatcp!(
+                "Couldn't find a compatible Java version, please download Java {} or higher",
+                MINIMUM_JAVA_VERSION
+            ));
+			return Ok(None);
 		};
 
 		log::info!("Using Java binary: {:?}", java_bin);
-		Some((java_bin, p))
+		Ok(Some((java_bin, p)))
 	} else {
 		log::warn!("No server found. We will not start the server.");
-		None
-	};
+		Ok(None)
+	}
+}
 
+fn setup_tauri(
+	context: tauri::Context,
+	server_info: Option<(std::ffi::OsString, std::path::PathBuf)>,
+	exit_flag: Arc<AtomicBool>,
+	backend: Arc<Mutex<Option<CommandChild>>>,
+) -> Result<tauri::App, tauri::Error> {
 	let exit_flag_terminated = exit_flag.clone();
-	let build_result = tauri::Builder::default()
+	tauri::Builder::default()
 		.plugin(tauri_plugin_dialog::init())
 		.plugin(tauri_plugin_fs::init())
 		.plugin(tauri_plugin_os::init())
@@ -281,7 +329,14 @@ fn main() -> Result<()> {
 			// WindowEvent::Resized(_) => std::thread::sleep(std::time::Duration::from_nanos(1)),
 			_ => (),
 		})
-		.build(tauri_context);
+		.build(context)
+}
+
+fn tauri_build_result(
+	build_result: Result<tauri::App, tauri::Error>,
+	exit_flag: Arc<AtomicBool>,
+	backend: Arc<Mutex<Option<CommandChild>>>,
+) {
 	match build_result {
 		Ok(app) => {
 			app.run(move |app_handle, event| match event {
@@ -295,7 +350,7 @@ fn main() -> Result<()> {
 						Err(e) => log::error!("failed to save window state: {}", e),
 					}
 
-					let mut lock = backend_termination.lock().unwrap();
+					let mut lock = backend.lock().unwrap();
 					let Some(ref mut child) = *lock else { return };
 					let write_result = child.write(b"exit\n");
 					match write_result {
@@ -339,6 +394,4 @@ fn main() -> Result<()> {
 			show_error(&error.to_string());
 		}
 	}
-
-	Ok(())
 }

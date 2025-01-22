@@ -90,7 +90,7 @@ body {
 }
 
 :root {
-  overflow: hidden;
+  // overflow: hidden; -- NEVER EVER BRING THIS BACK <3
   background: theme('colors.background.20');
 
   --navbar-w: 101px;
@@ -386,6 +386,14 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: theme('colors.background.60');
+}
+
+.bg-background-60::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.background.40');
+}
+
+.bg-background-60 {
+  scrollbar-color: theme('colors.background.50') transparent;
 }
 
 .dropdown-scroll {
