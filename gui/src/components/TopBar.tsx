@@ -86,7 +86,7 @@ export function TopBar({
       return;
     }
 
-    if (config?.useTray && !dontTray) {
+    if (isTrayAvailable && config?.useTray && !dontTray) {
       await getCurrentWindow().hide();
       await invoke('update_tray_text');
     } else if (
