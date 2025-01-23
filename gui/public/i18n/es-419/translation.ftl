@@ -50,6 +50,20 @@ body_part-LEFT_UPPER_LEG = Muslo izquierdo
 body_part-LEFT_LOWER_LEG = Tobillo izquierdo
 body_part-LEFT_FOOT = Pie izquierdo
 
+## BoardType
+
+board_type-UNKNOWN = Desconocido
+board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Placa personalizada
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+
 ## Proportions
 
 skeleton_bone-NONE = Nada
@@ -1090,6 +1104,21 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = El tracker { $trackerName } tiene un error.
 status_system-StatusUnassignedHMD = El casco de RV debe ser asignado como un sensor de cabeza.
+
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
 
 ## Tray Menu
 
