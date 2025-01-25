@@ -329,13 +329,7 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	private fun getFilteredRotation(): Quaternion = if (trackRotDirection) {
-		if (filteringHandler.filteringEnabled) {
-			// Get filtered rotation
-			filteringHandler.getFilteredRotation()
-		} else {
-			// Get unfiltered rotation
-			filteringHandler.getTrackedRotation()
-		}
+		filteringHandler.getFilteredRotation()
 	} else {
 		// Get raw rotation
 		_rotation
@@ -433,6 +427,6 @@ class Tracker @JvmOverloads constructor(
 	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
 	 */
 	fun resetFilteringQuats() {
-		filteringHandler.resetQuats(_rotation)
+		filteringHandler.resetMovingAverage(_rotation)
 	}
 }
