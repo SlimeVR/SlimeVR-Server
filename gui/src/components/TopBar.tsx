@@ -328,7 +328,7 @@ export function TopBar({
         accept={() => closeApp()}
         cancel={() => {
           setConnectedTrackerWarning(false);
-          getCurrentWindow().requestUserAttention(UserAttentionType.Critical);
+          getCurrentWindow().requestUserAttention(null);
         }}
       ></TrackersStillOnModal>
     </>
