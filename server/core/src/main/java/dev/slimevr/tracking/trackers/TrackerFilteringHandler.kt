@@ -58,4 +58,9 @@ class TrackerFilteringHandler {
 	 * Get the filtered rotation from the moving average (either prediction/smoothing or just >180 degs)
 	 */
 	fun getFilteredRotation() = movingAverage.filteredQuaternion
+
+	/**
+	 * Get the impact filtering has on the rotation
+	 */
+	fun getFilteringImpact(): Float = movingAverage.filteringImpact
 }
