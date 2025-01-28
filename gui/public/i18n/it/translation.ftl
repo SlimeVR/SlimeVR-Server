@@ -1046,6 +1046,12 @@ onboarding-choose_proportions-manual_proportions-description = Questo processo t
 onboarding-choose_proportions-scaled_proportions = Proporzioni in scala
 # Italized text
 onboarding-choose_proportions-scaled_proportions-subtitle = Consigliato per i nuovi utenti
+# Multiline string
+onboarding-choose_proportions-scaled_proportions-description =
+    Questo scalerà le proporzioni di un corpo umano medio in base alla tua altezza, questo aiuterà con la configurazione di base del tracciamento del corpo.
+    
+    <b>È necessario che il visore (HMD) sia collegato a SlimeVR e indossato sulla testa!</b>
+onboarding-choose_proportions-scaled_proportions-button = Proporzioni in scala
 onboarding-choose_proportions-export = Esporta le proporzioni del corpo
 onboarding-choose_proportions-import = Importa le proporzioni del corpo
 onboarding-choose_proportions-import-success = Importate con successo
@@ -1080,12 +1086,32 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Il tuo visore sta riportando dati di posizione al server di SlimeVR (ciò significa generalmente avere SteamVR in esecuzione e connesso a SlimeVR usando il driver di SlimeVR per SteamVR).
     Il tuo tracciamento funziona e rappresenta accuratamente i tuoi movimenti (e.g. hai eseguito un ripristino completo e i traker si muovono nella giusta direzione quando calci, ti pieghi, ti siedi, ecc.).
 onboarding-automatic_proportions-requirements-next = Ho letto i requisiti.
+onboarding-automatic_proportions-check_height-title-v2 = Misura la tua altezza
+onboarding-automatic_proportions-check_height-description-v2 = L'altezza del visore (HMD) dovrebbe essere leggermente inferiore all'altezza completa, poiché il visore misura l'altezza degli occhi. Questa misurazione verrà utilizzata come base per le proporzioni del tuo corpo.
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning-v2 = Inizia a misurare stando in piedi <u>dritti</u> per calcolare la tua altezza. Fai attenzione a non alzare le mani più in alto del visore, poiché potrebbero influire sulla misurazione!
 onboarding-automatic_proportions-check_height-guardian_tip =
     Se stai utilizzando un visore VR standalone, assicurati di avere il tuo guardiano/
     limiti attivato in modo che la tua altezza sia corretta!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Sconosciuto
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height2 = L'altezza del visore è:
+onboarding-automatic_proportions-check_height-measure-start = Inizia la misurazione
+onboarding-automatic_proportions-check_height-measure-stop = Interrompi la misurazione
+onboarding-automatic_proportions-check_height-measure-reset = Riprova la misurazione
 onboarding-automatic_proportions-check_height-next_step = Sono corretti
+onboarding-automatic_proportions-check_floor_height-title = Misura l'altezza del pavimento (opzionale)
+onboarding-automatic_proportions-check_floor_height-description = In alcuni casi, l'altezza del pavimento potrebbe non essere impostata correttamente dal visore, causando la misurazione dell'altezza del visore a risultare superiore a quella che dovrebbe essere. Puoi misurare l'"altezza" del pavimento per correggere l'altezza del visore.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning = Se sei sicurə che l'altezza del pavimento sia corretta, puoi saltare questo passaggio.
+# Shows an element below it
+onboarding-automatic_proportions-check_floor_height-floor_height = L'altezza del pavimento è:
+onboarding-automatic_proportions-check_floor_height-measure-start = Inizia la misurazione
+onboarding-automatic_proportions-check_floor_height-measure-stop = Interrompi la misurazione
+onboarding-automatic_proportions-check_floor_height-measure-reset = Riprova la misurazione
+onboarding-automatic_proportions-check_floor_height-skip_step = Salta il passaggio e salva
+onboarding-automatic_proportions-check_floor_height-next_step = Usa l'altezza del pavimento e salva
 onboarding-automatic_proportions-start_recording-title = Preparati a muoverti
 onboarding-automatic_proportions-start_recording-description = Ora registreremo alcune pose e movimenti specifici. Questi verranno descritte nelle schermate successive. Preparati a iniziare quando premi il pulsante!
 onboarding-automatic_proportions-start_recording-next = Inizia registrazione
@@ -1120,12 +1146,27 @@ onboarding-automatic_proportions-error_modal-v2 =
     Si tratta probabilmente di un problema di calibrazione del montaggio. Assicurati che il tracciamento funzioni correttamente prima di riprovare.
     Controlla <docs>i documenti</docs> o entra nel nostro server <discord>Discord</discord> per assistenza ^_^
 onboarding-automatic_proportions-error_modal-confirm = Ho capito!
+onboarding-automatic_proportions-smol_warning =
+    L'altezza configurata di { $height } è inferiore all'altezza minima accettata di { $minHeight }.
+    <b>Si prega di ripetere le misurazioni e assicurarsi che siano corrette.</b>
+onboarding-automatic_proportions-smol_warning-cancel = Indietro
 
 ## Tracker scaled proportions setup
 
+onboarding-scaled_proportions-title = Proporzioni in scala
+onboarding-scaled_proportions-description = Affinché i tracker di SlimeVR funzionino, dobbiamo conoscere la lunghezza dei tuoi arti. Questo utilizzerà delle proporzioni nella media e la scalerà in base alla tua altezza.
+onboarding-scaled_proportions-manual_height-title = Configura la tua altezza
+onboarding-scaled_proportions-manual_height-description = L'altezza del visore (HMD) dovrebbe essere leggermente inferiore all'altezza completa, poiché il visore misura l'altezza degli occhi. Questa altezza verrà utilizzata come base per le proporzioni del tuo corpo.
+onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR non è attualmente connesso a SlimeVR, quindi le misurazioni non possono essere basate sul visore. <b>Procedi a tua discrezione o controlla la documentazione!</b>
+onboarding-scaled_proportions-manual_height-height = L'altezza del visore è
+onboarding-scaled_proportions-manual_height-next_step = Continua e salva
 
 ## Tracker scaled proportions reset
 
+onboarding-scaled_proportions-reset_proportion-title = Ripristina le proporzioni del corpo
+onboarding-scaled_proportions-reset_proportion-description = Per impostare le proporzioni del tuo corpo in base alla tua altezza, ora devi ripristinare tutte le tue proporzioni. In questo modo verranno cancellate tutte le proporzioni configurate e verrà fornita una configurazione di base.
+onboarding-scaled_proportions-done-title = Proporzioni del corpo configurate
+onboarding-scaled_proportions-done-description = Le proporzioni del tuo corpo dovrebbero ora essere configurate in base alla tua altezza.
 
 ## Home
 
