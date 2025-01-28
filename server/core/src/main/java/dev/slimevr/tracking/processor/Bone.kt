@@ -67,7 +67,7 @@ class Bone(val boneType: BoneType, val rotationConstraint: Constraint) {
 	 * this bone and all of its children while
 	 * enforcing rotation constraints.
 	 */
-	fun updateWithConstraints() {
+	fun updateWithConstraints(correctConstraints: Boolean) {
 		val initialRot = getGlobalRotation()
 		val newRot = rotationConstraint.applyConstraint(initialRot, this)
 		setRotationRaw(newRot)
@@ -82,7 +82,8 @@ class Bone(val boneType: BoneType, val rotationConstraint: Constraint) {
 			val deltaRot = newRot * initialRot.inv()
 			val angle = deltaRot.angleR()
 
-			if (angle > Constraint.ANGLE_THRESHOLD &&
+			if (correctConstraints &&
+				angle > Constraint.ANGLE_THRESHOLD &&
 				(attachedTracker?.filteringHandler?.getFilteringImpact() ?: 1f) < Constraint.FILTER_IMPACT_THRESHOLD &&
 				(parent?.attachedTracker?.filteringHandler?.getFilteringImpact() ?: 0f) < Constraint.FILTER_IMPACT_THRESHOLD
 			) {
@@ -92,7 +93,7 @@ class Bone(val boneType: BoneType, val rotationConstraint: Constraint) {
 
 		// Recursively apply constraints and update children.
 		for (child in children) {
-			child.updateWithConstraints()
+			child.updateWithConstraints(correctConstraints)
 		}
 	}
 
