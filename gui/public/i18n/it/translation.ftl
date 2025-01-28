@@ -130,6 +130,10 @@ reset-reset_all_warning =
     Sei sicuro di volerlo fare?
 reset-reset_all_warning-reset = Ripristino delle proporzioni
 reset-reset_all_warning-cancel = Annulla
+reset-reset_all_warning_default =
+    <b>Avvertimento:</b> Al momento non hai definito la tua altezza, 
+    Di conseguenza le proporzioni saranno basate su un'altezza predefinita.
+    Sei sicuro di voler continuare?
 reset-full = Ripristino completo
 reset-mounting = Ripristino del posizionamento
 reset-yaw = Ripristina dell'orientamento
@@ -472,6 +476,11 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = "Piedi piantati"
 settings-general-fk_settings-leg_fk = Tracking delle gambe
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Abilita il ripristino di posizionamento dei piedi mettendosi in punta di piedi.
 settings-general-fk_settings-leg_fk-reset_mounting_feet = Ripristino del posizionamento dei piedi
+settings-general-fk_settings-enforce_joint_constraints = Limiti dello scheletro
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Rispetta i vincoli
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Impedisci ai legamenti di ruotare oltre il loro limite
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Correggi con i vincoli
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Correggi le rotazioni dei legamenti quando si spingono oltre il loro limite
 settings-general-fk_settings-arm_fk = Tracking delle braccia
 settings-general-fk_settings-arm_fk-description = Forza il calcolo della posizione delle braccia a utilizzare il visore anche se la posizione delle mani é disponibile.
 settings-general-fk_settings-arm_fk-force_arms = Forza il calcolo delle braccia dal visore
@@ -1034,6 +1043,9 @@ onboarding-choose_proportions-manual_proportions = Proporzioni manuali
 # Italicized text
 onboarding-choose_proportions-manual_proportions-subtitle = Per piccole modifiche
 onboarding-choose_proportions-manual_proportions-description = Questo processo ti permetterà di regolare manualmente le proporzioni del corpo modificandole direttamente.
+onboarding-choose_proportions-scaled_proportions = Proporzioni in scala
+# Italized text
+onboarding-choose_proportions-scaled_proportions-subtitle = Consigliato per i nuovi utenti
 onboarding-choose_proportions-export = Esporta le proporzioni del corpo
 onboarding-choose_proportions-import = Importa le proporzioni del corpo
 onboarding-choose_proportions-import-success = Importate con successo
@@ -1068,20 +1080,11 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Il tuo visore sta riportando dati di posizione al server di SlimeVR (ciò significa generalmente avere SteamVR in esecuzione e connesso a SlimeVR usando il driver di SlimeVR per SteamVR).
     Il tuo tracciamento funziona e rappresenta accuratamente i tuoi movimenti (e.g. hai eseguito un ripristino completo e i traker si muovono nella giusta direzione quando calci, ti pieghi, ti siedi, ecc.).
 onboarding-automatic_proportions-requirements-next = Ho letto i requisiti.
-onboarding-automatic_proportions-check_height-title = Controlla la tua altezza
-onboarding-automatic_proportions-check_height-description = Usiamo la tua altezza come base delle nostre misurazioni utilizzando l'altezza dell'HMD come approssimazione della tua altezza effettiva, ma è meglio controllare se il valore è giusto!
-# All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = Si prega di premere il pulsante stando in piedi <u>in posizione eretta</u> per calcolare l'altezza. Hai 3 secondi dopo aver premuto il pulsante!
 onboarding-automatic_proportions-check_height-guardian_tip =
     Se stai utilizzando un visore VR standalone, assicurati di avere il tuo guardiano/
     limiti attivato in modo che la tua altezza sia corretta!
-onboarding-automatic_proportions-check_height-fetch_height = Sono in piedi!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Sconosciuto
-# Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = L'altezza del tuo HMD è
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = quindi la tua altezza effettiva è
 onboarding-automatic_proportions-check_height-next_step = Sono corretti
 onboarding-automatic_proportions-start_recording-title = Preparati a muoverti
 onboarding-automatic_proportions-start_recording-description = Ora registreremo alcune pose e movimenti specifici. Questi verranno descritte nelle schermate successive. Preparati a iniziare quando premi il pulsante!
@@ -1117,6 +1120,12 @@ onboarding-automatic_proportions-error_modal-v2 =
     Si tratta probabilmente di un problema di calibrazione del montaggio. Assicurati che il tracciamento funzioni correttamente prima di riprovare.
     Controlla <docs>i documenti</docs> o entra nel nostro server <discord>Discord</discord> per assistenza ^_^
 onboarding-automatic_proportions-error_modal-confirm = Ho capito!
+
+## Tracker scaled proportions setup
+
+
+## Tracker scaled proportions reset
+
 
 ## Home
 
