@@ -1026,6 +1026,12 @@ onboarding-choose_proportions-manual_proportions-description = 本選項可以�
 onboarding-choose_proportions-scaled_proportions = 標準軀幹比例
 # Italized text
 onboarding-choose_proportions-scaled_proportions-subtitle = 推薦新使用者使用
+# Multiline string
+onboarding-choose_proportions-scaled_proportions-description =
+    依照人體的平均軀幹比例，依照你的身高進行縮放調整，可用於基本的全身追蹤。
+    
+    <b>本選項需要連接頭戴顯示器 (HMD) 到 SlimeVR，並且戴上頭部。</b>
+onboarding-choose_proportions-scaled_proportions-button = 標準軀幹比例
 onboarding-choose_proportions-export = 匯出軀幹比例
 onboarding-choose_proportions-import = 匯入軀幹比例
 onboarding-choose_proportions-import-success = 匯入成功
@@ -1061,10 +1067,30 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     頭戴顯示器會回報定位資料給 SlimeVR 伺服器（通常為執行 SteamVR 並透過 SlimeVR 的 SteamVR 驅動程式來連接 SlimeVR）。
     追蹤狀態正常且能反映你的移動姿態（例如，進行完全重置後，踢腿、彎曲、坐下時的肢體方向是正確的）。
 onboarding-automatic_proportions-requirements-next = 我已閱讀使用需求
+onboarding-automatic_proportions-check_height-title-v2 = 測量你的身高
+onboarding-automatic_proportions-check_height-description-v2 = 你的頭戴顯示器 (HMD) 高度應略小於您的身高全長，因為頭戴顯示器會測量你的眼睛高度。本測量會被做為計算軀幹比例的基礎值。
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning-v2 = <u>站直</u>以開始測量你的身高。請注意不要將手抬高過於頭戴顯示器，將會影響測量。
 onboarding-automatic_proportions-check_height-guardian_tip = 如果你使用的是一體式 VR 頭顯，請確認頭盔的守護神/邊界設定已經開啟，以確保身高能正確測量。
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 不明
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height2 = 你的頭戴顯示器高度是：
+onboarding-automatic_proportions-check_height-measure-start = 開始測量
+onboarding-automatic_proportions-check_height-measure-stop = 停止測量
+onboarding-automatic_proportions-check_height-measure-reset = 重新測量
 onboarding-automatic_proportions-check_height-next_step = 數值沒問題
+onboarding-automatic_proportions-check_floor_height-title = 測量地板高度（選用）
+onboarding-automatic_proportions-check_floor_height-description = 在某些情況下，頭戴顯示器可能無法正確設定地板高度，導致頭戴顯示器測得的高度高於應有的高度。你可以測量地板的「高度」以校正頭戴顯示器的高度。
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning = 如果你確定地板的高度是正確的，可以跳過此步驟。
+# Shows an element below it
+onboarding-automatic_proportions-check_floor_height-floor_height = 你的地板高度是：
+onboarding-automatic_proportions-check_floor_height-measure-start = 開始測量
+onboarding-automatic_proportions-check_floor_height-measure-stop = 停止測量
+onboarding-automatic_proportions-check_floor_height-measure-reset = 重新測量
+onboarding-automatic_proportions-check_floor_height-skip_step = 跳過本步驟並儲存
+onboarding-automatic_proportions-check_floor_height-next_step = 使用地板高度並儲存
 onboarding-automatic_proportions-start_recording-title = 準備擺動作囉
 onboarding-automatic_proportions-start_recording-description = 我們現在要記錄一些特定的姿勢和動作，將會在下一個畫面中提示。當按鈕被按下時，準備好開始！
 onboarding-automatic_proportions-start_recording-next = 開始錄製
@@ -1095,9 +1121,17 @@ onboarding-automatic_proportions-error_modal-v2 =
     這有可能是配戴校正的問題，請確保追蹤功能運作正常之後再試一次。
     <docs>請檢閱文件</docs>或加入我們的 <discord>Discord</discord> 以尋求幫助 ^_^
 onboarding-automatic_proportions-error_modal-confirm = 瞭解！
+onboarding-automatic_proportions-smol_warning =
+    你設定的身高 { $height } 小於可接受的最小身高 { $minHeight }。
+    <b>請重新進行測量，並確保數值是正確的。</b>
+onboarding-automatic_proportions-smol_warning-cancel = 返回
 
 ## Tracker scaled proportions setup
 
+onboarding-scaled_proportions-title = 標準軀幹比例
+onboarding-scaled_proportions-description = 為了讓 SlimeVR 追蹤器正常使用，我們需要知道你的骨骼長度。本流程會使用人體的平均軀幹比例並依照你的身高縮放調整。
+onboarding-scaled_proportions-manual_height-title = 設定你的身高
+onboarding-scaled_proportions-manual_height-description = 你的頭戴顯示器 (HMD) 高度應略小於您的身高全長，因為頭戴顯示器會測量你的眼睛高度。測量出的高度會被做為計算軀幹比例的基礎值。
 
 ## Tracker scaled proportions reset
 
