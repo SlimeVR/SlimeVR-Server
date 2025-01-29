@@ -1132,9 +1132,16 @@ onboarding-scaled_proportions-title = 標準軀幹比例
 onboarding-scaled_proportions-description = 為了讓 SlimeVR 追蹤器正常使用，我們需要知道你的骨骼長度。本流程會使用人體的平均軀幹比例並依照你的身高縮放調整。
 onboarding-scaled_proportions-manual_height-title = 設定你的身高
 onboarding-scaled_proportions-manual_height-description = 你的頭戴顯示器 (HMD) 高度應略小於您的身高全長，因為頭戴顯示器會測量你的眼睛高度。測量出的高度會被做為計算軀幹比例的基礎值。
+onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR 目前尚未連接到 SlimeVR，因此無法根據頭戴顯示器測量身高。<b>請查閱說明文件，繼續操作請自行承擔風險！</b>
+onboarding-scaled_proportions-manual_height-height = 你的頭戴顯示器高度是
+onboarding-scaled_proportions-manual_height-next_step = 繼續並儲存
 
 ## Tracker scaled proportions reset
 
+onboarding-scaled_proportions-reset_proportion-title = 重置軀幹比例
+onboarding-scaled_proportions-reset_proportion-description = 要依照身高設定軀幹比例，你現在需要重置相關設定。本按鈕會清除以前所設定的軀幹比例並提供基本配置。
+onboarding-scaled_proportions-done-title = 軀幹比例已設定
+onboarding-scaled_proportions-done-description = 軀幹比例現在已經依照你的身高設定。
 
 ## Home
 
