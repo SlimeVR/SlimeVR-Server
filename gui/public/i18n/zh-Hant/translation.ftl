@@ -130,6 +130,10 @@ reset-reset_all_warning =
     你確定要執行此操作嗎？
 reset-reset_all_warning-reset = 重置軀幹比例
 reset-reset_all_warning-cancel = 取消
+reset-reset_all_warning_default =
+    <b>警告：</b>目前還沒有設定你身高，
+    軀幹比例將會依預設身高來計算。
+    你確定要繼續嗎？
 reset-full = 完整重置
 reset-mounting = 配戴重置
 reset-yaw = 左右偏擺重置
@@ -474,6 +478,11 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = 腳底貼地功�
 settings-general-fk_settings-leg_fk = 腿部追蹤
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = 開啟腳部配戴重置，進行配戴重置時需要踮起腳尖。
 settings-general-fk_settings-leg_fk-reset_mounting_feet = 腳部配戴重置
+settings-general-fk_settings-enforce_joint_constraints = 骨骼限制
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 約束關節旋轉
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免關節旋轉超出極限
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints = 以約束修正關節旋轉
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = 若關節旋轉角度超出極限時，修正旋轉角度
 settings-general-fk_settings-arm_fk = 手臂追蹤
 settings-general-fk_settings-arm_fk-description = 強制透過頭戴顯示器來追蹤手臂，即使有手部的定位資料。
 settings-general-fk_settings-arm_fk-force_arms = 強制從頭戴顯示器進行手臂追蹤
@@ -1014,6 +1023,9 @@ onboarding-choose_proportions-manual_proportions = 手動軀幹比例校正
 # Italicized text
 onboarding-choose_proportions-manual_proportions-subtitle = 適合進行微調
 onboarding-choose_proportions-manual_proportions-description = 本選項可以讓你直接修改軀幹比例的設定值
+onboarding-choose_proportions-scaled_proportions = 標準軀幹比例
+# Italized text
+onboarding-choose_proportions-scaled_proportions-subtitle = 推薦新使用者使用
 onboarding-choose_proportions-export = 匯出軀幹比例
 onboarding-choose_proportions-import = 匯入軀幹比例
 onboarding-choose_proportions-import-success = 匯入成功
@@ -1049,18 +1061,9 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     頭戴顯示器會回報定位資料給 SlimeVR 伺服器（通常為執行 SteamVR 並透過 SlimeVR 的 SteamVR 驅動程式來連接 SlimeVR）。
     追蹤狀態正常且能反映你的移動姿態（例如，進行完全重置後，踢腿、彎曲、坐下時的肢體方向是正確的）。
 onboarding-automatic_proportions-requirements-next = 我已閱讀使用需求
-onboarding-automatic_proportions-check_height-title = 檢查你的身高
-onboarding-automatic_proportions-check_height-description = 我們會透過頭戴顯示器回報的高度來推算你的實際身高，但仍建議檢查數值是否正確。
-# All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = 請<u>站直</u>並按下按鈕以計算身高，按下按鈕後你有 3 秒鐘來調整姿勢。
 onboarding-automatic_proportions-check_height-guardian_tip = 如果你使用的是一體式 VR 頭顯，請確認頭盔的守護神/邊界設定已經開啟，以確保身高能正確測量。
-onboarding-automatic_proportions-check_height-fetch_height = 我站著了！
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 不明
-# Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = 你的頭戴顯示器高度是
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = 所以你的實際身高是
 onboarding-automatic_proportions-check_height-next_step = 數值沒問題
 onboarding-automatic_proportions-start_recording-title = 準備擺動作囉
 onboarding-automatic_proportions-start_recording-description = 我們現在要記錄一些特定的姿勢和動作，將會在下一個畫面中提示。當按鈕被按下時，準備好開始！
@@ -1092,6 +1095,12 @@ onboarding-automatic_proportions-error_modal-v2 =
     這有可能是配戴校正的問題，請確保追蹤功能運作正常之後再試一次。
     <docs>請檢閱文件</docs>或加入我們的 <discord>Discord</discord> 以尋求幫助 ^_^
 onboarding-automatic_proportions-error_modal-confirm = 瞭解！
+
+## Tracker scaled proportions setup
+
+
+## Tracker scaled proportions reset
+
 
 ## Home
 
