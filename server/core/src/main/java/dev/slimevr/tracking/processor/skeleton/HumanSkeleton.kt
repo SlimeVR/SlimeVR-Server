@@ -511,7 +511,9 @@ class HumanSkeleton(
 
 		updateTransforms()
 		updateBones()
-		headBone.updateWithConstraints()
+		if (enforceConstraints) {
+			headBone.updateWithConstraints(correctConstraints)
+		}
 		updateComputedTrackers()
 
 		// Don't run post-processing if the tracking is paused
