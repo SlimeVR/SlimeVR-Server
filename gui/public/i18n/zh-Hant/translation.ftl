@@ -478,7 +478,7 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = 腳底貼地功�
 settings-general-fk_settings-leg_fk = 腿部追蹤
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = 開啟腳部配戴重置，進行配戴重置時需要踮起腳尖。
 settings-general-fk_settings-leg_fk-reset_mounting_feet = 腳部配戴重置
-settings-general-fk_settings-enforce_joint_constraints = 骨骼限制
+settings-general-fk_settings-enforce_joint_constraints = 骨架限制
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 約束關節旋轉
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免關節旋轉超出極限
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = 以約束修正關節旋轉
@@ -1028,7 +1028,7 @@ onboarding-choose_proportions-scaled_proportions = 標準軀幹比例
 onboarding-choose_proportions-scaled_proportions-subtitle = 推薦新使用者使用
 # Multiline string
 onboarding-choose_proportions-scaled_proportions-description =
-    依照人體的平均軀幹比例，依照你的身高進行縮放調整，可用於基本的全身追蹤。
+    使用人體的平均軀幹比例，依照你的身高進行縮放調整，可用於基本的全身追蹤。
     
     <b>本選項需要連接頭戴顯示器 (HMD) 到 SlimeVR，並且戴上頭部。</b>
 onboarding-choose_proportions-scaled_proportions-button = 標準軀幹比例
@@ -1070,8 +1070,8 @@ onboarding-automatic_proportions-requirements-next = 我已閱讀使用需求
 onboarding-automatic_proportions-check_height-title-v2 = 測量你的身高
 onboarding-automatic_proportions-check_height-description-v2 = 你的頭戴顯示器 (HMD) 高度應略小於您的身高全長，因為頭戴顯示器會測量你的眼睛高度。本測量會被做為計算軀幹比例的基礎值。
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning-v2 = <u>站直</u>以開始測量你的身高。請注意不要將手抬高過於頭戴顯示器，將會影響測量。
-onboarding-automatic_proportions-check_height-guardian_tip = 如果你使用的是一體式 VR 頭顯，請確認頭盔的守護神/邊界設定已經開啟，以確保身高能正確測量。
+onboarding-automatic_proportions-check_height-calculation_warning-v2 = <u>站直</u>並開始測量以計算出你的身高。請注意不要將手抬高過於頭戴顯示器，因為會影響測量。
+onboarding-automatic_proportions-check_height-guardian_tip = 如果你使用的是一體式 VR 頭戴顯示器，請確認頭盔的守護神/邊界設定已經開啟，以確保身高能正確測量。
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 不明
 # Shows an element below it
