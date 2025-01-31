@@ -1276,6 +1276,7 @@ firmware_update-changelog-title = Updating to {$version}
 firmware_update-looking_for_devices = Looking for devices to update...
 firmware_update-retry = Retry
 firmware_update-update = Update Selected Trackers
+firmware_update-exit = Exit
 
 ## Tray Menu
 tray_menu-show = Show

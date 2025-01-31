@@ -130,14 +130,14 @@ export function useProvideAppContext(): AppContext {
   useEffect(() => {
     const fetchCurrentFirmwareRelease = async () => {
       const releases: any[] | null = JSON.parse(
-        await cacheWrap(
+        (await cacheWrap(
           'firmware-releases',
           () =>
             fetch('https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases')
               .then((res) => res.text())
-              .catch(() => 'null'),
-          1000 * 60 * 60
-        )
+              .catch(() => null),
+          60 * 60 * 1000
+        )) ?? 'null'
       );
       if (!releases) return null;
 
