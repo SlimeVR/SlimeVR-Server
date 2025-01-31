@@ -10,7 +10,6 @@ import java.util.function.Consumer
 class AutoBoneStep(
 	val config: AutoBoneConfig,
 	val targetHmdHeight: Float,
-	val targetFullHeight: Float,
 	val frames: PoseFrames,
 	val epochCallback: Consumer<AutoBone.Epoch>?,
 	serverConfig: ConfigManager,
@@ -20,9 +19,6 @@ class AutoBoneStep(
 	var cursor2: Int = 0,
 	var currentHmdHeight: Float = 0f,
 ) {
-
-	val eyeHeightToHeightRatio: Float = targetHmdHeight / targetFullHeight
-
 	var maxFrameCount = frames.maxFrameCount
 
 	val framePlayer1 = TrackerFramesPlayer(frames)
@@ -40,7 +36,7 @@ class AutoBoneStep(
 		// Load server configs into the skeleton
 		skeleton1.loadFromConfig(serverConfig)
 		skeleton2.loadFromConfig(serverConfig)
-		// Disable leg tweaks, this will mess with the resulting positions
+		// Disable leg tweaks and IK solver, these will mess with the resulting positions
 		skeleton1.setLegTweaksEnabled(false)
 		skeleton2.setLegTweaksEnabled(false)
 	}
