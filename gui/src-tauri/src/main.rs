@@ -13,7 +13,8 @@ use clap::Parser;
 use color_eyre::Result;
 use state::WindowState;
 use tauri::Emitter;
-use tauri::{Manager, RunEvent, WindowEvent};
+use tauri::WindowEvent;
+use tauri::{Manager, RunEvent};
 use tauri_plugin_shell::process::CommandChild;
 
 use crate::util::{
