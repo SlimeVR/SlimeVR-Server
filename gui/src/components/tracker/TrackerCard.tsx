@@ -141,7 +141,6 @@ export function TrackerCard({
 }) {
   const { currentFirmwareRelease } = useAppContext();
   const { useVelocity } = useTracker(tracker);
-
   const velocity = useVelocity();
 
   return (

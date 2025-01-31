@@ -300,13 +300,21 @@ export function FirmwareUpdate() {
     queueFlashing(selectedDevices);
   };
 
+  const exit = () => {
+    clear();
+    navigate('/');
+  };
+
   const canStartUpdate =
     isValid &&
     devices.length !== 0 &&
     !hasPendingTrackers &&
     trackerWithErrors.length === 0;
   const canRetry =
-    isValid && devices.length !== 0 && trackerWithErrors.length !== 0;
+    !hasPendingTrackers &&
+    isValid &&
+    devices.length !== 0 &&
+    trackerWithErrors.length !== 0;
 
   const statusKeys = Object.keys(status);
 
@@ -393,6 +401,13 @@ export function FirmwareUpdate() {
               variant="primary"
               disabled={!canStartUpdate}
               onClick={startUpdate}
+            ></Button>
+          </Localized>
+          <Localized id="firmware_update-exit">
+            <Button
+              variant="primary"
+              onClick={exit}
+              disabled={hasPendingTrackers}
             ></Button>
           </Localized>
         </div>

@@ -30,7 +30,7 @@ export async function cacheGet(key: string): Promise<string | null> {
   const item = JSON.parse(itemStr);
   const now = new Date();
 
-  if (now.getTime() > item.expiry) {
+  if (item.expiry > 0 && now.getTime() > item.expiry) {
     await store.delete(key);
     return null;
   }
@@ -50,7 +50,7 @@ export async function cacheSet(key: string, value: unknown, ttl: number | undefi
 
 export async function cacheWrap(
   key: string,
-  orDefault: () => Promise<string>,
+  orDefault: () => Promise<string | null>,
   ttl: number | undefined
 ) {
   const realItem = await store.get(key);
