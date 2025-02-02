@@ -9,7 +9,10 @@ import {
 import { useConfig } from '@/hooks/config';
 import { useCountdown } from '@/hooks/countdown';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { playSoundOnResetStarted } from '@/sounds/sounds';
+import {
+  playSoundOnResetEnded,
+  playSoundOnResetStarted,
+} from '@/sounds/sounds';
 import { BigButton } from '@/components/commons/BigButton';
 import { Button } from '@/components/commons/Button';
 import {
@@ -51,6 +54,7 @@ export function ResetButton({
   const { isCounting, startCountdown, timer } = useCountdown({
     duration: type === ResetType.Yaw ? 0.2 : undefined,
     onCountdownEnd: () => {
+      maybePlaySoundOnResetEnd(type);
       reset();
       if (onReseted) onReseted();
     },
@@ -77,9 +81,14 @@ export function ResetButton({
     return <FullResetIcon width={20} />;
   };
 
-  const maybePlaySoundOnResetStarted = (type: ResetType) => {
+  const maybePlaySoundOnResetEnd = (type: ResetType) => {
     if (!config?.feedbackSound) return;
-    playSoundOnResetStarted(type, config?.feedbackSoundVolume);
+    playSoundOnResetEnded(type, config?.feedbackSoundVolume);
+  };
+
+  const maybePlaySoundOnResetStart = () => {
+    if (!config?.feedbackSound) return;
+    playSoundOnResetStarted(config?.feedbackSoundVolume);
   };
 
   return variant === 'small' ? (
@@ -87,7 +96,7 @@ export function ResetButton({
       icon={getIcon()}
       onClick={() => {
         startCountdown();
-        maybePlaySoundOnResetStarted(type);
+        maybePlaySoundOnResetStart();
       }}
       variant="primary"
       disabled={isCounting || needsFullReset}
@@ -103,7 +112,7 @@ export function ResetButton({
       icon={getIcon()}
       onClick={() => {
         startCountdown();
-        maybePlaySoundOnResetStarted(type);
+        maybePlaySoundOnResetStart();
       }}
       disabled={isCounting || needsFullReset}
     ></BigButton>
