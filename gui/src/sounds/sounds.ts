@@ -41,7 +41,7 @@ function restartAndPlay(audio: HTMLAudioElement, volume: number) {
   }
 }
 
-export function playSoundOnResetStarted(resetType: ResetType, volume = 1) {
+export function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
   switch (resetType) {
     case ResetType.Yaw: {
       restartAndPlay(quickResetStartedSound, volume);
@@ -56,6 +56,10 @@ export function playSoundOnResetStarted(resetType: ResetType, volume = 1) {
       break;
     }
   }
+}
+
+export function playSoundOnResetStarted(volume = 1) {
+  restartAndPlay(tapSetupSound1, volume);
 }
 
 let lastKnownVolume = 1;
