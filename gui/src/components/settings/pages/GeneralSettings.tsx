@@ -117,7 +117,6 @@ export interface SettingsForm {
     sittingFootAngle: number;
     lyingOnBackUpperLegAngle: number;
     lyingOnBackLowerLegAngle: number;
-    hideYawCorrection: boolean;
   };
 }
 
@@ -197,7 +196,6 @@ const defaultValues: SettingsForm = {
     sittingFootAngle: 0.0,
     lyingOnBackUpperLegAngle: 0.0,
     lyingOnBackLowerLegAngle: 0.0,
-    hideYawCorrection: false,
   },
 };
 
@@ -348,8 +346,6 @@ export function GeneralSettings() {
       values.yawCorrectionSettings.lyingOnBackUpperLegAngle;
     yawCorrectionSettings.lyingOnBackLowerLegAngle =
       values.yawCorrectionSettings.lyingOnBackLowerLegAngle;
-    yawCorrectionSettings.hideYawCorrection =
-      values.yawCorrectionSettings.hideYawCorrection;
     settings.yawCorrectionSettings = yawCorrectionSettings;
 
     if (values.resetsSettings) {
