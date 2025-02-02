@@ -10,12 +10,24 @@ const fullResetStartedSound = new Audio(
 const mountingResetStartedSound = new Audio(
   await fetchResourceUrl('/sounds/mounting-reset-started-sound.mp3')
 );
-const tapSetupSound1 = new Audio(await fetchResourceUrl('/sounds/first-tap.mp3'));
-const tapSetupSound2 = new Audio(await fetchResourceUrl('/sounds/second-tap.mp3'));
-const tapSetupSound3 = new Audio(await fetchResourceUrl('/sounds/third-tap.mp3'));
-const tapSetupSound4 = new Audio(await fetchResourceUrl('/sounds/fourth-tap.mp3'));
-const tapSetupSound5 = new Audio(await fetchResourceUrl('/sounds/fifth-tap.mp3'));
-const tapSetupSoundEnd = new Audio(await fetchResourceUrl('/sounds/end-tap.mp3'));
+const tapSetupSound1 = new Audio(
+  await fetchResourceUrl('/sounds/first-tap.mp3')
+);
+const tapSetupSound2 = new Audio(
+  await fetchResourceUrl('/sounds/second-tap.mp3')
+);
+const tapSetupSound3 = new Audio(
+  await fetchResourceUrl('/sounds/third-tap.mp3')
+);
+const tapSetupSound4 = new Audio(
+  await fetchResourceUrl('/sounds/fourth-tap.mp3')
+);
+const tapSetupSound5 = new Audio(
+  await fetchResourceUrl('/sounds/fifth-tap.mp3')
+);
+const tapSetupSoundEnd = new Audio(
+  await fetchResourceUrl('/sounds/end-tap.mp3')
+);
 const tapSetupExtraSound = new Audio(
   await fetchResourceUrl('/sounds/tapextrasetup.mp3')
 );
