@@ -1,15 +1,6 @@
 import { fetchResourceUrl } from '@/utils/tauri';
 import { ResetType } from 'solarxr-protocol';
 
-const quickResetStartedSound = new Audio(
-  await fetchResourceUrl('/sounds/quick-reset-started-sound.mp3')
-);
-const fullResetStartedSound = new Audio(
-  await fetchResourceUrl('/sounds/full-reset-started-sound.mp3')
-);
-const mountingResetStartedSound = new Audio(
-  await fetchResourceUrl('/sounds/mounting-reset-started-sound.mp3')
-);
 const tapSetupSound1 = new Audio(await fetchResourceUrl('/sounds/first-tap.mp3'));
 const tapSetupSound2 = new Audio(await fetchResourceUrl('/sounds/second-tap.mp3'));
 const tapSetupSound3 = new Audio(await fetchResourceUrl('/sounds/third-tap.mp3'));
