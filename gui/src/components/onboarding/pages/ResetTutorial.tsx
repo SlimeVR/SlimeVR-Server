@@ -143,12 +143,12 @@ export function ResetTutorialPage() {
                 setCurIndex(curIndex + 1);
               }}
             >
-              {l10n.getString('onboarding-reset_tutorial-skip')}
+              {l10n.getString('onboarding-reset_tutorial-next')}
             </Button>
 
             <Button
               variant="primary"
-              to="/onboarding/body-proportions/choose"
+              to="/onboarding/body-proportions/auto"
               className={classNames(
                 'ml-auto',
                 order.length > curIndex + 1 && 'hidden'

@@ -54,7 +54,11 @@ export function PutTrackersOnStep({
           <div className="flex gap-3 mobile:justify-between">
             <Button
               variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
-              to="/onboarding/body-proportions/choose"
+              to={
+                variant === 'alone'
+                  ? '/onboarding/body-proportions/choose'
+                  : '/onboarding/reset-tutorial'
+              }
               state={{ alonePage: variant === 'alone' }}
             >
               {l10n.getString('onboarding-automatic_proportions-prev_step')}

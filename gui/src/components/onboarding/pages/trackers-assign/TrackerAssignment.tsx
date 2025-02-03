@@ -322,7 +322,7 @@ export function TrackersAssignPage() {
                     </Button>
                     <Button
                       variant="primary"
-                      to="/onboarding/mounting/choose"
+                      to="/onboarding/mounting/auto"
                       disabled={
                         assignedTrackers.length === 0 && trackers.length > 0
                       }

@@ -736,7 +736,7 @@ onboarding-wifi_creds-password =
 onboarding-reset_tutorial-back = Go Back to Mounting calibration
 onboarding-reset_tutorial = Reset tutorial
 onboarding-reset_tutorial-explanation = While you use your trackers they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
-onboarding-reset_tutorial-skip = Skip step
+onboarding-reset_tutorial-next = Got it!
 # Cares about multiline
 onboarding-reset_tutorial-0 = Tap { $taps } times the highlighted tracker for triggering yaw reset.
 

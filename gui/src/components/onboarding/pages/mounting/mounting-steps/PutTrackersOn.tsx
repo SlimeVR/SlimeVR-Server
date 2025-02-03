@@ -54,7 +54,11 @@ export function PutTrackersOnStep({
           <div className="flex gap-3 mobile:justify-between">
             <Button
               variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
-              to="/onboarding/mounting/choose"
+              to={
+                variant === 'alone'
+                  ? '/onboarding/mounting/choose'
+                  : '/onboarding/trackers-assign'
+              }
               state={{ alonePage: variant === 'alone' }}
             >
               {l10n.getString('onboarding-automatic_mounting-prev_step')}
