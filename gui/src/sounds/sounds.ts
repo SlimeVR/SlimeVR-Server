@@ -32,15 +32,15 @@ function restartAndPlay(audio: HTMLAudioElement, volume: number) {
 export function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
   switch (resetType) {
     case ResetType.Yaw: {
-      restartAndPlay(quickResetStartedSound, volume);
+      restartAndPlay(tapSetupSound2, volume);
       break;
     }
     case ResetType.Full: {
-      restartAndPlay(fullResetStartedSound, volume);
+      restartAndPlay(tapSetupSound3, volume);
       break;
     }
     case ResetType.Mounting: {
-      restartAndPlay(mountingResetStartedSound, volume);
+      restartAndPlay(tapSetupSound4, volume);
       break;
     }
   }
