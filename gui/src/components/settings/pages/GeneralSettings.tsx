@@ -485,7 +485,35 @@ export function GeneralSettings() {
                   </Typography>
                 ))}
             </div>
-            <div className="grid grid-cols-2 gap-3 pt-3">
+            <div className="flex flex-col pt-4"></div>
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-steamvr-trackers-tracker_toggling'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-2 pb-4">
+              {l10n
+                .getString(
+                  'settings-general-steamvr-trackers-tracker_toggling-description'
+                )
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="trackers.automaticTrackerToggle"
+              label={l10n.getString(
+                'settings-general-steamvr-trackers-tracker_toggling-label'
+              )}
+            />
+            <div className="flex flex-col pt-4"></div>
+            <div className="grid grid-cols-2 gap-3">
               <CheckBox
                 variant="toggle"
                 outlined
@@ -585,33 +613,6 @@ export function GeneralSettings() {
                 )}
               />
             </div>
-            <div className="flex flex-col pt-4 pb-4"></div>
-            <Typography bold>
-              {l10n.getString(
-                'settings-general-steamvr-trackers-tracker_toggling'
-              )}
-            </Typography>
-            <div className="flex flex-col pt-2 pb-4">
-              {l10n
-                .getString(
-                  'settings-general-steamvr-trackers-tracker_toggling-description'
-                )
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </div>
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="trackers.automaticTrackerToggle"
-              label={l10n.getString(
-                'settings-general-steamvr-trackers-tracker_toggling-label'
-              )}
-            />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">
