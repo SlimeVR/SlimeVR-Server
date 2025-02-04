@@ -32,7 +32,7 @@ declare module '@react-three/fiber' {
   }
 }
 
-const GROUND_COLOR = '#4444aa';
+const GROUND_COLOR = '#2c2c6b';
 const FRUSTUM_SIZE = 10;
 const FACTOR = 2;
 // Not currently used but nice to have
@@ -196,7 +196,7 @@ export function SkeletonVisualizerWidget({
 
   if (!skeleton.current) return <></>;
   return (
-    <div className="bg-background-60 flex flex-col p-3 rounded-lg gap-2">
+    <div className="bg-background-70 flex flex-col rounded-lg gap-2 h-full">
       <ErrorBoundary
         fallback={
           <Typography color="primary" textAlign="text-center">
@@ -205,8 +205,8 @@ export function SkeletonVisualizerWidget({
         }
       >
         <Canvas
-          className={classNames('container mx-auto')}
-          style={{ height, background: 'transparent', maxHeight }}
+          className={classNames('container mx-auto h-full')}
+          style={{ background: 'transparent' }}
         >
           <gridHelper args={[10, 50, GROUND_COLOR, GROUND_COLOR]} />
           <group position={[0, heightOffset, 0]} quaternion={yawReset}>

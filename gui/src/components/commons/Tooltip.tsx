@@ -13,11 +13,15 @@ import { createPortal } from 'react-dom';
 import { Typography } from './Typography';
 import { CloseIcon } from './icon/CloseIcon';
 
+type Direction = 'top' | 'left' | 'right' | 'bottom';
 interface TooltipProps {
   content: ReactNode;
   children: ReactElement;
-  preferedDirection: 'top' | 'left' | 'right' | 'bottom';
+  preferedDirection: Direction;
+  blockedDirections?: Direction[];
   mode?: 'corner' | 'center';
+  variant?: 'auto' | 'drawer' | 'floating';
+  disabled?: boolean;
 }
 
 interface TooltipPos {
@@ -76,6 +80,7 @@ const clamp = (v: number, min: number, max: number) =>
 
 const getFloatingTooltipPosition = (
   preferedDirection: TooltipProps['preferedDirection'],
+  blockedDirections: Direction[],
   mode: TooltipProps['mode'],
   childrenRect: DOMRect,
   tooltipRect: DOMRect
@@ -134,9 +139,10 @@ const getFloatingTooltipPosition = (
   const pos = getPosition(preferedDirection);
   if (isNotInside({ ...pos, height: tooltipRect.height }, windowRect)) {
     const [firstPos] = ['left', 'top', 'right', 'bottom']
+      .filter((dir) => !blockedDirections.includes(dir as Direction))
       .map((dir) => ({
         dir,
-        area: getPosition(dir as TooltipProps['preferedDirection']),
+        area: getPosition(dir as Direction),
       }))
       .toSorted(
         (a, b) =>
@@ -225,12 +231,13 @@ const getFloatingTooltipPosition = (
 export function FloatingTooltip({
   childRef,
   preferedDirection,
+  blockedDirections = [],
   mode,
   children,
 }: {
   childRef: MutableRefObject<HTMLDivElement | null>;
   children: ReactNode;
-} & Pick<TooltipProps, 'mode' | 'preferedDirection'>) {
+} & Pick<TooltipProps, 'mode' | 'preferedDirection' | 'blockedDirections'>) {
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [tooltipStyle, setTooltipStyle] = useState<TooltipPos | undefined>();
 
@@ -244,6 +251,7 @@ export function FloatingTooltip({
     setTooltipStyle(
       getFloatingTooltipPosition(
         preferedDirection,
+        blockedDirections,
         mode,
         childrenRect,
         tooltipRect
@@ -372,15 +380,15 @@ export function DrawerTooltip({
     if (childRef.current && childRef.current.children[0]) {
       const elem = childRef.current.children[0] as HTMLElement;
 
-      elem.addEventListener('mousedown', touchStart); // for debug on desktop
-      elem.addEventListener('mouseup', touchEnd); // for debug on desktop
-      elem.addEventListener('click', touchEnd);
+      // elem.addEventListener('mousedown', touchStart); // for debug on desktop
+      // elem.addEventListener('mouseup', touchEnd); // for debug on desktop
+      // elem.addEventListener('click', touchEnd);
       elem.addEventListener('touchstart', touchStart);
       elem.addEventListener('touchend', touchEnd);
 
       return () => {
-        elem.removeEventListener('mousedown', touchStart); // for debug on desktop
-        elem.removeEventListener('mouseup', touchEnd); // for debug on desktop
+        // elem.removeEventListener('mousedown', touchStart); // for debug on desktop
+        // elem.removeEventListener('mouseup', touchEnd); // for debug on desktop
         elem.removeEventListener('touchstart', touchStart);
         elem.removeEventListener('touchend', touchEnd);
         clearTimeout(touchTimeout.current);
@@ -435,30 +443,51 @@ export function Tooltip({
   content,
   children,
   preferedDirection,
+  blockedDirections = [],
   mode = 'center',
+  variant = 'auto',
+  disabled = false,
 }: TooltipProps) {
   const childRef = useRef<HTMLDivElement | null>(null);
   const { isMobile } = useBreakpoint('mobile');
+
+  let portal = null;
+  if (variant === 'auto') {
+    portal = isMobile ? (
+      <DrawerTooltip childRef={childRef}>{content}</DrawerTooltip>
+    ) : (
+      <FloatingTooltip
+        preferedDirection={preferedDirection}
+        blockedDirections={blockedDirections}
+        mode={mode}
+        childRef={childRef}
+      >
+        {content}
+      </FloatingTooltip>
+    );
+  }
+
+  if (variant === 'drawer')
+    portal = <DrawerTooltip childRef={childRef}>{content}</DrawerTooltip>;
+
+  if (variant === 'floating')
+    portal = (
+      <FloatingTooltip
+        blockedDirections={blockedDirections}
+        preferedDirection={preferedDirection}
+        mode={mode}
+        childRef={childRef}
+      >
+        {content}
+      </FloatingTooltip>
+    );
 
   return (
     <>
       <div className="contents" ref={childRef}>
         {children}
       </div>
-      {createPortal(
-        isMobile ? (
-          <DrawerTooltip childRef={childRef}>{content}</DrawerTooltip>
-        ) : (
-          <FloatingTooltip
-            preferedDirection={preferedDirection}
-            mode={mode}
-            childRef={childRef}
-          >
-            {content}
-          </FloatingTooltip>
-        ),
-        document.body
-      )}
+      {!disabled && createPortal(portal, document.body)}
     </>
   );
 }
