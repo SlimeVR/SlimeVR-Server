@@ -154,6 +154,64 @@ class AutoBone(private val server: VRServer) {
 		trainingStep.skeleton2.update()
 	}
 
+	fun filterFrames(frames: PoseFrames, trainingStep: AutoBoneStep) {
+		// Calculate the initial frame errors and recording stats
+		val frameErrors = FloatArray(frames.maxFrameCount)
+		val frameStats = StatsCalculator()
+		val recordingStats = StatsCalculator()
+		for (i in 0 until frames.maxFrameCount) {
+			frameStats.reset()
+			for (j in 0 until frames.maxFrameCount) {
+				if (i == j) continue
+
+				trainingStep.setCursors(
+					i,
+					j,
+					updatePlayerCursors = true,
+				)
+
+				frameStats.addValue(getErrorDeriv(trainingStep))
+			}
+			frameErrors[i] = frameStats.mean
+			recordingStats.addValue(frameStats.mean)
+			// LogManager.info("[AutoBone] Frame: ${i + 1}, Mean error: ${frameStats.mean} (SD ${frameStats.standardDeviation})")
+		}
+		LogManager.info("[AutoBone] Full recording mean error: ${frameStats.mean} (SD ${frameStats.standardDeviation})")
+
+		// Remove outlier frames
+		val sdMult = 1.4f
+		val mean = recordingStats.mean
+		val sd = recordingStats.standardDeviation * sdMult
+		for (i in frameErrors.size - 1 downTo 0) {
+			val err = frameErrors[i]
+			if (err < mean - sd || err > mean + sd) {
+				for (frameHolder in frames.frameHolders) {
+					frameHolder.frames.removeAt(i)
+				}
+			}
+		}
+		trainingStep.maxFrameCount = frames.maxFrameCount
+
+		// Calculate and print the resulting recording stats
+		recordingStats.reset()
+		for (i in 0 until frames.maxFrameCount) {
+			frameStats.reset()
+			for (j in 0 until frames.maxFrameCount) {
+				if (i == j) continue
+
+				trainingStep.setCursors(
+					i,
+					j,
+					updatePlayerCursors = true,
+				)
+
+				frameStats.addValue(getErrorDeriv(trainingStep))
+			}
+			recordingStats.addValue(frameStats.mean)
+		}
+		LogManager.info("[AutoBone] Full recording after mean error: ${frameStats.mean} (SD ${frameStats.standardDeviation})")
+	}
+
 	@Throws(AutoBoneException::class)
 	fun processFrames(
 		frames: PoseFrames,
@@ -205,61 +263,7 @@ class AutoBone(private val server: VRServer) {
 		updateRecordingScale(trainingStep, 1f / targetHmdHeight)
 
 		if (config.useFrameFiltering) {
-			// Calculate the initial frame errors and recording stats
-			val frameErrors = FloatArray(frames.maxFrameCount)
-			val frameStats = StatsCalculator()
-			val recordingStats = StatsCalculator()
-			for (i in 0 until frames.maxFrameCount) {
-				frameStats.reset()
-				for (j in 0 until frames.maxFrameCount) {
-					if (i == j) continue
-
-					trainingStep.setCursors(
-						i,
-						j,
-						updatePlayerCursors = true,
-					)
-
-					frameStats.addValue(getErrorDeriv(trainingStep))
-				}
-				frameErrors[i] = frameStats.mean
-				recordingStats.addValue(frameStats.mean)
-				// LogManager.info("[AutoBone] Frame: ${i + 1}, Mean error: ${frameStats.mean} (SD ${frameStats.standardDeviation})")
-			}
-			LogManager.info("[AutoBone] Full recording mean error: ${frameStats.mean} (SD ${frameStats.standardDeviation})")
-
-			// Remove outlier frames
-			val sdMult = 1.4f
-			val mean = recordingStats.mean
-			val sd = recordingStats.standardDeviation * sdMult
-			for (i in frameErrors.size - 1 downTo 0) {
-				val err = frameErrors[i]
-				if (err < mean - sd || err > mean + sd) {
-					for (frameHolder in frames.frameHolders) {
-						frameHolder.frames.removeAt(i)
-					}
-				}
-			}
-			trainingStep.maxFrameCount = frames.maxFrameCount
-
-			// Calculate and print the resulting recording stats
-			recordingStats.reset()
-			for (i in 0 until frames.maxFrameCount) {
-				frameStats.reset()
-				for (j in 0 until frames.maxFrameCount) {
-					if (i == j) continue
-
-					trainingStep.setCursors(
-						i,
-						j,
-						updatePlayerCursors = true,
-					)
-
-					frameStats.addValue(getErrorDeriv(trainingStep))
-				}
-				recordingStats.addValue(frameStats.mean)
-			}
-			LogManager.info("[AutoBone] Full recording after mean error: ${frameStats.mean} (SD ${frameStats.standardDeviation})")
+			filterFrames(frames, trainingStep)
 		}
 
 		// Epoch loop, each epoch is one full iteration over the full dataset
