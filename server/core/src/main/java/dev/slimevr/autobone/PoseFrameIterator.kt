@@ -44,9 +44,10 @@ object PoseFrameIterator {
 		// Perform any setup that needs to be done before the current epoch
 		step.preEpoch?.accept(step)
 
-		var randIndices: IntArray? = null
-		if (config.randomizeFrameOrder) {
-			randIndices = randomIndices(step.maxFrameCount, step.random)
+		val randIndices = if (config.randomizeFrameOrder) {
+			randomIndices(step.maxFrameCount, step.random)
+		} else {
+			null
 		}
 
 		// Iterate over the frames using a cursor and an offset for comparing
