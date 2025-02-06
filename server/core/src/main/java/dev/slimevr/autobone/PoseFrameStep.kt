@@ -10,13 +10,20 @@ import kotlin.random.Random
 
 class PoseFrameStep<T>(
 	val config: AutoBoneConfig,
+	/** The config to initialize skeletons. */
 	serverConfig: ConfigManager? = null,
 	val frames: PoseFrames,
+	/** The consumer run before each epoch. */
 	val preEpoch: Consumer<PoseFrameStep<T>>? = null,
+	/** The consumer run for each step. */
 	val onStep: Consumer<PoseFrameStep<T>>,
+	/** The consumer run after each epoch. */
 	val postEpoch: Consumer<PoseFrameStep<T>>? = null,
+	/** The current epoch. */
 	var epoch: Int = 0,
+	/** The current frame cursor position in [frames] for skeleton1. */
 	var cursor1: Int = 0,
+	/** The current frame cursor position in [frames] for skeleton2. */
 	var cursor2: Int = 0,
 	randomSeed: Long = 0,
 	val data: T,
