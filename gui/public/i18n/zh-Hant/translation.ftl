@@ -1070,8 +1070,8 @@ onboarding-automatic_proportions-requirements-next = 我已閱讀使用需求
 onboarding-automatic_proportions-check_height-title-v2 = 測量你的身高
 onboarding-automatic_proportions-check_height-description-v2 = 你的頭戴顯示器 (HMD) 高度應略小於您的身高全長，因為頭戴顯示器會測量你的眼睛高度。本測量會被做為計算軀幹比例的基礎值。
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning-v2 = <u>站直</u>並開始測量以計算出你的身高。請注意不要將手抬高過於頭戴顯示器，因為會影響測量。
-onboarding-automatic_proportions-check_height-guardian_tip = 如果你使用的是一體式 VR 頭戴顯示器，請確認頭盔的守護神/邊界設定已經開啟，以確保身高能正確測量。
+onboarding-automatic_proportions-check_height-calculation_warning-v2 = 在<u>直立</u>時開始測量以計算出你的身高。請注意不要將手抬高過於頭戴顯示器，因為會影響測量。
+onboarding-automatic_proportions-check_height-guardian_tip = 如果你使用的是一體式 VR 頭戴顯示器，請確認守護神/邊界設定已經開啟，以確保身高能正確測量。
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 不明
 # Shows an element below it
@@ -1191,23 +1191,23 @@ firmware_tool-board_pins_step-enable_led = 設定 LED
 firmware_tool-board_pins_step-led_pin =
     .label = LED 腳位
     .placeholder = 輸入 LED 腳位位址
-firmware_tool-board_pins_step-battery_type = 選擇電量偵測類型
-firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = 外接測量
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = 內部測量
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = 內部 + MCP3021
-firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = MCP3021
+firmware_tool-board_pins_step-battery_type = 選擇電池測量電路類型
+firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = 使用外接電阻與板內 ADC 測量（預設）
+firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = 使用板內低電量警示電路
+firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = 板內電路 + MCP3021
+firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = 使用外接 MCP3021 測量
 firmware_tool-board_pins_step-battery_sensor_pin =
     .label = 電量偵測腳位
     .placeholder = 輸入電量偵測腳位位址
 firmware_tool-board_pins_step-battery_resistor =
-    .label = 電量偵測電阻阻值（歐姆）
+    .label = 電池外接串連電阻（歐姆）
     .placeholder = 輸入用於偵測電量的電阻阻值
 firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = 電池擴充板 R1 阻值（歐姆）
-    .placeholder = 輸入電池擴充板的 R1 阻值
+    .label = ADC 對地分壓 R1（歐姆）
+    .placeholder = 輸入開發板上 ADC 對地的分壓電阻阻值
 firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = 電池擴充板 R2 阻值（歐姆）
-    .placeholder = 輸入電池擴充板的 R2 阻值
+    .label = ADC 對輸入分壓 R2（歐姆）
+    .placeholder = 輸入開發板上 ADC 對輸入的分壓電阻阻值
 firmware_tool-add_imus_step = 設定慣性測量單元 (IMU)
 firmware_tool-add_imus_step-description =
     請加入追蹤器所使用的 IMU
@@ -1288,9 +1288,9 @@ firmware_update-status-UPLOADING = 正在上傳韌體
 firmware_update-status-SYNCING_WITH_MCU = 正在與 MCU 同步
 firmware_update-status-REBOOTING = 正在重啟追蹤器
 firmware_update-status-PROVISIONING = 正在設定 Wi-Fi 認證資訊
-firmware_update-status-DONE = 上傳完畢！
+firmware_update-status-DONE = 更新完成！
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = 找不到裝置
-firmware_update-status-ERROR_TIMEOUT = 上傳流程已逾時
+firmware_update-status-ERROR_TIMEOUT = 更新流程已逾時
 firmware_update-status-ERROR_DOWNLOAD_FAILED = 無法下載韌體
 firmware_update-status-ERROR_AUTHENTICATION_FAILED = 無法與 MCU 進行認證
 firmware_update-status-ERROR_UPLOAD_FAILED = 無法上傳韌體
@@ -1308,6 +1308,7 @@ firmware_update-changelog-title = 更新到 { $version }
 firmware_update-looking_for_devices = 正在尋找要更新的裝置…
 firmware_update-retry = 重試
 firmware_update-update = 更新所選的追蹤器
+firmware_update-exit = 離開
 
 ## Tray Menu
 
