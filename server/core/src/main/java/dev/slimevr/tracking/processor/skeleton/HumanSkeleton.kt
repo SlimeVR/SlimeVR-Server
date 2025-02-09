@@ -512,7 +512,7 @@ class HumanSkeleton(
 		updateTransforms()
 		updateBones()
 		if (enforceConstraints) {
-			headBone.updateWithConstraints(correctConstraints)
+			headBone.updateWithConstraints(false)
 		}
 		updateComputedTrackers()
 
