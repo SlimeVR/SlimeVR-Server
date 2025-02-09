@@ -1203,11 +1203,11 @@ firmware_tool-board_pins_step-battery_resistor =
     .label = 電池外接串連電阻（歐姆）
     .placeholder = 輸入用於偵測電量的電阻阻值
 firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = 電池擴充板 R1 阻值（歐姆）
-    .placeholder = 輸入電池擴充板的 R1 阻值
+    .label = ADC 對地分壓 R1（歐姆）
+    .placeholder = 輸入開發板上 ADC 對地的分壓電阻阻值
 firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = 電池擴充板 R2 阻值（歐姆）
-    .placeholder = 輸入電池擴充板的 R2 阻值
+    .label = ADC 對輸入分壓 R2（歐姆）
+    .placeholder = 輸入開發板上 ADC 對輸入的分壓電阻阻值
 firmware_tool-add_imus_step = 設定慣性測量單元 (IMU)
 firmware_tool-add_imus_step-description =
     請加入追蹤器所使用的 IMU
