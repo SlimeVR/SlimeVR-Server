@@ -8,7 +8,7 @@ import dev.slimevr.math.Angle
 class StayAlignedConfig {
 
 	// Apply yaw correction
-	var enabled = true
+	var enabled = false
 
 	// Amount of yaw correction
 	@JsonSerialize(using = AngleInDegConversions.Serializer::class)
