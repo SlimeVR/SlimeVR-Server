@@ -297,7 +297,7 @@ class TrackerSkeleton(skeleton: HumanSkeleton) {
 		arm: List<Tracker>,
 		hand: Tracker?,
 	): V? {
-		val index = this.upperBody.indexOf(tracker)
+		val index = arm.indexOf(tracker)
 		if (index < 0) {
 			return null
 		}
