@@ -512,7 +512,9 @@ class HumanSkeleton(
 		updateTransforms()
 		updateBones()
 		if (enforceConstraints) {
-			headBone.updateWithConstraints(correctConstraints)
+			// TODO re-enable toggling correctConstraints once
+			// https://github.com/SlimeVR/SlimeVR-Server/issues/1297 is solved
+			headBone.updateWithConstraints(false)
 		}
 		updateComputedTrackers()
 
