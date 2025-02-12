@@ -156,14 +156,8 @@ class SkeletonConfigManager(
 	}
 
 	protected fun setNodeOffset(nodeOffset: BoneType, x: Float, y: Float, z: Float) {
-		var offset = nodeOffsets[nodeOffset]
-
-		if (offset == null) {
-			offset = Vector3(x, y, z)
-			nodeOffsets[nodeOffset] = offset
-		} else {
-			offset = Vector3(x, y, z)
-		}
+		val offset = Vector3(x, y, z)
+		nodeOffsets[nodeOffset] = offset
 
 		// Updates in skeleton
 		humanPoseManager?.updateNodeOffset(nodeOffset, offset)
