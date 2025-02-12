@@ -1,33 +1,12 @@
 import { fetchResourceUrl } from '@/utils/tauri';
 import { ResetType } from 'solarxr-protocol';
 
-const quickResetStartedSound = new Audio(
-  await fetchResourceUrl('/sounds/quick-reset-started-sound.mp3')
-);
-const fullResetStartedSound = new Audio(
-  await fetchResourceUrl('/sounds/full-reset-started-sound.mp3')
-);
-const mountingResetStartedSound = new Audio(
-  await fetchResourceUrl('/sounds/mounting-reset-started-sound.mp3')
-);
-const tapSetupSound1 = new Audio(
-  await fetchResourceUrl('/sounds/first-tap.mp3')
-);
-const tapSetupSound2 = new Audio(
-  await fetchResourceUrl('/sounds/second-tap.mp3')
-);
-const tapSetupSound3 = new Audio(
-  await fetchResourceUrl('/sounds/third-tap.mp3')
-);
-const tapSetupSound4 = new Audio(
-  await fetchResourceUrl('/sounds/fourth-tap.mp3')
-);
-const tapSetupSound5 = new Audio(
-  await fetchResourceUrl('/sounds/fifth-tap.mp3')
-);
-const tapSetupSoundEnd = new Audio(
-  await fetchResourceUrl('/sounds/end-tap.mp3')
-);
+const tapSetupSound1 = new Audio(await fetchResourceUrl('/sounds/first-tap.mp3'));
+const tapSetupSound2 = new Audio(await fetchResourceUrl('/sounds/second-tap.mp3'));
+const tapSetupSound3 = new Audio(await fetchResourceUrl('/sounds/third-tap.mp3'));
+const tapSetupSound4 = new Audio(await fetchResourceUrl('/sounds/fourth-tap.mp3'));
+const tapSetupSound5 = new Audio(await fetchResourceUrl('/sounds/fifth-tap.mp3'));
+const tapSetupSoundEnd = new Audio(await fetchResourceUrl('/sounds/end-tap.mp3'));
 const tapSetupExtraSound = new Audio(
   await fetchResourceUrl('/sounds/tapextrasetup.mp3')
 );
@@ -41,21 +20,25 @@ function restartAndPlay(audio: HTMLAudioElement, volume: number) {
   }
 }
 
-export function playSoundOnResetStarted(resetType: ResetType, volume = 1) {
+export function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
   switch (resetType) {
     case ResetType.Yaw: {
-      restartAndPlay(quickResetStartedSound, volume);
+      restartAndPlay(tapSetupSound2, volume);
       break;
     }
     case ResetType.Full: {
-      restartAndPlay(fullResetStartedSound, volume);
+      restartAndPlay(tapSetupSound3, volume);
       break;
     }
     case ResetType.Mounting: {
-      restartAndPlay(mountingResetStartedSound, volume);
+      restartAndPlay(tapSetupSound4, volume);
       break;
     }
   }
+}
+
+export function playSoundOnResetStarted(volume = 1) {
+  restartAndPlay(tapSetupSound1, volume);
 }
 
 let lastKnownVolume = 1;
