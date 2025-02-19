@@ -114,18 +114,20 @@ export function TopBar({
       await tryCloseApp(true);
     });
 
-    const unlistenCloseRequested = getCurrentWindow().listen(
-      TauriEvent.WINDOW_CLOSE_REQUESTED,
-      async (data) => {
-        const ev = new CloseRequestedEvent(data);
-        ev.preventDefault();
-        await tryCloseApp();
-      }
-    );
+    const unlistenCloseRequested = isTauri
+      ? getCurrentWindow().listen(
+          TauriEvent.WINDOW_CLOSE_REQUESTED,
+          async (data) => {
+            const ev = new CloseRequestedEvent(data);
+            ev.preventDefault();
+            await tryCloseApp();
+          }
+        )
+      : undefined;
 
     return () => {
       unlistenTrayClose.then((fn) => fn());
-      unlistenCloseRequested.then((fn) => fn());
+      unlistenCloseRequested?.then((fn) => fn());
     };
   }, [
     config?.useTray,
