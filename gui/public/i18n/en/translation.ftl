@@ -86,7 +86,15 @@ board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 
 ## Proportions
 skeleton_bone-NONE = None
