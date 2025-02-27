@@ -52,7 +52,16 @@ export const boardTypeToFirmwareToolBoardType: Record<
   [BoardType.SLIMEVR]: 'BOARD_SLIMEVR',
   [BoardType.LOLIN_C3_MINI]: 'BOARD_LOLIN_C3_MINI',
   [BoardType.BEETLE32C3]: 'BOARD_BEETLE32C3',
-  [BoardType.ES32C3DEVKITM1]: 'BOARD_ES32C3DEVKITM1',
+  [BoardType.ESP32C3DEVKITM1]: 'BOARD_ES32C3DEVKITM1',
+  [BoardType.OWOTRACK]: null,
+  [BoardType.WRANGLER]: null,
+  [BoardType.MOCOPI]: null,
+  [BoardType.WEMOSWROOM02]: null,
+  [BoardType.XIAO_ESP32C3]: null,
+  [BoardType.HARITORA]: null,
+  [BoardType.ESP32C6DEVKITC1]: null,
+  [BoardType.GLOVE_IMU_SLIMEVR_DEV]: null,
+  [BoardType.DEV_RESERVED]: null,
 };
 
 export const firmwareToolToBoardType: Record<CreateBoardConfigDTO['type'], BoardType> =
