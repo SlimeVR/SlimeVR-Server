@@ -181,10 +181,10 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 			if (bytesAvailable.getValue() < 4) {
 				return readAnything; // Wait for more data
 			}
-			int messageLength = (buffArray[3] << 24)
-				| (buffArray[2] << 16)
-				| (buffArray[1] << 8)
-				| buffArray[0];
+			int messageLength = (Byte.toUnsignedInt(buffArray[3]) << 24)
+				| (Byte.toUnsignedInt(buffArray[2]) << 16)
+				| (Byte.toUnsignedInt(buffArray[1]) << 8)
+				| Byte.toUnsignedInt(buffArray[0]);
 			if (messageLength > 1024) { // Overflow
 				setPipeError("Pipe overflow. Message length: " + messageLength);
 				return readAnything;
