@@ -631,11 +631,16 @@ settings-osc-vrchat-description-v1 =
     Change settings specific to the OSC Trackers standard used for sending
     tracking data to applications without SteamVR (ex. Quest standalone).
     Make sure to enable OSC in VRChat via the Action Menu under OSC > Enabled.
-    To allow receiving HMD and controller data from VRChat, go in your main menu's
-    settings under Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
 settings-osc-vrchat-enable-label = Enable
+settings-osc-vrchat-oscqueryEnabled = Enable OSCQuery
+settings-osc-vrchat-oscqueryEnabled-description =
+    OSCQuery automatically detects running instances of VRChat and sends them data.
+    It can also advertise itself to them in order to receive HMD and controller data.
+    To allow receiving HMD and controller data from VRChat, go in your main menu's settings
+    under "Tracking & IK" and enable "Allow Sending Head and Wrist VR Tracking OSC Data".
+settings-osc-vrchat-oscqueryEnabled-label = Enable OSCQuery
 settings-osc-vrchat-network = Network ports
 settings-osc-vrchat-network-description-v1 = Set the ports for listening and sending data. Can be left untouched for VRChat.
 settings-osc-vrchat-network-port_in =
