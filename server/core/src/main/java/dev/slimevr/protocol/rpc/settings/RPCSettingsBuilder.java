@@ -67,6 +67,7 @@ public class RPCSettingsBuilder {
 		VRCOSCSettings.startVRCOSCSettings(fbb);
 		VRCOSCSettings.addOscSettings(fbb, generalSettingOffset);
 		VRCOSCSettings.addTrackers(fbb, oscSettingOffset);
+		VRCOSCSettings.addOscqueryEnabled(fbb, config.getOscqueryEnabled());
 
 		return VRCOSCSettings.endVRCOSCSettings(fbb);
 	}
