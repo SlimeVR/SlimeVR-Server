@@ -65,7 +65,6 @@ interface SettingsForm {
     forceArmsFromHmd: boolean;
     floorClip: boolean;
     skatingCorrection: boolean;
-    viveEmulation: boolean;
     toeSnap: boolean;
     footPlant: boolean;
     selfLocalization: boolean;
@@ -127,7 +126,6 @@ const defaultValues: SettingsForm = {
     forceArmsFromHmd: false,
     floorClip: false,
     skatingCorrection: false,
-    viveEmulation: false,
     toeSnap: false,
     footPlant: true,
     selfLocalization: false,
@@ -237,7 +235,6 @@ export function GeneralSettings() {
       toggles.extendedPelvis = values.toggles.extendedPelvis;
       toggles.extendedSpine = values.toggles.extendedSpine;
       toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
-      toggles.viveEmulation = values.toggles.viveEmulation;
       toggles.toeSnap = values.toggles.toeSnap;
       toggles.footPlant = values.toggles.footPlant;
       toggles.selfLocalization = values.toggles.selfLocalization;
@@ -1219,29 +1216,6 @@ export function GeneralSettings() {
                   </div>
                 </div>
 
-                <div className="flex flex-col pt-2 pb-3">
-                  <Typography bold>
-                    {l10n.getString(
-                      'settings-general-fk_settings-vive_emulation-title'
-                    )}
-                  </Typography>
-                  <Typography color="secondary">
-                    {l10n.getString(
-                      'settings-general-fk_settings-vive_emulation-description'
-                    )}
-                  </Typography>
-                </div>
-                <div className="grid sm:grid-cols-1 gap-3 pb-5">
-                  <CheckBox
-                    variant="toggle"
-                    outlined
-                    control={control}
-                    name="toggles.viveEmulation"
-                    label={l10n.getString(
-                      'settings-general-fk_settings-vive_emulation-label'
-                    )}
-                  />
-                </div>
                 <div className="flex flex-col pt-2 pb-3">
                   <Typography bold>
                     {l10n.getString(

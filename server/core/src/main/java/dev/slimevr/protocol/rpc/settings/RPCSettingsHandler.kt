@@ -255,7 +255,6 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 						SkeletonConfigToggles.SKATING_CORRECTION,
 						toggles.skatingCorrection(),
 					)
-				hpm.setToggle(SkeletonConfigToggles.VIVE_EMULATION, toggles.viveEmulation())
 				hpm.setToggle(SkeletonConfigToggles.TOE_SNAP, toggles.toeSnap())
 				hpm.setToggle(SkeletonConfigToggles.FOOT_PLANT, toggles.footPlant())
 				hpm.setToggle(SkeletonConfigToggles.SELF_LOCALIZATION, toggles.selfLocalization())
