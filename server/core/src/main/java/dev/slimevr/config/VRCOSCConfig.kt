@@ -13,7 +13,9 @@ class VRCOSCConfig : OSCConfig() {
 	@JsonDeserialize(using = BooleanMapDeserializer::class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer::class)
 	var trackers: MutableMap<String, Boolean> = HashMap()
-	
+
+	var oscqueryEnabled: Boolean = true
+
 	fun getOSCTrackerRole(role: TrackerRole, def: Boolean): Boolean = trackers.getOrDefault(role.name.lowercase(Locale.getDefault()), def)
 
 	fun setOSCTrackerRole(role: TrackerRole, `val`: Boolean) {

@@ -94,13 +94,13 @@ class VRCOSCHandler(
 		updateOscReceiver(config.portIn, vrsystemTrackersAddresses + oscTrackersAddresses)
 		updateOscSender(config.portOut, config.address)
 
-		if (vrcOscQueryHandler == null && config.enabled) {
+		if (vrcOscQueryHandler == null && config.enabled && config.oscqueryEnabled) {
 			try {
 				vrcOscQueryHandler = VRCOSCQueryHandler(this)
 			} catch (e: Throwable) {
 				LogManager.severe("Unable to initialize OSCQuery: $e", e)
 			}
-		} else if (vrcOscQueryHandler != null && !config.enabled) {
+		} else if (vrcOscQueryHandler != null && (!config.enabled || !config.oscqueryEnabled)) {
 			vrcOscQueryHandler?.close()
 			vrcOscQueryHandler = null
 		}

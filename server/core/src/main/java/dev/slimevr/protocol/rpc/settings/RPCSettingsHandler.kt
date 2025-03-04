@@ -136,6 +136,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands())
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands())
 			}
+			vrcOSCConfig.oscqueryEnabled = req.vrcOsc().oscqueryEnabled()
 
 			vrcOscHandler.refreshSettings(true)
 		}
