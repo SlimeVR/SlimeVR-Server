@@ -58,11 +58,56 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 	// Reference adjustment quats
+	/**
+	 * Gyro fix is set by full reset. This sets the current y rotation to 0, correcting
+	 * for initial yaw rotation and the rotation incurred by mounting orientation. This
+	 * is a local offset in rotation and does not affect the axes of rotation.
+	 *
+	 * This rotation is only used to compute [attachmentFix], otherwise [yawFix] would
+	 * correct for the same rotation.
+	 */
 	private var gyroFix = Quaternion.IDENTITY
+
+	/**
+	 * Attachment fix is set by full reset. This sets the current x and z rotations to
+	 * 0, correcting for initial pitch and roll rotation. This is a global offset in
+	 * rotation and affects the axes of rotation.
+	 *
+	 * This effectively sets the rotation at the moment of a full reset to be
+	 * zero-reference in the x and z axes.
+	 */
 	private var attachmentFix = Quaternion.IDENTITY
+
+	/**
+	 * Mounting rotation fix is set by mounting reset. This corrects for the mounting
+	 * orientation, then the inverse is used to correct for the rotation incurred. This
+	 * value is computed after [yawFix], but takes effect before [yawFix]. This affects
+	 * the axes of rotation, but does not incur an offset in rotation.
+	 *
+	 * This rotation is done in addition to [mountingOrientation] as to not interfere
+	 * with the functionality of manual mounting orientation. This effectively sets the
+	 * rotation at the moment of a mounting reset to be zero-reference in the y-axis. If
+	 * no mounting reset is done, then this rotation will not be used and only
+	 * [mountingOrientation] will apply.
+	 */
 	var mountRotFix = Quaternion.IDENTITY
 		private set
+
+	/**
+	 * Yaw fix is set by yaw reset. This sets the current y rotation to match the
+	 * provided reference, correlating the tracker to the provided frame of reference.
+	 * This is a local offset in rotation and does not affect the axes of rotation.
+	 *
+	 * This effectively aligns the current yaw rotation to the head tracker's yaw
+	 * rotation.
+	 */
 	private var yawFix = Quaternion.IDENTITY
+
+	/**
+	 * Constraint fix is set by skeleton constraints. This corrects for any yaw rotation
+	 * that violates the skeleton constraints. This is a local offset in rotation and
+	 * does not affect the axes of rotation.
+	 */
 	private var constraintFix = Quaternion.IDENTITY
 
 	// Yaw reset smoothing vars
@@ -74,6 +119,12 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var gyroFixNoMounting = Quaternion.IDENTITY
 	private var attachmentFixNoMounting = Quaternion.IDENTITY
 	private var yawFixZeroReference = Quaternion.IDENTITY
+
+	/**
+	 * T-Pose down fix is set by full reset. This corrects for the pitch of the rotation
+	 * assuming a t-pose reference, adjusting to match our expected i-pose reference.
+	 * This is a global offset in rotation and affects the axes of rotation.
+	 */
 	private var tposeDownFix = Quaternion.IDENTITY
 
 	/**
