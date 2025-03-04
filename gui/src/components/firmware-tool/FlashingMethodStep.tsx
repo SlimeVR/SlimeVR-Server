@@ -199,7 +199,12 @@ function OTADevicesList({
       if (
         hardwareInfo?.officialBoardType === BoardType.SLIMEVR_LEGACY ||
         hardwareInfo?.officialBoardType === BoardType.SLIMEVR_DEV ||
-        hardwareInfo?.officialBoardType === BoardType.CUSTOM
+        hardwareInfo?.officialBoardType === BoardType.CUSTOM ||
+        hardwareInfo?.officialBoardType === BoardType.OWOTRACK ||
+        hardwareInfo?.officialBoardType === BoardType.WRANGLER ||
+        hardwareInfo?.officialBoardType === BoardType.MOCOPI ||
+        hardwareInfo?.officialBoardType === BoardType.HARITORA ||
+        hardwareInfo?.officialBoardType === BoardType.DEV_RESERVED
       )
         return false;
 
