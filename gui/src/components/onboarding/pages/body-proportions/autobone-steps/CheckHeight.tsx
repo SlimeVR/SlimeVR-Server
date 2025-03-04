@@ -54,7 +54,7 @@ export function CheckHeightStep({
           <div className="flex flex-grow flex-col gap-4">
             <Typography variant="main-title" bold>
               {l10n.getString(
-                'onboarding-automatic_proportions-check_height-title-v2'
+                'onboarding-automatic_proportions-check_height-title-v3'
               )}
             </Typography>
             <div>
@@ -64,7 +64,7 @@ export function CheckHeightStep({
                 )}
               </Typography>
               <Localized
-                id="onboarding-automatic_proportions-check_height-calculation_warning-v2"
+                id="onboarding-automatic_proportions-check_height-calculation_warning-v3"
                 elems={{ u: <span className="underline"></span> }}
               >
                 <Typography color="secondary" bold>

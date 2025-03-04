@@ -75,7 +75,7 @@ export function CheckFloorHeightStep({
                 )}
               </Typography>
               <Localized
-                id="onboarding-automatic_proportions-check_floor_height-calculation_warning"
+                id="onboarding-automatic_proportions-check_floor_height-calculation_warning-v2"
                 elems={{ u: <span className="underline"></span> }}
               >
                 <Typography color="secondary" bold>
@@ -129,6 +129,16 @@ export function CheckFloorHeightStep({
                         'onboarding-automatic_proportions-check_height-unknown'
                       )
                     : mFormat.format(floorHeight)}
+                </Typography>
+                <Typography>
+                  {l10n.getString(
+                    'onboarding-automatic_proportions-check_floor_height-full_height'
+                  )}
+                </Typography>
+                <Typography>
+                  {mFormat.format(
+                    ((hmdHeight ?? 0) - (floorHeight ?? 0)) / 0.936
+                  )}
                 </Typography>
               </div>
             </div>
