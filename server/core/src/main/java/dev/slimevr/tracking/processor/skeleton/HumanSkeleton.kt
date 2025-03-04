@@ -212,7 +212,6 @@ class HumanSkeleton(
 	// Modules
 	var legTweaks = LegTweaks(this)
 	var tapDetectionManager = TapDetectionManager(this)
-	var viveEmulation = ViveEmulation(this)
 	var localizer = Localizer(this)
 
 	// Constructors
@@ -523,7 +522,6 @@ class HumanSkeleton(
 
 		legTweaks.tweakLegs()
 		localizer.update()
-		viveEmulation.update()
 	}
 
 	/**
@@ -1202,8 +1200,6 @@ class HumanSkeleton(
 			SkeletonConfigToggles.SKATING_CORRECTION -> legTweaks.setSkatingCorrectionEnabled(newValue)
 
 			SkeletonConfigToggles.FLOOR_CLIP -> legTweaks.setFloorClipEnabled(newValue)
-
-			SkeletonConfigToggles.VIVE_EMULATION -> viveEmulation.enabled = newValue
 
 			SkeletonConfigToggles.TOE_SNAP -> legTweaks.toeSnapEnabled = newValue
 
