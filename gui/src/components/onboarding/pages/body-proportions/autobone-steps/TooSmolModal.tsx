@@ -50,7 +50,7 @@ export function TooSmolModal({
             id="onboarding-automatic_proportions-smol_warning"
             elems={{ b: <b></b> }}
             vars={{
-              height: mFormat.format(hmdHeight ?? 0 - (floorHeight ?? 0)),
+              height: mFormat.format((hmdHeight ?? 0) - (floorHeight ?? 0)),
               minHeight: mFormat.format(MIN_HEIGHT),
             }}
           >
