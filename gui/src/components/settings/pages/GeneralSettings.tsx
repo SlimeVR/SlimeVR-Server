@@ -235,7 +235,6 @@ export function GeneralSettings() {
       toggles.extendedPelvis = values.toggles.extendedPelvis;
       toggles.extendedSpine = values.toggles.extendedSpine;
       toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
-      toggles.viveEmulation = false;
       toggles.toeSnap = values.toggles.toeSnap;
       toggles.footPlant = values.toggles.footPlant;
       toggles.selfLocalization = values.toggles.selfLocalization;
