@@ -668,6 +668,12 @@ settings-osc-vrchat-enable = Attiva
 settings-osc-vrchat-enable-description = Attiva o disattiva l'invio e la ricezione dei dati
 settings-osc-vrchat-enable-label = Attiva
 settings-osc-vrchat-oscqueryEnabled = Abilita OSCQuery
+settings-osc-vrchat-oscqueryEnabled-description =
+    OSCQuery rileva automaticamente le istanze in esecuzione di VRChat e invia loro dati.
+    Può anche rendersi visibile ad essi per ricevere i dati del HMD e dei controller.
+    Per consentire la ricezione dei dati del HMD e controller da VRChat, vai nelle impostazioni dal menu principale
+    in "Tracking e IK" e abilita "Consenti l'Invio di Dati di Tracciamento OSC di Testa e Polso".
+settings-osc-vrchat-oscqueryEnabled-label = Abilita OSCQuery
 settings-osc-vrchat-network = Porte di rete
 settings-osc-vrchat-network-description-v1 = Imposta le porte per l'ascolto e l'invio dei dati. Può essere lasciato come predefinito per utilizzo con VRChat.
 settings-osc-vrchat-network-port_in =
@@ -1092,7 +1098,10 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Il tuo visore sta riportando dati di posizione al server di SlimeVR (ciò significa generalmente avere SteamVR in esecuzione e connesso a SlimeVR usando il driver di SlimeVR per SteamVR).
     Il tuo tracciamento funziona e rappresenta accuratamente i tuoi movimenti (e.g. hai eseguito un ripristino completo e i traker si muovono nella giusta direzione quando calci, ti pieghi, ti siedi, ecc.).
 onboarding-automatic_proportions-requirements-next = Ho letto i requisiti.
+onboarding-automatic_proportions-check_height-title-v3 = Misura l'altezza del visore
 onboarding-automatic_proportions-check_height-description-v2 = L'altezza del visore (HMD) dovrebbe essere leggermente inferiore all'altezza completa, poiché il visore misura l'altezza degli occhi. Questa misurazione verrà utilizzata come base per le proporzioni del tuo corpo.
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = Inizia a misurare stando in piedi <u>dritti</u> per misurare la tua altezza. Fai attenzione a non alzare le mani più in alto del visore, poiché potrebbero influire sulla misurazione!
 onboarding-automatic_proportions-check_height-guardian_tip =
     Se stai utilizzando un visore VR standalone, assicurati di avere il tuo guardiano/
     limiti attivato in modo che la tua altezza sia corretta!
@@ -1106,8 +1115,11 @@ onboarding-automatic_proportions-check_height-measure-reset = Riprova la misuraz
 onboarding-automatic_proportions-check_height-next_step = Sono corretti
 onboarding-automatic_proportions-check_floor_height-title = Misura l'altezza del pavimento (opzionale)
 onboarding-automatic_proportions-check_floor_height-description = In alcuni casi, l'altezza del pavimento potrebbe non essere impostata correttamente dal visore, causando la misurazione dell'altezza del visore a risultare superiore a quella che dovrebbe essere. Puoi misurare l'"altezza" del pavimento per correggere l'altezza del visore.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = Inizia a misurare e posiziona un controller contro il pavimento per misurarne l'altezza. Se sei sicurə che l'altezza del pavimento sia corretta, puoi saltare questo passaggio.
 # Shows an element below it
 onboarding-automatic_proportions-check_floor_height-floor_height = L'altezza del pavimento è:
+onboarding-automatic_proportions-check_floor_height-full_height = La tua altezza totale stimata è:
 onboarding-automatic_proportions-check_floor_height-measure-start = Inizia la misurazione
 onboarding-automatic_proportions-check_floor_height-measure-stop = Interrompi la misurazione
 onboarding-automatic_proportions-check_floor_height-measure-reset = Riprova la misurazione
