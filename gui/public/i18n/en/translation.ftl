@@ -125,14 +125,13 @@ skeleton_bone-ELBOW_OFFSET = Elbow Offset
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
-reset-reset_all_warning =
-    <b>Warning:</b> This will reset your proportions to being just based on your height.
+reset-reset_all_warning-v2 =
+    <b>Warning:</b> Your proportions will be reset to defaults scaled to your configured height.
     Are you sure you want to do this?
 reset-reset_all_warning-reset = Reset proportions
 reset-reset_all_warning-cancel = Cancel
-reset-reset_all_warning_default =
-    <b>Warning:</b> You currently don't have your height defined, which
-    will make the proportions be based on a default height.
+reset-reset_all_warning_default-v2 =
+    <b>Warning:</b> Your height has not been configured, your proportions will be reset to defaults with the default height.
     Are you sure you want to do this?
 
 reset-full = Full Reset

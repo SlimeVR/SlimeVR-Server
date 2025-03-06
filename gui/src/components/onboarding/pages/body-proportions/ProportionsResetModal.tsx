@@ -55,8 +55,8 @@ export function ProportionsResetModal({
           <Localized
             id={
               usingDefaultHeight
-                ? 'reset-reset_all_warning_default'
-                : 'reset-reset_all_warning'
+                ? 'reset-reset_all_warning_default-v2'
+                : 'reset-reset_all_warning-v2'
             }
             elems={{ b: <b></b> }}
           >
