@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import {
   RecordBVHRequestT,
   RecordBVHStatusT,
