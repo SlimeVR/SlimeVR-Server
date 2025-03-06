@@ -251,16 +251,19 @@ export function FirmwareUpdate() {
     [status]
   );
 
-  const shouldShowRebootWarning = useMemo(
-    () =>
-      Object.keys(status).find((id) =>
-        [
-          FirmwareUpdateStatus.REBOOTING,
-          FirmwareUpdateStatus.UPLOADING,
-        ].includes(status[id].status)
-      ),
-    [status]
-  );
+  const shouldShowRebootWarning = useMemo(() => {
+    console.log();
+    const statuses = Object.keys(status);
+    return (
+      statuses.length > 0 &&
+      statuses.find(
+        (id) =>
+          ![FirmwareUpdateStatus.DONE, ...firmwareUpdateErrorStatus].includes(
+            status[id].status
+          )
+      )
+    );
+  }, [status]);
 
   const retryError = () => {
     const devices = trackerWithErrors.map((id) => {

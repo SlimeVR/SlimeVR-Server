@@ -1261,11 +1261,11 @@ firmware_tool-build-ERROR = Unable to build the firmware
 
 ## Firmware update status
 firmware_update-status-DOWNLOADING = Downloading the firmware
-firmware_update-status-NEED_MANUAL_REBOOT = Waiting for the user to reboot the tracker
+firmware_update-status-NEED_MANUAL_REBOOT = Please restart the tracker
 firmware_update-status-AUTHENTICATING = Authenticating with the mcu
 firmware_update-status-UPLOADING = Uploading the firmware
 firmware_update-status-SYNCING_WITH_MCU = Syncing with the mcu
-firmware_update-status-REBOOTING = Rebooting the tracker
+firmware_update-status-REBOOTING = Applying the update
 firmware_update-status-PROVISIONING = Setting Wi-Fi credentials
 firmware_update-status-DONE = Update complete!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = Could not find the device

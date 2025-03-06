@@ -10,6 +10,7 @@ import {
   TrackerStatus as TrackerStatusEnum,
 } from 'solarxr-protocol';
 import { TrackerStatus } from '@/components/tracker/TrackerStatus';
+import { useMemo } from 'react';
 
 interface DeviceCardProps {
   deviceNames: string[];
@@ -60,18 +61,26 @@ export function DeviceCardControl({
   online = null,
   ...props
 }: DeviceCardControlProps & DeviceCardProps) {
+  const cardborder = useMemo(() => {
+    if (!props.status) return 'border-transparent';
+
+    if (props.status === FirmwareUpdateStatus.DONE)
+      return 'border-status-success';
+
+    if (props.status === FirmwareUpdateStatus.NEED_MANUAL_REBOOT)
+      return 'border-status-special';
+
+    if (firmwareUpdateErrorStatus.includes(props.status))
+      return 'border-status-critical';
+
+    return 'border-transparent';
+  }, [props.status]);
+
   return (
     <div
       className={classNames(
         'rounded-md bg-background-60 h-[86px] pt-2 flex flex-col justify-between border-2 relative',
-        props.status &&
-          firmwareUpdateErrorStatus.includes(props.status) &&
-          'border-status-critical',
-        props.status === FirmwareUpdateStatus.DONE && 'border-status-success',
-        (!props.status ||
-          (props.status !== FirmwareUpdateStatus.DONE &&
-            !firmwareUpdateErrorStatus.includes(props.status))) &&
-          'border-transparent'
+        cardborder
       )}
     >
       {control && name ? (
