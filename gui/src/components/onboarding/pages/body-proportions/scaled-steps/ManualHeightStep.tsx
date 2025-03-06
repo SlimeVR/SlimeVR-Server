@@ -63,7 +63,7 @@ export function ManualHeightStep({
   );
 
   handleSubmit((values) => {
-    setHmdHeight(values.height);
+    setHmdHeight(values.height * 0.936);
   });
 
   return (
@@ -79,7 +79,7 @@ export function ManualHeightStep({
             <div>
               <Typography color="secondary">
                 {l10n.getString(
-                  'onboarding-scaled_proportions-manual_height-description'
+                  'onboarding-scaled_proportions-manual_height-description-v2'
                 )}
               </Typography>
               {/* <Localized
@@ -107,7 +107,7 @@ export function ManualHeightStep({
                 control={control}
                 name="height"
                 label={l10n.getString(
-                  'onboarding-scaled_proportions-manual_height-height'
+                  'onboarding-scaled_proportions-manual_height-height-v2'
                 )}
                 valueLabelFormat={(value) =>
                   isNaN(value)
@@ -123,6 +123,16 @@ export function ManualHeightStep({
                 doubleStep={0.1}
               />
             </form>
+            <div className="flex flex-col self-center items-center justify-center">
+              <Typography>
+                {l10n.getString(
+                  'onboarding-scaled_proportions-manual_height-estimated_height'
+                )}
+              </Typography>
+              <Typography>
+                {mFormat.format(control._formValues.height * 0.936)}
+              </Typography>
+            </div>
           </div>
         </div>
 

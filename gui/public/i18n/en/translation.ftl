@@ -1096,9 +1096,10 @@ onboarding-automatic_proportions-smol_warning-cancel = Go back
 onboarding-scaled_proportions-title = Scaled proportions
 onboarding-scaled_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This will use an average proportion and scale it based on your height.
 onboarding-scaled_proportions-manual_height-title = Configure your height
-onboarding-scaled_proportions-manual_height-description = Your headset (HMD) height should be slightly less than your full height, as headsets measure your eye height. This height will be used as a baseline for your body proportions.
+onboarding-scaled_proportions-manual_height-description-v2 = This height will be used as a baseline for your body proportions.
 onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR is not currently connected to SlimeVR, so measurements can't be based on your headset. <b>Proceed at your own risk or check the docs!</b>
-onboarding-scaled_proportions-manual_height-height = Your headset height is
+onboarding-scaled_proportions-manual_height-height-v2 = Your full height is
+onboarding-scaled_proportions-manual_height-estimated_height = Your estimated headset height is:
 onboarding-scaled_proportions-manual_height-next_step = Continue and save
 
 ## Tracker scaled proportions reset
