@@ -41,7 +41,7 @@ export function DeviceCardContent({ deviceNames, status }: DeviceCardProps) {
         ))}
       </div>
       {status !== undefined ? (
-        <Typography color="secondary">
+        <Typography>
           {l10n.getString(
             'firmware_update-status-' + FirmwareUpdateStatus[status]
           )}

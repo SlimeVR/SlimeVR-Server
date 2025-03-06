@@ -252,7 +252,6 @@ export function FirmwareUpdate() {
   );
 
   const shouldShowRebootWarning = useMemo(() => {
-    console.log();
     const statuses = Object.keys(status);
     return (
       statuses.length > 0 &&
