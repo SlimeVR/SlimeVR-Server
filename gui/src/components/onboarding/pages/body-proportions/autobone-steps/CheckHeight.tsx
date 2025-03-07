@@ -125,7 +125,7 @@ export function CheckHeightStep({
                     ? l10n.getString(
                         'onboarding-automatic_proportions-check_height-unknown'
                       )
-                    : mFormat.format(hmdHeight)}
+                    : mFormat.format(hmdHeight / 0.936)}
                 </Typography>
               </div>
             </div>

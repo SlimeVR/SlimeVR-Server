@@ -128,7 +128,7 @@ export function CheckFloorHeightStep({
                     ? l10n.getString(
                         'onboarding-automatic_proportions-check_height-unknown'
                       )
-                    : mFormat.format(floorHeight)}
+                    : mFormat.format(floorHeight / 0.936)}
                 </Typography>
                 <Typography>
                   {l10n.getString(
