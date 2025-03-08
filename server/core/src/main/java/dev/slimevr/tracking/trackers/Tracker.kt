@@ -111,7 +111,7 @@ class Tracker @JvmOverloads constructor(
 			}
 			alreadyInitialized = true
 		}
-		if (!isInternal) {
+		if (!isInternal && VRServer.instanceInitialized) {
 			// If the status of a non-internal tracker has changed, inform
 			// the VRServer to recreate the skeleton, as it may need to
 			// assign or un-assign the tracker to a body part
