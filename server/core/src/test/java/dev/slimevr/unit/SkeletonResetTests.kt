@@ -1,15 +1,17 @@
 package dev.slimevr.unit
 
+import com.jme3.math.FastMath
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
+import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.udp.IMUType
 import io.eiren.util.collections.FastList
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
+import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
 
 class SkeletonResetTests {
 
@@ -41,13 +43,16 @@ class SkeletonResetTests {
 		hpm.resetTrackersFull(resetSource)
 
 		for (tracker in tracks) {
-			assertEquals(trackRot1.toEulerAngles(EulerOrder.YZX), tracker.getRotation().toEulerAngles(EulerOrder.YZX), "\"${tracker.name}\" did not reset to the reference rotation.")
+			val actual = tracker.getRotation()
+			assert(quatEqual(trackRot1, actual)) {
+				"\"${tracker.name}\" did not reset to the reference rotation. Expected <$trackRot1>, actual <$actual>."
+			}
 		}
 	}
 
 	fun mkTrack(pos: TrackerPosition, hmd: Boolean = false, computed: Boolean = false, reset: Boolean = true): Tracker {
 		val name = "test ${pos.designation}"
-		return Tracker(
+		val tracker = Tracker(
 			null,
 			getNextLocalTrackerId(),
 			name,
@@ -57,10 +62,18 @@ class SkeletonResetTests {
 			hasRotation = true,
 			isComputed = computed,
 			imuType = IMUType.UNKNOWN,
-			needsReset = reset,
+			needsReset = true,
 			needsMounting = reset,
 			isHmd = hmd,
 			trackRotDirection = false,
 		)
+		tracker.status = TrackerStatus.OK
+		return tracker
 	}
+
+	fun quatEqual(q1: Quaternion, q2: Quaternion, tolerance: Float = FastMath.ZERO_TOLERANCE): Boolean =
+		FastMath.isApproxEqual(q1.w, q2.w, tolerance) &&
+			FastMath.isApproxEqual(q1.x, q2.x, tolerance) &&
+			FastMath.isApproxEqual(q1.y, q2.y, tolerance) &&
+			FastMath.isApproxEqual(q1.z, q2.z, tolerance)
 }
