@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   RecordBVHRequestT,
   RecordBVHStatusT,
@@ -15,7 +15,7 @@ export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [recording, setRecording] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     sendRPCPacket(RpcMessage.RecordBVHStatusRequest, new RecordBVHRequestT());
   }, []);
 
