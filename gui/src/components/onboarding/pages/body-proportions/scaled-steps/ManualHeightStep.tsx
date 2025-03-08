@@ -5,7 +5,7 @@ import { Localized, useLocalization } from '@fluent/react';
 import { useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
 import { useHeightContext } from '@/hooks/height';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
   ModelSettingsT,
@@ -40,6 +40,11 @@ export function ManualHeightStep({
   const { sendRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
   const { statuses } = useStatusContext();
+  const height = useWatch({
+    name: 'height',
+    defaultValue: 1.5,
+    control,
+  });
 
   const missingSteamConnection = useMemo(
     () =>
@@ -129,9 +134,7 @@ export function ManualHeightStep({
                   'onboarding-scaled_proportions-manual_height-estimated_height'
                 )}
               </Typography>
-              <Typography>
-                {mFormat.format(control._formValues.height * 0.936)}
-              </Typography>
+              <Typography>{mFormat.format(height * 0.936)}</Typography>
             </div>
           </div>
         </div>
