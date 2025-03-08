@@ -12,6 +12,7 @@ import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.Test
+import kotlin.random.Random
 
 class SkeletonResetTests {
 
@@ -19,6 +20,8 @@ class SkeletonResetTests {
 
 	@Test
 	fun testSkeletonReset() {
+		val rand = Random(42)
+
 		val hmd = mkTrack(TrackerPosition.HEAD, true, true, false)
 		val chest = mkTrack(TrackerPosition.CHEST)
 		val hip = mkTrack(TrackerPosition.HIP)
@@ -37,15 +40,44 @@ class SkeletonResetTests {
 		// Initialize skeleton and everything
 		val hpm = HumanPoseManager(trackerList)
 
-		val headRot1 = EulerAngles(EulerOrder.YZX, 0f, 90f, 15f).toQuaternion()
-		val trackRot1 = EulerAngles(EulerOrder.YZX, 0f, 90f, 0f).toQuaternion()
+		val headRot1 = EulerAngles(EulerOrder.YZX, 0f, FastMath.HALF_PI, FastMath.QUARTER_PI).toQuaternion()
+		val expectRot1 = EulerAngles(EulerOrder.YZX, 0f, FastMath.HALF_PI, 0f).toQuaternion()
+
+		for (tracker in tracks) {
+			val init = EulerAngles(
+				EulerOrder.YZX,
+				rand.nextFloat() * FastMath.TWO_PI,
+				rand.nextFloat() * FastMath.TWO_PI,
+				rand.nextFloat() * FastMath.TWO_PI,
+			).toQuaternion()
+			tracker.setRotation(init)
+		}
 		hmd.setRotation(headRot1)
 		hpm.resetTrackersFull(resetSource)
 
 		for (tracker in tracks) {
 			val actual = tracker.getRotation()
-			assert(quatEqual(trackRot1, actual)) {
-				"\"${tracker.name}\" did not reset to the reference rotation. Expected <$trackRot1>, actual <$actual>."
+			assert(quatEqual(expectRot1, actual)) {
+				"\"${tracker.name}\" did not reset to the reference rotation. Expected <$expectRot1>, actual <$actual>."
+			}
+		}
+
+		for (tracker in tracks) {
+			val init = EulerAngles(
+				EulerOrder.YZX,
+				rand.nextFloat() * FastMath.TWO_PI,
+				rand.nextFloat() * FastMath.TWO_PI,
+				rand.nextFloat() * FastMath.TWO_PI,
+			).toQuaternion()
+			tracker.setRotation(init)
+		}
+		hmd.setRotation(Quaternion.IDENTITY)
+		hpm.resetTrackersYaw(resetSource)
+
+		for (tracker in tracks) {
+			val yaw = tracker.getRotation().toEulerAngles(EulerOrder.YZX).y
+			assert(FastMath.isApproxZero(yaw)) {
+				"\"${tracker.name}\" did not reset to the reference rotation. Expected <0f>, actual <$yaw>."
 			}
 		}
 	}
