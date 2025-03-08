@@ -5,7 +5,7 @@ import { Localized, useLocalization } from '@fluent/react';
 import { useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
 import { useHeightContext } from '@/hooks/height';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
   ModelSettingsT,
@@ -34,17 +34,13 @@ export function ManualHeightStep({
 }) {
   const { l10n } = useLocalization();
   const { hmdHeight, setHmdHeight } = useHeightContext();
-  const { control, handleSubmit } = useForm<HeightForm>({
+  const { control, handleSubmit, watch } = useForm<HeightForm>({
     defaultValues: { height: 1.5 },
   });
   const { sendRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
   const { statuses } = useStatusContext();
-  const height = useWatch({
-    name: 'height',
-    defaultValue: 1.5,
-    control,
-  });
+  const height = watch('height');
 
   const missingSteamConnection = useMemo(
     () =>
