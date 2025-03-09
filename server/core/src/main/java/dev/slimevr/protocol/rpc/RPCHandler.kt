@@ -18,6 +18,7 @@ import dev.slimevr.protocol.rpc.setup.RPCUtil.getLocalIp
 import dev.slimevr.protocol.rpc.status.RPCStatusHandler
 import dev.slimevr.protocol.rpc.trackingpause.RPCTrackingPause
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
+import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByBodyPart
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
@@ -470,7 +471,8 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 				.createHeightResponse(
 					fbb,
 					posTrackers.minOf { it.position.y },
-					posTrackers.maxOf { it.position.y },
+					posTrackers.find { it.trackerPosition == TrackerPosition.HEAD }?.position?.y
+						?: posTrackers.maxOf { it.position.y },
 				)
 		} else {
 			HeightResponse

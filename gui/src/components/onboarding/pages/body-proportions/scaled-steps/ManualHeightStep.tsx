@@ -34,12 +34,13 @@ export function ManualHeightStep({
 }) {
   const { l10n } = useLocalization();
   const { hmdHeight, setHmdHeight } = useHeightContext();
-  const { control, handleSubmit } = useForm<HeightForm>({
+  const { control, handleSubmit, watch } = useForm<HeightForm>({
     defaultValues: { height: 1.5 },
   });
   const { sendRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
   const { statuses } = useStatusContext();
+  const height = watch('height');
 
   const missingSteamConnection = useMemo(
     () =>
@@ -63,7 +64,7 @@ export function ManualHeightStep({
   );
 
   handleSubmit((values) => {
-    setHmdHeight(values.height);
+    setHmdHeight(values.height * 0.936);
   });
 
   return (
@@ -79,7 +80,7 @@ export function ManualHeightStep({
             <div>
               <Typography color="secondary">
                 {l10n.getString(
-                  'onboarding-scaled_proportions-manual_height-description'
+                  'onboarding-scaled_proportions-manual_height-description-v2'
                 )}
               </Typography>
               {/* <Localized
@@ -107,7 +108,7 @@ export function ManualHeightStep({
                 control={control}
                 name="height"
                 label={l10n.getString(
-                  'onboarding-scaled_proportions-manual_height-height'
+                  'onboarding-scaled_proportions-manual_height-height-v2'
                 )}
                 valueLabelFormat={(value) =>
                   isNaN(value)
@@ -123,6 +124,14 @@ export function ManualHeightStep({
                 doubleStep={0.1}
               />
             </form>
+            <div className="flex flex-col self-center items-center justify-center">
+              <Typography>
+                {l10n.getString(
+                  'onboarding-scaled_proportions-manual_height-estimated_height'
+                )}
+              </Typography>
+              <Typography>{mFormat.format(height * 0.936)}</Typography>
+            </div>
           </div>
         </div>
 
