@@ -60,6 +60,7 @@ import { ScaledProportionsPage } from './components/onboarding/pages/body-propor
 import { EmptyLayout } from './components/EmptyLayout';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
 import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
+import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -290,13 +291,7 @@ export default function App() {
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
                     <Preload />
                     {!websocketAPI.isConnected && (
-                      <EmptyLayout>
-                        <div className="flex w-full h-full justify-center items-center p-2">
-                          {websocketAPI.isFirstConnection
-                            ? l10n.getString('websocket-connecting')
-                            : l10n.getString('websocket-connection_lost')}
-                        </div>
-                      </EmptyLayout>
+                      <ConnectionLost></ConnectionLost>
                     )}
                     {websocketAPI.isConnected && <Layout></Layout>}
                   </div>
