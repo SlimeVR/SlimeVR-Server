@@ -36,7 +36,6 @@ import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
-import { useLocalization } from '@fluent/react';
 import * as os from '@tauri-apps/plugin-os';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
@@ -57,7 +56,6 @@ import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
 import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
-import { EmptyLayout } from './components/EmptyLayout';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
 import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
@@ -179,7 +177,6 @@ function Layout() {
 
 export default function App() {
   const websocketAPI = useProvideWebsocketApi();
-  const { l10n } = useLocalization();
   const [updateFound, setUpdateFound] = useState('');
   const isTauri = useIsTauri();
 
