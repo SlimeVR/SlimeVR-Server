@@ -33,7 +33,7 @@ export function ManualHeightStep({
   variant: 'onboarding' | 'alone';
 }) {
   const { l10n } = useLocalization();
-  const { hmdHeight, setHmdHeight } = useHeightContext();
+  const { setHmdHeight } = useHeightContext();
   const { control, handleSubmit } = useForm<HeightForm>({
     defaultValues: { height: 1.5 },
   });
@@ -62,9 +62,18 @@ export function ManualHeightStep({
     [currentLocales]
   );
 
-  handleSubmit((values) => {
+  const onSubmit = (values: HeightForm) => {
     setHmdHeight(values.height);
-  });
+    const settingsRequest = new ChangeSettingsRequestT();
+    settingsRequest.modelSettings = new ModelSettingsT(
+      null,
+      null,
+      null,
+      new SkeletonHeightT(values.height, 0)
+    );
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsRequest);
+    nextStep();
+  };
 
   return (
     <>
@@ -133,20 +142,7 @@ export function ManualHeightStep({
           >
             {l10n.getString('onboarding-automatic_proportions-prev_step')}
           </Button>
-          <Button
-            variant="primary"
-            onClick={() => {
-              const settingsRequest = new ChangeSettingsRequestT();
-              settingsRequest.modelSettings = new ModelSettingsT(
-                null,
-                null,
-                null,
-                new SkeletonHeightT(hmdHeight, 0)
-              );
-              sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsRequest);
-              nextStep();
-            }}
-          >
+          <Button variant="primary" onClick={handleSubmit(onSubmit)}>
             {l10n.getString(
               'onboarding-scaled_proportions-manual_height-next_step'
             )}
