@@ -157,26 +157,26 @@ export const NOTES: { [note: string]: number } = {
   'A#7': 3729.31,
   Bb7: 3729.31,
   B7: 3951.07,
-  C8: 4186.01
-}
+  C8: 4186.01,
+};
 
 /**
  * A measure that can be played on a Xylophone
  */
 export interface IMeasure {
-  notes: string[]
-  length?: number
-  offset?: number
-  type?: OscillatorOptions['type'],
-  volume?: number
+  notes: string[];
+  length?: number;
+  offset?: number;
+  type?: OscillatorOptions['type'];
+  volume?: number;
 }
 
 export interface INote {
-  note: string
-  length?: number
-  offset?: number
-  type?: OscillatorOptions['type'],
-  volume?: number
+  note: string;
+  length?: number;
+  offset?: number;
+  type?: OscillatorOptions['type'];
+  volume?: number;
 }
 
 /**
@@ -187,21 +187,21 @@ export default class Xylophone {
    * Returns the AudioContext that's used under the hood
    */
   get audioContext() {
-    return this.context
+    return this.context;
   }
 
   /**
    * Converts a named note to hertz (e.g. `toHertz('A4') => 440.00`)
    */
   private static toHertz(note: string): number {
-    note = note.trim()
-    if (note in NOTES) return NOTES[note]
-    throw new Error(`${note} is not a valid note`)
+    note = note.trim();
+    if (note in NOTES) return NOTES[note];
+    throw new Error(`${note} is not a valid note`);
   }
 
-  private oscillator: OscillatorNode | undefined
-  private gainNode: GainNode | undefined
-  private context: AudioContext = new (window.AudioContext)()
+  private oscillator: OscillatorNode | undefined;
+  private gainNode: GainNode | undefined;
+  private context: AudioContext = new window.AudioContext();
 
   /**
    * Plays a series of notes in an `IMeasure`. If an array of `IMeasure`s is given then
@@ -210,17 +210,17 @@ export default class Xylophone {
    */
   public async play(measure: IMeasure | IMeasure[]): Promise<void> {
     if (measure instanceof Array) {
-      const arr = []
+      const arr = [];
 
-      for (const m of measure) arr.push(await this.play(m))
+      for (const m of measure) arr.push(await this.play(m));
 
-      return
+      return;
     }
-    let i = 0
+    let i = 0;
     await Promise.all(
-      measure.notes.map(note => {
-        let offset
-        if (measure.offset) offset = measure.offset * i++
+      measure.notes.map((note) => {
+        let offset;
+        if (measure.offset) offset = measure.offset * i++;
 
         return this.playTone({
           length: measure.length,
@@ -228,10 +228,10 @@ export default class Xylophone {
           offset,
           type: measure.type,
           volume: measure.volume,
-        })
+        });
       })
-    )
-    return
+    );
+    return;
   }
 
   /**
@@ -241,49 +241,54 @@ export default class Xylophone {
    * @returns {function} Stops the loop when called
    */
   public loop(measure: IMeasure | IMeasure[]): Promise<() => void> {
-    return new Promise(resolve => {
-      let canceled = false
+    return new Promise((resolve) => {
+      let canceled = false;
 
-      resolve(() => (canceled = true))
+      resolve(() => (canceled = true));
 
       const loop = async () => {
-        if (canceled) return
+        if (canceled) return;
 
-        await this.play(measure)
+        await this.play(measure);
 
-        loop()
-      }
+        loop();
+      };
 
-      loop()
-    })
+      loop();
+    });
   }
 
   /**
    * Plays an `INote`
    * @param note The tone to play
    */
-  private playTone({ note, length = 1, offset = 1, type = 'sine', volume }: INote): Promise<void> {
-    return new Promise(resolve => {
-      offset = this.context.currentTime + offset
+  private playTone({
+    note,
+    length = 1,
+    offset = 1,
+    type = 'sine',
+    volume,
+  }: INote): Promise<void> {
+    return new Promise((resolve) => {
+      offset = this.context.currentTime + offset;
 
-      this.oscillator = this.context.createOscillator()
-      this.gainNode = this.context.createGain()
+      this.oscillator = this.context.createOscillator();
+      this.gainNode = this.context.createGain();
 
+      this.oscillator.connect(this.gainNode);
+      this.gainNode.connect(this.context.destination);
+      this.oscillator.type = type;
 
-      this.oscillator.connect(this.gainNode)
-      this.gainNode.connect(this.context.destination)
-      this.oscillator.type = type
+      const gain = Math.min(1, Math.pow((volume ?? 1) * 0.5, Math.E) + 0.05);
 
-      const gain = Math.min(1, Math.pow((volume ?? 1) * 0.5, Math.E) + 0.05)
+      this.oscillator.frequency.value = Xylophone.toHertz(note);
+      this.gainNode.gain.setValueAtTime(0, offset);
+      this.gainNode.gain.linearRampToValueAtTime(1 * gain, offset + 0.01);
 
-      this.oscillator.frequency.value = Xylophone.toHertz(note)
-      this.gainNode.gain.setValueAtTime(0, offset)
-      this.gainNode.gain.linearRampToValueAtTime(1 * gain, offset + 0.01)
-
-      this.oscillator.start(offset)
-      this.gainNode.gain.exponentialRampToValueAtTime(0.001 * gain, offset + length)
-      this.oscillator.stop(offset + length)
-      this.oscillator.onended = () => resolve()
-    })
+      this.oscillator.start(offset);
+      this.gainNode.gain.exponentialRampToValueAtTime(0.001 * gain, offset + length);
+      this.oscillator.stop(offset + length);
+      this.oscillator.onended = () => resolve();
+    });
   }
 }
