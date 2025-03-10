@@ -8,6 +8,7 @@ import { useLocaleConfig } from '@/i18n/config';
 import { TipBox } from '@/components/commons/TipBox';
 import { useHeightContext } from '@/hooks/height';
 import { useInterval } from '@/hooks/timeout';
+import { useOnboarding } from '@/hooks/onboarding';
 
 export function CheckHeightStep({
   nextStep,
@@ -18,6 +19,7 @@ export function CheckHeightStep({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
+  const { state } = useOnboarding();
   const { l10n } = useLocalization();
   const { hmdHeight, setHmdHeight } = useHeightContext();
   const [fetchHeight, setFetchHeight] = useState(false);
@@ -140,12 +142,14 @@ export function CheckHeightStep({
         </div>
 
         <div className="flex gap-3 mobile:justify-between">
-          <Button
-            variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
-            onClick={prevStep}
-          >
-            {l10n.getString('onboarding-automatic_proportions-prev_step')}
-          </Button>
+          {!state.alonePage && (
+            <Button
+              variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
+              onClick={prevStep}
+            >
+              {l10n.getString('onboarding-automatic_proportions-prev_step')}
+            </Button>
+          )}
           <Button
             variant="primary"
             onClick={nextStep}

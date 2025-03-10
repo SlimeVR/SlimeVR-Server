@@ -89,7 +89,7 @@ export function MainLinks() {
         {l10n.getString('navbar-mounting')}
       </NavButton>
       <NavButton
-        to="/onboarding/body-proportions/choose"
+        to="/onboarding/body-proportions/scaled"
         match="/onboarding/body-proportions/*"
         state={{ alonePage: true }}
         icon={<RulerIcon></RulerIcon>}
