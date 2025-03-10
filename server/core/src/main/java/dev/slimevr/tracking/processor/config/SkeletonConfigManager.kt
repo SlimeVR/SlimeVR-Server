@@ -112,7 +112,7 @@ class SkeletonConfigManager(
 	fun setToggle(config: SkeletonConfigToggles, newValue: Boolean?) {
 		if (newValue != null) {
 			if (configToggles[config] != null && (newValue != configToggles[config])) {
-				changedToggles[config.id - 1] = true
+				changedToggles[config.ordinal] = true
 			}
 			configToggles[config] = newValue
 		} else {
@@ -135,7 +135,7 @@ class SkeletonConfigManager(
 	fun setValue(config: SkeletonConfigValues, newValue: Float?) {
 		if (newValue != null) {
 			if (configValues[config] != null && (newValue != configValues[config])) {
-				changedValues[config.id - 1] = true
+				changedValues[config.ordinal] = true
 			}
 			configValues[config] = newValue
 		} else {
@@ -526,12 +526,12 @@ class SkeletonConfigManager(
 
 		// Only write changed values to keep using defaults if not changed
 		for (value in SkeletonConfigToggles.values) {
-			if (changedToggles[value.id - 1]) skeletonConfig.getToggles()[value.configKey] = getToggle(value)
+			if (changedToggles[value.ordinal]) skeletonConfig.getToggles()[value.configKey] = getToggle(value)
 		}
 
 		// Only write changed values to keep using defaults if not changed
 		for (value in SkeletonConfigValues.values) {
-			if (changedValues[value.id - 1]) skeletonConfig.getValues()[value.configKey] = getValue(value)
+			if (changedValues[value.ordinal]) skeletonConfig.getValues()[value.configKey] = getValue(value)
 		}
 	}
 
