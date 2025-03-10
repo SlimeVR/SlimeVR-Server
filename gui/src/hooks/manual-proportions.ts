@@ -364,6 +364,5 @@ function roundedStep(value: number, step: number, add: boolean): number {
   }
 }
 
-
 export const MIN_HEIGHT = 0.4;
 export const CURRENT_EXPORT_VERSION = 1;

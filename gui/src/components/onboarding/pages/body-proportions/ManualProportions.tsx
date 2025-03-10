@@ -57,7 +57,6 @@ enum ImportStatus {
 }
 
 function ImportExportButtons() {
-  const { state } = useOnboarding();
   const isTauri = useIsTauri();
   const { l10n } = useLocalization();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
