@@ -363,3 +363,7 @@ function roundedStep(value: number, step: number, add: boolean): number {
     return (Math.round(value * 200) + step * 2) / 200;
   }
 }
+
+
+export const MIN_HEIGHT = 0.4;
+export const CURRENT_EXPORT_VERSION = 1;
