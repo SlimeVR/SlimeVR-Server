@@ -5,8 +5,11 @@
 # translators on what it means
 
 ## Websocket (server) status
-websocket-connecting = Connecting to the server
-websocket-connection_lost = Connection lost to the server. Trying to reconnect...
+websocket-connecting = Loading...
+websocket-connection_lost = The server crashed!
+websocket-connection_lost-desc = It looks like the SlimeVR server crashed. Check the logs and restart the program
+websocket-connection_lost-close = Exit SlimeVR
+websocket-connection_lost-logs = Open the logs Folder
 
 ## Update notification
 version_update-title = New version available: { $version }
