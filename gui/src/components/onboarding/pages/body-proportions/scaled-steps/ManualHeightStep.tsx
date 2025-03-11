@@ -35,8 +35,8 @@ export function ManualHeightStep({
 }) {
   const { state } = useOnboarding();
   const { l10n } = useLocalization();
-  const { hmdHeight, setHmdHeight } = useHeightContext();
-  const { control, handleSubmit } = useForm<HeightForm>({
+  const { setHmdHeight } = useHeightContext();
+  const { control, handleSubmit, formState } = useForm<HeightForm>({
     defaultValues: { height: 1.5 },
   });
   const { sendRPCPacket } = useWebsocketAPI();
@@ -64,99 +64,88 @@ export function ManualHeightStep({
     [currentLocales]
   );
 
-  handleSubmit((values) => {
+  const submitHmdHeight = (values: HeightForm) => {
     setHmdHeight(values.height);
-  });
+    const settingsRequest = new ChangeSettingsRequestT();
+    settingsRequest.modelSettings = new ModelSettingsT(
+      null,
+      null,
+      null,
+      new SkeletonHeightT(values.height, 0)
+    );
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsRequest);
+    nextStep();
+  };
 
   return (
-    <>
-      <div className="flex flex-col flex-grow">
-        <div className="flex gap-2 flex-grow">
-          <div className="flex flex-grow flex-col gap-4">
-            <Typography variant="main-title" bold>
+    <form
+      className="flex flex-col flex-grow"
+      onSubmit={handleSubmit(submitHmdHeight)}
+    >
+      <div className="flex gap-2 flex-grow">
+        <div className="flex flex-grow flex-col gap-4">
+          <Typography variant="main-title" bold>
+            {l10n.getString(
+              'onboarding-scaled_proportions-manual_height-title'
+            )}
+          </Typography>
+          <div>
+            <Typography color="secondary">
               {l10n.getString(
-                'onboarding-scaled_proportions-manual_height-title'
+                'onboarding-scaled_proportions-manual_height-description'
               )}
             </Typography>
-            <div>
-              <Typography color="secondary">
-                {l10n.getString(
-                  'onboarding-scaled_proportions-manual_height-description'
-                )}
-              </Typography>
-              {/* <Localized
-                id="onboarding-scaled_proportions-manual_height-warning"
-                elems={{ u: <span className="underline"></span> }}
-              >
-                <Typography color="secondary" bold>
-                  Input your height manually!
-                </Typography>
-              </Localized> */}
-              {missingSteamConnection && (
-                <div className="flex flex-row items-center mt-2 gap-2 mobile:flex-col">
-                  <Localized
-                    id="onboarding-scaled_proportions-manual_height-missing_steamvr"
-                    elems={{ b: <b></b> }}
-                    // TODO: Add link to docs!
-                  >
-                    <WarningBox>You don't have SteamVR connected!</WarningBox>
-                  </Localized>
-                </div>
+            {missingSteamConnection && (
+              <div className="flex flex-row items-center mt-2 gap-2 mobile:flex-col">
+                <Localized
+                  id="onboarding-scaled_proportions-manual_height-missing_steamvr"
+                  elems={{ b: <b></b> }}
+                  // TODO: Add link to docs!
+                >
+                  <WarningBox>You don't have SteamVR connected!</WarningBox>
+                </Localized>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col self-center items-center justify-center">
+            <NumberSelector
+              control={control}
+              name="height"
+              label={l10n.getString(
+                'onboarding-scaled_proportions-manual_height-height'
               )}
-            </div>
-            <form className="flex flex-col self-center items-center justify-center">
-              <NumberSelector
-                control={control}
-                name="height"
-                label={l10n.getString(
-                  'onboarding-scaled_proportions-manual_height-height'
-                )}
-                valueLabelFormat={(value) =>
-                  isNaN(value)
-                    ? l10n.getString(
-                        'onboarding-scaled_proportions-manual_height-unknown'
-                      )
-                    : mFormat.format(value)
-                }
-                min={MIN_HEIGHT}
-                max={4}
-                step={0.01}
-                showButtonWithNumber
-                doubleStep={0.1}
-              />
-            </form>
+              valueLabelFormat={(value) =>
+                isNaN(value)
+                  ? l10n.getString(
+                      'onboarding-scaled_proportions-manual_height-unknown'
+                    )
+                  : mFormat.format(value)
+              }
+              min={MIN_HEIGHT}
+              max={4}
+              step={0.01}
+              showButtonWithNumber
+              doubleStep={0.1}
+            />
           </div>
         </div>
-
-        <div className="flex gap-3 mobile:justify-between">
-          {!state.alonePage && (
-            <Button
-              variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
-              onClick={prevStep}
-            >
-              {l10n.getString('onboarding-automatic_proportions-prev_step')}
-            </Button>
-          )}
-          <Button
-            variant="primary"
-            onClick={() => {
-              const settingsRequest = new ChangeSettingsRequestT();
-              settingsRequest.modelSettings = new ModelSettingsT(
-                null,
-                null,
-                null,
-                new SkeletonHeightT(hmdHeight, 0)
-              );
-              sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsRequest);
-              nextStep();
-            }}
-          >
-            {l10n.getString(
-              'onboarding-scaled_proportions-manual_height-next_step'
-            )}
-          </Button>
-        </div>
       </div>
-    </>
+
+      <div className="flex gap-3 mobile:justify-between">
+        {!state.alonePage && (
+          <Button
+            variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
+            onClick={prevStep}
+          >
+            {l10n.getString('onboarding-automatic_proportions-prev_step')}
+          </Button>
+        )}
+        <Button type="submit" variant="primary" disabled={!formState.isValid}>
+          {l10n.getString(
+            'onboarding-scaled_proportions-manual_height-next_step'
+          )}
+        </Button>
+      </div>
+    </form>
   );
 }
