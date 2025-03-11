@@ -39,7 +39,6 @@ import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings
 import * as os from '@tauri-apps/plugin-os';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
-import { ProportionsChoose } from './components/onboarding/pages/body-proportions/ProportionsChoose';
 import { StatusProvider } from './components/providers/StatusSystemContext';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
 import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
@@ -150,10 +149,6 @@ function Layout() {
             <Route path="mounting/auto" element={<AutomaticMountingPage />} />
             <Route path="mounting/manual" element={<ManualMountingPage />} />
             <Route path="reset-tutorial" element={<ResetTutorialPage />} />
-            <Route
-              path="body-proportions/choose"
-              element={<ProportionsChoose />}
-            />
             <Route
               path="body-proportions/auto"
               element={<AutomaticProportionsPage />}
