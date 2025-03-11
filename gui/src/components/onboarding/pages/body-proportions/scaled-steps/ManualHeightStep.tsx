@@ -15,9 +15,10 @@ import {
   StatusSteamVRDisconnectedT,
 } from 'solarxr-protocol';
 import { NumberSelector } from '@/components/commons/NumberSelector';
-import { MIN_HEIGHT } from '@/components/onboarding/pages/body-proportions/ProportionsChoose';
 import { WarningBox } from '@/components/commons/TipBox';
 import { useStatusContext } from '@/hooks/status-system';
+import { useOnboarding } from '@/hooks/onboarding';
+import { MIN_HEIGHT } from '@/hooks/manual-proportions';
 
 interface HeightForm {
   height: number;
@@ -32,6 +33,7 @@ export function ManualHeightStep({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
+  const { state } = useOnboarding();
   const { l10n } = useLocalization();
   const { setHmdHeight } = useHeightContext();
   const { control, handleSubmit } = useForm<HeightForm>({
@@ -136,13 +138,18 @@ export function ManualHeightStep({
         </div>
 
         <div className="flex gap-3 mobile:justify-between">
+          {!state.alonePage && (
+            <Button
+              variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
+              onClick={prevStep}
+            >
+              {l10n.getString('onboarding-automatic_proportions-prev_step')}
+            </Button>
+          )}
           <Button
-            variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
-            onClick={prevStep}
+            variant="primary"
+            onClick={handleSubmit(onSubmit)}
           >
-            {l10n.getString('onboarding-automatic_proportions-prev_step')}
-          </Button>
-          <Button variant="primary" onClick={handleSubmit(onSubmit)}>
             {l10n.getString(
               'onboarding-scaled_proportions-manual_height-next_step'
             )}
