@@ -118,6 +118,7 @@ class QuaternionMovingAverage(
 		latestQuaternion = twinQ
 	}
 
+	@Synchronized
 	fun resetQuats(q: Quaternion) {
 		if (type == TrackerFilters.PREDICTION) {
 			rotBuffer?.clear()
