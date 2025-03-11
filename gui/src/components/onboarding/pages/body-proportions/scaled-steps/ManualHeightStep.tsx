@@ -146,10 +146,7 @@ export function ManualHeightStep({
               {l10n.getString('onboarding-automatic_proportions-prev_step')}
             </Button>
           )}
-          <Button
-            variant="primary"
-            onClick={handleSubmit(onSubmit)}
-          >
+          <Button variant="primary" onClick={handleSubmit(onSubmit)}>
             {l10n.getString(
               'onboarding-scaled_proportions-manual_height-next_step'
             )}
