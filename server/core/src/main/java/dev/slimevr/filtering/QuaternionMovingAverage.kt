@@ -29,7 +29,6 @@ class QuaternionMovingAverage(
 	private var latestQuaternion = IDENTITY
 	private var smoothingQuaternion = IDENTITY
 	private val fpsTimer = if (VRServer.instanceInitialized) VRServer.instance.fpsTimer else NanoTimer()
-	private var frameCounter = 0
 	private var lastAmt = 0f
 
 	init {
@@ -71,21 +70,11 @@ class QuaternionMovingAverage(
 				filteredQuaternion = filteredQuaternion.interpQ(quatBuf, amt)
 			}
 		} else if (type == TrackerFilters.SMOOTHING) {
-			// Increase every update for linear interpolation
-			frameCounter++
-
-			// Calculate the slerp factor based off the smoothFactor and smoothingCounter
-			var amt = smoothFactor * frameCounter
-
-			// Make it framerate-independent
-			amt *= fpsTimer.timePerFrame
-
-			// Be at least last amount to not rollback
-			amt = amt.coerceAtLeast(lastAmt)
-
+			// Calculate the slerp factor based off the last amount and smoothFactor
 			// limit to 1 to not overshoot
-			amt = amt.coerceAtMost(1f)
-
+			val amt = (
+				lastAmt + (smoothFactor * fpsTimer.timePerFrame)
+				).coerceAtMost(1f)
 			lastAmt = amt
 
 			// Smooth towards the target rotation by the slerp factor
@@ -108,7 +97,6 @@ class QuaternionMovingAverage(
 			// Gets and stores the rotation between the last 2 quaternions
 			rotBuffer?.add(latestQuaternion.inv().times(twinQ))
 		} else if (type == TrackerFilters.SMOOTHING) {
-			frameCounter = 0
 			lastAmt = 0f
 			smoothingQuaternion = filteredQuaternion
 		} else {
