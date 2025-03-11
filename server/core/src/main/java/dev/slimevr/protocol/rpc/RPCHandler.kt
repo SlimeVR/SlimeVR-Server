@@ -89,6 +89,15 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		}
 
 		registerPacketListener(
+			RpcMessage.RecordBVHStatusRequest,
+		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
+			this.onBVHStatusRequest(
+				conn,
+				messageHeader,
+			)
+		}
+
+		registerPacketListener(
 			RpcMessage.SkeletonResetAllRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onSkeletonResetAllRequest(
@@ -292,6 +301,17 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		} else {
 			if (!api.server.bvhRecorder.isRecording) api.server.bvhRecorder.startRecording()
 		}
+
+		val fbb = FlatBufferBuilder(40)
+		val status = RecordBVHStatus
+			.createRecordBVHStatus(fbb, api.server.bvhRecorder.isRecording)
+		val outbound = this.createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status)
+		fbb.finish(outbound)
+		conn.send(fbb.dataBuffer())
+	}
+
+	fun onBVHStatusRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		if (messageHeader.message(RecordBVHStatusRequest()) !is RecordBVHStatusRequest) return
 
 		val fbb = FlatBufferBuilder(40)
 		val status = RecordBVHStatus

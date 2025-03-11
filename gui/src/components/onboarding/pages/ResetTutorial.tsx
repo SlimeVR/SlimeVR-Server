@@ -148,7 +148,7 @@ export function ResetTutorialPage() {
 
             <Button
               variant="primary"
-              to="/onboarding/body-proportions/choose"
+              to="/onboarding/body-proportions/scaled"
               className={classNames(
                 'ml-auto',
                 order.length > curIndex + 1 && 'hidden'

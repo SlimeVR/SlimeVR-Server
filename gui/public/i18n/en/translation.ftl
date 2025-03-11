@@ -962,47 +962,23 @@ onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
 onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting orientations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 
-## Tracker proportions method choose
-onboarding-choose_proportions = What proportion calibration method to use?
-# Multiline string
-onboarding-choose_proportions-description-v1 = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
-    When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
-    <b>You only need to measure your body once!</b> Unless they are wrong or your body has changed, then you don't need to do them again.
-onboarding-choose_proportions-auto_proportions = Automatic proportions
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = Recommended
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    This will guess your proportions by recording a sample of your movements and passing it through an algorithm.
-
-    <b>This requires having your headset (HMD) connected to SlimeVR and on your head!</b>
-onboarding-choose_proportions-manual_proportions = Manual proportions
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = For small touches
-onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
-onboarding-choose_proportions-scaled_proportions = Scaled proportions
-# Italized text
-onboarding-choose_proportions-scaled_proportions-subtitle = Recommended for new users
-# Multiline string
-onboarding-choose_proportions-scaled_proportions-description =
-    This will scale the proportions of an average human body based on your height, this will help for basic full-body tracking.
-
-    <b>This requires having your headset (HMD) connected to SlimeVR and on your head!</b>
-onboarding-choose_proportions-scaled_proportions-button = Scaled proportions
-onboarding-choose_proportions-export = Export proportions
-onboarding-choose_proportions-import = Import proportions
-onboarding-choose_proportions-import-success = Imported
-onboarding-choose_proportions-import-failed = Failed
-onboarding-choose_proportions-file_type = Body proportions file
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 onboarding-manual_proportions-back = Go Back to Reset tutorial
 onboarding-manual_proportions-title = Manual Body Proportions
 onboarding-manual_proportions-precision = Precision adjust
 onboarding-manual_proportions-auto = Automatic proportions
 onboarding-manual_proportions-ratio = Adjust by ratio groups
+onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning
+onboarding-manual_proportions-export = Export proportions
+onboarding-manual_proportions-import = Import proportions
+onboarding-manual_proportions-import-success = Imported
+onboarding-manual_proportions-import-failed = Failed
+onboarding-manual_proportions-file_type = Body proportions file
+
 
 ## Tracker automatic proportions setup
-onboarding-automatic_proportions-back = Go Back to Reset tutorial
+onboarding-automatic_proportions-back = Go Back to Manual Proportions
 onboarding-automatic_proportions-title = Measure your body
 onboarding-automatic_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.
 onboarding-automatic_proportions-manual = Manual proportions
