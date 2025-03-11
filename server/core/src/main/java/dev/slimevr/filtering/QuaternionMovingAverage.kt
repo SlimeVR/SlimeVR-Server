@@ -120,11 +120,12 @@ class QuaternionMovingAverage(
 
 	@Synchronized
 	fun resetQuats(q: Quaternion) {
-		if (type == TrackerFilters.PREDICTION) {
-			rotBuffer?.clear()
-			latestQuaternion = q
-		}
+		// Clear prediction buffer
+		rotBuffer?.clear()
+		// Reset tracked quaternions
+		latestQuaternion = q
 		filteredQuaternion = q
+		// Set the current quaternion
 		addQuaternion(q)
 	}
 }
