@@ -183,7 +183,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
     if (!isConnected && isFirstConnection) {
       setTimedOut(true);
     }
-  }, 10_000) // Show the user that the server timed out if no connection after 10s
+  }, 10_000); // Show the user that the server timed out if no connection after 10s
 
   useEffect(() => {
     connect();
