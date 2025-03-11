@@ -12,17 +12,19 @@ import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Typography } from '@/components/commons/Typography';
 import { BodyProportions } from './BodyProportions';
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useBreakpoint, useIsTauri } from '@/hooks/breakpoint';
 import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
 import { ProportionsResetModal } from './ProportionsResetModal';
 import { fileOpen, fileSave } from 'browser-fs-access';
-import { CURRENT_EXPORT_VERSION } from '@/hooks/manual-proportions';
+import { CURRENT_EXPORT_VERSION, MIN_HEIGHT } from '@/hooks/manual-proportions';
 import { save } from '@tauri-apps/plugin-dialog';
 import { writeTextFile } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
 import classNames from 'classnames';
+import { useAppContext } from '@/hooks/app';
+import { Tooltip } from '@/components/commons/Tooltip';
 
 function parseConfigImport(
   config: SkeletonConfigExport
@@ -226,6 +228,7 @@ export function ManualProportionsPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
+  const { computedTrackers } = useAppContext();
 
   applyProgress(0.9);
 
@@ -241,6 +244,17 @@ export function ManualProportionsPage() {
   useEffect(() => {
     localStorage.setItem('ratioMode', ratio?.toString() ?? 'true');
   }, [ratio]);
+
+  const beneathFloor = useMemo(() => {
+    const hmd = computedTrackers.find(
+      (tracker) =>
+        tracker.tracker.trackerId?.trackerNum === 1 &&
+        tracker.tracker.trackerId.deviceId?.id === undefined
+    );
+    return !(hmd?.tracker.position && hmd.tracker.position.y >= MIN_HEIGHT);
+  }, [computedTrackers]);
+
+  const canUseFineTuning = !beneathFloor || import.meta.env.DEV;
 
   return (
     <>
@@ -272,15 +286,27 @@ export function ManualProportionsPage() {
                   </div>
                 )}
               </div>
-              <Button
-                variant="secondary"
-                to="/onboarding/body-proportions/auto"
-                state={{ alonePage: state.alonePage }}
+              <Tooltip
+                content={
+                  <Localized id="onboarding-manual_proportions-fine_tuning_button-disabled-tooltip">
+                    <Typography></Typography>
+                  </Localized>
+                }
+                preferedDirection="top"
+                disabled={canUseFineTuning}
               >
-                {l10n.getString(
-                  'onboarding-manual_proportions-fine_tuning_button'
-                )}
-              </Button>
+                <Button
+                  variant="secondary"
+                  to="/onboarding/body-proportions/auto"
+                  state={{ alonePage: state.alonePage }}
+                  disabled={!canUseFineTuning}
+                >
+                  {l10n.getString(
+                    'onboarding-manual_proportions-fine_tuning_button'
+                  )}
+                </Button>
+              </Tooltip>
+
               <div className="w-full px-2">
                 <BodyProportions
                   precise={precise ?? defaultValues.precise}

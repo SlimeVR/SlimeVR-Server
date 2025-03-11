@@ -970,6 +970,7 @@ onboarding-manual_proportions-precision = Precision adjust
 onboarding-manual_proportions-auto = Automatic proportions
 onboarding-manual_proportions-ratio = Adjust by ratio groups
 onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning
 onboarding-manual_proportions-export = Export proportions
 onboarding-manual_proportions-import = Import proportions
 onboarding-manual_proportions-import-success = Imported
