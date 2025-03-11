@@ -4,6 +4,7 @@ import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
+import kotlin.math.abs
 
 // influences the range of smoothFactor.
 private const val SMOOTH_MULTIPLIER = 42f
@@ -30,6 +31,10 @@ class QuaternionMovingAverage(
 	private var smoothingQuaternion = IDENTITY
 	private val fpsTimer = if (VRServer.instanceInitialized) VRServer.instance.fpsTimer else NanoTimer()
 	private var lastAmt = 0f
+
+	// Polarity tracking
+	private var flipped = false
+	private var lastDot = 1f
 
 	init {
 		// amount should range from 0 to 1.
@@ -86,8 +91,18 @@ class QuaternionMovingAverage(
 
 	@Synchronized
 	fun addQuaternion(q: Quaternion) {
-		// Keep track of rotations (for going over 180 degrees)
-		val twinQ = q.twinNearest(latestQuaternion)
+		// Keep track of rotation polarity (for going over 180 degrees)
+		val dot = q.dot(latestQuaternion)
+		val dotDiff = lastDot - dot
+		lastDot = dot
+
+		// If the rotation is extreme to the opposite polarity
+		if (abs(dotDiff) > 1.5f) {
+			// Flip polarity
+			flipped = !flipped
+		}
+
+		val polQ = if (flipped) -q else q
 
 		if (type == TrackerFilters.PREDICTION) {
 			if (rotBuffer!!.size == rotBuffer!!.capacity()) {
@@ -95,15 +110,13 @@ class QuaternionMovingAverage(
 			}
 
 			// Gets and stores the rotation between the last 2 quaternions
-			rotBuffer?.add(latestQuaternion.inv().times(twinQ))
+			rotBuffer?.add(latestQuaternion.inv().times(polQ))
 		} else if (type == TrackerFilters.SMOOTHING) {
 			lastAmt = 0f
 			smoothingQuaternion = filteredQuaternion
-		} else {
-			smoothingQuaternion = filteredQuaternion
 		}
 
-		latestQuaternion = twinQ
+		latestQuaternion = polQ
 	}
 
 	@Synchronized
@@ -113,6 +126,9 @@ class QuaternionMovingAverage(
 		// Reset tracked quaternions
 		latestQuaternion = q
 		filteredQuaternion = q
+		// Reset polarity tracking
+		flipped = false
+		lastDot = 1f
 		// Set the current quaternion
 		addQuaternion(q)
 	}
