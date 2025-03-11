@@ -124,160 +124,108 @@ class HumanPoseManager(val server: VRServer?) {
 
 	// #endregion
 	// #region private methods
+	private fun mkTrack(name: String, display: String, pos: TrackerPosition): Tracker = Tracker(
+		null,
+		getNextLocalTrackerId(),
+		name,
+		display,
+		pos,
+		hasPosition = true,
+		hasRotation = true,
+		isInternal = true,
+		isComputed = true,
+		allowFiltering = false,
+		trackRotDirection = false,
+	)
+
 	private fun initializeComputedHumanPoseTracker() {
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				mkTrack(
 					"human://HEAD",
 					"Computed head",
 					TrackerPosition.HEAD,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				mkTrack(
 					"human://CHEST",
 					"Computed chest",
 					TrackerPosition.UPPER_CHEST,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				mkTrack(
 					"human://WAIST",
 					"Computed hip",
 					TrackerPosition.HIP,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				mkTrack(
 					"human://LEFT_KNEE",
 					"Computed left knee",
 					TrackerPosition.LEFT_UPPER_LEG,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				mkTrack(
 					"human://RIGHT_KNEE",
 					"Computed right knee",
 					TrackerPosition.RIGHT_UPPER_LEG,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				mkTrack(
 					"human://LEFT_FOOT",
 					"Computed left foot",
 					TrackerPosition.LEFT_FOOT,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				mkTrack(
 					"human://RIGHT_FOOT",
 					"Computed right foot",
 					TrackerPosition.RIGHT_FOOT,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				mkTrack(
 					"human://LEFT_ELBOW",
 					"Computed left elbow",
 					TrackerPosition.LEFT_UPPER_ARM,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				mkTrack(
 					"human://RIGHT_ELBOW",
 					"Computed right elbow",
 					TrackerPosition.RIGHT_UPPER_ARM,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				mkTrack(
 					"human://LEFT_HAND",
 					"Computed left hand",
 					TrackerPosition.LEFT_HAND,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				mkTrack(
 					"human://RIGHT_HAND",
 					"Computed right hand",
 					TrackerPosition.RIGHT_HAND,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 
