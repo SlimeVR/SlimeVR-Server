@@ -12,12 +12,13 @@ import {
 } from 'solarxr-protocol';
 
 import { Builder, ByteBuffer } from 'flatbuffers';
-import { useInterval } from './timeout';
+import { useInterval, useTimeout } from './timeout';
 import { log } from '@/utils/logging';
 
 export interface WebSocketApi {
   isConnected: boolean;
   isFirstConnection: boolean;
+  timedOut: boolean;
   reconnect: () => void;
   useRPCPacket: <T>(type: RpcMessage, callback: (packet: T) => void) => void;
   useDataFeedPacket: <T>(type: DataFeedMessage, callback: (packet: T) => void) => void;
@@ -41,6 +42,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
   const pubsublistenerRef = useRef<EventTarget>(new EventTarget());
   const datafeedlistenerRef = useRef<EventTarget>(new EventTarget());
   const [isFirstConnection, setFirstConnection] = useState(true);
+  const [timedOut, setTimedOut] = useState(false);
   const [isConnected, setConnected] = useState(false);
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -57,6 +59,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
   const onConnected = () => {
     if (!webSocketRef.current) return;
     setFirstConnection(false);
+    setTimedOut(false);
     setConnected(true);
   };
 
@@ -176,6 +179,12 @@ export function useProvideWebsocketApi(): WebSocketApi {
     connect();
   };
 
+  useTimeout(() => {
+    if (!isConnected && isFirstConnection) {
+      setTimedOut(true);
+    }
+  }, 10_000); // Show the user that the server timed out if no connection after 10s
+
   useEffect(() => {
     connect();
     return () => {
@@ -186,6 +195,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
   return {
     isConnected,
     isFirstConnection,
+    timedOut,
     reconnect,
     useDataFeedPacket: <T>(type: DataFeedMessage, callback: (packet: T) => void) => {
       useEffect(() => {

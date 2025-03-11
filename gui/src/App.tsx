@@ -36,7 +36,6 @@ import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
-import { useLocalization } from '@fluent/react';
 import * as os from '@tauri-apps/plugin-os';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
@@ -56,9 +55,9 @@ import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
 import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
-import { EmptyLayout } from './components/EmptyLayout';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
 import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
+import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -173,7 +172,6 @@ function Layout() {
 
 export default function App() {
   const websocketAPI = useProvideWebsocketApi();
-  const { l10n } = useLocalization();
   const [updateFound, setUpdateFound] = useState('');
   const isTauri = useIsTauri();
 
@@ -285,13 +283,7 @@ export default function App() {
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
                     <Preload />
                     {!websocketAPI.isConnected && (
-                      <EmptyLayout>
-                        <div className="flex w-full h-full justify-center items-center p-2">
-                          {websocketAPI.isFirstConnection
-                            ? l10n.getString('websocket-connecting')
-                            : l10n.getString('websocket-connection_lost')}
-                        </div>
-                      </EmptyLayout>
+                      <ConnectionLost></ConnectionLost>
                     )}
                     {websocketAPI.isConnected && <Layout></Layout>}
                   </div>
