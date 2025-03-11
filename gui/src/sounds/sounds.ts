@@ -2,12 +2,11 @@ import { ResetType } from 'solarxr-protocol';
 import Xylophone from './xylophone';
 
 const tones = [
-  ['C4', 'E4', 'G4'],
-  ['E4', 'G4', 'C5'],
-  ['G4', 'C5', 'E5'],
-  ['C5', 'E5', 'G5'],
-  ['E5', 'G5', 'C6'],
-  ['G5', 'C6', 'E6'],
+  ['E3', 'G3', 'B3'],
+  ['G3', 'B3', 'D4'],
+  ['B3', 'D4', 'F#4'],
+  ['D4', 'F#4', 'A4'],
+  ['F#4', 'A4', 'C#5'],
 ];
 
 const xylophone = new Xylophone();
@@ -25,7 +24,7 @@ export async function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
     }
     case ResetType.Full: {
       xylophone.play({
-        notes: ['C4', 'E4'],
+        notes: ['E3', 'G3'],
         offset: 0.15,
         type: 'square',
         volume,
@@ -34,7 +33,7 @@ export async function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
     }
     case ResetType.Mounting: {
       xylophone.play({
-        notes: ['C4', 'E4', 'G4'],
+        notes: ['G3', 'B3', 'D4'],
         offset: 0.15,
         type: 'square',
         volume,
