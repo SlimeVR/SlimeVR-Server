@@ -219,7 +219,7 @@ tracker-status-timed_out = 连接超时
 imu-not-applicable = 不匹配的传感器
 imu-power-on-reset = 传感器被重置
 imu-internal-system-reset = 传感器内部重置
-imu-watchdog-timeout = 传感器相应超时
+imu-watchdog-timeout = 传感器响应超时
 imu-external-reset = 传感器外部重置
 imu-other = 传感器未知错误
 
