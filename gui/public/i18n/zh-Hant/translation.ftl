@@ -9,6 +9,11 @@
 
 websocket-connecting = 正在連接伺服器
 websocket-connection_lost = 與伺服器的連線已中斷，正在嘗試重新連線……
+websocket-connection_lost-desc = SlimeVR 伺服器程式似乎當機了。請檢查日誌並重新啟動程式
+websocket-timedout = 無法連接到伺服器
+websocket-timedout-desc = SlimeVR 伺服器程式似乎已當機或逾時。請檢查日誌並重新啟動程式
+websocket-error-close = 退出 SlimeVR
+websocket-error-logs = 開啟日誌資料夾
 
 ## Update notification
 
@@ -92,7 +97,15 @@ board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joy-Con
+board_type-MOCOPI = Sony mocopi
+board_type-WEMOSWROOM02 = WeMos WROOM-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU 手套
 
 ## Proportions
 
@@ -514,9 +527,6 @@ settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = 膝�
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = 膝部的偏航軸與翻滾軸，與腳踝定位平均的比例
 settings-general-fk_settings-self_localization-title = 動作捕捉模式
 settings-general-fk_settings-self_localization-description = 動作捕捉模式允許在沒有頭戴顯示器或其他追蹤器時，粗略的追蹤身體骨架的定位。請注意，本功能需要腳部與頭部的追蹤器，並且本功能仍在實驗階段。
-settings-general-fk_settings-vive_emulation-title = Vive 模擬
-settings-general-fk_settings-vive_emulation-description = 模擬 Vive 追蹤器的腰部追蹤失效問題。（ 註：這是一個玩笑功能，會降低追蹤品質。）
-settings-general-fk_settings-vive_emulation-label = 開啟 Vive 模擬
 
 ## Gesture control settings (tracker tapping)
 
@@ -649,10 +659,16 @@ settings-osc-vrchat = VRChat OSC 追蹤器
 settings-osc-vrchat-description-v1 =
     變更 OSC 追蹤器標準的設定，該標準可用於傳送追蹤器資料到不使用 SteamVR 的應用程式（例如 Quest 單機版）。
     請確保 VRChat 中的動作選單內，OSC 設定「選項→OSC→已啟用」已經開啟。
-    SlimeVR 若要能透過 VRChat 接收頭戴顯示器以及控制器的資料，請進入主選單的設定，並開啟「追蹤 & IK→允許透過 OSC 發送頭部與腕部的 VR 追蹤數據」。
 settings-osc-vrchat-enable = 啟用
 settings-osc-vrchat-enable-description = 切換資料的傳送和接收。
 settings-osc-vrchat-enable-label = 啟用
+settings-osc-vrchat-oscqueryEnabled = 啟用 OSCQuery
+settings-osc-vrchat-oscqueryEnabled-description =
+    OSCQuery 會自動偵測並發送數據給正在執行中的 VRChat 程式。
+    也會把自己廣告給其他應用程式，以接收頭戴顯示器與控制器的數據。
+    要允許從 VRChat 接收頭戴顯示器與控制器的數據，請進入主功能表的設定
+    並啟用「允許透過 OSC 發送頭部與腕部的 VR 追蹤數據」。
+settings-osc-vrchat-oscqueryEnabled-label = 啟用 OSCQuery
 settings-osc-vrchat-network = 連接埠
 settings-osc-vrchat-network-description-v1 = 設定收發追蹤器資料的連接埠埠號，使用 VRChat 不須更改。
 settings-osc-vrchat-network-port_in =
@@ -1004,47 +1020,20 @@ onboarding-automatic_mounting-put_trackers_on-title = 請戴好追蹤器
 onboarding-automatic_mounting-put_trackers_on-description = 為了校準配戴方向，我們將使用剛才分配的追蹤器。戴上你所有的追蹤器，你可以在右邊的圖中看到追蹤器的對應部位。
 onboarding-automatic_mounting-put_trackers_on-next = 我所有的追蹤器都戴好了！
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = 要使用哪一種軀幹比例的校正方式？
-# Multiline string
-onboarding-choose_proportions-description-v1 =
-    軀幹比例用於取得身體各個部位的長短，為計算追蹤器的位置而有所必要。
-    當你的軀幹比例與設定的比例有差異時，追蹤精確度會變差，你可能會注意到出現腳滑溜冰的情形，或者你的身體與你的虛擬角色對不太上。
-    <b>軀幹比例的測量只需要進行一次！</b>除非設定有誤，或是身材有明顯變化，本設定不需要重複進行。
-onboarding-choose_proportions-auto_proportions = 自動軀幹比例校正
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = 推薦使用
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    本選項會從你的身體動作錄製一段樣本，並通過演算法來推算你的軀幹比例。
-    
-    <b>使用本功能需要連接頭戴顯示器到 SlimeVR，並且配戴在頭部！</b>
-onboarding-choose_proportions-manual_proportions = 手動軀幹比例校正
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = 適合進行微調
-onboarding-choose_proportions-manual_proportions-description = 本選項可以讓你直接修改軀幹比例的設定值
-onboarding-choose_proportions-scaled_proportions = 標準軀幹比例
-# Italized text
-onboarding-choose_proportions-scaled_proportions-subtitle = 推薦新使用者使用
-# Multiline string
-onboarding-choose_proportions-scaled_proportions-description =
-    使用人體的平均軀幹比例，依照你的身高進行縮放調整，可用於基本的全身追蹤。
-    
-    <b>本選項需要連接頭戴顯示器 (HMD) 到 SlimeVR，並且戴上頭部。</b>
-onboarding-choose_proportions-scaled_proportions-button = 標準軀幹比例
-onboarding-choose_proportions-export = 匯出軀幹比例
-onboarding-choose_proportions-import = 匯入軀幹比例
-onboarding-choose_proportions-import-success = 匯入成功
-onboarding-choose_proportions-import-failed = 匯入失敗
-onboarding-choose_proportions-file_type = 軀幹比例描述檔
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = 返回重置教學
 onboarding-manual_proportions-title = 手動調整軀幹比例
 onboarding-manual_proportions-precision = 精確調整
 onboarding-manual_proportions-auto = 進行自動校正
 onboarding-manual_proportions-ratio = 依比例分組調整
+onboarding-manual_proportions-fine_tuning_button = 自動微調軀幹比例
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 請連接 VR 頭戴顯示器以使用此功能
+onboarding-manual_proportions-export = 匯出軀幹比例
+onboarding-manual_proportions-import = 匯入軀幹比例
+onboarding-manual_proportions-import-success = 匯入成功
+onboarding-manual_proportions-import-failed = 匯入失敗
+onboarding-manual_proportions-file_type = 軀幹比例描述檔
 
 ## Tracker automatic proportions setup
 
@@ -1067,10 +1056,10 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     頭戴顯示器會回報定位資料給 SlimeVR 伺服器（通常為執行 SteamVR 並透過 SlimeVR 的 SteamVR 驅動程式來連接 SlimeVR）。
     追蹤狀態正常且能反映你的移動姿態（例如，進行完全重置後，踢腿、彎曲、坐下時的肢體方向是正確的）。
 onboarding-automatic_proportions-requirements-next = 我已閱讀使用需求
-onboarding-automatic_proportions-check_height-title-v2 = 測量你的身高
+onboarding-automatic_proportions-check_height-title-v3 = 測量頭戴顯示器高度
 onboarding-automatic_proportions-check_height-description-v2 = 你的頭戴顯示器 (HMD) 高度應略小於您的身高全長，因為頭戴顯示器會測量你的眼睛高度。本測量會被做為計算軀幹比例的基礎值。
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning-v2 = 在<u>直立</u>時開始測量以計算出你的身高。請注意不要將手抬高過於頭戴顯示器，因為會影響測量。
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = 在<u>直立</u>時開始測量以量出你的身高。請注意不要將手抬高過於頭戴顯示器，因為會影響測量。
 onboarding-automatic_proportions-check_height-guardian_tip = 如果你使用的是一體式 VR 頭戴顯示器，請確認守護神/邊界設定已經開啟，以確保身高能正確測量。
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 不明
@@ -1083,9 +1072,10 @@ onboarding-automatic_proportions-check_height-next_step = 數值沒問題
 onboarding-automatic_proportions-check_floor_height-title = 測量地板高度（選用）
 onboarding-automatic_proportions-check_floor_height-description = 在某些情況下，頭戴顯示器可能無法正確設定地板高度，導致頭戴顯示器測得的高度高於應有的高度。你可以測量地板的「高度」以校正頭戴顯示器的高度。
 # All the text is in bold!
-onboarding-automatic_proportions-check_floor_height-calculation_warning = 如果你確定地板的高度是正確的，可以跳過此步驟。
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = 開始測量並將控制器擺放在地板上以測量地板高度。若你確定地板高度是正確的，本步驟可以跳過。
 # Shows an element below it
 onboarding-automatic_proportions-check_floor_height-floor_height = 你的地板高度是：
+onboarding-automatic_proportions-check_floor_height-full_height = 你的估計身高是：
 onboarding-automatic_proportions-check_floor_height-measure-start = 開始測量
 onboarding-automatic_proportions-check_floor_height-measure-stop = 停止測量
 onboarding-automatic_proportions-check_floor_height-measure-reset = 重新測量
