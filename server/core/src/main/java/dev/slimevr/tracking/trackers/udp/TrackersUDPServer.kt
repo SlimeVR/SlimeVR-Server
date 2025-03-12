@@ -466,12 +466,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				)
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				LogManager.severe(
-					"${tracker.packetErrorCode}")
 				tracker.status = TrackerStatus.ERROR
 				tracker.packetErrorCode = packet.errorNumber
-				LogManager.severe(
-					"${tracker.packetErrorCode}")
 			}
 
 			is UDPPacket15SensorInfo -> {
