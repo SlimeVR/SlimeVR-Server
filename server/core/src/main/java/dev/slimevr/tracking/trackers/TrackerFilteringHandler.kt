@@ -37,7 +37,9 @@ class TrackerFilteringHandler {
 	 * Update the moving average to make it smooth
 	 */
 	fun update() {
-		movingAverage.update()
+		if (filteringEnabled) {
+			movingAverage.update()
+		}
 	}
 
 	/**
@@ -45,13 +47,6 @@ class TrackerFilteringHandler {
 	 */
 	fun dataTick(currentRawRotation: Quaternion) {
 		movingAverage.addQuaternion(currentRawRotation)
-	}
-
-	/**
-	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
-	 */
-	fun resetMovingAverage(currentRawRotation: Quaternion) {
-		movingAverage.resetQuats(currentRawRotation)
 	}
 
 	/**

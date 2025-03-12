@@ -50,7 +50,10 @@ class QuaternionMovingAverage(
 			predictFactor = PREDICT_MULTIPLIER * amount + PREDICT_MIN
 			rotBuffer = CircularArrayList(PREDICT_BUFFER)
 		}
-		resetQuats(initialRotation)
+
+		latestQuaternion = initialRotation
+		filteredQuaternion = initialRotation
+		addQuaternion(initialRotation)
 	}
 
 	// Runs at up to 1000hz. We use a timer to make it framerate-independent
@@ -91,8 +94,7 @@ class QuaternionMovingAverage(
 			// Smooth towards the target rotation by the slerp factor
 			filteredQuaternion = smoothingQuaternion.interpR(latestQuaternion, amt)
 		} else {
-			// No filtering; just keep track of rotations (for going over 180 degrees)
-			filteredQuaternion = latestQuaternion.twinNearest(smoothingQuaternion)
+			return
 		}
 
 		filteringImpact = latestQuaternion.angleToR(filteredQuaternion)
@@ -112,18 +114,9 @@ class QuaternionMovingAverage(
 			lastAmt = 0f
 			smoothingQuaternion = filteredQuaternion
 		} else {
-			smoothingQuaternion = filteredQuaternion
+			filteredQuaternion = q
 		}
 
 		latestQuaternion = q
-	}
-
-	fun resetQuats(q: Quaternion) {
-		if (type == TrackerFilters.PREDICTION) {
-			rotBuffer?.clear()
-			latestQuaternion = q
-		}
-		filteredQuaternion = q
-		addQuaternion(q)
 	}
 }

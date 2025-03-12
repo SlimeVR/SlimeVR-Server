@@ -170,7 +170,6 @@ class SkeletonResetTests {
 			needsReset = true,
 			needsMounting = reset,
 			isHmd = hmd,
-			trackRotDirection = false,
 		)
 		tracker.status = TrackerStatus.OK
 		return tracker

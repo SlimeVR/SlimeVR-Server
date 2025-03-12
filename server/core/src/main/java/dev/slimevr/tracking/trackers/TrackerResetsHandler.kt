@@ -350,8 +350,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
 			this.tracker.lastResetStatus = 0u
 		}
-
-		tracker.resetFilteringQuats()
 	}
 
 	/**
@@ -394,8 +392,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			this.tracker.statusResetRecently = false
 			this.tracker.lastResetStatus = 0u
 		}
-
-		tracker.resetFilteringQuats()
 	}
 
 	/**
@@ -405,7 +401,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun resetMounting(reference: Quaternion) {
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
 			tracker.trackerFlexHandler.resetMax()
-			tracker.resetFilteringQuats()
 			return
 		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
 			return
@@ -459,8 +454,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// save mounting reset
 		if (saveMountingReset) tracker.saveMountingResetOrientation(mountRotFix)
-
-		tracker.resetFilteringQuats()
 	}
 
 	/**

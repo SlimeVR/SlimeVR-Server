@@ -41,7 +41,6 @@ data class TrackerFrames(var name: String = "", val frames: FastList<TrackerFram
 			// Make sure this is false!! Otherwise HumanSkeleton ignores it
 			isInternal = false,
 			isComputed = true,
-			trackRotDirection = false,
 		)
 
 		tracker.status = TrackerStatus.OK
