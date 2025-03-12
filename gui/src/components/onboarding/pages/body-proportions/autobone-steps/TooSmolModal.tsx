@@ -2,10 +2,10 @@ import { BaseModal } from '@/components/commons/BaseModal';
 import { Button } from '@/components/commons/Button';
 import { WarningBox } from '@/components/commons/TipBox';
 import { useHeightContext } from '@/hooks/height';
+import { MIN_HEIGHT } from '@/hooks/manual-proportions';
 import { useLocaleConfig } from '@/i18n/config';
 import { Localized, useLocalization } from '@fluent/react';
 import { useMemo } from 'react';
-import { MIN_HEIGHT } from '@/components/onboarding/pages/body-proportions/ProportionsChoose';
 
 export function TooSmolModal({
   isOpen = true,

@@ -18,6 +18,7 @@ interface TooltipProps {
   children: ReactElement;
   preferedDirection: 'top' | 'left' | 'right' | 'bottom';
   mode?: 'corner' | 'center';
+  disabled?: boolean;
 }
 
 interface TooltipPos {
@@ -436,6 +437,7 @@ export function Tooltip({
   children,
   preferedDirection,
   mode = 'center',
+  disabled = false,
 }: TooltipProps) {
   const childRef = useRef<HTMLDivElement | null>(null);
   const { isMobile } = useBreakpoint('mobile');
@@ -445,20 +447,21 @@ export function Tooltip({
       <div className="contents" ref={childRef}>
         {children}
       </div>
-      {createPortal(
-        isMobile ? (
-          <DrawerTooltip childRef={childRef}>{content}</DrawerTooltip>
-        ) : (
-          <FloatingTooltip
-            preferedDirection={preferedDirection}
-            mode={mode}
-            childRef={childRef}
-          >
-            {content}
-          </FloatingTooltip>
-        ),
-        document.body
-      )}
+      {!disabled &&
+        createPortal(
+          isMobile ? (
+            <DrawerTooltip childRef={childRef}>{content}</DrawerTooltip>
+          ) : (
+            <FloatingTooltip
+              preferedDirection={preferedDirection}
+              mode={mode}
+              childRef={childRef}
+            >
+              {content}
+            </FloatingTooltip>
+          ),
+          document.body
+        )}
     </>
   );
 }

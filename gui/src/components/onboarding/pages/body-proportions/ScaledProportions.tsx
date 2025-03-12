@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useOnboarding } from '@/hooks/onboarding';
 import { Typography } from '@/components/commons/Typography';
 import { StepperSlider } from '@/components/onboarding/StepperSlider';
@@ -12,6 +12,7 @@ import { useMemo } from 'react';
 import { ManualHeightStep } from './scaled-steps/ManualHeightStep';
 import { useTrackers } from '@/hooks/tracker';
 import { BodyPart } from 'solarxr-protocol';
+import { Button } from '@/components/commons/Button';
 
 export function ScaledProportionsPage() {
   const { l10n } = useLocalization();
@@ -63,11 +64,20 @@ export function ScaledProportionsPage() {
                       { type: 'fullsize', component: DoneStep },
                     ]
               }
-              back={() =>
-                navigate('/onboarding/body-proportions/choose', { state })
-              }
+              back={() => navigate('/onboarding/reset-tutorial', { state })}
             ></StepperSlider>
           </div>
+          {state.alonePage && (
+            <div className="flex justify-end">
+              <Localized id="onboarding-manual_proportions-title">
+                <Button
+                  to="/onboarding/body-proportions/manual"
+                  variant="secondary"
+                  state={{ alonePage: state.alonePage }}
+                ></Button>
+              </Localized>
+            </div>
+          )}
         </div>
       </div>
     </HeightContextC.Provider>
