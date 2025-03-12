@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { Control, Controller } from 'react-hook-form';
 import {
   FirmwareUpdateStatus,
+  PacketErrorCode,
   TrackerStatus as TrackerStatusEnum,
 } from 'solarxr-protocol';
 import { TrackerStatus } from '@/components/tracker/TrackerStatus';
@@ -133,7 +134,6 @@ export function DeviceCardControl({
             status={
               online ? TrackerStatusEnum.OK : TrackerStatusEnum.DISCONNECTED
             }
-            error={0}
           ></TrackerStatus>
         </div>
       )}

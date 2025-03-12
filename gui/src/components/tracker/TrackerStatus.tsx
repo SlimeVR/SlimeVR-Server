@@ -39,7 +39,7 @@ export function TrackerStatus({ status, error }: { status: number, error?: numbe
 
   const statusClass = useMemo(() => statusClassMap[status], [status]);
   const statusLabel = useMemo(() => {
-    if (status == 4 && error != undefined) {
+    if (status == TrackerStatusEnum.ERROR && error != undefined) {
       return imuErrorLabelMap[error];
     } else {
       return statusLabelMap[status];
