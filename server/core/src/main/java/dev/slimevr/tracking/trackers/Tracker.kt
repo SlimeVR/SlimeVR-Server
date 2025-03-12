@@ -91,6 +91,7 @@ class Tracker @JvmOverloads constructor(
 	var batteryVoltage: Float? = null
 	var batteryLevel: Float? = null
 	var ping: Int? = null
+	var packetErrorCode: Int = 0
 	var signalStrength: Int? = null
 	var temperature: Float? = null
 	var customName: String? = null

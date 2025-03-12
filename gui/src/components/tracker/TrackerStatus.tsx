@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { useMemo } from 'react';
 import { TrackerStatus as TrackerStatusEnum } from 'solarxr-protocol';
+import { PacketErrorCode as IMUErrorStatusEnum } from 'solarxr-protocol';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 
@@ -14,6 +15,15 @@ const statusLabelMap: { [key: number]: string } = {
   [TrackerStatusEnum.TIMED_OUT]: 'tracker-status-timed_out',
 };
 
+const imuErrorLabelMap: { [key: number]: string } = {
+  [IMUErrorStatusEnum.NOT_APPLICABLE]: 'imu-not-applicable',
+  [IMUErrorStatusEnum.POWER_ON_RESET]: 'imu-power-on-reset',
+  [IMUErrorStatusEnum.INTERNAL_SYSTEM_RESET]: 'imu-internal-system-reset',
+  [IMUErrorStatusEnum.WATCHDOG_TIMEOUT]: 'imu-watchdog-timeout',
+  [IMUErrorStatusEnum.EXTERNAL_RESET]: 'imu-external-reset',
+  [IMUErrorStatusEnum.OTHER]: 'imu-other',
+};
+
 const statusClassMap: { [key: number]: string } = {
   [TrackerStatusEnum.NONE]: 'bg-background-30',
   [TrackerStatusEnum.BUSY]: 'bg-status-warning',
@@ -24,11 +34,17 @@ const statusClassMap: { [key: number]: string } = {
   [TrackerStatusEnum.TIMED_OUT]: 'bg-status-warning',
 };
 
-export function TrackerStatus({ status }: { status: number }) {
+export function TrackerStatus({ status, error }: { status: number, error?: number}) {
   const { l10n } = useLocalization();
 
   const statusClass = useMemo(() => statusClassMap[status], [status]);
-  const statusLabel = useMemo(() => statusLabelMap[status], [status]);
+  const statusLabel = useMemo(() => {
+    if (status == 4 && error != undefined) {
+      return imuErrorLabelMap[error];
+    } else {
+      return statusLabelMap[status];
+    }
+  }, [status, error]);
 
   return (
     <div className="flex text-default gap-2">

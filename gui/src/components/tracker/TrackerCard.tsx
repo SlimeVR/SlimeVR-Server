@@ -38,7 +38,7 @@ function TrackerBig({
         </Typography>
       </div>
       <div className="flex justify-center">
-        <TrackerStatus status={tracker.status}></TrackerStatus>
+        <TrackerStatus status={tracker.status} error={tracker.packetErrorCode}></TrackerStatus>
       </div>
       <div className="flex text-default justify-center gap-5 flex-wrap">
         {device && device.hardwareStatus && (
@@ -87,7 +87,7 @@ function TrackerSmol({
         <Typography bold truncate>
           {trackerName}
         </Typography>
-        <TrackerStatus status={tracker.status}></TrackerStatus>
+        <TrackerStatus status={tracker.status} error={tracker.packetErrorCode}></TrackerStatus>
       </div>
       {device && device.hardwareStatus && (
         <>

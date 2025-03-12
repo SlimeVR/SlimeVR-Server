@@ -12,6 +12,7 @@ export function useDataFeedConfig() {
   trackerData.rotation = true;
   trackerData.info = true;
   trackerData.status = true;
+  trackerData.packetErrorCode = true;
   trackerData.temp = true;
   trackerData.linearAcceleration = true;
   trackerData.rotationReferenceAdjusted = true;

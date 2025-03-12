@@ -12,7 +12,7 @@ import solarxr_protocol.data_feed.device_data.DeviceData;
 import solarxr_protocol.data_feed.device_data.DeviceDataMaskT;
 import solarxr_protocol.data_feed.tracker.TrackerData;
 import solarxr_protocol.data_feed.tracker.TrackerDataMaskT;
-import solarxr_protocol.data_feed.tracker.TrackerInfo;
+import solarxr_protocol.data_feed.tracker.*;
 import solarxr_protocol.datatypes.DeviceId;
 import solarxr_protocol.datatypes.Ipv4Address;
 import solarxr_protocol.datatypes.Temperature;
@@ -193,6 +193,8 @@ public class DataFeedBuilder {
 			TrackerData.addInfo(fbb, trackerInfosOffset);
 		if (mask.getStatus())
 			TrackerData.addStatus(fbb, tracker.getStatus().getId() + 1);
+		if (mask.getPacketErrorCode())
+			TrackerData.addPacketErrorCode(fbb, tracker.getPacketErrorCode());
 		if (mask.getPosition() && tracker.getHasPosition())
 			TrackerData.addPosition(fbb, DataFeedBuilder.createTrackerPosition(fbb, tracker));
 		if (mask.getRotation() && tracker.getHasRotation())

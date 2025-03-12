@@ -6,6 +6,7 @@ import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { Control, Controller } from 'react-hook-form';
 import {
+  TrackerDataT,
   FirmwareUpdateStatus,
   TrackerStatus as TrackerStatusEnum,
 } from 'solarxr-protocol';
@@ -133,6 +134,7 @@ export function DeviceCardControl({
             status={
               online ? TrackerStatusEnum.OK : TrackerStatusEnum.DISCONNECTED
             }
+            error={0}
           ></TrackerStatus>
         </div>
       )}

@@ -219,8 +219,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			LogManager.info("[TrackerServer] Added sensor $trackerId for ${connection.name}, ImuType $sensorType, DataType $trackerDataType, default TrackerPosition $trackerPosition")
 		}
 		val status = UDPPacket15SensorInfo.getStatus(sensorStatus)
+		//if (imuErrortype != null) imuTracker.imuErrorType = imuErrortype
 		if (status != null) imuTracker.status = status
-
+		//LogManager.info("errorState66666: $imuErrortype")/////
 		if (magStatus == MagnetometerStatus.NOT_SUPPORTED) return
 		if (magStatus == MagnetometerStatus.ENABLED &&
 			(!VRServer.instance.configManager.vrConfig.server.useMagnetometerOnAllTrackers || imuTracker.config.shouldHaveMagEnabled == false)
@@ -467,7 +468,12 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				)
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
+				LogManager.severe(
+					"${tracker.packetErrorCode}")
 				tracker.status = TrackerStatus.ERROR
+				tracker.packetErrorCode = packet.errorNumber
+				LogManager.severe(
+					"${tracker.packetErrorCode}")
 			}
 
 			is UDPPacket15SensorInfo -> {

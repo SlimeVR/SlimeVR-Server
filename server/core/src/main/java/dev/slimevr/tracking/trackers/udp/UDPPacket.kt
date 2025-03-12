@@ -2,6 +2,7 @@ package dev.slimevr.tracking.trackers.udp
 
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
+//import dev.slimevr.tracking.trackers.ImuErrorType
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import java.io.IOException
@@ -244,7 +245,6 @@ data class UDPPacket15SensorInfo(
 		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.get().toInt() and 0xFF)
 		if (buf.remaining() > 0) trackerDataType = TrackerDataType.getById(buf.get().toUInt() and 0xFFu) ?: TrackerDataType.ROTATION
 	}
-
 	companion object {
 		fun getStatus(sensorStatus: Int): TrackerStatus? = when (sensorStatus) {
 			0 -> TrackerStatus.DISCONNECTED
