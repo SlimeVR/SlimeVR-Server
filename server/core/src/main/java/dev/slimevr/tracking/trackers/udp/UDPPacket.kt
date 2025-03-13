@@ -2,7 +2,6 @@ package dev.slimevr.tracking.trackers.udp
 
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
-//import dev.slimevr.tracking.trackers.ImuErrorType
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import java.io.IOException
