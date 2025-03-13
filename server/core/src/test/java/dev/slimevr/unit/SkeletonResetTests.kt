@@ -7,8 +7,8 @@ import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.udp.IMUType
-import dev.slimevr.unit.TrackerUtils.assertAnglesApproxEqual
-import dev.slimevr.unit.TrackerUtils.quatApproxEqual
+import dev.slimevr.unit.TrackerTestUtils.assertAnglesApproxEqual
+import dev.slimevr.unit.TrackerTestUtils.quatApproxEqual
 import io.eiren.util.collections.FastList
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
@@ -81,7 +81,7 @@ class SkeletonResetTests {
 		hpm.resetTrackersYaw(resetSource)
 
 		for (tracker in tracks) {
-			val yaw = TrackerUtils.yaw(tracker.getRotation())
+			val yaw = TrackerTestUtils.yaw(tracker.getRotation())
 			assertAnglesApproxEqual(0f, yaw, "\"${tracker.name}\" did not reset to the reference rotation.")
 		}
 	}
@@ -141,8 +141,8 @@ class SkeletonResetTests {
 			val actualMounting = tracker.resetsHandler.mountRotFix
 
 			// Make sure yaw matches
-			val expectedY = TrackerUtils.yaw(expectedMounting)
-			val actualY = TrackerUtils.yaw(actualMounting)
+			val expectedY = TrackerTestUtils.yaw(expectedMounting)
+			val actualY = TrackerTestUtils.yaw(actualMounting)
 			assertAnglesApproxEqual(expectedY, actualY, "\"${tracker.name}\" did not reset to the reference rotation.")
 
 			// X and Z components should be zero for mounting
@@ -176,5 +176,5 @@ class SkeletonResetTests {
 		return tracker
 	}
 
-	fun mkTrackMount(rot: Quaternion): Quaternion = rot * (TrackerUtils.frontRot / rot)
+	fun mkTrackMount(rot: Quaternion): Quaternion = rot * (TrackerTestUtils.frontRot / rot)
 }
