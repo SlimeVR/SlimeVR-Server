@@ -7,7 +7,7 @@ import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.AssertionFailureBuilder
 import kotlin.math.abs
 
-object TrackerUtils {
+object TrackerTestUtils {
 	val directions = arrayOf(
 		Quaternion.SLIMEVR.FRONT,
 		Quaternion.SLIMEVR.FRONT_LEFT,
