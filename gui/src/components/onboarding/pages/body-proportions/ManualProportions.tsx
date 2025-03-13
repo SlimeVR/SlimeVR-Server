@@ -9,12 +9,10 @@ import {
 import { useOnboarding } from '@/hooks/onboarding';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
-import { CheckBox } from '@/components/commons/Checkbox';
-import { Typography } from '@/components/commons/Typography';
-import { BodyProportions } from './BodyProportions';
-import { Localized, useLocalization } from '@fluent/react';
+import { BodyProportions2 } from './BodyProportions';
+import { useLocalization } from '@fluent/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useBreakpoint, useIsTauri } from '@/hooks/breakpoint';
+import { useIsTauri } from '@/hooks/breakpoint';
 import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
 import { ProportionsResetModal } from './ProportionsResetModal';
 import { fileOpen, fileSave } from 'browser-fs-access';
@@ -24,7 +22,8 @@ import { writeTextFile } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
 import classNames from 'classnames';
 import { useAppContext } from '@/hooks/app';
-import { Tooltip } from '@/components/commons/Tooltip';
+import { BigButton } from '@/components/commons/BigButton';
+import { FullResetIcon } from '@/components/commons/icon/ResetIcon';
 
 function parseConfigImport(
   config: SkeletonConfigExport
@@ -183,6 +182,7 @@ function ImportExportButtons() {
 }
 
 function ButtonsControl() {
+  const { computedTrackers } = useAppContext();
   const { l10n } = useLocalization();
   const { state } = useOnboarding();
   const { sendRPCPacket } = useWebsocketAPI();
@@ -195,40 +195,54 @@ function ButtonsControl() {
     );
   };
 
+  const beneathFloor = useMemo(() => {
+    const hmd = computedTrackers.find(
+      (tracker) =>
+        tracker.tracker.trackerId?.trackerNum === 1 &&
+        tracker.tracker.trackerId.deviceId?.id === undefined
+    );
+    return !(hmd?.tracker.position && hmd.tracker.position.y >= MIN_HEIGHT);
+  }, [computedTrackers]);
+
+  const canUseFineTuning = !beneathFloor || import.meta.env.DEV;
+
   return (
-    <div className="gap-2 flex mobile:grid grid-cols-2">
-      <div className="flex flex-grow mobile:contents">
-        <Button
-          variant="secondary"
-          state={{ alonePage: state.alonePage }}
-          to="/onboarding/body-proportions/scaled"
-        >
-          {l10n.getString('onboarding-scaled_proportions-title')}
-        </Button>
-      </div>
-      <div className="flex gap-2 mobile:contents">
-        <ImportExportButtons></ImportExportButtons>
-        <Button variant="secondary" onClick={() => setShowWarning(true)}>
-          {l10n.getString('reset-reset_all')}
-        </Button>
-        <ProportionsResetModal
-          accept={() => {
-            resetAll();
-            setShowWarning(false);
-          }}
-          onClose={() => setShowWarning(false)}
-          isOpen={showWarning}
-        ></ProportionsResetModal>
-      </div>
+    <div className="bg-background-60 h-20 rounded-md flex gap-2">
+      <BigButton
+        icon={<FullResetIcon></FullResetIcon>}
+        className="h-full"
+        onClick={() => setShowWarning(true)}
+      >
+        Reset Proportions
+      </BigButton>
+      <BigButton
+        icon={<FullResetIcon></FullResetIcon>}
+        disabled={!canUseFineTuning}
+        className="h-full"
+      >
+        Auto Fine tuning
+      </BigButton>
+      <BigButton icon={<FullResetIcon></FullResetIcon>} className="h-full">
+        Import
+      </BigButton>
+      <BigButton icon={<FullResetIcon></FullResetIcon>} className="h-full">
+        Export
+      </BigButton>
+
+      <ProportionsResetModal
+        accept={() => {
+          resetAll();
+          setShowWarning(false);
+        }}
+        onClose={() => setShowWarning(false)}
+        isOpen={showWarning}
+      ></ProportionsResetModal>
     </div>
   );
 }
 
 export function ManualProportionsPage() {
-  const { isMobile } = useBreakpoint('mobile');
-  const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
-  const { computedTrackers } = useAppContext();
 
   applyProgress(0.9);
 
@@ -245,85 +259,21 @@ export function ManualProportionsPage() {
     localStorage.setItem('ratioMode', ratio?.toString() ?? 'true');
   }, [ratio]);
 
-  const beneathFloor = useMemo(() => {
-    const hmd = computedTrackers.find(
-      (tracker) =>
-        tracker.tracker.trackerId?.trackerNum === 1 &&
-        tracker.tracker.trackerId.deviceId?.id === undefined
-    );
-    return !(hmd?.tracker.position && hmd.tracker.position.y >= MIN_HEIGHT);
-  }, [computedTrackers]);
-
-  const canUseFineTuning = !beneathFloor || import.meta.env.DEV;
-
   return (
     <>
-      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative">
-        <div className="flex flex-col w-full h-full xs:max-w-5xl xs:justify-center">
-          <div className="flex gap-8 justify-center h-full xs:items-center">
-            <div className="flex flex-col w-full xs:max-w-2xl gap-3 items-center mobile:justify-around">
-              <div className="flex flex-col mx-4">
-                <Typography variant="main-title">
-                  {l10n.getString('onboarding-manual_proportions-title')}
-                </Typography>
-                <CheckBox
-                  control={control}
-                  label={l10n.getString('onboarding-manual_proportions-ratio')}
-                  name="ratio"
-                  variant="toggle"
-                ></CheckBox>
-                <CheckBox
-                  control={control}
-                  label={l10n.getString(
-                    'onboarding-manual_proportions-precision'
-                  )}
-                  name="precise"
-                  variant="toggle"
-                ></CheckBox>
-                {isMobile && (
-                  <div className="flex gap-3 justify-between">
-                    <ButtonsControl></ButtonsControl>
-                  </div>
-                )}
-              </div>
-              <Tooltip
-                content={
-                  <Localized id="onboarding-manual_proportions-fine_tuning_button-disabled-tooltip">
-                    <Typography></Typography>
-                  </Localized>
-                }
-                preferedDirection="top"
-                disabled={canUseFineTuning}
-              >
-                <Button
-                  variant="secondary"
-                  to="/onboarding/body-proportions/auto"
-                  state={{ alonePage: state.alonePage }}
-                  disabled={!canUseFineTuning}
-                >
-                  {l10n.getString(
-                    'onboarding-manual_proportions-fine_tuning_button'
-                  )}
-                </Button>
-              </Tooltip>
-
-              <div className="w-full px-2">
-                <BodyProportions
-                  precise={precise ?? defaultValues.precise}
-                  type={ratio ? 'ratio' : 'linear'}
-                  variant={state.alonePage ? 'alone' : 'onboarding'}
-                ></BodyProportions>
-              </div>
-            </div>
-            <div className="flex-col flex-grow gap-3 rounded-xl fill-background-50 items-center hidden md:flex">
-              <SkeletonVisualizerWidget height="65vh" maxHeight={600} />
-            </div>
+      <div className="flex w-full h-full gap-2 bg-background-70 p-2">
+        <div className="flex flex-col flex-grow gap-2">
+          <ButtonsControl></ButtonsControl>
+          <div className="bg-background-60 h-20 rounded-md flex-grow overflow-y-auto">
+            <BodyProportions2
+              precise={precise ?? defaultValues.precise}
+              type={ratio ? 'ratio' : 'linear'}
+              variant={state.alonePage ? 'alone' : 'onboarding'}
+            ></BodyProportions2>
           </div>
-          {!isMobile && (
-            <div className="my-5 mx-4">
-              <ButtonsControl></ButtonsControl>
-            </div>
-          )}
+        </div>
+        <div className="flex rounded-md overflow-clip max-w-md w-full bg-background-60">
+          <SkeletonVisualizerWidget />
         </div>
       </div>
     </>
