@@ -2,6 +2,7 @@ package dev.slimevr.tracking.processor.skeleton
 
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer
+import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.Constraint
@@ -9,6 +10,10 @@ import dev.slimevr.tracking.processor.Constraint.Companion.ConstraintType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
+import dev.slimevr.tracking.processor.stayaligned.StayAligned
+import dev.slimevr.tracking.processor.stayaligned.skeleton.PlayerPose
+import dev.slimevr.tracking.processor.stayaligned.skeleton.RelaxedPose
+import dev.slimevr.tracking.processor.stayaligned.skeleton.TrackerSkeleton
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
@@ -214,6 +219,10 @@ class HumanSkeleton(
 	var tapDetectionManager = TapDetectionManager(this)
 	var localizer = Localizer(this)
 
+	// Stay Aligned
+	var trackerSkeleton = TrackerSkeleton(this)
+	var stayAlignedConfig = StayAlignedConfig().also { it.enabled = false }
+
 	// Constructors
 	init {
 		assembleSkeleton()
@@ -235,6 +244,7 @@ class HumanSkeleton(
 		)
 		legTweaks.setConfig(server.configManager.vrConfig.legTweaks)
 		localizer.setEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION))
+		stayAlignedConfig = server.configManager.vrConfig.stayAlignedConfig
 	}
 
 	constructor(
@@ -452,6 +462,9 @@ class HumanSkeleton(
 
 		// Update bones tracker field
 		refreshBoneTracker()
+
+		// Update tracker skeleton
+		trackerSkeleton = TrackerSkeleton(this)
 	}
 
 	/**
@@ -507,6 +520,10 @@ class HumanSkeleton(
 	@VRServerThread
 	fun updatePose() {
 		tapDetectionManager.update()
+
+		val pose = PlayerPose.ofTrackers(trackerSkeleton)
+		val relaxedPose = RelaxedPose.forPose(pose, stayAlignedConfig)
+		StayAligned.adjustNextTracker(trackerSkeleton, stayAlignedConfig, relaxedPose)
 
 		updateTransforms()
 		updateBones()

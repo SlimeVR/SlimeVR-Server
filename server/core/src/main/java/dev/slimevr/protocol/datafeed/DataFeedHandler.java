@@ -98,7 +98,20 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 				h.getAllBones()
 			);
 
-		return DataFeedUpdate.createDataFeedUpdate(fbb, devicesOffset, trackersOffset, bonesOffset);
+		int stayAlignedOffset = 0;
+		if (config.getStayAlignedMask()) {
+			stayAlignedOffset = DataFeedBuilderKotlin.INSTANCE
+				.createStayAlignedData(fbb, this.api.server.humanPoseManager.skeleton);
+		}
+
+		return DataFeedUpdate
+			.createDataFeedUpdate(
+				fbb,
+				devicesOffset,
+				trackersOffset,
+				bonesOffset,
+				stayAlignedOffset
+			);
 	}
 
 	public void sendDataFeedUpdate() {

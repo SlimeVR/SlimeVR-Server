@@ -121,7 +121,7 @@ export function Navbar() {
       <NavButton
         to="/settings/trackers"
         match="/settings/*"
-        state={{ scrollTo: 'steamvr' }}
+        state={{ scrollTo: 'stayaligned' /* FIXME: DO NOT MERGE */ }}
         icon={<GearIcon></GearIcon>}
       >
         {l10n.getString('navbar-settings')}

@@ -4,6 +4,7 @@ import com.jme3.math.FastMath
 import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.config.ConfigManager
+import dev.slimevr.math.Angle
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
@@ -559,6 +560,13 @@ class HumanPoseManager(val server: VRServer?) {
 					.append(" deg (")
 					.append(Precision.round(driftPerMin, 4))
 					.append(" deg/min)")
+
+				if (tracker.stayAligned.yawCorrection.yawAtLastReset != Angle.ZERO) {
+					trackersDriftText
+						.append(" (stay aligned yaw correction ")
+						.append(tracker.stayAligned.yawCorrection.yawAtLastReset.toDeg())
+						.append(" deg)")
+				}
 			}
 		}
 

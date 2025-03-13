@@ -39,12 +39,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	}
 
 	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
-		val fbb = FlatBufferBuilder(32)
-
-		val settings = RPCSettingsBuilder.createSettingsResponse(fbb, api.server)
-		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)
-		fbb.finish(outbound)
-		conn.send(fbb.dataBuffer())
+		rpcHandler.sendSettingsChangedResponse(conn)
 	}
 
 	fun onChangeSettingsRequest(conn: GenericConnection?, messageHeader: RpcMessageHeader) {
@@ -352,6 +347,22 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			resetsConfig.yawResetSmoothTime = req.resetsSettings().yawResetSmoothTime()
 			resetsConfig.resetHmdPitch = req.resetsSettings().resetHmdPitch()
 			resetsConfig.updateTrackersResetsSettings()
+		}
+
+		if (req.stayAligned() != null) {
+			val config = api.server.configManager.vrConfig.stayAlignedConfig
+			config.enabled = req.stayAligned().enabled()
+			config.extraYawCorrection = req.stayAligned().extraYawCorrection()
+			config.hideYawCorrection = req.stayAligned().hideYawCorrection()
+			config.standingRelaxedPose.upperLegAngleInDeg = req.stayAligned().standingUpperLegAngle()
+			config.standingRelaxedPose.lowerLegAngleInDeg = req.stayAligned().standingLowerLegAngle()
+			config.standingRelaxedPose.footAngleInDeg = req.stayAligned().standingFootAngle()
+			config.sittingRelaxedPose.upperLegAngleInDeg = req.stayAligned().sittingUpperLegAngle()
+			config.sittingRelaxedPose.lowerLegAngleInDeg = req.stayAligned().sittingLowerLegAngle()
+			config.sittingRelaxedPose.footAngleInDeg = req.stayAligned().sittingFootAngle()
+			config.flatRelaxedPose.upperLegAngleInDeg = req.stayAligned().flatUpperLegAngle()
+			config.flatRelaxedPose.lowerLegAngleInDeg = req.stayAligned().flatLowerLegAngle()
+			config.flatRelaxedPose.footAngleInDeg = req.stayAligned().flatFootAngle()
 		}
 
 		api.server.configManager.saveConfig()
