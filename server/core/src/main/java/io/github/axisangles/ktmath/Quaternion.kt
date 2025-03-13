@@ -114,7 +114,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	/**
 	 * computes the dot product of this quaternion with that quaternion
 	 * @param that the quaternion with which to be dotted
-	 * @return the inverse quaternion
+	 * @return the dot product between quaternions
 	 **/
 	fun dot(that: Quaternion): Float =
 		this.w * that.w + this.x * that.x + this.y * that.y + this.z * that.z
@@ -365,7 +365,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 
 		val angleA = atan2(2f * (abQ * bQ + aQ * rot.w), rot.w * rot.w - aQ * aQ + bQ * bQ - abQ * abQ)
 		val angleB = atan2(2f * (abQ * aQ + bQ * rot.w), rot.w * rot.w + aQ * aQ - bQ * bQ - abQ * abQ)
-		
+
 		return floatArrayOf(angleA, angleB)
 	}
 
