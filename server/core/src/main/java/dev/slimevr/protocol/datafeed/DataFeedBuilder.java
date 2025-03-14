@@ -193,6 +193,8 @@ public class DataFeedBuilder {
 			TrackerData.addInfo(fbb, trackerInfosOffset);
 		if (mask.getStatus())
 			TrackerData.addStatus(fbb, tracker.getStatus().getId() + 1);
+		if (mask.getPacketErrorCode())
+			TrackerData.addPacketErrorCode(fbb, tracker.getPacketErrorCode());
 		if (mask.getPosition() && tracker.getHasPosition())
 			TrackerData.addPosition(fbb, DataFeedBuilder.createTrackerPosition(fbb, tracker));
 		if (mask.getRotation() && tracker.getHasRotation())

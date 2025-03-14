@@ -244,7 +244,6 @@ data class UDPPacket15SensorInfo(
 		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.get().toInt() and 0xFF)
 		if (buf.remaining() > 0) trackerDataType = TrackerDataType.getById(buf.get().toUInt() and 0xFFu) ?: TrackerDataType.ROTATION
 	}
-
 	companion object {
 		fun getStatus(sensorStatus: Int): TrackerStatus? = when (sensorStatus) {
 			0 -> TrackerStatus.DISCONNECTED
