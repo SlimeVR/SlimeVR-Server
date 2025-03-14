@@ -272,12 +272,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				// Don't reset the HMD at all
 				Quaternion.IDENTITY
 			}
-		} else if (!tracker.isComputed) {
-			// Align the pitch and roll axes with a zero reference-space
-			fixAttachment(mountingAdjustedRotation * tposeDownFix)
 		} else {
-			// If the tracker is computed, then we can assume a zero reference-space
-			Quaternion.IDENTITY
+			// Align the pitch and roll axes with a zero reference-space
+			// TODO: Using mounting adjusted rotation here may interfere with computed trackers
+			fixAttachment(mountingAdjustedRotation * tposeDownFix)
 		}
 
 		// Mounting for computed trackers
