@@ -68,7 +68,10 @@ export function TrackerNameCell({ tracker }: { tracker: TrackerDataT }) {
         <Typography bold whitespace="whitespace-nowrap">
           {name}
         </Typography>
-        <TrackerStatus status={tracker.status} error={tracker.packetErrorCode}></TrackerStatus>
+        <TrackerStatus
+          status={tracker.status}
+          error={tracker.packetErrorCode}
+        ></TrackerStatus>
       </div>
     </div>
   );

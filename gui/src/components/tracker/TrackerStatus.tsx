@@ -1,6 +1,9 @@
 import classNames from 'classnames';
 import { useMemo } from 'react';
-import { TrackerStatus as TrackerStatusEnum, PacketErrorCode as IMUErrorStatusEnum } from 'solarxr-protocol';
+import {
+  TrackerStatus as TrackerStatusEnum,
+  PacketErrorCode as IMUErrorStatusEnum,
+} from 'solarxr-protocol';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 
@@ -33,7 +36,13 @@ const statusClassMap: { [key: number]: string } = {
   [TrackerStatusEnum.TIMED_OUT]: 'bg-status-warning',
 };
 
-export function TrackerStatus({ status, error }: { status: number, error?: number}) {
+export function TrackerStatus({
+  status,
+  error,
+}: {
+  status: number;
+  error?: number;
+}) {
   const { l10n } = useLocalization();
 
   const statusClass = useMemo(() => statusClassMap[status], [status]);
