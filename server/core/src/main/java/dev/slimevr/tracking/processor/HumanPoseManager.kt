@@ -26,7 +26,6 @@ import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
-import solarxr_protocol.rpc.StatusUnassignedHMD
 import solarxr_protocol.rpc.StatusUnassignedHMDT
 import java.util.function.Consumer
 import kotlin.math.*
@@ -124,7 +123,7 @@ class HumanPoseManager(val server: VRServer?) {
 
 	// #endregion
 	// #region private methods
-	private fun mkTrack(name: String, display: String, pos: TrackerPosition): Tracker = Tracker(
+	private fun makeComputedTracker(name: String, display: String, pos: TrackerPosition): Tracker = Tracker(
 		null,
 		getNextLocalTrackerId(),
 		name,
@@ -142,7 +141,7 @@ class HumanPoseManager(val server: VRServer?) {
 	private fun initializeComputedHumanPoseTracker() {
 		computedTrackers
 			.add(
-				mkTrack(
+				makeComputedTracker(
 					"human://HEAD",
 					"Computed head",
 					TrackerPosition.HEAD,
@@ -150,7 +149,7 @@ class HumanPoseManager(val server: VRServer?) {
 			)
 		computedTrackers
 			.add(
-				mkTrack(
+				makeComputedTracker(
 					"human://CHEST",
 					"Computed chest",
 					TrackerPosition.UPPER_CHEST,
@@ -158,7 +157,7 @@ class HumanPoseManager(val server: VRServer?) {
 			)
 		computedTrackers
 			.add(
-				mkTrack(
+				makeComputedTracker(
 					"human://WAIST",
 					"Computed hip",
 					TrackerPosition.HIP,
@@ -166,7 +165,7 @@ class HumanPoseManager(val server: VRServer?) {
 			)
 		computedTrackers
 			.add(
-				mkTrack(
+				makeComputedTracker(
 					"human://LEFT_KNEE",
 					"Computed left knee",
 					TrackerPosition.LEFT_UPPER_LEG,
@@ -174,7 +173,7 @@ class HumanPoseManager(val server: VRServer?) {
 			)
 		computedTrackers
 			.add(
-				mkTrack(
+				makeComputedTracker(
 					"human://RIGHT_KNEE",
 					"Computed right knee",
 					TrackerPosition.RIGHT_UPPER_LEG,
@@ -182,7 +181,7 @@ class HumanPoseManager(val server: VRServer?) {
 			)
 		computedTrackers
 			.add(
-				mkTrack(
+				makeComputedTracker(
 					"human://LEFT_FOOT",
 					"Computed left foot",
 					TrackerPosition.LEFT_FOOT,
@@ -190,7 +189,7 @@ class HumanPoseManager(val server: VRServer?) {
 			)
 		computedTrackers
 			.add(
-				mkTrack(
+				makeComputedTracker(
 					"human://RIGHT_FOOT",
 					"Computed right foot",
 					TrackerPosition.RIGHT_FOOT,
@@ -198,7 +197,7 @@ class HumanPoseManager(val server: VRServer?) {
 			)
 		computedTrackers
 			.add(
-				mkTrack(
+				makeComputedTracker(
 					"human://LEFT_ELBOW",
 					"Computed left elbow",
 					TrackerPosition.LEFT_UPPER_ARM,
@@ -206,7 +205,7 @@ class HumanPoseManager(val server: VRServer?) {
 			)
 		computedTrackers
 			.add(
-				mkTrack(
+				makeComputedTracker(
 					"human://RIGHT_ELBOW",
 					"Computed right elbow",
 					TrackerPosition.RIGHT_UPPER_ARM,
@@ -214,7 +213,7 @@ class HumanPoseManager(val server: VRServer?) {
 			)
 		computedTrackers
 			.add(
-				mkTrack(
+				makeComputedTracker(
 					"human://LEFT_HAND",
 					"Computed left hand",
 					TrackerPosition.LEFT_HAND,
@@ -223,7 +222,7 @@ class HumanPoseManager(val server: VRServer?) {
 			)
 		computedTrackers
 			.add(
-				mkTrack(
+				makeComputedTracker(
 					"human://RIGHT_HAND",
 					"Computed right hand",
 					TrackerPosition.RIGHT_HAND,
