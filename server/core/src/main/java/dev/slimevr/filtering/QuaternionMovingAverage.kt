@@ -90,9 +90,6 @@ class QuaternionMovingAverage(
 
 			// Smooth towards the target rotation by the slerp factor
 			filteredQuaternion = smoothingQuaternion.interpR(latestQuaternion, amt)
-		} else {
-			// No filtering; just keep track of rotations (for going over 180 degrees)
-			filteredQuaternion = latestQuaternion.twinNearest(smoothingQuaternion)
 		}
 
 		filteringImpact = latestQuaternion.angleToR(filteredQuaternion)
@@ -112,17 +109,17 @@ class QuaternionMovingAverage(
 			lastAmt = 0f
 			smoothingQuaternion = filteredQuaternion
 		} else {
-			smoothingQuaternion = filteredQuaternion
+			// No filtering; just keep track of rotations (for going over 180 degrees)
+			filteredQuaternion = q.twinNearest(filteredQuaternion)
 		}
 
 		latestQuaternion = q
 	}
 
+	@Synchronized
 	fun resetQuats(q: Quaternion) {
-		if (type == TrackerFilters.PREDICTION) {
-			rotBuffer?.clear()
-			latestQuaternion = q
-		}
+		rotBuffer?.clear()
+		latestQuaternion = q
 		filteredQuaternion = q
 		addQuaternion(q)
 	}
