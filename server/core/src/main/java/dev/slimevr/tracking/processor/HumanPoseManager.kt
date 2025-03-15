@@ -135,6 +135,7 @@ class HumanPoseManager(val server: VRServer?) {
 		isInternal = true,
 		isComputed = true,
 		allowFiltering = false,
+		// Do not track polarity, moving avg de-syncs ticks and breaks leg tweaks
 		trackRotDirection = false,
 	)
 
