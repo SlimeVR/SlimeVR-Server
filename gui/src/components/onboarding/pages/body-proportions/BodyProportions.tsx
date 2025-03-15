@@ -37,10 +37,12 @@ function IncrementButton({
 }
 
 function ProportionItem({
+  type,
   part,
   precise,
   onBoneChange,
 }: {
+  type: 'linear' | 'ratio';
   part: Label;
   precise: boolean;
   onBoneChange: (params: UpdateBoneParams) => void;
@@ -114,7 +116,7 @@ function ProportionItem({
         key={part.label}
         itemID={part.label}
         className={classNames(
-          'flex justify-center gap-6 p-2 px-4',
+          'flex justify-center gap-6 mobile:gap-2 p-2 mobile:px-2 px-4',
           part.type === 'group-part'
             ? 'bg-background-50 group/child-buttons'
             : 'bg-background-70 group/buttons'
@@ -122,15 +124,18 @@ function ProportionItem({
       >
         <div
           className={classNames(
-            'h-16 rounded-lg flex w-full items-center transition-colors',
+            'h-16 rounded-lg flex w-full items-center mobile:items-start transition-colors mobile:flex-col mobile:gap-2 mobile:py-2 mobile:h-auto',
             'duration-300'
           )}
         >
           <Tooltip
             content={
-              // <Localized id={`${part.label}-desc`}>
-              <Typography variant="standard"></Typography>
-              // </Localized>
+              <Localized id={`${part.label}-desc`}>
+                <Typography
+                  variant="standard"
+                  whitespace="whitespace-pre-wrap"
+                ></Typography>
+              </Localized>
             }
             preferedDirection="bottom"
             mode="corner"
@@ -199,7 +204,7 @@ function ProportionItem({
             </div>
           </div>
         </div>
-        {part.type !== 'group-part' && (
+        {type === 'ratio' && part.type !== 'group-part' && (
           <div
             className={classNames(
               'flex items-center fill-background-20',
@@ -226,6 +231,8 @@ function ProportionItem({
           <div className="overflow-hidden">
             {part.bones.map((part) => (
               <ProportionItem
+                type={type}
+                key={part.label}
                 precise={precise}
                 part={part}
                 onBoneChange={onBoneChange}
@@ -238,7 +245,7 @@ function ProportionItem({
   );
 }
 
-export function BodyProportions2({
+export function BodyProportions({
   precise,
   type,
   variant: _variant = 'onboarding',
@@ -257,6 +264,8 @@ export function BodyProportions2({
         <div className="flex flex-grow flex-col gap-2 p-2">
           {bodyPartsGrouped.map((part) => (
             <ProportionItem
+              type={type}
+              key={part.label}
               part={part}
               precise={precise}
               onBoneChange={changeBoneValue}

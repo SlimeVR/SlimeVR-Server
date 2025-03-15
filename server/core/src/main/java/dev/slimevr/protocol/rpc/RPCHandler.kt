@@ -258,7 +258,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		// might not be a good idea maybe let the client ask again
 		val fbb = FlatBufferBuilder(300)
-		val config = RPCBuilder.createSkeletonConfig(fbb, api.server.humanPoseManager)
+		val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
 		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
@@ -272,7 +272,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		}
 
 		val fbb = FlatBufferBuilder(300)
-		val config = RPCBuilder.createSkeletonConfig(fbb, api.server.humanPoseManager)
+		val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
 		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())

@@ -107,7 +107,7 @@ export function useManualProportions({
         value,
       } satisfies BoneLabel))
     ];
-  }, [config])
+  }, [config, type])
 
   useRPCPacket(RpcMessage.SkeletonConfigResponse, (data: SkeletonConfigResponseT) => {
     setConfig(data);
