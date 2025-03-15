@@ -55,7 +55,7 @@ class HumanPoseManager(val server: VRServer?) {
 			skeleton = HumanSkeleton(this, server)
 			// This computes all node offsets, so the defaults don't need to be
 			// explicitly loaded into the skeleton (no need for
-			// `updateNodeOffsetsInSkeleton()`)
+			// `computeAllNodeOffsets()`)
 			loadFromConfig(server.configManager)
 			for (sc in onSkeletonUpdated) sc.accept(skeleton)
 		}
@@ -70,7 +70,7 @@ class HumanPoseManager(val server: VRServer?) {
 	constructor(trackers: List<Tracker>?) : this(server = null) {
 		skeleton = HumanSkeleton(this, trackers)
 		// Set default node offsets on the new skeleton
-		skeletonConfigManager.updateNodeOffsetsInSkeleton()
+		skeletonConfigManager.computeAllNodeOffsets()
 		skeletonConfigManager.updateSettingsInSkeleton()
 	}
 
@@ -87,9 +87,9 @@ class HumanPoseManager(val server: VRServer?) {
 		offsetConfigs: Map<SkeletonConfigOffsets, Float>?,
 	) : this(server = null) {
 		skeleton = HumanSkeleton(this, trackers)
-		// Set default node offsets on the new skeleton
-		skeletonConfigManager.updateNodeOffsetsInSkeleton()
 		// Set offsetConfigs from given offsetConfigs on creation
+		// This computes all node offsets, so the defaults don't need to be
+		// explicitly loaded into the skeleton (no need for `computeAllNodeOffsets()`)
 		skeletonConfigManager.setOffsets(offsetConfigs)
 		skeletonConfigManager.updateSettingsInSkeleton()
 	}
@@ -110,14 +110,14 @@ class HumanPoseManager(val server: VRServer?) {
 		altOffsetConfigs: Map<SkeletonConfigOffsets, Float>?,
 	) : this(server = null) {
 		skeleton = HumanSkeleton(this, trackers)
-		// Set default node offsets on the new skeleton
-		skeletonConfigManager.updateNodeOffsetsInSkeleton()
 		// Set offsetConfigs from given offsetConfigs on creation
 		if (altOffsetConfigs != null) {
 			// Set alts first, so if there's any overlap it doesn't affect
 			// the values
 			skeletonConfigManager.setOffsets(altOffsetConfigs)
 		}
+		// This computes all node offsets, so the defaults don't need to be
+		// explicitly loaded into the skeleton (no need for `computeAllNodeOffsets()`)
 		skeletonConfigManager.setOffsets(offsetConfigs)
 		skeletonConfigManager.updateSettingsInSkeleton()
 	}
