@@ -29,11 +29,11 @@ export function ArrowUpIcon({ size = 24 }: { size?: number }) {
   );
 }
 
-export function ArrowLeftIcon() {
+export function ArrowLeftIcon({ size = 12 }: { size?: number }) {
   return (
     <svg
-      width="12"
-      height="10"
+      width={size}
+      height={size}
       viewBox="0 0 12 10"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -46,11 +46,11 @@ export function ArrowLeftIcon() {
   );
 }
 
-export function ArrowRightIcon() {
+export function ArrowRightIcon({ size = 12 }: { size?: number }) {
   return (
     <svg
-      width="12"
-      height="10"
+      width={size}
+      height={size}
       viewBox="0 0 12 10"
       xmlns="http://www.w3.org/2000/svg"
     >

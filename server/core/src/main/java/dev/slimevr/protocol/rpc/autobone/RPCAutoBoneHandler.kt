@@ -8,8 +8,8 @@ import dev.slimevr.autobone.AutoBoneProcessType.Companion.getById
 import dev.slimevr.poseframeformat.PoseFrames
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
-import dev.slimevr.protocol.rpc.RPCBuilder
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.protocol.rpc.createSkeletonConfig
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import solarxr_protocol.rpc.AutoBoneEpochResponse
 import solarxr_protocol.rpc.AutoBoneProcessRequest
@@ -153,7 +153,7 @@ class RPCAutoBoneHandler(
 		val outbound = rpcHandler.createRPCMessage(
 			fbb,
 			RpcMessage.SkeletonConfigResponse,
-			RPCBuilder.createSkeletonConfig(fbb, api.server.humanPoseManager),
+			createSkeletonConfig(fbb, api.server.humanPoseManager),
 		)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
