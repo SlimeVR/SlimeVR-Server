@@ -4,7 +4,7 @@ import { Typography } from '@/components/commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
 import { useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
-import { useHeightContext } from '@/hooks/height';
+import { EYE_HEIGHT_TO_HEIGHT_RATIO, useHeightContext } from '@/hooks/height';
 import { useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
@@ -36,12 +36,13 @@ export function ManualHeightStep({
   const { state } = useOnboarding();
   const { l10n } = useLocalization();
   const { setHmdHeight } = useHeightContext();
-  const { control, handleSubmit, formState } = useForm<HeightForm>({
+  const { control, handleSubmit, formState, watch } = useForm<HeightForm>({
     defaultValues: { height: 1.5 },
   });
   const { sendRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
   const { statuses } = useStatusContext();
+  const height = watch('height');
 
   const missingSteamConnection = useMemo(
     () =>
@@ -65,13 +66,14 @@ export function ManualHeightStep({
   );
 
   const submitHmdHeight = (values: HeightForm) => {
-    setHmdHeight(values.height);
+    const newHeight = values.height * EYE_HEIGHT_TO_HEIGHT_RATIO;
+    setHmdHeight(newHeight);
     const settingsRequest = new ChangeSettingsRequestT();
     settingsRequest.modelSettings = new ModelSettingsT(
       null,
       null,
       null,
-      new SkeletonHeightT(values.height, 0)
+      new SkeletonHeightT(newHeight, 0)
     );
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsRequest);
     nextStep();
@@ -92,7 +94,7 @@ export function ManualHeightStep({
           <div>
             <Typography color="secondary">
               {l10n.getString(
-                'onboarding-scaled_proportions-manual_height-description'
+                'onboarding-scaled_proportions-manual_height-description-v2'
               )}
             </Typography>
             {missingSteamConnection && (
@@ -112,7 +114,7 @@ export function ManualHeightStep({
               control={control}
               name="height"
               label={l10n.getString(
-                'onboarding-scaled_proportions-manual_height-height'
+                'onboarding-scaled_proportions-manual_height-height-v2'
               )}
               valueLabelFormat={(value) =>
                 isNaN(value)
@@ -127,6 +129,16 @@ export function ManualHeightStep({
               showButtonWithNumber
               doubleStep={0.1}
             />
+          </div>
+          <div className="flex flex-col self-center items-center justify-center">
+            <Typography>
+              {l10n.getString(
+                'onboarding-scaled_proportions-manual_height-estimated_height'
+              )}
+            </Typography>
+            <Typography>
+              {mFormat.format(height * EYE_HEIGHT_TO_HEIGHT_RATIO)}
+            </Typography>
           </div>
         </div>
       </div>
