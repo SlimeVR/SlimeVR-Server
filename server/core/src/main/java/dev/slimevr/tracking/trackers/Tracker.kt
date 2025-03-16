@@ -63,6 +63,11 @@ class Tracker @JvmOverloads constructor(
 	 * Automatically set the status to DISCONNECTED
 	 */
 	val usesTimeout: Boolean = false,
+	/**
+	 * If true, smoothing and prediction may be enabled. If either are enabled, then
+	 * rotations will be updated with [tick]. This will not have any effect if
+	 * [trackRotDirection] is set to false.
+	 */
 	val allowFiltering: Boolean = false,
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
@@ -71,6 +76,9 @@ class Tracker @JvmOverloads constructor(
 	 * Whether to track the direction of the tracker's rotation
 	 * (positive vs negative rotation). This needs to be disabled for AutoBone and
 	 * unit tests, where the rotation is absolute and not temporal.
+	 *
+	 * If true, the output rotation will only be updated after [dataTick]. If false, the
+	 * output rotation will be updated immediately with the raw rotation.
 	 */
 	val trackRotDirection: Boolean = true,
 	magStatus: MagnetometerStatus = MagnetometerStatus.NOT_SUPPORTED,
