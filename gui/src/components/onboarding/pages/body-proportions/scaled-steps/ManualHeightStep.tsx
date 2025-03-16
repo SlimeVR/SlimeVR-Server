@@ -4,7 +4,7 @@ import { Typography } from '@/components/commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
 import { useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
-import { useHeightContext } from '@/hooks/height';
+import { EYE_HEIGHT_TO_HEIGHT_RATIO, useHeightContext } from '@/hooks/height';
 import { useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
@@ -66,7 +66,7 @@ export function ManualHeightStep({
   );
 
   const submitHmdHeight = (values: HeightForm) => {
-    const newHeight = values.height * 0.936;
+    const newHeight = values.height * EYE_HEIGHT_TO_HEIGHT_RATIO;
     setHmdHeight(newHeight);
     const settingsRequest = new ChangeSettingsRequestT();
     settingsRequest.modelSettings = new ModelSettingsT(
@@ -136,7 +136,9 @@ export function ManualHeightStep({
                 'onboarding-scaled_proportions-manual_height-estimated_height'
               )}
             </Typography>
-            <Typography>{mFormat.format(height * 0.936)}</Typography>
+            <Typography>
+              {mFormat.format(height * EYE_HEIGHT_TO_HEIGHT_RATIO)}
+            </Typography>
           </div>
         </div>
       </div>

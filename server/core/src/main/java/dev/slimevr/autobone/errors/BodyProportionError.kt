@@ -27,10 +27,9 @@ class BodyProportionError : IAutoBoneError {
 	}
 
 	companion object {
-		// TODO hip tracker stuff... Hip tracker should be around 3 to 5
-		// centimeters.
 		// The headset height is not the full height! This value compensates for the
-		// offset from the headset height to the user height
+		// offset from the headset height to the user full height
+		// From Drillis and Contini (1966)
 		@JvmField
 		var eyeHeightToHeightRatio = 0.936f
 
