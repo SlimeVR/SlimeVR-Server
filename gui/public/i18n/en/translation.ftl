@@ -211,12 +211,12 @@ tracker-status-disconnected = Disconnected
 tracker-status-occluded = Occluded
 tracker-status-ok = OK
 tracker-status-timed_out = Timed out
-imu-not-applicable = IMU NOT APPLICABLE
-imu-power-on-reset = POWER ON RESET
-imu-internal-system-reset = SYSTEM RESET
-imu-watchdog-timeout = TIMEOUT
-imu-external-reset = EXTERNAL RESET
-imu-other = UNKNOW ERROR
+imu-not-applicable = Sensor not found
+imu-power-on-reset = Power on reset
+imu-internal-system-reset = System reset
+imu-watchdog-timeout = Timeout
+imu-external-reset = External reset
+imu-other = Unknown error
 
 ## Tracker status columns
 tracker-table-column-name = Name
