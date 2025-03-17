@@ -491,7 +491,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	// incorrect. Projection around the Y-axis is worse.
 	// In both cases, the isolated yaw value changes
 	// with the tracker's roll when pointing forward.
-	private fun getYawQuaternion(rot: Quaternion): Quaternion = EulerAngles(EulerOrder.YZX, 0f, rot.toEulerAngles(EulerOrder.YZX).y, 0f).toQuaternion()
+	// calling twinNearest() makes sure this rotation has the wanted polarity (+-).
+	private fun getYawQuaternion(rot: Quaternion): Quaternion = EulerAngles(EulerOrder.YZX, 0f, rot.toEulerAngles(EulerOrder.YZX).y, 0f).toQuaternion().twinNearest(rot)
 
 	private fun makeIdentityAdjustmentQuatsFull() {
 		val sensorRotation = tracker.getRawRotation()
