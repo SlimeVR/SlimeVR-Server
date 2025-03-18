@@ -32,6 +32,7 @@ import io.eiren.util.ann.ThreadSecure
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import solarxr_protocol.datatypes.TrackerIdT
+import solarxr_protocol.rpc.ResetType
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
@@ -328,20 +329,32 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
+		resetHandler.sendStarted(ResetType.Full)
 		timer.schedule(delay) {
-			queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
+			queueTask {
+				humanPoseManager.resetTrackersFull(resetSourceName)
+				resetHandler.sendFinished(ResetType.Full)
+			}
 		}
 	}
 
 	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long) {
+		resetHandler.sendStarted(ResetType.Yaw)
 		timer.schedule(delay) {
-			queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
+			queueTask {
+				humanPoseManager.resetTrackersYaw(resetSourceName)
+				resetHandler.sendFinished(ResetType.Yaw)
+			}
 		}
 	}
 
 	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long) {
+		resetHandler.sendStarted(ResetType.Mounting)
 		timer.schedule(delay) {
-			queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
+			queueTask {
+				humanPoseManager.resetTrackersMounting(resetSourceName)
+				resetHandler.sendFinished(ResetType.Mounting)
+			}
 		}
 	}
 
