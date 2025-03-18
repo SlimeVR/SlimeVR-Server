@@ -9,6 +9,11 @@
 
 websocket-connecting = Connexion au serveur
 websocket-connection_lost = Connexion avec le serveur perdue. Reconnexion...
+websocket-connection_lost-desc = Il semble que le serveur SlimeVR ait planté. Vérifiez les logs et redémarrez le programme.
+websocket-timedout = Impossible de se connecter au serveur
+websocket-timedout-desc = Il semble que le serveur SlimeVR ait planté ou que le délai d'attente ait expiré. Vérifiez les logs et redémarrez le programme.
+websocket-error-close = Quitter SlimeVR
+websocket-error-logs = Ouvrez le dossier des logs
 
 ## Update notification
 
@@ -92,7 +97,15 @@ board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 
 ## Proportions
 
@@ -125,15 +138,8 @@ skeleton_bone-ELBOW_OFFSET = Décalage des coudes
 ## Tracker reset buttons
 
 reset-reset_all = Réinitialiser toutes les proportions
-reset-reset_all_warning =
-    <b>Avertissement:</b> Cela réinitialisera vos proportions pour qu’elles soient basées sur votre taille.
-    Êtes-vous sûr de vouloir faire cela ?
 reset-reset_all_warning-reset = Réinitialiser les proportions
 reset-reset_all_warning-cancel = Annuler
-reset-reset_all_warning_default =
-    <b>Avertissement:</b> Vous n’avez actuellement pas défini votre taille, ce qui
-    fera en sorte que les proportions seront basées sur une hauteur par défaut.
-    Êtes-vous sûr de vouloir faire cela ?
 reset-full = Réinitialisation complète
 reset-mounting = Réinitialiser l'alignement
 reset-yaw = Réinitialisation horizontale
@@ -510,9 +516,6 @@ settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Inter
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Interpoler les rotations horizontales et de torsion des genoux avec celles des chevilles
 settings-general-fk_settings-self_localization-title = Mode Mocap
 settings-general-fk_settings-self_localization-description = Le mode Mocap permet au squelette de suivre grossièrement sa propre position sans casque ou autres capteurs. Ce mode nécessite des capteurs de pieds et de tête afin de fonctionner et est encore expérimental.
-settings-general-fk_settings-vive_emulation-title = Émulation Vive
-settings-general-fk_settings-vive_emulation-description = Simule les problèmes des capteurs de taille que capteurs Vive ont. Cette optionest une blague et rend la capture des mouvements pire.
-settings-general-fk_settings-vive_emulation-label = Activer l'émulation Vive
 
 ## Gesture control settings (tracker tapping)
 
@@ -659,6 +662,8 @@ settings-osc-vrchat-description-v1 =
 settings-osc-vrchat-enable = Activer
 settings-osc-vrchat-enable-description = Activer/désactiver l'envoi et la réception de données.
 settings-osc-vrchat-enable-label = Activer
+settings-osc-vrchat-oscqueryEnabled = Activer OSCQuery
+settings-osc-vrchat-oscqueryEnabled-label = Activer OSCQuery
 settings-osc-vrchat-network = Ports réseau
 settings-osc-vrchat-network-description-v1 = Définissez les ports d'écoute et d'envoi des données. Peut être laissé intact pour VRChat.
 settings-osc-vrchat-network-port_in =
@@ -701,6 +706,7 @@ settings-osc-vmc-network-address-description = Choisissez l'adresse vers laquell
 settings-osc-vmc-network-address-placeholder = Adresse IPv4
 settings-osc-vmc-vrm = Modèle VRM
 settings-osc-vmc-vrm-description = Chargez un modèle VRM pour permettre l'ancrage à la tête et permettre une plus grande compatibilité avec d'autres applications
+settings-osc-vmc-vrm-untitled_model = Modèle sans nom
 settings-osc-vmc-vrm-file_select = Glissez et déposez un modèle à utiliser, ou <u>parcourir</u>.
 settings-osc-vmc-anchor_hip = Ancrage aux hanches
 settings-osc-vmc-anchor_hip-description = Ancrer la capture des mouvements aux hanches, utile pour le VTubing assis.
@@ -764,6 +770,7 @@ onboarding-wifi_creds-submit = Valider
 onboarding-wifi_creds-ssid =
     .label = Nom du Wi-Fi
     .placeholder = Nom
+onboarding-wifi_creds-ssid-required = Le nom du Wi-Fi est requis
 onboarding-wifi_creds-password =
     .label = Mot de passe du Wi-Fi
     .placeholder = Mot de passe
@@ -1018,38 +1025,14 @@ onboarding-automatic_mounting-put_trackers_on-title = Enfilez vos capteurs
 onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alignement, nous allons utiliser les capteurs que vous venez d'attribuer.
 onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = Quelle méthode de calibration des proportions utiliser ?
-# Multiline string
-onboarding-choose_proportions-description-v1 =
-    Les proportions du corps sont utilisées pour connaître les mesures de votre corps. Elles sont requises pour calculer les positions des capteurs.
-    Lorsque les proportions de votre corps ne correspondent pas à celles enregistrées, la précision du suivi sera moins bonne et vous remarquerez certains problèmes comme du patinage ou de la glisse, ou votre corps ne correspondra pas bien à votre avatar.
-    <b>Vous n’avez besoin de mesurer les proportions de votre corps qu’une seule fois !</b> À moins qu’elle ne soient incorrectes ou que votre corps ait changé, vous n’avez pas besoin de les refaire.
-onboarding-choose_proportions-auto_proportions = Proportions automatiques
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = Recommendée
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    Cela permettra d'estimer vos proportions en enregistrant un échantillon de vos mouvements et en le faisant passer par un algorithme.
-    
-    <b>Cela nécessite d’avoir votre casque VR connecté à SlimeVR et sur votre tête !</b>
-onboarding-choose_proportions-manual_proportions = Proportions manuelles
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = Pour les retouches
-onboarding-choose_proportions-manual_proportions-description = Ceci vous permettra d'ajuster vos proportions manuellement en les modifiant directement
-onboarding-choose_proportions-export = Exporter les proportions
-onboarding-choose_proportions-import = Importer les proportions
-onboarding-choose_proportions-import-success = Importé
-onboarding-choose_proportions-import-failed = Raté
-onboarding-choose_proportions-file_type = Fichier de proportions
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = Revenir au didacticiel de réinitialisation
 onboarding-manual_proportions-title = Proportions manuelles du corps
 onboarding-manual_proportions-precision = Ajustement de précision
 onboarding-manual_proportions-auto = Calibration automatique
 onboarding-manual_proportions-ratio = Ajuster par groupes de ratios
+onboarding-manual_proportions-file_type = Fichier des proportions du corps
 
 ## Tracker automatic proportions setup
 
