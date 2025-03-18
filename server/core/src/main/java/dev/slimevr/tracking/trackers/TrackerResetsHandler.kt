@@ -361,11 +361,14 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * position should be corrected in the source.
 	 */
 	fun resetYaw(reference: Quaternion) {
+		// TODO HMD doesn't get yaw reset, which makes it so tracker.resetFilteringQuats() doesn't get called
+
 		constraintFix = Quaternion.IDENTITY
 
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
 			tracker.trackerDataType == TrackerDataType.FLEX_ANGLE
 		) {
+			// Don't do anything as these don't have yaw anyways
 			return
 		}
 
