@@ -329,7 +329,9 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
-		resetHandler.sendStarted(ResetType.Full)
+		if (delay > 0) {
+			resetHandler.sendStarted(ResetType.Full)
+		}
 		timer.schedule(delay) {
 			queueTask {
 				humanPoseManager.resetTrackersFull(resetSourceName)
@@ -339,7 +341,9 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long) {
-		resetHandler.sendStarted(ResetType.Yaw)
+		if (delay > 0) {
+			resetHandler.sendStarted(ResetType.Yaw)
+		}
 		timer.schedule(delay) {
 			queueTask {
 				humanPoseManager.resetTrackersYaw(resetSourceName)
@@ -349,7 +353,9 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long) {
-		resetHandler.sendStarted(ResetType.Mounting)
+		if (delay > 0) {
+			resetHandler.sendStarted(ResetType.Mounting)
+		}
 		timer.schedule(delay) {
 			queueTask {
 				humanPoseManager.resetTrackersMounting(resetSourceName)

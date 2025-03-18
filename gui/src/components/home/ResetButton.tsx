@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
   ResetRequestT,
   ResetType,
@@ -21,6 +21,7 @@ import {
   FullResetIcon,
 } from '@/components/commons/icon/ResetIcon';
 import { useStatusContext } from '@/hooks/status-system';
+import classNames from 'classnames';
 
 export function ResetButton({
   type,
@@ -35,6 +36,7 @@ export function ResetButton({
   const { sendRPCPacket } = useWebsocketAPI();
   const { statuses } = useStatusContext();
   const { config } = useConfig();
+  const [isFinished, setFinished] = useState(false);
 
   const needsFullReset = useMemo(
     () =>
@@ -52,10 +54,12 @@ export function ResetButton({
   };
 
   const { isCounting, startCountdown, timer } = useCountdown({
-    duration: type === ResetType.Yaw ? 0.2 : undefined,
+    duration: type === ResetType.Yaw ? 0 : undefined,
     onCountdownEnd: () => {
       maybePlaySoundOnResetEnd(type);
       reset();
+      setFinished(true);
+      setTimeout(() => setFinished(false), 2000);
       if (onReseted) onReseted();
     },
   });
@@ -92,13 +96,20 @@ export function ResetButton({
       playSoundOnResetStarted(config?.feedbackSoundVolume);
   };
 
+  const triggerReset = () => {
+    setFinished(false);
+    startCountdown();
+    maybePlaySoundOnResetStart();
+  };
+
   return variant === 'small' ? (
     <Button
       icon={getIcon()}
-      onClick={() => {
-        startCountdown();
-        maybePlaySoundOnResetStart();
-      }}
+      onClick={triggerReset}
+      className={classNames(
+        'border-2',
+        isFinished ? 'border-status-success' : 'border-transparent'
+      )}
       variant="primary"
       disabled={isCounting || needsFullReset}
     >
@@ -111,10 +122,11 @@ export function ResetButton({
     <BigButton
       text={!isCounting || type === ResetType.Yaw ? text : String(timer)}
       icon={getIcon()}
-      onClick={() => {
-        startCountdown();
-        maybePlaySoundOnResetStart();
-      }}
+      onClick={triggerReset}
+      className={classNames(
+        'border-2',
+        isFinished ? 'border-status-success' : 'border-transparent'
+      )}
       disabled={isCounting || needsFullReset}
     ></BigButton>
   );
