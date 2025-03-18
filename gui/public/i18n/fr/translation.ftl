@@ -261,7 +261,7 @@ tracker-infos-manufacturer = Fabricant
 tracker-infos-display_name = Nom
 tracker-infos-custom_name = Nom personnalisé
 tracker-infos-url = URL du capteur
-tracker-infos-version = Version du firmware
+tracker-infos-version = Version du micrologiciel
 tracker-infos-hardware_rev = Révision du hardware
 tracker-infos-hardware_identifier = ID Matériel
 tracker-infos-data_support = Prise en charge de données
@@ -309,7 +309,7 @@ tracker-settings-update-unavailable = Ne peut pas être mis à jour (DIY)
 tracker-settings-update-up_to_date = À jour
 tracker-settings-update-available = { $versionName } est maintenant disponible
 tracker-settings-update = Mettre à jour maintenant
-tracker-settings-update-title = Version du firmware
+tracker-settings-update-title = Version du micrologiciel
 
 ## Tracker part card info
 
@@ -385,7 +385,7 @@ settings-sidebar-utils = Utilitaires
 settings-sidebar-serial = Console série
 settings-sidebar-appearance = Apparence
 settings-sidebar-notifications = Notifications
-settings-sidebar-firmware-tool = Outil de firmware DIY
+settings-sidebar-firmware-tool = Outil de micrologiciel DIY
 settings-sidebar-advanced = Avancé
 
 ## SteamVR settings
@@ -452,7 +452,7 @@ settings-general-tracker_mechanics-drift_compensation_warning =
     réinitialiser très souvent (toutes les ~5-10 minutes).
     
     Voici quelques IMUs sujets à des réinitialisations fréquentes :
-    Joy-Cons, owoTrack et MPUs (sans firmware récent).
+    Joy-Cons, owoTrack et MPUs (sans micrologiciel récent).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Annuler
 settings-general-tracker_mechanics-drift_compensation_warning-done = Je comprends
 settings-general-tracker_mechanics-drift_compensation-amount-label = Force de la compensation
@@ -464,7 +464,7 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Enregistrer la réinitialisation de l'alignement
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Utiliser le magnétomètre sur tous les capteurs IMU qui le prennent en charge
 settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
-    Utilise le magnétomètre sur tous les capteurs dotés d'un firmware compatible, réduisant ainsi la dérive dans des environnements magnétiques stables.
+    Utilise le magnétomètre sur tous les capteurs dotés d'un micrologiciel compatible, réduisant ainsi la dérive dans des environnements magnétiques stables.
     Peut être désactivé par capteur dans les paramètres du capteur. <b>Ne fermez aucun des capteurs en changeant cette option !</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Utiliser le magnétomètre sur les capteurs
 
@@ -1193,10 +1193,10 @@ firmware_tool-loading = Chargement...
 
 ## Firmware tool Steps
 
-firmware_tool = Outil de firmware DIY
-firmware_tool-description = Vous permet de configurer et flasher vos capteurs DIY
-firmware_tool-not_available = Oups, l'outil de firmware n'est pas disponible en ce moment. Revenez plus tard !
-firmware_tool-not_compatible = L'outil de firmware n'est pas compatible avec cette version de serveur. Veuillez mettre à jour votre serveur !
+firmware_tool = Outil de micrologiciel DIY
+firmware_tool-description = Vous permet de configurer et de flash vos capteurs DIY
+firmware_tool-not_available = Oups, l'outil de micrologiciel n'est pas disponible en ce moment. Revenez plus tard !
+firmware_tool-not_compatible = L'outil de micrologiciel n'est pas compatible avec cette version de serveur. Veuillez mettre à jour votre serveur !
 firmware_tool-board_step = Sélectionnez votre carte
 firmware_tool-board_step-description = Sélectionnez l'une des cartes répertoriées ci-dessous.
 firmware_tool-board_pins_step = Vérifiez les broches
@@ -1247,15 +1247,15 @@ firmware_tool-add_imus_step-optional_tracker =
 firmware_tool-add_imus_step-show_less = Afficher moins
 firmware_tool-add_imus_step-show_more = Afficher plus
 firmware_tool-add_imus_step-add_more = Ajouter plus d'IMUs
-firmware_tool-select_firmware_step = Sélectionnez la version du firmware
-firmware_tool-select_firmware_step-description = Veuillez choisir la version du firmware que vous souhaitez utiliser
+firmware_tool-select_firmware_step = Sélectionnez la version du micrologiciel
+firmware_tool-select_firmware_step-description = Veuillez choisir la version du micrologiciel que vous souhaitez utiliser
 firmware_tool-select_firmware_step-show-third-party =
-    .label = Afficher les firmwares de tierces parties
-firmware_tool-flash_method_step = Méthode de flashage
-firmware_tool-flash_method_step-description = Veuillez sélectionner la méthode de flashage que vous souhaitez utiliser
+    .label = Afficher les micrologiciels de tierces parties
+firmware_tool-flash_method_step = Méthode de flash
+firmware_tool-flash_method_step-description = Veuillez sélectionner la méthode de flash que vous souhaitez utiliser
 firmware_tool-flash_method_step-ota =
     .label = OTA
-    .description = Utiliser la méthode « over the air ». Votre capteur utilisera le Wi-Fi pour mettre à jour son firmware. Ne fonctionne que sur les capteurs déjà configurés.
+    .description = Utiliser la méthode « over the air ». Votre capteur utilisera le Wi-Fi pour mettre à jour son micrologiciel. Ne fonctionne que sur les capteurs déjà configurés.
 firmware_tool-flash_method_step-serial =
     .label = Série
     .description = Utiliser un cable USB pour mettre à jour votre capteur
@@ -1264,7 +1264,12 @@ firmware_tool-flashbtn_step-description = Avant de passer à l'étape suivante, 
 firmware_tool-flashbtn_step-board_SLIMEVR = Éteignez le capteur, retirez le boîtier (s'il y en a un), connectez un câble USB à votre ordinateur, puis effectuez l'une des étapes suivantes en fonction de la révision de votre carte SlimeVR :
 firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Allumez le capteur tout en court-circuitant le deuxième pad FLASH rectangulaire à partir du bord sur la face supérieure de la carte et du bouclier métallique du microcontrôleur
 firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Allumez le tracker tout en court-circuitant le pad FLASH circulaire sur le côté supérieur de la carte et le bouclier métallique du microcontrôleur
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Allumez le tracker tout en appuyant sur le bouton FLASH situé sur la face supérieure de la carte
+firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Allumez le tracker tout en appuyant sur le bouton FLASH situé sur la partie supérieure de la carte
+firmware_tool-flashbtn_step-board_OTHER =
+    Avant de flash le capteur, vous devrez probablement le mettre en mode bootloader.
+    La plupart du temps, il s'agit d'appuyer sur le bouton boot de la carte avant que le processus de flash ne commence.
+    Si le processus de flash expire au début du flash, cela signifie probablement que le capteur n'était pas en mode bootloader
+    Veuillez vous référer aux instructions de flash de votre carte pour savoir comment activer le mode boatloader
 firmware_tool-flash_method_ota-devices = Appareils OTA détectés :
 firmware_tool-flash_method_ota-no_devices = Il n'y a aucune carte pouvant être mise à jour à l'aide d'OTA, assurez-vous d'avoir sélectionné le bon type de carte
 firmware_tool-flash_method_serial-wifi = Identifiants Wi-Fi :
@@ -1272,45 +1277,49 @@ firmware_tool-flash_method_serial-devices-label = Appareils en série détectés
 firmware_tool-flash_method_serial-devices-placeholder = Sélectionnez un appareil en série
 firmware_tool-flash_method_serial-no_devices = Aucun appareil en série compatible n'est détecté, assurez-vous que le capteur est branché
 firmware_tool-build_step = Création
-firmware_tool-build_step-description = Le firmware se fait créer, veuillez patienter
-firmware_tool-flashing_step = Flashing
+firmware_tool-build_step-description = Le micrologiciel se fait créer, veuillez patienter
+firmware_tool-flashing_step = En train de flash
 firmware_tool-flashing_step-description = Vos traceurs se font flash, veuillez suivre les instructions à l'écran
+firmware_tool-flashing_step-warning = Ne débranchez pas ou ne redémarrez pas le capteur pendant le processus d'envoi à moins qu'on ne vous le dise, cela pourrait rendre votre carte inutilisable
+firmware_tool-flashing_step-flash_more = Flash plus de capteurs
 firmware_tool-flashing_step-exit = Quitter
 
 ## firmware tool build status
 
 firmware_tool-build-CREATING_BUILD_FOLDER = Création du dossier de création
-firmware_tool-build-DOWNLOADING_FIRMWARE = Téléchargement du firmware
-firmware_tool-build-EXTRACTING_FIRMWARE = Extraction du firmware
+firmware_tool-build-DOWNLOADING_FIRMWARE = Téléchargement du micrologiciel
+firmware_tool-build-EXTRACTING_FIRMWARE = Extraction du micrologiciel
 firmware_tool-build-SETTING_UP_DEFINES = Configuration des définitions
-firmware_tool-build-BUILDING = Création du firmware
-firmware_tool-build-SAVING = Enregistrement du firmware
+firmware_tool-build-BUILDING = Création du micrologiciel
+firmware_tool-build-SAVING = Enregistrement du micrologiciel
 firmware_tool-build-DONE = Création terminée
-firmware_tool-build-ERROR = Impossible de créer le firmware
+firmware_tool-build-ERROR = Impossible de créer le micrologiciel
 
 ## Firmware update status
 
-firmware_update-status-DOWNLOADING = Téléchargement du firmware
+firmware_update-status-DOWNLOADING = Téléchargement du micrologiciel
 firmware_update-status-NEED_MANUAL_REBOOT = Veuillez redémarrer le capteur
 firmware_update-status-AUTHENTICATING = Authentification avec le MCU
-firmware_update-status-UPLOADING = Envoi du firmware
+firmware_update-status-UPLOADING = Envoi du micrologiciel
 firmware_update-status-SYNCING_WITH_MCU = Synchronisation avec le MCU
 firmware_update-status-REBOOTING = Application de la mise à jour
 firmware_update-status-PROVISIONING = Envoi des identifiants Wi-Fi
 firmware_update-status-DONE = Mise à jour terminée !
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = Impossible de trouver l'appareil
 firmware_update-status-ERROR_TIMEOUT = Le processus de mise à jour a dépassé le délai alloué
-firmware_update-status-ERROR_DOWNLOAD_FAILED = Échec du téléchargement du firmware
+firmware_update-status-ERROR_DOWNLOAD_FAILED = Échec du téléchargement du micrologiciel
 firmware_update-status-ERROR_AUTHENTICATION_FAILED = Échec de l'authentification avec le MCU
-firmware_update-status-ERROR_UPLOAD_FAILED = Échec de l'envoi du firmware
+firmware_update-status-ERROR_UPLOAD_FAILED = Échec de l'envoi du micrologiciel
 firmware_update-status-ERROR_PROVISIONING_FAILED = Impossible de définir les informations d'identification Wi-Fi
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = La méthode de mise à jour n'est pas prise en charge
 firmware_update-status-ERROR_UNKNOWN = Erreur inconnue
 
 ## Dedicated Firmware Update Page
 
-firmware_update-title = Mise à jour du firmware
+firmware_update-title = Mise à jour du micrologiciel
 firmware_update-devices = Appareils disponibles
+firmware_update-devices-description = Veuillez sélectionner les capteurs que vous souhaitez mettre à jour à la dernière version du micrologiciel SlimeVR
+firmware_update-no_devices = Assurez-vous que les capteurs que vous souhaitez mettre à jour sont allumés et connectés au Wi-Fi !
 firmware_update-changelog-title = Mise à jour vers { $version }
 firmware_update-looking_for_devices = Recherche d'appareils à mettre à jour...
 firmware_update-retry = Réessayer
