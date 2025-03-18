@@ -9,6 +9,11 @@
 
 websocket-connecting = Connessione al server in corso
 websocket-connection_lost = Connessione con il server persa. Tentativo di riconnessione in corso...
+websocket-connection_lost-desc = Sembra che il server SlimeVR si sia crashato. Controlla i log e riavvia il programma
+websocket-timedout = Impossibile connettersi al server
+websocket-timedout-desc = Sembra che il server SlimeVR si sia crashato o bloccato. Controlla i log e riavvia il programma
+websocket-error-close = Chiudi SlimeVR
+websocket-error-logs = Apri la cartella dei log
 
 ## Update notification
 
@@ -133,15 +138,14 @@ skeleton_bone-ELBOW_OFFSET = Correzione per il gomito
 ## Tracker reset buttons
 
 reset-reset_all = Ripristina tutte le proporzioni
-reset-reset_all_warning =
-    <b>Attenzione:</b> Questo ripristinerà le tue proporzioni in modo che siano basate solo sulla tua altezza.
-    Sei sicuro di volerlo fare?
+reset-reset_all_warning-v2 =
+    <b>Attenzione:</b>Le proporzioni verranno ripristinate ai valori predefiniti in base all'altezza configurata.
+    Sei sicurə di volerlo fare?
 reset-reset_all_warning-reset = Ripristino delle proporzioni
 reset-reset_all_warning-cancel = Annulla
-reset-reset_all_warning_default =
-    <b>Avvertimento:</b> Al momento non hai definito la tua altezza, 
-    Di conseguenza le proporzioni saranno basate su un'altezza predefinita.
-    Sei sicuro di voler continuare?
+reset-reset_all_warning_default-v2 =
+    <b>Attenzione:</b>Non hai configurato la tua alteza, le proporzioni verranno ripristinate ai valori predefiniti in base all'altezza predefinita.
+    Sei sicurə di volerlo fare?
 reset-full = Ripristino completo
 reset-mounting = Ripristino del posizionamento
 reset-yaw = Ripristina dell'orientamento
@@ -1036,47 +1040,20 @@ onboarding-automatic_mounting-put_trackers_on-title = Indossa i tuoi tracker
 onboarding-automatic_mounting-put_trackers_on-description = Per calibrare le rotazioni delle posizioni di montaggio useremo i tracker che hai appena assegnato. Indossa tutti i tuoi tracker, puoi vedere quali sono quali nella figura a destra.
 onboarding-automatic_mounting-put_trackers_on-next = Sto indossando tutti i miei tracker
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = Quale metodo di calibrazione delle proporzioni vuoi usare?
-# Multiline string
-onboarding-choose_proportions-description-v1 =
-    Le "Proporzioni del corpo" sono utilizzate per conoscere le esatte misure del tuo corpo. Sono necessarie per calcolare le posizioni dei tracker.
-    Quando le proporzioni del tuo corpo non corrispondono a quelle salvate, la precisione di tracciamento sarà peggiore e noterai cose come slittamento o come la posizione del tuo corpo che no corrisponde con quella del tuo avatar.
-    <b>Devi misurare il tuo corpo solo una volta!</b> A meno che non siano sbagliate o il tuo corpo non sia cambiato, non è necessario rifarlo.
-onboarding-choose_proportions-auto_proportions = Proporzioni automatiche
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = Raccomandato
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    Questo indovinerà le tue proporzioni registrando un campione dei tuoi movimenti e passandolo attraverso un algoritmo.
-    
-    <b>Ciò richiede che il tuo visore (HMD) sia collegato a SlimeVR e indossato  correttaments sulla tua testa</b>
-onboarding-choose_proportions-manual_proportions = Proporzioni manuali
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = Per piccole modifiche
-onboarding-choose_proportions-manual_proportions-description = Questo processo ti permetterà di regolare manualmente le proporzioni del corpo modificandole direttamente.
-onboarding-choose_proportions-scaled_proportions = Proporzioni in scala
-# Italized text
-onboarding-choose_proportions-scaled_proportions-subtitle = Consigliato per i nuovi utenti
-# Multiline string
-onboarding-choose_proportions-scaled_proportions-description =
-    Questo scalerà le proporzioni di un corpo umano medio in base alla tua altezza, questo aiuterà con la configurazione di base del tracciamento del corpo.
-    
-    <b>È necessario che il visore (HMD) sia collegato a SlimeVR e indossato sulla testa!</b>
-onboarding-choose_proportions-scaled_proportions-button = Proporzioni in scala
-onboarding-choose_proportions-export = Esporta le proporzioni del corpo
-onboarding-choose_proportions-import = Importa le proporzioni del corpo
-onboarding-choose_proportions-import-success = Importate con successo
-onboarding-choose_proportions-import-failed = Importaggio fallito
-onboarding-choose_proportions-file_type = File delle proporzioni del corpo
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = Torna al tutorial di ripristino
 onboarding-manual_proportions-title = Impostazione manuale delle proporzioni del corpo
 onboarding-manual_proportions-precision = Regolazione di precisione
 onboarding-manual_proportions-auto = Calibrazione automatica
 onboarding-manual_proportions-ratio = Regolazione tramite gruppi di rapporti
+onboarding-manual_proportions-fine_tuning_button = Regola automaticamente le proporzioni
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Per piacer collega un visore VR per utilizzare la regolazione automatica
+onboarding-manual_proportions-export = Esporta le proporzioni del corpo
+onboarding-manual_proportions-import = Importa le proporzioni del corpo
+onboarding-manual_proportions-import-success = Importate con successo
+onboarding-manual_proportions-import-failed = Importazione fallita
+onboarding-manual_proportions-file_type = File delle proporzioni del corpo
 
 ## Tracker automatic proportions setup
 
@@ -1169,9 +1146,10 @@ onboarding-automatic_proportions-smol_warning-cancel = Indietro
 onboarding-scaled_proportions-title = Proporzioni in scala
 onboarding-scaled_proportions-description = Affinché i tracker di SlimeVR funzionino, dobbiamo conoscere la lunghezza dei tuoi arti. Questo utilizzerà delle proporzioni nella media e la scalerà in base alla tua altezza.
 onboarding-scaled_proportions-manual_height-title = Configura la tua altezza
-onboarding-scaled_proportions-manual_height-description = L'altezza del visore (HMD) dovrebbe essere leggermente inferiore all'altezza completa, poiché il visore misura l'altezza degli occhi. Questa altezza verrà utilizzata come base per le proporzioni del tuo corpo.
+onboarding-scaled_proportions-manual_height-description-v2 = Questa altezza verrà utilizzata come punto di riferimento per calcolare le proporzioni del tuo corpo.
 onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR non è attualmente connesso a SlimeVR, quindi le misurazioni non possono essere basate sul visore. <b>Procedi a tua discrezione o controlla la documentazione!</b>
-onboarding-scaled_proportions-manual_height-height = L'altezza del visore è
+onboarding-scaled_proportions-manual_height-height-v2 = La tua altezza totale è
+onboarding-scaled_proportions-manual_height-estimated_height = La altezza del tuo visore stimata è:
 onboarding-scaled_proportions-manual_height-next_step = Continua e salva
 
 ## Tracker scaled proportions reset
