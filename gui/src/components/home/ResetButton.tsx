@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ResetRequestT,
   ResetType,
@@ -36,6 +36,7 @@ export function ResetButton({
   const { sendRPCPacket } = useWebsocketAPI();
   const { statuses } = useStatusContext();
   const { config } = useConfig();
+  const finishedTimeoutRef = useRef(-1);
   const [isFinished, setFinished] = useState(false);
 
   const needsFullReset = useMemo(
@@ -59,7 +60,12 @@ export function ResetButton({
       maybePlaySoundOnResetEnd(type);
       reset();
       setFinished(true);
-      setTimeout(() => setFinished(false), 2000);
+      if (finishedTimeoutRef.current !== -1)
+        clearTimeout(finishedTimeoutRef.current);
+      finishedTimeoutRef.current = setTimeout(() => {
+        setFinished(false);
+        finishedTimeoutRef.current = -1;
+      }, 2000);
       if (onReseted) onReseted();
     },
   });
@@ -101,6 +107,13 @@ export function ResetButton({
     startCountdown();
     maybePlaySoundOnResetStart();
   };
+
+  useEffect(() => {
+    return () => {
+      if (finishedTimeoutRef.current !== -1)
+        clearTimeout(finishedTimeoutRef.current);
+    };
+  }, []);
 
   return variant === 'small' ? (
     <Button
