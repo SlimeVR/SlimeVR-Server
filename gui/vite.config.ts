@@ -3,6 +3,8 @@ import { defineConfig, PluginOption } from 'vite';
 import { execSync } from 'child_process';
 import path from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
+import jotaiDebugLabel from 'jotai/babel/plugin-debug-label'
+import jotaiReactRefresh from 'jotai/babel/plugin-react-refresh'
 
 const commitHash = execSync('git rev-parse --verify --short HEAD').toString().trim();
 const versionTag = execSync('git --no-pager tag --sort -taggerdate --points-at HEAD')
@@ -39,9 +41,10 @@ export default defineConfig({
     __VERSION_TAG__: JSON.stringify(versionTag),
     __GIT_CLEAN__: gitClean,
   },
-  plugins: [react(), i18nHotReload(), visualizer() as PluginOption],
+  plugins: [react({ babel: { plugins: [jotaiDebugLabel, jotaiReactRefresh] } }), i18nHotReload(), visualizer() as PluginOption],
   build: {
     target: 'es2022',
+    sourcemap: true,
     emptyOutDir: true,
     commonjsOptions: {
       include: [/solarxr-protocol/, /node_modules/],

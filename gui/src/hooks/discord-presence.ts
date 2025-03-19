@@ -1,20 +1,24 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useConfig } from './config';
 import { useInterval } from './timeout';
-import { useTrackers } from './tracker';
 import { invoke } from '@tauri-apps/api/core';
 import { warn } from '@/utils/logging';
 import { useLocalization } from '@fluent/react';
+import { connectedIMUTrackersAtom } from '@/store/app-store';
+import { getDefaultStore } from 'jotai';
 
 export function useDiscordPresence() {
   const { config } = useConfig();
-  const { useConnectedIMUTrackers } = useTrackers();
   const { l10n } = useLocalization();
-  const imuTrackers = useConnectedIMUTrackers();
 
-  const updatePresence = useCallback(() => {
+  // Update presence every 6.9 seconds
+  useInterval(() => {
     (async () => {
       try {
+        // Better to do this instead of useAtomValue as we are doing polling with the interval
+        // useAtomValue can trigger re render of the dom and this hook is top level, so this
+        // would be really bad
+        const imuTrackers = getDefaultStore().get(connectedIMUTrackersAtom)
         if (await checkDiscordClient()) {
           // If discord client exists, try updating presence
           await updateDiscordPresence({
@@ -31,10 +35,7 @@ export function useDiscordPresence() {
         warn(`failed to update presence, error: ${e}`);
       }
     })();
-  }, [imuTrackers.length, l10n]);
-
-  // Update presence every 6.9 seconds
-  useInterval(updatePresence, config?.discordPresence ? 6900 : null);
+  }, config?.discordPresence ? 6900 : null);
 
   // Clear presence on config being disabled
   useEffect(() => {
@@ -47,6 +48,7 @@ export function useDiscordPresence() {
       );
     })();
   }, [config?.discordPresence]);
+
 }
 
 export function checkDiscordClient(): Promise<boolean> {

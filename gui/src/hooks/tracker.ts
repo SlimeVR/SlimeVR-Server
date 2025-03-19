@@ -1,40 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BodyPart, TrackerDataT, TrackerInfoT, TrackerStatus } from 'solarxr-protocol';
+import { BodyPart, TrackerDataT, TrackerInfoT } from 'solarxr-protocol';
 import { QuaternionFromQuatT, QuaternionToEulerDegrees } from '@/maths/quaternion';
-import { useAppContext } from './app';
 import { ReactLocalization, useLocalization } from '@fluent/react';
 import { useDataFeedConfig } from './datafeed-config';
 import { Quaternion, Vector3 } from 'three';
 import { Vector3FromVec3fT } from '@/maths/vector3';
+import { useAtomValue } from 'jotai';
+import { trackerFromIdAtom } from '@/store/app-store';
 
-export function useTrackers() {
-  const { trackers } = useAppContext();
-
-  return {
-    trackers,
-    useAssignedTrackers: () =>
-      useMemo(
-        () =>
-          trackers.filter(({ tracker }) => tracker.info?.bodyPart !== BodyPart.NONE),
-        [trackers]
-      ),
-    useUnassignedTrackers: () =>
-      useMemo(
-        () =>
-          trackers.filter(({ tracker }) => tracker.info?.bodyPart === BodyPart.NONE),
-        [trackers]
-      ),
-    useConnectedIMUTrackers: () =>
-      useMemo(
-        () =>
-          trackers.filter(
-            ({ tracker }) =>
-              tracker.status !== TrackerStatus.DISCONNECTED && tracker.info?.isImu
-          ),
-        [trackers]
-      ),
-  };
-}
 
 export function getTrackerName(l10n: ReactLocalization, info: TrackerInfoT | null) {
   if (info?.customName) return info?.customName;
@@ -45,6 +18,7 @@ export function getTrackerName(l10n: ReactLocalization, info: TrackerInfoT | nul
 export function useTracker(tracker: TrackerDataT) {
   const { l10n } = useLocalization();
   const { feedMaxTps } = useDataFeedConfig();
+
 
   return {
     useName: () =>
@@ -84,7 +58,7 @@ export function useTracker(tracker: TrackerDataT) {
           const dif = Math.min(
             1,
             (rot.x ** 2 + rot.y ** 2 + rot.z ** 2) * 50 +
-              (acc.x ** 2 + acc.y ** 2 + acc.z ** 2) / 1000
+            (acc.x ** 2 + acc.y ** 2 + acc.z ** 2) / 1000
           );
           // Use sum of the rotation and acceleration delta vector lengths over 0.3sec
           // for smoother movement and better detection of slow movement.
@@ -115,19 +89,8 @@ export function useTrackerFromId(
   trackerNum: string | number | undefined,
   deviceId: string | number | undefined
 ) {
-  const { trackers } = useAppContext();
-
-  const tracker = useMemo(
-    () =>
-      trackers.find(
-        ({ tracker }) =>
-          trackerNum &&
-          deviceId &&
-          tracker?.trackerId?.trackerNum == trackerNum &&
-          tracker?.trackerId?.deviceId?.id == deviceId
-      ),
-    [trackers, trackerNum, deviceId]
-  );
-
-  return tracker;
+  const trackerAtom = useMemo(() => trackerFromIdAtom({ trackerNum, deviceId }),
+    [trackerNum, deviceId]
+  )
+  return useAtomValue(trackerAtom);
 }

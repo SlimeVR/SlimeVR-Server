@@ -3,10 +3,11 @@ import { Typography } from '@/components/commons/Typography';
 import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
 import { ASSIGNMENT_MODES } from '@/components/onboarding/BodyAssignment';
 import { useLocalization } from '@fluent/react';
-import { useTrackers } from '@/hooks/tracker';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 import { Dropdown } from '@/components/commons/Dropdown';
+import { useAtomValue } from 'jotai';
+import { connectedIMUTrackersAtom } from '@/store/app-store';
 
 // Ordered collection of assign modes with the number of IMU trackers
 const ASSIGN_MODE_OPTIONS = [
@@ -26,8 +27,7 @@ export function TrackerAssignOptions({
   variant: 'radio' | 'dropdown';
 }) {
   const { l10n } = useLocalization();
-  const { useConnectedIMUTrackers } = useTrackers();
-  const connectedIMUTrackers = useConnectedIMUTrackers().length;
+  const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
 
   const { config, setConfig } = useConfig();
   const { control, watch, setValue } = useForm<{
@@ -44,11 +44,11 @@ export function TrackerAssignOptions({
   }, [assignMode]);
 
   useEffect(() => {
-    if (connectedIMUTrackers <= ASSIGN_MODE_OPTIONS[assignMode]) return;
+    if (connectedIMUTrackers.length <= ASSIGN_MODE_OPTIONS[assignMode]) return;
 
     const selectedAssignMode =
       (Object.entries(ASSIGN_MODE_OPTIONS).find(
-        ([_, count]) => count >= connectedIMUTrackers
+        ([_, count]) => count >= connectedIMUTrackers.length
       )?.[0] as AssignMode) ?? AssignMode.All;
 
     if (assignMode !== selectedAssignMode) {
@@ -114,7 +114,9 @@ export function TrackerAssignOptions({
       name="assignMode"
       control={control}
       value={mode}
-      disabled={connectedIMUTrackers > trackersCount && mode !== AssignMode.All}
+      disabled={
+        connectedIMUTrackers.length > trackersCount && mode !== AssignMode.All
+      }
       className="hidden"
     >
       <div className="flex flex-row md:gap-4 gap-2">

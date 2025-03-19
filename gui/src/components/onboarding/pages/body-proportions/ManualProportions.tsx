@@ -23,8 +23,10 @@ import { save } from '@tauri-apps/plugin-dialog';
 import { writeTextFile } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
 import classNames from 'classnames';
-import { useAppContext } from '@/hooks/app';
 import { Tooltip } from '@/components/commons/Tooltip';
+import { useNavigate } from 'react-router-dom';
+import { useAtomValue } from 'jotai';
+import { computedTrackersAtom } from '@/store/app-store';
 
 function parseConfigImport(
   config: SkeletonConfigExport
@@ -228,7 +230,8 @@ export function ManualProportionsPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
-  const { computedTrackers } = useAppContext();
+
+  const computedTrackers = useAtomValue(computedTrackersAtom);
 
   applyProgress(0.9);
 

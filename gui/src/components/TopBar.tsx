@@ -21,7 +21,6 @@ import { QuestionIcon } from './commons/icon/QuestionIcon';
 import { useBreakpoint, useIsTauri } from '@/hooks/breakpoint';
 import { GearIcon } from './commons/icon/GearIcon';
 import { invoke } from '@tauri-apps/api/core';
-import { useTrackers } from '@/hooks/tracker';
 import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
 import { listen, TauriEvent } from '@tauri-apps/api/event';
@@ -34,6 +33,8 @@ import {
   getCurrentWindow,
   UserAttentionType,
 } from '@tauri-apps/api/window';
+import { useAtomValue } from 'jotai';
+import { connectedIMUTrackersAtom } from '@/store/app-store';
 
 export function VersionTag() {
   return (
@@ -62,8 +63,7 @@ export function TopBar({
   const isTauri = useIsTauri();
   const { isMobile } = useBreakpoint('mobile');
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const { useConnectedIMUTrackers } = useTrackers();
-  const connectedIMUTrackers = useConnectedIMUTrackers();
+  const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { config, setConfig, saveConfig } = useConfig();
   const version = useContext(VersionContext);
   const [localIp, setLocalIp] = useState<string | null>(null);

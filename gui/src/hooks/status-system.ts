@@ -16,8 +16,8 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { FluentVariable } from '@fluent/bundle';
-import { FlatDeviceTracker } from './app';
 import { ReactLocalization } from '@fluent/react';
+import { FlatDeviceTracker } from '@/store/app-store';
 
 type StatusSystemStateAction =
   | StatusSystemStateFixedAction
