@@ -1,13 +1,17 @@
 import classNames from 'classnames';
 import ReactModal from 'react-modal';
 import { BodyPart } from 'solarxr-protocol';
-import { FlatDeviceTracker } from '@/hooks/app';
-import { useTrackers } from '@/hooks/tracker';
 import { Button } from '@/components/commons/Button';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';
 import { useLocalization } from '@fluent/react';
+import { useAtomValue } from 'jotai';
+import {
+  assignedTrackersAtom,
+  FlatDeviceTracker,
+  unassignedTrackersAtom,
+} from '@/store/app-store';
 
 export function TrackerSelectionMenu({
   isOpen = true,
@@ -21,10 +25,9 @@ export function TrackerSelectionMenu({
   onTrackerSelected: (tracker: FlatDeviceTracker | null) => void;
 }) {
   const { l10n } = useLocalization();
-  const { useAssignedTrackers, useUnassignedTrackers } = useTrackers();
 
-  const unassignedTrackers = useUnassignedTrackers();
-  const assignedTrackers = useAssignedTrackers();
+  const unassignedTrackers = useAtomValue(unassignedTrackersAtom);
+  const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
   return (
     <>

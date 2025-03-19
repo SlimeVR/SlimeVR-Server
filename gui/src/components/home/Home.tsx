@@ -2,7 +2,6 @@ import { Localized, useLocalization } from '@fluent/react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { StatusData, TrackerDataT } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
-import { useTrackers } from '@/hooks/tracker';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';
 import { TrackersTable } from '@/components/tracker/TrackersTable';
@@ -15,13 +14,15 @@ import { useMemo } from 'react';
 import { WarningBox } from '@/components/commons/TipBox';
 import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
 import classNames from 'classnames';
+import { useAtomValue } from 'jotai';
+import { flatTrackersAtom } from '@/store/app-store';
 
 const DONT_REPEAT_STATUSES = [StatusData.StatusTrackerReset];
 
 export function Home() {
   const { l10n } = useLocalization();
   const { config } = useConfig();
-  const { trackers } = useTrackers();
+  const trackers = useAtomValue(flatTrackersAtom);
   const { statuses } = useStatusContext();
   const navigate = useNavigate();
 

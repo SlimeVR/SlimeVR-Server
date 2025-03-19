@@ -23,13 +23,14 @@ import {
   TrackerStatus,
 } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
-import { useAppContext } from '@/hooks/app';
 import { Input } from '@/components/commons/Input';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { useOnboarding } from '@/hooks/onboarding';
 import { DeviceCardControl } from './DeviceCard';
 import { getTrackerName } from '@/hooks/tracker';
 import { ObjectSchema, object, string } from 'yup';
+import { useAtomValue } from 'jotai';
+import { devicesAtom } from '@/store/app-store';
 
 interface FlashingMethodForm {
   flashingMethod?: string;
@@ -191,10 +192,10 @@ function OTADevicesList({
 }) {
   const { l10n } = useLocalization();
   const { selectDevices, newConfig } = useFirmwareTool();
-  const { state } = useAppContext();
+  const allDevices = useAtomValue(devicesAtom);
 
   const devices =
-    state.datafeed?.devices.filter(({ trackers, hardwareInfo }) => {
+    allDevices.filter(({ trackers, hardwareInfo }) => {
       // We make sure the device is not one of these types
       if (
         hardwareInfo?.officialBoardType === BoardType.SLIMEVR_LEGACY ||

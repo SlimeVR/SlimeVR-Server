@@ -1,5 +1,5 @@
+import { FlatDeviceTracker } from '@/store/app-store';
 import { useMemo } from 'react';
-import { FlatDeviceTracker } from './app';
 
 const IGNORED_BOARDS = new Set(['Sony Mocopi', 'Haritora']);
 

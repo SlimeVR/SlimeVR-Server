@@ -8,28 +8,18 @@ import { CheckFloorHeightStep } from './autobone-steps/CheckFloorHeight';
 import { ResetProportionsStep } from './scaled-steps/ResetProportions';
 import { DoneStep } from './scaled-steps/Done';
 import { useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
 import { ManualHeightStep } from './scaled-steps/ManualHeightStep';
-import { useTrackers } from '@/hooks/tracker';
-import { BodyPart } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
+import { useAtomValue } from 'jotai';
+import { hasHMDTrackerAtom } from '@/store/app-store';
 
 export function ScaledProportionsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const heightContext = useProvideHeightContext();
   const navigate = useNavigate();
-  const { trackers } = useTrackers();
 
-  const hmdTracker = useMemo(
-    () =>
-      trackers.some(
-        (tracker) =>
-          tracker.tracker.info?.bodyPart === BodyPart.HEAD &&
-          (tracker.tracker.info.isHmd || tracker.tracker.position?.y)
-      ),
-    [trackers]
-  );
+  const hmdTracker = useAtomValue(hasHMDTrackerAtom);
 
   applyProgress(0.9);
 

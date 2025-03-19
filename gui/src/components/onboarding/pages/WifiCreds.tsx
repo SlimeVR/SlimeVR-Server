@@ -5,15 +5,15 @@ import { Button } from '@/components/commons/Button';
 import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
 import classNames from 'classnames';
-import { useTrackers } from '@/hooks/tracker';
 import { useIsRestCalibrationTrackers } from '@/hooks/imu-logic';
+import { useAtomValue } from 'jotai';
+import { connectedIMUTrackersAtom } from '@/store/app-store';
 
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const { control, handleSubmit, submitWifiCreds, formState } = useWifiForm();
-  const { useConnectedIMUTrackers } = useTrackers();
-  const connectedIMUTrackers = useConnectedIMUTrackers();
+  const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
 
   applyProgress(0.2);
 

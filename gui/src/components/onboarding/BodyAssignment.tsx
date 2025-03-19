@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react';
 import { BodyPart } from 'solarxr-protocol';
-import { FlatDeviceTracker } from '@/hooks/app';
 import { AssignMode } from '@/hooks/config';
-import { useTrackers } from '@/hooks/tracker';
 import { BodyInteractions } from '@/components/commons/BodyInteractions';
 import { TrackerPartCard } from '@/components/tracker/TrackerPartCard';
 import { BodyPartError } from './pages/trackers-assign/TrackerAssignment';
 import { SIDES } from '@/components/commons/PersonFrontIcon';
+import { useAtomValue } from 'jotai';
+import { assignedTrackersAtom, FlatDeviceTracker } from '@/store/app-store';
 
 export const ARMS_PARTS = new Set([
   BodyPart.LEFT_UPPER_ARM,
@@ -112,9 +112,7 @@ export function BodyAssignment({
   width?: number;
   dotSize?: number;
 }) {
-  const { useAssignedTrackers } = useTrackers();
-
-  const assignedTrackers = useAssignedTrackers();
+  const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
   const trackerPartGrouped = useMemo(
     () =>

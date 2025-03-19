@@ -8,11 +8,12 @@ import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { useCountdown } from '@/hooks/countdown';
 import classNames from 'classnames';
 import { TaybolIcon } from '@/components/commons/icon/TaybolIcon';
-import { useTrackers } from '@/hooks/tracker';
 import { useRestCalibrationTrackers } from '@/hooks/imu-logic';
 import { averageVector, Vector3FromVec3fT } from '@/maths/vector3';
 import { Vector3 } from 'three';
 import { useTimeout } from '@/hooks/timeout';
+import { useAtomValue } from 'jotai';
+import { connectedIMUTrackersAtom } from '@/store/app-store';
 
 export enum CalibrationStatus {
   SUCCESS,
@@ -36,8 +37,7 @@ export function CalibrationTutorialPage() {
     onCountdownEnd: () => setCalibrationStatus(CalibrationStatus.SUCCESS),
   });
   useTimeout(() => setSkipButton(true), 10000);
-  const { useConnectedIMUTrackers } = useTrackers();
-  const connectedIMUTrackers = useConnectedIMUTrackers();
+  const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const restCalibrationTrackers =
     useRestCalibrationTrackers(connectedIMUTrackers);
   const [rested, setRested] = useState(false);

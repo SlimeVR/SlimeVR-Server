@@ -1,40 +1,44 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useConfig } from './config';
 import { useInterval } from './timeout';
-import { useTrackers } from './tracker';
 import { invoke } from '@tauri-apps/api/core';
 import { warn } from '@/utils/logging';
 import { useLocalization } from '@fluent/react';
+import { connectedIMUTrackersAtom } from '@/store/app-store';
+import { getDefaultStore } from 'jotai';
 
 export function useDiscordPresence() {
   const { config } = useConfig();
-  const { useConnectedIMUTrackers } = useTrackers();
   const { l10n } = useLocalization();
-  const imuTrackers = useConnectedIMUTrackers();
-
-  const updatePresence = useCallback(() => {
-    (async () => {
-      try {
-        if (await checkDiscordClient()) {
-          // If discord client exists, try updating presence
-          await updateDiscordPresence({
-            details: l10n.getString(
-              'settings-general-interface-discord_presence-message',
-              { amount: imuTrackers.length }
-            ),
-          });
-        } else {
-          // else, try creating a discord client
-          await createDiscordClient();
-        }
-      } catch (e) {
-        warn(`failed to update presence, error: ${e}`);
-      }
-    })();
-  }, [imuTrackers.length, l10n]);
 
   // Update presence every 6.9 seconds
-  useInterval(updatePresence, config?.discordPresence ? 6900 : null);
+  useInterval(
+    () => {
+      (async () => {
+        try {
+          // Better to do this instead of useAtomValue as we are doing polling with the interval
+          // useAtomValue can trigger re render of the dom and this hook is top level, so this
+          // would be really bad
+          const imuTrackers = getDefaultStore().get(connectedIMUTrackersAtom);
+          if (await checkDiscordClient()) {
+            // If discord client exists, try updating presence
+            await updateDiscordPresence({
+              details: l10n.getString(
+                'settings-general-interface-discord_presence-message',
+                { amount: imuTrackers.length }
+              ),
+            });
+          } else {
+            // else, try creating a discord client
+            await createDiscordClient();
+          }
+        } catch (e) {
+          warn(`failed to update presence, error: ${e}`);
+        }
+      })();
+    },
+    config?.discordPresence ? 6900 : null
+  );
 
   // Clear presence on config being disabled
   useEffect(() => {

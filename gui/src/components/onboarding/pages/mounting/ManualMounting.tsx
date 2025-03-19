@@ -1,8 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { AssignTrackerRequestT, BodyPart, RpcMessage } from 'solarxr-protocol';
-import { FlatDeviceTracker } from '@/hooks/app';
 import { useOnboarding } from '@/hooks/onboarding';
-import { useTrackers } from '@/hooks/tracker';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import {
   MountingOrientationDegreesToQuatT,
@@ -18,6 +16,8 @@ import { useLocalization } from '@fluent/react';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { Quaternion } from 'three';
 import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
+import { assignedTrackersAtom, FlatDeviceTracker } from '@/store/app-store';
+import { useAtomValue } from 'jotai';
 
 export function ManualMountingPage() {
   const { isMobile } = useBreakpoint('mobile');
@@ -30,8 +30,7 @@ export function ManualMountingPage() {
 
   applyProgress(0.7);
 
-  const { useAssignedTrackers } = useTrackers();
-  const assignedTrackers = useAssignedTrackers();
+  const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
   const trackerPartGrouped = useMemo(
     () =>
