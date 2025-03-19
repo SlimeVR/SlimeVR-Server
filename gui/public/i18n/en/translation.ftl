@@ -105,10 +105,12 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 skeleton_bone-NONE = None
 skeleton_bone-HEAD = Head Shift
 skeleton_bone-HEAD-desc =
+    The head shift value is from your headset to about the middle of your head.
     Shake your head left to right as if you're disagreeing.
     Adjust your head offset until any movement is negligible. All trackers should stay in place.
 skeleton_bone-NECK = Neck Length
 skeleton_bone-NECK-desc =
+    The neck length value is the distance from about the middle of your head to your shoulders.
     Move your head up and down as if you're nodding OR tilt your head to the left and right like a cute, confused, dog.
     Adjust your neck length until any movement is negligible. All trackers should stay in place.
 skeleton_bone-torso_group = Torso length
@@ -128,61 +130,79 @@ skeleton_bone-CHEST-desc =
     Chest Length
 skeleton_bone-WAIST = Waist Length
 skeleton_bone-WAIST-desc =
-    Waist Length
+    The Waist Length is the distance from your chest to your hips minus whatever you set for Hip Length.
+    For example, if your chest to hip distance is 30 and your Hip Length is 5 your Waist Length would be 25.
+    Modify value until your SteamVR waist/hip tracker lines up with your hip bones (you can use your controller to line up your IRL hip and tracker).
 skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP-desc =
-    Hip Length
+    This length is used for calculating hip movement, experiment with it but it should be between 2 and 6.
+    At first set this between 2 and 6, it may require experimentation and changes based on movement observed once all other values are set.
+    If you increase this value you must decrease the Waist Length value an equal amount.
 skeleton_bone-HIP_OFFSET = Hip Offset
 skeleton_bone-HIP_OFFSET-desc =
-    Keep at 0 unless you have a particular problem with your avatar or application/game.
+    Keep at 0 unless you have a particular problem with your avatar or application/game. (WHY?!)
 skeleton_bone-HIPS_WIDTH = Hips Width
 skeleton_bone-HIPS_WIDTH-desc =
-    Default value is good. Can try to tweak to make your leg trackers line up when resetting,
+    The hips width value is the distance between your femurs.
+    Default value is good. You can try to tweak to make your leg trackers line up when resetting,
     but do not increase this value with the goal of preventing leg crossing.
 skeleton_bone-leg_group = Leg length
 skeleton_bone-leg_group-desc =
     Leg length
 skeleton_bone-UPPER_LEG = Upper Leg Length
 skeleton_bone-UPPER_LEG-desc =
-    Upper Leg Length
+    The Upper Leg Length is from your hip to your knee.
+    Modify until your SteamVR knee trackers are at your knee joints.
 skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-LOWER_LEG-desc =
-    Lower Leg Length
+    The Lower Leg Length is from the knee to your ankle.
+    Modify until your SteamVR feet trackers are at the level of your ankles.
 skeleton_bone-FOOT_LENGTH = Foot Length
 skeleton_bone-FOOT_LENGTH-desc =
-    Foot Length
+    The foot length value is the length of your foot, from your ankle to your toes.
 skeleton_bone-FOOT_SHIFT = Foot Shift
 skeleton_bone-FOOT_SHIFT-desc =
     Foot Shift
 skeleton_bone-SKELETON_OFFSET = Skeleton Offset
 skeleton_bone-SKELETON_OFFSET-desc =
-    Skeleton Offset
+    The Skeleton offset value offsets all your trackers from their physical position
+    forward (with a positive value) or backwards (with a negative value).
+    This can be left untouched unless you need it. (WHY?!)
+    Keep at 0 unless you have a particular problem with your avatar. (WHY?!)
 skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
 skeleton_bone-SHOULDERS_DISTANCE-desc =
-    Shoulders Distance
+    Shoulders Distance (FROM WHERE TO WHERE) (HOW IS IT DIFFERENT FROM SHOULDER WIDTH)
+    (HOW TO TWEAK)
 skeleton_bone-SHOULDERS_DISTANCE-desc =
     Set Upper arm length to 0 and adjust the values until the elbow trackers are on your shoulders.
 skeleton_bone-SHOULDERS_WIDTH = Shoulders Width
 skeleton_bone-SHOULDERS_WIDTH-desc =
-    Shoulders Width
+    Shoulders Width (FROM WHERE TO WHERE)
+    (HOW TO TWEAK)
 skeleton_bone-arm_group = Arm length
 skeleton_bone-arm_group-desc =
-    Arm length
+    Arm length (FROM WHERE TO WHERE)
+    (HOW TO TWEAK)
 skeleton_bone-UPPER_ARM = Upper Arm Length
 skeleton_bone-UPPER_ARM-desc =
-    Upper Arm Length
+    Upper Arm Length (FROM WHERE TO WHERE)
+    (HOW TO TWEAK)
 skeleton_bone-LOWER_ARM = Lower Arm Length
 skeleton_bone-LOWER_ARM-desc =
-    Lower Arm Length
+    Lower Arm Length (FROM WHERE TO WHERE)
+    (HOW TO TWEAK)
 skeleton_bone-HAND_Y = Hand Distance Y
 skeleton_bone-HAND_Y-desc =
-    Hand Distance Y
+    Hand Distance Y (FROM WHERE TO WHERE)
+    (HOW TO TWEAK)
 skeleton_bone-HAND_Z = Hand Distance Z
 skeleton_bone-HAND_Z-desc =
-    Hand Distance Z
+    Hand Distance Z (FROM WHERE TO WHERE)
+    (HOW TO TWEAK)
 skeleton_bone-ELBOW_OFFSET = Elbow Offset
 skeleton_bone-ELBOW_OFFSET-desc =
     Elbow Offset
+    Keep at 0 unless you have arm tracking problems using lower + upper arm tracking from controller or an elbow tracker binding to your chest.
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
