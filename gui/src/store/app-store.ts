@@ -1,15 +1,18 @@
 import { atom } from 'jotai';
-import { BodyPart, DataFeedUpdateT, DeviceDataT, TrackerDataT, TrackerStatus } from 'solarxr-protocol';
+import {
+  BodyPart,
+  DataFeedUpdateT,
+  DeviceDataT,
+  TrackerDataT,
+  TrackerStatus,
+} from 'solarxr-protocol';
 import { selectAtom } from 'jotai/utils';
 import { isEqual } from '@react-hookz/deep-equal';
-
 
 export interface FlatDeviceTracker {
   device?: DeviceDataT;
   tracker: TrackerDataT;
 }
-
-console.log('APP STORE INIT');
 
 export const ignoredTrackersAtom = atom(new Set());
 
@@ -19,7 +22,7 @@ export const devicesAtom = selectAtom(
   datafeedAtom,
   (datafeed) => datafeed.devices,
   isEqual
-)
+);
 
 export const flatTrackersAtom = atom((get) => {
   const devices = get(devicesAtom);
@@ -55,13 +58,13 @@ export const computedTrackersAtom = selectAtom(
   datafeedAtom,
   (datafeed) => datafeed.syntheticTrackers.map((tracker) => ({ tracker })),
   isEqual
-)
+);
 
 export const bonesAtom = selectAtom(
   datafeedAtom,
   (datafeed) => datafeed.bones,
   isEqual
-)
+);
 
 export const hasHMDTrackerAtom = atom((get) => {
   const trackers = get(flatTrackersAtom);

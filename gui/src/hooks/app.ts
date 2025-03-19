@@ -1,19 +1,12 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import {
   DataFeedMessage,
   DataFeedUpdateT,
-  DeviceDataT,
   ResetResponseT,
   ResetStatus,
   ResetType,
   RpcMessage,
   StartDataFeedT,
-  TrackerDataT,
 } from 'solarxr-protocol';
 import { playSoundOnResetEnded, playSoundOnResetStarted } from '@/sounds/sounds';
 import { useConfig } from './config';
@@ -30,7 +23,6 @@ export interface FirmwareRelease {
   changelog: string;
   firmwareFile: string;
 }
-
 
 export interface AppContext {
   currentFirmwareRelease: FirmwareRelease | null;

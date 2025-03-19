@@ -24,7 +24,6 @@ import { writeTextFile } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
 import classNames from 'classnames';
 import { Tooltip } from '@/components/commons/Tooltip';
-import { useNavigate } from 'react-router-dom';
 import { useAtomValue } from 'jotai';
 import { computedTrackersAtom } from '@/store/app-store';
 
