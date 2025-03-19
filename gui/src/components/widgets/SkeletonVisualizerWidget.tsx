@@ -84,9 +84,10 @@ interface SkeletonVisualizerWidgetProps {
   maxHeight?: number | string;
 }
 
-export function ToggleableSkeletonVisualizerWidget(
-  props: SkeletonVisualizerWidgetProps
-) {
+export function ToggleableSkeletonVisualizerWidget({
+  height,
+  maxHeight,
+}: SkeletonVisualizerWidgetProps) {
   const { l10n } = useLocalization();
   const [enabled, setEnabled] = useState(false);
 
@@ -121,7 +122,12 @@ export function ToggleableSkeletonVisualizerWidget(
           >
             {l10n.getString('widget-skeleton_visualizer-hide')}
           </Button>
-          <SkeletonVisualizerWidget />
+          <div
+            style={{ height, maxHeight }}
+            className="bg-background-60 p-1 rounded-md"
+          >
+            <SkeletonVisualizerWidget />
+          </div>
         </div>
       )}
     </>
