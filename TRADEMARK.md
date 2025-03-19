@@ -37,4 +37,6 @@ Usage of the logo is allowed in forks of SlimeVR software, as long as it's not c
 
 Please understand that we have an obligation to reduce confusion for the customers, and we believe that our usage terms are generous compared to many other companies and products. This applies to all sellers or derivative products, we do not make exceptions.
 
-If you have any questions about SlimeVR trademark or copyrighted materials, you can reach out to us at *tm < at > slimevr.dev*.
+---
+
+If you have any questions about SlimeVR trademark or copyrighted materials, you can reach out to us at *tm[at]slimevr.dev*.
