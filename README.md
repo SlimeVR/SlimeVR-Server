@@ -52,7 +52,7 @@ uncertain what the exact requirements are.
 
 **SlimeVR logo is copyright of SlimeVR B.V.**
 
-For more information on both, please refer to [TRADEMARK.md].
+For more information on both, please refer to the [TRADEMARK].
 
 ## Contributions
 Any contributions submitted for inclusion in this repository will be dual-licensed under
@@ -71,3 +71,4 @@ okay with this and that you are authorized to provide the above licenses.
 
 [LICENSE-MIT]: LICENSE-MIT
 [LICENSE-APACHE]: LICENSE-APACHE
+[TRADEMARK]: TRADEMARK.md
