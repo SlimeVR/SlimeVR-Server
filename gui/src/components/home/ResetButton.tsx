@@ -109,13 +109,14 @@ export function ResetButton({
     </Button>
   ) : (
     <BigButton
-      text={!isCounting || type === ResetType.Yaw ? text : String(timer)}
       icon={getIcon()}
       onClick={() => {
         startCountdown();
         maybePlaySoundOnResetStart();
       }}
       disabled={isCounting || needsFullReset}
-    ></BigButton>
+    >
+      {!isCounting || type === ResetType.Yaw ? text : String(timer)}
+    </BigButton>
   );
 }

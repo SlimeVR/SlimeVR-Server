@@ -104,29 +104,85 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 ## Proportions
 skeleton_bone-NONE = None
 skeleton_bone-HEAD = Head Shift
+skeleton_bone-HEAD-desc =
+    Shake your head left to right as if you're disagreeing.
+    Adjust your head offset until any movement is negligible. All trackers should stay in place.
 skeleton_bone-NECK = Neck Length
+skeleton_bone-NECK-desc =
+    Move your head up and down as if you're nodding OR tilt your head to the left and right like a cute, confused, dog.
+    Adjust your neck length until any movement is negligible. All trackers should stay in place.
 skeleton_bone-torso_group = Torso length
+skeleton_bone-torso_group-desc =
+    The Chest Length is roughly the distance from the end of your neck to the end of your chest.
+    When using a single chest tracker, only the sum of the two values is important.
+    When using two chest trackers, the SteamVR tracker will still be calculated from a single chest tracker,
+    but the rest of the spine will use both.
 skeleton_bone-UPPER_CHEST = Upper Chest Length
+skeleton_bone-UPPER_CHEST-desc =
+    Upper Chest Length
 skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-CHEST_OFFSET-desc =
+    Chest Offset
 skeleton_bone-CHEST = Chest Length
+skeleton_bone-CHEST-desc =
+    Chest Length
 skeleton_bone-WAIST = Waist Length
+skeleton_bone-WAIST-desc =
+    Waist Length
 skeleton_bone-HIP = Hip Length
+skeleton_bone-HIP-desc =
+    Hip Length
 skeleton_bone-HIP_OFFSET = Hip Offset
+skeleton_bone-HIP_OFFSET-desc =
+    Keep at 0 unless you have a particular problem with your avatar or application/game.
 skeleton_bone-HIPS_WIDTH = Hips Width
+skeleton_bone-HIPS_WIDTH-desc =
+    Default value is good. Can try to tweak to make your leg trackers line up when resetting,
+    but do not increase this value with the goal of preventing leg crossing.
 skeleton_bone-leg_group = Leg length
+skeleton_bone-leg_group-desc =
+    Leg length
 skeleton_bone-UPPER_LEG = Upper Leg Length
+skeleton_bone-UPPER_LEG-desc =
+    Upper Leg Length
 skeleton_bone-LOWER_LEG = Lower Leg Length
+skeleton_bone-LOWER_LEG-desc =
+    Lower Leg Length
 skeleton_bone-FOOT_LENGTH = Foot Length
+skeleton_bone-FOOT_LENGTH-desc =
+    Foot Length
 skeleton_bone-FOOT_SHIFT = Foot Shift
+skeleton_bone-FOOT_SHIFT-desc =
+    Foot Shift
 skeleton_bone-SKELETON_OFFSET = Skeleton Offset
+skeleton_bone-SKELETON_OFFSET-desc =
+    Skeleton Offset
 skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    Shoulders Distance
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    Set Upper arm length to 0 and adjust the values until the elbow trackers are on your shoulders.
 skeleton_bone-SHOULDERS_WIDTH = Shoulders Width
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    Shoulders Width
 skeleton_bone-arm_group = Arm length
+skeleton_bone-arm_group-desc =
+    Arm length
 skeleton_bone-UPPER_ARM = Upper Arm Length
+skeleton_bone-UPPER_ARM-desc =
+    Upper Arm Length
 skeleton_bone-LOWER_ARM = Lower Arm Length
+skeleton_bone-LOWER_ARM-desc =
+    Lower Arm Length
 skeleton_bone-HAND_Y = Hand Distance Y
+skeleton_bone-HAND_Y-desc =
+    Hand Distance Y
 skeleton_bone-HAND_Z = Hand Distance Z
+skeleton_bone-HAND_Z-desc =
+    Hand Distance Z
 skeleton_bone-ELBOW_OFFSET = Elbow Offset
+skeleton_bone-ELBOW_OFFSET-desc =
+    Elbow Offset
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
@@ -970,17 +1026,16 @@ onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 ## Tracker manual proportions setupa
 onboarding-manual_proportions-back = Go Back to Reset tutorial
 onboarding-manual_proportions-title = Manual Body Proportions
-onboarding-manual_proportions-precision = Precision adjust
-onboarding-manual_proportions-auto = Automatic proportions
-onboarding-manual_proportions-ratio = Adjust by ratio groups
 onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning
 onboarding-manual_proportions-export = Export proportions
 onboarding-manual_proportions-import = Import proportions
-onboarding-manual_proportions-import-success = Imported
-onboarding-manual_proportions-import-failed = Failed
 onboarding-manual_proportions-file_type = Body proportions file
-
+onboarding-manual_proportions-normal_increment = Normal increment
+onboarding-manual_proportions-precise_increment = Precise increment
+onboarding-manual_proportions-grouped_proportions = Grouped proportions
+onboarding-manual_proportions-all_proportions = All proportions
+onboarding-manual_proportions-estimated_height = Estimated user height
 
 ## Tracker automatic proportions setup
 onboarding-automatic_proportions-back = Go Back to Manual Proportions
