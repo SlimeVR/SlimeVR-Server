@@ -27,7 +27,7 @@ export function useCountdown({
           resetEnd();
         }
       },
-      duration > 1 ? 1000 : 500
+      duration > 1 ? 1000 : duration * 1000
     );
   };
 
