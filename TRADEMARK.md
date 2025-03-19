@@ -2,7 +2,7 @@
 
 **Usage of SlimeVR software, hardware, or other intellectual property in this or other repositories does not grant you the right to use SlimeVR trademark as your own.**
 
-The purpose of a trademark is to remove uncertainty for users and customers regarding the product's manufacturer or endorsement. You're not allowed to market your product using SlimeVR name, and your usage of the name should be only factual and descriptive. For example, calling original SlimeVR products SlimeVR or describing compatibility of other products or derriviatives. This applies to all products, including software, and hardware including non-official Full-Body Trackers.
+The purpose of a trademark is to remove uncertainty for users and customers regarding the product's manufacturer or endorsement. You're not allowed to market your product using SlimeVR name, and your usage of the name should be only factual and descriptive. For example, calling original SlimeVR products SlimeVR or describing compatibility of other products or deriviatives. This applies to all products, including software, and hardware including non-official Full-Body Trackers.
 
 **Here are a few _acceptable_ uses of SlimeVR name when selling unofficial Slime trackers:**
 * SlimeVR-compatible trackers
@@ -31,9 +31,9 @@ Also, please ensure you use the correct spelling and capitalization: only **"Sli
 
 **SlimeVR logo is copyright of SlimeVR B.V.**
 
-Use of the logo is not allowed except in the case of reporting factual information, or if you make content featuring the original SlimeVR Trackers. Creation of fan works,. fo and reviews are allowed, as long as there is no confusion about the ownership of the logo, or endorsments of any third-party products.
+Use of the logo is not allowed except in the case of reporting factual information, or if you make content featuring the original SlimeVR Trackers. Creation of fan works and reviews are allowed, as long as there is no confusion about the ownership of the logo, or endorsments of any third-party products.
 
-Usage of the logo is allowed in forks of SlimeVR software, as long as it's not changed in any way and there is no confusion about the ownership of the logo, or endorsments of any third-party products. If the fork changes software substantially, the usages of the logo is not allowed. We reserve the gudjement to ourselves.
+Usage of the logo is allowed in forks of SlimeVR software, as long as it's not changed in any way and there is no confusion about the ownership of the logo, or endorsements of any third-party products. If the fork changes software substantially, the usages of the logo is not allowed. We reserve the judjement to ourselves.
 
 Please understand that we have an obligation to reduce confusion for the customers, and we believe that our usage terms are generous compared to many other companies and products. This applies to all sellers or derivative products, we do not make exceptions.
 
