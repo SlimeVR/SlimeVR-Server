@@ -23,7 +23,6 @@
     "browser-fs-access": "^0.35.0",
     "classnames": "^2.5.1",
     "flatbuffers": "22.10.26",
-    "immer": "^10.1.1",
     "intl-pluralrules": "^2.0.1",
     "ip-num": "^1.5.1",
     "jotai": "^2.12.2",
