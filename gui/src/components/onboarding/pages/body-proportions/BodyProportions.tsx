@@ -25,7 +25,7 @@ function IncrementButton({
     <div
       onClick={onClick}
       className={classNames(
-        'p-3 rounded-lg xs:w-10 xs:h-10 flex flex-col justify-center items-center',
+        'p-3 rounded-lg xs:w-10 xs:h-10 flex flex-col justify-center items-center cursor-pointer',
         'bg-background-40 hover:bg-opacity-50 active:bg-accent-background-30'
       )}
     >
