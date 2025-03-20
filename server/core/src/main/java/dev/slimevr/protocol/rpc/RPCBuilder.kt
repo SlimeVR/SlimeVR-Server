@@ -8,7 +8,7 @@ import solarxr_protocol.rpc.SkeletonPart
 
 fun createSkeletonConfig(
 	fbb: FlatBufferBuilder,
-	humanPoseManager: HumanPoseManager
+	humanPoseManager: HumanPoseManager,
 ): Int {
 	val partsOffsets = IntArray(SkeletonConfigOffsets.entries.size)
 
