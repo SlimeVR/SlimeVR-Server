@@ -84,9 +84,10 @@ interface SkeletonVisualizerWidgetProps {
   maxHeight?: number | string;
 }
 
-export function ToggleableSkeletonVisualizerWidget(
-  props: SkeletonVisualizerWidgetProps
-) {
+export function ToggleableSkeletonVisualizerWidget({
+  height,
+  maxHeight,
+}: SkeletonVisualizerWidgetProps) {
   const { l10n } = useLocalization();
   const [enabled, setEnabled] = useState(false);
 
@@ -121,17 +122,19 @@ export function ToggleableSkeletonVisualizerWidget(
           >
             {l10n.getString('widget-skeleton_visualizer-hide')}
           </Button>
-          <SkeletonVisualizerWidget {...props} />
+          <div
+            style={{ height, maxHeight }}
+            className="bg-background-60 p-1 rounded-md"
+          >
+            <SkeletonVisualizerWidget />
+          </div>
         </div>
       )}
     </>
   );
 }
 
-export function SkeletonVisualizerWidget({
-  height = '35vh',
-  maxHeight = 400,
-}: SkeletonVisualizerWidgetProps) {
+export function SkeletonVisualizerWidget() {
   const { bones: _bones } = useAppContext();
 
   const { l10n } = useLocalization();
@@ -196,36 +199,31 @@ export function SkeletonVisualizerWidget({
 
   if (!skeleton.current) return <></>;
   return (
-    <div className="bg-background-60 flex flex-col p-3 rounded-lg gap-2">
-      <ErrorBoundary
-        fallback={
-          <Typography color="primary" textAlign="text-center">
-            {l10n.getString('tips-failed_webgl')}
-          </Typography>
-        }
-      >
-        <Canvas
-          className={classNames('container mx-auto')}
-          style={{ height, background: 'transparent', maxHeight }}
-        >
-          <gridHelper args={[10, 50, GROUND_COLOR, GROUND_COLOR]} />
-          <group position={[0, heightOffset, 0]} quaternion={yawReset}>
-            <SkeletonHelper object={skeleton.current[0]}></SkeletonHelper>
-          </group>
-          <primitive object={skeleton.current[0]} />
-          <PerspectiveCamera
-            makeDefault
-            position={[3, 2.5, -3]}
-            fov={20}
-            zoom={1 / scale}
-          />
-          <OrbitControls
-            target={[0, targetCamera, 0]}
-            maxDistance={20}
-            maxPolarAngle={Math.PI / 2}
-          />
-        </Canvas>
-      </ErrorBoundary>
-    </div>
+    <ErrorBoundary
+      fallback={
+        <Typography color="primary" textAlign="text-center">
+          {l10n.getString('tips-failed_webgl')}
+        </Typography>
+      }
+    >
+      <Canvas className={classNames('container mx-auto')}>
+        <gridHelper args={[10, 50, GROUND_COLOR, GROUND_COLOR]} />
+        <group position={[0, heightOffset, 0]} quaternion={yawReset}>
+          <SkeletonHelper object={skeleton.current[0]}></SkeletonHelper>
+        </group>
+        <primitive object={skeleton.current[0]} />
+        <PerspectiveCamera
+          makeDefault
+          position={[3, 2.5, -3]}
+          fov={20}
+          zoom={1 / scale}
+        />
+        <OrbitControls
+          target={[0, targetCamera, 0]}
+          maxDistance={20}
+          maxPolarAngle={Math.PI / 2}
+        />
+      </Canvas>
+    </ErrorBoundary>
   );
 }

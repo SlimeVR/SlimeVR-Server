@@ -133,7 +133,6 @@ export function ResetButton({
     </Button>
   ) : (
     <BigButton
-      text={!isCounting || type === ResetType.Yaw ? text : String(timer)}
       icon={getIcon()}
       onClick={triggerReset}
       className={classNames(
@@ -141,6 +140,8 @@ export function ResetButton({
         isFinished ? 'border-status-success' : 'border-transparent'
       )}
       disabled={isCounting || needsFullReset}
-    ></BigButton>
+    >
+      {!isCounting || type === ResetType.Yaw ? text : String(timer)}
+    </BigButton>
   );
 }
