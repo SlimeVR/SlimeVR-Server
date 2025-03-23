@@ -138,15 +138,14 @@ skeleton_bone-ELBOW_OFFSET = 肘部偏移
 ## Tracker reset buttons
 
 reset-reset_all = 重置軀幹比例
-reset-reset_all_warning =
-    <b>警告：</b> 這會將軀幹比例重置為僅基於身高的比例。
-    你確定要執行此操作嗎？
+reset-reset_all_warning-v2 =
+    <b>警告：</b>軀幹比例將會重置預設值，並依你的身高等比例調整。
+    確定要繼續嗎？
 reset-reset_all_warning-reset = 重置軀幹比例
 reset-reset_all_warning-cancel = 取消
-reset-reset_all_warning_default =
-    <b>警告：</b>目前還沒有設定你身高，
-    軀幹比例將會依預設身高來計算。
-    你確定要繼續嗎？
+reset-reset_all_warning_default-v2 =
+    <b>警告：</b>由於尚未設定身高，軀幹比例將會重置為使用預設身高的預設值。
+    確定要繼續嗎？
 reset-full = 完整重置
 reset-mounting = 配戴重置
 reset-yaw = 左右偏擺重置
@@ -1121,9 +1120,10 @@ onboarding-automatic_proportions-smol_warning-cancel = 返回
 onboarding-scaled_proportions-title = 標準軀幹比例
 onboarding-scaled_proportions-description = 為了讓 SlimeVR 追蹤器正常使用，我們需要知道你的骨骼長度。本流程會使用人體的平均軀幹比例並依照你的身高縮放調整。
 onboarding-scaled_proportions-manual_height-title = 設定你的身高
-onboarding-scaled_proportions-manual_height-description = 你的頭戴顯示器 (HMD) 高度應略小於您的身高全長，因為頭戴顯示器會測量你的眼睛高度。測量出的高度會被做為計算軀幹比例的基礎值。
+onboarding-scaled_proportions-manual_height-description-v2 = 身高會當作軀幹比例設定的基礎。
 onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR 目前尚未連接到 SlimeVR，因此無法根據頭戴顯示器測量身高。<b>請查閱說明文件，繼續操作請自行承擔風險！</b>
-onboarding-scaled_proportions-manual_height-height = 你的頭戴顯示器高度是
+onboarding-scaled_proportions-manual_height-height-v2 = 你的身高全長為
+onboarding-scaled_proportions-manual_height-estimated_height = 你的估計身高為：
 onboarding-scaled_proportions-manual_height-next_step = 繼續並儲存
 
 ## Tracker scaled proportions reset
