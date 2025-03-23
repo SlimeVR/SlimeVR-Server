@@ -59,6 +59,19 @@ fn warning(msg: String) {
 }
 
 #[tauri::command]
+fn open_config_folder(app_handle: tauri::AppHandle) {
+	let path = app_handle
+		.path()
+		.app_config_dir()
+		.unwrap_or_else(|_| Path::new(".").to_path_buf());
+	let path_str = path.to_string_lossy().into_owned();
+
+	if let Err(err) = open::that(path_str) {
+		eprintln!("Failed to open config folder: {}", err);
+	}
+}
+
+#[tauri::command]
 fn open_logs_folder(app_handle: tauri::AppHandle) {
 	let config_dir = app_handle
 		.path()
@@ -68,7 +81,7 @@ fn open_logs_folder(app_handle: tauri::AppHandle) {
 	let path_str = path.to_string_lossy().into_owned();
 
 	if let Err(err) = open::that(path_str) {
-		eprintln!("Failed to open config folder: {}", err);
+		eprintln!("Failed to open logs folder: {}", err);
 	}
 }
 
@@ -246,6 +259,7 @@ fn setup_tauri(
 			logging,
 			erroring,
 			warning,
+			open_config_folder,
 			open_logs_folder,
 			tray::update_translations,
 			tray::update_tray_text,
