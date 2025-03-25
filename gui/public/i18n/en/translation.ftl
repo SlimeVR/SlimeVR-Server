@@ -1291,3 +1291,30 @@ unknown_device-modal-description = There is a new tracker with MAC address <b>{$
     Do you want to connect it to SlimeVR?
 unknown_device-modal-confirm = Sure!
 unknown_device-modal-forget = Ignore it
+
+
+# VRChat config warnings
+vrc_config-on = On
+vrc_config-off = Off
+vrc_config-invalid = You have missconfigured VRChat settings!
+vrc_config-show_more = Show more
+vrc_config-setting_name = VRChat Setting name
+vrc_config-recommended_value = Recommended Value
+vrc_config-current_value = Current Value
+vrc_config-legacy_mode = Use Legacy IK Solving
+vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
+vrc_config-spine_mode = FBT Spine Mode
+vrc_config-tracker_model = FBT Tracker Model
+vrc_config-calibration_range = Calibration Range
+vrc_config-user_height = User Real Height
+
+vrc_config-spine_mode-UNKNOWN = Unknown
+vrc_config-spine_mode-LOCK_BOTH = Lock Both
+vrc_config-spine_mode-LOCK_HEAD = Lock Head
+vrc_config-spine_mode-LOCK_HIP = Lock Hip
+
+vrc_config-tracker_model-UNKNOWN = Unkown
+vrc_config-tracker_model-AXIS = Axis
+vrc_config-tracker_model-BOX = Box
+vrc_config-tracker_model-SPHERE = Sphere
+vrc_config-tracker_model-SYSTEM = System

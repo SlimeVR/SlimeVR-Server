@@ -634,23 +634,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	private fun isLeftArmTracker(): Boolean {
-		tracker.trackerPosition?.let {
-			return it == TrackerPosition.LEFT_SHOULDER ||
-				it == TrackerPosition.LEFT_UPPER_ARM ||
-				it == TrackerPosition.LEFT_LOWER_ARM ||
-				it == TrackerPosition.LEFT_HAND
-		}
-		return false
+		return tracker.trackerPosition?.isLeftArmTracker() ?: false
 	}
 
 	private fun isRightArmTracker(): Boolean {
-		tracker.trackerPosition?.let {
-			return it == TrackerPosition.RIGHT_SHOULDER ||
-				it == TrackerPosition.RIGHT_UPPER_ARM ||
-				it == TrackerPosition.RIGHT_LOWER_ARM ||
-				it == TrackerPosition.RIGHT_HAND
-		}
-		return false
+		return tracker.trackerPosition?.isRightArmTracker() ?: false
 	}
 
 	private fun isLeftLowerArmTracker(): Boolean {

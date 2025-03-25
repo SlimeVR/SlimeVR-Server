@@ -69,6 +69,20 @@ enum class TrackerPosition(
 	RIGHT_LITTLE_DISTAL("body:right_little_distal", null, BodyPart.RIGHT_LITTLE_DISTAL, 50),
 	;
 
+	fun isLeftArmTracker(): Boolean {
+		return this == LEFT_SHOULDER ||
+			this == LEFT_UPPER_ARM ||
+			this == LEFT_LOWER_ARM ||
+			this == LEFT_HAND
+	}
+
+	fun isRightArmTracker(): Boolean {
+		return this == RIGHT_SHOULDER ||
+			this == RIGHT_UPPER_ARM ||
+			this == RIGHT_LOWER_ARM ||
+			this == RIGHT_HAND
+	}
+
 	/**
 	 * Returns the default mounting orientation for the body part
 	 */
