@@ -1306,6 +1306,7 @@ vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
 vrc_config-spine_mode = FBT Spine Mode
 vrc_config-tracker_model = FBT Tracker Model
 vrc_config-calibration_range = Calibration Range
+vrc_config-calibration_visuals = Display Calibration Visuals
 vrc_config-user_height = User Real Height
 
 vrc_config-spine_mode-UNKNOWN = Unknown

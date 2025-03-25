@@ -172,6 +172,21 @@ export function VRCWarningsPage() {
                   ></SettingRow>
                   <SettingRow
                     details={<>hI</>}
+                    name="vrc_config-calibration_visuals"
+                    recommendedValue={
+                      <Localized
+                        id={onOffKey(state.recommended.calibrationVisuals)}
+                      ></Localized>
+                    }
+                    value={
+                      <Localized
+                        id={onOffKey(state.state.calibrationVisuals)}
+                      ></Localized>
+                    }
+                    valid={state.validity.calibrationVisualsOk}
+                  ></SettingRow>
+                  <SettingRow
+                    details={<>hI</>}
                     name="vrc_config-spine_mode"
                     recommendedValue={state.recommended.spineMode
                       .map((mode) =>
