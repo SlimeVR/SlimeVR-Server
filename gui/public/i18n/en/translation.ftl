@@ -1294,6 +1294,8 @@ unknown_device-modal-forget = Ignore it
 
 
 # VRChat config warnings
+vrc_config-page-title = VRChat configuration warnings
+vrc_config-page-desc = This page shows the state of your VRChat settings and shows what settings are incompatible with SlimeVR. It is highly recommended that you fix any warnings showing up here for the best user experience with SlimeVR
 vrc_config-on = On
 vrc_config-off = Off
 vrc_config-invalid = You have missconfigured VRChat settings!

@@ -101,16 +101,13 @@ export function VRCWarningsPage() {
 
   return (
     <div className="flex flex-col p-4 w-full">
-      <div className="flex flex-col max-w-lg gap-3">
-        <Typography variant="main-title">
-          VRChat configuration warnings
-        </Typography>
-        <Typography variant="standard" color="secondary">
-          This page shows the state of your VRChat settings and shows what
-          settings are incompatible with SlimeVR. It is highly recommended that
-          you fix any warnings showing up here for the best user experience with
-          SlimeVR
-        </Typography>
+      <div className="flex flex-col max-w-lg mobile:w-full gap-3">
+        <Localized id={'vrc_config-page-title'}>
+          <Typography variant="main-title" />
+        </Localized>
+        <Localized id={'vrc_config-page-desc'}>
+          <Typography variant="standard" color="secondary" />
+        </Localized>
       </div>
       <div className="w-full mt-4 gap-2 flex flex-col">
         <div className="-m-2 overflow-x-auto">
@@ -121,18 +118,18 @@ export function VRCWarningsPage() {
                   <tr>
                     <th scope="col" className="px-6 py-3 text-start">
                       <Localized id={'vrc_config-setting_name'}>
-                        <Typography></Typography>
+                        <Typography />
                       </Localized>
                     </th>
 
                     <th scope="col" className="px-6 py-3 text-end">
                       <Localized id={'vrc_config-recommended_value'}>
-                        <Typography></Typography>
+                        <Typography />
                       </Localized>
                     </th>
                     <th scope="col" className="px-6 py-3 text-end">
                       <Localized id={'vrc_config-current_value'}>
-                        <Typography></Typography>
+                        <Typography />
                       </Localized>
                     </th>
                   </tr>
