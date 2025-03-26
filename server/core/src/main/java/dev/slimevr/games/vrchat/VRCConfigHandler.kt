@@ -153,17 +153,6 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		listeners.removeIf { l -> l === listener }
 	}
 
-<<<<<<< Updated upstream
-	fun checkValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedValues): VRCConfigValidity = VRCConfigValidity(
-		legacyModeOk = values.legacyMode == recommended.legacyMode,
-		shoulderTrackingOk = values.shoulderTrackingDisabled == recommended.shoulderTrackingDisabled,
-		spineModeOk = recommended.spineMode.contains(values.spineMode),
-		tackerModelOk = values.trackerModel == recommended.trackerModel,
-		calibrationOk = abs(values.calibrationRange - recommended.calibrationRange) < 0.1,
-		userHeightOk = abs(server.humanPoseManager.userHeightFromConfig / 0.936 - values.userHeight) < 0.1,
-		calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
-	)
-=======
 	fun checkValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedValues): VRCConfigValidity {
 		return VRCConfigValidity(
 			legacyModeOk = values.legacyMode == recommended.legacyMode,
@@ -176,7 +165,6 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 			avatarMeasurementOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
 		)
 	}
->>>>>>> Stashed changes
 
 	fun onChange(values: VRCConfigValues) {
 		val recommended = recommendedValues()
