@@ -1,6 +1,7 @@
 import { Control, Controller, useForm } from 'react-hook-form';
 import {
   ChangeSkeletonConfigRequestT,
+  ResetType,
   RpcMessage,
   SkeletonBone,
   SkeletonConfigRequestT,
@@ -12,7 +13,7 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { BodyProportions } from './BodyProportions';
 import { Localized, useLocalization } from '@fluent/react';
 import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { useIsTauri } from '@/hooks/breakpoint';
+import { useBreakpoint, useIsTauri } from '@/hooks/breakpoint';
 import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
 import { ProportionsResetModal } from './ProportionsResetModal';
 import { fileOpen, fileSave } from 'browser-fs-access';
@@ -32,6 +33,54 @@ import { HumanIcon } from '@/components/commons/icon/HumanIcon';
 import { Typography } from '@/components/commons/Typography';
 import { useLocaleConfig } from '@/i18n/config';
 import { useNavigate } from 'react-router-dom';
+import { ResetButton } from '@/components/home/ResetButton';
+
+function IconButton({
+  onClick,
+  children,
+  className,
+  disabled,
+  tooltip,
+  showTooltip = false,
+  icon,
+}: {
+  onClick: () => void;
+  className?: string;
+  disabled?: boolean;
+  children: ReactNode;
+  tooltip?: ReactNode;
+  showTooltip?: boolean;
+  icon: ReactNode;
+}) {
+  const { isMobile } = useBreakpoint('mobile');
+
+  if (isMobile) showTooltip = true;
+
+  return (
+    <Tooltip
+      disabled={!showTooltip}
+      preferedDirection="bottom"
+      content={tooltip ?? children}
+    >
+      <button
+        onClick={onClick}
+        disabled={disabled}
+        className={classNames(
+          'flex flex-col rounded-md p-2 justify-between gap-1 items-center text-standard fill-background-10',
+          disabled
+            ? 'cursor-not-allowed opacity-30'
+            : 'hover:bg-background-50 cursor-pointer',
+          className
+        )}
+      >
+        <div className="flex justify-center items-center h-8 mobile:w-8 p-2 mobile:p-0">
+          {icon}
+        </div>
+        <div className={classNames('mobile:hidden')}>{children}</div>
+      </button>
+    </Tooltip>
+  );
+}
 
 function parseConfigImport(
   config: SkeletonConfigExport
@@ -155,11 +204,7 @@ function ImportExportButtons() {
     <>
       <div className="flex">
         <IconButton
-          tooltip={
-            <Localized id="onboarding-manual_proportions-import">
-              <Typography variant="standard"></Typography>
-            </Localized>
-          }
+          icon={<UploadFileIcon width={25}></UploadFileIcon>}
           onClick={onImport}
           className={classNames(
             'transition-colors',
@@ -167,16 +212,14 @@ function ImportExportButtons() {
             importState === ImportStatus.SUCCESS && 'text-status-success'
           )}
         >
-          <UploadFileIcon width={25}></UploadFileIcon>
+          <Localized id="onboarding-manual_proportions-import">
+            <Typography variant="standard"></Typography>
+          </Localized>
         </IconButton>
       </div>
       <div className="flex">
         <IconButton
-          tooltip={
-            <Localized id="onboarding-manual_proportions-export">
-              <Typography variant="standard"></Typography>
-            </Localized>
-          }
+          icon={<ImportIcon size={25}></ImportIcon>}
           onClick={() => {
             exporting.current = true;
 
@@ -186,7 +229,9 @@ function ImportExportButtons() {
             );
           }}
         >
-          <ImportIcon size={25}></ImportIcon>
+          <Localized id="onboarding-manual_proportions-export">
+            <Typography variant="standard"></Typography>
+          </Localized>
         </IconButton>
       </div>
     </>
@@ -198,38 +243,6 @@ type ManualProportionControls = Control<{
   ratio: boolean;
 }>;
 
-function IconButton({
-  onClick,
-  tooltip,
-  children,
-  className,
-  disabled,
-}: {
-  onClick: () => void;
-  tooltip: ReactNode;
-  className?: string;
-  disabled?: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <Tooltip preferedDirection="bottom" content={tooltip}>
-      <button
-        onClick={onClick}
-        disabled={disabled}
-        className={classNames(
-          'flex flex-col justify-center rounded-md p-3 gap-1 items-center w-14 h-14 text-standard',
-          disabled
-            ? 'fill-background-70 cursor-not-allowed'
-            : 'fill-background-10 bg-background-60 hover:bg-background-50 cursor-pointer',
-          className
-        )}
-      >
-        {children}
-      </button>
-    </Tooltip>
-  );
-}
-
 function LinearRatioToggle({ control }: { control: ManualProportionControls }) {
   return (
     <Controller
@@ -239,25 +252,21 @@ function LinearRatioToggle({ control }: { control: ManualProportionControls }) {
         <>
           {value ? (
             <IconButton
-              tooltip={
-                <Localized id="onboarding-manual_proportions-grouped_proportions">
-                  <Typography variant="standard"></Typography>
-                </Localized>
-              }
+              icon={<PercentIcon size={25}></PercentIcon>}
               onClick={() => onChange(!value)}
             >
-              <PercentIcon size={25}></PercentIcon>
+              <Localized id="onboarding-manual_proportions-grouped_proportions">
+                <Typography variant="standard"></Typography>
+              </Localized>
             </IconButton>
           ) : (
             <IconButton
-              tooltip={
-                <Localized id="onboarding-manual_proportions-all_proportions">
-                  <Typography variant="standard"></Typography>
-                </Localized>
-              }
+              icon={<RulerIcon width={25}></RulerIcon>}
               onClick={() => onChange(!value)}
             >
-              <RulerIcon width={25}></RulerIcon>
+              <Localized id="onboarding-manual_proportions-all_proportions">
+                <Typography variant="standard"></Typography>
+              </Localized>
             </IconButton>
           )}
         </>
@@ -275,25 +284,21 @@ function PreciseToggle({ control }: { control: ManualProportionControls }) {
         <>
           {!value ? (
             <IconButton
-              tooltip={
-                <Localized id="onboarding-manual_proportions-normal_increment">
-                  <Typography variant="standard"></Typography>
-                </Localized>
-              }
+              icon={<div className="text-xl font-bold">+1</div>}
               onClick={() => onChange(!value)}
             >
-              <div className="text-xl font-bold">+1</div>
+              <Localized id="onboarding-manual_proportions-normal_increment">
+                <Typography variant="standard"></Typography>
+              </Localized>
             </IconButton>
           ) : (
             <IconButton
-              tooltip={
-                <Localized id="onboarding-manual_proportions-precise_increment">
-                  <Typography variant="standard"></Typography>
-                </Localized>
-              }
+              icon={<div className="text-xl font-bold">+0.5</div>}
               onClick={() => onChange(!value)}
             >
-              <div className="text-xl font-bold">+0.5</div>
+              <Localized id="onboarding-manual_proportions-precise_increment">
+                <Typography variant="standard"></Typography>
+              </Localized>
             </IconButton>
           )}
         </>
@@ -337,19 +342,17 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
       </div>
       <div className="flex">
         <IconButton
-          tooltip={
-            <Localized id="reset-reset_all">
-              <Typography variant="standard"></Typography>
-            </Localized>
-          }
+          icon={<FullResetIcon width={20}></FullResetIcon>}
           onClick={() => setShowWarning(true)}
         >
-          <FullResetIcon width={20}></FullResetIcon>
+          <Localized id="reset-reset_all">
+            <Typography variant="standard"></Typography>
+          </Localized>
         </IconButton>
       </div>
       <div className="flex">
         <IconButton
-          disabled={!canUseFineTuning}
+          showTooltip={!canUseFineTuning}
           tooltip={
             <Localized
               id={
@@ -361,16 +364,20 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
               <Typography variant="standard"></Typography>
             </Localized>
           }
+          disabled={!canUseFineTuning}
+          icon={<HumanIcon width={20}></HumanIcon>}
           onClick={() =>
             nav('/onboarding/body-proportions/auto', {
               state: { alonePage: state.alonePage },
             })
           }
         >
-          <HumanIcon width={20}></HumanIcon>
+          <Localized id={'onboarding-manual_proportions-fine_tuning_button'}>
+            <Typography variant="standard"></Typography>
+          </Localized>
         </IconButton>
       </div>
-      <div className="flex flex-grow mobile:hidden"></div>
+      <div className="flex flex-grow"></div>
       <ImportExportButtons></ImportExportButtons>
       <ProportionsResetModal
         accept={() => {
@@ -437,20 +444,30 @@ export function ManualProportionsPage() {
         </div>
         <div className="rounded-md overflow-clip w-1/3 bg-background-60 hidden mobile:hidden sm:flex relative">
           <SkeletonVisualizerWidget />
-          <Tooltip
-            preferedDirection="bottom"
-            content={
-              <Localized id="onboarding-manual_proportions-estimated_height">
-                <Typography></Typography>
-              </Localized>
-            }
-          >
-            <div className="absolute h-14 bg-background-50 p-4 flex items-center rounded-lg right-4 top-4">
-              <Typography variant="main-title">
-                {cmFormat.format((userHeight * 100) / 0.936)}
-              </Typography>
+
+          <div className="top-4 w-full px-4 absolute flex gap-2 flex-col md:flex-row">
+            <div className="h-14 flex flex-grow items-center">
+              <ResetButton
+                type={ResetType.Full}
+                size="small"
+                className="w-full h-full bg-background-50 hover:bg-background-40 text-background-10"
+              ></ResetButton>
             </div>
-          </Tooltip>
+            <Tooltip
+              preferedDirection="bottom"
+              content={
+                <Localized id="onboarding-manual_proportions-estimated_height">
+                  <Typography></Typography>
+                </Localized>
+              }
+            >
+              <div className="h-14 bg-background-50 p-4 flex items-center rounded-lg min-w-36 justify-center">
+                <Typography variant="main-title">
+                  {cmFormat.format((userHeight * 100) / 0.936)}
+                </Typography>
+              </div>
+            </Tooltip>
+          </div>
         </div>
       </div>
     </>

@@ -25,11 +25,13 @@ import classNames from 'classnames';
 
 export function ResetButton({
   type,
-  variant = 'big',
+  size = 'big',
+  className,
   onReseted,
 }: {
+  className?: string;
   type: ResetType;
-  variant: 'big' | 'small';
+  size: 'big' | 'small';
   onReseted?: () => void;
 }) {
   const { l10n } = useLocalization();
@@ -115,21 +117,19 @@ export function ResetButton({
     };
   }, []);
 
-  return variant === 'small' ? (
+  return size === 'small' ? (
     <Button
       icon={getIcon()}
       onClick={triggerReset}
       className={classNames(
         'border-2',
-        isFinished ? 'border-status-success' : 'border-transparent'
+        isFinished ? 'border-status-success' : 'border-transparent',
+        className
       )}
       variant="primary"
       disabled={isCounting || needsFullReset}
     >
-      <div className="relative">
-        <div className="opacity-0 h-0">{text}</div>
-        {!isCounting || type === ResetType.Yaw ? text : String(timer)}
-      </div>
+      {!isCounting || type === ResetType.Yaw ? text : String(timer)}
     </Button>
   ) : (
     <BigButton
@@ -137,7 +137,8 @@ export function ResetButton({
       onClick={triggerReset}
       className={classNames(
         'border-2',
-        isFinished ? 'border-status-success' : 'border-transparent'
+        isFinished ? 'border-status-success' : 'border-transparent',
+        className
       )}
       disabled={isCounting || needsFullReset}
     >

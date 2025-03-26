@@ -146,7 +146,7 @@ function ProportionItem({
               </Typography>
             </div>
           </Tooltip>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center mobile:justify-center mobile:w-full">
             <div
               className={classNames(
                 'flex items-center gap-2 my-2 opacity-10',
@@ -169,7 +169,7 @@ function ProportionItem({
                 </IncrementButton>
               )}
             </div>
-            <Typography variant="mobile-title" bold>
+            <div className="text-xl font-bold min-w-24 text-center">
               {part.unit === 'percent'
                 ? /* Make number rounding so it's based on .5 decimals */
                   percentageFormat.format(Math.round(part.ratio * 200) / 200)
@@ -179,12 +179,12 @@ function ProportionItem({
                   part.value * 100
                 )})`}</p>
               )}
-            </Typography>
+            </div>
             <div
               className={classNames(
                 'flex items-center gap-2 my-2 opacity-10',
                 part.type === 'group-part'
-                  ? ' group-hover/child-buttons:opacity-100'
+                  ? 'group-hover/child-buttons:opacity-100'
                   : 'group-hover/buttons:opacity-100'
               )}
             >
