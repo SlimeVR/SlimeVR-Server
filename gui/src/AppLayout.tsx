@@ -1,14 +1,12 @@
-import { useEffect, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useConfig } from './hooks/config';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { getSentryOrCompute } from './utils/sentry';
+import { Outlet } from 'react-router-dom';
 
 export function AppLayout() {
-  const { loading, config } = useConfig();
-  const navigate = useNavigate();
+  const { config } = useConfig();
 
   useLayoutEffect(() => {
-    if (loading || !config) return;
+    if (!config) return;
     if (config.theme !== undefined) {
       document.documentElement.dataset.theme = config.theme;
     }
@@ -26,23 +24,7 @@ export function AppLayout() {
         `${config.textSize}rem`
       );
     }
-  }, [config, loading]);
-
-  useLayoutEffect(() => {
-    if (config && !config.doneOnboarding) {
-      navigate('/onboarding/home');
-    }
-  }, [config?.doneOnboarding]);
-
-  // const location = useLocation();
-  // const navigationType = useNavigationType();
-  // useEffect(() => {
-  //   if (import.meta.env.PROD) return;
-  //   console.log('The current URL is', { ...location });
-  //   console.log('The last navigation action was', navigationType);
-  // }, [location, navigationType]);
-
-  if (loading) return <></>;
+  }, [config]);
 
   return (
     <>

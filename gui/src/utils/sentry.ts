@@ -9,6 +9,9 @@ import {
 } from 'react-router-dom';
 
 export function getSentryOrCompute(enabled = false) {
+  // if sentry is already initialized - SKIP
+  if (enabled && Sentry.isInitialized()) return;
+
   const client = Sentry.getClient();
   if (client) {
     log(`${enabled ? 'Enabled' : 'Disabled'} error logging with Sentry.`);
