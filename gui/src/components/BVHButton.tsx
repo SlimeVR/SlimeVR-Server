@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import {
   RecordBVHRequestT,
@@ -11,7 +11,6 @@ import { RecordIcon } from './commons/icon/RecordIcon';
 import classNames from 'classnames';
 
 export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
-  const { l10n } = useLocalization();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [recording, setRecording] = useState(false);
 
@@ -30,15 +29,16 @@ export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   });
 
   return (
-    <BigButton
-      text={l10n.getString(recording ? 'bvh-recording' : 'bvh-start_recording')}
-      icon={<RecordIcon width={20} />}
-      onClick={toggleBVH}
-      className={classNames(
-        props.className,
-        'border',
-        recording ? 'border-status-critical' : 'border-transparent'
-      )}
-    ></BigButton>
+    <Localized id={recording ? 'bvh-recording' : 'bvh-start_recording'}>
+      <BigButton
+        icon={<RecordIcon width={20} />}
+        onClick={toggleBVH}
+        className={classNames(
+          props.className,
+          'border',
+          recording ? 'border-status-critical' : 'border-transparent'
+        )}
+      ></BigButton>
+    </Localized>
   );
 }

@@ -6,180 +6,30 @@ import {
   ChangeSkeletonConfigRequestT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
-import { useReducer, useEffect, useMemo, useState, useLayoutEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-export type ProportionChange = LinearChange | RatioChange | BoneChange | GroupChange;
-
-export enum ProportionChangeType {
-  Linear,
-  Ratio,
-  Bone,
-  Group,
-}
-
-export interface LinearChange {
-  type: ProportionChangeType.Linear;
-  value: number;
-}
-
-export interface RatioChange {
-  type: ProportionChangeType.Ratio;
-  /**
-   * This is a number between -1 and 1 [-1; 1]
-   */
-  value: number;
-}
-
-export interface BoneChange {
-  type: ProportionChangeType.Bone;
-  bone: SkeletonBone;
+type LabelBase = {
   value: number;
   label: string;
-}
+} & ({ unit: 'cm' } | { unit: 'percent'; ratio: number });
 
-export interface GroupChange {
-  type: ProportionChangeType.Group;
-  bones: {
-    bone: SkeletonBone;
-    /**
-     * This is a number between 0 and 1 [0; 1]
-     */
-    value: number;
-    label: string;
-  }[];
-  value: number;
-  label: string;
-  index?: number;
-  parentLabel: string;
-}
-
-export type ProportionState = BoneState | GroupState;
-
-export enum BoneType {
-  Single,
-  Group,
-}
-
-export interface BoneState {
-  type: BoneType.Single;
+export type BoneLabel = LabelBase & {
+  type: 'bone';
   bone: SkeletonBone;
-  value: number;
-  currentLabel: string;
-}
+};
 
-export interface GroupState {
-  type: BoneType.Group;
-  bones: {
-    bone: SkeletonBone;
-    /**
-     * This is a number between 0 and 1 [0; 1]
-     */
-    value: number;
-  }[];
-  value: number;
-  currentLabel: string;
-  index?: number;
-  parentLabel: string;
-}
+export type GroupLabel = LabelBase & {
+  type: 'group';
+  bones: GroupPartLabel[];
+};
 
-function reducer(state: ProportionState, action: ProportionChange): ProportionState {
-  switch (action.type) {
-    case ProportionChangeType.Bone: {
-      return {
-        ...action,
-        currentLabel: action.label,
-        type: BoneType.Single,
-      };
-    }
-
-    case ProportionChangeType.Group: {
-      return {
-        ...action,
-        currentLabel: action.label,
-        type: BoneType.Group,
-      };
-    }
-
-    case ProportionChangeType.Linear: {
-      if (action.value > 0) {
-        return {
-          ...state,
-          value: roundedStep(state.value, action.value, true),
-        };
-      }
-
-      return {
-        ...state,
-        value: state.value + action.value / 100,
-      };
-    }
-
-    case ProportionChangeType.Ratio: {
-      if (state.type === BoneType.Single || state.index === undefined) {
-        throw new Error(`Unexpected increase of bone ${state.currentLabel}`);
-      }
-
-      const newState: GroupState = JSON.parse(JSON.stringify(state));
-      if (newState.index === undefined) throw 'unreachable';
-      newState.bones[newState.index].value += action.value;
-      if (newState.bones[newState.index].value <= 0) return state;
-      const filtered = newState.bones.filter((_it, index) => newState.index !== index);
-      const total = filtered.reduce((acc, cur) => acc + cur.value, 0);
-
-      for (const part of filtered) {
-        part.value += (part.value / total) * action.value * -1;
-        if (part.value <= 0) return state;
-      }
-
-      return newState;
-    }
-  }
-}
+export type GroupPartLabel = LabelBase & {
+  type: 'group-part';
+  bone: SkeletonBone;
+  group: string;
+};
 
 export type Label = BoneLabel | GroupLabel | GroupPartLabel;
-
-export enum LabelType {
-  Bone,
-  Group,
-  GroupPart,
-}
-
-export interface BoneLabel {
-  type: LabelType.Bone;
-  bone: SkeletonBone;
-  value: number;
-  label: string;
-}
-
-export interface GroupLabel {
-  type: LabelType.Group;
-  bones: {
-    bone: SkeletonBone;
-    /**
-     * This is a number between 0 and 1 [0; 1]
-     */
-    value: number;
-    label: string;
-  }[];
-  value: number;
-  label: string;
-}
-
-export interface GroupPartLabel {
-  type: LabelType.GroupPart;
-  bones: {
-    bone: SkeletonBone;
-    /**
-     * This is a number between 0 and 1 [0; 1]
-     */
-    value: number;
-    label: string;
-  }[];
-  value: number;
-  label: string;
-  parentLabel: string;
-  index: number;
-}
 
 const BONE_MAPPING: Map<string, SkeletonBone[]> = new Map([
   [
@@ -195,100 +45,76 @@ const BONE_MAPPING: Map<string, SkeletonBone[]> = new Map([
   ['skeleton_bone-arm_group', [SkeletonBone.UPPER_ARM, SkeletonBone.LOWER_ARM]],
 ]);
 
-export const INVALID_BONE: BoneState = {
-  type: BoneType.Single,
-  bone: SkeletonBone.NONE,
-  value: 0,
-  currentLabel: 'invalid-bone',
-};
+export type UpdateBoneParams = { newValue: number } & (
+  | { type: 'bone'; bone: SkeletonBone }
+  | { type: 'group'; group: string }
+  | { type: 'group-part'; group: string; bone: SkeletonBone }
+);
 
-export function useManualProportions(): {
-  bodyParts: Label[];
-  ratioMode: boolean;
-  state: ProportionState;
-  dispatch: (change: ProportionChange) => void;
-  setRatioMode: (ratio: boolean) => void;
+export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
+  bodyPartsGrouped: Label[];
+  changeBoneValue: (params: UpdateBoneParams) => void;
 } {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [config, setConfig] = useState<Omit<SkeletonConfigResponseT, 'pack'> | null>(
     null
   );
-  const [ratio, setRatio] = useState(false);
-  const [state, dispatch] = useReducer(reducer, INVALID_BONE);
-
-  const bodyParts: Label[] = useMemo(() => {
+  const bodyPartsGrouped: Label[] = useMemo(() => {
     if (!config) return [];
-    if (ratio) {
-      const groups: GroupPartLabel[] = [];
-      for (const [label, related] of BONE_MAPPING) {
-        const children = config.skeletonParts.filter((it) => related.includes(it.bone));
-        const total = children.reduce((acc, cur) => cur.value + acc, 0);
-
-        const group: GroupPartLabel = {
-          parentLabel: label,
-          label,
-          type: LabelType.GroupPart,
-          value: total,
-          bones: children.map((it) => ({
-            label: 'skeleton_bone-' + SkeletonBone[it.bone],
-            value: it.value / total,
-            bone: it.bone,
-          })),
-          index: 0,
-        };
-        groups.push(
-          ...children.map((_it, index) => ({
-            ...group,
-            index,
-            label: group.bones[index].label,
-          }))
-        );
-      }
-
-      return config.skeletonParts.flatMap(({ bone, value }) => {
-        const part = groups.find((it) => it.bones[it.index].bone === bone);
-        if (part === undefined) {
-          return {
-            type: LabelType.Bone,
+    if (type === 'linear') {
+      return config.skeletonParts.map(
+        ({ bone, value }) =>
+          ({
+            type: 'bone',
+            unit: 'cm',
             bone,
             label: 'skeleton_bone-' + SkeletonBone[bone],
             value,
-          };
-        }
-
-        if (part.index === 0) {
-          return [
-            // For some reason, Typescript can't handle this being a GroupPart
-            // when specifically inside an array. If I directly return it without part,
-            // it will work. Surely some typing in flatMap's definition is wrong
-            {
-              ...part,
-              type: LabelType.Group,
-              label: part.parentLabel,
-              index: undefined,
-            } as unknown as GroupPartLabel,
-            part,
-          ];
-        }
-        return part;
-      });
+          }) satisfies BoneLabel
+      );
     }
 
-    return config.skeletonParts.map(({ bone, value }) => ({
-      type: LabelType.Bone,
-      bone,
-      label: 'skeleton_bone-' + SkeletonBone[bone],
-      value,
-    }));
-  }, [config, ratio]);
-
-  useLayoutEffect(() => {
-    dispatch({
-      ...INVALID_BONE,
-      label: INVALID_BONE.currentLabel,
-      type: ProportionChangeType.Bone,
-    });
-  }, [ratio]);
+    return [
+      ...BONE_MAPPING.keys().map((groupName) => {
+        const groupBones = BONE_MAPPING.get(groupName);
+        if (!groupBones) throw 'invalid state - this value should always exits';
+        const total = config.skeletonParts
+          .filter(({ bone }) => groupBones.includes(bone))
+          .reduce((acc, cur) => cur.value + acc, 0);
+        return {
+          type: 'group',
+          bones: config.skeletonParts
+            .filter(({ bone }) => groupBones.includes(bone))
+            .map(({ bone, value }) => ({
+              type: 'group-part',
+              group: groupName,
+              unit: 'percent',
+              bone,
+              label: 'skeleton_bone-' + SkeletonBone[bone],
+              value: value,
+              ratio: value / total,
+            })),
+          unit: 'cm',
+          label: groupName,
+          value: total,
+        } satisfies GroupLabel;
+      }),
+      ...config.skeletonParts
+        .filter(
+          ({ bone }) => !BONE_MAPPING.values().find((bones) => bones.includes(bone))
+        )
+        .map(
+          ({ bone, value }) =>
+            ({
+              type: 'bone',
+              unit: 'cm',
+              bone,
+              label: 'skeleton_bone-' + SkeletonBone[bone],
+              value,
+            }) satisfies BoneLabel
+        ),
+    ];
+  }, [config, type]);
 
   useRPCPacket(RpcMessage.SkeletonConfigResponse, (data: SkeletonConfigResponseT) => {
     setConfig(data);
@@ -298,70 +124,72 @@ export function useManualProportions(): {
     sendRPCPacket(RpcMessage.SkeletonConfigRequest, new SkeletonConfigRequestT());
   }, []);
 
-  useEffect(() => {
-    const conf = { ...config } as Omit<SkeletonConfigResponseT, 'pack'> | null;
-
-    if (state.type === BoneType.Single) {
-      // Just ignore if bone is none (because initial state value)
-      // and check if we actually changed of value
-      if (
-        state.bone === SkeletonBone.NONE ||
-        bodyParts.find((it) => it.type === LabelType.Bone && it.bone === state.bone)
-          ?.value === state.value
-      ) {
-        return;
+  return {
+    bodyPartsGrouped,
+    changeBoneValue: (params) => {
+      if (!config) return;
+      if (params.type === 'group') {
+        const group = BONE_MAPPING.get(params.group);
+        if (!group) throw 'invalid state - group should exist';
+        const oldGroupTotal = config.skeletonParts
+          .filter(({ bone }) => group.includes(bone))
+          .reduce((acc, cur) => cur.value + acc, 0);
+        for (const part of group) {
+          const currentValue = config.skeletonParts.find(({ bone }) => bone === part);
+          if (!currentValue) throw 'invalid state - the bone should exists';
+          const currentRatio = currentValue.value / oldGroupTotal;
+          sendRPCPacket(
+            RpcMessage.ChangeSkeletonConfigRequest,
+            new ChangeSkeletonConfigRequestT(part, params.newValue * currentRatio)
+          );
+        }
       }
 
-      sendRPCPacket(
-        RpcMessage.ChangeSkeletonConfigRequest,
-        new ChangeSkeletonConfigRequestT(state.bone, state.value)
-      );
-      const b = conf?.skeletonParts?.find(({ bone }) => bone === state.bone);
-      if (!b || !conf) return;
-      b.value = state.value;
-    } else {
-      const part = bodyParts.find(
-        (it) =>
-          it.type === LabelType.Group &&
-          (it.label === state.currentLabel || it.label === state.parentLabel)
-      ) as GroupLabel | undefined;
+      if (params.type === 'group-part') {
+        const group = BONE_MAPPING.get(params.group);
+        if (!group) throw 'invalid state - group should exist';
+        const part = config.skeletonParts.find(({ bone }) => bone === params.bone);
+        if (!part) throw 'invalid state - the part should exists';
+        const oldGroupTotal = config.skeletonParts
+          .filter(({ bone }) => group.includes(bone))
+          .reduce((acc, cur) => cur.value + acc, 0);
+        let newValue = part.value + oldGroupTotal * params.newValue; // the new ratio is computed from the group size and not the bone
+        if (newValue <= 0)
+          // Prevent ratios from getting below zero
+          newValue = 0;
 
-      // Check if we found the group we were looking for
-      // and check if it even changed of value
-      // we only need to check one child because changing one
-      // value propagates to the other children
-
-      if (
-        !part ||
-        (part.value === state.value && part.bones[0].value === state.bones[0].value)
-      ) {
-        return;
-      }
-
-      for (const child of state.bones) {
         sendRPCPacket(
           RpcMessage.ChangeSkeletonConfigRequest,
-          new ChangeSkeletonConfigRequestT(child.bone, state.value * child.value)
+          new ChangeSkeletonConfigRequestT(params.bone, newValue)
         );
 
-        const b = conf?.skeletonParts?.find(({ bone }) => bone === child.bone);
-        if (!b || !conf) return;
-        b.value = state.value * child.value;
+        // Update percent from other bones ratios so the total stays 100%
+        // it will remove or add to the other bones proportionally to their current value
+        const diffValue = Math.abs(newValue - part.value);
+        const signDiff = Math.sign(newValue - part.value);
+        for (const part of group) {
+          if (part === params.bone) continue;
+          const currentValue = config.skeletonParts.find(({ bone }) => bone === part);
+          if (!currentValue) throw 'invalid state - the bone should exists';
+          sendRPCPacket(
+            RpcMessage.ChangeSkeletonConfigRequest,
+            new ChangeSkeletonConfigRequestT(
+              part,
+              currentValue.value - (diffValue / (group.length - 1)) * signDiff
+            )
+          );
+        }
       }
-    }
 
-    setConfig(conf);
-  }, [state]);
-
-  return { bodyParts, ratioMode: ratio, state, dispatch, setRatioMode: setRatio };
-}
-
-function roundedStep(value: number, step: number, add: boolean): number {
-  if (!add) {
-    return (Math.round(value * 200) - step * 2) / 200;
-  } else {
-    return (Math.round(value * 200) + step * 2) / 200;
-  }
+      if (params.type === 'bone') {
+        sendRPCPacket(
+          RpcMessage.ChangeSkeletonConfigRequest,
+          new ChangeSkeletonConfigRequestT(params.bone, params.newValue)
+        );
+      }
+      sendRPCPacket(RpcMessage.SkeletonConfigRequest, new SkeletonConfigRequestT());
+    },
+  };
 }
 
 export const MIN_HEIGHT = 0.4;
