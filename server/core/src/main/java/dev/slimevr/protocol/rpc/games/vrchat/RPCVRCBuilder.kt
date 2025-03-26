@@ -11,6 +11,7 @@ fun buildVRCConfigValues(fbb: FlatBufferBuilder, values: dev.slimevr.games.vrcha
 	VRCConfigValues.addLegacyMode(fbb, values.legacyMode)
 	VRCConfigValues.addShoulderTrackingDisabled(fbb, values.shoulderTrackingDisabled)
 	VRCConfigValues.addTrackerModel(fbb, values.trackerModel.id)
+	VRCConfigValues.addAvatarMeasurementType(fbb, values.avatarMeasurementType.id)
 	VRCConfigValues.addUserHeight(fbb, values.userHeight.toFloat())
 	return VRCConfigValues.endVRCConfigValues(fbb)
 }
@@ -24,6 +25,7 @@ fun buildVRCConfigValidity(fbb: FlatBufferBuilder, validity: dev.slimevr.games.v
 	VRCConfigValidity.addShoulderTrackingOk(fbb, validity.shoulderTrackingOk)
 	VRCConfigValidity.addTrackerModelOk(fbb, validity.tackerModelOk)
 	VRCConfigValidity.addUserHeightOk(fbb, validity.userHeightOk)
+	VRCConfigValidity.addAvatarMeasurementTypeOk(fbb, validity.avatarMeasurementOk)
 	return VRCConfigValidity.endVRCConfigValidity(fbb)
 }
 
@@ -41,6 +43,7 @@ fun buildVRCConfigRecommendedValues(fbb: FlatBufferBuilder, values: dev.slimevr.
 	VRCConfigRecommendedValues.addLegacyMode(fbb, values.legacyMode)
 	VRCConfigRecommendedValues.addShoulderTrackingDisabled(fbb, values.shoulderTrackingDisabled)
 	VRCConfigRecommendedValues.addTrackerModel(fbb, values.trackerModel.id)
+	VRCConfigRecommendedValues.addAvatarMeasurementType(fbb, values.avatarMeasurementType.id)
 	VRCConfigRecommendedValues.addUserHeight(fbb, values.userHeight.toFloat())
 	return VRCConfigRecommendedValues.endVRCConfigRecommendedValues(fbb)
 }

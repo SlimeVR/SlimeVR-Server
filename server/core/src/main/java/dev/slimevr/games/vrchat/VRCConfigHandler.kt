@@ -22,7 +22,7 @@ enum class VRCTrackerModel(val value: Int, val id: Int) {
 	}
 }
 
-enum class VRCSpineModel(val value: Int, val id: Int) {
+enum class VRCSpineMode(val value: Int, val id: Int) {
 	UNKNOWN(-1, solarxr_protocol.rpc.VRCSpineMode.UNKNOWN),
 	LOCK_HIP(0, solarxr_protocol.rpc.VRCSpineMode.LOCK_HIP),
 	LOCK_HEAD(1, solarxr_protocol.rpc.VRCSpineMode.LOCK_HEAD),
@@ -30,11 +30,25 @@ enum class VRCSpineModel(val value: Int, val id: Int) {
 	;
 
 	companion object {
-		private val byValue = VRCSpineModel.entries.associateBy { it.value }
+		private val byValue = VRCSpineMode.entries.associateBy { it.value }
 
-		fun getByValue(value: Int): VRCSpineModel? = byValue[value]
+		fun getByValue(value: Int): VRCSpineMode? = byValue[value]
 	}
 }
+
+enum class VRCAvatarMeasurementType(val value: Int, val id: Int) {
+	UNKNOWN(-1, solarxr_protocol.rpc.VRCAvatarMeasurementType.UNKNOWN),
+	HEIGHT(0, solarxr_protocol.rpc.VRCAvatarMeasurementType.HEIGHT),
+	ARM_SPAN(1, solarxr_protocol.rpc.VRCAvatarMeasurementType.ARM_SPAN);
+
+
+	companion object {
+		private val byValue = VRCAvatarMeasurementType.entries.associateBy { it.value }
+
+		fun getByValue(value: Int): VRCAvatarMeasurementType? = byValue[value]
+	}
+}
+
 
 data class VRCConfigValues(
 	val legacyMode: Boolean,
@@ -43,7 +57,8 @@ data class VRCConfigValues(
 	val calibrationRange: Double,
 	val calibrationVisuals: Boolean,
 	val trackerModel: VRCTrackerModel,
-	val spineMode: VRCSpineModel,
+	val spineMode: VRCSpineMode,
+	val avatarMeasurementType: VRCAvatarMeasurementType,
 )
 
 data class VRCConfigRecommendedValues(
@@ -53,7 +68,8 @@ data class VRCConfigRecommendedValues(
 	val calibrationRange: Double,
 	val calibrationVisuals: Boolean,
 	val trackerModel: VRCTrackerModel,
-	val spineMode: Array<VRCSpineModel>,
+	val spineMode: Array<VRCSpineMode>,
+	val avatarMeasurementType: VRCAvatarMeasurementType,
 )
 
 data class VRCConfigValidity(
@@ -64,6 +80,7 @@ data class VRCConfigValidity(
 	val calibrationVisualsOk: Boolean,
 	val tackerModelOk: Boolean,
 	val spineModeOk: Boolean,
+	val avatarMeasurementOk: Boolean,
 )
 
 abstract class VRCConfigHandler {
@@ -122,8 +139,9 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 			userHeight = server.humanPoseManager.userHeightFromConfig / 0.936,
 			calibrationRange = 0.2,
 			trackerModel = VRCTrackerModel.AXIS,
-			spineMode = arrayOf(VRCSpineModel.LOCK_HIP, VRCSpineModel.LOCK_HEAD),
+			spineMode = arrayOf(VRCSpineMode.LOCK_HIP, VRCSpineMode.LOCK_HEAD),
 			calibrationVisuals = true,
+			avatarMeasurementType = VRCAvatarMeasurementType.HEIGHT
 		)
 	}
 
@@ -135,6 +153,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		listeners.removeIf { l -> l === listener }
 	}
 
+<<<<<<< Updated upstream
 	fun checkValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedValues): VRCConfigValidity = VRCConfigValidity(
 		legacyModeOk = values.legacyMode == recommended.legacyMode,
 		shoulderTrackingOk = values.shoulderTrackingDisabled == recommended.shoulderTrackingDisabled,
@@ -144,6 +163,20 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		userHeightOk = abs(server.humanPoseManager.userHeightFromConfig / 0.936 - values.userHeight) < 0.1,
 		calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
 	)
+=======
+	fun checkValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedValues): VRCConfigValidity {
+		return VRCConfigValidity(
+			legacyModeOk = values.legacyMode == recommended.legacyMode,
+			shoulderTrackingOk = values.shoulderTrackingDisabled == recommended.shoulderTrackingDisabled,
+			spineModeOk = recommended.spineMode.contains(values.spineMode),
+			tackerModelOk = values.trackerModel == recommended.trackerModel,
+			calibrationOk = abs(values.calibrationRange - recommended.calibrationRange) < 0.1,
+			userHeightOk = abs(server.humanPoseManager.userHeightFromConfig / 0.936 - values.userHeight) < 0.1,
+			calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
+			avatarMeasurementOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
+		)
+	}
+>>>>>>> Stashed changes
 
 	fun onChange(values: VRCConfigValues) {
 		val recommended = recommendedValues()

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useWebsocketAPI } from './websocket-api';
-import { RpcMessage, VRCConfigStateChangeResponseT, VRCConfigStateRequestT, VRCSpineMode, VRCTrackerModel } from 'solarxr-protocol';
+import { RpcMessage, VRCAvatarMeasurementType, VRCConfigStateChangeResponseT, VRCConfigStateRequestT, VRCSpineMode, VRCTrackerModel } from 'solarxr-protocol';
 
 type NonNull<T> = {
   [P in keyof T]: NonNullable<T[P]>;
@@ -21,6 +21,12 @@ export const trackerModelTranslationMap: Record<VRCTrackerModel, string> = {
   [VRCTrackerModel.BOX]: 'vrc_config-tracker_model-BOX',
   [VRCTrackerModel.SPHERE]: 'vrc_config-tracker_model-SPHERE',
   [VRCTrackerModel.SYSTEM]: 'vrc_config-tracker_model-SYSTEM',
+}
+
+export const avatarMeasurementTypeTranslationMap: Record<VRCAvatarMeasurementType, string> = {
+  [VRCAvatarMeasurementType.UNKNOWN]: 'vrc_config-avatar_measurement_type-UNKNOWN',
+  [VRCAvatarMeasurementType.HEIGHT]: 'vrc_config-avatar_measurement_type-HEIGHT',
+  [VRCAvatarMeasurementType.ARM_SPAN]: 'vrc_config-avatar_measurement_type-ARM_SPAN',
 }
 
 

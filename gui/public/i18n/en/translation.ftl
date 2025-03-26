@@ -1295,7 +1295,13 @@ unknown_device-modal-forget = Ignore it
 
 # VRChat config warnings
 vrc_config-page-title = VRChat configuration warnings
-vrc_config-page-desc = This page shows the state of your VRChat settings and shows what settings are incompatible with SlimeVR. It is highly recommended that you fix any warnings showing up here for the best user experience with SlimeVR
+vrc_config-page-desc = This page shows the state of your VRChat settings and shows what settings are incompatible with SlimeVR. It is highly recommended that you fix any warnings showing up here for the best user experience with SlimeVR.
+vrc_config-page-help = Can't find the settings?
+vrc_config-page-help-desc = Check out our <a>documentation on this topic!</a>
+vrc_config-page-big_menu = Tracking & IK (Big Menu)
+vrc_config-page-big_menu-desc = Settings related to IK in the big settings menu
+vrc_config-page-wrist_menu = Tracking & IK (Wrist Menu)
+vrc_config-page-wrist_menu-desc = Settings related to IK in small settings menu (wrist menu)
 vrc_config-on = On
 vrc_config-off = Off
 vrc_config-invalid = You have missconfigured VRChat settings!
@@ -1307,6 +1313,7 @@ vrc_config-legacy_mode = Use Legacy IK Solving
 vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
 vrc_config-spine_mode = FBT Spine Mode
 vrc_config-tracker_model = FBT Tracker Model
+vrc_config-avatar_measurement_type = Avatar Measurement
 vrc_config-calibration_range = Calibration Range
 vrc_config-calibration_visuals = Display Calibration Visuals
 vrc_config-user_height = User Real Height
@@ -1321,3 +1328,7 @@ vrc_config-tracker_model-AXIS = Axis
 vrc_config-tracker_model-BOX = Box
 vrc_config-tracker_model-SPHERE = Sphere
 vrc_config-tracker_model-SYSTEM = System
+
+vrc_config-avatar_measurement_type-UNKNOWN = Unknown
+vrc_config-avatar_measurement_type-HEIGHT = Height
+vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span

@@ -90,8 +90,9 @@ class DesktopVRCConfigHandler: VRCConfigHandler() {
 			userHeight = doubleValue("PlayerHeight") ?: -1.0,
 			calibrationRange = doubleValue("VRC_IK_CALIBRATION_RANGE") ?: -1.0,
 			trackerModel =  VRCTrackerModel.getByValue(intValue("VRC_IK_TRACKER_MODEL") ?: -1) ?: VRCTrackerModel.UNKNOWN,
-			spineMode = VRCSpineModel.getByValue(intValue("VRC_IK_FBT_SPINE_MODE") ?: -1)  ?: VRCSpineModel.UNKNOWN,
-			calibrationVisuals =  intValue("VRC_IK_CALIBRATION_VIS") == 1
+			spineMode = VRCSpineMode.getByValue(intValue("VRC_IK_FBT_SPINE_MODE") ?: -1)  ?: VRCSpineMode.UNKNOWN,
+			calibrationVisuals =  intValue("VRC_IK_CALIBRATION_VIS") == 1,
+			avatarMeasurementType = VRCAvatarMeasurementType.getByValue(intValue("VRC_IK_AVATAR_MEASUREMENT_TYPE") ?: -1)  ?: VRCAvatarMeasurementType.UNKNOWN
 		)
 		if (newConfig != configState) {
 			configState = newConfig;
