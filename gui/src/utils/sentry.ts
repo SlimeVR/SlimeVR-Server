@@ -32,7 +32,7 @@ export function getSentryOrCompute(enabled = false) {
       }),
       Sentry.browserProfilingIntegration(),
       Sentry.replayIntegration({
-        maskAllText: true,
+        maskAllText: false,
         maskAllInputs: true,
         blockAllMedia: false,
       }),
