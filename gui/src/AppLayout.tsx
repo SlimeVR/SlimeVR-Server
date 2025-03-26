@@ -34,12 +34,6 @@ export function AppLayout() {
     }
   }, [config?.doneOnboarding]);
 
-  useEffect(() => {
-    if (config?.errorTracking !== undefined) {
-      getSentryOrCompute(config.errorTracking ?? false);
-    }
-  }, [config?.errorTracking]);
-
   // const location = useLocation();
   // const navigationType = useNavigationType();
   // useEffect(() => {

@@ -108,9 +108,9 @@ export function useConfigProvider(): ConfigContext {
     set((curr) =>
       config
         ? ({
-            ...curr,
-            ...config,
-          } as Config)
+          ...curr,
+          ...config,
+        } as Config)
         : null
     );
     if (tauri) {
