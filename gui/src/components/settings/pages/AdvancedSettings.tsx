@@ -9,13 +9,12 @@ import { BugIcon } from '@/components/commons/icon/BugIcon';
 import { Button } from '@/components/commons/Button';
 import { SettingsResetModal } from '@/components/settings/SettingsResetModal';
 
-import { open } from '@tauri-apps/plugin-shell';
 import { error } from '@/utils/logging';
-import { appConfigDir } from '@tauri-apps/api/path';
 import { defaultConfig as defaultGUIConfig, useConfig } from '@/hooks/config';
 import { defaultValues as defaultDevConfig } from '@/components/widgets/DeveloperModeWidget';
 import { RpcMessage, SettingsResetRequestT } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { invoke } from '@tauri-apps/api/core';
 
 function guiDefaults() {
   // Destructure the properties to exclude "lang"
@@ -40,8 +39,7 @@ export function AdvancedSettings() {
 
   const openConfigFolder = async () => {
     try {
-      const configPath = await appConfigDir();
-      await open('file://' + configPath);
+      await invoke<string | null>('open_config_folder');
     } catch (err) {
       error('Failed to open config folder:', err);
     }
