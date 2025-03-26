@@ -33,7 +33,7 @@ fun buildVRCConfigRecommendedValues(fbb: FlatBufferBuilder, values: dev.slimevr.
 	val spineModeOffset = VRCConfigRecommendedValues
 		.createSpineModeVector(
 			fbb,
-			values.spineMode.map { it.id.toByte() }.toByteArray()
+			values.spineMode.map { it.id.toByte() }.toByteArray(),
 		)
 
 	VRCConfigRecommendedValues.startVRCConfigRecommendedValues(fbb)
@@ -48,13 +48,12 @@ fun buildVRCConfigRecommendedValues(fbb: FlatBufferBuilder, values: dev.slimevr.
 	return VRCConfigRecommendedValues.endVRCConfigRecommendedValues(fbb)
 }
 
-
 fun buildVRCConfigStateResponse(
 	fbb: FlatBufferBuilder,
 	isSupported: Boolean,
 	validity: dev.slimevr.games.vrchat.VRCConfigValidity?,
 	values: dev.slimevr.games.vrchat.VRCConfigValues?,
-	recommended: dev.slimevr.games.vrchat.VRCConfigRecommendedValues?
+	recommended: dev.slimevr.games.vrchat.VRCConfigRecommendedValues?,
 ): Int {
 	if (!isSupported) {
 		VRCConfigStateChangeResponse.startVRCConfigStateChangeResponse(fbb)
@@ -62,12 +61,13 @@ fun buildVRCConfigStateResponse(
 		return VRCConfigStateChangeResponse.endVRCConfigStateChangeResponse(fbb)
 	}
 
-	if (validity == null || values == null || recommended == null)
+	if (validity == null || values == null || recommended == null) {
 		error("invalid state - all should be set")
+	}
 
-	val validityOffset = buildVRCConfigValidity(fbb, validity);
-	val valuesOffset = buildVRCConfigValues(fbb, values);
-	val recommendedOffset = buildVRCConfigRecommendedValues(fbb, recommended);
+	val validityOffset = buildVRCConfigValidity(fbb, validity)
+	val valuesOffset = buildVRCConfigValues(fbb, values)
+	val recommendedOffset = buildVRCConfigRecommendedValues(fbb, recommended)
 
 	VRCConfigStateChangeResponse.startVRCConfigStateChangeResponse(fbb)
 	VRCConfigStateChangeResponse.addIsSupported(fbb, true)

@@ -1,5 +1,5 @@
 import { Typography } from '@/components/commons/Typography';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import {} from 'solarxr-protocol';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';

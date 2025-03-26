@@ -29,9 +29,9 @@ class RPCVRChatHandler(
 	private fun onConfigStateRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val fbb = FlatBufferBuilder(32)
 
-		val configManager = api.server.vrcConfigManager;
+		val configManager = api.server.vrcConfigManager
 		val values = configManager.currentValues
-		val recommended = configManager.recommendedValues();
+		val recommended = configManager.recommendedValues()
 		// FUCKING KOTLIN BRING ME BACK MY FUCKING TERNARY OPERATORS!!!!!!!!!!!!!!!!! - With love <3 Futura
 		val validity = if (values !== null) configManager.checkValidity(values, recommended) else null
 
@@ -40,7 +40,7 @@ class RPCVRChatHandler(
 			isSupported = api.server.vrcConfigManager.isSupported,
 			validity = validity,
 			values = values,
-			recommended = api.server.vrcConfigManager.recommendedValues()
+			recommended = api.server.vrcConfigManager.recommendedValues(),
 		)
 
 		val outbound = rpcHandler.createRPCMessage(
@@ -60,7 +60,7 @@ class RPCVRChatHandler(
 			isSupported = api.server.vrcConfigManager.isSupported,
 			validity = validity,
 			values = values,
-			recommended = recommended
+			recommended = recommended,
 		)
 
 		val outbound = rpcHandler.createRPCMessage(
@@ -74,5 +74,4 @@ class RPCVRChatHandler(
 			apiServer.apiConnections.forEach { it.send(fbb.dataBuffer()) }
 		}
 	}
-
 }

@@ -39,8 +39,8 @@ enum class VRCSpineMode(val value: Int, val id: Int) {
 enum class VRCAvatarMeasurementType(val value: Int, val id: Int) {
 	UNKNOWN(-1, solarxr_protocol.rpc.VRCAvatarMeasurementType.UNKNOWN),
 	HEIGHT(0, solarxr_protocol.rpc.VRCAvatarMeasurementType.HEIGHT),
-	ARM_SPAN(1, solarxr_protocol.rpc.VRCAvatarMeasurementType.ARM_SPAN);
-
+	ARM_SPAN(1, solarxr_protocol.rpc.VRCAvatarMeasurementType.ARM_SPAN),
+	;
 
 	companion object {
 		private val byValue = VRCAvatarMeasurementType.entries.associateBy { it.value }
@@ -48,7 +48,6 @@ enum class VRCAvatarMeasurementType(val value: Int, val id: Int) {
 		fun getByValue(value: Int): VRCAvatarMeasurementType? = byValue[value]
 	}
 }
-
 
 data class VRCConfigValues(
 	val legacyMode: Boolean,
@@ -141,7 +140,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 			trackerModel = VRCTrackerModel.AXIS,
 			spineMode = arrayOf(VRCSpineMode.LOCK_HIP, VRCSpineMode.LOCK_HEAD),
 			calibrationVisuals = true,
-			avatarMeasurementType = VRCAvatarMeasurementType.HEIGHT
+			avatarMeasurementType = VRCAvatarMeasurementType.HEIGHT,
 		)
 	}
 
@@ -153,18 +152,16 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		listeners.removeIf { l -> l === listener }
 	}
 
-	fun checkValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedValues): VRCConfigValidity {
-		return VRCConfigValidity(
-			legacyModeOk = values.legacyMode == recommended.legacyMode,
-			shoulderTrackingOk = values.shoulderTrackingDisabled == recommended.shoulderTrackingDisabled,
-			spineModeOk = recommended.spineMode.contains(values.spineMode),
-			tackerModelOk = values.trackerModel == recommended.trackerModel,
-			calibrationOk = abs(values.calibrationRange - recommended.calibrationRange) < 0.1,
-			userHeightOk = abs(server.humanPoseManager.userHeightFromConfig / 0.936 - values.userHeight) < 0.1,
-			calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
-			avatarMeasurementOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
-		)
-	}
+	fun checkValidity(values: VRCConfigValues, recommended: VRCConfigRecommendedValues): VRCConfigValidity = VRCConfigValidity(
+		legacyModeOk = values.legacyMode == recommended.legacyMode,
+		shoulderTrackingOk = values.shoulderTrackingDisabled == recommended.shoulderTrackingDisabled,
+		spineModeOk = recommended.spineMode.contains(values.spineMode),
+		tackerModelOk = values.trackerModel == recommended.trackerModel,
+		calibrationOk = abs(values.calibrationRange - recommended.calibrationRange) < 0.1,
+		userHeightOk = abs(server.humanPoseManager.userHeightFromConfig / 0.936 - values.userHeight) < 0.1,
+		calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
+		avatarMeasurementOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
+	)
 
 	fun onChange(values: VRCConfigValues) {
 		val recommended = recommendedValues()
