@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { BaseModal } from './commons/BaseModal';
 import { Button } from './commons/Button';
 import { Typography } from './commons/Typography';
@@ -32,12 +32,15 @@ export function ErrorConsentModal({
               <Typography variant="main-title">
                 {l10n.getString('error_collection_modal-title')}
               </Typography>
-              <Typography
-                variant="vr-accessible"
-                whitespace="whitespace-pre-line"
+              <Localized
+                id={'error_collection_modal-description'}
+                elems={{ b: <b></b> }}
               >
-                {l10n.getString('error_collection_modal-description')}
-              </Typography>
+                <Typography
+                  variant="standard"
+                  whitespace="whitespace-pre-line"
+                />
+              </Localized>
             </div>
           </div>
 

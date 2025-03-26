@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { CheckBox } from '@/components/commons/Checkbox';
@@ -291,11 +291,15 @@ export function InterfaceSettings() {
               {l10n.getString('settings-interface-behavior-error_tracking')}
             </Typography>
             <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary" whitespace="whitespace-pre-line">
-                {l10n.getString(
-                  'settings-interface-behavior-error_tracking-description'
-                )}
-              </Typography>
+              <Localized
+                id={'settings-interface-behavior-error_tracking-description'}
+                elems={{ b: <b></b> }}
+              >
+                <Typography
+                  color="secondary"
+                  whitespace="whitespace-pre-line"
+                ></Typography>
+              </Localized>
             </div>
             <div className="grid sm:grid-cols-2 pb-4">
               <CheckBox

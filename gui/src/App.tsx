@@ -54,12 +54,8 @@ import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
-<<<<<<< HEAD
 import { withSentryReactRouterV6Routing } from '@sentry/react';
-import { EmptyLayout } from './components/EmptyLayout';
-=======
 import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
->>>>>>> a06161bbfa9281002b51b89000e057a8603a1564
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
 import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
