@@ -57,7 +57,7 @@ jobs:
 
       - if: matrix.os == 'ubuntu-22.04'
         name: Set up Linux dependencies
-        uses: awalsh128/cache-apt-pkgs-action@latest
+        uses: awalsh128/cache-apt-pkgs-action@v1.4.3
         with:
           packages: libgtk-3-dev webkit2gtk-4.1 libappindicator3-dev librsvg2-dev patchelf
           # Increment to invalidate the cache

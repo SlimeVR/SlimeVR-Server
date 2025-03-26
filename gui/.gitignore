@@ -28,6 +28,7 @@ yarn-error.log*
 # vite
 /dist
 /stats.html
+vite.config.ts.timestamp*
 
 # eslint
 .eslintcache

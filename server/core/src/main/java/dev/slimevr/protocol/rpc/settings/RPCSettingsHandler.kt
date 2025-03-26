@@ -136,6 +136,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands())
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands())
 			}
+			vrcOSCConfig.oscqueryEnabled = req.vrcOsc().oscqueryEnabled()
 
 			vrcOscHandler.refreshSettings(true)
 		}
@@ -254,10 +255,11 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 						SkeletonConfigToggles.SKATING_CORRECTION,
 						toggles.skatingCorrection(),
 					)
-				hpm.setToggle(SkeletonConfigToggles.VIVE_EMULATION, toggles.viveEmulation())
 				hpm.setToggle(SkeletonConfigToggles.TOE_SNAP, toggles.toeSnap())
 				hpm.setToggle(SkeletonConfigToggles.FOOT_PLANT, toggles.footPlant())
 				hpm.setToggle(SkeletonConfigToggles.SELF_LOCALIZATION, toggles.selfLocalization())
+				hpm.setToggle(SkeletonConfigToggles.ENFORCE_CONSTRAINTS, toggles.enforceConstraints())
+				hpm.setToggle(SkeletonConfigToggles.CORRECT_CONSTRAINTS, toggles.correctConstraints())
 			}
 
 			if (ratios != null) {
@@ -317,6 +319,11 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 					legTweaksConfig.correctionStrength = legTweaks.correctionStrength()
 				}
 				api.server.humanPoseManager.updateLegTweaksConfig()
+			}
+
+			modelSettings.skeletonHeight()?.let {
+				api.server.configManager.vrConfig.skeleton.hmdHeight = it.hmdHeight()
+				api.server.configManager.vrConfig.skeleton.floorHeight = it.floorHeight()
 			}
 
 			hpm.saveConfig()

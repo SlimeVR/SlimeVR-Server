@@ -57,7 +57,8 @@
     "preview-vite": "vite preview",
     "javaversion-build": "cd src-tauri/src/ && javac JavaVersion.java && jar cvfe JavaVersion.jar JavaVersion JavaVersion.class",
     "gen:javaversion": "cd src-tauri/src/ && javac JavaVersion.java && jar cvfe JavaVersion.jar JavaVersion JavaVersion.class",
-    "gen:firmware-tool": "openapi-codegen gen firmwareTool"
+    "gen:firmware-tool": "openapi-codegen gen firmwareTool",
+    "gen:icons": "tauri icon --ios-color '#663499' src-tauri/icons/icon.svg"
   },
   "devDependencies": {
     "@dword-design/eslint-plugin-import-alias": "^4.0.9",

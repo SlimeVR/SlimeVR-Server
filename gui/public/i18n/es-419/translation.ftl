@@ -50,6 +50,20 @@ body_part-LEFT_UPPER_LEG = Muslo izquierdo
 body_part-LEFT_LOWER_LEG = Tobillo izquierdo
 body_part-LEFT_FOOT = Pie izquierdo
 
+## BoardType
+
+board_type-UNKNOWN = Desconocido
+board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Placa personalizada
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+
 ## Proportions
 
 skeleton_bone-NONE = Nada
@@ -497,9 +511,9 @@ settings-general-interface-dev_mode = Modo desarrollador
 settings-general-interface-dev_mode-description = Este modo puede ser útil si es que necesitas información a fondo o para un nivel de interacción más avanzado con los sensores conectados.
 settings-general-interface-dev_mode-label = Modo desarrollador
 settings-general-interface-theme = Tema de color
-settings-general-interface-show-navbar-onboarding = Mostrar "{ navbar-onboarding }" en la barra de navegación
+settings-general-interface-show-navbar-onboarding = Mostrar «{ navbar-onboarding }» en la barra de navegación
 settings-general-interface-show-navbar-onboarding-description = Esto cambia si el botón "{ navbar-onboarding }" se muestra en la barra de navegación.
-settings-general-interface-show-navbar-onboarding-label = Mostrar "{ navbar-onboarding }"
+settings-general-interface-show-navbar-onboarding-label = Mostrar «{ navbar-onboarding }»
 settings-general-interface-lang = Selecciona un idioma
 settings-general-interface-lang-description = Cambia el idioma que quieras usar.
 settings-general-interface-lang-placeholder = Selecciona el idioma a utilizar
@@ -646,12 +660,7 @@ settings-osc-vmc-network-address-description = Establece la dirección donde se 
 settings-osc-vmc-network-address-placeholder = Dirección IPv4
 settings-osc-vmc-vrm = Modelo VRM
 settings-osc-vmc-vrm-description = Carga un modelo VRM para permitir el anclaje de cabeza y habilitar una mejor compatibilidad con otras aplicaciones
-settings-osc-vmc-vrm-model_unloaded = Ningún modelo cargado
-settings-osc-vmc-vrm-model_loaded =
-    { $titled ->
-        [true] Modelo cargado: { $name }
-       *[other] Modelo sin nombre cargado
-    }
+settings-osc-vmc-vrm-untitled_model = Modelo sin nombre
 settings-osc-vmc-vrm-file_select = Arrastra y suelta un modelo para usar, o <u>selecciona uno</u>.
 settings-osc-vmc-anchor_hip = Anclaje por cadera
 settings-osc-vmc-anchor_hip-description = Anclar el tracking a la cadera, útil para hacer de VTuber sentado. Si lo desactivas, carga un modelo VRM.
@@ -1095,6 +1104,21 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = El tracker { $trackerName } tiene un error.
 status_system-StatusUnassignedHMD = El casco de RV debe ser asignado como un sensor de cabeza.
+
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
 
 ## Tray Menu
 

@@ -65,10 +65,12 @@ interface SettingsForm {
     forceArmsFromHmd: boolean;
     floorClip: boolean;
     skatingCorrection: boolean;
-    viveEmulation: boolean;
     toeSnap: boolean;
     footPlant: boolean;
     selfLocalization: boolean;
+    usePosition: boolean;
+    enforceConstraints: boolean;
+    correctConstraints: boolean;
   };
   ratios: {
     imputeWaistFromChestHip: number;
@@ -124,10 +126,12 @@ const defaultValues: SettingsForm = {
     forceArmsFromHmd: false,
     floorClip: false,
     skatingCorrection: false,
-    viveEmulation: false,
     toeSnap: false,
     footPlant: true,
     selfLocalization: false,
+    usePosition: true,
+    enforceConstraints: true,
+    correctConstraints: true,
   },
   ratios: {
     imputeWaistFromChestHip: 0.3,
@@ -231,10 +235,12 @@ export function GeneralSettings() {
       toggles.extendedPelvis = values.toggles.extendedPelvis;
       toggles.extendedSpine = values.toggles.extendedSpine;
       toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
-      toggles.viveEmulation = values.toggles.viveEmulation;
       toggles.toeSnap = values.toggles.toeSnap;
       toggles.footPlant = values.toggles.footPlant;
       toggles.selfLocalization = values.toggles.selfLocalization;
+      toggles.usePosition = values.toggles.usePosition;
+      toggles.enforceConstraints = values.toggles.enforceConstraints;
+      toggles.correctConstraints = values.toggles.correctConstraints;
       modelSettings.toggles = toggles;
     }
 
@@ -476,7 +482,35 @@ export function GeneralSettings() {
                   </Typography>
                 ))}
             </div>
-            <div className="grid grid-cols-2 gap-3 pt-3">
+            <div className="flex flex-col pt-4"></div>
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-steamvr-trackers-tracker_toggling'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-2 pb-4">
+              {l10n
+                .getString(
+                  'settings-general-steamvr-trackers-tracker_toggling-description'
+                )
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="trackers.automaticTrackerToggle"
+              label={l10n.getString(
+                'settings-general-steamvr-trackers-tracker_toggling-label'
+              )}
+            />
+            <div className="flex flex-col pt-4"></div>
+            <div className="grid grid-cols-2 gap-3">
               <CheckBox
                 variant="toggle"
                 outlined
@@ -576,33 +610,6 @@ export function GeneralSettings() {
                 )}
               />
             </div>
-            <div className="flex flex-col pt-4 pb-4"></div>
-            <Typography bold>
-              {l10n.getString(
-                'settings-general-steamvr-trackers-tracker_toggling'
-              )}
-            </Typography>
-            <div className="flex flex-col pt-2 pb-4">
-              {l10n
-                .getString(
-                  'settings-general-steamvr-trackers-tracker_toggling-description'
-                )
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </div>
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="trackers.automaticTrackerToggle"
-              label={l10n.getString(
-                'settings-general-steamvr-trackers-tracker_toggling-label'
-              )}
-            />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">
@@ -981,6 +988,7 @@ export function GeneralSettings() {
                 )}
               />
             </div>
+
             <Typography color="secondary">
               {l10n.getString(
                 'settings-general-fk_settings-arm_fk-reset_mode-description'
@@ -1031,6 +1039,30 @@ export function GeneralSettings() {
                 )}
                 value={'3'}
               ></Radio>
+            </div>
+
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography bold>
+                {l10n.getString(
+                  'settings-general-fk_settings-enforce_joint_constraints'
+                )}
+              </Typography>
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-1 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="toggles.enforceConstraints"
+                label={l10n.getString(
+                  'settings-general-fk_settings-enforce_joint_constraints-enforce_constraints'
+                )}
+              />
             </div>
 
             {config?.debug && (
@@ -1187,29 +1219,6 @@ export function GeneralSettings() {
                 <div className="flex flex-col pt-2 pb-3">
                   <Typography bold>
                     {l10n.getString(
-                      'settings-general-fk_settings-vive_emulation-title'
-                    )}
-                  </Typography>
-                  <Typography color="secondary">
-                    {l10n.getString(
-                      'settings-general-fk_settings-vive_emulation-description'
-                    )}
-                  </Typography>
-                </div>
-                <div className="grid sm:grid-cols-1 gap-3 pb-5">
-                  <CheckBox
-                    variant="toggle"
-                    outlined
-                    control={control}
-                    name="toggles.viveEmulation"
-                    label={l10n.getString(
-                      'settings-general-fk_settings-vive_emulation-label'
-                    )}
-                  />
-                </div>
-                <div className="flex flex-col pt-2 pb-3">
-                  <Typography bold>
-                    {l10n.getString(
                       'settings-general-fk_settings-self_localization-title'
                     )}
                   </Typography>
@@ -1362,38 +1371,33 @@ export function GeneralSettings() {
                 step={1}
               />
             </div>
-            {config?.debug && (
-              <div className="grid sm:grid-cols-1 gap-2 pt-2">
-                <Typography bold>
-                  {l10n.getString(
-                    'settings-general-gesture_control-numberTrackersOverThreshold'
-                  )}
-                </Typography>
-                <Typography color="secondary">
-                  {l10n.getString(
-                    'settings-general-gesture_control-numberTrackersOverThreshold-description'
-                  )}
-                </Typography>
-                <NumberSelector
-                  control={control}
-                  name="tapDetection.numberTrackersOverThreshold"
-                  label={l10n.getString(
-                    'settings-general-gesture_control-numberTrackersOverThreshold'
-                  )}
-                  valueLabelFormat={(value) =>
-                    l10n.getString(
-                      'settings-general-gesture_control-trackers',
-                      {
-                        amount: Math.round(value),
-                      }
-                    )
-                  }
-                  min={1}
-                  max={20}
-                  step={1}
-                />
-              </div>
-            )}
+            <div className="grid sm:grid-cols-1 gap-2 pt-2">
+              <Typography bold>
+                {l10n.getString(
+                  'settings-general-gesture_control-numberTrackersOverThreshold'
+                )}
+              </Typography>
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-gesture_control-numberTrackersOverThreshold-description'
+                )}
+              </Typography>
+              <NumberSelector
+                control={control}
+                name="tapDetection.numberTrackersOverThreshold"
+                label={l10n.getString(
+                  'settings-general-gesture_control-numberTrackersOverThreshold'
+                )}
+                valueLabelFormat={(value) =>
+                  l10n.getString('settings-general-gesture_control-trackers', {
+                    amount: Math.round(value),
+                  })
+                }
+                min={1}
+                max={20}
+                step={1}
+              />
+            </div>
           </>
         </SettingsPagePaneLayout>
       </form>

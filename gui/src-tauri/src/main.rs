@@ -1,6 +1,7 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
 use std::env;
 use std::panic;
+use std::path::Path;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
@@ -13,7 +14,8 @@ use clap::Parser;
 use color_eyre::Result;
 use state::WindowState;
 use tauri::Emitter;
-use tauri::{Manager, RunEvent, WindowEvent};
+use tauri::WindowEvent;
+use tauri::{Manager, RunEvent};
 use tauri_plugin_shell::process::CommandChild;
 
 use crate::util::{
@@ -54,6 +56,33 @@ fn erroring(msg: String) {
 #[tauri::command]
 fn warning(msg: String) {
 	log::warn!(target: "webview", "{}", msg)
+}
+
+#[tauri::command]
+fn open_config_folder(app_handle: tauri::AppHandle) {
+	let path = app_handle
+		.path()
+		.app_config_dir()
+		.unwrap_or_else(|_| Path::new(".").to_path_buf());
+	let path_str = path.to_string_lossy().into_owned();
+
+	if let Err(err) = open::that(path_str) {
+		eprintln!("Failed to open config folder: {}", err);
+	}
+}
+
+#[tauri::command]
+fn open_logs_folder(app_handle: tauri::AppHandle) {
+	let config_dir = app_handle
+		.path()
+		.app_config_dir()
+		.unwrap_or_else(|_| Path::new(".").to_path_buf());
+	let path = config_dir.join("logs");
+	let path_str = path.to_string_lossy().into_owned();
+
+	if let Err(err) = open::that(path_str) {
+		eprintln!("Failed to open logs folder: {}", err);
+	}
 }
 
 fn main() -> Result<()> {
@@ -230,6 +259,8 @@ fn setup_tauri(
 			logging,
 			erroring,
 			warning,
+			open_config_folder,
+			open_logs_folder,
 			tray::update_translations,
 			tray::update_tray_text,
 			tray::is_tray_available,

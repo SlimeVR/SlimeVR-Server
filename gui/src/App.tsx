@@ -36,11 +36,9 @@ import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
-import { useLocalization } from '@fluent/react';
 import * as os from '@tauri-apps/plugin-os';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
-import { ProportionsChoose } from './components/onboarding/pages/body-proportions/ProportionsChoose';
 import { StatusProvider } from './components/providers/StatusSystemContext';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
 import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
@@ -56,10 +54,15 @@ import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
+<<<<<<< HEAD
 import { withSentryReactRouterV6Routing } from '@sentry/react';
 import { EmptyLayout } from './components/EmptyLayout';
+=======
+import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
+>>>>>>> a06161bbfa9281002b51b89000e057a8603a1564
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
 import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
+import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -154,16 +157,16 @@ function Layout() {
             <Route path="mounting/manual" element={<ManualMountingPage />} />
             <Route path="reset-tutorial" element={<ResetTutorialPage />} />
             <Route
-              path="body-proportions/choose"
-              element={<ProportionsChoose />}
-            />
-            <Route
               path="body-proportions/auto"
               element={<AutomaticProportionsPage />}
             />
             <Route
               path="body-proportions/manual"
               element={<ManualProportionsPage />}
+            />
+            <Route
+              path="body-proportions/scaled"
+              element={<ScaledProportionsPage />}
             />
             <Route path="done" element={<DonePage />} />
           </Route>
@@ -176,7 +179,6 @@ function Layout() {
 
 export default function App() {
   const websocketAPI = useProvideWebsocketApi();
-  const { l10n } = useLocalization();
   const [updateFound, setUpdateFound] = useState('');
   const isTauri = useIsTauri();
 
@@ -288,13 +290,7 @@ export default function App() {
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
                     <Preload />
                     {!websocketAPI.isConnected && (
-                      <EmptyLayout>
-                        <div className="flex w-full h-full justify-center items-center p-2">
-                          {websocketAPI.isFirstConnection
-                            ? l10n.getString('websocket-connecting')
-                            : l10n.getString('websocket-connection_lost')}
-                        </div>
-                      </EmptyLayout>
+                      <ConnectionLost></ConnectionLost>
                     )}
                     {websocketAPI.isConnected && <Layout></Layout>}
                   </div>

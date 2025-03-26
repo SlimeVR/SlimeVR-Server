@@ -63,10 +63,24 @@ class Tracker @JvmOverloads constructor(
 	 * Automatically set the status to DISCONNECTED
 	 */
 	val usesTimeout: Boolean = false,
+	/**
+	 * If true, smoothing and prediction may be enabled. If either are enabled, then
+	 * rotations will be updated with [tick]. This will not have any effect if
+	 * [trackRotDirection] is set to false.
+	 */
 	val allowFiltering: Boolean = false,
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
 	val isHmd: Boolean = false,
+	/**
+	 * Whether to track the direction of the tracker's rotation
+	 * (positive vs negative rotation). This needs to be disabled for AutoBone and
+	 * unit tests, where the rotation is absolute and not temporal.
+	 *
+	 * If true, the output rotation will only be updated after [dataTick]. If false, the
+	 * output rotation will be updated immediately with the raw rotation.
+	 */
+	val trackRotDirection: Boolean = true,
 	magStatus: MagnetometerStatus = MagnetometerStatus.NOT_SUPPORTED,
 	/**
 	 * Rotation by default.
@@ -105,7 +119,7 @@ class Tracker @JvmOverloads constructor(
 			}
 			alreadyInitialized = true
 		}
-		if (!isInternal) {
+		if (!isInternal && VRServer.instanceInitialized) {
 			// If the status of a non-internal tracker has changed, inform
 			// the VRServer to recreate the skeleton, as it may need to
 			// assign or un-assign the tracker to a body part
@@ -310,7 +324,9 @@ class Tracker @JvmOverloads constructor(
 	fun dataTick() {
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
-		filteringHandler.dataTick(_rotation)
+		if (trackRotDirection) {
+			filteringHandler.dataTick(_rotation)
+		}
 	}
 
 	/**
@@ -318,6 +334,13 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun heartbeat() {
 		timeAtLastUpdate = System.currentTimeMillis()
+	}
+
+	private fun getFilteredRotation(): Quaternion = if (trackRotDirection) {
+		filteringHandler.getFilteredRotation()
+	} else {
+		// Get raw rotation
+		_rotation
 	}
 
 	/**
@@ -328,13 +351,7 @@ class Tracker @JvmOverloads constructor(
 	 * it too much should be avoided for performance reasons.
 	 */
 	fun getRotation(): Quaternion {
-		var rot = if (allowFiltering && filteringHandler.filteringEnabled) {
-			// Get filtered rotation
-			filteringHandler.getFilteredRotation()
-		} else {
-			// Get unfiltered rotation
-			filteringHandler.getTrackedRotation()
-		}
+		var rot = getFilteredRotation()
 
 		// Reset if needed and is not computed and internal
 		if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
@@ -360,13 +377,7 @@ class Tracker @JvmOverloads constructor(
 	 * This is used for debugging/visualizing tracker data
 	 */
 	fun getIdentityAdjustedRotation(): Quaternion {
-		var rot = if (filteringHandler.filteringEnabled) {
-			// Get filtered rotation
-			filteringHandler.getFilteredRotation()
-		} else {
-			// Get unfiltered rotation
-			filteringHandler.getTrackedRotation()
-		}
+		var rot = getFilteredRotation()
 
 		// Reset if needed or is a computed tracker besides head
 		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
@@ -424,6 +435,6 @@ class Tracker @JvmOverloads constructor(
 	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
 	 */
 	fun resetFilteringQuats() {
-		filteringHandler.resetQuats(_rotation)
+		filteringHandler.resetMovingAverage(_rotation)
 	}
 }

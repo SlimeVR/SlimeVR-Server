@@ -32,22 +32,22 @@ import io.eiren.util.ann.ThreadSecure
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import solarxr_protocol.datatypes.TrackerIdT
+import solarxr_protocol.rpc.ResetType
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
 import kotlin.concurrent.schedule
 
-typealias SteamBridgeProvider = (
+typealias BridgeProvider = (
 	server: VRServer,
 	computedTrackers: List<Tracker>,
-) -> ISteamVRBridge?
+) -> Sequence<Bridge>
 
 const val SLIMEVR_IDENTIFIER = "dev.slimevr.SlimeVR"
 
 class VRServer @JvmOverloads constructor(
-	driverBridgeProvider: SteamBridgeProvider = { _, _ -> null },
-	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _ -> null },
+	bridgeProvider: BridgeProvider = { _, _ -> sequence {} },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
 	flashingHandlerProvider: (VRServer) -> SerialFlashingHandler? = { _ -> null },
 	acquireMulticastLock: () -> Any? = { null },
@@ -135,22 +135,11 @@ class VRServer @JvmOverloads constructor(
 			"Sensors UDP server",
 		) { tracker: Tracker -> registerTracker(tracker) }
 
-		// Start bridges for SteamVR and Feeder
-		val driverBridge = driverBridgeProvider(this, computedTrackers)
-		if (driverBridge != null) {
-			tasks.add(Runnable { driverBridge.startBridge() })
-			bridges.add(driverBridge)
+		// Start bridges and WebSocket server
+		for (bridge in bridgeProvider(this, computedTrackers) + sequenceOf(WebSocketVRBridge(computedTrackers, this))) {
+			tasks.add(Runnable { bridge.startBridge() })
+			bridges.add(bridge)
 		}
-		val feederBridge = feederBridgeProvider(this)
-		if (feederBridge != null) {
-			tasks.add(Runnable { feederBridge.startBridge() })
-			bridges.add(feederBridge)
-		}
-
-		// Create WebSocket server
-		val wsBridge = WebSocketVRBridge(computedTrackers, this)
-		tasks.add(Runnable { wsBridge.startBridge() })
-		bridges.add(wsBridge)
 
 		// Initialize OSC handlers
 		vrcOSCHandler = VRCOSCHandler(
@@ -340,20 +329,38 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
+		if (delay > 0) {
+			resetHandler.sendStarted(ResetType.Full)
+		}
 		timer.schedule(delay) {
-			queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
+			queueTask {
+				humanPoseManager.resetTrackersFull(resetSourceName)
+				resetHandler.sendFinished(ResetType.Full)
+			}
 		}
 	}
 
 	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long) {
+		if (delay > 0) {
+			resetHandler.sendStarted(ResetType.Yaw)
+		}
 		timer.schedule(delay) {
-			queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
+			queueTask {
+				humanPoseManager.resetTrackersYaw(resetSourceName)
+				resetHandler.sendFinished(ResetType.Yaw)
+			}
 		}
 	}
 
 	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long) {
+		if (delay > 0) {
+			resetHandler.sendStarted(ResetType.Mounting)
+		}
 		timer.schedule(delay) {
-			queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
+			queueTask {
+				humanPoseManager.resetTrackersMounting(resetSourceName)
+				resetHandler.sendFinished(ResetType.Mounting)
+			}
 		}
 	}
 

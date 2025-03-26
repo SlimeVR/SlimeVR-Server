@@ -4,7 +4,11 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { BigButton } from './commons/BigButton';
 import { TrashIcon } from './commons/icon/TrashIcon';
 
-export function ClearDriftCompensationButton() {
+export function ClearDriftCompensationButton({
+  disabled,
+}: {
+  disabled: boolean;
+}) {
   const { l10n } = useLocalization();
   const { sendRPCPacket } = useWebsocketAPI();
 
@@ -18,6 +22,7 @@ export function ClearDriftCompensationButton() {
       text={l10n.getString('widget-drift_compensation-clear')}
       icon={<TrashIcon size={20} />}
       onClick={clearDriftCompensation}
+      disabled={disabled}
     >
       {}
     </BigButton>

@@ -304,6 +304,41 @@ public class CurrentVRConfigConverter implements VersionedModelConverter {
 					}
 				}
 			}
+
+			if (version < 14) {
+				// Update AutoBone defaults
+				ObjectNode autoBoneNode = (ObjectNode) modelData.get("autoBone");
+				if (autoBoneNode != null) {
+					// Move HMD height to skeleton
+					ObjectNode skeletonNode = (ObjectNode) modelData.get("skeleton");
+					if (skeletonNode != null) {
+						JsonNode targetHmdHeight = autoBoneNode.get("targetHmdHeight");
+						if (targetHmdHeight != null) {
+							skeletonNode.set("hmdHeight", targetHmdHeight);
+						}
+					}
+
+					JsonNode offsetSlideNode = autoBoneNode.get("offsetSlideErrorFactor");
+					JsonNode slideNode = autoBoneNode.get("slideErrorFactor");
+					if (
+						offsetSlideNode != null
+							&& slideNode != null
+							&& offsetSlideNode.floatValue() == 1.0f
+							&& slideNode.floatValue() == 0.0f
+					) {
+						autoBoneNode.set("offsetSlideErrorFactor", new FloatNode(0.0f));
+						autoBoneNode.set("slideErrorFactor", new FloatNode(1.0f));
+					}
+					JsonNode bodyProportionsNode = autoBoneNode.get("bodyProportionErrorFactor");
+					if (bodyProportionsNode != null && bodyProportionsNode.floatValue() == 0.25f) {
+						autoBoneNode.set("bodyProportionErrorFactor", new FloatNode(0.05f));
+					}
+					JsonNode numEpochsNode = autoBoneNode.get("numEpochs");
+					if (numEpochsNode != null && numEpochsNode.intValue() == 100) {
+						autoBoneNode.set("numEpochs", new IntNode(50));
+					}
+				}
+			}
 		} catch (Exception e) {
 			LogManager.severe("Error during config migration: " + e);
 		}

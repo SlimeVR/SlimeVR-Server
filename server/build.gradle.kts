@@ -20,7 +20,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 		// define the steps to apply to those files
 		trimTrailingWhitespace()
 		endWithNewline()
-		indentWithTabs()
+		leadingSpacesToTabs()
 	}
 	// format "yaml", {
 	// 	target "*.yml", "*.yaml",
@@ -61,6 +61,8 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 
 		removeUnusedImports()
 		// Use eclipse JDT formatter
-		eclipse().configFile("spotless.xml")
+		eclipse()
+			.configFile("spotless.xml")
+			.withP2Mirrors(mapOf("https://download.eclipse.org/" to "https://mirror.umd.edu/eclipse/"))
 	}
 }

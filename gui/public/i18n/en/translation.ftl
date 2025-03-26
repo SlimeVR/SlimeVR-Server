@@ -5,8 +5,13 @@
 # translators on what it means
 
 ## Websocket (server) status
-websocket-connecting = Connecting to the server
-websocket-connection_lost = Connection lost to the server. Trying to reconnect...
+websocket-connecting = Loading...
+websocket-connection_lost = The server crashed!
+websocket-connection_lost-desc = It looks like the SlimeVR server crashed. Check the logs and restart the program
+websocket-timedout = Could not connect to the server
+websocket-timedout-desc = It looks like the SlimeVR server crashed or timed out. Check the logs and restart the program
+websocket-error-close = Exit SlimeVR
+websocket-error-logs = Open the logs Folder
 
 ## Update notification
 version_update-title = New version available: { $version }
@@ -86,7 +91,15 @@ board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 
 ## Proportions
 skeleton_bone-NONE = None
@@ -117,11 +130,14 @@ skeleton_bone-ELBOW_OFFSET = Elbow Offset
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
-reset-reset_all_warning =
-    <b>Warning:</b> This will reset your proportions to being just based on your height.
+reset-reset_all_warning-v2 =
+    <b>Warning:</b> Your proportions will be reset to defaults scaled to your configured height.
     Are you sure you want to do this?
 reset-reset_all_warning-reset = Reset proportions
 reset-reset_all_warning-cancel = Cancel
+reset-reset_all_warning_default-v2 =
+    <b>Warning:</b> Your height has not been configured, your proportions will be reset to defaults with the default height.
+    Are you sure you want to do this?
 
 reset-full = Full Reset
 reset-mounting = Reset Mounting
@@ -447,6 +463,11 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotat
 settings-general-fk_settings-leg_fk = Leg tracking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Enable feet Mounting Reset by tiptoeing.
 settings-general-fk_settings-leg_fk-reset_mounting_feet = Feet Mounting Reset
+settings-general-fk_settings-enforce_joint_constraints = Skeletal Limits
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Enforce constraints
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Prevents joints from rotating past their limit
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Correct with constraints
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Correct joint rotations when they push past their limit
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Force arms to be tracked from the headset (HMD) even if positional hand data is available.
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
@@ -479,10 +500,6 @@ settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Average the k
 
 settings-general-fk_settings-self_localization-title = Mocap mode
 settings-general-fk_settings-self_localization-description = Mocap Mode allows the skeleton to roughly track its own position without a headset or other trackers. Note that this requires feet and head trackers to work and is still experimental.
-
-settings-general-fk_settings-vive_emulation-title = Vive emulation
-settings-general-fk_settings-vive_emulation-description = Emulate the waist tracker problems that Vive trackers have. This is a joke and makes tracking worse.
-settings-general-fk_settings-vive_emulation-label = Enable Vive emulation
 
 ## Gesture control settings (tracker tapping)
 settings-general-gesture_control = Gesture control
@@ -624,11 +641,16 @@ settings-osc-vrchat-description-v1 =
     Change settings specific to the OSC Trackers standard used for sending
     tracking data to applications without SteamVR (ex. Quest standalone).
     Make sure to enable OSC in VRChat via the Action Menu under OSC > Enabled.
-    To allow receiving HMD and controller data from VRChat, go in your main menu's
-    settings under Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Enable
 settings-osc-vrchat-enable-description = Toggle the sending and receiving of data.
 settings-osc-vrchat-enable-label = Enable
+settings-osc-vrchat-oscqueryEnabled = Enable OSCQuery
+settings-osc-vrchat-oscqueryEnabled-description =
+    OSCQuery automatically detects running instances of VRChat and sends them data.
+    It can also advertise itself to them in order to receive HMD and controller data.
+    To allow receiving HMD and controller data from VRChat, go in your main menu's settings
+    under "Tracking & IK" and enable "Allow Sending Head and Wrist VR Tracking OSC Data".
+settings-osc-vrchat-oscqueryEnabled-label = Enable OSCQuery
 settings-osc-vrchat-network = Network ports
 settings-osc-vrchat-network-description-v1 = Set the ports for listening and sending data. Can be left untouched for VRChat.
 settings-osc-vrchat-network-port_in =
@@ -955,45 +977,32 @@ onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
 onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting orientations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 
-## Tracker proportions method choose
-onboarding-choose_proportions = What proportion calibration method to use?
-# Multiline string
-onboarding-choose_proportions-description-v1 = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
-    When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
-    <b>You only need to measure your body once!</b> Unless they are wrong or your body has changed, then you don't need to do them again.
-onboarding-choose_proportions-auto_proportions = Automatic proportions
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = Recommended
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    This will guess your proportions by recording a sample of your movements and passing it through an algorithm.
-
-    <b>This requires having your headset (HMD) connected to SlimeVR and on your head!</b>
-onboarding-choose_proportions-manual_proportions = Manual proportions
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = For small touches
-onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
-onboarding-choose_proportions-export = Export proportions
-onboarding-choose_proportions-import = Import proportions
-onboarding-choose_proportions-import-success = Imported
-onboarding-choose_proportions-import-failed = Failed
-onboarding-choose_proportions-file_type = Body proportions file
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 onboarding-manual_proportions-back = Go Back to Reset tutorial
 onboarding-manual_proportions-title = Manual Body Proportions
 onboarding-manual_proportions-precision = Precision adjust
 onboarding-manual_proportions-auto = Automatic proportions
 onboarding-manual_proportions-ratio = Adjust by ratio groups
+onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning
+onboarding-manual_proportions-export = Export proportions
+onboarding-manual_proportions-import = Import proportions
+onboarding-manual_proportions-import-success = Imported
+onboarding-manual_proportions-import-failed = Failed
+onboarding-manual_proportions-file_type = Body proportions file
+
 
 ## Tracker automatic proportions setup
-onboarding-automatic_proportions-back = Go Back to Reset tutorial
+onboarding-automatic_proportions-back = Go Back to Manual Proportions
 onboarding-automatic_proportions-title = Measure your body
 onboarding-automatic_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.
 onboarding-automatic_proportions-manual = Manual proportions
 onboarding-automatic_proportions-prev_step = Previous step
+
 onboarding-automatic_proportions-put_trackers_on-title = Put on your trackers
 onboarding-automatic_proportions-put_trackers_on-description = To calibrate your proportions, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_proportions-put_trackers_on-next = I have all my trackers on
+
 onboarding-automatic_proportions-requirements-title = Requirements
 # Each line of text is a different list item
 onboarding-automatic_proportions-requirements-descriptionv2 =
@@ -1003,23 +1012,39 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Your headset is reporting positional data to the SlimeVR server (this generally means having SteamVR running and connected to SlimeVR using SlimeVR's SteamVR driver).
     Your tracking is working and is accurately representing your movements (ex. you have performed a full reset and they move the right direction when kicking, bending over, sitting, etc).
 onboarding-automatic_proportions-requirements-next = I have read the requirements
-onboarding-automatic_proportions-check_height-title = Check your height
-onboarding-automatic_proportions-check_height-description = We use your height as a basis of our measurements by using the headset's (HMD) height as an approximation of your actual height, but it's better to check if they are right yourself!
+
+onboarding-automatic_proportions-check_height-title-v3 = Measure your headset height
+onboarding-automatic_proportions-check_height-description-v2 = Your headset (HMD) height should be slightly less than your full height, as headsets measure your eye height. This measurement will be used as a baseline for your body proportions.
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = Please press the button while standing <u>upright</u> to calculate your height. You have 3 seconds after you press the button!
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = Start measuring while standing <u>upright</u> to measure your height. Be careful to not raise your hands higher than your headset, as they may affect the measurement!
 onboarding-automatic_proportions-check_height-guardian_tip = If you are using a standalone VR headset, make sure to have your guardian /
     boundary turned on so that your height is correct!
-onboarding-automatic_proportions-check_height-fetch_height = I'm standing!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Unknown
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = Your HMD height is
+onboarding-automatic_proportions-check_height-hmd_height2 = Your headset height is:
+onboarding-automatic_proportions-check_height-measure-start = Start measuring
+onboarding-automatic_proportions-check_height-measure-stop = Stop measuring
+onboarding-automatic_proportions-check_height-measure-reset = Retry measuring
+onboarding-automatic_proportions-check_height-next_step = Use headset height
+
+onboarding-automatic_proportions-check_floor_height-title = Measure your floor height (optional)
+onboarding-automatic_proportions-check_floor_height-description = In some cases, your floor height may not be set correctly by your headset, causing the headset height to be measured as higher than it should be. You can measure the "height" of your floor to correct your headset height.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = Start measuring and put a controller against your floor to measure its height. If you are sure that your floor height is correct, you can skip this step.
 # Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = so your actual height is
-onboarding-automatic_proportions-check_height-next_step = They are fine
+onboarding-automatic_proportions-check_floor_height-floor_height = Your floor height is:
+onboarding-automatic_proportions-check_floor_height-full_height = Your estimated full height is:
+onboarding-automatic_proportions-check_floor_height-measure-start = Start measuring
+onboarding-automatic_proportions-check_floor_height-measure-stop = Stop measuring
+onboarding-automatic_proportions-check_floor_height-measure-reset = Retry measuring
+onboarding-automatic_proportions-check_floor_height-skip_step = Skip step and save
+onboarding-automatic_proportions-check_floor_height-next_step = Use floor height and save
+
 onboarding-automatic_proportions-start_recording-title = Get ready to move
 onboarding-automatic_proportions-start_recording-description = We're now going to record some specific poses and moves. These will be prompted in the next screen. Be ready to start when the button is pressed!
 onboarding-automatic_proportions-start_recording-next = Start Recording
+
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Recording in progress...
 onboarding-automatic_proportions-recording-description-p1 = Make the moves shown below:
@@ -1037,12 +1062,14 @@ onboarding-automatic_proportions-recording-timer = { $time ->
     [one] 1 second left
     *[other] { $time } seconds left
 }
+
 onboarding-automatic_proportions-verify_results-title = Verify results
 onboarding-automatic_proportions-verify_results-description = Check the results below, do they look correct?
 onboarding-automatic_proportions-verify_results-results = Recording results
 onboarding-automatic_proportions-verify_results-processing = Processing the result
 onboarding-automatic_proportions-verify_results-redo = Redo recording
 onboarding-automatic_proportions-verify_results-confirm = They're correct
+
 onboarding-automatic_proportions-done-title = Body measured and saved.
 onboarding-automatic_proportions-done-description = Your body proportions' calibration is complete!
 onboarding-automatic_proportions-error_modal-v2 =
@@ -1050,6 +1077,27 @@ onboarding-automatic_proportions-error_modal-v2 =
     This is likely a mounting calibration issue. Make sure your tracking works properly before trying again.
     Please <docs>check the docs</docs> or join our <discord>Discord</discord> for help ^_^
 onboarding-automatic_proportions-error_modal-confirm = Understood!
+
+onboarding-automatic_proportions-smol_warning =
+    Your configured height of { $height } is smaller than the minimum accepted height of { $minHeight }.
+    <b>Please redo the measurements and ensure they are correct.</b>
+onboarding-automatic_proportions-smol_warning-cancel = Go back
+
+## Tracker scaled proportions setup
+onboarding-scaled_proportions-title = Scaled proportions
+onboarding-scaled_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This will use an average proportion and scale it based on your height.
+onboarding-scaled_proportions-manual_height-title = Configure your height
+onboarding-scaled_proportions-manual_height-description-v2 = This height will be used as a baseline for your body proportions.
+onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR is not currently connected to SlimeVR, so measurements can't be based on your headset. <b>Proceed at your own risk or check the docs!</b>
+onboarding-scaled_proportions-manual_height-height-v2 = Your full height is
+onboarding-scaled_proportions-manual_height-estimated_height = Your estimated headset height is:
+onboarding-scaled_proportions-manual_height-next_step = Continue and save
+
+## Tracker scaled proportions reset
+onboarding-scaled_proportions-reset_proportion-title = Reset your body proportions
+onboarding-scaled_proportions-reset_proportion-description = To set your body proportions based on your height, you need to now reset all of your proportions. This will clear any proportions you have configured and provide a baseline configuration.
+onboarding-scaled_proportions-done-title = Body proportions set
+onboarding-scaled_proportions-done-description = Your body proportions should now be configured based on your height.
 
 ## Home
 home-no_trackers = No trackers detected or assigned
@@ -1162,9 +1210,7 @@ firmware_tool-flash_method_step-serial =
 firmware_tool-flashbtn_step = Press the boot btn
 firmware_tool-flashbtn_step-description = Before going into the next step there is a few things you need to do
 
-firmware_tool-flashbtn_step-board_SLIMEVR = Press the flash button on the pcb before inserting turning on the tracker.
-    If the tracker was already on, simply turn it off and back on while pressing the button or shorting the flash pads.
-    Here are a few pictures on how to do it according to the different revisions of the SlimeVR tracker
+firmware_tool-flashbtn_step-board_SLIMEVR = Turn off the tracker, remove the case (if any), connect a USB cable to this computer, then do one of the following steps according to your SlimeVR board revision:
 firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board, and the metal shield of the microcontroller
 firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board, and the metal shield of the microcontroller
 firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Turn on the tracker while pushing in the FLASH button on the top side of the board
@@ -1206,11 +1252,11 @@ firmware_tool-build-ERROR = Unable to build the firmware
 
 ## Firmware update status
 firmware_update-status-DOWNLOADING = Downloading the firmware
-firmware_update-status-NEED_MANUAL_REBOOT = Waiting for the user to reboot the tracker
+firmware_update-status-NEED_MANUAL_REBOOT = Please restart the tracker
 firmware_update-status-AUTHENTICATING = Authenticating with the mcu
 firmware_update-status-UPLOADING = Uploading the firmware
 firmware_update-status-SYNCING_WITH_MCU = Syncing with the mcu
-firmware_update-status-REBOOTING = Rebooting the tracker
+firmware_update-status-REBOOTING = Applying the update
 firmware_update-status-PROVISIONING = Setting Wi-Fi credentials
 firmware_update-status-DONE = Update complete!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = Could not find the device
@@ -1231,6 +1277,7 @@ firmware_update-changelog-title = Updating to {$version}
 firmware_update-looking_for_devices = Looking for devices to update...
 firmware_update-retry = Retry
 firmware_update-update = Update Selected Trackers
+firmware_update-exit = Exit
 
 ## Tray Menu
 tray_menu-show = Show

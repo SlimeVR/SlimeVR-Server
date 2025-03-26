@@ -15,11 +15,12 @@ import {
   DeviceDataT,
   ResetResponseT,
   ResetStatus,
+  ResetType,
   RpcMessage,
   StartDataFeedT,
   TrackerDataT,
 } from 'solarxr-protocol';
-import { playSoundOnResetStarted } from '@/sounds/sounds';
+import { playSoundOnResetEnded, playSoundOnResetStarted } from '@/sounds/sounds';
 import { useConfig } from './config';
 import { useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
@@ -118,7 +119,12 @@ export function useProvideAppContext(): AppContext {
     try {
       switch (status) {
         case ResetStatus.STARTED: {
-          playSoundOnResetStarted(resetType, config?.feedbackSoundVolume);
+          if (resetType !== ResetType.Yaw)
+            playSoundOnResetStarted(config?.feedbackSoundVolume);
+          break;
+        }
+        case ResetStatus.FINISHED: {
+          playSoundOnResetEnded(resetType, config?.feedbackSoundVolume);
           break;
         }
       }
@@ -130,14 +136,14 @@ export function useProvideAppContext(): AppContext {
   useEffect(() => {
     const fetchCurrentFirmwareRelease = async () => {
       const releases: any[] | null = JSON.parse(
-        await cacheWrap(
+        (await cacheWrap(
           'firmware-releases',
           () =>
             fetch('https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases')
               .then((res) => res.text())
-              .catch(() => 'null'),
-          1000 * 60 * 60
-        )
+              .catch(() => null),
+          60 * 60 * 1000
+        )) ?? 'null'
       );
       if (!releases) return null;
 
