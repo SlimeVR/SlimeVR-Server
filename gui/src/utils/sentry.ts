@@ -7,6 +7,7 @@ import {
   useLocation,
   useNavigationType,
 } from 'react-router-dom';
+import { AppState } from '@/hooks/app';
 
 export function getSentryOrCompute(enabled = false) {
   // if sentry is already initialized - SKIP
@@ -51,6 +52,7 @@ export function getSentryOrCompute(enabled = false) {
     // Session Replay
     replaysSessionSampleRate: import.meta.env.PROD ? 0.1 : 1.0, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
     replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+    normalizeDepth: 8,
     enabled,
   });
 
@@ -61,4 +63,20 @@ export function getSentryOrCompute(enabled = false) {
   }
 
   return newClient;
+}
+
+
+export function updateSentryContext(state: AppState) {
+
+  // We filter out the shit we dont want. We dont need rotation data or ip addresses
+  const trackers = (state.datafeed?.devices || []).map(({ hardwareInfo, trackers, id }) => ({
+    id: id?.id,
+    hardwareInfo: { ...hardwareInfo, ipAddress: undefined },
+    trackers: trackers.map(({ info, trackerId }) => ({ info, trackerId: { trackerNum: trackerId?.trackerNum, deviceId: trackerId?.deviceId?.id } }))
+  }))
+
+  // Will send the latest context to sentry when an error happens
+  Sentry.setContext('trackers', {
+    trackers
+  });
 }

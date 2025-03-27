@@ -4,7 +4,6 @@ import {
   Reducer,
   useContext,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useReducer,
   useState,
@@ -27,7 +26,7 @@ import { useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
 import { error } from '@/utils/logging';
 import { cacheWrap } from './cache';
-import { getSentryOrCompute } from '@/utils/sentry';
+import { updateSentryContext } from '@/utils/sentry';
 
 export interface FirmwareRelease {
   name: string;
@@ -115,6 +114,10 @@ export function useProvideAppContext(): AppContext {
   useDataFeedPacket(DataFeedMessage.DataFeedUpdate, (packet: DataFeedUpdateT) => {
     dispatch({ type: 'datafeed', value: packet });
   });
+
+  useEffect(() => {
+    updateSentryContext(state);
+  }, [state.datafeed?.devices])
 
   useRPCPacket(RpcMessage.ResetResponse, ({ status, resetType }: ResetResponseT) => {
     if (!config?.feedbackSound) return;
