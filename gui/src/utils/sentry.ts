@@ -65,18 +65,24 @@ export function getSentryOrCompute(enabled = false) {
   return newClient;
 }
 
-
 export function updateSentryContext(state: AppState) {
-
   // We filter out the shit we dont want. We dont need rotation data or ip addresses
-  const trackers = (state.datafeed?.devices || []).map(({ hardwareInfo, trackers, id }) => ({
-    id: id?.id,
-    hardwareInfo: { ...hardwareInfo, ipAddress: undefined },
-    trackers: trackers.map(({ info, trackerId }) => ({ info, trackerId: { trackerNum: trackerId?.trackerNum, deviceId: trackerId?.deviceId?.id } }))
-  }))
+  const trackers = (state.datafeed?.devices || []).map(
+    ({ hardwareInfo, trackers, id }) => ({
+      id: id?.id,
+      hardwareInfo: { ...hardwareInfo, ipAddress: undefined },
+      trackers: trackers.map(({ info, trackerId }) => ({
+        info,
+        trackerId: {
+          trackerNum: trackerId?.trackerNum,
+          deviceId: trackerId?.deviceId?.id,
+        },
+      })),
+    })
+  );
 
   // Will send the latest context to sentry when an error happens
   Sentry.setContext('trackers', {
-    trackers
+    trackers,
   });
 }

@@ -114,10 +114,12 @@ export const loadConfig = async () => {
     // setLoading(false);
     return null;
   }
-}
+};
 
 export function useConfigProvider(initialConfig: Config | null): ConfigContext {
-  const [currConfig, set] = useState<Config | null>(initialConfig || defaultConfig as Config);
+  const [currConfig, set] = useState<Config | null>(
+    initialConfig || (defaultConfig as Config)
+  );
   const tauri = useIsTauri();
 
   useDebouncedEffect(
@@ -134,9 +136,9 @@ export function useConfigProvider(initialConfig: Config | null): ConfigContext {
     set((curr) =>
       config
         ? ({
-          ...curr,
-          ...config,
-        } as Config)
+            ...curr,
+            ...config,
+          } as Config)
         : null
     );
     if (tauri) {

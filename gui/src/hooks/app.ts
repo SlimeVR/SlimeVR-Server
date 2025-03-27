@@ -117,7 +117,7 @@ export function useProvideAppContext(): AppContext {
 
   useEffect(() => {
     updateSentryContext(state);
-  }, [state.datafeed?.devices])
+  }, [state.datafeed?.devices]);
 
   useRPCPacket(RpcMessage.ResetResponse, ({ status, resetType }: ResetResponseT) => {
     if (!config?.feedbackSound) return;
