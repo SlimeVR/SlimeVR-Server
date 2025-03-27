@@ -144,7 +144,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 			spineMode = arrayOf(VRCSpineMode.LOCK_HIP, VRCSpineMode.LOCK_HEAD),
 			calibrationVisuals = true,
 			avatarMeasurementType = VRCAvatarMeasurementType.HEIGHT,
-			shoulderWidthCompensation = true
+			shoulderWidthCompensation = true,
 		)
 	}
 
@@ -165,7 +165,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		userHeightOk = abs(server.humanPoseManager.userHeightFromConfig / 0.936 - values.userHeight) < 0.1,
 		calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
 		avatarMeasurementOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
-		shoulderWidthCompensationOk = values.shoulderWidthCompensation == recommended.shoulderWidthCompensation
+		shoulderWidthCompensationOk = values.shoulderWidthCompensation == recommended.shoulderWidthCompensation,
 	)
 
 	fun onChange(values: VRCConfigValues) {
