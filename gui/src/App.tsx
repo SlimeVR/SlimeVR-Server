@@ -58,6 +58,7 @@ import { ScaledProportionsPage } from './components/onboarding/pages/body-propor
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
 import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
+import { VRCWarningsPage } from './components/vrc/VRCWarningsPage';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -104,6 +105,14 @@ function Layout() {
             element={
               <MainLayout background={false} isMobile={isMobile}>
                 <TrackerSettingsPage />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/vrc-warnings"
+            element={
+              <MainLayout isMobile={isMobile} widgets={false}>
+                <VRCWarningsPage />
               </MainLayout>
             }
           />

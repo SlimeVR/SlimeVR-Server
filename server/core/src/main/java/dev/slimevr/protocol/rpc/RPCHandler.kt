@@ -8,6 +8,7 @@ import dev.slimevr.protocol.ProtocolHandler
 import dev.slimevr.protocol.datafeed.DataFeedBuilder
 import dev.slimevr.protocol.rpc.autobone.RPCAutoBoneHandler
 import dev.slimevr.protocol.rpc.firmware.RPCFirmwareUpdateHandler
+import dev.slimevr.protocol.rpc.games.vrchat.RPCVRChatHandler
 import dev.slimevr.protocol.rpc.reset.RPCResetHandler
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler
@@ -44,6 +45,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCHandshakeHandler(this, api)
 		RPCTrackingPause(this, api)
 		RPCFirmwareUpdateHandler(this, api)
+		RPCVRChatHandler(this, api)
 
 		registerPacketListener(
 			RpcMessage.ResetRequest,

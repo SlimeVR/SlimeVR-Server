@@ -7,6 +7,9 @@ import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.firmware.FirmwareUpdateHandler
 import dev.slimevr.firmware.SerialFlashingHandler
+import dev.slimevr.games.vrchat.VRCConfigHandler
+import dev.slimevr.games.vrchat.VRCConfigHandlerStub
+import dev.slimevr.games.vrchat.VRChatConfigManager
 import dev.slimevr.osc.OSCHandler
 import dev.slimevr.osc.OSCRouter
 import dev.slimevr.osc.VMCHandler
@@ -50,6 +53,7 @@ class VRServer @JvmOverloads constructor(
 	bridgeProvider: BridgeProvider = { _, _ -> sequence {} },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
 	flashingHandlerProvider: (VRServer) -> SerialFlashingHandler? = { _ -> null },
+	vrcConfigHandlerProvider: (VRServer) -> VRCConfigHandler = { _ -> VRCConfigHandlerStub() },
 	acquireMulticastLock: () -> Any? = { null },
 	// configPath is used by VRWorkout, do not remove!
 	configPath: String,
@@ -86,6 +90,8 @@ class VRServer @JvmOverloads constructor(
 	var serialFlashingHandler: SerialFlashingHandler?
 
 	val firmwareUpdateHandler: FirmwareUpdateHandler
+
+	val vrcConfigManager: VRChatConfigManager
 
 	@JvmField
 	val autoBoneHandler: AutoBoneHandler
@@ -124,6 +130,7 @@ class VRServer @JvmOverloads constructor(
 		// AutoBone requires HumanPoseManager first
 		autoBoneHandler = AutoBoneHandler(this)
 		firmwareUpdateHandler = FirmwareUpdateHandler(this)
+		vrcConfigManager = VRChatConfigManager(this, vrcConfigHandlerProvider(this))
 		protocolAPI = ProtocolAPI(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 
