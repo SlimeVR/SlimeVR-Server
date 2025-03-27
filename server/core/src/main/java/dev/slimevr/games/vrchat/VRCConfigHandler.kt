@@ -38,8 +38,8 @@ enum class VRCSpineMode(val value: Int, val id: Int) {
 
 enum class VRCAvatarMeasurementType(val value: Int, val id: Int) {
 	UNKNOWN(-1, solarxr_protocol.rpc.VRCAvatarMeasurementType.UNKNOWN),
-	HEIGHT(0, solarxr_protocol.rpc.VRCAvatarMeasurementType.HEIGHT),
-	ARM_SPAN(1, solarxr_protocol.rpc.VRCAvatarMeasurementType.ARM_SPAN),
+	ARM_SPAN(0, solarxr_protocol.rpc.VRCAvatarMeasurementType.ARM_SPAN),
+	HEIGHT(1, solarxr_protocol.rpc.VRCAvatarMeasurementType.HEIGHT),
 	;
 
 	companion object {
@@ -52,6 +52,7 @@ enum class VRCAvatarMeasurementType(val value: Int, val id: Int) {
 data class VRCConfigValues(
 	val legacyMode: Boolean,
 	val shoulderTrackingDisabled: Boolean,
+	val shoulderWidthCompensation: Boolean,
 	val userHeight: Double,
 	val calibrationRange: Double,
 	val calibrationVisuals: Boolean,
@@ -63,6 +64,7 @@ data class VRCConfigValues(
 data class VRCConfigRecommendedValues(
 	val legacyMode: Boolean,
 	val shoulderTrackingDisabled: Boolean,
+	val shoulderWidthCompensation: Boolean,
 	val userHeight: Double,
 	val calibrationRange: Double,
 	val calibrationVisuals: Boolean,
@@ -74,6 +76,7 @@ data class VRCConfigRecommendedValues(
 data class VRCConfigValidity(
 	val legacyModeOk: Boolean,
 	val shoulderTrackingOk: Boolean,
+	val shoulderWidthCompensationOk: Boolean,
 	val userHeightOk: Boolean,
 	val calibrationOk: Boolean,
 	val calibrationVisualsOk: Boolean,
@@ -141,6 +144,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 			spineMode = arrayOf(VRCSpineMode.LOCK_HIP, VRCSpineMode.LOCK_HEAD),
 			calibrationVisuals = true,
 			avatarMeasurementType = VRCAvatarMeasurementType.HEIGHT,
+			shoulderWidthCompensation = true
 		)
 	}
 
@@ -161,6 +165,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		userHeightOk = abs(server.humanPoseManager.userHeightFromConfig / 0.936 - values.userHeight) < 0.1,
 		calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
 		avatarMeasurementOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
+		shoulderWidthCompensationOk = values.shoulderWidthCompensation == recommended.shoulderWidthCompensation
 	)
 
 	fun onChange(values: VRCConfigValues) {

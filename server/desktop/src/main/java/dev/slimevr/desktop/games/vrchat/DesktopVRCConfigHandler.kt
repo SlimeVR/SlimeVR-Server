@@ -99,6 +99,7 @@ class DesktopVRCConfigHandler : VRCConfigHandler() {
 			spineMode = VRCSpineMode.getByValue(intValue("VRC_IK_FBT_SPINE_MODE") ?: -1) ?: VRCSpineMode.UNKNOWN,
 			calibrationVisuals = intValue("VRC_IK_CALIBRATION_VIS") == 1,
 			avatarMeasurementType = VRCAvatarMeasurementType.getByValue(intValue("VRC_IK_AVATAR_MEASUREMENT_TYPE") ?: -1) ?: VRCAvatarMeasurementType.UNKNOWN,
+			shoulderWidthCompensation = intValue("VRC_IK_SHOULDER_WIDTH_COMPENSATION") == 1,
 		)
 		if (newConfig != configState) {
 			configState = newConfig

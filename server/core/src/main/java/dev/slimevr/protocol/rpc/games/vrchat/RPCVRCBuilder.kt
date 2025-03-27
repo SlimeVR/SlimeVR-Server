@@ -13,6 +13,7 @@ fun buildVRCConfigValues(fbb: FlatBufferBuilder, values: dev.slimevr.games.vrcha
 	VRCConfigValues.addTrackerModel(fbb, values.trackerModel.id)
 	VRCConfigValues.addAvatarMeasurementType(fbb, values.avatarMeasurementType.id)
 	VRCConfigValues.addUserHeight(fbb, values.userHeight.toFloat())
+	VRCConfigValues.addShoulderWidthCompensation(fbb, values.shoulderWidthCompensation)
 	return VRCConfigValues.endVRCConfigValues(fbb)
 }
 
@@ -26,6 +27,7 @@ fun buildVRCConfigValidity(fbb: FlatBufferBuilder, validity: dev.slimevr.games.v
 	VRCConfigValidity.addTrackerModelOk(fbb, validity.tackerModelOk)
 	VRCConfigValidity.addUserHeightOk(fbb, validity.userHeightOk)
 	VRCConfigValidity.addAvatarMeasurementTypeOk(fbb, validity.avatarMeasurementOk)
+	VRCConfigValidity.addShoulderWidthCompensationOk(fbb, validity.shoulderWidthCompensationOk)
 	return VRCConfigValidity.endVRCConfigValidity(fbb)
 }
 
@@ -45,6 +47,7 @@ fun buildVRCConfigRecommendedValues(fbb: FlatBufferBuilder, values: dev.slimevr.
 	VRCConfigRecommendedValues.addTrackerModel(fbb, values.trackerModel.id)
 	VRCConfigRecommendedValues.addAvatarMeasurementType(fbb, values.avatarMeasurementType.id)
 	VRCConfigRecommendedValues.addUserHeight(fbb, values.userHeight.toFloat())
+	VRCConfigRecommendedValues.addShoulderWidthCompensation(fbb, values.shoulderWidthCompensation)
 	return VRCConfigRecommendedValues.endVRCConfigRecommendedValues(fbb)
 }
 

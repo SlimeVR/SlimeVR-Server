@@ -150,6 +150,22 @@ export function VRCWarningsPage() {
                       valid={state.validity.shoulderTrackingOk}
                     ></SettingRow>
                     <SettingRow
+                      name="vrc_config-shoulder_width_compensation"
+                      recommendedValue={
+                        <Localized
+                          id={onOffKey(
+                            state.recommended.shoulderWidthCompensation
+                          )}
+                        ></Localized>
+                      }
+                      value={
+                        <Localized
+                          id={onOffKey(state.state.shoulderWidthCompensation)}
+                        ></Localized>
+                      }
+                      valid={state.validity.shoulderWidthCompensationOk}
+                    ></SettingRow>
+                    <SettingRow
                       name="vrc_config-calibration_visuals"
                       recommendedValue={
                         <Localized
