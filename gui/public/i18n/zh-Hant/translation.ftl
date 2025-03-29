@@ -7,7 +7,7 @@
 
 ## Websocket (server) status
 
-websocket-connecting = 正在載入……
+websocket-connecting = 載入中…
 websocket-connection_lost = 伺服器當機了！
 websocket-connection_lost-desc = SlimeVR 伺服器程式似乎當機了。請檢查日誌並重新啟動程式
 websocket-timedout = 無法連接到伺服器
