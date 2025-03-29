@@ -4,6 +4,7 @@ import com.jme3.math.FastMath
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
+import io.github.axisangles.ktmath.Vector3
 import org.junit.jupiter.api.AssertionFailureBuilder
 import kotlin.math.abs
 import kotlin.random.Random
@@ -59,6 +60,11 @@ object TrackerTestUtils {
 			FastMath.isApproxEqual(q1.x, q2.x, tolerance) &&
 			FastMath.isApproxEqual(q1.y, q2.y, tolerance) &&
 			FastMath.isApproxEqual(q1.z, q2.z, tolerance)
+
+	fun vectorApproxEqual(v1: Vector3, v2: Vector3, tolerance: Float = FastMath.ZERO_TOLERANCE): Boolean =
+		FastMath.isApproxEqual(v1.x, v2.x, tolerance) &&
+			FastMath.isApproxEqual(v1.y, v2.y, tolerance) &&
+			FastMath.isApproxEqual(v1.z, v2.z, tolerance)
 
 	fun randFloat(random: Random, minInclusive: Float, maxExclusive: Float): Float = minInclusive + (random.nextFloat() * (maxExclusive - minInclusive))
 
