@@ -29,13 +29,7 @@ class SkeletonResetTests {
 		// Randomize tracker orientations, these should be zeroed and matched to the
 		// headset yaw by full reset
 		for (tracker in trackers.set) {
-			val init = EulerAngles(
-				EulerOrder.YZX,
-				rand.nextFloat() * FastMath.TWO_PI,
-				rand.nextFloat() * FastMath.TWO_PI,
-				rand.nextFloat() * FastMath.TWO_PI,
-			).toQuaternion()
-			tracker.setRotation(init)
+			tracker.setRotation(TrackerTestUtils.randQuat(rand))
 		}
 		trackers.head.setRotation(headRot1)
 		hpm.resetTrackersFull(resetSource)
@@ -50,13 +44,7 @@ class SkeletonResetTests {
 		// Randomize full tracker orientations, these should match the headset yaw but
 		// retain orientation otherwise
 		for (tracker in trackers.set) {
-			val init = EulerAngles(
-				EulerOrder.YZX,
-				rand.nextFloat() * FastMath.TWO_PI,
-				rand.nextFloat() * FastMath.TWO_PI,
-				rand.nextFloat() * FastMath.TWO_PI,
-			).toQuaternion()
-			tracker.setRotation(init)
+			tracker.setRotation(TrackerTestUtils.randQuat(rand))
 		}
 		trackers.head.setRotation(Quaternion.IDENTITY)
 		hpm.resetTrackersYaw(resetSource)
