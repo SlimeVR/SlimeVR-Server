@@ -55,7 +55,7 @@ enum class BoardType(val id: UInt) {
 	HARITORA(18u),
 	ESP32C6DEVKITC1(19u),
 	GLOVE_IMU_SLIMEVR_DEV(20u),
-  GESTURES(21u), // https://www.gestures.space/
+	GESTURES(21u), // https://www.gestures.space/
 	DEV_RESERVED(250u),
 	;
 
