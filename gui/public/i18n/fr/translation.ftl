@@ -23,6 +23,8 @@ tips-find_tracker = Impossible de différencier vos capteurs ? Secouez-en un pou
 tips-do_not_move_heels = Assurez-vous de ne pas bouger vos pieds pendant l'enregistrement !
 tips-file_select = Glissez et déposez des fichiers à utiliser, ou <u>parcourir</u>.
 tips-tap_setup = Vous pouvez tapoter lentement votre capteur 2 fois pour le choisir au lieu de le sélectionner depuis le menu.
+tips-turn_on_tracker = Vous utilisez des capteurs officiels SlimeVR ? N’oubliez pas <b><em>d’allumer votre capteur</em></b> après l’avoir connecté au PC !
+tips-failed_webgl = Échec de l’initialisation de WebGL.
 
 ## Body parts
 
@@ -47,6 +49,50 @@ body_part-LEFT_HAND = Main gauche
 body_part-LEFT_UPPER_LEG = Cuisse gauche
 body_part-LEFT_LOWER_LEG = Cheville gauche
 body_part-LEFT_FOOT = Pied gauche
+body_part-LEFT_THUMB_METACARPAL = Métacarpien du pouce gauche
+body_part-LEFT_THUMB_PROXIMAL = Pouce gauche proximal
+body_part-LEFT_THUMB_DISTAL = Pouce gauche distal
+body_part-LEFT_INDEX_PROXIMAL = Index gauche proximal
+body_part-LEFT_INDEX_INTERMEDIATE = Index gauche intermédiaire
+body_part-LEFT_INDEX_DISTAL = Index gauche distal
+body_part-LEFT_MIDDLE_PROXIMAL = Majeur gauche proximal
+body_part-LEFT_MIDDLE_INTERMEDIATE = Majeur gauche intermédiaire
+body_part-LEFT_MIDDLE_DISTAL = Majeur gauche distal
+body_part-LEFT_RING_PROXIMAL = Annulaire gauche proximal
+body_part-LEFT_RING_INTERMEDIATE = Annulaire gauche intermédiaire
+body_part-LEFT_RING_DISTAL = Annulaire gauche distal
+body_part-LEFT_LITTLE_PROXIMAL = Auriculaire gauche proximal
+body_part-LEFT_LITTLE_INTERMEDIATE = Auriculaire gauche intermédiaire
+body_part-LEFT_LITTLE_DISTAL = Auriculaire gauche distal
+body_part-RIGHT_THUMB_METACARPAL = Métacarpien du pouce droit
+body_part-RIGHT_THUMB_PROXIMAL = Pouce droit proximal
+body_part-RIGHT_THUMB_DISTAL = Pouce droit distal
+body_part-RIGHT_INDEX_PROXIMAL = Index droit proximal
+body_part-RIGHT_INDEX_INTERMEDIATE = Index droit intermédiaire
+body_part-RIGHT_INDEX_DISTAL = Index droit distal
+body_part-RIGHT_MIDDLE_PROXIMAL = Majeur droit proximal
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Majeur droit intermédiaire
+body_part-RIGHT_MIDDLE_DISTAL = Majeur droit distal
+body_part-RIGHT_RING_PROXIMAL = Annulaire droit proximal
+body_part-RIGHT_RING_INTERMEDIATE = Annulaire droit intermédiaire
+body_part-RIGHT_RING_DISTAL = Annulaire droit distal
+body_part-RIGHT_LITTLE_PROXIMAL = Auriculaire droit proximal
+body_part-RIGHT_LITTLE_INTERMEDIATE = Auriculaire droit intermédiaire
+body_part-RIGHT_LITTLE_DISTAL = Auriculaire droit distal
+
+## BoardType
+
+board_type-UNKNOWN = Inconnu
+board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Carte personnalisée
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
 
 ## Proportions
 
@@ -79,6 +125,15 @@ skeleton_bone-ELBOW_OFFSET = Décalage des coudes
 ## Tracker reset buttons
 
 reset-reset_all = Réinitialiser toutes les proportions
+reset-reset_all_warning =
+    <b>Avertissement:</b> Cela réinitialisera vos proportions pour qu’elles soient basées sur votre taille.
+    Êtes-vous sûr de vouloir faire cela ?
+reset-reset_all_warning-reset = Réinitialiser les proportions
+reset-reset_all_warning-cancel = Annuler
+reset-reset_all_warning_default =
+    <b>Avertissement:</b> Vous n’avez actuellement pas défini votre taille, ce qui
+    fera en sorte que les proportions seront basées sur une hauteur par défaut.
+    Êtes-vous sûr de vouloir faire cela ?
 reset-full = Réinitialisation complète
 reset-mounting = Réinitialiser l'alignement
 reset-yaw = Réinitialisation horizontale
@@ -124,7 +179,7 @@ widget-drift_compensation-clear = Réinitialiser la compensation de la dérive
 
 ## Widget: Clear Reset Mounting
 
-widget-clear_mounting = Mettre à zéro la réinitialisation de l'alignement
+widget-clear_mounting = Réinitialiser la calibration de l'alignement
 
 ## Widget: Developer settings
 
@@ -140,9 +195,12 @@ widget-developer_mode-more_info = Plus d'informations
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = Rotation
+widget-imu_visualizer-preview = Aperçu
+widget-imu_visualizer-hide = Masquer
 widget-imu_visualizer-rotation_raw = Brute
 widget-imu_visualizer-rotation_preview = Aperçu
-widget-imu_visualizer-rotation_hide = Masquer
+widget-imu_visualizer-acceleration = Accélération
+widget-imu_visualizer-position = Position
 
 ## Widget: Skeleton Visualizer
 
@@ -194,8 +252,17 @@ tracker-infos-url = URL du capteur
 tracker-infos-version = Version du firmware
 tracker-infos-hardware_rev = Révision du hardware
 tracker-infos-hardware_identifier = ID Matériel
+tracker-infos-data_support = Prise en charge de données
 tracker-infos-imu = Capteur IMU
 tracker-infos-board_type = Carte principale
+tracker-infos-network_version = Version du protocole
+tracker-infos-magnetometer = Magnétomètre
+tracker-infos-magnetometer-status-v1 =
+    { $status ->
+        [DISABLED] Désctivé
+        [ENABLED] Activé
+       *[NOT_SUPPORTED] Non pris en charge
+    }
 
 ## Tracker settings
 
@@ -210,11 +277,27 @@ tracker-settings-mounting_section-edit = Changer l'orientation
 tracker-settings-drift_compensation_section = Permettre la compensation de la dérive
 tracker-settings-drift_compensation_section-description = Ce capteur devrait-il compenser pour sa dérive quand l'option est activée ?
 tracker-settings-drift_compensation_section-edit = Permettre la compensation de la dérive
+tracker-settings-use_mag = Autoriser l'utilisation du magnétomètre sur ce capteur
+# Multiline!
+tracker-settings-use_mag-description =
+    Est-ce que ce capteur utiliser son magnétomètre pour réduire la dérive lorsque l’utilisation du magnétomètre est autorisée ? <b>N’éteignez pas votre capteur pendant que vous changez cette option !</b>
+    
+    Vous devez d’abord autoriser l’utilisation du magnétomètre dans les paramètres. <magSetting>Cliquez ici pour y accéder</magSetting>.
+tracker-settings-use_mag-label = Autoriser le magnétomètre
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Nom personalisé
 tracker-settings-name_section-description = Donnez-lui un joli surnom :3
 tracker-settings-name_section-placeholder = Patte gauche d'Erimel
+tracker-settings-name_section-label = Nom personalisé
+tracker-settings-forget = Oublier capteur
+tracker-settings-forget-description = Supprime le capteur du serveur SlimeVR et l’empêche de s’y connecter jusqu’à ce que le serveur soit redémarré. La configuration du capteur ne sera pas perdue.
+tracker-settings-forget-label = Oublier capteur
+tracker-settings-update-unavailable = Ne peut pas être mis à jour (DIY)
+tracker-settings-update-up_to_date = À jour
+tracker-settings-update-available = { $versionName } est maintenant disponible
+tracker-settings-update = Mettre à jour maintenant
+tracker-settings-update-title = Version du firmware
 
 ## Tracker part card info
 
@@ -290,6 +373,8 @@ settings-sidebar-utils = Utilitaires
 settings-sidebar-serial = Console série
 settings-sidebar-appearance = Apparence
 settings-sidebar-notifications = Notifications
+settings-sidebar-firmware-tool = Outil de firmware DIY
+settings-sidebar-advanced = Avancé
 
 ## SteamVR settings
 
@@ -304,10 +389,22 @@ settings-general-steamvr-description =
     Utile pour les jeux ou applications qui ne supportent que certains capteurs.
 settings-general-steamvr-trackers-waist = Taille
 settings-general-steamvr-trackers-chest = Poitrine
-settings-general-steamvr-trackers-feet = Pieds
-settings-general-steamvr-trackers-knees = Genoux
-settings-general-steamvr-trackers-elbows = Coudes
-settings-general-steamvr-trackers-hands = Mains
+settings-general-steamvr-trackers-left_foot = Pied gauche
+settings-general-steamvr-trackers-right_foot = Pied droit
+settings-general-steamvr-trackers-left_knee = Genou gauche
+settings-general-steamvr-trackers-right_knee = Genou droit
+settings-general-steamvr-trackers-left_elbow = Coude gauche
+settings-general-steamvr-trackers-right_elbow = Coude droit
+settings-general-steamvr-trackers-left_hand = Main gauche
+settings-general-steamvr-trackers-right_hand = Main droite
+settings-general-steamvr-trackers-tracker_toggling = Assignation automatique des capteurs
+settings-general-steamvr-trackers-tracker_toggling-description = Gère automatiquement l’activation ou la désactivation des capteurs SteamVR en fonction de vos capteurs actuellement affectés
+settings-general-steamvr-trackers-tracker_toggling-label = Assignation automatique des capteurs
+settings-general-steamvr-trackers-hands-warning =
+    <b>Attention :</b> les capteurs de mains remplaceront vos manettes.
+    Êtes-vous sûr?
+settings-general-steamvr-trackers-hands-warning-cancel = Annuler
+settings-general-steamvr-trackers-hands-warning-done = Oui
 
 ## Tracker mechanics
 
@@ -325,14 +422,39 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = Fluidi
 settings-general-tracker_mechanics-filtering-type-prediction = Prédiction
 settings-general-tracker_mechanics-filtering-type-prediction-description = Réduit la latence et rend les mouvements plus vifs, mais moins fluides.
 settings-general-tracker_mechanics-filtering-amount = Intensité du filtrage
+settings-general-tracker_mechanics-yaw-reset-smooth-time = Temps de fluidification de la réinitialisation horizontale (0s désactive la fluidification)
 settings-general-tracker_mechanics-drift_compensation = Compensation de la dérive
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
     Compense la dérive des gyroscopes en appliquant une rotation inverse.
     Modifier la force de la compensation et le nombre de réinitialisations prises en compte.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Compensation de la dérive
+settings-general-tracker_mechanics-drift_compensation-prediction = Prédiction de la compensation de la dérive
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    Prédit la compensation de la dérive au-delà de la dérive précédemment mesurée.
+    Activez cette option si vos capteurs tournent continuellement sur eux-mêmes horizontalement.
+settings-general-tracker_mechanics-drift_compensation-prediction-label = Prédiction de la compensation de la dérive
+settings-general-tracker_mechanics-drift_compensation_warning =
+    <b>Avertissement:</b> n’utilisez la compensation de la dérive que si vous devez
+    réinitialiser très souvent (toutes les ~5-10 minutes).
+    
+    Voici quelques IMUs sujets à des réinitialisations fréquentes :
+    Joy-Cons, owoTrack et MPUs (sans firmware récent).
+settings-general-tracker_mechanics-drift_compensation_warning-cancel = Annuler
+settings-general-tracker_mechanics-drift_compensation_warning-done = Je comprends
 settings-general-tracker_mechanics-drift_compensation-amount-label = Force de la compensation
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nombre de réinitialisations prises en compte
+settings-general-tracker_mechanics-save_mounting_reset = Enregistrer la calibration de la réinitialisation automatique de l'alignement
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    Enregistre les calibrations des réinitialisation automatiques d'alignement pour les capteurs entre les redémarrages.
+    Utile lorsque vous portez une combinaison où les capteurs ne bougent pas entre les sessions. <b>Non recommandé pour les utilisateurs normaux !</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Enregistrer la réinitialisation de l'alignement
+settings-general-tracker_mechanics-use_mag_on_all_trackers = Utiliser le magnétomètre sur tous les capteurs IMU qui le prennent en charge
+settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
+    Utilise le magnétomètre sur tous les capteurs dotés d’un firmware compatible, réduisant ainsi la dérive dans des environnements magnétiques stables.
+    Peut être désactivé par capteur dans les paramètres du capteur. <b>Ne fermez aucun des capteurs en changeant cette option !</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Utiliser le magnétomètre sur les capteurs
 
 ## FK/Tracking settings
 
@@ -356,9 +478,13 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = La correction de
 settings-general-fk_settings-leg_fk = Capture des jambes
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Activer la réinitialisation de l'alignement des pieds en allant sur la pointe des pieds.
 settings-general-fk_settings-leg_fk-reset_mounting_feet = Réinitialisation de l'alignement des pieds
+settings-general-fk_settings-enforce_joint_constraints = Limites squelettiques
 settings-general-fk_settings-arm_fk = Capture des bras
 settings-general-fk_settings-arm_fk-description = Changez la façon dont les bras sont captés.
 settings-general-fk_settings-arm_fk-force_arms = Forcer les bras en provenance du casque VR
+settings-general-fk_settings-reset_settings = Paramètres de réinitialisations
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = Réinitialisez la rotation verticale du casque VR lors d’une réinitialisation complète. Utile pour porter un casque VR sur le front pour le VTubing ou l'animation. Ne pas activer pour la VR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = Réinitialiser la rotation verticale du casque VR
 settings-general-fk_settings-arm_fk-reset_mode-description = Changer la pose des bras attendue pour la réinitialisation de l'alignement.
 settings-general-fk_settings-arm_fk-back = En arrière
 settings-general-fk_settings-arm_fk-back-description = Le mode par défaut, avec les bras vers l’arrière et les avant-bras vers l’avant.
@@ -427,6 +553,9 @@ settings-general-interface-dev_mode = Mode développeur
 settings-general-interface-dev_mode-description = Ce mode peut être utile pour avoir des données approfondies ou pour interagir avec des capteurs connectés à un niveau plus avancé.
 settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-theme = Thème
+settings-general-interface-show-navbar-onboarding = Afficher « { navbar-onboarding } » dans la barre de navigation
+settings-general-interface-show-navbar-onboarding-description = Cela change si le bouton « { navbar-onboarding } » s’affiche dans la barre de navigation.
+settings-general-interface-show-navbar-onboarding-label = Afficher « { navbar-onboarding } »
 settings-general-interface-lang = Langue
 settings-general-interface-lang-description = Choisir la langue par défaut.
 settings-general-interface-lang-placeholder = Langue
@@ -438,6 +567,9 @@ settings-interface-appearance-font-os_font = Police du système d’exploitation
 settings-interface-appearance-font-slime_font = Police par défaut
 settings-interface-appearance-font_size = Agrandissement du texte
 settings-interface-appearance-font_size-description = Cela affecte la taille du texte de toute l'interface, sauf de ce menu.
+settings-interface-appearance-decorations = Utiliser les décorations natives du système
+settings-interface-appearance-decorations-description = Cela n'affichera pas la barre supérieure de l'interface et utilisera celle du système d'exploitation à la place.
+settings-interface-appearance-decorations-label = Utiliser les décorations natives
 
 ## Notification settings
 
@@ -452,6 +584,18 @@ settings-general-interface-feedback_sound-volume = Volume du son de retour
 settings-general-interface-connected_trackers_warning = Avertissement de capteurs connectés
 settings-general-interface-connected_trackers_warning-description = Cette option affichera une fenêtre contextuelle chaque fois que vous essaierez de quitter SlimeVR tout en ayant un ou plusieurs capteurs connectés. Il vous rappelle d’éteindre vos capteurs lorsque vous avez terminé pour préserver la durée de vie de la batterie.
 settings-general-interface-connected_trackers_warning-label = Avertissement de capteurs connectés en quittant
+settings-general-interface-use_tray = Minimiser dans la zone de notifications
+settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l’utiliser sans l’interface graphique.
+settings-general-interface-use_tray-label = Minimiser dans la zone de notifications
+settings-general-interface-discord_presence = Partager l'activité sur Discord
+settings-general-interface-discord_presence-description = Indique à votre client Discord que vous utilisez SlimeVR avec le nombre de capteurs IMU que vous utilisez.
+settings-general-interface-discord_presence-label = Partager l'activité sur Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Aucun capteur
+        [one] Utilise { $amount } capteur
+       *[other] Utilise { $amount } capteurs
+    }
 
 ## Serial settings
 
@@ -473,6 +617,9 @@ settings-serial-factory_reset-warning-cancel = Annuler
 settings-serial-get_infos = Obtenir des informations
 settings-serial-serial_select = Sélectionnez un port série
 settings-serial-auto_dropdown_item = Automatique
+settings-serial-get_wifi_scan = Obtenir scan WiFi
+settings-serial-file_type = Texte brut
+settings-serial-save_logs = Enregistrer dans un fichier
 
 ## OSC router settings
 
@@ -503,14 +650,17 @@ settings-osc-router-network-address-placeholder = Adresse IPv4
 
 settings-osc-vrchat = Capteurs OSC VRChat
 # This cares about multilines
-settings-osc-vrchat-description =
-    Modifiez les paramètres spécifiques à VRChat pour recevoir et envoyer
-    des capteurs par OSC (fonctionne sur Quest sans PC).
+settings-osc-vrchat-description-v1 =
+    Modifier les paramètres spécifiques à la norme « OSC Trackers » utilisée pour l’envoi
+    des données de suivi vers des applications sans SteamVR (par exemple, sur Quest).
+    Assurez-vous d’activer le protocole OSC dans VRChat via le menu d'action (rond) sous OSC > Enabled.
+    Pour permettre de recevoir les données de suivi du casque VR et des manettes à partir de VRChat,
+    allez dans le menu principal sous Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Activer
 settings-osc-vrchat-enable-description = Activer/désactiver l'envoi et la réception de données.
 settings-osc-vrchat-enable-label = Activer
 settings-osc-vrchat-network = Ports réseau
-settings-osc-vrchat-network-description = Définissez les ports pour écouter et envoyer des données à VRChat.
+settings-osc-vrchat-network-description-v1 = Définissez les ports d'écoute et d'envoi des données. Peut être laissé intact pour VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Port d'entrée
     .placeholder = Port d'entrée (par défaut : 9001)
@@ -518,7 +668,7 @@ settings-osc-vrchat-network-port_out =
     .label = Port de sortie
     .placeholder = Port de sortie (par défaut : 9000)
 settings-osc-vrchat-network-address = Adresse réseau
-settings-osc-vrchat-network-address-description = Choisissez l'adresse à laquelle envoyer les données à VRChat (vérifiez les réseaux Wi-Fi de votre appareil).
+settings-osc-vrchat-network-address-description-v1 = Choisissez l'adresse à laquelle envoyer des données. Peut être laissé intact pour VRChat.
 settings-osc-vrchat-network-address-placeholder = Adresse IP VRChat
 settings-osc-vrchat-network-trackers = capteurs
 settings-osc-vrchat-network-trackers-description = Sélectionner quels capteurs envoyer via OSC.
@@ -551,16 +701,43 @@ settings-osc-vmc-network-address-description = Choisissez l'adresse vers laquell
 settings-osc-vmc-network-address-placeholder = Adresse IPv4
 settings-osc-vmc-vrm = Modèle VRM
 settings-osc-vmc-vrm-description = Chargez un modèle VRM pour permettre l'ancrage à la tête et permettre une plus grande compatibilité avec d'autres applications
-settings-osc-vmc-vrm-model_unloaded = Aucun modèle chargé
-settings-osc-vmc-vrm-model_loaded =
-    { $titled ->
-        [true] Modèle chargé : { $name }
-       *[other] Modèle sans nom chargé
-    }
 settings-osc-vmc-vrm-file_select = Glissez et déposez un modèle à utiliser, ou <u>parcourir</u>.
 settings-osc-vmc-anchor_hip = Ancrage aux hanches
 settings-osc-vmc-anchor_hip-description = Ancrer la capture des mouvements aux hanches, utile pour le VTubing assis.
 settings-osc-vmc-anchor_hip-label = Ancrage aux hanches
+settings-osc-vmc-mirror_tracking = Inverser les mouvements
+settings-osc-vmc-mirror_tracking-description = Inverse les mouvements horizontalement
+settings-osc-vmc-mirror_tracking-label = Inverser les mouvements
+
+## Advanced settings
+
+settings-utils-advanced = Avancé
+settings-utils-advanced-reset-gui = Réinitialiser les paramètres de l’interface graphique
+settings-utils-advanced-reset-gui-description = Restaurez les paramètres par défaut de l'interface.
+settings-utils-advanced-reset-gui-label = Réinitialiser l’interface graphique
+settings-utils-advanced-reset-server = Réinitialiser les paramètres de la capture
+settings-utils-advanced-reset-server-description = Restaurez les paramètres par défaut de la capture
+settings-utils-advanced-reset-server-label = Réinitialiser la capture
+settings-utils-advanced-reset-all = Réinitialiser tous les paramètres
+settings-utils-advanced-reset-all-description = Restaurez les paramètres de l'interface et de la capture.
+settings-utils-advanced-reset-all-label = Tout réinitialiser
+settings-utils-advanced-reset_warning =
+    { $type ->
+        [gui]
+            <b>Avertissement:</b> Cela réinitialisera vos paramètres de l'interface.
+            Êtes-vous sûr de vouloir faire cela ?
+        [server]
+            <b>Avertissement:</b> Cela réinitialisera vos paramètres de la capture.
+            Êtes-vous sûr de vouloir faire cela ?
+       *[all]
+            <b>Avertissement:</b> Cela réinitialisera tous vos paramètres.
+            Êtes-vous sûr de vouloir faire cela ?
+    }
+settings-utils-advanced-reset_warning-reset = Réinitialiser les paramètres
+settings-utils-advanced-reset_warning-cancel = Annuler
+settings-utils-advanced-open_data = Dossier des données
+settings-utils-advanced-open_data-description = Ouvre le dossier des données de SlimeVR dans l’explorateur de fichiers, contenant les fichiers de configuration ainsi que les logs.
+settings-utils-advanced-open_data-label = Ouvrir le dossier
 
 ## Setup/onboarding menu
 
@@ -638,8 +815,8 @@ onboarding-done-close = Fermer le guide
 
 onboarding-connect_tracker-back = Revenir aux informations d'identification Wi-Fi
 onboarding-connect_tracker-title = Connecter les capteurs
-onboarding-connect_tracker-description-p0 = Passons maintenant à la partie amusante: connecter tous les capteurs !
-onboarding-connect_tracker-description-p1 = Connectez chaque capteur qui n'est pas encore connecté via un port USB.
+onboarding-connect_tracker-description-p0-v1 = Passons maintenant à la partie amusante, connecter les capteurs!
+onboarding-connect_tracker-description-p1-v1 = Connectez chaque capteur un par un via un port USB.
 onboarding-connect_tracker-issue-serial = J'ai des problèmes de connexion !
 onboarding-connect_tracker-usb = Capteur USB
 onboarding-connect_tracker-connection_status-none = Recherche de capteurs
@@ -673,6 +850,7 @@ onboarding-calibration_tutorial-status-waiting = En attente de vous
 onboarding-calibration_tutorial-status-calibrating = Calibration...
 onboarding-calibration_tutorial-status-success = Génial !
 onboarding-calibration_tutorial-status-error = Le capteur a été déplacé
+onboarding-calibration_tutorial-skip = Sauter le tutoriel
 
 ## Tracker assignment tutorial
 
@@ -699,6 +877,28 @@ onboarding-assign_trackers-assigned =
     }
 onboarding-assign_trackers-advanced = Afficher les emplacements d'attribution avancés
 onboarding-assign_trackers-next = J'ai attribué tous mes capteurs
+onboarding-assign_trackers-mirror_view = Vue miroir
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [one] x{ $trackersCount }
+       *[other] x{ $trackersCount }
+    }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] Kit du bas du corps
+        [core] Kit de base
+        [enhanced-core] Kit de base renforcé
+        [full-body] Kit du corps complet
+       *[all] Tous les capteurs
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] Minimum pour le suivi du corps en réalité virtuelle
+        [core] + Suivi amélioré de la colonne vertébrale
+        [enhanced-core] + Rotation des pieds
+        [full-body] + Suivi des coudes
+       *[all] Toutes les attributions de capteurs disponibles
+    }
 
 ## Tracker assignment warnings
 
@@ -774,12 +974,12 @@ onboarding-choose_mounting = Quelle méthode de calibration de l’alignement ut
 # Multiline text
 onboarding-choose_mounting-description = La calibration de l'alignement ajuste pour l'orientation des capteurs sur votre corps.
 onboarding-choose_mounting-auto_mounting = Alignement automatique
-# Italized text
-onboarding-choose_mounting-auto_mounting-label = Expérimentale
+# Italicized text
+onboarding-choose_mounting-auto_mounting-label-v2 = Recommendée
 onboarding-choose_mounting-auto_mounting-description = Ceci permettra de détecter automatiquement la direction de tous vos capteurs à partir de 2 poses
 onboarding-choose_mounting-manual_mounting = Alignement manuel
-# Italized text
-onboarding-choose_mounting-manual_mounting-label = Recommendée
+# Italicized text
+onboarding-choose_mounting-manual_mounting-label-v2 = Peut manquer de précision
 onboarding-choose_mounting-manual_mounting-description = Ceci vous permettra de choisir la direction de chaque capteur manuellement
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
@@ -822,18 +1022,19 @@ onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
 
 onboarding-choose_proportions = Quelle méthode de calibration des proportions utiliser ?
 # Multiline string
-onboarding-choose_proportions-description =
-    Les proportions corporelles sont utilisées pour connaître les mesures de votre corps. Elles sont nécéssaires pour calculer les positions des capteurs.
-    Lorsque les proportions de votre corps ne correspondent pas à celles enregistrées, la précision des capteurs sera moins bonne et vous remarquerez des problèmes tel que le patinage, le glissage ou votre corps ne correspondant pas bien à votre avatar.
+onboarding-choose_proportions-description-v1 =
+    Les proportions du corps sont utilisées pour connaître les mesures de votre corps. Elles sont requises pour calculer les positions des capteurs.
+    Lorsque les proportions de votre corps ne correspondent pas à celles enregistrées, la précision du suivi sera moins bonne et vous remarquerez certains problèmes comme du patinage ou de la glisse, ou votre corps ne correspondra pas bien à votre avatar.
+    <b>Vous n’avez besoin de mesurer les proportions de votre corps qu’une seule fois !</b> À moins qu’elle ne soient incorrectes ou que votre corps ait changé, vous n’avez pas besoin de les refaire.
 onboarding-choose_proportions-auto_proportions = Proportions automatiques
-# Italized text
+# Italicized text
 onboarding-choose_proportions-auto_proportions-subtitle = Recommendée
 onboarding-choose_proportions-auto_proportions-descriptionv3 =
     Cela permettra d'estimer vos proportions en enregistrant un échantillon de vos mouvements et en le faisant passer par un algorithme.
     
     <b>Cela nécessite d’avoir votre casque VR connecté à SlimeVR et sur votre tête !</b>
 onboarding-choose_proportions-manual_proportions = Proportions manuelles
-# Italized text
+# Italicized text
 onboarding-choose_proportions-manual_proportions-subtitle = Pour les retouches
 onboarding-choose_proportions-manual_proportions-description = Ceci vous permettra d'ajuster vos proportions manuellement en les modifiant directement
 onboarding-choose_proportions-export = Exporter les proportions
@@ -869,17 +1070,11 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Votre casque envoie sa position au serveur SlimeVR (cela signifie généralement que SteamVR est ouvert et connecté à SlimeVR en utilisant le pilote SteamVR de SlimeVR).
     La capture des mouvements fonctionne et représente correctement vos mouvements (ex. vous avez effectué une réinitialisation complète des capteurs et ils bougent dans le bon sens lorsque vous donnez des coups de pieds, vous penchez, vous assoyez, etc).
 onboarding-automatic_proportions-requirements-next = J'ai lu les exigences
-onboarding-automatic_proportions-check_height-title = Vérifiez votre taille
-onboarding-automatic_proportions-check_height-description = Nous utilisons votre taille comme la base de nos mesures en utilisant la hauteur de votre casque comme approximation de votre taille réelle, mais il est préférable de vérifier si elles sont correctes vous-même !
-# All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = Veuillez appuyer sur le bouton en vous <u>tenant debout</u> pour calculer votre taille. Vous avez un délais de 3 secondes après avoir appuyé sur le bouton !
-onboarding-automatic_proportions-check_height-fetch_height = Je suis debout !
+onboarding-automatic_proportions-check_height-guardian_tip =
+    Si vous utilisez un casque VR sans-fil, assurez-vous d’avoir votre guardien/
+    limite activée pour que votre hauteur soit correcte !
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Inconnu
-# Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = La hauteur de votre casque est
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = donc votre taille est
 onboarding-automatic_proportions-check_height-next_step = Ils sont bons
 onboarding-automatic_proportions-start_recording-title = Préparez-vous à bouger
 onboarding-automatic_proportions-start_recording-description = Nous allons maintenant enregistrer quelques positions et mouvements spécifiques. Ceux-ci seront inscris sur l’écran suivant. Soyez prêt à commencer dès que vous appuyez sur le bouton !
@@ -910,10 +1105,17 @@ onboarding-automatic_proportions-verify_results-redo = Refaire l'enregistrement
 onboarding-automatic_proportions-verify_results-confirm = Les résultats sont corrects
 onboarding-automatic_proportions-done-title = Calibration terminée
 onboarding-automatic_proportions-done-description = La calibration de vos proportions est terminée !
-onboarding-automatic_proportions-error_modal =
-    <b>Avertissement :</b> Une erreur a été détectée lors de l’estimation des proportions !
-    Veuillez <docs>consulter la documentation</docs> ou rejoindre notre <discord>Discord</discord> pour obtenir de l’aide ^_^
+onboarding-automatic_proportions-error_modal-v2 =
+    <b>Avertissement:</b> Il y a eu une erreur lors de l’estimation des proportions !
+    Il s’agit probablement d’un problème avec la calibration de l'alignement. Assurez-vous que votre capture des mouvements fonctionne correctement avant de réessayer.
+     Veuillez <docs>consulter la documentation</docs> ou rejoindre notre <discord>Discord</discord> pour obtenir de l’aide ^_^
 onboarding-automatic_proportions-error_modal-confirm = Compris !
+
+## Tracker scaled proportions setup
+
+
+## Tracker scaled proportions reset
+
 
 ## Home
 
@@ -937,3 +1139,75 @@ status_system-StatusSteamVRDisconnected =
        *[other] Impossible de se connecter à SteamVR via le pilote SlimeVR.
     }
 status_system-StatusTrackerError = Le capteur { $trackerName } a une erreur.
+status_system-StatusUnassignedHMD = Le casque VR devrait être attribué en tant que capteur de la tête.
+
+## Firmware tool globals
+
+firmware_tool-next_step = Prochaine étape
+firmware_tool-previous_step = Étape précédente
+firmware_tool-ok = Parfait
+firmware_tool-retry = Réessayer
+firmware_tool-loading = Chargement...
+
+## Firmware tool Steps
+
+firmware_tool = Outil de firmware DIY
+firmware_tool-description = Vous permet de configurer et flasher vos capteurs DIY
+firmware_tool-not_available = Oups, l'outil de firmware n'est pas disponible en ce moment. Revenez plus tard !
+firmware_tool-not_compatible = L’outil de firmware n'est pas compatible avec cette version de serveur. Veuillez mettre à jour votre serveur !
+firmware_tool-board_step = Sélectionnez votre carte
+firmware_tool-board_step-description = Sélectionnez l'une des cartes répertoriées ci-dessous.
+firmware_tool-board_pins_step = Vérifiez les broches
+firmware_tool-board_pins_step-description =
+    Veuillez vérifier que les broches sélectionnées sont correctes.
+    Si vous avez suivi la documentation de SlimeVR, les valeurs par défaut devraient être correctes.
+firmware_tool-board_pins_step-enable_led = Activer la LED
+firmware_tool-board_pins_step-led_pin =
+    .label = Broche LED
+    .placeholder = Entrez l'adresse de la broche LED
+firmware_tool-board_pins_step-battery_type = Sélectionnez le type de batterie
+firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = Batterie externe
+firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = Batterie interne
+firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = MCP3021 interne
+firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = MCP3021
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
+firmware_update-changelog-title = Mise à jour vers { $version }
+firmware_update-looking_for_devices = Recherche d'appareils à mettre à jour...
+firmware_update-retry = Réessayer
+firmware_update-update = Mettre à jour les capteurs sélectionnés
+firmware_update-exit = Quitter
+
+## Tray Menu
+
+tray_menu-show = Afficher
+tray_menu-hide = Masquer
+tray_menu-quit = Quitter
+
+## First exit modal
+
+tray_or_exit_modal-title = Que devrait faire le bouton de fermeture ?
+# Multiline text
+tray_or_exit_modal-description =
+    Cela permet de choisir entre quitter le serveur ou le réduire à la barre de notifications lorsque le bouton de fermeture est enfoncé.
+    Vous pouvez modifier cela plus tard dans les paramètres d'interface !
+tray_or_exit_modal-radio-exit = Quitter à la fermeture
+tray_or_exit_modal-radio-tray = Minimiser dans la zone de notifications
+tray_or_exit_modal-submit = Sauvegarder
+tray_or_exit_modal-cancel = Annuler
+
+## Unknown device modal
+
+unknown_device-modal-title = Un nouveau capteur a été trouvé !
+unknown_device-modal-description =
+    Il y a un nouveau capteur avec l’adresse MAC <b>{ $deviceId }</b>.
+    Voulez-vous le connecter à SlimeVR ?
+unknown_device-modal-confirm = Oui!
+unknown_device-modal-forget = Ignorer

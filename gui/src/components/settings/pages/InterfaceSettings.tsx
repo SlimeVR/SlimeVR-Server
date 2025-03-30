@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { CheckBox } from '@/components/commons/Checkbox';
@@ -16,20 +16,28 @@ import { LangSelector } from '@/components/commons/LangSelector';
 import { BellIcon } from '@/components/commons/icon/BellIcon';
 import { Range } from '@/components/commons/Range';
 import { Dropdown } from '@/components/commons/Dropdown';
+import { ArrowRightLeftIcon } from '@/components/commons/icon/ArrowIcons';
+import { isTrayAvailable } from '@/utils/tauri';
 
 interface InterfaceSettingsForm {
   appearance: {
-    devmode: boolean;
     theme: string;
+    showNavbarOnboarding: boolean;
     textSize: number;
     fonts: string;
+    decorations: boolean;
+  };
+  behavior: {
+    devmode: boolean;
+    useTray: boolean;
+    discordPresence: boolean;
+    errorTracking: boolean;
   };
   notifications: {
     watchNewDevices: boolean;
     feedbackSound: boolean;
     feedbackSoundVolume: number;
     connectedTrackersWarning: boolean;
-    useTray: boolean;
   };
 }
 
@@ -40,10 +48,12 @@ export function InterfaceSettings() {
   const { control, watch, handleSubmit } = useForm<InterfaceSettingsForm>({
     defaultValues: {
       appearance: {
-        devmode: config?.debug ?? defaultConfig.debug,
         theme: config?.theme ?? defaultConfig.theme,
+        showNavbarOnboarding:
+          config?.showNavbarOnboarding ?? defaultConfig.showNavbarOnboarding,
         textSize: config?.textSize ?? defaultConfig.textSize,
         fonts: config?.fonts.join(',') ?? defaultConfig.fonts.join(','),
+        decorations: config?.decorations ?? defaultConfig.decorations,
       },
       notifications: {
         watchNewDevices:
@@ -54,22 +64,34 @@ export function InterfaceSettings() {
         connectedTrackersWarning:
           config?.connectedTrackersWarning ??
           defaultConfig.connectedTrackersWarning,
+      },
+      behavior: {
+        devmode: config?.debug ?? defaultConfig.debug,
         useTray: config?.useTray ?? defaultConfig.useTray ?? false,
+        discordPresence:
+          config?.discordPresence ?? defaultConfig.discordPresence,
+        errorTracking: config?.errorTracking ?? false,
       },
     },
   });
 
   const onSubmit = (values: InterfaceSettingsForm) => {
     setConfig({
-      debug: values.appearance.devmode,
       watchNewDevices: values.notifications.watchNewDevices,
       feedbackSound: values.notifications.feedbackSound,
       feedbackSoundVolume: values.notifications.feedbackSoundVolume,
+      connectedTrackersWarning: values.notifications.connectedTrackersWarning,
+
       theme: values.appearance.theme,
+      showNavbarOnboarding: values.appearance.showNavbarOnboarding,
       fonts: values.appearance.fonts.split(','),
       textSize: values.appearance.textSize,
-      connectedTrackersWarning: values.notifications.connectedTrackersWarning,
-      useTray: values.notifications.useTray,
+      decorations: values.appearance.decorations,
+
+      useTray: values.behavior.useTray,
+      discordPresence: values.behavior.discordPresence,
+      debug: values.behavior.devmode,
+      errorTracking: values.behavior.errorTracking,
     });
   };
 
@@ -87,6 +109,7 @@ export function InterfaceSettings() {
     <SettingsPageLayout>
       <form
         className="flex flex-col gap-2 w-full"
+        // Don't resize the font size for this page because you have access to font resizing on it and we don't want to break the layout just in case
         style={
           {
             '--font-size': '12rem',
@@ -182,14 +205,51 @@ export function InterfaceSettings() {
                 )}
               />
             </div>
+          </>
+        </SettingsPagePaneLayout>
+
+        <SettingsPagePaneLayout
+          icon={<ArrowRightLeftIcon></ArrowRightLeftIcon>}
+          id="behavior"
+        >
+          <>
+            <Typography variant="main-title">
+              {l10n.getString('settings-interface-behavior')}
+            </Typography>
+
+            {isTrayAvailable && (
+              <>
+                <Typography bold>
+                  {l10n.getString('settings-general-interface-use_tray')}
+                </Typography>
+                <div className="flex flex-col pt-1 pb-2">
+                  <Typography color="secondary">
+                    {l10n.getString(
+                      'settings-general-interface-use_tray-description'
+                    )}
+                  </Typography>
+                </div>
+                <div className="grid sm:grid-cols-2 pb-4">
+                  <CheckBox
+                    variant="toggle"
+                    control={control}
+                    outlined
+                    name="behavior.useTray"
+                    label={l10n.getString(
+                      'settings-general-interface-use_tray-label'
+                    )}
+                  />
+                </div>
+              </>
+            )}
 
             <Typography bold>
-              {l10n.getString('settings-general-interface-use_tray')}
+              {l10n.getString('settings-general-interface-discord_presence')}
             </Typography>
             <div className="flex flex-col pt-1 pb-2">
               <Typography color="secondary">
                 {l10n.getString(
-                  'settings-general-interface-use_tray-description'
+                  'settings-general-interface-discord_presence-description'
                 )}
               </Typography>
             </div>
@@ -198,23 +258,12 @@ export function InterfaceSettings() {
                 variant="toggle"
                 control={control}
                 outlined
-                name="notifications.useTray"
+                name="behavior.discordPresence"
                 label={l10n.getString(
-                  'settings-general-interface-use_tray-label'
+                  'settings-general-interface-discord_presence-label'
                 )}
               />
             </div>
-          </>
-        </SettingsPagePaneLayout>
-
-        <SettingsPagePaneLayout
-          icon={<SquaresIcon></SquaresIcon>}
-          id="appearance"
-        >
-          <>
-            <Typography variant="main-title">
-              {l10n.getString('settings-interface-appearance')}
-            </Typography>
 
             <Typography bold>
               {l10n.getString('settings-general-interface-dev_mode')}
@@ -231,9 +280,67 @@ export function InterfaceSettings() {
                 variant="toggle"
                 control={control}
                 outlined
-                name="appearance.devmode"
+                name="behavior.devmode"
                 label={l10n.getString(
                   'settings-general-interface-dev_mode-label'
+                )}
+              />
+            </div>
+
+            <Typography bold>
+              {l10n.getString('settings-interface-behavior-error_tracking')}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Localized
+                id={'settings-interface-behavior-error_tracking-description'}
+                elems={{ b: <b></b> }}
+              >
+                <Typography
+                  color="secondary"
+                  whitespace="whitespace-pre-line"
+                ></Typography>
+              </Localized>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                variant="toggle"
+                control={control}
+                outlined
+                name="behavior.errorTracking"
+                label={l10n.getString(
+                  'settings-interface-behavior-error_tracking-label'
+                )}
+              />
+            </div>
+          </>
+        </SettingsPagePaneLayout>
+
+        <SettingsPagePaneLayout
+          icon={<SquaresIcon></SquaresIcon>}
+          id="appearance"
+        >
+          <>
+            <Typography variant="main-title">
+              {l10n.getString('settings-interface-appearance')}
+            </Typography>
+            <Typography bold>
+              {l10n.getString('settings-interface-appearance-decorations')}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-interface-appearance-decorations-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                variant="toggle"
+                control={control}
+                outlined
+                name="appearance.decorations"
+                label={l10n.getString(
+                  'settings-interface-appearance-decorations-label'
                 )}
               />
             </div>
@@ -291,7 +398,37 @@ export function InterfaceSettings() {
                   value={'trans'}
                   colors="!bg-trans-flag"
                 ></ThemeSelector>
+                <ThemeSelector
+                  control={control}
+                  name="appearance.theme"
+                  value={'asexual'}
+                  colors="!bg-asexual-flag"
+                ></ThemeSelector>
               </div>
+            </div>
+
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-interface-show-navbar-onboarding'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-interface-show-navbar-onboarding-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <CheckBox
+                variant="toggle"
+                control={control}
+                outlined
+                name="appearance.showNavbarOnboarding"
+                label={l10n.getString(
+                  'settings-general-interface-show-navbar-onboarding-label'
+                )}
+              />
             </div>
 
             <Typography bold>
@@ -318,7 +455,7 @@ export function InterfaceSettings() {
                       'settings-interface-appearance-font-slime_font'
                     ),
                     value: 'poppins',
-                    fontName: 'poppins',
+                    fontName: 'poppins, Noto Sans CJK',
                   },
                   {
                     label: 'OpenDyslexic',

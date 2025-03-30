@@ -28,6 +28,8 @@ pub static POSSIBLE_TITLES: &[&str] = &[
 	"never gonna let you down",
 	"uwu sowwy",
 ];
+pub const MIN_WINDOW_SIZE_WIDTH: f64 = 393.0;
+pub const MIN_WINDOW_SIZE_HEIGHT: f64 = 667.0;
 
 shadow!(build);
 // Tauri has a way to return the package.json version, but it's not a constant...
@@ -60,7 +62,7 @@ pub fn get_launch_path(cli: Cli) -> Option<PathBuf> {
 	let paths = [
 		cli.launch_from_path,
 		// AppImage passes the fakeroot in `APPDIR` env var.
-		env::var_os("APPDIR").map(PathBuf::from),
+		env::var_os("APPDIR").map(|a| PathBuf::from(a).join("usr/share/slimevr/")),
 		env::current_dir().ok(),
 		// getcwd in Mac can't be trusted, so let's get the executable's path
 		env::current_exe()
@@ -105,7 +107,8 @@ pub fn show_error(text: &str) -> bool {
 		.set_description(text)
 		.set_buttons(MessageButtons::Ok)
 		.set_level(MessageLevel::Error)
-		.show() == MessageDialogResult::Ok
+		.show()
+		== MessageDialogResult::Ok
 }
 
 #[cfg(mobile)]
@@ -220,20 +223,26 @@ pub fn logger_format(
 	w: &mut dyn std::io::Write,
 	_now: &mut DeferredNow,
 	record: &Record,
+	ansi: bool,
 ) -> Result<(), std::io::Error> {
 	let level = record.level();
 	let module_path = record.module_path().unwrap_or("<unnamed>");
-	// optionally print target
+	// Optionally print target
 	let target = if module_path.starts_with(record.target()) {
 		"".to_string()
 	} else {
 		format!(", {}", record.target())
 	};
-	write!(
-		w,
-		"{} [{}{target}] {}",
-		style(level).paint(level.to_string()),
-		record.module_path().unwrap_or("<unnamed>"),
-		style(level).paint(record.args().to_string())
-	)
+	// A toggle for ansi formatting, mainly disabled for file logs, but enabled for terminal logs.
+	if ansi {
+		write!(
+			w,
+			"{} [{}{target}] {}",
+			style(level).paint(level.to_string()),
+			module_path,
+			style(level).paint(record.args().to_string())
+		)
+	} else {
+		write!(w, "{} [{}{target}] {}", level, module_path, record.args())
+	}
 }

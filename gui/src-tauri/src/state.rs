@@ -4,6 +4,8 @@ use color_eyre::Result;
 use serde::{Deserialize, Serialize};
 use tauri::{LogicalSize, Monitor, PhysicalPosition, PhysicalSize, Window};
 
+use crate::util;
+
 static STATE_FILENAME: &str = ".window-state.json";
 
 #[derive(Serialize, Deserialize, Debug, Default)]
@@ -13,6 +15,7 @@ pub struct WindowState {
 	height: f64,
 	x: i32,
 	y: i32,
+	decorated: bool,
 	#[serde(skip)]
 	old: bool,
 }
@@ -48,6 +51,8 @@ impl WindowState {
 		window: &Window,
 		ignore_maximized: bool,
 	) -> Result<()> {
+		self.decorated = window.is_decorated()?;
+
 		let maximized = window.is_maximized()?;
 		self.maximized = maximized || (self.maximized && ignore_maximized);
 		// We early return when it's maximized because we dont have to save the state
@@ -68,12 +73,18 @@ impl WindowState {
 	}
 
 	pub fn update_window(&self, window: &Window, ignore_maximized: bool) -> Result<()> {
+		window.set_decorations(self.decorated)?;
+
 		let maximized = !ignore_maximized && window.is_maximized()?;
 		if maximized && !self.maximized {
 			window.unmaximize()?;
 		}
 
-		window.set_size(LogicalSize::new(self.width, self.height))?;
+		if self.width > util::MIN_WINDOW_SIZE_WIDTH
+			&& self.height > util::MIN_WINDOW_SIZE_HEIGHT
+		{
+			window.set_size(LogicalSize::new(self.width, self.height))?;
+		}
 
 		let pos = PhysicalPosition::new(self.x, self.y);
 		for monitor in window.available_monitors()? {

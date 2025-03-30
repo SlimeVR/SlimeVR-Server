@@ -1,19 +1,34 @@
 import { useMemo } from 'react';
 import { FlatDeviceTracker } from './app';
-import { ImuType } from 'solarxr-protocol';
 
-export function useBnoExists(connectedTrackers: FlatDeviceTracker[]): boolean {
-  const bnoExists = useMemo(
+const IGNORED_BOARDS = new Set(['Sony Mocopi', 'Haritora']);
+
+export function useIsRestCalibrationTrackers(
+  connectedTrackers: FlatDeviceTracker[]
+): boolean {
+  const imuExists = useMemo(
     () =>
       connectedTrackers.some(
         (tracker) =>
-          tracker.tracker.info?.imuType &&
-          [ImuType.BNO055, ImuType.BNO080, ImuType.BNO085].includes(
-            tracker.tracker.info?.imuType
+          tracker.tracker.info?.isImu &&
+          !(
+            tracker.device?.hardwareInfo?.boardType &&
+            IGNORED_BOARDS.has(tracker.device?.hardwareInfo?.boardType as string)
           )
       ),
     [connectedTrackers]
   );
 
-  return bnoExists;
+  return imuExists;
+}
+
+export function useRestCalibrationTrackers(
+  connectedTrackers: FlatDeviceTracker[]
+): FlatDeviceTracker[] {
+  const restTrackers = useMemo(
+    () => connectedTrackers.filter((tracker) => tracker.tracker.info?.isImu),
+    [connectedTrackers]
+  );
+
+  return restTrackers;
 }

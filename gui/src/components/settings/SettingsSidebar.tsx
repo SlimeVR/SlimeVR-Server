@@ -41,8 +41,9 @@ export function SettingsLink({
 
 export function SettingsSidebar() {
   const { l10n } = useLocalization();
+
   return (
-    <div className="flex flex-col px-5 w-[280px] min-w-[280px] py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg">
+    <div className="flex flex-col px-5 py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg h-full">
       <Typography variant="main-title">
         {l10n.getString('settings-sidebar-title')}
       </Typography>
@@ -73,6 +74,9 @@ export function SettingsSidebar() {
           <SettingsLink to="/settings/interface" scrollTo="notifications">
             {l10n.getString('settings-sidebar-notifications')}
           </SettingsLink>
+          <SettingsLink to="/settings/interface" scrollTo="behavior">
+            {l10n.getString('settings-sidebar-behavior')}
+          </SettingsLink>
           <SettingsLink to="/settings/interface" scrollTo="appearance">
             {l10n.getString('settings-sidebar-appearance')}
           </SettingsLink>
@@ -98,6 +102,14 @@ export function SettingsSidebar() {
           <div className="flex flex-col gap-2">
             <SettingsLink to="/settings/serial">
               {l10n.getString('settings-sidebar-serial')}
+            </SettingsLink>
+            <SettingsLink to="/settings/firmware-tool">
+              {l10n.getString('settings-sidebar-firmware-tool')}
+            </SettingsLink>
+          </div>
+          <div className="flex flex-col gap-2">
+            <SettingsLink to="/settings/advanced">
+              {l10n.getString('settings-sidebar-advanced')}
             </SettingsLink>
           </div>
         </div>

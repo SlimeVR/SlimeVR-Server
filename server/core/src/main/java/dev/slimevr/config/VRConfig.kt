@@ -10,8 +10,8 @@ import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
 
 @JsonVersionedModel(
-	currentVersion = "13",
-	defaultDeserializeToVersion = "13",
+	currentVersion = "14",
+	defaultDeserializeToVersion = "14",
 	toCurrentConverterClass = CurrentVRConfigConverter::class,
 )
 class VRConfig {
@@ -101,8 +101,8 @@ class VRConfig {
 			val config = getTracker(tracker)
 			tracker.readConfig(config)
 			if (tracker.isImu()) tracker.resetsHandler.readDriftCompensationConfig(driftCompensation)
+			tracker.resetsHandler.readResetConfig(resetsConfig)
 			if (tracker.needsReset) {
-				tracker.resetsHandler.readResetConfig(resetsConfig)
 				tracker.saveMountingResetOrientation(config)
 			}
 			if (tracker.allowFiltering) {

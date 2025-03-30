@@ -1,0 +1,413 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-name), 'Noto Sans CJK', sans-serif, 'Twemoji Chromium',
+    emoji;
+  width: 100vw;
+  height: 100vh;
+  user-select: none;
+  background: theme('colors.background.20');
+
+  /*Scrollbar for firefox */
+  scrollbar-color: theme('colors.background.50') transparent;
+  scrollbar-width: thin;
+}
+
+@media (-webkit-animation) {
+  body {
+    font-family: var(--font-name), 'Noto Sans CJK', sans-serif, 'Twemoji Webkit',
+      emoji;
+  }
+
+  body.linux {
+    font-family: var(--font-name), 'Noto Sans CJK', sans-serif, emoji;
+  }
+}
+
+@font-face {
+  font-family: 'Twemoji Webkit';
+  src: url('/fonts/twemoji-picosvg.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Twemoji Chromium';
+  src: url('/fonts/twemoji-glyf_colr_1.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Regular.woff') format('woff');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Italic.woff') format('woff');
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Bold.woff') format('woff');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Bold-Italic.woff') format('woff');
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Lexend';
+  src: url('/fonts/Lexend[HEXP,wght].woff2') format('woff2-variations');
+  font-weight: 125 950;
+}
+
+@font-face {
+  font-family: 'Noto Sans CJK';
+  src: url('/fonts/NotoSansCJK-VF.otf.woff2') format('woff2-variations');
+  font-weight: 125 950;
+  font-stretch: 75% 125%;
+  font-style: oblique 0deg 20deg;
+}
+
+@font-face {
+  font-family: 'Ubuntu';
+  src: url('/fonts/Ubuntu-R.woff2') format('woff2');
+}
+
+:root {
+  // overflow: hidden; -- NEVER EVER BRING THIS BACK <3
+  background: theme('colors.background.20');
+
+  --navbar-w: 101px;
+  --widget-w: 274px;
+  --topbar-h: 38px;
+
+  @screen mobile {
+    --topbar-h: 44px;
+    --navbar-h: 90px;
+  }
+}
+
+/* Colors have to be in RGB format currently */
+:root {
+  --background-10: 255, 255, 255;
+  --background-20: 120, 164, 198;
+  --background-30: 96, 138, 171;
+  --background-40: 61, 99, 129;
+  --background-50: 26, 61, 89;
+  --background-60: 17, 45, 67;
+  --background-70: 8, 30, 48;
+  --background-80: 0, 16, 28;
+  --background-90: 0, 5, 9;
+
+  --accent-background-10: 187, 138, 229;
+  --accent-background-20: 157, 92, 212;
+  --accent-background-30: 101, 69, 154;
+  --accent-background-40: 98, 59, 131;
+  --accent-background-50: 46, 33, 69;
+
+  --success: 80, 232, 151;
+  --warning: 216, 205, 55;
+  --critical: 223, 109, 140;
+  --special: 164, 79, 237;
+  --window-icon-stroke: 192, 161, 216;
+
+  --default-color: 255, 255, 255;
+
+  /* Default font size */
+  --font-size: 12rem;
+  --font-size-standard: var(--font-size);
+  /* 16% bigger */
+  --font-size-vr: calc(var(--font-size) * 1.16);
+  /* 100.08% bigger */
+  --font-size-title: calc(var(--font-size) * 2.08);
+
+  --font-name: 'poppins';
+}
+
+:root[data-theme='trans'] {
+  --background-10: 77, 34, 43;
+  --background-20: 26, 102, 130;
+  --background-30: 9, 84, 112;
+  --background-40: 79, 159, 189;
+  --background-50: 238, 238, 238;
+  --background-60: 255, 255, 255;
+  --background-70: 245, 169, 184;
+  --background-80: 91, 206, 250;
+  --background-90: 0, 5, 9;
+
+  --accent-background-10: 181, 58, 82;
+  --accent-background-20: 252, 202, 212;
+  --accent-background-30: 247, 183, 196;
+  --accent-background-40: 247, 183, 196;
+  --accent-background-50: 245, 169, 184;
+
+  --success: 68, 194, 127;
+  --warning: 240, 221, 58;
+  --critical: 223, 109, 140;
+  --special: 164, 79, 237;
+  --window-icon-stroke: 28, 154, 201;
+
+  --default-color: 29, 29, 29;
+}
+
+:root[data-theme='slime-green'] {
+  --background-10: 255, 255, 255;
+  --background-20: 107, 206, 107;
+  --background-30: 68, 193, 69;
+  --background-40: 46, 139, 49;
+  --background-50: 27, 82, 28;
+  --background-60: 20, 60, 20;
+  --background-70: 13, 39, 13;
+  --background-80: 7, 20, 7;
+  --background-90: 2, 6, 2;
+
+  --accent-background-10: 104, 205, 105;
+  --accent-background-20: 57, 171, 58;
+  --accent-background-30: 41, 122, 41;
+  --accent-background-40: 36, 108, 36;
+  --accent-background-50: 19, 57, 19;
+
+  --success: 80, 232, 151;
+  --warning: 216, 205, 55;
+  --critical: 223, 109, 140;
+  --special: 54, 161, 54;
+  --window-icon-stroke: 129, 213, 130;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='slime-yellow'] {
+  --background-10: 255, 255, 255;
+  --background-20: 206, 204, 107;
+  --background-30: 193, 191, 68;
+  --background-40: 139, 137, 46;
+  --background-50: 82, 82, 27;
+  --background-60: 60, 60, 20;
+  --background-70: 39, 39, 13;
+  --background-80: 20, 20, 7;
+  --background-90: 6, 6, 2;
+
+  --accent-background-10: 205, 203, 104;
+  --accent-background-20: 171, 169, 57;
+  --accent-background-30: 122, 121, 41;
+  --accent-background-40: 108, 107, 36;
+  --accent-background-50: 57, 57, 19;
+
+  --success: 80, 232, 151;
+  --warning: 216, 205, 55;
+  --critical: 223, 109, 140;
+  --special: 161, 160, 54;
+  --window-icon-stroke: 213, 212, 129;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='slime-orange'] {
+  --background-10: 255, 255, 255;
+  --background-20: 206, 145, 107;
+  --background-30: 193, 116, 68;
+  --background-40: 139, 82, 46;
+  --background-50: 82, 49, 27;
+  --background-60: 60, 35, 20;
+  --background-70: 39, 23, 13;
+  --background-80: 20, 12, 7;
+  --background-90: 6, 4, 2;
+
+  --accent-background-10: 205, 143, 104;
+  --accent-background-20: 171, 101, 57;
+  --accent-background-30: 122, 72, 41;
+  --accent-background-40: 108, 64, 36;
+  --accent-background-50: 57, 34, 19;
+
+  --success: 80, 232, 151;
+  --warning: 216, 205, 55;
+  --critical: 223, 109, 140;
+  --special: 161, 95, 54;
+  --window-icon-stroke: 213, 162, 129;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='slime-red'] {
+  --background-10: 255, 255, 255;
+  --background-20: 206, 107, 107;
+  --background-30: 193, 68, 68;
+  --background-40: 139, 46, 46;
+  --background-50: 82, 27, 27;
+  --background-60: 60, 20, 20;
+  --background-70: 39, 13, 13;
+  --background-80: 20, 7, 7;
+  --background-90: 6, 2, 2;
+
+  --accent-background-10: 205, 104, 104;
+  --accent-background-20: 171, 57, 57;
+  --accent-background-30: 122, 41, 41;
+  --accent-background-40: 108, 36, 36;
+  --accent-background-50: 57, 19, 19;
+
+  --success: 80, 232, 151;
+  --warning: 216, 205, 55;
+  --critical: 223, 109, 140;
+  --special: 161, 54, 54;
+  --window-icon-stroke: 213, 129, 129;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='dark'] {
+  --background-10: 255, 255, 255;
+  --background-20: 158, 158, 158;
+  --background-30: 133, 133, 133;
+  --background-40: 94, 94, 94;
+  --background-50: 58, 58, 58;
+  --background-60: 42, 42, 42;
+  --background-70: 28, 28, 28;
+  --background-80: 14, 14, 14;
+  --background-90: 4, 4, 4;
+
+  --accent-background-10: 158, 158, 158;
+  --accent-background-20: 121, 121, 121;
+  --accent-background-30: 85, 85, 85;
+  --accent-background-40: 76, 76, 76;
+  --accent-background-50: 39, 39, 39;
+
+  --success: 80, 232, 151;
+  --warning: 216, 205, 55;
+  --critical: 223, 109, 140;
+  --special: 121, 121, 121;
+  --window-icon-stroke: 172, 172, 172;
+
+  --default-color: 255, 255, 255;
+}
+
+:root[data-theme='light'] {
+  --background-10: 0, 0, 0;
+  --background-20: 97, 97, 97;
+  --background-30: 122, 122, 122;
+  --background-40: 161, 161, 161;
+  --background-50: 197, 197, 197;
+  --background-60: 213, 213, 213;
+  --background-70: 227, 227, 227;
+  --background-80: 241, 241, 241;
+  --background-90: 251, 251, 251;
+
+  --accent-background-10: 97, 97, 97;
+  --accent-background-20: 134, 134, 134;
+  --accent-background-30: 170, 170, 170;
+  --accent-background-40: 179, 179, 179;
+  --accent-background-50: 216, 216, 216;
+
+  --success: 0, 100, 43;
+  --warning: 100, 94, 0;
+  --critical: 100, 4, 33;
+  --special: 134, 134, 134;
+  --window-icon-stroke: 83, 83, 83;
+
+  --default-color: 0, 0, 0;
+}
+
+:root[data-theme='asexual'] {
+  --background-10: 255, 255, 255;
+  --background-20: 230, 230, 230;
+  --background-30: 200, 200, 200;
+  --background-40: 120, 120, 120;
+  --background-50: 90, 90, 90;
+  --background-60: 60, 60, 60;
+  --background-70: 30, 30, 30;
+  --background-80: 15, 15, 15;
+  --background-90: 0, 0, 0;
+
+  --accent-background-10: 230, 0, 230;
+  --accent-background-20: 210, 0, 210;
+  --accent-background-30: 150, 0, 150;
+  --accent-background-40: 130, 0, 130;
+  --accent-background-50: 70, 0, 70;
+
+  --success: 100, 230, 10;
+  --warning: 220, 200, 50;
+  --critical: 220, 40, 110;
+  --special: 230, 0, 230;
+  --window-icon-stroke: 200, 130, 200;
+
+  --default-color: 255, 255, 255;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: theme('colors.background.50');
+  border-radius: 50px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.background.60');
+}
+
+.bg-background-60::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.background.40');
+}
+
+.bg-background-60 {
+  scrollbar-color: theme('colors.background.50') transparent;
+}
+
+.dropdown-scroll {
+  scrollbar-color: theme('colors.background.40') theme('colors.background.50');
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb {
+  background: theme('colors.background.40');
+}
+
+.dropdown-scroll::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.background.50');
+}
+
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
+.crisp-edges {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}

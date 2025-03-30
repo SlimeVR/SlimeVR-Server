@@ -1,16 +1,25 @@
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { DeveloperModeWidgetForm } from '@/components/widgets/DeveloperModeWidget';
 import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
-import { Store } from '@tauri-apps/plugin-store';
+import { createStore, Store } from '@tauri-apps/plugin-store';
 import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
+import { isTauri } from '@tauri-apps/api/core';
 
 export interface WindowConfig {
   width: number;
   height: number;
   x: number;
   y: number;
+}
+
+export enum AssignMode {
+  LowerBody = 'lower-body',
+  Core = 'core',
+  EnhancedCore = 'enhanced-core',
+  FullBody = 'full-body',
+  All = 'all',
 }
 
 export interface Config {
@@ -25,17 +34,18 @@ export interface Config {
   theme: string;
   textSize: number;
   fonts: string[];
-  advancedAssign: boolean;
   useTray: boolean | null;
-  doneManualMounting: boolean;
   mirrorView: boolean;
+  assignMode: AssignMode;
+  discordPresence: boolean;
+  errorTracking: boolean | null;
+  decorations: boolean;
+  showNavbarOnboarding: boolean;
 }
 
 export interface ConfigContext {
   config: Config | null;
-  loading: boolean;
   setConfig: (config: Partial<Config>) => Promise<void>;
-  loadConfig: () => Promise<Config | null>;
   saveConfig: () => Promise<void>;
 }
 
@@ -50,10 +60,13 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   theme: 'slime',
   textSize: 12,
   fonts: ['poppins'],
-  advancedAssign: false,
   useTray: null,
-  doneManualMounting: false,
   mirrorView: true,
+  assignMode: AssignMode.Core,
+  discordPresence: false,
+  errorTracking: null,
+  decorations: false,
+  showNavbarOnboarding: true,
 };
 
 interface CrossStorage {
@@ -61,22 +74,53 @@ interface CrossStorage {
   get(key: string): Promise<string | null>;
 }
 
-const tauriStore: CrossStorage = new Store('gui-settings.dat');
-
 const localStore: CrossStorage = {
   get: async (key) => localStorage.getItem(key),
   set: async (key, value) => localStorage.setItem(key, value),
 };
 
+const store: CrossStorage = isTauri()
+  ? await createStore('gui-settings.dat', { autoSave: 100 as never })
+  : localStore;
+
 function fallbackToDefaults(loadedConfig: any): Config {
   return Object.assign({}, defaultConfig, loadedConfig);
 }
 
-export function useConfigProvider(): ConfigContext {
-  const [currConfig, set] = useState<Config | null>(null);
-  const [loading, setLoading] = useState(false);
+// Move the load of the config ouside of react
+// allows to load everything before the first render
+export const loadConfig = async () => {
+  try {
+    const migrated = await store.get('configMigratedToTauri');
+    if (!migrated) {
+      const oldConfig = localStorage.getItem('config.json');
+
+      if (oldConfig) await store.set('config.json', oldConfig);
+
+      store.set('configMigratedToTauri', 'true');
+    }
+
+    const json = await store.get('config.json');
+
+    if (!json) throw new Error('Config has ceased existing for some reason');
+
+    const loadedConfig = fallbackToDefaults(JSON.parse(json));
+    // set(loadedConfig);
+    // setLoading(false);
+    return loadedConfig;
+  } catch (e) {
+    error(e);
+    // setConfig(defaultConfig);
+    // setLoading(false);
+    return null;
+  }
+};
+
+export function useConfigProvider(initialConfig: Config | null): ConfigContext {
+  const [currConfig, set] = useState<Config | null>(
+    initialConfig || (defaultConfig as Config)
+  );
   const tauri = useIsTauri();
-  const store = useMemo(() => (tauri ? tauriStore : localStore), [tauri]);
 
   useDebouncedEffect(
     () => {
@@ -103,8 +147,10 @@ export function useConfigProvider(): ConfigContext {
           const newConfig: Partial<Config> = JSON.parse(
             (await store.get('config.json')) ?? '{}'
           );
-          return Object.entries(config).every(
-            ([key, value]) => newConfig[key as keyof Config] === value
+          return Object.entries(config).every(([key, value]) =>
+            typeof value === 'object'
+              ? JSON.stringify(newConfig[key as keyof Config]) === JSON.stringify(value)
+              : newConfig[key as keyof Config] === value
           );
         },
         100,
@@ -116,8 +162,10 @@ export function useConfigProvider(): ConfigContext {
           const newConfig: Partial<Config> = JSON.parse(
             localStorage.getItem('config.json') ?? '{}'
           );
-          return Object.entries(config).every(
-            ([key, value]) => newConfig[key as keyof Config] === value
+          return Object.entries(config).every(([key, value]) =>
+            typeof value === 'object'
+              ? JSON.stringify(newConfig[key as keyof Config]) === JSON.stringify(value)
+              : newConfig[key as keyof Config] === value
           );
         },
         100,
@@ -128,36 +176,7 @@ export function useConfigProvider(): ConfigContext {
 
   return {
     config: currConfig,
-    loading,
     setConfig,
-    loadConfig: async () => {
-      setLoading(true);
-      try {
-        const migrated = await store.get('configMigratedToTauri');
-        if (!migrated) {
-          const oldConfig = localStorage.getItem('config.json');
-
-          if (oldConfig) await store.set('config.json', oldConfig);
-
-          store.set('configMigratedToTauri', 'true');
-        }
-
-        const json = await store.get('config.json');
-
-        if (!json) throw new Error('Config has ceased existing for some reason');
-
-        const loadedConfig = fallbackToDefaults(JSON.parse(json));
-        set(loadedConfig);
-
-        setLoading(false);
-        return loadedConfig;
-      } catch (e) {
-        error(e);
-        setConfig(defaultConfig);
-        setLoading(false);
-        return null;
-      }
-    },
     saveConfig: async () => {
       if (!tauri) return;
       await (store as Store).save();

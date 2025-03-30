@@ -5,6 +5,8 @@ import dev.slimevr.autobone.AutoBoneHandler
 import dev.slimevr.bridge.Bridge
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ConfigManager
+import dev.slimevr.firmware.FirmwareUpdateHandler
+import dev.slimevr.firmware.SerialFlashingHandler
 import dev.slimevr.osc.OSCHandler
 import dev.slimevr.osc.OSCRouter
 import dev.slimevr.osc.VMCHandler
@@ -30,25 +32,29 @@ import io.eiren.util.ann.ThreadSecure
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import solarxr_protocol.datatypes.TrackerIdT
+import solarxr_protocol.rpc.ResetType
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
 import kotlin.concurrent.schedule
 
-typealias SteamBridgeProvider = (
+typealias BridgeProvider = (
 	server: VRServer,
 	computedTrackers: List<Tracker>,
-) -> ISteamVRBridge?
+) -> Sequence<Bridge>
 
 const val SLIMEVR_IDENTIFIER = "dev.slimevr.SlimeVR"
 
 class VRServer @JvmOverloads constructor(
-	driverBridgeProvider: SteamBridgeProvider = { _, _ -> null },
-	feederBridgeProvider: (VRServer) -> ISteamVRBridge? = { _ -> null },
+	bridgeProvider: BridgeProvider = { _, _ -> sequence {} },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
+	flashingHandlerProvider: (VRServer) -> SerialFlashingHandler? = { _ -> null },
+	acquireMulticastLock: () -> Any? = { null },
+	// configPath is used by VRWorkout, do not remove!
 	configPath: String,
 ) : Thread("VRServer") {
+
 	@JvmField
 	val configManager: ConfigManager
 
@@ -59,7 +65,9 @@ class VRServer @JvmOverloads constructor(
 	private val bridges: MutableList<Bridge> = FastList()
 	private val tasks: Queue<Runnable> = LinkedBlockingQueue()
 	private val newTrackersConsumers: MutableList<Consumer<Tracker>> = FastList()
+	private val trackerStatusListeners: MutableList<TrackerStatusListener> = FastList()
 	private val onTick: MutableList<Runnable> = FastList()
+	private val lock = acquireMulticastLock()
 	val oSCRouter: OSCRouter
 
 	@JvmField
@@ -74,6 +82,10 @@ class VRServer @JvmOverloads constructor(
 
 	@JvmField
 	val serialHandler: SerialHandler
+
+	var serialFlashingHandler: SerialFlashingHandler?
+
+	val firmwareUpdateHandler: FirmwareUpdateHandler
 
 	@JvmField
 	val autoBoneHandler: AutoBoneHandler
@@ -104,12 +116,14 @@ class VRServer @JvmOverloads constructor(
 		configManager.loadConfig()
 		deviceManager = DeviceManager(this)
 		serialHandler = serialHandlerProvider(this)
+		serialFlashingHandler = flashingHandlerProvider(this)
 		provisioningHandler = ProvisioningHandler(this)
 		resetHandler = ResetHandler()
 		tapSetupHandler = TapSetupHandler()
 		humanPoseManager = HumanPoseManager(this)
 		// AutoBone requires HumanPoseManager first
 		autoBoneHandler = AutoBoneHandler(this)
+		firmwareUpdateHandler = FirmwareUpdateHandler(this)
 		protocolAPI = ProtocolAPI(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 
@@ -121,28 +135,15 @@ class VRServer @JvmOverloads constructor(
 			"Sensors UDP server",
 		) { tracker: Tracker -> registerTracker(tracker) }
 
-		// Start bridges for SteamVR and Feeder
-		val driverBridge = driverBridgeProvider(this, computedTrackers)
-		if (driverBridge != null) {
-			tasks.add(Runnable { driverBridge.startBridge() })
-			bridges.add(driverBridge)
+		// Start bridges and WebSocket server
+		for (bridge in bridgeProvider(this, computedTrackers) + sequenceOf(WebSocketVRBridge(computedTrackers, this))) {
+			tasks.add(Runnable { bridge.startBridge() })
+			bridges.add(bridge)
 		}
-		val feederBridge = feederBridgeProvider(this)
-		if (feederBridge != null) {
-			tasks.add(Runnable { feederBridge.startBridge() })
-			bridges.add(feederBridge)
-		}
-
-		// Create WebSocket server
-		val wsBridge = WebSocketVRBridge(computedTrackers, this)
-		tasks.add(Runnable { wsBridge.startBridge() })
-		bridges.add(wsBridge)
 
 		// Initialize OSC handlers
 		vrcOSCHandler = VRCOSCHandler(
 			this,
-			humanPoseManager,
-			driverBridge,
 			configManager.vrConfig.vrcOSC,
 			computedTrackers,
 		)
@@ -150,7 +151,6 @@ class VRServer @JvmOverloads constructor(
 			this,
 			humanPoseManager,
 			configManager.vrConfig.vmc,
-			computedTrackers,
 		)
 
 		// Initialize OSC router
@@ -283,13 +283,11 @@ class VRServer @JvmOverloads constructor(
 	fun updateSkeletonModel() {
 		queueTask {
 			humanPoseManager.updateSkeletonModelFromServer()
+			vrcOSCHandler.setHeadTracker(TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD))
 			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
 				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
 			}
 		}
-		vrcOSCHandler.setHeadTracker(
-			TrackerUtils.getTrackerForSkeleton(trackers, TrackerPosition.HEAD),
-		)
 	}
 
 	fun resetTrackersFull(resetSourceName: String?) {
@@ -308,29 +306,61 @@ class VRServer @JvmOverloads constructor(
 		queueTask { humanPoseManager.clearTrackersMounting(resetSourceName) }
 	}
 
+	fun getPauseTracking(): Boolean = humanPoseManager.getPauseTracking()
+
 	fun setPauseTracking(pauseTracking: Boolean, sourceName: String?) {
-		queueTask { humanPoseManager.setPauseTracking(pauseTracking, sourceName) }
+		queueTask {
+			humanPoseManager.setPauseTracking(pauseTracking, sourceName)
+			// Toggle trackers as they don't toggle when tracking is paused
+			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
+				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
+			}
+		}
 	}
 
 	fun togglePauseTracking(sourceName: String?) {
-		queueTask { humanPoseManager.togglePauseTracking(sourceName) }
+		queueTask {
+			humanPoseManager.togglePauseTracking(sourceName)
+			// Toggle trackers as they don't toggle when tracking is paused
+			if (this.getVRBridge(ISteamVRBridge::class.java)?.updateShareSettingsAutomatically() == true) {
+				RPCSettingsHandler.sendSteamVRUpdatedSettings(protocolAPI, protocolAPI.rpcHandler)
+			}
+		}
 	}
 
 	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
+		if (delay > 0) {
+			resetHandler.sendStarted(ResetType.Full)
+		}
 		timer.schedule(delay) {
-			queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
+			queueTask {
+				humanPoseManager.resetTrackersFull(resetSourceName)
+				resetHandler.sendFinished(ResetType.Full)
+			}
 		}
 	}
 
 	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long) {
+		if (delay > 0) {
+			resetHandler.sendStarted(ResetType.Yaw)
+		}
 		timer.schedule(delay) {
-			queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
+			queueTask {
+				humanPoseManager.resetTrackersYaw(resetSourceName)
+				resetHandler.sendFinished(ResetType.Yaw)
+			}
 		}
 	}
 
 	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long) {
+		if (delay > 0) {
+			resetHandler.sendStarted(ResetType.Mounting)
+		}
 		timer.schedule(delay) {
-			queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
+			queueTask {
+				humanPoseManager.resetTrackersMounting(resetSourceName)
+				resetHandler.sendFinished(ResetType.Mounting)
+			}
 		}
 	}
 
@@ -396,6 +426,18 @@ class VRServer @JvmOverloads constructor(
 				t.resetsHandler.refreshDriftCompensationEnabled()
 			}
 		}
+	}
+
+	fun trackerStatusChanged(tracker: Tracker, oldStatus: TrackerStatus, newStatus: TrackerStatus) {
+		trackerStatusListeners.forEach { it.onTrackerStatusChanged(tracker, oldStatus, newStatus) }
+	}
+
+	fun addTrackerStatusListener(listener: TrackerStatusListener) {
+		trackerStatusListeners.add(listener)
+	}
+
+	fun removeTrackerStatusListener(listener: TrackerStatusListener) {
+		trackerStatusListeners.removeIf { listener == it }
 	}
 
 	companion object {

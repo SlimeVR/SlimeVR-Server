@@ -278,7 +278,7 @@ export function BodyProportions({
               className={classNames(
                 'h-12 w-32 rounded-lg bg-background-60 flex flex-col justify-center',
                 'items-center fill-background-10',
-                scrollerRef?.current?.scrollTop ?? 0 > 0
+                (scrollerRef?.current?.scrollTop ?? 0 > 0)
                   ? 'opacity-100 active:bg-accent-background-30'
                   : 'opacity-50'
               )}
@@ -326,7 +326,7 @@ export function BodyProportions({
                     <Typography variant="section-title" bold>
                       {l10n.getString(label)}
                     </Typography>
-                    <Typography variant="mobile-title" bold>
+                    <Typography variant="mobile-title" bold sentryMask>
                       {type === LabelType.GroupPart
                         ? /* Make number rounding so it's based on .5 decimals */
                           percentageFormat.format(Math.round(value * 200) / 200)

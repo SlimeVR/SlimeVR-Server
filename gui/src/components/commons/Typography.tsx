@@ -1,3 +1,4 @@
+import { useConfig } from '@/hooks/config';
 import classNames from 'classnames';
 import { createElement, ReactNode, useMemo } from 'react';
 
@@ -8,7 +9,9 @@ export function Typography({
   whitespace = 'whitespace-normal',
   children,
   italic = false,
+  truncate = false,
   textAlign,
+  sentryMask = false,
 }: {
   variant?:
     | 'main-title'
@@ -18,6 +21,7 @@ export function Typography({
     | 'mobile-title';
   bold?: boolean;
   italic?: boolean;
+  truncate?: boolean;
   block?: boolean;
   color?: 'primary' | 'secondary' | string;
   whitespace?:
@@ -34,6 +38,7 @@ export function Typography({
     | 'text-start'
     | 'text-end';
   children?: ReactNode;
+  sentryMask?: boolean;
 }) {
   const tag = useMemo(() => {
     const tags = {
@@ -45,6 +50,7 @@ export function Typography({
     };
     return tags[variant];
   }, [variant]);
+  const { config } = useConfig();
 
   return createElement(
     tag,
@@ -65,6 +71,10 @@ export function Typography({
         whitespace,
         textAlign,
         italic && 'italic',
+        truncate && 'leading-3 text-ellipsis',
+        truncate && (config?.textSize ?? 12) > 12 && 'line-clamp-1',
+        truncate && (config?.textSize ?? 12) <= 12 && 'line-clamp-2',
+        sentryMask && 'sentry-mask',
       ]),
     },
     children || []

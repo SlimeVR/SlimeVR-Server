@@ -6,7 +6,7 @@ import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
 import classNames from 'classnames';
 import { useTrackers } from '@/hooks/tracker';
-import { useBnoExists } from '@/hooks/imu-logic';
+import { useIsRestCalibrationTrackers } from '@/hooks/imu-logic';
 
 export function WifiCredsPage() {
   const { l10n } = useLocalization();
@@ -17,7 +17,7 @@ export function WifiCredsPage() {
 
   applyProgress(0.2);
 
-  const bnoExists = useBnoExists(connectedIMUTrackers);
+  const isRestCalibration = useIsRestCalibrationTrackers(connectedIMUTrackers);
 
   return (
     <form
@@ -52,7 +52,7 @@ export function WifiCredsPage() {
           </div>
           <div
             className={classNames(
-              'flex flex-col gap-3 p-10 rounded-xl max-w-sm',
+              'flex flex-col gap-3 p-10 rounded-xl max-w-sm sentry-mask',
               !state.alonePage && 'bg-background-70',
               state.alonePage && 'bg-background-60'
             )}
@@ -97,7 +97,7 @@ export function WifiCredsPage() {
                 variant="secondary"
                 className={state.alonePage ? 'opacity-0' : ''}
                 to={
-                  bnoExists
+                  isRestCalibration
                     ? '/onboarding/calibration-tutorial'
                     : '/onboarding/assign-tutorial'
                 }

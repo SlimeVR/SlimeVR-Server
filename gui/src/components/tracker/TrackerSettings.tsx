@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { IPv4 } from 'ip-num/IPNumber';
 import { useEffect, useMemo, useState } from 'react';
@@ -6,10 +6,13 @@ import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import {
   AssignTrackerRequestT,
+  BoardType,
   BodyPart,
   ForgetDeviceRequestT,
   ImuType,
+  MagnetometerStatus,
   RpcMessage,
+  TrackerDataType,
 } from 'solarxr-protocol';
 import { useDebouncedEffect } from '@/hooks/timeout';
 import { useTrackerFromId } from '@/hooks/tracker';
@@ -33,6 +36,9 @@ import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMe
 import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
+import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
+import semver from 'semver';
+import { checkForUpdate } from '@/components/firmware-update/FirmwareUpdate';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -146,6 +152,26 @@ export function TrackerSettingsPage() {
     }
   }, [firstLoad]);
 
+  const boardType = useMemo(() => {
+    if (tracker?.device?.hardwareInfo?.officialBoardType) {
+      return l10n.getString(
+        'board_type-' +
+          BoardType[
+            tracker?.device?.hardwareInfo?.officialBoardType ??
+              BoardType.UNKNOWN
+          ]
+      );
+    } else if (tracker?.device?.hardwareInfo?.boardType) {
+      return tracker?.device?.hardwareInfo?.boardType;
+    } else {
+      return '--';
+    }
+  }, [
+    tracker?.device?.hardwareInfo?.officialBoardType,
+    tracker?.device?.hardwareInfo?.boardType,
+    l10n,
+  ]);
+
   const macAddress = useMemo(() => {
     if (
       /(?:[a-zA-Z\d]{2}:){5}[a-zA-Z\d]{2}/.test(
@@ -157,6 +183,18 @@ export function TrackerSettingsPage() {
     }
     return null;
   }, [tracker?.device?.hardwareInfo?.hardwareIdentifier]);
+
+  const { currentFirmwareRelease } = useAppContext();
+
+  const needUpdate =
+    currentFirmwareRelease &&
+    tracker?.device?.hardwareInfo &&
+    checkForUpdate(currentFirmwareRelease, tracker?.device?.hardwareInfo);
+  const updateUnavailable =
+    tracker?.device?.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
+    !semver.valid(
+      tracker?.device?.hardwareInfo?.firmwareVersion?.toString() ?? 'none'
+    );
 
   return (
     <form
@@ -170,6 +208,7 @@ export function TrackerSettingsPage() {
       ></SingleTrackerBodyAssignmentMenu>
       <MountingSelectionMenu
         bodyPart={tracker?.tracker.info?.bodyPart}
+        currRotation={currRotation}
         isOpen={selectRotation}
         onClose={() => setSelectRotation(false)}
         onDirectionSelected={onDirectionSelected}
@@ -184,21 +223,55 @@ export function TrackerSettingsPage() {
               shakeHighlight={false}
             ></TrackerCard>
           )}
-          {/* <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
-            <Typography bold>Firmware version</Typography>
-            <div className="flex gap-2">
-              <Typography color="secondary">
-                {tracker?.device?.hardwareInfo?.firmwareVersion}
-              </Typography>
-              <Typography color="secondary">-</Typography>
-              <Typography color="text-accent-background-10">
-                Up to date
-              </Typography>
+          {
+            <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
+              <Localized id="tracker-settings-update-title">
+                <Typography variant="section-title">
+                  Firmware version
+                </Typography>
+              </Localized>
+              <div className="flex gap-2">
+                <Typography color="secondary">
+                  v{tracker?.device?.hardwareInfo?.firmwareVersion}
+                </Typography>
+                <Typography color="secondary">-</Typography>
+                {updateUnavailable && (
+                  <Localized id="tracker-settings-update-unavailable">
+                    <Typography>Cannot be updated (DIY)</Typography>
+                  </Localized>
+                )}
+                {!updateUnavailable && (
+                  <>
+                    {!needUpdate && (
+                      <Localized id="tracker-settings-update-up_to_date">
+                        <Typography>Up to date</Typography>
+                      </Localized>
+                    )}
+                    {needUpdate && (
+                      <Localized
+                        id="tracker-settings-update-available"
+                        vars={{ versionName: currentFirmwareRelease?.name }}
+                      >
+                        <Typography color="text-accent-background-10">
+                          New version available
+                        </Typography>
+                      </Localized>
+                    )}
+                  </>
+                )}
+              </div>
+              <Localized id="tracker-settings-update">
+                <Button
+                  variant={needUpdate ? 'primary' : 'secondary'}
+                  disabled={!needUpdate}
+                  to="/firmware-update"
+                >
+                  Update now
+                </Button>
+              </Localized>
             </div>
-            <Button variant="primary" disabled>
-              Update now
-            </Button>
-          </div> */}
+          }
+
           <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2 overflow-x-auto">
             <div className="flex justify-between">
               <Typography color="secondary">
@@ -218,7 +291,7 @@ export function TrackerSettingsPage() {
               <Typography color="secondary">
                 {l10n.getString('tracker-infos-custom_name')}
               </Typography>
-              <Typography>
+              <Typography sentry-mask>
                 {tracker?.tracker.info?.customName || '--'}
               </Typography>
             </div>
@@ -235,26 +308,20 @@ export function TrackerSettingsPage() {
             </div>
             <div className="flex justify-between">
               <Typography color="secondary">
-                {l10n.getString('tracker-infos-version')}
-              </Typography>
-              <Typography>
-                {tracker?.device?.hardwareInfo?.firmwareVersion || '--'}
-              </Typography>
-            </div>
-            {/* <div className="flex justify-between">
-              <Typography color="secondary">
-                {l10n.getString('tracker-infos-hardware_rev')}
-              </Typography>
-              <Typography>
-                {tracker?.device?.hardwareInfo?.hardwareRevision || '--'}
-              </Typography>
-            </div> */}
-            <div className="flex justify-between">
-              <Typography color="secondary">
                 {l10n.getString('tracker-infos-hardware_identifier')}
               </Typography>
               <Typography>
                 {tracker?.device?.hardwareInfo?.hardwareIdentifier || '--'}
+              </Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-data_support')}
+              </Typography>
+              <Typography>
+                {tracker?.tracker.info?.dataSupport
+                  ? TrackerDataType[tracker?.tracker.info?.dataSupport]
+                  : '--'}
               </Typography>
             </div>
             <div className="flex justify-between">
@@ -271,8 +338,19 @@ export function TrackerSettingsPage() {
               <Typography color="secondary">
                 {l10n.getString('tracker-infos-board_type')}
               </Typography>
+              <Typography>{boardType}</Typography>
+            </div>
+            <div className="flex justify-between">
+              <Typography color="secondary">
+                {l10n.getString('tracker-infos-magnetometer')}
+              </Typography>
               <Typography>
-                {tracker?.device?.hardwareInfo?.boardType || '--'}
+                {tracker?.tracker.info?.magnetometer === undefined
+                  ? '--'
+                  : l10n.getString('tracker-infos-magnetometer-status-v1', {
+                      status:
+                        MagnetometerStatus[tracker.tracker.info.magnetometer],
+                    })}
               </Typography>
             </div>
             <div className="flex justify-between">
@@ -307,18 +385,18 @@ export function TrackerSettingsPage() {
               )}
             </Typography>
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
-              <div className="flex gap-3 items-center">
+              <div className="flex gap-3 items-center fill-background-10">
                 {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
                   <BodyPartIcon
                     bodyPart={tracker?.tracker.info?.bodyPart}
                   ></BodyPartIcon>
                 )}
                 {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
-                  <WarningIcon className="text-yellow-300" />
+                  <WarningIcon className="fill-status-warning" />
                 )}
                 <Typography
                   color={classNames({
-                    'text-yellow-300':
+                    'text-status-warning':
                       tracker?.tracker.info?.bodyPart === BodyPart.NONE,
                   })}
                 >
@@ -402,7 +480,16 @@ export function TrackerSettingsPage() {
               </div>
             </div>
           )}
-          <div className="flex flex-col gap-2 w-full mt-3">
+          {tracker?.tracker.info?.isImu &&
+            tracker?.tracker.info?.magnetometer !==
+              MagnetometerStatus.NOT_SUPPORTED && (
+              <MagnetometerToggleSetting
+                settingType="tracker"
+                trackerNum={tracker.tracker.trackerId?.trackerNum}
+                deviceId={tracker.tracker.trackerId?.deviceId?.id}
+              />
+            )}
+          <div className="flex flex-col gap-2 w-full mt-3 sentry-mask">
             <Typography variant="section-title">
               {l10n.getString('tracker-settings-name_section')}
             </Typography>
@@ -418,7 +505,7 @@ export function TrackerSettingsPage() {
               control={control}
               autocomplete="off"
               rules={undefined}
-              label="Tracker name"
+              label={l10n.getString('tracker-settings-name_section-label')}
             ></Input>
           </div>
           {macAddress && (
@@ -431,7 +518,7 @@ export function TrackerSettingsPage() {
               </Typography>
               <Button
                 variant="secondary"
-                className="!bg-status-critical  self-start"
+                className="!bg-status-critical self-start"
                 onClick={() => {
                   sendRPCPacket(
                     RpcMessage.ForgetDeviceRequest,

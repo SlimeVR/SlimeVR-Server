@@ -11,6 +11,10 @@ import { TrackerStatus } from './TrackerStatus';
 import classNames from 'classnames';
 import { useTracker } from '@/hooks/tracker';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
+import { DownloadIcon } from '@/components/commons/icon/DownloadIcon';
+import { Link } from 'react-router-dom';
+import { useAppContext } from '@/hooks/app';
+import { checkForUpdate } from '@/components/firmware-update/FirmwareUpdate';
 
 function TrackerBig({
   device,
@@ -29,7 +33,9 @@ function TrackerBig({
         <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
       </div>
       <div className="flex justify-center">
-        <Typography bold>{trackerName}</Typography>
+        <Typography bold truncate>
+          {trackerName}
+        </Typography>
       </div>
       <div className="flex justify-center">
         <TrackerStatus status={tracker.status}></TrackerStatus>
@@ -39,6 +45,7 @@ function TrackerBig({
           <>
             {device.hardwareStatus.batteryPctEstimate && (
               <TrackerBattery
+                voltage={device.hardwareStatus.batteryVoltage}
                 value={device.hardwareStatus.batteryPctEstimate / 100}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />
@@ -76,8 +83,10 @@ function TrackerSmol({
       <div className="flex flex-col justify-center items-center fill-background-10">
         <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
       </div>
-      <div className="flex flex-col flex-grow">
-        <Typography bold>{trackerName}</Typography>
+      <div className="flex flex-col flex-grow justify-center">
+        <Typography bold truncate>
+          {trackerName}
+        </Typography>
         <TrackerStatus status={tracker.status}></TrackerStatus>
       </div>
       {device && device.hardwareStatus && (
@@ -85,6 +94,7 @@ function TrackerSmol({
           <div className="flex flex-col justify-center items-center">
             {device.hardwareStatus.batteryPctEstimate && (
               <TrackerBattery
+                voltage={device.hardwareStatus.batteryVoltage}
                 value={device.hardwareStatus.batteryPctEstimate / 100}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />
@@ -116,6 +126,7 @@ export function TrackerCard({
   bg = 'bg-background-60',
   shakeHighlight = true,
   warning = false,
+  showUpdates = false,
 }: {
   tracker: TrackerDataT;
   device?: DeviceDataT;
@@ -126,33 +137,50 @@ export function TrackerCard({
   shakeHighlight?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
   warning?: boolean;
+  showUpdates?: boolean;
 }) {
+  const { currentFirmwareRelease } = useAppContext();
   const { useVelocity } = useTracker(tracker);
-
   const velocity = useVelocity();
 
   return (
-    <div
-      onClick={onClick}
-      className={classNames(
-        'rounded-lg overflow-hidden',
-        interactable && 'hover:bg-background-50 cursor-pointer',
-        outlined && 'outline outline-2 outline-accent-background-40',
-        warning && 'border-status-warning border-solid border-2',
-        bg
-      )}
-      style={
-        shakeHighlight
-          ? {
-              boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
-                velocity * 8
-              )}px #BB8AE5`,
-            }
-          : {}
-      }
-    >
-      {smol && <TrackerSmol tracker={tracker} device={device}></TrackerSmol>}
-      {!smol && <TrackerBig tracker={tracker} device={device}></TrackerBig>}
+    <div className="relative">
+      <div
+        onClick={onClick}
+        className={classNames(
+          'rounded-lg overflow-hidden',
+          interactable && 'hover:bg-background-50 cursor-pointer',
+          outlined && 'outline outline-2 outline-accent-background-40',
+          warning && 'border-status-warning border-solid border-2',
+          bg
+        )}
+        style={
+          shakeHighlight
+            ? {
+                boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
+                  velocity * 8
+                )}px rgb(var(--accent-background-30))`,
+              }
+            : {}
+        }
+      >
+        {smol && <TrackerSmol tracker={tracker} device={device}></TrackerSmol>}
+        {!smol && <TrackerBig tracker={tracker} device={device}></TrackerBig>}
+      </div>
+      {showUpdates &&
+        tracker.status !== TrackerStatusEnum.DISCONNECTED &&
+        currentFirmwareRelease &&
+        device?.hardwareInfo &&
+        checkForUpdate(currentFirmwareRelease, device.hardwareInfo) && (
+          <Link to="/firmware-update" className="absolute right-5 -top-2.5">
+            <div className="relative">
+              <div className="absolute rounded-full h-6 w-6 left-1 top-1 bg-accent-background-10 animate-[ping_2s_linear_infinite]"></div>
+              <div className="absolute rounded-full h-8 w-8 hover:bg-background-40 hover:cursor-pointer bg-background-50 justify-center flex items-center">
+                <DownloadIcon width={15}></DownloadIcon>
+              </div>
+            </div>
+          </Link>
+        )}
     </div>
   );
 }

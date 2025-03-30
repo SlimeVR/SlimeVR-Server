@@ -3,9 +3,11 @@ import { useOnboarding } from '@/hooks/onboarding';
 import { Button } from '@/components/commons/Button';
 import { SlimeVRIcon } from '@/components/commons/icon/SimevrIcon';
 import { Typography } from '@/components/commons/Typography';
+import { useNavigate } from 'react-router-dom';
 
 export function DonePage() {
   const { l10n } = useLocalization();
+  const navigate = useNavigate();
   const { applyProgress, skipSetup } = useOnboarding();
 
   applyProgress(1);
@@ -22,7 +24,13 @@ export function DonePage() {
             {l10n.getString('onboarding-done-description')}
           </Typography>
         </div>
-        <Button variant="primary" to="/" onClick={skipSetup}>
+        <Button
+          variant="primary"
+          onClick={() => {
+            skipSetup();
+            navigate('/');
+          }}
+        >
           {l10n.getString('onboarding-done-close')}
         </Button>
       </div>

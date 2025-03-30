@@ -40,6 +40,25 @@ class UDPProtocolParser {
 				buf.position(bundlePacketStart + bundlePacketLen)
 			}
 			return bundlePackets.toTypedArray()
+		} else if (packetId == PACKET_BUNDLE_COMPACT) {
+			bundlePackets.clear()
+			while (buf.hasRemaining()) {
+				val bundlePacketLen = Math.min(buf.get().toUByte().toInt(), buf.remaining()) // 1 byte
+				if (bundlePacketLen == 0) continue
+
+				val bundlePacketStart = buf.position()
+				val bundleBuf = buf.slice()
+				bundleBuf.limit(bundlePacketLen)
+				val bundlePacketId = bundleBuf.get().toUByte().toInt() // 1 byte
+				val newPacket = getNewPacket(bundlePacketId)
+				newPacket?.let {
+					newPacket.readData(bundleBuf)
+					bundlePackets.add(newPacket)
+				}
+
+				buf.position(bundlePacketStart + bundlePacketLen)
+			}
+			return bundlePackets.toTypedArray()
 		}
 
 		val newPacket = getNewPacket(packetId)
@@ -95,6 +114,8 @@ class UDPProtocolParser {
 		PACKET_TEMPERATURE -> UDPPacket20Temperature()
 		PACKET_USER_ACTION -> UDPPacket21UserAction()
 		PACKET_FEATURE_FLAGS -> UDPPacket22FeatureFlags()
+		PACKET_ACK_CONFIG_CHANGE -> UDPPacket24AckConfigChange()
+		PACKET_FLEX_DATA -> UDPPacket26FlexData()
 		PACKET_PROTOCOL_CHANGE -> UDPPacket200ProtocolChange()
 		else -> null
 	}
@@ -127,7 +148,12 @@ class UDPProtocolParser {
 		const val PACKET_TEMPERATURE = 20
 		const val PACKET_USER_ACTION = 21
 		const val PACKET_FEATURE_FLAGS = 22
+		const val PACKET_ROTATION_AND_ACCELERATION = 23
+		const val PACKET_ACK_CONFIG_CHANGE = 24
+		const val PACKET_SET_CONFIG_FLAG = 25
+		const val PACKET_FLEX_DATA = 26
 		const val PACKET_BUNDLE = 100
+		const val PACKET_BUNDLE_COMPACT = 101
 		const val PACKET_PROTOCOL_CHANGE = 200
 		private val HANDSHAKE_BUFFER = ByteArray(64)
 		private val bundlePackets = ArrayList<UDPPacket>(128)

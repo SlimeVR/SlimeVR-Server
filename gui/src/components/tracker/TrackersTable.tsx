@@ -45,7 +45,8 @@ const displayColumns: { [k: string]: boolean } = {
 };
 
 const isSlime = ({ device }: FlatDeviceTracker) =>
-  device?.hardwareInfo?.manufacturer === 'SlimeVR';
+  device?.hardwareInfo?.manufacturer === 'SlimeVR' ||
+  device?.hardwareInfo?.manufacturer === 'HID Device';
 
 const getDeviceName = ({ device }: FlatDeviceTracker) =>
   device?.customName?.toString() || '';
@@ -137,7 +138,7 @@ export function RowContainer({
         style={{
           boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
             velocity * 8
-          )}px  #BB8AE5`,
+          )}px rgb(var(--accent-background-30))`,
         }}
         className={classNames(
           'h-[50px]  flex flex-col justify-center px-3',

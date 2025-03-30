@@ -25,7 +25,7 @@ import java.util.List;
 public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 	public final String socketPath;
 	public final UnixDomainSocketAddress socketAddress;
-	private final ByteBuffer dst = ByteBuffer.allocate(2048);
+	private final ByteBuffer dst = ByteBuffer.allocate(2048).order(ByteOrder.LITTLE_ENDIAN);
 	private final ByteBuffer src = ByteBuffer.allocate(2048).order(ByteOrder.LITTLE_ENDIAN);
 
 	private ServerSocketChannel server;
@@ -163,7 +163,7 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		// if buffer has 4 bytes at least, we got the message size!
 		// processs all messages
 		while (dst.position() >= 4) {
-			int messageLength = dst.get(0) | dst.get(1) << 8 | dst.get(2) << 16 | dst.get(3) << 24;
+			int messageLength = dst.getInt(0);
 			if (messageLength > 1024) { // Overflow
 				LogManager
 					.severe(

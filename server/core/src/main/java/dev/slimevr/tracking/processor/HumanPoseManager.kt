@@ -22,6 +22,11 @@ import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import org.apache.commons.math3.util.Precision
+import solarxr_protocol.datatypes.DeviceIdT
+import solarxr_protocol.datatypes.TrackerIdT
+import solarxr_protocol.rpc.StatusData
+import solarxr_protocol.rpc.StatusDataUnion
+import solarxr_protocol.rpc.StatusUnassignedHMDT
 import java.util.function.Consumer
 import kotlin.math.*
 
@@ -49,7 +54,7 @@ class HumanPoseManager(val server: VRServer?) {
 			skeleton = HumanSkeleton(this, server)
 			// This computes all node offsets, so the defaults don't need to be
 			// explicitly loaded into the skeleton (no need for
-			// `updateNodeOffsetsInSkeleton()`)
+			// `computeAllNodeOffsets()`)
 			loadFromConfig(server.configManager)
 			for (sc in onSkeletonUpdated) sc.accept(skeleton)
 		}
@@ -64,7 +69,7 @@ class HumanPoseManager(val server: VRServer?) {
 	constructor(trackers: List<Tracker>?) : this(server = null) {
 		skeleton = HumanSkeleton(this, trackers)
 		// Set default node offsets on the new skeleton
-		skeletonConfigManager.updateNodeOffsetsInSkeleton()
+		skeletonConfigManager.computeAllNodeOffsets()
 		skeletonConfigManager.updateSettingsInSkeleton()
 	}
 
@@ -81,9 +86,9 @@ class HumanPoseManager(val server: VRServer?) {
 		offsetConfigs: Map<SkeletonConfigOffsets, Float>?,
 	) : this(server = null) {
 		skeleton = HumanSkeleton(this, trackers)
-		// Set default node offsets on the new skeleton
-		skeletonConfigManager.updateNodeOffsetsInSkeleton()
 		// Set offsetConfigs from given offsetConfigs on creation
+		// This computes all node offsets, so the defaults don't need to be
+		// explicitly loaded into the skeleton (no need for `computeAllNodeOffsets()`)
 		skeletonConfigManager.setOffsets(offsetConfigs)
 		skeletonConfigManager.updateSettingsInSkeleton()
 	}
@@ -104,174 +109,123 @@ class HumanPoseManager(val server: VRServer?) {
 		altOffsetConfigs: Map<SkeletonConfigOffsets, Float>?,
 	) : this(server = null) {
 		skeleton = HumanSkeleton(this, trackers)
-		// Set default node offsets on the new skeleton
-		skeletonConfigManager.updateNodeOffsetsInSkeleton()
 		// Set offsetConfigs from given offsetConfigs on creation
 		if (altOffsetConfigs != null) {
 			// Set alts first, so if there's any overlap it doesn't affect
 			// the values
 			skeletonConfigManager.setOffsets(altOffsetConfigs)
 		}
+		// This computes all node offsets, so the defaults don't need to be
+		// explicitly loaded into the skeleton (no need for `computeAllNodeOffsets()`)
 		skeletonConfigManager.setOffsets(offsetConfigs)
 		skeletonConfigManager.updateSettingsInSkeleton()
 	}
 
 	// #endregion
 	// #region private methods
+	private fun makeComputedTracker(name: String, display: String, pos: TrackerPosition): Tracker = Tracker(
+		null,
+		getNextLocalTrackerId(),
+		name,
+		display,
+		pos,
+		hasPosition = true,
+		hasRotation = true,
+		isInternal = true,
+		isComputed = true,
+		allowFiltering = false,
+		// Do not track polarity, moving avg de-syncs ticks and breaks leg tweaks
+		trackRotDirection = false,
+	)
+
 	private fun initializeComputedHumanPoseTracker() {
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://HEAD",
 					"Computed head",
 					TrackerPosition.HEAD,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://CHEST",
 					"Computed chest",
 					TrackerPosition.UPPER_CHEST,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://WAIST",
 					"Computed hip",
 					TrackerPosition.HIP,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://LEFT_KNEE",
 					"Computed left knee",
 					TrackerPosition.LEFT_UPPER_LEG,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://RIGHT_KNEE",
 					"Computed right knee",
 					TrackerPosition.RIGHT_UPPER_LEG,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://LEFT_FOOT",
 					"Computed left foot",
 					TrackerPosition.LEFT_FOOT,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://RIGHT_FOOT",
 					"Computed right foot",
 					TrackerPosition.RIGHT_FOOT,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://LEFT_ELBOW",
 					"Computed left elbow",
 					TrackerPosition.LEFT_UPPER_ARM,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://RIGHT_ELBOW",
 					"Computed right elbow",
 					TrackerPosition.RIGHT_UPPER_ARM,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://LEFT_HAND",
 					"Computed left hand",
 					TrackerPosition.LEFT_HAND,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://RIGHT_HAND",
 					"Computed right hand",
 					TrackerPosition.RIGHT_HAND,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 
@@ -333,16 +287,6 @@ class HumanPoseManager(val server: VRServer?) {
 	 */
 	@ThreadSafe
 	fun getComputedTracker(trackerRole: TrackerRole): Tracker = skeleton.getComputedTracker(trackerRole)
-
-	/**
-	 * Returns all trackers if VRServer is non-null. Else, returns the
-	 * skeleton's assigned trackers.
-	 *
-	 * @return a list of trackers to use for reset.
-	 */
-	val trackersToReset: List<Tracker?>
-		get() =
-			server?.allTrackers ?: skeleton.localTrackers
 
 	/**
 	 * @return the head bone, which is the root of the skeleton
@@ -496,6 +440,14 @@ class HumanPoseManager(val server: VRServer?) {
 	fun updateNodeOffset(boneType: BoneType, offset: Vector3) {
 		if (!isSkeletonPresent) return
 		skeleton.updateNodeOffset(boneType, offset)
+	}
+
+	/**
+	 * Updates all the node offsets in the skeleton
+	 */
+	fun updateNodeOffsetsInSkeleton() {
+		if (!isSkeletonPresent) return
+		skeletonConfigManager.updateNodeOffsetsInSkeleton()
 	}
 
 	/**
@@ -690,9 +642,70 @@ class HumanPoseManager(val server: VRServer?) {
 		get() = skeletonConfigManager.userHeightFromOffsets
 
 	// #endregion
+	fun getPauseTracking(): Boolean = skeleton.getPauseTracking()
+
 	fun setPauseTracking(pauseTracking: Boolean, sourceName: String?) {
 		skeleton.setPauseTracking(pauseTracking, sourceName)
 	}
 
-	fun togglePauseTracking(sourceName: String?): Boolean = skeleton.togglePauseTracking(sourceName) // #endregion
+	fun togglePauseTracking(sourceName: String?): Boolean = skeleton.togglePauseTracking(sourceName)
+
+	// This should be executed when the head tracker is changed
+	fun checkTrackersRequiringReset() {
+		// Checks if this is main human pose manager (having server) or
+		// skeleton doesn't have a head tracker or not an HMD one
+		if (server == null ||
+			skeleton.headTracker?.isComputed != true
+		) {
+			return
+		}
+		server.allTrackers
+			.filter { !it.isInternal && it.trackerPosition != null }
+			.forEach {
+				it.checkReportRequireReset()
+			}
+	}
+
+	private var lastMissingHmdStatus = 0u
+	fun checkReportMissingHmd() {
+		// Check if this is main skeleton, there is no head tracker currently,
+		// and there is an available HMD one
+		if (server == null) return
+		val tracker = VRServer.instance.allTrackers.firstOrNull { it.isHmd && !it.isInternal && it.status.sendData }
+		if (skeleton.headTracker == null &&
+			lastMissingHmdStatus == 0u &&
+			tracker != null
+		) {
+			reportMissingHmd(tracker)
+		} else if (lastMissingHmdStatus != 0u &&
+			(skeleton.headTracker != null || tracker == null)
+		) {
+			server.statusSystem.removeStatus(lastMissingHmdStatus)
+			lastMissingHmdStatus = 0u
+		}
+	}
+
+	private fun reportMissingHmd(tracker: Tracker) {
+		require(lastMissingHmdStatus == 0u) {
+			"${::lastMissingHmdStatus.name} must be 0u, but was $lastMissingHmdStatus"
+		}
+		require(server != null) {
+			"${::server.name} must not be null"
+		}
+
+		val status = StatusDataUnion().apply {
+			type = StatusData.StatusUnassignedHMD
+			value = StatusUnassignedHMDT().apply {
+				trackerId = TrackerIdT().apply {
+					if (tracker.device != null) {
+						deviceId = DeviceIdT().apply { id = tracker.device.id }
+					}
+					trackerNum = tracker.trackerNum
+				}
+			}
+		}
+		lastMissingHmdStatus = server.statusSystem.addStatus(status, true)
+	}
+
+	// #endregion
 }

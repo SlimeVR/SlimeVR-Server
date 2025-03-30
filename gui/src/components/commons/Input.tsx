@@ -87,7 +87,9 @@ export const InputInside = forwardRef<
       <div className="relative w-full">
         <input
           type={forceText ? 'text' : type}
-          className={classNames(classes, { 'pr-10': type === 'password' })}
+          className={classNames(classes, {
+            'pr-10 sentry-mask': type === 'password',
+          })}
           placeholder={placeholder || undefined}
           autoComplete={autocomplete ? 'off' : 'on'}
           onChange={onChange}
@@ -98,7 +100,7 @@ export const InputInside = forwardRef<
         ></input>
         {type === 'password' && (
           <div
-            className="fill-background-10 absolute inset-y-0 right-0 pr-6 z-10 my-auto w-[16px] h-[16px]"
+            className="fill-background-10 absolute inset-y-0 right-0 pr-6 z-10 my-auto w-[16px] h-[16px] cursor-pointer"
             onClick={togglePassword}
           >
             <EyeIcon width={16} closed={forceText}></EyeIcon>

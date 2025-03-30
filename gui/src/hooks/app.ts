@@ -6,6 +6,7 @@ import {
   useEffect,
   useMemo,
   useReducer,
+  useState,
 } from 'react';
 import {
   BoneT,
@@ -14,15 +15,25 @@ import {
   DeviceDataT,
   ResetResponseT,
   ResetStatus,
+  ResetType,
   RpcMessage,
   StartDataFeedT,
   TrackerDataT,
 } from 'solarxr-protocol';
-import { playSoundOnResetStarted } from '@/sounds/sounds';
+import { playSoundOnResetEnded, playSoundOnResetStarted } from '@/sounds/sounds';
 import { useConfig } from './config';
 import { useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
 import { error } from '@/utils/logging';
+import { cacheWrap } from './cache';
+import { updateSentryContext } from '@/utils/sentry';
+
+export interface FirmwareRelease {
+  name: string;
+  version: string;
+  changelog: string;
+  firmwareFile: string;
+}
 
 export interface FlatDeviceTracker {
   device?: DeviceDataT;
@@ -39,6 +50,7 @@ export interface AppState {
 }
 
 export interface AppContext {
+  currentFirmwareRelease: FirmwareRelease | null;
   state: AppState;
   trackers: FlatDeviceTracker[];
   dispatch: Dispatch<AppStateAction>;
@@ -69,6 +81,8 @@ export function useProvideAppContext(): AppContext {
     datafeed: new DataFeedUpdateT(),
     ignoredTrackers: new Set(),
   });
+  const [currentFirmwareRelease, setCurrentFirmwareRelease] =
+    useState<FirmwareRelease | null>(null);
 
   useEffect(() => {
     if (isConnected) {
@@ -101,12 +115,21 @@ export function useProvideAppContext(): AppContext {
     dispatch({ type: 'datafeed', value: packet });
   });
 
+  useEffect(() => {
+    updateSentryContext(state);
+  }, [state.datafeed?.devices]);
+
   useRPCPacket(RpcMessage.ResetResponse, ({ status, resetType }: ResetResponseT) => {
     if (!config?.feedbackSound) return;
     try {
       switch (status) {
         case ResetStatus.STARTED: {
-          playSoundOnResetStarted(resetType, config?.feedbackSoundVolume);
+          if (resetType !== ResetType.Yaw)
+            playSoundOnResetStarted(config?.feedbackSoundVolume);
+          break;
+        }
+        case ResetStatus.FINISHED: {
+          playSoundOnResetEnded(resetType, config?.feedbackSoundVolume);
           break;
         }
       }
@@ -115,7 +138,55 @@ export function useProvideAppContext(): AppContext {
     }
   });
 
+  useEffect(() => {
+    const fetchCurrentFirmwareRelease = async () => {
+      const releases: any[] | null = JSON.parse(
+        (await cacheWrap(
+          'firmware-releases',
+          () =>
+            fetch('https://api.github.com/repos/SlimeVR/SlimeVR-Tracker-ESP/releases')
+              .then((res) => res.text())
+              .catch(() => null),
+          60 * 60 * 1000
+        )) ?? 'null'
+      );
+      if (!releases) return null;
+
+      const firstRelease = releases.find(
+        (release) =>
+          release.prerelease === false &&
+          release.assets &&
+          release.assets.find(
+            (asset: any) =>
+              asset.name === 'BOARD_SLIMEVR-firmware.bin' && asset.browser_download_url
+          )
+      );
+
+      let version = firstRelease.tag_name;
+      if (version.charAt(0) === 'v') {
+        version = version.substring(1);
+      }
+
+      if (firstRelease) {
+        return {
+          name: firstRelease.name,
+          version,
+          changelog: firstRelease.body,
+          firmwareFile: firstRelease.assets.find(
+            (asset: any) =>
+              asset.name === 'BOARD_SLIMEVR-firmware.bin' && asset.browser_download_url
+          ).browser_download_url,
+        };
+      } else {
+        return null;
+      }
+    };
+
+    fetchCurrentFirmwareRelease().then((res) => setCurrentFirmwareRelease(res));
+  }, []);
+
   return {
+    currentFirmwareRelease,
     state,
     trackers,
     dispatch,

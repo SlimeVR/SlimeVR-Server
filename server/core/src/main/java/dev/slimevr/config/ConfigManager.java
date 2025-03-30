@@ -16,6 +16,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 
 public class ConfigManager {
@@ -115,6 +117,32 @@ public class ConfigManager {
 
 		// Serialize config
 		try {
+			// delete accidental folder caused by PR
+			// https://github.com/SlimeVR/SlimeVR-Server/pull/1176
+			var cfgFileMaybeFolder = cfgFile.toFile();
+			if (cfgFileMaybeFolder.isDirectory()) {
+				try (Stream<Path> pathStream = Files.walk(cfgFile)) {
+					var list = pathStream.sorted(Comparator.reverseOrder()).toList();
+					for (var path : list) {
+						Files.delete(path);
+					}
+				} catch (IOException e) {
+					LogManager
+						.severe(
+							"Unable to delete folder that has same name as the config file on path \""
+								+ cfgFile
+								+ "\""
+						);
+					return;
+				}
+
+			}
+			var cfgFolder = cfgFile.toAbsolutePath().getParent().toFile();
+			if (!cfgFolder.exists() && !cfgFolder.mkdirs()) {
+				LogManager
+					.severe("Unable to create folders for config on path \"" + cfgFile + "\"");
+				return;
+			}
 			om.writeValue(tmpCfgFile.toFile(), this.vrConfig);
 		} catch (IOException e) {
 			LogManager.severe("Unable to write serialized config to \"" + tmpCfgFile + "\"", e);
@@ -131,6 +159,11 @@ public class ConfigManager {
 					e
 				);
 		}
+	}
+
+	public void resetConfig() {
+		this.vrConfig = new VRConfig();
+		saveConfig();
 	}
 
 	public VRConfig getVrConfig() {

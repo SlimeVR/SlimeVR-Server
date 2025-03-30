@@ -1,3 +1,4 @@
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig, PluginOption } from 'vite';
 import { execSync } from 'child_process';
@@ -10,7 +11,9 @@ const versionTag = execSync('git --no-pager tag --sort -taggerdate --points-at H
   .split('\n')[0]
   .trim();
 // If not empty then it's not clean
-const gitClean = execSync('git status --porcelain').toString() ? false : true;
+const gitCleanString = execSync('git status --porcelain').toString();
+const gitClean = gitCleanString ? false : true;
+if (!gitClean) console.log('Git is dirty because of:\n' + gitCleanString);
 
 console.log(`version is ${versionTag || commitHash}${gitClean ? '' : '-dirty'}`);
 
@@ -21,7 +24,7 @@ export function i18nHotReload(): PluginOption {
     handleHotUpdate({ file, server }) {
       if (file.endsWith('.ftl')) {
         console.log('Fluent files updated');
-        server.ws.send({
+        server.hot.send({
           type: 'custom',
           event: 'locales-update',
         });
@@ -37,17 +40,28 @@ export default defineConfig({
     __VERSION_TAG__: JSON.stringify(versionTag),
     __GIT_CLEAN__: gitClean,
   },
-  plugins: [react(), i18nHotReload(), visualizer() as PluginOption],
+  plugins: [
+    react(),
+    i18nHotReload(),
+    visualizer() as PluginOption,
+    sentryVitePlugin({
+      org: 'slimevr',
+      project: 'slimevr-server-gui-react',
+    }),
+  ],
   build: {
-    target: 'es2020',
+    target: 'es2022',
     emptyOutDir: true,
+
     commonjsOptions: {
       include: [/solarxr-protocol/, /node_modules/],
     },
+
+    sourcemap: true,
   },
   optimizeDeps: {
     esbuildOptions: {
-      target: 'es2020',
+      target: 'es2022',
     },
     needsInterop: ['solarxr-protocol'],
     include: ['solarxr-protocol'],
@@ -55,6 +69,13 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern',
+      },
     },
   },
 });

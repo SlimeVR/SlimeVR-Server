@@ -20,7 +20,7 @@ import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusSteamVRDisconnectedT
 
 abstract class SteamVRBridge(
-	server: VRServer,
+	protected val server: VRServer,
 	threadName: String,
 	bridgeName: String,
 	protected val bridgeSettingsKey: String,
@@ -53,7 +53,9 @@ abstract class SteamVRBridge(
 	}
 
 	override fun updateShareSettingsAutomatically(): Boolean {
-		if (!config.automaticSharedTrackersToggling) return false
+		// Return false if automatic trackers is disabled or if tracking is paused
+		if (!config.automaticSharedTrackersToggling || server.getPauseTracking()) return false
+
 		val skeleton = instance.humanPoseManager.skeleton
 		val isWaistSteamVr = skeleton.hipTracker?.device?.isOpenVrDevice == true ||
 			skeleton.waistTracker?.device?.isOpenVrDevice == true
@@ -61,8 +63,7 @@ abstract class SteamVRBridge(
 		changeShareSettings(TrackerRole.WAIST, skeleton.hasSpineTracker && !isWaistSteamVr)
 
 		// hasChest if waist and/or hip is on, and chest and/or upper chest is also on
-		val hasChest = (skeleton.hipTracker != null || skeleton.waistTracker != null) &&
-			(skeleton.upperChestTracker != null || skeleton.chestTracker != null)
+		val hasChest = skeleton.upperChestTracker != null || skeleton.chestTracker != null
 		val isChestSteamVr = skeleton.upperChestTracker?.device?.isOpenVrDevice == true ||
 			skeleton.chestTracker?.device?.isOpenVrDevice == true
 		changeShareSettings(
@@ -110,6 +111,7 @@ abstract class SteamVRBridge(
 		changeShareSettings(TrackerRole.RIGHT_ELBOW, hasRightElbow && !isRightElbowSteamVr)
 
 		// Hands aren't touched as they will override the controller's tracking
+		// Return true to say that trackers were successfully toggled automatically
 		return true
 	}
 
@@ -151,41 +153,46 @@ abstract class SteamVRBridge(
 				"OpenVR", // TODO : We need the manufacturer
 			)
 
+		// Display name, needsReset and isHmd
 		val displayName: String
-		val needsReset: Boolean
-		if (trackerAdded.trackerId == 0) {
+		val isHmd = if (trackerAdded.trackerId == 0) {
 			displayName = if (trackerAdded.trackerName == "HMD") {
 				"SteamVR Driver HMD"
 			} else {
 				"Feeder App HMD"
 			}
-			// TODO support needsReset = true for VTubing (GUI toggle?)
-			needsReset = false
+			true
 		} else {
 			displayName = trackerAdded.trackerName
-			needsReset = true
+			false
 		}
 
+		// trackerPosition
+		val role = getById(trackerAdded.trackerRole)
+		val trackerPosition = if (role != null) {
+			getByTrackerRole(role)
+		} else {
+			null
+		}
+
+		// Make the tracker
 		val tracker = Tracker(
 			device,
 			getNextLocalTrackerId(),
 			trackerAdded.trackerSerial,
 			displayName,
-			null,
+			trackerPosition,
 			trackerAdded.trackerId,
 			hasPosition = true,
 			hasRotation = true,
 			userEditable = true,
 			isComputed = true,
-			needsReset = needsReset,
+			needsReset = true,
+			isHmd = isHmd,
 		)
 
 		device.trackers[0] = tracker
 		instance.deviceManager.addDevice(device)
-		val role = getById(trackerAdded.trackerRole)
-		if (role != null) {
-			tracker.trackerPosition = getByTrackerRole(role)
-		}
 		return tracker
 	}
 

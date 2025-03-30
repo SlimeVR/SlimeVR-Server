@@ -31,6 +31,8 @@ import {
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
 import { HandsWarningModal } from '@/components/settings/HandsWarningModal';
+import { MagnetometerToggleSetting } from './MagnetometerToggleSetting';
+import { DriftCompensationModal } from '@/components/settings/DriftCompensationModal';
 
 interface SettingsForm {
   trackers: {
@@ -52,6 +54,7 @@ interface SettingsForm {
   };
   driftCompensation: {
     enabled: boolean;
+    prediction: boolean;
     amount: number;
     maxResets: number;
   };
@@ -62,10 +65,12 @@ interface SettingsForm {
     forceArmsFromHmd: boolean;
     floorClip: boolean;
     skatingCorrection: boolean;
-    viveEmulation: boolean;
     toeSnap: boolean;
     footPlant: boolean;
     selfLocalization: boolean;
+    usePosition: boolean;
+    enforceConstraints: boolean;
+    correctConstraints: boolean;
   };
   ratios: {
     imputeWaistFromChestHip: number;
@@ -96,6 +101,7 @@ interface SettingsForm {
     armsMountingResetMode: number;
     yawResetSmoothTime: number;
     saveMountingReset: boolean;
+    resetHmdPitch: boolean;
   };
 }
 
@@ -120,10 +126,12 @@ const defaultValues: SettingsForm = {
     forceArmsFromHmd: false,
     floorClip: false,
     skatingCorrection: false,
-    viveEmulation: false,
     toeSnap: false,
     footPlant: true,
     selfLocalization: false,
+    usePosition: true,
+    enforceConstraints: true,
+    correctConstraints: true,
   },
   ratios: {
     imputeWaistFromChestHip: 0.3,
@@ -137,6 +145,7 @@ const defaultValues: SettingsForm = {
   filtering: { amount: 0.1, type: FilteringType.NONE },
   driftCompensation: {
     enabled: false,
+    prediction: false,
     amount: 0.1,
     maxResets: 1,
   },
@@ -158,6 +167,7 @@ const defaultValues: SettingsForm = {
     armsMountingResetMode: 0,
     yawResetSmoothTime: 0.0,
     saveMountingReset: false,
+    resetHmdPitch: false,
   },
 };
 
@@ -225,10 +235,12 @@ export function GeneralSettings() {
       toggles.extendedPelvis = values.toggles.extendedPelvis;
       toggles.extendedSpine = values.toggles.extendedSpine;
       toggles.forceArmsFromHmd = values.toggles.forceArmsFromHmd;
-      toggles.viveEmulation = values.toggles.viveEmulation;
       toggles.toeSnap = values.toggles.toeSnap;
       toggles.footPlant = values.toggles.footPlant;
       toggles.selfLocalization = values.toggles.selfLocalization;
+      toggles.usePosition = values.toggles.usePosition;
+      toggles.enforceConstraints = values.toggles.enforceConstraints;
+      toggles.correctConstraints = values.toggles.correctConstraints;
       modelSettings.toggles = toggles;
     }
 
@@ -280,6 +292,7 @@ export function GeneralSettings() {
 
     const driftCompensation = new DriftCompensationSettingsT();
     driftCompensation.enabled = values.driftCompensation.enabled;
+    driftCompensation.prediction = values.driftCompensation.prediction;
     driftCompensation.amount = values.driftCompensation.amount;
     driftCompensation.maxResets = values.driftCompensation.maxResets;
     settings.driftCompensation = driftCompensation;
@@ -294,6 +307,7 @@ export function GeneralSettings() {
         values.resetsSettings.yawResetSmoothTime;
       resetsSettings.saveMountingReset =
         values.resetsSettings.saveMountingReset;
+      resetsSettings.resetHmdPitch = values.resetsSettings.resetHmdPitch;
       settings.resetsSettings = resetsSettings;
     }
 
@@ -326,7 +340,7 @@ export function GeneralSettings() {
     if (settings.steamVrTrackers) {
       formData.trackers = settings.steamVrTrackers;
       if (
-        settings.steamVrTrackers.leftHand &&
+        settings.steamVrTrackers.leftHand ||
         settings.steamVrTrackers.rightHand
       ) {
         setHandsWarning(false);
@@ -432,6 +446,8 @@ export function GeneralSettings() {
   //   }
   // }, [state]);
 
+  const [showDriftCompWarning, setShowDriftCompWarning] = useState(false);
+
   return (
     <SettingsPageLayout>
       <HandsWarningModal
@@ -466,7 +482,35 @@ export function GeneralSettings() {
                   </Typography>
                 ))}
             </div>
-            <div className="grid grid-cols-2 gap-3 pt-3">
+            <div className="flex flex-col pt-4"></div>
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-steamvr-trackers-tracker_toggling'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-2 pb-4">
+              {l10n
+                .getString(
+                  'settings-general-steamvr-trackers-tracker_toggling-description'
+                )
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="trackers.automaticTrackerToggle"
+              label={l10n.getString(
+                'settings-general-steamvr-trackers-tracker_toggling-label'
+              )}
+            />
+            <div className="flex flex-col pt-4"></div>
+            <div className="grid grid-cols-2 gap-3">
               <CheckBox
                 variant="toggle"
                 outlined
@@ -566,33 +610,6 @@ export function GeneralSettings() {
                 )}
               />
             </div>
-            <div className="flex flex-col pt-4 pb-4"></div>
-            <Typography bold>
-              {l10n.getString(
-                'settings-general-steamvr-trackers-tracker_toggling'
-              )}
-            </Typography>
-            <div className="flex flex-col pt-2 pb-4">
-              {l10n
-                .getString(
-                  'settings-general-steamvr-trackers-tracker_toggling-description'
-                )
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </div>
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="trackers.automaticTrackerToggle"
-              label={l10n.getString(
-                'settings-general-steamvr-trackers-tracker_toggling-label'
-              )}
-            />
           </>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">
@@ -694,7 +711,51 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-tracker_mechanics-drift_compensation-enabled-label'
               )}
+              onClick={() => {
+                if (getValues('driftCompensation.enabled')) {
+                  return;
+                }
+
+                setShowDriftCompWarning(true);
+              }}
             />
+            <div className="flex flex-col pt-2 pb-4"></div>
+            <Typography bold>
+              {l10n.getString(
+                'settings-general-tracker_mechanics-drift_compensation-prediction'
+              )}
+            </Typography>
+            <div className="flex flex-col pt-2 pb-4">
+              {l10n
+                .getString(
+                  'settings-general-tracker_mechanics-drift_compensation-prediction-description'
+                )
+                .split('\n')
+                .map((line, i) => (
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
+            </div>
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="driftCompensation.prediction"
+              label={l10n.getString(
+                'settings-general-tracker_mechanics-drift_compensation-prediction-label'
+              )}
+            />
+            <DriftCompensationModal
+              accept={() => {
+                setShowDriftCompWarning(false);
+              }}
+              onClose={() => {
+                setShowDriftCompWarning(false);
+                setValue('driftCompensation.enabled', false);
+              }}
+              isOpen={showDriftCompWarning}
+            ></DriftCompensationModal>
             <div className="flex gap-5 pt-5 md:flex-row flex-col">
               <NumberSelector
                 control={control}
@@ -754,6 +815,10 @@ export function GeneralSettings() {
               label={l10n.getString(
                 'settings-general-tracker_mechanics-save_mounting_reset-enabled-label'
               )}
+            />
+            <MagnetometerToggleSetting
+              settingType="general"
+              id="mechanics-magnetometer"
             />
           </>
         </SettingsPagePaneLayout>
@@ -859,24 +924,6 @@ export function GeneralSettings() {
                 )}
               />
             </div>
-            <div className="flex flex-col pt-2 pb-3">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-fk_settings-leg_fk-reset_mounting_feet-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-1 gap-3 pb-3">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="resetsSettings.resetMountingFeet"
-                label={l10n.getString(
-                  'settings-general-fk_settings-leg_fk-reset_mounting_feet'
-                )}
-              />
-            </div>
 
             <div className="flex flex-col pt-2 pb-3">
               <Typography bold>
@@ -900,12 +947,54 @@ export function GeneralSettings() {
               />
             </div>
 
+            <div className="flex flex-col pt-2">
+              <Typography bold>
+                {l10n.getString('settings-general-fk_settings-reset_settings')}
+              </Typography>
+            </div>
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-fk_settings-reset_settings-reset_hmd_pitch-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-1 gap-3 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="resetsSettings.resetHmdPitch"
+                label={l10n.getString(
+                  'settings-general-fk_settings-reset_settings-reset_hmd_pitch'
+                )}
+              />
+            </div>
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-fk_settings-leg_fk-reset_mounting_feet-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-1 gap-3 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="resetsSettings.resetMountingFeet"
+                label={l10n.getString(
+                  'settings-general-fk_settings-leg_fk-reset_mounting_feet'
+                )}
+              />
+            </div>
+
             <Typography color="secondary">
               {l10n.getString(
                 'settings-general-fk_settings-arm_fk-reset_mode-description'
               )}
             </Typography>
-            <div className="grid md:grid-cols-2 flex-col gap-3 pt-2">
+            <div className="grid md:grid-cols-2 flex-col gap-3 pt-2 pb-3">
               <Radio
                 control={control}
                 name="resetsSettings.armsMountingResetMode"
@@ -951,6 +1040,31 @@ export function GeneralSettings() {
                 value={'3'}
               ></Radio>
             </div>
+
+            <div className="flex flex-col pt-2 pb-3">
+              <Typography bold>
+                {l10n.getString(
+                  'settings-general-fk_settings-enforce_joint_constraints'
+                )}
+              </Typography>
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-1 pb-3">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="toggles.enforceConstraints"
+                label={l10n.getString(
+                  'settings-general-fk_settings-enforce_joint_constraints-enforce_constraints'
+                )}
+              />
+            </div>
+
             {config?.debug && (
               <>
                 <div className="flex flex-col pt-2 pb-3">
@@ -1102,29 +1216,6 @@ export function GeneralSettings() {
                   </div>
                 </div>
 
-                <div className="flex flex-col pt-2 pb-3">
-                  <Typography bold>
-                    {l10n.getString(
-                      'settings-general-fk_settings-vive_emulation-title'
-                    )}
-                  </Typography>
-                  <Typography color="secondary">
-                    {l10n.getString(
-                      'settings-general-fk_settings-vive_emulation-description'
-                    )}
-                  </Typography>
-                </div>
-                <div className="grid sm:grid-cols-1 gap-3 pb-5">
-                  <CheckBox
-                    variant="toggle"
-                    outlined
-                    control={control}
-                    name="toggles.viveEmulation"
-                    label={l10n.getString(
-                      'settings-general-fk_settings-vive_emulation-label'
-                    )}
-                  />
-                </div>
                 <div className="flex flex-col pt-2 pb-3">
                   <Typography bold>
                     {l10n.getString(
@@ -1280,38 +1371,33 @@ export function GeneralSettings() {
                 step={1}
               />
             </div>
-            {config?.debug && (
-              <div className="grid sm:grid-cols-1 gap-2 pt-2">
-                <Typography bold>
-                  {l10n.getString(
-                    'settings-general-gesture_control-numberTrackersOverThreshold'
-                  )}
-                </Typography>
-                <Typography color="secondary">
-                  {l10n.getString(
-                    'settings-general-gesture_control-numberTrackersOverThreshold-description'
-                  )}
-                </Typography>
-                <NumberSelector
-                  control={control}
-                  name="tapDetection.numberTrackersOverThreshold"
-                  label={l10n.getString(
-                    'settings-general-gesture_control-numberTrackersOverThreshold'
-                  )}
-                  valueLabelFormat={(value) =>
-                    l10n.getString(
-                      'settings-general-gesture_control-trackers',
-                      {
-                        amount: Math.round(value),
-                      }
-                    )
-                  }
-                  min={1}
-                  max={20}
-                  step={1}
-                />
-              </div>
-            )}
+            <div className="grid sm:grid-cols-1 gap-2 pt-2">
+              <Typography bold>
+                {l10n.getString(
+                  'settings-general-gesture_control-numberTrackersOverThreshold'
+                )}
+              </Typography>
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-general-gesture_control-numberTrackersOverThreshold-description'
+                )}
+              </Typography>
+              <NumberSelector
+                control={control}
+                name="tapDetection.numberTrackersOverThreshold"
+                label={l10n.getString(
+                  'settings-general-gesture_control-numberTrackersOverThreshold'
+                )}
+                valueLabelFormat={(value) =>
+                  l10n.getString('settings-general-gesture_control-trackers', {
+                    amount: Math.round(value),
+                  })
+                }
+                min={1}
+                max={20}
+                step={1}
+              />
+            </div>
           </>
         </SettingsPagePaneLayout>
       </form>

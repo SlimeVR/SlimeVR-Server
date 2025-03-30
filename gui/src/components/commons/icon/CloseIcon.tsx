@@ -1,7 +1,5 @@
-import classNames from 'classnames';
-
 export function CloseIcon({
-  className,
+  className = 'stroke-window-icon',
   size = 35,
 }: {
   className?: string;
@@ -11,7 +9,7 @@ export function CloseIcon({
     <svg
       width={size}
       height={size}
-      className={classNames('stroke-window-icon', className)}
+      className={className}
       viewBox="0 0 31 29"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

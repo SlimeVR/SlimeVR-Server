@@ -37,6 +37,7 @@ interface VRCOSCSettingsForm {
       hands: boolean;
       waist: boolean;
     };
+    oscqueryEnabled: boolean;
   };
 }
 
@@ -57,6 +58,7 @@ const defaultValues = {
       hands: false,
       waist: false,
     },
+    oscqueryEnabled: true,
   },
 };
 
@@ -82,6 +84,7 @@ export function VRCOSCSettings() {
         new OSCTrackersSettingT(),
         values.vrchat.trackers
       );
+      vrcOsc.oscqueryEnabled = values.vrchat.oscqueryEnabled;
 
       settings.vrcOsc = vrcOsc;
     }
@@ -113,8 +116,11 @@ export function VRCOSCSettings() {
           formData.vrchat.oscSettings.address =
             settings.vrcOsc.oscSettings.address.toString();
       }
+
       if (settings.vrcOsc.trackers)
         formData.vrchat.trackers = settings.vrcOsc.trackers;
+
+      formData.vrchat.oscqueryEnabled = settings.vrcOsc.oscqueryEnabled;
     }
 
     reset(formData);
@@ -131,7 +137,7 @@ export function VRCOSCSettings() {
             <div className="flex flex-col pt-2 pb-4">
               <>
                 {l10n
-                  .getString('settings-osc-vrchat-description')
+                  .getString('settings-osc-vrchat-description-v1')
                   .split('\n')
                   .map((line, i) => (
                     <Typography color="secondary" key={i}>
@@ -157,12 +163,40 @@ export function VRCOSCSettings() {
                 label={l10n.getString('settings-osc-vrchat-enable-label')}
               />
             </div>
+
+            <Typography bold>
+              {l10n.getString('settings-osc-vrchat-oscqueryEnabled')}
+            </Typography>
+            <div className="flex flex-col pb-2">
+              <Typography color="secondary">
+                {l10n
+                  .getString('settings-osc-vrchat-oscqueryEnabled-description')
+                  .split('\n')
+                  .map((line, i) => (
+                    <Typography color="secondary" key={i}>
+                      {line}
+                    </Typography>
+                  ))}
+              </Typography>
+            </div>
+            <div className="grid grid-cols-2 gap-3 pb-5">
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="vrchat.oscqueryEnabled"
+                label={l10n.getString(
+                  'settings-osc-vrchat-oscqueryEnabled-label'
+                )}
+              />
+            </div>
+
             <Typography bold>
               {l10n.getString('settings-osc-vrchat-network')}
             </Typography>
             <div className="flex flex-col pb-2">
               <Typography color="secondary">
-                {l10n.getString('settings-osc-vrchat-network-description')}
+                {l10n.getString('settings-osc-vrchat-network-description-v1')}
               </Typography>
             </div>
             <div className="grid grid-cols-2 gap-3 pb-5">
@@ -199,7 +233,7 @@ export function VRCOSCSettings() {
             <div className="flex flex-col pb-2">
               <Typography color="secondary">
                 {l10n.getString(
-                  'settings-osc-vrchat-network-address-description'
+                  'settings-osc-vrchat-network-address-description-v1'
                 )}
               </Typography>
             </div>

@@ -1,12 +1,14 @@
 package dev.slimevr.tracking.processor.skeleton;
 
 
+import dev.slimevr.VRServer;
 import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.setup.TapSetupHandler;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
 import solarxr_protocol.rpc.ResetType;
+import solarxr_protocol.rpc.StatusData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,6 +169,7 @@ public class TapDetectionManager {
 
 			yawResetDetector.resetDetector();
 			yawResetAllowPlaySound = true;
+			this.resetHandler.sendFinished(ResetType.Yaw);
 		}
 	}
 
@@ -188,10 +191,18 @@ public class TapDetectionManager {
 
 			fullResetDetector.resetDetector();
 			fullResetAllowPlaySound = true;
+			this.resetHandler.sendFinished(ResetType.Full);
 		}
 	}
 
 	private void checkMountingReset() {
+		// Don't allow mounting if tracker needs reset
+		VRServer server = humanPoseManager.getServer();
+		if (server != null && server.statusSystem.hasStatusType(StatusData.StatusTrackerReset)) {
+			mountingResetDetector.resetDetector();
+			return;
+		}
+
 		boolean tapped = (mountingResetTaps <= mountingResetDetector.getTaps());
 
 		if (tapped && mountingResetAllowPlaySound) {
@@ -207,6 +218,7 @@ public class TapDetectionManager {
 			skeleton.resetTrackersMounting(resetSourceName);
 			mountingResetDetector.resetDetector();
 			mountingResetAllowPlaySound = true;
+			this.resetHandler.sendFinished(ResetType.Mounting);
 		}
 	}
 

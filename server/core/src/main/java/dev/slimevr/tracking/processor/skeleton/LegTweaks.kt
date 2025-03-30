@@ -788,7 +788,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		val angle = FastMath.clamp(footPos.y - floorLevel, 0.0f, footLength)
 		return if (angle > footLength * MAXIMUM_TOE_DOWN_ANGLE) {
 			asin(
-				footLength * MAXIMUM_TOE_DOWN_ANGLE / footLength,
+				MAXIMUM_TOE_DOWN_ANGLE,
 			)
 		} else {
 			asin(

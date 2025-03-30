@@ -6,11 +6,11 @@ import {
   Routes,
 } from 'react-router-dom';
 import { Home } from './components/home/Home';
-import { MainLayoutRoute } from './components/MainLayout';
+import { MainLayout } from './components/MainLayout';
 import { AppContextProvider } from './components/providers/AppContext';
 import { GeneralSettings } from './components/settings/pages/GeneralSettings';
 import { Serial } from './components/settings/pages/Serial';
-import { SettingsLayoutRoute } from './components/settings/SettingsLayout';
+import { SettingsLayout } from './components/settings/SettingsLayout';
 import {
   useProvideWebsocketApi,
   WebSocketApiContext,
@@ -36,11 +36,9 @@ import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
-import { useLocalization } from '@fluent/react';
 import * as os from '@tauri-apps/plugin-os';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
-import { ProportionsChoose } from './components/onboarding/pages/body-proportions/ProportionsChoose';
 import { StatusProvider } from './components/providers/StatusSystemContext';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
 import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
@@ -51,63 +49,83 @@ import { useBreakpoint, useIsTauri } from './hooks/breakpoint';
 import { VRModePage } from './components/vr-mode/VRModePage';
 import { InterfaceSettings } from './components/settings/pages/InterfaceSettings';
 import { error, log } from './utils/logging';
+import { FirmwareToolSettings } from './components/firmware-tool/FirmwareTool';
 import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
+import { useDiscordPresence } from './hooks/discord-presence';
+import { withSentryReactRouterV6Routing } from '@sentry/react';
+import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
+import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
+import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
+import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
 export const DOCS_SITE = 'https://docs.slimevr.dev';
 export const SLIMEVR_DISCORD = 'https://discord.gg/slimevr';
 
+const SentryRoutes = withSentryReactRouterV6Routing(Routes);
+
 function Layout() {
   const { isMobile } = useBreakpoint('mobile');
+  useDiscordPresence();
 
   return (
     <>
       <SerialDetectionModal></SerialDetectionModal>
       <VersionUpdateModal></VersionUpdateModal>
       <UnknownDeviceModal></UnknownDeviceModal>
-      <Routes>
+      <SentryRoutes>
         <Route element={<AppLayout />}>
           <Route
             path="/"
             element={
-              <MainLayoutRoute isMobile={isMobile}>
+              <MainLayout isMobile={isMobile}>
                 <Home />
-              </MainLayoutRoute>
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/firmware-update"
+            element={
+              <MainLayout isMobile={isMobile} widgets={false}>
+                <FirmwareUpdate />
+              </MainLayout>
             }
           />
           <Route
             path="/vr-mode"
             element={
-              <MainLayoutRoute isMobile={isMobile}>
+              <MainLayout isMobile={isMobile}>
                 <VRModePage />
-              </MainLayoutRoute>
+              </MainLayout>
             }
           />
           <Route
             path="/tracker/:trackernum/:deviceid"
             element={
-              <MainLayoutRoute background={false} isMobile={isMobile}>
+              <MainLayout background={false} isMobile={isMobile}>
                 <TrackerSettingsPage />
-              </MainLayoutRoute>
+              </MainLayout>
             }
           />
           <Route
             path="/settings"
             element={
-              <SettingsLayoutRoute>
+              <SettingsLayout>
                 <Outlet />
-              </SettingsLayoutRoute>
+              </SettingsLayout>
             }
           >
+            <Route path="firmware-tool" element={<FirmwareToolSettings />} />
             <Route path="trackers" element={<GeneralSettings />} />
             <Route path="serial" element={<Serial />} />
             <Route path="osc/router" element={<OSCRouterSettings />} />
             <Route path="osc/vrchat" element={<VRCOSCSettings />} />
             <Route path="osc/vmc" element={<VMCSettings />} />
             <Route path="interface" element={<InterfaceSettings />} />
+            <Route path="advanced" element={<AdvancedSettings />} />
           </Route>
           <Route
             path="/onboarding"
@@ -135,10 +153,6 @@ function Layout() {
             <Route path="mounting/manual" element={<ManualMountingPage />} />
             <Route path="reset-tutorial" element={<ResetTutorialPage />} />
             <Route
-              path="body-proportions/choose"
-              element={<ProportionsChoose />}
-            />
-            <Route
               path="body-proportions/auto"
               element={<AutomaticProportionsPage />}
             />
@@ -146,18 +160,21 @@ function Layout() {
               path="body-proportions/manual"
               element={<ManualProportionsPage />}
             />
+            <Route
+              path="body-proportions/scaled"
+              element={<ScaledProportionsPage />}
+            />
             <Route path="done" element={<DonePage />} />
           </Route>
           <Route path="*" element={<TopBar></TopBar>}></Route>
         </Route>
-      </Routes>
+      </SentryRoutes>
     </>
   );
 }
 
 export default function App() {
   const websocketAPI = useProvideWebsocketApi();
-  const { l10n } = useLocalization();
   const [updateFound, setUpdateFound] = useState('');
   const isTauri = useIsTauri();
 
@@ -198,15 +215,10 @@ export default function App() {
 
   if (isTauri) {
     useEffect(() => {
-      os.type()
-        .then((type) => document.body.classList.add(type.toLowerCase()))
-        .catch(error);
+      const type = os.type();
+      document.body.classList.add(type.toLowerCase());
 
-      return () => {
-        os.type()
-          .then((type) => document.body.classList.remove(type.toLowerCase()))
-          .catch(error);
-      };
+      return () => document.body.classList.remove(type.toLowerCase());
     }, []);
   }
 
@@ -273,19 +285,10 @@ export default function App() {
                 <VersionContext.Provider value={updateFound}>
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
                     <Preload />
-                    <div className="flex-col h-full">
-                      {!websocketAPI.isConnected && (
-                        <>
-                          <TopBar></TopBar>
-                          <div className="flex w-full h-full justify-center items-center p-2">
-                            {websocketAPI.isFirstConnection
-                              ? l10n.getString('websocket-connecting')
-                              : l10n.getString('websocket-connection_lost')}
-                          </div>
-                        </>
-                      )}
-                      {websocketAPI.isConnected && <Layout></Layout>}
-                    </div>
+                    {!websocketAPI.isConnected && (
+                      <ConnectionLost></ConnectionLost>
+                    )}
+                    {websocketAPI.isConnected && <Layout></Layout>}
                   </div>
                 </VersionContext.Provider>
               </StatusProvider>
