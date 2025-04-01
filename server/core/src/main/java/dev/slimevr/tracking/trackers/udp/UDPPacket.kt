@@ -225,8 +225,9 @@ data class UDPPacket15SensorInfo(
 	var sensorStatus: Int = 0,
 	var sensorType: IMUType = IMUType.UNKNOWN,
 	var sensorConfig: SensorConfig? = null,
-	var trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
+	var hasCompletedRestCalibration: Boolean? = null,
 	var trackerPosition: TrackerPosition? = null,
+	var trackerDataType: TrackerDataType = TrackerDataType.ROTATION,
 ) : UDPPacket(15),
 	SensorSpecificPacket {
 	override var sensorId = 0
@@ -239,6 +240,7 @@ data class UDPPacket15SensorInfo(
 		if (buf.remaining() > 1) {
 			sensorConfig = SensorConfig(buf.getShort().toUShort())
 		}
+		if (buf.remaining() > 0) hasCompletedRestCalibration = buf.get().toInt() and 0xFF != 0
 		if (buf.remaining() > 0) trackerPosition = TrackerPosition.getById(buf.get().toInt() and 0xFF)
 		if (buf.remaining() > 0) trackerDataType = TrackerDataType.getById(buf.get().toUInt() and 0xFFu) ?: TrackerDataType.ROTATION
 	}

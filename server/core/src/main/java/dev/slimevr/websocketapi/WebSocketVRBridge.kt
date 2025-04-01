@@ -205,6 +205,9 @@ class WebSocketVRBridge(
 		when (json["name"].asText()) {
 			"calibrate" -> instance.resetTrackersYaw(RESET_SOURCE_NAME)
 			"full_calibrate" -> instance.resetTrackersFull(RESET_SOURCE_NAME)
+			"mounting_calibrate" -> instance.resetTrackersMounting(RESET_SOURCE_NAME)
+			"mounting_clear" -> instance.clearTrackersMounting(RESET_SOURCE_NAME)
+			"toggle_pause_tracking" -> instance.togglePauseTracking(RESET_SOURCE_NAME)
 		}
 	}
 

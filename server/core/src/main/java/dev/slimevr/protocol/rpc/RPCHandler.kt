@@ -18,6 +18,7 @@ import dev.slimevr.protocol.rpc.setup.RPCUtil.getLocalIp
 import dev.slimevr.protocol.rpc.status.RPCStatusHandler
 import dev.slimevr.protocol.rpc.trackingpause.RPCTrackingPause
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
+import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByBodyPart
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
@@ -82,6 +83,15 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			RpcMessage.RecordBVHRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onRecordBVHRequest(
+				conn,
+				messageHeader,
+			)
+		}
+
+		registerPacketListener(
+			RpcMessage.RecordBVHStatusRequest,
+		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
+			this.onBVHStatusRequest(
 				conn,
 				messageHeader,
 			)
@@ -300,6 +310,17 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		conn.send(fbb.dataBuffer())
 	}
 
+	fun onBVHStatusRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		if (messageHeader.message(RecordBVHStatusRequest()) !is RecordBVHStatusRequest) return
+
+		val fbb = FlatBufferBuilder(40)
+		val status = RecordBVHStatus
+			.createRecordBVHStatus(fbb, api.server.bvhRecorder.isRecording)
+		val outbound = this.createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status)
+		fbb.finish(outbound)
+		conn.send(fbb.dataBuffer())
+	}
+
 	fun onResetRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = messageHeader.message(ResetRequest()) as? ResetRequest ?: return
 
@@ -470,7 +491,8 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 				.createHeightResponse(
 					fbb,
 					posTrackers.minOf { it.position.y },
-					posTrackers.maxOf { it.position.y },
+					posTrackers.find { it.trackerPosition == TrackerPosition.HEAD }?.position?.y
+						?: posTrackers.maxOf { it.position.y },
 				)
 		} else {
 			HeightResponse

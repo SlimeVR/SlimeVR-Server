@@ -169,6 +169,7 @@ public class TapDetectionManager {
 
 			yawResetDetector.resetDetector();
 			yawResetAllowPlaySound = true;
+			this.resetHandler.sendFinished(ResetType.Yaw);
 		}
 	}
 
@@ -190,6 +191,7 @@ public class TapDetectionManager {
 
 			fullResetDetector.resetDetector();
 			fullResetAllowPlaySound = true;
+			this.resetHandler.sendFinished(ResetType.Full);
 		}
 	}
 
@@ -216,6 +218,7 @@ public class TapDetectionManager {
 			skeleton.resetTrackersMounting(resetSourceName);
 			mountingResetDetector.resetDetector();
 			mountingResetAllowPlaySound = true;
+			this.resetHandler.sendFinished(ResetType.Mounting);
 		}
 	}
 

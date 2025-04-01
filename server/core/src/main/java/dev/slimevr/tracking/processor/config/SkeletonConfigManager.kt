@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.processor.config
 
 import dev.slimevr.VRServer.Companion.instance
+import dev.slimevr.VRServer.Companion.instanceInitialized
 import dev.slimevr.autobone.AutoBone
 import dev.slimevr.autobone.errors.BodyProportionError.Companion.proportionLimitMap
 import dev.slimevr.config.ConfigManager
@@ -112,7 +113,7 @@ class SkeletonConfigManager(
 	fun setToggle(config: SkeletonConfigToggles, newValue: Boolean?) {
 		if (newValue != null) {
 			if (configToggles[config] != null && (newValue != configToggles[config])) {
-				changedToggles[config.id - 1] = true
+				changedToggles[config.ordinal] = true
 			}
 			configToggles[config] = newValue
 		} else {
@@ -135,7 +136,7 @@ class SkeletonConfigManager(
 	fun setValue(config: SkeletonConfigValues, newValue: Float?) {
 		if (newValue != null) {
 			if (configValues[config] != null && (newValue != configValues[config])) {
-				changedValues[config.id - 1] = true
+				changedValues[config.ordinal] = true
 			}
 			configValues[config] = newValue
 		} else {
@@ -156,14 +157,8 @@ class SkeletonConfigManager(
 	}
 
 	protected fun setNodeOffset(nodeOffset: BoneType, x: Float, y: Float, z: Float) {
-		var offset = nodeOffsets[nodeOffset]
-
-		if (offset == null) {
-			offset = Vector3(x, y, z)
-			nodeOffsets[nodeOffset] = offset
-		} else {
-			offset = Vector3(x, y, z)
-		}
+		val offset = Vector3(x, y, z)
+		nodeOffsets[nodeOffset] = offset
 
 		// Updates in skeleton
 		humanPoseManager?.updateNodeOffset(nodeOffset, offset)
@@ -415,14 +410,14 @@ class SkeletonConfigManager(
 
 		// Remove from config to use default if they change in the future.
 		Arrays.fill(changedToggles, false)
-		for (value in SkeletonConfigToggles.values) {
-			instance.configManager
-				.vrConfig
-				.skeleton
-				.getToggles()
-				.remove(value.configKey)
-			// Set default in skeleton
-			setToggle(value, value.defaultValue)
+		if (instanceInitialized) {
+			for (value in SkeletonConfigToggles.values) {
+				instance.configManager
+					.vrConfig
+					.skeleton
+					.getToggles()
+					.remove(value.configKey)
+			}
 		}
 	}
 
@@ -438,14 +433,14 @@ class SkeletonConfigManager(
 
 		// Remove from config to use default if they change in the future.
 		Arrays.fill(changedValues, false)
-		for (value in SkeletonConfigValues.values) {
-			instance.configManager
-				.vrConfig
-				.skeleton
-				.getValues()
-				.remove(value.configKey)
-			// Set default in skeleton
-			setValue(value, value.defaultValue)
+		if (instanceInitialized) {
+			for (value in SkeletonConfigValues.values) {
+				instance.configManager
+					.vrConfig
+					.skeleton
+					.getValues()
+					.remove(value.configKey)
+			}
 		}
 	}
 
@@ -521,6 +516,8 @@ class SkeletonConfigManager(
 	}
 
 	fun save() {
+		require(instanceInitialized) { "VRServer instance is not initialized, config cannot be saved." }
+
 		val skeletonConfig = instance.configManager
 			.vrConfig
 			.skeleton
@@ -532,12 +529,12 @@ class SkeletonConfigManager(
 
 		// Only write changed values to keep using defaults if not changed
 		for (value in SkeletonConfigToggles.values) {
-			if (changedToggles[value.id - 1]) skeletonConfig.getToggles()[value.configKey] = getToggle(value)
+			if (changedToggles[value.ordinal]) skeletonConfig.getToggles()[value.configKey] = getToggle(value)
 		}
 
 		// Only write changed values to keep using defaults if not changed
 		for (value in SkeletonConfigValues.values) {
-			if (changedValues[value.id - 1]) skeletonConfig.getValues()[value.configKey] = getValue(value)
+			if (changedValues[value.ordinal]) skeletonConfig.getValues()[value.configKey] = getValue(value)
 		}
 	}
 

@@ -1,6 +1,7 @@
 package dev.slimevr.autobone.errors
 
 import dev.slimevr.autobone.AutoBoneStep
+import dev.slimevr.autobone.PoseFrameStep
 import dev.slimevr.autobone.errors.proportions.ProportionLimiter
 import dev.slimevr.autobone.errors.proportions.RangeProportionLimiter
 import dev.slimevr.tracking.processor.HumanPoseManager
@@ -11,8 +12,8 @@ import kotlin.math.*
 // The distance from average human proportions
 class BodyProportionError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
-	override fun getStepError(trainingStep: AutoBoneStep): Float = getBodyProportionError(
-		trainingStep.skeleton1,
+	override fun getStepError(step: PoseFrameStep<AutoBoneStep>): Float = getBodyProportionError(
+		step.skeleton1,
 		// Skeletons are now normalized to reduce bias, so height is always 1
 		1f,
 	)
@@ -26,10 +27,9 @@ class BodyProportionError : IAutoBoneError {
 	}
 
 	companion object {
-		// TODO hip tracker stuff... Hip tracker should be around 3 to 5
-		// centimeters.
 		// The headset height is not the full height! This value compensates for the
-		// offset from the headset height to the user height
+		// offset from the headset height to the user full height
+		// From Drillis and Contini (1966)
 		@JvmField
 		var eyeHeightToHeightRatio = 0.936f
 

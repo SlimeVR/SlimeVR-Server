@@ -15,16 +15,18 @@ import {
   DeviceDataT,
   ResetResponseT,
   ResetStatus,
+  ResetType,
   RpcMessage,
   StartDataFeedT,
   TrackerDataT,
 } from 'solarxr-protocol';
-import { playSoundOnResetStarted } from '@/sounds/sounds';
+import { playSoundOnResetEnded, playSoundOnResetStarted } from '@/sounds/sounds';
 import { useConfig } from './config';
 import { useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
 import { error } from '@/utils/logging';
 import { cacheWrap } from './cache';
+import { updateSentryContext } from '@/utils/sentry';
 
 export interface FirmwareRelease {
   name: string;
@@ -113,12 +115,21 @@ export function useProvideAppContext(): AppContext {
     dispatch({ type: 'datafeed', value: packet });
   });
 
+  useEffect(() => {
+    updateSentryContext(state);
+  }, [state.datafeed?.devices]);
+
   useRPCPacket(RpcMessage.ResetResponse, ({ status, resetType }: ResetResponseT) => {
     if (!config?.feedbackSound) return;
     try {
       switch (status) {
         case ResetStatus.STARTED: {
-          playSoundOnResetStarted(resetType, config?.feedbackSoundVolume);
+          if (resetType !== ResetType.Yaw)
+            playSoundOnResetStarted(config?.feedbackSoundVolume);
+          break;
+        }
+        case ResetStatus.FINISHED: {
+          playSoundOnResetEnded(resetType, config?.feedbackSoundVolume);
           break;
         }
       }

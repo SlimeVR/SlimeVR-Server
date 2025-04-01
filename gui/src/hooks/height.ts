@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useWebsocketAPI } from './websocket-api';
 import { RpcMessage, SettingsRequestT, SettingsResponseT } from 'solarxr-protocol';
-import { MIN_HEIGHT } from '@/components/onboarding/pages/body-proportions/ProportionsChoose';
+import { MIN_HEIGHT } from './manual-proportions';
 
 export interface HeightContext {
   hmdHeight: number | null;
@@ -56,3 +56,8 @@ export function useHeightContext() {
   }
   return context;
 }
+
+// The headset height is not the full height! This value compensates for the
+// offset from the headset height to the user full height
+// From Drillis and Contini (1966)
+export const EYE_HEIGHT_TO_HEIGHT_RATIO = 0.936;

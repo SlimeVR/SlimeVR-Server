@@ -52,9 +52,9 @@ export function WidgetsComponent() {
         <ClearMountingButton></ClearMountingButton>
         <BVHButton></BVHButton>
         <TrackingPauseButton></TrackingPauseButton>
-        {driftCompensationEnabled && (
-          <ClearDriftCompensationButton></ClearDriftCompensationButton>
-        )}
+        <ClearDriftCompensationButton
+          disabled={!driftCompensationEnabled}
+        ></ClearDriftCompensationButton>
       </div>
       <div className="w-full">
         <OverlayWidget></OverlayWidget>

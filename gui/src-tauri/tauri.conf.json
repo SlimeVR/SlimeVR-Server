@@ -61,11 +61,6 @@
     "shortDescription": "",
     "licenseFile": "../../LICENSE-MIT"
   },
-  "plugins": {
-    "shell": {
-      "open": "^((https?://\\w+)|(file://)).+"
-    }
-  },
   "productName": "slimevr",
   "version": "../package.json",
   "identifier": "dev.slimevr.SlimeVR",

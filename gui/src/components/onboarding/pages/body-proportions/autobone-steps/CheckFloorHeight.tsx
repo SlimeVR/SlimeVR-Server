@@ -12,7 +12,7 @@ import { Typography } from '@/components/commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
-import { useHeightContext } from '@/hooks/height';
+import { EYE_HEIGHT_TO_HEIGHT_RATIO, useHeightContext } from '@/hooks/height';
 import { useInterval } from '@/hooks/timeout';
 import { TooSmolModal } from './TooSmolModal';
 
@@ -75,7 +75,7 @@ export function CheckFloorHeightStep({
                 )}
               </Typography>
               <Localized
-                id="onboarding-automatic_proportions-check_floor_height-calculation_warning"
+                id="onboarding-automatic_proportions-check_floor_height-calculation_warning-v2"
                 elems={{ u: <span className="underline"></span> }}
               >
                 <Typography color="secondary" bold>
@@ -129,6 +129,17 @@ export function CheckFloorHeightStep({
                         'onboarding-automatic_proportions-check_height-unknown'
                       )
                     : mFormat.format(floorHeight)}
+                </Typography>
+                <Typography>
+                  {l10n.getString(
+                    'onboarding-automatic_proportions-check_floor_height-full_height'
+                  )}
+                </Typography>
+                <Typography>
+                  {mFormat.format(
+                    ((hmdHeight ?? 0) - (floorHeight ?? 0)) /
+                      EYE_HEIGHT_TO_HEIGHT_RATIO
+                  )}
                 </Typography>
               </div>
             </div>

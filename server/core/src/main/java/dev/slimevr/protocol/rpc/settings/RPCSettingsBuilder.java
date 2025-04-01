@@ -67,6 +67,7 @@ public class RPCSettingsBuilder {
 		VRCOSCSettings.startVRCOSCSettings(fbb);
 		VRCOSCSettings.addOscSettings(fbb, generalSettingOffset);
 		VRCOSCSettings.addTrackers(fbb, oscSettingOffset);
+		VRCOSCSettings.addOscqueryEnabled(fbb, config.getOscqueryEnabled());
 
 		return VRCOSCSettings.endVRCOSCSettings(fbb);
 	}
@@ -185,7 +186,6 @@ public class RPCSettingsBuilder {
 				humanPoseManager.getToggle(SkeletonConfigToggles.FORCE_ARMS_FROM_HMD),
 				humanPoseManager.getToggle(SkeletonConfigToggles.FLOOR_CLIP),
 				humanPoseManager.getToggle(SkeletonConfigToggles.SKATING_CORRECTION),
-				humanPoseManager.getToggle(SkeletonConfigToggles.VIVE_EMULATION),
 				humanPoseManager.getToggle(SkeletonConfigToggles.TOE_SNAP),
 				humanPoseManager.getToggle(SkeletonConfigToggles.FOOT_PLANT),
 				humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION),

@@ -29,6 +29,7 @@ import { TrayOrExitModal } from './TrayOrExitModal';
 import { error } from '@/utils/logging';
 import { useDoubleTap } from 'use-double-tap';
 import { isTrayAvailable } from '@/utils/tauri';
+import { ErrorConsentModal } from './ErrorConsentModal';
 import {
   CloseRequestedEvent,
   getCurrentWindow,
@@ -114,18 +115,20 @@ export function TopBar({
       await tryCloseApp(true);
     });
 
-    const unlistenCloseRequested = getCurrentWindow().listen(
-      TauriEvent.WINDOW_CLOSE_REQUESTED,
-      async (data) => {
-        const ev = new CloseRequestedEvent(data);
-        ev.preventDefault();
-        await tryCloseApp();
-      }
-    );
+    const unlistenCloseRequested = isTauri
+      ? getCurrentWindow().listen(
+          TauriEvent.WINDOW_CLOSE_REQUESTED,
+          async (data) => {
+            const ev = new CloseRequestedEvent(data);
+            ev.preventDefault();
+            await tryCloseApp();
+          }
+        )
+      : undefined;
 
     return () => {
       unlistenTrayClose.then((fn) => fn());
-      unlistenCloseRequested.then((fn) => fn());
+      unlistenCloseRequested?.then((fn) => fn());
     };
   }, [
     config?.useTray,
@@ -331,6 +334,11 @@ export function TopBar({
           getCurrentWindow().requestUserAttention(null);
         }}
       ></TrackersStillOnModal>
+      <ErrorConsentModal
+        isOpen={config?.errorTracking === null}
+        accept={() => setConfig({ errorTracking: true })}
+        cancel={() => setConfig({ errorTracking: false })}
+      />
     </>
   );
 }

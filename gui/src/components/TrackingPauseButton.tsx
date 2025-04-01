@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   SetPauseTrackingRequestT,
   RpcMessage,
@@ -10,6 +10,7 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { BigButton } from './commons/BigButton';
 import { PlayIcon } from './commons/icon/PlayIcon';
 import { PauseIcon } from './commons/icon/PauseIcon';
+import classNames from 'classnames';
 
 export function TrackingPauseButton(
   props: React.HTMLAttributes<HTMLButtonElement>
@@ -30,10 +31,12 @@ export function TrackingPauseButton(
     }
   );
 
-  sendRPCPacket(
-    RpcMessage.TrackingPauseStateRequest,
-    new TrackingPauseStateRequestT()
-  );
+  useEffect(() => {
+    sendRPCPacket(
+      RpcMessage.TrackingPauseStateRequest,
+      new TrackingPauseStateRequestT()
+    );
+  }, []);
 
   return (
     <BigButton
@@ -42,7 +45,7 @@ export function TrackingPauseButton(
       )}
       icon={trackingPause ? <PlayIcon width={20} /> : <PauseIcon width={20} />}
       onClick={toggleTracking}
-      className={props.className}
+      className={classNames(props.className, 'min-h-24')}
     ></BigButton>
   );
 }

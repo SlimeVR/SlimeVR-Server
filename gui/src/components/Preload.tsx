@@ -12,29 +12,6 @@ export function Preload() {
 
       <link
         rel="preload"
-        href="/sounds/quick-reset-started-sound.mp3"
-        as="audio"
-      />
-      <link
-        rel="preload"
-        href="/sounds/full-reset-started-sound.mp3"
-        as="audio"
-      />
-      <link
-        rel="preload"
-        href="/sounds/mounting-reset-started-sound.mp3"
-        as="audio"
-      />
-      <link rel="preload" href="/sounds/first-tap.mp3" as="audio" />
-      <link rel="preload" href="/sounds/second-tap.mp3" as="audio" />
-      <link rel="preload" href="/sounds/third-tap.mp3" as="audio" />
-      <link rel="preload" href="/sounds/fourth-tap.mp3" as="audio" />
-      <link rel="preload" href="/sounds/fifth-tap.mp3" as="audio" />
-      <link rel="preload" href="/sounds/end-tap.mp3" as="audio" />
-      <link rel="preload" href="/sounds/tapextrasetup.mp3" as="audio" />
-
-      <link
-        rel="preload"
         href="/models/tracker.gltf"
         as="fetch"
         crossOrigin="anonymous"

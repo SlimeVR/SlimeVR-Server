@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ResetRequestT,
   ResetType,
@@ -9,7 +9,10 @@ import {
 import { useConfig } from '@/hooks/config';
 import { useCountdown } from '@/hooks/countdown';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { playSoundOnResetStarted } from '@/sounds/sounds';
+import {
+  playSoundOnResetEnded,
+  playSoundOnResetStarted,
+} from '@/sounds/sounds';
 import { BigButton } from '@/components/commons/BigButton';
 import { Button } from '@/components/commons/Button';
 import {
@@ -18,6 +21,7 @@ import {
   FullResetIcon,
 } from '@/components/commons/icon/ResetIcon';
 import { useStatusContext } from '@/hooks/status-system';
+import classNames from 'classnames';
 
 export function ResetButton({
   type,
@@ -32,6 +36,8 @@ export function ResetButton({
   const { sendRPCPacket } = useWebsocketAPI();
   const { statuses } = useStatusContext();
   const { config } = useConfig();
+  const finishedTimeoutRef = useRef(-1);
+  const [isFinished, setFinished] = useState(false);
 
   const needsFullReset = useMemo(
     () =>
@@ -49,9 +55,17 @@ export function ResetButton({
   };
 
   const { isCounting, startCountdown, timer } = useCountdown({
-    duration: type === ResetType.Yaw ? 0.2 : undefined,
+    duration: type === ResetType.Yaw ? 0 : undefined,
     onCountdownEnd: () => {
+      maybePlaySoundOnResetEnd(type);
       reset();
+      setFinished(true);
+      if (finishedTimeoutRef.current !== -1)
+        clearTimeout(finishedTimeoutRef.current);
+      finishedTimeoutRef.current = setTimeout(() => {
+        setFinished(false);
+        finishedTimeoutRef.current = -1;
+      }, 2000);
       if (onReseted) onReseted();
     },
   });
@@ -77,18 +91,38 @@ export function ResetButton({
     return <FullResetIcon width={20} />;
   };
 
-  const maybePlaySoundOnResetStarted = (type: ResetType) => {
+  const maybePlaySoundOnResetEnd = (type: ResetType) => {
     if (!config?.feedbackSound) return;
-    playSoundOnResetStarted(type, config?.feedbackSoundVolume);
+    playSoundOnResetEnded(type, config?.feedbackSoundVolume);
   };
+
+  const maybePlaySoundOnResetStart = () => {
+    if (!config?.feedbackSound) return;
+    if (type !== ResetType.Yaw)
+      playSoundOnResetStarted(config?.feedbackSoundVolume);
+  };
+
+  const triggerReset = () => {
+    setFinished(false);
+    startCountdown();
+    maybePlaySoundOnResetStart();
+  };
+
+  useEffect(() => {
+    return () => {
+      if (finishedTimeoutRef.current !== -1)
+        clearTimeout(finishedTimeoutRef.current);
+    };
+  }, []);
 
   return variant === 'small' ? (
     <Button
       icon={getIcon()}
-      onClick={() => {
-        startCountdown();
-        maybePlaySoundOnResetStarted(type);
-      }}
+      onClick={triggerReset}
+      className={classNames(
+        'border-2',
+        isFinished ? 'border-status-success' : 'border-transparent'
+      )}
       variant="primary"
       disabled={isCounting || needsFullReset}
     >
@@ -101,10 +135,11 @@ export function ResetButton({
     <BigButton
       text={!isCounting || type === ResetType.Yaw ? text : String(timer)}
       icon={getIcon()}
-      onClick={() => {
-        startCountdown();
-        maybePlaySoundOnResetStarted(type);
-      }}
+      onClick={triggerReset}
+      className={classNames(
+        'border-2',
+        isFinished ? 'border-status-success' : 'border-transparent'
+      )}
       disabled={isCounting || needsFullReset}
     ></BigButton>
   );
