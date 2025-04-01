@@ -138,7 +138,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 			shoulderTrackingDisabled =
 			((forceArmsFromHMD || !hasLeftHandWithPosition || !hasRightHandWithPosition) || isMissingAnArmTracker) && // Not tracking shoulders from hands
 				((!forceArmsFromHMD && hasLeftHandWithPosition && hasRightHandWithPosition) || isMissingAShoulderTracker), // Not tracking shoulders from HMD
-			userHeight = server.humanPoseManager.userHeightFromConfig / 0.936,
+			userHeight = server.humanPoseManager.realUserHeight.toDouble(),
 			calibrationRange = 0.2,
 			trackerModel = VRCTrackerModel.AXIS,
 			spineMode = arrayOf(VRCSpineMode.LOCK_HIP, VRCSpineMode.LOCK_HEAD),
@@ -162,7 +162,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		spineModeOk = recommended.spineMode.contains(values.spineMode),
 		tackerModelOk = values.trackerModel == recommended.trackerModel,
 		calibrationOk = abs(values.calibrationRange - recommended.calibrationRange) < 0.1,
-		userHeightOk = abs(server.humanPoseManager.userHeightFromConfig / 0.936 - values.userHeight) < 0.1,
+		userHeightOk = abs(server.humanPoseManager.realUserHeight - values.userHeight) < 0.1,
 		calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
 		avatarMeasurementOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
 		shoulderWidthCompensationOk = values.shoulderWidthCompensation == recommended.shoulderWidthCompensation,
