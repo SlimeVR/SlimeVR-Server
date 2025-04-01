@@ -54,6 +54,7 @@ import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
+import { withSentryReactRouterV6Routing } from '@sentry/react';
 import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
 import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
@@ -65,6 +66,8 @@ export const VersionContext = createContext('');
 export const DOCS_SITE = 'https://docs.slimevr.dev';
 export const SLIMEVR_DISCORD = 'https://discord.gg/slimevr';
 
+const SentryRoutes = withSentryReactRouterV6Routing(Routes);
+
 function Layout() {
   const { isMobile } = useBreakpoint('mobile');
   useDiscordPresence();
@@ -74,7 +77,7 @@ function Layout() {
       <SerialDetectionModal></SerialDetectionModal>
       <VersionUpdateModal></VersionUpdateModal>
       <UnknownDeviceModal></UnknownDeviceModal>
-      <Routes>
+      <SentryRoutes>
         <Route element={<AppLayout />}>
           <Route
             path="/"
@@ -174,7 +177,7 @@ function Layout() {
           </Route>
           <Route path="*" element={<TopBar></TopBar>}></Route>
         </Route>
-      </Routes>
+      </SentryRoutes>
     </>
   );
 }
