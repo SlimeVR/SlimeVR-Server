@@ -1,7 +1,6 @@
 package dev.slimevr.unit
 
 import com.jme3.math.FastMath
-import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -10,7 +9,7 @@ import org.junit.jupiter.api.TestFactory
 import kotlin.math.sign
 import kotlin.test.assertEquals
 
-class JointInterpTests {
+class TwinExtendedBackTests {
 
 	// Bottom back quarter
 	val negRange = -269..-180
@@ -46,8 +45,8 @@ class JointInterpTests {
 				}
 			}
 
-	fun testSign(ref: Quaternion, extended: Quaternion?, expectedSign: Float) {
-		val result = HumanSkeleton.signExtendedRot(ref, extended)
+	fun testSign(ref: Quaternion, extended: Quaternion, expectedSign: Float) {
+		val result = extended.twinExtendedBack(ref)
 		val dot = ref.dot(result)
 		assertEquals(expectedSign.sign, dot.sign, "Resulting dot ($dot) does not match the expected sign ($expectedSign)")
 	}

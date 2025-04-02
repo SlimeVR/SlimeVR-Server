@@ -2,6 +2,7 @@
 
 package io.github.axisangles.ktmath
 
+import com.jme3.math.FastMath
 import kotlinx.serialization.Serializable
 import kotlin.math.*
 
@@ -19,6 +20,16 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		 * SlimeVR-specific constants and utils
 		 */
 		val SLIMEVR: SlimeVR = SlimeVR
+
+		/**
+		 * Used to rotate an identity quaternion to face upwards for [twinExtendedBack].
+		 */
+		private val UP_ADJ = EulerAngles(
+			EulerOrder.YZX,
+			-FastMath.HALF_PI,
+			0f,
+			0f,
+		).toQuaternion()
 
 		/**
 		 * creates a new quaternion representing the rotation about v's axis
@@ -227,11 +238,47 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 
 	/**
 	 * between this and -this, picks the one nearest to that quaternion
-	 * @param that the quaternion to be nearest
+	 * @param that the quaternion to be nearest to
 	 * @return nearest quaternion
 	 **/
 	fun twinNearest(that: Quaternion): Quaternion =
 		if (this.dot(that) < 0f) -this else this
+
+	/**
+	 * between this and -this, picks the one furthest from that quaternion
+	 * @param that the quaternion to be furthest from
+	 * @return furthest quaternion
+	 **/
+	fun twinFurthest(that: Quaternion): Quaternion =
+		if (this.dot(that) < 0f) this else -this
+
+	/**
+	 * Similar to [twinNearest], but uses [twinFurthest] for the lower back quadrant
+	 * relative to [that]. This is useful for joints that have limited forward rotation
+	 * and extensive backward rotation.
+	 * @param that The reference quaternion to be nearest to or furthest from.
+	 * @return The furthest quaternion if in the lower back quadrant, otherwise the
+	 * nearest quaternion.
+	 */
+	fun twinExtendedBack(that: Quaternion): Quaternion {
+		/*
+		 * This handles the thigh extending behind the torso to face downwards, and the
+		 * hip extending behind the chest. The thigh cannot bend to the back away from
+		 * the torso and the spine hopefully can't bend back that far, so we can fairly
+		 * safely assume the rotation is towards the torso.
+		 */
+
+		val isBack = that.angleToR(this) > FastMath.HALF_PI
+		val isLower = (that * UP_ADJ).angleToR(this) > FastMath.HALF_PI
+
+		return if (isBack && isLower) {
+			// Select longest rotation
+			this.twinFurthest(that)
+		} else {
+			// Select shortest rotation
+			this.twinNearest(that)
+		}
+	}
 
 	/**
 	 * interpolates from this quaternion to that quaternion by t in quaternion space

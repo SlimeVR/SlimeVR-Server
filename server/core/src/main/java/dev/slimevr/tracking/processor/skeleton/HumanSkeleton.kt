@@ -1744,40 +1744,5 @@ class HumanSkeleton(
 			0f,
 			0f,
 		).toQuaternion()
-
-		/**
-		 * Used to rotate an identity quaternion to face up.
-		 */
-		val UP_ADJ = EulerAngles(
-			EulerOrder.YZX,
-			-FastMath.HALF_PI,
-			0f,
-			0f,
-		).toQuaternion()
-
-		/**
-		 * Similar to twinNearest, but uses the longest rotation for the lower back
-		 * quadrant. This handles the thigh extending behind the torso to face
-		 * downwards, and the hip extending behind the chest. The thigh cannot bend to
-		 * the back away from the torso and the spine hopefully can't bend back that far,
-		 * so we can fairly safely assume the rotation is towards the torso.
-		 */
-		fun signExtendedRot(ref: Quaternion, extended: Quaternion?): Quaternion {
-			// Handle null here for convenience
-			if (extended == null) {
-				return ref
-			}
-
-			val isBack = ref.angleToR(extended) > FastMath.HALF_PI
-			val isLower = (ref * UP_ADJ).angleToR(extended) > FastMath.HALF_PI
-
-			return if (isBack && isLower) {
-				// Select longest rotation
-				if (extended.dot(ref) >= 0f) -extended else extended
-			} else {
-				// Select shortest rotation
-				extended.twinNearest(ref)
-			}
-		}
 	}
 }
