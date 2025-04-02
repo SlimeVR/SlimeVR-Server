@@ -758,9 +758,12 @@ settings-utils-advanced-reset_warning =
     }
 settings-utils-advanced-reset_warning-reset = 重置設定
 settings-utils-advanced-reset_warning-cancel = 取消
-settings-utils-advanced-open_data = 數據資料夾
-settings-utils-advanced-open_data-description = 在檔案管理器中開啟 SlimeVR 的數據資料夾，該資料夾包含設定與記錄檔。
+settings-utils-advanced-open_data-v1 = 設定資料夾
+settings-utils-advanced-open_data-description-v1 = 在檔案管理器中開啟 SlimeVR 的設定資料夾，該資料夾包含程式的設定。
 settings-utils-advanced-open_data-label = 打開資料夾
+settings-utils-advanced-open_logs = 記錄檔資料夾
+settings-utils-advanced-open_logs-description = 在檔案管理器中開啟 SlimeVR 的記錄檔資料夾，該資料夾包含程式的記錄檔。
+settings-utils-advanced-open_logs-label = 打開資料夾
 
 ## Setup/onboarding menu
 
