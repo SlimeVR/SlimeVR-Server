@@ -411,3 +411,12 @@ input::-ms-clear {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
 }
+
+a,
+p,
+h1,
+h2,
+button,
+div {
+  hyphens: auto;
+}
