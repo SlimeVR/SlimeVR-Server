@@ -50,6 +50,27 @@ body_part-LEFT_UPPER_LEG = Linker Oberschenkel
 body_part-LEFT_LOWER_LEG = Linker Knöchel
 body_part-LEFT_FOOT = Linker Fuß
 
+## BoardType
+
+board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Benutzerdefiniertes Board
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev-IMU-Handschuh
+
 ## Proportions
 
 skeleton_bone-NONE = Keine
@@ -81,9 +102,6 @@ skeleton_bone-ELBOW_OFFSET = Ellbogenversatz
 ## Tracker reset buttons
 
 reset-reset_all = Alle Proportionen zurücksetzen
-reset-reset_all_warning =
-    <b>Achtung:</b> Die Proportionen werden zurückgesetzt und auf Basis ihrer Körpergröße neu berechnet.
-    Sind sie sich sicher?
 reset-reset_all_warning-reset = Proportionen zurücksetzen
 reset-reset_all_warning-cancel = Abbrechen
 reset-full = Reset
@@ -244,6 +262,10 @@ tracker-settings-name_section-label = Trackername
 tracker-settings-forget = Tracker Vergessen
 tracker-settings-forget-description = Entfernt den Tracker vom SlimeVR Server und verhindert, dass er sich wieder verbindet, bis der Server neu gestartet wurde. Die Konfiguration des Trackers geht nicht verloren.
 tracker-settings-forget-label = Tracker Vergessen
+tracker-settings-update-unavailable = Kann nicht aktualisiert werden (DIY)
+tracker-settings-update-available = { $versionName } ist jetzt Verfügbar
+tracker-settings-update = Jetzt aktualisieren
+tracker-settings-update-title = Firmware-Version
 
 ## Tracker part card info
 
@@ -319,6 +341,7 @@ settings-sidebar-utils = Werkzeuge
 settings-sidebar-serial = Serielle Konsole
 settings-sidebar-appearance = Erscheinungsbild
 settings-sidebar-notifications = Benachrichtigungen
+settings-sidebar-firmware-tool = DIY Firmware Tool
 settings-sidebar-advanced = Erweitert
 
 ## SteamVR settings
@@ -454,9 +477,6 @@ settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Inter
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Interpolation der horizontalen und Torsionsrotationen der Knie mit denen der Fußgelenke
 settings-general-fk_settings-self_localization-title = Motion-Capture-Modus
 settings-general-fk_settings-self_localization-description = Der Motion-Capture-Modus ermöglicht es dem Skelett, ungefähr die eigene Position ohne Headset oder Tracker zu verfolgen. Beachten Sie, dass diese Funktion Fuß- und Kopf-Tracker benötigt und noch experimentell ist.
-settings-general-fk_settings-vive_emulation-title = Vive-Simulierung
-settings-general-fk_settings-vive_emulation-description = Simuliere die Tracking-Probleme, welche bei Vive-Trackern auftreten. Dies ist ein Scherz und verschlechtert das Tracking.
-settings-general-fk_settings-vive_emulation-label = Vive-Simulierung
 
 ## Gesture control settings (tracker tapping)
 
@@ -493,9 +513,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Erhö
 ## Appearance settings
 
 settings-interface-appearance = Erscheinungsbild
-settings-general-interface-dev_mode = Entwicklermodus
-settings-general-interface-dev_mode-description = Der Entwicklermodus stellt mehr Daten dar und erlaubt auch erweiterte Einstellungen, so wie erweiterte Optionen bei verbundenen Trackern.
-settings-general-interface-dev_mode-label = Entwicklermodus
 settings-general-interface-theme = Farbschema
 settings-general-interface-show-navbar-onboarding = "{ navbar-onboarding }" in der Navigationsleiste anzeigen
 settings-general-interface-show-navbar-onboarding-description = Dies ändert die Sichtbarkeit der Schaltfläche "{ navbar-onboarding }" in der Navigationsleiste
@@ -528,6 +545,12 @@ settings-general-interface-feedback_sound-volume = Feedback-Sound-Lautstärke
 settings-general-interface-connected_trackers_warning = Warnung zu verbundenen Trackern
 settings-general-interface-connected_trackers_warning-description = Diese Option zeigt jedes Mal ein Pop-up-Fenster an, wenn Sie versuchen, SlimeVR zu beenden, während ein oder mehrere Tracker verbunden sind. Es erinnert Sie daran, die Tracker auszuschalten, um die Akkulaufzeit zu verlängern.
 settings-general-interface-connected_trackers_warning-label = Warnung vor verbundenen Trackern beim Verlassen
+
+## Behavior settings
+
+settings-general-interface-dev_mode = Entwicklermodus
+settings-general-interface-dev_mode-description = Der Entwicklermodus stellt mehr Daten dar und erlaubt auch erweiterte Einstellungen, so wie erweiterte Optionen bei verbundenen Trackern.
+settings-general-interface-dev_mode-label = Entwicklermodus
 settings-general-interface-use_tray = In den Infobereich minimieren
 settings-general-interface-use_tray-description = Erlaubt Ihnen, das Fenster zu schließen, ohne den SlimeVR-Server zu beenden. Dies erlaubt Ihnen diesen weiterzuverwenden, ohne dass das Fenster stört.
 settings-general-interface-use_tray-label = In den Infobereich minimieren
@@ -642,12 +665,6 @@ settings-osc-vmc-network-address-description = Setze die Adresse, wo die Daten h
 settings-osc-vmc-network-address-placeholder = IPv4-Adresse
 settings-osc-vmc-vrm = VRM-Model
 settings-osc-vmc-vrm-description = Lade ein VRM-Modell um die Kopfverankerung anzuschalten und eine bessere Kompatibilität mit anderen Anwendungen zu bekommen.
-settings-osc-vmc-vrm-model_unloaded = Kein Modell geladen
-settings-osc-vmc-vrm-model_loaded =
-    { $titled ->
-        [true] Modell geladen: { $name }
-       *[other] Unbenanntes Modell geladen
-    }
 settings-osc-vmc-vrm-file_select = Modell per Drag & Drop laden oder <u>durchsuchen</u>
 settings-osc-vmc-anchor_hip = Hüftenverankerung
 settings-osc-vmc-anchor_hip-description = Die Hüften-Verankerung für das Tracking ist nützlich für VTubing im Sitzen. Beim Deaktivieren muss ein VRM-Model geladen werden.
@@ -682,8 +699,6 @@ settings-utils-advanced-reset_warning =
     }
 settings-utils-advanced-reset_warning-reset = Einstellungen zurücksetzen
 settings-utils-advanced-reset_warning-cancel = Abbrechen
-settings-utils-advanced-open_data = Daten-Ordner
-settings-utils-advanced-open_data-description = Öffnet den Daten-Ordner von SlimeVR im Explorer, der Konfigurations- und Protokolldateien enthält.
 settings-utils-advanced-open_data-label = Ordner öffnen
 
 ## Setup/onboarding menu
@@ -964,31 +979,7 @@ onboarding-automatic_mounting-put_trackers_on-title = Legen Sie Ihre Tracker an
 onboarding-automatic_mounting-put_trackers_on-description = Um die Drehung der Tracker zu kalibrieren, werden die Tracker verwendet, welche Sie gerade zugewiesen haben. Ziehen Sie alle Ihre Tracker an, in der Abbildung rechts können sie sehen um welchen Tracker es sich handelt.
 onboarding-automatic_mounting-put_trackers_on-next = Ich habe alle meine Tracker angelegt
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = Welche Kalibrierungsmethode ist zu verwenden?
-# Multiline string
-onboarding-choose_proportions-description-v1 =
-    Wenn die Proportionen Ihres Körpers nicht mit den Gespeicherten übereinstimmen, ist die Präzision des Trackings schlechter. Außerdem können Probleme wie Skaten oder Rutschen auftreten oder, dass die Bewegungen Ihres Avatars nicht gut mit den Bewegungen Ihres Körpers übereinstimmen.
-    <b>Sie müssen Ihren Körper nur einmal messen!</b> Es sei denn, die Messwerte sind falsch oder Ihr Körper hat sich verändert, dann müssen Sie die Körperproportionen nochmal bestimmen.
-onboarding-choose_proportions-auto_proportions = Automatische Proportionen
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = Empfohlen
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    Dies wird versuchen, Ihre Proportionen mit Hilfe einer Bewegungsaufnahme zu bestimmen, welche von einem Algorithmus verarbeitet wird.
-    
-    <b>Dazu muss Ihr Headset (HMD) mit SlimeVR verbunden sein und Sie müssen es an haben!</b>
-onboarding-choose_proportions-manual_proportions = Manuelle Körperproportionen
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = Für kleine Anpassungen
-onboarding-choose_proportions-manual_proportions-description = Auf diese Weise können Sie Ihre Proportionen manuell anpassen, indem Sie diese direkt ändern
-onboarding-choose_proportions-export = Proportionen exportieren
-onboarding-choose_proportions-import = Proportionen importieren
-onboarding-choose_proportions-import-success = Importiert
-onboarding-choose_proportions-import-failed = Fehlgeschlagen
-onboarding-choose_proportions-file_type = Körperproportions-Datei
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = Gehen Sie zurück zum Reset-Tutorial
 onboarding-manual_proportions-title = Manuelle Körperproportionen
@@ -1015,19 +1006,10 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Ihr Headset sendet Positionsdaten an den SlimeVR-Server (das bedeutet allgemein, dass SteamVR läuft und über den SlimeVR-SteamVR Treiber mit SteamVR verbunden ist).
     Ihr Tracking funktioniert und stellt Ihre Bewegungen akkurat dar (z.B.: Sie haben einen Reset durchgeführt und Ihre Tracker bewegen sich beim Treten, Bücken, Sitzen, usw. richtig).
 onboarding-automatic_proportions-requirements-next = Ich habe die Anforderungen gelesen
-onboarding-automatic_proportions-check_height-title = Überprüfen Sie Ihre Körpergröße
-onboarding-automatic_proportions-check_height-description = Wir benutzen die Höhe des Headsets (HMD) als eine Schätzung für Ihre tatsächliche Grösse, doch es ist besser dass Sie diese selbst überprüfen!
-# All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = Bitte betätigen Sie auf den Knopf während Sie <u>aufrecht</u> stehen, um Ihre Körpergröße zu berechnen. Sie haben 3 Sekunden Zeit, nachdem Sie auf den Knopf gedrückt haben.
 onboarding-automatic_proportions-check_height-guardian_tip = Wenn Sie ein eigenständiges VR Headset verwenden, stellen Sie sicher, dass Ihr Guardian Begrenzung aktiviert ist und damit Ihre Größe korrekt ist!
-onboarding-automatic_proportions-check_height-fetch_height = Ich stehe!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Unbekannt
-# Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = Ihre Headset-Höhe ist
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = Ihre tatsächliche Körpergröße ist
-onboarding-automatic_proportions-check_height-next_step = Werte sind korrekt
+onboarding-automatic_proportions-check_height-next_step = Headset-Höhe verwenden
 onboarding-automatic_proportions-start_recording-title = Bereiten Sie sich auf ein paar Bewegungen vor
 onboarding-automatic_proportions-start_recording-description = Wir werden nun einige bestimmte Posen und Bewegungen aufnehmen. Diese werden im nächsten Schritt angezeigt. Sei bereit damit zu beginnen, wenn du auf den Knopf drückst!
 onboarding-automatic_proportions-start_recording-next = Aufnahme starten
@@ -1063,6 +1045,12 @@ onboarding-automatic_proportions-error_modal-v2 =
     Bitte <docs>überprüfen Sie die Dokumentation</docs> oder treten Sie unserem <discord>Discord</discord> bei, um Hilfe zu erhalten ^_^
 onboarding-automatic_proportions-error_modal-confirm = Verstanden!
 
+## Tracker scaled proportions setup
+
+
+## Tracker scaled proportions reset
+
+
 ## Home
 
 home-no_trackers = Keine Tracker erkannt oder zugewiesen
@@ -1086,6 +1074,24 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = Der Tracker "{ $trackerName }" weist einen Fehler auf.
 status_system-StatusUnassignedHMD = Das VR-Headset sollte als Kopf-Tracker zugewiesen sein.
+
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+firmware_tool-add_imus_step-imu_type-label = IMU Typ
+firmware_tool-add_imus_step-imu_type-placeholder = Wähle den IMU Typ aus
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
+firmware_update-changelog-title = Aktualisieren auf { $version }
 
 ## Tray Menu
 
@@ -1114,3 +1120,6 @@ unknown_device-modal-description =
     Möchten Sie diesen mit SlimeVR verbinden?
 unknown_device-modal-confirm = Sicher!
 unknown_device-modal-forget = Ignorieren
+
+## Error collection consent modal
+
