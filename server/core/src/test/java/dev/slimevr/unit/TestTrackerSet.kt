@@ -41,7 +41,7 @@ class TestTrackerSet(
 	/**
 	 * All the trackers in the set plus the headset.
 	 */
-	val all = set.plus(head)
+	val all = set + head
 
 	/**
 	 * All the trackers in the set plus the headset as a list.
