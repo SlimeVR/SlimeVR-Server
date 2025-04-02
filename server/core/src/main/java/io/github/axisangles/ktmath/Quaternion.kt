@@ -2,7 +2,6 @@
 
 package io.github.axisangles.ktmath
 
-import com.jme3.math.FastMath
 import kotlinx.serialization.Serializable
 import kotlin.math.*
 
@@ -24,12 +23,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		/**
 		 * Used to rotate an identity quaternion to face upwards for [twinExtendedBack].
 		 */
-		private val UP_ADJ = EulerAngles(
-			EulerOrder.YZX,
-			-FastMath.HALF_PI,
-			0f,
-			0f,
-		).toQuaternion()
+		private val UP_ADJ = Quaternion(0.707f, -0.707f, 0f, 0f)
 
 		/**
 		 * creates a new quaternion representing the rotation about v's axis
@@ -253,13 +247,13 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		if (this.dot(that) < 0f) this else -this
 
 	/**
-	 * Similar to [twinNearest], but uses [twinFurthest] for the lower back quadrant
-	 * relative to [that]. This is useful for joints that have limited forward rotation
-	 * and extensive backward rotation.
+	 * Similar to [twinNearest], but offset so the lower back quadrant is the furthest
+	 * rotation relative to [that]. This is useful for joints that have limited forward
+	 * rotation, but extensive backward rotation.
 	 * @param that The reference quaternion to be nearest to or furthest from.
 	 * @return The furthest quaternion if in the lower back quadrant, otherwise the
 	 * nearest quaternion.
-	 */
+	 **/
 	fun twinExtendedBack(that: Quaternion): Quaternion {
 		/*
 		 * This handles the thigh extending behind the torso to face downwards, and the
@@ -267,17 +261,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		 * the torso and the spine hopefully can't bend back that far, so we can fairly
 		 * safely assume the rotation is towards the torso.
 		 */
-
-		val isBack = that.angleToR(this) > FastMath.HALF_PI
-		val isLower = (that * UP_ADJ).angleToR(this) > FastMath.HALF_PI
-
-		return if (isBack && isLower) {
-			// Select longest rotation
-			this.twinFurthest(that)
-		} else {
-			// Select shortest rotation
-			this.twinNearest(that)
-		}
+		return this.twinNearest(that * UP_ADJ)
 	}
 
 	/**
