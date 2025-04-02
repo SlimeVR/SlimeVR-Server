@@ -533,6 +533,14 @@ settings-general-interface-use_tray-label = Minimalizovat do oznamovací oblasti
 settings-general-interface-discord_presence = Sdílet aktivitu na Discordu
 settings-general-interface-discord_presence-description = Sdělí Discord klientu, že používáte SlimeVR společně s počtem trackerů IMU, které používáte.
 settings-general-interface-discord_presence-label = Sdílet aktivitu na Discordu
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] Sliming around
+        [one] Používá 1 tracker
+        [few] Používá { $amount } trackery
+        [many] Používá { $amount } trackerů
+       *[other] Používá { $amount } trackerů
+    }
 
 ## Serial settings
 
