@@ -1099,12 +1099,25 @@ onboarding-automatic_proportions-error_modal-v2 =
     Esto es posiblemente debido a un problema con la calibración de montura. Asegúrate de que tu tracking funcione adecuadamente antes de intentarlo nuevamente.
     Por favor <docs>revisa la documentación</docs> o únete a nuestro <discord>Discord</discord> por ayuda ^_^
 onboarding-automatic_proportions-error_modal-confirm = ¡Entendido!
+onboarding-automatic_proportions-smol_warning =
+    La altura configurada de { $height } es menor que la altura mínima aceptada de { $minHeight }.
+    <b>Por favor vuelva a hacer las mediciones y asegúrese de que sean correctas.</b>
+onboarding-automatic_proportions-smol_warning-cancel = Volver
 
 ## Tracker scaled proportions setup
 
+onboarding-scaled_proportions-title = Proporciones escaladas
+onboarding-scaled_proportions-description = Para que los trackers SlimeVR funcionen, necesitamos saber el largo de sus huesos. Esto usará una proporción promedia y la escalará en función a su altura.
+onboarding-scaled_proportions-manual_height-title = Ajuste su altura
+onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR no está conectado actualmente a SlimeVR, por lo que las mediciones no se pueden basar en su casco. <b>¡Proceda bajo su propio riesgo o consulte la documentación!</b>
+onboarding-scaled_proportions-manual_height-next_step = Continuar y guardar
 
 ## Tracker scaled proportions reset
 
+onboarding-scaled_proportions-reset_proportion-title = Reestablecer las proporciones de su cuerpo
+onboarding-scaled_proportions-reset_proportion-description = Para establecer las proporciones de su cuerpo en función a su altura, ahora debe restablecer todas sus proporciones. Esto borrará las proporciones que haya configurado y proporcionará una configuración de referencia.
+onboarding-scaled_proportions-done-title = Proporciones corporales guardadas
+onboarding-scaled_proportions-done-description = Las proporciones de su cuerpo ahora deberían estar configuradas en función de su altura.
 
 ## Home
 
@@ -1132,18 +1145,127 @@ status_system-StatusUnassignedHMD = El casco de RV debe ser asignado como un sen
 
 ## Firmware tool globals
 
+firmware_tool-next_step = Siguiente paso
+firmware_tool-previous_step = Paso anterior
+firmware_tool-ok = Se ve bien
+firmware_tool-retry = Reintentar
+firmware_tool-loading = Cargando...
 
 ## Firmware tool Steps
 
+firmware_tool = Herramienta de firmware DIY
+firmware_tool-description = Le permite configurar y actualizar sus sensores construidos por usted
+firmware_tool-not_available = Vaya, la herramienta de firmware no está disponible en este momento. ¡Vuelva más tarde!
+firmware_tool-not_compatible = La herramienta de firmware no es compatible con esta versión del servidor. ¡Por favor, actualice la app!
+firmware_tool-board_step = Seleccione su placa
+firmware_tool-board_step-description = Seleccione una de las placas que se enumeran a continuación.
+firmware_tool-board_pins_step = Revisar los pines
+firmware_tool-board_pins_step-description =
+    Verifique que los pines seleccionados sean correctos.
+    Si siguió la documentación de SlimeVR, los valores predeterminados deben ser correctos
+firmware_tool-board_pins_step-enable_led = Habilitar LED
+firmware_tool-board_pins_step-led_pin =
+    .label = Pin del LED
+    .placeholder = Ingrese la dirección pin del LED
+firmware_tool-board_pins_step-battery_type = Seleccione el tipo de batería
+firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = Batería externa
+firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = Batería interna
+firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = MCP3021 interno
+firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = MCP3021
+firmware_tool-board_pins_step-battery_sensor_pin =
+    .label = Pin del sensor de batería
+    .placeholder = Ingrese la dirección pin del sensor de batería
+firmware_tool-board_pins_step-battery_resistor =
+    .label = Resistencia de la batería (Ohmios)
+    .placeholder = Ingrese el valor de la resistencia de la batería.
+firmware_tool-board_pins_step-battery_shield_resistor-0 =
+    .label = Shield de la batería R1 (Ohmios).
+    .placeholder = Ingrese el valor del shield de la batería R1.
+firmware_tool-board_pins_step-battery_shield_resistor-1 =
+    .label = Shield de la batería R2 (Ohmios).
+    .placeholder = Ingrese el valor del shield de la batería R2.
+firmware_tool-add_imus_step = Declare sus IMUs
+firmware_tool-add_imus_step-description =
+    Por favor añada las IMU que tiene su sensor
+    Si siguió la documentación de SlimeVR, los valores predeterminados deben ser correctos
+firmware_tool-add_imus_step-imu_type-label = Tipo de IMU
+firmware_tool-add_imus_step-imu_type-placeholder = Seleccione el tipo de IMU
+firmware_tool-add_imus_step-imu_rotation =
+    .label = Rotación del IMU (grados)
+    .placeholder = Ángulo de rotación del IMU
+firmware_tool-add_imus_step-scl_pin =
+    .label = Pin SCL
+    .placeholder = Dirección pin SCL
+firmware_tool-add_imus_step-sda_pin =
+    .label = Pin SDA
+    .placeholder = Dirección pin SDA
+firmware_tool-add_imus_step-int_pin =
+    .label = Pin INT
+    .placeholder = Dirección pin INT
+firmware_tool-add_imus_step-optional_tracker =
+    .label = Sensor opcional
+firmware_tool-add_imus_step-show_less = Mostrar menos
+firmware_tool-add_imus_step-show_more = Mostrar más
+firmware_tool-add_imus_step-add_more = Agregar más IMUs
+firmware_tool-select_firmware_step = Seleccione la versión del firmware
+firmware_tool-select_firmware_step-description = Por favor elija la versión del firmware que desea utilizar
+firmware_tool-select_firmware_step-show-third-party =
+    .label = Mostrar firmwares de terceros
+firmware_tool-flash_method_step = Método de flasheo
+firmware_tool-flash_method_step-description = Por favor seleccione el método de flasheo que desea utilizar
+firmware_tool-flash_method_step-ota =
+    .label = OTA
+    .description = Utilice el método por aire (OTA). Su sensor utilizará Wi-Fi para actualizar su firmware. Funciona sólo en sensores ya configurados.
+firmware_tool-flash_method_step-serial =
+    .label = Serial
+    .description = Utilice un cable USB para actualizar su sensor.
+firmware_tool-flashbtn_step = Presione el botón de boot
+firmware_tool-flashbtn_step-description = Antes de pasar al siguiente paso, hay algunas cosas que debe hacer
+firmware_tool-flashbtn_step-board_SLIMEVR = Apague el sensor, retire la carcasa (si la hay), conecte un cable USB a esta computadora y, a continuación, realice uno de los siguientes pasos de acuerdo con la revisión de la placa SlimeVR:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Encienda el sensor mientras cortocircuita el segundo FLASH pad rectangular desde el borde en la parte superior de la placa y el protector metálico del microcontrolador.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Encienda el sensor mientras cortocircuita el FLASH pad circular en la parte superior de la placa y el escudo metálico del microcontrolador.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Encienda el sensor mientras presiona el botón FLASH en la parte superior de la placa
+firmware_tool-flashbtn_step-board_OTHER =
+    Antes de flashear, probablemente tendrá que poner el sensor en modo bootloader.
+    La mayoría de las veces, esto significa presionar el botón de boot en la placa antes de que comience el proceso de flasheo. Si el proceso de flasheo se agota al comienzo, probablemente significa que el sensor no estaba en modo bootloader. 
+    Por favor, consulte las instrucciones de flasheo de su placa para saber cómo activar el modo bootloader.
+firmware_tool-flash_method_ota-devices = Dispositivos OTA detectados:
+firmware_tool-flash_method_ota-no_devices = No hay placas que se puedan actualizar mediante OTA, asegúrese de seleccionar el tipo de placa correcto
+firmware_tool-flash_method_serial-wifi = Credenciales del Wi-Fi:
+firmware_tool-flash_method_serial-devices-label = Dispositivos serial detectados:
+firmware_tool-flash_method_serial-devices-placeholder = Seleccione un dispositivo serial
 
 ## firmware tool build status
 
 
 ## Firmware update status
 
+firmware_update-status-AUTHENTICATING = Autenticando con el microcontrolador
+firmware_update-status-UPLOADING = Cargando el firmware
+firmware_update-status-SYNCING_WITH_MCU = Sincronizando con el microcontrolador
+firmware_update-status-REBOOTING = Aplicando la actualización
+firmware_update-status-PROVISIONING = Configurando las credenciales del Wi-Fi
+firmware_update-status-DONE = ¡Actualización completa!
+firmware_update-status-ERROR_DEVICE_NOT_FOUND = No se pudo encontrar el dispositivo
+firmware_update-status-ERROR_TIMEOUT = Se agotó el tiempo de espera del proceso de actualización
+firmware_update-status-ERROR_DOWNLOAD_FAILED = No se pudo descargar el firmware
+firmware_update-status-ERROR_AUTHENTICATION_FAILED = No se pudo autenticar con el microcontrolador
+firmware_update-status-ERROR_UPLOAD_FAILED = No se pudo cargar el firmware
+firmware_update-status-ERROR_PROVISIONING_FAILED = No se pudieron configurar las credenciales del Wi-Fi
+firmware_update-status-ERROR_UNSUPPORTED_METHOD = El método de actualización no es compatible
+firmware_update-status-ERROR_UNKNOWN = Error desconocido
 
 ## Dedicated Firmware Update Page
 
+firmware_update-title = Actualización de firmware
+firmware_update-devices = Dispositivos disponibles
+firmware_update-devices-description = Seleccione los sensores que desea actualizar a la última versión del firmware de SlimeVR
+firmware_update-no_devices = ¡Asegúrese de que los sensores que desea actualizar estén encendidos y conectados al Wi-Fi!
+firmware_update-changelog-title = Actualizando a { $version }
+firmware_update-looking_for_devices = Buscando dispositivos para actualizar...
+firmware_update-retry = Reintentar
+firmware_update-update = Actualizar sensores seleccionados
+firmware_update-exit = Salir
 
 ## Tray Menu
 
