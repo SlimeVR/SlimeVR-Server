@@ -1234,12 +1234,30 @@ firmware_tool-flash_method_ota-no_devices = No hay placas que se puedan actualiz
 firmware_tool-flash_method_serial-wifi = Credenciales del Wi-Fi:
 firmware_tool-flash_method_serial-devices-label = Dispositivos serial detectados:
 firmware_tool-flash_method_serial-devices-placeholder = Seleccione un dispositivo serial
+firmware_tool-flash_method_serial-no_devices = No se han detectado dispositivos serial compatibles, asegúrese de que el sensor esté conectado
+firmware_tool-build_step = Compilando
+firmware_tool-build_step-description = El firmware se está compilando, por favor espere
+firmware_tool-flashing_step = Flasheando
+firmware_tool-flashing_step-description = Sus sensores se están flasheando, por favor siga las instrucciones en la pantalla
+firmware_tool-flashing_step-warning = No desconecte ni reinicie el sensor durante el proceso de carga a menos que se le indique que lo haga, ya que puede hacer que su placa quede inutilizable
+firmware_tool-flashing_step-flash_more = Flashear más sensores
+firmware_tool-flashing_step-exit = Salir
 
 ## firmware tool build status
 
+firmware_tool-build-CREATING_BUILD_FOLDER = Creando la carpeta de compilación
+firmware_tool-build-DOWNLOADING_FIRMWARE = Descargando el firmware
+firmware_tool-build-EXTRACTING_FIRMWARE = Extrayendo el firmware
+firmware_tool-build-SETTING_UP_DEFINES = Configurando las definiciones
+firmware_tool-build-BUILDING = Compilando el firmware
+firmware_tool-build-SAVING = Guardando la compilación
+firmware_tool-build-DONE = Compilación completa
+firmware_tool-build-ERROR = No se pudo compilar el firmware
 
 ## Firmware update status
 
+firmware_update-status-DOWNLOADING = Descargando el firmware
+firmware_update-status-NEED_MANUAL_REBOOT = Por favor reinicie el sensor
 firmware_update-status-AUTHENTICATING = Autenticando con el microcontrolador
 firmware_update-status-UPLOADING = Cargando el firmware
 firmware_update-status-SYNCING_WITH_MCU = Sincronizando con el microcontrolador
