@@ -89,6 +89,23 @@ body_part-RIGHT_LITTLE_DISTAL = wight widdle distol
 
 board_type-UNKNOWN = unnown
 board_type-NODEMCU = nowdemcu
+board_type-CUSTOM = cusom boawd
+board_type-WROOM32 = wroom32
+board_type-WEMOSD1MINI = wemo d1 meenee
+board_type-TTGO_TBASE = ttgo tbase
+board_type-ESP01 = esp01
+board_type-SLIMEVR = swimevr
+board_type-LOLIN_C3_MINI = lol c3 meenee
+board_type-BEETLE32C3 = 🪲 (beetle) esp32-c3
+board_type-ESP32C3DEVKITM1 = expressive esp32-c3 devkitm1
+board_type-OWOTRACK = owo!!Track
+board_type-WRANGLER = wrangle joycons (yeehaw)
+board_type-MOCOPI = soni mocopi
+board_type-WEMOSWROOM02 = memos vroom-02 d1 meenee
+board_type-XIAO_ESP32C3 = seeeed studio xiao esp32c3
+board_type-HARITORA = hawitowa
+board_type-ESP32C6DEVKITC1 = espresso esp32-c6 devkitc1
+board_type-GLOVE_IMU_SLIMEVR_DEV = swimevr dev imu gwove
 
 ## Proportions
 
@@ -121,7 +138,14 @@ skeleton_bone-ELBOW_OFFSET = ewbow awfsewt
 ## Tracker reset buttons
 
 reset-reset_all = weset aww pwopowtions~
+reset-reset_all_warning-v2 =
+    <b>warnings!!!</b> ur pwopawshuns will be weset to default scaled to ur configuwed heit.
+    are u SHURE you want to do dis?!? >~>
+reset-reset_all_warning-reset = weset pwopawshuns
 reset-reset_all_warning-cancel = cancew :o
+reset-reset_all_warning_default-v2 =
+    <b>wawnin!!</b> ur heit has nawt been configure, ur pwopawshuns will be weset to defawts wiff da defawt heit.
+    are u REALLY sure you want to do this?! <~<
 reset-full = fuww weset~
 reset-mounting = weset meownting
 reset-yaw = yaw weset
@@ -187,6 +211,8 @@ widget-imu_visualizer-preview = pwewiew
 widget-imu_visualizer-hide = hoide
 widget-imu_visualizer-rotation_raw = waw
 widget-imu_visualizer-rotation_preview = pwewiew
+widget-imu_visualizer-acceleration = accewewation
+widget-imu_visualizer-position = pawsition
 
 ## Widget: Skeleton Visualizer
 
@@ -238,9 +264,17 @@ tracker-infos-url = twackaw uawl
 tracker-infos-version = fiwmwawe vewsion
 tracker-infos-hardware_rev = hawdwawe revision
 tracker-infos-hardware_identifier = hawdwawe id
+tracker-infos-data_support = deyta suppowt
 tracker-infos-imu = imu sensow
 tracker-infos-board_type = mane bored
 tracker-infos-network_version = pwotocol vewsiowon
+tracker-infos-magnetometer = magentometer
+tracker-infos-magnetometer-status-v1 =
+    { $status ->
+        [DISABLED] disabled.
+        [ENABLED] enabled!!
+       *[NOT_SUPPORTED] nawt suppowted...
+    }
 
 ## Tracker settings
 
@@ -255,6 +289,8 @@ tracker-settings-mounting_section-edit = edit meownting
 tracker-settings-drift_compensation_section = awwow dwift compensation
 tracker-settings-drift_compensation_section-description = shouwd this twackew compensate fow its dwift when dwift compensation is enabwed?
 tracker-settings-drift_compensation_section-edit = awwow dwift compensation
+tracker-settings-use_mag = awwow magentometer on dis twackew
+tracker-settings-use_mag-label = awwow magnetomemer
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = twackaw name
@@ -264,6 +300,9 @@ tracker-settings-name_section-label = twackaw name
 tracker-settings-forget = *forgors the tracker*
 tracker-settings-forget-description = remooves teh twackew fwom da SwimeVR sewvew n pwevent it frum conecting to it til fhe sewvew iz westawtied. the cowonfigyuwatsin of da twackew woant b wost.
 tracker-settings-forget-label = *forgors the tracker*
+tracker-settings-update-unavailable = cannawt be updayted (DIY)
+tracker-settings-update-up_to_date = up to dayte!! ^w^
+tracker-settings-update-available = { $versionName } is naow awailabwe
 
 ## Tracker part card info
 
@@ -401,6 +440,10 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     saves the auwtoemyatic meownting weset cawybwationz for da twackews betwean westawts. useful
     wen weawing a sUwUit whewe twackews dont  move between sesshuns. <b>nawt wecomended for noarmal UwUsews!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = save meownting weset
+settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
+    uses magnemometer on da twackews dat have a compatubble firmwear fow it, weduces dwift in stable magnettic enviwoments.
+    can be disable per twackew in da twackew setting! <b>pwease dont shut down any twackew when u toggle dis!</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers-label = use mangenmometer on twackews
 
 ## FK/Tracking settings
 
@@ -424,6 +467,11 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = pawb-pwant wotat
 settings-general-fk_settings-leg_fk = leg twacking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Enyabwe pawb Meownting Weset by tiptoeing.
 settings-general-fk_settings-leg_fk-reset_mounting_feet = Pawb Meownting Weset
+settings-general-fk_settings-enforce_joint_constraints = skewetal wimits
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = enfourse constwaints
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = pwevents da joins fwom wotating past da wimit
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints = cowwect wit constwaints
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = cowwect joint wotashuns when dey push past their wimit
 settings-general-fk_settings-arm_fk = awm twacking
 settings-general-fk_settings-arm_fk-description = chawnge teh way teh awms awe twacked.
 settings-general-fk_settings-arm_fk-force_arms = fowce awms fwom hmd
@@ -492,6 +540,9 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = incwe
 
 settings-interface-appearance = appeawance
 settings-general-interface-theme = cowor theem
+settings-general-interface-show-navbar-onboarding = show "{ navbar-onboarding }" on da nawigation bar
+settings-general-interface-show-navbar-onboarding-description = dis change if da "{ navbar-onboarding }" button show on da nawigashun bar!
+settings-general-interface-show-navbar-onboarding-label = show "{ navbar-onboarding }"
 settings-general-interface-lang = sewect wanguage
 settings-general-interface-lang-description = change the defawwt wanguage yuw want to use
 settings-general-interface-lang-placeholder = sewect teh wanguage to use
@@ -503,6 +554,9 @@ settings-interface-appearance-font-os_font = os fawnt
 settings-interface-appearance-font-slime_font = defawt fawnt
 settings-interface-appearance-font_size = bass fawn scawing
 settings-interface-appearance-font_size-description = dis affects da fawnt size of da whol intewface except dis setting panew.
+settings-interface-appearance-decorations = use da sysem native decowashuns
+settings-interface-appearance-decorations-description = dis wiw not wendew da top bar of da interfase an will use da opewating syssem's insted.
+settings-interface-appearance-decorations-label = use native decowashuns
 
 ## Notification settings
 
@@ -520,6 +574,7 @@ settings-general-interface-connected_trackers_warning-label = Connected twackews
 
 ## Behavior settings
 
+settings-interface-behavior = behavur
 settings-general-interface-dev_mode = devwowwewow mode
 settings-general-interface-dev_mode-description = this mode can be wowseffuw if you need in-dipth data owow to intewact with cownnected twackaws on a wowowe wowadvanced wowwevew
 settings-general-interface-dev_mode-label = devwowwewow mode
