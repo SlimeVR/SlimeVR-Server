@@ -385,6 +385,7 @@ settings-sidebar-utils = Utilitaires
 settings-sidebar-serial = Console série
 settings-sidebar-appearance = Apparence
 settings-sidebar-notifications = Notifications
+settings-sidebar-behavior = Comportement
 settings-sidebar-firmware-tool = Outil de micrologiciel DIY
 settings-sidebar-advanced = Avancé
 
@@ -562,9 +563,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Augme
 ## Appearance settings
 
 settings-interface-appearance = Apparence
-settings-general-interface-dev_mode = Mode développeur
-settings-general-interface-dev_mode-description = Ce mode peut être utile pour avoir des données approfondies ou pour interagir avec des capteurs connectés à un niveau plus avancé.
-settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-theme = Thème
 settings-general-interface-show-navbar-onboarding = Afficher « { navbar-onboarding } » dans la barre de navigation
 settings-general-interface-show-navbar-onboarding-description = Cela décide si le bouton « { navbar-onboarding } » s'affiche dans la barre de navigation.
@@ -597,6 +595,13 @@ settings-general-interface-feedback_sound-volume = Volume du son de retour
 settings-general-interface-connected_trackers_warning = Avertissement de capteurs connectés
 settings-general-interface-connected_trackers_warning-description = Cette option affichera une fenêtre contextuelle à chaque fois que vous essaierez de quitter SlimeVR en ayant un ou plusieurs capteurs connectés. Il vous rappelle d'éteindre vos capteurs lorsque vous avez terminé pour préserver la durée de vie de la batterie.
 settings-general-interface-connected_trackers_warning-label = Avertissement de capteurs connectés en quittant
+
+## Behavior settings
+
+settings-interface-behavior = Comportement
+settings-general-interface-dev_mode = Mode développeur
+settings-general-interface-dev_mode-description = Ce mode peut être utile pour avoir des données approfondies ou pour interagir avec des capteurs connectés à un niveau plus avancé.
+settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-use_tray = Minimiser dans la zone de notifications
 settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l'utiliser sans l'interface graphique.
 settings-general-interface-use_tray-label = Minimiser dans la zone de notifications
@@ -609,6 +614,14 @@ settings-general-interface-discord_presence-message =
         [one] Utilise { $amount } capteur
        *[other] Utilise { $amount } capteurs
     }
+settings-interface-behavior-error_tracking = Collecte des erreurs via Sentry.io
+settings-interface-behavior-error_tracking-description =
+    Pour procurer la meilleur expérience utilisateur, nous collectons des rapports, des métriques de performance, et des information de système d'exploitation de manière anonyme. Cela nous aide a détecter des bugs et des problème avec SlimeVR. Ces métriques sont collecte via Sentry.io.
+    
+    Nous ne collectons pas vos informations personnelles comme votre adresse IP ou vos informations d'identification WIFI. SlimeVR respecte vos informations personnelles !
+    
+    Consentez-vous à la collecte anonyme de vos données d'erreurs ?
+settings-interface-behavior-error_tracking-label = Envoyer les erreurs aux développeurs
 
 ## Serial settings
 
@@ -756,9 +769,12 @@ settings-utils-advanced-reset_warning =
     }
 settings-utils-advanced-reset_warning-reset = Réinitialiser les paramètres
 settings-utils-advanced-reset_warning-cancel = Annuler
-settings-utils-advanced-open_data = Dossier des données
-settings-utils-advanced-open_data-description = Ouvre le dossier des données de SlimeVR dans l'explorateur de fichiers, contenant les fichiers de configuration ainsi que les logs.
+settings-utils-advanced-open_data-v1 = Dossier de configuration
+settings-utils-advanced-open_data-description-v1 = Ouvre le dossier de configuration de SlimeVR, contenant les fichiers de configuration, dans l'explorateur de fichier
 settings-utils-advanced-open_data-label = Ouvrir le dossier
+settings-utils-advanced-open_logs = Dossier des logs
+settings-utils-advanced-open_logs-description = Ouvre le dossier des logs de SlimeVR, contenant ses logs, dans l'explorateur de fichier
+settings-utils-advanced-open_logs-label = Ouvrir le dossier
 
 ## Setup/onboarding menu
 
@@ -1352,3 +1368,13 @@ unknown_device-modal-description =
     Voulez-vous le connecter à SlimeVR ?
 unknown_device-modal-confirm = Oui!
 unknown_device-modal-forget = Ignorer
+
+## Error collection consent modal
+
+error_collection_modal-title = Avons nous l'autorisation de collecter les erreurs ?
+error_collection_modal-description =
+    { settings-interface-behavior-error_tracking-description }
+    
+    Vous pouvez modifier ce paramètre ultérieurement dans la section "Comportement" des paramètres.
+error_collection_modal-confirm = Je suis d'accord
+error_collection_modal-cancel = Je ne veux pas
