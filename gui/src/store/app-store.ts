@@ -14,7 +14,7 @@ export interface FlatDeviceTracker {
   tracker: TrackerDataT;
 }
 
-export const ignoredTrackersAtom = atom(new Set());
+export const ignoredTrackersAtom = atom(new Set<string>());
 
 export const datafeedAtom = atom(new DataFeedUpdateT());
 
@@ -27,12 +27,8 @@ export const devicesAtom = selectAtom(
 export const flatTrackersAtom = atom((get) => {
   const devices = get(devicesAtom);
 
-  return devices.reduce<FlatDeviceTracker[]>(
-    (curr, device) => [
-      ...curr,
-      ...device.trackers.map((tracker) => ({ tracker, device })),
-    ],
-    []
+  return devices.flatMap<FlatDeviceTracker>((device) =>
+    device.trackers.map((tracker) => ({ tracker, device }))
   );
 });
 
@@ -72,7 +68,7 @@ export const hasHMDTrackerAtom = atom((get) => {
   return trackers.some(
     (tracker) =>
       tracker.tracker.info?.bodyPart === BodyPart.HEAD &&
-      (tracker.tracker.info.isHmd || tracker.tracker.position?.y)
+      (tracker.tracker.info.isHmd || tracker.tracker.position?.y !== undefined)
   );
 });
 

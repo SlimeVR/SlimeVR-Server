@@ -29,7 +29,7 @@ export function UnknownDeviceModal() {
         ['/onboarding/connect-trackers', '/settings/firmware-tool'].includes(
           pathname
         ) ||
-        ignoredTrackers.has(macAddress as string) ||
+        ignoredTrackers.has(macAddress) ||
         (currentTracker !== null && currentTracker !== macAddress)
       )
         return;
@@ -93,7 +93,7 @@ export function UnknownDeviceModal() {
           variant="tertiary"
           onClick={() => {
             setIgnoredTracker((state) => {
-              if (!state.has(currentTracker)) state.add(currentTracker);
+              state.add(currentTracker);
               return state;
             });
             closeModal();

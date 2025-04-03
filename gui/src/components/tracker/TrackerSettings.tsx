@@ -527,7 +527,7 @@ export function TrackerSettingsPage() {
                     new ForgetDeviceRequestT(macAddress)
                   );
                   setIgnoredTracker((state) => {
-                    if (!state.has(macAddress)) state.add(macAddress);
+                    state.add(macAddress);
                     return state;
                   });
                 }}
