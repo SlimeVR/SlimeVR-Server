@@ -21,6 +21,7 @@
     "@tauri-apps/plugin-os": "^2.0.0",
     "@tauri-apps/plugin-shell": "^2.0.0",
     "@tauri-apps/plugin-store": "^2.0.0",
+    "@twemoji/svg": "^15.0.0",
     "browser-fs-access": "^0.35.0",
     "classnames": "^2.5.1",
     "flatbuffers": "22.10.26",

@@ -20,7 +20,21 @@ export function LangSelector({
   });
 
   const languagesItems = useMemo(
-    () => langs.map(({ key, name }) => ({ label: name, value: key })),
+    () =>
+      langs.map(({ key, name, emoji }) => ({
+        component: (
+          <div>
+            <img
+              draggable="false"
+              className="inline-block w-auto h-[1em] -translate-y-[0.05em]"
+              src={emoji}
+            />
+            {' ' + name}
+          </div>
+        ),
+        label: name,
+        value: key,
+      })),
     []
   );
 
