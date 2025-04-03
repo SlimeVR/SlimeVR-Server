@@ -2,7 +2,8 @@ import { useLocalization } from '@fluent/react';
 import { useEffect, useMemo, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { useConfig } from '@/hooks/config';
-import { langs, LangContext } from '@/i18n/config';
+import { LangContext } from '@/i18n/config';
+import { langs } from '@/i18n/names';
 import { Dropdown, DropdownDirection } from './Dropdown';
 
 export function LangSelector({
@@ -20,7 +21,21 @@ export function LangSelector({
   });
 
   const languagesItems = useMemo(
-    () => langs.map(({ key, name }) => ({ label: name, value: key })),
+    () =>
+      langs.map(({ key, name, emoji }) => ({
+        component: (
+          <div>
+            <img
+              draggable="false"
+              className="inline-block w-auto h-[1em] -translate-y-[0.05em]"
+              src={emoji}
+            />
+            {' ' + name}
+          </div>
+        ),
+        label: name,
+        value: key,
+      })),
     []
   );
 
