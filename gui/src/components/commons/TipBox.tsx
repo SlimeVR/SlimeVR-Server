@@ -64,7 +64,7 @@ export function WarningBox({
       >
         <WarningIcon></WarningIcon>
       </div>
-      <div className="flex flex-col justify-center">
+      <div className="flex flex-col justify-center w-full">
         <Typography
           color="text-background-60"
           whitespace={whitespace ? 'whitespace-pre-line' : undefined}
