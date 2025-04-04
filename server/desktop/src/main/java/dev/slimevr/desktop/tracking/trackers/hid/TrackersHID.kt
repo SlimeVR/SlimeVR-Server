@@ -2,8 +2,13 @@ package dev.slimevr.desktop.tracking.trackers.hid
 
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer
-import dev.slimevr.tracking.trackers.*
-import dev.slimevr.tracking.trackers.udp.*
+import dev.slimevr.tracking.trackers.Device
+import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.TrackerStatus
+import dev.slimevr.tracking.trackers.udp.BoardType
+import dev.slimevr.tracking.trackers.udp.IMUType
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
+import dev.slimevr.tracking.trackers.udp.MCUType
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
