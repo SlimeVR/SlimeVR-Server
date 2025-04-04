@@ -9,6 +9,11 @@
 
 websocket-connecting = Verbindung zum Server wird hergestellt...
 websocket-connection_lost = Verbindung zum Server verloren. Versuche Verbindung wiederherzustellen ...
+websocket-connection_lost-desc = Es sieht so aus, als wäre der SlimeVR-Server abgestürzt. Überprüfen Sie die Protokolle und starten Sie das Programm neu.
+websocket-timedout = Es konnte keine Verbindung zum Server hergestellt werden.
+websocket-timedout-desc = Es sieht so aus, als ob der SlimeVR-Server abgestürzt ist oder nicht rechtzeitig geantwortet hat. Überprüfen Sie die Protokolle und starten Sie das Programm neu.
+websocket-error-close = SlimeVR beenden
+websocket-error-logs = Öffne den Logs-Ordner
 
 ## Update notification
 
@@ -52,6 +57,7 @@ body_part-LEFT_FOOT = Linker Fuß
 
 ## BoardType
 
+board_type-UNKNOWN = Unbekannt
 board_type-NODEMCU = NodeMCU
 board_type-CUSTOM = Benutzerdefiniertes Board
 board_type-WROOM32 = WROOM32
@@ -102,8 +108,14 @@ skeleton_bone-ELBOW_OFFSET = Ellbogenversatz
 ## Tracker reset buttons
 
 reset-reset_all = Alle Proportionen zurücksetzen
+reset-reset_all_warning-v2 =
+    <b>Warnung:</b>Ihre Proportionen werden auf die Standardwerte zurückgesetzt und entsprechend Ihrer konfigurierten Körpergröße skaliert.
+    Möchten Sie dies wirklich tun?
 reset-reset_all_warning-reset = Proportionen zurücksetzen
 reset-reset_all_warning-cancel = Abbrechen
+reset-reset_all_warning_default-v2 =
+    <b>Warnung:</b> Ihre Körpergröße wurde nicht konfiguriert. Ihre Proportionen werden auf die Standardwerte mit der Standardgröße zurückgesetzt.
+    Möchten Sie dies wirklich tun?
 reset-full = Reset
 reset-mounting = Befestigungs-Reset
 reset-yaw = Horizontaler Reset
