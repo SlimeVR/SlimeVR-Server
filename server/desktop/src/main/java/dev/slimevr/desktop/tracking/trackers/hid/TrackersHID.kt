@@ -7,8 +7,8 @@ import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.udp.BoardType
 import dev.slimevr.tracking.trackers.udp.IMUType
-import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import dev.slimevr.tracking.trackers.udp.MCUType
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
