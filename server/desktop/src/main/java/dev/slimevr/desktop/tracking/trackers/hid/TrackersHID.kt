@@ -168,6 +168,10 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			this.devices.add(device)
 			deviceList.add(this.devices.size - 1)
 			VRServer.instance.deviceManager.addDevice(device) // actually add device to the server
+			LogManager
+				.info(
+					"[TrackerServer] Added device $deviceName for ${hidDevice.serialNumber}, id $deviceId",
+				)
 			return device
 		}
 	}
