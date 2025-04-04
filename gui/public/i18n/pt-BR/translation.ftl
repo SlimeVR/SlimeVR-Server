@@ -656,6 +656,11 @@ settings-osc-vrchat-enable = Ativar
 settings-osc-vrchat-enable-description = Ligar ou desligar o envio e recebimento de dados
 settings-osc-vrchat-enable-label = Ativar
 settings-osc-vrchat-oscqueryEnabled = Habilitar OSCQuery
+settings-osc-vrchat-oscqueryEnabled-description =
+    OSCQuery detecta automaticamente instâncias em execução do VRChat e envia dados para ele.
+    Ele também pode anunciar-se para que ele receba dados de HMD e de controles.
+    Para permitir o recebimento de dados de HMD e controles do VRChat, vá às configurações do seu menu principal, na seção "Tracking & IK", e habilite "Enviar Dados OSC de Rastreio de RV da Cabeça e do Pulso".
+settings-osc-vrchat-oscqueryEnabled-label = Ativar OSCQuery
 settings-osc-vrchat-network = Portas de rede
 settings-osc-vrchat-network-description-v1 = Define as portas para receber e enviar dados. Pode ser deixado como está para o VRChat.
 settings-osc-vrchat-network-port_in =
@@ -733,7 +738,12 @@ settings-utils-advanced-reset_warning =
     }
 settings-utils-advanced-reset_warning-reset = Resetar configurações
 settings-utils-advanced-reset_warning-cancel = Cancelar
+settings-utils-advanced-open_data-v1 = Pasta de configuração
+settings-utils-advanced-open_data-description-v1 = Abre a pasta de configuração do SlimeVR no explorador de arquivos, contendo as configurações
 settings-utils-advanced-open_data-label = Abrir pasta
+settings-utils-advanced-open_logs = Pasta de logs
+settings-utils-advanced-open_logs-description = Abre a pasta de logs do SlimeVR no explorador de arquivos, contendo os logs do aplicativo
+settings-utils-advanced-open_logs-label = Abrir pasta
 
 ## Setup/onboarding menu
 
@@ -760,6 +770,7 @@ onboarding-wifi_creds-submit = Enviar!
 onboarding-wifi_creds-ssid =
     .label = SSID
     .placeholder = Enter SSID
+onboarding-wifi_creds-ssid-required = Nome do Wi-Fi é obrgiatório
 onboarding-wifi_creds-password =
     .label = Password
     .placeholder = Enter password
@@ -817,6 +828,7 @@ onboarding-connect_tracker-issue-serial = Estou tendo problemas para conectar!
 onboarding-connect_tracker-usb = Tracker USB
 onboarding-connect_tracker-connection_status-none = Procurando por trackers
 onboarding-connect_tracker-connection_status-serial_init = Conectando ao dispositivo serial
+onboarding-connect_tracker-connection_status-obtaining_mac_address = Obtendo o endereço MAC do tracker
 onboarding-connect_tracker-connection_status-provisioning = Enviando credenciais de Wi-Fi
 onboarding-connect_tracker-connection_status-connecting = Enviando credenciais de Wi-Fi
 onboarding-connect_tracker-connection_status-looking_for_server = Procurando servidor
@@ -1021,6 +1033,10 @@ onboarding-manual_proportions-title = Proporções de corpo manuais
 onboarding-manual_proportions-precision = Ajuste de precisão
 onboarding-manual_proportions-auto = Calibragem Automática
 onboarding-manual_proportions-ratio = Ajustar por grupos de proporções
+onboarding-manual_proportions-fine_tuning_button = Melhorar automaticamente as proporções
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor, conecte seu headset VR para utilizar a melhoria automatica
+onboarding-manual_proportions-export = Exportar proporções
+onboarding-manual_proportions-import = Importar proporções
 
 ## Tracker automatic proportions setup
 
@@ -1117,6 +1133,9 @@ status_system-StatusUnassignedHMD = O headset (HMD) deve ser designado como o tr
 
 ## Firmware tool Steps
 
+firmware_tool = Ferramenta de Firmware DIY
+firmware_tool-description = Permite você configurar e fazer upload do firmware em seu tracker DIY
+firmware_tool-not_available = Oops, a ferramenta de firmware não está disponível no momento. Volte novamente mais tarde!
 
 ## firmware tool build status
 
