@@ -1037,6 +1037,9 @@ onboarding-manual_proportions-fine_tuning_button = Melhorar automaticamente as p
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor, conecte seu headset VR para utilizar a melhoria automatica
 onboarding-manual_proportions-export = Exportar proporções
 onboarding-manual_proportions-import = Importar proporções
+onboarding-manual_proportions-import-success = Importado
+onboarding-manual_proportions-import-failed = Falhou
+onboarding-manual_proportions-file_type = Arquivo de proporções do corpo
 
 ## Tracker automatic proportions setup
 
@@ -1057,12 +1060,33 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Seu headset está enviando dados de posição para o servidor SlimeVR (isso geralmente significa ter o SteamVR em execução e conectado ao SlimeVR usando o driver SteamVR do SlimeVR).
     Seu rastreamento está funcionando e representa com precisão seus movimentos (por exemplo, você realizou uma reinicialização completa e eles se movem na direção certa ao chutar, se inclinar, sentar, etc.).
 onboarding-automatic_proportions-requirements-next = Eu li os requisitos.
+onboarding-automatic_proportions-check_height-title-v3 = Meça a altura do seu headset
+onboarding-automatic_proportions-check_height-description-v2 = A altura do seu headset (HMD) deve ser um pouco menor que sua altura total, já que o headset mede a altura do olho. Essa medida será usada como base para as proporções do seu corpo
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = Comece a medir enquanto está <u>de pé</u> para medir sua altura. Tome cuidado para não levantar sua mão mais alto que seu headset, pois pode prejudicar as medidas!
 onboarding-automatic_proportions-check_height-guardian_tip =
     Se você estiver usando um óculos VR standalone, certifique-se de que seu guardião /
     limite esteja ligado para que sua altura seja a correta!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Desconhecido
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height2 = A altura do seu headset é:
+onboarding-automatic_proportions-check_height-measure-start = Comece a medir
+onboarding-automatic_proportions-check_height-measure-stop = Parar medição
+onboarding-automatic_proportions-check_height-measure-reset = Refazer medição
 onboarding-automatic_proportions-check_height-next_step = Estão bem
+onboarding-automatic_proportions-check_floor_height-title = Medir a altura do seu chão (opcional)
+onboarding-automatic_proportions-check_floor_height-description = Em alguns casos, a altura do chão pode não estar corretamente configurada pelo seu headset, fazendo com que a altura do seu headset seja medida mais alta do que deveria. Você pode medir a "altura" do seu chão para corrigir a altura do seu headset
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = Inicie a medição e coloque o controle no chão para medir a altura. Se você tem certeza que a altura do chão está correta, você pode pular essa etapa
+# Shows an element below it
+onboarding-automatic_proportions-check_floor_height-floor_height = A altura do seu chão é:
+onboarding-automatic_proportions-check_floor_height-full_height = A sua altura total estimada é:
+onboarding-automatic_proportions-check_floor_height-measure-start = Comece a medir
+onboarding-automatic_proportions-check_floor_height-measure-stop = Parar de medir
+onboarding-automatic_proportions-check_floor_height-measure-reset = Refazer medição
+onboarding-automatic_proportions-check_floor_height-skip_step = Pular etapa e salvar
+onboarding-automatic_proportions-check_floor_height-next_step = Usar a altura do chão e salvar
 onboarding-automatic_proportions-start_recording-title = Esteja preparado para se mexer
 onboarding-automatic_proportions-start_recording-description = Começaremos a gravar algumas poses e movimentos específicos. Estes serão solicitados na próxima tela. Esteja preparado para começar quando o botão for pressionado!
 onboarding-automatic_proportions-start_recording-next = Começar Gravação
@@ -1097,6 +1121,10 @@ onboarding-automatic_proportions-error_modal-v2 =
     Isso provavelmente é um problema da calibragem de posição. Verifique se o rastreamento está funcionando corretamente antes de tentar novamente.
     Por favor, <docs>verifique a  documentação</docs> ou entre em nosso <discord> Discord</discord> para obter ajuda ^_^
 onboarding-automatic_proportions-error_modal-confirm = Entendido!
+onboarding-automatic_proportions-smol_warning =
+    A sua altura configurada de: { $height } é menor que a altura mínima aceita de: { $minHeight }.
+    <b>Por favor refaça as medidas e tenha certeza que estão corretas.</b>
+onboarding-automatic_proportions-smol_warning-cancel = Voltar
 
 ## Tracker scaled proportions setup
 
