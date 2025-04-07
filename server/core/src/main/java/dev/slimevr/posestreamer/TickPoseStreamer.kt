@@ -25,6 +25,9 @@ open class TickPoseStreamer(skeleton: HumanSkeleton) : PoseStreamer(skeleton) {
 		}
 
 	fun tick(tickDelta: Float) {
-		ticker.tick(tickDelta)
+		// Only tick if there is an output
+		if (hasOutput) {
+			ticker.tick(tickDelta)
+		}
 	}
 }

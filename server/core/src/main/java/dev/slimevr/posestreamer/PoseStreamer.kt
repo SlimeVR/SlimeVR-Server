@@ -52,6 +52,9 @@ open class PoseStreamer(skeleton: HumanSkeleton) {
 			this.stream = stream
 		}
 
+	val hasOutput
+		get() = output?.isClosed == false
+
 	@Synchronized
 	@Throws(IOException::class)
 	fun closeOutput() {
