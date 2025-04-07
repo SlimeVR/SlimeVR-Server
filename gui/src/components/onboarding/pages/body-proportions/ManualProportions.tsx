@@ -81,14 +81,20 @@ function ImportExportButtons() {
     (data: SkeletonConfigExport) => {
       if (!exporting.current) return;
       exporting.current = false;
+
+      // make a copy of the config as mutating it directly would be an issue
+      // bc if other useRPCPacket read the same packet,
+      // data would use the mutated data
+      const copy: SkeletonConfigExport = JSON.parse(JSON.stringify(data));
+
       // Convert the skeleton part enums into a string
-      data.skeletonParts.forEach((x) => {
+      copy.skeletonParts.forEach((x) => {
         if (typeof x.bone === 'number')
           x.bone = SkeletonBone[x.bone] as SkeletonBoneKey;
       });
-      data.version = CURRENT_EXPORT_VERSION;
+      copy.version = CURRENT_EXPORT_VERSION;
 
-      const blob = new Blob([JSON.stringify(data)], {
+      const blob = new Blob([JSON.stringify(copy)], {
         type: 'application/json',
       });
       if (isTauri) {
@@ -102,7 +108,7 @@ function ImportExportButtons() {
           defaultPath: 'body-proportions.json',
         })
           .then((path) =>
-            path ? writeTextFile(path, JSON.stringify(data)) : undefined
+            path ? writeTextFile(path, JSON.stringify(copy)) : undefined
           )
           .catch((err) => {
             error(err);
