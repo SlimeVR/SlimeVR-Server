@@ -4,26 +4,19 @@ import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import io.eiren.util.logging.LogManager
 import java.io.IOException
 
-open class PoseStreamer {
+open class PoseStreamer(skeleton: HumanSkeleton) {
 	// 60 FPS
 	private var intervalInternal: Float = 1f / 60f
 	private var stream: PoseDataStream? = null
 
-	var skeleton: HumanSkeleton? = null
+	var skeleton: HumanSkeleton = skeleton
 		protected set
-
-	protected constructor()
-
-	constructor(skeleton: HumanSkeleton?) {
-		this.skeleton = skeleton
-	}
 
 	@Synchronized
 	fun captureFrame() {
 		// Make sure the stream is open before trying to write
-		val skeleton = skeleton
 		val stream = stream
-		if (skeleton == null || stream == null || stream.isClosed) {
+		if (stream == null || stream.isClosed) {
 			return
 		}
 
@@ -54,8 +47,6 @@ open class PoseStreamer {
 	open var output: PoseDataStream?
 		get() = stream
 		set(stream) {
-			val skeleton = skeleton
-			requireNotNull(skeleton) { "Unable to initialize stream, skeleton is null" }
 			requireNotNull(stream) { "stream must not be null" }
 			stream.writeHeader(skeleton, this)
 			this.stream = stream
@@ -74,10 +65,7 @@ open class PoseStreamer {
 	@Synchronized
 	@Throws(IOException::class)
 	fun closeOutput(stream: PoseDataStream) {
-		val skeleton = skeleton
-		if (skeleton != null) {
-			stream.writeFooter(skeleton)
-		}
+		stream.writeFooter(skeleton)
 		stream.close()
 	}
 }

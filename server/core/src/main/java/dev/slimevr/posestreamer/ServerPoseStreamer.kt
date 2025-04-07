@@ -5,7 +5,7 @@ import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.util.ann.VRServerThread
 import java.util.function.Consumer
 
-class ServerPoseStreamer(val server: VRServer) : TickPoseStreamer(null) {
+class ServerPoseStreamer(val server: VRServer) : TickPoseStreamer(server.humanPoseManager.skeleton) {
 
 	init {
 		// Register callbacks/events
@@ -15,7 +15,9 @@ class ServerPoseStreamer(val server: VRServer) : TickPoseStreamer(null) {
 
 	@VRServerThread
 	fun onSkeletonUpdated(skeleton: HumanSkeleton?) {
-		this.skeleton = skeleton
+		if (skeleton != null) {
+			this.skeleton = skeleton
+		}
 	}
 
 	@VRServerThread

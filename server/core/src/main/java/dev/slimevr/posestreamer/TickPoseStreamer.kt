@@ -4,7 +4,7 @@ import dev.slimevr.TickReducer
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import java.io.IOException
 
-open class TickPoseStreamer(skeleton: HumanSkeleton?) : PoseStreamer(skeleton) {
+open class TickPoseStreamer(skeleton: HumanSkeleton) : PoseStreamer(skeleton) {
 	private val ticker = TickReducer({ captureFrame() }, frameInterval)
 
 	@set:Throws(IOException::class)
