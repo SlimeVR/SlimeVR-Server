@@ -178,7 +178,7 @@ class BVHFileStream : PoseDataStream {
 	}
 
 	@Throws(IOException::class)
-	public override fun writeFrame(skeleton: HumanSkeleton) {
+	override fun writeFrame(skeleton: HumanSkeleton) {
 		val rootBone = skeleton.headBone
 
 		val rootPos = rootBone.getPosition()
