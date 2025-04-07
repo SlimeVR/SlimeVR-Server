@@ -5,12 +5,12 @@ import io.eiren.util.logging.LogManager
 import java.io.IOException
 
 open class PoseStreamer {
-	protected var frameRecordingInterval: Long = 60L
+	// 60 FPS
+	private var intervalInternal: Float = 1f / 60f
+	private var stream: PoseDataStream? = null
 
-	@get:Synchronized
 	var skeleton: HumanSkeleton? = null
 		protected set
-	protected var poseFileStream: PoseDataStream? = null
 
 	protected constructor()
 
@@ -22,7 +22,7 @@ open class PoseStreamer {
 	fun captureFrame() {
 		// Make sure the stream is open before trying to write
 		val skeleton = skeleton
-		val stream = poseFileStream
+		val stream = stream
 		if (skeleton == null || stream == null || stream.isClosed) {
 			return
 		}
@@ -35,52 +35,49 @@ open class PoseStreamer {
 		}
 	}
 
-	@get:Synchronized
-	@set:Synchronized
-	var frameInterval: Long
-		get() = frameRecordingInterval
-		set(intervalMs) {
-			require(intervalMs >= 1) { "intervalMs must at least have a value of 1" }
-			this.frameRecordingInterval = intervalMs
+	open var frameInterval: Float
+		get() = intervalInternal
+		set(interval) {
+			require(interval > 0f) { "interval must be a value greater than 0" }
+			this.intervalInternal = interval
 		}
 
 	@Synchronized
 	@Throws(IOException::class)
-	fun setOutput(poseFileStream: PoseDataStream, intervalMs: Long) {
-		this.frameInterval = intervalMs
+	fun setOutput(poseFileStream: PoseDataStream, interval: Float) {
+		this.frameInterval = interval
 		this.output = poseFileStream
 	}
 
-	@get:Synchronized
 	@set:Throws(IOException::class)
 	@set:Synchronized
 	open var output: PoseDataStream?
-		get() = poseFileStream
-		set(poseFileStream) {
+		get() = stream
+		set(stream) {
 			val skeleton = skeleton
 			requireNotNull(skeleton) { "Unable to initialize stream, skeleton is null" }
-			requireNotNull(poseFileStream) { "poseFileStream must not be null" }
-			poseFileStream.writeHeader(skeleton, this)
-			this.poseFileStream = poseFileStream
+			requireNotNull(stream) { "stream must not be null" }
+			stream.writeHeader(skeleton, this)
+			this.stream = stream
 		}
 
 	@Synchronized
 	@Throws(IOException::class)
 	fun closeOutput() {
-		val poseFileStream = this.poseFileStream
-		if (poseFileStream != null) {
-			closeOutput(poseFileStream)
-			this.poseFileStream = null
+		val stream = this.stream
+		if (stream != null) {
+			closeOutput(stream)
+			this.stream = null
 		}
 	}
 
 	@Synchronized
 	@Throws(IOException::class)
-	fun closeOutput(poseFileStream: PoseDataStream) {
+	fun closeOutput(stream: PoseDataStream) {
 		val skeleton = skeleton
 		if (skeleton != null) {
-			poseFileStream.writeFooter(skeleton)
+			stream.writeFooter(skeleton)
 		}
-		poseFileStream.close()
+		stream.close()
 	}
 }

@@ -15,7 +15,8 @@ class BVHRecorder(server: VRServer) {
 			try {
 				val stream = BVHFileStream(bvhFile)
 				poseDataStream = stream
-				poseStreamer.setOutput(stream, 1000L / 100L)
+				// 100 FPS
+				poseStreamer.setOutput(stream, 1f / 100f)
 			} catch (_: IOException) {
 				LogManager
 					.severe(

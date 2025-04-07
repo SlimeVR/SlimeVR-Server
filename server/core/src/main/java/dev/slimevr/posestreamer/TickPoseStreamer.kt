@@ -1,45 +1,30 @@
 package dev.slimevr.posestreamer
 
+import dev.slimevr.TickReducer
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import java.io.IOException
 
 open class TickPoseStreamer(skeleton: HumanSkeleton?) : PoseStreamer(skeleton) {
-	protected var nextFrameTimeMs: Long = -1L
+	private val ticker = TickReducer({ captureFrame() }, frameInterval)
 
-	@get:Synchronized
 	@set:Throws(IOException::class)
 	@set:Synchronized
 	override var output: PoseDataStream?
 		get() = super.output
 		set(value) {
 			super.output = value
-			nextFrameTimeMs = -1L // Reset the frame timing
+			ticker.reset()
 		}
 
-	fun doTick() {
-		val poseFileStream = this.poseFileStream
-		if (poseFileStream == null) {
-			return
+	@set:Synchronized
+	override var frameInterval: Float
+		get() = super.frameInterval
+		set(value) {
+			super.frameInterval = value
+			ticker.interval = value
 		}
 
-		val skeleton = this.skeleton
-		if (skeleton == null) {
-			return
-		}
-
-		val curTime = System.currentTimeMillis()
-		if (curTime < nextFrameTimeMs) {
-			return
-		}
-
-		nextFrameTimeMs += frameRecordingInterval
-
-		// To prevent duplicate frames, make sure the frame time is always in
-		// the future
-		if (nextFrameTimeMs <= curTime) {
-			nextFrameTimeMs = curTime + frameRecordingInterval
-		}
-
-		captureFrame()
+	fun tick(tickDelta: Float) {
+		ticker.tick(tickDelta)
 	}
 }

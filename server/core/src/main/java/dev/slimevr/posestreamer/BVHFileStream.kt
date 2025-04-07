@@ -142,7 +142,7 @@ class BVHFileStream : PoseDataStream {
 		writer.write(getBufferedFrameCount(frameCount) + "\n")
 
 		// Frame time in seconds
-		writer.write("Frame Time: ${streamer.frameInterval / 1000.0}\n")
+		writer.write("Frame Time: ${streamer.frameInterval}\n")
 	}
 
 	@Throws(IOException::class)
