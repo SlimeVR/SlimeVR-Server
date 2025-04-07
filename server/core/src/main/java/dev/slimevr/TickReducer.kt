@@ -4,7 +4,7 @@ class TickReducer(
 	/**
 	 * The function to run every tick interval.
 	 */
-	val onTick: (delta: Float) -> Unit,
+	private val onTick: (delta: Float) -> Unit,
 	/**
 	 * The tick interval in seconds.
 	 */
