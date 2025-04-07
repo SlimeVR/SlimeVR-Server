@@ -290,16 +290,16 @@ class VRServer @JvmOverloads constructor(
 		}
 	}
 
-	fun resetTrackersFull(resetSourceName: String?) {
-		queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
+	fun resetTrackersFull(params: ResetParams) {
+		queueTask { humanPoseManager.resetTrackersFull(params) }
 	}
 
-	fun resetTrackersYaw(resetSourceName: String?) {
-		queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
+	fun resetTrackersYaw(params: ResetParams) {
+		queueTask { humanPoseManager.resetTrackersYaw(params) }
 	}
 
-	fun resetTrackersMounting(resetSourceName: String?) {
-		queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
+	fun resetTrackersMounting(params: ResetParams) {
+		queueTask { humanPoseManager.resetTrackersMounting(params) }
 	}
 
 	fun clearTrackersMounting(resetSourceName: String?) {
@@ -334,7 +334,7 @@ class VRServer @JvmOverloads constructor(
 		}
 		timer.schedule(delay) {
 			queueTask {
-				humanPoseManager.resetTrackersFull(resetSourceName)
+				humanPoseManager.resetTrackersFull(ResetParams.makeDefault(resetSourceName))
 				resetHandler.sendFinished(ResetType.Full)
 			}
 		}
@@ -346,7 +346,7 @@ class VRServer @JvmOverloads constructor(
 		}
 		timer.schedule(delay) {
 			queueTask {
-				humanPoseManager.resetTrackersYaw(resetSourceName)
+				humanPoseManager.resetTrackersYaw(ResetParams.makeDefault(resetSourceName))
 				resetHandler.sendFinished(ResetType.Yaw)
 			}
 		}
@@ -358,7 +358,7 @@ class VRServer @JvmOverloads constructor(
 		}
 		timer.schedule(delay) {
 			queueTask {
-				humanPoseManager.resetTrackersMounting(resetSourceName)
+				humanPoseManager.resetTrackersMounting(ResetParams.makeDefault(resetSourceName))
 				resetHandler.sendFinished(ResetType.Mounting)
 			}
 		}

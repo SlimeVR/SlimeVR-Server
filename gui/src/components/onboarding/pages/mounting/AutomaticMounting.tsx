@@ -6,24 +6,36 @@ import { MountingResetStep } from './mounting-steps/MountingReset';
 import { PreparationStep } from './mounting-steps/Preparation';
 import { PutTrackersOnStep } from './mounting-steps/PutTrackersOn';
 import { useLocalization } from '@fluent/react';
+import { PreparationStep as SittingModePreparationStep } from './sitting-mounting-steps/Preparation';
+import { SittingLegsRaisedResetStep as SittingModeSittingLegsRaisedResetStep } from './sitting-mounting-steps/SittingLegsRaisedReset';
+import { SittingLegsTogetherResetStep as SittingModeSittingLegsTogetherResetStep } from './sitting-mounting-steps/SittingLegsTogetherReset';
+import { SittingResetStep as SittingModeSittingResetStep } from './sitting-mounting-steps/SittingReset';
+import { StandingResetStep as SittingModeStandingResetStep } from './sitting-mounting-steps/StandingReset';
 
 // Auto mounting steps that can be included within other flows
-export const autoMountingSteps: Step[] = [
+export const skiingMountingSteps: Step[] = [
   { type: 'numbered', component: PutTrackersOnStep },
   { type: 'numbered', component: PreparationStep },
   { type: 'numbered', component: MountingResetStep },
 ];
 
-const steps: Step[] = [
-  ...autoMountingSteps,
-  { type: 'fullsize', component: DoneStep },
+export const sittingMountingSteps: Step[] = [
+  { type: 'numbered', component: SittingModePreparationStep },
+  { type: 'numbered', component: SittingModeStandingResetStep },
+  { type: 'numbered', component: SittingModeSittingResetStep },
+  { type: 'numbered', component: SittingModeSittingLegsTogetherResetStep },
+  { type: 'numbered', component: SittingModeSittingLegsRaisedResetStep },
 ];
+
+const doneSteps: Step[] = [{ type: 'fullsize', component: DoneStep }];
 
 export function AutomaticMountingPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
 
   applyProgress(0.7);
+
+  const steps = [...sittingMountingSteps, ...doneSteps];
 
   return (
     <>

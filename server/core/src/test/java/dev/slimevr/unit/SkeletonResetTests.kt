@@ -3,6 +3,7 @@ package dev.slimevr.unit
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.tracking.processor.HumanPoseManager
+import dev.slimevr.tracking.trackers.ResetParams
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
@@ -57,7 +58,7 @@ class SkeletonResetTests {
 			tracker.setRotation(init)
 		}
 		hmd.setRotation(headRot1)
-		hpm.resetTrackersFull(resetSource)
+		hpm.resetTrackersFull(ResetParams.makeDefault(resetSource))
 
 		for (tracker in tracks) {
 			val actual = tracker.getRotation()
@@ -78,7 +79,7 @@ class SkeletonResetTests {
 			tracker.setRotation(init)
 		}
 		hmd.setRotation(Quaternion.IDENTITY)
-		hpm.resetTrackersYaw(resetSource)
+		hpm.resetTrackersYaw(ResetParams.makeDefault(resetSource))
 
 		for (tracker in tracks) {
 			val yaw = TrackerUtils.yaw(tracker.getRotation())
@@ -120,7 +121,7 @@ class SkeletonResetTests {
 			tracker.setRotation(mkTrackMount(mountRot))
 		}
 		// Then perform a mounting reset
-		hpm.resetTrackersMounting(resetSource)
+		hpm.resetTrackersMounting(ResetParams.makeDefault(resetSource))
 
 		for ((tracker, mountRot) in expected) {
 			// Some mounting needs to be inverted (when in a specific pose)

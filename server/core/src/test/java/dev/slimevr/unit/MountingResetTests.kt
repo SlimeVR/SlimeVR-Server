@@ -2,6 +2,7 @@ package dev.slimevr.unit
 
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
+import dev.slimevr.tracking.trackers.ResetBodyPose
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.udp.IMUType
 import dev.slimevr.unit.TrackerUtils.assertAnglesApproxEqual
@@ -54,7 +55,7 @@ class MountingResetTests {
 		tracker.setRotation(Quaternion.IDENTITY)
 		tracker.resetsHandler.resetFull(Quaternion.IDENTITY)
 		tracker.setRotation(trackerRot)
-		tracker.resetsHandler.resetMounting(Quaternion.IDENTITY)
+		tracker.resetsHandler.resetMounting(Quaternion.IDENTITY, ResetBodyPose.SKIING)
 
 		val expectedYaw = yaw(expected)
 		val resultYaw = yaw(tracker.resetsHandler.mountRotFix)
@@ -71,7 +72,7 @@ class MountingResetTests {
 		tracker.setRotation(reference * trackerRot)
 		// Since reference is the offset from quat identity (reset) and the rotation,
 		// it needs to be applied twice
-		tracker.resetsHandler.resetMounting(reference * reference)
+		tracker.resetsHandler.resetMounting(reference * reference, ResetBodyPose.SKIING)
 
 		val expectedYaw2 = yaw(expected)
 		val resultYaw2 = yaw(tracker.resetsHandler.mountRotFix)
@@ -86,7 +87,7 @@ class MountingResetTests {
 		tracker.resetsHandler.resetFull(reference)
 		tracker.resetsHandler.resetYaw(Quaternion.IDENTITY)
 		tracker.setRotation(trackerRot)
-		tracker.resetsHandler.resetMounting(Quaternion.IDENTITY)
+		tracker.resetsHandler.resetMounting(Quaternion.IDENTITY, ResetBodyPose.SKIING)
 
 		val expectedYaw3 = yaw(expected)
 		val resultYaw3 = yaw(tracker.resetsHandler.mountRotFix)
@@ -104,7 +105,7 @@ class MountingResetTests {
 		tracker.setRotation(reference * trackerRot)
 		// Since reference is the offset from quat identity (reset) and the rotation,
 		// it needs to be applied twice
-		tracker.resetsHandler.resetMounting(reference * reference)
+		tracker.resetsHandler.resetMounting(reference * reference, ResetBodyPose.SKIING)
 
 		val expectedYaw4 = yaw(expected)
 		val resultYaw4 = yaw(tracker.resetsHandler.mountRotFix)
@@ -139,7 +140,7 @@ class MountingResetTests {
 		tracker.setRotation(Quaternion.IDENTITY)
 		tracker.resetsHandler.resetFull(Quaternion.IDENTITY)
 		tracker.setRotation(trackerRot)
-		tracker.resetsHandler.resetMounting(Quaternion.IDENTITY)
+		tracker.resetsHandler.resetMounting(Quaternion.IDENTITY, ResetBodyPose.SKIING)
 
 		val expectedYaw = yaw(expected)
 		val resultYaw = yaw(tracker.resetsHandler.mountRotFix)

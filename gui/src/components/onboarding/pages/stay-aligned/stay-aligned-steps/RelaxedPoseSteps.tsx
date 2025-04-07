@@ -4,14 +4,17 @@ import {
   CurrentRelaxedPose,
   DetectRelaxedPoseButton,
 } from '@/components/stay-aligned/RelaxedPose';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocalization } from '@fluent/react';
 import { StayAlignedRelaxedPose } from 'solarxr-protocol';
+import { sendEnableStayAligned } from '@/components/onboarding/pages/stay-aligned/StayAlignedSetup';
 
 function makeRelaxedPoseStep(
   titleKey: string,
   descriptionKeys: string[],
   imageUrl: string,
-  relaxedPose: StayAlignedRelaxedPose
+  relaxedPose: StayAlignedRelaxedPose,
+  enableStayAligned: boolean
 ) {
   return ({
     nextStep,
@@ -23,6 +26,7 @@ function makeRelaxedPoseStep(
     variant: 'onboarding' | 'alone';
   }) => {
     const { l10n } = useLocalization();
+    const { sendRPCPacket } = useWebsocketAPI();
 
     return (
       <div className="flex mobile:flex-col">
@@ -45,7 +49,15 @@ function makeRelaxedPoseStep(
             >
               {l10n.getString('onboarding-automatic_mounting-prev_step')}
             </Button>
-            <DetectRelaxedPoseButton onClick={nextStep} pose={relaxedPose} />
+            <DetectRelaxedPoseButton
+              onClick={() => {
+                nextStep();
+                if (enableStayAligned) {
+                  sendEnableStayAligned(true, sendRPCPacket);
+                }
+              }}
+              pose={relaxedPose}
+            />
           </div>
         </div>
         <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
@@ -61,10 +73,10 @@ export const StandingRelaxedPoseStep = makeRelaxedPoseStep(
   [
     'onboarding-stay_aligned-relaxed_poses-standing-step-0',
     'onboarding-stay_aligned-relaxed_poses-standing-step-1',
-    'onboarding-stay_aligned-relaxed_poses-standing-step-2',
   ],
   '/images/relaxed_pose_standing.webp',
-  StayAlignedRelaxedPose.STANDING
+  StayAlignedRelaxedPose.STANDING,
+  false
 );
 
 export const SittingRelaxedPoseStep = makeRelaxedPoseStep(
@@ -72,10 +84,10 @@ export const SittingRelaxedPoseStep = makeRelaxedPoseStep(
   [
     'onboarding-stay_aligned-relaxed_poses-sitting-step-0',
     'onboarding-stay_aligned-relaxed_poses-sitting-step-1',
-    'onboarding-stay_aligned-relaxed_poses-sitting-step-2',
   ],
   '/images/relaxed_pose_sitting.webp',
-  StayAlignedRelaxedPose.SITTING
+  StayAlignedRelaxedPose.SITTING,
+  false
 );
 
 export const FlatRelaxedPoseStep = makeRelaxedPoseStep(
@@ -83,8 +95,8 @@ export const FlatRelaxedPoseStep = makeRelaxedPoseStep(
   [
     'onboarding-stay_aligned-relaxed_poses-flat-step-0',
     'onboarding-stay_aligned-relaxed_poses-flat-step-1',
-    'onboarding-stay_aligned-relaxed_poses-flat-step-2',
   ],
   '/images/relaxed_pose_flat.webp',
-  StayAlignedRelaxedPose.FLAT
+  StayAlignedRelaxedPose.FLAT,
+  true
 );

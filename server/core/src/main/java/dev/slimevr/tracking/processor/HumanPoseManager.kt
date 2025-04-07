@@ -10,6 +10,7 @@ import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
+import dev.slimevr.tracking.trackers.ResetParams
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
@@ -482,8 +483,8 @@ class HumanPoseManager(val server: VRServer?) {
 		skeletonConfigManager.computeNodeOffset(node)
 	}
 
-	fun resetTrackersFull(resetSourceName: String?) {
-		skeleton.resetTrackersFull(resetSourceName)
+	fun resetTrackersFull(params: ResetParams) {
+		skeleton.resetTrackersFull(params)
 		if (server != null) {
 			if (skeleton.headTracker == null && skeleton.neckTracker == null) {
 				server.vrcOSCHandler.yawAlign(IDENTITY)
@@ -498,8 +499,8 @@ class HumanPoseManager(val server: VRServer?) {
 		}
 	}
 
-	fun resetTrackersYaw(resetSourceName: String?) {
-		skeleton.resetTrackersYaw(resetSourceName)
+	fun resetTrackersYaw(params: ResetParams) {
+		skeleton.resetTrackersYaw(params)
 		if (server != null) {
 			if (skeleton.headTracker == null && skeleton.neckTracker == null) {
 				server.vrcOSCHandler.yawAlign(IDENTITY)
@@ -578,8 +579,8 @@ class HumanPoseManager(val server: VRServer?) {
 		}
 	}
 
-	fun resetTrackersMounting(resetSourceName: String?) {
-		skeleton.resetTrackersMounting(resetSourceName)
+	fun resetTrackersMounting(params: ResetParams) {
+		skeleton.resetTrackersMounting(params)
 	}
 
 	fun clearTrackersMounting(resetSourceName: String?) {

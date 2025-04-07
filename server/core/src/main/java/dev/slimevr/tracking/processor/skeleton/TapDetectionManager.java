@@ -6,6 +6,7 @@ import dev.slimevr.config.TapDetectionConfig;
 import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.setup.TapSetupHandler;
 import dev.slimevr.tracking.processor.HumanPoseManager;
+import dev.slimevr.tracking.trackers.ResetParams;
 import dev.slimevr.tracking.trackers.Tracker;
 import solarxr_protocol.rpc.ResetType;
 import solarxr_protocol.rpc.StatusData;
@@ -163,9 +164,10 @@ public class TapDetectionManager {
 			tapped && System.nanoTime() - yawResetDetector.getDetectionTime() > yawResetDelayNs
 		) {
 			if (humanPoseManager != null)
-				humanPoseManager.resetTrackersYaw(resetSourceName);
+				humanPoseManager
+					.resetTrackersYaw(ResetParams.Companion.makeDefault(resetSourceName));
 			else
-				skeleton.resetTrackersYaw(resetSourceName);
+				skeleton.resetTrackersYaw(ResetParams.Companion.makeDefault(resetSourceName));
 
 			yawResetDetector.resetDetector();
 			yawResetAllowPlaySound = true;
@@ -185,9 +187,10 @@ public class TapDetectionManager {
 			tapped && System.nanoTime() - fullResetDetector.getDetectionTime() > fullResetDelayNs
 		) {
 			if (humanPoseManager != null)
-				humanPoseManager.resetTrackersFull(resetSourceName);
+				humanPoseManager
+					.resetTrackersFull(ResetParams.Companion.makeDefault(resetSourceName));
 			else
-				skeleton.resetTrackersFull(resetSourceName);
+				skeleton.resetTrackersFull(ResetParams.Companion.makeDefault(resetSourceName));
 
 			fullResetDetector.resetDetector();
 			fullResetAllowPlaySound = true;
@@ -215,7 +218,7 @@ public class TapDetectionManager {
 				&& System.nanoTime() - mountingResetDetector.getDetectionTime()
 					> mountingResetDelayNs
 		) {
-			skeleton.resetTrackersMounting(resetSourceName);
+			skeleton.resetTrackersMounting(ResetParams.Companion.makeDefault(resetSourceName));
 			mountingResetDetector.resetDetector();
 			mountingResetAllowPlaySound = true;
 			this.resetHandler.sendFinished(ResetType.Mounting);

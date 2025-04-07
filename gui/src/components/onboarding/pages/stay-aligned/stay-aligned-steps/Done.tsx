@@ -1,10 +1,7 @@
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocalization } from '@fluent/react';
-import { useEffect } from 'react';
-import { EnableStayAlignedRequestT, RpcMessage } from 'solarxr-protocol';
 
 export function DoneStep({
   resetSteps,
@@ -16,13 +13,6 @@ export function DoneStep({
   variant: 'onboarding' | 'alone';
 }) {
   const { l10n } = useLocalization();
-  const { sendRPCPacket } = useWebsocketAPI();
-
-  // Enable Stay Aligned
-  useEffect(() => {
-    const req = new EnableStayAlignedRequestT();
-    sendRPCPacket(RpcMessage.EnableStayAlignedRequest, req);
-  }, []);
 
   return (
     <div className="flex flex-col items-center w-full justify-center gap-5">
@@ -42,7 +32,11 @@ export function DoneStep({
         >
           {l10n.getString('onboarding-stay_aligned-done-restart')}
         </Button>
-        <Button variant="primary" to="/settings/trackers">
+        <Button
+          variant="primary"
+          to="/settings/trackers"
+          state={{ scrollTo: 'stayaligned' }}
+        >
           {l10n.getString('onboarding-stay_aligned-done-done')}
         </Button>
       </div>

@@ -6,6 +6,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.VRServer.Companion.instance
 import dev.slimevr.bridge.Bridge
+import dev.slimevr.tracking.trackers.ResetParams
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
@@ -203,9 +204,9 @@ class WebSocketVRBridge(
 
 	private fun parseAction(json: ObjectNode, conn: WebSocket) {
 		when (json["name"].asText()) {
-			"calibrate" -> instance.resetTrackersYaw(RESET_SOURCE_NAME)
-			"full_calibrate" -> instance.resetTrackersFull(RESET_SOURCE_NAME)
-			"mounting_calibrate" -> instance.resetTrackersMounting(RESET_SOURCE_NAME)
+			"calibrate" -> instance.resetTrackersYaw(ResetParams.makeDefault(RESET_SOURCE_NAME))
+			"full_calibrate" -> instance.resetTrackersFull(ResetParams.makeDefault(RESET_SOURCE_NAME))
+			"mounting_calibrate" -> instance.resetTrackersMounting(ResetParams.makeDefault(RESET_SOURCE_NAME))
 			"mounting_clear" -> instance.clearTrackersMounting(RESET_SOURCE_NAME)
 			"toggle_pause_tracking" -> instance.togglePauseTracking(RESET_SOURCE_NAME)
 		}

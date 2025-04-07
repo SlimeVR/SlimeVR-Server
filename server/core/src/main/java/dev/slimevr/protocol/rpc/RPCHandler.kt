@@ -20,6 +20,8 @@ import dev.slimevr.protocol.rpc.status.RPCStatusHandler
 import dev.slimevr.protocol.rpc.trackingpause.RPCTrackingPause
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import dev.slimevr.tracking.processor.stayaligned.skeleton.RelaxedPose
+import dev.slimevr.tracking.trackers.ResetBodyPose
+import dev.slimevr.tracking.trackers.ResetParams
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByBodyPart
 import dev.slimevr.tracking.trackers.TrackerStatus
@@ -344,9 +346,40 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 	fun onResetRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = messageHeader.message(ResetRequest()) as? ResetRequest ?: return
 
-		if (req.resetType() == ResetType.Yaw) api.server.resetTrackersYaw(RESET_SOURCE_NAME)
-		if (req.resetType() == ResetType.Full) api.server.resetTrackersFull(RESET_SOURCE_NAME)
-		if (req.resetType() == ResetType.Mounting) api.server.resetTrackersMounting(RESET_SOURCE_NAME)
+		val bodyPose =
+			if (req.hasBodyPose()) {
+				ResetBodyPose.getById(req.bodyPose()) ?: ResetBodyPose.SKIING
+			} else {
+				ResetBodyPose.SKIING
+			}
+
+		val referenceTrackerPosition =
+			if (req.hasReferenceTracker()) {
+				TrackerPosition.getByBodyPart(req.referenceTracker()) ?: TrackerPosition.HEAD
+			} else {
+				TrackerPosition.HEAD
+			}
+
+		val trackerPositions = buildSet {
+			for (i in 0 until req.trackersLength()) {
+				TrackerPosition.getByBodyPart(req.trackers(i))?.let {
+					add(it)
+				}
+			}
+		}
+
+		val params = ResetParams(
+			RESET_SOURCE_NAME,
+			bodyPose,
+			referenceTrackerPosition,
+			trackerPositions,
+		)
+
+		LogManager.info("${params.source} ${params.bodyPose} ${params.referenceTrackerPosition} ${params.trackerPositionsToReset}")
+
+		if (req.resetType() == ResetType.Yaw) api.server.resetTrackersYaw(params)
+		if (req.resetType() == ResetType.Full) api.server.resetTrackersFull(params)
+		if (req.resetType() == ResetType.Mounting) api.server.resetTrackersMounting(params)
 	}
 
 	fun onClearMountingResetRequest(
@@ -611,10 +644,14 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 	}
 
 	private fun onEnableStayAlignedRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val enableRequest =
+			messageHeader.message(EnableStayAlignedRequest()) as? EnableStayAlignedRequest
+				?: return
+
 		val configManager = api.server.configManager
 
 		val config = configManager.vrConfig.stayAlignedConfig
-		config.enabled = true
+		config.enabled = enableRequest.enable()
 
 		configManager.saveConfig()
 

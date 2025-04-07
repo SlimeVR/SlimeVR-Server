@@ -9,6 +9,7 @@ import dev.slimevr.config.ResetsConfig
 import dev.slimevr.filtering.CircularArrayList
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import io.eiren.math.FloatMath.animateEase
+import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -345,6 +346,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		calculateDrift(oldRot)
 
+		LogManager.info("[resetFull] ${tracker.trackerPosition} reset")
+
 		postProcessResetFull()
 	}
 
@@ -402,13 +405,15 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 		tracker.resetFilteringQuats()
+
+		LogManager.info("[resetYaw] ${tracker.trackerPosition} reset")
 	}
 
 	/**
 	 * Perform the math to align the tracker to go forward
 	 * and stores it in mountRotFix, and adjusts yawFix
 	 */
-	fun resetMounting(reference: Quaternion) {
+	fun resetMounting(reference: Quaternion, bodyPose: ResetBodyPose) {
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
 			tracker.trackerFlexHandler.resetMax()
 			tracker.resetFilteringQuats()
@@ -426,6 +431,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		rotBuf = gyroFix * rotBuf
 		rotBuf *= attachmentFix
 		rotBuf = yawFix * rotBuf
+
+		// TODO: Fail reset if current rotation is too close to the full reset rotation
 
 		// Adjust buffer to reference
 		rotBuf = reference.project(Vector3.POS_Y).inv().unit() * rotBuf
@@ -453,11 +460,32 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 		// Adjust for forward/back arms and thighs
-		val isLowerArmBack = armsResetMode == ArmsResetModes.BACK && (isLeftLowerArmTracker() || isRightLowerArmTracker())
-		val isArmForward = armsResetMode == ArmsResetModes.FORWARD && (isLeftArmTracker() || isRightArmTracker())
-		if (!isThighTracker() && !isArmForward && !isLowerArmBack) {
-			// Tracker goes back
-			yawAngle -= FastMath.PI
+		val isArmTracker =
+			isLeftArmTracker() || isLeftLowerArmTracker() || isLeftFingerTracker() ||
+				isRightArmTracker() || isRightLowerArmTracker() || isRightFingerTracker()
+
+		// Fix mounting for trackers that are facing down
+		if (isArmTracker) {
+			// FIXME: This is confusing
+			val isLowerArmBack = armsResetMode == ArmsResetModes.BACK && (isLeftLowerArmTracker() || isRightLowerArmTracker())
+			val isArmForward = armsResetMode == ArmsResetModes.FORWARD && (isLeftArmTracker() || isRightArmTracker())
+			if (!isArmForward && !isLowerArmBack) {
+				// Tracker goes back
+				yawAngle -= FastMath.PI
+			}
+		} else {
+			when (bodyPose) {
+				ResetBodyPose.SKIING -> {
+					// All trackers except thigh trackers are facing down
+					if (!isThighTracker()) {
+						yawAngle -= FastMath.PI
+					}
+				}
+
+				ResetBodyPose.SITTING_LEANING_BACK -> {
+					// All trackers are facing up, so don't adjust any trackers
+				}
+			}
 		}
 
 		// Make an adjustment quaternion from the angle
@@ -467,6 +495,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		if (saveMountingReset) tracker.saveMountingResetOrientation(mountRotFix)
 
 		tracker.resetFilteringQuats()
+
+		LogManager.info("[resetMounting] ${tracker.trackerPosition} reset")
 	}
 
 	/**

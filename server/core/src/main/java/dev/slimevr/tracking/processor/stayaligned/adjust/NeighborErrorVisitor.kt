@@ -8,6 +8,7 @@ import dev.slimevr.tracking.processor.stayaligned.skeleton.RelaxedPose
 import dev.slimevr.tracking.processor.stayaligned.skeleton.Side
 import dev.slimevr.tracking.processor.stayaligned.skeleton.TrackerSkeleton
 import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.TrackerPosition
 
 /**
  * Error between a tracker's yaw and its neighbors' yaws.
@@ -37,9 +38,9 @@ class NeighborErrorVisitor(
 		val targetYaw = AngleAverage()
 
 		if (
-			aboveHeadOrUpperBody != null // &&
-// 			// Head often drags the upper body trackers off to the side, so ignore it
-// 			aboveHeadOrUpperBody.trackerPosition != TrackerPosition.HEAD
+			aboveHeadOrUpperBody != null &&
+			// Head often drags the upper body trackers off to the side, so ignore it
+			aboveHeadOrUpperBody.trackerPosition != TrackerPosition.HEAD
 		) {
 			targetYaw.add(trackerYaw(aboveHeadOrUpperBody))
 		}
@@ -60,9 +61,9 @@ class NeighborErrorVisitor(
 		val targetYaw = AngleAverage()
 
 		if (
-			aboveHeadOrUpperBody != null // &&
-// 			// Head often drags the upper body trackers off to the side, so ignore it
-// 			aboveHeadOrUpperBody.trackerPosition != TrackerPosition.HEAD
+			aboveHeadOrUpperBody != null &&
+			// Head often drags the upper body trackers off to the side, so ignore it
+			aboveHeadOrUpperBody.trackerPosition != TrackerPosition.HEAD
 		) {
 			targetYaw.add(trackerYaw(aboveHeadOrUpperBody))
 		}

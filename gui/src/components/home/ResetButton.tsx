@@ -1,6 +1,8 @@
 import { useLocalization } from '@fluent/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  BodyPart,
+  ResetBodyPose,
   ResetRequestT,
   ResetType,
   RpcMessage,
@@ -25,10 +27,16 @@ import classNames from 'classnames';
 
 export function ResetButton({
   type,
+  bodyPose,
+  referenceTrackerPosition,
+  trackerPositions,
   variant = 'big',
   onReseted,
 }: {
   type: ResetType;
+  bodyPose?: ResetBodyPose;
+  referenceTrackerPosition?: BodyPart;
+  trackerPositions?: BodyPart[];
   variant: 'big' | 'small';
   onReseted?: () => void;
 }) {
@@ -51,6 +59,9 @@ export function ResetButton({
   const reset = () => {
     const req = new ResetRequestT();
     req.resetType = type;
+    req.bodyPose = bodyPose || ResetBodyPose.SKIING;
+    req.referenceTracker = referenceTrackerPosition || BodyPart.HEAD;
+    req.trackers = trackerPositions || [];
     sendRPCPacket(RpcMessage.ResetRequest, req);
   };
 

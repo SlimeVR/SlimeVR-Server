@@ -4,6 +4,7 @@ import dev.slimevr.VRServer.Companion.instance
 import dev.slimevr.bridge.BridgeThread
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.desktop.platform.ProtobufMessages.*
+import dev.slimevr.tracking.trackers.ResetParams
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerStatus.Companion.getById
@@ -197,9 +198,9 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 		val resetSourceName = String.format("%s: %s", resetSourceNamePrefix, bridgeName)
 		when (userAction.name) {
 			"reset" -> // TODO : Check pose field
-				instance.resetTrackersFull(resetSourceName)
+				instance.resetTrackersFull(ResetParams.makeDefault(resetSourceName))
 
-			"fast_reset" -> instance.resetTrackersYaw(resetSourceName)
+			"fast_reset" -> instance.resetTrackersYaw(ResetParams.makeDefault(resetSourceName))
 
 			"pause_tracking" ->
 				instance

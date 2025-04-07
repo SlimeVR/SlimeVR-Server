@@ -3,15 +3,27 @@ import { Typography } from '@/components/commons/Typography';
 import { Step, StepperSlider } from '@/components/onboarding/StepperSlider';
 import { DoneStep } from './stay-aligned-steps/Done';
 import { useLocalization } from '@fluent/react';
-import { autoMountingSteps } from '@/components/onboarding/pages/mounting/AutomaticMounting';
 import {
   FlatRelaxedPoseStep,
   SittingRelaxedPoseStep,
   StandingRelaxedPoseStep,
 } from './stay-aligned-steps/RelaxedPoseSteps';
+import { EnableStayAlignedRequestT, RpcMessage } from 'solarxr-protocol';
+import { RPCPacketType, useWebsocketAPI } from '@/hooks/websocket-api';
+import { useEffect } from 'react';
+import { sittingMountingSteps } from '@/components/onboarding/pages/mounting/AutomaticMounting';
+
+export function sendEnableStayAligned(
+  enable: boolean,
+  sendRPCPacket: (type: RpcMessage, data: RPCPacketType) => void
+) {
+  const req = new EnableStayAlignedRequestT();
+  req.enable = enable;
+  sendRPCPacket(RpcMessage.EnableStayAlignedRequest, req);
+}
 
 const steps: Step[] = [
-  ...autoMountingSteps,
+  ...sittingMountingSteps,
   { type: 'numbered', component: StandingRelaxedPoseStep },
   { type: 'numbered', component: SittingRelaxedPoseStep },
   { type: 'numbered', component: FlatRelaxedPoseStep },
@@ -20,6 +32,11 @@ const steps: Step[] = [
 export function StayAlignedSetup() {
   const { l10n } = useLocalization();
   const { state } = useOnboarding();
+  const { sendRPCPacket } = useWebsocketAPI();
+
+  useEffect(() => {
+    sendEnableStayAligned(false, sendRPCPacket);
+  }, []);
 
   return (
     <>

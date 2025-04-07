@@ -981,15 +981,30 @@ onboarding-automatic_mounting-prev_step = Previous step
 onboarding-automatic_mounting-done-title = Mounting orientations calibrated.
 onboarding-automatic_mounting-done-description = Your mounting calibration is complete!
 onboarding-automatic_mounting-done-restart = Try again
-onboarding-automatic_mounting-mounting_reset-title = Mounting Reset
-onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pose with your legs bent, your upper body tilted forwards, and your arms bent.
-onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Reset Mounting" button and wait for 3 seconds before the trackers' mounting orientations will reset.
+onboarding-automatic_mounting-mounting_reset-title = Sitting Reset
+onboarding-automatic_mounting-mounting_reset-step-0 = 1. Without moving your feet, sit back down
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. Keep your thighs parallel, and legs straight down.
+onboarding-automatic_mounting-mounting_reset-step-2 = 3. Lean backwards so that your upper body is slanted.
+onboarding-automatic_mounting-mounting_reset-step-3 = 4. If you have arm trackers, position your arms in the mounting reset pose. (You may need to choose a different arm pose in settings, e.g. "Forward".)
 onboarding-automatic_mounting-preparation-title = Preparation
-onboarding-automatic_mounting-preparation-step-0 = 1. Stand upright with your arms to your sides.
-onboarding-automatic_mounting-preparation-step-1 = 2. Press the "Full Reset" button and wait for 3 seconds before the trackers will reset.
+onboarding-automatic_mounting-preparation-step-0 = 1. Sit on a chair or couch.
+onboarding-automatic_mounting-preparation-step-1 = 2. Adjust your thighs to be parallel.
+onboarding-automatic_mounting-preparation-step-2 = 3. Adjust your legs to point straight down.
+onboarding-automatic_mounting-preparation-step-3 = 4. Position your feet comfortably. They can point inwards or outwards if necessary. Do not force them to point forward.
+onboarding-automatic_mounting-standing_reset-title = Standing Reset
+onboarding-automatic_mounting-standing_reset-step-0 = 1. Without moving your feet, stand up straight.
+onboarding-automatic_mounting-standing_reset-step-1 = 2. You can use the edge of your chair to help stand straight.
+onboarding-automatic_mounting-standing_reset-step-2 = 3. If you have arm trackers, position your arms in the full reset pose.
 onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
 onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting orientations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
+onboarding-automatic_mounting-preparation_feet-title = Lower Leg Reset (1 of 2)
+onboarding-automatic_mounting-preparation_feet-step-0 = 1. Rotate your feet so that they point forwards.
+onboarding-automatic_mounting-preparation_feet-step-1 = 2. Keep your thighs parallel, and legs straight down.
+onboarding-automatic_mounting-mounting_reset_feet-title = Lower Leg Reset (2 of 2)
+onboarding-automatic_mounting-mounting_reset_feet-step-0 = 1. Slide your feet forward, then lift your feet up slightly.
+onboarding-automatic_mounting-mounting_reset_feet-step-1 = 2. Do not angle your feet inwards or outwards.
+
 
 ## Tracker manual proportions setupa
 onboarding-manual_proportions-back = Go Back to Reset tutorial
@@ -1123,15 +1138,12 @@ onboarding-stay_aligned-done-done = Done
 onboarding-stay_aligned-relaxed_poses-standing-title = Relaxed Standing Pose
 onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stand in a comfortable position. Relax!
 onboarding-stay_aligned-relaxed_poses-standing-step-1 = 2. Check that your trackers match your body. If it does not match, you need to restart this flow.
-onboarding-stay_aligned-relaxed_poses-standing-step-2 = 3. Press the "Detect angles" button.
 onboarding-stay_aligned-relaxed_poses-sitting-title = Relaxed Sitting Pose
 onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Sit in a comfortable position. Relax!
 onboarding-stay_aligned-relaxed_poses-sitting-step-1 = 2. Check that your trackers match your body. If it does not match, you need to restart this flow.
-onboarding-stay_aligned-relaxed_poses-sitting-step-2 = 3. Press the "Detect angles" button.
 onboarding-stay_aligned-relaxed_poses-flat-title = Relaxed Lying Pose
 onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sit on the floor with your legs in front. Relax!
 onboarding-stay_aligned-relaxed_poses-flat-step-1 = 2. Check that your trackers match your body. If it does not match, you need to restart this flow.
-onboarding-stay_aligned-relaxed_poses-flat-step-2 = 3. Press the "Detect angles" button.
 
 ## Home
 home-no_trackers = No trackers detected or assigned
