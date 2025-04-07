@@ -83,7 +83,8 @@ function ImportExportButtons() {
       exporting.current = false;
 
       // make a copy of the config as mutating it directly would be an issue
-      // bc if other useRPCPacket read that data would use the mutated data
+      // bc if other useRPCPacket read the same packet,
+      // data would use the mutated data
       const copy: SkeletonConfigExport = JSON.parse(JSON.stringify(data));
 
       // Convert the skeleton part enums into a string
