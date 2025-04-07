@@ -26,15 +26,6 @@ Use of the SlimeVR name that can cause confusion is not allowed in any part of t
 
 Also, please ensure you use the correct spelling and capitalization: only **"SlimeVR" is acceptable**. Not "Slimevr", "slimevr", or "Slime VR". You're allowed to use the word "slime" as you wish, it's not a trademark.
 
-## Use of SlimeVR logo
-![SlimeVR logo](https://avatars.githubusercontent.com/u/78072904?s=200&v=4)
-
-**SlimeVR logo is copyright of SlimeVR B.V.**
-
-Use of the logo is not allowed except in the case of reporting factual information, or if you make content featuring the original SlimeVR Trackers. Creation of fan works and reviews are allowed, as long as there is no confusion about the ownership of the logo, or endorsments of any third-party products.
-
-Usage of the logo is allowed in forks of SlimeVR software, as long as it's not changed in any way and there is no confusion about the ownership of the logo, or endorsements of any third-party products. If the fork changes software substantially, the usages of the logo is not allowed. We reserve the judjement to ourselves.
-
 Please understand that we have an obligation to reduce confusion for the customers, and we believe that our usage terms are generous compared to many other companies and products. This applies to all sellers or derivative products, we do not make exceptions.
 
 ---
