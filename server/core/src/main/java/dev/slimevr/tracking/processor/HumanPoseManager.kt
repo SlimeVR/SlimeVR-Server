@@ -670,45 +670,22 @@ class HumanPoseManager(val server: VRServer?) {
 			}
 	}
 
-	private var lastMissingHmdStatus = 0u
 	fun checkReportMissingHmd() {
 		// Check if this is main skeleton, there is no head tracker currently,
 		// and there is an available HMD one
 		if (server == null) return
 		val tracker = VRServer.instance.allTrackers.firstOrNull { it.isHmd && !it.isInternal && it.status.sendData }
-		if (skeleton.headTracker == null &&
-			lastMissingHmdStatus == 0u &&
-			tracker != null
-		) {
-			reportMissingHmd(tracker)
-		} else if (lastMissingHmdStatus != 0u &&
-			(skeleton.headTracker != null || tracker == null)
-		) {
-			server.statusSystem.removeStatus(lastMissingHmdStatus)
-			lastMissingHmdStatus = 0u
-		}
-	}
 
-	private fun reportMissingHmd(tracker: Tracker) {
-		require(lastMissingHmdStatus == 0u) {
-			"${::lastMissingHmdStatus.name} must be 0u, but was $lastMissingHmdStatus"
-		}
-		require(server != null) {
-			"${::server.name} must not be null"
-		}
-
-		val status = StatusDataUnion().apply {
-			type = StatusData.StatusUnassignedHMD
-			value = StatusUnassignedHMDT().apply {
-				trackerId = TrackerIdT().apply {
-					if (tracker.device != null) {
-						deviceId = DeviceIdT().apply { id = tracker.device.id }
-					}
-					trackerNum = tracker.trackerNum
+		if (skeleton.headTracker == null && tracker != null) {
+			server.flightListManager.updateUnassignedHMD(false, TrackerIdT().apply {
+				if (tracker.device != null) {
+					deviceId = DeviceIdT().apply { id = tracker.device.id }
 				}
-			}
+				trackerNum = tracker.trackerNum
+			})
+		} else {
+			server.flightListManager.updateUnassignedHMD(true, null)
 		}
-		lastMissingHmdStatus = server.statusSystem.addStatus(status, true)
 	}
 
 	// #endregion

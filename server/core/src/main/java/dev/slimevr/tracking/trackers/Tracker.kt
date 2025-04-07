@@ -11,6 +11,8 @@ import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
+import solarxr_protocol.rpc.FlightListExtraData
+import solarxr_protocol.rpc.FlightListStepId
 import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusTrackerErrorT
@@ -72,6 +74,9 @@ class Tracker @JvmOverloads constructor(
 	val needsReset: Boolean = false,
 	val needsMounting: Boolean = false,
 	val isHmd: Boolean = false,
+
+
+
 	/**
 	 * Whether to track the direction of the tracker's rotation
 	 * (positive vs negative rotation). This needs to be disabled for AutoBone and
@@ -106,6 +111,14 @@ class Tracker @JvmOverloads constructor(
 		private set
 
 	/**
+	 * Watch the rest calibration status
+	 */
+	var hasCompletedRestCalibration: Boolean? by Delegates.observable(null) {
+		_, old, new ->
+		if (old == new) return@observable
+		VRServer.instance.flightListManager.updateTrackerCalibrationStep()
+	};
+	/**
 	 * If the tracker has gotten disconnected after it was initialized first time
 	 */
 	var statusResetRecently = false
@@ -129,9 +142,6 @@ class Tracker @JvmOverloads constructor(
 			if (isHmd) {
 				VRServer.instance.humanPoseManager.checkReportMissingHmd()
 			}
-			checkReportErrorStatus()
-			checkReportRequireReset()
-
 			VRServer.instance.trackerStatusChanged(this, old, new)
 		}
 	}
@@ -143,7 +153,7 @@ class Tracker @JvmOverloads constructor(
 			// Set default mounting orientation for that body part
 			new?.let { resetsHandler.mountingOrientation = it.defaultMounting() }
 
-			checkReportRequireReset()
+			VRServer.instance.flightListManager.updateRequireReset()
 		}
 	}
 
@@ -169,73 +179,6 @@ class Tracker @JvmOverloads constructor(
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
-	}
-
-	fun checkReportRequireReset() {
-		if (needsReset && trackerPosition != null && lastResetStatus == 0u &&
-			!status.reset && (isImu() || !statusResetRecently && trackerDataType != TrackerDataType.FLEX_ANGLE)
-		) {
-			reportRequireReset()
-		} else if (lastResetStatus != 0u && (trackerPosition == null || status.reset)) {
-			VRServer.instance.statusSystem.removeStatus(lastResetStatus)
-			lastResetStatus = 0u
-		}
-	}
-
-	/**
-	 * If 0 then it's null
-	 */
-	var lastResetStatus = 0u
-	private fun reportRequireReset() {
-		require(lastResetStatus == 0u) {
-			"lastResetStatus must be 0u, but was $lastResetStatus"
-		}
-
-		val tempTrackerNum = this.trackerNum
-		val statusMsg = StatusTrackerResetT().apply {
-			trackerId = TrackerIdT().apply {
-				if (device != null) {
-					deviceId = DeviceIdT().apply { id = device.id }
-				}
-				trackerNum = tempTrackerNum
-			}
-		}
-		val status = StatusDataUnion().apply {
-			type = StatusData.StatusTrackerReset
-			value = statusMsg
-		}
-		lastResetStatus = VRServer.instance.statusSystem.addStatus(status, true)
-	}
-
-	private fun checkReportErrorStatus() {
-		if (status == TrackerStatus.ERROR && lastErrorStatus == 0u) {
-			reportErrorStatus()
-		} else if (lastErrorStatus != 0u && status != TrackerStatus.ERROR) {
-			VRServer.instance.statusSystem.removeStatus(lastErrorStatus)
-			lastErrorStatus = 0u
-		}
-	}
-
-	var lastErrorStatus = 0u
-	private fun reportErrorStatus() {
-		require(lastErrorStatus == 0u) {
-			"lastResetStatus must be 0u, but was $lastErrorStatus"
-		}
-
-		val tempTrackerNum = this.trackerNum
-		val statusMsg = StatusTrackerErrorT().apply {
-			trackerId = TrackerIdT().apply {
-				if (device != null) {
-					deviceId = DeviceIdT().apply { id = device.id }
-				}
-				trackerNum = tempTrackerNum
-			}
-		}
-		val status = StatusDataUnion().apply {
-			type = StatusData.StatusTrackerError
-			value = statusMsg
-		}
-		lastErrorStatus = VRServer.instance.statusSystem.addStatus(status, true)
 	}
 
 	/**
@@ -265,7 +208,7 @@ class Tracker @JvmOverloads constructor(
 		if (!isInternal &&
 			!(!isImu() && (trackerPosition == TrackerPosition.LEFT_HAND || trackerPosition == TrackerPosition.RIGHT_HAND))
 		) {
-			checkReportRequireReset()
+			VRServer.instance.flightListManager.updateRequireReset()
 		}
 	}
 

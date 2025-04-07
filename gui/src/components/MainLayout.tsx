@@ -11,8 +11,8 @@ import { TopBar } from './TopBar';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import './MainLayout.scss';
 import { Toolbar } from './Toolbar';
-import { WidgetsComponent } from './WidgetsComponent';
 import { SkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
+import { SessionFlightList } from './SessionFlightList';
 
 export function MainLayout({
   children,
@@ -89,18 +89,17 @@ export function MainLayout({
             <Toolbar></Toolbar>
           </div>
           <div
+            style={{ gridArea: 'l' }}
+            className="overflow-y-auto mr-2 my-2 rounded-md bg-background-70 flex flex-col gap-2 p-2"
+          >
+            <SessionFlightList></SessionFlightList>
+          </div>
+          <div
             style={{ gridArea: 'p' }}
             className="overflow-y-auto mr-2 mb-2 rounded-md bg-background-70 flex flex-col"
           >
             {/* <WidgetsComponent></WidgetsComponent> */}
             <SkeletonVisualizerWidget height={'100%'} maxHeight={'auto'} />
-          </div>
-          <div
-            style={{ gridArea: 'l' }}
-            className="overflow-y-auto mr-2 my-2 rounded-md bg-background-70 flex flex-col gap-2 p-2"
-          >
-            {/* <WidgetsComponent></WidgetsComponent> */}
-            {/* <SkeletonVisualizerWidget height={'100%'} maxHeight={'auto'} /> */}
           </div>
         </>
       )}

@@ -346,11 +346,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	private fun postProcessResetFull() {
-		if (this.tracker.lastResetStatus != 0u) {
-			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
-			this.tracker.lastResetStatus = 0u
-		}
-
+		VRServer.instance.flightListManager.updateRequireReset();
 		tracker.resetFilteringQuats()
 	}
 
@@ -389,10 +385,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Remove the status if yaw reset was performed after the tracker
 		// was disconnected and connected.
-		if (this.tracker.lastResetStatus != 0u && this.tracker.statusResetRecently) {
-			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
+		if (this.tracker.statusResetRecently) {
+			VRServer.instance.flightListManager.updateRequireReset();
 			this.tracker.statusResetRecently = false
-			this.tracker.lastResetStatus = 0u
 		}
 
 		tracker.resetFilteringQuats()

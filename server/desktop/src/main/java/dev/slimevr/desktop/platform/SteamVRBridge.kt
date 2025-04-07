@@ -15,9 +15,7 @@ import dev.slimevr.tracking.trackers.TrackerRole.Companion.getById
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.collections.FastList
-import solarxr_protocol.rpc.StatusData
-import solarxr_protocol.rpc.StatusDataUnion
-import solarxr_protocol.rpc.StatusSteamVRDisconnectedT
+import solarxr_protocol.rpc.*
 
 abstract class SteamVRBridge(
 	protected val server: VRServer,
@@ -427,33 +425,22 @@ abstract class SteamVRBridge(
 		}
 	}
 
-	/**
-	 * When 0, then it means null
-	 */
-	protected var lastSteamVRStatus: Int = 0
-
 	@BridgeThread
 	protected fun reportDisconnected() {
-		if (lastSteamVRStatus != 0) {
-			return
+		server.flightListManager.updateValidity(FlightListStepId.STEAMVR_DISCONNECTED, false) {
+			it.extraData = FlightListExtraDataUnion().apply {
+				type = FlightListExtraData.StatusSteamVRDisconnected
+				value = StatusSteamVRDisconnectedT().apply {
+					bridgeSettingsName = bridgeSettingsKey
+				}
+			}
 		}
-		val statusData = StatusSteamVRDisconnectedT()
-		statusData.bridgeSettingsName = bridgeSettingsKey
-
-		val status = StatusDataUnion()
-		status.type = StatusData.StatusSteamVRDisconnected
-		status.value = statusData
-		lastSteamVRStatus = instance.statusSystem
-			.addStatus(status, false).toInt()
 	}
 
 	@BridgeThread
 	protected fun reportConnected() {
-		if (lastSteamVRStatus == 0) {
-			return
+		server.flightListManager.updateValidity(FlightListStepId.STEAMVR_DISCONNECTED, true) {
+			it.extraData = null
 		}
-		instance.statusSystem
-			.removeStatus(lastSteamVRStatus.toUInt())
-		lastSteamVRStatus = 0
 	}
 }

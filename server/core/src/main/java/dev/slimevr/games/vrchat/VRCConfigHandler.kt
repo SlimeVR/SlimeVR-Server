@@ -4,6 +4,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerUtils
+import solarxr_protocol.rpc.FlightListStepId
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.math.*
 

@@ -7,6 +7,7 @@ import { useTrackers } from '@/hooks/tracker';
 import { Quaternion } from 'three';
 import { QuaternionFromQuatT, similarQuaternions } from '@/maths/quaternion';
 import { useMemo } from 'react';
+import { Button } from './commons/Button';
 
 const _q = new Quaternion();
 
@@ -34,11 +35,13 @@ export function ClearMountingButton() {
   };
 
   return (
-    <BigButton
-      text={l10n.getString('widget-clear_mounting')}
+    <Button
       icon={<TrashIcon size={20} />}
       onClick={clearMounting}
       disabled={!trackerWithMounting}
-    />
+      variant="primary"
+    >
+      {l10n.getString('widget-clear_mounting')}
+    </Button>
   );
 }
