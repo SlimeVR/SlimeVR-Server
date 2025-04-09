@@ -57,29 +57,31 @@ export function ScaledProportionsPage() {
             </div>
           </div>
 
-          <WarningBox>
-            <Localized
-              id="onboarding-scaled_proportions-manual_height-warning"
-              elems={{ b: <b></b> }}
-            >
-              <Typography
-                whitespace="whitespace-pre"
-                color="text-background-60"
-              ></Typography>
-            </Localized>
-            <ul className="list-disc ml-8">
-              {!hasHmd && (
-                <Localized id="onboarding-scaled_proportions-manual_height-warning-no_hmd">
-                  <li></li>
-                </Localized>
-              )}
-              {!hasHandControllers && (
-                <Localized id="onboarding-scaled_proportions-manual_height-warning-no_controllers">
-                  <li></li>
-                </Localized>
-              )}
-            </ul>
-          </WarningBox>
+          {!canDoAuto && (
+            <WarningBox>
+              <Localized
+                id="onboarding-scaled_proportions-manual_height-warning"
+                elems={{ b: <b></b> }}
+              >
+                <Typography
+                  whitespace="whitespace-pre"
+                  color="text-background-60"
+                ></Typography>
+              </Localized>
+              <ul className="list-disc ml-8">
+                {!hasHmd && (
+                  <Localized id="onboarding-scaled_proportions-manual_height-warning-no_hmd">
+                    <li></li>
+                  </Localized>
+                )}
+                {!hasHandControllers && (
+                  <Localized id="onboarding-scaled_proportions-manual_height-warning-no_controllers">
+                    <li></li>
+                  </Localized>
+                )}
+              </ul>
+            </WarningBox>
+          )}
           <div className="flex">
             <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
