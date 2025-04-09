@@ -50,6 +50,9 @@ body_part-LEFT_UPPER_LEG = Muslo izquierdo
 body_part-LEFT_LOWER_LEG = Tobillo Izquierdo
 body_part-LEFT_FOOT = Pie izquierdo
 
+## BoardType
+
+
 ## Proportions
 
 skeleton_bone-NONE = Ninguno
@@ -415,9 +418,6 @@ settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Prome
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Promedia el balanceo de las rodillas con la de los tobillos
 settings-general-fk_settings-self_localization-title = Modo Captura de movimiento
 settings-general-fk_settings-self_localization-description = El modo captura de movimiento permite al esqueleto seguir aproximadamente tu posición sin auriculares ni otros trackers. Ten en cuenta que esto requiere trrackers de pies y cabeza para funcionar y que aún está en fase experimental.
-settings-general-fk_settings-vive_emulation-title = Emulación Vive
-settings-general-fk_settings-vive_emulation-description = Emula los problemas de cintura que lo Vive trackers producen. Es una broma y produce peor tracking.
-settings-general-fk_settings-vive_emulation-label = Habilitar emulación Vive
 
 ## Gesture control settings (tracker tapping)
 
@@ -456,9 +456,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Aumen
 ## Appearance settings
 
 settings-interface-appearance = Apariencia
-settings-general-interface-dev_mode = Modo de desarrollador
-settings-general-interface-dev_mode-description = Este modo puede ser útil si necesitas datos en profundidad o para interactuar con los trackers conectados a un nivel más avanzado
-settings-general-interface-dev_mode-label = Modo de desarrollador
 settings-general-interface-theme = Temas
 settings-general-interface-show-navbar-onboarding = Enseñar ''{ navbar-onboarding }" en la barra de navegación
 settings-general-interface-show-navbar-onboarding-description = Esto cambia si el botón de  "{ navbar-onboarding }" enseña en la barra de navegación
@@ -489,6 +486,12 @@ settings-general-interface-feedback_sound-volume = Volumen del sonido de feedbac
 settings-general-interface-connected_trackers_warning = Advertencia de trackers conectados
 settings-general-interface-connected_trackers_warning-description = Esta opción mostrará una ventana emergente cada vez que intentes salir de SlimeVR mientras tengas uno o más trackers conectados. Te recuerda que debes apagar los trackers cuando hayas terminado para ahorrar batería.
 settings-general-interface-connected_trackers_warning-label = Aviso de trackers conectados al cerrar
+
+## Behavior settings
+
+settings-general-interface-dev_mode = Modo de desarrollador
+settings-general-interface-dev_mode-description = Este modo puede ser útil si necesitas datos en profundidad o para interactuar con los trackers conectados a un nivel más avanzado
+settings-general-interface-dev_mode-label = Modo de desarrollador
 settings-general-interface-use_tray = Minimizar a la bandeja
 settings-general-interface-use_tray-description = Te permite cerrar la ventana sin cerrar SlimeVR para que pueda seguir usándolo sin que la interfaz te moleste.
 settings-general-interface-use_tray-label = Minimizar en la bandeja del sistema
@@ -624,7 +627,6 @@ settings-utils-advanced-reset-server-label = Restablecer el tracking,
 settings-utils-advanced-reset-all = Restablecer todas las configuraciónes
 settings-utils-advanced-reset-all-description = Restaurar la configuración predeterminada para el interfaz y el tracking.
 settings-utils-advanced-reset_warning-cancel = Cancelar
-settings-utils-advanced-open_data = Carpeta de datos
 settings-utils-advanced-open_data-label = Abrir carpeta
 
 ## Setup/onboarding menu
@@ -905,32 +907,7 @@ onboarding-automatic_mounting-put_trackers_on-title = Ponte los trackers
 onboarding-automatic_mounting-put_trackers_on-description = Para calibrar la posiciones de montura, vamos a utilizar los trackers que acabas de asignar. Colocate todos tus trackers, puedes ver cuales son cuales en la figura de la derecha.
 onboarding-automatic_mounting-put_trackers_on-next = Tengo todos mis trackers en posicion
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = ¿Qué método de calibración de proporciones utilizara?
-# Multiline string
-onboarding-choose_proportions-description-v1 =
-    Las proporciones corporales se utilizaran para conocer las medidas de tu cuerpo. Son necesarias para calcular las posiciones de los trackers. 
-    Cuando las proporciones de tu cuerpo no coincidan con las guardadas, la precisión del tracking será peor y notarás cosas como que patinas o te deslizas, o que tu cuerpo no se ajusta bien a tu avatar.
-    <b>¡Sólo necesitas medir tu cuerpo una vez!</b> A menos que estén mal o tu cuerpo haya cambiado, entonces no necesitas volver a hacerlo.
-onboarding-choose_proportions-auto_proportions = Proporciones automáticas
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = Recomendado
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    Adivinará tus proporciones grabando una muestra de tus movimientos y pasándola por un algoritmo.
-    
-    <b>¡Esto requiere tener tu visor (HMD) conectado a SlimeVR y en tu cabeza!</b>
-onboarding-choose_proportions-manual_proportions = Proporciones manuales
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = Para pequeños retoques
-onboarding-choose_proportions-manual_proportions-description = Esto te permitirá ajustar tus proporciones manualmente modificándolas directamente
-onboarding-choose_proportions-export = Exportar proporciones
-onboarding-choose_proportions-import = Importar proporciones
-onboarding-choose_proportions-import-success = Importado
-onboarding-choose_proportions-import-failed = Fallido
-onboarding-choose_proportions-file_type = Archivo de proporciones físicas
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = Volver al tutorial de reinicios
 onboarding-manual_proportions-title = Proporciones físicas manuales
@@ -957,21 +934,12 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Tu visor están reportando datos de posición al servidor de SlimeVR (esto generalmente significa tener SteamVR ejecutándose y conectado a SlimeVR usando el driver para SteamVR de SlimeVR).
     Su tracking está funcionando y está representando con precisión sus movimientos (ej. usted ha realizado un reinicio completo y se mueven en la dirección correcta al patear, agacharse, sentarse, etc).
 onboarding-automatic_proportions-requirements-next = He leído los requisitos
-onboarding-automatic_proportions-check_height-title = Comprueba tu altura
-onboarding-automatic_proportions-check_height-description = Utilizamos tu estatura como base de nuestras mediciones utilizando la altura de tu visor (HMD) como aproximación a tu estatura real, ¡pero es mejor que compruebes tú mismo si son correctas!
-# All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = Por favor, pulse el botón mientras esté <u>derecho</u> para calcular su altura. ¡Tienes 3 segundos después de pulsar el botón!
 onboarding-automatic_proportions-check_height-guardian_tip =
     Si usted está usando un visor VR standalone, ¡asegúrese de tener su guardián /
     limite activado para que tu altura sea la correcta!
-onboarding-automatic_proportions-check_height-fetch_height = ¡Estoy de pie!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Desconocida
-# Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = La altura de tu HMD es
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = por lo que tu altura real es
-onboarding-automatic_proportions-check_height-next_step = Están bien
+onboarding-automatic_proportions-check_height-next_step = Usar la altura del visor
 onboarding-automatic_proportions-start_recording-title = Prepárate para moverte
 onboarding-automatic_proportions-start_recording-description = Ahora vamos a grabar algunas poses y movimientos específicos. Se le indicarán en la siguiente pantalla. ¡Prepárate para empezar cuando pulse el botón!
 onboarding-automatic_proportions-start_recording-next = Iniciar grabación
@@ -1003,6 +971,12 @@ onboarding-automatic_proportions-done-title = Proporciones medidas y guardadas.
 onboarding-automatic_proportions-done-description = ¡Calibración de las proporciones físicas completada!
 onboarding-automatic_proportions-error_modal-confirm = ¡Entendido!
 
+## Tracker scaled proportions setup
+
+
+## Tracker scaled proportions reset
+
+
 ## Home
 
 home-no_trackers = No se han detectado ni asignado trackers
@@ -1026,6 +1000,21 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = El tracker { $trackerName } tiene un error.
 status_system-StatusUnassignedHMD = El casco de RV debe asignarse como tracker de cabeza.
+
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
 
 ## Tray Menu
 
@@ -1054,3 +1043,6 @@ unknown_device-modal-description =
     ¿Quieres conectarlo a SlimeVR?
 unknown_device-modal-confirm = ¡Claro!
 unknown_device-modal-forget = Ignóralo
+
+## Error collection consent modal
+
