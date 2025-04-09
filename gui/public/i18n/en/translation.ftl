@@ -582,7 +582,7 @@ settings-general-interface-discord_presence-message = { $amount ->
 }
 settings-interface-behavior-error_tracking = Error collection via Sentry.io
 settings-interface-behavior-error_tracking-description =
-    Do you consent to the collection of anonymized error data?
+    <h1>Do you consent to the collection of anonymized error data?</h1>
 
     <b>We do not collect personal information</b> such as your IP address or wireless credentials. SlimeVR values your privacy!
 
