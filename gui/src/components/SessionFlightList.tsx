@@ -1,5 +1,7 @@
+import { useSessionFlightlist } from '@/hooks/session-flightlist';
+
 export function SessionFlightList() {
-  return <div>
-    
-  </div>;
+  const f = useSessionFlightlist();
+
+  return <div></div>;
 }

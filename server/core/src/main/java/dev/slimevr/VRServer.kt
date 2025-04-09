@@ -134,6 +134,7 @@ class VRServer @JvmOverloads constructor(
 		autoBoneHandler = AutoBoneHandler(this)
 		firmwareUpdateHandler = FirmwareUpdateHandler(this)
 		vrcConfigManager = VRChatConfigManager(this, vrcConfigHandlerProvider(this))
+		flightListManager = FlightListManager(this)
 		protocolAPI = ProtocolAPI(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 
@@ -173,7 +174,7 @@ class VRServer @JvmOverloads constructor(
 			registerTracker(tracker)
 		}
 
-		flightListManager = FlightListManager(this);
+
 
 		instance = this
 	}

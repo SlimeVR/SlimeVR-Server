@@ -429,8 +429,8 @@ abstract class SteamVRBridge(
 	protected fun reportDisconnected() {
 		server.flightListManager.updateValidity(FlightListStepId.STEAMVR_DISCONNECTED, false) {
 			it.extraData = FlightListExtraDataUnion().apply {
-				type = FlightListExtraData.StatusSteamVRDisconnected
-				value = StatusSteamVRDisconnectedT().apply {
+				type = FlightListExtraData.FlightListSteamVRDisconnected
+				value = FlightListSteamVRDisconnectedT().apply {
 					bridgeSettingsName = bridgeSettingsKey
 				}
 			}

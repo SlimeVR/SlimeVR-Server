@@ -663,11 +663,7 @@ class HumanPoseManager(val server: VRServer?) {
 		) {
 			return
 		}
-		server.allTrackers
-			.filter { !it.isInternal && it.trackerPosition != null }
-			.forEach {
-				it.checkReportRequireReset()
-			}
+		server.flightListManager.updateRequireReset()
 	}
 
 	fun checkReportMissingHmd() {

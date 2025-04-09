@@ -17,6 +17,9 @@ import solarxr_protocol.rpc.FlightListNeedCalibrationT
 import solarxr_protocol.rpc.FlightListStepId
 import solarxr_protocol.rpc.FlightListStepT
 import solarxr_protocol.rpc.FlightListStepVisibility
+import solarxr_protocol.rpc.FlightListTrackerErrorT
+import solarxr_protocol.rpc.FlightListTrackerResetT
+import solarxr_protocol.rpc.FlightListUnassignedHMDT
 import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
 import solarxr_protocol.rpc.StatusUnassignedHMDT
@@ -30,7 +33,7 @@ interface FlightListListener {
 class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, TrackerStatusListener {
 
 	private val listeners: MutableList<FlightListListener> = CopyOnWriteArrayList()
-	private val steps: HashMap<Int, FlightListStepT> = hashMapOf()
+	val steps: MutableList<FlightListStepT> = mutableListOf()
 
 	init {
 		vrServer.vrcConfigManager.addListener(this)
@@ -58,65 +61,62 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, Tra
 		}.toTypedArray()
 	}
 
-	fun createSteps() {
-		steps[FlightListStepId.TRACKERS_CALIBRATION] = FlightListStepT().apply {
+	private fun createSteps() {
+		steps.add(FlightListStepT().apply {
 			id = FlightListStepId.TRACKERS_CALIBRATION
 			optional = true
 			ignorable = false
 			visibility = FlightListStepVisibility.ALWAYS
-		}
+		})
 
-		steps[FlightListStepId.FULL_RESET] = FlightListStepT().apply {
+		steps.add(FlightListStepT().apply {
 			id = FlightListStepId.FULL_RESET
 			optional = false
 			ignorable = false
 			visibility = FlightListStepVisibility.ALWAYS
-		}
+		})
 
-		steps[FlightListStepId.STEAMVR_DISCONNECTED] = FlightListStepT().apply {
+		steps.add(FlightListStepT().apply {
 			id = FlightListStepId.STEAMVR_DISCONNECTED
 			optional = true
 			ignorable = true
 			visibility = FlightListStepVisibility.WHEN_INVALID
-		}
+		})
 
-		steps[FlightListStepId.UNASSIGNED_HMD] = FlightListStepT().apply {
+		steps.add(FlightListStepT().apply {
 			id = FlightListStepId.UNASSIGNED_HMD
 			optional = false
 			ignorable = false
 			visibility = FlightListStepVisibility.WHEN_INVALID
-		}
+		})
 
-		steps[FlightListStepId.TRACKER_ERROR] = FlightListStepT().apply {
+		steps.add(FlightListStepT().apply {
 			id = FlightListStepId.TRACKER_ERROR
 			optional = false
 			ignorable = false
 			visibility = FlightListStepVisibility.WHEN_INVALID
-		}
+		})
 
 		if (vrServer.vrcConfigManager.isSupported) {
-			steps[FlightListStepId.VRCHAT_SETTINGS] = FlightListStepT().apply {
+			steps.add(FlightListStepT().apply {
 				id = FlightListStepId.VRCHAT_SETTINGS
 				optional = false
 				ignorable = true
 				visibility = FlightListStepVisibility.WHEN_INVALID
-			}
-		}
-
-		require(steps.all { it.key == it.value.id }) {
-			"Mismatching id/key pair"
+			})
 		}
 	}
 
 	fun updateValidity(id: Int, valid: Boolean, beforeUpdate: ((step: FlightListStepT) -> Unit)? = null) {
-		val step = steps[id] ?: return;
-		if (step.valid != valid) {
-			step.valid = valid
-			if (beforeUpdate != null) {
-				beforeUpdate(step)
-			}
-			listeners.forEach { it.onStepUpdate(step) }
+		require(id != FlightListStepId.UNKNOWN) {
+			"id is unknown"
 		}
+		val step = steps.find { it.id == id } ?: return;
+		step.valid = valid
+		if (beforeUpdate != null) {
+			beforeUpdate(step)
+		}
+		listeners.forEach { it.onStepUpdate(step) }
 	}
 
 	fun updateUnassignedHMD(valid: Boolean, trackerId: TrackerIdT?) {
@@ -125,8 +125,8 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, Tra
 				it.extraData = null
 			} else {
 				it.extraData = FlightListExtraDataUnion().apply {
-					type = FlightListExtraData.StatusUnassignedHMD
-					value = StatusUnassignedHMDT().apply {
+					type = FlightListExtraData.FlightListUnassignedHMD
+					value = FlightListUnassignedHMDT().apply {
 						this.trackerId = trackerId
 					}
 				}
@@ -136,16 +136,16 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, Tra
 
 	fun updateRequireReset() {
 		val trackerRequireReset = vrServer.allTrackers.filter {
-			it.needsReset && it.trackerPosition != null && it.status.reset && (
+			!it.isInternal && it.needsReset && it.trackerPosition != null && it.status.reset && (
 				it.isImu()
 					|| !it.statusResetRecently && it.trackerDataType != TrackerDataType.FLEX_ANGLE
 				)
 		}
-		updateValidity(FlightListStepId.FULL_RESET, trackerRequireReset.isNotEmpty()) {
+		updateValidity(FlightListStepId.FULL_RESET, trackerRequireReset.isEmpty()) {
 			if (trackerRequireReset.isNotEmpty()) {
 				it.extraData = FlightListExtraDataUnion().apply {
-					type = FlightListExtraData.StatusTrackerReset
-					value = StatusTrackerResetT().apply {
+					type = FlightListExtraData.FlightListTrackerReset
+					value = FlightListTrackerResetT().apply {
 						trackersId = buildTrackersIds(trackerRequireReset)
 					}
 				}
@@ -157,8 +157,12 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, Tra
 
 
 	fun updateTrackerCalibrationStep() {
-		val trackersNeedCalibration = vrServer.allTrackers.filter { it.isImu() && it.hasCompletedRestCalibration == false }
-		updateValidity(FlightListStepId.TRACKERS_CALIBRATION, trackersNeedCalibration.isNotEmpty()) {
+		val trackersNeedCalibration = vrServer.allTrackers.filter {
+			it.isImu()
+				&& it.status !== TrackerStatus.DISCONNECTED
+				&& it.hasCompletedRestCalibration == false
+		}
+		updateValidity(FlightListStepId.TRACKERS_CALIBRATION, trackersNeedCalibration.isEmpty()) {
 			if (trackersNeedCalibration.isNotEmpty()) {
 				it.extraData = FlightListExtraDataUnion().apply {
 					type = FlightListExtraData.FlightListNeedCalibration
@@ -166,6 +170,8 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, Tra
 						trackersId = buildTrackersIds(trackersNeedCalibration)
 					}
 				}
+			} else {
+				it.extraData = null
 			}
 		}
 	}
@@ -185,11 +191,11 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, Tra
 		// Prevent useless computation if we are not dealing with error statuses
 		if (oldStatus == TrackerStatus.ERROR || newStatus == TrackerStatus.ERROR) {
 			val trackersWithError = vrServer.allTrackers.filter { it.status === TrackerStatus.ERROR }
-			updateValidity(FlightListStepId.TRACKER_ERROR, trackersWithError.isNotEmpty()) {
+			updateValidity(FlightListStepId.TRACKER_ERROR, trackersWithError.isEmpty()) {
 				if (trackersWithError.isNotEmpty()) {
 					it.extraData = FlightListExtraDataUnion().apply {
-						type = FlightListExtraData.StatusTrackerError
-						value = StatusTrackerErrorT().apply {
+						type = FlightListExtraData.FlightListTrackerError
+						value = FlightListTrackerErrorT().apply {
 							trackersId = buildTrackersIds(trackersWithError)
 						}
 					}
@@ -202,5 +208,18 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, Tra
 		if (oldStatus.reset || newStatus.reset) {
 			updateRequireReset()
 		}
+
+		if (newStatus == TrackerStatus.DISCONNECTED) {
+			updateTrackerCalibrationStep()
+		}
+	}
+
+	fun toggleStep(step: FlightListStepT) {
+		val ignoredSteps = vrServer.configManager.vrConfig.flightList.ignoredStepsIds;
+		if (!ignoredSteps.contains(step.id))
+			ignoredSteps.add(step.id)
+		else
+			ignoredSteps.remove(step.id)
+		vrServer.configManager.saveConfig()
 	}
 }
