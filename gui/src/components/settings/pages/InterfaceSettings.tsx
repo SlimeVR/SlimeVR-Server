@@ -293,7 +293,9 @@ export function InterfaceSettings() {
             <div className="flex flex-col pt-1 pb-2">
               <Localized
                 id={'settings-interface-behavior-error_tracking-description'}
-                elems={{ b: <b></b> }}
+                elems={{
+                  b: <b></b>,
+                }}
               >
                 <Typography
                   color="secondary"
