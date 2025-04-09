@@ -1098,6 +1098,13 @@ onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR is not cur
 onboarding-scaled_proportions-manual_height-height-v2 = Your full height is
 onboarding-scaled_proportions-manual_height-estimated_height = Your estimated headset height is:
 onboarding-scaled_proportions-manual_height-next_step = Continue and save
+onboarding-scaled_proportions-manual_height-warning =
+    You are currently using the manual way of setting up scaled proportions!
+    <b>This mode is recommended only if you do not use a HMD with SlimeVR</b>
+
+    To be able to use the automatic scaled proportions please:
+onboarding-scaled_proportions-manual_height-warning-no_hmd = Connect a VR Headset
+onboarding-scaled_proportions-manual_height-warning-no_controllers = Make sure your controllers are connected and correctly assigned to your hands
 
 ## Tracker scaled proportions reset
 onboarding-scaled_proportions-reset_proportion-title = Reset your body proportions
