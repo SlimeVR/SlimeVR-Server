@@ -581,7 +581,7 @@ settings-general-interface-discord_presence-message = { $amount ->
     *[other] Using { $amount } trackers
 }
 settings-interface-behavior-error_tracking = Error collection via Sentry.io
-settings-interface-behavior-error_tracking-description =
+settings-interface-behavior-error_tracking-description_v2 =
     <h1>Do you consent to the collection of anonymized error data?</h1>
 
     <b>We do not collect personal information</b> such as your IP address or wireless credentials. SlimeVR values your privacy!
@@ -1310,7 +1310,7 @@ unknown_device-modal-forget = Ignore it
 
 ## Error collection consent modal
 error_collection_modal-title = Can we collect errors?
-error_collection_modal-description = { settings-interface-behavior-error_tracking-description }
+error_collection_modal-description = { settings-interface-behavior-error_tracking-description_v2 }
 
     You can change this setting later in the Behavior section of the settings page.
 error_collection_modal-confirm = I agree
