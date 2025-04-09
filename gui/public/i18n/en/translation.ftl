@@ -1103,7 +1103,7 @@ onboarding-scaled_proportions-manual_height-warning =
     <b>This mode is recommended only if you do not use a HMD with SlimeVR</b>
 
     To be able to use the automatic scaled proportions please:
-onboarding-scaled_proportions-manual_height-warning-no_hmd = Connect an HMD
+onboarding-scaled_proportions-manual_height-warning-no_hmd = Connect a VR Headset
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Make sure your controllers are connected and correctly assigned to your hands
 
 ## Tracker scaled proportions reset
