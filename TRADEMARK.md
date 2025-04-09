@@ -2,7 +2,7 @@
 
 **Usage of SlimeVR software, hardware, or other intellectual property in this or other repositories does not grant you the right to use SlimeVR trademark as your own.**
 
-The purpose of a trademark is to remove uncertainty for users and customers regarding the product's manufacturer or endorsement. You're not allowed to market your product using SlimeVR name, and your usage of the name should be only factual and descriptive. For example, calling original SlimeVR products SlimeVR or describing compatibility of other products or deriviatives. This applies to all products, including software, and hardware including non-official Full-Body Trackers.
+The purpose of a trademark is to remove uncertainty for users and customers regarding the product's manufacturer or endorsement. You're not allowed to market your product using SlimeVR name, and your usage of the name should be only factual and descriptive. For example, calling original SlimeVR products SlimeVR or describing compatibility of other products or derivatives. This applies to all products, including software, and hardware including non-official Full-Body Trackers.
 
 **Here are a few _acceptable_ uses of SlimeVR name when selling unofficial Slime trackers:**
 * SlimeVR-compatible trackers

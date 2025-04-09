@@ -50,9 +50,7 @@ uncertain what the exact requirements are.
 ## Trademark and Logo use
 **SlimeVR is a trademark or a registered trademark of SlimeVR B.V. Usage of SlimeVR software, hardware, or other intellectual property in this or other repositories does not grant you the right to use SlimeVR trademark as your own.**
 
-**SlimeVR logo is copyright of SlimeVR B.V.**
-
-For more information on both, please refer to the [TRADEMARK].
+For more information, please refer to the [TRADEMARK].
 
 ## Contributions
 Any contributions submitted for inclusion in this repository will be dual-licensed under
