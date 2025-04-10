@@ -9,6 +9,11 @@
 
 websocket-connecting = Conectándose al servidor
 websocket-connection_lost = Conexión con el servidor perdida. Intentando reconectar...
+websocket-connection_lost-desc = Parece que el servidor de SlimeVR ha dejado de funcionar. Revise los registros y reinicie el programa
+websocket-timedout = No se ha podido conectar al servidor
+websocket-timedout-desc = Parece que el servidor de SlimeVR ha dejado de funcionar o se agotó el tiempo de espera de la conexión. Revise los registros y reinicie el programa
+websocket-error-close = Salir de SlimeVR
+websocket-error-logs = Abra la carpeta de registros
 
 ## Update notification
 
@@ -49,6 +54,14 @@ body_part-LEFT_HAND = Mano izquierda
 body_part-LEFT_UPPER_LEG = Muslo izquierdo
 body_part-LEFT_LOWER_LEG = Tobillo Izquierdo
 body_part-LEFT_FOOT = Pie izquierdo
+body_part-LEFT_THUMB_METACARPAL = Metacarpiano del pulgar izquierdo
+body_part-LEFT_THUMB_PROXIMAL = Proximal del pulgar izquierdo
+body_part-LEFT_THUMB_DISTAL = Distal del pulgar izquierdo
+body_part-LEFT_INDEX_PROXIMAL = Proximal del índice izquierdo
+body_part-LEFT_INDEX_INTERMEDIATE = Medial del índice izquierdo
+body_part-LEFT_INDEX_DISTAL = Distal del indice izquierdo
+body_part-LEFT_MIDDLE_PROXIMAL = Proximal del medio izquierdo
+body_part-LEFT_MIDDLE_INTERMEDIATE = Medial del medio izquierdo
 
 ## BoardType
 
