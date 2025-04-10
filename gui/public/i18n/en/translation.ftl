@@ -1317,7 +1317,7 @@ unknown_device-modal-forget = Ignore it
 
 ## Error collection consent modal
 error_collection_modal-title = Can we collect errors?
-error_collection_modal-description = { settings-interface-behavior-error_tracking-description_v2 }
+error_collection_modal-description_v2 = { settings-interface-behavior-error_tracking-description_v2 }
 
     You can change this setting later in the Behavior section of the settings page.
 error_collection_modal-confirm = I agree
