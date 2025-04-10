@@ -584,12 +584,12 @@ settings-general-interface-discord_presence-message = { $amount ->
     *[other] Using { $amount } trackers
 }
 settings-interface-behavior-error_tracking = Error collection via Sentry.io
-settings-interface-behavior-error_tracking-description =
-    To provide the best user experience, we collect anonymized error reports, performance metrics, and operating system information. This helps us detect bugs and issues with SlimeVR. These metrics are collected via Sentry.io.
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>Do you consent to the collection of anonymized error data?</h1>
 
     <b>We do not collect personal information</b> such as your IP address or wireless credentials. SlimeVR values your privacy!
 
-    Do you consent to the collection of anonymized error data?
+    To provide the best user experience, we collect anonymized error reports, performance metrics, and operating system information. This helps us detect bugs and issues with SlimeVR. These metrics are collected via Sentry.io.
 
 settings-interface-behavior-error_tracking-label = Send errors to developers
 
@@ -729,9 +729,12 @@ settings-utils-advanced-reset_warning =
 settings-utils-advanced-reset_warning-reset = Reset settings
 settings-utils-advanced-reset_warning-cancel = Cancel
 
-settings-utils-advanced-open_data = Data folder
-settings-utils-advanced-open_data-description = Open SlimeVR's data folder in file explorer, containing config and log files.
+settings-utils-advanced-open_data-v1 = Config folder
+settings-utils-advanced-open_data-description-v1 = Open SlimeVR's config folder in file explorer, containing the configuration
 settings-utils-advanced-open_data-label = Open folder
+settings-utils-advanced-open_logs = Logs folder
+settings-utils-advanced-open_logs-description = Open SlimeVR's logs folder in file explorer, containing the logs of the app
+settings-utils-advanced-open_logs-label = Open folder
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
@@ -1098,6 +1101,13 @@ onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR is not cur
 onboarding-scaled_proportions-manual_height-height-v2 = Your full height is
 onboarding-scaled_proportions-manual_height-estimated_height = Your estimated headset height is:
 onboarding-scaled_proportions-manual_height-next_step = Continue and save
+onboarding-scaled_proportions-manual_height-warning =
+    You are currently using the manual way of setting up scaled proportions!
+    <b>This mode is recommended only if you do not use a HMD with SlimeVR</b>
+
+    To be able to use the automatic scaled proportions please:
+onboarding-scaled_proportions-manual_height-warning-no_hmd = Connect a VR Headset
+onboarding-scaled_proportions-manual_height-warning-no_controllers = Make sure your controllers are connected and correctly assigned to your hands
 
 ## Tracker scaled proportions reset
 onboarding-scaled_proportions-reset_proportion-title = Reset your body proportions
@@ -1352,7 +1362,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
 
 ## Error collection consent modal
 error_collection_modal-title = Can we collect errors?
-error_collection_modal-description = { settings-interface-behavior-error_tracking-description }
+error_collection_modal-description = { settings-interface-behavior-error_tracking-description_v2 }
 
     You can change this setting later in the Behavior section of the settings page.
 error_collection_modal-confirm = I agree

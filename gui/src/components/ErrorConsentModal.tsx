@@ -34,7 +34,10 @@ export function ErrorConsentModal({
               </Typography>
               <Localized
                 id={'error_collection_modal-description'}
-                elems={{ b: <b></b> }}
+                elems={{
+                  b: <b></b>,
+                  h1: <span className="text-lg font-bold"></span>,
+                }}
               >
                 <Typography
                   variant="standard"

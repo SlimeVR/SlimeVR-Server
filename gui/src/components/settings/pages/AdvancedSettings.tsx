@@ -45,6 +45,14 @@ export function AdvancedSettings() {
     }
   };
 
+  const openLogsFolder = async () => {
+    try {
+      await invoke<string | null>('open_logs_folder');
+    } catch (err) {
+      error('Failed to open config folder:', err);
+    }
+  };
+
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
@@ -163,12 +171,12 @@ export function AdvancedSettings() {
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
                   <Typography bold>
-                    {l10n.getString('settings-utils-advanced-open_data')}
+                    {l10n.getString('settings-utils-advanced-open_data-v1')}
                   </Typography>
                   <div className="flex flex-col">
                     <Typography color="secondary">
                       {l10n.getString(
-                        'settings-utils-advanced-open_data-description'
+                        'settings-utils-advanced-open_data-description-v1'
                       )}
                     </Typography>
                   </div>
@@ -176,6 +184,26 @@ export function AdvancedSettings() {
                 <div className="flex flex-col nsm:pt-2">
                   <Button variant="secondary" onClick={openConfigFolder}>
                     {l10n.getString('settings-utils-advanced-open_data-label')}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
+                <div>
+                  <Typography bold>
+                    {l10n.getString('settings-utils-advanced-open_logs')}
+                  </Typography>
+                  <div className="flex flex-col">
+                    <Typography color="secondary">
+                      {l10n.getString(
+                        'settings-utils-advanced-open_logs-description'
+                      )}
+                    </Typography>
+                  </div>
+                </div>
+                <div className="flex flex-col nsm:pt-2">
+                  <Button variant="secondary" onClick={openLogsFolder}>
+                    {l10n.getString('settings-utils-advanced-open_logs-label')}
                   </Button>
                 </div>
               </div>

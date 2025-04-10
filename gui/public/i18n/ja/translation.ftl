@@ -49,6 +49,37 @@ body_part-LEFT_HAND = 左手
 body_part-LEFT_UPPER_LEG = 左膝
 body_part-LEFT_LOWER_LEG = 左足
 body_part-LEFT_FOOT = 左足先
+body_part-LEFT_THUMB_PROXIMAL = 左母指近位部
+body_part-LEFT_THUMB_DISTAL = 左母指遠位部
+body_part-LEFT_INDEX_PROXIMAL = 左人差指近位部
+body_part-LEFT_INDEX_INTERMEDIATE = 左人差指中間部
+body_part-LEFT_INDEX_DISTAL = 左人差指遠位部
+body_part-LEFT_MIDDLE_PROXIMAL = 左中指近位部
+body_part-LEFT_MIDDLE_INTERMEDIATE = 左中指中間部
+body_part-LEFT_MIDDLE_DISTAL = 左中指遠位部
+body_part-LEFT_RING_PROXIMAL = 左薬指近位部
+body_part-LEFT_RING_INTERMEDIATE = 左薬指中間部
+body_part-LEFT_RING_DISTAL = 左薬指遠位部
+body_part-LEFT_LITTLE_PROXIMAL = 左小指近位部
+body_part-LEFT_LITTLE_INTERMEDIATE = 左小指中間部
+body_part-LEFT_LITTLE_DISTAL = 左小指遠位部
+body_part-RIGHT_THUMB_PROXIMAL = 右母指近位部
+body_part-RIGHT_THUMB_DISTAL = 右母指遠位部
+body_part-RIGHT_INDEX_PROXIMAL = 右人差指近位部
+body_part-RIGHT_INDEX_INTERMEDIATE = 右人差指中間部
+body_part-RIGHT_INDEX_DISTAL = 右人差指遠位部
+body_part-RIGHT_MIDDLE_PROXIMAL = 右中指近位部
+body_part-RIGHT_MIDDLE_INTERMEDIATE = 右中指中間部
+body_part-RIGHT_MIDDLE_DISTAL = 右中指遠位部
+body_part-RIGHT_RING_PROXIMAL = 右薬指近位部
+body_part-RIGHT_RING_INTERMEDIATE = 右薬指中間部
+body_part-RIGHT_RING_DISTAL = 右薬指遠位部
+body_part-RIGHT_LITTLE_PROXIMAL = 右小指近位部
+body_part-RIGHT_LITTLE_INTERMEDIATE = 右小指中間部
+body_part-RIGHT_LITTLE_DISTAL = 右小指遠位部
+
+## BoardType
+
 
 ## Proportions
 
@@ -144,7 +175,6 @@ widget-developer_mode-more_info = 他情報
 widget-imu_visualizer = 回転
 widget-imu_visualizer-rotation_raw = 生
 widget-imu_visualizer-rotation_preview = 生
-widget-imu_visualizer-rotation_hide = 隠す
 
 ## Widget: Skeleton Visualizer
 
@@ -213,12 +243,18 @@ tracker-settings-mounting_section-edit = 装着向きの編集
 tracker-settings-drift_compensation_section = ドリフト補正を行う
 tracker-settings-drift_compensation_section-description = ドリフト補正が有効になっている場合、このトラッカーはドリフトを補正する必要がありますか?
 tracker-settings-drift_compensation_section-edit = ドリフト補正を行う
+# Multiline!
+tracker-settings-use_mag-description =
+    このトラッカーは、マグネトメーターの使用が許可されている場合、ドリフトを減らすためにマグネトメーターを使用すべきですか？ <b>設定を切り替える際は、トラッカーをシャットダウンしないでください！</b>
+    
+    まず、マグネトメーターの使用を許可する必要があります。<magSetting>設定に移動するにはここをクリックしてください</magSetting>。
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = トラッカー名称
 tracker-settings-name_section-description = 自由に名称をつけてください
 tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-forget = フォーゲット・トラッカー
+tracker-settings-forget-description = スライムVRサーバーからトラッカーを削除し、サーバーが再起動するまで接続できないようにします。トラッカーの設定は失われません。
 tracker-settings-forget-label = フォーゲット・トラッカー
 
 ## Tracker part card info
@@ -307,6 +343,10 @@ settings-general-steamvr-description =
     SlimeVRが行うことをよりコントロールしたい場合に便利です。
 settings-general-steamvr-trackers-waist = 腰
 settings-general-steamvr-trackers-chest = 胸
+settings-general-steamvr-trackers-tracker_toggling-description = 現在のトラッカー割り当てに応じて、SteamVRトラッカーのオン・オフを自動的に切り替えます。
+settings-general-steamvr-trackers-hands-warning =
+    <b>警告：</b> ハンドトラッカーはコントローラーを上書きします。
+    よろしいですか？
 settings-general-steamvr-trackers-hands-warning-cancel = キャンセル
 settings-general-steamvr-trackers-hands-warning-done = はい
 
@@ -377,9 +417,6 @@ settings-general-fk_settings-skeleton_settings-ratios = スケルトン比率
 settings-general-fk_settings-skeleton_settings-ratios-description = スケルトン設定の値を変更する。これらを変更した後、体の比率を調整する必要があるかもしれません。
 settings-general-fk_settings-skeleton_settings-impute_waist_from_chest_hip = 胸から腰への推定
 settings-general-fk_settings-self_localization-title = モーションキャプチャモード
-settings-general-fk_settings-vive_emulation-title = Viveエミュレーション
-settings-general-fk_settings-vive_emulation-description = Viveトラッカーが抱える腰トラッカーの問題をエミュレートします。
-settings-general-fk_settings-vive_emulation-label = Viveエミュレーションの有効化
 
 ## Gesture control settings (tracker tapping)
 
@@ -409,9 +446,6 @@ settings-general-gesture_control-mountingResetTaps = タップによるマウン
 ## Appearance settings
 
 settings-interface-appearance = 外観
-settings-general-interface-dev_mode = 開発者モード
-settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
-settings-general-interface-dev_mode-label = 開発者モード
 settings-general-interface-theme = カラーテーマ
 settings-general-interface-lang = 言語を選択
 settings-general-interface-lang-description = 使用したいデフォルトの言語を変更する
@@ -432,6 +466,12 @@ settings-general-interface-feedback_sound = フィードバック音
 settings-general-interface-feedback_sound-label = フィードバック音
 settings-general-interface-feedback_sound-volume = フィードバック音量
 settings-general-interface-connected_trackers_warning = 接続されたトラッカー警告
+
+## Behavior settings
+
+settings-general-interface-dev_mode = 開発者モード
+settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
+settings-general-interface-dev_mode-label = 開発者モード
 settings-general-interface-use_tray-label = システムトレイに最小化する
 
 ## Serial settings
@@ -513,6 +553,9 @@ settings-osc-vmc-network-port_out =
 settings-osc-vmc-network-address = ネットワークアドレス
 settings-osc-vmc-network-address-placeholder = IPV4アドレス
 settings-osc-vmc-vrm = VRMモデル
+
+## Advanced settings
+
 
 ## Setup/onboarding menu
 
@@ -653,13 +696,7 @@ onboarding-automatic_mounting-put_trackers_on-title = トラッカーを装着�
 onboarding-automatic_mounting-put_trackers_on-description = マウントの方向を較正するために、先ほど割り当てたトラッカーを使用します。右の図でどれがどれだかわかると思います。
 onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカーを装着しました
 
-## Tracker proportions method choose
-
-# Italized text
-onboarding-choose_proportions-auto_proportions-subtitle = おすすめされた
-onboarding-choose_proportions-import-failed = 失敗
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = チュートリアルをリセットする
 onboarding-manual_proportions-title = マニュアルボディプロポーション
@@ -703,6 +740,12 @@ onboarding-automatic_proportions-done-title = 体を測定して保存
 onboarding-automatic_proportions-done-description = ボディプロポーションのキャリブレーションが完了しました！
 onboarding-automatic_proportions-error_modal-confirm = 了解!
 
+## Tracker scaled proportions setup
+
+
+## Tracker scaled proportions reset
+
+
 ## Home
 
 home-no_trackers = トラッカーを検出できません。もしくは割り当てられていません。
@@ -722,6 +765,21 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = { $trackerName } トラッカーにエラーが発生しています
 
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
+
 ## Tray Menu
 
 tray_menu-show = ショー
@@ -737,3 +795,6 @@ tray_or_exit_modal-cancel = キャンセル
 
 unknown_device-modal-confirm = もちろん!
 unknown_device-modal-forget = 無視する
+
+## Error collection consent modal
+
