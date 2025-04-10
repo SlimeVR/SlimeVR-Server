@@ -33,7 +33,7 @@ export function ErrorConsentModal({
                 {l10n.getString('error_collection_modal-title')}
               </Typography>
               <Localized
-                id={'error_collection_modal-description'}
+                id={'error_collection_modal-description_v2'}
                 elems={{
                   b: <b></b>,
                   h1: <span className="text-lg font-bold"></span>,
