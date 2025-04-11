@@ -30,7 +30,6 @@ import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import solarxr_protocol.rpc.StatusData
-import java.lang.IllegalArgumentException
 import kotlin.properties.Delegates
 
 class HumanSkeleton(
@@ -805,42 +804,34 @@ class HumanSkeleton(
 			// Tries to guess missing lower spine trackers by interpolating rotations
 			if (waistTracker == null) {
 				getFirstAvailableTracker(chestTracker, upperChestTracker)?.let { chest ->
+					val chestRot = chest.getRotation()
+
 					hipTracker?.let {
 						// Calculates waist from chest + hip
-						var hipRot = it.getRotation()
-						var chestRot = chest.getRotation()
-
-						// Get the rotation relative to where we expect the hip to be
-						if (chestRot.times(FORWARD_QUATERNION).dot(hipRot) < 0.0f) {
-							hipRot = hipRot.unaryMinus()
-						}
+						val hipRot = signExtendedRot(chestRot, it.getRotation())
 
 						// Interpolate between the chest and the hip
-						chestRot = chestRot.interpQ(hipRot, waistFromChestHipAveraging)
+						val interp = chestRot.interpQ(hipRot, waistFromChestHipAveraging)
 
 						// Set waist's rotation
-						waistBone.setRotation(chestRot)
+						waistBone.setRotation(interp)
 					} ?: run {
 						if (hasKneeTrackers) {
 							// Calculates waist from chest + legs
-							var leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
-							var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
-							var chestRot = chest.getRotation()
-
-							// Get the rotation relative to where we expect the upper legs to be
-							val expectedUpperLegsRot = chestRot.times(FORWARD_QUATERNION)
-							if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
-								leftLegRot = leftLegRot.unaryMinus()
-							}
-							if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
-								rightLegRot = rightLegRot.unaryMinus()
-							}
+							val leftLegRot = signExtendedRot(
+								chestRot,
+								leftUpperLegTracker?.getRotation(),
+							)
+							val rightLegRot = signExtendedRot(
+								chestRot,
+								rightUpperLegTracker?.getRotation(),
+							)
 
 							// Interpolate between the pelvis, averaged from the legs, and the chest
-							chestRot = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), waistFromChestLegsAveraging).unit()
+							val interp = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), waistFromChestLegsAveraging).unit()
 
 							// Set waist's rotation
-							waistBone.setRotation(chestRot)
+							waistBone.setRotation(interp)
 						}
 					}
 				}
@@ -848,47 +839,41 @@ class HumanSkeleton(
 			if (hipTracker == null && hasKneeTrackers) {
 				waistTracker?.let {
 					// Calculates hip from waist + legs
-					var leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
-					var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
-					var waistRot = it.getRotation()
-
-					// Get the rotation relative to where we expect the upper legs to be
-					val expectedUpperLegsRot = waistRot.times(FORWARD_QUATERNION)
-					if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
-						leftLegRot = leftLegRot.unaryMinus()
-					}
-					if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
-						rightLegRot = rightLegRot.unaryMinus()
-					}
+					val waistRot = it.getRotation()
+					val leftLegRot = signExtendedRot(
+						waistRot,
+						leftUpperLegTracker?.getRotation(),
+					)
+					val rightLegRot = signExtendedRot(
+						waistRot,
+						rightUpperLegTracker?.getRotation(),
+					)
 
 					// Interpolate between the pelvis, averaged from the legs, and the chest
-					waistRot = waistRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromWaistLegsAveraging).unit()
+					val interp = waistRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromWaistLegsAveraging).unit()
 
 					// Set hip rotation
-					hipBone.setRotation(waistRot)
-					hipTrackerBone.setRotation(waistRot)
+					hipBone.setRotation(interp)
+					hipTrackerBone.setRotation(interp)
 				} ?: run {
 					getFirstAvailableTracker(chestTracker, upperChestTracker)?.let {
 						// Calculates hip from chest + legs
-						var leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
-						var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
-						var chestRot = it.getRotation()
-
-						// Get the rotation relative to where we expect the upper legs to be
-						val expectedUpperLegsRot = chestRot.times(FORWARD_QUATERNION)
-						if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
-							leftLegRot = leftLegRot.unaryMinus()
-						}
-						if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
-							rightLegRot = rightLegRot.unaryMinus()
-						}
+						val chestRot = it.getRotation()
+						val leftLegRot = signExtendedRot(
+							chestRot,
+							leftUpperLegTracker?.getRotation(),
+						)
+						val rightLegRot = signExtendedRot(
+							chestRot,
+							rightUpperLegTracker?.getRotation(),
+						)
 
 						// Interpolate between the pelvis, averaged from the legs, and the chest
-						chestRot = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromChestLegsAveraging).unit()
+						val interp = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromChestLegsAveraging).unit()
 
 						// Set hip rotation
-						hipBone.setRotation(chestRot)
-						hipTrackerBone.setRotation(chestRot)
+						hipBone.setRotation(interp)
+						hipTrackerBone.setRotation(interp)
 					}
 				}
 			}
@@ -896,15 +881,21 @@ class HumanSkeleton(
 
 		// Extended pelvis model
 		if (extendedPelvisModel && hasKneeTrackers && hipTracker == null) {
-			val leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
-			val rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
 			val hipRot = hipBone.getLocalRotation()
+			val leftLegRot = signExtendedRot(
+				hipRot,
+				leftUpperLegTracker?.getRotation(),
+			)
+			val rightLegRot = signExtendedRot(
+				hipRot,
+				rightUpperLegTracker?.getRotation(),
+			)
 
 			val extendedPelvisRot = extendedPelvisYawRoll(leftLegRot, rightLegRot, hipRot)
 
 			// Interpolate between the hipRot and extendedPelvisRot
 			val newHipRot = hipRot.interpR(
-				if (extendedPelvisRot.lenSq() != 0.0f) extendedPelvisRot else IDENTITY,
+				if (extendedPelvisRot.lenSq() != 0.0f) extendedPelvisRot else hipRot,
 				hipLegsAveraging,
 			)
 
@@ -1127,8 +1118,8 @@ class HumanSkeleton(
 	 * Rotates the third Quaternion to match its yaw and roll to the rotation of
 	 * the average of the first and second quaternions.
 	 *
-	 * @param leftKnee the first Quaternion
-	 * @param rightKnee the second Quaternion
+	 * @param leftKnee the first Quaternion (signed to the hip)
+	 * @param rightKnee the second Quaternion (signed to the hip)
 	 * @param hip the third Quaternion
 	 * @return the rotated Quaternion
 	 */
@@ -1137,24 +1128,11 @@ class HumanSkeleton(
 		rightKnee: Quaternion,
 		hip: Quaternion,
 	): Quaternion {
-		// Get the knees' rotation relative to where we expect them to be.
-		// The angle between your knees and hip can be over 180 degrees...
-		var leftKneeRot = leftKnee
-		var rightKneeRot = rightKnee
-
-		val kneeRot = hip.times(FORWARD_QUATERNION)
-		if (kneeRot.dot(leftKneeRot) < 0.0f) {
-			leftKneeRot = leftKneeRot.unaryMinus()
-		}
-		if (kneeRot.dot(rightKneeRot) < 0.0f) {
-			rightKneeRot = rightKneeRot.unaryMinus()
-		}
-
 		// R = InverseHip * (LeftLeft + RightLeg)
 		// C = Quaternion(R.w, -R.x, 0, 0)
 		// Pelvis = Hip * R * C
 		// normalize(Pelvis)
-		val r = hip.inv() * (leftKneeRot + rightKneeRot)
+		val r = hip.inv() * (leftKnee + rightKnee)
 		val c = Quaternion(r.w, -r.x, 0f, 0f)
 		return (hip * r * c).unit()
 	}
@@ -1736,11 +1714,39 @@ class HumanSkeleton(
 	}
 
 	companion object {
-		val FORWARD_QUATERNION = EulerAngles(
+		/**
+		 * Used to rotate an identity quaternion to face up.
+		 */
+		val UP_ADJ = EulerAngles(
 			EulerOrder.YZX,
-			FastMath.HALF_PI,
+			-FastMath.HALF_PI,
 			0f,
 			0f,
 		).toQuaternion()
+
+		/**
+		 * Similar to twinNearest, but uses the longest rotation for the lower back
+		 * quadrant. This handles the thigh extending behind the torso to face
+		 * downwards, and the hip extending behind the chest. The thigh cannot bend to
+		 * the back away from the torso and the spine hopefully can't bend back that far,
+		 * so we can fairly safely assume the rotation is towards the torso.
+		 */
+		fun signExtendedRot(ref: Quaternion, extended: Quaternion?): Quaternion {
+			// Handle null here for convenience
+			if (extended == null) {
+				return ref
+			}
+
+			val isBack = ref.angleToR(extended) > FastMath.HALF_PI
+			val isLower = (ref * UP_ADJ).angleToR(extended) > FastMath.HALF_PI
+
+			return if (isBack && isLower) {
+				// Select longest rotation
+				if (extended.dot(ref) >= 0f) -extended else extended
+			} else {
+				// Select shortest rotation
+				extended.twinNearest(ref)
+			}
+		}
 	}
 }
