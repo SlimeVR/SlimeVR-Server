@@ -641,6 +641,10 @@ class HumanPoseManager(val server: VRServer?) {
 	val userHeightFromConfig: Float
 		get() = skeletonConfigManager.userHeightFromOffsets
 
+	@get:ThreadSafe
+	val realUserHeight: Float
+		get() = skeletonConfigManager.userHeightFromOffsets / 0.936f
+
 	// #endregion
 	fun getPauseTracking(): Boolean = skeleton.getPauseTracking()
 
