@@ -4,9 +4,9 @@ import com.jme3.math.FastMath
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.udp.IMUType
-import dev.slimevr.unit.TrackerUtils.assertAnglesApproxEqual
-import dev.slimevr.unit.TrackerUtils.deg
-import dev.slimevr.unit.TrackerUtils.yaw
+import dev.slimevr.unit.TrackerTestUtils.assertAnglesApproxEqual
+import dev.slimevr.unit.TrackerTestUtils.deg
+import dev.slimevr.unit.TrackerTestUtils.yaw
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -23,8 +23,8 @@ import org.junit.jupiter.api.TestFactory
 class MountingResetTests {
 
 	@TestFactory
-	fun testResetAndMounting(): List<DynamicTest> = TrackerUtils.directions.flatMap { e ->
-		TrackerUtils.directions.map { m ->
+	fun testResetAndMounting(): List<DynamicTest> = TrackerTestUtils.directions.flatMap { e ->
+		TrackerTestUtils.directions.map { m ->
 			DynamicTest.dynamicTest(
 				"Full and Mounting Reset Test of Tracker (Expected: ${deg(e)}, reference: ${deg(m)})",
 			) {
@@ -35,7 +35,7 @@ class MountingResetTests {
 
 	private fun checkResetMounting(expected: Quaternion, reference: Quaternion) {
 		// Compute the pitch/roll for the expected mounting
-		val trackerRot = (expected * (TrackerUtils.frontRot / expected))
+		val trackerRot = (expected * (TrackerTestUtils.frontRot / expected))
 
 		val tracker = Tracker(
 			null,
@@ -120,7 +120,7 @@ class MountingResetTests {
 		val expected = Quaternion.SLIMEVR.RIGHT
 		val reference = EulerAngles(EulerOrder.YZX, FastMath.PI / 8f, FastMath.HALF_PI, 0f).toQuaternion()
 		// Compute the pitch/roll for the expected mounting
-		val trackerRot = (expected * (TrackerUtils.frontRot / expected))
+		val trackerRot = (expected * (TrackerTestUtils.frontRot / expected))
 
 		val tracker = Tracker(
 			null,
