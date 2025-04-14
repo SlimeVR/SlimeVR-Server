@@ -64,7 +64,6 @@ export const boardTypeToFirmwareToolBoardType: Record<
   [BoardType.XIAO_ESP32C3]: null,
   [BoardType.ESP32C6DEVKITC1]: null,
   [BoardType.GLOVE_IMU_SLIMEVR_DEV]: null,
-  [BoardType.GESTURES]: null,
 };
 
 export const firmwareToolToBoardType: Record<CreateBoardConfigDTO['type'], BoardType> =
