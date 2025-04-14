@@ -106,6 +106,8 @@ export function TopBar({
   const unshowVersionBind = useDoubleTap(() => setShowVersionMobile(false));
 
   useEffect(() => {
+    if (!isTauri) return;
+
     const unlistenTrayClose = listen('try-close', async () => {
       const window = getCurrentWindow();
       await window.show();
@@ -115,20 +117,18 @@ export function TopBar({
       await tryCloseApp(true);
     });
 
-    const unlistenCloseRequested = isTauri
-      ? getCurrentWindow().listen(
-          TauriEvent.WINDOW_CLOSE_REQUESTED,
-          async (data) => {
-            const ev = new CloseRequestedEvent(data);
-            ev.preventDefault();
-            await tryCloseApp();
-          }
-        )
-      : undefined;
+    const unlistenCloseRequested = getCurrentWindow().listen(
+      TauriEvent.WINDOW_CLOSE_REQUESTED,
+      async (data) => {
+        const ev = new CloseRequestedEvent(data);
+        ev.preventDefault();
+        await tryCloseApp();
+      }
+    );
 
     return () => {
       unlistenTrayClose.then((fn) => fn());
-      unlistenCloseRequested?.then((fn) => fn());
+      unlistenCloseRequested.then((fn) => fn());
     };
   }, [
     config?.useTray,
