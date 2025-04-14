@@ -54,7 +54,7 @@ export function checkForUpdate(
   if (
     canUpdate &&
     device.hardwareStatus?.batteryPctEstimate &&
-    device.hardwareStatus?.batteryPctEstimate < 70
+    device.hardwareStatus?.batteryPctEstimate < 50
   ) {
     return 'low-battery';
   }
