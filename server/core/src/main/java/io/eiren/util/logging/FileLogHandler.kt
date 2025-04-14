@@ -12,6 +12,16 @@ import java.util.logging.ErrorManager
 import java.util.logging.LogRecord
 import java.util.logging.StreamHandler
 
+/**
+ * A log handler that manages a set of log files, deleting the oldest log(s) when limits
+ * are reached.
+ * @param path The directory to store and discover the log files in.
+ * @param logTag The identifier tag for log files (ex. "slimevr-server").
+ * @param dateFormat The format to use for the date and time in the log file names.
+ * @param limit The independent log file size limit in bytes.
+ * @param maxCount The collective log file count limit.
+ * @param collectiveLimit The collective log file size limit in bytes.
+ */
 class FileLogHandler @JvmOverloads constructor(
 	private val path: Path,
 	private val logTag: String,
@@ -21,6 +31,9 @@ class FileLogHandler @JvmOverloads constructor(
 	private val collectiveLimit: Long = -1,
 ) : StreamHandler() {
 
+	/**
+	 * A log [File] with a [LocalDateTime] and [count] associated to it.
+	 */
 	inner class DatedLogFile(val file: File, val dateTime: LocalDateTime, val count: Int) : Comparable<DatedLogFile> {
 		override fun compareTo(o: DatedLogFile): Int {
 			val dtCompare = dateTime.compareTo(o.dateTime)
@@ -28,16 +41,46 @@ class FileLogHandler @JvmOverloads constructor(
 		}
 	}
 
+	/**
+	 * The symbol to use for separating file name sections.
+	 */
 	private val sectionSeparator = '_'
+
+	/**
+	 * The file suffix to use for logs.
+	 */
 	private val logSuffix = ".log"
 
+	/**
+	 * The list of log files being managed by this [FileLogHandler].
+	 */
 	private val logFiles: MutableList<DatedLogFile>
 
+	/**
+	 * The [LocalDateTime] to use for log files created by this [FileLogHandler]
+	 * instance.
+	 */
 	private val dateTime: LocalDateTime = LocalDateTime.now()
+
+	/**
+	 * The formatted string representing [dateTime].
+	 */
 	private val date: String = dateTime.format(dateFormat)
 
+	/**
+	 * The current file [DataOutputStream].
+	 */
 	private var curStream: DataOutputStream? = null
+
+	/**
+	 * The current file count for logs based on the same [dateTime] made by this
+	 * [FileLogHandler] instance.
+	 */
 	private var fileCount = 0
+
+	/**
+	 * The current collective size of all log files in bytes.
+	 */
 	private var collectiveSize: Long = 0
 
 	init {
@@ -51,6 +94,11 @@ class FileLogHandler @JvmOverloads constructor(
 		newFile()
 	}
 
+	/**
+	 * Parses [file]'s name and returns a parsed [DatedLogFile].
+	 * @param file The file to parse the name of.
+	 * @return The parsed [DatedLogFile].
+	 */
 	private fun parseFileName(file: File): DatedLogFile? {
 		val name = file.getName()
 
@@ -84,6 +132,12 @@ class FileLogHandler @JvmOverloads constructor(
 		}
 	}
 
+	/**
+	 * Finds all the log files parseable by [parseFileName] in the provided path,
+	 * [path].
+	 * @param path The path to check for log files.
+	 * @return A list containing all parsed [DatedLogFile]s from [path].
+	 */
 	private fun findLogs(path: Path): MutableList<DatedLogFile> {
 		val logFiles = mutableListOf<DatedLogFile>()
 
@@ -101,6 +155,11 @@ class FileLogHandler @JvmOverloads constructor(
 		return logFiles
 	}
 
+	/**
+	 * Computes the sum of the file sizes from the provided [logFiles].
+	 * @param logFiles The list of [DatedLogFile]s to compute the size of.
+	 * @return The size of all the provided [DatedLogFile]s in bytes.
+	 */
 	private fun sumFileSizes(logFiles: List<DatedLogFile>): Long {
 		var size: Long = 0
 		for (log in logFiles) {
@@ -109,6 +168,10 @@ class FileLogHandler @JvmOverloads constructor(
 		return size
 	}
 
+	/**
+	 * Tries to delete the provided [file].
+	 * @param file The [File] to delete.
+	 */
 	private fun deleteFile(file: File) {
 		if (file.delete()) return
 
@@ -120,6 +183,11 @@ class FileLogHandler @JvmOverloads constructor(
 		)
 	}
 
+	/**
+	 * Returns the earliest [DatedLogFile] from the provided list, [logFiles].
+	 * @param logFiles The [DatedLogFile]s to find the earliest file from.
+	 * @return The earliest [DatedLogFile] or null if none could be found.
+	 */
 	private fun getEarliestFile(logFiles: List<DatedLogFile>): DatedLogFile? {
 		var earliest: DatedLogFile? = null
 
@@ -132,6 +200,9 @@ class FileLogHandler @JvmOverloads constructor(
 		return earliest
 	}
 
+	/**
+	 * Deletes the earliest log file from [logFiles].
+	 */
 	@Synchronized
 	private fun deleteEarliestFile() {
 		val earliest = getEarliestFile(logFiles)
@@ -148,6 +219,11 @@ class FileLogHandler @JvmOverloads constructor(
 		deleteFile(earliest.file)
 	}
 
+	/**
+	 * Deletes the earliest log files until the [collectiveSize] plus [curFileSize] is
+	 * less than [collectiveLimit].
+	 * @param curFileSize The size of the current log file in bytes.
+	 */
 	@Synchronized
 	private fun deleteOverCollectiveLimit(curFileSize: Int = 0) {
 		if (collectiveLimit <= 0) return
@@ -158,6 +234,11 @@ class FileLogHandler @JvmOverloads constructor(
 		}
 	}
 
+	/**
+	 * Creates a new log file, closing [curStream] automatically and incrementing
+	 * [fileCount]. This method also handles deleting old log files based on the
+	 * specified limits: [limit], [maxCount], and [collectiveLimit].
+	 */
 	@Synchronized
 	private fun newFile() {
 		// Clear the last log file
@@ -200,6 +281,11 @@ class FileLogHandler @JvmOverloads constructor(
 		}
 	}
 
+	/**
+	 * Publishes the provided [record]. This automatically manages deleting old log
+	 * files based on [collectiveLimit] as the new log is written and creating new log
+	 * files after the file size limit, [limit], is reached.
+	 */
 	@Synchronized
 	override fun publish(record: LogRecord?) {
 		if (!isLoggable(record)) return
