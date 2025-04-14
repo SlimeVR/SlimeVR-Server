@@ -1367,3 +1367,10 @@ error_collection_modal-description = { settings-interface-behavior-error_trackin
     You can change this setting later in the Behavior section of the settings page.
 error_collection_modal-confirm = I agree
 error_collection_modal-cancel = I don't want to
+
+flight_list-TRACKERS_CALIBRATION = Put trackers on a flat surface
+flight_list-FULL_RESET = Perform a Full reset
+flight_list-VRCHAT_SETTINGS = Some VRChat settings are missconfigured
+flight_list-STEAMVR_DISCONNECTED = SteamVR is not running
+flight_list-UNASSIGNED_HMD = The VR Headset is not assigned
+flight_list-TRACKER_ERROR = Some trackers have errors

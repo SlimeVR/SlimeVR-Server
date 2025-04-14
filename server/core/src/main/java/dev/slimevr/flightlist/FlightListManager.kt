@@ -1,6 +1,7 @@
 package dev.slimevr.flightlist
 
 import dev.slimevr.VRServer
+import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.games.vrchat.VRCConfigListener
 import dev.slimevr.games.vrchat.VRCConfigRecommendedValues
 import dev.slimevr.games.vrchat.VRCConfigValidity
@@ -11,35 +12,35 @@ import dev.slimevr.tracking.trackers.TrackerStatusListener
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
-import solarxr_protocol.rpc.FlightListExtraData
-import solarxr_protocol.rpc.FlightListExtraDataUnion
-import solarxr_protocol.rpc.FlightListNeedCalibrationT
-import solarxr_protocol.rpc.FlightListStepId
-import solarxr_protocol.rpc.FlightListStepT
-import solarxr_protocol.rpc.FlightListStepVisibility
-import solarxr_protocol.rpc.FlightListTrackerErrorT
-import solarxr_protocol.rpc.FlightListTrackerResetT
-import solarxr_protocol.rpc.FlightListUnassignedHMDT
-import solarxr_protocol.rpc.StatusTrackerErrorT
-import solarxr_protocol.rpc.StatusTrackerResetT
-import solarxr_protocol.rpc.StatusUnassignedHMDT
+import solarxr_protocol.rpc.*
+import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.concurrent.timerTask
+import kotlin.system.measureTimeMillis
 
 
 interface FlightListListener {
 	fun onStepUpdate(step: FlightListStepT)
 }
 
-class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, TrackerStatusListener {
+class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 
 	private val listeners: MutableList<FlightListListener> = CopyOnWriteArrayList()
 	val steps: MutableList<FlightListStepT> = mutableListOf()
 
+	private val updateFlightListTimer = Timer("FetchVRCConfigTimer")
+
 	init {
 		vrServer.vrcConfigManager.addListener(this)
-		vrServer.addTrackerStatusListener(this)
 
 		createSteps()
+		updateFlightListTimer.scheduleAtFixedRate(
+			timerTask {
+				updateFligtlist()
+			},
+			0,
+			1000,
+		)
 	}
 
 	fun addListener(channel: FlightListListener) {
@@ -64,7 +65,7 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, Tra
 	private fun createSteps() {
 		steps.add(FlightListStepT().apply {
 			id = FlightListStepId.TRACKERS_CALIBRATION
-			optional = true
+			optional = false
 			ignorable = false
 			visibility = FlightListStepVisibility.ALWAYS
 		})
@@ -92,6 +93,7 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, Tra
 
 		steps.add(FlightListStepT().apply {
 			id = FlightListStepId.TRACKER_ERROR
+			valid = true; // Default to valid
 			optional = false
 			ignorable = false
 			visibility = FlightListStepVisibility.WHEN_INVALID
@@ -100,14 +102,120 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, Tra
 		if (vrServer.vrcConfigManager.isSupported) {
 			steps.add(FlightListStepT().apply {
 				id = FlightListStepId.VRCHAT_SETTINGS
-				optional = false
+				optional = true
 				ignorable = true
 				visibility = FlightListStepVisibility.WHEN_INVALID
 			})
 		}
 	}
 
-	fun updateValidity(id: Int, valid: Boolean, beforeUpdate: ((step: FlightListStepT) -> Unit)? = null) {
+	fun updateFligtlist() {
+		println(measureTimeMillis {
+			val assignedTrackers =
+				vrServer.allTrackers.filter { it.trackerPosition != null && it.status != TrackerStatus.DISCONNECTED }
+			val imuTrackers =
+				assignedTrackers.filter { it.isImu() && it.trackerDataType != TrackerDataType.FLEX_ANGLE }
+
+			val trackersWithError =
+				imuTrackers.filter { it.status === TrackerStatus.ERROR }
+			updateValidity(
+				FlightListStepId.TRACKER_ERROR,
+				trackersWithError.isEmpty()
+			) {
+				if (trackersWithError.isNotEmpty()) {
+					it.extraData = FlightListExtraDataUnion().apply {
+						type = FlightListExtraData.FlightListTrackerError
+						value = FlightListTrackerErrorT().apply {
+							trackersId = buildTrackersIds(trackersWithError)
+						}
+					}
+				} else {
+					it.extraData = null;
+				}
+			}
+
+			val trackerRequireReset = imuTrackers.filter {
+				it.status !== TrackerStatus.ERROR &&
+				!it.isInternal && it.needsReset && it.status.reset && (it.isImu() || !it.statusResetRecently)
+			}
+			updateValidity(FlightListStepId.FULL_RESET, trackerRequireReset.isEmpty()) {
+				if (trackerRequireReset.isNotEmpty()) {
+					it.extraData = FlightListExtraDataUnion().apply {
+						type = FlightListExtraData.FlightListTrackerReset
+						value = FlightListTrackerResetT().apply {
+							trackersId = buildTrackersIds(trackerRequireReset)
+						}
+					}
+				} else {
+					it.extraData = null;
+				}
+			}
+
+			val hmd =
+				assignedTrackers.firstOrNull { it.isHmd && !it.isInternal && it.status.sendData }
+			val assignedHmd =
+				hmd != null
+					&& vrServer.humanPoseManager.skeleton.headTracker != null
+			updateValidity(FlightListStepId.UNASSIGNED_HMD, assignedHmd) {
+				if (hmd != null) {
+					it.extraData = FlightListExtraDataUnion().apply {
+						type = FlightListExtraData.FlightListUnassignedHMD
+						value = FlightListUnassignedHMDT().apply {
+							trackerId = TrackerIdT().apply {
+								if (hmd.device != null) {
+									deviceId = DeviceIdT().apply { id = hmd.device.id }
+								}
+								trackerNum = hmd.trackerNum
+							}
+						}
+					}
+				} else {
+					it.extraData = null
+				}
+			}
+
+			val trackersNeedCalibration = imuTrackers.filter {
+				it.hasCompletedRestCalibration == false
+			}
+			updateValidity(
+				FlightListStepId.TRACKERS_CALIBRATION,
+				trackersNeedCalibration.isEmpty()
+			) {
+				if (trackersNeedCalibration.isNotEmpty()) {
+					it.extraData = FlightListExtraDataUnion().apply {
+						type = FlightListExtraData.FlightListNeedCalibration
+						value = FlightListNeedCalibrationT().apply {
+							trackersId = buildTrackersIds(trackersNeedCalibration)
+						}
+					}
+				} else {
+					it.extraData = null
+				}
+			}
+
+			val steamVRBridge = vrServer.getVRBridge(ISteamVRBridge::class.java)
+			if (steamVRBridge != null) {
+				val steamvrConnected = steamVRBridge.isConnected()
+				updateValidity(
+					FlightListStepId.STEAMVR_DISCONNECTED,
+					steamvrConnected
+				) {
+					if (!steamvrConnected) {
+						it.extraData = FlightListExtraDataUnion().apply {
+							type = FlightListExtraData.FlightListSteamVRDisconnected
+							value = FlightListSteamVRDisconnectedT().apply {
+								bridgeSettingsName = steamVRBridge.getBridgeConfigKey()
+							}
+						}
+					} else {
+						it.extraData = null;
+					}
+				}
+			}
+		})
+	}
+
+	private fun updateValidity(id: Int, valid: Boolean, beforeUpdate: ((step: FlightListStepT) -> Unit)? = null) {
 		require(id != FlightListStepId.UNKNOWN) {
 			"id is unknown"
 		}
@@ -117,63 +225,6 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, Tra
 			beforeUpdate(step)
 		}
 		listeners.forEach { it.onStepUpdate(step) }
-	}
-
-	fun updateUnassignedHMD(valid: Boolean, trackerId: TrackerIdT?) {
-		updateValidity(FlightListStepId.UNASSIGNED_HMD, valid) {
-			if (trackerId == null) {
-				it.extraData = null
-			} else {
-				it.extraData = FlightListExtraDataUnion().apply {
-					type = FlightListExtraData.FlightListUnassignedHMD
-					value = FlightListUnassignedHMDT().apply {
-						this.trackerId = trackerId
-					}
-				}
-			}
-		}
-	}
-
-	fun updateRequireReset() {
-		val trackerRequireReset = vrServer.allTrackers.filter {
-			!it.isInternal && it.needsReset && it.trackerPosition != null && it.status.reset && (
-				it.isImu()
-					|| !it.statusResetRecently && it.trackerDataType != TrackerDataType.FLEX_ANGLE
-				)
-		}
-		updateValidity(FlightListStepId.FULL_RESET, trackerRequireReset.isEmpty()) {
-			if (trackerRequireReset.isNotEmpty()) {
-				it.extraData = FlightListExtraDataUnion().apply {
-					type = FlightListExtraData.FlightListTrackerReset
-					value = FlightListTrackerResetT().apply {
-						trackersId = buildTrackersIds(trackerRequireReset)
-					}
-				}
-			} else {
-				it.extraData = null;
-			}
-		}
-	}
-
-
-	fun updateTrackerCalibrationStep() {
-		val trackersNeedCalibration = vrServer.allTrackers.filter {
-			it.isImu()
-				&& it.status !== TrackerStatus.DISCONNECTED
-				&& it.hasCompletedRestCalibration == false
-		}
-		updateValidity(FlightListStepId.TRACKERS_CALIBRATION, trackersNeedCalibration.isEmpty()) {
-			if (trackersNeedCalibration.isNotEmpty()) {
-				it.extraData = FlightListExtraDataUnion().apply {
-					type = FlightListExtraData.FlightListNeedCalibration
-					value = FlightListNeedCalibrationT().apply {
-						trackersId = buildTrackersIds(trackersNeedCalibration)
-					}
-				}
-			} else {
-				it.extraData = null
-			}
-		}
 	}
 
 	override fun onChange(
@@ -187,32 +238,6 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener, Tra
 		)
 	}
 
-	override fun onTrackerStatusChanged(tracker: Tracker, oldStatus: TrackerStatus, newStatus: TrackerStatus) {
-		// Prevent useless computation if we are not dealing with error statuses
-		if (oldStatus == TrackerStatus.ERROR || newStatus == TrackerStatus.ERROR) {
-			val trackersWithError = vrServer.allTrackers.filter { it.status === TrackerStatus.ERROR }
-			updateValidity(FlightListStepId.TRACKER_ERROR, trackersWithError.isEmpty()) {
-				if (trackersWithError.isNotEmpty()) {
-					it.extraData = FlightListExtraDataUnion().apply {
-						type = FlightListExtraData.FlightListTrackerError
-						value = FlightListTrackerErrorT().apply {
-							trackersId = buildTrackersIds(trackersWithError)
-						}
-					}
-				} else {
-					it.extraData = null;
-				}
-			}
-		}
-
-		if (oldStatus.reset || newStatus.reset) {
-			updateRequireReset()
-		}
-
-		if (newStatus == TrackerStatus.DISCONNECTED) {
-			updateTrackerCalibrationStep()
-		}
-	}
 
 	fun toggleStep(step: FlightListStepT) {
 		val ignoredSteps = vrServer.configManager.vrConfig.flightList.ignoredStepsIds;

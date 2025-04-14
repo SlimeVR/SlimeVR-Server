@@ -346,7 +346,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	private fun postProcessResetFull() {
-		VRServer.instance.flightListManager.updateRequireReset();
 		tracker.resetFilteringQuats()
 	}
 
@@ -386,7 +385,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		// Remove the status if yaw reset was performed after the tracker
 		// was disconnected and connected.
 		if (this.tracker.statusResetRecently) {
-			VRServer.instance.flightListManager.updateRequireReset();
+//			VRServer.instance.flightListManager.updateRequireReset();
+			// FIXME find if i can delete statusResetRecently. im worried im gonna break stuff
 			this.tracker.statusResetRecently = false
 		}
 

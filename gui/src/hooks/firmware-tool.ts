@@ -47,6 +47,7 @@ export const boardTypeToFirmwareToolBoardType: Record<
     | BoardType.MOCOPI
     | BoardType.HARITORA
     | BoardType.DEV_RESERVED
+    | BoardType.GESTURES
   >,
   CreateBoardConfigDTO['type'] | null
 > = {

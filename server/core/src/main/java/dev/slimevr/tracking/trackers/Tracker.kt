@@ -113,11 +113,7 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * Watch the rest calibration status
 	 */
-	var hasCompletedRestCalibration: Boolean? by Delegates.observable(null) {
-		_, old, new ->
-		if (old == new) return@observable
-		VRServer.instance.flightListManager.updateTrackerCalibrationStep()
-	};
+	var hasCompletedRestCalibration: Boolean? = null
 	/**
 	 * If the tracker has gotten disconnected after it was initialized first time
 	 */
@@ -138,10 +134,6 @@ class Tracker @JvmOverloads constructor(
 			// assign or un-assign the tracker to a body part
 			VRServer.instance.updateSkeletonModel()
 			VRServer.instance.refreshTrackersDriftCompensationEnabled()
-
-			if (isHmd) {
-				VRServer.instance.humanPoseManager.checkReportMissingHmd()
-			}
 			VRServer.instance.trackerStatusChanged(this, old, new)
 		}
 	}
@@ -152,8 +144,6 @@ class Tracker @JvmOverloads constructor(
 		if (!isInternal) {
 			// Set default mounting orientation for that body part
 			new?.let { resetsHandler.mountingOrientation = it.defaultMounting() }
-
-			VRServer.instance.flightListManager.updateRequireReset()
 		}
 	}
 
@@ -204,11 +194,6 @@ class Tracker @JvmOverloads constructor(
 			config.allowDriftCompensation?.let {
 				resetsHandler.allowDriftCompensation = it
 			}
-		}
-		if (!isInternal &&
-			!(!isImu() && (trackerPosition == TrackerPosition.LEFT_HAND || trackerPosition == TrackerPosition.RIGHT_HAND))
-		) {
-			VRServer.instance.flightListManager.updateRequireReset()
 		}
 	}
 

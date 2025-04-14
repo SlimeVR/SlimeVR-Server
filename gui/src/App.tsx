@@ -114,7 +114,7 @@ function Layout() {
           <Route
             path="/vrc-warnings"
             element={
-              <MainLayout isMobile={isMobile} widgets={false}>
+              <MainLayout isMobile={isMobile}>
                 <VRCWarningsPage />
               </MainLayout>
             }

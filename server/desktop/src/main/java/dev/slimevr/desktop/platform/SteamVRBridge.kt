@@ -21,12 +21,13 @@ abstract class SteamVRBridge(
 	protected val server: VRServer,
 	threadName: String,
 	bridgeName: String,
-	protected val bridgeSettingsKey: String,
+	val bridgeSettingsKey: String,
 	protected val shareableTrackers: List<Tracker>,
 ) : ProtobufBridge(bridgeName),
 	Runnable {
 	protected val runnerThread: Thread = Thread(this, threadName)
 	protected val config: BridgeConfig = server.configManager.vrConfig.getBridge(bridgeSettingsKey)
+	var connected: Boolean = false;
 
 	@VRServerThread
 	override fun startBridge() {
@@ -427,20 +428,11 @@ abstract class SteamVRBridge(
 
 	@BridgeThread
 	protected fun reportDisconnected() {
-		server.flightListManager.updateValidity(FlightListStepId.STEAMVR_DISCONNECTED, false) {
-			it.extraData = FlightListExtraDataUnion().apply {
-				type = FlightListExtraData.FlightListSteamVRDisconnected
-				value = FlightListSteamVRDisconnectedT().apply {
-					bridgeSettingsName = bridgeSettingsKey
-				}
-			}
-		}
+		connected = false;
 	}
 
 	@BridgeThread
 	protected fun reportConnected() {
-		server.flightListManager.updateValidity(FlightListStepId.STEAMVR_DISCONNECTED, true) {
-			it.extraData = null
-		}
+		connected = true;
 	}
 }
