@@ -110,14 +110,14 @@ class FileLogHandler @JvmOverloads constructor(
 	}
 
 	private fun deleteFile(file: File) {
-		if (!file.delete()) {
-			file.deleteOnExit()
-			reportError(
-				"Failed to delete file, deleting on exit.",
-				null,
-				ErrorManager.GENERIC_FAILURE,
-			)
-		}
+		if (file.delete()) return
+
+		file.deleteOnExit()
+		reportError(
+			"Failed to delete file, deleting on exit.",
+			null,
+			ErrorManager.GENERIC_FAILURE,
+		)
 	}
 
 	private fun getEarliestFile(logFiles: List<DatedLogFile>): DatedLogFile? {
@@ -135,26 +135,26 @@ class FileLogHandler @JvmOverloads constructor(
 	@Synchronized
 	private fun deleteEarliestFile() {
 		val earliest = getEarliestFile(logFiles)
-		if (earliest != null) {
-			// If we have a collective limit, update the current size and clamp
-			if (collectiveLimit > 0) {
-				collectiveSize = (
-					collectiveSize - earliest.file.length()
-					).coerceAtLeast(0)
-			}
+		if (earliest == null) return
 
-			logFiles.remove(earliest)
-			deleteFile(earliest.file)
+		// If we have a collective limit, update the current size and clamp
+		if (collectiveLimit > 0) {
+			collectiveSize = (
+				collectiveSize - earliest.file.length()
+				).coerceAtLeast(0)
 		}
+
+		logFiles.remove(earliest)
+		deleteFile(earliest.file)
 	}
 
 	@Synchronized
 	private fun deleteOverCollectiveLimit(curFileSize: Int = 0) {
-		if (collectiveLimit > 0) {
-			// Delete files over the collective size limit, including the current stream
-			while (!logFiles.isEmpty() && collectiveSize + curFileSize >= collectiveLimit) {
-				deleteEarliestFile()
-			}
+		if (collectiveLimit <= 0) return
+
+		// Delete files over the collective size limit, including the current stream
+		while (!logFiles.isEmpty() && collectiveSize + curFileSize >= collectiveLimit) {
+			deleteEarliestFile()
 		}
 	}
 
@@ -202,9 +202,7 @@ class FileLogHandler @JvmOverloads constructor(
 
 	@Synchronized
 	override fun publish(record: LogRecord?) {
-		if (!isLoggable(record)) {
-			return
-		}
+		if (!isLoggable(record)) return
 
 		// Push the log
 		super.publish(record)
