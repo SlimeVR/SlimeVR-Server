@@ -31,7 +31,7 @@ class FileLogHandler @JvmOverloads constructor(
 	private val sectionSeparator = '_'
 	private val logSuffix = ".log"
 
-	private val logFiles: ArrayList<DatedLogFile>
+	private val logFiles: MutableList<DatedLogFile>
 
 	private val dateTime: LocalDateTime = LocalDateTime.now()
 	private val date: String = dateTime.format(dateFormat)
@@ -84,8 +84,8 @@ class FileLogHandler @JvmOverloads constructor(
 		}
 	}
 
-	private fun findLogs(path: Path): ArrayList<DatedLogFile> {
-		val logFiles: ArrayList<DatedLogFile> = ArrayList<DatedLogFile>()
+	private fun findLogs(path: Path): MutableList<DatedLogFile> {
+		val logFiles = mutableListOf<DatedLogFile>()
 
 		val files = path.toFile().listFiles()
 		if (files == null) return logFiles
@@ -101,7 +101,7 @@ class FileLogHandler @JvmOverloads constructor(
 		return logFiles
 	}
 
-	private fun sumFileSizes(logFiles: ArrayList<DatedLogFile>): Long {
+	private fun sumFileSizes(logFiles: List<DatedLogFile>): Long {
 		var size: Long = 0
 		for (log in logFiles) {
 			size += log.file.length()
@@ -120,7 +120,7 @@ class FileLogHandler @JvmOverloads constructor(
 		}
 	}
 
-	private fun getEarliestFile(logFiles: ArrayList<DatedLogFile>): DatedLogFile? {
+	private fun getEarliestFile(logFiles: List<DatedLogFile>): DatedLogFile? {
 		var earliest: DatedLogFile? = null
 
 		for (log in logFiles) {
