@@ -1,7 +1,10 @@
 import { CHECKBOX_CLASSES } from '@/components/commons/Checkbox';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { Typography } from '@/components/commons/Typography';
-import { firmwareUpdateErrorStatus } from '@/hooks/firmware-tool';
+import {
+  firmwareUpdateErrorStatus,
+  firmwareUpdateStatusLabel,
+} from '@/hooks/firmware-tool';
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { Control, Controller } from 'react-hook-form';
@@ -42,9 +45,7 @@ export function DeviceCardContent({ deviceNames, status }: DeviceCardProps) {
       </div>
       {status !== undefined ? (
         <Typography>
-          {l10n.getString(
-            'firmware_update-status-' + FirmwareUpdateStatus[status]
-          )}
+          {l10n.getString(firmwareUpdateStatusLabel[status])}
         </Typography>
       ) : (
         <Typography> </Typography> // placeholder so the size of the component does not change if there is no status
