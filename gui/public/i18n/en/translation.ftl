@@ -283,6 +283,7 @@ tracker-settings-forget = Forget tracker
 tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevent it from connecting to it until the server is restarted. The configuration of the tracker won't be lost.
 tracker-settings-forget-label = Forget tracker
 tracker-settings-update-unavailable = Cannot be updated (DIY)
+tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
 tracker-settings-update-up_to_date = Up to date
 tracker-settings-update-available = { $versionName } is now available
 tracker-settings-update = Update now
