@@ -10,7 +10,6 @@ import {
   FirmwareUpdateStatus,
   FirmwareUpdateStatusResponseT,
   FirmwareUpdateStopQueuesRequestT,
-  HardwareInfoT,
   RpcMessage,
   TrackerStatus,
 } from 'solarxr-protocol';
