@@ -149,6 +149,16 @@ class FileLogHandler @JvmOverloads constructor(
 	}
 
 	@Synchronized
+	private fun deleteOverCollectiveLimit(curFileSize: Int = 0) {
+		if (collectiveLimit > 0) {
+			// Delete files over the collective size limit, including the current stream
+			while (!logFiles.isEmpty() && collectiveSize + curFileSize >= collectiveLimit) {
+				deleteEarliestFile()
+			}
+		}
+	}
+
+	@Synchronized
 	private fun newFile() {
 		// Clear the last log file
 		val lastStream = curStream
@@ -166,12 +176,8 @@ class FileLogHandler @JvmOverloads constructor(
 			}
 		}
 
-		if (collectiveLimit > 0) {
-			// Delete files over the collective size limit
-			while (!logFiles.isEmpty() && collectiveSize >= collectiveLimit) {
-				deleteEarliestFile()
-			}
-		}
+		// Handle collective limit
+		deleteOverCollectiveLimit()
 
 		try {
 			val newFile = path.resolve(
@@ -205,15 +211,14 @@ class FileLogHandler @JvmOverloads constructor(
 		// Then flush, so we always have the latest output
 		flush()
 
-		if (collectiveLimit > 0) {
-			// Delete files over the collective size limit, including the current stream
-			while (!logFiles.isEmpty() && collectiveSize + curStream!!.size() >= collectiveLimit) {
-				deleteEarliestFile()
-			}
-		}
+		// The number of bytes written to the current log file
+		val curFileSize = curStream!!.size()
+
+		// Handle the collective limit as we write to the new log file
+		deleteOverCollectiveLimit(curFileSize)
 
 		// If written above the log limit, make a new file
-		if (limit > 0 && curStream!!.size() >= limit) {
+		if (limit > 0 && curFileSize >= limit) {
 			newFile()
 		}
 	}
