@@ -138,8 +138,9 @@ class FileLogHandler @JvmOverloads constructor(
 		if (earliest != null) {
 			// If we have a collective limit, update the current size and clamp
 			if (collectiveLimit > 0) {
-				collectiveSize -= earliest.file.length()
-				if (collectiveSize < 0) collectiveSize = 0
+				collectiveSize = (
+					collectiveSize - earliest.file.length()
+					).coerceAtLeast(0)
 			}
 
 			logFiles.remove(earliest)
