@@ -72,12 +72,15 @@ fn open_config_folder(app_handle: tauri::AppHandle) {
 
 #[tauri::command]
 fn open_logs_folder(app_handle: tauri::AppHandle) {
-	let path = app_handle
-		.path()
-		.app_log_dir()
-		.unwrap_or_else(|_| Path::new("./logs/").to_path_buf());
+	#[cfg(windows)]
+	let path = app_handle.path().app_data_dir().map(|dir| dir.join("logs"));
 
-	if let Err(err) = open::that(path) {
+	#[cfg(unix)]
+	let path = app_handle.path().app_log_dir();
+
+	if let Err(err) =
+		open::that(path.unwrap_or_else(|_| Path::new("./logs/").to_path_buf()))
+	{
 		eprintln!("Failed to open logs folder: {}", err);
 	}
 }
