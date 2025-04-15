@@ -1249,7 +1249,7 @@ firmware_tool-build_step-description =
 firmware_tool-flashing_step = Flashing
 firmware_tool-flashing_step-description =
     Your trackers are flashing, please follow the instructions on the screen
-firmware_tool-flashing_step-warning = Do not unplug or restart the tracker during the upload process unless told to, it may make your board unusable
+firmware_tool-flashing_step-warning-v2 = Do not unplug or turn off the tracker during the upload process unless told to, it may make your board unusable
 firmware_tool-flashing_step-flash_more = Flash more trackers
 firmware_tool-flashing_step-exit = Exit
 
@@ -1265,7 +1265,7 @@ firmware_tool-build-ERROR = Unable to build the firmware
 
 ## Firmware update status
 firmware_update-status-DOWNLOADING = Downloading the firmware
-firmware_update-status-NEED_MANUAL_REBOOT = Please restart the tracker
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Please turn your tracker off and on again
 firmware_update-status-AUTHENTICATING = Authenticating with the mcu
 firmware_update-status-UPLOADING = Uploading the firmware
 firmware_update-status-SYNCING_WITH_MCU = Syncing with the mcu
