@@ -615,12 +615,12 @@ settings-general-interface-discord_presence-message =
        *[other] nutzt { $amount } Tracker
     }
 settings-interface-behavior-error_tracking = Fehlererfassung über Sentry.io
-settings-interface-behavior-error_tracking-description =
-    Um die beste Benutzererfahrung zu bieten, erfassen wir anonymisierte Fehlerberichte, Leistungsmetriken und Betriebssysteminformationen. Dies hilft uns, Bugs und Probleme mit SlimeVR zu erkennen. Diese Daten werden über Sentry.io gesammelt.
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>Sind Sie mit der Erhebung anonymisierter Fehlerdaten einverstanden?</h1>
     
-    <b>Wir sammeln keine personenbezogenen Daten</b> wie Ihre IP-Adresse oder WLAN-Zugangsdaten. SlimeVR legt Wert auf Ihre Privatsphäre!
+    <b>Wir erfassen keine personenbezogenen Daten,</b> wie Ihre IP-Adresse oder WLAN-Zugangsdaten. SlimeVR respektiert Ihre Privatsphäre!
     
-    Stimmen Sie der Sammlung von anonymisierten Fehlertaten zu?
+    Um die bestmögliche Benutzererfahrung zu bieten, erfassen wir anonymisierte Fehlerberichte, Leistungsmetriken und Informationen zum Betriebssystem. Dies hilft uns, Fehler und Probleme mit SlimeVR zu erkennen. Diese Metriken werden über Sentry.io erfasst.
 settings-interface-behavior-error_tracking-label = Fehler an Entwickler senden
 
 ## Serial settings
@@ -1161,6 +1161,13 @@ onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR ist derzei
 onboarding-scaled_proportions-manual_height-height-v2 = Ihre Körpergröße ist
 onboarding-scaled_proportions-manual_height-estimated_height = Die geschätzte Höhe des Headsets beträgt:
 onboarding-scaled_proportions-manual_height-next_step = Fortfahren und speichern
+onboarding-scaled_proportions-manual_height-warning =
+    Sie verwenden derzeit die manuelle Methode zur Einrichtung skalierter Proportionen!
+    <b>Dieser Modus wird nur empfohlen, wenn Sie kein VR-Headset mit SlimeVR verwenden.</b>
+    
+    Um die automatische Skalierung der Proportionen nutzen zu können, bitte:
+onboarding-scaled_proportions-manual_height-warning-no_hmd = Schließen Sie ein VR-Headset an
+onboarding-scaled_proportions-manual_height-warning-no_controllers = Stellen Sie sicher, dass Ihre Controller verbunden und korrekt den Händen zugewiesen sind
 
 ## Tracker scaled proportions reset
 
@@ -1367,10 +1374,9 @@ unknown_device-modal-forget = Ignorieren
 ## Error collection consent modal
 
 error_collection_modal-title = Können wir Fehler sammeln?
-error_collection_modal-description =
-    { settings-interface-behavior-error_tracking-description }
+error_collection_modal-description_v2 =
+    { settings-interface-behavior-error_tracking-description_v2 }
     
-    
-    Sie können diese Einstellung später im Abschnitt „Verhalten“ der Einstellungsseite ändern.
+    Sie können diese Einstellung später im Abschnitt Verhalten auf der Einstellungsseite ändern.
 error_collection_modal-confirm = Ich stimme zu
 error_collection_modal-cancel = Ich will nicht

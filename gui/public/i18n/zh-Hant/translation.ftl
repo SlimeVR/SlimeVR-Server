@@ -609,12 +609,12 @@ settings-general-interface-discord_presence-message =
        *[other] 正在使用 { $amount } 個追蹤器
     }
 settings-interface-behavior-error_tracking = 透過 Sentry.io 收集錯誤資訊
-settings-interface-behavior-error_tracking-description =
-    為了提供最佳的使用者體驗，我們會收集匿名化的錯誤報告、性能指標和作業系統資訊。收集這些資訊有助於我們偵測錯誤與問題。我們透過 Sentry.io 來收集這些數據。
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>你是否同意我們蒐集匿名化的錯誤資料？</h1>
     
-    <b>我們不會收集個人資料</b>，例如 IP 與無線網路認證資訊等。SlimeVR 重視你的隱私！
+    <b>我們不會收集個人資訊</b> ，例如你的 IP 位址或無線網路認證資訊。SlimeVR 重視你的隱私！
     
-    你是否同意我們收集匿名化的錯誤資訊？
+    為了提供最佳的使用者體驗，我們會蒐集匿名化的錯誤報告、性能指標和作業系統資訊，這會對我們檢測 SlimeVR 的錯誤和問題有所幫助。我們會透過 Sentry.io 來蒐集這些指標。
 settings-interface-behavior-error_tracking-label = 向開發者傳送錯誤資訊
 
 ## Serial settings
@@ -1133,7 +1133,7 @@ onboarding-automatic_proportions-smol_warning-cancel = 返回
 
 ## Tracker scaled proportions setup
 
-onboarding-scaled_proportions-title = 標準軀幹比例
+onboarding-scaled_proportions-title = 縮放型軀幹比例
 onboarding-scaled_proportions-description = 為了讓 SlimeVR 追蹤器正常使用，我們需要知道你的骨骼長度。本流程會使用人體的平均軀幹比例並依照你的身高縮放調整。
 onboarding-scaled_proportions-manual_height-title = 設定你的身高
 onboarding-scaled_proportions-manual_height-description-v2 = 身高會當作軀幹比例設定的基礎。
@@ -1141,6 +1141,13 @@ onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR 目前尚�
 onboarding-scaled_proportions-manual_height-height-v2 = 你的身高全長為
 onboarding-scaled_proportions-manual_height-estimated_height = 你的估計身高為：
 onboarding-scaled_proportions-manual_height-next_step = 繼續並儲存
+onboarding-scaled_proportions-manual_height-warning =
+    你現在正在手動設定縮放型軀幹比例，<b>這個方法僅在你使用 SlimeVR
+    不使用頭戴顯示器時推薦使用。</b>
+    
+    若要能自動設定縮放型軀幹比例，請按照以下步驟：
+onboarding-scaled_proportions-manual_height-warning-no_hmd = 連接 VR 頭戴顯示器
+onboarding-scaled_proportions-manual_height-warning-no_controllers = 檢查 VR 控制器是否正常連接，並在 SlimeVR 介面中分配到你的雙手
 
 ## Tracker scaled proportions reset
 
@@ -1259,7 +1266,7 @@ firmware_tool-flashbtn_step-board_OTHER =
     在燒錄前，你可能需要將追蹤器切換進 Bootloader（開機載入程式）。
     多數狀況下，在燒錄開始前按下 BOOT 按鈕即可開始燒錄。
     如果燒錄進度開始時就已逾時，表示追蹤器未能進入 Bootloader 模式，
-    請參考開發板燒錄韌體的說明文件，以得知進入 Bootloader 模式的方法。
+    請參考追蹤器主板燒錄韌體的說明文件，以得知進入 Bootloader 模式的方法。
 firmware_tool-flash_method_ota-devices = 偵測到的 OTA 裝置：
 firmware_tool-flash_method_ota-no_devices = 找不到可以使用 OTA 更新的主板，請確認所選擇的主板類型
 firmware_tool-flash_method_serial-wifi = Wi-Fi 認證資訊：
@@ -1288,11 +1295,11 @@ firmware_tool-build-ERROR = 無法建置韌體
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = 正在下載韌體
-firmware_update-status-NEED_MANUAL_REBOOT = 正在等待使用者重啟追蹤器
+firmware_update-status-NEED_MANUAL_REBOOT = 請重新啟動追蹤器
 firmware_update-status-AUTHENTICATING = 正在與 MCU 認證
 firmware_update-status-UPLOADING = 正在上傳韌體
 firmware_update-status-SYNCING_WITH_MCU = 正在與 MCU 同步
-firmware_update-status-REBOOTING = 正在重啟追蹤器
+firmware_update-status-REBOOTING = 正在套用更新
 firmware_update-status-PROVISIONING = 正在設定 Wi-Fi 認證資訊
 firmware_update-status-DONE = 更新完成！
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = 找不到裝置
@@ -1346,9 +1353,9 @@ unknown_device-modal-forget = 別管它
 
 ## Error collection consent modal
 
-error_collection_modal-title = 我們可以收集錯誤資訊嗎？
-error_collection_modal-description =
-    { settings-interface-behavior-error_tracking-description }
+error_collection_modal-title = 我們可以蒐集錯誤資訊嗎？
+error_collection_modal-description_v2 =
+    { settings-interface-behavior-error_tracking-description_v2 }
     
     若之後要變更此設定，可以在「詳細設定」頁面中的「行為」來變更。
 error_collection_modal-confirm = 我同意

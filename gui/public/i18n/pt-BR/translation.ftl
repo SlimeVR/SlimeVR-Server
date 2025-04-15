@@ -592,12 +592,12 @@ settings-general-interface-discord_presence-message =
        *[other] Usando { $amount } trackers
     }
 settings-interface-behavior-error_tracking = Coleta de erros via Sentry.io
-settings-interface-behavior-error_tracking-description =
-    Para proporcionar a melhor experiência do usuário, coletamos relatórios de erros de forma anônima, métricas de desempenho e informações sobre o sistema operacional. Isso nos ajuda a detectar bugs e problemas com o SlimeVR. Essas métricas são coletadas através do Sentry.io.
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>Você <h1>concorda com a coleta de dados de erro anônimos?</h1><b></h1> <b>Não coletamos informações pessoais</b></b>, como seu endereço IP ou credenciais de rede sem fio. A SlimeVR valoriza sua privacidade!
     
-    <b>Não coletamos informações pessoais</b> como seu endereço de IP ou credenciais de rede sem fio. O SlimeVR valoriza sua privacidade!
+    Para oferecer a melhor experiência ao usuário, coletamos relatórios de erros anônimos, métricas de desempenho e informações do sistema operacional. Isso nos ajuda a detectar bugs e problemas com o SlimeVR. Essas métricas são coletadas pelo Sentry.io.
     
-    Você consente com a coleta de dados de erros de forma anônima?
+    Traduzido com a versão gratuita do tradutor - DeepL.com
 settings-interface-behavior-error_tracking-label = Enviar erros para os desenvolvedores
 
 ## Serial settings
@@ -1347,9 +1347,5 @@ unknown_device-modal-forget = Ignore-o
 ## Error collection consent modal
 
 error_collection_modal-title = Podemos coletar erros?
-error_collection_modal-description =
-    { settings-interface-behavior-error_tracking-description }
-    
-    Você pode alterar essa configuração mais tarde na seção Comportamento da página de configurações.
 error_collection_modal-confirm = Eu concordo
 error_collection_modal-cancel = Eu não quero
