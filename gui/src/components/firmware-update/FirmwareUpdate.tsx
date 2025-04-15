@@ -343,7 +343,7 @@ export function FirmwareUpdate() {
                   </Localized>
                 )}
               {shouldShowRebootWarning && (
-                <Localized id="firmware_tool-flashing_step-warning">
+                <Localized id="firmware_tool-flashing_step-warning-v2">
                   <WarningBox>Warning</WarningBox>
                 </Localized>
               )}

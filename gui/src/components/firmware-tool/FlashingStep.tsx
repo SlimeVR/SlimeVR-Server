@@ -171,7 +171,7 @@ export function FlashingStep({
 
         <div className="my-4 flex gap-2 flex-col">
           {shouldShowRebootWarning && (
-            <Localized id="firmware_tool-flashing_step-warning">
+            <Localized id="firmware_tool-flashing_step-warning-v2">
               <WarningBox>Warning</WarningBox>
             </Localized>
           )}
