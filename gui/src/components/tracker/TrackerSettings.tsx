@@ -271,7 +271,7 @@ export function TrackerSettingsPage() {
               <Localized id="tracker-settings-update">
                 <Button
                   variant={
-                    needUpdate == 'need-update' ? 'primary' : 'secondary'
+                    needUpdate === 'need-update' ? 'primary' : 'secondary'
                   }
                   disabled={needUpdate !== 'need-update'}
                   to="/firmware-update"
