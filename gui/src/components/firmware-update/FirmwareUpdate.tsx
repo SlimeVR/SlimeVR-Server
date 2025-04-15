@@ -1,7 +1,7 @@
 import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { getTrackerName } from '@/hooks/tracker';
-import { ComponentProps, useEffect, useMemo, useState } from 'react';
+import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
 import {
   BoardType,
   DeviceDataT,
@@ -120,7 +120,7 @@ export function FirmwareUpdate() {
   const navigate = useNavigate();
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const [selectedDevices, setSelectedDevices] = useState<SelectedDevice[]>([]);
+  const pendingDevicesRef = useRef<SelectedDevice[]>([]);
   const { state, currentFirmwareRelease } = useAppContext();
   const [status, setStatus] = useState<Record<string, UpdateStatus>>({});
 
@@ -144,7 +144,7 @@ export function FirmwareUpdate() {
           : data.deviceId.port;
       if (!id) throw new Error('invalid device id');
 
-      const selectedDevice = selectedDevices?.find(
+      const selectedDevice = pendingDevicesRef.current.find(
         ({ deviceId }) => deviceId === id.toString()
       );
 
@@ -213,7 +213,7 @@ export function FirmwareUpdate() {
 
   const queueFlashing = (selectedDevices: SelectedDevice[]) => {
     clear();
-    setSelectedDevices(selectedDevices);
+    pendingDevicesRef.current = selectedDevices;
     const firmwareFile = currentFirmwareRelease?.firmwareFile;
     if (!firmwareFile) throw new Error('invalid state - no firmware file');
     const requests = getFlashingRequests(
@@ -288,16 +288,19 @@ export function FirmwareUpdate() {
   const startUpdate = () => {
     const selectedDevices = Object.keys(selectedDevicesForm)
       .filter((d) => selectedDevicesForm[d])
-      .map((id) => {
+      .reduce((curr, id) => {
         const device = devices.find(({ id: dId }) => id === dId?.id.toString());
 
-        if (!device) throw new Error('no device found');
-        return {
-          type: FirmwareUpdateMethod.OTAFirmwareUpdate,
-          deviceId: id,
-          deviceNames: deviceNames(device, l10n),
-        };
-      });
+        if (!device) return curr;
+        return [
+          ...curr,
+          {
+            type: FirmwareUpdateMethod.OTAFirmwareUpdate,
+            deviceId: id,
+            deviceNames: deviceNames(device, l10n),
+          },
+        ];
+      }, [] as SelectedDevice[]);
     if (!selectedDevices)
       throw new Error('invalid state - no selected devices');
 
