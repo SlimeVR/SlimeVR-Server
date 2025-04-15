@@ -125,7 +125,11 @@ function ImportExportButtons() {
   const onImport = async () => {
     const file = await fileOpen({
       mimeTypes: ['application/json'],
+    }).catch((err) => {
+      error(err);
+      return null;
     });
+    if (!file) return;
 
     const text = await file.text();
     const config = JSON.parse(text) as SkeletonConfigExport;
