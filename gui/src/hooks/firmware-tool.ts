@@ -258,7 +258,7 @@ export const getFlashingRequests = (
         const id = new SerialDevicePortT();
         id.port = device.deviceId.toString();
 
-        if (!onboardingState.wifi?.ssid || !onboardingState.wifi?.password)
+        if (!onboardingState.wifi?.ssid)
           throw new Error('invalid state, wifi should be set');
 
         const method = new SerialFirmwareUpdateT();
