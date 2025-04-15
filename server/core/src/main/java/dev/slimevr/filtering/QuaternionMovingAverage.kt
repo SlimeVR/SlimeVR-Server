@@ -64,7 +64,7 @@ class QuaternionMovingAverage(
 				rotBuffer?.forEach { quatBuf *= it }
 
 				// Calculate how much to slerp
-				val amt = predictFactor * fpsTimer.timePerFrame
+				val amt = (predictFactor * fpsTimer.timePerFrame).coerceAtMost(1f)
 
 				// Slerps the target rotation to that predicted rotation by amt
 				filteredQuaternion = filteredQuaternion.interpR(quatBuf, amt)
