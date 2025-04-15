@@ -195,7 +195,6 @@ export function TrackerCard({
     currentFirmwareRelease &&
     device &&
     checkForUpdate(currentFirmwareRelease, device);
-  console.log(showUpdate);
   return (
     <div className="relative">
       <div
