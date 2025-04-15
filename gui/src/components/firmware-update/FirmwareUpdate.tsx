@@ -286,11 +286,10 @@ export function FirmwareUpdate() {
   };
 
   const startUpdate = () => {
-    const selectedDevices = Object.keys(selectedDevicesForm)
-      .filter((d) => selectedDevicesForm[d])
-      .reduce((curr, id) => {
+    const selectedDevices = Object.keys(selectedDevicesForm).reduce(
+      (curr, id) => {
+        if (!selectedDevicesForm[id]) return curr;
         const device = devices.find(({ id: dId }) => id === dId?.id.toString());
-
         if (!device) return curr;
         return [
           ...curr,
@@ -300,7 +299,9 @@ export function FirmwareUpdate() {
             deviceNames: deviceNames(device, l10n),
           },
         ];
-      }, [] as SelectedDevice[]);
+      },
+      [] as SelectedDevice[]
+    );
     if (!selectedDevices)
       throw new Error('invalid state - no selected devices');
 
