@@ -213,6 +213,7 @@ export function FirmwareUpdate() {
 
   const queueFlashing = (selectedDevices: SelectedDevice[]) => {
     clear();
+    setSelectedDevices(selectedDevices);
     const firmwareFile = currentFirmwareRelease?.firmwareFile;
     if (!firmwareFile) throw new Error('invalid state - no firmware file');
     const requests = getFlashingRequests(
@@ -264,7 +265,7 @@ export function FirmwareUpdate() {
     );
   }, [status]);
 
-  const retryError = () => {
+  const retry = () => {
     const devices = trackerWithErrors.map((id) => {
       const device = status[id];
       return {
@@ -280,7 +281,8 @@ export function FirmwareUpdate() {
         {}
       ),
     });
-    queueFlashing(devices);
+    setStatus({});
+    clear();
   };
 
   const startUpdate = () => {
@@ -298,7 +300,7 @@ export function FirmwareUpdate() {
       });
     if (!selectedDevices)
       throw new Error('invalid state - no selected devices');
-    setSelectedDevices(selectedDevices);
+
     queueFlashing(selectedDevices);
   };
 
@@ -313,10 +315,7 @@ export function FirmwareUpdate() {
     !hasPendingTrackers &&
     trackerWithErrors.length === 0;
   const canRetry =
-    !hasPendingTrackers &&
-    isValid &&
-    devices.length !== 0 &&
-    trackerWithErrors.length !== 0;
+    !hasPendingTrackers && isValid && trackerWithErrors.length !== 0;
 
   const statusKeys = Object.keys(status);
 
@@ -395,7 +394,7 @@ export function FirmwareUpdate() {
             <Button
               variant="secondary"
               disabled={!canRetry}
-              onClick={retryError}
+              onClick={retry}
             ></Button>
           </Localized>
           <Localized id="firmware_update-update">
