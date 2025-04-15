@@ -57,6 +57,18 @@ class BodyProportionError : IAutoBoneError {
 				0.002f,
 			),
 			makeLimiter(
+				SkeletonConfigOffsets.SHOULDERS_WIDTH,
+				0.04f,
+			),
+			makeLimiter(
+				SkeletonConfigOffsets.UPPER_ARM,
+				0.02f,
+			),
+			makeLimiter(
+				SkeletonConfigOffsets.LOWER_ARM,
+				0.02f,
+			),
+			makeLimiter(
 				SkeletonConfigOffsets.UPPER_CHEST,
 				0.01f,
 			),
