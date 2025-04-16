@@ -88,12 +88,12 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		}
 	}
 
-	private fun startOtaUpdate(
+	private suspend fun startOtaUpdate(
 		part: DownloadedFirmwarePart,
 		deviceId: UpdateDeviceId<Int>,
-	) {
+	): Unit = suspendCancellableCoroutine  { c ->
 		val udpDevice: UDPDevice? =
-			(this.server.deviceManager.devices.find { device -> device is UDPDevice && device.id == deviceId.id }) as UDPDevice?
+			(server.deviceManager.devices.find { device -> device is UDPDevice && device.id == deviceId.id }) as UDPDevice?
 
 		if (udpDevice == null) {
 			onStatusChange(
@@ -102,14 +102,18 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 					FirmwareUpdateStatus.ERROR_DEVICE_NOT_FOUND,
 				),
 			)
-			return
+			return@suspendCancellableCoroutine
 		}
-		OTAUpdateTask(
+		val task = OTAUpdateTask(
 			part.firmware,
 			deviceId,
 			udpDevice.ipAddress,
-			this::onStatusChange,
-		).run()
+			::onStatusChange,
+		)
+		c.invokeOnCancellation {
+			task.cancel()
+		}
+		task.run()
 	}
 
 	private fun startSerialUpdate(
@@ -256,8 +260,10 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		clearJob = mainScope.async {
 			oldClearJob?.await()
 			watchRestartQueue.clear()
+			LogManager.info("[FirmwareUpdateHandler] Before join")
 			runningJobs.forEach { it.cancelAndJoin() }
 			runningJobs.clear()
+			LogManager.info("[FirmwareUpdateHandler] Clearing jobs")
 		}
 	}
 
