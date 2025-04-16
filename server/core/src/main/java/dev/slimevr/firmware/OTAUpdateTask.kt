@@ -21,10 +21,10 @@ class OTAUpdateTask(
 	private val statusCallback: Consumer<UpdateStatusEvent<Int>>,
 ) {
 	private val receiveBuffer: ByteArray = ByteArray(38)
-	var socketServer: ServerSocket? = null;
-	var uploadSocket: Socket? = null;
-	var authSocket: DatagramSocket? = null;
-	var canceled: Boolean = false;
+	var socketServer: ServerSocket? = null
+	var uploadSocket: Socket? = null
+	var authSocket: DatagramSocket? = null
+	var canceled: Boolean = false
 
 	@Throws(NoSuchAlgorithmException::class)
 	private fun bytesToMd5(bytes: ByteArray): String {
@@ -150,7 +150,7 @@ class OTAUpdateTask(
 
 	fun run() {
 		ServerSocket(0).use { serverSocket ->
-			socketServer = serverSocket;
+			socketServer = serverSocket
 			if (!authenticate(serverSocket.localPort)) {
 				statusCallback.accept(
 					UpdateStatusEvent(
@@ -181,11 +181,10 @@ class OTAUpdateTask(
 	}
 
 	fun cancel() {
-		println("OTA CANCEL");
-		canceled = true;
-		socketServer?.close();
-		authSocket?.close();
-		uploadSocket?.close();
+		canceled = true
+		socketServer?.close()
+		authSocket?.close()
+		uploadSocket?.close()
 	}
 
 	companion object {

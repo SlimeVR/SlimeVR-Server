@@ -91,7 +91,7 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 	private suspend fun startOtaUpdate(
 		part: DownloadedFirmwarePart,
 		deviceId: UpdateDeviceId<Int>,
-	): Unit = suspendCancellableCoroutine  { c ->
+	): Unit = suspendCancellableCoroutine { c ->
 		val udpDevice: UDPDevice? =
 			(server.deviceManager.devices.find { device -> device is UDPDevice && device.id == deviceId.id }) as UDPDevice?
 
