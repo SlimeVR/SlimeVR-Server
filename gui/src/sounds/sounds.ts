@@ -17,7 +17,7 @@ export async function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
       xylophone.play({
         notes: ['C4'],
         offset: 0.15,
-        type: 'square',
+        type: 'custom',
         volume,
       });
       break;
@@ -26,7 +26,7 @@ export async function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
       xylophone.play({
         notes: ['E3', 'G3'],
         offset: 0.15,
-        type: 'square',
+        type: 'custom',
         volume,
       });
       break;
@@ -35,7 +35,7 @@ export async function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
       xylophone.play({
         notes: ['G3', 'B3', 'D4'],
         offset: 0.15,
-        type: 'square',
+        type: 'custom',
         volume,
       });
       break;
@@ -47,7 +47,7 @@ export async function playSoundOnResetStarted(volume = 1) {
   await xylophone.play({
     notes: ['A4'],
     offset: 0.4,
-    type: 'square',
+    type: 'custom',
     volume,
   });
 }
@@ -58,17 +58,25 @@ export async function playTapSetupSound(volume = 1) {
     xylophone.play({
       notes: tones[lastTap],
       offset: 0.15,
-      type: 'square',
+      type: 'custom',
       volume,
     });
   } else {
-    xylophone.play({
-      notes: ['D4', 'E4', 'G4', 'E4', 'B4', 'B4', 'A4'],
-      offset: 0.15,
-      length: 1,
-      type: 'sawtooth',
-      volume,
-    });
+    xylophone.play([
+      {
+        notes: ['G#3', 'A#3', 'C#4', 'A#3'],
+        offset: 0.15,
+        length: 1,
+        type: 'custom',
+        volume,
+      },{
+        notes: ['F4', 'F4', 'D#4'],
+        offset: 0.45,
+        length: 2,
+        type: 'custom',
+        volume,
+      }
+    ]);
   }
   lastTap++;
   if (lastTap >= tones.length) {
