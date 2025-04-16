@@ -260,10 +260,9 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		clearJob = mainScope.async {
 			oldClearJob?.await()
 			watchRestartQueue.clear()
-			LogManager.info("[FirmwareUpdateHandler] Before join")
 			runningJobs.forEach { it.cancelAndJoin() }
 			runningJobs.clear()
-			LogManager.info("[FirmwareUpdateHandler] Clearing jobs")
+			LogManager.info("[FirmwareUpdateHandler] Update jobs canceled")
 		}
 	}
 
