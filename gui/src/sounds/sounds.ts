@@ -69,13 +69,14 @@ export async function playTapSetupSound(volume = 1) {
         length: 1,
         type: 'custom',
         volume,
-      },{
+      },
+      {
         notes: ['F4', 'F4', 'D#4'],
         offset: 0.45,
         length: 2,
         type: 'custom',
         volume,
-      }
+      },
     ]);
   }
   lastTap++;

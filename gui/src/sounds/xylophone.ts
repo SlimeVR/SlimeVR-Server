@@ -296,8 +296,11 @@ export default class Xylophone {
        * gain: logarithmic volume
        * and final gain of 0.5
        */
-      const freqGain = Math.min(1, Math.sqrt(200) * (1 / Math.sqrt(Xylophone.toHertz(note))));
-      const gain = Math.min(1, Math.pow((volume ?? 1), Math.E) * freqGain) * 0.5;
+      const freqGain = Math.min(
+        1,
+        Math.sqrt(200) * (1 / Math.sqrt(Xylophone.toHertz(note)))
+      );
+      const gain = Math.min(1, Math.pow(volume ?? 1, Math.E) * freqGain) * 0.5;
 
       this.oscillator.frequency.value = Xylophone.toHertz(note);
       this.gainNode.gain.setValueAtTime(0, offset);
