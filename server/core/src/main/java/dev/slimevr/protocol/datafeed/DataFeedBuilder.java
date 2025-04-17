@@ -185,6 +185,12 @@ public class DataFeedBuilder {
 		int trackerInfosOffset = DataFeedBuilder.createTrackerInfos(fbb, mask.getInfo(), tracker);
 		int trackerIdOffset = DataFeedBuilder.createTrackerId(fbb, tracker);
 
+		int stayAlignedOffset = 0;
+		if (mask.getStayAligned()) {
+			stayAlignedOffset = DataFeedBuilderKotlin.INSTANCE
+				.createTrackerStayAlignedTracker(fbb, tracker.getStayAligned());
+		}
+
 		TrackerData.startTrackerData(fbb);
 
 		TrackerData.addTrackerId(fbb, trackerIdOffset);
@@ -232,6 +238,9 @@ public class DataFeedBuilder {
 		}
 		if (mask.getTps()) {
 			TrackerData.addTps(fbb, (int) tracker.getTps());
+		}
+		if (mask.getStayAligned()) {
+			TrackerData.addStayAligned(fbb, stayAlignedOffset);
 		}
 
 		return TrackerData.endTrackerData(fbb);

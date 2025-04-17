@@ -52,7 +52,8 @@ export function QuaternionToEulerDegrees(q?: QuatObject | null) {
   const angles = { x: 0, y: 0, z: 0 };
   if (!q) return angles;
 
-  const a = new Euler().setFromQuaternion(new Quaternion(q.x, q.y, q.z, q.w));
+  // When comparing tracker rotations, most important angle is yaw, so use YZX order which prioritizes yaw
+  const a = new Euler().setFromQuaternion(new Quaternion(q.x, q.y, q.z, q.w), 'YZX');
   return { x: a.x * RAD_TO_DEG, y: a.y * RAD_TO_DEG, z: a.z * RAD_TO_DEG };
 }
 
