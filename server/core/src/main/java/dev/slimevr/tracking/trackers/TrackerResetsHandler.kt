@@ -340,6 +340,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			yawResetSmoothTimeRemain = 0.0f
 		}
 
+		// Reset Stay Aligned
+		tracker.stayAligned.reset()
+
 		calculateDrift(oldRot)
 
 		postProcessResetFull()
@@ -378,6 +381,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		yawResetSmoothTimeRemain = 0.0f
 
 		makeIdentityAdjustmentQuatsYaw()
+
+		// Reset Stay Aligned
+		tracker.stayAligned.reset()
 
 		calculateDrift(oldRot)
 

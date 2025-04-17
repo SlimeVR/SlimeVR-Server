@@ -2,6 +2,7 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
+import dev.slimevr.tracking.processor.stayaligned.trackers.StayAlignedTrackerState
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
 import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
@@ -154,6 +155,8 @@ class Tracker @JvmOverloads constructor(
 	 * It's like the ID, but it should be local to the device if it has one
 	 */
 	val trackerNum: Int = trackerNum ?: id
+
+	val stayAligned = StayAlignedTrackerState(this)
 
 	init {
 		// IMPORTANT: Look here for the required states of inputs
@@ -316,6 +319,7 @@ class Tracker @JvmOverloads constructor(
 		}
 		filteringHandler.update()
 		resetsHandler.update()
+		stayAligned.update()
 	}
 
 	/**
@@ -336,11 +340,22 @@ class Tracker @JvmOverloads constructor(
 		timeAtLastUpdate = System.currentTimeMillis()
 	}
 
-	private fun getFilteredRotation(): Quaternion = if (trackRotDirection) {
-		filteringHandler.getFilteredRotation()
-	} else {
-		// Get raw rotation
-		_rotation
+	private fun getFilteredRotation(): Quaternion {
+		var rot =
+			if (trackRotDirection) {
+				filteringHandler.getFilteredRotation()
+			} else {
+				// Get raw rotation
+				_rotation
+			}
+
+		if (!stayAligned.hideCorrection) {
+			// Apply yaw correction in tracker's world space, because that is where
+			// drift is happening
+			rot = Quaternion.rotationAroundYAxis(stayAligned.yawCorrection.toRad()) * rot
+		}
+
+		return rot
 	}
 
 	/**

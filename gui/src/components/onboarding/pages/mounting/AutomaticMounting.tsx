@@ -7,12 +7,18 @@ import { PreparationStep } from './mounting-steps/Preparation';
 import { PutTrackersOnStep } from './mounting-steps/PutTrackersOn';
 import { useLocalization } from '@fluent/react';
 
-const steps: Step[] = [
+// Auto mounting steps that can be included within other flows
+export const autoMountingSteps: Step[] = [
   { type: 'numbered', component: PutTrackersOnStep },
   { type: 'numbered', component: PreparationStep },
   { type: 'numbered', component: MountingResetStep },
+];
+
+const steps: Step[] = [
+  ...autoMountingSteps,
   { type: 'fullsize', component: DoneStep },
 ];
+
 export function AutomaticMountingPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
