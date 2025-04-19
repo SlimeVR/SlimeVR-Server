@@ -306,6 +306,7 @@ tracker-settings-forget = Tracker Vergessen
 tracker-settings-forget-description = Entfernt den Tracker vom SlimeVR Server und verhindert, dass er sich wieder verbindet, bis der Server neu gestartet wurde. Die Konfiguration des Trackers geht nicht verloren.
 tracker-settings-forget-label = Tracker Vergessen
 tracker-settings-update-unavailable = Kann nicht aktualisiert werden (DIY)
+tracker-settings-update-low-battery = Aktualisierung nicht möglich. Akku unter 50 %
 tracker-settings-update-up_to_date = Auf dem neusten Stand
 tracker-settings-update-available = { $versionName } ist jetzt Verfügbar
 tracker-settings-update = Jetzt aktualisieren
@@ -1297,7 +1298,7 @@ firmware_tool-build_step = Building
 firmware_tool-build_step-description = Die Firmware wird erstellt, bitte warten.
 firmware_tool-flashing_step = Flashen
 firmware_tool-flashing_step-description = Ihre Tracker werden geflasht, bitte folgen Sie den Anweisungen auf dem Bildschirm.
-firmware_tool-flashing_step-warning = Trennen Sie den Tracker während des Upload-Prozesses nicht vom Computer und starten Sie ihn nicht neu, es sei denn, Sie werden dazu aufgefordert. Andernfalls könnte Ihr Board unbrauchbar werden.
+firmware_tool-flashing_step-warning-v2 = Trennen oder schalten Sie den Tracker während des Upload-Vorgangs nicht aus, es sei denn, Sie werden dazu aufgefordert, da dies den Tracker unbrauchbar machen kann.
 firmware_tool-flashing_step-flash_more = Weitere Tracker flashen
 firmware_tool-flashing_step-exit = Schließen
 
@@ -1315,7 +1316,7 @@ firmware_tool-build-ERROR = Die Firmware konnte nicht erstellt werden
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = Lade die Firmware herunter
-firmware_update-status-NEED_MANUAL_REBOOT = Bitte starten Sie den Tracker neu
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Bitte schalten Sie Ihren Tracker aus und wieder ein.
 firmware_update-status-AUTHENTICATING = Authentifizierung mit dem Mikrokontroller
 firmware_update-status-UPLOADING = Lade die Firmware hoch
 firmware_update-status-SYNCING_WITH_MCU = Synchronisieren mit dem Mikrokontroller
