@@ -212,6 +212,7 @@ class HumanSkeleton(
 	var legTweaks = LegTweaks(this)
 	var tapDetectionManager = TapDetectionManager(this)
 	var localizer = Localizer(this)
+	var ikSolver = IKSolver(headBone)
 
 	// Constructors
 	init {
@@ -448,6 +449,9 @@ class HumanSkeleton(
 
 		// Update tap detection's trackers
 		tapDetectionManager.updateConfig(trackers)
+
+		// Rebuild Ik Solver
+		ikSolver.buildChains(trackers)
 
 		// Update bones tracker field
 		refreshBoneTracker()
@@ -1206,7 +1210,7 @@ class HumanSkeleton(
 
 			SkeletonConfigToggles.SELF_LOCALIZATION -> localizer.setEnabled(newValue)
 
-			SkeletonConfigToggles.USE_POSITION -> newValue
+			SkeletonConfigToggles.USE_POSITION -> ikSolver.enabled = newValue
 
 			SkeletonConfigToggles.ENFORCE_CONSTRAINTS -> enforceConstraints = newValue
 
@@ -1572,6 +1576,7 @@ class HumanSkeleton(
 		}
 		legTweaks.resetBuffer()
 		localizer.reset()
+		ikSolver.resetOffsets()
 		LogManager.info("[HumanSkeleton] Reset: full ($resetSourceName)")
 	}
 
@@ -1709,6 +1714,14 @@ class HumanSkeleton(
 	@VRServerThread
 	fun setLegTweaksEnabled(value: Boolean) {
 		legTweaks.enabled = value
+	}
+
+	/**
+	 * enable/disable IK solver (for Autobone)
+	 */
+	@VRServerThread
+	fun setIKSolverEnabled(value: Boolean) {
+		ikSolver.enabled = value
 	}
 
 	@VRServerThread
