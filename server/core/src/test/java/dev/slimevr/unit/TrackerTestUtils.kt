@@ -6,8 +6,9 @@ import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.AssertionFailureBuilder
 import kotlin.math.abs
+import kotlin.random.Random
 
-object TrackerUtils {
+object TrackerTestUtils {
 	val directions = arrayOf(
 		Quaternion.SLIMEVR.FRONT,
 		Quaternion.SLIMEVR.FRONT_LEFT,
@@ -58,4 +59,13 @@ object TrackerUtils {
 			FastMath.isApproxEqual(q1.x, q2.x, tolerance) &&
 			FastMath.isApproxEqual(q1.y, q2.y, tolerance) &&
 			FastMath.isApproxEqual(q1.z, q2.z, tolerance)
+
+	fun randFloat(random: Random, minInclusive: Float, maxExclusive: Float): Float = minInclusive + (random.nextFloat() * (maxExclusive - minInclusive))
+
+	fun randQuat(random: Random): Quaternion = Quaternion(
+		randFloat(random, -1f, 1f),
+		randFloat(random, -1f, 1f),
+		randFloat(random, -1f, 1f),
+		randFloat(random, -1f, 1f),
+	).unit()
 }

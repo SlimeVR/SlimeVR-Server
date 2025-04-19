@@ -1741,6 +1741,8 @@ class HumanSkeleton(
 	}
 
 	companion object {
+		// Deprecated by Quaternion.twinExtendedBack and Quaternion.UP_ADJ, see their
+		// documentation for an explanation of the functionality - Butterscotch
 		val FORWARD_QUATERNION = EulerAngles(
 			EulerOrder.YZX,
 			FastMath.HALF_PI,
