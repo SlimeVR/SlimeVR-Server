@@ -208,19 +208,22 @@ export default class Xylophone {
    * each `IMeasure` will play when the previous one completes. Resolves when all sound has stopped.
    * @param measure The `IMeasure` or `IMeasure[]` to play
    */
-  public async play(measure: IMeasure | IMeasure[]): Promise<void> {
+  public async play(measure: IMeasure | IMeasure[], delay = 0): Promise<void> {
     if (measure instanceof Array) {
       const arr = [];
 
-      for (const m of measure) arr.push(await this.play(m));
+      for (const m of measure) {
+        arr.push(this.play(m, delay));
+        if (m.offset) delay += m.notes.length * m.offset;
+      }
 
       return;
     }
     let i = 0;
     await Promise.all(
       measure.notes.map((note) => {
-        let offset;
-        if (measure.offset) offset = measure.offset * i++;
+        let offset = delay;
+        if (measure.offset) offset += measure.offset * i++;
 
         return this.playTone({
           length: measure.length,
@@ -275,15 +278,33 @@ export default class Xylophone {
       this.oscillator = this.context.createOscillator();
       this.gainNode = this.context.createGain();
 
+      const real = new Float32Array([0, 0, 0, 0]); // cos
+      const imag = new Float32Array([0, 1, 0.333, 0.2]); // sine
+      const wave = this.context.createPeriodicWave(real, imag); // cos, sine
+
       this.oscillator.connect(this.gainNode);
       this.gainNode.connect(this.context.destination);
-      this.oscillator.type = type;
+      if (type === 'custom') {
+        this.oscillator.setPeriodicWave(wave);
+      } else {
+        this.oscillator.type = type;
+      }
 
-      const gain = Math.min(1, Math.pow((volume ?? 1) * 0.5, Math.E) + 0.05);
+      /**
+       * freqGain: 1/f amplitude for equal energy per octave
+       * and clamp to 1 amplitude at 200Hz
+       * gain: logarithmic volume
+       * and final gain of 0.5
+       */
+      const freqGain = Math.min(
+        1,
+        Math.sqrt(200) * (1 / Math.sqrt(Xylophone.toHertz(note)))
+      );
+      const gain = Math.min(1, Math.pow(volume ?? 1, Math.E) * freqGain) * 0.5;
 
       this.oscillator.frequency.value = Xylophone.toHertz(note);
       this.gainNode.gain.setValueAtTime(0, offset);
-      this.gainNode.gain.linearRampToValueAtTime(1 * gain, offset + 0.01);
+      this.gainNode.gain.linearRampToValueAtTime(1 * gain, offset + 0.02);
 
       this.oscillator.start(offset);
       this.gainNode.gain.exponentialRampToValueAtTime(0.001 * gain, offset + length);

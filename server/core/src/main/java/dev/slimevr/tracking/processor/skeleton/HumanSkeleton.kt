@@ -29,7 +29,6 @@ import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
-import solarxr_protocol.rpc.StatusData
 import java.lang.IllegalArgumentException
 import kotlin.properties.Delegates
 
@@ -57,8 +56,8 @@ class HumanSkeleton(
 	// Arm bones
 	val leftUpperShoulderBone = Bone(BoneType.LEFT_UPPER_SHOULDER, Constraint(ConstraintType.COMPLETE))
 	val rightUpperShoulderBone = Bone(BoneType.RIGHT_UPPER_SHOULDER, Constraint(ConstraintType.COMPLETE))
-	val leftShoulderBone = Bone(BoneType.LEFT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 10f))
-	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 10f))
+	val leftShoulderBone = Bone(BoneType.LEFT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 30f))
+	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 30f))
 	val leftUpperArmBone = Bone(BoneType.LEFT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
 	val rightUpperArmBone = Bone(BoneType.RIGHT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
 	val leftLowerArmBone = Bone(BoneType.LEFT_LOWER_ARM, Constraint(ConstraintType.LOOSE_HINGE, 0f, -180f, 40f))
@@ -1599,8 +1598,14 @@ class HumanSkeleton(
 
 	@VRServerThread
 	fun resetTrackersMounting(resetSourceName: String?) {
-		val server = humanPoseManager.server
-		if (server != null && server.statusSystem.hasStatusType(StatusData.StatusTrackerReset)) {
+		val trackersToReset = trackersToReset
+
+		// TODO: PLEASE rewrite this handling at some point in the future... This is so
+		//  hacky!! Surely there's a better way to check reset status - Butterscotch
+		// If there's a server present (required for status) and any tracker reports a
+		// non-zero reset status (indicates reset required), then block mounting reset,
+		// as it requires a full reset first
+		if (humanPoseManager.server != null && trackersToReset.any { it != null && it.lastResetStatus != 0u }) {
 			LogManager.info("[HumanSkeleton] Reset: mounting ($resetSourceName) failed, reset required")
 			return
 		}

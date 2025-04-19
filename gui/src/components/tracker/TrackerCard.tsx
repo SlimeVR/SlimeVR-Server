@@ -15,6 +15,52 @@ import { DownloadIcon } from '@/components/commons/icon/DownloadIcon';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '@/hooks/app';
 import { checkForUpdate } from '@/components/firmware-update/FirmwareUpdate';
+import { Tooltip } from '@/components/commons/Tooltip';
+import { Localized } from '@fluent/react';
+
+function UpdateIcon({
+  showUpdate,
+}: {
+  showUpdate: 'need-update' | 'low-battery' | 'updated' | 'unavailable';
+}) {
+  const content = (
+    <div className="relative">
+      <div
+        className={classNames(
+          'absolute rounded-full h-6 w-6 left-1 top-1 bg-accent-background-10 animate-[ping_2s_linear_infinite]',
+          showUpdate !== 'need-update' && 'hidden'
+        )}
+      ></div>
+      <div
+        className={classNames(
+          'absolute rounded-full h-8 w-8 justify-center flex items-center',
+          showUpdate === 'low-battery'
+            ? 'cursor-not-allowed bg-background-80 outline-2 outline-status-critical outline'
+            : 'hover:bg-background-40 hover:cursor-pointer bg-background-50'
+        )}
+      >
+        <DownloadIcon width={15}></DownloadIcon>
+      </div>
+    </div>
+  );
+
+  return showUpdate !== 'need-update' ? (
+    <Tooltip
+      preferedDirection="top"
+      content={
+        <Localized id={'tracker-settings-update-low-battery'}>
+          <Typography></Typography>
+        </Localized>
+      }
+    >
+      <div className="absolute right-5 -top-2.5">{content}</div>
+    </Tooltip>
+  ) : (
+    <Link to="/firmware-update" className="absolute right-5 -top-2.5">
+      {content}
+    </Link>
+  );
+}
 
 function TrackerBig({
   device,
@@ -143,6 +189,12 @@ export function TrackerCard({
   const { useVelocity } = useTracker(tracker);
   const velocity = useVelocity();
 
+  const showUpdate =
+    showUpdates &&
+    tracker.status !== TrackerStatusEnum.DISCONNECTED &&
+    currentFirmwareRelease &&
+    device &&
+    checkForUpdate(currentFirmwareRelease, device);
   return (
     <div className="relative">
       <div
@@ -167,19 +219,10 @@ export function TrackerCard({
         {smol && <TrackerSmol tracker={tracker} device={device}></TrackerSmol>}
         {!smol && <TrackerBig tracker={tracker} device={device}></TrackerBig>}
       </div>
-      {showUpdates &&
-        tracker.status !== TrackerStatusEnum.DISCONNECTED &&
-        currentFirmwareRelease &&
-        device?.hardwareInfo &&
-        checkForUpdate(currentFirmwareRelease, device.hardwareInfo) && (
-          <Link to="/firmware-update" className="absolute right-5 -top-2.5">
-            <div className="relative">
-              <div className="absolute rounded-full h-6 w-6 left-1 top-1 bg-accent-background-10 animate-[ping_2s_linear_infinite]"></div>
-              <div className="absolute rounded-full h-8 w-8 hover:bg-background-40 hover:cursor-pointer bg-background-50 justify-center flex items-center">
-                <DownloadIcon width={15}></DownloadIcon>
-              </div>
-            </div>
-          </Link>
+      {showUpdate &&
+        showUpdate !== 'unavailable' &&
+        showUpdate !== 'updated' && (
+          <UpdateIcon showUpdate={showUpdate}></UpdateIcon>
         )}
     </div>
   );
