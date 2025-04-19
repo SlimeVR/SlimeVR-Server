@@ -4,7 +4,11 @@ import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
-import { EYE_HEIGHT_TO_HEIGHT_RATIO, useHeightContext } from '@/hooks/height';
+import {
+  DEFAULT_EYE_HEIGHT,
+  EYE_HEIGHT_TO_HEIGHT_RATIO,
+  useHeightContext,
+} from '@/hooks/height';
 import { useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
@@ -31,9 +35,9 @@ export function ManualHeightStep({
 }) {
   const { state } = useOnboarding();
   const { l10n } = useLocalization();
-  const { setHmdHeight } = useHeightContext();
+  const { setHmdHeight, currentHeight } = useHeightContext();
   const { control, handleSubmit, formState, watch } = useForm<HeightForm>({
-    defaultValues: { height: 1.5 },
+    defaultValues: { height: currentHeight() ?? DEFAULT_EYE_HEIGHT },
   });
   const { sendRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
