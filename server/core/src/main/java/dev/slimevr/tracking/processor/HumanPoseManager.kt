@@ -3,6 +3,7 @@ package dev.slimevr.tracking.processor
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
+import dev.slimevr.autobone.errors.BodyProportionError
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
@@ -643,7 +644,7 @@ class HumanPoseManager(val server: VRServer?) {
 
 	@get:ThreadSafe
 	val realUserHeight: Float
-		get() = skeletonConfigManager.userHeightFromOffsets / 0.936f
+		get() = skeletonConfigManager.userHeightFromOffsets / BodyProportionError.eyeHeightToHeightRatio
 
 	// #endregion
 	fun getPauseTracking(): Boolean = skeleton.getPauseTracking()
