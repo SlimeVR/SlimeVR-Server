@@ -24,6 +24,12 @@
     "store:allow-get",
     "store:allow-set",
     "store:allow-save",
-    "fs:allow-write-text-file"
+    "fs:allow-write-text-file",
+    "fs:allow-read-text-file",
+    "fs:allow-exists",
+    {
+      "identifier": "fs:scope",
+      "allow": [{ "path": "$APPDATA" }, { "path": "$APPDATA/**" }]
+    }
   ]
 }
