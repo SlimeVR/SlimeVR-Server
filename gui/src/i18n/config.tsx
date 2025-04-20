@@ -118,7 +118,7 @@ export const langs = [
 // only on launch :P
 const overrideLangExists = exists(OVERRIDE_FILENAME, {
     baseDir: BaseDirectory.AppConfig,
-    }).catch((e) => false);
+    }).catch(() => false);
 
 // Fetch translation file
 async function fetchMessages(locale: string): Promise<[string, string]> {
