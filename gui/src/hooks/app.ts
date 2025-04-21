@@ -125,7 +125,7 @@ export function useProvideAppContext(): AppContext {
       switch (status) {
         case ResetStatus.STARTED: {
           if (resetType !== ResetType.Yaw)
-            playSoundOnResetStarted(config?.feedbackSoundVolume);
+            playSoundOnResetStarted(resetType, config?.feedbackSoundVolume);
           break;
         }
         case ResetStatus.FINISHED: {
