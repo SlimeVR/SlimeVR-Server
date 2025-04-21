@@ -411,3 +411,11 @@ input::-ms-clear {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
 }
+
+.border-animated-200 {
+  transition: border-color 0.2s ease-in-out;
+}
+
+.border-animated-500 {
+  transition: border-color 0.5s ease-in-out;
+}
