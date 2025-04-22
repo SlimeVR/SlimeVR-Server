@@ -46,10 +46,10 @@ export function ManualHeightStep({
 
   // Load the last configured height
   useEffect(() => {
-    const height = currentHeight();
     reset({
       height:
-        (currentHeight && currentHeight / EYE_HEIGHT_TO_HEIGHT_RATIO) || DEFAULT_FULL_HEIGHT,
+        (currentHeight && currentHeight / EYE_HEIGHT_TO_HEIGHT_RATIO) ||
+        DEFAULT_FULL_HEIGHT,
     });
   }, [currentHeight]);
 

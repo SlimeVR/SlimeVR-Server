@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useWebsocketAPI } from './websocket-api';
 import { RpcMessage, SettingsRequestT, SettingsResponseT } from 'solarxr-protocol';
 import { MIN_HEIGHT } from './manual-proportions';
@@ -30,7 +30,10 @@ export function useProvideHeightContext(): HeightContext {
     }
   });
 
-  const currentHeight = useMemo(() => computeHeight(hmdHeight, floorHeight), [hmdHeight, floorHeight])
+  const currentHeight = useMemo(
+    () => computeHeight(hmdHeight, floorHeight),
+    [hmdHeight, floorHeight]
+  );
 
   return { hmdHeight, setHmdHeight, floorHeight, setFloorHeight, currentHeight };
 }
