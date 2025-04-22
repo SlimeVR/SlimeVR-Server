@@ -63,7 +63,7 @@ export const boardTypeToFirmwareToolBoardType: Record<
   [BoardType.WEMOSWROOM02]: null,
   [BoardType.XIAO_ESP32C3]: null,
   [BoardType.ESP32C6DEVKITC1]: null,
-  [BoardType.GLOVE_IMU_SLIMEVR_DEV]: null,
+  [BoardType.GLOVE_IMU_SLIMEVR_DEV]: null
 };
 
 export const firmwareToolToBoardType: Record<CreateBoardConfigDTO['type'], BoardType> =
@@ -81,6 +81,32 @@ export const firmwareUpdateErrorStatus = [
   FirmwareUpdateStatus.ERROR_UNSUPPORTED_METHOD,
   FirmwareUpdateStatus.ERROR_UPLOAD_FAILED,
 ];
+
+export const firmwareUpdateStatusLabel: Record<FirmwareUpdateStatus, string> = {
+  [FirmwareUpdateStatus.DOWNLOADING]: 'firmware_update-status-DOWNLOADING',
+  [FirmwareUpdateStatus.NEED_MANUAL_REBOOT]:
+    'firmware_update-status-NEED_MANUAL_REBOOT-v2',
+  [FirmwareUpdateStatus.AUTHENTICATING]: 'firmware_update-status-AUTHENTICATING',
+  [FirmwareUpdateStatus.UPLOADING]: 'firmware_update-status-UPLOADING',
+  [FirmwareUpdateStatus.SYNCING_WITH_MCU]: 'firmware_update-status-SYNCING_WITH_MCU',
+  [FirmwareUpdateStatus.REBOOTING]: 'firmware_update-status-REBOOTING',
+  [FirmwareUpdateStatus.PROVISIONING]: 'firmware_update-status-PROVISIONING',
+  [FirmwareUpdateStatus.DONE]: 'firmware_update-status-DONE',
+  [FirmwareUpdateStatus.ERROR_DEVICE_NOT_FOUND]:
+    'firmware_update-status-ERROR_DEVICE_NOT_FOUND',
+  [FirmwareUpdateStatus.ERROR_TIMEOUT]: 'firmware_update-status-ERROR_TIMEOUT',
+  [FirmwareUpdateStatus.ERROR_DOWNLOAD_FAILED]:
+    'firmware_update-status-ERROR_DOWNLOAD_FAILED',
+  [FirmwareUpdateStatus.ERROR_AUTHENTICATION_FAILED]:
+    'firmware_update-status-ERROR_AUTHENTICATION_FAILED',
+  [FirmwareUpdateStatus.ERROR_UPLOAD_FAILED]:
+    'firmware_update-status-ERROR_UPLOAD_FAILED',
+  [FirmwareUpdateStatus.ERROR_PROVISIONING_FAILED]:
+    'firmware_update-status-ERROR_PROVISIONING_FAILED',
+  [FirmwareUpdateStatus.ERROR_UNSUPPORTED_METHOD]:
+    'firmware_update-status-ERROR_UNSUPPORTED_METHOD',
+  [FirmwareUpdateStatus.ERROR_UNKNOWN]: 'firmware_update-status-ERROR_UNKNOWN',
+};
 
 export interface FirmwareToolContext {
   selectBoard: (boardType: CreateBoardConfigDTO['type']) => Promise<void>;
@@ -232,7 +258,7 @@ export const getFlashingRequests = (
         const id = new SerialDevicePortT();
         id.port = device.deviceId.toString();
 
-        if (!onboardingState.wifi?.ssid || !onboardingState.wifi?.password)
+        if (!onboardingState.wifi?.ssid)
           throw new Error('invalid state, wifi should be set');
 
         const method = new SerialFirmwareUpdateT();

@@ -379,6 +379,7 @@ tracker-settings-forget = Forget tracker
 tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevent it from connecting to it until the server is restarted. The configuration of the tracker won't be lost.
 tracker-settings-forget-label = Forget tracker
 tracker-settings-update-unavailable = Cannot be updated (DIY)
+tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
 tracker-settings-update-up_to_date = Up to date
 tracker-settings-update-available = { $versionName } is now available
 tracker-settings-update = Update now
@@ -455,6 +456,7 @@ settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 settings-sidebar-appearance = Appearance
 settings-sidebar-notifications = Notifications
+settings-sidebar-behavior = Behavior
 settings-sidebar-firmware-tool = DIY Firmware Tool
 settings-sidebar-advanced = Advanced
 
@@ -627,9 +629,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Incre
 
 ## Appearance settings
 settings-interface-appearance = Appearance
-settings-general-interface-dev_mode = Developer Mode
-settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
-settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-theme = Color theme
 settings-general-interface-show-navbar-onboarding = Show "{ navbar-onboarding }" on navigation bar
 settings-general-interface-show-navbar-onboarding-description = This changes if the "{ navbar-onboarding }" button shows on the navigation bar.
@@ -661,6 +660,12 @@ settings-general-interface-feedback_sound-volume = Feedback sound volume
 settings-general-interface-connected_trackers_warning = Connected trackers warning
 settings-general-interface-connected_trackers_warning-description = This option will show a pop-up every time you try exiting SlimeVR while having one or more connected trackers. It reminds you to turn off your trackers when you are done to preserve battery life.
 settings-general-interface-connected_trackers_warning-label = Connected trackers warning on exit
+
+## Behavior settings
+settings-interface-behavior = Behavior
+settings-general-interface-dev_mode = Developer Mode
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = Minimize to system tray
 settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bothering you.
 settings-general-interface-use_tray-label = Minimize to system tray
@@ -672,6 +677,15 @@ settings-general-interface-discord_presence-message = { $amount ->
     [one] Using 1 tracker
     *[other] Using { $amount } trackers
 }
+settings-interface-behavior-error_tracking = Error collection via Sentry.io
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>Do you consent to the collection of anonymized error data?</h1>
+
+    <b>We do not collect personal information</b> such as your IP address or wireless credentials. SlimeVR values your privacy!
+
+    To provide the best user experience, we collect anonymized error reports, performance metrics, and operating system information. This helps us detect bugs and issues with SlimeVR. These metrics are collected via Sentry.io.
+
+settings-interface-behavior-error_tracking-label = Send errors to developers
 
 ## Serial settings
 settings-serial = Serial Console
@@ -809,9 +823,12 @@ settings-utils-advanced-reset_warning =
 settings-utils-advanced-reset_warning-reset = Reset settings
 settings-utils-advanced-reset_warning-cancel = Cancel
 
-settings-utils-advanced-open_data = Data folder
-settings-utils-advanced-open_data-description = Open SlimeVR's data folder in file explorer, containing config and log files.
+settings-utils-advanced-open_data-v1 = Config folder
+settings-utils-advanced-open_data-description-v1 = Open SlimeVR's config folder in file explorer, containing the configuration
 settings-utils-advanced-open_data-label = Open folder
+settings-utils-advanced-open_logs = Logs folder
+settings-utils-advanced-open_logs-description = Open SlimeVR's logs folder in file explorer, containing the logs of the app
+settings-utils-advanced-open_logs-label = Open folder
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
@@ -1177,6 +1194,13 @@ onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR is not cur
 onboarding-scaled_proportions-manual_height-height-v2 = Your full height is
 onboarding-scaled_proportions-manual_height-estimated_height = Your estimated headset height is:
 onboarding-scaled_proportions-manual_height-next_step = Continue and save
+onboarding-scaled_proportions-manual_height-warning =
+    You are currently using the manual way of setting up scaled proportions!
+    <b>This mode is recommended only if you do not use a HMD with SlimeVR</b>
+
+    To be able to use the automatic scaled proportions please:
+onboarding-scaled_proportions-manual_height-warning-no_hmd = Connect a VR Headset
+onboarding-scaled_proportions-manual_height-warning-no_controllers = Make sure your controllers are connected and correctly assigned to your hands
 
 ## Tracker scaled proportions reset
 onboarding-scaled_proportions-reset_proportion-title = Reset your body proportions
@@ -1321,7 +1345,7 @@ firmware_tool-build_step-description =
 firmware_tool-flashing_step = Flashing
 firmware_tool-flashing_step-description =
     Your trackers are flashing, please follow the instructions on the screen
-firmware_tool-flashing_step-warning = Do not unplug or restart the tracker during the upload process unless told to, it may make your board unusable
+firmware_tool-flashing_step-warning-v2 = Do not unplug or turn off the tracker during the upload process unless told to, it may make your board unusable
 firmware_tool-flashing_step-flash_more = Flash more trackers
 firmware_tool-flashing_step-exit = Exit
 
@@ -1337,7 +1361,7 @@ firmware_tool-build-ERROR = Unable to build the firmware
 
 ## Firmware update status
 firmware_update-status-DOWNLOADING = Downloading the firmware
-firmware_update-status-NEED_MANUAL_REBOOT = Please restart the tracker
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Please turn your tracker off and on again
 firmware_update-status-AUTHENTICATING = Authenticating with the mcu
 firmware_update-status-UPLOADING = Uploading the firmware
 firmware_update-status-SYNCING_WITH_MCU = Syncing with the mcu
@@ -1386,3 +1410,11 @@ unknown_device-modal-description = There is a new tracker with MAC address <b>{$
     Do you want to connect it to SlimeVR?
 unknown_device-modal-confirm = Sure!
 unknown_device-modal-forget = Ignore it
+
+## Error collection consent modal
+error_collection_modal-title = Can we collect errors?
+error_collection_modal-description_v2 = { settings-interface-behavior-error_tracking-description_v2 }
+
+    You can change this setting later in the Behavior section of the settings page.
+error_collection_modal-confirm = I agree
+error_collection_modal-cancel = I don't want to

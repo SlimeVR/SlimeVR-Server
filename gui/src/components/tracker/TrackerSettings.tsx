@@ -189,7 +189,7 @@ export function TrackerSettingsPage() {
   const needUpdate =
     currentFirmwareRelease &&
     tracker?.device?.hardwareInfo &&
-    checkForUpdate(currentFirmwareRelease, tracker?.device?.hardwareInfo);
+    checkForUpdate(currentFirmwareRelease, tracker?.device);
   const updateUnavailable =
     tracker?.device?.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
     !semver.valid(
@@ -242,19 +242,27 @@ export function TrackerSettingsPage() {
                 )}
                 {!updateUnavailable && (
                   <>
-                    {!needUpdate && (
+                    {needUpdate === 'updated' && (
                       <Localized id="tracker-settings-update-up_to_date">
                         <Typography>Up to date</Typography>
                       </Localized>
                     )}
-                    {needUpdate && (
+                    {needUpdate === 'need-update' && currentFirmwareRelease && (
                       <Localized
                         id="tracker-settings-update-available"
-                        vars={{ versionName: currentFirmwareRelease?.name }}
+                        vars={{ versionName: currentFirmwareRelease.name }}
                       >
                         <Typography color="text-accent-background-10">
                           New version available
                         </Typography>
+                      </Localized>
+                    )}
+                    {needUpdate === 'low-battery' && currentFirmwareRelease && (
+                      <Localized
+                        id="tracker-settings-update-low-battery"
+                        vars={{ versionName: currentFirmwareRelease.name }}
+                      >
+                        <Typography color="text-status-critical"></Typography>
                       </Localized>
                     )}
                   </>
@@ -262,8 +270,10 @@ export function TrackerSettingsPage() {
               </div>
               <Localized id="tracker-settings-update">
                 <Button
-                  variant={needUpdate ? 'primary' : 'secondary'}
-                  disabled={!needUpdate}
+                  variant={
+                    needUpdate === 'need-update' ? 'primary' : 'secondary'
+                  }
+                  disabled={needUpdate !== 'need-update'}
                   to="/firmware-update"
                 >
                   Update now
@@ -291,7 +301,7 @@ export function TrackerSettingsPage() {
               <Typography color="secondary">
                 {l10n.getString('tracker-infos-custom_name')}
               </Typography>
-              <Typography>
+              <Typography sentry-mask>
                 {tracker?.tracker.info?.customName || '--'}
               </Typography>
             </div>
@@ -489,7 +499,7 @@ export function TrackerSettingsPage() {
                 deviceId={tracker.tracker.trackerId?.deviceId?.id}
               />
             )}
-          <div className="flex flex-col gap-2 w-full mt-3">
+          <div className="flex flex-col gap-2 w-full mt-3 sentry-mask">
             <Typography variant="section-title">
               {l10n.getString('tracker-settings-name_section')}
             </Typography>

@@ -1,7 +1,7 @@
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
-import { Localized, useLocalization } from '@fluent/react';
+import { useLocalization } from '@fluent/react';
 import { useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
 import { EYE_HEIGHT_TO_HEIGHT_RATIO, useHeightContext } from '@/hooks/height';
@@ -11,12 +11,8 @@ import {
   ModelSettingsT,
   RpcMessage,
   SkeletonHeightT,
-  StatusData,
-  StatusSteamVRDisconnectedT,
 } from 'solarxr-protocol';
 import { NumberSelector } from '@/components/commons/NumberSelector';
-import { WarningBox } from '@/components/commons/TipBox';
-import { useStatusContext } from '@/hooks/status-system';
 import { useOnboarding } from '@/hooks/onboarding';
 import { MIN_HEIGHT } from '@/hooks/manual-proportions';
 
@@ -41,19 +37,7 @@ export function ManualHeightStep({
   });
   const { sendRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
-  const { statuses } = useStatusContext();
   const height = watch('height');
-
-  const missingSteamConnection = useMemo(
-    () =>
-      Object.values(statuses).some(
-        (x) =>
-          x.dataType === StatusData.StatusSteamVRDisconnected &&
-          (x.data as StatusSteamVRDisconnectedT).bridgeSettingsName ===
-            'steamvr'
-      ),
-    [statuses]
-  );
 
   const mFormat = useMemo(
     () =>
@@ -97,17 +81,6 @@ export function ManualHeightStep({
                 'onboarding-scaled_proportions-manual_height-description-v2'
               )}
             </Typography>
-            {missingSteamConnection && (
-              <div className="flex flex-row items-center mt-2 gap-2 mobile:flex-col">
-                <Localized
-                  id="onboarding-scaled_proportions-manual_height-missing_steamvr"
-                  elems={{ b: <b></b> }}
-                  // TODO: Add link to docs!
-                >
-                  <WarningBox>You don't have SteamVR connected!</WarningBox>
-                </Localized>
-              </div>
-            )}
           </div>
           <div className="flex flex-col self-center items-center justify-center">
             <NumberSelector
