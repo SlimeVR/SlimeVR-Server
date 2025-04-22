@@ -49,9 +49,9 @@ export function ManualHeightStep({
     const height = currentHeight();
     reset({
       height:
-        (height && height / EYE_HEIGHT_TO_HEIGHT_RATIO) || DEFAULT_FULL_HEIGHT,
+        (currentHeight && currentHeight / EYE_HEIGHT_TO_HEIGHT_RATIO) || DEFAULT_FULL_HEIGHT,
     });
-  }, [currentHeight()]);
+  }, [currentHeight]);
 
   const mFormat = useMemo(
     () =>

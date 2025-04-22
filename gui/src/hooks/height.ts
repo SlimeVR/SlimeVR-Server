@@ -8,7 +8,7 @@ export interface HeightContext {
   setHmdHeight: React.Dispatch<React.SetStateAction<number | null>>;
   floorHeight: number | null;
   setFloorHeight: React.Dispatch<React.SetStateAction<number | null>>;
-  currentHeight: () => number | null;
+  currentHeight: number | null;
 }
 
 export function useProvideHeightContext(): HeightContext {
@@ -30,7 +30,7 @@ export function useProvideHeightContext(): HeightContext {
     }
   });
 
-  const currentHeight = () => computeHeight(hmdHeight, floorHeight);
+  const currentHeight = useMemo(() => computeHeight(hmdHeight, floorHeight), [hmdHeight, floorHeight])
 
   return { hmdHeight, setHmdHeight, floorHeight, setFloorHeight, currentHeight };
 }
