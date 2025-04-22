@@ -63,7 +63,7 @@ export function ManualHeightStep({
     [currentLocales]
   );
 
-  const submitHmdHeight = (values: HeightForm) => {
+  const submitFullHeight = (values: HeightForm) => {
     const newHeight = values.height * EYE_HEIGHT_TO_HEIGHT_RATIO;
     setHmdHeight(newHeight);
     const settingsRequest = new ChangeSettingsRequestT();
@@ -80,7 +80,7 @@ export function ManualHeightStep({
   return (
     <form
       className="flex flex-col flex-grow"
-      onSubmit={handleSubmit(submitHmdHeight)}
+      onSubmit={handleSubmit(submitFullHeight)}
     >
       <div className="flex gap-2 flex-grow">
         <div className="flex flex-grow flex-col gap-4">
