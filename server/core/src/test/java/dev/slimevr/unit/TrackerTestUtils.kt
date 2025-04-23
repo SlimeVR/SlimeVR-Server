@@ -1,12 +1,10 @@
 package dev.slimevr.unit
 
 import com.jme3.math.FastMath
-import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.AssertionFailureBuilder
 import kotlin.math.abs
-import kotlin.random.Random
 
 object TrackerTestUtils {
 	val directions = arrayOf(
@@ -20,7 +18,30 @@ object TrackerTestUtils {
 		Quaternion.SLIMEVR.BACK,
 	)
 
-	val frontRot = EulerAngles(EulerOrder.YZX, FastMath.HALF_PI, 0f, 0f).toQuaternion()
+	val frontRot = Quaternion(0.707f, 0.707f, 0f, 0f)
+
+	// A diverse range of quaternions to be used for testing where specific rotations
+	// do not matter
+	val testRots = arrayOf(
+		// Various rotations
+		frontRot,
+		Quaternion(0.707f, 0f, 0f, 0.707f),
+		Quaternion(0.854f, 0.354f, 0.146f, 0.354f),
+		// Pure yaw rotations
+		Quaternion.SLIMEVR.FRONT,
+		Quaternion.SLIMEVR.LEFT,
+		Quaternion.SLIMEVR.RIGHT,
+		// Axes
+		Quaternion.I,
+		Quaternion.K,
+		// Negative axes (same rotations, different sign)
+		-Quaternion.I,
+		-Quaternion.K,
+		// Identity
+		Quaternion.IDENTITY,
+	)
+
+	fun testRotFromIndex(index: Int): Quaternion = testRots[abs(index) % testRots.size]
 
 	/**
 	 * Makes a radian angle positive
@@ -59,13 +80,4 @@ object TrackerTestUtils {
 			FastMath.isApproxEqual(q1.x, q2.x, tolerance) &&
 			FastMath.isApproxEqual(q1.y, q2.y, tolerance) &&
 			FastMath.isApproxEqual(q1.z, q2.z, tolerance)
-
-	fun randFloat(random: Random, minInclusive: Float, maxExclusive: Float): Float = minInclusive + (random.nextFloat() * (maxExclusive - minInclusive))
-
-	fun randQuat(random: Random): Quaternion = Quaternion(
-		randFloat(random, -1f, 1f),
-		randFloat(random, -1f, 1f),
-		randFloat(random, -1f, 1f),
-		randFloat(random, -1f, 1f),
-	).unit()
 }

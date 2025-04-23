@@ -9,7 +9,6 @@ import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.Test
-import kotlin.random.Random
 
 class SkeletonResetTests {
 
@@ -17,7 +16,6 @@ class SkeletonResetTests {
 
 	@Test
 	fun testSkeletonReset() {
-		val rand = Random(42)
 		val trackers = TestTrackerSet()
 
 		// Initialize skeleton and everything
@@ -28,8 +26,8 @@ class SkeletonResetTests {
 
 		// Randomize tracker orientations, these should be zeroed and matched to the
 		// headset yaw by full reset
-		for (tracker in trackers.set) {
-			tracker.setRotation(TrackerTestUtils.randQuat(rand))
+		for ((i, tracker) in trackers.set.withIndex()) {
+			tracker.setRotation(TrackerTestUtils.testRotFromIndex(i))
 		}
 		trackers.head.setRotation(headRot1)
 		hpm.resetTrackersFull(resetSource)
@@ -43,8 +41,9 @@ class SkeletonResetTests {
 
 		// Randomize full tracker orientations, these should match the headset yaw but
 		// retain orientation otherwise
-		for (tracker in trackers.set) {
-			tracker.setRotation(TrackerTestUtils.randQuat(rand))
+		for ((i, tracker) in trackers.set.withIndex()) {
+			// Offset index so it's different from last reset
+			tracker.setRotation(TrackerTestUtils.testRotFromIndex(i + 1))
 		}
 		trackers.head.setRotation(Quaternion.IDENTITY)
 		hpm.resetTrackersYaw(resetSource)
