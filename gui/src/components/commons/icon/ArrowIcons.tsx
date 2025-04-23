@@ -29,11 +29,11 @@ export function ArrowUpIcon({ size = 24 }: { size?: number }) {
   );
 }
 
-export function ArrowLeftIcon() {
+export function ArrowLeftIcon({ size = 12 }: { size?: number }) {
   return (
     <svg
-      width="12"
-      height="10"
+      width={size}
+      height={size}
       viewBox="0 0 12 10"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -46,11 +46,11 @@ export function ArrowLeftIcon() {
   );
 }
 
-export function ArrowRightIcon() {
+export function ArrowRightIcon({ size = 12 }: { size?: number }) {
   return (
     <svg
-      width="12"
-      height="10"
+      width={size}
+      height={size}
       viewBox="0 0 12 10"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -58,6 +58,25 @@ export function ArrowRightIcon() {
         fillRule="evenodd"
         clipRule="evenodd"
         d="M-3.2717e-07 5C-3.2717e-07 4.81059 0.0790079 4.62894 0.219644 4.49501C0.360281 4.36108 0.551026 4.28584 0.749916 4.28584L9.43845 4.28584L6.2183 1.22068C6.14858 1.15428 6.09327 1.07545 6.05554 0.9887C6.0178 0.901945 5.99838 0.808961 5.99838 0.715058C5.99838 0.621155 6.0178 0.528172 6.05554 0.441417C6.09327 0.354662 6.14858 0.275834 6.2183 0.209435C6.28803 0.143036 6.3708 0.0903648 6.4619 0.0544297C6.553 0.0184946 6.65064 -2.87569e-07 6.74925 -2.87569e-07C6.84785 -2.87569e-07 6.94549 0.0184946 7.03659 0.0544297C7.12769 0.0903648 7.21046 0.143036 7.28019 0.209435L11.7797 4.49438C11.8495 4.56072 11.9049 4.63952 11.9427 4.72629C11.9805 4.81305 12 4.90606 12 5C12 5.09394 11.9805 5.18695 11.9427 5.27371C11.9049 5.36048 11.8495 5.43928 11.7797 5.50562L7.28019 9.79056C7.13937 9.92466 6.94839 10 6.74925 10C6.5501 10 6.35912 9.92466 6.2183 9.79056C6.07749 9.65646 5.99838 9.47459 5.99838 9.28494C5.99838 9.0953 6.07749 8.91342 6.2183 8.77932L9.43845 5.71416L0.749916 5.71416C0.551026 5.71416 0.360281 5.63891 0.219644 5.50498C0.0790079 5.37105 -3.2717e-07 5.18941 -3.2717e-07 5Z"
+      />
+    </svg>
+  );
+}
+
+export function ArrowRightLeftIcon() {
+  return (
+    <svg
+      width="24"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
       />
     </svg>
   );

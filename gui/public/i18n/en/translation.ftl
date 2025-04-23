@@ -104,29 +104,125 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 ## Proportions
 skeleton_bone-NONE = None
 skeleton_bone-HEAD = Head Shift
+skeleton_bone-HEAD-desc =
+    This is the distance from your headset to the middle of your head.
+    To adjust it, shake your head left to right as if you're disagreeing and modify
+    it until any movement in other trackers is negligible. 
 skeleton_bone-NECK = Neck Length
+skeleton_bone-NECK-desc =
+    This is the distance from the middle of your head to the base of your neck.
+    To adjust it, move your head up and down as if you're nodding or tilt your head 
+    to the left and right and modify it until any movement in other trackers is negligible. 
 skeleton_bone-torso_group = Torso length
+skeleton_bone-torso_group-desc =
+    This is the distance from the base of your neck to your hips.
+    To adjust it, modify it standing up straight until your virtual hips line
+    up with your real ones.
 skeleton_bone-UPPER_CHEST = Upper Chest Length
+skeleton_bone-UPPER_CHEST-desc =
+    This is the distance from the base of your neck to the middle of your chest.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-CHEST_OFFSET-desc =
+    This can be adjusted to move your virtual chest tracker up or down in order to aid
+    with calibration in certain games or applications that may expect it to be higher or lower.
 skeleton_bone-CHEST = Chest Length
+skeleton_bone-CHEST-desc =
+    This is the distance from the middle of your chest to the middle of your spine.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-WAIST = Waist Length
+skeleton_bone-WAIST-desc =
+    This is the distance from the middle of your spine to your belly button.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP = Hip Length
+skeleton_bone-HIP-desc =
+    This is the distance from your belly button to your hips
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP_OFFSET = Hip Offset
+skeleton_bone-HIP_OFFSET-desc =
+    This can be adjusted to move your virtual hip tracker up or down in order to aid
+    with calibration in certain games or applications that may expect it to be on your waist.
 skeleton_bone-HIPS_WIDTH = Hips Width
+skeleton_bone-HIPS_WIDTH-desc =
+    This is the distance between the start of your legs.
+    To adjust it, perform a full reset with your legs straight and modify it until
+    your virtual legs match up with your real ones horizontally.
 skeleton_bone-leg_group = Leg length
+skeleton_bone-leg_group-desc =
+    This is the distance from your hips to your feet.
+    To adjust it, adjust your Torso Length properly and modify it
+    until your virtual feet are at the same level as your real ones.
 skeleton_bone-UPPER_LEG = Upper Leg Length
+skeleton_bone-UPPER_LEG-desc =
+    This is the distance from your hips to your knees.
+    To adjust it, adjust your Leg Length properly and modify it
+    until your virtual knees are at the same level as your real ones.
 skeleton_bone-LOWER_LEG = Lower Leg Length
+skeleton_bone-LOWER_LEG-desc =
+    This is the distance from your hips to your knees.
+    To adjust it, adjust your Leg Length properly and modify it
+    until your virtual knees are at the same level as your real ones.
 skeleton_bone-FOOT_LENGTH = Foot Length
+skeleton_bone-FOOT_LENGTH-desc =
+    This is the distance from your ankles to your toes.
+    To adjust it, tiptoe and modify it until your virtual feet stay in place.
 skeleton_bone-FOOT_SHIFT = Foot Shift
+skeleton_bone-FOOT_SHIFT-desc =
+    This value is the horizontal distance from your knee to your ankle.
+    It accounts for your lower legs going backwards when standing up straight.
+    To adjust it, set Foot Length to 0, perform a full reset and modify it until your virtual
+    feet line up with the middle of your ankles.
 skeleton_bone-SKELETON_OFFSET = Skeleton Offset
+skeleton_bone-SKELETON_OFFSET-desc =
+    This can be adjusted to offsets all your trackers forward or backwards.
+    It can be used in order to aid with calibration in certain games or applications
+    that may expect your trackers to be more forward.
 skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    This is the vertical distance from the base of your neck to your shoulders.
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers 
+    line up vertically with your real shoulders.
 skeleton_bone-SHOULDERS_WIDTH = Shoulders Width
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    This is the horizontal distance from the base of your neck to your shoulders.
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers 
+    line up horizontally with your real shoulders.
 skeleton_bone-arm_group = Arm length
+skeleton_bone-arm_group-desc =
+    This is the distance from your shoulders to your wrists.
+    To adjust it, adjust Shoulders Distance properly, set Hand Distance Y 
+    to 0 and modify it until your hand trackers line up with your wrists.
 skeleton_bone-UPPER_ARM = Upper Arm Length
+skeleton_bone-UPPER_ARM-desc =
+    This is the distance from your shoulders to your elbows.
+    To adjust it, adjust Arm Length properly and modify it until 
+    your elbow trackers line up with your real elbows.
 skeleton_bone-LOWER_ARM = Lower Arm Length
+skeleton_bone-LOWER_ARM-desc =
+    This is the distance from your elbows to your wrists.
+    To adjust it, adjust Arm Length properly and modify it until 
+    your elbow trackers line up with your real elbows.
 skeleton_bone-HAND_Y = Hand Distance Y
+skeleton_bone-HAND_Y-desc =
+    This is the vertical distance from your wrists to the middle of your hand.
+    To adjust it for motion capture, adjust Arm Length properly and modify it until your
+    hand trackers line up vertically with the middle of your hands.
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and 
+    modify it until your elbow trackers line up vertically with your wrists.
 skeleton_bone-HAND_Z = Hand Distance Z
+skeleton_bone-HAND_Z-desc =
+    This is the horizontal distance from your wrists to the middle of your hand.
+    To adjust it for motion capture, set it to 0.
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and 
+    modify it until your elbow trackers line up horizontally with your wrists.
 skeleton_bone-ELBOW_OFFSET = Elbow Offset
+skeleton_bone-ELBOW_OFFSET-desc =
+    This can be adjusted to move your virtual elbow trackers up or down in order to aid
+    with VRChat accidentally binding and elbow tracker to the chest.
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
@@ -283,6 +379,7 @@ tracker-settings-forget = Forget tracker
 tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevent it from connecting to it until the server is restarted. The configuration of the tracker won't be lost.
 tracker-settings-forget-label = Forget tracker
 tracker-settings-update-unavailable = Cannot be updated (DIY)
+tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
 tracker-settings-update-up_to_date = Up to date
 tracker-settings-update-available = { $versionName } is now available
 tracker-settings-update = Update now
@@ -359,6 +456,7 @@ settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 settings-sidebar-appearance = Appearance
 settings-sidebar-notifications = Notifications
+settings-sidebar-behavior = Behavior
 settings-sidebar-firmware-tool = DIY Firmware Tool
 settings-sidebar-advanced = Advanced
 
@@ -565,6 +663,12 @@ settings-general-interface-feedback_sound-volume = Feedback sound volume
 settings-general-interface-connected_trackers_warning = Connected trackers warning
 settings-general-interface-connected_trackers_warning-description = This option will show a pop-up every time you try exiting SlimeVR while having one or more connected trackers. It reminds you to turn off your trackers when you are done to preserve battery life.
 settings-general-interface-connected_trackers_warning-label = Connected trackers warning on exit
+
+## Behavior settings
+settings-interface-behavior = Behavior
+settings-general-interface-dev_mode = Developer Mode
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = Minimize to system tray
 settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bothering you.
 settings-general-interface-use_tray-label = Minimize to system tray
@@ -576,6 +680,15 @@ settings-general-interface-discord_presence-message = { $amount ->
     [one] Using 1 tracker
     *[other] Using { $amount } trackers
 }
+settings-interface-behavior-error_tracking = Error collection via Sentry.io
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>Do you consent to the collection of anonymized error data?</h1>
+
+    <b>We do not collect personal information</b> such as your IP address or wireless credentials. SlimeVR values your privacy!
+
+    To provide the best user experience, we collect anonymized error reports, performance metrics, and operating system information. This helps us detect bugs and issues with SlimeVR. These metrics are collected via Sentry.io.
+
+settings-interface-behavior-error_tracking-label = Send errors to developers
 
 ## Serial settings
 settings-serial = Serial Console
@@ -713,9 +826,12 @@ settings-utils-advanced-reset_warning =
 settings-utils-advanced-reset_warning-reset = Reset settings
 settings-utils-advanced-reset_warning-cancel = Cancel
 
-settings-utils-advanced-open_data = Data folder
-settings-utils-advanced-open_data-description = Open SlimeVR's data folder in file explorer, containing config and log files.
+settings-utils-advanced-open_data-v1 = Config folder
+settings-utils-advanced-open_data-description-v1 = Open SlimeVR's config folder in file explorer, containing the configuration
 settings-utils-advanced-open_data-label = Open folder
+settings-utils-advanced-open_logs = Logs folder
+settings-utils-advanced-open_logs-description = Open SlimeVR's logs folder in file explorer, containing the logs of the app
+settings-utils-advanced-open_logs-label = Open folder
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
@@ -970,17 +1086,16 @@ onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 ## Tracker manual proportions setupa
 onboarding-manual_proportions-back = Go Back to Reset tutorial
 onboarding-manual_proportions-title = Manual Body Proportions
-onboarding-manual_proportions-precision = Precision adjust
-onboarding-manual_proportions-auto = Automatic proportions
-onboarding-manual_proportions-ratio = Adjust by ratio groups
 onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning
 onboarding-manual_proportions-export = Export proportions
 onboarding-manual_proportions-import = Import proportions
-onboarding-manual_proportions-import-success = Imported
-onboarding-manual_proportions-import-failed = Failed
 onboarding-manual_proportions-file_type = Body proportions file
-
+onboarding-manual_proportions-normal_increment = Normal increment
+onboarding-manual_proportions-precise_increment = Precise increment
+onboarding-manual_proportions-grouped_proportions = Grouped proportions
+onboarding-manual_proportions-all_proportions = All proportions
+onboarding-manual_proportions-estimated_height = Estimated user height
 
 ## Tracker automatic proportions setup
 onboarding-automatic_proportions-back = Go Back to Manual Proportions
@@ -1082,6 +1197,13 @@ onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR is not cur
 onboarding-scaled_proportions-manual_height-height-v2 = Your full height is
 onboarding-scaled_proportions-manual_height-estimated_height = Your estimated headset height is:
 onboarding-scaled_proportions-manual_height-next_step = Continue and save
+onboarding-scaled_proportions-manual_height-warning =
+    You are currently using the manual way of setting up scaled proportions!
+    <b>This mode is recommended only if you do not use a HMD with SlimeVR</b>
+
+    To be able to use the automatic scaled proportions please:
+onboarding-scaled_proportions-manual_height-warning-no_hmd = Connect a VR Headset
+onboarding-scaled_proportions-manual_height-warning-no_controllers = Make sure your controllers are connected and correctly assigned to your hands
 
 ## Tracker scaled proportions reset
 onboarding-scaled_proportions-reset_proportion-title = Reset your body proportions
@@ -1226,7 +1348,7 @@ firmware_tool-build_step-description =
 firmware_tool-flashing_step = Flashing
 firmware_tool-flashing_step-description =
     Your trackers are flashing, please follow the instructions on the screen
-firmware_tool-flashing_step-warning = Do not unplug or restart the tracker during the upload process unless told to, it may make your board unusable
+firmware_tool-flashing_step-warning-v2 = Do not unplug or turn off the tracker during the upload process unless told to, it may make your board unusable
 firmware_tool-flashing_step-flash_more = Flash more trackers
 firmware_tool-flashing_step-exit = Exit
 
@@ -1242,7 +1364,7 @@ firmware_tool-build-ERROR = Unable to build the firmware
 
 ## Firmware update status
 firmware_update-status-DOWNLOADING = Downloading the firmware
-firmware_update-status-NEED_MANUAL_REBOOT = Please restart the tracker
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Please turn your tracker off and on again
 firmware_update-status-AUTHENTICATING = Authenticating with the mcu
 firmware_update-status-UPLOADING = Uploading the firmware
 firmware_update-status-SYNCING_WITH_MCU = Syncing with the mcu
@@ -1291,3 +1413,53 @@ unknown_device-modal-description = There is a new tracker with MAC address <b>{$
     Do you want to connect it to SlimeVR?
 unknown_device-modal-confirm = Sure!
 unknown_device-modal-forget = Ignore it
+
+
+# VRChat config warnings
+vrc_config-page-title = VRChat configuration warnings
+vrc_config-page-desc = This page shows the state of your VRChat settings and shows what settings are incompatible with SlimeVR. It is highly recommended that you fix any warnings showing up here for the best user experience with SlimeVR.
+vrc_config-page-help = Can't find the settings?
+vrc_config-page-help-desc = Check out our <a>documentation on this topic!</a>
+vrc_config-page-big_menu = Tracking & IK (Big Menu)
+vrc_config-page-big_menu-desc = Settings related to IK in the big settings menu
+vrc_config-page-wrist_menu = Tracking & IK (Wrist Menu)
+vrc_config-page-wrist_menu-desc = Settings related to IK in small settings menu (wrist menu)
+vrc_config-on = On
+vrc_config-off = Off
+vrc_config-invalid = You have misconfigured VRChat settings!
+vrc_config-show_more = Show more
+vrc_config-setting_name = VRChat Setting name
+vrc_config-recommended_value = Recommended Value
+vrc_config-current_value = Current Value
+vrc_config-legacy_mode = Use Legacy IK Solving
+vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
+vrc_config-shoulder_width_compensation = Shoulder Width Compensation
+vrc_config-spine_mode = FBT Spine Mode
+vrc_config-tracker_model = FBT Tracker Model
+vrc_config-avatar_measurement_type = Avatar Measurement
+vrc_config-calibration_range = Calibration Range
+vrc_config-calibration_visuals = Display Calibration Visuals
+vrc_config-user_height = User Real Height
+
+vrc_config-spine_mode-UNKNOWN = Unknown
+vrc_config-spine_mode-LOCK_BOTH = Lock Both
+vrc_config-spine_mode-LOCK_HEAD = Lock Head
+vrc_config-spine_mode-LOCK_HIP = Lock Hip
+
+vrc_config-tracker_model-UNKNOWN = Unkown
+vrc_config-tracker_model-AXIS = Axis
+vrc_config-tracker_model-BOX = Box
+vrc_config-tracker_model-SPHERE = Sphere
+vrc_config-tracker_model-SYSTEM = System
+
+vrc_config-avatar_measurement_type-UNKNOWN = Unknown
+vrc_config-avatar_measurement_type-HEIGHT = Height
+vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
+
+## Error collection consent modal
+error_collection_modal-title = Can we collect errors?
+error_collection_modal-description_v2 = { settings-interface-behavior-error_tracking-description_v2 }
+
+    You can change this setting later in the Behavior section of the settings page.
+error_collection_modal-confirm = I agree
+error_collection_modal-cancel = I don't want to

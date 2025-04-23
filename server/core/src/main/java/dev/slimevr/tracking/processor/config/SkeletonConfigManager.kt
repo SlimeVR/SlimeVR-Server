@@ -452,7 +452,15 @@ class SkeletonConfigManager(
 
 	fun resetOffset(config: SkeletonConfigOffsets) {
 		when (config) {
-			SkeletonConfigOffsets.UPPER_CHEST, SkeletonConfigOffsets.CHEST, SkeletonConfigOffsets.WAIST, SkeletonConfigOffsets.HIP, SkeletonConfigOffsets.UPPER_LEG, SkeletonConfigOffsets.LOWER_LEG -> {
+			SkeletonConfigOffsets.UPPER_ARM,
+			SkeletonConfigOffsets.LOWER_ARM,
+			SkeletonConfigOffsets.UPPER_CHEST,
+			SkeletonConfigOffsets.CHEST,
+			SkeletonConfigOffsets.WAIST,
+			SkeletonConfigOffsets.HIP,
+			SkeletonConfigOffsets.UPPER_LEG,
+			SkeletonConfigOffsets.LOWER_LEG,
+			-> {
 				val height = humanPoseManager?.server?.configManager?.vrConfig?.skeleton?.userHeight ?: -1f
 				if (height > AutoBone.MIN_HEIGHT) { // Reset only if floor level seems right,
 					val proportionLimiter = proportionLimitMap[config]

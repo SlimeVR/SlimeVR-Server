@@ -1,19 +1,18 @@
-import { useForm } from 'react-hook-form';
+import { Control, Controller, useForm } from 'react-hook-form';
 import {
   ChangeSkeletonConfigRequestT,
+  ResetType,
   RpcMessage,
   SkeletonBone,
   SkeletonConfigRequestT,
+  SkeletonConfigResponseT,
   SkeletonResetAllRequestT,
 } from 'solarxr-protocol';
 import { useOnboarding } from '@/hooks/onboarding';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { Button } from '@/components/commons/Button';
-import { CheckBox } from '@/components/commons/Checkbox';
-import { Typography } from '@/components/commons/Typography';
 import { BodyProportions } from './BodyProportions';
 import { Localized, useLocalization } from '@fluent/react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useBreakpoint, useIsTauri } from '@/hooks/breakpoint';
 import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
 import { ProportionsResetModal } from './ProportionsResetModal';
@@ -26,6 +25,64 @@ import classNames from 'classnames';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { useAtomValue } from 'jotai';
 import { computedTrackersAtom } from '@/store/app-store';
+import { useAppContext } from '@/hooks/app';
+import { RulerIcon } from '@/components/commons/icon/RulerIcon';
+import { PercentIcon } from '@/components/commons/icon/PercentIcon';
+import { UploadFileIcon } from '@/components/commons/icon/UploadFileIcon';
+import { FullResetIcon } from '@/components/commons/icon/ResetIcon';
+import { ImportIcon } from '@/components/commons/icon/ImportIcon';
+import { HumanIcon } from '@/components/commons/icon/HumanIcon';
+import { Typography } from '@/components/commons/Typography';
+import { useLocaleConfig } from '@/i18n/config';
+import { useNavigate } from 'react-router-dom';
+import { ResetButton } from '@/components/home/ResetButton';
+
+function IconButton({
+  onClick,
+  children,
+  className,
+  disabled,
+  tooltip,
+  showTooltip = false,
+  icon,
+}: {
+  onClick: () => void;
+  className?: string;
+  disabled?: boolean;
+  children: ReactNode;
+  tooltip?: ReactNode;
+  showTooltip?: boolean;
+  icon: ReactNode;
+}) {
+  const { isMobile } = useBreakpoint('mobile');
+
+  if (isMobile) showTooltip = true;
+
+  return (
+    <Tooltip
+      disabled={!showTooltip}
+      preferedDirection="bottom"
+      content={tooltip ?? children}
+    >
+      <button
+        onClick={onClick}
+        disabled={disabled}
+        className={classNames(
+          'flex flex-col rounded-md p-2 justify-between gap-1 items-center text-standard fill-background-10',
+          disabled
+            ? 'cursor-not-allowed opacity-30'
+            : 'hover:bg-background-50 cursor-pointer',
+          className
+        )}
+      >
+        <div className="flex justify-center items-center h-8 mobile:w-8 p-2 mobile:p-0">
+          {icon}
+        </div>
+        <div className={classNames('mobile:hidden')}>{children}</div>
+      </button>
+    </Tooltip>
+  );
+}
 
 function parseConfigImport(
   config: SkeletonConfigExport
@@ -66,30 +123,25 @@ function ImportExportButtons() {
   const [importState, setImportState] = useState(ImportStatus.OK);
   const exporting = useRef(false);
 
-  const importStatusKey = useMemo(() => {
-    switch (importState) {
-      case ImportStatus.FAILED:
-        return 'onboarding-manual_proportions-import-failed';
-      case ImportStatus.SUCCESS:
-        return 'onboarding-manual_proportions-import-success';
-      case ImportStatus.OK:
-        return 'onboarding-manual_proportions-import';
-    }
-  }, [importState]);
-
   useRPCPacket(
     RpcMessage.SkeletonConfigResponse,
     (data: SkeletonConfigExport) => {
       if (!exporting.current) return;
       exporting.current = false;
+
+      // make a copy of the config as mutating it directly would be an issue
+      // bc if other useRPCPacket read the same packet,
+      // data would use the mutated data
+      const copy: SkeletonConfigExport = JSON.parse(JSON.stringify(data));
+
       // Convert the skeleton part enums into a string
-      data.skeletonParts.forEach((x) => {
+      copy.skeletonParts.forEach((x) => {
         if (typeof x.bone === 'number')
           x.bone = SkeletonBone[x.bone] as SkeletonBoneKey;
       });
-      data.version = CURRENT_EXPORT_VERSION;
+      copy.version = CURRENT_EXPORT_VERSION;
 
-      const blob = new Blob([JSON.stringify(data)], {
+      const blob = new Blob([JSON.stringify(copy)], {
         type: 'application/json',
       });
       if (isTauri) {
@@ -103,7 +155,7 @@ function ImportExportButtons() {
           defaultPath: 'body-proportions.json',
         })
           .then((path) =>
-            path ? writeTextFile(path, JSON.stringify(data)) : undefined
+            path ? writeTextFile(path, JSON.stringify(copy)) : undefined
           )
           .catch((err) => {
             error(err);
@@ -120,7 +172,11 @@ function ImportExportButtons() {
   const onImport = async () => {
     const file = await fileOpen({
       mimeTypes: ['application/json'],
+    }).catch((err) => {
+      error(err);
+      return null;
     });
+    if (!file) return;
 
     const text = await file.text();
     const config = JSON.parse(text) as SkeletonConfigExport;
@@ -151,41 +207,122 @@ function ImportExportButtons() {
       sendRPCPacket(RpcMessage.ChangeSkeletonConfigRequest, req)
     );
     setImportState(ImportStatus.SUCCESS);
+    setTimeout(() => {
+      setImportState(ImportStatus.OK);
+    }, 2000);
   };
 
   return (
     <>
-      <Button
-        variant="secondary"
-        onClick={() => {
-          exporting.current = true;
+      <div className="flex">
+        <IconButton
+          icon={<UploadFileIcon width={25}></UploadFileIcon>}
+          onClick={onImport}
+          className={classNames(
+            'transition-colors',
+            importState === ImportStatus.FAILED && 'text-status-critical',
+            importState === ImportStatus.SUCCESS && 'text-status-success'
+          )}
+        >
+          <Localized id="onboarding-manual_proportions-import">
+            <Typography variant="standard"></Typography>
+          </Localized>
+        </IconButton>
+      </div>
+      <div className="flex">
+        <IconButton
+          icon={<ImportIcon size={25}></ImportIcon>}
+          onClick={() => {
+            exporting.current = true;
 
-          sendRPCPacket(
-            RpcMessage.SkeletonConfigRequest,
-            new SkeletonConfigRequestT()
-          );
-        }}
-      >
-        {l10n.getString('onboarding-manual_proportions-export')}
-      </Button>
-      <Button
-        variant="secondary"
-        className={classNames(
-          'transition-colors',
-          importState === ImportStatus.FAILED && 'bg-status-critical',
-          importState === ImportStatus.SUCCESS && 'bg-status-success'
-        )}
-        onClick={onImport}
-      >
-        {l10n.getString(importStatusKey)}
-      </Button>
+            sendRPCPacket(
+              RpcMessage.SkeletonConfigRequest,
+              new SkeletonConfigRequestT()
+            );
+          }}
+        >
+          <Localized id="onboarding-manual_proportions-export">
+            <Typography variant="standard"></Typography>
+          </Localized>
+        </IconButton>
+      </div>
     </>
   );
 }
 
-function ButtonsControl() {
-  const { l10n } = useLocalization();
+type ManualProportionControls = Control<{
+  precise: boolean;
+  ratio: boolean;
+}>;
+
+function LinearRatioToggle({ control }: { control: ManualProportionControls }) {
+  return (
+    <Controller
+      name="ratio"
+      control={control}
+      render={({ field: { onChange, value } }) => (
+        <>
+          {value ? (
+            <IconButton
+              icon={<PercentIcon size={25}></PercentIcon>}
+              onClick={() => onChange(!value)}
+            >
+              <Localized id="onboarding-manual_proportions-grouped_proportions">
+                <Typography variant="standard"></Typography>
+              </Localized>
+            </IconButton>
+          ) : (
+            <IconButton
+              icon={<RulerIcon width={25}></RulerIcon>}
+              onClick={() => onChange(!value)}
+            >
+              <Localized id="onboarding-manual_proportions-all_proportions">
+                <Typography variant="standard"></Typography>
+              </Localized>
+            </IconButton>
+          )}
+        </>
+      )}
+    ></Controller>
+  );
+}
+
+function PreciseToggle({ control }: { control: ManualProportionControls }) {
+  return (
+    <Controller
+      name="precise"
+      control={control}
+      render={({ field: { onChange, value } }) => (
+        <>
+          {!value ? (
+            <IconButton
+              icon={<div className="text-xl font-bold">+1</div>}
+              onClick={() => onChange(!value)}
+            >
+              <Localized id="onboarding-manual_proportions-normal_increment">
+                <Typography variant="standard"></Typography>
+              </Localized>
+            </IconButton>
+          ) : (
+            <IconButton
+              icon={<div className="text-xl font-bold">+0.5</div>}
+              onClick={() => onChange(!value)}
+            >
+              <Localized id="onboarding-manual_proportions-precise_increment">
+                <Typography variant="standard"></Typography>
+              </Localized>
+            </IconButton>
+          )}
+        </>
+      )}
+    ></Controller>
+  );
+}
+
+function ButtonsControl({ control }: { control: ManualProportionControls }) {
   const { state } = useOnboarding();
+  const nav = useNavigate();
+  const computedTrackers = useAtomValue(computedTrackersAtom);
   const { sendRPCPacket } = useWebsocketAPI();
 
   const [showWarning, setShowWarning] = useState(false);
@@ -195,57 +332,6 @@ function ButtonsControl() {
       new SkeletonResetAllRequestT()
     );
   };
-
-  return (
-    <div className="gap-2 flex mobile:grid grid-cols-2">
-      <div className="flex flex-grow mobile:contents">
-        <Button
-          variant="secondary"
-          state={{ alonePage: state.alonePage }}
-          to="/onboarding/body-proportions/scaled"
-        >
-          {l10n.getString('onboarding-scaled_proportions-title')}
-        </Button>
-      </div>
-      <div className="flex gap-2 mobile:contents">
-        <ImportExportButtons></ImportExportButtons>
-        <Button variant="secondary" onClick={() => setShowWarning(true)}>
-          {l10n.getString('reset-reset_all')}
-        </Button>
-        <ProportionsResetModal
-          accept={() => {
-            resetAll();
-            setShowWarning(false);
-          }}
-          onClose={() => setShowWarning(false)}
-          isOpen={showWarning}
-        ></ProportionsResetModal>
-      </div>
-    </div>
-  );
-}
-
-export function ManualProportionsPage() {
-  const { isMobile } = useBreakpoint('mobile');
-  const { l10n } = useLocalization();
-  const { applyProgress, state } = useOnboarding();
-
-  const computedTrackers = useAtomValue(computedTrackersAtom);
-
-  applyProgress(0.9);
-
-  const savedValue = useMemo(() => localStorage.getItem('ratioMode'), []);
-
-  const defaultValues = { precise: false, ratio: savedValue !== 'false' };
-
-  const { control, watch } = useForm<{ precise: boolean; ratio: boolean }>({
-    defaultValues,
-  });
-  const { precise, ratio } = watch();
-
-  useEffect(() => {
-    localStorage.setItem('ratioMode', ratio?.toString() ?? 'true');
-  }, [ratio]);
 
   const beneathFloor = useMemo(() => {
     const hmd = computedTrackers.find(
@@ -259,73 +345,141 @@ export function ManualProportionsPage() {
   const canUseFineTuning = !beneathFloor || import.meta.env.DEV;
 
   return (
-    <>
-      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative">
-        <div className="flex flex-col w-full h-full xs:max-w-5xl xs:justify-center">
-          <div className="flex gap-8 justify-center h-full xs:items-center">
-            <div className="flex flex-col w-full xs:max-w-2xl gap-3 items-center mobile:justify-around">
-              <div className="flex flex-col mx-4">
-                <Typography variant="main-title">
-                  {l10n.getString('onboarding-manual_proportions-title')}
-                </Typography>
-                <CheckBox
-                  control={control}
-                  label={l10n.getString('onboarding-manual_proportions-ratio')}
-                  name="ratio"
-                  variant="toggle"
-                ></CheckBox>
-                <CheckBox
-                  control={control}
-                  label={l10n.getString(
-                    'onboarding-manual_proportions-precision'
-                  )}
-                  name="precise"
-                  variant="toggle"
-                ></CheckBox>
-                {isMobile && (
-                  <div className="flex gap-3 justify-between">
-                    <ButtonsControl></ButtonsControl>
-                  </div>
-                )}
-              </div>
-              <Tooltip
-                content={
-                  <Localized id="onboarding-manual_proportions-fine_tuning_button-disabled-tooltip">
-                    <Typography></Typography>
-                  </Localized>
-                }
-                preferedDirection="top"
-                disabled={canUseFineTuning}
-              >
-                <Button
-                  variant="secondary"
-                  to="/onboarding/body-proportions/auto"
-                  state={{ alonePage: state.alonePage }}
-                  disabled={!canUseFineTuning}
-                >
-                  {l10n.getString(
-                    'onboarding-manual_proportions-fine_tuning_button'
-                  )}
-                </Button>
-              </Tooltip>
+    <div className="bg-background-60 rounded-md flex gap-2">
+      <div className="flex">
+        <LinearRatioToggle control={control}></LinearRatioToggle>
+      </div>
+      <div className="flex">
+        <PreciseToggle control={control}></PreciseToggle>
+      </div>
+      <div className="flex">
+        <IconButton
+          icon={<FullResetIcon width={20}></FullResetIcon>}
+          onClick={() => setShowWarning(true)}
+        >
+          <Localized id="reset-reset_all">
+            <Typography variant="standard"></Typography>
+          </Localized>
+        </IconButton>
+      </div>
+      <div className="flex">
+        <IconButton
+          showTooltip={!canUseFineTuning}
+          tooltip={
+            <Localized
+              id={
+                !canUseFineTuning
+                  ? 'onboarding-manual_proportions-fine_tuning_button-disabled-tooltip'
+                  : 'onboarding-manual_proportions-fine_tuning_button'
+              }
+            >
+              <Typography variant="standard"></Typography>
+            </Localized>
+          }
+          disabled={!canUseFineTuning}
+          icon={<HumanIcon width={20}></HumanIcon>}
+          onClick={() =>
+            nav('/onboarding/body-proportions/auto', {
+              state: { alonePage: state.alonePage },
+            })
+          }
+        >
+          <Localized id={'onboarding-manual_proportions-fine_tuning_button'}>
+            <Typography variant="standard"></Typography>
+          </Localized>
+        </IconButton>
+      </div>
+      <div className="flex flex-grow"></div>
+      <ImportExportButtons></ImportExportButtons>
+      <ProportionsResetModal
+        accept={() => {
+          resetAll();
+          setShowWarning(false);
+        }}
+        onClose={() => setShowWarning(false)}
+        isOpen={showWarning}
+      ></ProportionsResetModal>
+    </div>
+  );
+}
 
-              <div className="w-full px-2">
-                <BodyProportions
-                  precise={precise ?? defaultValues.precise}
-                  type={ratio ? 'ratio' : 'linear'}
-                  variant={state.alonePage ? 'alone' : 'onboarding'}
-                ></BodyProportions>
-              </div>
-            </div>
-            <div className="flex-col flex-grow gap-3 rounded-xl fill-background-50 items-center hidden md:flex">
-              <SkeletonVisualizerWidget height="65vh" maxHeight={600} />
-            </div>
+export function ManualProportionsPage() {
+  const { applyProgress, state } = useOnboarding();
+  const { useRPCPacket } = useWebsocketAPI();
+  const { currentLocales } = useLocaleConfig();
+
+  const [userHeight, setUserHeight] = useState(0);
+
+  applyProgress(0.9);
+
+  const savedValue = useMemo(() => localStorage.getItem('ratioMode'), []);
+
+  const defaultValues = { precise: false, ratio: savedValue !== 'false' };
+
+  const { control, watch } = useForm<{ precise: boolean; ratio: boolean }>({
+    defaultValues,
+  });
+  const { precise, ratio } = watch();
+
+  const { cmFormat } = useMemo(() => {
+    const cmFormat = Intl.NumberFormat(currentLocales, {
+      style: 'unit',
+      unit: 'centimeter',
+      maximumFractionDigits: 1,
+    });
+    return { cmFormat };
+  }, [currentLocales]);
+
+  useEffect(() => {
+    localStorage.setItem('ratioMode', ratio?.toString() ?? 'true');
+  }, [ratio]);
+
+  useRPCPacket(
+    RpcMessage.SkeletonConfigResponse,
+    (data: SkeletonConfigResponseT) => {
+      if (data.userHeight) setUserHeight(data.userHeight);
+    }
+  );
+
+  return (
+    <>
+      <div className="flex w-full h-full gap-2 bg-background-70 p-2">
+        <div className="flex flex-col flex-grow gap-2">
+          <ButtonsControl control={control}></ButtonsControl>
+          <div className="bg-background-60 h-20 rounded-md flex-grow overflow-y-auto">
+            <BodyProportions
+              precise={precise ?? defaultValues.precise}
+              type={ratio ? 'ratio' : 'linear'}
+              variant={state.alonePage ? 'alone' : 'onboarding'}
+            ></BodyProportions>
           </div>
-          {!isMobile && (
-            <div className="my-5 mx-4">
-              <ButtonsControl></ButtonsControl>
+        </div>
+        <div className="rounded-md overflow-clip w-1/3 bg-background-60 hidden mobile:hidden sm:flex relative">
+          <SkeletonVisualizerWidget />
+
+          <div className="top-4 w-full px-4 absolute flex gap-2 flex-col md:flex-row">
+            <div className="h-14 flex flex-grow items-center">
+              <ResetButton
+                type={ResetType.Full}
+                size="small"
+                className="w-full h-full bg-background-50 hover:bg-background-40 text-background-10"
+              ></ResetButton>
             </div>
-          )}
+            <Tooltip
+              preferedDirection="bottom"
+              content={
+                <Localized id="onboarding-manual_proportions-estimated_height">
+                  <Typography></Typography>
+                </Localized>
+              }
+            >
+              <div className="h-14 bg-background-50 p-4 flex items-center rounded-lg min-w-36 justify-center">
+                <Typography variant="main-title">
+                  {cmFormat.format((userHeight * 100) / 0.936)}
+                </Typography>
+              </div>
+            </Tooltip>
+          </div>
         </div>
       </div>
     </>

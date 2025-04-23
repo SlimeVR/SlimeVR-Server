@@ -1,5 +1,5 @@
 import { Localized, useLocalization } from '@fluent/react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { StatusData, TrackerDataT } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { Typography } from '@/components/commons/Typography';
@@ -16,6 +16,7 @@ import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
 import classNames from 'classnames';
 import { useAtomValue } from 'jotai';
 import { flatTrackersAtom } from '@/store/app-store';
+import { useVRCConfig } from '@/hooks/vrc-config';
 
 const DONT_REPEAT_STATUSES = [StatusData.StatusTrackerReset];
 
@@ -24,6 +25,7 @@ export function Home() {
   const { config } = useConfig();
   const trackers = useAtomValue(flatTrackersAtom);
   const { statuses } = useStatusContext();
+  const { invalidConfig } = useVRCConfig();
   const navigate = useNavigate();
 
   const sendToSettings = (tracker: TrackerDataT) => {
@@ -52,9 +54,7 @@ export function Home() {
       <div className="h-full overflow-y-auto">
         <div
           className={classNames(
-            'px-3 pt-3 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1',
-            filteredStatuses.filter(([, status]) => status.prioritized)
-              .length === 0 && 'hidden'
+            'px-3 pt-3 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1'
           )}
         >
           {filteredStatuses
@@ -70,6 +70,22 @@ export function Home() {
                 </WarningBox>
               </Localized>
             ))}
+          {invalidConfig && (
+            <WarningBox whitespace={false}>
+              <div className="flex gap-2 justify-between items-center w-full">
+                <div className="flex">
+                  <Localized id={'vrc_config-invalid'}></Localized>
+                </div>
+                <div className="flex">
+                  <Link to="/vrc-warnings">
+                    <div className="rounded-md p-2 bg-background-90 bg-opacity-15 hover:bg-background-10 hover:bg-opacity-25 text-nowrap">
+                      <Localized id={'vrc_config-show_more'}></Localized>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </WarningBox>
+          )}
         </div>
         <div className="overflow-y-auto flex flex-col gap-3">
           {trackers.length === 0 && (

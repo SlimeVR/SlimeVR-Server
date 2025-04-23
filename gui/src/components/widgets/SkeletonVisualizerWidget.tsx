@@ -85,9 +85,10 @@ interface SkeletonVisualizerWidgetProps {
   maxHeight?: number | string;
 }
 
-export function ToggleableSkeletonVisualizerWidget(
-  props: SkeletonVisualizerWidgetProps
-) {
+export function ToggleableSkeletonVisualizerWidget({
+  height,
+  maxHeight,
+}: SkeletonVisualizerWidgetProps) {
   const { l10n } = useLocalization();
   const [enabled, setEnabled] = useState(false);
 
@@ -122,17 +123,19 @@ export function ToggleableSkeletonVisualizerWidget(
           >
             {l10n.getString('widget-skeleton_visualizer-hide')}
           </Button>
-          <SkeletonVisualizerWidget {...props} />
+          <div
+            style={{ height, maxHeight }}
+            className="bg-background-60 p-1 rounded-md"
+          >
+            <SkeletonVisualizerWidget />
+          </div>
         </div>
       )}
     </>
   );
 }
 
-export function SkeletonVisualizerWidget({
-  height = '35vh',
-  maxHeight = 400,
-}: SkeletonVisualizerWidgetProps) {
+export function SkeletonVisualizerWidget() {
   const _bones = useAtomValue(bonesAtom);
 
   const { l10n } = useLocalization();
@@ -200,10 +203,7 @@ export function SkeletonVisualizerWidget({
         </Typography>
       }
     >
-      <Canvas
-        className={classNames('container mx-auto')}
-        style={{ height, background: 'transparent', maxHeight }}
-      >
+      <Canvas className={classNames('container mx-auto')}>
         <gridHelper args={[10, 50, GROUND_COLOR, GROUND_COLOR]} />
         <group position={[0, heightOffset, 0]} quaternion={yawReset}>
           <SkeletonHelper object={skeleton[0]}></SkeletonHelper>

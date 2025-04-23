@@ -1,9 +1,10 @@
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig, PluginOption } from 'vite';
 import { execSync } from 'child_process';
 import path from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
-import jotaiReactRefresh from 'jotai/babel/plugin-react-refresh'
+import jotaiReactRefresh from 'jotai/babel/plugin-react-refresh';
 
 const commitHash = execSync('git rev-parse --verify --short HEAD').toString().trim();
 const versionTag = execSync('git --no-pager tag --sort -taggerdate --points-at HEAD')
@@ -40,13 +41,24 @@ export default defineConfig({
     __VERSION_TAG__: JSON.stringify(versionTag),
     __GIT_CLEAN__: gitClean,
   },
-  plugins: [react({ babel: { plugins: [jotaiReactRefresh] } }), i18nHotReload(), visualizer() as PluginOption],
+  plugins: [
+    react({ babel: { plugins: [jotaiReactRefresh] } }),
+    i18nHotReload(),
+    visualizer() as PluginOption,
+    sentryVitePlugin({
+      org: 'slimevr',
+      project: 'slimevr-server-gui-react',
+    }),
+  ],
   build: {
     target: 'es2022',
     emptyOutDir: true,
+
     commonjsOptions: {
       include: [/solarxr-protocol/, /node_modules/],
     },
+
+    sourcemap: true,
   },
   optimizeDeps: {
     esbuildOptions: {

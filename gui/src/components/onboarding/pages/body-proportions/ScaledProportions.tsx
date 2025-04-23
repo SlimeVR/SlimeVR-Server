@@ -10,16 +10,36 @@ import { DoneStep } from './scaled-steps/Done';
 import { useNavigate } from 'react-router-dom';
 import { ManualHeightStep } from './scaled-steps/ManualHeightStep';
 import { Button } from '@/components/commons/Button';
+import { WarningBox } from '@/components/commons/TipBox';
+import { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
-import { hasHMDTrackerAtom } from '@/store/app-store';
+import { flatTrackersAtom } from '@/store/app-store';
+import { BodyPart } from 'solarxr-protocol';
 
 export function ScaledProportionsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const heightContext = useProvideHeightContext();
   const navigate = useNavigate();
+  const trackers = useAtomValue(flatTrackersAtom);
 
-  const hmdTracker = useAtomValue(hasHMDTrackerAtom);
+  const { hasHmd, hasHandControllers } = useMemo(() => {
+    const hasHmd = trackers.some(
+      (tracker) =>
+        tracker.tracker.info?.bodyPart === BodyPart.HEAD &&
+        (tracker.tracker.info.isHmd || tracker.tracker.position?.y)
+    );
+    const hasHandControllers =
+      trackers.filter(
+        (tracker) =>
+          tracker.tracker.info?.bodyPart === BodyPart.LEFT_HAND ||
+          tracker.tracker.info?.bodyPart === BodyPart.RIGHT_HAND
+      ).length >= 2;
+
+    return { hasHmd, hasHandControllers };
+  }, [trackers]);
+
+  const canDoAuto = hasHmd && hasHandControllers;
 
   applyProgress(0.9);
 
@@ -37,11 +57,37 @@ export function ScaledProportionsPage() {
               </Typography>
             </div>
           </div>
+
+          {!canDoAuto && (
+            <WarningBox>
+              <Localized
+                id="onboarding-scaled_proportions-manual_height-warning"
+                elems={{ b: <b></b> }}
+              >
+                <Typography
+                  whitespace="whitespace-pre"
+                  color="text-background-60"
+                ></Typography>
+              </Localized>
+              <ul className="list-disc ml-8">
+                {!hasHmd && (
+                  <Localized id="onboarding-scaled_proportions-manual_height-warning-no_hmd">
+                    <li></li>
+                  </Localized>
+                )}
+                {!hasHandControllers && (
+                  <Localized id="onboarding-scaled_proportions-manual_height-warning-no_controllers">
+                    <li></li>
+                  </Localized>
+                )}
+              </ul>
+            </WarningBox>
+          )}
           <div className="flex">
             <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
               steps={
-                !hmdTracker
+                !canDoAuto
                   ? [
                       { type: 'numbered', component: ManualHeightStep },
                       { type: 'numbered', component: ResetProportionsStep },

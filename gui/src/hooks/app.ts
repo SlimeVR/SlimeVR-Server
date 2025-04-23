@@ -14,8 +14,9 @@ import { useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
 import { error } from '@/utils/logging';
 import { cacheWrap } from './cache';
-import { useSetAtom } from 'jotai';
-import { datafeedAtom } from '@/store/app-store';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { datafeedAtom, devicesAtom } from '@/store/app-store';
+import { updateSentryContext } from '@/utils/sentry';
 
 export interface FirmwareRelease {
   name: string;
@@ -34,6 +35,7 @@ export function useProvideAppContext(): AppContext {
   const { config } = useConfig();
   const { dataFeedConfig } = useDataFeedConfig();
   const setDatafeed = useSetAtom(datafeedAtom);
+  const devices = useAtomValue(devicesAtom);
 
   const [currentFirmwareRelease, setCurrentFirmwareRelease] =
     useState<FirmwareRelease | null>(null);
@@ -49,6 +51,10 @@ export function useProvideAppContext(): AppContext {
   useDataFeedPacket(DataFeedMessage.DataFeedUpdate, (packet: DataFeedUpdateT) => {
     setDatafeed(packet);
   });
+
+  useEffect(() => {
+    updateSentryContext(devices);
+  }, [devices]);
 
   useRPCPacket(RpcMessage.ResetResponse, ({ status, resetType }: ResetResponseT) => {
     if (!config?.feedbackSound) return;

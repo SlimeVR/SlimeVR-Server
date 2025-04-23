@@ -1,22 +1,22 @@
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
-import { Localized, useLocalization } from '@fluent/react';
-import { useMemo } from 'react';
+import { useLocalization } from '@fluent/react';
+import { useEffect, useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
-import { EYE_HEIGHT_TO_HEIGHT_RATIO, useHeightContext } from '@/hooks/height';
+import {
+  DEFAULT_FULL_HEIGHT,
+  EYE_HEIGHT_TO_HEIGHT_RATIO,
+  useHeightContext,
+} from '@/hooks/height';
 import { useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
   ModelSettingsT,
   RpcMessage,
   SkeletonHeightT,
-  StatusData,
-  StatusSteamVRDisconnectedT,
 } from 'solarxr-protocol';
 import { NumberSelector } from '@/components/commons/NumberSelector';
-import { WarningBox } from '@/components/commons/TipBox';
-import { useStatusContext } from '@/hooks/status-system';
 import { useOnboarding } from '@/hooks/onboarding';
 import { MIN_HEIGHT } from '@/hooks/manual-proportions';
 
@@ -35,25 +35,23 @@ export function ManualHeightStep({
 }) {
   const { state } = useOnboarding();
   const { l10n } = useLocalization();
-  const { setHmdHeight } = useHeightContext();
-  const { control, handleSubmit, formState, watch } = useForm<HeightForm>({
-    defaultValues: { height: 1.5 },
-  });
+  const { setHmdHeight, currentHeight } = useHeightContext();
+  const { control, handleSubmit, formState, watch, reset } =
+    useForm<HeightForm>({
+      defaultValues: { height: DEFAULT_FULL_HEIGHT },
+    });
   const { sendRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
-  const { statuses } = useStatusContext();
   const height = watch('height');
 
-  const missingSteamConnection = useMemo(
-    () =>
-      Object.values(statuses).some(
-        (x) =>
-          x.dataType === StatusData.StatusSteamVRDisconnected &&
-          (x.data as StatusSteamVRDisconnectedT).bridgeSettingsName ===
-            'steamvr'
-      ),
-    [statuses]
-  );
+  // Load the last configured height
+  useEffect(() => {
+    reset({
+      height:
+        (currentHeight && currentHeight / EYE_HEIGHT_TO_HEIGHT_RATIO) ||
+        DEFAULT_FULL_HEIGHT,
+    });
+  }, [currentHeight]);
 
   const mFormat = useMemo(
     () =>
@@ -65,7 +63,7 @@ export function ManualHeightStep({
     [currentLocales]
   );
 
-  const submitHmdHeight = (values: HeightForm) => {
+  const submitFullHeight = (values: HeightForm) => {
     const newHeight = values.height * EYE_HEIGHT_TO_HEIGHT_RATIO;
     setHmdHeight(newHeight);
     const settingsRequest = new ChangeSettingsRequestT();
@@ -82,7 +80,7 @@ export function ManualHeightStep({
   return (
     <form
       className="flex flex-col flex-grow"
-      onSubmit={handleSubmit(submitHmdHeight)}
+      onSubmit={handleSubmit(submitFullHeight)}
     >
       <div className="flex gap-2 flex-grow">
         <div className="flex flex-grow flex-col gap-4">
@@ -97,17 +95,6 @@ export function ManualHeightStep({
                 'onboarding-scaled_proportions-manual_height-description-v2'
               )}
             </Typography>
-            {missingSteamConnection && (
-              <div className="flex flex-row items-center mt-2 gap-2 mobile:flex-col">
-                <Localized
-                  id="onboarding-scaled_proportions-manual_height-missing_steamvr"
-                  elems={{ b: <b></b> }}
-                  // TODO: Add link to docs!
-                >
-                  <WarningBox>You don't have SteamVR connected!</WarningBox>
-                </Localized>
-              </div>
-            )}
           </div>
           <div className="flex flex-col self-center items-center justify-center">
             <NumberSelector

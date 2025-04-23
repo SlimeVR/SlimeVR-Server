@@ -7,6 +7,9 @@ import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.firmware.FirmwareUpdateHandler
 import dev.slimevr.firmware.SerialFlashingHandler
+import dev.slimevr.games.vrchat.VRCConfigHandler
+import dev.slimevr.games.vrchat.VRCConfigHandlerStub
+import dev.slimevr.games.vrchat.VRChatConfigManager
 import dev.slimevr.osc.OSCHandler
 import dev.slimevr.osc.OSCRouter
 import dev.slimevr.osc.VMCHandler
@@ -32,6 +35,7 @@ import io.eiren.util.ann.ThreadSecure
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import solarxr_protocol.datatypes.TrackerIdT
+import solarxr_protocol.rpc.ResetType
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
@@ -49,6 +53,7 @@ class VRServer @JvmOverloads constructor(
 	bridgeProvider: BridgeProvider = { _, _ -> sequence {} },
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
 	flashingHandlerProvider: (VRServer) -> SerialFlashingHandler? = { _ -> null },
+	vrcConfigHandlerProvider: (VRServer) -> VRCConfigHandler = { _ -> VRCConfigHandlerStub() },
 	acquireMulticastLock: () -> Any? = { null },
 	// configPath is used by VRWorkout, do not remove!
 	configPath: String,
@@ -85,6 +90,8 @@ class VRServer @JvmOverloads constructor(
 	var serialFlashingHandler: SerialFlashingHandler?
 
 	val firmwareUpdateHandler: FirmwareUpdateHandler
+
+	val vrcConfigManager: VRChatConfigManager
 
 	@JvmField
 	val autoBoneHandler: AutoBoneHandler
@@ -123,6 +130,7 @@ class VRServer @JvmOverloads constructor(
 		// AutoBone requires HumanPoseManager first
 		autoBoneHandler = AutoBoneHandler(this)
 		firmwareUpdateHandler = FirmwareUpdateHandler(this)
+		vrcConfigManager = VRChatConfigManager(this, vrcConfigHandlerProvider(this))
 		protocolAPI = ProtocolAPI(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 
@@ -328,20 +336,38 @@ class VRServer @JvmOverloads constructor(
 	}
 
 	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
+		if (delay > 0) {
+			resetHandler.sendStarted(ResetType.Full)
+		}
 		timer.schedule(delay) {
-			queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
+			queueTask {
+				humanPoseManager.resetTrackersFull(resetSourceName)
+				resetHandler.sendFinished(ResetType.Full)
+			}
 		}
 	}
 
 	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long) {
+		if (delay > 0) {
+			resetHandler.sendStarted(ResetType.Yaw)
+		}
 		timer.schedule(delay) {
-			queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
+			queueTask {
+				humanPoseManager.resetTrackersYaw(resetSourceName)
+				resetHandler.sendFinished(ResetType.Yaw)
+			}
 		}
 	}
 
 	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long) {
+		if (delay > 0) {
+			resetHandler.sendStarted(ResetType.Mounting)
+		}
 		timer.schedule(delay) {
-			queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
+			queueTask {
+				humanPoseManager.resetTrackersMounting(resetSourceName)
+				resetHandler.sendFinished(ResetType.Mounting)
+			}
 		}
 	}
 
