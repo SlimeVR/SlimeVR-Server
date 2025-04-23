@@ -121,7 +121,9 @@ export function ResetButton({
       onClick={triggerReset}
       className={classNames(
         'border-2',
-        isFinished ? 'border-status-success' : 'border-transparent'
+        isFinished
+          ? 'border-status-success'
+          : 'transition-[border-color] duration-500 ease-in-out border-transparent'
       )}
       variant="primary"
       disabled={isCounting || needsFullReset}
@@ -138,7 +140,9 @@ export function ResetButton({
       onClick={triggerReset}
       className={classNames(
         'border-2',
-        isFinished ? 'border-status-success' : 'border-transparent'
+        isFinished
+          ? 'border-status-success'
+          : 'transition-[border-color] duration-500 ease-in-out border-transparent'
       )}
       disabled={isCounting || needsFullReset}
     ></BigButton>
