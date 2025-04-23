@@ -35,33 +35,40 @@ export function SelectBoardStep({
           {!isFetching && (
             <div className="gap-2 flex flex-col">
               <div className="grid sm:grid-cols-2 mobile-settings:grid-cols-1 gap-2">
-                {boards?.map((board) => (
-                  <div
-                    key={board}
-                    className={classNames(
-                      'p-3 rounded-md hover:bg-background-50',
-                      {
-                        'bg-background-50 text-background-10':
-                          newConfig?.boardConfig?.type === board,
-                        'bg-background-60':
-                          newConfig?.boardConfig?.type !== board,
-                      }
-                    )}
-                    onClick={() => {
-                      selectBoard(board as CreateBoardConfigDTO['type']);
-                    }}
-                  >
-                    {l10n.getString(
-                      `board_type-${
-                        BoardType[
-                          firmwareToolToBoardType[
-                            board as CreateBoardConfigDTO['type']
-                          ] ?? BoardType.UNKNOWN
-                        ]
-                      }`
-                    )}
-                  </div>
-                ))}
+                {boards
+                  ?.filter(
+                    (board) =>
+                      !!firmwareToolToBoardType[
+                        board as CreateBoardConfigDTO['type']
+                      ]
+                  )
+                  .map((board) => (
+                    <div
+                      key={board}
+                      className={classNames(
+                        'p-3 rounded-md hover:bg-background-50',
+                        {
+                          'bg-background-50 text-background-10':
+                            newConfig?.boardConfig?.type === board,
+                          'bg-background-60':
+                            newConfig?.boardConfig?.type !== board,
+                        }
+                      )}
+                      onClick={() => {
+                        selectBoard(board as CreateBoardConfigDTO['type']);
+                      }}
+                    >
+                      {l10n.getString(
+                        `board_type-${
+                          BoardType[
+                            firmwareToolToBoardType[
+                              board as CreateBoardConfigDTO['type']
+                            ] ?? BoardType.UNKNOWN
+                          ]
+                        }`
+                      )}
+                    </div>
+                  ))}
               </div>
               <div className="flex justify-end">
                 <Localized id="firmware_tool-next_step">

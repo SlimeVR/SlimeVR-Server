@@ -7,6 +7,7 @@ import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
 import dev.slimevr.bridge.Bridge
 import dev.slimevr.desktop.firmware.DesktopSerialFlashingHandler
+import dev.slimevr.desktop.games.vrchat.DesktopVRCConfigHandler
 import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketRpcBridge
@@ -123,6 +124,7 @@ fun main(args: Array<String>) {
 			::provideBridges,
 			{ _ -> DesktopSerialHandler() },
 			{ _ -> DesktopSerialFlashingHandler() },
+			{ _ -> DesktopVRCConfigHandler() },
 			configPath = configDir,
 		)
 		vrServer.start()

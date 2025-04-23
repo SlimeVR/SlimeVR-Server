@@ -8,6 +8,7 @@ import dev.slimevr.protocol.ProtocolHandler
 import dev.slimevr.protocol.datafeed.DataFeedBuilder
 import dev.slimevr.protocol.rpc.autobone.RPCAutoBoneHandler
 import dev.slimevr.protocol.rpc.firmware.RPCFirmwareUpdateHandler
+import dev.slimevr.protocol.rpc.games.vrchat.RPCVRChatHandler
 import dev.slimevr.protocol.rpc.reset.RPCResetHandler
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler
@@ -44,6 +45,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCHandshakeHandler(this, api)
 		RPCTrackingPause(this, api)
 		RPCFirmwareUpdateHandler(this, api)
+		RPCVRChatHandler(this, api)
 
 		registerPacketListener(
 			RpcMessage.ResetRequest,
@@ -259,7 +261,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		// might not be a good idea maybe let the client ask again
 		val fbb = FlatBufferBuilder(300)
-		val config = RPCBuilder.createSkeletonConfig(fbb, api.server.humanPoseManager)
+		val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
 		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
@@ -273,7 +275,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		}
 
 		val fbb = FlatBufferBuilder(300)
-		val config = RPCBuilder.createSkeletonConfig(fbb, api.server.humanPoseManager)
+		val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
 		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())

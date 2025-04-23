@@ -39,6 +39,8 @@ import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
 import semver from 'semver';
 import { checkForUpdate } from '@/components/firmware-update/FirmwareUpdate';
+import { useSetAtom } from 'jotai';
+import { ignoredTrackersAtom } from '@/store/app-store';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -72,7 +74,7 @@ export function TrackerSettingsPage() {
     },
     reValidateMode: 'onSubmit',
   });
-  const { dispatch } = useAppContext();
+  const setIgnoredTracker = useSetAtom(ignoredTrackersAtom);
   const { trackerName, allowDriftCompensation } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
@@ -189,7 +191,7 @@ export function TrackerSettingsPage() {
   const needUpdate =
     currentFirmwareRelease &&
     tracker?.device?.hardwareInfo &&
-    checkForUpdate(currentFirmwareRelease, tracker?.device?.hardwareInfo);
+    checkForUpdate(currentFirmwareRelease, tracker?.device);
   const updateUnavailable =
     tracker?.device?.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
     !semver.valid(
@@ -242,19 +244,27 @@ export function TrackerSettingsPage() {
                 )}
                 {!updateUnavailable && (
                   <>
-                    {!needUpdate && (
+                    {needUpdate === 'updated' && (
                       <Localized id="tracker-settings-update-up_to_date">
                         <Typography>Up to date</Typography>
                       </Localized>
                     )}
-                    {needUpdate && (
+                    {needUpdate === 'need-update' && currentFirmwareRelease && (
                       <Localized
                         id="tracker-settings-update-available"
-                        vars={{ versionName: currentFirmwareRelease?.name }}
+                        vars={{ versionName: currentFirmwareRelease.name }}
                       >
                         <Typography color="text-accent-background-10">
                           New version available
                         </Typography>
+                      </Localized>
+                    )}
+                    {needUpdate === 'low-battery' && currentFirmwareRelease && (
+                      <Localized
+                        id="tracker-settings-update-low-battery"
+                        vars={{ versionName: currentFirmwareRelease.name }}
+                      >
+                        <Typography color="text-status-critical"></Typography>
                       </Localized>
                     )}
                   </>
@@ -262,8 +272,10 @@ export function TrackerSettingsPage() {
               </div>
               <Localized id="tracker-settings-update">
                 <Button
-                  variant={needUpdate ? 'primary' : 'secondary'}
-                  disabled={!needUpdate}
+                  variant={
+                    needUpdate === 'need-update' ? 'primary' : 'secondary'
+                  }
+                  disabled={needUpdate !== 'need-update'}
                   to="/firmware-update"
                 >
                   Update now
@@ -524,7 +536,10 @@ export function TrackerSettingsPage() {
                     RpcMessage.ForgetDeviceRequest,
                     new ForgetDeviceRequestT(macAddress)
                   );
-                  dispatch({ type: 'ignoreTracker', value: macAddress });
+                  setIgnoredTracker((state) => {
+                    state.add(macAddress);
+                    return state;
+                  });
                 }}
               >
                 {l10n.getString('tracker-settings-forget-label')}

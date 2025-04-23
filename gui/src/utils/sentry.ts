@@ -7,7 +7,7 @@ import {
   useLocation,
   useNavigationType,
 } from 'react-router-dom';
-import { AppState } from '@/hooks/app';
+import { DeviceDataT } from 'solarxr-protocol';
 
 export function getSentryOrCompute(enabled = false) {
   // if sentry is already initialized - SKIP
@@ -65,21 +65,19 @@ export function getSentryOrCompute(enabled = false) {
   return newClient;
 }
 
-export function updateSentryContext(state: AppState) {
+export function updateSentryContext(devices: DeviceDataT[]) {
   // We filter out the shit we dont want. We dont need rotation data or ip addresses
-  const trackers = (state.datafeed?.devices || []).map(
-    ({ hardwareInfo, trackers, id }) => ({
-      id: id?.id,
-      hardwareInfo: { ...hardwareInfo, ipAddress: undefined },
-      trackers: trackers.map(({ info, trackerId }) => ({
-        info,
-        trackerId: {
-          trackerNum: trackerId?.trackerNum,
-          deviceId: trackerId?.deviceId?.id,
-        },
-      })),
-    })
-  );
+  const trackers = (devices || []).map(({ hardwareInfo, trackers, id }) => ({
+    id: id?.id,
+    hardwareInfo: { ...hardwareInfo, ipAddress: undefined },
+    trackers: trackers.map(({ info, trackerId }) => ({
+      info,
+      trackerId: {
+        trackerNum: trackerId?.trackerNum,
+        deviceId: trackerId?.deviceId?.id,
+      },
+    })),
+  }));
 
   // Will send the latest context to sentry when an error happens
   Sentry.setContext('trackers', {

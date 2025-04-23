@@ -325,7 +325,7 @@ class Tracker @JvmOverloads constructor(
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
 		if (trackRotDirection) {
-			filteringHandler.dataTick(_rotation)
+			filteringHandler.dataTick(getAdjustedRotation())
 		}
 	}
 
@@ -336,30 +336,46 @@ class Tracker @JvmOverloads constructor(
 		timeAtLastUpdate = System.currentTimeMillis()
 	}
 
-	private fun getFilteredRotation(): Quaternion = if (trackRotDirection) {
-		filteringHandler.getFilteredRotation()
-	} else {
-		// Get raw rotation
-		_rotation
-	}
-
 	/**
-	 * Gets the adjusted tracker rotation after all corrections
-	 * (filtering, reset, mounting and drift compensation).
+	 * Gets the adjusted tracker rotation after the resetsHandler's corrections
+	 * (reset, mounting and drift compensation).
 	 * This is the rotation that is applied on the SlimeVR skeleton bones.
 	 * Warning: This performs several Quaternion multiplications, so calling
 	 * it too much should be avoided for performance reasons.
 	 */
-	fun getRotation(): Quaternion {
-		var rot = getFilteredRotation()
-
+	private fun getAdjustedRotation(): Quaternion {
 		// Reset if needed and is not computed and internal
-		if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
+		return if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset, mounting and drift compensation
-			rot = resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
+			resetsHandler.getReferenceAdjustedDriftRotationFrom(_rotation)
+		} else {
+			_rotation
 		}
+	}
 
-		return rot
+	/**
+	 * Gets the identity-adjusted tracker rotation after the resetsHandler's corrections
+	 * (identity reset, drift and identity mounting).
+	 * This is used for debugging/visualizing tracker data
+	 */
+	fun getIdentityAdjustedRotation(): Quaternion {
+		// Reset if needed or is a computed tracker besides head
+		return if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
+			// Adjust to reset and mounting
+			resetsHandler.getIdentityAdjustedDriftRotationFrom(_rotation)
+		} else {
+			_rotation
+		}
+	}
+
+	/**
+	 * Get the rotation of the tracker after the resetsHandler's corrections and filtering if applicable
+	 */
+	fun getRotation(): Quaternion = if (trackRotDirection) {
+		filteringHandler.getFilteredRotation()
+	} else {
+		// Get non-filtered rotation
+		getAdjustedRotation()
 	}
 
 	/**
@@ -369,23 +385,6 @@ class Tracker @JvmOverloads constructor(
 		resetsHandler.getReferenceAdjustedAccel(_rotation, _acceleration)
 	} else {
 		_acceleration
-	}
-
-	/**
-	 * Gets the identity-adjusted tracker rotation after corrections
-	 * (filtering, identity reset, drift and identity mounting).
-	 * This is used for debugging/visualizing tracker data
-	 */
-	fun getIdentityAdjustedRotation(): Quaternion {
-		var rot = getFilteredRotation()
-
-		// Reset if needed or is a computed tracker besides head
-		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
-			// Adjust to reset and mounting
-			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
-		}
-
-		return rot
 	}
 
 	/**
@@ -435,6 +434,6 @@ class Tracker @JvmOverloads constructor(
 	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
 	 */
 	fun resetFilteringQuats() {
-		filteringHandler.resetMovingAverage(_rotation)
+		filteringHandler.resetMovingAverage(getAdjustedRotation())
 	}
 }

@@ -9,6 +9,11 @@
 
 websocket-connecting = connyecting to teh sewvew
 websocket-connection_lost = oopsie woopsie~ connyection wost to teh sewvew ;m;... uwu am twying to weconnyect owo!
+websocket-connection_lost-desc = uh ohs! it look like da swimevr serber cwashed... check ur logs and stuffs and maybe westawt da pwogwam.
+websocket-timedout = could nawt connec to da serwer
+websocket-timedout-desc = it look like da swimevr serwer cwashed ow time out, omg!! check da log and westawt da pwogwam.
+websocket-error-close = Exit SwimeVR
+websocket-error-logs = open da logs fowder
 
 ## Update notification
 
@@ -49,6 +54,58 @@ body_part-LEFT_HAND = weft pawb
 body_part-LEFT_UPPER_LEG = weft uppew weg
 body_part-LEFT_LOWER_LEG = weft wowwe weg
 body_part-LEFT_FOOT = weft pawb
+body_part-LEFT_THUMB_METACARPAL = weft thum medacarpool
+body_part-LEFT_THUMB_PROXIMAL = weft thum pwoximal
+body_part-LEFT_THUMB_DISTAL = weft thum dital
+body_part-LEFT_INDEX_PROXIMAL = weft index pwoximal
+body_part-LEFT_INDEX_INTERMEDIATE = weft index indamedeate
+body_part-LEFT_INDEX_DISTAL = weft index dissal
+body_part-LEFT_MIDDLE_PROXIMAL = weft middol pwoximal
+body_part-LEFT_MIDDLE_INTERMEDIATE = weft middol intermediation
+body_part-LEFT_MIDDLE_DISTAL = weft middol dittol
+body_part-LEFT_RING_PROXIMAL = weft wing woxiwal
+body_part-LEFT_RING_INTERMEDIATE = weft wing wintamediate
+body_part-LEFT_RING_DISTAL = weft wing distol
+body_part-LEFT_LITTLE_PROXIMAL = weft widdle woximol
+body_part-LEFT_LITTLE_INTERMEDIATE = weft widdle imtermedate
+body_part-LEFT_LITTLE_DISTAL = weft widdle dital
+body_part-RIGHT_THUMB_METACARPAL = wight thum medacarpool
+body_part-RIGHT_THUMB_PROXIMAL = wight thum thoximal
+body_part-RIGHT_THUMB_DISTAL = wight thum distol
+body_part-RIGHT_INDEX_PROXIMAL = wight index poximal
+body_part-RIGHT_INDEX_INTERMEDIATE = wight index imtertediate
+body_part-RIGHT_INDEX_DISTAL = wight index distal
+body_part-RIGHT_MIDDLE_PROXIMAL = wight middol pwoximal
+body_part-RIGHT_MIDDLE_INTERMEDIATE = wight middol intertediate
+body_part-RIGHT_MIDDLE_DISTAL = wight middol distol
+body_part-RIGHT_RING_PROXIMAL = wight wing roximal
+body_part-RIGHT_RING_INTERMEDIATE = wight wing imterdemiate
+body_part-RIGHT_RING_DISTAL = wight wing distol
+body_part-RIGHT_LITTLE_PROXIMAL = wight widdle pwoximal
+body_part-RIGHT_LITTLE_INTERMEDIATE = wight widdle imternediate
+body_part-RIGHT_LITTLE_DISTAL = wight widdle distol
+
+## BoardType
+
+board_type-UNKNOWN = unnown
+board_type-NODEMCU = nowdemcu
+board_type-CUSTOM = cusom boawd
+board_type-WROOM32 = wroom32
+board_type-WEMOSD1MINI = wemo d1 meenee
+board_type-TTGO_TBASE = ttgo tbase
+board_type-ESP01 = esp01
+board_type-SLIMEVR = swimevr
+board_type-LOLIN_C3_MINI = lol c3 meenee
+board_type-BEETLE32C3 = 🪲 (beetle) esp32-c3
+board_type-ESP32C3DEVKITM1 = expressive esp32-c3 devkitm1
+board_type-OWOTRACK = owo!!Track
+board_type-WRANGLER = wrangle joycons (yeehaw)
+board_type-MOCOPI = soni mocopi
+board_type-WEMOSWROOM02 = memos vroom-02 d1 meenee
+board_type-XIAO_ESP32C3 = seeeed studio xiao esp32c3
+board_type-HARITORA = hawitowa
+board_type-ESP32C6DEVKITC1 = espresso esp32-c6 devkitc1
+board_type-GLOVE_IMU_SLIMEVR_DEV = swimevr dev imu gwove
 
 ## Proportions
 
@@ -81,6 +138,14 @@ skeleton_bone-ELBOW_OFFSET = ewbow awfsewt
 ## Tracker reset buttons
 
 reset-reset_all = weset aww pwopowtions~
+reset-reset_all_warning-v2 =
+    <b>warnings!!!</b> ur pwopawshuns will be weset to default scaled to ur configuwed heit.
+    are u SHURE you want to do dis?!? >~>
+reset-reset_all_warning-reset = weset pwopawshuns
+reset-reset_all_warning-cancel = cancew :o
+reset-reset_all_warning_default-v2 =
+    <b>wawnin!!</b> ur heit has nawt been configure, ur pwopawshuns will be weset to defawts wiff da defawt heit.
+    are u REALLY sure you want to do this?! <~<
 reset-full = fuww weset~
 reset-mounting = weset meownting
 reset-yaw = yaw weset
@@ -142,9 +207,12 @@ widget-developer_mode-more_info = mowe info
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = wotation
+widget-imu_visualizer-preview = pwewiew
+widget-imu_visualizer-hide = hoide
 widget-imu_visualizer-rotation_raw = waw
 widget-imu_visualizer-rotation_preview = pwewiew
-widget-imu_visualizer-rotation_hide = hoide
+widget-imu_visualizer-acceleration = accewewation
+widget-imu_visualizer-position = pawsition
 
 ## Widget: Skeleton Visualizer
 
@@ -196,9 +264,17 @@ tracker-infos-url = twackaw uawl
 tracker-infos-version = fiwmwawe vewsion
 tracker-infos-hardware_rev = hawdwawe revision
 tracker-infos-hardware_identifier = hawdwawe id
+tracker-infos-data_support = deyta suppowt
 tracker-infos-imu = imu sensow
 tracker-infos-board_type = mane bored
 tracker-infos-network_version = pwotocol vewsiowon
+tracker-infos-magnetometer = magentometer
+tracker-infos-magnetometer-status-v1 =
+    { $status ->
+        [DISABLED] disabled.
+        [ENABLED] enabled!!
+       *[NOT_SUPPORTED] nawt suppowted...
+    }
 
 ## Tracker settings
 
@@ -213,14 +289,21 @@ tracker-settings-mounting_section-edit = edit meownting
 tracker-settings-drift_compensation_section = awwow dwift compensation
 tracker-settings-drift_compensation_section-description = shouwd this twackew compensate fow its dwift when dwift compensation is enabwed?
 tracker-settings-drift_compensation_section-edit = awwow dwift compensation
+tracker-settings-use_mag = awwow magentometer on dis twackew
+tracker-settings-use_mag-label = awwow magnetomemer
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = twackaw name
 tracker-settings-name_section-description = owo whats dis?
 tracker-settings-name_section-placeholder = ewimewl's weft pawb
+tracker-settings-name_section-label = twackaw name
 tracker-settings-forget = *forgors the tracker*
 tracker-settings-forget-description = remooves teh twackew fwom da SwimeVR sewvew n pwevent it frum conecting to it til fhe sewvew iz westawtied. the cowonfigyuwatsin of da twackew woant b wost.
 tracker-settings-forget-label = *forgors the tracker*
+tracker-settings-update-unavailable = cannawt be updayted (DIY)
+tracker-settings-update-up_to_date = up to dayte!! ^w^
+tracker-settings-update-available = { $versionName } is naow awailabwe
+tracker-settings-update = uwupdate meow!
 
 ## Tracker part card info
 
@@ -296,6 +379,7 @@ settings-sidebar-utils = utiwities
 settings-sidebar-serial = sewiaw cownsaw
 settings-sidebar-appearance = appeawance
 settings-sidebar-notifications = notificashuns
+settings-sidebar-behavior = behavur
 
 ## SteamVR settings
 
@@ -350,6 +434,7 @@ settings-general-tracker_mechanics-drift_compensation-description =
     compensates imu yaw dwift by appwying an invewse wotation.
     change amownt of compensation and how many wesets awe taken into accouwnt.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = dwift compensation
+settings-general-tracker_mechanics-drift_compensation_warning-cancel = cancew :o
 settings-general-tracker_mechanics-drift_compensation-amount-label = compensation amownt
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = nuwmbew of wesets uwsed
 settings-general-tracker_mechanics-save_mounting_reset = saiv awtomatic meownting weset calibwaytion
@@ -357,6 +442,10 @@ settings-general-tracker_mechanics-save_mounting_reset-description =
     saves the auwtoemyatic meownting weset cawybwationz for da twackews betwean westawts. useful
     wen weawing a sUwUit whewe twackews dont  move between sesshuns. <b>nawt wecomended for noarmal UwUsews!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = save meownting weset
+settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
+    uses magnemometer on da twackews dat have a compatubble firmwear fow it, weduces dwift in stable magnettic enviwoments.
+    can be disable per twackew in da twackew setting! <b>pwease dont shut down any twackew when u toggle dis!</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers-label = use mangenmometer on twackews
 
 ## FK/Tracking settings
 
@@ -380,6 +469,11 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = pawb-pwant wotat
 settings-general-fk_settings-leg_fk = leg twacking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Enyabwe pawb Meownting Weset by tiptoeing.
 settings-general-fk_settings-leg_fk-reset_mounting_feet = Pawb Meownting Weset
+settings-general-fk_settings-enforce_joint_constraints = skewetal wimits
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = enfourse constwaints
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = pwevents da joins fwom wotating past da wimit
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints = cowwect wit constwaints
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = cowwect joint wotashuns when dey push past their wimit
 settings-general-fk_settings-arm_fk = awm twacking
 settings-general-fk_settings-arm_fk-description = chawnge teh way teh awms awe twacked.
 settings-general-fk_settings-arm_fk-force_arms = fowce awms fwom hmd
@@ -411,9 +505,6 @@ settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = awewa
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Avewage the knees' yaw and woww with the ankews'
 settings-general-fk_settings-self_localization-title = mocap mowd
 settings-general-fk_settings-self_localization-description = mocap mowd awwows da skeweton to wuffly twack is own posishun without a hedset or other twackews. note dat dis wequiwes feet and hed twackews to wowk and is stiwll expewimentaw.
-settings-general-fk_settings-vive_emulation-title = vive emuwation
-settings-general-fk_settings-vive_emulation-description = emuwate the waist twackew pwobwems that vive twackews hawe. tis is a jowke and mawkes twacking wowse eheh ^^
-settings-general-fk_settings-vive_emulation-label = enabwe vive emuwation
 
 ## Gesture control settings (tracker tapping)
 
@@ -450,10 +541,10 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = incwe
 ## Appearance settings
 
 settings-interface-appearance = appeawance
-settings-general-interface-dev_mode = devwowwewow mode
-settings-general-interface-dev_mode-description = this mode can be wowseffuw if you need in-dipth data owow to intewact with cownnected twackaws on a wowowe wowadvanced wowwevew
-settings-general-interface-dev_mode-label = devwowwewow mode
 settings-general-interface-theme = cowor theem
+settings-general-interface-show-navbar-onboarding = show "{ navbar-onboarding }" on da nawigation bar
+settings-general-interface-show-navbar-onboarding-description = dis change if da "{ navbar-onboarding }" button show on da nawigashun bar!
+settings-general-interface-show-navbar-onboarding-label = show "{ navbar-onboarding }"
 settings-general-interface-lang = sewect wanguage
 settings-general-interface-lang-description = change the defawwt wanguage yuw want to use
 settings-general-interface-lang-placeholder = sewect teh wanguage to use
@@ -465,6 +556,9 @@ settings-interface-appearance-font-os_font = os fawnt
 settings-interface-appearance-font-slime_font = defawt fawnt
 settings-interface-appearance-font_size = bass fawn scawing
 settings-interface-appearance-font_size-description = dis affects da fawnt size of da whol intewface except dis setting panew.
+settings-interface-appearance-decorations = use da sysem native decowashuns
+settings-interface-appearance-decorations-description = dis wiw not wendew da top bar of da interfase an will use da opewating syssem's insted.
+settings-interface-appearance-decorations-label = use native decowashuns
 
 ## Notification settings
 
@@ -479,6 +573,13 @@ settings-general-interface-feedback_sound-volume = feedback sownd volyume
 settings-general-interface-connected_trackers_warning = Connected twackews wawning
 settings-general-interface-connected_trackers_warning-description = This option wiww show a pop-up evewy time you twy exiting SwimeVR whiwe having one ow mowe connected twackews. It weminds you to tuwn off youw twackews when you awe done to pwesewve battewy wife.
 settings-general-interface-connected_trackers_warning-label = Connected twackews wawning on exit
+
+## Behavior settings
+
+settings-interface-behavior = behavur
+settings-general-interface-dev_mode = devwowwewow mode
+settings-general-interface-dev_mode-description = this mode can be wowseffuw if you need in-dipth data owow to intewact with cownnected twackaws on a wowowe wowadvanced wowwevew
+settings-general-interface-dev_mode-label = devwowwewow mode
 settings-general-interface-use_tray = minimaize to systewm tway
 settings-general-interface-use_tray-description = wets u cwose the wimdOwOw wifhout cwosing da SwimeVR Sewvew so uou can keep using it withowt da GUI bohtewing u.
 settings-general-interface-use_tray-label = minimaize to systewm tway
@@ -588,12 +689,6 @@ settings-osc-vmc-network-address-description = choose which addwess to send out 
 settings-osc-vmc-network-address-placeholder = IPV4 addwess
 settings-osc-vmc-vrm = VRM modew
 settings-osc-vmc-vrm-description = woad a VRM modew to awwow head anchow and enabwe a highew compatibiwity with othew appwications
-settings-osc-vmc-vrm-model_unloaded = no modew woaded
-settings-osc-vmc-vrm-model_loaded =
-    { $titled ->
-        [true] modew woaded: { $name }
-       *[other] untitwed modew woaded
-    }
 settings-osc-vmc-vrm-file_select = dwag & dwop a modew to use OwO, ow <u>bwowse</u>
 settings-osc-vmc-anchor_hip = anchow at hips
 settings-osc-vmc-anchor_hip-description = anchow the twacking at the hips, usefuw fow seated vtubing
@@ -601,6 +696,29 @@ settings-osc-vmc-anchor_hip-label = anchow at hips
 settings-osc-vmc-mirror_tracking = miwwow twacking
 settings-osc-vmc-mirror_tracking-description = miwwow da twacking howizawntawwy.
 settings-osc-vmc-mirror_tracking-label = miwwow twacking
+
+## Advanced settings
+
+settings-utils-advanced-reset_warning =
+    { $type ->
+        [gui]
+            <b>wawning!!</b> this wiww weset youw gui settings to defawts :(
+            aw you supew dupew sure?
+        [server]
+            <b>wawning!!</b> this wiww weset youw twacking settings to defawts :(
+            aw you supew dupew sure?
+       *[all]
+            <b>wawning!!</b> this wiww make aww youw settings go bye-bye!!
+            aw you supew dupew sure??
+    }
+settings-utils-advanced-reset_warning-reset = weset setings
+settings-utils-advanced-reset_warning-cancel = cancew :o
+settings-utils-advanced-open_data-v1 = config fowdew
+settings-utils-advanced-open_data-description-v1 = open swimevr's config fowdew in da fiwe explowew, containing teh configuwation
+settings-utils-advanced-open_data-label = open fowdew
+settings-utils-advanced-open_logs = logs fowdew
+settings-utils-advanced-open_logs-description = open swimevr's logs fowdew in da fiwe explowew, containing teh logs of da app
+settings-utils-advanced-open_logs-label = open fowdew
 
 ## Setup/onboarding menu
 
@@ -627,6 +745,7 @@ onboarding-wifi_creds-submit = suwbmyt!
 onboarding-wifi_creds-ssid =
     .label = wi-fi nawme
     .placeholder = entew wi-fi nawme
+onboarding-wifi_creds-ssid-required = wifi name is wequiwed!!
 onboarding-wifi_creds-password =
     .label = passwowod
     .placeholder = entew passwowod
@@ -684,6 +803,7 @@ onboarding-connect_tracker-issue-serial = i'm having twouble connecting!
 onboarding-connect_tracker-usb = usb twackew
 onboarding-connect_tracker-connection_status-none = wooking fow twackaws
 onboarding-connect_tracker-connection_status-serial_init = conectin too da sewiaw dewise
+onboarding-connect_tracker-connection_status-obtaining_mac_address = obtainin teh twacker mac addwess
 onboarding-connect_tracker-connection_status-provisioning = sending wi-fi cwedentials
 onboarding-connect_tracker-connection_status-connecting = sending wi-fi cwedentials
 onboarding-connect_tracker-connection_status-looking_for_server = wookin fow da sewvew
@@ -713,6 +833,7 @@ onboarding-calibration_tutorial-status-waiting = waiiiting fur u
 onboarding-calibration_tutorial-status-calibrating = cawibwating
 onboarding-calibration_tutorial-status-success = congwats~!!
 onboarding-calibration_tutorial-status-error = da twackew was move ;w;
+onboarding-calibration_tutorial-skip = skip tutowiaw
 
 ## Tracker assignment tutorial
 
@@ -836,11 +957,11 @@ onboarding-choose_mounting = wut meownting cawibwation mefod to use?
 # Multiline text
 onboarding-choose_mounting-description = meownting owientation correct fow da pwacement of twackews on u body.
 onboarding-choose_mounting-auto_mounting = awtomawic meownting
-# Italized text
+# Italicized text
 onboarding-choose_mounting-auto_mounting-label-v2 = wecommended
 onboarding-choose_mounting-auto_mounting-description = dis will automaticawwy detec da meownting diwecshuns fow aww of ya twackews fwom 2 poses
 onboarding-choose_mounting-manual_mounting = manyul meownting
-# Italized text
+# Italicized text
 onboarding-choose_mounting-manual_mounting-label-v2 = might nawt b pwecise enuff ;w;
 onboarding-choose_mounting-manual_mounting-description = dis will let u chose da meownting diwecshun manuwawwy fow eech twackew
 # Multiline text
@@ -880,38 +1001,16 @@ onboarding-automatic_mounting-put_trackers_on-title = put on yowo twackaws
 onboarding-automatic_mounting-put_trackers_on-description = to cawibwate meownting wowations, we'we gonna use the twackaws yowo just assigned. put on awe yowo twackaws, yowo can see which awe which in the figuwe to the wowight.
 onboarding-automatic_mounting-put_trackers_on-next = i haff awe my twackaws on
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = wut pwopowshun cawibwation mefod to use?
-# Multiline string
-onboarding-choose_proportions-description-v1 =
-    bawdy pwopowotions r used to knwo da mehsuwementz of youw bawdy. they'we wequiewed to cawcuwate da twackews' pawsitshons.
-    wen pwopowotiosn of ur bawdey don match teh ones saeved, yow twacking pwecisiown wiww b wowse and u wiww nowotice tingz wike skayting ow slaiding, ow yor bodiey matching uor avataw wel.
-    <b>u only need to mewhsuwe your bawdee once!!</b> unwess dey awe rong ow yer boady haz chaenged, you dont need to do them agen. UwU
-onboarding-choose_proportions-auto_proportions = awtomatic pwopowtions
-# Italized text
-onboarding-choose_proportions-auto_proportions-subtitle = wecommended
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    This wiww guess youw pwopowtions by wecowding a sampwe of youw movements and passing it thwough an awgowithm.
-    
-    <b>This wequiwes having youw headset (HMD) connected to SwimeVR and on youw head!</b>
-onboarding-choose_proportions-manual_proportions = manuwal pwopowtions
-# Italized text
-onboarding-choose_proportions-manual_proportions-subtitle = fow smol touchies
-onboarding-choose_proportions-manual_proportions-description = dis will let u ajust ur pwopowtions manuwally by modifying dem diwectwy
-onboarding-choose_proportions-export = expowt pawpowshuns
-onboarding-choose_proportions-import = Impowt pwopowtions
-onboarding-choose_proportions-import-success = Impowted
-onboarding-choose_proportions-import-failed = Faiwed
-onboarding-choose_proportions-file_type = body pawpowshuns file
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = go bawck to weset tutowiaw
 onboarding-manual_proportions-title = manyuaw bodee pwopowtiesions
 onboarding-manual_proportions-precision = pwecision adjusty
 onboarding-manual_proportions-auto = owtomatic cawybwation
 onboarding-manual_proportions-ratio = ajust by watio gwoups
+onboarding-manual_proportions-fine_tuning_button = automaticawwy fine tuwune propowtions
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = pwease connect a vr headset to use automatic fine tuwuning
+onboarding-manual_proportions-import-failed = faiwed :(
 
 ## Tracker automatic proportions setup
 
@@ -932,21 +1031,33 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Youw headset is wepowting positionaw data to the SwimeVR sewvew (this genewawwy means having SteamVR wunning and connected to SwimeVR using SwimeVR's SteamVR dwivew).
     Youw twacking is wowking and is accuwatewy wepwesenting youw movements (ex. you have pewfowmed a fuww weset and they move the wight diwection when kicking, bending ovew, sitting, etc).
 onboarding-automatic_proportions-requirements-next = i have wed da wequiwemens
-onboarding-automatic_proportions-check_height-title = check youw height
-onboarding-automatic_proportions-check_height-description = we use youw height as a basis of ouw measuwements by using da hmd's height as an appwoximashun of youw actuwaw height, but is better to check if they are right youwsewf!
+onboarding-automatic_proportions-check_height-title-v3 = measuwe youw headset heit
+onboarding-automatic_proportions-check_height-description-v2 = youw hedset heit shuld be swightwy less than youw fuww heit, becoz hedsets measuwe youw eye heit. dis measuwement wiww be used az a basewine fow youw body pwopowtions.
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = pwease pwess da button while standing <u>upwight</u> to cawcuwate youw height. you hav 3 second aftew you pwess da button! >w<
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = stawt measuwing whiwe standin <u>upwite</u> to measuwe youw heit. be cawefuw to not waise youw hands highew than youw hedset, becoz dey may affect teh measuwement!
 onboarding-automatic_proportions-check_height-guardian_tip =
     if u r using a standowone VR hedset, make suwe to have youw gawrdian /
     bowndawy tuwned on so ur heit iz cowwect!!
-onboarding-automatic_proportions-check_height-fetch_height = am standing!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = unnown
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = youw hmd heit is
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = so youw actuaw heit is
+onboarding-automatic_proportions-check_height-hmd_height2 = youw hedset heit is:
+onboarding-automatic_proportions-check_height-measure-start = stawt measuwing
+onboarding-automatic_proportions-check_height-measure-stop = stawp measuwing
+onboarding-automatic_proportions-check_height-measure-reset = wetwy measuwing
 onboarding-automatic_proportions-check_height-next_step = dey awe fine
+onboarding-automatic_proportions-check_floor_height-title = measuwe youw fwoor heit (opshunaw)
+onboarding-automatic_proportions-check_floor_height-description = sometimez youw fwoor heit may nawt be set cowwectwy by youw hedset, cawsing da hedset heit 2 be measuwed too high (ono :c). u can measuwe da "heit" of youw fwoor to cowwect youw hedset heit.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = stawt measuwing and put a contwowwew agens youw fwoor to measuwe its heit. if u r suwe dat youw fwoor heit is cowwect, u can skip dis step.
+# Shows an element below it
+onboarding-automatic_proportions-check_floor_height-floor_height = youw fwoor heit is:
+onboarding-automatic_proportions-check_floor_height-full_height = youw estimated fuww heit is:
+onboarding-automatic_proportions-check_floor_height-measure-start = stawt measuwing
+onboarding-automatic_proportions-check_floor_height-measure-stop = stawp measuwing
+onboarding-automatic_proportions-check_floor_height-measure-reset = wetwy measuwing
+onboarding-automatic_proportions-check_floor_height-skip_step = skip dis and saiv
+onboarding-automatic_proportions-check_floor_height-next_step = use fwoor heit and saiv
 onboarding-automatic_proportions-start_recording-title = get wowdy to move
 onboarding-automatic_proportions-start_recording-description = we'we now going to wowcawd some specific poses and moves. these will be pwompted in teh wowst screen. be wowdy to stawt when teh buttawn is pwessed!
 onboarding-automatic_proportions-start_recording-next = stawt wowcawding
@@ -976,10 +1087,33 @@ onboarding-automatic_proportions-verify_results-redo = wedo wecowding
 onboarding-automatic_proportions-verify_results-confirm = tehywee coowect
 onboarding-automatic_proportions-done-title = bawdy meowsured anwd sayved uwu
 onboarding-automatic_proportions-done-description = yoww body pwopowwtions cawybowwation is cowowplete! ^w^
-onboarding-automatic_proportions-error_modal =
-    <b>wawning:</b> an ewwow was fownd whiwe estimating pawpowshuns! ;w;
-    pwease <docs>check da docs</docs> or join ouw <discord>Discord</discord> fow hewp >~>
+onboarding-automatic_proportions-error_modal-v2 =
+    <b>oh nyo...</b> thewe wuz an ewwow whiwe estimatin da pwopowtions... :(
+    dis is wikewy a mountin cawibwation issue. make suwe youw twackin wowks pwopewy befow twying agen.
+    pwease <docs>chek da docs</docs> ow join ouw <discord>discowd</discord> fow hewp :3
 onboarding-automatic_proportions-error_modal-confirm = undewstood!
+onboarding-automatic_proportions-smol_warning =
+    youw configuwed heit of { $height } iz way 2 widdle den da { $minHeight }.
+    <b>pwease wedo da measuwments and ensuwe dey r cowwect.</b>
+onboarding-automatic_proportions-smol_warning-cancel = go bak
+
+## Tracker scaled proportions setup
+
+onboarding-scaled_proportions-title = scawed pwopowtions
+onboarding-scaled_proportions-description = fow swimevr twackews to wowk, we need to kno teh bigness of youw bowones. dis wiww use an avewage pwopowtion and scawe it based on youw heit.
+onboarding-scaled_proportions-manual_height-title = configuwe youw heit
+onboarding-scaled_proportions-manual_height-description-v2 = dis heit wiww be used az a basewine fow youw body pwopowtions.
+onboarding-scaled_proportions-manual_height-missing_steamvr = steawmvr is nawt cuwwentwy cowonnected to da swimevr, so measuwements cant be based on youw hedset ono... <b>pwoceed at youw owon wisk ow chek da docs!</b>
+onboarding-scaled_proportions-manual_height-height-v2 = youw fuww heit is
+onboarding-scaled_proportions-manual_height-estimated_height = youw estimated hedset heit is:
+onboarding-scaled_proportions-manual_height-next_step = keep goin an saiv
+
+## Tracker scaled proportions reset
+
+onboarding-scaled_proportions-reset_proportion-title = weset youw body pwopowtions
+onboarding-scaled_proportions-reset_proportion-description = to set youw pwopowtions based on youw heit, u gotsa weset aww of youw pwopowtions. dis wiww cweaw any pwopowtions u hav configuwed and pwovide a basewine configuwation.
+onboarding-scaled_proportions-done-title = body pwopowtions set
+onboarding-scaled_proportions-done-description = youw body pwopowtions shuld nao be configuwed based on youw heit :3
 
 ## Home
 
@@ -1004,6 +1138,149 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = da { $trackerName } twackew has ewwow. >~<
 status_system-StatusUnassignedHMD = teh VR hedset shud be awssaignd as a hed twackew.
+
+## Firmware tool globals
+
+firmware_tool-next_step = next step
+firmware_tool-previous_step = pwevious step
+firmware_tool-ok = wooks gud
+firmware_tool-retry = wetwy
+firmware_tool-loading = woadin...
+
+## Firmware tool Steps
+
+firmware_tool = DIY fiwmwawe toow
+firmware_tool-description = awwows u to configuwe an fwash youw DIY twackews
+firmware_tool-not_available = oopsie woopsie! da fiwmwawe toow iz nawt avaiwabwe wight meow :3 twy agen laitew!
+firmware_tool-not_compatible = teh fiwmwawe toow iz nawt compatibwe wit dis vershun of teh sewvew. pwease uwupdate youw sewvew!
+firmware_tool-board_step = sewect youw boawd
+firmware_tool-board_step-description = sewect wun of da boawds wisted bewow owo
+firmware_tool-board_pins_step = check da pins
+firmware_tool-board_pins_step-description =
+    pwease vewify dat da pins hewe r cowwect.
+    if u fowwowed teh swimevr docs teh defawt vawuwes shuld be cowwect
+firmware_tool-board_pins_step-enable_led = enabwe da wights
+firmware_tool-board_pins_step-led_pin =
+    .label = pin fow teh wight
+    .placeholder = put in teh pin addwess fow teh wight
+firmware_tool-board_pins_step-battery_type = sewect da battewy taip
+firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = extewnaw battewy
+firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = intewnaw battewy
+firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = intewnaw mcp 3021
+firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = mcp3021
+firmware_tool-board_pins_step-battery_sensor_pin =
+    .label = battewy sensow pin
+    .placeholder = put in teh pin addwess fow teh battewy sensow
+firmware_tool-board_pins_step-battery_resistor =
+    .label = battewy wesistow (owms)
+    .placeholder = put in teh vawue fow teh battewy wesistow
+firmware_tool-board_pins_step-battery_shield_resistor-0 =
+    .label = battewy shiewd r1 (owms)
+    .placeholder = put in teh vawue of battewy shiewd r1
+firmware_tool-board_pins_step-battery_shield_resistor-1 =
+    .label = battewy shiewd r2 (owms)
+    .placeholder = put in teh vawue ﻿of battewy shiewd r2
+firmware_tool-add_imus_step = decwawe youw imuwus
+firmware_tool-add_imus_step-description =
+    pwease add teh imuwus dat youw twackew got
+    if u fowwowed teh swimevr docsteh defawt vawuwes shuld be cowwect
+firmware_tool-add_imus_step-imu_type-label = imuwu taip
+firmware_tool-add_imus_step-imu_type-placeholder = sewect teh taip of imuwu
+firmware_tool-add_imus_step-imu_rotation =
+    .label = imuwu wotaishun (degwees)
+    .placeholder = wotaishun angle of teh imuwu
+firmware_tool-add_imus_step-scl_pin =
+    .label = scl pin
+    .placeholder = pin addwess of scl
+firmware_tool-add_imus_step-sda_pin =
+    .label = sda pin
+    .placeholder = pin addwess of sda
+firmware_tool-add_imus_step-int_pin =
+    .label = int pin
+    .placeholder = pin addwess of int
+firmware_tool-add_imus_step-optional_tracker =
+    .label = opshunal twackew
+firmware_tool-add_imus_step-show_less = show wess
+firmware_tool-add_imus_step-show_more = show mowe
+firmware_tool-add_imus_step-add_more = add mowe imuwus!!
+firmware_tool-select_firmware_step = sewect teh fiwmwawe vershun
+firmware_tool-select_firmware_step-description = pwease chooze wat vershun of teh fiwmwawe u wanna use
+firmware_tool-select_firmware_step-show-third-party =
+    .label = show thiwd pawty fiwmwawes
+firmware_tool-flash_method_step = fwashin mefod
+firmware_tool-flash_method_step-description = pwease sewect teh fwashin mefod u wanna use
+firmware_tool-flash_method_step-ota =
+    .label = ovew teh aiw
+    .description = use da ovew teh aiw mefod. youw twackew wiww use da wifi to uwupdate its fiwmwawe :3 but it ownwy wowks on awedy fwashed twackews!
+firmware_tool-flash_method_step-serial =
+    .label = sewiaw
+    .description = use an usb cabwe to uwupdate youw twackew.
+firmware_tool-flashbtn_step = pwess da buwut buddon
+firmware_tool-flashbtn_step-description = befow goin into da next step thewe's stuff u gotta do
+firmware_tool-flashbtn_step-board_SLIMEVR = tuwn awf da twackew, wemove da case if u got wun, conecc an usb cabwe to dis compooper, den do wun of da fowwowin steps dependin on wat swimevr boawd u got:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11 = tuwn on da twackew whiwe showtin teh secund wectanguwaw FWASH!! pad fwom da edge on teh top side of teh boawd and da metaw shiewd of da micwocontwowwew
+firmware_tool-flashbtn_step-board_SLIMEVR-r12 = tuwn on da twackew whiwe showtin teh ciwcuwaw FWASH!! pad on teh top side of teh boawd and teh metaw shiewd of da micwocontwowwew
+firmware_tool-flashbtn_step-board_SLIMEVR-r14 = tuwn on da twackew whiwe pushin in da FWASH!! buddon on da top side of da boawd
+firmware_tool-flashbtn_step-board_OTHER =
+    befow fwashin u prob need 2 put da twackew into buwutwoadew mowd :3
+    mowst of da time it meens pressin da buwut buddon on da boawd befow da fwashin pwocess stawts.
+    if da fwashin pwocess timeout at da stawt of da fwashin it prob meens dat da twackew wuz nawt in buwutwoadew mowd ono
+    pwease wefew to da fwashin instwucshuns of youw boawd to no how 2 tuwn on da buwutwoadew mowd :3
+firmware_tool-flash_method_ota-devices = detectewed ovew teh aiw dewices:
+firmware_tool-flash_method_ota-no_devices = thewe r no boawds dat can be uwupdated usin ovew teh aiw, make suwe u sewected da cowwect boawd taip
+firmware_tool-flash_method_serial-wifi = wifi cwedenshuls:
+firmware_tool-flash_method_serial-devices-label = detectewed sewiaw dewices:
+firmware_tool-flash_method_serial-devices-placeholder = sewect a sewiaw dewice
+firmware_tool-flash_method_serial-no_devices = thewe r no compatibwe sewiaw dewices detectewed, make suwe da twackew is pwugged in
+firmware_tool-build_step = bildin
+firmware_tool-build_step-description = da fiwmwawe is bildin pwease wait :3
+firmware_tool-flashing_step = fwashin
+firmware_tool-flashing_step-description = youw twackews r fwashin, pwease fowwow da instwucshuns on da scween
+firmware_tool-flashing_step-warning = do NAWT unpwug ow westawt da twackew duwin da upwoad pwocess unwess towd to, it culd make youw boawd unuwusabwe
+firmware_tool-flashing_step-flash_more = fwash mowe twackews
+firmware_tool-flashing_step-exit = exit
+
+## firmware tool build status
+
+firmware_tool-build-CREATING_BUILD_FOLDER = cweatin da bild fowdew
+firmware_tool-build-DOWNLOADING_FIRMWARE = downwoadin da fiwmwawe
+firmware_tool-build-EXTRACTING_FIRMWARE = extwactin da fiwmwawe
+firmware_tool-build-SETTING_UP_DEFINES = configuwin da defains
+firmware_tool-build-BUILDING = bildin da fiwmwawe
+firmware_tool-build-SAVING = savin da bild
+firmware_tool-build-DONE = bild compwete!
+firmware_tool-build-ERROR = unabwe to bild da fiwmwawe...
+
+## Firmware update status
+
+firmware_update-status-DOWNLOADING = downwoadin da fiwmwawe
+firmware_update-status-NEED_MANUAL_REBOOT = pwease westawt da twackew
+firmware_update-status-AUTHENTICATING = awthenticatin wit da mcu
+firmware_update-status-UPLOADING = upwoadin da fiwmwawe
+firmware_update-status-SYNCING_WITH_MCU = syncin wit da mcu
+firmware_update-status-REBOOTING = appwyin da uwupdate
+firmware_update-status-PROVISIONING = settin da wifi cwedenshuls
+firmware_update-status-DONE = uwupdate compwete!!
+firmware_update-status-ERROR_DEVICE_NOT_FOUND = culd nawt find da dewice
+firmware_update-status-ERROR_TIMEOUT = da uwupdate pwocess timed owt
+firmware_update-status-ERROR_DOWNLOAD_FAILED = culd nawt downwoad da fiwmwawe
+firmware_update-status-ERROR_AUTHENTICATION_FAILED = culd nawt awthenticate wit da mcu
+firmware_update-status-ERROR_UPLOAD_FAILED = culd nawt upwoad da fiwmwawe
+firmware_update-status-ERROR_PROVISIONING_FAILED = culd nawt set da wifi cwedenshuls
+firmware_update-status-ERROR_UNSUPPORTED_METHOD = da uwupdate mefod is nawt suppowted
+firmware_update-status-ERROR_UNKNOWN = unyown ewwow
+
+## Dedicated Firmware Update Page
+
+firmware_update-title = fiwmwawe uwupdate
+firmware_update-devices = avaiwabwe dewices
+firmware_update-devices-description = pwease sewect da twackews u want to uwupdate to da latest vershun of swimevr fiwmwawe
+firmware_update-no_devices = pwease make suwe dat da twackews u want to uwupdate r AWN an conecced to da wifi!
+firmware_update-changelog-title = uwupdatin to { $version }
+firmware_update-looking_for_devices = lookin fow dewices to uwupdate...
+firmware_update-retry = wetwy
+firmware_update-update = uwupdate sewected twackews
+firmware_update-exit = exit
 
 ## Tray Menu
 
@@ -1032,3 +1309,6 @@ unknown_device-modal-description =
     d-do u wanna conect it to SwimeVR?
 unknown_device-modal-confirm = sure!!
 unknown_device-modal-forget = ignowe it
+
+## Error collection consent modal
+
