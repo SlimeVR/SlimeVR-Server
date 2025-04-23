@@ -1,5 +1,5 @@
 import { useLocalization } from '@fluent/react';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ResetRequestT,
   ResetType,
@@ -21,20 +21,25 @@ import {
   FullResetIcon,
 } from '@/components/commons/icon/ResetIcon';
 import { useStatusContext } from '@/hooks/status-system';
+import classNames from 'classnames';
 
 export function ResetButton({
   type,
-  variant = 'big',
+  size = 'big',
+  className,
   onReseted,
 }: {
+  className?: string;
   type: ResetType;
-  variant: 'big' | 'small';
+  size: 'big' | 'small';
   onReseted?: () => void;
 }) {
   const { l10n } = useLocalization();
   const { sendRPCPacket } = useWebsocketAPI();
   const { statuses } = useStatusContext();
   const { config } = useConfig();
+  const finishedTimeoutRef = useRef(-1);
+  const [isFinished, setFinished] = useState(false);
 
   const needsFullReset = useMemo(
     () =>
@@ -52,10 +57,17 @@ export function ResetButton({
   };
 
   const { isCounting, startCountdown, timer } = useCountdown({
-    duration: type === ResetType.Yaw ? 0.2 : undefined,
+    duration: type === ResetType.Yaw ? 0 : undefined,
     onCountdownEnd: () => {
       maybePlaySoundOnResetEnd(type);
       reset();
+      setFinished(true);
+      if (finishedTimeoutRef.current !== -1)
+        clearTimeout(finishedTimeoutRef.current);
+      finishedTimeoutRef.current = setTimeout(() => {
+        setFinished(false);
+        finishedTimeoutRef.current = -1;
+      }, 2000);
       if (onReseted) onReseted();
     },
   });
@@ -92,30 +104,49 @@ export function ResetButton({
       playSoundOnResetStarted(config?.feedbackSoundVolume);
   };
 
-  return variant === 'small' ? (
+  const triggerReset = () => {
+    setFinished(false);
+    startCountdown();
+    maybePlaySoundOnResetStart();
+  };
+
+  useEffect(() => {
+    return () => {
+      if (finishedTimeoutRef.current !== -1)
+        clearTimeout(finishedTimeoutRef.current);
+    };
+  }, []);
+
+  return size === 'small' ? (
     <Button
       icon={getIcon()}
-      onClick={() => {
-        startCountdown();
-        maybePlaySoundOnResetStart();
-      }}
+      onClick={triggerReset}
+      className={classNames(
+        'border-2',
+        isFinished
+          ? 'border-status-success'
+          : 'transition-[border-color] duration-500 ease-in-out border-transparent',
+        className
+      )}
       variant="primary"
       disabled={isCounting || needsFullReset}
     >
-      <div className="relative">
-        <div className="opacity-0 h-0">{text}</div>
-        {!isCounting || type === ResetType.Yaw ? text : String(timer)}
-      </div>
+      {!isCounting || type === ResetType.Yaw ? text : String(timer)}
     </Button>
   ) : (
     <BigButton
-      text={!isCounting || type === ResetType.Yaw ? text : String(timer)}
       icon={getIcon()}
-      onClick={() => {
-        startCountdown();
-        maybePlaySoundOnResetStart();
-      }}
+      onClick={triggerReset}
+      className={classNames(
+        'border-2',
+        isFinished
+          ? 'border-status-success'
+          : 'transition-[border-color] duration-500 ease-in-out border-transparent',
+        className
+      )}
       disabled={isCounting || needsFullReset}
-    ></BigButton>
+    >
+      {!isCounting || type === ResetType.Yaw ? text : String(timer)}
+    </BigButton>
   );
 }

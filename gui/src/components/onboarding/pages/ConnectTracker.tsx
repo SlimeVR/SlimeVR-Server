@@ -10,7 +10,6 @@ import {
   WifiProvisioningStatusResponseT,
 } from 'solarxr-protocol';
 import { useOnboarding } from '@/hooks/onboarding';
-import { useTrackers } from '@/hooks/tracker';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { ArrowLink } from '@/components/commons/ArrowLink';
 import { Button } from '@/components/commons/Button';
@@ -21,6 +20,8 @@ import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';
 import { useIsRestCalibrationTrackers } from '@/hooks/imu-logic';
 import './ConnectTracker.scss';
+import { useAtomValue } from 'jotai';
+import { connectedIMUTrackersAtom } from '@/store/app-store';
 
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
@@ -57,7 +58,7 @@ const statusProgressMap = {
 
 export function ConnectTrackersPage() {
   const { l10n } = useLocalization();
-  const { useConnectedIMUTrackers } = useTrackers();
+  const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { applyProgress, state } = useOnboarding();
   const navigate = useNavigate();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
@@ -65,8 +66,6 @@ export function ConnectTrackersPage() {
     useState<WifiProvisioningStatus>(WifiProvisioningStatus.NONE);
 
   applyProgress(0.4);
-
-  const connectedIMUTrackers = useConnectedIMUTrackers();
 
   const bnoExists = useIsRestCalibrationTrackers(connectedIMUTrackers);
 

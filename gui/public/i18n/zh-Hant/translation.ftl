@@ -7,8 +7,8 @@
 
 ## Websocket (server) status
 
-websocket-connecting = 正在連接伺服器
-websocket-connection_lost = 與伺服器的連線已中斷，正在嘗試重新連線……
+websocket-connecting = 載入中…
+websocket-connection_lost = 伺服器當機了！
 websocket-connection_lost-desc = SlimeVR 伺服器程式似乎當機了。請檢查日誌並重新啟動程式
 websocket-timedout = 無法連接到伺服器
 websocket-timedout-desc = SlimeVR 伺服器程式似乎已當機或逾時。請檢查日誌並重新啟動程式
@@ -138,15 +138,14 @@ skeleton_bone-ELBOW_OFFSET = 肘部偏移
 ## Tracker reset buttons
 
 reset-reset_all = 重置軀幹比例
-reset-reset_all_warning =
-    <b>警告：</b> 這會將軀幹比例重置為僅基於身高的比例。
-    你確定要執行此操作嗎？
+reset-reset_all_warning-v2 =
+    <b>警告：</b>軀幹比例將會重置成預設值，並依你的身高等比例調整。
+    確定要繼續嗎？
 reset-reset_all_warning-reset = 重置軀幹比例
 reset-reset_all_warning-cancel = 取消
-reset-reset_all_warning_default =
-    <b>警告：</b>目前還沒有設定你身高，
-    軀幹比例將會依預設身高來計算。
-    你確定要繼續嗎？
+reset-reset_all_warning_default-v2 =
+    <b>警告：</b>由於尚未設定身高，軀幹比例將會重置為使用預設身高的預設值。
+    確定要繼續嗎？
 reset-full = 完整重置
 reset-mounting = 配戴重置
 reset-yaw = 左右偏擺重置
@@ -386,6 +385,7 @@ settings-sidebar-utils = 工具
 settings-sidebar-serial = 串列埠終端
 settings-sidebar-appearance = 外觀
 settings-sidebar-notifications = 通知
+settings-sidebar-behavior = 行為
 settings-sidebar-firmware-tool = DIY 韌體工具
 settings-sidebar-advanced = 進階
 
@@ -558,9 +558,6 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = 如�
 ## Appearance settings
 
 settings-interface-appearance = 外觀
-settings-general-interface-dev_mode = 開發者模式
-settings-general-interface-dev_mode-description = 本功能會提供更深入的資料，也能與已連線的追蹤器進行更進一步的控制。
-settings-general-interface-dev_mode-label = 開發者模式
 settings-general-interface-theme = 佈景主題色彩
 settings-general-interface-show-navbar-onboarding = 在導覽列上顯示「{ navbar-onboarding }」
 settings-general-interface-show-navbar-onboarding-description = 本選項變更 「{ navbar-onboarding }」 按鈕是否要顯示在導覽列上。
@@ -593,6 +590,13 @@ settings-general-interface-feedback_sound-volume = 聲音回饋音量
 settings-general-interface-connected_trackers_warning = 已連接追蹤器警告
 settings-general-interface-connected_trackers_warning-description = 啟用本選項後，每次當退出 SlimeVR 時仍有追蹤器連接著會顯示通知，提醒你在使用完畢時關閉追蹤器電源來節省電池電量。
 settings-general-interface-connected_trackers_warning-label = 當退出程式時，有追蹤器連接中則顯示警告
+
+## Behavior settings
+
+settings-interface-behavior = 行為
+settings-general-interface-dev_mode = 開發者模式
+settings-general-interface-dev_mode-description = 本功能會提供更深入的資料，也能與已連線的追蹤器進行更進一步的控制。
+settings-general-interface-dev_mode-label = 開發者模式
 settings-general-interface-use_tray = 最小化到系統列
 settings-general-interface-use_tray-description = 本選項可以讓你在關閉視窗時不會關閉 SlimeVR 的伺服器程式，讓你在不受圖形介面的打擾下繼續使用追蹤器。
 settings-general-interface-use_tray-label = 最小化到系統列
@@ -604,6 +608,14 @@ settings-general-interface-discord_presence-message =
         [0] 正在捕捉史萊姆
        *[other] 正在使用 { $amount } 個追蹤器
     }
+settings-interface-behavior-error_tracking = 透過 Sentry.io 收集錯誤資訊
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>你是否同意我們蒐集匿名化的錯誤資料？</h1>
+    
+    <b>我們不會收集個人資訊</b> ，例如你的 IP 位址或無線網路認證資訊。SlimeVR 重視你的隱私！
+    
+    為了提供最佳的使用者體驗，我們會蒐集匿名化的錯誤報告、性能指標和作業系統資訊，這會對我們檢測 SlimeVR 的錯誤和問題有所幫助。我們會透過 Sentry.io 來蒐集這些指標。
+settings-interface-behavior-error_tracking-label = 向開發者傳送錯誤資訊
 
 ## Serial settings
 
@@ -746,9 +758,12 @@ settings-utils-advanced-reset_warning =
     }
 settings-utils-advanced-reset_warning-reset = 重置設定
 settings-utils-advanced-reset_warning-cancel = 取消
-settings-utils-advanced-open_data = 數據資料夾
-settings-utils-advanced-open_data-description = 在檔案管理器中開啟 SlimeVR 的數據資料夾，該資料夾包含設定與記錄檔。
+settings-utils-advanced-open_data-v1 = 設定資料夾
+settings-utils-advanced-open_data-description-v1 = 在檔案管理器中開啟 SlimeVR 的設定資料夾，該資料夾包含程式的設定。
 settings-utils-advanced-open_data-label = 打開資料夾
+settings-utils-advanced-open_logs = 記錄檔資料夾
+settings-utils-advanced-open_logs-description = 在檔案管理器中開啟 SlimeVR 的記錄檔資料夾，該資料夾包含程式的記錄檔。
+settings-utils-advanced-open_logs-label = 打開資料夾
 
 ## Setup/onboarding menu
 
@@ -1118,13 +1133,21 @@ onboarding-automatic_proportions-smol_warning-cancel = 返回
 
 ## Tracker scaled proportions setup
 
-onboarding-scaled_proportions-title = 標準軀幹比例
+onboarding-scaled_proportions-title = 縮放型軀幹比例
 onboarding-scaled_proportions-description = 為了讓 SlimeVR 追蹤器正常使用，我們需要知道你的骨骼長度。本流程會使用人體的平均軀幹比例並依照你的身高縮放調整。
 onboarding-scaled_proportions-manual_height-title = 設定你的身高
-onboarding-scaled_proportions-manual_height-description = 你的頭戴顯示器 (HMD) 高度應略小於您的身高全長，因為頭戴顯示器會測量你的眼睛高度。測量出的高度會被做為計算軀幹比例的基礎值。
+onboarding-scaled_proportions-manual_height-description-v2 = 身高會當作軀幹比例設定的基礎。
 onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR 目前尚未連接到 SlimeVR，因此無法根據頭戴顯示器測量身高。<b>請查閱說明文件，繼續操作請自行承擔風險！</b>
-onboarding-scaled_proportions-manual_height-height = 你的頭戴顯示器高度是
+onboarding-scaled_proportions-manual_height-height-v2 = 你的身高全長為
+onboarding-scaled_proportions-manual_height-estimated_height = 你的估計身高為：
 onboarding-scaled_proportions-manual_height-next_step = 繼續並儲存
+onboarding-scaled_proportions-manual_height-warning =
+    你現在正在手動設定縮放型軀幹比例，<b>這個方法僅在你使用 SlimeVR
+    不使用頭戴顯示器時推薦使用。</b>
+    
+    若要能自動設定縮放型軀幹比例，請按照以下步驟：
+onboarding-scaled_proportions-manual_height-warning-no_hmd = 連接 VR 頭戴顯示器
+onboarding-scaled_proportions-manual_height-warning-no_controllers = 檢查 VR 控制器是否正常連接，並在 SlimeVR 介面中分配到你的雙手
 
 ## Tracker scaled proportions reset
 
@@ -1243,7 +1266,7 @@ firmware_tool-flashbtn_step-board_OTHER =
     在燒錄前，你可能需要將追蹤器切換進 Bootloader（開機載入程式）。
     多數狀況下，在燒錄開始前按下 BOOT 按鈕即可開始燒錄。
     如果燒錄進度開始時就已逾時，表示追蹤器未能進入 Bootloader 模式，
-    請參考開發板燒錄韌體的說明文件，以得知進入 Bootloader 模式的方法。
+    請參考追蹤器主板燒錄韌體的說明文件，以得知進入 Bootloader 模式的方法。
 firmware_tool-flash_method_ota-devices = 偵測到的 OTA 裝置：
 firmware_tool-flash_method_ota-no_devices = 找不到可以使用 OTA 更新的主板，請確認所選擇的主板類型
 firmware_tool-flash_method_serial-wifi = Wi-Fi 認證資訊：
@@ -1272,11 +1295,11 @@ firmware_tool-build-ERROR = 無法建置韌體
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = 正在下載韌體
-firmware_update-status-NEED_MANUAL_REBOOT = 正在等待使用者重啟追蹤器
+firmware_update-status-NEED_MANUAL_REBOOT = 請重新啟動追蹤器
 firmware_update-status-AUTHENTICATING = 正在與 MCU 認證
 firmware_update-status-UPLOADING = 正在上傳韌體
 firmware_update-status-SYNCING_WITH_MCU = 正在與 MCU 同步
-firmware_update-status-REBOOTING = 正在重啟追蹤器
+firmware_update-status-REBOOTING = 正在套用更新
 firmware_update-status-PROVISIONING = 正在設定 Wi-Fi 認證資訊
 firmware_update-status-DONE = 更新完成！
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = 找不到裝置
@@ -1327,3 +1350,13 @@ unknown_device-modal-description =
     要將它連接到 SlimeVR 嗎？
 unknown_device-modal-confirm = 好喔！
 unknown_device-modal-forget = 別管它
+
+## Error collection consent modal
+
+error_collection_modal-title = 我們可以蒐集錯誤資訊嗎？
+error_collection_modal-description_v2 =
+    { settings-interface-behavior-error_tracking-description_v2 }
+    
+    若之後要變更此設定，可以在「詳細設定」頁面中的「行為」來變更。
+error_collection_modal-confirm = 我同意
+error_collection_modal-cancel = 我不想要

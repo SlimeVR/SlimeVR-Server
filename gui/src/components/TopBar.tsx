@@ -21,7 +21,6 @@ import { QuestionIcon } from './commons/icon/QuestionIcon';
 import { useBreakpoint, useIsTauri } from '@/hooks/breakpoint';
 import { GearIcon } from './commons/icon/GearIcon';
 import { invoke } from '@tauri-apps/api/core';
-import { useTrackers } from '@/hooks/tracker';
 import { TrackersStillOnModal } from './TrackersStillOnModal';
 import { useConfig } from '@/hooks/config';
 import { listen, TauriEvent } from '@tauri-apps/api/event';
@@ -29,11 +28,14 @@ import { TrayOrExitModal } from './TrayOrExitModal';
 import { error } from '@/utils/logging';
 import { useDoubleTap } from 'use-double-tap';
 import { isTrayAvailable } from '@/utils/tauri';
+import { ErrorConsentModal } from './ErrorConsentModal';
 import {
   CloseRequestedEvent,
   getCurrentWindow,
   UserAttentionType,
 } from '@tauri-apps/api/window';
+import { useAtomValue } from 'jotai';
+import { connectedIMUTrackersAtom } from '@/store/app-store';
 
 export function VersionTag() {
   return (
@@ -62,8 +64,7 @@ export function TopBar({
   const isTauri = useIsTauri();
   const { isMobile } = useBreakpoint('mobile');
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const { useConnectedIMUTrackers } = useTrackers();
-  const connectedIMUTrackers = useConnectedIMUTrackers();
+  const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { config, setConfig, saveConfig } = useConfig();
   const version = useContext(VersionContext);
   const [localIp, setLocalIp] = useState<string | null>(null);
@@ -105,6 +106,8 @@ export function TopBar({
   const unshowVersionBind = useDoubleTap(() => setShowVersionMobile(false));
 
   useEffect(() => {
+    if (!isTauri) return;
+
     const unlistenTrayClose = listen('try-close', async () => {
       const window = getCurrentWindow();
       await window.show();
@@ -114,20 +117,18 @@ export function TopBar({
       await tryCloseApp(true);
     });
 
-    const unlistenCloseRequested = isTauri
-      ? getCurrentWindow().listen(
-          TauriEvent.WINDOW_CLOSE_REQUESTED,
-          async (data) => {
-            const ev = new CloseRequestedEvent(data);
-            ev.preventDefault();
-            await tryCloseApp();
-          }
-        )
-      : undefined;
+    const unlistenCloseRequested = getCurrentWindow().listen(
+      TauriEvent.WINDOW_CLOSE_REQUESTED,
+      async (data) => {
+        const ev = new CloseRequestedEvent(data);
+        ev.preventDefault();
+        await tryCloseApp();
+      }
+    );
 
     return () => {
       unlistenTrayClose.then((fn) => fn());
-      unlistenCloseRequested?.then((fn) => fn());
+      unlistenCloseRequested.then((fn) => fn());
     };
   }, [
     config?.useTray,
@@ -333,6 +334,11 @@ export function TopBar({
           getCurrentWindow().requestUserAttention(null);
         }}
       ></TrackersStillOnModal>
+      <ErrorConsentModal
+        isOpen={config?.errorTracking === null}
+        accept={() => setConfig({ errorTracking: true })}
+        cancel={() => setConfig({ errorTracking: false })}
+      />
     </>
   );
 }

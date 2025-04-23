@@ -1,7 +1,7 @@
 import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { getTrackerName } from '@/hooks/tracker';
-import { ComponentProps, useEffect, useMemo, useState } from 'react';
+import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
 import {
   BoardType,
   DeviceDataT,
@@ -10,7 +10,6 @@ import {
   FirmwareUpdateStatus,
   FirmwareUpdateStatusResponseT,
   FirmwareUpdateStopQueuesRequestT,
-  HardwareInfoT,
   RpcMessage,
   TrackerStatus,
 } from 'solarxr-protocol';
@@ -34,21 +33,35 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { object } from 'yup';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { A } from '@/components/commons/A';
+import { useAtomValue } from 'jotai';
+import { devicesAtom } from '@/store/app-store';
 
 export function checkForUpdate(
   currentFirmwareRelease: FirmwareRelease,
-  hardwareInfo: HardwareInfoT
-) {
-  return (
-    // TODO: This is temporary, end goal is to support all board types
-    hardwareInfo.officialBoardType === BoardType.SLIMEVR &&
-    semver.valid(currentFirmwareRelease.version) &&
-    semver.valid(hardwareInfo.firmwareVersion?.toString() ?? 'none') &&
-    semver.lt(
-      hardwareInfo.firmwareVersion?.toString() ?? 'none',
-      currentFirmwareRelease.version
-    )
+  device: DeviceDataT
+): 'need-update' | 'low-battery' | 'updated' | 'unavailable' {
+  if (
+    device.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
+    !semver.valid(currentFirmwareRelease.version) ||
+    !semver.valid(device.hardwareInfo.firmwareVersion?.toString() ?? 'none')
+  ) {
+    return 'unavailable';
+  }
+
+  const canUpdate = semver.lt(
+    device.hardwareInfo.firmwareVersion?.toString() ?? 'none',
+    currentFirmwareRelease.version
   );
+
+  if (
+    canUpdate &&
+    device.hardwareStatus?.batteryPctEstimate &&
+    device.hardwareStatus?.batteryPctEstimate < 50
+  ) {
+    return 'low-battery';
+  }
+
+  return canUpdate ? 'need-update' : 'updated';
 }
 
 interface FirmwareUpdateForm {
@@ -93,10 +106,9 @@ const StatusList = ({ status }: { status: Record<string, UpdateStatus> }) => {
     const val = status[id];
 
     if (!val) throw new Error('there should always be a val');
-    const { state } = useAppContext();
-    const device = state.datafeed?.devices.find(
-      ({ id: dId }) => id === dId?.id.toString()
-    );
+    const devices = useAtomValue(devicesAtom);
+
+    const device = devices.find(({ id: dId }) => id === dId?.id.toString());
 
     return (
       <DeviceCardControl
@@ -120,18 +132,20 @@ export function FirmwareUpdate() {
   const navigate = useNavigate();
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const [selectedDevices, setSelectedDevices] = useState<SelectedDevice[]>([]);
-  const { state, currentFirmwareRelease } = useAppContext();
+  const pendingDevicesRef = useRef<SelectedDevice[]>([]);
+  const { currentFirmwareRelease } = useAppContext();
   const [status, setStatus] = useState<Record<string, UpdateStatus>>({});
 
+  const allDevices = useAtomValue(devicesAtom);
+
   const devices =
-    state.datafeed?.devices.filter(
-      ({ trackers, hardwareInfo }) =>
-        trackers.length > 0 &&
+    allDevices.filter(
+      (device) =>
+        device.trackers.length > 0 &&
         currentFirmwareRelease &&
-        hardwareInfo &&
-        checkForUpdate(currentFirmwareRelease, hardwareInfo) &&
-        trackers.every(({ status }) => status === TrackerStatus.OK)
+        device.hardwareInfo &&
+        checkForUpdate(currentFirmwareRelease, device) === 'need-update' &&
+        device.trackers.every(({ status }) => status === TrackerStatus.OK)
     ) || [];
 
   useRPCPacket(
@@ -144,7 +158,7 @@ export function FirmwareUpdate() {
           : data.deviceId.port;
       if (!id) throw new Error('invalid device id');
 
-      const selectedDevice = selectedDevices?.find(
+      const selectedDevice = pendingDevicesRef.current.find(
         ({ deviceId }) => deviceId === id.toString()
       );
 
@@ -213,6 +227,7 @@ export function FirmwareUpdate() {
 
   const queueFlashing = (selectedDevices: SelectedDevice[]) => {
     clear();
+    pendingDevicesRef.current = selectedDevices;
     const firmwareFile = currentFirmwareRelease?.firmwareFile;
     if (!firmwareFile) throw new Error('invalid state - no firmware file');
     const requests = getFlashingRequests(
@@ -264,7 +279,7 @@ export function FirmwareUpdate() {
     );
   }, [status]);
 
-  const retryError = () => {
+  const retry = () => {
     const devices = trackerWithErrors.map((id) => {
       const device = status[id];
       return {
@@ -280,25 +295,30 @@ export function FirmwareUpdate() {
         {}
       ),
     });
-    queueFlashing(devices);
+    setStatus({});
+    clear();
   };
 
   const startUpdate = () => {
-    const selectedDevices = Object.keys(selectedDevicesForm)
-      .filter((d) => selectedDevicesForm[d])
-      .map((id) => {
+    const selectedDevices = Object.keys(selectedDevicesForm).reduce(
+      (curr, id) => {
+        if (!selectedDevicesForm[id]) return curr;
         const device = devices.find(({ id: dId }) => id === dId?.id.toString());
-
-        if (!device) throw new Error('no device found');
-        return {
-          type: FirmwareUpdateMethod.OTAFirmwareUpdate,
-          deviceId: id,
-          deviceNames: deviceNames(device, l10n),
-        };
-      });
+        if (!device) return curr;
+        return [
+          ...curr,
+          {
+            type: FirmwareUpdateMethod.OTAFirmwareUpdate,
+            deviceId: id,
+            deviceNames: deviceNames(device, l10n),
+          },
+        ];
+      },
+      [] as SelectedDevice[]
+    );
     if (!selectedDevices)
       throw new Error('invalid state - no selected devices');
-    setSelectedDevices(selectedDevices);
+
     queueFlashing(selectedDevices);
   };
 
@@ -313,10 +333,7 @@ export function FirmwareUpdate() {
     !hasPendingTrackers &&
     trackerWithErrors.length === 0;
   const canRetry =
-    !hasPendingTrackers &&
-    isValid &&
-    devices.length !== 0 &&
-    trackerWithErrors.length !== 0;
+    !hasPendingTrackers && isValid && trackerWithErrors.length !== 0;
 
   const statusKeys = Object.keys(status);
 
@@ -343,7 +360,7 @@ export function FirmwareUpdate() {
                   </Localized>
                 )}
               {shouldShowRebootWarning && (
-                <Localized id="firmware_tool-flashing_step-warning">
+                <Localized id="firmware_tool-flashing_step-warning-v2">
                   <WarningBox>Warning</WarningBox>
                 </Localized>
               )}
@@ -395,7 +412,7 @@ export function FirmwareUpdate() {
             <Button
               variant="secondary"
               disabled={!canRetry}
-              onClick={retryError}
+              onClick={retry}
             ></Button>
           </Localized>
           <Localized id="firmware_update-update">

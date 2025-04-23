@@ -33,8 +33,9 @@ public class LogManager {
 				mainLogDir.toPath(),
 				"slimevr-server",
 				DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"),
-				25 * 1000000,
-				2
+				25 * 1000000, // 25 MB max file size
+				8, // 8 max log files
+				100 * 1000000 // 100 MB max collective size
 			);
 			fileHandler.setFormatter(loc);
 			global.addHandler(fileHandler);

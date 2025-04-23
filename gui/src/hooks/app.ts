@@ -1,24 +1,12 @@
+import { createContext, useContext, useEffect, useState } from 'react';
 import {
-  createContext,
-  Dispatch,
-  Reducer,
-  useContext,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-} from 'react';
-import {
-  BoneT,
   DataFeedMessage,
   DataFeedUpdateT,
-  DeviceDataT,
   ResetResponseT,
   ResetStatus,
   ResetType,
   RpcMessage,
   StartDataFeedT,
-  TrackerDataT,
 } from 'solarxr-protocol';
 import { playSoundOnResetEnded, playSoundOnResetStarted } from '@/sounds/sounds';
 import { useConfig } from './config';
@@ -26,6 +14,9 @@ import { useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
 import { error } from '@/utils/logging';
 import { cacheWrap } from './cache';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { datafeedAtom, devicesAtom } from '@/store/app-store';
+import { updateSentryContext } from '@/utils/sentry';
 
 export interface FirmwareRelease {
   name: string;
@@ -34,41 +25,8 @@ export interface FirmwareRelease {
   firmwareFile: string;
 }
 
-export interface FlatDeviceTracker {
-  device?: DeviceDataT;
-  tracker: TrackerDataT;
-}
-
-export type AppStateAction =
-  | { type: 'datafeed'; value: DataFeedUpdateT }
-  | { type: 'ignoreTracker'; value: string };
-
-export interface AppState {
-  datafeed?: DataFeedUpdateT;
-  ignoredTrackers: Set<string>;
-}
-
 export interface AppContext {
   currentFirmwareRelease: FirmwareRelease | null;
-  state: AppState;
-  trackers: FlatDeviceTracker[];
-  dispatch: Dispatch<AppStateAction>;
-  bones: BoneT[];
-  computedTrackers: FlatDeviceTracker[];
-}
-
-export function reducer(state: AppState, action: AppStateAction) {
-  switch (action.type) {
-    case 'datafeed':
-      return { ...state, datafeed: action.value };
-    case 'ignoreTracker':
-      return {
-        ...state,
-        ignoredTrackers: new Set([...state.ignoredTrackers, action.value]),
-      };
-    default:
-      throw new Error(`unhandled state action ${(action as AppStateAction).type}`);
-  }
 }
 
 export function useProvideAppContext(): AppContext {
@@ -76,10 +34,9 @@ export function useProvideAppContext(): AppContext {
     useWebsocketAPI();
   const { config } = useConfig();
   const { dataFeedConfig } = useDataFeedConfig();
-  const [state, dispatch] = useReducer<Reducer<AppState, AppStateAction>>(reducer, {
-    datafeed: new DataFeedUpdateT(),
-    ignoredTrackers: new Set(),
-  });
+  const setDatafeed = useSetAtom(datafeedAtom);
+  const devices = useAtomValue(devicesAtom);
+
   const [currentFirmwareRelease, setCurrentFirmwareRelease] =
     useState<FirmwareRelease | null>(null);
 
@@ -91,28 +48,13 @@ export function useProvideAppContext(): AppContext {
     }
   }, [isConnected]);
 
-  const trackers = useMemo(
-    () =>
-      (state.datafeed?.devices || []).reduce<FlatDeviceTracker[]>(
-        (curr, device) => [
-          ...curr,
-          ...device.trackers.map((tracker) => ({ tracker, device })),
-        ],
-        []
-      ),
-    [state]
-  );
-
-  const computedTrackers: FlatDeviceTracker[] = useMemo(
-    () => (state.datafeed?.syntheticTrackers || []).map((tracker) => ({ tracker })),
-    [state]
-  );
-
-  const bones = useMemo(() => state.datafeed?.bones || [], [state]);
-
   useDataFeedPacket(DataFeedMessage.DataFeedUpdate, (packet: DataFeedUpdateT) => {
-    dispatch({ type: 'datafeed', value: packet });
+    setDatafeed(packet);
   });
+
+  useEffect(() => {
+    updateSentryContext(devices);
+  }, [devices]);
 
   useRPCPacket(RpcMessage.ResetResponse, ({ status, resetType }: ResetResponseT) => {
     if (!config?.feedbackSound) return;
@@ -182,11 +124,6 @@ export function useProvideAppContext(): AppContext {
 
   return {
     currentFirmwareRelease,
-    state,
-    trackers,
-    dispatch,
-    bones,
-    computedTrackers,
   };
 }
 

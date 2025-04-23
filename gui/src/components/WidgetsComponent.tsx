@@ -17,23 +17,42 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { parseStatusToLocale, useStatusContext } from '@/hooks/status-system';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { useAppContext } from '@/hooks/app';
 import { ClearMountingButton } from './ClearMountingButton';
 import { ToggleableSkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
+import { useAtomValue } from 'jotai';
+import { flatTrackersAtom } from '@/store/app-store';
+
+function UnprioritizedStatuses() {
+  const { l10n } = useLocalization();
+  const trackers = useAtomValue(flatTrackersAtom);
+  const { statuses } = useStatusContext();
+  const unprioritizedStatuses = useMemo(
+    () => Object.values(statuses).filter((status) => !status.prioritized),
+    [statuses]
+  );
+
+  return (
+    <div className="w-full flex flex-col gap-3 mb-2">
+      {unprioritizedStatuses.map((status) => (
+        <Localized
+          id={`status_system-${StatusData[status.dataType]}`}
+          vars={parseStatusToLocale(status, trackers, l10n)}
+          key={status.id}
+        >
+          <TipBox whitespace={false} hideIcon>
+            {`Warning, you should fix ${StatusData[status.dataType]}`}
+          </TipBox>
+        </Localized>
+      ))}
+    </div>
+  );
+}
 
 export function WidgetsComponent() {
   const { config } = useConfig();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [driftCompensationEnabled, setDriftCompensationEnabled] =
     useState(false);
-  const { trackers } = useAppContext();
-  const { statuses } = useStatusContext();
-  const { l10n } = useLocalization();
-  const unprioritizedStatuses = useMemo(
-    () => Object.values(statuses).filter((status) => !status.prioritized),
-    [statuses]
-  );
-
   useEffect(() => {
     sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
   }, []);
@@ -46,9 +65,9 @@ export function WidgetsComponent() {
   return (
     <>
       <div className="grid grid-cols-2 gap-2 w-full [&>*:nth-child(odd):last-of-type]:col-span-full">
-        <ResetButton type={ResetType.Yaw} variant="big"></ResetButton>
-        <ResetButton type={ResetType.Full} variant="big"></ResetButton>
-        <ResetButton type={ResetType.Mounting} variant="big"></ResetButton>
+        <ResetButton type={ResetType.Yaw} size="big"></ResetButton>
+        <ResetButton type={ResetType.Full} size="big"></ResetButton>
+        <ResetButton type={ResetType.Mounting} size="big"></ResetButton>
         <ClearMountingButton></ClearMountingButton>
         <BVHButton></BVHButton>
         <TrackingPauseButton></TrackingPauseButton>
@@ -62,19 +81,7 @@ export function WidgetsComponent() {
       <div className="mb-2">
         <ToggleableSkeletonVisualizerWidget height={400} />
       </div>
-      <div className="w-full flex flex-col gap-3 mb-2">
-        {unprioritizedStatuses.map((status) => (
-          <Localized
-            id={`status_system-${StatusData[status.dataType]}`}
-            vars={parseStatusToLocale(status, trackers, l10n)}
-            key={status.id}
-          >
-            <TipBox whitespace={false} hideIcon={true}>
-              {`Warning, you should fix ${StatusData[status.dataType]}`}
-            </TipBox>
-          </Localized>
-        ))}
-      </div>
+      <UnprioritizedStatuses></UnprioritizedStatuses>
       {config?.debug && (
         <div className="w-full">
           <DeveloperModeWidget></DeveloperModeWidget>
