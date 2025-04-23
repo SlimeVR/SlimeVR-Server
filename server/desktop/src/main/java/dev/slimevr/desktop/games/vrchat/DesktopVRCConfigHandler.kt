@@ -75,7 +75,7 @@ class DesktopVRCConfigHandler : VRCConfigHandler() {
 	private val getDevicesTimer = Timer("FetchVRCConfigTimer")
 
 	private var configState: VRCConfigValues? = null
-	private var vrcConfigKeys = getVRChatKeys(VRC_REG_PATH)
+	private var vrcConfigKeys: Map<String, String>
 	lateinit var onChange: (config: VRCConfigValues) -> Unit
 
 	private fun intValue(key: String): Int? {
@@ -86,6 +86,14 @@ class DesktopVRCConfigHandler : VRCConfigHandler() {
 	private fun doubleValue(key: String): Double? {
 		val realKey = vrcConfigKeys[key] ?: return null
 		return getQwordValue(VRC_REG_PATH, realKey)
+	}
+
+	init {
+		vrcConfigKeys = if (OperatingSystem.currentPlatform === OperatingSystem.WINDOWS) {
+			getVRChatKeys(VRC_REG_PATH)
+		} else {
+			mapOf()
+		}
 	}
 
 	private fun updateCurrentState() {
