@@ -25,7 +25,6 @@ import classNames from 'classnames';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { useAtomValue } from 'jotai';
 import { computedTrackersAtom } from '@/store/app-store';
-import { useAppContext } from '@/hooks/app';
 import { RulerIcon } from '@/components/commons/icon/RulerIcon';
 import { PercentIcon } from '@/components/commons/icon/PercentIcon';
 import { UploadFileIcon } from '@/components/commons/icon/UploadFileIcon';
