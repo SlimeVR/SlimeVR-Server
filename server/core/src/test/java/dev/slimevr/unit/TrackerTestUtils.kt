@@ -1,13 +1,12 @@
 package dev.slimevr.unit
 
 import com.jme3.math.FastMath
-import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import org.junit.jupiter.api.AssertionFailureBuilder
 import kotlin.math.abs
 
-object TrackerUtils {
+object TrackerTestUtils {
 	val directions = arrayOf(
 		Quaternion.SLIMEVR.FRONT,
 		Quaternion.SLIMEVR.FRONT_LEFT,
@@ -19,7 +18,30 @@ object TrackerUtils {
 		Quaternion.SLIMEVR.BACK,
 	)
 
-	val frontRot = EulerAngles(EulerOrder.YZX, FastMath.HALF_PI, 0f, 0f).toQuaternion()
+	val frontRot = Quaternion(0.707f, 0.707f, 0f, 0f)
+
+	// A diverse range of quaternions to be used for testing where specific rotations
+	// do not matter
+	val testRots = arrayOf(
+		// Various rotations
+		frontRot,
+		Quaternion(0.707f, 0f, 0f, 0.707f),
+		Quaternion(0.854f, 0.354f, 0.146f, 0.354f),
+		// Pure yaw rotations
+		Quaternion.SLIMEVR.FRONT,
+		Quaternion.SLIMEVR.LEFT,
+		Quaternion.SLIMEVR.RIGHT,
+		// Axes
+		Quaternion.I,
+		Quaternion.K,
+		// Negative axes (same rotations, different sign)
+		-Quaternion.I,
+		-Quaternion.K,
+		// Identity
+		Quaternion.IDENTITY,
+	)
+
+	fun testRotFromIndex(index: Int): Quaternion = testRots[abs(index) % testRots.size]
 
 	/**
 	 * Makes a radian angle positive
