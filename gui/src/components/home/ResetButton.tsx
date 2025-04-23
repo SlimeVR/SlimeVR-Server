@@ -123,7 +123,7 @@ export function ResetButton({
         'border-2',
         isFinished
           ? 'border-status-success'
-          : 'border-animated-500 border-transparent'
+          : 'transition-[border-color] duration-500 ease-in-out border-transparent'
       )}
       variant="primary"
       disabled={isCounting || needsFullReset}
@@ -142,7 +142,7 @@ export function ResetButton({
         'border-2',
         isFinished
           ? 'border-status-success'
-          : 'border-animated-500 border-transparent'
+          : 'transition-[border-color] duration-500 ease-in-out border-transparent'
       )}
       disabled={isCounting || needsFullReset}
     ></BigButton>
