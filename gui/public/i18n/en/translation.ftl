@@ -104,29 +104,125 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 ## Proportions
 skeleton_bone-NONE = None
 skeleton_bone-HEAD = Head Shift
+skeleton_bone-HEAD-desc =
+    This is the distance from your headset to the middle of your head.
+    To adjust it, shake your head left to right as if you're disagreeing and modify
+    it until any movement in other trackers is negligible. 
 skeleton_bone-NECK = Neck Length
+skeleton_bone-NECK-desc =
+    This is the distance from the middle of your head to the base of your neck.
+    To adjust it, move your head up and down as if you're nodding or tilt your head 
+    to the left and right and modify it until any movement in other trackers is negligible. 
 skeleton_bone-torso_group = Torso length
+skeleton_bone-torso_group-desc =
+    This is the distance from the base of your neck to your hips.
+    To adjust it, modify it standing up straight until your virtual hips line
+    up with your real ones.
 skeleton_bone-UPPER_CHEST = Upper Chest Length
+skeleton_bone-UPPER_CHEST-desc =
+    This is the distance from the base of your neck to the middle of your chest.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-CHEST_OFFSET-desc =
+    This can be adjusted to move your virtual chest tracker up or down in order to aid
+    with calibration in certain games or applications that may expect it to be higher or lower.
 skeleton_bone-CHEST = Chest Length
+skeleton_bone-CHEST-desc =
+    This is the distance from the middle of your chest to the middle of your spine.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-WAIST = Waist Length
+skeleton_bone-WAIST-desc =
+    This is the distance from the middle of your spine to your belly button.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP = Hip Length
+skeleton_bone-HIP-desc =
+    This is the distance from your belly button to your hips
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP_OFFSET = Hip Offset
+skeleton_bone-HIP_OFFSET-desc =
+    This can be adjusted to move your virtual hip tracker up or down in order to aid
+    with calibration in certain games or applications that may expect it to be on your waist.
 skeleton_bone-HIPS_WIDTH = Hips Width
+skeleton_bone-HIPS_WIDTH-desc =
+    This is the distance between the start of your legs.
+    To adjust it, perform a full reset with your legs straight and modify it until
+    your virtual legs match up with your real ones horizontally.
 skeleton_bone-leg_group = Leg length
+skeleton_bone-leg_group-desc =
+    This is the distance from your hips to your feet.
+    To adjust it, adjust your Torso Length properly and modify it
+    until your virtual feet are at the same level as your real ones.
 skeleton_bone-UPPER_LEG = Upper Leg Length
+skeleton_bone-UPPER_LEG-desc =
+    This is the distance from your hips to your knees.
+    To adjust it, adjust your Leg Length properly and modify it
+    until your virtual knees are at the same level as your real ones.
 skeleton_bone-LOWER_LEG = Lower Leg Length
+skeleton_bone-LOWER_LEG-desc =
+    This is the distance from your hips to your knees.
+    To adjust it, adjust your Leg Length properly and modify it
+    until your virtual knees are at the same level as your real ones.
 skeleton_bone-FOOT_LENGTH = Foot Length
+skeleton_bone-FOOT_LENGTH-desc =
+    This is the distance from your ankles to your toes.
+    To adjust it, tiptoe and modify it until your virtual feet stay in place.
 skeleton_bone-FOOT_SHIFT = Foot Shift
+skeleton_bone-FOOT_SHIFT-desc =
+    This value is the horizontal distance from your knee to your ankle.
+    It accounts for your lower legs going backwards when standing up straight.
+    To adjust it, set Foot Length to 0, perform a full reset and modify it until your virtual
+    feet line up with the middle of your ankles.
 skeleton_bone-SKELETON_OFFSET = Skeleton Offset
+skeleton_bone-SKELETON_OFFSET-desc =
+    This can be adjusted to offsets all your trackers forward or backwards.
+    It can be used in order to aid with calibration in certain games or applications
+    that may expect your trackers to be more forward.
 skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    This is the vertical distance from the base of your neck to your shoulders.
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers 
+    line up vertically with your real shoulders.
 skeleton_bone-SHOULDERS_WIDTH = Shoulders Width
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    This is the horizontal distance from the base of your neck to your shoulders.
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers 
+    line up horizontally with your real shoulders.
 skeleton_bone-arm_group = Arm length
+skeleton_bone-arm_group-desc =
+    This is the distance from your shoulders to your wrists.
+    To adjust it, adjust Shoulders Distance properly, set Hand Distance Y 
+    to 0 and modify it until your hand trackers line up with your wrists.
 skeleton_bone-UPPER_ARM = Upper Arm Length
+skeleton_bone-UPPER_ARM-desc =
+    This is the distance from your shoulders to your elbows.
+    To adjust it, adjust Arm Length properly and modify it until 
+    your elbow trackers line up with your real elbows.
 skeleton_bone-LOWER_ARM = Lower Arm Length
+skeleton_bone-LOWER_ARM-desc =
+    This is the distance from your elbows to your wrists.
+    To adjust it, adjust Arm Length properly and modify it until 
+    your elbow trackers line up with your real elbows.
 skeleton_bone-HAND_Y = Hand Distance Y
+skeleton_bone-HAND_Y-desc =
+    This is the vertical distance from your wrists to the middle of your hand.
+    To adjust it for motion capture, adjust Arm Length properly and modify it until your
+    hand trackers line up vertically with the middle of your hands.
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and 
+    modify it until your elbow trackers line up vertically with your wrists.
 skeleton_bone-HAND_Z = Hand Distance Z
+skeleton_bone-HAND_Z-desc =
+    This is the horizontal distance from your wrists to the middle of your hand.
+    To adjust it for motion capture, set it to 0.
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and 
+    modify it until your elbow trackers line up horizontally with your wrists.
 skeleton_bone-ELBOW_OFFSET = Elbow Offset
+skeleton_bone-ELBOW_OFFSET-desc =
+    This can be adjusted to move your virtual elbow trackers up or down in order to aid
+    with VRChat accidentally binding and elbow tracker to the chest.
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
@@ -990,17 +1086,16 @@ onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 ## Tracker manual proportions setupa
 onboarding-manual_proportions-back = Go Back to Reset tutorial
 onboarding-manual_proportions-title = Manual Body Proportions
-onboarding-manual_proportions-precision = Precision adjust
-onboarding-manual_proportions-auto = Automatic proportions
-onboarding-manual_proportions-ratio = Adjust by ratio groups
 onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning
 onboarding-manual_proportions-export = Export proportions
 onboarding-manual_proportions-import = Import proportions
-onboarding-manual_proportions-import-success = Imported
-onboarding-manual_proportions-import-failed = Failed
 onboarding-manual_proportions-file_type = Body proportions file
-
+onboarding-manual_proportions-normal_increment = Normal increment
+onboarding-manual_proportions-precise_increment = Precise increment
+onboarding-manual_proportions-grouped_proportions = Grouped proportions
+onboarding-manual_proportions-all_proportions = All proportions
+onboarding-manual_proportions-estimated_height = Estimated user height
 
 ## Tracker automatic proportions setup
 onboarding-automatic_proportions-back = Go Back to Manual Proportions
