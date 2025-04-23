@@ -1,8 +1,8 @@
-export function CheckIcon(_props: any) {
+export function CheckIcon({ size = 9 }: { size?: number }) {
   return (
     <svg
-      width="9"
-      height="7"
+      width={size}
+      height={size}
       viewBox="0 0 9 7"
       xmlns="http://www.w3.org/2000/svg"
     >
