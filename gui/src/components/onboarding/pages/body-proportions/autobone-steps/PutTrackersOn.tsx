@@ -1,10 +1,11 @@
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { useTrackers } from '@/hooks/tracker';
 import { BodyDisplay } from '@/components/commons/BodyDisplay';
 import { Button } from '@/components/commons/Button';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
+import { useAtomValue } from 'jotai';
+import { flatTrackersAtom } from '@/store/app-store';
 
 export function PutTrackersOnStep({
   nextStep,
@@ -15,7 +16,7 @@ export function PutTrackersOnStep({
 }) {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
-  const { trackers } = useTrackers();
+  const trackers = useAtomValue(flatTrackersAtom);
 
   return (
     <>

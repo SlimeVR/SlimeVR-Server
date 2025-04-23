@@ -39,6 +39,8 @@ import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
 import semver from 'semver';
 import { checkForUpdate } from '@/components/firmware-update/FirmwareUpdate';
+import { useSetAtom } from 'jotai';
+import { ignoredTrackersAtom } from '@/store/app-store';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -72,7 +74,7 @@ export function TrackerSettingsPage() {
     },
     reValidateMode: 'onSubmit',
   });
-  const { dispatch } = useAppContext();
+  const setIgnoredTracker = useSetAtom(ignoredTrackersAtom);
   const { trackerName, allowDriftCompensation } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
@@ -534,7 +536,10 @@ export function TrackerSettingsPage() {
                     RpcMessage.ForgetDeviceRequest,
                     new ForgetDeviceRequestT(macAddress)
                   );
-                  dispatch({ type: 'ignoreTracker', value: macAddress });
+                  setIgnoredTracker((state) => {
+                    state.add(macAddress);
+                    return state;
+                  });
                 }}
               >
                 {l10n.getString('tracker-settings-forget-label')}

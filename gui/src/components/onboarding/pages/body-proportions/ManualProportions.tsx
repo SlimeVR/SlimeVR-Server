@@ -22,9 +22,10 @@ import { save } from '@tauri-apps/plugin-dialog';
 import { writeTextFile } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
 import classNames from 'classnames';
-import { useAppContext } from '@/hooks/app';
-import { RulerIcon } from '@/components/commons/icon/RulerIcon';
 import { Tooltip } from '@/components/commons/Tooltip';
+import { useAtomValue } from 'jotai';
+import { computedTrackersAtom } from '@/store/app-store';
+import { RulerIcon } from '@/components/commons/icon/RulerIcon';
 import { PercentIcon } from '@/components/commons/icon/PercentIcon';
 import { UploadFileIcon } from '@/components/commons/icon/UploadFileIcon';
 import { FullResetIcon } from '@/components/commons/icon/ResetIcon';
@@ -320,7 +321,7 @@ function PreciseToggle({ control }: { control: ManualProportionControls }) {
 function ButtonsControl({ control }: { control: ManualProportionControls }) {
   const { state } = useOnboarding();
   const nav = useNavigate();
-  const { computedTrackers } = useAppContext();
+  const computedTrackers = useAtomValue(computedTrackersAtom);
   const { sendRPCPacket } = useWebsocketAPI();
 
   const [showWarning, setShowWarning] = useState(false);

@@ -1,7 +1,6 @@
 import { Canvas, Object3DNode, extend, useThree } from '@react-three/fiber';
-import { useAppContext } from '@/hooks/app';
 import { Bone } from 'three';
-import { useMemo, useEffect, useRef, useState } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import {
   OrbitControls,
   OrthographicCamera,
@@ -20,6 +19,8 @@ import { Button } from '@/components/commons/Button';
 import { useLocalization } from '@fluent/react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Typography } from '@/components/commons/Typography';
+import { useAtomValue } from 'jotai';
+import { bonesAtom } from '@/store/app-store';
 
 extend({ BasedSkeletonHelper });
 
@@ -135,22 +136,20 @@ export function ToggleableSkeletonVisualizerWidget({
 }
 
 export function SkeletonVisualizerWidget() {
-  const { bones: _bones } = useAppContext();
+  const _bones = useAtomValue(bonesAtom);
 
   const { l10n } = useLocalization();
-  const bones = useMemo(
-    () => new Map(_bones.map((b) => [b.bodyPart, b])),
-    [JSON.stringify(_bones)]
+  const bones = useMemo(() => {
+    return new Map(_bones.map((b) => [b.bodyPart, b]));
+  }, [_bones]);
+
+  const skeleton = useMemo(
+    () => createChildren(bones, BoneKind.root),
+    [bones.size]
   );
 
-  const skeleton = useRef<Bone[]>();
-
   useEffect(() => {
-    skeleton.current = createChildren(bones, BoneKind.root);
-  }, [bones.size]);
-
-  useEffect(() => {
-    skeleton.current?.forEach(
+    skeleton.forEach(
       (bone) => bone instanceof BoneKind && bone.updateData(bones)
     );
   }, [bones]);
@@ -166,15 +165,13 @@ export function SkeletonVisualizerWidget() {
     return (yLength as BoneT[]).reduce((prev, cur) => prev + cur.boneLength, 0);
   }, [bones]);
 
-  const bonesInitialized = bones.size > 0;
-
   const targetCamera = useMemo(() => {
     const hmd = bones.get(BodyPart.HEAD);
     if (hmd?.headPositionG?.y && hmd.headPositionG.y > 0) {
       return hmd.headPositionG.y / 2;
     }
     return heightOffset / 2;
-  }, [bonesInitialized]);
+  }, [bones]);
 
   const yawReset = useMemo(() => {
     const hmd = bones.get(BodyPart.HEAD);
@@ -190,14 +187,14 @@ export function SkeletonVisualizerWidget() {
       new THREE.Vector3(quat.x, quat.y, quat.z).dot(VEC_Y) / VEC_Y.lengthSq()
     );
     return new THREE.Quaternion(vec.x, vec.y, vec.z, quat.w).normalize();
-  }, [bonesInitialized]);
+  }, [bones.size]);
 
   const scale = useMemo(
     () => Math.max(1.8, heightOffset) / 1.8,
     [heightOffset]
   );
 
-  if (!skeleton.current) return <></>;
+  if (!skeleton) return <></>;
   return (
     <ErrorBoundary
       fallback={
@@ -209,9 +206,9 @@ export function SkeletonVisualizerWidget() {
       <Canvas className={classNames('container mx-auto')}>
         <gridHelper args={[10, 50, GROUND_COLOR, GROUND_COLOR]} />
         <group position={[0, heightOffset, 0]} quaternion={yawReset}>
-          <SkeletonHelper object={skeleton.current[0]}></SkeletonHelper>
+          <SkeletonHelper object={skeleton[0]}></SkeletonHelper>
         </group>
-        <primitive object={skeleton.current[0]} />
+        <primitive object={skeleton[0]} />
         <PerspectiveCamera
           makeDefault
           position={[3, 2.5, -3]}

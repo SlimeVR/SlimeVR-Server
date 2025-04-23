@@ -4,6 +4,7 @@ import { defineConfig, PluginOption } from 'vite';
 import { execSync } from 'child_process';
 import path from 'path';
 import { visualizer } from 'rollup-plugin-visualizer';
+import jotaiReactRefresh from 'jotai/babel/plugin-react-refresh';
 
 const commitHash = execSync('git rev-parse --verify --short HEAD').toString().trim();
 const versionTag = execSync('git --no-pager tag --sort -taggerdate --points-at HEAD')
@@ -41,7 +42,7 @@ export default defineConfig({
     __GIT_CLEAN__: gitClean,
   },
   plugins: [
-    react(),
+    react({ babel: { plugins: [jotaiReactRefresh] } }),
     i18nHotReload(),
     visualizer() as PluginOption,
     sentryVitePlugin({
