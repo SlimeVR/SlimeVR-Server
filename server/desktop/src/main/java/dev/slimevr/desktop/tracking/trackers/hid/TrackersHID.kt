@@ -8,6 +8,7 @@ import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.udp.BoardType
 import dev.slimevr.tracking.trackers.udp.IMUType
 import dev.slimevr.tracking.trackers.udp.MCUType
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
@@ -113,7 +114,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 		}
 	}
 
-	private fun setUpSensor(device: HIDDevice, trackerId: Int, sensorType: IMUType, sensorStatus: TrackerStatus) {
+	private fun setUpSensor(device: HIDDevice, trackerId: Int, sensorType: IMUType, sensorStatus: TrackerStatus, magStatus: MagnetometerStatus) {
 		// LogManager.info("[TrackerServer] Sensor $trackerId for ${device.name}, status $sensorStatus")
 		var imuTracker = device.getTracker(trackerId)
 		if (imuTracker == null) {
@@ -132,9 +133,11 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 				needsReset = true,
 				needsMounting = true,
 				usesTimeout = false,
+				magStatus = magStatus,
 			)
 			// usesTimeout false because HID trackers aren't "Disconnected" unless receiver is physically removed probably
 			// TODO: Could tracker maybe use "Timed out" status without marking as disconnecting?
+			// TODO: can be marked as "Disconnected" by timeout if the tracker has enabled activity timeouts
 			device.trackers[trackerId] = imuTracker
 			trackersConsumer.accept(imuTracker)
 			imuTracker.status = sensorStatus
@@ -165,6 +168,10 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			this.devices.add(device)
 			deviceList.add(this.devices.size - 1)
 			VRServer.instance.deviceManager.addDevice(device) // actually add device to the server
+			LogManager
+				.info(
+					"[TrackerServer] Added device $deviceName for ${hidDevice.serialNumber}, id $deviceId",
+				)
 			return device
 		}
 	}
@@ -254,9 +261,12 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						// Register tracker
 						if (packetType == 0) { // Tracker register packet (device info)
 							val imu_id = dataReceived[i + 8].toUByte().toInt()
+							val mag_id = dataReceived[i + 9].toUByte().toInt()
 							val sensorType = IMUType.getById(imu_id.toUInt())
+							// only able to register magnetometer status, not magnetometer type
+							val magStatus = MagnetometerStatus.getById(mag_id.toUByte())
 							if (sensorType != null) {
-								setUpSensor(device, trackerId, sensorType!!, TrackerStatus.OK)
+								setUpSensor(device, trackerId, sensorType!!, TrackerStatus.OK, magStatus!!)
 							}
 						}
 
@@ -273,7 +283,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						var brd_id: Int? = null
 						var mcu_id: Int? = null
 						// var imu_id: Int? = null
-						// var mag_id: Int? = null // not used currently
+						// var mag_id: Int? = null
 						var fw_date: Int? = null
 						var fw_major: Int? = null
 						var fw_minor: Int? = null
