@@ -15,7 +15,7 @@ class SkeletonResetTests {
 	val resetSource = "Unit Test"
 
 	@Test
-	fun testSkeletonReset() {
+	fun testSkeletonFullReset() {
 		val trackers = TestTrackerSet()
 
 		// Initialize skeleton and everything
@@ -38,12 +38,20 @@ class SkeletonResetTests {
 				"\"${tracker.name}\" did not reset to the reference rotation. Expected <$expectRot1>, actual <$actual>."
 			}
 		}
+	}
+
+	@Test
+	fun testSkeletonYawReset() {
+		val trackers = TestTrackerSet()
+
+		// Initialize skeleton and everything
+		val hpm = HumanPoseManager(trackers.allL)
 
 		// Randomize full tracker orientations, these should match the headset yaw but
 		// retain orientation otherwise
 		for ((i, tracker) in trackers.set.withIndex()) {
 			// Offset index so it's different from last reset
-			tracker.setRotation(TrackerTestUtils.testRotFromIndex(i + 1))
+			tracker.setRotation(TrackerTestUtils.testRotFromIndex(i))
 		}
 		trackers.head.setRotation(Quaternion.IDENTITY)
 		hpm.resetTrackersYaw(resetSource)
@@ -55,7 +63,7 @@ class SkeletonResetTests {
 	}
 
 	@Test
-	fun testSkeletonMount() {
+	fun testSkeletonMountReset() {
 		val trackers = TestTrackerSet()
 
 		// Initialize skeleton and everything
