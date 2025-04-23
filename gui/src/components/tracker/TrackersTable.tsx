@@ -141,7 +141,7 @@ export function RowContainer({
           )}px rgb(var(--accent-background-30))`,
         }}
         className={classNames(
-          'h-[50px]  flex flex-col justify-center px-3',
+          'h-[50px]  flex flex-col justify-center px-3 transition-[box-shadow] duration-200 ease-linear',
           rounded === 'left' && 'rounded-l-lg',
           rounded === 'right' && 'rounded-r-lg',
           hover ? 'bg-background-50 cursor-pointer' : 'bg-background-60',
