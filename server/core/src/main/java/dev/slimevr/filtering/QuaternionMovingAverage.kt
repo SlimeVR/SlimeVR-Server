@@ -115,6 +115,9 @@ class QuaternionMovingAverage(
 	@Synchronized
 	fun resetQuats(q: Quaternion, reference: Quaternion) {
 		// Assume a rotation within 180 degrees of the reference
+		// TODO: Currently the reference is the headset, this restricts all trackers to
+		//  have at most a 180 degree rotation from the HMD during a reset, we can
+		//  probably do better using a hierarchy
 		val rot = q.twinNearest(reference)
 		rotBuffer?.clear()
 		latestQuaternion = rot
