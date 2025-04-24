@@ -100,17 +100,28 @@ public class ProvisioningHandler implements SerialListener {
 		if (this.provisioningStatus == ProvisioningStatus.OBTAINING_MAC_ADDRESS)
 			this.tryObtainMacAddress();
 
-		if (!hasLogs && this.provisioningStatus == ProvisioningStatus.OBTAINING_MAC_ADDRESS && System.currentTimeMillis() - this.lastStatusChange > 1_000) {
+		if (
+			!hasLogs
+				&& this.provisioningStatus == ProvisioningStatus.OBTAINING_MAC_ADDRESS
+				&& System.currentTimeMillis() - this.lastStatusChange > 1_000
+		) {
 			this.changeStatus(ProvisioningStatus.NO_SERIAL_LOGS_ERROR);
 			return;
 		}
 
-		if (this.provisioningStatus == ProvisioningStatus.SERIAL_INIT && vrServer.serialHandler.getKnownPorts().findAny().isEmpty() && System.currentTimeMillis() - this.lastStatusChange > 15_000) {
+		if (
+			this.provisioningStatus == ProvisioningStatus.SERIAL_INIT
+				&& vrServer.serialHandler.getKnownPorts().findAny().isEmpty()
+				&& System.currentTimeMillis() - this.lastStatusChange > 15_000
+		) {
 			this.changeStatus(ProvisioningStatus.NO_SERIAL_DEVICE_FOUND);
 			return;
 		}
 
-		if (System.currentTimeMillis() - this.lastStatusChange > this.provisioningStatus.getTimeout()) {
+		if (
+			System.currentTimeMillis() - this.lastStatusChange
+				> this.provisioningStatus.getTimeout()
+		) {
 			if (
 				this.provisioningStatus == ProvisioningStatus.NONE
 					|| this.provisioningStatus == ProvisioningStatus.SERIAL_INIT
@@ -149,7 +160,18 @@ public class ProvisioningHandler implements SerialListener {
 		if (!server) {
 			this.hasLogs = true;
 			if (provisioningStatus == ProvisioningStatus.NO_SERIAL_LOGS_ERROR) {
-				this.changeStatus(ProvisioningStatus.OBTAINING_MAC_ADDRESS); // Recover the onboarding process if the user turned on the tracker afterward
+				this.changeStatus(ProvisioningStatus.OBTAINING_MAC_ADDRESS); // Recover
+																				// the
+																				// onboarding
+																				// process
+																				// if
+																				// the
+																				// user
+																				// turned
+																				// on
+																				// the
+																				// tracker
+																				// afterward
 			}
 		}
 

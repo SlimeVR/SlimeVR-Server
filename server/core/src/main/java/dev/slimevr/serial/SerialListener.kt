@@ -23,6 +23,7 @@ abstract class SerialPort {
 interface SerialListener {
 	fun onSerialConnected(port: SerialPort)
 	fun onSerialDisconnected()
+
 	// var server indicates if the log is injected by the server (not an actual serial log)
 	fun onSerialLog(str: String, server: Boolean)
 	fun onNewSerialDevice(port: SerialPort)
