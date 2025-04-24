@@ -10,6 +10,7 @@ export function BaseModal({
 }: {
   isOpen: boolean;
   children: ReactNode;
+  appendClasses?: string;
   important?: boolean;
   closeable?: boolean;
 } & ReactModal.Props) {
@@ -31,7 +32,8 @@ export function BaseModal({
         classNames(
           'items-center focus:ring-transparent focus:ring-offset-transparent',
           'focus:outline-transparent outline-none bg-background-60 p-6 rounded-lg m-2',
-          'text-background-10'
+          'text-background-10',
+          props.appendClasses
         )
       }
     >
