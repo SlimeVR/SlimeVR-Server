@@ -18,13 +18,13 @@ class TrackerFilteringHandler {
 	/**
 	 * Reads/loads filtering settings from given config
 	 */
-	fun readFilteringConfig(config: FiltersConfig, currentRawRotation: Quaternion) {
+	fun readFilteringConfig(config: FiltersConfig, currentRotation: Quaternion) {
 		val type = TrackerFilters.getByConfigkey(config.type)
 		if (type == TrackerFilters.SMOOTHING || type == TrackerFilters.PREDICTION) {
 			movingAverage = QuaternionMovingAverage(
 				type,
 				config.amount,
-				currentRawRotation,
+				currentRotation,
 			)
 			filteringEnabled = true
 		} else {

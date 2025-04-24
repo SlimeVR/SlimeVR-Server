@@ -108,7 +108,7 @@ class VRConfig {
 			if (tracker.allowFiltering) {
 				tracker
 					.filteringHandler
-					.readFilteringConfig(filters, tracker.getRawRotation())
+					.readFilteringConfig(filters, tracker.getRotation())
 			}
 		}
 	}
