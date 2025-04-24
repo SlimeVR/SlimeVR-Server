@@ -50,8 +50,8 @@ class TrackerFilteringHandler {
 	/**
 	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
 	 */
-	fun resetMovingAverage(currentRotation: Quaternion) {
-		movingAverage.resetQuats(currentRotation)
+	fun resetMovingAverage(currentRotation: Quaternion, reference: Quaternion) {
+		movingAverage.resetQuats(currentRotation, reference)
 	}
 
 	/**

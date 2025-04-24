@@ -49,7 +49,9 @@ class QuaternionMovingAverage(
 			predictFactor = PREDICT_MULTIPLIER * amount + PREDICT_MIN
 			rotBuffer = CircularArrayList(PREDICT_BUFFER)
 		}
-		resetQuats(initialRotation)
+
+		// We have no reference at the start, so just use the initial rotation
+		resetQuats(initialRotation, initialRotation)
 	}
 
 	// Runs at up to 1000hz. We use a timer to make it framerate-independent
@@ -106,12 +108,17 @@ class QuaternionMovingAverage(
 		}
 	}
 
-	// Resets the quaternion space to be non-flipped (twinNearest)
+	/**
+	 * Aligns the quaternion space of [q] to the [reference] and sets the latest
+	 * [filteredQuaternion] immediately
+	 */
 	@Synchronized
-	fun resetQuats(q: Quaternion) {
+	fun resetQuats(q: Quaternion, reference: Quaternion) {
+		// Assume a rotation within 180 degrees of the reference
+		val rot = q.twinNearest(reference)
 		rotBuffer?.clear()
-		latestQuaternion = q
-		filteredQuaternion = q
-		addQuaternion(q)
+		latestQuaternion = rot
+		filteredQuaternion = rot
+		addQuaternion(rot)
 	}
 }
