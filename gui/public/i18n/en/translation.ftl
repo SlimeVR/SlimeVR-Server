@@ -922,6 +922,7 @@ onboarding-connect_serial-error-modal-no_serial_device_found-desc =
     Please connect a tracker with the provided usb cable to your computer and turn the tracker on.
     If this does not work:
       - try with another usb cable
+      - try with another usb port
       - try reinstalling the SlimeVR server and select "USB Drivers" in the components section
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
