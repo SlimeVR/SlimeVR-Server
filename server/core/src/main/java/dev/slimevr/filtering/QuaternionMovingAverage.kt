@@ -57,18 +57,17 @@ class QuaternionMovingAverage(
 	@Synchronized
 	fun update() {
 		if (type == TrackerFilters.PREDICTION) {
-			if (rotBuffer!!.size > 0) {
-				var quatBuf = latestQuaternion
-
+			val rotBuf = rotBuffer
+			if (rotBuf != null && rotBuf.isNotEmpty()) {
 				// Applies the past rotations to the current rotation
-				rotBuffer?.forEach { quatBuf *= it }
+				val predictRot = rotBuf.reduce { buf, rot -> buf * rot }
 
 				// Calculate how much to slerp
 				// Limit slerp by a reasonable amount so low TPS doesn't break tracking
 				val amt = (predictFactor * fpsTimer.timePerFrame).coerceAtMost(1f)
 
 				// Slerps the target rotation to that predicted rotation by amt
-				filteredQuaternion = filteredQuaternion.interpQ(quatBuf, amt)
+				filteredQuaternion = filteredQuaternion.interpQ(predictRot, amt)
 			}
 		} else if (type == TrackerFilters.SMOOTHING) {
 			// Make it framerate-independent
