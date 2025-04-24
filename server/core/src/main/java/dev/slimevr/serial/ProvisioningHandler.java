@@ -160,18 +160,8 @@ public class ProvisioningHandler implements SerialListener {
 		if (!server) {
 			this.hasLogs = true;
 			if (provisioningStatus == ProvisioningStatus.NO_SERIAL_LOGS_ERROR) {
-				this.changeStatus(ProvisioningStatus.OBTAINING_MAC_ADDRESS); // Recover
-																				// the
-																				// onboarding
-																				// process
-																				// if
-																				// the
-																				// user
-																				// turned
-																				// on
-																				// the
-																				// tracker
-																				// afterward
+				// Recover the onboarding process if the user turned on the tracker afterward
+				this.changeStatus(ProvisioningStatus.OBTAINING_MAC_ADDRESS);
 			}
 		}
 
