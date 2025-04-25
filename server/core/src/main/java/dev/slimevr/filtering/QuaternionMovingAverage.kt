@@ -62,7 +62,7 @@ class QuaternionMovingAverage(
 			val rotBuf = rotBuffer
 			if (rotBuf != null && rotBuf.isNotEmpty()) {
 				// Applies the past rotations to the current rotation
-				val predictRot = rotBuf.reduce { buf, rot -> buf * rot }
+				val predictRot = rotBuf.fold(latestQuaternion) { buf, rot -> buf * rot }
 
 				// Calculate how much to slerp
 				// Limit slerp by a reasonable amount so low TPS doesn't break tracking
