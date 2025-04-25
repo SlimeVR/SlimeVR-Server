@@ -36,16 +36,24 @@ export function TrackerBattery({
           charging={(voltage || 0) > 4.3}
         />
       </div>
-      <div className="w-10">
-        <Typography color={textColor}>
-          {percentFormatter.format(value)}
-        </Typography>
-        {voltage && config?.debug && (
-          <Typography color={textColor}>
-            {voltageFormatter.format(voltage)}V
-          </Typography>
-        )}
-      </div>
+      {(((voltage || 0) <= 4.3 || (voltage && config?.debug)) && (
+        <div className="w-10">
+          {(voltage || 0) <= 4.3 && (
+            <Typography color={textColor}>
+              {percentFormatter.format(value)}
+            </Typography>
+          )}
+          {voltage && config?.debug && (
+            <Typography color={textColor}>
+              {voltageFormatter.format(voltage)}V
+            </Typography>
+          )}
+        </div>
+      )) || (
+        <div className="flex flex-col justify-center w-10">
+          <div className="w-5 h-1 bg-background-30 rounded-full"></div>
+        </div>
+      )}
     </div>
   );
 }
