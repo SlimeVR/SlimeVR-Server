@@ -101,12 +101,12 @@ const DeviceList = ({
 
 const StatusList = ({ status }: { status: Record<string, UpdateStatus> }) => {
   const statusKeys = Object.keys(status);
+  const devices = useAtomValue(devicesAtom);
 
   return statusKeys.map((id, index) => {
     const val = status[id];
 
     if (!val) throw new Error('there should always be a val');
-    const devices = useAtomValue(devicesAtom);
 
     const device = devices.find(({ id: dId }) => id === dId?.id.toString());
 
