@@ -49,7 +49,9 @@ class QuaternionMovingAverage(
 			predictFactor = PREDICT_MULTIPLIER * amount + PREDICT_MIN
 			rotBuffer = CircularArrayList(PREDICT_BUFFER)
 		}
-		resetQuats(initialRotation)
+
+		// We have no reference at the start, so just use the initial rotation
+		resetQuats(initialRotation, initialRotation)
 	}
 
 	// Runs at up to 1000hz. We use a timer to make it framerate-independent
@@ -57,17 +59,17 @@ class QuaternionMovingAverage(
 	@Synchronized
 	fun update() {
 		if (type == TrackerFilters.PREDICTION) {
-			if (rotBuffer!!.size > 0) {
-				var quatBuf = latestQuaternion
-
+			val rotBuf = rotBuffer
+			if (rotBuf != null && rotBuf.isNotEmpty()) {
 				// Applies the past rotations to the current rotation
-				rotBuffer?.forEach { quatBuf *= it }
+				val predictRot = rotBuf.fold(latestQuaternion) { buf, rot -> buf * rot }
 
 				// Calculate how much to slerp
+				// Limit slerp by a reasonable amount so low TPS doesn't break tracking
 				val amt = (predictFactor * fpsTimer.timePerFrame).coerceAtMost(1f)
 
 				// Slerps the target rotation to that predicted rotation by amt
-				filteredQuaternion = filteredQuaternion.interpR(quatBuf, amt)
+				filteredQuaternion = filteredQuaternion.interpQ(predictRot, amt)
 			}
 		} else if (type == TrackerFilters.SMOOTHING) {
 			// Make it framerate-independent
@@ -78,7 +80,7 @@ class QuaternionMovingAverage(
 			val amt = (smoothFactor * timeSinceUpdate).coerceAtMost(1f)
 
 			// Smooth towards the target rotation by the slerp factor
-			filteredQuaternion = smoothingQuaternion.interpR(latestQuaternion, amt)
+			filteredQuaternion = smoothingQuaternion.interpQ(latestQuaternion, amt)
 		}
 
 		filteringImpact = latestQuaternion.angleToR(filteredQuaternion)
@@ -86,29 +88,40 @@ class QuaternionMovingAverage(
 
 	@Synchronized
 	fun addQuaternion(q: Quaternion) {
+		val oldQ = latestQuaternion
+		val newQ = q.twinNearest(oldQ)
+		latestQuaternion = newQ
+
 		if (type == TrackerFilters.PREDICTION) {
 			if (rotBuffer!!.size == rotBuffer!!.capacity()) {
 				rotBuffer?.removeLast()
 			}
 
 			// Gets and stores the rotation between the last 2 quaternions
-			rotBuffer?.add(latestQuaternion.inv().times(q))
+			rotBuffer?.add(oldQ.inv().times(newQ))
 		} else if (type == TrackerFilters.SMOOTHING) {
 			timeSinceUpdate = 0f
 			smoothingQuaternion = filteredQuaternion
 		} else {
 			// No filtering; just keep track of rotations (for going over 180 degrees)
-			filteredQuaternion = q.twinNearest(filteredQuaternion)
+			filteredQuaternion = newQ
 		}
-
-		latestQuaternion = q
 	}
 
+	/**
+	 * Aligns the quaternion space of [q] to the [reference] and sets the latest
+	 * [filteredQuaternion] immediately
+	 */
 	@Synchronized
-	fun resetQuats(q: Quaternion) {
+	fun resetQuats(q: Quaternion, reference: Quaternion) {
+		// Assume a rotation within 180 degrees of the reference
+		// TODO: Currently the reference is the headset, this restricts all trackers to
+		//  have at most a 180 degree rotation from the HMD during a reset, we can
+		//  probably do better using a hierarchy
+		val rot = q.twinNearest(reference)
 		rotBuffer?.clear()
-		latestQuaternion = q
-		filteredQuaternion = q
-		addQuaternion(q)
+		latestQuaternion = rot
+		filteredQuaternion = rot
+		addQuaternion(rot)
 	}
 }
