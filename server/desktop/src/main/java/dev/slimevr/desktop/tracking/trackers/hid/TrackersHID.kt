@@ -24,7 +24,6 @@ import org.hid4java.jna.HidApi
 import org.hid4java.jna.HidDeviceInfoStructure
 import java.nio.ByteBuffer
 import java.util.function.Consumer
-import kotlin.experimental.and
 import kotlin.math.*
 
 private const val HID_TRACKER_RECEIVER_VID = 0x1209
@@ -130,8 +129,8 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 				userEditable = true,
 				imuType = sensorType,
 				allowFiltering = true,
-				needsReset = true,
-				needsMounting = true,
+				allowReset = true,
+				allowMounting = true,
 				usesTimeout = false,
 				magStatus = magStatus,
 			)

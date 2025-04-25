@@ -3,7 +3,7 @@ export function CrossIcon({ size = 20 }: { size: number }) {
     <svg
       viewBox="0 0 20 20"
       width={size}
-      height={20}
+      height={size}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path

@@ -290,7 +290,7 @@ class VMCHandler(
 				userEditable = true,
 				isComputed = position != null,
 				usesTimeout = true,
-				needsReset = position != null,
+				allowReset = position != null,
 			)
 			trackerDevice!!.trackers[trackerDevice!!.trackers.size] = tracker
 			byTrackerNameTracker[name] = tracker

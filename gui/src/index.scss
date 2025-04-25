@@ -87,13 +87,15 @@ body {
   // overflow: hidden; -- NEVER EVER BRING THIS BACK <3
   background: theme('colors.background.20');
 
-  --navbar-w: 101px;
-  --widget-w: 274px;
+  --navbar-w: 66px;
   --topbar-h: 38px;
+  --toolbar-h: 65px;
+  --preview-w: 400px;
+  --flightlist-w: 272px;
 
   @screen mobile {
     --topbar-h: 44px;
-    --navbar-h: 90px;
+    --navbar-h: 60px;
   }
 }
 

@@ -9,12 +9,6 @@ import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import solarxr_protocol.datatypes.DeviceIdT
-import solarxr_protocol.datatypes.TrackerIdT
-import solarxr_protocol.rpc.StatusData
-import solarxr_protocol.rpc.StatusDataUnion
-import solarxr_protocol.rpc.StatusTrackerErrorT
-import solarxr_protocol.rpc.StatusTrackerResetT
 import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2_000L
@@ -69,9 +63,23 @@ class Tracker @JvmOverloads constructor(
 	 * [trackRotDirection] is set to false.
 	 */
 	val allowFiltering: Boolean = false,
-	val needsReset: Boolean = false,
-	val needsMounting: Boolean = false,
+
+	/**
+	 * If true, the tracker can be reset
+	 */
+	val allowReset: Boolean = false,
+	/**
+	 * If true, the tracker can do mounting calibration
+	 */
+	val allowMounting: Boolean = false,
+
 	val isHmd: Boolean = false,
+
+	/**
+	 * If true, the tracker need the user to perform a reset
+	 */
+	var needReset: Boolean = false,
+
 	/**
 	 * Whether to track the direction of the tracker's rotation
 	 * (positive vs negative rotation). This needs to be disabled for AutoBone and
@@ -106,32 +114,25 @@ class Tracker @JvmOverloads constructor(
 		private set
 
 	/**
+	 * Watch the rest calibration status
+	 */
+	var hasCompletedRestCalibration: Boolean? = null
+	/**
 	 * If the tracker has gotten disconnected after it was initialized first time
 	 */
-	var statusResetRecently = false
-	private var alreadyInitialized = false
 	var status: TrackerStatus by Delegates.observable(TrackerStatus.DISCONNECTED) { _, old, new ->
 		if (old == new) return@observable
 
-		if (!new.reset) {
-			if (alreadyInitialized) {
-				statusResetRecently = true
-			}
-			alreadyInitialized = true
+		if (allowReset && !old.reset && new.reset && !needReset) {
+			needReset = true;
 		}
+
 		if (!isInternal && VRServer.instanceInitialized) {
 			// If the status of a non-internal tracker has changed, inform
 			// the VRServer to recreate the skeleton, as it may need to
 			// assign or un-assign the tracker to a body part
 			VRServer.instance.updateSkeletonModel()
 			VRServer.instance.refreshTrackersDriftCompensationEnabled()
-
-			if (isHmd) {
-				VRServer.instance.humanPoseManager.checkReportMissingHmd()
-			}
-			checkReportErrorStatus()
-			checkReportRequireReset()
-
 			VRServer.instance.trackerStatusChanged(this, old, new)
 		}
 	}
@@ -139,16 +140,18 @@ class Tracker @JvmOverloads constructor(
 	var trackerPosition: TrackerPosition? by Delegates.observable(trackerPosition) { _, old, new ->
 		if (old == new) return@observable
 
+		if (allowReset && !needReset) {
+			needReset = true;
+		}
+
 		if (!isInternal) {
 			// Set default mounting orientation for that body part
 			new?.let { resetsHandler.mountingOrientation = it.defaultMounting() }
-
-			checkReportRequireReset()
 		}
 	}
 
 	// Computed value to simplify availability checks
-	val hasAdjustedRotation = hasRotation && (allowFiltering || needsReset)
+	val hasAdjustedRotation = hasRotation && (allowFiltering || allowReset)
 
 	/**
 	 * It's like the ID, but it should be local to the device if it has one
@@ -157,11 +160,11 @@ class Tracker @JvmOverloads constructor(
 
 	init {
 		// IMPORTANT: Look here for the required states of inputs
-		require(!needsReset || (hasRotation && needsReset)) {
-			"If ${::needsReset.name} is true, then ${::hasRotation.name} must also be true"
+		require(!allowReset || (hasRotation && allowReset)) {
+			"If ${::allowReset.name} is true, then ${::hasRotation.name} must also be true"
 		}
-		require(!needsMounting || (needsReset && needsMounting)) {
-			"If ${::needsMounting.name} is true, then ${::needsReset.name} must also be true"
+		require(!allowMounting || (allowReset && allowMounting)) {
+			"If ${::allowMounting.name} is true, then ${::allowReset.name} must also be true"
 		}
 		require(!isHmd || (hasPosition && isHmd)) {
 			"If ${::isHmd.name} is true, then ${::hasPosition.name} must also be true"
@@ -169,73 +172,6 @@ class Tracker @JvmOverloads constructor(
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
-	}
-
-	fun checkReportRequireReset() {
-		if (needsReset && trackerPosition != null && lastResetStatus == 0u &&
-			!status.reset && (isImu() || !statusResetRecently && trackerDataType != TrackerDataType.FLEX_ANGLE)
-		) {
-			reportRequireReset()
-		} else if (lastResetStatus != 0u && (trackerPosition == null || status.reset)) {
-			VRServer.instance.statusSystem.removeStatus(lastResetStatus)
-			lastResetStatus = 0u
-		}
-	}
-
-	/**
-	 * If 0 then it's null
-	 */
-	var lastResetStatus = 0u
-	private fun reportRequireReset() {
-		require(lastResetStatus == 0u) {
-			"lastResetStatus must be 0u, but was $lastResetStatus"
-		}
-
-		val tempTrackerNum = this.trackerNum
-		val statusMsg = StatusTrackerResetT().apply {
-			trackerId = TrackerIdT().apply {
-				if (device != null) {
-					deviceId = DeviceIdT().apply { id = device.id }
-				}
-				trackerNum = tempTrackerNum
-			}
-		}
-		val status = StatusDataUnion().apply {
-			type = StatusData.StatusTrackerReset
-			value = statusMsg
-		}
-		lastResetStatus = VRServer.instance.statusSystem.addStatus(status, true)
-	}
-
-	private fun checkReportErrorStatus() {
-		if (status == TrackerStatus.ERROR && lastErrorStatus == 0u) {
-			reportErrorStatus()
-		} else if (lastErrorStatus != 0u && status != TrackerStatus.ERROR) {
-			VRServer.instance.statusSystem.removeStatus(lastErrorStatus)
-			lastErrorStatus = 0u
-		}
-	}
-
-	var lastErrorStatus = 0u
-	private fun reportErrorStatus() {
-		require(lastErrorStatus == 0u) {
-			"lastResetStatus must be 0u, but was $lastErrorStatus"
-		}
-
-		val tempTrackerNum = this.trackerNum
-		val statusMsg = StatusTrackerErrorT().apply {
-			trackerId = TrackerIdT().apply {
-				if (device != null) {
-					deviceId = DeviceIdT().apply { id = device.id }
-				}
-				trackerNum = tempTrackerNum
-			}
-		}
-		val status = StatusDataUnion().apply {
-			type = StatusData.StatusTrackerError
-			value = statusMsg
-		}
-		lastErrorStatus = VRServer.instance.statusSystem.addStatus(status, true)
 	}
 
 	/**
@@ -248,7 +184,7 @@ class Tracker @JvmOverloads constructor(
 		config.designation?.let { designation ->
 			getByDesignation(designation)?.let { trackerPosition = it }
 		} ?: run { trackerPosition = null }
-		if (needsMounting) {
+		if (allowMounting) {
 			// Load manual mounting
 			config.mountingOrientation?.let { resetsHandler.mountingOrientation = it.toValue() }
 		}
@@ -262,11 +198,6 @@ class Tracker @JvmOverloads constructor(
 				resetsHandler.allowDriftCompensation = it
 			}
 		}
-		if (!isInternal &&
-			!(!isImu() && (trackerPosition == TrackerPosition.LEFT_HAND || trackerPosition == TrackerPosition.RIGHT_HAND))
-		) {
-			checkReportRequireReset()
-		}
 	}
 
 	/**
@@ -275,7 +206,7 @@ class Tracker @JvmOverloads constructor(
 	fun writeConfig(config: TrackerConfig) {
 		trackerPosition?.let { config.designation = it.designation } ?: run { config.designation = null }
 		customName?.let { config.customName = it }
-		if (needsMounting) {
+		if (allowMounting) {
 			// Save manual mounting
 			config.mountingOrientation = resetsHandler.mountingOrientation.toObject()
 		}
@@ -345,7 +276,7 @@ class Tracker @JvmOverloads constructor(
 	 */
 	private fun getAdjustedRotation(): Quaternion {
 		// Reset if needed and is not computed and internal
-		return if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
+		return if (allowReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset, mounting and drift compensation
 			resetsHandler.getReferenceAdjustedDriftRotationFrom(_rotation)
 		} else {
@@ -360,7 +291,7 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun getIdentityAdjustedRotation(): Quaternion {
 		// Reset if needed or is a computed tracker besides head
-		return if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
+		return if (allowReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset and mounting
 			resetsHandler.getIdentityAdjustedDriftRotationFrom(_rotation)
 		} else {
@@ -381,7 +312,7 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * Gets the world-adjusted acceleration
 	 */
-	fun getAcceleration(): Vector3 = if (needsReset) {
+	fun getAcceleration(): Vector3 = if (allowReset) {
 		resetsHandler.getReferenceAdjustedAccel(_rotation, _acceleration)
 	} else {
 		_acceleration

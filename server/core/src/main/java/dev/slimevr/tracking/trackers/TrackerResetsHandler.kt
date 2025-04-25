@@ -296,7 +296,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		val mountingAdjustedRotation = tracker.getRawRotation() * mountingOrientation
 
 		// Gyrofix
-		if (tracker.needsMounting || (tracker.trackerPosition == TrackerPosition.HEAD && !tracker.isHmd)) {
+		if (tracker.allowMounting || (tracker.trackerPosition == TrackerPosition.HEAD && !tracker.isHmd)) {
 			gyroFix = if (tracker.isComputed) {
 				fixGyroscope(tracker.getRawRotation())
 			} else {
@@ -328,7 +328,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 		// Rotate attachmentFix by 180 degrees as a workaround for t-pose (down)
-		if (tposeDownFix != Quaternion.IDENTITY && tracker.needsMounting) {
+		if (tposeDownFix != Quaternion.IDENTITY && tracker.allowMounting) {
 			attachmentFix *= HalfHorizontal
 		}
 
@@ -346,9 +346,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	private fun postProcessResetFull() {
-		if (this.tracker.lastResetStatus != 0u) {
-			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
-			this.tracker.lastResetStatus = 0u
+		if (this.tracker.needReset) {
+			this.tracker.needReset = false
 		}
 
 		tracker.resetFilteringQuats()
@@ -390,13 +389,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			yawFixSmoothIncremental = yawFixOld / yawFix
 		}
 
-		// Remove the status if yaw reset was performed after the tracker
-		// was disconnected and connected.
-		if (this.tracker.lastResetStatus != 0u && this.tracker.statusResetRecently) {
-			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
-			this.tracker.statusResetRecently = false
-			this.tracker.lastResetStatus = 0u
-		}
+		this.tracker.needReset = false
 
 		tracker.resetFilteringQuats()
 	}

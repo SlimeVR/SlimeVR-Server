@@ -33,7 +33,7 @@ declare module '@react-three/fiber' {
   }
 }
 
-const GROUND_COLOR = '#4444aa';
+const GROUND_COLOR = '#2c2c6b';
 const FRUSTUM_SIZE = 10;
 const FACTOR = 2;
 // Not currently used but nice to have
