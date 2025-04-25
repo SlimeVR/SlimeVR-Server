@@ -292,7 +292,7 @@ export function TrackersTable({
             <TrackerWifi
               rssi={device?.hardwareStatus?.rssi || 0}
               rssiShowNumeric
-              ping={device?.hardwareStatus?.ping || 0}
+              ping={device?.hardwareStatus?.ping}
               disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               textColor={fontColor}
             ></TrackerWifi>
