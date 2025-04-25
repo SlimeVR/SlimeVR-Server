@@ -26,6 +26,7 @@ public class ProvisioningHandler implements SerialListener {
 	private final Timer provisioningTickTimer = new Timer("ProvisioningTickTimer");
 	private long lastStatusChange = -1;
 	private byte connectRetries = 0;
+	private boolean hasLogs = false;
 	private final byte MAX_CONNECTION_RETRIES = 1;
 	private final VRServer vrServer;
 
@@ -45,6 +46,7 @@ public class ProvisioningHandler implements SerialListener {
 
 	public void start(String ssid, String password, String port) {
 		this.isRunning = true;
+		this.hasLogs = false;
 		this.ssid = ssid;
 		this.password = password;
 		this.preferredPort = port;
@@ -54,6 +56,7 @@ public class ProvisioningHandler implements SerialListener {
 
 	public void stop() {
 		this.isRunning = false;
+		this.hasLogs = false;
 		this.ssid = null;
 		this.password = null;
 		this.connectRetries = 0;
@@ -63,6 +66,7 @@ public class ProvisioningHandler implements SerialListener {
 
 	public void initSerial(String port) {
 		this.provisioningStatus = ProvisioningStatus.SERIAL_INIT;
+		this.hasLogs = false;
 
 		try {
 			boolean openResult = false;
@@ -93,27 +97,43 @@ public class ProvisioningHandler implements SerialListener {
 
 
 	public void provisioningTick() {
+		if (this.provisioningStatus == ProvisioningStatus.OBTAINING_MAC_ADDRESS)
+			this.tryObtainMacAddress();
 
 		if (
-			this.provisioningStatus == ProvisioningStatus.CONNECTION_ERROR
-				|| this.provisioningStatus == ProvisioningStatus.DONE
-		)
+			!hasLogs
+				&& this.provisioningStatus == ProvisioningStatus.OBTAINING_MAC_ADDRESS
+				&& System.currentTimeMillis() - this.lastStatusChange > 1_000
+		) {
+			this.changeStatus(ProvisioningStatus.NO_SERIAL_LOGS_ERROR);
 			return;
+		}
 
+		if (
+			this.provisioningStatus == ProvisioningStatus.SERIAL_INIT
+				&& vrServer.serialHandler.getKnownPorts().findAny().isEmpty()
+				&& System.currentTimeMillis() - this.lastStatusChange > 15_000
+		) {
+			this.changeStatus(ProvisioningStatus.NO_SERIAL_DEVICE_FOUND);
+			return;
+		}
 
-		if (System.currentTimeMillis() - this.lastStatusChange > 10000) {
+		if (
+			System.currentTimeMillis() - this.lastStatusChange
+				> this.provisioningStatus.getTimeout()
+		) {
 			if (
 				this.provisioningStatus == ProvisioningStatus.NONE
 					|| this.provisioningStatus == ProvisioningStatus.SERIAL_INIT
 			)
 				this.initSerial(this.preferredPort);
-			else if (
-				this.provisioningStatus == ProvisioningStatus.OBTAINING_MAC_ADDRESS
-					|| this.provisioningStatus == ProvisioningStatus.PROVISIONING
-			)
-				this.tryObtainMacAddress();
+			else if (this.provisioningStatus == ProvisioningStatus.CONNECTING)
+				this.changeStatus(ProvisioningStatus.CONNECTION_ERROR);
 			else if (this.provisioningStatus == ProvisioningStatus.LOOKING_FOR_SERVER)
 				this.changeStatus(ProvisioningStatus.COULD_NOT_FIND_SERVER);
+			else if (!this.provisioningStatus.isError()) {
+				this.changeStatus(ProvisioningStatus.CONNECTION_ERROR); // TIMEOUT
+			}
 		}
 	}
 
@@ -134,9 +154,17 @@ public class ProvisioningHandler implements SerialListener {
 	}
 
 	@Override
-	public void onSerialLog(@NotNull String str) {
+	public void onSerialLog(@NotNull String str, boolean server) {
 		if (!isRunning)
 			return;
+		if (!server) {
+			this.hasLogs = true;
+			if (provisioningStatus == ProvisioningStatus.NO_SERIAL_LOGS_ERROR) {
+				// Recover the onboarding process if the user turned on the
+				// tracker afterward
+				this.changeStatus(ProvisioningStatus.OBTAINING_MAC_ADDRESS);
+			}
+		}
 
 		if (
 			provisioningStatus == ProvisioningStatus.OBTAINING_MAC_ADDRESS && str.contains("mac:")
@@ -190,8 +218,8 @@ public class ProvisioningHandler implements SerialListener {
 	}
 
 	public void changeStatus(ProvisioningStatus status) {
-		this.lastStatusChange = System.currentTimeMillis();
 		if (this.provisioningStatus != status) {
+			this.lastStatusChange = System.currentTimeMillis();
 			this.listeners
 				.forEach(
 					(l) -> l

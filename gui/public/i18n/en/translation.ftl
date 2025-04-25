@@ -107,12 +107,12 @@ skeleton_bone-HEAD = Head Shift
 skeleton_bone-HEAD-desc =
     This is the distance from your headset to the middle of your head.
     To adjust it, shake your head left to right as if you're disagreeing and modify
-    it until any movement in other trackers is negligible. 
+    it until any movement in other trackers is negligible.
 skeleton_bone-NECK = Neck Length
 skeleton_bone-NECK-desc =
     This is the distance from the middle of your head to the base of your neck.
-    To adjust it, move your head up and down as if you're nodding or tilt your head 
-    to the left and right and modify it until any movement in other trackers is negligible. 
+    To adjust it, move your head up and down as if you're nodding or tilt your head
+    to the left and right and modify it until any movement in other trackers is negligible.
 skeleton_bone-torso_group = Torso length
 skeleton_bone-torso_group-desc =
     This is the distance from the base of your neck to your hips.
@@ -184,40 +184,40 @@ skeleton_bone-SKELETON_OFFSET-desc =
 skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
 skeleton_bone-SHOULDERS_DISTANCE-desc =
     This is the vertical distance from the base of your neck to your shoulders.
-    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers 
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
     line up vertically with your real shoulders.
 skeleton_bone-SHOULDERS_WIDTH = Shoulders Width
 skeleton_bone-SHOULDERS_WIDTH-desc =
     This is the horizontal distance from the base of your neck to your shoulders.
-    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers 
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
     line up horizontally with your real shoulders.
 skeleton_bone-arm_group = Arm length
 skeleton_bone-arm_group-desc =
     This is the distance from your shoulders to your wrists.
-    To adjust it, adjust Shoulders Distance properly, set Hand Distance Y 
+    To adjust it, adjust Shoulders Distance properly, set Hand Distance Y
     to 0 and modify it until your hand trackers line up with your wrists.
 skeleton_bone-UPPER_ARM = Upper Arm Length
 skeleton_bone-UPPER_ARM-desc =
     This is the distance from your shoulders to your elbows.
-    To adjust it, adjust Arm Length properly and modify it until 
+    To adjust it, adjust Arm Length properly and modify it until
     your elbow trackers line up with your real elbows.
 skeleton_bone-LOWER_ARM = Lower Arm Length
 skeleton_bone-LOWER_ARM-desc =
     This is the distance from your elbows to your wrists.
-    To adjust it, adjust Arm Length properly and modify it until 
+    To adjust it, adjust Arm Length properly and modify it until
     your elbow trackers line up with your real elbows.
 skeleton_bone-HAND_Y = Hand Distance Y
 skeleton_bone-HAND_Y-desc =
     This is the vertical distance from your wrists to the middle of your hand.
     To adjust it for motion capture, adjust Arm Length properly and modify it until your
     hand trackers line up vertically with the middle of your hands.
-    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and 
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
     modify it until your elbow trackers line up vertically with your wrists.
 skeleton_bone-HAND_Z = Hand Distance Z
 skeleton_bone-HAND_Z-desc =
     This is the horizontal distance from your wrists to the middle of your hand.
     To adjust it for motion capture, set it to 0.
-    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and 
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
     modify it until your elbow trackers line up horizontally with your wrists.
 skeleton_bone-ELBOW_OFFSET = Elbow Offset
 skeleton_bone-ELBOW_OFFSET-desc =
@@ -913,6 +913,17 @@ onboarding-connect_tracker-connection_status-looking_for_server = Looking for se
 onboarding-connect_tracker-connection_status-connection_error = Unable to connect to Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = Could not find the server
 onboarding-connect_tracker-connection_status-done = Connected to the Server
+onboarding-connect_tracker-connection_status-no_serial_log = Could not get logs from the tracker
+onboarding-connect_tracker-connection_status-no_serial_device_found = Could not find a tracker from USB
+onboarding-connect_serial-error-modal-no_serial_log = Is the tracker turned on?
+onboarding-connect_serial-error-modal-no_serial_log-desc = Make sure the tracker is turned on and connected to your computer
+onboarding-connect_serial-error-modal-no_serial_device_found = No trackers detected
+onboarding-connect_serial-error-modal-no_serial_device_found-desc =
+    Please connect a tracker with the provided usb cable to your computer and turn the tracker on.
+    If this does not work:
+      - try with another usb cable
+      - try with another usb port
+      - try reinstalling the SlimeVR server and select "USB Drivers" in the components section
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",

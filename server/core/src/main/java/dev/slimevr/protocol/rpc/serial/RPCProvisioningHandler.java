@@ -65,7 +65,7 @@ public class RPCProvisioningHandler implements ProvisioningListener {
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
 		WifiProvisioningStatusResponse.startWifiProvisioningStatusResponse(fbb);
-		WifiProvisioningStatusResponse.addStatus(fbb, status.getId());
+		WifiProvisioningStatusResponse.addStatus(fbb, status.id);
 		int update = WifiProvisioningStatusResponse.endWifiProvisioningStatusResponse(fbb);
 		int outbound = rpcHandler
 			.createRPCMessage(fbb, RpcMessage.WifiProvisioningStatusResponse, update);
