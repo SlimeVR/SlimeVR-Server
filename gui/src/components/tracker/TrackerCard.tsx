@@ -89,7 +89,7 @@ function TrackerBig({
       <div className="flex text-default justify-center gap-5 flex-wrap">
         {device && device.hardwareStatus && (
           <>
-            {device.hardwareStatus.batteryPctEstimate && (
+            {device.hardwareStatus.batteryPctEstimate != null && (
               <TrackerBattery
                 voltage={device.hardwareStatus.batteryVoltage}
                 value={device.hardwareStatus.batteryPctEstimate / 100}
@@ -138,7 +138,7 @@ function TrackerSmol({
       {device && device.hardwareStatus && (
         <>
           <div className="flex flex-col justify-center items-center">
-            {device.hardwareStatus.batteryPctEstimate && (
+            {device.hardwareStatus.batteryPctEstimate != null && (
               <TrackerBattery
                 voltage={device.hardwareStatus.batteryVoltage}
                 value={device.hardwareStatus.batteryPctEstimate / 100}

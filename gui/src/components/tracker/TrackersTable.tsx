@@ -273,10 +273,10 @@ export function TrackersTable({
         id: DisplayColumn.BATTERY,
         label: l10n.getString('tracker-table-column-battery'),
         row: ({ device, tracker }) =>
-          device?.hardwareStatus?.batteryPctEstimate && (
+          device?.hardwareStatus?.batteryPctEstimate != null && (
             <TrackerBattery
               value={device.hardwareStatus.batteryPctEstimate / 100}
-              voltage={device.hardwareStatus?.batteryVoltage}
+              voltage={device.hardwareStatus.batteryVoltage}
               disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               textColor={fontColor}
             />
