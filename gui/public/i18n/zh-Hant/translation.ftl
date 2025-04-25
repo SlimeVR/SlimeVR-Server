@@ -558,6 +558,9 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = 如�
 ## Appearance settings
 
 settings-interface-appearance = 外觀
+settings-general-interface-dev_mode = 開發者模式
+settings-general-interface-dev_mode-description = 本功能會提供更深入的資料，也能與已連線的追蹤器進行更進一步的控制。
+settings-general-interface-dev_mode-label = 開發者模式
 settings-general-interface-theme = 佈景主題色彩
 settings-general-interface-show-navbar-onboarding = 在導覽列上顯示「{ navbar-onboarding }」
 settings-general-interface-show-navbar-onboarding-description = 本選項變更 「{ navbar-onboarding }」 按鈕是否要顯示在導覽列上。
@@ -678,8 +681,8 @@ settings-osc-vrchat-oscqueryEnabled = 啟用 OSCQuery
 settings-osc-vrchat-oscqueryEnabled-description =
     OSCQuery 會自動偵測並發送數據給正在執行中的 VRChat 程式。
     也會把自己廣告給其他應用程式，以接收頭戴顯示器與控制器的數據。
-    要允許從 VRChat 接收頭戴顯示器與控制器的數據，請進入主功能表的設定
-    並啟用「允許透過 OSC 發送頭部與腕部的 VR 追蹤數據」。
+    要允許從 VRChat 接收頭戴顯示器與控制器的數據，請進入主選單的設定
+    在「追蹤 & IK」下，啟用「允許透過 OSC 發送頭部與腕部的 VR 追蹤數據」。
 settings-osc-vrchat-oscqueryEnabled-label = 啟用 OSCQuery
 settings-osc-vrchat-network = 連接埠
 settings-osc-vrchat-network-description-v1 = 設定收發追蹤器資料的連接埠埠號，使用 VRChat 不須更改。
@@ -1039,15 +1042,10 @@ onboarding-automatic_mounting-put_trackers_on-next = 我所有的追蹤器都戴
 
 onboarding-manual_proportions-back = 返回重置教學
 onboarding-manual_proportions-title = 手動調整軀幹比例
-onboarding-manual_proportions-precision = 精確調整
-onboarding-manual_proportions-auto = 進行自動校正
-onboarding-manual_proportions-ratio = 依比例分組調整
 onboarding-manual_proportions-fine_tuning_button = 自動微調軀幹比例
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 請連接 VR 頭戴顯示器以使用此功能
 onboarding-manual_proportions-export = 匯出軀幹比例
 onboarding-manual_proportions-import = 匯入軀幹比例
-onboarding-manual_proportions-import-success = 匯入成功
-onboarding-manual_proportions-import-failed = 匯入失敗
 onboarding-manual_proportions-file_type = 軀幹比例描述檔
 
 ## Tracker automatic proportions setup
@@ -1277,7 +1275,6 @@ firmware_tool-build_step = 建置中
 firmware_tool-build_step-description = 韌體正在建置中，請稍後
 firmware_tool-flashing_step = 燒錄中
 firmware_tool-flashing_step-description = 追蹤器燒錄中，請遵循畫面上的指示
-firmware_tool-flashing_step-warning = 除非特別指示，燒錄中請勿移除或是重啟追蹤器，否則可能導致主板無法使用。
 firmware_tool-flashing_step-flash_more = 燒錄更多追蹤器
 firmware_tool-flashing_step-exit = 離開
 
@@ -1295,7 +1292,6 @@ firmware_tool-build-ERROR = 無法建置韌體
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = 正在下載韌體
-firmware_update-status-NEED_MANUAL_REBOOT = 請重新啟動追蹤器
 firmware_update-status-AUTHENTICATING = 正在與 MCU 認證
 firmware_update-status-UPLOADING = 正在上傳韌體
 firmware_update-status-SYNCING_WITH_MCU = 正在與 MCU 同步
@@ -1350,6 +1346,23 @@ unknown_device-modal-description =
     要將它連接到 SlimeVR 嗎？
 unknown_device-modal-confirm = 好喔！
 unknown_device-modal-forget = 別管它
+vrc_config-page-big_menu = 追蹤 & IK（主選單）
+vrc_config-page-big_menu-desc = 主選單中與 IK （逆向運動學）相關的設定
+vrc_config-page-wrist_menu = 追蹤 & IK（快速選單）
+vrc_config-page-wrist_menu-desc = 快速選單中與 IK （逆向運動學）相關的設定
+vrc_config-on = 開啟
+vrc_config-off = 關閉
+vrc_config-invalid = VRChat 的設定設錯了！
+vrc_config-show_more = 顯示更多
+vrc_config-setting_name = VRChat 設定名稱
+vrc_config-recommended_value = 建議設定
+vrc_config-current_value = 目前設定
+vrc_config-legacy_mode = 使用傳統 IK 解決方案
+vrc_config-disable_shoulder_tracking = 停用肩膀追蹤
+vrc_config-shoulder_width_compensation = 肩寬補償
+vrc_config-spine_mode = FBT 脊椎模式
+vrc_config-tracker_model = FBT 追蹤器形狀
+vrc_config-avatar_measurement_type = 角色測量
 
 ## Error collection consent modal
 
