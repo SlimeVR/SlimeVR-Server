@@ -45,8 +45,8 @@ class MountingResetTests {
 			null,
 			hasRotation = true,
 			imuType = IMUType.UNKNOWN,
-			needsReset = true,
-			needsMounting = true,
+			allowReset = true,
+			allowMounting = true,
 			trackRotDirection = false,
 		)
 
@@ -130,8 +130,8 @@ class MountingResetTests {
 			null,
 			hasRotation = true,
 			imuType = IMUType.UNKNOWN,
-			needsReset = true,
-			needsMounting = true,
+			allowReset = true,
+			allowMounting = true,
 			trackRotDirection = false,
 		)
 

@@ -175,7 +175,16 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				// Set up new sensor for older firmware.
 				// Firmware after 7 should send sensor status packet and sensor
 				// will be created when it's received
-				setUpSensor(connection, 0, handshake.imuType, 1, MagnetometerStatus.NOT_SUPPORTED, null, TrackerDataType.ROTATION)
+				setUpSensor(
+					connection,
+					0,
+					handshake.imuType,
+					1,
+					MagnetometerStatus.NOT_SUPPORTED,
+					null,
+					TrackerDataType.ROTATION,
+					null,
+				)
 			}
 			connection
 		}
@@ -187,7 +196,16 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 	}
 
 	private val mainScope = CoroutineScope(SupervisorJob())
-	private fun setUpSensor(connection: UDPDevice, trackerId: Int, sensorType: IMUType, sensorStatus: Int, magStatus: MagnetometerStatus, trackerPosition: TrackerPosition?, trackerDataType: TrackerDataType) {
+	private fun setUpSensor(
+		connection: UDPDevice,
+		trackerId: Int,
+		sensorType: IMUType,
+		sensorStatus: Int,
+		magStatus: MagnetometerStatus,
+		trackerPosition: TrackerPosition?,
+		trackerDataType: TrackerDataType,
+		hasCompletedRestCalibration: Boolean?
+	) {
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
@@ -208,8 +226,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				userEditable = true,
 				imuType = if (trackerDataType == TrackerDataType.ROTATION) sensorType else null,
 				allowFiltering = true,
-				needsReset = true,
-				needsMounting = true,
+				allowReset = true,
+				allowMounting = true,
 				usesTimeout = true,
 				magStatus = magStatus,
 				trackerDataType = trackerDataType,
@@ -220,6 +238,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		}
 		val status = UDPPacket15SensorInfo.getStatus(sensorStatus)
 		if (status != null) imuTracker.status = status
+
+		imuTracker.hasCompletedRestCalibration = hasCompletedRestCalibration
 
 		if (magStatus == MagnetometerStatus.NOT_SUPPORTED) return
 		if (magStatus == MagnetometerStatus.ENABLED &&
@@ -481,6 +501,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					magStatus,
 					packet.trackerPosition,
 					packet.trackerDataType,
+					packet.hasCompletedRestCalibration,
 				)
 				// Send ack
 				bb.limit(bb.capacity())

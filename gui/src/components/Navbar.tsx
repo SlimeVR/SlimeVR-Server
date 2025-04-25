@@ -2,14 +2,15 @@ import { useLocalization } from '@fluent/react';
 import classnames from 'classnames';
 import { ReactNode } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
-import { CubeIcon } from './commons/icon/CubeIcon';
 import { GearIcon } from './commons/icon/GearIcon';
 import { HumanIcon } from './commons/icon/HumanIcon';
 import { RulerIcon } from './commons/icon/RulerIcon';
 import { SparkleIcon } from './commons/icon/SparkleIcon';
-import { WrenchIcon } from './commons/icon/WrenchIcons';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { useConfig } from '@/hooks/config';
+import { Tooltip } from './commons/Tooltip';
+import { HomeIcon } from './commons/icon/HomeIcon';
+import { SkiIcon } from './commons/icon/SkiIcon';
 
 export function NavButton({
   to,
@@ -24,43 +25,43 @@ export function NavButton({
   state?: any;
   icon: ReactNode;
 }) {
+  const { isMobile } = useBreakpoint('mobile');
   const doesMatch = useMatch({
     path: match || to,
   });
 
   return (
-    <NavLink
-      to={to}
-      state={state}
-      className={classnames(
-        'flex flex-col justify-center xs:gap-4 mobile:gap-2',
-        'xs:w-[85px] mobile:w-[80px] mobile:h-[80px]',
-        'xs:py-3 mobile:py-4 rounded-md mobile:rounded-b-none group select-text',
-        {
-          'bg-accent-background-50 fill-accent-background-20': doesMatch,
-          'hover:bg-background-70': !doesMatch,
-        }
-      )}
+    <Tooltip
+      disabled={isMobile}
+      preferedDirection={'right'}
+      content={children}
+      variant="floating"
     >
-      <div className="flex justify-around">
-        <div
-          className={classnames('scale-150', {
-            'fill-accent-lighter': doesMatch,
-            'fill-background-50': !doesMatch,
-          })}
-        >
-          {icon}
-        </div>
-      </div>
-      <div
-        className={classnames('text-center', {
-          'text-accent-background-10': doesMatch,
-          'text-background-10': !doesMatch,
-        })}
+      <NavLink
+        to={to}
+        state={state}
+        className={classnames(
+          'flex flex-col justify-center xs:gap-4 mobile:gap-2',
+          'xs:w-[50px] xs:h-[50px] mobile:w-[50px] mobile:h-[50px]',
+          'xs:py-3 mobile:py-4 rounded-md mobile:rounded-b-none group select-text',
+          {
+            'bg-accent-background-50 fill-accent-background-20': doesMatch,
+            'hover:bg-background-70': !doesMatch,
+          }
+        )}
       >
-        {children}
-      </div>
-    </NavLink>
+        <div className="flex justify-around">
+          <div
+            className={classnames('scale-150', {
+              'fill-accent-lighter': doesMatch,
+              'fill-background-50': !doesMatch,
+            })}
+          >
+            {icon}
+          </div>
+        </div>
+      </NavLink>
+    </Tooltip>
   );
 }
 
@@ -70,7 +71,7 @@ export function MainLinks() {
 
   return (
     <>
-      <NavButton to="/" icon={<CubeIcon></CubeIcon>}>
+      <NavButton to="/" icon={<HomeIcon></HomeIcon>}>
         {l10n.getString('navbar-home')}
       </NavButton>
       <NavButton
@@ -84,7 +85,7 @@ export function MainLinks() {
         to="/onboarding/mounting/choose"
         match="/onboarding/mounting/*"
         state={{ alonePage: true }}
-        icon={<WrenchIcon></WrenchIcon>}
+        icon={<SkiIcon></SkiIcon>}
       >
         {l10n.getString('navbar-mounting')}
       </NavButton>

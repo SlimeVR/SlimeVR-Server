@@ -5,11 +5,13 @@
     's c' calc(100% - var(--topbar-h))
     / var(--navbar-w) calc(100% - var(--navbar-w));
 
-  &:has(.widgets) {
+  &.full {
     grid-template:
       't t t' var(--topbar-h)
-      's c w' calc(100% - var(--topbar-h))
-      / var(--navbar-w) calc(100% - var(--navbar-w) - var(--widget-w)) var(--widget-w);
+      's r r' var(--toolbar-h)
+      's c l' calc(70% - var(--topbar-h) - var(--toolbar-h))
+      's c p' calc(30%)
+      / var(--navbar-w) calc(75% - var(--navbar-w)) calc(25%);
   }
 
   @screen mobile {
