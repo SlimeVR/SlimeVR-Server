@@ -31,38 +31,21 @@ export function TrackerBattery({
     <div className="flex gap-2">
       <div className="flex flex-col justify-around">
         <BatteryIcon
-          value={((voltage || 0) <= 4.3 && value) || 0}
+          value={value}
           disabled={disabled}
-          charging={false}
+          charging={(voltage || 0) > 4.3}
         />
       </div>
-      {((voltage || 0) > 4.3 && (
-        <div className="flex flex-col justify-center w-10">
-          <svg
-            width="18"
-            height="16"
-            viewBox="0 0 14 10"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              className={'fill-status-warning'}
-              d="M 0.93561138,11.744353 2.4349252,6.1488377 H 0.0312815 L 3.5761014,0.00903018 2.2061799,5.1216451 h 2.4534885 z"
-              transform="translate(3, -0.5)"
-            />
-          </svg>
-        </div>
-      )) || (
-        <div className="w-10">
+      <div className="w-10">
+        <Typography color={textColor}>
+          {percentFormatter.format(value)}
+        </Typography>
+        {voltage && config?.debug && (
           <Typography color={textColor}>
-            {percentFormatter.format(value)}
+            {voltageFormatter.format(voltage)}V
           </Typography>
-          {voltage && config?.debug && (
-            <Typography color={textColor}>
-              {voltageFormatter.format(voltage)}V
-            </Typography>
-          )}
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
