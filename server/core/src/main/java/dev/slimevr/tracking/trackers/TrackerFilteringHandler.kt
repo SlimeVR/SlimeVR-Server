@@ -28,7 +28,10 @@ class TrackerFilteringHandler {
 			)
 			filteringEnabled = true
 		} else {
-			movingAverage = QuaternionMovingAverage(TrackerFilters.NONE)
+			movingAverage = QuaternionMovingAverage(
+				TrackerFilters.NONE,
+				initialRotation = currentRotation,
+			)
 			filteringEnabled = false
 		}
 	}
