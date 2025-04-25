@@ -71,7 +71,7 @@ public class RPCSerialHandler implements SerialListener {
 	}
 
 	@Override
-	public void onSerialLog(String str) {
+	public void onSerialLog(String str, boolean server) {
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
 		int logOffset = fbb.createString(str);
