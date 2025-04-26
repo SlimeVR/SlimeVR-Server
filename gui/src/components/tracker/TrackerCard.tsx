@@ -100,7 +100,7 @@ function TrackerBig({
               {(device.hardwareStatus.rssi != null ||
                 device.hardwareStatus.ping != null) && (
                 <TrackerWifi
-                  rssi={device.hardwareStatus.rssi || 0}
+                  rssi={device.hardwareStatus.rssi}
                   ping={device.hardwareStatus.ping}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
                 ></TrackerWifi>
@@ -150,7 +150,7 @@ function TrackerSmol({
             {(device.hardwareStatus.rssi != null ||
               device.hardwareStatus.ping != null) && (
               <TrackerWifi
-                rssi={device.hardwareStatus.rssi || 0}
+                rssi={device.hardwareStatus.rssi}
                 ping={device.hardwareStatus.ping}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               ></TrackerWifi>

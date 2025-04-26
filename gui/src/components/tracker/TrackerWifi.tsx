@@ -8,7 +8,7 @@ export function TrackerWifi({
   disabled,
   textColor = 'secondary',
 }: {
-  rssi: number;
+  rssi: number | null;
   ping: number | null;
   rssiShowNumeric?: boolean;
   disabled?: boolean;
@@ -17,16 +17,16 @@ export function TrackerWifi({
   return (
     <div className="flex gap-2">
       <div className="flex flex-col justify-around">
-        <WifiIcon value={rssi} disabled={disabled} />
+        <WifiIcon value={rssi || -100} disabled={disabled} />
       </div>
-      {(!disabled && (ping != null || rssiShowNumeric) && (
+      {(!disabled && (ping != null || (rssiShowNumeric && rssi != null)) && (
         <div className="w-12">
           {ping != null && (
             <Typography color={textColor} whitespace="whitespace-nowrap">
               {ping} ms
             </Typography>
           )}
-          {rssiShowNumeric && (
+          {rssiShowNumeric && rssi != null && (
             <Typography color={textColor} whitespace="whitespace-nowrap">
               {rssi} dBm
             </Typography>
