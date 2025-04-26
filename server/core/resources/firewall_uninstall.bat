@@ -26,6 +26,9 @@ call :DeleteRule "SlimeVR TCP 21110 outgoing"
 rem OpenJDK Platform Binary access
 call :DeleteRule "SlimeVR OpenJDK Platform incoming"
 call :DeleteRule "SlimeVR OpenJDK Platform outgoing"
+rem ESP8266 OTA default port
+call :DeleteRule "SlimeVR UDP 8266 incoming"
+call :DeleteRule "SlimeVR UDP 8266 outgoing"
 
 echo Done!
 pause
