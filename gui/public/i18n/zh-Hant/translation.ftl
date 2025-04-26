@@ -130,7 +130,9 @@ skeleton_bone-UPPER_CHEST-desc =
     若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
     修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-CHEST_OFFSET = 胸部偏移
-skeleton_bone-CHEST_OFFSET-desc = 胸部追蹤器可以依據不同遊戲或應用程式的校正需求來上下調整。
+skeleton_bone-CHEST_OFFSET-desc =
+    調整胸部追蹤器的上下補償。某些遊戲或是應用程式可能會期待追蹤器比較上面
+    或下面，可以透過調整本數值來校正。
 skeleton_bone-CHEST = 胸部長度
 skeleton_bone-CHEST-desc =
     這是從胸部中間到脊椎中間的距離。
@@ -147,7 +149,9 @@ skeleton_bone-HIP-desc =
     若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
     修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-HIP_OFFSET = 臀部偏移
-skeleton_bone-HIP_OFFSET-desc = 臀部追蹤器可以依據不同遊戲或應用程式的校正需求來上下調整。
+skeleton_bone-HIP_OFFSET-desc =
+    調整臀部追蹤器的上下補償。某些遊戲或是應用程式可能會期待追蹤器在腰部，
+    可以透過調整本數值來校正。
 skeleton_bone-HIPS_WIDTH = 臀部寬度
 skeleton_bone-HIPS_WIDTH-desc =
     這是兩腿之間的起始距離。
@@ -155,21 +159,73 @@ skeleton_bone-HIPS_WIDTH-desc =
 skeleton_bone-leg_group = 腿部長度
 skeleton_bone-leg_group-desc =
     這是從臀部到腳部的距離。
-    若要調整，請適當調整軀幹長度後，修改此數值，直到虛擬的腳
-    部與實際腳部的高度一致。
+    若要調整，請適當調整軀幹長度後，修改此數值，直到虛擬的腳部
+    與實際腳部的高度一致。
 skeleton_bone-UPPER_LEG = 大腿長度
+skeleton_bone-UPPER_LEG-desc =
+    這是從臀部到膝蓋的距離。
+    若要調整，請適當調整腿部長度後，修改此數值，直到虛擬的膝蓋
+    與實際膝蓋的高度一致。
 skeleton_bone-LOWER_LEG = 小腿長度
+skeleton_bone-LOWER_LEG-desc =
+    這是從膝蓋到腳踝的距離。
+    若要調整，請適當調整腿部長度後，修改此數值，直到虛擬的腳踝
+    與實際腳踝的高度一致。
 skeleton_bone-FOOT_LENGTH = 腳部長度
+skeleton_bone-FOOT_LENGTH-desc =
+    這是從腳踝到腳趾的距離。
+    若要調整，請踮起腳尖，修改此數值，直到虛擬的腳部與實際腳部對齊。
 skeleton_bone-FOOT_SHIFT = 腳部偏移
+skeleton_bone-FOOT_SHIFT-desc =
+    這是從膝蓋到腳踝的水平距離。
+    這個數值可以校正站直時小腿會向後移動的問題。
+    若要調整，請將腳部長度設為 0，進行完整重置後再修改，直到虛擬腳部與
+    腳踝中間對齊。
 skeleton_bone-SKELETON_OFFSET = 骨骼偏移
+skeleton_bone-SKELETON_OFFSET-desc =
+    調整全部追蹤器的向前或向後補償。某些遊戲或是應用程式可能會期待追蹤器
+    比較前面，可以透過調整本數值來校正。
 skeleton_bone-SHOULDERS_DISTANCE = 肩膀距離
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    這是從脖子底部到肩膀的垂直距離。
+    若要調整，請將上臂長度設為 0 再修改，直到虛擬的肘部追蹤器與
+    實際的肩膀垂直對齊。
 skeleton_bone-SHOULDERS_WIDTH = 肩膀寬度
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    這是從脖子底部到肩膀的水平距離。
+    若要調整，請將上臂長度設為 0 再修改，直到虛擬的肘部追蹤器與
+    實際的肩膀水平對齊。
 skeleton_bone-arm_group = 手臂長度
+skeleton_bone-arm_group-desc =
+    這是從肩膀到手腕的距離。
+    若要調整，請適當調整肩膀距離，將手部距離 Y 設定為 0 再修改，
+    直到虛擬的手部追蹤器與手腕對齊。
 skeleton_bone-UPPER_ARM = 上臂長度
+skeleton_bone-UPPER_ARM-desc =
+    這是從肩膀到手肘的距離。
+    若要調整，請適當調整手臂長度後，修改此數值，直到虛擬的
+    手肘追蹤器與實際手肘的位置一致。
 skeleton_bone-LOWER_ARM = 前臂長度
+skeleton_bone-LOWER_ARM-desc =
+    這是從手肘到手腕的距離。
+    若要調整，請適當調整手臂長度後，修改此數值，直到虛擬的
+    手肘追蹤器與實際手肘的位置一致。
 skeleton_bone-HAND_Y = 手部距離Y
+skeleton_bone-HAND_Y-desc =
+    這是從手腕到手中間的垂直距離。
+    若要調整以進行動作捕捉，請適當調整手臂長度後修改此數值，直到虛擬的手部追蹤器
+    與實際的手中間垂直對齊。
+    若要調整以從控制器進行肘部跟蹤，請將手臂長度設為0後修改此數值，直到虛擬的肘
+    部追蹤器與實際的手腕垂直對齊。
 skeleton_bone-HAND_Z = 手部距離Z
+skeleton_bone-HAND_Z-desc =
+    這是從手腕到手中間的水平距離。
+    若要調整以進行動作捕捉，請適當調整手臂長度後修改此數值，直到虛擬的手部追蹤器
+    與實際的手中間水平對齊。
+    若要調整以從控制器進行肘部跟蹤，請將手臂長度設為0後修改此數值，直到虛擬的肘
+    部追蹤器與實際的手腕水平對齊。
 skeleton_bone-ELBOW_OFFSET = 肘部偏移
+skeleton_bone-ELBOW_OFFSET-desc = 將虛擬的肘部追蹤器向上或向下調整，以避免 VRChat 將肘部追蹤器綁到胸部。
 
 ## Tracker reset buttons
 
@@ -342,6 +398,7 @@ tracker-settings-forget = 忘記追蹤器
 tracker-settings-forget-description = 從 SlimeVR 伺服器程式中移除該追蹤器，且直到重新啟動伺服器前不會再次連接。該追蹤器的設定不會遺失。
 tracker-settings-forget-label = 忘記追蹤器
 tracker-settings-update-unavailable = 無法更新 (DIY)
+tracker-settings-update-low-battery = 無法更新，電池電量低於 50%
 tracker-settings-update-up_to_date = 已為最新版本
 tracker-settings-update-available = 版本 { $versionName } 可供更新
 tracker-settings-update = 立即更新
@@ -894,6 +951,17 @@ onboarding-connect_tracker-connection_status-looking_for_server = 正在尋找�
 onboarding-connect_tracker-connection_status-connection_error = 無法連線到 Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = 未尋找到可用的伺服器
 onboarding-connect_tracker-connection_status-done = 已連線到伺服器
+onboarding-connect_tracker-connection_status-no_serial_log = 無法從追蹤器取得紀錄訊息
+onboarding-connect_tracker-connection_status-no_serial_device_found = 無法透過 USB 找到追蹤器
+onboarding-connect_serial-error-modal-no_serial_log = 追蹤器電源開了嗎？
+onboarding-connect_serial-error-modal-no_serial_log-desc = 請確認追蹤器電源已開啟，並連接到這台電腦上
+onboarding-connect_serial-error-modal-no_serial_device_found = 找不到追蹤器
+onboarding-connect_serial-error-modal-no_serial_device_found-desc =
+    請使用隨附的 USB 傳輸線將追蹤器連接到你的電腦後，再打開追蹤器電源。
+    如果還是不行，請嘗試以下操作：
+      - 使用另一條 USB 傳輸線
+      - 使用另一個 USB 插座
+      - 重新安裝 SlimeVR 伺服器程式，然後在安裝元件部分將「USB drivers」打勾
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -1083,6 +1151,8 @@ onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 請連接 VR
 onboarding-manual_proportions-export = 匯出軀幹比例
 onboarding-manual_proportions-import = 匯入軀幹比例
 onboarding-manual_proportions-file_type = 軀幹比例描述檔
+onboarding-manual_proportions-normal_increment = 正常調整
+onboarding-manual_proportions-precise_increment = 精確調整
 
 ## Tracker automatic proportions setup
 
