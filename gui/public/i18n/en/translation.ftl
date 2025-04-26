@@ -163,7 +163,7 @@ skeleton_bone-UPPER_LEG-desc =
     until your virtual knees are at the same level as your real ones.
 skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-LOWER_LEG-desc =
-    This is the distance from your hips to your knees.
+    This is the distance from your knees to your ankles.
     To adjust it, adjust your Leg Length properly and modify it
     until your virtual knees are at the same level as your real ones.
 skeleton_bone-FOOT_LENGTH = Foot Length
