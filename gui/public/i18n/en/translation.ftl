@@ -222,7 +222,7 @@ skeleton_bone-HAND_Z-desc =
 skeleton_bone-ELBOW_OFFSET = Elbow Offset
 skeleton_bone-ELBOW_OFFSET-desc =
     This can be adjusted to move your virtual elbow trackers up or down in order to aid
-    with VRChat accidentally binding and elbow tracker to the chest.
+    with VRChat accidentally binding an elbow tracker to the chest.
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
