@@ -17,7 +17,7 @@ export function TrackerWifi({
   return (
     <div className="flex gap-2">
       <div className="flex flex-col justify-around">
-        <WifiIcon value={rssi || -100} disabled={disabled} />
+        <WifiIcon value={rssi} disabled={disabled} />
       </div>
       {(!disabled && (ping != null || (rssiShowNumeric && rssi != null)) && (
         <div className="w-12">
