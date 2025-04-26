@@ -215,14 +215,14 @@ skeleton_bone-HAND_Y-desc =
     這是從手腕到手中間的垂直距離。
     若要調整以進行動作捕捉，請適當調整手臂長度後修改此數值，直到虛擬的手部追蹤器
     與實際的手中間垂直對齊。
-    若要調整以從控制器進行肘部跟蹤，請將手臂長度設為0後修改此數值，直到虛擬的肘
+    若要調整以從控制器進行肘部跟蹤，請將手臂長度設為 0 後修改此數值，直到虛擬的肘
     部追蹤器與實際的手腕垂直對齊。
 skeleton_bone-HAND_Z = 手部距離Z
 skeleton_bone-HAND_Z-desc =
     這是從手腕到手中間的水平距離。
     若要調整以進行動作捕捉，請適當調整手臂長度後修改此數值，直到虛擬的手部追蹤器
     與實際的手中間水平對齊。
-    若要調整以從控制器進行肘部跟蹤，請將手臂長度設為0後修改此數值，直到虛擬的肘
+    若要調整以從控制器進行肘部跟蹤，請將手臂長度設為 0 後修改此數值，直到虛擬的肘
     部追蹤器與實際的手腕水平對齊。
 skeleton_bone-ELBOW_OFFSET = 肘部偏移
 skeleton_bone-ELBOW_OFFSET-desc = 將虛擬的肘部追蹤器向上或向下調整，以避免 VRChat 將肘部追蹤器綁到胸部。
@@ -1153,6 +1153,9 @@ onboarding-manual_proportions-import = 匯入軀幹比例
 onboarding-manual_proportions-file_type = 軀幹比例描述檔
 onboarding-manual_proportions-normal_increment = 正常調整
 onboarding-manual_proportions-precise_increment = 精確調整
+onboarding-manual_proportions-grouped_proportions = 分組調整軀幹比例
+onboarding-manual_proportions-all_proportions = 全部軀幹比例
+onboarding-manual_proportions-estimated_height = 預估的使用者身高
 
 ## Tracker automatic proportions setup
 
@@ -1381,6 +1384,7 @@ firmware_tool-build_step = 建置中
 firmware_tool-build_step-description = 韌體正在建置中，請稍後
 firmware_tool-flashing_step = 燒錄中
 firmware_tool-flashing_step-description = 追蹤器燒錄中，請遵循畫面上的指示
+firmware_tool-flashing_step-warning-v2 = 除非特別指示，燒錄中請勿移除或是關閉追蹤器，否則可能導致主板無法使用
 firmware_tool-flashing_step-flash_more = 燒錄更多追蹤器
 firmware_tool-flashing_step-exit = 離開
 
@@ -1398,6 +1402,7 @@ firmware_tool-build-ERROR = 無法建置韌體
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = 正在下載韌體
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = 請關閉追蹤器的電源再打開
 firmware_update-status-AUTHENTICATING = 正在與 MCU 認證
 firmware_update-status-UPLOADING = 正在上傳韌體
 firmware_update-status-SYNCING_WITH_MCU = 正在與 MCU 同步
@@ -1452,6 +1457,11 @@ unknown_device-modal-description =
     要將它連接到 SlimeVR 嗎？
 unknown_device-modal-confirm = 好喔！
 unknown_device-modal-forget = 別管它
+# VRChat config warnings
+vrc_config-page-title = VRChat 設定警告
+vrc_config-page-desc = 本頁會顯示 VRChat 的設定並顯示哪些設定與 SlimeVR 不相容。非常建議您根據這裡顯示的警告來修改設定，以獲得最佳的 SlimeVR 使用體驗。
+vrc_config-page-help = 找不到設定在哪裡嗎？
+vrc_config-page-help-desc = 請查閱<a>本主題的相關文件</a>
 vrc_config-page-big_menu = 追蹤 & IK（主選單）
 vrc_config-page-big_menu-desc = 主選單中與 IK （逆向運動學）相關的設定
 vrc_config-page-wrist_menu = 追蹤 & IK（快速選單）
