@@ -1,3 +1,4 @@
+import { useConfig } from '@/hooks/config';
 import { MouseEventHandler } from 'react';
 import {
   DeviceDataT,
@@ -69,6 +70,8 @@ function TrackerBig({
   tracker: TrackerDataT;
   device?: DeviceDataT;
 }) {
+  const { config } = useConfig();
+
   const { useName } = useTracker(tracker);
 
   const trackerName = useName();
@@ -101,6 +104,7 @@ function TrackerBig({
                 device.hardwareStatus.ping != null) && (
                 <TrackerWifi
                   rssi={device.hardwareStatus.rssi}
+                  rssiShowNumeric={config?.debug}
                   ping={device.hardwareStatus.ping}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
                 ></TrackerWifi>
