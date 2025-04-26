@@ -89,7 +89,7 @@ function TrackerBig({
       <div className="flex justify-center">
         <TrackerStatus status={tracker.status}></TrackerStatus>
       </div>
-      <div className="flex text-default justify-center gap-5 flex-wrap">
+      <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
         {device && device.hardwareStatus && (
           <>
             {device.hardwareStatus.batteryPctEstimate != null && (
@@ -99,7 +99,7 @@ function TrackerBig({
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />
             )}
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2">
               {(device.hardwareStatus.rssi != null ||
                 device.hardwareStatus.ping != null) && (
                 <TrackerWifi
