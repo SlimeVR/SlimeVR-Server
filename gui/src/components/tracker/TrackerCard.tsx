@@ -96,7 +96,7 @@ function TrackerBig({
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />
             )}
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               {(device.hardwareStatus.rssi != null ||
                 device.hardwareStatus.ping != null) && (
                 <TrackerWifi
