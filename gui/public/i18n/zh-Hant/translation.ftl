@@ -111,16 +111,52 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU 手套
 
 skeleton_bone-NONE = 無
 skeleton_bone-HEAD = 頭部偏移
+skeleton_bone-HEAD-desc =
+    這是從頭戴顯示器到頭中央的距離。
+    若要調整，請左右搖頭（如不同意、否定般的樣子）並不要移動身體，檢查其他
+    追蹤器的數值跳動並變更此參數，直到數值跳動小到可以忽略不計。
 skeleton_bone-NECK = 頸部長度
+skeleton_bone-NECK-desc =
+    這是從頭中央到脖子底部的距離。
+    若要調整，請上下點頭（如同意、肯定般的樣子）並不要移動身體，檢查其他
+    追蹤器的數值跳動並變更此參數，直到數值跳動小到可以忽略不計。
 skeleton_bone-torso_group = 軀幹長度
+skeleton_bone-torso_group-desc =
+    這是從脖子底部到臀部的距離。
+    若要調整，請站立並調整此參數，直到虛擬的臀部與實際臀部對齊。
 skeleton_bone-UPPER_CHEST = 上胸長度
+skeleton_bone-UPPER_CHEST-desc =
+    這是從脖子底部到胸部中間的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-CHEST_OFFSET = 胸部偏移
+skeleton_bone-CHEST_OFFSET-desc = 胸部追蹤器可以依據不同遊戲或應用程式的校正需求來上下調整。
 skeleton_bone-CHEST = 胸部長度
+skeleton_bone-CHEST-desc =
+    這是從胸部中間到脊椎中間的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-WAIST = 腰部長度
+skeleton_bone-WAIST-desc =
+    這是從脊椎中間到肚臍的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-HIP = 臀部長度
+skeleton_bone-HIP-desc =
+    這是從肚臍到臀部的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-HIP_OFFSET = 臀部偏移
+skeleton_bone-HIP_OFFSET-desc = 臀部追蹤器可以依據不同遊戲或應用程式的校正需求來上下調整。
 skeleton_bone-HIPS_WIDTH = 臀部寬度
+skeleton_bone-HIPS_WIDTH-desc =
+    這是兩腿之間的起始距離。
+    若要調整，請站直進行完整重置後，修改到虛擬的腿部與實際腿部對齊。
 skeleton_bone-leg_group = 腿部長度
+skeleton_bone-leg_group-desc =
+    這是從臀部到腳部的距離。
+    若要調整，請適當調整軀幹長度後，修改此數值，直到虛擬的腳
+    部與實際腳部的高度一致。
 skeleton_bone-UPPER_LEG = 大腿長度
 skeleton_bone-LOWER_LEG = 小腿長度
 skeleton_bone-FOOT_LENGTH = 腳部長度
@@ -1363,6 +1399,21 @@ vrc_config-shoulder_width_compensation = 肩寬補償
 vrc_config-spine_mode = FBT 脊椎模式
 vrc_config-tracker_model = FBT 追蹤器形狀
 vrc_config-avatar_measurement_type = 角色測量
+vrc_config-calibration_range = 校正範圍
+vrc_config-calibration_visuals = 顯示 FBT 校正範圍
+vrc_config-user_height = 用戶真實身高
+vrc_config-spine_mode-UNKNOWN = 不明
+vrc_config-spine_mode-LOCK_BOTH = 同時鎖定
+vrc_config-spine_mode-LOCK_HEAD = 鎖定頭部
+vrc_config-spine_mode-LOCK_HIP = 鎖定臀部
+vrc_config-tracker_model-UNKNOWN = 不明
+vrc_config-tracker_model-AXIS = 軸
+vrc_config-tracker_model-BOX = 箱型
+vrc_config-tracker_model-SPHERE = 球型
+vrc_config-tracker_model-SYSTEM = 系統
+vrc_config-avatar_measurement_type-UNKNOWN = 不明
+vrc_config-avatar_measurement_type-HEIGHT = 身高
+vrc_config-avatar_measurement_type-ARM_SPAN = 臂展
 
 ## Error collection consent modal
 
