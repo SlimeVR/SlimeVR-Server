@@ -4,6 +4,7 @@ import { DEFAULT_LOCALE, LangContext } from '@/i18n/config';
 import { getSentryOrCompute } from '@/utils/sentry';
 
 const config = await loadConfig();
+
 if (config?.errorTracking !== undefined) {
   // load sentry ASAP to catch early errors
   getSentryOrCompute(config.errorTracking ?? false);
