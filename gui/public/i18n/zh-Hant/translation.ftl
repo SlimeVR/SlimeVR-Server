@@ -169,8 +169,8 @@ skeleton_bone-UPPER_LEG-desc =
 skeleton_bone-LOWER_LEG = 小腿長度
 skeleton_bone-LOWER_LEG-desc =
     這是從膝蓋到腳踝的距離。
-    若要調整，請適當調整腿部長度後，修改此數值，直到虛擬的腳踝
-    與實際腳踝的高度一致。
+    若要調整，請適當調整腿部長度後，修改此數值，直到虛擬的膝蓋
+    與實際膝蓋的高度一致。
 skeleton_bone-FOOT_LENGTH = 腳部長度
 skeleton_bone-FOOT_LENGTH-desc =
     這是從腳踝到腳趾的距離。
@@ -220,8 +220,7 @@ skeleton_bone-HAND_Y-desc =
 skeleton_bone-HAND_Z = 手部距離Z
 skeleton_bone-HAND_Z-desc =
     這是從手腕到手中間的水平距離。
-    若要調整以進行動作捕捉，請適當調整手臂長度後修改此數值，直到虛擬的手部追蹤器
-    與實際的手中間水平對齊。
+    若要調整以進行動作捕捉，請將此值設定為 0。
     若要調整以從控制器進行肘部跟蹤，請將手臂長度設為 0 後修改此數值，直到虛擬的肘
     部追蹤器與實際的手腕水平對齊。
 skeleton_bone-ELBOW_OFFSET = 肘部偏移
@@ -291,7 +290,7 @@ widget-developer_mode = 開發者選項
 widget-developer_mode-high_contrast = 高對比 UI
 widget-developer_mode-precise_rotation = 顯示精確旋轉
 widget-developer_mode-fast_data_feed = 快速資料更新
-widget-developer_mode-filter_slimes_and_hmd = 只顯示 Slime 追蹤器與頭戴顯示器
+widget-developer_mode-filter_slimes_and_hmd = 只顯示 SlimeVR 追蹤器與頭戴顯示器
 widget-developer_mode-sort_by_name = 依名稱排序
 widget-developer_mode-raw_slime_rotation = 顯示原始旋轉
 widget-developer_mode-more_info = 更多資訊
@@ -670,7 +669,7 @@ settings-interface-appearance-font-slime_font = 預設字體
 settings-interface-appearance-font_size = 文字縮放
 settings-interface-appearance-font_size-description = 本設定會影響整個 UI 的文字大小，除了本設定面板以外。
 settings-interface-appearance-decorations = 使用系統原生的視窗邊框
-settings-interface-appearance-decorations-description = 不顯示標題列 UI，替換成作業系統提供的標題列。
+settings-interface-appearance-decorations-description = 不顯示標題列 UI，使用作業系統提供的標題列。
 settings-interface-appearance-decorations-label = 使用原生的視窗邊框
 
 ## Notification settings
