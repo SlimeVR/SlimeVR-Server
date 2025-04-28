@@ -188,6 +188,7 @@ export function useFirmwareToolContext(): FirmwareToolContext {
           boardConfig: {
             ...currConfig.boardConfig,
             ...form,
+            batteryResistances: form.batteryResistances.map((r) => Number(r)),
           },
         };
       });
