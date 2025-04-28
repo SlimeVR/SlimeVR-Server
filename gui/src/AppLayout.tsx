@@ -1,9 +1,10 @@
 import { useLayoutEffect } from 'react';
 import { useConfig } from './hooks/config';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 export function AppLayout() {
   const { config } = useConfig();
+  const navigate = useNavigate();
 
   useLayoutEffect(() => {
     if (!config) return;
@@ -25,6 +26,12 @@ export function AppLayout() {
       );
     }
   }, [config]);
+
+  useLayoutEffect(() => {
+    if (config && !config.doneOnboarding) {
+      navigate('/onboarding/home');
+    }
+  }, [config?.doneOnboarding]);
 
   return (
     <>
