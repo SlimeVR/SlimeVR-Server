@@ -207,7 +207,8 @@ export function TrackerCard({
           'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear',
           interactable && 'hover:bg-background-50 cursor-pointer',
           outlined && 'outline outline-2 outline-accent-background-40',
-          warning && 'border-status-warning border-solid border-2',
+          warning &&
+            'outline outline-2 -outline-offset-2 outline-status-warning',
           bg
         )}
         style={
