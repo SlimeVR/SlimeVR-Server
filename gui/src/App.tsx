@@ -60,6 +60,7 @@ import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
 import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
 import { VRCWarningsPage } from './components/vrc/VRCWarningsPage';
+import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/StayAlignedSetup';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -173,6 +174,7 @@ function Layout() {
               path="body-proportions/scaled"
               element={<ScaledProportionsPage />}
             />
+            <Route path="stay-aligned" element={<StayAlignedSetup />} />
             <Route path="done" element={<DonePage />} />
           </Route>
           <Route path="*" element={<TopBar></TopBar>}></Route>
