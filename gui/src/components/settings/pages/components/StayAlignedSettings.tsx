@@ -96,6 +96,18 @@ export function StayAlignedSettings({
         <Typography color="secondary">
           {l10n.getString('settings-stay_aligned-description')}
         </Typography>
+        <Typography color="secondary">
+          {l10n.getString('settings-stay_aligned-setup-description')}
+        </Typography>
+        <div className="flex mt-2">
+          <Button
+            variant="primary"
+            to="/onboarding/stay-aligned"
+            state={{ alonePage: true }}
+          >
+            {l10n.getString('settings-stay_aligned-setup-label')}
+          </Button>
+        </div>
       </div>
       <div className="mt-4">
         <Typography bold>
