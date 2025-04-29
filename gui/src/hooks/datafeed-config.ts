@@ -17,6 +17,7 @@ export function useDataFeedConfig() {
   trackerData.rotationReferenceAdjusted = true;
   trackerData.rotationIdentityAdjusted = true;
   trackerData.tps = true;
+  trackerData.stayAligned = true;
 
   const dataMask = new DeviceDataMaskT();
   dataMask.deviceData = true;
@@ -27,6 +28,7 @@ export function useDataFeedConfig() {
   dataFeedConfig.boneMask = true;
   dataFeedConfig.minimumTimeSinceLast = 1000 / feedMaxTps;
   dataFeedConfig.syntheticTrackersMask = trackerData;
+  dataFeedConfig.stayAlignedPoseMask = true;
 
   return {
     dataFeedConfig,
