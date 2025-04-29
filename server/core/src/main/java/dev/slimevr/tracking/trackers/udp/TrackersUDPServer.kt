@@ -191,18 +191,19 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)
 		if (imuTracker == null) {
-			var displayName = "Tracker "
 			var formattedHWID = connection.hardwareIdentifier.replace(":", "").takeLast(5)
 			if (trackerId != 0) {
-				displayName = "Extension "
-				formattedHWID += "_$trackerId"
+				formattedHWID += " Extension"
+				if (trackerId > 1) {
+					formattedHWID += " $trackerId"
+				}
 			}
 
 			imuTracker = Tracker(
 				connection,
 				VRServer.getNextLocalTrackerId(),
 				connection.name + "/" + trackerId,
-				displayName + formattedHWID,
+				"Tracker $formattedHWID",
 				trackerPosition,
 				trackerNum = trackerId,
 				hasRotation = true,
