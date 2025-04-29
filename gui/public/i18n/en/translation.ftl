@@ -544,6 +544,8 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetome
 
 settings-stay_aligned = Stay Aligned
 settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your most common poses.
+settings-stay_aligned-setup-label = Setup Stay Aligned
+settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
 settings-stay_aligned-warnings-drift_compensation = ⚠ Please turn off Drift Compensation! Drift Compensation will conflict with Stay Aligned.
 settings-stay_aligned-enabled-label = Enabled
 settings-stay_aligned-extra_yaw_correction-label = Extra correction for low quality IMUs (e.g. BMI160, MPU60XX)
@@ -1246,6 +1248,34 @@ onboarding-scaled_proportions-reset_proportion-title = Reset your body proportio
 onboarding-scaled_proportions-reset_proportion-description = To set your body proportions based on your height, you need to now reset all of your proportions. This will clear any proportions you have configured and provide a baseline configuration.
 onboarding-scaled_proportions-done-title = Body proportions set
 onboarding-scaled_proportions-done-description = Your body proportions should now be configured based on your height.
+
+## Stay Aligned setup
+onboarding-stay_aligned-title = Stay Aligned
+onboarding-stay_aligned-description = Configure Stay Aligned to keep your trackers aligned.
+onboarding-stay_aligned-verify_mounting-title = Check your Mounting
+onboarding-stay_aligned-verify_mounting-step-0 = Stay Aligned requires good mounting. Otherwise, you won't get a good experience with Stay Aligned.
+onboarding-stay_aligned-verify_mounting-step-1 = 1. Move around while standing.
+onboarding-stay_aligned-verify_mounting-step-2 = 2. Sit down and move your legs and feet.
+onboarding-stay_aligned-verify_mounting-step-3 = 3. If your trackers aren't in the right place, restart the process.
+onboarding-stay_aligned-relaxed_poses-standing-title = Relaxed Standing Pose
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stand in a comfortable position. Relax!
+onboarding-stay_aligned-relaxed_poses-standing-step-1 = 2. Check that your trackers match your body. If it does not match, you need to restart this flow.
+onboarding-stay_aligned-relaxed_poses-standing-step-2 = 3. Press the "Detect pose" button.
+onboarding-stay_aligned-relaxed_poses-sitting-title = Relaxed Sitting Pose
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Sit in a comfortable position. Relax!
+onboarding-stay_aligned-relaxed_poses-sitting-step-1 = 2. Check that your trackers match your body. If it does not match, you need to restart this flow.
+onboarding-stay_aligned-relaxed_poses-sitting-step-2 = 3. Press the "Detect pose" button.
+onboarding-stay_aligned-relaxed_poses-flat-title = Relaxed Lying Pose
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sit on the floor with your legs in front. Relax!
+onboarding-stay_aligned-relaxed_poses-flat-step-1 = 2. Check that your trackers match your body. If it does not match, you need to restart this flow.
+onboarding-stay_aligned-relaxed_poses-flat-step-2 = 3. Press the "Detect pose" button.
+onboarding-stay_aligned-relaxed_poses-skip_step = Skip
+onboarding-stay_aligned-done-title = Stay Aligned enabled!
+onboarding-stay_aligned-done-description = Your Stay Aligned setup is complete!
+onboarding-stay_aligned-previous_step = Previous
+onboarding-stay_aligned-next_step = Next
+onboarding-stay_aligned-restart = Restart
+onboarding-stay_aligned-done = Done
 
 ## Home
 home-no_trackers = No trackers detected or assigned
