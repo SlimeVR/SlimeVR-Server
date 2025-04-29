@@ -83,7 +83,7 @@ export function NumberSelector({
                 -
               </Button>
             </div>
-            <div className="flex flex-grow justify-center items-center w-10 text-standard">
+            <div className="flex flex-grow justify-center text-center items-center w-10 text-standard">
               {valueLabelFormat ? valueLabelFormat(value) : value}
             </div>
             <div className="flex gap-1">
