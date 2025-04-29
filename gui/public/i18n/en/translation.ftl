@@ -293,6 +293,7 @@ widget-imu_visualizer-rotation_raw = Raw rotation
 widget-imu_visualizer-rotation_preview = Preview rotation
 widget-imu_visualizer-acceleration = Acceleration
 widget-imu_visualizer-position = Position
+widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Widget: Skeleton Visualizer
 widget-skeleton_visualizer-preview = Skeleton preview
@@ -317,6 +318,7 @@ tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Rotation X/Y/Z
 tracker-table-column-position = Position X/Y/Z
+tracker-table-column-stay_aligned = Stay Aligned
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -447,6 +449,7 @@ mounting_selection_menu-close = Close
 settings-sidebar-title = Settings
 settings-sidebar-general = General
 settings-sidebar-tracker_mechanics = Tracker mechanics
+settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = Tracking settings
 settings-sidebar-gesture_control = Gesture control
 settings-sidebar-interface = Interface
@@ -538,6 +541,27 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Uses magnetometer on all trackers that have a compatible firmware for it, reducing drift in stable magnetic environments.
     Can be disabled per tracker in the tracker's settings. <b>Please don't shutdown any of the trackers while toggling this!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetometer on trackers
+
+settings-stay_aligned = Stay Aligned
+settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your most common poses.
+settings-stay_aligned-warnings-drift_compensation = ⚠ Please turn off Drift Compensation! Drift Compensation will conflict with Stay Aligned.
+settings-stay_aligned-enabled-label = Enabled
+settings-stay_aligned-extra_yaw_correction-label = Extra correction for low quality IMUs (e.g. BMI160, MPU60XX)
+settings-stay_aligned-hide_yaw_correction-label = Hide correction (for comparison)
+settings-stay_aligned-general-label = General
+settings-stay_aligned-relaxed_poses-label = Relaxed Poses
+settings-stay_aligned-relaxed_poses-standing = Standing
+settings-stay_aligned-relaxed_poses-sitting = Sitting in chair
+settings-stay_aligned-relaxed_poses-flat = Sitting on floor
+settings-stay_aligned-relaxed_poses-current_angles = Current angles
+settings-stay_aligned-relaxed_poses-upper_leg_angle = Thigh
+settings-stay_aligned-relaxed_poses-lower_leg_angle = Ankle
+settings-stay_aligned-relaxed_poses-foot_angle = Foot
+settings-stay_aligned-relaxed_poses-detect_pose = Detect pose
+settings-stay_aligned-relaxed_poses-reset_pose = Reset pose
+settings-stay_aligned-relaxed_poses-outwards = {$angle} outwards
+settings-stay_aligned-relaxed_poses-inwards = {$angle} inwards
+settings-stay_aligned-relaxed_poses-disabled = Not enabled
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings

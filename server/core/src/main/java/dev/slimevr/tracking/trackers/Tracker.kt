@@ -2,6 +2,7 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
+import dev.slimevr.tracking.processor.stayaligned.trackers.StayAlignedTrackerState
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
 import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
@@ -155,6 +156,8 @@ class Tracker @JvmOverloads constructor(
 	 * It's like the ID, but it should be local to the device if it has one
 	 */
 	val trackerNum: Int = trackerNum ?: id
+
+	val stayAligned = StayAlignedTrackerState(this)
 
 	init {
 		// IMPORTANT: Look here for the required states of inputs
@@ -317,6 +320,7 @@ class Tracker @JvmOverloads constructor(
 		}
 		filteringHandler.update()
 		resetsHandler.update()
+		stayAligned.update()
 	}
 
 	/**
@@ -345,12 +349,39 @@ class Tracker @JvmOverloads constructor(
 	 * it too much should be avoided for performance reasons.
 	 */
 	private fun getAdjustedRotation(): Quaternion {
+		var rot = _rotation
+
+		if (!stayAligned.hideCorrection) {
+			// Yaw drift happens in the raw rotation space
+			rot = Quaternion.rotationAroundYAxis(stayAligned.yawCorrection.toRad()) * rot
+		}
+
 		// Reset if needed and is not computed and internal
 		return if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset, mounting and drift compensation
-			resetsHandler.getReferenceAdjustedDriftRotationFrom(_rotation)
+			resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
 		} else {
-			_rotation
+			rot
+		}
+	}
+
+	/**
+	 * Same as getAdjustedRotation except that Stay Aligned correction is always
+	 * applied. This allows Stay Aligned to do gradient descent with the tracker's
+	 * rotation.
+	 */
+	fun getAdjustedRotationForceStayAligned(): Quaternion {
+		var rot = _rotation
+
+		// Yaw drift happens in the raw rotation space
+		rot = Quaternion.rotationAroundYAxis(stayAligned.yawCorrection.toRad()) * rot
+
+		// Reset if needed and is not computed and internal
+		return if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
+			// Adjust to reset, mounting and drift compensation
+			resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
+		} else {
+			rot
 		}
 	}
 
@@ -360,12 +391,19 @@ class Tracker @JvmOverloads constructor(
 	 * This is used for debugging/visualizing tracker data
 	 */
 	fun getIdentityAdjustedRotation(): Quaternion {
+		var rot = _rotation
+
+		if (!stayAligned.hideCorrection) {
+			// Yaw drift happens in the raw rotation space
+			rot = Quaternion.rotationAroundYAxis(stayAligned.yawCorrection.toRad()) * rot
+		}
+
 		// Reset if needed or is a computed tracker besides head
 		return if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset and mounting
-			resetsHandler.getIdentityAdjustedDriftRotationFrom(_rotation)
+			resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		} else {
-			_rotation
+			rot
 		}
 	}
 

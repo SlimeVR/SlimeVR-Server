@@ -57,6 +57,9 @@ export function SettingsSidebar() {
           <SettingsLink to="/settings/trackers" scrollTo="steamvr">
             SteamVR
           </SettingsLink>
+          <SettingsLink to="/settings/trackers" scrollTo="stayaligned">
+            {l10n.getString('settings-sidebar-stay_aligned')}
+          </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="mechanics">
             {l10n.getString('settings-sidebar-tracker_mechanics')}
           </SettingsLink>
