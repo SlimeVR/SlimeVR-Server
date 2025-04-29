@@ -12,6 +12,7 @@ import { useLocalization } from '@fluent/react';
 import { Vector3Object, Vector3FromVec3fT } from '@/maths/vector3';
 import { Gltf } from '@react-three/drei';
 import { ErrorBoundary } from 'react-error-boundary';
+import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
 
 const groundColor = '#4444aa';
 
@@ -165,6 +166,15 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
             {l10n.getString('tracker-infos-magnetometer')}
           </Typography>
           <Typography>{formatVector3(tracker.rawMagneticVector, 1)}</Typography>
+        </div>
+      )}
+
+      {!!tracker.stayAligned && (
+        <div className="flex justify-between">
+          <Typography color="secondary">
+            {l10n.getString('widget-imu_visualizer-stay_aligned')}
+          </Typography>
+          <StayAlignedInfo color="primary" tracker={tracker} />
         </div>
       )}
 

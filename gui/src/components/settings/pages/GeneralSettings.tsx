@@ -33,8 +33,15 @@ import {
 import { HandsWarningModal } from '@/components/settings/HandsWarningModal';
 import { MagnetometerToggleSetting } from './MagnetometerToggleSetting';
 import { DriftCompensationModal } from '@/components/settings/DriftCompensationModal';
+import {
+  defaultStayAlignedSettings,
+  StayAlignedSettings,
+  StayAlignedSettingsForm,
+  serializeStayAlignedSettings,
+  deserializeStayAlignedSettings,
+} from './components/StayAlignedSettings';
 
-interface SettingsForm {
+export type SettingsForm = {
   trackers: {
     waist: boolean;
     chest: boolean;
@@ -103,7 +110,8 @@ interface SettingsForm {
     saveMountingReset: boolean;
     resetHmdPitch: boolean;
   };
-}
+  stayAligned: StayAlignedSettingsForm;
+};
 
 const defaultValues: SettingsForm = {
   trackers: {
@@ -169,6 +177,7 @@ const defaultValues: SettingsForm = {
     saveMountingReset: false,
     resetHmdPitch: false,
   },
+  stayAligned: defaultStayAlignedSettings,
 };
 
 export function GeneralSettings() {
@@ -297,6 +306,8 @@ export function GeneralSettings() {
     driftCompensation.maxResets = values.driftCompensation.maxResets;
     settings.driftCompensation = driftCompensation;
 
+    settings.stayAligned = serializeStayAlignedSettings(values.stayAligned);
+
     if (values.resetsSettings) {
       const resetsSettings = new ResetsSettingsT();
       resetsSettings.resetMountingFeet =
@@ -418,6 +429,12 @@ export function GeneralSettings() {
 
     if (settings.resetsSettings) {
       formData.resetsSettings = settings.resetsSettings;
+    }
+
+    if (settings.stayAligned) {
+      formData.stayAligned = deserializeStayAlignedSettings(
+        settings.stayAligned
+      );
     }
 
     reset({ ...getValues(), ...formData });
@@ -612,6 +629,7 @@ export function GeneralSettings() {
             </div>
           </>
         </SettingsPagePaneLayout>
+        <StayAlignedSettings values={getValues()} control={control} />
         <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">
           <>
             <Typography variant="main-title">
