@@ -41,6 +41,7 @@ export interface Config {
   errorTracking: boolean | null;
   decorations: boolean;
   showNavbarOnboarding: boolean;
+  vrcMutedWarnings: string[];
 }
 
 export interface ConfigContext {
@@ -67,6 +68,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   errorTracking: null,
   decorations: false,
   showNavbarOnboarding: true,
+  vrcMutedWarnings: [],
 };
 
 interface CrossStorage {

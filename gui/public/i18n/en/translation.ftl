@@ -458,6 +458,7 @@ settings-sidebar-appearance = Appearance
 settings-sidebar-notifications = Notifications
 settings-sidebar-behavior = Behavior
 settings-sidebar-firmware-tool = DIY Firmware Tool
+settings-sidebar-vrc_warnings = VRChat Config Warnings
 settings-sidebar-advanced = Advanced
 
 ## SteamVR settings
@@ -1442,6 +1443,9 @@ vrc_config-show_more = Show more
 vrc_config-setting_name = VRChat Setting name
 vrc_config-recommended_value = Recommended Value
 vrc_config-current_value = Current Value
+vrc_config-mute = Mute Warning
+vrc_config-mute-btn = Mute
+vrc_config-unmute-btn = Unmute
 vrc_config-legacy_mode = Use Legacy IK Solving
 vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
 vrc_config-shoulder_width_compensation = Shoulder Width Compensation
