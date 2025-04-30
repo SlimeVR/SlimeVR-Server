@@ -244,15 +244,15 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 
 	override fun getCurrentPort(): SlimeSerialPort? = this.currentPort
 
-	private fun addLog(str: String) {
+	private fun addLog(str: String, server: Boolean = true) {
 		LogManager.info("[Serial] $str")
-		listeners.forEach { it.onSerialLog(str) }
+		listeners.forEach { it.onSerialLog(str, server) }
 	}
 
 	override fun onNewData(data: ByteArray?) {
 		if (data != null) {
 			val s = StandardCharsets.UTF_8.decode(ByteBuffer.wrap(data)).toString()
-			addLog(s)
+			addLog(s, false)
 		}
 	}
 

@@ -446,7 +446,7 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
 	 */
-	fun resetFilteringQuats() {
-		filteringHandler.resetMovingAverage(getAdjustedRotation())
+	fun resetFilteringQuats(reference: Quaternion) {
+		filteringHandler.resetMovingAverage(getAdjustedRotation(), reference)
 	}
 }
