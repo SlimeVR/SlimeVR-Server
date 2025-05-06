@@ -12,12 +12,13 @@ import kotlin.concurrent.scheduleAtFixedRate
 
 enum class NetworkProfile {
 	PRIVATE,
-	PUBLIC
+	PUBLIC,
 }
 
 fun checkNetworkProfile(): NetworkProfile? {
-	if (OperatingSystem.currentPlatform != OperatingSystem.WINDOWS)
+	if (OperatingSystem.currentPlatform != OperatingSystem.WINDOWS) {
 		return null
+	}
 	try {
 		// Full command as a single string
 		val command = "powershell.exe -Command \"(Get-NetConnectionProfile).NetworkCategory\""
@@ -32,8 +33,9 @@ fun checkNetworkProfile(): NetworkProfile? {
 			lines.joinToString("\n")
 		}
 		val exitCode = process.waitFor()
-		if (exitCode != 0)
+		if (exitCode != 0) {
 			return null
+		}
 		return when (output.trim()) {
 			"Private" -> NetworkProfile.PRIVATE
 			"Public" -> NetworkProfile.PUBLIC
@@ -71,5 +73,4 @@ class NetworkProfileChecker(private val server: VRServer) {
 			}
 		}
 	}
-
 }
