@@ -87,6 +87,7 @@ jobs:
         shell: bash
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          NODE_OPTIONS: ${{ matrix.os == 'macos-latest' && '--max-old-space-size=4096' || '' }}
         run: pnpm run skipbundler --config $( ./gui/scripts/gitversion.mjs )
 
       - if: matrix.os == 'windows-latest'
