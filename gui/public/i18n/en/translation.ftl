@@ -1242,6 +1242,7 @@ status_system-StatusSteamVRDisconnected = { $type ->
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
 status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
+status_system-StatusPublicNetwork = Your network profile is currently set to Public. This is not recomended for SlimeVR to function properly. <PublicFixLink>See how to fix here</PublicFixLink>
 
 
 ## Firmware tool globals
