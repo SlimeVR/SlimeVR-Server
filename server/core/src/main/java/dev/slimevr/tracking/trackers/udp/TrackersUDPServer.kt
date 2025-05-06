@@ -12,7 +12,6 @@ import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.*
-import org.apache.commons.lang3.ArrayUtils
 import solarxr_protocol.rpc.ResetType
 import java.net.DatagramPacket
 import java.net.DatagramSocket
@@ -612,11 +611,14 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				sb.append("null")
 			} else {
 				sb.append(packet.address.toString())
+				sb.append(':')
 				sb.append(packet.port)
 				sb.append(',')
 				sb.append(packet.length)
 				sb.append(',')
-				sb.append(ArrayUtils.toString(packet.data))
+				sb.append('{')
+				sb.append(HexFormat.ofDelimiter(",").formatHex(packet.data, 0, packet.length))
+				sb.append('}')
 			}
 			sb.append('}')
 			return sb.toString()
