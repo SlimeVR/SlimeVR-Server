@@ -124,6 +124,7 @@ export function parseStatusToLocale(
     case StatusData.NONE:
     case StatusData.StatusTrackerReset:
     case StatusData.StatusUnassignedHMD:
+    case StatusData.StatusPublicNetwork:
       return {};
     case StatusData.StatusSteamVRDisconnected: {
       const data = status.data as StatusSteamVRDisconnectedT;
