@@ -13,105 +13,11 @@ import { exists, readTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
 import { invoke } from '@tauri-apps/api/core';
 import { isTrayAvailable } from '@/utils/tauri';
+import { langs } from './names';
 
 export const defaultNS = 'translation';
 export const DEFAULT_LOCALE = 'en';
 const OVERRIDE_FILENAME = 'override.ftl';
-
-export const langs = [
-  {
-    name: '🇦🇪 عربى',
-    key: 'ar',
-  },
-  {
-    name: '🇨🇿 Čeština',
-    key: 'cs',
-  },
-  {
-    name: '🇩🇰 Dansk',
-    key: 'da',
-  },
-  {
-    name: '🇩🇪 Deutsch',
-    key: 'de',
-  },
-  {
-    name: '🇺🇸 English',
-    key: 'en',
-  },
-  {
-    name: '🌎 Español Latinoamericano',
-    key: 'es-419',
-  },
-  {
-    name: '🇪🇸 Español España',
-    key: 'es-ES',
-  },
-  {
-    name: '🇪🇪 Eesti',
-    key: 'et',
-  },
-  {
-    name: '🇫🇮 Suomi',
-    key: 'fi',
-  },
-  {
-    name: '🇫🇷 Français',
-    key: 'fr',
-  },
-  {
-    name: '🇮🇹 Italiano',
-    key: 'it',
-  },
-  {
-    name: '🇯🇵 日本語',
-    key: 'ja',
-  },
-  {
-    name: '🇰🇷 한국어',
-    key: 'ko',
-  },
-  {
-    name: '🇳🇴 Norsk bokmål',
-    key: 'nb-NO',
-  },
-  {
-    name: '🇳🇱 Nederlands',
-    key: 'nl',
-  },
-  {
-    name: '🇵🇱 Polski',
-    key: 'pl',
-  },
-  {
-    name: '🇧🇷 Português Brasileiro',
-    key: 'pt-BR',
-  },
-  {
-    name: '🇷🇺 Русский',
-    key: 'ru',
-  },
-  {
-    name: '🇺🇦 Українська',
-    key: 'uk',
-  },
-  {
-    name: '🇻🇳 Tiếng Việt',
-    key: 'vi',
-  },
-  {
-    name: '🇨🇳 简体中文',
-    key: 'zh-Hans',
-  },
-  {
-    name: '🧋 繁體中文',
-    key: 'zh-Hant',
-  },
-  {
-    name: '🥺 Engwish~ OwO',
-    key: 'en-x-owo',
-  },
-];
 
 // AppConfig path: https://docs.rs/tauri/1.2.4/tauri/api/path/fn.config_dir.html
 // We doing this only once, don't want an override check to be done on runtime,
