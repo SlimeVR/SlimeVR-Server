@@ -1,9 +1,9 @@
 package dev.slimevr.desktop.tracking.trackers.hid
 
-import com.jme3.math.FastMath
 import dev.slimevr.VRServer
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.Tracker.Companion.axisOffset
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.udp.BoardType
 import dev.slimevr.tracking.trackers.udp.IMUType
@@ -11,7 +11,6 @@ import dev.slimevr.tracking.trackers.udp.MCUType
 import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
-import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import io.github.axisangles.ktmath.Vector3
 import org.hid4java.HidDevice
 import org.hid4java.HidException
@@ -400,7 +399,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							// x y z w -> w x y z
 							var rot = Quaternion(q[3].toFloat(), q[0].toFloat(), q[1].toFloat(), q[2].toFloat())
 							val scaleRot = 1 / (1 shl 15).toFloat() // compile time evaluation
-							rot = AXES_OFFSET.times(scaleRot).times(rot) // no division
+							rot = axisOffset(rot * scaleRot) // no division
 							tracker.setRotation(rot)
 						}
 						if (packetType == 2) {
@@ -419,13 +418,14 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							val s = sin(a)
 							val k = s * invSqrtD
 							var rot = Quaternion(cos(a), k * v[0], k * v[1], k * v[2])
-							rot = AXES_OFFSET.times(rot) // no division
+							rot = axisOffset(rot) // no division
 							tracker.setRotation(rot)
 						}
 						if (packetType == 1 || packetType == 2) {
 							// TODO: Acceleration "was" wrong
 							val scaleAccel = 1 / (1 shl 7).toFloat() // compile time evaluation
 							var acceleration = Vector3(a[0].toFloat(), a[1].toFloat(), a[2].toFloat()).times(scaleAccel) // no division
+							acceleration = axisOffset(acceleration)
 							tracker.setAcceleration(acceleration)
 							tracker.dataTick() // only data tick if there is rotation data
 						}
@@ -492,10 +492,6 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	}
 
 	companion object {
-		/**
-		 * Change between IMU axes and OpenGL/SteamVR axes
-		 */
-		private val AXES_OFFSET = fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
 		private const val resetSourceName = "TrackerServer"
 	}
 }
