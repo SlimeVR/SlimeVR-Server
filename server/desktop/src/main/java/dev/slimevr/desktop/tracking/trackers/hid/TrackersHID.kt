@@ -463,10 +463,14 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			// Work on devicesByHid and add/remove as necessary
 			val removeList: MutableList<HidDevice> = devicesByHID.keys.toMutableList()
 			removeList.removeAll(hidDeviceList)
-			hidDeviceList.removeAll(devicesByHID.keys) // addList
 			for (device in removeList) {
 				removeDevice(device)
 			}
+			// Quickly reattaching a device may not be detected, so always try to open existing devices
+			for (device in devicesByHID.keys) {
+				device.open()
+			}
+			hidDeviceList.removeAll(devicesByHID.keys) // addList
 			for (device in hidDeviceList) {
 				checkConfigureDevice(device)
 			}
