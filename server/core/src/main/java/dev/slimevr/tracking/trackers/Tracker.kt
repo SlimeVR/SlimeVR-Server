@@ -428,7 +428,11 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * Gets the magnetic field vector, in mGauss.
 	 */
-	fun getMagVector() = _magVector
+	fun getMagVector() = if (needsReset) {
+		resetsHandler.getReferenceAdjustedAccel(_rotation, _magVector)
+	} else {
+		_magVector
+	}
 
 	/**
 	 * Sets the magnetic field vector.

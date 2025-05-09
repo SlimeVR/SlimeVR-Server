@@ -3,6 +3,7 @@ package dev.slimevr.protocol.datafeed;
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.tracking.trackers.Device;
 import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus;
 import dev.slimevr.tracking.trackers.udp.UDPDevice;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
@@ -233,7 +234,7 @@ public class DataFeedBuilder {
 		if (mask.getTps()) {
 			TrackerData.addTps(fbb, (int) tracker.getTps());
 		}
-		if (mask.getRawMagneticVector()) {
+		if (mask.getRawMagneticVector() && tracker.getMagStatus() == MagnetometerStatus.ENABLED) {
 			TrackerData.addRawMagneticVector(fbb, createTrackerMagneticVector(fbb, tracker));
 		}
 
