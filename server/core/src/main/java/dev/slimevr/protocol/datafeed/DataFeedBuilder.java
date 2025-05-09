@@ -3,6 +3,7 @@ package dev.slimevr.protocol.datafeed;
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.tracking.trackers.Device;
 import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus;
 import dev.slimevr.tracking.trackers.udp.UDPDevice;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
@@ -80,6 +81,16 @@ public class DataFeedBuilder {
 		return TrackerId.endTrackerId(fbb);
 	}
 
+	public static int createVec3(FlatBufferBuilder fbb, Vector3 vec) {
+		return Vec3f
+			.createVec3f(
+				fbb,
+				vec.getX(),
+				vec.getY(),
+				vec.getZ()
+			);
+	}
+
 	public static int createQuat(FlatBufferBuilder fbb, Quaternion quaternion) {
 		return Quat
 			.createQuat(
@@ -146,14 +157,7 @@ public class DataFeedBuilder {
 	}
 
 	public static int createTrackerPosition(FlatBufferBuilder fbb, Tracker tracker) {
-		Vector3 pos = tracker.getPosition();
-		return Vec3f
-			.createVec3f(
-				fbb,
-				pos.getX(),
-				pos.getY(),
-				pos.getZ()
-			);
+		return createVec3(fbb, tracker.getPosition());
 	}
 
 	public static int createTrackerRotation(FlatBufferBuilder fbb, Tracker tracker) {
@@ -161,14 +165,11 @@ public class DataFeedBuilder {
 	}
 
 	public static int createTrackerAcceleration(FlatBufferBuilder fbb, Tracker tracker) {
-		Vector3 accel = tracker.getAcceleration();
-		return Vec3f
-			.createVec3f(
-				fbb,
-				accel.getX(),
-				accel.getY(),
-				accel.getZ()
-			);
+		return createVec3(fbb, tracker.getAcceleration());
+	}
+
+	public static int createTrackerMagneticVector(FlatBufferBuilder fbb, Tracker tracker) {
+		return createVec3(fbb, tracker.getMagVector());
 	}
 
 	public static int createTrackerTemperature(FlatBufferBuilder fbb, Tracker tracker) {
@@ -232,6 +233,9 @@ public class DataFeedBuilder {
 		}
 		if (mask.getTps()) {
 			TrackerData.addTps(fbb, (int) tracker.getTps());
+		}
+		if (mask.getRawMagneticVector() && tracker.getMagStatus() == MagnetometerStatus.ENABLED) {
+			TrackerData.addRawMagneticVector(fbb, createTrackerMagneticVector(fbb, tracker));
 		}
 
 		return TrackerData.endTrackerData(fbb);
