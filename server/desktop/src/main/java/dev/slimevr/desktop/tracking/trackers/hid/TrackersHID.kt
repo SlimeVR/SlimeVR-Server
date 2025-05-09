@@ -118,11 +118,12 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 		// LogManager.info("[TrackerServer] Sensor $trackerId for ${device.name}, status $sensorStatus")
 		var imuTracker = device.getTracker(trackerId)
 		if (imuTracker == null) {
+			var formattedHWID = device.hardwareIdentifier.replace(":", "").takeLast(5)
 			imuTracker = Tracker(
 				device,
 				VRServer.getNextLocalTrackerId(),
 				device.name + "/" + trackerId,
-				"IMU Tracker #" + VRServer.currentLocalTrackerId,
+				"Tracker $formattedHWID",
 				null,
 				trackerNum = trackerId,
 				hasRotation = true,
@@ -265,8 +266,8 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							val sensorType = IMUType.getById(imu_id.toUInt())
 							// only able to register magnetometer status, not magnetometer type
 							val magStatus = MagnetometerStatus.getById(mag_id.toUByte())
-							if (sensorType != null) {
-								setUpSensor(device, trackerId, sensorType!!, TrackerStatus.OK, magStatus!!)
+							if (sensorType != null && magStatus != null) {
+								setUpSensor(device, trackerId, sensorType, TrackerStatus.OK, magStatus)
 							}
 						}
 

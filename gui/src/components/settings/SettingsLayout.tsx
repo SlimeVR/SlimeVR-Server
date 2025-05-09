@@ -45,6 +45,10 @@ export function SettingSelectorMobile() {
         value: { url: '/settings/firmware-tool' },
       },
       {
+        label: l10n.getString('settings-sidebar-vrc_warnings'),
+        value: { url: '/vrc-warnings' },
+      },
+      {
         label: l10n.getString('settings-sidebar-advanced'),
         value: { url: '/settings/advanced' },
       },

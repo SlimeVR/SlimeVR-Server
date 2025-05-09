@@ -1,6 +1,5 @@
 import { Typography } from '@/components/commons/Typography';
 import { ReactNode } from 'react';
-import {} from 'solarxr-protocol';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import {
@@ -8,22 +7,28 @@ import {
   spineModeTranslationMap,
   trackerModelTranslationMap,
   useVRCConfig,
+  VRCConfigStateSupported,
 } from '@/hooks/vrc-config';
 import { Localized, useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { useLocaleConfig } from '@/i18n/config';
 import { A } from '@/components/commons/A';
+import { Button } from '@/components/commons/Button';
 
-export function SettingRow({
+function SettingRow({
   name,
   valid,
   value,
   recommendedValue,
+  muted,
+  mute,
 }: {
-  valid: boolean;
   name: string;
   recommendedValue: ReactNode;
   value: ReactNode;
+  valid: boolean;
+  muted: boolean;
+  mute: () => void;
 }) {
   return (
     <tr className="group border-b border-background-60">
@@ -41,12 +46,56 @@ export function SettingRow({
       <td
         className={classNames(
           'px-6 py-4 text-end items-center',
-          !valid && 'text-status-warning'
+          !valid && !muted && 'text-status-warning'
         )}
       >
         {value}
       </td>
+      <td
+        className={classNames('px-6 py-4 text-end items-end justify-end flex')}
+      >
+        <Localized id={muted ? 'vrc_config-unmute-btn' : 'vrc_config-mute-btn'}>
+          <Button
+            variant="secondary"
+            className="min-w-24"
+            onClick={mute}
+          ></Button>
+        </Localized>
+      </td>
     </tr>
+  );
+}
+
+function Table({ children }: { children: ReactNode }) {
+  return (
+    <table className="min-w-full divide-y divide-background-50">
+      <thead>
+        <tr>
+          <th scope="col" className="px-6 py-3 text-start">
+            <Localized id={'vrc_config-setting_name'}>
+              <Typography />
+            </Localized>
+          </th>
+
+          <th scope="col" className="px-6 py-3 text-end">
+            <Localized id={'vrc_config-recommended_value'}>
+              <Typography />
+            </Localized>
+          </th>
+          <th scope="col" className="px-6 py-3 text-end">
+            <Localized id={'vrc_config-current_value'}>
+              <Typography />
+            </Localized>
+          </th>
+          <th scope="col" className="px-6 py-3 text-end">
+            <Localized id={'vrc_config-mute'}>
+              <Typography />
+            </Localized>
+          </th>
+        </tr>
+      </thead>
+      <tbody>{children}</tbody>
+    </table>
   );
 }
 
@@ -55,7 +104,7 @@ const onOffKey = (value: boolean) =>
 
 export function VRCWarningsPage() {
   const { l10n } = useLocalization();
-  const { state } = useVRCConfig();
+  const { state, toggleMutedSettings, mutedSettings } = useVRCConfig();
   const { currentLocales } = useLocaleConfig();
 
   const meterFormat = Intl.NumberFormat(currentLocales, {
@@ -67,6 +116,12 @@ export function VRCWarningsPage() {
   if (!state || !state.isSupported) {
     return <></>;
   }
+
+  const settingRowProps = (key: keyof VRCConfigStateSupported['validity']) => ({
+    mute: () => toggleMutedSettings(key),
+    muted: mutedSettings.includes(key),
+    valid: state.validity[key] == true,
+  });
 
   return (
     <div className="flex flex-col p-4 w-full">
@@ -89,126 +144,104 @@ export function VRCWarningsPage() {
                 <Localized id="vrc_config-page-big_menu-desc">
                   <Typography color="secondary" />
                 </Localized>
-                <table className="min-w-full divide-y divide-background-50">
-                  <thead>
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-start">
-                        <Localized id={'vrc_config-setting_name'}>
-                          <Typography />
-                        </Localized>
-                      </th>
-
-                      <th scope="col" className="px-6 py-3 text-end">
-                        <Localized id={'vrc_config-recommended_value'}>
-                          <Typography />
-                        </Localized>
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-end">
-                        <Localized id={'vrc_config-current_value'}>
-                          <Typography />
-                        </Localized>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <SettingRow
-                      name="vrc_config-user_height"
-                      recommendedValue={meterFormat.format(
-                        state.recommended.userHeight
-                      )}
-                      value={meterFormat.format(state.state.userHeight)}
-                      valid={state.validity.userHeightOk}
-                    ></SettingRow>
-                    <SettingRow
-                      name="vrc_config-legacy_mode"
-                      recommendedValue={
-                        <Localized
-                          id={onOffKey(state.recommended.legacyMode)}
-                        ></Localized>
-                      }
-                      value={
-                        <Localized
-                          id={onOffKey(state.state.legacyMode)}
-                        ></Localized>
-                      }
-                      valid={state.validity.legacyModeOk}
-                    ></SettingRow>
-                    <SettingRow
-                      name="vrc_config-disable_shoulder_tracking"
-                      recommendedValue={
-                        <Localized
-                          id={onOffKey(
-                            state.recommended.shoulderTrackingDisabled
-                          )}
-                        ></Localized>
-                      }
-                      value={
-                        <Localized
-                          id={onOffKey(state.state.shoulderTrackingDisabled)}
-                        ></Localized>
-                      }
-                      valid={state.validity.shoulderTrackingOk}
-                    ></SettingRow>
-                    <SettingRow
-                      name="vrc_config-shoulder_width_compensation"
-                      recommendedValue={
-                        <Localized
-                          id={onOffKey(
-                            state.recommended.shoulderWidthCompensation
-                          )}
-                        ></Localized>
-                      }
-                      value={
-                        <Localized
-                          id={onOffKey(state.state.shoulderWidthCompensation)}
-                        ></Localized>
-                      }
-                      valid={state.validity.shoulderWidthCompensationOk}
-                    ></SettingRow>
-                    <SettingRow
-                      name="vrc_config-calibration_visuals"
-                      recommendedValue={
-                        <Localized
-                          id={onOffKey(state.recommended.calibrationVisuals)}
-                        ></Localized>
-                      }
-                      value={
-                        <Localized
-                          id={onOffKey(state.state.calibrationVisuals)}
-                        ></Localized>
-                      }
-                      valid={state.validity.calibrationVisualsOk}
-                    ></SettingRow>
-                    <SettingRow
-                      name="vrc_config-calibration_range"
-                      recommendedValue={meterFormat.format(
-                        state.recommended.calibrationRange
-                      )}
-                      value={meterFormat.format(state.state.calibrationRange)}
-                      valid={state.validity.calibrationRangeOk}
-                    ></SettingRow>
-                    <SettingRow
-                      name="vrc_config-tracker_model"
-                      recommendedValue={
-                        <Localized
-                          id={
-                            trackerModelTranslationMap[
-                              state.recommended.trackerModel
-                            ]
-                          }
-                        ></Localized>
-                      }
-                      value={
-                        <Localized
-                          id={
-                            trackerModelTranslationMap[state.state.trackerModel]
-                          }
-                        ></Localized>
-                      }
-                      valid={state.validity.trackerModelOk}
-                    ></SettingRow>
-                  </tbody>
-                </table>
+                <Table>
+                  <SettingRow
+                    {...settingRowProps('userHeightOk')}
+                    name="vrc_config-user_height"
+                    recommendedValue={meterFormat.format(
+                      state.recommended.userHeight
+                    )}
+                    value={meterFormat.format(state.state.userHeight)}
+                  ></SettingRow>
+                  <SettingRow
+                    {...settingRowProps('legacyModeOk')}
+                    name="vrc_config-legacy_mode"
+                    recommendedValue={
+                      <Localized
+                        id={onOffKey(state.recommended.legacyMode)}
+                      ></Localized>
+                    }
+                    value={
+                      <Localized
+                        id={onOffKey(state.state.legacyMode)}
+                      ></Localized>
+                    }
+                  ></SettingRow>
+                  <SettingRow
+                    {...settingRowProps('shoulderTrackingOk')}
+                    name="vrc_config-disable_shoulder_tracking"
+                    recommendedValue={
+                      <Localized
+                        id={onOffKey(
+                          state.recommended.shoulderTrackingDisabled
+                        )}
+                      ></Localized>
+                    }
+                    value={
+                      <Localized
+                        id={onOffKey(state.state.shoulderTrackingDisabled)}
+                      ></Localized>
+                    }
+                  ></SettingRow>
+                  <SettingRow
+                    {...settingRowProps('shoulderWidthCompensationOk')}
+                    name="vrc_config-shoulder_width_compensation"
+                    recommendedValue={
+                      <Localized
+                        id={onOffKey(
+                          state.recommended.shoulderWidthCompensation
+                        )}
+                      ></Localized>
+                    }
+                    value={
+                      <Localized
+                        id={onOffKey(state.state.shoulderWidthCompensation)}
+                      ></Localized>
+                    }
+                  ></SettingRow>
+                  <SettingRow
+                    {...settingRowProps('calibrationVisualsOk')}
+                    name="vrc_config-calibration_visuals"
+                    recommendedValue={
+                      <Localized
+                        id={onOffKey(state.recommended.calibrationVisuals)}
+                      ></Localized>
+                    }
+                    value={
+                      <Localized
+                        id={onOffKey(state.state.calibrationVisuals)}
+                      ></Localized>
+                    }
+                  ></SettingRow>
+                  <SettingRow
+                    {...settingRowProps('calibrationRangeOk')}
+                    name="vrc_config-calibration_range"
+                    recommendedValue={meterFormat.format(
+                      state.recommended.calibrationRange
+                    )}
+                    value={meterFormat.format(state.state.calibrationRange)}
+                  ></SettingRow>
+                  <SettingRow
+                    {...settingRowProps('trackerModelOk')}
+                    name="vrc_config-tracker_model"
+                    recommendedValue={
+                      <Localized
+                        id={
+                          trackerModelTranslationMap[
+                            state.recommended.trackerModel
+                          ]
+                        }
+                      ></Localized>
+                    }
+                    value={
+                      <Localized
+                        id={
+                          trackerModelTranslationMap[state.state.trackerModel]
+                        }
+                      ></Localized>
+                    }
+                  ></SettingRow>
+                </Table>
               </div>
               <div className="flex flex-col gap-2">
                 <Localized id="vrc_config-page-wrist_menu">
@@ -217,67 +250,45 @@ export function VRCWarningsPage() {
                 <Localized id="vrc_config-page-wrist_menu-desc">
                   <Typography color="secondary" />
                 </Localized>
-                <table className="min-w-full divide-y divide-background-50">
-                  <thead>
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-start">
-                        <Localized id={'vrc_config-setting_name'}>
-                          <Typography />
-                        </Localized>
-                      </th>
+                <Table>
+                  <SettingRow
+                    {...settingRowProps('spineModeOk')}
+                    name="vrc_config-spine_mode"
+                    recommendedValue={state.recommended.spineMode
+                      .map((mode) =>
+                        l10n.getString(spineModeTranslationMap[mode])
+                      )
+                      .join(', ')}
+                    value={
+                      <Localized
+                        id={spineModeTranslationMap[state.state.spineMode]}
+                      ></Localized>
+                    }
+                  ></SettingRow>
 
-                      <th scope="col" className="px-6 py-3 text-end">
-                        <Localized id={'vrc_config-recommended_value'}>
-                          <Typography />
-                        </Localized>
-                      </th>
-                      <th scope="col" className="px-6 py-3 text-end">
-                        <Localized id={'vrc_config-current_value'}>
-                          <Typography />
-                        </Localized>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <SettingRow
-                      name="vrc_config-spine_mode"
-                      recommendedValue={state.recommended.spineMode
-                        .map((mode) =>
-                          l10n.getString(spineModeTranslationMap[mode])
-                        )
-                        .join(', ')}
-                      value={
-                        <Localized
-                          id={spineModeTranslationMap[state.state.spineMode]}
-                        ></Localized>
-                      }
-                      valid={state.validity.spineModeOk}
-                    ></SettingRow>
-
-                    <SettingRow
-                      name="vrc_config-avatar_measurement_type"
-                      recommendedValue={
-                        <Localized
-                          id={
-                            avatarMeasurementTypeTranslationMap[
-                              state.recommended.avatarMeasurementType
-                            ]
-                          }
-                        ></Localized>
-                      }
-                      value={
-                        <Localized
-                          id={
-                            avatarMeasurementTypeTranslationMap[
-                              state.state.avatarMeasurementType
-                            ]
-                          }
-                        ></Localized>
-                      }
-                      valid={state.validity.avatarMeasurementTypeOk}
-                    ></SettingRow>
-                  </tbody>
-                </table>
+                  <SettingRow
+                    {...settingRowProps('avatarMeasurementTypeOk')}
+                    name="vrc_config-avatar_measurement_type"
+                    recommendedValue={
+                      <Localized
+                        id={
+                          avatarMeasurementTypeTranslationMap[
+                            state.recommended.avatarMeasurementType
+                          ]
+                        }
+                      ></Localized>
+                    }
+                    value={
+                      <Localized
+                        id={
+                          avatarMeasurementTypeTranslationMap[
+                            state.state.avatarMeasurementType
+                          ]
+                        }
+                      ></Localized>
+                    }
+                  ></SettingRow>
+                </Table>
               </div>
             </div>
           </div>
