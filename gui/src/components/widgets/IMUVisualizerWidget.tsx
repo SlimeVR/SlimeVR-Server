@@ -219,6 +219,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
             <SceneRenderer
               quat={{ ...quat }}
               vec={{ ...vec }}
+              mag={{ ...mag }}
               model={
                 isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'
               }
