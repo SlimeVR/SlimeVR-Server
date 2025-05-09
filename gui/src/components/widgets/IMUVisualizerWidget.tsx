@@ -9,8 +9,7 @@ import { PerspectiveCamera, Vector3 } from 'three';
 import { Button } from '@/components/commons/Button';
 import { QuatObject } from '@/maths/quaternion';
 import { useLocalization } from '@fluent/react';
-import { Vector3Object } from '@/maths/vector3';
-import { Vector3FromVec3fT } from '@/maths/vector3';
+import { Vector3Object, Vector3FromVec3fT } from '@/maths/vector3';
 import { Gltf } from '@react-three/drei';
 import { ErrorBoundary } from 'react-error-boundary';
 
