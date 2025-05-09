@@ -441,7 +441,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							tracker.setAcceleration(acceleration)
 						}
 						if (packetType == 4) {
-							val scaleMag = 1 / (1 shl 10).toFloat() // compile time evaluation
+							val scaleMag = 1000 / (1 shl 10).toFloat() // compile time evaluation, and change gauss to milligauss
 							var magnetometer = Vector3(m[0].toFloat(), m[1].toFloat(), m[2].toFloat()).times(scaleMag) // no division
 							tracker.setMagVector(magnetometer)
 						}
