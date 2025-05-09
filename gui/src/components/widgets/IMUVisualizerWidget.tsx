@@ -9,7 +9,7 @@ import { PerspectiveCamera, Vector3 } from 'three';
 import { Button } from '@/components/commons/Button';
 import { QuatObject } from '@/maths/quaternion';
 import { useLocalization } from '@fluent/react';
-import { Vector3Object } from '@/maths/vector3';
+import { Vector3Object, Vector3FromVec3fT } from '@/maths/vector3';
 import { Gltf } from '@react-three/drei';
 import { ErrorBoundary } from 'react-error-boundary';
 
@@ -56,23 +56,9 @@ function SceneRenderer({
 
       <arrowHelper
         args={[
-          new Vector3(-Math.sign(vec.x), 0, 0),
+          Vector3FromVec3fT(vec).normalize(),
           new Vector3(0, 0, 0),
-          Math.sqrt(Math.abs(vec.x)) * 2,
-        ]}
-      />
-      <arrowHelper
-        args={[
-          new Vector3(0, Math.sign(vec.y), 0),
-          new Vector3(0, 0, 0),
-          Math.sqrt(Math.abs(vec.y)) * 2,
-        ]}
-      />
-      <arrowHelper
-        args={[
-          new Vector3(0, 0, -Math.sign(vec.z)),
-          new Vector3(0, 0, 0),
-          Math.sqrt(Math.abs(vec.z)) * 2,
+          Math.sqrt(Vector3FromVec3fT(vec).length()) * 2,
         ]}
       />
 
