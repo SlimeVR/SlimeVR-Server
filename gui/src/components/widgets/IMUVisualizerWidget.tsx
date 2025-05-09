@@ -36,9 +36,9 @@ function SceneRenderer({
   mag: Vector3Object;
   model: string;
 }) {
-    var magDir = new Vector3(mag.x, mag.y, mag.z);
-    var magLen = magDir.length();
-    var magMag = Math.sqrt(magLen / 100); // normalize magnituge
+    const magDir = new Vector3(mag.x, mag.y, mag.z);
+    const magLen = magDir.length();
+    const magMag = Math.sqrt(magLen / 100); // normalize magnituge
     if (magLen > 0)
       magDir.multiplyScalar(1/ magLen);
 
