@@ -441,6 +441,13 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							tracker.setAcceleration(acceleration)
 						}
 						if (packetType == 4) {
+							// Magnetometer is in local device frame
+							// On flat surface / face up:
+							// Right side of the device is +X
+							// Front side (facing up) is +Z
+							// Mounted on body / standing up:
+							// Top side of the device is +Y
+							// Front side (facing out) is +Z
 							val scaleMag = 1000 / (1 shl 10).toFloat() // compile time evaluation, and change gauss to milligauss
 							var magnetometer = Vector3(m[0].toFloat(), m[1].toFloat(), m[2].toFloat()).times(scaleMag) // no division
 							tracker.setMagVector(magnetometer)
