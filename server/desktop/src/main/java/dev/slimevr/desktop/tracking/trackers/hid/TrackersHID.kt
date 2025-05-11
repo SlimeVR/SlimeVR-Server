@@ -423,7 +423,13 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							tracker.setRotation(rot)
 						}
 						if (packetType == 1 || packetType == 2) {
-							// TODO: Acceleration "was" wrong
+							// Acceleration is in local device frame
+							// On flat surface / face up:
+							// Right side of the device is +X
+							// Front side (facing up) is +Z
+							// Mounted on body / standing up:
+							// Top side of the device is +Y
+							// Front side (facing out) is +Z
 							val scaleAccel = 1 / (1 shl 7).toFloat() // compile time evaluation
 							var acceleration = Vector3(a[0].toFloat(), a[1].toFloat(), a[2].toFloat()).times(scaleAccel) // no division
 							tracker.setAcceleration(acceleration)
