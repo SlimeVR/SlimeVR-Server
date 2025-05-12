@@ -440,10 +440,11 @@ class Tracker @JvmOverloads constructor(
 
 	companion object {
 		/**
-		 * Changes from IMU axis to OpenGL/SteamVR axis
+		 * Turn 90 degrees around LEFT axis to make the base position of the tracker standing upwards
+		 * instead of laying on the back
 		 */
-		fun axisOffset(v: Vector3): Vector3 = Vector3(v.x, v.z, -v.y)
 		private val rotationOffset = Quaternion(INV_SQRT_TWO, -INV_SQRT_TWO, 0f, 0f)
+		fun axisOffset(v: Vector3): Vector3 = rotationOffset.sandwich(v)
 		fun axisOffset(q: Quaternion): Quaternion = rotationOffset * q
 	}
 }
