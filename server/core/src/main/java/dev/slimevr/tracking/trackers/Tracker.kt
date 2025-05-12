@@ -384,6 +384,8 @@ class Tracker @JvmOverloads constructor(
 	 * Gets the world-adjusted acceleration
 	 */
 	fun getAcceleration(): Vector3 = if (needsReset) {
+		//_acceleration
+		//getAdjustedRotation().sandwich(_acceleration)
 		resetsHandler.getReferenceAdjustedAccel(_rotation, _acceleration)
 	} else {
 		_acceleration
@@ -461,7 +463,8 @@ class Tracker @JvmOverloads constructor(
 		 * instead of laying on the back
 		 */
 		private val rotationOffset = Quaternion(INV_SQRT_TWO, -INV_SQRT_TWO, 0f, 0f)
-		fun axisOffset(v: Vector3): Vector3 = rotationOffset.sandwich(v)
+		fun axisRemap(v: Vector3): Vector3 = Vector3(v.x, -v.y, -v.z)
+		fun axisOffset(v: Vector3): Vector3 = axisRemap(v) //rotationOffset.sandwich(rotationOffset.sandwich(v))
 		fun axisOffset(q: Quaternion): Quaternion = rotationOffset * q
 	}
 }

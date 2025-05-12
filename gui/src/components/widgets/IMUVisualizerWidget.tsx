@@ -110,14 +110,14 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
 
   const rotationRaw = useRawRotationEulerDegrees();
   const rotationIdent = useIdentAdjRotationEulerDegrees() || rotationRaw;
-  const quat =
-    tracker?.rotationIdentityAdjusted ||
-    tracker?.rotation ||
-    new THREE.Quaternion();
-  const vec =
-    tracker?.linearAcceleration ||
-    tracker?.rawAcceleration ||
-    new THREE.Vector3();
+  const quat = useMemo(() => {
+    return tracker?.rotationIdentityAdjusted || tracker?.rotation || new THREE.Quaternion()
+  }, [tracker])
+
+  const vec = useMemo(() => {
+    return new Vector3().copy(tracker?.linearAcceleration || tracker?.rawAcceleration || {x: 0, y: 0, z: 0})  // .applyQuaternion(new THREE.Quaternion().copy(quat))
+  }, [tracker, quat])
+
     const mag =
         tracker?.rawMagneticVector ||
         new THREE.Vector3();
