@@ -21,6 +21,7 @@ import { ClearMountingButton } from './ClearMountingButton';
 import { ToggleableSkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
 import { useAtomValue } from 'jotai';
 import { flatTrackersAtom } from '@/store/app-store';
+import { A } from './commons/A';
 
 function UnprioritizedStatuses() {
   const { l10n } = useLocalization();
@@ -38,6 +39,11 @@ function UnprioritizedStatuses() {
           id={`status_system-${StatusData[status.dataType]}`}
           vars={parseStatusToLocale(status, trackers, l10n)}
           key={status.id}
+          elems={{
+            PublicFixLink: (
+              <A href="https://docs.slimevr.dev/common-issues.html#the-trackers-are-connected-to-my-wi-fi-but-dont-turn-up-on-slimevr"></A>
+            ),
+          }}
         >
           <TipBox whitespace={false} hideIcon>
             {`Warning, you should fix ${StatusData[status.dataType]}`}
