@@ -24,7 +24,7 @@ fun checkNetworkProfile(): NetworkProfile? {
 		val command = "powershell.exe -Command \"(Get-NetConnectionProfile).NetworkCategory\""
 
 		// Use ProcessBuilder with the full command passed through the shell
-		val processBuilder = ProcessBuilder("cmd.exe", "/c", command)
+		val processBuilder = ProcessBuilder(command.split(" "))
 		processBuilder.redirectErrorStream(true)
 		val process = processBuilder.start()
 
