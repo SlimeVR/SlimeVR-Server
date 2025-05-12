@@ -28,12 +28,20 @@ export function TrackerModel({ model }: { model: string }) {
 function SceneRenderer({
   quat,
   vec,
+  mag,
   model,
 }: {
   quat: QuatObject;
   vec: Vector3Object;
+  mag: Vector3Object;
   model: string;
 }) {
+    const magDir = new Vector3(mag.x, mag.y, mag.z);
+    const magLen = magDir.length();
+    const magMag = Math.sqrt(magLen / 100); // normalize magnituge
+    if (magLen > 0)
+      magDir.multiplyScalar(1/ magLen);
+
   return (
     <Canvas
       className="container"
@@ -59,6 +67,14 @@ function SceneRenderer({
           Vector3FromVec3fT(vec).normalize(),
           new Vector3(0, 0, 0),
           Math.sqrt(Vector3FromVec3fT(vec).length()) * 2,
+        ]}
+      />
+      <arrowHelper
+        args={[
+          magDir,
+          magDir.clone().multiplyScalar(-magMag),
+          2 * magMag,
+          THREE.Color.NAMES.aqua,
         ]}
       />
 
@@ -102,6 +118,9 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
     tracker?.linearAcceleration ||
     tracker?.rawAcceleration ||
     new THREE.Vector3();
+    const mag =
+        tracker?.rawMagneticVector ||
+        new THREE.Vector3();
 
   return (
     <div className="bg-background-70 flex flex-col p-3 rounded-lg gap-2">
@@ -143,6 +162,17 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
         </div>
       )}
 
+      {tracker.rawMagneticVector && (
+        <div className="flex justify-between">
+          <Typography color="secondary">
+            {l10n.getString('tracker-infos-magnetometer')}
+          </Typography>
+          <Typography>
+            {formatVector3(tracker.rawMagneticVector, 1)}
+          </Typography>
+        </div>
+      )}
+
       {!enabled && (
         <Button
           variant="secondary"
@@ -175,6 +205,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
             <SceneRenderer
               quat={{ ...quat }}
               vec={{ ...vec }}
+              mag={{ ...mag }}
               model={
                 isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'
               }
