@@ -216,6 +216,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			var devicesDataReceived = false
 			val q = intArrayOf(0, 0, 0, 0)
 			val a = intArrayOf(0, 0, 0)
+			val m = intArrayOf(0, 0, 0)
 			for ((hidDevice, deviceList) in devicesByHID) {
 				val dataReceived: ByteArray = try {
 					hidDevice.readAll(0) // multiples 64 bytes
@@ -317,7 +318,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 									// Q15 as short big endian
 									q[j] = dataReceived[i + 2 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 2 + j * 2].toUByte().toInt()
 								}
-								for (j in 0..2) { // accel received as fixed 7, in m/s
+								for (j in 0..2) { // accel received as fixed 7, in m/s^2
 									// Q7 as short big endian
 									a[j] = dataReceived[i + 10 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 10 + j * 2].toUByte().toInt()
 								}
@@ -335,7 +336,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 								q[0] = (q_buf and 1023u).toInt()
 								q[1] = (q_buf shr 10 and 2047u).toInt()
 								q[2] = (q_buf shr 21 and 2047u).toInt()
-								for (j in 0..2) { // accel received as fixed 7, in m/s
+								for (j in 0..2) { // accel received as fixed 7, in m/s^2
 									// Q7 as short big endian
 									a[j] = dataReceived[i + 9 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 9 + j * 2].toUByte().toInt()
 								}
@@ -346,6 +347,17 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 								svr_status = dataReceived[i + 2].toUByte().toInt()
 								// status = dataReceived[i + 3].toUByte().toInt()
 								rssi = dataReceived[i + 15].toUByte().toInt()
+							}
+
+							4 -> { // full precision quat and mag, no extra data
+								for (j in 0..3) { // quat received as fixed Q15
+									// Q15 as short big endian
+									q[j] = dataReceived[i + 2 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 2 + j * 2].toUByte().toInt()
+								}
+								for (j in 0..2) { // mag received as fixed 10, in gauss
+									// Q10 as short big endian
+									m[j] = dataReceived[i + 10 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 10 + j * 2].toUByte().toInt()
+								}
 							}
 
 							else -> {
@@ -394,7 +406,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						}
 
 						// Assign rotation and acceleration
-						if (packetType == 1) {
+						if (packetType == 1 || packetType == 4) {
 							// The data comes in the same order as in the UDP protocol
 							// x y z w -> w x y z
 							var rot = Quaternion(q[3].toFloat(), q[0].toFloat(), q[1].toFloat(), q[2].toFloat())
@@ -422,11 +434,31 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							tracker.setRotation(rot)
 						}
 						if (packetType == 1 || packetType == 2) {
-							// TODO: Acceleration "was" wrong
+							// Acceleration is in local device frame
+							// On flat surface / face up:
+							// Right side of the device is +X
+							// Front side (facing up) is +Z
+							// Mounted on body / standing up:
+							// Top side of the device is +Y
+							// Front side (facing out) is +Z
 							val scaleAccel = 1 / (1 shl 7).toFloat() // compile time evaluation
 							var acceleration = Vector3(a[0].toFloat(), a[1].toFloat(), a[2].toFloat()).times(scaleAccel) // no division
 							acceleration = axisOffset(acceleration)
 							tracker.setAcceleration(acceleration)
+						}
+						if (packetType == 4) {
+							// Magnetometer is in local device frame
+							// On flat surface / face up:
+							// Right side of the device is +X
+							// Front side (facing up) is +Z
+							// Mounted on body / standing up:
+							// Top side of the device is +Y
+							// Front side (facing out) is +Z
+							val scaleMag = 1000 / (1 shl 10).toFloat() // compile time evaluation, and change gauss to milligauss
+							var magnetometer = Vector3(m[0].toFloat(), m[1].toFloat(), m[2].toFloat()).times(scaleMag) // no division
+							tracker.setMagVector(magnetometer)
+						}
+						if (packetType == 1 || packetType == 2 || packetType == 4) {
 							tracker.dataTick() // only data tick if there is rotation data
 						}
 
@@ -463,10 +495,14 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			// Work on devicesByHid and add/remove as necessary
 			val removeList: MutableList<HidDevice> = devicesByHID.keys.toMutableList()
 			removeList.removeAll(hidDeviceList)
-			hidDeviceList.removeAll(devicesByHID.keys) // addList
 			for (device in removeList) {
 				removeDevice(device)
 			}
+			// Quickly reattaching a device may not be detected, so always try to open existing devices
+			for (device in devicesByHID.keys) {
+				device.open()
+			}
+			hidDeviceList.removeAll(devicesByHID.keys) // addList
 			for (device in hidDeviceList) {
 				checkConfigureDevice(device)
 			}

@@ -93,6 +93,7 @@ class Tracker @JvmOverloads constructor(
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
 	private var _rotation = Quaternion.IDENTITY
 	private var _acceleration = Vector3.NULL
+	private var _magVector = Vector3.NULL
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
@@ -423,6 +424,22 @@ class Tracker @JvmOverloads constructor(
 		} else {
 			MagnetometerStatus.DISABLED
 		}
+	}
+
+	/**
+	 * Gets the magnetic field vector, in mGauss.
+	 */
+	fun getMagVector() = if (needsReset) {
+		resetsHandler.getReferenceAdjustedAccel(_rotation, _magVector)
+	} else {
+		_magVector
+	}
+
+	/**
+	 * Sets the magnetic field vector.
+	 */
+	fun setMagVector(vec: Vector3) {
+		this._magVector = vec
 	}
 
 	/**
