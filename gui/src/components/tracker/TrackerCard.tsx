@@ -1,3 +1,4 @@
+import { useConfig } from '@/hooks/config';
 import { MouseEventHandler } from 'react';
 import {
   DeviceDataT,
@@ -69,6 +70,8 @@ function TrackerBig({
   tracker: TrackerDataT;
   device?: DeviceDataT;
 }) {
+  const { config } = useConfig();
+
   const { useName } = useTracker(tracker);
 
   const trackerName = useName();
@@ -86,10 +89,10 @@ function TrackerBig({
       <div className="flex justify-center">
         <TrackerStatus status={tracker.status}></TrackerStatus>
       </div>
-      <div className="flex text-default justify-center gap-5 flex-wrap">
+      <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
         {device && device.hardwareStatus && (
           <>
-            {device.hardwareStatus.batteryPctEstimate && (
+            {device.hardwareStatus.batteryPctEstimate != null && (
               <TrackerBattery
                 voltage={device.hardwareStatus.batteryVoltage}
                 value={device.hardwareStatus.batteryPctEstimate / 100}
@@ -100,8 +103,9 @@ function TrackerBig({
               {(device.hardwareStatus.rssi != null ||
                 device.hardwareStatus.ping != null) && (
                 <TrackerWifi
-                  rssi={device.hardwareStatus.rssi || 0}
-                  ping={device.hardwareStatus.ping || 0}
+                  rssi={device.hardwareStatus.rssi}
+                  rssiShowNumeric={config?.debug}
+                  ping={device.hardwareStatus.ping}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
                 ></TrackerWifi>
               )}
@@ -138,7 +142,7 @@ function TrackerSmol({
       {device && device.hardwareStatus && (
         <>
           <div className="flex flex-col justify-center items-center">
-            {device.hardwareStatus.batteryPctEstimate && (
+            {device.hardwareStatus.batteryPctEstimate != null && (
               <TrackerBattery
                 voltage={device.hardwareStatus.batteryVoltage}
                 value={device.hardwareStatus.batteryPctEstimate / 100}
@@ -150,8 +154,8 @@ function TrackerSmol({
             {(device.hardwareStatus.rssi != null ||
               device.hardwareStatus.ping != null) && (
               <TrackerWifi
-                rssi={device.hardwareStatus.rssi || 0}
-                ping={device.hardwareStatus.ping || 0}
+                rssi={device.hardwareStatus.rssi}
+                ping={device.hardwareStatus.ping}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               ></TrackerWifi>
             )}
@@ -203,7 +207,8 @@ export function TrackerCard({
           'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear',
           interactable && 'hover:bg-background-50 cursor-pointer',
           outlined && 'outline outline-2 outline-accent-background-40',
-          warning && 'border-status-warning border-solid border-2',
+          warning &&
+            'outline outline-2 -outline-offset-2 outline-status-warning',
           bg
         )}
         style={

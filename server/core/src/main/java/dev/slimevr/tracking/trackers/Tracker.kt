@@ -100,6 +100,7 @@ class Tracker @JvmOverloads constructor(
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
 	private var _rotation = Quaternion.IDENTITY
 	private var _acceleration = Vector3.NULL
+	private var _magVector = Vector3.NULL
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
@@ -356,6 +357,22 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
+	 * Gets the magnetic field vector, in mGauss.
+	 */
+	fun getMagVector() = if (allowReset) {
+		resetsHandler.getReferenceAdjustedAccel(_rotation, _magVector)
+	} else {
+		_magVector
+	}
+
+	/**
+	 * Sets the magnetic field vector.
+	 */
+	fun setMagVector(vec: Vector3) {
+		this._magVector = vec
+	}
+
+	/**
 	 * Gets the current TPS of the tracker
 	 */
 	val tps: Float
@@ -364,7 +381,7 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
 	 */
-	fun resetFilteringQuats() {
-		filteringHandler.resetMovingAverage(getAdjustedRotation())
+	fun resetFilteringQuats(reference: Quaternion) {
+		filteringHandler.resetMovingAverage(getAdjustedRotation(), reference)
 	}
 }

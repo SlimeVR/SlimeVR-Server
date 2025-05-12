@@ -108,6 +108,11 @@ export function SettingsSidebar() {
             </SettingsLink>
           </div>
           <div className="flex flex-col gap-2">
+            <SettingsLink to="/vrc-warnings">
+              {l10n.getString('settings-sidebar-vrc_warnings')}
+            </SettingsLink>
+          </div>
+          <div className="flex flex-col gap-2">
             <SettingsLink to="/settings/advanced">
               {l10n.getString('settings-sidebar-advanced')}
             </SettingsLink>

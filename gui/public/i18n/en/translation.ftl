@@ -163,7 +163,7 @@ skeleton_bone-UPPER_LEG-desc =
     until your virtual knees are at the same level as your real ones.
 skeleton_bone-LOWER_LEG = Lower Leg Length
 skeleton_bone-LOWER_LEG-desc =
-    This is the distance from your hips to your knees.
+    This is the distance from your knees to your ankles.
     To adjust it, adjust your Leg Length properly and modify it
     until your virtual knees are at the same level as your real ones.
 skeleton_bone-FOOT_LENGTH = Foot Length
@@ -222,7 +222,7 @@ skeleton_bone-HAND_Z-desc =
 skeleton_bone-ELBOW_OFFSET = Elbow Offset
 skeleton_bone-ELBOW_OFFSET-desc =
     This can be adjusted to move your virtual elbow trackers up or down in order to aid
-    with VRChat accidentally binding and elbow tracker to the chest.
+    with VRChat accidentally binding an elbow tracker to the chest.
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
@@ -458,6 +458,7 @@ settings-sidebar-appearance = Appearance
 settings-sidebar-notifications = Notifications
 settings-sidebar-behavior = Behavior
 settings-sidebar-firmware-tool = DIY Firmware Tool
+settings-sidebar-vrc_warnings = VRChat Config Warnings
 settings-sidebar-advanced = Advanced
 
 ## SteamVR settings
@@ -1241,6 +1242,7 @@ status_system-StatusSteamVRDisconnected = { $type ->
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
 status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
+status_system-StatusPublicNetwork = Your network profile is currently set to Public. This is not recomended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
 
 
 ## Firmware tool globals
@@ -1442,6 +1444,9 @@ vrc_config-show_more = Show more
 vrc_config-setting_name = VRChat Setting name
 vrc_config-recommended_value = Recommended Value
 vrc_config-current_value = Current Value
+vrc_config-mute = Mute Warning
+vrc_config-mute-btn = Mute
+vrc_config-unmute-btn = Unmute
 vrc_config-legacy_mode = Use Legacy IK Solving
 vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
 vrc_config-shoulder_width_compensation = Shoulder Width Compensation

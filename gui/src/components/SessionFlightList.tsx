@@ -20,7 +20,7 @@ function Step({
         className={classNames(
           'p-1 h-5 w-5 rounded-full fill-background-10 flex items-center justify-center',
           status === 'complete' && 'bg-status-success',
-          status === 'blocked' && 'bg-background-50',
+          status === 'blocked' && 'bg-orange-300',
           status === 'skipped' && 'bg-background-50',
           status === 'invalid' && !optional && 'bg-status-critical',
           status === 'invalid' && optional && 'bg-status-warning'
