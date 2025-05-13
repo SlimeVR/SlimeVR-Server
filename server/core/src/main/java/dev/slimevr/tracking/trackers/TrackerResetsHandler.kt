@@ -280,9 +280,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 		// Adjust for T-Pose (down)
-		tposeDownFix = if (((isLeftArmTracker() || isLeftFingerTracker()) && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
+		tposeDownFix = if (((TrackerPosition.isLeftArm(tracker.trackerPosition) || TrackerPosition.isLeftFinger(tracker.trackerPosition)) && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
 			EulerAngles(EulerOrder.YZX, 0f, 0f, -FastMath.HALF_PI).toQuaternion()
-		} else if (((isRightArmTracker() || isRightFingerTracker()) && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
+		} else if (((TrackerPosition.isRightArm(tracker.trackerPosition) || TrackerPosition.isRightFinger(tracker.trackerPosition)) && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
 			EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
 		} else {
 			Quaternion.IDENTITY
@@ -412,7 +412,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			return
 		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
 			return
-		} else if (!resetMountingFeet && isFootTracker()) {
+		} else if (!resetMountingFeet && TrackerPosition.isFoot(tracker.trackerPosition)) {
 			return
 		}
 
@@ -434,25 +434,25 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		var yawAngle = atan2(rotVector.x, rotVector.z)
 
 		// Adjust for T-Pose and fingers
-		if ((isLeftArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
-			(isRightArmTracker() && armsResetMode == ArmsResetModes.TPOSE_UP) ||
-			isLeftFingerTracker()
+		if ((TrackerPosition.isLeftArm(tracker.trackerPosition) && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
+			(TrackerPosition.isRightArm(tracker.trackerPosition) && armsResetMode == ArmsResetModes.TPOSE_UP) ||
+			TrackerPosition.isLeftFinger(tracker.trackerPosition)
 		) {
 			// Tracker goes right
 			yawAngle -= FastMath.HALF_PI
 		}
-		if ((isLeftArmTracker() && armsResetMode == ArmsResetModes.TPOSE_UP) ||
-			(isRightArmTracker() && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
-			isRightFingerTracker()
+		if ((TrackerPosition.isLeftArm(tracker.trackerPosition) && armsResetMode == ArmsResetModes.TPOSE_UP) ||
+			(TrackerPosition.isRightArm(tracker.trackerPosition) && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
+			TrackerPosition.isRightFinger(tracker.trackerPosition)
 		) {
 			// Tracker goes left
 			yawAngle += FastMath.HALF_PI
 		}
 
 		// Adjust for forward/back arms and thighs
-		val isLowerArmBack = armsResetMode == ArmsResetModes.BACK && (isLeftLowerArmTracker() || isRightLowerArmTracker())
-		val isArmForward = armsResetMode == ArmsResetModes.FORWARD && (isLeftArmTracker() || isRightArmTracker())
-		if (!isThighTracker() && !isArmForward && !isLowerArmBack) {
+		val isLowerArmBack = armsResetMode == ArmsResetModes.BACK && (TrackerPosition.isLeftLowerArm(tracker.trackerPosition) || TrackerPosition.isRightLowerArm(tracker.trackerPosition))
+		val isArmForward = armsResetMode == ArmsResetModes.FORWARD && (TrackerPosition.isLeftArm(tracker.trackerPosition) || TrackerPosition.isRightArm(tracker.trackerPosition))
+		if (!TrackerPosition.isThigh(tracker.trackerPosition) && !isArmForward && !isLowerArmBack) {
 			// Tracker goes back
 			yawAngle -= FastMath.PI
 		}
@@ -627,99 +627,5 @@ class TrackerResetsHandler(val tracker: Tracker) {
 					)
 			}
 		}
-	}
-
-	private fun isThighTracker(): Boolean {
-		tracker.trackerPosition?.let {
-			return it == TrackerPosition.LEFT_UPPER_LEG ||
-				it == TrackerPosition.RIGHT_UPPER_LEG
-		}
-		return false
-	}
-
-	private fun isLeftArmTracker(): Boolean {
-		tracker.trackerPosition?.let {
-			return it == TrackerPosition.LEFT_SHOULDER ||
-				it == TrackerPosition.LEFT_UPPER_ARM ||
-				it == TrackerPosition.LEFT_LOWER_ARM ||
-				it == TrackerPosition.LEFT_HAND
-		}
-		return false
-	}
-
-	private fun isRightArmTracker(): Boolean {
-		tracker.trackerPosition?.let {
-			return it == TrackerPosition.RIGHT_SHOULDER ||
-				it == TrackerPosition.RIGHT_UPPER_ARM ||
-				it == TrackerPosition.RIGHT_LOWER_ARM ||
-				it == TrackerPosition.RIGHT_HAND
-		}
-		return false
-	}
-
-	private fun isLeftLowerArmTracker(): Boolean {
-		tracker.trackerPosition?.let {
-			return it == TrackerPosition.LEFT_LOWER_ARM ||
-				it == TrackerPosition.LEFT_HAND
-		}
-		return false
-	}
-
-	private fun isRightLowerArmTracker(): Boolean {
-		tracker.trackerPosition?.let {
-			return it == TrackerPosition.RIGHT_LOWER_ARM ||
-				it == TrackerPosition.RIGHT_HAND
-		}
-		return false
-	}
-
-	private fun isFootTracker(): Boolean {
-		tracker.trackerPosition?.let {
-			return it == TrackerPosition.LEFT_FOOT ||
-				it == TrackerPosition.RIGHT_FOOT
-		}
-		return false
-	}
-
-	private fun isLeftFingerTracker(): Boolean {
-		tracker.trackerPosition?.let {
-			return it == TrackerPosition.LEFT_THUMB_METACARPAL ||
-				it == TrackerPosition.LEFT_THUMB_PROXIMAL ||
-				it == TrackerPosition.LEFT_THUMB_DISTAL ||
-				it == TrackerPosition.LEFT_INDEX_PROXIMAL ||
-				it == TrackerPosition.LEFT_INDEX_INTERMEDIATE ||
-				it == TrackerPosition.LEFT_INDEX_DISTAL ||
-				it == TrackerPosition.LEFT_MIDDLE_PROXIMAL ||
-				it == TrackerPosition.LEFT_MIDDLE_INTERMEDIATE ||
-				it == TrackerPosition.LEFT_MIDDLE_DISTAL ||
-				it == TrackerPosition.LEFT_RING_PROXIMAL ||
-				it == TrackerPosition.LEFT_RING_INTERMEDIATE ||
-				it == TrackerPosition.LEFT_RING_DISTAL ||
-				it == TrackerPosition.LEFT_LITTLE_PROXIMAL ||
-				it == TrackerPosition.LEFT_LITTLE_INTERMEDIATE ||
-				it == TrackerPosition.LEFT_LITTLE_DISTAL
-		}
-		return false
-	}
-
-	private fun isRightFingerTracker(): Boolean {
-		tracker.trackerPosition?.let {
-			return it == TrackerPosition.RIGHT_THUMB_METACARPAL ||
-				it == TrackerPosition.RIGHT_THUMB_PROXIMAL ||
-				it == TrackerPosition.RIGHT_THUMB_DISTAL ||
-				it == TrackerPosition.RIGHT_INDEX_PROXIMAL ||
-				it == TrackerPosition.RIGHT_INDEX_INTERMEDIATE ||
-				it == TrackerPosition.RIGHT_INDEX_DISTAL ||
-				it == TrackerPosition.RIGHT_MIDDLE_PROXIMAL ||
-				it == TrackerPosition.RIGHT_MIDDLE_INTERMEDIATE ||
-				it == TrackerPosition.RIGHT_MIDDLE_DISTAL ||
-				it == TrackerPosition.RIGHT_RING_PROXIMAL ||
-				it == TrackerPosition.RIGHT_RING_INTERMEDIATE ||
-				it == TrackerPosition.RIGHT_RING_DISTAL ||
-				it == TrackerPosition.RIGHT_LITTLE_PROXIMAL ||
-				it == TrackerPosition.RIGHT_LITTLE_INTERMEDIATE ||
-				it == TrackerPosition.RIGHT_LITTLE_DISTAL
-		}
-		return false
 	}
 }

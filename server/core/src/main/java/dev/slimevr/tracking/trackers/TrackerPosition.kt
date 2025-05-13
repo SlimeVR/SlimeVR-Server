@@ -135,5 +135,99 @@ enum class TrackerPosition(
 
 		@JvmStatic
 		fun getById(id: Int): TrackerPosition? = byId[id]
+
+		fun isThigh(trackerPosition: TrackerPosition?): Boolean {
+			trackerPosition?.let {
+				return it == TrackerPosition.LEFT_UPPER_LEG ||
+					it == TrackerPosition.RIGHT_UPPER_LEG
+			}
+			return false
+		}
+
+		fun isLeftArm(trackerPosition: TrackerPosition?): Boolean {
+			trackerPosition?.let {
+				return it == TrackerPosition.LEFT_SHOULDER ||
+					it == TrackerPosition.LEFT_UPPER_ARM ||
+					it == TrackerPosition.LEFT_LOWER_ARM ||
+					it == TrackerPosition.LEFT_HAND
+			}
+			return false
+		}
+
+		fun isRightArm(trackerPosition: TrackerPosition?): Boolean {
+			trackerPosition?.let {
+				return it == TrackerPosition.RIGHT_SHOULDER ||
+					it == TrackerPosition.RIGHT_UPPER_ARM ||
+					it == TrackerPosition.RIGHT_LOWER_ARM ||
+					it == TrackerPosition.RIGHT_HAND
+			}
+			return false
+		}
+
+		fun isLeftLowerArm(trackerPosition: TrackerPosition?): Boolean {
+			trackerPosition?.let {
+				return it == TrackerPosition.LEFT_LOWER_ARM ||
+					it == TrackerPosition.LEFT_HAND
+			}
+			return false
+		}
+
+		fun isRightLowerArm(trackerPosition: TrackerPosition?): Boolean {
+			trackerPosition?.let {
+				return it == TrackerPosition.RIGHT_LOWER_ARM ||
+					it == TrackerPosition.RIGHT_HAND
+			}
+			return false
+		}
+
+		fun isFoot(trackerPosition: TrackerPosition?): Boolean {
+			trackerPosition?.let {
+				return it == TrackerPosition.LEFT_FOOT ||
+					it == TrackerPosition.RIGHT_FOOT
+			}
+			return false
+		}
+
+		fun isLeftFinger(trackerPosition: TrackerPosition?): Boolean {
+			trackerPosition?.let {
+				return it == TrackerPosition.LEFT_THUMB_METACARPAL ||
+					it == TrackerPosition.LEFT_THUMB_PROXIMAL ||
+					it == TrackerPosition.LEFT_THUMB_DISTAL ||
+					it == TrackerPosition.LEFT_INDEX_PROXIMAL ||
+					it == TrackerPosition.LEFT_INDEX_INTERMEDIATE ||
+					it == TrackerPosition.LEFT_INDEX_DISTAL ||
+					it == TrackerPosition.LEFT_MIDDLE_PROXIMAL ||
+					it == TrackerPosition.LEFT_MIDDLE_INTERMEDIATE ||
+					it == TrackerPosition.LEFT_MIDDLE_DISTAL ||
+					it == TrackerPosition.LEFT_RING_PROXIMAL ||
+					it == TrackerPosition.LEFT_RING_INTERMEDIATE ||
+					it == TrackerPosition.LEFT_RING_DISTAL ||
+					it == TrackerPosition.LEFT_LITTLE_PROXIMAL ||
+					it == TrackerPosition.LEFT_LITTLE_INTERMEDIATE ||
+					it == TrackerPosition.LEFT_LITTLE_DISTAL
+			}
+			return false
+		}
+
+		fun isRightFinger(trackerPosition: TrackerPosition?): Boolean {
+			trackerPosition?.let {
+				return it == TrackerPosition.RIGHT_THUMB_METACARPAL ||
+					it == TrackerPosition.RIGHT_THUMB_PROXIMAL ||
+					it == TrackerPosition.RIGHT_THUMB_DISTAL ||
+					it == TrackerPosition.RIGHT_INDEX_PROXIMAL ||
+					it == TrackerPosition.RIGHT_INDEX_INTERMEDIATE ||
+					it == TrackerPosition.RIGHT_INDEX_DISTAL ||
+					it == TrackerPosition.RIGHT_MIDDLE_PROXIMAL ||
+					it == TrackerPosition.RIGHT_MIDDLE_INTERMEDIATE ||
+					it == TrackerPosition.RIGHT_MIDDLE_DISTAL ||
+					it == TrackerPosition.RIGHT_RING_PROXIMAL ||
+					it == TrackerPosition.RIGHT_RING_INTERMEDIATE ||
+					it == TrackerPosition.RIGHT_RING_DISTAL ||
+					it == TrackerPosition.RIGHT_LITTLE_PROXIMAL ||
+					it == TrackerPosition.RIGHT_LITTLE_INTERMEDIATE ||
+					it == TrackerPosition.RIGHT_LITTLE_DISTAL
+			}
+			return false
+		}
 	}
 }
