@@ -329,9 +329,11 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		// Get the list of bodyparts we want to reset
 		// If empty, check in HumanSkeleton will reset all
 		val bodyParts = mutableListOf<Int>()
-		val buffer = req.bodyPartsAsByteBuffer()
-		while (buffer.hasRemaining()) {
-			bodyParts.add(buffer.get().toInt())
+		if (req.bodyPartsLength() > 0) {
+			val buffer = req.bodyPartsAsByteBuffer()
+			while (buffer.hasRemaining()) {
+				bodyParts.add(buffer.get().toInt())
+			}
 		}
 
 		if (req.resetType() == ResetType.Yaw) {
