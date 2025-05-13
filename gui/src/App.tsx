@@ -82,7 +82,7 @@ function Layout() {
           <Route
             path="/"
             element={
-              <MainLayout isMobile={isMobile}>
+              <MainLayout isMobile={isMobile} full>
                 <Home />
               </MainLayout>
             }
@@ -90,7 +90,7 @@ function Layout() {
           <Route
             path="/firmware-update"
             element={
-              <MainLayout isMobile={isMobile} widgets={false}>
+              <MainLayout isMobile={isMobile}>
                 <FirmwareUpdate />
               </MainLayout>
             }
@@ -114,7 +114,7 @@ function Layout() {
           <Route
             path="/vrc-warnings"
             element={
-              <MainLayout isMobile={isMobile} widgets={false}>
+              <MainLayout isMobile={isMobile}>
                 <VRCWarningsPage />
               </MainLayout>
             }

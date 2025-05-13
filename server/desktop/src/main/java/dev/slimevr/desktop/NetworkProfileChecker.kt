@@ -57,18 +57,18 @@ class NetworkProfileChecker(private val server: VRServer) {
 				val profile = checkNetworkProfile()
 				if (profile != currentNetworkProfile) {
 					currentNetworkProfile = profile
-					if (lastPublicNetworkStatus == 0u && profile == NetworkProfile.PUBLIC) {
-						lastPublicNetworkStatus = server.statusSystem.addStatus(
-							StatusDataUnion().apply {
-								type = StatusData.StatusPublicNetwork
-								value = StatusPublicNetworkT()
-							},
-							false,
-						)
-					} else if (lastPublicNetworkStatus != 0u && profile != NetworkProfile.PUBLIC) {
-						server.statusSystem.removeStatus(lastPublicNetworkStatus)
-						lastPublicNetworkStatus = 0u
-					}
+//					if (lastPublicNetworkStatus == 0u && profile == NetworkProfile.PUBLIC) {
+//						lastPublicNetworkStatus = server.statusSystem.addStatus(
+//							StatusDataUnion().apply {
+//								type = StatusData.StatusPublicNetwork
+//								value = StatusPublicNetworkT()
+//							},
+//							false,
+//						)
+//					} else if (lastPublicNetworkStatus != 0u && profile != NetworkProfile.PUBLIC) {
+//						server.statusSystem.removeStatus(lastPublicNetworkStatus)
+//						lastPublicNetworkStatus = 0u
+//					}
 				}
 			}
 		}
