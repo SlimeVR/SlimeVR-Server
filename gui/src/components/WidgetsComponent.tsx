@@ -75,6 +75,16 @@ export function WidgetsComponent() {
         <ResetButton type={ResetType.Full} size="big"></ResetButton>
         <ResetButton type={ResetType.Mounting} size="big"></ResetButton>
         <ClearMountingButton></ClearMountingButton>
+        <ResetButton
+          type={ResetType.Mounting}
+          size="big"
+          bodyPartsToReset="feet"
+        ></ResetButton>
+        <ResetButton
+          type={ResetType.Mounting}
+          size="big"
+          bodyPartsToReset="fingers"
+        ></ResetButton>
         <BVHButton></BVHButton>
         <TrackingPauseButton></TrackingPauseButton>
         <ClearDriftCompensationButton

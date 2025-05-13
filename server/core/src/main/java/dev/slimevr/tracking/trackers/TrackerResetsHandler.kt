@@ -40,7 +40,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var compensateDrift = false
 	private var driftPrediction = false
 	private var driftCompensationEnabled = false
-	private var resetMountingFeet = false
 	private var armsResetMode = ArmsResetModes.BACK
 	private var yawResetSmoothTime = 0.0f
 	private lateinit var fpsTimer: NanoTimer
@@ -172,7 +171,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Reads/loads reset settings from the given config
 	 */
 	fun readResetConfig(config: ResetsConfig) {
-		resetMountingFeet = config.resetMountingFeet
 		armsResetMode = config.mode
 		yawResetSmoothTime = config.yawResetSmoothTime
 		if (!::fpsTimer.isInitialized) {
@@ -411,8 +409,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			tracker.resetFilteringQuats(reference)
 			return
 		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
-			return
-		} else if (!resetMountingFeet && TrackerPosition.isFoot(tracker.trackerPosition)) {
 			return
 		}
 
