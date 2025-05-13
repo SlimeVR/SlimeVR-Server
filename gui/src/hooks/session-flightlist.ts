@@ -58,10 +58,7 @@ export function useSessionFlightlist() {
           (visibility === FlightListStepVisibility.WHEN_INVALID &&
             ['invalid', 'skipped'].includes(status))
       );
-
     setSteps(steps);
-
-    console.log(steps);
   });
 
   useRPCPacket(
@@ -69,7 +66,6 @@ export function useSessionFlightlist() {
     (data: FlightListStepChangeResponseT) => {
       const step = data.step;
       if (!step) throw 'invalid state - step should be set';
-      console.log('Update', step);
       setSteps((steps) => {
         const visibleSteps = steps.filter((step) => !ignoredSteps.includes(step.id));
         const newsteps = visibleSteps
