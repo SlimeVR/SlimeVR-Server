@@ -8,9 +8,11 @@ import { useForm } from 'react-hook-form';
 import { useLocalization } from '@fluent/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './SettingsLayout.scss';
+import { useVRCConfig } from '@/hooks/vrc-config';
 
 export function SettingSelectorMobile() {
   const { l10n } = useLocalization();
+  const { state: vrcConfigState } = useVRCConfig();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -44,10 +46,14 @@ export function SettingSelectorMobile() {
         label: l10n.getString('settings-sidebar-firmware-tool'),
         value: { url: '/settings/firmware-tool' },
       },
-      {
-        label: l10n.getString('settings-sidebar-vrc_warnings'),
-        value: { url: '/vrc-warnings' },
-      },
+      ...(vrcConfigState?.isSupported
+        ? [
+            {
+              label: l10n.getString('settings-sidebar-vrc_warnings'),
+              value: { url: '/vrc-warnings' },
+            },
+          ]
+        : []),
       {
         label: l10n.getString('settings-sidebar-advanced'),
         value: { url: '/settings/advanced' },

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useWebsocketAPI } from './websocket-api';
 import {
   RpcMessage,
@@ -48,7 +48,7 @@ export function useVRCConfig() {
   const { config, setConfig } = useConfig();
   const [state, setState] = useState<VRCConfigState | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     sendRPCPacket(RpcMessage.VRCConfigStateRequest, new VRCConfigStateRequestT());
   }, []);
 
