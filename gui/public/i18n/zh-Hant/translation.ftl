@@ -111,29 +111,120 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU 手套
 
 skeleton_bone-NONE = 無
 skeleton_bone-HEAD = 頭部偏移
+skeleton_bone-HEAD-desc =
+    這是從頭戴顯示器到頭中央的距離。
+    若要調整，請左右搖頭（如不同意、否定般的樣子）並不要移動身體，檢查其他
+    追蹤器的數值跳動並變更此參數，直到數值跳動小到可以忽略不計。
 skeleton_bone-NECK = 頸部長度
+skeleton_bone-NECK-desc =
+    這是從頭中央到脖子底部的距離。
+    若要調整，請上下點頭（如同意、肯定般的樣子）並不要移動身體，檢查其他
+    追蹤器的數值跳動並變更此參數，直到數值跳動小到可以忽略不計。
 skeleton_bone-torso_group = 軀幹長度
+skeleton_bone-torso_group-desc =
+    這是從脖子底部到臀部的距離。
+    若要調整，請站立並調整此參數，直到虛擬的臀部與實際臀部對齊。
 skeleton_bone-UPPER_CHEST = 上胸長度
+skeleton_bone-UPPER_CHEST-desc =
+    這是從脖子底部到胸部中間的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-CHEST_OFFSET = 胸部偏移
+skeleton_bone-CHEST_OFFSET-desc =
+    調整胸部追蹤器的上下補償。某些遊戲或是應用程式可能會期待追蹤器比較上面
+    或下面，可以透過調整本數值來校正。
 skeleton_bone-CHEST = 胸部長度
+skeleton_bone-CHEST-desc =
+    這是從胸部中間到脊椎中間的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-WAIST = 腰部長度
+skeleton_bone-WAIST-desc =
+    這是從脊椎中間到肚臍的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-HIP = 臀部長度
+skeleton_bone-HIP-desc =
+    這是從肚臍到臀部的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-HIP_OFFSET = 臀部偏移
+skeleton_bone-HIP_OFFSET-desc =
+    調整臀部追蹤器的上下補償。某些遊戲或是應用程式可能會期待追蹤器在腰部，
+    可以透過調整本數值來校正。
 skeleton_bone-HIPS_WIDTH = 臀部寬度
+skeleton_bone-HIPS_WIDTH-desc =
+    這是兩腿之間的起始距離。
+    若要調整，請站直進行完整重置後，修改到虛擬的腿部與實際腿部對齊。
 skeleton_bone-leg_group = 腿部長度
+skeleton_bone-leg_group-desc =
+    這是從臀部到腳部的距離。
+    若要調整，請適當調整軀幹長度後，修改此數值，直到虛擬的腳部
+    與實際腳部的高度一致。
 skeleton_bone-UPPER_LEG = 大腿長度
+skeleton_bone-UPPER_LEG-desc =
+    這是從臀部到膝蓋的距離。
+    若要調整，請適當調整腿部長度後，修改此數值，直到虛擬的膝蓋
+    與實際膝蓋的高度一致。
 skeleton_bone-LOWER_LEG = 小腿長度
+skeleton_bone-LOWER_LEG-desc =
+    這是從膝蓋到腳踝的距離。
+    若要調整，請適當調整腿部長度後，修改此數值，直到虛擬的膝蓋
+    與實際膝蓋的高度一致。
 skeleton_bone-FOOT_LENGTH = 腳部長度
+skeleton_bone-FOOT_LENGTH-desc =
+    這是從腳踝到腳趾的距離。
+    若要調整，請踮起腳尖，修改此數值，直到虛擬的腳部與實際腳部對齊。
 skeleton_bone-FOOT_SHIFT = 腳部偏移
+skeleton_bone-FOOT_SHIFT-desc =
+    這是從膝蓋到腳踝的水平距離。
+    這個數值可以校正站直時小腿會向後移動的問題。
+    若要調整，請將腳部長度設為 0，進行完整重置後再修改，直到虛擬腳部與
+    腳踝中間對齊。
 skeleton_bone-SKELETON_OFFSET = 骨骼偏移
+skeleton_bone-SKELETON_OFFSET-desc =
+    調整全部追蹤器的向前或向後補償。某些遊戲或是應用程式可能會期待追蹤器
+    比較前面，可以透過調整本數值來校正。
 skeleton_bone-SHOULDERS_DISTANCE = 肩膀距離
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    這是從脖子底部到肩膀的垂直距離。
+    若要調整，請將上臂長度設為 0 再修改，直到虛擬的肘部追蹤器與
+    實際的肩膀垂直對齊。
 skeleton_bone-SHOULDERS_WIDTH = 肩膀寬度
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    這是從脖子底部到肩膀的水平距離。
+    若要調整，請將上臂長度設為 0 再修改，直到虛擬的肘部追蹤器與
+    實際的肩膀水平對齊。
 skeleton_bone-arm_group = 手臂長度
+skeleton_bone-arm_group-desc =
+    這是從肩膀到手腕的距離。
+    若要調整，請適當調整肩膀距離，將手部距離 Y 設定為 0 再修改，
+    直到虛擬的手部追蹤器與手腕對齊。
 skeleton_bone-UPPER_ARM = 上臂長度
+skeleton_bone-UPPER_ARM-desc =
+    這是從肩膀到手肘的距離。
+    若要調整，請適當調整手臂長度後，修改此數值，直到虛擬的
+    手肘追蹤器與實際手肘的位置一致。
 skeleton_bone-LOWER_ARM = 前臂長度
+skeleton_bone-LOWER_ARM-desc =
+    這是從手肘到手腕的距離。
+    若要調整，請適當調整手臂長度後，修改此數值，直到虛擬的
+    手肘追蹤器與實際手肘的位置一致。
 skeleton_bone-HAND_Y = 手部距離Y
+skeleton_bone-HAND_Y-desc =
+    這是從手腕到手中間的垂直距離。
+    若要調整以進行動作捕捉，請適當調整手臂長度後修改此數值，直到虛擬的手部追蹤器
+    與實際的手中間垂直對齊。
+    若要調整以從控制器進行肘部跟蹤，請將手臂長度設為 0 後修改此數值，直到虛擬的肘
+    部追蹤器與實際的手腕垂直對齊。
 skeleton_bone-HAND_Z = 手部距離Z
+skeleton_bone-HAND_Z-desc =
+    這是從手腕到手中間的水平距離。
+    若要調整以進行動作捕捉，請將此值設定為 0。
+    若要調整以從控制器進行肘部跟蹤，請將手臂長度設為 0 後修改此數值，直到虛擬的肘
+    部追蹤器與實際的手腕水平對齊。
 skeleton_bone-ELBOW_OFFSET = 肘部偏移
+skeleton_bone-ELBOW_OFFSET-desc = 將虛擬的肘部追蹤器向上或向下調整，以避免 VRChat 將肘部追蹤器綁到胸部。
 
 ## Tracker reset buttons
 
@@ -199,7 +290,7 @@ widget-developer_mode = 開發者選項
 widget-developer_mode-high_contrast = 高對比 UI
 widget-developer_mode-precise_rotation = 顯示精確旋轉
 widget-developer_mode-fast_data_feed = 快速資料更新
-widget-developer_mode-filter_slimes_and_hmd = 只顯示 Slime 追蹤器與頭戴顯示器
+widget-developer_mode-filter_slimes_and_hmd = 只顯示 SlimeVR 追蹤器與頭戴顯示器
 widget-developer_mode-sort_by_name = 依名稱排序
 widget-developer_mode-raw_slime_rotation = 顯示原始旋轉
 widget-developer_mode-more_info = 更多資訊
@@ -306,6 +397,7 @@ tracker-settings-forget = 忘記追蹤器
 tracker-settings-forget-description = 從 SlimeVR 伺服器程式中移除該追蹤器，且直到重新啟動伺服器前不會再次連接。該追蹤器的設定不會遺失。
 tracker-settings-forget-label = 忘記追蹤器
 tracker-settings-update-unavailable = 無法更新 (DIY)
+tracker-settings-update-low-battery = 無法更新，電池電量低於 50%
 tracker-settings-update-up_to_date = 已為最新版本
 tracker-settings-update-available = 版本 { $versionName } 可供更新
 tracker-settings-update = 立即更新
@@ -387,6 +479,7 @@ settings-sidebar-appearance = 外觀
 settings-sidebar-notifications = 通知
 settings-sidebar-behavior = 行為
 settings-sidebar-firmware-tool = DIY 韌體工具
+settings-sidebar-vrc_warnings = VRChat 配置警告
 settings-sidebar-advanced = 進階
 
 ## SteamVR settings
@@ -558,6 +651,9 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = 如�
 ## Appearance settings
 
 settings-interface-appearance = 外觀
+settings-general-interface-dev_mode = 開發者模式
+settings-general-interface-dev_mode-description = 本功能會提供更深入的資料，也能與已連線的追蹤器進行更進一步的控制。
+settings-general-interface-dev_mode-label = 開發者模式
 settings-general-interface-theme = 佈景主題色彩
 settings-general-interface-show-navbar-onboarding = 在導覽列上顯示「{ navbar-onboarding }」
 settings-general-interface-show-navbar-onboarding-description = 本選項變更 「{ navbar-onboarding }」 按鈕是否要顯示在導覽列上。
@@ -574,7 +670,7 @@ settings-interface-appearance-font-slime_font = 預設字體
 settings-interface-appearance-font_size = 文字縮放
 settings-interface-appearance-font_size-description = 本設定會影響整個 UI 的文字大小，除了本設定面板以外。
 settings-interface-appearance-decorations = 使用系統原生的視窗邊框
-settings-interface-appearance-decorations-description = 不顯示標題列 UI，替換成作業系統提供的標題列。
+settings-interface-appearance-decorations-description = 不顯示標題列 UI，使用作業系統提供的標題列。
 settings-interface-appearance-decorations-label = 使用原生的視窗邊框
 
 ## Notification settings
@@ -678,8 +774,8 @@ settings-osc-vrchat-oscqueryEnabled = 啟用 OSCQuery
 settings-osc-vrchat-oscqueryEnabled-description =
     OSCQuery 會自動偵測並發送數據給正在執行中的 VRChat 程式。
     也會把自己廣告給其他應用程式，以接收頭戴顯示器與控制器的數據。
-    要允許從 VRChat 接收頭戴顯示器與控制器的數據，請進入主功能表的設定
-    並啟用「允許透過 OSC 發送頭部與腕部的 VR 追蹤數據」。
+    要允許從 VRChat 接收頭戴顯示器與控制器的數據，請進入主選單的設定
+    在「追蹤 & IK」下，啟用「允許透過 OSC 發送頭部與腕部的 VR 追蹤數據」。
 settings-osc-vrchat-oscqueryEnabled-label = 啟用 OSCQuery
 settings-osc-vrchat-network = 連接埠
 settings-osc-vrchat-network-description-v1 = 設定收發追蹤器資料的連接埠埠號，使用 VRChat 不須更改。
@@ -855,6 +951,17 @@ onboarding-connect_tracker-connection_status-looking_for_server = 正在尋找�
 onboarding-connect_tracker-connection_status-connection_error = 無法連線到 Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = 未尋找到可用的伺服器
 onboarding-connect_tracker-connection_status-done = 已連線到伺服器
+onboarding-connect_tracker-connection_status-no_serial_log = 無法從追蹤器取得紀錄訊息
+onboarding-connect_tracker-connection_status-no_serial_device_found = 無法透過 USB 找到追蹤器
+onboarding-connect_serial-error-modal-no_serial_log = 追蹤器電源開了嗎？
+onboarding-connect_serial-error-modal-no_serial_log-desc = 請確認追蹤器電源已開啟，並連接到這台電腦上
+onboarding-connect_serial-error-modal-no_serial_device_found = 找不到追蹤器
+onboarding-connect_serial-error-modal-no_serial_device_found-desc =
+    請使用隨附的 USB 傳輸線將追蹤器連接到你的電腦後，再打開追蹤器電源。
+    如果還是不行，請嘗試以下操作：
+      - 使用另一條 USB 傳輸線
+      - 使用另一個 USB 插座
+      - 重新安裝 SlimeVR 伺服器程式，然後在安裝元件部分將「USB drivers」打勾
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -1039,16 +1146,16 @@ onboarding-automatic_mounting-put_trackers_on-next = 我所有的追蹤器都戴
 
 onboarding-manual_proportions-back = 返回重置教學
 onboarding-manual_proportions-title = 手動調整軀幹比例
-onboarding-manual_proportions-precision = 精確調整
-onboarding-manual_proportions-auto = 進行自動校正
-onboarding-manual_proportions-ratio = 依比例分組調整
 onboarding-manual_proportions-fine_tuning_button = 自動微調軀幹比例
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 請連接 VR 頭戴顯示器以使用此功能
 onboarding-manual_proportions-export = 匯出軀幹比例
 onboarding-manual_proportions-import = 匯入軀幹比例
-onboarding-manual_proportions-import-success = 匯入成功
-onboarding-manual_proportions-import-failed = 匯入失敗
 onboarding-manual_proportions-file_type = 軀幹比例描述檔
+onboarding-manual_proportions-normal_increment = 正常調整
+onboarding-manual_proportions-precise_increment = 精確調整
+onboarding-manual_proportions-grouped_proportions = 分組調整軀幹比例
+onboarding-manual_proportions-all_proportions = 全部軀幹比例
+onboarding-manual_proportions-estimated_height = 預估的使用者身高
 
 ## Tracker automatic proportions setup
 
@@ -1277,7 +1384,7 @@ firmware_tool-build_step = 建置中
 firmware_tool-build_step-description = 韌體正在建置中，請稍後
 firmware_tool-flashing_step = 燒錄中
 firmware_tool-flashing_step-description = 追蹤器燒錄中，請遵循畫面上的指示
-firmware_tool-flashing_step-warning = 除非特別指示，燒錄中請勿移除或是重啟追蹤器，否則可能導致主板無法使用。
+firmware_tool-flashing_step-warning-v2 = 除非特別指示，燒錄中請勿移除或是關閉追蹤器，否則可能導致主板無法使用
 firmware_tool-flashing_step-flash_more = 燒錄更多追蹤器
 firmware_tool-flashing_step-exit = 離開
 
@@ -1295,7 +1402,7 @@ firmware_tool-build-ERROR = 無法建置韌體
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = 正在下載韌體
-firmware_update-status-NEED_MANUAL_REBOOT = 請重新啟動追蹤器
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = 請關閉追蹤器的電源再打開
 firmware_update-status-AUTHENTICATING = 正在與 MCU 認證
 firmware_update-status-UPLOADING = 正在上傳韌體
 firmware_update-status-SYNCING_WITH_MCU = 正在與 MCU 同步
@@ -1350,6 +1457,46 @@ unknown_device-modal-description =
     要將它連接到 SlimeVR 嗎？
 unknown_device-modal-confirm = 好喔！
 unknown_device-modal-forget = 別管它
+# VRChat config warnings
+vrc_config-page-title = VRChat 設定警告
+vrc_config-page-desc = 本頁會顯示 VRChat 的設定並顯示哪些設定與 SlimeVR 不相容。非常建議您根據這裡顯示的警告來修改設定，以獲得最佳的 SlimeVR 使用體驗。
+vrc_config-page-help = 找不到設定在哪裡嗎？
+vrc_config-page-help-desc = 請查閱<a>本主題的相關文件</a>
+vrc_config-page-big_menu = 追蹤 & IK（主選單）
+vrc_config-page-big_menu-desc = 主選單中與 IK （逆向運動學）相關的設定
+vrc_config-page-wrist_menu = 追蹤 & IK（快速選單）
+vrc_config-page-wrist_menu-desc = 快速選單中與 IK （逆向運動學）相關的設定
+vrc_config-on = 開啟
+vrc_config-off = 關閉
+vrc_config-invalid = VRChat 的設定設錯了！
+vrc_config-show_more = 顯示更多
+vrc_config-setting_name = VRChat 設定名稱
+vrc_config-recommended_value = 建議設定
+vrc_config-current_value = 目前設定
+vrc_config-mute = 將警告靜音
+vrc_config-mute-btn = 靜音
+vrc_config-unmute-btn = 取消靜音
+vrc_config-legacy_mode = 使用傳統 IK 解決方案
+vrc_config-disable_shoulder_tracking = 停用肩膀追蹤
+vrc_config-shoulder_width_compensation = 肩寬補償
+vrc_config-spine_mode = FBT 脊椎模式
+vrc_config-tracker_model = FBT 追蹤器形狀
+vrc_config-avatar_measurement_type = 角色測量
+vrc_config-calibration_range = 校正範圍
+vrc_config-calibration_visuals = 顯示 FBT 校正範圍
+vrc_config-user_height = 用戶真實身高
+vrc_config-spine_mode-UNKNOWN = 不明
+vrc_config-spine_mode-LOCK_BOTH = 同時鎖定
+vrc_config-spine_mode-LOCK_HEAD = 鎖定頭部
+vrc_config-spine_mode-LOCK_HIP = 鎖定臀部
+vrc_config-tracker_model-UNKNOWN = 不明
+vrc_config-tracker_model-AXIS = 軸
+vrc_config-tracker_model-BOX = 箱型
+vrc_config-tracker_model-SPHERE = 球型
+vrc_config-tracker_model-SYSTEM = 系統
+vrc_config-avatar_measurement_type-UNKNOWN = 不明
+vrc_config-avatar_measurement_type-HEIGHT = 身高
+vrc_config-avatar_measurement_type-ARM_SPAN = 臂展
 
 ## Error collection consent modal
 
