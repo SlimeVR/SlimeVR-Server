@@ -479,6 +479,7 @@ settings-sidebar-appearance = 外觀
 settings-sidebar-notifications = 通知
 settings-sidebar-behavior = 行為
 settings-sidebar-firmware-tool = DIY 韌體工具
+settings-sidebar-vrc_warnings = VRChat 配置警告
 settings-sidebar-advanced = 進階
 
 ## SteamVR settings
