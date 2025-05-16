@@ -18,6 +18,7 @@ import { Range } from '@/components/commons/Range';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { ArrowRightLeftIcon } from '@/components/commons/icon/ArrowIcons';
 import { isTrayAvailable } from '@/utils/tauri';
+import { UnitSelector } from '@/components/commons/UnitSelector';
 
 interface InterfaceSettingsForm {
   appearance: {
@@ -520,6 +521,20 @@ export function InterfaceSettings() {
             </div>
             <div className="grid sm:grid-cols-2 pb-4">
               <LangSelector alignment="left" />
+            </div>
+
+            <Typography bold>
+              {l10n.getString('settings-interface-appearance-unit_system')}
+            </Typography>
+            <div className="flex flex-col pt-1 pb-2">
+              <Typography color="secondary">
+                {l10n.getString(
+                  'settings-interface-appearance-unit_system-description'
+                )}
+              </Typography>
+            </div>
+            <div className="grid sm:grid-cols-2 pb-4">
+              <UnitSelector alignment="left" />
             </div>
           </>
         </SettingsPagePaneLayout>

@@ -80,6 +80,9 @@ importers:
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
+      convert:
+        specifier: ^5.10.0
+        version: 5.10.0
       flatbuffers:
         specifier: 22.10.26
         version: 22.10.26
@@ -1860,6 +1863,9 @@ packages:
   convert-to-spaces@1.0.2:
     resolution: {integrity: sha512-cj09EBuObp9gZNQCzc7hByQyrs6jVGE+o9kSJmeUoj+GiPiJvi5LYqEH/Hmme4+MTLHM+Ejtq+FChpjjEnsPdQ==}
     engines: {node: '>= 4'}
+
+  convert@5.10.0:
+    resolution: {integrity: sha512-1agZ7UULsa0AVUZefVDmfy7hdHDIm7hr/tB8scKwSy8HE8a+5c3EQsCTEQfx6/+8LGNa7Re2+4fir9mKxFsBuw==}
 
   create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
@@ -6146,6 +6152,8 @@ snapshots:
   convert-source-map@2.0.0: {}
 
   convert-to-spaces@1.0.2: {}
+
+  convert@5.10.0: {}
 
   create-require@1.1.1: {}
 

@@ -72,7 +72,7 @@ export function DropdownItems({
       <div
         ref={ref}
         className={classNames(
-          'z-[1000] fixed rounded shadow',
+          'z-[1000] fixed rounded shadow w-fit',
           'overflow-y-auto dropdown-scroll overflow-x-hidden text-background-10',
           variant == 'primary' && 'bg-background-60',
           variant == 'secondary' && 'bg-background-70',
@@ -100,13 +100,13 @@ export function DropdownItems({
               style={item.fontName ? { fontFamily: item.fontName } : {}}
               className={classNames(
                 'py-2 px-4 min-w-max cursor-pointer first-of-type:*:pointer-events-none',
-                variant == 'primary' &&
-                  'checked-hover:bg-background-50 text-background-20 ' +
+                variant === 'primary' &&
+                  'data-checked:bg-background-40 hover:bg-background-50 text-background-20 ' +
                     'checked-hover:text-background-10',
-                variant == 'secondary' &&
-                  'checked-hover:bg-background-60 text-background-20 ' +
+                variant === 'secondary' &&
+                  'data-checked:bg-background-50 hover:bg-background-60 text-background-20 ' +
                     'checked-hover:text-background-10',
-                variant == 'tertiary' &&
+                variant === 'tertiary' &&
                   'bg-accent-background-30 checked-hover:bg-accent-background-20'
               )}
               onClick={() => {

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import { DeveloperModeWidgetForm } from '@/components/widgets/DeveloperModeWidget';
 import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
@@ -22,6 +22,11 @@ export enum AssignMode {
   All = 'all',
 }
 
+export enum UnitType {
+  Metric = 'metric',
+  Imperial = 'imperial',
+}
+
 export interface Config {
   debug: boolean;
   lang: string;
@@ -42,6 +47,7 @@ export interface Config {
   decorations: boolean;
   showNavbarOnboarding: boolean;
   vrcMutedWarnings: string[];
+  unitSystem: UnitType;
 }
 
 export interface ConfigContext {
@@ -69,6 +75,7 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   decorations: false,
   showNavbarOnboarding: true,
   vrcMutedWarnings: [],
+  unitSystem: UnitType.Metric,
 };
 
 interface CrossStorage {
@@ -194,4 +201,12 @@ export function useConfig() {
     throw new Error('useConfig must be within a ConfigContext Provider');
   }
   return context;
+}
+
+export function useUnit() {
+  const { config } = useConfig();
+  return useMemo(() => {
+    const unitSystem = config?.unitSystem ?? defaultConfig.unitSystem;
+    return unitSystem === UnitType.Metric ? 'm' : 'in';
+  }, [config?.unitSystem]);
 }

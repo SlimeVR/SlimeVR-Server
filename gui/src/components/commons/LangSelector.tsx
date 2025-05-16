@@ -1,7 +1,7 @@
 import { useLocalization } from '@fluent/react';
 import { useEffect, useMemo, useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { useConfig } from '@/hooks/config';
+import { defaultConfig, useConfig } from '@/hooks/config';
 import { LangContext } from '@/i18n/config';
 import { langs } from '@/i18n/names';
 import { Dropdown, DropdownDirection } from './Dropdown';
@@ -17,7 +17,7 @@ export function LangSelector({
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
   const { control, watch, handleSubmit } = useForm<{ lang: string }>({
-    defaultValues: { lang: config?.lang || 'en' },
+    defaultValues: { lang: config?.lang ?? defaultConfig.lang },
   });
 
   const languagesItems = useMemo(

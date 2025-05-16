@@ -258,10 +258,12 @@ const config = {
       addUtilities({
         '.text-main-title': textConfig('calc(var(--font-size-title) / 16)', 700),
         '.text-section-title': textConfig('calc(var(--font-size-vr) / 16)', 700),
+
         '.text-standard': textConfig('calc(var(--font-size-standard) / 16)', 500),
+        '.text-standard-bold': textConfig('calc(var(--font-size-standard) / 16)', 700),
+
         '.text-vr-accesible': textConfig('calc(var(--font-size-vr) / 16)', 500),
         '.text-vr-accesible-bold': textConfig('calc(var(--font-size-vr) / 16)', 700),
-        '.text-standard-bold': textConfig('calc(var(--font-size-standard) / 16)', 700),
       });
     }),
     plugin(function ({ addVariant }) {
