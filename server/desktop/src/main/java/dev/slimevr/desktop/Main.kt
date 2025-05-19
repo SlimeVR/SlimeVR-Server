@@ -129,6 +129,8 @@ fun main(args: Array<String>) {
 		)
 		vrServer.start()
 
+		NetworkProfileChecker(vrServer)
+
 		// Start service for USB HID trackers
 		TrackersHID(
 			"Sensors HID service",
@@ -143,6 +145,7 @@ fun main(args: Array<String>) {
 				}
 			}
 		}
+
 		vrServer.join()
 		scanner.join()
 		LogManager.closeLogger()

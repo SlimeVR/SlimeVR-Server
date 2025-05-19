@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   RpcMessage,
   StartWifiProvisioningRequestT,
+  StatusData,
   StopWifiProvisioningRequestT,
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
@@ -15,7 +16,7 @@ import { ArrowLink } from '@/components/commons/ArrowLink';
 import { Button } from '@/components/commons/Button';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { ProgressBar } from '@/components/commons/ProgressBar';
-import { TipBox } from '@/components/commons/TipBox';
+import { TipBox, WarningBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';
 import { useIsRestCalibrationTrackers } from '@/hooks/imu-logic';
@@ -23,6 +24,8 @@ import './ConnectTracker.scss';
 import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { BaseModal } from '@/components/commons/BaseModal';
+import { useStatusContext } from '@/hooks/status-system';
+import { A } from '@/components/commons/A';
 
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
@@ -72,6 +75,8 @@ const statusProgressMap = {
 
 export function ConnectTrackersPage() {
   const { l10n } = useLocalization();
+  const { statuses } = useStatusContext();
+
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { applyProgress, state } = useOnboarding();
   const navigate = useNavigate();
@@ -159,6 +164,12 @@ export function ConnectTrackersPage() {
     [connectedIMUTrackers.length]
   );
 
+  const filteredStatuses = useMemo(() => {
+    return Object.entries(statuses).filter(
+      ([, value]) => value.dataType == StatusData.StatusPublicNetwork
+    );
+  }, [statuses]);
+
   return (
     <>
       <BaseModal
@@ -231,7 +242,23 @@ export function ConnectTrackersPage() {
           >
             <TipBox>Conditional tip</TipBox>
           </Localized>
-
+          {filteredStatuses.map(([, status]) => (
+            <div className="pt-4">
+              <Localized
+                key={status.id}
+                id={`status_system-${StatusData[status.dataType]}`}
+                elems={{
+                  PublicFixLink: (
+                    <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
+                  ),
+                }}
+              >
+                <WarningBox whitespace={false}>
+                  {`Warning, you should fix ${StatusData[status.dataType]}`}
+                </WarningBox>
+              </Localized>
+            </div>
+          ))}
           <div
             className={classNames(
               'rounded-xl h-24 flex gap-2 p-3 lg:w-full mt-4 relative',

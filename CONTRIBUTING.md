@@ -105,6 +105,7 @@ When touching SolarXR:
 - After editing files, you should run `cd solarxr-protocol`, then either run
 `./generate-flatbuffer.ps1` (Windows) or `./generate-flatbuffer.sh` (Linux/OSX)
 - Make sure to commit your changes inside the submodule.
+- To make sure the gui use the latest generated code, run `pnpm i`.
 
 ## Code Licensing
 SlimeVR uses dual MIT and Apache-2.0 license. Be sure that any code that you reference,
