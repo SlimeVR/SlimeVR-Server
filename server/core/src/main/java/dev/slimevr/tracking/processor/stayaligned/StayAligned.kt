@@ -2,8 +2,8 @@ package dev.slimevr.tracking.processor.stayaligned
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.StayAlignedConfig
-import dev.slimevr.tracking.processor.stayaligned.StayAlignedDefaults.EXTRA_YAW_CORRECTION_PER_SEC
-import dev.slimevr.tracking.processor.stayaligned.StayAlignedDefaults.YAW_CORRECTION_PER_SEC
+import dev.slimevr.tracking.processor.stayaligned.StayAlignedDefaults.IMU_TO_YAW_CORRECTION
+import dev.slimevr.tracking.processor.stayaligned.StayAlignedDefaults.YAW_CORRECTION_DEFAULT
 import dev.slimevr.tracking.processor.stayaligned.adjust.AdjustTrackerYaw
 import dev.slimevr.tracking.processor.stayaligned.trackers.TrackerSkeleton
 
@@ -37,10 +37,8 @@ object StayAligned {
 		// Update hide correction since the config could have changed
 		trackerToAdjust.stayAligned.hideCorrection = config.hideYawCorrection
 
-		var yawCorrectionPerSec = YAW_CORRECTION_PER_SEC
-		if (config.extraYawCorrection) {
-			yawCorrectionPerSec += EXTRA_YAW_CORRECTION_PER_SEC
-		}
+		val yawCorrectionPerSec =
+			IMU_TO_YAW_CORRECTION.getOrDefault(trackerToAdjust.imuType, YAW_CORRECTION_DEFAULT)
 
 		// Scale yaw correction since we're only updating one tracker per tick
 		val yawCorrection =

@@ -3,6 +3,7 @@ package dev.slimevr.tracking.processor.stayaligned
 import dev.slimevr.math.Angle
 import dev.slimevr.tracking.processor.stayaligned.poses.RelaxedPose
 import dev.slimevr.tracking.processor.stayaligned.trackers.RestDetector
+import dev.slimevr.tracking.trackers.udp.IMUType
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -10,12 +11,6 @@ import kotlin.time.Duration.Companion.seconds
  * algorithm from a single place.
  */
 object StayAlignedDefaults {
-
-	// Maximum yaw correction to apply
-	val YAW_CORRECTION_PER_SEC = Angle.ofDeg(0.20f)
-
-	// Extra yaw correction to apply to terrible IMUs
-	val EXTRA_YAW_CORRECTION_PER_SEC = Angle.ofDeg(0.20f)
 
 	// Rest detector for detecting when trackers are at rest
 	fun makeRestDetector() =
@@ -44,4 +39,33 @@ object StayAlignedDefaults {
 	const val YAW_ERRORS_LOCKED_ERROR_WEIGHT = 10.0f
 	const val YAW_ERRORS_CENTER_ERROR_WEIGHT = 2.0f
 	const val YAW_ERRORS_NEIGHBOR_ERROR_WEIGHT = 1.0f
+
+	// Yaw correction for each type of IMU
+	val YAW_CORRECTION_IMU_GOOD = Angle.ofDeg(0.1f)
+	val YAW_CORRECTION_IMU_OK = Angle.ofDeg(0.2f)
+	val YAW_CORRECTION_IMU_BAD = Angle.ofDeg(0.4f)
+
+	val IMU_TO_YAW_CORRECTION = buildMap {
+		set(IMUType.MPU9250, YAW_CORRECTION_IMU_BAD)
+		set(IMUType.MPU6500, YAW_CORRECTION_IMU_BAD)
+		set(IMUType.BNO080, YAW_CORRECTION_IMU_GOOD)
+		set(IMUType.BNO085, YAW_CORRECTION_IMU_GOOD)
+		set(IMUType.BNO055, YAW_CORRECTION_IMU_OK)
+		set(IMUType.MPU6050, YAW_CORRECTION_IMU_BAD)
+		set(IMUType.BNO086, YAW_CORRECTION_IMU_GOOD)
+		set(IMUType.BMI160, YAW_CORRECTION_IMU_BAD)
+		set(IMUType.ICM20948, YAW_CORRECTION_IMU_OK)
+		set(IMUType.ICM42688, YAW_CORRECTION_IMU_OK)
+		set(IMUType.BMI270, YAW_CORRECTION_IMU_OK)
+		set(IMUType.LSM6DS3TRC, YAW_CORRECTION_IMU_OK)
+		set(IMUType.LSM6DSV, YAW_CORRECTION_IMU_GOOD)
+		set(IMUType.LSM6DSO, YAW_CORRECTION_IMU_OK)
+		set(IMUType.LSM6DSR, YAW_CORRECTION_IMU_OK)
+		set(IMUType.ICM45686, YAW_CORRECTION_IMU_GOOD)
+		set(IMUType.ICM45605, YAW_CORRECTION_IMU_GOOD)
+	}
+
+	// Assume any new IMUs are at least OK, or else we wouldn't be writing firmware to
+	// support it. Please classify and add new IMUs to the map above!
+	val YAW_CORRECTION_DEFAULT = YAW_CORRECTION_IMU_OK
 }
