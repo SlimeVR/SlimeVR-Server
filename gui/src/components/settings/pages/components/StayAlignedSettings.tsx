@@ -81,7 +81,7 @@ export function deserializeStayAlignedSettings(
 function CopySettingsButton({ values }: { values: SettingsForm }) {
   const { l10n } = useLocalization();
   const { currentLocales } = useLocaleConfig();
-  const degreeFormat = new Intl.NumberFormat(currentLocales, {
+  const numberFormat = new Intl.NumberFormat(currentLocales, {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
@@ -95,40 +95,38 @@ function CopySettingsButton({ values }: { values: SettingsForm }) {
   const copySettings = () => {
     const config = values.stayAligned;
 
-    let debug = 'Stay Aligned\n';
-    debug += '\n';
+    const debug = `
+Stay Aligned
 
-    debug += 'GENERAL\n';
-    debug += '=======\n';
-    debug += `Enabled: ${config.enabled ? 'true' : 'false'}\n`;
-    debug += `Extra yaw correction: ${boolify(config.extraYawCorrection)}\n`;
-    debug += `Setup complete: ${boolify(config.setupComplete)}\n`;
-    debug += '\n';
+GENERAL
+=======
+Enabled: ${config.enabled ? 'true' : 'false'}
+Extra yaw correction: ${boolify(config.extraYawCorrection)}
+Setup complete: ${boolify(config.setupComplete)}
 
-    debug += 'RELAXED POSES\n';
-    debug += '=============\n';
-    debug += `Standing: ${config.standingEnabled ? `Enabled (upper_leg=${degreeFormat.format(config.standingUpperLegAngle)}, lower_leg=${degreeFormat.format(config.standingLowerLegAngle)}, foot=${degreeFormat.format(config.standingFootAngle)})` : 'Not enabled'}\n`;
-    debug += `Sitting: ${config.sittingEnabled ? `Enabled (upper_leg=${degreeFormat.format(config.sittingUpperLegAngle)}, lower_leg=${degreeFormat.format(config.sittingLowerLegAngle)}, foot=${degreeFormat.format(config.sittingFootAngle)})` : 'Not enabled'}\n`;
-    debug += `Flat: ${config.flatEnabled ? `Enabled (upper_leg=${degreeFormat.format(config.flatUpperLegAngle)}, lower_leg=${degreeFormat.format(config.flatLowerLegAngle)}, foot=${degreeFormat.format(config.flatFootAngle)})` : 'Not enabled'}\n`;
-    debug += '\n';
+RELAXED POSES
+=============
+Standing: ${config.standingEnabled ? `Enabled (upper_leg=${numberFormat.format(config.standingUpperLegAngle)}, lower_leg=${numberFormat.format(config.standingLowerLegAngle)}, foot=${numberFormat.format(config.standingFootAngle)})` : 'Not enabled'}
+Sitting: ${config.sittingEnabled ? `Enabled (upper_leg=${numberFormat.format(config.sittingUpperLegAngle)}, lower_leg=${numberFormat.format(config.sittingLowerLegAngle)}, foot=${numberFormat.format(config.sittingFootAngle)})` : 'Not enabled'}
+Flat: ${config.flatEnabled ? `Enabled (upper_leg=${numberFormat.format(config.flatUpperLegAngle)}, lower_leg=${numberFormat.format(config.flatLowerLegAngle)}, foot=${numberFormat.format(config.flatFootAngle)})` : 'Not enabled'}
 
-    debug += 'TRACKERS\n';
-    debug += '========\n';
-    trackers.forEach((t) => {
-      const info = t.tracker.info;
-      const stayAligned = t.tracker.stayAligned;
-      if (info && stayAligned) {
-        debug += `${bodypartToString(info.bodyPart)}: correction=${degreeFormat.format(stayAligned.yawCorrectionInDeg)} locked=${stayAligned.locked ? `true locked_error=${degreeFormat.format(stayAligned.lockedErrorInDeg)}` : 'false'} center_error=${degreeFormat.format(stayAligned.centerErrorInDeg)} neighbor_error=${degreeFormat.format(stayAligned.neighborErrorInDeg)}\n`;
-      }
-    });
-    debug += '\n';
+TRACKERS
+========
+${trackers.map((t) => {
+  const info = t.tracker.info;
+  const stayAligned = t.tracker.stayAligned;
+  if (info && stayAligned) {
+    return `${bodypartToString(info.bodyPart)}: correction=${numberFormat.format(stayAligned.yawCorrectionInDeg)} locked=${stayAligned.locked ? `true locked_error=${numberFormat.format(stayAligned.lockedErrorInDeg)}` : 'false'} center_error=${numberFormat.format(stayAligned.centerErrorInDeg)} neighbor_error=${numberFormat.format(stayAligned.neighborErrorInDeg)}`;
+  }
+})}
 
-    debug += 'OTHER\n';
-    debug += '=====\n';
-    debug += `Drift compensation: ${values.driftCompensation.enabled ? 'true <------------ WTF' : 'false'}\n`;
-    debug += `Filtering: type=${values.filtering.type} amount=${values.filtering.amount}\n`;
-    debug += `Enforce constraints: ${boolify(values.toggles.enforceConstraints)}\n`;
-    debug += `Skating correction: ${boolify(values.toggles.skatingCorrection)}\n`;
+OTHER
+=====
+Drift compensation: ${values.driftCompensation.enabled ? 'true <------------ WTF' : 'false'}
+Filtering: type=${values.filtering.type} amount=${numberFormat.format(values.filtering.amount)}
+Enforce constraints: ${boolify(values.toggles.enforceConstraints)}
+Skating correction: ${boolify(values.toggles.skatingCorrection)}
+`;
 
     navigator.clipboard.writeText(debug);
   };
