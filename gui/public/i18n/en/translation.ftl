@@ -543,27 +543,23 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetometer on trackers
 
 settings-stay_aligned = Stay Aligned
-settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your most common poses.
+settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
 settings-stay_aligned-setup-label = Setup Stay Aligned
 settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
 settings-stay_aligned-warnings-drift_compensation = ⚠ Please turn off Drift Compensation! Drift Compensation will conflict with Stay Aligned.
-settings-stay_aligned-enabled-label = Enabled
-settings-stay_aligned-extra_yaw_correction-label = Extra correction for low quality IMUs (e.g. BMI160, MPU60XX)
-settings-stay_aligned-hide_yaw_correction-label = Hide correction (for comparison)
+settings-stay_aligned-enabled-label = Adjust trackers
+settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare with no Stay Aligned)
 settings-stay_aligned-general-label = General
 settings-stay_aligned-relaxed_poses-label = Relaxed Poses
-settings-stay_aligned-relaxed_poses-standing = Standing
-settings-stay_aligned-relaxed_poses-sitting = Sitting in chair
-settings-stay_aligned-relaxed_poses-flat = Sitting on floor
-settings-stay_aligned-relaxed_poses-current_angles = Current angles
-settings-stay_aligned-relaxed_poses-upper_leg_angle = Thigh
-settings-stay_aligned-relaxed_poses-lower_leg_angle = Ankle
-settings-stay_aligned-relaxed_poses-foot_angle = Foot
+settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.
+settings-stay_aligned-relaxed_poses-standing = Adjust trackers while standing
+settings-stay_aligned-relaxed_poses-sitting = Adjust trackers while sitting in a chair
+settings-stay_aligned-relaxed_poses-flat = Adjust trackers while sitting on the floor, or lying on your back
 settings-stay_aligned-relaxed_poses-detect_pose = Detect pose
 settings-stay_aligned-relaxed_poses-reset_pose = Reset pose
-settings-stay_aligned-relaxed_poses-outwards = {$angle} outwards
-settings-stay_aligned-relaxed_poses-inwards = {$angle} inwards
-settings-stay_aligned-relaxed_poses-disabled = Not enabled
+settings-stay_aligned-debug-label = Debugging
+settings-stay_aligned-debug-description = Please include your settings when reporting problems about Stay Aligned.
+settings-stay_aligned-debug-copy-label = Copy settings to clipboard
 
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings

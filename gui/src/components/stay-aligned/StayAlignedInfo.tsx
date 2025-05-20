@@ -1,6 +1,5 @@
 import { Typography } from '@/components/commons/Typography';
 import { useLocaleConfig } from '@/i18n/config';
-import { angleIsNearZero } from '@/maths/angle';
 import { TrackerDataT } from 'solarxr-protocol';
 
 export function StayAlignedInfo({
@@ -17,10 +16,6 @@ export function StayAlignedInfo({
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
-  const errorFormat = new Intl.NumberFormat(currentLocales, {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1,
-  });
 
   const stayAligned = tracker.stayAligned;
   if (!stayAligned) {
@@ -28,26 +23,11 @@ export function StayAlignedInfo({
   }
 
   const locked = stayAligned.locked ? '🔒' : '';
-
-  const delta = `Δ=${degreeFormat.format(stayAligned.yawCorrectionInDeg)}`;
-
-  const errors = [];
-  const maxErrorToShow = 0.1;
-  if (!angleIsNearZero(stayAligned.lockedErrorInDeg, maxErrorToShow)) {
-    errors.push(`L=${errorFormat.format(stayAligned.lockedErrorInDeg)}`);
-  }
-  if (!angleIsNearZero(stayAligned.centerErrorInDeg, maxErrorToShow)) {
-    errors.push(`C=${errorFormat.format(stayAligned.centerErrorInDeg)}`);
-  }
-  if (!angleIsNearZero(stayAligned.neighborErrorInDeg, maxErrorToShow)) {
-    errors.push(`N=${errorFormat.format(stayAligned.neighborErrorInDeg)}`);
-  }
-
-  const error = errors.length > 0 ? `(${errors.join(', ')})` : '';
+  const delta = degreeFormat.format(stayAligned.yawCorrectionInDeg);
 
   return (
     <Typography color={color} whitespace="whitespace-nowrap">
-      {locked} {delta} {error}
+      {locked} {delta}
     </Typography>
   );
 }

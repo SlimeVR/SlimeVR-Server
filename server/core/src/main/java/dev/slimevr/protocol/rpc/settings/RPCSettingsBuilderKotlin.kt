@@ -28,5 +28,6 @@ object RPCSettingsBuilderKotlin {
 				config.flatRelaxedPose.upperLegAngleInDeg,
 				config.flatRelaxedPose.lowerLegAngleInDeg,
 				config.flatRelaxedPose.footAngleInDeg,
+				config.setupComplete,
 			)
 }

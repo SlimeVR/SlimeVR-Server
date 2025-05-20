@@ -46,4 +46,9 @@ class StayAlignedConfig {
 	 * Flat relaxed pose
 	 */
 	val flatRelaxedPose = StayAlignedRelaxedPoseConfig()
+
+	/**
+	 * Whether setup has been completed
+	 */
+	var setupComplete = false
 }

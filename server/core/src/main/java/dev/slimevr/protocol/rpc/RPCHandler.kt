@@ -621,6 +621,9 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		val config = configManager.vrConfig.stayAlignedConfig
 		config.enabled = request.enable()
+		if (request.enable()) {
+			config.setupComplete = true
+		}
 
 		configManager.saveConfig()
 
