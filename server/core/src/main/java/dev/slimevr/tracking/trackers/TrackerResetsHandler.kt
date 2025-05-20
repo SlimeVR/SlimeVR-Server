@@ -340,12 +340,12 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			yawResetSmoothTimeRemain = 0.0f
 		}
 
-		// Reset Stay Aligned
-		tracker.stayAligned.reset()
-
 		calculateDrift(oldRot)
 
 		postProcessResetFull(reference)
+
+		// Reset Stay Aligned
+		tracker.stayAligned.reset()
 	}
 
 	private fun postProcessResetFull(reference: Quaternion) {
@@ -385,9 +385,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		makeIdentityAdjustmentQuatsYaw()
 
-		// Reset Stay Aligned
-		tracker.stayAligned.reset()
-
 		calculateDrift(oldRot)
 
 		// Start at yaw before reset if smoothing enabled
@@ -405,6 +402,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 		tracker.resetFilteringQuats(reference)
+
+		// Reset Stay Aligned
+		tracker.stayAligned.reset()
 	}
 
 	/**
