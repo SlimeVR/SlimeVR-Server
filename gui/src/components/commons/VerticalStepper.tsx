@@ -88,12 +88,13 @@ export function VerticalStep({
   );
 }
 
-type VerticalStepComponentType = FC<{
+export type VerticalStepComponentProps = {
   nextStep: () => void;
   prevStep: () => void;
   goTo: (id: string) => void;
   isActive: boolean;
-}>;
+};
+type VerticalStepComponentType = FC<VerticalStepComponentProps>;
 
 export type VerticalStep = {
   title: string;
