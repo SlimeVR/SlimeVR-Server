@@ -113,13 +113,13 @@ skeleton_bone-NONE = 無
 skeleton_bone-HEAD = 頭部偏移
 skeleton_bone-HEAD-desc =
     這是從頭戴顯示器到頭中央的距離。
-    若要調整，請左右搖頭（如不同意、否定般的樣子）並不要移動身體，檢查其他
-    追蹤器的數值跳動並變更此參數，直到數值跳動小到可以忽略不計。
+    若要調整，請左右搖頭（如不同意、否定般的樣子），檢查其他追蹤器的數值跳
+    動並變更此參數，直到數值跳動小到可以忽略不計。
 skeleton_bone-NECK = 頸部長度
 skeleton_bone-NECK-desc =
     這是從頭中央到脖子底部的距離。
-    若要調整，請上下點頭（如同意、肯定般的樣子）並不要移動身體，檢查其他
-    追蹤器的數值跳動並變更此參數，直到數值跳動小到可以忽略不計。
+    若要調整，請上下點頭（如同意、肯定般的樣子），或將頭倒向兩側肩膀，檢查
+    其他追蹤器的數值跳動並變更此參數，直到數值跳動小到可以忽略不計。
 skeleton_bone-torso_group = 軀幹長度
 skeleton_bone-torso_group-desc =
     這是從脖子底部到臀部的距離。
@@ -304,6 +304,7 @@ widget-imu_visualizer-rotation_raw = 原始旋轉
 widget-imu_visualizer-rotation_preview = 預覽
 widget-imu_visualizer-acceleration = 加速度
 widget-imu_visualizer-position = 位置
+widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Widget: Skeleton Visualizer
 
@@ -331,6 +332,7 @@ tracker-table-column-temperature = 溫度 ℃
 tracker-table-column-linear-acceleration = 加速度 X/Y/Z
 tracker-table-column-rotation = 旋轉 X/Y/Z
 tracker-table-column-position = 位置 X/Y/Z
+tracker-table-column-stay_aligned = Stay Aligned
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -468,6 +470,7 @@ mounting_selection_menu-close = 關閉
 settings-sidebar-title = 設定
 settings-sidebar-general = 一般設定
 settings-sidebar-tracker_mechanics = 追蹤機制
+settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = 追蹤設定
 settings-sidebar-gesture_control = 手勢控制
 settings-sidebar-interface = 使用者介面
@@ -561,6 +564,15 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     在所有有韌體支援的追蹤器上使用磁力計，在磁場穩定的環境中可以減緩偏移。
     開啟此選項後，可以個別在追蹤器選項內停用磁力計。<b>切換此選項時請勿關閉任何一個追蹤器的電源！</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 在追蹤器上啟用磁力計
+settings-stay_aligned = Stay Aligned
+settings-stay_aligned-description = Stay Aligned 會逐漸調整追蹤器以對齊常用的姿勢，進以減緩偏移
+settings-stay_aligned-setup-label = 設定 Stay Aligned
+settings-stay_aligned-setup-description = 啟用 Stay Aligned 前，請先完成「設定 Stay Aligned」。
+settings-stay_aligned-warnings-drift_compensation = ⚠ 請關閉偏移補償，偏移補償會與 Stay Aligned 衝突。
+settings-stay_aligned-enabled-label = 啟用
+settings-stay_aligned-extra_yaw_correction-label = 對低品質 IMU 進行額外補正（例如 BMI160、MPU60xx）
+settings-stay_aligned-hide_yaw_correction-label = 隱藏補正（用以比較參考）
+settings-stay_aligned-general-label = 一般設定
 
 ## FK/Tracking settings
 
@@ -573,10 +585,10 @@ settings-general-fk_settings-leg_tweak-floor_clip = 地板限制
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
-settings-general-fk_settings-leg_tweak-skating_correction = 腳滑修正
+settings-general-fk_settings-leg_tweak-skating_correction = 腳滑補正
 settings-general-fk_settings-leg_tweak-toe_snap = 腳趾跟地
 settings-general-fk_settings-leg_tweak-foot_plant = 腳底貼地
-settings-general-fk_settings-leg_tweak-skating_correction-amount = 腳滑修正量
+settings-general-fk_settings-leg_tweak-skating_correction-amount = 腳滑補正量
 settings-general-fk_settings-leg_tweak-skating_correction-description = 腳滑修正功能可以矯正腳滑溜冰的問題，但會降低某些動作的準確度。啟用本功能前請進行完整重置，並在遊戲內進行校正。
 settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制功能可以減輕甚至解決腳部穿入地板的情況。啟用本功能前請進行完整重置，並在遊戲內進行校正。
 settings-general-fk_settings-leg_tweak-toe_snap-description = 腳趾跟地功能在沒有腳部的追蹤器時，會嘗試猜測腳掌的旋轉角度。
@@ -1262,6 +1274,9 @@ onboarding-scaled_proportions-reset_proportion-title = 重置軀幹比例
 onboarding-scaled_proportions-reset_proportion-description = 要依照身高設定軀幹比例，你現在需要重置相關設定。本按鈕會清除以前所設定的軀幹比例並提供基本配置。
 onboarding-scaled_proportions-done-title = 軀幹比例已設定
 onboarding-scaled_proportions-done-description = 軀幹比例現在已經依照你的身高設定。
+
+## Stay Aligned setup
+
 
 ## Home
 
