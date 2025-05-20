@@ -7,11 +7,10 @@ import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { Typography } from '@/components/commons/Typography';
 import { SettingsPagePaneLayout } from '@/components/settings/SettingsPageLayout';
 import { useLocalization } from '@fluent/react';
-import { useConfig } from '@/hooks/config';
-import {
-  RelaxedPosesSettings,
-  RelaxedPosesSummary,
-} from '@/components/stay-aligned/RelaxedPose';
+import { useAtomValue } from 'jotai';
+import { connectedIMUTrackersAtom } from '@/store/app-store';
+import { bodypartToString } from '@/utils/formatting';
+import { useLocaleConfig } from '@/i18n/config';
 
 export type StayAlignedSettingsForm = {
   enabled: boolean;
@@ -29,6 +28,7 @@ export type StayAlignedSettingsForm = {
   flatUpperLegAngle: number;
   flatLowerLegAngle: number;
   flatFootAngle: number;
+  setupComplete: boolean;
 };
 
 export const defaultStayAlignedSettings: StayAlignedSettingsForm = {
@@ -47,6 +47,7 @@ export const defaultStayAlignedSettings: StayAlignedSettingsForm = {
   flatUpperLegAngle: 0.0,
   flatLowerLegAngle: 0.0,
   flatFootAngle: 0.0,
+  setupComplete: false,
 };
 
 export function serializeStayAlignedSettings(
@@ -77,6 +78,66 @@ export function deserializeStayAlignedSettings(
   return serialized;
 }
 
+function CopySettingsButton({ values }: { values: SettingsForm }) {
+  const { l10n } = useLocalization();
+  const { currentLocales } = useLocaleConfig();
+  const numberFormat = new Intl.NumberFormat(currentLocales, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+
+  const trackers = useAtomValue(connectedIMUTrackersAtom);
+
+  function boolify(value: boolean) {
+    return value ? 'true' : 'false';
+  }
+
+  const copySettings = () => {
+    const config = values.stayAligned;
+
+    const debug = `
+Stay Aligned
+
+GENERAL
+=======
+Enabled: ${config.enabled ? 'true' : 'false'}
+Extra yaw correction: ${boolify(config.extraYawCorrection)}
+Setup complete: ${boolify(config.setupComplete)}
+
+RELAXED POSES
+=============
+Standing: ${config.standingEnabled ? `Enabled (upper_leg=${numberFormat.format(config.standingUpperLegAngle)}, lower_leg=${numberFormat.format(config.standingLowerLegAngle)}, foot=${numberFormat.format(config.standingFootAngle)})` : 'Not enabled'}
+Sitting: ${config.sittingEnabled ? `Enabled (upper_leg=${numberFormat.format(config.sittingUpperLegAngle)}, lower_leg=${numberFormat.format(config.sittingLowerLegAngle)}, foot=${numberFormat.format(config.sittingFootAngle)})` : 'Not enabled'}
+Flat: ${config.flatEnabled ? `Enabled (upper_leg=${numberFormat.format(config.flatUpperLegAngle)}, lower_leg=${numberFormat.format(config.flatLowerLegAngle)}, foot=${numberFormat.format(config.flatFootAngle)})` : 'Not enabled'}
+
+TRACKERS
+========
+${trackers.map((t) => {
+  const info = t.tracker.info;
+  const stayAligned = t.tracker.stayAligned;
+  if (info && stayAligned) {
+    return `${bodypartToString(info.bodyPart)}: correction=${numberFormat.format(stayAligned.yawCorrectionInDeg)} locked=${stayAligned.locked ? `true locked_error=${numberFormat.format(stayAligned.lockedErrorInDeg)}` : 'false'} center_error=${numberFormat.format(stayAligned.centerErrorInDeg)} neighbor_error=${numberFormat.format(stayAligned.neighborErrorInDeg)}`;
+  }
+})}
+
+OTHER
+=====
+Drift compensation: ${values.driftCompensation.enabled ? 'true <------------ WTF' : 'false'}
+Filtering: type=${values.filtering.type} amount=${numberFormat.format(values.filtering.amount)}
+Enforce constraints: ${boolify(values.toggles.enforceConstraints)}
+Skating correction: ${boolify(values.toggles.skatingCorrection)}
+`;
+
+    navigator.clipboard.writeText(debug);
+  };
+
+  return (
+    <Button variant="primary" onClick={copySettings}>
+      {l10n.getString('settings-stay_aligned-debug-copy-label')}
+    </Button>
+  );
+}
+
 export function StayAlignedSettings({
   values,
   control,
@@ -85,7 +146,23 @@ export function StayAlignedSettings({
   control: Control<SettingsForm, any>;
 }) {
   const { l10n } = useLocalization();
-  const { config } = useConfig();
+
+  const config = values.stayAligned;
+  const hasStandingPose =
+    config.standingEnabled ||
+    config.standingUpperLegAngle !== 0.0 ||
+    config.standingLowerLegAngle !== 0.0 ||
+    config.standingFootAngle !== 0.0;
+  const hasSittingPose =
+    config.sittingEnabled ||
+    config.sittingUpperLegAngle !== 0.0 ||
+    config.sittingLowerLegAngle !== 0.0 ||
+    config.sittingFootAngle !== 0.0;
+  const hasFlatPose =
+    config.flatEnabled ||
+    config.flatUpperLegAngle !== 0.0 ||
+    config.flatLowerLegAngle !== 0.0 ||
+    config.flatFootAngle !== 0.0;
 
   return (
     <SettingsPagePaneLayout icon={<WrenchIcon />} id="stayaligned">
@@ -109,7 +186,7 @@ export function StayAlignedSettings({
           </Button>
         </div>
       </div>
-      <div className="mt-4">
+      <div className="mt-6">
         <Typography bold>
           {l10n.getString('settings-stay_aligned-general-label')}
         </Typography>
@@ -120,22 +197,14 @@ export function StayAlignedSettings({
             )}
           </div>
         )}
-        <div className="grid sm:grid-cols-2 gap-3 mt-2">
+        <div className="grid sm:grid-cols-1 gap-3 mt-2">
           <CheckBox
             variant="toggle"
             outlined
             control={control}
             name="stayAligned.enabled"
             label={l10n.getString('settings-stay_aligned-enabled-label')}
-          />
-          <CheckBox
-            variant="toggle"
-            outlined
-            control={control}
-            name="stayAligned.extraYawCorrection"
-            label={l10n.getString(
-              'settings-stay_aligned-extra_yaw_correction-label'
-            )}
+            disabled={!config.setupComplete}
           />
           <CheckBox
             variant="toggle"
@@ -145,19 +214,61 @@ export function StayAlignedSettings({
             label={l10n.getString(
               'settings-stay_aligned-hide_yaw_correction-label'
             )}
+            disabled={!config.setupComplete}
           />
         </div>
       </div>
-      <div className="mt-4">
+      <div className="mt-6">
         <Typography bold>
           {l10n.getString('settings-stay_aligned-relaxed_poses-label')}
         </Typography>
+        <div className="mt-2">
+          <Typography color="secondary">
+            {l10n.getString('settings-stay_aligned-relaxed_poses-description')}
+          </Typography>
+        </div>
         <div className="grid sm:grid-cols-1 gap-3 mt-2">
-          {config?.debug ? (
-            <RelaxedPosesSettings control={control} />
-          ) : (
-            <RelaxedPosesSummary values={values} />
-          )}
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="stayAligned.standingEnabled"
+            label={l10n.getString(
+              'settings-stay_aligned-relaxed_poses-standing'
+            )}
+            disabled={!config.setupComplete || !hasStandingPose}
+          />
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="stayAligned.sittingEnabled"
+            label={l10n.getString(
+              'settings-stay_aligned-relaxed_poses-sitting'
+            )}
+            disabled={!config.setupComplete || !hasSittingPose}
+          />
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="stayAligned.flatEnabled"
+            label={l10n.getString('settings-stay_aligned-relaxed_poses-flat')}
+            disabled={!config.setupComplete || !hasFlatPose}
+          />
+        </div>
+      </div>
+      <div className="mt-6">
+        <Typography bold>
+          {l10n.getString('settings-stay_aligned-debug-label')}
+        </Typography>
+        <div className="mt-2">
+          <Typography color="secondary">
+            {l10n.getString('settings-stay_aligned-debug-description')}
+          </Typography>
+        </div>
+        <div className="mt-2">
+          <CopySettingsButton values={values} />
         </div>
       </div>
     </SettingsPagePaneLayout>

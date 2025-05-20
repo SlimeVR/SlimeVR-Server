@@ -1,7 +1,6 @@
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import {
-  CurrentRelaxedPose,
   DetectRelaxedPoseButton,
   ResetRelaxedPoseButton,
 } from '@/components/stay-aligned/RelaxedPose';
@@ -42,7 +41,6 @@ function makeRelaxedPoseStep(
               </Typography>
             ))}
           </div>
-          <CurrentRelaxedPose />
           <div className="flex gap-3 mobile:justify-between">
             <Button
               variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
