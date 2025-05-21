@@ -570,22 +570,18 @@ settings-stay_aligned-setup-label = 設定 Stay Aligned
 settings-stay_aligned-setup-description = 啟用 Stay Aligned 前，請先完成「設定 Stay Aligned」。
 settings-stay_aligned-warnings-drift_compensation = ⚠ 請關閉偏移補償，偏移補償會與 Stay Aligned 衝突。
 settings-stay_aligned-enabled-label = 啟用
-settings-stay_aligned-extra_yaw_correction-label = 對低品質 IMU 進行額外補正（例如 BMI160、MPU60xx）
 settings-stay_aligned-hide_yaw_correction-label = 隱藏補正（用以比較參考）
 settings-stay_aligned-general-label = 一般設定
 settings-stay_aligned-relaxed_poses-label = 放鬆的姿勢
+settings-stay_aligned-relaxed_poses-description = Stay Aligned 會使用各種放鬆的姿勢保持追蹤器的定位。請使用「設定 Stay Aligned」來變更設定的姿勢。
 settings-stay_aligned-relaxed_poses-standing = 站立姿勢
 settings-stay_aligned-relaxed_poses-sitting = 坐在椅子上的姿勢
 settings-stay_aligned-relaxed_poses-flat = 坐在地板上的姿勢
-settings-stay_aligned-relaxed_poses-current_angles = 目前角度
-settings-stay_aligned-relaxed_poses-upper_leg_angle = 大腿
-settings-stay_aligned-relaxed_poses-lower_leg_angle = 腳踝
-settings-stay_aligned-relaxed_poses-foot_angle = 腳
 settings-stay_aligned-relaxed_poses-detect_pose = 偵測姿勢
 settings-stay_aligned-relaxed_poses-reset_pose = 重置姿勢
-settings-stay_aligned-relaxed_poses-outwards = { $angle } 朝外
-settings-stay_aligned-relaxed_poses-inwards = { $angle } 朝內
-settings-stay_aligned-relaxed_poses-disabled = 未啟用
+settings-stay_aligned-debug-label = 除錯資訊
+settings-stay_aligned-debug-description = 在回報與 Stay Aligned 相關的問題時，請附上以下設定參數。
+settings-stay_aligned-debug-copy-label = 複製設定參數進剪貼簿
 
 ## FK/Tracking settings
 
