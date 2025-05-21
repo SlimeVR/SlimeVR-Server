@@ -44,9 +44,11 @@ object StayAlignedDefaults {
 	val YAW_CORRECTION_IMU_GOOD = Angle.ofDeg(0.1f)
 	val YAW_CORRECTION_IMU_OK = Angle.ofDeg(0.2f)
 	val YAW_CORRECTION_IMU_BAD = Angle.ofDeg(0.4f)
+	val YAW_CORRECTION_IMU_DISABLED = Angle.ZERO
 
 	val IMU_TO_YAW_CORRECTION = buildMap {
-		set(IMUType.MPU9250, YAW_CORRECTION_IMU_BAD)
+		// Mag is enabled on MPU9250 but server doesn't know about it
+		set(IMUType.MPU9250, YAW_CORRECTION_IMU_DISABLED)
 		set(IMUType.MPU6500, YAW_CORRECTION_IMU_BAD)
 		set(IMUType.BNO080, YAW_CORRECTION_IMU_GOOD)
 		set(IMUType.BNO085, YAW_CORRECTION_IMU_GOOD)
