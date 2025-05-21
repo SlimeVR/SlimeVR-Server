@@ -353,7 +353,6 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val config = api.server.configManager.vrConfig.stayAlignedConfig
 			val requestConfig = req.stayAligned()
 			config.enabled = requestConfig.enabled()
-			config.extraYawCorrection = requestConfig.extraYawCorrection()
 			config.hideYawCorrection = requestConfig.hideYawCorrection()
 			config.standingRelaxedPose.enabled = requestConfig.standingEnabled()
 			config.standingRelaxedPose.upperLegAngleInDeg = requestConfig.standingUpperLegAngle()

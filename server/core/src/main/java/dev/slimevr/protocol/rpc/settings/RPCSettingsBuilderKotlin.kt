@@ -14,7 +14,7 @@ object RPCSettingsBuilderKotlin {
 			.createStayAlignedSettings(
 				fbb,
 				config.enabled,
-				config.extraYawCorrection,
+				false, // deprecated
 				config.hideYawCorrection,
 				config.standingRelaxedPose.enabled,
 				config.standingRelaxedPose.upperLegAngleInDeg,
