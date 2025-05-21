@@ -79,7 +79,7 @@ enum class BoardType(val id: UInt) {
 		WRANGLER -> "Wrangler Joycons"
 		MOCOPI -> "Sony Mocopi"
 		WEMOSWROOM02 -> "Wemos Wroom-02 D1 Mini"
-		GESTURES -> "Gestures"
+		GESTURES -> "litten Yº by Gestures"
 		XIAO_ESP32C3 -> "Seeed Studio XIAO ESP32C3"
 		HARITORA -> "Haritora"
 		ESP32C6DEVKITC1 -> "Espressif ESP32-C6 DevKitC-1"
