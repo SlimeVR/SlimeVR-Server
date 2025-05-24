@@ -36,6 +36,16 @@ function ButtonContent({
   );
 }
 
+export type ButtonProps = {
+  children?: ReactNode;
+  icon?: ReactNode;
+  variant: 'primary' | 'secondary' | 'tertiary' | 'quaternary';
+  to?: string;
+  loading?: boolean;
+  rounded?: boolean;
+  state?: any;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
+
 export function Button({
   children,
   variant,
@@ -46,15 +56,7 @@ export function Button({
   icon,
   rounded = false,
   ...props
-}: {
-  children?: ReactNode;
-  icon?: ReactNode;
-  variant: 'primary' | 'secondary' | 'tertiary' | 'quaternary';
-  to?: string;
-  loading?: boolean;
-  rounded?: boolean;
-  state?: any;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+}: ButtonProps) {
   const classes = useMemo(() => {
     const variantsMap = {
       primary: classNames({

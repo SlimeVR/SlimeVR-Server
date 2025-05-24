@@ -37,7 +37,7 @@ export function VerticalStep({
       setTimeout(() => {
         if (!refTop.current) return;
         refTop.current.scrollIntoView({ behavior: 'smooth' });
-      }, 500);
+      }, 300);
   }, [isSelected]);
 
   useLayoutEffect(() => {
@@ -78,7 +78,7 @@ export function VerticalStep({
         <div
           style={{ height: !isSelected ? 0 : height }}
           className={classNames('overflow-clip px-1', {
-            'duration-500 transition-[height]': shouldAnimate,
+            'duration-300 transition-[height]': shouldAnimate,
           })}
         >
           <div ref={ref}>{children}</div>
@@ -88,12 +88,13 @@ export function VerticalStep({
   );
 }
 
-type VerticalStepComponentType = FC<{
+export type VerticalStepComponentProps = {
   nextStep: () => void;
   prevStep: () => void;
   goTo: (id: string) => void;
   isActive: boolean;
-}>;
+};
+type VerticalStepComponentType = FC<VerticalStepComponentProps>;
 
 export type VerticalStep = {
   title: string;
