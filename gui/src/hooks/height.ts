@@ -74,5 +74,7 @@ export const EYE_HEIGHT_TO_HEIGHT_RATIO = 0.936;
 // Based on average human height (1.65m)
 // From https://ourworldindata.org/human-height (January 2024)
 export const DEFAULT_FULL_HEIGHT = 1.65;
-export const DEFAULT_FULL_HEIGHT_INCHES = Math.round(convert(DEFAULT_FULL_HEIGHT, 'm').to('in'));
+export const DEFAULT_FULL_HEIGHT_INCHES = Math.round(
+  convert(DEFAULT_FULL_HEIGHT, 'm').to('in')
+);
 export const DEFAULT_EYE_HEIGHT = DEFAULT_FULL_HEIGHT * EYE_HEIGHT_TO_HEIGHT_RATIO;
