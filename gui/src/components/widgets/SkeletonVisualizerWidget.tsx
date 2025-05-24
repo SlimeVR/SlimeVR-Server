@@ -219,7 +219,7 @@ function initializePreview(
       frameInterval = interval;
     },
     rebuildSkeleton,
-    updatesBones: (bones, forceRender = false) => {
+    updatesBones: (bones) => {
       skeleton.forEach(
         (bone) => bone instanceof BoneKind && bone.updateData(bones)
       );
@@ -231,10 +231,6 @@ function initializePreview(
         camera.zoom = 1 / scale;
         skeletonGroup.position.set(0, heightOffset, 0);
       }
-
-      if (forceRender) {
-        render(0);
-      }
     },
     destroy: () => {
       skeletonHelper.dispose();
@@ -244,8 +240,12 @@ function initializePreview(
   };
 }
 
+const BASE_FRAMERATE = 30;
+const LOW_FRAMERATE = 15;
+
 function SkeletonVisualizer() {
   const { config } = useConfig();
+
   const previewContext = useRef<SkeletonPreviewContext | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -279,14 +279,14 @@ function SkeletonVisualizer() {
     if (config?.devSettings.fastDataFeed) return;
     const context = previewContext.current;
     if (!context) return;
-    context.setFrameInterval(1000 / 30);
+    context.setFrameInterval(1000 / BASE_FRAMERATE);
   };
 
   const onLeave = () => {
     if (config?.devSettings.fastDataFeed) return;
     const context = previewContext.current;
     if (!context) return;
-    context.setFrameInterval(1000 / 15);
+    context.setFrameInterval(1000 / LOW_FRAMERATE);
   };
 
   useLayoutEffect(() => {
@@ -299,7 +299,7 @@ function SkeletonVisualizer() {
       createChildren(bones, BoneKind.root)
     );
     if (!config?.devSettings.fastDataFeed)
-      previewContext.current.setFrameInterval(1000 / 15);
+      previewContext.current.setFrameInterval(1000 / LOW_FRAMERATE);
 
     const rect = containerRef.current.getBoundingClientRect();
     previewContext.current.resize(rect.width, rect.height);
