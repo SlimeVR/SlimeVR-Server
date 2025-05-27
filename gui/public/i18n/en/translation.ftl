@@ -1259,6 +1259,7 @@ onboarding-stay_aligned-verify_mounting-step-1 = 1. Move around while standing.
 onboarding-stay_aligned-verify_mounting-step-2 = 2. Sit down and move your legs and feet.
 onboarding-stay_aligned-verify_mounting-step-3 = 3. If your trackers aren't in the right place, press "Redo Mounting Calibration"
 onboarding-stay_aligned-verify_mounting-redo_mounting = Redo Mounting calibration
+onboarding-stay_aligned-preparation-title = Preparation
 onboarding-stay_aligned-preparation-tip = Make sure to stand upright. You must be looking forward and your arms must be down to your sides.
 onboarding-stay_aligned-relaxed_poses-standing-title = Relaxed Standing Pose
 onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stand in a comfortable position. Relax!
