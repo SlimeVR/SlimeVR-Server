@@ -6,7 +6,7 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { MouseEventHandler } from 'react';
-import { Button } from '@/components/commons/Button';
+import { Button, ButtonProps } from '@/components/commons/Button';
 
 /**
  * Tells the server to set a relaxed pose to the current pose's angles.
@@ -33,7 +33,7 @@ export function DetectRelaxedPoseButton({
         }
       }}
     >
-      {l10n.getString('settings-stay_aligned-relaxed_poses-detect_pose')}
+      {l10n.getString('settings-stay_aligned-relaxed_poses-save_pose')}
     </Button>
   );
 }
@@ -43,9 +43,11 @@ export function DetectRelaxedPoseButton({
  */
 export function ResetRelaxedPoseButton({
   pose,
+  variant = 'primary',
   onClick,
   children,
 }: {
+  variant: ButtonProps['variant'];
   pose: StayAlignedRelaxedPose;
   onClick?: MouseEventHandler<HTMLButtonElement>;
 } & React.PropsWithChildren) {
@@ -54,7 +56,7 @@ export function ResetRelaxedPoseButton({
 
   return (
     <Button
-      variant="primary"
+      variant={variant}
       onClick={(e) => {
         const req = new DetectStayAlignedRelaxedPoseRequestT();
         req.pose = pose;

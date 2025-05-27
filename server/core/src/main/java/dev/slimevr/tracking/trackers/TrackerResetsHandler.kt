@@ -131,7 +131,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Reads/loads drift compensation settings from given config
 	 */
 	fun readDriftCompensationConfig(config: DriftCompensationConfig) {
-		compensateDrift = config.enabled
+		compensateDrift = false
 		driftPrediction = config.prediction
 		driftAmount = config.amount
 		val maxResets = config.maxResets

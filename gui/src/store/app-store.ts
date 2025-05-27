@@ -1,6 +1,7 @@
 import { atom } from 'jotai';
 import {
   BodyPart,
+  BoneT,
   DataFeedUpdateT,
   DeviceDataT,
   TrackerDataT,
@@ -17,6 +18,8 @@ export interface FlatDeviceTracker {
 export const ignoredTrackersAtom = atom(new Set<string>());
 
 export const datafeedAtom = atom(new DataFeedUpdateT());
+
+export const bonesAtom = atom<BoneT[]>([]);
 
 export const devicesAtom = selectAtom(
   datafeedAtom,
@@ -53,12 +56,6 @@ export const connectedIMUTrackersAtom = atom((get) => {
 export const computedTrackersAtom = selectAtom(
   datafeedAtom,
   (datafeed) => datafeed.syntheticTrackers.map((tracker) => ({ tracker })),
-  isEqual
-);
-
-export const bonesAtom = selectAtom(
-  datafeedAtom,
-  (datafeed) => datafeed.bones,
   isEqual
 );
 
