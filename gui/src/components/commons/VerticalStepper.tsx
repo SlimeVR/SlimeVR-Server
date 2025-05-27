@@ -102,7 +102,13 @@ export type VerticalStep = {
   component: VerticalStepComponentType;
 };
 
-export default function VerticalStepper({ steps }: { steps: VerticalStep[] }) {
+export default function VerticalStepper({
+  steps,
+  onStepChange,
+}: {
+  steps: VerticalStep[];
+  onStepChange?: (index: number, id?: string) => void;
+}) {
   const [currStep, setStep] = useState(0);
 
   const nextStep = () => {
@@ -121,6 +127,10 @@ export default function VerticalStepper({ steps }: { steps: VerticalStep[] }) {
 
     setStep(step);
   };
+
+  useEffect(() => {
+    onStepChange?.(currStep, steps[currStep].id);
+  }, [currStep]);
 
   return (
     <ol className="relative border-l border-gray-700 text-gray-400">

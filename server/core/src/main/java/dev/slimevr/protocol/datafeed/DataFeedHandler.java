@@ -54,7 +54,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
 
-		int messageOffset = this.buildDatafeed(fbb, req.config().unpack());
+		int messageOffset = this.buildDatafeed(fbb, req.config().unpack(), 0);
 
 		DataFeedMessageHeader.startDataFeedMessageHeader(fbb);
 		DataFeedMessageHeader.addMessage(fbb, messageOffset);
@@ -70,7 +70,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 		conn.send(fbb.dataBuffer());
 	}
 
-	public int buildDatafeed(FlatBufferBuilder fbb, DataFeedConfigT config) {
+	public int buildDatafeed(FlatBufferBuilder fbb, DataFeedConfigT config, int index) {
 		int devicesOffset = DataFeedBuilder
 			.createDevicesData(
 				fbb,
@@ -110,7 +110,8 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 				devicesOffset,
 				trackersOffset,
 				bonesOffset,
-				stayAlignedPoseOffset
+				stayAlignedPoseOffset,
+				index
 			);
 	}
 
@@ -133,7 +134,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 						fbb = new FlatBufferBuilder(300);
 					}
 
-					int messageOffset = this.buildDatafeed(fbb, configT);
+					int messageOffset = this.buildDatafeed(fbb, configT, index);
 
 					DataFeedMessageHeader.startDataFeedMessageHeader(fbb);
 					DataFeedMessageHeader.addMessage(fbb, messageOffset);

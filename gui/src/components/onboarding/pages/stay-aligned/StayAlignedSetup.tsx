@@ -1,32 +1,25 @@
-import { useOnboarding } from '@/hooks/onboarding';
 import { Typography } from '@/components/commons/Typography';
-import { Step, StepperSlider } from '@/components/onboarding/StepperSlider';
 import { DoneStep } from './stay-aligned-steps/Done';
 import { useLocalization } from '@fluent/react';
-import { autoMountingSteps } from '@/components/onboarding/pages/mounting/AutomaticMounting';
 import {
   FlatRelaxedPoseStep,
   SittingRelaxedPoseStep,
   StandingRelaxedPoseStep,
 } from './stay-aligned-steps/RelaxedPoseSteps';
-import {
-  EnableStayAlignedRequestT,
-  ResetType,
-  RpcMessage,
-} from 'solarxr-protocol';
+import { EnableStayAlignedRequestT, RpcMessage } from 'solarxr-protocol';
 import { RPCPacketType, useWebsocketAPI } from '@/hooks/websocket-api';
-import { useEffect } from 'react';
-import VerticalStepper, {
-  VerticalStepComponentProps,
-} from '@/components/commons/VerticalStepper';
+import { useEffect, useRef } from 'react';
+import VerticalStepper from '@/components/commons/VerticalStepper';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { useAtomValue } from 'jotai';
-import { flatTrackersAtom } from '@/store/app-store';
-import { TipBox } from '@/components/commons/TipBox';
-import { BodyDisplay } from '@/components/commons/BodyDisplay';
-import { Button } from '@/components/commons/Button';
-import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
-import { ResetButton } from '@/components/home/ResetButton';
+import {
+  SkeletonPreviewView,
+  SkeletonVisualizerWidget,
+} from '@/components/widgets/SkeletonVisualizerWidget';
+import { Vector3 } from 'three';
+import { Easing } from '@tweenjs/tween.js';
+import { VerifyMountingStep } from './stay-aligned-steps/VerifyMounting';
+import { PutTrackersOnStep } from './stay-aligned-steps/PutTrackersOnStep';
+import { PreparationStep } from './stay-aligned-steps/PreparationStep';
 
 export function enableStayAligned(
   enable: boolean,
@@ -37,138 +30,100 @@ export function enableStayAligned(
   sendRPCPacket(RpcMessage.EnableStayAlignedRequest, req);
 }
 
-// const steps: Step[] = [
-//   ...autoMountingSteps,
-//   { type: 'numbered', component: VerifyMountingStep },
-//   { type: 'numbered', component: StandingRelaxedPoseStep },
-//   { type: 'numbered', component: SittingRelaxedPoseStep },
-//   { type: 'numbered', component: FlatRelaxedPoseStep },
-//   { type: 'fullsize', component: DoneStep },
-// ];
-
-function PutTrackersOnStep({ isActive, nextStep }: VerticalStepComponentProps) {
-  const { isMobile } = useBreakpoint('mobile');
-  const trackers = useAtomValue(flatTrackersAtom);
-  const { l10n } = useLocalization();
-
-  return (
-    <div className="flex flex-col items-center w-full">
-      <div className="flex flex-col flex-grow gap-2">
-        <div className="flex flex-grow flex-col gap-4">
-          <div>
-            <Typography color="secondary">
-              {l10n.getString(
-                'onboarding-automatic_mounting-put_trackers_on-description'
-              )}
-            </Typography>
-          </div>
-          <div className="flex">
-            <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>
-          </div>
-        </div>
-        <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-16">
-          <BodyDisplay
-            trackers={trackers}
-            width={150}
-            dotsSize={15}
-            variant="dots"
-            hideUnassigned={true}
-          />
-        </div>
-        <div className="flex flex-col gap-3">
-          <div className="flex gap-3 justify-end">
-            <Button variant="primary" onClick={nextStep}>
-              {l10n.getString(
-                'onboarding-automatic_mounting-put_trackers_on-next'
-              )}
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export function PreparationStep({
-  nextStep,
-  prevStep,
-}: VerticalStepComponentProps) {
-  const { isMobile } = useBreakpoint('mobile');
-  const { l10n } = useLocalization();
-
-  return (
-    <div className="flex flex-col flex-grow justify-between">
-      <div className="flex flex-col gap-4">
-        <div>
-          <Typography color="secondary">
-            {l10n.getString('onboarding-automatic_mounting-preparation-step-0')}
-          </Typography>
-          <Typography color="secondary">
-            {l10n.getString('onboarding-automatic_mounting-preparation-step-1')}
-          </Typography>
-        </div>
-      </div>
-      <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
-        <img src="/images/reset-pose.webp" width={100} alt="Reset position" />
-      </div>
-      <div className="flex gap-3 justify-between">
-        <Button variant={'secondary'} onClick={prevStep}>
-          {l10n.getString('onboarding-automatic_mounting-prev_step')}
-        </Button>
-        <ResetButton
-          size="small"
-          type={ResetType.Full}
-          onReseted={nextStep}
-        ></ResetButton>
-      </div>
-    </div>
-  );
-}
-
-export function VerifyMountingStep({
-  nextStep,
-  prevStep,
-}: VerticalStepComponentProps) {
-  const { l10n } = useLocalization();
-
-  return (
-    <div className="flex flex-grow flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <Typography color="secondary">
-          {l10n.getString('onboarding-stay_aligned-verify_mounting-step-0')}
-        </Typography>
-        <Typography color="secondary">
-          {l10n.getString('onboarding-stay_aligned-verify_mounting-step-1')}
-        </Typography>
-        <Typography color="secondary">
-          {l10n.getString('onboarding-stay_aligned-verify_mounting-step-2')}
-        </Typography>
-        <Typography color="secondary">
-          {l10n.getString('onboarding-stay_aligned-verify_mounting-step-3')}
-        </Typography>
-      </div>
-      <div className="flex gap-3 justify-between">
-        <Button variant={'secondary'} to="/onboarding/mounting/choose">
-          Redo Mounting calibration
-        </Button>
-        <Button variant="primary" onClick={nextStep}>
-          {l10n.getString('onboarding-stay_aligned-next_step')}
-        </Button>
-      </div>
-    </div>
-  );
-}
-
 export function StayAlignedSetup() {
   const { l10n } = useLocalization();
-  const { state } = useOnboarding();
+  const { isMobile } = useBreakpoint('mobile');
   const { sendRPCPacket } = useWebsocketAPI();
+
+  const viewsRef = useRef<{
+    cam1?: SkeletonPreviewView;
+    cam2?: SkeletonPreviewView;
+  }>({});
 
   useEffect(() => {
     // Disable Stay Aligned as soon as we enter the setup flow so that we don't
     // adjust the trackers while trying to set up the feature
     enableStayAligned(false, sendRPCPacket);
   }, []);
+
+  const updateCamSizes = () => {
+    const views = viewsRef.current;
+    if (!views.cam1 || !views.cam2) return;
+    if (!views.cam2.hidden) {
+      if (isMobile) {
+        views.cam1.height = 1;
+        views.cam2.height = 1;
+        views.cam2.width = 0.5;
+        views.cam1.width = 0.5;
+        views.cam1.bottom = 0;
+        views.cam2.bottom = 0;
+        views.cam2.left = 0.5;
+      } else {
+        views.cam1.height = 0.5;
+        views.cam2.height = 0.5;
+        views.cam2.width = 1;
+        views.cam1.width = 1;
+        views.cam1.bottom = 0;
+        views.cam2.bottom = 0.5;
+        views.cam2.left = 0;
+      }
+    } else {
+      views.cam1.height = 1;
+      views.cam2.height = 1;
+      views.cam2.width = 1;
+      views.cam1.width = 1;
+      views.cam1.bottom = 0;
+      views.cam2.bottom = 0;
+      views.cam2.left = 0;
+    }
+  };
+
+  const onStepChange = (index: number, id?: string) => {
+    const views = viewsRef.current;
+    if (!views.cam1 || !views.cam2) return;
+    switch (id) {
+      case 'standing': {
+        views.cam2.hidden = true;
+        views.cam1.tween
+          .stop()
+          .to(new Vector3(0, 1, -6), 500)
+          .easing(Easing.Quadratic.InOut)
+          .startFromCurrentValues();
+        break;
+      }
+      case 'flat':
+      case 'sitting': {
+        views.cam2.hidden = false;
+        views.cam1.tween
+          .stop()
+          .to(new Vector3(-5, 1, -0), 500)
+          .easing(Easing.Quadratic.InOut)
+          .startFromCurrentValues();
+
+        views.cam2.tween
+          .stop()
+          .to(new Vector3(0, 4, -0.2), 500)
+          .easing(Easing.Quadratic.InOut)
+          .startFromCurrentValues();
+        break;
+      }
+      default: {
+        views.cam2.hidden = true;
+        views.cam1.tween
+          .stop()
+          .to(new Vector3(3, 2.5, -3), 1000)
+          .easing(Easing.Quadratic.InOut)
+          .startFromCurrentValues();
+        break;
+      }
+    }
+
+    updateCamSizes();
+  };
+
+  useEffect(() => {
+    updateCamSizes();
+  }, [isMobile]);
 
   return (
     <div className="h-full w-full flex gap-2 mobile:flex-col bg-background-80">
@@ -183,18 +138,25 @@ export function StayAlignedSetup() {
         </div>
         <div className="flex pl-4 pt-4">
           <VerticalStepper
+            onStepChange={onStepChange}
             steps={[
               {
-                title: 'Put on trackers',
+                title: l10n.getString(
+                  'onboarding-stay_aligned-put_trackers_on-title'
+                ),
                 component: PutTrackersOnStep,
                 id: 'start',
               },
               {
-                title: 'Preparation',
+                title: l10n.getString(
+                  'onboarding-stay_aligned-preparation-title'
+                ),
                 component: PreparationStep,
               },
               {
-                title: 'Verify Mounting',
+                title: l10n.getString(
+                  'onboarding-stay_aligned-verify_mounting-title'
+                ),
                 component: VerifyMountingStep,
               },
               {
@@ -202,18 +164,21 @@ export function StayAlignedSetup() {
                   'onboarding-stay_aligned-relaxed_poses-standing-title'
                 ),
                 component: StandingRelaxedPoseStep,
+                id: 'standing',
               },
               {
                 title: l10n.getString(
                   'onboarding-stay_aligned-relaxed_poses-sitting-title'
                 ),
                 component: SittingRelaxedPoseStep,
+                id: 'sitting',
               },
               {
                 title: l10n.getString(
                   'onboarding-stay_aligned-relaxed_poses-flat-title'
                 ),
                 component: FlatRelaxedPoseStep,
+                id: 'flat',
               },
               {
                 title: l10n.getString('onboarding-stay_aligned-done-title'),
@@ -223,8 +188,37 @@ export function StayAlignedSetup() {
           ></VerticalStepper>
         </div>
       </div>
-      <div className="bg-background-70 rounded-md w-[45%] mobile:w-full mobile:h-[30%]">
-        <SkeletonVisualizerWidget></SkeletonVisualizerWidget>
+      <div className="bg-background-70 rounded-md xs:max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full mobile:h-[30%]">
+        <SkeletonVisualizerWidget
+          onInit={(context) => {
+            viewsRef.current.cam1 = context.addView({
+              left: 0,
+              bottom: 0,
+              width: 1,
+              height: 1,
+              position: new Vector3(3, 2.5, -3),
+              onHeightChange(v, newHeight) {
+                v.controls.target.set(0, newHeight / 2, 0);
+                const scale = Math.max(1.8, newHeight) / 1.8;
+                v.camera.zoom = 1 / scale;
+              },
+            });
+
+            viewsRef.current.cam2 = context.addView({
+              left: 0,
+              bottom: 0.5,
+              width: 1,
+              height: 0.5,
+              hidden: true,
+              position: new Vector3(3, 2.5, -3),
+              onHeightChange(v, newHeight) {
+                v.controls.target.set(0, newHeight / 2, 0);
+                const scale = Math.max(1.8, newHeight) / 1.8;
+                v.camera.zoom = 1 / scale;
+              },
+            });
+          }}
+        ></SkeletonVisualizerWidget>
       </div>
     </div>
   );

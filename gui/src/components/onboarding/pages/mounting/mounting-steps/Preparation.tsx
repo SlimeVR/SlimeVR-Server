@@ -4,6 +4,8 @@ import { Typography } from '@/components/commons/Typography';
 import { ResetButton } from '@/components/home/ResetButton';
 import { useLocalization } from '@fluent/react';
 import { useBreakpoint } from '@/hooks/breakpoint';
+import { CheckIcon } from '@/components/commons/icon/CheckIcon';
+import { CrossIcon } from '@/components/commons/icon/CrossIcon';
 
 export function PreparationStep({
   nextStep,
@@ -14,7 +16,6 @@ export function PreparationStep({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
-  const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
 
   return (
@@ -25,27 +26,43 @@ export function PreparationStep({
             {l10n.getString('onboarding-automatic_mounting-preparation-title')}
           </Typography>
           <div>
-            <Typography color="secondary">
-              {l10n.getString(
-                'onboarding-automatic_mounting-preparation-step-0'
-              )}
-            </Typography>
-            <Typography color="secondary">
-              {l10n.getString(
-                'onboarding-automatic_mounting-preparation-step-1'
-              )}
-            </Typography>
+            <Localized id="onboarding-automatic_mounting-preparation-v2-step-0">
+              <Typography color="secondary"></Typography>
+            </Localized>
+            <Localized id="onboarding-automatic_mounting-preparation-v2-step-1">
+              <Typography color="secondary"></Typography>
+            </Localized>
+            <Localized id="onboarding-automatic_mounting-preparation-v2-step-2">
+              <Typography color="secondary"></Typography>
+            </Localized>
           </div>
         </div>
-        {isMobile && (
-          <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
+        <div className="grid grid-cols-3 py-4 gap-2">
+          <div className="flex flex-col bg-background-70 rounded-md relative max-h-64">
+            <CheckIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success"></CheckIcon>
             <img
-              src="/images/reset-pose.webp"
-              width={100}
+              src="/images/reset/FullResetPose.webp"
+              className="h-full object-contain"
               alt="Reset position"
             />
           </div>
-        )}
+          <div className="flex flex-col bg-background-70 rounded-md relative max-h-64">
+            <CheckIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success"></CheckIcon>
+            <img
+              src="/images/reset/FullResetPoseSide.webp"
+              className="h-full object-contain"
+              alt="Reset position side"
+            />
+          </div>
+          <div className="flex flex-col bg-background-70 rounded-md relative max-h-64">
+            <CrossIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-critical"></CrossIcon>
+            <img
+              src="/images/reset/FullResetPoseWrong.webp"
+              className="h-full object-contain"
+              alt="Reset position wrong"
+            />
+          </div>
+        </div>
         <div className="flex gap-3 mobile:justify-between">
           <Button
             variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
@@ -60,11 +77,6 @@ export function PreparationStep({
           ></ResetButton>
         </div>
       </div>
-      {!isMobile && (
-        <div className="flex flex-col pt-1 items-center fill-background-50 justify-center px-12">
-          <img src="/images/reset-pose.webp" width={90} alt="Reset position" />
-        </div>
-      )}
     </div>
   );
 }

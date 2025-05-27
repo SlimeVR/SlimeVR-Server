@@ -26,7 +26,7 @@ export function useDataFeedConfig() {
 
   const dataFeedConfig = new DataFeedConfigT();
   dataFeedConfig.dataMask = dataMask;
-  dataFeedConfig.boneMask = true;
+  dataFeedConfig.boneMask = false;
   dataFeedConfig.minimumTimeSinceLast = 1000 / feedMaxTps;
   dataFeedConfig.syntheticTrackersMask = trackerData;
   dataFeedConfig.stayAlignedPoseMask = true;
@@ -35,4 +35,11 @@ export function useDataFeedConfig() {
     dataFeedConfig,
     feedMaxTps,
   };
+}
+
+export function useBonesDataFeedConfig() {
+  const dataFeedConfig = new DataFeedConfigT();
+  dataFeedConfig.boneMask = true;
+  dataFeedConfig.minimumTimeSinceLast = 1000 / 40;
+  return dataFeedConfig;
 }

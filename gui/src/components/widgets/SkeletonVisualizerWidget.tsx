@@ -17,6 +17,7 @@ import { Typography } from '@/components/commons/Typography';
 import { useAtomValue } from 'jotai';
 import { bonesAtom } from '@/store/app-store';
 import { useConfig } from '@/hooks/config';
+import { Tween } from '@tweenjs/tween.js';
 
 const GROUND_COLOR = '#4444aa';
 
@@ -86,33 +87,29 @@ export function ToggleableSkeletonVisualizerWidget({
   );
 }
 
-type SkeletonPreviewContext = {
-  resize: (width: number, height: number) => void;
-  updatesBones: (bones: Map<BodyPart, BoneT>, render?: boolean) => void;
-  rebuildSkeleton(
-    newSkeleton: (BoneKind | THREE.Bone)[],
-    bones: Map<BodyPart, BoneT>
-  ): void;
-  setFrameInterval: (interval: number) => void;
-  destroy: () => void;
+export type SkeletonPreviewView = {
+  left: number;
+  bottom: number;
+  width: number;
+  height: number;
+  camera: THREE.PerspectiveCamera;
+  controls: OrbitControls;
+  hidden: boolean;
+  tween: Tween<THREE.Vector3>;
+  onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
 };
 
 function initializePreview(
   canvas: HTMLCanvasElement,
   skeleton: (BoneKind | THREE.Bone)[]
-): SkeletonPreviewContext {
+) {
   let lastRenderTimeRef = 0;
   let frameInterval = 0;
 
+  const views: SkeletonPreviewView[] = [];
+
   const resolution = new THREE.Vector2(canvas.clientWidth, canvas.clientHeight);
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    20,
-    resolution.width / resolution.height,
-    0.1,
-    1000
-  );
-
   const renderer = new THREE.WebGLRenderer({
     canvas,
     alpha: true,
@@ -120,17 +117,9 @@ function initializePreview(
   });
   renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.maxDistance = 20;
-  controls.dampingFactor = 0.2;
-  controls.enableDamping = true;
-  controls.maxPolarAngle = Math.PI / 2;
-
   const grid = new THREE.GridHelper(10, 50, GROUND_COLOR, GROUND_COLOR);
   grid.position.set(0, 0, 0);
   scene.add(grid);
-
-  camera.position.set(3, 2.5, -3);
 
   const skeletonGroup = new THREE.Group();
   let skeletonHelper = new BasedSkeletonHelper(skeleton[0]);
@@ -191,8 +180,26 @@ function initializePreview(
   };
 
   const render = (delta: number) => {
-    controls.update(delta);
-    renderer.render(scene, camera);
+    views.forEach((v) => {
+      v.controls.update(delta);
+
+      const left = Math.floor(resolution.x * v.left);
+      const bottom = Math.floor(resolution.y * v.bottom);
+      const width = Math.floor(resolution.x * v.width);
+      const height = Math.floor(resolution.y * v.height);
+
+      renderer.setViewport(left, bottom, width, height);
+      renderer.setScissor(left, bottom, width, height);
+      renderer.setScissorTest(true);
+
+      v.tween.update();
+
+      v.camera.aspect = width / height;
+      v.camera.updateProjectionMatrix();
+
+      if (v.hidden) return;
+      renderer.render(scene, v.camera);
+    });
   };
 
   let animationFrameId: number;
@@ -207,29 +214,45 @@ function initializePreview(
 
   animationFrameId = requestAnimationFrame(animate);
 
+  // Make sure orbit controls works only on the current view
+  canvas.addEventListener('pointermove', (event) => {
+    const x = event.offsetX / resolution.x;
+    const y = 1 - event.offsetY / resolution.y;
+    views.forEach((v) => {
+      if (
+        x >= v.left &&
+        x <= v.left + v.width &&
+        y >= v.bottom &&
+        y <= v.bottom + v.height
+      ) {
+        v.controls.enabled = true;
+      } else {
+        v.controls.enabled = false;
+      }
+    });
+  });
+
   return {
     resize: (width: number, height: number) => {
       resolution.set(width, height);
       skeletonHelper.resolution.copy(resolution);
       renderer.setSize(width, height);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
     },
-    setFrameInterval: (interval) => {
+    setFrameInterval: (interval: number) => {
       frameInterval = interval;
     },
     rebuildSkeleton,
-    updatesBones: (bones) => {
+    updatesBones: (bones: Map<BodyPart, BoneT>) => {
       skeleton.forEach(
         (bone) => bone instanceof BoneKind && bone.updateData(bones)
       );
       const newHeight = computeHeight(bones);
       if (newHeight !== heightOffset) {
         heightOffset = newHeight;
-        controls.target.set(0, heightOffset / 2, 0);
-        const scale = Math.max(1.8, heightOffset) / 1.8;
-        camera.zoom = 1 / scale;
         skeletonGroup.position.set(0, heightOffset, 0);
+        views.forEach((v) => {
+          v.onHeightChange(v, heightOffset);
+        });
       }
     },
     destroy: () => {
@@ -237,16 +260,76 @@ function initializePreview(
       renderer.dispose();
       cancelAnimationFrame(animationFrameId);
     },
+    addView: ({
+      left,
+      bottom,
+      width,
+      height,
+      position,
+      hidden = false,
+      onHeightChange,
+    }: {
+      left: number;
+      bottom: number;
+      width: number;
+      height: number;
+      position: THREE.Vector3;
+      hidden?: boolean;
+      onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
+    }) => {
+      const camera = new THREE.PerspectiveCamera(
+        20,
+        resolution.width / resolution.height,
+        0.1,
+        1000
+      );
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.maxDistance = 20;
+      controls.dampingFactor = 0.2;
+      controls.enableDamping = true;
+
+      const tween = new Tween(position)
+        .onUpdate(() => {
+          camera.position.copy(position);
+        })
+        .onStart(() => (frameInterval = 0))
+        .onComplete(() => (frameInterval = 1000 / 30));
+
+      camera.position.copy(position);
+
+      const view: SkeletonPreviewView = {
+        camera,
+        left,
+        bottom,
+        width,
+        height,
+        controls,
+        tween,
+        hidden,
+        onHeightChange,
+      };
+
+      views.push(view);
+
+      return view;
+    },
   };
 }
 
-const BASE_FRAMERATE = 30;
-const LOW_FRAMERATE = 15;
+const BASE_FRAMERATE = 60;
+const LOW_FRAMERATE = 60;
 
-function SkeletonVisualizer() {
+type PreviewContext = ReturnType<typeof initializePreview>;
+
+function SkeletonVisualizer({
+  onInit,
+}: {
+  onInit: (context: PreviewContext) => void;
+}) {
   const { config } = useConfig();
 
-  const previewContext = useRef<SkeletonPreviewContext | null>(null);
+  const previewContext = useRef<PreviewContext | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeObserver = useRef(new ResizeObserver(([e]) => onResize(e)));
@@ -307,6 +390,8 @@ function SkeletonVisualizer() {
     containerRef.current.addEventListener('mouseenter', onEnter);
     containerRef.current.addEventListener('mouseleave', onLeave);
 
+    onInit(previewContext.current);
+
     return () => {
       if (!previewContext.current || !containerRef.current) return;
       resizeObserver.current.unobserve(containerRef.current);
@@ -324,7 +409,24 @@ function SkeletonVisualizer() {
   );
 }
 
-export function SkeletonVisualizerWidget() {
+export function SkeletonVisualizerWidget({
+  onInit = (context) => {
+    context.addView({
+      left: 0,
+      bottom: 0,
+      width: 1,
+      height: 1,
+      position: new THREE.Vector3(3, 2.5, -3),
+      onHeightChange(v, newHeight) {
+        v.controls.target.set(0, newHeight / 2, 0);
+        const scale = Math.max(1.8, newHeight) / 1.8;
+        v.camera.zoom = 1 / scale;
+      },
+    });
+  },
+}: {
+  onInit?: (context: PreviewContext) => void;
+}) {
   const { l10n } = useLocalization();
 
   return (
@@ -335,7 +437,7 @@ export function SkeletonVisualizerWidget() {
         </Typography>
       }
     >
-      <SkeletonVisualizer></SkeletonVisualizer>
+      <SkeletonVisualizer onInit={onInit}></SkeletonVisualizer>
     </ErrorBoundary>
   );
 }
