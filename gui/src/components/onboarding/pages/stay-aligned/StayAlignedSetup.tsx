@@ -79,6 +79,10 @@ export function StayAlignedSetup() {
   };
 
   const onStepChange = (index: number, id?: string) => {
+    if (id === 'start') {
+      enableStayAligned(false, sendRPCPacket);
+    }
+
     const views = viewsRef.current;
     if (!views.cam1 || !views.cam2) return;
     switch (id) {
