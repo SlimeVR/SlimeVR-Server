@@ -2,6 +2,7 @@
 build
 
 /bin/
+*/bin/
 
 MagnetoLib.dll
 vrconfig.yml
