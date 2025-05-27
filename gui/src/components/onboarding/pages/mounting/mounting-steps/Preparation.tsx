@@ -2,8 +2,7 @@ import { ResetType } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { ResetButton } from '@/components/home/ResetButton';
-import { useLocalization } from '@fluent/react';
-import { useBreakpoint } from '@/hooks/breakpoint';
+import { Localized, useLocalization } from '@fluent/react';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { CrossIcon } from '@/components/commons/icon/CrossIcon';
 
