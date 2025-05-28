@@ -33,6 +33,7 @@ export function VerifyMountingStep({
             <Button
               variant={'secondary'}
               to="/onboarding/mounting/choose"
+              state={{ alonePage: true }}
             ></Button>
           </Localized>
           <Localized id="onboarding-stay_aligned-next_step">

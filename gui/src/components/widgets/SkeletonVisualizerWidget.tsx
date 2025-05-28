@@ -130,6 +130,7 @@ function initializePreview(
   scene.add(skeleton[0]);
 
   let heightOffset = 0;
+  let skeletonOffset = 0;
 
   const rebuildSkeleton = (
     newSkeleton: (BoneKind | THREE.Bone)[],
@@ -168,7 +169,17 @@ function initializePreview(
     skeletonGroup.rotation.setFromQuaternion(yawReset);
   };
 
-  const computeHeight = (bones: Map<BodyPart, BoneT>) => {
+  const computeUserHeight = (bones: Map<BodyPart, BoneT>) => {
+    const hmd = bones.get(BodyPart.HEAD);
+    if (hmd?.headPositionG?.y && hmd.headPositionG.y > 0) {
+      return hmd.headPositionG.y;
+    }
+    const yLength = Y_PARTS.map((x) => bones.get(x));
+    if (yLength.some((x) => x === undefined)) return 0;
+    return (yLength as BoneT[]).reduce((prev, cur) => prev + cur.boneLength, 0);
+  };
+
+  const computeSkeletonOffset = (bones: Map<BodyPart, BoneT>) => {
     const hmd = bones.get(BodyPart.HEAD);
     // If I know the head position, don't use an offset
     if (hmd?.headPositionG?.y !== undefined && hmd.headPositionG?.y > 0) {
@@ -246,13 +257,18 @@ function initializePreview(
       skeleton.forEach(
         (bone) => bone instanceof BoneKind && bone.updateData(bones)
       );
-      const newHeight = computeHeight(bones);
+      const newHeight = computeUserHeight(bones);
       if (newHeight !== heightOffset) {
         heightOffset = newHeight;
-        skeletonGroup.position.set(0, heightOffset, 0);
         views.forEach((v) => {
           v.onHeightChange(v, heightOffset);
         });
+      }
+
+      const newSkeletinOffset = computeSkeletonOffset(bones);
+      if (newSkeletinOffset != skeletonOffset) {
+        skeletonOffset = newSkeletinOffset;
+        skeletonGroup.position.set(0, skeletonOffset, 0);
       }
     },
     destroy: () => {

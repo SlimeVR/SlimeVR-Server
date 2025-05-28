@@ -27,7 +27,7 @@ function PosePage({
   const { l10n } = useLocalization();
   const { sendRPCPacket } = useWebsocketAPI();
   return (
-    <div className="flex flex-col pt-2">
+    <div className="flex flex-col py-2">
       <div className="flex flex-col gap-2">
         {descriptionKeys.map((descriptionKey) => (
           <Typography color="secondary">
