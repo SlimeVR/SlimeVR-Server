@@ -172,11 +172,14 @@ function initializePreview(
   const computeUserHeight = (bones: Map<BodyPart, BoneT>) => {
     const hmd = bones.get(BodyPart.HEAD);
     if (hmd?.headPositionG?.y && hmd.headPositionG.y > 0) {
-      return hmd.headPositionG.y;
+      return hmd.headPositionG.y / 0.936;
     }
     const yLength = Y_PARTS.map((x) => bones.get(x));
     if (yLength.some((x) => x === undefined)) return 0;
-    return (yLength as BoneT[]).reduce((prev, cur) => prev + cur.boneLength, 0);
+    return (
+      (yLength as BoneT[]).reduce((prev, cur) => prev + cur.boneLength, 0) /
+      0.936
+    );
   };
 
   const computeSkeletonOffset = (bones: Map<BodyPart, BoneT>) => {
