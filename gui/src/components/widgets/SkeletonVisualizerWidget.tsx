@@ -195,6 +195,7 @@ function initializePreview(
 
   const render = (delta: number) => {
     views.forEach((v) => {
+      if (v.hidden) return;
       v.controls.update(delta);
 
       const left = Math.floor(resolution.x * v.left);
@@ -211,7 +212,6 @@ function initializePreview(
       v.camera.aspect = width / height;
       v.camera.updateProjectionMatrix();
 
-      if (v.hidden) return;
       renderer.render(scene, v.camera);
     });
   };
@@ -220,10 +220,11 @@ function initializePreview(
   const animate = (currentTime: number) => {
     animationFrameId = requestAnimationFrame(animate);
 
-    if (currentTime - lastRenderTimeRef > frameInterval) {
-      lastRenderTimeRef = currentTime;
-      render(currentTime);
-    }
+    const now = performance.now();
+    const elapsed = now - lastRenderTimeRef;
+    if (elapsed < frameInterval) return;
+    render(currentTime);
+    lastRenderTimeRef = now - (elapsed % frameInterval);
   };
 
   animationFrameId = requestAnimationFrame(animate);
@@ -313,7 +314,7 @@ function initializePreview(
           camera.position.copy(position);
         })
         .onStart(() => (frameInterval = 0))
-        .onComplete(() => (frameInterval = 1000 / 30));
+        .onComplete(() => (frameInterval = 1000 / LOW_FRAMERATE));
 
       camera.position.copy(position);
 
@@ -337,7 +338,7 @@ function initializePreview(
 }
 
 const BASE_FRAMERATE = 60;
-const LOW_FRAMERATE = 60;
+const LOW_FRAMERATE = 30;
 
 type PreviewContext = ReturnType<typeof initializePreview>;
 
