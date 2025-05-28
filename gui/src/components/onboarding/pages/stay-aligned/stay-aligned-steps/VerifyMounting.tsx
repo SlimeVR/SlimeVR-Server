@@ -8,7 +8,7 @@ export function VerifyMountingStep({
   prevStep,
 }: VerticalStepComponentProps) {
   return (
-    <div className="flex flex-grow flex-col gap-4">
+    <div className="flex flex-grow flex-col gap-4 py-2">
       <div className="flex flex-col gap-2">
         <Localized id="onboarding-stay_aligned-verify_mounting-step-0">
           <Typography color="secondary" />
