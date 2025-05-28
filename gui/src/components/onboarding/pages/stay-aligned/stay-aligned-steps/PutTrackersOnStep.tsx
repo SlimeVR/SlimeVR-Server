@@ -14,7 +14,7 @@ export function PutTrackersOnStep({ nextStep }: VerticalStepComponentProps) {
   const canContinue = assignedTrackers.length >= 5 || import.meta.env.DEV;
 
   return (
-    <div className="flex flex-col w-full pt-2">
+    <div className="flex flex-col w-full py-2">
       <div className="flex flex-col flex-grow gap-2">
         <div className="flex flex-grow flex-col gap-4">
           <div>

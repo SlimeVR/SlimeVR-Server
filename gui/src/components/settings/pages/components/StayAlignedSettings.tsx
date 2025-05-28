@@ -112,13 +112,15 @@ Flat: ${config.flatEnabled ? `Enabled (upper_leg=${numberFormat.format(config.fl
 
 TRACKERS
 ========
-${trackers.map((t) => {
-  const info = t.tracker.info;
-  const stayAligned = t.tracker.stayAligned;
-  if (info && stayAligned) {
-    return `${bodypartToString(info.bodyPart)}: correction=${numberFormat.format(stayAligned.yawCorrectionInDeg)} locked=${stayAligned.locked ? `true locked_error=${numberFormat.format(stayAligned.lockedErrorInDeg)}` : 'false'} center_error=${numberFormat.format(stayAligned.centerErrorInDeg)} neighbor_error=${numberFormat.format(stayAligned.neighborErrorInDeg)}`;
-  }
-})}
+${trackers
+  .map((t) => {
+    const info = t.tracker.info;
+    const stayAligned = t.tracker.stayAligned;
+    if (info && stayAligned) {
+      return `${bodypartToString(info.bodyPart)}: correction=${numberFormat.format(stayAligned.yawCorrectionInDeg)} locked=${stayAligned.locked ? `true locked_error=${numberFormat.format(stayAligned.lockedErrorInDeg)}` : 'false'} center_error=${numberFormat.format(stayAligned.centerErrorInDeg)} neighbor_error=${numberFormat.format(stayAligned.neighborErrorInDeg)}`;
+    }
+  })
+  .join('\n')}
 
 OTHER
 =====

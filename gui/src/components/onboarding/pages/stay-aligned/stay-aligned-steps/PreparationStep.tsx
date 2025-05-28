@@ -13,7 +13,7 @@ export function PreparationStep({
   prevStep,
 }: VerticalStepComponentProps) {
   return (
-    <div className="flex flex-col flex-grow justify-between pt-2 gap-2">
+    <div className="flex flex-col flex-grow justify-between py-2 gap-2">
       <div className="flex flex-col gap-1">
         <Localized id="onboarding-automatic_mounting-preparation-v2-step-0">
           <Typography color="secondary"></Typography>
