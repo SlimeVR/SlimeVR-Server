@@ -203,7 +203,7 @@ export function StayAlignedSetup() {
               position: new Vector3(3, 2.5, -3),
               onHeightChange(v, newHeight) {
                 v.controls.target.set(0, newHeight / 2, 0);
-                const scale = Math.max(1.8, newHeight) / 1.8;
+                const scale = Math.max(1, newHeight) / 1.5;
                 v.camera.zoom = 1 / scale;
               },
             });
@@ -217,7 +217,7 @@ export function StayAlignedSetup() {
               position: new Vector3(3, 2.5, -3),
               onHeightChange(v, newHeight) {
                 v.controls.target.set(0, newHeight / 2, 0);
-                const scale = Math.max(1.8, newHeight) / 1.8;
+                const scale = Math.max(1, newHeight) / 1.5;
                 v.camera.zoom = 1 / scale;
               },
             });
