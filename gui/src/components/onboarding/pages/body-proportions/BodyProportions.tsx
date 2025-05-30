@@ -128,28 +128,32 @@ function ProportionItem({
             'duration-300'
           )}
         >
-          <Tooltip
-            content={
-              <Localized id={`${part.label}-desc`}>
-                <Typography
-                  variant="standard"
-                  whitespace="whitespace-pre-wrap"
-                ></Typography>
-              </Localized>
-            }
-            preferedDirection="bottom"
-            mode="corner"
-          >
-            <div className="flex flex-grow" onClick={toggleOpen}>
-              <Typography variant="section-title" bold>
-                {l10n.getString(part.label)}
-              </Typography>
-            </div>
-          </Tooltip>
+          <div className="flex flex-grow" onClick={toggleOpen}>
+            <Typography variant="section-title" bold>
+              {l10n.getString(part.label)}
+            </Typography>
+            <Tooltip
+              content={
+                <Localized id={`${part.label}-desc`}>
+                  <Typography
+                    variant="standard"
+                    whitespace="whitespace-pre-wrap"
+                  ></Typography>
+                </Localized>
+              }
+              preferedDirection="bottom"
+              mode="corner"
+            >
+              <div className="info-icon hover:opacity-100 opacity-65 ml-1 scale-[0.65] border-2 border-solid text-xs w-5 h-5 flex justify-center items-center rounded-full">
+                i
+              </div>
+            </Tooltip>
+          </div>
+
           <div className="flex gap-4 items-center mobile:justify-center mobile:w-full">
             <div
               className={classNames(
-                'flex items-center gap-2 my-2 opacity-10',
+                'flex items-center gap-2 my-2 opacity-75',
                 part.type === 'group-part'
                   ? 'group-hover/child-buttons:opacity-100'
                   : 'group-hover/buttons:opacity-100'
@@ -182,7 +186,7 @@ function ProportionItem({
             </div>
             <div
               className={classNames(
-                'flex items-center gap-2 my-2 opacity-10',
+                'flex items-center gap-2 my-2 opacity-75',
                 part.type === 'group-part'
                   ? 'group-hover/child-buttons:opacity-100'
                   : 'group-hover/buttons:opacity-100'
@@ -207,8 +211,8 @@ function ProportionItem({
         {type === 'ratio' && part.type !== 'group-part' && (
           <div
             className={classNames(
-              'flex items-center fill-background-20',
-              part.type === 'bone' && 'opacity-20'
+              'flex items-center fill-background-20 hover:scale-110',
+              part.type === 'bone' && 'opacity-50'
             )}
             onClick={toggleOpen}
           >
