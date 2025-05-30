@@ -1,4 +1,6 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
 import { useMemo, useEffect, useState, useRef, useLayoutEffect } from 'react';
 import {
@@ -18,6 +20,7 @@ import { useAtomValue } from 'jotai';
 import { bonesAtom } from '@/store/app-store';
 import { useConfig } from '@/hooks/config';
 import { Tween } from '@tweenjs/tween.js';
+import { Vector3FromVec3fT } from '@/maths/vector3';
 
 const GROUND_COLOR = '#4444aa';
 
@@ -99,12 +102,21 @@ export type SkeletonPreviewView = {
   onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
 };
 
+type MannequinBone = {
+  bodyPart: BodyPart;
+  mBone: THREE.Object3D;
+  mBoneLength: number;
+  invert: boolean;
+};
+
 function initializePreview(
   canvas: HTMLCanvasElement,
   skeleton: (BoneKind | THREE.Bone)[]
 ) {
   let lastRenderTimeRef = 0;
   let frameInterval = 0;
+  let heightOffset = 0;
+  let skeletonOffset = 0;
 
   const views: SkeletonPreviewView[] = [];
 
@@ -129,8 +141,130 @@ function initializePreview(
   scene.add(skeletonGroup);
   scene.add(skeleton[0]);
 
-  let heightOffset = 0;
-  let skeletonOffset = 0;
+  const loader = new GLTFLoader();
+  let mannequin: GLTF | null = null;
+  const mannequinBones: Map<BodyPart, MannequinBone> = new Map();
+
+  // Load a glTF resource
+  loader.load(
+    // resource URL
+    '/models/mannequin/mannequin2.gltf',
+    // called when the resource is loaded
+    function (gltf) {
+      mannequin = gltf;
+
+      mannequinBones.clear();
+
+      const addBone = (
+        bodyPart: BodyPart,
+        boneName: string,
+        boneLength: number,
+        invert: boolean
+      ) => {
+        const mBone = gltf.scene.getObjectByName(boneName);
+        if (mBone) {
+          mannequinBones.set(bodyPart, {
+            bodyPart,
+            mBone,
+            mBoneLength: boneLength,
+            invert,
+          });
+        }
+      };
+
+      addBone(BodyPart.HIP, 'mixamorigHips', 0.105592, true);
+      addBone(BodyPart.WAIST, 'mixamorigSpine', 0.100027, true);
+      addBone(BodyPart.CHEST, 'mixamorigSpine1', 0.0932207, true);
+      addBone(BodyPart.UPPER_CHEST, 'mixamorigSpine2', 0.137015, true);
+      addBone(BodyPart.NECK, 'mixamorigNeck', 0.0976436, true);
+      addBone(BodyPart.LEFT_UPPER_LEG, 'mixamorigLeftUpLeg', 0.443714, false);
+      addBone(BodyPart.LEFT_LOWER_LEG, 'mixamorigLeftLeg', 0.445279, false);
+      addBone(BodyPart.LEFT_FOOT, 'mixamorigLeftFoot', 0.138169, false);
+      addBone(BodyPart.RIGHT_UPPER_LEG, 'mixamorigRightUpLeg', 0.443714, false);
+      addBone(BodyPart.RIGHT_LOWER_LEG, 'mixamorigRightLeg', 0.445279, false);
+      addBone(BodyPart.RIGHT_FOOT, 'mixamorigRightFoot', 0.138169, false);
+
+      scene.add(gltf.scene);
+      gltf.scene.traverse((c) => {
+        if (
+          c instanceof THREE.SkinnedMesh &&
+          c.material instanceof THREE.Material
+        ) {
+          c.material.transparent = true;
+          c.material.depthWrite = false;
+          c.material.opacity = 0.3;
+        }
+      });
+    },
+    // called while loading is progressing
+    function (xhr) {
+      console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+    },
+    // called when loading has errors
+    function (error) {
+      console.log('An error happened');
+    }
+  );
+
+  const updateManequin = (bones: Map<BodyPart, BoneT>) => {
+    mannequinBones.forEach(({ bodyPart, invert, mBone, mBoneLength }) => {
+      const bone = bones.get(bodyPart);
+      if (!bone) {
+        return;
+      }
+      const p = Vector3FromVec3fT(bone.headPositionG);
+      const q = QuaternionFromQuatT(bone.rotationG);
+
+      // The SlimeVR bone position is always at the top of the bone, and the
+      // quaternion points "up" (why??).
+      if (invert) {
+        // The mannequin bone wants to point the other way, so shift the position
+        // to the tail of the SlimeVR bone.
+        p.sub(new THREE.Vector3(0, mBoneLength, 0).applyQuaternion(q));
+      } else {
+        // We need the mannequin bone rotation to point in the direction of the
+        // bone, so rotate the bone around its x axis.
+        q.multiply(new THREE.Quaternion(1, 0, 0, 0));
+      }
+
+      // mBone.position.copy(
+      //   new THREE.Vector3(
+      //     bone.headPositionG?.x,
+      //     bone.headPositionG?.y ?? 0,
+      //     bone.headPositionG?.z
+      //   ).add(new THREE.Vector3(0, skeletonOffset, 0))
+      // );
+      mBone.position.copy(new THREE.Vector3(0, heightOffset, 0)).add(p);
+      mBone.setRotationFromQuaternion(q);
+      mBone.scale.set(1, bone.boneLength / mBoneLength, 1);
+    });
+  };
+
+  const light = new THREE.HemisphereLight(0xffffff, 0x222222, 2);
+  scene.add(light);
+
+  const updateBones = (bones: Map<BodyPart, BoneT>) => {
+    skeleton.forEach(
+      (bone) => bone instanceof BoneKind && bone.updateData(bones)
+    );
+    const newHeight = computeUserHeight(bones);
+    if (newHeight !== heightOffset) {
+      heightOffset = newHeight;
+      views.forEach((v) => {
+        v.onHeightChange(v, heightOffset);
+      });
+    }
+
+    const newSkeletinOffset = computeSkeletonOffset(bones);
+    if (newSkeletinOffset != skeletonOffset) {
+      skeletonOffset = newSkeletinOffset;
+      skeletonGroup.position.set(0, skeletonOffset, 0);
+    }
+
+    if (mannequin) {
+      updateManequin(bones);
+    }
+  };
 
   const rebuildSkeleton = (
     newSkeleton: (BoneKind | THREE.Bone)[],
@@ -257,24 +391,7 @@ function initializePreview(
       frameInterval = interval;
     },
     rebuildSkeleton,
-    updatesBones: (bones: Map<BodyPart, BoneT>) => {
-      skeleton.forEach(
-        (bone) => bone instanceof BoneKind && bone.updateData(bones)
-      );
-      const newHeight = computeUserHeight(bones);
-      if (newHeight !== heightOffset) {
-        heightOffset = newHeight;
-        views.forEach((v) => {
-          v.onHeightChange(v, heightOffset);
-        });
-      }
-
-      const newSkeletinOffset = computeSkeletonOffset(bones);
-      if (newSkeletinOffset != skeletonOffset) {
-        skeletonOffset = newSkeletinOffset;
-        skeletonGroup.position.set(0, skeletonOffset, 0);
-      }
-    },
+    updateBones,
     destroy: () => {
       skeletonHelper.dispose();
       renderer.dispose();
@@ -369,7 +486,7 @@ function SkeletonVisualizer({
   useEffect(() => {
     const context = previewContext.current;
     if (!context) return;
-    context.updatesBones(bones);
+    context.updateBones(bones);
   }, [bones]);
 
   const onResize = (e: ResizeObserverEntry) => {
