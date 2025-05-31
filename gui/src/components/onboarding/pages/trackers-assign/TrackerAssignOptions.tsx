@@ -21,12 +21,43 @@ const ASSIGN_MODE_OPTIONS = [
   {} as Record<AssignMode, number>
 );
 
+const ItemContent = ({
+  mode,
+  trackersCount,
+}: {
+  mode: string;
+  trackersCount: number;
+}) => {
+  const { l10n } = useLocalization();
+
+  return (
+    <>
+      <Typography variant="main-title" textAlign="text-right">
+        {l10n.getString('onboarding-assign_trackers-option-amount', {
+          trackersCount,
+        })}
+      </Typography>
+      <div className="flex flex-col">
+        <Typography>
+          {l10n.getString('onboarding-assign_trackers-option-label', {
+            mode,
+          })}
+        </Typography>
+        <Typography variant="standard" color="secondary">
+          {l10n.getString('onboarding-assign_trackers-option-description', {
+            mode,
+          })}
+        </Typography>
+      </div>
+    </>
+  );
+};
+
 export function TrackerAssignOptions({
   variant = 'radio',
 }: {
   variant: 'radio' | 'dropdown';
 }) {
-  const { l10n } = useLocalization();
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
 
   const { config, setConfig } = useConfig();
@@ -55,34 +86,6 @@ export function TrackerAssignOptions({
       setValue('assignMode', selectedAssignMode);
     }
   }, [connectedIMUTrackers, assignMode]);
-
-  const ItemContent = ({
-    mode,
-    trackersCount,
-  }: {
-    mode: string;
-    trackersCount: number;
-  }) => (
-    <>
-      <Typography variant="main-title" textAlign="text-right">
-        {l10n.getString('onboarding-assign_trackers-option-amount', {
-          trackersCount,
-        })}
-      </Typography>
-      <div className="flex flex-col">
-        <Typography>
-          {l10n.getString('onboarding-assign_trackers-option-label', {
-            mode,
-          })}
-        </Typography>
-        <Typography variant="standard" color="secondary">
-          {l10n.getString('onboarding-assign_trackers-option-description', {
-            mode,
-          })}
-        </Typography>
-      </div>
-    </>
-  );
 
   if (variant == 'dropdown')
     return (
