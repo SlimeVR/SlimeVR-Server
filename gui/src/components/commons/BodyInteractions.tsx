@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { BodyPart } from 'solarxr-protocol';
 import { PersonFrontIcon } from './PersonFrontIcon';
 import { useBreakpoint } from '@/hooks/breakpoint';
@@ -9,7 +9,7 @@ export function BodyInteractions({
   rightControls,
   highlightedRoles,
   assignedRoles,
-  width = 228,
+  width = 248,
   dotsSize = 15,
   variant = 'tracker-select',
   mirror,
@@ -30,6 +30,12 @@ export function BodyInteractions({
   const personRef = useRef<HTMLDivElement | null>(null);
   const leftContainerRef = useRef<HTMLDivElement | null>(null);
   const rightContainerRef = useRef<HTMLDivElement | null>(null);
+  const mutationObserverRef = useRef<MutationObserver>(
+    new MutationObserver(() => updateSlots())
+  );
+  const resizeObserverRef = useRef<ResizeObserver>(
+    new ResizeObserver(() => updateSlots())
+  );
   const canvasRefRef = useRef<HTMLCanvasElement | null>(null);
   const [slotsButtonsPos, setSlotsButtonPos] = useState<
     {
@@ -78,7 +84,7 @@ export function BodyInteractions({
     };
   };
 
-  useLayoutEffect(() => {
+  const updateSlots = () => {
     if (
       !(
         personRef.current &&
@@ -88,7 +94,6 @@ export function BodyInteractions({
       )
     )
       return;
-
     const ctx = canvasRefRef.current.getContext('2d');
     if (!ctx) return;
     const slotsPos = getSlotsPos();
@@ -147,7 +152,44 @@ export function BodyInteractions({
       });
     }
     setSlotsButtonPos(slots);
-  }, [leftControls, rightControls, variant]);
+  };
+
+  useEffect(() => {
+    updateSlots();
+  }, [variant]);
+
+  useEffect(() => {
+    if (
+      !rightContainerRef.current ||
+      !leftContainerRef.current ||
+      !personRef.current
+    )
+      return;
+
+    resizeObserverRef.current.observe(personRef.current);
+
+    mutationObserverRef.current.observe(rightContainerRef.current, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+    });
+    mutationObserverRef.current.observe(leftContainerRef.current, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+    });
+
+    return () => {
+      if (
+        !rightContainerRef.current ||
+        !leftContainerRef.current ||
+        !personRef.current
+      )
+        return;
+      mutationObserverRef.current.takeRecords();
+      resizeObserverRef.current.unobserve(personRef.current);
+    };
+  }, []);
 
   return (
     <div className="relative">
