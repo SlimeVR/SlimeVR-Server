@@ -1,7 +1,7 @@
 import { ResetType } from 'solarxr-protocol';
-import Xylophone from './xylophone';
+import Xylophone, { ValidNote } from './xylophone';
 
-const tones = [
+const tones: ValidNote[][] = [
   ['E3', 'G3', 'B3'],
   ['G3', 'B3', 'D4'],
   ['B3', 'D4', 'F#4'],
