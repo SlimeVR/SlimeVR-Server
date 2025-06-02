@@ -41,9 +41,9 @@ object StayAlignedDefaults {
 	const val YAW_ERRORS_NEIGHBOR_ERROR_WEIGHT = 1.0f
 
 	// Yaw correction for each type of IMU
-	val YAW_CORRECTION_IMU_GOOD = Angle.ofDeg(0.1f)
-	val YAW_CORRECTION_IMU_OK = Angle.ofDeg(0.2f)
-	val YAW_CORRECTION_IMU_BAD = Angle.ofDeg(0.4f)
+	val YAW_CORRECTION_IMU_GOOD = Angle.ofDeg(0.15f)
+	val YAW_CORRECTION_IMU_OK = Angle.ofDeg(0.20f)
+	val YAW_CORRECTION_IMU_BAD = Angle.ofDeg(0.40f)
 	val YAW_CORRECTION_IMU_DISABLED = Angle.ZERO
 
 	val IMU_TO_YAW_CORRECTION = buildMap {

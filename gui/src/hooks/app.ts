@@ -10,12 +10,12 @@ import {
 } from 'solarxr-protocol';
 import { playSoundOnResetEnded, playSoundOnResetStarted } from '@/sounds/sounds';
 import { useConfig } from './config';
-import { useDataFeedConfig } from './datafeed-config';
+import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
 import { error } from '@/utils/logging';
 import { cacheWrap } from './cache';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { datafeedAtom, devicesAtom } from '@/store/app-store';
+import { bonesAtom, datafeedAtom, devicesAtom } from '@/store/app-store';
 import { updateSentryContext } from '@/utils/sentry';
 
 export interface FirmwareRelease {
@@ -34,7 +34,9 @@ export function useProvideAppContext(): AppContext {
     useWebsocketAPI();
   const { config } = useConfig();
   const { dataFeedConfig } = useDataFeedConfig();
+  const bonesDataFeedConfig = useBonesDataFeedConfig();
   const setDatafeed = useSetAtom(datafeedAtom);
+  const setBones = useSetAtom(bonesAtom);
   const devices = useAtomValue(devicesAtom);
 
   const [currentFirmwareRelease, setCurrentFirmwareRelease] =
@@ -43,13 +45,17 @@ export function useProvideAppContext(): AppContext {
   useEffect(() => {
     if (isConnected) {
       const startDataFeed = new StartDataFeedT();
-      startDataFeed.dataFeeds = [dataFeedConfig];
+      startDataFeed.dataFeeds = [dataFeedConfig, bonesDataFeedConfig];
       sendDataFeedPacket(DataFeedMessage.StartDataFeed, startDataFeed);
     }
   }, [isConnected]);
 
   useDataFeedPacket(DataFeedMessage.DataFeedUpdate, (packet: DataFeedUpdateT) => {
-    setDatafeed(packet);
+    if (packet.index === 0) {
+      setDatafeed(packet);
+    } else if (packet.index === 1) {
+      setBones(packet.bones);
+    }
   });
 
   useEffect(() => {
