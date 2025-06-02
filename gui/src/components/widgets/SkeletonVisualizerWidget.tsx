@@ -227,14 +227,14 @@ function initializePreview(
         q.multiply(new THREE.Quaternion(1, 0, 0, 0));
       }
 
-      // mBone.position.copy(
-      //   new THREE.Vector3(
-      //     bone.headPositionG?.x,
-      //     bone.headPositionG?.y ?? 0,
-      //     bone.headPositionG?.z
-      //   ).add(new THREE.Vector3(0, skeletonOffset, 0))
-      // );
-      mBone.position.copy(new THREE.Vector3(0, heightOffset, 0)).add(p);
+      mBone.position.copy(
+        new THREE.Vector3(
+          bone.headPositionG?.x,
+          bone.headPositionG?.y ?? 0,
+          bone.headPositionG?.z
+        ).add(new THREE.Vector3(0, skeletonOffset, 0))
+      );
+      // mBone.position.copy(new THREE.Vector3(0, heightOffset, 0)).add(p);
       mBone.setRotationFromQuaternion(q);
       mBone.scale.set(1, bone.boneLength / mBoneLength, 1);
     });
