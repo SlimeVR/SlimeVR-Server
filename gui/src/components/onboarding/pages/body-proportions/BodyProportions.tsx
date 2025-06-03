@@ -17,11 +17,11 @@ import { Tooltip } from '@/components/commons/Tooltip';
 function IncrementButton({
   children,
   onClick,
-  groupPart,
+  bgDark,
 }: {
   children: ReactNode;
   onClick?: MouseEventHandler<HTMLDivElement>;
-  groupPart: boolean;
+  bgDark: boolean;
 }) {
   return (
     <div
@@ -29,7 +29,7 @@ function IncrementButton({
       className={classNames(
         'p-3 rounded-lg xs:w-10 xs:h-10 flex flex-col justify-center items-center cursor-pointer',
         'hover:bg-opacity-50 active:bg-accent-background-30',
-        { 'bg-background-60': groupPart, 'bg-background-40': !groupPart }
+        { 'bg-background-60': bgDark, 'bg-background-40': !bgDark }
       )}
     >
       <Typography variant="vr-accessible" bold>
@@ -159,21 +159,21 @@ function ProportionItem({
             >
               {!precise && (
                 <IncrementButton
-                  groupPart={part.type !== 'group-part'}
+                  bgDark={part.type !== 'group-part'}
                   onClick={() => boneIncrement(-5)}
                 >
                   {configFormat.format(-5)}
                 </IncrementButton>
               )}
               <IncrementButton
-                groupPart={part.type !== 'group-part'}
+                bgDark={part.type !== 'group-part'}
                 onClick={() => boneIncrement(-1)}
               >
                 {configFormat.format(-1)}
               </IncrementButton>
               {precise && (
                 <IncrementButton
-                  groupPart={part.type !== 'group-part'}
+                  bgDark={part.type !== 'group-part'}
                   onClick={() => boneIncrement(-0.5)}
                 >
                   {configFormat.format(-0.5)}
@@ -196,21 +196,21 @@ function ProportionItem({
             >
               {precise && (
                 <IncrementButton
-                  groupPart={part.type !== 'group-part'}
+                  bgDark={part.type !== 'group-part'}
                   onClick={() => boneIncrement(+0.5)}
                 >
                   {configFormat.format(+0.5)}
                 </IncrementButton>
               )}
               <IncrementButton
-                groupPart={part.type !== 'group-part'}
+                bgDark={part.type !== 'group-part'}
                 onClick={() => boneIncrement(+1)}
               >
                 {configFormat.format(+1)}
               </IncrementButton>
               {!precise && (
                 <IncrementButton
-                  groupPart={part.type !== 'group-part'}
+                  bgDark={part.type !== 'group-part'}
                   onClick={() => boneIncrement(+5)}
                 >
                   {configFormat.format(+5)}
