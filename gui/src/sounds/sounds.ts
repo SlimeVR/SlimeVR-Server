@@ -19,12 +19,13 @@ export async function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
         offset: 0.15,
         type: 'custom',
         volume,
+        loudness: [1.25, 1, 1, 1],
       });
       break;
     }
     case ResetType.Full: {
       xylophone.play({
-        notes: ['G4', 'C3',],
+        notes: ['G4', 'C3'],
         offset: 0.15,
         type: 'custom',
         volume,
