@@ -2,9 +2,13 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
-import { EYE_HEIGHT_TO_HEIGHT_RATIO, useHeightContext } from '@/hooks/height';
+import {
+  DEFAULT_FULL_HEIGHT,
+  EYE_HEIGHT_TO_HEIGHT_RATIO,
+  useHeightContext,
+} from '@/hooks/height';
 import { useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
@@ -31,13 +35,23 @@ export function ManualHeightStep({
 }) {
   const { state } = useOnboarding();
   const { l10n } = useLocalization();
-  const { setHmdHeight } = useHeightContext();
-  const { control, handleSubmit, formState, watch } = useForm<HeightForm>({
-    defaultValues: { height: 1.5 },
-  });
+  const { setHmdHeight, currentHeight } = useHeightContext();
+  const { control, handleSubmit, formState, watch, reset } =
+    useForm<HeightForm>({
+      defaultValues: { height: DEFAULT_FULL_HEIGHT },
+    });
   const { sendRPCPacket } = useWebsocketAPI();
   const { currentLocales } = useLocaleConfig();
   const height = watch('height');
+
+  // Load the last configured height
+  useEffect(() => {
+    reset({
+      height:
+        (currentHeight && currentHeight / EYE_HEIGHT_TO_HEIGHT_RATIO) ||
+        DEFAULT_FULL_HEIGHT,
+    });
+  }, [currentHeight]);
 
   const mFormat = useMemo(
     () =>
@@ -49,7 +63,7 @@ export function ManualHeightStep({
     [currentLocales]
   );
 
-  const submitHmdHeight = (values: HeightForm) => {
+  const submitFullHeight = (values: HeightForm) => {
     const newHeight = values.height * EYE_HEIGHT_TO_HEIGHT_RATIO;
     setHmdHeight(newHeight);
     const settingsRequest = new ChangeSettingsRequestT();
@@ -66,7 +80,7 @@ export function ManualHeightStep({
   return (
     <form
       className="flex flex-col flex-grow"
-      onSubmit={handleSubmit(submitHmdHeight)}
+      onSubmit={handleSubmit(submitFullHeight)}
     >
       <div className="flex gap-2 flex-grow">
         <div className="flex flex-grow flex-col gap-4">

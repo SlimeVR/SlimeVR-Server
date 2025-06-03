@@ -7,7 +7,6 @@ import {
   TrackerIdT,
   TrackerStatus as TrackerStatusEnum,
 } from 'solarxr-protocol';
-import { FlatDeviceTracker } from '@/hooks/app';
 import { useConfig } from '@/hooks/config';
 import { useTracker } from '@/hooks/tracker';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
@@ -17,6 +16,8 @@ import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
 import { trackerStatusRelated, useStatusContext } from '@/hooks/status-system';
+import { FlatDeviceTracker } from '@/store/app-store';
+import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
 
 enum DisplayColumn {
   NAME,
@@ -28,6 +29,7 @@ enum DisplayColumn {
   TEMPERATURE,
   LINEAR_ACCELERATION,
   POSITION,
+  STAY_ALIGNED,
   URL,
 }
 
@@ -41,6 +43,7 @@ const displayColumns: { [k: string]: boolean } = {
   [DisplayColumn.TEMPERATURE]: true,
   [DisplayColumn.LINEAR_ACCELERATION]: true,
   [DisplayColumn.POSITION]: true,
+  [DisplayColumn.STAY_ALIGNED]: true,
   [DisplayColumn.URL]: true,
 };
 
@@ -141,13 +144,13 @@ export function RowContainer({
           )}px rgb(var(--accent-background-30))`,
         }}
         className={classNames(
-          'h-[50px]  flex flex-col justify-center px-3',
-          rounded === 'left' && 'rounded-l-lg',
-          rounded === 'right' && 'rounded-r-lg',
+          'h-[50px]  flex flex-col justify-center px-3 transition-[box-shadow] duration-200 ease-linear',
+          rounded === 'left' && 'rounded-l-lg border-l-2',
+          rounded === 'right' && 'rounded-r-lg border-r-2',
           hover ? 'bg-background-50 cursor-pointer' : 'bg-background-60',
-          warning && 'border-status-warning border-solid border-t-2 border-b-2',
-          rounded === 'left' && warning && 'border-l-2',
-          rounded === 'right' && warning && 'border-r-2'
+          (warning &&
+            'border-status-warning border-solid border-t-2 border-b-2') ||
+            'border-transparent'
         )}
       >
         {children}
@@ -196,6 +199,7 @@ export function TrackersTable({
   displayColumns[DisplayColumn.TEMPERATURE] = hasTemperature || false;
   displayColumns[DisplayColumn.POSITION] = moreInfo || false;
   displayColumns[DisplayColumn.LINEAR_ACCELERATION] = moreInfo || false;
+  displayColumns[DisplayColumn.STAY_ALIGNED] = moreInfo || false;
   displayColumns[DisplayColumn.URL] = moreInfo || false;
   const displayColumnsKeys = Object.keys(displayColumns).filter(
     (k) => displayColumns[k]
@@ -273,10 +277,10 @@ export function TrackersTable({
         id: DisplayColumn.BATTERY,
         label: l10n.getString('tracker-table-column-battery'),
         row: ({ device, tracker }) =>
-          device?.hardwareStatus?.batteryPctEstimate && (
+          device?.hardwareStatus?.batteryPctEstimate != null && (
             <TrackerBattery
               value={device.hardwareStatus.batteryPctEstimate / 100}
-              voltage={device.hardwareStatus?.batteryVoltage}
+              voltage={device.hardwareStatus.batteryVoltage}
               disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               textColor={fontColor}
             />
@@ -290,9 +294,9 @@ export function TrackersTable({
           (device?.hardwareStatus?.rssi != null ||
             device?.hardwareStatus?.ping != null) && (
             <TrackerWifi
-              rssi={device?.hardwareStatus?.rssi || 0}
+              rssi={device?.hardwareStatus?.rssi}
               rssiShowNumeric
-              ping={device?.hardwareStatus?.ping || 0}
+              ping={device?.hardwareStatus?.ping}
               disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               textColor={fontColor}
             ></TrackerWifi>
@@ -360,6 +364,15 @@ export function TrackersTable({
               {formatVector3(tracker.position, 2)}
             </Typography>
           ),
+      })}
+
+      {column({
+        id: DisplayColumn.STAY_ALIGNED,
+        label: l10n.getString('tracker-table-column-stay_aligned'),
+        labelClassName: 'w-36',
+        row: ({ tracker }) => (
+          <StayAlignedInfo color={fontColor} tracker={tracker} />
+        ),
       })}
 
       {column({

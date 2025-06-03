@@ -17,6 +17,8 @@ export function useDataFeedConfig() {
   trackerData.rotationReferenceAdjusted = true;
   trackerData.rotationIdentityAdjusted = true;
   trackerData.tps = true;
+  trackerData.rawMagneticVector = true;
+  trackerData.stayAligned = true;
 
   const dataMask = new DeviceDataMaskT();
   dataMask.deviceData = true;
@@ -24,12 +26,20 @@ export function useDataFeedConfig() {
 
   const dataFeedConfig = new DataFeedConfigT();
   dataFeedConfig.dataMask = dataMask;
-  dataFeedConfig.boneMask = true;
+  dataFeedConfig.boneMask = false;
   dataFeedConfig.minimumTimeSinceLast = 1000 / feedMaxTps;
   dataFeedConfig.syntheticTrackersMask = trackerData;
+  dataFeedConfig.stayAlignedPoseMask = true;
 
   return {
     dataFeedConfig,
     feedMaxTps,
   };
+}
+
+export function useBonesDataFeedConfig() {
+  const dataFeedConfig = new DataFeedConfigT();
+  dataFeedConfig.boneMask = true;
+  dataFeedConfig.minimumTimeSinceLast = 1000 / 40;
+  return dataFeedConfig;
 }

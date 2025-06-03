@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import {
   SetPauseTrackingRequestT,
@@ -15,7 +15,6 @@ import classNames from 'classnames';
 export function TrackingPauseButton(
   props: React.HTMLAttributes<HTMLButtonElement>
 ) {
-  const { l10n } = useLocalization();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [trackingPause, setTrackingPause] = useState(false);
 
@@ -39,13 +38,14 @@ export function TrackingPauseButton(
   }, []);
 
   return (
-    <BigButton
-      text={l10n.getString(
-        trackingPause ? 'tracking-paused' : 'tracking-unpaused'
-      )}
-      icon={trackingPause ? <PlayIcon width={20} /> : <PauseIcon width={20} />}
-      onClick={toggleTracking}
-      className={classNames(props.className, 'min-h-24')}
-    ></BigButton>
+    <Localized id={trackingPause ? 'tracking-paused' : 'tracking-unpaused'}>
+      <BigButton
+        icon={
+          trackingPause ? <PlayIcon width={20} /> : <PauseIcon width={20} />
+        }
+        onClick={toggleTracking}
+        className={classNames(props.className, 'min-h-24')}
+      ></BigButton>
+    </Localized>
   );
 }

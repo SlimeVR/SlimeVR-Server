@@ -4,7 +4,7 @@ net session >nul 2>&1
 if %errorlevel% == 0 (
     echo Running with administrative privileges! - Needed for firewall modification!
 ) else (
-    echo Requesting administrative privileges - Needed for firewall modification! 
+    echo Requesting administrative privileges - Needed for firewall modification!
     :: Temp script to request admin... Works and doesn't leave a mess.
     echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
     echo UAC.ShellExecute "%~s0", "", "%~dp0", "runas", 1 >> "%temp%\getadmin.vbs"
@@ -21,8 +21,8 @@ rem WebSocket server default port
 call :AddRule "SlimeVR TCP 21110 incoming" "dir=in action=allow protocol=TCP localport=21110 enable=yes"
 call :AddRule "SlimeVR TCP 21110 outgoing" "dir=out action=allow protocol=TCP localport=21110 enable=yes"
 rem OpenJDK Platform Binary access
-call :AddRule "SlimeVR OpenJDK Platform incoming" "dir=in action=allow program=%~dp0jre\bin\java.exe enable=yes"
-call :AddRule "SlimeVR OpenJDK Platform outgoing" "dir=out action=allow program=%~dp0jre\bin\java.exe enable=yes"
+call :AddRule "SlimeVR OpenJDK Platform incoming" "dir=in action=allow program=""%~dp0jre\bin\java.exe"" enable=yes"
+call :AddRule "SlimeVR OpenJDK Platform outgoing" "dir=out action=allow program=""%~dp0jre\bin\java.exe"" enable=yes"
 rem ESP8266 OTA default port
 call :AddRule "SlimeVR UDP 8266 incoming" "dir=in action=allow protocol=UDP localport=8266 enable=yes"
 call :AddRule "SlimeVR UDP 8266 outgoing" "dir=out action=allow protocol=UDP localport=8266 enable=yes"
@@ -35,7 +35,9 @@ exit /B
 :AddRule
 setlocal
 set "ruleName=%~1"
-set "ruleParams=%~2"
+set "rulePara=%~2"
+:: Change from "" to "
+set "ruleParams=%rulePara:""="%"
 
 netsh advfirewall firewall show rule name="%ruleName%" >nul 2>&1
 if %errorlevel% neq 0 (

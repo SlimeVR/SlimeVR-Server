@@ -13,7 +13,7 @@ class FiltersConfig {
 	fun updateTrackersFilters() {
 		for (tracker in VRServer.instance.allTrackers) {
 			if (tracker.allowFiltering) {
-				tracker.filteringHandler.readFilteringConfig(this, tracker.getRawRotation())
+				tracker.filteringHandler.readFilteringConfig(this, tracker.getRotation())
 			}
 		}
 	}

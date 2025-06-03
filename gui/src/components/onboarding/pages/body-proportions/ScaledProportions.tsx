@@ -8,19 +8,20 @@ import { CheckFloorHeightStep } from './autobone-steps/CheckFloorHeight';
 import { ResetProportionsStep } from './scaled-steps/ResetProportions';
 import { DoneStep } from './scaled-steps/Done';
 import { useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
 import { ManualHeightStep } from './scaled-steps/ManualHeightStep';
-import { useTrackers } from '@/hooks/tracker';
-import { BodyPart } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { WarningBox } from '@/components/commons/TipBox';
+import { useMemo } from 'react';
+import { useAtomValue } from 'jotai';
+import { flatTrackersAtom } from '@/store/app-store';
+import { BodyPart } from 'solarxr-protocol';
 
 export function ScaledProportionsPage() {
   const { l10n } = useLocalization();
   const { applyProgress, state } = useOnboarding();
   const heightContext = useProvideHeightContext();
   const navigate = useNavigate();
-  const { trackers } = useTrackers();
+  const trackers = useAtomValue(flatTrackersAtom);
 
   const { hasHmd, hasHandControllers } = useMemo(() => {
     const hasHmd = trackers.some(

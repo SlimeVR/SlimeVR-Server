@@ -1,5 +1,8 @@
 import { createContext, useContext, useState } from 'react';
-import { DeveloperModeWidgetForm } from '@/components/widgets/DeveloperModeWidget';
+import {
+  defaultValues as defaultDevSettings,
+  DeveloperModeWidgetForm,
+} from '@/components/widgets/DeveloperModeWidget';
 import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
 import { createStore, Store } from '@tauri-apps/plugin-store';
@@ -41,6 +44,7 @@ export interface Config {
   errorTracking: boolean | null;
   decorations: boolean;
   showNavbarOnboarding: boolean;
+  vrcMutedWarnings: string[];
 }
 
 export interface ConfigContext {
@@ -49,7 +53,7 @@ export interface ConfigContext {
   saveConfig: () => Promise<void>;
 }
 
-export const defaultConfig: Omit<Config, 'devSettings'> = {
+export const defaultConfig: Config = {
   lang: 'en',
   debug: false,
   doneOnboarding: false,
@@ -67,6 +71,8 @@ export const defaultConfig: Omit<Config, 'devSettings'> = {
   errorTracking: null,
   decorations: false,
   showNavbarOnboarding: true,
+  vrcMutedWarnings: [],
+  devSettings: defaultDevSettings,
 };
 
 interface CrossStorage {

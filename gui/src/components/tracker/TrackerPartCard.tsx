@@ -1,11 +1,11 @@
 import classNames from 'classnames';
 import { MouseEventHandler, useEffect, useMemo, useState } from 'react';
 import { BodyPart, TrackerDataT } from 'solarxr-protocol';
-import { FlatDeviceTracker } from '@/hooks/app';
 import { useTracker } from '@/hooks/tracker';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
+import { FlatDeviceTracker } from '@/store/app-store';
 
 function Tracker({
   tracker,
@@ -78,7 +78,7 @@ export function TrackerPartCard({
     (showCard && (
       <div
         className={classNames(
-          'flex flex-col gap-1 control xs:w-32 hover:bg-background-50 px-2 py-1 rounded-md relative',
+          'flex flex-col gap-1 control xs:w-32 hover:bg-background-50 px-2 py-1 rounded-md relative transition-[box-shadow] duration-200 ease-linear',
           direction === 'left' ? 'items-start' : 'items-end'
         )}
         id={BodyPart[role]}

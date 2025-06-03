@@ -3,6 +3,7 @@ import { ReactNode, useMemo } from 'react';
 import { NavLink, useLocation, useMatch } from 'react-router-dom';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
+import { useVRCConfig } from '@/hooks/vrc-config';
 
 export function SettingsLink({
   to,
@@ -41,6 +42,7 @@ export function SettingsLink({
 
 export function SettingsSidebar() {
   const { l10n } = useLocalization();
+  const { state: vrcConfigState } = useVRCConfig();
 
   return (
     <div className="flex flex-col px-5 py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg h-full">
@@ -54,6 +56,9 @@ export function SettingsSidebar() {
         <div className="flex flex-col gap-2">
           <SettingsLink to="/settings/trackers" scrollTo="steamvr">
             SteamVR
+          </SettingsLink>
+          <SettingsLink to="/settings/trackers" scrollTo="stayaligned">
+            {l10n.getString('settings-sidebar-stay_aligned')}
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="mechanics">
             {l10n.getString('settings-sidebar-tracker_mechanics')}
@@ -107,6 +112,13 @@ export function SettingsSidebar() {
               {l10n.getString('settings-sidebar-firmware-tool')}
             </SettingsLink>
           </div>
+          {vrcConfigState?.isSupported && (
+            <div className="flex flex-col gap-2">
+              <SettingsLink to="/vrc-warnings">
+                {l10n.getString('settings-sidebar-vrc_warnings')}
+              </SettingsLink>
+            </div>
+          )}
           <div className="flex flex-col gap-2">
             <SettingsLink to="/settings/advanced">
               {l10n.getString('settings-sidebar-advanced')}

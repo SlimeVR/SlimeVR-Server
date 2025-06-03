@@ -57,7 +57,7 @@ jobs:
 
       - if: matrix.os == 'ubuntu-22.04'
         name: Set up Linux dependencies
-        uses: awalsh128/cache-apt-pkgs-action@v1.4.3
+        uses: awalsh128/cache-apt-pkgs-action@v1.5.0
         with:
           packages: libgtk-3-dev webkit2gtk-4.1 libappindicator3-dev librsvg2-dev patchelf
           # Increment to invalidate the cache
@@ -87,6 +87,7 @@ jobs:
         shell: bash
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          NODE_OPTIONS: ${{ matrix.os == 'macos-latest' && '--max-old-space-size=4096' || '' }}
         run: pnpm run skipbundler --config $( ./gui/scripts/gitversion.mjs )
 
       - if: matrix.os == 'windows-latest'

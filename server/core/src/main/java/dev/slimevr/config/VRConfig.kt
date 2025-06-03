@@ -40,6 +40,8 @@ class VRConfig {
 
 	val resetsConfig: ResetsConfig = ResetsConfig()
 
+	val stayAlignedConfig = StayAlignedConfig()
+
 	@JsonDeserialize(using = TrackerConfigMapDeserializer::class)
 	@JsonSerialize(keyUsing = StdKeySerializers.StringKeySerializer::class)
 	private val trackers: MutableMap<String, TrackerConfig> = HashMap()
@@ -108,7 +110,7 @@ class VRConfig {
 			if (tracker.allowFiltering) {
 				tracker
 					.filteringHandler
-					.readFilteringConfig(filters, tracker.getRawRotation())
+					.readFilteringConfig(filters, tracker.getRotation())
 			}
 		}
 	}

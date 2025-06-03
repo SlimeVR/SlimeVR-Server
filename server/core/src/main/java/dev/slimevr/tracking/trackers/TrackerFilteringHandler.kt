@@ -18,17 +18,20 @@ class TrackerFilteringHandler {
 	/**
 	 * Reads/loads filtering settings from given config
 	 */
-	fun readFilteringConfig(config: FiltersConfig, currentRawRotation: Quaternion) {
+	fun readFilteringConfig(config: FiltersConfig, currentRotation: Quaternion) {
 		val type = TrackerFilters.getByConfigkey(config.type)
 		if (type == TrackerFilters.SMOOTHING || type == TrackerFilters.PREDICTION) {
 			movingAverage = QuaternionMovingAverage(
 				type,
 				config.amount,
-				currentRawRotation,
+				currentRotation,
 			)
 			filteringEnabled = true
 		} else {
-			movingAverage = QuaternionMovingAverage(TrackerFilters.NONE)
+			movingAverage = QuaternionMovingAverage(
+				TrackerFilters.NONE,
+				initialRotation = currentRotation,
+			)
 			filteringEnabled = false
 		}
 	}
@@ -50,8 +53,8 @@ class TrackerFilteringHandler {
 	/**
 	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
 	 */
-	fun resetMovingAverage(currentRawRotation: Quaternion) {
-		movingAverage.resetQuats(currentRawRotation)
+	fun resetMovingAverage(currentRotation: Quaternion, reference: Quaternion) {
+		movingAverage.resetQuats(currentRotation, reference)
 	}
 
 	/**

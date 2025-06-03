@@ -2,6 +2,7 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
+import dev.slimevr.tracking.processor.stayaligned.trackers.StayAlignedTrackerState
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
 import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
@@ -92,6 +93,7 @@ class Tracker @JvmOverloads constructor(
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
 	private var _rotation = Quaternion.IDENTITY
 	private var _acceleration = Vector3.NULL
+	private var _magVector = Vector3.NULL
 	var position = Vector3.NULL
 	val resetsHandler: TrackerResetsHandler = TrackerResetsHandler(this)
 	val filteringHandler: TrackerFilteringHandler = TrackerFilteringHandler()
@@ -154,6 +156,8 @@ class Tracker @JvmOverloads constructor(
 	 * It's like the ID, but it should be local to the device if it has one
 	 */
 	val trackerNum: Int = trackerNum ?: id
+
+	val stayAligned = StayAlignedTrackerState(this)
 
 	init {
 		// IMPORTANT: Look here for the required states of inputs
@@ -316,6 +320,7 @@ class Tracker @JvmOverloads constructor(
 		}
 		filteringHandler.update()
 		resetsHandler.update()
+		stayAligned.update()
 	}
 
 	/**
@@ -325,7 +330,7 @@ class Tracker @JvmOverloads constructor(
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
 		if (trackRotDirection) {
-			filteringHandler.dataTick(_rotation)
+			filteringHandler.dataTick(getAdjustedRotation())
 		}
 	}
 
@@ -336,30 +341,80 @@ class Tracker @JvmOverloads constructor(
 		timeAtLastUpdate = System.currentTimeMillis()
 	}
 
-	private fun getFilteredRotation(): Quaternion = if (trackRotDirection) {
-		filteringHandler.getFilteredRotation()
-	} else {
-		// Get raw rotation
-		_rotation
-	}
-
 	/**
-	 * Gets the adjusted tracker rotation after all corrections
-	 * (filtering, reset, mounting and drift compensation).
+	 * Gets the adjusted tracker rotation after the resetsHandler's corrections
+	 * (reset, mounting and drift compensation).
 	 * This is the rotation that is applied on the SlimeVR skeleton bones.
 	 * Warning: This performs several Quaternion multiplications, so calling
 	 * it too much should be avoided for performance reasons.
 	 */
-	fun getRotation(): Quaternion {
-		var rot = getFilteredRotation()
+	private fun getAdjustedRotation(): Quaternion {
+		var rot = _rotation
 
-		// Reset if needed and is not computed and internal
-		if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
-			// Adjust to reset, mounting and drift compensation
-			rot = resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
+		if (!stayAligned.hideCorrection) {
+			// Yaw drift happens in the raw rotation space
+			rot = Quaternion.rotationAroundYAxis(stayAligned.yawCorrection.toRad()) * rot
 		}
 
-		return rot
+		// Reset if needed and is not computed and internal
+		return if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
+			// Adjust to reset, mounting and drift compensation
+			resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
+		} else {
+			rot
+		}
+	}
+
+	/**
+	 * Same as getAdjustedRotation except that Stay Aligned correction is always
+	 * applied. This allows Stay Aligned to do gradient descent with the tracker's
+	 * rotation.
+	 */
+	fun getAdjustedRotationForceStayAligned(): Quaternion {
+		var rot = _rotation
+
+		// Yaw drift happens in the raw rotation space
+		rot = Quaternion.rotationAroundYAxis(stayAligned.yawCorrection.toRad()) * rot
+
+		// Reset if needed and is not computed and internal
+		return if (needsReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
+			// Adjust to reset, mounting and drift compensation
+			resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
+		} else {
+			rot
+		}
+	}
+
+	/**
+	 * Gets the identity-adjusted tracker rotation after the resetsHandler's corrections
+	 * (identity reset, drift and identity mounting).
+	 * This is used for debugging/visualizing tracker data
+	 */
+	fun getIdentityAdjustedRotation(): Quaternion {
+		var rot = _rotation
+
+		if (!stayAligned.hideCorrection) {
+			// Yaw drift happens in the raw rotation space
+			rot = Quaternion.rotationAroundYAxis(stayAligned.yawCorrection.toRad()) * rot
+		}
+
+		// Reset if needed or is a computed tracker besides head
+		return if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
+			// Adjust to reset and mounting
+			resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
+		} else {
+			rot
+		}
+	}
+
+	/**
+	 * Get the rotation of the tracker after the resetsHandler's corrections and filtering if applicable
+	 */
+	fun getRotation(): Quaternion = if (trackRotDirection) {
+		filteringHandler.getFilteredRotation()
+	} else {
+		// Get non-filtered rotation
+		getAdjustedRotation()
 	}
 
 	/**
@@ -369,23 +424,6 @@ class Tracker @JvmOverloads constructor(
 		resetsHandler.getReferenceAdjustedAccel(_rotation, _acceleration)
 	} else {
 		_acceleration
-	}
-
-	/**
-	 * Gets the identity-adjusted tracker rotation after corrections
-	 * (filtering, identity reset, drift and identity mounting).
-	 * This is used for debugging/visualizing tracker data
-	 */
-	fun getIdentityAdjustedRotation(): Quaternion {
-		var rot = getFilteredRotation()
-
-		// Reset if needed or is a computed tracker besides head
-		if (needsReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
-			// Adjust to reset and mounting
-			rot = resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
-		}
-
-		return rot
 	}
 
 	/**
@@ -426,6 +464,22 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
+	 * Gets the magnetic field vector, in mGauss.
+	 */
+	fun getMagVector() = if (needsReset) {
+		resetsHandler.getReferenceAdjustedAccel(_rotation, _magVector)
+	} else {
+		_magVector
+	}
+
+	/**
+	 * Sets the magnetic field vector.
+	 */
+	fun setMagVector(vec: Vector3) {
+		this._magVector = vec
+	}
+
+	/**
 	 * Gets the current TPS of the tracker
 	 */
 	val tps: Float
@@ -434,7 +488,7 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * Call when doing a full reset to reset the tracking of rotations >180 degrees
 	 */
-	fun resetFilteringQuats() {
-		filteringHandler.resetMovingAverage(_rotation)
+	fun resetFilteringQuats(reference: Quaternion) {
+		filteringHandler.resetMovingAverage(getAdjustedRotation(), reference)
 	}
 }

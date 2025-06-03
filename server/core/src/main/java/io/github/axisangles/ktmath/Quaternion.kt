@@ -21,6 +21,11 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		val SLIMEVR: SlimeVR = SlimeVR
 
 		/**
+		 * Used to rotate an identity quaternion to face upwards for [twinExtendedBack].
+		 */
+		private val UP_ADJ = Quaternion(0.707f, -0.707f, 0f, 0f)
+
+		/**
 		 * creates a new quaternion representing the rotation about v's axis
 		 * by an angle of v's length
 		 * @param v the rotation vector
@@ -53,6 +58,33 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 
 			return (d + d.len()).unit()
 		}
+
+		/**
+		 * Rotation around X-axis
+		 *
+		 * Derived from the axis-angle representation in
+		 * https://en.wikipedia.org/wiki/Axis%E2%80%93angle_representation#Unit_quaternions
+		 */
+		fun rotationAroundXAxis(angle: Float): Quaternion =
+			Quaternion(cos(angle / 2.0f), sin(angle / 2.0f), 0.0f, 0.0f)
+
+		/**
+		 * Rotation around Y-axis
+		 *
+		 * Derived from the axis-angle representation in
+		 * https://en.wikipedia.org/wiki/Axis%E2%80%93angle_representation#Unit_quaternions
+		 */
+		fun rotationAroundYAxis(angle: Float): Quaternion =
+			Quaternion(cos(angle / 2.0f), 0.0f, sin(angle / 2.0f), 0.0f)
+
+		/**
+		 * Rotation around Z-axis
+		 *
+		 * Derived from the axis-angle representation in
+		 * https://en.wikipedia.org/wiki/Axis%E2%80%93angle_representation#Unit_quaternions
+		 */
+		fun rotationAroundZAxis(angle: Float): Quaternion =
+			Quaternion(cos(angle / 2.0f), 0.0f, 0.0f, sin(angle / 2.0f))
 
 		/**
 		 * SlimeVR-specific constants and utils
@@ -114,7 +146,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	/**
 	 * computes the dot product of this quaternion with that quaternion
 	 * @param that the quaternion with which to be dotted
-	 * @return the inverse quaternion
+	 * @return the dot product between quaternions
 	 **/
 	fun dot(that: Quaternion): Float =
 		this.w * that.w + this.x * that.x + this.y * that.y + this.z * that.z
@@ -227,11 +259,37 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 
 	/**
 	 * between this and -this, picks the one nearest to that quaternion
-	 * @param that the quaternion to be nearest
+	 * @param that the quaternion to be nearest to
 	 * @return nearest quaternion
 	 **/
 	fun twinNearest(that: Quaternion): Quaternion =
 		if (this.dot(that) < 0f) -this else this
+
+	/**
+	 * between this and -this, picks the one furthest from that quaternion
+	 * @param that the quaternion to be furthest from
+	 * @return furthest quaternion
+	 **/
+	fun twinFurthest(that: Quaternion): Quaternion =
+		if (this.dot(that) < 0f) this else -this
+
+	/**
+	 * Similar to [twinNearest], but offset so the lower back quadrant is the furthest
+	 * rotation relative to [that]. This is useful for joints that have limited forward
+	 * rotation, but extensive backward rotation.
+	 * @param that The reference quaternion to be nearest to or furthest from.
+	 * @return The furthest quaternion if in the lower back quadrant, otherwise the
+	 * nearest quaternion.
+	 **/
+	fun twinExtendedBack(that: Quaternion): Quaternion {
+		/*
+		 * This handles the thigh extending behind the torso to face downwards, and the
+		 * hip extending behind the chest. The thigh cannot bend to the back away from
+		 * the torso and the spine hopefully can't bend back that far, so we can fairly
+		 * safely assume the rotation is towards the torso.
+		 */
+		return this.twinNearest(that * UP_ADJ)
+	}
 
 	/**
 	 * interpolates from this quaternion to that quaternion by t in quaternion space
@@ -365,7 +423,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 
 		val angleA = atan2(2f * (abQ * bQ + aQ * rot.w), rot.w * rot.w - aQ * aQ + bQ * bQ - abQ * abQ)
 		val angleB = atan2(2f * (abQ * aQ + bQ * rot.w), rot.w * rot.w + aQ * aQ - bQ * bQ - abQ * abQ)
-		
+
 		return floatArrayOf(angleA, angleB)
 	}
 
@@ -375,6 +433,45 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @return that vector transformed by this quaternion
 	 **/
 	fun sandwich(that: Vector3): Vector3 = (this * Quaternion(0f, that) / this).xyz
+
+	/**
+	 * Sandwiches the unit X vector
+	 *
+	 * First column of rotation matrix in
+	 * https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Conversion_to_and_from_the_matrix_representation
+	 */
+	fun sandwichUnitX(): Vector3 =
+		Vector3(
+			w * w + x * x - y * y - z * z,
+			2.0f * (x * y + w * z),
+			2.0f * (x * z - w * y),
+		)
+
+	/**
+	 * Sandwiches the unit Y vector
+	 *
+	 * Second column of rotation matrix in
+	 * https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Conversion_to_and_from_the_matrix_representation
+	 */
+	fun sandwichUnitY(): Vector3 =
+		Vector3(
+			2.0f * (x * y - w * z),
+			w * w - x * x + y * y - z * z,
+			2.0f * (y * z + w * x),
+		)
+
+	/**
+	 * Sandwiches the unit Z vector
+	 *
+	 * Third column of rotation matrix in
+	 * https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Conversion_to_and_from_the_matrix_representation
+	 */
+	fun sandwichUnitZ(): Vector3 =
+		Vector3(
+			2.0f * (x * z + w * y),
+			2.0f * (y * z - w * x),
+			w * w - x * x - y * y + z * z,
+		)
 
 	/**
 	 * computes this quaternion's unit length rotation axis

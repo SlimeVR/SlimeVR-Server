@@ -131,7 +131,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Reads/loads drift compensation settings from given config
 	 */
 	fun readDriftCompensationConfig(config: DriftCompensationConfig) {
-		compensateDrift = config.enabled
+		compensateDrift = false
 		driftPrediction = config.prediction
 		driftAmount = config.amount
 		val maxResets = config.maxResets
@@ -272,10 +272,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
 			tracker.trackerFlexHandler.resetMin()
-			postProcessResetFull()
+			postProcessResetFull(reference)
 			return
 		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
-			postProcessResetFull()
+			postProcessResetFull(reference)
 			return
 		}
 
@@ -342,16 +342,19 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		calculateDrift(oldRot)
 
-		postProcessResetFull()
+		postProcessResetFull(reference)
+
+		// Reset Stay Aligned
+		tracker.stayAligned.reset()
 	}
 
-	private fun postProcessResetFull() {
+	private fun postProcessResetFull(reference: Quaternion) {
 		if (this.tracker.lastResetStatus != 0u) {
 			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
 			this.tracker.lastResetStatus = 0u
 		}
 
-		tracker.resetFilteringQuats()
+		tracker.resetFilteringQuats(reference)
 	}
 
 	/**
@@ -361,11 +364,14 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * position should be corrected in the source.
 	 */
 	fun resetYaw(reference: Quaternion) {
+		// TODO HMD doesn't get yaw reset, which makes it so tracker.resetFilteringQuats() doesn't get called
+
 		constraintFix = Quaternion.IDENTITY
 
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
 			tracker.trackerDataType == TrackerDataType.FLEX_ANGLE
 		) {
+			// Don't do anything as these don't have yaw anyways
 			return
 		}
 
@@ -395,7 +401,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			this.tracker.lastResetStatus = 0u
 		}
 
-		tracker.resetFilteringQuats()
+		tracker.resetFilteringQuats(reference)
+
+		// Reset Stay Aligned
+		tracker.stayAligned.reset()
 	}
 
 	/**
@@ -405,7 +414,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun resetMounting(reference: Quaternion) {
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
 			tracker.trackerFlexHandler.resetMax()
-			tracker.resetFilteringQuats()
+			tracker.resetFilteringQuats(reference)
 			return
 		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
 			return
@@ -460,7 +469,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		// save mounting reset
 		if (saveMountingReset) tracker.saveMountingResetOrientation(mountRotFix)
 
-		tracker.resetFilteringQuats()
+		tracker.resetFilteringQuats(reference)
 	}
 
 	/**
@@ -491,7 +500,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	// incorrect. Projection around the Y-axis is worse.
 	// In both cases, the isolated yaw value changes
 	// with the tracker's roll when pointing forward.
-	private fun getYawQuaternion(rot: Quaternion): Quaternion = EulerAngles(EulerOrder.YZX, 0f, rot.toEulerAngles(EulerOrder.YZX).y, 0f).toQuaternion()
+	// calling twinNearest() makes sure this rotation has the wanted polarity (+-).
+	private fun getYawQuaternion(rot: Quaternion): Quaternion = EulerAngles(EulerOrder.YZX, 0f, rot.toEulerAngles(EulerOrder.YZX).y, 0f).toQuaternion().twinNearest(rot)
 
 	private fun makeIdentityAdjustmentQuatsFull() {
 		val sensorRotation = tracker.getRawRotation()

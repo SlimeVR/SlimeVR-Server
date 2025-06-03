@@ -20,7 +20,7 @@
   SOFTWARE.
 */
 
-export const NOTES: { [note: string]: number } = {
+export const NOTES = {
   C0: 16.35,
   'C#0': 17.32,
   Db0: 17.32,
@@ -160,11 +160,13 @@ export const NOTES: { [note: string]: number } = {
   C8: 4186.01,
 };
 
+export type ValidNote = keyof typeof NOTES;
+
 /**
  * A measure that can be played on a Xylophone
  */
 export interface IMeasure {
-  notes: string[];
+  notes: ValidNote[];
   length?: number;
   offset?: number;
   type?: OscillatorOptions['type'];
@@ -172,7 +174,7 @@ export interface IMeasure {
 }
 
 export interface INote {
-  note: string;
+  note: ValidNote;
   length?: number;
   offset?: number;
   type?: OscillatorOptions['type'];
@@ -193,10 +195,8 @@ export default class Xylophone {
   /**
    * Converts a named note to hertz (e.g. `toHertz('A4') => 440.00`)
    */
-  private static toHertz(note: string): number {
-    note = note.trim();
-    if (note in NOTES) return NOTES[note];
-    throw new Error(`${note} is not a valid note`);
+  private static toHertz(note: ValidNote): number {
+    return NOTES[note];
   }
 
   private oscillator: OscillatorNode | undefined;

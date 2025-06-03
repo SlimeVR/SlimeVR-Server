@@ -33,6 +33,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { object } from 'yup';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { A } from '@/components/commons/A';
+import { useAtomValue } from 'jotai';
+import { devicesAtom } from '@/store/app-store';
 
 export function checkForUpdate(
   currentFirmwareRelease: FirmwareRelease,
@@ -53,8 +55,8 @@ export function checkForUpdate(
 
   if (
     canUpdate &&
-    device.hardwareStatus?.batteryPctEstimate &&
-    device.hardwareStatus?.batteryPctEstimate < 50
+    device.hardwareStatus?.batteryPctEstimate != null &&
+    device.hardwareStatus.batteryPctEstimate < 50
   ) {
     return 'low-battery';
   }
@@ -99,15 +101,14 @@ const DeviceList = ({
 
 const StatusList = ({ status }: { status: Record<string, UpdateStatus> }) => {
   const statusKeys = Object.keys(status);
+  const devices = useAtomValue(devicesAtom);
 
   return statusKeys.map((id, index) => {
     const val = status[id];
 
     if (!val) throw new Error('there should always be a val');
-    const { state } = useAppContext();
-    const device = state.datafeed?.devices.find(
-      ({ id: dId }) => id === dId?.id.toString()
-    );
+
+    const device = devices.find(({ id: dId }) => id === dId?.id.toString());
 
     return (
       <DeviceCardControl
@@ -132,11 +133,13 @@ export function FirmwareUpdate() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const pendingDevicesRef = useRef<SelectedDevice[]>([]);
-  const { state, currentFirmwareRelease } = useAppContext();
+  const { currentFirmwareRelease } = useAppContext();
   const [status, setStatus] = useState<Record<string, UpdateStatus>>({});
 
+  const allDevices = useAtomValue(devicesAtom);
+
   const devices =
-    state.datafeed?.devices.filter(
+    allDevices.filter(
       (device) =>
         device.trackers.length > 0 &&
         currentFirmwareRelease &&
