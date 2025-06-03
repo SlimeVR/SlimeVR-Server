@@ -17,16 +17,19 @@ import { Tooltip } from '@/components/commons/Tooltip';
 function IncrementButton({
   children,
   onClick,
+  groupPart,
 }: {
   children: ReactNode;
   onClick?: MouseEventHandler<HTMLDivElement>;
+  groupPart: boolean;
 }) {
   return (
     <div
       onClick={onClick}
       className={classNames(
         'p-3 rounded-lg xs:w-10 xs:h-10 flex flex-col justify-center items-center cursor-pointer',
-        'bg-background-40 hover:bg-opacity-50 active:bg-accent-background-30'
+        'hover:bg-opacity-50 active:bg-accent-background-30',
+        { 'bg-background-60': groupPart, 'bg-background-40': !groupPart }
       )}
     >
       <Typography variant="vr-accessible" bold>
@@ -144,7 +147,7 @@ function ProportionItem({
               preferedDirection="bottom"
               mode="corner"
             >
-              <div className="info-icon hover:opacity-100 opacity-65 ml-1 scale-[0.65] border-2 border-solid text-xs w-5 h-5 flex justify-center items-center rounded-full">
+              <div className="hover:opacity-100 opacity-65 ml-1 scale-[0.65] border-2 border-solid text-xs w-5 h-5 flex justify-center items-center rounded-full cursor-help">
                 i
               </div>
             </Tooltip>
@@ -152,23 +155,27 @@ function ProportionItem({
 
           <div className="flex gap-4 items-center mobile:justify-center mobile:w-full">
             <div
-              className={classNames(
-                'flex items-center gap-2 my-2 opacity-75',
-                part.type === 'group-part'
-                  ? 'group-hover/child-buttons:opacity-100'
-                  : 'group-hover/buttons:opacity-100'
-              )}
+              className={classNames('flex items-center gap-2 my-2 opacity-100')}
             >
               {!precise && (
-                <IncrementButton onClick={() => boneIncrement(-5)}>
+                <IncrementButton
+                  groupPart={part.type !== 'group-part'}
+                  onClick={() => boneIncrement(-5)}
+                >
                   {configFormat.format(-5)}
                 </IncrementButton>
               )}
-              <IncrementButton onClick={() => boneIncrement(-1)}>
+              <IncrementButton
+                groupPart={part.type !== 'group-part'}
+                onClick={() => boneIncrement(-1)}
+              >
                 {configFormat.format(-1)}
               </IncrementButton>
               {precise && (
-                <IncrementButton onClick={() => boneIncrement(-0.5)}>
+                <IncrementButton
+                  groupPart={part.type !== 'group-part'}
+                  onClick={() => boneIncrement(-0.5)}
+                >
                   {configFormat.format(-0.5)}
                 </IncrementButton>
               )}
@@ -185,23 +192,27 @@ function ProportionItem({
               )}
             </div>
             <div
-              className={classNames(
-                'flex items-center gap-2 my-2 opacity-75',
-                part.type === 'group-part'
-                  ? 'group-hover/child-buttons:opacity-100'
-                  : 'group-hover/buttons:opacity-100'
-              )}
+              className={classNames('flex items-center gap-2 my-2 opacity-100')}
             >
               {precise && (
-                <IncrementButton onClick={() => boneIncrement(+0.5)}>
+                <IncrementButton
+                  groupPart={part.type !== 'group-part'}
+                  onClick={() => boneIncrement(+0.5)}
+                >
                   {configFormat.format(+0.5)}
                 </IncrementButton>
               )}
-              <IncrementButton onClick={() => boneIncrement(+1)}>
+              <IncrementButton
+                groupPart={part.type !== 'group-part'}
+                onClick={() => boneIncrement(+1)}
+              >
                 {configFormat.format(+1)}
               </IncrementButton>
               {!precise && (
-                <IncrementButton onClick={() => boneIncrement(+5)}>
+                <IncrementButton
+                  groupPart={part.type !== 'group-part'}
+                  onClick={() => boneIncrement(+5)}
+                >
                   {configFormat.format(+5)}
                 </IncrementButton>
               )}
@@ -211,8 +222,9 @@ function ProportionItem({
         {type === 'ratio' && part.type !== 'group-part' && (
           <div
             className={classNames(
-              'flex items-center fill-background-20 hover:scale-110',
-              part.type === 'bone' && 'opacity-50'
+              'flex items-center fill-background-20',
+              part.type === 'bone' && 'opacity-50 cursor-not-allowed',
+              part.type !== 'bone' && 'hover:scale-110'
             )}
             onClick={toggleOpen}
           >
