@@ -54,15 +54,71 @@ body_part-LEFT_HAND = Левая рука
 body_part-LEFT_UPPER_LEG = Левое бедро
 body_part-LEFT_LOWER_LEG = Левая голень
 body_part-LEFT_FOOT = Левая ступня
+body_part-LEFT_THUMB_METACARPAL = Левый большой палец (пястная кость)
+body_part-LEFT_THUMB_PROXIMAL = Левый большой палец (проксимальная фаланга)
+body_part-LEFT_THUMB_DISTAL = Левый большой палец (дистальная фаланга)
+body_part-LEFT_INDEX_PROXIMAL = Левый указательный палец (проксимальная фаланга)
+body_part-LEFT_INDEX_INTERMEDIATE = Левый указательный палец (промежуточная фаланга)
+body_part-LEFT_INDEX_DISTAL = Левый указательный палец (дистальная фаланга)
+body_part-LEFT_MIDDLE_PROXIMAL = Левый средний палец (проксимальная фаланга)
+body_part-LEFT_MIDDLE_INTERMEDIATE = Левый средний палец (промежуточная фаланга)
+body_part-LEFT_MIDDLE_DISTAL = Левый средний палец (дистальная фаланга)
+body_part-LEFT_RING_PROXIMAL = Левый безымянный палец (проксимальная фаланга)
+body_part-LEFT_RING_INTERMEDIATE = Левый безымянный палец (промежуточная фаланга)
+body_part-LEFT_RING_DISTAL = Левый безымянный палец (дистальная фаланга)
+body_part-LEFT_LITTLE_PROXIMAL = Левый мизинец (проксимальная фаланга)
+body_part-LEFT_LITTLE_INTERMEDIATE = Левый мизинец (промежуточная фаланга)
+body_part-LEFT_LITTLE_DISTAL = Левый мизинец (дистальная фаланга)
+body_part-RIGHT_THUMB_METACARPAL = Правый большой палец (пястная кость)
+body_part-RIGHT_THUMB_PROXIMAL = Правый большой палец (проксимальная фаланга)
+body_part-RIGHT_THUMB_DISTAL = Правый большой палец (дистальная фаланга)
+body_part-RIGHT_INDEX_PROXIMAL = Правый указательный палец (проксимальная фаланга)
+body_part-RIGHT_INDEX_INTERMEDIATE = Правый указательный палец (промежуточная фаланга)
+body_part-RIGHT_INDEX_DISTAL = Правый указательный палец (дистальная фаланга)
+body_part-RIGHT_MIDDLE_PROXIMAL = Правый средний палец (проксимальная фаланга)
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Правый средний палец (промежуточная фаланга)
+body_part-RIGHT_MIDDLE_DISTAL = Правый средний палец (дистальная фаланга)
+body_part-RIGHT_RING_PROXIMAL = Правый безымянный палец (проксимальная фаланга)
+body_part-RIGHT_RING_INTERMEDIATE = Правый безымянный палец (промежуточная фаланга)
+body_part-RIGHT_RING_DISTAL = Правый безымянный палец (дистальная фаланга)
+body_part-RIGHT_LITTLE_PROXIMAL = Правый мизинец (проксимальная фаланга)
+body_part-RIGHT_LITTLE_INTERMEDIATE = Правый мизинец (промежуточная фаланга)
+body_part-RIGHT_LITTLE_DISTAL = Правый мизинец (дистальная фаланга)
 
 ## BoardType
 
+board_type-UNKNOWN = Неизвестно
+board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Кастомная Плата
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = SlimeVR
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 
 ## Proportions
 
 skeleton_bone-NONE = Пусто
 skeleton_bone-HEAD = Голова
+skeleton_bone-HEAD-desc =
+    Это расстояние от вашего шлема до центра вашей головы.
+    Чтобы откалибровать его, покрутите головой из стороны в сторону, будто несогласны с чем-то, и изменяйте
+    значение, пока движение других трекеров не станет незначительным.
 skeleton_bone-NECK = Длина шеи
+skeleton_bone-NECK-desc =
+    Это расстояние от центра вашей головы до основания вашей шеи.
+    Чтобы откалибровать его, двигайте головой вверх-вниз, будто вы киваете, или отклоняйте голову
+    влево-вправо и изменяйте значение, пока движение других трекеров не станет незначительным.
 skeleton_bone-torso_group = Длина туловища
 skeleton_bone-torso_group-desc =
     Это расстояние от основания вашей шеи до ваших бёдер.
@@ -148,16 +204,45 @@ skeleton_bone-arm_group-desc =
     Чтобы откалибровать его, убедитесь, что "Расстояние до плеч" задано верно, установите "Расстояние
     до руки Y" равным 0, и изменяйте значение, пока ваши трекеры рук не совпадут с вашими запястьями.
 skeleton_bone-UPPER_ARM = Длинна предплечья
+skeleton_bone-UPPER_ARM-desc =
+    Это расстояние от ваших плеч до ваших локтей.
+    Чтобы откалибровать его, убедитесь, что "Длина руки" задана верно, и изменяйте
+    значение, пока ваши трекеры локтей не совпадут с вашими реальными локтями.
 skeleton_bone-LOWER_ARM = Длинна нижнего предплечья
+skeleton_bone-LOWER_ARM-desc =
+    Это расстояние от ваших локтей до ваших запястий.
+    Чтобы откалибровать его, убедитесь, что "Длина руки" задана верно, и изменяйте
+    значение, пока ваши трекеры локтей не совпадут с вашими реальными локтями.
 skeleton_bone-HAND_Y = Расстояние от руки Y
+skeleton_bone-HAND_Y-desc =
+    Это вертикальное расстояние от ваших запястий до центра вашей руки.
+    Чтобы откалибровать его для захвата движений, убедитесь, что "Длина руки" задана верно, и изменяйте
+    значение, пока ваши трекеры рук не совпадут вертикально с центром ваших рук.
+    Чтобы откалибровать его для отслеживания локтей от ваших контроллеров, установите "Длину руки" равной 0,
+    и изменяйте значение, пока ваши трекеры локтей не совпадут вертикально с вашими запястьями.
 skeleton_bone-HAND_Z = Расстояние от руки Z
+skeleton_bone-HAND_Z-desc =
+    Это горизонтальное расстояние от ваших запястий до центра ваших ладоней.
+    Чтобы откалибровать его для захвата движений, установите значение равным 0.
+    Чтобы откалибровать его для отслеживания локтей от ваших контроллеров, установите
+    "Длину руки" равной 0, и изменяйте значение, пока ваши трекеры локтей не совпадут
+    горизонтально с вашими запястьями.
 skeleton_bone-ELBOW_OFFSET = Смещение локтя
+skeleton_bone-ELBOW_OFFSET-desc =
+    Это параметр позволяет сдвинуть ваш виртуальный трекер локтей вверх или вниз, чтобы помочь
+    со случайной привязкой трекеров локтей к груди при использовании с VRChat.
 
 ## Tracker reset buttons
 
 reset-reset_all = Сбросить все пропорции
+reset-reset_all_warning-v2 =
+    <b>Внимание:<b> Ваши пропорции будут сброшены до дефолтных размеров в соответствии заданному росту.
+    Вы уверены, что хотите это сделать?
 reset-reset_all_warning-reset = Сброс пропорций
 reset-reset_all_warning-cancel = Отмена
+reset-reset_all_warning_default-v2 =
+    <b>Внимание:</b> Вы не настроили свой рост в SlimeVR, ваши пропорции будут сброшены до дефолтных вместе с ростом.
+    Вы уверены, что хотите это сделать?
 reset-full = Полный сброс
 reset-mounting = Сбросить крепление
 reset-yaw = Горизонтальный сброс
@@ -276,6 +361,7 @@ tracker-infos-url = URL трекера
 tracker-infos-version = Версия прошивки
 tracker-infos-hardware_rev = Ревизия устройства
 tracker-infos-hardware_identifier = ID оборудования
+tracker-infos-data_support = Поддержка данных
 tracker-infos-imu = Датчик IMU
 tracker-infos-board_type = Основная плата
 tracker-infos-network_version = Версия Протокола
@@ -313,6 +399,12 @@ tracker-settings-name_section-label = Имя трекера
 tracker-settings-forget = Забыть трекер
 tracker-settings-forget-description = Убирает трекер с SlimeVR Сервер и запрещает ему подключаться к серверу до того как он будет перезапущен. Конфигурация трекера не будет потеряна.
 tracker-settings-forget-label = Забыть трекер
+tracker-settings-update-unavailable = Невозможно обновить (DIY)
+tracker-settings-update-low-battery = Невозможно обновить. Заряд батареи менее 50%
+tracker-settings-update-up_to_date = Обновлено
+tracker-settings-update-available = { $versionName } теперь доступна
+tracker-settings-update = Обновить сейчас
+tracker-settings-update-title = Версия прошивки
 
 ## Tracker part card info
 
@@ -388,6 +480,9 @@ settings-sidebar-utils = Утилиты
 settings-sidebar-serial = Консоль
 settings-sidebar-appearance = Внешний вид
 settings-sidebar-notifications = Уведомление
+settings-sidebar-behavior = Поведение
+settings-sidebar-firmware-tool = Инструмент Прошивки DIY
+settings-sidebar-vrc_warnings = Предупреждения конфигурации VRChat
 settings-sidebar-advanced = Продвинутые
 
 ## SteamVR settings
@@ -465,6 +560,8 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Использует магнитометр на всех трекерах, которые имеют совместимую с ним прошивку, уменьшая дрифт в стабильных магнитных средах.
     Может быть отключен для каждого трекера в настройках трекера. <b>Пожалуйста, не выключайте ни один из трекеров во время переключения!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Использовать магнитометр трекеров
+settings-stay_aligned-enabled-label = Калибровка трекеров
+settings-stay_aligned-general-label = Общие
 
 ## FK/Tracking settings
 
