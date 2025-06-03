@@ -99,7 +99,7 @@ class DesktopVRCConfigHandler : VRCConfigHandler() {
 	private fun updateCurrentState() {
 		vrcConfigKeys = getVRChatKeys(VRC_REG_PATH)
 		val newConfig = VRCConfigValues(
-			legacyMode = intValue("VRC_IK_LEGACY") == 1,
+			legacyMode = intValue("VRC_IK_LEGACY_CALIBRATION") == 1,
 			shoulderTrackingDisabled = intValue("VRC_IK_DISABLE_SHOULDER_TRACKING") == 1,
 			userHeight = doubleValue("PlayerHeight") ?: -1.0,
 			calibrationRange = doubleValue("VRC_IK_CALIBRATION_RANGE") ?: -1.0,
