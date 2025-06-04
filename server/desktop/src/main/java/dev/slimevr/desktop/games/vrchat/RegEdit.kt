@@ -13,6 +13,7 @@ import java.io.InvalidObjectException
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.io.path.Path
+import kotlin.io.path.exists
 
 abstract class AbstractRegEdit {
 	abstract fun getQwordValue(path: String, key: String): Double?
@@ -76,6 +77,13 @@ class RegEditWindows : AbstractRegEdit() {
 }
 
 class RegEditLinux : AbstractRegEdit() {
+	init {
+		if (USER_REG_PATH == null) {
+			LogManager.info("[VRChatRegEdit] Couldn't find any VRChat registry file")
+		} else {
+			LogManager.info("[VRChatRegEdit] Using VRChat registry file: $USER_REG_PATH")
+		}
+	}
 	lateinit var registry: Map<String, String>
 
 	@OptIn(ExperimentalStdlibApi::class)
@@ -135,9 +143,13 @@ class RegEditLinux : AbstractRegEdit() {
 	}
 
 	companion object {
-		const val USER_REG_SUBPATH = "Steam/steamapps/compatdata/438100/pfx/user.reg"
-		val USER_REG_PATH = System.getenv("XDG_DATA_HOME")?.let { Path(it, USER_REG_SUBPATH) }
-			?: System.getenv("HOME")?.let { Path(it, ".local", "share", USER_REG_SUBPATH) }
+		const val USER_REG_SUBPATH = "steamapps/compatdata/438100/pfx/user.reg"
+		val USER_REG_PATH =
+			System.getenv("HOME")?.let {
+				Path(it, ".steam", "root", USER_REG_SUBPATH).let { if (it.exists()) it else null }
+					?: Path(it, ".steam", "debian-installation", USER_REG_SUBPATH).let { if (it.exists()) it else null }
+					?: Path(it, ".var", "app", "com.valvesoftware.Steam", "data", "Steam", USER_REG_SUBPATH).let { if (it.exists()) it else null }
+			}
 		val KEY_VALUE_PATTERN = Regex(""""(.+)"=(.+)""")
 
 		@OptIn(ExperimentalStdlibApi::class)
