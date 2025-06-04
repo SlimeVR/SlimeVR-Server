@@ -1,11 +1,5 @@
 package dev.slimevr.desktop.games.vrchat
 
-import com.sun.jna.Memory
-import com.sun.jna.platform.win32.Advapi32
-import com.sun.jna.platform.win32.Advapi32Util
-import com.sun.jna.platform.win32.WinNT
-import com.sun.jna.platform.win32.WinReg
-import com.sun.jna.ptr.IntByReference
 import dev.slimevr.games.vrchat.VRCAvatarMeasurementType
 import dev.slimevr.games.vrchat.VRCConfigHandler
 import dev.slimevr.games.vrchat.VRCConfigValues
@@ -15,64 +9,17 @@ import io.eiren.util.OperatingSystem
 import java.util.Timer
 import kotlin.concurrent.timerTask
 
-// Vrchat is dumb and write 64 bit doubles in the registry as DWORD instead of QWORD.
-// so we have to be creative
-fun getQwordValue(path: String, key: String): Double? {
-	val hKey = WinReg.HKEY_CURRENT_USER
-	val phkResult = WinReg.HKEYByReference()
-
-	// Open the registry key
-	if (Advapi32.INSTANCE.RegOpenKeyEx(hKey, path, 0, WinNT.KEY_READ, phkResult) != 0) {
-		println("Error: Cannot open registry key")
-		return null
-	}
-
-	val lpData = Memory(8)
-	val lpcbData = IntByReference(8)
-
-	val result = Advapi32.INSTANCE.RegQueryValueEx(
-		phkResult.value,
-		key,
-		0,
-		null,
-		lpData,
-		lpcbData,
-	)
-	Advapi32.INSTANCE.RegCloseKey(phkResult.value)
-
-	if (result != 0) {
-		println("Error: Cannot read registry key")
-		return null
-	}
-	return lpData.getDouble(0)
-}
-
-fun getDwordValue(path: String, key: String): Int? = try {
-	val data = Advapi32Util.registryGetIntValue(WinReg.HKEY_CURRENT_USER, path, key)
-	data
-} catch (e: Exception) {
-	println("Error reading DWORD: ${e.message}")
-	null
-}
-
-fun getVRChatKeys(path: String): Map<String, String> {
-	val keysMap = mutableMapOf<String, String>()
-
-	try {
-		Advapi32Util.registryGetValues(WinReg.HKEY_CURRENT_USER, path).forEach {
-			keysMap[it.key.replace("""_h\d+$""".toRegex(), "")] = it.key
-		}
-	} catch (e: Exception) {
-		println("Error reading Values from VRC registry: ${e.message}")
-	}
-	return keysMap
-}
-
 const val VRC_REG_PATH = "Software\\VRChat\\VRChat"
 
 class DesktopVRCConfigHandler : VRCConfigHandler() {
 
 	private val getDevicesTimer = Timer("FetchVRCConfigTimer")
+	private val regEdit: AbstractRegEdit =
+		if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
+			RegEditWindows()
+		} else {
+			RegEditLinux()
+		}
 
 	private var configState: VRCConfigValues? = null
 	private var vrcConfigKeys: Map<String, String>
@@ -80,24 +27,26 @@ class DesktopVRCConfigHandler : VRCConfigHandler() {
 
 	private fun intValue(key: String): Int? {
 		val realKey = vrcConfigKeys[key] ?: return null
-		return getDwordValue(VRC_REG_PATH, realKey)
+		return regEdit.getDwordValue(VRC_REG_PATH, realKey)
 	}
 
 	private fun doubleValue(key: String): Double? {
 		val realKey = vrcConfigKeys[key] ?: return null
-		return getQwordValue(VRC_REG_PATH, realKey)
+		return regEdit.getQwordValue(VRC_REG_PATH, realKey)
 	}
 
 	init {
-		vrcConfigKeys = if (OperatingSystem.currentPlatform === OperatingSystem.WINDOWS) {
-			getVRChatKeys(VRC_REG_PATH)
+		vrcConfigKeys = if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS ||
+			OperatingSystem.currentPlatform == OperatingSystem.LINUX
+		) {
+			regEdit.getVRChatKeys(VRC_REG_PATH)
 		} else {
 			mapOf()
 		}
 	}
 
 	private fun updateCurrentState() {
-		vrcConfigKeys = getVRChatKeys(VRC_REG_PATH)
+		vrcConfigKeys = regEdit.getVRChatKeys(VRC_REG_PATH)
 		val newConfig = VRCConfigValues(
 			legacyMode = intValue("VRC_IK_LEGACY") == 1,
 			shoulderTrackingDisabled = intValue("VRC_IK_DISABLE_SHOULDER_TRACKING") == 1,
@@ -116,7 +65,10 @@ class DesktopVRCConfigHandler : VRCConfigHandler() {
 	}
 
 	override val isSupported: Boolean
-		get() = OperatingSystem.currentPlatform === OperatingSystem.WINDOWS && vrcConfigKeys.isNotEmpty()
+		get() = (
+			OperatingSystem.currentPlatform == OperatingSystem.WINDOWS ||
+				OperatingSystem.currentPlatform == OperatingSystem.LINUX
+			) && vrcConfigKeys.isNotEmpty()
 
 	override fun initHandler(onChange: (config: VRCConfigValues) -> Unit) {
 		this.onChange = onChange
