@@ -1,0 +1,42 @@
+# Copyright 2025 Eiren Rain and SlimeVR Contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+## QinHeng
+# CH340
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="1A86", ATTRS{idProduct}=="7522", MODE="0660", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="1A86", ATTRS{idProduct}=="7523", MODE="0660", TAG+="uaccess"
+# CH341
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="1A86", ATTRS{idProduct}=="5523", MODE="0660", TAG+="uaccess"
+# CH9102x
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="1A86", ATTRS{idProduct}=="55D4", MODE="0660", TAG+="uaccess"
+
+## Silabs
+# CP210x
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="10C4", ATTRS{idProduct}=="EA60", MODE="0660", TAG+="uaccess"
+
+## Espressif
+# ESP32-C3
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="303A", ATTRS{idProduct}=="1001", MODE="0660", TAG+="uaccess"
+
+## FTDI
+# FT232BM/L/Q, FT245BM/L/Q
+# FT232RL/Q, FT245RL/Q
+# VNC1L with VDPS Firmware
+# VNC2 with FT232Slave
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", MODE="0660", TAG+="uaccess"
+
+## SlimeVR
+# smol slime dongle
+SUBSYSTEM=="usb", ATTR{idVendor}=="1209", ATTR{idProduct}=="7690", MODE="0660", TAG+="uaccess"
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="7690", MODE="0660", TAG+="uaccess"
