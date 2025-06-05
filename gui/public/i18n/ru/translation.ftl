@@ -1330,6 +1330,7 @@ onboarding-stay_aligned-title = Оставаться выровненным
 onboarding-stay_aligned-description = Настройте функцию "Оставаться выровненным", чтобы ваши трекеры продолжали оставаться выровненными.
 onboarding-stay_aligned-put_trackers_on-title = Наденьте ваши трекеры
 onboarding-stay_aligned-put_trackers_on-description = Чтобы сохранить ваши расслабленные позы, будут использованы трекеры, которые вы только что назначили. Наденьте все трекеры, вы можете увидеть, какие из них какие, на рисунке справа.
+onboarding-stay_aligned-put_trackers_on-trackers_warning = Вы подключили и назначили менее 5 трекеров! Это минимально требуемое количество трекеров для корректной работы функции "Оставаться выровненным".
 onboarding-stay_aligned-put_trackers_on-next = У меня включены все трекеры
 onboarding-stay_aligned-verify_mounting-title = Проверьте ваше крепление
 onboarding-stay_aligned-verify_mounting-step-0 = Функция "Оставаться выровненным" требует хорошего крепления. В противном случае вы не получите положительного опыта в использовании данной функции.
@@ -1349,6 +1350,13 @@ onboarding-stay_aligned-relaxed_poses-flat-title = Расслабленная п
 onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Сядьте на пол, расположив ноги перед собой. Расслабьтесь!
 onboarding-stay_aligned-relaxed_poses-flat-step-2 = 3. Нажмите кнопку: "Сохранить позу".
 onboarding-stay_aligned-relaxed_poses-skip_step = Пропустить
+onboarding-stay_aligned-done-title = Функция "Оставаться выровненным" включена!
+onboarding-stay_aligned-done-description = Настройка функции "Оставаться выровненным" завершена!
+onboarding-stay_aligned-done-description-2 = Настройка завершена! Вы можете провести настройку повторно, если хотите заново откалибровать позы.
+onboarding-stay_aligned-previous_step = Предыдущий
+onboarding-stay_aligned-next_step = Следующий
+onboarding-stay_aligned-restart = Перезапустить
+onboarding-stay_aligned-done = Выполнено
 
 ## Home
 
@@ -1373,6 +1381,7 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = В трекере { $trackerName } обнаружена ошибка.
 status_system-StatusUnassignedHMD = VR гарнитура должна быть назначена как трекер головы.
+status_system-StatusPublicNetwork = В настоящее время ваш сетевой профиль отмечен как "Общедоступный". Для корректной работы SlimeVR  не рекомендуется использовать эту настройку. <PublicFixLink>Узнать, как это исправить, здесь.</PublicFixLink>
 
 ## Firmware tool globals
 
