@@ -12,6 +12,7 @@ websocket-connection_lost = Połączenie z serwerem zostało utracone. Próba po
 websocket-connection_lost-desc = Wygląda na to, że serwer SlimeVR przestał działać. Sprawdź dzienniki i uruchom ponownie program
 websocket-timedout = Nie można połączyć się z serwerem
 websocket-timedout-desc = Wygląda na to, że serwer SlimeVR uległ awarii lub upłynął limit czasu. Sprawdź dzienniki i uruchom ponownie program
+websocket-error-close = Wyjdź ze SlimeVR
 websocket-error-logs = Otwórz folder dzienników
 
 ## Update notification
@@ -62,11 +63,22 @@ board_type-CUSTOM = Płytka niestandardowa
 board_type-WROOM32 = WROOM32
 board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = Podstawa T TTGO
+board_type-SLIMEVR = SlimeVR
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
 
 ## Proportions
 
 skeleton_bone-NONE = Brak
 skeleton_bone-HEAD = Przesunięcie głowy
+skeleton_bone-HEAD-desc =
+    To jest odległość od headsetu do środka głowy.
+    Aby ją dostosować, obracaj głową(lewo i prawo) i edytuj wartość do momentu kiedy ruch innych urządzeń będzie minimalny.
 skeleton_bone-NECK = Długość szyi
 skeleton_bone-torso_group = Długość torsu
 skeleton_bone-UPPER_CHEST = Długość górnej części klatki piersiowej
@@ -155,8 +167,12 @@ widget-developer_mode-more_info = Więcej info
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = Rotacja
+widget-imu_visualizer-preview = Podgląd
+widget-imu_visualizer-hide = Ukryj
 widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = Podgląd
+widget-imu_visualizer-acceleration = Akceleracja
+widget-imu_visualizer-position = Pozycja
 
 ## Widget: Skeleton Visualizer
 
@@ -211,6 +227,12 @@ tracker-infos-hardware_identifier = Identyfikator sprzętu
 tracker-infos-imu = Czujnik IMU
 tracker-infos-board_type = Płyta główna
 tracker-infos-network_version = Wersja protokołu
+tracker-infos-magnetometer-status-v1 =
+    { $status ->
+        [DISABLED] Wyłączony
+        [ENABLED] Włączony
+       *[NOT_SUPPORTED] Nieobsługiwane
+    }
 
 ## Tracker settings
 
@@ -230,9 +252,15 @@ tracker-settings-drift_compensation_section-edit = Pozwalaj na kompensację dryf
 tracker-settings-name_section = Nazwa Trackera
 tracker-settings-name_section-description = Daj mu słodką nazwę :)
 tracker-settings-name_section-placeholder = Lewa noga Yexo
+tracker-settings-name_section-label = Nazwa Urządzenia
 tracker-settings-forget = Zapomnij o trackerze
 tracker-settings-forget-description = Usuwa moduł śledzący z serwera SlimeVR i uniemożliwia mu połączenie się z nim do czasu ponownego uruchomienia serwera. Konfiguracja modułu śledzącego nie zostanie utracona.
 tracker-settings-forget-label = Zapomnij o trackerze
+tracker-settings-update-low-battery = Nie można zaktualizować. Bateria poniżej 50%
+tracker-settings-update-up_to_date = Aktualny
+tracker-settings-update-available = Wersja { $versionName } jest już dostępna
+tracker-settings-update = Zaktualizuj teraz
+tracker-settings-update-title = Wersja oprogramowania
 
 ## Tracker part card info
 
