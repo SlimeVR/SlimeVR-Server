@@ -129,7 +129,7 @@ fun main(args: Array<String>) {
 		)
 		vrServer.start()
 
-		NetworkProfileChecker(vrServer)
+		// NetworkProfileChecker(vrServer)
 
 		// Start service for USB HID trackers
 		TrackersHID(
