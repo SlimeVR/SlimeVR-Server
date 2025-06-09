@@ -278,9 +278,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 		// Adjust for T-Pose (down)
-		tposeDownFix = if (((TrackerPosition.isLeftArm(tracker.trackerPosition) || TrackerPosition.isLeftFinger(tracker.trackerPosition)) && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
+		tposeDownFix = if (((tracker.trackerPosition.isLeftArm() || tracker.trackerPosition.isLeftFinger()) && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
 			EulerAngles(EulerOrder.YZX, 0f, 0f, -FastMath.HALF_PI).toQuaternion()
-		} else if (((TrackerPosition.isRightArm(tracker.trackerPosition) || TrackerPosition.isRightFinger(tracker.trackerPosition)) && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
+		} else if (((tracker.trackerPosition.isRightArm() || tracker.trackerPosition.isRightFinger()) && armsResetMode == ArmsResetModes.TPOSE_DOWN)) {
 			EulerAngles(EulerOrder.YZX, 0f, 0f, FastMath.HALF_PI).toQuaternion()
 		} else {
 			Quaternion.IDENTITY
@@ -436,25 +436,25 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		var yawAngle = atan2(rotVector.x, rotVector.z)
 
 		// Adjust for T-Pose and fingers
-		if ((TrackerPosition.isLeftArm(tracker.trackerPosition) && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
-			(TrackerPosition.isRightArm(tracker.trackerPosition) && armsResetMode == ArmsResetModes.TPOSE_UP) ||
-			TrackerPosition.isLeftFinger(tracker.trackerPosition)
+		if ((tracker.trackerPosition.isLeftArm() && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
+			(tracker.trackerPosition.isRightArm() && armsResetMode == ArmsResetModes.TPOSE_UP) ||
+			tracker.trackerPosition.isLeftFinger()
 		) {
 			// Tracker goes right
 			yawAngle -= FastMath.HALF_PI
 		}
-		if ((TrackerPosition.isLeftArm(tracker.trackerPosition) && armsResetMode == ArmsResetModes.TPOSE_UP) ||
-			(TrackerPosition.isRightArm(tracker.trackerPosition) && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
-			TrackerPosition.isRightFinger(tracker.trackerPosition)
+		if ((tracker.trackerPosition.isLeftArm() && armsResetMode == ArmsResetModes.TPOSE_UP) ||
+			(tracker.trackerPosition.isRightArm() && armsResetMode == ArmsResetModes.TPOSE_DOWN) ||
+			tracker.trackerPosition.isRightFinger()
 		) {
 			// Tracker goes left
 			yawAngle += FastMath.HALF_PI
 		}
 
 		// Adjust for forward/back arms and thighs
-		val isLowerArmBack = armsResetMode == ArmsResetModes.BACK && (TrackerPosition.isLeftLowerArm(tracker.trackerPosition) || TrackerPosition.isRightLowerArm(tracker.trackerPosition))
-		val isArmForward = armsResetMode == ArmsResetModes.FORWARD && (TrackerPosition.isLeftArm(tracker.trackerPosition) || TrackerPosition.isRightArm(tracker.trackerPosition))
-		if (!TrackerPosition.isThigh(tracker.trackerPosition) && !isArmForward && !isLowerArmBack) {
+		val isLowerArmBack = armsResetMode == ArmsResetModes.BACK && (tracker.trackerPosition.isLeftLowerArm() || tracker.trackerPosition.isRightLowerArm())
+		val isArmForward = armsResetMode == ArmsResetModes.FORWARD && (tracker.trackerPosition.isLeftArm() || tracker.trackerPosition.isRightArm())
+		if (!tracker.trackerPosition.isThigh() && !isArmForward && !isLowerArmBack) {
 			// Tracker goes back
 			yawAngle -= FastMath.PI
 		}
