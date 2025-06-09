@@ -13,7 +13,7 @@ websocket-connection_lost-desc = Il semble que le serveur SlimeVR ait planté. V
 websocket-timedout = Impossible de se connecter au serveur
 websocket-timedout-desc = Il semble que le serveur SlimeVR ait planté ou que le délai d'attente ait expiré. Vérifiez les logs et redémarrez le programme.
 websocket-error-close = Quitter SlimeVR
-websocket-error-logs = Ouvrez le dossier des logs
+websocket-error-logs = Ouvrir le dossier des logs
 
 ## Update notification
 
@@ -563,6 +563,9 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Augme
 ## Appearance settings
 
 settings-interface-appearance = Apparence
+settings-general-interface-dev_mode = Mode développeur
+settings-general-interface-dev_mode-description = Ce mode peut être utile pour avoir des données approfondies ou pour interagir avec des capteurs connectés à un niveau plus avancé.
+settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-theme = Thème
 settings-general-interface-show-navbar-onboarding = Afficher « { navbar-onboarding } » dans la barre de navigation
 settings-general-interface-show-navbar-onboarding-description = Cela décide si le bouton « { navbar-onboarding } » s'affiche dans la barre de navigation.
@@ -615,12 +618,12 @@ settings-general-interface-discord_presence-message =
        *[other] Utilise { $amount } capteurs
     }
 settings-interface-behavior-error_tracking = Collecte des erreurs via Sentry.io
-settings-interface-behavior-error_tracking-description =
-    Pour procurer la meilleur expérience utilisateur, nous collectons des rapports, des métriques de performance, et des information de système d'exploitation de manière anonyme. Cela nous aide a détecter des bugs et des problème avec SlimeVR. Ces métriques sont collecte via Sentry.io.
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>Consentez-vous à la collecte de données d'erreur anonymisée ?</h1>
     
-    Nous ne collectons pas vos informations personnelles comme votre adresse IP ou vos informations d'identification WIFI. SlimeVR respecte vos informations personnelles !
+    <b>Nous ne collectons pas d'informations personnelles</b> telles que votre adresse IP ou vos identifiants Wi-Fi. SlimeVR accorde une grande importance à votre vie privée !
     
-    Consentez-vous à la collecte anonyme de vos données d'erreurs ?
+    Pour offrir la meilleure expérience utilisateur possible, nous collectons des rapports d'erreurs anonymisés, des mesures de performance et des informations sur le système d'exploitation. Cela nous aide à détecter les bugs et les problèmes liés à SlimeVR. Ces données sont collectées via Sentry.io.
 settings-interface-behavior-error_tracking-label = Envoyer les erreurs aux développeurs
 
 ## Serial settings
@@ -1051,8 +1054,6 @@ onboarding-automatic_mounting-mounting_reset-title = Réinitialisation de l'alig
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Accroupissez-vous dans une pose de "ski" avec les jambes pliées, le haut du corps incliné vers l'avant et les bras pliés.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Appuyez sur le bouton "Réinitialiser l'alignement" et attendez 3 secondes avant que l'alignement des capteurs se calibre.
 onboarding-automatic_mounting-preparation-title = Préparation
-onboarding-automatic_mounting-preparation-step-0 = 1. Tenez-vous debout avec vos bras à vos côtés.
-onboarding-automatic_mounting-preparation-step-1 = 2. Appuyez sur le bouton "Réinitialisation complète" et attendez 3 secondes avant que les capteurs ne se réinitialisent.
 onboarding-automatic_mounting-put_trackers_on-title = Enfilez vos capteurs
 onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alignement, nous allons utiliser les capteurs que vous venez d'attribuer.
 onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
@@ -1061,15 +1062,10 @@ onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
 
 onboarding-manual_proportions-back = Revenir au didacticiel de réinitialisation
 onboarding-manual_proportions-title = Proportions manuelles du corps
-onboarding-manual_proportions-precision = Ajustement de précision
-onboarding-manual_proportions-auto = Calibration automatique
-onboarding-manual_proportions-ratio = Ajuster par groupes de ratios
 onboarding-manual_proportions-fine_tuning_button = Automatiquement ajuster les proportions
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Veuillez connecter un casque VR pour utiliser l'ajustement automatique
 onboarding-manual_proportions-export = Exporter les proportions
 onboarding-manual_proportions-import = Importer les proportions
-onboarding-manual_proportions-import-success = Importé
-onboarding-manual_proportions-import-failed = Échec
 onboarding-manual_proportions-file_type = Fichier des proportions du corps
 
 ## Tracker automatic proportions setup
@@ -1167,6 +1163,13 @@ onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR n'est actu
 onboarding-scaled_proportions-manual_height-height-v2 = Votre hauteur totale est :
 onboarding-scaled_proportions-manual_height-estimated_height = La hauteur estimée de votre casque est de :
 onboarding-scaled_proportions-manual_height-next_step = Continuer et enregistrer
+onboarding-scaled_proportions-manual_height-warning =
+    Vous utilisez actuellement le réglage manuel de la mise à l'échelle des proportions !
+    <b>Ce mode est recommandé uniquement si vous n'utilisez pas de casque VR avec SlimeVR</b>
+    
+    Pour pouvoir utiliser les proportions mises à l’échelle automatiquement, veuillez :
+onboarding-scaled_proportions-manual_height-warning-no_hmd = Connecter un casque VR
+onboarding-scaled_proportions-manual_height-warning-no_controllers = Assurez-vous que vos manettes sont connectées et correctement assignées à vos mains
 
 ## Tracker scaled proportions reset
 
@@ -1174,6 +1177,9 @@ onboarding-scaled_proportions-reset_proportion-title = Réinitialiser les propor
 onboarding-scaled_proportions-reset_proportion-description = Pour définir les proportions de votre corps en fonction de votre taille, vous devez réinitialiser toutes vos proportions. Cela remplacera les proportions que vous avez configurées par une configuration de base.
 onboarding-scaled_proportions-done-title = Ensemble de proportions du corps
 onboarding-scaled_proportions-done-description = Les proportions de votre corps devraient maintenant être configurées à partir de votre taille.
+
+## Stay Aligned setup
+
 
 ## Home
 
@@ -1296,7 +1302,6 @@ firmware_tool-build_step = Création
 firmware_tool-build_step-description = Le micrologiciel se fait créer, veuillez patienter
 firmware_tool-flashing_step = En train de flash
 firmware_tool-flashing_step-description = Vos traceurs se font flash, veuillez suivre les instructions à l'écran
-firmware_tool-flashing_step-warning = Ne débranchez pas ou ne redémarrez pas le capteur pendant le processus d'envoi à moins qu'on ne vous le dise, cela pourrait rendre votre carte inutilisable
 firmware_tool-flashing_step-flash_more = Flash plus de capteurs
 firmware_tool-flashing_step-exit = Quitter
 
@@ -1314,7 +1319,6 @@ firmware_tool-build-ERROR = Impossible de créer le micrologiciel
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = Téléchargement du micrologiciel
-firmware_update-status-NEED_MANUAL_REBOOT = Veuillez redémarrer le capteur
 firmware_update-status-AUTHENTICATING = Authentification avec le MCU
 firmware_update-status-UPLOADING = Envoi du micrologiciel
 firmware_update-status-SYNCING_WITH_MCU = Synchronisation avec le MCU
@@ -1372,8 +1376,8 @@ unknown_device-modal-forget = Ignorer
 ## Error collection consent modal
 
 error_collection_modal-title = Avons nous l'autorisation de collecter les erreurs ?
-error_collection_modal-description =
-    { settings-interface-behavior-error_tracking-description }
+error_collection_modal-description_v2 =
+    { settings-interface-behavior-error_tracking-description_v2 }
     
     Vous pouvez modifier ce paramètre ultérieurement dans la section "Comportement" des paramètres.
 error_collection_modal-confirm = Je suis d'accord
