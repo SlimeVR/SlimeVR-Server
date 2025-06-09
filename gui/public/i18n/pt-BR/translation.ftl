@@ -41,7 +41,7 @@ body_part-RIGHT_UPPER_ARM = Braço superior direito
 body_part-RIGHT_LOWER_ARM = Antebraço direito
 body_part-RIGHT_HAND = Mão Direita
 body_part-RIGHT_UPPER_LEG = Coxa direita
-body_part-RIGHT_LOWER_LEG = Canela direita
+body_part-RIGHT_LOWER_LEG = Tornozelo direito
 body_part-RIGHT_FOOT = Pé direito
 body_part-UPPER_CHEST = Peito Superior
 body_part-CHEST = Peito
@@ -52,7 +52,7 @@ body_part-LEFT_UPPER_ARM = Braço superior esquerdo
 body_part-LEFT_LOWER_ARM = Antebraço esquerdo
 body_part-LEFT_HAND = Mão esquerda
 body_part-LEFT_UPPER_LEG = Coxa esquerda
-body_part-LEFT_LOWER_LEG = Canela esquerda
+body_part-LEFT_LOWER_LEG = Tornozelo esquerdo
 body_part-LEFT_FOOT = Pé esquerdo
 body_part-LEFT_THUMB_METACARPAL = Metacarpo do polegar esquerdo
 body_part-LEFT_THUMB_PROXIMAL = Proximal do polegar esquerdo
@@ -540,6 +540,9 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Aumen
 ## Appearance settings
 
 settings-interface-appearance = Aparência
+settings-general-interface-dev_mode = Modo de desenvolvedor
+settings-general-interface-dev_mode-description = Este modo pode ser útil se precisar de dados específicos ou para interagir com trackers conectados a um nível mais avançado
+settings-general-interface-dev_mode-label = Modo de desenvolvedor
 settings-general-interface-theme = Cor do tema
 settings-general-interface-show-navbar-onboarding = Mostrar "{ navbar-onboarding }" na barra de navegação
 settings-general-interface-show-navbar-onboarding-description = Isso muda se o botão "{ navbar-onboarding }" for exibido na barra de navegação.
@@ -945,18 +948,18 @@ onboarding-assign_trackers-warning-RIGHT_FOOT =
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
     { $unassigned ->
-        [0] Canela esquerda está atribuída, porém a coxa esquerda e peito, quadril ou cintura também precisam ser atribuídos!
-        [1] Canela esquerda está atribuída, porém peito, quadril ou cintura também precisam ser atribuídos!
-        [2] Canela esquerda está atribuída, porém a coxa direita também precisa ser atribuída!
-       *[unknown] Canela esquerda está atribuída, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
+        [2] Tornozelo esquerdo está atribuído, porém a coxa direita também precisa ser atribuída!
+        [1] Tornozelo esquerdo está atribuído, porém peito, quadril ou cintura também precisam ser atribuídos!
+        [0] Tornozelo esquerdo está atribuído, porém a coxa esquerda e peito, quadril ou cintura também precisam ser atribuídos!
+       *[unknown] Tornozelo esquerdo está atribuído, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
     { $unassigned ->
-        [0] Canela direita está atribuída, porém a coxa direita e peito, quadril ou cintura também precisam ser atribuídos!
-        [1] Canela direita está atribuída, porém peito, quadril ou cintura também precisam ser atribuídos!
-        [2] Canela direita está atribuída, porém a coxa direita também precisa ser atribuída!
-       *[unknown] Canela direita está atribuída, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
+        [2] Tornozelo direito está atribuído, porém a coxa direita também precisa ser atribuída!
+        [1] Tornozelo direito está atribuído, porém peito, quadril ou cintura também precisam ser atribuídos!
+        [0] Tornozelo direito está atribuído, porém a coxa direita e peito, quadril ou cintura também precisam ser atribuídos!
+       *[unknown] Tornozelo direito está atribuído, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
@@ -1037,15 +1040,10 @@ onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trac
 
 onboarding-manual_proportions-back = Voltar para o tutorial de reset
 onboarding-manual_proportions-title = Proporções de corpo manuais
-onboarding-manual_proportions-precision = Ajuste de precisão
-onboarding-manual_proportions-auto = Calibragem Automática
-onboarding-manual_proportions-ratio = Ajustar por grupos de proporções
 onboarding-manual_proportions-fine_tuning_button = Melhorar automaticamente as proporções
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor, conecte seu headset VR para utilizar a melhoria automatica
 onboarding-manual_proportions-export = Exportar proporções
 onboarding-manual_proportions-import = Importar proporções
-onboarding-manual_proportions-import-success = Importado
-onboarding-manual_proportions-import-failed = Falhou
 onboarding-manual_proportions-file_type = Arquivo de proporções do corpo
 
 ## Tracker automatic proportions setup
@@ -1270,7 +1268,6 @@ firmware_tool-build_step = Compilando
 firmware_tool-build_step-description = O firmware está sendo compilado, aguarde
 firmware_tool-flashing_step = Atualizando
 firmware_tool-flashing_step-description = Seus trackers estão atualizando, por favor, siga as instruções na tela
-firmware_tool-flashing_step-warning = Não desconecte nem reinicie o tracker durante o processo de upload, a menos que seja solicitado, pois isso pode tornar sua placa inutilizável
 firmware_tool-flashing_step-flash_more = Atualizar mais trackers
 firmware_tool-flashing_step-exit = Sair
 
@@ -1288,7 +1285,6 @@ firmware_tool-build-ERROR = Não foi possível compilar o firmware
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = Baixando o firmware
-firmware_update-status-NEED_MANUAL_REBOOT = Favor reiniciar o tracker
 firmware_update-status-AUTHENTICATING = Autenticando com o mcu
 firmware_update-status-UPLOADING = Fazendo upload do firmware
 firmware_update-status-SYNCING_WITH_MCU = Sincronizando com o mcu

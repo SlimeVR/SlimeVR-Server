@@ -75,7 +75,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
     }
 
     return [
-      ...BONE_MAPPING.keys().map((groupName) => {
+      ...[...BONE_MAPPING.keys()].map((groupName) => {
         const groupBones = BONE_MAPPING.get(groupName);
         if (!groupBones) throw 'invalid state - this value should always exits';
         const total = config.skeletonParts
@@ -101,7 +101,8 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
       }),
       ...config.skeletonParts
         .filter(
-          ({ bone }) => !BONE_MAPPING.values().find((bones) => bones.includes(bone))
+          ({ bone }) =>
+            ![...BONE_MAPPING.values()].find((bones) => bones.includes(bone))
         )
         .map(
           ({ bone, value }) =>

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { DefaultValues, useForm } from 'react-hook-form';
 import {
   ChangeSettingsRequestT,
-  DriftCompensationSettingsT,
   FilteringSettingsT,
   FilteringType,
   LegTweaksSettingsT,
@@ -32,9 +31,15 @@ import {
 } from '@/components/settings/SettingsPageLayout';
 import { HandsWarningModal } from '@/components/settings/HandsWarningModal';
 import { MagnetometerToggleSetting } from './MagnetometerToggleSetting';
-import { DriftCompensationModal } from '@/components/settings/DriftCompensationModal';
+import {
+  defaultStayAlignedSettings,
+  StayAlignedSettings,
+  StayAlignedSettingsForm,
+  serializeStayAlignedSettings,
+  deserializeStayAlignedSettings,
+} from './components/StayAlignedSettings';
 
-interface SettingsForm {
+export type SettingsForm = {
   trackers: {
     waist: boolean;
     chest: boolean;
@@ -51,12 +56,6 @@ interface SettingsForm {
   filtering: {
     type: number;
     amount: number;
-  };
-  driftCompensation: {
-    enabled: boolean;
-    prediction: boolean;
-    amount: number;
-    maxResets: number;
   };
   toggles: {
     extendedSpine: boolean;
@@ -102,7 +101,8 @@ interface SettingsForm {
     saveMountingReset: boolean;
     resetHmdPitch: boolean;
   };
-}
+  stayAligned: StayAlignedSettingsForm;
+};
 
 const defaultValues: SettingsForm = {
   trackers: {
@@ -142,12 +142,6 @@ const defaultValues: SettingsForm = {
     interpKneeAnkle: 0.2,
   },
   filtering: { amount: 0.1, type: FilteringType.NONE },
-  driftCompensation: {
-    enabled: false,
-    prediction: false,
-    amount: 0.1,
-    maxResets: 1,
-  },
   tapDetection: {
     mountingResetEnabled: false,
     yawResetEnabled: false,
@@ -167,6 +161,7 @@ const defaultValues: SettingsForm = {
     saveMountingReset: false,
     resetHmdPitch: false,
   },
+  stayAligned: defaultStayAlignedSettings,
 };
 
 export function GeneralSettings() {
@@ -288,12 +283,7 @@ export function GeneralSettings() {
     filtering.amount = values.filtering.amount;
     settings.filtering = filtering;
 
-    const driftCompensation = new DriftCompensationSettingsT();
-    driftCompensation.enabled = values.driftCompensation.enabled;
-    driftCompensation.prediction = values.driftCompensation.prediction;
-    driftCompensation.amount = values.driftCompensation.amount;
-    driftCompensation.maxResets = values.driftCompensation.maxResets;
-    settings.driftCompensation = driftCompensation;
+    settings.stayAligned = serializeStayAlignedSettings(values.stayAligned);
 
     if (values.resetsSettings) {
       const resetsSettings = new ResetsSettingsT();
@@ -327,10 +317,6 @@ export function GeneralSettings() {
 
     if (settings.filtering) {
       formData.filtering = settings.filtering;
-    }
-
-    if (settings.driftCompensation) {
-      formData.driftCompensation = settings.driftCompensation;
     }
 
     if (settings.steamVrTrackers) {
@@ -416,6 +402,12 @@ export function GeneralSettings() {
       formData.resetsSettings = settings.resetsSettings;
     }
 
+    if (settings.stayAligned) {
+      formData.stayAligned = deserializeStayAlignedSettings(
+        settings.stayAligned
+      );
+    }
+
     reset({ ...getValues(), ...formData });
   });
 
@@ -441,8 +433,6 @@ export function GeneralSettings() {
   //     elem.scrollIntoView({ behavior: 'smooth' });
   //   }
   // }, [state]);
-
-  const [showDriftCompWarning, setShowDriftCompWarning] = useState(false);
 
   return (
     <SettingsPageLayout>
@@ -608,6 +598,7 @@ export function GeneralSettings() {
             </div>
           </>
         </SettingsPagePaneLayout>
+        <StayAlignedSettings values={getValues()} control={control} />
         <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">
           <>
             <Typography variant="main-title">
@@ -679,102 +670,6 @@ export function GeneralSettings() {
                 min={0.1}
                 max={1.0}
                 step={0.1}
-              />
-            </div>
-            <div className="flex flex-col pt-4 pb-4"></div>
-            <Typography bold>
-              {l10n.getString(
-                'settings-general-tracker_mechanics-drift_compensation'
-              )}
-            </Typography>
-            <div className="flex flex-col pt-2 pb-4">
-              {l10n
-                .getString(
-                  'settings-general-tracker_mechanics-drift_compensation-description'
-                )
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </div>
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="driftCompensation.enabled"
-              label={l10n.getString(
-                'settings-general-tracker_mechanics-drift_compensation-enabled-label'
-              )}
-              onClick={() => {
-                if (getValues('driftCompensation.enabled')) {
-                  return;
-                }
-
-                setShowDriftCompWarning(true);
-              }}
-            />
-            <div className="flex flex-col pt-2 pb-4"></div>
-            <Typography bold>
-              {l10n.getString(
-                'settings-general-tracker_mechanics-drift_compensation-prediction'
-              )}
-            </Typography>
-            <div className="flex flex-col pt-2 pb-4">
-              {l10n
-                .getString(
-                  'settings-general-tracker_mechanics-drift_compensation-prediction-description'
-                )
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </div>
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="driftCompensation.prediction"
-              label={l10n.getString(
-                'settings-general-tracker_mechanics-drift_compensation-prediction-label'
-              )}
-            />
-            <DriftCompensationModal
-              accept={() => {
-                setShowDriftCompWarning(false);
-              }}
-              onClose={() => {
-                setShowDriftCompWarning(false);
-                setValue('driftCompensation.enabled', false);
-              }}
-              isOpen={showDriftCompWarning}
-            ></DriftCompensationModal>
-            <div className="flex gap-5 pt-5 md:flex-row flex-col">
-              <NumberSelector
-                control={control}
-                name="driftCompensation.amount"
-                label={l10n.getString(
-                  'settings-general-tracker_mechanics-drift_compensation-amount-label'
-                )}
-                valueLabelFormat={(value) => percentageFormat.format(value)}
-                min={0.1}
-                max={1.0}
-                step={0.1}
-              />
-            </div>
-            <div className="flex gap-5 pt-5 md:flex-row flex-col">
-              <NumberSelector
-                control={control}
-                name="driftCompensation.maxResets"
-                label={l10n.getString(
-                  'settings-general-tracker_mechanics-drift_compensation-max_resets-label'
-                )}
-                min={1}
-                max={25}
-                step={1}
               />
             </div>
             <div className="flex gap-5 pt-5 md:flex-row flex-col">

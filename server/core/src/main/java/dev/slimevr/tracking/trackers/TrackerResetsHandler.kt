@@ -130,7 +130,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Reads/loads drift compensation settings from given config
 	 */
 	fun readDriftCompensationConfig(config: DriftCompensationConfig) {
-		compensateDrift = config.enabled
+		compensateDrift = false
 		driftPrediction = config.prediction
 		driftAmount = config.amount
 		val maxResets = config.maxResets
@@ -341,6 +341,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		calculateDrift(oldRot)
 
 		postProcessResetFull(reference)
+
+		// Reset Stay Aligned
+		tracker.stayAligned.reset()
 	}
 
 	private fun postProcessResetFull(reference: Quaternion) {
@@ -397,6 +400,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 		tracker.resetFilteringQuats(reference)
+
+		// Reset Stay Aligned
+		tracker.stayAligned.reset()
 	}
 
 	/**

@@ -407,7 +407,11 @@ public class RPCSettingsBuilder {
 						fbb,
 						server.configManager.getVrConfig().getResetsConfig()
 					),
-				0
+				RPCSettingsBuilderKotlin.INSTANCE
+					.createStayAlignedSettings(
+						fbb,
+						server.configManager.getVrConfig().getStayAlignedConfig()
+					)
 			);
 	}
 }

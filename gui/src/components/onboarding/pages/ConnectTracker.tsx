@@ -26,6 +26,7 @@ import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { useStatusContext } from '@/hooks/status-system';
 import { A } from '@/components/commons/A';
+import { CONNECT_TRACKER } from '@/utils/tauri';
 
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
@@ -198,7 +199,7 @@ export function ConnectTrackersPage() {
             ></Typography>
           </Localized>
           <video
-            src="/videos/turn-on-tracker.webm"
+            src={CONNECT_TRACKER}
             loop
             autoPlay
             className="w-full aspect-video rounded-md mt-2"
@@ -249,7 +250,7 @@ export function ConnectTrackersPage() {
                 id={`status_system-${StatusData[status.dataType]}`}
                 elems={{
                   PublicFixLink: (
-                    <A href="https://docs.slimevr.dev/common-issues.html#the-trackers-are-connected-to-my-wi-fi-but-dont-turn-up-on-slimevr"></A>
+                    <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
                   ),
                 }}
               >

@@ -1,22 +1,14 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { BVHButton } from './BVHButton';
-import { ClearDriftCompensationButton } from './ClearDriftCompensationButton';
 import { TrackingPauseButton } from './TrackingPauseButton';
 import { ResetButton } from './home/ResetButton';
 import { OverlayWidget } from './widgets/OverlayWidget';
 import { TipBox } from './commons/TipBox';
 import { DeveloperModeWidget } from './widgets/DeveloperModeWidget';
 import { useConfig } from '@/hooks/config';
-import {
-  ResetType,
-  RpcMessage,
-  SettingsRequestT,
-  SettingsResponseT,
-  StatusData,
-} from 'solarxr-protocol';
-import { useEffect, useMemo, useState } from 'react';
+import { ResetType, StatusData } from 'solarxr-protocol';
+import { useMemo } from 'react';
 import { parseStatusToLocale, useStatusContext } from '@/hooks/status-system';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { ClearMountingButton } from './ClearMountingButton';
 import { ToggleableSkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
 import { useAtomValue } from 'jotai';
@@ -41,7 +33,7 @@ function UnprioritizedStatuses() {
           key={status.id}
           elems={{
             PublicFixLink: (
-              <A href="https://docs.slimevr.dev/common-issues.html#the-trackers-are-connected-to-my-wi-fi-but-dont-turn-up-on-slimevr"></A>
+              <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
             ),
           }}
         >
@@ -56,17 +48,6 @@ function UnprioritizedStatuses() {
 
 export function WidgetsComponent() {
   const { config } = useConfig();
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const [driftCompensationEnabled, setDriftCompensationEnabled] =
-    useState(false);
-  useEffect(() => {
-    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
-  }, []);
-
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    if (settings.driftCompensation != null)
-      setDriftCompensationEnabled(settings.driftCompensation.enabled);
-  });
 
   return (
     <>
@@ -87,9 +68,6 @@ export function WidgetsComponent() {
         ></ResetButton>
         <BVHButton></BVHButton>
         <TrackingPauseButton></TrackingPauseButton>
-        <ClearDriftCompensationButton
-          disabled={!driftCompensationEnabled}
-        ></ClearDriftCompensationButton>
       </div>
       <div className="w-full">
         <OverlayWidget></OverlayWidget>
