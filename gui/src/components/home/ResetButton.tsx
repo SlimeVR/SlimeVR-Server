@@ -90,13 +90,13 @@ export function ResetButton({
   const reset = () => {
     const req = new ResetRequestT();
     req.resetType = type;
-    if (bodyPartsToReset == 'default') {
+    if (bodyPartsToReset === 'default') {
       // Default (server handles it)
       req.bodyParts = [];
-    } else if (bodyPartsToReset == 'feet') {
+    } else if (bodyPartsToReset === 'feet') {
       // Feet
       req.bodyParts = feetBodyParts;
-    } else if (bodyPartsToReset == 'fingers') {
+    } else if (bodyPartsToReset === 'fingers') {
       // Fingers
       req.bodyParts = fingerBodyParts;
     }
@@ -124,17 +124,17 @@ export function ResetButton({
       case ResetType.Yaw:
         return l10n.getString(
           'reset-yaw' +
-            (bodyPartsToReset != 'default' ? '-' + bodyPartsToReset : '')
+            (bodyPartsToReset !== 'default' ? '-' + bodyPartsToReset : '')
         );
       case ResetType.Mounting:
         return l10n.getString(
           'reset-mounting' +
-            (bodyPartsToReset != 'default' ? '-' + bodyPartsToReset : '')
+            (bodyPartsToReset !== 'default' ? '-' + bodyPartsToReset : '')
         );
       case ResetType.Full:
         return l10n.getString(
           'reset-full' +
-            (bodyPartsToReset != 'default' ? '-' + bodyPartsToReset : '')
+            (bodyPartsToReset !== 'default' ? '-' + bodyPartsToReset : '')
         );
     }
   }, [type, bodyPartsToReset]);
