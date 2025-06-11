@@ -557,6 +557,7 @@ settings-stay_aligned-relaxed_poses-sitting = Adjust trackers while sitting in a
 settings-stay_aligned-relaxed_poses-flat = Adjust trackers while sitting on the floor, or lying on your back
 settings-stay_aligned-relaxed_poses-save_pose = Save pose
 settings-stay_aligned-relaxed_poses-reset_pose = Reset pose
+settings-stay_aligned-relaxed_poses-close = Close
 settings-stay_aligned-debug-label = Debugging
 settings-stay_aligned-debug-description = Please include your settings when reporting problems about Stay Aligned.
 settings-stay_aligned-debug-copy-label = Copy settings to clipboard
