@@ -342,10 +342,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		calculateDrift(oldRot)
 
-		postProcessResetFull(reference)
-
-		// Reset Stay Aligned
+		// Reset Stay Aligned (before resetting filtering, which depends on the
+		// tracker's rotation)
 		tracker.stayAligned.reset()
+
+		postProcessResetFull(reference)
 	}
 
 	private fun postProcessResetFull(reference: Quaternion) {
@@ -401,10 +402,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			this.tracker.lastResetStatus = 0u
 		}
 
-		tracker.resetFilteringQuats(reference)
-
-		// Reset Stay Aligned
+		// Reset Stay Aligned (before resetting filtering, which depends on the
+		// tracker's rotation)
 		tracker.stayAligned.reset()
+
+		tracker.resetFilteringQuats(reference)
 	}
 
 	/**
