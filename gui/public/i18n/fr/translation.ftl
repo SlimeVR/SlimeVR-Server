@@ -1330,12 +1330,22 @@ onboarding-stay_aligned-verify_mounting-step-3 = 3. Si vos capteurs ne sont pas 
 onboarding-stay_aligned-verify_mounting-redo_mounting = Refaire la calibration de l'alignement
 onboarding-stay_aligned-preparation-title = Préparation
 onboarding-stay_aligned-preparation-tip = Assurez-vous de vous tenir droit. Vous devez regarder vers l'avant et vos bras doivent être le long de votre corps.
-onboarding-stay_aligned-relaxed_poses-standing-title = Posture debout détendue
+onboarding-stay_aligned-relaxed_poses-standing-title = Posture debout détendu
 onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Tenez-vous dans une position confortable. Détendez-vous !
 onboarding-stay_aligned-relaxed_poses-standing-step-2 = 3. Appuyez sur le bouton « Enregistrer la posture ».
+onboarding-stay_aligned-relaxed_poses-sitting-title = Posture assis détendu dans une chaise
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Asseyez-vous dans une position confortable. Détendez-vous !
+onboarding-stay_aligned-relaxed_poses-sitting-step-2 = 3. Appuyez sur le bouton « Enregistrer la posture ».
+onboarding-stay_aligned-relaxed_poses-flat-title = Posture assis détendu sur le sol
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Asseyez-vous sur le sol, les jambes devant. Détendez-vous !
+onboarding-stay_aligned-relaxed_poses-flat-step-2 = 3. Appuyez sur le bouton « Enregistrer la posture ».
+onboarding-stay_aligned-relaxed_poses-skip_step = Sauter
+onboarding-stay_aligned-done-title = Garder Aligné activé !
+onboarding-stay_aligned-done-description = La configuration de Garder Aligné est terminée !
+onboarding-stay_aligned-done-description-2 = La configuration est terminée ! Vous pouvez recommencer le processus si vous souhaitez recalibrer les postures.
 onboarding-stay_aligned-previous_step = Précédent
 onboarding-stay_aligned-next_step = Prochain
-onboarding-stay_aligned-restart = Redémarrer
+onboarding-stay_aligned-restart = Recommencer
 onboarding-stay_aligned-done = Fait
 
 ## Home
