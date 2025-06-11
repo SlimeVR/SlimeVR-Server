@@ -154,12 +154,40 @@ skeleton_bone-HIP_OFFSET-desc =
     Ceci peut être ajusté pour déplacer votre capteur virtuel de hanche vers le haut ou vers le bas afin d’aider
     avec la calibration dans certains jeux ou applications qui pourraient s’attendre à ce qu’il soit sur votre taille.
 skeleton_bone-HIPS_WIDTH = Largeur des hanches
+skeleton_bone-HIPS_WIDTH-desc =
+    Ceci est la distance entre vos deux jambes.
+    Pour l’ajuster, effectuez une réinitialisation complète avec vos jambes droites et modifiez-la jusqu’à ce que
+    Vos jambes virtuelles soient au même niveau horizontalement que vos vraies jambes.
 skeleton_bone-leg_group = Longueur des jambes
+skeleton_bone-leg_group-desc =
+    Ceci est la distance entre vos hanches et vos pieds.
+    Pour l’ajuster, ajustez correctement la longueur du torse et modifiez-la
+    jusqu’à ce que vos pieds virtuels soient au même niveau que vos pieds réels.
 skeleton_bone-UPPER_LEG = Longueur des jambes supérieures
+skeleton_bone-UPPER_LEG-desc =
+    Ceci est la distance entre vos hanches et vos genoux.
+    Pour l’ajuster, ajustez correctement la longueur des jambes et modifiez-la
+    jusqu’à ce que vos genoux virtuels soient au même niveau que vos genoux réels.
 skeleton_bone-LOWER_LEG = Longueur des jambes inférieures
+skeleton_bone-LOWER_LEG-desc =
+    Ceci est la distance entre vos genoux et vos chevilles.
+    Pour l’ajuster, ajustez correctement la longueur des jambes et modifiez-la
+    jusqu’à ce que vos genoux virtuels soient au même niveau que vos genoux réels.
 skeleton_bone-FOOT_LENGTH = Longueur des pieds
+skeleton_bone-FOOT_LENGTH-desc =
+    Ceci est la distance entre vos chevilles et vos orteils.
+    Pour l’ajuster, allez sur la pointe des pieds et modifiez-la jusqu’à ce que vos pieds virtuels restent en place.
 skeleton_bone-FOOT_SHIFT = Décalage des pieds
+skeleton_bone-FOOT_SHIFT-desc =
+    Ceci est la distance horizontale entre votre genou et votre cheville.
+    Il tient compte du fait que le bas de vos jambes recule lorsque vous vous tenez droit.
+    Pour l’ajuster, réglez la longueur des pieds à 0, effectuez une réinitialisation complète et modifiez-la jusqu’à ce que vos
+    pieds virtuels s’alignent avec le milieu de vos chevilles.
 skeleton_bone-SKELETON_OFFSET = Décalage du squelette
+skeleton_bone-SKELETON_OFFSET-desc =
+    Ceci peut être ajusté pour décaler tous vos capteurs vers l’avant ou vers l’arrière.
+    Cela peut être utilisé pour aider à la calibration dans certains jeux ou applications
+    qui pourraient s’attendre à ce que vos capteurs soient plus vers l'avant.
 skeleton_bone-SHOULDERS_DISTANCE = Distance des épaules
 skeleton_bone-SHOULDERS_WIDTH = Largeur des épaules
 skeleton_bone-arm_group = Longueur des bras
@@ -247,6 +275,7 @@ widget-imu_visualizer-rotation_raw = Brute
 widget-imu_visualizer-rotation_preview = Aperçu
 widget-imu_visualizer-acceleration = Accélération
 widget-imu_visualizer-position = Position
+widget-imu_visualizer-stay_aligned = Garder Aligné
 
 ## Widget: Skeleton Visualizer
 
@@ -274,6 +303,7 @@ tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accél. X/Y/Z
 tracker-table-column-rotation = Rotation X/Y/Z
 tracker-table-column-position = Position X/Y/Z
+tracker-table-column-stay_aligned = Garder Aligné
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -411,6 +441,7 @@ mounting_selection_menu-close = Fermer
 settings-sidebar-title = Réglages
 settings-sidebar-general = Général
 settings-sidebar-tracker_mechanics = Paramètres des capteurs
+settings-sidebar-stay_aligned = Garder Aligné
 settings-sidebar-fk_settings = Paramètres de la capture
 settings-sidebar-gesture_control = Contrôle gestuel
 settings-sidebar-interface = Interface
@@ -504,8 +535,24 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Utilise le magnétomètre sur tous les capteurs dotés d'un micrologiciel compatible, réduisant ainsi la dérive dans des environnements magnétiques stables.
     Peut être désactivé par capteur dans les paramètres du capteur. <b>Ne fermez aucun des capteurs en changeant cette option !</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Utiliser le magnétomètre sur les capteurs
+settings-stay_aligned = Garder Aligné
+settings-stay_aligned-description = Garder Aligné réduit la dérive en ajustant progressivement vos capteurs pour qu’ils correspondent à vos poses détendues.
+settings-stay_aligned-setup-label = Configurer Garder Aligné
+settings-stay_aligned-setup-description = Vous devez terminer « Configurer Garder Aligné » pour activer Garder Aligné.
+settings-stay_aligned-warnings-drift_compensation = ⚠ Veuillez désactiver la compensation de la dérive ! La compensation de la dérive entrera en conflit avec Garder Aligné.
 settings-stay_aligned-enabled-label = Ajuster les capteurs
+settings-stay_aligned-hide_yaw_correction-label = Masquer l'ajustement (pour comparer sans Garder Aligné)
 settings-stay_aligned-general-label = Général
+settings-stay_aligned-relaxed_poses-label = Poses détendues
+settings-stay_aligned-relaxed_poses-description = Garder Aligné utilise vos poses détendues pour garder vos capteurs alignés. Utilisez « Configurer Garder Aligné » pour mettre à jour ces poses.
+settings-stay_aligned-relaxed_poses-standing = Ajuster les capteurs en position debout
+settings-stay_aligned-relaxed_poses-sitting = Ajuster les capteurs en position assise sur une chaise
+settings-stay_aligned-relaxed_poses-flat = Ajuster les capteurs en position assise sur le sol ou allongée sur le dos
+settings-stay_aligned-relaxed_poses-save_pose = Enregistrer la pose
+settings-stay_aligned-relaxed_poses-reset_pose = Réinitialiser la pose
+settings-stay_aligned-debug-label = Débogage
+settings-stay_aligned-debug-description = Veuillez inclure vos paramètres lorsque vous signalez des problèmes concernant Garder Aligné.
+settings-stay_aligned-debug-copy-label = Copier les paramètres dans le presse-papiers
 
 ## FK/Tracking settings
 
@@ -905,6 +952,11 @@ onboarding-connect_tracker-connection_status-looking_for_server = Recherche du s
 onboarding-connect_tracker-connection_status-connection_error = Impossible de se connecter au réseau
 onboarding-connect_tracker-connection_status-could_not_find_server = Impossible de trouver le serveur
 onboarding-connect_tracker-connection_status-done = Connecté au serveur
+onboarding-connect_tracker-connection_status-no_serial_log = Erreur lors de l'obtention des journaux du capteur
+onboarding-connect_tracker-connection_status-no_serial_device_found = Aucun capteur trouvé par USB
+onboarding-connect_serial-error-modal-no_serial_log = Le capteur est-il allumé ?
+onboarding-connect_serial-error-modal-no_serial_log-desc = Assurez-vous que le capteur est allumé et connecté à votre ordinateur
+onboarding-connect_serial-error-modal-no_serial_device_found = Aucun capteur détecté
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -1103,6 +1155,11 @@ onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Veuillez con
 onboarding-manual_proportions-export = Exporter les proportions
 onboarding-manual_proportions-import = Importer les proportions
 onboarding-manual_proportions-file_type = Fichier des proportions du corps
+onboarding-manual_proportions-normal_increment = Incrément normal
+onboarding-manual_proportions-precise_increment = Incrément précis
+onboarding-manual_proportions-grouped_proportions = Proportions groupées
+onboarding-manual_proportions-all_proportions = Toutes les proportions
+onboarding-manual_proportions-estimated_height = Taille estimée de l'utilisateur
 
 ## Tracker automatic proportions setup
 
@@ -1216,6 +1273,13 @@ onboarding-scaled_proportions-done-description = Les proportions de votre corps 
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-title = Garder Aligné
+onboarding-stay_aligned-description = Configurer Garder Aligné pour garder vos capteurs alignés.
+onboarding-stay_aligned-put_trackers_on-title = Mettez vos capteurs
+onboarding-stay_aligned-previous_step = Précédent
+onboarding-stay_aligned-next_step = Prochain
+onboarding-stay_aligned-restart = Redémarrer
+onboarding-stay_aligned-done = Fait
 
 ## Home
 
@@ -1240,6 +1304,7 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = Le capteur { $trackerName } a une erreur.
 status_system-StatusUnassignedHMD = Le casque VR devrait être attribué en tant que capteur de la tête.
+status_system-StatusPublicNetwork = Votre profil réseau est actuellement défini comme étant public. Ce n’est pas recommandé pour le fonctionnement correct de SlimeVR. <PublicFixLink>Voyez comment y remédier ici.</PublicFixLink>
 
 ## Firmware tool globals
 
@@ -1338,6 +1403,7 @@ firmware_tool-build_step = Création
 firmware_tool-build_step-description = Le micrologiciel se fait créer, veuillez patienter
 firmware_tool-flashing_step = En train de flash
 firmware_tool-flashing_step-description = Vos traceurs se font flash, veuillez suivre les instructions à l'écran
+firmware_tool-flashing_step-warning-v2 = Ne débranchez pas ou n'éteignez pas le capteur pendant le processus d'envoi à moins qu'on ne vous le dise, cela pourrait rendre votre carte inutilisable
 firmware_tool-flashing_step-flash_more = Flash plus de capteurs
 firmware_tool-flashing_step-exit = Quitter
 
@@ -1355,6 +1421,7 @@ firmware_tool-build-ERROR = Impossible de créer le micrologiciel
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = Téléchargement du micrologiciel
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Veuillez éteindre et rallumer votre capteur
 firmware_update-status-AUTHENTICATING = Authentification avec le MCU
 firmware_update-status-UPLOADING = Envoi du micrologiciel
 firmware_update-status-SYNCING_WITH_MCU = Synchronisation avec le MCU
@@ -1408,9 +1475,15 @@ unknown_device-modal-description =
     Voulez-vous le connecter à SlimeVR ?
 unknown_device-modal-confirm = Oui!
 unknown_device-modal-forget = Ignorer
+# VRChat config warnings
+vrc_config-page-title = Avertissements de configuration VRChat
+vrc_config-page-desc = Cette page montre l’état de vos paramètres VRChat et montre quels paramètres sont incompatibles avec SlimeVR. Il est fortement recommandé de corriger tous les avertissements qui s’affichent ici pour la meilleure expérience utilisateur avec SlimeVR.
 vrc_config-page-help = Vous ne trouvez pas les paramètres ?
 vrc_config-page-help-desc = Consultez notre <a>documentation à ce sujet !</a>
-vrc_config-page-big_menu = Suivi et CI (gros menu)
+vrc_config-page-big_menu = Suivi et CI (menu principal)
+vrc_config-page-big_menu-desc = Paramètres liés au suivi dans le menu principal
+vrc_config-page-wrist_menu = Suivi et CI (menu rapide)
+vrc_config-page-wrist_menu-desc = Paramètres liés au suivi dans le petit menu des paramètres (menu rapide)
 vrc_config-on = Activé
 vrc_config-off = Désactivé
 vrc_config-invalid = Vous avez des paramètres VRChat mal configurés !
@@ -1421,8 +1494,15 @@ vrc_config-current_value = Valeur actuelle
 vrc_config-mute = Ignorer l'avertissement
 vrc_config-mute-btn = Ignorer
 vrc_config-unmute-btn = Ne plus ignorer
+vrc_config-tracker_model = Apparence des traqueurs du suivi du corps
+vrc_config-calibration_range = Plage de calibration
+vrc_config-calibration_visuals = Afficher les visuels de calibration
 vrc_config-spine_mode-UNKNOWN = Inconnu
 vrc_config-tracker_model-UNKNOWN = Inconnu
+vrc_config-tracker_model-AXIS = Axe
+vrc_config-tracker_model-BOX = Cube
+vrc_config-tracker_model-SPHERE = Sphère
+vrc_config-tracker_model-SYSTEM = Système
 vrc_config-avatar_measurement_type-UNKNOWN = Inconnu
 
 ## Error collection consent modal
