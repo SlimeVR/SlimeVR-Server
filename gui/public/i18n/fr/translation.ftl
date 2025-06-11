@@ -721,8 +721,6 @@ settings-osc-vrchat-description-v1 =
     Modifier les paramètres spécifiques à la norme « OSC Trackers » utilisée pour l'envoi
     des données de suivi vers des applications sans SteamVR (par exemple, sur Quest).
     Assurez-vous d'activer le protocole OSC dans VRChat via le menu d'action (rond) sous OSC > Enabled.
-    Pour permettre de recevoir les données de suivi du casque VR et des manettes à partir de VRChat,
-    allez dans le menu principal sous Tracking & IK > Allow Sending Head and Wrist VR Tracking OSC Data.
 settings-osc-vrchat-enable = Activer
 settings-osc-vrchat-enable-description = Activer/désactiver l'envoi et la réception de données.
 settings-osc-vrchat-enable-label = Activer
@@ -731,7 +729,7 @@ settings-osc-vrchat-oscqueryEnabled-description =
     OSCQuery détecte automatiquement les instances VRChat en cours d'exécution et leur envoie des données.
     Il peut également se faire détecter afin de recevoir les données du casque et des manettes VR.
     Pour permettre de recevoir les données du casque et des manettes de VRChat, allez dans les paramètres de votre menu principal
-    sous « Tracking & IK » et activez « Allow Sending Head and Wrist VR Tracking OSC Data ».
+    sous « Suivi et CI » et activez « Autoriser l'envoi de données OSC de suivi en VR pour la tête et les poignets ».
 settings-osc-vrchat-oscqueryEnabled-label = Activer OSCQuery
 settings-osc-vrchat-network = Ports réseau
 settings-osc-vrchat-network-description-v1 = Définissez les ports d'écoute et d'envoi des données. Peut être laissé intact pour VRChat.
@@ -1410,6 +1408,9 @@ unknown_device-modal-description =
     Voulez-vous le connecter à SlimeVR ?
 unknown_device-modal-confirm = Oui!
 unknown_device-modal-forget = Ignorer
+vrc_config-page-help = Vous ne trouvez pas les paramètres ?
+vrc_config-page-help-desc = Consultez notre <a>documentation à ce sujet !</a>
+vrc_config-page-big_menu = Suivi et CI (gros menu)
 vrc_config-on = Activé
 vrc_config-off = Désactivé
 vrc_config-invalid = Vous avez des paramètres VRChat mal configurés !
@@ -1422,6 +1423,7 @@ vrc_config-mute-btn = Ignorer
 vrc_config-unmute-btn = Ne plus ignorer
 vrc_config-spine_mode-UNKNOWN = Inconnu
 vrc_config-tracker_model-UNKNOWN = Inconnu
+vrc_config-avatar_measurement_type-UNKNOWN = Inconnu
 
 ## Error collection consent modal
 
