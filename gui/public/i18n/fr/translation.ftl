@@ -189,13 +189,47 @@ skeleton_bone-SKELETON_OFFSET-desc =
     Cela peut être utilisé pour aider à la calibration dans certains jeux ou applications
     qui pourraient s’attendre à ce que vos capteurs soient plus vers l'avant.
 skeleton_bone-SHOULDERS_DISTANCE = Distance des épaules
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    Ceci est la distance verticale entre la base de votre cou et vos épaules.
+    Pour l’ajuster, réglez la longueur des bras à 0 et modifiez-la jusqu’à ce que vos capteurs de coude virtuels
+    soient alignés verticalement avec vos vraies épaules.
 skeleton_bone-SHOULDERS_WIDTH = Largeur des épaules
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    Ceci est la distance horizontale entre la base de votre cou et vos épaules.
+    Pour l’ajuster, réglez la longueur des bras à 0 et modifiez-la jusqu’à ce que vos capteurs de coude virtuels
+    soient alignés horizontalement avec vos vraies épaules.
 skeleton_bone-arm_group = Longueur des bras
+skeleton_bone-arm_group-desc =
+    Ceci est la distance entre vos épaules et vos poignets.
+    Pour l’ajuster, ajustez correctement la distance des épaules, réglez la distance Y des mains
+    à 0 et modifiez-la jusqu’à ce que vos capteurs de main soient alignés avec vos poignets.
 skeleton_bone-UPPER_ARM = Longueur des bras supérieurs
+skeleton_bone-UPPER_ARM-desc =
+    Ceci est la distance entre vos épaules et vos coudes.
+    Pour l’ajuster, ajustez correctement la longueur des bras et modifiez-la jusqu’à ce que
+    vos capteurs de coude soient alignés avec vos vrais coudes.
 skeleton_bone-LOWER_ARM = Longueur des avant-bras
+skeleton_bone-LOWER_ARM-desc =
+    Ceci est la distance entre vos coudes et vos poignets.
+    Pour l’ajuster, ajustez correctement la longueur des bras et modifiez-la jusqu’à ce que
+    vos capteurs de coude soient alignés avec vos vrais coudes.
 skeleton_bone-HAND_Y = Distance Y des mains
+skeleton_bone-HAND_Y-desc =
+    Ceci est la distance verticale entre vos poignets et le milieu de vos main.
+    Pour l’ajuster pour la capture de mouvement, ajustez correctement la longueur des bras et modifiez-la jusqu’à ce que votre
+    capteurs de main soient alignés verticalement avec le milieu de vos mains.
+    Pour l’ajuster pour le suivi des coudes à partir de vos manettes, réglez la longueur des bras à 0 et
+    modifiez-la jusqu’à ce que vos capteurs de coude soient alignés verticalement avec vos poignets.
 skeleton_bone-HAND_Z = Distance Z des mains
+skeleton_bone-HAND_Z-desc =
+    Ceci est la distance horizontale entre vos poignets et le milieu de votre main.
+    Pour l’ajuster pour la capture de mouvement, réglez-la à 0.
+    Pour l’ajuster pour le suivi du coude à partir de vos manettes, réglez la longueur des bras à 0 et
+    modifiez-la jusqu’à ce que vos capteurs de coude soient alignés horizontalement avec vos poignets.
 skeleton_bone-ELBOW_OFFSET = Décalage des coudes
+skeleton_bone-ELBOW_OFFSET-desc =
+    Ceci peut être ajusté pour déplacer vos capteurs de coude virtuels vers le haut ou vers le bas afin d’aider
+    dans le cas où VRChat lie accidentellement un capteur de coude à votre poitrine poitrine.
 
 ## Tracker reset buttons
 
@@ -536,20 +570,20 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Peut être désactivé par capteur dans les paramètres du capteur. <b>Ne fermez aucun des capteurs en changeant cette option !</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Utiliser le magnétomètre sur les capteurs
 settings-stay_aligned = Garder Aligné
-settings-stay_aligned-description = Garder Aligné réduit la dérive en ajustant progressivement vos capteurs pour qu’ils correspondent à vos poses détendues.
+settings-stay_aligned-description = Garder Aligné réduit la dérive en ajustant progressivement vos capteurs pour qu’ils correspondent à vos postures détendues.
 settings-stay_aligned-setup-label = Configurer Garder Aligné
 settings-stay_aligned-setup-description = Vous devez terminer « Configurer Garder Aligné » pour activer Garder Aligné.
 settings-stay_aligned-warnings-drift_compensation = ⚠ Veuillez désactiver la compensation de la dérive ! La compensation de la dérive entrera en conflit avec Garder Aligné.
 settings-stay_aligned-enabled-label = Ajuster les capteurs
 settings-stay_aligned-hide_yaw_correction-label = Masquer l'ajustement (pour comparer sans Garder Aligné)
 settings-stay_aligned-general-label = Général
-settings-stay_aligned-relaxed_poses-label = Poses détendues
-settings-stay_aligned-relaxed_poses-description = Garder Aligné utilise vos poses détendues pour garder vos capteurs alignés. Utilisez « Configurer Garder Aligné » pour mettre à jour ces poses.
+settings-stay_aligned-relaxed_poses-label = Postures détendues
+settings-stay_aligned-relaxed_poses-description = Garder Aligné utilise vos postures détendues pour garder vos capteurs alignés. Utilisez « Configurer Garder Aligné » pour mettre à jour ces poses.
 settings-stay_aligned-relaxed_poses-standing = Ajuster les capteurs en position debout
 settings-stay_aligned-relaxed_poses-sitting = Ajuster les capteurs en position assise sur une chaise
 settings-stay_aligned-relaxed_poses-flat = Ajuster les capteurs en position assise sur le sol ou allongée sur le dos
-settings-stay_aligned-relaxed_poses-save_pose = Enregistrer la pose
-settings-stay_aligned-relaxed_poses-reset_pose = Réinitialiser la pose
+settings-stay_aligned-relaxed_poses-save_pose = Enregistrer la posture
+settings-stay_aligned-relaxed_poses-reset_pose = Réinitialiser la posture
 settings-stay_aligned-debug-label = Débogage
 settings-stay_aligned-debug-description = Veuillez inclure vos paramètres lorsque vous signalez des problèmes concernant Garder Aligné.
 settings-stay_aligned-debug-copy-label = Copier les paramètres dans le presse-papiers
@@ -957,6 +991,12 @@ onboarding-connect_tracker-connection_status-no_serial_device_found = Aucun capt
 onboarding-connect_serial-error-modal-no_serial_log = Le capteur est-il allumé ?
 onboarding-connect_serial-error-modal-no_serial_log-desc = Assurez-vous que le capteur est allumé et connecté à votre ordinateur
 onboarding-connect_serial-error-modal-no_serial_device_found = Aucun capteur détecté
+onboarding-connect_serial-error-modal-no_serial_device_found-desc =
+    Veuillez connecter un capteur avec le câble USB fourni à votre ordinateur et l'allumer.
+    Si cela ne fonctionne pas :
+      - Essayez avec un autre câble USB
+      - Essayez avec un autre port USB
+      - Essayez de réinstaller le serveur SlimeVR et cochez « USB Drivers » dans la section des composants
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -1142,6 +1182,9 @@ onboarding-automatic_mounting-mounting_reset-title = Réinitialisation de l'alig
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Accroupissez-vous dans une pose de "ski" avec les jambes pliées, le haut du corps incliné vers l'avant et les bras pliés.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Appuyez sur le bouton "Réinitialiser l'alignement" et attendez 3 secondes avant que l'alignement des capteurs se calibre.
 onboarding-automatic_mounting-preparation-title = Préparation
+onboarding-automatic_mounting-preparation-v2-step-0 = 1. Appuyez sur le bouton « Réinitialisation complète ».
+onboarding-automatic_mounting-preparation-v2-step-1 = 2. Tenez-vous droit debout, les bras le long du corps. Assurez-vous de regarder vers l’avant.
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. Maintenez la position jusqu'à la fin du chronomètre de 3 secondes.
 onboarding-automatic_mounting-put_trackers_on-title = Enfilez vos capteurs
 onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alignement, nous allons utiliser les capteurs que vous venez d'attribuer.
 onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
@@ -1276,6 +1319,20 @@ onboarding-scaled_proportions-done-description = Les proportions de votre corps 
 onboarding-stay_aligned-title = Garder Aligné
 onboarding-stay_aligned-description = Configurer Garder Aligné pour garder vos capteurs alignés.
 onboarding-stay_aligned-put_trackers_on-title = Mettez vos capteurs
+onboarding-stay_aligned-put_trackers_on-description = Pour enregistrer vos postures de repos, nous utiliserons les capteurs que vous venez d’attribuer. Enfilez tous vos capteurs. Vous pouvez voir lesquels sont lesquels dans la figure de droite.
+onboarding-stay_aligned-put_trackers_on-trackers_warning = Vous avez actuellement moins de 5 capteurs connectés et attribués ! Il s’agit du nombre minimum de capteurs requis pour que Garder Aligné fonctionne correctement.
+onboarding-stay_aligned-put_trackers_on-next = J'ai tous mes capteurs sur moi
+onboarding-stay_aligned-verify_mounting-title = Vérifiez votre alignement
+onboarding-stay_aligned-verify_mounting-step-0 = Garder Aligné nécessite un bon alignement. Sinon, vous n'aurez pas une bonne expérience avec Garder Aligné.
+onboarding-stay_aligned-verify_mounting-step-1 = 1. Déplacez-vous debout.
+onboarding-stay_aligned-verify_mounting-step-2 = 2. Asseyez-vous et bougez vos jambes et vos pieds.
+onboarding-stay_aligned-verify_mounting-step-3 = 3. Si vos capteurs ne sont pas au bons endroits, appuyez sur « Refaire la calibration de l'alignement »
+onboarding-stay_aligned-verify_mounting-redo_mounting = Refaire la calibration de l'alignement
+onboarding-stay_aligned-preparation-title = Préparation
+onboarding-stay_aligned-preparation-tip = Assurez-vous de vous tenir droit. Vous devez regarder vers l'avant et vos bras doivent être le long de votre corps.
+onboarding-stay_aligned-relaxed_poses-standing-title = Posture debout détendue
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Tenez-vous dans une position confortable. Détendez-vous !
+onboarding-stay_aligned-relaxed_poses-standing-step-2 = 3. Appuyez sur le bouton « Enregistrer la posture ».
 onboarding-stay_aligned-previous_step = Précédent
 onboarding-stay_aligned-next_step = Prochain
 onboarding-stay_aligned-restart = Redémarrer
