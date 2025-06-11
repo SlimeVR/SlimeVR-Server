@@ -1494,16 +1494,27 @@ vrc_config-current_value = Valeur actuelle
 vrc_config-mute = Ignorer l'avertissement
 vrc_config-mute-btn = Ignorer
 vrc_config-unmute-btn = Ne plus ignorer
+vrc_config-legacy_mode = Utiliser l'ancienne méthode de résolution de la CI
+vrc_config-disable_shoulder_tracking = Désactiver le suivi des épaules
+vrc_config-shoulder_width_compensation = Compensation de la largeur des épaules
+vrc_config-spine_mode = Mode colonne vertébrale du suivi du corps
 vrc_config-tracker_model = Apparence des traqueurs du suivi du corps
+vrc_config-avatar_measurement_type = Mesure de l'avatar
 vrc_config-calibration_range = Plage de calibration
 vrc_config-calibration_visuals = Afficher les visuels de calibration
+vrc_config-user_height = Taille réelle de l'utilisateur
 vrc_config-spine_mode-UNKNOWN = Inconnu
+vrc_config-spine_mode-LOCK_BOTH = Verrouiller les deux
+vrc_config-spine_mode-LOCK_HEAD = Verrouiller la tête
+vrc_config-spine_mode-LOCK_HIP = Verrouiller la hanche
 vrc_config-tracker_model-UNKNOWN = Inconnu
 vrc_config-tracker_model-AXIS = Axe
 vrc_config-tracker_model-BOX = Cube
 vrc_config-tracker_model-SPHERE = Sphère
 vrc_config-tracker_model-SYSTEM = Système
 vrc_config-avatar_measurement_type-UNKNOWN = Inconnu
+vrc_config-avatar_measurement_type-HEIGHT = Taille
+vrc_config-avatar_measurement_type-ARM_SPAN = Envergure des bras
 
 ## Error collection consent modal
 
