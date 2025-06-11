@@ -111,14 +111,48 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 
 skeleton_bone-NONE = Aucun
 skeleton_bone-HEAD = Décalage de la tête
+skeleton_bone-HEAD-desc =
+    Ceci est la distance entre votre casque et le milieu de votre tête.
+    Pour l’ajuster, secouez votre tête de gauche à droite comme si vous disiez non et modifiez-la
+    jusqu’à ce que vos capteurs bougent le moins possible.
 skeleton_bone-NECK = Longueur du cou
+skeleton_bone-NECK-desc =
+    Ceci est la distance entre le milieu de votre tête et la base de votre cou.
+    Pour l’ajuster, hochez votre tête de haut en bas ou inclinez votre tête de gauche à droite et modifiez-la 
+    jusqu’à ce que vos capteurs bougent le moins possible.
 skeleton_bone-torso_group = Longueur du torse
+skeleton_bone-torso_group-desc =
+    Ceci est la distance entre la base de votre cou et vos hanches.
+    Pour l’ajuster, tenez-vous debout et modifiez-la jusqu’à ce que
+    vos hanches virtuelles soient alignées avec vos vraies hanches.
 skeleton_bone-UPPER_CHEST = Longueur de la poitrine supérieure
+skeleton_bone-UPPER_CHEST-desc =
+    Ceci la distance entre la base de votre cou et le milieu de votre poitrine.
+    Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
+    (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
 skeleton_bone-CHEST_OFFSET = Décalage de la poitrine
+skeleton_bone-CHEST_OFFSET-desc =
+    Ceci peut être ajusté pour déplacer votre capteur virtuel de poitrine vers le haut ou vers le bas afin d’aider
+    avec la calibration dans certains jeux ou applications qui peuvent s’attendre à ce qu’il soit plus ou moins haut.
 skeleton_bone-CHEST = Longueur de la poitrine
+skeleton_bone-CHEST-desc =
+    Ceci est la distance entre le milieu de votre poitrine et le milieu de votre colonne vertébrale.
+    Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
+    (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
 skeleton_bone-WAIST = Longueur de la taille
+skeleton_bone-WAIST-desc =
+    Ceci est la distance entre le milieu de votre colonne vertébrale et votre nombril.
+    Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
+    (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
 skeleton_bone-HIP = Longueur des hanches
+skeleton_bone-HIP-desc =
+    Ceci est la distance entre votre nombril et vos hanches
+    Pour l’ajuster, ajustez correctement la longueur de votre torse et modifiez-la dans différentes positions
+    (assis, penché, allongé, etc.) jusqu’à ce que votre colonne vertébrale virtuelle corresponde à votre colonne vertébrale réelle.
 skeleton_bone-HIP_OFFSET = Décalage de la hanche
+skeleton_bone-HIP_OFFSET-desc =
+    Ceci peut être ajusté pour déplacer votre capteur virtuel de hanche vers le haut ou vers le bas afin d’aider
+    avec la calibration dans certains jeux ou applications qui pourraient s’attendre à ce qu’il soit sur votre taille.
 skeleton_bone-HIPS_WIDTH = Largeur des hanches
 skeleton_bone-leg_group = Longueur des jambes
 skeleton_bone-UPPER_LEG = Longueur des jambes supérieures
@@ -306,6 +340,7 @@ tracker-settings-forget = Oublier capteur
 tracker-settings-forget-description = Supprime le capteur du serveur SlimeVR et l'empêche de s'y connecter jusqu'à ce que le serveur soit redémarré. La configuration du capteur ne sera pas perdue.
 tracker-settings-forget-label = Oublier capteur
 tracker-settings-update-unavailable = Ne peut pas être mis à jour (DIY)
+tracker-settings-update-low-battery = Mise à jour impossible. Batterie inférieure à 50 %
 tracker-settings-update-up_to_date = À jour
 tracker-settings-update-available = { $versionName } est maintenant disponible
 tracker-settings-update = Mettre à jour maintenant
@@ -387,6 +422,7 @@ settings-sidebar-appearance = Apparence
 settings-sidebar-notifications = Notifications
 settings-sidebar-behavior = Comportement
 settings-sidebar-firmware-tool = Outil de micrologiciel DIY
+settings-sidebar-vrc_warnings = Avertissements de configuration VRChat
 settings-sidebar-advanced = Avancé
 
 ## SteamVR settings
@@ -468,6 +504,8 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Utilise le magnétomètre sur tous les capteurs dotés d'un micrologiciel compatible, réduisant ainsi la dérive dans des environnements magnétiques stables.
     Peut être désactivé par capteur dans les paramètres du capteur. <b>Ne fermez aucun des capteurs en changeant cette option !</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Utiliser le magnétomètre sur les capteurs
+settings-stay_aligned-enabled-label = Ajuster les capteurs
+settings-stay_aligned-general-label = Général
 
 ## FK/Tracking settings
 
@@ -1372,6 +1410,18 @@ unknown_device-modal-description =
     Voulez-vous le connecter à SlimeVR ?
 unknown_device-modal-confirm = Oui!
 unknown_device-modal-forget = Ignorer
+vrc_config-on = Activé
+vrc_config-off = Désactivé
+vrc_config-invalid = Vous avez des paramètres VRChat mal configurés !
+vrc_config-show_more = Afficher plus
+vrc_config-setting_name = Nom du paramètre VRChat
+vrc_config-recommended_value = Valeur recommandée
+vrc_config-current_value = Valeur actuelle
+vrc_config-mute = Ignorer l'avertissement
+vrc_config-mute-btn = Ignorer
+vrc_config-unmute-btn = Ne plus ignorer
+vrc_config-spine_mode-UNKNOWN = Inconnu
+vrc_config-tracker_model-UNKNOWN = Inconnu
 
 ## Error collection consent modal
 
