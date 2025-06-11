@@ -1518,7 +1518,7 @@ vrc_config-spine_mode-LOCK_BOTH = Lock Both
 vrc_config-spine_mode-LOCK_HEAD = Lock Head
 vrc_config-spine_mode-LOCK_HIP = Lock Hip
 
-vrc_config-tracker_model-UNKNOWN = Unkown
+vrc_config-tracker_model-UNKNOWN = Unknown
 vrc_config-tracker_model-AXIS = Axis
 vrc_config-tracker_model-BOX = Box
 vrc_config-tracker_model-SPHERE = Sphere
