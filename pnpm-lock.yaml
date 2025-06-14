@@ -71,6 +71,9 @@ importers:
       '@tauri-apps/plugin-store':
         specifier: ^2.0.0
         version: 2.0.0
+      '@tweenjs/tween.js':
+        specifier: ^25.0.0
+        version: 25.0.0
       '@twemoji/svg':
         specifier: ^15.0.0
         version: 15.0.0
@@ -834,6 +837,7 @@ packages:
   '@react-hookz/deep-equal@3.0.3':
     resolution: {integrity: sha512-SLy+NmiDpncqc2d9TR4Y4R7f8lUFOQK9WbnIq02A6wDxy+dTHfA2Np0dPvj0SFp6i1nqERLmEUe9MxPLuO/IqA==}
     engines: {node: '>=18.0.0'}
+    deprecated: Package is deprecated and will be deleted soon. Use @ver0/deep-equal instead.
 
   '@react-spring/animated@9.6.1':
     resolution: {integrity: sha512-ls/rJBrAqiAYozjLo5EPPLLOb1LM0lNVQcXODTC1SMtS6DbuBCPaKco5svFUQFMP2dso3O+qcC4k9FsKc0KxMQ==}
@@ -1260,6 +1264,9 @@ packages:
 
   '@tweenjs/tween.js@23.1.2':
     resolution: {integrity: sha512-kMCNaZCJugWI86xiEHaY338CU5JpD0B97p1j1IKNn/Zto8PgACjQx0UxbHjmOcLl/dDOBnItwD07KmCs75pxtQ==}
+
+  '@tweenjs/tween.js@25.0.0':
+    resolution: {integrity: sha512-XKLA6syeBUaPzx4j3qwMqzzq+V4uo72BnlbOjmuljLrRqdsd3qnzvZZoxvMHZ23ndsRS4aufU6JOZYpCbU6T1A==}
 
   '@twemoji/svg@15.0.0':
     resolution: {integrity: sha512-ZSPef2B6nBaYnfgdTbAy4jgW95o7pi2xPGwGCU+WMTxo7J6B1lMPTWwSq/wTuiMq+N0khQ90CcvYp1wFoQpo/w==}
@@ -5468,6 +5475,8 @@ snapshots:
       '@tauri-apps/api': 2.0.2
 
   '@tweenjs/tween.js@23.1.2': {}
+
+  '@tweenjs/tween.js@25.0.0': {}
 
   '@twemoji/svg@15.0.0': {}
 
