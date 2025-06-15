@@ -1,7 +1,5 @@
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import reactHooks from 'eslint-plugin-react-hooks';
-import { includeIgnoreFile } from '@eslint/compat';
 import js from '@eslint/js';
 import importAlias from '@dword-design/eslint-plugin-import-alias';
 import { configs, plugins } from 'eslint-config-airbnb-extended';
