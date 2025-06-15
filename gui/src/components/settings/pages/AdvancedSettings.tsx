@@ -21,8 +21,6 @@ function guiDefaults() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { lang, ...guiDefaults } = defaultGUIConfig;
 
-  // Include "devSettings" which has all the properties of "defaultDevConfig"
-  // @ts-expect-error "devSettings" is not in the "guiDefaults" object but we want to include it (from "defaultDevConfig")
   guiDefaults.devSettings = defaultDevConfig;
 
   return guiDefaults;
