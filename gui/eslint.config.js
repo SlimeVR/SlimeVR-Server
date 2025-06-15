@@ -53,7 +53,8 @@ const prettierConfig = [
     name: 'prettier/config',
     rules: {
       ...prettierConfigRules,
-      'prettier/prettier': 'error',
+      // remove errors with prettier, use prettier for that pls
+      // 'prettier/prettier': 'error',
     },
   },
 ];
