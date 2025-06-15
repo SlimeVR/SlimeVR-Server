@@ -55,7 +55,7 @@ export function useProvideOnboarding(): OnboardingContext {
   const { state: locatioState } = useLocation();
 
   useLayoutEffect(() => {
-    const { alonePage = false }: { alonePage?: boolean } = (locatioState as any) || {};
+    const { alonePage = false }: { alonePage?: boolean } = locatioState || {};
 
     if (alonePage !== state.alonePage)
       dispatch({ type: 'alone-page', value: alonePage });

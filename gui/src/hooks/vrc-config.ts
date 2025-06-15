@@ -1,5 +1,4 @@
 import { useLayoutEffect, useMemo, useState } from 'react';
-import { useWebsocketAPI } from './websocket-api';
 import {
   RpcMessage,
   VRCAvatarMeasurementType,
@@ -8,6 +7,8 @@ import {
   VRCSpineMode,
   VRCTrackerModel,
 } from 'solarxr-protocol';
+import { log } from '@/utils/logging';
+import { useWebsocketAPI } from './websocket-api';
 import { useConfig } from './config';
 
 type NonNull<T> = {
@@ -50,7 +51,7 @@ export function useVRCConfig() {
 
   useLayoutEffect(() => {
     sendRPCPacket(RpcMessage.VRCConfigStateRequest, new VRCConfigStateRequestT());
-  }, []);
+  }, [sendRPCPacket]);
 
   useRPCPacket(
     RpcMessage.VRCConfigStateChangeResponse,
@@ -83,7 +84,7 @@ export function useVRCConfig() {
       if (index === -1) config.vrcMutedWarnings.push(key);
       else config?.vrcMutedWarnings.splice(index, 1);
       await setConfig(config);
-      console.log(config.vrcMutedWarnings);
+      log(config.vrcMutedWarnings);
     },
   };
 }

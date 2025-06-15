@@ -89,8 +89,9 @@ export function ResetButton({
         return <YawResetIcon width={20} />;
       case ResetType.Mounting:
         return <MountingResetIcon width={20} />;
+      case ResetType.Full:
+        <FullResetIcon width={20} />;
     }
-    return <FullResetIcon width={20} />;
   };
 
   const maybePlaySoundOnResetEnd = (type: ResetType) => {
@@ -110,12 +111,13 @@ export function ResetButton({
     maybePlaySoundOnResetStart();
   };
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       if (finishedTimeoutRef.current !== -1)
         clearTimeout(finishedTimeoutRef.current);
-    };
-  }, []);
+    },
+    []
+  );
 
   return size === 'small' ? (
     <Button

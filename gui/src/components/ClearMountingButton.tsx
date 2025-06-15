@@ -1,15 +1,15 @@
 import { Localized } from '@fluent/react';
 import { ClearMountingResetRequestT, RpcMessage } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { BigButton } from './commons/BigButton';
-import { TrashIcon } from './commons/icon/TrashIcon';
 import { Quaternion } from 'three';
 import { QuaternionFromQuatT, similarQuaternions } from '@/maths/quaternion';
 import { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom } from '@/store/app-store';
+import { TrashIcon } from './commons/icon/TrashIcon';
+import { BigButton } from './commons/BigButton';
 
-const _q = new Quaternion();
+const QUAT = new Quaternion();
 
 export function ClearMountingButton() {
   const { sendRPCPacket } = useWebsocketAPI();
@@ -21,7 +21,7 @@ export function ClearMountingButton() {
         (d) =>
           !similarQuaternions(
             QuaternionFromQuatT(d?.tracker.info?.mountingResetOrientation),
-            _q
+            QUAT
           )
       ),
     [assignedTrackers]

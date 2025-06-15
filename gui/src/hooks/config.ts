@@ -4,11 +4,11 @@ import {
   DeveloperModeWidgetForm,
 } from '@/components/widgets/DeveloperModeWidget';
 import { error } from '@/utils/logging';
-import { useDebouncedEffect } from './timeout';
 import { createStore, Store } from '@tauri-apps/plugin-store';
-import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
 import { isTauri } from '@tauri-apps/api/core';
+import { useIsTauri } from './breakpoint';
+import { useDebouncedEffect } from './timeout';
 
 export interface WindowConfig {
   width: number;
@@ -90,7 +90,7 @@ const store: CrossStorage = isTauri()
   : localStore;
 
 function fallbackToDefaults(loadedConfig: any): Config {
-  return Object.assign({}, defaultConfig, loadedConfig);
+  return { ...defaultConfig, ...loadedConfig };
 }
 
 // Move the load of the config ouside of react
@@ -123,9 +123,7 @@ export const loadConfig = async () => {
 };
 
 export function useConfigProvider(initialConfig: Config | null): ConfigContext {
-  const [currConfig, set] = useState<Config | null>(
-    initialConfig || (defaultConfig as Config)
-  );
+  const [currConfig, set] = useState<Config | null>(initialConfig || defaultConfig);
   const tauri = useIsTauri();
 
   useDebouncedEffect(

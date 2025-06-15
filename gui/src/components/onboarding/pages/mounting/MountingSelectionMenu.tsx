@@ -23,171 +23,131 @@ export const mapPart: Record<
     currentLocales: string[];
   }) => JSX.Element
 > = {
-  [BodyPart.UPPER_CHEST]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.CHEST]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.HEAD]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.HIP]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.LEFT_HIP]: ({ width }) => <FootIcon width={width}></FootIcon>, // Unused
-  [BodyPart.RIGHT_HIP]: ({ width }) => <FootIcon width={width}></FootIcon>, // Unused
+  [BodyPart.UPPER_CHEST]: ({ width }) => <FootIcon width={width} />,
+  [BodyPart.CHEST]: ({ width }) => <FootIcon width={width} />,
+  [BodyPart.HEAD]: ({ width }) => <FootIcon width={width} />,
+  [BodyPart.HIP]: ({ width }) => <FootIcon width={width} />,
+  [BodyPart.LEFT_HIP]: ({ width }) => <FootIcon width={width} />, // Unused
+  [BodyPart.RIGHT_HIP]: ({ width }) => <FootIcon width={width} />, // Unused
   [BodyPart.LEFT_FOOT]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}
         transform="translate(40, -50)"
-      ></PawIcon>
+      />
     ) : (
-      <FootIcon width={width}></FootIcon>
+      <FootIcon width={width} />
     ),
-  [BodyPart.LEFT_HAND]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.LEFT_LOWER_ARM]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.LEFT_HAND]: ({ width }) => <FootIcon width={width} />,
+  [BodyPart.LEFT_LOWER_ARM]: ({ width }) => <FootIcon width={width} />,
   [BodyPart.LEFT_LOWER_LEG]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}
         transform="translate(40, -50)"
-      ></PawIcon>
+      />
     ) : (
-      <FootIcon width={width}></FootIcon>
+      <FootIcon width={width} />
     ),
-  [BodyPart.LEFT_SHOULDER]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.LEFT_UPPER_ARM]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.LEFT_SHOULDER]: ({ width }) => <FootIcon width={width} />,
+  [BodyPart.LEFT_UPPER_ARM]: ({ width }) => <FootIcon width={width} />,
   [BodyPart.LEFT_UPPER_LEG]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}
         transform="translate(40, -50)"
-      ></PawIcon>
+      />
     ) : (
-      <FootIcon width={width}></FootIcon>
+      <FootIcon width={width} />
     ),
-  [BodyPart.NECK]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.NONE]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.NECK]: ({ width }) => <FootIcon width={width} />,
+  [BodyPart.NONE]: ({ width }) => <FootIcon width={width} />,
   [BodyPart.RIGHT_FOOT]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}
         transform="translate(40, -50)"
-      ></PawIcon>
+      />
     ) : (
-      <FootIcon width={width} flipped></FootIcon>
+      <FootIcon width={width} flipped />
     ),
-  [BodyPart.RIGHT_HAND]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.RIGHT_LOWER_ARM]: ({ width }) => (
-    <FootIcon width={width}></FootIcon>
-  ),
+  [BodyPart.RIGHT_HAND]: ({ width }) => <FootIcon width={width} />,
+  [BodyPart.RIGHT_LOWER_ARM]: ({ width }) => <FootIcon width={width} />,
   [BodyPart.RIGHT_LOWER_LEG]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}
         transform="translate(40, -50)"
-      ></PawIcon>
+      />
     ) : (
-      <FootIcon width={width} flipped></FootIcon>
+      <FootIcon width={width} flipped />
     ),
-  [BodyPart.RIGHT_SHOULDER]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.RIGHT_UPPER_ARM]: ({ width }) => (
-    <FootIcon width={width}></FootIcon>
-  ),
+  [BodyPart.RIGHT_SHOULDER]: ({ width }) => <FootIcon width={width} />,
+  [BodyPart.RIGHT_UPPER_ARM]: ({ width }) => <FootIcon width={width} />,
   [BodyPart.RIGHT_UPPER_LEG]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
       <PawIcon
         width={width ? width * 0.75 : undefined}
         transform="translate(40, -50)"
-      ></PawIcon>
+      />
     ) : (
-      <FootIcon width={width} flipped></FootIcon>
+      <FootIcon width={width} flipped />
     ),
-  [BodyPart.WAIST]: ({ width }) => <FootIcon width={width}></FootIcon>,
+  [BodyPart.WAIST]: ({ width }) => <FootIcon width={width} />,
   [BodyPart.LEFT_THUMB_METACARPAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.LEFT_THUMB_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.LEFT_THUMB_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.LEFT_INDEX_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.LEFT_THUMB_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_THUMB_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_INDEX_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_INDEX_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.LEFT_INDEX_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.LEFT_MIDDLE_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.LEFT_INDEX_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_MIDDLE_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_MIDDLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.LEFT_MIDDLE_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.LEFT_RING_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.LEFT_MIDDLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_RING_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_RING_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.LEFT_RING_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.LEFT_LITTLE_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.LEFT_RING_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_LITTLE_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_LITTLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.LEFT_LITTLE_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.LEFT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_THUMB_METACARPAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.RIGHT_THUMB_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.RIGHT_THUMB_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.RIGHT_INDEX_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.RIGHT_THUMB_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.RIGHT_THUMB_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.RIGHT_INDEX_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_INDEX_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.RIGHT_INDEX_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.RIGHT_INDEX_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_MIDDLE_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
   [BodyPart.RIGHT_MIDDLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.RIGHT_MIDDLE_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.RIGHT_RING_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.RIGHT_MIDDLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.RIGHT_RING_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_RING_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.RIGHT_RING_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.RIGHT_RING_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_LITTLE_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
   [BodyPart.RIGHT_LITTLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
 };
 
 export function MountingBodyPartIcon({
@@ -235,7 +195,7 @@ function PieSliceOfFeet({
         )}
         transform="translate(125 125)"
         id={id}
-      ></path>
+      />
       <text dy="-5" strokeWidth="1">
         <textPath xlinkHref={`#${id}`} startOffset="50%" textAnchor="middle">
           {!noText ? l10n.getString(id) : ''}
@@ -250,7 +210,7 @@ function PieSliceOfFeet({
             : 'fill-none'
         )}
       >
-        <SlimeUpIcon width={trackerWidth}></SlimeUpIcon>
+        <SlimeUpIcon width={trackerWidth} />
       </g>
     </g>
   );
@@ -301,17 +261,17 @@ export function MountingSelectionMenu({
                 currRotation={currRotation}
                 id="tracker-rotation-left"
                 trackerTransform="translate(75, 0) scale(-1, 1)"
-              ></PieSliceOfFeet>
+              />
               <PieSliceOfFeet
                 d="M0 0-89-44A99 99 0 0 1-44-89Z"
                 direction={rotationToQuatMap.FRONT_LEFT}
                 onDirectionSelected={onDirectionSelected}
                 currRotation={currRotation}
                 id="tracker-rotation_left_front"
-                noText={true}
+                noText
                 trackerTransform="translate(-2, 175) rotate(-135)"
                 trackerWidth={7}
-              ></PieSliceOfFeet>
+              />
               <PieSliceOfFeet
                 d="M0 0-44-89A99 99 0 0 1 44-89Z"
                 direction={rotationToQuatMap.FRONT}
@@ -319,17 +279,17 @@ export function MountingSelectionMenu({
                 currRotation={currRotation}
                 id="tracker-rotation-front"
                 trackerTransform="translate(0, 75) rotate(-90)"
-              ></PieSliceOfFeet>
+              />
               <PieSliceOfFeet
                 d="M0 0 44-89A99 99 0 0 1 89-44Z"
                 direction={rotationToQuatMap.FRONT_RIGHT}
                 onDirectionSelected={onDirectionSelected}
                 currRotation={currRotation}
                 id="tracker-rotation-front_right"
-                noText={true}
+                noText
                 trackerTransform="translate(73, 0) rotate(-45)"
                 trackerWidth={7}
-              ></PieSliceOfFeet>
+              />
               <PieSliceOfFeet
                 d="M0 0 89-44A99 99 0 0 1 89 44Z"
                 direction={rotationToQuatMap.RIGHT}
@@ -337,17 +297,17 @@ export function MountingSelectionMenu({
                 currRotation={currRotation}
                 id="tracker-rotation-right"
                 trackerTransform="translate(175,0)"
-              ></PieSliceOfFeet>
+              />
               <PieSliceOfFeet
                 d="M0 0 89 44A99 99 0 0 1 44 89Z"
                 direction={rotationToQuatMap.BACK_RIGHT}
                 onDirectionSelected={onDirectionSelected}
                 currRotation={currRotation}
                 id="tracker-rotation-back_right"
-                noText={true}
+                noText
                 trackerTransform="translate(252, 75) rotate(45)"
                 trackerWidth={7}
-              ></PieSliceOfFeet>
+              />
               <PieSliceOfFeet
                 d="M0 0 44 89A99 99 0 0 1-44 89Z"
                 direction={rotationToQuatMap.BACK}
@@ -355,17 +315,17 @@ export function MountingSelectionMenu({
                 currRotation={currRotation}
                 id="tracker-rotation-back"
                 trackerTransform="translate(250, 175) rotate(90)"
-              ></PieSliceOfFeet>
+              />
               <PieSliceOfFeet
                 d="M0 0-44 89A99 99 0 0 1-89 44Z"
                 direction={rotationToQuatMap.BACK_LEFT}
                 onDirectionSelected={onDirectionSelected}
                 currRotation={currRotation}
                 id="tracker-rotation-back_left"
-                noText={true}
+                noText
                 trackerTransform="translate(177, 250) rotate(135)"
                 trackerWidth={7}
-              ></PieSliceOfFeet>
+              />
             </g>
           </svg>
         </div>

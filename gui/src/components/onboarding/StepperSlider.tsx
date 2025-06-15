@@ -19,10 +19,10 @@ type StepComponentType = FC<{
   variant: 'alone' | 'onboarding';
   active: boolean;
 }>;
-export type Step = {
+export interface Step {
   type: 'numbered' | 'fullsize';
   component: StepComponentType;
-};
+}
 
 export function StepContainer({
   children,
@@ -83,9 +83,7 @@ export function StepDot({
       )}
       onClick={onClick}
     >
-      {active && (
-        <div className="flex h-2 w-2 rounded-full bg-background-10"></div>
-      )}
+      {active && <div className="flex h-2 w-2 rounded-full bg-background-10" />}
       {done && <CheckIcon />}
     </div>
   );
@@ -162,6 +160,7 @@ export function StepperSlider({
           {steps.map(({ type, component: StepComponent }, index) => (
             <StepContainer
               variant={variant}
+              // eslint-disable-next-line react/no-array-index-key
               key={index}
               type={type}
               width={width}
@@ -181,9 +180,10 @@ export function StepperSlider({
       </div>
       <div className="flex justify-center items-center gap-2">
         {Array.from({ length: steps.length }).map((_, index) => (
+          // eslint-disable-next-line react/no-array-index-key
           <div key={index} className="flex items-center gap-2">
             {index !== 0 && (
-              <div className="w-5 h-1 bg-background-50 rounded-full"></div>
+              <div className="w-5 h-1 bg-background-50 rounded-full" />
             )}
             <StepDot
               active={index === step}

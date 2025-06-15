@@ -75,7 +75,7 @@ export function CalibrationTutorialPage() {
       setCalibrationStatus(CalibrationStatus.ERROR);
       abortCountdown();
     }
-  }, [calibrationStatus, rested]);
+  }, [abortCountdown, calibrationStatus, rested]);
 
   const progressBarClass = useMemo(() => {
     switch (calibrationStatus) {
@@ -83,6 +83,8 @@ export function CalibrationTutorialPage() {
         return 'bg-status-critical';
       case CalibrationStatus.SUCCESS:
         return 'bg-status-success';
+      default:
+        return undefined;
     }
   }, [calibrationStatus]);
 
@@ -115,102 +117,100 @@ export function CalibrationTutorialPage() {
   applyProgress(0.43);
 
   return (
-    <>
-      <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
-        <div className="flex w-full h-full justify-center xs:px-20 mobile:px-5 pb-5 gap-14">
-          <div className="flex gap-4 self-center mobile:z-10">
-            <div className="flex flex-col max-w-md gap-3">
-              <div>
-                <Typography variant="mobile-title">
-                  {l10n.getString('onboarding-calibration_tutorial')}
-                </Typography>
-                <Typography variant="vr-accessible" italic>
-                  {l10n.getString('onboarding-calibration_tutorial-subtitle')}
-                </Typography>
-              </div>
-              <Localized
-                id="onboarding-calibration_tutorial-description"
-                elems={{ b: <b></b> }}
-              >
-                <Typography color="secondary">
-                  Description on calibration of IMU
-                </Typography>
-              </Localized>
-              <div>
-                <div className="xs:hidden flex flex-row justify-center">
-                  <div className="stroke-none fill-background-10 ">
-                    <TaybolIcon width="220"></TaybolIcon>
-                  </div>
+    <div className="flex flex-col gap-5 h-full items-center w-full justify-center relative">
+      <div className="flex w-full h-full justify-center xs:px-20 mobile:px-5 pb-5 gap-14">
+        <div className="flex gap-4 self-center mobile:z-10">
+          <div className="flex flex-col max-w-md gap-3">
+            <div>
+              <Typography variant="mobile-title">
+                {l10n.getString('onboarding-calibration_tutorial')}
+              </Typography>
+              <Typography variant="vr-accessible" italic>
+                {l10n.getString('onboarding-calibration_tutorial-subtitle')}
+              </Typography>
+            </div>
+            <Localized
+              id="onboarding-calibration_tutorial-description"
+              elems={{ b: <b /> }}
+            >
+              <Typography color="secondary">
+                Description on calibration of IMU
+              </Typography>
+            </Localized>
+            <div>
+              <div className="xs:hidden flex flex-row justify-center">
+                <div className="stroke-none fill-background-10 ">
+                  <TaybolIcon width="220" />
                 </div>
-                <div className="flex justify-center">
-                  <LoaderIcon slimeState={slimeStatus}></LoaderIcon>
-                </div>
-                <ProgressBar
-                  progress={
-                    isCounting
-                      ? (IMU_CALIBRATION_TIME - timer) / IMU_CALIBRATION_TIME
-                      : calibrationStatus === CalibrationStatus.SUCCESS ||
-                          calibrationStatus === CalibrationStatus.ERROR
-                        ? 1
-                        : 0
-                  }
-                  height={14}
-                  animated={true}
-                  colorClass={progressBarClass}
-                ></ProgressBar>
               </div>
               <div className="flex justify-center">
-                <Typography variant="section-title">{progressText}</Typography>
+                <LoaderIcon slimeState={slimeStatus} />
               </div>
-              <div className="flex gap-3 mobile:flex-col">
-                <Button
-                  variant="secondary"
-                  to="/onboarding/wifi-creds"
-                  className="xs:mr-auto"
-                >
-                  {l10n.getString('onboarding-previous_step')}
-                </Button>
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    setCalibrationStatus(CalibrationStatus.CALIBRATING);
-                    startCountdown();
-                  }}
-                  disabled={isCounting || !rested}
-                  className={classNames(
-                    'xs:ml-auto',
-                    CalibrationStatus.SUCCESS === calibrationStatus && 'hidden'
-                  )}
-                >
-                  {l10n.getString('onboarding-calibration_tutorial-calibrate')}
-                </Button>
-                <Button
-                  variant="primary"
-                  to="/onboarding/assign-tutorial"
-                  className={classNames(
-                    'xs:ml-auto',
-                    CalibrationStatus.SUCCESS !== calibrationStatus && 'hidden'
-                  )}
-                >
-                  {l10n.getString('onboarding-continue')}
-                </Button>
-              </div>
+              <ProgressBar
+                progress={
+                  isCounting
+                    ? (IMU_CALIBRATION_TIME - timer) / IMU_CALIBRATION_TIME
+                    : calibrationStatus === CalibrationStatus.SUCCESS ||
+                        calibrationStatus === CalibrationStatus.ERROR
+                      ? 1
+                      : 0
+                }
+                height={14}
+                animated
+                colorClass={progressBarClass}
+              />
+            </div>
+            <div className="flex justify-center">
+              <Typography variant="section-title">{progressText}</Typography>
+            </div>
+            <div className="flex gap-3 mobile:flex-col">
               <Button
                 variant="secondary"
-                to="/onboarding/assign-tutorial"
-                className={classNames('xs:ml-auto', !skipButton && 'hidden')}
+                to="/onboarding/wifi-creds"
+                className="xs:mr-auto"
               >
-                {l10n.getString('onboarding-calibration_tutorial-skip')}
+                {l10n.getString('onboarding-previous_step')}
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  setCalibrationStatus(CalibrationStatus.CALIBRATING);
+                  startCountdown();
+                }}
+                disabled={isCounting || !rested}
+                className={classNames(
+                  'xs:ml-auto',
+                  CalibrationStatus.SUCCESS === calibrationStatus && 'hidden'
+                )}
+              >
+                {l10n.getString('onboarding-calibration_tutorial-calibrate')}
+              </Button>
+              <Button
+                variant="primary"
+                to="/onboarding/assign-tutorial"
+                className={classNames(
+                  'xs:ml-auto',
+                  CalibrationStatus.SUCCESS !== calibrationStatus && 'hidden'
+                )}
+              >
+                {l10n.getString('onboarding-continue')}
               </Button>
             </div>
+            <Button
+              variant="secondary"
+              to="/onboarding/assign-tutorial"
+              className={classNames('xs:ml-auto', !skipButton && 'hidden')}
+            >
+              {l10n.getString('onboarding-calibration_tutorial-skip')}
+            </Button>
           </div>
-          <div className="mobile:hidden flex self-center w-[32rem] mobile:absolute">
-            <div className="stroke-none xs:fill-background-10 mobile:fill-background-50 mobile:blur-sm">
-              <TaybolIcon width="450"></TaybolIcon>
-            </div>
+        </div>
+        <div className="mobile:hidden flex self-center w-[32rem] mobile:absolute">
+          <div className="stroke-none xs:fill-background-10 mobile:fill-background-50 mobile:blur-sm">
+            <TaybolIcon width="450" />
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

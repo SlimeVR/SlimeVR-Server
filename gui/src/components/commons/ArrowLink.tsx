@@ -36,13 +36,13 @@ export function ArrowLink({
     <NavLink to={to} state={state} className={classes}>
       {direction === 'left' && (
         <div className="flex flex-col justify-center">
-          <ArrowLeftIcon></ArrowLeftIcon>
+          <ArrowLeftIcon />
         </div>
       )}
       {children}
       {direction === 'right' && (
         <div className="flex flex-col justify-center">
-          <ArrowRightIcon></ArrowRightIcon>
+          <ArrowRightIcon />
         </div>
       )}
     </NavLink>

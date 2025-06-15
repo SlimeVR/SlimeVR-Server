@@ -40,7 +40,7 @@ export function SkipSetupWarningModal({
     >
       <div className="flex w-full h-full flex-col ">
         <div className="flex flex-col flex-grow items-center gap-3">
-          <Localized id="onboarding-setup_warning" elems={{ b: <b></b> }}>
+          <Localized id="onboarding-setup_warning" elems={{ b: <b /> }}>
             <WarningBox>
               <b>Warning:</b> The setup is needed for good tracking, this is
               required if this is your first time using SlimeVR.

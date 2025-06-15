@@ -39,7 +39,7 @@ import {
   deserializeStayAlignedSettings,
 } from './components/StayAlignedSettings';
 
-export type SettingsForm = {
+export interface SettingsForm {
   trackers: {
     waist: boolean;
     chest: boolean;
@@ -103,7 +103,7 @@ export type SettingsForm = {
     resetHmdPitch: boolean;
   };
   stayAligned: StayAlignedSettingsForm;
-};
+}
 
 const defaultValues: SettingsForm = {
   trackers: {
@@ -454,7 +454,7 @@ export function GeneralSettings() {
         }}
       />
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<SteamIcon></SteamIcon>} id="steamvr">
+        <SettingsPagePaneLayout icon={<SteamIcon />} id="steamvr">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-general-steamvr')}
@@ -467,12 +467,13 @@ export function GeneralSettings() {
                 .getString('settings-general-steamvr-description')
                 .split('\n')
                 .map((line, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
                   <Typography color="secondary" key={i}>
                     {line}
                   </Typography>
                 ))}
             </div>
-            <div className="flex flex-col pt-4"></div>
+            <div className="flex flex-col pt-4" />
             <Typography bold>
               {l10n.getString(
                 'settings-general-steamvr-trackers-tracker_toggling'
@@ -485,6 +486,7 @@ export function GeneralSettings() {
                 )
                 .split('\n')
                 .map((line, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
                   <Typography color="secondary" key={i}>
                     {line}
                   </Typography>
@@ -499,7 +501,7 @@ export function GeneralSettings() {
                 'settings-general-steamvr-trackers-tracker_toggling-label'
               )}
             />
-            <div className="flex flex-col pt-4"></div>
+            <div className="flex flex-col pt-4" />
             <div className="grid grid-cols-2 gap-3">
               <CheckBox
                 variant="toggle"
@@ -603,7 +605,7 @@ export function GeneralSettings() {
           </>
         </SettingsPagePaneLayout>
         <StayAlignedSettings values={getValues()} control={control} />
-        <SettingsPagePaneLayout icon={<WrenchIcon></WrenchIcon>} id="mechanics">
+        <SettingsPagePaneLayout icon={<WrenchIcon />} id="mechanics">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-general-tracker_mechanics')}
@@ -618,6 +620,7 @@ export function GeneralSettings() {
                 )
                 .split('\n')
                 .map((line, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
                   <Typography color="secondary" key={i}>
                     {line}
                   </Typography>
@@ -639,7 +642,7 @@ export function GeneralSettings() {
                   'settings-general-tracker_mechanics-filtering-type-none-description'
                 )}
                 value={FilteringType.NONE.toString()}
-              ></Radio>
+              />
               <Radio
                 control={control}
                 name="filtering.type"
@@ -650,7 +653,7 @@ export function GeneralSettings() {
                   'settings-general-tracker_mechanics-filtering-type-smoothing-description'
                 )}
                 value={FilteringType.SMOOTHING.toString()}
-              ></Radio>
+              />
               <Radio
                 control={control}
                 name="filtering.type"
@@ -661,7 +664,7 @@ export function GeneralSettings() {
                   'settings-general-tracker_mechanics-filtering-type-prediction-description'
                 )}
                 value={FilteringType.PREDICTION.toString()}
-              ></Radio>
+              />
             </div>
             <div className="flex gap-5 pt-5 md:flex-row flex-col">
               <NumberSelector
@@ -697,9 +700,9 @@ export function GeneralSettings() {
               </Typography>
               <Localized
                 id="settings-general-tracker_mechanics-save_mounting_reset-description"
-                elems={{ b: <b></b> }}
+                elems={{ b: <b /> }}
               >
-                <Typography color="secondary"></Typography>
+                <Typography color="secondary" />
               </Localized>
             </div>
             <CheckBox
@@ -717,10 +720,7 @@ export function GeneralSettings() {
             />
           </>
         </SettingsPagePaneLayout>
-        <SettingsPagePaneLayout
-          icon={<WrenchIcon></WrenchIcon>}
-          id="fksettings"
-        >
+        <SettingsPagePaneLayout icon={<WrenchIcon />} id="fksettings">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-general-fk_settings')}
@@ -900,7 +900,7 @@ export function GeneralSettings() {
                   'settings-general-fk_settings-arm_fk-back-description'
                 )}
                 value={'0'}
-              ></Radio>
+              />
               <Radio
                 control={control}
                 name="resetsSettings.armsMountingResetMode"
@@ -911,7 +911,7 @@ export function GeneralSettings() {
                   'settings-general-fk_settings-arm_fk-forward-description'
                 )}
                 value={'1'}
-              ></Radio>
+              />
               <Radio
                 control={control}
                 name="resetsSettings.armsMountingResetMode"
@@ -922,7 +922,7 @@ export function GeneralSettings() {
                   'settings-general-fk_settings-arm_fk-tpose_up-description'
                 )}
                 value={'2'}
-              ></Radio>
+              />
               <Radio
                 control={control}
                 name="resetsSettings.armsMountingResetMode"
@@ -933,7 +933,7 @@ export function GeneralSettings() {
                   'settings-general-fk_settings-arm_fk-tpose_down-description'
                 )}
                 value={'3'}
-              ></Radio>
+              />
             </div>
 
             <div className="flex flex-col pt-2 pb-3">
@@ -1139,10 +1139,7 @@ export function GeneralSettings() {
           </>
         </SettingsPagePaneLayout>
 
-        <SettingsPagePaneLayout
-          icon={<WrenchIcon></WrenchIcon>}
-          id="gestureControl"
-        >
+        <SettingsPagePaneLayout icon={<WrenchIcon />} id="gestureControl">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-general-gesture_control')}

@@ -6,11 +6,13 @@ import {
   RpcMessage,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import classNames from 'classnames';
 import { BigButton } from './commons/BigButton';
 import { RecordIcon } from './commons/icon/RecordIcon';
-import classNames from 'classnames';
 
-export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
+export function BVHButton({
+  className,
+}: React.HTMLAttributes<HTMLButtonElement>) {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [recording, setRecording] = useState(false);
 
@@ -34,11 +36,11 @@ export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
         icon={<RecordIcon width={20} />}
         onClick={toggleBVH}
         className={classNames(
-          props.className,
+          className,
           'border',
           recording ? 'border-status-critical' : 'border-transparent'
         )}
-      ></BigButton>
+      />
     </Localized>
   );
 }

@@ -10,6 +10,7 @@ import {
 import { useEffect, useMemo } from 'react';
 import { firmwareToolBaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
 import { Button } from '@/components/commons/Button';
+import { error } from '@/utils/logging';
 
 export function BuildStep({
   isActive,
@@ -42,7 +43,7 @@ export function BuildStep({
         };
       }
     } catch (e) {
-      console.error(e);
+      error(e);
       setBuildStatus({ id: '', status: 'ERROR' });
     }
   };
@@ -65,47 +66,45 @@ export function BuildStep({
   );
 
   return (
-    <>
-      <div className="flex flex-col w-full">
-        <div className="flex flex-grow flex-col gap-4">
-          <Typography color="secondary">
-            {l10n.getString('firmware_tool-build_step-description')}
-          </Typography>
-        </div>
-        <div className="my-4">
-          {!isGlobalLoading && (
-            <div className="flex justify-center flex-col items-center gap-3 h-44">
-              <LoaderIcon
-                slimeState={
-                  buildStatus.status !== 'ERROR'
-                    ? SlimeState.JUMPY
-                    : SlimeState.SAD
-                }
-              ></LoaderIcon>
-              <Typography variant="section-title" color="secondary">
-                {l10n.getString('firmware_tool-build-' + buildStatus.status)}
-              </Typography>
-            </div>
-          )}
-          {isGlobalLoading && (
-            <div className="flex justify-center flex-col items-center gap-3 h-44">
-              <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware_tool-loading">
-                <Typography color="secondary"></Typography>
-              </Localized>
-            </div>
-          )}
-        </div>
-        <div className="flex justify-end">
-          <Localized id="firmware_tool-retry">
-            <Button
-              variant="secondary"
-              disabled={hasPendingBuild}
-              onClick={() => goTo('FlashingMethod')}
-            ></Button>
-          </Localized>
-        </div>
+    <div className="flex flex-col w-full">
+      <div className="flex flex-grow flex-col gap-4">
+        <Typography color="secondary">
+          {l10n.getString('firmware_tool-build_step-description')}
+        </Typography>
       </div>
-    </>
+      <div className="my-4">
+        {!isGlobalLoading && (
+          <div className="flex justify-center flex-col items-center gap-3 h-44">
+            <LoaderIcon
+              slimeState={
+                buildStatus.status !== 'ERROR'
+                  ? SlimeState.JUMPY
+                  : SlimeState.SAD
+              }
+            />
+            <Typography variant="section-title" color="secondary">
+              {l10n.getString(`firmware_tool-build-${buildStatus.status}`)}
+            </Typography>
+          </div>
+        )}
+        {isGlobalLoading && (
+          <div className="flex justify-center flex-col items-center gap-3 h-44">
+            <LoaderIcon slimeState={SlimeState.JUMPY} />
+            <Localized id="firmware_tool-loading">
+              <Typography color="secondary" />
+            </Localized>
+          </div>
+        )}
+      </div>
+      <div className="flex justify-end">
+        <Localized id="firmware_tool-retry">
+          <Button
+            variant="secondary"
+            disabled={hasPendingBuild}
+            onClick={() => goTo('FlashingMethod')}
+          />
+        </Localized>
+      </div>
+    </div>
   );
 }

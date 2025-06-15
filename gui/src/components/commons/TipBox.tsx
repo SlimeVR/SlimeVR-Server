@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
+import classNames from 'classnames';
 import { BulbIcon } from './icon/BulbIcon';
 import { WarningIcon } from './icon/WarningIcon';
 import { Typography } from './Typography';
-import classNames from 'classnames';
 
 export function TipBox({
   children,
@@ -28,7 +28,7 @@ export function TipBox({
           hideIcon && 'hidden'
         )}
       >
-        <BulbIcon></BulbIcon>
+        <BulbIcon />
       </div>
       <div className="flex flex-col">
         <Typography
@@ -62,7 +62,7 @@ export function WarningBox({
           hideIcon && 'hidden'
         )}
       >
-        <WarningIcon></WarningIcon>
+        <WarningIcon />
       </div>
       <div className="flex flex-col justify-center w-full">
         <Typography

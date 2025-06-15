@@ -16,7 +16,7 @@ export type PayloadType = MessageT['payloadType'];
 
 export function usePubSub() {
   const { sendPubSubPacket, usePubSubPacket } = useWebsocketAPI();
-  const [handleTopics, setHandleTopics] = useState<{ [key: number]: TopicIdT }>({});
+  const [handleTopics, setHandleTopics] = useState<Record<number, TopicIdT>>({});
 
   const subscribe = (
     topicId: TopicIdT,

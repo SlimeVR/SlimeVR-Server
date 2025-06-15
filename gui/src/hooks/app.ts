@@ -9,14 +9,14 @@ import {
   StartDataFeedT,
 } from 'solarxr-protocol';
 import { playSoundOnResetEnded, playSoundOnResetStarted } from '@/sounds/sounds';
-import { useConfig } from './config';
-import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';
-import { useWebsocketAPI } from './websocket-api';
 import { error } from '@/utils/logging';
-import { cacheWrap } from './cache';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { bonesAtom, datafeedAtom, devicesAtom } from '@/store/app-store';
 import { updateSentryContext } from '@/utils/sentry';
+import { useConfig } from './config';
+import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';
+import { useWebsocketAPI } from './websocket-api';
+import { cacheWrap } from './cache';
 
 export interface FirmwareRelease {
   name: string;
@@ -120,9 +120,8 @@ export function useProvideAppContext(): AppContext {
               asset.name === 'BOARD_SLIMEVR-firmware.bin' && asset.browser_download_url
           ).browser_download_url,
         };
-      } else {
-        return null;
       }
+      return null;
     };
 
     fetchCurrentFirmwareRelease().then((res) => setCurrentFirmwareRelease(res));
