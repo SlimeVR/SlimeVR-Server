@@ -8,9 +8,9 @@ import {
   useState,
 } from 'react';
 import { BodyPart, TrackerDataT } from 'solarxr-protocol';
-import { useTracker } from '@/hooks/tracker';
-import { PersonFrontIcon } from './PersonFrontIcon';
+import { uniqueNumberFromTracker, useTracker } from '@/hooks/tracker';
 import { FlatDeviceTracker } from '@/store/app-store';
+import { PersonFrontIcon } from './PersonFrontIcon';
 
 interface SlotDot {
   id: string;
@@ -45,7 +45,7 @@ function Tracker({
     updateVelocity(velocity);
   }, [velocity]);
 
-  return <></>;
+  return null;
 }
 
 function Dot({
@@ -94,11 +94,11 @@ function Dot({
           height: dotSize,
           outlineWidth: globalVelocity * 2 + 2,
         }}
-      ></div>
-      {trackers?.map(({ tracker }, index) => (
+      />
+      {trackers?.map(({ tracker }) => (
         <Tracker
           tracker={tracker}
-          key={index}
+          key={uniqueNumberFromTracker(tracker)}
           updateVelocity={(vel) => updateVelocity(vel)}
         />
       ))}
@@ -126,14 +126,11 @@ export function BodyDisplay({
   const personRef = useRef<HTMLDivElement | null>(null);
   const [slotsButtonsPos, setSlotsButtonPos] = useState<SlotDot[]>([]);
 
-  const getSlotsPos = () => {
-    return (
-      (personRef.current && [
-        ...(personRef.current.querySelectorAll('.body-part-circle') as any),
-      ]) ||
-      []
-    );
-  };
+  const getSlotsPos = () =>
+    (personRef.current && [
+      ...(personRef.current.querySelectorAll('.body-part-circle') as any),
+    ]) ||
+    [];
 
   const getOffset = (el: HTMLDivElement, offset = { left: 0, top: 0 }) => {
     const rect = el.getBoundingClientRect();
@@ -166,7 +163,7 @@ export function BodyDisplay({
 
   const trackerPartGrouped = useMemo(
     () =>
-      trackers.reduce<{ [key: number]: FlatDeviceTracker[] }>((curr, td) => {
+      trackers.reduce<Record<number, FlatDeviceTracker[]>>((curr, td) => {
         if (!td) return curr;
 
         const key = td.tracker.info?.bodyPart || BodyPart.NONE;
@@ -187,7 +184,7 @@ export function BodyDisplay({
           variant === 'tracker-select' && 'mx-10'
         )}
       >
-        <PersonFrontIcon width={width}></PersonFrontIcon>
+        <PersonFrontIcon width={width} />
         {slotsButtonsPos.map((dotData) => (
           <Dot
             {...dotData}

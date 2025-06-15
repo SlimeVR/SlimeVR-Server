@@ -1,7 +1,11 @@
 import { Vec3fT } from 'solarxr-protocol';
 import { Vector3 } from 'three';
 
-export type Vector3Object = { x: number; y: number; z: number };
+export interface Vector3Object {
+  x: number;
+  y: number;
+  z: number;
+}
 
 export function averageVector(vecs: Vector3[]) {
   if (vecs.length === 0) return new Vector3();

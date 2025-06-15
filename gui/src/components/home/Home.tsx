@@ -17,6 +17,7 @@ import classNames from 'classnames';
 import { useAtomValue } from 'jotai';
 import { flatTrackersAtom } from '@/store/app-store';
 import { useVRCConfig } from '@/hooks/vrc-config';
+import { uniqueNumberFromTracker } from '@/hooks/tracker';
 
 const DONT_REPEAT_STATUSES = [StatusData.StatusTrackerReset];
 
@@ -49,7 +50,7 @@ export function Home() {
         to="/vr-mode"
         className="xs:hidden absolute z-50 h-12 w-12 rounded-full bg-accent-background-30 bottom-3 right-3 flex justify-center items-center fill-background-10"
       >
-        <HeadsetIcon></HeadsetIcon>
+        <HeadsetIcon />
       </NavLink>
       <div className="h-full overflow-y-auto">
         <div
@@ -74,12 +75,12 @@ export function Home() {
             <WarningBox whitespace={false}>
               <div className="flex gap-2 justify-between items-center w-full">
                 <div className="flex">
-                  <Localized id={'vrc_config-invalid'}></Localized>
+                  <Localized id={'vrc_config-invalid'} />
                 </div>
                 <div className="flex">
                   <Link to="/vrc-warnings">
                     <div className="rounded-md p-2 bg-background-90 bg-opacity-15 hover:bg-background-10 hover:bg-opacity-25 text-nowrap">
-                      <Localized id={'vrc_config-show_more'}></Localized>
+                      <Localized id={'vrc_config-show_more'} />
                     </div>
                   </Link>
                 </div>
@@ -98,9 +99,9 @@ export function Home() {
 
           {!config?.debug && trackers.length > 0 && (
             <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-5 my-5">
-              {trackers.map(({ tracker, device }, index) => (
+              {trackers.map(({ tracker, device }) => (
                 <TrackerCard
-                  key={index}
+                  key={uniqueNumberFromTracker(tracker)}
                   tracker={tracker}
                   device={device}
                   onClick={() => sendToSettings(tracker)}
@@ -119,7 +120,7 @@ export function Home() {
               <TrackersTable
                 flatTrackers={trackers}
                 clickedTracker={(tracker) => sendToSettings(tracker)}
-              ></TrackersTable>
+              />
             </div>
           )}
         </div>

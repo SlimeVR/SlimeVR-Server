@@ -6,19 +6,23 @@ import { BodyPart, BoneT } from 'solarxr-protocol';
 import { Vector3FromVec3fT } from '@/maths/vector3';
 import { QuaternionFromQuatT } from '@/maths/quaternion';
 
-const _vector = new Vector3();
-const _boneMatrix = new Matrix4();
-const _matrixWorldInv = new Matrix4();
+const VECTOR = new Vector3();
+const BONE_MATRIX = new Matrix4();
+const MATRIX_WORLD_INV = new Matrix4();
 
 export class BasedSkeletonHelper extends LineSegments2 {
   isSkeletonHelper: boolean;
+
   root: Object3D;
+
   bones: Bone[];
+
   readonly type = 'SkeletonHelper';
 
   get resolution() {
     return this.material.resolution;
   }
+
   set resolution(v: Vector2) {
     this.material.resolution = v;
   }
@@ -75,24 +79,24 @@ export class BasedSkeletonHelper extends LineSegments2 {
   }
 
   updateMatrixWorld(force: boolean) {
-    const bones = this.bones;
+    const { bones } = this;
 
-    const geometry = this.geometry;
+    const { geometry } = this;
     const vertices = [];
 
-    _matrixWorldInv.copy(this.root.matrixWorld).invert();
+    MATRIX_WORLD_INV.copy(this.root.matrixWorld).invert();
 
     for (let i = 0; i < bones.length; i++) {
       const bone = bones[i];
 
       if (bone.parent && (bone.parent as Bone).isBone) {
-        _boneMatrix.multiplyMatrices(_matrixWorldInv, bone.parent.matrixWorld);
-        _vector.setFromMatrixPosition(_boneMatrix);
-        vertices.push(_vector.x, _vector.y, _vector.z);
+        BONE_MATRIX.multiplyMatrices(MATRIX_WORLD_INV, bone.parent.matrixWorld);
+        VECTOR.setFromMatrixPosition(BONE_MATRIX);
+        vertices.push(VECTOR.x, VECTOR.y, VECTOR.z);
 
-        _boneMatrix.multiplyMatrices(_matrixWorldInv, bone.matrixWorld);
-        _vector.setFromMatrixPosition(_boneMatrix);
-        vertices.push(_vector.x, _vector.y, _vector.z);
+        BONE_MATRIX.multiplyMatrices(MATRIX_WORLD_INV, bone.matrixWorld);
+        VECTOR.setFromMatrixPosition(BONE_MATRIX);
+        vertices.push(VECTOR.x, VECTOR.y, VECTOR.z);
       }
     }
 
@@ -127,13 +131,14 @@ function getBoneList(object: Object3D): Bone[] {
 
 export class BoneKind extends Bone {
   boneT: BoneT;
+
   tail: boolean;
 
   constructor(bones: Map<BodyPart, BoneT>, bodyPart: BodyPart, tail: boolean) {
     super();
     const bone = bones.get(bodyPart);
     if (!bone) {
-      throw 'Couldnt find bone ' + BodyPart[bodyPart];
+      throw Error(`Couldnt find bone ${BodyPart[bodyPart]}`);
     }
     this.boneT = bone;
     this.name = BodyPart[bodyPart];
@@ -186,7 +191,7 @@ export class BoneKind extends Bone {
   get boneColor(): Color {
     switch (this.boneT.bodyPart) {
       case BodyPart.NONE:
-        throw 'Unexpected body part';
+        throw Error('Unexpected body part');
       case BodyPart.HEAD:
         return new Color('black');
       case BodyPart.NECK:
@@ -262,7 +267,7 @@ export class BoneKind extends Bone {
   static children(part: BodyPart): BodyPart[] {
     switch (part) {
       case BodyPart.NONE:
-        throw 'Unexpected body part';
+        throw Error('Unexpected body part');
       case BodyPart.HEAD:
         return [BodyPart.NECK];
       case BodyPart.NECK:
@@ -388,7 +393,7 @@ export class BoneKind extends Bone {
   static parent(part: BodyPart): BodyPart | null {
     switch (part) {
       case BodyPart.NONE:
-        throw 'Unexpected body part';
+        throw Error('Unexpected body part');
       case BodyPart.HEAD:
         return null;
       case BodyPart.NECK:

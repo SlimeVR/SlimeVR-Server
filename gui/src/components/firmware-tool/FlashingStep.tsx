@@ -17,11 +17,11 @@ import {
   RpcMessage,
 } from 'solarxr-protocol';
 import { useOnboarding } from '@/hooks/onboarding';
-import { DeviceCardControl } from './DeviceCard';
 import { WarningBox } from '@/components/commons/TipBox';
 import { Button } from '@/components/commons/Button';
 import { useNavigate } from 'react-router-dom';
 import { firmwareToolS3BaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
+import { DeviceCardControl } from './DeviceCard';
 
 export function FlashingStep({
   goTo,
@@ -38,14 +38,17 @@ export function FlashingStep({
     useFirmwareTool();
   const { state: onboardingState } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const [status, setStatus] = useState<{
-    [key: string]: {
-      status: FirmwareUpdateStatus;
-      type: FirmwareUpdateMethod;
-      progress: number;
-      deviceNames: string[];
-    };
-  }>({});
+  const [status, setStatus] = useState<
+    Record<
+      string,
+      {
+        status: FirmwareUpdateStatus;
+        type: FirmwareUpdateMethod;
+        progress: number;
+        deviceNames: string[];
+      }
+    >
+  >({});
 
   const clear = () => {
     setStatus({});
@@ -161,60 +164,58 @@ export function FlashingStep({
   );
 
   return (
-    <>
-      <div className="flex flex-col w-full">
-        <div className="flex flex-grow flex-col gap-4">
-          <Typography color="secondary">
-            {l10n.getString('firmware_tool-flashing_step-description')}
-          </Typography>
-        </div>
+    <div className="flex flex-col w-full">
+      <div className="flex flex-grow flex-col gap-4">
+        <Typography color="secondary">
+          {l10n.getString('firmware_tool-flashing_step-description')}
+        </Typography>
+      </div>
 
-        <div className="my-4 flex gap-2 flex-col">
-          {shouldShowRebootWarning && (
-            <Localized id="firmware_tool-flashing_step-warning-v2">
-              <WarningBox>Warning</WarningBox>
-            </Localized>
-          )}
+      <div className="my-4 flex gap-2 flex-col">
+        {shouldShowRebootWarning && (
+          <Localized id="firmware_tool-flashing_step-warning-v2">
+            <WarningBox>Warning</WarningBox>
+          </Localized>
+        )}
 
-          {Object.keys(status).map((id) => {
-            const val = status[id];
+        {Object.keys(status).map((id) => {
+          const val = status[id];
 
-            return (
-              <DeviceCardControl
-                status={val.status}
-                progress={val.progress}
-                key={id}
-                deviceNames={val.deviceNames}
-              ></DeviceCardControl>
-            );
-          })}
-          <div className="flex gap-2 self-end">
-            <Localized id="firmware_tool-retry">
-              <Button
-                variant="secondary"
-                disabled={trackerWithErrors.length === 0}
-                onClick={retryError}
-              ></Button>
-            </Localized>
-            <Localized id="firmware_tool-flashing_step-flash_more">
-              <Button
-                variant="secondary"
-                disabled={hasPendingTrackers}
-                onClick={() => goTo('FlashingMethod')}
-              ></Button>
-            </Localized>
-            <Localized id="firmware_tool-flashing_step-exit">
-              <Button
-                variant="primary"
-                onClick={() => {
-                  clear();
-                  nav('/');
-                }}
-              ></Button>
-            </Localized>
-          </div>
+          return (
+            <DeviceCardControl
+              status={val.status}
+              progress={val.progress}
+              key={id}
+              deviceNames={val.deviceNames}
+            />
+          );
+        })}
+        <div className="flex gap-2 self-end">
+          <Localized id="firmware_tool-retry">
+            <Button
+              variant="secondary"
+              disabled={trackerWithErrors.length === 0}
+              onClick={retryError}
+            />
+          </Localized>
+          <Localized id="firmware_tool-flashing_step-flash_more">
+            <Button
+              variant="secondary"
+              disabled={hasPendingTrackers}
+              onClick={() => goTo('FlashingMethod')}
+            />
+          </Localized>
+          <Localized id="firmware_tool-flashing_step-exit">
+            <Button
+              variant="primary"
+              onClick={() => {
+                clear();
+                nav('/');
+              }}
+            />
+          </Localized>
         </div>
       </div>
-    </>
+    </div>
   );
 }

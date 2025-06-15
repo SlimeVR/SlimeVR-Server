@@ -11,13 +11,13 @@ import { Button } from '@/components/commons/Button';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { BodyAssignment } from '@/components/onboarding/BodyAssignment';
-import { MountingSelectionMenu } from './MountingSelectionMenu';
 import { useLocalization } from '@fluent/react';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { Quaternion } from 'three';
 import { AssignMode, defaultConfig, useConfig } from '@/hooks/config';
 import { assignedTrackersAtom, FlatDeviceTracker } from '@/store/app-store';
 import { useAtomValue } from 'jotai';
+import { MountingSelectionMenu } from './MountingSelectionMenu';
 
 export function ManualMountingPage() {
   const { isMobile } = useBreakpoint('mobile');
@@ -34,7 +34,7 @@ export function ManualMountingPage() {
 
   const trackerPartGrouped = useMemo(
     () =>
-      assignedTrackers.reduce<{ [key: number]: FlatDeviceTracker[] }>(
+      assignedTrackers.reduce<Record<number, FlatDeviceTracker[]>>(
         (curr, td) => {
           const key = td.tracker.info?.bodyPart || BodyPart.NONE;
           return {
@@ -92,7 +92,7 @@ export function ManualMountingPage() {
         isOpen={selectedRole !== BodyPart.NONE}
         onClose={() => setSelectRole(BodyPart.NONE)}
         onDirectionSelected={onDirectionSelected}
-      ></MountingSelectionMenu>
+      />
       <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative overflow-y-auto">
         <div className="flex xs:flex-row mobile:flex-col h-full px-8 xs:w-full xs:justify-center mobile:px-4 items-center">
           <div className="flex flex-col w-full xs:max-w-sm gap-3">
@@ -122,10 +122,10 @@ export function ManualMountingPage() {
             <BodyAssignment
               width={isMobile ? 160 : undefined}
               mirror={config?.mirrorView ?? defaultConfig.mirrorView}
-              onlyAssigned={true}
+              onlyAssigned
               assignMode={AssignMode.All}
               onRoleSelected={setSelectRole}
-            ></BodyAssignment>
+            />
           </div>
         </div>
       </div>

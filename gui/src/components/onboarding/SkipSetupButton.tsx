@@ -11,7 +11,7 @@ export function SkipSetupButton({
   modalVisible: boolean;
   visible: boolean;
 }) {
-  if (!visible) return <></>;
+  if (!visible) return null;
   useEffect(() => {
     if (modalVisible) return;
 
@@ -35,7 +35,7 @@ export function SkipSetupButton({
       onClick={onClick}
     >
       <div className="flex flex-col justify-center items-center">
-        <EscapeIcon size={42}></EscapeIcon>
+        <EscapeIcon size={42} />
         <p className="text-standard">ESC</p>
       </div>
     </button>

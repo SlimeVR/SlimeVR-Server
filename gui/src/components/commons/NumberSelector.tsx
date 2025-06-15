@@ -1,8 +1,8 @@
 import { Control, Controller } from 'react-hook-form';
-import { Button } from './Button';
-import { Typography } from './Typography';
 import { useCallback, useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
+import { Button } from './Button';
+import { Typography } from './Typography';
 
 export function NumberSelector({
   label,

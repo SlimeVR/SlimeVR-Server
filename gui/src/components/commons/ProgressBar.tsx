@@ -21,6 +21,7 @@ export function ProgressBar({
       {Array.from({ length: parts }).map((_, key) => (
         <Bar
           index={key}
+          // eslint-disable-next-line react/no-array-index-key
           key={key}
           progress={progress}
           height={height}
@@ -28,7 +29,7 @@ export function ProgressBar({
           animated={animated}
           parts={parts}
           bottom={bottom}
-        ></Bar>
+        />
       ))}
     </div>
   );
@@ -74,7 +75,7 @@ export function Bar({
           width: `${value * 100}%`,
           height: `${height}px`,
         }}
-      ></div>
+      />
     </div>
   );
 }

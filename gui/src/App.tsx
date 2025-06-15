@@ -5,6 +5,11 @@ import {
   Route,
   Routes,
 } from 'react-router-dom';
+import { Event, listen } from '@tauri-apps/api/event';
+import * as os from '@tauri-apps/plugin-os';
+import { open } from '@tauri-apps/plugin-shell';
+import semver from 'semver';
+import { withSentryReactRouterV6Routing } from '@sentry/react';
 import { Home } from './components/home/Home';
 import { MainLayout } from './components/MainLayout';
 import { AppContextProvider } from './components/providers/AppContext';
@@ -16,7 +21,6 @@ import {
   WebSocketApiContext,
 } from './hooks/websocket-api';
 
-import { Event, listen } from '@tauri-apps/api/event';
 import { OnboardingContextProvider } from './components/onboarding/OnboardingContextProvicer';
 import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
 import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
@@ -36,15 +40,12 @@ import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
 import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
-import * as os from '@tauri-apps/plugin-os';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
 import { StatusProvider } from './components/providers/StatusSystemContext';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
 import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
 import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
-import { open } from '@tauri-apps/plugin-shell';
-import semver from 'semver';
 import { useBreakpoint, useIsTauri } from './hooks/breakpoint';
 import { VRModePage } from './components/vr-mode/VRModePage';
 import { InterfaceSettings } from './components/settings/pages/InterfaceSettings';
@@ -54,7 +55,6 @@ import { AppLayout } from './AppLayout';
 import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
 import { useDiscordPresence } from './hooks/discord-presence';
-import { withSentryReactRouterV6Routing } from '@sentry/react';
 import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
 import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
 import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
@@ -75,9 +75,9 @@ function Layout() {
 
   return (
     <>
-      <SerialDetectionModal></SerialDetectionModal>
-      <VersionUpdateModal></VersionUpdateModal>
-      <UnknownDeviceModal></UnknownDeviceModal>
+      <SerialDetectionModal />
+      <VersionUpdateModal />
+      <UnknownDeviceModal />
       <SentryRoutes>
         <Route element={<AppLayout />}>
           <Route
@@ -158,7 +158,7 @@ function Layout() {
             />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
             <Route path="enter-vr" element={<EnterVRPage />} />
-            <Route path="mounting/choose" element={<MountingChoose />}></Route>
+            <Route path="mounting/choose" element={<MountingChoose />} />
             <Route path="mounting/auto" element={<AutomaticMountingPage />} />
             <Route path="mounting/manual" element={<ManualMountingPage />} />
             <Route path="reset-tutorial" element={<ResetTutorialPage />} />
@@ -177,7 +177,7 @@ function Layout() {
             <Route path="stay-aligned" element={<StayAlignedSetup />} />
             <Route path="done" element={<DonePage />} />
           </Route>
-          <Route path="*" element={<TopBar></TopBar>}></Route>
+          <Route path="*" element={<TopBar />} />
         </Route>
       </SentryRoutes>
     </>
@@ -190,7 +190,7 @@ export default function App() {
   const isTauri = useIsTauri();
 
   useEffect(() => {
-    const onKeydown: (arg0: KeyboardEvent) => void = function (event) {
+    const onKeydown = (event: KeyboardEvent) => {
       // prevent search bar keybind
       if (
         event.key === 'F3' ||
@@ -239,10 +239,11 @@ export default function App() {
         'server-status',
         (event: Event<[string, string]>) => {
           const [eventType, s] = event.payload;
-          if ('stderr' === eventType) {
+          if (eventType === 'stderr') {
             // This strange invocation is what lets us lose the line information in the console
             // See more here: https://stackoverflow.com/a/48994308
             // These two are fine to keep with console.log, they are server logs
+            /* eslint-disable no-console */
             setTimeout(
               console.log.bind(
                 console,
@@ -260,6 +261,7 @@ export default function App() {
                 'color:green'
               )
             );
+            /* eslint-enable no-console */
           } else if (eventType === 'error') {
             error('Error: %s', s);
           } else if (eventType === 'terminated') {
@@ -278,7 +280,7 @@ export default function App() {
   useEffect(() => {
     function onKeyboard(ev: KeyboardEvent) {
       if (ev.key === 'F1') {
-        return open(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'));
+        open(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'));
       }
     }
 
@@ -296,10 +298,8 @@ export default function App() {
                 <VersionContext.Provider value={updateFound}>
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
                     <Preload />
-                    {!websocketAPI.isConnected && (
-                      <ConnectionLost></ConnectionLost>
-                    )}
-                    {websocketAPI.isConnected && <Layout></Layout>}
+                    {!websocketAPI.isConnected && <ConnectionLost />}
+                    {websocketAPI.isConnected && <Layout />}
                   </div>
                 </VersionContext.Provider>
               </StatusProvider>

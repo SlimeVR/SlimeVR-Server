@@ -28,12 +28,12 @@ interface TooltipPos {
   height?: number;
 }
 
-type Rect = {
+interface Rect {
   left: number;
   top: number;
   width: number;
   height: number;
-};
+}
 
 function overlapArea(rect1: Rect, rect2: Rect) {
   // Find the overlap in the x direction (width)
@@ -273,6 +273,8 @@ export function FloatingTooltip({
         elem.removeEventListener('mouseleave', onMouseLeave);
       };
     }
+
+    return undefined;
   }, []);
 
   useLayoutEffect(() => {
@@ -395,6 +397,8 @@ export function DrawerTooltip({
         clearTimeout(touchTimeout.current);
       };
     }
+
+    return undefined;
   }, []);
 
   return (
@@ -406,7 +410,7 @@ export function DrawerTooltip({
           opacity: drawerStyle ? 0.5 : 0,
           pointerEvents: drawerStyle ? 'all' : 'none',
         }}
-      ></div>
+      />
       <div
         className={classNames(
           'fixed z-50 w-full text-background-10 max-h-full -bottom-full transition-all overflow-clip'
@@ -422,10 +426,11 @@ export function DrawerTooltip({
               Pro tip
             </Typography>
             <button
+              type="button"
               className="absolute right-4 top-3 h-6 w-6 bg-background-70 rounded-full flex justify-center items-center"
               onClick={() => close()}
             >
-              <CloseIcon size={20} className="stroke-white"></CloseIcon>
+              <CloseIcon size={20} className="stroke-white" />
             </button>
           </div>
           <div

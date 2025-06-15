@@ -104,7 +104,7 @@ export function ManualHeightStep({
                 'onboarding-scaled_proportions-manual_height-height-v2'
               )}
               valueLabelFormat={(value) =>
-                isNaN(value)
+                Number.isNaN(value)
                   ? l10n.getString(
                       'onboarding-scaled_proportions-manual_height-unknown'
                     )

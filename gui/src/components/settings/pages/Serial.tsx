@@ -74,17 +74,18 @@ export function Serial() {
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.SerialDevicesRequest, new SerialDevicesRequestT());
-    const typedState: { serialPort: string } = state as any;
+    const typedState: { serialPort: string } = state;
     if (typedState?.serialPort) {
       reset({ port: typedState.serialPort });
     }
   }, []);
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       sendRPCPacket(RpcMessage.CloseSerialRequest, new CloseSerialRequestT());
-    };
-  }, []);
+    },
+    []
+  );
 
   useRPCPacket(
     RpcMessage.SerialUpdateResponse,
@@ -214,7 +215,7 @@ export function Serial() {
       >
         <Localized
           id="settings-serial-factory_reset-warning"
-          elems={{ b: <b></b> }}
+          elems={{ b: <b /> }}
         >
           <WarningBox>
             <b>Warning:</b> This will reset the tracker to factory settings.
@@ -235,16 +236,15 @@ export function Serial() {
           <Typography variant="main-title">
             {l10n.getString('settings-serial')}
           </Typography>
-          <>
-            {l10n
-              .getString('settings-serial-description')
-              .split('\n')
-              .map((line, i) => (
-                <Typography color="secondary" key={i}>
-                  {line}
-                </Typography>
-              ))}
-          </>
+          {l10n
+            .getString('settings-serial-description')
+            .split('\n')
+            .map((line, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Typography color="secondary" key={i}>
+                {line}
+              </Typography>
+            ))}
         </div>
         <div className="bg-background-80 rounded-lg flex-grow h-0 flex flex-col p-2">
           <div
@@ -293,7 +293,7 @@ export function Serial() {
                     label: device.name?.toString() || 'error',
                     value: device.port?.toString() || 'error',
                   }))}
-                ></Dropdown>
+                />
               </div>
             </div>
           </div>

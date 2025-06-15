@@ -12,9 +12,9 @@
   grid-template:
     's t' var(--connect-tracker-layout-top)
     's c' calc(100% - var(--connect-tracker-layout-top))
-    / calc(var(--connect-tracker-layout-sidebar)) calc(100% - var(
-          --connect-tracker-layout-sidebar
-        ));
+    / calc(var(--connect-tracker-layout-sidebar)) calc(
+      100% - var(--connect-tracker-layout-sidebar)
+    );
 
   @screen mobile {
     grid-template:

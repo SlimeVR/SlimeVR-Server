@@ -1,11 +1,5 @@
 import { Typography } from '@/components/commons/Typography';
-import { DoneStep } from './stay-aligned-steps/Done';
 import { useLocalization } from '@fluent/react';
-import {
-  FlatRelaxedPoseStep,
-  SittingRelaxedPoseStep,
-  StandingRelaxedPoseStep,
-} from './stay-aligned-steps/RelaxedPoseSteps';
 import { EnableStayAlignedRequestT, RpcMessage } from 'solarxr-protocol';
 import { RPCPacketType, useWebsocketAPI } from '@/hooks/websocket-api';
 import { useEffect, useRef } from 'react';
@@ -17,6 +11,12 @@ import {
 } from '@/components/widgets/SkeletonVisualizerWidget';
 import { Vector3 } from 'three';
 import { Easing } from '@tweenjs/tween.js';
+import {
+  FlatRelaxedPoseStep,
+  SittingRelaxedPoseStep,
+  StandingRelaxedPoseStep,
+} from './stay-aligned-steps/RelaxedPoseSteps';
+import { DoneStep } from './stay-aligned-steps/Done';
 import { VerifyMountingStep } from './stay-aligned-steps/VerifyMounting';
 import { PutTrackersOnStep } from './stay-aligned-steps/PutTrackersOnStep';
 import { PreparationStep } from './stay-aligned-steps/PreparationStep';
@@ -189,7 +189,7 @@ export function StayAlignedSetup() {
                 component: DoneStep,
               },
             ]}
-          ></VerticalStepper>
+          />
         </div>
       </div>
       <div className="bg-background-70 rounded-md xs:max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg w-full mobile:h-[30%]">
@@ -222,7 +222,7 @@ export function StayAlignedSetup() {
               },
             });
           }}
-        ></SkeletonVisualizerWidget>
+        />
       </div>
     </div>
   );

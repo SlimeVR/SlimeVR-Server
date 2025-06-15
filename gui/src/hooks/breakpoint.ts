@@ -1,3 +1,4 @@
+// eslint-disable-next-line import-x/no-extraneous-dependencies
 import resolveConfig from 'tailwindcss/resolveConfig';
 import { useMediaQuery } from 'react-responsive';
 import tailwindConfig from '../../tailwind.config';

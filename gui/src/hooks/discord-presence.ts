@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { useConfig } from './config';
-import { useInterval } from './timeout';
 import { invoke } from '@tauri-apps/api/core';
 import { warn } from '@/utils/logging';
 import { useLocalization } from '@fluent/react';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { getDefaultStore } from 'jotai';
+import { useInterval } from './timeout';
+import { useConfig } from './config';
 
 export function useDiscordPresence() {
   const { config } = useConfig();

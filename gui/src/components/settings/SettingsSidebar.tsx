@@ -20,7 +20,7 @@ export function SettingsLink({
   });
 
   const isActive = useMemo(() => {
-    const typedState: { scrollTo?: string } = state as any;
+    const typedState: { scrollTo?: string } = state;
     return (
       (doesMatch && !scrollTo && !typedState?.scrollTo) ||
       (doesMatch && typedState?.scrollTo == scrollTo)

@@ -26,25 +26,23 @@ export function TrackersStillOnModal({
   return (
     <BaseModal isOpen={isOpen} onRequestClose={cancel} important>
       <div className="flex flex-col gap-3">
-        <>
-          <div className="flex flex-col items-center gap-3 fill-accent-background-20">
-            <div className="flex flex-col items-center gap-2">
-              <Typography variant="main-title">
-                {l10n.getString('trackers_still_on-modal-title')}
-              </Typography>
-              <Typography variant="standard">
-                {l10n.getString('trackers_still_on-modal-description')}
-              </Typography>
-            </div>
+        <div className="flex flex-col items-center gap-3 fill-accent-background-20">
+          <div className="flex flex-col items-center gap-2">
+            <Typography variant="main-title">
+              {l10n.getString('trackers_still_on-modal-title')}
+            </Typography>
+            <Typography variant="standard">
+              {l10n.getString('trackers_still_on-modal-description')}
+            </Typography>
           </div>
+        </div>
 
-          <Button variant="primary" onClick={accept}>
-            {l10n.getString('trackers_still_on-modal-confirm')}
-          </Button>
-          <Button variant="tertiary" onClick={cancel}>
-            {l10n.getString('trackers_still_on-modal-cancel')}
-          </Button>
-        </>
+        <Button variant="primary" onClick={accept}>
+          {l10n.getString('trackers_still_on-modal-confirm')}
+        </Button>
+        <Button variant="tertiary" onClick={cancel}>
+          {l10n.getString('trackers_still_on-modal-cancel')}
+        </Button>
       </div>
     </BaseModal>
   );

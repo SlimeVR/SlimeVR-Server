@@ -2,9 +2,7 @@ import { useRef, useState } from 'react';
 
 export function useCountdown({
   duration = 3,
-  onCountdownEnd = () => {
-    return;
-  },
+  onCountdownEnd = () => {},
 }: {
   duration?: number;
   onCountdownEnd: () => void;

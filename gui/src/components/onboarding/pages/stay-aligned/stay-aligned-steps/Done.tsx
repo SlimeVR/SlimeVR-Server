@@ -8,22 +8,22 @@ export function DoneStep({ goTo }: VerticalStepComponentProps) {
     <div className="flex flex-col items-center w-full justify-center gap-5 py-2">
       <div className="flex gap-1 flex-col justify-center items-center pt-10">
         <Localized id="onboarding-stay_aligned-done-description">
-          <Typography variant="main-title"></Typography>
+          <Typography variant="main-title" />
         </Localized>
         <Localized id="onboarding-stay_aligned-done-description-2">
-          <Typography color="secondary"></Typography>
+          <Typography color="secondary" />
         </Localized>
       </div>
       <div className="flex gap-3 justify-between">
         <Localized id="onboarding-stay_aligned-restart">
-          <Button variant={'secondary'} onClick={() => goTo('start')}></Button>
+          <Button variant={'secondary'} onClick={() => goTo('start')} />
         </Localized>
         <Localized id="onboarding-stay_aligned-done">
           <Button
             variant="primary"
             to="/settings/trackers"
             state={{ scrollTo: 'stayaligned' }}
-          ></Button>
+          />
         </Localized>
       </div>
     </div>

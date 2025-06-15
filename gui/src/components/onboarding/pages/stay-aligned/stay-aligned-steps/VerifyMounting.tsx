@@ -25,7 +25,7 @@ export function VerifyMountingStep({
       </div>
       <div className="flex gap-3 justify-between">
         <Localized id="onboarding-stay_aligned-previous_step">
-          <Button variant="secondary" onClick={prevStep}></Button>
+          <Button variant="secondary" onClick={prevStep} />
         </Localized>
 
         <div className="flex gap-2">
@@ -34,10 +34,10 @@ export function VerifyMountingStep({
               variant={'secondary'}
               to="/onboarding/mounting/choose"
               state={{ alonePage: true }}
-            ></Button>
+            />
           </Localized>
           <Localized id="onboarding-stay_aligned-next_step">
-            <Button variant="primary" onClick={nextStep}></Button>
+            <Button variant="primary" onClick={nextStep} />
           </Localized>
         </div>
       </div>

@@ -102,12 +102,9 @@ export function MagnetometerToggleSetting({
         </Typography>
         <Localized
           id="settings-general-tracker_mechanics-use_mag_on_all_trackers-description"
-          elems={{ b: <b></b> }}
+          elems={{ b: <b /> }}
         >
-          <Typography
-            color="secondary"
-            whitespace="whitespace-pre-line"
-          ></Typography>
+          <Typography color="secondary" whitespace="whitespace-pre-line" />
         </Localized>
       </div>
       <CheckBox
@@ -129,20 +126,17 @@ export function MagnetometerToggleSetting({
       <Localized
         id="tracker-settings-use_mag-description"
         elems={{
-          b: <b></b>,
+          b: <b />,
           magSetting: (
             <Link
               to="/settings/trackers"
               state={{ scrollTo: 'mechanics-magnetometer' }}
               className="underline"
-            ></Link>
+            />
           ),
         }}
       >
-        <Typography
-          color="secondary"
-          whitespace="whitespace-pre-line"
-        ></Typography>
+        <Typography color="secondary" whitespace="whitespace-pre-line" />
       </Localized>
       <div className="flex">
         <CheckBox

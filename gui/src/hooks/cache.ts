@@ -58,9 +58,8 @@ export async function cacheWrap(
     const defaultItem = await orDefault();
     await cacheSet(key, defaultItem, ttl);
     return defaultItem;
-  } else {
-    return (await cacheGet(key))!;
   }
+  return (await cacheGet(key))!;
 }
 
 export async function cacheDelete(key: string) {

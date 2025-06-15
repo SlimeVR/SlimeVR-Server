@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 export function A({ href, children }: { href?: string; children?: ReactNode }) {
   return (
     <a
-      href="javascript:void(0)"
+      href={'javascript:'}
       onClick={() =>
         href && open(href).catch(() => window.open(href, '_blank'))
       }

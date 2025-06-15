@@ -9,9 +9,9 @@ import {
   SkeletonBone,
   SkeletonPartT,
 } from 'solarxr-protocol';
-import { useWebsocketAPI } from './websocket-api';
 import { useLocalization } from '@fluent/react';
 import { log } from '@/utils/logging';
+import { useWebsocketAPI } from './websocket-api';
 
 export enum ProcessStatus {
   PENDING,
@@ -39,15 +39,15 @@ export function useProvideAutobone(): AutoboneContext {
   const [eta, setEta] = useState(-1);
   const [skeletonParts, setSkeletonParts] = useState<SkeletonPartT[] | null>(null);
 
-  const bodyParts = useMemo(() => {
-    return (
+  const bodyParts = useMemo(
+    () =>
       skeletonParts?.map(({ bone, value }) => ({
         bone,
-        label: l10n.getString('skeleton_bone-' + SkeletonBone[bone]),
+        label: l10n.getString(`skeleton_bone-${SkeletonBone[bone]}`),
         value,
-      })) || []
-    );
-  }, [skeletonParts]);
+      })) || [],
+    [skeletonParts]
+  );
 
   const startProcess = (processType: AutoBoneProcessType) => {
     // Don't allow multiple processes at once (for now atleast)
@@ -118,6 +118,8 @@ export function useProvideAutobone(): AutoboneContext {
             //     new SkeletonConfigRequestT()
             //   );
             //   break;
+
+            default:
           }
         }
       }

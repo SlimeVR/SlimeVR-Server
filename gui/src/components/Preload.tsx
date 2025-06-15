@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet';
+
 export function Preload() {
   return (
     <Helmet>

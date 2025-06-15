@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { invoke, isTauri } from '@tauri-apps/api/core';
 
 export function log(...msgs: any[]) {

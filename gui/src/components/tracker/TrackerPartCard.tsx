@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { MouseEventHandler, useEffect, useMemo, useState } from 'react';
 import { BodyPart, TrackerDataT } from 'solarxr-protocol';
-import { useTracker } from '@/hooks/tracker';
+import { uniqueNumberFromTracker, useTracker } from '@/hooks/tracker';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
@@ -96,16 +96,16 @@ export function TrackerPartCard({
               direction === 'right' ? '-right-6' : '-left-6'
             )}
           >
-            <WarningIcon></WarningIcon>
+            <WarningIcon />
           </div>
         )}
         <Typography color="secondary">
-          {l10n.getString('body_part-' + BodyPart[role])}
+          {l10n.getString(`body_part-${BodyPart[role]}`)}
         </Typography>
-        {td?.map(({ tracker }, index) => (
+        {td?.map(({ tracker }) => (
           <Tracker
             tracker={tracker}
-            key={index}
+            key={uniqueNumberFromTracker(tracker)}
             updateVelocity={(vel) => updateVelocity(vel)}
           />
         ))}
@@ -115,6 +115,7 @@ export function TrackerPartCard({
           </Typography>
         )}
       </div>
-    )) || <></>
+    )) ||
+    null
   );
 }

@@ -19,7 +19,7 @@ export function PutTrackersOnStep({ nextStep }: VerticalStepComponentProps) {
         <div className="flex flex-grow flex-col gap-4">
           <div>
             <Localized id="onboarding-stay_aligned-put_trackers_on-description">
-              <Typography color="secondary"></Typography>
+              <Typography color="secondary" />
             </Localized>
           </div>
           <div className="flex">
@@ -41,7 +41,7 @@ export function PutTrackersOnStep({ nextStep }: VerticalStepComponentProps) {
             width={150}
             dotsSize={15}
             variant="dots"
-            hideUnassigned={true}
+            hideUnassigned
           />
         </div>
         <div className="flex flex-col gap-3">
@@ -51,7 +51,7 @@ export function PutTrackersOnStep({ nextStep }: VerticalStepComponentProps) {
                 variant="primary"
                 onClick={nextStep}
                 disabled={!canContinue}
-              ></Button>
+              />
             </Localized>
           </div>
         </div>

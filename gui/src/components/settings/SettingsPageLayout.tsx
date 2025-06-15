@@ -19,15 +19,13 @@ export function SettingsPageLayout({
     if (!pageRef.current || !typedState || !typedState.scrollTo) {
       return;
     }
-    const elem = pageRef.current.querySelector(
+    const elem = pageRef.current.querySelector<HTMLElement>(
       `#${typedState.scrollTo}`
-    ) as HTMLElement | null;
+    );
     if (elem) {
       // stupid way of doing this, just get the closest overflow-y-auto
       // usually its just the parentElem
-      const closestScroll = elem.closest(
-        '.overflow-y-auto'
-      ) as HTMLElement | null;
+      const closestScroll = elem.closest('.overflow-y-auto');
       if (closestScroll) {
         // The 45 is just enough padding for making the scroll look perfect
         const topPadding = isMobile ? 80 : 45;
@@ -37,7 +35,7 @@ export function SettingsPageLayout({
         });
       }
     }
-  }, [state]);
+  }, [state, isMobile]);
 
   return (
     <div ref={pageRef} className={className} {...props}>

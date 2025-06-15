@@ -134,7 +134,7 @@ function ProportionItem({
                 <Typography
                   variant="standard"
                   whitespace="whitespace-pre-wrap"
-                ></Typography>
+                />
               </Localized>
             }
             preferedDirection="bottom"
@@ -212,11 +212,7 @@ function ProportionItem({
             )}
             onClick={toggleOpen}
           >
-            {open ? (
-              <ArrowUpIcon size={50}></ArrowUpIcon>
-            ) : (
-              <ArrowDownIcon size={50}></ArrowDownIcon>
-            )}
+            {open ? <ArrowUpIcon size={50} /> : <ArrowDownIcon size={50} />}
           </div>
         )}
       </div>
@@ -236,7 +232,7 @@ function ProportionItem({
                 precise={precise}
                 part={part}
                 onBoneChange={onBoneChange}
-              ></ProportionItem>
+              />
             ))}
           </div>
         </div>
@@ -269,10 +265,11 @@ export function BodyProportions({
               part={part}
               precise={precise}
               onBoneChange={changeBoneValue}
-            ></ProportionItem>
+            />
           ))}
         </div>
       </div>
-    )) || <></>
+    )) ||
+    null
   );
 }

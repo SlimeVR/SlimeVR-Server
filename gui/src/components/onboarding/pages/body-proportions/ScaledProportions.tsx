@@ -2,19 +2,19 @@ import { Localized, useLocalization } from '@fluent/react';
 import { useOnboarding } from '@/hooks/onboarding';
 import { Typography } from '@/components/commons/Typography';
 import { StepperSlider } from '@/components/onboarding/StepperSlider';
-import { CheckHeightStep } from './autobone-steps/CheckHeight';
 import { HeightContextC, useProvideHeightContext } from '@/hooks/height';
-import { CheckFloorHeightStep } from './autobone-steps/CheckFloorHeight';
-import { ResetProportionsStep } from './scaled-steps/ResetProportions';
-import { DoneStep } from './scaled-steps/Done';
 import { useNavigate } from 'react-router-dom';
-import { ManualHeightStep } from './scaled-steps/ManualHeightStep';
 import { Button } from '@/components/commons/Button';
 import { WarningBox } from '@/components/commons/TipBox';
 import { useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { flatTrackersAtom } from '@/store/app-store';
 import { BodyPart } from 'solarxr-protocol';
+import { ManualHeightStep } from './scaled-steps/ManualHeightStep';
+import { DoneStep } from './scaled-steps/Done';
+import { ResetProportionsStep } from './scaled-steps/ResetProportions';
+import { CheckFloorHeightStep } from './autobone-steps/CheckFloorHeight';
+import { CheckHeightStep } from './autobone-steps/CheckHeight';
 
 export function ScaledProportionsPage() {
   const { l10n } = useLocalization();
@@ -62,22 +62,22 @@ export function ScaledProportionsPage() {
             <WarningBox>
               <Localized
                 id="onboarding-scaled_proportions-manual_height-warning"
-                elems={{ b: <b></b> }}
+                elems={{ b: <b /> }}
               >
                 <Typography
                   whitespace="whitespace-pre"
                   color="text-background-60"
-                ></Typography>
+                />
               </Localized>
               <ul className="list-disc ml-8">
                 {!hasHmd && (
                   <Localized id="onboarding-scaled_proportions-manual_height-warning-no_hmd">
-                    <li></li>
+                    <li />
                   </Localized>
                 )}
                 {!hasHandControllers && (
                   <Localized id="onboarding-scaled_proportions-manual_height-warning-no_controllers">
-                    <li></li>
+                    <li />
                   </Localized>
                 )}
               </ul>
@@ -101,7 +101,7 @@ export function ScaledProportionsPage() {
                     ]
               }
               back={() => navigate('/onboarding/reset-tutorial', { state })}
-            ></StepperSlider>
+            />
           </div>
           {state.alonePage && (
             <div className="flex justify-end">
@@ -110,7 +110,7 @@ export function ScaledProportionsPage() {
                   to="/onboarding/body-proportions/manual"
                   variant="secondary"
                   state={{ alonePage: state.alonePage }}
-                ></Button>
+                />
               </Localized>
             </div>
           )}

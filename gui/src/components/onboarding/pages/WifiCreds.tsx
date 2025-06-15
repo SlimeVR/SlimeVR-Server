@@ -30,16 +30,15 @@ export function WifiCredsPage() {
             <Typography variant="main-title">
               {l10n.getString('onboarding-wifi_creds')}
             </Typography>
-            <>
-              {l10n
-                .getString('onboarding-wifi_creds-description')
-                .split('\n')
-                .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
-                ))}
-            </>
+            {l10n
+              .getString('onboarding-wifi_creds-description')
+              .split('\n')
+              .map((line, i) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <Typography color="secondary" key={i}>
+                  {line}
+                </Typography>
+              ))}
             {!state.alonePage && (
               <Button
                 variant="secondary"

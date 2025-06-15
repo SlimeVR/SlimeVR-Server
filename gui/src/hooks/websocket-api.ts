@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   DataFeedMessage,
@@ -12,8 +19,8 @@ import {
 } from 'solarxr-protocol';
 
 import { Builder, ByteBuffer } from 'flatbuffers';
-import { useInterval, useTimeout } from './timeout';
 import { log } from '@/utils/logging';
+import { useInterval, useTimeout } from './timeout';
 
 export interface WebSocketApi {
   isConnected: boolean;
@@ -154,16 +161,16 @@ export function useProvideWebsocketApi(): WebSocketApi {
     webSocketRef.current.send(fbb.asUint8Array());
   };
 
-  const connect = () => {
+  const connect = useCallback(() => {
     webSocketRef.current = new WebSocket(`ws://${targetIp}:${targetPort}`);
 
     // Connection opened
     webSocketRef.current.addEventListener('open', onConnected);
     webSocketRef.current.addEventListener('close', onConnectionClose);
     webSocketRef.current.addEventListener('message', onMessage);
-  };
+  }, [targetIp, targetPort]);
 
-  const disconnect = () => {
+  const disconnect = useCallback(() => {
     if (!webSocketRef.current) return;
 
     webSocketRef.current.removeEventListener('open', onConnected);
@@ -172,7 +179,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
     webSocketRef.current.close();
     webSocketRef.current = null;
     setConnected(false);
-  };
+  }, []);
 
   const reconnect = () => {
     disconnect();
@@ -190,7 +197,7 @@ export function useProvideWebsocketApi(): WebSocketApi {
     return () => {
       disconnect();
     };
-  }, []);
+  }, [connect, disconnect]);
 
   return {
     isConnected,

@@ -6,9 +6,9 @@ import {
   RpcMessage,
   SettingsRequestT,
 } from 'solarxr-protocol';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Navbar } from './Navbar';
 import { TopBar } from './TopBar';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { WidgetsComponent } from './WidgetsComponent';
 import './MainLayout.scss';
 
@@ -33,11 +33,11 @@ export function MainLayout({
   function usePageChanged(callback: () => void) {
     useEffect(() => {
       callback();
-    }, [location.pathname]);
+    }, [window.location.pathname]);
   }
 
   usePageChanged(() => {
-    if (location.pathname.includes('body-proportions')) {
+    if (window.location.pathname.includes('body-proportions')) {
       const tempSettings = new LegTweaksTmpChangeT();
       tempSettings.skatingCorrection = false;
       tempSettings.floorClip = false;
@@ -54,17 +54,19 @@ export function MainLayout({
 
       sendRPCPacket(RpcMessage.LegTweaksTmpClear, resetSettings);
     }
-    setProportionsLastPageOpen(location.pathname.includes('body-proportions'));
+    setProportionsLastPageOpen(
+      window.location.pathname.includes('body-proportions')
+    );
   });
 
   return (
     <div className="">
       <div className="main-layout w-full h-screen">
         <div style={{ gridArea: 't' }}>
-          <TopBar></TopBar>
+          <TopBar />
         </div>
         <div style={{ gridArea: 's' }} className="overflow-y-auto">
-          <Navbar></Navbar>
+          <Navbar />
         </div>
         <div
           style={{ gridArea: 'c' }}
@@ -81,7 +83,7 @@ export function MainLayout({
             style={{ gridArea: 'w' }}
             className="overflow-y-auto mr-2 my-2 rounded-xl bg-background-70 flex flex-col gap-2 p-2 widgets"
           >
-            <WidgetsComponent></WidgetsComponent>
+            <WidgetsComponent />
           </div>
         )}
       </div>

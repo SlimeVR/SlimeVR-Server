@@ -5,19 +5,19 @@ import {
   FirmwareToolContextC,
   useFirmwareToolContext,
 } from '@/hooks/firmware-tool';
-import { AddImusStep } from './AddImusStep';
-import { SelectBoardStep } from './SelectBoardStep';
-import { BoardPinsStep } from './BoardPinsStep';
 import VerticalStepper from '@/components/commons/VerticalStepper';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { Button } from '@/components/commons/Button';
+import { FirmwareUpdateMethod } from 'solarxr-protocol';
+import { useMemo } from 'react';
+import { AddImusStep } from './AddImusStep';
+import { SelectBoardStep } from './SelectBoardStep';
+import { BoardPinsStep } from './BoardPinsStep';
 import { SelectFirmwareStep } from './SelectFirmwareStep';
 import { BuildStep } from './BuildStep';
 import { FlashingMethodStep } from './FlashingMethodStep';
 import { FlashingStep } from './FlashingStep';
 import { FlashBtnStep } from './FlashBtnStep';
-import { FirmwareUpdateMethod } from 'solarxr-protocol';
-import { useMemo } from 'react';
 
 function FirmwareToolContent() {
   const { l10n } = useLocalization();
@@ -80,40 +80,39 @@ function FirmwareToolContent() {
           {l10n.getString('firmware_tool')}
         </Typography>
         <div className="flex flex-col pt-2 pb-4">
-          <>
-            {l10n
-              .getString('firmware_tool-description')
-              .split('\n')
-              .map((line, i) => (
-                <Typography color="secondary" key={i}>
-                  {line}
-                </Typography>
-              ))}
-          </>
+          {l10n
+            .getString('firmware_tool-description')
+            .split('\n')
+            .map((line, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Typography color="secondary" key={i}>
+                {line}
+              </Typography>
+            ))}
         </div>
         <div className="m-4 h-full">
           {isError && (
             <div className="w-full flex flex-col justify-center items-center gap-3 h-full">
-              <LoaderIcon slimeState={SlimeState.SAD}></LoaderIcon>
+              <LoaderIcon slimeState={SlimeState.SAD} />
               {!isCompatible ? (
                 <Localized id="firmware_tool-not_compatible">
-                  <Typography variant="section-title"></Typography>
+                  <Typography variant="section-title" />
                 </Localized>
               ) : (
                 <Localized id="firmware_tool-not_available">
-                  <Typography variant="section-title"></Typography>
+                  <Typography variant="section-title" />
                 </Localized>
               )}
               <Localized id="firmware_tool-retry">
-                <Button variant="primary" onClick={retry}></Button>
+                <Button variant="primary" onClick={retry} />
               </Localized>
             </div>
           )}
           {isLoading && (
             <div className="w-full flex flex-col justify-center items-center gap-3 h-full">
-              <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
+              <LoaderIcon slimeState={SlimeState.JUMPY} />
               <Localized id="firmware_tool-loading">
-                <Typography variant="section-title"></Typography>
+                <Typography variant="section-title" />
               </Localized>
             </div>
           )}

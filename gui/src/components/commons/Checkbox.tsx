@@ -100,7 +100,7 @@ export function CheckBox({
                     'right-0': value && !loading,
                     'bg-background-30': disabled,
                   })}
-                ></div>
+                />
               </div>
             )}
             {label}

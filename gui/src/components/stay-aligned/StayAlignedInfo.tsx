@@ -17,9 +17,9 @@ export function StayAlignedInfo({
     maximumFractionDigits: 1,
   });
 
-  const stayAligned = tracker.stayAligned;
+  const { stayAligned } = tracker;
   if (!stayAligned) {
-    return <></>;
+    return null;
   }
 
   const locked = stayAligned.locked ? '🔒' : '';

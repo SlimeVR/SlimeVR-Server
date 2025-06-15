@@ -1,6 +1,4 @@
 import classNames from 'classnames';
-import { CheckIcon } from './icon/CheckIcon';
-import { Typography } from './Typography';
 import {
   FC,
   ReactNode,
@@ -11,6 +9,8 @@ import {
 } from 'react';
 import { useElemSize } from '@/hooks/layout';
 import { useDebouncedEffect } from '@/hooks/timeout';
+import { Typography } from './Typography';
+import { CheckIcon } from './icon/CheckIcon';
 
 export function VerticalStep({
   active,
@@ -66,7 +66,7 @@ export function VerticalStep({
         )}
       >
         {isPrevious ? (
-          <CheckIcon></CheckIcon>
+          <CheckIcon />
         ) : (
           <Typography variant="section-title">{index + 1}</Typography>
         )}
@@ -88,19 +88,19 @@ export function VerticalStep({
   );
 }
 
-export type VerticalStepComponentProps = {
+export interface VerticalStepComponentProps {
   nextStep: () => void;
   prevStep: () => void;
   goTo: (id: string) => void;
   isActive: boolean;
-};
+}
 type VerticalStepComponentType = FC<VerticalStepComponentProps>;
 
-export type VerticalStep = {
+export interface VerticalStep {
   title: string;
   id?: string;
   component: VerticalStepComponentType;
-};
+}
 
 export default function VerticalStepper({
   steps,
@@ -135,13 +135,14 @@ export default function VerticalStepper({
   return (
     <ol className="relative border-l border-gray-700 text-gray-400">
       {steps.map(({ title, component: StepComponent }, index) => (
+        // eslint-disable-next-line react/no-array-index-key
         <VerticalStep active={currStep} index={index} title={title} key={index}>
           <StepComponent
             nextStep={nextStep}
             prevStep={prevStep}
             goTo={goTo}
             isActive={currStep === index}
-          ></StepComponent>
+          />
         </VerticalStep>
       ))}
     </ol>

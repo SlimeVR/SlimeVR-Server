@@ -92,7 +92,7 @@ export function MountingChoose() {
                         'absolute w-[100px] -right-2 -top-10',
                         animated && 'animate-[bounce_1s_1]'
                       )}
-                    ></img>
+                    />
                     <Typography variant="main-title" bold>
                       {l10n.getString(
                         'onboarding-choose_mounting-manual_mounting'
@@ -141,7 +141,7 @@ export function MountingChoose() {
         accept={skipSetup}
         onClose={() => setShowWarning(false)}
         isOpen={showWarning}
-      ></SkipSetupWarningModal>
+      />
     </>
   );
 }

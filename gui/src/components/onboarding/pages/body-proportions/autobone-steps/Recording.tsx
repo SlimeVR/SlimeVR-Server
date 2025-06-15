@@ -5,10 +5,10 @@ import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
 import { P, match } from 'ts-pattern';
-import { AutoboneErrorModal } from './AutoboneErrorModal';
 import { PlayCircleIcon } from '@/components/commons/icon/PlayIcon';
 import { useDebouncedEffect } from '@/hooks/timeout';
 import { AUTOBONE_VIDEO } from '@/utils/tauri';
+import { AutoboneErrorModal } from './AutoboneErrorModal';
 
 export function Recording({
   nextStep,
@@ -69,7 +69,6 @@ export function Recording({
     }
     if (active && paused) {
       toggleVideo();
-      return;
     }
   }, [active]);
 
@@ -81,11 +80,11 @@ export function Recording({
           setModalOpen(false);
           resetSteps();
         }}
-      ></AutoboneErrorModal>
+      />
       <div className="flex flex-col items-center w-full justify-between">
         <div className="flex gap-1 flex-col justify-center items-center">
           <div className="flex text-status-critical justify-center items-center gap-1">
-            <div className="w-2 h-2 rounded-lg bg-status-critical"></div>
+            <div className="w-2 h-2 rounded-lg bg-status-critical" />
             <Typography color="text-status-critical">
               {l10n.getString(
                 'onboarding-automatic_proportions-recording-title'
@@ -104,16 +103,15 @@ export function Recording({
           </Typography>
         </div>
         <ol className="list-decimal mobile:px-4 nsmol:hidden">
-          <>
-            {l10n
-              .getString('onboarding-automatic_proportions-recording-steps')
-              .split('\n')
-              .map((line, i) => (
-                <li key={i}>
-                  <Typography color="secondary">{line}</Typography>
-                </li>
-              ))}
-          </>
+          {l10n
+            .getString('onboarding-automatic_proportions-recording-steps')
+            .split('\n')
+            .map((line, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <li key={i}>
+                <Typography color="secondary">{line}</Typography>
+              </li>
+            ))}
         </ol>
         <div className="flex">
           <TipBox>{l10n.getString('tips-do_not_move_heels')}</TipBox>
@@ -136,7 +134,7 @@ export function Recording({
                 () => 'bg-status-success'
               )
               .otherwise(() => undefined)}
-          ></ProgressBar>
+          />
           <Typography color="secondary">
             {match([hasCalibration, hasRecording])
               .returnType<ReactNode>()
@@ -155,12 +153,16 @@ export function Recording({
           </Typography>
         </div>
       </div>
-      <button className="relative appearance-none h-fit" onClick={toggleVideo}>
+      <button
+        type="button"
+        className="relative appearance-none h-fit"
+        onClick={toggleVideo}
+      >
         <div
           className="absolute w-[100px] h-[100px] top-0 bottom-0 left-0 right-0 m-auto fill-background-20"
           hidden={!paused}
         >
-          <PlayCircleIcon width={100}></PlayCircleIcon>
+          <PlayCircleIcon width={100} />
         </div>
 
         <video
@@ -173,7 +175,7 @@ export function Recording({
           playsInline
           controls={false}
           poster="/images/autobone-poster.webp"
-        ></video>
+        />
       </button>
     </div>
   );

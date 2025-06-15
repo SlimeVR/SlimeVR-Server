@@ -12,7 +12,7 @@ import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { bodypartToString } from '@/utils/formatting';
 import { useLocaleConfig } from '@/i18n/config';
 
-export type StayAlignedSettingsForm = {
+export interface StayAlignedSettingsForm {
   enabled: boolean;
   extraYawCorrection: boolean;
   hideYawCorrection: boolean;
@@ -29,7 +29,7 @@ export type StayAlignedSettingsForm = {
   flatLowerLegAngle: number;
   flatFootAngle: number;
   setupComplete: boolean;
-};
+}
 
 export const defaultStayAlignedSettings: StayAlignedSettingsForm = {
   enabled: false,
@@ -114,11 +114,12 @@ TRACKERS
 ========
 ${trackers
   .map((t) => {
-    const info = t.tracker.info;
-    const stayAligned = t.tracker.stayAligned;
+    const { info } = t.tracker;
+    const { stayAligned } = t.tracker;
     if (info && stayAligned) {
       return `${bodypartToString(info.bodyPart)}: correction=${numberFormat.format(stayAligned.yawCorrectionInDeg)} locked=${stayAligned.locked ? `true locked_error=${numberFormat.format(stayAligned.lockedErrorInDeg)}` : 'false'} center_error=${numberFormat.format(stayAligned.centerErrorInDeg)} neighbor_error=${numberFormat.format(stayAligned.neighborErrorInDeg)}`;
     }
+    return '';
   })
   .join('\n')}
 
@@ -144,7 +145,7 @@ export function StayAlignedSettings({
   control,
 }: {
   values: SettingsForm;
-  control: Control<SettingsForm, any>;
+  control: Control<SettingsForm>;
 }) {
   const { l10n } = useLocalization();
 

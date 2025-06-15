@@ -8,6 +8,8 @@ import {
   useState,
   createContext,
   useContext,
+  useCallback,
+  useMemo,
 } from 'react';
 import { exists, readTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
@@ -46,6 +48,7 @@ function* lazilyParsedBundles(fetchedMessages: [string, string][]) {
 function verifyLocale(locale: string | null): string | null {
   if (!locale) return null;
   try {
+    // eslint-disable-next-line no-new
     new Intl.Locale(locale);
     return locale;
   } catch (e) {
@@ -57,19 +60,20 @@ function verifyLocale(locale: string | null): string | null {
 interface AppLocalizationProviderProps {
   children: ReactNode;
 }
-interface i18n {
+interface I18n {
   currentLocales: string[];
   changeLocales: (userLocales: string[]) => Promise<void>;
 }
 
 const TRAY_MENU_KEYS = ['tray_menu-show', 'tray_menu-hide', 'tray_menu-quit'];
 
-export const LangContext = createContext<i18n>(undefined as never);
-export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
+export const LangContext = createContext<I18n>(undefined as never);
+export function AppLocalizationProvider({
+  children,
+}: AppLocalizationProviderProps) {
   const [currentLocales, setCurrentLocales] = useState([DEFAULT_LOCALE]);
   const [l10n, setL10n] = useState<ReactLocalization | null>(null);
-
-  async function changeLocales(userLocales: string[]) {
+  const changeLocales = useCallback(async (userLocales: string[]) => {
     const currentLocale = match(
       userLocales.filter((x) => verifyLocale(x) !== null),
       langs.map((x) => x.key),
@@ -95,7 +99,7 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     localStorage.setItem('i18nextLng', currentLocale);
     document.documentElement.lang = currentLocale;
     setL10n(new ReactLocalization(bundles));
-  }
+  }, []);
 
   useEffect(() => {
     const lang = verifyLocale(localStorage.getItem('i18nextLng'));
@@ -106,7 +110,7 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     if (import.meta.hot) {
       import.meta.hot.on('locales-update', () => changeLocales(currentLocales));
     }
-  }, []);
+  }, [changeLocales, currentLocales]);
 
   useEffect(() => {
     if (l10n === null || !isTrayAvailable) return;
@@ -117,28 +121,33 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     });
     const promise = invoke('update_translations', { newI18n });
     return () => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       promise.then(() => {});
     };
   }, [l10n]);
 
+  const values = useMemo(
+    () => ({
+      currentLocales,
+      changeLocales,
+    }),
+    [changeLocales, currentLocales]
+  );
+
   if (l10n === null) {
-    return <></>;
+    return null;
   }
 
   return (
-    <>
-      <LocalizationProvider l10n={l10n}>
-        <LangContext.Provider value={{ currentLocales, changeLocales }}>
-          {Children.only(props.children)}
-        </LangContext.Provider>
-      </LocalizationProvider>
-    </>
+    <LocalizationProvider l10n={l10n}>
+      <LangContext.Provider value={values}>
+        {Children.only(children)}
+      </LangContext.Provider>
+    </LocalizationProvider>
   );
 }
 
 export function useLocaleConfig() {
-  const context = useContext<i18n>(LangContext);
+  const context = useContext<I18n>(LangContext);
   if (!context) {
     throw new Error(
       'useLocaleConfig must be within a AppLocalization Provider'

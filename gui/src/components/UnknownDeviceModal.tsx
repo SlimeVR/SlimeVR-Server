@@ -1,7 +1,4 @@
 import { useState } from 'react';
-import { BaseModal } from './commons/BaseModal';
-import { Typography } from './commons/Typography';
-import { Button } from './commons/Button';
 import { Localized, useLocalization } from '@fluent/react';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocation } from 'react-router-dom';
@@ -13,6 +10,9 @@ import {
 import { useDebouncedEffect } from '@/hooks/timeout';
 import { useAtom } from 'jotai';
 import { ignoredTrackersAtom } from '@/store/app-store';
+import { Button } from './commons/Button';
+import { Typography } from './commons/Typography';
+import { BaseModal } from './commons/BaseModal';
 
 export function UnknownDeviceModal() {
   const { l10n } = useLocalization();
@@ -63,7 +63,7 @@ export function UnknownDeviceModal() {
             </Typography>
             <Localized
               id="unknown_device-modal-description"
-              elems={{ b: <b></b> }}
+              elems={{ b: <b /> }}
               vars={{ deviceId: currentTracker ?? 'ERROR' }}
             >
               <Typography
@@ -93,7 +93,7 @@ export function UnknownDeviceModal() {
           variant="tertiary"
           onClick={() => {
             setIgnoredTracker((state) => {
-              if (!currentTracker) throw 'should have a tracker';
+              if (!currentTracker) throw Error('should have a tracker');
               state.add(currentTracker);
               return state;
             });

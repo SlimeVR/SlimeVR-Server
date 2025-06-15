@@ -11,7 +11,7 @@ export function BatteryIcon({
   charging: boolean;
 }) {
   const col = useMemo(() => {
-    const colorsMap: { [key: number]: string } = {
+    const colorsMap: Record<number, string> = {
       0.4: 'fill-status-success',
       0.2: 'fill-status-warning',
       0: 'fill-status-critical',

@@ -119,7 +119,7 @@ export function InterfaceSettings() {
           } as React.CSSProperties
         }
       >
-        <SettingsPagePaneLayout icon={<BellIcon></BellIcon>} id="notifications">
+        <SettingsPagePaneLayout icon={<BellIcon />} id="notifications">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-interface-notifications')}
@@ -208,10 +208,7 @@ export function InterfaceSettings() {
           </>
         </SettingsPagePaneLayout>
 
-        <SettingsPagePaneLayout
-          icon={<ArrowRightLeftIcon></ArrowRightLeftIcon>}
-          id="behavior"
-        >
+        <SettingsPagePaneLayout icon={<ArrowRightLeftIcon />} id="behavior">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-interface-behavior')}
@@ -294,13 +291,13 @@ export function InterfaceSettings() {
               <Localized
                 id={'settings-interface-behavior-error_tracking-description_v2'}
                 elems={{
-                  b: <b></b>,
+                  b: <b />,
                 }}
               >
                 <Typography
                   color="secondary"
                   whitespace="whitespace-pre-line"
-                ></Typography>
+                />
               </Localized>
             </div>
             <div className="grid sm:grid-cols-2 pb-4">
@@ -317,10 +314,7 @@ export function InterfaceSettings() {
           </>
         </SettingsPagePaneLayout>
 
-        <SettingsPagePaneLayout
-          icon={<SquaresIcon></SquaresIcon>}
-          id="appearance"
-        >
+        <SettingsPagePaneLayout icon={<SquaresIcon />} id="appearance">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-interface-appearance')}
@@ -357,55 +351,55 @@ export function InterfaceSettings() {
                   name="appearance.theme"
                   value={'slime'}
                   colors="!bg-slime"
-                ></ThemeSelector>
+                />
                 <ThemeSelector
                   control={control}
                   name="appearance.theme"
                   value={'slime-green'}
                   colors="!bg-slime-green"
-                ></ThemeSelector>
+                />
                 <ThemeSelector
                   control={control}
                   name="appearance.theme"
                   value={'slime-yellow'}
                   colors="!bg-slime-yellow"
-                ></ThemeSelector>
+                />
                 <ThemeSelector
                   control={control}
                   name="appearance.theme"
                   value={'slime-orange'}
                   colors="!bg-slime-orange"
-                ></ThemeSelector>
+                />
                 <ThemeSelector
                   control={control}
                   name="appearance.theme"
                   value={'slime-red'}
                   colors="!bg-slime-red"
-                ></ThemeSelector>
+                />
                 <ThemeSelector
                   control={control}
                   name="appearance.theme"
                   value={'dark'}
                   colors="!bg-dark"
-                ></ThemeSelector>
+                />
                 <ThemeSelector
                   control={control}
                   name="appearance.theme"
                   value={'light'}
                   colors="!bg-light"
-                ></ThemeSelector>
+                />
                 <ThemeSelector
                   control={control}
                   name="appearance.theme"
                   value={'trans'}
                   colors="!bg-trans-flag"
-                ></ThemeSelector>
+                />
                 <ThemeSelector
                   control={control}
                   name="appearance.theme"
                   value={'asexual'}
                   colors="!bg-asexual-flag"
-                ></ThemeSelector>
+                />
               </div>
             </div>
 

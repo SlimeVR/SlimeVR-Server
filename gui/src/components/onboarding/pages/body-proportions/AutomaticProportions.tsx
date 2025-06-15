@@ -3,6 +3,7 @@ import { AutoboneContextC, useProvideAutobone } from '@/hooks/autobone';
 import { useOnboarding } from '@/hooks/onboarding';
 import { Typography } from '@/components/commons/Typography';
 import { StepperSlider } from '@/components/onboarding/StepperSlider';
+import { HeightContextC, useProvideHeightContext } from '@/hooks/height';
 import { DoneStep } from './autobone-steps/Done';
 import { RequirementsStep } from './autobone-steps/Requirements';
 import { PutTrackersOnStep } from './autobone-steps/PutTrackersOn';
@@ -11,7 +12,6 @@ import { StartRecording } from './autobone-steps/StartRecording';
 import { VerifyResultsStep } from './autobone-steps/VerifyResults';
 import { CheckHeightStep } from './autobone-steps/CheckHeight';
 import { PreparationStep } from './autobone-steps/Preparation';
-import { HeightContextC, useProvideHeightContext } from '@/hooks/height';
 import { CheckFloorHeightStep } from './autobone-steps/CheckFloorHeight';
 
 export function AutomaticProportionsPage() {
@@ -53,7 +53,7 @@ export function AutomaticProportionsPage() {
                   { type: 'numbered', component: VerifyResultsStep },
                   { type: 'fullsize', component: DoneStep },
                 ]}
-              ></StepperSlider>
+              />
             </div>
           </div>
         </div>

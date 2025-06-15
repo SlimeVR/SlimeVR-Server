@@ -30,7 +30,7 @@ function IMUCard({
 }: {
   imuTypes: Imudto[];
   hasIntPin: boolean;
-  control: Control<{ imus: CreateImuConfigDTO[] }, any>;
+  control: Control<{ imus: CreateImuConfigDTO[] }>;
   index: number;
   onDelete: () => void;
 }) {
@@ -50,7 +50,7 @@ function IMUCard({
         <div className={'w-full flex flex-col gap-2'}>
           <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3 fill-background-10">
             <label className="flex flex-col justify-end gap-1">
-              <Localized id="firmware_tool-add_imus_step-imu_type-label"></Localized>
+              <Localized id="firmware_tool-add_imus_step-imu_type-label" />
               <Dropdown
                 control={control}
                 name={`imus[${index}].type`}
@@ -65,7 +65,7 @@ function IMUCard({
                 )}
                 direction="down"
                 display="block"
-              ></Dropdown>
+              />
             </label>
             <Localized
               id="firmware_tool-add_imus_step-imu_rotation"
@@ -82,7 +82,7 @@ function IMUCard({
                 label="Rotation Degree"
                 placeholder="Rotation Degree"
                 autocomplete="off"
-              ></Input>
+              />
             </Localized>
           </div>
           <div
@@ -104,7 +104,7 @@ function IMUCard({
                   name={`imus[${index}].sclPin`}
                   variant="primary"
                   autocomplete="off"
-                ></Input>
+                />
               </Localized>
               <Localized
                 id="firmware_tool-add_imus_step-sda_pin"
@@ -119,7 +119,7 @@ function IMUCard({
                   label="SDA Pin"
                   placeholder="SDA Pin"
                   autocomplete="off"
-                ></Input>
+                />
               </Localized>
 
               {hasIntPin && (
@@ -134,7 +134,7 @@ function IMUCard({
                     name={`imus[${index}].intPin`}
                     variant="primary"
                     autocomplete="off"
-                  ></Input>
+                  />
                 </Localized>
               )}
               <label className="flex flex-col justify-end gap-1 md:pt-3 sm:pt-3">
@@ -148,7 +148,7 @@ function IMUCard({
                     variant="toggle"
                     color="tertiary"
                     label=""
-                  ></CheckBox>
+                  />
                 </Localized>
               </label>
             </div>
@@ -156,7 +156,7 @@ function IMUCard({
         </div>
         <div className="flex flex-col items-center mt-[25px] fill-background-10">
           <Button variant="quaternary" rounded onClick={onDelete}>
-            <TrashIcon size={15}></TrashIcon>
+            <TrashIcon size={15} />
           </Button>
         </div>
       </div>
@@ -171,8 +171,8 @@ function IMUCard({
               : 'firmware_tool-add_imus_step-show_more'
           )}
         </Typography>
-        {!open && <ArrowDownIcon></ArrowDownIcon>}
-        {open && <ArrowUpIcon></ArrowUpIcon>}
+        {!open && <ArrowDownIcon />}
+        {open && <ArrowUpIcon />}
       </div>
     </div>
   );
@@ -237,72 +237,71 @@ export function AddImusStep({
   };
 
   return (
-    <>
-      <div className="flex flex-col w-full">
-        <div className="flex flex-col gap-4">
-          <Typography color="secondary">
-            {l10n.getString('firmware_tool-board_pins_step-description')}
-          </Typography>
-        </div>
-        <div className="my-4 flex flex-col gap-4">
-          {!isAckchuallyLoading && imuTypes && newConfig && (
-            <>
-              <div className="flex flex-col gap-3">
-                <div
-                  className={classNames(
-                    'grid gap-2 px-2',
-                    form.imus.length > 1
-                      ? 'md:grid-cols-2 mobile-settings:grid-cols-1'
-                      : 'grid-cols-1'
-                  )}
-                >
-                  {form.imus.map((imu, index) => (
-                    <IMUCard
-                      control={control}
-                      imuTypes={imuTypes}
-                      key={`${index}:${imu.type}`}
-                      hasIntPin={
-                        imuTypes?.find(({ type: t }) => t == imu.type)
-                          ?.hasIntPin ?? false
-                      }
-                      index={index}
-                      onDelete={() => deleteImu(index)}
-                    ></IMUCard>
-                  ))}
-                </div>
-                <div className="flex justify-center">
-                  <Localized id="firmware_tool-add_imus_step-add_more">
-                    <Button variant="primary" onClick={addImu}></Button>
-                  </Localized>
-                </div>
+    <div className="flex flex-col w-full">
+      <div className="flex flex-col gap-4">
+        <Typography color="secondary">
+          {l10n.getString('firmware_tool-board_pins_step-description')}
+        </Typography>
+      </div>
+      <div className="my-4 flex flex-col gap-4">
+        {!isAckchuallyLoading && imuTypes && newConfig && (
+          <>
+            <div className="flex flex-col gap-3">
+              <div
+                className={classNames(
+                  'grid gap-2 px-2',
+                  form.imus.length > 1
+                    ? 'md:grid-cols-2 mobile-settings:grid-cols-1'
+                    : 'grid-cols-1'
+                )}
+              >
+                {form.imus.map((imu, index) => (
+                  <IMUCard
+                    control={control}
+                    imuTypes={imuTypes}
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`${index}:${imu.type}`}
+                    hasIntPin={
+                      imuTypes?.find(({ type: t }) => t == imu.type)
+                        ?.hasIntPin ?? false
+                    }
+                    index={index}
+                    onDelete={() => deleteImu(index)}
+                  />
+                ))}
               </div>
-              <div className="flex justify-between">
-                <Localized id="firmware_tool-previous_step">
-                  <Button variant="tertiary" onClick={prevStep}></Button>
-                </Localized>
-                <Localized id="firmware_tool-next_step">
-                  <Button
-                    variant="primary"
-                    disabled={!isValidState || form.imus.length === 0}
-                    onClick={() => {
-                      updateImus(form.imus);
-                      nextStep();
-                    }}
-                  ></Button>
+              <div className="flex justify-center">
+                <Localized id="firmware_tool-add_imus_step-add_more">
+                  <Button variant="primary" onClick={addImu} />
                 </Localized>
               </div>
-            </>
-          )}
-          {isAckchuallyLoading && (
-            <div className="flex justify-center flex-col items-center gap-3 h-44">
-              <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware_tool-loading">
-                <Typography color="secondary"></Typography>
+            </div>
+            <div className="flex justify-between">
+              <Localized id="firmware_tool-previous_step">
+                <Button variant="tertiary" onClick={prevStep} />
+              </Localized>
+              <Localized id="firmware_tool-next_step">
+                <Button
+                  variant="primary"
+                  disabled={!isValidState || form.imus.length === 0}
+                  onClick={() => {
+                    updateImus(form.imus);
+                    nextStep();
+                  }}
+                />
               </Localized>
             </div>
-          )}
-        </div>
+          </>
+        )}
+        {isAckchuallyLoading && (
+          <div className="flex justify-center flex-col items-center gap-3 h-44">
+            <LoaderIcon slimeState={SlimeState.JUMPY} />
+            <Localized id="firmware_tool-loading">
+              <Typography color="secondary" />
+            </Localized>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }

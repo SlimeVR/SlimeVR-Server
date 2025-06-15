@@ -1,8 +1,8 @@
 import { useLocalization } from '@fluent/react';
+import { useForm } from 'react-hook-form';
 import { BaseModal } from './commons/BaseModal';
 import { Button } from './commons/Button';
 import { Typography } from './commons/Typography';
-import { useForm } from 'react-hook-form';
 import { Radio } from './commons/Radio';
 
 interface TrayOrExitForm {
@@ -57,13 +57,13 @@ export function TrayOrExitModal({
             name="exitType"
             label={l10n.getString('tray_or_exit_modal-radio-exit')}
             value="0"
-          ></Radio>
+          />
           <Radio
             control={control}
             name="exitType"
             label={l10n.getString('tray_or_exit_modal-radio-tray')}
             value="1"
-          ></Radio>
+          />
         </div>
 
         <Button type="submit" variant="primary">
