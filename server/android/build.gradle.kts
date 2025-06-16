@@ -86,7 +86,7 @@ dependencies {
 
 // The android block is where you configure all your Android-specific build options.
 extra.apply {
-	set("gitVersionCode", grgit.tag.list().size)
+	set("gitVersionCode", 92)
 	set("gitVersionName", grgit.describe(mapOf("tags" to true, "always" to true)))
 }
 android {
@@ -112,7 +112,7 @@ android {
 	defaultConfig {
 
 		// Uniquely identifies the package for publishing.
-		applicationId = "dev.slimevr.server"
+		applicationId = "dev.slimevr.server.android"
 
 		// Defines the minimum API level required to run the app.
 		minSdk = 26
