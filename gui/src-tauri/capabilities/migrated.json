@@ -6,14 +6,7 @@
     "main"
   ],
   "permissions": [
-    "core:path:default",
-    "core:event:default",
-    "core:window:default",
-    "core:app:default",
-    "core:resources:default",
-    "core:menu:default",
-    "core:tray:default",
-    "core:webview:default",
+    "core:default",
     "core:window:allow-close",
     "core:window:allow-toggle-maximize",
     "core:window:allow-minimize",
@@ -21,6 +14,8 @@
     "core:window:allow-hide",
     "core:window:allow-show",
     "core:window:allow-set-focus",
+    "core:window:allow-destroy",
+    "core:window:allow-request-user-attention",
     "core:window:allow-set-decorations",
     "store:default",
     "os:allow-os-type",
@@ -29,6 +24,12 @@
     "store:allow-get",
     "store:allow-set",
     "store:allow-save",
-    "fs:allow-write-text-file"
+    "fs:allow-write-text-file",
+    "fs:allow-read-text-file",
+    "fs:allow-exists",
+    {
+      "identifier": "fs:scope",
+      "allow": [{ "path": "$APPDATA" }, { "path": "$APPDATA/**" }]
+    }
   ]
 }

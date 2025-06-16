@@ -12,24 +12,24 @@ import {
   SettingsRequestT,
   SettingsResponseT,
 } from 'solarxr-protocol';
-import { useTrackers } from '@/hooks/tracker';
 import { BodyDisplay } from '@/components/commons/BodyDisplay';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import classNames from 'classnames';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { log } from '@/utils/logging';
+import { useAtomValue } from 'jotai';
+import { assignedTrackersAtom } from '@/store/app-store';
 
 export function ResetTutorialPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { applyProgress } = useOnboarding();
-  const { useAssignedTrackers } = useTrackers();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [curIndex, setCurIndex] = useState(0);
   const [tapSettings, setTapSettings] = useState<number[]>([]);
   applyProgress(0.8);
 
-  const assignedTrackers = useAssignedTrackers();
+  const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
   const highestTorsoTracker = useMemo(
     () =>
@@ -148,7 +148,7 @@ export function ResetTutorialPage() {
 
             <Button
               variant="primary"
-              to="/onboarding/body-proportions/choose"
+              to="/onboarding/body-proportions/scaled"
               className={classNames(
                 'ml-auto',
                 order.length > curIndex + 1 && 'hidden'

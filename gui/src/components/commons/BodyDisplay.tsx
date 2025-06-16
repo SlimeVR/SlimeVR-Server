@@ -8,9 +8,9 @@ import {
   useState,
 } from 'react';
 import { BodyPart, TrackerDataT } from 'solarxr-protocol';
-import { FlatDeviceTracker } from '@/hooks/app';
 import { useTracker } from '@/hooks/tracker';
 import { PersonFrontIcon } from './PersonFrontIcon';
+import { FlatDeviceTracker } from '@/store/app-store';
 
 interface SlotDot {
   id: string;

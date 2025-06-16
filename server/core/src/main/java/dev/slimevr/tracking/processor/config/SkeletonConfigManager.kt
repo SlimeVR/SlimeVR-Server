@@ -1,7 +1,8 @@
 package dev.slimevr.tracking.processor.config
 
 import dev.slimevr.VRServer.Companion.instance
-import dev.slimevr.autobone.errors.BodyProportionError
+import dev.slimevr.VRServer.Companion.instanceInitialized
+import dev.slimevr.autobone.AutoBone
 import dev.slimevr.autobone.errors.BodyProportionError.Companion.proportionLimitMap
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.tracking.processor.BoneType
@@ -112,7 +113,7 @@ class SkeletonConfigManager(
 	fun setToggle(config: SkeletonConfigToggles, newValue: Boolean?) {
 		if (newValue != null) {
 			if (configToggles[config] != null && (newValue != configToggles[config])) {
-				changedToggles[config.id - 1] = true
+				changedToggles[config.ordinal] = true
 			}
 			configToggles[config] = newValue
 		} else {
@@ -135,7 +136,7 @@ class SkeletonConfigManager(
 	fun setValue(config: SkeletonConfigValues, newValue: Float?) {
 		if (newValue != null) {
 			if (configValues[config] != null && (newValue != configValues[config])) {
-				changedValues[config.id - 1] = true
+				changedValues[config.ordinal] = true
 			}
 			configValues[config] = newValue
 		} else {
@@ -156,14 +157,8 @@ class SkeletonConfigManager(
 	}
 
 	protected fun setNodeOffset(nodeOffset: BoneType, x: Float, y: Float, z: Float) {
-		var offset = nodeOffsets[nodeOffset]
-
-		if (offset == null) {
-			offset = Vector3(x, y, z)
-			nodeOffsets[nodeOffset] = offset
-		} else {
-			offset = Vector3(x, y, z)
-		}
+		val offset = Vector3(x, y, z)
+		nodeOffsets[nodeOffset] = offset
 
 		// Updates in skeleton
 		humanPoseManager?.updateNodeOffset(nodeOffset, offset)
@@ -245,6 +240,20 @@ class SkeletonConfigManager(
 				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH),
 			)
 
+			BoneType.LEFT_UPPER_SHOULDER -> setNodeOffset(
+				nodeOffset,
+				0f,
+				0f,
+				0f,
+			)
+
+			BoneType.RIGHT_UPPER_SHOULDER -> setNodeOffset(
+				nodeOffset,
+				0f,
+				0f,
+				0f,
+			)
+
 			BoneType.LEFT_SHOULDER -> setNodeOffset(
 				nodeOffset,
 				-getOffset(SkeletonConfigOffsets.SHOULDERS_WIDTH) / 2f,
@@ -287,8 +296,8 @@ class SkeletonConfigManager(
 				0f,
 			)
 
-			BoneType.LEFT_THUMB_PROXIMAL, BoneType.LEFT_THUMB_INTERMEDIATE, BoneType.LEFT_THUMB_DISTAL,
-			BoneType.RIGHT_THUMB_PROXIMAL, BoneType.RIGHT_THUMB_INTERMEDIATE, BoneType.RIGHT_THUMB_DISTAL,
+			BoneType.LEFT_THUMB_METACARPAL, BoneType.LEFT_THUMB_PROXIMAL, BoneType.LEFT_THUMB_DISTAL,
+			BoneType.RIGHT_THUMB_METACARPAL, BoneType.RIGHT_THUMB_PROXIMAL, BoneType.RIGHT_THUMB_DISTAL,
 			-> setNodeOffset(
 				nodeOffset,
 				0f,
@@ -401,14 +410,14 @@ class SkeletonConfigManager(
 
 		// Remove from config to use default if they change in the future.
 		Arrays.fill(changedToggles, false)
-		for (value in SkeletonConfigToggles.values) {
-			instance.configManager
-				.vrConfig
-				.skeleton
-				.getToggles()
-				.remove(value.configKey)
-			// Set default in skeleton
-			setToggle(value, value.defaultValue)
+		if (instanceInitialized) {
+			for (value in SkeletonConfigToggles.values) {
+				instance.configManager
+					.vrConfig
+					.skeleton
+					.getToggles()
+					.remove(value.configKey)
+			}
 		}
 	}
 
@@ -424,14 +433,14 @@ class SkeletonConfigManager(
 
 		// Remove from config to use default if they change in the future.
 		Arrays.fill(changedValues, false)
-		for (value in SkeletonConfigValues.values) {
-			instance.configManager
-				.vrConfig
-				.skeleton
-				.getValues()
-				.remove(value.configKey)
-			// Set default in skeleton
-			setValue(value, value.defaultValue)
+		if (instanceInitialized) {
+			for (value in SkeletonConfigValues.values) {
+				instance.configManager
+					.vrConfig
+					.skeleton
+					.getValues()
+					.remove(value.configKey)
+			}
 		}
 	}
 
@@ -441,18 +450,19 @@ class SkeletonConfigManager(
 		resetValues()
 	}
 
-	fun resetOffset(config: SkeletonConfigOffsets?) {
-		if (config == null) {
-			return
-		}
-
+	fun resetOffset(config: SkeletonConfigOffsets) {
 		when (config) {
-			SkeletonConfigOffsets.UPPER_CHEST, SkeletonConfigOffsets.CHEST, SkeletonConfigOffsets.WAIST, SkeletonConfigOffsets.HIP, SkeletonConfigOffsets.UPPER_LEG, SkeletonConfigOffsets.LOWER_LEG -> {
-				val height = (
-					humanPoseManager!!.hmdHeight /
-						BodyProportionError.eyeHeightToHeightRatio
-					)
-				if (height > 0.5f) { // Reset only if floor level seems right,
+			SkeletonConfigOffsets.UPPER_ARM,
+			SkeletonConfigOffsets.LOWER_ARM,
+			SkeletonConfigOffsets.UPPER_CHEST,
+			SkeletonConfigOffsets.CHEST,
+			SkeletonConfigOffsets.WAIST,
+			SkeletonConfigOffsets.HIP,
+			SkeletonConfigOffsets.UPPER_LEG,
+			SkeletonConfigOffsets.LOWER_LEG,
+			-> {
+				val height = humanPoseManager?.server?.configManager?.vrConfig?.skeleton?.userHeight ?: -1f
+				if (height > AutoBone.MIN_HEIGHT) { // Reset only if floor level seems right,
 					val proportionLimiter = proportionLimitMap[config]
 					if (proportionLimiter != null) {
 						setOffset(
@@ -514,6 +524,8 @@ class SkeletonConfigManager(
 	}
 
 	fun save() {
+		require(instanceInitialized) { "VRServer instance is not initialized, config cannot be saved." }
+
 		val skeletonConfig = instance.configManager
 			.vrConfig
 			.skeleton
@@ -525,12 +537,12 @@ class SkeletonConfigManager(
 
 		// Only write changed values to keep using defaults if not changed
 		for (value in SkeletonConfigToggles.values) {
-			if (changedToggles[value.id - 1]) skeletonConfig.getToggles()[value.configKey] = getToggle(value)
+			if (changedToggles[value.ordinal]) skeletonConfig.getToggles()[value.configKey] = getToggle(value)
 		}
 
 		// Only write changed values to keep using defaults if not changed
 		for (value in SkeletonConfigValues.values) {
-			if (changedValues[value.id - 1]) skeletonConfig.getValues()[value.configKey] = getValue(value)
+			if (changedValues[value.ordinal]) skeletonConfig.getValues()[value.configKey] = getValue(value)
 		}
 	}
 

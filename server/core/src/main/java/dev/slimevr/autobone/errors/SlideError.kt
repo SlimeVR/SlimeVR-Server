@@ -1,42 +1,43 @@
 package dev.slimevr.autobone.errors
 
 import dev.slimevr.autobone.AutoBoneStep
+import dev.slimevr.autobone.PoseFrameStep
+import dev.slimevr.tracking.processor.Bone
+import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
-import dev.slimevr.tracking.trackers.Tracker
-import dev.slimevr.tracking.trackers.TrackerRole
 
 // The change in position of the ankle over time
 class SlideError : IAutoBoneError {
 	@Throws(AutoBoneException::class)
-	override fun getStepError(trainingStep: AutoBoneStep): Float = getSlideError(
-		trainingStep.skeleton1.skeleton,
-		trainingStep.skeleton2.skeleton,
+	override fun getStepError(step: PoseFrameStep<AutoBoneStep>): Float = getSlideError(
+		step.skeleton1.skeleton,
+		step.skeleton2.skeleton,
 	)
 
 	companion object {
 		fun getSlideError(skeleton1: HumanSkeleton, skeleton2: HumanSkeleton): Float {
 			// Calculate and average between both feet
 			return (
-				getSlideError(skeleton1, skeleton2, TrackerRole.LEFT_FOOT) +
-					getSlideError(skeleton1, skeleton2, TrackerRole.RIGHT_FOOT)
+				getSlideError(skeleton1, skeleton2, BoneType.LEFT_LOWER_LEG) +
+					getSlideError(skeleton1, skeleton2, BoneType.RIGHT_LOWER_LEG)
 				) / 2f
 		}
 
 		fun getSlideError(
 			skeleton1: HumanSkeleton,
 			skeleton2: HumanSkeleton,
-			trackerRole: TrackerRole,
+			bone: BoneType,
 		): Float {
 			// Calculate and average between both feet
 			return getSlideError(
-				skeleton1.getComputedTracker(trackerRole),
-				skeleton2.getComputedTracker(trackerRole),
+				skeleton1.getBone(bone),
+				skeleton2.getBone(bone),
 			)
 		}
 
-		fun getSlideError(tracker1: Tracker, tracker2: Tracker): Float {
+		fun getSlideError(bone1: Bone, bone2: Bone): Float {
 			// Return the midpoint distance
-			return (tracker2.position - tracker1.position).len() / 2f
+			return (bone2.getTailPosition() - bone1.getTailPosition()).len() / 2f
 		}
 	}
 }

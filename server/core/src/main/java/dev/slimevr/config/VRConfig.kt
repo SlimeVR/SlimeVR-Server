@@ -10,8 +10,8 @@ import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
 
 @JsonVersionedModel(
-	currentVersion = "13",
-	defaultDeserializeToVersion = "13",
+	currentVersion = "14",
+	defaultDeserializeToVersion = "14",
 	toCurrentConverterClass = CurrentVRConfigConverter::class,
 )
 class VRConfig {
@@ -108,7 +108,7 @@ class VRConfig {
 			if (tracker.allowFiltering) {
 				tracker
 					.filteringHandler
-					.readFilteringConfig(filters, tracker.getRawRotation())
+					.readFilteringConfig(filters, tracker.getRotation())
 			}
 		}
 	}

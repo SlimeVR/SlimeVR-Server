@@ -1,27 +1,16 @@
-import {
-  AutoBoneSettingsT,
-  ChangeSettingsRequestT,
-  HeightRequestT,
-  HeightResponseT,
-  RpcMessage,
-} from 'solarxr-protocol';
+import { HeightRequestT, HeightResponseT, RpcMessage } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
-import { useForm } from 'react-hook-form';
 import { useMemo, useState } from 'react';
-import { NumberSelector } from '@/components/commons/NumberSelector';
-import { MIN_HEIGHT } from '@/components/onboarding/pages/body-proportions/ProportionsChoose';
 import { useLocaleConfig } from '@/i18n/config';
-import { useCountdown } from '@/hooks/countdown';
 import { TipBox } from '@/components/commons/TipBox';
+import { useHeightContext } from '@/hooks/height';
+import { useInterval } from '@/hooks/timeout';
+import { useOnboarding } from '@/hooks/onboarding';
 
-interface HeightForm {
-  hmdHeight: number;
-}
-
-export function CheckHeight({
+export function CheckHeightStep({
   nextStep,
   prevStep,
   variant,
@@ -30,18 +19,18 @@ export function CheckHeight({
   prevStep: () => void;
   variant: 'onboarding' | 'alone';
 }) {
+  const { state } = useOnboarding();
   const { l10n } = useLocalization();
-  const { control, handleSubmit, setValue } = useForm<HeightForm>();
-  const [fetchedHeight, setFetchedHeight] = useState(false);
+  const { hmdHeight, setHmdHeight } = useHeightContext();
+  const [fetchHeight, setFetchHeight] = useState(false);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const { timer, isCounting, startCountdown } = useCountdown({
-    duration: 3,
-    onCountdownEnd: () => {
-      setFetchedHeight(true);
-      sendRPCPacket(RpcMessage.HeightRequest, new HeightRequestT());
-    },
-  });
   const { currentLocales } = useLocaleConfig();
+
+  useInterval(() => {
+    if (fetchHeight) {
+      sendRPCPacket(RpcMessage.HeightRequest, new HeightRequestT());
+    }
+  }, 100);
 
   const mFormat = useMemo(
     () =>
@@ -53,101 +42,118 @@ export function CheckHeight({
     [currentLocales]
   );
 
-  const sFormat = useMemo(
-    () => new Intl.RelativeTimeFormat(currentLocales, { style: 'short' }),
-    [currentLocales]
-  );
-
-  useRPCPacket(RpcMessage.HeightResponse, ({ hmdHeight }: HeightResponseT) => {
-    setValue('hmdHeight', hmdHeight);
+  useRPCPacket(RpcMessage.HeightResponse, ({ maxHeight }: HeightResponseT) => {
+    if (fetchHeight) {
+      setHmdHeight((val) =>
+        val === null ? maxHeight : Math.max(maxHeight, val)
+      );
+    }
   });
-
-  const onSubmit = (values: HeightForm) => {
-    const changeSettings = new ChangeSettingsRequestT();
-    const autobone = new AutoBoneSettingsT();
-    autobone.targetHmdHeight = values.hmdHeight;
-    changeSettings.autoBoneSettings = autobone;
-
-    sendRPCPacket(RpcMessage.ChangeSettingsRequest, changeSettings);
-    nextStep();
-  };
-
   return (
     <>
       <div className="flex flex-col flex-grow">
-        <div className="flex flex-grow flex-col gap-4">
-          <Typography variant="main-title" bold>
-            {l10n.getString(
-              'onboarding-automatic_proportions-check_height-title'
-            )}
-          </Typography>
-          <div>
-            <Typography color="secondary">
+        <div className="flex gap-2 flex-grow">
+          <div className="flex flex-grow flex-col gap-4">
+            <Typography variant="main-title" bold>
               {l10n.getString(
-                'onboarding-automatic_proportions-check_height-description'
+                'onboarding-automatic_proportions-check_height-title-v3'
               )}
             </Typography>
-            <Localized
-              id="onboarding-automatic_proportions-check_height-calculation_warning"
-              elems={{ u: <span className="underline"></span> }}
-            >
-              <Typography color="secondary" bold>
-                Press the button to get your height!
-              </Typography>
-            </Localized>
-
-            <div className="flex flex-row items-center mt-2 gap-2 mobile:flex-col">
-              <Button
-                variant="primary"
-                onClick={startCountdown}
-                disabled={isCounting}
-              >
-                {isCounting
-                  ? sFormat.format(timer, 'second')
-                  : l10n.getString(
-                      'onboarding-automatic_proportions-check_height-fetch_height'
-                    )}
-              </Button>
-              <TipBox className="break-words">
+            <div>
+              <Typography color="secondary">
                 {l10n.getString(
-                  'onboarding-automatic_proportions-check_height-guardian_tip'
+                  'onboarding-automatic_proportions-check_height-description-v2'
                 )}
-              </TipBox>
+              </Typography>
+              <Localized
+                id="onboarding-automatic_proportions-check_height-calculation_warning-v3"
+                elems={{ u: <span className="underline"></span> }}
+              >
+                <Typography color="secondary" bold>
+                  Press the button to get your height!
+                </Typography>
+              </Localized>
+
+              <div className="flex flex-row items-center mt-2 gap-2 mobile:flex-col">
+                <TipBox className="break-words">
+                  {l10n.getString(
+                    'onboarding-automatic_proportions-check_height-guardian_tip'
+                  )}
+                </TipBox>
+              </div>
+            </div>
+            <div className="flex flex-grow items-center justify-center">
+              <div className="flex flex-col gap-3 items-center">
+                {!fetchHeight && (
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      setHmdHeight(null);
+                      setFetchHeight(true);
+                    }}
+                  >
+                    <Typography textAlign="text-center">
+                      {l10n.getString(
+                        hmdHeight !== null
+                          ? 'onboarding-automatic_proportions-check_height-measure-reset'
+                          : 'onboarding-automatic_proportions-check_height-measure-start'
+                      )}
+                    </Typography>
+                  </Button>
+                )}
+                {fetchHeight && (
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      setFetchHeight(false);
+                    }}
+                  >
+                    <Typography textAlign="text-center">
+                      {l10n.getString(
+                        'onboarding-automatic_proportions-check_height-measure-stop'
+                      )}
+                    </Typography>
+                  </Button>
+                )}
+                <Typography>
+                  {l10n.getString(
+                    'onboarding-automatic_proportions-check_height-hmd_height2'
+                  )}
+                </Typography>
+                <Typography
+                  color={fetchHeight ? 'text-status-success' : undefined}
+                >
+                  {hmdHeight === null
+                    ? l10n.getString(
+                        'onboarding-automatic_proportions-check_height-unknown'
+                      )
+                    : mFormat.format(hmdHeight)}
+                </Typography>
+              </div>
             </div>
           </div>
-          <form className="flex flex-col self-center items-center justify-center">
-            <NumberSelector
-              control={control}
-              name="hmdHeight"
-              label={l10n.getString(
-                'onboarding-automatic_proportions-check_height-hmd_height1'
-              )}
-              valueLabelFormat={(value) =>
-                isNaN(value)
-                  ? l10n.getString(
-                      'onboarding-automatic_proportions-check_height-unknown'
-                    )
-                  : mFormat.format(value)
-              }
-              min={MIN_HEIGHT}
-              max={4}
-              step={0.01}
-              disabled={true}
+          <div className="self-center">
+            <img
+              src="/images/front-standing-pose.webp"
+              className="mobile:w-[150px] min-w-[120px] w-[34vh]"
+              alt="Reset position"
             />
-          </form>
+          </div>
         </div>
 
         <div className="flex gap-3 mobile:justify-between">
-          <Button
-            variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
-            onClick={prevStep}
-          >
-            {l10n.getString('onboarding-automatic_proportions-prev_step')}
-          </Button>
+          {!state.alonePage && (
+            <Button
+              variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
+              onClick={prevStep}
+            >
+              {l10n.getString('onboarding-automatic_proportions-prev_step')}
+            </Button>
+          )}
           <Button
             variant="primary"
-            onClick={handleSubmit(onSubmit)}
-            disabled={!fetchedHeight}
+            onClick={nextStep}
+            disabled={hmdHeight === null || fetchHeight}
           >
             {l10n.getString(
               'onboarding-automatic_proportions-check_height-next_step'

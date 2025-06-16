@@ -112,10 +112,13 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
 
-      - name: Build GUI
-        run: |
-          pnpm i
-          cd gui && pnpm run build
+      - name: Install dependencies
+        run: pnpm i
+
+      - name: Build
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: cd gui && pnpm run build
 
       - name: Build with Gradle
         run: ./gradlew :server:android:assembleDebug
@@ -185,7 +188,7 @@ jobs:
           path: server/ios/build/robovmx-build/tmp/Main.ipa
 
   bundle-linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [build, test]
     if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
     steps:
@@ -199,15 +202,26 @@ jobs:
           path: server/desktop/build/libs/
 
       - name: Set up Linux dependencies
-        uses: awalsh128/cache-apt-pkgs-action@latest
+        uses: awalsh128/cache-apt-pkgs-action@v1.5.0
         with:
-          packages: libgtk-3-dev webkit2gtk-4.1 libappindicator3-dev librsvg2-dev patchelf libfuse2
+          packages: |
+            build-essential curl wget file libssl-dev libgtk-3-dev libappindicator3-dev librsvg2-dev
           # Increment to invalidate the cache
-          version: 1.0
+          version: 2.0
           # Enables a workaround to attempt to run pre and post install scripts
           execute_install_scripts: true
           # Disables uploading logs as a build artifact
           debug: false
+
+      - name: Set up specific Linux versioned dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y \
+            libwebkit2gtk-4.1-0=2.44.0-2 \
+            libwebkit2gtk-4.1-dev=2.44.0-2 \
+            libjavascriptcoregtk-4.1-0=2.44.0-2 \
+            libjavascriptcoregtk-4.1-dev=2.44.0-2 \
+            gir1.2-javascriptcoregtk-4.1=2.44.0-2 \
+            gir1.2-webkit2-4.1=2.44.0-2;
 
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
@@ -221,10 +235,13 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
 
+      - name: Install dependencies
+        run: pnpm i
+
       - name: Build
-        run: |
-          pnpm i
-          pnpm run tauri build --config $( ./gui/scripts/gitversion.mjs )
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: pnpm run tauri build --config $( ./gui/scripts/gitversion.mjs )
 
       - name: Make GUI tarball
         run: |
@@ -296,11 +313,16 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
 
-      - name: Build
+      - name: Install dependencies
         run: |
           rustup target add x86_64-apple-darwin
           pnpm i
-          pnpm run tauri build --target universal-apple-darwin --config $( ./gui/scripts/gitversion.mjs )
+
+      - name: Build
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: pnpm run tauri build --target universal-apple-darwin --config $( ./gui/scripts/gitversion.mjs )
 
       - name: Modify Application
         run: |
@@ -315,7 +337,7 @@ jobs:
           ./bundle_dmg.sh --volname SlimeVR --icon slimevr 180 170 --app-drop-link 480 170 \
           --window-size 660 400 --hide-extension ../macos/SlimeVR.app \
           --volicon ../macos/SlimeVR.app/Contents/Resources/icon.icns --skip-jenkins \
-          --eula ../../../../LICENSE-MIT slimevr.dmg ../macos/SlimeVR.app
+          --eula ../../../../../LICENSE-MIT slimevr.dmg ../macos/SlimeVR.app
 
       - uses: actions/upload-artifact@v4
         with:
@@ -368,11 +390,15 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
 
+      - name: Install dependencies
+        shell: bash
+        run: pnpm i
+
       - name: Build
         shell: bash
-        run: |
-          pnpm i
-          pnpm run skipbundler --config $( ./gui/scripts/gitversion.mjs )
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: pnpm run skipbundler --config $( ./gui/scripts/gitversion.mjs )
 
       - name: Bundle to zips
         shell: bash

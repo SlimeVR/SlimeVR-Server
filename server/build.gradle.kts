@@ -2,8 +2,11 @@ plugins {
 	id("com.diffplug.spotless")
 }
 
-repositories {
-	mavenCentral()
+allprojects {
+	repositories {
+		mavenCentral()
+		maven("https://jitpack.io")
+	}
 }
 
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
@@ -17,7 +20,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 		// define the steps to apply to those files
 		trimTrailingWhitespace()
 		endWithNewline()
-		indentWithTabs()
+		leadingSpacesToTabs()
 	}
 	// format "yaml", {
 	// 	target "*.yml", "*.yaml",
@@ -35,7 +38,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 			"ktlint_standard_property-naming" to "disabled",
 			"ij_kotlin_packages_to_use_import_on_demand" to
 				"java.util.*,kotlin.math.*,dev.slimevr.autobone.errors.*" +
-				",io.github.axisangles.ktmath.*,kotlinx.atomicfu.*" +
+				",io.github.axisangles.ktmath.*,kotlinx.atomicfu.*,kotlinx.coroutines.*" +
 				",dev.slimevr.tracking.trackers.*,dev.slimevr.desktop.platform.ProtobufMessages.*" +
 				",solarxr_protocol.rpc.*,kotlinx.coroutines.*,com.illposed.osc.*,android.app.*",
 			"ij_kotlin_allow_trailing_comma" to true,
@@ -58,6 +61,8 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 
 		removeUnusedImports()
 		// Use eclipse JDT formatter
-		eclipse().configFile("spotless.xml")
+		eclipse()
+			.configFile("spotless.xml")
+			.withP2Mirrors(mapOf("https://download.eclipse.org/" to "https://mirror.umd.edu/eclipse/"))
 	}
 }

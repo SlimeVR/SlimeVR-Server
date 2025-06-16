@@ -23,6 +23,6 @@ public class RPCBuilder {
 		}
 
 		int parts = SkeletonConfigResponse.createSkeletonPartsVector(fbb, partsOffsets);
-		return SkeletonConfigResponse.createSkeletonConfigResponse(fbb, parts);
+		return SkeletonConfigResponse.createSkeletonConfigResponse(fbb, parts, 0);
 	}
 }

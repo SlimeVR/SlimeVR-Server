@@ -58,6 +58,7 @@ class ServerConfig {
 			}.awaitAll()
 
 			useMagnetometerOnAllTrackers = state
+			VRServer.instance.configManager.saveConfig()
 		} finally {
 			magMutex.unlock()
 		}

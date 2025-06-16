@@ -136,6 +136,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands())
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands())
 			}
+			vrcOSCConfig.oscqueryEnabled = req.vrcOsc().oscqueryEnabled()
 
 			vrcOscHandler.refreshSettings(true)
 		}
@@ -153,7 +154,9 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				vmcConfig.portOut = osc.portOut()
 				vmcConfig.address = osc.address()
 			}
-			if (req.vmcOsc().vrmJson() != null) vmcConfig.vrmJson = req.vmcOsc().vrmJson()
+			if (req.vmcOsc().vrmJson() != null) {
+				vmcConfig.vrmJson = req.vmcOsc().vrmJson().ifEmpty { null }
+			}
 			vmcConfig.anchorHip = req.vmcOsc().anchorHip()
 			vmcConfig.mirrorTracking = req.vmcOsc().mirrorTracking()
 
@@ -252,10 +255,11 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 						SkeletonConfigToggles.SKATING_CORRECTION,
 						toggles.skatingCorrection(),
 					)
-				hpm.setToggle(SkeletonConfigToggles.VIVE_EMULATION, toggles.viveEmulation())
 				hpm.setToggle(SkeletonConfigToggles.TOE_SNAP, toggles.toeSnap())
 				hpm.setToggle(SkeletonConfigToggles.FOOT_PLANT, toggles.footPlant())
 				hpm.setToggle(SkeletonConfigToggles.SELF_LOCALIZATION, toggles.selfLocalization())
+				hpm.setToggle(SkeletonConfigToggles.ENFORCE_CONSTRAINTS, toggles.enforceConstraints())
+				hpm.setToggle(SkeletonConfigToggles.CORRECT_CONSTRAINTS, toggles.correctConstraints())
 			}
 
 			if (ratios != null) {
@@ -317,6 +321,11 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				api.server.humanPoseManager.updateLegTweaksConfig()
 			}
 
+			modelSettings.skeletonHeight()?.let {
+				api.server.configManager.vrConfig.skeleton.hmdHeight = it.hmdHeight()
+				api.server.configManager.vrConfig.skeleton.floorHeight = it.floorHeight()
+			}
+
 			hpm.saveConfig()
 		}
 
@@ -361,7 +370,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val settings = SettingsResponse
 				.createSettingsResponse(
 					fbb,
-					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)

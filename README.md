@@ -47,6 +47,11 @@ on SlimeVR, you need to be aware of them:**
 Please refer to the [LICENSE-MIT] and [LICENSE-APACHE] files if you are at any point
 uncertain what the exact requirements are.
 
+## Trademark and Logo use
+**SlimeVR is a trademark or a registered trademark of SlimeVR B.V. Usage of SlimeVR software, hardware, or other intellectual property in this or other repositories does not grant you the right to use SlimeVR trademark as your own.**
+
+For more information, please refer to the [TRADEMARK].
+
 ## Contributions
 Any contributions submitted for inclusion in this repository will be dual-licensed under
 either:
@@ -64,3 +69,4 @@ okay with this and that you are authorized to provide the above licenses.
 
 [LICENSE-MIT]: LICENSE-MIT
 [LICENSE-APACHE]: LICENSE-APACHE
+[TRADEMARK]: TRADEMARK.md

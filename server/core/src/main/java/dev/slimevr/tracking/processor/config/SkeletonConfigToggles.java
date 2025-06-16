@@ -12,10 +12,12 @@ public enum SkeletonConfigToggles {
 	FORCE_ARMS_FROM_HMD(4, "Force arms from HMD", "forceArmsFromHMD", true),
 	FLOOR_CLIP(5, "Floor clip", "floorClip", true),
 	SKATING_CORRECTION(6, "Skating correction", "skatingCorrection", true),
-	VIVE_EMULATION(7, "Vive emulation", "viveEmulation", false),
 	TOE_SNAP(8, "Toe Snap", "toeSnap", false),
 	FOOT_PLANT(9, "Foot Plant", "footPlant", true),
-	SELF_LOCALIZATION(10, "Self Localization", "selfLocalization", false),;
+	SELF_LOCALIZATION(10, "Self Localization", "selfLocalization", false),
+	USE_POSITION(11, "Use Position", "usePosition", true),
+	ENFORCE_CONSTRAINTS(12, "Enforce Constraints", "enforceConstraints", true),
+	CORRECT_CONSTRAINTS(13, "Correct Constraints", "correctConstraints", true),;
 
 	public static final SkeletonConfigToggles[] values = values();
 	private static final Map<String, SkeletonConfigToggles> byStringVal = new HashMap<>();
