@@ -890,16 +890,16 @@ onboarding-reset_tutorial = Reset tutorial
 onboarding-reset_tutorial-explanation = While you use your trackers, they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
 onboarding-reset_tutorial-skip = Skip step
 # Cares about multiline
-onboarding-reset_tutorial-0 = Tap { $taps } times the highlighted tracker for triggering yaw reset.
+onboarding-reset_tutorial-0 = Tap the highlighted tracker { $taps } times to trigger a yaw reset.
 
     This will make the trackers face the same direction as your headset (HMD).
 # Cares about multiline
-onboarding-reset_tutorial-1 = Tap { $taps } times the highlighted tracker for triggering full reset.
+onboarding-reset_tutorial-1 = Tap the highlighted tracker { $taps } times to trigger a full reset.
 
     You need to be standing for this (i-pose). There is a 3 seconds delay (configurable) before it actually happens.
     This fully resets the position and rotation of all your trackers. It should fix most issues.
 # Cares about multiline
-onboarding-reset_tutorial-2 = Tap { $taps } times the highlighted tracker to trigger a mounting reset.
+onboarding-reset_tutorial-2 = Tap the highlighted tracker { $taps } times to trigger a mounting reset.
 
     Mounting reset helps with how the trackers are actually placed on your body, so if you accidentally moved them and changed how they are oriented by a large amount, this will help.
 
