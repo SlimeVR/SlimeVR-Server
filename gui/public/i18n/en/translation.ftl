@@ -23,7 +23,7 @@ version_update-close = Close
 tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
-tips-tap_setup = You can slowly tap 2 times on your tracker to choose it instead of selecting it from the menu.
+tips-tap_setup = You can slowly tap your tracker 2 times to choose it instead of selecting it from the menu.
 tips-turn_on_tracker = Using official SlimeVR trackers? Remember to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 tips-failed_webgl = Failed to initialize WebGL.
 
@@ -140,8 +140,8 @@ skeleton_bone-WAIST-desc =
 skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP-desc =
     This is the distance from your belly button to your hips.
-    To adjust it, adjust your Torso Length properly and modify it in various positions
-    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
+    To adjust it, set your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches your real one.
 skeleton_bone-HIP_OFFSET = Hip Offset
 skeleton_bone-HIP_OFFSET-desc =
     This can be adjusted to move your virtual hip tracker up or down in order to aid
@@ -178,8 +178,8 @@ skeleton_bone-FOOT_SHIFT-desc =
     feet line up with the middle of your ankles.
 skeleton_bone-SKELETON_OFFSET = Skeleton Offset
 skeleton_bone-SKELETON_OFFSET-desc =
-    This can be adjusted to offset all your trackers forward or backwards.
-    It can be used in order to aid with calibration in certain games or applications
+    This can be adjusted to offset all your trackers forward or backward.
+    It can be used to help with calibration in certain games or applications
     that may expect your trackers to be more forward.
 skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
 skeleton_bone-SHOULDERS_DISTANCE-desc =
@@ -378,7 +378,7 @@ tracker-settings-name_section-description = Give it a cute nickname :)
 tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-label = Tracker name
 tracker-settings-forget = Forget tracker
-tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevents it from connecting to it until the server is restarted. The configuration of the tracker won't be lost.
+tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevents it from connecting until the server is restarted. The configuration of the tracker won't be lost.
 tracker-settings-forget-label = Forget tracker
 tracker-settings-update-unavailable = Cannot be updated (DIY)
 tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
@@ -576,8 +576,8 @@ settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
 settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
 settings-general-fk_settings-leg_tweak-foot_plant = Foot plant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
-settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction corrects for ice skating but can decrease accuracy in certain movement patterns. When enabling this, make sure to do a full reset and recalibrate in game.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can reduce or eliminate clipping through the floor. When enabling this, make sure to do a full reset and recalibrate in game.
+settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction corrects for ice skating but can decrease accuracy in certain movement patterns. When enabling this, make sure to perform a full reset and recalibrate in game.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can reduce or eliminate clipping through the floor. When enabling this, make sure to perform a full reset and recalibrate in game.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if foot trackers are not in use.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotates your feet to be parallel to the ground when in contact.
 settings-general-fk_settings-leg_fk = Leg tracking
@@ -677,7 +677,7 @@ settings-interface-appearance-decorations-label = Use native decorations
 ## Notification settings
 settings-interface-notifications = Notifications
 settings-general-interface-serial_detection = Serial device detection
-settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker.
+settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug in a new serial device that could be a tracker. It helps to improve the setup process of a tracker.
 settings-general-interface-serial_detection-label = Serial device detection
 settings-general-interface-feedback_sound = Feedback sound
 settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered.
@@ -903,7 +903,7 @@ onboarding-reset_tutorial-2 = Tap { $taps } times the highlighted tracker to tri
 
     Mounting reset helps with how the trackers are actually placed on your body, so if you accidentally moved them and changed how they are oriented by a large amount, this will help.
 
-    You need to be in a pose like you are skiing as shown in the Automatic Mounting wizard and you have a 3 second delay (configurable) before it gets triggered.
+    You need to be in a pose like you are skiing as shown in the Automatic Mounting wizard, and you have a 3 second delay (configurable) before it gets triggered.
 
 ## Setup start
 onboarding-home = Welcome to SlimeVR
@@ -944,8 +944,8 @@ onboarding-connect_serial-error-modal-no_serial_device_found = No trackers detec
 onboarding-connect_serial-error-modal-no_serial_device_found-desc =
     Please connect a tracker with the provided USB cable to your computer and turn the tracker on.
     If this does not work:
-      - try with another USB cable
-      - try with another USB port
+      - try using a different USB cable
+      - try using a different USB port
       - try reinstalling the SlimeVR server and select "USB Drivers" in the components section
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
@@ -1191,7 +1191,7 @@ onboarding-automatic_proportions-recording-description-p1 = Make the moves shown
 # Each line of text is a different list item
 onboarding-automatic_proportions-recording-steps =
     Standing up straight, roll your head in a circle.
-    Bend your back forwards and squat. While squatting, look to your left, then to your right.
+    Bend your back forward and squat. While squatting, look to your left, then to your right.
     Twist your upper body to the left (counter-clockwise), then reach down towards the ground.
     Twist your upper body to the right (clockwise), then reach down towards the ground.
     Roll your hips in a circular motion as if you're using a hula hoop.
@@ -1322,7 +1322,7 @@ firmware_tool-board_step-description = Select one of the boards listed below.
 firmware_tool-board_pins_step = Check the pins
 firmware_tool-board_pins_step-description =
     Please verify that the selected pins are correct.
-    If you followed the SlimeVR documentation the defaults values should be correct
+    If you followed the SlimeVR documentation, the default values should be correct.
 firmware_tool-board_pins_step-enable_led = Enable LED
 firmware_tool-board_pins_step-led_pin =
     .label = LED Pin
@@ -1350,8 +1350,8 @@ firmware_tool-board_pins_step-battery_shield_resistor-1 =
 
 firmware_tool-add_imus_step = Declare your IMUs
 firmware_tool-add_imus_step-description =
-    Please add the IMUs that your tracker has
-    If you followed the SlimeVR documentation the defaults values should be correct
+    Please add the IMUs that your tracker has.
+    If you followed the SlimeVR documentation, the default values should be correct.
 firmware_tool-add_imus_step-imu_type-label = IMU type
 firmware_tool-add_imus_step-imu_type-placeholder = Select the type of IMU
 firmware_tool-add_imus_step-imu_rotation =
@@ -1389,7 +1389,7 @@ firmware_tool-flash_method_step-serial =
     .description = Use a USB cable to update your tracker.
 
 firmware_tool-flashbtn_step = Press the boot btn
-firmware_tool-flashbtn_step-description = Before going into the next step there is a few things you need to do
+firmware_tool-flashbtn_step-description = Before going to the next step, there are a few things you need to do
 
 firmware_tool-flashbtn_step-board_SLIMEVR = Turn off the tracker, remove the case (if any), connect a USB cable to this computer, then do one of the following steps according to your SlimeVR board revision:
 firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board, and the metal shield of the microcontroller
@@ -1398,8 +1398,8 @@ firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Turn on the tracker while pushin
 
 firmware_tool-flashbtn_step-board_OTHER = Before flashing, you will probably need to put the tracker into bootloader mode.
     Most of the time, this means pressing the boot button on the board before the flashing process starts.
-    If the flashing process times out at the beginning of the flashing, it probably means that the tracker was not in bootloader mode.
-    Please refer to the flashing instructions of your board to know how to turn on the bootloader mode
+    If the flashing process times out at the start, it probably means that the tracker was not in bootloader mode.
+    Please refer to the flashing instructions of your board to know how to enter bootloader mode
 
 
 
