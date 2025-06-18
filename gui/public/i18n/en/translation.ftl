@@ -899,7 +899,7 @@ onboarding-reset_tutorial-1 = Tap { $taps } times the highlighted tracker for tr
     You need to be standing for this (i-pose). There is a 3 seconds delay (configurable) before it actually happens.
     This fully resets the position and rotation of all your trackers. It should fix most issues.
 # Cares about multiline
-onboarding-reset_tutorial-2 = Tap { $taps } times the highlighted tracker to trigger mounting reset.
+onboarding-reset_tutorial-2 = Tap { $taps } times the highlighted tracker to trigger a mounting reset.
 
     Mounting reset helps with how the trackers are actually placed on your body, so if you accidentally moved them and changed how they are oriented by a large amount, this will help.
 
