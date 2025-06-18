@@ -1383,7 +1383,7 @@ firmware_tool-flash_method_step-description =
     Please select the flashing method you want to use
 firmware_tool-flash_method_step-ota =
     .label = OTA
-    .description = Use the over-the-air method. Your tracker will use Wi-Fi to update its firmware. Works only on already set up trackers.
+    .description = Use the over-the-air method. Your tracker will use Wi-Fi to update its firmware. Only works on trackers that have been set up.
 firmware_tool-flash_method_step-serial =
     .label = Serial
     .description = Use a USB cable to update your tracker.
