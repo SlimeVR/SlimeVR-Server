@@ -7,7 +7,7 @@
 ## Websocket (server) status
 websocket-connecting = Loading...
 websocket-connection_lost = The server crashed!
-websocket-connection_lost-desc = It looks like the SlimeVR server crashed. Check the logs and restart the program
+websocket-connection_lost-desc = It looks like the SlimeVR server crashed. Check the logs and restart the program.
 websocket-timedout = Could not connect to the server
 websocket-timedout-desc = It looks like the SlimeVR server crashed or timed out. Check the logs and restart the program
 websocket-error-close = Exit SlimeVR
@@ -23,7 +23,7 @@ version_update-close = Close
 tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
-tips-tap_setup = You can slowly tap 2 times your tracker to choose it instead of selecting it from the menu.
+tips-tap_setup = You can slowly tap 2 times on your tracker to choose it instead of selecting it from the menu.
 tips-turn_on_tracker = Using official SlimeVR trackers? Remember to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 tips-failed_webgl = Failed to initialize WebGL.
 
@@ -139,7 +139,7 @@ skeleton_bone-WAIST-desc =
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP = Hip Length
 skeleton_bone-HIP-desc =
-    This is the distance from your belly button to your hips
+    This is the distance from your belly button to your hips.
     To adjust it, adjust your Torso Length properly and modify it in various positions
     (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP_OFFSET = Hip Offset
@@ -178,7 +178,7 @@ skeleton_bone-FOOT_SHIFT-desc =
     feet line up with the middle of your ankles.
 skeleton_bone-SKELETON_OFFSET = Skeleton Offset
 skeleton_bone-SKELETON_OFFSET-desc =
-    This can be adjusted to offsets all your trackers forward or backwards.
+    This can be adjusted to offset all your trackers forward or backwards.
     It can be used in order to aid with calibration in certain games or applications
     that may expect your trackers to be more forward.
 skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
@@ -331,7 +331,7 @@ tracker-rotation-back = Back
 tracker-rotation-back_left = Back-Left
 tracker-rotation-back_right = Back-Right
 tracker-rotation-custom = Custom
-tracker-rotation-overriden = (overriden by mounting reset)
+tracker-rotation-overriden = (overridden by mounting reset)
 
 ## Tracker information
 tracker-infos-manufacturer = Manufacturer
@@ -378,7 +378,7 @@ tracker-settings-name_section-description = Give it a cute nickname :)
 tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-label = Tracker name
 tracker-settings-forget = Forget tracker
-tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevent it from connecting to it until the server is restarted. The configuration of the tracker won't be lost.
+tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevents it from connecting to it until the server is restarted. The configuration of the tracker won't be lost.
 tracker-settings-forget-label = Forget tracker
 tracker-settings-update-unavailable = Cannot be updated (DIY)
 tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
@@ -393,7 +393,7 @@ tracker-part_card-unassigned = Unassigned
 
 ## Body assignment menu
 body_assignment_menu = Where do you want this tracker to be?
-body_assignment_menu-description = Choose a location where you want this tracker to be assigned. Alternatively you can choose to manage all trackers at once instead of one by one.
+body_assignment_menu-description = Choose a location where you want this tracker to be assigned. Alternatively, you can choose to manage all trackers at once instead of one by one.
 body_assignment_menu-show_advanced_locations = Show advanced assign locations
 body_assignment_menu-manage_trackers = Manage all trackers
 body_assignment_menu-unassign_tracker = Unassign tracker
@@ -436,8 +436,8 @@ tracker_selection_menu-dont_assign = Unassign
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
-    <b>Warning:</b> A neck tracker can be deadly if adjusted too tightly,
-    the strap could cut the circulation to your head!
+    <b>Warning:</b> A neck tracker can be deadly if adjusted too tightly;
+    the strap could cut off circulation to your head!
 tracker_selection_menu-neck_warning-done = I understand the risks
 tracker_selection_menu-neck_warning-cancel = Cancel
 
@@ -485,7 +485,7 @@ settings-general-steamvr-trackers-right_elbow = Right elbow
 settings-general-steamvr-trackers-left_hand = Left hand
 settings-general-steamvr-trackers-right_hand = Right hand
 settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
-settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments
+settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments.
 settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
 settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> hand trackers will override your controllers.
     Are you sure?
@@ -498,7 +498,7 @@ settings-general-tracker_mechanics-filtering = Filtering
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
     Choose the filtering type for your trackers.
-    Prediction predicts movement while smoothing smoothens movement.
+    Prediction predicts movement while smoothing smooths movement.
 settings-general-tracker_mechanics-filtering-type = Filtering type
 settings-general-tracker_mechanics-filtering-type-none = No filtering
 settings-general-tracker_mechanics-filtering-type-none-description = Use rotations as is. Will not do any filtering.
@@ -512,7 +512,7 @@ settings-general-tracker_mechanics-drift_compensation = Drift compensation
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
     Compensates IMU yaw drift by applying an inverse rotation.
-    Change amount of compensation and up to how many resets are taken into account.
+    Change the amount of compensation and up to how many resets are taken into account.
     This should only be used if you need to reset very often!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
 settings-general-tracker_mechanics-drift_compensation-prediction = Drift compensation prediction
@@ -576,9 +576,9 @@ settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
 settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
 settings-general-fk_settings-leg_tweak-foot_plant = Foot plant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
-settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction corrects for ice skating but can decrease accuracy in certain movement patterns. When enabling this, make sure to full reset and recalibrate in game.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can reduce or eliminate clipping through the floor. When enabling this, make sure to full reset and recalibrate in game.
-settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if feet trackers are not in use.
+settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction corrects for ice skating but can decrease accuracy in certain movement patterns. When enabling this, make sure to do a full reset and recalibrate in game.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can reduce or eliminate clipping through the floor. When enabling this, make sure to do a full reset and recalibrate in game.
+settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if foot trackers are not in use.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotates your feet to be parallel to the ground when in contact.
 settings-general-fk_settings-leg_fk = Leg tracking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Enable feet Mounting Reset by tiptoeing.
@@ -598,9 +598,9 @@ settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm po
 settings-general-fk_settings-arm_fk-back = Back
 settings-general-fk_settings-arm_fk-back-description = The default mode, with the upper arms going back and lower arms going forward.
 settings-general-fk_settings-arm_fk-tpose_up = T-pose (up)
-settings-general-fk_settings-arm_fk-tpose_up-description = Expects your arms to be down on the sides during Full Reset, and 90 degrees up to the sides during Mounting Reset.
+settings-general-fk_settings-arm_fk-tpose_up-description = Expects your arms to be down at your sides during Full Reset, and 90 degrees up to the sides during Mounting Reset.
 settings-general-fk_settings-arm_fk-tpose_down = T-pose (down)
-settings-general-fk_settings-arm_fk-tpose_down-description = Expects your arms to be 90 degrees up to the sides during Full Reset, and down on the sides during Mounting Reset.
+settings-general-fk_settings-arm_fk-tpose_down-description = Expects your arms to be 90 degrees up to the sides during Full Reset, and down at your sides during Mounting Reset.
 settings-general-fk_settings-arm_fk-forward = Forward
 settings-general-fk_settings-arm_fk-forward-description = Expects your arms to be up 90 degrees forward. Useful for VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Skeleton toggles
@@ -657,7 +657,7 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-theme = Color theme
 settings-general-interface-show-navbar-onboarding = Show "{ navbar-onboarding }" on navigation bar
-settings-general-interface-show-navbar-onboarding-description = This changes if the "{ navbar-onboarding }" button shows on the navigation bar.
+settings-general-interface-show-navbar-onboarding-description = This changes whether the "{ navbar-onboarding }" button shows on the navigation bar.
 settings-general-interface-show-navbar-onboarding-label = Show "{ navbar-onboarding }"
 settings-general-interface-lang = Select language
 settings-general-interface-lang-description = Change the default language you want to use.
@@ -693,7 +693,7 @@ settings-general-interface-dev_mode = Developer Mode
 settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = Minimize to system tray
-settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bothering you.
+settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bother you.
 settings-general-interface-use_tray-label = Minimize to system tray
 settings-general-interface-discord_presence = Share activity on Discord
 settings-general-interface-discord_presence-description = Tells your Discord client that you are using SlimeVR along with the number of IMU trackers you are using.
@@ -741,7 +741,7 @@ settings-osc-router = OSC router
 # This cares about multilines
 settings-osc-router-description =
     Forward OSC messages from another program.
-    Useful for using another OSC program with VRChat for example.
+    Useful for using another OSC program with VRChat, for example.
 settings-osc-router-enable = Enable
 settings-osc-router-enable-description = Toggle the forwarding of messages.
 settings-osc-router-enable-label = Enable
@@ -801,7 +801,7 @@ settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     Change settings specific to the VMC (Virtual Motion Capture) protocol
-        to send SlimeVR's bone data and receive bone data from other apps.
+    to send SlimeVR's bone data and receive bone data from other apps.
 settings-osc-vmc-enable = Enable
 settings-osc-vmc-enable-description = Toggle the sending and receiving of data.
 settings-osc-vmc-enable-label = Enable
@@ -887,7 +887,7 @@ onboarding-wifi_creds-password =
 ## Mounting setup
 onboarding-reset_tutorial-back = Go Back to Mounting calibration
 onboarding-reset_tutorial = Reset tutorial
-onboarding-reset_tutorial-explanation = While you use your trackers they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
+onboarding-reset_tutorial-explanation = While you use your trackers, they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
 onboarding-reset_tutorial-skip = Skip step
 # Cares about multiline
 onboarding-reset_tutorial-0 = Tap { $taps } times the highlighted tracker for triggering yaw reset.
@@ -899,18 +899,18 @@ onboarding-reset_tutorial-1 = Tap { $taps } times the highlighted tracker for tr
     You need to be standing for this (i-pose). There is a 3 seconds delay (configurable) before it actually happens.
     This fully resets the position and rotation of all your trackers. It should fix most issues.
 # Cares about multiline
-onboarding-reset_tutorial-2 = Tap { $taps } times the highlighted tracker for triggering mounting reset.
+onboarding-reset_tutorial-2 = Tap { $taps } times the highlighted tracker to trigger mounting reset.
 
-    Mounting reset helps on how the trackers are actually put on you, so if you accidentally moved them and changed how they are oriented by a big amount, this will help.
+    Mounting reset helps with how the trackers are actually placed on your body, so if you accidentally moved them and changed how they are oriented by a large amount, this will help.
 
-    You need to be on a pose like you are skiing like it's shown on the Automatic Mounting wizard and you have a 3 second delay (configurable) before it gets triggered.
+    You need to be in a pose like you are skiing as shown in the Automatic Mounting wizard and you have a 3 second delay (configurable) before it gets triggered.
 
 ## Setup start
 onboarding-home = Welcome to SlimeVR
 onboarding-home-start = Let's get set up!
 
 ## Enter VR part of setup
-onboarding-enter_vr-back = Go Back to Tracker assignent
+onboarding-enter_vr-back = Go Back to Tracker assignment
 onboarding-enter_vr-title = Time to enter VR!
 onboarding-enter_vr-description = Put on all your trackers and then enter VR!
 onboarding-enter_vr-ready = I'm ready
@@ -942,10 +942,10 @@ onboarding-connect_serial-error-modal-no_serial_log = Is the tracker turned on?
 onboarding-connect_serial-error-modal-no_serial_log-desc = Make sure the tracker is turned on and connected to your computer
 onboarding-connect_serial-error-modal-no_serial_device_found = No trackers detected
 onboarding-connect_serial-error-modal-no_serial_device_found-desc =
-    Please connect a tracker with the provided usb cable to your computer and turn the tracker on.
+    Please connect a tracker with the provided USB cable to your computer and turn the tracker on.
     If this does not work:
-      - try with another usb cable
-      - try with another usb port
+      - try with another USB cable
+      - try with another USB port
       - try reinstalling the SlimeVR server and select "USB Drivers" in the components section
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
@@ -1156,7 +1156,7 @@ onboarding-automatic_proportions-requirements-next = I have read the requirement
 onboarding-automatic_proportions-check_height-title-v3 = Measure your headset height
 onboarding-automatic_proportions-check_height-description-v2 = Your headset (HMD) height should be slightly less than your full height, as headsets measure your eye height. This measurement will be used as a baseline for your body proportions.
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning-v3 = Start measuring while standing <u>upright</u> to measure your height. Be careful to not raise your hands higher than your headset, as they may affect the measurement!
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = Start measuring while standing <u>upright</u> to measure your height. Be careful not to raise your hands higher than your headset, as they may affect the measurement!
 onboarding-automatic_proportions-check_height-guardian_tip = If you are using a standalone VR headset, make sure to have your guardian /
     boundary turned on so that your height is correct!
 # Context is that the height is unknown
@@ -1234,7 +1234,7 @@ onboarding-scaled_proportions-manual_height-estimated_height = Your estimated he
 onboarding-scaled_proportions-manual_height-next_step = Continue and save
 onboarding-scaled_proportions-manual_height-warning =
     You are currently using the manual way of setting up scaled proportions!
-    <b>This mode is recommended only if you do not use a HMD with SlimeVR</b>
+    <b>This mode is recommended only if you do not use an HMD with SlimeVR</b>
 
     To be able to use the automatic scaled proportions please:
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Connect a VR Headset
@@ -1257,7 +1257,7 @@ onboarding-stay_aligned-verify_mounting-title = Check your Mounting
 onboarding-stay_aligned-verify_mounting-step-0 = Stay Aligned requires good mounting. Otherwise, you won't get a good experience with Stay Aligned.
 onboarding-stay_aligned-verify_mounting-step-1 = 1. Move around while standing.
 onboarding-stay_aligned-verify_mounting-step-2 = 2. Sit down and move your legs and feet.
-onboarding-stay_aligned-verify_mounting-step-3 = 3. If your trackers aren't in the right place, press "Redo Mounting Calibration"
+onboarding-stay_aligned-verify_mounting-step-3 = 3. If your trackers aren't in the right place, press "Redo Mounting Calibration".
 onboarding-stay_aligned-verify_mounting-redo_mounting = Redo Mounting calibration
 onboarding-stay_aligned-preparation-title = Preparation
 onboarding-stay_aligned-preparation-tip = Make sure to stand upright. You must be looking forward and your arms must be down to your sides.
@@ -1273,7 +1273,7 @@ onboarding-stay_aligned-relaxed_poses-flat-step-2 = 3. Press the "Save pose" but
 onboarding-stay_aligned-relaxed_poses-skip_step = Skip
 onboarding-stay_aligned-done-title = Stay Aligned enabled!
 onboarding-stay_aligned-done-description = Your Stay Aligned setup is complete!
-onboarding-stay_aligned-done-description-2 = Setup is complete! You may restart the process if you want to re-calibrate the poses
+onboarding-stay_aligned-done-description-2 = Setup is complete! You may restart the process if you want to recalibrate the poses
 onboarding-stay_aligned-previous_step = Previous
 onboarding-stay_aligned-next_step = Next
 onboarding-stay_aligned-restart = Restart
@@ -1298,7 +1298,7 @@ status_system-StatusSteamVRDisconnected = { $type ->
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
 status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
-status_system-StatusPublicNetwork = Your network profile is currently set to Public. This is not recomended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+status_system-StatusPublicNetwork = Your network profile is currently set to Public. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
 
 
 ## Firmware tool globals
@@ -1383,7 +1383,7 @@ firmware_tool-flash_method_step-description =
     Please select the flashing method you want to use
 firmware_tool-flash_method_step-ota =
     .label = OTA
-    .description = Use the over the air method. Your tracker will use the Wi-Fi to update it's firmware. Works only on already setup trackers.
+    .description = Use the over-the-air method. Your tracker will use Wi-Fi to update its firmware. Works only on already set up trackers.
 firmware_tool-flash_method_step-serial =
     .label = Serial
     .description = Use a USB cable to update your tracker.
@@ -1396,10 +1396,10 @@ firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Turn on the tracker while shorti
 firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board, and the metal shield of the microcontroller
 firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Turn on the tracker while pushing in the FLASH button on the top side of the board
 
-firmware_tool-flashbtn_step-board_OTHER = Before flashing you will probably need to put the tracker into bootloader mode.
-    Most of the time it means pressing the boot button on the board before the flashing process starts.
-    If the flashing process timeout at the begining of the flashing it probably means that the tracker was not in bootloader mode
-    Please refer to the flashing instructions of your board to know how to turn on the boatloader mode
+firmware_tool-flashbtn_step-board_OTHER = Before flashing, you will probably need to put the tracker into bootloader mode.
+    Most of the time, this means pressing the boot button on the board before the flashing process starts.
+    If the flashing process times out at the beginning of the flashing, it probably means that the tracker was not in bootloader mode.
+    Please refer to the flashing instructions of your board to know how to turn on the bootloader mode
 
 
 
@@ -1453,7 +1453,7 @@ firmware_update-status-ERROR_UNKNOWN = Unknown error
 firmware_update-title = Firmware update
 firmware_update-devices = Available Devices
 firmware_update-devices-description = Please select the trackers you want to update to the latest version of SlimeVR firmware
-firmware_update-no_devices = Plase make sure that the trackers you want to update are ON and connected to the Wi-Fi!
+firmware_update-no_devices = Please make sure that the trackers you want to update are ON and connected to the Wi-Fi!
 firmware_update-changelog-title = Updating to {$version}
 firmware_update-looking_for_devices = Looking for devices to update...
 firmware_update-retry = Retry
@@ -1468,7 +1468,7 @@ tray_menu-quit = Quit
 ## First exit modal
 tray_or_exit_modal-title = What should the close button do?
 # Multiline text
-tray_or_exit_modal-description = This lets you choose whether you want to exit the server or to minimize it to the tray when pressing the close button.
+tray_or_exit_modal-description = This lets you choose whether you want to exit the server or minimize it to the tray when pressing the close button.
 
     You can change this later in the interface settings!
 tray_or_exit_modal-radio-exit = Exit on close
