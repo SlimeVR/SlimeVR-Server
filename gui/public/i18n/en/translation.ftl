@@ -9,7 +9,7 @@ websocket-connecting = Loading...
 websocket-connection_lost = The server crashed!
 websocket-connection_lost-desc = It looks like the SlimeVR server crashed. Check the logs and restart the program.
 websocket-timedout = Could not connect to the server
-websocket-timedout-desc = It looks like the SlimeVR server crashed or timed out. Check the logs and restart the program
+websocket-timedout-desc = It looks like the SlimeVR server crashed or timed out. Check the logs and restart the program.
 websocket-error-close = Exit SlimeVR
 websocket-error-logs = Open the logs Folder
 
@@ -24,7 +24,7 @@ tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
 tips-tap_setup = You can slowly tap your tracker 2 times to choose it instead of selecting it from the menu.
-tips-turn_on_tracker = Using official SlimeVR trackers? Remember to <b><em>turn on your tracker</em></b> after connecting it to the PC!
+tips-turn_on_tracker = Using official SlimeVR trackers? Don’t forget to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 tips-failed_webgl = Failed to initialize WebGL.
 
 ## Body parts
@@ -511,8 +511,8 @@ settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time
 settings-general-tracker_mechanics-drift_compensation = Drift compensation
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    Compensates IMU yaw drift by applying an inverse rotation.
-    Change the amount of compensation and up to how many resets are taken into account.
+    Compensates for IMU yaw drift by applying an inverse rotation.
+    Change the amount of compensation and the number of resets taken into account.
     This should only be used if you need to reset very often!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
 settings-general-tracker_mechanics-drift_compensation-prediction = Drift compensation prediction
@@ -576,8 +576,8 @@ settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
 settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
 settings-general-fk_settings-leg_tweak-foot_plant = Foot plant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
-settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction corrects for ice skating but can decrease accuracy in certain movement patterns. When enabling this, make sure to perform a full reset and recalibrate in game.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can reduce or eliminate clipping through the floor. When enabling this, make sure to perform a full reset and recalibrate in game.
+settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns. When enabling this, make sure to perform a full reset and recalibrate in-game.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can reduce or eliminate clipping through the floor. When enabling this, make sure to perform a full reset and recalibrate in-game.
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if foot trackers are not in use.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotates your feet to be parallel to the ground when in contact.
 settings-general-fk_settings-leg_fk = Leg tracking
@@ -602,7 +602,7 @@ settings-general-fk_settings-arm_fk-tpose_up-description = Expects your arms to 
 settings-general-fk_settings-arm_fk-tpose_down = T-pose (down)
 settings-general-fk_settings-arm_fk-tpose_down-description = Expects your arms to be 90 degrees up to the sides during Full Reset, and down at your sides during Mounting Reset.
 settings-general-fk_settings-arm_fk-forward = Forward
-settings-general-fk_settings-arm_fk-forward-description = Expects your arms to be up 90 degrees forward. Useful for VTubing.
+settings-general-fk_settings-arm_fk-forward-description = Expects your arms to be raised forward at 90 degrees. Useful for VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Skeleton toggles
 settings-general-fk_settings-skeleton_settings-description = Toggle skeleton settings on or off. It is recommended to leave these on.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Extended spine model
@@ -660,7 +660,7 @@ settings-general-interface-show-navbar-onboarding = Show "{ navbar-onboarding }"
 settings-general-interface-show-navbar-onboarding-description = This changes whether the "{ navbar-onboarding }" button shows on the navigation bar.
 settings-general-interface-show-navbar-onboarding-label = Show "{ navbar-onboarding }"
 settings-general-interface-lang = Select language
-settings-general-interface-lang-description = Change the default language you want to use.
+settings-general-interface-lang-description = Change the default language.
 settings-general-interface-lang-placeholder = Select the language to use
 # Keep the font name untranslated
 settings-interface-appearance-font = GUI font
@@ -680,7 +680,7 @@ settings-general-interface-serial_detection = Serial device detection
 settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug in a new serial device that could be a tracker. It helps to improve the setup process of a tracker.
 settings-general-interface-serial_detection-label = Serial device detection
 settings-general-interface-feedback_sound = Feedback sound
-settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered.
+settings-general-interface-feedback_sound-description = This option plays a sound when a reset is triggered.
 settings-general-interface-feedback_sound-label = Feedback sound
 settings-general-interface-feedback_sound-volume = Feedback sound volume
 settings-general-interface-connected_trackers_warning = Connected trackers warning
@@ -690,7 +690,7 @@ settings-general-interface-connected_trackers_warning-label = Connected trackers
 ## Behavior settings
 settings-interface-behavior = Behavior
 settings-general-interface-dev_mode = Developer Mode
-settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
 settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = Minimize to system tray
 settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bother you.
@@ -901,7 +901,7 @@ onboarding-reset_tutorial-1 = Tap the highlighted tracker { $taps } times to tri
 # Cares about multiline
 onboarding-reset_tutorial-2 = Tap the highlighted tracker { $taps } times to trigger a mounting reset.
 
-    Mounting reset helps with how the trackers are actually placed on your body, so if you accidentally moved them and changed how they are oriented by a large amount, this will help.
+    Mounting reset adjusts for how trackers are placed on your body. If they’ve moved or rotated significantly, this helps recalibrate their orientation.
 
     You need to be in a pose like you are skiing as shown in the Automatic Mounting wizard, and you have a 3 second delay (configurable) before it gets triggered.
 
@@ -939,7 +939,7 @@ onboarding-connect_tracker-connection_status-done = Connected to the Server
 onboarding-connect_tracker-connection_status-no_serial_log = Could not get logs from the tracker
 onboarding-connect_tracker-connection_status-no_serial_device_found = Could not find a tracker from USB
 onboarding-connect_serial-error-modal-no_serial_log = Is the tracker turned on?
-onboarding-connect_serial-error-modal-no_serial_log-desc = Make sure the tracker is turned on and connected to your computer
+onboarding-connect_serial-error-modal-no_serial_log-desc = Make sure the tracker is turned on and connected to your computer.
 onboarding-connect_serial-error-modal-no_serial_device_found = No trackers detected
 onboarding-connect_serial-error-modal-no_serial_device_found-desc =
     Please connect a tracker with the provided USB cable to your computer and turn the tracker on.
@@ -1154,7 +1154,7 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
 onboarding-automatic_proportions-requirements-next = I have read the requirements
 
 onboarding-automatic_proportions-check_height-title-v3 = Measure your headset height
-onboarding-automatic_proportions-check_height-description-v2 = Your headset (HMD) height should be slightly less than your full height, as headsets measure your eye height. This measurement will be used as a baseline for your body proportions.
+onboarding-automatic_proportions-check_height-description-v2 = Your headset (HMD) height should be slightly less than your full height because headsets measure your eye height. This measurement will be used as a baseline for your body proportions.
 # All the text is in bold!
 onboarding-automatic_proportions-check_height-calculation_warning-v3 = Start measuring while standing <u>upright</u> to measure your height. Be careful not to raise your hands higher than your headset, as they may affect the measurement!
 onboarding-automatic_proportions-check_height-guardian_tip = If you are using a standalone VR headset, make sure to have your guardian /
@@ -1192,8 +1192,8 @@ onboarding-automatic_proportions-recording-description-p1 = Make the moves shown
 onboarding-automatic_proportions-recording-steps =
     Standing up straight, roll your head in a circle.
     Bend your back forward and squat. While squatting, look to your left, then to your right.
-    Twist your upper body to the left (counter-clockwise), then reach down towards the ground.
-    Twist your upper body to the right (clockwise), then reach down towards the ground.
+    Twist your upper body to the left (counter-clockwise), then reach down toward the ground.
+    Twist your upper body to the right (clockwise), then reach down toward the ground.
     Roll your hips in a circular motion as if you're using a hula hoop.
     If there is time left on the recording, you can repeat these steps until it's finished.
 onboarding-automatic_proportions-recording-processing = Processing the result
@@ -1234,7 +1234,7 @@ onboarding-scaled_proportions-manual_height-estimated_height = Your estimated he
 onboarding-scaled_proportions-manual_height-next_step = Continue and save
 onboarding-scaled_proportions-manual_height-warning =
     You are currently using the manual way of setting up scaled proportions!
-    <b>This mode is recommended only if you do not use an HMD with SlimeVR</b>
+    <b>This mode is recommended only if you do not use an HMD with SlimeVR.</b>
 
     To be able to use the automatic scaled proportions please:
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Connect a VR Headset
@@ -1273,7 +1273,7 @@ onboarding-stay_aligned-relaxed_poses-flat-step-2 = 3. Press the "Save pose" but
 onboarding-stay_aligned-relaxed_poses-skip_step = Skip
 onboarding-stay_aligned-done-title = Stay Aligned enabled!
 onboarding-stay_aligned-done-description = Your Stay Aligned setup is complete!
-onboarding-stay_aligned-done-description-2 = Setup is complete! You may restart the process if you want to recalibrate the poses
+onboarding-stay_aligned-done-description-2 = Setup is complete! You may restart the process if you want to recalibrate the poses.
 onboarding-stay_aligned-previous_step = Previous
 onboarding-stay_aligned-next_step = Next
 onboarding-stay_aligned-restart = Restart
@@ -1391,15 +1391,15 @@ firmware_tool-flash_method_step-serial =
 firmware_tool-flashbtn_step = Press the boot btn
 firmware_tool-flashbtn_step-description = Before going to the next step, there are a few things you need to do
 
-firmware_tool-flashbtn_step-board_SLIMEVR = Turn off the tracker, remove the case (if any), connect a USB cable to this computer, then do one of the following steps according to your SlimeVR board revision:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board, and the metal shield of the microcontroller
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board, and the metal shield of the microcontroller
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Turn on the tracker while pushing in the FLASH button on the top side of the board
+firmware_tool-flashbtn_step-board_SLIMEVR = Turn off the tracker, remove the case (if any), connect the USB cable to your computer, then follow the appropriate steps for your SlimeVR board revision:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board to the metal shield of the microcontroller.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board to the metal shield of the microcontroller.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Turn on the tracker while pushing in the FLASH button on the top side of the board.
 
 firmware_tool-flashbtn_step-board_OTHER = Before flashing, you will probably need to put the tracker into bootloader mode.
     Most of the time, this means pressing the boot button on the board before the flashing process starts.
     If the flashing process times out at the start, it probably means that the tracker was not in bootloader mode.
-    Please refer to the flashing instructions of your board to know how to enter bootloader mode
+    Refer to your board’s flashing instructions to learn how to enter bootloader mode.
 
 
 
@@ -1452,7 +1452,7 @@ firmware_update-status-ERROR_UNKNOWN = Unknown error
 ## Dedicated Firmware Update Page
 firmware_update-title = Firmware update
 firmware_update-devices = Available Devices
-firmware_update-devices-description = Please select the trackers you want to update to the latest version of SlimeVR firmware
+firmware_update-devices-description = Please select the trackers you want to update to the latest version of SlimeVR firmware.
 firmware_update-no_devices = Please make sure that the trackers you want to update are ON and connected to the Wi-Fi!
 firmware_update-changelog-title = Updating to {$version}
 firmware_update-looking_for_devices = Looking for devices to update...
@@ -1468,7 +1468,7 @@ tray_menu-quit = Quit
 ## First exit modal
 tray_or_exit_modal-title = What should the close button do?
 # Multiline text
-tray_or_exit_modal-description = This lets you choose whether you want to exit the server or minimize it to the tray when pressing the close button.
+tray_or_exit_modal-description = Choose whether to exit the server or minimize it to the tray when clicking the close button.
 
     You can change this later in the interface settings!
 tray_or_exit_modal-radio-exit = Exit on close
