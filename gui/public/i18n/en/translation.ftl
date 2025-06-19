@@ -24,7 +24,7 @@ tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
 tips-tap_setup = You can slowly tap your tracker 2 times to choose it instead of selecting it from the menu.
-tips-turn_on_tracker = Using official SlimeVR trackers? Don’t forget to <b><em>turn on your tracker</em></b> after connecting it to the PC!
+tips-turn_on_tracker = Using official SlimeVR trackers? Don't forget to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 tips-failed_webgl = Failed to initialize WebGL.
 
 ## Body parts
@@ -901,7 +901,7 @@ onboarding-reset_tutorial-1 = Tap the highlighted tracker { $taps } times to tri
 # Cares about multiline
 onboarding-reset_tutorial-2 = Tap the highlighted tracker { $taps } times to trigger a mounting reset.
 
-    Mounting reset adjusts for how trackers are placed on your body. If they’ve moved or rotated significantly, this helps recalibrate their orientation.
+    Mounting reset adjusts for how trackers are placed on your body. If they've moved or rotated significantly, this helps recalibrate their orientation.
 
     You need to be in a pose like you are skiing as shown in the Automatic Mounting wizard, and you have a 3 second delay (configurable) before it gets triggered.
 
@@ -1399,7 +1399,7 @@ firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Turn on the tracker while pushin
 firmware_tool-flashbtn_step-board_OTHER = Before flashing, you will probably need to put the tracker into bootloader mode.
     Most of the time, this means pressing the boot button on the board before the flashing process starts.
     If the flashing process times out at the start, it probably means that the tracker was not in bootloader mode.
-    Refer to your board’s flashing instructions to learn how to enter bootloader mode.
+    Refer to your board's flashing instructions to learn how to enter bootloader mode.
 
 
 
