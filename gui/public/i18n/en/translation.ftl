@@ -962,8 +962,8 @@ onboarding-connect_tracker-next = I connected all my trackers
 ## Tracker calibration tutorial
 onboarding-calibration_tutorial = IMU Calibration Tutorial
 onboarding-calibration_tutorial-subtitle = This will help reduce tracker drifting!
-onboarding-calibration_tutorial-description = Every time you turn on your trackers, they need to rest for a moment on a flat surface to calibrate. Let's do the same thing by clicking the "{ onboarding-calibration_tutorial-calibrate }" button, <b>do not move them!</b>
-onboarding-calibration_tutorial-calibrate = I placed my trackers on the table
+onboarding-calibration_tutorial-description-v1 = Every time after turning your trackers on, they need to rest for a moment on a stable surface to calibrate. Calibration can be performed at any time after your trackers are turned on; this page is just a tutorial. To start the tutorial, click the "{ onboarding-calibration_tutorial-calibrate }" button, then <b>do not move your trackers!</b>
+onboarding-calibration_tutorial-calibrate = I placed my trackers on a table
 onboarding-calibration_tutorial-status-waiting = Waiting for you
 onboarding-calibration_tutorial-status-calibrating = Calibrating
 onboarding-calibration_tutorial-status-success = Nice!
