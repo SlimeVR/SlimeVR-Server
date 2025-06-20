@@ -1,13 +1,12 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useConfig } from './hooks/config';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import randomColor from 'randomcolor';
 
 export function AppLayout() {
   const { config } = useConfig();
   const navigate = useNavigate();
-  const location = useLocation();
   const [colors, setColors] = useState<string[] | null>();
 
   useEffect(() => {
@@ -38,7 +37,7 @@ export function AppLayout() {
         ).map((x) => x.join(',')),
       ].flat()
     );
-  }, [location]);
+  }, [config?.theme]);
 
   useLayoutEffect(() => {
     if (!config) return;
