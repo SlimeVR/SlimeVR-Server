@@ -11,12 +11,12 @@ import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { bodypartToString } from '@/utils/formatting';
 import { useLocaleConfig } from '@/i18n/config';
+import { useState } from 'react';
 import {
   FlatRelaxedPoseModal,
   SittingRelaxedPoseModal,
   StandingRelaxedPoseModal,
 } from './StayAlignedPoseModal';
-import { useState } from 'react';
 
 export interface StayAlignedSettingsForm {
   enabled: boolean;
@@ -177,148 +177,138 @@ export function StayAlignedSettings({
   const openFlat = useState(false);
 
   return (
-    <>
-      <SettingsPagePaneLayout icon={<WrenchIcon />} id="stayaligned">
-        <Typography variant="main-title">
-          {l10n.getString('settings-stay_aligned')}
+    <SettingsPagePaneLayout icon={<WrenchIcon />} id="stayaligned">
+      <Typography variant="main-title">
+        {l10n.getString('settings-stay_aligned')}
+      </Typography>
+      <div className="mt-2">
+        <Typography color="secondary">
+          {l10n.getString('settings-stay_aligned-description')}
+        </Typography>
+        <Typography color="secondary">
+          {l10n.getString('settings-stay_aligned-setup-description')}
+        </Typography>
+        <div className="flex mt-2">
+          <Button
+            variant="primary"
+            to="/onboarding/stay-aligned"
+            state={{ alonePage: true }}
+          >
+            {l10n.getString('settings-stay_aligned-setup-label')}
+          </Button>
+        </div>
+      </div>
+      <div className="mt-6">
+        <Typography bold>
+          {l10n.getString('settings-stay_aligned-general-label')}
+        </Typography>
+        <div className="grid sm:grid-cols-2 gap-3 mt-2">
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="stayAligned.enabled"
+            label={l10n.getString('settings-stay_aligned-enabled-label')}
+            disabled={!config.setupComplete}
+          />
+          <CheckBox
+            variant="toggle"
+            outlined
+            control={control}
+            name="stayAligned.hideYawCorrection"
+            label={l10n.getString(
+              'settings-stay_aligned-hide_yaw_correction-label'
+            )}
+            disabled={!config.setupComplete}
+          />
+        </div>
+      </div>
+      <div className="mt-6">
+        <Typography bold>
+          {l10n.getString('settings-stay_aligned-relaxed_poses-label')}
         </Typography>
         <div className="mt-2">
           <Typography color="secondary">
-            {l10n.getString('settings-stay_aligned-description')}
+            {l10n.getString('settings-stay_aligned-relaxed_poses-description')}
           </Typography>
-          <Typography color="secondary">
-            {l10n.getString('settings-stay_aligned-setup-description')}
-          </Typography>
-          <div className="flex mt-2">
-            <Button
-              variant="primary"
-              to="/onboarding/stay-aligned"
-              state={{ alonePage: true }}
-            >
-              {l10n.getString('settings-stay_aligned-setup-label')}
-            </Button>
-          </div>
         </div>
-        <div className="mt-6">
-          <Typography bold>
-            {l10n.getString('settings-stay_aligned-general-label')}
-          </Typography>
-          <div className="grid sm:grid-cols-2 gap-3 mt-2">
+        <div className="grid sm:grid-cols-1 gap-3 mt-2">
+          <div className="flex gap-2">
             <CheckBox
               variant="toggle"
               outlined
               control={control}
-              name="stayAligned.enabled"
-              label={l10n.getString('settings-stay_aligned-enabled-label')}
-              disabled={!config.setupComplete}
-            />
-            <CheckBox
-              variant="toggle"
-              outlined
-              control={control}
-              name="stayAligned.hideYawCorrection"
+              name="stayAligned.standingEnabled"
               label={l10n.getString(
-                'settings-stay_aligned-hide_yaw_correction-label'
+                'settings-stay_aligned-relaxed_poses-standing'
               )}
-              disabled={!config.setupComplete}
+              disabled={!config.setupComplete || !hasStandingPose}
             />
+            <StandingRelaxedPoseModal open={openStanding} />
+            <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
+              <Button
+                variant="primary"
+                className="w-full max-w-32"
+                disabled={!config.setupComplete}
+                onClick={() => openStanding[1](true)}
+              />
+            </Localized>
           </div>
-        </div>
-        <div className="mt-6">
-          <Typography bold>
-            {l10n.getString('settings-stay_aligned-relaxed_poses-label')}
-          </Typography>
-          <div className="mt-2">
-            <Typography color="secondary">
-              {l10n.getString(
-                'settings-stay_aligned-relaxed_poses-description'
+          <div className="flex gap-2">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="stayAligned.sittingEnabled"
+              label={l10n.getString(
+                'settings-stay_aligned-relaxed_poses-sitting'
               )}
-            </Typography>
+              disabled={!config.setupComplete || !hasSittingPose}
+            />
+            <SittingRelaxedPoseModal open={openSitting} />
+            <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
+              <Button
+                variant="primary"
+                className="w-full max-w-32"
+                disabled={!config.setupComplete}
+                onClick={() => openSitting[1](true)}
+              />
+            </Localized>
           </div>
-          <div className="grid sm:grid-cols-1 gap-3 mt-2">
-            <div className="flex gap-2">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="stayAligned.standingEnabled"
-                label={l10n.getString(
-                  'settings-stay_aligned-relaxed_poses-standing'
-                )}
-                disabled={!config.setupComplete || !hasStandingPose}
+          <div className="flex gap-2">
+            <CheckBox
+              variant="toggle"
+              outlined
+              control={control}
+              name="stayAligned.flatEnabled"
+              label={l10n.getString('settings-stay_aligned-relaxed_poses-flat')}
+              disabled={!config.setupComplete || !hasFlatPose}
+            />
+            <FlatRelaxedPoseModal open={openFlat} />
+            <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
+              <Button
+                variant="primary"
+                className="w-full max-w-32"
+                disabled={!config.setupComplete}
+                onClick={() => openFlat[1](true)}
               />
-              <StandingRelaxedPoseModal
-                open={openStanding}
-              ></StandingRelaxedPoseModal>
-              <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
-                <Button
-                  variant="primary"
-                  className="w-full max-w-32"
-                  disabled={!config.setupComplete}
-                  onClick={() => openStanding[1](true)}
-                ></Button>
-              </Localized>
-            </div>
-            <div className="flex gap-2">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="stayAligned.sittingEnabled"
-                label={l10n.getString(
-                  'settings-stay_aligned-relaxed_poses-sitting'
-                )}
-                disabled={!config.setupComplete || !hasSittingPose}
-              />
-              <SittingRelaxedPoseModal
-                open={openSitting}
-              ></SittingRelaxedPoseModal>
-              <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
-                <Button
-                  variant="primary"
-                  className="w-full max-w-32"
-                  disabled={!config.setupComplete}
-                  onClick={() => openSitting[1](true)}
-                ></Button>
-              </Localized>
-            </div>
-            <div className="flex gap-2">
-              <CheckBox
-                variant="toggle"
-                outlined
-                control={control}
-                name="stayAligned.flatEnabled"
-                label={l10n.getString(
-                  'settings-stay_aligned-relaxed_poses-flat'
-                )}
-                disabled={!config.setupComplete || !hasFlatPose}
-              />
-              <FlatRelaxedPoseModal open={openFlat}></FlatRelaxedPoseModal>
-              <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
-                <Button
-                  variant="primary"
-                  className="w-full max-w-32"
-                  disabled={!config.setupComplete}
-                  onClick={() => openFlat[1](true)}
-                ></Button>
-              </Localized>
-            </div>
+            </Localized>
           </div>
         </div>
-        <div className="mt-6">
-          <Typography bold>
-            {l10n.getString('settings-stay_aligned-debug-label')}
+      </div>
+      <div className="mt-6">
+        <Typography bold>
+          {l10n.getString('settings-stay_aligned-debug-label')}
+        </Typography>
+        <div className="mt-2">
+          <Typography color="secondary">
+            {l10n.getString('settings-stay_aligned-debug-description')}
           </Typography>
-          <div className="mt-2">
-            <Typography color="secondary">
-              {l10n.getString('settings-stay_aligned-debug-description')}
-            </Typography>
-          </div>
-          <div className="mt-2">
-            <CopySettingsButton values={values} />
-          </div>
         </div>
-      </SettingsPagePaneLayout>
-    </>
+        <div className="mt-2">
+          <CopySettingsButton values={values} />
+        </div>
+      </div>
+    </SettingsPagePaneLayout>
   );
 }
