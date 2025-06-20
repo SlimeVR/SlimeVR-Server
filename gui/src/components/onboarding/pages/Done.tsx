@@ -15,7 +15,7 @@ export function DonePage() {
   return (
     <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
       <div className="flex flex-col gap-5 items-center z-10">
-        <SlimeVRIcon></SlimeVRIcon>
+        <SlimeVRIcon />
         <Typography variant="main-title">
           {l10n.getString('onboarding-done-title')}
         </Typography>

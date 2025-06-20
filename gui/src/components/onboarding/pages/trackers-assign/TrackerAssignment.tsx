@@ -27,22 +27,22 @@ import {
   LOWER_BODY,
 } from '@/components/onboarding/BodyAssignment';
 import { NeckWarningModal } from '@/components/onboarding/NeckWarningModal';
-import { TrackerSelectionMenu } from './TrackerSelectionMenu';
 import { defaultConfig, useConfig } from '@/hooks/config';
 import { playTapSetupSound } from '@/sounds/sounds';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { TrackerAssignOptions } from './TrackerAssignOptions';
 import { useAtomValue } from 'jotai';
 import {
   assignedTrackersAtom,
   FlatDeviceTracker,
   flatTrackersAtom,
 } from '@/store/app-store';
+import { TrackerAssignOptions } from './TrackerAssignOptions';
+import { TrackerSelectionMenu } from './TrackerSelectionMenu';
 
-export type BodyPartError = {
+export interface BodyPartError {
   label: string | undefined;
   affectedRoles: BodyPart[];
-};
+}
 
 interface FlatDeviceTrackerDummy {
   tracker: {
@@ -137,7 +137,7 @@ export function TrackersAssignPage() {
 
   const trackerPartGrouped = useMemo(
     () =>
-      assignedTrackers.reduce<{ [key: number]: FlatDeviceTracker[] }>(
+      assignedTrackers.reduce<Record<number, FlatDeviceTracker[]>>(
         (curr, td) => {
           const key = td.tracker.info?.bodyPart || BodyPart.NONE;
           return {
@@ -193,14 +193,15 @@ export function TrackersAssignPage() {
     return Object.keys(BodyPart)
       .map<BodyPart>((key) => +key)
       .filter((key) => typeof key === 'number' && !Number.isNaN(key))
-      .reduce<Record<BodyPart, BodyPartError>>((curr, role) => {
-        return {
+      .reduce<Record<BodyPart, BodyPartError>>(
+        (curr, role) => ({
           ...curr,
           [role]: trackerRoles.find((tr) => tr === role)
             ? message(role)
             : undefined,
-        };
-      }, {} as any);
+        }),
+        {} as any
+      );
   }, [trackers]);
 
   const onTrackerSelected = (
@@ -268,7 +269,7 @@ export function TrackersAssignPage() {
         isOpen={selectedRole !== BodyPart.NONE}
         onClose={() => setSelectRole(BodyPart.NONE)}
         onTrackerSelected={onTrackerSelected}
-      ></TrackerSelectionMenu>
+      />
       <NeckWarningModal
         isOpen={shouldShowChokerWarn}
         overlayClassName={classNames(
@@ -276,7 +277,7 @@ export function TrackersAssignPage() {
         )}
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}
-      ></NeckWarningModal>
+      />
       <div className="flex flex-col gap-5 h-full items-center w-full justify-center">
         <div className="flex flex-col w-full overflow-y-auto px-4 xs:items-center">
           <div className="flex mobile:flex-col md:gap-8 mobile:gap-4 mobile:pb-4">
@@ -314,7 +315,7 @@ export function TrackersAssignPage() {
                   )}
                   name="mirrorView"
                   variant="toggle"
-                ></CheckBox>
+                />
               </div>
               <div className="flex flex-row">
                 {!state.alonePage && (
@@ -349,7 +350,7 @@ export function TrackersAssignPage() {
                 assignMode={config?.assignMode ?? defaultConfig.assignMode}
                 mirror={mirrorView}
                 onRoleSelected={tryOpenChokerWarning}
-              ></BodyAssignment>
+              />
             </div>
           </div>
         </div>

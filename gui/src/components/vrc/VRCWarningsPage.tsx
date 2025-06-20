@@ -55,11 +55,7 @@ function SettingRow({
         className={classNames('px-6 py-4 text-end items-end justify-end flex')}
       >
         <Localized id={muted ? 'vrc_config-unmute-btn' : 'vrc_config-mute-btn'}>
-          <Button
-            variant="secondary"
-            className="min-w-24"
-            onClick={mute}
-          ></Button>
+          <Button variant="secondary" className="min-w-24" onClick={mute} />
         </Localized>
       </td>
     </tr>
@@ -114,7 +110,7 @@ export function VRCWarningsPage() {
   });
 
   if (!state || !state.isSupported) {
-    return <></>;
+    return null;
   }
 
   const settingRowProps = (key: keyof VRCConfigStateSupported['validity']) => ({
@@ -152,21 +148,15 @@ export function VRCWarningsPage() {
                       state.recommended.userHeight
                     )}
                     value={meterFormat.format(state.state.userHeight)}
-                  ></SettingRow>
+                  />
                   <SettingRow
                     {...settingRowProps('legacyModeOk')}
                     name="vrc_config-legacy_mode"
                     recommendedValue={
-                      <Localized
-                        id={onOffKey(state.recommended.legacyMode)}
-                      ></Localized>
+                      <Localized id={onOffKey(state.recommended.legacyMode)} />
                     }
-                    value={
-                      <Localized
-                        id={onOffKey(state.state.legacyMode)}
-                      ></Localized>
-                    }
-                  ></SettingRow>
+                    value={<Localized id={onOffKey(state.state.legacyMode)} />}
+                  />
                   <SettingRow
                     {...settingRowProps('shoulderTrackingOk')}
                     name="vrc_config-disable_shoulder_tracking"
@@ -175,14 +165,14 @@ export function VRCWarningsPage() {
                         id={onOffKey(
                           state.recommended.shoulderTrackingDisabled
                         )}
-                      ></Localized>
+                      />
                     }
                     value={
                       <Localized
                         id={onOffKey(state.state.shoulderTrackingDisabled)}
-                      ></Localized>
+                      />
                     }
-                  ></SettingRow>
+                  />
                   <SettingRow
                     {...settingRowProps('shoulderWidthCompensationOk')}
                     name="vrc_config-shoulder_width_compensation"
@@ -191,28 +181,28 @@ export function VRCWarningsPage() {
                         id={onOffKey(
                           state.recommended.shoulderWidthCompensation
                         )}
-                      ></Localized>
+                      />
                     }
                     value={
                       <Localized
                         id={onOffKey(state.state.shoulderWidthCompensation)}
-                      ></Localized>
+                      />
                     }
-                  ></SettingRow>
+                  />
                   <SettingRow
                     {...settingRowProps('calibrationVisualsOk')}
                     name="vrc_config-calibration_visuals"
                     recommendedValue={
                       <Localized
                         id={onOffKey(state.recommended.calibrationVisuals)}
-                      ></Localized>
+                      />
                     }
                     value={
                       <Localized
                         id={onOffKey(state.state.calibrationVisuals)}
-                      ></Localized>
+                      />
                     }
-                  ></SettingRow>
+                  />
                   <SettingRow
                     {...settingRowProps('calibrationRangeOk')}
                     name="vrc_config-calibration_range"
@@ -220,7 +210,7 @@ export function VRCWarningsPage() {
                       state.recommended.calibrationRange
                     )}
                     value={meterFormat.format(state.state.calibrationRange)}
-                  ></SettingRow>
+                  />
                   <SettingRow
                     {...settingRowProps('trackerModelOk')}
                     name="vrc_config-tracker_model"
@@ -231,16 +221,16 @@ export function VRCWarningsPage() {
                             state.recommended.trackerModel
                           ]
                         }
-                      ></Localized>
+                      />
                     }
                     value={
                       <Localized
                         id={
                           trackerModelTranslationMap[state.state.trackerModel]
                         }
-                      ></Localized>
+                      />
                     }
-                  ></SettingRow>
+                  />
                 </Table>
               </div>
               <div className="flex flex-col gap-2">
@@ -262,9 +252,9 @@ export function VRCWarningsPage() {
                     value={
                       <Localized
                         id={spineModeTranslationMap[state.state.spineMode]}
-                      ></Localized>
+                      />
                     }
-                  ></SettingRow>
+                  />
 
                   <SettingRow
                     {...settingRowProps('avatarMeasurementTypeOk')}
@@ -276,7 +266,7 @@ export function VRCWarningsPage() {
                             state.recommended.avatarMeasurementType
                           ]
                         }
-                      ></Localized>
+                      />
                     }
                     value={
                       <Localized
@@ -285,9 +275,9 @@ export function VRCWarningsPage() {
                             state.state.avatarMeasurementType
                           ]
                         }
-                      ></Localized>
+                      />
                     }
-                  ></SettingRow>
+                  />
                 </Table>
               </div>
             </div>
@@ -301,7 +291,7 @@ export function VRCWarningsPage() {
         <Localized
           id={'vrc_config-page-help-desc'}
           elems={{
-            a: <A href="https://docs.slimevr.dev/tools/vrchat-config.html"></A>,
+            a: <A href="https://docs.slimevr.dev/tools/vrchat-config.html" />,
           }}
         >
           <Typography color="secondary" />

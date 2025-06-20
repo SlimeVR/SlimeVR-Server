@@ -31,8 +31,8 @@ export function OverlayWidget() {
       if (type !== Payload.KeyValues) throw new Error('Invalid payload');
       const obj = keyValues(payload);
       reset({
-        isMirrored: obj['is_mirrored'] === 'true',
-        isVisible: obj['is_visible'] === 'true',
+        isMirrored: obj.is_mirrored === 'true',
+        isVisible: obj.is_visible === 'true',
       });
     }
   );
@@ -77,15 +77,13 @@ export function OverlayWidget() {
         name="isVisible"
         variant="toggle"
         label={l10n.getString('widget-overlay-is_visible_label')}
-      ></CheckBox>
+      />
       <CheckBox
         control={control}
         name="isMirrored"
         variant="toggle"
         label={l10n.getString('widget-overlay-is_mirrored_label')}
-      ></CheckBox>
+      />
     </form>
-  ) : (
-    <></>
-  );
+  ) : null;
 }

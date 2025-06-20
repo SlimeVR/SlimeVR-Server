@@ -21,7 +21,7 @@ export function WifiIcon({
   const y = useMemo(() => (1 - percent) * 13, [percent]);
 
   const col = useMemo(() => {
-    const colorsMap: { [key: number]: string } = {
+    const colorsMap: Record<number, string> = {
       0.4: 'fill-status-success',
       0.2: 'fill-status-warning',
       0: 'fill-status-critical',

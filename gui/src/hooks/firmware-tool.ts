@@ -28,11 +28,11 @@ import { OnboardingContext } from './onboarding';
 
 export type PartialBuildFirmware = DeepPartial<CreateBuildFirmwareDTO>;
 export type FirmwareBuildStatus = BuildResponseDTO;
-export type SelectedDevice = {
+export interface SelectedDevice {
   type: FirmwareUpdateMethod;
   deviceId: string | number;
   deviceNames: string[];
-};
+}
 
 export const boardTypeToFirmwareToolBoardType: Record<
   Exclude<
@@ -181,28 +181,24 @@ export function useFirmwareToolContext(): FirmwareToolContext {
       setLoading(false);
     },
     updatePins: (form: BoardPinsForm) => {
-      setNewConfig((currConfig) => {
-        return {
-          ...currConfig,
-          imusConfig: [...(currConfig?.imusConfig || [])],
-          boardConfig: {
-            ...currConfig.boardConfig,
-            ...form,
-            batteryResistances: form.batteryResistances.map((r) => Number(r)),
-          },
-        };
-      });
+      setNewConfig((currConfig) => ({
+        ...currConfig,
+        imusConfig: [...(currConfig?.imusConfig || [])],
+        boardConfig: {
+          ...currConfig.boardConfig,
+          ...form,
+          batteryResistances: form.batteryResistances.map((r) => Number(r)),
+        },
+      }));
     },
     updateImus: (imus: CreateBuildFirmwareDTO['imusConfig']) => {
-      setNewConfig((currConfig) => {
-        return {
-          ...currConfig,
-          imusConfig: imus.map(({ rotation, ...fields }) => ({
-            ...fields,
-            rotation: Number(rotation),
-          })), // Make sure that the rotation is handled as number
-        };
-      });
+      setNewConfig((currConfig) => ({
+        ...currConfig,
+        imusConfig: imus.map(({ rotation, ...fields }) => ({
+          ...fields,
+          rotation: Number(rotation),
+        })), // Make sure that the rotation is handled as number
+      }));
     },
     retry: async () => {
       setLoading(true);

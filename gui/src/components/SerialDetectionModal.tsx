@@ -69,7 +69,7 @@ export function SerialDetectionModal() {
         {!showWifiForm && (
           <>
             <div className="flex flex-col items-center gap-3 fill-accent-background-20">
-              <USBIcon></USBIcon>
+              <USBIcon />
               <div className="flex flex-col items-center gap-2">
                 <Typography variant="main-title">
                   {l10n.getString('serial_detection-new_device-p0')}
@@ -101,7 +101,7 @@ export function SerialDetectionModal() {
           >
             <div className="flex flex-col items-center gap-3">
               <div className="fill-background-10">
-                <BulbIcon></BulbIcon>
+                <BulbIcon />
               </div>
               <Typography variant="main-title">
                 {l10n.getString('serial_detection-new_device-p0')}

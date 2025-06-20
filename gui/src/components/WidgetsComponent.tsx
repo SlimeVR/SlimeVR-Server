@@ -1,18 +1,18 @@
 import { Localized, useLocalization } from '@fluent/react';
+import { useConfig } from '@/hooks/config';
+import { ResetType, StatusData } from 'solarxr-protocol';
+import { useMemo } from 'react';
+import { parseStatusToLocale, useStatusContext } from '@/hooks/status-system';
+import { useAtomValue } from 'jotai';
+import { flatTrackersAtom } from '@/store/app-store';
 import { BVHButton } from './BVHButton';
 import { TrackingPauseButton } from './TrackingPauseButton';
 import { ResetButton } from './home/ResetButton';
 import { OverlayWidget } from './widgets/OverlayWidget';
 import { TipBox } from './commons/TipBox';
 import { DeveloperModeWidget } from './widgets/DeveloperModeWidget';
-import { useConfig } from '@/hooks/config';
-import { ResetType, StatusData } from 'solarxr-protocol';
-import { useMemo } from 'react';
-import { parseStatusToLocale, useStatusContext } from '@/hooks/status-system';
 import { ClearMountingButton } from './ClearMountingButton';
 import { ToggleableSkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
-import { useAtomValue } from 'jotai';
-import { flatTrackersAtom } from '@/store/app-store';
 import { A } from './commons/A';
 
 function UnprioritizedStatuses() {
@@ -33,7 +33,7 @@ function UnprioritizedStatuses() {
           key={status.id}
           elems={{
             PublicFixLink: (
-              <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
+              <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public" />
             ),
           }}
         >
@@ -52,23 +52,23 @@ export function WidgetsComponent() {
   return (
     <>
       <div className="grid grid-cols-2 gap-2 w-full [&>*:nth-child(odd):last-of-type]:col-span-full">
-        <ResetButton type={ResetType.Yaw} size="big"></ResetButton>
-        <ResetButton type={ResetType.Full} size="big"></ResetButton>
-        <ResetButton type={ResetType.Mounting} size="big"></ResetButton>
-        <ClearMountingButton></ClearMountingButton>
-        <BVHButton></BVHButton>
-        <TrackingPauseButton></TrackingPauseButton>
+        <ResetButton type={ResetType.Yaw} size="big" />
+        <ResetButton type={ResetType.Full} size="big" />
+        <ResetButton type={ResetType.Mounting} size="big" />
+        <ClearMountingButton />
+        <BVHButton />
+        <TrackingPauseButton />
       </div>
       <div className="w-full">
-        <OverlayWidget></OverlayWidget>
+        <OverlayWidget />
       </div>
       <div className="mb-2">
         <ToggleableSkeletonVisualizerWidget height={400} />
       </div>
-      <UnprioritizedStatuses></UnprioritizedStatuses>
+      <UnprioritizedStatuses />
       {config?.debug && (
         <div className="w-full">
-          <DeveloperModeWidget></DeveloperModeWidget>
+          <DeveloperModeWidget />
         </div>
       )}
     </>
