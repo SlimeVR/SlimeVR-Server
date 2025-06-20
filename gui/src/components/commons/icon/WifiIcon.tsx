@@ -5,12 +5,12 @@ export function WifiIcon({
   value,
   disabled = false,
 }: {
-  value: number;
+  value: number | null;
   disabled?: boolean;
 }) {
   const percent = useMemo(
     () =>
-      value
+      value != null
         ? Math.max(
             Math.min(((value - -95) * (100 - 0)) / (-40 - -95) + 0, 100)
           ) / 100
@@ -18,7 +18,7 @@ export function WifiIcon({
     [value]
   );
 
-  const y = useMemo(() => (percent ? (1 - percent) * 13 : 0), [percent]);
+  const y = useMemo(() => (1 - percent) * 13, [percent]);
 
   const col = useMemo(() => {
     const colorsMap: { [key: number]: string } = {

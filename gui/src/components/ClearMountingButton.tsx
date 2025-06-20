@@ -1,20 +1,19 @@
-import { useLocalization } from '@fluent/react';
+import { Localized } from '@fluent/react';
 import { ClearMountingResetRequestT, RpcMessage } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { BigButton } from './commons/BigButton';
 import { TrashIcon } from './commons/icon/TrashIcon';
-import { useTrackers } from '@/hooks/tracker';
 import { Quaternion } from 'three';
 import { QuaternionFromQuatT, similarQuaternions } from '@/maths/quaternion';
 import { useMemo } from 'react';
+import { useAtomValue } from 'jotai';
+import { assignedTrackersAtom } from '@/store/app-store';
 
 const _q = new Quaternion();
 
 export function ClearMountingButton() {
-  const { l10n } = useLocalization();
   const { sendRPCPacket } = useWebsocketAPI();
-  const { useAssignedTrackers } = useTrackers();
-  const assignedTrackers = useAssignedTrackers();
+  const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
   const trackerWithMounting = useMemo(
     () =>
@@ -34,11 +33,12 @@ export function ClearMountingButton() {
   };
 
   return (
-    <BigButton
-      text={l10n.getString('widget-clear_mounting')}
-      icon={<TrashIcon size={20} />}
-      onClick={clearMounting}
-      disabled={!trackerWithMounting}
-    />
+    <Localized id={'widget-clear_mounting'}>
+      <BigButton
+        icon={<TrashIcon size={20} />}
+        onClick={clearMounting}
+        disabled={!trackerWithMounting}
+      />
+    </Localized>
   );
 }

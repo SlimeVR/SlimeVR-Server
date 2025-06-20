@@ -1,0 +1,37 @@
+"Area: Continuous Integration":
+- changed-files:
+  - any-glob-to-any-file: ".github/**"
+"Area: Application Protocol":
+- changed-files:
+  - any-glob-to-any-file: ["solarxr-protocol"]
+"Area: AutoBone":
+- changed-files:
+  - any-glob-to-any-file: "server/core/src/main/java/dev/slimevr/autobone/**"
+"Area: Documentation":
+- changed-files:
+  - any-glob-to-any-file: "**/*.md"
+"Area: GUI":
+- all:
+  - changed-files:
+    - all-globs-to-any-file: ["gui/**/*", "!gui/public/i18n/**/*"]
+"Area: Hardware Protocol":
+- changed-files:
+  - any-glob-to-any-file: "server/core/src/main/java/dev/slimevr/tracking/trackers/udp/**"
+"Area: Server":
+- changed-files:
+  - any-glob-to-any-file: ["server/**", "*gradle*", "gradle/**"]
+"Area: Skeletal Model":
+- changed-files:
+  - any-glob-to-any-file: "server/core/src/main/java/dev/slimevr/tracking/processor/**"
+"Area: SteamVR Driver":
+- changed-files:
+  - any-glob-to-any-file: "server/desktop/src/main/java/dev/slimevr/desktop/platform/**"
+"Area: Translation":
+- changed-files:
+  - any-glob-to-any-file: "gui/public/i18n/**"
+"Area: VMC":
+- changed-files:
+  - any-glob-to-any-file: ["server/core/src/main/java/dev/slimevr/osc/Unity*", "server/core/src/main/java/dev/slimevr/osc/VMC*", "server/core/src/main/java/dev/slimevr/osc/VRM*"]
+"Area: VRCOSC":
+- changed-files:
+  - any-glob-to-any-file: ["server/core/src/main/java/dev/slimevr/osc/VRC*"]

@@ -3,7 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    devenv.url = "github:cachix/devenv";
+    devenv = {
+      url = "github:cachix/devenv";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix2container = {
       url = "github:nlewo/nix2container";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -89,7 +92,7 @@
               harfbuzz
               libffi
               libsoup_3
-              openssl
+              openssl.dev
               pango
               pkg-config
               treefmt
@@ -137,7 +140,7 @@
           enterShell = with pkgs; ''
             # Export a LD_LIBRARY_PATH without libudev-zero as libgudev not likey
             export SLIMEVR_RUST_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
-            export LD_LIBRARY_PATH="${libudev-zero}/lib:$LD_LIBRARY_PATH"
+            export LD_LIBRARY_PATH="${libudev-zero}/lib:${libayatana-appindicator}/lib:$LD_LIBRARY_PATH"
             # GStreamer plugins won't be found without this
             export GST_PLUGIN_SYSTEM_PATH_1_0="${pkgs.gst_all_1.gstreamer.out}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-base}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-good}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-bad}/lib/gstreamer-1.0"
           '';

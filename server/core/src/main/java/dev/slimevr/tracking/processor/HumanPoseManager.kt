@@ -3,6 +3,7 @@ package dev.slimevr.tracking.processor
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
+import dev.slimevr.autobone.errors.BodyProportionError
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
@@ -26,7 +27,6 @@ import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
-import solarxr_protocol.rpc.StatusUnassignedHMD
 import solarxr_protocol.rpc.StatusUnassignedHMDT
 import java.util.function.Consumer
 import kotlin.math.*
@@ -55,7 +55,7 @@ class HumanPoseManager(val server: VRServer?) {
 			skeleton = HumanSkeleton(this, server)
 			// This computes all node offsets, so the defaults don't need to be
 			// explicitly loaded into the skeleton (no need for
-			// `updateNodeOffsetsInSkeleton()`)
+			// `computeAllNodeOffsets()`)
 			loadFromConfig(server.configManager)
 			for (sc in onSkeletonUpdated) sc.accept(skeleton)
 		}
@@ -70,7 +70,7 @@ class HumanPoseManager(val server: VRServer?) {
 	constructor(trackers: List<Tracker>?) : this(server = null) {
 		skeleton = HumanSkeleton(this, trackers)
 		// Set default node offsets on the new skeleton
-		skeletonConfigManager.updateNodeOffsetsInSkeleton()
+		skeletonConfigManager.computeAllNodeOffsets()
 		skeletonConfigManager.updateSettingsInSkeleton()
 	}
 
@@ -87,9 +87,9 @@ class HumanPoseManager(val server: VRServer?) {
 		offsetConfigs: Map<SkeletonConfigOffsets, Float>?,
 	) : this(server = null) {
 		skeleton = HumanSkeleton(this, trackers)
-		// Set default node offsets on the new skeleton
-		skeletonConfigManager.updateNodeOffsetsInSkeleton()
 		// Set offsetConfigs from given offsetConfigs on creation
+		// This computes all node offsets, so the defaults don't need to be
+		// explicitly loaded into the skeleton (no need for `computeAllNodeOffsets()`)
 		skeletonConfigManager.setOffsets(offsetConfigs)
 		skeletonConfigManager.updateSettingsInSkeleton()
 	}
@@ -110,174 +110,123 @@ class HumanPoseManager(val server: VRServer?) {
 		altOffsetConfigs: Map<SkeletonConfigOffsets, Float>?,
 	) : this(server = null) {
 		skeleton = HumanSkeleton(this, trackers)
-		// Set default node offsets on the new skeleton
-		skeletonConfigManager.updateNodeOffsetsInSkeleton()
 		// Set offsetConfigs from given offsetConfigs on creation
 		if (altOffsetConfigs != null) {
 			// Set alts first, so if there's any overlap it doesn't affect
 			// the values
 			skeletonConfigManager.setOffsets(altOffsetConfigs)
 		}
+		// This computes all node offsets, so the defaults don't need to be
+		// explicitly loaded into the skeleton (no need for `computeAllNodeOffsets()`)
 		skeletonConfigManager.setOffsets(offsetConfigs)
 		skeletonConfigManager.updateSettingsInSkeleton()
 	}
 
 	// #endregion
 	// #region private methods
+	private fun makeComputedTracker(name: String, display: String, pos: TrackerPosition): Tracker = Tracker(
+		null,
+		getNextLocalTrackerId(),
+		name,
+		display,
+		pos,
+		hasPosition = true,
+		hasRotation = true,
+		isInternal = true,
+		isComputed = true,
+		allowFiltering = false,
+		// Do not track polarity, moving avg de-syncs ticks and breaks leg tweaks
+		trackRotDirection = false,
+	)
+
 	private fun initializeComputedHumanPoseTracker() {
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://HEAD",
 					"Computed head",
 					TrackerPosition.HEAD,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://CHEST",
 					"Computed chest",
 					TrackerPosition.UPPER_CHEST,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://WAIST",
 					"Computed hip",
 					TrackerPosition.HIP,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://LEFT_KNEE",
 					"Computed left knee",
 					TrackerPosition.LEFT_UPPER_LEG,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://RIGHT_KNEE",
 					"Computed right knee",
 					TrackerPosition.RIGHT_UPPER_LEG,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://LEFT_FOOT",
 					"Computed left foot",
 					TrackerPosition.LEFT_FOOT,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://RIGHT_FOOT",
 					"Computed right foot",
 					TrackerPosition.RIGHT_FOOT,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://LEFT_ELBOW",
 					"Computed left elbow",
 					TrackerPosition.LEFT_UPPER_ARM,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://RIGHT_ELBOW",
 					"Computed right elbow",
 					TrackerPosition.RIGHT_UPPER_ARM,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://LEFT_HAND",
 					"Computed left hand",
 					TrackerPosition.LEFT_HAND,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 
 				),
 			)
 		computedTrackers
 			.add(
-				Tracker(
-					null,
-					getNextLocalTrackerId(),
+				makeComputedTracker(
 					"human://RIGHT_HAND",
 					"Computed right hand",
 					TrackerPosition.RIGHT_HAND,
-					hasPosition = true,
-					hasRotation = true,
-					isInternal = true,
-					isComputed = true,
 				),
 			)
 
@@ -692,6 +641,14 @@ class HumanPoseManager(val server: VRServer?) {
 	@get:ThreadSafe
 	val userHeightFromConfig: Float
 		get() = skeletonConfigManager.userHeightFromOffsets
+
+	@get:ThreadSafe
+	val userNeckHeightFromConfig: Float
+		get() = skeletonConfigManager.userNeckHeightFromOffsets
+
+	@get:ThreadSafe
+	val realUserHeight: Float
+		get() = skeletonConfigManager.userHeightFromOffsets / BodyProportionError.eyeHeightToHeightRatio
 
 	// #endregion
 	fun getPauseTracking(): Boolean = skeleton.getPauseTracking()

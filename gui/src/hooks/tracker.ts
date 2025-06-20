@@ -1,39 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BodyPart, TrackerDataT, TrackerStatus } from 'solarxr-protocol';
+import { BodyPart, TrackerDataT, TrackerInfoT } from 'solarxr-protocol';
 import { QuaternionFromQuatT, QuaternionToEulerDegrees } from '@/maths/quaternion';
-import { useAppContext } from './app';
-import { useLocalization } from '@fluent/react';
+import { ReactLocalization, useLocalization } from '@fluent/react';
 import { useDataFeedConfig } from './datafeed-config';
 import { Quaternion, Vector3 } from 'three';
 import { Vector3FromVec3fT } from '@/maths/vector3';
+import { useAtomValue } from 'jotai';
+import { trackerFromIdAtom } from '@/store/app-store';
 
-export function useTrackers() {
-  const { trackers } = useAppContext();
-
-  return {
-    trackers,
-    useAssignedTrackers: () =>
-      useMemo(
-        () =>
-          trackers.filter(({ tracker }) => tracker.info?.bodyPart !== BodyPart.NONE),
-        [trackers]
-      ),
-    useUnassignedTrackers: () =>
-      useMemo(
-        () =>
-          trackers.filter(({ tracker }) => tracker.info?.bodyPart === BodyPart.NONE),
-        [trackers]
-      ),
-    useConnectedIMUTrackers: () =>
-      useMemo(
-        () =>
-          trackers.filter(
-            ({ tracker }) =>
-              tracker.status !== TrackerStatus.DISCONNECTED && tracker.info?.isImu
-          ),
-        [trackers]
-      ),
-  };
+export function getTrackerName(l10n: ReactLocalization, info: TrackerInfoT | null) {
+  if (info?.customName) return info?.customName;
+  if (info?.bodyPart) return l10n.getString('body_part-' + BodyPart[info?.bodyPart]);
+  return info?.displayName || 'NONE';
 }
 
 export function useTracker(tracker: TrackerDataT) {
@@ -42,12 +20,7 @@ export function useTracker(tracker: TrackerDataT) {
 
   return {
     useName: () =>
-      useMemo(() => {
-        if (tracker.info?.customName) return tracker.info?.customName;
-        if (tracker.info?.bodyPart)
-          return l10n.getString('body_part-' + BodyPart[tracker.info?.bodyPart]);
-        return tracker.info?.displayName || 'NONE';
-      }, [tracker.info]),
+      useMemo(() => getTrackerName(l10n, tracker.info), [tracker.info, l10n]),
     useRawRotationEulerDegrees: () =>
       useMemo(() => QuaternionToEulerDegrees(tracker?.rotation), [tracker.rotation]),
     useRefAdjRotationEulerDegrees: () =>
@@ -114,19 +87,9 @@ export function useTrackerFromId(
   trackerNum: string | number | undefined,
   deviceId: string | number | undefined
 ) {
-  const { trackers } = useAppContext();
-
-  const tracker = useMemo(
-    () =>
-      trackers.find(
-        ({ tracker }) =>
-          trackerNum &&
-          deviceId &&
-          tracker?.trackerId?.trackerNum == trackerNum &&
-          tracker?.trackerId?.deviceId?.id == deviceId
-      ),
-    [trackers, trackerNum, deviceId]
+  const trackerAtom = useMemo(
+    () => trackerFromIdAtom({ trackerNum, deviceId }),
+    [trackerNum, deviceId]
   );
-
-  return tracker;
+  return useAtomValue(trackerAtom);
 }

@@ -2,6 +2,7 @@
 build
 
 /bin/
+*/bin/
 
 MagnetoLib.dll
 vrconfig.yml
@@ -19,3 +20,7 @@ Load AutoBone Recordings
 *.log.lck
 *.log
 logs/
+
+android/release
+android/debug
+

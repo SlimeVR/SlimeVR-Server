@@ -39,12 +39,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	}
 
 	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
-		val fbb = FlatBufferBuilder(32)
-
-		val settings = RPCSettingsBuilder.createSettingsResponse(fbb, api.server)
-		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)
-		fbb.finish(outbound)
-		conn.send(fbb.dataBuffer())
+		rpcHandler.sendSettingsChangedResponse(conn)
 	}
 
 	fun onChangeSettingsRequest(conn: GenericConnection?, messageHeader: RpcMessageHeader) {
@@ -136,6 +131,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands())
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands())
 			}
+			vrcOSCConfig.oscqueryEnabled = req.vrcOsc().oscqueryEnabled()
 
 			vrcOscHandler.refreshSettings(true)
 		}
@@ -153,7 +149,9 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				vmcConfig.portOut = osc.portOut()
 				vmcConfig.address = osc.address()
 			}
-			if (req.vmcOsc().vrmJson() != null) vmcConfig.vrmJson = req.vmcOsc().vrmJson()
+			if (req.vmcOsc().vrmJson() != null) {
+				vmcConfig.vrmJson = req.vmcOsc().vrmJson().ifEmpty { null }
+			}
 			vmcConfig.anchorHip = req.vmcOsc().anchorHip()
 			vmcConfig.mirrorTracking = req.vmcOsc().mirrorTracking()
 
@@ -252,10 +250,11 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 						SkeletonConfigToggles.SKATING_CORRECTION,
 						toggles.skatingCorrection(),
 					)
-				hpm.setToggle(SkeletonConfigToggles.VIVE_EMULATION, toggles.viveEmulation())
 				hpm.setToggle(SkeletonConfigToggles.TOE_SNAP, toggles.toeSnap())
 				hpm.setToggle(SkeletonConfigToggles.FOOT_PLANT, toggles.footPlant())
 				hpm.setToggle(SkeletonConfigToggles.SELF_LOCALIZATION, toggles.selfLocalization())
+				hpm.setToggle(SkeletonConfigToggles.ENFORCE_CONSTRAINTS, toggles.enforceConstraints())
+				hpm.setToggle(SkeletonConfigToggles.CORRECT_CONSTRAINTS, toggles.correctConstraints())
 			}
 
 			if (ratios != null) {
@@ -317,6 +316,11 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				api.server.humanPoseManager.updateLegTweaksConfig()
 			}
 
+			modelSettings.skeletonHeight()?.let {
+				api.server.configManager.vrConfig.skeleton.hmdHeight = it.hmdHeight()
+				api.server.configManager.vrConfig.skeleton.floorHeight = it.floorHeight()
+			}
+
 			hpm.saveConfig()
 		}
 
@@ -345,6 +349,25 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			resetsConfig.updateTrackersResetsSettings()
 		}
 
+		if (req.stayAligned() != null) {
+			val config = api.server.configManager.vrConfig.stayAlignedConfig
+			val requestConfig = req.stayAligned()
+			config.enabled = requestConfig.enabled()
+			config.hideYawCorrection = requestConfig.hideYawCorrection()
+			config.standingRelaxedPose.enabled = requestConfig.standingEnabled()
+			config.standingRelaxedPose.upperLegAngleInDeg = requestConfig.standingUpperLegAngle()
+			config.standingRelaxedPose.lowerLegAngleInDeg = requestConfig.standingLowerLegAngle()
+			config.standingRelaxedPose.footAngleInDeg = requestConfig.standingFootAngle()
+			config.sittingRelaxedPose.enabled = requestConfig.sittingEnabled()
+			config.sittingRelaxedPose.upperLegAngleInDeg = requestConfig.sittingUpperLegAngle()
+			config.sittingRelaxedPose.lowerLegAngleInDeg = requestConfig.sittingLowerLegAngle()
+			config.sittingRelaxedPose.footAngleInDeg = requestConfig.sittingFootAngle()
+			config.flatRelaxedPose.enabled = requestConfig.flatEnabled()
+			config.flatRelaxedPose.upperLegAngleInDeg = requestConfig.flatUpperLegAngle()
+			config.flatRelaxedPose.lowerLegAngleInDeg = requestConfig.flatLowerLegAngle()
+			config.flatRelaxedPose.footAngleInDeg = requestConfig.flatFootAngle()
+		}
+
 		api.server.configManager.saveConfig()
 	}
 
@@ -361,7 +384,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			val settings = SettingsResponse
 				.createSettingsResponse(
 					fbb,
-					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0,
+					RPCSettingsBuilder.createSteamVRSettings(fbb, bridge), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				)
 			val outbound =
 				rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)

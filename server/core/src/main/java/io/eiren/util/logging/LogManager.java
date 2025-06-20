@@ -3,10 +3,9 @@ package io.eiren.util.logging;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,10 +29,16 @@ public class LogManager {
 			if (!mainLogDir.exists())
 				mainLogDir.mkdirs();
 
-			String lastLogPattern = Paths.get(mainLogDir.getPath(), "log_last_%g.log").toString();
-			FileHandler filehandler = new FileHandler(lastLogPattern, 25 * 1000000, 2);
-			filehandler.setFormatter(loc);
-			global.addHandler(filehandler);
+			FileLogHandler fileHandler = new FileLogHandler(
+				mainLogDir.toPath(),
+				"slimevr-server",
+				DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"),
+				25 * 1000000, // 25 MB max file size
+				8, // 8 max log files
+				100 * 1000000 // 100 MB max collective size
+			);
+			fileHandler.setFormatter(loc);
+			global.addHandler(fileHandler);
 		}
 	}
 

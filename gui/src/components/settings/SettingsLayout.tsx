@@ -8,9 +8,11 @@ import { useForm } from 'react-hook-form';
 import { useLocalization } from '@fluent/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './SettingsLayout.scss';
+import { useVRCConfig } from '@/hooks/vrc-config';
 
 export function SettingSelectorMobile() {
   const { l10n } = useLocalization();
+  const { state: vrcConfigState } = useVRCConfig();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -22,7 +24,7 @@ export function SettingSelectorMobile() {
       },
       {
         label: l10n.getString('settings-sidebar-interface'),
-        value: { url: '/settings/interface', scrollTo: 'appearance' },
+        value: { url: '/settings/interface', scrollTo: 'notifications' },
       },
       {
         label: l10n.getString('settings-sidebar-osc_router'),
@@ -40,6 +42,18 @@ export function SettingSelectorMobile() {
         label: l10n.getString('settings-sidebar-serial'),
         value: { url: '/settings/serial' },
       },
+      {
+        label: l10n.getString('settings-sidebar-firmware-tool'),
+        value: { url: '/settings/firmware-tool' },
+      },
+      ...(vrcConfigState?.isSupported
+        ? [
+            {
+              label: l10n.getString('settings-sidebar-vrc_warnings'),
+              value: { url: '/vrc-warnings' },
+            },
+          ]
+        : []),
       {
         label: l10n.getString('settings-sidebar-advanced'),
         value: { url: '/settings/advanced' },
@@ -99,7 +113,7 @@ export function SettingsLayout({ children }: { children: ReactNode }) {
         <div style={{ gridArea: 'n' }}>
           <Navbar></Navbar>
         </div>
-        <div style={{ gridArea: 's' }} className="my-2">
+        <div style={{ gridArea: 's' }} className="my-2 mobile:hidden">
           <SettingsSidebar></SettingsSidebar>
         </div>
         <div

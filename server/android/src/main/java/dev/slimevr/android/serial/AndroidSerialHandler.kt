@@ -90,10 +90,16 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		listeners.forEach { it.onNewSerialDevice(port) }
 	}
 
+	private fun onDeviceDel(port: SerialPortWrapper) {
+		listeners.forEach { it.onSerialDeviceDeleted(port) }
+	}
+
 	private fun detectNewPorts() {
-		val differences = knownPorts.asSequence() - lastKnownPorts
+		val addDifferences = knownPorts.asSequence() - lastKnownPorts
+		val delDifferences = lastKnownPorts - knownPorts.asSequence().toSet()
 		lastKnownPorts = knownPorts.asSequence().toSet()
-		differences.forEach { onNewDevice(it) }
+		addDifferences.forEach { onNewDevice(it) }
+		delDifferences.forEach { onDeviceDel(it) }
 	}
 
 	override fun addListener(channel: SerialListener) {
@@ -226,21 +232,27 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		}
 	}
 
+	override fun write(buff: ByteArray) {
+		usbIoManager?.writeAsync(buff)
+	}
+
 	@Synchronized
 	override fun setWifi(ssid: String, passwd: String) {
 		writeSerial("SET WIFI \"${ssid}\" \"${passwd}\"")
 		addLog("-> SET WIFI \"$ssid\" \"${passwd.replace(".".toRegex(), "*")}\"\n")
 	}
 
-	private fun addLog(str: String) {
+	override fun getCurrentPort(): SlimeSerialPort? = this.currentPort
+
+	private fun addLog(str: String, server: Boolean = true) {
 		LogManager.info("[Serial] $str")
-		listeners.forEach { it.onSerialLog(str) }
+		listeners.forEach { it.onSerialLog(str, server) }
 	}
 
 	override fun onNewData(data: ByteArray?) {
 		if (data != null) {
 			val s = StandardCharsets.UTF_8.decode(ByteBuffer.wrap(data)).toString()
-			addLog(s)
+			addLog(s, false)
 		}
 	}
 

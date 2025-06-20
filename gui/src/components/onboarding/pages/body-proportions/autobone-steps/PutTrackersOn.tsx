@@ -1,10 +1,11 @@
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { useTrackers } from '@/hooks/tracker';
 import { BodyDisplay } from '@/components/commons/BodyDisplay';
 import { Button } from '@/components/commons/Button';
 import { TipBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
+import { useAtomValue } from 'jotai';
+import { flatTrackersAtom } from '@/store/app-store';
 
 export function PutTrackersOnStep({
   nextStep,
@@ -15,7 +16,7 @@ export function PutTrackersOnStep({
 }) {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
-  const { trackers } = useTrackers();
+  const trackers = useAtomValue(flatTrackersAtom);
 
   return (
     <>
@@ -54,10 +55,10 @@ export function PutTrackersOnStep({
           <div className="flex gap-3 mobile:justify-between">
             <Button
               variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
-              to="/onboarding/body-proportions/choose"
+              to="/onboarding/body-proportions/manual"
               state={{ alonePage: variant === 'alone' }}
             >
-              {l10n.getString('onboarding-automatic_proportions-prev_step')}
+              {l10n.getString('onboarding-automatic_proportions-back')}
             </Button>
             <Button variant="primary" onClick={nextStep}>
               {l10n.getString(

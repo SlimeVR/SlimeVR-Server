@@ -81,6 +81,8 @@ skeleton_bone-ELBOW_OFFSET = Sai số khuỷu tay
 ## Tracker reset buttons
 
 reset-reset_all = Đặt lại tất cả bộ phận
+reset-reset_all_warning-reset = Đặt lại tỷ lệ
+reset-reset_all_warning-cancel = Hủy
 reset-full = Đặt lại
 reset-mounting = Đặt lại hướng gắn tracker
 reset-yaw = Đặt lại chiều quay lệch
@@ -142,9 +144,12 @@ widget-developer_mode-more_info = Thêm thông tin
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = Góc quay
+widget-imu_visualizer-preview = Xem trước
+widget-imu_visualizer-hide = Ẩn
 widget-imu_visualizer-rotation_raw = Gốc
 widget-imu_visualizer-rotation_preview = Qua xử lí
-widget-imu_visualizer-rotation_hide = Ẩn
+widget-imu_visualizer-acceleration = Gia tốc
+widget-imu_visualizer-position = Vị trí
 
 ## Widget: Skeleton Visualizer
 
@@ -296,6 +301,7 @@ settings-sidebar-utils = Công cụ
 settings-sidebar-serial = Cổng Serial
 settings-sidebar-appearance = Giao diện
 settings-sidebar-notifications = Thông báo
+settings-sidebar-advanced = Cài đặt mở rộng
 
 ## SteamVR settings
 
@@ -350,6 +356,10 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Bù trừ sai lệch trục ngang của cảm biến bằng cách thêm một sai lệch chống lại nó
     Thay đổi mức độ bù trừ và số lần đặt lại được áp dụng bù trừ
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Bù trừ sai số
+settings-general-tracker_mechanics-drift_compensation-prediction = Dự đoán bù trôi (drift compensation)
+settings-general-tracker_mechanics-drift_compensation-prediction-label = Dự đoán bù trôi (drift compensation)
+settings-general-tracker_mechanics-drift_compensation_warning-cancel = Hủy
+settings-general-tracker_mechanics-drift_compensation_warning-done = Tôi hiểu
 settings-general-tracker_mechanics-drift_compensation-amount-label = Mức độ bù trừ
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Số lần đặt lại được áp dụng bù trừ
 settings-general-tracker_mechanics-save_mounting_reset = Lưu thiết bị đã giao tự động
@@ -605,6 +615,17 @@ settings-osc-vmc-mirror_tracking = Phản chiếu ngược theo dõi cơ thể
 settings-osc-vmc-mirror_tracking-description = Phản chiếu theo dõi theo chiều ngang.
 settings-osc-vmc-mirror_tracking-label = Phản chiếu ngược theo dõi cơ thể
 
+## Advanced settings
+
+settings-utils-advanced = Cài đặt mở rộng
+settings-utils-advanced-reset-gui = Đặt lại cài đặt GUI
+settings-utils-advanced-reset-all-label = Đặt lại tất cả
+settings-utils-advanced-reset_warning-reset = Đặt lại cài đặt
+settings-utils-advanced-reset_warning-cancel = Hủy
+settings-utils-advanced-open_data = Thư mục dữ liệu
+settings-utils-advanced-open_data-description = Mở thư mục dữ liệu của SlimeVR trong tệp, chứa các tệp cấu hình và logs.
+settings-utils-advanced-open_data-label = Mở thư mục
+
 ## Setup/onboarding menu
 
 onboarding-skip = Bỏ qua cài đặt
@@ -716,6 +737,7 @@ onboarding-calibration_tutorial-status-waiting = Đang chờ bạn hoàn thành
 onboarding-calibration_tutorial-status-calibrating = Đang hiệu chuẩn
 onboarding-calibration_tutorial-status-success = Nice!
 onboarding-calibration_tutorial-status-error = Thiết bị đã di chuyển
+onboarding-calibration_tutorial-skip = Bỏ qua hướng dẫn
 
 ## Tracker assignment tutorial
 
@@ -835,11 +857,11 @@ onboarding-choose_mounting = Bạn muốn dùng phương pháp hiểu chuần n�
 # Multiline text
 onboarding-choose_mounting-description = Hướng lắp đặt chính xác cho vị trí của thiết bị theo dõi trên cơ thể của bạn.
 onboarding-choose_mounting-auto_mounting = Cân chỉnh tự động
-# Italized text
+# Italicized text
 onboarding-choose_mounting-auto_mounting-label-v2 = Khuyến khích dùng
 onboarding-choose_mounting-auto_mounting-description = Điều này sẽ tự động phát hiện các hướng lắp đặt cho tất cả các thiết bị của bạn từ 2 tư thế
 onboarding-choose_mounting-manual_mounting = Cân chỉnh thủ công
-# Italized text
+# Italicized text
 onboarding-choose_mounting-manual_mounting-label-v2 = Có thể không đủ chính xác
 onboarding-choose_mounting-manual_mounting-description = Điều này sẽ cho phép bạn chọn hướng lắp theo cách thủ công cho từng thiết bị
 # Multiline text
@@ -888,14 +910,14 @@ onboarding-choose_proportions-description-v1 =
     Khi tỷ lệ cơ thể của bạn không khớp với tỷ lệ được lưu, độ chính xác theo dõi của bạn sẽ kém hơn và bạn sẽ nhận thấy những thứ như trượt băng hoặc trượt, hoặc cơ thể của bạn không khớp với hình đại diện của bạn.
     <b>Bạn chỉ cần đo cơ thể của bạn một lần!</b> Trừ khi chúng sai hoặc cơ thể bạn đã thay đổi, thì bạn không cần phải làm lại.
 onboarding-choose_proportions-auto_proportions = Đo kích thước cơ thể tự động
-# Italized text
+# Italicized text
 onboarding-choose_proportions-auto_proportions-subtitle = Khuyến khích dùng
 onboarding-choose_proportions-auto_proportions-descriptionv3 =
     Tính năng này sẽ đoán tỷ lệ cơ thể của bạn bằng cách ghi lại một mẫu chuyển động của bạn và chuyển nó qua một thuật toán.
     
     <b>Tính năng này sẽ yêu cầu headset của bạn (HMD) được kết nối với SlimeVR và đang nằm ở trên đầu của bạn!</b>
 onboarding-choose_proportions-manual_proportions = Đo kích thước cơ thể thủ công
-# Italized text
+# Italicized text
 onboarding-choose_proportions-manual_proportions-subtitle = Cho chính xác
 onboarding-choose_proportions-manual_proportions-description = Tính năng này sẽ cho phép bạn điều chỉnh tỉ lệ cơ thể của mình theo cách thủ công bằng cách chỉnh sửa các con số một cách trực tiếp
 onboarding-choose_proportions-export = Xuất tỉ lệ cơ thể

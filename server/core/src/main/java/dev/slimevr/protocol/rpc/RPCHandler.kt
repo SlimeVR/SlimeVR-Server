@@ -1,14 +1,18 @@
 package dev.slimevr.protocol.rpc
 
 import com.google.flatbuffers.FlatBufferBuilder
-import dev.slimevr.autobone.errors.BodyProportionError
+import dev.slimevr.config.config
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.ProtocolHandler
+import dev.slimevr.protocol.datafeed.DataFeedBuilder
 import dev.slimevr.protocol.rpc.autobone.RPCAutoBoneHandler
+import dev.slimevr.protocol.rpc.firmware.RPCFirmwareUpdateHandler
+import dev.slimevr.protocol.rpc.games.vrchat.RPCVRChatHandler
 import dev.slimevr.protocol.rpc.reset.RPCResetHandler
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler
 import dev.slimevr.protocol.rpc.serial.RPCSerialHandler
+import dev.slimevr.protocol.rpc.settings.RPCSettingsBuilder
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
 import dev.slimevr.protocol.rpc.setup.RPCHandshakeHandler
 import dev.slimevr.protocol.rpc.setup.RPCTapSetupHandler
@@ -16,37 +20,21 @@ import dev.slimevr.protocol.rpc.setup.RPCUtil.getLocalIp
 import dev.slimevr.protocol.rpc.status.RPCStatusHandler
 import dev.slimevr.protocol.rpc.trackingpause.RPCTrackingPause
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
+import dev.slimevr.tracking.processor.stayaligned.poses.RelaxedPose
+import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByBodyPart
+import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
+import kotlinx.coroutines.*
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.datatypes.TransactionId
-import solarxr_protocol.rpc.AssignTrackerRequest
-import solarxr_protocol.rpc.ChangeSkeletonConfigRequest
-import solarxr_protocol.rpc.ClearDriftCompensationRequest
-import solarxr_protocol.rpc.ClearMountingResetRequest
-import solarxr_protocol.rpc.HeightResponse
-import solarxr_protocol.rpc.LegTweaksTmpChange
-import solarxr_protocol.rpc.LegTweaksTmpClear
-import solarxr_protocol.rpc.OverlayDisplayModeChangeRequest
-import solarxr_protocol.rpc.OverlayDisplayModeResponse
-import solarxr_protocol.rpc.RecordBVHRequest
-import solarxr_protocol.rpc.RecordBVHStatus
-import solarxr_protocol.rpc.ResetRequest
-import solarxr_protocol.rpc.ResetType
-import solarxr_protocol.rpc.RpcMessage
-import solarxr_protocol.rpc.RpcMessageHeader
-import solarxr_protocol.rpc.ServerInfosResponse
-import solarxr_protocol.rpc.SetPauseTrackingRequest
-import solarxr_protocol.rpc.SkeletonConfigRequest
-import solarxr_protocol.rpc.SkeletonResetAllRequest
-import solarxr_protocol.rpc.StatusSystemRequest
-import solarxr_protocol.rpc.StatusSystemResponse
-import solarxr_protocol.rpc.StatusSystemResponseT
+import solarxr_protocol.rpc.*
 
 class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeader>() {
 	private var currTransactionId: Long = 0
+	private val mainScope = CoroutineScope(SupervisorJob())
 
 	init {
 		RPCResetHandler(this, api)
@@ -58,6 +46,8 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCAutoBoneHandler(this, api)
 		RPCHandshakeHandler(this, api)
 		RPCTrackingPause(this, api)
+		RPCFirmwareUpdateHandler(this, api)
+		RPCVRChatHandler(this, api)
 
 		registerPacketListener(
 			RpcMessage.ResetRequest,
@@ -97,6 +87,15 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			RpcMessage.RecordBVHRequest,
 		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
 			this.onRecordBVHRequest(
+				conn,
+				messageHeader,
+			)
+		}
+
+		registerPacketListener(
+			RpcMessage.RecordBVHStatusRequest,
+		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
+			this.onBVHStatusRequest(
 				conn,
 				messageHeader,
 			)
@@ -197,6 +196,36 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 				messageHeader,
 			)
 		}
+
+		registerPacketListener(
+			RpcMessage.MagToggleRequest,
+		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
+			this.onMagToggleRequest(conn, messageHeader)
+		}
+
+		registerPacketListener(
+			RpcMessage.ChangeMagToggleRequest,
+		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
+			this.onChangeMagToggleRequest(conn, messageHeader)
+		}
+
+		registerPacketListener(
+			RpcMessage.EnableStayAlignedRequest,
+		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
+			this.onEnableStayAlignedRequest(conn, messageHeader)
+		}
+
+		registerPacketListener(
+			RpcMessage.DetectStayAlignedRelaxedPoseRequest,
+		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
+			this.onDetectStayAlignedRelaxedPoseRequest(conn, messageHeader)
+		}
+
+		registerPacketListener(
+			RpcMessage.ResetStayAlignedRelaxedPoseRequest,
+		) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
+			this.onResetStayAlignedRelaxedPoseRequest(conn, messageHeader)
+		}
 	}
 
 	private fun onServerInfosRequest(
@@ -252,7 +281,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		// might not be a good idea maybe let the client ask again
 		val fbb = FlatBufferBuilder(300)
-		val config = RPCBuilder.createSkeletonConfig(fbb, api.server.humanPoseManager)
+		val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
 		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
@@ -266,7 +295,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		}
 
 		val fbb = FlatBufferBuilder(300)
-		val config = RPCBuilder.createSkeletonConfig(fbb, api.server.humanPoseManager)
+		val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
 		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
@@ -294,6 +323,17 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		} else {
 			if (!api.server.bvhRecorder.isRecording) api.server.bvhRecorder.startRecording()
 		}
+
+		val fbb = FlatBufferBuilder(40)
+		val status = RecordBVHStatus
+			.createRecordBVHStatus(fbb, api.server.bvhRecorder.isRecording)
+		val outbound = this.createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status)
+		fbb.finish(outbound)
+		conn.send(fbb.dataBuffer())
+	}
+
+	fun onBVHStatusRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		if (messageHeader.message(RecordBVHStatusRequest()) !is RecordBVHStatusRequest) return
 
 		val fbb = FlatBufferBuilder(40)
 		val status = RecordBVHStatus
@@ -467,14 +507,194 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 	fun onHeightRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
 		val fbb = FlatBufferBuilder(32)
 
-		val hmdHeight = api.server.humanPoseManager.hmdHeight
-		val response = HeightResponse
-			.createHeightResponse(
-				fbb,
-				hmdHeight,
-				hmdHeight / BodyProportionError.eyeHeightToHeightRatio,
-			)
+		val posTrackers = api.server.allTrackers.filter { !it.isInternal && it.status == TrackerStatus.OK && it.hasPosition && it.trackerPosition != null }
+		val response = if (posTrackers.isNotEmpty()) {
+			HeightResponse
+				.createHeightResponse(
+					fbb,
+					posTrackers.minOf { it.position.y },
+					posTrackers.find { it.trackerPosition == TrackerPosition.HEAD }?.position?.y
+						?: posTrackers.maxOf { it.position.y },
+				)
+		} else {
+			HeightResponse
+				.createHeightResponse(
+					fbb,
+					0f,
+					0f,
+				)
+		}
 		fbb.finish(createRPCMessage(fbb, RpcMessage.HeightResponse, response))
+		conn.send(fbb.dataBuffer())
+	}
+
+	fun onMagToggleRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val req = messageHeader
+			.message(MagToggleRequest()) as? MagToggleRequest ?: return
+		val fbb = FlatBufferBuilder(32)
+
+		if (req.trackerId() == null) {
+			val response = MagToggleResponse.createMagToggleResponse(
+				fbb,
+				0,
+				api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers,
+			)
+			fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+			conn.send(fbb.dataBuffer())
+			return
+		}
+
+		val tracker = api.server.getTrackerById(req.trackerId().unpack()) ?: return
+		val trackerId = DataFeedBuilder.createTrackerId(fbb, tracker)
+		val response = MagToggleResponse.createMagToggleResponse(
+			fbb,
+			trackerId,
+			tracker.config.shouldHaveMagEnabled == true,
+		)
+		fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+		conn.send(fbb.dataBuffer())
+	}
+
+	fun onChangeMagToggleRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val req = messageHeader
+			.message(ChangeMagToggleRequest()) as? ChangeMagToggleRequest ?: return
+
+		if (req.trackerId() == null) {
+			mainScope.launch {
+				withTimeoutOrNull(MAG_TIMEOUT) {
+					api.server.configManager.vrConfig.server.defineMagOnAllTrackers(req.enable())
+				}
+
+				val fbb = FlatBufferBuilder(32)
+				val response = MagToggleResponse.createMagToggleResponse(
+					fbb,
+					0,
+					api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers,
+				)
+				fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+				conn.send(fbb.dataBuffer())
+			}
+			return
+		}
+
+		val tracker = api.server.getTrackerById(req.trackerId().unpack()) ?: return
+		if (tracker.device == null || tracker.config.shouldHaveMagEnabled == req.enable()) return
+		val state = req.enable()
+		tracker.config.shouldHaveMagEnabled = state
+		// Don't apply magnetometer setting if use magnetometer global setting is not enabled
+		if (!api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers) {
+			val fbb = FlatBufferBuilder(32)
+			val trackerId = DataFeedBuilder.createTrackerId(fbb, tracker)
+			val response = MagToggleResponse.createMagToggleResponse(
+				fbb,
+				trackerId,
+				state,
+			)
+			fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+			conn.send(fbb.dataBuffer())
+			return
+		}
+
+		mainScope.launch {
+			withTimeoutOrNull(MAG_TIMEOUT) {
+				tracker.device.setMag(state, tracker.trackerNum)
+			}
+
+			val fbb = FlatBufferBuilder(32)
+			val trackerId = DataFeedBuilder.createTrackerId(fbb, tracker)
+			val response = MagToggleResponse.createMagToggleResponse(
+				fbb,
+				trackerId,
+				state,
+			)
+			fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+			conn.send(fbb.dataBuffer())
+		}
+	}
+
+	private fun onEnableStayAlignedRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val request =
+			messageHeader.message(EnableStayAlignedRequest()) as? EnableStayAlignedRequest
+				?: return
+
+		val configManager = api.server.configManager
+
+		val config = configManager.vrConfig.stayAlignedConfig
+		config.enabled = request.enable()
+		if (request.enable()) {
+			config.setupComplete = true
+		}
+
+		configManager.saveConfig()
+
+		sendSettingsChangedResponse(conn)
+	}
+
+	private fun onDetectStayAlignedRelaxedPoseRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val request =
+			messageHeader.message(ResetStayAlignedRelaxedPoseRequest()) as? ResetStayAlignedRelaxedPoseRequest
+				?: return
+
+		val configManager = api.server.configManager
+		val config = configManager.vrConfig.stayAlignedConfig
+
+		val pose = request.pose()
+
+		val poseConfig =
+			when (pose) {
+				StayAlignedRelaxedPose.STANDING -> config.standingRelaxedPose
+				StayAlignedRelaxedPose.SITTING -> config.sittingRelaxedPose
+				StayAlignedRelaxedPose.FLAT -> config.flatRelaxedPose
+				else -> return
+			}
+
+		val relaxedPose = RelaxedPose.fromTrackers(api.server.humanPoseManager.skeleton)
+
+		poseConfig.enabled = true
+		poseConfig.upperLegAngleInDeg = relaxedPose.upperLeg.toDeg()
+		poseConfig.lowerLegAngleInDeg = relaxedPose.lowerLeg.toDeg()
+		poseConfig.footAngleInDeg = relaxedPose.foot.toDeg()
+
+		configManager.saveConfig()
+
+		LogManager.info("[detectStayAlignedRelaxedPose] pose=$pose $relaxedPose")
+
+		sendSettingsChangedResponse(conn)
+	}
+
+	private fun onResetStayAlignedRelaxedPoseRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val request =
+			messageHeader.message(ResetStayAlignedRelaxedPoseRequest()) as? ResetStayAlignedRelaxedPoseRequest
+				?: return
+
+		val configManager = api.server.configManager
+		val config = configManager.vrConfig.stayAlignedConfig
+
+		val pose = request.pose()
+
+		val poseConfig =
+			when (pose) {
+				StayAlignedRelaxedPose.STANDING -> config.standingRelaxedPose
+				StayAlignedRelaxedPose.SITTING -> config.sittingRelaxedPose
+				StayAlignedRelaxedPose.FLAT -> config.flatRelaxedPose
+				else -> return
+			}
+
+		poseConfig.enabled = false
+		poseConfig.upperLegAngleInDeg = 0.0f
+		poseConfig.lowerLegAngleInDeg = 0.0f
+		poseConfig.footAngleInDeg = 0.0f
+
+		LogManager.info("[resetStayAlignedRelaxedPose] pose=$pose")
+
+		sendSettingsChangedResponse(conn)
+	}
+
+	fun sendSettingsChangedResponse(conn: GenericConnection) {
+		val fbb = FlatBufferBuilder(32)
+		val settings = RPCSettingsBuilder.createSettingsResponse(fbb, api.server)
+		val outbound = createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)
+		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
 
@@ -482,3 +702,4 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		private const val RESET_SOURCE_NAME = "WebSocketAPI"
 	}
 }
+const val MAG_TIMEOUT: Long = 10_000L

@@ -1,23 +1,26 @@
 package dev.slimevr.tracking.processor.skeleton
 
-import com.jme3.math.FastMath
 import dev.slimevr.VRServer
+import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.BoneType
+import dev.slimevr.tracking.processor.Constraint
+import dev.slimevr.tracking.processor.Constraint.Companion.ConstraintType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
+import dev.slimevr.tracking.processor.stayaligned.StayAligned
+import dev.slimevr.tracking.processor.stayaligned.trackers.TrackerSkeleton
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.tracking.trackers.TrackerUtils.getFirstAvailableTracker
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
+import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
-import io.github.axisangles.ktmath.EulerAngles
-import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.I
 import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
@@ -26,7 +29,6 @@ import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
-import solarxr_protocol.rpc.StatusData
 import java.lang.IllegalArgumentException
 import kotlin.properties.Delegates
 
@@ -34,55 +36,87 @@ class HumanSkeleton(
 	val humanPoseManager: HumanPoseManager,
 ) {
 	// Upper body bones
-	val headBone = Bone(BoneType.HEAD)
-	val neckBone = Bone(BoneType.NECK)
-	val upperChestBone = Bone(BoneType.UPPER_CHEST)
-	val chestBone = Bone(BoneType.CHEST)
-	val waistBone = Bone(BoneType.WAIST)
-	val hipBone = Bone(BoneType.HIP)
+	val headBone = Bone(BoneType.HEAD, Constraint(ConstraintType.COMPLETE))
+	val neckBone = Bone(BoneType.NECK, Constraint(ConstraintType.COMPLETE))
+	val upperChestBone = Bone(BoneType.UPPER_CHEST, Constraint(ConstraintType.TWIST_SWING, 90f, 120f))
+	val chestBone = Bone(BoneType.CHEST, Constraint(ConstraintType.TWIST_SWING, 60f, 120f))
+	val waistBone = Bone(BoneType.WAIST, Constraint(ConstraintType.TWIST_SWING, 60f, 120f))
+	val hipBone = Bone(BoneType.HIP, Constraint(ConstraintType.TWIST_SWING, 60f, 120f))
 
 	// Lower body bones
-	val leftHipBone = Bone(BoneType.LEFT_HIP)
-	val rightHipBone = Bone(BoneType.RIGHT_HIP)
-	val leftUpperLegBone = Bone(BoneType.LEFT_UPPER_LEG)
-	val rightUpperLegBone = Bone(BoneType.RIGHT_UPPER_LEG)
-	val leftLowerLegBone = Bone(BoneType.LEFT_LOWER_LEG)
-	val rightLowerLegBone = Bone(BoneType.RIGHT_LOWER_LEG)
-	val leftFootBone = Bone(BoneType.LEFT_FOOT)
-	val rightFootBone = Bone(BoneType.RIGHT_FOOT)
+	val leftHipBone = Bone(BoneType.LEFT_HIP, Constraint(ConstraintType.TWIST_SWING, 0f, 15f))
+	val rightHipBone = Bone(BoneType.RIGHT_HIP, Constraint(ConstraintType.TWIST_SWING, 0f, 15f))
+	val leftUpperLegBone = Bone(BoneType.LEFT_UPPER_LEG, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
+	val rightUpperLegBone = Bone(BoneType.RIGHT_UPPER_LEG, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
+	val leftLowerLegBone = Bone(BoneType.LEFT_LOWER_LEG, Constraint(ConstraintType.LOOSE_HINGE, 180f, 0f, 50f))
+	val rightLowerLegBone = Bone(BoneType.RIGHT_LOWER_LEG, Constraint(ConstraintType.LOOSE_HINGE, 180f, 0f, 50f))
+	val leftFootBone = Bone(BoneType.LEFT_FOOT, Constraint(ConstraintType.TWIST_SWING, 60f, 60f))
+	val rightFootBone = Bone(BoneType.RIGHT_FOOT, Constraint(ConstraintType.TWIST_SWING, 60f, 60f))
 
 	// Arm bones
-	val leftShoulderBone = Bone(BoneType.LEFT_SHOULDER)
-	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER)
-	val leftUpperArmBone = Bone(BoneType.LEFT_UPPER_ARM)
-	val rightUpperArmBone = Bone(BoneType.RIGHT_UPPER_ARM)
-	val leftLowerArmBone = Bone(BoneType.LEFT_LOWER_ARM)
-	val rightLowerArmBone = Bone(BoneType.RIGHT_LOWER_ARM)
-	val leftHandBone = Bone(BoneType.LEFT_HAND)
-	val rightHandBone = Bone(BoneType.RIGHT_HAND)
+	val leftUpperShoulderBone = Bone(BoneType.LEFT_UPPER_SHOULDER, Constraint(ConstraintType.COMPLETE))
+	val rightUpperShoulderBone = Bone(BoneType.RIGHT_UPPER_SHOULDER, Constraint(ConstraintType.COMPLETE))
+	val leftShoulderBone = Bone(BoneType.LEFT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 30f))
+	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 30f))
+	val leftUpperArmBone = Bone(BoneType.LEFT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
+	val rightUpperArmBone = Bone(BoneType.RIGHT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
+	val leftLowerArmBone = Bone(BoneType.LEFT_LOWER_ARM, Constraint(ConstraintType.LOOSE_HINGE, 0f, -180f, 40f))
+	val rightLowerArmBone = Bone(BoneType.RIGHT_LOWER_ARM, Constraint(ConstraintType.LOOSE_HINGE, 0f, -180f, 40f))
+	val leftHandBone = Bone(BoneType.LEFT_HAND, Constraint(ConstraintType.TWIST_SWING, 120f, 120f))
+	val rightHandBone = Bone(BoneType.RIGHT_HAND, Constraint(ConstraintType.TWIST_SWING, 120f, 120f))
+
+	// Finger bones
+	val leftThumbMetacarpalBone = Bone(BoneType.LEFT_THUMB_METACARPAL, Constraint(ConstraintType.COMPLETE))
+	val leftThumbProximalBone = Bone(BoneType.LEFT_THUMB_PROXIMAL, Constraint(ConstraintType.COMPLETE))
+	val leftThumbDistalBone = Bone(BoneType.LEFT_THUMB_DISTAL, Constraint(ConstraintType.COMPLETE))
+	val leftIndexProximalBone = Bone(BoneType.LEFT_INDEX_PROXIMAL, Constraint(ConstraintType.COMPLETE))
+	val leftIndexIntermediateBone = Bone(BoneType.LEFT_INDEX_INTERMEDIATE, Constraint(ConstraintType.COMPLETE))
+	val leftIndexDistalBone = Bone(BoneType.LEFT_INDEX_DISTAL, Constraint(ConstraintType.COMPLETE))
+	val leftMiddleProximalBone = Bone(BoneType.LEFT_MIDDLE_PROXIMAL, Constraint(ConstraintType.COMPLETE))
+	val leftMiddleIntermediateBone = Bone(BoneType.LEFT_MIDDLE_INTERMEDIATE, Constraint(ConstraintType.COMPLETE))
+	val leftMiddleDistalBone = Bone(BoneType.LEFT_MIDDLE_DISTAL, Constraint(ConstraintType.COMPLETE))
+	val leftRingProximalBone = Bone(BoneType.LEFT_RING_PROXIMAL, Constraint(ConstraintType.COMPLETE))
+	val leftRingIntermediateBone = Bone(BoneType.LEFT_RING_INTERMEDIATE, Constraint(ConstraintType.COMPLETE))
+	val leftRingDistalBone = Bone(BoneType.LEFT_RING_DISTAL, Constraint(ConstraintType.COMPLETE))
+	val leftLittleProximalBone = Bone(BoneType.LEFT_LITTLE_PROXIMAL, Constraint(ConstraintType.COMPLETE))
+	val leftLittleIntermediateBone = Bone(BoneType.LEFT_LITTLE_INTERMEDIATE, Constraint(ConstraintType.COMPLETE))
+	val leftLittleDistalBone = Bone(BoneType.LEFT_LITTLE_DISTAL, Constraint(ConstraintType.COMPLETE))
+	val rightThumbMetacarpalBone = Bone(BoneType.RIGHT_THUMB_METACARPAL, Constraint(ConstraintType.COMPLETE))
+	val rightThumbProximalBone = Bone(BoneType.RIGHT_THUMB_PROXIMAL, Constraint(ConstraintType.COMPLETE))
+	val rightThumbDistalBone = Bone(BoneType.RIGHT_THUMB_DISTAL, Constraint(ConstraintType.COMPLETE))
+	val rightIndexProximalBone = Bone(BoneType.RIGHT_INDEX_PROXIMAL, Constraint(ConstraintType.COMPLETE))
+	val rightIndexIntermediateBone = Bone(BoneType.RIGHT_INDEX_INTERMEDIATE, Constraint(ConstraintType.COMPLETE))
+	val rightIndexDistalBone = Bone(BoneType.RIGHT_INDEX_DISTAL, Constraint(ConstraintType.COMPLETE))
+	val rightMiddleProximalBone = Bone(BoneType.RIGHT_MIDDLE_PROXIMAL, Constraint(ConstraintType.COMPLETE))
+	val rightMiddleIntermediateBone = Bone(BoneType.RIGHT_MIDDLE_INTERMEDIATE, Constraint(ConstraintType.COMPLETE))
+	val rightMiddleDistalBone = Bone(BoneType.RIGHT_MIDDLE_DISTAL, Constraint(ConstraintType.COMPLETE))
+	val rightRingProximalBone = Bone(BoneType.RIGHT_RING_PROXIMAL, Constraint(ConstraintType.COMPLETE))
+	val rightRingIntermediateBone = Bone(BoneType.RIGHT_RING_INTERMEDIATE, Constraint(ConstraintType.COMPLETE))
+	val rightRingDistalBone = Bone(BoneType.RIGHT_RING_DISTAL, Constraint(ConstraintType.COMPLETE))
+	val rightLittleProximalBone = Bone(BoneType.RIGHT_LITTLE_PROXIMAL, Constraint(ConstraintType.COMPLETE))
+	val rightLittleIntermediateBone = Bone(BoneType.RIGHT_LITTLE_INTERMEDIATE, Constraint(ConstraintType.COMPLETE))
+	val rightLittleDistalBone = Bone(BoneType.RIGHT_LITTLE_DISTAL, Constraint(ConstraintType.COMPLETE))
 
 	// Tracker bones
-	val headTrackerBone = Bone(BoneType.HEAD_TRACKER)
-	val chestTrackerBone = Bone(BoneType.CHEST_TRACKER)
-	val hipTrackerBone = Bone(BoneType.HIP_TRACKER)
-	val leftKneeTrackerBone = Bone(BoneType.LEFT_KNEE_TRACKER)
-	val rightKneeTrackerBone = Bone(BoneType.RIGHT_KNEE_TRACKER)
-	val leftFootTrackerBone = Bone(BoneType.LEFT_FOOT_TRACKER)
-	val rightFootTrackerBone = Bone(BoneType.RIGHT_FOOT_TRACKER)
-	val leftElbowTrackerBone = Bone(BoneType.LEFT_ELBOW_TRACKER)
-	val rightElbowTrackerBone = Bone(BoneType.RIGHT_ELBOW_TRACKER)
-	val leftHandTrackerBone = Bone(BoneType.LEFT_HAND_TRACKER)
-	val rightHandTrackerBone = Bone(BoneType.RIGHT_HAND_TRACKER)
+	val headTrackerBone = Bone(BoneType.HEAD_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val chestTrackerBone = Bone(BoneType.CHEST_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val hipTrackerBone = Bone(BoneType.HIP_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val leftKneeTrackerBone = Bone(BoneType.LEFT_KNEE_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val rightKneeTrackerBone = Bone(BoneType.RIGHT_KNEE_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val leftFootTrackerBone = Bone(BoneType.LEFT_FOOT_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val rightFootTrackerBone = Bone(BoneType.RIGHT_FOOT_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val leftElbowTrackerBone = Bone(BoneType.LEFT_ELBOW_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val rightElbowTrackerBone = Bone(BoneType.RIGHT_ELBOW_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val leftHandTrackerBone = Bone(BoneType.LEFT_HAND_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val rightHandTrackerBone = Bone(BoneType.RIGHT_HAND_TRACKER, Constraint(ConstraintType.COMPLETE))
 
 	// Buffers
 	var hasSpineTracker = false
 	var hasKneeTrackers = false
-	var hasLeftLegTracker = false
-	var hasRightLegTracker = false
-	var hasLeftFootTracker = false
-	var hasRightFootTracker = false
 	var hasLeftArmTracker = false
 	var hasRightArmTracker = false
+	var hasLeftFingerTracker = false
+	var hasRightFingerTracker = false
 
 	// Input trackers
 	var headTracker: Tracker? by Delegates.observable(null) { _, old, new ->
@@ -110,6 +144,36 @@ class HumanSkeleton(
 	var rightHandTracker: Tracker? = null
 	var leftShoulderTracker: Tracker? = null
 	var rightShoulderTracker: Tracker? = null
+	var leftThumbMetacarpalTracker: Tracker? = null
+	var leftThumbProximalTracker: Tracker? = null
+	var leftThumbDistalTracker: Tracker? = null
+	var leftIndexProximalTracker: Tracker? = null
+	var leftIndexIntermediateTracker: Tracker? = null
+	var leftIndexDistalTracker: Tracker? = null
+	var leftMiddleProximalTracker: Tracker? = null
+	var leftMiddleIntermediateTracker: Tracker? = null
+	var leftMiddleDistalTracker: Tracker? = null
+	var leftRingProximalTracker: Tracker? = null
+	var leftRingIntermediateTracker: Tracker? = null
+	var leftRingDistalTracker: Tracker? = null
+	var leftLittleProximalTracker: Tracker? = null
+	var leftLittleIntermediateTracker: Tracker? = null
+	var leftLittleDistalTracker: Tracker? = null
+	var rightThumbMetacarpalTracker: Tracker? = null
+	var rightThumbProximalTracker: Tracker? = null
+	var rightThumbDistalTracker: Tracker? = null
+	var rightIndexProximalTracker: Tracker? = null
+	var rightIndexIntermediateTracker: Tracker? = null
+	var rightIndexDistalTracker: Tracker? = null
+	var rightMiddleProximalTracker: Tracker? = null
+	var rightMiddleIntermediateTracker: Tracker? = null
+	var rightMiddleDistalTracker: Tracker? = null
+	var rightRingProximalTracker: Tracker? = null
+	var rightRingIntermediateTracker: Tracker? = null
+	var rightRingDistalTracker: Tracker? = null
+	var rightLittleProximalTracker: Tracker? = null
+	var rightLittleIntermediateTracker: Tracker? = null
+	var rightLittleDistalTracker: Tracker? = null
 
 	// Output trackers
 	var computedHeadTracker: Tracker? = null
@@ -129,6 +193,8 @@ class HumanSkeleton(
 	private var extendedPelvisModel = false
 	private var extendedKneeModel = false
 	private var forceArmsFromHMD = true
+	private var enforceConstraints = true
+	private var correctConstraints = true
 
 	// Ratios
 	private var waistFromChestHipAveraging = 0f
@@ -145,8 +211,11 @@ class HumanSkeleton(
 	// Modules
 	var legTweaks = LegTweaks(this)
 	var tapDetectionManager = TapDetectionManager(this)
-	var viveEmulation = ViveEmulation(this)
 	var localizer = Localizer(this)
+
+	// Stay Aligned
+	var trackerSkeleton = TrackerSkeleton(this)
+	var stayAlignedConfig = StayAlignedConfig()
 
 	// Constructors
 	init {
@@ -169,6 +238,7 @@ class HumanSkeleton(
 		)
 		legTweaks.setConfig(server.configManager.vrConfig.legTweaks)
 		localizer.setEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION))
+		stayAlignedConfig = server.configManager.vrConfig.stayAlignedConfig
 	}
 
 	constructor(
@@ -231,8 +301,10 @@ class HumanSkeleton(
 		}
 
 		// Shoulders
-		neckBone.attachChild(leftShoulderBone)
-		neckBone.attachChild(rightShoulderBone)
+		neckBone.attachChild(leftUpperShoulderBone)
+		neckBone.attachChild(rightUpperShoulderBone)
+		leftUpperShoulderBone.attachChild(leftShoulderBone)
+		rightUpperShoulderBone.attachChild(rightShoulderBone)
 
 		// Upper arm
 		leftShoulderBone.attachChild(leftUpperArmBone)
@@ -259,24 +331,63 @@ class HumanSkeleton(
 			rightLowerArmBone.attachChild(rightHandBone)
 			rightHandBone.attachChild(rightHandTrackerBone)
 		}
+
+		// Fingers
+		leftHandBone.attachChild(leftThumbMetacarpalBone)
+		leftThumbMetacarpalBone.attachChild(leftThumbProximalBone)
+		leftThumbProximalBone.attachChild(leftThumbDistalBone)
+		leftHandBone.attachChild(leftIndexProximalBone)
+		leftIndexProximalBone.attachChild(leftIndexIntermediateBone)
+		leftIndexIntermediateBone.attachChild(leftIndexDistalBone)
+		leftHandBone.attachChild(leftMiddleProximalBone)
+		leftMiddleProximalBone.attachChild(leftMiddleIntermediateBone)
+		leftMiddleIntermediateBone.attachChild(leftMiddleDistalBone)
+		leftHandBone.attachChild(leftRingProximalBone)
+		leftRingProximalBone.attachChild(leftRingIntermediateBone)
+		leftRingIntermediateBone.attachChild(leftRingDistalBone)
+		leftHandBone.attachChild(leftLittleProximalBone)
+		leftLittleProximalBone.attachChild(leftLittleIntermediateBone)
+		leftLittleIntermediateBone.attachChild(leftLittleDistalBone)
+		rightHandBone.attachChild(rightThumbMetacarpalBone)
+		rightThumbMetacarpalBone.attachChild(rightThumbProximalBone)
+		rightThumbProximalBone.attachChild(rightThumbDistalBone)
+		rightHandBone.attachChild(rightIndexProximalBone)
+		rightIndexProximalBone.attachChild(rightIndexIntermediateBone)
+		rightIndexIntermediateBone.attachChild(rightIndexDistalBone)
+		rightHandBone.attachChild(rightMiddleProximalBone)
+		rightMiddleProximalBone.attachChild(rightMiddleIntermediateBone)
+		rightMiddleIntermediateBone.attachChild(rightMiddleDistalBone)
+		rightHandBone.attachChild(rightRingProximalBone)
+		rightRingProximalBone.attachChild(rightRingIntermediateBone)
+		rightRingIntermediateBone.attachChild(rightRingDistalBone)
+		rightHandBone.attachChild(rightLittleProximalBone)
+		rightLittleProximalBone.attachChild(rightLittleIntermediateBone)
+		rightLittleIntermediateBone.attachChild(rightLittleDistalBone)
 	}
 
 	/**
 	 * Set input trackers from a list
 	 */
 	fun setTrackersFromList(trackers: List<Tracker>) {
+		// Head
 		headTracker = getTrackerForSkeleton(trackers, TrackerPosition.HEAD)
 		neckTracker = getTrackerForSkeleton(trackers, TrackerPosition.NECK)
+
+		// Spine
 		upperChestTracker = getTrackerForSkeleton(trackers, TrackerPosition.UPPER_CHEST)
 		chestTracker = getTrackerForSkeleton(trackers, TrackerPosition.CHEST)
 		waistTracker = getTrackerForSkeleton(trackers, TrackerPosition.WAIST)
 		hipTracker = getTrackerForSkeleton(trackers, TrackerPosition.HIP)
+
+		// Legs
 		leftUpperLegTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_UPPER_LEG)
 		leftLowerLegTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_LOWER_LEG)
 		leftFootTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_FOOT)
 		rightUpperLegTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_UPPER_LEG)
 		rightLowerLegTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_LOWER_LEG)
 		rightFootTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_FOOT)
+
+		// Arms
 		leftLowerArmTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_LOWER_ARM)
 		rightLowerArmTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_LOWER_ARM)
 		leftUpperArmTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_UPPER_ARM)
@@ -286,15 +397,53 @@ class HumanSkeleton(
 		leftShoulderTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_SHOULDER)
 		rightShoulderTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_SHOULDER)
 
-		// Check for specific conditions and store them in booleans.
+		// Fingers
+		leftThumbMetacarpalTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_THUMB_METACARPAL)
+		leftThumbProximalTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_THUMB_PROXIMAL)
+		leftThumbDistalTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_THUMB_DISTAL)
+		leftIndexProximalTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_INDEX_PROXIMAL)
+		leftIndexIntermediateTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_INDEX_INTERMEDIATE)
+		leftIndexDistalTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_INDEX_DISTAL)
+		leftMiddleProximalTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_MIDDLE_PROXIMAL)
+		leftMiddleIntermediateTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_MIDDLE_INTERMEDIATE)
+		leftMiddleDistalTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_MIDDLE_DISTAL)
+		leftRingProximalTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_RING_PROXIMAL)
+		leftRingIntermediateTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_RING_INTERMEDIATE)
+		leftRingDistalTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_RING_DISTAL)
+		leftLittleProximalTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_LITTLE_PROXIMAL)
+		leftLittleIntermediateTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_LITTLE_INTERMEDIATE)
+		leftLittleDistalTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_LITTLE_DISTAL)
+		rightThumbMetacarpalTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_THUMB_METACARPAL)
+		rightThumbProximalTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_THUMB_PROXIMAL)
+		rightThumbDistalTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_THUMB_DISTAL)
+		rightIndexProximalTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_INDEX_PROXIMAL)
+		rightIndexIntermediateTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_INDEX_INTERMEDIATE)
+		rightIndexDistalTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_INDEX_DISTAL)
+		rightMiddleProximalTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_MIDDLE_PROXIMAL)
+		rightMiddleIntermediateTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_MIDDLE_INTERMEDIATE)
+		rightMiddleDistalTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_MIDDLE_DISTAL)
+		rightRingProximalTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_RING_PROXIMAL)
+		rightRingIntermediateTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_RING_INTERMEDIATE)
+		rightRingDistalTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_RING_DISTAL)
+		rightLittleProximalTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_LITTLE_PROXIMAL)
+		rightLittleIntermediateTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_LITTLE_INTERMEDIATE)
+		rightLittleDistalTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_LITTLE_DISTAL)
+
+		// Check for specific conditions and cache them
 		hasSpineTracker = upperChestTracker != null || chestTracker != null || waistTracker != null || hipTracker != null
 		hasKneeTrackers = leftUpperLegTracker != null && rightUpperLegTracker != null
-		hasLeftLegTracker = leftUpperLegTracker != null || leftLowerLegTracker != null || leftFootTracker != null
-		hasRightLegTracker = rightUpperLegTracker != null || rightLowerLegTracker != null || rightFootTracker != null
-		hasLeftFootTracker = leftFootTracker != null
-		hasRightFootTracker = rightFootTracker != null
 		hasLeftArmTracker = leftLowerArmTracker != null || leftUpperArmTracker != null
 		hasRightArmTracker = rightLowerArmTracker != null || rightUpperArmTracker != null
+		hasLeftFingerTracker = leftThumbMetacarpalTracker != null || leftThumbProximalTracker != null || leftThumbDistalTracker != null ||
+			leftIndexProximalTracker != null || leftIndexIntermediateTracker != null || leftIndexDistalTracker != null ||
+			leftMiddleProximalTracker != null || leftMiddleIntermediateTracker != null || leftMiddleDistalTracker != null ||
+			leftRingProximalTracker != null || leftRingIntermediateTracker != null || leftRingDistalTracker != null ||
+			leftLittleProximalTracker != null || leftLittleIntermediateTracker != null || leftLittleDistalTracker != null
+		hasRightFingerTracker = rightThumbMetacarpalTracker != null || rightThumbProximalTracker != null || rightThumbDistalTracker != null ||
+			rightIndexProximalTracker != null || rightIndexIntermediateTracker != null || rightIndexDistalTracker != null ||
+			rightMiddleProximalTracker != null || rightMiddleIntermediateTracker != null || rightMiddleDistalTracker != null ||
+			rightRingProximalTracker != null || rightRingIntermediateTracker != null || rightRingDistalTracker != null ||
+			rightLittleProximalTracker != null || rightLittleIntermediateTracker != null || rightLittleDistalTracker != null
 
 		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true)
@@ -304,6 +453,12 @@ class HumanSkeleton(
 
 		// Update tap detection's trackers
 		tapDetectionManager.updateConfig(trackers)
+
+		// Update bones tracker field
+		refreshBoneTracker()
+
+		// Update tracker skeleton
+		trackerSkeleton = TrackerSkeleton(this)
 	}
 
 	/**
@@ -360,8 +515,15 @@ class HumanSkeleton(
 	fun updatePose() {
 		tapDetectionManager.update()
 
+		StayAligned.adjustNextTracker(trackerSkeleton, stayAlignedConfig)
+
 		updateTransforms()
 		updateBones()
+		if (enforceConstraints) {
+			// TODO re-enable toggling correctConstraints once
+			// https://github.com/SlimeVR/SlimeVR-Server/issues/1297 is solved
+			headBone.updateWithConstraints(false)
+		}
 		updateComputedTrackers()
 
 		// Don't run post-processing if the tracking is paused
@@ -369,7 +531,15 @@ class HumanSkeleton(
 
 		legTweaks.tweakLegs()
 		localizer.update()
-		viveEmulation.update()
+	}
+
+	/**
+	 * Refresh the attachedTracker field in each bone
+	 */
+	private fun refreshBoneTracker() {
+		for (bone in allHumanBones) {
+			bone.attachedTracker = getTrackerForBone(bone.boneType)
+		}
 	}
 
 	/**
@@ -394,6 +564,7 @@ class HumanSkeleton(
 
 		// Spine
 		updateSpineTransforms()
+
 		// Left leg
 		updateLegTransforms(
 			leftUpperLegBone,
@@ -405,6 +576,7 @@ class HumanSkeleton(
 			leftLowerLegTracker,
 			leftFootTracker,
 		)
+
 		// Right leg
 		updateLegTransforms(
 			rightUpperLegBone,
@@ -416,9 +588,11 @@ class HumanSkeleton(
 			rightLowerLegTracker,
 			rightFootTracker,
 		)
+
 		// Left arm
 		updateArmTransforms(
 			isTrackingLeftArmFromController,
+			leftUpperShoulderBone,
 			leftShoulderBone,
 			leftUpperArmBone,
 			leftElbowTrackerBone,
@@ -430,9 +604,11 @@ class HumanSkeleton(
 			leftLowerArmTracker,
 			leftHandTracker,
 		)
+
 		// Right arm
 		updateArmTransforms(
 			isTrackingRightArmFromController,
+			rightUpperShoulderBone,
 			rightShoulderBone,
 			rightUpperArmBone,
 			rightElbowTrackerBone,
@@ -443,6 +619,116 @@ class HumanSkeleton(
 			rightUpperArmTracker,
 			rightLowerArmTracker,
 			rightHandTracker,
+		)
+
+		// Left thumb
+		updateFingerTransforms(
+			leftHandTrackerBone.getGlobalRotation(),
+			leftThumbMetacarpalBone,
+			leftThumbProximalBone,
+			leftThumbDistalBone,
+			leftThumbMetacarpalTracker,
+			leftThumbProximalTracker,
+			leftThumbDistalTracker,
+		)
+
+		// Left index
+		updateFingerTransforms(
+			leftHandTrackerBone.getGlobalRotation(),
+			leftIndexProximalBone,
+			leftIndexIntermediateBone,
+			leftIndexDistalBone,
+			leftIndexProximalTracker,
+			leftIndexIntermediateTracker,
+			leftIndexDistalTracker,
+		)
+
+		// Left middle
+		updateFingerTransforms(
+			leftHandTrackerBone.getGlobalRotation(),
+			leftMiddleProximalBone,
+			leftMiddleIntermediateBone,
+			leftMiddleDistalBone,
+			leftMiddleProximalTracker,
+			leftMiddleIntermediateTracker,
+			leftMiddleDistalTracker,
+		)
+
+		// Left ring
+		updateFingerTransforms(
+			leftHandTrackerBone.getGlobalRotation(),
+			leftRingProximalBone,
+			leftRingIntermediateBone,
+			leftRingDistalBone,
+			leftRingProximalTracker,
+			leftRingIntermediateTracker,
+			leftRingDistalTracker,
+		)
+
+		// Left little
+		updateFingerTransforms(
+			leftHandTrackerBone.getGlobalRotation(),
+			leftLittleProximalBone,
+			leftLittleIntermediateBone,
+			leftLittleDistalBone,
+			leftLittleProximalTracker,
+			leftLittleIntermediateTracker,
+			leftLittleDistalTracker,
+		)
+
+		// Right thumb
+		updateFingerTransforms(
+			rightHandTrackerBone.getGlobalRotation(),
+			rightThumbMetacarpalBone,
+			rightThumbProximalBone,
+			rightThumbDistalBone,
+			rightThumbMetacarpalTracker,
+			rightThumbProximalTracker,
+			rightThumbDistalTracker,
+		)
+
+		// Right index
+		updateFingerTransforms(
+			rightHandTrackerBone.getGlobalRotation(),
+			rightIndexProximalBone,
+			rightIndexIntermediateBone,
+			rightIndexDistalBone,
+			rightIndexProximalTracker,
+			rightIndexIntermediateTracker,
+			rightIndexDistalTracker,
+		)
+
+		// Right middle
+		updateFingerTransforms(
+			rightHandTrackerBone.getGlobalRotation(),
+			rightMiddleProximalBone,
+			rightMiddleIntermediateBone,
+			rightMiddleDistalBone,
+			rightMiddleProximalTracker,
+			rightMiddleIntermediateTracker,
+			rightMiddleDistalTracker,
+		)
+
+		// Right ring
+		updateFingerTransforms(
+			rightHandTrackerBone.getGlobalRotation(),
+			rightRingProximalBone,
+			rightRingIntermediateBone,
+			rightRingDistalBone,
+			rightRingProximalTracker,
+			rightRingIntermediateTracker,
+			rightRingDistalTracker,
+		)
+
+		// Right little
+		updateFingerTransforms(
+			rightHandTrackerBone.getGlobalRotation(),
+			rightLittleProximalBone,
+			rightLittleIntermediateBone,
+			rightLittleDistalBone,
+			rightLittleProximalTracker,
+			rightLittleIntermediateTracker,
+			rightLittleDistalTracker,
 		)
 	}
 
@@ -533,11 +819,6 @@ class HumanSkeleton(
 						var hipRot = it.getRotation()
 						var chestRot = chest.getRotation()
 
-						// Get the rotation relative to where we expect the hip to be
-						if (chestRot.times(FORWARD_QUATERNION).dot(hipRot) < 0.0f) {
-							hipRot = hipRot.unaryMinus()
-						}
-
 						// Interpolate between the chest and the hip
 						chestRot = chestRot.interpQ(hipRot, waistFromChestHipAveraging)
 
@@ -549,15 +830,6 @@ class HumanSkeleton(
 							var leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
 							var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
 							var chestRot = chest.getRotation()
-
-							// Get the rotation relative to where we expect the upper legs to be
-							val expectedUpperLegsRot = chestRot.times(FORWARD_QUATERNION)
-							if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
-								leftLegRot = leftLegRot.unaryMinus()
-							}
-							if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
-								rightLegRot = rightLegRot.unaryMinus()
-							}
 
 							// Interpolate between the pelvis, averaged from the legs, and the chest
 							chestRot = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), waistFromChestLegsAveraging).unit()
@@ -575,15 +847,6 @@ class HumanSkeleton(
 					var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
 					var waistRot = it.getRotation()
 
-					// Get the rotation relative to where we expect the upper legs to be
-					val expectedUpperLegsRot = waistRot.times(FORWARD_QUATERNION)
-					if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
-						leftLegRot = leftLegRot.unaryMinus()
-					}
-					if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
-						rightLegRot = rightLegRot.unaryMinus()
-					}
-
 					// Interpolate between the pelvis, averaged from the legs, and the chest
 					waistRot = waistRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromWaistLegsAveraging).unit()
 
@@ -596,15 +859,6 @@ class HumanSkeleton(
 						var leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
 						var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
 						var chestRot = it.getRotation()
-
-						// Get the rotation relative to where we expect the upper legs to be
-						val expectedUpperLegsRot = chestRot.times(FORWARD_QUATERNION)
-						if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
-							leftLegRot = leftLegRot.unaryMinus()
-						}
-						if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
-							rightLegRot = rightLegRot.unaryMinus()
-						}
 
 						// Interpolate between the pelvis, averaged from the legs, and the chest
 						chestRot = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromChestLegsAveraging).unit()
@@ -626,11 +880,10 @@ class HumanSkeleton(
 			val extendedPelvisRot = extendedPelvisYawRoll(leftLegRot, rightLegRot, hipRot)
 
 			// Interpolate between the hipRot and extendedPelvisRot
-			val newHipRot = if (extendedPelvisRot.lenSq() != 0.0f) {
-				hipRot.interpR(extendedPelvisRot, hipLegsAveraging)
-			} else {
-				Quaternion.IDENTITY
-			}
+			val newHipRot = hipRot.interpR(
+				if (extendedPelvisRot.lenSq() != 0.0f) extendedPelvisRot else IDENTITY,
+				hipLegsAveraging,
+			)
 
 			// Set new hip rotation
 			hipBone.setRotation(newHipRot)
@@ -706,6 +959,7 @@ class HumanSkeleton(
 	 */
 	private fun updateArmTransforms(
 		isTrackingFromController: Boolean,
+		upperShoulderBone: Bone,
 		shoulderBone: Bone,
 		upperArmBone: Bone,
 		elbowTrackerBone: Bone,
@@ -738,6 +992,7 @@ class HumanSkeleton(
 			// Get shoulder rotation
 			var armRot = shoulderTracker?.getRotation() ?: upperChestBone.getLocalRotation()
 			// Set shoulder rotation
+			upperShoulderBone.setRotation(upperChestBone.getLocalRotation())
 			shoulderBone.setRotation(armRot)
 
 			if (upperArmTracker != null || lowerArmTracker != null) {
@@ -764,6 +1019,70 @@ class HumanSkeleton(
 			// Set hand, and hand tracker rotation
 			handBone.setRotation(armRot)
 			handTrackerBone.setRotation(armRot)
+		}
+	}
+
+	/**
+	 * Update a finger's 3 bones' transforms
+	 */
+	private fun updateFingerTransforms(
+		handRotation: Quaternion,
+		proximalBone: Bone,
+		intermediateBone: Bone,
+		distalBone: Bone,
+		proximalTracker: Tracker?,
+		intermediateTracker: Tracker?,
+		distalTracker: Tracker?,
+	) {
+		if (distalTracker == null && intermediateTracker == null && proximalTracker == null) {
+			// Set fingers' rotations to the hand's if no finger tracker
+			proximalBone.setRotation(handRotation)
+			intermediateBone.setRotation(handRotation)
+			distalBone.setRotation(handRotation)
+		}
+
+		// Note: we use interpQ instead of interpR in order to slerp over 180 degrees.
+		// Start of finger
+		proximalTracker?.let {
+			val fingerRot = if (it.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
+				it.trackerDataType == TrackerDataType.FLEX_ANGLE
+			) {
+				handRotation * it.getRotation()
+			} else {
+				it.getRotation()
+			}
+
+			proximalBone.setRotation(fingerRot)
+			if (intermediateTracker == null) intermediateBone.setRotation(handRotation.interpQ(fingerRot, 2.12f))
+			if (distalTracker == null) distalBone.setRotation(handRotation.interpQ(fingerRot, 3.03f))
+		}
+		// Middle of finger
+		intermediateTracker?.let {
+			val fingerRot = if (it.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
+				it.trackerDataType == TrackerDataType.FLEX_ANGLE
+			) {
+				handRotation * it.getRotation()
+			} else {
+				it.getRotation()
+			}
+
+			if (proximalTracker == null) proximalBone.setRotation(handRotation.interpQ(fingerRot, 0.47f))
+			intermediateBone.setRotation(fingerRot)
+			if (distalTracker == null) distalBone.setRotation(handRotation.interpQ(fingerRot, 1.43f))
+		}
+		// Tip of finger
+		distalTracker?.let {
+			val fingerRot = if (it.trackerDataType == TrackerDataType.FLEX_RESISTANCE ||
+				it.trackerDataType == TrackerDataType.FLEX_ANGLE
+			) {
+				handRotation * it.getRotation()
+			} else {
+				it.getRotation()
+			}
+
+			if (proximalTracker == null && intermediateTracker == null) proximalBone.setRotation(handRotation.interpQ(fingerRot, 0.33f))
+			if (intermediateTracker == null) intermediateBone.setRotation(handRotation.interpQ(fingerRot, 0.7f))
+			distalBone.setRotation(fingerRot)
 		}
 	}
 
@@ -795,24 +1114,11 @@ class HumanSkeleton(
 		rightKnee: Quaternion,
 		hip: Quaternion,
 	): Quaternion {
-		// Get the knees' rotation relative to where we expect them to be.
-		// The angle between your knees and hip can be over 180 degrees...
-		var leftKneeRot = leftKnee
-		var rightKneeRot = rightKnee
-
-		val kneeRot = hip.times(FORWARD_QUATERNION)
-		if (kneeRot.dot(leftKneeRot) < 0.0f) {
-			leftKneeRot = leftKneeRot.unaryMinus()
-		}
-		if (kneeRot.dot(rightKneeRot) < 0.0f) {
-			rightKneeRot = rightKneeRot.unaryMinus()
-		}
-
 		// R = InverseHip * (LeftLeft + RightLeg)
 		// C = Quaternion(R.w, -R.x, 0, 0)
 		// Pelvis = Hip * R * C
 		// normalize(Pelvis)
-		val r = hip.inv() * (leftKneeRot + rightKneeRot)
+		val r = hip.inv() * (leftKnee + rightKnee)
 		val c = Quaternion(r.w, -r.x, 0f, 0f)
 		return (hip * r * c).unit()
 	}
@@ -859,13 +1165,17 @@ class HumanSkeleton(
 
 			SkeletonConfigToggles.FLOOR_CLIP -> legTweaks.setFloorClipEnabled(newValue)
 
-			SkeletonConfigToggles.VIVE_EMULATION -> viveEmulation.enabled = newValue
-
 			SkeletonConfigToggles.TOE_SNAP -> legTweaks.toeSnapEnabled = newValue
 
 			SkeletonConfigToggles.FOOT_PLANT -> legTweaks.footPlantEnabled = newValue
 
 			SkeletonConfigToggles.SELF_LOCALIZATION -> localizer.setEnabled(newValue)
+
+			SkeletonConfigToggles.USE_POSITION -> newValue
+
+			SkeletonConfigToggles.ENFORCE_CONSTRAINTS -> enforceConstraints = newValue
+
+			SkeletonConfigToggles.CORRECT_CONSTRAINTS -> correctConstraints = newValue
 		}
 	}
 
@@ -947,6 +1257,8 @@ class HumanSkeleton(
 		BoneType.RIGHT_FOOT -> rightFootBone
 		BoneType.LEFT_FOOT_TRACKER -> leftFootTrackerBone
 		BoneType.RIGHT_FOOT_TRACKER -> rightFootTrackerBone
+		BoneType.LEFT_UPPER_SHOULDER -> leftUpperShoulderBone
+		BoneType.RIGHT_UPPER_SHOULDER -> rightUpperShoulderBone
 		BoneType.LEFT_SHOULDER -> leftShoulderBone
 		BoneType.RIGHT_SHOULDER -> rightShoulderBone
 		BoneType.LEFT_UPPER_ARM -> leftUpperArmBone
@@ -959,6 +1271,60 @@ class HumanSkeleton(
 		BoneType.RIGHT_HAND -> rightHandBone
 		BoneType.LEFT_HAND_TRACKER -> leftHandTrackerBone
 		BoneType.RIGHT_HAND_TRACKER -> rightHandTrackerBone
+		BoneType.LEFT_THUMB_METACARPAL -> leftThumbMetacarpalBone
+		BoneType.LEFT_THUMB_PROXIMAL -> leftThumbProximalBone
+		BoneType.LEFT_THUMB_DISTAL -> leftThumbDistalBone
+		BoneType.LEFT_INDEX_PROXIMAL -> leftIndexProximalBone
+		BoneType.LEFT_INDEX_INTERMEDIATE -> leftIndexIntermediateBone
+		BoneType.LEFT_INDEX_DISTAL -> leftIndexDistalBone
+		BoneType.LEFT_MIDDLE_PROXIMAL -> leftMiddleProximalBone
+		BoneType.LEFT_MIDDLE_INTERMEDIATE -> leftMiddleIntermediateBone
+		BoneType.LEFT_MIDDLE_DISTAL -> leftMiddleDistalBone
+		BoneType.LEFT_RING_PROXIMAL -> leftRingProximalBone
+		BoneType.LEFT_RING_INTERMEDIATE -> leftRingIntermediateBone
+		BoneType.LEFT_RING_DISTAL -> leftRingDistalBone
+		BoneType.LEFT_LITTLE_PROXIMAL -> leftLittleProximalBone
+		BoneType.LEFT_LITTLE_INTERMEDIATE -> leftLittleIntermediateBone
+		BoneType.LEFT_LITTLE_DISTAL -> leftLittleDistalBone
+		BoneType.RIGHT_THUMB_METACARPAL -> rightThumbMetacarpalBone
+		BoneType.RIGHT_THUMB_PROXIMAL -> rightThumbProximalBone
+		BoneType.RIGHT_THUMB_DISTAL -> rightThumbDistalBone
+		BoneType.RIGHT_INDEX_PROXIMAL -> rightIndexProximalBone
+		BoneType.RIGHT_INDEX_INTERMEDIATE -> rightIndexIntermediateBone
+		BoneType.RIGHT_INDEX_DISTAL -> rightIndexDistalBone
+		BoneType.RIGHT_MIDDLE_PROXIMAL -> rightMiddleProximalBone
+		BoneType.RIGHT_MIDDLE_INTERMEDIATE -> rightMiddleIntermediateBone
+		BoneType.RIGHT_MIDDLE_DISTAL -> rightMiddleDistalBone
+		BoneType.RIGHT_RING_PROXIMAL -> rightRingProximalBone
+		BoneType.RIGHT_RING_INTERMEDIATE -> rightRingIntermediateBone
+		BoneType.RIGHT_RING_DISTAL -> rightRingDistalBone
+		BoneType.RIGHT_LITTLE_PROXIMAL -> rightLittleProximalBone
+		BoneType.RIGHT_LITTLE_INTERMEDIATE -> rightLittleIntermediateBone
+		BoneType.RIGHT_LITTLE_DISTAL -> rightLittleDistalBone
+	}
+
+	private fun getTrackerForBone(bone: BoneType?): Tracker? = when (bone) {
+		BoneType.HEAD -> headTracker
+		BoneType.NECK -> neckTracker
+		BoneType.UPPER_CHEST -> upperChestTracker
+		BoneType.CHEST -> chestTracker
+		BoneType.WAIST -> waistTracker
+		BoneType.HIP -> hipTracker
+		BoneType.LEFT_UPPER_LEG -> leftUpperLegTracker
+		BoneType.RIGHT_UPPER_LEG -> rightUpperLegTracker
+		BoneType.LEFT_LOWER_LEG -> leftLowerLegTracker
+		BoneType.RIGHT_LOWER_LEG -> rightLowerLegTracker
+		BoneType.LEFT_FOOT -> leftFootTracker
+		BoneType.RIGHT_FOOT -> rightFootTracker
+		BoneType.LEFT_SHOULDER -> leftShoulderTracker
+		BoneType.RIGHT_SHOULDER -> rightShoulderTracker
+		BoneType.LEFT_UPPER_ARM -> leftUpperArmTracker
+		BoneType.RIGHT_UPPER_ARM -> rightUpperArmTracker
+		BoneType.LEFT_LOWER_ARM -> leftLowerArmTracker
+		BoneType.RIGHT_LOWER_ARM -> rightLowerArmTracker
+		BoneType.LEFT_HAND -> leftHandTracker
+		BoneType.RIGHT_HAND -> rightHandTracker
+		else -> null
 	}
 
 	/**
@@ -980,6 +1346,8 @@ class HumanSkeleton(
 			rightLowerLegBone,
 			leftFootBone,
 			rightFootBone,
+			leftUpperShoulderBone,
+			rightUpperShoulderBone,
 			leftShoulderBone,
 			rightShoulderBone,
 			leftUpperArmBone,
@@ -988,6 +1356,36 @@ class HumanSkeleton(
 			rightLowerArmBone,
 			leftHandBone,
 			rightHandBone,
+			leftThumbMetacarpalBone,
+			leftThumbProximalBone,
+			leftThumbDistalBone,
+			leftIndexProximalBone,
+			leftIndexIntermediateBone,
+			leftIndexDistalBone,
+			leftMiddleProximalBone,
+			leftMiddleIntermediateBone,
+			leftMiddleDistalBone,
+			leftRingProximalBone,
+			leftRingIntermediateBone,
+			leftRingDistalBone,
+			leftLittleProximalBone,
+			leftLittleIntermediateBone,
+			leftLittleDistalBone,
+			rightThumbMetacarpalBone,
+			rightThumbProximalBone,
+			rightThumbDistalBone,
+			rightIndexProximalBone,
+			rightIndexIntermediateBone,
+			rightIndexDistalBone,
+			rightMiddleProximalBone,
+			rightMiddleIntermediateBone,
+			rightMiddleDistalBone,
+			rightRingProximalBone,
+			rightRingIntermediateBone,
+			rightRingDistalBone,
+			rightLittleProximalBone,
+			rightLittleIntermediateBone,
+			rightLittleDistalBone,
 		)
 
 	/**
@@ -995,6 +1393,8 @@ class HumanSkeleton(
 	 */
 	private val allArmBones: Array<Bone>
 		get() = arrayOf(
+			leftUpperShoulderBone,
+			rightUpperShoulderBone,
 			leftShoulderBone,
 			rightShoulderBone,
 			leftUpperArmBone,
@@ -1007,6 +1407,36 @@ class HumanSkeleton(
 			rightHandBone,
 			leftHandTrackerBone,
 			rightHandTrackerBone,
+			leftThumbMetacarpalBone,
+			leftThumbProximalBone,
+			leftThumbDistalBone,
+			leftIndexProximalBone,
+			leftIndexIntermediateBone,
+			leftIndexDistalBone,
+			leftMiddleProximalBone,
+			leftMiddleIntermediateBone,
+			leftMiddleDistalBone,
+			leftRingProximalBone,
+			leftRingIntermediateBone,
+			leftRingDistalBone,
+			leftLittleProximalBone,
+			leftLittleIntermediateBone,
+			leftLittleDistalBone,
+			rightThumbMetacarpalBone,
+			rightThumbProximalBone,
+			rightThumbDistalBone,
+			rightIndexProximalBone,
+			rightIndexIntermediateBone,
+			rightIndexDistalBone,
+			rightMiddleProximalBone,
+			rightMiddleIntermediateBone,
+			rightMiddleDistalBone,
+			rightRingProximalBone,
+			rightRingIntermediateBone,
+			rightRingDistalBone,
+			rightLittleProximalBone,
+			rightLittleIntermediateBone,
+			rightLittleDistalBone,
 		)
 
 	val hmdHeight: Float
@@ -1053,6 +1483,36 @@ class HumanSkeleton(
 			rightHandTracker,
 			leftShoulderTracker,
 			rightShoulderTracker,
+			leftThumbMetacarpalTracker,
+			leftThumbProximalTracker,
+			leftThumbDistalTracker,
+			leftIndexProximalTracker,
+			leftIndexIntermediateTracker,
+			leftIndexDistalTracker,
+			leftMiddleProximalTracker,
+			leftMiddleIntermediateTracker,
+			leftMiddleDistalTracker,
+			leftRingProximalTracker,
+			leftRingIntermediateTracker,
+			leftRingDistalTracker,
+			leftLittleProximalTracker,
+			leftLittleIntermediateTracker,
+			leftLittleDistalTracker,
+			rightThumbMetacarpalTracker,
+			rightThumbProximalTracker,
+			rightThumbDistalTracker,
+			rightIndexProximalTracker,
+			rightIndexIntermediateTracker,
+			rightIndexDistalTracker,
+			rightMiddleProximalTracker,
+			rightMiddleIntermediateTracker,
+			rightMiddleDistalTracker,
+			rightRingProximalTracker,
+			rightRingIntermediateTracker,
+			rightRingDistalTracker,
+			rightLittleProximalTracker,
+			rightLittleIntermediateTracker,
+			rightLittleDistalTracker,
 		)
 
 	fun resetTrackersFull(resetSourceName: String?) {
@@ -1103,8 +1563,14 @@ class HumanSkeleton(
 
 	@VRServerThread
 	fun resetTrackersMounting(resetSourceName: String?) {
-		val server = humanPoseManager.server
-		if (server != null && server.statusSystem.hasStatusType(StatusData.StatusTrackerReset)) {
+		val trackersToReset = trackersToReset
+
+		// TODO: PLEASE rewrite this handling at some point in the future... This is so
+		//  hacky!! Surely there's a better way to check reset status - Butterscotch
+		// If there's a server present (required for status) and any tracker reports a
+		// non-zero reset status (indicates reset required), then block mounting reset,
+		// as it requires a full reset first
+		if (humanPoseManager.server != null && trackersToReset.any { it != null && it.lastResetStatus != 0u }) {
 			LogManager.info("[HumanSkeleton] Reset: mounting ($resetSourceName) failed, reset required")
 			return
 		}
@@ -1237,14 +1703,5 @@ class HumanSkeleton(
 		val newState = !pauseTracking
 		setPauseTracking(newState, sourceName)
 		return newState
-	}
-
-	companion object {
-		val FORWARD_QUATERNION = EulerAngles(
-			EulerOrder.YZX,
-			FastMath.HALF_PI,
-			0f,
-			0f,
-		).toQuaternion()
 	}
 }

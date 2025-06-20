@@ -39,12 +39,6 @@ export function SerialDetectionModal() {
 
   const openWifi = () => {
     setShowWifiForm(true);
-    // if (!hasWifiCreds) {
-    //   setShowWifiForm(true);
-    // } else {
-    //   closeModal();
-    //   nav('/onboarding/connect-trackers', { state: { alonePage: true } });
-    // }
   };
 
   const modalWifiSubmit = (form: WifiFormData) => {
@@ -58,7 +52,11 @@ export function SerialDetectionModal() {
     ({ device }: NewSerialDeviceResponseT) => {
       if (
         config?.watchNewDevices &&
-        !['/settings/serial', '/onboarding/connect-trackers'].includes(pathname)
+        ![
+          '/settings/serial',
+          '/onboarding/connect-trackers',
+          '/settings/firmware-tool',
+        ].includes(pathname)
       ) {
         setOpen(device);
       }
@@ -112,7 +110,7 @@ export function SerialDetectionModal() {
                 {l10n.getString('serial_detection-new_device-p1')}
               </Typography>
             </div>
-            <div className="flex flex-col gap-3 rounded-xl max-w-sm">
+            <div className="flex flex-col gap-3 rounded-xl max-w-sm sentry-mask">
               <Localized
                 id="onboarding-wifi_creds-ssid"
                 attrs={{ placeholder: true, label: true }}

@@ -2,17 +2,17 @@ import { useLocalization } from '@fluent/react';
 import { useOnboarding } from '@/hooks/onboarding';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
-import { useTrackers } from '@/hooks/tracker';
 import { useIsRestCalibrationTrackers } from '@/hooks/imu-logic';
 import { StickerSlime } from './StickerSlime';
 import { TrackerArrow } from './TrackerArrow';
 import { ExtensionArrow } from './ExtensionArrow';
+import { useAtomValue } from 'jotai';
+import { connectedIMUTrackersAtom } from '@/store/app-store';
 
 export function AssignmentTutorialPage() {
   const { l10n } = useLocalization();
   const { applyProgress } = useOnboarding();
-  const { useConnectedIMUTrackers } = useTrackers();
-  const connectedIMUTrackers = useConnectedIMUTrackers();
+  const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const isRestCalibration = useIsRestCalibrationTrackers(connectedIMUTrackers);
 
   applyProgress(0.46);

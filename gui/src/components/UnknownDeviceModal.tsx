@@ -11,13 +11,14 @@ import {
   UnknownDeviceHandshakeNotificationT,
 } from 'solarxr-protocol';
 import { useDebouncedEffect } from '@/hooks/timeout';
-import { useAppContext } from '@/hooks/app';
+import { useAtom } from 'jotai';
+import { ignoredTrackersAtom } from '@/store/app-store';
 
 export function UnknownDeviceModal() {
   const { l10n } = useLocalization();
   const [open, setOpen] = useState(0);
   const { pathname } = useLocation();
-  const { state, dispatch } = useAppContext();
+  const [ignoredTrackers, setIgnoredTracker] = useAtom(ignoredTrackersAtom);
   const [currentTracker, setCurrentTracker] = useState<string | null>(null);
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
 
@@ -25,8 +26,10 @@ export function UnknownDeviceModal() {
     RpcMessage.UnknownDeviceHandshakeNotification,
     ({ macAddress }: UnknownDeviceHandshakeNotificationT) => {
       if (
-        ['/onboarding/connect-trackers'].includes(pathname) ||
-        state.ignoredTrackers.has(macAddress as string) ||
+        ['/onboarding/connect-trackers', '/settings/firmware-tool'].includes(
+          pathname
+        ) ||
+        (macAddress && ignoredTrackers.has(macAddress?.toString())) ||
         (currentTracker !== null && currentTracker !== macAddress)
       )
         return;
@@ -89,9 +92,10 @@ export function UnknownDeviceModal() {
         <Button
           variant="tertiary"
           onClick={() => {
-            dispatch({
-              type: 'ignoreTracker',
-              value: currentTracker as string,
+            setIgnoredTracker((state) => {
+              if (!currentTracker) throw 'should have a tracker';
+              state.add(currentTracker);
+              return state;
             });
             closeModal();
           }}

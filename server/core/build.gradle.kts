@@ -76,6 +76,13 @@ dependencies {
 	implementation("org.java-websocket:Java-WebSocket:1.+")
 	implementation("com.melloware:jintellitype:1.+")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+	implementation("com.mayakapps.kache:kache:2.1.0")
+
+	api("com.github.loucass003:EspflashKotlin:v0.11.0")
+
+	// Allow the use of reflection
+	implementation(kotlin("reflect"))
 
 	// Jitpack
 	implementation("com.github.SlimeVR:oscquery-kt:566a0cba58")
@@ -86,6 +93,7 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter")
 	testImplementation("org.junit.platform:junit-platform-launcher")
 }
+
 tasks.test {
 	useJUnitPlatform()
 }

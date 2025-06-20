@@ -16,8 +16,8 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { FluentVariable } from '@fluent/bundle';
-import { FlatDeviceTracker } from './app';
 import { ReactLocalization } from '@fluent/react';
+import { FlatDeviceTracker } from '@/store/app-store';
 
 type StatusSystemStateAction =
   | StatusSystemStateFixedAction
@@ -124,6 +124,7 @@ export function parseStatusToLocale(
     case StatusData.NONE:
     case StatusData.StatusTrackerReset:
     case StatusData.StatusUnassignedHMD:
+    case StatusData.StatusPublicNetwork:
       return {};
     case StatusData.StatusSteamVRDisconnected: {
       const data = status.data as StatusSteamVRDisconnectedT;

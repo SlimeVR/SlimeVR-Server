@@ -3,6 +3,7 @@ package dev.slimevr.protocol.datafeed;
 import com.google.flatbuffers.FlatBufferBuilder;
 import dev.slimevr.tracking.trackers.Device;
 import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.udp.MagnetometerStatus;
 import dev.slimevr.tracking.trackers.udp.UDPDevice;
 import io.github.axisangles.ktmath.Quaternion;
 import io.github.axisangles.ktmath.Vector3;
@@ -38,8 +39,6 @@ public class DataFeedBuilder {
 			? fbb.createString(device.getManufacturer())
 			: 0;
 
-		int boardTypeOffset = fbb.createString(device.getBoardType().toString());
-
 		int hardwareIdentifierOffset = fbb.createString(device.getHardwareIdentifier());
 
 		HardwareInfo.startHardwareInfo(fbb);
@@ -59,7 +58,7 @@ public class DataFeedBuilder {
 						)
 				);
 
-			HardwareInfo.addNetworkProtocolVersion(fbb, udpDevice.firmwareBuild);
+			HardwareInfo.addNetworkProtocolVersion(fbb, udpDevice.protocolVersion);
 		}
 
 		// BRUH MOMENT
@@ -68,7 +67,7 @@ public class DataFeedBuilder {
 		// TODO need support: HardwareInfo.addDisplayName(fbb, de);
 
 		HardwareInfo.addMcuId(fbb, device.getMcuType().getSolarType());
-		HardwareInfo.addBoardType(fbb, boardTypeOffset);
+		HardwareInfo.addOfficialBoardType(fbb, device.getBoardType().getSolarType());
 		return HardwareInfo.endHardwareInfo(fbb);
 	}
 
@@ -80,6 +79,16 @@ public class DataFeedBuilder {
 			TrackerId.addDeviceId(fbb, DeviceId.createDeviceId(fbb, tracker.getDevice().getId()));
 
 		return TrackerId.endTrackerId(fbb);
+	}
+
+	public static int createVec3(FlatBufferBuilder fbb, Vector3 vec) {
+		return Vec3f
+			.createVec3f(
+				fbb,
+				vec.getX(),
+				vec.getY(),
+				vec.getZ()
+			);
 	}
 
 	public static int createQuat(FlatBufferBuilder fbb, Quaternion quaternion) {
@@ -139,20 +148,16 @@ public class DataFeedBuilder {
 			TrackerInfo.addMountingResetOrientation(fbb, createQuat(fbb, mountResetFix));
 		}
 
+		TrackerInfo.addMagnetometer(fbb, tracker.getMagStatus().getSolarType());
 		TrackerInfo.addIsHmd(fbb, tracker.isHmd());
+
+		TrackerInfo.addDataSupport(fbb, tracker.getTrackerDataType().getSolarType());
 
 		return TrackerInfo.endTrackerInfo(fbb);
 	}
 
 	public static int createTrackerPosition(FlatBufferBuilder fbb, Tracker tracker) {
-		Vector3 pos = tracker.getPosition();
-		return Vec3f
-			.createVec3f(
-				fbb,
-				pos.getX(),
-				pos.getY(),
-				pos.getZ()
-			);
+		return createVec3(fbb, tracker.getPosition());
 	}
 
 	public static int createTrackerRotation(FlatBufferBuilder fbb, Tracker tracker) {
@@ -160,14 +165,11 @@ public class DataFeedBuilder {
 	}
 
 	public static int createTrackerAcceleration(FlatBufferBuilder fbb, Tracker tracker) {
-		Vector3 accel = tracker.getAcceleration();
-		return Vec3f
-			.createVec3f(
-				fbb,
-				accel.getX(),
-				accel.getY(),
-				accel.getZ()
-			);
+		return createVec3(fbb, tracker.getAcceleration());
+	}
+
+	public static int createTrackerMagneticVector(FlatBufferBuilder fbb, Tracker tracker) {
+		return createVec3(fbb, tracker.getMagVector());
 	}
 
 	public static int createTrackerTemperature(FlatBufferBuilder fbb, Tracker tracker) {
@@ -183,6 +185,12 @@ public class DataFeedBuilder {
 	) {
 		int trackerInfosOffset = DataFeedBuilder.createTrackerInfos(fbb, mask.getInfo(), tracker);
 		int trackerIdOffset = DataFeedBuilder.createTrackerId(fbb, tracker);
+
+		int stayAlignedOffset = 0;
+		if (mask.getStayAligned()) {
+			stayAlignedOffset = DataFeedBuilderKotlin.INSTANCE
+				.createTrackerStayAlignedTracker(fbb, tracker.getStayAligned());
+		}
 
 		TrackerData.startTrackerData(fbb);
 
@@ -231,6 +239,12 @@ public class DataFeedBuilder {
 		}
 		if (mask.getTps()) {
 			TrackerData.addTps(fbb, (int) tracker.getTps());
+		}
+		if (mask.getRawMagneticVector() && tracker.getMagStatus() == MagnetometerStatus.ENABLED) {
+			TrackerData.addRawMagneticVector(fbb, createTrackerMagneticVector(fbb, tracker));
+		}
+		if (mask.getStayAligned()) {
+			TrackerData.addStayAligned(fbb, stayAlignedOffset);
 		}
 
 		return TrackerData.endTrackerData(fbb);
@@ -348,7 +362,7 @@ public class DataFeedBuilder {
 		for (int i = 0; i < devices.size(); i++) {
 			Device device = devices.get(i);
 			devicesDataOffsets[i] = DataFeedBuilder
-				.createDeviceData(fbb, i, deviceDataMaskT, device);
+				.createDeviceData(fbb, device.getId(), deviceDataMaskT, device);
 		}
 
 		return DataFeedUpdate.createDevicesVector(fbb, devicesDataOffsets);

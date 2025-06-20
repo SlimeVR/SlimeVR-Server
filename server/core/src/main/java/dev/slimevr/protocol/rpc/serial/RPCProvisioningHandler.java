@@ -6,6 +6,7 @@ import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.rpc.RPCHandler;
 import dev.slimevr.serial.ProvisioningListener;
 import dev.slimevr.serial.ProvisioningStatus;
+import dev.slimevr.serial.SerialPort;
 import solarxr_protocol.rpc.*;
 
 import java.util.function.Consumer;
@@ -59,12 +60,12 @@ public class RPCProvisioningHandler implements ProvisioningListener {
 	}
 
 	@Override
-	public void onProvisioningStatusChange(ProvisioningStatus status) {
+	public void onProvisioningStatusChange(ProvisioningStatus status, SerialPort port) {
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 
 		WifiProvisioningStatusResponse.startWifiProvisioningStatusResponse(fbb);
-		WifiProvisioningStatusResponse.addStatus(fbb, status.getId());
+		WifiProvisioningStatusResponse.addStatus(fbb, status.id);
 		int update = WifiProvisioningStatusResponse.endWifiProvisioningStatusResponse(fbb);
 		int outbound = rpcHandler
 			.createRPCMessage(fbb, RpcMessage.WifiProvisioningStatusResponse, update);

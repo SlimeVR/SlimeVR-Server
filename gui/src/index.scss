@@ -4,39 +4,14 @@
 
 body {
   font-variant-numeric: tabular-nums;
-  font-family: var(--font-name), 'Noto Sans CJK', sans-serif, 'Twemoji Chromium',
-    emoji;
+  font-family: var(--font-name), 'Noto Sans CJK', sans-serif, emoji;
   width: 100vw;
   height: 100vh;
-  user-select: none;
   background: theme('colors.background.20');
 
   /*Scrollbar for firefox */
   scrollbar-color: theme('colors.background.50') transparent;
   scrollbar-width: thin;
-}
-
-@media (-webkit-animation) {
-  body {
-    font-family: var(--font-name), 'Noto Sans CJK', sans-serif, 'Twemoji Webkit',
-      emoji;
-  }
-
-  body.linux {
-    font-family: var(--font-name), 'Noto Sans CJK', sans-serif, emoji;
-  }
-}
-
-@font-face {
-  font-family: 'Twemoji Webkit';
-  src: url('/fonts/twemoji-picosvg.woff2') format('woff2');
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Twemoji Chromium';
-  src: url('/fonts/twemoji-glyf_colr_1.woff2') format('woff2');
-  font-display: swap;
 }
 
 @font-face {
@@ -84,7 +59,7 @@ body {
 }
 
 :root {
-  overflow: hidden;
+  // overflow: hidden; -- NEVER EVER BRING THIS BACK <3
   background: theme('colors.background.20');
 
   --navbar-w: 101px;
@@ -382,6 +357,14 @@ body {
   background: theme('colors.background.60');
 }
 
+.bg-background-60::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.background.40');
+}
+
+.bg-background-60 {
+  scrollbar-color: theme('colors.background.50') transparent;
+}
+
 .dropdown-scroll {
   scrollbar-color: theme('colors.background.40') theme('colors.background.50');
 }
@@ -402,4 +385,13 @@ input::-ms-clear {
 .crisp-edges {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
+}
+
+a,
+p,
+h1,
+h2,
+button,
+div {
+  hyphens: auto;
 }
