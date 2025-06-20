@@ -65,7 +65,7 @@ export function ScaledProportionsPage() {
                 elems={{ b: <b></b> }}
               >
                 <Typography
-                  whitespace="whitespace-pre"
+                  whitespace="whitespace-pre-line"
                   color="text-background-60"
                 ></Typography>
               </Localized>
