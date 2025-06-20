@@ -107,6 +107,7 @@ impl WindowState {
 				u32::min(monitor_size.height, window_size.height),
 			))?;
 
+			// If the position of the window was previously in the config
 			if is_old {
 				window.set_position(pos)?;
 			}
