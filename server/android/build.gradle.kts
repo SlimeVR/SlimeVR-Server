@@ -86,7 +86,7 @@ dependencies {
 
 // The android block is where you configure all your Android-specific build options.
 extra.apply {
-	set("gitVersionCode", 92)
+	set("gitVersionCode", grgit.tag.list().size)
 	set("gitVersionName", grgit.describe(mapOf("tags" to true, "always" to true)))
 }
 android {
