@@ -15,16 +15,17 @@ export async function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
   switch (resetType) {
     case ResetType.Yaw: {
       xylophone.play({
-        notes: ['C4'],
+        notes: ['D3', 'D3', 'D4', 'A3'], // beautiful day outside~
         offset: 0.15,
         type: 'custom',
         volume,
+        loudness: [1.25, 1, 1, 1],
       });
       break;
     }
     case ResetType.Full: {
       xylophone.play({
-        notes: ['E3', 'G3'],
+        notes: ['G4', 'C3'],
         offset: 0.15,
         type: 'custom',
         volume,
@@ -33,8 +34,8 @@ export async function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
     }
     case ResetType.Mounting: {
       xylophone.play({
-        notes: ['G3', 'B3', 'D4'],
-        offset: 0.15,
+        notes: ['D4', 'B4', 'G4', 'G3'],
+        offset: 0.14,
         type: 'custom',
         volume,
       });
@@ -43,13 +44,27 @@ export async function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
   }
 }
 
-export async function playSoundOnResetStarted(volume = 1) {
-  await xylophone.play({
-    notes: ['A4'],
-    offset: 0.4,
-    type: 'custom',
-    volume,
-  });
+export async function playSoundOnResetStarted(resetType: ResetType, volume = 1) {
+  switch (resetType) {
+    case ResetType.Full: {
+      await xylophone.play({
+        notes: ['D3', 'F#4'],
+        offset: 0.15,
+        type: 'custom',
+        volume,
+      });
+      break;
+    }
+    case ResetType.Mounting: {
+      await xylophone.play({
+        notes: ['F#3', 'B4'],
+        offset: 0.15,
+        type: 'custom',
+        volume,
+      });
+      break;
+    }
+  }
 }
 
 let lastTap = 0;
