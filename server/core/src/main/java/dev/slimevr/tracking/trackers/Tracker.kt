@@ -7,6 +7,7 @@ import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
 import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
+import io.eiren.math.FloatMath.INV_SQRT_TWO
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -490,5 +491,15 @@ class Tracker @JvmOverloads constructor(
 	 */
 	fun resetFilteringQuats(reference: Quaternion) {
 		filteringHandler.resetMovingAverage(getAdjustedRotation(), reference)
+	}
+
+	companion object {
+		/**
+		 * Turn 90 degrees around LEFT axis to make the base position of the tracker standing upwards
+		 * instead of laying on the back
+		 */
+		private val rotationOffset = Quaternion(INV_SQRT_TWO, -INV_SQRT_TWO, 0f, 0f)
+		fun axisOffset(v: Vector3): Vector3 = rotationOffset.sandwich(v)
+		fun axisOffset(q: Quaternion): Quaternion = rotationOffset * q
 	}
 }
