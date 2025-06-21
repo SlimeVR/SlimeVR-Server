@@ -5,6 +5,7 @@ import dev.slimevr.bridge.BridgeThread
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.desktop.platform.ProtobufMessages.*
 import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.TrackerStatus.Companion.getById
 import dev.slimevr.util.ann.VRServerThread
@@ -231,6 +232,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 				.setTrackerName(tracker.name)
 				.setTrackerSerial(tracker.name)
 				.setTrackerRole(tracker.trackerPosition!!.trackerRole!!.id)
+				.setFingertrackingEnabled(tracker.trackerPosition == TrackerPosition.LEFT_HAND || tracker.trackerPosition == TrackerPosition.RIGHT_HAND)
 			sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build())
 		}
 	}
@@ -254,6 +256,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			.setTrackerName(tracker.name)
 			.setTrackerSerial(tracker.name)
 			.setTrackerRole(tracker.trackerPosition!!.trackerRole!!.id)
+			.setFingertrackingEnabled(tracker.trackerPosition == TrackerPosition.LEFT_HAND || tracker.trackerPosition == TrackerPosition.RIGHT_HAND)
 		sendMessage(ProtobufMessage.newBuilder().setTrackerAdded(builder).build())
 	}
 

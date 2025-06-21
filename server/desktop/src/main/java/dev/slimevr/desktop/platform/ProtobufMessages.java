@@ -446,6 +446,1202 @@ public final class ProtobufMessages {
 
 	}
 
+	public interface FingerBoneRotationOrBuilder extends
+		// @@protoc_insertion_point(interface_extends:messages.FingerBoneRotation)
+		com.google.protobuf.MessageOrBuilder {
+
+		/**
+		 * <code>.messages.FingerBoneRotation.FingerBoneName name = 1;</code>
+		 * 
+		 * @return The enum numeric value on the wire for name.
+		 */
+		int getNameValue();
+
+		/**
+		 * <code>.messages.FingerBoneRotation.FingerBoneName name = 1;</code>
+		 * 
+		 * @return The name.
+		 */
+		dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.FingerBoneName getName();
+
+		/**
+		 * <code>float x = 2;</code>
+		 * 
+		 * @return The x.
+		 */
+		float getX();
+
+		/**
+		 * <code>float y = 3;</code>
+		 * 
+		 * @return The y.
+		 */
+		float getY();
+
+		/**
+		 * <code>float z = 4;</code>
+		 * 
+		 * @return The z.
+		 */
+		float getZ();
+
+		/**
+		 * <code>float w = 5;</code>
+		 * 
+		 * @return The w.
+		 */
+		float getW();
+	}
+
+	/**
+	 * Protobuf type {@code messages.FingerBoneRotation}
+	 */
+	public static final class FingerBoneRotation extends
+		com.google.protobuf.GeneratedMessage implements
+		// @@protoc_insertion_point(message_implements:messages.FingerBoneRotation)
+		FingerBoneRotationOrBuilder {
+		private static final long serialVersionUID = 0L;
+		static {
+			com.google.protobuf.RuntimeVersion
+				.validateProtobufGencodeVersion(
+					com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+					/* major= */ 4,
+					/* minor= */ 31,
+					/* patch= */ 1,
+					/* suffix= */ "",
+					FingerBoneRotation.class.getName()
+				);
+		}
+
+		// Use FingerBoneRotation.newBuilder() to construct.
+		private FingerBoneRotation(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+			super(builder);
+		}
+
+		private FingerBoneRotation() {
+			name_ = 0;
+		}
+
+		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+			return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_FingerBoneRotation_descriptor;
+		}
+
+		@java.lang.Override
+		protected com.google.protobuf.GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
+			return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_FingerBoneRotation_fieldAccessorTable
+				.ensureFieldAccessorsInitialized(
+					dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.class,
+					dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder.class
+				);
+		}
+
+		/**
+		 * Protobuf enum {@code messages.FingerBoneRotation.FingerBoneName}
+		 */
+		public enum FingerBoneName
+			implements com.google.protobuf.ProtocolMessageEnum {
+			/**
+			 * <code>THUMB_METACARPAL = 0;</code>
+			 */
+			THUMB_METACARPAL(0),
+			/**
+			 * <code>THUMB_PROXIMAL = 1;</code>
+			 */
+			THUMB_PROXIMAL(1),
+			/**
+			 * <code>THUMB_DISTAL = 2;</code>
+			 */
+			THUMB_DISTAL(2),
+			/**
+			 * <code>INDEX_PROXIMAL = 3;</code>
+			 */
+			INDEX_PROXIMAL(3),
+			/**
+			 * <code>INDEX_INTERMEDIATE = 4;</code>
+			 */
+			INDEX_INTERMEDIATE(4),
+			/**
+			 * <code>INDEX_DISTAL = 5;</code>
+			 */
+			INDEX_DISTAL(5),
+			/**
+			 * <code>MIDDLE_PROXIMAL = 6;</code>
+			 */
+			MIDDLE_PROXIMAL(6),
+			/**
+			 * <code>MIDDLE_INTERMEDIATE = 7;</code>
+			 */
+			MIDDLE_INTERMEDIATE(7),
+			/**
+			 * <code>MIDDLE_DISTAL = 8;</code>
+			 */
+			MIDDLE_DISTAL(8),
+			/**
+			 * <code>RING_PROXIMAL = 9;</code>
+			 */
+			RING_PROXIMAL(9),
+			/**
+			 * <code>RING_INTERMEDIATE = 10;</code>
+			 */
+			RING_INTERMEDIATE(10),
+			/**
+			 * <code>RING_DISTAL = 11;</code>
+			 */
+			RING_DISTAL(11),
+			/**
+			 * <code>LITTLE_PROXIMAL = 12;</code>
+			 */
+			LITTLE_PROXIMAL(12),
+			/**
+			 * <code>LITTLE_INTERMEDIATE = 13;</code>
+			 */
+			LITTLE_INTERMEDIATE(13),
+			/**
+			 * <code>LITTLE_DISTAL = 14;</code>
+			 */
+			LITTLE_DISTAL(14),
+			UNRECOGNIZED(-1),
+			;
+
+			static {
+				com.google.protobuf.RuntimeVersion
+					.validateProtobufGencodeVersion(
+						com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+						/* major= */ 4,
+						/* minor= */ 31,
+						/* patch= */ 1,
+						/* suffix= */ "",
+						FingerBoneName.class.getName()
+					);
+			}
+			/**
+			 * <code>THUMB_METACARPAL = 0;</code>
+			 */
+			public static final int THUMB_METACARPAL_VALUE = 0;
+			/**
+			 * <code>THUMB_PROXIMAL = 1;</code>
+			 */
+			public static final int THUMB_PROXIMAL_VALUE = 1;
+			/**
+			 * <code>THUMB_DISTAL = 2;</code>
+			 */
+			public static final int THUMB_DISTAL_VALUE = 2;
+			/**
+			 * <code>INDEX_PROXIMAL = 3;</code>
+			 */
+			public static final int INDEX_PROXIMAL_VALUE = 3;
+			/**
+			 * <code>INDEX_INTERMEDIATE = 4;</code>
+			 */
+			public static final int INDEX_INTERMEDIATE_VALUE = 4;
+			/**
+			 * <code>INDEX_DISTAL = 5;</code>
+			 */
+			public static final int INDEX_DISTAL_VALUE = 5;
+			/**
+			 * <code>MIDDLE_PROXIMAL = 6;</code>
+			 */
+			public static final int MIDDLE_PROXIMAL_VALUE = 6;
+			/**
+			 * <code>MIDDLE_INTERMEDIATE = 7;</code>
+			 */
+			public static final int MIDDLE_INTERMEDIATE_VALUE = 7;
+			/**
+			 * <code>MIDDLE_DISTAL = 8;</code>
+			 */
+			public static final int MIDDLE_DISTAL_VALUE = 8;
+			/**
+			 * <code>RING_PROXIMAL = 9;</code>
+			 */
+			public static final int RING_PROXIMAL_VALUE = 9;
+			/**
+			 * <code>RING_INTERMEDIATE = 10;</code>
+			 */
+			public static final int RING_INTERMEDIATE_VALUE = 10;
+			/**
+			 * <code>RING_DISTAL = 11;</code>
+			 */
+			public static final int RING_DISTAL_VALUE = 11;
+			/**
+			 * <code>LITTLE_PROXIMAL = 12;</code>
+			 */
+			public static final int LITTLE_PROXIMAL_VALUE = 12;
+			/**
+			 * <code>LITTLE_INTERMEDIATE = 13;</code>
+			 */
+			public static final int LITTLE_INTERMEDIATE_VALUE = 13;
+			/**
+			 * <code>LITTLE_DISTAL = 14;</code>
+			 */
+			public static final int LITTLE_DISTAL_VALUE = 14;
+
+
+			public final int getNumber() {
+				if (this == UNRECOGNIZED) {
+					throw new java.lang.IllegalArgumentException(
+						"Can't get the number of an unknown enum value."
+					);
+				}
+				return value;
+			}
+
+			/**
+			 * @param value The numeric wire value of the corresponding enum
+			 * entry.
+			 * @return The enum associated with the given numeric wire value.
+			 * @deprecated Use {@link #forNumber(int)} instead.
+			 */
+			@java.lang.Deprecated
+			public static FingerBoneName valueOf(int value) {
+				return forNumber(value);
+			}
+
+			/**
+			 * @param value The numeric wire value of the corresponding enum
+			 * entry.
+			 * @return The enum associated with the given numeric wire value.
+			 */
+			public static FingerBoneName forNumber(int value) {
+				switch (value) {
+					case 0:
+						return THUMB_METACARPAL;
+					case 1:
+						return THUMB_PROXIMAL;
+					case 2:
+						return THUMB_DISTAL;
+					case 3:
+						return INDEX_PROXIMAL;
+					case 4:
+						return INDEX_INTERMEDIATE;
+					case 5:
+						return INDEX_DISTAL;
+					case 6:
+						return MIDDLE_PROXIMAL;
+					case 7:
+						return MIDDLE_INTERMEDIATE;
+					case 8:
+						return MIDDLE_DISTAL;
+					case 9:
+						return RING_PROXIMAL;
+					case 10:
+						return RING_INTERMEDIATE;
+					case 11:
+						return RING_DISTAL;
+					case 12:
+						return LITTLE_PROXIMAL;
+					case 13:
+						return LITTLE_INTERMEDIATE;
+					case 14:
+						return LITTLE_DISTAL;
+					default:
+						return null;
+				}
+			}
+
+			public static com.google.protobuf.Internal.EnumLiteMap<FingerBoneName> internalGetValueMap() {
+				return internalValueMap;
+			}
+
+			private static final com.google.protobuf.Internal.EnumLiteMap<FingerBoneName> internalValueMap = new com.google.protobuf.Internal.EnumLiteMap<FingerBoneName>() {
+				public FingerBoneName findValueByNumber(int number) {
+					return FingerBoneName.forNumber(number);
+				}
+			};
+
+			public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
+				if (this == UNRECOGNIZED) {
+					throw new java.lang.IllegalStateException(
+						"Can't get the descriptor of an unrecognized enum value."
+					);
+				}
+				return getDescriptor().getValues().get(ordinal());
+			}
+
+			public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
+				return getDescriptor();
+			}
+
+			public static com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation
+					.getDescriptor()
+					.getEnumTypes()
+					.get(0);
+			}
+
+			private static final FingerBoneName[] VALUES = values();
+
+			public static FingerBoneName valueOf(
+				com.google.protobuf.Descriptors.EnumValueDescriptor desc
+			) {
+				if (desc.getType() != getDescriptor()) {
+					throw new java.lang.IllegalArgumentException(
+						"EnumValueDescriptor is not for this type."
+					);
+				}
+				if (desc.getIndex() == -1) {
+					return UNRECOGNIZED;
+				}
+				return VALUES[desc.getIndex()];
+			}
+
+			private final int value;
+
+			private FingerBoneName(int value) {
+				this.value = value;
+			}
+
+			// @@protoc_insertion_point(enum_scope:messages.FingerBoneRotation.FingerBoneName)
+		}
+
+		public static final int NAME_FIELD_NUMBER = 1;
+		private int name_ = 0;
+
+		/**
+		 * <code>.messages.FingerBoneRotation.FingerBoneName name = 1;</code>
+		 * 
+		 * @return The enum numeric value on the wire for name.
+		 */
+		@java.lang.Override
+		public int getNameValue() {
+			return name_;
+		}
+
+		/**
+		 * <code>.messages.FingerBoneRotation.FingerBoneName name = 1;</code>
+		 * 
+		 * @return The name.
+		 */
+		@java.lang.Override
+		public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.FingerBoneName getName() {
+			dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.FingerBoneName result = dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.FingerBoneName
+				.forNumber(name_);
+			return result == null
+				? dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.FingerBoneName.UNRECOGNIZED
+				: result;
+		}
+
+		public static final int X_FIELD_NUMBER = 2;
+		private float x_ = 0F;
+
+		/**
+		 * <code>float x = 2;</code>
+		 * 
+		 * @return The x.
+		 */
+		@java.lang.Override
+		public float getX() {
+			return x_;
+		}
+
+		public static final int Y_FIELD_NUMBER = 3;
+		private float y_ = 0F;
+
+		/**
+		 * <code>float y = 3;</code>
+		 * 
+		 * @return The y.
+		 */
+		@java.lang.Override
+		public float getY() {
+			return y_;
+		}
+
+		public static final int Z_FIELD_NUMBER = 4;
+		private float z_ = 0F;
+
+		/**
+		 * <code>float z = 4;</code>
+		 * 
+		 * @return The z.
+		 */
+		@java.lang.Override
+		public float getZ() {
+			return z_;
+		}
+
+		public static final int W_FIELD_NUMBER = 5;
+		private float w_ = 0F;
+
+		/**
+		 * <code>float w = 5;</code>
+		 * 
+		 * @return The w.
+		 */
+		@java.lang.Override
+		public float getW() {
+			return w_;
+		}
+
+		private byte memoizedIsInitialized = -1;
+
+		@java.lang.Override
+		public final boolean isInitialized() {
+			byte isInitialized = memoizedIsInitialized;
+			if (isInitialized == 1)
+				return true;
+			if (isInitialized == 0)
+				return false;
+
+			memoizedIsInitialized = 1;
+			return true;
+		}
+
+		@java.lang.Override
+		public void writeTo(com.google.protobuf.CodedOutputStream output)
+			throws java.io.IOException {
+			if (
+				name_
+					!= dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.FingerBoneName.THUMB_METACARPAL
+						.getNumber()
+			) {
+				output.writeEnum(1, name_);
+			}
+			if (java.lang.Float.floatToRawIntBits(x_) != 0) {
+				output.writeFloat(2, x_);
+			}
+			if (java.lang.Float.floatToRawIntBits(y_) != 0) {
+				output.writeFloat(3, y_);
+			}
+			if (java.lang.Float.floatToRawIntBits(z_) != 0) {
+				output.writeFloat(4, z_);
+			}
+			if (java.lang.Float.floatToRawIntBits(w_) != 0) {
+				output.writeFloat(5, w_);
+			}
+			getUnknownFields().writeTo(output);
+		}
+
+		@java.lang.Override
+		public int getSerializedSize() {
+			int size = memoizedSize;
+			if (size != -1)
+				return size;
+
+			size = 0;
+			if (
+				name_
+					!= dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.FingerBoneName.THUMB_METACARPAL
+						.getNumber()
+			) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeEnumSize(1, name_);
+			}
+			if (java.lang.Float.floatToRawIntBits(x_) != 0) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeFloatSize(2, x_);
+			}
+			if (java.lang.Float.floatToRawIntBits(y_) != 0) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeFloatSize(3, y_);
+			}
+			if (java.lang.Float.floatToRawIntBits(z_) != 0) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeFloatSize(4, z_);
+			}
+			if (java.lang.Float.floatToRawIntBits(w_) != 0) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeFloatSize(5, w_);
+			}
+			size += getUnknownFields().getSerializedSize();
+			memoizedSize = size;
+			return size;
+		}
+
+		@java.lang.Override
+		public boolean equals(final java.lang.Object obj) {
+			if (obj == this) {
+				return true;
+			}
+			if (
+				!(obj instanceof dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation)
+			) {
+				return super.equals(obj);
+			}
+			dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation other = (dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation) obj;
+
+			if (name_ != other.name_)
+				return false;
+			if (
+				java.lang.Float.floatToIntBits(getX())
+					!= java.lang.Float
+						.floatToIntBits(
+							other.getX()
+						)
+			)
+				return false;
+			if (
+				java.lang.Float.floatToIntBits(getY())
+					!= java.lang.Float
+						.floatToIntBits(
+							other.getY()
+						)
+			)
+				return false;
+			if (
+				java.lang.Float.floatToIntBits(getZ())
+					!= java.lang.Float
+						.floatToIntBits(
+							other.getZ()
+						)
+			)
+				return false;
+			if (
+				java.lang.Float.floatToIntBits(getW())
+					!= java.lang.Float
+						.floatToIntBits(
+							other.getW()
+						)
+			)
+				return false;
+			if (!getUnknownFields().equals(other.getUnknownFields()))
+				return false;
+			return true;
+		}
+
+		@java.lang.Override
+		public int hashCode() {
+			if (memoizedHashCode != 0) {
+				return memoizedHashCode;
+			}
+			int hash = 41;
+			hash = (19 * hash) + getDescriptor().hashCode();
+			hash = (37 * hash) + NAME_FIELD_NUMBER;
+			hash = (53 * hash) + name_;
+			hash = (37 * hash) + X_FIELD_NUMBER;
+			hash = (53 * hash)
+				+ java.lang.Float
+					.floatToIntBits(
+						getX()
+					);
+			hash = (37 * hash) + Y_FIELD_NUMBER;
+			hash = (53 * hash)
+				+ java.lang.Float
+					.floatToIntBits(
+						getY()
+					);
+			hash = (37 * hash) + Z_FIELD_NUMBER;
+			hash = (53 * hash)
+				+ java.lang.Float
+					.floatToIntBits(
+						getZ()
+					);
+			hash = (37 * hash) + W_FIELD_NUMBER;
+			hash = (53 * hash)
+				+ java.lang.Float
+					.floatToIntBits(
+						getW()
+					);
+			hash = (29 * hash) + getUnknownFields().hashCode();
+			memoizedHashCode = hash;
+			return hash;
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation parseFrom(
+			java.nio.ByteBuffer data
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation parseFrom(
+			java.nio.ByteBuffer data,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation parseFrom(
+			com.google.protobuf.ByteString data
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation parseFrom(
+			com.google.protobuf.ByteString data,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation parseFrom(
+			byte[] data
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation parseFrom(
+			byte[] data,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation parseFrom(
+			java.io.InputStream input
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation parseFrom(
+			java.io.InputStream input,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation parseDelimitedFrom(
+			java.io.InputStream input
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseDelimitedWithIOException(PARSER, input);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation parseDelimitedFrom(
+			java.io.InputStream input,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation parseFrom(
+			com.google.protobuf.CodedInputStream input
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation parseFrom(
+			com.google.protobuf.CodedInputStream input,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input, extensionRegistry);
+		}
+
+		@java.lang.Override
+		public Builder newBuilderForType() {
+			return newBuilder();
+		}
+
+		public static Builder newBuilder() {
+			return DEFAULT_INSTANCE.toBuilder();
+		}
+
+		public static Builder newBuilder(
+			dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation prototype
+		) {
+			return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+		}
+
+		@java.lang.Override
+		public Builder toBuilder() {
+			return this == DEFAULT_INSTANCE
+				? new Builder()
+				: new Builder().mergeFrom(this);
+		}
+
+		@java.lang.Override
+		protected Builder newBuilderForType(
+			com.google.protobuf.GeneratedMessage.BuilderParent parent
+		) {
+			Builder builder = new Builder(parent);
+			return builder;
+		}
+
+		/**
+		 * Protobuf type {@code messages.FingerBoneRotation}
+		 */
+		public static final class Builder extends
+			com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+			// @@protoc_insertion_point(builder_implements:messages.FingerBoneRotation)
+			dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder {
+			public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_FingerBoneRotation_descriptor;
+			}
+
+			@java.lang.Override
+			protected com.google.protobuf.GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_FingerBoneRotation_fieldAccessorTable
+					.ensureFieldAccessorsInitialized(
+						dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.class,
+						dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder.class
+					);
+			}
+
+			// Construct using
+			// dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.newBuilder()
+			private Builder() {
+
+			}
+
+			private Builder(
+				com.google.protobuf.GeneratedMessage.BuilderParent parent
+			) {
+				super(parent);
+
+			}
+
+			@java.lang.Override
+			public Builder clear() {
+				super.clear();
+				bitField0_ = 0;
+				name_ = 0;
+				x_ = 0F;
+				y_ = 0F;
+				z_ = 0F;
+				w_ = 0F;
+				return this;
+			}
+
+			@java.lang.Override
+			public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_FingerBoneRotation_descriptor;
+			}
+
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation getDefaultInstanceForType() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation
+					.getDefaultInstance();
+			}
+
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation build() {
+				dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation result = buildPartial();
+				if (!result.isInitialized()) {
+					throw newUninitializedMessageException(result);
+				}
+				return result;
+			}
+
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation buildPartial() {
+				dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation result = new dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation(
+					this
+				);
+				if (bitField0_ != 0) {
+					buildPartial0(result);
+				}
+				onBuilt();
+				return result;
+			}
+
+			private void buildPartial0(
+				dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation result
+			) {
+				int from_bitField0_ = bitField0_;
+				if (((from_bitField0_ & 0x00000001) != 0)) {
+					result.name_ = name_;
+				}
+				if (((from_bitField0_ & 0x00000002) != 0)) {
+					result.x_ = x_;
+				}
+				if (((from_bitField0_ & 0x00000004) != 0)) {
+					result.y_ = y_;
+				}
+				if (((from_bitField0_ & 0x00000008) != 0)) {
+					result.z_ = z_;
+				}
+				if (((from_bitField0_ & 0x00000010) != 0)) {
+					result.w_ = w_;
+				}
+			}
+
+			@java.lang.Override
+			public Builder mergeFrom(com.google.protobuf.Message other) {
+				if (
+					other instanceof dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation
+				) {
+					return mergeFrom(
+						(dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation) other
+					);
+				} else {
+					super.mergeFrom(other);
+					return this;
+				}
+			}
+
+			public Builder mergeFrom(
+				dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation other
+			) {
+				if (
+					other
+						== dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation
+							.getDefaultInstance()
+				)
+					return this;
+				if (other.name_ != 0) {
+					setNameValue(other.getNameValue());
+				}
+				if (java.lang.Float.floatToRawIntBits(other.getX()) != 0) {
+					setX(other.getX());
+				}
+				if (java.lang.Float.floatToRawIntBits(other.getY()) != 0) {
+					setY(other.getY());
+				}
+				if (java.lang.Float.floatToRawIntBits(other.getZ()) != 0) {
+					setZ(other.getZ());
+				}
+				if (java.lang.Float.floatToRawIntBits(other.getW()) != 0) {
+					setW(other.getW());
+				}
+				this.mergeUnknownFields(other.getUnknownFields());
+				onChanged();
+				return this;
+			}
+
+			@java.lang.Override
+			public final boolean isInitialized() {
+				return true;
+			}
+
+			@java.lang.Override
+			public Builder mergeFrom(
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
+			)
+				throws java.io.IOException {
+				if (extensionRegistry == null) {
+					throw new java.lang.NullPointerException();
+				}
+				try {
+					boolean done = false;
+					while (!done) {
+						int tag = input.readTag();
+						switch (tag) {
+							case 0:
+								done = true;
+								break;
+							case 8: {
+								name_ = input.readEnum();
+								bitField0_ |= 0x00000001;
+								break;
+							} // case 8
+							case 21: {
+								x_ = input.readFloat();
+								bitField0_ |= 0x00000002;
+								break;
+							} // case 21
+							case 29: {
+								y_ = input.readFloat();
+								bitField0_ |= 0x00000004;
+								break;
+							} // case 29
+							case 37: {
+								z_ = input.readFloat();
+								bitField0_ |= 0x00000008;
+								break;
+							} // case 37
+							case 45: {
+								w_ = input.readFloat();
+								bitField0_ |= 0x00000010;
+								break;
+							} // case 45
+							default: {
+								if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+									done = true; // was an endgroup tag
+								}
+								break;
+							} // default:
+						} // switch (tag)
+					} // while (!done)
+				} catch (com.google.protobuf.InvalidProtocolBufferException e) {
+					throw e.unwrapIOException();
+				} finally {
+					onChanged();
+				} // finally
+				return this;
+			}
+
+			private int bitField0_;
+
+			private int name_ = 0;
+
+			/**
+			 * <code>.messages.FingerBoneRotation.FingerBoneName name = 1;</code>
+			 * 
+			 * @return The enum numeric value on the wire for name.
+			 */
+			@java.lang.Override
+			public int getNameValue() {
+				return name_;
+			}
+
+			/**
+			 * <code>.messages.FingerBoneRotation.FingerBoneName name = 1;</code>
+			 * 
+			 * @param value The enum numeric value on the wire for name to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setNameValue(int value) {
+				name_ = value;
+				bitField0_ |= 0x00000001;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>.messages.FingerBoneRotation.FingerBoneName name = 1;</code>
+			 * 
+			 * @return The name.
+			 */
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.FingerBoneName getName() {
+				dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.FingerBoneName result = dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.FingerBoneName
+					.forNumber(name_);
+				return result == null
+					? dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.FingerBoneName.UNRECOGNIZED
+					: result;
+			}
+
+			/**
+			 * <code>.messages.FingerBoneRotation.FingerBoneName name = 1;</code>
+			 * 
+			 * @param value The name to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setName(
+				dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.FingerBoneName value
+			) {
+				if (value == null) {
+					throw new NullPointerException();
+				}
+				bitField0_ |= 0x00000001;
+				name_ = value.getNumber();
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>.messages.FingerBoneRotation.FingerBoneName name = 1;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearName() {
+				bitField0_ = (bitField0_ & ~0x00000001);
+				name_ = 0;
+				onChanged();
+				return this;
+			}
+
+			private float x_;
+
+			/**
+			 * <code>float x = 2;</code>
+			 * 
+			 * @return The x.
+			 */
+			@java.lang.Override
+			public float getX() {
+				return x_;
+			}
+
+			/**
+			 * <code>float x = 2;</code>
+			 * 
+			 * @param value The x to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setX(float value) {
+
+				x_ = value;
+				bitField0_ |= 0x00000002;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>float x = 2;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearX() {
+				bitField0_ = (bitField0_ & ~0x00000002);
+				x_ = 0F;
+				onChanged();
+				return this;
+			}
+
+			private float y_;
+
+			/**
+			 * <code>float y = 3;</code>
+			 * 
+			 * @return The y.
+			 */
+			@java.lang.Override
+			public float getY() {
+				return y_;
+			}
+
+			/**
+			 * <code>float y = 3;</code>
+			 * 
+			 * @param value The y to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setY(float value) {
+
+				y_ = value;
+				bitField0_ |= 0x00000004;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>float y = 3;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearY() {
+				bitField0_ = (bitField0_ & ~0x00000004);
+				y_ = 0F;
+				onChanged();
+				return this;
+			}
+
+			private float z_;
+
+			/**
+			 * <code>float z = 4;</code>
+			 * 
+			 * @return The z.
+			 */
+			@java.lang.Override
+			public float getZ() {
+				return z_;
+			}
+
+			/**
+			 * <code>float z = 4;</code>
+			 * 
+			 * @param value The z to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setZ(float value) {
+
+				z_ = value;
+				bitField0_ |= 0x00000008;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>float z = 4;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearZ() {
+				bitField0_ = (bitField0_ & ~0x00000008);
+				z_ = 0F;
+				onChanged();
+				return this;
+			}
+
+			private float w_;
+
+			/**
+			 * <code>float w = 5;</code>
+			 * 
+			 * @return The w.
+			 */
+			@java.lang.Override
+			public float getW() {
+				return w_;
+			}
+
+			/**
+			 * <code>float w = 5;</code>
+			 * 
+			 * @param value The w to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setW(float value) {
+
+				w_ = value;
+				bitField0_ |= 0x00000010;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>float w = 5;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearW() {
+				bitField0_ = (bitField0_ & ~0x00000010);
+				w_ = 0F;
+				onChanged();
+				return this;
+			}
+
+			// @@protoc_insertion_point(builder_scope:messages.FingerBoneRotation)
+		}
+
+		// @@protoc_insertion_point(class_scope:messages.FingerBoneRotation)
+		private static final dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation DEFAULT_INSTANCE;
+		static {
+			DEFAULT_INSTANCE = new dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation();
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation getDefaultInstance() {
+			return DEFAULT_INSTANCE;
+		}
+
+		private static final com.google.protobuf.Parser<FingerBoneRotation> PARSER = new com.google.protobuf.AbstractParser<FingerBoneRotation>() {
+			@java.lang.Override
+			public FingerBoneRotation parsePartialFrom(
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
+			)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+				Builder builder = newBuilder();
+				try {
+					builder.mergeFrom(input, extensionRegistry);
+				} catch (com.google.protobuf.InvalidProtocolBufferException e) {
+					throw e.setUnfinishedMessage(builder.buildPartial());
+				} catch (com.google.protobuf.UninitializedMessageException e) {
+					throw e
+						.asInvalidProtocolBufferException()
+						.setUnfinishedMessage(builder.buildPartial());
+				} catch (java.io.IOException e) {
+					throw new com.google.protobuf.InvalidProtocolBufferException(e)
+						.setUnfinishedMessage(builder.buildPartial());
+				}
+				return builder.buildPartial();
+			}
+		};
+
+		public static com.google.protobuf.Parser<FingerBoneRotation> parser() {
+			return PARSER;
+		}
+
+		@java.lang.Override
+		public com.google.protobuf.Parser<FingerBoneRotation> getParserForType() {
+			return PARSER;
+		}
+
+		@java.lang.Override
+		public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation getDefaultInstanceForType() {
+			return DEFAULT_INSTANCE;
+		}
+
+	}
+
 	public interface PositionOrBuilder extends
 		// @@protoc_insertion_point(interface_extends:messages.Position)
 		com.google.protobuf.MessageOrBuilder {
@@ -547,6 +1743,35 @@ public final class ProtobufMessages {
 		 * @return The dataSource.
 		 */
 		dev.slimevr.desktop.platform.ProtobufMessages.Position.DataSource getDataSource();
+
+		/**
+		 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+		 */
+		java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation> getFingerBoneRotationsList();
+
+		/**
+		 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+		 */
+		dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation getFingerBoneRotations(
+			int index
+		);
+
+		/**
+		 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+		 */
+		int getFingerBoneRotationsCount();
+
+		/**
+		 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+		 */
+		java.util.List<? extends dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder> getFingerBoneRotationsOrBuilderList();
+
+		/**
+		 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+		 */
+		dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder getFingerBoneRotationsOrBuilder(
+			int index
+		);
 	}
 
 	/**
@@ -576,6 +1801,7 @@ public final class ProtobufMessages {
 
 		private Position() {
 			dataSource_ = 0;
+			fingerBoneRotations_ = java.util.Collections.emptyList();
 		}
 
 		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
@@ -911,6 +2137,54 @@ public final class ProtobufMessages {
 				: result;
 		}
 
+		public static final int FINGER_BONE_ROTATIONS_FIELD_NUMBER = 10;
+		@SuppressWarnings("serial")
+		private java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation> fingerBoneRotations_;
+
+		/**
+		 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+		 */
+		@java.lang.Override
+		public java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation> getFingerBoneRotationsList() {
+			return fingerBoneRotations_;
+		}
+
+		/**
+		 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+		 */
+		@java.lang.Override
+		public java.util.List<? extends dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder> getFingerBoneRotationsOrBuilderList() {
+			return fingerBoneRotations_;
+		}
+
+		/**
+		 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+		 */
+		@java.lang.Override
+		public int getFingerBoneRotationsCount() {
+			return fingerBoneRotations_.size();
+		}
+
+		/**
+		 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+		 */
+		@java.lang.Override
+		public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation getFingerBoneRotations(
+			int index
+		) {
+			return fingerBoneRotations_.get(index);
+		}
+
+		/**
+		 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+		 */
+		@java.lang.Override
+		public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder getFingerBoneRotationsOrBuilder(
+			int index
+		) {
+			return fingerBoneRotations_.get(index);
+		}
+
 		private byte memoizedIsInitialized = -1;
 
 		@java.lang.Override
@@ -954,6 +2228,9 @@ public final class ProtobufMessages {
 			}
 			if (((bitField0_ & 0x00000008) != 0)) {
 				output.writeEnum(9, dataSource_);
+			}
+			for (int i = 0; i < fingerBoneRotations_.size(); i++) {
+				output.writeMessage(10, fingerBoneRotations_.get(i));
 			}
 			getUnknownFields().writeTo(output);
 		}
@@ -1000,6 +2277,10 @@ public final class ProtobufMessages {
 			if (((bitField0_ & 0x00000008) != 0)) {
 				size += com.google.protobuf.CodedOutputStream
 					.computeEnumSize(9, dataSource_);
+			}
+			for (int i = 0; i < fingerBoneRotations_.size(); i++) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeMessageSize(10, fingerBoneRotations_.get(i));
 			}
 			size += getUnknownFields().getSerializedSize();
 			memoizedSize = size;
@@ -1095,6 +2376,11 @@ public final class ProtobufMessages {
 				if (dataSource_ != other.dataSource_)
 					return false;
 			}
+			if (
+				!getFingerBoneRotationsList()
+					.equals(other.getFingerBoneRotationsList())
+			)
+				return false;
 			if (!getUnknownFields().equals(other.getUnknownFields()))
 				return false;
 			return true;
@@ -1160,6 +2446,10 @@ public final class ProtobufMessages {
 			if (hasDataSource()) {
 				hash = (37 * hash) + DATA_SOURCE_FIELD_NUMBER;
 				hash = (53 * hash) + dataSource_;
+			}
+			if (getFingerBoneRotationsCount() > 0) {
+				hash = (37 * hash) + FINGER_BONE_ROTATIONS_FIELD_NUMBER;
+				hash = (53 * hash) + getFingerBoneRotationsList().hashCode();
 			}
 			hash = (29 * hash) + getUnknownFields().hashCode();
 			memoizedHashCode = hash;
@@ -1336,6 +2626,13 @@ public final class ProtobufMessages {
 				qz_ = 0F;
 				qw_ = 0F;
 				dataSource_ = 0;
+				if (fingerBoneRotationsBuilder_ == null) {
+					fingerBoneRotations_ = java.util.Collections.emptyList();
+				} else {
+					fingerBoneRotations_ = null;
+					fingerBoneRotationsBuilder_.clear();
+				}
+				bitField0_ = (bitField0_ & ~0x00000200);
 				return this;
 			}
 
@@ -1363,11 +2660,27 @@ public final class ProtobufMessages {
 				dev.slimevr.desktop.platform.ProtobufMessages.Position result = new dev.slimevr.desktop.platform.ProtobufMessages.Position(
 					this
 				);
+				buildPartialRepeatedFields(result);
 				if (bitField0_ != 0) {
 					buildPartial0(result);
 				}
 				onBuilt();
 				return result;
+			}
+
+			private void buildPartialRepeatedFields(
+				dev.slimevr.desktop.platform.ProtobufMessages.Position result
+			) {
+				if (fingerBoneRotationsBuilder_ == null) {
+					if (((bitField0_ & 0x00000200) != 0)) {
+						fingerBoneRotations_ = java.util.Collections
+							.unmodifiableList(fingerBoneRotations_);
+						bitField0_ = (bitField0_ & ~0x00000200);
+					}
+					result.fingerBoneRotations_ = fingerBoneRotations_;
+				} else {
+					result.fingerBoneRotations_ = fingerBoneRotationsBuilder_.build();
+				}
 			}
 
 			private void buildPartial0(
@@ -1455,6 +2768,32 @@ public final class ProtobufMessages {
 				if (other.hasDataSource()) {
 					setDataSourceValue(other.getDataSourceValue());
 				}
+				if (fingerBoneRotationsBuilder_ == null) {
+					if (!other.fingerBoneRotations_.isEmpty()) {
+						if (fingerBoneRotations_.isEmpty()) {
+							fingerBoneRotations_ = other.fingerBoneRotations_;
+							bitField0_ = (bitField0_ & ~0x00000200);
+						} else {
+							ensureFingerBoneRotationsIsMutable();
+							fingerBoneRotations_.addAll(other.fingerBoneRotations_);
+						}
+						onChanged();
+					}
+				} else {
+					if (!other.fingerBoneRotations_.isEmpty()) {
+						if (fingerBoneRotationsBuilder_.isEmpty()) {
+							fingerBoneRotationsBuilder_.dispose();
+							fingerBoneRotationsBuilder_ = null;
+							fingerBoneRotations_ = other.fingerBoneRotations_;
+							bitField0_ = (bitField0_ & ~0x00000200);
+							fingerBoneRotationsBuilder_ = com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders
+								? internalGetFingerBoneRotationsFieldBuilder()
+								: null;
+						} else {
+							fingerBoneRotationsBuilder_.addAllMessages(other.fingerBoneRotations_);
+						}
+					}
+				}
 				this.mergeUnknownFields(other.getUnknownFields());
 				onChanged();
 				return this;
@@ -1527,6 +2866,21 @@ public final class ProtobufMessages {
 								bitField0_ |= 0x00000100;
 								break;
 							} // case 72
+							case 82: {
+								dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation m = input
+									.readMessage(
+										dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation
+											.parser(),
+										extensionRegistry
+									);
+								if (fingerBoneRotationsBuilder_ == null) {
+									ensureFingerBoneRotationsIsMutable();
+									fingerBoneRotations_.add(m);
+								} else {
+									fingerBoneRotationsBuilder_.addMessage(m);
+								}
+								break;
+							} // case 82
 							default: {
 								if (!super.parseUnknownField(input, extensionRegistry, tag)) {
 									done = true; // was an endgroup tag
@@ -1957,6 +3311,290 @@ public final class ProtobufMessages {
 				dataSource_ = 0;
 				onChanged();
 				return this;
+			}
+
+			private java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation> fingerBoneRotations_ = java.util.Collections
+				.emptyList();
+
+			private void ensureFingerBoneRotationsIsMutable() {
+				if (!((bitField0_ & 0x00000200) != 0)) {
+					fingerBoneRotations_ = new java.util.ArrayList<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation>(
+						fingerBoneRotations_
+					);
+					bitField0_ |= 0x00000200;
+				}
+			}
+
+			private com.google.protobuf.RepeatedFieldBuilder<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder> fingerBoneRotationsBuilder_;
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation> getFingerBoneRotationsList() {
+				if (fingerBoneRotationsBuilder_ == null) {
+					return java.util.Collections.unmodifiableList(fingerBoneRotations_);
+				} else {
+					return fingerBoneRotationsBuilder_.getMessageList();
+				}
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public int getFingerBoneRotationsCount() {
+				if (fingerBoneRotationsBuilder_ == null) {
+					return fingerBoneRotations_.size();
+				} else {
+					return fingerBoneRotationsBuilder_.getCount();
+				}
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation getFingerBoneRotations(
+				int index
+			) {
+				if (fingerBoneRotationsBuilder_ == null) {
+					return fingerBoneRotations_.get(index);
+				} else {
+					return fingerBoneRotationsBuilder_.getMessage(index);
+				}
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public Builder setFingerBoneRotations(
+				int index,
+				dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation value
+			) {
+				if (fingerBoneRotationsBuilder_ == null) {
+					if (value == null) {
+						throw new NullPointerException();
+					}
+					ensureFingerBoneRotationsIsMutable();
+					fingerBoneRotations_.set(index, value);
+					onChanged();
+				} else {
+					fingerBoneRotationsBuilder_.setMessage(index, value);
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public Builder setFingerBoneRotations(
+				int index,
+				dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder builderForValue
+			) {
+				if (fingerBoneRotationsBuilder_ == null) {
+					ensureFingerBoneRotationsIsMutable();
+					fingerBoneRotations_.set(index, builderForValue.build());
+					onChanged();
+				} else {
+					fingerBoneRotationsBuilder_.setMessage(index, builderForValue.build());
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public Builder addFingerBoneRotations(
+				dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation value
+			) {
+				if (fingerBoneRotationsBuilder_ == null) {
+					if (value == null) {
+						throw new NullPointerException();
+					}
+					ensureFingerBoneRotationsIsMutable();
+					fingerBoneRotations_.add(value);
+					onChanged();
+				} else {
+					fingerBoneRotationsBuilder_.addMessage(value);
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public Builder addFingerBoneRotations(
+				int index,
+				dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation value
+			) {
+				if (fingerBoneRotationsBuilder_ == null) {
+					if (value == null) {
+						throw new NullPointerException();
+					}
+					ensureFingerBoneRotationsIsMutable();
+					fingerBoneRotations_.add(index, value);
+					onChanged();
+				} else {
+					fingerBoneRotationsBuilder_.addMessage(index, value);
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public Builder addFingerBoneRotations(
+				dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder builderForValue
+			) {
+				if (fingerBoneRotationsBuilder_ == null) {
+					ensureFingerBoneRotationsIsMutable();
+					fingerBoneRotations_.add(builderForValue.build());
+					onChanged();
+				} else {
+					fingerBoneRotationsBuilder_.addMessage(builderForValue.build());
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public Builder addFingerBoneRotations(
+				int index,
+				dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder builderForValue
+			) {
+				if (fingerBoneRotationsBuilder_ == null) {
+					ensureFingerBoneRotationsIsMutable();
+					fingerBoneRotations_.add(index, builderForValue.build());
+					onChanged();
+				} else {
+					fingerBoneRotationsBuilder_.addMessage(index, builderForValue.build());
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public Builder addAllFingerBoneRotations(
+				java.lang.Iterable<? extends dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation> values
+			) {
+				if (fingerBoneRotationsBuilder_ == null) {
+					ensureFingerBoneRotationsIsMutable();
+					com.google.protobuf.AbstractMessageLite.Builder
+						.addAll(
+							values,
+							fingerBoneRotations_
+						);
+					onChanged();
+				} else {
+					fingerBoneRotationsBuilder_.addAllMessages(values);
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public Builder clearFingerBoneRotations() {
+				if (fingerBoneRotationsBuilder_ == null) {
+					fingerBoneRotations_ = java.util.Collections.emptyList();
+					bitField0_ = (bitField0_ & ~0x00000200);
+					onChanged();
+				} else {
+					fingerBoneRotationsBuilder_.clear();
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public Builder removeFingerBoneRotations(int index) {
+				if (fingerBoneRotationsBuilder_ == null) {
+					ensureFingerBoneRotationsIsMutable();
+					fingerBoneRotations_.remove(index);
+					onChanged();
+				} else {
+					fingerBoneRotationsBuilder_.remove(index);
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder getFingerBoneRotationsBuilder(
+				int index
+			) {
+				return internalGetFingerBoneRotationsFieldBuilder().getBuilder(index);
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder getFingerBoneRotationsOrBuilder(
+				int index
+			) {
+				if (fingerBoneRotationsBuilder_ == null) {
+					return fingerBoneRotations_.get(index);
+				} else {
+					return fingerBoneRotationsBuilder_.getMessageOrBuilder(index);
+				}
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public java.util.List<? extends dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder> getFingerBoneRotationsOrBuilderList() {
+				if (fingerBoneRotationsBuilder_ != null) {
+					return fingerBoneRotationsBuilder_.getMessageOrBuilderList();
+				} else {
+					return java.util.Collections.unmodifiableList(fingerBoneRotations_);
+				}
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder addFingerBoneRotationsBuilder() {
+				return internalGetFingerBoneRotationsFieldBuilder()
+					.addBuilder(
+						dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation
+							.getDefaultInstance()
+					);
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder addFingerBoneRotationsBuilder(
+				int index
+			) {
+				return internalGetFingerBoneRotationsFieldBuilder()
+					.addBuilder(
+						index,
+						dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation
+							.getDefaultInstance()
+					);
+			}
+
+			/**
+			 * <code>repeated .messages.FingerBoneRotation finger_bone_rotations = 10;</code>
+			 */
+			public java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder> getFingerBoneRotationsBuilderList() {
+				return internalGetFingerBoneRotationsFieldBuilder().getBuilderList();
+			}
+
+			private com.google.protobuf.RepeatedFieldBuilder<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder> internalGetFingerBoneRotationsFieldBuilder() {
+				if (fingerBoneRotationsBuilder_ == null) {
+					fingerBoneRotationsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotation.Builder, dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder>(
+						fingerBoneRotations_,
+						((bitField0_ & 0x00000200) != 0),
+						getParentForChildren(),
+						isClean()
+					);
+					fingerBoneRotations_ = null;
+				}
+				return fingerBoneRotationsBuilder_;
 			}
 
 			// @@protoc_insertion_point(builder_scope:messages.Position)
@@ -3053,6 +4691,20 @@ public final class ProtobufMessages {
 		 * @return The trackerRole.
 		 */
 		int getTrackerRole();
+
+		/**
+		 * <code>optional bool fingertracking_enabled = 10;</code>
+		 * 
+		 * @return Whether the fingertrackingEnabled field is set.
+		 */
+		boolean hasFingertrackingEnabled();
+
+		/**
+		 * <code>optional bool fingertracking_enabled = 10;</code>
+		 * 
+		 * @return The fingertrackingEnabled.
+		 */
+		boolean getFingertrackingEnabled();
 	}
 
 	/**
@@ -3098,6 +4750,7 @@ public final class ProtobufMessages {
 				);
 		}
 
+		private int bitField0_;
 		public static final int TRACKER_ID_FIELD_NUMBER = 1;
 		private int trackerId_ = 0;
 
@@ -3208,6 +4861,29 @@ public final class ProtobufMessages {
 			return trackerRole_;
 		}
 
+		public static final int FINGERTRACKING_ENABLED_FIELD_NUMBER = 10;
+		private boolean fingertrackingEnabled_ = false;
+
+		/**
+		 * <code>optional bool fingertracking_enabled = 10;</code>
+		 * 
+		 * @return Whether the fingertrackingEnabled field is set.
+		 */
+		@java.lang.Override
+		public boolean hasFingertrackingEnabled() {
+			return ((bitField0_ & 0x00000001) != 0);
+		}
+
+		/**
+		 * <code>optional bool fingertracking_enabled = 10;</code>
+		 * 
+		 * @return The fingertrackingEnabled.
+		 */
+		@java.lang.Override
+		public boolean getFingertrackingEnabled() {
+			return fingertrackingEnabled_;
+		}
+
 		private byte memoizedIsInitialized = -1;
 
 		@java.lang.Override
@@ -3237,6 +4913,9 @@ public final class ProtobufMessages {
 			if (trackerRole_ != 0) {
 				output.writeInt32(4, trackerRole_);
 			}
+			if (((bitField0_ & 0x00000001) != 0)) {
+				output.writeBool(10, fingertrackingEnabled_);
+			}
 			getUnknownFields().writeTo(output);
 		}
 
@@ -3260,6 +4939,10 @@ public final class ProtobufMessages {
 			if (trackerRole_ != 0) {
 				size += com.google.protobuf.CodedOutputStream
 					.computeInt32Size(4, trackerRole_);
+			}
+			if (((bitField0_ & 0x00000001) != 0)) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeBoolSize(10, fingertrackingEnabled_);
 			}
 			size += getUnknownFields().getSerializedSize();
 			memoizedSize = size;
@@ -3296,6 +4979,15 @@ public final class ProtobufMessages {
 					!= other.getTrackerRole()
 			)
 				return false;
+			if (hasFingertrackingEnabled() != other.hasFingertrackingEnabled())
+				return false;
+			if (hasFingertrackingEnabled()) {
+				if (
+					getFingertrackingEnabled()
+						!= other.getFingertrackingEnabled()
+				)
+					return false;
+			}
 			if (!getUnknownFields().equals(other.getUnknownFields()))
 				return false;
 			return true;
@@ -3316,6 +5008,14 @@ public final class ProtobufMessages {
 			hash = (53 * hash) + getTrackerName().hashCode();
 			hash = (37 * hash) + TRACKER_ROLE_FIELD_NUMBER;
 			hash = (53 * hash) + getTrackerRole();
+			if (hasFingertrackingEnabled()) {
+				hash = (37 * hash) + FINGERTRACKING_ENABLED_FIELD_NUMBER;
+				hash = (53 * hash)
+					+ com.google.protobuf.Internal
+						.hashBoolean(
+							getFingertrackingEnabled()
+						);
+			}
 			hash = (29 * hash) + getUnknownFields().hashCode();
 			memoizedHashCode = hash;
 			return hash;
@@ -3488,6 +5188,7 @@ public final class ProtobufMessages {
 				trackerSerial_ = "";
 				trackerName_ = "";
 				trackerRole_ = 0;
+				fingertrackingEnabled_ = false;
 				return this;
 			}
 
@@ -3539,6 +5240,12 @@ public final class ProtobufMessages {
 				if (((from_bitField0_ & 0x00000008) != 0)) {
 					result.trackerRole_ = trackerRole_;
 				}
+				int to_bitField0_ = 0;
+				if (((from_bitField0_ & 0x00000010) != 0)) {
+					result.fingertrackingEnabled_ = fingertrackingEnabled_;
+					to_bitField0_ |= 0x00000001;
+				}
+				result.bitField0_ |= to_bitField0_;
 			}
 
 			@java.lang.Override
@@ -3577,6 +5284,9 @@ public final class ProtobufMessages {
 				}
 				if (other.getTrackerRole() != 0) {
 					setTrackerRole(other.getTrackerRole());
+				}
+				if (other.hasFingertrackingEnabled()) {
+					setFingertrackingEnabled(other.getFingertrackingEnabled());
 				}
 				this.mergeUnknownFields(other.getUnknownFields());
 				onChanged();
@@ -3625,6 +5335,11 @@ public final class ProtobufMessages {
 								bitField0_ |= 0x00000008;
 								break;
 							} // case 32
+							case 80: {
+								fingertrackingEnabled_ = input.readBool();
+								bitField0_ |= 0x00000010;
+								break;
+							} // case 80
 							default: {
 								if (!super.parseUnknownField(input, extensionRegistry, tag)) {
 									done = true; // was an endgroup tag
@@ -3889,6 +5604,54 @@ public final class ProtobufMessages {
 			public Builder clearTrackerRole() {
 				bitField0_ = (bitField0_ & ~0x00000008);
 				trackerRole_ = 0;
+				onChanged();
+				return this;
+			}
+
+			private boolean fingertrackingEnabled_;
+
+			/**
+			 * <code>optional bool fingertracking_enabled = 10;</code>
+			 * 
+			 * @return Whether the fingertrackingEnabled field is set.
+			 */
+			@java.lang.Override
+			public boolean hasFingertrackingEnabled() {
+				return ((bitField0_ & 0x00000010) != 0);
+			}
+
+			/**
+			 * <code>optional bool fingertracking_enabled = 10;</code>
+			 * 
+			 * @return The fingertrackingEnabled.
+			 */
+			@java.lang.Override
+			public boolean getFingertrackingEnabled() {
+				return fingertrackingEnabled_;
+			}
+
+			/**
+			 * <code>optional bool fingertracking_enabled = 10;</code>
+			 * 
+			 * @param value The fingertrackingEnabled to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setFingertrackingEnabled(boolean value) {
+
+				fingertrackingEnabled_ = value;
+				bitField0_ |= 0x00000010;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>optional bool fingertracking_enabled = 10;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearFingertrackingEnabled() {
+				bitField0_ = (bitField0_ & ~0x00000010);
+				fingertrackingEnabled_ = false;
 				onChanged();
 				return this;
 			}
@@ -6155,6 +7918,882 @@ public final class ProtobufMessages {
 
 	}
 
+	public interface FingersDataOrBuilder extends
+		// @@protoc_insertion_point(interface_extends:messages.FingersData)
+		com.google.protobuf.MessageOrBuilder {
+
+		/**
+		 * <code>int32 finger_bone = 1;</code>
+		 * 
+		 * @return The fingerBone.
+		 */
+		int getFingerBone();
+
+		/**
+		 * <code>float qx = 2;</code>
+		 * 
+		 * @return The qx.
+		 */
+		float getQx();
+
+		/**
+		 * <code>float qy = 3;</code>
+		 * 
+		 * @return The qy.
+		 */
+		float getQy();
+
+		/**
+		 * <code>float qz = 4;</code>
+		 * 
+		 * @return The qz.
+		 */
+		float getQz();
+
+		/**
+		 * <code>float qw = 5;</code>
+		 * 
+		 * @return The qw.
+		 */
+		float getQw();
+	}
+
+	/**
+	 * Protobuf type {@code messages.FingersData}
+	 */
+	public static final class FingersData extends
+		com.google.protobuf.GeneratedMessage implements
+		// @@protoc_insertion_point(message_implements:messages.FingersData)
+		FingersDataOrBuilder {
+		private static final long serialVersionUID = 0L;
+		static {
+			com.google.protobuf.RuntimeVersion
+				.validateProtobufGencodeVersion(
+					com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+					/* major= */ 4,
+					/* minor= */ 31,
+					/* patch= */ 1,
+					/* suffix= */ "",
+					FingersData.class.getName()
+				);
+		}
+
+		// Use FingersData.newBuilder() to construct.
+		private FingersData(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+			super(builder);
+		}
+
+		private FingersData() {
+		}
+
+		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+			return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_FingersData_descriptor;
+		}
+
+		@java.lang.Override
+		protected com.google.protobuf.GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
+			return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_FingersData_fieldAccessorTable
+				.ensureFieldAccessorsInitialized(
+					dev.slimevr.desktop.platform.ProtobufMessages.FingersData.class,
+					dev.slimevr.desktop.platform.ProtobufMessages.FingersData.Builder.class
+				);
+		}
+
+		public static final int FINGER_BONE_FIELD_NUMBER = 1;
+		private int fingerBone_ = 0;
+
+		/**
+		 * <code>int32 finger_bone = 1;</code>
+		 * 
+		 * @return The fingerBone.
+		 */
+		@java.lang.Override
+		public int getFingerBone() {
+			return fingerBone_;
+		}
+
+		public static final int QX_FIELD_NUMBER = 2;
+		private float qx_ = 0F;
+
+		/**
+		 * <code>float qx = 2;</code>
+		 * 
+		 * @return The qx.
+		 */
+		@java.lang.Override
+		public float getQx() {
+			return qx_;
+		}
+
+		public static final int QY_FIELD_NUMBER = 3;
+		private float qy_ = 0F;
+
+		/**
+		 * <code>float qy = 3;</code>
+		 * 
+		 * @return The qy.
+		 */
+		@java.lang.Override
+		public float getQy() {
+			return qy_;
+		}
+
+		public static final int QZ_FIELD_NUMBER = 4;
+		private float qz_ = 0F;
+
+		/**
+		 * <code>float qz = 4;</code>
+		 * 
+		 * @return The qz.
+		 */
+		@java.lang.Override
+		public float getQz() {
+			return qz_;
+		}
+
+		public static final int QW_FIELD_NUMBER = 5;
+		private float qw_ = 0F;
+
+		/**
+		 * <code>float qw = 5;</code>
+		 * 
+		 * @return The qw.
+		 */
+		@java.lang.Override
+		public float getQw() {
+			return qw_;
+		}
+
+		private byte memoizedIsInitialized = -1;
+
+		@java.lang.Override
+		public final boolean isInitialized() {
+			byte isInitialized = memoizedIsInitialized;
+			if (isInitialized == 1)
+				return true;
+			if (isInitialized == 0)
+				return false;
+
+			memoizedIsInitialized = 1;
+			return true;
+		}
+
+		@java.lang.Override
+		public void writeTo(com.google.protobuf.CodedOutputStream output)
+			throws java.io.IOException {
+			if (fingerBone_ != 0) {
+				output.writeInt32(1, fingerBone_);
+			}
+			if (java.lang.Float.floatToRawIntBits(qx_) != 0) {
+				output.writeFloat(2, qx_);
+			}
+			if (java.lang.Float.floatToRawIntBits(qy_) != 0) {
+				output.writeFloat(3, qy_);
+			}
+			if (java.lang.Float.floatToRawIntBits(qz_) != 0) {
+				output.writeFloat(4, qz_);
+			}
+			if (java.lang.Float.floatToRawIntBits(qw_) != 0) {
+				output.writeFloat(5, qw_);
+			}
+			getUnknownFields().writeTo(output);
+		}
+
+		@java.lang.Override
+		public int getSerializedSize() {
+			int size = memoizedSize;
+			if (size != -1)
+				return size;
+
+			size = 0;
+			if (fingerBone_ != 0) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeInt32Size(1, fingerBone_);
+			}
+			if (java.lang.Float.floatToRawIntBits(qx_) != 0) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeFloatSize(2, qx_);
+			}
+			if (java.lang.Float.floatToRawIntBits(qy_) != 0) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeFloatSize(3, qy_);
+			}
+			if (java.lang.Float.floatToRawIntBits(qz_) != 0) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeFloatSize(4, qz_);
+			}
+			if (java.lang.Float.floatToRawIntBits(qw_) != 0) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeFloatSize(5, qw_);
+			}
+			size += getUnknownFields().getSerializedSize();
+			memoizedSize = size;
+			return size;
+		}
+
+		@java.lang.Override
+		public boolean equals(final java.lang.Object obj) {
+			if (obj == this) {
+				return true;
+			}
+			if (!(obj instanceof dev.slimevr.desktop.platform.ProtobufMessages.FingersData)) {
+				return super.equals(obj);
+			}
+			dev.slimevr.desktop.platform.ProtobufMessages.FingersData other = (dev.slimevr.desktop.platform.ProtobufMessages.FingersData) obj;
+
+			if (
+				getFingerBone()
+					!= other.getFingerBone()
+			)
+				return false;
+			if (
+				java.lang.Float.floatToIntBits(getQx())
+					!= java.lang.Float
+						.floatToIntBits(
+							other.getQx()
+						)
+			)
+				return false;
+			if (
+				java.lang.Float.floatToIntBits(getQy())
+					!= java.lang.Float
+						.floatToIntBits(
+							other.getQy()
+						)
+			)
+				return false;
+			if (
+				java.lang.Float.floatToIntBits(getQz())
+					!= java.lang.Float
+						.floatToIntBits(
+							other.getQz()
+						)
+			)
+				return false;
+			if (
+				java.lang.Float.floatToIntBits(getQw())
+					!= java.lang.Float
+						.floatToIntBits(
+							other.getQw()
+						)
+			)
+				return false;
+			if (!getUnknownFields().equals(other.getUnknownFields()))
+				return false;
+			return true;
+		}
+
+		@java.lang.Override
+		public int hashCode() {
+			if (memoizedHashCode != 0) {
+				return memoizedHashCode;
+			}
+			int hash = 41;
+			hash = (19 * hash) + getDescriptor().hashCode();
+			hash = (37 * hash) + FINGER_BONE_FIELD_NUMBER;
+			hash = (53 * hash) + getFingerBone();
+			hash = (37 * hash) + QX_FIELD_NUMBER;
+			hash = (53 * hash)
+				+ java.lang.Float
+					.floatToIntBits(
+						getQx()
+					);
+			hash = (37 * hash) + QY_FIELD_NUMBER;
+			hash = (53 * hash)
+				+ java.lang.Float
+					.floatToIntBits(
+						getQy()
+					);
+			hash = (37 * hash) + QZ_FIELD_NUMBER;
+			hash = (53 * hash)
+				+ java.lang.Float
+					.floatToIntBits(
+						getQz()
+					);
+			hash = (37 * hash) + QW_FIELD_NUMBER;
+			hash = (53 * hash)
+				+ java.lang.Float
+					.floatToIntBits(
+						getQw()
+					);
+			hash = (29 * hash) + getUnknownFields().hashCode();
+			memoizedHashCode = hash;
+			return hash;
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData parseFrom(
+			java.nio.ByteBuffer data
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData parseFrom(
+			java.nio.ByteBuffer data,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData parseFrom(
+			com.google.protobuf.ByteString data
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData parseFrom(
+			com.google.protobuf.ByteString data,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData parseFrom(
+			byte[] data
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData parseFrom(
+			byte[] data,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData parseFrom(
+			java.io.InputStream input
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData parseFrom(
+			java.io.InputStream input,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData parseDelimitedFrom(
+			java.io.InputStream input
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseDelimitedWithIOException(PARSER, input);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData parseDelimitedFrom(
+			java.io.InputStream input,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData parseFrom(
+			com.google.protobuf.CodedInputStream input
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData parseFrom(
+			com.google.protobuf.CodedInputStream input,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input, extensionRegistry);
+		}
+
+		@java.lang.Override
+		public Builder newBuilderForType() {
+			return newBuilder();
+		}
+
+		public static Builder newBuilder() {
+			return DEFAULT_INSTANCE.toBuilder();
+		}
+
+		public static Builder newBuilder(
+			dev.slimevr.desktop.platform.ProtobufMessages.FingersData prototype
+		) {
+			return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+		}
+
+		@java.lang.Override
+		public Builder toBuilder() {
+			return this == DEFAULT_INSTANCE
+				? new Builder()
+				: new Builder().mergeFrom(this);
+		}
+
+		@java.lang.Override
+		protected Builder newBuilderForType(
+			com.google.protobuf.GeneratedMessage.BuilderParent parent
+		) {
+			Builder builder = new Builder(parent);
+			return builder;
+		}
+
+		/**
+		 * Protobuf type {@code messages.FingersData}
+		 */
+		public static final class Builder extends
+			com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+			// @@protoc_insertion_point(builder_implements:messages.FingersData)
+			dev.slimevr.desktop.platform.ProtobufMessages.FingersDataOrBuilder {
+			public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_FingersData_descriptor;
+			}
+
+			@java.lang.Override
+			protected com.google.protobuf.GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_FingersData_fieldAccessorTable
+					.ensureFieldAccessorsInitialized(
+						dev.slimevr.desktop.platform.ProtobufMessages.FingersData.class,
+						dev.slimevr.desktop.platform.ProtobufMessages.FingersData.Builder.class
+					);
+			}
+
+			// Construct using
+			// dev.slimevr.desktop.platform.ProtobufMessages.FingersData.newBuilder()
+			private Builder() {
+
+			}
+
+			private Builder(
+				com.google.protobuf.GeneratedMessage.BuilderParent parent
+			) {
+				super(parent);
+
+			}
+
+			@java.lang.Override
+			public Builder clear() {
+				super.clear();
+				bitField0_ = 0;
+				fingerBone_ = 0;
+				qx_ = 0F;
+				qy_ = 0F;
+				qz_ = 0F;
+				qw_ = 0F;
+				return this;
+			}
+
+			@java.lang.Override
+			public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_FingersData_descriptor;
+			}
+
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.FingersData getDefaultInstanceForType() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.FingersData
+					.getDefaultInstance();
+			}
+
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.FingersData build() {
+				dev.slimevr.desktop.platform.ProtobufMessages.FingersData result = buildPartial();
+				if (!result.isInitialized()) {
+					throw newUninitializedMessageException(result);
+				}
+				return result;
+			}
+
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.FingersData buildPartial() {
+				dev.slimevr.desktop.platform.ProtobufMessages.FingersData result = new dev.slimevr.desktop.platform.ProtobufMessages.FingersData(
+					this
+				);
+				if (bitField0_ != 0) {
+					buildPartial0(result);
+				}
+				onBuilt();
+				return result;
+			}
+
+			private void buildPartial0(
+				dev.slimevr.desktop.platform.ProtobufMessages.FingersData result
+			) {
+				int from_bitField0_ = bitField0_;
+				if (((from_bitField0_ & 0x00000001) != 0)) {
+					result.fingerBone_ = fingerBone_;
+				}
+				if (((from_bitField0_ & 0x00000002) != 0)) {
+					result.qx_ = qx_;
+				}
+				if (((from_bitField0_ & 0x00000004) != 0)) {
+					result.qy_ = qy_;
+				}
+				if (((from_bitField0_ & 0x00000008) != 0)) {
+					result.qz_ = qz_;
+				}
+				if (((from_bitField0_ & 0x00000010) != 0)) {
+					result.qw_ = qw_;
+				}
+			}
+
+			@java.lang.Override
+			public Builder mergeFrom(com.google.protobuf.Message other) {
+				if (other instanceof dev.slimevr.desktop.platform.ProtobufMessages.FingersData) {
+					return mergeFrom(
+						(dev.slimevr.desktop.platform.ProtobufMessages.FingersData) other
+					);
+				} else {
+					super.mergeFrom(other);
+					return this;
+				}
+			}
+
+			public Builder mergeFrom(
+				dev.slimevr.desktop.platform.ProtobufMessages.FingersData other
+			) {
+				if (
+					other
+						== dev.slimevr.desktop.platform.ProtobufMessages.FingersData
+							.getDefaultInstance()
+				)
+					return this;
+				if (other.getFingerBone() != 0) {
+					setFingerBone(other.getFingerBone());
+				}
+				if (java.lang.Float.floatToRawIntBits(other.getQx()) != 0) {
+					setQx(other.getQx());
+				}
+				if (java.lang.Float.floatToRawIntBits(other.getQy()) != 0) {
+					setQy(other.getQy());
+				}
+				if (java.lang.Float.floatToRawIntBits(other.getQz()) != 0) {
+					setQz(other.getQz());
+				}
+				if (java.lang.Float.floatToRawIntBits(other.getQw()) != 0) {
+					setQw(other.getQw());
+				}
+				this.mergeUnknownFields(other.getUnknownFields());
+				onChanged();
+				return this;
+			}
+
+			@java.lang.Override
+			public final boolean isInitialized() {
+				return true;
+			}
+
+			@java.lang.Override
+			public Builder mergeFrom(
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
+			)
+				throws java.io.IOException {
+				if (extensionRegistry == null) {
+					throw new java.lang.NullPointerException();
+				}
+				try {
+					boolean done = false;
+					while (!done) {
+						int tag = input.readTag();
+						switch (tag) {
+							case 0:
+								done = true;
+								break;
+							case 8: {
+								fingerBone_ = input.readInt32();
+								bitField0_ |= 0x00000001;
+								break;
+							} // case 8
+							case 21: {
+								qx_ = input.readFloat();
+								bitField0_ |= 0x00000002;
+								break;
+							} // case 21
+							case 29: {
+								qy_ = input.readFloat();
+								bitField0_ |= 0x00000004;
+								break;
+							} // case 29
+							case 37: {
+								qz_ = input.readFloat();
+								bitField0_ |= 0x00000008;
+								break;
+							} // case 37
+							case 45: {
+								qw_ = input.readFloat();
+								bitField0_ |= 0x00000010;
+								break;
+							} // case 45
+							default: {
+								if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+									done = true; // was an endgroup tag
+								}
+								break;
+							} // default:
+						} // switch (tag)
+					} // while (!done)
+				} catch (com.google.protobuf.InvalidProtocolBufferException e) {
+					throw e.unwrapIOException();
+				} finally {
+					onChanged();
+				} // finally
+				return this;
+			}
+
+			private int bitField0_;
+
+			private int fingerBone_;
+
+			/**
+			 * <code>int32 finger_bone = 1;</code>
+			 * 
+			 * @return The fingerBone.
+			 */
+			@java.lang.Override
+			public int getFingerBone() {
+				return fingerBone_;
+			}
+
+			/**
+			 * <code>int32 finger_bone = 1;</code>
+			 * 
+			 * @param value The fingerBone to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setFingerBone(int value) {
+
+				fingerBone_ = value;
+				bitField0_ |= 0x00000001;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>int32 finger_bone = 1;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearFingerBone() {
+				bitField0_ = (bitField0_ & ~0x00000001);
+				fingerBone_ = 0;
+				onChanged();
+				return this;
+			}
+
+			private float qx_;
+
+			/**
+			 * <code>float qx = 2;</code>
+			 * 
+			 * @return The qx.
+			 */
+			@java.lang.Override
+			public float getQx() {
+				return qx_;
+			}
+
+			/**
+			 * <code>float qx = 2;</code>
+			 * 
+			 * @param value The qx to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setQx(float value) {
+
+				qx_ = value;
+				bitField0_ |= 0x00000002;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>float qx = 2;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearQx() {
+				bitField0_ = (bitField0_ & ~0x00000002);
+				qx_ = 0F;
+				onChanged();
+				return this;
+			}
+
+			private float qy_;
+
+			/**
+			 * <code>float qy = 3;</code>
+			 * 
+			 * @return The qy.
+			 */
+			@java.lang.Override
+			public float getQy() {
+				return qy_;
+			}
+
+			/**
+			 * <code>float qy = 3;</code>
+			 * 
+			 * @param value The qy to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setQy(float value) {
+
+				qy_ = value;
+				bitField0_ |= 0x00000004;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>float qy = 3;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearQy() {
+				bitField0_ = (bitField0_ & ~0x00000004);
+				qy_ = 0F;
+				onChanged();
+				return this;
+			}
+
+			private float qz_;
+
+			/**
+			 * <code>float qz = 4;</code>
+			 * 
+			 * @return The qz.
+			 */
+			@java.lang.Override
+			public float getQz() {
+				return qz_;
+			}
+
+			/**
+			 * <code>float qz = 4;</code>
+			 * 
+			 * @param value The qz to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setQz(float value) {
+
+				qz_ = value;
+				bitField0_ |= 0x00000008;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>float qz = 4;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearQz() {
+				bitField0_ = (bitField0_ & ~0x00000008);
+				qz_ = 0F;
+				onChanged();
+				return this;
+			}
+
+			private float qw_;
+
+			/**
+			 * <code>float qw = 5;</code>
+			 * 
+			 * @return The qw.
+			 */
+			@java.lang.Override
+			public float getQw() {
+				return qw_;
+			}
+
+			/**
+			 * <code>float qw = 5;</code>
+			 * 
+			 * @param value The qw to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setQw(float value) {
+
+				qw_ = value;
+				bitField0_ |= 0x00000010;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>float qw = 5;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearQw() {
+				bitField0_ = (bitField0_ & ~0x00000010);
+				qw_ = 0F;
+				onChanged();
+				return this;
+			}
+
+			// @@protoc_insertion_point(builder_scope:messages.FingersData)
+		}
+
+		// @@protoc_insertion_point(class_scope:messages.FingersData)
+		private static final dev.slimevr.desktop.platform.ProtobufMessages.FingersData DEFAULT_INSTANCE;
+		static {
+			DEFAULT_INSTANCE = new dev.slimevr.desktop.platform.ProtobufMessages.FingersData();
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.FingersData getDefaultInstance() {
+			return DEFAULT_INSTANCE;
+		}
+
+		private static final com.google.protobuf.Parser<FingersData> PARSER = new com.google.protobuf.AbstractParser<FingersData>() {
+			@java.lang.Override
+			public FingersData parsePartialFrom(
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
+			)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+				Builder builder = newBuilder();
+				try {
+					builder.mergeFrom(input, extensionRegistry);
+				} catch (com.google.protobuf.InvalidProtocolBufferException e) {
+					throw e.setUnfinishedMessage(builder.buildPartial());
+				} catch (com.google.protobuf.UninitializedMessageException e) {
+					throw e
+						.asInvalidProtocolBufferException()
+						.setUnfinishedMessage(builder.buildPartial());
+				} catch (java.io.IOException e) {
+					throw new com.google.protobuf.InvalidProtocolBufferException(e)
+						.setUnfinishedMessage(builder.buildPartial());
+				}
+				return builder.buildPartial();
+			}
+		};
+
+		public static com.google.protobuf.Parser<FingersData> parser() {
+			return PARSER;
+		}
+
+		@java.lang.Override
+		public com.google.protobuf.Parser<FingersData> getParserForType() {
+			return PARSER;
+		}
+
+		@java.lang.Override
+		public dev.slimevr.desktop.platform.ProtobufMessages.FingersData getDefaultInstanceForType() {
+			return DEFAULT_INSTANCE;
+		}
+
+	}
+
 	public interface ProtobufMessageOrBuilder extends
 		// @@protoc_insertion_point(interface_extends:messages.ProtobufMessage)
 		com.google.protobuf.MessageOrBuilder {
@@ -8045,6 +10684,8 @@ public final class ProtobufMessages {
 
 	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_PingPong_descriptor;
 	private static final com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_messages_PingPong_fieldAccessorTable;
+	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_FingerBoneRotation_descriptor;
+	private static final com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_messages_FingerBoneRotation_fieldAccessorTable;
 	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_Position_descriptor;
 	private static final com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_messages_Position_fieldAccessorTable;
 	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_UserAction_descriptor;
@@ -8059,6 +10700,8 @@ public final class ProtobufMessages {
 	private static final com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_messages_TrackerStatus_ExtraEntry_fieldAccessorTable;
 	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_Battery_descriptor;
 	private static final com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_messages_Battery_fieldAccessorTable;
+	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_FingersData_descriptor;
+	private static final com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_messages_FingersData_fieldAccessorTable;
 	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_ProtobufMessage_descriptor;
 	private static final com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_messages_ProtobufMessage_fieldAccessorTable;
 
@@ -8071,71 +10714,105 @@ public final class ProtobufMessages {
 		java.lang.String[] descriptorData = {
 			"\n\026ProtobufMessages.proto\022\010messages\"\n\n\010Pi"
 				+
-				"ngPong\"\223\002\n\010Position\022\022\n\ntracker_id\030\001 \001(\005\022"
+				"ngPong\"\305\003\n\022FingerBoneRotation\0229\n\004name\030\001 "
 				+
-				"\016\n\001x\030\002 \001(\002H\000\210\001\001\022\016\n\001y\030\003 \001(\002H\001\210\001\001\022\016\n\001z\030\004 \001"
+				"\001(\0162+.messages.FingerBoneRotation.Finger"
 				+
-				"(\002H\002\210\001\001\022\n\n\002qx\030\005 \001(\002\022\n\n\002qy\030\006 \001(\002\022\n\n\002qz\030\007 "
+				"BoneName\022\t\n\001x\030\002 \001(\002\022\t\n\001y\030\003 \001(\002\022\t\n\001z\030\004 \001("
 				+
-				"\001(\002\022\n\n\002qw\030\010 \001(\002\0227\n\013data_source\030\t \001(\0162\035.m"
+				"\002\022\t\n\001w\030\005 \001(\002\"\307\002\n\016FingerBoneName\022\024\n\020THUMB"
 				+
-				"essages.Position.DataSourceH\003\210\001\001\"8\n\nData"
+				"_METACARPAL\020\000\022\022\n\016THUMB_PROXIMAL\020\001\022\020\n\014THU"
 				+
-				"Source\022\010\n\004NONE\020\000\022\007\n\003IMU\020\001\022\r\n\tPRECISION\020\002"
+				"MB_DISTAL\020\002\022\022\n\016INDEX_PROXIMAL\020\003\022\026\n\022INDEX"
 				+
-				"\022\010\n\004FULL\020\003B\004\n\002_xB\004\n\002_yB\004\n\002_zB\016\n\014_data_so"
+				"_INTERMEDIATE\020\004\022\020\n\014INDEX_DISTAL\020\005\022\023\n\017MID"
 				+
-				"urce\"\227\001\n\nUserAction\022\014\n\004name\030\001 \001(\t\022C\n\020act"
+				"DLE_PROXIMAL\020\006\022\027\n\023MIDDLE_INTERMEDIATE\020\007\022"
 				+
-				"ion_arguments\030\002 \003(\0132).messages.UserActio"
+				"\021\n\rMIDDLE_DISTAL\020\010\022\021\n\rRING_PROXIMAL\020\t\022\025\n"
 				+
-				"n.ActionArgumentsEntry\0326\n\024ActionArgument"
+				"\021RING_INTERMEDIATE\020\n\022\017\n\013RING_DISTAL\020\013\022\023\n"
 				+
-				"sEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"f"
+				"\017LITTLE_PROXIMAL\020\014\022\027\n\023LITTLE_INTERMEDIAT"
 				+
-				"\n\014TrackerAdded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016tr"
+				"E\020\r\022\021\n\rLITTLE_DISTAL\020\016\"\320\002\n\010Position\022\022\n\nt"
 				+
-				"acker_serial\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001(\t"
+				"racker_id\030\001 \001(\005\022\016\n\001x\030\002 \001(\002H\000\210\001\001\022\016\n\001y\030\003 \001"
 				+
-				"\022\024\n\014tracker_role\030\004 \001(\005\"\374\002\n\rTrackerStatus"
+				"(\002H\001\210\001\001\022\016\n\001z\030\004 \001(\002H\002\210\001\001\022\n\n\002qx\030\005 \001(\002\022\n\n\002q"
 				+
-				"\022\022\n\ntracker_id\030\001 \001(\005\022.\n\006status\030\002 \001(\0162\036.m"
+				"y\030\006 \001(\002\022\n\n\002qz\030\007 \001(\002\022\n\n\002qw\030\010 \001(\002\0227\n\013data_"
 				+
-				"essages.TrackerStatus.Status\0221\n\005extra\030\003 "
+				"source\030\t \001(\0162\035.messages.Position.DataSou"
 				+
-				"\003(\0132\".messages.TrackerStatus.ExtraEntry\022"
+				"rceH\003\210\001\001\022;\n\025finger_bone_rotations\030\n \003(\0132"
 				+
-				";\n\nconfidence\030\004 \001(\0162\".messages.TrackerSt"
+				"\034.messages.FingerBoneRotation\"8\n\nDataSou"
 				+
-				"atus.ConfidenceH\000\210\001\001\032,\n\nExtraEntry\022\013\n\003ke"
+				"rce\022\010\n\004NONE\020\000\022\007\n\003IMU\020\001\022\r\n\tPRECISION\020\002\022\010\n"
 				+
-				"y\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"E\n\006Status\022\020\n\014"
+				"\004FULL\020\003B\004\n\002_xB\004\n\002_yB\004\n\002_zB\016\n\014_data_sourc"
 				+
-				"DISCONNECTED\020\000\022\006\n\002OK\020\001\022\010\n\004BUSY\020\002\022\t\n\005ERRO"
+				"e\"\227\001\n\nUserAction\022\014\n\004name\030\001 \001(\t\022C\n\020action"
 				+
-				"R\020\003\022\014\n\010OCCLUDED\020\004\"3\n\nConfidence\022\006\n\002NO\020\000\022"
+				"_arguments\030\002 \003(\0132).messages.UserAction.A"
 				+
-				"\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\005\022\010\n\004HIGH\020\nB\r\n\013_confi"
+				"ctionArgumentsEntry\0326\n\024ActionArgumentsEn"
 				+
-				"dence\"I\n\007Battery\022\022\n\ntracker_id\030\001 \001(\005\022\025\n\r"
+				"try\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\246\001\n\014"
 				+
-				"battery_level\030\002 \001(\002\022\023\n\013is_charging\030\003 \001(\010"
+				"TrackerAdded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016trac"
 				+
-				"\"\373\001\n\017ProtobufMessage\022&\n\010position\030\001 \001(\0132\022"
+				"ker_serial\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001(\t\022\024"
 				+
-				".messages.PositionH\000\022+\n\013user_action\030\002 \001("
+				"\n\014tracker_role\030\004 \001(\005\022#\n\026fingertracking_e"
 				+
-				"\0132\024.messages.UserActionH\000\022/\n\rtracker_add"
+				"nabled\030\n \001(\010H\000\210\001\001B\031\n\027_fingertracking_ena"
 				+
-				"ed\030\003 \001(\0132\026.messages.TrackerAddedH\000\0221\n\016tr"
+				"bled\"\374\002\n\rTrackerStatus\022\022\n\ntracker_id\030\001 \001"
 				+
-				"acker_status\030\004 \001(\0132\027.messages.TrackerSta"
+				"(\005\022.\n\006status\030\002 \001(\0162\036.messages.TrackerSta"
 				+
-				"tusH\000\022$\n\007battery\030\005 \001(\0132\021.messages.Batter"
+				"tus.Status\0221\n\005extra\030\003 \003(\0132\".messages.Tra"
 				+
-				"yH\000B\t\n\007messageB2\n\034dev.slimevr.desktop.pl"
+				"ckerStatus.ExtraEntry\022;\n\nconfidence\030\004 \001("
 				+
-				"atformB\020ProtobufMessagesH\003b\006proto3"
+				"\0162\".messages.TrackerStatus.ConfidenceH\000\210"
+				+
+				"\001\001\032,\n\nExtraEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002"
+				+
+				" \001(\t:\0028\001\"E\n\006Status\022\020\n\014DISCONNECTED\020\000\022\006\n\002"
+				+
+				"OK\020\001\022\010\n\004BUSY\020\002\022\t\n\005ERROR\020\003\022\014\n\010OCCLUDED\020\004\""
+				+
+				"3\n\nConfidence\022\006\n\002NO\020\000\022\007\n\003LOW\020\001\022\n\n\006MEDIUM"
+				+
+				"\020\005\022\010\n\004HIGH\020\nB\r\n\013_confidence\"I\n\007Battery\022\022"
+				+
+				"\n\ntracker_id\030\001 \001(\005\022\025\n\rbattery_level\030\002 \001("
+				+
+				"\002\022\023\n\013is_charging\030\003 \001(\010\"R\n\013FingersData\022\023\n"
+				+
+				"\013finger_bone\030\001 \001(\005\022\n\n\002qx\030\002 \001(\002\022\n\n\002qy\030\003 \001"
+				+
+				"(\002\022\n\n\002qz\030\004 \001(\002\022\n\n\002qw\030\005 \001(\002\"\373\001\n\017ProtobufM"
+				+
+				"essage\022&\n\010position\030\001 \001(\0132\022.messages.Posi"
+				+
+				"tionH\000\022+\n\013user_action\030\002 \001(\0132\024.messages.U"
+				+
+				"serActionH\000\022/\n\rtracker_added\030\003 \001(\0132\026.mes"
+				+
+				"sages.TrackerAddedH\000\0221\n\016tracker_status\030\004"
+				+
+				" \001(\0132\027.messages.TrackerStatusH\000\022$\n\007batte"
+				+
+				"ry\030\005 \001(\0132\021.messages.BatteryH\000B\t\n\007message"
+				+
+				"B2\n\034dev.slimevr.desktop.platformB\020Protob"
+				+
+				"ufMessagesH\003b\006proto3"
 		};
 		descriptor = com.google.protobuf.Descriptors.FileDescriptor
 			.internalBuildGeneratedFileFrom(
@@ -8148,13 +10825,20 @@ public final class ProtobufMessages {
 			internal_static_messages_PingPong_descriptor,
 			new java.lang.String[] {}
 		);
-		internal_static_messages_Position_descriptor = getDescriptor().getMessageTypes().get(1);
+		internal_static_messages_FingerBoneRotation_descriptor = getDescriptor()
+			.getMessageTypes()
+			.get(1);
+		internal_static_messages_FingerBoneRotation_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+			internal_static_messages_FingerBoneRotation_descriptor,
+			new java.lang.String[] { "Name", "X", "Y", "Z", "W", }
+		);
+		internal_static_messages_Position_descriptor = getDescriptor().getMessageTypes().get(2);
 		internal_static_messages_Position_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_Position_descriptor,
 			new java.lang.String[] { "TrackerId", "X", "Y", "Z", "Qx", "Qy", "Qz", "Qw",
-				"DataSource", }
+				"DataSource", "FingerBoneRotations", }
 		);
-		internal_static_messages_UserAction_descriptor = getDescriptor().getMessageTypes().get(2);
+		internal_static_messages_UserAction_descriptor = getDescriptor().getMessageTypes().get(3);
 		internal_static_messages_UserAction_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_UserAction_descriptor,
 			new java.lang.String[] { "Name", "ActionArguments", }
@@ -8166,14 +10850,15 @@ public final class ProtobufMessages {
 			internal_static_messages_UserAction_ActionArgumentsEntry_descriptor,
 			new java.lang.String[] { "Key", "Value", }
 		);
-		internal_static_messages_TrackerAdded_descriptor = getDescriptor().getMessageTypes().get(3);
+		internal_static_messages_TrackerAdded_descriptor = getDescriptor().getMessageTypes().get(4);
 		internal_static_messages_TrackerAdded_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_TrackerAdded_descriptor,
-			new java.lang.String[] { "TrackerId", "TrackerSerial", "TrackerName", "TrackerRole", }
+			new java.lang.String[] { "TrackerId", "TrackerSerial", "TrackerName", "TrackerRole",
+				"FingertrackingEnabled", }
 		);
 		internal_static_messages_TrackerStatus_descriptor = getDescriptor()
 			.getMessageTypes()
-			.get(4);
+			.get(5);
 		internal_static_messages_TrackerStatus_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_TrackerStatus_descriptor,
 			new java.lang.String[] { "TrackerId", "Status", "Extra", "Confidence", }
@@ -8185,14 +10870,19 @@ public final class ProtobufMessages {
 			internal_static_messages_TrackerStatus_ExtraEntry_descriptor,
 			new java.lang.String[] { "Key", "Value", }
 		);
-		internal_static_messages_Battery_descriptor = getDescriptor().getMessageTypes().get(5);
+		internal_static_messages_Battery_descriptor = getDescriptor().getMessageTypes().get(6);
 		internal_static_messages_Battery_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_Battery_descriptor,
 			new java.lang.String[] { "TrackerId", "BatteryLevel", "IsCharging", }
 		);
+		internal_static_messages_FingersData_descriptor = getDescriptor().getMessageTypes().get(7);
+		internal_static_messages_FingersData_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+			internal_static_messages_FingersData_descriptor,
+			new java.lang.String[] { "FingerBone", "Qx", "Qy", "Qz", "Qw", }
+		);
 		internal_static_messages_ProtobufMessage_descriptor = getDescriptor()
 			.getMessageTypes()
-			.get(6);
+			.get(8);
 		internal_static_messages_ProtobufMessage_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_ProtobufMessage_descriptor,
 			new java.lang.String[] { "Position", "UserAction", "TrackerAdded", "TrackerStatus",
