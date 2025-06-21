@@ -56,7 +56,7 @@ export function WidgetsComponent() {
         <ResetButton type={ResetType.Full} size="big"></ResetButton>
         <ResetButton type={ResetType.Mounting} size="big"></ResetButton>
         <ClearMountingButton></ClearMountingButton>
-        <BVHButton></BVHButton>
+        {!__ANDROID__?.isThere() && <BVHButton></BVHButton>}
         <TrackingPauseButton></TrackingPauseButton>
       </div>
       <div className="w-full">

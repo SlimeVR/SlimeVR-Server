@@ -4,6 +4,11 @@
 declare const __COMMIT_HASH__: string;
 declare const __VERSION_TAG__: string;
 declare const __GIT_CLEAN__: boolean;
+declare const __ANDROID__:
+  | {
+      isThere: () => boolean;
+    }
+  | undefined;
 
 interface Window {
   readonly isTauri: boolean;

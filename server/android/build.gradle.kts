@@ -112,7 +112,7 @@ android {
 	defaultConfig {
 
 		// Uniquely identifies the package for publishing.
-		applicationId = "dev.slimevr.server"
+		applicationId = "dev.slimevr.server.android"
 
 		// Defines the minimum API level required to run the app.
 		minSdk = 26
