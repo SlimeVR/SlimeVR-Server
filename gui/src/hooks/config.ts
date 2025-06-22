@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState } from 'react';
 import {
   defaultValues as defaultDevSettings,
-  DeveloperModeWidgetForm
+  DeveloperModeWidgetForm,
 } from '@/components/widgets/DeveloperModeWidget';
 import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
