@@ -59,8 +59,8 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				bridge.changeShareSettings(TrackerRole.RIGHT_KNEE, req.steamVrTrackers().rightKnee())
 				bridge.changeShareSettings(TrackerRole.LEFT_ELBOW, req.steamVrTrackers().leftElbow())
 				bridge.changeShareSettings(TrackerRole.RIGHT_ELBOW, req.steamVrTrackers().rightElbow())
-				bridge.changeShareSettings(TrackerRole.LEFT_HAND, req.steamVrTrackers().leftHand())
-				bridge.changeShareSettings(TrackerRole.RIGHT_HAND, req.steamVrTrackers().rightHand())
+				bridge.changeShareSettings(TrackerRole.LEFT_CONTROLLER, req.steamVrTrackers().leftHand())
+				bridge.changeShareSettings(TrackerRole.RIGHT_CONTROLLER, req.steamVrTrackers().rightHand())
 				bridge.setAutomaticSharedTrackers(req.steamVrTrackers().automaticTrackerToggle())
 			}
 		}
@@ -128,8 +128,8 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_FOOT, trackers.feet())
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_ELBOW, trackers.elbows())
 				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_ELBOW, trackers.elbows())
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_HAND, trackers.hands())
-				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_HAND, trackers.hands())
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.LEFT_CONTROLLER, trackers.hands())
+				vrcOSCConfig.setOSCTrackerRole(TrackerRole.RIGHT_CONTROLLER, trackers.hands())
 			}
 			vrcOSCConfig.oscqueryEnabled = req.vrcOsc().oscqueryEnabled()
 

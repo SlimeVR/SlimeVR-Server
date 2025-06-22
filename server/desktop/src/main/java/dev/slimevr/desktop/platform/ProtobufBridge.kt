@@ -4,6 +4,7 @@ import dev.slimevr.VRServer.Companion.instance
 import dev.slimevr.bridge.BridgeThread
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.desktop.platform.ProtobufMessages.*
+import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
@@ -93,13 +94,13 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			return
 		}
 		for (tracker in sharedTrackers) {
-			writeTrackerUpdate(tracker)
+			writeTrackerUpdate(tracker, null) // TODO what's the best way of getting data over?
 			writeBatteryUpdate(tracker)
 		}
 	}
 
 	@VRServerThread
-	protected fun writeTrackerUpdate(localTracker: Tracker?) {
+	protected fun writeTrackerUpdate(localTracker: Tracker?, fingers: List<Bone>?) {
 		val builder = ProtobufMessages.Position.newBuilder().setTrackerId(
 			localTracker!!.id,
 		)
@@ -115,6 +116,17 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			builder.setQy(rot.y)
 			builder.setQz(rot.z)
 			builder.setQw(rot.w)
+		}
+		if ((localTracker.trackerPosition == TrackerPosition.LEFT_HAND || localTracker.trackerPosition == TrackerPosition.RIGHT_HAND) && fingers != null) {
+			for (i in 0 until fingers.count()) {
+				val fingersBuilder = FingerBoneRotation.newBuilder()
+				fingersBuilder.setName(FingerBoneRotation.FingerBoneName.valueOf(fingers[i].boneType.toString())) // Fingers are named the same
+				fingersBuilder.x = fingers[i].getLocalRotation().x
+				fingersBuilder.y = fingers[i].getLocalRotation().y
+				fingersBuilder.z = fingers[i].getLocalRotation().z
+				fingersBuilder.w = fingers[i].getLocalRotation().w
+				builder.addFingerBoneRotations(i, fingersBuilder)
+			}
 		}
 		sendMessage(ProtobufMessage.newBuilder().setPosition(builder).build())
 	}

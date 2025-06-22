@@ -33,8 +33,8 @@ enum class TrackerPosition(
 	RIGHT_LOWER_ARM("body:right_lower_arm", null, BodyPart.RIGHT_LOWER_ARM, 14),
 	LEFT_UPPER_ARM("body:left_upper_arm", TrackerRole.LEFT_ELBOW, BodyPart.LEFT_UPPER_ARM, 15),
 	RIGHT_UPPER_ARM("body:right_upper_arm", TrackerRole.RIGHT_ELBOW, BodyPart.RIGHT_UPPER_ARM, 16),
-	LEFT_HAND("body:left_hand", TrackerRole.LEFT_HAND, BodyPart.LEFT_HAND, 17),
-	RIGHT_HAND("body:right_hand", TrackerRole.RIGHT_HAND, BodyPart.RIGHT_HAND, 18),
+	LEFT_HAND("body:left_hand", TrackerRole.LEFT_CONTROLLER, BodyPart.LEFT_HAND, 17),
+	RIGHT_HAND("body:right_hand", TrackerRole.RIGHT_CONTROLLER, BodyPart.RIGHT_HAND, 18),
 	LEFT_SHOULDER("body:left_shoulder", TrackerRole.LEFT_SHOULDER, BodyPart.LEFT_SHOULDER, 19),
 	RIGHT_SHOULDER("body:right_shoulder", TrackerRole.RIGHT_SHOULDER, BodyPart.RIGHT_SHOULDER, 20),
 	LEFT_THUMB_METACARPAL("body:left_thumb_metacarpal", null, BodyPart.LEFT_THUMB_METACARPAL, 21),
@@ -119,12 +119,10 @@ enum class TrackerPosition(
 
 		@JvmStatic
 		fun getByTrackerRole(role: TrackerRole): TrackerPosition? {
-			// Hands TrackerPositions are bound to the hands TrackerRoles,
-			// so we hardcode getting those.
-			if (role == TrackerRole.LEFT_CONTROLLER) {
+			// Hands TrackerPositions are bound to the controllers TrackerRoles so we hardcode that case.
+			if (role == TrackerRole.LEFT_HAND) {
 				return LEFT_HAND
-			}
-			if (role == TrackerRole.RIGHT_CONTROLLER) {
+			} else if (role == TrackerRole.RIGHT_HAND) {
 				return RIGHT_HAND
 			}
 			return byTrackerRole[role]

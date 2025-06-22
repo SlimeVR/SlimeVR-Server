@@ -61,8 +61,8 @@ public class RPCSettingsBuilder {
 					&& config.getOSCTrackerRole(TrackerRole.RIGHT_FOOT, false),
 				config.getOSCTrackerRole(TrackerRole.LEFT_ELBOW, false)
 					&& config.getOSCTrackerRole(TrackerRole.RIGHT_ELBOW, false),
-				config.getOSCTrackerRole(TrackerRole.LEFT_HAND, false)
-					&& config.getOSCTrackerRole(TrackerRole.RIGHT_HAND, false)
+				config.getOSCTrackerRole(TrackerRole.LEFT_CONTROLLER, false)
+					&& config.getOSCTrackerRole(TrackerRole.RIGHT_CONTROLLER, false)
 			);
 		VRCOSCSettings.startVRCOSCSettings(fbb);
 		VRCOSCSettings.addOscSettings(fbb, generalSettingOffset);
@@ -164,8 +164,8 @@ public class RPCSettingsBuilder {
 					bridge.getShareSetting(TrackerRole.RIGHT_KNEE),
 					bridge.getShareSetting(TrackerRole.LEFT_ELBOW),
 					bridge.getShareSetting(TrackerRole.RIGHT_ELBOW),
-					bridge.getShareSetting(TrackerRole.LEFT_HAND),
-					bridge.getShareSetting(TrackerRole.RIGHT_HAND)
+					bridge.getShareSetting(TrackerRole.LEFT_CONTROLLER),
+					bridge.getShareSetting(TrackerRole.RIGHT_CONTROLLER)
 				);
 		}
 		return steamvrTrackerSettings;

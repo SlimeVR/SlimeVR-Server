@@ -503,8 +503,8 @@ class HumanSkeleton(
 		TrackerRole.RIGHT_FOOT -> computedRightFootTracker!!
 		TrackerRole.LEFT_ELBOW -> computedLeftElbowTracker!!
 		TrackerRole.RIGHT_ELBOW -> computedRightElbowTracker!!
-		TrackerRole.LEFT_HAND -> computedLeftHandTracker!!
-		TrackerRole.RIGHT_HAND -> computedRightHandTracker!!
+		TrackerRole.LEFT_CONTROLLER -> computedLeftHandTracker!!
+		TrackerRole.RIGHT_CONTROLLER -> computedRightHandTracker!!
 		else -> throw IllegalArgumentException("Unsupported computed tracker's TrackerRole in HumanSkeleton")
 	}
 
