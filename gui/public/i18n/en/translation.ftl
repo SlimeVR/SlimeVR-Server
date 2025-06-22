@@ -674,10 +674,10 @@ settings-interface-appearance-decorations = Use the system native decorations
 settings-interface-appearance-decorations-description = This will not render the top bar of the interface and will use the operating system's instead.
 settings-interface-appearance-decorations-label = Use native decorations
 settings-interface-appearance-unit_system = Select unit system
-settings-interface-appearance-unit_system-description = Change if you want to use the metric system or the imperial system for body measurements!
+settings-interface-appearance-unit_system-description = Change if you want to use the metric system or the imperial system for body measurements.
 settings-interface-appearance-unit_system-placeholder = Select the unit system to use
-settings-interface-appearance-unit_system-metric = ( cm - °C ) Metric units
-settings-interface-appearance-unit_system-imperial = ( ' " - °F ) Imperial units
+settings-interface-appearance-unit_system-metric = Metric units
+settings-interface-appearance-unit_system-imperial = Imperial units
 
 ## Notification settings
 settings-interface-notifications = Notifications
