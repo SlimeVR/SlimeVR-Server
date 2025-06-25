@@ -62,7 +62,7 @@ jobs:
         with:
           submodules: recursive
 
-      - if: matrix.os == 'ubuntu-22.04'
+      - if: startsWith(matrix.os, 'ubuntu')
         name: Set up Linux dependencies
         uses: awalsh128/cache-apt-pkgs-action@v1.5.0
         with:
