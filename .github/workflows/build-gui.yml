@@ -81,8 +81,6 @@ jobs:
 
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: '${{ matrix.os }}'
 
       - uses: pnpm/action-setup@v4
       - name: Use Node.js
@@ -107,7 +105,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           # Artifact name
-          name: SlimeVR-GUI-Windows
+          name: ${{ format('SlimeVR-GUI-Windows{0}', endsWith(matrix.os, 'arm') && '-arm' || '') }}
           # A file, directory or wildcard pattern that describes what to upload
           path: target/release/slimevr.exe
 
