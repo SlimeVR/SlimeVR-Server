@@ -14,6 +14,7 @@ import dev.slimevr.tracking.processor.stayaligned.trackers.TrackerSkeleton
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
+import dev.slimevr.tracking.trackers.TrackerUtils
 import dev.slimevr.tracking.trackers.TrackerUtils.getFirstAvailableTracker
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
@@ -29,6 +30,7 @@ import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
+import solarxr_protocol.datatypes.BodyPart
 import java.lang.IllegalArgumentException
 import kotlin.properties.Delegates
 
@@ -1515,17 +1517,21 @@ class HumanSkeleton(
 			rightLittleDistalTracker,
 		)
 
-	fun resetTrackersFull(resetSourceName: String?) {
+	@JvmOverloads
+	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
 		var referenceRotation = IDENTITY
-		headTracker?.let {
-			// Always reset the head (ifs in resetsHandler)
-			it.resetsHandler.resetFull(referenceRotation)
-			referenceRotation = it.getRotation()
+		if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
+			headTracker?.let {
+				// Always reset the head (ifs in resetsHandler)
+				it.resetsHandler.resetFull(referenceRotation)
+				referenceRotation = it.getRotation()
+			}
 		}
+
 		// Resets all axes of the trackers with the HMD as reference.
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsReset
-			if (tracker != null && (tracker.needsReset || tracker.isHmd)) {
+			if (tracker != null && (tracker.needsReset || tracker.isHmd) && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
 				tracker.resetsHandler.resetFull(referenceRotation)
 			}
 		}
@@ -1541,19 +1547,22 @@ class HumanSkeleton(
 	}
 
 	@VRServerThread
-	fun resetTrackersYaw(resetSourceName: String?) {
+	@JvmOverloads
+	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
 		// Resets the yaw of the trackers with the head as reference.
 		var referenceRotation = IDENTITY
-		headTracker?.let {
-			// Only reset if head needsReset and isn't computed
-			if (it.needsReset && !it.isComputed) {
-				it.resetsHandler.resetYaw(referenceRotation)
+		if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
+			headTracker?.let {
+				// Only reset if head needsReset and isn't computed
+				if (it.needsReset && !it.isComputed) {
+					it.resetsHandler.resetYaw(referenceRotation)
+				}
+				referenceRotation = it.getRotation()
 			}
-			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsReset
-			if (tracker != null && tracker.needsReset) {
+			if (tracker != null && tracker.needsReset && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
 				tracker.resetsHandler.resetYaw(referenceRotation)
 			}
 		}
@@ -1562,7 +1571,8 @@ class HumanSkeleton(
 	}
 
 	@VRServerThread
-	fun resetTrackersMounting(resetSourceName: String?) {
+	@JvmOverloads
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
 		val trackersToReset = trackersToReset
 
 		// TODO: PLEASE rewrite this handling at some point in the future... This is so
@@ -1577,16 +1587,18 @@ class HumanSkeleton(
 
 		// Resets the mounting orientation of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
-		headTracker?.let {
-			// Only reset if head needsMounting or is computed but not HMD
-			if (it.needsMounting || (it.isComputed && !it.isHmd)) {
-				it.resetsHandler.resetMounting(referenceRotation)
+		if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
+			headTracker?.let {
+				// Only reset if head needsMounting or is computed but not HMD
+				if (it.needsMounting || (it.isComputed && !it.isHmd)) {
+					it.resetsHandler.resetMounting(referenceRotation)
+				}
+				referenceRotation = it.getRotation()
 			}
-			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsMounting
-			if (tracker != null && tracker.needsMounting) {
+			if (tracker != null && tracker.needsMounting && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
 				tracker.resetsHandler.resetMounting(referenceRotation)
 			}
 		}
