@@ -18,13 +18,13 @@ class VRMReader(vrmJson: String) {
 				if (data.extensions.vrmV1.specVersion != "1.0") {
 					LogManager.warning("[VRMReader] VRM version is not 1.0")
 				}
-				data.extensions.vrmV1.humanoid.humanBones[unityBone]?.node
+				data.extensions.vrmV1.humanoid.humanBones.getValue(unityBone).node
 			} else {
 				data.extensions.vrmV0?.humanoid?.humanBones?.first {
 					it.bone.equals(unityBone.stringVal, ignoreCase = true)
 				}?.node
 			}
-		} catch (e: NoSuchElementException) {
+		} catch (_: NoSuchElementException) {
 			LogManager.warning("[VRMReader] Bone ${unityBone.stringVal} not found in JSON")
 			null
 		} ?: return Vector3.NULL
