@@ -27,6 +27,9 @@ data class NetworkInfo(
 	val connected: Boolean?,
 )
 
+/**
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/ne-netlistmgr-nlm_network_category">NLM_NETWORK_CATEGORY enumeration (netlistmgr.h)</a>
+ */
 enum class NetworkCategory(val value: Int) {
 	PUBLIC(0),
 	PRIVATE(1),
@@ -38,6 +41,9 @@ enum class NetworkCategory(val value: Int) {
 	}
 }
 
+/**
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/ne-netlistmgr-nlm_connectivity">NLM_CONNECTIVITY enumeration (netlistmgr.h)</a>
+ */
 enum class ConnectivityFlags(val value: Int) {
 	DISCONNECTED(0),
 	IPV4_NOTRAFFIC(0x1),
@@ -60,6 +66,9 @@ enum class ConnectivityFlags(val value: Int) {
 	}
 }
 
+/**
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nn-netlistmgr-inetworkconnection">INetworkConnection interface (netlistmgr.h)</a>
+ */
 @Suppress("ktlint:standard:backing-property-naming", "ktlint:standard:function-naming")
 class INetworkConnection(instance: Pointer?) : Dispatch(instance) {
 	companion object VTable {
@@ -83,6 +92,9 @@ class INetworkConnection(instance: Pointer?) : Dispatch(instance) {
 	}
 }
 
+/**
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nn-netlistmgr-ienumnetworkconnections">IEnumNetworkConnections interface (netlistmgr.h)</a>
+ */
 @Suppress("ktlint:standard:backing-property-naming", "ktlint:standard:function-naming")
 class IEnumNetworkConnections(instance: Pointer?) : Dispatch(instance) {
 	companion object VTable {
@@ -106,6 +118,9 @@ class IEnumNetworkConnections(instance: Pointer?) : Dispatch(instance) {
 	}
 }
 
+/**
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nn-netlistmgr-inetworklistmanager">INetworkListManager interface (netlistmgr.h)</a>
+ */
 @Suppress("ktlint:standard:backing-property-naming", "ktlint:standard:function-naming")
 class INetworkListManager(instance: Pointer?) : Dispatch(instance) {
 	companion object VTable {
@@ -129,6 +144,9 @@ class INetworkListManager(instance: Pointer?) : Dispatch(instance) {
 	}
 }
 
+/**
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nn-netlistmgr-inetwork">INetwork interface (netlistmgr.h)</a>
+ */
 @Suppress("ktlint:standard:backing-property-naming", "ktlint:standard:function-naming")
 class INetwork(instance: Pointer?) : Dispatch(instance) {
 	companion object VTable {
@@ -186,6 +204,10 @@ class INetwork(instance: Pointer?) : Dispatch(instance) {
 	}
 }
 
+/**
+ * Network List Manager API wrapper
+ * @see <a href="https://learn.microsoft.com/en-us/windows/win32/nla/about-the-network-list-manager-api">Network List Manager API</a>
+ */
 class COMNetworkManager {
 	lateinit var instance: INetworkListManager
 	private var shouldUninitialize = false
