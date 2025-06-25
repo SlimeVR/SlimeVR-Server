@@ -6,6 +6,7 @@ import com.sun.jna.platform.win32.COM.Dispatch
 import com.sun.jna.platform.win32.Guid.CLSID
 import com.sun.jna.platform.win32.Guid.IID
 import com.sun.jna.platform.win32.Ole32
+import com.sun.jna.platform.win32.OleAuto
 import com.sun.jna.platform.win32.WTypes
 import com.sun.jna.platform.win32.WinDef.BOOLByReference
 import com.sun.jna.platform.win32.WinNT.HRESULT
@@ -70,7 +71,12 @@ enum class ConnectivityFlags(val value: Int) {
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nn-netlistmgr-inetworkconnection">INetworkConnection interface (netlistmgr.h)</a>
  */
 @Suppress("ktlint:standard:backing-property-naming", "ktlint:standard:function-naming")
-class INetworkConnection(instance: Pointer?) : Dispatch(instance) {
+class INetworkConnection(instance: Pointer?) :
+	Dispatch(instance),
+	AutoCloseable {
+	override fun close() {
+		Release()
+	}
 	companion object VTable {
 		// IUnknown +3
 		// IDispatch +4
@@ -84,7 +90,7 @@ class INetworkConnection(instance: Pointer?) : Dispatch(instance) {
 		const val GetDomainType = 13
 	}
 
-	fun GetNetwork(): INetwork? {
+	fun GetNetwork(): INetwork {
 		val pNetwork = PointerByReference()
 		val hr = _invokeNativeInt(VTable.GetNetwork, arrayOf(pointer, pNetwork))
 		COMUtils.checkRC(HRESULT(hr))
@@ -96,7 +102,12 @@ class INetworkConnection(instance: Pointer?) : Dispatch(instance) {
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nn-netlistmgr-ienumnetworkconnections">IEnumNetworkConnections interface (netlistmgr.h)</a>
  */
 @Suppress("ktlint:standard:backing-property-naming", "ktlint:standard:function-naming")
-class IEnumNetworkConnections(instance: Pointer?) : Dispatch(instance) {
+class IEnumNetworkConnections(instance: Pointer?) :
+	Dispatch(instance),
+	AutoCloseable {
+	override fun close() {
+		Release()
+	}
 	companion object VTable {
 		// IUnknown +3
 		// IDispatch +4
@@ -122,7 +133,12 @@ class IEnumNetworkConnections(instance: Pointer?) : Dispatch(instance) {
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nn-netlistmgr-inetworklistmanager">INetworkListManager interface (netlistmgr.h)</a>
  */
 @Suppress("ktlint:standard:backing-property-naming", "ktlint:standard:function-naming")
-class INetworkListManager(instance: Pointer?) : Dispatch(instance) {
+class INetworkListManager(instance: Pointer?) :
+	Dispatch(instance),
+	AutoCloseable {
+	override fun close() {
+		Release()
+	}
 	companion object VTable {
 		// IUnknown +3
 		// IDispatch +4
@@ -136,7 +152,7 @@ class INetworkListManager(instance: Pointer?) : Dispatch(instance) {
 		const val GetConnectivity = 13
 	}
 
-	fun GetNetworkConnections(): IEnumNetworkConnections? {
+	fun GetNetworkConnections(): IEnumNetworkConnections {
 		val pEnumNetworkConnections = PointerByReference()
 		val hr = _invokeNativeInt(VTable.GetNetworkConnections, arrayOf(pointer, pEnumNetworkConnections))
 		COMUtils.checkRC(HRESULT(hr))
@@ -148,7 +164,12 @@ class INetworkListManager(instance: Pointer?) : Dispatch(instance) {
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nn-netlistmgr-inetwork">INetwork interface (netlistmgr.h)</a>
  */
 @Suppress("ktlint:standard:backing-property-naming", "ktlint:standard:function-naming")
-class INetwork(instance: Pointer?) : Dispatch(instance) {
+class INetwork(instance: Pointer?) :
+	Dispatch(instance),
+	AutoCloseable {
+	override fun close() {
+		Release()
+	}
 	companion object VTable {
 		// IUnknown +3
 		// IDispatch +4
@@ -168,19 +189,19 @@ class INetwork(instance: Pointer?) : Dispatch(instance) {
 		const val SetCategory = 19
 	}
 
-	fun GetName(): String? {
-		val name = PointerByReference()
-		val hr = _invokeNativeInt(VTable.GetName, arrayOf(pointer, name))
+	private fun getNativeString(vtableId: Int): String? {
+		val pStr = PointerByReference()
+		val hr = _invokeNativeInt(vtableId, arrayOf(pointer, pStr))
 		COMUtils.checkRC(HRESULT(hr))
-		return WTypes.BSTR(name.value).value
+		val bstr = WTypes.BSTR(pStr.value)
+		val stringValue = bstr.value
+		OleAuto.INSTANCE.SysFreeString(bstr)
+		return stringValue
 	}
 
-	fun GetDescription(): String? {
-		val desc = PointerByReference()
-		val hr = _invokeNativeInt(VTable.GetDescription, arrayOf(pointer, desc))
-		COMUtils.checkRC(HRESULT(hr))
-		return WTypes.BSTR(desc.value).value
-	}
+	fun GetName(): String? = getNativeString(VTable.GetName)
+
+	fun GetDescription(): String? = getNativeString(VTable.GetDescription)
 
 	fun IsConnected(): Boolean {
 		val bool = BOOLByReference()
@@ -208,11 +229,11 @@ class INetwork(instance: Pointer?) : Dispatch(instance) {
  * Network List Manager API wrapper
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/nla/about-the-network-list-manager-api">Network List Manager API</a>
  */
-class COMNetworkManager {
-	lateinit var instance: INetworkListManager
+class COMNetworkManager : AutoCloseable {
+	var instance: INetworkListManager
 	private var shouldUninitialize = false
 
-	fun init() {
+	init {
 		shouldUninitialize = COMUtils.SUCCEEDED(Ole32.INSTANCE.CoInitialize(null))
 
 		val CLSID_NetworkListManager = CLSID("dcb00c01-570f-4a9b-8d69-199fdba5723b")
@@ -226,15 +247,20 @@ class COMNetworkManager {
 			IID_INetworkListManager,
 			ptr,
 		)
-		COMUtils.checkRC(hr)
+		try {
+			COMUtils.checkRC(hr)
+		} catch (err: Exception) {
+			if (shouldUninitialize) {
+				Ole32.INSTANCE.CoUninitialize()
+			}
+			throw err
+		}
 
 		instance = INetworkListManager(ptr.value)
 	}
 
-	fun shutdown() {
-		if (::instance.isInitialized) {
-			instance.Release()
-		}
+	override fun close() {
+		instance.close()
 		if (shouldUninitialize) {
 			Ole32.INSTANCE.CoUninitialize()
 		}
@@ -245,30 +271,27 @@ fun enumerateNetworks(): List<NetworkInfo>? {
 	if (OperatingSystem.currentPlatform != OperatingSystem.WINDOWS) {
 		return null
 	}
-	val netmgr = COMNetworkManager()
-	val result = mutableListOf<NetworkInfo>()
 	try {
-		netmgr.init()
-		val conns = netmgr.instance.GetNetworkConnections()
-
-		generateSequence { conns?.Next() }
-			.forEach { conn ->
-				val network = conn.GetNetwork()
-				result.add(
-					NetworkInfo(
-						network?.GetName(),
-						network?.GetDescription(),
-						network?.GetCategory(),
-						network?.GetConnectivity(),
-						network?.IsConnected(),
-					),
-				)
+		COMNetworkManager().use { netmgr ->
+			netmgr.instance.GetNetworkConnections().use { conns ->
+				return generateSequence { conns.Next() }
+					.map { conn ->
+						conn.use {
+							conn.GetNetwork().use { network ->
+								NetworkInfo(
+									network.GetName(),
+									network.GetDescription(),
+									network.GetCategory(),
+									network.GetConnectivity(),
+									network.IsConnected(),
+								)
+							}
+						}
+					}.toList()
 			}
-		return result
+		}
 	} catch (err: Exception) {
 		println(err.stackTraceToString())
-	} finally {
-		netmgr.shutdown()
 	}
 	return null
 }
@@ -281,9 +304,8 @@ class NetworkProfileChecker(private val server: VRServer) {
 	init {
 		if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
 			this.updateTickTimer.scheduleAtFixedRate(0, 3000) {
-				val networks = enumerateNetworks()
 				val currentNumPublicNetworks =
-					networks?.filter { net ->
+					enumerateNetworks()?.filter { net ->
 						net.connected == true && net.category == NetworkCategory.PUBLIC
 					}?.count() ?: 0
 
