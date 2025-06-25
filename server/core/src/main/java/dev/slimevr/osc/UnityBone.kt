@@ -90,10 +90,10 @@ enum class UnityBone(
 	@SerialName("jaw")
 	JAW("Jaw", null, null),
 
-	@SerialName("leftThumbProximal")
+	@SerialName("leftThumbMetacarpal")
 	LEFT_THUMB_PROXIMAL("LeftThumbProximal", BoneType.LEFT_THUMB_METACARPAL, TrackerPosition.LEFT_THUMB_METACARPAL),
 
-	@SerialName("leftThumbIntermediate")
+	@SerialName("leftThumbProximal")
 	LEFT_THUMB_INTERMEDIATE("LeftThumbIntermediate", BoneType.LEFT_THUMB_PROXIMAL, TrackerPosition.LEFT_THUMB_PROXIMAL),
 
 	@SerialName("leftThumbDistal")
@@ -135,10 +135,10 @@ enum class UnityBone(
 	@SerialName("leftLittleDistal")
 	LEFT_LITTLE_DISTAL("LeftLittleDistal", BoneType.LEFT_LITTLE_DISTAL, TrackerPosition.LEFT_LITTLE_DISTAL),
 
-	@SerialName("rightThumbProximal")
+	@SerialName("rightThumbMetacarpal")
 	RIGHT_THUMB_PROXIMAL("RightThumbProximal", BoneType.RIGHT_THUMB_METACARPAL, TrackerPosition.RIGHT_THUMB_METACARPAL),
 
-	@SerialName("rightThumbIntermediate")
+	@SerialName("rightThumbProximal")
 	RIGHT_THUMB_INTERMEDIATE("RightThumbIntermediate", BoneType.RIGHT_THUMB_PROXIMAL, TrackerPosition.RIGHT_THUMB_PROXIMAL),
 
 	@SerialName("rightThumbDistal")
@@ -179,6 +179,7 @@ enum class UnityBone(
 
 	@SerialName("rightLittleDistal")
 	RIGHT_LITTLE_DISTAL("RightLittleDistal", BoneType.RIGHT_LITTLE_DISTAL, TrackerPosition.RIGHT_LITTLE_DISTAL),
+
 	LAST_BONE("LastBone", null, null),
 	;
 
