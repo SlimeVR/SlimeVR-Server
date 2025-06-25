@@ -349,12 +349,11 @@ async function parseVRMFile(
 }
 
 function getVRMName(json: string): string | null {
-  let name;
   try {
     const data = JSON.parse(json);
 
     if (typeof data?.extensions?.VRMC_vrm?.specVersion === 'string') {
-      name = data.extensions.VRMC_vrm.meta.name;
+      const name = data.extensions.VRMC_vrm.meta.name;
 
       if (typeof name !== 'string') {
         error(
@@ -362,13 +361,13 @@ function getVRMName(json: string): string | null {
         );
         return null;
       }
+
+      return name;
     } else {
-      name = data?.extensions?.VRM?.meta?.title || '';
+      return data?.extensions?.VRM?.meta?.title || '';
     }
   } catch (e) {
     error(e);
     return null;
   }
-
-  return name;
 }
