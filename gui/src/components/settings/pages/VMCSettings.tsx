@@ -337,6 +337,8 @@ async function parseVRMFile(vrm: File): Promise<string | null> {
     return null;
   }
 
+  // TODO: Check for the `VRMC_vrm` and `VRM` extension before saying its good to go
+
   return vrm
     .slice(gltfHeaderEnd, gltfHeaderEnd + jsonLength, 'application/json')
     .text();
