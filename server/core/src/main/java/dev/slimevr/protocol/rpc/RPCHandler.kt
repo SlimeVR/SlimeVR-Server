@@ -31,6 +31,7 @@ import kotlinx.coroutines.*
 import solarxr_protocol.MessageBundle
 import solarxr_protocol.datatypes.TransactionId
 import solarxr_protocol.rpc.*
+import kotlin.io.path.Path
 
 class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeader>() {
 	private var currTransactionId: Long = 0
@@ -319,7 +320,11 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val req = messageHeader.message(RecordBVHRequest()) as? RecordBVHRequest ?: return
 
 		if (req.stop()) {
-			if (api.server.bvhRecorder.isRecording) api.server.bvhRecorder.endRecording()
+			if (api.server.bvhRecorder.isRecording) {
+				api.server.bvhRecorder.endRecording(
+					Path(req.filePath()),
+				)
+			}
 		} else {
 			if (!api.server.bvhRecorder.isRecording) api.server.bvhRecorder.startRecording()
 		}

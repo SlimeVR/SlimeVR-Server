@@ -9,18 +9,34 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { BigButton } from './commons/BigButton';
 import { RecordIcon } from './commons/icon/RecordIcon';
 import classNames from 'classnames';
+import { isTauri } from '@tauri-apps/api/core';
+import { save } from '@tauri-apps/plugin-dialog';
 
 export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [recording, setRecording] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.RecordBVHStatusRequest, new RecordBVHRequestT());
   }, []);
 
-  const toggleBVH = () => {
-    const record = new RecordBVHRequestT();
-    record.stop = recording;
+  const toggleBVH = async () => {
+    const record = new RecordBVHRequestT(recording, null);
+    if (isTauri() && recording) {
+      setSaving(true);
+      record.filePath = await save({
+        title: 'Save BVH file',
+        filters: [
+          {
+            name: 'BVH',
+            extensions: ['bvh'],
+          },
+        ],
+        defaultPath: 'bvh-recording.bvh',
+      });
+      setSaving(false);
+    }
     sendRPCPacket(RpcMessage.RecordBVHRequest, record);
   };
 
@@ -33,6 +49,7 @@ export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
       <BigButton
         icon={<RecordIcon width={20} />}
         onClick={toggleBVH}
+        disabled={saving}
         className={classNames(
           props.className,
           'border',
