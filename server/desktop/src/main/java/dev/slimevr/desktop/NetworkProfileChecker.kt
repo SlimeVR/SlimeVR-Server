@@ -1,6 +1,7 @@
 package dev.slimevr.desktop
 
 import com.sun.jna.Pointer
+import com.sun.jna.platform.win32.COM.COMException
 import com.sun.jna.platform.win32.COM.COMUtils
 import com.sun.jna.platform.win32.COM.Dispatch
 import com.sun.jna.platform.win32.Guid.CLSID
@@ -90,6 +91,7 @@ class INetworkConnection(instance: Pointer?) :
 		const val GetDomainType = 13
 	}
 
+	@Throws(COMException::class)
 	fun GetNetwork(): INetwork {
 		val pNetwork = PointerByReference()
 		val hr = _invokeNativeInt(VTable.GetNetwork, arrayOf(pointer, pNetwork))
@@ -119,6 +121,7 @@ class IEnumNetworkConnections(instance: Pointer?) :
 		const val Clone = 11
 	}
 
+	@Throws(COMException::class)
 	fun Next(): INetworkConnection? {
 		val ppNetworkConnections = PointerByReference()
 		val nFetched = IntByReference()
@@ -152,6 +155,7 @@ class INetworkListManager(instance: Pointer?) :
 		const val GetConnectivity = 13
 	}
 
+	@Throws(COMException::class)
 	fun GetNetworkConnections(): IEnumNetworkConnections {
 		val pEnumNetworkConnections = PointerByReference()
 		val hr = _invokeNativeInt(VTable.GetNetworkConnections, arrayOf(pointer, pEnumNetworkConnections))
@@ -189,6 +193,7 @@ class INetwork(instance: Pointer?) :
 		const val SetCategory = 19
 	}
 
+	@Throws(COMException::class)
 	private fun getNativeString(vtableId: Int): String? {
 		val pStr = PointerByReference()
 		val hr = _invokeNativeInt(vtableId, arrayOf(pointer, pStr))
@@ -199,10 +204,13 @@ class INetwork(instance: Pointer?) :
 		return stringValue
 	}
 
+	@Throws(COMException::class)
 	fun GetName(): String? = getNativeString(VTable.GetName)
 
+	@Throws(COMException::class)
 	fun GetDescription(): String? = getNativeString(VTable.GetDescription)
 
+	@Throws(COMException::class)
 	fun IsConnected(): Boolean {
 		val bool = BOOLByReference()
 		val hr = _invokeNativeInt(VTable.IsConnected, arrayOf(pointer, bool))
@@ -210,6 +218,7 @@ class INetwork(instance: Pointer?) :
 		return bool.value.booleanValue()
 	}
 
+	@Throws(COMException::class)
 	fun GetConnectivity(): Set<ConnectivityFlags> {
 		val connectivity = IntByReference()
 		val hr = _invokeNativeInt(VTable.GetConnectivity, arrayOf(pointer, connectivity))
@@ -217,6 +226,7 @@ class INetwork(instance: Pointer?) :
 		return ConnectivityFlags.fromInt(connectivity.value)
 	}
 
+	@Throws(COMException::class)
 	fun GetCategory(): NetworkCategory? {
 		val category = IntByReference()
 		val hr = _invokeNativeInt(VTable.GetCategory, arrayOf(pointer, category))
@@ -228,8 +238,11 @@ class INetwork(instance: Pointer?) :
 /**
  * Network List Manager API wrapper
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/nla/about-the-network-list-manager-api">Network List Manager API</a>
+ * @throws COMException
  */
-class COMNetworkManager : AutoCloseable {
+class COMNetworkManager
+@Throws(COMException::class)
+constructor() : AutoCloseable {
 	var instance: INetworkListManager
 	private var shouldUninitialize = false
 
