@@ -74,6 +74,11 @@ jobs:
           # Disables uploading logs as a build artifact
           debug: false
 
+      - if: matrix.os == 'windows-11-arm'
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          cache: false
+
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
         with:
