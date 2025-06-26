@@ -42,6 +42,7 @@ class InterpolationHandler {
 	 * @param shortestDistance Whether the interpolation will take the shortest path or
 	 * take the quaternion space path between [start] and [end].
 	 */
+	@Synchronized
 	fun interpolate(
 		start: Quaternion = curRotation,
 		end: Quaternion,
@@ -69,6 +70,7 @@ class InterpolationHandler {
 	 * @param delta The time in seconds between the last time [tick] was run and the
 	 * current tick.
 	 */
+	@Synchronized
 	fun tick(delta: Float) {
 		if (remainingTime > 0f) {
 			remainingTime -= delta
@@ -87,6 +89,7 @@ class InterpolationHandler {
 		}
 	}
 
+	@Synchronized
 	fun reset() {
 		remainingTime = 0f
 		totalTime = 0f
