@@ -20,6 +20,8 @@ abstract class SerialHandler {
 	abstract fun getCurrentPort(): SerialPort?
 
 	companion object {
+		// Please also update the udev rules when updating these in:
+		// gui/src-tauri/69-slimevr-devices.rules
 		val supportedSerial: Set<Pair<Int, Int>> = setOf(
 			// / QinHeng
 			// CH340
