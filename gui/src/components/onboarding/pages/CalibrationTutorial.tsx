@@ -129,7 +129,7 @@ export function CalibrationTutorialPage() {
                 </Typography>
               </div>
               <Localized
-                id="onboarding-calibration_tutorial-description"
+                id="onboarding-calibration_tutorial-description-v1"
                 elems={{ b: <b></b> }}
               >
                 <Typography color="secondary">
