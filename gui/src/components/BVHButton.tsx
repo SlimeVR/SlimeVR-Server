@@ -24,7 +24,7 @@ export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
 
   const toggleBVH = async () => {
     const record = new RecordBVHRequestT(recording, null);
-    if (isTauri() && recording) {
+    if (isTauri() && !recording) {
       setSaving(true);
       record.filePath = await save({
         title: l10n.getString('bvh-save_title'),

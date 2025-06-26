@@ -321,12 +321,12 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		if (req.stop()) {
 			if (api.server.bvhRecorder.isRecording) {
-				api.server.bvhRecorder.endRecording(
-					Path(req.filePath()),
-				)
+				api.server.bvhRecorder.endRecording()
 			}
 		} else {
-			if (!api.server.bvhRecorder.isRecording) api.server.bvhRecorder.startRecording()
+			if (!api.server.bvhRecorder.isRecording) {
+				api.server.bvhRecorder.startRecording(Path(req.filePath()))
+			}
 		}
 
 		val fbb = FlatBufferBuilder(40)
