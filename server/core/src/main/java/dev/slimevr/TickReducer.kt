@@ -28,7 +28,7 @@ class TickReducer(
 	/**
 	 * The main ticking function to be run at a fast tick rate. Runs [onTick] at the
 	 * specified [interval] and [resolution].
-	 * @param delta The delta between the last tick [tick] was run on and the
+	 * @param delta The time in seconds between the last time [tick] was run and the
 	 * current tick.
 	 */
 	@Synchronized
