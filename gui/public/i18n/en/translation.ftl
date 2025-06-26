@@ -259,6 +259,7 @@ navbar-settings = Settings
 ## Biovision hierarchy recording
 bvh-start_recording = Record BVH
 bvh-recording = Recording...
+bvh-save_title = Save BVH recording
 
 ## Tracking pause
 tracking-unpaused = Pause tracking
