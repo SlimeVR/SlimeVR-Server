@@ -1,4 +1,4 @@
-import { Localized } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useState } from 'react';
 import {
   RecordBVHRequestT,
@@ -16,6 +16,7 @@ export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [recording, setRecording] = useState(false);
   const [saving, setSaving] = useState(false);
+  const { l10n } = useLocalization();
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.RecordBVHStatusRequest, new RecordBVHRequestT());
@@ -26,7 +27,7 @@ export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
     if (isTauri() && recording) {
       setSaving(true);
       record.filePath = await save({
-        title: 'Save BVH file',
+        title: l10n.getString('bvh-save_title'),
         filters: [
           {
             name: 'BVH',
