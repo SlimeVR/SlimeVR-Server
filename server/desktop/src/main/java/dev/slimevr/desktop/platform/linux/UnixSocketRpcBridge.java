@@ -3,10 +3,12 @@ package dev.slimevr.desktop.platform.linux;
 import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
+import dev.slimevr.tracking.processor.Bone;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.VRServer;
 import io.eiren.util.logging.LogManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,6 +74,10 @@ public class UnixSocketRpcBridge implements dev.slimevr.bridge.Bridge,
 	@Override
 	@VRServerThread
 	public void removeSharedTracker(Tracker tracker) {
+	}
+
+	@Override
+	public void addFingerBones(@NotNull List<Bone> bones) {
 	}
 
 	@Override

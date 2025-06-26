@@ -146,6 +146,7 @@ class VRServer @JvmOverloads constructor(
 		for (bridge in bridgeProvider(this, computedTrackers) + sequenceOf(WebSocketVRBridge(computedTrackers, this))) {
 			tasks.add(Runnable { bridge.startBridge() })
 			bridges.add(bridge)
+			bridge.addFingerBones(humanPoseManager.allFingerBones)
 		}
 
 		// Initialize OSC handlers

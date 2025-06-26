@@ -6,6 +6,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.VRServer.Companion.instance
 import dev.slimevr.bridge.Bridge
+import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
@@ -224,6 +225,10 @@ class WebSocketVRBridge(
 	}
 
 	override fun removeSharedTracker(tracker: Tracker?) {
+		// TODO Auto-generated method stub
+	}
+
+	override fun addFingerBones(bones: List<Bone>) {
 		// TODO Auto-generated method stub
 	}
 

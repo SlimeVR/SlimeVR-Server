@@ -5,6 +5,9 @@ import dev.slimevr.bridge.BridgeThread
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.desktop.platform.ProtobufMessages.*
 import dev.slimevr.tracking.processor.Bone
+import dev.slimevr.tracking.processor.BoneType
+import dev.slimevr.tracking.processor.isLeftFinger
+import dev.slimevr.tracking.processor.isRightFinger
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
@@ -13,6 +16,7 @@ import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.ann.Synchronize
 import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.collections.FastList
+import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import java.util.Queue
@@ -23,6 +27,10 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	@JvmField
 	@VRServerThread
 	protected val sharedTrackers: MutableList<Tracker> = FastList()
+
+	@JvmField
+	@VRServerThread
+	protected val fingerBones: MutableList<Bone> = FastList()
 
 	@ThreadSafe
 	private val inputQueue: Queue<ProtobufMessage> = LinkedBlockingQueue()
@@ -94,22 +102,26 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			return
 		}
 		for (tracker in sharedTrackers) {
-			writeTrackerUpdate(tracker, null) // TODO what's the best way of getting data over?
+			writeTrackerUpdate(tracker)
 			writeBatteryUpdate(tracker)
 		}
 	}
 
 	@VRServerThread
-	protected fun writeTrackerUpdate(localTracker: Tracker?, fingers: List<Bone>?) {
-		val builder = ProtobufMessages.Position.newBuilder().setTrackerId(
+	protected fun writeTrackerUpdate(localTracker: Tracker?) {
+		val builder = Position.newBuilder().setTrackerId(
 			localTracker!!.id,
 		)
+
+		// localTracker position
 		if (localTracker.hasPosition) {
 			val pos = localTracker.position
 			builder.setX(pos.x)
 			builder.setY(pos.y)
 			builder.setZ(pos.z)
 		}
+
+		// localTracker rotation
 		if (localTracker.hasRotation) {
 			val rot = localTracker.getRotation()
 			builder.setQx(rot.x)
@@ -117,17 +129,31 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			builder.setQz(rot.z)
 			builder.setQw(rot.w)
 		}
-		if ((localTracker.trackerPosition == TrackerPosition.LEFT_HAND || localTracker.trackerPosition == TrackerPosition.RIGHT_HAND) && fingers != null) {
-			for (i in 0 until fingers.count()) {
-				val fingersBuilder = FingerBoneRotation.newBuilder()
-				fingersBuilder.setName(FingerBoneRotation.FingerBoneName.valueOf(fingers[i].boneType.toString())) // Fingers are named the same
-				fingersBuilder.x = fingers[i].getLocalRotation().x
-				fingersBuilder.y = fingers[i].getLocalRotation().y
-				fingersBuilder.z = fingers[i].getLocalRotation().z
-				fingersBuilder.w = fingers[i].getLocalRotation().w
-				builder.addFingerBoneRotations(i, fingersBuilder)
+
+		// localTracker's associated fingers' rotations
+		val fingerBoneRotations: FastList<FingerBoneRotation> = FastList()
+		val trackerIsLeftHand = localTracker.trackerPosition == TrackerPosition.LEFT_HAND
+		val trackerIsRightHand = localTracker.trackerPosition == TrackerPosition.RIGHT_HAND
+		if (trackerIsLeftHand || trackerIsRightHand) {
+			for (fingerBone in fingerBones) {
+				if ((trackerIsLeftHand && fingerBone.boneType.isLeftFinger()) ||
+					(trackerIsRightHand && fingerBone.boneType.isRightFinger())
+				) {
+					val name = boneTypeToFingerBoneName(fingerBone.boneType)
+					val rot = fingerBone.getLocalRotation()
+
+					val fingerBuilder = FingerBoneRotation.newBuilder()
+						.setName(name)
+						.setX(rot.x)
+						.setY(rot.y)
+						.setZ(rot.z)
+						.setW(rot.w)
+
+					builder.addFingerBoneRotations(fingerBuilder.build())
+				}
 			}
 		}
+
 		sendMessage(ProtobufMessage.newBuilder().setPosition(builder).build())
 	}
 
@@ -283,6 +309,48 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			.setTrackerId(tracker!!.id)
 		statusBuilder.setStatus(ProtobufMessages.TrackerStatus.Status.DISCONNECTED)
 		sendMessage(ProtobufMessage.newBuilder().setTrackerStatus(statusBuilder).build())
+	}
+
+	@VRServerThread
+	override fun addFingerBones(bones: List<Bone>) {
+		fingerBones.addAll(bones)
+	}
+
+	private fun boneTypeToFingerBoneName(boneType: BoneType): FingerBoneRotation.FingerBoneName = when (boneType) {
+		BoneType.LEFT_THUMB_METACARPAL, BoneType.RIGHT_THUMB_METACARPAL -> FingerBoneRotation.FingerBoneName.THUMB_METACARPAL
+
+		BoneType.LEFT_THUMB_PROXIMAL, BoneType.RIGHT_THUMB_PROXIMAL -> FingerBoneRotation.FingerBoneName.THUMB_PROXIMAL
+
+		BoneType.LEFT_THUMB_DISTAL, BoneType.RIGHT_THUMB_DISTAL -> FingerBoneRotation.FingerBoneName.THUMB_DISTAL
+
+		BoneType.LEFT_INDEX_PROXIMAL, BoneType.RIGHT_INDEX_PROXIMAL -> FingerBoneRotation.FingerBoneName.INDEX_PROXIMAL
+
+		BoneType.LEFT_INDEX_INTERMEDIATE, BoneType.RIGHT_INDEX_INTERMEDIATE -> FingerBoneRotation.FingerBoneName.INDEX_INTERMEDIATE
+
+		BoneType.LEFT_INDEX_DISTAL, BoneType.RIGHT_INDEX_DISTAL -> FingerBoneRotation.FingerBoneName.INDEX_DISTAL
+
+		BoneType.LEFT_MIDDLE_PROXIMAL, BoneType.RIGHT_MIDDLE_PROXIMAL -> FingerBoneRotation.FingerBoneName.MIDDLE_PROXIMAL
+
+		BoneType.LEFT_MIDDLE_INTERMEDIATE, BoneType.RIGHT_MIDDLE_INTERMEDIATE -> FingerBoneRotation.FingerBoneName.MIDDLE_INTERMEDIATE
+
+		BoneType.LEFT_MIDDLE_DISTAL, BoneType.RIGHT_MIDDLE_DISTAL -> FingerBoneRotation.FingerBoneName.MIDDLE_DISTAL
+
+		BoneType.LEFT_RING_PROXIMAL, BoneType.RIGHT_RING_PROXIMAL -> FingerBoneRotation.FingerBoneName.RING_PROXIMAL
+
+		BoneType.LEFT_RING_INTERMEDIATE, BoneType.RIGHT_RING_INTERMEDIATE -> FingerBoneRotation.FingerBoneName.RING_INTERMEDIATE
+
+		BoneType.LEFT_RING_DISTAL, BoneType.RIGHT_RING_DISTAL -> FingerBoneRotation.FingerBoneName.RING_DISTAL
+
+		BoneType.LEFT_LITTLE_PROXIMAL, BoneType.RIGHT_LITTLE_PROXIMAL -> FingerBoneRotation.FingerBoneName.LITTLE_PROXIMAL
+
+		BoneType.LEFT_LITTLE_INTERMEDIATE, BoneType.RIGHT_LITTLE_INTERMEDIATE -> FingerBoneRotation.FingerBoneName.LITTLE_INTERMEDIATE
+
+		BoneType.LEFT_LITTLE_DISTAL, BoneType.RIGHT_LITTLE_DISTAL -> FingerBoneRotation.FingerBoneName.LITTLE_DISTAL
+
+		else -> {
+			LogManager.severe("[ProtobufBridge] Tried to get FingerBoneName from invalid BoneType " + boneType.name)
+			FingerBoneRotation.FingerBoneName.UNRECOGNIZED
+		}
 	}
 
 	companion object {

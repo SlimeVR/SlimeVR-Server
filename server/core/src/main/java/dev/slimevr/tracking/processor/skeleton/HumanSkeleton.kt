@@ -1439,6 +1439,43 @@ class HumanSkeleton(
 			rightLittleDistalBone,
 		)
 
+	/**
+	 * Returns all the finger bones
+	 */
+	val allFingerBones: Array<Bone>
+		get() = arrayOf(
+			leftThumbMetacarpalBone,
+			leftThumbProximalBone,
+			leftThumbDistalBone,
+			leftIndexProximalBone,
+			leftIndexIntermediateBone,
+			leftIndexDistalBone,
+			leftMiddleProximalBone,
+			leftMiddleIntermediateBone,
+			leftMiddleDistalBone,
+			leftRingProximalBone,
+			leftRingIntermediateBone,
+			leftRingDistalBone,
+			leftLittleProximalBone,
+			leftLittleIntermediateBone,
+			leftLittleDistalBone,
+			rightThumbMetacarpalBone,
+			rightThumbProximalBone,
+			rightThumbDistalBone,
+			rightIndexProximalBone,
+			rightIndexIntermediateBone,
+			rightIndexDistalBone,
+			rightMiddleProximalBone,
+			rightMiddleIntermediateBone,
+			rightMiddleDistalBone,
+			rightRingProximalBone,
+			rightRingIntermediateBone,
+			rightRingDistalBone,
+			rightLittleProximalBone,
+			rightLittleIntermediateBone,
+			rightLittleDistalBone,
+		)
+
 	val hmdHeight: Float
 		get() = headTracker?.position?.y ?: 0f
 

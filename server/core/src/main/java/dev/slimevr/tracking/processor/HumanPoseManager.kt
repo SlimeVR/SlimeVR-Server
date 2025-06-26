@@ -341,6 +341,13 @@ class HumanPoseManager(val server: VRServer?) {
 	val allBones: List<Bone>
 		get() = listOf(*skeleton.allHumanBones)
 
+	/**
+	 * @return All the finger bones
+	 */
+	@get:ThreadSafe
+	val allFingerBones: List<Bone>
+		get() = listOf(*skeleton.allFingerBones)
+
 	// #endregion
 	// #region config methods
 	/**
