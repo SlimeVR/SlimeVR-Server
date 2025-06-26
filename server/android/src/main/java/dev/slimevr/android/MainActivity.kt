@@ -2,10 +2,16 @@ package dev.slimevr.android
 
 import android.content.Intent
 import android.os.Bundle
+import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import io.eiren.util.logging.LogManager
+
+class AndroidJsObject {
+	@JavascriptInterface
+	fun isThere(): Boolean = true
+}
 
 class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,13 +45,16 @@ class MainActivity : AppCompatActivity() {
 		guiWebView.settings.javaScriptEnabled = true
 		guiWebView.settings.domStorageEnabled = true
 
+		// TODO: Let code know it is in android, should be gone when we start using tauri
+		guiWebView.addJavascriptInterface(AndroidJsObject(), "__ANDROID__")
+
 		// Try fixing zoom usability
 		guiWebView.settings.setSupportZoom(true)
 		guiWebView.settings.useWideViewPort = true
 		guiWebView.settings.loadWithOverviewMode = true
 		guiWebView.invokeZoomPicker()
 
-		// Disable cache! This is all local anyways
+		// Disable cache! This is all local anyway
 		guiWebView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
 		guiWebView.clearCache(true)
 
