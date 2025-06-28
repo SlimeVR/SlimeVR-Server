@@ -7,21 +7,28 @@
 
 ## Websocket (server) status
 
-websocket-connecting = Kobler til serveren
+websocket-connecting = Laster...
 websocket-connection_lost = Mistet server-tilkobling. Vennligst vent mens koblingen gjenopprettes...
-websocket-timedout = Klarer ikke å koble til Serveren
+websocket-connection_lost-desc = Det ser ut som at SlimeVR serveren har krasjet. Sjekk loggene og restart programmet.
+websocket-timedout = Klarte ikke å koble til serveren.
+websocket-timedout-desc = Det ser ut som at SlimeVR serveren har krasjet eller har brukt for lang til på å koble til. Sjekk loggene og restart programmet.
 websocket-error-close = Avslutt SlimeVR
+websocket-error-logs = Åpne opp "logs" mappen.
 
 ## Update notification
 
 version_update-title = Ny versjon tilgjengelig: { $version }
+version_update-description = Å klikke "{ version_update-update }" laster ned SlimeVR installatøren for deg.
 version_update-update = Oppdater
 version_update-close = Lukk
 
 ## Tips
 
-tips-find_tracker = Vanskeligheter med å skille mellom dine trackere? Rist én for å finne fram riktig gjenstand.
-tips-do_not_move_heels = Vær obs på at helene dine står stille under innspillingen!
+tips-find_tracker = Usikker på hvilken tracker som er hvilken? Rist en av dem! Den ristede trackeren vil bli fremhevet.
+tips-do_not_move_heels = Sørg for at dine heler ikke beveger under opptaket!
+tips-file_select = Dra og slipp filene for å enten bruke eller <u>gå igjennom</u>.
+tips-tap_setup = Du kan forsiktig trykke på din tracker 2 ganger sammenhengende istedenfor å velge den fra menyen.
+tips-turn_on_tracker = Bruker du offisielle SlimeVR trackere? Husk å <b><em>skru dem på</em></b> etter å ha koblet dem til PCen din!
 tips-failed_webgl = Feil ved initialisering av WebGL.
 
 ## Body parts
@@ -31,24 +38,42 @@ body_part-HEAD = Hode
 body_part-NECK = Hals
 body_part-RIGHT_SHOULDER = Høyre skulder
 body_part-RIGHT_UPPER_ARM = Høyre overarm
-body_part-RIGHT_LOWER_ARM = Høyre nedre arm
+body_part-RIGHT_LOWER_ARM = Høyre underarm
 body_part-RIGHT_HAND = Høyre hånd
 body_part-RIGHT_UPPER_LEG = Høyre lår
 body_part-RIGHT_LOWER_LEG = Høyre ankel
 body_part-RIGHT_FOOT = Høyre fot
+body_part-UPPER_CHEST = Øvre bryst
 body_part-CHEST = Bryst
 body_part-WAIST = Midje
 body_part-HIP = Hofte
 body_part-LEFT_SHOULDER = Venstre skulder
 body_part-LEFT_UPPER_ARM = Venstre overarm
-body_part-LEFT_LOWER_ARM = Venstre nedre arm
+body_part-LEFT_LOWER_ARM = Venstre underarm
 body_part-LEFT_HAND = Venstre hånd
 body_part-LEFT_UPPER_LEG = Venstre lår
 body_part-LEFT_LOWER_LEG = Venstre ankel
 body_part-LEFT_FOOT = Venstre fot
+body_part-LEFT_THUMB_METACARPAL = Venstre tommel mellomhånden
+body_part-LEFT_THUMB_PROXIMAL = Venstre tommel proksimal
+body_part-LEFT_THUMB_DISTAL = Venstre tommel lengst unna
+body_part-LEFT_INDEX_PROXIMAL = Venstre innerste pekefinger
+body_part-LEFT_INDEX_INTERMEDIATE = Venstre middels pekefinger
+body_part-LEFT_INDEX_DISTAL = Venstre yterste pekefinger
+body_part-LEFT_MIDDLE_PROXIMAL = Venstre innerste langfinger
+body_part-LEFT_MIDDLE_INTERMEDIATE = Venstre middels langfinger
+body_part-LEFT_MIDDLE_DISTAL = Venstre yterste langfinger
+body_part-LEFT_RING_PROXIMAL = Venstre innerste ring
 
 ## BoardType
 
+board_type-UNKNOWN = Ukjent
+board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Egendefinert brett
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-SLIMEVR = SlimeVR
+board_type-OWOTRACK = owoTrack
 board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
@@ -58,6 +83,7 @@ board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 skeleton_bone-NONE = Ingen
 skeleton_bone-HEAD = Hode bytte
 skeleton_bone-NECK = Halslengde
+skeleton_bone-torso_group = Torsolengde
 skeleton_bone-CHEST_OFFSET = Bryst-forskyvning
 skeleton_bone-CHEST = Bryst-lengde
 skeleton_bone-WAIST = Midje-lengde
