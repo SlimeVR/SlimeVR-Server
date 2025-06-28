@@ -111,10 +111,29 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = Guante SlimeVR Dev IMU
 
 skeleton_bone-NONE = Nada
 skeleton_bone-HEAD = Inclinación de cabeza
+skeleton_bone-HEAD-desc =
+    Esta es la distancia entre tu casco y el medio de tu cabeza.
+    Para ajustarlo, mueve tu cabeza de izquierda a derecha como si no estuvieras de acuerdo
+    y modifícalo hasta que cualquier movimiento con otros trackers sea insignificante.
 skeleton_bone-NECK = Largo del cuello
+skeleton_bone-NECK-desc =
+    Esta es la distancia entre el medio de tu cabeza hacia la base de tu nuca.
+    Para ajustarlo, mueve tu cabeza de arriba a abajo como su estuvieras asintiendo o ladea tu cabeza
+    hacia la izquierda y derecha y modifícalo hasta que cualquier movimiento con otros trackers sea insignificante.
 skeleton_bone-torso_group = Largo del torso
+skeleton_bone-torso_group-desc =
+    Esta es la distancia entre la base de tu nuca con tus caderas.
+    Para ajustarlo, modifícalo parándote recto hasta que tus caderas virtuales se alineen
+    con las reales.
 skeleton_bone-UPPER_CHEST = Largo del pecho superior
+skeleton_bone-UPPER_CHEST-desc =
+    Esta es la distancia entre la base de tu nuca hacia el medio de tu pecho.
+    Para ajustarlo, ajusta el largo de tu torso adecuadamente y modifícalo en varias posiciones
+    (Sentandote, agachandote, acostandote, etc.) hasta que tu espina virtual se alinee con la real.
 skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-CHEST_OFFSET-desc =
+    Esto se puede ajustar para mover tu tracker de pecho virtual hacia arriba o abajo para ayudar
+    con la calibración en ciertos juegos o aplicaciones que lo esperan mas alto o bajo.
 skeleton_bone-CHEST = Largo del pecho
 skeleton_bone-WAIST = Largo de la cintura
 skeleton_bone-HIP = Largo de la cadera
@@ -1103,7 +1122,7 @@ onboarding-automatic_proportions-check_height-hmd_height2 = La altura de su casc
 onboarding-automatic_proportions-check_height-measure-start = Empezar a medir
 onboarding-automatic_proportions-check_height-measure-stop = Dejar de medir
 onboarding-automatic_proportions-check_height-measure-reset = Volver a intentar la medición
-onboarding-automatic_proportions-check_height-next_step = Están bien
+onboarding-automatic_proportions-check_height-next_step = Usar la altura del visor
 onboarding-automatic_proportions-check_floor_height-title = Medir la altura de su piso (opcional)
 onboarding-automatic_proportions-check_floor_height-description = En algunos casos, es posible que el casco no ajuste correctamente la altura del piso, lo que hace que la altura del casco sea más alta de lo que debería ser. Puede medir la "altura" de su piso para corregir la altura de su casco.
 # All the text is in bold!
