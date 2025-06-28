@@ -1253,3 +1253,4 @@ error_collection_modal-description_v2 =
     
     Du kan ändra denna inställningen senare i beteende-sektionen av inställnings-sidan
 error_collection_modal-confirm = Jag tillåter.
+error_collection_modal-cancel = Jag vill inte
