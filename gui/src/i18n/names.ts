@@ -19,6 +19,8 @@ import ru from '@twemoji/svg/1f1f7-1f1fa.svg';
 import uk from '@twemoji/svg/1f1fa-1f1e6.svg';
 import vi from '@twemoji/svg/1f1fb-1f1f3.svg';
 import cn from '@twemoji/svg/1f1e8-1f1f3.svg';
+import th from '@twemoji/svg/1f1f9-1f1ed.svg';
+import sv from '@twemoji/svg/1f1f8-1f1ea.svg';
 import bubble from '@twemoji/svg/1f9cb.svg';
 import plead from '@twemoji/svg/1f97a.svg';
 
@@ -114,9 +116,19 @@ export const langs = [
     key: 'ru',
   },
   {
+    emoji: sv,
+    name: 'Svenska (Sverige)',
+    key: 'sv-SE',
+  },
+  {
     emoji: uk,
     name: 'Українська',
     key: 'uk',
+  },
+  {
+    emoji: th,
+    name: 'ไทย',
+    key: 'th',
   },
   {
     emoji: vi,
