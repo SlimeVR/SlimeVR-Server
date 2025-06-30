@@ -480,7 +480,7 @@ settings-sidebar-osc_router = เราเตอร์ OSC
 settings-sidebar-osc_trackers = แทร็กเกอร์ VRChat OSC
 settings-sidebar-utils = ยูทิลิตี้
 settings-sidebar-serial = ซีเรียลคอนโซล
-settings-sidebar-appearance = ลักษณะ
+settings-sidebar-appearance = รูปลักษณ์
 settings-sidebar-notifications = แจ้งเตือน
 settings-sidebar-behavior = พฤติกรรม
 settings-sidebar-firmware-tool = เครื่องมือสำหรับ Firmware DIY
@@ -596,6 +596,7 @@ settings-general-fk_settings-arm_fk-back = หลัง
 
 ## Appearance settings
 
+settings-interface-appearance = รูปลักษณ์
 settings-general-interface-dev_mode = โหมดนักพัฒนา
 settings-general-interface-dev_mode-label = โหมดนักพัฒนา
 settings-general-interface-theme = สีธีม
@@ -704,9 +705,26 @@ onboarding-calibration_tutorial-skip = ข้ามการสอนนี้
 
 ## Tracker assignment tutorial
 
+onboarding-assignment_tutorial = วิธีการเตรียม Slime Tracker ก่อนจะสวมใส่และใช้งาน
+onboarding-assignment_tutorial-first_step = 1. แปะสติกเกอร์บอกส่วนของร่างกาย (หากมี) บนแทร็กเกอร์ตามตำแหน่งที่คุณต้องการกำหนดให้มัน
+# This text has a character limit of around 11 characters, so please keep it short
+onboarding-assignment_tutorial-sticker = สติ๊กเกอร์
+onboarding-assignment_tutorial-second_step-v2 = 2. ใส่สายรัดเข้าในแทร็กเกอร์ของคุณ โดยให้ฝั่งหนามเตยออกมาทางฝั่งเดียวกับด้านหน้าแทร็กเกอร์ของคุณ
+onboarding-assignment_tutorial-second_step-continuation-v2 = หนามเตยของทางฝั่งแทร็กเกอร์เสริมควรจะหันหน้าตามภาพที่ให้:
+onboarding-assignment_tutorial-done = ฉันแปะสติ๊กเกอร์และสายรัดแล้ว!
 
 ## Tracker assignment setup
 
+onboarding-assign_trackers-back = กลับไปยังการตั้งค่า Wi-Fi
+onboarding-assign_trackers-title = กำหนดตำแหน่งแทร็กเกอร์
+onboarding-assign_trackers-description = มาเลือกตำแหน่งแทร็กเกอร์ว่าจะอยู่ตรงไหนกันเลย! คลิกบนตำแหน่งที่คุณต้องการเพื่อกำหนดตำแหน่ง
+# Look at translation of onboarding-connect_tracker-connected_trackers on how to use plurals
+# $assigned (Number) - Trackers that have been assigned a body part
+# $trackers (Number) - Trackers connected to the server
+onboarding-assign_trackers-assigned = { $assigned } จาก { $trackers } ได้ถูกกำหนดตำแหน่งแล้ว
+onboarding-assign_trackers-advanced = แสดงตำแหน่งที่กำหนดได้เพิ่มเติม
+onboarding-assign_trackers-next = ฉันได้กำหนดตำแหน่งหมดแล้ว
+onboarding-assign_trackers-option-amount = x{ $trackersCount }
 onboarding-assign_trackers-option-label =
     { $mode ->
         [lower-body] จุดวางเซ็ต lower-body
@@ -715,12 +733,65 @@ onboarding-assign_trackers-option-label =
         [full-body] จุดวางเซ็ต full-body
        *[all] จุดวางทั้งหมด
     }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] จำนวนขั้นต่ำสำหรับ VR Full-body tracking
+        [core] + การจับตำแหน่งสันหลังที่ดีขึ้น
+        [enhanced-core] + เพิ่มการหมุนของเท้า
+        [full-body] + จับตำแหน่งข้อศอก
+       *[all] ตำแหน่งที่ติดตั้งแทร็กเกอร์ได้ทั้งหมด
+    }
 
 ## Tracker assignment warnings
 
+# Note for devs, number is used for representing boolean states per bit.
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_FOOT =
+    { $unassigned ->
+        [0] เท้าซ้าย ถูกกำหนดแล้ว แต่คุณต้องกำหนด ข้อเท้าซ้าย ต้นขาซ้าย และอย่างใดอย่างหนึ่งระหว่าง ส่วนอก สะโพก หรือ เอว ด้วย
+        [1] เท้าซ้าย ถูกกำหนดแล้ว แต่คุณต้องกำหนด ต้นขาซ้าย และอย่างใดอย่างหนึ่งระหว่าง ส่วนอก สะโพก หรือ เอว ด้วย
+        [2] เท้าซ้าย ถูกกำหนดแล้ว แต่คุณต้องกำหนด ข้อเท้าซ้าย และอย่างใดอย่างหนึ่งระหว่าง ส่วนอก สะโพก หรือ เอว ด้วย
+        [3] เท้าซ้าย ถูกกำหนดแล้ว แต่คุณต้องกำหนด อย่างใดอย่างหนึ่งระหว่าง ส่วนอก สะโพก หรือ เอว ด้วย
+        [4] เท้าซ้าย ถูกกำหนดแล้ว แต่คุณต้องกำหนด ข้อเท้าซ้าย และ ต้นขาซ้าย ด้วย
+        [5] เท้าซ้าย ถูกกำหนดแล้ว แต่คุณต้องกำหนด ต้นขาซ้าย ด้วย
+        [6] เท้าซ้าย ถูกกำหนดแล้ว แต่คุณต้องกำหนด ข้อเท้าซ้าย ด้วย
+       *[unknown] เท้าซ้าย ถูกกำหนดแล้ว แแต่คุณต้องกำหนด ??? ??? ของร่างกายด้วย
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-RIGHT_FOOT =
+    { $unassigned ->
+        [0] เท้าขวา ถูกกำหนดแล้ว แต่คุณต้องกำหนด ข้อเท้าขวา ต้นขาขวา และอย่างใดอย่างหนึ่งระหว่าง ส่วนอก สะโพก หรือ เอว ด้วย
+        [1] เท้าขวา ถูกกำหนดแล้ว แต่คุณต้องกำหนด ต้นขาขวา และอย่างใดอย่างหนึ่งระหว่าง ส่วนอก สะโพก หรือ เอว ด้วย
+        [2] เท้าขวา ถูกกำหนดแล้ว แต่คุณต้องกำหนด ข้อเท้าขวา และอย่างใดอย่างหนึ่งระหว่าง ส่วนอก สะโพก หรือ เอว ด้วย
+        [3] เท้าขวา ถูกกำหนดแล้ว แต่คุณต้องกำหนด อย่างใดอย่างหนึ่งระหว่าง ส่วนอก สะโพก หรือ เอว ด้วย
+        [4] เท้าขวา ถูกกำหนดแล้ว แต่คุณต้องกำหนด ข้อเท้าขวา และ ต้นขาขวา ด้วย
+        [5] เท้าขวา ถูกกำหนดแล้ว แต่คุณต้องกำหนด ต้นขาขวา ด้วย
+        [6] เท้าขวา ถูกกำหนดแล้ว แต่คุณต้องกำหนด ข้อเท้าขวา ด้วย
+       *[unknown] เท้าขวา ถูกกำหนดแล้ว แต่คุณต้องกำหนด ??? ??? ของร่างกาย ด้วย
+    }
+# $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
+onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
+    { $unassigned ->
+        [0] ข้อเท้าซ้าย ถูกกำหนดแล้ว แต่คุณต้องกำหนด ต้นขาซ้าย และอย่างใดอย่างหนึ่งระหว่าง ส่วนอก สะโพก หรือ เอว ด้วย
+        [1] ข้อเท้าซ้าย ถูกกำหนดแล้ว แต่คุณต้องกำหนดอย่างใดอย่างหนึ่งระหว่าง ส่วนอก สะโพก หรือ เอว ด้วย
+        [2] ข้อเท้าซ้าย ถูกกำหนดแล้ว แต่คุณต้องกำหนด ต้นขาซ้าย ด้วย
+       *[unknown] ข้อเท้าซ้าย ถูกกำหนดแล้ว แต่คุณต้องกำหนด ??? ???? ของร่างกายด้วย
+    }
 
 ## Tracker mounting method choose
 
+onboarding-choose_mounting = คุณจะใช้วิธีไหนในการปรับเทียบทิศทางแทร็กเกอร์?
+# Multiline text
+onboarding-choose_mounting-description = การวางตำแหน่งของแทร็กเกอร์ นั้นช่วยแก้ไขทิศทางของแทร็กเกอร์เมื่อวางบนตัวของคุณ
+onboarding-choose_mounting-auto_mounting = ปรับเทียบทิศทางแบบอัตโนมัติ
+onboarding-choose_mounting-auto_mounting-description = นี่จะเป็นการปรับเทียบทิศทางของแทร็กเกอร์ทั้งหมดโดยอัตโนมัติจากท่าทาง 2 ท่าทางของคุณ
+onboarding-choose_mounting-manual_mounting = ปรับเทียบทิศทางแบบกำหนดเอง
+onboarding-choose_mounting-manual_mounting-description = นี่จะให้คุณกำหนดทิศทางของแทร็กเกอร์แต่ละตัวได้
+# Multiline text
+onboarding-choose_mounting-manual_modal-title =
+    คุณแน่ใจหรือไม่ว่าต้องการจะ
+    ปรับเทียบทิศทางแทร็กเกอร์แบบอัตโนมัติ?
+onboarding-choose_mounting-manual_modal-description = <b>เราแนะนำให้ใช้การปรับเทียบทิศทางแบบกำหนดเองสำหรับผู้ใช้ใหม่</b> เพราะว่าท่าทางในการปรับเทียบทิศทางแบบอัตโนมัติอาจจะยากในการทำให้ถูกต้องในครั้งเดียว และอาจจะต้องใช้การฝึกฝน
 onboarding-choose_mounting-manual_modal-cancel = ยกเลิก
 
 ## Tracker manual mounting setup
@@ -815,6 +886,10 @@ onboarding-automatic_proportions-verify_results-description = ตรวจสอ
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-verify_mounting-step-3 = 3. ถ้าแทร็กเกอร์ของคุณอยู่ผิดตำแหน่ง กรุณากด "ปรับเทียบทิศทางแทร็กเกอร์อีกครั้ง"
+onboarding-stay_aligned-verify_mounting-redo_mounting = ปรับเทียบทิศทางแทร็กเกอร์อีกครั้ง
+onboarding-stay_aligned-done-title = เปิดใช้งาน Stay Aligned แล้ว!
+onboarding-stay_aligned-done-description = การตั้งค่า Stay Aligned ของคุณสำเร็จแล้ว!
 
 ## Home
 
@@ -859,11 +934,13 @@ firmware_tool-flash_method_step-serial =
     .description = ใช้สาย USB เพื่ออัพเดทแทร็กเกอร์
 firmware_tool-flashbtn_step = กรุณากดปุ่ม Boot
 firmware_tool-flashbtn_step-description = มีสิ่งที่คุณควรจะรับทราบก่อนจะไปยังขั้นตอนถัดไป
+firmware_tool-flashbtn_step-board_SLIMEVR-r14 = เปิดแทร็กเกอร์ในขณะที่กดปุ่ม FLASH ที่ด้านบนของบอร์ด
 firmware_tool-flashbtn_step-board_OTHER =
     ก่อนการแฟลช คุณอาจต้องตั้งค่าแทรคเกอร์ให้อยู่ในโหมดบูตโหลดเดอร์ก่อน
     โดยส่วนใหญ่ คุณจะต้องกดปุ่มบูตบนบอร์ดก่อนที่กระบวนการแฟลชจะเริ่มต้น
     หากกระบวนการแฟลชหมดเวลาที่จุดเริ่มต้น อาจหมายความว่าแทรคเกอร์ไม่ได้อยู่ในโหมดบูตโหลดเดอร์
     โปรดดูคำแนะนำการแฟลชของบอร์ดของคุณเพื่อทราบวิธีเปิดโหมดบูตโหลดเดอร์
+firmware_tool-flash_method_ota-devices = พบอุปกรณ์ OTA:
 firmware_tool-flash_method_ota-no_devices = ไม่พบบอร์ดที่เราสามารถอัพเดทได้ผ่าน OTA กรุณาตรวจสอบว่าคุณได้เลือกชนิตของบอร์ดที่ถูกต้อง
 firmware_tool-flash_method_serial-wifi = ข้อมูล Wi-Fi:
 firmware_tool-flash_method_serial-devices-label = พบอุปกรณ์ซีเรียล:
@@ -881,7 +958,7 @@ firmware_tool-flashing_step-exit = ออก
 
 firmware_tool-build-CREATING_BUILD_FOLDER = กำลังสร้าง Build folder
 firmware_tool-build-DOWNLOADING_FIRMWARE = กำลังโหลด Firmware
-firmware_tool-build-EXTRACTING_FIRMWARE = กำลังแตกไฟล์Firmware
+firmware_tool-build-EXTRACTING_FIRMWARE = กำลังแตกไฟล์เฟิร์มแวร์
 firmware_tool-build-SETTING_UP_DEFINES = กำลังกำหนดค่า defines
 firmware_tool-build-BUILDING = กำลังสร้างตัว Firmware
 firmware_tool-build-SAVING = บันทึกค่าที่สร้างไว้
