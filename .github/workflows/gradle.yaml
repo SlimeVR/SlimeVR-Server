@@ -41,8 +41,8 @@ jobs:
       - name: Check code formatting
         run: ./gradlew spotlessCheck
 
-      # - name: Test with Gradle
-      #   run: ./gradlew test
+      - name: Test with Gradle
+        run: ./gradlew test
 
 
   build:
@@ -65,25 +65,25 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      # - name: Build with Gradle
-      #   run: ./gradlew shadowJar
+      - name: Build with Gradle
+        run: ./gradlew shadowJar
 
-      # - name: Upload the Server JAR as a Build Artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     # Artifact name
-      #     name: "SlimeVR-Server" # optional, default is artifact
-      #     # A file, directory or wildcard pattern that describes what to upload
-      #     path: server/desktop/build/libs/slimevr.jar
+      - name: Upload the Server JAR as a Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Artifact name
+          name: "SlimeVR-Server" # optional, default is artifact
+          # A file, directory or wildcard pattern that describes what to upload
+          path: server/desktop/build/libs/slimevr.jar
 
-      # - name: Upload to draft release
-      #   uses: softprops/action-gh-release@v2
-      #   if: startsWith(github.ref, 'refs/tags/')
-      #   with:
-      #     draft: true
-      #     generate_release_notes: true
-      #     files: |
-      #       server/desktop/build/libs/slimevr.jar
+      - name: Upload to draft release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: true
+          generate_release_notes: true
+          files: |
+            server/desktop/build/libs/slimevr.jar
 
 
   bundle-android:
@@ -155,10 +155,10 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: carlosperate/download-file-action@v2
+      - uses: actions/download-artifact@v4
         with:
-          file-url: "https://imurx.org/slimevr.jar"
-          location: server/desktop/build/libs/
+          name: "SlimeVR-Server"
+          path: server/desktop/build/libs/
 
       - name: Set up Linux dependencies
         uses: awalsh128/cache-apt-pkgs-action@v1.5.0
@@ -255,10 +255,10 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: carlosperate/download-file-action@v2
+      - uses: actions/download-artifact@v4
         with:
-          file-url: "https://imurx.org/slimevr.jar"
-          location: server/desktop/build/libs/
+          name: "SlimeVR-Server"
+          path: server/desktop/build/libs/
 
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
@@ -332,10 +332,10 @@ jobs:
         with:
           submodules: recursive
 
-      - uses: carlosperate/download-file-action@v2
+      - uses: actions/download-artifact@v4
         with:
-          file-url: "https://imurx.org/slimevr.jar"
-          location: server/desktop/build/libs/
+          name: "SlimeVR-Server"
+          path: server/desktop/build/libs/
 
       - name: Cache cargo dependencies
         uses: Swatinem/rust-cache@v2
