@@ -282,6 +282,7 @@ tracker-settings-forget = Esquecer o tracker
 tracker-settings-forget-description = Remove o tracker do servidor SlimeVR e impede que ele se conecte a ele até que o servidor seja reiniciado. A configuração do tracker não será perdida.
 tracker-settings-forget-label = Esquecer o tracker
 tracker-settings-update-unavailable = Não pode ser atualizado (DIY)
+tracker-settings-update-low-battery = Não é possível atualizar. Bateria abaixo de 50%
 tracker-settings-update-up_to_date = Atualizado
 tracker-settings-update-available = { $versionName } está disponível
 tracker-settings-update = Atualizar agora
@@ -363,6 +364,7 @@ settings-sidebar-appearance = Aparência
 settings-sidebar-notifications = Notificações
 settings-sidebar-behavior = Comportamento
 settings-sidebar-firmware-tool = Ferramenta de firmware DIY
+settings-sidebar-vrc_warnings = Alerta nas Configurações do VRChat
 settings-sidebar-advanced = Avançado
 
 ## SteamVR settings
@@ -444,6 +446,8 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Usa o magnetômetro em todos os trackers com firmware compatível, reduzindo o drift em ambientes magneticamente estáveis.
     Essa opção pode ser desativada indivualmente nas configurações de cada tracker. <b>Não desligue nenhum dos trackers enquanto altera esta opção!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar o magnetômetro nos trackers
+settings-stay_aligned-general-label = Geral
+settings-stay_aligned-relaxed_poses-close = Fechar
 
 ## FK/Tracking settings
 
@@ -1030,8 +1034,6 @@ onboarding-automatic_mounting-mounting_reset-title = Reset de Posição
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Agache-se em uma pose de "esqui" com as pernas dobradas, a parte superior do corpo inclinada para a frente e os braços dobrados.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Pressione o botão "Resetar Posição" e aguarde 3 segundos antes que as rotações de posição dos trackers sejam redefinidas.
 onboarding-automatic_mounting-preparation-title = Preparação
-onboarding-automatic_mounting-preparation-step-0 = 1. Fique de pé com os braços ao lado do corpo.
-onboarding-automatic_mounting-preparation-step-1 = 2. Pressione o botão "Reset" e aguarde 3 segundos antes que os trackers sejam reiniciados.
 onboarding-automatic_mounting-put_trackers_on-title = Coloque seus trackers
 onboarding-automatic_mounting-put_trackers_on-description = Para calibrar as rotações de posicionamento, usaremos os trackers que você atribuiu. Coloque todos os seus trackers, você pode ver qual é qual na figura na direita.
 onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trackers
@@ -1148,6 +1150,10 @@ onboarding-scaled_proportions-reset_proportion-title = Redefinir as proporções
 onboarding-scaled_proportions-reset_proportion-description = Para definir as proporções do corpo com base na sua altura, agora é necessário redefinir todas as proporções. Isso limpará todas as proporções que você configurou e fornecerá uma configuração de referência.
 onboarding-scaled_proportions-done-title = Proporções do corpo definidas
 onboarding-scaled_proportions-done-description = As proporções do seu corpo agora devem ser configuradas com base em sua altura.
+
+## Stay Aligned setup
+
+onboarding-stay_aligned-put_trackers_on-next = Todos meus trackers estão ligados
 
 ## Home
 

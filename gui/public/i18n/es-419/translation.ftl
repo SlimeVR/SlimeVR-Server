@@ -9,6 +9,11 @@
 
 websocket-connecting = Conectando al servidor
 websocket-connection_lost = Conexión al servidor perdida. Intentando reconectar...
+websocket-connection_lost-desc = Parece que el servidor de SlimeVR ha dejado de funcionar. Revise los registros y reinicie el programa.
+websocket-timedout = No se ha podido conectar al servidor.
+websocket-timedout-desc = Parece que el servidor de SlimeVR ha dejado de funcionar o se agotó el tiempo de espera de la conexión. Revise los registros y reinicie el programa
+websocket-error-close = Salir de SlimeVR
+websocket-error-logs = Abrir la carpeta de registros
 
 ## Update notification
 
@@ -92,15 +97,43 @@ board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = Guante SlimeVR Dev IMU
 
 ## Proportions
 
 skeleton_bone-NONE = Nada
 skeleton_bone-HEAD = Inclinación de cabeza
+skeleton_bone-HEAD-desc =
+    Esta es la distancia entre tu casco y el medio de tu cabeza.
+    Para ajustarlo, mueve tu cabeza de izquierda a derecha como si no estuvieras de acuerdo
+    y modifícalo hasta que cualquier movimiento con otros trackers sea insignificante.
 skeleton_bone-NECK = Largo del cuello
+skeleton_bone-NECK-desc =
+    Esta es la distancia entre el medio de tu cabeza hacia la base de tu nuca.
+    Para ajustarlo, mueve tu cabeza de arriba a abajo como su estuvieras asintiendo o ladea tu cabeza
+    hacia la izquierda y derecha y modifícalo hasta que cualquier movimiento con otros trackers sea insignificante.
 skeleton_bone-torso_group = Largo del torso
+skeleton_bone-torso_group-desc =
+    Esta es la distancia entre la base de tu nuca con tus caderas.
+    Para ajustarlo, modifícalo parándote recto hasta que tus caderas virtuales se alineen
+    con las reales.
 skeleton_bone-UPPER_CHEST = Largo del pecho superior
+skeleton_bone-UPPER_CHEST-desc =
+    Esta es la distancia entre la base de tu nuca hacia el medio de tu pecho.
+    Para ajustarlo, ajusta el largo de tu torso adecuadamente y modifícalo en varias posiciones
+    (Sentandote, agachandote, acostandote, etc.) hasta que tu espina virtual se alinee con la real.
 skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-CHEST_OFFSET-desc =
+    Esto se puede ajustar para mover tu tracker de pecho virtual hacia arriba o abajo para ayudar
+    con la calibración en ciertos juegos o aplicaciones que lo esperan mas alto o bajo.
 skeleton_bone-CHEST = Largo del pecho
 skeleton_bone-WAIST = Largo de la cintura
 skeleton_bone-HIP = Largo de la cadera
@@ -124,8 +157,14 @@ skeleton_bone-ELBOW_OFFSET = Desplazamiento del codo
 ## Tracker reset buttons
 
 reset-reset_all = Reiniciar todas las proporciones
+reset-reset_all_warning-v2 =
+    <b>Advertencia:</b> Sus proporciones se restablecerán a los valores predeterminados escalados a su altura configurada.
+    ¿Estás seguro de que quiere hacer esto?
 reset-reset_all_warning-reset = Reiniciar proporciones
 reset-reset_all_warning-cancel = Cancelar
+reset-reset_all_warning_default-v2 =
+    <b>Advertencia:</b> Su altura no ha sido configurada, sus proporciones se restablecerán a los valores predeterminados con la altura predeterminada.
+    ¿Estás seguro de que quieres hacer esto?
 reset-full = Reinicio completo
 reset-mounting = Reinicio de montura
 reset-yaw = Reinicio horizontal
@@ -365,6 +404,7 @@ settings-sidebar-utils = Utilidades
 settings-sidebar-serial = Consola serial
 settings-sidebar-appearance = Apariencia
 settings-sidebar-notifications = Notificaciones
+settings-sidebar-behavior = Comportamiento
 settings-sidebar-firmware-tool = Herramienta de firmware DIY
 settings-sidebar-advanced = Avanzado
 
@@ -542,6 +582,9 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Aumen
 ## Appearance settings
 
 settings-interface-appearance = Apariencia
+settings-general-interface-dev_mode = Modo desarrollador
+settings-general-interface-dev_mode-description = Este modo puede ser útil si es que necesitas información a fondo o para un nivel de interacción más avanzado con los sensores conectados.
+settings-general-interface-dev_mode-label = Modo desarrollador
 settings-general-interface-theme = Tema de color
 settings-general-interface-show-navbar-onboarding = Mostrar «{ navbar-onboarding }» en la barra de navegación
 settings-general-interface-show-navbar-onboarding-description = Esto cambia si el botón "{ navbar-onboarding }" se muestra en la barra de navegación.
@@ -577,6 +620,7 @@ settings-general-interface-connected_trackers_warning-label = Advertencia de tra
 
 ## Behavior settings
 
+settings-interface-behavior = Comportamiento
 settings-general-interface-dev_mode = Modo desarrollador
 settings-general-interface-dev_mode-description = Este modo puede ser útil si es que necesitas información a fondo o para un nivel de interacción más avanzado con los sensores conectados.
 settings-general-interface-dev_mode-label = Modo desarrollador
@@ -593,6 +637,14 @@ settings-general-interface-discord_presence-message =
         [many] Usando { $amount } de sensores
        *[other] Usando { $amount } sensores
     }
+settings-interface-behavior-error_tracking = Recopilación de errores a través de Sentry.io
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>Consientes a la recopilación de datos de errores anonimizados?</h1>
+    
+    <b>No recopilamos información personal</b> como tu dirección IP o credenciales del Wi-Fi. ¡SlimeVR respeta tu privacidad!
+    
+    Para proveer la mejor experiencia de usuario, recopilamos reportes de errores anonimizados, métricas de rendimiento, e información del sistema operativo. Esto nos ayuda a detectar errores y problemas con SlimeVR. Estas métricas son recopiladas a través de Sentry.io.
+settings-interface-behavior-error_tracking-label = Enviar errores a los desarrolladores
 
 ## Serial settings
 
@@ -656,6 +708,13 @@ settings-osc-vrchat-description-v1 =
 settings-osc-vrchat-enable = Habilitar
 settings-osc-vrchat-enable-description = Habilita el envio y recibo de datos.
 settings-osc-vrchat-enable-label = Habilitar
+settings-osc-vrchat-oscqueryEnabled = Habilitar OSCQuery
+settings-osc-vrchat-oscqueryEnabled-description =
+    OSCQuery detecta automáticamente las instancias en ejecución de VRChat y les envía datos.
+    También puede anunciarse a ellos para recibir datos del HMD y los mandos.
+    Para permitir la recepción de datos de HMD y mandos de VRChat, vaya a la configuración de su menú principal
+    en «Seguimiento e IK» y habilite «Permitir el envío de datos OSC de seguimiento de VR de cabeza y muñeca».
+settings-osc-vrchat-oscqueryEnabled-label = Habilitar OSCQuery
 settings-osc-vrchat-network = Puertos de conexión
 settings-osc-vrchat-network-description-v1 = Establece los puertos para recibir y enviar datos. Se puede dejar sin cambiar para VRChat.
 settings-osc-vrchat-network-port_in =
@@ -733,7 +792,12 @@ settings-utils-advanced-reset_warning =
     }
 settings-utils-advanced-reset_warning-reset = Reiniciar ajustes
 settings-utils-advanced-reset_warning-cancel = Cancelar
+settings-utils-advanced-open_data-v1 = Carpeta de configuración
+settings-utils-advanced-open_data-description-v1 = Abre la carpeta de configuración de SlimeVR en el explorador de archivos, que contiene la configuración
 settings-utils-advanced-open_data-label = Abrir carpeta
+settings-utils-advanced-open_logs = Carpeta de registros
+settings-utils-advanced-open_logs-description = Abre la carpeta de registros de SlimeVR en el explorador de archivos, que contiene los registros de la aplicación
+settings-utils-advanced-open_logs-label = Abrir carpeta
 
 ## Setup/onboarding menu
 
@@ -1011,8 +1075,6 @@ onboarding-automatic_mounting-mounting_reset-title = Reinicio de montura
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Arrodíllate en una posición de «esquiar» con tus piernas dobladas, la parte superior de tu cuerpo inclinada hacia adelante, y tus brazos doblados.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Presiona el botón «Reinicio de montura» y espera 3 segundos hasta que se reinicie la montura.
 onboarding-automatic_mounting-preparation-title = Preparación
-onboarding-automatic_mounting-preparation-step-0 = 1. Párate derecho con tus brazos a los costados.
-onboarding-automatic_mounting-preparation-step-1 = 2. Presiona el botón «Reiniciar» y espera 3 segundos hasta que se reinicien los sensores.
 onboarding-automatic_mounting-put_trackers_on-title = Ponte tus sensores
 onboarding-automatic_mounting-put_trackers_on-description = Para calibrar la ubicación de tus monturas, usaremos los sensores que has asignado. Ponte todos tus sensores, puedes ver cuál es cual en la figura de la derecha.
 onboarding-automatic_mounting-put_trackers_on-next = Tengo puestos todos mis sensores
@@ -1021,9 +1083,11 @@ onboarding-automatic_mounting-put_trackers_on-next = Tengo puestos todos mis sen
 
 onboarding-manual_proportions-back = Volver al tutorial de reinicio
 onboarding-manual_proportions-title = Proporciones de cuerpo manuales
-onboarding-manual_proportions-precision = Ajuste con precisión
-onboarding-manual_proportions-auto = Calibración automática
-onboarding-manual_proportions-ratio = Ajustar por porcentajes
+onboarding-manual_proportions-fine_tuning_button = Ajustar automáticamente las proporciones
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor conecte un visor VR para utilizar el ajuste automático
+onboarding-manual_proportions-export = Exportar proporciones
+onboarding-manual_proportions-import = Importar proporciones
+onboarding-manual_proportions-file_type = Archivo de proporciones del cuerpo
 
 ## Tracker automatic proportions setup
 
@@ -1044,7 +1108,10 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Tu visor esta reportando datos posicionales al servidor de SlimeVR (esto generalmente significa tener SteamVR abierto y conectado a SlimeVR usando el driver de SlimeVR para SteamVR).
     Tus sensores están funcionando y están representando tus movimientos con precisión (ej: Realizaste un reinicio completo y se mueven en la dirección correcta cuando pateas, te agachas, te sientas, etc).
 onboarding-automatic_proportions-requirements-next = He leído los requisitos
+onboarding-automatic_proportions-check_height-title-v3 = Mide la altura de tu visor
 onboarding-automatic_proportions-check_height-description-v2 = La altura de su casco (HMD) debe ser ligeramente menor que su altura total, ya que el casco está a la altura de sus ojos. Esta medida se utilizará como punto de partida para las proporciones de su cuerpo.
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = Empieza a medir mientras estás <u>de pié</u> para medir tu altura. Ten cuidado con no levantar tus manos más allá de tu visor, ¡Ya que esto puede afectar la medición!
 onboarding-automatic_proportions-check_height-guardian_tip =
     Si está utilizando un casco de VR portable, asegúrese de tener el guardián/
     barrera activado así la altura es detectada correctamente!
@@ -1055,11 +1122,14 @@ onboarding-automatic_proportions-check_height-hmd_height2 = La altura de su casc
 onboarding-automatic_proportions-check_height-measure-start = Empezar a medir
 onboarding-automatic_proportions-check_height-measure-stop = Dejar de medir
 onboarding-automatic_proportions-check_height-measure-reset = Volver a intentar la medición
-onboarding-automatic_proportions-check_height-next_step = Están bien
+onboarding-automatic_proportions-check_height-next_step = Usar la altura del visor
 onboarding-automatic_proportions-check_floor_height-title = Medir la altura de su piso (opcional)
 onboarding-automatic_proportions-check_floor_height-description = En algunos casos, es posible que el casco no ajuste correctamente la altura del piso, lo que hace que la altura del casco sea más alta de lo que debería ser. Puede medir la "altura" de su piso para corregir la altura de su casco.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = Empieza la medición y pon un mando en el piso para medir la altura. Si estás seguro de que la altura de tu piso es correcta, puedes saltar este paso.
 # Shows an element below it
 onboarding-automatic_proportions-check_floor_height-floor_height = La altura de su piso es:
+onboarding-automatic_proportions-check_floor_height-full_height = Su altura total estimada es:
 onboarding-automatic_proportions-check_floor_height-measure-start = Empezar a medir
 onboarding-automatic_proportions-check_floor_height-measure-stop = Dejar de medir
 onboarding-automatic_proportions-check_floor_height-measure-reset = Volver a intentar la medición
@@ -1109,8 +1179,19 @@ onboarding-automatic_proportions-smol_warning-cancel = Volver
 onboarding-scaled_proportions-title = Proporciones escaladas
 onboarding-scaled_proportions-description = Para que los trackers SlimeVR funcionen, necesitamos saber el largo de sus huesos. Esto usará una proporción promedia y la escalará en función a su altura.
 onboarding-scaled_proportions-manual_height-title = Ajuste su altura
+onboarding-scaled_proportions-manual_height-description-v2 = Esta altura se utilizará como referencia para las proporciones de su cuerpo.
 onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR no está conectado actualmente a SlimeVR, por lo que las mediciones no se pueden basar en su casco. <b>¡Proceda bajo su propio riesgo o consulte la documentación!</b>
+onboarding-scaled_proportions-manual_height-height-v2 = Su altura total es
+onboarding-scaled_proportions-manual_height-estimated_height = La altura estimada de su visor es:
 onboarding-scaled_proportions-manual_height-next_step = Continuar y guardar
+onboarding-scaled_proportions-manual_height-warning =
+    Actualmente estás utilizando la manera manual para configurar las proporciones escaladas!
+    
+    <b>Este modo solo es recomendado si no utilizas un HMD con SlimeVR</b>
+    
+    Para poder utilizar las proporciones escaladas automáticas, por favor:
+onboarding-scaled_proportions-manual_height-warning-no_hmd = Conecta un visor VR
+onboarding-scaled_proportions-manual_height-warning-no_controllers = Asegurate de que tus mandos están conectados y correctamente asignados a tus manos
 
 ## Tracker scaled proportions reset
 
@@ -1118,6 +1199,9 @@ onboarding-scaled_proportions-reset_proportion-title = Reestablecer las proporci
 onboarding-scaled_proportions-reset_proportion-description = Para establecer las proporciones de su cuerpo en función a su altura, ahora debe restablecer todas sus proporciones. Esto borrará las proporciones que haya configurado y proporcionará una configuración de referencia.
 onboarding-scaled_proportions-done-title = Proporciones corporales guardadas
 onboarding-scaled_proportions-done-description = Las proporciones de su cuerpo ahora deberían estar configuradas en función de su altura.
+
+## Stay Aligned setup
+
 
 ## Home
 
@@ -1239,7 +1323,6 @@ firmware_tool-build_step = Compilando
 firmware_tool-build_step-description = El firmware se está compilando, por favor espere
 firmware_tool-flashing_step = Flasheando
 firmware_tool-flashing_step-description = Sus sensores se están flasheando, por favor siga las instrucciones en la pantalla
-firmware_tool-flashing_step-warning = No desconecte ni reinicie el sensor durante el proceso de carga a menos que se le indique que lo haga, ya que puede hacer que su placa quede inutilizable
 firmware_tool-flashing_step-flash_more = Flashear más sensores
 firmware_tool-flashing_step-exit = Salir
 
@@ -1257,7 +1340,6 @@ firmware_tool-build-ERROR = No se pudo compilar el firmware
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = Descargando el firmware
-firmware_update-status-NEED_MANUAL_REBOOT = Por favor reinicie el sensor
 firmware_update-status-AUTHENTICATING = Autenticando con el microcontrolador
 firmware_update-status-UPLOADING = Cargando el firmware
 firmware_update-status-SYNCING_WITH_MCU = Sincronizando con el microcontrolador
@@ -1315,3 +1397,10 @@ unknown_device-modal-forget = Ignorarlo
 
 ## Error collection consent modal
 
+error_collection_modal-title = ¿Podemos recopilar errores?
+error_collection_modal-description_v2 =
+    { settings-interface-behavior-error_tracking-description_v2 }
+    
+    Tu puedes cambiar esta configuración más tarde en la sección de comportamiento de la pagina de configuración.
+error_collection_modal-confirm = Acepto
+error_collection_modal-cancel = No quiero

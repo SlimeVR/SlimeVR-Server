@@ -113,13 +113,13 @@ skeleton_bone-NONE = 無
 skeleton_bone-HEAD = 頭部偏移
 skeleton_bone-HEAD-desc =
     這是從頭戴顯示器到頭中央的距離。
-    若要調整，請左右搖頭（如不同意、否定般的樣子）並不要移動身體，檢查其他
-    追蹤器的數值跳動並變更此參數，直到數值跳動小到可以忽略不計。
+    若要調整，請左右搖頭（如不同意、否定般的樣子），檢查其他追蹤器的數值跳
+    動並變更此參數，直到數值跳動小到可以忽略不計。
 skeleton_bone-NECK = 頸部長度
 skeleton_bone-NECK-desc =
     這是從頭中央到脖子底部的距離。
-    若要調整，請上下點頭（如同意、肯定般的樣子）並不要移動身體，檢查其他
-    追蹤器的數值跳動並變更此參數，直到數值跳動小到可以忽略不計。
+    若要調整，請上下點頭（如同意、肯定般的樣子），或將頭倒向兩側肩膀，檢查
+    其他追蹤器的數值跳動並變更此參數，直到數值跳動小到可以忽略不計。
 skeleton_bone-torso_group = 軀幹長度
 skeleton_bone-torso_group-desc =
     這是從脖子底部到臀部的距離。
@@ -304,6 +304,7 @@ widget-imu_visualizer-rotation_raw = 原始旋轉
 widget-imu_visualizer-rotation_preview = 預覽
 widget-imu_visualizer-acceleration = 加速度
 widget-imu_visualizer-position = 位置
+widget-imu_visualizer-stay_aligned = 持續校正
 
 ## Widget: Skeleton Visualizer
 
@@ -331,6 +332,7 @@ tracker-table-column-temperature = 溫度 ℃
 tracker-table-column-linear-acceleration = 加速度 X/Y/Z
 tracker-table-column-rotation = 旋轉 X/Y/Z
 tracker-table-column-position = 位置 X/Y/Z
+tracker-table-column-stay_aligned = 持續校正
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -468,6 +470,7 @@ mounting_selection_menu-close = 關閉
 settings-sidebar-title = 設定
 settings-sidebar-general = 一般設定
 settings-sidebar-tracker_mechanics = 追蹤機制
+settings-sidebar-stay_aligned = 持續校正
 settings-sidebar-fk_settings = 追蹤設定
 settings-sidebar-gesture_control = 手勢控制
 settings-sidebar-interface = 使用者介面
@@ -561,6 +564,25 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     在所有有韌體支援的追蹤器上使用磁力計，在磁場穩定的環境中可以減緩偏移。
     開啟此選項後，可以個別在追蹤器選項內停用磁力計。<b>切換此選項時請勿關閉任何一個追蹤器的電源！</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 在追蹤器上啟用磁力計
+settings-stay_aligned = 持續校正
+settings-stay_aligned-description = 持續校正功能會逐漸調整追蹤器以對齊到設定的放鬆姿態，進而減少追蹤器偏移的影響。
+settings-stay_aligned-setup-label = 設定持續校正
+settings-stay_aligned-setup-description = 完成「設定持續校正」後，才可啟用持續校正功能。
+settings-stay_aligned-warnings-drift_compensation = ⚠ 啟用持續校正時請關閉偏移補償功能，避免發生干擾。
+settings-stay_aligned-enabled-label = 調整追蹤器
+settings-stay_aligned-hide_yaw_correction-label = 隱藏調整效果（可與關閉持續校正的效果對比）
+settings-stay_aligned-general-label = 一般設定
+settings-stay_aligned-relaxed_poses-label = 放鬆的姿態
+settings-stay_aligned-relaxed_poses-description = 持續校正功能會使用各種放鬆的姿態保持追蹤器的定位。請使用「設定持續校正」來更新設定的姿態。
+settings-stay_aligned-relaxed_poses-standing = 使用站立姿勢調整追蹤器
+settings-stay_aligned-relaxed_poses-sitting = 使用坐在椅子上的姿勢調整追蹤器
+settings-stay_aligned-relaxed_poses-flat = 使用坐在地板上或躺下的姿勢調整追蹤器
+settings-stay_aligned-relaxed_poses-save_pose = 儲存姿勢
+settings-stay_aligned-relaxed_poses-reset_pose = 重置姿勢
+settings-stay_aligned-relaxed_poses-close = 關閉
+settings-stay_aligned-debug-label = 除錯資訊
+settings-stay_aligned-debug-description = 在回報與持續校正相關的問題時，請附上以下設定參數。
+settings-stay_aligned-debug-copy-label = 複製設定參數進剪貼簿
 
 ## FK/Tracking settings
 
@@ -573,11 +595,11 @@ settings-general-fk_settings-leg_tweak-floor_clip = 地板限制
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
-settings-general-fk_settings-leg_tweak-skating_correction = 腳滑修正
+settings-general-fk_settings-leg_tweak-skating_correction = 腳滑補正
 settings-general-fk_settings-leg_tweak-toe_snap = 腳趾跟地
 settings-general-fk_settings-leg_tweak-foot_plant = 腳底貼地
-settings-general-fk_settings-leg_tweak-skating_correction-amount = 腳滑修正量
-settings-general-fk_settings-leg_tweak-skating_correction-description = 腳滑修正功能可以矯正腳滑溜冰的問題，但會降低某些動作的準確度。啟用本功能前請進行完整重置，並在遊戲內進行校正。
+settings-general-fk_settings-leg_tweak-skating_correction-amount = 腳滑補正量
+settings-general-fk_settings-leg_tweak-skating_correction-description = 腳滑補正功能可以矯正腳滑溜冰的問題，但會降低某些動作的準確度。啟用本功能前請進行完整重置，並在遊戲內進行校正。
 settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制功能可以減輕甚至解決腳部穿入地板的情況。啟用本功能前請進行完整重置，並在遊戲內進行校正。
 settings-general-fk_settings-leg_tweak-toe_snap-description = 腳趾跟地功能在沒有腳部的追蹤器時，會嘗試猜測腳掌的旋轉角度。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 腳底貼地功能會在腳底與地面接觸時，將腳部旋轉成與地板平行。
@@ -1136,8 +1158,9 @@ onboarding-automatic_mounting-mounting_reset-title = 配戴重置
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 雙腿彎曲以滑雪的姿勢蹲下，上身向前傾斜，手臂彎曲。
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. 按下「配戴重置」按鈕並等待 3 秒鐘，追蹤器的配戴方向將被重置。
 onboarding-automatic_mounting-preparation-title = 準備
-onboarding-automatic_mounting-preparation-step-0 = 1. 身體直立，雙臂放在身體兩側。
-onboarding-automatic_mounting-preparation-step-1 = 2. 按下「完整重置」按鈕，等待 3 秒鐘，追蹤器將會重置。
+onboarding-automatic_mounting-preparation-v2-step-0 = 1. 請按下「完整重置」按鈕。
+onboarding-automatic_mounting-preparation-v2-step-1 = 2. 站直，雙臂放在身體兩側，確保向前直視。
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. 保持姿勢直到 3 秒倒數結束。
 onboarding-automatic_mounting-put_trackers_on-title = 請戴好追蹤器
 onboarding-automatic_mounting-put_trackers_on-description = 為了校準配戴方向，我們將使用剛才分配的追蹤器。戴上你所有的追蹤器，你可以在右邊的圖中看到追蹤器的對應部位。
 onboarding-automatic_mounting-put_trackers_on-next = 我所有的追蹤器都戴好了！
@@ -1186,11 +1209,11 @@ onboarding-automatic_proportions-check_height-guardian_tip = 如果你使用的�
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 不明
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height2 = 你的頭戴顯示器高度是：
+onboarding-automatic_proportions-check_height-hmd_height2 = 頭戴顯示器的高度為：
 onboarding-automatic_proportions-check_height-measure-start = 開始測量
 onboarding-automatic_proportions-check_height-measure-stop = 停止測量
 onboarding-automatic_proportions-check_height-measure-reset = 重新測量
-onboarding-automatic_proportions-check_height-next_step = 數值沒問題
+onboarding-automatic_proportions-check_height-next_step = 使用頭戴顯示器高度
 onboarding-automatic_proportions-check_floor_height-title = 測量地板高度（選用）
 onboarding-automatic_proportions-check_floor_height-description = 在某些情況下，頭戴顯示器可能無法正確設定地板高度，導致頭戴顯示器測得的高度高於應有的高度。你可以測量地板的「高度」以校正頭戴顯示器的高度。
 # All the text is in bold!
@@ -1246,7 +1269,7 @@ onboarding-scaled_proportions-manual_height-title = 設定你的身高
 onboarding-scaled_proportions-manual_height-description-v2 = 身高會當作軀幹比例設定的基礎。
 onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR 目前尚未連接到 SlimeVR，因此無法根據頭戴顯示器測量身高。<b>請查閱說明文件，繼續操作請自行承擔風險！</b>
 onboarding-scaled_proportions-manual_height-height-v2 = 你的身高全長為
-onboarding-scaled_proportions-manual_height-estimated_height = 你的估計身高為：
+onboarding-scaled_proportions-manual_height-estimated_height = 頭戴顯示器估計高度為：
 onboarding-scaled_proportions-manual_height-next_step = 繼續並儲存
 onboarding-scaled_proportions-manual_height-warning =
     你現在正在手動設定縮放型軀幹比例，<b>這個方法僅在你使用 SlimeVR
@@ -1262,6 +1285,40 @@ onboarding-scaled_proportions-reset_proportion-title = 重置軀幹比例
 onboarding-scaled_proportions-reset_proportion-description = 要依照身高設定軀幹比例，你現在需要重置相關設定。本按鈕會清除以前所設定的軀幹比例並提供基本配置。
 onboarding-scaled_proportions-done-title = 軀幹比例已設定
 onboarding-scaled_proportions-done-description = 軀幹比例現在已經依照你的身高設定。
+
+## Stay Aligned setup
+
+onboarding-stay_aligned-title = 持續校正
+onboarding-stay_aligned-description = 設定持續校正功能讓追蹤器保持對齊狀態。
+onboarding-stay_aligned-put_trackers_on-title = 請戴好追蹤器
+onboarding-stay_aligned-put_trackers_on-description = 為了保存放鬆中的姿態，我們將使用你剛才分配的追蹤器。戴上你所有的追蹤器，你可以在右邊的圖中看到追蹤器的對應部位。
+onboarding-stay_aligned-put_trackers_on-trackers_warning = 你目前已連接與分配的追蹤器少於 5 個，持續校正功能需要 5 個以上的追蹤器才能正常運作。
+onboarding-stay_aligned-put_trackers_on-next = 我所有的追蹤器都戴好了
+onboarding-stay_aligned-verify_mounting-title = 確認追蹤器的配戴狀態
+onboarding-stay_aligned-verify_mounting-step-0 = 持續校正功能需要良好的追蹤器配戴固定，否則體驗會不如預期。
+onboarding-stay_aligned-verify_mounting-step-1 = 1. 請站著四處走動。
+onboarding-stay_aligned-verify_mounting-step-2 = 2. 坐下並擺動你的腿跟腳。
+onboarding-stay_aligned-verify_mounting-step-3 = 3. 如果虛擬追蹤器不在正確的位置上，請調整追蹤器並重複這個流程。
+onboarding-stay_aligned-verify_mounting-redo_mounting = 重做配戴校正
+onboarding-stay_aligned-preparation-title = 準備
+onboarding-stay_aligned-preparation-tip = 請確保站直。你必須向前直視，並且兩臂垂到身體兩側。
+onboarding-stay_aligned-relaxed_poses-standing-title = 放鬆的站立姿勢
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. 請以舒適的姿態站著，保持放鬆。
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 3. 請按下「儲存姿勢」按鈕。
+onboarding-stay_aligned-relaxed_poses-sitting-title = 放鬆的坐在椅子上的姿勢
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. 請以舒適的姿態坐著，保持放鬆。
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 3. 請按下「儲存姿勢」按鈕。
+onboarding-stay_aligned-relaxed_poses-flat-title = 放鬆的坐在地板上的姿勢
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. 請以舒適的姿態坐在地板上，腿部朝前，保持放鬆。
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 3. 請按下「儲存姿勢」按鈕。
+onboarding-stay_aligned-relaxed_poses-skip_step = 跳過
+onboarding-stay_aligned-done-title = 持續校正已啟用！
+onboarding-stay_aligned-done-description = 持續校正功能設定完成。
+onboarding-stay_aligned-done-description-2 = 設定完成。若需要重新校正姿勢，可以重新進行這個流程。
+onboarding-stay_aligned-previous_step = 上一步
+onboarding-stay_aligned-next_step = 下一步
+onboarding-stay_aligned-restart = 重新開始
+onboarding-stay_aligned-done = 完成
 
 ## Home
 
@@ -1286,6 +1343,7 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = 追蹤器{ $trackerName }發生錯誤
 status_system-StatusUnassignedHMD = VR 頭戴顯示器應被分配為頭部追蹤器。
+status_system-StatusPublicNetwork = 你的網路設定檔目前設為「公開」，SlimeVR 為了能正常運作，不建議如此設定。 <PublicFixLink>此處提供修正的方法。</PublicFixLink>
 
 ## Firmware tool globals
 
@@ -1468,14 +1526,14 @@ vrc_config-page-wrist_menu = 追蹤 & IK（快速選單）
 vrc_config-page-wrist_menu-desc = 快速選單中與 IK （逆向運動學）相關的設定
 vrc_config-on = 開啟
 vrc_config-off = 關閉
-vrc_config-invalid = VRChat 的設定設錯了！
+vrc_config-invalid = VRChat 的設定有誤！
 vrc_config-show_more = 顯示更多
 vrc_config-setting_name = VRChat 設定名稱
 vrc_config-recommended_value = 建議設定
 vrc_config-current_value = 目前設定
-vrc_config-mute = 將警告靜音
-vrc_config-mute-btn = 靜音
-vrc_config-unmute-btn = 取消靜音
+vrc_config-mute = 消除警告
+vrc_config-mute-btn = 消除
+vrc_config-unmute-btn = 復歸
 vrc_config-legacy_mode = 使用傳統 IK 解決方案
 vrc_config-disable_shoulder_tracking = 停用肩膀追蹤
 vrc_config-shoulder_width_compensation = 肩寬補償
