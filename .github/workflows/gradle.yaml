@@ -330,7 +330,7 @@ jobs:
     if: contains(fromJSON('["workflow_dispatch", "create"]'), github.event_name)
 
     env:
-      BUILD_ARCH: ${{ endsWith(matrix.os, 'arm') && 'warm64' || 'win64' }}
+      BUILD_ARCH: ${{ endsWith(matrix.os, 'arm') && 'win-aarch64' || 'win64' }}
     steps:
       - uses: actions/checkout@v4
         with:
