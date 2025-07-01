@@ -54,6 +54,28 @@ body_part-LEFT_HAND = Linkerhand
 body_part-LEFT_UPPER_LEG = Linkerdij
 body_part-LEFT_LOWER_LEG = Linkerenkel
 body_part-LEFT_FOOT = Linkervoet
+body_part-LEFT_THUMB_METACARPAL = Linkerduim middenhandsbeentje
+body_part-LEFT_THUMB_PROXIMAL = Linkerduim proximaal
+body_part-LEFT_THUMB_DISTAL = Linkerduim distaal
+body_part-LEFT_INDEX_PROXIMAL = Linker wijsvinger proximaal
+body_part-LEFT_INDEX_INTERMEDIATE = Linker middelste kootje van de wijsvinger
+body_part-LEFT_INDEX_DISTAL = Linker wijsvinger distaal
+body_part-LEFT_MIDDLE_PROXIMAL = Linker middelvinger proximaal
+body_part-LEFT_MIDDLE_INTERMEDIATE = Linker middelste kootje van de middelvinger
+body_part-LEFT_MIDDLE_DISTAL = Linker middelvinger distaal
+body_part-LEFT_RING_PROXIMAL = Linker ringvinger proximaal
+body_part-LEFT_RING_INTERMEDIATE = Linker middelste kootje van de ringvinger
+body_part-LEFT_RING_DISTAL = Linker ringvinger distaal
+body_part-RIGHT_THUMB_METACARPAL = Rechterduim middenhandsbeentje
+body_part-RIGHT_THUMB_PROXIMAL = Rechterduim proximaal
+body_part-RIGHT_THUMB_DISTAL = Rechterduim distaal
+body_part-RIGHT_INDEX_PROXIMAL = Rechter wijsvinger proximaal
+body_part-RIGHT_INDEX_INTERMEDIATE = Rechter middelste kootje van de wijsvinger
+body_part-RIGHT_INDEX_DISTAL = Rechter wijsvinger distaal
+body_part-RIGHT_MIDDLE_PROXIMAL = Rechts middelvinger proximaal
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Rechter middelste kootje van de middelvinger
+body_part-RIGHT_MIDDLE_DISTAL = Rechter middelvinger distaal
+body_part-RIGHT_RING_PROXIMAL = Rechter ringvinger proximaal
 
 ## BoardType
 
@@ -942,6 +964,8 @@ onboarding-automatic_mounting-put_trackers_on-next = Ik heb al mijn trackers aan
 
 onboarding-manual_proportions-back = Ga terug naar de reset tutorial
 onboarding-manual_proportions-title = Handmatige lichaamsverhoudingen
+onboarding-manual_proportions-import = Importeer proporties
+onboarding-manual_proportions-file_type = Lichaamsproporties bestand
 
 ## Tracker automatic proportions setup
 
@@ -957,10 +981,18 @@ onboarding-automatic_proportions-requirements-title = Vereisten
 # Each line of text is a different list item
 onboarding-automatic_proportions-requirements-descriptionv2 = Je hebt voldaan aan de minimale vereisten om je voeten te tracken (over het algemeen 5 trackers). Je hebt je trackers en headset aan en draagt ze. Je trackers en headset zijn verbonden met de SlimeVR server en werken naar behoren (zonder haperingen, loskoppelingen etc.). Je headset stuurt positiedata naar de SlimeVR server (dit vereist doorgaans dat SteamVR draait en verbonden is met SlimeVR via de SlimeVR SteamVR-driver). De tracking werkt en registreert je bewegingen nauwkeurig (je hebt bijvoorbeeld een volledige reset uitgevoerd en de trackers bewegen in de juiste richting bij schoppen, bukken, zitten etc.).
 onboarding-automatic_proportions-requirements-next = Ik heb de vereisten gelezen
+onboarding-automatic_proportions-check_height-title-v3 = Meet de hoogte van uw headset
+onboarding-automatic_proportions-check_height-description-v2 = De hoogte van uw headset (HMD) moet iets minder zijn dan uw volledige lengte, aangezien headsets uw ooghoogte meten. Deze meting wordt gebruikt als basis voor uw lichaamsverhoudingen.
 onboarding-automatic_proportions-check_height-guardian_tip = Als je een losse VR-bril gebruikt, zorg er dan voor dat je guardian/veilige zone is ingeschakeld zodat je lengte correct is gekalibreerd!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Onbekend
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height2 = De hoogte van uw headset is:
+onboarding-automatic_proportions-check_height-measure-start = Begin met meten
+onboarding-automatic_proportions-check_height-measure-stop = Stoppen met meten
+onboarding-automatic_proportions-check_height-measure-reset = Probeer opnieuw te meten
 onboarding-automatic_proportions-check_height-next_step = Ze zijn goed
+onboarding-automatic_proportions-check_floor_height-title = Meet uw vloerhoogte (optioneel)
 onboarding-automatic_proportions-start_recording-title = Zorg dat je klaar bent om te bewegen
 onboarding-automatic_proportions-start_recording-description = We gaan nu enkele specifieke houdingen en bewegingen opnemen. Deze worden in het volgende scherm geprompt. Zorg dat je klaar bent om te beginnen als de knop wordt ingedrukt!
 onboarding-automatic_proportions-start_recording-next = Start opname
