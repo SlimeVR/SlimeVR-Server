@@ -877,6 +877,7 @@ settings-utils-advanced-open_logs-label = เปิดโฟลเดอร์
 
 onboarding-skip = ข้ามการตั้งค่า
 onboarding-continue = ดำเนินการต่อ
+onboarding-wip = อยู่ในระหว่างการดำเนินการ
 onboarding-previous_step = ขั้นตอนก่อนหน้า
 onboarding-setup_warning =
     <b>คำเตือน:</b> การตั้งค่าเริ่มต้นนี้จำเป็นสำหรับการจับตำแหน่งที่ดี
