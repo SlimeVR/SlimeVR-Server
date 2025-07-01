@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useMemo, useState } from 'react';
 import {
   defaultValues as defaultDevSettings,
   DeveloperModeWidgetForm,
@@ -25,6 +25,11 @@ export enum AssignMode {
   All = 'all',
 }
 
+export enum UnitType {
+  Metric = 'metric',
+  Imperial = 'imperial',
+}
+
 export interface Config {
   debug: boolean;
   lang: string;
@@ -45,6 +50,7 @@ export interface Config {
   decorations: boolean;
   showNavbarOnboarding: boolean;
   vrcMutedWarnings: string[];
+  unitSystem: UnitType;
 }
 
 export interface ConfigContext {
@@ -72,6 +78,7 @@ export const defaultConfig: Config = {
   decorations: false,
   showNavbarOnboarding: true,
   vrcMutedWarnings: [],
+  unitSystem: UnitType.Metric,
   devSettings: defaultDevSettings,
 };
 
@@ -198,4 +205,12 @@ export function useConfig() {
     throw new Error('useConfig must be within a ConfigContext Provider');
   }
   return context;
+}
+
+export function useUnit() {
+  const { config } = useConfig();
+  return useMemo(() => {
+    const unitSystem = config?.unitSystem ?? defaultConfig.unitSystem;
+    return unitSystem === UnitType.Metric ? 'm' : 'in';
+  }, [config?.unitSystem]);
 }

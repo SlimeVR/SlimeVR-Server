@@ -32,9 +32,9 @@ import { FullResetIcon } from '@/components/commons/icon/ResetIcon';
 import { ImportIcon } from '@/components/commons/icon/ImportIcon';
 import { HumanIcon } from '@/components/commons/icon/HumanIcon';
 import { Typography } from '@/components/commons/Typography';
-import { useLocaleConfig } from '@/i18n/config';
 import { useNavigate } from 'react-router-dom';
 import { ResetButton } from '@/components/home/ResetButton';
+import { HeightDisplay } from '@/components/commons/HeightDisplay';
 
 function IconButton({
   onClick,
@@ -405,7 +405,6 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
 export function ManualProportionsPage() {
   const { applyProgress, state } = useOnboarding();
   const { useRPCPacket } = useWebsocketAPI();
-  const { currentLocales } = useLocaleConfig();
 
   const [userHeight, setUserHeight] = useState(0);
 
@@ -419,15 +418,6 @@ export function ManualProportionsPage() {
     defaultValues,
   });
   const { precise, ratio } = watch();
-
-  const { cmFormat } = useMemo(() => {
-    const cmFormat = Intl.NumberFormat(currentLocales, {
-      style: 'unit',
-      unit: 'centimeter',
-      maximumFractionDigits: 1,
-    });
-    return { cmFormat };
-  }, [currentLocales]);
 
   useEffect(() => {
     localStorage.setItem('ratioMode', ratio?.toString() ?? 'true');
@@ -474,7 +464,7 @@ export function ManualProportionsPage() {
             >
               <div className="h-14 bg-background-50 p-4 flex items-center rounded-lg min-w-36 justify-center">
                 <Typography variant="main-title">
-                  {cmFormat.format((userHeight * 100) / 0.936)}
+                  <HeightDisplay height={userHeight / 0.936} />
                 </Typography>
               </div>
             </Tooltip>

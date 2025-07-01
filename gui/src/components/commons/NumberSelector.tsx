@@ -1,7 +1,7 @@
 import { Control, Controller } from 'react-hook-form';
 import { Button } from './Button';
 import { Typography } from './Typography';
-import { useCallback, useMemo } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
 
 export function NumberSelector({
@@ -14,10 +14,10 @@ export function NumberSelector({
   step,
   doubleStep,
   disabled = false,
-  showButtonWithNumber = false,
+  showButtonWithNumber,
 }: {
   label?: string;
-  valueLabelFormat?: (value: number) => string;
+  valueLabelFormat?: (value: number) => string | ReactNode;
   control: Control<any>;
   name: string;
   min: number;
@@ -25,7 +25,7 @@ export function NumberSelector({
   step: number | ((value: number, add: boolean) => number);
   doubleStep?: number;
   disabled?: boolean;
-  showButtonWithNumber?: boolean;
+  showButtonWithNumber?: number;
 }) {
   const { currentLocales } = useLocaleConfig();
 
@@ -69,8 +69,8 @@ export function NumberSelector({
                   onClick={() => onChange(doubleStepFn(value, false))}
                   disabled={doubleStepFn(value, false) < min || disabled}
                 >
-                  {showButtonWithNumber
-                    ? decimalFormat.format(-doubleStep)
+                  {showButtonWithNumber !== undefined
+                    ? decimalFormat.format(-showButtonWithNumber)
                     : '--'}
                 </Button>
               )}
@@ -102,8 +102,8 @@ export function NumberSelector({
                   onClick={() => onChange(doubleStepFn(value, true))}
                   disabled={doubleStepFn(value, true) > max || disabled}
                 >
-                  {showButtonWithNumber
-                    ? decimalFormat.format(doubleStep)
+                  {showButtonWithNumber !== undefined
+                    ? decimalFormat.format(showButtonWithNumber)
                     : '++'}
                 </Button>
               )}
