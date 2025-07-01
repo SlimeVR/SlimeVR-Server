@@ -9,6 +9,11 @@
 
 websocket-connecting = Verbinding maken met de server
 websocket-connection_lost = Verbinding met de server verbroken. Opniew verbinding maken...
+websocket-connection_lost-desc = Het ziet er naar uit dat de verbinding met de SlimeVR server is verbroken. Check het logboek en start het programma opnieuw.
+websocket-timedout = Kan niet verbinden met de server.
+websocket-timedout-desc = Het ziet er naar uit dat de SlimeVR server is gestopt. Check het logboek en start het programma opnieuw.
+websocket-error-close = SlimeVR afsluiten
+websocket-error-logs = Open het logboek.
 
 ## Update notification
 
@@ -60,7 +65,6 @@ board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
 
 ## Proportions
 
@@ -444,9 +448,6 @@ settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Berek
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Bereken het gemiddelde van de 'yaw en roll van de knie trackers met die van de enkels'
 settings-general-fk_settings-self_localization-title = Mocap modus
 settings-general-fk_settings-self_localization-description = Mocap modus staat het skelet model toe om zijn eigen positie te bepalen zonder het gebruik van een headset of andere trackers. Dit vergt wel het gebruik van voet en hoofd trackers, dit is momenteel nog expirimenteel.
-settings-general-fk_settings-vive_emulation-title = Vive-emulatie
-settings-general-fk_settings-vive_emulation-description = Emuleer de problemen met de taille van Vive trackers. Dit is een mop en maakt tracking slechter.
-settings-general-fk_settings-vive_emulation-label = Vive-emulatie inschakelen
 
 ## Gesture control settings (tracker tapping)
 
@@ -518,6 +519,12 @@ settings-general-interface-feedback_sound-volume = Feedback geluid volume
 settings-general-interface-connected_trackers_warning = Waarschuwing voor verbonden trackers
 settings-general-interface-connected_trackers_warning-description = Deze optie toont een pop-up bericht telkens wanneer je SlimeVR probeert af te sluiten terwijl er nog trackers verbonden zijn. Dit bericht herinnert je eraan om je trackers uit te schakelen wanneer je klaar bent om de batterijduur te sparen.
 settings-general-interface-connected_trackers_warning-label = Waarschuwing voor verbonden trackers bij het afsluiten
+
+## Behavior settings
+
+settings-general-interface-dev_mode = Ontwikkelaarsmodus
+settings-general-interface-dev_mode-description = Deze modus kan nuttig zijn als je diepgaande gegevens nodig hebt of op een geavanceerd niveau wilt communiceren met aangesloten trackers.
+settings-general-interface-dev_mode-label = Ontwikkelaarsmodus
 settings-general-interface-use_tray = Minimaliseren naar systeem vak
 settings-general-interface-use_tray-description = Hiermee kun je het venster sluiten zonder de SlimeVR server te beëindigen, zodat je deze op de achtergrond kunt blijven gebruiken zonder dat de GUI in de weg zit.
 settings-general-interface-use_tray-label = Minimaliseren naar systeem vak
@@ -652,8 +659,6 @@ settings-utils-advanced-reset-all-description = Herstel de standaardwaarden voor
 settings-utils-advanced-reset-all-label = Alles resetten
 settings-utils-advanced-reset_warning-reset = Instellingen resetten
 settings-utils-advanced-reset_warning-cancel = Annuleren
-settings-utils-advanced-open_data = Gegevensmap
-settings-utils-advanced-open_data-description = Open de gegevensmap van SlimeVR in de bestandsverkenner, met configuratie- en logbestanden.
 settings-utils-advanced-open_data-label = Map openen
 
 ## Setup/onboarding menu
@@ -929,43 +934,14 @@ onboarding-automatic_mounting-mounting_reset-title = Montage-reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Ga staan in een "skie"-houding met gebogen benen, je bovenlichaam naar voren gekanteld en armen gebogen.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Druk op de knop "Reset montage" en wacht 3 seconden voordat de montagerichtingen van de trackers opnieuw worden ingesteld.
 onboarding-automatic_mounting-preparation-title = Voorbereiding
-onboarding-automatic_mounting-preparation-step-0 = 1. Sta rechtop met je armen langs je zij.
-onboarding-automatic_mounting-preparation-step-1 = 2. Druk op de knop "Resetten" en wacht 3 seconden voordat de trackers opnieuw worden ingesteld.
 onboarding-automatic_mounting-put_trackers_on-title = Doe je trackers aan
 onboarding-automatic_mounting-put_trackers_on-description = Om montagerichtingen te kalibreren gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
 onboarding-automatic_mounting-put_trackers_on-next = Ik heb al mijn trackers aan
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = Welke verhoudingskalibratiemethode moet worden gebruikt?
-# Multiline string
-onboarding-choose_proportions-description-v1 =
-    Lichaamsverhoudingen worden gebruikt om de afmetingen van je lichaam te bepalen. Deze informatie is nodig om de posities van de trackers te berekenen.
-    Als de verhoudingen van je lichaam niet overeenkomen met de opgeslagen waarden, zal de tracking-precisie slechter zijn. Je kunt dan last krijgen van ongemakkelijke effecten zoals schuiven of glijden, of kan je lichaam niet goed overeenkomen met je avatar in VR.
-    <b>Je hoeft je lichaam maar één keer te meten!</b> Tenzij de metingen onjuist zijn of je lichaam is veranderd, hoef je dit niet opnieuw te doen.
-onboarding-choose_proportions-auto_proportions = Automatische verhoudingen
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = Aanbevolen
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    Deze functie zal je lichaamsverhoudingen schatten door een sample van je bewegingen op te nemen en deze door een algoritme te laten analyseren. 
-    <b>Hiervoor moet je headset (HMD) verbonden zijn met SlimeVR en op je hoofd zitten!</b>
-onboarding-choose_proportions-manual_proportions = Handmatige lichaamsverhoudingen
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = Voor kleine details
-onboarding-choose_proportions-manual_proportions-description = Hier kan je jouw verhoudingen handmatig aanpassen
-onboarding-choose_proportions-export = Export proporties
-onboarding-choose_proportions-import = Importeer proporties
-onboarding-choose_proportions-import-success = geïmporteerd
-onboarding-choose_proportions-import-failed = Mislukt
-onboarding-choose_proportions-file_type = Lichaamsproporties bestand
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = Ga terug naar de reset tutorial
 onboarding-manual_proportions-title = Handmatige lichaamsverhoudingen
-onboarding-manual_proportions-precision = Precisie-aanpassing
-onboarding-manual_proportions-auto = Automatische kalibratie
-onboarding-manual_proportions-ratio = Aanpassen via verhoudingen
 
 ## Tracker automatic proportions setup
 
@@ -981,20 +957,9 @@ onboarding-automatic_proportions-requirements-title = Vereisten
 # Each line of text is a different list item
 onboarding-automatic_proportions-requirements-descriptionv2 = Je hebt voldaan aan de minimale vereisten om je voeten te tracken (over het algemeen 5 trackers). Je hebt je trackers en headset aan en draagt ze. Je trackers en headset zijn verbonden met de SlimeVR server en werken naar behoren (zonder haperingen, loskoppelingen etc.). Je headset stuurt positiedata naar de SlimeVR server (dit vereist doorgaans dat SteamVR draait en verbonden is met SlimeVR via de SlimeVR SteamVR-driver). De tracking werkt en registreert je bewegingen nauwkeurig (je hebt bijvoorbeeld een volledige reset uitgevoerd en de trackers bewegen in de juiste richting bij schoppen, bukken, zitten etc.).
 onboarding-automatic_proportions-requirements-next = Ik heb de vereisten gelezen
-onboarding-automatic_proportions-check_height-title = Controleer je lengte
-onboarding-automatic_proportions-check_height-description =
-    We gebruiken je lengte als een basis voor onze metingen middels de HMD's hoogte, hiermee bepalen we je echte lengte.
-    Maar het is beter om zelf te controleren of dit klopt.
-# All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = Druk op de knop terwijl je <u>rechtop</u> staat om je lengte te berekenen. Je hebt 3 seconden na dat je op de knop drukt!
 onboarding-automatic_proportions-check_height-guardian_tip = Als je een losse VR-bril gebruikt, zorg er dan voor dat je guardian/veilige zone is ingeschakeld zodat je lengte correct is gekalibreerd!
-onboarding-automatic_proportions-check_height-fetch_height = Ik sta!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Onbekend
-# Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = Je HMD lengte is
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = Je echte lengte is
 onboarding-automatic_proportions-check_height-next_step = Ze zijn goed
 onboarding-automatic_proportions-start_recording-title = Zorg dat je klaar bent om te bewegen
 onboarding-automatic_proportions-start_recording-description = We gaan nu enkele specifieke houdingen en bewegingen opnemen. Deze worden in het volgende scherm geprompt. Zorg dat je klaar bent om te beginnen als de knop wordt ingedrukt!
@@ -1030,6 +995,15 @@ onboarding-automatic_proportions-error_modal-v2 =
     Dit is waarschijnlijk een probleem met de montagekalibratie. Zorg ervoor dat je tracking goed werkt voordat je het opnieuw probeert.
      <docs>Bekijk de documentatie</docs> of word lid van onze <discord>Discord</discord> voor hulp ^_^
 onboarding-automatic_proportions-error_modal-confirm = Begrepen!
+
+## Tracker scaled proportions setup
+
+
+## Tracker scaled proportions reset
+
+
+## Stay Aligned setup
+
 
 ## Home
 
@@ -1083,7 +1057,6 @@ firmware_tool-build_step = Aan het bouwen
 firmware_tool-build_step-description = De firmware wordt gebouwd, even geduld a.u.b.
 firmware_tool-flashing_step = Firmware aan het uploaden
 firmware_tool-flashing_step-description = Je trackers worden geflashed, volg de instructies op het scherm
-firmware_tool-flashing_step-warning = Trek de tracker niet los en start hem niet opnieuw op tijdens het uploadproces, tenzij dit wordt verteld, hierdoor kan je bord onbruikbaar worden
 firmware_tool-flashing_step-flash_more = Flash meer trackers
 firmware_tool-flashing_step-exit = Sluit
 
@@ -1146,3 +1119,6 @@ unknown_device-modal-title = Er is een nieuwe tracker gevonden!
 unknown_device-modal-description = Er is een nieuwe tracker gevonden met MAC-adres <b>{ $deviceId }</b>. Wil je deze verbinden met SlimeVR?
 unknown_device-modal-confirm = Tuurlijk!
 unknown_device-modal-forget = Negeer het
+
+## Error collection consent modal
+
