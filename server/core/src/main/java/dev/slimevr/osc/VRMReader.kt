@@ -4,7 +4,6 @@ import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Vector3
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.util.*
 
@@ -14,14 +13,23 @@ class VRMReader(vrmJson: String) {
 	private val data: GLTF = jsonIgnoreKeys.decodeFromString(vrmJson)
 
 	fun getOffsetForBone(unityBone: UnityBone): Vector3 {
-		val bone = try {
-			data.extensions.vrm.humanoid.humanBones.first { it.bone.equals(unityBone.stringVal, ignoreCase = true) }
-		} catch (e: NoSuchElementException) {
+		val node = try {
+			if (data.extensions.vrmV1 != null) {
+				if (data.extensions.vrmV1.specVersion != "1.0") {
+					LogManager.warning("[VRMReader] VRM version is not 1.0")
+				}
+				data.extensions.vrmV1.humanoid.humanBones.getValue(unityBone).node
+			} else {
+				data.extensions.vrmV0?.humanoid?.humanBones?.first {
+					it.bone.equals(unityBone.stringVal, ignoreCase = true)
+				}?.node
+			}
+		} catch (_: NoSuchElementException) {
 			LogManager.warning("[VRMReader] Bone ${unityBone.stringVal} not found in JSON")
-			return Vector3.NULL
-		}
+			null
+		} ?: return Vector3.NULL
 
-		val translationNode = data.nodes[bone.node].translation ?: return Vector3.NULL
+		val translationNode = data.nodes[node].translation ?: return Vector3.NULL
 
 		return Vector3(translationNode[0].toFloat(), translationNode[1].toFloat(), translationNode[2].toFloat())
 	}
@@ -37,17 +45,35 @@ data class GLTF(
 @Serializable
 data class Extensions(
 	@SerialName("VRM")
-	val vrm: VRM,
+	val vrmV0: VRMV0? = null,
+	@SerialName("VRMC_vrm")
+	val vrmV1: VRMV1? = null,
 )
 
 @Serializable
-data class VRM(
-	val humanoid: Humanoid,
+data class VRMV1(
+	val specVersion: String,
+	val humanoid: HumanoidV1,
 )
 
 @Serializable
-data class Humanoid(
-	val humanBones: List<HumanBone>,
+data class HumanoidV1(
+	val humanBones: Map<UnityBone, HumanBoneV1>,
+)
+
+@Serializable
+data class HumanBoneV1(
+	val node: Int,
+)
+
+@Serializable
+data class VRMV0(
+	val humanoid: HumanoidV0,
+)
+
+@Serializable
+data class HumanoidV0(
+	val humanBones: List<HumanBoneV0>,
 	val armStretch: Double,
 	val legStretch: Double,
 	val upperArmTwist: Double,
@@ -59,7 +85,7 @@ data class Humanoid(
 )
 
 @Serializable
-data class HumanBone(
+data class HumanBoneV0(
 	val bone: String,
 	val node: Int,
 	val useDefaultValues: Boolean,
