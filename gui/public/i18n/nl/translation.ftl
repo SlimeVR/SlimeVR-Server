@@ -68,6 +68,7 @@ body_part-LEFT_RING_INTERMEDIATE = Linker middelste kootje van de ringvinger
 body_part-LEFT_RING_DISTAL = Linker ringvinger distaal
 body_part-LEFT_LITTLE_PROXIMAL = Linker kleine vinger proximaal
 body_part-LEFT_LITTLE_INTERMEDIATE = Linker middelste kootje van de kleine vinger
+body_part-LEFT_LITTLE_DISTAL = Linker kleine vinger distaal
 body_part-RIGHT_THUMB_METACARPAL = Rechterduim middenhandsbeentje
 body_part-RIGHT_THUMB_PROXIMAL = Rechterduim proximaal
 body_part-RIGHT_THUMB_DISTAL = Rechterduim distaal
@@ -80,6 +81,9 @@ body_part-RIGHT_MIDDLE_DISTAL = Rechter middelvinger distaal
 body_part-RIGHT_RING_PROXIMAL = Rechter ringvinger proximaal
 body_part-RIGHT_RING_INTERMEDIATE = Rechter middelste kootje van de ringvinger
 body_part-RIGHT_RING_DISTAL = Rechter ringvinger distaal
+body_part-RIGHT_LITTLE_PROXIMAL = Rechter kleine vinger proximaal
+body_part-RIGHT_LITTLE_INTERMEDIATE = Rechter middelste kootje van de kleine vinger
+body_part-RIGHT_LITTLE_DISTAL = Rechter kleine vinger distaal
 
 ## BoardType
 
