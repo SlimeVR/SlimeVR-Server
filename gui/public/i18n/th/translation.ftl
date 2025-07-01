@@ -472,7 +472,7 @@ mounting_selection_menu-close = ปิด
 
 settings-sidebar-title = การตั้งค่า
 settings-sidebar-general = ทั่วไป
-settings-sidebar-tracker_mechanics = การทำงานของแทร็กเกอร์
+settings-sidebar-tracker_mechanics = การทำงานแทร็กเกอร์
 settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = ตั้งค่าการจับตำแหน่ง
 settings-sidebar-gesture_control = ควบคุมผ่านท่าทาง
@@ -520,7 +520,7 @@ settings-general-steamvr-trackers-hands-warning-done = ตกลง
 
 ## Tracker mechanics
 
-settings-general-tracker_mechanics = การทำงานของแทร็กเกอร์
+settings-general-tracker_mechanics = การทำงานแทร็กเกอร์
 settings-general-tracker_mechanics-filtering = การกรอง
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
@@ -1131,6 +1131,7 @@ onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = กรุณ
 onboarding-manual_proportions-export = ส่งออกค่าสัดส่วน
 onboarding-manual_proportions-import = นำเข้าค่าสัดส่วน
 onboarding-manual_proportions-file_type = ไฟล์ข้อมูลสัดส่วน
+onboarding-manual_proportions-estimated_height = ความสูงของผู้ใช้โดยประมาณ
 
 ## Tracker automatic proportions setup
 
@@ -1191,23 +1192,39 @@ onboarding-automatic_proportions-recording-processing = กำลังประ
 onboarding-automatic_proportions-recording-timer = เหลือ { $time } นาที
 onboarding-automatic_proportions-verify_results-title = ยืนยันผลลัพธ์
 onboarding-automatic_proportions-verify_results-description = ตรวจสอบผลลัพธ์ด้านล่างว่าดูถูกต้องหรือไม่?
+onboarding-automatic_proportions-verify_results-results = ผลลัพธ์ของการบันทึก
+onboarding-automatic_proportions-verify_results-processing = กำลังประมวลผลผลลัพธ์
+onboarding-automatic_proportions-verify_results-redo = ทำการบันทึกใหม่อีกรอบ
+onboarding-automatic_proportions-verify_results-confirm = ถูกต้องหมดแล้ว
+onboarding-automatic_proportions-done-title = วัดสัดส่วนร่างกายและบันทึกแล้ว
+onboarding-automatic_proportions-done-description = ปรับสัดส่วนร่างกายของคุณสำเร็จแล้ว
 onboarding-automatic_proportions-error_modal-v2 =
     <b>คำเตือน:</b> มีความผิดพลาดระหว่างการประมาณสัดส่วน!
     อาจเกิดได้จากตำแหน่งแทร็กเกอร์ที่ผิด ตรวจสอบว่าแทร็กเกอร์นั้นทํางานอย่างถูกต้องแล้วลองอีกครั้ง
     โปรดตรวจสอบ <docs>เอกสาร</docs> หรือเข้าร่วม <discord>Discord</discord> ของเราเพื่อขอความช่วยเหลือ ^_^
+onboarding-automatic_proportions-error_modal-confirm = เข้าใจแล้ว!
+onboarding-automatic_proportions-smol_warning-cancel = ย้อนกลับ
 
 ## Tracker scaled proportions setup
 
+onboarding-scaled_proportions-manual_height-title = กําหนดค่าความสูงของคุณ
+onboarding-scaled_proportions-manual_height-estimated_height = ความสูงโดยประมาณของ HMD คือ:
+onboarding-scaled_proportions-manual_height-next_step = ดําเนินการต่อและบันทึก
 
 ## Tracker scaled proportions reset
 
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-title = Stay Aligned
 onboarding-stay_aligned-put_trackers_on-title = ใส่แทร็กเกอร์ของคุณ
 onboarding-stay_aligned-put_trackers_on-trackers_warning = คุณต้องมีแทร็กเกอร์มากกว่า 5 ตัว ที่กำลังเชื่อมต่ออยู่และถูกกำหนดตำแหน่งแล้ว นี่เป็นจำนวนขั้นต่ำในการใช้งาน Stay Aligned
+onboarding-stay_aligned-put_trackers_on-next = ฉันใส่แทร็กเกอร์ทั้งหมดแล้ว
+onboarding-stay_aligned-verify_mounting-title = ตรวจสอบตำแหน่งแทร็กเกอร์คุณ
+onboarding-stay_aligned-verify_mounting-step-0 = Stay Aligned ต้องการการตั้งทิศทางที่ดี ไม่เช่นนั้นคุณจะไม่ได้ประสบการ์ณที่ดีจาก Stay Aligned
 onboarding-stay_aligned-verify_mounting-step-3 = 3. ถ้าแทร็กเกอร์ของคุณอยู่ผิดตำแหน่ง กรุณากด "ปรับเทียบตำแหน่งแทร็กเกอร์อีกครั้ง"
 onboarding-stay_aligned-verify_mounting-redo_mounting = ปรับเทียบตำแหน่งแทร็กเกอร์อีกครั้ง
+onboarding-stay_aligned-preparation-title = เตรียมพร้อม
 onboarding-stay_aligned-relaxed_poses-skip_step = ข้าม
 onboarding-stay_aligned-done-title = เปิดใช้งาน Stay Aligned แล้ว!
 onboarding-stay_aligned-done-description = การตั้งค่า Stay Aligned ของคุณสำเร็จแล้ว!
@@ -1395,6 +1412,12 @@ vrc_config-unmute-btn = เลิกแจ้งเตือน
 vrc_config-legacy_mode = การตั้งศูนย์แบบเก่า
 vrc_config-calibration_range = ช่วงการตั้งศูนย์
 vrc_config-spine_mode-UNKNOWN = ไม่ทราบ
+vrc_config-tracker_model-UNKNOWN = ไม่ทราบ
+vrc_config-tracker_model-AXIS = แกนหมุน
+vrc_config-tracker_model-BOX = กล่อง
+vrc_config-tracker_model-SPHERE = ทรงกลม
+vrc_config-tracker_model-SYSTEM = ระบบ
+vrc_config-avatar_measurement_type-UNKNOWN = ไม่ทราบ
 
 ## Error collection consent modal
 
