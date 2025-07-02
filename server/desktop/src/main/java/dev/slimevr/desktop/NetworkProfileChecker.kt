@@ -6,10 +6,10 @@ import com.sun.jna.platform.win32.COM.COMUtils
 import com.sun.jna.platform.win32.COM.Dispatch
 import com.sun.jna.platform.win32.Guid.CLSID
 import com.sun.jna.platform.win32.Guid.IID
+import com.sun.jna.platform.win32.OaIdl.VARIANT_BOOLByReference
 import com.sun.jna.platform.win32.Ole32
 import com.sun.jna.platform.win32.OleAuto
 import com.sun.jna.platform.win32.WTypes
-import com.sun.jna.platform.win32.WinDef.BOOLByReference
 import com.sun.jna.platform.win32.WinNT.HRESULT
 import com.sun.jna.ptr.IntByReference
 import com.sun.jna.ptr.PointerByReference
@@ -212,7 +212,7 @@ class INetwork(instance: Pointer?) :
 
 	@Throws(COMException::class)
 	fun IsConnected(): Boolean {
-		val bool = BOOLByReference()
+		val bool = VARIANT_BOOLByReference()
 		val hr = _invokeNativeInt(VTable.IsConnected, arrayOf(pointer, bool))
 		COMUtils.checkRC(HRESULT(hr))
 		return bool.value.booleanValue()
