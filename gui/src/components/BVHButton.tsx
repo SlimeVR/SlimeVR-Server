@@ -11,8 +11,10 @@ import { RecordIcon } from './commons/icon/RecordIcon';
 import classNames from 'classnames';
 import { isTauri } from '@tauri-apps/api/core';
 import { save } from '@tauri-apps/plugin-dialog';
+import { useConfig } from '@/hooks/config';
 
 export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
+  const { config } = useConfig();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [recording, setRecording] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -23,21 +25,27 @@ export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   }, []);
 
   const toggleBVH = async () => {
-    const record = new RecordBVHRequestT(recording, null);
+    const record = new RecordBVHRequestT(recording, null, null);
+
     if (isTauri() && !recording) {
-      setSaving(true);
-      record.filePath = await save({
-        title: l10n.getString('bvh-save_title'),
-        filters: [
-          {
-            name: 'BVH',
-            extensions: ['bvh'],
-          },
-        ],
-        defaultPath: 'bvh-recording.bvh',
-      });
-      setSaving(false);
+      if (config?.bvhDirectory) {
+        record.folderPath = config.bvhDirectory;
+      } else {
+        setSaving(true);
+        record.filePath = await save({
+          title: l10n.getString('bvh-save_title'),
+          filters: [
+            {
+              name: 'BVH',
+              extensions: ['bvh'],
+            },
+          ],
+          defaultPath: 'bvh-recording.bvh',
+        });
+        setSaving(false);
+      }
     }
+
     sendRPCPacket(RpcMessage.RecordBVHRequest, record);
   };
 
