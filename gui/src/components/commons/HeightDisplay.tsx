@@ -11,11 +11,13 @@ export function HeightDisplay({
   heightUnit = 'm',
   unitDisplay = 'short',
   className,
+  roundInches = false,
 }: {
   heightUnit?: 'm' | 'cm' | 'in';
   height: number;
   unitDisplay?: 'narrow' | 'short' | 'long';
   className?: string;
+  roundInches?: boolean;
 }) {
   const { currentLocales } = useLocaleConfig();
   const { config } = useConfig();
@@ -57,7 +59,9 @@ export function HeightDisplay({
     if (unitSystem === UnitType.Metric) {
       return cmFormat.format(convert(height, heightUnit).to('cm'));
     } else {
-      const totalInches = convert(height, heightUnit).to('inches');
+      let totalInches = convert(height, heightUnit).to('inches');
+      if (roundInches) totalInches = Math.round(totalInches);
+
       const feet = Math.trunc(totalInches / 12);
       const remainingInches = totalInches % 12;
       return (

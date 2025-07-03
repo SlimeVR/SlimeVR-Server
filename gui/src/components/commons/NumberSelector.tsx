@@ -1,7 +1,7 @@
 import { Control, Controller } from 'react-hook-form';
 import { Button } from './Button';
 import { Typography } from './Typography';
-import { ReactNode, useCallback, useMemo } from 'react';
+import { ReactNode, useMemo } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
 
 export function NumberSelector({
@@ -22,8 +22,8 @@ export function NumberSelector({
   name: string;
   min: number;
   max: number;
-  step: number | ((value: number, add: boolean) => number);
-  doubleStep?: number;
+  step: number | ((value: number, sign: number) => number);
+  doubleStep?: number | ((value: number, sign: number) => number);
   disabled?: boolean;
   showButtonWithNumber?: number;
 }) {
@@ -32,16 +32,15 @@ export function NumberSelector({
   const stepFn =
     typeof step === 'function'
       ? step
-      : (value: number, add: boolean) =>
-          +(add ? value + step : value - step).toFixed(2);
+      : (value: number, sign: number) => +(value + step * sign).toFixed(2);
 
-  const doubleStepFn = useCallback(
-    (value: number, add: boolean) =>
-      doubleStep === undefined
-        ? 0
-        : +(add ? value + doubleStep : value - doubleStep).toFixed(2),
-    [doubleStep]
-  );
+  const doubleStepFn =
+    typeof doubleStep === 'function'
+      ? doubleStep
+      : (value: number, sign: number) =>
+          doubleStep === undefined
+            ? 0
+            : +(value + doubleStep * sign).toFixed(2);
 
   const decimalFormat = useMemo(
     () =>
@@ -66,8 +65,8 @@ export function NumberSelector({
                 <Button
                   variant="tertiary"
                   rounded
-                  onClick={() => onChange(doubleStepFn(value, false))}
-                  disabled={doubleStepFn(value, false) < min || disabled}
+                  onClick={() => onChange(doubleStepFn(value, -1))}
+                  disabled={doubleStepFn(value, -1) < min || disabled}
                 >
                   {showButtonWithNumber !== undefined
                     ? decimalFormat.format(-showButtonWithNumber)
@@ -77,8 +76,8 @@ export function NumberSelector({
               <Button
                 variant="tertiary"
                 rounded
-                onClick={() => onChange(stepFn(value, false))}
-                disabled={stepFn(value, false) < min || disabled}
+                onClick={() => onChange(stepFn(value, -1))}
+                disabled={stepFn(value, -1) < min || disabled}
               >
                 -
               </Button>
@@ -90,8 +89,8 @@ export function NumberSelector({
               <Button
                 variant="tertiary"
                 rounded
-                onClick={() => onChange(stepFn(value, true))}
-                disabled={stepFn(value, true) > max || disabled}
+                onClick={() => onChange(stepFn(value, 1))}
+                disabled={stepFn(value, 1) > max || disabled}
               >
                 +
               </Button>
@@ -99,8 +98,8 @@ export function NumberSelector({
                 <Button
                   variant="tertiary"
                   rounded
-                  onClick={() => onChange(doubleStepFn(value, true))}
-                  disabled={doubleStepFn(value, true) > max || disabled}
+                  onClick={() => onChange(doubleStepFn(value, 1))}
+                  disabled={doubleStepFn(value, 1) > max || disabled}
                 >
                   {showButtonWithNumber !== undefined
                     ? decimalFormat.format(showButtonWithNumber)

@@ -5,7 +5,6 @@ import { useLocalization } from '@fluent/react';
 import { useEffect } from 'react';
 import {
   DEFAULT_FULL_HEIGHT,
-  DEFAULT_FULL_HEIGHT_INCHES,
   EYE_HEIGHT_TO_HEIGHT_RATIO,
   useHeightContext,
 } from '@/hooks/height';
@@ -26,6 +25,8 @@ import convert from 'convert';
 interface HeightForm {
   height: number;
 }
+
+const INCH_IN_METER = convert(1, 'inch').to('m');
 
 export function ManualHeightStep({
   nextStep,
@@ -51,19 +52,13 @@ export function ManualHeightStep({
   useEffect(() => {
     reset({
       height:
-        (currentHeight &&
-          convert(currentHeight / EYE_HEIGHT_TO_HEIGHT_RATIO, 'm').to(
-            currentUnit
-          )) ||
-        currentUnit === 'm'
-          ? DEFAULT_FULL_HEIGHT
-          : DEFAULT_FULL_HEIGHT_INCHES,
+        (currentHeight && currentHeight / EYE_HEIGHT_TO_HEIGHT_RATIO) ||
+        DEFAULT_FULL_HEIGHT,
     });
   }, [currentHeight]);
 
   const submitFullHeight = (values: HeightForm) => {
-    const newHeight =
-      convert(values.height, currentUnit).to('m') * EYE_HEIGHT_TO_HEIGHT_RATIO;
+    const newHeight = values.height * EYE_HEIGHT_TO_HEIGHT_RATIO;
     setHmdHeight(newHeight);
     const settingsRequest = new ChangeSettingsRequestT();
     settingsRequest.modelSettings = new ModelSettingsT(
@@ -110,16 +105,29 @@ export function ManualHeightStep({
                 ) : (
                   <HeightDisplay
                     height={value}
-                    heightUnit={currentUnit}
                     unitDisplay="narrow"
+                    roundInches
                   />
                 )
               }
-              min={convert(MIN_HEIGHT, 'm').to(currentUnit)}
-              max={convert(4, 'm').to(currentUnit)}
-              step={currentUnit === 'm' ? 0.01 : 1}
+              min={MIN_HEIGHT}
+              max={4}
+              step={
+                currentUnit === 'm'
+                  ? 0.01
+                  : (v, s) =>
+                      Math.round((v + INCH_IN_METER * s) / INCH_IN_METER) *
+                      INCH_IN_METER
+              }
               showButtonWithNumber={currentUnit === 'm' ? 10 : 12}
-              doubleStep={currentUnit === 'm' ? 0.1 : 12}
+              doubleStep={
+                currentUnit === 'm'
+                  ? 0.1
+                  : (v, s) =>
+                      Math.round(
+                        (v + convert(1, 'ft').to('m') * s) / INCH_IN_METER
+                      ) * INCH_IN_METER
+              }
             />
           </div>
           <div className="flex flex-col self-center items-center justify-center">
@@ -129,12 +137,7 @@ export function ManualHeightStep({
               )}
             </Typography>
             <Typography>
-              <HeightDisplay
-                height={
-                  convert(height, currentUnit).to('m') *
-                  EYE_HEIGHT_TO_HEIGHT_RATIO
-                }
-              />
+              <HeightDisplay height={height * EYE_HEIGHT_TO_HEIGHT_RATIO} />
             </Typography>
           </div>
         </div>
