@@ -325,7 +325,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			}
 		} else {
 			if (!api.server.bvhRecorder.isRecording) {
-				api.server.bvhRecorder.startRecording(Path(req.folderPath() ?: req.filePath()))
+				api.server.bvhRecorder.startRecording(Path(req.path()))
 			}
 		}
 

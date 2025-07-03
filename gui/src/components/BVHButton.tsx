@@ -25,14 +25,14 @@ export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
   }, []);
 
   const toggleBVH = async () => {
-    const record = new RecordBVHRequestT(recording, null, null);
+    const record = new RecordBVHRequestT(recording);
 
     if (isTauri() && !recording) {
       if (config?.bvhDirectory) {
-        record.folderPath = config.bvhDirectory;
+        record.path = config.bvhDirectory;
       } else {
         setSaving(true);
-        record.filePath = await save({
+        record.path = await save({
           title: l10n.getString('bvh-save_title'),
           filters: [
             {
