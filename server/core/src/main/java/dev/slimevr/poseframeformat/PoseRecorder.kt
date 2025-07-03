@@ -1,9 +1,9 @@
 package dev.slimevr.poseframeformat
 
-import dev.slimevr.TickReducer
 import dev.slimevr.VRServer
 import dev.slimevr.poseframeformat.trackerdata.TrackerFrames
 import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.util.TickReducer
 import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager

@@ -1,4 +1,4 @@
-package dev.slimevr
+package dev.slimevr.util
 
 class TickReducer(
 	/**

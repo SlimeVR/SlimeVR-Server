@@ -1,7 +1,7 @@
 package dev.slimevr.posestreamer
 
-import dev.slimevr.TickReducer
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
+import dev.slimevr.util.TickReducer
 import java.io.IOException
 
 open class TickPoseStreamer(skeleton: HumanSkeleton) : PoseStreamer(skeleton) {
