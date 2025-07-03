@@ -293,7 +293,7 @@ widget-imu_visualizer-rotation_raw = Raw rotation
 widget-imu_visualizer-rotation_preview = Preview rotation
 widget-imu_visualizer-acceleration = Acceleration
 widget-imu_visualizer-position = Position
-widget-imu_visualizer-stay_aligned = Stay Aligned
+widget-imu_visualizer-stay_aligned = { -stay_aligned }
 
 ## Widget: Skeleton Visualizer
 widget-skeleton_visualizer-preview = Skeleton preview
@@ -318,7 +318,7 @@ tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Rotation X/Y/Z
 tracker-table-column-position = Position X/Y/Z
-tracker-table-column-stay_aligned = Stay Aligned
+tracker-table-column-stay_aligned = { -stay_aligned }
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -449,7 +449,7 @@ mounting_selection_menu-close = Close
 settings-sidebar-title = Settings
 settings-sidebar-general = General
 settings-sidebar-tracker_mechanics = Tracker mechanics
-settings-sidebar-stay_aligned = Stay Aligned
+settings-sidebar-stay_aligned = { -stay_aligned }
 settings-sidebar-fk_settings = Tracking settings
 settings-sidebar-gesture_control = Gesture control
 settings-sidebar-interface = Interface
@@ -542,16 +542,17 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Can be disabled per tracker in the tracker's settings. <b>Please don't shutdown any of the trackers while toggling this!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetometer on trackers
 
-settings-stay_aligned = Stay Aligned
-settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
-settings-stay_aligned-setup-label = Setup Stay Aligned
-settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
-settings-stay_aligned-warnings-drift_compensation = ⚠ Please turn off Drift Compensation! Drift Compensation will conflict with Stay Aligned.
+-stay_aligned = Stay Aligned
+-stay_aligned-setup = Setup { -stay_aligned }
+settings-stay_aligned = { -stay_aligned }
+settings-stay_aligned-description = { -stay_aligned } reduces drift by gradually adjusting your trackers to match your relaxed poses.
+settings-stay_aligned-setup-label = { -stay_aligned-setup }
+settings-stay_aligned-setup-description = You must complete "{ -stay_aligned-setup }" to enable { -stay_aligned }.
 settings-stay_aligned-enabled-label = Adjust trackers
-settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare with no Stay Aligned)
+settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (pretend { -stay_aligned } is disabled)
 settings-stay_aligned-general-label = General
 settings-stay_aligned-relaxed_poses-label = Relaxed Poses
-settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.
+settings-stay_aligned-relaxed_poses-description = { -stay_aligned } uses your relaxed poses to keep the trackers aligned.
 settings-stay_aligned-relaxed_poses-standing = Adjust trackers while standing
 settings-stay_aligned-relaxed_poses-sitting = Adjust trackers while sitting in a chair
 settings-stay_aligned-relaxed_poses-flat = Adjust trackers while sitting on the floor, or lying on your back
@@ -559,7 +560,7 @@ settings-stay_aligned-relaxed_poses-save_pose = Save pose
 settings-stay_aligned-relaxed_poses-reset_pose = Reset pose
 settings-stay_aligned-relaxed_poses-close = Close
 settings-stay_aligned-debug-label = Debugging
-settings-stay_aligned-debug-description = Please include your settings when reporting problems about Stay Aligned.
+settings-stay_aligned-debug-description = Please include your settings when reporting problems about { -stay_aligned }.
 settings-stay_aligned-debug-copy-label = Copy settings to clipboard
 
 ## FK/Tracking settings
@@ -1248,14 +1249,14 @@ onboarding-scaled_proportions-done-title = Body proportions set
 onboarding-scaled_proportions-done-description = Your body proportions should now be configured based on your height.
 
 ## Stay Aligned setup
-onboarding-stay_aligned-title = Stay Aligned
-onboarding-stay_aligned-description = Configure Stay Aligned to keep your trackers aligned.
+onboarding-stay_aligned-title = { -stay_aligned }
+onboarding-stay_aligned-description = Configure { -stay_aligned } to keep your trackers aligned.
 onboarding-stay_aligned-put_trackers_on-title = Put on your trackers
 onboarding-stay_aligned-put_trackers_on-description = To save your resting poses, we'll use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
-onboarding-stay_aligned-put_trackers_on-trackers_warning = You have fewer than 5 trackers currently connected and assigned! This is the minimum amount of trackers required for Stay Aligned to function properly.
+onboarding-stay_aligned-put_trackers_on-trackers_warning = You have fewer than 5 trackers currently connected and assigned! This is the minimum amount of trackers required for { -stay_aligned } to function properly.
 onboarding-stay_aligned-put_trackers_on-next = I have all my trackers on
 onboarding-stay_aligned-verify_mounting-title = Check your Mounting
-onboarding-stay_aligned-verify_mounting-step-0 = Stay Aligned requires good mounting. Otherwise, you won't get a good experience with Stay Aligned.
+onboarding-stay_aligned-verify_mounting-step-0 = { -stay_aligned } requires good mounting. Otherwise, you won't get a good experience with { -stay_aligned }.
 onboarding-stay_aligned-verify_mounting-step-1 = 1. Move around while standing.
 onboarding-stay_aligned-verify_mounting-step-2 = 2. Sit down and move your legs and feet.
 onboarding-stay_aligned-verify_mounting-step-3 = 3. If your trackers aren't in the right place, press "Redo Mounting Calibration"
@@ -1272,8 +1273,8 @@ onboarding-stay_aligned-relaxed_poses-flat-title = Relaxed Sitting on Floor Pose
 onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sit on the floor with your legs in front. Relax!
 onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Press the "Save pose" button.
 onboarding-stay_aligned-relaxed_poses-skip_step = Skip
-onboarding-stay_aligned-done-title = Stay Aligned enabled!
-onboarding-stay_aligned-done-description = Your Stay Aligned setup is complete!
+onboarding-stay_aligned-done-title = { -stay_aligned } enabled!
+onboarding-stay_aligned-done-description = Your { -stay_aligned } setup is complete!
 onboarding-stay_aligned-done-description-2 = Setup is complete! You may restart the process if you want to re-calibrate the poses
 onboarding-stay_aligned-previous_step = Previous
 onboarding-stay_aligned-next_step = Next
