@@ -5,14 +5,16 @@ import io.eiren.util.logging.LogManager
 import java.io.File
 import java.io.IOException
 import java.nio.file.Path
-import kotlin.io.path.isDirectory
 
 class BVHRecorder(server: VRServer) {
 	private val poseStreamer: ServerPoseStreamer = ServerPoseStreamer(server)
 	private var poseDataStream: PoseDataStream? = null
 
-	fun startRecording(newPath: Path?) {
-		val filePath = newPath?.toFile() ?: return
+	val isRecording: Boolean
+		get() = poseDataStream != null
+
+	fun startRecording(path: Path) {
+		val filePath = path.toFile()
 
 		val file = if (filePath.isDirectory()) {
 			getBvhFile(filePath) ?: return
@@ -21,21 +23,23 @@ class BVHRecorder(server: VRServer) {
 		}
 
 		try {
-			poseDataStream = BVHFileStream(file)
-			poseStreamer.setOutput(poseDataStream, 1000L / 100L)
+			val stream = BVHFileStream(file)
+			poseDataStream = stream
+			// 100 FPS
+			poseStreamer.setOutput(stream, 1f / 100f)
 		} catch (_: IOException) {
-			LogManager
-				.severe(
-					"[BVH] Failed to create the recording file \"${file.path}\".",
-				)
+			LogManager.severe("[BVH] Failed to create the recording file \"${file.path}\".")
 		}
 	}
 
 	fun endRecording() {
 		try {
-			poseStreamer.closeOutput(poseDataStream)
-		} catch (e: Exception) {
-			LogManager.severe("[BVH] Exception while closing poseDataStream", e)
+			val stream = poseDataStream
+			if (stream != null) {
+				poseStreamer.closeOutput(stream)
+			}
+		} catch (e1: Exception) {
+			LogManager.severe("[BVH] Exception while closing poseDataStream", e1)
 		} finally {
 			poseDataStream = null
 		}
@@ -52,14 +56,12 @@ class BVHRecorder(server: VRServer) {
 
 			return saveRecording
 		} else {
-			LogManager.severe(
-				"[BVH] Failed to create the recording directory \"${bvhSaveDir.path}\"",
-			)
+			LogManager
+				.severe(
+					"[BVH] Failed to create the recording directory \"${bvhSaveDir.path}\".",
+				)
 		}
 
 		return null
 	}
-
-	val isRecording: Boolean
-		get() = poseDataStream != null
 }
