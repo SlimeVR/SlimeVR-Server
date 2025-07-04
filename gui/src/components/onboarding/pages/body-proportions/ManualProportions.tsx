@@ -35,6 +35,7 @@ import { Typography } from '@/components/commons/Typography';
 import { useLocaleConfig } from '@/i18n/config';
 import { useNavigate } from 'react-router-dom';
 import { ResetButton } from '@/components/home/ResetButton';
+import { Vector3 } from 'three';
 
 function IconButton({
   onClick,
@@ -454,9 +455,25 @@ export function ManualProportionsPage() {
           </div>
         </div>
         <div className="rounded-md overflow-clip w-1/3 bg-background-60 hidden mobile:hidden sm:flex relative">
-          <SkeletonVisualizerWidget />
+          <SkeletonVisualizerWidget
+            onInit={(context) => {
+              context.addView({
+                left: 0,
+                bottom: 0,
+                width: 1,
+                height: 1,
+                position: new Vector3(3, 2.5, -3),
+                onHeightChange(v, newHeight) {
+                  // retouch the target and scale settings so the height element doesnt hide the head
+                  v.controls.target.set(0, newHeight / 1.7, 0);
+                  const scale = Math.max(1, newHeight) / 1.2;
+                  v.camera.zoom = 1 / scale;
+                },
+              });
+            }}
+          />
 
-          <div className="top-4 w-full px-4 absolute flex gap-2 flex-col md:flex-row">
+          <div className="top-4 w-full px-4 absolute flex gap-2 flex-col lg:flex-row md:flex-wrap">
             <div className="h-14 flex flex-grow items-center">
               <ResetButton
                 type={ResetType.Full}

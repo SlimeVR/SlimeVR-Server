@@ -259,6 +259,7 @@ navbar-settings = Settings
 ## Biovision hierarchy recording
 bvh-start_recording = Record BVH
 bvh-recording = Recording...
+bvh-save_title = Save BVH recording
 
 ## Tracking pause
 tracking-unpaused = Pause tracking
@@ -713,6 +714,9 @@ settings-interface-behavior-error_tracking-description_v2 =
     To provide the best user experience, we collect anonymized error reports, performance metrics, and operating system information. This helps us detect bugs and issues with SlimeVR. These metrics are collected via Sentry.io.
 
 settings-interface-behavior-error_tracking-label = Send errors to developers
+settings-interface-behavior-bvh_directory = Directory to save BVH recordings
+settings-interface-behavior-bvh_directory-description = Choose a directory to save your BVH recordings instead of having to choose where to save them each time.
+settings-interface-behavior-bvh_directory-label = Directory for BVH recordings
 
 ## Serial settings
 settings-serial = Serial Console
@@ -1298,8 +1302,10 @@ status_system-StatusSteamVRDisconnected = { $type ->
     [steamvr_feeder] Currently not connected to the SlimeVR Feeder App.
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
-status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
-status_system-StatusPublicNetwork = Your network profile is currently set to Public. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+status_system-StatusPublicNetwork = {$count -> 
+    [one] Your network profile is currently set to Public ({$adapters}). This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+    *[many] Some of your network adapters are set to public: {$adapters}. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+}
 
 
 ## Firmware tool globals
