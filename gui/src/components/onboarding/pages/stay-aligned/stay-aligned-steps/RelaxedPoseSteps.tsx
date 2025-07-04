@@ -77,7 +77,7 @@ export const StandingRelaxedPoseStep = (
     {...verticalStepProps}
     descriptionKeys={[
       'onboarding-stay_aligned-relaxed_poses-standing-step-0',
-      'onboarding-stay_aligned-relaxed_poses-standing-step-2',
+      'onboarding-stay_aligned-relaxed_poses-standing-step-1-v2',
     ]}
     relaxedPose={StayAlignedRelaxedPose.STANDING}
   >
@@ -96,7 +96,7 @@ export const SittingRelaxedPoseStep = (
     {...verticalStepProps}
     descriptionKeys={[
       'onboarding-stay_aligned-relaxed_poses-sitting-step-0',
-      'onboarding-stay_aligned-relaxed_poses-sitting-step-2',
+      'onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2',
     ]}
     relaxedPose={StayAlignedRelaxedPose.SITTING}
   >
@@ -115,7 +115,7 @@ export const FlatRelaxedPoseStep = (
     {...verticalStepProps}
     descriptionKeys={[
       'onboarding-stay_aligned-relaxed_poses-flat-step-0',
-      'onboarding-stay_aligned-relaxed_poses-flat-step-2',
+      'onboarding-stay_aligned-relaxed_poses-flat-step-1-v2',
     ]}
     relaxedPose={StayAlignedRelaxedPose.FLAT}
     lastStep

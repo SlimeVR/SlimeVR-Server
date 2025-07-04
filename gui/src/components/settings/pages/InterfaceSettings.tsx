@@ -18,6 +18,8 @@ import { Range } from '@/components/commons/Range';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { ArrowRightLeftIcon } from '@/components/commons/icon/ArrowIcons';
 import { isTrayAvailable } from '@/utils/tauri';
+import { isTauri } from '@tauri-apps/api/core';
+import { TauriFileInput } from '@/components/commons/TauriFileInput';
 
 interface InterfaceSettingsForm {
   appearance: {
@@ -32,6 +34,7 @@ interface InterfaceSettingsForm {
     useTray: boolean;
     discordPresence: boolean;
     errorTracking: boolean;
+    bvhDirectory: string | null;
   };
   notifications: {
     watchNewDevices: boolean;
@@ -71,6 +74,7 @@ export function InterfaceSettings() {
         discordPresence:
           config?.discordPresence ?? defaultConfig.discordPresence,
         errorTracking: config?.errorTracking ?? false,
+        bvhDirectory: config?.bvhDirectory ?? defaultConfig.bvhDirectory,
       },
     },
   });
@@ -92,6 +96,7 @@ export function InterfaceSettings() {
       discordPresence: values.behavior.discordPresence,
       debug: values.behavior.devmode,
       errorTracking: values.behavior.errorTracking,
+      bvhDirectory: values.behavior.bvhDirectory,
     });
   };
 
@@ -314,6 +319,32 @@ export function InterfaceSettings() {
                 )}
               />
             </div>
+
+            {isTauri() && (
+              <>
+                <Typography bold>
+                  {l10n.getString('settings-interface-behavior-bvh_directory')}
+                </Typography>
+                <div className="flex flex-col pt-1 pb-2">
+                  <Localized
+                    id={'settings-interface-behavior-bvh_directory-description'}
+                  >
+                    <Typography color="secondary"></Typography>
+                  </Localized>
+                </div>
+                <div className="grid gap-3 pb-5">
+                  <TauriFileInput
+                    name="behavior.bvhDirectory"
+                    rules={{
+                      required: false,
+                    }}
+                    control={control}
+                    label="settings-interface-behavior-bvh_directory-label"
+                    directory
+                  />
+                </div>
+              </>
+            )}
           </>
         </SettingsPagePaneLayout>
 

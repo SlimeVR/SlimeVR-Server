@@ -58,7 +58,7 @@ public class ConfigManager {
 		}
 	}
 
-	public void atomicMove(Path from, Path to) throws IOException {
+	static public void atomicMove(Path from, Path to) throws IOException {
 		try {
 			// Atomic move to overwrite
 			Files.move(from, to, StandardCopyOption.ATOMIC_MOVE);

@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -10,13 +7,29 @@
 
 ## Websocket (server) status
 
-websocket-connecting = Kobler til serveren
+websocket-connecting = Laster...
 websocket-connection_lost = Mistet server-tilkobling. Vennligst vent mens koblingen gjenopprettes...
+websocket-connection_lost-desc = Det ser ut som at SlimeVR serveren har krasjet. Sjekk loggene og restart programmet.
+websocket-timedout = Klarte ikke å koble til serveren.
+websocket-timedout-desc = Det ser ut som at SlimeVR serveren har krasjet eller har brukt for lang til på å koble til. Sjekk loggene og restart programmet.
+websocket-error-close = Avslutt SlimeVR
+websocket-error-logs = Åpne opp "logs" mappen.
+
+## Update notification
+
+version_update-title = Ny versjon tilgjengelig: { $version }
+version_update-description = Å klikke "{ version_update-update }" laster ned SlimeVR installatøren for deg.
+version_update-update = Oppdater
+version_update-close = Lukk
 
 ## Tips
 
-tips-find_tracker = Vanskeligheter med å skille mellom dine trackere? Rist én for å finne fram riktig gjenstand.
-tips-do_not_move_heels = Vær obs på at helene dine står stille under innspillingen!
+tips-find_tracker = Usikker på hvilken tracker som er hvilken? Rist en av dem! Den ristede trackeren vil bli fremhevet.
+tips-do_not_move_heels = Sørg for at dine heler ikke beveger under opptaket!
+tips-file_select = Dra og slipp filene for å enten bruke eller <u>gå igjennom</u>.
+tips-tap_setup = Du kan forsiktig trykke på din tracker 2 ganger sammenhengende istedenfor å velge den fra menyen.
+tips-turn_on_tracker = Bruker du offisielle SlimeVR trackere? Husk å <b><em>skru dem på</em></b> etter å ha koblet dem til PCen din!
+tips-failed_webgl = Feil ved initialisering av WebGL.
 
 ## Body parts
 
@@ -25,31 +38,54 @@ body_part-HEAD = Hode
 body_part-NECK = Hals
 body_part-RIGHT_SHOULDER = Høyre skulder
 body_part-RIGHT_UPPER_ARM = Høyre overarm
-body_part-RIGHT_LOWER_ARM = Høyre nedre arm
+body_part-RIGHT_LOWER_ARM = Høyre underarm
 body_part-RIGHT_HAND = Høyre hånd
 body_part-RIGHT_UPPER_LEG = Høyre lår
 body_part-RIGHT_LOWER_LEG = Høyre ankel
 body_part-RIGHT_FOOT = Høyre fot
-body_part-RIGHT_CONTROLLER = Høyre kontroller
+body_part-UPPER_CHEST = Øvre bryst
 body_part-CHEST = Bryst
 body_part-WAIST = Midje
 body_part-HIP = Hofte
 body_part-LEFT_SHOULDER = Venstre skulder
 body_part-LEFT_UPPER_ARM = Venstre overarm
-body_part-LEFT_LOWER_ARM = Venstre nedre arm
+body_part-LEFT_LOWER_ARM = Venstre underarm
 body_part-LEFT_HAND = Venstre hånd
 body_part-LEFT_UPPER_LEG = Venstre lår
 body_part-LEFT_LOWER_LEG = Venstre ankel
 body_part-LEFT_FOOT = Venstre fot
-body_part-LEFT_CONTROLLER = Venstre kontroller
+body_part-LEFT_THUMB_METACARPAL = Venstre tommel mellomhånden
+body_part-LEFT_THUMB_PROXIMAL = Venstre tommel proksimal
+body_part-LEFT_THUMB_DISTAL = Venstre tommel lengst unna
+body_part-LEFT_INDEX_PROXIMAL = Venstre innerste pekefinger
+body_part-LEFT_INDEX_INTERMEDIATE = Venstre middels pekefinger
+body_part-LEFT_INDEX_DISTAL = Venstre yterste pekefinger
+body_part-LEFT_MIDDLE_PROXIMAL = Venstre innerste langfinger
+body_part-LEFT_MIDDLE_INTERMEDIATE = Venstre middels langfinger
+body_part-LEFT_MIDDLE_DISTAL = Venstre yterste langfinger
+body_part-LEFT_RING_PROXIMAL = Venstre innerste ring
+
+## BoardType
+
+board_type-UNKNOWN = Ukjent
+board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Egendefinert brett
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-SLIMEVR = SlimeVR
+board_type-OWOTRACK = owoTrack
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 
 ## Proportions
 
 skeleton_bone-NONE = Ingen
 skeleton_bone-HEAD = Hode bytte
 skeleton_bone-NECK = Halslengde
-skeleton_bone-CHEST = Bryst-lengde
+skeleton_bone-torso_group = Torsolengde
 skeleton_bone-CHEST_OFFSET = Bryst-forskyvning
+skeleton_bone-CHEST = Bryst-lengde
 skeleton_bone-WAIST = Midje-lengde
 skeleton_bone-HIP = Hofte-lengde
 skeleton_bone-HIP_OFFSET = Hofte-forskyvning
@@ -63,16 +99,17 @@ skeleton_bone-SHOULDERS_DISTANCE = Skulder-distanse
 skeleton_bone-SHOULDERS_WIDTH = Skulder-bredde
 skeleton_bone-UPPER_ARM = Overarms-lengde
 skeleton_bone-LOWER_ARM = Nedre arm-lengde
-skeleton_bone-CONTROLLER_Y = Kontroller distanse Y
-skeleton_bone-CONTROLLER_Z = Kontroller distanse Z
 skeleton_bone-ELBOW_OFFSET = Albue-forskyvning
 
 ## Tracker reset buttons
 
 reset-reset_all = Nullstill alle proporsjoner
+reset-reset_all_warning-cancel = Avbryt
+reset-reset_all_warning_default-v2 =
+    <b>Advarsel:</b> Høyden din har ikke blitt konfigurert, proporsjonene dine vil bli tilbakestilt til standardinnstillingene med standardhøyden.
+    Er du sikker på at du vil gjøre dette?
 reset-full = Nullstill
 reset-mounting = Nullstill montering
-reset-quick = Rask nullstilling
 
 ## Serial detection stuff
 
@@ -93,16 +130,25 @@ navbar-mounting = Monterings kalibrering
 navbar-onboarding = Oppsetts veiviser
 navbar-settings = Innstillinger
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = BVH-innspilling
 bvh-recording = Spiller inn...
+
+## Tracking pause
+
 
 ## Widget: Overlay settings
 
 widget-overlay = Overlegg
 widget-overlay-is_visible_label = Vis overlegg i SteamVR
 widget-overlay-is_mirrored_label = Vis overlegg som speil
+
+## Widget: Drift compensation
+
+
+## Widget: Clear Reset Mounting
+
 
 ## Widget: Developer settings
 
@@ -120,6 +166,9 @@ widget-developer_mode-more_info = Mer info
 widget-imu_visualizer = Rotasjon
 widget-imu_visualizer-rotation_raw = Rå
 widget-imu_visualizer-rotation_preview = Forhåndsvisning
+
+## Widget: Skeleton Visualizer
+
 
 ## Tracker status
 
@@ -149,6 +198,7 @@ tracker-rotation-front = Front
 tracker-rotation-left = Venstre
 tracker-rotation-right = Høyre
 tracker-rotation-back = Bak
+tracker-rotation-custom = Egendefinert
 
 ## Tracker information
 
@@ -173,7 +223,7 @@ tracker-settings-drift_compensation_section-edit = Tillat avdrifts-kompensasjon
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Tracker navn
-tracker-settings-name_section-description = Gi den et søtt kallenavn-navn :)
+tracker-settings-name_section-description = Gi den et søtt kallenavn :)
 tracker-settings-name_section-placeholder = ~Thͭiͪaͥsͣˢ~ venstre ben
 
 ## Tracker part card info
@@ -260,10 +310,7 @@ settings-general-steamvr-description =
     Nyttig for spill eller programmer som bare støtter visse trackere.
 settings-general-steamvr-trackers-waist = Midje
 settings-general-steamvr-trackers-chest = Bryst
-settings-general-steamvr-trackers-feet = Føtter
-settings-general-steamvr-trackers-knees = Knær
-settings-general-steamvr-trackers-elbows = Albuer
-settings-general-steamvr-trackers-hands = Hender
+settings-general-steamvr-trackers-hands-warning-cancel = Avbryt
 
 ## Tracker mechanics
 
@@ -287,14 +334,18 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Kompenserer for IMU yaw avdrift ved å legge til en rotasjon av omvendt verdi.
     Endre mengde kompensasjon og opp til hvor mange nullstillinger som skal bli gjort rede for.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Avdrifts kompansering
+settings-general-tracker_mechanics-drift_compensation_warning-cancel = Avbryt
 settings-general-tracker_mechanics-drift_compensation-amount-label = Kompanserings mengde
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Bruk opp til x siste nullstillinger
+settings-general-tracker_mechanics-use_mag_on_all_trackers = Bruk magnetometer på alle IMU-trackere som støtter det
+settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
+    Bruker magnetometer på alle trackere som har en kompatibel firmware for det, noe som reduserer drift i stabile magnetiske områder.
+    Kan deaktiveres per tracker i trackerens innstillinger. <b>Ikke slå av noen av trackerne mens du endrer denne innstillingen !</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Bruk magnetometer på trackere
 
 ## FK/Tracking settings
 
-settings-general-fk_settings = Sporings innstillinger
-settings-general-fk_settings-leg_tweak = Bein-justeringer
-settings-general-fk_settings-leg_tweak-description = Gulv-clip kan redusere, om ikke eliminere det at lemmer går gjennom gulvet, men kan skape problemer når du er på knærne. Skating-korreksjon jobber mot "ice-skating", men kan forverre presisjonen i visse bevegelsesmønster.
+settings-general-fk_settings = Tracking innstillinger
 # Floor clip:
 # why the name - came from the idea of noclip in video games, but is the opposite where clipping to the floor is a desired feature
 # definition - Prevents the foot trackers from going lower than they where when a reset was performed
@@ -308,14 +359,7 @@ settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating-korre
 settings-general-fk_settings-arm_fk = Arm sporing
 settings-general-fk_settings-arm_fk-description = Endre metoden armene spores på.
 settings-general-fk_settings-arm_fk-force_arms = Tving armer fra HMD
-settings-general-fk_settings-skeleton_settings = Skjellet innstillinger
 settings-general-fk_settings-skeleton_settings-description = Skru skjellet innstillinger av eller på. Det anbefales å la disse stå på.
-settings-general-fk_settings-skeleton_settings-extended_spine = Forlenget ryggrad
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Forlenget pelvis
-settings-general-fk_settings-skeleton_settings-extended_knees = Forlenget kne
-settings-general-fk_settings-vive_emulation-title = Vive emulasjon
-settings-general-fk_settings-vive_emulation-description = Emuler midjesporings problemene som Vive sporerene har. Dette er en vits og gjør sporingen verre.
-settings-general-fk_settings-vive_emulation-label = Aktiver Vive emulasjon
 
 ## Gesture control settings (tracker tapping)
 
@@ -329,28 +373,37 @@ settings-general-gesture_control-taps =
         [one] 1 trykk
        *[other] { $amount } trykk
     }
-settings-general-gesture_control-quickResetEnabled = Aktiver rask nullstilling ved trykk
-settings-general-gesture_control-quickResetDelay = Rask nullstillings utsettelse
-settings-general-gesture_control-quickResetTaps = Trykking for rask nullstilling
-settings-general-gesture_control-resetEnabled = Aktiver nullstilling ved trykking
-settings-general-gesture_control-resetDelay = Nullstillings utsettelse
-settings-general-gesture_control-resetTaps = Trykking for nullstilling
 settings-general-gesture_control-mountingResetEnabled = Aktiver monterings-nullstilling ved trykking
 settings-general-gesture_control-mountingResetDelay = Monterings-nullstilling utsettelse
 settings-general-gesture_control-mountingResetTaps = Trykking for monterings-nullstilling
 
-## Interface settings
+## Appearance settings
 
-settings-general-interface = Grensesnitt
 settings-general-interface-dev_mode = Utvikler modus
 settings-general-interface-dev_mode-description = Denne modusen kan være hjelpsom dersom du trenger data som gir mer innsyn eller for å samhandle med tilkoblede sporere på et mer avansert nivå.
 settings-general-interface-dev_mode-label = Utvikler modus
-settings-general-interface-serial_detection = Seriell enhets gjenkjenning
-settings-general-interface-serial_detection-description = Dette valget viser en pop-up for hver gang du kobler til en ny seriell-enhet som kunne vært en sporer. Dette forbedrer sporerens konfigureringsprosess.
-settings-general-interface-serial_detection-label = Seriell enhets gjenkjenning
 settings-general-interface-lang = Velg språk
 settings-general-interface-lang-description = Endre hovedspråket du vil bruke.
 settings-general-interface-lang-placeholder = Velg språket du vil bruke
+
+## Notification settings
+
+settings-general-interface-serial_detection = Seriell enhets gjenkjenning
+settings-general-interface-serial_detection-description = Dette valget viser en pop-up for hver gang du kobler til en ny seriell-enhet som kunne vært en sporer. Dette forbedrer sporerens konfigureringsprosess.
+settings-general-interface-serial_detection-label = Seriell enhets gjenkjenning
+
+## Behavior settings
+
+settings-general-interface-dev_mode = Utvikler modus
+settings-general-interface-dev_mode-description = Denne modusen kan være hjelpsom dersom du trenger data som gir mer innsyn eller for å samhandle med tilkoblede sporere på et mer avansert nivå.
+settings-general-interface-dev_mode-label = Utvikler modus
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>Samtykker du til innsamling av anonymiserte feildata?</h1>
+    
+    <b>Vi samler ikke inn personlig informasjon</b> slik som din IP-adresse eller trådløs-legitimasjon. SlimeVR verdsetter ditt personvern!
+    
+    For å gi deg den beste brukeropplevelsen, samler vi inn anonymiserte feilrapporter, ytelsesmålinger og informasjon om operativsystemet. Dette hjelper oss med å oppdage feil og problemer med SlimeVR. Disse beregningene samles inn via Sentry.io.
+settings-interface-behavior-error_tracking-label = Send feilmeldinger til utviklere
 
 ## Serial settings
 
@@ -401,15 +454,10 @@ settings-osc-router-network-address-placeholder = IPV4 adresse
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC Trackere
-# This cares about multilines
-settings-osc-vrchat-description =
-    Juster på innstillinger spesifikt for VRChat for å motta HMD-data og sende
-    sporer-data for FBT (funker for Quest standalone).
 settings-osc-vrchat-enable = Aktiver
 settings-osc-vrchat-enable-description = Skru av/på utsending og mottakelse av data.
 settings-osc-vrchat-enable-label = Aktiver
 settings-osc-vrchat-network = Nettverks-porter
-settings-osc-vrchat-network-description = Still inn portene som skal motta og sende data til VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Port Inn
     .placeholder = Port inn (normalverdi: 9001)
@@ -417,15 +465,20 @@ settings-osc-vrchat-network-port_out =
     .label = Port Ut
     .placeholder = Port ut (standardisering: 9000)
 settings-osc-vrchat-network-address = Nettverksadresse
-settings-osc-vrchat-network-address-description = Velg hvilken adresse som skal sende ut data til VRChat (sjekk Wi-Fi innstillingene på din enhet).
 settings-osc-vrchat-network-address-placeholder = VRChat ip adresse
 settings-osc-vrchat-network-trackers = Trackere
 settings-osc-vrchat-network-trackers-description = Skru av/på sendingen av spesifikke sporere via OSC.
 settings-osc-vrchat-network-trackers-chest = Bryst
-settings-osc-vrchat-network-trackers-waist = Midje
+settings-osc-vrchat-network-trackers-hip = Hofte
 settings-osc-vrchat-network-trackers-knees = Knær
 settings-osc-vrchat-network-trackers-feet = Føtter
 settings-osc-vrchat-network-trackers-elbows = Albuer
+
+## VMC OSC settings
+
+
+## Advanced settings
+
 
 ## Setup/onboarding menu
 
@@ -454,15 +507,11 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = Gå tilbake til monterings kalibrering
 onboarding-reset_tutorial = Nullstill opplæringen
-onboarding-reset_tutorial-description = Denne funksjonen er ikke klar, bare trykk fortsett
+onboarding-reset_tutorial-skip = Hopp over trinn
 
 ## Setup start
 
 onboarding-home = Velkommen til SlimeVR
-# This cares about multilines and it's centered!!
-onboarding-home-description =
-    Muliggjør hel-kropps sporing
-    for alle
 onboarding-home-start = La oss sette i gang!
 
 ## Enter VR part of setup
@@ -482,15 +531,9 @@ onboarding-done-close = Lukk guiden
 
 onboarding-connect_tracker-back = Gå tilbake til Wi-Fi legitimasjon
 onboarding-connect_tracker-title = Koble til trackere
-onboarding-connect_tracker-description-p0 = Nå begynner den morsomme delen, å koble til alle trackerne!
-onboarding-connect_tracker-description-p1 = Ta og koble til alt som ikke er tilkoblet enda, via en USB port.
 onboarding-connect_tracker-issue-serial = Jeg sliter med å koble til!
 onboarding-connect_tracker-usb = USB Tracker
 onboarding-connect_tracker-connection_status-connecting = Sender Wi-Fi legitimasjon
-onboarding-connect_tracker-connection_status-connected = Koblet til Wi-Fi
-onboarding-connect_tracker-connection_status-error = Kunne ikke koble til Wi-Fi
-onboarding-connect_tracker-connection_status-start_connecting = Ser etter trackere
-onboarding-connect_tracker-connection_status-handshake = Koblet til Serveren
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -503,6 +546,12 @@ onboarding-connect_tracker-connected_trackers =
        *[other] { $amount } trackere tilkoblet
     }
 onboarding-connect_tracker-next = Jeg har tilkoblet alle mine trackere
+
+## Tracker calibration tutorial
+
+
+## Tracker assignment tutorial
+
 
 ## Tracker assignment setup
 
@@ -519,6 +568,13 @@ onboarding-assign_trackers-assigned =
     }
 onboarding-assign_trackers-advanced = Vis avanserte tildelings-plasseringer
 onboarding-assign_trackers-next = Jeg har tildelt alle trackerne
+
+## Tracker assignment warnings
+
+
+## Tracker mounting method choose
+
+onboarding-choose_mounting-manual_modal-cancel = Avbryt
 
 ## Tracker manual mounting setup
 
@@ -543,18 +599,14 @@ onboarding-automatic_mounting-mounting_reset-title = Monterings nullstilling
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Gjør knebøy som om du står på ski, bøyde knær, overkroppen rettet forover og armer bøyd.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Trykk på "Nullstill montering" knappen og vent 3 sekunder før trackernes monterings-rotasjon nullstilles.
 onboarding-automatic_mounting-preparation-title = Forberedning
-onboarding-automatic_mounting-preparation-step-0 = 1. Stå rett med armene til siden.
-onboarding-automatic_mounting-preparation-step-1 = 2. Trykk på "Nullstill" knappen og vent 3 sekunder før trackerne nullstilles.
 onboarding-automatic_mounting-put_trackers_on-title = Ta på deg dine trackere
 onboarding-automatic_mounting-put_trackers_on-description = For å kalibrere monterings-rotasjonene, må vi bruke trackerne du akkurat tildelte. Ta på deg alle dine trackere, du kan se hvem som er hvem i figuren til høyre.
 onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere på
 
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = Gå tilbake til Nullstillings opplæring
 onboarding-manual_proportions-title = Manuelle kropps-proporsjoner
-onboarding-manual_proportions-precision = Presisjons justering
-onboarding-manual_proportions-auto = Automatisk kalibrering
 
 ## Tracker automatic proportions setup
 
@@ -566,22 +618,14 @@ onboarding-automatic_proportions-prev_step = Forrige steg
 onboarding-automatic_proportions-put_trackers_on-title = Ta på deg alle dine trackere
 onboarding-automatic_proportions-put_trackers_on-description = For å kalibrere dine proporsjoner, bruker vi trackerne du akkurat har tildelt. Ta på deg alle dine trackere, du kan se hvem som går hvor i figuren til høyre.
 onboarding-automatic_proportions-put_trackers_on-next = Jeg har alle mine trackere på
-onboarding-automatic_proportions-preparation-title = Forberedning
-onboarding-automatic_proportions-preparation-description = Plasser en stol rett bak deg innenfor ditt play space. Vær forberedt på å sette deg ned i løpet av autobein oppsettet.
-onboarding-automatic_proportions-preparation-next = Jeg er foran en stol
 onboarding-automatic_proportions-start_recording-title = Gjør deg klar til å bevege deg
 onboarding-automatic_proportions-start_recording-description = Vi kommer nå til å spille inn noen spesifikke poseringer og bevegelser. Disse vil bli vist i den neste skjermen. Gjør deg klar til å starte når du trykker på knappen!
 onboarding-automatic_proportions-start_recording-next = Start Innspilling
 onboarding-automatic_proportions-recording-title = REC
 onboarding-automatic_proportions-recording-description-p0 = Innspilling pågår...
 onboarding-automatic_proportions-recording-description-p1 = Utfør bevegelsene vist nedenfor:
-onboarding-automatic_proportions-recording-steps-0 = Bøy knærne noen få ganger.
-onboarding-automatic_proportions-recording-steps-1 = Sett deg i stolen, reis deg så opp.
-onboarding-automatic_proportions-recording-steps-2 = Vri overkroppen til venstre, så bøy til høyre.
-onboarding-automatic_proportions-recording-steps-3 = Vri overkroppen til høyre, så bøy til venstre.
-onboarding-automatic_proportions-recording-steps-4 = Rist på kroppen til tiden går ut.
 onboarding-automatic_proportions-recording-processing = Jobber med resultatet
-# $time (Number) - Seconds left for the automatic calibration recording to finish (max 15)
+# $time (Number) - Seconds left for the automatic calibration recording to finish (max 20)
 onboarding-automatic_proportions-recording-timer =
     { $time ->
         [one] 1 sekund igjen
@@ -596,6 +640,49 @@ onboarding-automatic_proportions-verify_results-confirm = De er riktige
 onboarding-automatic_proportions-done-title = Kropp målt og lagret.
 onboarding-automatic_proportions-done-description = Din kropps-proposisjons kalibrering er fullført!
 
+## Tracker scaled proportions setup
+
+
+## Tracker scaled proportions reset
+
+
+## Stay Aligned setup
+
+
 ## Home
 
 home-no_trackers = Ingen trackere oppdaget eller tildelt
+
+## Trackers Still On notification
+
+
+## Status system
+
+
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
+
+## Tray Menu
+
+
+## First exit modal
+
+tray_or_exit_modal-cancel = Avbryt
+
+## Unknown device modal
+
+
+## Error collection consent modal
+
