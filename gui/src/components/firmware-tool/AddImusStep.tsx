@@ -241,7 +241,7 @@ export function AddImusStep({
       <div className="flex flex-col w-full">
         <div className="flex flex-col gap-4">
           <Typography color="secondary">
-            {l10n.getString('firmware_tool-board_pins_step-description')}
+            {l10n.getString('firmware_tool-add_imus_step-description')}
           </Typography>
         </div>
         <div className="my-4 flex flex-col gap-4">
