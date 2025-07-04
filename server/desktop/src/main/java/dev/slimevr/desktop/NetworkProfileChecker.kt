@@ -318,7 +318,7 @@ class NetworkProfileChecker(private val server: VRServer) {
 		if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
 			this.updateTickTimer.scheduleAtFixedRate(0, 3000) {
 				val currentNumPublicNetworks = enumerateNetworks()?.filter { net ->
-						net.connected == true && net.category == NetworkCategory.PUBLIC
+					net.connected == true && net.category == NetworkCategory.PUBLIC
 				} ?: listOf()
 				val currentNumPublicNetworksCount = currentNumPublicNetworks.count()
 
