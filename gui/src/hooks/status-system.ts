@@ -128,7 +128,6 @@ export function parseStatusToLocale(
       return {};
     case StatusData.StatusPublicNetwork: {
       const data = status.data as StatusPublicNetworkT;
-      console.log('hey', data)
       return {
         adapters: data.adapters.join(', '),
         count: data.adapters.length,
