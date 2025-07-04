@@ -70,11 +70,10 @@ export function VMCSettings() {
       );
       if (values.vmc.vrmJson !== undefined) {
         if (values.vmc.vrmJson.length > 0) {
-          vmcOsc.vrmJson = await parseVRMFile(values.vmc.vrmJson[0]);
-          if (vmcOsc.vrmJson) {
-            setModelName(
-              JSON.parse(vmcOsc.vrmJson)?.extensions?.VRM?.meta?.title || ''
-            );
+          const file = await parseVRMFile(values.vmc.vrmJson[0]);
+          if (file) {
+            vmcOsc.vrmJson = file.json;
+            setModelName(file.name);
           }
         } else {
           vmcOsc.vrmJson = '';
@@ -114,7 +113,7 @@ export function VMCSettings() {
       }
       const vrmJson = settings.vmcOsc.vrmJson?.toString();
       if (vrmJson) {
-        setModelName(JSON.parse(vrmJson)?.extensions?.VRM?.meta?.title || '');
+        setModelName(getVRMName(vrmJson) || '');
       }
 
       formData.vmc.anchorHip = settings.vmcOsc.anchorHip;
@@ -299,7 +298,9 @@ export function VMCSettings() {
 const gltfHeaderStart = 0;
 const gltfHeaderEnd = 20;
 
-async function parseVRMFile(vrm: File): Promise<string | null> {
+async function parseVRMFile(
+  vrm: File
+): Promise<{ json: string; name: string } | null> {
   const headerView = new DataView(
     await vrm.slice(gltfHeaderStart, gltfHeaderEnd).arrayBuffer()
   );
@@ -337,7 +338,36 @@ async function parseVRMFile(vrm: File): Promise<string | null> {
     return null;
   }
 
-  return vrm
+  const json = await vrm
     .slice(gltfHeaderEnd, gltfHeaderEnd + jsonLength, 'application/json')
     .text();
+
+  const name = getVRMName(json);
+  if (name === null) return null;
+
+  return { json, name };
+}
+
+function getVRMName(json: string): string | null {
+  try {
+    const data = JSON.parse(json);
+
+    if (typeof data?.extensions?.VRMC_vrm?.specVersion === 'string') {
+      const name = data.extensions.VRMC_vrm.meta.name;
+
+      if (typeof name !== 'string') {
+        error(
+          `The name of the VRM model is not a string, instead it is a ${typeof name}`
+        );
+        return null;
+      }
+
+      return name;
+    } else {
+      return data?.extensions?.VRM?.meta?.title || '';
+    }
+  } catch (e) {
+    error(e);
+    return null;
+  }
 }
