@@ -37,6 +37,7 @@ import kotlin.math.*
  */
 class HumanPoseManager(val server: VRServer?) {
 	val computedTrackers: MutableList<Tracker> = FastList()
+	val shareableFingerBones: MutableList<ShareableBone> = FastList()
 	private val onSkeletonUpdated: MutableList<Consumer<HumanSkeleton>> = FastList()
 	private val skeletonConfigManager = SkeletonConfigManager(true, this)
 
@@ -48,6 +49,7 @@ class HumanPoseManager(val server: VRServer?) {
 	// #region Constructors
 	init {
 		initializeComputedHumanPoseTracker()
+		initializeShareableFingerBones()
 	}
 
 	init {
@@ -233,6 +235,39 @@ class HumanPoseManager(val server: VRServer?) {
 		connectComputedHumanPoseTrackers()
 	}
 
+	private fun initializeShareableFingerBones() {
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_THUMB_METACARPAL))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_THUMB_PROXIMAL))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_THUMB_DISTAL))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_INDEX_PROXIMAL))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_INDEX_INTERMEDIATE))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_INDEX_DISTAL))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_MIDDLE_PROXIMAL))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_MIDDLE_INTERMEDIATE))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_MIDDLE_DISTAL))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_RING_PROXIMAL))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_RING_INTERMEDIATE))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_RING_DISTAL))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_LITTLE_PROXIMAL))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_LITTLE_INTERMEDIATE))
+		shareableFingerBones.add(ShareableBone(BoneType.LEFT_LITTLE_DISTAL))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_THUMB_METACARPAL))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_THUMB_PROXIMAL))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_THUMB_DISTAL))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_INDEX_PROXIMAL))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_INDEX_INTERMEDIATE))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_INDEX_DISTAL))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_MIDDLE_PROXIMAL))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_MIDDLE_INTERMEDIATE))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_MIDDLE_DISTAL))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_RING_PROXIMAL))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_RING_INTERMEDIATE))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_RING_DISTAL))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_LITTLE_PROXIMAL))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_LITTLE_INTERMEDIATE))
+		shareableFingerBones.add(ShareableBone(BoneType.RIGHT_LITTLE_DISTAL))
+	}
+
 	fun loadFromConfig(configManager: ConfigManager) {
 		skeletonConfigManager.loadFromConfig(configManager)
 	}
@@ -340,13 +375,6 @@ class HumanPoseManager(val server: VRServer?) {
 	@get:ThreadSafe
 	val allBones: List<Bone>
 		get() = listOf(*skeleton.allHumanBones)
-
-	/**
-	 * @return All the finger bones
-	 */
-	@get:ThreadSafe
-	val allFingerBones: List<Bone>
-		get() = listOf(*skeleton.allFingerBones)
 
 	// #endregion
 	// #region config methods

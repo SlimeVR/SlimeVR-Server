@@ -3,7 +3,7 @@ package dev.slimevr.desktop.platform.linux;
 import dev.slimevr.bridge.BridgeThread;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
-import dev.slimevr.tracking.processor.Bone;
+import dev.slimevr.tracking.processor.ShareableBone;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.VRServer;
@@ -77,7 +77,7 @@ public class UnixSocketRpcBridge implements dev.slimevr.bridge.Bridge,
 	}
 
 	@Override
-	public void addFingerBones(@NotNull List<Bone> bones) {
+	public void addFingerBones(@NotNull List<ShareableBone> bones) {
 	}
 
 	@Override

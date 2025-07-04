@@ -446,6 +446,511 @@ public final class ProtobufMessages {
 
 	}
 
+	public interface VersionOrBuilder extends
+		// @@protoc_insertion_point(interface_extends:messages.Version)
+		com.google.protobuf.MessageOrBuilder {
+
+		/**
+		 * <code>int32 protocol_version = 1;</code>
+		 * 
+		 * @return The protocolVersion.
+		 */
+		int getProtocolVersion();
+	}
+
+	/**
+	 * Protobuf type {@code messages.Version}
+	 */
+	public static final class Version extends
+		com.google.protobuf.GeneratedMessage implements
+		// @@protoc_insertion_point(message_implements:messages.Version)
+		VersionOrBuilder {
+		private static final long serialVersionUID = 0L;
+		static {
+			com.google.protobuf.RuntimeVersion
+				.validateProtobufGencodeVersion(
+					com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+					/* major= */ 4,
+					/* minor= */ 31,
+					/* patch= */ 1,
+					/* suffix= */ "",
+					Version.class.getName()
+				);
+		}
+
+		// Use Version.newBuilder() to construct.
+		private Version(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+			super(builder);
+		}
+
+		private Version() {
+		}
+
+		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+			return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_Version_descriptor;
+		}
+
+		@java.lang.Override
+		protected com.google.protobuf.GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
+			return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_Version_fieldAccessorTable
+				.ensureFieldAccessorsInitialized(
+					dev.slimevr.desktop.platform.ProtobufMessages.Version.class,
+					dev.slimevr.desktop.platform.ProtobufMessages.Version.Builder.class
+				);
+		}
+
+		public static final int PROTOCOL_VERSION_FIELD_NUMBER = 1;
+		private int protocolVersion_ = 0;
+
+		/**
+		 * <code>int32 protocol_version = 1;</code>
+		 * 
+		 * @return The protocolVersion.
+		 */
+		@java.lang.Override
+		public int getProtocolVersion() {
+			return protocolVersion_;
+		}
+
+		private byte memoizedIsInitialized = -1;
+
+		@java.lang.Override
+		public final boolean isInitialized() {
+			byte isInitialized = memoizedIsInitialized;
+			if (isInitialized == 1)
+				return true;
+			if (isInitialized == 0)
+				return false;
+
+			memoizedIsInitialized = 1;
+			return true;
+		}
+
+		@java.lang.Override
+		public void writeTo(com.google.protobuf.CodedOutputStream output)
+			throws java.io.IOException {
+			if (protocolVersion_ != 0) {
+				output.writeInt32(1, protocolVersion_);
+			}
+			getUnknownFields().writeTo(output);
+		}
+
+		@java.lang.Override
+		public int getSerializedSize() {
+			int size = memoizedSize;
+			if (size != -1)
+				return size;
+
+			size = 0;
+			if (protocolVersion_ != 0) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeInt32Size(1, protocolVersion_);
+			}
+			size += getUnknownFields().getSerializedSize();
+			memoizedSize = size;
+			return size;
+		}
+
+		@java.lang.Override
+		public boolean equals(final java.lang.Object obj) {
+			if (obj == this) {
+				return true;
+			}
+			if (!(obj instanceof dev.slimevr.desktop.platform.ProtobufMessages.Version)) {
+				return super.equals(obj);
+			}
+			dev.slimevr.desktop.platform.ProtobufMessages.Version other = (dev.slimevr.desktop.platform.ProtobufMessages.Version) obj;
+
+			if (
+				getProtocolVersion()
+					!= other.getProtocolVersion()
+			)
+				return false;
+			if (!getUnknownFields().equals(other.getUnknownFields()))
+				return false;
+			return true;
+		}
+
+		@java.lang.Override
+		public int hashCode() {
+			if (memoizedHashCode != 0) {
+				return memoizedHashCode;
+			}
+			int hash = 41;
+			hash = (19 * hash) + getDescriptor().hashCode();
+			hash = (37 * hash) + PROTOCOL_VERSION_FIELD_NUMBER;
+			hash = (53 * hash) + getProtocolVersion();
+			hash = (29 * hash) + getUnknownFields().hashCode();
+			memoizedHashCode = hash;
+			return hash;
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version parseFrom(
+			java.nio.ByteBuffer data
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version parseFrom(
+			java.nio.ByteBuffer data,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version parseFrom(
+			com.google.protobuf.ByteString data
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version parseFrom(
+			com.google.protobuf.ByteString data,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version parseFrom(byte[] data)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version parseFrom(
+			byte[] data,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version parseFrom(
+			java.io.InputStream input
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version parseFrom(
+			java.io.InputStream input,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version parseDelimitedFrom(
+			java.io.InputStream input
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseDelimitedWithIOException(PARSER, input);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version parseDelimitedFrom(
+			java.io.InputStream input,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version parseFrom(
+			com.google.protobuf.CodedInputStream input
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version parseFrom(
+			com.google.protobuf.CodedInputStream input,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input, extensionRegistry);
+		}
+
+		@java.lang.Override
+		public Builder newBuilderForType() {
+			return newBuilder();
+		}
+
+		public static Builder newBuilder() {
+			return DEFAULT_INSTANCE.toBuilder();
+		}
+
+		public static Builder newBuilder(
+			dev.slimevr.desktop.platform.ProtobufMessages.Version prototype
+		) {
+			return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+		}
+
+		@java.lang.Override
+		public Builder toBuilder() {
+			return this == DEFAULT_INSTANCE
+				? new Builder()
+				: new Builder().mergeFrom(this);
+		}
+
+		@java.lang.Override
+		protected Builder newBuilderForType(
+			com.google.protobuf.GeneratedMessage.BuilderParent parent
+		) {
+			Builder builder = new Builder(parent);
+			return builder;
+		}
+
+		/**
+		 * Protobuf type {@code messages.Version}
+		 */
+		public static final class Builder extends
+			com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+			// @@protoc_insertion_point(builder_implements:messages.Version)
+			dev.slimevr.desktop.platform.ProtobufMessages.VersionOrBuilder {
+			public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_Version_descriptor;
+			}
+
+			@java.lang.Override
+			protected com.google.protobuf.GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_Version_fieldAccessorTable
+					.ensureFieldAccessorsInitialized(
+						dev.slimevr.desktop.platform.ProtobufMessages.Version.class,
+						dev.slimevr.desktop.platform.ProtobufMessages.Version.Builder.class
+					);
+			}
+
+			// Construct using
+			// dev.slimevr.desktop.platform.ProtobufMessages.Version.newBuilder()
+			private Builder() {
+
+			}
+
+			private Builder(
+				com.google.protobuf.GeneratedMessage.BuilderParent parent
+			) {
+				super(parent);
+
+			}
+
+			@java.lang.Override
+			public Builder clear() {
+				super.clear();
+				bitField0_ = 0;
+				protocolVersion_ = 0;
+				return this;
+			}
+
+			@java.lang.Override
+			public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_Version_descriptor;
+			}
+
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.Version getDefaultInstanceForType() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.Version.getDefaultInstance();
+			}
+
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.Version build() {
+				dev.slimevr.desktop.platform.ProtobufMessages.Version result = buildPartial();
+				if (!result.isInitialized()) {
+					throw newUninitializedMessageException(result);
+				}
+				return result;
+			}
+
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.Version buildPartial() {
+				dev.slimevr.desktop.platform.ProtobufMessages.Version result = new dev.slimevr.desktop.platform.ProtobufMessages.Version(
+					this
+				);
+				if (bitField0_ != 0) {
+					buildPartial0(result);
+				}
+				onBuilt();
+				return result;
+			}
+
+			private void buildPartial0(
+				dev.slimevr.desktop.platform.ProtobufMessages.Version result
+			) {
+				int from_bitField0_ = bitField0_;
+				if (((from_bitField0_ & 0x00000001) != 0)) {
+					result.protocolVersion_ = protocolVersion_;
+				}
+			}
+
+			@java.lang.Override
+			public Builder mergeFrom(com.google.protobuf.Message other) {
+				if (other instanceof dev.slimevr.desktop.platform.ProtobufMessages.Version) {
+					return mergeFrom((dev.slimevr.desktop.platform.ProtobufMessages.Version) other);
+				} else {
+					super.mergeFrom(other);
+					return this;
+				}
+			}
+
+			public Builder mergeFrom(dev.slimevr.desktop.platform.ProtobufMessages.Version other) {
+				if (
+					other
+						== dev.slimevr.desktop.platform.ProtobufMessages.Version
+							.getDefaultInstance()
+				)
+					return this;
+				if (other.getProtocolVersion() != 0) {
+					setProtocolVersion(other.getProtocolVersion());
+				}
+				this.mergeUnknownFields(other.getUnknownFields());
+				onChanged();
+				return this;
+			}
+
+			@java.lang.Override
+			public final boolean isInitialized() {
+				return true;
+			}
+
+			@java.lang.Override
+			public Builder mergeFrom(
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
+			)
+				throws java.io.IOException {
+				if (extensionRegistry == null) {
+					throw new java.lang.NullPointerException();
+				}
+				try {
+					boolean done = false;
+					while (!done) {
+						int tag = input.readTag();
+						switch (tag) {
+							case 0:
+								done = true;
+								break;
+							case 8: {
+								protocolVersion_ = input.readInt32();
+								bitField0_ |= 0x00000001;
+								break;
+							} // case 8
+							default: {
+								if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+									done = true; // was an endgroup tag
+								}
+								break;
+							} // default:
+						} // switch (tag)
+					} // while (!done)
+				} catch (com.google.protobuf.InvalidProtocolBufferException e) {
+					throw e.unwrapIOException();
+				} finally {
+					onChanged();
+				} // finally
+				return this;
+			}
+
+			private int bitField0_;
+
+			private int protocolVersion_;
+
+			/**
+			 * <code>int32 protocol_version = 1;</code>
+			 * 
+			 * @return The protocolVersion.
+			 */
+			@java.lang.Override
+			public int getProtocolVersion() {
+				return protocolVersion_;
+			}
+
+			/**
+			 * <code>int32 protocol_version = 1;</code>
+			 * 
+			 * @param value The protocolVersion to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setProtocolVersion(int value) {
+
+				protocolVersion_ = value;
+				bitField0_ |= 0x00000001;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>int32 protocol_version = 1;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearProtocolVersion() {
+				bitField0_ = (bitField0_ & ~0x00000001);
+				protocolVersion_ = 0;
+				onChanged();
+				return this;
+			}
+
+			// @@protoc_insertion_point(builder_scope:messages.Version)
+		}
+
+		// @@protoc_insertion_point(class_scope:messages.Version)
+		private static final dev.slimevr.desktop.platform.ProtobufMessages.Version DEFAULT_INSTANCE;
+		static {
+			DEFAULT_INSTANCE = new dev.slimevr.desktop.platform.ProtobufMessages.Version();
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Version getDefaultInstance() {
+			return DEFAULT_INSTANCE;
+		}
+
+		private static final com.google.protobuf.Parser<Version> PARSER = new com.google.protobuf.AbstractParser<Version>() {
+			@java.lang.Override
+			public Version parsePartialFrom(
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
+			)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+				Builder builder = newBuilder();
+				try {
+					builder.mergeFrom(input, extensionRegistry);
+				} catch (com.google.protobuf.InvalidProtocolBufferException e) {
+					throw e.setUnfinishedMessage(builder.buildPartial());
+				} catch (com.google.protobuf.UninitializedMessageException e) {
+					throw e
+						.asInvalidProtocolBufferException()
+						.setUnfinishedMessage(builder.buildPartial());
+				} catch (java.io.IOException e) {
+					throw new com.google.protobuf.InvalidProtocolBufferException(e)
+						.setUnfinishedMessage(builder.buildPartial());
+				}
+				return builder.buildPartial();
+			}
+		};
+
+		public static com.google.protobuf.Parser<Version> parser() {
+			return PARSER;
+		}
+
+		@java.lang.Override
+		public com.google.protobuf.Parser<Version> getParserForType() {
+			return PARSER;
+		}
+
+		@java.lang.Override
+		public dev.slimevr.desktop.platform.ProtobufMessages.Version getDefaultInstanceForType() {
+			return DEFAULT_INSTANCE;
+		}
+
+	}
+
 	public interface FingerBoneRotationOrBuilder extends
 		// @@protoc_insertion_point(interface_extends:messages.FingerBoneRotation)
 		com.google.protobuf.MessageOrBuilder {
@@ -1642,6 +2147,702 @@ public final class ProtobufMessages {
 
 	}
 
+	public interface InputOrBuilder extends
+		// @@protoc_insertion_point(interface_extends:messages.Input)
+		com.google.protobuf.MessageOrBuilder {
+
+		/**
+		 * <code>.messages.Input.InputType type = 1;</code>
+		 * 
+		 * @return The enum numeric value on the wire for type.
+		 */
+		int getTypeValue();
+
+		/**
+		 * <code>.messages.Input.InputType type = 1;</code>
+		 * 
+		 * @return The type.
+		 */
+		dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType getType();
+	}
+
+	/**
+	 * Protobuf type {@code messages.Input}
+	 */
+	public static final class Input extends
+		com.google.protobuf.GeneratedMessage implements
+		// @@protoc_insertion_point(message_implements:messages.Input)
+		InputOrBuilder {
+		private static final long serialVersionUID = 0L;
+		static {
+			com.google.protobuf.RuntimeVersion
+				.validateProtobufGencodeVersion(
+					com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+					/* major= */ 4,
+					/* minor= */ 31,
+					/* patch= */ 1,
+					/* suffix= */ "",
+					Input.class.getName()
+				);
+		}
+
+		// Use Input.newBuilder() to construct.
+		private Input(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+			super(builder);
+		}
+
+		private Input() {
+			type_ = 0;
+		}
+
+		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+			return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_Input_descriptor;
+		}
+
+		@java.lang.Override
+		protected com.google.protobuf.GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
+			return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_Input_fieldAccessorTable
+				.ensureFieldAccessorsInitialized(
+					dev.slimevr.desktop.platform.ProtobufMessages.Input.class,
+					dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder.class
+				);
+		}
+
+		/**
+		 * Protobuf enum {@code messages.Input.InputType}
+		 */
+		public enum InputType
+			implements com.google.protobuf.ProtocolMessageEnum {
+			/**
+			 * <code>TAP = 0;</code>
+			 */
+			TAP(0),
+			/**
+			 * <code>DOUBLE_TAP = 1;</code>
+			 */
+			DOUBLE_TAP(1),
+			/**
+			 * <code>TRIPLE_TAP = 2;</code>
+			 */
+			TRIPLE_TAP(2),
+			UNRECOGNIZED(-1),
+			;
+
+			static {
+				com.google.protobuf.RuntimeVersion
+					.validateProtobufGencodeVersion(
+						com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+						/* major= */ 4,
+						/* minor= */ 31,
+						/* patch= */ 1,
+						/* suffix= */ "",
+						InputType.class.getName()
+					);
+			}
+			/**
+			 * <code>TAP = 0;</code>
+			 */
+			public static final int TAP_VALUE = 0;
+			/**
+			 * <code>DOUBLE_TAP = 1;</code>
+			 */
+			public static final int DOUBLE_TAP_VALUE = 1;
+			/**
+			 * <code>TRIPLE_TAP = 2;</code>
+			 */
+			public static final int TRIPLE_TAP_VALUE = 2;
+
+
+			public final int getNumber() {
+				if (this == UNRECOGNIZED) {
+					throw new java.lang.IllegalArgumentException(
+						"Can't get the number of an unknown enum value."
+					);
+				}
+				return value;
+			}
+
+			/**
+			 * @param value The numeric wire value of the corresponding enum
+			 * entry.
+			 * @return The enum associated with the given numeric wire value.
+			 * @deprecated Use {@link #forNumber(int)} instead.
+			 */
+			@java.lang.Deprecated
+			public static InputType valueOf(int value) {
+				return forNumber(value);
+			}
+
+			/**
+			 * @param value The numeric wire value of the corresponding enum
+			 * entry.
+			 * @return The enum associated with the given numeric wire value.
+			 */
+			public static InputType forNumber(int value) {
+				switch (value) {
+					case 0:
+						return TAP;
+					case 1:
+						return DOUBLE_TAP;
+					case 2:
+						return TRIPLE_TAP;
+					default:
+						return null;
+				}
+			}
+
+			public static com.google.protobuf.Internal.EnumLiteMap<InputType> internalGetValueMap() {
+				return internalValueMap;
+			}
+
+			private static final com.google.protobuf.Internal.EnumLiteMap<InputType> internalValueMap = new com.google.protobuf.Internal.EnumLiteMap<InputType>() {
+				public InputType findValueByNumber(int number) {
+					return InputType.forNumber(number);
+				}
+			};
+
+			public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
+				if (this == UNRECOGNIZED) {
+					throw new java.lang.IllegalStateException(
+						"Can't get the descriptor of an unrecognized enum value."
+					);
+				}
+				return getDescriptor().getValues().get(ordinal());
+			}
+
+			public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
+				return getDescriptor();
+			}
+
+			public static com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.Input
+					.getDescriptor()
+					.getEnumTypes()
+					.get(0);
+			}
+
+			private static final InputType[] VALUES = values();
+
+			public static InputType valueOf(
+				com.google.protobuf.Descriptors.EnumValueDescriptor desc
+			) {
+				if (desc.getType() != getDescriptor()) {
+					throw new java.lang.IllegalArgumentException(
+						"EnumValueDescriptor is not for this type."
+					);
+				}
+				if (desc.getIndex() == -1) {
+					return UNRECOGNIZED;
+				}
+				return VALUES[desc.getIndex()];
+			}
+
+			private final int value;
+
+			private InputType(int value) {
+				this.value = value;
+			}
+
+			// @@protoc_insertion_point(enum_scope:messages.Input.InputType)
+		}
+
+		public static final int TYPE_FIELD_NUMBER = 1;
+		private int type_ = 0;
+
+		/**
+		 * <code>.messages.Input.InputType type = 1;</code>
+		 * 
+		 * @return The enum numeric value on the wire for type.
+		 */
+		@java.lang.Override
+		public int getTypeValue() {
+			return type_;
+		}
+
+		/**
+		 * <code>.messages.Input.InputType type = 1;</code>
+		 * 
+		 * @return The type.
+		 */
+		@java.lang.Override
+		public dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType getType() {
+			dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType result = dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType
+				.forNumber(type_);
+			return result == null
+				? dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType.UNRECOGNIZED
+				: result;
+		}
+
+		private byte memoizedIsInitialized = -1;
+
+		@java.lang.Override
+		public final boolean isInitialized() {
+			byte isInitialized = memoizedIsInitialized;
+			if (isInitialized == 1)
+				return true;
+			if (isInitialized == 0)
+				return false;
+
+			memoizedIsInitialized = 1;
+			return true;
+		}
+
+		@java.lang.Override
+		public void writeTo(com.google.protobuf.CodedOutputStream output)
+			throws java.io.IOException {
+			if (
+				type_
+					!= dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType.TAP.getNumber()
+			) {
+				output.writeEnum(1, type_);
+			}
+			getUnknownFields().writeTo(output);
+		}
+
+		@java.lang.Override
+		public int getSerializedSize() {
+			int size = memoizedSize;
+			if (size != -1)
+				return size;
+
+			size = 0;
+			if (
+				type_
+					!= dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType.TAP.getNumber()
+			) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeEnumSize(1, type_);
+			}
+			size += getUnknownFields().getSerializedSize();
+			memoizedSize = size;
+			return size;
+		}
+
+		@java.lang.Override
+		public boolean equals(final java.lang.Object obj) {
+			if (obj == this) {
+				return true;
+			}
+			if (!(obj instanceof dev.slimevr.desktop.platform.ProtobufMessages.Input)) {
+				return super.equals(obj);
+			}
+			dev.slimevr.desktop.platform.ProtobufMessages.Input other = (dev.slimevr.desktop.platform.ProtobufMessages.Input) obj;
+
+			if (type_ != other.type_)
+				return false;
+			if (!getUnknownFields().equals(other.getUnknownFields()))
+				return false;
+			return true;
+		}
+
+		@java.lang.Override
+		public int hashCode() {
+			if (memoizedHashCode != 0) {
+				return memoizedHashCode;
+			}
+			int hash = 41;
+			hash = (19 * hash) + getDescriptor().hashCode();
+			hash = (37 * hash) + TYPE_FIELD_NUMBER;
+			hash = (53 * hash) + type_;
+			hash = (29 * hash) + getUnknownFields().hashCode();
+			memoizedHashCode = hash;
+			return hash;
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input parseFrom(
+			java.nio.ByteBuffer data
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input parseFrom(
+			java.nio.ByteBuffer data,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input parseFrom(
+			com.google.protobuf.ByteString data
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input parseFrom(
+			com.google.protobuf.ByteString data,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input parseFrom(byte[] data)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input parseFrom(
+			byte[] data,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws com.google.protobuf.InvalidProtocolBufferException {
+			return PARSER.parseFrom(data, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input parseFrom(
+			java.io.InputStream input
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input parseFrom(
+			java.io.InputStream input,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input parseDelimitedFrom(
+			java.io.InputStream input
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseDelimitedWithIOException(PARSER, input);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input parseDelimitedFrom(
+			java.io.InputStream input,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input parseFrom(
+			com.google.protobuf.CodedInputStream input
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input);
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input parseFrom(
+			com.google.protobuf.CodedInputStream input,
+			com.google.protobuf.ExtensionRegistryLite extensionRegistry
+		)
+			throws java.io.IOException {
+			return com.google.protobuf.GeneratedMessage
+				.parseWithIOException(PARSER, input, extensionRegistry);
+		}
+
+		@java.lang.Override
+		public Builder newBuilderForType() {
+			return newBuilder();
+		}
+
+		public static Builder newBuilder() {
+			return DEFAULT_INSTANCE.toBuilder();
+		}
+
+		public static Builder newBuilder(
+			dev.slimevr.desktop.platform.ProtobufMessages.Input prototype
+		) {
+			return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+		}
+
+		@java.lang.Override
+		public Builder toBuilder() {
+			return this == DEFAULT_INSTANCE
+				? new Builder()
+				: new Builder().mergeFrom(this);
+		}
+
+		@java.lang.Override
+		protected Builder newBuilderForType(
+			com.google.protobuf.GeneratedMessage.BuilderParent parent
+		) {
+			Builder builder = new Builder(parent);
+			return builder;
+		}
+
+		/**
+		 * Protobuf type {@code messages.Input}
+		 */
+		public static final class Builder extends
+			com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+			// @@protoc_insertion_point(builder_implements:messages.Input)
+			dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder {
+			public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_Input_descriptor;
+			}
+
+			@java.lang.Override
+			protected com.google.protobuf.GeneratedMessage.FieldAccessorTable internalGetFieldAccessorTable() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_Input_fieldAccessorTable
+					.ensureFieldAccessorsInitialized(
+						dev.slimevr.desktop.platform.ProtobufMessages.Input.class,
+						dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder.class
+					);
+			}
+
+			// Construct using
+			// dev.slimevr.desktop.platform.ProtobufMessages.Input.newBuilder()
+			private Builder() {
+
+			}
+
+			private Builder(
+				com.google.protobuf.GeneratedMessage.BuilderParent parent
+			) {
+				super(parent);
+
+			}
+
+			@java.lang.Override
+			public Builder clear() {
+				super.clear();
+				bitField0_ = 0;
+				type_ = 0;
+				return this;
+			}
+
+			@java.lang.Override
+			public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.internal_static_messages_Input_descriptor;
+			}
+
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.Input getDefaultInstanceForType() {
+				return dev.slimevr.desktop.platform.ProtobufMessages.Input.getDefaultInstance();
+			}
+
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.Input build() {
+				dev.slimevr.desktop.platform.ProtobufMessages.Input result = buildPartial();
+				if (!result.isInitialized()) {
+					throw newUninitializedMessageException(result);
+				}
+				return result;
+			}
+
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.Input buildPartial() {
+				dev.slimevr.desktop.platform.ProtobufMessages.Input result = new dev.slimevr.desktop.platform.ProtobufMessages.Input(
+					this
+				);
+				if (bitField0_ != 0) {
+					buildPartial0(result);
+				}
+				onBuilt();
+				return result;
+			}
+
+			private void buildPartial0(dev.slimevr.desktop.platform.ProtobufMessages.Input result) {
+				int from_bitField0_ = bitField0_;
+				if (((from_bitField0_ & 0x00000001) != 0)) {
+					result.type_ = type_;
+				}
+			}
+
+			@java.lang.Override
+			public Builder mergeFrom(com.google.protobuf.Message other) {
+				if (other instanceof dev.slimevr.desktop.platform.ProtobufMessages.Input) {
+					return mergeFrom((dev.slimevr.desktop.platform.ProtobufMessages.Input) other);
+				} else {
+					super.mergeFrom(other);
+					return this;
+				}
+			}
+
+			public Builder mergeFrom(dev.slimevr.desktop.platform.ProtobufMessages.Input other) {
+				if (
+					other
+						== dev.slimevr.desktop.platform.ProtobufMessages.Input.getDefaultInstance()
+				)
+					return this;
+				if (other.type_ != 0) {
+					setTypeValue(other.getTypeValue());
+				}
+				this.mergeUnknownFields(other.getUnknownFields());
+				onChanged();
+				return this;
+			}
+
+			@java.lang.Override
+			public final boolean isInitialized() {
+				return true;
+			}
+
+			@java.lang.Override
+			public Builder mergeFrom(
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
+			)
+				throws java.io.IOException {
+				if (extensionRegistry == null) {
+					throw new java.lang.NullPointerException();
+				}
+				try {
+					boolean done = false;
+					while (!done) {
+						int tag = input.readTag();
+						switch (tag) {
+							case 0:
+								done = true;
+								break;
+							case 8: {
+								type_ = input.readEnum();
+								bitField0_ |= 0x00000001;
+								break;
+							} // case 8
+							default: {
+								if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+									done = true; // was an endgroup tag
+								}
+								break;
+							} // default:
+						} // switch (tag)
+					} // while (!done)
+				} catch (com.google.protobuf.InvalidProtocolBufferException e) {
+					throw e.unwrapIOException();
+				} finally {
+					onChanged();
+				} // finally
+				return this;
+			}
+
+			private int bitField0_;
+
+			private int type_ = 0;
+
+			/**
+			 * <code>.messages.Input.InputType type = 1;</code>
+			 * 
+			 * @return The enum numeric value on the wire for type.
+			 */
+			@java.lang.Override
+			public int getTypeValue() {
+				return type_;
+			}
+
+			/**
+			 * <code>.messages.Input.InputType type = 1;</code>
+			 * 
+			 * @param value The enum numeric value on the wire for type to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setTypeValue(int value) {
+				type_ = value;
+				bitField0_ |= 0x00000001;
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>.messages.Input.InputType type = 1;</code>
+			 * 
+			 * @return The type.
+			 */
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType getType() {
+				dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType result = dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType
+					.forNumber(type_);
+				return result == null
+					? dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType.UNRECOGNIZED
+					: result;
+			}
+
+			/**
+			 * <code>.messages.Input.InputType type = 1;</code>
+			 * 
+			 * @param value The type to set.
+			 * @return This builder for chaining.
+			 */
+			public Builder setType(
+				dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType value
+			) {
+				if (value == null) {
+					throw new NullPointerException();
+				}
+				bitField0_ |= 0x00000001;
+				type_ = value.getNumber();
+				onChanged();
+				return this;
+			}
+
+			/**
+			 * <code>.messages.Input.InputType type = 1;</code>
+			 * 
+			 * @return This builder for chaining.
+			 */
+			public Builder clearType() {
+				bitField0_ = (bitField0_ & ~0x00000001);
+				type_ = 0;
+				onChanged();
+				return this;
+			}
+
+			// @@protoc_insertion_point(builder_scope:messages.Input)
+		}
+
+		// @@protoc_insertion_point(class_scope:messages.Input)
+		private static final dev.slimevr.desktop.platform.ProtobufMessages.Input DEFAULT_INSTANCE;
+		static {
+			DEFAULT_INSTANCE = new dev.slimevr.desktop.platform.ProtobufMessages.Input();
+		}
+
+		public static dev.slimevr.desktop.platform.ProtobufMessages.Input getDefaultInstance() {
+			return DEFAULT_INSTANCE;
+		}
+
+		private static final com.google.protobuf.Parser<Input> PARSER = new com.google.protobuf.AbstractParser<Input>() {
+			@java.lang.Override
+			public Input parsePartialFrom(
+				com.google.protobuf.CodedInputStream input,
+				com.google.protobuf.ExtensionRegistryLite extensionRegistry
+			)
+				throws com.google.protobuf.InvalidProtocolBufferException {
+				Builder builder = newBuilder();
+				try {
+					builder.mergeFrom(input, extensionRegistry);
+				} catch (com.google.protobuf.InvalidProtocolBufferException e) {
+					throw e.setUnfinishedMessage(builder.buildPartial());
+				} catch (com.google.protobuf.UninitializedMessageException e) {
+					throw e
+						.asInvalidProtocolBufferException()
+						.setUnfinishedMessage(builder.buildPartial());
+				} catch (java.io.IOException e) {
+					throw new com.google.protobuf.InvalidProtocolBufferException(e)
+						.setUnfinishedMessage(builder.buildPartial());
+				}
+				return builder.buildPartial();
+			}
+		};
+
+		public static com.google.protobuf.Parser<Input> parser() {
+			return PARSER;
+		}
+
+		@java.lang.Override
+		public com.google.protobuf.Parser<Input> getParserForType() {
+			return PARSER;
+		}
+
+		@java.lang.Override
+		public dev.slimevr.desktop.platform.ProtobufMessages.Input getDefaultInstanceForType() {
+			return DEFAULT_INSTANCE;
+		}
+
+	}
+
 	public interface PositionOrBuilder extends
 		// @@protoc_insertion_point(interface_extends:messages.Position)
 		com.google.protobuf.MessageOrBuilder {
@@ -1772,6 +2973,33 @@ public final class ProtobufMessages {
 		dev.slimevr.desktop.platform.ProtobufMessages.FingerBoneRotationOrBuilder getFingerBoneRotationsOrBuilder(
 			int index
 		);
+
+		/**
+		 * <code>repeated .messages.Input input = 11;</code>
+		 */
+		java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.Input> getInputList();
+
+		/**
+		 * <code>repeated .messages.Input input = 11;</code>
+		 */
+		dev.slimevr.desktop.platform.ProtobufMessages.Input getInput(int index);
+
+		/**
+		 * <code>repeated .messages.Input input = 11;</code>
+		 */
+		int getInputCount();
+
+		/**
+		 * <code>repeated .messages.Input input = 11;</code>
+		 */
+		java.util.List<? extends dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder> getInputOrBuilderList();
+
+		/**
+		 * <code>repeated .messages.Input input = 11;</code>
+		 */
+		dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder getInputOrBuilder(
+			int index
+		);
 	}
 
 	/**
@@ -1802,6 +3030,7 @@ public final class ProtobufMessages {
 		private Position() {
 			dataSource_ = 0;
 			fingerBoneRotations_ = java.util.Collections.emptyList();
+			input_ = java.util.Collections.emptyList();
 		}
 
 		public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
@@ -2185,6 +3414,52 @@ public final class ProtobufMessages {
 			return fingerBoneRotations_.get(index);
 		}
 
+		public static final int INPUT_FIELD_NUMBER = 11;
+		@SuppressWarnings("serial")
+		private java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.Input> input_;
+
+		/**
+		 * <code>repeated .messages.Input input = 11;</code>
+		 */
+		@java.lang.Override
+		public java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.Input> getInputList() {
+			return input_;
+		}
+
+		/**
+		 * <code>repeated .messages.Input input = 11;</code>
+		 */
+		@java.lang.Override
+		public java.util.List<? extends dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder> getInputOrBuilderList() {
+			return input_;
+		}
+
+		/**
+		 * <code>repeated .messages.Input input = 11;</code>
+		 */
+		@java.lang.Override
+		public int getInputCount() {
+			return input_.size();
+		}
+
+		/**
+		 * <code>repeated .messages.Input input = 11;</code>
+		 */
+		@java.lang.Override
+		public dev.slimevr.desktop.platform.ProtobufMessages.Input getInput(int index) {
+			return input_.get(index);
+		}
+
+		/**
+		 * <code>repeated .messages.Input input = 11;</code>
+		 */
+		@java.lang.Override
+		public dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder getInputOrBuilder(
+			int index
+		) {
+			return input_.get(index);
+		}
+
 		private byte memoizedIsInitialized = -1;
 
 		@java.lang.Override
@@ -2231,6 +3506,9 @@ public final class ProtobufMessages {
 			}
 			for (int i = 0; i < fingerBoneRotations_.size(); i++) {
 				output.writeMessage(10, fingerBoneRotations_.get(i));
+			}
+			for (int i = 0; i < input_.size(); i++) {
+				output.writeMessage(11, input_.get(i));
 			}
 			getUnknownFields().writeTo(output);
 		}
@@ -2281,6 +3559,10 @@ public final class ProtobufMessages {
 			for (int i = 0; i < fingerBoneRotations_.size(); i++) {
 				size += com.google.protobuf.CodedOutputStream
 					.computeMessageSize(10, fingerBoneRotations_.get(i));
+			}
+			for (int i = 0; i < input_.size(); i++) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeMessageSize(11, input_.get(i));
 			}
 			size += getUnknownFields().getSerializedSize();
 			memoizedSize = size;
@@ -2381,6 +3663,11 @@ public final class ProtobufMessages {
 					.equals(other.getFingerBoneRotationsList())
 			)
 				return false;
+			if (
+				!getInputList()
+					.equals(other.getInputList())
+			)
+				return false;
 			if (!getUnknownFields().equals(other.getUnknownFields()))
 				return false;
 			return true;
@@ -2450,6 +3737,10 @@ public final class ProtobufMessages {
 			if (getFingerBoneRotationsCount() > 0) {
 				hash = (37 * hash) + FINGER_BONE_ROTATIONS_FIELD_NUMBER;
 				hash = (53 * hash) + getFingerBoneRotationsList().hashCode();
+			}
+			if (getInputCount() > 0) {
+				hash = (37 * hash) + INPUT_FIELD_NUMBER;
+				hash = (53 * hash) + getInputList().hashCode();
 			}
 			hash = (29 * hash) + getUnknownFields().hashCode();
 			memoizedHashCode = hash;
@@ -2633,6 +3924,13 @@ public final class ProtobufMessages {
 					fingerBoneRotationsBuilder_.clear();
 				}
 				bitField0_ = (bitField0_ & ~0x00000200);
+				if (inputBuilder_ == null) {
+					input_ = java.util.Collections.emptyList();
+				} else {
+					input_ = null;
+					inputBuilder_.clear();
+				}
+				bitField0_ = (bitField0_ & ~0x00000400);
 				return this;
 			}
 
@@ -2680,6 +3978,15 @@ public final class ProtobufMessages {
 					result.fingerBoneRotations_ = fingerBoneRotations_;
 				} else {
 					result.fingerBoneRotations_ = fingerBoneRotationsBuilder_.build();
+				}
+				if (inputBuilder_ == null) {
+					if (((bitField0_ & 0x00000400) != 0)) {
+						input_ = java.util.Collections.unmodifiableList(input_);
+						bitField0_ = (bitField0_ & ~0x00000400);
+					}
+					result.input_ = input_;
+				} else {
+					result.input_ = inputBuilder_.build();
 				}
 			}
 
@@ -2794,6 +4101,32 @@ public final class ProtobufMessages {
 						}
 					}
 				}
+				if (inputBuilder_ == null) {
+					if (!other.input_.isEmpty()) {
+						if (input_.isEmpty()) {
+							input_ = other.input_;
+							bitField0_ = (bitField0_ & ~0x00000400);
+						} else {
+							ensureInputIsMutable();
+							input_.addAll(other.input_);
+						}
+						onChanged();
+					}
+				} else {
+					if (!other.input_.isEmpty()) {
+						if (inputBuilder_.isEmpty()) {
+							inputBuilder_.dispose();
+							inputBuilder_ = null;
+							input_ = other.input_;
+							bitField0_ = (bitField0_ & ~0x00000400);
+							inputBuilder_ = com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders
+								? internalGetInputFieldBuilder()
+								: null;
+						} else {
+							inputBuilder_.addAllMessages(other.input_);
+						}
+					}
+				}
 				this.mergeUnknownFields(other.getUnknownFields());
 				onChanged();
 				return this;
@@ -2881,6 +4214,21 @@ public final class ProtobufMessages {
 								}
 								break;
 							} // case 82
+							case 90: {
+								dev.slimevr.desktop.platform.ProtobufMessages.Input m = input
+									.readMessage(
+										dev.slimevr.desktop.platform.ProtobufMessages.Input
+											.parser(),
+										extensionRegistry
+									);
+								if (inputBuilder_ == null) {
+									ensureInputIsMutable();
+									input_.add(m);
+								} else {
+									inputBuilder_.addMessage(m);
+								}
+								break;
+							} // case 90
 							default: {
 								if (!super.parseUnknownField(input, extensionRegistry, tag)) {
 									done = true; // was an endgroup tag
@@ -3595,6 +4943,284 @@ public final class ProtobufMessages {
 					fingerBoneRotations_ = null;
 				}
 				return fingerBoneRotationsBuilder_;
+			}
+
+			private java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.Input> input_ = java.util.Collections
+				.emptyList();
+
+			private void ensureInputIsMutable() {
+				if (!((bitField0_ & 0x00000400) != 0)) {
+					input_ = new java.util.ArrayList<dev.slimevr.desktop.platform.ProtobufMessages.Input>(
+						input_
+					);
+					bitField0_ |= 0x00000400;
+				}
+			}
+
+			private com.google.protobuf.RepeatedFieldBuilder<dev.slimevr.desktop.platform.ProtobufMessages.Input, dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder, dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder> inputBuilder_;
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.Input> getInputList() {
+				if (inputBuilder_ == null) {
+					return java.util.Collections.unmodifiableList(input_);
+				} else {
+					return inputBuilder_.getMessageList();
+				}
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public int getInputCount() {
+				if (inputBuilder_ == null) {
+					return input_.size();
+				} else {
+					return inputBuilder_.getCount();
+				}
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public dev.slimevr.desktop.platform.ProtobufMessages.Input getInput(int index) {
+				if (inputBuilder_ == null) {
+					return input_.get(index);
+				} else {
+					return inputBuilder_.getMessage(index);
+				}
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public Builder setInput(
+				int index,
+				dev.slimevr.desktop.platform.ProtobufMessages.Input value
+			) {
+				if (inputBuilder_ == null) {
+					if (value == null) {
+						throw new NullPointerException();
+					}
+					ensureInputIsMutable();
+					input_.set(index, value);
+					onChanged();
+				} else {
+					inputBuilder_.setMessage(index, value);
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public Builder setInput(
+				int index,
+				dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder builderForValue
+			) {
+				if (inputBuilder_ == null) {
+					ensureInputIsMutable();
+					input_.set(index, builderForValue.build());
+					onChanged();
+				} else {
+					inputBuilder_.setMessage(index, builderForValue.build());
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public Builder addInput(dev.slimevr.desktop.platform.ProtobufMessages.Input value) {
+				if (inputBuilder_ == null) {
+					if (value == null) {
+						throw new NullPointerException();
+					}
+					ensureInputIsMutable();
+					input_.add(value);
+					onChanged();
+				} else {
+					inputBuilder_.addMessage(value);
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public Builder addInput(
+				int index,
+				dev.slimevr.desktop.platform.ProtobufMessages.Input value
+			) {
+				if (inputBuilder_ == null) {
+					if (value == null) {
+						throw new NullPointerException();
+					}
+					ensureInputIsMutable();
+					input_.add(index, value);
+					onChanged();
+				} else {
+					inputBuilder_.addMessage(index, value);
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public Builder addInput(
+				dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder builderForValue
+			) {
+				if (inputBuilder_ == null) {
+					ensureInputIsMutable();
+					input_.add(builderForValue.build());
+					onChanged();
+				} else {
+					inputBuilder_.addMessage(builderForValue.build());
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public Builder addInput(
+				int index,
+				dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder builderForValue
+			) {
+				if (inputBuilder_ == null) {
+					ensureInputIsMutable();
+					input_.add(index, builderForValue.build());
+					onChanged();
+				} else {
+					inputBuilder_.addMessage(index, builderForValue.build());
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public Builder addAllInput(
+				java.lang.Iterable<? extends dev.slimevr.desktop.platform.ProtobufMessages.Input> values
+			) {
+				if (inputBuilder_ == null) {
+					ensureInputIsMutable();
+					com.google.protobuf.AbstractMessageLite.Builder
+						.addAll(
+							values,
+							input_
+						);
+					onChanged();
+				} else {
+					inputBuilder_.addAllMessages(values);
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public Builder clearInput() {
+				if (inputBuilder_ == null) {
+					input_ = java.util.Collections.emptyList();
+					bitField0_ = (bitField0_ & ~0x00000400);
+					onChanged();
+				} else {
+					inputBuilder_.clear();
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public Builder removeInput(int index) {
+				if (inputBuilder_ == null) {
+					ensureInputIsMutable();
+					input_.remove(index);
+					onChanged();
+				} else {
+					inputBuilder_.remove(index);
+				}
+				return this;
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder getInputBuilder(
+				int index
+			) {
+				return internalGetInputFieldBuilder().getBuilder(index);
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder getInputOrBuilder(
+				int index
+			) {
+				if (inputBuilder_ == null) {
+					return input_.get(index);
+				} else {
+					return inputBuilder_.getMessageOrBuilder(index);
+				}
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public java.util.List<? extends dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder> getInputOrBuilderList() {
+				if (inputBuilder_ != null) {
+					return inputBuilder_.getMessageOrBuilderList();
+				} else {
+					return java.util.Collections.unmodifiableList(input_);
+				}
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder addInputBuilder() {
+				return internalGetInputFieldBuilder()
+					.addBuilder(
+						dev.slimevr.desktop.platform.ProtobufMessages.Input.getDefaultInstance()
+					);
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder addInputBuilder(
+				int index
+			) {
+				return internalGetInputFieldBuilder()
+					.addBuilder(
+						index,
+						dev.slimevr.desktop.platform.ProtobufMessages.Input.getDefaultInstance()
+					);
+			}
+
+			/**
+			 * <code>repeated .messages.Input input = 11;</code>
+			 */
+			public java.util.List<dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder> getInputBuilderList() {
+				return internalGetInputFieldBuilder().getBuilderList();
+			}
+
+			private com.google.protobuf.RepeatedFieldBuilder<dev.slimevr.desktop.platform.ProtobufMessages.Input, dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder, dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder> internalGetInputFieldBuilder() {
+				if (inputBuilder_ == null) {
+					inputBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<dev.slimevr.desktop.platform.ProtobufMessages.Input, dev.slimevr.desktop.platform.ProtobufMessages.Input.Builder, dev.slimevr.desktop.platform.ProtobufMessages.InputOrBuilder>(
+						input_,
+						((bitField0_ & 0x00000400) != 0),
+						getParentForChildren(),
+						isClean()
+					);
+					input_ = null;
+				}
+				return inputBuilder_;
 			}
 
 			// @@protoc_insertion_point(builder_scope:messages.Position)
@@ -4691,20 +6317,6 @@ public final class ProtobufMessages {
 		 * @return The trackerRole.
 		 */
 		int getTrackerRole();
-
-		/**
-		 * <code>optional bool fingertracking_enabled = 10;</code>
-		 * 
-		 * @return Whether the fingertrackingEnabled field is set.
-		 */
-		boolean hasFingertrackingEnabled();
-
-		/**
-		 * <code>optional bool fingertracking_enabled = 10;</code>
-		 * 
-		 * @return The fingertrackingEnabled.
-		 */
-		boolean getFingertrackingEnabled();
 	}
 
 	/**
@@ -4750,7 +6362,6 @@ public final class ProtobufMessages {
 				);
 		}
 
-		private int bitField0_;
 		public static final int TRACKER_ID_FIELD_NUMBER = 1;
 		private int trackerId_ = 0;
 
@@ -4861,29 +6472,6 @@ public final class ProtobufMessages {
 			return trackerRole_;
 		}
 
-		public static final int FINGERTRACKING_ENABLED_FIELD_NUMBER = 10;
-		private boolean fingertrackingEnabled_ = false;
-
-		/**
-		 * <code>optional bool fingertracking_enabled = 10;</code>
-		 * 
-		 * @return Whether the fingertrackingEnabled field is set.
-		 */
-		@java.lang.Override
-		public boolean hasFingertrackingEnabled() {
-			return ((bitField0_ & 0x00000001) != 0);
-		}
-
-		/**
-		 * <code>optional bool fingertracking_enabled = 10;</code>
-		 * 
-		 * @return The fingertrackingEnabled.
-		 */
-		@java.lang.Override
-		public boolean getFingertrackingEnabled() {
-			return fingertrackingEnabled_;
-		}
-
 		private byte memoizedIsInitialized = -1;
 
 		@java.lang.Override
@@ -4913,9 +6501,6 @@ public final class ProtobufMessages {
 			if (trackerRole_ != 0) {
 				output.writeInt32(4, trackerRole_);
 			}
-			if (((bitField0_ & 0x00000001) != 0)) {
-				output.writeBool(10, fingertrackingEnabled_);
-			}
 			getUnknownFields().writeTo(output);
 		}
 
@@ -4939,10 +6524,6 @@ public final class ProtobufMessages {
 			if (trackerRole_ != 0) {
 				size += com.google.protobuf.CodedOutputStream
 					.computeInt32Size(4, trackerRole_);
-			}
-			if (((bitField0_ & 0x00000001) != 0)) {
-				size += com.google.protobuf.CodedOutputStream
-					.computeBoolSize(10, fingertrackingEnabled_);
 			}
 			size += getUnknownFields().getSerializedSize();
 			memoizedSize = size;
@@ -4979,15 +6560,6 @@ public final class ProtobufMessages {
 					!= other.getTrackerRole()
 			)
 				return false;
-			if (hasFingertrackingEnabled() != other.hasFingertrackingEnabled())
-				return false;
-			if (hasFingertrackingEnabled()) {
-				if (
-					getFingertrackingEnabled()
-						!= other.getFingertrackingEnabled()
-				)
-					return false;
-			}
 			if (!getUnknownFields().equals(other.getUnknownFields()))
 				return false;
 			return true;
@@ -5008,14 +6580,6 @@ public final class ProtobufMessages {
 			hash = (53 * hash) + getTrackerName().hashCode();
 			hash = (37 * hash) + TRACKER_ROLE_FIELD_NUMBER;
 			hash = (53 * hash) + getTrackerRole();
-			if (hasFingertrackingEnabled()) {
-				hash = (37 * hash) + FINGERTRACKING_ENABLED_FIELD_NUMBER;
-				hash = (53 * hash)
-					+ com.google.protobuf.Internal
-						.hashBoolean(
-							getFingertrackingEnabled()
-						);
-			}
 			hash = (29 * hash) + getUnknownFields().hashCode();
 			memoizedHashCode = hash;
 			return hash;
@@ -5188,7 +6752,6 @@ public final class ProtobufMessages {
 				trackerSerial_ = "";
 				trackerName_ = "";
 				trackerRole_ = 0;
-				fingertrackingEnabled_ = false;
 				return this;
 			}
 
@@ -5240,12 +6803,6 @@ public final class ProtobufMessages {
 				if (((from_bitField0_ & 0x00000008) != 0)) {
 					result.trackerRole_ = trackerRole_;
 				}
-				int to_bitField0_ = 0;
-				if (((from_bitField0_ & 0x00000010) != 0)) {
-					result.fingertrackingEnabled_ = fingertrackingEnabled_;
-					to_bitField0_ |= 0x00000001;
-				}
-				result.bitField0_ |= to_bitField0_;
 			}
 
 			@java.lang.Override
@@ -5284,9 +6841,6 @@ public final class ProtobufMessages {
 				}
 				if (other.getTrackerRole() != 0) {
 					setTrackerRole(other.getTrackerRole());
-				}
-				if (other.hasFingertrackingEnabled()) {
-					setFingertrackingEnabled(other.getFingertrackingEnabled());
 				}
 				this.mergeUnknownFields(other.getUnknownFields());
 				onChanged();
@@ -5335,11 +6889,6 @@ public final class ProtobufMessages {
 								bitField0_ |= 0x00000008;
 								break;
 							} // case 32
-							case 80: {
-								fingertrackingEnabled_ = input.readBool();
-								bitField0_ |= 0x00000010;
-								break;
-							} // case 80
 							default: {
 								if (!super.parseUnknownField(input, extensionRegistry, tag)) {
 									done = true; // was an endgroup tag
@@ -5604,54 +7153,6 @@ public final class ProtobufMessages {
 			public Builder clearTrackerRole() {
 				bitField0_ = (bitField0_ & ~0x00000008);
 				trackerRole_ = 0;
-				onChanged();
-				return this;
-			}
-
-			private boolean fingertrackingEnabled_;
-
-			/**
-			 * <code>optional bool fingertracking_enabled = 10;</code>
-			 * 
-			 * @return Whether the fingertrackingEnabled field is set.
-			 */
-			@java.lang.Override
-			public boolean hasFingertrackingEnabled() {
-				return ((bitField0_ & 0x00000010) != 0);
-			}
-
-			/**
-			 * <code>optional bool fingertracking_enabled = 10;</code>
-			 * 
-			 * @return The fingertrackingEnabled.
-			 */
-			@java.lang.Override
-			public boolean getFingertrackingEnabled() {
-				return fingertrackingEnabled_;
-			}
-
-			/**
-			 * <code>optional bool fingertracking_enabled = 10;</code>
-			 * 
-			 * @param value The fingertrackingEnabled to set.
-			 * @return This builder for chaining.
-			 */
-			public Builder setFingertrackingEnabled(boolean value) {
-
-				fingertrackingEnabled_ = value;
-				bitField0_ |= 0x00000010;
-				onChanged();
-				return this;
-			}
-
-			/**
-			 * <code>optional bool fingertracking_enabled = 10;</code>
-			 * 
-			 * @return This builder for chaining.
-			 */
-			public Builder clearFingertrackingEnabled() {
-				bitField0_ = (bitField0_ & ~0x00000010);
-				fingertrackingEnabled_ = false;
 				onChanged();
 				return this;
 			}
@@ -8017,6 +9518,25 @@ public final class ProtobufMessages {
 		 */
 		dev.slimevr.desktop.platform.ProtobufMessages.BatteryOrBuilder getBatteryOrBuilder();
 
+		/**
+		 * <code>.messages.Version version = 6;</code>
+		 * 
+		 * @return Whether the version field is set.
+		 */
+		boolean hasVersion();
+
+		/**
+		 * <code>.messages.Version version = 6;</code>
+		 * 
+		 * @return The version.
+		 */
+		dev.slimevr.desktop.platform.ProtobufMessages.Version getVersion();
+
+		/**
+		 * <code>.messages.Version version = 6;</code>
+		 */
+		dev.slimevr.desktop.platform.ProtobufMessages.VersionOrBuilder getVersionOrBuilder();
+
 		dev.slimevr.desktop.platform.ProtobufMessages.ProtobufMessage.MessageCase getMessageCase();
 	}
 
@@ -8073,6 +9593,7 @@ public final class ProtobufMessages {
 			TRACKER_ADDED(3),
 			TRACKER_STATUS(4),
 			BATTERY(5),
+			VERSION(6),
 			MESSAGE_NOT_SET(0);
 
 			private final int value;
@@ -8103,6 +9624,8 @@ public final class ProtobufMessages {
 						return TRACKER_STATUS;
 					case 5:
 						return BATTERY;
+					case 6:
+						return VERSION;
 					case 0:
 						return MESSAGE_NOT_SET;
 					default:
@@ -8302,6 +9825,42 @@ public final class ProtobufMessages {
 			return dev.slimevr.desktop.platform.ProtobufMessages.Battery.getDefaultInstance();
 		}
 
+		public static final int VERSION_FIELD_NUMBER = 6;
+
+		/**
+		 * <code>.messages.Version version = 6;</code>
+		 * 
+		 * @return Whether the version field is set.
+		 */
+		@java.lang.Override
+		public boolean hasVersion() {
+			return messageCase_ == 6;
+		}
+
+		/**
+		 * <code>.messages.Version version = 6;</code>
+		 * 
+		 * @return The version.
+		 */
+		@java.lang.Override
+		public dev.slimevr.desktop.platform.ProtobufMessages.Version getVersion() {
+			if (messageCase_ == 6) {
+				return (dev.slimevr.desktop.platform.ProtobufMessages.Version) message_;
+			}
+			return dev.slimevr.desktop.platform.ProtobufMessages.Version.getDefaultInstance();
+		}
+
+		/**
+		 * <code>.messages.Version version = 6;</code>
+		 */
+		@java.lang.Override
+		public dev.slimevr.desktop.platform.ProtobufMessages.VersionOrBuilder getVersionOrBuilder() {
+			if (messageCase_ == 6) {
+				return (dev.slimevr.desktop.platform.ProtobufMessages.Version) message_;
+			}
+			return dev.slimevr.desktop.platform.ProtobufMessages.Version.getDefaultInstance();
+		}
+
 		private byte memoizedIsInitialized = -1;
 
 		@java.lang.Override
@@ -8354,6 +9913,13 @@ public final class ProtobufMessages {
 						(dev.slimevr.desktop.platform.ProtobufMessages.Battery) message_
 					);
 			}
+			if (messageCase_ == 6) {
+				output
+					.writeMessage(
+						6,
+						(dev.slimevr.desktop.platform.ProtobufMessages.Version) message_
+					);
+			}
 			getUnknownFields().writeTo(output);
 		}
 
@@ -8397,6 +9963,13 @@ public final class ProtobufMessages {
 					.computeMessageSize(
 						5,
 						(dev.slimevr.desktop.platform.ProtobufMessages.Battery) message_
+					);
+			}
+			if (messageCase_ == 6) {
+				size += com.google.protobuf.CodedOutputStream
+					.computeMessageSize(
+						6,
+						(dev.slimevr.desktop.platform.ProtobufMessages.Version) message_
 					);
 			}
 			size += getUnknownFields().getSerializedSize();
@@ -8452,6 +10025,13 @@ public final class ProtobufMessages {
 					)
 						return false;
 					break;
+				case 6:
+					if (
+						!getVersion()
+							.equals(other.getVersion())
+					)
+						return false;
+					break;
 				case 0:
 				default:
 			}
@@ -8487,6 +10067,10 @@ public final class ProtobufMessages {
 				case 5:
 					hash = (37 * hash) + BATTERY_FIELD_NUMBER;
 					hash = (53 * hash) + getBattery().hashCode();
+					break;
+				case 6:
+					hash = (37 * hash) + VERSION_FIELD_NUMBER;
+					hash = (53 * hash) + getVersion().hashCode();
 					break;
 				case 0:
 				default:
@@ -8674,6 +10258,9 @@ public final class ProtobufMessages {
 				if (batteryBuilder_ != null) {
 					batteryBuilder_.clear();
 				}
+				if (versionBuilder_ != null) {
+					versionBuilder_.clear();
+				}
 				messageCase_ = 0;
 				message_ = null;
 				return this;
@@ -8758,6 +10345,13 @@ public final class ProtobufMessages {
 				) {
 					result.message_ = batteryBuilder_.build();
 				}
+				if (
+					messageCase_ == 6
+						&&
+						versionBuilder_ != null
+				) {
+					result.message_ = versionBuilder_.build();
+				}
 			}
 
 			@java.lang.Override
@@ -8802,6 +10396,10 @@ public final class ProtobufMessages {
 					}
 					case BATTERY: {
 						mergeBattery(other.getBattery());
+						break;
+					}
+					case VERSION: {
+						mergeVersion(other.getVersion());
 						break;
 					}
 					case MESSAGE_NOT_SET: {
@@ -8880,6 +10478,15 @@ public final class ProtobufMessages {
 								messageCase_ = 5;
 								break;
 							} // case 42
+							case 50: {
+								input
+									.readMessage(
+										internalGetVersionFieldBuilder().getBuilder(),
+										extensionRegistry
+									);
+								messageCase_ = 6;
+								break;
+							} // case 50
 							default: {
 								if (!super.parseUnknownField(input, extensionRegistry, tag)) {
 									done = true; // was an endgroup tag
@@ -9753,6 +11360,172 @@ public final class ProtobufMessages {
 				return batteryBuilder_;
 			}
 
+			private com.google.protobuf.SingleFieldBuilder<dev.slimevr.desktop.platform.ProtobufMessages.Version, dev.slimevr.desktop.platform.ProtobufMessages.Version.Builder, dev.slimevr.desktop.platform.ProtobufMessages.VersionOrBuilder> versionBuilder_;
+
+			/**
+			 * <code>.messages.Version version = 6;</code>
+			 * 
+			 * @return Whether the version field is set.
+			 */
+			@java.lang.Override
+			public boolean hasVersion() {
+				return messageCase_ == 6;
+			}
+
+			/**
+			 * <code>.messages.Version version = 6;</code>
+			 * 
+			 * @return The version.
+			 */
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.Version getVersion() {
+				if (versionBuilder_ == null) {
+					if (messageCase_ == 6) {
+						return (dev.slimevr.desktop.platform.ProtobufMessages.Version) message_;
+					}
+					return dev.slimevr.desktop.platform.ProtobufMessages.Version
+						.getDefaultInstance();
+				} else {
+					if (messageCase_ == 6) {
+						return versionBuilder_.getMessage();
+					}
+					return dev.slimevr.desktop.platform.ProtobufMessages.Version
+						.getDefaultInstance();
+				}
+			}
+
+			/**
+			 * <code>.messages.Version version = 6;</code>
+			 */
+			public Builder setVersion(dev.slimevr.desktop.platform.ProtobufMessages.Version value) {
+				if (versionBuilder_ == null) {
+					if (value == null) {
+						throw new NullPointerException();
+					}
+					message_ = value;
+					onChanged();
+				} else {
+					versionBuilder_.setMessage(value);
+				}
+				messageCase_ = 6;
+				return this;
+			}
+
+			/**
+			 * <code>.messages.Version version = 6;</code>
+			 */
+			public Builder setVersion(
+				dev.slimevr.desktop.platform.ProtobufMessages.Version.Builder builderForValue
+			) {
+				if (versionBuilder_ == null) {
+					message_ = builderForValue.build();
+					onChanged();
+				} else {
+					versionBuilder_.setMessage(builderForValue.build());
+				}
+				messageCase_ = 6;
+				return this;
+			}
+
+			/**
+			 * <code>.messages.Version version = 6;</code>
+			 */
+			public Builder mergeVersion(
+				dev.slimevr.desktop.platform.ProtobufMessages.Version value
+			) {
+				if (versionBuilder_ == null) {
+					if (
+						messageCase_ == 6
+							&&
+							message_
+								!= dev.slimevr.desktop.platform.ProtobufMessages.Version
+									.getDefaultInstance()
+					) {
+						message_ = dev.slimevr.desktop.platform.ProtobufMessages.Version
+							.newBuilder(
+								(dev.slimevr.desktop.platform.ProtobufMessages.Version) message_
+							)
+							.mergeFrom(value)
+							.buildPartial();
+					} else {
+						message_ = value;
+					}
+					onChanged();
+				} else {
+					if (messageCase_ == 6) {
+						versionBuilder_.mergeFrom(value);
+					} else {
+						versionBuilder_.setMessage(value);
+					}
+				}
+				messageCase_ = 6;
+				return this;
+			}
+
+			/**
+			 * <code>.messages.Version version = 6;</code>
+			 */
+			public Builder clearVersion() {
+				if (versionBuilder_ == null) {
+					if (messageCase_ == 6) {
+						messageCase_ = 0;
+						message_ = null;
+						onChanged();
+					}
+				} else {
+					if (messageCase_ == 6) {
+						messageCase_ = 0;
+						message_ = null;
+					}
+					versionBuilder_.clear();
+				}
+				return this;
+			}
+
+			/**
+			 * <code>.messages.Version version = 6;</code>
+			 */
+			public dev.slimevr.desktop.platform.ProtobufMessages.Version.Builder getVersionBuilder() {
+				return internalGetVersionFieldBuilder().getBuilder();
+			}
+
+			/**
+			 * <code>.messages.Version version = 6;</code>
+			 */
+			@java.lang.Override
+			public dev.slimevr.desktop.platform.ProtobufMessages.VersionOrBuilder getVersionOrBuilder() {
+				if ((messageCase_ == 6) && (versionBuilder_ != null)) {
+					return versionBuilder_.getMessageOrBuilder();
+				} else {
+					if (messageCase_ == 6) {
+						return (dev.slimevr.desktop.platform.ProtobufMessages.Version) message_;
+					}
+					return dev.slimevr.desktop.platform.ProtobufMessages.Version
+						.getDefaultInstance();
+				}
+			}
+
+			/**
+			 * <code>.messages.Version version = 6;</code>
+			 */
+			private com.google.protobuf.SingleFieldBuilder<dev.slimevr.desktop.platform.ProtobufMessages.Version, dev.slimevr.desktop.platform.ProtobufMessages.Version.Builder, dev.slimevr.desktop.platform.ProtobufMessages.VersionOrBuilder> internalGetVersionFieldBuilder() {
+				if (versionBuilder_ == null) {
+					if (!(messageCase_ == 6)) {
+						message_ = dev.slimevr.desktop.platform.ProtobufMessages.Version
+							.getDefaultInstance();
+					}
+					versionBuilder_ = new com.google.protobuf.SingleFieldBuilder<dev.slimevr.desktop.platform.ProtobufMessages.Version, dev.slimevr.desktop.platform.ProtobufMessages.Version.Builder, dev.slimevr.desktop.platform.ProtobufMessages.VersionOrBuilder>(
+						(dev.slimevr.desktop.platform.ProtobufMessages.Version) message_,
+						getParentForChildren(),
+						isClean()
+					);
+					message_ = null;
+				}
+				messageCase_ = 6;
+				onChanged();
+				return versionBuilder_;
+			}
+
 			// @@protoc_insertion_point(builder_scope:messages.ProtobufMessage)
 		}
 
@@ -9808,8 +11581,12 @@ public final class ProtobufMessages {
 
 	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_PingPong_descriptor;
 	private static final com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_messages_PingPong_fieldAccessorTable;
+	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_Version_descriptor;
+	private static final com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_messages_Version_fieldAccessorTable;
 	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_FingerBoneRotation_descriptor;
 	private static final com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_messages_FingerBoneRotation_fieldAccessorTable;
+	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_Input_descriptor;
+	private static final com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_messages_Input_fieldAccessorTable;
 	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_Position_descriptor;
 	private static final com.google.protobuf.GeneratedMessage.FieldAccessorTable internal_static_messages_Position_fieldAccessorTable;
 	private static final com.google.protobuf.Descriptors.Descriptor internal_static_messages_UserAction_descriptor;
@@ -9836,101 +11613,109 @@ public final class ProtobufMessages {
 		java.lang.String[] descriptorData = {
 			"\n\026ProtobufMessages.proto\022\010messages\"\n\n\010Pi"
 				+
-				"ngPong\"\305\003\n\022FingerBoneRotation\0229\n\004name\030\001 "
+				"ngPong\"#\n\007Version\022\030\n\020protocol_version\030\001 "
 				+
-				"\001(\0162+.messages.FingerBoneRotation.Finger"
+				"\001(\005\"\305\003\n\022FingerBoneRotation\0229\n\004name\030\001 \001(\016"
 				+
-				"BoneName\022\t\n\001x\030\002 \001(\002\022\t\n\001y\030\003 \001(\002\022\t\n\001z\030\004 \001("
+				"2+.messages.FingerBoneRotation.FingerBon"
 				+
-				"\002\022\t\n\001w\030\005 \001(\002\"\307\002\n\016FingerBoneName\022\024\n\020THUMB"
+				"eName\022\t\n\001x\030\002 \001(\002\022\t\n\001y\030\003 \001(\002\022\t\n\001z\030\004 \001(\002\022\t"
 				+
-				"_METACARPAL\020\000\022\022\n\016THUMB_PROXIMAL\020\001\022\020\n\014THU"
+				"\n\001w\030\005 \001(\002\"\307\002\n\016FingerBoneName\022\024\n\020THUMB_ME"
 				+
-				"MB_DISTAL\020\002\022\022\n\016INDEX_PROXIMAL\020\003\022\026\n\022INDEX"
+				"TACARPAL\020\000\022\022\n\016THUMB_PROXIMAL\020\001\022\020\n\014THUMB_"
 				+
-				"_INTERMEDIATE\020\004\022\020\n\014INDEX_DISTAL\020\005\022\023\n\017MID"
+				"DISTAL\020\002\022\022\n\016INDEX_PROXIMAL\020\003\022\026\n\022INDEX_IN"
 				+
-				"DLE_PROXIMAL\020\006\022\027\n\023MIDDLE_INTERMEDIATE\020\007\022"
+				"TERMEDIATE\020\004\022\020\n\014INDEX_DISTAL\020\005\022\023\n\017MIDDLE"
 				+
-				"\021\n\rMIDDLE_DISTAL\020\010\022\021\n\rRING_PROXIMAL\020\t\022\025\n"
+				"_PROXIMAL\020\006\022\027\n\023MIDDLE_INTERMEDIATE\020\007\022\021\n\r"
 				+
-				"\021RING_INTERMEDIATE\020\n\022\017\n\013RING_DISTAL\020\013\022\023\n"
+				"MIDDLE_DISTAL\020\010\022\021\n\rRING_PROXIMAL\020\t\022\025\n\021RI"
 				+
-				"\017LITTLE_PROXIMAL\020\014\022\027\n\023LITTLE_INTERMEDIAT"
+				"NG_INTERMEDIATE\020\n\022\017\n\013RING_DISTAL\020\013\022\023\n\017LI"
 				+
-				"E\020\r\022\021\n\rLITTLE_DISTAL\020\016\"\320\002\n\010Position\022\022\n\nt"
+				"TTLE_PROXIMAL\020\014\022\027\n\023LITTLE_INTERMEDIATE\020\r"
 				+
-				"racker_id\030\001 \001(\005\022\016\n\001x\030\002 \001(\002H\000\210\001\001\022\016\n\001y\030\003 \001"
+				"\022\021\n\rLITTLE_DISTAL\020\016\"f\n\005Input\022\'\n\004type\030\001 \001"
 				+
-				"(\002H\001\210\001\001\022\016\n\001z\030\004 \001(\002H\002\210\001\001\022\n\n\002qx\030\005 \001(\002\022\n\n\002q"
+				"(\0162\031.messages.Input.InputType\"4\n\tInputTy"
 				+
-				"y\030\006 \001(\002\022\n\n\002qz\030\007 \001(\002\022\n\n\002qw\030\010 \001(\002\0227\n\013data_"
+				"pe\022\007\n\003TAP\020\000\022\016\n\nDOUBLE_TAP\020\001\022\016\n\nTRIPLE_TA"
 				+
-				"source\030\t \001(\0162\035.messages.Position.DataSou"
+				"P\020\002\"\360\002\n\010Position\022\022\n\ntracker_id\030\001 \001(\005\022\016\n\001"
 				+
-				"rceH\003\210\001\001\022;\n\025finger_bone_rotations\030\n \003(\0132"
+				"x\030\002 \001(\002H\000\210\001\001\022\016\n\001y\030\003 \001(\002H\001\210\001\001\022\016\n\001z\030\004 \001(\002H"
 				+
-				"\034.messages.FingerBoneRotation\"8\n\nDataSou"
+				"\002\210\001\001\022\n\n\002qx\030\005 \001(\002\022\n\n\002qy\030\006 \001(\002\022\n\n\002qz\030\007 \001(\002"
 				+
-				"rce\022\010\n\004NONE\020\000\022\007\n\003IMU\020\001\022\r\n\tPRECISION\020\002\022\010\n"
+				"\022\n\n\002qw\030\010 \001(\002\0227\n\013data_source\030\t \001(\0162\035.mess"
 				+
-				"\004FULL\020\003B\004\n\002_xB\004\n\002_yB\004\n\002_zB\016\n\014_data_sourc"
+				"ages.Position.DataSourceH\003\210\001\001\022;\n\025finger_"
 				+
-				"e\"\227\001\n\nUserAction\022\014\n\004name\030\001 \001(\t\022C\n\020action"
+				"bone_rotations\030\n \003(\0132\034.messages.FingerBo"
 				+
-				"_arguments\030\002 \003(\0132).messages.UserAction.A"
+				"neRotation\022\036\n\005input\030\013 \003(\0132\017.messages.Inp"
 				+
-				"ctionArgumentsEntry\0326\n\024ActionArgumentsEn"
+				"ut\"8\n\nDataSource\022\010\n\004NONE\020\000\022\007\n\003IMU\020\001\022\r\n\tP"
 				+
-				"try\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"\246\001\n\014"
+				"RECISION\020\002\022\010\n\004FULL\020\003B\004\n\002_xB\004\n\002_yB\004\n\002_zB\016"
 				+
-				"TrackerAdded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016trac"
+				"\n\014_data_source\"\227\001\n\nUserAction\022\014\n\004name\030\001 "
 				+
-				"ker_serial\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001(\t\022\024"
+				"\001(\t\022C\n\020action_arguments\030\002 \003(\0132).messages"
 				+
-				"\n\014tracker_role\030\004 \001(\005\022#\n\026fingertracking_e"
+				".UserAction.ActionArgumentsEntry\0326\n\024Acti"
 				+
-				"nabled\030\n \001(\010H\000\210\001\001B\031\n\027_fingertracking_ena"
+				"onArgumentsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002"
 				+
-				"bled\"\374\002\n\rTrackerStatus\022\022\n\ntracker_id\030\001 \001"
+				" \001(\t:\0028\001\"f\n\014TrackerAdded\022\022\n\ntracker_id\030\001"
 				+
-				"(\005\022.\n\006status\030\002 \001(\0162\036.messages.TrackerSta"
+				" \001(\005\022\026\n\016tracker_serial\030\002 \001(\t\022\024\n\014tracker_"
 				+
-				"tus.Status\0221\n\005extra\030\003 \003(\0132\".messages.Tra"
+				"name\030\003 \001(\t\022\024\n\014tracker_role\030\004 \001(\005\"\374\002\n\rTra"
 				+
-				"ckerStatus.ExtraEntry\022;\n\nconfidence\030\004 \001("
+				"ckerStatus\022\022\n\ntracker_id\030\001 \001(\005\022.\n\006status"
 				+
-				"\0162\".messages.TrackerStatus.ConfidenceH\000\210"
+				"\030\002 \001(\0162\036.messages.TrackerStatus.Status\0221"
 				+
-				"\001\001\032,\n\nExtraEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002"
+				"\n\005extra\030\003 \003(\0132\".messages.TrackerStatus.E"
 				+
-				" \001(\t:\0028\001\"E\n\006Status\022\020\n\014DISCONNECTED\020\000\022\006\n\002"
+				"xtraEntry\022;\n\nconfidence\030\004 \001(\0162\".messages"
 				+
-				"OK\020\001\022\010\n\004BUSY\020\002\022\t\n\005ERROR\020\003\022\014\n\010OCCLUDED\020\004\""
+				".TrackerStatus.ConfidenceH\000\210\001\001\032,\n\nExtraE"
 				+
-				"3\n\nConfidence\022\006\n\002NO\020\000\022\007\n\003LOW\020\001\022\n\n\006MEDIUM"
+				"ntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"E\n\006"
 				+
-				"\020\005\022\010\n\004HIGH\020\nB\r\n\013_confidence\"I\n\007Battery\022\022"
+				"Status\022\020\n\014DISCONNECTED\020\000\022\006\n\002OK\020\001\022\010\n\004BUSY"
 				+
-				"\n\ntracker_id\030\001 \001(\005\022\025\n\rbattery_level\030\002 \001("
+				"\020\002\022\t\n\005ERROR\020\003\022\014\n\010OCCLUDED\020\004\"3\n\nConfidenc"
 				+
-				"\002\022\023\n\013is_charging\030\003 \001(\010\"\373\001\n\017ProtobufMessa"
+				"e\022\006\n\002NO\020\000\022\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\005\022\010\n\004HIGH\020\n"
 				+
-				"ge\022&\n\010position\030\001 \001(\0132\022.messages.Position"
+				"B\r\n\013_confidence\"I\n\007Battery\022\022\n\ntracker_id"
 				+
-				"H\000\022+\n\013user_action\030\002 \001(\0132\024.messages.UserA"
+				"\030\001 \001(\005\022\025\n\rbattery_level\030\002 \001(\002\022\023\n\013is_char"
 				+
-				"ctionH\000\022/\n\rtracker_added\030\003 \001(\0132\026.message"
+				"ging\030\003 \001(\010\"\241\002\n\017ProtobufMessage\022&\n\010positi"
 				+
-				"s.TrackerAddedH\000\0221\n\016tracker_status\030\004 \001(\013"
+				"on\030\001 \001(\0132\022.messages.PositionH\000\022+\n\013user_a"
 				+
-				"2\027.messages.TrackerStatusH\000\022$\n\007battery\030\005"
+				"ction\030\002 \001(\0132\024.messages.UserActionH\000\022/\n\rt"
 				+
-				" \001(\0132\021.messages.BatteryH\000B\t\n\007messageB2\n\034"
+				"racker_added\030\003 \001(\0132\026.messages.TrackerAdd"
 				+
-				"dev.slimevr.desktop.platformB\020ProtobufMe"
+				"edH\000\0221\n\016tracker_status\030\004 \001(\0132\027.messages."
 				+
-				"ssagesH\003b\006proto3"
+				"TrackerStatusH\000\022$\n\007battery\030\005 \001(\0132\021.messa"
+				+
+				"ges.BatteryH\000\022$\n\007version\030\006 \001(\0132\021.message"
+				+
+				"s.VersionH\000B\t\n\007messageB2\n\034dev.slimevr.de"
+				+
+				"sktop.platformB\020ProtobufMessagesH\003b\006prot"
+				+
+				"o3"
 		};
 		descriptor = com.google.protobuf.Descriptors.FileDescriptor
 			.internalBuildGeneratedFileFrom(
@@ -9943,20 +11728,30 @@ public final class ProtobufMessages {
 			internal_static_messages_PingPong_descriptor,
 			new java.lang.String[] {}
 		);
+		internal_static_messages_Version_descriptor = getDescriptor().getMessageTypes().get(1);
+		internal_static_messages_Version_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+			internal_static_messages_Version_descriptor,
+			new java.lang.String[] { "ProtocolVersion", }
+		);
 		internal_static_messages_FingerBoneRotation_descriptor = getDescriptor()
 			.getMessageTypes()
-			.get(1);
+			.get(2);
 		internal_static_messages_FingerBoneRotation_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_FingerBoneRotation_descriptor,
 			new java.lang.String[] { "Name", "X", "Y", "Z", "W", }
 		);
-		internal_static_messages_Position_descriptor = getDescriptor().getMessageTypes().get(2);
+		internal_static_messages_Input_descriptor = getDescriptor().getMessageTypes().get(3);
+		internal_static_messages_Input_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+			internal_static_messages_Input_descriptor,
+			new java.lang.String[] { "Type", }
+		);
+		internal_static_messages_Position_descriptor = getDescriptor().getMessageTypes().get(4);
 		internal_static_messages_Position_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_Position_descriptor,
 			new java.lang.String[] { "TrackerId", "X", "Y", "Z", "Qx", "Qy", "Qz", "Qw",
-				"DataSource", "FingerBoneRotations", }
+				"DataSource", "FingerBoneRotations", "Input", }
 		);
-		internal_static_messages_UserAction_descriptor = getDescriptor().getMessageTypes().get(3);
+		internal_static_messages_UserAction_descriptor = getDescriptor().getMessageTypes().get(5);
 		internal_static_messages_UserAction_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_UserAction_descriptor,
 			new java.lang.String[] { "Name", "ActionArguments", }
@@ -9968,15 +11763,14 @@ public final class ProtobufMessages {
 			internal_static_messages_UserAction_ActionArgumentsEntry_descriptor,
 			new java.lang.String[] { "Key", "Value", }
 		);
-		internal_static_messages_TrackerAdded_descriptor = getDescriptor().getMessageTypes().get(4);
+		internal_static_messages_TrackerAdded_descriptor = getDescriptor().getMessageTypes().get(6);
 		internal_static_messages_TrackerAdded_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_TrackerAdded_descriptor,
-			new java.lang.String[] { "TrackerId", "TrackerSerial", "TrackerName", "TrackerRole",
-				"FingertrackingEnabled", }
+			new java.lang.String[] { "TrackerId", "TrackerSerial", "TrackerName", "TrackerRole", }
 		);
 		internal_static_messages_TrackerStatus_descriptor = getDescriptor()
 			.getMessageTypes()
-			.get(5);
+			.get(7);
 		internal_static_messages_TrackerStatus_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_TrackerStatus_descriptor,
 			new java.lang.String[] { "TrackerId", "Status", "Extra", "Confidence", }
@@ -9988,18 +11782,18 @@ public final class ProtobufMessages {
 			internal_static_messages_TrackerStatus_ExtraEntry_descriptor,
 			new java.lang.String[] { "Key", "Value", }
 		);
-		internal_static_messages_Battery_descriptor = getDescriptor().getMessageTypes().get(6);
+		internal_static_messages_Battery_descriptor = getDescriptor().getMessageTypes().get(8);
 		internal_static_messages_Battery_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_Battery_descriptor,
 			new java.lang.String[] { "TrackerId", "BatteryLevel", "IsCharging", }
 		);
 		internal_static_messages_ProtobufMessage_descriptor = getDescriptor()
 			.getMessageTypes()
-			.get(7);
+			.get(9);
 		internal_static_messages_ProtobufMessage_fieldAccessorTable = new com.google.protobuf.GeneratedMessage.FieldAccessorTable(
 			internal_static_messages_ProtobufMessage_descriptor,
 			new java.lang.String[] { "Position", "UserAction", "TrackerAdded", "TrackerStatus",
-				"Battery", "Message", }
+				"Battery", "Version", "Message", }
 		);
 		descriptor.resolveAllFeaturesImmutable();
 	}

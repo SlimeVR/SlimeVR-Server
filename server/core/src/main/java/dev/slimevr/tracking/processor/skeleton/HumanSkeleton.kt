@@ -7,6 +7,7 @@ import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.Constraint
 import dev.slimevr.tracking.processor.Constraint.Companion.ConstraintType
 import dev.slimevr.tracking.processor.HumanPoseManager
+import dev.slimevr.tracking.processor.ShareableBone
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
 import dev.slimevr.tracking.processor.stayaligned.StayAligned
@@ -188,6 +189,38 @@ class HumanSkeleton(
 	var computedLeftHandTracker: Tracker? = null
 	var computedRightHandTracker: Tracker? = null
 
+	// Output bones
+	var shareableLeftThumbMetacarpalBone: ShareableBone? = null
+	var shareableLeftThumbProximalBone: ShareableBone? = null
+	var shareableLeftThumbDistalBone: ShareableBone? = null
+	var shareableLeftIndexProximalBone: ShareableBone? = null
+	var shareableLeftIndexIntermediateBone: ShareableBone? = null
+	var shareableLeftIndexDistalBone: ShareableBone? = null
+	var shareableLeftMiddleProximalBone: ShareableBone? = null
+	var shareableLeftMiddleIntermediateBone: ShareableBone? = null
+	var shareableLeftMiddleDistalBone: ShareableBone? = null
+	var shareableLeftRingProximalBone: ShareableBone? = null
+	var shareableLeftRingIntermediateBone: ShareableBone? = null
+	var shareableLeftRingDistalBone: ShareableBone? = null
+	var shareableLeftLittleProximalBone: ShareableBone? = null
+	var shareableLeftLittleIntermediateBone: ShareableBone? = null
+	var shareableLeftLittleDistalBone: ShareableBone? = null
+	var shareableRightThumbMetacarpalBone: ShareableBone? = null
+	var shareableRightThumbProximalBone: ShareableBone? = null
+	var shareableRightThumbDistalBone: ShareableBone? = null
+	var shareableRightIndexProximalBone: ShareableBone? = null
+	var shareableRightIndexIntermediateBone: ShareableBone? = null
+	var shareableRightIndexDistalBone: ShareableBone? = null
+	var shareableRightMiddleProximalBone: ShareableBone? = null
+	var shareableRightMiddleIntermediateBone: ShareableBone? = null
+	var shareableRightMiddleDistalBone: ShareableBone? = null
+	var shareableRightRingProximalBone: ShareableBone? = null
+	var shareableRightRingIntermediateBone: ShareableBone? = null
+	var shareableRightRingDistalBone: ShareableBone? = null
+	var shareableRightLittleProximalBone: ShareableBone? = null
+	var shareableRightLittleIntermediateBone: ShareableBone? = null
+	var shareableRightLittleDistalBone: ShareableBone? = null
+
 	// Toggles
 	private var extendedSpineModel = false
 	private var extendedPelvisModel = false
@@ -221,6 +254,7 @@ class HumanSkeleton(
 	init {
 		assembleSkeleton()
 		setComputedTrackers(humanPoseManager.computedTrackers)
+		setShareableBones(humanPoseManager.shareableFingerBones)
 	}
 
 	constructor(
@@ -491,6 +525,54 @@ class HumanSkeleton(
 	}
 
 	/**
+	 * Set shareable bones from list
+	 */
+	private fun setShareableBones(bones: List<ShareableBone>) {
+		for (b in bones) {
+			setShareableBone(b)
+		}
+	}
+
+	/**
+	 * Set shareable bone
+	 */
+	private fun setShareableBone(bone: ShareableBone) {
+		when (bone.boneType) {
+			BoneType.LEFT_THUMB_METACARPAL -> shareableLeftThumbMetacarpalBone = bone
+			BoneType.LEFT_THUMB_PROXIMAL -> shareableLeftThumbProximalBone = bone
+			BoneType.LEFT_THUMB_DISTAL -> shareableLeftThumbDistalBone = bone
+			BoneType.LEFT_INDEX_PROXIMAL -> shareableLeftIndexProximalBone = bone
+			BoneType.LEFT_INDEX_INTERMEDIATE -> shareableLeftIndexIntermediateBone = bone
+			BoneType.LEFT_INDEX_DISTAL -> shareableLeftIndexDistalBone = bone
+			BoneType.LEFT_MIDDLE_PROXIMAL -> shareableLeftMiddleProximalBone = bone
+			BoneType.LEFT_MIDDLE_INTERMEDIATE -> shareableLeftMiddleIntermediateBone = bone
+			BoneType.LEFT_MIDDLE_DISTAL -> shareableLeftMiddleDistalBone = bone
+			BoneType.LEFT_RING_PROXIMAL -> shareableLeftRingProximalBone = bone
+			BoneType.LEFT_RING_INTERMEDIATE -> shareableLeftRingIntermediateBone = bone
+			BoneType.LEFT_RING_DISTAL -> shareableLeftRingDistalBone = bone
+			BoneType.LEFT_LITTLE_PROXIMAL -> shareableLeftLittleProximalBone = bone
+			BoneType.LEFT_LITTLE_INTERMEDIATE -> shareableLeftLittleIntermediateBone = bone
+			BoneType.LEFT_LITTLE_DISTAL -> shareableLeftLittleDistalBone = bone
+			BoneType.RIGHT_THUMB_METACARPAL -> shareableRightThumbMetacarpalBone = bone
+			BoneType.RIGHT_THUMB_PROXIMAL -> shareableRightThumbProximalBone = bone
+			BoneType.RIGHT_THUMB_DISTAL -> shareableRightThumbDistalBone = bone
+			BoneType.RIGHT_INDEX_PROXIMAL -> shareableRightIndexProximalBone = bone
+			BoneType.RIGHT_INDEX_INTERMEDIATE -> shareableRightIndexIntermediateBone = bone
+			BoneType.RIGHT_INDEX_DISTAL -> shareableRightIndexDistalBone = bone
+			BoneType.RIGHT_MIDDLE_PROXIMAL -> shareableRightMiddleProximalBone = bone
+			BoneType.RIGHT_MIDDLE_INTERMEDIATE -> shareableRightMiddleIntermediateBone = bone
+			BoneType.RIGHT_MIDDLE_DISTAL -> shareableRightMiddleDistalBone = bone
+			BoneType.RIGHT_RING_PROXIMAL -> shareableRightRingProximalBone = bone
+			BoneType.RIGHT_RING_INTERMEDIATE -> shareableRightRingIntermediateBone = bone
+			BoneType.RIGHT_RING_DISTAL -> shareableRightRingDistalBone = bone
+			BoneType.RIGHT_LITTLE_PROXIMAL -> shareableRightLittleProximalBone = bone
+			BoneType.RIGHT_LITTLE_INTERMEDIATE -> shareableRightLittleIntermediateBone = bone
+			BoneType.RIGHT_LITTLE_DISTAL -> shareableRightLittleDistalBone = bone
+			else -> {}
+		}
+	}
+
+	/**
 	 * Get output tracker from TrackerRole
 	 */
 	fun getComputedTracker(trackerRole: TrackerRole): Tracker = when (trackerRole) {
@@ -525,6 +607,7 @@ class HumanSkeleton(
 			headBone.updateWithConstraints(false)
 		}
 		updateComputedTrackers()
+		updateShareableBones()
 
 		// Don't run post-processing if the tracking is paused
 		if (pauseTracking) return
@@ -1146,6 +1229,45 @@ class HumanSkeleton(
 		}
 	}
 
+	private fun updateShareableBones() {
+		this.updateShareableBone(shareableLeftThumbMetacarpalBone, leftThumbMetacarpalBone)
+		this.updateShareableBone(shareableLeftThumbProximalBone, leftThumbProximalBone)
+		this.updateShareableBone(shareableLeftThumbDistalBone, leftThumbDistalBone)
+		this.updateShareableBone(shareableLeftIndexProximalBone, leftIndexProximalBone)
+		this.updateShareableBone(shareableLeftIndexIntermediateBone, leftIndexIntermediateBone)
+		this.updateShareableBone(shareableLeftIndexDistalBone, leftIndexDistalBone)
+		this.updateShareableBone(shareableLeftMiddleProximalBone, leftMiddleProximalBone)
+		this.updateShareableBone(shareableLeftMiddleIntermediateBone, leftMiddleIntermediateBone)
+		this.updateShareableBone(shareableLeftMiddleDistalBone, leftMiddleDistalBone)
+		this.updateShareableBone(shareableLeftRingProximalBone, leftRingProximalBone)
+		this.updateShareableBone(shareableLeftRingIntermediateBone, leftRingIntermediateBone)
+		this.updateShareableBone(shareableLeftRingDistalBone, leftRingDistalBone)
+		this.updateShareableBone(shareableLeftLittleProximalBone, leftLittleProximalBone)
+		this.updateShareableBone(shareableLeftLittleIntermediateBone, leftLittleIntermediateBone)
+		this.updateShareableBone(shareableLeftLittleDistalBone, leftLittleDistalBone)
+		this.updateShareableBone(shareableRightThumbMetacarpalBone, rightThumbMetacarpalBone)
+		this.updateShareableBone(shareableRightThumbProximalBone, rightThumbProximalBone)
+		this.updateShareableBone(shareableRightThumbDistalBone, rightThumbDistalBone)
+		this.updateShareableBone(shareableRightIndexProximalBone, rightIndexProximalBone)
+		this.updateShareableBone(shareableRightIndexIntermediateBone, rightIndexIntermediateBone)
+		this.updateShareableBone(shareableRightIndexDistalBone, rightIndexDistalBone)
+		this.updateShareableBone(shareableRightMiddleProximalBone, rightMiddleProximalBone)
+		this.updateShareableBone(shareableRightMiddleIntermediateBone, rightMiddleIntermediateBone)
+		this.updateShareableBone(shareableRightMiddleDistalBone, rightMiddleDistalBone)
+		this.updateShareableBone(shareableRightRingProximalBone, rightRingProximalBone)
+		this.updateShareableBone(shareableRightRingIntermediateBone, rightRingIntermediateBone)
+		this.updateShareableBone(shareableRightRingDistalBone, rightRingDistalBone)
+		this.updateShareableBone(shareableRightLittleProximalBone, rightLittleProximalBone)
+		this.updateShareableBone(shareableRightLittleIntermediateBone, rightLittleIntermediateBone)
+		this.updateShareableBone(shareableRightLittleDistalBone, rightLittleDistalBone)
+	}
+
+	private fun updateShareableBone(shareableBone: ShareableBone?, bone: Bone) {
+		shareableBone?.let {
+			it.localRotation = bone.getLocalRotation()
+		}
+	}
+
 	// Skeleton Config toggles
 	fun updateToggleState(configToggle: SkeletonConfigToggles, newValue: Boolean) {
 		when (configToggle) {
@@ -1407,43 +1529,6 @@ class HumanSkeleton(
 			rightHandBone,
 			leftHandTrackerBone,
 			rightHandTrackerBone,
-			leftThumbMetacarpalBone,
-			leftThumbProximalBone,
-			leftThumbDistalBone,
-			leftIndexProximalBone,
-			leftIndexIntermediateBone,
-			leftIndexDistalBone,
-			leftMiddleProximalBone,
-			leftMiddleIntermediateBone,
-			leftMiddleDistalBone,
-			leftRingProximalBone,
-			leftRingIntermediateBone,
-			leftRingDistalBone,
-			leftLittleProximalBone,
-			leftLittleIntermediateBone,
-			leftLittleDistalBone,
-			rightThumbMetacarpalBone,
-			rightThumbProximalBone,
-			rightThumbDistalBone,
-			rightIndexProximalBone,
-			rightIndexIntermediateBone,
-			rightIndexDistalBone,
-			rightMiddleProximalBone,
-			rightMiddleIntermediateBone,
-			rightMiddleDistalBone,
-			rightRingProximalBone,
-			rightRingIntermediateBone,
-			rightRingDistalBone,
-			rightLittleProximalBone,
-			rightLittleIntermediateBone,
-			rightLittleDistalBone,
-		)
-
-	/**
-	 * Returns all the finger bones
-	 */
-	val allFingerBones: Array<Bone>
-		get() = arrayOf(
 			leftThumbMetacarpalBone,
 			leftThumbProximalBone,
 			leftThumbDistalBone,

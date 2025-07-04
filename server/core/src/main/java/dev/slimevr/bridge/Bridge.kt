@@ -1,6 +1,6 @@
 package dev.slimevr.bridge
 
-import dev.slimevr.tracking.processor.Bone
+import dev.slimevr.tracking.processor.ShareableBone
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.util.ann.VRServerThread
@@ -47,7 +47,9 @@ interface Bridge {
 	 * @param bones
 	 */
 	@VRServerThread
-	fun addFingerBones(bones: List<Bone>)
+	fun addFingerBones(bones: List<ShareableBone>)
+
+	// TODO tap inputs
 
 	@VRServerThread
 	fun startBridge()
