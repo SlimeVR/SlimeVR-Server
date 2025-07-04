@@ -51,7 +51,7 @@ class BVHRecorder(server: VRServer) {
 			var recordingIndex = 1
 			do {
 				saveRecording =
-					File(bvhSaveDir, "BVH-Recording" + recordingIndex++ + ".bvh")
+					File(bvhSaveDir, "BVH-Recording${recordingIndex++}.bvh")
 			} while (saveRecording.exists())
 
 			return saveRecording
