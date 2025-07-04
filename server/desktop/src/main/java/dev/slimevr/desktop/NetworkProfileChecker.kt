@@ -317,24 +317,28 @@ class NetworkProfileChecker(private val server: VRServer) {
 	init {
 		if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
 			this.updateTickTimer.scheduleAtFixedRate(0, 3000) {
-				val currentNumPublicNetworks =
-					enumerateNetworks()?.filter { net ->
+				val currentNumPublicNetworks = enumerateNetworks()?.filter { net ->
 						net.connected == true && net.category == NetworkCategory.PUBLIC
-					}?.count() ?: 0
+				} ?: listOf()
+				val currentNumPublicNetworksCount = currentNumPublicNetworks.count()
 
-				if (numPublicNetworks != currentNumPublicNetworks) {
-					numPublicNetworks = currentNumPublicNetworks
+				if (numPublicNetworks != currentNumPublicNetworksCount) {
+					numPublicNetworks = currentNumPublicNetworksCount
+					if (lastPublicNetworkStatus != 0u) {
+						server.statusSystem.removeStatus(lastPublicNetworkStatus)
+						lastPublicNetworkStatus = 0u
+					}
+
 					if (lastPublicNetworkStatus == 0u && numPublicNetworks > 0) {
 						lastPublicNetworkStatus = server.statusSystem.addStatus(
 							StatusDataUnion().apply {
 								type = StatusData.StatusPublicNetwork
-								value = StatusPublicNetworkT()
+								value = StatusPublicNetworkT().apply {
+									adapters = currentNumPublicNetworks.map { it.name }.toTypedArray()
+								}
 							},
 							false,
 						)
-					} else if (lastPublicNetworkStatus != 0u && numPublicNetworks == 0) {
-						server.statusSystem.removeStatus(lastPublicNetworkStatus)
-						lastPublicNetworkStatus = 0u
 					}
 				}
 			}
