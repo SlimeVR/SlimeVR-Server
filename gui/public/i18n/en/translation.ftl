@@ -259,6 +259,7 @@ navbar-settings = Settings
 ## Biovision hierarchy recording
 bvh-start_recording = Record BVH
 bvh-recording = Recording...
+bvh-save_title = Save BVH recording
 
 ## Tracking pause
 tracking-unpaused = Pause tracking
@@ -713,6 +714,9 @@ settings-interface-behavior-error_tracking-description_v2 =
     To provide the best user experience, we collect anonymized error reports, performance metrics, and operating system information. This helps us detect bugs and issues with SlimeVR. These metrics are collected via Sentry.io.
 
 settings-interface-behavior-error_tracking-label = Send errors to developers
+settings-interface-behavior-bvh_directory = Directory to save BVH recordings
+settings-interface-behavior-bvh_directory-description = Choose a directory to save your BVH recordings instead of having to choose where to save them each time.
+settings-interface-behavior-bvh_directory-label = Directory for BVH recordings
 
 ## Serial settings
 settings-serial = Serial Console
@@ -1264,13 +1268,13 @@ onboarding-stay_aligned-preparation-title = Preparation
 onboarding-stay_aligned-preparation-tip = Make sure to stand upright. You must be looking forward and your arms must be down to your sides.
 onboarding-stay_aligned-relaxed_poses-standing-title = Relaxed Standing Pose
 onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stand in a comfortable position. Relax!
-onboarding-stay_aligned-relaxed_poses-standing-step-2 = 3. Press the "Save pose" button.
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Press the "Save pose" button.
 onboarding-stay_aligned-relaxed_poses-sitting-title = Relaxed Sitting in Chair Pose
 onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Sit in a comfortable position. Relax!
-onboarding-stay_aligned-relaxed_poses-sitting-step-2 = 3. Press the "Save pose" button.
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Press the "Save pose" button.
 onboarding-stay_aligned-relaxed_poses-flat-title = Relaxed Sitting on Floor Pose
 onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sit on the floor with your legs in front. Relax!
-onboarding-stay_aligned-relaxed_poses-flat-step-2 = 3. Press the "Save pose" button.
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Press the "Save pose" button.
 onboarding-stay_aligned-relaxed_poses-skip_step = Skip
 onboarding-stay_aligned-done-title = Stay Aligned enabled!
 onboarding-stay_aligned-done-description = Your Stay Aligned setup is complete!
