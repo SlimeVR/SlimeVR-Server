@@ -1031,12 +1031,32 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     يعمل التتبع الخاص بك ويمثل تحركاتك بدقة (على سبيل المثال ، لقد أجريت إعادة تعيين كاملة وتتحرك في الاتجاه الصحيح عند الركل, الانحناء, الجلوس, إلخ).
 onboarding-automatic_proportions-requirements-next = لقد قرأت المتطلبات
 onboarding-automatic_proportions-check_height-title-v3 = قم بقياس ارتفاع سماعة الرأس
+onboarding-automatic_proportions-check_height-description-v2 = يجب أن يكون ارتفاع سماعة الرأس (HMD) أقل قليلا من طولك الكامل ، حيث تقيس سماعات الرأس ارتفاع عينيك. سيتم استخدام هذا القياس كخط أساس لنسب جسمك.
+# All the text is in bold!
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = ابدأ في القياس أثناء الوقوف <u>في وضع مستقيم</u> لقياس طولك. احرص على عدم رفع يديك أعلى من سماعة الرأس ، لأنها قد تؤثر على القياس!
 onboarding-automatic_proportions-check_height-guardian_tip =
     إذا كنت تستخدم سماعة رأس VR مستقلة ، فتأكد من تشغيل حدود الحارس /
     لكي يكون طولك صحيحا!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = مجهول
+# Shows an element below it
+onboarding-automatic_proportions-check_height-hmd_height2 = ارتفاع سماعة الرأس هو:
+onboarding-automatic_proportions-check_height-measure-start = ابدأ القياس
+onboarding-automatic_proportions-check_height-measure-stop = توقف عن القياس
+onboarding-automatic_proportions-check_height-measure-reset = إعادة محاولة القياس
 onboarding-automatic_proportions-check_height-next_step = انهم بخير
+onboarding-automatic_proportions-check_floor_height-title = قم بقياس الارتفاع عن الأرض (اختياري)
+onboarding-automatic_proportions-check_floor_height-description = في بعض الحالات، قد لا يتم ضبط الارتفاع عن الأرض بشكل صحيح بواسطة سماعة الرأس، مما يتسبب في قياس ارتفاع سماعة الرأس على أنه أعلى مما ينبغي. يمكنك قياس "الارتفاع" عن الأرض لتصحيح ارتفاع سماعة الرأس.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = ابدأ بقياس و ضع وحدة التحكم على الأرض لقياس ارتفاعها. إذا كنت متأكدا من صحة الارتفاع عن الأرض ، فيمكنك تخطي هذه الخطوة.
+# Shows an element below it
+onboarding-automatic_proportions-check_floor_height-floor_height = الارتفاع عن الأرض هو:
+onboarding-automatic_proportions-check_floor_height-full_height = طولك الكامل المقدر هو:
+onboarding-automatic_proportions-check_floor_height-measure-start = ابدأ القياس
+onboarding-automatic_proportions-check_floor_height-measure-stop = توقف عن القياس
+onboarding-automatic_proportions-check_floor_height-measure-reset = إعد محاولة القياس
+onboarding-automatic_proportions-check_floor_height-skip_step = تخطي الخطوة وحفظ
+onboarding-automatic_proportions-check_floor_height-next_step = استخدم الارتفاع عن الأرض وحفظه
 onboarding-automatic_proportions-start_recording-title = استعد للتحرك
 onboarding-automatic_proportions-start_recording-description = سنقوم الآن بتسجيل بعض الوضعيات والحركات المحددة. ستتم مطالبتك بذلك في الشاشة التالية. كن مستعدا للبدء عند الضغط على الزر!
 onboarding-automatic_proportions-start_recording-next = بدء التسجيل
@@ -1070,10 +1090,27 @@ onboarding-automatic_proportions-verify_results-redo = إعادة التسجيل
 onboarding-automatic_proportions-verify_results-confirm = تبدو صحيحة
 onboarding-automatic_proportions-done-title = تم قياس الجسم و حفظه.
 onboarding-automatic_proportions-done-description = اكتملت معايرة نسب جسمك!
+onboarding-automatic_proportions-error_modal-v2 =
+    <b>تحذير:</b> حدث خطأ أثناء تقدير النسب!
+    من المحتمل أن تكون هذه مشكلة معايرة التركيب. تأكد من أن التعقب يعمل بشكل صحيح قبل المحاولة مرة أخرى.
+    يرجى <docs>التحقق من التعليمات</docs> أو الانضمام إلى <discord>Discord</discord> للحصول على المساعدة ^_^
 onboarding-automatic_proportions-error_modal-confirm = مفهوم!
+onboarding-automatic_proportions-smol_warning =
+    الارتفاع الذي تم تكوينه هو { $height } و هو أصغر من الحد الأدنى للارتفاع المقبول البالغ { $minHeight }.
+    <b>يرجى إعادة القياسات والتأكد من صحتها.</b>
+onboarding-automatic_proportions-smol_warning-cancel = الرجوع
 
 ## Tracker scaled proportions setup
 
+onboarding-scaled_proportions-title = النسب المقاسة
+onboarding-scaled_proportions-description = لكي تعمل أجهزة التعقب SlimeVR ، نحتاج إلى معرفة طول عظامك. ستستخدم نسبة متوسطة وقياسها بناء على طولك.
+onboarding-scaled_proportions-manual_height-title = تكوين طولك
+onboarding-scaled_proportions-manual_height-description-v2 = سيتم استخدام هذا الطول كخط أساس لنسب جسمك.
+onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR غير متصل حاليا ب SlimeVR ، لذلك لا يمكن أن تستند القياسات إلى سماعة الرأس الخاصة بك. <b>تابع على مسؤوليتك الخاصة أو تحقق من المستندات!</b>
+onboarding-scaled_proportions-manual_height-height-v2 = طولك الكامل هو
+onboarding-scaled_proportions-manual_height-estimated_height = الارتفاع المقدر لسماعة الرأس هو:
+onboarding-scaled_proportions-manual_height-next_step = المتابعة والحفظ
+onboarding-scaled_proportions-manual_height-warning-no_hmd = وصّل سماعة رأس VR
 
 ## Tracker scaled proportions reset
 
