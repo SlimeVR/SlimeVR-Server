@@ -15,21 +15,21 @@ import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { DownloadIcon } from '@/components/commons/icon/DownloadIcon';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '@/hooks/app';
-import { checkForUpdate } from '@/components/firmware-update/FirmwareUpdate';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { Localized } from '@fluent/react';
+import { checkForUpdate } from '@/hooks/firmware-update';
 
 function UpdateIcon({
   showUpdate,
 }: {
-  showUpdate: 'need-update' | 'low-battery' | 'updated' | 'unavailable';
+  showUpdate: 'can-update' | 'low-battery' | 'updated' | 'unavailable';
 }) {
   const content = (
     <div className="relative">
       <div
         className={classNames(
           'absolute rounded-full h-6 w-6 left-1 top-1 bg-accent-background-10 animate-[ping_2s_linear_infinite]',
-          showUpdate !== 'need-update' && 'hidden'
+          showUpdate !== 'can-update' && 'hidden'
         )}
       ></div>
       <div
@@ -45,7 +45,7 @@ function UpdateIcon({
     </div>
   );
 
-  return showUpdate !== 'need-update' ? (
+  return showUpdate !== 'can-update' ? (
     <Tooltip
       preferedDirection="top"
       content={

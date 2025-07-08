@@ -37,9 +37,9 @@ import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
 import semver from 'semver';
-import { checkForUpdate } from '@/components/firmware-update/FirmwareUpdate';
 import { useSetAtom } from 'jotai';
 import { ignoredTrackersAtom } from '@/store/app-store';
+import { checkForUpdate } from '@/hooks/firmware-update';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -227,7 +227,7 @@ export function TrackerSettingsPage() {
                         <Typography>Up to date</Typography>
                       </Localized>
                     )}
-                    {needUpdate === 'need-update' && currentFirmwareRelease && (
+                    {needUpdate === 'can-update' && currentFirmwareRelease && (
                       <Localized
                         id="tracker-settings-update-available"
                         vars={{ versionName: currentFirmwareRelease.name }}
@@ -251,9 +251,9 @@ export function TrackerSettingsPage() {
               <Localized id="tracker-settings-update">
                 <Button
                   variant={
-                    needUpdate === 'need-update' ? 'primary' : 'secondary'
+                    needUpdate === 'can-update' ? 'primary' : 'secondary'
                   }
-                  disabled={needUpdate !== 'need-update'}
+                  disabled={needUpdate !== 'can-update'}
                   to="/firmware-update"
                 >
                   Update now
