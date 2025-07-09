@@ -7,10 +7,10 @@ import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.firmware.FirmwareUpdateHandler
 import dev.slimevr.firmware.SerialFlashingHandler
+import dev.slimevr.flightlist.FlightListManager
 import dev.slimevr.games.vrchat.VRCConfigHandler
 import dev.slimevr.games.vrchat.VRCConfigHandlerStub
 import dev.slimevr.games.vrchat.VRChatConfigManager
-import dev.slimevr.flightlist.FlightListManager
 import dev.slimevr.osc.OSCHandler
 import dev.slimevr.osc.OSCRouter
 import dev.slimevr.osc.VMCHandler
@@ -173,8 +173,6 @@ class VRServer @JvmOverloads constructor(
 		for (tracker in computedTrackers) {
 			registerTracker(tracker)
 		}
-
-
 
 		instance = this
 	}

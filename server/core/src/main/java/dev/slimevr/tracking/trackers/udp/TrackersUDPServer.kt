@@ -203,7 +203,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		magStatus: MagnetometerStatus,
 		trackerPosition: TrackerPosition?,
 		trackerDataType: TrackerDataType,
-		hasCompletedRestCalibration: Boolean?
+		hasCompletedRestCalibration: Boolean?,
 	) {
 		LogManager.info("[TrackerServer] Sensor $trackerId for ${connection.name} status: $sensorStatus")
 		var imuTracker = connection.getTracker(trackerId)

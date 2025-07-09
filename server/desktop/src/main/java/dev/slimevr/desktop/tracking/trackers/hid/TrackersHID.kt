@@ -40,6 +40,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 	private val devices: MutableList<HIDDevice> = mutableListOf()
 	private val devicesBySerial: MutableMap<String, MutableList<Int>> = HashMap()
 	private val devicesByHID: MutableMap<HidDevice, MutableList<Int>> = HashMap()
+	private val lastDataByHID: MutableMap<HidDevice, Int> = HashMap()
 	private val hidServicesSpecification = HidServicesSpecification()
 	private var hidServices: HidServices? = null
 
@@ -91,6 +92,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			val list: MutableList<Int> = mutableListOf()
 			this.devicesBySerial[serial] = list
 			this.devicesByHID[hidDevice] = list
+			this.lastDataByHID[hidDevice] = 0 // initialize last data received
 			LogManager.info("[TrackerServer] (Probably) Compatible HID device detected: $serial")
 		}
 	}
@@ -232,6 +234,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						continue // Don't continue with this data
 					}
 					devicesDataReceived = true // Data is received and is valid (not malformed)
+					lastDataByHID[hidDevice] = 0 // reset last data received
 					val packetCount = dataReceived.size / PACKET_SIZE
 					var i = 0
 					while (i < packetCount * PACKET_SIZE) {
@@ -464,6 +467,8 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 						i += PACKET_SIZE
 					}
 					// LogManager.info("[TrackerServer] HID received $packetCount tracker packets")
+				} else {
+					lastDataByHID[hidDevice] = lastDataByHID[hidDevice]!! + 1 // increment last data received
 				}
 			}
 			if (!devicesPresent) {
@@ -499,7 +504,11 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 			}
 			// Quickly reattaching a device may not be detected, so always try to open existing devices
 			for (device in devicesByHID.keys) {
-				device.open()
+				// a receiver sends keep-alive data at 10 packets/s
+				if (lastDataByHID[device]!! > 100) { // try to reopen device if no data was received recently (about >100ms)
+					LogManager.info("[TrackerServer] Reopening device ${device.serialNumber} after no data received")
+					device.open()
+				}
 			}
 			hidDeviceList.removeAll(devicesByHID.keys) // addList
 			for (device in hidDeviceList) {

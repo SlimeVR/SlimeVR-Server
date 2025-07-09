@@ -9,6 +9,11 @@
 
 websocket-connecting = 正在连接到服务器
 websocket-connection_lost = 与服务器的连接丢失，正在尝试重新连接...
+websocket-connection_lost-desc = 看起来 SlimeVR 服务器崩溃了。检查日志并重新启动程序
+websocket-timedout = 无法连接到服务器
+websocket-timedout-desc = 看起来 SlimeVR 服务器崩溃或超时了。检查日志并重新启动程序
+websocket-error-close = 退出 SlimeVR
+websocket-error-logs = 打开日志文件夹
 
 ## Update notification
 
@@ -92,47 +97,139 @@ board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = 索尼 Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR开发版IMU手套
 
 ## Proportions
 
 skeleton_bone-NONE = 无
 skeleton_bone-HEAD = 头部偏移
+skeleton_bone-HEAD-desc =
+    从头戴显示器到头部中心的距离。
+    调节时，左右摇头并修改此参数，使头部移动时其他追踪器位置保持不变。
 skeleton_bone-NECK = 颈部长度
+skeleton_bone-NECK-desc =
+    从头部中心到脖子根部的距离。
+    调节时，上下点头或左右倾斜头部，并修改此参数，
+    使头部移动时其他追踪器位置保持不变。
 skeleton_bone-torso_group = 躯干长度
+skeleton_bone-torso_group-desc =
+    从脖子根部到臀部的距离。
+    调节时，直立并修改此参数，使虚拟臀部与真实的臀部对齐。
 skeleton_bone-UPPER_CHEST = 上胸长度
+skeleton_bone-UPPER_CHEST-desc =
+    从脖子根部到胸部中部的距离。
+    调节时，先完成躯干长度的设置，再修改此参数，
+    并进行包括坐下、弯腰、平躺等动作，使虚拟脊椎与真实的脊椎对齐。
 skeleton_bone-CHEST_OFFSET = 胸部偏移
+skeleton_bone-CHEST_OFFSET-desc = 向上或向下移动臀部胸部追踪器，用于在某些游戏或应用中移动胸部追踪器位置。
 skeleton_bone-CHEST = 胸部长度
+skeleton_bone-CHEST-desc =
+    从胸部中部到脊椎中部的距离。
+    调节时，先完成躯干长度的设置，再修改此参数，
+    并进行包括坐下、弯腰、平躺等动作，使虚拟脊椎与真实的脊椎对齐。
 skeleton_bone-WAIST = 腰部长度
+skeleton_bone-WAIST-desc =
+    从脊椎中部到肚脐的距离。
+    调节时，先完成躯干长度的设置，再修改此参数，
+    并进行包括坐下、弯腰、平躺等动作，使虚拟脊椎与真实的脊椎对齐。
 skeleton_bone-HIP = 髋部长度
+skeleton_bone-HIP-desc =
+    从肚脐到臀部的距离。
+    调节时，先完成躯干长度的设置，再修改此参数，
+    并进行包括坐下、弯腰、平躺等动作，使虚拟脊椎与真实的脊椎对齐。
 skeleton_bone-HIP_OFFSET = 髋部偏移
+skeleton_bone-HIP_OFFSET-desc = 向上或向下移动臀部虚拟追踪器，用于在某些游戏或应用中将虚拟臀部追踪器移动至腰部。
 skeleton_bone-HIPS_WIDTH = 髋部宽度
+skeleton_bone-HIPS_WIDTH-desc =
+    两腿根部之间的距离。
+    调节时，先在站直时进行一次完全重置，再修改此参数，
+    使虚拟腿部与真实的腿部位置在水平方向上对齐。
 skeleton_bone-leg_group = 全腿长度
+skeleton_bone-leg_group-desc =
+    从臀部到脚踝的距离。
+    调节时，先完成躯干长度的设置，再修改此参数，
+    使虚拟脚部与真实的脚部位置对齐。
 skeleton_bone-UPPER_LEG = 大腿长度
+skeleton_bone-UPPER_LEG-desc =
+    从臀部到膝盖的距离。
+    调节时，先完成腿部长度的设置，再修改此参数，
+    使虚拟膝盖与真实的膝盖位置对齐。
 skeleton_bone-LOWER_LEG = 小腿长度
+skeleton_bone-LOWER_LEG-desc =
+    从膝盖到脚踝的距离。
+    调节时，先完成腿部长度的设置，再修改此参数，
+    使虚拟膝盖与真实的膝盖位置对齐。
 skeleton_bone-FOOT_LENGTH = 脚部长度
+skeleton_bone-FOOT_LENGTH-desc =
+    从脚踝到脚趾的距离。
+    调节时，踮起脚尖并修改此参数，
+    使虚拟脚部位置与真实脚部位置对齐。
 skeleton_bone-FOOT_SHIFT = 脚部偏移
+skeleton_bone-FOOT_SHIFT-desc =
+    从膝盖到脚踝的水平距离。可用于修正直立式小腿向后弯曲的问题。
+    调节时，先将脚部长度设置为0，进行完全复位，
+    再修改此参数，使虚拟脚部对齐脚踝中心。
 skeleton_bone-SKELETON_OFFSET = 骨架偏移
+skeleton_bone-SKELETON_OFFSET-desc = 向前或向后移动所有虚拟追踪器，用于在某些游戏或应用中调节追踪器位置。
 skeleton_bone-SHOULDERS_DISTANCE = 肩膀距离
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    从脖子中心到肩膀的垂直距离。
+    调节时，先将上臂长度设置为0，再修改此参数，
+    使虚拟肘部追踪器与真实的肩膀位置在垂直方向上对齐。
 skeleton_bone-SHOULDERS_WIDTH = 肩膀宽度
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    从脖子中心到肩膀的水平距离。
+    调节时，先将上臂长度设置为0，再修改此参数，
+    使虚拟肘部追踪器与真实的肩膀位置在水平方向上对齐。
 skeleton_bone-arm_group = 手臂长度
+skeleton_bone-arm_group-desc =
+    从肩膀到手腕的距离。
+    调整时，先完成肩膀距离的配置，将手部距离Y设置为0，
+    再修改此参数，使手部追踪器与手腕对齐。
 skeleton_bone-UPPER_ARM = 上臂长度
+skeleton_bone-UPPER_ARM-desc =
+    从肩膀到手肘的距离。
+    调整时，先完成手臂长度的设置，再修改此参数，
+    使肘部追踪器与真实的手肘位置对齐。
 skeleton_bone-LOWER_ARM = 前臂距离
+skeleton_bone-LOWER_ARM-desc =
+    从手肘到手腕的距离。
+    调整时，先完成手臂长度的设置，再修改此参数，
+    使肘部追踪器与真实的手肘位置对齐。
 skeleton_bone-HAND_Y = 手部距离Y
+skeleton_bone-HAND_Y-desc =
+    从手腕到手中心的c垂直距离。
+    在动捕模式下，先完成手臂长度的设置，
+    再修改此参数，使手部追踪器与手的中心在垂直方向上对齐。
+    在使用控制器进行肘部追踪的情况下，将手臂长度设置为0，
+    再修改此参数，使肘部追踪器与手的中心在垂直方向上对齐。
 skeleton_bone-HAND_Z = 手部距离Z
+skeleton_bone-HAND_Z-desc =
+    从手腕到手中心的水平距离。
+    在动捕模式下，将此数值设置为0。
+    在使用控制器进行肘部追踪的情况下，将手臂长度设置为0，
+    并修改此参数，使肘部追踪器与手腕在水平方向对齐。
 skeleton_bone-ELBOW_OFFSET = 肘部偏移
+skeleton_bone-ELBOW_OFFSET-desc = 向上或向下移动肘部虚拟追踪器，避免VRChat将肘部追踪器绑定到胸部。
 
 ## Tracker reset buttons
 
 reset-reset_all = 重置身体比例
-reset-reset_all_warning =
-    <b>警告：</b> 这会将您的身体比例重置为仅基于身高的默认比例。
+reset-reset_all_warning-v2 =
+    <b>警告：</b> 您的骨骼比例将重置为您配置的身高下的默认值。
     您确定要执行此操作吗？
 reset-reset_all_warning-reset = 重置身体比例
 reset-reset_all_warning-cancel = 取消
-reset-reset_all_warning_default =
-    <b>警告：</b> 您当前没有设置身高，
-    这样将使用默认身高计算身体比例。
+reset-reset_all_warning_default-v2 =
+    <b>警告：</b> 您的身高尚未配置，您的骨骼比例将重置为默认身高下的默认值。
     您确定要执行此操作吗？
 reset-full = 完整重置
 reset-mounting = 重置佩戴
@@ -201,6 +298,7 @@ widget-imu_visualizer-rotation_raw = 原始旋转
 widget-imu_visualizer-rotation_preview = 预览
 widget-imu_visualizer-acceleration = 加速度
 widget-imu_visualizer-position = 位置
+widget-imu_visualizer-stay_aligned = 持续校准
 
 ## Widget: Skeleton Visualizer
 
@@ -228,6 +326,7 @@ tracker-table-column-temperature = 温度 °C
 tracker-table-column-linear-acceleration = 加速度 X/Y/Z
 tracker-table-column-rotation = 旋转 X/Y/Z
 tracker-table-column-position = 位置 X/Y/Z
+tracker-table-column-stay_aligned = 持续校准
 tracker-table-column-url = 地址
 
 ## Tracker rotation
@@ -294,6 +393,7 @@ tracker-settings-forget = 忘记追踪器
 tracker-settings-forget-description = 从 SlimeVR 服务器中移除该追踪器，并在服务器重启前不再连接这一追踪器。追踪器的配置信息不会被清除。
 tracker-settings-forget-label = 忘记追踪器
 tracker-settings-update-unavailable = 无法升级（DIY）
+tracker-settings-update-low-battery = 无法更新。当前电池电量低于 50%
 tracker-settings-update-up_to_date = 已是最新
 tracker-settings-update-available = { $versionName } 现在可用
 tracker-settings-update = 立即更新
@@ -364,6 +464,7 @@ mounting_selection_menu-close = 关闭
 settings-sidebar-title = 设置
 settings-sidebar-general = 通用设置
 settings-sidebar-tracker_mechanics = 追踪器设置
+settings-sidebar-stay_aligned = 持续校准
 settings-sidebar-fk_settings = FK 设置
 settings-sidebar-gesture_control = 手势控制
 settings-sidebar-interface = 交互界面
@@ -373,7 +474,9 @@ settings-sidebar-utils = 工具
 settings-sidebar-serial = 串口控制台
 settings-sidebar-appearance = 外观
 settings-sidebar-notifications = 通知
+settings-sidebar-behavior = 行为
 settings-sidebar-firmware-tool = DIY固件工具
+settings-sidebar-vrc_warnings = VRChat设置警告
 settings-sidebar-advanced = 高级选项
 
 ## SteamVR settings
@@ -455,6 +558,24 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     在所有有固件支持的追踪器上启用磁力计，在磁场稳定的环境中可以减轻飘移。
     可以在个别追踪器上禁用本功能。<b>切换此选项时请勿关闭任何一个追踪器的电源！</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 在追踪器上启用磁力计
+settings-stay_aligned = 持续校准
+settings-stay_aligned-description = 持续校准会逐渐将追踪器对齐到设置的放松姿势，减少追踪器漂移的影响
+settings-stay_aligned-setup-label = 配置持续校准
+settings-stay_aligned-setup-description = 完成“配置持续校准”后才可启动持续校准。
+settings-stay_aligned-warnings-drift_compensation = ⚠ 使用持续校准时请关闭漂移补偿功能，避免发生干扰
+settings-stay_aligned-enabled-label = 调整追踪器
+settings-stay_aligned-hide_yaw_correction-label = 隐藏调整效果（用于与持续校准关闭时进行比较）
+settings-stay_aligned-general-label = 通用设置
+settings-stay_aligned-relaxed_poses-label = 放松姿势
+settings-stay_aligned-relaxed_poses-description = 持续校准使用您设定的放松姿势保持追踪器校准。使用“设置持续校准”来更新放松姿势。
+settings-stay_aligned-relaxed_poses-standing = 站立放松姿势
+settings-stay_aligned-relaxed_poses-sitting = 椅子上放松姿势
+settings-stay_aligned-relaxed_poses-flat = 地面/平躺放松姿势
+settings-stay_aligned-relaxed_poses-save_pose = 保存姿势
+settings-stay_aligned-relaxed_poses-reset_pose = 重置姿势
+settings-stay_aligned-debug-label = 调试
+settings-stay_aligned-debug-description = 在报告持续校准相关问题时，请包含您的以下设置信息
+settings-stay_aligned-debug-copy-label = 复制设置信息到剪贴板
 
 ## FK/Tracking settings
 
@@ -514,9 +635,6 @@ settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = 平�
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = 平均膝盖与小腿间航向轴和横滚轴的数值
 settings-general-fk_settings-self_localization-title = 动作捕捉模式
 settings-general-fk_settings-self_localization-description = 动作捕捉模式允许在没有头戴设备或其他追踪器的情况下粗略地跟踪骨架姿态。请注意，本功能需要脚部和头部追踪器，且现阶段依然是实验性的。
-settings-general-fk_settings-vive_emulation-title = Vive 模拟
-settings-general-fk_settings-vive_emulation-description = 模拟Vive追踪器的腰部丢追问题。（ 注：这是一个玩笑功能，会劣化追踪质量。）
-settings-general-fk_settings-vive_emulation-label = 开启 Vive 模拟
 
 ## Gesture control settings (tracker tapping)
 
@@ -583,6 +701,13 @@ settings-general-interface-feedback_sound-volume = 提示音音量
 settings-general-interface-connected_trackers_warning = 已连接追踪器警告
 settings-general-interface-connected_trackers_warning-description = 启用本选项后，每次当退出 SlimeVR 时仍有追踪器连接着会显示通知，提醒你在使用完毕时关闭追踪器电源来节省电池电量。
 settings-general-interface-connected_trackers_warning-label = 退出时，有追踪器连接中则显示警告
+
+## Behavior settings
+
+settings-interface-behavior = 行为
+settings-general-interface-dev_mode = 开发者模式
+settings-general-interface-dev_mode-description = 如果你需要深入的资料或对连接的追踪器进行进阶调整，开启此模式将会非常有用。
+settings-general-interface-dev_mode-label = 开发者模式
 settings-general-interface-use_tray = 最小化至任务栏
 settings-general-interface-use_tray-description = 关闭 SlimeVR 窗口时，SlimeVR 服务器将会隐藏至任务栏图标而不会直接退出，可以继续使用。
 settings-general-interface-use_tray-label = 最小化至任务栏
@@ -594,6 +719,14 @@ settings-general-interface-discord_presence-message =
         [0] { "" }
        *[other] 正在使用 { $amount } 个追踪器
     }
+settings-interface-behavior-error_tracking = 通过 Sentry.io 收集错误信息
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>您是否同意收集匿名的错误信息？</h1>
+    
+    <b>我们不会收集您的个人信息</b> ，例如您的 IP 地址或 WiFi 信息。SlimeVR 重视您的隐私！
+    
+    为了提供最佳用户体验，我们会收集匿名错误报告、性能指标和操作系统信息。这有助于我们检测 SlimeVR 的错误和问题。这些指标将通过 Sentry.io 收集。
+settings-interface-behavior-error_tracking-label = 向开发人员发送错误信息
 
 ## Serial settings
 
@@ -656,6 +789,13 @@ settings-osc-vrchat-description-v1 =
 settings-osc-vrchat-enable = 启用
 settings-osc-vrchat-enable-description = 切换数据的发送和接收
 settings-osc-vrchat-enable-label = 启用
+settings-osc-vrchat-oscqueryEnabled = 启用 OSCQuery
+settings-osc-vrchat-oscqueryEnabled-description =
+    OSCQuery 会自动检测正在运行的 VRChat 并向其发送数据。
+    它还可以向 VRChat 通告自身，以便接收头戴显示器和控制器数据。
+    要允许从 VRChat 接收头戴显示器和控制器数据，请进入主菜单的设置
+    并启用“允许发送头部和手腕VR追踪OSC数据”。
+settings-osc-vrchat-oscqueryEnabled-label = 启用 OSCQuery
 settings-osc-vrchat-network = 网络端口
 settings-osc-vrchat-network-description-v1 = 设置传输OSC数据的端口。用于VRChat时无需修改。
 settings-osc-vrchat-network-port_in =
@@ -733,9 +873,12 @@ settings-utils-advanced-reset_warning =
     }
 settings-utils-advanced-reset_warning-reset = 重置设置
 settings-utils-advanced-reset_warning-cancel = 取消
-settings-utils-advanced-open_data = 数据文件夹
-settings-utils-advanced-open_data-description = 在文件管理器中打开SlimeVR的数据文件夹，查看配置文件与日志文件。
+settings-utils-advanced-open_data-v1 = 配置文件夹
+settings-utils-advanced-open_data-description-v1 = 在文件管理器中打开SlimeVR的配置文件夹，查看配置文件。
 settings-utils-advanced-open_data-label = 打开文件夹
+settings-utils-advanced-open_logs = 日志文件夹
+settings-utils-advanced-open_logs-description = 在文件管理器中打开SlimeVR的日志文件夹，查看SlimeVR的日志文件。
+settings-utils-advanced-open_logs-label = 打开文件夹
 
 ## Setup/onboarding menu
 
@@ -827,6 +970,17 @@ onboarding-connect_tracker-connection_status-looking_for_server = 正在寻找�
 onboarding-connect_tracker-connection_status-connection_error = 无法连接到 Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = 未找到到服务器
 onboarding-connect_tracker-connection_status-done = 已连接到服务器
+onboarding-connect_tracker-connection_status-no_serial_log = 无法从跟踪器获取日志
+onboarding-connect_tracker-connection_status-no_serial_device_found = 无法通过USB找到追踪器
+onboarding-connect_serial-error-modal-no_serial_log = 追踪器开关是否打开？
+onboarding-connect_serial-error-modal-no_serial_log-desc = 请确保追踪器已经开启并连接到电脑
+onboarding-connect_serial-error-modal-no_serial_device_found = 未检测到追踪器
+onboarding-connect_serial-error-modal-no_serial_device_found-desc =
+    请使用附带的USB线将追踪器连接到电脑并打开追踪器开关。
+    若仍无法工作：
+     - 尝试其他的USB线
+     - 尝试其他的USB接口
+     - 尝试重新安装SlimeVR服务端并在安装时勾选“USB驱动”
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -1001,53 +1155,27 @@ onboarding-automatic_mounting-mounting_reset-title = 佩戴重置
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 双腿弯曲以滑雪的姿势蹲下，上身向前倾斜，手臂弯曲。
 onboarding-automatic_mounting-mounting_reset-step-1 = 按下佩戴重置按钮并等待 3 秒钟，然后追踪器的佩戴方向将被重置。
 onboarding-automatic_mounting-preparation-title = 准备
-onboarding-automatic_mounting-preparation-step-0 = 1. 身体直立，双臂放在身体两侧。
-onboarding-automatic_mounting-preparation-step-1 = 按下“复位”按钮，等待 3 秒钟，追踪器将复位。
+onboarding-automatic_mounting-preparation-v2-step-0 = 1. 按下“完全重置”按钮。
+onboarding-automatic_mounting-preparation-v2-step-1 = 2. 站直并向前看，双臂放在身体两侧。
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. 保持姿势，直到 3 秒计时结束。
 onboarding-automatic_mounting-put_trackers_on-title = 穿戴好追踪器
 onboarding-automatic_mounting-put_trackers_on-description = 为了校准佩戴方向，我们将使用你刚才分配的追踪器。戴上你所有的追踪器，你可以在右边的图中看到哪个追踪器对应哪个。
 onboarding-automatic_mounting-put_trackers_on-next = 所有的追踪器都已开启！
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = 使用哪种方法校准身体比例？
-# Multiline string
-onboarding-choose_proportions-description-v1 =
-    身体比例记录了你身体各部分的尺寸。它们被用来计算虚拟追踪器的位置。
-    如果保存的身体比例和实际身体尺寸不匹配，追踪精度将会下降，并且会出现脚在地面滑动，或是身体和虚拟形象动作不一致的情况。
-    <b>身体比例设置只要进行一次！</b> 除非身体比例存在错误或是身体尺寸发生了改变，否则不需要重复进行身体比例设置。
-onboarding-choose_proportions-auto_proportions = 自动调整身体比例
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = 推荐
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    这将录制你的运动样本并通过算法来推测你的身体比例。
-    
-    <b>需要戴上头戴设备，并确保设备已连接到 SlimeVR！</b>
-onboarding-choose_proportions-manual_proportions = 手动调整身体比例
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = 用于精细调整
-onboarding-choose_proportions-manual_proportions-description = 这将需要你手动修改以调整你的身体比例
-onboarding-choose_proportions-scaled_proportions = 标准身体比例
-# Italized text
-onboarding-choose_proportions-scaled_proportions-subtitle = 推荐新用户使用
-# Multiline string
-onboarding-choose_proportions-scaled_proportions-description =
-    这将根据您的身高和平均人体比例设置身体比例，可以获得基本的全身跟踪效果。
-    
-    <b>这需要将您的头戴显示器 （HMD） 连接到 SlimeVR 并戴在头上！</b>
-onboarding-choose_proportions-scaled_proportions-button = 标准身体比例
-onboarding-choose_proportions-export = 导出身体比例
-onboarding-choose_proportions-import = 导入身体比例
-onboarding-choose_proportions-import-success = 导入成功
-onboarding-choose_proportions-import-failed = 导入失败
-onboarding-choose_proportions-file_type = 身体比例文件
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = 返回重置教程
 onboarding-manual_proportions-title = 手动调整身体比例
-onboarding-manual_proportions-precision = 精确调整
-onboarding-manual_proportions-auto = 自动校准
-onboarding-manual_proportions-ratio = 按比例分组调整
+onboarding-manual_proportions-fine_tuning_button = 自动微调身体比例
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 请连接 VR头戴显示器 以使用自动微调
+onboarding-manual_proportions-export = 导出身体比例
+onboarding-manual_proportions-import = 导入身体比例
+onboarding-manual_proportions-file_type = 身体比例文件
+onboarding-manual_proportions-normal_increment = 正常调整
+onboarding-manual_proportions-precise_increment = 精细调整
+onboarding-manual_proportions-grouped_proportions = 分组身体比例
+onboarding-manual_proportions-all_proportions = 所有身体比例
+onboarding-manual_proportions-estimated_height = 估测用户身高
 
 ## Tracker automatic proportions setup
 
@@ -1068,10 +1196,10 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     你的头戴设备正在向 SlimeVR 服务器回报位置信息（通常需要 SteamVR 正在运行且通过 SlimeVR 的 SteamVR 驱动连接到 SlimeVR）。
     你的追踪器正常工作并能反应实际运动（进行过完整重置和佩戴重置，踢腿、弯腰、坐下等动作时虚拟骨骼向正确的方向弯曲）。
 onboarding-automatic_proportions-requirements-next = 我已阅读
-onboarding-automatic_proportions-check_height-title-v2 = 测量你的身高
+onboarding-automatic_proportions-check_height-title-v3 = 测量你的头戴显示器的高度
 onboarding-automatic_proportions-check_height-description-v2 = 您的头戴显示器 （HMD） 高度应略小于您的身高，因为头戴显示器会测量您眼睛的高度。此测量值将用作计算您身体比例的基准。
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning-v2 = 在 <u>直立</u> 时开始测量以计算您的身高。小心不要将手举到高于头显，它们可能会影响测量结果！
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = 在 <u>站直</u> 时开始测量以计算您的身高。注意不要将手举过头显，不然可能会影响测量结果！
 onboarding-automatic_proportions-check_height-guardian_tip =
     如果你正在使用一体机进行串流，请确保开启并设置了安全边界，
     以获取正确的高度信息。
@@ -1086,9 +1214,10 @@ onboarding-automatic_proportions-check_height-next_step = 数值没问题
 onboarding-automatic_proportions-check_floor_height-title = 测量您的地板高度（可选）
 onboarding-automatic_proportions-check_floor_height-description = 在某些情况下，头戴显示器可能无法正确设置地板高度，从而导致头显测得的身高高于实际身高。您可以测量地板的“高度”以校正头显的高度。
 # All the text is in bold!
-onboarding-automatic_proportions-check_floor_height-calculation_warning = 如果您确定您的地板高度是正确的，则可以跳过此步骤。
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = 开始测量并将控制器放在地板上以测量地板高度。如果您确定您的地板高度是正确的，则可以跳过此步骤。
 # Shows an element below it
 onboarding-automatic_proportions-check_floor_height-floor_height = 您的地板高度为：
+onboarding-automatic_proportions-check_floor_height-full_height = 估计您的身高为：
 onboarding-automatic_proportions-check_floor_height-measure-start = 开始测量
 onboarding-automatic_proportions-check_floor_height-measure-stop = 停止测量
 onboarding-automatic_proportions-check_floor_height-measure-reset = 重试测量
@@ -1134,10 +1263,18 @@ onboarding-automatic_proportions-smol_warning-cancel = 返回
 onboarding-scaled_proportions-title = 标准身体比例
 onboarding-scaled_proportions-description = 为了让 SlimeVR 追踪器正常使用，我们需要知道你的骨头的长度。将会使用人体平均骨骼比例，并缩放至您的身高。
 onboarding-scaled_proportions-manual_height-title = 配置您的身高
-onboarding-scaled_proportions-manual_height-description = 您的头戴显示器 （HMD） 高度应略小于您的身高，因为头戴显示器会测量您眼睛的高度。此高度将用作计算您身体比例的基准。
+onboarding-scaled_proportions-manual_height-description-v2 = 此身高将用作您身体比例的基准。
 onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR 当前未连接到 SlimeVR，因此不能基于您的头戴显示器进行测量。 <b>请连接后再继续操作或查看文档！</b>
-onboarding-scaled_proportions-manual_height-height = 您的头戴显示器的高度是
+onboarding-scaled_proportions-manual_height-height-v2 = 您的身高为
+onboarding-scaled_proportions-manual_height-estimated_height = 估计您的头显高度为：
 onboarding-scaled_proportions-manual_height-next_step = 保存并继续
+onboarding-scaled_proportions-manual_height-warning =
+    您当前正在手动设置缩放身体比例！
+    <b>建议只在您不使用头戴显示器时使用此模式</b>
+    
+    为了能够使用自动缩放身体比例，请：
+onboarding-scaled_proportions-manual_height-warning-no_hmd = 连接 VR 头戴显示器
+onboarding-scaled_proportions-manual_height-warning-no_controllers = 确保您的控制器已连接并正确分配到手部
 
 ## Tracker scaled proportions reset
 
@@ -1145,6 +1282,40 @@ onboarding-scaled_proportions-reset_proportion-title = 重置您的身体比例
 onboarding-scaled_proportions-reset_proportion-description = 为了根据您的身高设置身体比例，您现在需要重置所有身体比例。这将清除您先前配置的所有身体比例并提供一个基础设置。
 onboarding-scaled_proportions-done-title = 身体比例已设置
 onboarding-scaled_proportions-done-description = 身体比例已根据您的身高进行设置。
+
+## Stay Aligned setup
+
+onboarding-stay_aligned-title = 持续校准
+onboarding-stay_aligned-description = 配置持续校准以保持追踪器校准
+onboarding-stay_aligned-put_trackers_on-title = 穿戴好追踪器
+onboarding-stay_aligned-put_trackers_on-description = 为了保存放松姿势，我们将使用你刚才分配的追踪器。戴上你所有的追踪器，你可以在右边的图中看到哪个追踪器对应哪个。
+onboarding-stay_aligned-put_trackers_on-trackers_warning = 您当前已经连接和分配的追踪器数量少于 5 个！这是持续校准正常运行所需的最小追踪器数量。
+onboarding-stay_aligned-put_trackers_on-next = 所有的追踪器都已开启！
+onboarding-stay_aligned-verify_mounting-title = 检查追踪器佩戴
+onboarding-stay_aligned-verify_mounting-step-0 = 持续校准需要良好的追踪器佩戴固定。否则，持续校准的效果可能会不太理想。
+onboarding-stay_aligned-verify_mounting-step-1 = 1. 请在站立时四处移动。
+onboarding-stay_aligned-verify_mounting-step-2 = 2. 请坐下并移动腿和脚
+onboarding-stay_aligned-verify_mounting-step-3 = 3. 如果追踪器不在正确的位置上，请重新进行这个流程。
+onboarding-stay_aligned-verify_mounting-redo_mounting = 重做佩戴校准
+onboarding-stay_aligned-preparation-title = 准备
+onboarding-stay_aligned-preparation-tip = 站直并向前看，双臂放在身体两侧。
+onboarding-stay_aligned-relaxed_poses-standing-title = 站立放松姿势
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. 以舒适的姿势站立并放松。
+onboarding-stay_aligned-relaxed_poses-standing-step-2 = 3. 按下“检测姿势”按钮。
+onboarding-stay_aligned-relaxed_poses-sitting-title = 椅子上放松姿势
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. 以舒适的姿势坐下并放松。
+onboarding-stay_aligned-relaxed_poses-sitting-step-2 = 3. 按下“检测姿势”按钮。
+onboarding-stay_aligned-relaxed_poses-flat-title = 地面/平躺放松姿势
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. 以舒适的姿势坐或躺在地面上，保持腿在前方并放松。
+onboarding-stay_aligned-relaxed_poses-flat-step-2 = 3. 按下“检测姿势”按钮。
+onboarding-stay_aligned-relaxed_poses-skip_step = 跳过
+onboarding-stay_aligned-done-title = 持续校准已开启！
+onboarding-stay_aligned-done-description = 持续校准已设定完成！
+onboarding-stay_aligned-done-description-2 = 设置完成！如果要重新校准放松姿势，可以重新进行该过程
+onboarding-stay_aligned-previous_step = 上一步
+onboarding-stay_aligned-next_step = 下一步
+onboarding-stay_aligned-restart = 重新开始
+onboarding-stay_aligned-done = 完成
 
 ## Home
 
@@ -1169,6 +1340,7 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = { $trackerName } 追踪器发生错误
 status_system-StatusUnassignedHMD = VR头显应被分配为头部追踪器。
+status_system-StatusPublicNetwork = 您当前的网络类型设置为“公开”。 这可能会导致SlimeVR功能出现异常。<PublicFixLink>点击这里查看如何进行设置。</PublicFixLink>
 
 ## Firmware tool globals
 
@@ -1267,7 +1439,7 @@ firmware_tool-build_step = 构建中
 firmware_tool-build_step-description = 固件正在构建中，请稍候
 firmware_tool-flashing_step = 固件烧录中
 firmware_tool-flashing_step-description = 正在向追踪器烧录固件，请按照屏幕上的指示操作
-firmware_tool-flashing_step-warning = 除非特别指示，在固件传输过程中请勿断开或重启追踪器，否则可能会导致您的电路板无法使用
+firmware_tool-flashing_step-warning-v2 = 除非特别指示，在固件传输过程中请勿断开或关闭追踪器，否则可能会导致您的电路板无法使用
 firmware_tool-flashing_step-flash_more = 烧录更多的追踪器
 firmware_tool-flashing_step-exit = 退出
 
@@ -1285,7 +1457,7 @@ firmware_tool-build-ERROR = 无法构建固件
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = 正在下载固件
-firmware_update-status-NEED_MANUAL_REBOOT = 等待用户重启追踪器
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = 请关闭您的追踪器，然后再重新打开
 firmware_update-status-AUTHENTICATING = 正在确认追踪器连接
 firmware_update-status-UPLOADING = 正在传输固件
 firmware_update-status-SYNCING_WITH_MCU = 正在与追踪器同步
@@ -1339,3 +1511,53 @@ unknown_device-modal-description =
     要将它连接到 SlimeVR 吗？
 unknown_device-modal-confirm = 是的！
 unknown_device-modal-forget = 忽略它
+# VRChat config warnings
+vrc_config-page-title = VRChat设置警告
+vrc_config-page-desc = 本页会显示当前VRChat设置的状态，并显示哪些设置与SlimeVR存在冲突。为获得最好的体验，建议修复此处显示的所有警告后再进行使用。
+vrc_config-page-help = 找不到设置信息？
+vrc_config-page-help-desc = 请查阅 <a>此处的说明文档</a>
+vrc_config-page-big_menu = 追踪与IK（大菜单）
+vrc_config-page-big_menu-desc = 大菜单中与IK相关的设置
+vrc_config-page-wrist_menu = 追踪与IK（手上菜单）
+vrc_config-page-wrist_menu-desc = 手上菜单（小菜单）中与IK相关的配置
+vrc_config-on = 开
+vrc_config-off = 关
+vrc_config-invalid = 存在错误的VRChat设置！
+vrc_config-show_more = 显示更多
+vrc_config-setting_name = VRChat设置名称
+vrc_config-recommended_value = 推荐值
+vrc_config-current_value = 当前值
+vrc_config-mute = 消除警告
+vrc_config-mute-btn = 消除
+vrc_config-unmute-btn = 取消消除
+vrc_config-legacy_mode = 使用旧版IK解算
+vrc_config-disable_shoulder_tracking = 禁用肩膀追踪
+vrc_config-shoulder_width_compensation = 肩宽补偿
+vrc_config-spine_mode = 全追脊柱模式
+vrc_config-tracker_model = 全追追踪器模型
+vrc_config-avatar_measurement_type = 虚拟形象测量
+vrc_config-calibration_range = 校准范围
+vrc_config-calibration_visuals = 显示全追校准范围
+vrc_config-user_height = 用户真实身高
+vrc_config-spine_mode-UNKNOWN = 未知
+vrc_config-spine_mode-LOCK_BOTH = 同时锁定
+vrc_config-spine_mode-LOCK_HEAD = 锁定头部
+vrc_config-spine_mode-LOCK_HIP = 锁定臀部
+vrc_config-tracker_model-UNKNOWN = 未知
+vrc_config-tracker_model-AXIS = 十字轴
+vrc_config-tracker_model-BOX = 方盒
+vrc_config-tracker_model-SPHERE = 球体
+vrc_config-tracker_model-SYSTEM = 系统模型
+vrc_config-avatar_measurement_type-UNKNOWN = 未知
+vrc_config-avatar_measurement_type-HEIGHT = 身高
+vrc_config-avatar_measurement_type-ARM_SPAN = 臂展
+
+## Error collection consent modal
+
+error_collection_modal-title = 我们可以收集错误信息吗？
+error_collection_modal-description_v2 =
+    { settings-interface-behavior-error_tracking-description_v2 }
+    
+    您可以稍后在设置页面的行为部分中更改此设置。
+error_collection_modal-confirm = 我同意
+error_collection_modal-cancel = 还是算了

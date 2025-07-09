@@ -638,6 +638,10 @@ class HumanPoseManager(val server: VRServer?) {
 		get() = skeletonConfigManager.userHeightFromOffsets
 
 	@get:ThreadSafe
+	val userNeckHeightFromConfig: Float
+		get() = skeletonConfigManager.userNeckHeightFromOffsets
+
+	@get:ThreadSafe
 	val realUserHeight: Float
 		get() = skeletonConfigManager.userHeightFromOffsets / BodyProportionError.eyeHeightToHeightRatio
 

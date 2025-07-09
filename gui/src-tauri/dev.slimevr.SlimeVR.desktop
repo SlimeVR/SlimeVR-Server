@@ -1,6 +1,6 @@
 [Desktop Entry]
 Version=1.5
-Categories=Game;Development;GTK;
+Categories=Game;GTK;
 Exec={{exec}}
 Icon={{icon}}
 

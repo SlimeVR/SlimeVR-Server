@@ -41,7 +41,7 @@ body_part-RIGHT_UPPER_ARM = Braço superior direito
 body_part-RIGHT_LOWER_ARM = Antebraço direito
 body_part-RIGHT_HAND = Mão Direita
 body_part-RIGHT_UPPER_LEG = Coxa direita
-body_part-RIGHT_LOWER_LEG = Canela direita
+body_part-RIGHT_LOWER_LEG = Tornozelo direito
 body_part-RIGHT_FOOT = Pé direito
 body_part-UPPER_CHEST = Peito Superior
 body_part-CHEST = Peito
@@ -52,7 +52,7 @@ body_part-LEFT_UPPER_ARM = Braço superior esquerdo
 body_part-LEFT_LOWER_ARM = Antebraço esquerdo
 body_part-LEFT_HAND = Mão esquerda
 body_part-LEFT_UPPER_LEG = Coxa esquerda
-body_part-LEFT_LOWER_LEG = Canela esquerda
+body_part-LEFT_LOWER_LEG = Tornozelo esquerdo
 body_part-LEFT_FOOT = Pé esquerdo
 body_part-LEFT_THUMB_METACARPAL = Metacarpo do polegar esquerdo
 body_part-LEFT_THUMB_PROXIMAL = Proximal do polegar esquerdo
@@ -282,6 +282,7 @@ tracker-settings-forget = Esquecer o tracker
 tracker-settings-forget-description = Remove o tracker do servidor SlimeVR e impede que ele se conecte a ele até que o servidor seja reiniciado. A configuração do tracker não será perdida.
 tracker-settings-forget-label = Esquecer o tracker
 tracker-settings-update-unavailable = Não pode ser atualizado (DIY)
+tracker-settings-update-low-battery = Não é possível atualizar. Bateria abaixo de 50%
 tracker-settings-update-up_to_date = Atualizado
 tracker-settings-update-available = { $versionName } está disponível
 tracker-settings-update = Atualizar agora
@@ -363,6 +364,7 @@ settings-sidebar-appearance = Aparência
 settings-sidebar-notifications = Notificações
 settings-sidebar-behavior = Comportamento
 settings-sidebar-firmware-tool = Ferramenta de firmware DIY
+settings-sidebar-vrc_warnings = Alerta nas Configurações do VRChat
 settings-sidebar-advanced = Avançado
 
 ## SteamVR settings
@@ -444,6 +446,8 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Usa o magnetômetro em todos os trackers com firmware compatível, reduzindo o drift em ambientes magneticamente estáveis.
     Essa opção pode ser desativada indivualmente nas configurações de cada tracker. <b>Não desligue nenhum dos trackers enquanto altera esta opção!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Usar o magnetômetro nos trackers
+settings-stay_aligned-general-label = Geral
+settings-stay_aligned-relaxed_poses-close = Fechar
 
 ## FK/Tracking settings
 
@@ -540,6 +544,9 @@ settings-general-gesture_control-numberTrackersOverThreshold-description = Aumen
 ## Appearance settings
 
 settings-interface-appearance = Aparência
+settings-general-interface-dev_mode = Modo de desenvolvedor
+settings-general-interface-dev_mode-description = Este modo pode ser útil se precisar de dados específicos ou para interagir com trackers conectados a um nível mais avançado
+settings-general-interface-dev_mode-label = Modo de desenvolvedor
 settings-general-interface-theme = Cor do tema
 settings-general-interface-show-navbar-onboarding = Mostrar "{ navbar-onboarding }" na barra de navegação
 settings-general-interface-show-navbar-onboarding-description = Isso muda se o botão "{ navbar-onboarding }" for exibido na barra de navegação.
@@ -945,18 +952,18 @@ onboarding-assign_trackers-warning-RIGHT_FOOT =
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-LEFT_LOWER_LEG =
     { $unassigned ->
-        [0] Canela esquerda está atribuída, porém a coxa esquerda e peito, quadril ou cintura também precisam ser atribuídos!
-        [1] Canela esquerda está atribuída, porém peito, quadril ou cintura também precisam ser atribuídos!
-        [2] Canela esquerda está atribuída, porém a coxa direita também precisa ser atribuída!
-       *[unknown] Canela esquerda está atribuída, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
+        [2] Tornozelo esquerdo está atribuído, porém a coxa direita também precisa ser atribuída!
+        [1] Tornozelo esquerdo está atribuído, porém peito, quadril ou cintura também precisam ser atribuídos!
+        [0] Tornozelo esquerdo está atribuído, porém a coxa esquerda e peito, quadril ou cintura também precisam ser atribuídos!
+       *[unknown] Tornozelo esquerdo está atribuído, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-RIGHT_LOWER_LEG =
     { $unassigned ->
-        [0] Canela direita está atribuída, porém a coxa direita e peito, quadril ou cintura também precisam ser atribuídos!
-        [1] Canela direita está atribuída, porém peito, quadril ou cintura também precisam ser atribuídos!
-        [2] Canela direita está atribuída, porém a coxa direita também precisa ser atribuída!
-       *[unknown] Canela direita está atribuída, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
+        [2] Tornozelo direito está atribuído, porém a coxa direita também precisa ser atribuída!
+        [1] Tornozelo direito está atribuído, porém peito, quadril ou cintura também precisam ser atribuídos!
+        [0] Tornozelo direito está atribuído, porém a coxa direita e peito, quadril ou cintura também precisam ser atribuídos!
+       *[unknown] Tornozelo direito está atribuído, porém a parte do corpo desconhecida não atribuída também precisa ser atribuída!
     }
 # $unassigned (Number) - Bits are based on BodyAssignment.ASSIGNMENT_RULES order
 onboarding-assign_trackers-warning-LEFT_UPPER_LEG =
@@ -1027,8 +1034,6 @@ onboarding-automatic_mounting-mounting_reset-title = Reset de Posição
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Agache-se em uma pose de "esqui" com as pernas dobradas, a parte superior do corpo inclinada para a frente e os braços dobrados.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Pressione o botão "Resetar Posição" e aguarde 3 segundos antes que as rotações de posição dos trackers sejam redefinidas.
 onboarding-automatic_mounting-preparation-title = Preparação
-onboarding-automatic_mounting-preparation-step-0 = 1. Fique de pé com os braços ao lado do corpo.
-onboarding-automatic_mounting-preparation-step-1 = 2. Pressione o botão "Reset" e aguarde 3 segundos antes que os trackers sejam reiniciados.
 onboarding-automatic_mounting-put_trackers_on-title = Coloque seus trackers
 onboarding-automatic_mounting-put_trackers_on-description = Para calibrar as rotações de posicionamento, usaremos os trackers que você atribuiu. Coloque todos os seus trackers, você pode ver qual é qual na figura na direita.
 onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trackers
@@ -1037,15 +1042,10 @@ onboarding-automatic_mounting-put_trackers_on-next = Coloquei todos os meus trac
 
 onboarding-manual_proportions-back = Voltar para o tutorial de reset
 onboarding-manual_proportions-title = Proporções de corpo manuais
-onboarding-manual_proportions-precision = Ajuste de precisão
-onboarding-manual_proportions-auto = Calibragem Automática
-onboarding-manual_proportions-ratio = Ajustar por grupos de proporções
 onboarding-manual_proportions-fine_tuning_button = Melhorar automaticamente as proporções
 onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Por favor, conecte seu headset VR para utilizar a melhoria automatica
 onboarding-manual_proportions-export = Exportar proporções
 onboarding-manual_proportions-import = Importar proporções
-onboarding-manual_proportions-import-success = Importado
-onboarding-manual_proportions-import-failed = Falhou
 onboarding-manual_proportions-file_type = Arquivo de proporções do corpo
 
 ## Tracker automatic proportions setup
@@ -1150,6 +1150,10 @@ onboarding-scaled_proportions-reset_proportion-title = Redefinir as proporções
 onboarding-scaled_proportions-reset_proportion-description = Para definir as proporções do corpo com base na sua altura, agora é necessário redefinir todas as proporções. Isso limpará todas as proporções que você configurou e fornecerá uma configuração de referência.
 onboarding-scaled_proportions-done-title = Proporções do corpo definidas
 onboarding-scaled_proportions-done-description = As proporções do seu corpo agora devem ser configuradas com base em sua altura.
+
+## Stay Aligned setup
+
+onboarding-stay_aligned-put_trackers_on-next = Todos meus trackers estão ligados
 
 ## Home
 
@@ -1270,7 +1274,6 @@ firmware_tool-build_step = Compilando
 firmware_tool-build_step-description = O firmware está sendo compilado, aguarde
 firmware_tool-flashing_step = Atualizando
 firmware_tool-flashing_step-description = Seus trackers estão atualizando, por favor, siga as instruções na tela
-firmware_tool-flashing_step-warning = Não desconecte nem reinicie o tracker durante o processo de upload, a menos que seja solicitado, pois isso pode tornar sua placa inutilizável
 firmware_tool-flashing_step-flash_more = Atualizar mais trackers
 firmware_tool-flashing_step-exit = Sair
 
@@ -1288,7 +1291,6 @@ firmware_tool-build-ERROR = Não foi possível compilar o firmware
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = Baixando o firmware
-firmware_update-status-NEED_MANUAL_REBOOT = Favor reiniciar o tracker
 firmware_update-status-AUTHENTICATING = Autenticando com o mcu
 firmware_update-status-UPLOADING = Fazendo upload do firmware
 firmware_update-status-SYNCING_WITH_MCU = Sincronizando com o mcu

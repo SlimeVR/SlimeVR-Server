@@ -2,10 +2,12 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
+import dev.slimevr.tracking.processor.stayaligned.trackers.StayAlignedTrackerState
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
 import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
+import dev.slimevr.util.InterpolationHandler
 import io.eiren.util.BufferedTimer
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -118,6 +120,7 @@ class Tracker @JvmOverloads constructor(
 	 * Watch the rest calibration status
 	 */
 	var hasCompletedRestCalibration: Boolean? = null
+
 	/**
 	 * If the tracker has gotten disconnected after it was initialized first time
 	 */
@@ -125,7 +128,7 @@ class Tracker @JvmOverloads constructor(
 		if (old == new) return@observable
 
 		if (allowReset && !old.reset && new.reset && !needReset) {
-			needReset = true;
+			needReset = true
 		}
 
 		if (!isInternal && VRServer.instanceInitialized) {
@@ -142,7 +145,7 @@ class Tracker @JvmOverloads constructor(
 		if (old == new) return@observable
 
 		if (allowReset && !needReset) {
-			needReset = true;
+			needReset = true
 		}
 
 		if (!isInternal) {
@@ -158,6 +161,9 @@ class Tracker @JvmOverloads constructor(
 	 * It's like the ID, but it should be local to the device if it has one
 	 */
 	val trackerNum: Int = trackerNum ?: id
+
+	val stayAligned = StayAlignedTrackerState(this)
+	val yawResetSmoothing = InterpolationHandler()
 
 	init {
 		// IMPORTANT: Look here for the required states of inputs
@@ -246,8 +252,17 @@ class Tracker @JvmOverloads constructor(
 				status = TrackerStatus.TIMED_OUT
 			}
 		}
+
+		// Get the last frame time as a delta
+		val deltaTime = if (VRServer.instanceInitialized) {
+			VRServer.instance.fpsTimer.timePerFrame
+		} else {
+			0.001f
+		}
+
 		filteringHandler.update()
-		resetsHandler.update()
+		yawResetSmoothing.tick(deltaTime)
+		stayAligned.update()
 	}
 
 	/**
@@ -276,12 +291,39 @@ class Tracker @JvmOverloads constructor(
 	 * it too much should be avoided for performance reasons.
 	 */
 	private fun getAdjustedRotation(): Quaternion {
+		var rot = _rotation
+
+		if (!stayAligned.hideCorrection) {
+			// Yaw drift happens in the raw rotation space
+			rot = Quaternion.rotationAroundYAxis(stayAligned.yawCorrection.toRad()) * rot
+		}
+
 		// Reset if needed and is not computed and internal
 		return if (allowReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset, mounting and drift compensation
-			resetsHandler.getReferenceAdjustedDriftRotationFrom(_rotation)
+			resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
 		} else {
-			_rotation
+			rot
+		}
+	}
+
+	/**
+	 * Same as getAdjustedRotation except that Stay Aligned correction is always
+	 * applied. This allows Stay Aligned to do gradient descent with the tracker's
+	 * rotation.
+	 */
+	fun getAdjustedRotationForceStayAligned(): Quaternion {
+		var rot = _rotation
+
+		// Yaw drift happens in the raw rotation space
+		rot = Quaternion.rotationAroundYAxis(stayAligned.yawCorrection.toRad()) * rot
+
+		// Reset if needed and is not computed and internal
+		return if (needReset && !(isComputed && isInternal) && trackerDataType == TrackerDataType.ROTATION) {
+			// Adjust to reset, mounting and drift compensation
+			resetsHandler.getReferenceAdjustedDriftRotationFrom(rot)
+		} else {
+			rot
 		}
 	}
 
@@ -291,23 +333,38 @@ class Tracker @JvmOverloads constructor(
 	 * This is used for debugging/visualizing tracker data
 	 */
 	fun getIdentityAdjustedRotation(): Quaternion {
+		var rot = _rotation
+
+		if (!stayAligned.hideCorrection) {
+			// Yaw drift happens in the raw rotation space
+			rot = Quaternion.rotationAroundYAxis(stayAligned.yawCorrection.toRad()) * rot
+		}
+
 		// Reset if needed or is a computed tracker besides head
 		return if (allowReset && !(isComputed && trackerPosition != TrackerPosition.HEAD) && trackerDataType == TrackerDataType.ROTATION) {
 			// Adjust to reset and mounting
-			resetsHandler.getIdentityAdjustedDriftRotationFrom(_rotation)
+			resetsHandler.getIdentityAdjustedDriftRotationFrom(rot)
 		} else {
-			_rotation
+			rot
 		}
 	}
 
 	/**
 	 * Get the rotation of the tracker after the resetsHandler's corrections and filtering if applicable
 	 */
-	fun getRotation(): Quaternion = if (trackRotDirection) {
-		filteringHandler.getFilteredRotation()
-	} else {
-		// Get non-filtered rotation
-		getAdjustedRotation()
+	fun getRotation(): Quaternion {
+		var rot = if (trackRotDirection) {
+			filteringHandler.getFilteredRotation()
+		} else {
+			// Get non-filtered rotation
+			getAdjustedRotation()
+		}
+
+		if (yawResetSmoothing.remainingTime > 0f) {
+			rot = yawResetSmoothing.curRotation * rot
+		}
+
+		return rot
 	}
 
 	/**

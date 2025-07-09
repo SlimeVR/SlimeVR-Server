@@ -13,22 +13,23 @@ class RPCFlightListHandler(
 ) : FlightListListener {
 
 	init {
-	    api.server.flightListManager.addListener(this)
+		api.server.flightListManager.addListener(this)
 
 		rpcHandler.registerPacketListener(RpcMessage.FlightListRequest, ::onFlightListRequest)
 		rpcHandler.registerPacketListener(RpcMessage.ToggleFlightListStepRequest, ::onToggleFlightListRequest)
 	}
 
-	fun buildFlightListResponse(fbb: FlatBufferBuilder): Int {
-		return FlightListResponse.pack(fbb, FlightListResponseT().apply {
+	fun buildFlightListResponse(fbb: FlatBufferBuilder): Int = FlightListResponse.pack(
+		fbb,
+		FlightListResponseT().apply {
 			steps = api.server.flightListManager.steps.toTypedArray()
 			ignoredSteps = api.server.configManager.vrConfig.flightList.ignoredStepsIds.toIntArray()
-		})
-	}
+		},
+	)
 
 	private fun onFlightListRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
-		val fbb = FlatBufferBuilder(32);
-		val response = buildFlightListResponse(fbb);
+		val fbb = FlatBufferBuilder(32)
+		val response = buildFlightListResponse(fbb)
 		val outbound = rpcHandler.createRPCMessage(
 			fbb,
 			RpcMessage.FlightListResponse,
@@ -43,10 +44,10 @@ class RPCFlightListHandler(
 			?: return
 		val step = api.server.flightListManager.steps.find { it.id == req.stepId() } ?: error("invalid step id requested")
 
-		api.server.flightListManager.toggleStep(step);
+		api.server.flightListManager.toggleStep(step)
 
-		val fbb = FlatBufferBuilder(32);
-		val response = buildFlightListResponse(fbb);
+		val fbb = FlatBufferBuilder(32)
+		val response = buildFlightListResponse(fbb)
 		val outbound = rpcHandler.createRPCMessage(
 			fbb,
 			RpcMessage.FlightListResponse,
@@ -56,13 +57,12 @@ class RPCFlightListHandler(
 		conn.send(fbb.dataBuffer())
 	}
 
-
 	override fun onStepUpdate(step: FlightListStepT) {
 		val fbb = FlatBufferBuilder(32)
-		val stepOffset = FlightListStep.pack(fbb, step);
+		val stepOffset = FlightListStep.pack(fbb, step)
 		FlightListStepChangeResponse.startFlightListStepChangeResponse(fbb)
 		FlightListStepChangeResponse.addStep(fbb, stepOffset)
-		val response = FlightListStepChangeResponse.endFlightListStepChangeResponse(fbb);
+		val response = FlightListStepChangeResponse.endFlightListStepChangeResponse(fbb)
 
 		val outbound = rpcHandler.createRPCMessage(
 			fbb,

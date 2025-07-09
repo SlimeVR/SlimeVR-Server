@@ -26,7 +26,7 @@ abstract class SteamVRBridge(
 	Runnable {
 	protected val runnerThread: Thread = Thread(this, threadName)
 	protected val config: BridgeConfig = server.configManager.vrConfig.getBridge(bridgeSettingsKey)
-	var connected: Boolean = false;
+	var connected: Boolean = false
 
 	@VRServerThread
 	override fun startBridge() {
@@ -427,11 +427,11 @@ abstract class SteamVRBridge(
 
 	@BridgeThread
 	protected fun reportDisconnected() {
-		connected = false;
+		connected = false
 	}
 
 	@BridgeThread
 	protected fun reportConnected() {
-		connected = true;
+		connected = true
 	}
 }
