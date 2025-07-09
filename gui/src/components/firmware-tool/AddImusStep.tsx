@@ -237,71 +237,72 @@ export function AddImusStep({
   };
 
   return (
-    <div className="flex flex-col w-full">
-      <div className="flex flex-col gap-4">
-        <Typography color="secondary">
-          {l10n.getString('firmware_tool-board_pins_step-description')}
-        </Typography>
-      </div>
-      <div className="my-4 flex flex-col gap-4">
-        {!isAckchuallyLoading && imuTypes && newConfig && (
-          <>
-            <div className="flex flex-col gap-3">
-              <div
-                className={classNames(
-                  'grid gap-2 px-2',
-                  form.imus.length > 1
-                    ? 'md:grid-cols-2 mobile-settings:grid-cols-1'
-                    : 'grid-cols-1'
-                )}
-              >
-                {form.imus.map((imu, index) => (
-                  <IMUCard
-                    control={control}
-                    imuTypes={imuTypes}
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`${index}:${imu.type}`}
-                    hasIntPin={
-                      imuTypes?.find(({ type: t }) => t == imu.type)
-                        ?.hasIntPin ?? false
-                    }
-                    index={index}
-                    onDelete={() => deleteImu(index)}
-                  />
-                ))}
+    <>
+      <div className="flex flex-col w-full">
+        <div className="flex flex-col gap-4">
+          <Typography color="secondary">
+            {l10n.getString('firmware_tool-add_imus_step-description')}
+          </Typography>
+        </div>
+        <div className="my-4 flex flex-col gap-4">
+          {!isAckchuallyLoading && imuTypes && newConfig && (
+            <>
+              <div className="flex flex-col gap-3">
+                <div
+                  className={classNames(
+                    'grid gap-2 px-2',
+                    form.imus.length > 1
+                      ? 'md:grid-cols-2 mobile-settings:grid-cols-1'
+                      : 'grid-cols-1'
+                  )}
+                >
+                  {form.imus.map((imu, index) => (
+                    <IMUCard
+                      control={control}
+                      imuTypes={imuTypes}
+                      key={`${index}:${imu.type}`}
+                      hasIntPin={
+                        imuTypes?.find(({ type: t }) => t == imu.type)
+                          ?.hasIntPin ?? false
+                      }
+                      index={index}
+                      onDelete={() => deleteImu(index)}
+                    ></IMUCard>
+                  ))}
+                </div>
+                <div className="flex justify-center">
+                  <Localized id="firmware_tool-add_imus_step-add_more">
+                    <Button variant="primary" onClick={addImu}></Button>
+                  </Localized>
+                </div>
               </div>
-              <div className="flex justify-center">
-                <Localized id="firmware_tool-add_imus_step-add_more">
-                  <Button variant="primary" onClick={addImu} />
+              <div className="flex justify-between">
+                <Localized id="firmware_tool-previous_step">
+                  <Button variant="tertiary" onClick={prevStep}></Button>
+                </Localized>
+                <Localized id="firmware_tool-next_step">
+                  <Button
+                    variant="primary"
+                    disabled={!isValidState || form.imus.length === 0}
+                    onClick={() => {
+                      updateImus(form.imus);
+                      nextStep();
+                    }}
+                  ></Button>
                 </Localized>
               </div>
-            </div>
-            <div className="flex justify-between">
-              <Localized id="firmware_tool-previous_step">
-                <Button variant="tertiary" onClick={prevStep} />
-              </Localized>
-              <Localized id="firmware_tool-next_step">
-                <Button
-                  variant="primary"
-                  disabled={!isValidState || form.imus.length === 0}
-                  onClick={() => {
-                    updateImus(form.imus);
-                    nextStep();
-                  }}
-                />
+            </>
+          )}
+          {isAckchuallyLoading && (
+            <div className="flex justify-center flex-col items-center gap-3 h-44">
+              <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
+              <Localized id="firmware_tool-loading">
+                <Typography color="secondary"></Typography>
               </Localized>
             </div>
-          </>
-        )}
-        {isAckchuallyLoading && (
-          <div className="flex justify-center flex-col items-center gap-3 h-44">
-            <LoaderIcon slimeState={SlimeState.JUMPY} />
-            <Localized id="firmware_tool-loading">
-              <Typography color="secondary" />
-            </Localized>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

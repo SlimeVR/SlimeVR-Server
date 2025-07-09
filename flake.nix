@@ -78,7 +78,6 @@
               cacert
             ])
             ++ lib.optionals pkgs.stdenv.isLinux (with pkgs; [
-              appimagekit
               atk
               cairo
               dbus
@@ -122,6 +121,8 @@
           languages.javascript = {
             enable = true;
             corepack.enable = true;
+            pnpm.enable = true;
+            npm.enable = true;
           };
 
           languages.rust = {

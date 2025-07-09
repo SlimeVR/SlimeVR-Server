@@ -35,6 +35,7 @@ import { useNavigate } from 'react-router-dom';
 import { ResetButton } from '@/components/home/ResetButton';
 import { ProportionsResetModal } from './ProportionsResetModal';
 import { BodyProportions } from './BodyProportions';
+import { Vector3 } from 'three';
 
 function IconButton({
   onClick,
@@ -442,44 +443,62 @@ export function ManualProportionsPage() {
   );
 
   return (
-    <div className="flex w-full h-full gap-2 bg-background-70 p-2">
-      <div className="flex flex-col flex-grow gap-2">
-        <ButtonsControl control={control} />
-        <div className="bg-background-60 h-20 rounded-md flex-grow overflow-y-auto">
-          <BodyProportions
-            precise={precise ?? defaultValues.precise}
-            type={ratio ? 'ratio' : 'linear'}
-            variant={state.alonePage ? 'alone' : 'onboarding'}
-          />
-        </div>
-      </div>
-      <div className="rounded-md overflow-clip w-1/3 bg-background-60 hidden mobile:hidden sm:flex relative">
-        <SkeletonVisualizerWidget />
-
-        <div className="top-4 w-full px-4 absolute flex gap-2 flex-col md:flex-row">
-          <div className="h-14 flex flex-grow items-center">
-            <ResetButton
-              type={ResetType.Full}
-              size="small"
-              className="w-full h-full bg-background-50 hover:bg-background-40 text-background-10"
-            />
+    <>
+      <div className="flex w-full h-full gap-2 bg-background-70 p-2">
+        <div className="flex flex-col flex-grow gap-2">
+          <ButtonsControl control={control}></ButtonsControl>
+          <div className="bg-background-60 h-20 rounded-md flex-grow overflow-y-auto">
+            <BodyProportions
+              precise={precise ?? defaultValues.precise}
+              type={ratio ? 'ratio' : 'linear'}
+              variant={state.alonePage ? 'alone' : 'onboarding'}
+            ></BodyProportions>
           </div>
-          <Tooltip
-            preferedDirection="bottom"
-            content={
-              <Localized id="onboarding-manual_proportions-estimated_height">
-                <Typography />
-              </Localized>
-            }
-          >
-            <div className="h-14 bg-background-50 p-4 flex items-center rounded-lg min-w-36 justify-center">
-              <Typography variant="main-title">
-                {cmFormat.format((userHeight * 100) / 0.936)}
-              </Typography>
+        </div>
+        <div className="rounded-md overflow-clip w-1/3 bg-background-60 hidden mobile:hidden sm:flex relative">
+          <SkeletonVisualizerWidget
+            onInit={(context) => {
+              context.addView({
+                left: 0,
+                bottom: 0,
+                width: 1,
+                height: 1,
+                position: new Vector3(3, 2.5, -3),
+                onHeightChange(v, newHeight) {
+                  // retouch the target and scale settings so the height element doesnt hide the head
+                  v.controls.target.set(0, newHeight / 1.7, 0);
+                  const scale = Math.max(1, newHeight) / 1.2;
+                  v.camera.zoom = 1 / scale;
+                },
+              });
+            }}
+          />
+
+          <div className="top-4 w-full px-4 absolute flex gap-2 flex-col lg:flex-row md:flex-wrap">
+            <div className="h-14 flex flex-grow items-center">
+              <ResetButton
+                type={ResetType.Full}
+                size="small"
+                className="w-full h-full bg-background-50 hover:bg-background-40 text-background-10"
+              ></ResetButton>
             </div>
-          </Tooltip>
+            <Tooltip
+              preferedDirection="bottom"
+              content={
+                <Localized id="onboarding-manual_proportions-estimated_height">
+                  <Typography></Typography>
+                </Localized>
+              }
+            >
+              <div className="h-14 bg-background-50 p-4 flex items-center rounded-lg min-w-36 justify-center">
+                <Typography variant="main-title">
+                  {cmFormat.format((userHeight * 100) / 0.936)}
+                </Typography>
+              </div>
+            </Tooltip>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

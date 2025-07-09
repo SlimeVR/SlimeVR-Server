@@ -19,7 +19,7 @@ interface InputProps {
   name: string;
 }
 
-function FileInputContentBlank({
+export function FileInputContentBlank({
   isDragging,
   label,
 }: {
@@ -55,7 +55,7 @@ function FileInputContentBlank({
   );
 }
 
-function FileInputContentFile({
+export function FileInputContentFile({
   importedFileName,
   onClearPicker,
 }: {
@@ -79,7 +79,8 @@ function FileInputContentFile({
         <a
           href="#"
           className="h-12 w-12 hover:bg-accent-background-20 cursor-pointer"
-          onClick={() => {
+          onClick={(ev) => {
+            ev.stopPropagation();
             onClearPicker();
           }}
         >

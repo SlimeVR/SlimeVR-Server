@@ -75,74 +75,68 @@ function StaAlignedPoseModal({
   );
 }
 
-export function StandingRelaxedPoseModal({
+export const StandingRelaxedPoseModal = ({
   open,
 }: {
   open: [boolean, Dispatch<SetStateAction<boolean>>];
-}) {
-  return (
-    <StaAlignedPoseModal
-      open={open}
-      title={'onboarding-stay_aligned-relaxed_poses-standing-title'}
-      descriptionKeys={[
-        'onboarding-stay_aligned-relaxed_poses-standing-step-0',
-        'onboarding-stay_aligned-relaxed_poses-standing-step-2',
-      ]}
-      relaxedPose={StayAlignedRelaxedPose.STANDING}
-    >
-      <img
-        src={'/images/stay-aligned/StayAlignedStanding.webp'}
-        width={260}
-        alt="Reset position"
-      />
-    </StaAlignedPoseModal>
-  );
-}
+}) => (
+  <StaAlignedPoseModal
+    open={open}
+    title={'onboarding-stay_aligned-relaxed_poses-standing-title'}
+    descriptionKeys={[
+      'onboarding-stay_aligned-relaxed_poses-standing-step-0',
+      'onboarding-stay_aligned-relaxed_poses-standing-step-1-v2',
+    ]}
+    relaxedPose={StayAlignedRelaxedPose.STANDING}
+  >
+    <img
+      src={'/images/stay-aligned/StayAlignedStanding.webp'}
+      width={260}
+      alt="Reset position"
+    />
+  </StaAlignedPoseModal>
+);
 
-export function SittingRelaxedPoseModal({
+export const SittingRelaxedPoseModal = ({
   open,
 }: {
   open: [boolean, Dispatch<SetStateAction<boolean>>];
-}) {
-  return (
-    <StaAlignedPoseModal
-      open={open}
-      title={'onboarding-stay_aligned-relaxed_poses-sitting-title'}
-      descriptionKeys={[
-        'onboarding-stay_aligned-relaxed_poses-sitting-step-0',
-        'onboarding-stay_aligned-relaxed_poses-sitting-step-2',
-      ]}
-      relaxedPose={StayAlignedRelaxedPose.SITTING}
-    >
-      <img
-        src={'/images/stay-aligned/StayAlignedSitting.webp'}
-        width={260}
-        alt="Reset position"
-      />
-    </StaAlignedPoseModal>
-  );
-}
+}) => (
+  <StaAlignedPoseModal
+    open={open}
+    title={'onboarding-stay_aligned-relaxed_poses-sitting-title'}
+    descriptionKeys={[
+      'onboarding-stay_aligned-relaxed_poses-sitting-step-0',
+      'onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2',
+    ]}
+    relaxedPose={StayAlignedRelaxedPose.SITTING}
+  >
+    <img
+      src={'/images/stay-aligned/StayAlignedSitting.webp'}
+      width={260}
+      alt="Reset position"
+    />
+  </StaAlignedPoseModal>
+);
 
-export function FlatRelaxedPoseModal({
+export const FlatRelaxedPoseModal = ({
   open,
 }: {
   open: [boolean, Dispatch<SetStateAction<boolean>>];
-}) {
-  return (
-    <StaAlignedPoseModal
-      open={open}
-      title={'onboarding-stay_aligned-relaxed_poses-flat-title'}
-      descriptionKeys={[
-        'onboarding-stay_aligned-relaxed_poses-flat-step-0',
-        'onboarding-stay_aligned-relaxed_poses-flat-step-2',
-      ]}
-      relaxedPose={StayAlignedRelaxedPose.FLAT}
-    >
-      <img
-        src={'/images/stay-aligned/StayAlignedFloor.webp'}
-        width={560}
-        alt="Reset position"
-      />
-    </StaAlignedPoseModal>
-  );
-}
+}) => (
+  <StaAlignedPoseModal
+    open={open}
+    title={'onboarding-stay_aligned-relaxed_poses-flat-title'}
+    descriptionKeys={[
+      'onboarding-stay_aligned-relaxed_poses-flat-step-0',
+      'onboarding-stay_aligned-relaxed_poses-flat-step-1-v2',
+    ]}
+    relaxedPose={StayAlignedRelaxedPose.FLAT}
+  >
+    <img
+      src={'/images/stay-aligned/StayAlignedFloor.webp'}
+      width={560}
+      alt="Reset position"
+    />
+  </StaAlignedPoseModal>
+);

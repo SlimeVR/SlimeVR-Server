@@ -4,6 +4,7 @@ import {
   RpcMessage,
   StatusData,
   StatusMessageT,
+  StatusPublicNetworkT,
   StatusSteamVRDisconnectedT,
   StatusSystemFixedT,
   StatusSystemRequestT,
@@ -120,8 +121,14 @@ export function parseStatusToLocale(
     case StatusData.NONE:
     case StatusData.StatusTrackerReset:
     case StatusData.StatusUnassignedHMD:
-    case StatusData.StatusPublicNetwork:
       return {};
+    case StatusData.StatusPublicNetwork: {
+      const data = status.data as StatusPublicNetworkT;
+      return {
+        adapters: data.adapters.join(', '),
+        count: data.adapters.length,
+      };
+    }
     case StatusData.StatusSteamVRDisconnected: {
       const data = status.data as StatusSteamVRDisconnectedT;
       if (typeof data.bridgeSettingsName === 'string') {
