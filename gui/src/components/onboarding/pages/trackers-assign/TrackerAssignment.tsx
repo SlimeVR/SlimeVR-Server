@@ -281,7 +281,7 @@ export function TrackersAssignPage() {
         <div className="flex flex-col w-full overflow-y-auto px-4 xs:items-center">
           <div className="flex mobile:flex-col md:gap-8 mobile:gap-4 mobile:pb-4">
             <div className="flex flex-col xs:max-w-sm gap-3">
-              <Typography variant="main-title">
+              <Typography variant="main-title" color="accent">
                 {l10n.getString('onboarding-assign_trackers-title')}
               </Typography>
               <Typography color="secondary">

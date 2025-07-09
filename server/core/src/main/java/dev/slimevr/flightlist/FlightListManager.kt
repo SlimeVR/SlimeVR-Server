@@ -227,11 +227,14 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 			"id is unknown"
 		}
 		val step = steps.find { it.id == id } ?: return
+		val wasValid = step.valid;
 		step.valid = valid
 		if (beforeUpdate != null) {
 			beforeUpdate(step)
 		}
-		listeners.forEach { it.onStepUpdate(step) }
+		if (wasValid != valid) { //FIXME: this does not cover extraData changing
+			listeners.forEach { it.onStepUpdate(step) }
+		}
 	}
 
 	override fun onChange(
