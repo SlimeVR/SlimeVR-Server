@@ -84,4 +84,11 @@ object TrackerTestUtils {
 	fun vectorApproxEqual(v1: Vector3, v2: Vector3, tolerance: Float = FastMath.ZERO_TOLERANCE): Boolean = FastMath.isApproxEqual(v1.x, v2.x, tolerance) &&
 		FastMath.isApproxEqual(v1.y, v2.y, tolerance) &&
 		FastMath.isApproxEqual(v1.z, v2.z, tolerance)
+
+	fun assertVectorApproxEqual(expected: Vector3, actual: Vector3, message: String? = null) {
+		if (!vectorApproxEqual(expected, actual)) {
+			AssertionFailureBuilder.assertionFailure().message(message)
+				.expected(expected).actual(actual).buildAndThrow()
+		}
+	}
 }
