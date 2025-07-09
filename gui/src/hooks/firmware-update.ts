@@ -3,9 +3,6 @@ import { cacheWrap } from './cache';
 import semver from 'semver';
 import { hostname, locale, platform, version } from '@tauri-apps/plugin-os';
 
-type DeployDataJson = Map<string, string>;
-type DeployData = Map<number, Date>;
-
 export interface FirmwareRelease {
   name: string;
   version: string;
