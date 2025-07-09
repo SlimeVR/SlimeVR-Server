@@ -40,31 +40,34 @@ const processDeployData = (sortedMap: [string, string][]) => {
     minTime = d.getTime();
     deployData.set(parseFloat(percent), new Date(date));
   }
+
   return deployData;
 };
 
-const checkUserCanUpdate = async (deployAssetUrl: string) => {
-  if (!deployAssetUrl) return false;
-  const deployDataJson: DeployData | null = await fetch(deployAssetUrl)
-    .then((res) => res.json())
-    .catch(() => null);
-  if (!deployDataJson) return false;
+const checkUserCanUpdate = (body: string) => {
+  const matches = [...body.matchAll(/```json\r?\n([\s\S]*?)```/g)];
+  if (matches.length === 0) return true;
+  const deployDataJson = JSON.parse(matches.at(-1)?.[1] ?? 'null');
+  if (!deployDataJson) return true;
 
   const deployDataMap = new Map(
     Object.entries(deployDataJson)
   ) as unknown as DeployDataJson;
   const sortedMap = [...deployDataMap].sort(
-    ([a], [b]) => parseFloat(b) - parseFloat(a)
+    ([a], [b]) => parseFloat(a) - parseFloat(b)
   );
 
   if (sortedMap.keys().find((key) => key > 1 || key <= 0)) return false; // values outside boundaries / cancel
 
   const deployData = processDeployData(sortedMap);
+
   if (!deployData) return false;
 
-  const todayUpdateRange = deployData
-    .entries()
-    .find(([, date]) => Date.now() >= date.getTime())?.[0];
+  const todayUpdateRange = deployData.entries().find(([, date], index) => {
+    if (index === 0 && Date.now() < date.getTime()) return true;
+    return Date.now() >= date.getTime();
+  })?.[0];
+
   if (!todayUpdateRange) return false;
 
   // Make it so the hash change every version. Prevent the same user from getting the same delay
@@ -87,7 +90,6 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
   const processedReleses = [];
   for (const release of releases) {
     const fwAsset = firstAsset(release.assets, 'BOARD_SLIMEVR-firmware.bin');
-    const deployAsset = firstAsset(release.assets, 'deploy.json');
     if (!release.assets || !fwAsset /* || release.prerelease */) continue;
 
     let version = release.tag_name;
@@ -95,10 +97,7 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
       version = version.substring(1);
     }
 
-    const userCanUpdate = !deployAsset
-      ? true
-      : await checkUserCanUpdate(deployAsset?.browser_download_url);
-
+    const userCanUpdate = checkUserCanUpdate(release.body);
     processedReleses.push({
       name: release.name,
       version,
