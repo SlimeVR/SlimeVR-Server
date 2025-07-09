@@ -103,6 +103,7 @@ export const gui = [
       // stuff that should be enabled again later
       eqeqeq: 'off',
       'no-nested-ternary': 'off',
+      // FIXME: Remove after merge of https://github.com/SlimeVR/SlimeVR-Server/pull/1494
       'no-await-in-loop': 'off',
       '@typescript-eslint/no-use-before-define': 'off',
       '@typescript-eslint/no-shadow': 'off',
