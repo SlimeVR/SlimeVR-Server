@@ -438,6 +438,11 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
+	 * Gets the unadjusted (local-space) acceleration
+	 */
+	fun getRawAcceleration(): Vector3 = _acceleration
+
+	/**
 	 * Gets the raw (unadjusted) rotation of the tracker.
 	 * If this is an IMU, this will be the raw sensor rotation.
 	 */
