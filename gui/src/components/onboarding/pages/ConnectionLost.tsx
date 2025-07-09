@@ -30,21 +30,21 @@ function Error({ title, desc }: { title: string; desc: string }) {
 
   return (
     <>
-      <LoaderIcon slimeState={SlimeState.SAD} size={200}></LoaderIcon>
+      <LoaderIcon slimeState={SlimeState.SAD} size={200} />
       <div>
         <Localized id={title}>
-          <Typography variant="main-title"></Typography>
+          <Typography variant="main-title" />
         </Localized>
         <Localized id={desc}>
-          <Typography variant="standard"></Typography>
+          <Typography variant="standard" />
         </Localized>
         {isTauri && (
           <div className="flex gap-2 justify-center mt-4">
             <Localized id="websocket-error-close">
-              <Button variant="primary" onClick={closeApp}></Button>
+              <Button variant="primary" onClick={closeApp} />
             </Localized>
             <Localized id="websocket-error-logs">
-              <Button variant="secondary" onClick={openLogsFolder}></Button>
+              <Button variant="secondary" onClick={openLogsFolder} />
             </Localized>
           </div>
         )}
@@ -65,10 +65,10 @@ export function ConnectionLost() {
         <div className="flex flex-col items-center gap-4 -mt-12">
           {isLoading && (
             <>
-              <LoaderIcon slimeState={SlimeState.JUMPY} size={200}></LoaderIcon>
+              <LoaderIcon slimeState={SlimeState.JUMPY} size={200} />
               <div>
                 <Localized id="websocket-connecting">
-                  <Typography variant="main-title"></Typography>
+                  <Typography variant="main-title" />
                 </Localized>
               </div>
             </>
@@ -77,13 +77,10 @@ export function ConnectionLost() {
             <Error
               title="websocket-connection_lost"
               desc="websocket-connection_lost-desc"
-            ></Error>
+            />
           )}
           {isTimedOut && (
-            <Error
-              title="websocket-timedout"
-              desc="websocket-timedout-desc"
-            ></Error>
+            <Error title="websocket-timedout" desc="websocket-timedout-desc" />
           )}
         </div>
       </div>

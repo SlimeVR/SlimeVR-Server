@@ -1,7 +1,7 @@
 import { BoardType, DeviceDataT } from 'solarxr-protocol';
-import { cacheWrap } from './cache';
 import semver from 'semver';
 import { hostname, locale, platform, version } from '@tauri-apps/plugin-os';
+import { cacheWrap } from './cache';
 
 type DeployDataJson = Map<string, string>;
 type DeployData = Map<number, Date>;

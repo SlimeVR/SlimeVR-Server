@@ -42,7 +42,7 @@ export function SettingsResetModal({
         <div className="flex flex-col flex-grow items-center gap-3">
           <Localized
             id="settings-utils-advanced-reset_warning"
-            elems={{ b: <b></b> }}
+            elems={{ b: <b /> }}
             vars={{ type: variant }}
           >
             <WarningBox>

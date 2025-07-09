@@ -42,6 +42,7 @@ export function Range({
           />
           <datalist id={`${name}-datalist`} className="">
             {values.map(({ value }, i) => (
+              // eslint-disable-next-line react/no-array-index-key
               <option key={i}>{value}</option>
             ))}
           </datalist>
@@ -54,6 +55,7 @@ export function Range({
                 );
                 return (
                   <span
+                    // eslint-disable-next-line react/no-array-index-key
                     key={i}
                     className={classNames(
                       'flex-1',

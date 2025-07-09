@@ -38,7 +38,7 @@ export function HandsWarningModal({
         <div className="flex w-full flex-col flex-grow items-center gap-3">
           <Localized
             id="settings-general-steamvr-trackers-hands-warning"
-            elems={{ b: <b></b> }}
+            elems={{ b: <b /> }}
           >
             <WarningBox>
               <b>Warning:</b> Please don't use hands if you have controllers!

@@ -8,16 +8,16 @@ import {
   TrackerStatus as TrackerStatusEnum,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
-import { useTracker } from '@/hooks/tracker';
+import { uniqueNumberFromTracker, useTracker } from '@/hooks/tracker';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Typography } from '@/components/commons/Typography';
 import { formatVector3 } from '@/utils/formatting';
-import { TrackerBattery } from './TrackerBattery';
-import { TrackerStatus } from './TrackerStatus';
-import { TrackerWifi } from './TrackerWifi';
 import { trackerStatusRelated, useStatusContext } from '@/hooks/status-system';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
+import { TrackerBattery } from './TrackerBattery';
+import { TrackerStatus } from './TrackerStatus';
+import { TrackerWifi } from './TrackerWifi';
 
 enum DisplayColumn {
   NAME,
@@ -33,7 +33,7 @@ enum DisplayColumn {
   URL,
 }
 
-const displayColumns: { [k: string]: boolean } = {
+const displayColumns: Record<string, boolean> = {
   [DisplayColumn.NAME]: true,
   [DisplayColumn.TYPE]: true,
   [DisplayColumn.BATTERY]: true,
@@ -65,13 +65,13 @@ export function TrackerNameCell({ tracker }: { tracker: TrackerDataT }) {
   return (
     <div className="flex flex-row gap-2">
       <div className="flex flex-col justify-center items-center fill-background-10">
-        <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
+        <BodyPartIcon bodyPart={tracker.info?.bodyPart} />
       </div>
       <div className="flex flex-col flex-grow">
         <Typography bold whitespace="whitespace-nowrap">
           {name}
         </Typography>
-        <TrackerStatus status={tracker.status}></TrackerStatus>
+        <TrackerStatus status={tracker.status} />
       </div>
     </div>
   );
@@ -204,8 +204,9 @@ export function TrackersTable({
   const displayColumnsKeys = Object.keys(displayColumns).filter(
     (k) => displayColumns[k]
   );
-  const firstColumnId = +displayColumnsKeys[0];
-  const lastColumnId = +displayColumnsKeys[displayColumnsKeys.length - 1];
+  const firstColumnId: DisplayColumn = +displayColumnsKeys[0];
+  const lastColumnId: DisplayColumn =
+    +displayColumnsKeys[displayColumnsKeys.length - 1];
 
   function column({
     id,
@@ -222,7 +223,7 @@ export function TrackersTable({
     if (firstColumnId === id) rounded = 'left';
     else if (lastColumnId === id) rounded = 'right';
 
-    if (!displayColumns[id]) return <></>;
+    if (!displayColumns[id]) return null;
 
     return (
       <div
@@ -233,10 +234,10 @@ export function TrackersTable({
         <div className={`flex px-3 whitespace-nowrap ${labelClassName}`}>
           {label}
         </div>
-        {filteredSortedTrackers.map((data, index) => (
+        {filteredSortedTrackers.map((data) => (
           <RowContainer
             rounded={rounded}
-            key={index}
+            key={uniqueNumberFromTracker(data.tracker)}
             tracker={data.tracker}
             onClick={() => clickedTracker(data.tracker)}
             hover={trackerEqual(data.tracker.trackerId)}
@@ -246,7 +247,7 @@ export function TrackersTable({
               trackerStatusRelated(data.tracker, status)
             )}
           >
-            {row(data) || <></>}
+            {row(data) || null}
           </RowContainer>
         ))}
       </div>
@@ -258,9 +259,7 @@ export function TrackersTable({
       {column({
         id: DisplayColumn.NAME,
         label: l10n.getString('tracker-table-column-name'),
-        row: ({ tracker }) => (
-          <TrackerNameCell tracker={tracker}></TrackerNameCell>
-        ),
+        row: ({ tracker }) => <TrackerNameCell tracker={tracker} />,
       })}
 
       {column({
@@ -299,7 +298,7 @@ export function TrackersTable({
               ping={device?.hardwareStatus?.ping}
               disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               textColor={fontColor}
-            ></TrackerWifi>
+            />
           ),
       })}
 
@@ -308,7 +307,7 @@ export function TrackersTable({
         label: l10n.getString('tracker-table-column-tps'),
         row: ({ tracker }) => (
           <Typography color={fontColor}>
-            {tracker?.tps != null ? <>{tracker.tps}</> : <></>}
+            {tracker?.tps != null ? <>{tracker.tps}</> : null}
           </Typography>
         ),
       })}
@@ -337,7 +336,7 @@ export function TrackersTable({
           tracker?.temp &&
           tracker?.temp?.temp != 0 && (
             <Typography color={fontColor} whitespace="whitespace-nowrap">
-              {`${tracker.temp.temp.toFixed(2)}`}
+              {tracker.temp.temp.toFixed(2)}
             </Typography>
           ),
       })}

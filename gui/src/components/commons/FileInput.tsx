@@ -19,13 +19,13 @@ interface InputProps {
   name: string;
 }
 
-export const FileInputContentBlank = ({
+export function FileInputContentBlank({
   isDragging,
   label,
 }: {
   isDragging: boolean;
   label: string;
-}) => {
+}) {
   return (
     <div
       className={classNames(
@@ -41,7 +41,7 @@ export const FileInputContentBlank = ({
           <Localized
             id={label}
             elems={{
-              u: <span className="underline text-background-20"></span>,
+              u: <span className="underline text-background-20" />,
             }}
           >
             <Typography>
@@ -53,15 +53,15 @@ export const FileInputContentBlank = ({
       </span>
     </div>
   );
-};
+}
 
-export const FileInputContentFile = ({
+export function FileInputContentFile({
   importedFileName,
   onClearPicker,
 }: {
   importedFileName: string;
   onClearPicker: () => any;
-}) => {
+}) {
   return (
     <div
       className={classNames(
@@ -75,7 +75,7 @@ export const FileInputContentFile = ({
           <FileIcon />
           <span>{importedFileName}</span>
         </div>
-        <span className="flex-grow"></span>
+        <span className="flex-grow" />
         <a
           href="#"
           className="h-12 w-12 hover:bg-accent-background-20 cursor-pointer"
@@ -92,7 +92,7 @@ export const FileInputContentFile = ({
       </div>
     </div>
   );
-};
+}
 
 export const FileInputInside = forwardRef<
   HTMLInputElement,
@@ -107,83 +107,85 @@ export const FileInputInside = forwardRef<
     name: string;
     importedFileName: string | null;
   }
->(function AppInput(
-  {
-    label = 'tips-file_select',
-    name,
-    onChange,
-    accept,
-    capture,
-    multiple = false,
-    importedFileName,
-  },
-  ref
-) {
-  const innerRef = useRef<HTMLInputElement>(null);
+>(
+  (
+    {
+      label = 'tips-file_select',
+      name,
+      onChange,
+      accept,
+      capture,
+      multiple = false,
+      importedFileName,
+    },
+    ref
+  ) => {
+    const innerRef = useRef<HTMLInputElement>(null);
 
-  useImperativeHandle(ref, () => innerRef.current!);
+    useImperativeHandle(ref, () => innerRef.current!);
 
-  const acceptList = useMemo(() => accept.split(/, ?/), [accept]);
-  const [isDragging, setDragging] = useState(false);
+    const acceptList = useMemo(() => accept.split(/, ?/), [accept]);
+    const [isDragging, setDragging] = useState(false);
 
-  const isFileImported = importedFileName !== null && !isDragging;
+    const isFileImported = importedFileName !== null && !isDragging;
 
-  const onClearPicker = () => {
-    onChange([]);
-    innerRef.current!.value = '';
-  };
+    const onClearPicker = () => {
+      onChange([]);
+      innerRef.current!.value = '';
+    };
 
-  return (
-    <label
-      onDragOver={(ev) => ev.preventDefault()}
-      onDrop={(ev) => {
-        ev.preventDefault();
-        setDragging(false);
+    return (
+      <label
+        onDragOver={(ev) => ev.preventDefault()}
+        onDrop={(ev) => {
+          ev.preventDefault();
+          setDragging(false);
 
-        if (
-          ev.dataTransfer.files.length &&
-          // If MIME type is any of the accept list,
-          // or if file extension is anything on the acceptList
-          (acceptList.includes(ev.dataTransfer.files[0].type) ||
-            acceptList.some((ext) =>
-              ev.dataTransfer.files[0].name.endsWith(ext)
-            ))
-        ) {
-          onChange(ev.dataTransfer.files);
-        }
-      }}
-      onDragEnter={(ev) => {
-        ev.preventDefault();
-        setDragging(true);
-      }}
-      onDragLeave={(ev) => {
-        ev.preventDefault();
-        setDragging(false);
-      }}
-    >
-      {isFileImported
-        ? FileInputContentFile({ importedFileName, onClearPicker })
-        : FileInputContentBlank({ isDragging, label })}
-
-      <input
-        type="file"
-        className="hidden"
-        onChange={(ev) => {
-          if (ev.target.files?.length) {
-            onChange(ev.target.files);
+          if (
+            ev.dataTransfer.files.length &&
+            // If MIME type is any of the accept list,
+            // or if file extension is anything on the acceptList
+            (acceptList.includes(ev.dataTransfer.files[0].type) ||
+              acceptList.some((ext) =>
+                ev.dataTransfer.files[0].name.endsWith(ext)
+              ))
+          ) {
+            onChange(ev.dataTransfer.files);
           }
         }}
-        name={name}
-        ref={innerRef}
-        accept={accept}
-        multiple={multiple}
-        capture={capture}
-      ></input>
-    </label>
-  );
-});
+        onDragEnter={(ev) => {
+          ev.preventDefault();
+          setDragging(true);
+        }}
+        onDragLeave={(ev) => {
+          ev.preventDefault();
+          setDragging(false);
+        }}
+      >
+        {isFileImported
+          ? FileInputContentFile({ importedFileName, onClearPicker })
+          : FileInputContentBlank({ isDragging, label })}
 
-export const FileInput = ({
+        <input
+          type="file"
+          className="hidden"
+          onChange={(ev) => {
+            if (ev.target.files?.length) {
+              onChange(ev.target.files);
+            }
+          }}
+          name={name}
+          ref={innerRef}
+          accept={accept}
+          multiple={multiple}
+          capture={capture}
+        />
+      </label>
+    );
+  }
+);
+
+export function FileInput({
   control,
   name,
   label,
@@ -201,11 +203,11 @@ export const FileInput = ({
   capture?: boolean | 'user' | 'environment';
   /**
    * Use a translation key!
-   **/
+   * */
   label?: string;
   importedFileName: string | null;
 } & InputProps &
-  Partial<HTMLInputElement>) => {
+  Partial<HTMLInputElement>) {
   return (
     <Controller
       control={control}
@@ -223,8 +225,8 @@ export const FileInput = ({
           capture={capture}
           multiple={multiple}
           importedFileName={importedFileName}
-        ></FileInputInside>
+        />
       )}
     />
   );
-};
+}

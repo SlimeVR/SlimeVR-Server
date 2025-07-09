@@ -50,7 +50,7 @@ export function TrackerBattery({
         </div>
       )) || (
         <div className="flex flex-col justify-center w-10">
-          <div className="w-5 h-1 bg-background-30 rounded-full"></div>
+          <div className="w-5 h-1 bg-background-30 rounded-full" />
         </div>
       )}
     </div>

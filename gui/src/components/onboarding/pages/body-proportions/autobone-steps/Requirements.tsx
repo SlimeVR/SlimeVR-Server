@@ -14,44 +14,39 @@ export function RequirementsStep({
   const { l10n } = useLocalization();
 
   return (
-    <>
-      <div className="flex flex-col flex-grow">
-        <div className="flex flex-grow flex-col gap-4">
-          <Typography variant="main-title" bold>
-            {l10n.getString(
-              'onboarding-automatic_proportions-requirements-title'
-            )}
-          </Typography>
-          <ul className="list-disc mobile:px-4">
-            <>
-              {l10n
-                .getString(
-                  'onboarding-automatic_proportions-requirements-descriptionv2'
-                )
-                .split('\n')
-                .map((line, i) => (
-                  <li key={i}>
-                    <Typography color="secondary">{line}</Typography>
-                  </li>
-                ))}
-            </>
-          </ul>
-        </div>
-
-        <div className="flex gap-3 mobile:justify-between">
-          <Button
-            variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
-            onClick={prevStep}
-          >
-            {l10n.getString('onboarding-automatic_proportions-prev_step')}
-          </Button>
-          <Button variant="primary" onClick={nextStep}>
-            {l10n.getString(
-              'onboarding-automatic_proportions-requirements-next'
-            )}
-          </Button>
-        </div>
+    <div className="flex flex-col flex-grow">
+      <div className="flex flex-grow flex-col gap-4">
+        <Typography variant="main-title" bold>
+          {l10n.getString(
+            'onboarding-automatic_proportions-requirements-title'
+          )}
+        </Typography>
+        <ul className="list-disc mobile:px-4">
+          {l10n
+            .getString(
+              'onboarding-automatic_proportions-requirements-descriptionv2'
+            )
+            .split('\n')
+            .map((line, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <li key={i}>
+                <Typography color="secondary">{line}</Typography>
+              </li>
+            ))}
+        </ul>
       </div>
-    </>
+
+      <div className="flex gap-3 mobile:justify-between">
+        <Button
+          variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
+          onClick={prevStep}
+        >
+          {l10n.getString('onboarding-automatic_proportions-prev_step')}
+        </Button>
+        <Button variant="primary" onClick={nextStep}>
+          {l10n.getString('onboarding-automatic_proportions-requirements-next')}
+        </Button>
+      </div>
+    </div>
   );
 }

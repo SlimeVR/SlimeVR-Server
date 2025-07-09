@@ -61,7 +61,7 @@ export function MountingResetStep({
             size="small"
             type={ResetType.Mounting}
             onReseted={nextStep}
-          ></ResetButton>
+          />
         </div>
       </div>
       {!isMobile && (

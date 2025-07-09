@@ -28,155 +28,103 @@ export const mapPart: Record<
     currentLocales: string[];
   }) => JSX.Element
 > = {
-  [BodyPart.UPPER_CHEST]: ({ width }) => (
-    <UpperChestIcon width={width}></UpperChestIcon>
-  ),
-  [BodyPart.CHEST]: ({ width }) => <ChestIcon width={width}></ChestIcon>,
-  [BodyPart.HEAD]: ({ width }) => <HeadsetIcon width={width}></HeadsetIcon>,
-  [BodyPart.HIP]: ({ width }) => <HipIcon width={width}></HipIcon>,
-  [BodyPart.LEFT_HIP]: ({ width }) => <HipIcon width={width}></HipIcon>, // Unused
-  [BodyPart.RIGHT_HIP]: ({ width }) => <HipIcon width={width}></HipIcon>, // Unused
+  [BodyPart.UPPER_CHEST]: ({ width }) => <UpperChestIcon width={width} />,
+  [BodyPart.CHEST]: ({ width }) => <ChestIcon width={width} />,
+  [BodyPart.HEAD]: ({ width }) => <HeadsetIcon width={width} />,
+  [BodyPart.HIP]: ({ width }) => <HipIcon width={width} />,
+  [BodyPart.LEFT_HIP]: ({ width }) => <HipIcon width={width} />, // Unused
+  [BodyPart.RIGHT_HIP]: ({ width }) => <HipIcon width={width} />, // Unused
   [BodyPart.LEFT_FOOT]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
-      <PawIcon></PawIcon>
+      <PawIcon />
     ) : (
-      <FootIcon width={width}></FootIcon>
+      <FootIcon width={width} />
     ),
-  [BodyPart.LEFT_HAND]: ({ width }) => (
-    <ControllerIcon width={width}></ControllerIcon>
-  ),
-  [BodyPart.LEFT_LOWER_ARM]: ({ width }) => (
-    <LowerArmIcon width={width}></LowerArmIcon>
-  ),
-  [BodyPart.LEFT_LOWER_LEG]: ({ width }) => (
-    <AnkleIcon width={width}></AnkleIcon>
-  ),
-  [BodyPart.LEFT_SHOULDER]: ({ width }) => (
-    <ShoulderIcon width={width}></ShoulderIcon>
-  ),
-  [BodyPart.LEFT_UPPER_ARM]: ({ width }) => (
-    <UpperArmIcon width={width}></UpperArmIcon>
-  ),
-  [BodyPart.LEFT_UPPER_LEG]: ({ width }) => (
-    <UpperLegIcon width={width}></UpperLegIcon>
-  ),
-  [BodyPart.NECK]: ({ width }) => <NeckIcon width={width}></NeckIcon>,
-  [BodyPart.NONE]: ({ width }) => <SlimeVRIcon width={width}></SlimeVRIcon>,
+  [BodyPart.LEFT_HAND]: ({ width }) => <ControllerIcon width={width} />,
+  [BodyPart.LEFT_LOWER_ARM]: ({ width }) => <LowerArmIcon width={width} />,
+  [BodyPart.LEFT_LOWER_LEG]: ({ width }) => <AnkleIcon width={width} />,
+  [BodyPart.LEFT_SHOULDER]: ({ width }) => <ShoulderIcon width={width} />,
+  [BodyPart.LEFT_UPPER_ARM]: ({ width }) => <UpperArmIcon width={width} />,
+  [BodyPart.LEFT_UPPER_LEG]: ({ width }) => <UpperLegIcon width={width} />,
+  [BodyPart.NECK]: ({ width }) => <NeckIcon width={width} />,
+  [BodyPart.NONE]: ({ width }) => <SlimeVRIcon width={width} />,
   [BodyPart.RIGHT_FOOT]: ({ width, currentLocales }) =>
     currentLocales.includes('en-x-owo') ? (
-      <PawIcon></PawIcon>
+      <PawIcon />
     ) : (
-      <FootIcon width={width} flipped></FootIcon>
+      <FootIcon width={width} flipped />
     ),
   [BodyPart.RIGHT_HAND]: ({ width }) => (
-    <ControllerIcon width={width} flipped></ControllerIcon>
+    <ControllerIcon width={width} flipped />
   ),
   [BodyPart.RIGHT_LOWER_ARM]: ({ width }) => (
-    <LowerArmIcon width={width} flipped></LowerArmIcon>
+    <LowerArmIcon width={width} flipped />
   ),
   [BodyPart.RIGHT_LOWER_LEG]: ({ width }) => (
-    <AnkleIcon width={width} flipped></AnkleIcon>
+    <AnkleIcon width={width} flipped />
   ),
-  [BodyPart.RIGHT_SHOULDER]: ({ width }) => (
-    <ShoulderIcon width={width}></ShoulderIcon>
-  ),
+  [BodyPart.RIGHT_SHOULDER]: ({ width }) => <ShoulderIcon width={width} />,
   [BodyPart.RIGHT_UPPER_ARM]: ({ width }) => (
-    <UpperArmIcon width={width} flipped></UpperArmIcon>
+    <UpperArmIcon width={width} flipped />
   ),
   [BodyPart.RIGHT_UPPER_LEG]: ({ width }) => (
-    <UpperLegIcon width={width} flipped></UpperLegIcon>
+    <UpperLegIcon width={width} flipped />
   ),
-  [BodyPart.WAIST]: ({ width }) => <WaistIcon width={width}></WaistIcon>,
+  [BodyPart.WAIST]: ({ width }) => <WaistIcon width={width} />,
   [BodyPart.LEFT_THUMB_METACARPAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.LEFT_THUMB_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.LEFT_THUMB_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.LEFT_INDEX_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.LEFT_THUMB_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_THUMB_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_INDEX_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_INDEX_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.LEFT_INDEX_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.LEFT_MIDDLE_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.LEFT_INDEX_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_MIDDLE_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_MIDDLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.LEFT_MIDDLE_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.LEFT_RING_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.LEFT_MIDDLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_RING_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_RING_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.LEFT_RING_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.LEFT_LITTLE_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.LEFT_RING_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.LEFT_LITTLE_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.LEFT_LITTLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.LEFT_LITTLE_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.LEFT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_THUMB_METACARPAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.RIGHT_THUMB_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.RIGHT_THUMB_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.RIGHT_INDEX_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.RIGHT_THUMB_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.RIGHT_THUMB_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.RIGHT_INDEX_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_INDEX_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.RIGHT_INDEX_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.RIGHT_INDEX_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_MIDDLE_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
   [BodyPart.RIGHT_MIDDLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.RIGHT_MIDDLE_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
-  [BodyPart.RIGHT_RING_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.RIGHT_MIDDLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
+  [BodyPart.RIGHT_RING_PROXIMAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_RING_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.RIGHT_RING_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.RIGHT_RING_DISTAL]: ({ width }) => <FingersIcon width={width} />,
   [BodyPart.RIGHT_LITTLE_PROXIMAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
   [BodyPart.RIGHT_LITTLE_INTERMEDIATE]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
+    <FingersIcon width={width} />
   ),
-  [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => (
-    <FingersIcon width={width}></FingersIcon>
-  ),
+  [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => <FingersIcon width={width} />,
 };
 
 export function BodyPartIcon({
