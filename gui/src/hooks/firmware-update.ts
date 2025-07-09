@@ -68,7 +68,7 @@ const checkUserCanUpdate = async (deployAssetUrl: string) => {
   if (!todayUpdateRange) return false;
 
   // Make it so the hash change every version. Prevent the same user from getting the same delay
-  return hash(`${uniqueUserKey}-${version}`) < todayUpdateRange;
+  return hash(`${uniqueUserKey}-${version}`) >= todayUpdateRange;
 };
 
 export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | null> {
