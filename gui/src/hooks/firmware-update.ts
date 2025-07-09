@@ -31,39 +31,29 @@ const uniqueUserKey = `${await hostname()}-${await locale()}-${platform()}-${ver
 const firstAsset = (assets: any[], name: string) =>
   assets.find((asset: any) => asset.name === name && asset.browser_download_url);
 
-const processDeployData = (sortedMap: [string, string][]) => {
-  const deployData: DeployData = new Map();
-  let minTime = 0;
-  for (const [percent, date] of sortedMap) {
-    const d = new Date(date);
-    if (d.getTime() <= minTime) return null; // Dates in the wrong order / cancel
-    minTime = d.getTime();
-    deployData.set(parseFloat(percent), new Date(date));
-  }
-
-  return deployData;
-};
-
 const checkUserCanUpdate = (body: string) => {
   const matches = [...body.matchAll(/```json\r?\n([\s\S]*?)```/g)];
   if (matches.length === 0) return true;
   const deployDataJson = JSON.parse(matches.at(-1)?.[1] ?? 'null');
   if (!deployDataJson) return true;
 
-  const deployDataMap = new Map(
-    Object.entries(deployDataJson)
-  ) as unknown as DeployDataJson;
-  const sortedMap = [...deployDataMap].sort(
-    ([a], [b]) => parseFloat(a) - parseFloat(b)
-  );
+  const deployData = (
+    Object.entries(deployDataJson).map(([key, val]) => {
+      return [parseFloat(key), new Date(val as string)];
+    }) as [number, Date][]
+  ).sort(([a], [b]) => a - b);
 
-  if (sortedMap.keys().find((key) => key > 1 || key <= 0)) return false; // values outside boundaries / cancel
+  if (deployData.find(([key]) => key > 1 || key <= 0)) return false; // values outside boundaries / cancel
 
-  const deployData = processDeployData(sortedMap);
+  if (
+    deployData.find(
+      ([, date], index) =>
+        index > 0 && date.getTime() < deployData[index - 1][1].getTime()
+    )
+  )
+    return false; // Dates in the wrong order / cancel
 
-  if (!deployData) return false;
-
-  const todayUpdateRange = deployData.entries().find(([, date], index) => {
+  const todayUpdateRange = deployData.find(([, date], index) => {
     if (index === 0 && Date.now() < date.getTime()) return true;
     return Date.now() >= date.getTime();
   })?.[0];
