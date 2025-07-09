@@ -3,6 +3,7 @@ package dev.slimevr.poseframeformat
 import dev.slimevr.VRServer
 import dev.slimevr.poseframeformat.trackerdata.TrackerFrames
 import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.util.TickReducer
 import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
@@ -18,77 +19,62 @@ class PoseRecorder(private val server: VRServer) {
 	private var poseFrame: PoseFrames? = null
 	private var numFrames = -1
 	private var frameCursor = 0
-	private var frameRecordingInterval = 60L
-	private var nextFrameTimeMs = -1L
-	private var currentRecording: CompletableFuture<PoseFrames>? = null
-	private var currentFrameCallback: Consumer<RecordingProgress>? = null
+
+	// Default 50 TPS
+	private val ticker = TickReducer({ onTick() }, 0.02f)
+
+	private var recordingFuture: CompletableFuture<PoseFrames>? = null
+	private var frameCallback: Consumer<RecordingProgress>? = null
 	var trackers = FastList<Pair<Tracker, TrackerFrames>>()
 
 	init {
-		server.addOnTick { onTick() }
+		server.addOnTick {
+			if (numFrames > 0) {
+				ticker.tick(server.fpsTimer.timePerFrame)
+			}
+		}
 	}
 
+	// Make sure it's synchronized since this is the server thread interacting with
+	// an unknown outside thread controlling this class
+	@Synchronized
 	@VRServerThread
 	fun onTick() {
-		if (numFrames <= 0) {
-			return
-		}
-		val poseFrame = poseFrame
-		val trackers: List<Pair<Tracker, TrackerFrames>> = trackers
-		if (poseFrame == null) {
-			return
-		}
 		if (frameCursor >= numFrames) {
 			// If done and hasn't yet, send finished recording
 			stopFrameRecording()
 			return
 		}
-		val curTime = System.currentTimeMillis()
-		if (curTime < nextFrameTimeMs) {
-			return
-		}
-		nextFrameTimeMs += frameRecordingInterval
 
-		// To prevent duplicate frames, make sure the frame time is always in
-		// the future
-		if (nextFrameTimeMs <= curTime) {
-			nextFrameTimeMs = curTime + frameRecordingInterval
+		// A stopped recording will be accounted for by an empty "trackers" list
+		val cursor = frameCursor++
+		for (tracker in trackers) {
+			// Add a frame for each tracker
+			tracker.right.addFrameFromTracker(cursor, tracker.left)
 		}
 
-		// Make sure it's synchronized since this is the server thread
-		// interacting with
-		// an unknown outside thread controlling this class
-		synchronized(this) {
-			// A stopped recording will be accounted for by an empty "trackers"
-			// list
-			val cursor = frameCursor++
-			for (tracker in trackers) {
-				// Add a frame for each tracker
-				tracker.right.addFrameFromTracker(cursor, tracker.left)
-			}
-
-			currentFrameCallback?.accept(RecordingProgress(frameCursor, numFrames))
-
-			// If done, send finished recording
-			if (frameCursor >= numFrames) {
-				stopFrameRecording()
-			}
+		// Send the number of finished frames
+		frameCallback?.accept(RecordingProgress(frameCursor, numFrames))
+		// If done, send finished recording
+		if (frameCursor >= numFrames) {
+			stopFrameRecording()
 		}
 	}
 
 	@Synchronized
 	fun startFrameRecording(
 		numFrames: Int,
-		intervalMs: Long,
+		interval: Float,
 		trackers: List<Tracker?> = server.allTrackers,
 		frameCallback: Consumer<RecordingProgress>? = null,
 	): Future<PoseFrames> {
 		require(numFrames >= 1) { "numFrames must at least have a value of 1." }
-		require(intervalMs >= 1) { "intervalMs must at least have a value of 1." }
+		require(interval > 0) { "interval must be greater than 0." }
 		require(trackers.isNotEmpty()) { "trackers must have at least one entry." }
+
 		cancelFrameRecording()
 		val poseFrame = PoseFrames(trackers.size)
-		poseFrame.frameInterval = intervalMs / 1000f
+		poseFrame.frameInterval = interval
 
 		// Update tracker list
 		this.trackers.ensureCapacity(trackers.size)
@@ -107,26 +93,29 @@ class PoseRecorder(private val server: VRServer) {
 		}
 		require(this.trackers.isNotEmpty()) { "trackers must have at least one valid tracker." }
 
+		// Ticking setup
+		ticker.interval = interval
+		ticker.reset()
+
+		val recordingFuture = CompletableFuture<PoseFrames>()
+		this.recordingFuture = recordingFuture
+		this.frameCallback = frameCallback
+
+		// Recording setup
 		this.poseFrame = poseFrame
 		frameCursor = 0
 		this.numFrames = numFrames
-		frameRecordingInterval = intervalMs
-		nextFrameTimeMs = -1L
 
-		LogManager
-			.info(
-				"[PoseRecorder] Recording $numFrames samples at a $intervalMs ms frame interval",
-			)
+		LogManager.info(
+			"[PoseRecorder] Recording $numFrames samples at a $interval s frame interval",
+		)
 
-		currentFrameCallback = frameCallback
-		val internalCurrentRecording = CompletableFuture<PoseFrames>()
-		currentRecording = internalCurrentRecording
-		return internalCurrentRecording
+		return recordingFuture
 	}
 
 	@Synchronized
 	private fun internalStopFrameRecording(cancel: Boolean) {
-		val currentRecording = currentRecording
+		val currentRecording = recordingFuture
 		if (currentRecording != null && !currentRecording.isDone) {
 			val currentFrames = poseFrame
 			if (cancel || currentFrames == null) {
@@ -154,25 +143,20 @@ class PoseRecorder(private val server: VRServer) {
 		internalStopFrameRecording(true)
 	}
 
-	@get:Synchronized
 	val isReadyToRecord: Boolean
 		get() = server.trackersCount > 0
 
-	@get:Synchronized
 	val isRecording: Boolean
 		get() = numFrames > frameCursor
 
-	@Synchronized
-	fun hasRecording(): Boolean = currentRecording != null
+	fun hasRecording(): Boolean = recordingFuture != null
 
-	@get:Synchronized
 	val framesAsync: Future<PoseFrames>?
-		get() = currentRecording
+		get() = recordingFuture
 
 	@get:Throws(ExecutionException::class, InterruptedException::class)
-	@get:Synchronized
 	val frames: PoseFrames?
 		get() {
-			return currentRecording?.get()
+			return recordingFuture?.get()
 		}
 }
