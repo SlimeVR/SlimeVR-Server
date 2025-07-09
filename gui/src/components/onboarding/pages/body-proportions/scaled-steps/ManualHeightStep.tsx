@@ -2,8 +2,7 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
 import { useLocalization } from '@fluent/react';
-import { useEffect, useMemo } from 'react';
-import { useLocaleConfig } from '@/i18n/config';
+import { useEffect } from 'react';
 import {
   DEFAULT_FULL_HEIGHT,
   EYE_HEIGHT_TO_HEIGHT_RATIO,
@@ -19,10 +18,15 @@ import {
 import { NumberSelector } from '@/components/commons/NumberSelector';
 import { useOnboarding } from '@/hooks/onboarding';
 import { MIN_HEIGHT } from '@/hooks/manual-proportions';
+import { HeightDisplay } from '@/components/commons/HeightDisplay';
+import { useUnit } from '@/hooks/config';
+import convert from 'convert';
 
 interface HeightForm {
   height: number;
 }
+
+const INCH_IN_METER = convert(1, 'inch').to('m');
 
 export function ManualHeightStep({
   nextStep,
@@ -41,8 +45,8 @@ export function ManualHeightStep({
       defaultValues: { height: DEFAULT_FULL_HEIGHT },
     });
   const { sendRPCPacket } = useWebsocketAPI();
-  const { currentLocales } = useLocaleConfig();
   const height = watch('height');
+  const currentUnit = useUnit();
 
   // Load the last configured height
   useEffect(() => {
@@ -52,16 +56,6 @@ export function ManualHeightStep({
         DEFAULT_FULL_HEIGHT,
     });
   }, [currentHeight]);
-
-  const mFormat = useMemo(
-    () =>
-      new Intl.NumberFormat(currentLocales, {
-        style: 'unit',
-        unit: 'meter',
-        maximumFractionDigits: 2,
-      }),
-    [currentLocales]
-  );
 
   const submitFullHeight = (values: HeightForm) => {
     const newHeight = values.height * EYE_HEIGHT_TO_HEIGHT_RATIO;
@@ -104,17 +98,36 @@ export function ManualHeightStep({
                 'onboarding-scaled_proportions-manual_height-height-v2'
               )}
               valueLabelFormat={(value) =>
-                isNaN(value)
-                  ? l10n.getString(
-                      'onboarding-scaled_proportions-manual_height-unknown'
-                    )
-                  : mFormat.format(value)
+                isNaN(value) ? (
+                  l10n.getString(
+                    'onboarding-scaled_proportions-manual_height-unknown'
+                  )
+                ) : (
+                  <HeightDisplay
+                    height={value}
+                    unitDisplay="narrow"
+                    roundInches
+                  />
+                )
               }
               min={MIN_HEIGHT}
               max={4}
-              step={0.01}
-              showButtonWithNumber
-              doubleStep={0.1}
+              step={
+                currentUnit === 'm'
+                  ? 0.01
+                  : (v, s) =>
+                      Math.round((v + INCH_IN_METER * s) / INCH_IN_METER) *
+                      INCH_IN_METER
+              }
+              showButtonWithNumber={currentUnit === 'm' ? 10 : 12}
+              doubleStep={
+                currentUnit === 'm'
+                  ? 0.1
+                  : (v, s) =>
+                      Math.round(
+                        (v + convert(1, 'ft').to('m') * s) / INCH_IN_METER
+                      ) * INCH_IN_METER
+              }
             />
           </div>
           <div className="flex flex-col self-center items-center justify-center">
@@ -124,7 +137,7 @@ export function ManualHeightStep({
               )}
             </Typography>
             <Typography>
-              {mFormat.format(height * EYE_HEIGHT_TO_HEIGHT_RATIO)}
+              <HeightDisplay height={height * EYE_HEIGHT_TO_HEIGHT_RATIO} />
             </Typography>
           </div>
         </div>

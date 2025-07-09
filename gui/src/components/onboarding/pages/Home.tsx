@@ -4,6 +4,7 @@ import { Button } from '@/components/commons/Button';
 import { SlimeVRIcon } from '@/components/commons/icon/SimevrIcon';
 import { LangSelector } from '@/components/commons/LangSelector';
 import { Typography } from '@/components/commons/Typography';
+import { UnitSelector } from '@/components/commons/UnitSelector';
 
 export function HomePage() {
   const { l10n } = useLocalization();
@@ -23,8 +24,9 @@ export function HomePage() {
             {l10n.getString('onboarding-home-start')}
           </Button>
         </div>
-        <div className="absolute right-4 bottom-4 z-50">
+        <div className="flex flex-col gap-3 absolute right-4 bottom-4 z-50">
           <LangSelector />
+          <UnitSelector />
         </div>
         <div
           className="absolute bg-accent-background-50 w-full rounded-full"
