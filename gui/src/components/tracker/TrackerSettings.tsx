@@ -222,6 +222,14 @@ export function TrackerSettingsPage() {
                 )}
                 {!updateUnavailable && (
                   <>
+                    {needUpdate === 'blocked' && (
+                      // This happens only if no update is available and or the user is not in the current stagged
+                      <Localized id="tracker-settings-update-blocked">
+                        <Typography>
+                          Update not available. No other releases available
+                        </Typography>
+                      </Localized>
+                    )}
                     {needUpdate === 'updated' && (
                       <Localized id="tracker-settings-update-up_to_date">
                         <Typography>Up to date</Typography>

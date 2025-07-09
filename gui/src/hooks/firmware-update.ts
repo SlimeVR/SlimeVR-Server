@@ -11,8 +11,7 @@ export interface FirmwareRelease {
   version: string;
   changelog: string;
   firmwareFile: string;
-  todayUpdateRange: number;
-  userUniqueRange: number;
+  userCanUpdate: boolean;
 }
 
 // implemetation of https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function
@@ -32,6 +31,46 @@ const uniqueUserKey = `${await hostname()}-${await locale()}-${platform()}-${ver
 const firstAsset = (assets: any[], name: string) =>
   assets.find((asset: any) => asset.name === name && asset.browser_download_url);
 
+const processDeployData = (sortedMap: [string, string][]) => {
+  const deployData: DeployData = new Map();
+  let minTime = 0;
+  for (const [percent, date] of sortedMap) {
+    const d = new Date(date);
+    if (d.getTime() <= minTime) return null; // Dates in the wrong order / cancel
+    minTime = d.getTime();
+    deployData.set(parseFloat(percent), new Date(date));
+  }
+  return deployData;
+};
+
+const checkUserCanUpdate = async (deployAssetUrl: string) => {
+  if (!deployAssetUrl) return false;
+  const deployDataJson: DeployData | null = await fetch(deployAssetUrl)
+    .then((res) => res.json())
+    .catch(() => null);
+  if (!deployDataJson) return false;
+
+  const deployDataMap = new Map(
+    Object.entries(deployDataJson)
+  ) as unknown as DeployDataJson;
+  const sortedMap = [...deployDataMap].sort(
+    ([a], [b]) => parseFloat(b) - parseFloat(a)
+  );
+
+  if (sortedMap.keys().find((key) => key > 1 || key <= 0)) return false; // values outside boundaries / cancel
+
+  const deployData = processDeployData(sortedMap);
+  if (!deployData) return false;
+
+  const todayUpdateRange = deployData
+    .entries()
+    .find(([, date]) => Date.now() >= date.getTime())?.[0];
+  if (!todayUpdateRange) return false;
+
+  // Make it so the hash change every version. Prevent the same user from getting the same delay
+  return hash(`${uniqueUserKey}-${version}`) < todayUpdateRange;
+};
+
 export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | null> {
   const releases: any[] | null = JSON.parse(
     (await cacheWrap(
@@ -45,70 +84,46 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
   );
   if (!releases) return null;
 
-  const firstRelease = releases.find(
-    (release) =>
-      // release.prerelease === false && // GONE FOR NOW / We will bring it back next release
-      release.assets &&
-      firstAsset(release.assets, 'BOARD_SLIMEVR-firmware.bin') &&
-      firstAsset(release.assets, 'deploy.json')
-  );
-  if (!firstRelease) return null;
+  const processedReleses = [];
+  for (const release of releases) {
+    const fwAsset = firstAsset(release.assets, 'BOARD_SLIMEVR-firmware.bin');
+    const deployAsset = firstAsset(release.assets, 'deploy.json');
+    if (!release.assets || !fwAsset /* || release.prerelease */) continue;
 
-  const deployDataJson: DeployData | null = await fetch(
-    firstAsset(firstRelease.assets, 'deploy.json').browser_download_url
-  )
-    .then((res) => res.json())
-    .catch(() => null);
-  if (!deployDataJson) return null;
+    let version = release.tag_name;
+    if (version.charAt(0) === 'v') {
+      version = version.substring(1);
+    }
 
-  const deployDataMap = new Map(
-    Object.entries(deployDataJson)
-  ) as unknown as DeployDataJson;
-  const sortedMap = [...deployDataMap].sort(
-    ([a], [b]) => parseFloat(b) - parseFloat(a)
-  );
+    const userCanUpdate = !deployAsset
+      ? true
+      : await checkUserCanUpdate(deployAsset?.browser_download_url);
 
-  if (sortedMap.keys().find((key) => key > 1 || key <= 0)) return null; // values outside boundaries / cancel
+    processedReleses.push({
+      name: release.name,
+      version,
+      changelog: release.body,
+      firmwareFile: fwAsset,
+      userCanUpdate,
+    });
 
-  const deployData: DeployData = new Map();
-  let minTime = 0;
-  for (const [percent, date] of sortedMap) {
-    const d = new Date(date);
-    if (d.getTime() <= minTime) return null; // Dates in the wrong order / cancel
-    minTime = d.getTime();
-    deployData.set(parseFloat(percent), new Date(date));
+    if (userCanUpdate) break; // Stop early if we found one valid update. No need to download more
   }
-
-  const todayUpdateRange = deployData
-    .entries()
-    .find(([, date]) => Date.now() >= date.getTime())?.[0];
-
-  if (!todayUpdateRange) return null;
-
-  let version = firstRelease.tag_name;
-  if (version.charAt(0) === 'v') {
-    version = version.substring(1);
-  }
-  return {
-    name: firstRelease.name,
-    version,
-    changelog: firstRelease.body,
-    firmwareFile: firstAsset(firstRelease.assets, 'BOARD_SLIMEVR-firmware.bin')
-      .browser_download_url,
-    todayUpdateRange,
-    userUniqueRange: hash(`${uniqueUserKey}-${version}`), // Make it so the hash change every version. Prevent the same user from getting the same delay
-  };
+  return (
+    processedReleses.find(({ userCanUpdate }) => userCanUpdate) ?? processedReleses[0]
+  );
 }
 
 export function checkForUpdate(
   currentFirmwareRelease: FirmwareRelease,
   device: DeviceDataT
-): 'can-update' | 'low-battery' | 'updated' | 'unavailable' {
+): 'can-update' | 'low-battery' | 'updated' | 'unavailable' | 'blocked' {
+  if (!currentFirmwareRelease.userCanUpdate) return 'blocked';
+
   if (
     device.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
     !semver.valid(currentFirmwareRelease.version) ||
-    !semver.valid(device.hardwareInfo.firmwareVersion?.toString() ?? 'none') ||
-    currentFirmwareRelease.userUniqueRange > currentFirmwareRelease.todayUpdateRange
+    !semver.valid(device.hardwareInfo.firmwareVersion?.toString() ?? 'none')
   ) {
     return 'unavailable';
   }
