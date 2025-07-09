@@ -312,20 +312,13 @@ class Tracker @JvmOverloads constructor(
 	/**
 	 * Synchronized with the VRServer's 1000hz while loop
 	 */
-	fun tick() {
+	fun tick(deltaTime: Float) {
 		if (usesTimeout) {
 			if (System.currentTimeMillis() - timeAtLastUpdate > DISCONNECT_MS) {
 				status = TrackerStatus.DISCONNECTED
 			} else if (System.currentTimeMillis() - timeAtLastUpdate > TIMEOUT_MS) {
 				status = TrackerStatus.TIMED_OUT
 			}
-		}
-
-		// Get the last frame time as a delta
-		val deltaTime = if (VRServer.instanceInitialized) {
-			VRServer.instance.fpsTimer.timePerFrame
-		} else {
-			0.001f
 		}
 
 		filteringHandler.update()
