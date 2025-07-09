@@ -3,7 +3,6 @@ import { Typography } from '@/components/commons/Typography';
 import { getTrackerName } from '@/hooks/tracker';
 import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  BoardType,
   DeviceDataT,
   DeviceIdTableT,
   FirmwareUpdateMethod,
@@ -13,13 +12,12 @@ import {
   RpcMessage,
   TrackerStatus,
 } from 'solarxr-protocol';
-import semver from 'semver';
 import classNames from 'classnames';
 import { Button } from '@/components/commons/Button';
 import Markdown from 'react-markdown';
 import remark from 'remark-gfm';
 import { WarningBox } from '@/components/commons/TipBox';
-import { FirmwareRelease, useAppContext } from '@/hooks/app';
+import { useAppContext } from '@/hooks/app';
 import { DeviceCardControl } from '@/components/firmware-tool/DeviceCard';
 import { Control, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -35,34 +33,7 @@ import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { A } from '@/components/commons/A';
 import { useAtomValue } from 'jotai';
 import { devicesAtom } from '@/store/app-store';
-
-export function checkForUpdate(
-  currentFirmwareRelease: FirmwareRelease,
-  device: DeviceDataT
-): 'need-update' | 'low-battery' | 'updated' | 'unavailable' {
-  if (
-    device.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
-    !semver.valid(currentFirmwareRelease.version) ||
-    !semver.valid(device.hardwareInfo.firmwareVersion?.toString() ?? 'none')
-  ) {
-    return 'unavailable';
-  }
-
-  const canUpdate = semver.lt(
-    device.hardwareInfo.firmwareVersion?.toString() ?? 'none',
-    currentFirmwareRelease.version
-  );
-
-  if (
-    canUpdate &&
-    device.hardwareStatus?.batteryPctEstimate != null &&
-    device.hardwareStatus.batteryPctEstimate < 50
-  ) {
-    return 'low-battery';
-  }
-
-  return canUpdate ? 'need-update' : 'updated';
-}
+import { checkForUpdate } from '@/hooks/firmware-update';
 
 interface FirmwareUpdateForm {
   selectedDevices: { [key: string]: boolean };
@@ -144,7 +115,7 @@ export function FirmwareUpdate() {
         device.trackers.length > 0 &&
         currentFirmwareRelease &&
         device.hardwareInfo &&
-        checkForUpdate(currentFirmwareRelease, device) === 'need-update' &&
+        checkForUpdate(currentFirmwareRelease, device) === 'can-update' &&
         device.trackers.every(({ status }) => status === TrackerStatus.OK)
     ) || [];
 

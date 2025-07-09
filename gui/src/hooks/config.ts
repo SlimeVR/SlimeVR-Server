@@ -50,6 +50,7 @@ export interface Config {
   decorations: boolean;
   showNavbarOnboarding: boolean;
   vrcMutedWarnings: string[];
+  bvhDirectory: string | null;
   unitSystem: UnitType;
 }
 
@@ -80,6 +81,7 @@ export const defaultConfig: Config = {
   vrcMutedWarnings: [],
   unitSystem: UnitType.Metric,
   devSettings: defaultDevSettings,
+  bvhDirectory: null,
 };
 
 interface CrossStorage {
