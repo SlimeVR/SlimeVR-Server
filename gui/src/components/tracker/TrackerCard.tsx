@@ -22,7 +22,12 @@ import { checkForUpdate } from '@/hooks/firmware-update';
 function UpdateIcon({
   showUpdate,
 }: {
-  showUpdate: 'can-update' | 'low-battery' | 'updated' | 'unavailable';
+  showUpdate:
+    | 'can-update'
+    | 'low-battery'
+    | 'updated'
+    | 'unavailable'
+    | 'blocked';
 }) {
   const content = (
     <div className="relative">
