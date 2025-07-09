@@ -384,6 +384,7 @@ tracker-settings-forget-label = Forget tracker
 tracker-settings-update-unavailable = Cannot be updated (DIY)
 tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
 tracker-settings-update-up_to_date = Up to date
+tracker-settings-update-blocked = Update not available. No other releases available
 tracker-settings-update-available = { $versionName } is now available
 tracker-settings-update = Update now
 tracker-settings-update-title = Firmware version
@@ -1303,7 +1304,7 @@ status_system-StatusSteamVRDisconnected = { $type ->
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
 status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
-status_system-StatusPublicNetwork = {$count -> 
+status_system-StatusPublicNetwork = {$count ->
     [one] Your network profile is currently set to Public ({$adapters}). This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
     *[many] Some of your network adapters are set to public: {$adapters}. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
 }
