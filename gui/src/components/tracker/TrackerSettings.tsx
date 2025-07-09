@@ -37,9 +37,9 @@ import { MagnetometerToggleSetting } from '@/components/settings/pages/Magnetome
 import semver from 'semver';
 import { useSetAtom } from 'jotai';
 import { ignoredTrackersAtom } from '@/store/app-store';
+import { checkForUpdate } from '@/hooks/firmware-update';
 import { TrackerCard } from './TrackerCard';
 import { SingleTrackerBodyAssignmentMenu } from './SingleTrackerBodyAssignmentMenu';
-import { checkForUpdate } from '@/hooks/firmware-update';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],

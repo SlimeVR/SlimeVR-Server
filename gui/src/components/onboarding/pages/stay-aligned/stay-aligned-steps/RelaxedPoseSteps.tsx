@@ -70,60 +70,66 @@ function PosePage({
   );
 }
 
-export const StandingRelaxedPoseStep = (
+export function StandingRelaxedPoseStep(
   verticalStepProps: VerticalStepComponentProps
-) => (
-  <PosePage
-    {...verticalStepProps}
-    descriptionKeys={[
-      'onboarding-stay_aligned-relaxed_poses-standing-step-0',
-      'onboarding-stay_aligned-relaxed_poses-standing-step-1-v2',
-    ]}
-    relaxedPose={StayAlignedRelaxedPose.STANDING}
-  >
-    <img
-      src={'/images/stay-aligned/StayAlignedStanding.webp'}
-      width={300}
-      alt="Reset position"
-    />
-  </PosePage>
-);
+) {
+  return (
+    <PosePage
+      {...verticalStepProps}
+      descriptionKeys={[
+        'onboarding-stay_aligned-relaxed_poses-standing-step-0',
+        'onboarding-stay_aligned-relaxed_poses-standing-step-1-v2',
+      ]}
+      relaxedPose={StayAlignedRelaxedPose.STANDING}
+    >
+      <img
+        src={'/images/stay-aligned/StayAlignedStanding.webp'}
+        width={300}
+        alt="Reset position"
+      />
+    </PosePage>
+  );
+}
 
-export const SittingRelaxedPoseStep = (
+export function SittingRelaxedPoseStep(
   verticalStepProps: VerticalStepComponentProps
-) => (
-  <PosePage
-    {...verticalStepProps}
-    descriptionKeys={[
-      'onboarding-stay_aligned-relaxed_poses-sitting-step-0',
-      'onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2',
-    ]}
-    relaxedPose={StayAlignedRelaxedPose.SITTING}
-  >
-    <img
-      src={'/images/stay-aligned/StayAlignedSitting.webp'}
-      width={300}
-      alt="Reset position"
-    />
-  </PosePage>
-);
+) {
+  return (
+    <PosePage
+      {...verticalStepProps}
+      descriptionKeys={[
+        'onboarding-stay_aligned-relaxed_poses-sitting-step-0',
+        'onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2',
+      ]}
+      relaxedPose={StayAlignedRelaxedPose.SITTING}
+    >
+      <img
+        src={'/images/stay-aligned/StayAlignedSitting.webp'}
+        width={300}
+        alt="Reset position"
+      />
+    </PosePage>
+  );
+}
 
-export const FlatRelaxedPoseStep = (
+export function FlatRelaxedPoseStep(
   verticalStepProps: VerticalStepComponentProps
-) => (
-  <PosePage
-    {...verticalStepProps}
-    descriptionKeys={[
-      'onboarding-stay_aligned-relaxed_poses-flat-step-0',
-      'onboarding-stay_aligned-relaxed_poses-flat-step-1-v2',
-    ]}
-    relaxedPose={StayAlignedRelaxedPose.FLAT}
-    lastStep
-  >
-    <img
-      src={'/images/stay-aligned/StayAlignedFloor.webp'}
-      width={600}
-      alt="Reset position"
-    />
-  </PosePage>
-);
+) {
+  return (
+    <PosePage
+      {...verticalStepProps}
+      descriptionKeys={[
+        'onboarding-stay_aligned-relaxed_poses-flat-step-0',
+        'onboarding-stay_aligned-relaxed_poses-flat-step-1-v2',
+      ]}
+      relaxedPose={StayAlignedRelaxedPose.FLAT}
+      lastStep
+    >
+      <img
+        src={'/images/stay-aligned/StayAlignedFloor.webp'}
+        width={600}
+        alt="Reset position"
+      />
+    </PosePage>
+  );
+}

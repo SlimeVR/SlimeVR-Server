@@ -351,7 +351,7 @@ function getVRMName(json: string): string | null {
     const data = JSON.parse(json);
 
     if (typeof data?.extensions?.VRMC_vrm?.specVersion === 'string') {
-      const name = data.extensions.VRMC_vrm.meta.name;
+      const { name } = data.extensions.VRMC_vrm.meta;
 
       if (typeof name !== 'string') {
         error(
@@ -361,9 +361,8 @@ function getVRMName(json: string): string | null {
       }
 
       return name;
-    } else {
-      return data?.extensions?.VRM?.meta?.title || '';
     }
+    return data?.extensions?.VRM?.meta?.title || '';
   } catch (e) {
     error(e);
     return null;

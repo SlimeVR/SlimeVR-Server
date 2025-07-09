@@ -326,7 +326,7 @@ export function InterfaceSettings() {
                   <Localized
                     id={'settings-interface-behavior-bvh_directory-description'}
                   >
-                    <Typography color="secondary"></Typography>
+                    <Typography color="secondary" />
                   </Localized>
                 </div>
                 <div className="grid gap-3 pb-5">

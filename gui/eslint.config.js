@@ -103,6 +103,7 @@ export const gui = [
       // stuff that should be enabled again later
       eqeqeq: 'off',
       'no-nested-ternary': 'off',
+      'no-await-in-loop': 'off',
       '@typescript-eslint/no-use-before-define': 'off',
       '@typescript-eslint/no-shadow': 'off',
       'import-x/prefer-default-export': 'off',

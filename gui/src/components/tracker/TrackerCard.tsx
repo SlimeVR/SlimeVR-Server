@@ -14,10 +14,10 @@ import { Link } from 'react-router-dom';
 import { useAppContext } from '@/hooks/app';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { Localized } from '@fluent/react';
+import { checkForUpdate } from '@/hooks/firmware-update';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
 import { TrackerBattery } from './TrackerBattery';
-import { checkForUpdate } from '@/hooks/firmware-update';
 
 function UpdateIcon({
   showUpdate,

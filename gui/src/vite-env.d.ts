@@ -7,6 +7,7 @@ declare const __COMMIT_HASH__: string;
 declare const __VERSION_TAG__: string;
 // eslint-disable-next-line @typescript-eslint/naming-convention
 declare const __GIT_CLEAN__: boolean;
+// eslint-disable-next-line @typescript-eslint/naming-convention
 declare const __ANDROID__:
   | {
       isThere: () => boolean;
