@@ -1,7 +1,9 @@
 package dev.slimevr.tracking.trackers
 
 import dev.slimevr.VRServer
+import dev.slimevr.autobone.StatsCalculator
 import dev.slimevr.config.TrackerConfig
+import dev.slimevr.filtering.CircularArrayList
 import dev.slimevr.tracking.processor.stayaligned.trackers.StayAlignedTrackerState
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
@@ -9,8 +11,12 @@ import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import dev.slimevr.util.InterpolationHandler
 import io.eiren.util.BufferedTimer
+import io.eiren.util.collections.FastList
+import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
+import kotlin.math.abs
+import kotlin.math.atan2
 import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2_000L
@@ -184,6 +190,18 @@ class Tracker @JvmOverloads constructor(
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
+		/*
+		if (!isInternal && isImu()) {
+			csv = File("C:/Users/Butterscotch/Desktop/Tracker Accel", "tracker_$id.csv")
+			csvOut = csv.writer()
+
+			LogManager.info("Starting recording (probably)")
+			csvOut.write("Time (ms),Acceleration X,Acceleration Y,Acceleration Z,Acceleration Magnitude,Velocity X,Velocity Y,Velocity Z,Velocity Magnitude,Position X,Position Y,Position Z,HMD Position X,HMD Position Y,HMD Position Z\n")
+		} else {
+			csv = null
+			csvOut = null
+		}
+		 */
 	}
 
 	/**
@@ -263,6 +281,82 @@ class Tracker @JvmOverloads constructor(
 		stayAligned.update()
 	}
 
+	val minDur = 2000L
+	var startTime = System.currentTimeMillis()
+
+	data class AccelSample(val time: Long, val accel: Vector3, val hmdPos: Vector3)
+	data class AccelTimeline(val resting: Boolean, val samples: FastList<AccelSample> = FastList<AccelSample>())
+
+	var lastFrameRest = true
+	var curFrameRest = true
+
+	val lastSamples = CircularArrayList<AccelSample>(8)
+	var curTimeline: AccelTimeline? = null
+
+	var resetNext = false
+
+	fun accumSample(accum: AccelAccumulator, sample: AccelSample, lastSampleTime: Long = -1, accelBias: Vector3 = Vector3.NULL): Float {
+		val delta = if (lastSampleTime >= 0) {
+			(sample.time - lastSampleTime) / 1000f
+		} else {
+			0f
+		}
+		accum.dataTick(sample.accel - accelBias, delta)
+
+		return delta
+	}
+
+	fun processTimeline(accum: AccelAccumulator, timeline: AccelTimeline, lastSampleTime: Long = -1, accelBias: Vector3 = Vector3.NULL, action: (accum: AccelAccumulator, sample: AccelSample, delta: Float) -> Unit = { _, _, _ -> }): Long {
+		// If -1, assume we are at the start
+		var lastTime = lastSampleTime
+
+		for (sample in timeline.samples) {
+			val delta = accumSample(accum, sample, lastTime, accelBias)
+			action(accum, sample, delta)
+			lastTime = sample.time
+		}
+
+		return lastTime
+	}
+
+	fun processRest(accum: AccelAccumulator, timeline: AccelTimeline, lastSampleTime: Long = -1): Pair<Long, Vector3> {
+		val sampleCount = timeline.samples.size.toFloat()
+		var avgY = Vector3.NULL
+
+		val lastTime = processTimeline(accum, timeline, lastSampleTime) { accum, _, _ ->
+			avgY += accum.velocity / sampleCount
+		}
+
+		return Pair(lastTime, avgY)
+	}
+
+	fun writeTimeline(accum: AccelAccumulator, timeline: AccelTimeline, lastSampleTime: Long = -1, accelBias: Vector3 = Vector3.NULL): Long {
+		// Accel position is only the offset, so let's make the HMD an offset too
+		val initHmd = timeline.samples.first().hmdPos
+
+		val time = processTimeline(accum, timeline, lastSampleTime, accelBias) { accum, sample, _ ->
+			val time = sample.time
+			val accel = accum.acceleration
+			val vel = accum.velocity
+			val pos = accum.offset
+			val hmd = sample.hmdPos - initHmd
+
+			// csvOut?.write("$time,${accel.x},${accel.y},${accel.z},${accel.len()},${vel.x},${vel.y},${vel.z},${vel.len()},${pos.x},${pos.y},${pos.z},${hmd.x},${hmd.y},${hmd.z}\n")
+		}
+
+		return time
+	}
+
+	fun angle(vector: Vector3): Quaternion {
+		val yaw = atan2(vector.x, vector.z)
+		return Quaternion.rotationAroundYAxis(yaw)
+	}
+
+	fun startMounting() {
+		resetNext = true
+		startTime = System.currentTimeMillis()
+	}
+
 	/**
 	 * Tells the tracker that it received new data
 	 * NOTE: Use only when rotation is received
@@ -272,6 +366,122 @@ class Tracker @JvmOverloads constructor(
 		timeAtLastUpdate = System.currentTimeMillis()
 		if (trackRotDirection) {
 			filteringHandler.dataTick(getAdjustedRotation())
+		}
+
+		if (resetNext) {
+			lastFrameRest = curFrameRest
+
+			val accel = getAcceleration()
+			val accelLen = accel.len()
+			val hmdPos = if (VRServer.instanceInitialized) {
+				VRServer.instance.humanPoseManager.skeleton.headTracker?.position ?: Vector3.NULL
+			} else {
+				Vector3.NULL
+			}
+			val sample = AccelSample(timeAtLastUpdate - startTime, accel, hmdPos)
+
+			// Ensure a minimum sample size, assume resting at start
+			if (lastSamples.size >= 4) {
+				val stats = StatsCalculator()
+				for (sample in lastSamples) {
+					stats.addValue(sample.accel.len())
+				}
+
+				curFrameRest = if (curFrameRest) {
+					stats.mean < 0.3f && accelLen - stats.mean < 0.6f
+				} else {
+					stats.mean < 0.1f && stats.standardDeviation < 0.2f && sample.time >= minDur
+				}
+			}
+
+			// On rest state change
+			if (curFrameRest != lastFrameRest) {
+				if (curFrameRest) {
+					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) is now eepy.")
+
+					curTimeline?.let { move ->
+						val firstSample = move.samples.first()
+						val lastSample = move.samples.last()
+
+						val calibAccum = AccelAccumulator()
+						processTimeline(calibAccum, move)
+
+						val moveTime = lastSample.time - firstSample.time
+						val postAvg = calibAccum.velocity
+
+						// Assume the velocity at the end is the resting velocity
+						val slope = postAvg / (moveTime / 1000f)
+						// LogManager.info("moveTime: $moveTime\npostAvg: $postAvg\nslope: $slope")
+
+						val outAccum = AccelAccumulator()
+						processTimeline(outAccum, move, accelBias = slope)
+
+						// We need to compare offsets of HMD and tracker
+						val hmdOff = lastSample.hmdPos - firstSample.hmdPos
+						val trackerOff = outAccum.offset
+
+						val hmd = Vector3(hmdOff.x, 0f, hmdOff.z)
+						val tracker = Vector3(trackerOff.x, 0f, trackerOff.z)
+
+						val hmdRot = angle(hmd.unit())
+						val trackerRot = angle(tracker.unit())
+						val mountRot = trackerRot * hmdRot.inv()
+
+						val mountVec = (resetsHandler.mountingOrientation * resetsHandler.mountRotFix * mountRot).inv().sandwich(Vector3.POS_Z)
+						val mountText = if (abs(mountVec.z) > abs(mountVec.x)) {
+							if (mountVec.z < 0f) {
+								"front"
+							} else {
+								"back"
+							}
+						} else {
+							if (mountVec.x > 0f) {
+								"right"
+							} else {
+								"left"
+							}
+						}
+
+						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}):\nTracker: $trackerOff\nHmd: $hmdOff\nErr: ${tracker.len() - hmd.len()}\nResult: $mountVec ($mountText)")
+						resetsHandler.mountRotFix *= mountRot
+						resetNext = false
+					}
+					curTimeline = null
+				} else {
+					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) now has zoomies!")
+
+					// Cycle timeline
+					curTimeline = AccelTimeline(false)
+					for (sample in lastSamples) {
+						curTimeline?.samples?.add(sample)
+					}
+				}
+
+				// Flush rest detection
+				lastSamples.clear()
+			}
+
+			// Moving avg accel for rest detection
+			if (lastSamples.size == lastSamples.capacity()) {
+				lastSamples.removeLast()
+			}
+
+			// Collect samples for rest detection at a constant-ish rate if possible
+			if (curFrameRest) {
+				lastSamples.add(sample)
+			} else {
+				// Collect the latest samples when moving
+				curTimeline?.samples?.add(sample)
+
+				if (lastSamples.isNotEmpty()) {
+					// Try to have TPS at a lower rate
+					if (sample.time - lastSamples.first().time > 100) {
+						lastSamples.add(sample)
+					}
+				} else {
+					lastSamples.add(sample)
+				}
+			}
 		}
 	}
 

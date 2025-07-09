@@ -77,7 +77,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * [mountingOrientation] will apply.
 	 */
 	var mountRotFix = Quaternion.IDENTITY
-		private set
 
 	/**
 	 * Yaw fix is set by yaw reset. This sets the current y rotation to match the
@@ -381,6 +380,18 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		tracker.stayAligned.reset()
 
 		tracker.resetFilteringQuats(reference)
+	}
+
+	fun resetMountingAccel(reference: Quaternion) {
+		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
+			tracker.trackerFlexHandler.resetMax()
+			tracker.resetFilteringQuats(reference)
+			return
+		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
+			return
+		}
+
+		tracker.startMounting()
 	}
 
 	/**
