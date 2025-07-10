@@ -105,7 +105,7 @@ pub fn create_tray<R: Runtime>(app: &tauri::AppHandle<R>) -> tauri::Result<()> {
 		.title("SlimeVR")
 		.tooltip("SlimeVR")
 		.icon_as_template(true)
-		.menu_on_left_click(false)
+		.show_menu_on_left_click(false)
 		.icon(if cfg!(target_os = "macos") {
 			include_image!("icons/appleTrayIcon.png")
 		} else {
@@ -146,7 +146,7 @@ pub fn create_tray<R: Runtime>(app: &tauri::AppHandle<R>) -> tauri::Result<()> {
 			_ => {}
 		})
 		// We don't want this as we open the window on left click
-		.menu_on_left_click(false)
+		.show_menu_on_left_click(false)
 		.build(app)?;
 
 	app.manage(TrayAvailable(true));
