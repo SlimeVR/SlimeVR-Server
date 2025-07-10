@@ -1,4 +1,5 @@
 import { BoardType, DeviceDataT } from 'solarxr-protocol';
+import { fetch } from '@tauri-apps/plugin-http';
 import { cacheWrap } from './cache';
 import semver from 'semver';
 import { hostname, locale, platform, version } from '@tauri-apps/plugin-os';
@@ -23,15 +24,14 @@ const hash = (str: string) => {
   return (hash >>> 0) / 2 ** 32;
 };
 
-const uniqueUserKey = `${await hostname()}-${await locale()}-${platform()}-${version()}`;
-
 const firstAsset = (assets: any[], name: string) =>
   assets.find((asset: any) => asset.name === name && asset.browser_download_url);
 
-const checkUserCanUpdate = (body: string) => {
-  const matches = [...body.matchAll(/```json\r?\n([\s\S]*?)```/g)];
-  if (matches.length === 0) return true;
-  const deployDataJson = JSON.parse(matches.at(-1)?.[1] ?? 'null');
+const checkUserCanUpdate = async (url: string) => {
+  if (!url) return true;
+  const deployDataJson = await fetch(url)
+    .then((res) => res.json())
+    .catch(console.error);
   if (!deployDataJson) return true;
 
   const deployData = (
@@ -57,6 +57,7 @@ const checkUserCanUpdate = (body: string) => {
 
   if (!todayUpdateRange) return false;
 
+  const uniqueUserKey = `${await hostname()}-${await locale()}-${platform()}-${version()}`;
   // Make it so the hash change every version. Prevent the same user from getting the same delay
   return hash(`${uniqueUserKey}-${version}`) <= todayUpdateRange;
 };
@@ -84,7 +85,8 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
       version = version.substring(1);
     }
 
-    const userCanUpdate = checkUserCanUpdate(release.body);
+    const deployAsset = firstAsset(release.assets, 'deploy.json');
+    const userCanUpdate = await checkUserCanUpdate(deployAsset?.browser_download_url);
     processedReleses.push({
       name: release.name,
       version,

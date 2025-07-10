@@ -31,6 +31,17 @@
     {
       "identifier": "fs:scope",
       "allow": [{ "path": "$APPDATA" }, { "path": "$APPDATA/**" }]
+    },
+    {
+      "identifier": "http:default",
+      "allow": [
+        {
+          "url": "https://github.com/SlimeVR/SlimeVR-Tracker-ESP/releases/download/*"
+        },
+        {
+          "url": "https://release-assets.githubusercontent.com/*"
+        }
+      ]
     }
   ]
 }
