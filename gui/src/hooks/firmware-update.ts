@@ -31,7 +31,7 @@ const checkUserCanUpdate = async (url: string) => {
   if (!url) return true;
   const deployDataJson = await fetch(url)
     .then((res) => res.json())
-    .catch(console.error);
+    .catch(() => null);
   if (!deployDataJson) return true;
 
   const deployData = (

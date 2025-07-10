@@ -37,9 +37,6 @@
       "allow": [
         {
           "url": "https://github.com/SlimeVR/SlimeVR-Tracker-ESP/releases/download/*"
-        },
-        {
-          "url": "https://release-assets.githubusercontent.com/*"
         }
       ]
     }
