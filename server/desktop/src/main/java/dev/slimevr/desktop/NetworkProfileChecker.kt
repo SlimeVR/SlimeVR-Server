@@ -15,9 +15,6 @@ import com.sun.jna.ptr.IntByReference
 import com.sun.jna.ptr.PointerByReference
 import dev.slimevr.VRServer
 import io.eiren.util.OperatingSystem
-import solarxr_protocol.rpc.StatusData
-import solarxr_protocol.rpc.StatusDataUnion
-import solarxr_protocol.rpc.StatusPublicNetworkT
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
 
@@ -324,22 +321,22 @@ class NetworkProfileChecker(private val server: VRServer) {
 
 				if (numPublicNetworks != currentNumPublicNetworksCount) {
 					numPublicNetworks = currentNumPublicNetworksCount
-					if (lastPublicNetworkStatus != 0u) {
-						server.statusSystem.removeStatus(lastPublicNetworkStatus)
-						lastPublicNetworkStatus = 0u
-					}
-
-					if (lastPublicNetworkStatus == 0u && numPublicNetworks > 0) {
-						lastPublicNetworkStatus = server.statusSystem.addStatus(
-							StatusDataUnion().apply {
-								type = StatusData.StatusPublicNetwork
-								value = StatusPublicNetworkT().apply {
-									adapters = currentNumPublicNetworks.map { it.name }.toTypedArray()
-								}
-							},
-							false,
-						)
-					}
+// 					if (lastPublicNetworkStatus != 0u) {
+// 						server.statusSystem.removeStatus(lastPublicNetworkStatus)
+// 						lastPublicNetworkStatus = 0u
+// 					}
+//
+// 					if (lastPublicNetworkStatus == 0u && numPublicNetworks > 0) {
+// 						lastPublicNetworkStatus = server.statusSystem.addStatus(
+// 							StatusDataUnion().apply {
+// 								type = StatusData.StatusPublicNetwork
+// 								value = StatusPublicNetworkT().apply {
+// 									adapters = currentNumPublicNetworks.map { it.name }.toTypedArray()
+// 								}
+// 							},
+// 							false,
+// 						)
+// 					}
 				}
 			}
 		}

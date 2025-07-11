@@ -58,8 +58,8 @@ class TestTrackerSet(
 			hasPosition = positional || isHmd,
 			hasRotation = true,
 			isComputed = computed || isHmd,
-			needsReset = resetHead || !isHmd,
-			needsMounting = resetHead || !isHmd,
+			allowReset = resetHead || !isHmd,
+			allowMounting = resetHead || !isHmd,
 			isHmd = isHmd,
 			trackRotDirection = false,
 		)
