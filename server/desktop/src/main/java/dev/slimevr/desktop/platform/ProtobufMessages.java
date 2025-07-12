@@ -2214,17 +2214,13 @@ public final class ProtobufMessages {
 		public enum InputType
 			implements com.google.protobuf.ProtocolMessageEnum {
 			/**
-			 * <code>TAP = 0;</code>
+			 * <code>DOUBLE_TAP = 0;</code>
 			 */
-			TAP(0),
+			DOUBLE_TAP(0),
 			/**
-			 * <code>DOUBLE_TAP = 1;</code>
+			 * <code>TRIPLE_TAP = 1;</code>
 			 */
-			DOUBLE_TAP(1),
-			/**
-			 * <code>TRIPLE_TAP = 2;</code>
-			 */
-			TRIPLE_TAP(2),
+			TRIPLE_TAP(1),
 			UNRECOGNIZED(-1),
 			;
 
@@ -2240,17 +2236,13 @@ public final class ProtobufMessages {
 					);
 			}
 			/**
-			 * <code>TAP = 0;</code>
+			 * <code>DOUBLE_TAP = 0;</code>
 			 */
-			public static final int TAP_VALUE = 0;
+			public static final int DOUBLE_TAP_VALUE = 0;
 			/**
-			 * <code>DOUBLE_TAP = 1;</code>
+			 * <code>TRIPLE_TAP = 1;</code>
 			 */
-			public static final int DOUBLE_TAP_VALUE = 1;
-			/**
-			 * <code>TRIPLE_TAP = 2;</code>
-			 */
-			public static final int TRIPLE_TAP_VALUE = 2;
+			public static final int TRIPLE_TAP_VALUE = 1;
 
 
 			public final int getNumber() {
@@ -2281,10 +2273,8 @@ public final class ProtobufMessages {
 			public static InputType forNumber(int value) {
 				switch (value) {
 					case 0:
-						return TAP;
-					case 1:
 						return DOUBLE_TAP;
-					case 2:
+					case 1:
 						return TRIPLE_TAP;
 					default:
 						return null;
@@ -2392,7 +2382,8 @@ public final class ProtobufMessages {
 			throws java.io.IOException {
 			if (
 				type_
-					!= dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType.TAP.getNumber()
+					!= dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType.DOUBLE_TAP
+						.getNumber()
 			) {
 				output.writeEnum(1, type_);
 			}
@@ -2408,7 +2399,8 @@ public final class ProtobufMessages {
 			size = 0;
 			if (
 				type_
-					!= dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType.TAP.getNumber()
+					!= dev.slimevr.desktop.platform.ProtobufMessages.Input.InputType.DOUBLE_TAP
+						.getNumber()
 			) {
 				size += com.google.protobuf.CodedOutputStream
 					.computeEnumSize(1, type_);
@@ -11637,85 +11629,83 @@ public final class ProtobufMessages {
 				+
 				"TTLE_PROXIMAL\020\014\022\027\n\023LITTLE_INTERMEDIATE\020\r"
 				+
-				"\022\021\n\rLITTLE_DISTAL\020\016\"f\n\005Input\022\'\n\004type\030\001 \001"
+				"\022\021\n\rLITTLE_DISTAL\020\016\"]\n\005Input\022\'\n\004type\030\001 \001"
 				+
-				"(\0162\031.messages.Input.InputType\"4\n\tInputTy"
+				"(\0162\031.messages.Input.InputType\"+\n\tInputTy"
 				+
-				"pe\022\007\n\003TAP\020\000\022\016\n\nDOUBLE_TAP\020\001\022\016\n\nTRIPLE_TA"
+				"pe\022\016\n\nDOUBLE_TAP\020\000\022\016\n\nTRIPLE_TAP\020\001\"\360\002\n\010P"
 				+
-				"P\020\002\"\360\002\n\010Position\022\022\n\ntracker_id\030\001 \001(\005\022\016\n\001"
+				"osition\022\022\n\ntracker_id\030\001 \001(\005\022\016\n\001x\030\002 \001(\002H\000"
 				+
-				"x\030\002 \001(\002H\000\210\001\001\022\016\n\001y\030\003 \001(\002H\001\210\001\001\022\016\n\001z\030\004 \001(\002H"
+				"\210\001\001\022\016\n\001y\030\003 \001(\002H\001\210\001\001\022\016\n\001z\030\004 \001(\002H\002\210\001\001\022\n\n\002q"
 				+
-				"\002\210\001\001\022\n\n\002qx\030\005 \001(\002\022\n\n\002qy\030\006 \001(\002\022\n\n\002qz\030\007 \001(\002"
+				"x\030\005 \001(\002\022\n\n\002qy\030\006 \001(\002\022\n\n\002qz\030\007 \001(\002\022\n\n\002qw\030\010 "
 				+
-				"\022\n\n\002qw\030\010 \001(\002\0227\n\013data_source\030\t \001(\0162\035.mess"
+				"\001(\002\0227\n\013data_source\030\t \001(\0162\035.messages.Posi"
 				+
-				"ages.Position.DataSourceH\003\210\001\001\022;\n\025finger_"
+				"tion.DataSourceH\003\210\001\001\022;\n\025finger_bone_rota"
 				+
-				"bone_rotations\030\n \003(\0132\034.messages.FingerBo"
+				"tions\030\n \003(\0132\034.messages.FingerBoneRotatio"
 				+
-				"neRotation\022\036\n\005input\030\013 \003(\0132\017.messages.Inp"
+				"n\022\036\n\005input\030\013 \003(\0132\017.messages.Input\"8\n\nDat"
 				+
-				"ut\"8\n\nDataSource\022\010\n\004NONE\020\000\022\007\n\003IMU\020\001\022\r\n\tP"
+				"aSource\022\010\n\004NONE\020\000\022\007\n\003IMU\020\001\022\r\n\tPRECISION\020"
 				+
-				"RECISION\020\002\022\010\n\004FULL\020\003B\004\n\002_xB\004\n\002_yB\004\n\002_zB\016"
+				"\002\022\010\n\004FULL\020\003B\004\n\002_xB\004\n\002_yB\004\n\002_zB\016\n\014_data_s"
 				+
-				"\n\014_data_source\"\227\001\n\nUserAction\022\014\n\004name\030\001 "
+				"ource\"\227\001\n\nUserAction\022\014\n\004name\030\001 \001(\t\022C\n\020ac"
 				+
-				"\001(\t\022C\n\020action_arguments\030\002 \003(\0132).messages"
+				"tion_arguments\030\002 \003(\0132).messages.UserActi"
 				+
-				".UserAction.ActionArgumentsEntry\0326\n\024Acti"
+				"on.ActionArgumentsEntry\0326\n\024ActionArgumen"
 				+
-				"onArgumentsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002"
+				"tsEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\""
 				+
-				" \001(\t:\0028\001\"f\n\014TrackerAdded\022\022\n\ntracker_id\030\001"
+				"f\n\014TrackerAdded\022\022\n\ntracker_id\030\001 \001(\005\022\026\n\016t"
 				+
-				" \001(\005\022\026\n\016tracker_serial\030\002 \001(\t\022\024\n\014tracker_"
+				"racker_serial\030\002 \001(\t\022\024\n\014tracker_name\030\003 \001("
 				+
-				"name\030\003 \001(\t\022\024\n\014tracker_role\030\004 \001(\005\"\374\002\n\rTra"
+				"\t\022\024\n\014tracker_role\030\004 \001(\005\"\374\002\n\rTrackerStatu"
 				+
-				"ckerStatus\022\022\n\ntracker_id\030\001 \001(\005\022.\n\006status"
+				"s\022\022\n\ntracker_id\030\001 \001(\005\022.\n\006status\030\002 \001(\0162\036."
 				+
-				"\030\002 \001(\0162\036.messages.TrackerStatus.Status\0221"
+				"messages.TrackerStatus.Status\0221\n\005extra\030\003"
 				+
-				"\n\005extra\030\003 \003(\0132\".messages.TrackerStatus.E"
+				" \003(\0132\".messages.TrackerStatus.ExtraEntry"
 				+
-				"xtraEntry\022;\n\nconfidence\030\004 \001(\0162\".messages"
+				"\022;\n\nconfidence\030\004 \001(\0162\".messages.TrackerS"
 				+
-				".TrackerStatus.ConfidenceH\000\210\001\001\032,\n\nExtraE"
+				"tatus.ConfidenceH\000\210\001\001\032,\n\nExtraEntry\022\013\n\003k"
 				+
-				"ntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"E\n\006"
+				"ey\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001\"E\n\006Status\022\020\n"
 				+
-				"Status\022\020\n\014DISCONNECTED\020\000\022\006\n\002OK\020\001\022\010\n\004BUSY"
+				"\014DISCONNECTED\020\000\022\006\n\002OK\020\001\022\010\n\004BUSY\020\002\022\t\n\005ERR"
 				+
-				"\020\002\022\t\n\005ERROR\020\003\022\014\n\010OCCLUDED\020\004\"3\n\nConfidenc"
+				"OR\020\003\022\014\n\010OCCLUDED\020\004\"3\n\nConfidence\022\006\n\002NO\020\000"
 				+
-				"e\022\006\n\002NO\020\000\022\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\005\022\010\n\004HIGH\020\n"
+				"\022\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\005\022\010\n\004HIGH\020\nB\r\n\013_conf"
 				+
-				"B\r\n\013_confidence\"I\n\007Battery\022\022\n\ntracker_id"
+				"idence\"I\n\007Battery\022\022\n\ntracker_id\030\001 \001(\005\022\025\n"
 				+
-				"\030\001 \001(\005\022\025\n\rbattery_level\030\002 \001(\002\022\023\n\013is_char"
+				"\rbattery_level\030\002 \001(\002\022\023\n\013is_charging\030\003 \001("
 				+
-				"ging\030\003 \001(\010\"\241\002\n\017ProtobufMessage\022&\n\010positi"
+				"\010\"\241\002\n\017ProtobufMessage\022&\n\010position\030\001 \001(\0132"
 				+
-				"on\030\001 \001(\0132\022.messages.PositionH\000\022+\n\013user_a"
+				"\022.messages.PositionH\000\022+\n\013user_action\030\002 \001"
 				+
-				"ction\030\002 \001(\0132\024.messages.UserActionH\000\022/\n\rt"
+				"(\0132\024.messages.UserActionH\000\022/\n\rtracker_ad"
 				+
-				"racker_added\030\003 \001(\0132\026.messages.TrackerAdd"
+				"ded\030\003 \001(\0132\026.messages.TrackerAddedH\000\0221\n\016t"
 				+
-				"edH\000\0221\n\016tracker_status\030\004 \001(\0132\027.messages."
+				"racker_status\030\004 \001(\0132\027.messages.TrackerSt"
 				+
-				"TrackerStatusH\000\022$\n\007battery\030\005 \001(\0132\021.messa"
+				"atusH\000\022$\n\007battery\030\005 \001(\0132\021.messages.Batte"
 				+
-				"ges.BatteryH\000\022$\n\007version\030\006 \001(\0132\021.message"
+				"ryH\000\022$\n\007version\030\006 \001(\0132\021.messages.Version"
 				+
-				"s.VersionH\000B\t\n\007messageB2\n\034dev.slimevr.de"
+				"H\000B\t\n\007messageB2\n\034dev.slimevr.desktop.pla"
 				+
-				"sktop.platformB\020ProtobufMessagesH\003b\006prot"
-				+
-				"o3"
+				"tformB\020ProtobufMessagesH\003b\006proto3"
 		};
 		descriptor = com.google.protobuf.Descriptors.FileDescriptor
 			.internalBuildGeneratedFileFrom(
