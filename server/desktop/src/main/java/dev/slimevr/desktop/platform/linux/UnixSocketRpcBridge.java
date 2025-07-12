@@ -1,6 +1,7 @@
 package dev.slimevr.desktop.platform.linux;
 
 import dev.slimevr.bridge.BridgeThread;
+import dev.slimevr.inputs.Input;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.tracking.processor.ShareableBone;
@@ -141,5 +142,10 @@ public class UnixSocketRpcBridge implements dev.slimevr.bridge.Bridge,
 			.stream()
 			.map(key -> (GenericConnection) key.attachment())
 			.filter(conn -> conn != null);
+	}
+
+	@Override
+	public void sendBooleanInput(@NotNull Input input) {
+
 	}
 }

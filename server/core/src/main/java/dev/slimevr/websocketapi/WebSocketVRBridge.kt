@@ -6,6 +6,7 @@ import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.VRServer.Companion.instance
 import dev.slimevr.bridge.Bridge
+import dev.slimevr.inputs.Input
 import dev.slimevr.tracking.processor.ShareableBone
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
@@ -229,6 +230,10 @@ class WebSocketVRBridge(
 	}
 
 	override fun addFingerBones(bones: List<ShareableBone>) {
+		// TODO Auto-generated method stub
+	}
+
+	override fun sendBooleanInput(input: Input) {
 		// TODO Auto-generated method stub
 	}
 

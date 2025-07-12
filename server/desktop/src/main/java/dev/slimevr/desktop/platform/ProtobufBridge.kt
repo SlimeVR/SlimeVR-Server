@@ -4,6 +4,7 @@ import dev.slimevr.VRServer.Companion.instance
 import dev.slimevr.bridge.BridgeThread
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.desktop.platform.ProtobufMessages.*
+import dev.slimevr.inputs.InputType
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.ShareableBone
 import dev.slimevr.tracking.processor.isLeftFinger
@@ -46,6 +47,8 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	private var hadNewData = false
 
 	private var remoteProtocolVersion: Int = 0
+
+	private val inputs: MutableList<dev.slimevr.inputs.Input> = FastList()
 
 	/**
 	 * Wakes the bridge thread, implementation is platform-specific.
@@ -155,9 +158,38 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			}
 		}
 
-		// TODO tap inputs
+		// Double and triple tap inputs
+		if (remoteProtocolVersion >= 1) {
+			val trackerIsLeftHand = localTracker.trackerPosition == TrackerPosition.LEFT_HAND
+			val trackerIsRightHand = localTracker.trackerPosition == TrackerPosition.RIGHT_HAND
+			if (trackerIsLeftHand || trackerIsRightHand) {
+				for (input in inputs) {
+					if ((input.rightHand && trackerIsRightHand) || (!input.rightHand && trackerIsLeftHand)) {
+						val inputBuilder = Input.newBuilder()
+						if (input.type == InputType.DOUBLE_TAP) {
+							inputBuilder.setType(Input.InputType.DOUBLE_TAP)
+						} else if (input.type == InputType.TRIPLE_TAP) {
+							inputBuilder.setType(Input.InputType.TRIPLE_TAP)
+						} else {
+							continue
+						}
+
+						builder.addInput(inputBuilder.build())
+
+						inputs.remove(input)
+					} else {
+						// Input side doesn't match controller side
+					}
+				}
+			}
+		}
 
 		sendMessage(ProtobufMessage.newBuilder().setPosition(builder).build())
+	}
+
+	@VRServerThread
+	override fun sendBooleanInput(input: dev.slimevr.inputs.Input) {
+		inputs.add(input)
 	}
 
 	@VRServerThread
