@@ -1,14 +1,12 @@
 package dev.slimevr.tracking.trackers
 
 import com.jme3.math.FastMath
-import com.jme3.system.NanoTimer
 import dev.slimevr.VRServer
 import dev.slimevr.config.ArmsResetModes
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.filtering.CircularArrayList
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
-import io.eiren.math.FloatMath.animateEase
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
@@ -42,7 +40,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var driftCompensationEnabled = false
 	private var armsResetMode = ArmsResetModes.BACK
 	private var yawResetSmoothTime = 0.0f
-	private lateinit var fpsTimer: NanoTimer
 	var saveMountingReset = false
 	var resetHmdPitch = false
 	var allowDriftCompensation = false
@@ -109,11 +106,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private var constraintFix = Quaternion.IDENTITY
 
-	// Yaw reset smoothing vars
-	private var yawFixOld = Quaternion.IDENTITY
-	private var yawFixSmoothIncremental = Quaternion.IDENTITY
-	private var yawResetSmoothTimeRemain = 0.0f
-
 	// Zero-reference/identity adjustment quats for IMU debugging
 	private var gyroFixNoMounting = Quaternion.IDENTITY
 	private var attachmentFixNoMounting = Quaternion.IDENTITY
@@ -173,9 +165,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun readResetConfig(config: ResetsConfig) {
 		armsResetMode = config.mode
 		yawResetSmoothTime = config.yawResetSmoothTime
-		if (!::fpsTimer.isInitialized) {
-			fpsTimer = VRServer.instance.fpsTimer
-		}
 		saveMountingReset = config.saveMountingReset
 		resetHmdPitch = config.resetHmdPitch
 	}
@@ -190,7 +179,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Takes a rotation and adjusts it to resets, mounting,
 	 * and drift compensation, with the HMD as the reference.
 	 */
-	fun getReferenceAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion = adjustToDrift(adjustToYawResetSmoothing(adjustToReference(rotation)))
+	fun getReferenceAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion = adjustToDrift(adjustToReference(rotation))
 
 	/**
 	 * Takes a rotation and adjusts it to resets and mounting,
@@ -246,17 +235,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				driftTimeRatio = min(1.0f, driftTimeRatio)
 			}
 			return averagedDriftQuat.pow(driftAmount * driftTimeRatio) * rotation
-		}
-		return rotation
-	}
-
-	/**
-	 * Apply yaw reset smoothing to quaternion rotated to new yaw
-	 * fix and returns smoothed quaternion
-	 */
-	private fun adjustToYawResetSmoothing(rotation: Quaternion): Quaternion {
-		if (yawResetSmoothTimeRemain > 0.0f) {
-			return yawFixSmoothIncremental * rotation
 		}
 		return rotation
 	}
@@ -335,15 +313,16 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		// Don't adjust yaw if head and computed
 		if (tracker.trackerPosition != TrackerPosition.HEAD || !tracker.isComputed) {
 			yawFix = fixYaw(mountingAdjustedRotation, reference)
-			yawResetSmoothTimeRemain = 0.0f
+			tracker.yawResetSmoothing.reset()
 		}
 
 		calculateDrift(oldRot)
 
-		postProcessResetFull(reference)
-
-		// Reset Stay Aligned
+		// Reset Stay Aligned (before resetting filtering, which depends on the
+		// tracker's rotation)
 		tracker.stayAligned.reset()
+
+		postProcessResetFull(reference)
 	}
 
 	private fun postProcessResetFull(reference: Quaternion) {
@@ -377,9 +356,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		val oldRot = adjustToReference(tracker.getRawRotation())
 		lastResetQuaternion = oldRot
 
-		yawFixOld = yawFix
+		val yawFixOld = yawFix
 		yawFix = fixYaw(tracker.getRawRotation() * mountingOrientation, reference)
-		yawResetSmoothTimeRemain = 0.0f
+		tracker.yawResetSmoothing.reset()
 
 		makeIdentityAdjustmentQuatsYaw()
 
@@ -387,8 +366,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Start at yaw before reset if smoothing enabled
 		if (yawResetSmoothTime > 0.0f) {
-			yawResetSmoothTimeRemain = yawResetSmoothTime
-			yawFixSmoothIncremental = yawFixOld / yawFix
+			tracker.yawResetSmoothing.interpolate(
+				yawFixOld / yawFix,
+				Quaternion.IDENTITY,
+				yawResetSmoothTime,
+			)
 		}
 
 		// Remove the status if yaw reset was performed after the tracker
@@ -399,10 +381,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			this.tracker.lastResetStatus = 0u
 		}
 
-		tracker.resetFilteringQuats(reference)
-
-		// Reset Stay Aligned
+		// Reset Stay Aligned (before resetting filtering, which depends on the
+		// tracker's rotation)
 		tracker.stayAligned.reset()
+
+		tracker.resetFilteringQuats(reference)
 	}
 
 	/**
@@ -629,5 +612,99 @@ class TrackerResetsHandler(val tracker: Tracker) {
 					)
 			}
 		}
+	}
+
+	private fun isThighTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.LEFT_UPPER_LEG ||
+				it == TrackerPosition.RIGHT_UPPER_LEG
+		}
+		return false
+	}
+
+	private fun isLeftArmTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.LEFT_SHOULDER ||
+				it == TrackerPosition.LEFT_UPPER_ARM ||
+				it == TrackerPosition.LEFT_LOWER_ARM ||
+				it == TrackerPosition.LEFT_HAND
+		}
+		return false
+	}
+
+	private fun isRightArmTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.RIGHT_SHOULDER ||
+				it == TrackerPosition.RIGHT_UPPER_ARM ||
+				it == TrackerPosition.RIGHT_LOWER_ARM ||
+				it == TrackerPosition.RIGHT_HAND
+		}
+		return false
+	}
+
+	private fun isLeftLowerArmTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.LEFT_LOWER_ARM ||
+				it == TrackerPosition.LEFT_HAND
+		}
+		return false
+	}
+
+	private fun isRightLowerArmTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.RIGHT_LOWER_ARM ||
+				it == TrackerPosition.RIGHT_HAND
+		}
+		return false
+	}
+
+	private fun isFootTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.LEFT_FOOT ||
+				it == TrackerPosition.RIGHT_FOOT
+		}
+		return false
+	}
+
+	private fun isLeftFingerTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.LEFT_THUMB_METACARPAL ||
+				it == TrackerPosition.LEFT_THUMB_PROXIMAL ||
+				it == TrackerPosition.LEFT_THUMB_DISTAL ||
+				it == TrackerPosition.LEFT_INDEX_PROXIMAL ||
+				it == TrackerPosition.LEFT_INDEX_INTERMEDIATE ||
+				it == TrackerPosition.LEFT_INDEX_DISTAL ||
+				it == TrackerPosition.LEFT_MIDDLE_PROXIMAL ||
+				it == TrackerPosition.LEFT_MIDDLE_INTERMEDIATE ||
+				it == TrackerPosition.LEFT_MIDDLE_DISTAL ||
+				it == TrackerPosition.LEFT_RING_PROXIMAL ||
+				it == TrackerPosition.LEFT_RING_INTERMEDIATE ||
+				it == TrackerPosition.LEFT_RING_DISTAL ||
+				it == TrackerPosition.LEFT_LITTLE_PROXIMAL ||
+				it == TrackerPosition.LEFT_LITTLE_INTERMEDIATE ||
+				it == TrackerPosition.LEFT_LITTLE_DISTAL
+		}
+		return false
+	}
+
+	private fun isRightFingerTracker(): Boolean {
+		tracker.trackerPosition?.let {
+			return it == TrackerPosition.RIGHT_THUMB_METACARPAL ||
+				it == TrackerPosition.RIGHT_THUMB_PROXIMAL ||
+				it == TrackerPosition.RIGHT_THUMB_DISTAL ||
+				it == TrackerPosition.RIGHT_INDEX_PROXIMAL ||
+				it == TrackerPosition.RIGHT_INDEX_INTERMEDIATE ||
+				it == TrackerPosition.RIGHT_INDEX_DISTAL ||
+				it == TrackerPosition.RIGHT_MIDDLE_PROXIMAL ||
+				it == TrackerPosition.RIGHT_MIDDLE_INTERMEDIATE ||
+				it == TrackerPosition.RIGHT_MIDDLE_DISTAL ||
+				it == TrackerPosition.RIGHT_RING_PROXIMAL ||
+				it == TrackerPosition.RIGHT_RING_INTERMEDIATE ||
+				it == TrackerPosition.RIGHT_RING_DISTAL ||
+				it == TrackerPosition.RIGHT_LITTLE_PROXIMAL ||
+				it == TrackerPosition.RIGHT_LITTLE_INTERMEDIATE ||
+				it == TrackerPosition.RIGHT_LITTLE_DISTAL
+		}
+		return false
 	}
 }

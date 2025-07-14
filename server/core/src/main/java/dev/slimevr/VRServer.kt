@@ -242,7 +242,7 @@ class VRServer @JvmOverloads constructor(
 				bridge.dataRead()
 			}
 			for (tracker in trackers) {
-				tracker.tick()
+				tracker.tick(fpsTimer.timePerFrame)
 			}
 			humanPoseManager.update()
 			for (bridge in bridges) {

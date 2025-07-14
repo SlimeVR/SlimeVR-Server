@@ -66,7 +66,9 @@ export function WidgetsComponent() {
           size="big"
           bodyPartsToReset="fingers"
         ></ResetButton>
-        <BVHButton></BVHButton>
+        {(typeof __ANDROID__ === 'undefined' || !__ANDROID__?.isThere()) && (
+          <BVHButton></BVHButton>
+        )}
         <TrackingPauseButton></TrackingPauseButton>
       </div>
       <div className="w-full">
