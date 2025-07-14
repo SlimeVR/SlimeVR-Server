@@ -237,8 +237,8 @@ reset-reset_all_warning_default-v2 =
 
 reset-full = Full Reset
 reset-mounting = Reset Mounting
-reset-mounting-feet = Reset Mounting Feet
-reset-mounting-fingers = Reset Mounting Fingers
+reset-mounting-feet = Reset Feet Mounting
+reset-mounting-fingers = Reset Fingers Mounting
 reset-yaw = Yaw Reset
 
 ## Serial detection stuff

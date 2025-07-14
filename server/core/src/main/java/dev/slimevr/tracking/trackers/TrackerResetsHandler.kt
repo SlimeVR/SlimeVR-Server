@@ -592,28 +592,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		return totalMatrix.toQuaternion()
 	}
 
-	/**
-	 * Update yaw reset smoothing time
-	 */
-	@Synchronized
-	fun update() {
-		if (yawResetSmoothTimeRemain > 0.0f) {
-			var deltaTime = 0.001f
-			if (::fpsTimer.isInitialized) {
-				deltaTime = fpsTimer.timePerFrame
-			}
-			yawResetSmoothTimeRemain = yawResetSmoothTimeRemain - deltaTime
-			if (yawResetSmoothTimeRemain > 0.0f) {
-				// Remaining time decreases to 0, so the interpolation is reversed
-				yawFixSmoothIncremental = yawFix.inv() * yawFix
-					.interpR(
-						yawFixOld,
-						animateEase(yawResetSmoothTimeRemain / yawResetSmoothTime),
-					)
-			}
-		}
-	}
-
 	private fun isThighTracker(): Boolean {
 		tracker.trackerPosition?.let {
 			return it == TrackerPosition.LEFT_UPPER_LEG ||
