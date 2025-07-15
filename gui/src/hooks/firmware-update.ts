@@ -27,11 +27,18 @@ const hash = (str: string) => {
 const firstAsset = (assets: any[], name: string) =>
   assets.find((asset: any) => asset.name === name && asset.browser_download_url);
 
-const checkUserCanUpdate = async (url: string) => {
+const checkUserCanUpdate = async (url: string, fwVersion: string) => {
   if (!url) return true;
-  const deployDataJson = await fetch(url)
-    .then((res) => res.json())
-    .catch(() => null);
+  const deployDataJson = JSON.parse(
+    (await cacheWrap(
+      `firmware-${fwVersion}-deploy`,
+      () =>
+        fetch(url)
+          .then((res) => res.text())
+          .catch(() => null),
+      60 * 60 * 1000
+    )) || 'null'
+  );
   if (!deployDataJson) return true;
 
   const deployData = (
@@ -59,7 +66,7 @@ const checkUserCanUpdate = async (url: string) => {
 
   const uniqueUserKey = `${await hostname()}-${await locale()}-${platform()}-${version()}`;
   // Make it so the hash change every version. Prevent the same user from getting the same delay
-  return hash(`${uniqueUserKey}-${version}`) <= todayUpdateRange;
+  return hash(`${uniqueUserKey}-${fwVersion}`) <= todayUpdateRange;
 };
 
 export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | null> {
@@ -86,7 +93,10 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
     }
 
     const deployAsset = firstAsset(release.assets, 'deploy.json');
-    const userCanUpdate = await checkUserCanUpdate(deployAsset?.browser_download_url);
+    const userCanUpdate = await checkUserCanUpdate(
+      deployAsset?.browser_download_url,
+      version
+    );
     processedReleses.push({
       name: release.name,
       version,
