@@ -1,0 +1,30 @@
+# This workflow will build the update manifest for the updater and update a GitHub release
+
+name: Generate update manifest
+
+on:
+  workflow_dispatch:
+  release:
+    types: [released]
+
+jobs:
+  generate-manifest:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+
+      - name: Generate update-manifest.json
+        run: |
+          npx @slimevr/update-manifest-generator@latest
+
+      - name: Upload update-manifest.json to release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ secrets.RELEASE_ID }}
+          files: update-manifest.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
