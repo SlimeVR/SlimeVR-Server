@@ -1,6 +1,6 @@
 import { BoardType, DeviceDataT } from 'solarxr-protocol';
 import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
-import { cacheDelete, cacheWrap } from './cache';
+import { cacheWrap } from './cache';
 import semver from 'semver';
 import { hostname, locale, platform, version } from '@tauri-apps/plugin-os';
 
