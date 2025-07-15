@@ -1,6 +1,6 @@
 import { BoardType, DeviceDataT } from 'solarxr-protocol';
-import { fetch } from '@tauri-apps/plugin-http';
-import { cacheWrap } from './cache';
+import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
+import { cacheDelete, cacheWrap } from './cache';
 import semver from 'semver';
 import { hostname, locale, platform, version } from '@tauri-apps/plugin-os';
 
@@ -33,7 +33,7 @@ const checkUserCanUpdate = async (url: string, fwVersion: string) => {
     (await cacheWrap(
       `firmware-${fwVersion}-deploy`,
       () =>
-        fetch(url)
+        tauriFetch(url)
           .then((res) => res.text())
           .catch(() => null),
       60 * 60 * 1000
