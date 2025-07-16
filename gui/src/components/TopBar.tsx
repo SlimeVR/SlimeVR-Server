@@ -1,3 +1,20 @@
+import { DOCS_SITE, GH_REPO, VersionContext } from '@/App';
+import { useBreakpoint, useIsTauri } from '@/hooks/breakpoint';
+import { STABLE_CHANNEL, useConfig } from '@/hooks/config';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { connectedIMUTrackersAtom } from '@/store/app-store';
+import { error } from '@/utils/logging';
+import { isTrayAvailable } from '@/utils/tauri';
+import { invoke } from '@tauri-apps/api/core';
+import { listen, TauriEvent } from '@tauri-apps/api/event';
+import {
+  CloseRequestedEvent,
+  getCurrentWindow,
+  UserAttentionType,
+} from '@tauri-apps/api/window';
+import { open } from '@tauri-apps/plugin-shell';
+import classNames from 'classnames';
+import { useAtomValue } from 'jotai';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {
@@ -6,38 +23,21 @@ import {
   ServerInfosResponseT,
   TrackerStatus,
 } from 'solarxr-protocol';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useDoubleTap } from 'use-double-tap';
 import { CloseIcon } from './commons/icon/CloseIcon';
+import { DownloadIcon } from './commons/icon/DownloadIcon';
+import { GearIcon } from './commons/icon/GearIcon';
 import { MaximiseIcon } from './commons/icon/MaximiseIcon';
 import { MinimiseIcon } from './commons/icon/MinimiseIcon';
+import { QuestionIcon } from './commons/icon/QuestionIcon';
 import { SlimeVRIcon } from './commons/icon/SimevrIcon';
 import { ProgressBar } from './commons/ProgressBar';
 import { Typography } from './commons/Typography';
-import { DownloadIcon } from './commons/icon/DownloadIcon';
-import { open } from '@tauri-apps/plugin-shell';
-import { DOCS_SITE, GH_REPO, VersionContext } from '@/App';
-import classNames from 'classnames';
-import { QuestionIcon } from './commons/icon/QuestionIcon';
-import { useBreakpoint, useIsTauri } from '@/hooks/breakpoint';
-import { GearIcon } from './commons/icon/GearIcon';
-import { invoke } from '@tauri-apps/api/core';
-import { TrackersStillOnModal } from './TrackersStillOnModal';
-import { useConfig } from '@/hooks/config';
-import { listen, TauriEvent } from '@tauri-apps/api/event';
-import { TrayOrExitModal } from './TrayOrExitModal';
-import { error } from '@/utils/logging';
-import { useDoubleTap } from 'use-double-tap';
-import { isTrayAvailable } from '@/utils/tauri';
 import { ErrorConsentModal } from './ErrorConsentModal';
-import {
-  CloseRequestedEvent,
-  getCurrentWindow,
-  UserAttentionType,
-} from '@tauri-apps/api/window';
-import { useAtomValue } from 'jotai';
-import { connectedIMUTrackersAtom } from '@/store/app-store';
+import { TrackersStillOnModal } from './TrackersStillOnModal';
+import { TrayOrExitModal } from './TrayOrExitModal';
 
-export function VersionTag() {
+function VersionTag() {
   return (
     <div
       className={classNames(
@@ -51,6 +51,34 @@ export function VersionTag() {
       }}
     >
       {(__VERSION_TAG__ || __COMMIT_HASH__) + (__GIT_CLEAN__ ? '' : '-dirty')}
+    </div>
+  );
+}
+
+export function VersionIndicator() {
+  const { config } = useConfig();
+
+  const channel = config?.updateChannel ?? STABLE_CHANNEL;
+  const isStable = channel === STABLE_CHANNEL;
+
+  return (
+    <div className="bg-opacity-10 bg-status-success rounded-lg overflow-hidden flex">
+      <VersionTag />
+
+      {!isStable && (
+        <div
+          className={classNames(
+            'flex justify-around flex-col text-standard-bold',
+            'text-status-success',
+            'px-3 select-text cursor-pointer'
+          )}
+          onClick={() => {
+            /* TODO(devminer): Open the configuraton page */
+          }}
+        >
+          {channel}
+        </div>
+      )}
     </div>
   );
 }
@@ -181,7 +209,7 @@ export function TopBar({
               )}
               {(!(isMobile && !config?.decorations) || showVersionMobile) && (
                 <>
-                  <VersionTag></VersionTag>
+                  <VersionIndicator />
                   {doesMatchSettings && (
                     <div
                       className={classNames(

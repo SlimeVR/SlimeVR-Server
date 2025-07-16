@@ -1,14 +1,16 @@
-import { createContext, useContext, useState } from 'react';
 import {
   defaultValues as defaultDevSettings,
   DeveloperModeWidgetForm,
 } from '@/components/widgets/DeveloperModeWidget';
-import { error } from '@/utils/logging';
-import { useDebouncedEffect } from './timeout';
-import { createStore, Store } from '@tauri-apps/plugin-store';
-import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
+import { error } from '@/utils/logging';
 import { isTauri } from '@tauri-apps/api/core';
+import { createStore, Store } from '@tauri-apps/plugin-store';
+import { createContext, useContext, useState } from 'react';
+import { useIsTauri } from './breakpoint';
+import { useDebouncedEffect } from './timeout';
+
+export const STABLE_CHANNEL = 'stable';
 
 export interface WindowConfig {
   width: number;
@@ -26,6 +28,7 @@ export enum AssignMode {
 }
 
 export interface Config {
+  updateChannel: string;
   debug: boolean;
   lang: string;
   doneOnboarding: boolean;
@@ -55,6 +58,7 @@ export interface ConfigContext {
 }
 
 export const defaultConfig: Config = {
+  updateChannel: STABLE_CHANNEL,
   lang: 'en',
   debug: false,
   doneOnboarding: false,

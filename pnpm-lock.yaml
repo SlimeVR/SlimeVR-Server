@@ -47,6 +47,9 @@ importers:
       '@sentry/vite-plugin':
         specifier: ^2.22.7
         version: 2.22.7
+      '@slimevr/update-manifest':
+        specifier: ^0.0.1
+        version: 0.0.1(typescript@5.6.3)
       '@tailwindcss/typography':
         specifier: ^0.5.15
         version: 0.5.15(tailwindcss@3.4.14(ts-node@9.1.1(typescript@5.6.3)))
@@ -1082,6 +1085,9 @@ packages:
   '@sindresorhus/is@5.6.0':
     resolution: {integrity: sha512-TV7t8GKYaJWsn00tFDqBw8+Uqmr8A0fRU1tvTQhyZzGv0sJCGRQL3JGMI3ucuKo3XIZdUP+Lx7/gh2t3lewy7g==}
     engines: {node: '>=14.16'}
+
+  '@slimevr/update-manifest@0.0.1':
+    resolution: {integrity: sha512-SqPUQuyhSRdO2kQZG6LPHv+X6mRKzR7/oBJULSiNUQrUhT9NbqssDjGDhZX49UZX8R0lM+BK6468p+7l3oQxMQ==}
 
   '@swc/core-darwin-arm64@1.6.5':
     resolution: {integrity: sha512-RGQhMdni2v1/ANQ/2K+F+QYdzaucekYBewZcX1ogqJ8G5sbPaBdYdDN1qQ4kHLCIkPtGP6qC7c71qPEqL2RidQ==}
@@ -4271,6 +4277,14 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
+  valibot@1.1.0:
+    resolution: {integrity: sha512-Nk8lX30Qhu+9txPYTwM0cFlWLdPFsFr6LblzqIySfbZph9+BFsAHsNvHOymEviUepeIW6KFHzpX8TKhbptBXXw==}
+    peerDependencies:
+      typescript: '>=5'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   vfile-message@4.0.2:
     resolution: {integrity: sha512-jRDZ1IMLttGj41KcZvlrYAaI3CfqpLpfpf+Mfig13viT6NKvRzWZ+lXz0Y5D60w6uJIBAOGq9mSHf0gktF0duw==}
 
@@ -5336,6 +5350,12 @@ snapshots:
       - supports-color
 
   '@sindresorhus/is@5.6.0': {}
+
+  '@slimevr/update-manifest@0.0.1(typescript@5.6.3)':
+    dependencies:
+      valibot: 1.1.0(typescript@5.6.3)
+    transitivePeerDependencies:
+      - typescript
 
   '@swc/core-darwin-arm64@1.6.5':
     optional: true
@@ -9031,6 +9051,10 @@ snapshots:
   utility-types@3.11.0: {}
 
   uuid@9.0.1: {}
+
+  valibot@1.1.0(typescript@5.6.3):
+    optionalDependencies:
+      typescript: 5.6.3
 
   vfile-message@4.0.2:
     dependencies:

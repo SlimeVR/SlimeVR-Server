@@ -1,8 +1,10 @@
+import { type UpdateManifest } from '@slimevr/update-manifest';
+import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 import { createContext, useEffect, useState } from 'react';
 import {
-  BrowserRouter as Router,
   Outlet,
   Route,
+  BrowserRouter as Router,
   Routes,
 } from 'react-router-dom';
 import { Home } from './components/home/Home';
@@ -16,56 +18,60 @@ import {
   WebSocketApiContext,
 } from './hooks/websocket-api';
 
+import { STABLE_CHANNEL } from '@/hooks/config.js';
+import { withSentryReactRouterV6Routing } from '@sentry/react';
 import { Event, listen } from '@tauri-apps/api/event';
+import * as os from '@tauri-apps/plugin-os';
+import { open } from '@tauri-apps/plugin-shell';
+import semver from 'semver';
+import { AppLayout } from './AppLayout';
+import { FirmwareToolSettings } from './components/firmware-tool/FirmwareTool';
+import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { OnboardingContextProvider } from './components/onboarding/OnboardingContextProvicer';
 import { OnboardingLayout } from './components/onboarding/OnboardingLayout';
+import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
 import { AutomaticProportionsPage } from './components/onboarding/pages/body-proportions/AutomaticProportions';
 import { ManualProportionsPage } from './components/onboarding/pages/body-proportions/ManualProportions';
+import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
+import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
+import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
 import { ConnectTrackersPage } from './components/onboarding/pages/ConnectTracker';
 import { DonePage } from './components/onboarding/pages/Done';
 import { EnterVRPage } from './components/onboarding/pages/EnterVR';
 import { HomePage } from './components/onboarding/pages/Home';
 import { AutomaticMountingPage } from './components/onboarding/pages/mounting/AutomaticMounting';
 import { ManualMountingPage } from './components/onboarding/pages/mounting/ManualMounting';
+import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
 import { ResetTutorialPage } from './components/onboarding/pages/ResetTutorial';
+import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/StayAlignedSetup';
 import { TrackersAssignPage } from './components/onboarding/pages/trackers-assign/TrackerAssignment';
 import { WifiCredsPage } from './components/onboarding/pages/WifiCreds';
+import { Preload } from './components/Preload';
 import { ConfigContextProvider } from './components/providers/ConfigContext';
+import { StatusProvider } from './components/providers/StatusSystemContext';
 import { SerialDetectionModal } from './components/SerialDetectionModal';
+import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
+import { InterfaceSettings } from './components/settings/pages/InterfaceSettings';
+import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
+import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { VRCOSCSettings } from './components/settings/pages/VRCOSCSettings';
 import { TopBar } from './components/TopBar';
 import { TrackerSettingsPage } from './components/tracker/TrackerSettings';
-import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings';
-import * as os from '@tauri-apps/plugin-os';
-import { VMCSettings } from './components/settings/pages/VMCSettings';
-import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
-import { StatusProvider } from './components/providers/StatusSystemContext';
-import { VersionUpdateModal } from './components/VersionUpdateModal';
-import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
-import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
-import { open } from '@tauri-apps/plugin-shell';
-import semver from 'semver';
-import { useBreakpoint, useIsTauri } from './hooks/breakpoint';
-import { VRModePage } from './components/vr-mode/VRModePage';
-import { InterfaceSettings } from './components/settings/pages/InterfaceSettings';
-import { error, log } from './utils/logging';
-import { FirmwareToolSettings } from './components/firmware-tool/FirmwareTool';
-import { AppLayout } from './AppLayout';
-import { Preload } from './components/Preload';
 import { UnknownDeviceModal } from './components/UnknownDeviceModal';
-import { useDiscordPresence } from './hooks/discord-presence';
-import { withSentryReactRouterV6Routing } from '@sentry/react';
-import { ScaledProportionsPage } from './components/onboarding/pages/body-proportions/ScaledProportions';
-import { AdvancedSettings } from './components/settings/pages/AdvancedSettings';
-import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
-import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
+import { VersionUpdateModal } from './components/VersionUpdateModal';
+import { VRModePage } from './components/vr-mode/VRModePage';
 import { VRCWarningsPage } from './components/vrc/VRCWarningsPage';
-import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/StayAlignedSetup';
+import { useBreakpoint, useIsTauri } from './hooks/breakpoint';
+import { useDiscordPresence } from './hooks/discord-presence';
+import { error, log } from './utils/logging';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
-export const VersionContext = createContext('');
+// TODO(devminer): make this configurable
+export const RELEASE_CHANNEL = 'stable';
 export const DOCS_SITE = 'https://docs.slimevr.dev';
 export const SLIMEVR_DISCORD = 'https://discord.gg/slimevr';
+
+export const VersionContext = createContext('');
 
 const SentryRoutes = withSentryReactRouterV6Routing(Routes);
 
@@ -207,18 +213,26 @@ export default function App() {
 
   useEffect(() => {
     async function fetchReleases() {
-      const releases = await fetch(
-        `https://api.github.com/repos/${GH_REPO}/releases`
+      const updateManifest = await tauriFetch(
+        `https://github.com/${GH_REPO}/releases/download/v0.0.0-update-manifest/update-manifest.json`
       )
-        .then((res) => res.json())
-        .then((json: any[]) => json.filter((rl) => rl?.prerelease === false));
+        .then((res) => res.json() as Promise<UpdateManifest>)
+        .catch((err) => {
+          error('Failed to fetch releases:', err);
+          debugger;
+        });
+
+      if (!updateManifest) return;
+
+      const channel =
+        updateManifest.channels[RELEASE_CHANNEL] ??
+        updateManifest.channels[STABLE_CHANNEL];
 
       if (
         __VERSION_TAG__ &&
-        typeof releases[0].tag_name === 'string' &&
-        semver.gt(releases[0].tag_name, __VERSION_TAG__)
+        semver.gt(channel.current_version, __VERSION_TAG__)
       ) {
-        setUpdateFound(releases[0].tag_name);
+        setUpdateFound(channel.current_version);
       }
     }
     fetchReleases().catch(() => error('failed to fetch releases'));
