@@ -43,6 +43,8 @@ fn update_window_state(
 	Ok(())
 }
 
+const VERSION: &str = env!("SLIMEVR_SERVER_VERSION");
+
 #[tauri::command]
 fn logging(msg: String) {
 	log::info!(target: "webview", "{}", msg)
@@ -95,10 +97,12 @@ fn main() -> Result<()> {
 	}));
 
 	let cli = Cli::parse();
+
 	let tauri_context = tauri::generate_context!();
 
 	// Set up loggers and global handlers
 	let _logger = setup_logger(&tauri_context);
+	log::info!(target: "backend", "Starting SlimeVR GUI v{}", VERSION);
 
 	// Ensure child processes die when spawned on windows
 	// and then check for WebView2's existence
