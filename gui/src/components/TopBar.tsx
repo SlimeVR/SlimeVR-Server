@@ -62,20 +62,20 @@ export function VersionIndicator() {
   const isStable = channel === STABLE_CHANNEL;
 
   return (
-    <div className="bg-opacity-10 bg-status-success rounded-lg overflow-hidden flex">
+    <div className="bg-opacity-10 bg-status-success rounded-lg overflow-hidden flex gap-1">
       <VersionTag />
 
+      <NavLink
+        to="/settings/updates"
+        className="flex justify-around flex-col py-1 pr-0.5 transition-all fill-status-success"
+        data-tauri-drag-region
+        state={{ scrollTo: 'channel' }}
+      >
+        <GearIcon />
+      </NavLink>
+
       {!isStable && (
-        <div
-          className={classNames(
-            'flex justify-around flex-col text-standard-bold',
-            'text-status-success',
-            'px-3 select-text cursor-pointer'
-          )}
-          onClick={() => {
-            /* TODO(devminer): Open the configuraton page */
-          }}
-        >
+        <div className="flex justify-around flex-col text-standard-bold text-status-success pl-0.5 pr-3 select-text">
           {channel}
         </div>
       )}

@@ -1,25 +1,25 @@
-import { Localized, useLocalization } from '@fluent/react';
-import { Typography } from '@/components/commons/Typography';
-import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
-import { useFirmwareTool } from '@/hooks/firmware-tool';
 import { Button } from '@/components/commons/Button';
-import { Control, useForm } from 'react-hook-form';
-import {
-  CreateImuConfigDTO,
-  Imudto,
-} from '@/firmware-tool-api/firmwareToolSchemas';
+import { CheckBox } from '@/components/commons/Checkbox';
 import { Dropdown } from '@/components/commons/Dropdown';
-import { TrashIcon } from '@/components/commons/icon/TrashIcon';
 import { Input } from '@/components/commons/Input';
+import { Typography } from '@/components/commons/Typography';
 import {
   ArrowDownIcon,
   ArrowUpIcon,
 } from '@/components/commons/icon/ArrowIcons';
-import { useEffect, useRef, useState } from 'react';
-import classNames from 'classnames';
-import { useElemSize } from '@/hooks/layout';
+import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
+import { TrashIcon } from '@/components/commons/icon/TrashIcon';
 import { useGetFirmwaresImus } from '@/firmware-tool-api/firmwareToolComponents';
-import { CheckBox } from '@/components/commons/Checkbox';
+import {
+  CreateImuConfigDTO,
+  Imudto,
+} from '@/firmware-tool-api/firmwareToolSchemas';
+import { useFirmwareTool } from '@/hooks/firmware-tool';
+import { useElemSize } from '@/hooks/layout';
+import { Localized, useLocalization } from '@fluent/react';
+import classNames from 'classnames';
+import { useEffect, useRef, useState } from 'react';
+import { Control, useForm } from 'react-hook-form';
 
 function IMUCard({
   control,

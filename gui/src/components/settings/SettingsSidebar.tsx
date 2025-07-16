@@ -1,9 +1,9 @@
+import { Typography } from '@/components/commons/Typography';
+import { useVRCConfig } from '@/hooks/vrc-config';
+import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { ReactNode, useMemo } from 'react';
 import { NavLink, useLocation, useMatch } from 'react-router-dom';
-import { Typography } from '@/components/commons/Typography';
-import { useLocalization } from '@fluent/react';
-import { useVRCConfig } from '@/hooks/vrc-config';
 
 export function SettingsLink({
   to,
@@ -68,6 +68,9 @@ export function SettingsSidebar() {
           </SettingsLink>
           <SettingsLink to="/settings/trackers" scrollTo="gestureControl">
             {l10n.getString('settings-sidebar-gesture_control')}
+          </SettingsLink>
+          <SettingsLink to="/settings/updates" scrollTo="updates">
+            {l10n.getString('settings-sidebar-updates')}
           </SettingsLink>
         </div>
       </div>

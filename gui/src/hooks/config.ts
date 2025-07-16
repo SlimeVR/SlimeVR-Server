@@ -4,13 +4,14 @@ import {
 } from '@/components/widgets/DeveloperModeWidget';
 import { waitUntil } from '@/utils/a11y';
 import { error } from '@/utils/logging';
+import { type ChannelName } from '@slimevr/update-manifest';
 import { isTauri } from '@tauri-apps/api/core';
 import { createStore, Store } from '@tauri-apps/plugin-store';
 import { createContext, useContext, useState } from 'react';
 import { useIsTauri } from './breakpoint';
 import { useDebouncedEffect } from './timeout';
 
-export const STABLE_CHANNEL = 'stable';
+export const STABLE_CHANNEL = 'stable' as ChannelName;
 
 export interface WindowConfig {
   width: number;
@@ -28,7 +29,8 @@ export enum AssignMode {
 }
 
 export interface Config {
-  updateChannel: string;
+  updateChannel: ChannelName;
+  autoUpdate: boolean;
   debug: boolean;
   lang: string;
   doneOnboarding: boolean;
@@ -59,6 +61,7 @@ export interface ConfigContext {
 
 export const defaultConfig: Config = {
   updateChannel: STABLE_CHANNEL,
+  autoUpdate: true,
   lang: 'en',
   debug: false,
   doneOnboarding: false,

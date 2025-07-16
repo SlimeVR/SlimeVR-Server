@@ -1,7 +1,28 @@
-import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
+import { A } from '@/components/commons/A';
+import { Button } from '@/components/commons/Button';
+import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
+import { WarningBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
+import { DeviceCardControl } from '@/components/firmware-tool/DeviceCard';
+import { useAppContext } from '@/hooks/app';
+import {
+  firmwareUpdateErrorStatus,
+  getFlashingRequests,
+  SelectedDevice,
+} from '@/hooks/firmware-tool';
+import { checkForUpdate } from '@/hooks/firmware-update';
 import { getTrackerName } from '@/hooks/tracker';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { devicesAtom } from '@/store/app-store';
+import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import classNames from 'classnames';
+import { useAtomValue } from 'jotai';
 import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
+import { Control, useForm } from 'react-hook-form';
+import Markdown from 'react-markdown';
+import { useNavigate } from 'react-router-dom';
+import remark from 'remark-gfm';
 import {
   DeviceDataT,
   DeviceIdTableT,
@@ -12,28 +33,7 @@ import {
   RpcMessage,
   TrackerStatus,
 } from 'solarxr-protocol';
-import classNames from 'classnames';
-import { Button } from '@/components/commons/Button';
-import Markdown from 'react-markdown';
-import remark from 'remark-gfm';
-import { WarningBox } from '@/components/commons/TipBox';
-import { useAppContext } from '@/hooks/app';
-import { DeviceCardControl } from '@/components/firmware-tool/DeviceCard';
-import { Control, useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
-import {
-  firmwareUpdateErrorStatus,
-  getFlashingRequests,
-  SelectedDevice,
-} from '@/hooks/firmware-tool';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { object } from 'yup';
-import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
-import { A } from '@/components/commons/A';
-import { useAtomValue } from 'jotai';
-import { devicesAtom } from '@/store/app-store';
-import { checkForUpdate } from '@/hooks/firmware-update';
 
 interface FirmwareUpdateForm {
   selectedDevices: { [key: string]: boolean };

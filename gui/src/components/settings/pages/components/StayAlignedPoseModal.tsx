@@ -9,7 +9,7 @@ import { useLocalization } from '@fluent/react';
 import { Dispatch, ReactNode, SetStateAction } from 'react';
 import { StayAlignedRelaxedPose } from 'solarxr-protocol';
 
-function StaAlignedPoseModal({
+function StayAlignedPoseModal({
   open,
   title,
   descriptionKeys,
@@ -80,7 +80,7 @@ export const StandingRelaxedPoseModal = ({
 }: {
   open: [boolean, Dispatch<SetStateAction<boolean>>];
 }) => (
-  <StaAlignedPoseModal
+  <StayAlignedPoseModal
     open={open}
     title={'onboarding-stay_aligned-relaxed_poses-standing-title'}
     descriptionKeys={[
@@ -94,7 +94,7 @@ export const StandingRelaxedPoseModal = ({
       width={260}
       alt="Reset position"
     />
-  </StaAlignedPoseModal>
+  </StayAlignedPoseModal>
 );
 
 export const SittingRelaxedPoseModal = ({
@@ -102,7 +102,7 @@ export const SittingRelaxedPoseModal = ({
 }: {
   open: [boolean, Dispatch<SetStateAction<boolean>>];
 }) => (
-  <StaAlignedPoseModal
+  <StayAlignedPoseModal
     open={open}
     title={'onboarding-stay_aligned-relaxed_poses-sitting-title'}
     descriptionKeys={[
@@ -116,7 +116,7 @@ export const SittingRelaxedPoseModal = ({
       width={260}
       alt="Reset position"
     />
-  </StaAlignedPoseModal>
+  </StayAlignedPoseModal>
 );
 
 export const FlatRelaxedPoseModal = ({
@@ -124,7 +124,7 @@ export const FlatRelaxedPoseModal = ({
 }: {
   open: [boolean, Dispatch<SetStateAction<boolean>>];
 }) => (
-  <StaAlignedPoseModal
+  <StayAlignedPoseModal
     open={open}
     title={'onboarding-stay_aligned-relaxed_poses-flat-title'}
     descriptionKeys={[
@@ -138,5 +138,5 @@ export const FlatRelaxedPoseModal = ({
       width={560}
       alt="Reset position"
     />
-  </StaAlignedPoseModal>
+  </StayAlignedPoseModal>
 );
