@@ -19,7 +19,7 @@ import { bonesAtom } from '@/store/app-store';
 import { useConfig } from '@/hooks/config';
 import { Tween } from '@tweenjs/tween.js';
 
-const GROUND_COLOR = '#4444aa';
+const GROUND_COLOR = '#2c2c6b';
 
 // Just need to know the length of the total body, so don't need right legs
 const Y_PARTS = [

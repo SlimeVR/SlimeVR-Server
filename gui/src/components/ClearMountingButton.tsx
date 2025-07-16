@@ -1,11 +1,11 @@
 import { Localized } from '@fluent/react';
 import { ClearMountingResetRequestT, RpcMessage } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { BigButton } from './commons/BigButton';
 import { TrashIcon } from './commons/icon/TrashIcon';
 import { Quaternion } from 'three';
 import { QuaternionFromQuatT, similarQuaternions } from '@/maths/quaternion';
 import { useMemo } from 'react';
+import { Button } from './commons/Button';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom } from '@/store/app-store';
 
@@ -34,11 +34,12 @@ export function ClearMountingButton() {
 
   return (
     <Localized id={'widget-clear_mounting'}>
-      <BigButton
+      <Button
         icon={<TrashIcon size={20} />}
         onClick={clearMounting}
         disabled={!trackerWithMounting}
-      />
+        variant="primary"
+      ></Button>
     </Localized>
   );
 }

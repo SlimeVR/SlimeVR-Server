@@ -122,7 +122,6 @@ class HumanSkeleton(
 	var headTracker: Tracker? by Delegates.observable(null) { _, old, new ->
 		if (old == new) return@observable
 
-		humanPoseManager.checkReportMissingHmd()
 		humanPoseManager.checkTrackersRequiringReset()
 	}
 	var neckTracker: Tracker? = null
@@ -1525,7 +1524,7 @@ class HumanSkeleton(
 		// Resets all axes of the trackers with the HMD as reference.
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsReset
-			if (tracker != null && (tracker.needsReset || tracker.isHmd)) {
+			if (tracker != null && (tracker.allowReset || tracker.isHmd)) {
 				tracker.resetsHandler.resetFull(referenceRotation)
 			}
 		}
@@ -1546,14 +1545,14 @@ class HumanSkeleton(
 		var referenceRotation = IDENTITY
 		headTracker?.let {
 			// Only reset if head needsReset and isn't computed
-			if (it.needsReset && !it.isComputed) {
+			if (it.allowReset && !it.isComputed) {
 				it.resetsHandler.resetYaw(referenceRotation)
 			}
 			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsReset
-			if (tracker != null && tracker.needsReset) {
+			if (tracker != null && tracker.allowReset) {
 				tracker.resetsHandler.resetYaw(referenceRotation)
 			}
 		}
@@ -1570,7 +1569,7 @@ class HumanSkeleton(
 		// If there's a server present (required for status) and any tracker reports a
 		// non-zero reset status (indicates reset required), then block mounting reset,
 		// as it requires a full reset first
-		if (humanPoseManager.server != null && trackersToReset.any { it != null && it.lastResetStatus != 0u }) {
+		if (humanPoseManager.server != null && trackersToReset.any { it != null && it.needReset }) {
 			LogManager.info("[HumanSkeleton] Reset: mounting ($resetSourceName) failed, reset required")
 			return
 		}
@@ -1579,14 +1578,14 @@ class HumanSkeleton(
 		var referenceRotation = IDENTITY
 		headTracker?.let {
 			// Only reset if head needsMounting or is computed but not HMD
-			if (it.needsMounting || (it.isComputed && !it.isHmd)) {
+			if (it.allowMounting || (it.isComputed && !it.isHmd)) {
 				it.resetsHandler.resetMounting(referenceRotation)
 			}
 			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsMounting
-			if (tracker != null && tracker.needsMounting) {
+			if (tracker != null && tracker.allowMounting) {
 				tracker.resetsHandler.resetMounting(referenceRotation)
 			}
 		}
@@ -1598,11 +1597,11 @@ class HumanSkeleton(
 	@VRServerThread
 	fun clearTrackersMounting(resetSourceName: String?) {
 		headTracker?.let {
-			if (it.needsMounting) it.resetsHandler.clearMounting()
+			if (it.allowMounting) it.resetsHandler.clearMounting()
 		}
 		for (tracker in trackersToReset) {
 			if (tracker != null &&
-				tracker.needsMounting
+				tracker.allowMounting
 			) {
 				tracker.resetsHandler.clearMounting()
 			}

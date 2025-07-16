@@ -7,6 +7,7 @@ import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.firmware.FirmwareUpdateHandler
 import dev.slimevr.firmware.SerialFlashingHandler
+import dev.slimevr.flightlist.FlightListManager
 import dev.slimevr.games.vrchat.VRCConfigHandler
 import dev.slimevr.games.vrchat.VRCConfigHandlerStub
 import dev.slimevr.games.vrchat.VRChatConfigManager
@@ -116,6 +117,8 @@ class VRServer @JvmOverloads constructor(
 	@JvmField
 	val handshakeHandler = HandshakeHandler()
 
+	val flightListManager: FlightListManager
+
 	init {
 		// UwU
 		configManager = ConfigManager(configPath)
@@ -131,6 +134,7 @@ class VRServer @JvmOverloads constructor(
 		autoBoneHandler = AutoBoneHandler(this)
 		firmwareUpdateHandler = FirmwareUpdateHandler(this)
 		vrcConfigManager = VRChatConfigManager(this, vrcConfigHandlerProvider(this))
+		flightListManager = FlightListManager(this)
 		protocolAPI = ProtocolAPI(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 
@@ -169,6 +173,7 @@ class VRServer @JvmOverloads constructor(
 		for (tracker in computedTrackers) {
 			registerTracker(tracker)
 		}
+
 		instance = this
 	}
 
