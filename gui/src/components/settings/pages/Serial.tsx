@@ -114,12 +114,12 @@ export function Serial() {
     }
   );
 
-  useEffect(() => {
-    if (consoleRef.current)
-      consoleRef.current.scrollTo({
-        top: consoleRef.current.scrollHeight,
-      });
-  }, [consoleContent]);
+  // useEffect(() => {
+  //   if (consoleRef.current)
+  //     consoleRef.current.scrollTo({
+  //       top: consoleRef.current.scrollHeight,
+  //     });
+  // }, [consoleContent]);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -248,7 +248,7 @@ export function Serial() {
         </div>
         <div className="bg-background-80 rounded-lg flex-grow h-0 flex flex-col p-2">
           <div
-            className="flex-grow overflow-x-auto overflow-y-auto"
+            className="flex-grow overflow-auto overscroll-y-contain snap-y snap-proximity"
             ref={consoleRef}
           >
             <div className="flex select-text">
@@ -258,6 +258,7 @@ export function Serial() {
                   : l10n.getString('settings-serial-connection_lost')}
               </pre>
             </div>
+            <div className="snap-end" />
           </div>
           <div className="border-t-2 pt-2 border-background-60 border-solid gap-2 flex flex-row">
             <div className="xs:flex flex-grow xs:flex-wrap gap-2 grid grid-cols-2">
