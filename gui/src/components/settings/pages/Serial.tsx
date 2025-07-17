@@ -114,13 +114,6 @@ export function Serial() {
     }
   );
 
-  // useEffect(() => {
-  //   if (consoleRef.current)
-  //     consoleRef.current.scrollTo({
-  //       top: consoleRef.current.scrollHeight,
-  //     });
-  // }, [consoleContent]);
-
   useEffect(() => {
     const id = setInterval(() => {
       if (!isSerialOpen) {
