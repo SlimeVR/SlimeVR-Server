@@ -56,6 +56,8 @@ class VRConfig {
 
 	val flightList: FlightListConfig = FlightListConfig()
 
+	val vrcConfig: VRCConfig = VRCConfig()
+
 	init {
 		// Initialize default settings for OSC Router
 		oscRouter.portIn = 9002

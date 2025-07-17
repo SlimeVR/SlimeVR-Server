@@ -13,57 +13,14 @@ import com.sun.jna.platform.win32.WTypes
 import com.sun.jna.platform.win32.WinNT.HRESULT
 import com.sun.jna.ptr.IntByReference
 import com.sun.jna.ptr.PointerByReference
+import dev.slimevr.ConnectivityFlags
+import dev.slimevr.NetworkCategory
+import dev.slimevr.NetworkInfo
+import dev.slimevr.NetworkProfileChecker
 import dev.slimevr.VRServer
 import io.eiren.util.OperatingSystem
 import java.util.*
 import kotlin.concurrent.scheduleAtFixedRate
-
-data class NetworkInfo(
-	val name: String?,
-	val description: String?,
-	val category: NetworkCategory?,
-	val connectivity: Set<ConnectivityFlags>?,
-	val connected: Boolean?,
-)
-
-/**
- * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/ne-netlistmgr-nlm_network_category">NLM_NETWORK_CATEGORY enumeration (netlistmgr.h)</a>
- */
-enum class NetworkCategory(val value: Int) {
-	PUBLIC(0),
-	PRIVATE(1),
-	DOMAIN_AUTHENTICATED(2),
-	;
-
-	companion object {
-		fun fromInt(value: Int) = values().find { it.value == value }
-	}
-}
-
-/**
- * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/ne-netlistmgr-nlm_connectivity">NLM_CONNECTIVITY enumeration (netlistmgr.h)</a>
- */
-enum class ConnectivityFlags(val value: Int) {
-	DISCONNECTED(0),
-	IPV4_NOTRAFFIC(0x1),
-	IPV6_NOTRAFFIC(0x2),
-	IPV4_SUBNET(0x10),
-	IPV4_LOCALNETWORK(0x20),
-	IPV4_INTERNET(0x40),
-	IPV6_SUBNET(0x100),
-	IPV6_LOCALNETWORK(0x200),
-	IPV6_INTERNET(0x400),
-	;
-
-	companion object {
-		fun fromInt(value: Int): Set<ConnectivityFlags> =
-			if (value == 0) {
-				setOf(DISCONNECTED)
-			} else {
-				values().filter { it != DISCONNECTED && (value and it.value) != 0 }.toSet()
-			}
-	}
-}
 
 /**
  * @see <a href="https://learn.microsoft.com/en-us/windows/win32/api/netlistmgr/nn-netlistmgr-inetworkconnection">INetworkConnection interface (netlistmgr.h)</a>
@@ -306,38 +263,23 @@ fun enumerateNetworks(): List<NetworkInfo>? {
 	return null
 }
 
-class NetworkProfileChecker(private val server: VRServer) {
+class DesktopNetworkProfileChecker(private val server: VRServer):
+	NetworkProfileChecker() {
 	private val updateTickTimer = Timer("NetworkProfileCheck")
-	private var lastPublicNetworkStatus: UInt = 0u
-	private var numPublicNetworks = 0
+	private var publicNetworksLocal: List<NetworkInfo> = listOf()
+
+	override val isSupported: Boolean
+		get() = OperatingSystem.currentPlatform == OperatingSystem.WINDOWS
+
+	override val publicNetworks: List<NetworkInfo>
+		get() = publicNetworksLocal;
 
 	init {
 		if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {
 			this.updateTickTimer.scheduleAtFixedRate(0, 3000) {
-				val currentNumPublicNetworks = enumerateNetworks()?.filter { net ->
+				publicNetworksLocal = enumerateNetworks()?.filter { net ->
 					net.connected == true && net.category == NetworkCategory.PUBLIC
 				} ?: listOf()
-				val currentNumPublicNetworksCount = currentNumPublicNetworks.count()
-
-				if (numPublicNetworks != currentNumPublicNetworksCount) {
-					numPublicNetworks = currentNumPublicNetworksCount
-// 					if (lastPublicNetworkStatus != 0u) {
-// 						server.statusSystem.removeStatus(lastPublicNetworkStatus)
-// 						lastPublicNetworkStatus = 0u
-// 					}
-//
-// 					if (lastPublicNetworkStatus == 0u && numPublicNetworks > 0) {
-// 						lastPublicNetworkStatus = server.statusSystem.addStatus(
-// 							StatusDataUnion().apply {
-// 								type = StatusData.StatusPublicNetwork
-// 								value = StatusPublicNetworkT().apply {
-// 									adapters = currentNumPublicNetworks.map { it.name }.toTypedArray()
-// 								}
-// 							},
-// 							false,
-// 						)
-// 					}
-				}
 			}
 		}
 	}

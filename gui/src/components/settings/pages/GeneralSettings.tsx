@@ -9,6 +9,7 @@ import {
   ModelRatiosT,
   ModelSettingsT,
   ModelTogglesT,
+  MountingMethod,
   ResetsSettingsT,
   RpcMessage,
   SettingsRequestT,
@@ -38,6 +39,11 @@ import {
   serializeStayAlignedSettings,
   deserializeStayAlignedSettings,
 } from './components/StayAlignedSettings';
+import {
+  defaultResetSettings,
+  loadResetSettings,
+  ResetSettingsForm,
+} from '@/hooks/reset-settings';
 
 export type SettingsForm = {
   trackers: {
@@ -95,13 +101,7 @@ export type SettingsForm = {
   legTweaks: {
     correctionStrength: number;
   };
-  resetsSettings: {
-    resetMountingFeet: boolean;
-    armsMountingResetMode: number;
-    yawResetSmoothTime: number;
-    saveMountingReset: boolean;
-    resetHmdPitch: boolean;
-  };
+  resetsSettings: ResetSettingsForm;
   stayAligned: StayAlignedSettingsForm;
 };
 
@@ -156,22 +156,14 @@ const defaultValues: SettingsForm = {
     numberTrackersOverThreshold: 1,
   },
   legTweaks: { correctionStrength: 0.3 },
-  resetsSettings: {
-    resetMountingFeet: false,
-    armsMountingResetMode: 0,
-    yawResetSmoothTime: 0.0,
-    saveMountingReset: false,
-    resetHmdPitch: false,
-  },
+  resetsSettings: defaultResetSettings,
   stayAligned: defaultStayAlignedSettings,
 };
 
 export function GeneralSettings() {
   const { l10n } = useLocalization();
   const { config } = useConfig();
-  // const { state } = useLocation();
   const { currentLocales } = useLocaleConfig();
-  // const pageRef = useRef<HTMLFormElement | null>(null);
 
   const percentageFormat = new Intl.NumberFormat(currentLocales, {
     style: 'percent',
@@ -288,17 +280,7 @@ export function GeneralSettings() {
     settings.stayAligned = serializeStayAlignedSettings(values.stayAligned);
 
     if (values.resetsSettings) {
-      const resetsSettings = new ResetsSettingsT();
-      resetsSettings.resetMountingFeet =
-        values.resetsSettings.resetMountingFeet;
-      resetsSettings.armsMountingResetMode =
-        values.resetsSettings.armsMountingResetMode;
-      resetsSettings.yawResetSmoothTime =
-        values.resetsSettings.yawResetSmoothTime;
-      resetsSettings.saveMountingReset =
-        values.resetsSettings.saveMountingReset;
-      resetsSettings.resetHmdPitch = values.resetsSettings.resetHmdPitch;
-      settings.resetsSettings = resetsSettings;
+      settings.resetsSettings = loadResetSettings(values.resetsSettings);
     }
 
     sendRPCPacket(RpcMessage.ChangeSettingsRequest, settings);

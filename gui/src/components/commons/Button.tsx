@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React, { ReactNode, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LoaderIcon, SlimeState } from './icon/LoaderIcon';
+import { Localized, LocalizedProps } from '@fluent/react';
 
 function ButtonContent({
   loading,
@@ -44,7 +45,9 @@ export type ButtonProps = {
   loading?: boolean;
   rounded?: boolean;
   state?: any;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>;
+  id?: string;
+} & React.ButtonHTMLAttributes<HTMLButtonElement> &
+  Omit<LocalizedProps, 'id'>;
 
 export function Button({
   children,
@@ -55,6 +58,10 @@ export function Button({
   state = {},
   icon,
   rounded = false,
+  attrs,
+  id,
+  vars,
+  elems,
   ...props
 }: ButtonProps) {
   const classes = useMemo(() => {
@@ -95,7 +102,7 @@ export function Button({
     );
   }, [variant, disabled, rounded, props.className]);
 
-  return to ? (
+  const content = to ? (
     <NavLink
       to={to}
       className={classes}
@@ -113,4 +120,14 @@ export function Button({
       </ButtonContent>
     </button>
   );
+
+  if (id) {
+    return (
+      <Localized attrs={attrs} vars={vars} elems={elems} id={id}>
+        {content}
+      </Localized>
+    );
+  }
+
+  return content;
 }

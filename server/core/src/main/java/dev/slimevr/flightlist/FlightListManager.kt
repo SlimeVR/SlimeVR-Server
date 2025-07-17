@@ -2,13 +2,16 @@ package dev.slimevr.flightlist
 
 import dev.slimevr.VRServer
 import dev.slimevr.bridge.ISteamVRBridge
+import dev.slimevr.config.MountingMethods
 import dev.slimevr.games.vrchat.VRCConfigListener
 import dev.slimevr.games.vrchat.VRCConfigRecommendedValues
 import dev.slimevr.games.vrchat.VRCConfigValidity
 import dev.slimevr.games.vrchat.VRCConfigValues
+import dev.slimevr.reset.ResetListener
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
+import io.eiren.util.OperatingSystem
 import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
 import solarxr_protocol.rpc.*
@@ -18,7 +21,7 @@ import kotlin.concurrent.timerTask
 import kotlin.system.measureTimeMillis
 
 interface FlightListListener {
-	fun onStepUpdate(step: FlightListStepT)
+	fun onStepsUpdate()
 }
 
 class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
@@ -28,13 +31,17 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 
 	private val updateFlightListTimer = Timer("FetchVRCConfigTimer")
 
+	// Simple flag set to true if reset mounting was performed at least once.
+	// This value is only runtime and never saved
+	var resetMountingCompleted = false
+
 	init {
 		vrServer.vrcConfigManager.addListener(this)
 
 		createSteps()
 		updateFlightListTimer.scheduleAtFixedRate(
 			timerTask {
-				updateFligtlist()
+				updateFlightlist()
 			},
 			0,
 			1000,
@@ -62,8 +69,9 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 		steps.add(
 			FlightListStepT().apply {
 				id = FlightListStepId.TRACKERS_CALIBRATION
+				enabled = true
 				optional = false
-				ignorable = false
+				ignorable = true
 				visibility = FlightListStepVisibility.ALWAYS
 			},
 		)
@@ -71,6 +79,7 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 		steps.add(
 			FlightListStepT().apply {
 				id = FlightListStepId.FULL_RESET
+				enabled = true
 				optional = false
 				ignorable = false
 				visibility = FlightListStepVisibility.ALWAYS
@@ -79,7 +88,19 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 
 		steps.add(
 			FlightListStepT().apply {
+				id = FlightListStepId.MOUNTING_CALIBRATION
+				valid = false
+				enabled = vrServer.configManager.vrConfig.resetsConfig.preferedMountingMethod == MountingMethods.AUTOMATIC
+				optional = false
+				ignorable = true
+				visibility = FlightListStepVisibility.ALWAYS
+			},
+		)
+
+		steps.add(
+			FlightListStepT().apply {
 				id = FlightListStepId.STEAMVR_DISCONNECTED
+				enabled = true
 				optional = true
 				ignorable = true
 				visibility = FlightListStepVisibility.WHEN_INVALID
@@ -89,6 +110,7 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 		steps.add(
 			FlightListStepT().apply {
 				id = FlightListStepId.UNASSIGNED_HMD
+				enabled = true
 				optional = false
 				ignorable = false
 				visibility = FlightListStepVisibility.WHEN_INVALID
@@ -98,26 +120,36 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 		steps.add(
 			FlightListStepT().apply {
 				id = FlightListStepId.TRACKER_ERROR
-				valid = true; // Default to valid
+				valid = true // Default to valid
+				enabled = true
 				optional = false
 				ignorable = false
 				visibility = FlightListStepVisibility.WHEN_INVALID
 			},
 		)
 
-		if (vrServer.vrcConfigManager.isSupported) {
-			steps.add(
-				FlightListStepT().apply {
-					id = FlightListStepId.VRCHAT_SETTINGS
-					optional = true
-					ignorable = true
-					visibility = FlightListStepVisibility.WHEN_INVALID
-				},
-			)
-		}
+		steps.add(
+			FlightListStepT().apply {
+				id = FlightListStepId.VRCHAT_SETTINGS
+				enabled = vrServer.vrcConfigManager.isSupported
+				optional = true
+				ignorable = true
+				visibility = FlightListStepVisibility.WHEN_INVALID
+			},
+		)
+
+		steps.add(
+			FlightListStepT().apply {
+				id = FlightListStepId.NETWORK_PROFILE_PUBLIC
+				enabled = vrServer.networkProfileChecker.isSupported
+				optional = true
+				ignorable = true
+				visibility = FlightListStepVisibility.WHEN_INVALID
+			},
+		)
 	}
 
-	fun updateFligtlist() {
+	fun updateFlightlist() {
 		println(
 			measureTimeMillis {
 				val assignedTrackers =
@@ -187,6 +219,10 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 					FlightListStepId.TRACKERS_CALIBRATION,
 					trackersNeedCalibration.isEmpty(),
 				) {
+					// Don't show the step if none of the trackers connected support IMU calibration
+					it.enabled = imuTrackers.any { t ->
+						t.hasCompletedRestCalibration != null
+					}
 					if (trackersNeedCalibration.isNotEmpty()) {
 						it.extraData = FlightListExtraDataUnion().apply {
 							type = FlightListExtraData.FlightListNeedCalibration
@@ -218,6 +254,27 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 						}
 					}
 				}
+
+				if (vrServer.networkProfileChecker.isSupported) {
+					updateValidity(FlightListStepId.NETWORK_PROFILE_PUBLIC, vrServer.networkProfileChecker.publicNetworks.isEmpty()) {
+						if (vrServer.networkProfileChecker.publicNetworks.isNotEmpty()) {
+							it.extraData = FlightListExtraDataUnion().apply {
+								type = FlightListExtraData.FlightListPublicNetworks
+								value = FlightListPublicNetworksT().apply {
+									adapters = vrServer.networkProfileChecker.publicNetworks.map { it.name }.toTypedArray()
+								}
+							}
+						} else {
+							it.extraData = null;
+						}
+					}
+				}
+
+				updateValidity(FlightListStepId.MOUNTING_CALIBRATION, resetMountingCompleted) {
+					it.enabled = vrServer.configManager.vrConfig.resetsConfig.preferedMountingMethod == MountingMethods.AUTOMATIC
+				}
+
+				listeners.forEach { it.onStepsUpdate() }
 			},
 		)
 	}
@@ -227,25 +284,27 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 			"id is unknown"
 		}
 		val step = steps.find { it.id == id } ?: return
-		val wasValid = step.valid;
 		step.valid = valid
 		if (beforeUpdate != null) {
 			beforeUpdate(step)
 		}
-		if (wasValid != valid) { //FIXME: this does not cover extraData changing
-			listeners.forEach { it.onStepUpdate(step) }
-		}
 	}
+
 
 	override fun onChange(
 		validity: VRCConfigValidity,
 		values: VRCConfigValues,
 		recommended: VRCConfigRecommendedValues,
+		muted: List<String>
 	) {
 		updateValidity(
 			FlightListStepId.VRCHAT_SETTINGS,
-			validity.javaClass.declaredFields.asSequence().all { p -> p.get(validity) == true },
+			VRCConfigValidity::class.java.declaredFields.asSequence().all { p ->
+				p.isAccessible = true
+				return@all p.get(validity) == true || muted.contains(p.name)
+			},
 		)
+		listeners.forEach { it.onStepsUpdate() }
 	}
 
 	fun toggleStep(step: FlightListStepT) {
@@ -257,4 +316,5 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 		}
 		vrServer.configManager.saveConfig()
 	}
+
 }

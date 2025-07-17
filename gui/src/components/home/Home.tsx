@@ -1,31 +1,20 @@
-import { Localized, useLocalization } from '@fluent/react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { StatusData, TrackerDataT } from 'solarxr-protocol';
+import { useLocalization } from '@fluent/react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { TrackerDataT } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerCard } from '@/components/tracker/TrackerCard';
 import { TrackersTable } from '@/components/tracker/TrackersTable';
-import {
-  parseStatusToLocale,
-  trackerStatusRelated,
-  useStatusContext,
-} from '@/hooks/status-system';
-import { useMemo } from 'react';
-import { WarningBox } from '@/components/commons/TipBox';
 import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
-import classNames from 'classnames';
 import { useAtomValue } from 'jotai';
 import { flatTrackersAtom } from '@/store/app-store';
-import { useVRCConfig } from '@/hooks/vrc-config';
-
-const DONT_REPEAT_STATUSES = [StatusData.StatusTrackerReset];
+import { useSessionFlightlist } from '@/hooks/session-flightlist';
 
 export function Home() {
   const { l10n } = useLocalization();
   const { config } = useConfig();
   const trackers = useAtomValue(flatTrackersAtom);
-  const { statuses } = useStatusContext();
-  const { invalidConfig } = useVRCConfig();
+  const { hightlightedTrackers } = useSessionFlightlist();
   const navigate = useNavigate();
 
   const sendToSettings = (tracker: TrackerDataT) => {
@@ -33,15 +22,6 @@ export function Home() {
       `/tracker/${tracker.trackerId?.trackerNum}/${tracker.trackerId?.deviceId?.id}`
     );
   };
-
-  const filteredStatuses = useMemo(() => {
-    const dontRepeat = new Map(DONT_REPEAT_STATUSES.map((x) => [x, false]));
-    return Object.entries(statuses).filter(([, value]) => {
-      if (dontRepeat.get(value.dataType)) return false;
-      if (dontRepeat.has(value.dataType)) dontRepeat.set(value.dataType, true);
-      return true;
-    });
-  }, [statuses]);
 
   return (
     <div className="relative h-full">
@@ -52,41 +32,6 @@ export function Home() {
         <HeadsetIcon></HeadsetIcon>
       </NavLink>
       <div className="h-full overflow-y-auto">
-        <div
-          className={classNames(
-            'px-3 pt-3 gap-3 w-full grid md:grid-cols-2 mobile:grid-cols-1'
-          )}
-        >
-          {filteredStatuses
-            .filter(([, status]) => status.prioritized)
-            .map(([, status]) => (
-              <Localized
-                key={status.id}
-                id={`status_system-${StatusData[status.dataType]}`}
-                vars={parseStatusToLocale(status, trackers, l10n)}
-              >
-                <WarningBox whitespace={false}>
-                  {`Warning, you should fix ${StatusData[status.dataType]}`}
-                </WarningBox>
-              </Localized>
-            ))}
-          {invalidConfig && (
-            <WarningBox whitespace={false}>
-              <div className="flex gap-2 justify-between items-center w-full">
-                <div className="flex">
-                  <Localized id={'vrc_config-invalid'}></Localized>
-                </div>
-                <div className="flex">
-                  <Link to="/vrc-warnings">
-                    <div className="rounded-md p-2 bg-background-90 bg-opacity-15 hover:bg-background-10 hover:bg-opacity-25 text-nowrap">
-                      <Localized id={'vrc_config-show_more'}></Localized>
-                    </div>
-                  </Link>
-                </div>
-              </div>
-            </WarningBox>
-          )}
-        </div>
         <div className="overflow-y-auto flex flex-col gap-3">
           {trackers.length === 0 && (
             <div className="flex px-5 pt-5 justify-center">
@@ -107,9 +52,13 @@ export function Home() {
                   smol
                   showUpdates
                   interactable
-                  warning={Object.values(statuses).some((status) =>
-                    trackerStatusRelated(tracker, status)
-                  )}
+                  warning={
+                    !!hightlightedTrackers.find(
+                      (t) =>
+                        t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
+                        t?.trackerNum === tracker.trackerId?.trackerNum
+                    )
+                  }
                 />
               ))}
             </div>

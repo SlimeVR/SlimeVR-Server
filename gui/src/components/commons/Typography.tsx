@@ -1,4 +1,5 @@
 import { useConfig } from '@/hooks/config';
+import { Localized, LocalizedProps } from '@fluent/react';
 import classNames from 'classnames';
 import { createElement, ReactNode, useMemo } from 'react';
 
@@ -12,6 +13,10 @@ export function Typography({
   truncate = false,
   textAlign,
   sentryMask = false,
+  id,
+  attrs,
+  elems,
+  vars,
 }: {
   variant?:
     | 'main-title'
@@ -39,7 +44,8 @@ export function Typography({
     | 'text-end';
   children?: ReactNode;
   sentryMask?: boolean;
-}) {
+  id?: string;
+} & Omit<LocalizedProps, 'id'>) {
   const tag = useMemo(() => {
     const tags = {
       'main-title': 'h1',
@@ -52,7 +58,7 @@ export function Typography({
   }, [variant]);
   const { config } = useConfig();
 
-  return createElement(
+  const element = createElement(
     tag,
     {
       className: classNames([
@@ -77,6 +83,16 @@ export function Typography({
         sentryMask && 'sentry-mask',
       ]),
     },
-    children || []
+    children || id || []
   );
+
+  if (id) {
+    return (
+      <Localized id={id} attrs={attrs} elems={elems} vars={vars}>
+        {element}
+      </Localized>
+    );
+  }
+
+  return element;
 }

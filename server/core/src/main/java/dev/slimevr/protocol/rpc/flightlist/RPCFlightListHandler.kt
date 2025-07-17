@@ -57,16 +57,12 @@ class RPCFlightListHandler(
 		conn.send(fbb.dataBuffer())
 	}
 
-	override fun onStepUpdate(step: FlightListStepT) {
+	override fun onStepsUpdate() {
 		val fbb = FlatBufferBuilder(32)
-		val stepOffset = FlightListStep.pack(fbb, step)
-		FlightListStepChangeResponse.startFlightListStepChangeResponse(fbb)
-		FlightListStepChangeResponse.addStep(fbb, stepOffset)
-		val response = FlightListStepChangeResponse.endFlightListStepChangeResponse(fbb)
-
+		val response = buildFlightListResponse(fbb)
 		val outbound = rpcHandler.createRPCMessage(
 			fbb,
-			RpcMessage.FlightListStepChangeResponse,
+			RpcMessage.FlightListResponse,
 			response,
 		)
 		fbb.finish(outbound)

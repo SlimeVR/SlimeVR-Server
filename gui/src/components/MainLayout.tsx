@@ -12,7 +12,7 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import './MainLayout.scss';
 import { Toolbar } from './Toolbar';
 import { SkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
-import { SessionFlightList } from './SessionFlightList';
+import { SessionFlightList } from './flight-list/SessionFlightList';
 
 export function MainLayout({
   children,
@@ -90,13 +90,13 @@ export function MainLayout({
           </div>
           <div
             style={{ gridArea: 'l' }}
-            className="overflow-y-auto mr-2 my-2 rounded-md bg-background-70 flex flex-col gap-2 p-2"
+            className="mr-2 my-2 rounded-md bg-background-70 flex overflow-clip"
           >
             <SessionFlightList></SessionFlightList>
           </div>
           <div
             style={{ gridArea: 'p' }}
-            className="overflow-y-auto mr-2 mb-2 rounded-md bg-background-70 flex flex-col"
+            className="mr-2 mb-2 rounded-md bg-background-70 flex flex-col"
           >
             {/* <WidgetsComponent></WidgetsComponent> */}
             <SkeletonVisualizerWidget />

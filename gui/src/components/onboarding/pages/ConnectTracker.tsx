@@ -3,9 +3,10 @@ import classNames from 'classnames';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  FlightListPublicNetworksT,
+  FlightListStepId,
   RpcMessage,
   StartWifiProvisioningRequestT,
-  StatusData,
   StopWifiProvisioningRequestT,
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
@@ -24,9 +25,9 @@ import './ConnectTracker.scss';
 import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { BaseModal } from '@/components/commons/BaseModal';
-import { useStatusContext } from '@/hooks/status-system';
 import { A } from '@/components/commons/A';
 import { CONNECT_TRACKER } from '@/utils/tauri';
+import { useSessionFlightlist } from '@/hooks/session-flightlist';
 
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
@@ -74,9 +75,34 @@ const statusProgressMap = {
   [WifiProvisioningStatus.COULD_NOT_FIND_SERVER]: 0.8,
 };
 
+export function InvalidNetworkProfileWarning({
+  extraData,
+}: {
+  extraData: FlightListPublicNetworksT;
+}) {
+  return (
+    <div className="pt-4">
+      <Localized
+        id="flight_list-NETWORK_PROFILE_PUBLIC-desc"
+        elems={{
+          PublicFixLink: (
+            <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
+          ),
+        }}
+        vars={{
+          count: extraData.adapters.length,
+          adapters: extraData.adapters.join(', '),
+        }}
+      >
+        <WarningBox whitespace={false}>WARNING</WarningBox>
+      </Localized>
+    </div>
+  );
+}
+
 export function ConnectTrackersPage() {
   const { l10n } = useLocalization();
-  const { statuses } = useStatusContext();
+  const { steps } = useSessionFlightlist();
 
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { applyProgress, state } = useOnboarding();
@@ -165,11 +191,12 @@ export function ConnectTrackersPage() {
     [connectedIMUTrackers.length]
   );
 
-  const filteredStatuses = useMemo(() => {
-    return Object.entries(statuses).filter(
-      ([, value]) => value.dataType == StatusData.StatusPublicNetwork
+  const invalidNetworkProfile = useMemo(() => {
+    return steps.find(
+      (step) =>
+        step.id === FlightListStepId.NETWORK_PROFILE_PUBLIC && !step.valid
     );
-  }, [statuses]);
+  }, [steps]);
 
   return (
     <>
@@ -243,23 +270,13 @@ export function ConnectTrackersPage() {
           >
             <TipBox>Conditional tip</TipBox>
           </Localized>
-          {filteredStatuses.map(([, status]) => (
-            <div className="pt-4">
-              <Localized
-                key={status.id}
-                id={`status_system-${StatusData[status.dataType]}`}
-                elems={{
-                  PublicFixLink: (
-                    <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
-                  ),
-                }}
-              >
-                <WarningBox whitespace={false}>
-                  {`Warning, you should fix ${StatusData[status.dataType]}`}
-                </WarningBox>
-              </Localized>
-            </div>
-          ))}
+          {invalidNetworkProfile && (
+            <InvalidNetworkProfileWarning
+              extraData={
+                invalidNetworkProfile.extraData as FlightListPublicNetworksT
+              }
+            />
+          )}
           <div
             className={classNames(
               'rounded-xl h-24 flex gap-2 p-3 lg:w-full mt-4 relative',

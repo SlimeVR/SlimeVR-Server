@@ -1303,7 +1303,7 @@ status_system-StatusSteamVRDisconnected = { $type ->
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
 status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
-status_system-StatusPublicNetwork = {$count -> 
+status_system-StatusPublicNetwork = {$count ->
     [one] Your network profile is currently set to Public ({$adapters}). This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
     *[many] Some of your network adapters are set to public: {$adapters}. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
 }
@@ -1543,3 +1543,32 @@ error_collection_modal-description_v2 = { settings-interface-behavior-error_trac
     You can change this setting later in the Behavior section of the settings page.
 error_collection_modal-confirm = I agree
 error_collection_modal-cancel = I don't want to
+
+
+flight_list-MOUNTING_CALIBRATION = Perform a mounting calibration
+flight_list-FULL_RESET = Perform a full Reset
+flight_list-FULL_RESET-desc = Some Trackers need a reset to be performed
+flight_list-STEAMVR_DISCONNECTED = SteamVR not running
+flight_list-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for vr?
+flight_list-STEAMVR_DISCONNECTED-open = Launch SteamVR
+flight_list-TRACKERS_CALIBRATION = Calibrate your trackers
+flight_list-TRACKERS_CALIBRATION-desc = You didnt perform the tracker calibration. Please let your slimes, highlited in yellow, rest on a static surface for a few secconds
+flight_list-TRACKER_ERROR = Trackers with Errors
+flight_list-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the tracker.
+flight_list-VRCHAT_SETTINGS = Misconfigured VRChat settings
+flight_list-VRCHAT_SETTINGS-desc = You have misconfigured VRchat Settings! This can impact your tracking experience.
+flight_list-VRCHAT_SETTINGS-open = Go to VRChat Warnings
+flight_list-UNASSIGNED_HMD = VR Headset not assigned to Head
+flight_list-UNASSIGNED_HMD-desc = The VR headset should be assigned as a head tracker.
+flight_list-NETWORK_PROFILE_PUBLIC = Wrong network profile used
+flight_list-NETWORK_PROFILE_PUBLIC-desc = {$count ->
+    [one] Your network profile is currently set to Public ({$adapters}).
+          This is not recommended for SlimeVR to function properly.
+          <PublicFixLink>See how to fix it here.</PublicFixLink>
+    *[many] Some of your network adapters are set to public:
+            {$adapters}
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+}
+flight_list-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
+flight_list-ignore = Ignore

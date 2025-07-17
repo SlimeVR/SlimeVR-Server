@@ -78,11 +78,11 @@ data class VRCConfigValidity(
 	val shoulderTrackingOk: Boolean,
 	val shoulderWidthCompensationOk: Boolean,
 	val userHeightOk: Boolean,
-	val calibrationOk: Boolean,
+	val calibrationRangeOk: Boolean,
 	val calibrationVisualsOk: Boolean,
-	val tackerModelOk: Boolean,
+	val trackerModelOk: Boolean,
 	val spineModeOk: Boolean,
-	val avatarMeasurementOk: Boolean,
+	val avatarMeasurementTypeOk: Boolean,
 )
 
 abstract class VRCConfigHandler {
@@ -98,19 +98,45 @@ class VRCConfigHandlerStub : VRCConfigHandler() {
 }
 
 interface VRCConfigListener {
-	fun onChange(validity: VRCConfigValidity, values: VRCConfigValues, recommended: VRCConfigRecommendedValues)
+	fun onChange(validity: VRCConfigValidity, values: VRCConfigValues, recommended: VRCConfigRecommendedValues, muted: List<String>)
 }
 
 class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHandler) {
 
 	private val listeners: MutableList<VRCConfigListener> = CopyOnWriteArrayList()
 	var currentValues: VRCConfigValues? = null
+	var currentValidity: VRCConfigValidity? = null
 
 	val isSupported: Boolean
 		get() = handler.isSupported
 
 	init {
 		handler.initHandler(::onChange)
+	}
+
+	fun toggleMuteWarning(key: String) {
+		val keys = VRCConfigValidity::class.java.declaredFields.asSequence().map { p -> p.name }
+		if (!keys.contains(key)) return;
+
+		if (!server.configManager.vrConfig.vrcConfig.mutedWarnings.contains(key))
+			server.configManager.vrConfig.vrcConfig.mutedWarnings.add(key)
+		else
+			server.configManager.vrConfig.vrcConfig.mutedWarnings.remove(key)
+
+		server.configManager.saveConfig()
+
+		val recommended = recommendedValues()
+		val validity = currentValidity ?: return
+		val values = currentValues ?: return
+		listeners.forEach {
+			println("CALLED")
+			it.onChange(
+				validity,
+				values,
+				recommended,
+				server.configManager.vrConfig.vrcConfig.mutedWarnings
+			)
+		}
 	}
 
 	/**
@@ -160,20 +186,21 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		legacyModeOk = values.legacyMode == recommended.legacyMode,
 		shoulderTrackingOk = values.shoulderTrackingDisabled == recommended.shoulderTrackingDisabled,
 		spineModeOk = recommended.spineMode.contains(values.spineMode),
-		tackerModelOk = values.trackerModel == recommended.trackerModel,
-		calibrationOk = abs(values.calibrationRange - recommended.calibrationRange) < 0.1,
+		trackerModelOk = values.trackerModel == recommended.trackerModel,
+		calibrationRangeOk = abs(values.calibrationRange - recommended.calibrationRange) < 0.1,
 		userHeightOk = abs(server.humanPoseManager.realUserHeight - values.userHeight) < 0.1,
 		calibrationVisualsOk = values.calibrationVisuals == recommended.calibrationVisuals,
-		avatarMeasurementOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
+		avatarMeasurementTypeOk = values.avatarMeasurementType == recommended.avatarMeasurementType,
 		shoulderWidthCompensationOk = values.shoulderWidthCompensation == recommended.shoulderWidthCompensation,
 	)
 
 	fun onChange(values: VRCConfigValues) {
 		val recommended = recommendedValues()
-		val validity = checkValidity(values, recommended)
+		val validity = checkValidity(values, recommended);
+		currentValidity = validity
 		currentValues = values
 		listeners.forEach {
-			it.onChange(validity, values, recommended)
+			it.onChange(validity, values, recommended, server.configManager.vrConfig.vrcConfig.mutedWarnings)
 		}
 	}
 }

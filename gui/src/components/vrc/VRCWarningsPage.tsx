@@ -104,7 +104,7 @@ const onOffKey = (value: boolean) =>
 
 export function VRCWarningsPage() {
   const { l10n } = useLocalization();
-  const { state, toggleMutedSettings, mutedSettings } = useVRCConfig();
+  const { state, toggleMutedSettings } = useVRCConfig();
   const { currentLocales } = useLocaleConfig();
 
   const meterFormat = Intl.NumberFormat(currentLocales, {
@@ -119,7 +119,7 @@ export function VRCWarningsPage() {
 
   const settingRowProps = (key: keyof VRCConfigStateSupported['validity']) => ({
     mute: () => toggleMutedSettings(key),
-    muted: mutedSettings.includes(key),
+    muted: state.muted.includes(key),
     valid: state.validity[key] == true,
   });
 

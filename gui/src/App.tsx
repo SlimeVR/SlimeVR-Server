@@ -39,7 +39,6 @@ import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings
 import * as os from '@tauri-apps/plugin-os';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
-import { StatusProvider } from './components/providers/StatusSystemContext';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
 import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
 import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
@@ -61,6 +60,7 @@ import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
 import { VRCWarningsPage } from './components/vrc/VRCWarningsPage';
 import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/StayAlignedSetup';
+import { FlightListProvider } from './components/flight-list/FlightListProvider';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -292,7 +292,7 @@ export default function App() {
         <WebSocketApiContext.Provider value={websocketAPI}>
           <AppContextProvider>
             <OnboardingContextProvider>
-              <StatusProvider>
+              <FlightListProvider>
                 <VersionContext.Provider value={updateFound}>
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
                     <Preload />
@@ -302,7 +302,7 @@ export default function App() {
                     {websocketAPI.isConnected && <Layout></Layout>}
                   </div>
                 </VersionContext.Provider>
-              </StatusProvider>
+              </FlightListProvider>
             </OnboardingContextProvider>
           </AppContextProvider>
         </WebSocketApiContext.Provider>

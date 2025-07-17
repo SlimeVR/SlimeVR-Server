@@ -1,10 +1,10 @@
 import { useLocalization } from '@fluent/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  FlightListStepId,
   ResetRequestT,
   ResetType,
   RpcMessage,
-  StatusData,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useCountdown } from '@/hooks/countdown';
@@ -20,8 +20,8 @@ import {
   YawResetIcon,
   FullResetIcon,
 } from '@/components/commons/icon/ResetIcon';
-import { useStatusContext } from '@/hooks/status-system';
 import classNames from 'classnames';
+import { useSessionFlightlist } from '@/hooks/session-flightlist';
 
 export function ResetButton({
   type,
@@ -36,7 +36,7 @@ export function ResetButton({
 }) {
   const { l10n } = useLocalization();
   const { sendRPCPacket } = useWebsocketAPI();
-  const { statuses } = useStatusContext();
+  const { steps } = useSessionFlightlist();
   const { config } = useConfig();
   const finishedTimeoutRef = useRef(-1);
   const [isFinished, setFinished] = useState(false);
@@ -44,10 +44,10 @@ export function ResetButton({
   const needsFullReset = useMemo(
     () =>
       type === ResetType.Mounting &&
-      Object.values(statuses).some(
-        (status) => status.dataType === StatusData.StatusTrackerReset
+      steps.some(
+        (step) => step.id === FlightListStepId.FULL_RESET && !step.valid
       ),
-    [statuses]
+    [steps, type]
   );
 
   const reset = () => {

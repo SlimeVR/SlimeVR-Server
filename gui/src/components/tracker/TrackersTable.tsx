@@ -15,9 +15,9 @@ import { formatVector3 } from '@/utils/formatting';
 import { TrackerBattery } from './TrackerBattery';
 import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
-import { trackerStatusRelated, useStatusContext } from '@/hooks/status-system';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
+import { useSessionFlightlist } from '@/hooks/session-flightlist';
 
 enum DisplayColumn {
   NAME,
@@ -169,7 +169,7 @@ export function TrackersTable({
   const { l10n } = useLocalization();
   const [hoverTracker, setHoverTracker] = useState<TrackerIdT | null>(null);
   const { config } = useConfig();
-  const { statuses } = useStatusContext();
+  const { hightlightedTrackers } = useSessionFlightlist();
 
   const trackerEqual = (id: TrackerIdT | null) =>
     id?.trackerNum == hoverTracker?.trackerNum &&
@@ -242,9 +242,13 @@ export function TrackersTable({
             hover={trackerEqual(data.tracker.trackerId)}
             onMouseOver={() => setHoverTracker(data.tracker.trackerId)}
             onMouseOut={() => setHoverTracker(null)}
-            warning={Object.values(statuses).some((status) =>
-              trackerStatusRelated(data.tracker, status)
-            )}
+            warning={
+              !!hightlightedTrackers.find(
+                (t) =>
+                  t?.deviceId?.id === data.tracker.trackerId?.deviceId?.id &&
+                  t?.trackerNum === data.tracker.trackerId?.trackerNum
+              )
+            }
           >
             {row(data) || <></>}
           </RowContainer>
