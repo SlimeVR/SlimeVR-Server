@@ -1,13 +1,13 @@
 import { useBreakpoint } from '@/hooks/breakpoint';
 import classNames from 'classnames';
 import {
+  MutableRefObject,
+  ReactElement,
   ReactNode,
+  useLayoutEffect,
+  useMemo,
   useRef,
   useState,
-  ReactElement,
-  useLayoutEffect,
-  MutableRefObject,
-  useMemo,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { Typography } from './Typography';
@@ -419,6 +419,7 @@ export function DrawerTooltip({
         >
           <div className="h-12 rounded-t-lg relative flex justify-center items-center">
             <Typography variant="section-title" textAlign="text-center">
+              {/* TODO(futura): translations */}
               Pro tip
             </Typography>
             <button

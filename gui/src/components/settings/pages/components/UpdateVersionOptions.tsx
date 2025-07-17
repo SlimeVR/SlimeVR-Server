@@ -5,7 +5,7 @@ import { Typography } from '@/components/commons/Typography';
 import { UpdateManifest, type ChannelName } from '@slimevr/update-manifest';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { SemVer } from 'semver';
+import { compare } from 'semver';
 
 const ItemContent = ({
   version,
@@ -85,9 +85,10 @@ export function UpdateChannelVersionOptions({
         display="block"
         direction="down"
         placeholder=""
+        maxHeight="300px"
         items={Object.entries(ch.versions)
-          .map(([tag, version]) => [tag, version, new SemVer(tag)] as const)
-          .sort(([_11, _12, a], [_21, _22, b]) => b.compare(a))
+          .map(([tag, version]) => [tag, version] as const)
+          .sort(([a, _12], [b, _22]) => compare(b, a))
           .map(([tag, version]) => {
             const isAlreadyInstalled = tag === __VERSION_TAG__;
             // TODO(devminer): correctly figure out the current platform
@@ -120,8 +121,8 @@ export function UpdateChannelVersionOptions({
   return (
     <div className="flex flex-col gap-2">
       {Object.entries(ch.versions)
-        .map(([tag, version]) => [tag, version, new SemVer(tag)] as const)
-        .sort(([_11, _12, a], [_21, _22, b]) => b.compare(a))
+        .map(([tag, version]) => [tag, version] as const)
+        .sort(([a, _12], [b, _22]) => compare(b, a))
         .map(([tag, version]) => {
           const isAlreadyInstalled = tag === __VERSION_TAG__;
           // TODO(devminer): correctly figure out the current platform

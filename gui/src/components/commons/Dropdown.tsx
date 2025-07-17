@@ -100,15 +100,27 @@ export function DropdownItems({
             <li
               style={item.fontName ? { fontFamily: item.fontName } : {}}
               className={classNames(
-                'py-2 px-4 min-w-max cursor-pointer first-of-type:*:pointer-events-none',
-                variant == 'primary' &&
-                  'checked-hover:bg-background-50 text-background-20 ' +
-                    'checked-hover:text-background-10',
-                variant == 'secondary' &&
-                  'checked-hover:bg-background-60 text-background-20 ' +
-                    'checked-hover:text-background-10',
-                variant == 'tertiary' &&
-                  'bg-accent-background-30 checked-hover:bg-accent-background-20'
+                'py-2 px-4 min-w-max first-of-type:*:pointer-events-none',
+                {
+                  'cursor-pointer': !item.disabled,
+                },
+                item.disabled
+                  ? {
+                      'bg-background-70':
+                        variant === 'primary',
+                      'bg-background-80':
+                        variant === 'secondary',
+                      'bg-background-40':
+                        variant === 'tertiary',
+                    }
+                  : {
+                      'checked-hover:bg-background-50 text-background-20 checked-hover:text-background-10':
+                        variant === 'primary',
+                      'checked-hover:bg-background-60 text-background-20 checked-hover:text-background-10':
+                        variant === 'secondary',
+                      'bg-accent-background-30 checked-hover:bg-accent-background-20':
+                        variant == 'tertiary',
+                    }
               )}
               onClick={() => {
                 if (item.disabled) return;

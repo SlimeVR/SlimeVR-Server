@@ -146,32 +146,39 @@ function ChangeVersion({ updateManifest }: { updateManifest: UpdateManifest }) {
   const install = useCallback(() => {}, []);
 
   return (
-    <div className="flex gap-2">
-      <div className="w-1/4 flex flex-col md:gap-4 sm:gap-2 xs:gap-1 mobile:gap-4 max-h-[512px] pr-1">
-        <UpdateChannelOptions
-          manifest={updateManifest}
-          value={channel}
-          variant={isMobile ? 'dropdown' : 'radio'}
-          onSelect={(channel) => {
-            setChannel(channel);
-            setVersion('');
-          }}
-        />
+    <div className="flex md-max:flex-col gap-2">
+      <div className="md:w-1/4">
+        <Typography>Channel</Typography>
+        <div className="flex flex-col md:gap-4 sm:gap-2 xs:gap-1 mobile:gap-4 max-h-[384px] md:max-h-[512px] pr-1">
+          <UpdateChannelOptions
+            manifest={updateManifest}
+            value={channel}
+            variant={isMobile ? 'dropdown' : 'radio'}
+            onSelect={(channel) => {
+              setChannel(channel);
+              setVersion('');
+            }}
+          />
+        </div>
       </div>
 
-      <div className="w-1/4 flex flex-col md:gap-4 sm:gap-2 xs:gap-1 mobile:gap-4 max-h-[512px] overflow-auto pr-1">
-        <UpdateChannelVersionOptions
-          manifest={updateManifest}
-          channel={channel}
-          value={version}
-          variant={isMobile ? 'dropdown' : 'radio'}
-          onSelect={setVersion}
-        />
+      <div className="md:w-1/4">
+        <Typography>Version</Typography>
+        <div className="flex flex-col md:gap-4 sm:gap-2 xs:gap-1 mobile:gap-4 max-h-[384px] md:max-h-[512px] overflow-auto pr-1">
+          <UpdateChannelVersionOptions
+            manifest={updateManifest}
+            channel={channel}
+            value={version}
+            variant={isMobile ? 'dropdown' : 'radio'}
+            onSelect={setVersion}
+          />
+        </div>
       </div>
 
-      <div className="w-1/2 flex flex-col gap-2">
+      <div className="md:w-1/2 flex flex-col gap-2">
         {v && (
           <>
+            <Typography>Release Notes</Typography>
             <div className="bg-background-60 rounded-lg px-3 py-2 max-h-[512px] overflow-auto">
               <Markdown
                 remarkPlugins={[remark]}
