@@ -30,7 +30,7 @@ export enum AssignMode {
 
 export interface Config {
   updateChannel: ChannelName;
-  autoUpdate: boolean;
+  notifyOnAvailableUpdates: boolean;
   debug: boolean;
   lang: string;
   doneOnboarding: boolean;
@@ -61,7 +61,7 @@ export interface ConfigContext {
 
 export const defaultConfig: Config = {
   updateChannel: STABLE_CHANNEL,
-  autoUpdate: true,
+  notifyOnAvailableUpdates: true,
   lang: 'en',
   debug: false,
   doneOnboarding: false,

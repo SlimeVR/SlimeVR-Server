@@ -1,6 +1,7 @@
-import { DOCS_SITE, GH_REPO, VersionContext } from '@/App';
+import { DOCS_SITE, GH_REPO } from '@/App';
 import { useBreakpoint, useIsTauri } from '@/hooks/breakpoint';
 import { STABLE_CHANNEL, useConfig } from '@/hooks/config';
+import { useUpdateContext } from '@/hooks/update.js';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { error } from '@/utils/logging';
@@ -15,7 +16,7 @@ import {
 import { open } from '@tauri-apps/plugin-shell';
 import classNames from 'classnames';
 import { useAtomValue } from 'jotai';
-import { ReactNode, useContext, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
 import {
   RpcMessage,
@@ -94,7 +95,7 @@ export function TopBar({
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { config, setConfig, saveConfig } = useConfig();
-  const version = useContext(VersionContext);
+  const { isUpToDate } = useUpdateContext();
   const [localIp, setLocalIp] = useState<string | null>(null);
   const [showConnectedTrackersWarning, setConnectedTrackerWarning] =
     useState(false);
@@ -224,7 +225,7 @@ export function TopBar({
                 </>
               )}
 
-              {version && (
+              {!isUpToDate && (
                 <div
                   className="cursor-pointer"
                   onClick={() => {

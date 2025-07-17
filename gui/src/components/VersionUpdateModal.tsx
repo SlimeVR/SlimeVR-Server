@@ -1,23 +1,25 @@
+import { GH_REPO } from '@/App';
+import { useUpdateContext } from '@/hooks/update.js';
+import { error } from '@/utils/logging';
 import { useLocalization } from '@fluent/react';
-import { useContext, useState } from 'react';
+import { open } from '@tauri-apps/plugin-shell';
+import { useState } from 'react';
+import semver from 'semver';
 import { BaseModal } from './commons/BaseModal';
 import { Button } from './commons/Button';
 import { Typography } from './commons/Typography';
-import { open } from '@tauri-apps/plugin-shell';
-import semver from 'semver';
-import { GH_REPO, VersionContext } from '@/App';
-import { error } from '@/utils/logging';
 
 export function VersionUpdateModal() {
   const { l10n } = useLocalization();
-  const newVersion = useContext(VersionContext);
+  const { latestVersionOnChannel: newVersion } = useUpdateContext();
   const [forceClose, setForceClose] = useState(false);
   const closeModal = () => {
-    localStorage.setItem('lastVersionFound', newVersion);
+    localStorage.setItem('lastVersionFound', newVersion ?? '');
     setForceClose(true);
   };
   let isVersionNew = false;
   try {
+    // TODO(devminer): check over this, if this is still necessary
     if (newVersion) {
       isVersionNew = semver.gt(
         newVersion,
@@ -27,6 +29,8 @@ export function VersionUpdateModal() {
   } catch {
     error('failed to parse new version');
   }
+
+  if (newVersion === null) return null;
 
   return (
     <BaseModal

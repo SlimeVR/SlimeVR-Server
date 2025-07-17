@@ -4,6 +4,7 @@ import { Typography } from '@/components/commons/Typography';
 import { ASSIGNMENT_MODES } from '@/components/onboarding/BodyAssignment';
 import { AssignMode, defaultConfig } from '@/hooks/config';
 import { UpdateManifest, type ChannelName } from '@slimevr/update-manifest';
+import classNames from 'classnames';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -33,7 +34,9 @@ const ItemContent = ({
 
         {channel === defaultConfig.updateChannel && (
           /* TODO(devminer): add translations */
-          <div className="bg-background-70 px-1.5 py-1 rounded-md">default</div>
+          <div className="bg-background-70 px-1.5 py-0.5 rounded-md leading-[1rem] text-[0.625rem]">
+            default
+          </div>
         )}
       </div>
 
@@ -47,13 +50,15 @@ const ItemContent = ({
 export function UpdateChannelOptions({
   manifest,
   value,
-  variant = 'radio',
   onSelect,
+  variant = 'radio',
+  asList = true,
 }: {
   manifest: UpdateManifest;
   value: ChannelName;
-  variant: 'radio' | 'dropdown';
   onSelect: (channel: ChannelName) => void;
+  variant?: 'radio' | 'dropdown';
+  asList?: boolean;
 }) {
   const { control, watch } = useForm<{
     updateChannel: ChannelName;
@@ -91,7 +96,7 @@ export function UpdateChannelOptions({
     );
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className={classNames('flex gap-2', asList && 'flex-col')}>
       {Object.entries(manifest.channels).map(([channel, data]) => (
         <Radio
           key={channel}
