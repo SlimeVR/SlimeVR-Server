@@ -33,6 +33,7 @@ export interface DropdownItem {
   component?: ReactNode;
   value: string;
   fontName?: string;
+  disabled?: boolean;
 }
 
 export type DropdownDirection = 'up' | 'down';
@@ -110,9 +111,11 @@ export function DropdownItems({
                   'bg-accent-background-30 checked-hover:bg-accent-background-20'
               )}
               onClick={() => {
+                if (item.disabled) return;
                 onSelectItem(item);
               }}
               onKeyDown={(ev) => {
+                if (item.disabled) return;
                 if (!a11yClick(ev)) return;
                 onSelectItem(item);
               }}

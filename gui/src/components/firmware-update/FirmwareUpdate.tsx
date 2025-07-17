@@ -1,6 +1,6 @@
-import { A } from '@/components/commons/A';
 import { Button } from '@/components/commons/Button';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
+import { MarkdownLink } from '@/components/commons/MarkdownLink.js';
 import { WarningBox } from '@/components/commons/TipBox';
 import { Typography } from '@/components/commons/Typography';
 import { DeviceCardControl } from '@/components/firmware-tool/DeviceCard';
@@ -18,7 +18,7 @@ import { Localized, ReactLocalization, useLocalization } from '@fluent/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
 import { useAtomValue } from 'jotai';
-import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Control, useForm } from 'react-hook-form';
 import Markdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
@@ -94,10 +94,6 @@ const StatusList = ({ status }: { status: Record<string, UpdateStatus> }) => {
     );
   });
 };
-
-const MarkdownLink = (props: ComponentProps<'a'>) => (
-  <A href={props.href}>{props.children}</A>
-);
 
 export function FirmwareUpdate() {
   const navigate = useNavigate();

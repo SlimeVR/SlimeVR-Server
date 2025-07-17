@@ -32,6 +32,7 @@ const ItemContent = ({
         <Typography>{channel}</Typography>
 
         {channel === defaultConfig.updateChannel && (
+          /* TODO(devminer): add translations */
           <div className="bg-background-70 px-1.5 py-1 rounded-md">default</div>
         )}
       </div>
