@@ -3,7 +3,6 @@ import { Radio } from '@/components/commons/Radio';
 import { Typography } from '@/components/commons/Typography';
 import { ASSIGNMENT_MODES } from '@/components/onboarding/BodyAssignment';
 import { AssignMode, defaultConfig } from '@/hooks/config';
-import { useLocalization } from '@fluent/react';
 import { UpdateManifest, type ChannelName } from '@slimevr/update-manifest';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -27,8 +26,6 @@ const ItemContent = ({
   name: ChannelName;
   description?: string;
 }) => {
-  const { l10n } = useLocalization();
-
   return (
     <div className="flex flex-col">
       <div className="flex gap-2 items-center">

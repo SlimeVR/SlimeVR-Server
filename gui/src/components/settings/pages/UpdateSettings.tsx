@@ -1,7 +1,9 @@
 import { UpdateManifestContext } from '@/App.js';
+import { A } from '@/components/commons/A.js';
 import { SteamIcon } from '@/components/commons/icon/SteamIcon';
 import { Typography } from '@/components/commons/Typography';
 import { UpdateChannelOptions } from '@/components/settings/pages/components/UpdateChannelOptions.js';
+import { UpdateChannelVersionOptions } from '@/components/settings/pages/components/UpdateVersionOptions.js';
 import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
@@ -10,8 +12,11 @@ import { useBreakpoint } from '@/hooks/breakpoint.js';
 import { defaultConfig, useConfig } from '@/hooks/config';
 import { useLocalization } from '@fluent/react';
 import { UpdateManifest, type ChannelName } from '@slimevr/update-manifest';
-import { useContext, useEffect, useState } from 'react';
+import classNames from 'classnames';
+import { ComponentProps, useContext, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import Markdown from 'react-markdown';
+import remark from 'remark-gfm';
 
 export type SettingsForm = {
   channel: ChannelName;
@@ -113,12 +118,26 @@ export function UpdateSettings() {
   );
 }
 
+const MarkdownLink = (props: ComponentProps<'a'>) => (
+  <A href={props.href}>{props.children}</A>
+);
+
 function ChangeVersion({ updateManifest }: { updateManifest: UpdateManifest }) {
   const { isMobile } = useBreakpoint('mobile');
   const { config } = useConfig();
   const [channel, setChannel] = useState<ChannelName>(
     config?.updateChannel ?? defaultConfig.updateChannel
   );
+  const [version, setVersion] = useState(
+    __VERSION_TAG__ in updateManifest.channels[channel].versions
+      ? __VERSION_TAG__
+      : ''
+  );
+
+  console.log(channel, version);
+
+  const ch = updateManifest.channels[channel] ?? null;
+  const v = ch?.versions[version] ?? null;
 
   return (
     <div className="flex gap-2">
@@ -127,19 +146,39 @@ function ChangeVersion({ updateManifest }: { updateManifest: UpdateManifest }) {
           manifest={updateManifest}
           value={channel}
           variant={isMobile ? 'dropdown' : 'radio'}
-          onSelect={setChannel}
+          onSelect={(channel) => {
+            setChannel(channel);
+            setVersion('');
+          }}
         />
       </div>
 
       <div className="w-1/4 flex flex-col md:gap-4 sm:gap-2 xs:gap-1 mobile:gap-4">
-        {/* <UpdateChannelOptions
-                  variant={isMobile ? 'dropdown' : 'radio'}
-                /> */}
-        Version
+        <UpdateChannelVersionOptions
+          manifest={updateManifest}
+          channel={channel}
+          value={version}
+          variant={isMobile ? 'dropdown' : 'radio'}
+          onSelect={setVersion}
+        />
       </div>
 
-      <div className="w-1/2 flex flex-col md:gap-4 sm:gap-2 xs:gap-1 mobile:gap-4">
-        Changelog
+      <div className="w-1/2 flex">
+        {v && (
+          <div className="bg-background-60 rounded-lg px-3 py-2 max-h-[512px] overflow-auto">
+            <Markdown
+              remarkPlugins={[remark]}
+              components={{ a: MarkdownLink }}
+              className={classNames(
+                'w-full text-sm prose-xl prose text-background-10 prose-h1:text-background-10',
+                'prose-h2:text-background-10 prose-h3:text-background-10 prose-a:text-background-20 prose-strong:text-background-10',
+                'prose-code:text-background-20'
+              )}
+            >
+              {v.release_notes}
+            </Markdown>
+          </div>
+        )}
       </div>
     </div>
   );
