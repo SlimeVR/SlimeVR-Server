@@ -1,0 +1,25 @@
+package dev.slimevr.tracking.trackers
+
+import com.jme3.system.NanoTimer
+import io.github.axisangles.ktmath.Vector3
+
+class AccelMountHandler {
+	var acceleration = Vector3.NULL
+		private set
+	var velocity = Vector3.NULL
+		private set
+	var offset = Vector3.NULL
+		private set
+
+	val timer = NanoTimer()
+
+	fun dataTick(acceleration: Vector3) {
+		timer.update()
+		val deltaTime = timer.timePerFrame
+
+		this.acceleration = acceleration
+		offset += (velocity * deltaTime) + ((acceleration * deltaTime * deltaTime) / 2f)
+		velocity += acceleration * deltaTime
+		// Some other stuff I forgot
+	}
+}
