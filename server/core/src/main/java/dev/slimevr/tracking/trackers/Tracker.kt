@@ -9,6 +9,7 @@ import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import dev.slimevr.util.InterpolationHandler
 import io.eiren.util.BufferedTimer
+import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import solarxr_protocol.datatypes.DeviceIdT
@@ -17,6 +18,7 @@ import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
+import kotlin.math.abs
 import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2_000L
@@ -160,6 +162,7 @@ class Tracker @JvmOverloads constructor(
 
 	val stayAligned = StayAlignedTrackerState(this)
 	val yawResetSmoothing = InterpolationHandler()
+	var accelMountHandler = AccelMountHandler()
 
 	init {
 		// IMPORTANT: Look here for the required states of inputs
@@ -326,6 +329,7 @@ class Tracker @JvmOverloads constructor(
 		stayAligned.update()
 	}
 
+	var count = 0
 	/**
 	 * Tells the tracker that it received new data
 	 */
@@ -334,6 +338,34 @@ class Tracker @JvmOverloads constructor(
 		timeAtLastUpdate = System.currentTimeMillis()
 		if (trackRotDirection) {
 			filteringHandler.dataTick(getAdjustedRotation())
+		}
+
+		val accel = getAcceleration()
+
+		accelMountHandler.dataTick(accel)
+
+		val len = accel.len()
+		if (len >= 8f) {
+			var xyz = ""
+			if (abs(accel.x) >= 8f) {
+				xyz += "X"
+			}
+			if (abs(accel.y) >= 8f) {
+				xyz += "Y"
+			}
+			if (abs(accel.z) >= 8f) {
+				xyz += "Z"
+			}
+			//LogManager.info("[ACCEL] (${accel.x}, ${accel.y}, ${accel.z}) [$len > 8] {$xyz}")
+		}
+
+		if (!isInternal && isImu() && count++ % 100 == 0) {
+			val offset = accelMountHandler.offset
+			LogManager.info("[ACCEL OFF] (${offset.x}, ${offset.y}, ${offset.z})")
+
+			//if (offset.len() > 10f) {
+				accelMountHandler = AccelMountHandler()
+			//}
 		}
 	}
 

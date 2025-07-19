@@ -190,7 +190,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun getIdentityAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion = adjustToDrift(adjustToIdentity(rotation))
 
 	/**
-	 * Get the adjusted accel from yawFixZeroReference
+	 * Get the reference adjusted accel.
 	 */
 	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 = (adjustToReference(rawRot) / yawFix).sandwich(accel)
 
