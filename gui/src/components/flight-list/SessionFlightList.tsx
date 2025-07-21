@@ -407,9 +407,9 @@ export function SessionFlightList() {
           </div>
         </div>
       </div>
-      <FlightListSettingsModal
+      {/* <FlightListSettingsModal
         open={settingsOpenState}
-      ></FlightListSettingsModal>
+      ></FlightListSettingsModal> */}
     </>
   );
 }

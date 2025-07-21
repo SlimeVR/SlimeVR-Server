@@ -73,27 +73,25 @@ export type SessionFlightListContext = ReturnType<typeof provideSessionFlightlis
 
 export function provideSessionFlightlist() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const [steps, setSteps] = useState<FlightListStepT[]>([]);
+  const [steps, setSteps] = useState<FlightListStep[]>([]);
   const [ignoredSteps, setIgnoredSteps] = useState<FlightListStepId[]>([]);
 
   useRPCPacket(RpcMessage.FlightListResponse, (data: FlightListResponseT) => {
     setIgnoredSteps(data.ignoredSteps);
-    setSteps(data.steps);
+    const activeSteps = data.steps.filter(
+      (step) => !data.ignoredSteps.includes(step.id) && step.enabled
+    );
+    const steps = activeSteps.map((step: FlightListStepT, index) =>
+      createStep(activeSteps, step, index)
+    );
+    setSteps(steps);
   });
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.FlightListRequest, new FlightListRequestT());
   }, []);
 
-  const visibleSteps = useMemo(() => {
-    const activeSteps = steps.filter(
-      (step) => !ignoredSteps.includes(step.id) && step.enabled
-    );
-    return steps
-      .map((step: FlightListStepT, index) => createStep(activeSteps, step, index))
-      .filter(stepVisibility);
-  }, [steps, ignoredSteps]);
-
+  const visibleSteps = useMemo(() => steps.filter(stepVisibility), [steps]);
   const firstRequired = useMemo(
     () =>
       visibleSteps.find(
@@ -114,8 +112,7 @@ export function provideSessionFlightlist() {
   }, [firstRequired]);
 
   return {
-    steps,
-    visibleSteps,
+    visibleSteps: steps.filter(stepVisibility),
     firstRequired,
     ignoredSteps,
     hightlightedTrackers,
