@@ -9,8 +9,6 @@ import {
   ModelRatiosT,
   ModelSettingsT,
   ModelTogglesT,
-  MountingMethod,
-  ResetsSettingsT,
   RpcMessage,
   SettingsRequestT,
   SettingsResponseT,

@@ -1,6 +1,5 @@
 import {
   ChangeSettingsRequestT,
-  MountingMethod,
   ResetsSettingsT,
   RpcMessage,
   SettingsResetRequestT,
@@ -15,7 +14,6 @@ export interface ResetSettingsForm {
   yawResetSmoothTime: number;
   saveMountingReset: boolean;
   resetHmdPitch: boolean;
-  preferedMountingMethod: number;
 }
 
 export const defaultResetSettings = {
@@ -24,7 +22,6 @@ export const defaultResetSettings = {
   yawResetSmoothTime: 0.0,
   saveMountingReset: false,
   resetHmdPitch: false,
-  preferedMountingMethod: MountingMethod.AUTOMATIC,
 };
 
 export function loadResetSettings(resetSettingsForm: ResetSettingsForm) {
@@ -34,7 +31,6 @@ export function loadResetSettings(resetSettingsForm: ResetSettingsForm) {
   resetsSettings.yawResetSmoothTime = resetSettingsForm.yawResetSmoothTime;
   resetsSettings.saveMountingReset = resetSettingsForm.saveMountingReset;
   resetsSettings.resetHmdPitch = resetSettingsForm.resetHmdPitch;
-  resetsSettings.preferedMountingMethod = resetSettingsForm.preferedMountingMethod;
 
   return resetsSettings;
 }

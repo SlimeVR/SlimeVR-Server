@@ -1551,11 +1551,11 @@ flight_list-FULL_RESET-desc = Some Trackers need a reset to be performed
 flight_list-STEAMVR_DISCONNECTED = SteamVR not running
 flight_list-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for vr?
 flight_list-STEAMVR_DISCONNECTED-open = Launch SteamVR
-flight_list-TRACKERS_CALIBRATION = Calibrate your trackers
-flight_list-TRACKERS_CALIBRATION-desc = You didnt perform the tracker calibration. Please let your slimes, highlited in yellow, rest on a static surface for a few secconds
+flight_list-TRACKERS_REST_CALIBRATION = Calibrate your trackers
+flight_list-TRACKERS_REST_CALIBRATION-desc = You didnt perform the tracker calibration. Please let your slimes, highlited in yellow, rest on a static surface for a few secconds
 flight_list-TRACKER_ERROR = Trackers with Errors
 flight_list-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the tracker.
-flight_list-VRCHAT_SETTINGS = Misconfigured VRChat settings
+flight_list-VRCHAT_SETTINGS = Configure VRChat settings
 flight_list-VRCHAT_SETTINGS-desc = You have misconfigured VRchat Settings! This can impact your tracking experience.
 flight_list-VRCHAT_SETTINGS-open = Go to VRChat Warnings
 flight_list-UNASSIGNED_HMD = VR Headset not assigned to Head
@@ -1571,4 +1571,8 @@ flight_list-NETWORK_PROFILE_PUBLIC-desc = {$count ->
             <PublicFixLink>See how to fix it here.</PublicFixLink>
 }
 flight_list-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
+flight_list-STAY_ALIGNED_CONFIGURED = Configure Stay Aligned
+flight_list-STAY_ALIGNED_CONFIGURED-desc = Record the stay aligned poses for an improved imu drift
+flight_list-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
+
 flight_list-ignore = Ignore

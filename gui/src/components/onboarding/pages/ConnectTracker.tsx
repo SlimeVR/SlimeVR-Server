@@ -102,7 +102,7 @@ export function InvalidNetworkProfileWarning({
 
 export function ConnectTrackersPage() {
   const { l10n } = useLocalization();
-  const { steps } = useSessionFlightlist();
+  const { visibleSteps: steps } = useSessionFlightlist();
 
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { applyProgress, state } = useOnboarding();

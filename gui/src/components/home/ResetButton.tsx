@@ -36,7 +36,7 @@ export function ResetButton({
 }) {
   const { l10n } = useLocalization();
   const { sendRPCPacket } = useWebsocketAPI();
-  const { steps } = useSessionFlightlist();
+  const { visibleSteps: steps } = useSessionFlightlist();
   const { config } = useConfig();
   const finishedTimeoutRef = useRef(-1);
   const [isFinished, setFinished] = useState(false);

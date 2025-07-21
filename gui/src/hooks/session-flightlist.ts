@@ -12,7 +12,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 export const flightlistIdtoLabel: Record<FlightListStepId, string> = {
   [FlightListStepId.UNKNOWN]: '',
-  [FlightListStepId.TRACKERS_CALIBRATION]: 'flight_list-TRACKERS_CALIBRATION',
+  [FlightListStepId.TRACKERS_REST_CALIBRATION]: 'flight_list-TRACKERS_REST_CALIBRATION',
   [FlightListStepId.FULL_RESET]: 'flight_list-FULL_RESET',
   [FlightListStepId.VRCHAT_SETTINGS]: 'flight_list-VRCHAT_SETTINGS',
   [FlightListStepId.STEAMVR_DISCONNECTED]: 'flight_list-STEAMVR_DISCONNECTED',
@@ -20,13 +20,19 @@ export const flightlistIdtoLabel: Record<FlightListStepId, string> = {
   [FlightListStepId.TRACKER_ERROR]: 'flight_list-TRACKER_ERROR',
   [FlightListStepId.NETWORK_PROFILE_PUBLIC]: 'flight_list-NETWORK_PROFILE_PUBLIC',
   [FlightListStepId.MOUNTING_CALIBRATION]: 'flight_list-MOUNTING_CALIBRATION',
+  [FlightListStepId.STAY_ALIGNED_CONFIGURED]: 'flight_list-STAY_ALIGNED_CONFIGURED',
 };
 
 export type FlightListStepStatus = 'complete' | 'skipped' | 'blocked' | 'invalid';
 export type FlightListStep = FlightListStepT & {
   status: FlightListStepStatus;
-  firstInvalid: boolean;
+  firstRequired: boolean;
 };
+
+const stepVisibility = ({ visibility, status, firstRequired }: FlightListStep) =>
+  firstRequired ||
+  visibility === FlightListStepVisibility.ALWAYS ||
+  (visibility === FlightListStepVisibility.WHEN_INVALID && status != 'complete');
 
 const createStep = (
   steps: FlightListStepT[],
@@ -34,52 +40,61 @@ const createStep = (
   index: number
 ): FlightListStep => {
   const previousSteps = steps.slice(0, index);
-  const blocked = previousSteps.some(({ valid, optional }) => !valid && !optional);
+  const previousBlocked = previousSteps.some(
+    ({ valid, optional }) => !valid && !optional
+  );
 
   let status: FlightListStepStatus = 'complete';
-  if (blocked && !step.valid) status = 'blocked';
-  if (!blocked && !step.valid) status = 'invalid';
-  if (!blocked && step.optional && !step.valid && index !== previousSteps.length)
-    status = 'skipped';
+  if (previousBlocked && !step.valid) status = 'blocked';
+  if (!previousBlocked && !step.valid) status = 'invalid';
+
+  const firstRequiredIndex = steps.findIndex(
+    (s, index) => !s.valid || (index === steps.length - 1 && !s.valid)
+  );
+
+  const skipped =
+    steps.find(
+      (s, sIndex) =>
+        (sIndex > index && s.valid && !s.optional) || sIndex === steps.length - 1
+    ) || index === steps.length - 1;
+  if (!step.valid && step.optional && skipped) status = 'skipped';
 
   return {
     ...step,
     status,
-    firstInvalid: steps.findIndex((s) => !s.valid) == index,
+    firstRequired:
+      firstRequiredIndex === index ||
+      (firstRequiredIndex === -1 && index === steps.length - 1 && !step.valid),
     pack: () => 0,
   };
 };
 
 export type SessionFlightListContext = ReturnType<typeof provideSessionFlightlist>;
 
-const stepVisibility = ({ visibility, status, firstInvalid }: FlightListStep) =>
-  firstInvalid ||
-  visibility === FlightListStepVisibility.ALWAYS ||
-  (visibility === FlightListStepVisibility.WHEN_INVALID &&
-    ['invalid', 'blocked'].includes(status));
-
 export function provideSessionFlightlist() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const [steps, setSteps] = useState<FlightListStep[]>([]);
+  const [steps, setSteps] = useState<FlightListStepT[]>([]);
   const [ignoredSteps, setIgnoredSteps] = useState<FlightListStepId[]>([]);
 
   useRPCPacket(RpcMessage.FlightListResponse, (data: FlightListResponseT) => {
     setIgnoredSteps(data.ignoredSteps);
-    const activeSteps = data.steps.filter(
-      (step) => !data.ignoredSteps.includes(step.id) && step.enabled
-    );
-    const steps = activeSteps.map((step: FlightListStepT, index) =>
-      createStep(activeSteps, step, index)
-    );
-    setSteps(steps);
+    setSteps(data.steps);
   });
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.FlightListRequest, new FlightListRequestT());
   }, []);
 
-  const visibleSteps = useMemo(() => steps.filter(stepVisibility), [steps]);
-  const firstInvalid = useMemo(
+  const visibleSteps = useMemo(() => {
+    const activeSteps = steps.filter(
+      (step) => !ignoredSteps.includes(step.id) && step.enabled
+    );
+    return steps
+      .map((step: FlightListStepT, index) => createStep(activeSteps, step, index))
+      .filter(stepVisibility);
+  }, [steps, ignoredSteps]);
+
+  const firstRequired = useMemo(
     () =>
       visibleSteps.find(
         (step) => !step.valid && step.status != 'blocked' && !step.optional
@@ -88,19 +103,20 @@ export function provideSessionFlightlist() {
   );
 
   const hightlightedTrackers = useMemo(() => {
-    if (!firstInvalid || !firstInvalid.extraData) return [];
-    if ('trackersId' in firstInvalid.extraData) {
-      return firstInvalid.extraData.trackersId;
+    if (!firstRequired || !firstRequired.extraData) return [];
+    if ('trackersId' in firstRequired.extraData) {
+      return firstRequired.extraData.trackersId;
     }
-    if ('trackerId' in firstInvalid.extraData) {
-      return [firstInvalid.extraData.trackerId];
+    if ('trackerId' in firstRequired.extraData) {
+      return [firstRequired.extraData.trackerId];
     }
     return [];
-  }, [firstInvalid]);
+  }, [firstRequired]);
 
   return {
-    steps: steps.filter(stepVisibility),
-    firstInvalid,
+    steps,
+    visibleSteps,
+    firstRequired,
     ignoredSteps,
     hightlightedTrackers,
     toggle: (step: FlightListStepId) => {

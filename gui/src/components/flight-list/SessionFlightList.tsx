@@ -10,7 +10,7 @@ import {
   FlightListStepId,
   ResetType,
 } from 'solarxr-protocol';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { openUrl } from '@tauri-apps/plugin-opener';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { Typography } from '@/components/commons/Typography';
@@ -20,52 +20,79 @@ import { A } from '@/components/commons/A';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { CrossIcon } from '@/components/commons/icon/CrossIcon';
+import { ArrowDownIcon } from '@/components/commons/icon/ArrowIcons';
 import { Localized } from '@fluent/react';
+import { GearIcon } from '@/components/commons/icon/GearIcon';
+import { WrenchIcon } from '../commons/icon/WrenchIcons';
+import { FlightListSettingsModal } from './FlightListSettingsModal';
 
 function Step({
-  step: { status, id, optional, firstInvalid },
+  step: { status, id, optional, firstRequired },
   children,
 }: {
   step: FlightListStep;
   index: number;
   children: ReactNode;
 }) {
+  const [open, setOpen] = useState(firstRequired);
+
+  const canBeOpened =
+    (status === 'skipped' || status === 'invalid') && !firstRequired;
+
+  useEffect(() => {
+    if (!canBeOpened) setOpen(false);
+  }, [open]);
+
   return (
-    <div className={classNames('flex flex-col relative px-3 fist:h-[600px]')}>
-      <div className="absolute left-[23px] top-0 border-l-[2px] border-gray-700 border-dashed h-full"></div>
-      <div className="flex w-full gap-2">
+    <div
+      className={classNames(
+        'flex flex-col pr-2 ml-6 last:pb-0 pb-3 border-l-[2px] border-background-50',
+        status !== 'complete' || (firstRequired && 'border-dashed')
+      )}
+    >
+      <div
+        className={classNames(
+          'flex w-full gap-2 ',
+          canBeOpened && 'group cursor-pointer'
+        )}
+        onClick={() => {
+          if (canBeOpened) setOpen((open) => !open);
+        }}
+      >
         <div
           className={classNames(
-            'p-1 h-6 w-6 rounded-full fill-background-10 flex items-center justify-center',
+            'p-1 rounded-full fill-background-10 flex items-center justify-center z-10 h-[25px] w-[25px] -ml-[13px]',
             status === 'complete' && 'bg-accent-background-20',
             status === 'blocked' && 'bg-background-50',
-            status === 'skipped' && 'bg-background-50',
+            status === 'skipped' && 'bg-background-50 fill-background-30',
             status === 'invalid' && !optional && 'bg-background-50',
             status === 'invalid' && optional && 'bg-background-50'
           )}
         >
+          {status === 'skipped' && <CheckIcon size={10}></CheckIcon>}
           {status === 'complete' && <CheckIcon size={10}></CheckIcon>}
-          {status !== 'complete' && (
+          {(status === 'invalid' || status === 'blocked') && (
             <div
               className={classNames(
-                'h-3 w-3 rounded-full',
+                'h-[12px] w-[12px] rounded-full',
                 optional && 'bg-background-40',
-                (status === 'skipped' || status === 'blocked' || !optional) &&
+                !optional &&
                   'bg-accent-background-10 animate-pulse brightness-75'
               )}
             />
           )}
         </div>
-        <div className="flex flex-col justify-center">
-          <Typography
-            id={flightlistIdtoLabel[id]}
-            variant="section-title"
-          ></Typography>
+        <div className="flex items-center justify-between w-full group-hover:text-background-20 text-section-title">
+          <Localized id={flightlistIdtoLabel[id]} />
+          {canBeOpened && (
+            <div className="fill-background-30 group-hover:scale-125 group-hover:fill-background-20 transition-transform">
+              <ArrowDownIcon size={20}></ArrowDownIcon>
+            </div>
+          )}
         </div>
       </div>
-
-      {(firstInvalid || (status === 'invalid' && optional)) && children && (
-        <div className="pt-2 pl-8">{children}</div>
+      {(firstRequired || open) && children && (
+        <div className="pt-2 pl-5">{children}</div>
       )}
     </div>
   );
@@ -75,10 +102,10 @@ const stepContentLookup: Record<
   number,
   (step: FlightListStep, context: SessionFlightListContext) => JSX.Element
 > = {
-  [FlightListStepId.TRACKERS_CALIBRATION]: (step, { toggle }) => {
+  [FlightListStepId.TRACKERS_REST_CALIBRATION]: (step, { toggle }) => {
     return (
       <div className="space-y-2.5">
-        <Typography id="flight_list-TRACKERS_CALIBRATION-desc"></Typography>
+        <Typography id="flight_list-TRACKERS_REST_CALIBRATION-desc"></Typography>
         <div className="flex justify-end">
           {step.ignorable && (
             <Button
@@ -96,18 +123,21 @@ const stepContentLookup: Record<
       <div className="space-y-2.5">
         <Typography id="flight_list-FULL_RESET-desc"></Typography>
         <div>
-          <Localized id="onboarding-automatic_mounting-preparation-v2-step-0">
-            <Typography color="secondary"></Typography>
-          </Localized>
-          <Localized id="onboarding-automatic_mounting-preparation-v2-step-1">
-            <Typography color="secondary"></Typography>
-          </Localized>
-          <Localized id="onboarding-automatic_mounting-preparation-v2-step-2">
-            <Typography color="secondary"></Typography>
-          </Localized>
+          <Typography
+            color="secondary"
+            id="onboarding-automatic_mounting-preparation-v2-step-0"
+          ></Typography>
+          <Typography
+            color="secondary"
+            id="onboarding-automatic_mounting-preparation-v2-step-1"
+          ></Typography>
+          <Typography
+            color="secondary"
+            id="onboarding-automatic_mounting-preparation-v2-step-2"
+          ></Typography>
         </div>
         <div className="grid grid-cols-3 py-1.5 gap-2">
-          <div className="flex flex-col bg-background-80 rounded-md relative max-h-64">
+          <div className="flex flex-col bg-background-80 rounded-md relative max-h-52">
             <CheckIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success"></CheckIcon>
             <img
               src="/images/reset/FullResetPose.webp"
@@ -115,7 +145,7 @@ const stepContentLookup: Record<
               alt="Reset position"
             />
           </div>
-          <div className="flex flex-col bg-background-80 rounded-md relative max-h-64">
+          <div className="flex flex-col bg-background-80 rounded-md relative max-h-52">
             <CheckIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success"></CheckIcon>
             <img
               src="/images/reset/FullResetPoseSide.webp"
@@ -123,7 +153,7 @@ const stepContentLookup: Record<
               alt="Reset position side"
             />
           </div>
-          <div className="flex flex-col bg-background-80 rounded-md relative max-h-64">
+          <div className="flex flex-col bg-background-80 rounded-md relative max-h-52">
             <CrossIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-critical"></CrossIcon>
             <img
               src="/images/reset/FullResetPoseWrong.webp"
@@ -132,7 +162,7 @@ const stepContentLookup: Record<
             />
           </div>
         </div>
-        <div className="flex justify-center">
+        <div className="flex">
           <ResetButton type={ResetType.Full} size="small"></ResetButton>
         </div>
       </div>
@@ -254,42 +284,132 @@ const stepContentLookup: Record<
       </div>
     );
   },
+  [FlightListStepId.STAY_ALIGNED_CONFIGURED]: (step, { toggle }) => {
+    return (
+      <>
+        <div className="space-y-2.5">
+          <Typography id="flight_list-STAY_ALIGNED_CONFIGURED-desc"></Typography>
+          <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
+            <Button
+              id="flight_list-STAY_ALIGNED_CONFIGURED-open"
+              variant="primary"
+              to="/onboarding/stay-aligned"
+              state={{ alonePage: true }}
+            ></Button>
+            {step.ignorable && (
+              <Button
+                id="flight_list-ignore"
+                variant="secondary"
+                onClick={() => toggle(step.id)}
+              ></Button>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  },
 };
 
 export function SessionFlightList() {
   const context = useSessionFlightlist();
-  const { steps } = context;
+  const { visibleSteps } = context;
+
+  const progress = useMemo(() => {
+    const completeSteps = visibleSteps.filter(
+      (step) => step.status === 'complete' || step.status === 'skipped'
+    );
+    return Math.min(1, completeSteps.length / visibleSteps.length);
+  }, [visibleSteps]);
+
+  const completion = useMemo(() => {
+    if (
+      progress === 1 &&
+      visibleSteps.find((step) => step.status === 'skipped')
+    )
+      return 'partial';
+    return progress === 1 ? 'complete' : 'incomplete';
+  }, [progress, visibleSteps]);
+
+  const slimeState = useMemo(() => {
+    if (completion === 'complete') return SlimeState.HAPPY;
+    if (completion === 'incomplete') return SlimeState.CURIOUS;
+    return SlimeState.HAPPY;
+  }, [completion]);
+
+  const settingsOpenState = useState(false);
+  const [, setSettingsOpen] = settingsOpenState;
 
   return (
-    <div className="relative h-full w-full overflow-y-auto">
-      <div className="flex flex-col pt-4 h-full overflow-clip">
-        {steps.map((step, index) => (
-          <Step step={step} index={index + 1} key={step.id}>
-            {stepContentLookup[step.id]?.(step, context) || undefined}
-          </Step>
-        ))}
+    <>
+      <div className="h-full w-full flex flex-col overflow-y-auto overflow-x-clip pt-3">
+        <div className="flex pl-3 pr-3 pb-2 justify-between items-center">
+          <div className="gap-2 flex fill-background-40">
+            <Typography variant="section-title">SlimeVR Flight list</Typography>
+          </div>
+          <div
+            className="flex gap-1 items-center fill-background-40 underline hover:fill-background-30 cursor-pointer rounded-full p-2 hover:bg-background-50"
+            onClick={() => setSettingsOpen(true)}
+          >
+            <WrenchIcon width={15}></WrenchIcon>
+          </div>
+        </div>
+        <div className="contents">
+          {visibleSteps.map((step, index) => (
+            <Step step={step} index={index + 1} key={step.id}>
+              {stepContentLookup[step.id]?.(step, context) || undefined}
+            </Step>
+          ))}
+        </div>
         <div
-          className={classNames('flex-grow flex-col justify-end flex relative')}
+          className={classNames(
+            'flex flex-grow flex-col justify-end border-l-[2px] border-background-50 ml-6 pt-3',
+            completion === 'incomplete' && 'border-dashed'
+          )}
         >
-          {/* <div className="absolute left-2 border-l-[2px] border-gray-700 border-dashed"></div> */}
           <div className="flex w-full gap-2">
-            <div className="h-6 w-6 rounded-full bg-status-critical fill-background-10 flex items-center justify-center">
-              <CheckIcon />
+            <div className="rounded-full bg-background-50 flex items-center justify-center h-[25px] w-[25px] -ml-[13px]">
+              <div
+                className={classNames(
+                  'h-[12px] w-[12px] rounded-full',
+                  completion !== 'incomplete'
+                    ? 'bg-status-success'
+                    : 'bg-status-critical animate-pulse'
+                )}
+              ></div>
             </div>
             <div className="flex flex-col justify-center">
-              <Typography variant="section-title">
-                You are not prepared to use SlimeVR!
-              </Typography>
+              {completion === 'incomplete' && (
+                <Typography variant="section-title">
+                  You are not prepared to use SlimeVR!
+                </Typography>
+              )}
+              {(completion == 'complete' || completion === 'partial') && (
+                <Typography variant="section-title">
+                  You are prepared to use SlimeVR!
+                </Typography>
+              )}
             </div>
           </div>
-          <div className="bottom-0 left-0 w-full">
-            <ProgressBar progress={0.5} height={8} bottom></ProgressBar>
-            <div className="absolute -bottom-4 -right-4 -rotate-45">
-              <LoaderIcon slimeState={SlimeState.CURIOUS}></LoaderIcon>
+        </div>
+        <div className="w-full flex relative p-3 pr-12">
+          <ProgressBar
+            progress={progress}
+            colorClass={
+              completion !== 'incomplete'
+                ? 'bg-status-success'
+                : 'bg-accent-background-20'
+            }
+          ></ProgressBar>
+          <div className="absolute bottom-0 right-0 w-20 h-20 overflow-clip">
+            <div className="-rotate-45 translate-x-3.5 translate-y-3.5">
+              <LoaderIcon slimeState={slimeState}></LoaderIcon>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      <FlightListSettingsModal
+        open={settingsOpenState}
+      ></FlightListSettingsModal>
+    </>
   );
 }

@@ -68,7 +68,38 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 	private fun createSteps() {
 		steps.add(
 			FlightListStepT().apply {
-				id = FlightListStepId.TRACKERS_CALIBRATION
+				id = FlightListStepId.NETWORK_PROFILE_PUBLIC
+				enabled = vrServer.networkProfileChecker.isSupported
+				optional = false
+				ignorable = true
+				visibility = FlightListStepVisibility.WHEN_INVALID
+			},
+		)
+
+		steps.add(
+			FlightListStepT().apply {
+				id = FlightListStepId.STEAMVR_DISCONNECTED
+				enabled = true
+				optional = false
+				ignorable = true
+				visibility = FlightListStepVisibility.WHEN_INVALID
+			},
+		)
+
+		steps.add(
+			FlightListStepT().apply {
+				id = FlightListStepId.TRACKER_ERROR
+				valid = true // Default to valid
+				enabled = true
+				optional = false
+				ignorable = false
+				visibility = FlightListStepVisibility.WHEN_INVALID
+			},
+		)
+
+		steps.add(
+			FlightListStepT().apply {
+				id = FlightListStepId.TRACKERS_REST_CALIBRATION
 				enabled = true
 				optional = false
 				ignorable = true
@@ -99,16 +130,6 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 
 		steps.add(
 			FlightListStepT().apply {
-				id = FlightListStepId.STEAMVR_DISCONNECTED
-				enabled = true
-				optional = true
-				ignorable = true
-				visibility = FlightListStepVisibility.WHEN_INVALID
-			},
-		)
-
-		steps.add(
-			FlightListStepT().apply {
 				id = FlightListStepId.UNASSIGNED_HMD
 				enabled = true
 				optional = false
@@ -119,19 +140,8 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 
 		steps.add(
 			FlightListStepT().apply {
-				id = FlightListStepId.TRACKER_ERROR
-				valid = true // Default to valid
+				id = FlightListStepId.STAY_ALIGNED_CONFIGURED
 				enabled = true
-				optional = false
-				ignorable = false
-				visibility = FlightListStepVisibility.WHEN_INVALID
-			},
-		)
-
-		steps.add(
-			FlightListStepT().apply {
-				id = FlightListStepId.VRCHAT_SETTINGS
-				enabled = vrServer.vrcConfigManager.isSupported
 				optional = true
 				ignorable = true
 				visibility = FlightListStepVisibility.WHEN_INVALID
@@ -140,8 +150,8 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 
 		steps.add(
 			FlightListStepT().apply {
-				id = FlightListStepId.NETWORK_PROFILE_PUBLIC
-				enabled = vrServer.networkProfileChecker.isSupported
+				id = FlightListStepId.VRCHAT_SETTINGS
+				enabled = vrServer.vrcConfigManager.isSupported
 				optional = true
 				ignorable = true
 				visibility = FlightListStepVisibility.WHEN_INVALID
@@ -216,7 +226,7 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 					it.hasCompletedRestCalibration == false
 				}
 				updateValidity(
-					FlightListStepId.TRACKERS_CALIBRATION,
+					FlightListStepId.TRACKERS_REST_CALIBRATION,
 					trackersNeedCalibration.isEmpty(),
 				) {
 					// Don't show the step if none of the trackers connected support IMU calibration
@@ -273,6 +283,8 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 				updateValidity(FlightListStepId.MOUNTING_CALIBRATION, resetMountingCompleted) {
 					it.enabled = vrServer.configManager.vrConfig.resetsConfig.preferedMountingMethod == MountingMethods.AUTOMATIC
 				}
+
+				updateValidity(FlightListStepId.STAY_ALIGNED_CONFIGURED, vrServer.configManager.vrConfig.stayAlignedConfig.enabled)
 
 				listeners.forEach { it.onStepsUpdate() }
 			},
