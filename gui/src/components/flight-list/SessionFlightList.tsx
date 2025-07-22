@@ -344,7 +344,7 @@ export function SessionFlightList() {
       <div className="h-full w-full flex flex-col overflow-y-auto overflow-x-clip pt-3">
         <div className="flex pl-3 pr-3 pb-2 justify-between items-center">
           <div className="gap-2 flex fill-background-40">
-            <Typography variant="section-title">SlimeVR Flight list</Typography>
+            <Typography variant="section-title">Flight list</Typography>
           </div>
           <div
             className="flex gap-1 items-center fill-background-40 underline hover:fill-background-30 cursor-pointer rounded-full p-2 hover:bg-background-50"
@@ -362,7 +362,7 @@ export function SessionFlightList() {
         </div>
         <div
           className={classNames(
-            'flex flex-grow flex-col justify-end border-l-[2px] border-background-50 ml-6 pt-3',
+            'flex flex-col justify-end border-l-[2px] border-background-50 ml-6 pt-3',
             completion === 'incomplete' && 'border-dashed'
           )}
         >

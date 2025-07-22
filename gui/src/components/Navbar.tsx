@@ -34,7 +34,7 @@ export function NavButton({
     <Tooltip
       disabled={isMobile}
       preferedDirection={'right'}
-      content={children}
+      content={<div className="text-xl">{children}</div>}
       variant="floating"
     >
       <NavLink
@@ -42,7 +42,7 @@ export function NavButton({
         state={state}
         className={classnames(
           'flex flex-col justify-center xs:gap-4 mobile:gap-2',
-          'xs:w-[50px] xs:h-[50px] mobile:w-[50px] mobile:h-[50px]',
+          'xs:w-[75px] xs:h-[75px] mobile:w-[75px] mobile:h-[75px]',
           'xs:py-3 mobile:py-4 rounded-md mobile:rounded-b-none group select-text',
           {
             'bg-accent-background-50 fill-accent-background-20': doesMatch,
@@ -52,9 +52,9 @@ export function NavButton({
       >
         <div className="flex justify-around">
           <div
-            className={classnames('scale-150', {
+            className={classnames('scale-[170%]', {
               'fill-accent-lighter': doesMatch,
-              'fill-background-50': !doesMatch,
+              'fill-background-40': !doesMatch,
             })}
           >
             {icon}
