@@ -42,7 +42,7 @@ export function NavButton({
         state={state}
         className={classnames(
           'flex flex-col justify-center xs:gap-4 mobile:gap-2',
-          'xs:w-[75px] xs:h-[75px] mobile:w-[75px] mobile:h-[75px]',
+          'xs:w-[65px] xs:h-[65px] mobile:w-[65px] mobile:h-[65px]',
           'xs:py-3 mobile:py-4 rounded-md mobile:rounded-b-none group select-text',
           {
             'bg-accent-background-50 fill-accent-background-20': doesMatch,
