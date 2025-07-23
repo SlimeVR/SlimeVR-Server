@@ -56,7 +56,19 @@ export function WidgetsComponent() {
         <ResetButton type={ResetType.Full} size="big"></ResetButton>
         <ResetButton type={ResetType.Mounting} size="big"></ResetButton>
         <ClearMountingButton></ClearMountingButton>
-        <BVHButton></BVHButton>
+        <ResetButton
+          type={ResetType.Mounting}
+          size="big"
+          bodyPartsToReset="feet"
+        ></ResetButton>
+        <ResetButton
+          type={ResetType.Mounting}
+          size="big"
+          bodyPartsToReset="fingers"
+        ></ResetButton>
+        {(typeof __ANDROID__ === 'undefined' || !__ANDROID__?.isThere()) && (
+          <BVHButton></BVHButton>
+        )}
         <TrackingPauseButton></TrackingPauseButton>
       </div>
       <div className="w-full">

@@ -42,6 +42,7 @@ import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.Consumer
+import kotlin.collections.ArrayList
 import kotlin.concurrent.schedule
 
 typealias BridgeProvider = (
@@ -248,7 +249,7 @@ class VRServer @JvmOverloads constructor(
 				bridge.dataRead()
 			}
 			for (tracker in trackers) {
-				tracker.tick()
+				tracker.tick(fpsTimer.timePerFrame)
 			}
 			humanPoseManager.update()
 
@@ -316,16 +317,16 @@ class VRServer @JvmOverloads constructor(
 		}
 	}
 
-	fun resetTrackersFull(resetSourceName: String?) {
-		queueTask { humanPoseManager.resetTrackersFull(resetSourceName) }
+	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
+		queueTask { humanPoseManager.resetTrackersFull(resetSourceName, bodyParts) }
 	}
 
-	fun resetTrackersYaw(resetSourceName: String?) {
-		queueTask { humanPoseManager.resetTrackersYaw(resetSourceName) }
+	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
+		queueTask { humanPoseManager.resetTrackersYaw(resetSourceName, bodyParts) }
 	}
 
-	fun resetTrackersMounting(resetSourceName: String?) {
-		queueTask { humanPoseManager.resetTrackersMounting(resetSourceName) }
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFeetAndFingers) {
+		queueTask { humanPoseManager.resetTrackersMounting(resetSourceName, bodyParts) }
 	}
 
 	fun clearTrackersMounting(resetSourceName: String?) {

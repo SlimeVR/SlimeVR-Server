@@ -78,7 +78,6 @@
               cacert
             ])
             ++ lib.optionals pkgs.stdenv.isLinux (with pkgs; [
-              appimagekit
               atk
               cairo
               dbus
@@ -122,13 +121,15 @@
           languages.javascript = {
             enable = true;
             corepack.enable = true;
+            pnpm.enable = true;
+            npm.enable = true;
           };
 
           languages.rust = {
             enable = true;
             toolchain = fenixpkgs.fromToolchainName {
               name = rust_toolchain.toolchain.channel;
-              sha256 = "sha256-VZZnlyP69+Y3crrLHQyJirqlHrTtGTsyiSnZB8jEvVo=";
+              sha256 = "sha256-yMuSb5eQPO/bHv+Bcf/US8LVMbf/G/0MSfiPwBhiPpk=";
             };
             components = rust_toolchain.toolchain.components;
           };

@@ -54,6 +54,7 @@ dirs-next = "2.0.0"
 discord-sdk = "0.3.6"
 tokio = { version = "1.37.0", features = ["time"] }
 itertools = "0.13.0"
+tauri-plugin-http = "2.5.0"
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"

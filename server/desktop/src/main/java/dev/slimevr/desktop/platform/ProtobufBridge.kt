@@ -287,6 +287,8 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 
 			"fast_reset" -> instance.resetTrackersYaw(resetSourceName)
 
+			"mounting_reset" -> instance.resetTrackersMounting(resetSourceName)
+
 			"pause_tracking" ->
 				instance
 					.togglePauseTracking(resetSourceName)

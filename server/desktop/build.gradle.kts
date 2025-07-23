@@ -63,7 +63,7 @@ dependencies {
 	implementation("com.google.protobuf:protobuf-java:4.31.1")
 	implementation("net.java.dev.jna:jna:5.+")
 	implementation("net.java.dev.jna:jna-platform:5.+")
-	implementation("com.fazecast:jSerialComm:2.11.1-SNAPSHOT")
+	implementation("com.fazecast:jSerialComm:2.11.2")
 	implementation("org.hid4java:hid4java:0.8.0")
 }
 

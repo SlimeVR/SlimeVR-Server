@@ -80,17 +80,36 @@ impl WindowState {
 			window.unmaximize()?;
 		}
 
-		if self.width > util::MIN_WINDOW_SIZE_WIDTH
-			&& self.height > util::MIN_WINDOW_SIZE_HEIGHT
+		let size = if self.width >= util::MIN_WINDOW_SIZE_WIDTH
+			&& self.height >= util::MIN_WINDOW_SIZE_HEIGHT
 		{
-			window.set_size(LogicalSize::new(self.width, self.height))?;
-		}
+			Some(LogicalSize::new(self.width, self.height))
+		} else {
+			None
+		};
 
 		let pos = PhysicalPosition::new(self.x, self.y);
-		for monitor in window.available_monitors()? {
-			if monitor.contains(pos) {
+		let monitor = window
+			.available_monitors()?
+			.into_iter()
+			.find(|x| x.contains(pos))
+			.map(|m| (m, true))
+			.or(window.current_monitor()?.map(|m| (m, false)));
+
+		// Don't surpass the monitor's size
+		if let Some((monitor, is_old)) = monitor {
+			let monitor_size = *monitor.size();
+			let window_size = size
+				.map(|s| s.to_physical(monitor.scale_factor()))
+				.unwrap_or(window.outer_size()?);
+			window.set_size(PhysicalSize::new(
+				u32::min(monitor_size.width, window_size.width),
+				u32::min(monitor_size.height, window_size.height),
+			))?;
+
+			// If the position of the window was previously in the config
+			if is_old {
 				window.set_position(pos)?;
-				break;
 			}
 		}
 
