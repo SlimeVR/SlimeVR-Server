@@ -10,6 +10,8 @@ import dev.slimevr.firmware.SerialFlashingHandler
 import dev.slimevr.games.vrchat.VRCConfigHandler
 import dev.slimevr.games.vrchat.VRCConfigHandlerStub
 import dev.slimevr.games.vrchat.VRChatConfigManager
+import dev.slimevr.inputs.Input
+import dev.slimevr.inputs.TapInputManager
 import dev.slimevr.osc.OSCHandler
 import dev.slimevr.osc.OSCRouter
 import dev.slimevr.osc.VMCHandler
@@ -116,6 +118,9 @@ class VRServer @JvmOverloads constructor(
 	@JvmField
 	val handshakeHandler = HandshakeHandler()
 
+	val tapInputManager: TapInputManager
+	val inputs: MutableList<Input> = FastList()
+
 	init {
 		// UwU
 		configManager = ConfigManager(configPath)
@@ -148,6 +153,7 @@ class VRServer @JvmOverloads constructor(
 			bridges.add(bridge)
 			bridge.addFingerBones(humanPoseManager.shareableFingerBones)
 		}
+		tapInputManager = TapInputManager(humanPoseManager.skeleton, this)
 
 		// Initialize OSC handlers
 		vrcOSCHandler = VRCOSCHandler(
@@ -245,11 +251,23 @@ class VRServer @JvmOverloads constructor(
 				tracker.tick()
 			}
 			humanPoseManager.update()
+
+			// Check for tap inputs
+			tapInputManager.update()
+			// Update bridges
 			for (bridge in bridges) {
+				// Send inputs to each bridge
+				for (input in inputs) {
+					bridge.sendInput(input)
+				}
 				bridge.dataWrite()
 			}
+			// Don't forget to clear inputs so that we don't send the same ones again
+			inputs.clear()
+
 			vrcOSCHandler.update()
 			vMCHandler.update()
+
 			// final long time = System.currentTimeMillis() - start;
 			try {
 				sleep(1) // 1000Hz

@@ -145,7 +145,7 @@ public class UnixSocketRpcBridge implements dev.slimevr.bridge.Bridge,
 	}
 
 	@Override
-	public void sendBooleanInput(@NotNull Input input) {
+	public void sendInput(@NotNull Input input) {
 
 	}
 }

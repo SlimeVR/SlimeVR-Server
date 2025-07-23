@@ -233,7 +233,7 @@ class WebSocketVRBridge(
 		// TODO Auto-generated method stub
 	}
 
-	override fun sendBooleanInput(input: Input) {
+	override fun sendInput(input: Input) {
 		// TODO Auto-generated method stub
 	}
 

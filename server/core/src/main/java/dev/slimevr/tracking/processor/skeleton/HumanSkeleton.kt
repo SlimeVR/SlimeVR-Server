@@ -487,6 +487,7 @@ class HumanSkeleton(
 
 		// Update tap detection's trackers
 		tapDetectionManager.updateConfig(trackers)
+		humanPoseManager.server?.tapInputManager?.reinit()
 
 		// Update bones tracker field
 		refreshBoneTracker()

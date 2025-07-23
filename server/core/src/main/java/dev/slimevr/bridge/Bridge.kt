@@ -56,7 +56,7 @@ interface Bridge {
 	 * @param input the object containing the data about the input
 	 */
 	@VRServerThread
-	fun sendBooleanInput(input: Input)
+	fun sendInput(input: Input)
 
 	@VRServerThread
 	fun startBridge()

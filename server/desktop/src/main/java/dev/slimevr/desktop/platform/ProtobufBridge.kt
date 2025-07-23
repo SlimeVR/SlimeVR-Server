@@ -20,9 +20,8 @@ import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import java.util.Queue
+import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
-import kotlin.collections.HashMap
 
 abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISteamVRBridge {
 	@JvmField
@@ -163,7 +162,9 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			val trackerIsLeftHand = localTracker.trackerPosition == TrackerPosition.LEFT_HAND
 			val trackerIsRightHand = localTracker.trackerPosition == TrackerPosition.RIGHT_HAND
 			if (trackerIsLeftHand || trackerIsRightHand) {
-				for (input in inputs) {
+				val iterator = inputs.iterator()
+				while (iterator.hasNext()) {
+					val input = iterator.next()
 					if ((input.rightHand && trackerIsRightHand) || (!input.rightHand && trackerIsLeftHand)) {
 						val inputBuilder = Input.newBuilder()
 						if (input.type == InputType.DOUBLE_TAP) {
@@ -176,7 +177,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 
 						builder.addInput(inputBuilder.build())
 
-						inputs.remove(input)
+						iterator.remove()
 					} else {
 						// Input side doesn't match controller side
 					}
@@ -188,7 +189,7 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	}
 
 	@VRServerThread
-	override fun sendBooleanInput(input: dev.slimevr.inputs.Input) {
+	override fun sendInput(input: dev.slimevr.inputs.Input) {
 		inputs.add(input)
 	}
 
