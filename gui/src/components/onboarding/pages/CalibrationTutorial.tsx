@@ -45,16 +45,17 @@ export function CalibrationTutorialPage() {
   useEffect(() => {
     const accelLength = restCalibrationTrackers.every((x) => {
       if (
+        x.device?.id?.id === undefined ||
         x.tracker.trackerId?.trackerNum === undefined ||
         x.tracker.trackerId.deviceId?.id === undefined ||
         !x.tracker.linearAcceleration
       )
         return false;
 
-      const trackerId =
-        x.tracker.trackerId.trackerNum + (x.tracker.trackerId.trackerNum << 8);
-      const lastValues = lastValueMap.current.get(trackerId) ?? [];
-      lastValueMap.current.set(trackerId, lastValues);
+      const trackerId = x.device.id.id;
+//        x.tracker.trackerId.trackerNum + (x.tracker.trackerId.deviceId.id << 8);
+      const lastValue = lastValueMap.current.get(trackerId) ?? new Vector3();
+      lastValueMap.current.set(trackerId, lastValue);
 
       const vec3 = Vector3FromVec3fT(x.tracker.linearAcceleration);
       if (lastValues.length > 5) {
