@@ -236,7 +236,7 @@ reset-reset_all_warning_default-v2 =
     Are you sure you want to do this?
 
 reset-full = Full Reset
-reset-mounting = Reset Mounting
+reset-mounting = Mounting Calibration
 reset-yaw = Yaw Reset
 
 ## Serial detection stuff
@@ -273,8 +273,8 @@ widget-overlay-is_mirrored_label = Display Overlay as Mirror
 ## Widget: Drift compensation
 widget-drift_compensation-clear = Clear drift compensation
 
-## Widget: Clear Reset Mounting
-widget-clear_mounting = Clear reset mounting
+## Widget: Clear Mounting calibration
+widget-clear_mounting = Clear mounting calibration
 
 ## Widget: Developer settings
 widget-developer_mode = Developer Mode
@@ -645,7 +645,7 @@ settings-general-gesture_control-yawResetTaps = Taps for yaw reset
 settings-general-gesture_control-fullResetEnabled = Enable tap to full reset
 settings-general-gesture_control-fullResetDelay = Full reset delay
 settings-general-gesture_control-fullResetTaps = Taps for full reset
-settings-general-gesture_control-mountingResetEnabled = Enable tap to reset mounting
+settings-general-gesture_control-mountingResetEnabled = Enable tap to mounting calibration
 settings-general-gesture_control-mountingResetDelay = Mounting reset delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 # The number of trackers that can have higher acceleration before a tap is rejected
@@ -1114,7 +1114,7 @@ onboarding-automatic_mounting-done-description = Your mounting calibration is co
 onboarding-automatic_mounting-done-restart = Try again
 onboarding-automatic_mounting-mounting_reset-title = Mounting Reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pose with your legs bent, your upper body tilted forwards, and your arms bent.
-onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Reset Mounting" button and wait for 3 seconds before the trackers' mounting orientations will reset.
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Mounting calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 onboarding-automatic_mounting-preparation-title = Preparation
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Press the "Full Reset" button.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stand upright with your arms to your sides. Make sure to look forward.
@@ -1560,7 +1560,7 @@ flight_list-VRCHAT_SETTINGS-desc = You have misconfigured VRchat Settings! This 
 flight_list-VRCHAT_SETTINGS-open = Go to VRChat Warnings
 flight_list-UNASSIGNED_HMD = VR Headset not assigned to Head
 flight_list-UNASSIGNED_HMD-desc = The VR headset should be assigned as a head tracker.
-flight_list-NETWORK_PROFILE_PUBLIC = Wrong network profile used
+flight_list-NETWORK_PROFILE_PUBLIC = Change your network profile
 flight_list-NETWORK_PROFILE_PUBLIC-desc = {$count ->
     [one] Your network profile is currently set to Public ({$adapters}).
           This is not recommended for SlimeVR to function properly.

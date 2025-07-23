@@ -69,11 +69,7 @@ export function PreparationStep({
           >
             {l10n.getString('onboarding-automatic_mounting-prev_step')}
           </Button>
-          <ResetButton
-            size="small"
-            type={ResetType.Full}
-            onReseted={nextStep}
-          ></ResetButton>
+          <ResetButton type={ResetType.Full} onReseted={nextStep}></ResetButton>
         </div>
       </div>
     </div>

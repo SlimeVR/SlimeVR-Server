@@ -83,7 +83,7 @@ function Layout() {
           <Route
             path="/"
             element={
-              <MainLayout isMobile={isMobile} full>
+              <MainLayout isMobile={isMobile} full showToolbarSettings>
                 <Home />
               </MainLayout>
             }
@@ -99,7 +99,7 @@ function Layout() {
           <Route
             path="/vr-mode"
             element={
-              <MainLayout isMobile={isMobile}>
+              <MainLayout isMobile={isMobile} full>
                 <VRModePage />
               </MainLayout>
             }

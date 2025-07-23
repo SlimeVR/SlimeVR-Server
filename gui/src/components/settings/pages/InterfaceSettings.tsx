@@ -20,6 +20,7 @@ import { ArrowRightLeftIcon } from '@/components/commons/icon/ArrowIcons';
 import { isTrayAvailable } from '@/utils/tauri';
 import { isTauri } from '@tauri-apps/api/core';
 import { TauriFileInput } from '@/components/commons/TauriFileInput';
+import { DeveloperModeWidget } from '@/components/widgets/DeveloperModeWidget';
 
 interface InterfaceSettingsForm {
   appearance: {
@@ -280,16 +281,19 @@ export function InterfaceSettings() {
                 )}
               </Typography>
             </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="behavior.devmode"
-                label={l10n.getString(
-                  'settings-general-interface-dev_mode-label'
-                )}
-              />
+            <div className="grid grid-cols-1 gap-2 pb-4 w-full">
+              <div className="">
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  outlined
+                  name="behavior.devmode"
+                  label={l10n.getString(
+                    'settings-general-interface-dev_mode-label'
+                  )}
+                />
+              </div>
+              {config?.debug && <DeveloperModeWidget></DeveloperModeWidget>}
             </div>
 
             <Typography bold>

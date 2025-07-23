@@ -31,47 +31,45 @@ export function Home() {
       >
         <HeadsetIcon></HeadsetIcon>
       </NavLink>
-      <div className="h-full overflow-y-auto">
-        <div className="overflow-y-auto flex flex-col gap-3">
-          {trackers.length === 0 && (
-            <div className="flex px-5 pt-5 justify-center">
-              <Typography variant="standard">
-                {l10n.getString('home-no_trackers')}
-              </Typography>
-            </div>
-          )}
+      <div className="overflow-y-auto flex flex-col gap-3">
+        {trackers.length === 0 && (
+          <div className="flex px-5 pt-5 justify-center">
+            <Typography variant="standard">
+              {l10n.getString('home-no_trackers')}
+            </Typography>
+          </div>
+        )}
 
-          {!config?.debug && trackers.length > 0 && (
-            <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-5 my-5">
-              {trackers.map(({ tracker, device }, index) => (
-                <TrackerCard
-                  key={index}
-                  tracker={tracker}
-                  device={device}
-                  onClick={() => sendToSettings(tracker)}
-                  smol
-                  showUpdates
-                  interactable
-                  warning={
-                    !!hightlightedTrackers.find(
-                      (t) =>
-                        t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
-                        t?.trackerNum === tracker.trackerId?.trackerNum
-                    )
-                  }
-                />
-              ))}
-            </div>
-          )}
-          {config?.debug && trackers.length > 0 && (
-            <div className="px-2 pt-5 overflow-y-scroll overflow-x-auto">
-              <TrackersTable
-                flatTrackers={trackers}
-                clickedTracker={(tracker) => sendToSettings(tracker)}
-              ></TrackersTable>
-            </div>
-          )}
-        </div>
+        {config?.homeLayout == 'default' && trackers.length > 0 && (
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-4 px-5 my-5">
+            {trackers.map(({ tracker, device }, index) => (
+              <TrackerCard
+                key={index}
+                tracker={tracker}
+                device={device}
+                onClick={() => sendToSettings(tracker)}
+                smol
+                showUpdates
+                interactable
+                warning={
+                  !!hightlightedTrackers.find(
+                    (t) =>
+                      t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
+                      t?.trackerNum === tracker.trackerId?.trackerNum
+                  )
+                }
+              />
+            ))}
+          </div>
+        )}
+        {config?.homeLayout === 'table' && trackers.length > 0 && (
+          <div className="px-2 overflow-x-auto">
+            <TrackersTable
+              flatTrackers={trackers}
+              clickedTracker={(tracker) => sendToSettings(tracker)}
+            ></TrackersTable>
+          </div>
+        )}
       </div>
     </div>
   );

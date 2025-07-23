@@ -28,7 +28,7 @@ function UpdateIcon({
     <div className="relative">
       <div
         className={classNames(
-          'absolute rounded-full h-6 w-6 left-1 top-1 bg-accent-background-10 animate-[ping_2s_linear_infinite]',
+          'absolute rounded-full h-6 w-6 left-1 top-1 bg-accent-background-10 animate-[ping_2s_linear_3]',
           showUpdate !== 'need-update' && 'hidden'
         )}
       ></div>

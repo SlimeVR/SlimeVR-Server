@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { WidgetsComponent } from '@/components/WidgetsComponent';
 import { useNavigate } from 'react-router-dom';
+import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
 
 export function VRModePage() {
   const nav = useNavigate();
@@ -12,8 +12,8 @@ export function VRModePage() {
   }, [isMobile]);
 
   return (
-    <div className="p-2 flex flex-col gap-2 h-full">
-      <WidgetsComponent></WidgetsComponent>
+    <div className="flex flex-col gap-2 h-full rounded-t-lg">
+      <SkeletonVisualizerWidget></SkeletonVisualizerWidget>
     </div>
   );
 }

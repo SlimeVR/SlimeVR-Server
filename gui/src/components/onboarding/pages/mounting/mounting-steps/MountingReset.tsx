@@ -58,7 +58,6 @@ export function MountingResetStep({
             {l10n.getString('onboarding-automatic_mounting-prev_step')}
           </Button>
           <ResetButton
-            size="small"
             type={ResetType.Mounting}
             onReseted={nextStep}
           ></ResetButton>

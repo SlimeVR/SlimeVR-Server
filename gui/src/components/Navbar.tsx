@@ -52,7 +52,7 @@ export function NavButton({
       >
         <div className="flex justify-around">
           <div
-            className={classnames('scale-[170%]', {
+            className={classnames('scale-[150%]', {
               'fill-accent-lighter': doesMatch,
               'fill-background-40': !doesMatch,
             })}

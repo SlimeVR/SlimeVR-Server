@@ -18,11 +18,11 @@ function ButtonContent({
       <div
         className={classNames(
           { 'opacity-0': loading },
-          'flex flex-row gap-2 justify-center'
+          'flex flex-row gap-2 justify-center items-center'
         )}
       >
         {icon && (
-          <div className="flex justify-center items-center fill-background-10 w-5 h-5">
+          <div className="flex justify-center items-center fill-background-10 w-5">
             {icon}
           </div>
         )}
@@ -110,24 +110,26 @@ export function Button({
       onClick={(ev) => disabled && ev.preventDefault()}
     >
       <ButtonContent icon={icon} loading={loading}>
-        {children}
+        {id && (
+          <Localized attrs={attrs} vars={vars} elems={elems} id={id}>
+            {children}
+          </Localized>
+        )}
+        {!id && children}
       </ButtonContent>
     </NavLink>
   ) : (
     <button type="button" {...props} className={classes} disabled={disabled}>
       <ButtonContent icon={icon} loading={loading}>
-        {children}
+        {id && (
+          <Localized attrs={attrs} vars={vars} elems={elems} id={id}>
+            {children}
+          </Localized>
+        )}
+        {!id && children}
       </ButtonContent>
     </button>
   );
-
-  if (id) {
-    return (
-      <Localized attrs={attrs} vars={vars} elems={elems} id={id}>
-        {content}
-      </Localized>
-    );
-  }
 
   return content;
 }

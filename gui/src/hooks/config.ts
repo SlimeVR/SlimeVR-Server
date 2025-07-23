@@ -46,6 +46,7 @@ export interface Config {
   showNavbarOnboarding: boolean;
   vrcMutedWarnings: string[];
   bvhDirectory: string | null;
+  homeLayout: 'default' | 'table';
 }
 
 export interface ConfigContext {
@@ -75,6 +76,7 @@ export const defaultConfig: Config = {
   vrcMutedWarnings: [],
   devSettings: defaultDevSettings,
   bvhDirectory: null,
+  homeLayout: 'default',
 };
 
 interface CrossStorage {

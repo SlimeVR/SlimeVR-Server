@@ -172,6 +172,7 @@ const config = {
       nsm: { raw: 'not (min-width: 900px)' },
       sm: '900px',
       md: '1100px',
+      nmd: { raw: 'not (min-width: 1100px)' },
       'md-max': { raw: 'not (min-width: 1100px)' },
       lg: '1300px',
       xl: '1600px',

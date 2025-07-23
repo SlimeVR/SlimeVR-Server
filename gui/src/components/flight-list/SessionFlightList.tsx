@@ -22,9 +22,7 @@ import { ProgressBar } from '@/components/commons/ProgressBar';
 import { CrossIcon } from '@/components/commons/icon/CrossIcon';
 import { ArrowDownIcon } from '@/components/commons/icon/ArrowIcons';
 import { Localized } from '@fluent/react';
-import { GearIcon } from '@/components/commons/icon/GearIcon';
-import { WrenchIcon } from '../commons/icon/WrenchIcons';
-import { FlightListSettingsModal } from './FlightListSettingsModal';
+import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 
 function Step({
   step: { status, id, optional, firstRequired },
@@ -163,7 +161,7 @@ const stepContentLookup: Record<
           </div>
         </div>
         <div className="flex">
-          <ResetButton type={ResetType.Full} size="small"></ResetButton>
+          <ResetButton type={ResetType.Full}></ResetButton>
         </div>
       </div>
     );
@@ -272,7 +270,7 @@ const stepContentLookup: Record<
           />
         </div>
         <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
-          <ResetButton size="small" type={ResetType.Mounting}></ResetButton>
+          <ResetButton type={ResetType.Mounting}></ResetButton>
           {step.ignorable && (
             <Button
               id="flight_list-ignore"
@@ -344,7 +342,7 @@ export function SessionFlightList() {
       <div className="h-full w-full flex flex-col overflow-y-auto overflow-x-clip pt-3">
         <div className="flex pl-3 pr-3 pb-2 justify-between items-center">
           <div className="gap-2 flex fill-background-40">
-            <Typography variant="section-title">Flight list</Typography>
+            <Typography variant="section-title">Tracking checklist</Typography>
           </div>
           <div
             className="flex gap-1 items-center fill-background-40 underline hover:fill-background-30 cursor-pointer rounded-full p-2 hover:bg-background-50"
@@ -362,7 +360,7 @@ export function SessionFlightList() {
         </div>
         <div
           className={classNames(
-            'flex flex-col justify-end border-l-[2px] border-background-50 ml-6 pt-3',
+            'flex flex-col flex-grow justify-end border-l-[2px] border-background-50 ml-6 pt-3',
             completion === 'incomplete' && 'border-dashed'
           )}
         >

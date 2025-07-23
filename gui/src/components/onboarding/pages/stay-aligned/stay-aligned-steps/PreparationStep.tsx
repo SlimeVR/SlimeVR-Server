@@ -53,11 +53,7 @@ export function PreparationStep({
           <Button variant={'secondary'} onClick={prevStep}></Button>
         </Localized>
 
-        <ResetButton
-          size="small"
-          type={ResetType.Full}
-          onReseted={nextStep}
-        ></ResetButton>
+        <ResetButton type={ResetType.Full} onReseted={nextStep}></ResetButton>
       </div>
     </div>
   );

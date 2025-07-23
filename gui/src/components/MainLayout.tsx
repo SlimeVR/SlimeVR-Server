@@ -11,7 +11,6 @@ import { TopBar } from './TopBar';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import './MainLayout.scss';
 import { Toolbar } from './Toolbar';
-import { SkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
 import { SessionFlightList } from './flight-list/SessionFlightList';
 
 export function MainLayout({
@@ -19,10 +18,12 @@ export function MainLayout({
   background = true,
   full = false,
   isMobile = undefined,
+  showToolbarSettings = false,
 }: {
   children: ReactNode;
   background?: boolean;
   isMobile?: boolean;
+  showToolbarSettings?: boolean;
   full?: boolean;
 }) {
   const { sendRPCPacket } = useWebsocketAPI();
@@ -60,12 +61,7 @@ export function MainLayout({
   });
 
   return (
-    <div
-      className={classNames(
-        'main-layout w-full h-screen',
-        !isMobile && full && 'full'
-      )}
-    >
+    <div className={classNames('main-layout w-full h-screen', full && 'full')}>
       <div style={{ gridArea: 't' }}>
         <TopBar></TopBar>
       </div>
@@ -78,28 +74,24 @@ export function MainLayout({
         className={classNames(
           'overflow-y-auto mr-2 my-2 mobile:m-0',
           'flex flex-col rounded-md',
-          background && 'bg-background-70'
+          background && 'bg-background-70',
+          { 'rounded-t-none': !isMobile && full }
         )}
       >
         {children}
       </div>
+      {full && (
+        <div style={{ gridArea: 'b' }}>
+          <Toolbar showSettings={showToolbarSettings}></Toolbar>
+        </div>
+      )}
       {!isMobile && full && (
         <>
-          <div style={{ gridArea: 'r' }}>
-            <Toolbar></Toolbar>
-          </div>
           <div
             style={{ gridArea: 'l' }}
             className="mr-2 my-2 rounded-md bg-background-70 flex overflow-clip"
           >
             <SessionFlightList></SessionFlightList>
-          </div>
-          <div
-            style={{ gridArea: 'p' }}
-            className="mr-2 mb-2 rounded-md bg-background-70 flex flex-col"
-          >
-            {/* <WidgetsComponent></WidgetsComponent> */}
-            <SkeletonVisualizerWidget />
           </div>
         </>
       )}

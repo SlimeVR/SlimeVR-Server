@@ -1,152 +1,63 @@
-import { useLocalization } from '@fluent/react';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  FlightListStepId,
-  ResetRequestT,
-  ResetType,
-  RpcMessage,
-} from 'solarxr-protocol';
-import { useConfig } from '@/hooks/config';
-import { useCountdown } from '@/hooks/countdown';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
-import {
-  playSoundOnResetEnded,
-  playSoundOnResetStarted,
-} from '@/sounds/sounds';
-import { BigButton } from '@/components/commons/BigButton';
+import { Localized } from '@fluent/react';
+import { ResetType } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
-import {
-  MountingResetIcon,
-  YawResetIcon,
-  FullResetIcon,
-} from '@/components/commons/icon/ResetIcon';
 import classNames from 'classnames';
-import { useSessionFlightlist } from '@/hooks/session-flightlist';
+import { useReset } from '@/hooks/reset';
+import {
+  FullResetIcon,
+  YawResetIcon,
+} from '@/components/commons/icon/ResetIcon';
+import { SkiIcon } from '@/components/commons/icon/SkiIcon';
+import { useMemo } from 'react';
 
 export function ResetButton({
   type,
-  size = 'big',
   className,
   onReseted,
 }: {
   className?: string;
   type: ResetType;
-  size: 'big' | 'small';
   onReseted?: () => void;
 }) {
-  const { l10n } = useLocalization();
-  const { sendRPCPacket } = useWebsocketAPI();
-  const { visibleSteps: steps } = useSessionFlightlist();
-  const { config } = useConfig();
-  const finishedTimeoutRef = useRef(-1);
-  const [isFinished, setFinished] = useState(false);
-
-  const needsFullReset = useMemo(
-    () =>
-      type === ResetType.Mounting &&
-      steps.some(
-        (step) => step.id === FlightListStepId.FULL_RESET && !step.valid
-      ),
-    [steps, type]
+  const { triggerReset, status, timer, disabled, name } = useReset(
+    type,
+    onReseted
   );
 
-  const reset = () => {
-    const req = new ResetRequestT();
-    req.resetType = type;
-    sendRPCPacket(RpcMessage.ResetRequest, req);
-  };
-
-  const { isCounting, startCountdown, timer } = useCountdown({
-    duration: type === ResetType.Yaw ? 0 : undefined,
-    onCountdownEnd: () => {
-      maybePlaySoundOnResetEnd(type);
-      reset();
-      setFinished(true);
-      if (finishedTimeoutRef.current !== -1)
-        clearTimeout(finishedTimeoutRef.current);
-      finishedTimeoutRef.current = setTimeout(() => {
-        setFinished(false);
-        finishedTimeoutRef.current = -1;
-      }, 2000);
-      if (onReseted) onReseted();
-    },
-  });
-
-  const text = useMemo(() => {
+  const icon = useMemo(() => {
     switch (type) {
       case ResetType.Yaw:
-        return l10n.getString('reset-yaw');
+        return <YawResetIcon width={18} />;
       case ResetType.Mounting:
-        return l10n.getString('reset-mounting');
-      case ResetType.Full:
-        return l10n.getString('reset-full');
+        return <SkiIcon size={18} />;
     }
+    return <FullResetIcon width={18} />;
   }, [type]);
 
-  const getIcon = () => {
-    switch (type) {
-      case ResetType.Yaw:
-        return <YawResetIcon width={20} />;
-      case ResetType.Mounting:
-        return <MountingResetIcon width={20} />;
-    }
-    return <FullResetIcon width={20} />;
-  };
-
-  const maybePlaySoundOnResetEnd = (type: ResetType) => {
-    if (!config?.feedbackSound) return;
-    playSoundOnResetEnded(type, config?.feedbackSoundVolume);
-  };
-
-  const maybePlaySoundOnResetStart = () => {
-    if (!config?.feedbackSound) return;
-    if (type !== ResetType.Yaw)
-      playSoundOnResetStarted(config?.feedbackSoundVolume);
-  };
-
-  const triggerReset = () => {
-    setFinished(false);
-    startCountdown();
-    maybePlaySoundOnResetStart();
-  };
-
-  useEffect(() => {
-    return () => {
-      if (finishedTimeoutRef.current !== -1)
-        clearTimeout(finishedTimeoutRef.current);
-    };
-  }, []);
-
-  return size === 'small' ? (
+  return (
     <Button
-      icon={getIcon()}
+      icon={icon}
       onClick={triggerReset}
       className={classNames(
-        'border-2',
-        isFinished
+        'border-2 m-1',
+        status === 'finished'
           ? 'border-status-success'
           : 'transition-[border-color] duration-500 ease-in-out border-transparent',
         className
       )}
       variant="primary"
-      disabled={isCounting || needsFullReset}
+      disabled={disabled}
     >
-      {!isCounting || type === ResetType.Yaw ? text : String(timer)}
+      <div className="flex flex-col">
+        <div className="opacity-0 h-0">
+          <Localized id={name}></Localized>
+        </div>
+        {status !== 'counting' || type === ResetType.Yaw ? (
+          <Localized id={name}></Localized>
+        ) : (
+          String(timer)
+        )}
+      </div>
     </Button>
-  ) : (
-    <BigButton
-      icon={getIcon()}
-      onClick={triggerReset}
-      className={classNames(
-        'border-2',
-        isFinished
-          ? 'border-status-success'
-          : 'transition-[border-color] duration-500 ease-in-out border-transparent',
-        className
-      )}
-      disabled={isCounting || needsFullReset}
-    >
-      {!isCounting || type === ResetType.Yaw ? text : String(timer)}
-    </BigButton>
   );
 }

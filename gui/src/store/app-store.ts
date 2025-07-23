@@ -45,12 +45,16 @@ export const unassignedTrackersAtom = atom((get) => {
   return trackers.filter(({ tracker }) => tracker.info?.bodyPart === BodyPart.NONE);
 });
 
-export const connectedIMUTrackersAtom = atom((get) => {
+export const connectedTrackersAtom = atom((get) => {
   const trackers = get(flatTrackersAtom);
   return trackers.filter(
-    ({ tracker }) =>
-      tracker.status !== TrackerStatus.DISCONNECTED && tracker.info?.isImu
+    ({ tracker }) => tracker.status !== TrackerStatus.DISCONNECTED
   );
+});
+
+export const connectedIMUTrackersAtom = atom((get) => {
+  const trackers = get(connectedTrackersAtom);
+  return trackers.filter(({ tracker }) => tracker.info?.isImu);
 });
 
 export const computedTrackersAtom = selectAtom(
