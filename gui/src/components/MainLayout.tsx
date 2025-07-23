@@ -11,7 +11,7 @@ import { TopBar } from './TopBar';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import './MainLayout.scss';
 import { Toolbar } from './Toolbar';
-import { SessionFlightList } from './flight-list/SessionFlightList';
+import { Sidebar } from './Sidebar';
 
 export function MainLayout({
   children,
@@ -65,7 +65,7 @@ export function MainLayout({
       <div style={{ gridArea: 't' }}>
         <TopBar></TopBar>
       </div>
-      <div style={{ gridArea: 's' }} className="overflow-y-auto">
+      <div style={{ gridArea: 'n' }} className="overflow-y-auto">
         <Navbar></Navbar>
       </div>
 
@@ -86,14 +86,9 @@ export function MainLayout({
         </div>
       )}
       {!isMobile && full && (
-        <>
-          <div
-            style={{ gridArea: 'l' }}
-            className="mr-2 my-2 rounded-md bg-background-70 flex overflow-clip"
-          >
-            <SessionFlightList></SessionFlightList>
-          </div>
-        </>
+        <div style={{ gridArea: 's' }} className="mr-2">
+          <Sidebar></Sidebar>
+        </div>
       )}
     </div>
   );

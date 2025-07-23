@@ -32,7 +32,7 @@ function ButtonProgress({
   return (
     <div
       className={classNames(
-        'absolute top-0 left-0 w-0 h-full bg-background-70 opacity-50 transition-all duration-1000 ease-linear',
+        'absolute top-0 left-0 w-0 h-full bg-accent-background-20 opacity-50 transition-all duration-1000 ease-linear',
         { 'duration-150': status === 'finished' }
       )}
       style={{ width: `${progress * 100}%` }}
@@ -65,7 +65,7 @@ function BasicResetButton({ type }: { type: ResetType }) {
         className={classNames(
           MAINBUTTON_CLASSES({ disabled }),
           {
-            'animate-bounce': status === 'finished',
+            // 'animate-bounce': status === 'finished',
           },
           'rounded-lg'
         )}
@@ -74,7 +74,16 @@ function BasicResetButton({ type }: { type: ResetType }) {
         }}
         onClick={() => !disabled && triggerReset()}
       >
-        {icon}
+        <div
+          className={classNames({
+            'animate-spin-ccw': status === 'finished',
+          })}
+          style={{
+            animationIterationCount: 1,
+          }}
+        >
+          {icon}
+        </div>
 
         <div className="hidden md:block">
           <Typography

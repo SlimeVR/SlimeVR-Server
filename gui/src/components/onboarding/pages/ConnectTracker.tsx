@@ -102,7 +102,7 @@ export function InvalidNetworkProfileWarning({
 
 export function ConnectTrackersPage() {
   const { l10n } = useLocalization();
-  const { visibleSteps: steps } = useSessionFlightlist();
+  const { visibleSteps } = useSessionFlightlist();
 
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { applyProgress, state } = useOnboarding();
@@ -192,11 +192,11 @@ export function ConnectTrackersPage() {
   );
 
   const invalidNetworkProfile = useMemo(() => {
-    return steps.find(
+    return visibleSteps.find(
       (step) =>
         step.id === FlightListStepId.NETWORK_PROFILE_PUBLIC && !step.valid
     );
-  }, [steps]);
+  }, [visibleSteps]);
 
   return (
     <>

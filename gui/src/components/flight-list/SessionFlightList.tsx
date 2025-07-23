@@ -23,6 +23,7 @@ import { CrossIcon } from '@/components/commons/icon/CrossIcon';
 import { ArrowDownIcon } from '@/components/commons/icon/ArrowIcons';
 import { Localized } from '@fluent/react';
 import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
+import { c } from 'vite/dist/node/types.d-aGj9QkWt';
 
 function Step({
   step: { status, id, optional, firstRequired },
@@ -308,25 +309,17 @@ const stepContentLookup: Record<
   },
 };
 
-export function SessionFlightList() {
+export function SessionFlightList({
+  closed,
+  closing,
+  toggleClosed,
+}: {
+  closed: boolean;
+  closing: boolean;
+  toggleClosed: () => void;
+}) {
   const context = useSessionFlightlist();
-  const { visibleSteps } = context;
-
-  const progress = useMemo(() => {
-    const completeSteps = visibleSteps.filter(
-      (step) => step.status === 'complete' || step.status === 'skipped'
-    );
-    return Math.min(1, completeSteps.length / visibleSteps.length);
-  }, [visibleSteps]);
-
-  const completion = useMemo(() => {
-    if (
-      progress === 1 &&
-      visibleSteps.find((step) => step.status === 'skipped')
-    )
-      return 'partial';
-    return progress === 1 ? 'complete' : 'incomplete';
-  }, [progress, visibleSteps]);
+  const { visibleSteps, progress, completion } = context;
 
   const slimeState = useMemo(() => {
     if (completion === 'complete') return SlimeState.HAPPY;
@@ -339,19 +332,42 @@ export function SessionFlightList() {
 
   return (
     <>
-      <div className="h-full w-full flex flex-col overflow-y-auto overflow-x-clip pt-3">
-        <div className="flex pl-3 pr-3 pb-2 justify-between items-center">
+      <div
+        className={classNames(
+          {
+            'overflow-y-auto': !closing && !closed,
+          },
+          'h-full w-full flex flex-col overflow-x-clip pt-1'
+        )}
+      >
+        <div
+          className={classNames(
+            'flex pl-3 pr-1 pb-2 pt-1 justify-between items-center'
+          )}
+        >
           <div className="gap-2 flex fill-background-40">
             <Typography variant="section-title">Tracking checklist</Typography>
           </div>
-          <div
-            className="flex gap-1 items-center fill-background-40 underline hover:fill-background-30 cursor-pointer rounded-full p-2 hover:bg-background-50"
-            onClick={() => setSettingsOpen(true)}
-          >
-            <WrenchIcon width={15}></WrenchIcon>
+          <div className="flex gap-2">
+            <div
+              className="flex gap-1 items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-8 h-8 hover:bg-background-50"
+              onClick={() => toggleClosed()}
+            >
+              <ArrowDownIcon size={25}></ArrowDownIcon>
+            </div>
+            <div
+              className="flex gap-1 items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-8 h-8 hover:bg-background-50"
+              onClick={() => setSettingsOpen(true)}
+            >
+              <WrenchIcon width={15}></WrenchIcon>
+            </div>
           </div>
         </div>
-        <div className="contents">
+        <div
+          className={classNames('transition-all duration-500 delay-100', {
+            'opacity-0 h-0': closed,
+          })}
+        >
           {visibleSteps.map((step, index) => (
             <Step step={step} index={index + 1} key={step.id}>
               {stepContentLookup[step.id]?.(step, context) || undefined}
@@ -359,10 +375,10 @@ export function SessionFlightList() {
           ))}
         </div>
         <div
-          className={classNames(
-            'flex flex-col flex-grow justify-end border-l-[2px] border-background-50 ml-6 pt-3',
-            completion === 'incomplete' && 'border-dashed'
-          )}
+          className={classNames('flex flex-col flex-grow justify-end  ml-6', {
+            'pt-3 border-l-[2px] border-background-50': !closed,
+            'border-dashed': completion === 'incomplete',
+          })}
         >
           <div className="flex w-full gap-2">
             <div className="rounded-full bg-background-50 flex items-center justify-center h-[25px] w-[25px] -ml-[13px]">
@@ -375,7 +391,7 @@ export function SessionFlightList() {
                 )}
               ></div>
             </div>
-            <div className="flex flex-col justify-center">
+            <div className={'flex flex-col justify-center'}>
               {completion === 'incomplete' && (
                 <Typography variant="section-title">
                   You are not prepared to use SlimeVR!
@@ -389,16 +405,23 @@ export function SessionFlightList() {
             </div>
           </div>
         </div>
-        <div className="w-full flex relative p-3 pr-12">
-          <ProgressBar
-            progress={progress}
-            colorClass={
-              completion !== 'incomplete'
-                ? 'bg-status-success'
-                : 'bg-accent-background-20'
-            }
-          ></ProgressBar>
-          <div className="absolute bottom-0 right-0 w-20 h-20 overflow-clip">
+        <div
+          className={classNames('w-full flex relative p-3 pr-12', {
+            'pt-0': closed,
+          })}
+        >
+          {!closed && (
+            <ProgressBar
+              progress={progress}
+              colorClass={
+                completion !== 'incomplete'
+                  ? 'bg-status-success'
+                  : 'bg-accent-background-20'
+              }
+            ></ProgressBar>
+          )}
+
+          <div className="absolute bottom-0 right-0 w-20 h-20 overflow-clip pointer-events-none">
             <div className="-rotate-45 translate-x-3.5 translate-y-3.5">
               <LoaderIcon slimeState={slimeState}></LoaderIcon>
             </div>

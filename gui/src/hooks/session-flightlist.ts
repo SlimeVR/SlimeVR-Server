@@ -111,11 +111,26 @@ export function provideSessionFlightlist() {
     return [];
   }, [firstRequired]);
 
+  const progress = useMemo(() => {
+    const completeSteps = visibleSteps.filter(
+      (step) => step.status === 'complete' || step.status === 'skipped'
+    );
+    return Math.min(1, completeSteps.length / visibleSteps.length);
+  }, [visibleSteps]);
+
+  const completion: 'complete' | 'partial' | 'incomplete' = useMemo(() => {
+    if (progress === 1 && visibleSteps.find((step) => step.status === 'skipped'))
+      return 'partial';
+    return progress === 1 || visibleSteps.length === 0 ? 'complete' : 'incomplete';
+  }, [progress, visibleSteps]);
+
   return {
     visibleSteps: steps.filter(stepVisibility),
     firstRequired,
     ignoredSteps,
     hightlightedTrackers,
+    progress,
+    completion,
     toggle: (step: FlightListStepId) => {
       const res = new ToggleFlightListStepRequestT();
       res.stepId = step;

@@ -229,6 +229,14 @@ const config = {
             'animation-timing-function': 'cubic-bezier(0.8, 0, 1, 1)',
           },
         },
+        'spin-ccw': {
+          '0%': {
+            transform: 'rotate(0deg)',
+          },
+          '100%': {
+            transform: 'rotate(-360deg)',
+          },
+        },
       },
       backgroundImage: {
         slime: `linear-gradient(135deg, ${colors.purple[100]} 50%, ${colors['blue-gray'][700]} 50% 100%)`,
@@ -241,6 +249,9 @@ const config = {
         'trans-flag': `linear-gradient(135deg, ${colors['trans-blue'][800]} 40%, ${colors['trans-blue'][700]} 40% 70%, ${colors['trans-blue'][600]} 70% 100%)`,
         'asexual-flag': `linear-gradient(135deg, ${colors['asexual'][100]} 30%, ${colors['asexual'][200]} 30% 50%, ${colors['asexual'][300]} 50% 70%, ${colors['asexual'][400]} 70% 100%)`,
       },
+    },
+    animation: {
+      'spin-ccw': 'spin-ccw 1s linear infinite',
     },
     data: {
       checked: 'checked=true',
