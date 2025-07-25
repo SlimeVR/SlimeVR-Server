@@ -20,10 +20,14 @@ import { A } from '@/components/commons/A';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { CrossIcon } from '@/components/commons/icon/CrossIcon';
-import { ArrowDownIcon } from '@/components/commons/icon/ArrowIcons';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+} from '@/components/commons/icon/ArrowIcons';
 import { Localized } from '@fluent/react';
 import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { c } from 'vite/dist/node/types.d-aGj9QkWt';
+import { FlightListSettingsModal } from './FlightListSettingsModal';
 
 function Step({
   step: { status, id, optional, firstRequired },
@@ -319,11 +323,12 @@ export function SessionFlightList({
   toggleClosed: () => void;
 }) {
   const context = useSessionFlightlist();
-  const { visibleSteps, progress, completion } = context;
+  const { visibleSteps, progress, completion, warnings } = context;
 
   const slimeState = useMemo(() => {
     if (completion === 'complete') return SlimeState.HAPPY;
     if (completion === 'incomplete') return SlimeState.CURIOUS;
+    if (completion === 'partial') return SlimeState.SAD;
     return SlimeState.HAPPY;
   }, [completion]);
 
@@ -342,24 +347,25 @@ export function SessionFlightList({
       >
         <div
           className={classNames(
-            'flex pl-3 pr-1 pb-2 pt-1 justify-between items-center'
+            'flex pl-3 pr-2 pb-2 pt-1 justify-between items-center'
           )}
         >
           <div className="gap-2 flex fill-background-40">
             <Typography variant="section-title">Tracking checklist</Typography>
           </div>
-          <div className="flex gap-2">
-            <div
-              className="flex gap-1 items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-8 h-8 hover:bg-background-50"
-              onClick={() => toggleClosed()}
-            >
-              <ArrowDownIcon size={25}></ArrowDownIcon>
-            </div>
+          <div className="flex gap-1">
             <div
               className="flex gap-1 items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-8 h-8 hover:bg-background-50"
               onClick={() => setSettingsOpen(true)}
             >
               <WrenchIcon width={15}></WrenchIcon>
+            </div>
+            <div
+              className="flex gap-1 items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-8 h-8 hover:bg-background-50"
+              onClick={() => toggleClosed()}
+            >
+              {closed && <ArrowDownIcon size={25}></ArrowDownIcon>}
+              {!closed && <CrossIcon size={25}></CrossIcon>}
             </div>
           </div>
         </div>
@@ -375,20 +381,30 @@ export function SessionFlightList({
           ))}
         </div>
         <div
-          className={classNames('flex flex-col flex-grow justify-end  ml-6', {
-            'pt-3 border-l-[2px] border-background-50': !closed,
-            'border-dashed': completion === 'incomplete',
-          })}
+          className={classNames(
+            'flex flex-col flex-grow  border-l-[2px] justify-end ml-6 transition-all duration-500 delay-100',
+            {
+              'pt-3 border-background-50': !closed,
+              'border-transparent': closed,
+              'border-dashed': completion === 'incomplete',
+            }
+          )}
         >
-          <div className="flex w-full gap-2">
-            <div className="rounded-full bg-background-50 flex items-center justify-center h-[25px] w-[25px] -ml-[13px]">
+          <div
+            className={classNames('flex w-full gap-2 z-10', {
+              'cursor-pointer': closed,
+              'pointer-events-none': !closed,
+            })}
+            onClick={() => toggleClosed()}
+          >
+            <div className="rounded-full bg-background-50 flex items-center justify-center h-[25px] w-[25px] -ml-[13px] relative">
               <div
-                className={classNames(
-                  'h-[12px] w-[12px] rounded-full',
-                  completion !== 'incomplete'
-                    ? 'bg-status-success'
-                    : 'bg-status-critical animate-pulse'
-                )}
+                className={classNames('h-[12px] w-[12px] rounded-full', {
+                  'bg-status-success': completion === 'complete',
+                  'bg-status-critical animate-pulse':
+                    completion === 'incomplete',
+                  'bg-status-warning animate-pulse': completion === 'partial',
+                })}
               ></div>
             </div>
             <div className={'flex flex-col justify-center'}>
@@ -397,7 +413,12 @@ export function SessionFlightList({
                   You are not prepared to use SlimeVR!
                 </Typography>
               )}
-              {(completion == 'complete' || completion === 'partial') && (
+              {completion === 'partial' && (
+                <Typography variant="section-title">
+                  You have {warnings.length} warnings!
+                </Typography>
+              )}
+              {completion == 'complete' && (
                 <Typography variant="section-title">
                   You are prepared to use SlimeVR!
                 </Typography>
@@ -414,9 +435,11 @@ export function SessionFlightList({
             <ProgressBar
               progress={progress}
               colorClass={
-                completion !== 'incomplete'
-                  ? 'bg-status-success'
-                  : 'bg-accent-background-20'
+                completion === 'incomplete'
+                  ? 'bg-accent-background-20'
+                  : completion === 'partial'
+                    ? 'bg-status-warning'
+                    : 'bg-status-success'
               }
             ></ProgressBar>
           )}
@@ -428,9 +451,9 @@ export function SessionFlightList({
           </div>
         </div>
       </div>
-      {/* <FlightListSettingsModal
+      <FlightListSettingsModal
         open={settingsOpenState}
-      ></FlightListSettingsModal> */}
+      ></FlightListSettingsModal>
     </>
   );
 }

@@ -16,7 +16,7 @@ class RPCFlightListHandler(
 		api.server.flightListManager.addListener(this)
 
 		rpcHandler.registerPacketListener(RpcMessage.FlightListRequest, ::onFlightListRequest)
-		rpcHandler.registerPacketListener(RpcMessage.ToggleFlightListStepRequest, ::onToggleFlightListRequest)
+		rpcHandler.registerPacketListener(RpcMessage.IgnoreFlightListStepRequest, ::onToggleFlightListRequest)
 	}
 
 	fun buildFlightListResponse(fbb: FlatBufferBuilder): Int = FlightListResponse.pack(
@@ -40,11 +40,11 @@ class RPCFlightListHandler(
 	}
 
 	private fun onToggleFlightListRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
-		val req = messageHeader.message(ToggleFlightListStepRequest()) as ToggleFlightListStepRequest?
+		val req = messageHeader.message(IgnoreFlightListStepRequest()) as IgnoreFlightListStepRequest?
 			?: return
 		val step = api.server.flightListManager.steps.find { it.id == req.stepId() } ?: error("invalid step id requested")
 
-		api.server.flightListManager.toggleStep(step)
+		api.server.flightListManager.ignoreStep(step, req.ignore())
 
 		val fbb = FlatBufferBuilder(32)
 		val response = buildFlightListResponse(fbb)

@@ -29,7 +29,9 @@ export function CheckBox({
   const classes = useMemo(() => {
     const vriantsMap = {
       checkbox: {
-        checkbox: CHECKBOX_CLASSES,
+        checkbox: classNames(CHECKBOX_CLASSES, {
+          'brightness-50 hover:cursor-not-allowed': disabled,
+        }),
         toggle: '',
         pin: '',
       },
@@ -42,7 +44,7 @@ export function CheckBox({
       },
     };
     return vriantsMap[variant];
-  }, [variant]);
+  }, [variant, disabled]);
 
   return (
     <Controller
@@ -53,7 +55,7 @@ export function CheckBox({
           className={classNames(
             {
               'rounded-lg': outlined,
-              'text-background-30': !outlined || disabled,
+              'text-background-30 ': !outlined || disabled,
               'bg-background-60': outlined && color === 'primary',
               'bg-background-70': outlined && color === 'secondary',
               'bg-background-50': outlined && color === 'tertiary',
@@ -67,7 +69,7 @@ export function CheckBox({
               {
                 'px-3': outlined,
                 'cursor-pointer': !disabled && !loading,
-                'cursor-default': disabled || loading,
+                'cursor-not-allowed': disabled || loading,
               }
             )}
           >

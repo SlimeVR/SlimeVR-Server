@@ -188,7 +188,7 @@ export class BoneKind extends Bone {
       case BodyPart.NONE:
         throw 'Unexpected body part';
       case BodyPart.HEAD:
-        return new Color('black');
+        return new Color('gold');
       case BodyPart.NECK:
         return new Color('silver');
       case BodyPart.UPPER_CHEST:

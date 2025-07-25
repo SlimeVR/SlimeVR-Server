@@ -319,11 +319,12 @@ class FlightListManager(private val vrServer: VRServer) : VRCConfigListener {
 		listeners.forEach { it.onStepsUpdate() }
 	}
 
-	fun toggleStep(step: FlightListStepT) {
+	fun ignoreStep(step: FlightListStepT, ignore: Boolean) {
+		if (!step.ignorable) return;
 		val ignoredSteps = vrServer.configManager.vrConfig.flightList.ignoredStepsIds
-		if (!ignoredSteps.contains(step.id)) {
+		if (ignore && !ignoredSteps.contains(step.id)) {
 			ignoredSteps.add(step.id)
-		} else {
+		} else if (!ignore) {
 			ignoredSteps.remove(step.id)
 		}
 		vrServer.configManager.saveConfig()

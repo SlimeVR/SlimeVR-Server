@@ -237,6 +237,38 @@ const config = {
             transform: 'rotate(-360deg)',
           },
         },
+        skiing: {
+          '0%, 100%': {
+            transform: 'rotate(0deg) translateX(0%) translateY(0%)',
+          },
+          '10%': {
+            transform: 'rotate(12deg) translateX(-2%) translateY(2%)',
+          },
+          '20%': {
+            transform: 'rotate(10deg) translateX(0%) translateY(0%)',
+          },
+          '30%': {
+            transform: 'rotate(12deg) translateX(2%) translateY(-2%)',
+          },
+          '40%': {
+            transform: 'rotate(10deg) translateX(0%) translateY(0%)',
+          },
+          '50%': {
+            transform: 'rotate(12deg) translateX(-2%) translateY(2%)',
+          },
+          '60%': {
+            transform: 'rotate(10deg) translateX(0%) translateY(0%)',
+          },
+          '70%': {
+            transform: 'rotate(12deg) translateX(2%) translateY(-2%)',
+          },
+          '80%': {
+            transform: 'rotate(10deg) translateX(0%) translateY(0%)',
+          },
+          '90%': {
+            transform: 'rotate(10deg) translateX(-2%) translateY(2%)',
+          },
+        },
       },
       backgroundImage: {
         slime: `linear-gradient(135deg, ${colors.purple[100]} 50%, ${colors['blue-gray'][700]} 50% 100%)`,
@@ -249,9 +281,11 @@ const config = {
         'trans-flag': `linear-gradient(135deg, ${colors['trans-blue'][800]} 40%, ${colors['trans-blue'][700]} 40% 70%, ${colors['trans-blue'][600]} 70% 100%)`,
         'asexual-flag': `linear-gradient(135deg, ${colors['asexual'][100]} 30%, ${colors['asexual'][200]} 30% 50%, ${colors['asexual'][300]} 50% 70%, ${colors['asexual'][400]} 70% 100%)`,
       },
-    },
-    animation: {
-      'spin-ccw': 'spin-ccw 1s linear infinite',
+      animation: {
+        'spin-ccw': 'spin-ccw 1s linear infinite',
+        skiing: 'skiing 1s linear infinite',
+        'skiing-reset': 'skiing-reset 0.2s linear infinite',
+      },
     },
     data: {
       checked: 'checked=true',

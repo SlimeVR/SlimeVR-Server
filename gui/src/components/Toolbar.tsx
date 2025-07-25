@@ -1,24 +1,32 @@
 import { Typography } from './commons/Typography';
 import classNames from 'classnames';
-import { ResetType } from 'solarxr-protocol';
+import {
+  ClearMountingResetRequestT,
+  ResetType,
+  RpcMessage,
+} from 'solarxr-protocol';
 import { ResetBtnStatus, useReset } from '@/hooks/reset';
 import { Tooltip } from './commons/Tooltip';
 import { GearIcon } from './commons/icon/GearIcon';
 import { useAtomValue } from 'jotai';
-import { connectedTrackersAtom } from '@/store/app-store';
+import { assignedTrackersAtom, connectedTrackersAtom } from '@/store/app-store';
 import { ClearIcon } from './commons/icon/ClearIcon';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { useMemo, useState } from 'react';
 import { HomeSettingsModal } from './home/HomeSettingsModal';
 import { SkiIcon } from './commons/icon/SkiIcon';
 import { FullResetIcon, YawResetIcon } from './commons/icon/ResetIcon';
+import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { QuaternionFromQuatT, similarQuaternions } from '@/maths/quaternion';
+import { Quaternion } from 'three';
+import { LayoutIcon } from './commons/icon/LayoutIcon';
 
 const MAINBUTTON_CLASSES = ({ disabled }: { disabled: boolean }) =>
   classNames(
-    'p-2 flex justify-center px-4 gap-4 h-full items-center hover:bg-background-50 bg-background-60 relative overflow-clip aspect-square md:aspect-auto',
+    'p-2 flex justify-center px-4 gap-4 h-full items-center bg-background-60 relative overflow-clip aspect-square md:aspect-auto',
     {
-      'cursor-pointer': !disabled,
-      'cursor-not-allowed': disabled,
+      'cursor-pointer hover:bg-background-50 bg-background-60': !disabled,
+      'cursor-not-allowed bg-background-70 brightness-75': disabled,
     }
   );
 
@@ -62,13 +70,7 @@ function BasicResetButton({ type }: { type: ResetType }) {
       preferedDirection="top"
     >
       <div
-        className={classNames(
-          MAINBUTTON_CLASSES({ disabled }),
-          {
-            // 'animate-bounce': status === 'finished',
-          },
-          'rounded-lg'
-        )}
+        className={classNames(MAINBUTTON_CLASSES({ disabled }), 'rounded-lg')}
         style={{
           animationIterationCount: 1,
         }}
@@ -98,19 +100,37 @@ function BasicResetButton({ type }: { type: ResetType }) {
   );
 }
 
+const _q = new Quaternion();
 function MountingCalibrationButton() {
   const { isNmd } = useBreakpoint('nmd');
   const { triggerReset, status, name, timer, disabled, duration } = useReset(
     ResetType.Mounting
   );
+  const assignedTrackers = useAtomValue(assignedTrackersAtom);
+
+  const { sendRPCPacket } = useWebsocketAPI();
+  const trackerWithMounting = useMemo(
+    () =>
+      assignedTrackers.some(
+        (d) =>
+          !similarQuaternions(
+            QuaternionFromQuatT(d?.tracker.info?.mountingResetOrientation),
+            _q
+          )
+      ),
+    [assignedTrackers]
+  );
+
+  const clearMounting = () => {
+    const record = new ClearMountingResetRequestT();
+    sendRPCPacket(RpcMessage.ClearMountingResetRequest, record);
+  };
 
   const progress = status === 'counting' ? 1 - (timer - 1) / duration : 0;
 
   return (
     <div
-      className={classNames('flex rounded-lg overflow-clip relative', {
-        'animate-bounce': status === 'finished',
-      })}
+      className={classNames('flex rounded-lg overflow-clip relative')}
       style={{
         animationIterationCount: 1,
       }}
@@ -124,7 +144,17 @@ function MountingCalibrationButton() {
           className={classNames(MAINBUTTON_CLASSES({ disabled }), 'flex-grow')}
           onClick={() => !disabled && triggerReset()}
         >
-          <div className="fill-background-10">
+          <div
+            className={classNames(
+              {
+                'animate-skiing': status === 'finished',
+              },
+              'fill-background-10'
+            )}
+            style={{
+              animationIterationCount: 1,
+            }}
+          >
             <SkiIcon size={24} />
           </div>
           <div className="hidden md:block">
@@ -146,9 +176,10 @@ function MountingCalibrationButton() {
       >
         <div
           className={classNames(
-            MAINBUTTON_CLASSES({ disabled }),
+            MAINBUTTON_CLASSES({ disabled: !trackerWithMounting || disabled }),
             'fill-background-10 rounded-r-lg border-l-[2px] border-background-50 md:w-16 aspect-square md:aspect-auto'
           )}
+          onClick={() => trackerWithMounting && !disabled && clearMounting}
         >
           <div className="rotate-12">
             <ClearIcon></ClearIcon>
@@ -184,7 +215,7 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
               className="fill-background-30 hover:fill-background-20 cursor-pointer"
               onClick={() => setSettingsOpen(true)}
             >
-              <GearIcon size={22}></GearIcon>
+              <LayoutIcon size={18}></LayoutIcon>
             </div>
           )}
         </div>

@@ -579,6 +579,10 @@ class HumanPoseManager(val server: VRServer?) {
 
 	fun clearTrackersMounting(resetSourceName: String?) {
 		skeleton.clearTrackersMounting(resetSourceName)
+		if (server != null) {
+			server.flightListManager.resetMountingCompleted = false;
+			server.configManager.saveConfig()
+		}
 	}
 
 	@get:ThreadSafe

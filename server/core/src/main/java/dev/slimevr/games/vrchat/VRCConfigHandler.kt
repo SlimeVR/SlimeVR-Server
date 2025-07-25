@@ -129,7 +129,6 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		val validity = currentValidity ?: return
 		val values = currentValues ?: return
 		listeners.forEach {
-			println("CALLED")
 			it.onChange(
 				validity,
 				values,

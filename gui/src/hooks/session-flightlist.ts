@@ -4,8 +4,8 @@ import {
   FlightListStepId,
   FlightListStepT,
   FlightListStepVisibility,
+  IgnoreFlightListStepRequestT,
   RpcMessage,
-  ToggleFlightListStepRequestT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -70,34 +70,42 @@ const createStep = (
 };
 
 export type SessionFlightListContext = ReturnType<typeof provideSessionFlightlist>;
-
+export type Steps = {
+  steps: FlightListStepT[];
+  visibleSteps: FlightListStep[];
+  ignoredSteps: FlightListStepId[];
+};
 export function provideSessionFlightlist() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const [steps, setSteps] = useState<FlightListStep[]>([]);
-  const [ignoredSteps, setIgnoredSteps] = useState<FlightListStepId[]>([]);
+  const [steps, setSteps] = useState<Steps>({
+    steps: [],
+    visibleSteps: [],
+    ignoredSteps: [],
+  });
 
   useRPCPacket(RpcMessage.FlightListResponse, (data: FlightListResponseT) => {
-    setIgnoredSteps(data.ignoredSteps);
     const activeSteps = data.steps.filter(
       (step) => !data.ignoredSteps.includes(step.id) && step.enabled
     );
-    const steps = activeSteps.map((step: FlightListStepT, index) =>
-      createStep(activeSteps, step, index)
-    );
-    setSteps(steps);
+    setSteps({
+      steps: data.steps,
+      visibleSteps: activeSteps
+        .map((step: FlightListStepT, index) => createStep(activeSteps, step, index))
+        .filter(stepVisibility),
+      ignoredSteps: data.ignoredSteps,
+    });
   });
 
   useEffect(() => {
     sendRPCPacket(RpcMessage.FlightListRequest, new FlightListRequestT());
   }, []);
 
-  const visibleSteps = useMemo(() => steps.filter(stepVisibility), [steps]);
   const firstRequired = useMemo(
     () =>
-      visibleSteps.find(
+      steps.visibleSteps.find(
         (step) => !step.valid && step.status != 'blocked' && !step.optional
       ),
-    [visibleSteps]
+    [steps]
   );
 
   const hightlightedTrackers = useMemo(() => {
@@ -112,30 +120,42 @@ export function provideSessionFlightlist() {
   }, [firstRequired]);
 
   const progress = useMemo(() => {
-    const completeSteps = visibleSteps.filter(
+    const completeSteps = steps.visibleSteps.filter(
       (step) => step.status === 'complete' || step.status === 'skipped'
     );
-    return Math.min(1, completeSteps.length / visibleSteps.length);
-  }, [visibleSteps]);
+    return Math.min(1, completeSteps.length / steps.visibleSteps.length);
+  }, [steps]);
 
   const completion: 'complete' | 'partial' | 'incomplete' = useMemo(() => {
-    if (progress === 1 && visibleSteps.find((step) => step.status === 'skipped'))
+    if (progress === 1 && steps.visibleSteps.find((step) => step.status === 'skipped'))
       return 'partial';
-    return progress === 1 || visibleSteps.length === 0 ? 'complete' : 'incomplete';
-  }, [progress, visibleSteps]);
+    return progress === 1 || steps.visibleSteps.length === 0
+      ? 'complete'
+      : 'incomplete';
+  }, [progress, steps]);
+
+  const warnings = useMemo(
+    () => steps.visibleSteps.filter((step) => !step.valid),
+    [steps]
+  );
+
+  const ignoreStep = (step: FlightListStepId, ignore: boolean) => {
+    const res = new IgnoreFlightListStepRequestT();
+    res.stepId = step;
+    res.ignore = ignore;
+    sendRPCPacket(RpcMessage.IgnoreFlightListStepRequest, res);
+  };
 
   return {
-    visibleSteps: steps.filter(stepVisibility),
+    ...steps,
     firstRequired,
-    ignoredSteps,
     hightlightedTrackers,
     progress,
     completion,
-    toggle: (step: FlightListStepId) => {
-      const res = new ToggleFlightListStepRequestT();
-      res.stepId = step;
-      sendRPCPacket(RpcMessage.ToggleFlightListStepRequest, res);
-    },
+    warnings,
+    ignoreStep,
+    toggle: (step: FlightListStepId) =>
+      ignoreStep(step, !steps.ignoredSteps.includes(step)),
   };
 }
 
