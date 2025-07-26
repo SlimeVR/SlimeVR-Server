@@ -101,7 +101,7 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
       name: release.name,
       version,
       changelog: release.body,
-      firmwareFile: fwAsset,
+      firmwareFile: fwAsset.browser_download_url,
       userCanUpdate,
     });
 
