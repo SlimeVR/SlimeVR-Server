@@ -237,6 +237,8 @@ reset-reset_all_warning_default-v2 =
 
 reset-full = Full Reset
 reset-mounting = Mounting Calibration
+reset-mounting-feet = Reset Feet Mounting
+reset-mounting-fingers = Reset Fingers Mounting
 reset-yaw = Yaw Reset
 
 ## Serial detection stuff
@@ -384,6 +386,7 @@ tracker-settings-forget-label = Forget tracker
 tracker-settings-update-unavailable = Cannot be updated (DIY)
 tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
 tracker-settings-update-up_to_date = Up to date
+tracker-settings-update-blocked = Update not available. No other releases available
 tracker-settings-update-available = { $versionName } is now available
 tracker-settings-update = Update now
 tracker-settings-update-title = Firmware version

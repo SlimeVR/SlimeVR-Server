@@ -255,6 +255,7 @@ fn setup_tauri(
 		.plugin(tauri_plugin_os::init())
 		.plugin(tauri_plugin_shell::init())
 		.plugin(tauri_plugin_store::Builder::default().build())
+		.plugin(tauri_plugin_http::init())
 		.invoke_handler(tauri::generate_handler![
 			update_window_state,
 			logging,

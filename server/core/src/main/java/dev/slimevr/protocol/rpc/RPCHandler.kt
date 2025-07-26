@@ -354,9 +354,37 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 	fun onResetRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
 		val req = messageHeader.message(ResetRequest()) as? ResetRequest ?: return
 
-		if (req.resetType() == ResetType.Yaw) api.server.resetTrackersYaw(RESET_SOURCE_NAME)
-		if (req.resetType() == ResetType.Full) api.server.resetTrackersFull(RESET_SOURCE_NAME)
-		if (req.resetType() == ResetType.Mounting) api.server.resetTrackersMounting(RESET_SOURCE_NAME)
+		// Get the list of bodyparts we want to reset
+		// If empty, check in HumanSkeleton will reset all
+		val bodyParts = mutableListOf<Int>()
+		if (req.bodyPartsLength() > 0) {
+			val buffer = req.bodyPartsAsByteBuffer()
+			while (buffer.hasRemaining()) {
+				bodyParts.add(buffer.get().toInt())
+			}
+		}
+
+		if (req.resetType() == ResetType.Yaw) {
+			if (bodyParts.isEmpty()) {
+				api.server.resetTrackersYaw(RESET_SOURCE_NAME)
+			} else {
+				api.server.resetTrackersYaw(RESET_SOURCE_NAME, bodyParts.toList())
+			}
+		}
+		if (req.resetType() == ResetType.Full) {
+			if (bodyParts.isEmpty()) {
+				api.server.resetTrackersFull(RESET_SOURCE_NAME)
+			} else {
+				api.server.resetTrackersFull(RESET_SOURCE_NAME, bodyParts.toList())
+			}
+		}
+		if (req.resetType() == ResetType.Mounting) {
+			if (bodyParts.isEmpty()) {
+				api.server.resetTrackersMounting(RESET_SOURCE_NAME)
+			} else {
+				api.server.resetTrackersMounting(RESET_SOURCE_NAME, bodyParts.toList())
+			}
+		}
 	}
 
 	fun onClearMountingResetRequest(

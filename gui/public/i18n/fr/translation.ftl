@@ -269,6 +269,7 @@ navbar-settings = Réglages
 
 bvh-start_recording = Enregistrer BVH
 bvh-recording = Enregistrement...
+bvh-save_title = Sauvegarder l’enregistrement BVH
 
 ## Tracking pause
 
@@ -406,6 +407,7 @@ tracker-settings-forget-label = Oublier capteur
 tracker-settings-update-unavailable = Ne peut pas être mis à jour (DIY)
 tracker-settings-update-low-battery = Mise à jour impossible. Batterie inférieure à 50 %
 tracker-settings-update-up_to_date = À jour
+tracker-settings-update-blocked = Mise à jour non disponible. Aucune autre version disponible
 tracker-settings-update-available = { $versionName } est maintenant disponible
 tracker-settings-update = Mettre à jour maintenant
 tracker-settings-update-title = Version du micrologiciel
@@ -584,6 +586,7 @@ settings-stay_aligned-relaxed_poses-sitting = Ajuster les capteurs en position a
 settings-stay_aligned-relaxed_poses-flat = Ajuster les capteurs en position assise sur le sol ou allongée sur le dos
 settings-stay_aligned-relaxed_poses-save_pose = Enregistrer la posture
 settings-stay_aligned-relaxed_poses-reset_pose = Réinitialiser la posture
+settings-stay_aligned-relaxed_poses-close = Fermer
 settings-stay_aligned-debug-label = Débogage
 settings-stay_aligned-debug-description = Veuillez inclure vos paramètres lorsque vous signalez des problèmes concernant Garder Aligné.
 settings-stay_aligned-debug-copy-label = Copier les paramètres dans le presse-papiers
@@ -744,6 +747,9 @@ settings-interface-behavior-error_tracking-description_v2 =
     
     Pour offrir la meilleure expérience utilisateur possible, nous collectons des rapports d'erreurs anonymisés, des mesures de performance et des informations sur le système d'exploitation. Cela nous aide à détecter les bugs et les problèmes liés à SlimeVR. Ces données sont collectées via Sentry.io.
 settings-interface-behavior-error_tracking-label = Envoyer les erreurs aux développeurs
+settings-interface-behavior-bvh_directory = Répertoire pour sauvegarder les enregistrements BVH
+settings-interface-behavior-bvh_directory-description = Choisissez un répertoire où sauvegarder vos enregistrements BVH au lieu d’avoir à choisir où les sauvegarder à chaque fois.
+settings-interface-behavior-bvh_directory-label = Répertoire où sauvegarder les enregistrements BVH
 
 ## Serial settings
 
@@ -1014,7 +1020,7 @@ onboarding-connect_tracker-next = J'ai connecté tous mes capteurs
 
 onboarding-calibration_tutorial = Tutoriel de calibration IMU
 onboarding-calibration_tutorial-subtitle = Ceci vous aidera à réduire la dérive du capteur !
-onboarding-calibration_tutorial-description = Chaque fois que vous allumez vos capteurs, ils doivent rester sur une surface plane pour se calibrer. Faisons de même en cliquant sur le bouton « { onboarding-calibration_tutorial-calibrate } ». <b>Ne les déplacez pas !</b>
+onboarding-calibration_tutorial-description-v1 = Après avoir allumé vos capteurs, placez-les sur une surface stable pendant un moment pour leur permettre de se calibrer. La calibration peut être effectué n'importe quand lors que les capteurs sont allumés - cette page sert simplement de tutoriel. Pour commencer, cliquez sur le bouton « { onboarding-calibration_tutorial-calibrate } », puis <b>ne déplacez pas vos capteurs !</b>
 onboarding-calibration_tutorial-calibrate = J'ai posé mes capteurs sur la table
 onboarding-calibration_tutorial-status-waiting = En attente de vous
 onboarding-calibration_tutorial-status-calibrating = Calibration...
@@ -1332,13 +1338,13 @@ onboarding-stay_aligned-preparation-title = Préparation
 onboarding-stay_aligned-preparation-tip = Assurez-vous de vous tenir droit. Vous devez regarder vers l'avant et vos bras doivent être le long de votre corps.
 onboarding-stay_aligned-relaxed_poses-standing-title = Posture debout détendu
 onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Tenez-vous dans une position confortable. Détendez-vous !
-onboarding-stay_aligned-relaxed_poses-standing-step-2 = 3. Appuyez sur le bouton « Enregistrer la posture ».
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Appuyez sur le bouton « Enregistrer la posture ».
 onboarding-stay_aligned-relaxed_poses-sitting-title = Posture assis détendu dans une chaise
 onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Asseyez-vous dans une position confortable. Détendez-vous !
-onboarding-stay_aligned-relaxed_poses-sitting-step-2 = 3. Appuyez sur le bouton « Enregistrer la posture ».
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Appuyez sur le bouton « Enregistrer la posture ».
 onboarding-stay_aligned-relaxed_poses-flat-title = Posture assis détendu sur le sol
 onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Asseyez-vous sur le sol, les jambes devant. Détendez-vous !
-onboarding-stay_aligned-relaxed_poses-flat-step-2 = 3. Appuyez sur le bouton « Enregistrer la posture ».
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Appuyez sur le bouton « Enregistrer la posture ».
 onboarding-stay_aligned-relaxed_poses-skip_step = Sauter
 onboarding-stay_aligned-done-title = Garder Aligné activé !
 onboarding-stay_aligned-done-description = La configuration de Garder Aligné est terminée !

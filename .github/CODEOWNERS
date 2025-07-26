@@ -14,7 +14,7 @@
 /gui/src/i18n/ @ImUrX @Erimelowo
 /l10n.toml @ImUrX @Erimelowo
 
-/gui/src/components/settings/ @Erimelowo @ImUrX
+/gui/src/components/settings/ @Erimelowo @ImUrX @loucass003
 
 # Rust part of the GUI
 /gui/src-tauri/ @ImUrX

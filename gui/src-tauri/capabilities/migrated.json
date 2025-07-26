@@ -17,6 +17,9 @@
     "core:window:allow-set-decorations",
     "store:default",
     "os:allow-os-type",
+    "os:allow-hostname",
+    "os:allow-locale",
+    "dialog:allow-open",
     "dialog:allow-save",
     "shell:allow-open",
     "store:allow-get",
@@ -44,6 +47,14 @@
         },
         {
           "url": "ms-settings:network"
+        }
+      ]
+    },
+    {
+      "identifier": "http:default",
+      "allow": [
+        {
+          "url": "https://github.com/SlimeVR/SlimeVR-Tracker-ESP/releases/download/*"
         }
       ]
     }

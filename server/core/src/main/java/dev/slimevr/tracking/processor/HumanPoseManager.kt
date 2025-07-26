@@ -11,10 +11,7 @@ import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
-import dev.slimevr.tracking.trackers.Tracker
-import dev.slimevr.tracking.trackers.TrackerPosition
-import dev.slimevr.tracking.trackers.TrackerRole
-import dev.slimevr.tracking.trackers.TrackerStatus
+import dev.slimevr.tracking.trackers.*
 import dev.slimevr.trackingpause.TrackingPauseHandler
 import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.ann.ThreadSafe
@@ -478,8 +475,9 @@ class HumanPoseManager(val server: VRServer?) {
 		skeletonConfigManager.computeNodeOffset(node)
 	}
 
-	fun resetTrackersFull(resetSourceName: String?) {
-		skeleton.resetTrackersFull(resetSourceName)
+	@JvmOverloads
+	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
+		skeleton.resetTrackersFull(resetSourceName, bodyParts)
 		if (server != null) {
 			if (skeleton.headTracker == null && skeleton.neckTracker == null) {
 				server.vrcOSCHandler.yawAlign(IDENTITY)
@@ -494,8 +492,9 @@ class HumanPoseManager(val server: VRServer?) {
 		}
 	}
 
-	fun resetTrackersYaw(resetSourceName: String?) {
-		skeleton.resetTrackersYaw(resetSourceName)
+	@JvmOverloads
+	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
+		skeleton.resetTrackersYaw(resetSourceName, bodyParts)
 		if (server != null) {
 			if (skeleton.headTracker == null && skeleton.neckTracker == null) {
 				server.vrcOSCHandler.yawAlign(IDENTITY)
@@ -567,8 +566,10 @@ class HumanPoseManager(val server: VRServer?) {
 		}
 	}
 
-	fun resetTrackersMounting(resetSourceName: String?) {
-		skeleton.resetTrackersMounting(resetSourceName)
+	@JvmOverloads
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFeetAndFingers) {
+		skeleton.resetTrackersMounting(resetSourceName, bodyParts)
+		//FIXME: Should prob take into consideration the different kinds of mounting
 		if (server != null) {
 			server.configManager.vrConfig.resetsConfig.preferedMountingMethod =
 				MountingMethods.AUTOMATIC

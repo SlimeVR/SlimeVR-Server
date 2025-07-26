@@ -28,7 +28,7 @@
       },
       "rpm": {
         "depends": [
-          "java-17-openjdk",
+          "java-latest-openjdk",
           "udev"
         ],
         "files": {
