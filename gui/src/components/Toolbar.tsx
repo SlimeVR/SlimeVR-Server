@@ -7,7 +7,6 @@ import {
 } from 'solarxr-protocol';
 import { ResetBtnStatus, useReset } from '@/hooks/reset';
 import { Tooltip } from './commons/Tooltip';
-import { GearIcon } from './commons/icon/GearIcon';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom, connectedTrackersAtom } from '@/store/app-store';
 import { ClearIcon } from './commons/icon/ClearIcon';

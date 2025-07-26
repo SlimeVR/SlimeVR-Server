@@ -22,7 +22,7 @@ export function Sidebar() {
   const { completion } = useSessionFlightlist();
   const [closed, setClosed] = useState(true);
   const [closing, setClosing] = useState(false);
-  const [userHeight, setUserHeight] = useState(0);
+  const [userHeight, setUserHeight] = useState('');
 
   const { currentLocales } = useLocaleConfig();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
@@ -62,7 +62,8 @@ export function Sidebar() {
   useRPCPacket(
     RpcMessage.SkeletonConfigResponse,
     (data: SkeletonConfigResponseT) => {
-      if (data.userHeight) setUserHeight(data.userHeight);
+      if (data.userHeight)
+        setUserHeight(cmFormat.format((data.userHeight * 100) / 0.936));
     }
   );
 
@@ -106,24 +107,22 @@ export function Sidebar() {
           >
             <div
               className={classNames(
-                'h-12 bg-background-60 p-4 flex items-center rounded-lg justify-center cursor-help w-fit top-2 left-2 absolute',
+                'h-10 bg-background-60 p-4 flex items-center rounded-lg justify-center cursor-help w-fit top-2 left-2 absolute',
                 {
                   'opacity-0': !closed,
                   'opacity-100': closed,
                 }
               )}
             >
-              <Typography variant="main-title">
-                {cmFormat.format((userHeight * 100) / 0.936)}
-              </Typography>
+              <Typography variant="section-title">{userHeight}</Typography>
             </div>
           </Tooltip>
           <Tooltip
             preferedDirection="bottom"
             content={<Typography>Disable rendering</Typography>}
           >
-            <div className="flex justify-center items-center w-12 h-12 cursor-pointer rounded-full fill-background-10 absolute right-2 top-2 bg-background-60 hover:bg-background-50">
-              <EyeIcon width={22} closed></EyeIcon>
+            <div className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-2 top-2 bg-background-60 hover:bg-background-50">
+              <EyeIcon width={18} closed></EyeIcon>
             </div>
           </Tooltip>
           {/* <Tooltip
