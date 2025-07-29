@@ -39,7 +39,6 @@ import { OSCRouterSettings } from './components/settings/pages/OSCRouterSettings
 import * as os from '@tauri-apps/plugin-os';
 import { VMCSettings } from './components/settings/pages/VMCSettings';
 import { MountingChoose } from './components/onboarding/pages/mounting/MountingChoose';
-import { StatusProvider } from './components/providers/StatusSystemContext';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
 import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
 import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
@@ -61,6 +60,8 @@ import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
 import { VRCWarningsPage } from './components/vrc/VRCWarningsPage';
 import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/StayAlignedSetup';
+import { TrackingChecklistProvider } from './components/tracking-checklist/TrackingChecklistProvider';
+import { HomeScreenSettings } from './components/settings/pages/HomeScreenSettings';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -83,7 +84,7 @@ function Layout() {
           <Route
             path="/"
             element={
-              <MainLayout isMobile={isMobile}>
+              <MainLayout isMobile={isMobile} full showToolbarSettings>
                 <Home />
               </MainLayout>
             }
@@ -91,7 +92,7 @@ function Layout() {
           <Route
             path="/firmware-update"
             element={
-              <MainLayout isMobile={isMobile} widgets={false}>
+              <MainLayout isMobile={isMobile}>
                 <FirmwareUpdate />
               </MainLayout>
             }
@@ -99,7 +100,7 @@ function Layout() {
           <Route
             path="/vr-mode"
             element={
-              <MainLayout isMobile={isMobile}>
+              <MainLayout isMobile={isMobile} full>
                 <VRModePage />
               </MainLayout>
             }
@@ -115,7 +116,7 @@ function Layout() {
           <Route
             path="/vrc-warnings"
             element={
-              <MainLayout isMobile={isMobile} widgets={false}>
+              <MainLayout isMobile={isMobile}>
                 <VRCWarningsPage />
               </MainLayout>
             }
@@ -135,6 +136,7 @@ function Layout() {
             <Route path="osc/vrchat" element={<VRCOSCSettings />} />
             <Route path="osc/vmc" element={<VMCSettings />} />
             <Route path="interface" element={<InterfaceSettings />} />
+            <Route path="interface/home" element={<HomeScreenSettings />} />
             <Route path="advanced" element={<AdvancedSettings />} />
           </Route>
           <Route
@@ -292,7 +294,7 @@ export default function App() {
         <WebSocketApiContext.Provider value={websocketAPI}>
           <AppContextProvider>
             <OnboardingContextProvider>
-              <StatusProvider>
+              <TrackingChecklistProvider>
                 <VersionContext.Provider value={updateFound}>
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
                     <Preload />
@@ -302,7 +304,7 @@ export default function App() {
                     {websocketAPI.isConnected && <Layout></Layout>}
                   </div>
                 </VersionContext.Provider>
-              </StatusProvider>
+              </TrackingChecklistProvider>
             </OnboardingContextProvider>
           </AppContextProvider>
         </WebSocketApiContext.Provider>

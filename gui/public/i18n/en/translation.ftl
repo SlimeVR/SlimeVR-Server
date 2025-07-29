@@ -236,7 +236,7 @@ reset-reset_all_warning_default-v2 =
     Are you sure you want to do this?
 
 reset-full = Full Reset
-reset-mounting = Reset Mounting
+reset-mounting = Mounting Calibration
 reset-mounting-feet = Reset Feet Mounting
 reset-mounting-fingers = Reset Fingers Mounting
 reset-yaw = Yaw Reset
@@ -260,6 +260,7 @@ navbar-settings = Settings
 
 ## Biovision hierarchy recording
 bvh-start_recording = Record BVH
+bvh-stop_recording = Save BVH recording
 bvh-recording = Recording...
 bvh-save_title = Save BVH recording
 
@@ -275,8 +276,8 @@ widget-overlay-is_mirrored_label = Display Overlay as Mirror
 ## Widget: Drift compensation
 widget-drift_compensation-clear = Clear drift compensation
 
-## Widget: Clear Reset Mounting
-widget-clear_mounting = Clear reset mounting
+## Widget: Clear Mounting calibration
+widget-clear_mounting = Clear mounting calibration
 
 ## Widget: Developer settings
 widget-developer_mode = Developer Mode
@@ -452,6 +453,7 @@ mounting_selection_menu-close = Close
 ## Sidebar settings
 settings-sidebar-title = Settings
 settings-sidebar-general = General
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Tracker mechanics
 settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = Tracking settings
@@ -459,9 +461,12 @@ settings-sidebar-gesture_control = Gesture control
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = VRChat OSC Trackers
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 settings-sidebar-appearance = Appearance
+settings-sidebar-home = Home Screen
+settings-sidebar-checklist = Tracking checklist
 settings-sidebar-notifications = Notifications
 settings-sidebar-behavior = Behavior
 settings-sidebar-firmware-tool = DIY Firmware Tool
@@ -648,7 +653,7 @@ settings-general-gesture_control-yawResetTaps = Taps for yaw reset
 settings-general-gesture_control-fullResetEnabled = Enable tap to full reset
 settings-general-gesture_control-fullResetDelay = Full reset delay
 settings-general-gesture_control-fullResetTaps = Taps for full reset
-settings-general-gesture_control-mountingResetEnabled = Enable tap to reset mounting
+settings-general-gesture_control-mountingResetEnabled = Enable tap to mounting calibration
 settings-general-gesture_control-mountingResetDelay = Mounting reset delay
 settings-general-gesture_control-mountingResetTaps = Taps for mounting reset
 # The number of trackers that can have higher acceleration before a tap is rejected
@@ -1117,7 +1122,7 @@ onboarding-automatic_mounting-done-description = Your mounting calibration is co
 onboarding-automatic_mounting-done-restart = Try again
 onboarding-automatic_mounting-mounting_reset-title = Mounting Reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pose with your legs bent, your upper body tilted forwards, and your arms bent.
-onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Reset Mounting" button and wait for 3 seconds before the trackers' mounting orientations will reset.
+onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Mounting calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 onboarding-automatic_mounting-preparation-title = Preparation
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Press the "Full Reset" button.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stand upright with your arms to your sides. Make sure to look forward.
@@ -1546,3 +1551,38 @@ error_collection_modal-description_v2 = { settings-interface-behavior-error_trac
     You can change this setting later in the Behavior section of the settings page.
 error_collection_modal-confirm = I agree
 error_collection_modal-cancel = I don't want to
+
+
+tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
+tracking_checklist-FULL_RESET = Perform a full Reset
+tracking_checklist-FULL_RESET-desc = Some Trackers need a reset to be performed
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR not running
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for vr?
+tracking_checklist-STEAMVR_DISCONNECTED-open = Launch SteamVR
+tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didnt perform the tracker calibration. Please let your slimes, highlited in yellow, rest on a static surface for a few secconds
+tracking_checklist-TRACKER_ERROR = Trackers with Errors
+tracking_checklist-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the tracker.
+tracking_checklist-VRCHAT_SETTINGS = Configure VRChat settings
+tracking_checklist-VRCHAT_SETTINGS-desc = You have misconfigured VRchat Settings! This can impact your tracking experience.
+tracking_checklist-VRCHAT_SETTINGS-open = Go to VRChat Warnings
+tracking_checklist-UNASSIGNED_HMD = VR Headset not assigned to Head
+tracking_checklist-UNASSIGNED_HMD-desc = The VR headset should be assigned as a head tracker.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Change your network profile
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc = {$count ->
+    [one] Your network profile is currently set to Public ({$adapters}).
+          This is not recommended for SlimeVR to function properly.
+          <PublicFixLink>See how to fix it here.</PublicFixLink>
+    *[many] Some of your network adapters are set to public:
+            {$adapters}
+            This is not recommended for SlimeVR to function properly.
+            <PublicFixLink>See how to fix it here.</PublicFixLink>
+}
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Configure Stay Aligned
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the stay aligned poses for an improved imu drift
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
+
+tracking_checklist-ignore = Ignore
+
+sidebar-preview-mocap_mode_soon = Mocap Mode (Soon™)

@@ -3,6 +3,7 @@
 package dev.slimevr.desktop
 
 import dev.slimevr.Keybinding
+import dev.slimevr.NetworkProfileChecker
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
 import dev.slimevr.bridge.Bridge
@@ -125,11 +126,11 @@ fun main(args: Array<String>) {
 			{ _ -> DesktopSerialHandler() },
 			{ _ -> DesktopSerialFlashingHandler() },
 			{ _ -> DesktopVRCConfigHandler() },
+			{ server -> DesktopNetworkProfileChecker(server) },
 			configPath = configDir,
 		)
 		vrServer.start()
 
-		NetworkProfileChecker(vrServer)
 
 		// Start service for USB HID trackers
 		TrackersHID(

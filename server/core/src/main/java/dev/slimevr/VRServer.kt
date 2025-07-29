@@ -7,6 +7,7 @@ import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.firmware.FirmwareUpdateHandler
 import dev.slimevr.firmware.SerialFlashingHandler
+import dev.slimevr.trackingchecklist.TrackingChecklistManager
 import dev.slimevr.games.vrchat.VRCConfigHandler
 import dev.slimevr.games.vrchat.VRCConfigHandlerStub
 import dev.slimevr.games.vrchat.VRChatConfigManager
@@ -55,6 +56,7 @@ class VRServer @JvmOverloads constructor(
 	serialHandlerProvider: (VRServer) -> SerialHandler = { _ -> SerialHandlerStub() },
 	flashingHandlerProvider: (VRServer) -> SerialFlashingHandler? = { _ -> null },
 	vrcConfigHandlerProvider: (VRServer) -> VRCConfigHandler = { _ -> VRCConfigHandlerStub() },
+	networkProfileProvider: (VRServer) -> NetworkProfileChecker = { _ -> NetworkProfileCheckerStub() },
 	acquireMulticastLock: () -> Any? = { null },
 	// configPath is used by VRWorkout, do not remove!
 	configPath: String,
@@ -117,6 +119,10 @@ class VRServer @JvmOverloads constructor(
 	@JvmField
 	val handshakeHandler = HandshakeHandler()
 
+	val trackingChecklistManager: TrackingChecklistManager
+
+	val networkProfileChecker: NetworkProfileChecker;
+
 	init {
 		// UwU
 		configManager = ConfigManager(configPath)
@@ -132,6 +138,8 @@ class VRServer @JvmOverloads constructor(
 		autoBoneHandler = AutoBoneHandler(this)
 		firmwareUpdateHandler = FirmwareUpdateHandler(this)
 		vrcConfigManager = VRChatConfigManager(this, vrcConfigHandlerProvider(this))
+		networkProfileChecker = networkProfileProvider(this)
+		trackingChecklistManager = TrackingChecklistManager(this)
 		protocolAPI = ProtocolAPI(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 
@@ -170,6 +178,7 @@ class VRServer @JvmOverloads constructor(
 		for (tracker in computedTrackers) {
 			registerTracker(tracker)
 		}
+
 		instance = this
 	}
 

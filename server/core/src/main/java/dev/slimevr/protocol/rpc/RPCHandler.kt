@@ -1,6 +1,7 @@
 package dev.slimevr.protocol.rpc
 
 import com.google.flatbuffers.FlatBufferBuilder
+import dev.slimevr.config.MountingMethods
 import dev.slimevr.config.config
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
@@ -8,6 +9,7 @@ import dev.slimevr.protocol.ProtocolHandler
 import dev.slimevr.protocol.datafeed.DataFeedBuilder
 import dev.slimevr.protocol.rpc.autobone.RPCAutoBoneHandler
 import dev.slimevr.protocol.rpc.firmware.RPCFirmwareUpdateHandler
+import dev.slimevr.protocol.rpc.trackingchecklist.RPCTrackingChecklistHandler
 import dev.slimevr.protocol.rpc.games.vrchat.RPCVRChatHandler
 import dev.slimevr.protocol.rpc.reset.RPCResetHandler
 import dev.slimevr.protocol.rpc.serial.RPCProvisioningHandler
@@ -49,6 +51,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCTrackingPause(this, api)
 		RPCFirmwareUpdateHandler(this, api)
 		RPCVRChatHandler(this, api)
+		RPCTrackingChecklistHandler(this, api)
 
 		registerPacketListener(
 			RpcMessage.ResetRequest,
@@ -417,7 +420,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		tracker.trackerPosition = pos
 
 		if (req.mountingOrientation() != null) {
-			if (tracker.needsMounting) {
+			if (tracker.allowMounting) {
 				tracker
 					.resetsHandler
 					.mountingOrientation = Quaternion(
@@ -426,6 +429,8 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 					req.mountingOrientation().y(),
 					req.mountingOrientation().z(),
 				)
+				api.server.configManager.vrConfig.resetsConfig.preferedMountingMethod =
+					MountingMethods.MANUAL
 			}
 		}
 

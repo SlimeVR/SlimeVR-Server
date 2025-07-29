@@ -1,22 +1,58 @@
+:root {
+  --toolbar-h: 140px;
+}
+
 .main-layout {
   display: grid;
   grid-template:
     't t' var(--topbar-h)
-    's c' calc(100% - var(--topbar-h))
+    'n c' calc(100% - var(--topbar-h))
     / var(--navbar-w) calc(100% - var(--navbar-w));
 
-  &:has(.widgets) {
+  &.full {
     grid-template:
       't t t' var(--topbar-h)
-      's c w' calc(100% - var(--topbar-h))
-      / var(--navbar-w) calc(100% - var(--navbar-w) - var(--widget-w)) var(--widget-w);
+      'n b s' var(--toolbar-h)
+      'n c s' calc(100% - var(--topbar-h) - var(--toolbar-h))
+      / var(--navbar-w) calc(100% - var(--navbar-w) - var(--right-section-w)) var(--right-section-w);
+  }
+
+  @screen nsm {
+    --right-section-w: 40%;
+  }
+
+  @screen sm {
+    --right-section-w: 35%;
+  }
+
+  @screen md {
+    --right-section-w: 30%;
+  }
+
+  @screen lg {
+    --right-section-w: 25%;
+  }
+
+  @screen xl {
+    --right-section-w: 20%;
   }
 
   @screen mobile {
+    --toolbar-h: 125px;
+
+    &.full {
+      grid-template:
+        't' var(--topbar-h)
+        'b' var(--toolbar-h)
+        'c' calc(100% - var(--topbar-h) - var(--toolbar-h) - var(--navbar-h))
+        'n' calc(var(--navbar-h))
+        / 100%;
+    }
+
     grid-template:
       't' var(--topbar-h)
       'c' calc(100% - var(--topbar-h) - var(--navbar-h))
-      's' calc(var(--navbar-h))
+      'n' calc(var(--navbar-h))
       / 100%;
   }
 }

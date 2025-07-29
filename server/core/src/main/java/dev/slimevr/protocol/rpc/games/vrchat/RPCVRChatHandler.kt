@@ -18,12 +18,8 @@ class RPCVRChatHandler(
 	init {
 		api.server.vrcConfigManager.addListener(this)
 
-		rpcHandler.registerPacketListener(RpcMessage.VRCConfigStateRequest) { conn: GenericConnection, messageHeader: RpcMessageHeader ->
-			this.onConfigStateRequest(
-				conn,
-				messageHeader,
-			)
-		}
+		rpcHandler.registerPacketListener(RpcMessage.VRCConfigStateRequest, ::onConfigStateRequest)
+		rpcHandler.registerPacketListener(RpcMessage.VRCConfigSettingToggleMute, ::onToggleMuteRequest)
 	}
 
 	private fun onConfigStateRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
@@ -41,6 +37,7 @@ class RPCVRChatHandler(
 			validity = validity,
 			values = values,
 			recommended = api.server.vrcConfigManager.recommendedValues(),
+			muted = api.server.configManager.vrConfig.vrcConfig.mutedWarnings
 		)
 
 		val outbound = rpcHandler.createRPCMessage(
@@ -52,7 +49,13 @@ class RPCVRChatHandler(
 		conn.send(fbb.dataBuffer())
 	}
 
-	override fun onChange(validity: VRCConfigValidity, values: VRCConfigValues, recommended: VRCConfigRecommendedValues) {
+	private fun onToggleMuteRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
+		val req = messageHeader.message(VRCConfigSettingToggleMute()) as VRCConfigSettingToggleMute?
+			?: return
+		api.server.vrcConfigManager.toggleMuteWarning(req.key());
+	}
+
+	override fun onChange(validity: VRCConfigValidity, values: VRCConfigValues, recommended: VRCConfigRecommendedValues, muted: List<String>) {
 		val fbb = FlatBufferBuilder(32)
 
 		val response = buildVRCConfigStateResponse(
@@ -61,6 +64,7 @@ class RPCVRChatHandler(
 			validity = validity,
 			values = values,
 			recommended = recommended,
+			muted
 		)
 
 		val outbound = rpcHandler.createRPCMessage(
