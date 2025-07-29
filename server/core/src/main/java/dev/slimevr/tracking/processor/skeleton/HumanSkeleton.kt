@@ -1520,12 +1520,12 @@ class HumanSkeleton(
 	@JvmOverloads
 	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
 		var referenceRotation = IDENTITY
-		if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
-			headTracker?.let {
+		headTracker?.let {
+			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
 				// Always reset the head (ifs in resetsHandler)
 				it.resetsHandler.resetFull(referenceRotation)
-				referenceRotation = it.getRotation()
 			}
+			referenceRotation = it.getRotation()
 		}
 
 		// Resets all axes of the trackers with the HMD as reference.
@@ -1551,14 +1551,14 @@ class HumanSkeleton(
 	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
 		// Resets the yaw of the trackers with the head as reference.
 		var referenceRotation = IDENTITY
-		if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
-			headTracker?.let {
+		headTracker?.let {
+			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
 				// Only reset if head needsReset and isn't computed
 				if (it.needsReset && !it.isComputed) {
 					it.resetsHandler.resetYaw(referenceRotation)
 				}
-				referenceRotation = it.getRotation()
 			}
+			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsReset
@@ -1587,14 +1587,14 @@ class HumanSkeleton(
 
 		// Resets the mounting orientation of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
-		if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
-			headTracker?.let {
+		headTracker?.let {
+			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
 				// Only reset if head needsMounting or is computed but not HMD
 				if (it.needsMounting || (it.isComputed && !it.isHmd)) {
 					it.resetsHandler.resetMounting(referenceRotation)
 				}
-				referenceRotation = it.getRotation()
 			}
+			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsMounting
