@@ -8,13 +8,13 @@ import { TrackersTable } from '@/components/tracker/TrackersTable';
 import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
 import { useAtomValue } from 'jotai';
 import { flatTrackersAtom } from '@/store/app-store';
-import { useSessionFlightlist } from '@/hooks/session-flightlist';
+import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 
 export function Home() {
   const { l10n } = useLocalization();
   const { config } = useConfig();
   const trackers = useAtomValue(flatTrackersAtom);
-  const { hightlightedTrackers } = useSessionFlightlist();
+  const { hightlightedTrackers } = useTrackingChecklist();
   const navigate = useNavigate();
 
   const sendToSettings = (tracker: TrackerDataT) => {

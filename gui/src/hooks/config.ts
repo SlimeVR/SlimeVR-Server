@@ -47,6 +47,7 @@ export interface Config {
   vrcMutedWarnings: string[];
   bvhDirectory: string | null;
   homeLayout: 'default' | 'table';
+  skeletonPreview: boolean;
 }
 
 export interface ConfigContext {
@@ -77,6 +78,7 @@ export const defaultConfig: Config = {
   devSettings: defaultDevSettings,
   bvhDirectory: null,
   homeLayout: 'default',
+  skeletonPreview: true,
 };
 
 interface CrossStorage {

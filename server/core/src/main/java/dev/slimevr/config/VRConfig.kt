@@ -54,7 +54,7 @@ class VRConfig {
 
 	val overlay: OverlayConfig = OverlayConfig()
 
-	val flightList: FlightListConfig = FlightListConfig()
+	val trackingChecklist: TrackingChecklistConfig = TrackingChecklistConfig()
 
 	val vrcConfig: VRCConfig = VRCConfig()
 

@@ -3,11 +3,11 @@ import classNames from 'classnames';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  FlightListPublicNetworksT,
-  FlightListStepId,
   RpcMessage,
   StartWifiProvisioningRequestT,
   StopWifiProvisioningRequestT,
+  TrackingChecklistPublicNetworksT,
+  TrackingChecklistStepId,
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
 } from 'solarxr-protocol';
@@ -27,7 +27,7 @@ import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { BaseModal } from '@/components/commons/BaseModal';
 import { A } from '@/components/commons/A';
 import { CONNECT_TRACKER } from '@/utils/tauri';
-import { useSessionFlightlist } from '@/hooks/session-flightlist';
+import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
@@ -78,12 +78,12 @@ const statusProgressMap = {
 export function InvalidNetworkProfileWarning({
   extraData,
 }: {
-  extraData: FlightListPublicNetworksT;
+  extraData: TrackingChecklistPublicNetworksT;
 }) {
   return (
     <div className="pt-4">
       <Localized
-        id="flight_list-NETWORK_PROFILE_PUBLIC-desc"
+        id="tracking_checklist-NETWORK_PROFILE_PUBLIC-desc"
         elems={{
           PublicFixLink: (
             <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
@@ -102,7 +102,7 @@ export function InvalidNetworkProfileWarning({
 
 export function ConnectTrackersPage() {
   const { l10n } = useLocalization();
-  const { visibleSteps } = useSessionFlightlist();
+  const { visibleSteps } = useTrackingChecklist();
 
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { applyProgress, state } = useOnboarding();
@@ -194,7 +194,8 @@ export function ConnectTrackersPage() {
   const invalidNetworkProfile = useMemo(() => {
     return visibleSteps.find(
       (step) =>
-        step.id === FlightListStepId.NETWORK_PROFILE_PUBLIC && !step.valid
+        step.id === TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC &&
+        !step.valid
     );
   }, [visibleSteps]);
 
@@ -273,7 +274,7 @@ export function ConnectTrackersPage() {
           {invalidNetworkProfile && (
             <InvalidNetworkProfileWarning
               extraData={
-                invalidNetworkProfile.extraData as FlightListPublicNetworksT
+                invalidNetworkProfile.extraData as TrackingChecklistPublicNetworksT
               }
             />
           )}

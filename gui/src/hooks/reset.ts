@@ -1,18 +1,15 @@
-import {
-  playSoundOnResetEnded,
-  playSoundOnResetStarted,
-} from '@/sounds/sounds';
+import { playSoundOnResetEnded, playSoundOnResetStarted } from '@/sounds/sounds';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  FlightListStepId,
   ResetRequestT,
   ResetResponseT,
   ResetStatus,
   ResetType,
   RpcMessage,
+  TrackingChecklistStepId,
 } from 'solarxr-protocol';
 import { useConfig } from './config';
-import { useSessionFlightlist } from './session-flightlist';
+import { useTrackingChecklist } from './tracking-checklist';
 import { useWebsocketAPI } from './websocket-api';
 import { useCountdown } from './countdown';
 
@@ -24,12 +21,12 @@ export function useReset(type: ResetType, onReseted?: () => void) {
   const finishedTimeoutRef = useRef(-1);
   const [status, setStatus] = useState<ResetBtnStatus>('idle');
 
-  const { visibleSteps } = useSessionFlightlist();
+  const { visibleSteps } = useTrackingChecklist();
   const needsFullReset = useMemo(
     () =>
       type == ResetType.Mounting &&
       visibleSteps.some(
-        (step) => step.id === FlightListStepId.FULL_RESET && !step.valid
+        (step) => step.id === TrackingChecklistStepId.FULL_RESET && !step.valid
       ),
     [visibleSteps, type]
   );
@@ -55,8 +52,7 @@ export function useReset(type: ResetType, onReseted?: () => void) {
 
     // If a timer was already running / clear it
     abortCountdown();
-    if (finishedTimeoutRef.current !== -1)
-      clearTimeout(finishedTimeoutRef.current);
+    if (finishedTimeoutRef.current !== -1) clearTimeout(finishedTimeoutRef.current);
 
     // After 2s go back to idle state
     finishedTimeoutRef.current = setTimeout(() => {
@@ -74,8 +70,7 @@ export function useReset(type: ResetType, onReseted?: () => void) {
 
   const maybePlaySoundOnResetStart = () => {
     if (!config?.feedbackSound) return;
-    if (type !== ResetType.Yaw)
-      playSoundOnResetStarted(config?.feedbackSoundVolume);
+    if (type !== ResetType.Yaw) playSoundOnResetStarted(config?.feedbackSoundVolume);
   };
 
   const triggerReset = () => {
@@ -86,23 +81,19 @@ export function useReset(type: ResetType, onReseted?: () => void) {
 
   useEffect(() => {
     return () => {
-      if (finishedTimeoutRef.current !== -1)
-        clearTimeout(finishedTimeoutRef.current);
+      if (finishedTimeoutRef.current !== -1) clearTimeout(finishedTimeoutRef.current);
     };
   }, []);
 
-  useRPCPacket(
-    RpcMessage.ResetResponse,
-    ({ status, resetType }: ResetResponseT) => {
-      if (resetType !== type) return;
-      switch (status) {
-        case ResetStatus.FINISHED: {
-          onResetFinished();
-          break;
-        }
+  useRPCPacket(RpcMessage.ResetResponse, ({ status, resetType }: ResetResponseT) => {
+    if (resetType !== type) return;
+    switch (status) {
+      case ResetStatus.FINISHED: {
+        onResetFinished();
+        break;
       }
     }
-  );
+  });
 
   const name = useMemo(() => {
     switch (type) {

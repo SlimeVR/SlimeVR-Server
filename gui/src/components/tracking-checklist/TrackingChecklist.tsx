@@ -1,14 +1,14 @@
 import {
-  flightlistIdtoLabel,
-  FlightListStep,
-  SessionFlightListContext,
-  useSessionFlightlist,
-} from '@/hooks/session-flightlist';
+  TrackingChecklistStep,
+  TrackingChecklistContext,
+  useTrackingChecklist,
+  trackingchecklistIdtoLabel,
+} from '@/hooks/tracking-checklist';
 import classNames from 'classnames';
 import {
-  FlightListPublicNetworksT,
-  FlightListStepId,
   ResetType,
+  TrackingChecklistPublicNetworksT,
+  TrackingChecklistStepId,
 } from 'solarxr-protocol';
 import { ReactNode, useEffect, useMemo, useState } from 'react';
 import { openUrl } from '@tauri-apps/plugin-opener';
@@ -20,20 +20,16 @@ import { A } from '@/components/commons/A';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { CrossIcon } from '@/components/commons/icon/CrossIcon';
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-} from '@/components/commons/icon/ArrowIcons';
+import { ArrowDownIcon } from '@/components/commons/icon/ArrowIcons';
 import { Localized } from '@fluent/react';
 import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
-import { c } from 'vite/dist/node/types.d-aGj9QkWt';
-import { FlightListSettingsModal } from './FlightListSettingsModal';
+import { TrackingChecklistModal } from './TrackingChecklistModal';
 
 function Step({
   step: { status, id, optional, firstRequired },
   children,
 }: {
-  step: FlightListStep;
+  step: TrackingChecklistStep;
   index: number;
   children: ReactNode;
 }) {
@@ -86,7 +82,7 @@ function Step({
           )}
         </div>
         <div className="flex items-center justify-between w-full group-hover:text-background-20 text-section-title">
-          <Localized id={flightlistIdtoLabel[id]} />
+          <Localized id={trackingchecklistIdtoLabel[id]} />
           {canBeOpened && (
             <div className="fill-background-30 group-hover:scale-125 group-hover:fill-background-20 transition-transform">
               <ArrowDownIcon size={20}></ArrowDownIcon>
@@ -103,16 +99,19 @@ function Step({
 
 const stepContentLookup: Record<
   number,
-  (step: FlightListStep, context: SessionFlightListContext) => JSX.Element
+  (
+    step: TrackingChecklistStep,
+    context: TrackingChecklistContext
+  ) => JSX.Element
 > = {
-  [FlightListStepId.TRACKERS_REST_CALIBRATION]: (step, { toggle }) => {
+  [TrackingChecklistStepId.TRACKERS_REST_CALIBRATION]: (step, { toggle }) => {
     return (
       <div className="space-y-2.5">
-        <Typography id="flight_list-TRACKERS_REST_CALIBRATION-desc"></Typography>
+        <Typography id="tracking_checklist-TRACKERS_REST_CALIBRATION-desc"></Typography>
         <div className="flex justify-end">
           {step.ignorable && (
             <Button
-              id="flight_list-ignore"
+              id="tracking_checklist-ignore"
               variant="secondary"
               onClick={() => toggle(step.id)}
             ></Button>
@@ -121,10 +120,10 @@ const stepContentLookup: Record<
       </div>
     );
   },
-  [FlightListStepId.FULL_RESET]: () => {
+  [TrackingChecklistStepId.FULL_RESET]: () => {
     return (
       <div className="space-y-2.5">
-        <Typography id="flight_list-FULL_RESET-desc"></Typography>
+        <Typography id="tracking_checklist-FULL_RESET-desc"></Typography>
         <div>
           <Typography
             color="secondary"
@@ -171,20 +170,20 @@ const stepContentLookup: Record<
       </div>
     );
   },
-  [FlightListStepId.STEAMVR_DISCONNECTED]: (step, { toggle }) => {
+  [TrackingChecklistStepId.STEAMVR_DISCONNECTED]: (step, { toggle }) => {
     return (
       <>
         <div className="space-y-2.5">
-          <Typography id="flight_list-STEAMVR_DISCONNECTED-desc"></Typography>
+          <Typography id="tracking_checklist-STEAMVR_DISCONNECTED-desc"></Typography>
           <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
             <Button
-              id="flight_list-STEAMVR_DISCONNECTED-open"
+              id="tracking_checklist-STEAMVR_DISCONNECTED-open"
               variant="primary"
               onClick={() => openUrl('steam://run/250820')}
             ></Button>
             {step.ignorable && (
               <Button
-                id="flight_list-ignore"
+                id="tracking_checklist-ignore"
                 variant="secondary"
                 onClick={() => toggle(step.id)}
               ></Button>
@@ -194,19 +193,21 @@ const stepContentLookup: Record<
       </>
     );
   },
-  [FlightListStepId.TRACKER_ERROR]: () => {
-    return <Typography id="flight_list-TRACKER_ERROR-desc"></Typography>;
+  [TrackingChecklistStepId.TRACKER_ERROR]: () => {
+    return <Typography id="tracking_checklist-TRACKER_ERROR-desc"></Typography>;
   },
-  [FlightListStepId.UNASSIGNED_HMD]: () => {
-    return <Typography id="flight_list-UNASSIGNED_HMD-desc"></Typography>;
+  [TrackingChecklistStepId.UNASSIGNED_HMD]: () => {
+    return (
+      <Typography id="tracking_checklist-UNASSIGNED_HMD-desc"></Typography>
+    );
   },
-  [FlightListStepId.NETWORK_PROFILE_PUBLIC]: (step, { toggle }) => {
-    const data = step.extraData as FlightListPublicNetworksT | null;
+  [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]: (step, { toggle }) => {
+    const data = step.extraData as TrackingChecklistPublicNetworksT | null;
     return (
       <>
         <div className="space-y-2.5">
           <Typography
-            id="flight_list-NETWORK_PROFILE_PUBLIC-desc"
+            id="tracking_checklist-NETWORK_PROFILE_PUBLIC-desc"
             vars={{
               count: data?.adapters?.length ?? 0,
               adapters: data?.adapters?.join(', ') ?? '',
@@ -223,13 +224,13 @@ const stepContentLookup: Record<
           ></Typography>
           <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
             <Button
-              id="flight_list-NETWORK_PROFILE_PUBLIC-open"
+              id="tracking_checklist-NETWORK_PROFILE_PUBLIC-open"
               variant="primary"
               onClick={() => openUrl('ms-settings:network')}
             ></Button>
             {step.ignorable && (
               <Button
-                id="flight_list-ignore"
+                id="tracking_checklist-ignore"
                 variant="secondary"
                 onClick={() => toggle(step.id)}
               ></Button>
@@ -239,20 +240,20 @@ const stepContentLookup: Record<
       </>
     );
   },
-  [FlightListStepId.VRCHAT_SETTINGS]: (step, { toggle }) => {
+  [TrackingChecklistStepId.VRCHAT_SETTINGS]: (step, { toggle }) => {
     return (
       <>
         <div className="space-y-2.5">
-          <Typography id="flight_list-VRCHAT_SETTINGS-desc"></Typography>
+          <Typography id="tracking_checklist-VRCHAT_SETTINGS-desc"></Typography>
           <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
             <Button
               variant="primary"
               to="/vrc-warnings"
-              id="flight_list-VRCHAT_SETTINGS-open"
+              id="tracking_checklist-VRCHAT_SETTINGS-open"
             ></Button>
             {step.ignorable && (
               <Button
-                id="flight_list-ignore"
+                id="tracking_checklist-ignore"
                 variant="secondary"
                 onClick={() => toggle(step.id)}
               ></Button>
@@ -262,7 +263,7 @@ const stepContentLookup: Record<
       </>
     );
   },
-  [FlightListStepId.MOUNTING_CALIBRATION]: (step, { toggle }) => {
+  [TrackingChecklistStepId.MOUNTING_CALIBRATION]: (step, { toggle }) => {
     return (
       <div className="space-y-2.5">
         <Typography id="onboarding-automatic_mounting-mounting_reset-step-0"></Typography>
@@ -278,7 +279,7 @@ const stepContentLookup: Record<
           <ResetButton type={ResetType.Mounting}></ResetButton>
           {step.ignorable && (
             <Button
-              id="flight_list-ignore"
+              id="tracking_checklist-ignore"
               variant="secondary"
               onClick={() => toggle(step.id)}
             ></Button>
@@ -287,21 +288,21 @@ const stepContentLookup: Record<
       </div>
     );
   },
-  [FlightListStepId.STAY_ALIGNED_CONFIGURED]: (step, { toggle }) => {
+  [TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED]: (step, { toggle }) => {
     return (
       <>
         <div className="space-y-2.5">
-          <Typography id="flight_list-STAY_ALIGNED_CONFIGURED-desc"></Typography>
+          <Typography id="tracking_checklist-STAY_ALIGNED_CONFIGURED-desc"></Typography>
           <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
             <Button
-              id="flight_list-STAY_ALIGNED_CONFIGURED-open"
+              id="tracking_checklist-STAY_ALIGNED_CONFIGURED-open"
               variant="primary"
               to="/onboarding/stay-aligned"
               state={{ alonePage: true }}
             ></Button>
             {step.ignorable && (
               <Button
-                id="flight_list-ignore"
+                id="tracking_checklist-ignore"
                 variant="secondary"
                 onClick={() => toggle(step.id)}
               ></Button>
@@ -313,7 +314,7 @@ const stepContentLookup: Record<
   },
 };
 
-export function SessionFlightList({
+export function TrackingChecklist({
   closed,
   closing,
   toggleClosed,
@@ -322,7 +323,7 @@ export function SessionFlightList({
   closing: boolean;
   toggleClosed: () => void;
 }) {
-  const context = useSessionFlightlist();
+  const context = useTrackingChecklist();
   const { visibleSteps, progress, completion, warnings } = context;
 
   const slimeState = useMemo(() => {
@@ -451,9 +452,7 @@ export function SessionFlightList({
           </div>
         </div>
       </div>
-      <FlightListSettingsModal
-        open={settingsOpenState}
-      ></FlightListSettingsModal>
+      <TrackingChecklistModal open={settingsOpenState}></TrackingChecklistModal>
     </>
   );
 }

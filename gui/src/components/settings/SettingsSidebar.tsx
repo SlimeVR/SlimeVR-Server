@@ -1,18 +1,17 @@
 import classNames from 'classnames';
-import { ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
 import { NavLink, useLocation, useMatch } from 'react-router-dom';
 import { Typography } from '@/components/commons/Typography';
-import { useLocalization } from '@fluent/react';
 import { useVRCConfig } from '@/hooks/vrc-config';
 
 export function SettingsLink({
   to,
   scrollTo,
-  children,
+  id,
 }: {
+  id: string;
   to: string;
   scrollTo?: string;
-  children: ReactNode;
 }) {
   const { state } = useLocation();
   const doesMatch = useMatch({
@@ -35,94 +34,118 @@ export function SettingsLink({
         'bg-background-60': isActive,
       })}
     >
-      {children}
+      <Typography id={id} />
     </NavLink>
   );
 }
 
 export function SettingsSidebar() {
-  const { l10n } = useLocalization();
   const { state: vrcConfigState } = useVRCConfig();
 
   return (
     <div className="flex flex-col px-5 py-5 gap-3 overflow-y-auto bg-background-70 rounded-lg h-full">
-      <Typography variant="main-title">
-        {l10n.getString('settings-sidebar-title')}
-      </Typography>
+      <Typography variant="main-title" id="settings-sidebar-title" />
       <div className="flex flex-col gap-3">
-        <Typography variant="section-title">
-          {l10n.getString('settings-sidebar-general')}
-        </Typography>
+        <Typography variant="section-title" id="settings-sidebar-general" />
         <div className="flex flex-col gap-2">
-          <SettingsLink to="/settings/trackers" scrollTo="steamvr">
-            SteamVR
-          </SettingsLink>
-          <SettingsLink to="/settings/trackers" scrollTo="stayaligned">
-            {l10n.getString('settings-sidebar-stay_aligned')}
-          </SettingsLink>
-          <SettingsLink to="/settings/trackers" scrollTo="mechanics">
-            {l10n.getString('settings-sidebar-tracker_mechanics')}
-          </SettingsLink>
-          <SettingsLink to="/settings/trackers" scrollTo="fksettings">
-            {l10n.getString('settings-sidebar-fk_settings')}
-          </SettingsLink>
-          <SettingsLink to="/settings/trackers" scrollTo="gestureControl">
-            {l10n.getString('settings-sidebar-gesture_control')}
-          </SettingsLink>
+          <SettingsLink
+            to="/settings/trackers"
+            scrollTo="steamvr"
+            id="settings-sidebar-steamvr"
+          />
+          <SettingsLink
+            to="/settings/trackers"
+            scrollTo="stayaligned"
+            id="settings-sidebar-stay_aligned"
+          />
+          <SettingsLink
+            to="/settings/trackers"
+            scrollTo="mechanics"
+            id="settings-sidebar-tracker_mechanics"
+          />
+          <SettingsLink
+            to="/settings/trackers"
+            scrollTo="fksettings"
+            id="settings-sidebar-fk_settings"
+          />
+          <SettingsLink
+            to="/settings/trackers"
+            scrollTo="gestureControl"
+            id="settings-sidebar-gesture_control"
+          />
         </div>
       </div>
       <div className="flex flex-col gap-3">
-        <Typography variant="section-title">
-          {l10n.getString('settings-sidebar-interface')}
-        </Typography>
+        <Typography variant="section-title" id="settings-sidebar-interface" />
         <div className="flex flex-col gap-2">
-          <SettingsLink to="/settings/interface" scrollTo="notifications">
-            {l10n.getString('settings-sidebar-notifications')}
-          </SettingsLink>
-          <SettingsLink to="/settings/interface" scrollTo="behavior">
-            {l10n.getString('settings-sidebar-behavior')}
-          </SettingsLink>
-          <SettingsLink to="/settings/interface" scrollTo="appearance">
-            {l10n.getString('settings-sidebar-appearance')}
-          </SettingsLink>
+          <SettingsLink
+            to="/settings/interface"
+            scrollTo="notifications"
+            id="settings-sidebar-notifications"
+          />
+          <SettingsLink
+            to="/settings/interface"
+            scrollTo="behavior"
+            id="settings-sidebar-behavior"
+          />
+          <SettingsLink
+            to="/settings/interface"
+            scrollTo="appearance"
+            id="settings-sidebar-appearance"
+          />
+          <SettingsLink
+            to="/settings/interface/home"
+            scrollTo="home"
+            id="settings-sidebar-home"
+          />
+          <SettingsLink
+            to="/settings/interface/home"
+            scrollTo="checklist"
+            id="settings-sidebar-checklist"
+          />
         </div>
         <div className="flex flex-col gap-3">
           <Typography variant="section-title">OSC</Typography>
           <div className="flex flex-col gap-2">
-            <SettingsLink to="/settings/osc/router" scrollTo="router">
-              {l10n.getString('settings-sidebar-osc_router')}
-            </SettingsLink>
-            <SettingsLink to="/settings/osc/vrchat" scrollTo="vrchat">
-              {l10n.getString('settings-sidebar-osc_trackers')}
-            </SettingsLink>
-            <SettingsLink to="/settings/osc/vmc" scrollTo="vmc">
-              VMC
-            </SettingsLink>
+            <SettingsLink
+              to="/settings/osc/router"
+              scrollTo="router"
+              id="settings-sidebar-osc_router"
+            />
+            <SettingsLink
+              to="/settings/osc/vrchat"
+              scrollTo="vrchat"
+              id="settings-sidebar-osc_trackers"
+            />
+            <SettingsLink
+              to="/settings/osc/vmc"
+              scrollTo="vmc"
+              id="settings-sidebar-osc_vmc"
+            />
           </div>
         </div>
         <div className="flex flex-col gap-3">
-          <Typography variant="section-title">
-            {l10n.getString('settings-sidebar-utils')}
-          </Typography>
+          <Typography variant="section-title" id="settings-sidebar-utils" />
           <div className="flex flex-col gap-2">
-            <SettingsLink to="/settings/serial">
-              {l10n.getString('settings-sidebar-serial')}
-            </SettingsLink>
-            <SettingsLink to="/settings/firmware-tool">
-              {l10n.getString('settings-sidebar-firmware-tool')}
-            </SettingsLink>
+            <SettingsLink to="/settings/serial" id="settings-sidebar-serial" />
+            <SettingsLink
+              to="/settings/firmware-tool"
+              id="settings-sidebar-firmware-tool"
+            />
           </div>
           {vrcConfigState?.isSupported && (
             <div className="flex flex-col gap-2">
-              <SettingsLink to="/vrc-warnings">
-                {l10n.getString('settings-sidebar-vrc_warnings')}
-              </SettingsLink>
+              <SettingsLink
+                to="/vrc-warnings"
+                id="settings-sidebar-vrc_warnings"
+              />
             </div>
           )}
           <div className="flex flex-col gap-2">
-            <SettingsLink to="/settings/advanced">
-              {l10n.getString('settings-sidebar-advanced')}
-            </SettingsLink>
+            <SettingsLink
+              to="/settings/advanced"
+              id="settings-sidebar-advanced"
+            />
           </div>
         </div>
       </div>

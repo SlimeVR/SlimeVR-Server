@@ -60,7 +60,8 @@ import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
 import { VRCWarningsPage } from './components/vrc/VRCWarningsPage';
 import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/StayAlignedSetup';
-import { FlightListProvider } from './components/flight-list/FlightListProvider';
+import { TrackingChecklistProvider } from './components/tracking-checklist/TrackingChecklistProvider';
+import { HomeScreenSettings } from './components/settings/pages/HomeScreenSettings';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -135,6 +136,7 @@ function Layout() {
             <Route path="osc/vrchat" element={<VRCOSCSettings />} />
             <Route path="osc/vmc" element={<VMCSettings />} />
             <Route path="interface" element={<InterfaceSettings />} />
+            <Route path="interface/home" element={<HomeScreenSettings />} />
             <Route path="advanced" element={<AdvancedSettings />} />
           </Route>
           <Route
@@ -292,7 +294,7 @@ export default function App() {
         <WebSocketApiContext.Provider value={websocketAPI}>
           <AppContextProvider>
             <OnboardingContextProvider>
-              <FlightListProvider>
+              <TrackingChecklistProvider>
                 <VersionContext.Provider value={updateFound}>
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
                     <Preload />
@@ -302,7 +304,7 @@ export default function App() {
                     {websocketAPI.isConnected && <Layout></Layout>}
                   </div>
                 </VersionContext.Provider>
-              </FlightListProvider>
+              </TrackingChecklistProvider>
             </OnboardingContextProvider>
           </AppContextProvider>
         </WebSocketApiContext.Provider>

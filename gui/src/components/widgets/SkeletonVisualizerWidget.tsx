@@ -10,7 +10,6 @@ import * as THREE from 'three';
 import { BodyPart, BoneT } from 'solarxr-protocol';
 import { QuaternionFromQuatT, isIdentity } from '@/maths/quaternion';
 import classNames from 'classnames';
-import { Button } from '@/components/commons/Button';
 import { useLocalization } from '@fluent/react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Typography } from '@/components/commons/Typography';
@@ -18,6 +17,7 @@ import { useAtomValue } from 'jotai';
 import { bonesAtom } from '@/store/app-store';
 import { useConfig } from '@/hooks/config';
 import { Tween } from '@tweenjs/tween.js';
+import { EyeIcon } from '@/components/commons/icon/EyeIcon';
 
 const GROUND_COLOR = '#2c2c6b';
 
@@ -31,61 +31,6 @@ const Y_PARTS = [
   BodyPart.LEFT_UPPER_LEG,
   BodyPart.LEFT_LOWER_LEG,
 ];
-
-interface SkeletonVisualizerWidgetProps {
-  height?: number | string;
-  maxHeight?: number | string;
-}
-
-export function ToggleableSkeletonVisualizerWidget({
-  height,
-  maxHeight,
-}: SkeletonVisualizerWidgetProps) {
-  const { l10n } = useLocalization();
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    const state = localStorage.getItem('skeletonModelPreview');
-    if (state) setEnabled(state === 'true');
-  }, []);
-
-  return (
-    <>
-      {!enabled && (
-        <Button
-          variant="secondary"
-          className="w-full"
-          onClick={() => {
-            setEnabled(true);
-            localStorage.setItem('skeletonModelPreview', 'true');
-          }}
-        >
-          {l10n.getString('widget-skeleton_visualizer-preview')}
-        </Button>
-      )}
-      {enabled && (
-        <div className="flex flex-col gap-2">
-          <Button
-            className="w-full"
-            variant="secondary"
-            onClick={() => {
-              setEnabled(false);
-              localStorage.setItem('skeletonModelPreview', 'false');
-            }}
-          >
-            {l10n.getString('widget-skeleton_visualizer-hide')}
-          </Button>
-          <div
-            style={{ height, maxHeight }}
-            className="bg-background-60 p-1 rounded-md"
-          >
-            <SkeletonVisualizerWidget />
-          </div>
-        </div>
-      )}
-    </>
-  );
-}
 
 export type SkeletonPreviewView = {
   left: number;
@@ -110,7 +55,7 @@ function initializePreview(
 
   const resolution = new THREE.Vector2(canvas.clientWidth, canvas.clientHeight);
   const scene = new THREE.Scene();
-  const renderer = new THREE.WebGLRenderer({
+  let renderer: THREE.WebGLRenderer | null = new THREE.WebGLRenderer({
     canvas,
     alpha: true,
     antialias: true,
@@ -195,7 +140,7 @@ function initializePreview(
 
   const render = (delta: number) => {
     views.forEach((v) => {
-      if (v.hidden) return;
+      if (v.hidden || !renderer) return;
       v.controls.update(delta);
 
       const left = Math.floor(resolution.x * v.left);
@@ -251,6 +196,7 @@ function initializePreview(
     resize: (width: number, height: number) => {
       resolution.set(width, height);
       skeletonHelper.resolution.copy(resolution);
+      if (!renderer) return;
       renderer.setSize(width, height);
     },
     setFrameInterval: (interval: number) => {
@@ -276,9 +222,11 @@ function initializePreview(
       }
     },
     destroy: () => {
-      skeletonHelper.dispose();
-      renderer.dispose();
       cancelAnimationFrame(animationFrameId);
+      skeletonHelper.dispose();
+      if (!renderer) return;
+      renderer.dispose();
+      renderer = null; // Very important for js to free the WebGL context. dispose does not to it alone
     },
     addView: ({
       left,
@@ -297,6 +245,8 @@ function initializePreview(
       hidden?: boolean;
       onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
     }) => {
+      if (!renderer) return;
+
       const camera = new THREE.PerspectiveCamera(
         20,
         resolution.width / resolution.height,
@@ -344,8 +294,10 @@ type PreviewContext = ReturnType<typeof initializePreview>;
 
 function SkeletonVisualizer({
   onInit,
+  disabled = false,
 }: {
   onInit: (context: PreviewContext) => void;
+  disabled?: boolean;
 }) {
   const { config } = useConfig();
 
@@ -362,15 +314,15 @@ function SkeletonVisualizer({
   useEffect(() => {
     if (bones.size === 0) return;
     const context = previewContext.current;
-    if (!context) return;
+    if (!context || disabled) return;
     context.rebuildSkeleton(createChildren(bones, BoneKind.root), bones);
-  }, [bones.size]);
+  }, [bones.size, disabled]);
 
   useEffect(() => {
     const context = previewContext.current;
-    if (!context) return;
+    if (!context || disabled) return;
     context.updatesBones(bones);
-  }, [bones]);
+  }, [bones, disabled]);
 
   const onResize = (e: ResizeObserverEntry) => {
     const context = previewContext.current;
@@ -393,6 +345,7 @@ function SkeletonVisualizer({
   };
 
   useLayoutEffect(() => {
+    if (disabled) return;
     if (!canvasRef.current || !containerRef.current)
       throw 'invalid state - no canvas or container';
     resizeObserver.current.observe(containerRef.current);
@@ -416,11 +369,12 @@ function SkeletonVisualizer({
       if (!previewContext.current || !containerRef.current) return;
       resizeObserver.current.unobserve(containerRef.current);
       previewContext.current.destroy();
+      previewContext.current = null;
 
       containerRef.current.removeEventListener('mouseenter', onEnter);
       containerRef.current.removeEventListener('mouseleave', onLeave);
     };
-  }, []);
+  }, [disabled]);
 
   return (
     <div ref={containerRef} className={classNames('w-full h-full')}>
@@ -444,20 +398,56 @@ export function SkeletonVisualizerWidget({
       },
     });
   },
+  disabled = false,
+  toggleDisabled,
 }: {
   onInit?: (context: PreviewContext) => void;
+  disabled?: boolean;
+  toggleDisabled?: () => void;
 }) {
   const { l10n } = useLocalization();
+  const [error, setError] = useState(false);
 
   return (
-    <ErrorBoundary
-      fallback={
-        <Typography color="primary" textAlign="text-center">
-          {l10n.getString('tips-failed_webgl')}
-        </Typography>
-      }
-    >
-      <SkeletonVisualizer onInit={onInit}></SkeletonVisualizer>
-    </ErrorBoundary>
+    <div className={classNames('w-full h-full relative')}>
+      <div
+        className={classNames('w-full h-full transition-all', {
+          blur: disabled,
+        })}
+      >
+        <ErrorBoundary onError={() => setError(true)} fallback={<></>}>
+          <SkeletonVisualizer
+            onInit={onInit}
+            disabled={disabled}
+          ></SkeletonVisualizer>
+        </ErrorBoundary>
+      </div>
+      <div
+        className={classNames(
+          'absolute h-full w-full top-0 flex items-center justify-center transition-opacity duration-300',
+          { 'opacity-0 pointer-events-none': !disabled || error }
+        )}
+      >
+        <div
+          className="bg-background-90 rounded-lg p-2 px-3 flex gap-2 items-center hover:bg-background-60 cursor-pointer"
+          onClick={() => toggleDisabled?.()}
+        >
+          <EyeIcon closed width={20}></EyeIcon>
+          <Typography>Rendering disabled</Typography>
+        </div>
+      </div>
+      <div
+        className={classNames(
+          'absolute h-full w-full top-0 flex items-center justify-center transition-opacity duration-300',
+          { 'opacity-0 pointer-events-none': !error }
+        )}
+      >
+        <div className="bg-background-90 rounded-lg p-2 px-3 flex gap-2 items-center">
+          <Typography color="primary" textAlign="text-center">
+            {l10n.getString('tips-failed_webgl')}
+          </Typography>
+        </div>
+      </div>
+    </div>
   );
 }

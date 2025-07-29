@@ -17,7 +17,7 @@ import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
-import { useSessionFlightlist } from '@/hooks/session-flightlist';
+import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 
 enum DisplayColumn {
   NAME,
@@ -169,7 +169,7 @@ export function TrackersTable({
   const { l10n } = useLocalization();
   const [hoverTracker, setHoverTracker] = useState<TrackerIdT | null>(null);
   const { config } = useConfig();
-  const { hightlightedTrackers } = useSessionFlightlist();
+  const { hightlightedTrackers } = useTrackingChecklist();
 
   const trackerEqual = (id: TrackerIdT | null) =>
     id?.trackerNum == hoverTracker?.trackerNum &&

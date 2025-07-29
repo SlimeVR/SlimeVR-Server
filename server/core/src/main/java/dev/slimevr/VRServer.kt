@@ -7,7 +7,7 @@ import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.firmware.FirmwareUpdateHandler
 import dev.slimevr.firmware.SerialFlashingHandler
-import dev.slimevr.flightlist.FlightListManager
+import dev.slimevr.trackingchecklist.TrackingChecklistManager
 import dev.slimevr.games.vrchat.VRCConfigHandler
 import dev.slimevr.games.vrchat.VRCConfigHandlerStub
 import dev.slimevr.games.vrchat.VRChatConfigManager
@@ -119,7 +119,7 @@ class VRServer @JvmOverloads constructor(
 	@JvmField
 	val handshakeHandler = HandshakeHandler()
 
-	val flightListManager: FlightListManager
+	val trackingChecklistManager: TrackingChecklistManager
 
 	val networkProfileChecker: NetworkProfileChecker;
 
@@ -139,7 +139,7 @@ class VRServer @JvmOverloads constructor(
 		firmwareUpdateHandler = FirmwareUpdateHandler(this)
 		vrcConfigManager = VRChatConfigManager(this, vrcConfigHandlerProvider(this))
 		networkProfileChecker = networkProfileProvider(this)
-		flightListManager = FlightListManager(this)
+		trackingChecklistManager = TrackingChecklistManager(this)
 		protocolAPI = ProtocolAPI(this)
 		val computedTrackers = humanPoseManager.computedTrackers
 

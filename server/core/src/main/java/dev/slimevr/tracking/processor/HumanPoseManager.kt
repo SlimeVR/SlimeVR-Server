@@ -573,7 +573,7 @@ class HumanPoseManager(val server: VRServer?) {
 		if (server != null) {
 			server.configManager.vrConfig.resetsConfig.preferedMountingMethod =
 				MountingMethods.AUTOMATIC
-			server.flightListManager.resetMountingCompleted = true;
+			server.trackingChecklistManager.resetMountingCompleted = true;
 			server.configManager.saveConfig()
 		}
 	}
@@ -581,7 +581,7 @@ class HumanPoseManager(val server: VRServer?) {
 	fun clearTrackersMounting(resetSourceName: String?) {
 		skeleton.clearTrackersMounting(resetSourceName)
 		if (server != null) {
-			server.flightListManager.resetMountingCompleted = false;
+			server.trackingChecklistManager.resetMountingCompleted = false;
 			server.configManager.saveConfig()
 		}
 	}

@@ -1,5 +1,5 @@
 package dev.slimevr.config
 
-class FlightListConfig {
+class TrackingChecklistConfig {
 	val ignoredStepsIds: MutableList<Int> = mutableListOf()
 }

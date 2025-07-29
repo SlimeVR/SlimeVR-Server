@@ -260,6 +260,7 @@ navbar-settings = Settings
 
 ## Biovision hierarchy recording
 bvh-start_recording = Record BVH
+bvh-stop_recording = Save BVH recording
 bvh-recording = Recording...
 bvh-save_title = Save BVH recording
 
@@ -452,6 +453,7 @@ mounting_selection_menu-close = Close
 ## Sidebar settings
 settings-sidebar-title = Settings
 settings-sidebar-general = General
+settings-sidebar-steamvr = SteamVR
 settings-sidebar-tracker_mechanics = Tracker mechanics
 settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = Tracking settings
@@ -459,9 +461,12 @@ settings-sidebar-gesture_control = Gesture control
 settings-sidebar-interface = Interface
 settings-sidebar-osc_router = OSC router
 settings-sidebar-osc_trackers = VRChat OSC Trackers
+settings-sidebar-osc_vmc = VMC
 settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 settings-sidebar-appearance = Appearance
+settings-sidebar-home = Home Screen
+settings-sidebar-checklist = Tracking checklist
 settings-sidebar-notifications = Notifications
 settings-sidebar-behavior = Behavior
 settings-sidebar-firmware-tool = DIY Firmware Tool
@@ -1548,23 +1553,23 @@ error_collection_modal-confirm = I agree
 error_collection_modal-cancel = I don't want to
 
 
-flight_list-MOUNTING_CALIBRATION = Perform a mounting calibration
-flight_list-FULL_RESET = Perform a full Reset
-flight_list-FULL_RESET-desc = Some Trackers need a reset to be performed
-flight_list-STEAMVR_DISCONNECTED = SteamVR not running
-flight_list-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for vr?
-flight_list-STEAMVR_DISCONNECTED-open = Launch SteamVR
-flight_list-TRACKERS_REST_CALIBRATION = Calibrate your trackers
-flight_list-TRACKERS_REST_CALIBRATION-desc = You didnt perform the tracker calibration. Please let your slimes, highlited in yellow, rest on a static surface for a few secconds
-flight_list-TRACKER_ERROR = Trackers with Errors
-flight_list-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the tracker.
-flight_list-VRCHAT_SETTINGS = Configure VRChat settings
-flight_list-VRCHAT_SETTINGS-desc = You have misconfigured VRchat Settings! This can impact your tracking experience.
-flight_list-VRCHAT_SETTINGS-open = Go to VRChat Warnings
-flight_list-UNASSIGNED_HMD = VR Headset not assigned to Head
-flight_list-UNASSIGNED_HMD-desc = The VR headset should be assigned as a head tracker.
-flight_list-NETWORK_PROFILE_PUBLIC = Change your network profile
-flight_list-NETWORK_PROFILE_PUBLIC-desc = {$count ->
+tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
+tracking_checklist-FULL_RESET = Perform a full Reset
+tracking_checklist-FULL_RESET-desc = Some Trackers need a reset to be performed
+tracking_checklist-STEAMVR_DISCONNECTED = SteamVR not running
+tracking_checklist-STEAMVR_DISCONNECTED-desc = SteamVR is not running. Are you using it for vr?
+tracking_checklist-STEAMVR_DISCONNECTED-open = Launch SteamVR
+tracking_checklist-TRACKERS_REST_CALIBRATION = Calibrate your trackers
+tracking_checklist-TRACKERS_REST_CALIBRATION-desc = You didnt perform the tracker calibration. Please let your slimes, highlited in yellow, rest on a static surface for a few secconds
+tracking_checklist-TRACKER_ERROR = Trackers with Errors
+tracking_checklist-TRACKER_ERROR-desc = Some of your trackers have an error. Please restart the tracker.
+tracking_checklist-VRCHAT_SETTINGS = Configure VRChat settings
+tracking_checklist-VRCHAT_SETTINGS-desc = You have misconfigured VRchat Settings! This can impact your tracking experience.
+tracking_checklist-VRCHAT_SETTINGS-open = Go to VRChat Warnings
+tracking_checklist-UNASSIGNED_HMD = VR Headset not assigned to Head
+tracking_checklist-UNASSIGNED_HMD-desc = The VR headset should be assigned as a head tracker.
+tracking_checklist-NETWORK_PROFILE_PUBLIC = Change your network profile
+tracking_checklist-NETWORK_PROFILE_PUBLIC-desc = {$count ->
     [one] Your network profile is currently set to Public ({$adapters}).
           This is not recommended for SlimeVR to function properly.
           <PublicFixLink>See how to fix it here.</PublicFixLink>
@@ -1573,9 +1578,11 @@ flight_list-NETWORK_PROFILE_PUBLIC-desc = {$count ->
             This is not recommended for SlimeVR to function properly.
             <PublicFixLink>See how to fix it here.</PublicFixLink>
 }
-flight_list-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
-flight_list-STAY_ALIGNED_CONFIGURED = Configure Stay Aligned
-flight_list-STAY_ALIGNED_CONFIGURED-desc = Record the stay aligned poses for an improved imu drift
-flight_list-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
+tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
+tracking_checklist-STAY_ALIGNED_CONFIGURED = Configure Stay Aligned
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the stay aligned poses for an improved imu drift
+tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
 
-flight_list-ignore = Ignore
+tracking_checklist-ignore = Ignore
+
+sidebar-preview-mocap_mode_soon = Mocap Mode (Soon™)
