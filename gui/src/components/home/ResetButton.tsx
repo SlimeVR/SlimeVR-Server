@@ -23,6 +23,8 @@ import {
 } from '@/components/commons/icon/ResetIcon';
 import { useStatusContext } from '@/hooks/status-system';
 import classNames from 'classnames';
+import { FootIcon } from '@/components/commons/icon/FootIcon';
+import { FingersIcon } from '@/components/commons/icon/FingersIcon';
 
 export function ResetButton({
   type,
@@ -90,15 +92,17 @@ export function ResetButton({
   const reset = () => {
     const req = new ResetRequestT();
     req.resetType = type;
-    if (bodyPartsToReset === 'default') {
-      // Default (server handles it)
-      req.bodyParts = [];
-    } else if (bodyPartsToReset === 'feet') {
-      // Feet
-      req.bodyParts = feetBodyParts;
-    } else if (bodyPartsToReset === 'fingers') {
-      // Fingers
-      req.bodyParts = fingerBodyParts;
+    switch (bodyPartsToReset) {
+      case 'default':
+        // Server handles it. Usually all body parts except fingers.
+        req.bodyParts = [];
+        break;
+      case 'feet':
+        req.bodyParts = feetBodyParts;
+        break;
+      case 'fingers':
+        req.bodyParts = fingerBodyParts;
+        break;
     }
     sendRPCPacket(RpcMessage.ResetRequest, req);
   };
@@ -144,7 +148,14 @@ export function ResetButton({
       case ResetType.Yaw:
         return <YawResetIcon width={20} />;
       case ResetType.Mounting:
-        return <MountingResetIcon width={20} />;
+        switch (bodyPartsToReset) {
+          case 'default':
+            return <MountingResetIcon width={20} />;
+          case 'feet':
+            return <FootIcon width={30} />;
+          case 'fingers':
+            return <FingersIcon width={20} />;
+        }
     }
     return <FullResetIcon width={20} />;
   };
