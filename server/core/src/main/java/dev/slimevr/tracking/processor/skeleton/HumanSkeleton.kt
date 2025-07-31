@@ -1570,9 +1570,13 @@ class HumanSkeleton(
 		LogManager.info("[HumanSkeleton] Reset: yaw ($resetSourceName)")
 	}
 
+	/**
+	 * if bodyParts is empty, this resets mounting for all trackers.
+	 * Keep in mind TrackerResetsHandler.kt has some logic as well for which trackers get reset (feet)
+	 */
 	@VRServerThread
 	@JvmOverloads
-	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFeetAndFingers) {
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int>) {
 		val trackersToReset = trackersToReset
 
 		// TODO: PLEASE rewrite this handling at some point in the future... This is so
@@ -1596,10 +1600,13 @@ class HumanSkeleton(
 			}
 			referenceRotation = it.getRotation()
 		}
+
+		// If onlyFeet is true, feet will be forced to be mounting reset in their reset handlers.
+		val onlyFeet = bodyParts.isNotEmpty() && bodyParts.all { it == BodyPart.LEFT_FOOT || it == BodyPart.RIGHT_FOOT }
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsMounting
 			if (tracker != null && tracker.needsMounting && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
-				tracker.resetsHandler.resetMounting(referenceRotation)
+				tracker.resetsHandler.resetMounting(referenceRotation, onlyFeet)
 			}
 		}
 		legTweaks.resetBuffer()
