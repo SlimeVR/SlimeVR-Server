@@ -244,6 +244,8 @@ reset-reset_all_warning_default-v2 =
     Êtes-vous sûr de vouloir faire cela ?
 reset-full = Réinitialisation complète
 reset-mounting = Réinitialiser l'alignement
+reset-mounting-feet = Réinitialiser l'alignement des pieds
+reset-mounting-fingers = Réinitialiser l'alignement des doigts
 reset-yaw = Réinitialisation horizontale
 
 ## Serial detection stuff
