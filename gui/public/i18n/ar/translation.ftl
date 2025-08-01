@@ -497,8 +497,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = يمكن أن ي
 settings-general-fk_settings-leg_tweak-toe_snap-description = الانجذاب إلى أصابع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
 settings-general-fk_settings-leg_tweak-foot_plant-description = تثبيت اصبع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
 settings-general-fk_settings-leg_fk = تعقب الساق
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = تمكين إعادة ضبط تركيب القدمين عن طريق المشي على رؤوس الأصابع.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = إعادة تعيين تركيب القدمين
 settings-general-fk_settings-enforce_joint_constraints = حدود الهيكل العظمي
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = فرض القيود
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = منع المفاصل من الدوران إلى ما بعد الحد الأقصى
@@ -637,6 +635,14 @@ settings-general-interface-discord_presence-message =
         [many] كثيرة
        *[other] أخرى
     }
+settings-interface-behavior-error_tracking = جمع الأخطاء عبر Sentry.io
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>هل توافق على جمع بيانات الخطأ مجهولة المصدر؟</h1>
+    
+    <b>نحن لا نجمع معلومات شخصية</b> مثل عنوان IP الخاص بك أو بيانات الاعتماد اللاسلكية. يقدر SlimeVR خصوصيتك!
+    
+    لتوفير أفضل تجربة للمستخدم، نقوم بجمع تقارير الأخطاء ومقاييس الأداء ومعلومات نظام التشغيل مجهولة المصدر. يساعدنا هذا في اكتشاف الأخطاء والمشكلات المتعلقة ب SlimeVR. يتم جمع هذه المقاييس عبر Sentry.io.
+settings-interface-behavior-error_tracking-label = إرسال الأخطاء إلى المطورين
 
 ## Serial settings
 
@@ -659,6 +665,8 @@ settings-serial-get_infos = احصل على معلومات
 settings-serial-serial_select = اختر منفذ تسلسلي
 settings-serial-auto_dropdown_item = تلقائي
 settings-serial-get_wifi_scan = احصل على فحص WiFi
+settings-serial-file_type = نص عادي
+settings-serial-save_logs = حفظ في ملف
 
 ## OSC router settings
 
@@ -688,9 +696,21 @@ settings-osc-router-network-address-placeholder = عنوان آي بي في 4
 ## OSC VRChat settings
 
 settings-osc-vrchat = أجهزة تعقب "في ار تشات أوه أس سي"
+# This cares about multilines
+settings-osc-vrchat-description-v1 =
+    تغيير الإعدادات الخاصة بمعيار أجهزة تعقب OSC  المستخدم لإرسال
+    بيانات التعقب  إلى التطبيقات التي لا تحتوي على SteamVR (مثل Quest المستقل).
+    تأكد من تمكين OSC في VRChat عبر قائمة الإجراءات ضمن OSC > ممكن.
 settings-osc-vrchat-enable = تمكين
 settings-osc-vrchat-enable-description = بتبديل إرسال واستقبال البيانات.
 settings-osc-vrchat-enable-label = تمكين
+settings-osc-vrchat-oscqueryEnabled = تمكين OSCQuery
+settings-osc-vrchat-oscqueryEnabled-description =
+    يكتشف OSCQuery تلقائيا مثيلات VRChat قيد التشغيل ويرسل البيانات إليها.
+    يمكنه أيضا الإعلان عن نفسه لهم من أجل تلقي بيانات HMD ووحدة التحكم.
+    للسماح بتلقي بيانات HMD ووحدة التحكم من VRChat ، انتقل إلى إعدادات القائمة الرئيسية
+    ضمن "التتبع و IK (الحركة العكسية)" وتمكين "السماح بإرسال بيانات OSC لتتبع الرأس والمعصم".
+settings-osc-vrchat-oscqueryEnabled-label = تمكين OSCQuery
 settings-osc-vrchat-network = منافذ الشبكة
 settings-osc-vrchat-network-port_in =
     .label = منفذ الدخول
