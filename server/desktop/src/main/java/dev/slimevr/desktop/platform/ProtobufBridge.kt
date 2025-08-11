@@ -172,14 +172,14 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 						} else if (input.type == InputType.TRIPLE_TAP) {
 							inputBuilder.setType(Input.InputType.TRIPLE_TAP)
 						} else {
+							LogManager.debug("[ProtobufBridge] Unsupported Input, skipping: " + input.type)
+							iterator.remove()
 							continue
 						}
 
 						builder.addInput(inputBuilder.build())
 
 						iterator.remove()
-					} else {
-						// Input side doesn't match controller side
 					}
 				}
 			}
