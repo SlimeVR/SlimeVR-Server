@@ -346,6 +346,7 @@ public class RPCSettingsBuilder {
 		return ResetsSettings
 			.createResetsSettings(
 				fbb,
+				resetsConfig.getResetMountingFeet(),
 				resetsConfig.getMode().getId(),
 				resetsConfig.getYawResetSmoothTime(),
 				resetsConfig.getSaveMountingReset(),

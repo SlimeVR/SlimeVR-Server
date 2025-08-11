@@ -233,6 +233,8 @@ reset-reset_all_warning_default-v2 =
     您确定要执行此操作吗？
 reset-full = 完整重置
 reset-mounting = 重置佩戴
+reset-mounting-feet = 重置脚部佩戴
+reset-mounting-fingers = 重置手指佩戴
 reset-yaw = 重置航向轴
 
 ## Serial detection stuff
@@ -258,6 +260,7 @@ navbar-settings = 设置
 
 bvh-start_recording = 录制 BVH 文件
 bvh-recording = 录制中...
+bvh-save_title = 保存BVH记录
 
 ## Tracking pause
 
@@ -395,6 +398,7 @@ tracker-settings-forget-label = 忘记追踪器
 tracker-settings-update-unavailable = 无法升级（DIY）
 tracker-settings-update-low-battery = 无法更新。当前电池电量低于 50%
 tracker-settings-update-up_to_date = 已是最新
+tracker-settings-update-blocked = 更新不可用。没有其他可用版本
 tracker-settings-update-available = { $versionName } 现在可用
 tracker-settings-update = 立即更新
 tracker-settings-update-title = 固件版本
@@ -573,6 +577,7 @@ settings-stay_aligned-relaxed_poses-sitting = 椅子上放松姿势
 settings-stay_aligned-relaxed_poses-flat = 地面/平躺放松姿势
 settings-stay_aligned-relaxed_poses-save_pose = 保存姿势
 settings-stay_aligned-relaxed_poses-reset_pose = 重置姿势
+settings-stay_aligned-relaxed_poses-close = 关闭
 settings-stay_aligned-debug-label = 调试
 settings-stay_aligned-debug-description = 在报告持续校准相关问题时，请包含您的以下设置信息
 settings-stay_aligned-debug-copy-label = 复制设置信息到剪贴板
@@ -727,6 +732,9 @@ settings-interface-behavior-error_tracking-description_v2 =
     
     为了提供最佳用户体验，我们会收集匿名错误报告、性能指标和操作系统信息。这有助于我们检测 SlimeVR 的错误和问题。这些指标将通过 Sentry.io 收集。
 settings-interface-behavior-error_tracking-label = 向开发人员发送错误信息
+settings-interface-behavior-bvh_directory = BVH记录保存目录
+settings-interface-behavior-bvh_directory-description = 选择保存BVH记录文件的目录
+settings-interface-behavior-bvh_directory-label = BVH记录保存目录
 
 ## Serial settings
 
@@ -997,7 +1005,7 @@ onboarding-connect_tracker-next = 所有的追踪器都连接好了
 
 onboarding-calibration_tutorial = IMU校准教程
 onboarding-calibration_tutorial-subtitle = 这将有助于减少追踪器漂移！
-onboarding-calibration_tutorial-description = 每次开启追踪器时，它们都需要在平坦的表面上放置片刻以进行自校准。你也可以通过点击“{ onboarding-calibration_tutorial-calibrate }”按钮来手动校准， <b>校准过程中不要移动追踪器！</b>
+onboarding-calibration_tutorial-description-v1 = 打开追踪器后，将它们放在稳定的平面上一段时间，以便进行校准。追踪器开机后可随时进行校准 - 本页仅是一个校准教程。首先，点击 “{ onboarding-calibration_tutorial-calibrate }” 按钮，然后 <b>不要移动您的追踪器！</b>
 onboarding-calibration_tutorial-calibrate = 我已经把追踪器放在桌子上了
 onboarding-calibration_tutorial-status-waiting = 等待你的操作
 onboarding-calibration_tutorial-status-calibrating = 校准中
@@ -1301,13 +1309,13 @@ onboarding-stay_aligned-preparation-title = 准备
 onboarding-stay_aligned-preparation-tip = 站直并向前看，双臂放在身体两侧。
 onboarding-stay_aligned-relaxed_poses-standing-title = 站立放松姿势
 onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. 以舒适的姿势站立并放松。
-onboarding-stay_aligned-relaxed_poses-standing-step-2 = 3. 按下“检测姿势”按钮。
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. 按下“保存姿势”按钮。
 onboarding-stay_aligned-relaxed_poses-sitting-title = 椅子上放松姿势
 onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. 以舒适的姿势坐下并放松。
-onboarding-stay_aligned-relaxed_poses-sitting-step-2 = 3. 按下“检测姿势”按钮。
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. 按下“保存姿势”按钮。
 onboarding-stay_aligned-relaxed_poses-flat-title = 地面/平躺放松姿势
 onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. 以舒适的姿势坐或躺在地面上，保持腿在前方并放松。
-onboarding-stay_aligned-relaxed_poses-flat-step-2 = 3. 按下“检测姿势”按钮。
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. 按下“保存姿势”按钮。
 onboarding-stay_aligned-relaxed_poses-skip_step = 跳过
 onboarding-stay_aligned-done-title = 持续校准已开启！
 onboarding-stay_aligned-done-description = 持续校准已设定完成！

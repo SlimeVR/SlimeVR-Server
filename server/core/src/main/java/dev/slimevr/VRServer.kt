@@ -325,7 +325,7 @@ class VRServer @JvmOverloads constructor(
 		queueTask { humanPoseManager.resetTrackersYaw(resetSourceName, bodyParts) }
 	}
 
-	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFeetAndFingers) {
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
 		queueTask { humanPoseManager.resetTrackersMounting(resetSourceName, bodyParts) }
 	}
 

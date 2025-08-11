@@ -1643,12 +1643,12 @@ class HumanSkeleton(
 	@JvmOverloads
 	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
 		var referenceRotation = IDENTITY
-		if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
-			headTracker?.let {
+		headTracker?.let {
+			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
 				// Always reset the head (ifs in resetsHandler)
 				it.resetsHandler.resetFull(referenceRotation)
-				referenceRotation = it.getRotation()
 			}
+			referenceRotation = it.getRotation()
 		}
 
 		// Resets all axes of the trackers with the HMD as reference.
@@ -1674,14 +1674,14 @@ class HumanSkeleton(
 	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
 		// Resets the yaw of the trackers with the head as reference.
 		var referenceRotation = IDENTITY
-		if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
-			headTracker?.let {
+		headTracker?.let {
+			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
 				// Only reset if head needsReset and isn't computed
 				if (it.needsReset && !it.isComputed) {
 					it.resetsHandler.resetYaw(referenceRotation)
 				}
-				referenceRotation = it.getRotation()
 			}
+			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsReset
@@ -1693,9 +1693,13 @@ class HumanSkeleton(
 		LogManager.info("[HumanSkeleton] Reset: yaw ($resetSourceName)")
 	}
 
+	/**
+	 * if bodyParts is empty, this resets mounting for all trackers.
+	 * Keep in mind TrackerResetsHandler.kt has some logic as well for which trackers get reset (feet)
+	 */
 	@VRServerThread
 	@JvmOverloads
-	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int>) {
 		val trackersToReset = trackersToReset
 
 		// TODO: PLEASE rewrite this handling at some point in the future... This is so
@@ -1710,19 +1714,22 @@ class HumanSkeleton(
 
 		// Resets the mounting orientation of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
-		if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
-			headTracker?.let {
+		headTracker?.let {
+			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
 				// Only reset if head needsMounting or is computed but not HMD
 				if (it.needsMounting || (it.isComputed && !it.isHmd)) {
 					it.resetsHandler.resetMounting(referenceRotation)
 				}
-				referenceRotation = it.getRotation()
 			}
+			referenceRotation = it.getRotation()
 		}
+
+		// If onlyFeet is true, feet will be forced to be mounting reset in their reset handlers.
+		val onlyFeet = bodyParts.isNotEmpty() && bodyParts.all { it == BodyPart.LEFT_FOOT || it == BodyPart.RIGHT_FOOT }
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsMounting
 			if (tracker != null && tracker.needsMounting && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
-				tracker.resetsHandler.resetMounting(referenceRotation)
+				tracker.resetsHandler.resetMounting(referenceRotation, onlyFeet)
 			}
 		}
 		legTweaks.resetBuffer()
