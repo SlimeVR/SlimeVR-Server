@@ -2,6 +2,7 @@ package dev.slimevr.tracking.trackers
 
 import dev.slimevr.VRServer
 import dev.slimevr.config.TrackerConfig
+import dev.slimevr.filtering.CircularArrayList
 import dev.slimevr.tracking.processor.stayaligned.trackers.StayAlignedTrackerState
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
@@ -18,7 +19,6 @@ import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
-import kotlin.math.abs
 import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2_000L
@@ -329,7 +329,9 @@ class Tracker @JvmOverloads constructor(
 		stayAligned.update()
 	}
 
-	var count = 0
+	var collect = false
+	var lastAccel = CircularArrayList<Vector3>(8)
+
 	/**
 	 * Tells the tracker that it received new data
 	 */
@@ -342,30 +344,35 @@ class Tracker @JvmOverloads constructor(
 
 		val accel = getAcceleration()
 
-		accelMountHandler.dataTick(accel)
+		if (!collect && lastAccel.isNotEmpty()) {
+			val avgAccel = lastAccel.reduce { a, b ->
+				a + b
+			} / lastAccel.size.toFloat()
 
-		val len = accel.len()
-		if (len >= 8f) {
-			var xyz = ""
-			if (abs(accel.x) >= 8f) {
-				xyz += "X"
+			// If zoomies
+			if (accel.len() - avgAccel.len() > 0.5f) {
+				accelMountHandler = AccelMountHandler()
+				collect = true
 			}
-			if (abs(accel.y) >= 8f) {
-				xyz += "Y"
-			}
-			if (abs(accel.z) >= 8f) {
-				xyz += "Z"
-			}
-			//LogManager.info("[ACCEL] (${accel.x}, ${accel.y}, ${accel.z}) [$len > 8] {$xyz}")
 		}
 
-		if (!isInternal && isImu() && count++ % 100 == 0) {
-			val offset = accelMountHandler.offset
-			LogManager.info("[ACCEL OFF] (${offset.x}, ${offset.y}, ${offset.z})")
+		if (collect) {
+			accelMountHandler.dataTick(accel)
 
-			//if (offset.len() > 10f) {
-				accelMountHandler = AccelMountHandler()
-			//}
+			if (!isInternal && isImu() && accelMountHandler.timer.timeInSeconds > 1f) {
+				val offset = accelMountHandler.offset
+				LogManager.info("[ACCEL OFF] (${offset.x}, ${offset.y}, ${offset.z})")
+
+				// if (offset.len() > 10f) {
+				collect = false
+				// }
+			}
+		} else {
+			// Moving avg accel for rest detection
+			if (lastAccel.size == lastAccel.capacity()) {
+				lastAccel.removeLast()
+			}
+			lastAccel.add(accel)
 		}
 	}
 
