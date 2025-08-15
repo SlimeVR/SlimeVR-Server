@@ -3,7 +3,7 @@ package dev.slimevr.tracking.trackers
 import com.jme3.system.NanoTimer
 import io.github.axisangles.ktmath.Vector3
 
-class AccelMountHandler {
+class AccelAccumulator {
 	var acceleration = Vector3.NULL
 		private set
 	var velocity = Vector3.NULL
@@ -20,6 +20,5 @@ class AccelMountHandler {
 		this.acceleration = acceleration
 		offset += (velocity * deltaTime) + ((acceleration * deltaTime * deltaTime) / 2f)
 		velocity += acceleration * deltaTime
-		// Some other stuff I forgot
 	}
 }
