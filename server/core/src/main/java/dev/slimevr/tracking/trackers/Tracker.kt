@@ -360,8 +360,10 @@ class Tracker @JvmOverloads constructor(
 			accelAccumulator.dataTick(accel)
 
 			if (!isInternal && isImu() && accelAccumulator.timer.timeInSeconds > 2f) {
-				val offset = accelAccumulator.offset
-				LogManager.info("[ACCEL OFF] (${offset.x}, ${offset.y}, ${offset.z})")
+				val offset = Vector3(accelAccumulator.offset.x, 0f, accelAccumulator.offset.z).unit()
+				val pos = Vector3(accelAccumulator.posDir.x, 0f, accelAccumulator.posDir.z).unit()
+				val neg = Vector3(accelAccumulator.negDir.x, 0f, accelAccumulator.negDir.z).unit()
+				LogManager.info("[ACCEL OFF] (${offset.x}, ${offset.z})\n[ACCEL POS] (${pos.x}, ${pos.z})\n[ACCEL NEG] (${neg.x}, ${neg.z})")
 
 				// if (offset.len() > 10f) {
 				collect = false
