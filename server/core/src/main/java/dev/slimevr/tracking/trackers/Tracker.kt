@@ -162,7 +162,7 @@ class Tracker @JvmOverloads constructor(
 
 	val stayAligned = StayAlignedTrackerState(this)
 	val yawResetSmoothing = InterpolationHandler()
-	var accelMountHandler = AccelMountHandler()
+	var accelAccumulator = AccelAccumulator()
 
 	init {
 		// IMPORTANT: Look here for the required states of inputs
@@ -350,17 +350,17 @@ class Tracker @JvmOverloads constructor(
 			} / lastAccel.size.toFloat()
 
 			// If zoomies
-			if (accel.len() - avgAccel.len() > 0.5f) {
-				accelMountHandler = AccelMountHandler()
+			if (accel.len() - avgAccel.len() > 1f) {
+				accelAccumulator = AccelAccumulator()
 				collect = true
 			}
 		}
 
 		if (collect) {
-			accelMountHandler.dataTick(accel)
+			accelAccumulator.dataTick(accel)
 
-			if (!isInternal && isImu() && accelMountHandler.timer.timeInSeconds > 1f) {
-				val offset = accelMountHandler.offset
+			if (!isInternal && isImu() && accelAccumulator.timer.timeInSeconds > 2f) {
+				val offset = accelAccumulator.offset
 				LogManager.info("[ACCEL OFF] (${offset.x}, ${offset.y}, ${offset.z})")
 
 				// if (offset.len() > 10f) {
