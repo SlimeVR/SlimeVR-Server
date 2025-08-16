@@ -12,9 +12,7 @@ class AccelAccumulator {
 	var offset = Vector3.NULL
 		private set
 
-	var posDir = Vector3.NULL
-		private set
-	var negDir = Vector3.NULL
+	var dir = Vector3.NULL
 		private set
 
 	val timer = NanoTimer()
@@ -27,11 +25,7 @@ class AccelAccumulator {
 		offset += (velocity * deltaTime) + ((acceleration * deltaTime * deltaTime) / 2f)
 		velocity += acceleration * deltaTime
 
-		// Collective acceleration and deceleration
-		if (posDir.len() < 0.1f || posDir.angleTo(acceleration) <= 0.15f) {
-			posDir += acceleration.unit()
-		} else {
-			negDir += acceleration.unit()
-		}
+		// Collect velocity direction over time
+		dir += velocity.unit()
 	}
 }
