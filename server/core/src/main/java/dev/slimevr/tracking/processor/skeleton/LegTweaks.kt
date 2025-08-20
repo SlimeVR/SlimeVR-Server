@@ -1006,12 +1006,10 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	}
 
 	// remove the x and z components of the given quaternion
-	private fun isolateYaw(quaternion: Quaternion): Quaternion = Quaternion(
-		quaternion.w,
-		0f,
-		quaternion.y,
-		0f,
-	)
+	private fun isolateYaw(quaternion: Quaternion): Quaternion {
+		val eul = quaternion.toEulerAngles(EulerOrder.YZX)
+		return EulerAngles(EulerOrder.YZX, 0f, eul.y, 0f).toQuaternion()
+	}
 
 	// return a quaternion that has been rotated by the new pitch amount
 	private fun replacePitch(quaternion: Quaternion, newPitch: Float): Quaternion {
