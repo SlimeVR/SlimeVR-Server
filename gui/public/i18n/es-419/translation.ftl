@@ -7,8 +7,8 @@
 
 ## Websocket (server) status
 
-websocket-connecting = Conectando al servidor
-websocket-connection_lost = Conexión al servidor perdida. Intentando reconectar...
+websocket-connecting = Cargando...
+websocket-connection_lost = ¡El servidor falló!
 websocket-connection_lost-desc = Parece que el servidor de SlimeVR ha dejado de funcionar. Revise los registros y reinicie el programa.
 websocket-timedout = No se ha podido conectar al servidor.
 websocket-timedout-desc = Parece que el servidor de SlimeVR ha dejado de funcionar o se agotó el tiempo de espera de la conexión. Revise los registros y reinicie el programa
@@ -609,8 +609,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = El clip del suel
 settings-general-fk_settings-leg_tweak-toe_snap-description = El encajado de dedos intenta adivinar la rotación de los pies si sus respectivos trackers no están en uso.
 settings-general-fk_settings-leg_tweak-foot_plant-description = El plantado del pie rota los pies para que sean paralelos con el suelo al entrar en contacto.
 settings-general-fk_settings-leg_fk = Tracking de piernas
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Activar reinicio de montura para el pie mediante el pararse de puntillas.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Reinicio de montura de pies
 settings-general-fk_settings-enforce_joint_constraints = Límites esqueléticos
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Imponer restricciones
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que las articulaciones giren más allá de su límite
@@ -1018,7 +1016,6 @@ onboarding-connect_tracker-next = He conectado todos mis sensores
 
 onboarding-calibration_tutorial = Tutorial de calibración de IMU
 onboarding-calibration_tutorial-subtitle = ¡Esto te ayudara a reducir la desviación del tracker!
-onboarding-calibration_tutorial-description = Cada vez que enciendes tus trackers, van a necesitar descansar un ratito en una superficie plana para calibrarse. Tratemos de hacer lo mismo presionando el botón «{ onboarding-calibration_tutorial-calibrate }», <b>¡No los muevas!</b>
 onboarding-calibration_tutorial-calibrate = Puse los sensores en una mesa.
 onboarding-calibration_tutorial-status-waiting = Esperando por ti
 onboarding-calibration_tutorial-status-calibrating = Calibrando

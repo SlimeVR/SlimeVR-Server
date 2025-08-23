@@ -239,6 +239,8 @@ reset-reset_all_warning_default-v2 =
     確定要繼續嗎？
 reset-full = 完整重置
 reset-mounting = 配戴重置
+reset-mounting-feet = 重置腳部配戴
+reset-mounting-fingers = 重置手指配戴
 reset-yaw = 左右偏擺重置
 
 ## Serial detection stuff
@@ -264,6 +266,7 @@ navbar-settings = 詳細設定
 
 bvh-start_recording = 錄製 BVH 檔案
 bvh-recording = 錄製中…
+bvh-save_title = 儲存 BVH 紀錄
 
 ## Tracking pause
 
@@ -401,6 +404,7 @@ tracker-settings-forget-label = 忘記追蹤器
 tracker-settings-update-unavailable = 無法更新 (DIY)
 tracker-settings-update-low-battery = 無法更新，電池電量低於 50%
 tracker-settings-update-up_to_date = 已為最新版本
+tracker-settings-update-blocked = 無法更新，沒有其他可用版本。
 tracker-settings-update-available = 版本 { $versionName } 可供更新
 tracker-settings-update = 立即更新
 tracker-settings-update-title = 韌體版本
@@ -604,8 +608,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制功�
 settings-general-fk_settings-leg_tweak-toe_snap-description = 腳趾跟地功能在沒有腳部的追蹤器時，會嘗試猜測腳掌的旋轉角度。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 腳底貼地功能會在腳底與地面接觸時，將腳部旋轉成與地板平行。
 settings-general-fk_settings-leg_fk = 腿部追蹤
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = 開啟腳部配戴重置，進行配戴重置時需要踮起腳尖。
-settings-general-fk_settings-leg_fk-reset_mounting_feet = 腳部配戴重置
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 使用普通的重置配戴時，一併重置腳部配戴。
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = 強制重置腳部配戴
 settings-general-fk_settings-enforce_joint_constraints = 骨架限制
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 約束關節旋轉
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免關節旋轉超出極限
@@ -734,6 +738,9 @@ settings-interface-behavior-error_tracking-description_v2 =
     
     為了提供最佳的使用者體驗，我們會蒐集匿名化的錯誤報告、性能指標和作業系統資訊，這會對我們檢測 SlimeVR 的錯誤和問題有所幫助。我們會透過 Sentry.io 來蒐集這些指標。
 settings-interface-behavior-error_tracking-label = 向開發者傳送錯誤資訊
+settings-interface-behavior-bvh_directory = BVH 紀錄儲存目錄
+settings-interface-behavior-bvh_directory-description = 選擇儲存 BVH 紀錄文件的目錄，如此每次錄製 BVH 時不需要選擇儲存位置。
+settings-interface-behavior-bvh_directory-label = 存放 BVH 紀錄的目錄
 
 ## Serial settings
 
@@ -879,8 +886,8 @@ settings-utils-advanced-reset_warning-cancel = 取消
 settings-utils-advanced-open_data-v1 = 設定資料夾
 settings-utils-advanced-open_data-description-v1 = 在檔案管理器中開啟 SlimeVR 的設定資料夾，該資料夾包含程式的設定。
 settings-utils-advanced-open_data-label = 打開資料夾
-settings-utils-advanced-open_logs = 記錄檔資料夾
-settings-utils-advanced-open_logs-description = 在檔案管理器中開啟 SlimeVR 的記錄檔資料夾，該資料夾包含程式的記錄檔。
+settings-utils-advanced-open_logs = 紀錄檔資料夾
+settings-utils-advanced-open_logs-description = 在檔案管理器中開啟 SlimeVR 的紀錄檔資料夾，該資料夾包含程式的紀錄檔。
 settings-utils-advanced-open_logs-label = 打開資料夾
 
 ## Setup/onboarding menu
@@ -1000,7 +1007,7 @@ onboarding-connect_tracker-next = 所有的追蹤器都連接好了
 
 onboarding-calibration_tutorial = IMU 校正教學
 onboarding-calibration_tutorial-subtitle = 進行這項操作可以有效減少追蹤器發生飄移的機會
-onboarding-calibration_tutorial-description = 每次在打開追蹤器的開關時，需要將追蹤器平置一下來進行自動校正。你也可以透過按下「{ onboarding-calibration_tutorial-calibrate }」按鈕來進行手動校正，<b>校正過程中請勿移動追蹤器</b>。
+onboarding-calibration_tutorial-description-v1 = 開啟追蹤器開關後，將其放置在穩定的平面上一段時間以便進行校正。本頁僅提供操作教學——追蹤器電源開啟後即可隨時進行校正，無須回到本頁進行。首先請點選「{ onboarding-calibration_tutorial-calibrate }」按鈕，然後<b>不要移動追蹤器！</b>
 onboarding-calibration_tutorial-calibrate = 追蹤器已經放置在桌上了
 onboarding-calibration_tutorial-status-waiting = 正在等待你完成動作
 onboarding-calibration_tutorial-status-calibrating = 校正中
