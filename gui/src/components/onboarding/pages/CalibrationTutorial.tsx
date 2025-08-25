@@ -9,7 +9,7 @@ import { useCountdown } from '@/hooks/countdown';
 import classNames from 'classnames';
 import { TaybolIcon } from '@/components/commons/icon/TaybolIcon';
 import { useRestCalibrationTrackers } from '@/hooks/imu-logic';
-import { averageVector, Vector3FromVec3fT } from '@/maths/vector3';
+import { Vector3FromVec3fT } from '@/maths/vector3';
 import { Vector3 } from 'three';
 import { useTimeout } from '@/hooks/timeout';
 import { useAtomValue } from 'jotai';
@@ -37,7 +37,10 @@ export function CalibrationTutorialPage() {
   const [settled, setSettled] = useState(false);
   const { timer, isCounting, startCountdown, abortCountdown } = useCountdown({
     duration: settled ? IMU_CALIBRATION_TIME : IMU_SETTLE_TIME,
-    onCountdownEnd: () => settled ? setCalibrationStatus(CalibrationStatus.SUCCESS) : setSettled(true),
+    onCountdownEnd: () =>
+      settled
+        ? setCalibrationStatus(CalibrationStatus.SUCCESS)
+        : setSettled(true),
   });
   useTimeout(() => setSkipButton(true), 10000);
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
@@ -56,7 +59,7 @@ export function CalibrationTutorialPage() {
         return false;
 
       const trackerId = x.device.id.id;
-//        x.tracker.trackerId.trackerNum + (x.tracker.trackerId.deviceId.id << 8);
+      //        x.tracker.trackerId.trackerNum + (x.tracker.trackerId.deviceId.id << 8);
       const lastValue = lastValueMap.current.get(trackerId) ?? new Vector3();
       lastValueMap.current.set(trackerId, lastValue);
 
