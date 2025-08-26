@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 
@@ -59,13 +59,13 @@ jobs:
       BUILD_ARCH: ${{ endsWith(matrix.os, 'arm') && 'aarch64' || 'amd64' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 
       - if: startsWith(matrix.os, 'ubuntu')
         name: Set up Linux dependencies
-        uses: awalsh128/cache-apt-pkgs-action@v1.5.1
+        uses: awalsh128/cache-apt-pkgs-action@v1.5.3
         with:
           packages: libgtk-3-dev webkit2gtk-4.1 libappindicator3-dev librsvg2-dev patchelf
           # Increment to invalidate the cache

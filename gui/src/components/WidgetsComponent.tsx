@@ -55,7 +55,6 @@ export function WidgetsComponent() {
         <ResetButton type={ResetType.Yaw} size="big"></ResetButton>
         <ResetButton type={ResetType.Full} size="big"></ResetButton>
         <ResetButton type={ResetType.Mounting} size="big"></ResetButton>
-        <ClearMountingButton></ClearMountingButton>
         <ResetButton
           type={ResetType.Mounting}
           size="big"
@@ -66,6 +65,7 @@ export function WidgetsComponent() {
           size="big"
           bodyPartsToReset="fingers"
         ></ResetButton>
+        <ClearMountingButton></ClearMountingButton>
         {(typeof __ANDROID__ === 'undefined' || !__ANDROID__?.isThere()) && (
           <BVHButton></BVHButton>
         )}
