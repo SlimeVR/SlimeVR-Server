@@ -95,3 +95,49 @@ export const trackerFromIdAtom = ({
     (a) => a,
     isEqual
   );
+
+export const FEET_BODY_PARTS = [BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT];
+export const FINGER_BODY_PARTS = new Set([
+  BodyPart.LEFT_THUMB_METACARPAL,
+  BodyPart.LEFT_THUMB_PROXIMAL,
+  BodyPart.LEFT_THUMB_DISTAL,
+  BodyPart.LEFT_INDEX_PROXIMAL,
+  BodyPart.LEFT_INDEX_INTERMEDIATE,
+  BodyPart.LEFT_INDEX_DISTAL,
+  BodyPart.LEFT_MIDDLE_PROXIMAL,
+  BodyPart.LEFT_MIDDLE_INTERMEDIATE,
+  BodyPart.LEFT_MIDDLE_DISTAL,
+  BodyPart.LEFT_RING_PROXIMAL,
+  BodyPart.LEFT_RING_INTERMEDIATE,
+  BodyPart.LEFT_RING_DISTAL,
+  BodyPart.LEFT_LITTLE_PROXIMAL,
+  BodyPart.LEFT_LITTLE_INTERMEDIATE,
+  BodyPart.LEFT_LITTLE_DISTAL,
+  BodyPart.RIGHT_THUMB_METACARPAL,
+  BodyPart.RIGHT_THUMB_PROXIMAL,
+  BodyPart.RIGHT_THUMB_DISTAL,
+  BodyPart.RIGHT_INDEX_PROXIMAL,
+  BodyPart.RIGHT_INDEX_INTERMEDIATE,
+  BodyPart.RIGHT_INDEX_DISTAL,
+  BodyPart.RIGHT_MIDDLE_PROXIMAL,
+  BodyPart.RIGHT_MIDDLE_INTERMEDIATE,
+  BodyPart.RIGHT_MIDDLE_DISTAL,
+  BodyPart.RIGHT_RING_PROXIMAL,
+  BodyPart.RIGHT_RING_INTERMEDIATE,
+  BodyPart.RIGHT_RING_DISTAL,
+  BodyPart.RIGHT_LITTLE_PROXIMAL,
+  BodyPart.RIGHT_LITTLE_INTERMEDIATE,
+  BodyPart.RIGHT_LITTLE_DISTAL,
+]);
+
+export const fingerAssignedTrackers = atom((get) =>
+  get(assignedTrackersAtom).some(
+    (t) => t.tracker.info?.bodyPart && FINGER_BODY_PARTS.has(t.tracker.info.bodyPart)
+  )
+);
+
+export const feetAssignedTrackers = atom((get) =>
+  get(assignedTrackersAtom).some(
+    (t) => t.tracker.info?.bodyPart && FEET_BODY_PARTS.includes(t.tracker.info.bodyPart)
+  )
+);
