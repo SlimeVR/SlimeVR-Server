@@ -3,7 +3,10 @@ package dev.slimevr.android.tracking.trackers.hid
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.hardware.usb.UsbConstants
 import android.hardware.usb.UsbDevice
+import android.hardware.usb.UsbEndpoint
+import android.hardware.usb.UsbInterface
 import android.hardware.usb.UsbManager
 import com.jme3.math.FastMath
 import dev.slimevr.VRServer
@@ -20,14 +23,13 @@ import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import io.github.axisangles.ktmath.Vector3
 import java.nio.ByteBuffer
 import java.util.function.Consumer
-import kotlin.experimental.and
 import kotlin.math.*
 
 private const val HID_TRACKER_RECEIVER_VID = 0x1209
 private const val HID_TRACKER_RECEIVER_PID = 0x7690
 
 private const val PACKET_SIZE = 16
-const val ACTION_USB_PERMISSION = "dev.slimevr.android.USB_PERMISSION"
+const val ACTION_USB_PERMISSION = "dev.slimevr.USB_PERMISSION"
 
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
@@ -218,6 +220,53 @@ class TrackersHID(
 			}
 		}
 
+	/**
+	 * Find the HID interface.
+	 *
+	 * @return
+	 * Return the HID interface if found, otherwise null.
+	 */
+	private fun findHidInterface(usbDevice: UsbDevice): UsbInterface? {
+		val interfaceCount: Int = usbDevice.interfaceCount
+
+		for (interfaceIndex in 0 until interfaceCount) {
+			val usbInterface = usbDevice.getInterface(interfaceIndex)
+
+			if (usbInterface.interfaceClass == UsbConstants.USB_CLASS_HID) {
+				return usbInterface
+			}
+		}
+
+		return null
+	}
+
+	/**
+	 * Find the HID endpoints.
+	 *
+	 * @return
+	 * Return the HID endpoints if found, otherwise null.
+	 */
+	private fun findHidIO(usbInterface: UsbInterface): Pair<UsbEndpoint?, UsbEndpoint?> {
+		val endpointCount: Int = usbInterface.endpointCount
+
+		var usbEndpointIn: UsbEndpoint? = null
+		var usbEndpointOut: UsbEndpoint? = null
+
+		for (endpointIndex in 0 until endpointCount) {
+			val usbEndpoint = usbInterface.getEndpoint(endpointIndex)
+
+			if (usbEndpoint.type == UsbConstants.USB_ENDPOINT_XFER_INT) {
+				if (usbEndpoint.direction == UsbConstants.USB_DIR_OUT) {
+					usbEndpointOut = usbEndpoint
+				} else {
+					usbEndpointIn = usbEndpoint
+				}
+			}
+		}
+
+		return Pair(usbEndpointIn, usbEndpointOut)
+	}
+
 	private fun dataRead() {
 		synchronized(devicesByHID) {
 			var devicesPresent = false
@@ -229,19 +278,33 @@ class TrackersHID(
 				// TODO: Implement actual USB HID read from an opened UsbDeviceConnection
 				// This requires the device to be successfully opened in proceedWithDeviceConfiguration
 				// and the UsbDeviceConnection stored, likely in your HIDDevice wrapper class.
-				val dataReceived = ByteArray(0) // Placeholder
+
+				val dataReceived = ByteArray(64)
+				var dataRead = 0
+
+				findHidInterface(hidDevice)?.also { intf ->
+					findHidIO(intf).first?.also { endpointIn ->
+						usbManager.openDevice(hidDevice)?.apply {
+							claimInterface(intf, true)
+							dataRead = bulkTransfer(endpointIn, dataReceived, dataReceived.size, 0)
+							releaseInterface(intf)
+						}
+					}
+				}
+
+				// LogManager.info("[TrackerServer] HID data read ($dataRead bytes): ${dataReceived.contentToString()}")
 
 				devicesPresent = true // Even if the device has no data
-				if (dataReceived.isNotEmpty()) {
+				if (dataRead > 0) {
 					// Process data
 					// The data is always received as 64 bytes, this check no longer works
-					if (dataReceived.size % PACKET_SIZE != 0) {
+					if (dataRead % PACKET_SIZE != 0) {
 						LogManager.info("[TrackerServer] Malformed HID packet, ignoring")
 						continue // Don't continue with this data
 					}
 					devicesDataReceived = true // Data is received and is valid (not malformed)
 					lastDataByHID[hidDevice] = 0 // reset last data received
-					val packetCount = dataReceived.size / PACKET_SIZE
+					val packetCount = dataRead / PACKET_SIZE
 					var i = 0
 					while (i < packetCount * PACKET_SIZE) {
 						// Common packet data
