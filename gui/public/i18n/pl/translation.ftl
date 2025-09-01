@@ -268,6 +268,7 @@ navbar-settings = Ustawienia
 
 bvh-start_recording = Nagraj BVH
 bvh-recording = Nagrywanie...
+bvh-save_title = Zapisz nagranie BVH
 
 ## Tracking pause
 
@@ -308,6 +309,7 @@ widget-imu_visualizer-rotation_raw = Raw
 widget-imu_visualizer-rotation_preview = Podgląd
 widget-imu_visualizer-acceleration = Akceleracja
 widget-imu_visualizer-position = Pozycja
+widget-imu_visualizer-stay_aligned = Wyrównywanie
 
 ## Widget: Skeleton Visualizer
 
@@ -335,6 +337,7 @@ tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Akceleracja X/Y/Z
 tracker-table-column-rotation = Rotacja X/Y/Z
 tracker-table-column-position = Pozycja X/Y/Z
+tracker-table-column-stay_aligned = Wyrównywanie
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -403,6 +406,7 @@ tracker-settings-forget-label = Zapomnij o trackerze
 tracker-settings-update-unavailable = Nie można zaktualizować (zrób to sam)
 tracker-settings-update-low-battery = Nie można zaktualizować. Bateria poniżej 50%
 tracker-settings-update-up_to_date = Aktualny
+tracker-settings-update-blocked = Aktualizacja niedostępna. Brak innych wersji
 tracker-settings-update-available = Wersja { $versionName } jest już dostępna
 tracker-settings-update = Zaktualizuj teraz
 tracker-settings-update-title = Wersja oprogramowania
@@ -472,6 +476,7 @@ mounting_selection_menu-close = Zamknij
 settings-sidebar-title = Ustawienia
 settings-sidebar-general = Ogólne
 settings-sidebar-tracker_mechanics = Mechanika trackerów
+settings-sidebar-stay_aligned = Wyrównywanie
 settings-sidebar-fk_settings = Ustawienia śledzenia
 settings-sidebar-gesture_control = Sterowanie gestami
 settings-sidebar-interface = Interfejs
@@ -481,7 +486,9 @@ settings-sidebar-utils = Narzędzia
 settings-sidebar-serial = Konsola szeregowa
 settings-sidebar-appearance = Wygląd
 settings-sidebar-notifications = Powiadomienia
+settings-sidebar-behavior = Zachowanie
 settings-sidebar-firmware-tool = Narzędzie do oprogramowania sprzętowego DIY
+settings-sidebar-vrc_warnings = Ostrzeżenia dotyczące konfiguracji VRChat
 settings-sidebar-advanced = Zaawansowany
 
 ## SteamVR settings
@@ -563,6 +570,25 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Wykorzystuje magnetometr we wszystkich trackerach, które mają kompatybilne oprogramowanie sprzętowe, redukując dryf w stabilnych środowiskach magnetycznych.¶
     Można wyłączyć dla każdego modułu śledzącego w ustawieniach modułu śledzącego. <b>Proszę nie wyłączać żadnego modułu śledzącego podczas przełączania!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Użyj magnetometru na trackerach
+settings-stay_aligned = Wyrównywanie
+settings-stay_aligned-description = Wyrównywanie zmniejsza efekt driftu, stopniowo dostosowując trackery do twoich zrelaksowanych póz.
+settings-stay_aligned-setup-label = Konfiguracja Opcji Wyrównywania
+settings-stay_aligned-setup-description = Musisz ukończyć konfigurację, aby włączyć opcję Wyrównywania.
+settings-stay_aligned-warnings-drift_compensation = ⚠ Wyłącz kompensację Driftu, będzie ona kolidować z opcją Wyrównywania!
+settings-stay_aligned-enabled-label = Dostosuj trackery
+settings-stay_aligned-hide_yaw_correction-label = Ukryj dopasowanie (do porównania bez opcji Wyrównywania)
+settings-stay_aligned-general-label = Ogólne
+settings-stay_aligned-relaxed_poses-label = Zrelaksowane pozy
+settings-stay_aligned-relaxed_poses-description = Opcja Wyrównywania wykorzystuje Twoje zrelaksowane pozy, aby utrzymać trackery w jednej linii. Użyj opcji "Konfiguracja Opcji Wyrównywania", aby zaktualizować te pozy.
+settings-stay_aligned-relaxed_poses-standing = Dostosuj trackery w pozycji stojącej
+settings-stay_aligned-relaxed_poses-sitting = Dostosuj trackery, siedząc na krześle
+settings-stay_aligned-relaxed_poses-flat = Dostosuj trackery, siedząc na podłodze lub leżąc na plecach
+settings-stay_aligned-relaxed_poses-save_pose = Zapisz pozę
+settings-stay_aligned-relaxed_poses-reset_pose = Zresetuj Pozycję
+settings-stay_aligned-relaxed_poses-close = Zamknij
+settings-stay_aligned-debug-label = Debugowanie
+settings-stay_aligned-debug-description = Proszę dołączać ustawienia, podczas zgłaszania problemów z opcją Wyrównywania.
+settings-stay_aligned-debug-copy-label = Skopiuj ustawienia do schowka
 
 ## FK/Tracking settings
 
@@ -725,6 +751,9 @@ settings-interface-behavior-error_tracking-description_v2 =
     
     Aby zapewnić jak najlepsze wrażenia użytkownika, gromadzimy anonimowe raporty o błędach, wskaźniki wydajności i informacje o systemie operacyjnym. Pomaga nam to wykrywać błędy i problemy ze SlimeVR. Dane te są zbierane za pomocą Sentry.io.
 settings-interface-behavior-error_tracking-label = Wysyłanie błędów do deweloperów
+settings-interface-behavior-bvh_directory = Ścieżka do zapisywania nagrań BVH
+settings-interface-behavior-bvh_directory-description = Wybierz ścieżkę domyślną, w której chcesz zapisywać nagrania BVH.
+settings-interface-behavior-bvh_directory-label = Ścieżka do nagrań BVH
 
 ## Serial settings
 
@@ -788,6 +817,7 @@ settings-osc-vrchat-description-v1 =
 settings-osc-vrchat-enable = Zezwól
 settings-osc-vrchat-enable-description = Zezwól na wysyłanie i odbieranie danych.
 settings-osc-vrchat-enable-label = Zezwól
+settings-osc-vrchat-oscqueryEnabled = Włącz OSCQuery
 settings-osc-vrchat-oscqueryEnabled-description =
     OSCQuery automatycznie wykrywa uruchomione instancje VRChat i wysyła im dane.
     Może również reklamować się do nich w celu otrzymania danych HMD i administratora.
@@ -994,7 +1024,7 @@ onboarding-connect_tracker-next = Połączyłem już wszystkie trackery
 
 onboarding-calibration_tutorial = Samouczek kalibracji IMU
 onboarding-calibration_tutorial-subtitle = Pomoże to ograniczyć dryf trackera!
-onboarding-calibration_tutorial-description = Za każdym razem, gdy włączasz trackery, muszą one chwilę polerzeć na płaskiej powierzchni, aby się skalibrować. Zróbmy to samo, klikając przycisk „Kalibruj”, <b>nie ruszaj ich!</b>
+onboarding-calibration_tutorial-description-v1 = Po włączeniu trackerów umieść je na chwilę na stabilnej powierzchni, aby umożliwić kalibrację. Kalibrację można przeprowadzić w dowolnym momencie po włączeniu trackerów - ta strona zawiera po prostu samouczek. Aby rozpocząć, kliknij przycisk "{ onboarding-calibration_tutorial-calibrate }", a następnie <b>nie ruszaj swoich trackerów!</b>
 onboarding-calibration_tutorial-calibrate = Położyłem trackery na stole
 onboarding-calibration_tutorial-status-waiting = Czekam na Ciebie
 onboarding-calibration_tutorial-status-calibrating = Kalibracja
@@ -1165,6 +1195,9 @@ onboarding-automatic_mounting-mounting_reset-title = Kalibracja Pozycji
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Zrób pozycje "na Małysza" z wygiętymi nogami, tułowiem pochylonym do przodu z wygiętymi rękami.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Naciśnij "Zresetuj Położenie" i poczekaj 3 sekundy zanim trackery się zresetują.
 onboarding-automatic_mounting-preparation-title = Przygotowania
+onboarding-automatic_mounting-preparation-v2-step-0 = 1. Naciśnij przycisk "Pełny reset".
+onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stań prosto z rękami po bokach. Upewnij się, że patrzysz przed siebie.
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. Utrzymaj pozycję, aż skończy się 3-sekundowy timer.
 onboarding-automatic_mounting-put_trackers_on-title = Załóż trackery
 onboarding-automatic_mounting-put_trackers_on-description = Aby skalibrować rotacje, użyjemy trackerów które przypisano przed chwilą. Załóż wszystkie trackery, możesz je odróznić na postaci po prawej.
 onboarding-automatic_mounting-put_trackers_on-next = Wszystkie trackery założone
@@ -1298,6 +1331,37 @@ onboarding-scaled_proportions-done-description = Proporcje Twojego ciała powinn
 
 ## Stay Aligned setup
 
+onboarding-stay_aligned-title = Wyrównywanie
+onboarding-stay_aligned-description = Skonfiguruj opcję Wyrównywania, aby Twoje trackery były wyrównane.
+onboarding-stay_aligned-put_trackers_on-title = Załóż trackery
+onboarding-stay_aligned-put_trackers_on-description = Aby skalibrować proporcje, użyjemy trackerów które przed chwilą przypisałeś. Załóż wszystkie trackery, będziesz widział który to który na postaci po prawej.
+onboarding-stay_aligned-put_trackers_on-trackers_warning = Masz mniej niż 5 trackerów aktualnie podłączonych i przypisanych! Jest to minimalna liczba elementów śledzących wymaganych do prawidłowego działania opcji Wyrównywania.
+onboarding-stay_aligned-put_trackers_on-next = Mam wszystkie trackery założone
+onboarding-stay_aligned-verify_mounting-title = Sprawdź swój montaż
+onboarding-stay_aligned-verify_mounting-step-0 = Opcja Wyrównywania wymaga stabilnego mocowania trackera. W innym przypadku będziesz miał złe rezultaty.
+onboarding-stay_aligned-verify_mounting-step-1 = 1. Poruszaj się podczas stania.
+onboarding-stay_aligned-verify_mounting-step-2 = 2. Usiądź i poruszaj nogami i stopami.
+onboarding-stay_aligned-verify_mounting-step-3 = 3. Jeśli Twoje trackery nie znajdują się we właściwym miejscu, naciśnij "Ponów kalibrację montażu".
+onboarding-stay_aligned-verify_mounting-redo_mounting = Ponów kalibrację montażu
+onboarding-stay_aligned-preparation-title = Przygotowania
+onboarding-stay_aligned-preparation-tip = Upewnij się, że stoisz prosto. Patrz przed siebie z rękami opuszczonymi po bokach.
+onboarding-stay_aligned-relaxed_poses-standing-title = Zrelaksowana pozycja stojąca
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stań w wygodnej pozycji. Zrelaksuj się!
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Naciśnij przycisk "Zapisz pozę".
+onboarding-stay_aligned-relaxed_poses-sitting-title = Zrelaksowana pozycja siedząca na krześle
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Usiądź w wygodnej pozycji. Zrelaksuj się!
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Naciśnij przycisk "Zapisz pozę".
+onboarding-stay_aligned-relaxed_poses-flat-title = Zrelaksowana pozycja siedząca na podłodze
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Usiądź na podłodze z nogami wysuniętymi do przodu. Zrelaksuj się!
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Naciśnij przycisk "Zapisz pozę".
+onboarding-stay_aligned-relaxed_poses-skip_step = Pomiń
+onboarding-stay_aligned-done-title = Wyrównywanie Włączone!
+onboarding-stay_aligned-done-description = Konfiguracja Wyrównywania jest zakończona!
+onboarding-stay_aligned-done-description-2 = Konfiguracja została zakończona! Możesz ponownie uruchomić proces, jeśli chcesz ponownie skalibrować pozy.
+onboarding-stay_aligned-previous_step = Poprzednie
+onboarding-stay_aligned-next_step = Następne
+onboarding-stay_aligned-restart = Restart
+onboarding-stay_aligned-done = Gotowy
 
 ## Home
 
@@ -1322,6 +1386,12 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = Tracker { $trackerName } ma błąd.
 status_system-StatusUnassignedHMD = Headset powinien być przypisany do śledzenia głowy.
+status_system-StatusPublicNetwork =
+    { $count ->
+        [one] Twoja karta sieciowa jest ustawiona jako publiczna: { $adapters }. Nie jest to zalecane, aby SlimeVR działał poprawnie. <PublicFixLink>Zobacz, jak to naprawić tutaj.</PublicFixLink>
+        [few] Niektóre karty sieciowe są ustawione jako publiczne: { $adapters }. Nie jest to zalecane, aby SlimeVR działał poprawnie. <PublicFixLink>Zobacz, jak to naprawić tutaj.</PublicFixLink>
+       *[many] Dużo twoich karty sieciowych jest ustawionych jako publiczne: { $adapters }. Nie jest to zalecane, aby SlimeVR działał poprawnie. <PublicFixLink>Zobacz, jak to naprawić tutaj.</PublicFixLink>
+    }
 
 ## Firmware tool globals
 
@@ -1423,6 +1493,7 @@ firmware_tool-build_step = Building
 firmware_tool-build_step-description = Trwa tworzenie oprogramowania sprzętowego. Proszę czekać
 firmware_tool-flashing_step = Flashing
 firmware_tool-flashing_step-description = Twoje trackery migają. Postępuj zgodnie z instrukcjami wyświetlanymi na ekranie
+firmware_tool-flashing_step-warning-v2 = Nie odłączaj ani nie wyłączaj trackera podczas procesu przesyłania, chyba że zostaniesz o to poproszony, może to spowodować, że twoje urządzenie stanie się bezużyteczne.
 firmware_tool-flashing_step-flash_more = Flashuj więcej trackerów
 firmware_tool-flashing_step-exit = Wyjście
 
@@ -1440,6 +1511,7 @@ firmware_tool-build-ERROR = Nie można zbudować oprogramowania sprzętowego
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = Pobieranie oprogramowania sprzętowego
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Wyłącz i ponownie włącz swój tracker
 firmware_update-status-AUTHENTICATING = Uwierzytelnianie za pomocą MCU
 firmware_update-status-UPLOADING = Przesyłanie oprogramowania sprzętowego
 firmware_update-status-SYNCING_WITH_MCU = Synchronizacja z MCU
@@ -1510,6 +1582,9 @@ vrc_config-show_more = Pokaż więcej
 vrc_config-setting_name = Nazwa ustawienia VRChat
 vrc_config-recommended_value = Zalecana wartość
 vrc_config-current_value = Bieżąca wartość
+vrc_config-mute = Wycisz Ostrzeżenie
+vrc_config-mute-btn = Wycisz
+vrc_config-unmute-btn = Odcisz
 vrc_config-legacy_mode = Korzystanie ze starszego rozwiązywania kinematyki odwrotnej
 vrc_config-disable_shoulder_tracking = Wyłącz śledzenie ramienia
 vrc_config-shoulder_width_compensation = Kompensacja szerokości barku

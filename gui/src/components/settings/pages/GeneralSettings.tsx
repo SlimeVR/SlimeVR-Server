@@ -868,7 +868,7 @@ export function GeneralSettings() {
             <div className="flex flex-col pt-2 pb-3">
               <Typography color="secondary">
                 {l10n.getString(
-                  'settings-general-fk_settings-leg_fk-reset_mounting_feet-description'
+                  'settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1'
                 )}
               </Typography>
             </div>
@@ -879,7 +879,7 @@ export function GeneralSettings() {
                 control={control}
                 name="resetsSettings.resetMountingFeet"
                 label={l10n.getString(
-                  'settings-general-fk_settings-leg_fk-reset_mounting_feet'
+                  'settings-general-fk_settings-leg_fk-reset_mounting_feet-v1'
                 )}
               />
             </div>

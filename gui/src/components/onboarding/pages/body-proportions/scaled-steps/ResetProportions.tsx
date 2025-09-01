@@ -1,8 +1,8 @@
-import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
-import { useLocalization } from '@fluent/react';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { useLocalization } from '@fluent/react';
+import { RpcMessage, SkeletonResetAllRequestT } from 'solarxr-protocol';
 
 export function ResetProportionsStep({
   nextStep,
@@ -30,6 +30,36 @@ export function ResetProportionsStep({
               'onboarding-scaled_proportions-reset_proportion-description'
             )}
           </Typography>
+          <div>
+            <Typography color="secondary">
+              {l10n.getString(
+                'onboarding-scaled_proportions-reset_proportion-description'
+              )}
+            </Typography>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <div className="flex gap-3 mobile:justify-between">
+            <Button
+              variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
+              onClick={prevStep}
+            >
+              {l10n.getString('onboarding-automatic_proportions-prev_step')}
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                sendRPCPacket(
+                  RpcMessage.SkeletonResetAllRequest,
+                  new SkeletonResetAllRequestT()
+                );
+                nextStep();
+              }}
+            >
+              {l10n.getString('reset-reset_all')}
+            </Button>
+          </div>
         </div>
       </div>
 

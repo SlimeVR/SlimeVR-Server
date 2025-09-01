@@ -237,6 +237,8 @@ reset-reset_all_warning_default-v2 =
 
 reset-full = Full Reset
 reset-mounting = Reset Mounting
+reset-mounting-feet = Reset Feet Mounting
+reset-mounting-fingers = Reset Fingers Mounting
 reset-yaw = Yaw Reset
 
 ## Serial detection stuff
@@ -274,7 +276,7 @@ widget-overlay-is_mirrored_label = Display Overlay as Mirror
 widget-drift_compensation-clear = Clear drift compensation
 
 ## Widget: Clear Reset Mounting
-widget-clear_mounting = Clear reset mounting
+widget-clear_mounting = Clear Reset Mounting
 
 ## Widget: Developer settings
 widget-developer_mode = Developer Mode
@@ -584,8 +586,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can r
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if foot trackers are not in use.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotates your feet to be parallel to the ground when in contact.
 settings-general-fk_settings-leg_fk = Leg tracking
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Enable feet Mounting Reset by tiptoeing.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Feet Mounting Reset
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Force feet mounting reset during general mounting resets.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Force feet mounting reset
 settings-general-fk_settings-enforce_joint_constraints = Skeletal Limits
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Enforce constraints
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Prevents joints from rotating past their limit

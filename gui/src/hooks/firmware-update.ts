@@ -1,10 +1,8 @@
 import { BoardType, DeviceDataT } from 'solarxr-protocol';
+import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
 import semver from 'semver';
 import { hostname, locale, platform, version } from '@tauri-apps/plugin-os';
 import { cacheWrap } from './cache';
-
-type DeployDataJson = Map<string, string>;
-type DeployData = Map<number, Date>;
 
 export interface FirmwareRelease {
   name: string;
@@ -26,49 +24,49 @@ const hash = (str: string) => {
   return (hash >>> 0) / 2 ** 32;
 };
 
-const uniqueUserKey = `${await hostname()}-${await locale()}-${platform()}-${version()}`;
-
 const firstAsset = (assets: any[], name: string) =>
   assets.find((asset: any) => asset.name === name && asset.browser_download_url);
 
-const processDeployData = (sortedMap: [string, string][]) => {
-  const deployData: DeployData = new Map();
-  let minTime = 0;
-  for (const [percent, date] of sortedMap) {
-    const d = new Date(date);
-    if (d.getTime() <= minTime) return null; // Dates in the wrong order / cancel
-    minTime = d.getTime();
-    deployData.set(parseFloat(percent), new Date(date));
-  }
-  return deployData;
-};
-
-const checkUserCanUpdate = async (deployAssetUrl: string) => {
-  if (!deployAssetUrl) return false;
-  const deployDataJson: DeployData | null = await fetch(deployAssetUrl)
-    .then((res) => res.json())
-    .catch(() => null);
-  if (!deployDataJson) return false;
-
-  const deployDataMap = new Map(
-    Object.entries(deployDataJson)
-  ) as unknown as DeployDataJson;
-  const sortedMap = [...deployDataMap].sort(
-    ([a], [b]) => parseFloat(b) - parseFloat(a)
+const checkUserCanUpdate = async (url: string, fwVersion: string) => {
+  if (!url) return true;
+  const deployDataJson = JSON.parse(
+    (await cacheWrap(
+      `firmware-${fwVersion}-deploy`,
+      () =>
+        tauriFetch(url)
+          .then((res) => res.text())
+          .catch(() => null),
+      60 * 60 * 1000
+    )) || 'null'
   );
+  if (!deployDataJson) return true;
 
-  if (sortedMap.keys().find((key) => key > 1 || key <= 0)) return false; // values outside boundaries / cancel
+  const deployData = (
+    Object.entries(deployDataJson).map(([key, val]) => {
+      return [parseFloat(key), new Date(val as string)];
+    }) as [number, Date][]
+  ).sort(([a], [b]) => a - b);
 
-  const deployData = processDeployData(sortedMap);
-  if (!deployData) return false;
+  if (deployData.find(([key]) => key > 1 || key <= 0)) return false; // values outside boundaries / cancel
 
-  const todayUpdateRange = deployData
-    .entries()
-    .find(([, date]) => Date.now() >= date.getTime())?.[0];
+  if (
+    deployData.find(
+      ([, date], index) =>
+        index > 0 && date.getTime() < deployData[index - 1][1].getTime()
+    )
+  )
+    return false; // Dates in the wrong order / cancel
+
+  const todayUpdateRange = deployData.find(([, date], index) => {
+    if (index === 0 && Date.now() < date.getTime()) return true;
+    return Date.now() >= date.getTime();
+  })?.[0];
+
   if (!todayUpdateRange) return false;
 
+  const uniqueUserKey = `${await hostname()}-${await locale()}-${platform()}-${version()}`;
   // Make it so the hash change every version. Prevent the same user from getting the same delay
-  return hash(`${uniqueUserKey}-${version}`) <= todayUpdateRange;
+  return hash(`${uniqueUserKey}-${fwVersion}`) <= todayUpdateRange;
 };
 
 export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | null> {
@@ -87,7 +85,6 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
   const processedReleses = [];
   for (const release of releases) {
     const fwAsset = firstAsset(release.assets, 'BOARD_SLIMEVR-firmware.bin');
-    const deployAsset = firstAsset(release.assets, 'deploy.json');
     if (!release.assets || !fwAsset /* || release.prerelease */) continue;
 
     let version = release.tag_name;
@@ -95,15 +92,16 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
       version = version.substring(1);
     }
 
-    const userCanUpdate = !deployAsset
-      ? true
-      : await checkUserCanUpdate(deployAsset?.browser_download_url);
-
+    const deployAsset = firstAsset(release.assets, 'deploy.json');
+    const userCanUpdate = await checkUserCanUpdate(
+      deployAsset?.browser_download_url,
+      version
+    );
     processedReleses.push({
       name: release.name,
       version,
       changelog: release.body,
-      firmwareFile: fwAsset,
+      firmwareFile: fwAsset.browser_download_url,
       userCanUpdate,
     });
 
