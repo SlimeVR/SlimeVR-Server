@@ -470,6 +470,18 @@ export function InterfaceSettings() {
                   value={'snep'}
                   colors="!bg-snep"
                 />
+                <ThemeSelector
+                  control={control}
+                  name="appearance.theme"
+                  value={'custom-bright'}
+                  colors="!bg-custom-bright"
+                />
+                <ThemeSelector
+                  control={control}
+                  name="appearance.theme"
+                  value={'custom-dark'}
+                  colors="!bg-custom-dark"
+                />
               </div>
             </div>
 
