@@ -41,11 +41,9 @@ const checkUserCanUpdate = async (url: string, fwVersion: string) => {
   );
   if (!deployDataJson) return true;
 
-  const deployData = (
-    Object.entries(deployDataJson).map(([key, val]) => {
-      return [parseFloat(key), new Date(val as string)];
-    }) as [number, Date][]
-  ).sort(([a], [b]) => a - b);
+  const deployData = Object.entries(deployDataJson)
+    .map<[number, Date]>(([key, val]) => [parseFloat(key), new Date(val as string)])
+    .sort(([a], [b]) => a - b);
 
   if (deployData.find(([key]) => key > 1 || key <= 0)) return false; // values outside boundaries / cancel
 

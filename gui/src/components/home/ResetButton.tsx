@@ -127,18 +127,21 @@ export function ResetButton({
     switch (type) {
       case ResetType.Yaw:
         return l10n.getString(
-          'reset-yaw' +
-            (bodyPartsToReset !== 'default' ? '-' + bodyPartsToReset : '')
+          `reset-yaw${
+            bodyPartsToReset !== 'default' ? `-${bodyPartsToReset}` : ''
+          }`
         );
       case ResetType.Mounting:
         return l10n.getString(
-          'reset-mounting' +
-            (bodyPartsToReset !== 'default' ? '-' + bodyPartsToReset : '')
+          `reset-mounting${
+            bodyPartsToReset !== 'default' ? `-${bodyPartsToReset}` : ''
+          }`
         );
       case ResetType.Full:
         return l10n.getString(
-          'reset-full' +
-            (bodyPartsToReset !== 'default' ? '-' + bodyPartsToReset : '')
+          `reset-full${
+            bodyPartsToReset !== 'default' ? `-${bodyPartsToReset}` : ''
+          }`
         );
     }
   }, [type, bodyPartsToReset]);
@@ -149,12 +152,13 @@ export function ResetButton({
         return <YawResetIcon width={20} />;
       case ResetType.Mounting:
         switch (bodyPartsToReset) {
-          case 'default':
-            return <MountingResetIcon width={20} />;
           case 'feet':
             return <FootIcon width={30} />;
           case 'fingers':
             return <FingersIcon width={20} />;
+          case 'default':
+          default:
+            return <MountingResetIcon width={20} />;
         }
       case ResetType.Full:
         return <FullResetIcon width={20} />;

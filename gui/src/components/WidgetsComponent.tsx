@@ -52,20 +52,20 @@ export function WidgetsComponent() {
   return (
     <>
       <div className="grid grid-cols-2 gap-2 w-full [&>*:nth-child(odd):last-of-type]:col-span-full">
-        <ResetButton type={ResetType.Yaw} size="big"></ResetButton>
-        <ResetButton type={ResetType.Full} size="big"></ResetButton>
-        <ResetButton type={ResetType.Mounting} size="big"></ResetButton>
+        <ResetButton type={ResetType.Yaw} size="big" />
+        <ResetButton type={ResetType.Full} size="big" />
+        <ResetButton type={ResetType.Mounting} size="big" />
         <ResetButton
           type={ResetType.Mounting}
           size="big"
           bodyPartsToReset="feet"
-        ></ResetButton>
+        />
         <ResetButton
           type={ResetType.Mounting}
           size="big"
           bodyPartsToReset="fingers"
-        ></ResetButton>
-        <ClearMountingButton></ClearMountingButton>
+        />
+        <ClearMountingButton />
         {(typeof __ANDROID__ === 'undefined' || !__ANDROID__?.isThere()) && (
           <BVHButton />
         )}
