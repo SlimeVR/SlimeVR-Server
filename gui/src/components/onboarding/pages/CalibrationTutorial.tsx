@@ -53,13 +53,11 @@ export function CalibrationTutorialPage() {
       if (
         x.device?.id?.id === undefined ||
         x.tracker.trackerId?.trackerNum === undefined ||
-        x.tracker.trackerId.deviceId?.id === undefined ||
         !x.tracker.linearAcceleration
       )
         return false;
 
-      const trackerId = x.device.id.id;
-      //        x.tracker.trackerId.trackerNum + (x.tracker.trackerId.deviceId.id << 8);
+      const trackerId = x.tracker.trackerId.trackerNum + (x.device.id.id << 8);
       const lastValue = lastValueMap.current.get(trackerId) ?? new Vector3();
       lastValueMap.current.set(trackerId, lastValue);
 
@@ -90,7 +88,7 @@ export function CalibrationTutorialPage() {
     }
 
     setRested(settled || restCalibrationTrackers.length === 0);
-  }, [restCalibrationTrackers]);
+  }, [restCalibrationTrackers, settled, isCounting]);
 
   useEffect(() => {
     if (calibrationStatus === CalibrationStatus.CALIBRATING && !rested) {
