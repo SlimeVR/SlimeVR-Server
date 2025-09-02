@@ -31,7 +31,7 @@ class TrackersHID(
 	private val devices: MutableList<HIDDevice> = mutableListOf()
 	private val devicesBySerial: MutableMap<String, MutableList<Int>> = HashMap()
 	private val devicesByHID: MutableMap<UsbDevice, MutableList<Int>> = HashMap()
-	private val devicesByConn: MutableMap<UsbDevice, UsbDeviceHID> = HashMap()
+	private val connByHID: MutableMap<UsbDevice, UsbDeviceHID> = HashMap()
 	private val lastDataByHID: MutableMap<UsbDevice, Int> = HashMap()
 	private val usbManager: UsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
 
@@ -51,8 +51,12 @@ class TrackersHID(
 
 	private fun proceedWithDeviceConfiguration(hidDevice: UsbDevice) {
 		// This is the original logic from checkConfigureDevice after permission is confirmed
-		// TODO: Open UsbDeviceConnection here
 		LogManager.info("[TrackerServer] USB Permission granted for ${hidDevice.deviceName}. Proceeding with configuration.")
+
+		// Close any existing connection (do we still have one?)
+		this.connByHID[hidDevice]?.close()
+		// Open new HID connection with USB device
+		this.connByHID[hidDevice] = UsbDeviceHID(hidDevice, usbManager)
 
 		val serial = hidDevice.serialNumber ?: "Unknown USB Device ${hidDevice.deviceId}"
 		this.devicesBySerial[serial]?.let {
@@ -74,11 +78,6 @@ class TrackersHID(
 		this.devicesByHID[hidDevice] = list
 		this.lastDataByHID[hidDevice] = 0 // initialize last data received
 		LogManager.info("[TrackerServer] (Probably) Compatible HID device detected: $serial")
-
-		// Close any existing connection (do we still have one?)
-		this.devicesByConn[hidDevice]?.close()
-		// Open new HID connection with USB device
-		this.devicesByConn[hidDevice] = UsbDeviceHID(hidDevice, usbManager)
 	}
 
 	fun checkConfigureDevice(usbDevice: UsbDevice) {
@@ -112,8 +111,14 @@ class TrackersHID(
 					}
 				}
 			}
+
 			this.devicesByHID.remove(hidDevice)
-			LogManager.info("[TrackerServer] Linked HID device removed: ${hidDevice.serialNumber}")
+
+			val oldConn = this.connByHID.remove(hidDevice)
+			val serial = oldConn?.serialNumber ?: "Unknown"
+			oldConn?.close()
+
+			LogManager.info("[TrackerServer] Linked HID device removed: $serial")
 		}
 	}
 
@@ -188,7 +193,7 @@ class TrackersHID(
 			val m = intArrayOf(0, 0, 0)
 			for ((hidDevice, deviceList) in devicesByHID) {
 				val dataReceived = ByteArray(64)
-				val conn = devicesByConn[hidDevice]!!
+				val conn = connByHID[hidDevice]!!
 				val dataRead = conn.deviceConnection.bulkTransfer(conn.endpointIn, dataReceived, dataReceived.size, 0)
 
 				// LogManager.info("[TrackerServer] HID data read ($dataRead bytes): ${dataReceived.contentToString()}")
@@ -261,9 +266,7 @@ class TrackersHID(
 				// a receiver sends keep-alive data at 10 packets/s
 				if (lastDataByHID[device]!! > 100) { // try to reopen device if no data was received recently (about >100ms)
 					LogManager.info("[TrackerServer] Reopening device ${device.serialNumber} after no data received")
-					// TODO Try to re-check permission or re-open. For now, just logging.
-					//  Re-calling checkConfigureDevice might be an option if it's safe
-					//  to do so (e.g., doesn't create duplicate entries).
+					checkConfigureDevice(device)
 				}
 			}
 			hidDeviceList.removeAll(devicesByHID.keys) // addList

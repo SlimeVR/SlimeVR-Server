@@ -10,6 +10,11 @@ import java.io.Closeable
 
 class UsbDeviceHID(hidDevice: UsbDevice, usbManager: UsbManager) : Closeable {
 
+	val deviceName = hidDevice.deviceName
+	val serialNumber = hidDevice.serialNumber
+	val manufacturerName = hidDevice.manufacturerName
+	val productName = hidDevice.productName
+
 	val hidInterface: UsbInterface
 
 	val endpointIn: UsbEndpoint
