@@ -3,10 +3,7 @@ package dev.slimevr.android.tracking.trackers.hid
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.hardware.usb.UsbConstants
 import android.hardware.usb.UsbDevice
-import android.hardware.usb.UsbEndpoint
-import android.hardware.usb.UsbInterface
 import android.hardware.usb.UsbManager
 import dev.slimevr.VRServer
 import dev.slimevr.tracking.trackers.Device
@@ -34,6 +31,7 @@ class TrackersHID(
 	private val devices: MutableList<HIDDevice> = mutableListOf()
 	private val devicesBySerial: MutableMap<String, MutableList<Int>> = HashMap()
 	private val devicesByHID: MutableMap<UsbDevice, MutableList<Int>> = HashMap()
+	private val devicesByConn: MutableMap<UsbDevice, UsbDeviceHID> = HashMap()
 	private val lastDataByHID: MutableMap<UsbDevice, Int> = HashMap()
 	private val usbManager: UsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
 
@@ -76,7 +74,11 @@ class TrackersHID(
 		this.devicesByHID[hidDevice] = list
 		this.lastDataByHID[hidDevice] = 0 // initialize last data received
 		LogManager.info("[TrackerServer] (Probably) Compatible HID device detected: $serial")
-		// Actual opening of the device and interface claiming should happen here or in HIDDevice class
+
+		// Close any existing connection (do we still have one?)
+		this.devicesByConn[hidDevice]?.close()
+		// Open new HID connection with USB device
+		this.devicesByConn[hidDevice] = UsbDeviceHID(hidDevice, usbManager)
 	}
 
 	fun checkConfigureDevice(usbDevice: UsbDevice) {
@@ -177,53 +179,6 @@ class TrackersHID(
 			}
 		}
 
-	/**
-	 * Find the HID interface.
-	 *
-	 * @return
-	 * Return the HID interface if found, otherwise null.
-	 */
-	private fun findHidInterface(usbDevice: UsbDevice): UsbInterface? {
-		val interfaceCount: Int = usbDevice.interfaceCount
-
-		for (interfaceIndex in 0 until interfaceCount) {
-			val usbInterface = usbDevice.getInterface(interfaceIndex)
-
-			if (usbInterface.interfaceClass == UsbConstants.USB_CLASS_HID) {
-				return usbInterface
-			}
-		}
-
-		return null
-	}
-
-	/**
-	 * Find the HID endpoints.
-	 *
-	 * @return
-	 * Return the HID endpoints if found, otherwise null.
-	 */
-	private fun findHidIO(usbInterface: UsbInterface): Pair<UsbEndpoint?, UsbEndpoint?> {
-		val endpointCount: Int = usbInterface.endpointCount
-
-		var usbEndpointIn: UsbEndpoint? = null
-		var usbEndpointOut: UsbEndpoint? = null
-
-		for (endpointIndex in 0 until endpointCount) {
-			val usbEndpoint = usbInterface.getEndpoint(endpointIndex)
-
-			if (usbEndpoint.type == UsbConstants.USB_ENDPOINT_XFER_INT) {
-				if (usbEndpoint.direction == UsbConstants.USB_DIR_OUT) {
-					usbEndpointOut = usbEndpoint
-				} else {
-					usbEndpointIn = usbEndpoint
-				}
-			}
-		}
-
-		return Pair(usbEndpointIn, usbEndpointOut)
-	}
-
 	private fun dataRead() {
 		synchronized(devicesByHID) {
 			var devicesPresent = false
@@ -232,22 +187,9 @@ class TrackersHID(
 			val a = intArrayOf(0, 0, 0)
 			val m = intArrayOf(0, 0, 0)
 			for ((hidDevice, deviceList) in devicesByHID) {
-				// TODO: Implement actual USB HID read from an opened UsbDeviceConnection
-				// This requires the device to be successfully opened in proceedWithDeviceConfiguration
-				// and the UsbDeviceConnection stored, likely in your HIDDevice wrapper class.
-
 				val dataReceived = ByteArray(64)
-				var dataRead = 0
-
-				findHidInterface(hidDevice)?.also { intf ->
-					findHidIO(intf).first?.also { endpointIn ->
-						usbManager.openDevice(hidDevice)?.apply {
-							claimInterface(intf, true)
-							dataRead = bulkTransfer(endpointIn, dataReceived, dataReceived.size, 0)
-							releaseInterface(intf)
-						}
-					}
-				}
+				val conn = devicesByConn[hidDevice]!!
+				val dataRead = conn.deviceConnection.bulkTransfer(conn.endpointIn, dataReceived, dataReceived.size, 0)
 
 				// LogManager.info("[TrackerServer] HID data read ($dataRead bytes): ${dataReceived.contentToString()}")
 
