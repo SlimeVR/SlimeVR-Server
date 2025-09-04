@@ -25,7 +25,7 @@ const val ACTION_USB_PERMISSION = "dev.slimevr.USB_PERMISSION"
 /**
  * Handles Android USB Host HID dongles and receives tracker data from them.
  */
-class AndroidHIDService(
+class AndroidHIDManager(
 	name: String,
 	private val trackersConsumer: Consumer<Tracker>,
 	private val context: Context,

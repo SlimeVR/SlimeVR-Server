@@ -24,7 +24,7 @@ import java.util.function.Consumer
 /**
  * Handles desktop USB HID dongles and receives tracker data from them.
  */
-class DesktopHIDService(name: String, private val trackersConsumer: Consumer<Tracker>) :
+class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tracker>) :
 	Thread(name),
 	HidServicesListener {
 	private val devices: MutableList<HIDDevice> = mutableListOf()

@@ -13,7 +13,7 @@ import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketRpcBridge
 import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
 import dev.slimevr.desktop.serial.DesktopSerialHandler
-import dev.slimevr.desktop.tracking.trackers.hid.DesktopHIDService
+import dev.slimevr.desktop.tracking.trackers.hid.DesktopHIDManager
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.OperatingSystem
 import io.eiren.util.collections.FastList
@@ -132,7 +132,7 @@ fun main(args: Array<String>) {
 		NetworkProfileChecker(vrServer)
 
 		// Start service for USB HID trackers
-		DesktopHIDService(
+		DesktopHIDManager(
 			"Sensors HID service",
 		) { tracker: Tracker -> vrServer.registerTracker(tracker) }
 
