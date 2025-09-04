@@ -63,10 +63,16 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		override fun onReceive(context: Context, intent: Intent) {
 			when (intent.action) {
 				UsbManager.ACTION_USB_DEVICE_ATTACHED -> {
+					// Maybe use device from `UsbManager.EXTRA_DEVICE`? Would make
+					//  me feel better, but honestly this is just easier and probably
+					//  doesn't actually matter.
 					detectNewPorts()
 				}
 
 				UsbManager.ACTION_USB_DEVICE_DETACHED -> {
+					// Might be able to use `UsbManager.EXTRA_DEVICE` like device attached
+					//  event comment, though the device properties may no longer be available
+					//  when this event is fired. This should be checked before proceeding.
 					detectNewPorts()
 				}
 
