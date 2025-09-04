@@ -37,7 +37,7 @@ class AndroidHIDManager(
 	private val lastDataByHID: MutableMap<UsbDevice, Int> = HashMap()
 	private val usbManager: UsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
 
-	var usbReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+	val usbReceiver: BroadcastReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context, intent: Intent) {
 			when (intent.action) {
 				UsbManager.ACTION_USB_DEVICE_ATTACHED -> {
