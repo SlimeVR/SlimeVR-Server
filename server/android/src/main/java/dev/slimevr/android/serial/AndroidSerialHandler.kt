@@ -1,10 +1,13 @@
 package dev.slimevr.android.serial
 
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.hardware.usb.UsbManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.hoho.android.usbserial.driver.UsbSerialDriver
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
@@ -15,10 +18,8 @@ import io.eiren.util.logging.LogManager
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
-import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Stream
-import kotlin.concurrent.timerTask
 import kotlin.streams.asSequence
 import kotlin.streams.asStream
 import dev.slimevr.serial.SerialPort as SlimeSerialPort
@@ -43,8 +44,6 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 	private var usbIoManager: SerialInputOutputManager? = null
 
 	private val listeners: MutableList<SerialListener> = CopyOnWriteArrayList()
-	private val getDevicesTimer = Timer("GetDevicesTimer")
-	private var watchingNewDevices = false
 	private var lastKnownPorts = setOf<SerialPortWrapper>()
 	private val manager = activity.getSystemService(Context.USB_SERVICE) as UsbManager
 	private var currentPort: SerialPortWrapper? = null
@@ -60,37 +59,54 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 			.filter { isKnownBoard(it) }
 			.asStream()
 
+	val usbReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+		override fun onReceive(context: Context, intent: Intent) {
+			when (intent.action) {
+				UsbManager.ACTION_USB_DEVICE_ATTACHED -> {
+					detectNewPorts()
+				}
+
+				UsbManager.ACTION_USB_DEVICE_DETACHED -> {
+					detectNewPorts()
+				}
+
+				ACTION_USB_PERMISSION -> {
+					// TODO: We can probably receive this event in the server to avoid
+					//  polling, but for now we can just ignore it. (Note: This event is
+					//  not currently registered, so it will never fire.)
+				}
+			}
+		}
+	}
+
 	init {
-		startWatchingNewDevices()
+		val intentFilter = IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED)
+		intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED)
+
+		// Listen for USB device attach/detach
+		ContextCompat.registerReceiver(
+			activity,
+			usbReceiver,
+			intentFilter,
+			ContextCompat.RECEIVER_NOT_EXPORTED,
+		)
+
+		// Detect initial serial ports
+		detectNewPorts()
 	}
 
 	private fun getPorts(): List<UsbSerialDriver> = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
-
-	private fun startWatchingNewDevices() {
-		if (watchingNewDevices) return
-		watchingNewDevices = true
-		getDevicesTimer.scheduleAtFixedRate(
-			timerTask {
-				try {
-					detectNewPorts()
-				} catch (t: Throwable) {
-					LogManager.severe(
-						"[SerialHandler] Error while watching for new devices, cancelling the \"getDevicesTimer\".",
-						t,
-					)
-					getDevicesTimer.cancel()
-				}
-			},
-			0,
-			3000,
-		)
-	}
 
 	private fun onNewDevice(port: SerialPortWrapper) {
 		listeners.forEach { it.onNewSerialDevice(port) }
 	}
 
 	private fun onDeviceDel(port: SerialPortWrapper) {
+		// Remove permission request on disconnect so reconnecting re-requests
+		if (requestingPermission == port.portLocation) {
+			requestingPermission = ""
+		}
+
 		listeners.forEach { it.onSerialDeviceDeleted(port) }
 	}
 
@@ -224,6 +240,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 			usbIoManager?.stop()
 			usbIoManager = null
 			currentPort = null
+			requestingPermission = ""
 		} catch (e: Exception) {
 			LogManager.warning(
 				"[SerialHandler] Error closing port ${currentPort?.descriptivePortName}",
