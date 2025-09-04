@@ -75,6 +75,7 @@ value class EulerAngles(val order: EulerOrder, val x: Float, val y: Float, val z
 
 	// temp, replace with direct conversion later
 	// fun toMatrix(): Matrix3 = this.toQuaternion().toMatrix()
+
 	/**
 	 * creates a matrix which represents the same rotation as this eulerAngles
 	 * @return the matrix

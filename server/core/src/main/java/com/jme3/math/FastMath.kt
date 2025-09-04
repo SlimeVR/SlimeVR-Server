@@ -455,13 +455,17 @@ object FastMath {
 		val det13 = m21 * m33 - m23 * m31
 		val det23 = m22 * m33 - m23 * m32
 		return (
-			m00 * (m11 * det23 - m12 * det13 + m13 * det12) -
+			m00 *
+				(m11 * det23 - m12 * det13 + m13 * det12) -
 				m01
-				* (m10 * det23 - m12 * det03 + m13 * det02) +
+				*
+				(m10 * det23 - m12 * det03 + m13 * det02) +
 				m02
-				* (m10 * det13 - m11 * det03 + m13 * det01) -
+				*
+				(m10 * det13 - m11 * det03 + m13 * det01) -
 				m03
-				* (m10 * det12 - m11 * det02 + m12 * det01)
+				*
+				(m10 * det12 - m11 * det02 + m12 * det01)
 			).toFloat()
 	}
 
@@ -606,7 +610,7 @@ object FastMath {
 	 *
 	 * Source:
 	 * [
- * http://www.fox-toolkit.org/ftp/fasthalffloatconversion.pdf](http://www.fox-toolkit.org/ftp/fasthalffloatconversion.pdf)<br></br>
+	 * http://www.fox-toolkit.org/ftp/fasthalffloatconversion.pdf](http://www.fox-toolkit.org/ftp/fasthalffloatconversion.pdf)<br></br>
 	 * **broken link**
 	 *
 	 * @param half The half floating point value as a short.

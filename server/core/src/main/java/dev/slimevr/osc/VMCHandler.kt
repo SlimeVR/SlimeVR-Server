@@ -428,8 +428,7 @@ class VMCHandler(
 						val role = tracker.trackerPosition
 						address = if (role == TrackerPosition.HEAD) {
 							"/VMC/Ext/Hmd/Pos"
-						} else if (role == TrackerPosition.LEFT_HAND || role == TrackerPosition.RIGHT_HAND
-						) {
+						} else if (role == TrackerPosition.LEFT_HAND || role == TrackerPosition.RIGHT_HAND) {
 							"/VMC/Ext/Con/Pos"
 						} else {
 							"/VMC/Ext/Tra/Pos"

@@ -68,7 +68,8 @@ class DesktopVRCConfigHandler : VRCConfigHandler() {
 		get() = (
 			OperatingSystem.currentPlatform == OperatingSystem.WINDOWS ||
 				OperatingSystem.currentPlatform == OperatingSystem.LINUX
-			) && vrcConfigKeys.isNotEmpty()
+			) &&
+			vrcConfigKeys.isNotEmpty()
 
 	override fun initHandler(onChange: (config: VRCConfigValues) -> Unit) {
 		this.onChange = onChange

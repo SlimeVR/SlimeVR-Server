@@ -404,8 +404,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val tracker = api.server.getTrackerById(req.trackerId().unpack()) ?: return
 
 		val pos = getByBodyPart(req.bodyPosition())
-		val previousTracker = if (pos != null
-		) {
+		val previousTracker = if (pos != null) {
 			getTrackerForSkeleton(api.server.allTrackers, pos)
 		} else {
 			null
