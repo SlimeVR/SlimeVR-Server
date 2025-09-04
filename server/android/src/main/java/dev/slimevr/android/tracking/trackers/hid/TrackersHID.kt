@@ -239,15 +239,6 @@ class TrackersHID(
 				removeDevice(device)
 			}
 
-			// Quickly reattaching a device may not be detected, so always try to open existing devices
-			for (device in devicesByHID.keys) {
-				// a receiver sends keep-alive data at 10 packets/s
-				if (lastDataByHID[device]!! > 100) { // try to reopen device if no data was received recently (about >100ms)
-					LogManager.info("[TrackerServer] Reopening device ${device.serialNumber} after no data received")
-					checkConfigureDevice(device, requestPermission)
-				}
-			}
-
 			hidDeviceList.removeAll(devicesByHID.keys) // addList
 			for (device in hidDeviceList) {
 				// This will handle permission check/request
