@@ -16,13 +16,13 @@ export function PreparationStep({
     <div className="flex flex-col flex-grow justify-between py-2 gap-2">
       <div className="flex flex-col gap-1">
         <Localized id="onboarding-automatic_mounting-preparation-v2-step-0">
-          <Typography color="secondary"></Typography>
+          <Typography color="secondary" />
         </Localized>
         <Localized id="onboarding-automatic_mounting-preparation-v2-step-1">
-          <Typography color="secondary"></Typography>
+          <Typography color="secondary" />
         </Localized>
         <Localized id="onboarding-automatic_mounting-preparation-v2-step-2">
-          <Typography color="secondary"></Typography>
+          <Typography color="secondary" />
         </Localized>
       </div>
       <Localized id="onboarding-stay_aligned-preparation-tip">
@@ -30,18 +30,18 @@ export function PreparationStep({
       </Localized>
       <div className="grid grid-cols-3 py-4 gap-2">
         <div className="flex flex-col bg-background-60 rounded-md relative">
-          <CheckIcon className="md:w-20 sm:w-10 w-6 h-auto absolute top-2 right-2 fill-status-success"></CheckIcon>
+          <CheckIcon className="md:w-20 sm:w-10 w-6 h-auto absolute top-2 right-2 fill-status-success" />
           <img src="/images/reset/FullResetPose.webp" alt="Reset position" />
         </div>
         <div className="flex flex-col bg-background-60 rounded-md relative">
-          <CheckIcon className="md:w-20 sm:w-10 w-6 h-auto absolute top-2 right-2 fill-status-success"></CheckIcon>
+          <CheckIcon className="md:w-20 sm:w-10 w-6 h-auto absolute top-2 right-2 fill-status-success" />
           <img
             src="/images/reset/FullResetPoseSide.webp"
             alt="Reset position side"
           />
         </div>
         <div className="flex flex-col bg-background-60 rounded-md relative">
-          <CrossIcon className="md:w-20 sm:w-10 w-6 h-auto absolute top-2 right-2 fill-status-critical"></CrossIcon>
+          <CrossIcon className="md:w-20 sm:w-10 w-6 h-auto absolute top-2 right-2 fill-status-critical" />
           <img
             src="/images/reset/FullResetPoseWrong.webp"
             alt="Reset position wrong"
@@ -50,14 +50,10 @@ export function PreparationStep({
       </div>
       <div className="flex gap-3 justify-between">
         <Localized id="onboarding-stay_aligned-previous_step">
-          <Button variant={'secondary'} onClick={prevStep}></Button>
+          <Button variant={'secondary'} onClick={prevStep} />
         </Localized>
 
-        <ResetButton
-          size="small"
-          type={ResetType.Full}
-          onReseted={nextStep}
-        ></ResetButton>
+        <ResetButton size="small" type={ResetType.Full} onReseted={nextStep} />
       </div>
     </div>
   );

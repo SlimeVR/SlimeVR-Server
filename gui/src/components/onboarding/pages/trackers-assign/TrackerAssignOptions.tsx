@@ -21,13 +21,13 @@ const ASSIGN_MODE_OPTIONS = [
   {} as Record<AssignMode, number>
 );
 
-const ItemContent = ({
+function ItemContent({
   mode,
   trackersCount,
 }: {
   mode: string;
   trackersCount: number;
-}) => {
+}) {
   const { l10n } = useLocalization();
 
   return (
@@ -51,7 +51,7 @@ const ItemContent = ({
       </div>
     </>
   );
-};
+}
 
 export function TrackerAssignOptions({
   variant = 'radio',
@@ -99,32 +99,31 @@ export function TrackerAssignOptions({
           ([mode, trackersCount]) => ({
             component: (
               <div className="flex flex-row gap-2 py-1 text-left">
-                <ItemContent
-                  mode={mode}
-                  trackersCount={trackersCount}
-                ></ItemContent>
+                <ItemContent mode={mode} trackersCount={trackersCount} />
               </div>
             ),
             value: mode,
           })
         )}
-      ></Dropdown>
+      />
     );
 
-  return Object.entries(ASSIGN_MODE_OPTIONS).map(([mode, trackersCount]) => (
-    <Radio
-      key={mode}
-      name="assignMode"
-      control={control}
-      value={mode}
-      disabled={
-        connectedIMUTrackers.length > trackersCount && mode !== AssignMode.All
-      }
-      className="hidden"
-    >
-      <div className="flex flex-row md:gap-4 gap-2">
-        <ItemContent mode={mode} trackersCount={trackersCount}></ItemContent>
-      </div>
-    </Radio>
-  ));
+  return (Object.entries(ASSIGN_MODE_OPTIONS) as [AssignMode, number][]).map(
+    ([mode, trackersCount]) => (
+      <Radio
+        key={mode}
+        name="assignMode"
+        control={control}
+        value={mode}
+        disabled={
+          connectedIMUTrackers.length > trackersCount && mode !== AssignMode.All
+        }
+        className="hidden"
+      >
+        <div className="flex flex-row md:gap-4 gap-2">
+          <ItemContent mode={mode} trackersCount={trackersCount} />
+        </div>
+      </Radio>
+    )
+  );
 }

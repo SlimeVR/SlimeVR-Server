@@ -1,8 +1,8 @@
 import { BoardType, DeviceDataT } from 'solarxr-protocol';
 import { fetch as tauriFetch } from '@tauri-apps/plugin-http';
-import { cacheWrap } from './cache';
 import semver from 'semver';
 import { hostname, locale, platform, version } from '@tauri-apps/plugin-os';
+import { cacheWrap } from './cache';
 
 export interface FirmwareRelease {
   name: string;
@@ -41,11 +41,9 @@ const checkUserCanUpdate = async (url: string, fwVersion: string) => {
   );
   if (!deployDataJson) return true;
 
-  const deployData = (
-    Object.entries(deployDataJson).map(([key, val]) => {
-      return [parseFloat(key), new Date(val as string)];
-    }) as [number, Date][]
-  ).sort(([a], [b]) => a - b);
+  const deployData = Object.entries(deployDataJson)
+    .map<[number, Date]>(([key, val]) => [parseFloat(key), new Date(val as string)])
+    .sort(([a], [b]) => a - b);
 
   if (deployData.find(([key]) => key > 1 || key <= 0)) return false; // values outside boundaries / cancel
 

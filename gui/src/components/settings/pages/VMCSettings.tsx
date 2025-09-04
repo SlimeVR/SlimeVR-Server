@@ -126,22 +126,21 @@ export function VMCSettings() {
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<VMCIcon></VMCIcon>} id="vmc">
+        <SettingsPagePaneLayout icon={<VMCIcon />} id="vmc">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-osc-vmc')}
             </Typography>
             <div className="flex flex-col pt-2 pb-4">
-              <>
-                {l10n
-                  .getString('settings-osc-vmc-description')
-                  .split('\n')
-                  .map((line, i) => (
-                    <Typography color="secondary" key={i}>
-                      {line}
-                    </Typography>
-                  ))}
-              </>
+              {l10n
+                .getString('settings-osc-vmc-description')
+                .split('\n')
+                .map((line, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
             </div>
             <Typography bold>
               {l10n.getString('settings-osc-vmc-enable')}
@@ -164,16 +163,15 @@ export function VMCSettings() {
               {l10n.getString('settings-osc-vmc-network')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <>
-                {l10n
-                  .getString('settings-osc-vmc-network-description')
-                  .split('\n')
-                  .map((line, i) => (
-                    <Typography color="secondary" key={i}>
-                      {line}
-                    </Typography>
-                  ))}
-              </>
+              {l10n
+                .getString('settings-osc-vmc-network-description')
+                .split('\n')
+                .map((line, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
             </div>
             <div className="grid grid-cols-2 gap-3 pb-5">
               <Localized
@@ -187,7 +185,7 @@ export function VMCSettings() {
                   rules={{ required: true }}
                   placeholder="9002"
                   label=""
-                ></Input>
+                />
               </Localized>
               <Localized
                 id="settings-osc-vmc-network-port_out"
@@ -200,7 +198,7 @@ export function VMCSettings() {
                   rules={{ required: true }}
                   placeholder="9000"
                   label=""
-                ></Input>
+                />
               </Localized>
             </div>
             <Typography bold>
@@ -225,7 +223,7 @@ export function VMCSettings() {
                   'settings-osc-vmc-network-address-placeholder'
                 )}
                 label=""
-              ></Input>
+              />
             </div>
             <Typography bold>
               {l10n.getString('settings-osc-vmc-vrm')}
@@ -251,7 +249,7 @@ export function VMCSettings() {
                 }
                 label="settings-osc-vmc-vrm-file_select"
                 accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
-              ></FileInput>
+              />
               {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
             </div>
             <Typography bold>
@@ -353,7 +351,7 @@ function getVRMName(json: string): string | null {
     const data = JSON.parse(json);
 
     if (typeof data?.extensions?.VRMC_vrm?.specVersion === 'string') {
-      const name = data.extensions.VRMC_vrm.meta.name;
+      const { name } = data.extensions.VRMC_vrm.meta;
 
       if (typeof name !== 'string') {
         error(
@@ -363,9 +361,8 @@ function getVRMName(json: string): string | null {
       }
 
       return name;
-    } else {
-      return data?.extensions?.VRM?.meta?.title || '';
     }
+    return data?.extensions?.VRM?.meta?.title || '';
   } catch (e) {
     error(e);
     return null;

@@ -1,12 +1,12 @@
 import { useLocalization } from '@fluent/react';
 import { useContext, useState } from 'react';
-import { BaseModal } from './commons/BaseModal';
-import { Button } from './commons/Button';
-import { Typography } from './commons/Typography';
 import { open } from '@tauri-apps/plugin-shell';
 import semver from 'semver';
 import { GH_REPO, VersionContext } from '@/App';
 import { error } from '@/utils/logging';
+import { Typography } from './commons/Typography';
+import { Button } from './commons/Button';
+import { BaseModal } from './commons/BaseModal';
 
 export function VersionUpdateModal() {
   const { l10n } = useLocalization();
@@ -34,36 +34,34 @@ export function VersionUpdateModal() {
       onRequestClose={closeModal}
     >
       <div className="flex flex-col gap-3">
-        <>
-          <div className="flex flex-col items-center gap-3 fill-accent-background-20">
-            <div className="flex flex-col items-center gap-2">
-              <Typography variant="main-title">
-                {l10n.getString('version_update-title', {
-                  version: newVersion,
-                })}
-              </Typography>
-              <Typography variant="standard">
-                {l10n.getString('version_update-description')}
-              </Typography>
-            </div>
+        <div className="flex flex-col items-center gap-3 fill-accent-background-20">
+          <div className="flex flex-col items-center gap-2">
+            <Typography variant="main-title">
+              {l10n.getString('version_update-title', {
+                version: newVersion,
+              })}
+            </Typography>
+            <Typography variant="standard">
+              {l10n.getString('version_update-description')}
+            </Typography>
           </div>
+        </div>
 
-          <Button
-            variant="primary"
-            onClick={async () => {
-              const url = document.body.classList.contains('windows')
-                ? 'https://slimevr.dev/download'
-                : `https://github.com/${GH_REPO}/releases/latest`;
-              await open(url).catch(() => window.open(url, '_blank'));
-              closeModal();
-            }}
-          >
-            {l10n.getString('version_update-update')}
-          </Button>
-          <Button variant="tertiary" onClick={closeModal}>
-            {l10n.getString('version_update-close')}
-          </Button>
-        </>
+        <Button
+          variant="primary"
+          onClick={async () => {
+            const url = document.body.classList.contains('windows')
+              ? 'https://slimevr.dev/download'
+              : `https://github.com/${GH_REPO}/releases/latest`;
+            await open(url).catch(() => window.open(url, '_blank'));
+            closeModal();
+          }}
+        >
+          {l10n.getString('version_update-update')}
+        </Button>
+        <Button variant="tertiary" onClick={closeModal}>
+          {l10n.getString('version_update-close')}
+        </Button>
       </div>
     </BaseModal>
   );

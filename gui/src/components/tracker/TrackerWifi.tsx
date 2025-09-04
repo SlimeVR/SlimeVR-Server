@@ -34,7 +34,7 @@ export function TrackerWifi({
         </div>
       )) || (
         <div className="flex flex-col justify-center w-12">
-          <div className="w-7 h-1 bg-background-30 rounded-full"></div>
+          <div className="w-7 h-1 bg-background-30 rounded-full" />
         </div>
       )}
     </div>

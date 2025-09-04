@@ -87,7 +87,7 @@ export function ToggleableSkeletonVisualizerWidget({
   );
 }
 
-export type SkeletonPreviewView = {
+export interface SkeletonPreviewView {
   left: number;
   bottom: number;
   width: number;
@@ -97,7 +97,7 @@ export type SkeletonPreviewView = {
   hidden: boolean;
   tween: Tween<THREE.Vector3>;
   onHeightChange: (view: SkeletonPreviewView, newHeight: number) => void;
-};
+}
 
 function initializePreview(
   canvas: HTMLCanvasElement,
@@ -353,11 +353,12 @@ function SkeletonVisualizer({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const resizeObserver = useRef(new ResizeObserver(([e]) => onResize(e)));
-  const _bones = useAtomValue(bonesAtom);
+  const bonesValue = useAtomValue(bonesAtom);
 
-  const bones = useMemo(() => {
-    return new Map(_bones.map((b) => [b.bodyPart, b]));
-  }, [_bones]);
+  const bones = useMemo(
+    () => new Map(bonesValue.map((b) => [b.bodyPart, b])),
+    [bonesValue]
+  );
 
   useEffect(() => {
     if (bones.size === 0) return;
@@ -394,7 +395,7 @@ function SkeletonVisualizer({
 
   useLayoutEffect(() => {
     if (!canvasRef.current || !containerRef.current)
-      throw 'invalid state - no canvas or container';
+      throw Error('invalid state - no canvas or container');
     resizeObserver.current.observe(containerRef.current);
 
     previewContext.current = initializePreview(
@@ -424,7 +425,7 @@ function SkeletonVisualizer({
 
   return (
     <div ref={containerRef} className={classNames('w-full h-full')}>
-      <canvas ref={canvasRef} className="w-full h-full"></canvas>
+      <canvas ref={canvasRef} className="w-full h-full" />
     </div>
   );
 }
@@ -457,7 +458,7 @@ export function SkeletonVisualizerWidget({
         </Typography>
       }
     >
-      <SkeletonVisualizer onInit={onInit}></SkeletonVisualizer>
+      <SkeletonVisualizer onInit={onInit} />
     </ErrorBoundary>
   );
 }

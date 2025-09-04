@@ -53,80 +53,78 @@ export function StartRecording({
   };
 
   return (
-    <>
-      <div className="flex flex-col flex-grow gap-3">
-        <div className="flex flex-row flex-grow">
-          <div className="flex flex-grow flex-col gap-4">
-            <Typography variant="main-title" bold>
+    <div className="flex flex-col flex-grow gap-3">
+      <div className="flex flex-row flex-grow">
+        <div className="flex flex-grow flex-col gap-4">
+          <Typography variant="main-title" bold>
+            {l10n.getString(
+              'onboarding-automatic_proportions-start_recording-title'
+            )}
+          </Typography>
+          <div>
+            <Typography color="secondary">
               {l10n.getString(
-                'onboarding-automatic_proportions-start_recording-title'
+                'onboarding-automatic_proportions-start_recording-description'
               )}
             </Typography>
-            <div>
-              <Typography color="secondary">
-                {l10n.getString(
-                  'onboarding-automatic_proportions-start_recording-description'
-                )}
-              </Typography>
-            </div>
-            <ol className="list-decimal mobile:px-4 nsmol:hidden">
-              <>
-                {l10n
-                  .getString('onboarding-automatic_proportions-recording-steps')
-                  .split('\n')
-                  .map((line, i) => (
-                    <li key={i}>
-                      <Typography color="secondary">{line}</Typography>
-                    </li>
-                  ))}
-              </>
-            </ol>
-            <div className="flex nsmol:hidden">
-              <TipBox>{l10n.getString('tips-do_not_move_heels')}</TipBox>
-            </div>
           </div>
-          <button
-            className="relative appearance-none h-fit"
-            onClick={toggleVideo}
+          <ol className="list-decimal mobile:px-4 nsmol:hidden">
+            {l10n
+              .getString('onboarding-automatic_proportions-recording-steps')
+              .split('\n')
+              .map((line, i) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <li key={i}>
+                  <Typography color="secondary">{line}</Typography>
+                </li>
+              ))}
+          </ol>
+          <div className="flex nsmol:hidden">
+            <TipBox>{l10n.getString('tips-do_not_move_heels')}</TipBox>
+          </div>
+        </div>
+        <button
+          type="button"
+          className="relative appearance-none h-fit"
+          onClick={toggleVideo}
+        >
+          <div
+            className="absolute w-[100px] h-[100px] top-0 bottom-0 left-0 right-0 m-auto fill-background-20"
+            hidden={!paused}
           >
-            <div
-              className="absolute w-[100px] h-[100px] top-0 bottom-0 left-0 right-0 m-auto fill-background-20"
-              hidden={!paused}
-            >
-              <PlayCircleIcon width={100}></PlayCircleIcon>
-            </div>
+            <PlayCircleIcon width={100} />
+          </div>
 
-            <video
-              preload="auto"
-              ref={videoRef}
-              src={AUTOBONE_VIDEO}
-              className="min-w-[12rem] w-[12rem]"
-              muted
-              loop
-              playsInline
-              controls={false}
-              poster="/images/autobone-poster.webp"
-            ></video>
-          </button>
-        </div>
-
-        <div className="flex smol:hidden">
-          <TipBox>{l10n.getString('tips-do_not_move_heels')}</TipBox>
-        </div>
-        <div className="flex gap-3 mobile:justify-between">
-          <Button
-            variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
-            onClick={prevStep}
-          >
-            {l10n.getString('onboarding-automatic_proportions-prev_step')}
-          </Button>
-          <Button variant="primary" onClick={start}>
-            {l10n.getString(
-              'onboarding-automatic_proportions-start_recording-next'
-            )}
-          </Button>
-        </div>
+          <video
+            preload="auto"
+            ref={videoRef}
+            src={AUTOBONE_VIDEO}
+            className="min-w-[12rem] w-[12rem]"
+            muted
+            loop
+            playsInline
+            controls={false}
+            poster="/images/autobone-poster.webp"
+          />
+        </button>
       </div>
-    </>
+
+      <div className="flex smol:hidden">
+        <TipBox>{l10n.getString('tips-do_not_move_heels')}</TipBox>
+      </div>
+      <div className="flex gap-3 mobile:justify-between">
+        <Button
+          variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
+          onClick={prevStep}
+        >
+          {l10n.getString('onboarding-automatic_proportions-prev_step')}
+        </Button>
+        <Button variant="primary" onClick={start}>
+          {l10n.getString(
+            'onboarding-automatic_proportions-start_recording-next'
+          )}
+        </Button>
+      </div>
+    </div>
   );
 }

@@ -7,14 +7,14 @@ import {
   TrackingPauseStateRequestT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import classNames from 'classnames';
 import { BigButton } from './commons/BigButton';
 import { PlayIcon } from './commons/icon/PlayIcon';
 import { PauseIcon } from './commons/icon/PauseIcon';
-import classNames from 'classnames';
 
-export function TrackingPauseButton(
-  props: React.HTMLAttributes<HTMLButtonElement>
-) {
+export function TrackingPauseButton({
+  className,
+}: React.HTMLAttributes<HTMLButtonElement>) {
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
   const [trackingPause, setTrackingPause] = useState(false);
 
@@ -44,8 +44,8 @@ export function TrackingPauseButton(
           trackingPause ? <PlayIcon width={20} /> : <PauseIcon width={20} />
         }
         onClick={toggleTracking}
-        className={classNames(props.className, 'min-h-24')}
-      ></BigButton>
+        className={classNames(className, 'min-h-24')}
+      />
     </Localized>
   );
 }

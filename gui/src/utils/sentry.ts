@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/react';
-import { error, log } from './logging';
 import { useEffect } from 'react';
 import {
   createRoutesFromChildren,
@@ -8,6 +7,7 @@ import {
   useNavigationType,
 } from 'react-router-dom';
 import { DeviceDataT } from 'solarxr-protocol';
+import { error, log } from './logging';
 
 export function getSentryOrCompute(enabled = false) {
   // if sentry is already initialized - SKIP
@@ -67,17 +67,19 @@ export function getSentryOrCompute(enabled = false) {
 
 export function updateSentryContext(devices: DeviceDataT[]) {
   // We filter out the shit we dont want. We dont need rotation data or ip addresses
-  const trackers = (devices || []).map(({ hardwareInfo, trackers, id }) => ({
-    id: id?.id,
-    hardwareInfo: { ...hardwareInfo, ipAddress: undefined },
-    trackers: trackers.map(({ info, trackerId }) => ({
-      info,
-      trackerId: {
-        trackerNum: trackerId?.trackerNum,
-        deviceId: trackerId?.deviceId?.id,
-      },
-    })),
-  }));
+  const trackers = (devices || []).map(
+    ({ hardwareInfo, trackers: trackerList, id }) => ({
+      id: id?.id,
+      hardwareInfo: { ...hardwareInfo, ipAddress: undefined },
+      trackers: trackerList.map(({ info, trackerId }) => ({
+        info,
+        trackerId: {
+          trackerNum: trackerId?.trackerNum,
+          deviceId: trackerId?.deviceId?.id,
+        },
+      })),
+    })
+  );
 
   // Will send the latest context to sentry when an error happens
   Sentry.setContext('trackers', {

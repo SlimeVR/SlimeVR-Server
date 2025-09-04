@@ -1,12 +1,12 @@
-export function WarningIcon(props: any) {
+export function WarningIcon({ width, className, ...props }: any) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"
       {...props}
-      width={props.width || 30}
-      className={`${props.className || ''}`}
+      width={width || 30}
+      className={`${className || ''}`}
     >
       <path
         fillRule="evenodd"

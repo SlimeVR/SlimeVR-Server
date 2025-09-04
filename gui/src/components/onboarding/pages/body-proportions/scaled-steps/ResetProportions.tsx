@@ -17,12 +17,17 @@ export function ResetProportionsStep({
   const { sendRPCPacket } = useWebsocketAPI();
 
   return (
-    <>
-      <div className="flex flex-col flex-grow">
-        <div className="flex flex-grow flex-col gap-4 max-w-sm">
-          <Typography variant="main-title" bold>
+    <div className="flex flex-col flex-grow">
+      <div className="flex flex-grow flex-col gap-4 max-w-sm">
+        <Typography variant="main-title" bold>
+          {l10n.getString(
+            'onboarding-scaled_proportions-reset_proportion-title'
+          )}
+        </Typography>
+        <div>
+          <Typography color="secondary">
             {l10n.getString(
-              'onboarding-scaled_proportions-reset_proportion-title'
+              'onboarding-scaled_proportions-reset_proportion-description'
             )}
           </Typography>
           <div>
@@ -57,6 +62,29 @@ export function ResetProportionsStep({
           </div>
         </div>
       </div>
-    </>
+
+      <div className="flex flex-col gap-3">
+        <div className="flex gap-3 mobile:justify-between">
+          <Button
+            variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
+            onClick={prevStep}
+          >
+            {l10n.getString('onboarding-automatic_proportions-prev_step')}
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              sendRPCPacket(
+                RpcMessage.SkeletonResetAllRequest,
+                new SkeletonResetAllRequestT()
+              );
+              nextStep();
+            }}
+          >
+            {l10n.getString('reset-reset_all')}
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }

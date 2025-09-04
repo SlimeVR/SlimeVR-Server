@@ -24,7 +24,7 @@ export function useWifiForm() {
         password: state.wifi.password,
       });
     }
-  }, []);
+  }, [reset, state.wifi]);
 
   const submitWifiCreds = (value: WifiFormData) => {
     setWifiCredentials(value.ssid, value.password ?? '');

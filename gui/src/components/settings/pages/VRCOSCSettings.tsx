@@ -129,22 +129,21 @@ export function VRCOSCSettings() {
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<VRCIcon></VRCIcon>} id="vrchat">
+        <SettingsPagePaneLayout icon={<VRCIcon />} id="vrchat">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-osc-vrchat')}
             </Typography>
             <div className="flex flex-col pt-2 pb-4">
-              <>
-                {l10n
-                  .getString('settings-osc-vrchat-description-v1')
-                  .split('\n')
-                  .map((line, i) => (
-                    <Typography color="secondary" key={i}>
-                      {line}
-                    </Typography>
-                  ))}
-              </>
+              {l10n
+                .getString('settings-osc-vrchat-description-v1')
+                .split('\n')
+                .map((line, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
             </div>
             <Typography bold>
               {l10n.getString('settings-osc-vrchat-enable')}
@@ -173,6 +172,7 @@ export function VRCOSCSettings() {
                   .getString('settings-osc-vrchat-oscqueryEnabled-description')
                   .split('\n')
                   .map((line, i) => (
+                    // eslint-disable-next-line react/no-array-index-key
                     <Typography color="secondary" key={i}>
                       {line}
                     </Typography>
@@ -211,7 +211,7 @@ export function VRCOSCSettings() {
                   rules={{ required: true }}
                   placeholder="9001"
                   label=""
-                ></Input>
+                />
               </Localized>
               <Localized
                 id="settings-osc-vrchat-network-port_out"
@@ -224,7 +224,7 @@ export function VRCOSCSettings() {
                   rules={{ required: true }}
                   placeholder="9000"
                   label=""
-                ></Input>
+                />
               </Localized>
             </div>
             <Typography bold>
@@ -251,7 +251,7 @@ export function VRCOSCSettings() {
                   'settings-osc-vrchat-network-address-placeholder'
                 )}
                 label=""
-              ></Input>
+              />
             </div>
             <Typography bold>
               {l10n.getString('settings-osc-vrchat-network-trackers')}

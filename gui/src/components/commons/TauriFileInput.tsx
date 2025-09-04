@@ -4,8 +4,8 @@ import {
   RefCallBack,
   UseControllerProps,
 } from 'react-hook-form';
-import { FileInputContentBlank, FileInputContentFile } from './FileInput';
 import { open } from '@tauri-apps/plugin-dialog';
+import { FileInputContentBlank, FileInputContentFile } from './FileInput';
 
 export function InnerTauriFileInput({
   label,
@@ -43,7 +43,7 @@ export function TauriFileInput({
   control: Control<any>;
   /**
    * Use a translation key!
-   **/
+   * */
   label: string;
   name: string;
   directory?: boolean;

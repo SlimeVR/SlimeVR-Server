@@ -5,8 +5,8 @@ import {
   SkeletonConfigRequestT,
   ChangeSkeletonConfigRequestT,
 } from 'solarxr-protocol';
-import { useWebsocketAPI } from './websocket-api';
 import { useEffect, useMemo, useState } from 'react';
+import { useWebsocketAPI } from './websocket-api';
 
 type LabelBase = {
   value: number;
@@ -68,7 +68,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
             type: 'bone',
             unit: 'cm',
             bone,
-            label: 'skeleton_bone-' + SkeletonBone[bone],
+            label: `skeleton_bone-${SkeletonBone[bone]}`,
             value,
           }) satisfies BoneLabel
       );
@@ -77,7 +77,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
     return [
       ...[...BONE_MAPPING.keys()].map((groupName) => {
         const groupBones = BONE_MAPPING.get(groupName);
-        if (!groupBones) throw 'invalid state - this value should always exits';
+        if (!groupBones) throw Error('invalid state - this value should always exits');
         const total = config.skeletonParts
           .filter(({ bone }) => groupBones.includes(bone))
           .reduce((acc, cur) => cur.value + acc, 0);
@@ -90,8 +90,8 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
               group: groupName,
               unit: 'percent',
               bone,
-              label: 'skeleton_bone-' + SkeletonBone[bone],
-              value: value,
+              label: `skeleton_bone-${SkeletonBone[bone]}`,
+              value,
               ratio: value / total,
             })),
           unit: 'cm',
@@ -110,7 +110,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
               type: 'bone',
               unit: 'cm',
               bone,
-              label: 'skeleton_bone-' + SkeletonBone[bone],
+              label: `skeleton_bone-${SkeletonBone[bone]}`,
               value,
             }) satisfies BoneLabel
         ),
@@ -131,13 +131,13 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
       if (!config) return;
       if (params.type === 'group') {
         const group = BONE_MAPPING.get(params.group);
-        if (!group) throw 'invalid state - group should exist';
+        if (!group) throw Error('invalid state - group should exist');
         const oldGroupTotal = config.skeletonParts
           .filter(({ bone }) => group.includes(bone))
           .reduce((acc, cur) => cur.value + acc, 0);
         for (const part of group) {
           const currentValue = config.skeletonParts.find(({ bone }) => bone === part);
-          if (!currentValue) throw 'invalid state - the bone should exists';
+          if (!currentValue) throw Error('invalid state - the bone should exists');
           const currentRatio = currentValue.value / oldGroupTotal;
           sendRPCPacket(
             RpcMessage.ChangeSkeletonConfigRequest,
@@ -148,9 +148,9 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
 
       if (params.type === 'group-part') {
         const group = BONE_MAPPING.get(params.group);
-        if (!group) throw 'invalid state - group should exist';
+        if (!group) throw Error('invalid state - group should exist');
         const part = config.skeletonParts.find(({ bone }) => bone === params.bone);
-        if (!part) throw 'invalid state - the part should exists';
+        if (!part) throw Error('invalid state - the part should exists');
         const oldGroupTotal = config.skeletonParts
           .filter(({ bone }) => group.includes(bone))
           .reduce((acc, cur) => cur.value + acc, 0);
@@ -171,7 +171,7 @@ export function useManualProportions({ type }: { type: 'linear' | 'ratio' }): {
         for (const part of group) {
           if (part === params.bone) continue;
           const currentValue = config.skeletonParts.find(({ bone }) => bone === part);
-          if (!currentValue) throw 'invalid state - the bone should exists';
+          if (!currentValue) throw Error('invalid state - the bone should exists');
           sendRPCPacket(
             RpcMessage.ChangeSkeletonConfigRequest,
             new ChangeSkeletonConfigRequestT(

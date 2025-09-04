@@ -3,10 +3,14 @@ import { error } from './logging';
 export function a11yClick(event: React.KeyboardEvent | React.MouseEvent) {
   if (event.type === 'click') {
     return true;
-  } else if (event.type === 'keydown') {
+  }
+
+  if (event.type === 'keydown') {
     const keyboard = event as React.KeyboardEvent;
     return keyboard.key === 'Enter' || keyboard.key === ' ';
   }
+
+  return false;
 }
 
 export function waitUntil(
@@ -14,10 +18,11 @@ export function waitUntil(
   time: number,
   tries?: number
 ): Promise<void> {
+  let remaining = tries;
   return new Promise((resolve, rej) => {
     const isPromise = typeof condition() !== 'boolean';
     const interval = setInterval(() => {
-      if (tries && --tries === 0) {
+      if (remaining && --remaining === 0) {
         error(new Error('waitUntil ran out of tries'));
         clearInterval(interval);
         resolve();
