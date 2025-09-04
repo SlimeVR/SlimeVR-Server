@@ -287,6 +287,6 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 	override fun onRunError(e: java.lang.Exception?) {}
 
 	companion object {
-		private val ACTION_USB_PERMISSION = "dev.slimevr.USB_PERMISSION"
+		private const val ACTION_USB_PERMISSION = "dev.slimevr.USB_PERMISSION"
 	}
 }
