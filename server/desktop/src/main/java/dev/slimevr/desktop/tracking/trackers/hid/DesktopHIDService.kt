@@ -24,7 +24,7 @@ import java.util.function.Consumer
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
  */
-class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>) :
+class DesktopHIDService(name: String, private val trackersConsumer: Consumer<Tracker>) :
 	Thread(name),
 	HidServicesListener {
 	private val devices: MutableList<HIDDevice> = mutableListOf()

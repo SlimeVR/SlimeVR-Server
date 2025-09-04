@@ -8,7 +8,7 @@ import android.hardware.usb.UsbInterface
 import android.hardware.usb.UsbManager
 import java.io.Closeable
 
-class UsbDeviceHID(hidDevice: UsbDevice, usbManager: UsbManager) : Closeable {
+class AndroidHIDDevice(hidDevice: UsbDevice, usbManager: UsbManager) : Closeable {
 
 	val deviceName = hidDevice.deviceName
 	val serialNumber = hidDevice.serialNumber

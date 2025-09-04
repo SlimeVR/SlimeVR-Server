@@ -25,7 +25,7 @@ const val ACTION_USB_PERMISSION = "dev.slimevr.USB_PERMISSION"
 /**
  * Receives trackers data by UDP using extended owoTrack protocol.
  */
-class TrackersHID(
+class AndroidHIDService(
 	name: String,
 	private val trackersConsumer: Consumer<Tracker>,
 	private val context: Context,
@@ -33,7 +33,7 @@ class TrackersHID(
 	private val devices: MutableList<HIDDevice> = mutableListOf()
 	private val devicesBySerial: MutableMap<String, MutableList<Int>> = HashMap()
 	private val devicesByHID: MutableMap<UsbDevice, MutableList<Int>> = HashMap()
-	private val connByHID: MutableMap<UsbDevice, UsbDeviceHID> = HashMap()
+	private val connByHID: MutableMap<UsbDevice, AndroidHIDDevice> = HashMap()
 	private val lastDataByHID: MutableMap<UsbDevice, Int> = HashMap()
 	private val usbManager: UsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
 
@@ -66,7 +66,7 @@ class TrackersHID(
 		// Close any existing connection (do we still have one?)
 		this.connByHID[hidDevice]?.close()
 		// Open new HID connection with USB device
-		this.connByHID[hidDevice] = UsbDeviceHID(hidDevice, usbManager)
+		this.connByHID[hidDevice] = AndroidHIDDevice(hidDevice, usbManager)
 
 		val serial = hidDevice.serialNumber ?: "Unknown USB Device ${hidDevice.deviceId}"
 		this.devicesBySerial[serial]?.let {
