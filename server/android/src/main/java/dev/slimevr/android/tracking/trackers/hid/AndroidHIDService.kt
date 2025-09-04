@@ -23,7 +23,7 @@ import java.util.function.Consumer
 const val ACTION_USB_PERMISSION = "dev.slimevr.USB_PERMISSION"
 
 /**
- * Receives trackers data by UDP using extended owoTrack protocol.
+ * Handles Android USB Host HID dongles and receives tracker data from them.
  */
 class AndroidHIDService(
 	name: String,

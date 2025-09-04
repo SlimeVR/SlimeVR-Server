@@ -22,7 +22,7 @@ import java.nio.ByteBuffer
 import java.util.function.Consumer
 
 /**
- * Receives trackers data by UDP using extended owoTrack protocol.
+ * Handles desktop USB HID dongles and receives tracker data from them.
  */
 class DesktopHIDService(name: String, private val trackersConsumer: Consumer<Tracker>) :
 	Thread(name),
