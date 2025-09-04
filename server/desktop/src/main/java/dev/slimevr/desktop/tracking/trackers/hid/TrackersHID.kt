@@ -307,7 +307,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 								mcu_id = dataReceived[i + 6].toUByte().toInt()
 								// imu_id = dataReceived[i + 8].toUByte().toInt()
 								// mag_id = dataReceived[i + 9].toUByte().toInt()
-								// ushort big endian
+								// ushort little endian
 								fw_date = dataReceived[i + 11].toUByte().toInt() shl 8 or dataReceived[i + 10].toUByte().toInt()
 								fw_major = dataReceived[i + 12].toUByte().toInt()
 								fw_minor = dataReceived[i + 13].toUByte().toInt()
@@ -319,11 +319,11 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 								// Q15: 1 is represented as 0x7FFF, -1 as 0x8000
 								// The sender can use integer saturation to avoid overflow
 								for (j in 0..3) { // quat received as fixed Q15
-									// Q15 as short big endian
+									// Q15 as short little endian
 									q[j] = dataReceived[i + 2 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 2 + j * 2].toUByte().toInt()
 								}
 								for (j in 0..2) { // accel received as fixed 7, in m/s^2
-									// Q7 as short big endian
+									// Q7 as short little endian
 									a[j] = dataReceived[i + 10 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 10 + j * 2].toUByte().toInt()
 								}
 							}
@@ -341,7 +341,7 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 								q[1] = (q_buf shr 10 and 2047u).toInt()
 								q[2] = (q_buf shr 21 and 2047u).toInt()
 								for (j in 0..2) { // accel received as fixed 7, in m/s^2
-									// Q7 as short big endian
+									// Q7 as short little endian
 									a[j] = dataReceived[i + 9 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 9 + j * 2].toUByte().toInt()
 								}
 								rssi = dataReceived[i + 15].toUByte().toInt()
@@ -355,11 +355,11 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 
 							4 -> { // full precision quat and mag, no extra data
 								for (j in 0..3) { // quat received as fixed Q15
-									// Q15 as short big endian
+									// Q15 as short little endian
 									q[j] = dataReceived[i + 2 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 2 + j * 2].toUByte().toInt()
 								}
 								for (j in 0..2) { // mag received as fixed 10, in gauss
-									// Q10 as short big endian
+									// Q10 as short little endian
 									m[j] = dataReceived[i + 10 + j * 2 + 1].toInt() shl 8 or dataReceived[i + 10 + j * 2].toUByte().toInt()
 								}
 							}
