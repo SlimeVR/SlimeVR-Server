@@ -62,17 +62,8 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 	val usbReceiver: BroadcastReceiver = object : BroadcastReceiver() {
 		override fun onReceive(context: Context, intent: Intent) {
 			when (intent.action) {
-				UsbManager.ACTION_USB_DEVICE_ATTACHED -> {
-					// Maybe use device from `UsbManager.EXTRA_DEVICE`? Would make
-					//  me feel better, but honestly this is just easier and probably
-					//  doesn't actually matter.
-					detectNewPorts()
-				}
-
-				UsbManager.ACTION_USB_DEVICE_DETACHED -> {
-					// Might be able to use `UsbManager.EXTRA_DEVICE` like device attached
-					//  event comment, though the device properties may no longer be available
-					//  when this event is fired. This should be checked before proceeding.
+				UsbManager.ACTION_USB_DEVICE_ATTACHED, UsbManager.ACTION_USB_DEVICE_DETACHED -> {
+					// Use device from `UsbManager.EXTRA_DEVICE` if this is a problem
 					detectNewPorts()
 				}
 
@@ -110,7 +101,6 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		}
 
 		LogManager.info("[SerialHandler] Device added: ${port.descriptivePortName}")
-
 		listeners.forEach { it.onNewSerialDevice(port) }
 	}
 
@@ -128,7 +118,6 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		}
 
 		LogManager.info("[SerialHandler] Device removed: ${port.descriptivePortName}")
-
 		listeners.forEach { it.onSerialDeviceDeleted(port) }
 	}
 
@@ -203,6 +192,9 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 			)
 			return false
 		}
+
+		// If we have permission, we aren't requesting anymore
+		requestingPermission = ""
 
 		val connection = manager.openDevice(newPort.port.device)
 		if (connection == null) {
