@@ -64,11 +64,12 @@ fun main(activity: AppCompatActivity) {
 			vrServer.start()
 
 			// Start service for USB HID trackers
-			TrackersHID(
+			val trackersHid = TrackersHID(
 				"Sensors HID service",
 				{ tracker: Tracker -> vrServer.registerTracker(tracker) },
 				activity,
 			)
+			trackersHid.start()
 
 			Keybinding(vrServer)
 			vrServer.join()

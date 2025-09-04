@@ -1,10 +1,13 @@
 package dev.slimevr.android.tracking.trackers.hid
 
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
+import androidx.core.content.ContextCompat
 import dev.slimevr.VRServer
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
@@ -35,18 +38,26 @@ class TrackersHID(
 	private val lastDataByHID: MutableMap<UsbDevice, Int> = HashMap()
 	private val usbManager: UsbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
 
-	init {
-		// TODO: Implement device enumeration and data reading using Android USB Host API
-		//  For now, starting the threads as in the original hid4java implementation
-		val dataReadThread = Thread(dataReadRunnable)
-		dataReadThread.isDaemon = true
-		dataReadThread.name = "Android USB HID data reader"
-		dataReadThread.start()
+	var usbReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+		override fun onReceive(context: Context, intent: Intent) {
+			when (intent.action) {
+				UsbManager.ACTION_USB_DEVICE_ATTACHED -> {
+					(intent.getParcelableExtra(UsbManager.EXTRA_DEVICE) as UsbDevice?)?.let {
+						checkConfigureDevice(it, requestPermission = true)
+					}
+				}
 
-		val deviceEnumerateThread = Thread(deviceEnumerateRunnable)
-		deviceEnumerateThread.isDaemon = true
-		deviceEnumerateThread.name = "Android USB HID device enumerator"
-		deviceEnumerateThread.start()
+				UsbManager.ACTION_USB_DEVICE_DETACHED -> {
+					(intent.getParcelableExtra(UsbManager.EXTRA_DEVICE) as UsbDevice?)?.let {
+						removeDevice(it)
+					}
+				}
+
+				ACTION_USB_PERMISSION -> {
+					deviceEnumerate(false)
+				}
+			}
+		}
 	}
 
 	private fun proceedWithDeviceConfiguration(hidDevice: UsbDevice) {
@@ -80,12 +91,12 @@ class TrackersHID(
 		LogManager.info("[TrackerServer] (Probably) Compatible HID device detected: $serial")
 	}
 
-	fun checkConfigureDevice(usbDevice: UsbDevice) {
+	fun checkConfigureDevice(usbDevice: UsbDevice, requestPermission: Boolean = false) {
 		if (usbDevice.vendorId == HID_TRACKER_RECEIVER_VID && usbDevice.productId == HID_TRACKER_RECEIVER_PID) {
 			if (usbManager.hasPermission(usbDevice)) {
 				LogManager.info("[TrackerServer] Already have permission for ${usbDevice.deviceName}")
 				proceedWithDeviceConfiguration(usbDevice)
-			} else {
+			} else if (requestPermission) {
 				LogManager.info("[TrackerServer] Requesting permission for ${usbDevice.deviceName}")
 				val permissionIntent = PendingIntent.getBroadcast(
 					context,
@@ -149,40 +160,6 @@ class TrackersHID(
 			return device
 		}
 	}
-
-	@get:Synchronized
-	private val dataReadRunnable: Runnable
-		get() = Runnable {
-			while (true) {
-				try {
-					sleep(0) // Possible performance impact
-				} catch (e: InterruptedException) {
-					currentThread().interrupt()
-					break
-				}
-				dataRead() // not in try catch?
-			}
-		}
-
-	@get:Synchronized
-	private val deviceEnumerateRunnable: Runnable
-		get() = Runnable {
-			try {
-				sleep(100) // Delayed start
-			} catch (e: InterruptedException) {
-				currentThread().interrupt()
-				return@Runnable
-			}
-			while (true) {
-				try {
-					sleep(1000)
-				} catch (e: InterruptedException) {
-					currentThread().interrupt()
-					break
-				}
-				deviceEnumerate() // not in try catch?
-			}
-		}
 
 	private fun dataRead() {
 		synchronized(devicesByHID) {
@@ -250,7 +227,7 @@ class TrackersHID(
 		}
 	}
 
-	private fun deviceEnumerate() {
+	private fun deviceEnumerate(requestPermission: Boolean = false) {
 		val hidDeviceList: MutableList<UsbDevice> = usbManager.deviceList.values.filter {
 			it.vendorId == HID_TRACKER_RECEIVER_VID && it.productId == HID_TRACKER_RECEIVER_PID
 		}.toMutableList()
@@ -261,22 +238,50 @@ class TrackersHID(
 			for (device in removeList) {
 				removeDevice(device)
 			}
+
 			// Quickly reattaching a device may not be detected, so always try to open existing devices
 			for (device in devicesByHID.keys) {
 				// a receiver sends keep-alive data at 10 packets/s
 				if (lastDataByHID[device]!! > 100) { // try to reopen device if no data was received recently (about >100ms)
 					LogManager.info("[TrackerServer] Reopening device ${device.serialNumber} after no data received")
-					checkConfigureDevice(device)
+					checkConfigureDevice(device, requestPermission)
 				}
 			}
+
 			hidDeviceList.removeAll(devicesByHID.keys) // addList
 			for (device in hidDeviceList) {
-				checkConfigureDevice(device) // This will handle permission check/request
+				// This will handle permission check/request
+				checkConfigureDevice(device, requestPermission)
 			}
 		}
 	}
 
-	override fun run() { // Doesn't seem to run
+	override fun run() {
+		val intentFilter = IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED)
+		intentFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED)
+		intentFilter.addAction(ACTION_USB_PERMISSION)
+
+		// Listen for USB device attach/detach
+		ContextCompat.registerReceiver(
+			context,
+			usbReceiver,
+			intentFilter,
+			ContextCompat.RECEIVER_NOT_EXPORTED,
+		)
+
+		// Enumerate existing devices
+		deviceEnumerate(true)
+
+		// Data read loop
+		while (true) {
+			try {
+				sleep(0) // Possible performance impact
+			} catch (e: InterruptedException) {
+				currentThread().interrupt()
+				break
+			}
+			dataRead() // not in try catch?
+		}
 	}
 
 	fun getDevices(): List<Device> = devices
