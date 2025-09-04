@@ -29,6 +29,40 @@ class HIDCommon {
 
 		private val AXES_OFFSET = fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
 
+		fun deviceIdLookup(
+			hidDevices: MutableList<HIDDevice>,
+			hidSerialNumber: String?,
+			deviceId: Int,
+			deviceName: String? = null,
+			deviceList: MutableList<Int>,
+		): HIDDevice? {
+			synchronized(hidDevices) {
+				deviceList.map { hidDevices[it] }.find { it.hidId == deviceId }?.let { return it }
+				if (deviceName == null) { // not registered yet
+					return null
+				}
+				val device = HIDDevice(deviceId)
+				// server wants tracker to be unique, so use combination of hid serial and full id // TODO: use the tracker "address" instead
+				// TODO: the server should not setup any device, only when the receiver associates the id with the tracker "address" and sends this packet (0xff?) which it will do occasionally
+				// device.name = hidDevice.serialNumber ?: "Unknown HID Device"
+				// device.name += "-$deviceId"
+				device.name = deviceName
+				device.manufacturer = "HID Device" // TODO:
+				// device.manufacturer = hidDevice.manufacturer ?: "HID Device"
+// 			device.hardwareIdentifier = hidDevice.serialNumber // hardwareIdentifier is not used to identify the tracker, so also display the receiver serial
+// 			device.hardwareIdentifier += "-$deviceId/$deviceName" // receiver serial + assigned id in receiver + device address
+				device.hardwareIdentifier = deviceName // the rest of identifier wont fit in gui
+				hidDevices.add(device)
+				deviceList.add(hidDevices.size - 1)
+				VRServer.instance.deviceManager.addDevice(device) // actually add device to the server
+				LogManager
+					.info(
+						"[TrackerServer] Added device $deviceName for ${hidSerialNumber ?: "Unknown HID Device"}, id $deviceId",
+					)
+				return device
+			}
+		}
+
 		private fun setUpSensor(
 			device: HIDDevice,
 			trackerId: Int,

@@ -1,6 +1,5 @@
 package dev.slimevr.desktop.tracking.trackers.hid
 
-import dev.slimevr.VRServer
 import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
@@ -106,34 +105,6 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 		}
 	}
 
-	private fun deviceIdLookup(hidDevice: HidDevice, deviceId: Int, deviceName: String? = null, deviceList: MutableList<Int>): HIDDevice? {
-		synchronized(this.devices) {
-			deviceList.map { this.devices[it] }.find { it.hidId == deviceId }?.let { return it }
-			if (deviceName == null) { // not registered yet
-				return null
-			}
-			val device = HIDDevice(deviceId)
-			// server wants tracker to be unique, so use combination of hid serial and full id // TODO: use the tracker "address" instead
-			// TODO: the server should not setup any device, only when the receiver associates the id with the tracker "address" and sends this packet (0xff?) which it will do occasionally
-			// device.name = hidDevice.serialNumber ?: "Unknown HID Device"
-			// device.name += "-$deviceId"
-			device.name = deviceName
-			device.manufacturer = "HID Device" // TODO:
-			// device.manufacturer = hidDevice.manufacturer ?: "HID Device"
-// 			device.hardwareIdentifier = hidDevice.serialNumber // hardwareIdentifier is not used to identify the tracker, so also display the receiver serial
-// 			device.hardwareIdentifier += "-$deviceId/$deviceName" // receiver serial + assigned id in receiver + device address
-			device.hardwareIdentifier = deviceName // the rest of identifier wont fit in gui
-			this.devices.add(device)
-			deviceList.add(this.devices.size - 1)
-			VRServer.instance.deviceManager.addDevice(device) // actually add device to the server
-			LogManager
-				.info(
-					"[TrackerServer] Added device $deviceName for ${hidDevice.serialNumber}, id $deviceId",
-				)
-			return device
-		}
-	}
-
 	@get:Synchronized
 	private val dataReadRunnable: Runnable
 		get() = Runnable {
@@ -205,13 +176,13 @@ class TrackersHID(name: String, private val trackersConsumer: Consumer<Tracker>)
 							buffer.order(java.nio.ByteOrder.LITTLE_ENDIAN)
 							val addr = buffer.getLong() and 0xFFFFFFFFFFFF
 							val deviceName = String.format("%012X", addr)
-							deviceIdLookup(hidDevice, deviceId, deviceName, deviceList) // register device
+							HIDCommon.deviceIdLookup(devices, hidDevice.serialNumber, deviceId, deviceName, deviceList) // register device
 							// server wants tracker to be unique, so use combination of hid serial and full id
 							i += PACKET_SIZE
 							continue
 						}
 
-						val device: HIDDevice? = deviceIdLookup(hidDevice, deviceId, null, deviceList)
+						val device: HIDDevice? = HIDCommon.deviceIdLookup(devices, hidDevice.serialNumber, deviceId, null, deviceList)
 						if (device == null) { // not registered yet
 							i += PACKET_SIZE
 							continue
