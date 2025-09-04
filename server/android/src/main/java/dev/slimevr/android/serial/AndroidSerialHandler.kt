@@ -48,6 +48,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 	private val manager = activity.getSystemService(Context.USB_SERVICE) as UsbManager
 	private var currentPort: SerialPortWrapper? = null
 	private var requestingPermission: String = ""
+	private var readBuffer: StringBuilder = StringBuilder(4096)
 
 	override val isConnected: Boolean
 		get() = currentPort?.port?.isOpen ?: false
@@ -261,6 +262,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 			usbIoManager = null
 			currentPort = null
 			requestingPermission = ""
+			readBuffer.clear()
 		} catch (e: Exception) {
 			LogManager.warning(
 				"[SerialHandler] Error closing port ${currentPort?.descriptivePortName}",
@@ -288,8 +290,15 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 
 	override fun onNewData(data: ByteArray?) {
 		if (data != null) {
-			val s = StandardCharsets.UTF_8.decode(ByteBuffer.wrap(data)).toString()
-			addLog(s, false)
+			// Collect serial in a buffer until newline (or character limit)
+			// This is somewhat of a workaround for Android serial buffer being smaller
+			//  than on desktop, so we don't read full lines and it causes parsing issues
+			readBuffer.append(StandardCharsets.UTF_8.decode(ByteBuffer.wrap(data)))
+
+			if (readBuffer.contains('\n') || readBuffer.length >= 4096) {
+				addLog(readBuffer.toString(), false)
+				readBuffer.clear()
+			}
 		}
 	}
 
