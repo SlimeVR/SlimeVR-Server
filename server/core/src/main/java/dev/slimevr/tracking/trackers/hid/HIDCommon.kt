@@ -20,6 +20,9 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+/**
+ * A collection of shared HID functions between OS specific HID implementations.
+ */
 class HIDCommon {
 	companion object {
 		const val HID_TRACKER_RECEIVER_VID = 0x1209

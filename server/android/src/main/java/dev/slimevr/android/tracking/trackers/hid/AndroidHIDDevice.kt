@@ -8,6 +8,9 @@ import android.hardware.usb.UsbInterface
 import android.hardware.usb.UsbManager
 import java.io.Closeable
 
+/**
+ * A wrapper over Android's [UsbDevice] for HID devices.
+ */
 class AndroidHIDDevice(hidDevice: UsbDevice, usbManager: UsbManager) : Closeable {
 
 	val deviceName = hidDevice.deviceName
