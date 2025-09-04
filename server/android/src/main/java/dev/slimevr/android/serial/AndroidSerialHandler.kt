@@ -117,6 +117,11 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 			}
 		}
 
+		// If this port is still open for whatever reason, close it
+		if (port.port.isOpen) {
+			port.port.close()
+		}
+
 		LogManager.info("[SerialHandler] Device removed: ${port.descriptivePortName}")
 		listeners.forEach { it.onSerialDeviceDeleted(port) }
 	}
