@@ -104,6 +104,11 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 	private fun getPorts(): List<UsbSerialDriver> = UsbSerialProber.getDefaultProber().findAllDrivers(manager)
 
 	private fun onNewDevice(port: SerialPortWrapper) {
+		// If we missed clearing this on disconnect/close, clear it on discovery
+		if (requestingPermission == port.portLocation) {
+			requestingPermission = ""
+		}
+
 		listeners.forEach { it.onNewSerialDevice(port) }
 	}
 
