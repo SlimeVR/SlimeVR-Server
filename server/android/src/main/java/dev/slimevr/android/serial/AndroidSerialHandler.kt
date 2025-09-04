@@ -109,6 +109,8 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 			requestingPermission = ""
 		}
 
+		LogManager.info("[SerialHandler] Device added: ${port.descriptivePortName}")
+
 		listeners.forEach { it.onNewSerialDevice(port) }
 	}
 
@@ -117,6 +119,15 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		if (requestingPermission == port.portLocation) {
 			requestingPermission = ""
 		}
+
+		// If we're currently using this port, close it
+		currentPort?.portLocation.let { currentPortLocation ->
+			if (currentPortLocation == port.portLocation) {
+				closeSerial()
+			}
+		}
+
+		LogManager.info("[SerialHandler] Device removed: ${port.descriptivePortName}")
 
 		listeners.forEach { it.onSerialDeviceDeleted(port) }
 	}
@@ -181,9 +192,11 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 				flags,
 			)
 			if (requestingPermission != newPort.portLocation) {
-				println("Requesting permission for ${newPort.portLocation}")
+				LogManager.info("[SerialHandler] Requesting permission for ${newPort.portLocation}")
 				manager.requestPermission(newPort.port.device, usbPermissionIntent)
 				requestingPermission = newPort.portLocation
+			} else {
+				LogManager.info("[SerialHandler] Already requested permission for ${newPort.portLocation}, skipping")
 			}
 			LogManager.warning(
 				"[SerialHandler] Can't open serial port ${newPort.descriptivePortName}, invalid permissions",
@@ -195,7 +208,6 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 		if (connection == null) {
 			LogManager.warning(
 				"[SerialHandler] Can't open serial port ${newPort.descriptivePortName}, connection failed",
-
 			)
 			return false
 		}
