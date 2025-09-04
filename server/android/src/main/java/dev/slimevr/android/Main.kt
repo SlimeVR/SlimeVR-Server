@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import dev.slimevr.Keybinding
 import dev.slimevr.VRServer
 import dev.slimevr.android.serial.AndroidSerialHandler
+import dev.slimevr.android.tracking.trackers.hid.AndroidHIDManager
+import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.logging.LogManager
 import io.ktor.http.CacheControl
 import io.ktor.http.CacheControl.Visibility
@@ -60,6 +62,15 @@ fun main(activity: AppCompatActivity) {
 				},
 			)
 			vrServer.start()
+
+			// Start service for USB HID trackers
+			val androidHidManager = AndroidHIDManager(
+				"Sensors HID service",
+				{ tracker: Tracker -> vrServer.registerTracker(tracker) },
+				activity,
+			)
+			androidHidManager.start()
+
 			Keybinding(vrServer)
 			vrServer.join()
 			LogManager.closeLogger()
