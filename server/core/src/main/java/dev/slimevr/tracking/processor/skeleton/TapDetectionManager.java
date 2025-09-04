@@ -7,6 +7,7 @@ import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.setup.TapSetupHandler;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
+import dev.slimevr.tracking.trackers.TrackerUtils;
 import solarxr_protocol.rpc.ResetType;
 import solarxr_protocol.rpc.StatusData;
 
@@ -215,7 +216,17 @@ public class TapDetectionManager {
 				&& System.nanoTime() - mountingResetDetector.getDetectionTime()
 					> mountingResetDelayNs
 		) {
-			skeleton.resetTrackersMounting(resetSourceName);
+			// This will ask the skeleton for a mounting reset on every tracker
+			// except fingers.
+			// However, feet being reset or not will end up being decided on a
+			// per-tracker basis
+			// due to the setting being in ResetsConfig.kt
+			skeleton
+				.resetTrackersMounting(
+					resetSourceName,
+					TrackerUtils.INSTANCE.getAllBodyPartsButFingers()
+				);
+
 			mountingResetDetector.resetDetector();
 			mountingResetAllowPlaySound = true;
 			this.resetHandler.sendFinished(ResetType.Mounting);

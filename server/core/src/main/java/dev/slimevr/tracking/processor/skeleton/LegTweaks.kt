@@ -650,26 +650,30 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 			var weightR = getFootPlantWeight(rightFootPosition)
 
 			// if foot trackers exist add to the weights
+			val leftFootYaw = isolateYaw(leftFootRotation)
 			if (leftFootTracker) {
 				weightL *= getRotationalDistanceToPlant(
 					leftFootRotation,
+					leftFootYaw,
 				)
 			}
+			val rightFootYaw = isolateYaw(rightFootRotation)
 			if (rightFootTracker) {
 				weightR *= getRotationalDistanceToPlant(
 					rightFootRotation,
+					rightFootYaw,
 				)
 			}
 
 			// perform the correction
 			leftFootRotation = leftFootRotation
 				.interpR(
-					isolateYaw(leftFootRotation),
+					leftFootYaw,
 					weightL * masterWeightL,
 				)
 			rightFootRotation = rightFootRotation
 				.interpR(
-					isolateYaw(rightFootRotation),
+					rightFootYaw,
 					weightR * masterWeightR,
 				)
 		}
@@ -805,8 +809,7 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 	}
 
 	// returns the amount to slerp for foot plant when foot trackers are active
-	private fun getRotationalDistanceToPlant(footRot: Quaternion): Float {
-		val footRotYaw: Quaternion = isolateYaw(footRot)
+	private fun getRotationalDistanceToPlant(footRot: Quaternion, footRotYaw: Quaternion): Float {
 		var angle = footRot.angleToR(footRotYaw)
 		angle = (angle / (2 * Math.PI)).toFloat()
 		angle = FastMath.clamp(
@@ -1005,12 +1008,9 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		}
 	}
 
-	// remove the x and z components of the given quaternion
-	private fun isolateYaw(quaternion: Quaternion): Quaternion = Quaternion(
-		quaternion.w,
-		0f,
-		quaternion.y,
-		0f,
+	// isolate the euler yaw component of a given quaternion
+	private fun isolateYaw(quaternion: Quaternion): Quaternion = Quaternion.rotationAroundYAxis(
+		quaternion.toEulerAngles(EulerOrder.YZX).y,
 	)
 
 	// return a quaternion that has been rotated by the new pitch amount

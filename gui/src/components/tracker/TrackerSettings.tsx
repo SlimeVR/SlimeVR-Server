@@ -26,7 +26,6 @@ import {
 import { ArrowLink } from '@/components/commons/ArrowLink';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
 import { Button } from '@/components/commons/Button';
-import { CheckBox } from '@/components/commons/Checkbox';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 import { Input } from '@/components/commons/Input';
 import { Typography } from '@/components/commons/Typography';
@@ -38,9 +37,9 @@ import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
 import semver from 'semver';
-import { checkForUpdate } from '@/components/firmware-update/FirmwareUpdate';
 import { useSetAtom } from 'jotai';
 import { ignoredTrackersAtom } from '@/store/app-store';
+import { checkForUpdate } from '@/hooks/firmware-update';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -57,7 +56,6 @@ export function TrackerSettingsPage() {
   const { l10n } = useLocalization();
 
   const { sendRPCPacket } = useWebsocketAPI();
-  const [firstLoad, setFirstLoad] = useState(false);
   const [selectRotation, setSelectRotation] = useState<boolean>(false);
   const [selectBodypart, setSelectBodypart] = useState<boolean>(false);
   const { trackernum, deviceid } = useParams<{
@@ -66,16 +64,14 @@ export function TrackerSettingsPage() {
   }>();
   const { control, watch, reset, handleSubmit } = useForm<{
     trackerName: string | null;
-    allowDriftCompensation: boolean | null;
   }>({
     defaultValues: {
       trackerName: null,
-      allowDriftCompensation: null,
     },
     reValidateMode: 'onSubmit',
   });
   const setIgnoredTracker = useSetAtom(ignoredTrackersAtom);
-  const { trackerName, allowDriftCompensation } = watch();
+  const { trackerName } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
 
@@ -89,8 +85,7 @@ export function TrackerSettingsPage() {
     );
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
     assignreq.trackerId = tracker?.tracker.trackerId;
-    if (allowDriftCompensation != null)
-      assignreq.allowDriftCompensation = allowDriftCompensation;
+    assignreq.allowDriftCompensation = false;
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     setSelectRotation(false);
   };
@@ -101,8 +96,7 @@ export function TrackerSettingsPage() {
     const assignreq = new AssignTrackerRequestT();
     assignreq.bodyPosition = role;
     assignreq.trackerId = tracker?.tracker.trackerId;
-    if (allowDriftCompensation != null)
-      assignreq.allowDriftCompensation = allowDriftCompensation;
+    assignreq.allowDriftCompensation = false;
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     setSelectBodypart(false);
   };
@@ -113,12 +107,7 @@ export function TrackerSettingsPage() {
 
   const updateTrackerSettings = () => {
     if (!tracker) return;
-    if (allowDriftCompensation == null) return;
-    if (
-      trackerName == tracker.tracker.info?.customName &&
-      allowDriftCompensation == tracker.tracker.info?.allowDriftCompensation
-    )
-      return;
+    if (trackerName == tracker.tracker.info?.customName) return;
     const assignreq = new AssignTrackerRequestT();
     assignreq.bodyPosition = tracker?.tracker.info?.bodyPart || BodyPart.NONE;
     assignreq.mountingOrientation = currRotation
@@ -127,7 +116,7 @@ export function TrackerSettingsPage() {
 
     assignreq.displayName = trackerName ?? null;
     assignreq.trackerId = tracker?.tracker.trackerId;
-    assignreq.allowDriftCompensation = allowDriftCompensation;
+    assignreq.allowDriftCompensation = false;
     sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
   };
 
@@ -138,21 +127,10 @@ export function TrackerSettingsPage() {
   useDebouncedEffect(() => updateTrackerSettings(), [trackerName], 1000);
 
   useEffect(() => {
-    updateTrackerSettings();
-  }, [allowDriftCompensation]);
-
-  useEffect(() => {
-    if (tracker && !firstLoad) setFirstLoad(true);
-  }, [tracker, firstLoad]);
-
-  useEffect(() => {
-    if (firstLoad) {
-      reset({
-        trackerName: tracker?.tracker.info?.customName as string | null,
-        allowDriftCompensation: tracker?.tracker.info?.allowDriftCompensation,
-      });
-    }
-  }, [firstLoad]);
+    reset({
+      trackerName: tracker?.tracker.info?.customName as string | null,
+    });
+  }, []);
 
   const boardType = useMemo(() => {
     if (tracker?.device?.hardwareInfo?.officialBoardType) {
@@ -244,12 +222,20 @@ export function TrackerSettingsPage() {
                 )}
                 {!updateUnavailable && (
                   <>
+                    {needUpdate === 'blocked' && (
+                      // This happens only if no update is available and or the user is not in the current stagged
+                      <Localized id="tracker-settings-update-blocked">
+                        <Typography>
+                          Update not available. No other releases available
+                        </Typography>
+                      </Localized>
+                    )}
                     {needUpdate === 'updated' && (
                       <Localized id="tracker-settings-update-up_to_date">
                         <Typography>Up to date</Typography>
                       </Localized>
                     )}
-                    {needUpdate === 'need-update' && currentFirmwareRelease && (
+                    {needUpdate === 'can-update' && currentFirmwareRelease && (
                       <Localized
                         id="tracker-settings-update-available"
                         vars={{ versionName: currentFirmwareRelease.name }}
@@ -273,9 +259,9 @@ export function TrackerSettingsPage() {
               <Localized id="tracker-settings-update">
                 <Button
                   variant={
-                    needUpdate === 'need-update' ? 'primary' : 'secondary'
+                    needUpdate === 'can-update' ? 'primary' : 'secondary'
                   }
-                  disabled={needUpdate !== 'need-update'}
+                  disabled={needUpdate !== 'can-update'}
                   to="/firmware-update"
                 >
                   Update now
@@ -466,29 +452,6 @@ export function TrackerSettingsPage() {
                     {l10n.getString('tracker-settings-mounting_section-edit')}
                   </Button>
                 </div>
-              </div>
-            </div>
-          )}
-          {tracker?.tracker.info?.isImu && (
-            <div className="flex flex-col gap-2 w-full mt-3">
-              <Typography variant="section-title">
-                {l10n.getString('tracker-settings-drift_compensation_section')}
-              </Typography>
-              <Typography color="secondary">
-                {l10n.getString(
-                  'tracker-settings-drift_compensation_section-description'
-                )}
-              </Typography>
-              <div className="flex">
-                <CheckBox
-                  variant="toggle"
-                  outlined
-                  name="allowDriftCompensation"
-                  control={control}
-                  label={l10n.getString(
-                    'tracker-settings-drift_compensation_section-edit'
-                  )}
-                />
               </div>
             </div>
           )}

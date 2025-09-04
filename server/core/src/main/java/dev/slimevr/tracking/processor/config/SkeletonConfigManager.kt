@@ -34,6 +34,9 @@ class SkeletonConfigManager(
 	var userHeightFromOffsets: Float = calculateUserHeight()
 		private set
 
+	var userNeckHeightFromOffsets: Float = calculateUserHeight()
+		private set
+
 	init {
 		if (humanPoseManager?.isSkeletonPresent != false) {
 			updateSettingsInSkeleton()
@@ -87,6 +90,7 @@ class SkeletonConfigManager(
 
 		// Re-calculate user height
 		userHeightFromOffsets = calculateUserHeight()
+		userNeckHeightFromOffsets = userHeightFromOffsets - getOffset(SkeletonConfigOffsets.NECK)
 	}
 
 	fun setOffset(config: SkeletonConfigOffsets, newValue: Float?) {

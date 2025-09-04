@@ -1,6 +1,7 @@
 import { atom } from 'jotai';
 import {
   BodyPart,
+  BoneT,
   DataFeedUpdateT,
   DeviceDataT,
   TrackerDataT,
@@ -17,6 +18,8 @@ export interface FlatDeviceTracker {
 export const ignoredTrackersAtom = atom(new Set<string>());
 
 export const datafeedAtom = atom(new DataFeedUpdateT());
+
+export const bonesAtom = atom<BoneT[]>([]);
 
 export const devicesAtom = selectAtom(
   datafeedAtom,
@@ -56,12 +59,6 @@ export const computedTrackersAtom = selectAtom(
   isEqual
 );
 
-export const bonesAtom = selectAtom(
-  datafeedAtom,
-  (datafeed) => datafeed.bones,
-  isEqual
-);
-
 export const hasHMDTrackerAtom = atom((get) => {
   const trackers = get(flatTrackersAtom);
 
@@ -71,6 +68,12 @@ export const hasHMDTrackerAtom = atom((get) => {
       (tracker.tracker.info.isHmd || tracker.tracker.position?.y !== undefined)
   );
 });
+
+export const stayAlignedPoseAtom = selectAtom(
+  datafeedAtom,
+  (datafeed) => datafeed.stayAlignedPose,
+  isEqual
+);
 
 export const trackerFromIdAtom = ({
   trackerNum,

@@ -9,6 +9,11 @@
 
 websocket-connecting = Verbinding maken met de server
 websocket-connection_lost = Verbinding met de server verbroken. Opniew verbinding maken...
+websocket-connection_lost-desc = Het ziet er naar uit dat de verbinding met de SlimeVR server is verbroken. Check het logboek en start het programma opnieuw.
+websocket-timedout = Kan niet verbinden met de server.
+websocket-timedout-desc = Het ziet er naar uit dat de SlimeVR server is gestopt. Check het logboek en start het programma opnieuw.
+websocket-error-close = SlimeVR afsluiten
+websocket-error-logs = Open het logboek.
 
 ## Update notification
 
@@ -49,10 +54,42 @@ body_part-LEFT_HAND = Linkerhand
 body_part-LEFT_UPPER_LEG = Linkerdij
 body_part-LEFT_LOWER_LEG = Linkerenkel
 body_part-LEFT_FOOT = Linkervoet
+body_part-LEFT_THUMB_METACARPAL = Linkerduim middenhandsbeentje
+body_part-LEFT_THUMB_PROXIMAL = Linkerduim proximaal
+body_part-LEFT_THUMB_DISTAL = Linkerduim distaal
+body_part-LEFT_INDEX_PROXIMAL = Linker wijsvinger proximaal
+body_part-LEFT_INDEX_INTERMEDIATE = Linker middelste kootje van de wijsvinger
+body_part-LEFT_INDEX_DISTAL = Linker wijsvinger distaal
+body_part-LEFT_MIDDLE_PROXIMAL = Linker middelvinger proximaal
+body_part-LEFT_MIDDLE_INTERMEDIATE = Linker middelste kootje van de middelvinger
+body_part-LEFT_MIDDLE_DISTAL = Linker middelvinger distaal
+body_part-LEFT_RING_PROXIMAL = Linker ringvinger proximaal
+body_part-LEFT_RING_INTERMEDIATE = Linker middelste kootje van de ringvinger
+body_part-LEFT_RING_DISTAL = Linker ringvinger distaal
+body_part-LEFT_LITTLE_PROXIMAL = Linker kleine vinger proximaal
+body_part-LEFT_LITTLE_INTERMEDIATE = Linker middelste kootje van de kleine vinger
+body_part-LEFT_LITTLE_DISTAL = Linker kleine vinger distaal
+body_part-RIGHT_THUMB_METACARPAL = Rechterduim middenhandsbeentje
+body_part-RIGHT_THUMB_PROXIMAL = Rechterduim proximaal
+body_part-RIGHT_THUMB_DISTAL = Rechterduim distaal
+body_part-RIGHT_INDEX_PROXIMAL = Rechter wijsvinger proximaal
+body_part-RIGHT_INDEX_INTERMEDIATE = Rechter middelste kootje van de wijsvinger
+body_part-RIGHT_INDEX_DISTAL = Rechter wijsvinger distaal
+body_part-RIGHT_MIDDLE_PROXIMAL = Rechts middelvinger proximaal
+body_part-RIGHT_MIDDLE_INTERMEDIATE = Rechter middelste kootje van de middelvinger
+body_part-RIGHT_MIDDLE_DISTAL = Rechter middelvinger distaal
+body_part-RIGHT_RING_PROXIMAL = Rechter ringvinger proximaal
+body_part-RIGHT_RING_INTERMEDIATE = Rechter middelste kootje van de ringvinger
+body_part-RIGHT_RING_DISTAL = Rechter ringvinger distaal
+body_part-RIGHT_LITTLE_PROXIMAL = Rechter kleine vinger proximaal
+body_part-RIGHT_LITTLE_INTERMEDIATE = Rechter middelste kootje van de kleine vinger
+body_part-RIGHT_LITTLE_DISTAL = Rechter kleine vinger distaal
 
 ## BoardType
 
+board_type-UNKNOWN = Onbekend
 board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = Custom bord
 board_type-WROOM32 = WROOM32
 board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
@@ -60,43 +97,152 @@ board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joycons
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Handschoen
 
 ## Proportions
 
 skeleton_bone-NONE = Geen
 skeleton_bone-HEAD = Hoofdverschuiving
+skeleton_bone-HEAD-desc =
+    Dit is de afstand tussen je headset en het midden van je hoofd.
+    Om dit aan te passen, schud je je hoofd naar links en rechts alsof je 'nee' zegt, 
+    pas het aan totdat beweging van de andere trackers te verwaarlozen is.
 skeleton_bone-NECK = Neklengte
+skeleton_bone-NECK-desc =
+    Dit is de afstand tussen het midden van je hoofd en de basis van je nek.
+    Om dit aan te passen, beweeg je je hoofd op en neer alsof je knikt, of kantel je je hoofd 
+    naar links en rechts. Wijzig de positie totdat beweging in andere trackers verwaarloosbaar is.
 skeleton_bone-torso_group = Romp lengte
+skeleton_bone-torso_group-desc =
+    Dit is de afstand van je nek tot je heupen.
+    Om dit aan te passen, ga rechtop staan en pas het aan totdat je virtuele heupen
+    in lijn zijn met je echte heupen.
 skeleton_bone-UPPER_CHEST = Bovenborst Lengte
+skeleton_bone-UPPER_CHEST-desc =
+    Dit is de afstand tussen de basis van je nek en het midden van je borst.
+    Om dit aan te passen, stel je de torso-lengte correct af en pas je deze aan in verschillende houdingen 
+    (zitten, bukken, liggen, enz.) totdat je virtuele ruggengraat overeenkomt met je echte.
 skeleton_bone-CHEST_OFFSET = Borstoffset
+skeleton_bone-CHEST_OFFSET-desc =
+    Dit kan worden aangepast om je virtuele borsttracker omhoog of omlaag te verplaatsen,
+    om te helpen bij de kalibratie in bepaalde spellen of applicaties die verwachten dat deze hoger of lager staat.
 skeleton_bone-CHEST = Borstafstand
+skeleton_bone-CHEST-desc =
+    Dit is de afstand van het midden van je borst tot het midden van je ruggengraat.
+    Om dit aan te passen, stel je de torso-lengte correct af en pas je deze aan in verschillende houdingen 
+    (zitten, bukken, liggen, enz.) totdat je virtuele ruggengraat overeenkomt met je echte.
 skeleton_bone-WAIST = Taille lengte
+skeleton_bone-WAIST-desc =
+    Dit is de afstand van het midden van je ruggengraat tot je navel.
+    Om dit aan te passen, stel je de torso-lengte correct af en pas je deze aan in verschillende houdingen 
+    (zitten, bukken, liggen, enz.) totdat je virtuele ruggengraat overeenkomt met je echte.
 skeleton_bone-HIP = Heuplengte
+skeleton_bone-HIP-desc =
+    Dit is de afstand van je navel tot je heupen.
+    Om dit aan te passen, stel je de torso-lengte correct in en pas je deze aan in verschillende houdingen
+    (zitten, bukken, liggen, enz.) totdat je virtuele ruggengraat overeenkomt met je echte.
 skeleton_bone-HIP_OFFSET = Heupoffset
+skeleton_bone-HIP_OFFSET-desc =
+    Dit kan worden aangepast om je virtuele heuptracker omhoog of omlaag te verplaatsen,
+    om te helpen bij de kalibratie in bepaalde spellen of applicaties die mogelijk verwachten dat deze zich rond je middel bevindt.
 skeleton_bone-HIPS_WIDTH = Heupbreedte
+skeleton_bone-HIPS_WIDTH-desc =
+    Dit is de afstand tussen het begin van je benen.
+    Om dit aan te passen, voer je een volledige reset uit met je benen gestrekt en pas je het aan totdat je virtuele benen horizontaal overeenkomen met je echte.
 skeleton_bone-leg_group = Beenlengte
+skeleton_bone-leg_group-desc =
+    Dit is de afstand van je heupen tot je voeten.
+    Om dit aan te passen, pas je je torso-lengte op de juiste manier aan
+    totdat je virtuele voeten op hetzelfde niveau staan als je echte.
 skeleton_bone-UPPER_LEG = Bovenbeenlengte
+skeleton_bone-UPPER_LEG-desc =
+    Dit is de afstand van je heupen tot je knieën.
+    Om dit aan te passen, pas je je beenlengte op de juiste manier aan
+    totdat je virtuele knieën op dezelfde hoogte zijn als je echte.
 skeleton_bone-LOWER_LEG = Onderbeenlengte
+skeleton_bone-LOWER_LEG-desc =
+    Dit is de afstand van je knieën tot je enkels.
+    Om dit aan te passen, pas je je beenlengte op de juiste manier aan
+    totdat je virtuele knieën op dezelfde hoogte zijn als je echte knieën.
 skeleton_bone-FOOT_LENGTH = Voetlengte
+skeleton_bone-FOOT_LENGTH-desc =
+    Dit is de afstand van je enkels tot je tenen.
+    Om dit aan te passen, ga op je tenen staan en pas het aan totdat je virtuele voeten op hun plaats blijven.
 skeleton_bone-FOOT_SHIFT = Voetverschuiving
+skeleton_bone-FOOT_SHIFT-desc =
+    Deze waarde is de horizontale afstand van je knie tot je enkel.
+    Dit houdt rekening met het feit dat je onderbenen naar achteren staan wanneer je rechtop staat.
+    Om dit aan te passen, stel je de voetlengte in op 0, voer je een volledige reset uit,
+    en pas je het aan totdat je virtuele voeten op één lijn liggen met het midden van je enkels.
 skeleton_bone-SKELETON_OFFSET = Skelet offset
+skeleton_bone-SKELETON_OFFSET-desc =
+    Dit kan worden aangepast om al je trackers naar voren of naar achteren te verschuiven.
+    Het kan worden gebruikt om te helpen bij de kalibratie in bepaalde spellen of toepassingen
+    die mogelijk verwachten dat je trackers verder naar voren staan.
 skeleton_bone-SHOULDERS_DISTANCE = Schoudersafstand
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    Dit is de verticale afstand van de basis van je nek tot je schouders.
+    Om dit aan te passen, stel je de lengte van je bovenarm in op 0 en
+    pas je deze aan totdat je virtuele elleboogtrackers verticaal uitlijnen met je echte schouders.
 skeleton_bone-SHOULDERS_WIDTH = Schouderbreedte
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    Dit is de horizontale afstand van de basis van je nek tot je schouders.
+    Om dit aan te passen, stel je de lengte van je bovenarm in op 0 en pas je deze aan
+    totdat je virtuele elleboogtrackers horizontaal uitlijnen met je echte schouders.
 skeleton_bone-arm_group = Armlengte
+skeleton_bone-arm_group-desc =
+    Dit is de afstand van je schouders tot je polsen.
+    Om dit aan te passen, pas je de schouderafstand correct aan, stel je Handafstand Y in op 0, 
+    en pas je deze aan totdat je handtrackers op één lijn liggen met je polsen.
 skeleton_bone-UPPER_ARM = Bovenarmlengte
+skeleton_bone-UPPER_ARM-desc =
+    Dit is de afstand van je schouders tot je ellebogen.
+    Om dit aan te passen, pas je de armlengte correct aan en pas je deze aan
+    totdat je elleboogtrackers overeenkomen met je echte ellebogen.
 skeleton_bone-LOWER_ARM = Onderarmlengte
+skeleton_bone-LOWER_ARM-desc =
+    Dit is de afstand van je ellebogen tot je polsen.
+    Om dit aan te passen, pas je de armlengte correct aan en pas je deze aan
+    totdat je elleboogtrackers overeenkomen met je echte ellebogen.
 skeleton_bone-HAND_Y = Afstand hand Y
+skeleton_bone-HAND_Y-desc =
+    Dit is de verticale afstand van je polsen tot het midden van je hand.
+    Om dit aan te passen voor motion capture, pas je de armlengte correct aan 
+    en pas je deze aan totdat je handtrackers verticaal uitgelijnd zijn met het midden van je handen. 
+    Wil je het aanpassen voor elleboogtracking vanaf je controllers, 
+    stel dan de armlengte in op 0 en pas je deze aan totdat je elleboogtrackers verticaal op één lijn liggen met je polsen.
 skeleton_bone-HAND_Z = Afstand hand Z
+skeleton_bone-HAND_Z-desc =
+    Dit is de horizontale afstand van je polsen tot het midden van je hand.
+    Als je dit wilt aanpassen voor motion capture, stel je deze in op 0.
+    Wil je het aanpassen voor elleboogtracking vanaf je controllers, stel dan de armlengte in op 0 
+    en pas je deze aan totdat je elleboogtrackers horizontaal op één lijn liggen met je polsen.
 skeleton_bone-ELBOW_OFFSET = Elleboogoffset
+skeleton_bone-ELBOW_OFFSET-desc = Dit kan worden aangepast om je virtuele elleboogtrackers omhoog of omlaag te verplaatsen, zodat wordt voorkomen dat VRChat per ongeluk een elleboogtracker aan de borst koppelt.
 
 ## Tracker reset buttons
 
 reset-reset_all = Alle afmetingen resetten
+reset-reset_all_warning-v2 =
+    <b>Waarschuwing:</b> Je verhoudingen worden teruggezet naar de standaardinstellingen, geschaald op basis van je ingestelde lengte.
+    Weet je zeker dat je dit wilt doen?
 reset-reset_all_warning-reset = Verhoudingen resetten
 reset-reset_all_warning-cancel = Annuleren
+reset-reset_all_warning_default-v2 =
+    <b>Waarschuwing:</b> Uw lengte is nog niet ingesteld, je verhoudingen worden teruggezet naar de standaardinstellingen met de standaard lengte.
+    Weet je zeker dat je dit wilt doen?
 reset-full = Volledige reset
 reset-mounting = Reset montage
+reset-mounting-feet = Reset voetmontage
+reset-mounting-fingers = Reset vingermontage
 reset-yaw = Yaw Reset
 
 ## Serial detection stuff
@@ -122,6 +268,7 @@ navbar-settings = Instellingen
 
 bvh-start_recording = BVH opnemen
 bvh-recording = Opname bezig...
+bvh-save_title = Sla BVH-opname op
 
 ## Tracking pause
 
@@ -162,6 +309,7 @@ widget-imu_visualizer-rotation_raw = Rauw
 widget-imu_visualizer-rotation_preview = Preview
 widget-imu_visualizer-acceleration = Versnelling
 widget-imu_visualizer-position = Positie
+widget-imu_visualizer-stay_aligned = Blijf in lijn
 
 ## Widget: Skeleton Visualizer
 
@@ -189,6 +337,7 @@ tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Rotatie X/Y/Z
 tracker-table-column-position = Positie X/Y/Z
+tracker-table-column-stay_aligned = Blijf in lijn
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -238,15 +387,28 @@ tracker-settings-mounting_section-edit = Montage bewerken
 tracker-settings-drift_compensation_section = Laat drift compensatie toe
 tracker-settings-drift_compensation_section-description = Moet deze tracker compenseren voor drift wanneer drift compensatie is ingeschakeld?
 tracker-settings-drift_compensation_section-edit = Laat drift compensatie toe
+tracker-settings-use_mag = Sta de magnetometer toe op deze tracker.
+# Multiline!
+tracker-settings-use_mag-description =
+    Wilt u dat deze tracker de magnetometer gebruikt om drift te verminderen wanneer de magnetometer is toegestaan? <b>Zet de tracker niet uit terwijl u dit aan of uit zet.</b>
+    U moet eerst de magnetometer toestemming geven,<magSetting>click hier om naar de instellingen te gaan</magSetting>.
 tracker-settings-use_mag-label = Laat magnetometer toe
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = Trackernaam
 tracker-settings-name_section-description = Geef een schattige bijnaam :)
 tracker-settings-name_section-placeholder = NightyBeast's linkerbeen
+tracker-settings-name_section-label = Trackernaam
 tracker-settings-forget = Vergeet tracker
 tracker-settings-forget-description = Verwijdert de tracker van de SlimeVR Server en voorkomt dat deze verbinding kan maken totdat de server opnieuw wordt opgestart. De configuratie van de tracker blijft behouden.
 tracker-settings-forget-label = Vergeet tracker
+tracker-settings-update-unavailable = Kan niet worden bijgewerkt (DIY)
+tracker-settings-update-low-battery = Kan niet worden bijgewerkt. Batterij lager dan 50%
+tracker-settings-update-up_to_date = Up to date.
+tracker-settings-update-blocked = Update is niet beschikbaar. Er zijn geen andere versies beschikbaar.
+tracker-settings-update-available = { $versionName } is nu beschikbaar
+tracker-settings-update = Werk nu bij.
+tracker-settings-update-title = Firmware versie
 
 ## Tracker part card info
 
@@ -313,6 +475,7 @@ mounting_selection_menu-close = Sluiten
 settings-sidebar-title = Instellingen
 settings-sidebar-general = Algemeen
 settings-sidebar-tracker_mechanics = Trackersinstellingen
+settings-sidebar-stay_aligned = Blijf in lijn
 settings-sidebar-fk_settings = FK-instellingen
 settings-sidebar-gesture_control = Tikbediening
 settings-sidebar-interface = Interface
@@ -322,6 +485,9 @@ settings-sidebar-utils = Hulpmiddelen
 settings-sidebar-serial = Serieel console
 settings-sidebar-appearance = Uiterlijk
 settings-sidebar-notifications = Notificaties
+settings-sidebar-behavior = Gedrag
+settings-sidebar-firmware-tool = DIY Firmware Tool
+settings-sidebar-vrc_warnings = VRChat Configuratie-waarschuwingen
 settings-sidebar-advanced = Geavanceerd
 
 ## SteamVR settings
@@ -376,8 +542,19 @@ settings-general-tracker_mechanics-drift_compensation-description =
     Veranderd de sterkte van de compensatie en hoeveel resets worden gebruikt.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensate
 settings-general-tracker_mechanics-drift_compensation-prediction = Voorspelling van driftcompensatie
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    Voorspelt compensatie van gierdrift buiten het eerder gemeten bereik.
+    Schakel dit in als jouw trackers continu om de gier-as draaien.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Voorspelling van driftcompensatie
+settings-general-tracker_mechanics-drift_compensation_warning =
+    <b>Waarschuwing:</b> Gebruik alleen driftcompensatie als je heel vaak
+    moet resetten (elke ~5-10 minuten).
+    
+    IMU's die vaak worden gereset, zijn onder ander:
+    Joy-Cons, owoTrack en MPU's (zonder recente firmware).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Annuleren
+settings-general-tracker_mechanics-drift_compensation_warning-done = Ik begrijp het
 settings-general-tracker_mechanics-drift_compensation-amount-label = Compensatiesterkte
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Gebruik de laatste x resets
 settings-general-tracker_mechanics-save_mounting_reset = Sla de automatische montage reset kalibratie op
@@ -388,6 +565,25 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Gebruikt magnetometer op alle trackers die er een compatibele firmware voor hebben, waardoor drift in stabiele magnetische omgevingen wordt verminderd.
     Je kan dit per individuele tracker uit zetten in de instellingen van de tracker. <b>Sluit geen van de trackers af terwijl u dit in- en uitschakelt!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Gebruik magnetometer op de trackers
+settings-stay_aligned = Blijf in lijn
+settings-stay_aligned-description = ijf in lijn vermindert drift door je trackers geleidelijk aan te passen zodat ze overeenkomen met je ontspannen houdingen.
+settings-stay_aligned-setup-label = Blijf in lijn instellen
+settings-stay_aligned-setup-description = Je moet "Blijf in lijn instellen" voltooien om Blijf in lijn te activeren.
+settings-stay_aligned-warnings-drift_compensation = ⚠ Schakel Drift Compensation uit! Drift Compensation conflicteert met Blijf in lijn.
+settings-stay_aligned-enabled-label = Trackers aanpassen
+settings-stay_aligned-hide_yaw_correction-label = Aanpassing verbergen (om te vergelijken zonder Blijf in lijn)
+settings-stay_aligned-general-label = Algemeen
+settings-stay_aligned-relaxed_poses-label = Ontspannen houdingen
+settings-stay_aligned-relaxed_poses-description = Blijf in lijn gebruikt je ontspannen houdingen om je trackers in lijn te houden. Gebruik "Stel Blijf in lijn in" om deze houdingen bij te werken.
+settings-stay_aligned-relaxed_poses-standing = Pas trackers aan terwijl je staat
+settings-stay_aligned-relaxed_poses-sitting = Pas trackers aan terwijl je op een stoel zit
+settings-stay_aligned-relaxed_poses-flat = Pas trackers aan terwijl je op de grond zit of op je rug ligt.
+settings-stay_aligned-relaxed_poses-save_pose = Sla houding op
+settings-stay_aligned-relaxed_poses-reset_pose = Reset houding
+settings-stay_aligned-relaxed_poses-close = Sluiten
+settings-stay_aligned-debug-label = Foutopsporing
+settings-stay_aligned-debug-description = Voeg je instellingen toe wanneer je problemen met Blijf in lijn rapporteert.
+settings-stay_aligned-debug-copy-label = Instellingen naar klembord kopiëren
 
 ## FK/Tracking settings
 
@@ -413,6 +609,11 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotee
 settings-general-fk_settings-leg_fk = Been tracking
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Schakel Montage Reset voor de voeten in door op je tenen te staan.
 settings-general-fk_settings-leg_fk-reset_mounting_feet = Voeten montage reset.
+settings-general-fk_settings-enforce_joint_constraints = Bewegingslimieten van het skelet
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Beperkingen toepassen
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Voorkomt dat gewrichten over hun limiet draaien
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Corrigeren met beperkingen
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Corrigeer gewrichtsrotaties wanneer ze hun limiet overschrijden
 settings-general-fk_settings-arm_fk = Arm tracking
 settings-general-fk_settings-arm_fk-description = Verander de manier waarop de armen worden getrackt.
 settings-general-fk_settings-arm_fk-force_arms = Dwing armen vanuit HMD
@@ -444,9 +645,6 @@ settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Berek
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Bereken het gemiddelde van de 'yaw en roll van de knie trackers met die van de enkels'
 settings-general-fk_settings-self_localization-title = Mocap modus
 settings-general-fk_settings-self_localization-description = Mocap modus staat het skelet model toe om zijn eigen positie te bepalen zonder het gebruik van een headset of andere trackers. Dit vergt wel het gebruik van voet en hoofd trackers, dit is momenteel nog expirimenteel.
-settings-general-fk_settings-vive_emulation-title = Vive-emulatie
-settings-general-fk_settings-vive_emulation-description = Emuleer de problemen met de taille van Vive trackers. Dit is een mop en maakt tracking slechter.
-settings-general-fk_settings-vive_emulation-label = Vive-emulatie inschakelen
 
 ## Gesture control settings (tracker tapping)
 
@@ -518,6 +716,13 @@ settings-general-interface-feedback_sound-volume = Feedback geluid volume
 settings-general-interface-connected_trackers_warning = Waarschuwing voor verbonden trackers
 settings-general-interface-connected_trackers_warning-description = Deze optie toont een pop-up bericht telkens wanneer je SlimeVR probeert af te sluiten terwijl er nog trackers verbonden zijn. Dit bericht herinnert je eraan om je trackers uit te schakelen wanneer je klaar bent om de batterijduur te sparen.
 settings-general-interface-connected_trackers_warning-label = Waarschuwing voor verbonden trackers bij het afsluiten
+
+## Behavior settings
+
+settings-interface-behavior = Gedrag
+settings-general-interface-dev_mode = Ontwikkelaarsmodus
+settings-general-interface-dev_mode-description = Deze modus kan nuttig zijn als je diepgaande gegevens nodig hebt of op een geavanceerd niveau wilt communiceren met aangesloten trackers.
+settings-general-interface-dev_mode-label = Ontwikkelaarsmodus
 settings-general-interface-use_tray = Minimaliseren naar systeem vak
 settings-general-interface-use_tray-description = Hiermee kun je het venster sluiten zonder de SlimeVR server te beëindigen, zodat je deze op de achtergrond kunt blijven gebruiken zonder dat de GUI in de weg zit.
 settings-general-interface-use_tray-label = Minimaliseren naar systeem vak
@@ -530,6 +735,17 @@ settings-general-interface-discord_presence-message =
         [one] Gebruikt 1 tracker
        *[other] Gebruikt { $amount } trackers
     }
+settings-interface-behavior-error_tracking = Foutverzameling via Sentry.io
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>Geeft u toestemming voor het verzamelen van geanonimiseerde foutgegevens?</h1>
+    
+    <b>We verzamelen geen persoonlijke informatie</b> zoals uw IP-adres of draadloze inloggegevens. SlimeVR hecht veel waarde aan uw privacy!
+    
+    Om de beste gebruikerservaring te bieden, verzamelen we geanonimiseerde foutrapporten, prestatiestatistieken en informatie over het besturingssysteem. Dit helpt ons bij het detecteren van fouten en problemen met SlimeVR. Deze statistieken worden verzameld via Sentry.io.
+settings-interface-behavior-error_tracking-label = Stuur fouten naar de ontwikkelaars
+settings-interface-behavior-bvh_directory = Map om BVH-opnames op te slaan
+settings-interface-behavior-bvh_directory-description = Kies een map om je BVH-opnames op te slaan, zodat je niet elke keer hoeft te kiezen waar je ze opslaat.
+settings-interface-behavior-bvh_directory-label = Map voor BVH-opnames
 
 ## Serial settings
 
@@ -588,6 +804,13 @@ settings-osc-vrchat-description-v1 = Wijzig instellingen die specifiek zijn voor
 settings-osc-vrchat-enable = Inschakelen
 settings-osc-vrchat-enable-description = Schakel het verzenden en ontvangen van gegevens in en uit.
 settings-osc-vrchat-enable-label = Inschakelen
+settings-osc-vrchat-oscqueryEnabled = OSCQuery inschakelen
+settings-osc-vrchat-oscqueryEnabled-description =
+    OSCQuery detecteert automatisch actieve instanties van VRChat en stuurt hen data.
+    Het kan zichzelf ook aan hen bekendmaken om HMD- en controllerdata te ontvangen.
+    Om HMD- en controllerdata van VRChat te kunnen ontvangen, ga je in het hoofdmenu naar Instellingen,
+    onder "Tracking & IK", en schakel je "Allow Sending Head and Wrist VR Tracking OSC Data" in.
+settings-osc-vrchat-oscqueryEnabled-label = Schakel OSCQuery in
 settings-osc-vrchat-network = Netwerkpoorten
 settings-osc-vrchat-network-description-v1 = Stel de poorten in voor het ontvangen en verzenden van tracking data. Kan op standaardinstellingen blijven voor VRChat.
 settings-osc-vrchat-network-port_in =
@@ -630,6 +853,7 @@ settings-osc-vmc-network-address-description = Stel het adres in waarnaar gegeve
 settings-osc-vmc-network-address-placeholder = IPV4-adres
 settings-osc-vmc-vrm = VRM Model
 settings-osc-vmc-vrm-description = Laad een VRM-model om hoofdverankering mogelijk te maken en zorg voor een hogere compatibiliteit met andere applicaties.
+settings-osc-vmc-vrm-untitled_model = Naamloos model
 settings-osc-vmc-vrm-file_select = Sleep een modelbestand naar hier om ze te gebruiken of <u>blader</u>.
 settings-osc-vmc-anchor_hip = Heupverankering
 settings-osc-vmc-anchor_hip-description = Veranker de tracking aan de heupen, handig voor zittende VTubing. Als u deze uitschakelt, laadt u een VRM-model.
@@ -650,11 +874,26 @@ settings-utils-advanced-reset-server-label = Tracking resetten
 settings-utils-advanced-reset-all = Alle instellingen resetten
 settings-utils-advanced-reset-all-description = Herstel de standaardwaarden voor instellingen van beide de interface en de tracking.
 settings-utils-advanced-reset-all-label = Alles resetten
+settings-utils-advanced-reset_warning =
+    { $type ->
+        [gui]
+            <b>Waarschuwing</b>Hiermee worden al uw GUI instellingen teruggezet naar de standaardinstellingen. 
+            Weet u zeker dat u dit wilt doen?
+        [server]
+            <b>Waarschuwing</b>Hiermee worden al uw tracking instellingen teruggezet naar de standaardinstellingen.
+            Weet u zeker dat u dit wilt doen?
+       *[all]
+            <b>Waarschuwing:</b> Hiermee worden al uw instellingen teruggezet naar de standaardinstellingen.
+            Weet u zeker dat u dit wilt doen?
+    }
 settings-utils-advanced-reset_warning-reset = Instellingen resetten
 settings-utils-advanced-reset_warning-cancel = Annuleren
-settings-utils-advanced-open_data = Gegevensmap
-settings-utils-advanced-open_data-description = Open de gegevensmap van SlimeVR in de bestandsverkenner, met configuratie- en logbestanden.
+settings-utils-advanced-open_data-v1 = Configuratiemap
+settings-utils-advanced-open_data-description-v1 = Open de configuratiemap van SlimeVR in de bestandsverkenner, met configuratiebestanden.
 settings-utils-advanced-open_data-label = Map openen
+settings-utils-advanced-open_logs = logboeken
+settings-utils-advanced-open_logs-description = Open de logmap van SlimeVR in de bestandsverkenner, met de logboeken van de app
+settings-utils-advanced-open_logs-label = Map openen
 
 ## Setup/onboarding menu
 
@@ -746,6 +985,17 @@ onboarding-connect_tracker-connection_status-looking_for_server = Op zoek naar s
 onboarding-connect_tracker-connection_status-connection_error = Kan geen verbinding maken met Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = Kan de server niet vinden
 onboarding-connect_tracker-connection_status-done = Verbonden met de server
+onboarding-connect_tracker-connection_status-no_serial_log = Kon geen logbestanden van de tracker ophalen.
+onboarding-connect_tracker-connection_status-no_serial_device_found = Kon geen tracker via USB vinden.
+onboarding-connect_serial-error-modal-no_serial_log = Staat de tracker aan?
+onboarding-connect_serial-error-modal-no_serial_log-desc = Zorg dat de tracker aan staat en verbonden is met je computer.
+onboarding-connect_serial-error-modal-no_serial_device_found = Geen trackers gedetecteerd
+onboarding-connect_serial-error-modal-no_serial_device_found-desc =
+    Sluit een tracker met de meegeleverde USB-kabel aan op je computer en zet de tracker aan.
+    Als dit niet werkt:
+      -probeer een andere USB-kabel
+      -probeer een andere USB-poort
+      -probeer de SlimeVR-server opnieuw te installeren en selecteer "USB Drivers" in het onderdeelkeuze-menu
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -763,7 +1013,7 @@ onboarding-connect_tracker-next = Ik heb al mijn trackers verbonden
 
 onboarding-calibration_tutorial = Handleiding voor IMU-kalibratie
 onboarding-calibration_tutorial-subtitle = Helpt met het verminderen van het driften van de trackers!
-onboarding-calibration_tutorial-description = Elke keer dat je jouw trackers inschakelt, moeten ze even op een plat oppervlak rusten om te kalibreren. Leg al je trackers op een vlak oppervlak en <b>verplaats ze niet!</b>
+onboarding-calibration_tutorial-description-v1 = Zet je trackers aan en leg ze even op een stabiele ondergrond om te kalibreren. Kalibratie kan op elk moment na het inschakelen van de trackers worden uitgevoerd — deze pagina biedt alleen een handleiding. Klik op de knop "{ onboarding-calibration_tutorial-calibrate }" om te beginnen en <b>beweeg je trackers daarna niet meer!</b>
 onboarding-calibration_tutorial-calibrate = Al mijn trackers liggen neer
 onboarding-calibration_tutorial-status-waiting = Ik wacht op jou
 onboarding-calibration_tutorial-status-calibrating = Kalibreren
@@ -891,7 +1141,7 @@ onboarding-assign_trackers-warning-WAIST =
 
 onboarding-choose_mounting = Welke montagekalibratiemethode moet worden gebruikt?
 # Multiline text
-onboarding-choose_mounting-description = De oriëntatie van de montage corrigeert de plaatsing van trackers op uw lichaam.
+onboarding-choose_mounting-description = De oriëntatie van de montage corrigeert de plaatsing van trackers op je lichaam.
 onboarding-choose_mounting-auto_mounting = Automatische bevestiging
 # Italicized text
 onboarding-choose_mounting-auto_mounting-label-v2 = Aanbevolen
@@ -929,43 +1179,27 @@ onboarding-automatic_mounting-mounting_reset-title = Montage-reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Ga staan in een "skie"-houding met gebogen benen, je bovenlichaam naar voren gekanteld en armen gebogen.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Druk op de knop "Reset montage" en wacht 3 seconden voordat de montagerichtingen van de trackers opnieuw worden ingesteld.
 onboarding-automatic_mounting-preparation-title = Voorbereiding
-onboarding-automatic_mounting-preparation-step-0 = 1. Sta rechtop met je armen langs je zij.
-onboarding-automatic_mounting-preparation-step-1 = 2. Druk op de knop "Resetten" en wacht 3 seconden voordat de trackers opnieuw worden ingesteld.
+onboarding-automatic_mounting-preparation-v2-step-0 = 1. Druk op de knop "Volledige reset".
+onboarding-automatic_mounting-preparation-v2-step-1 = 2. Ga rechtop staan met je armen langs je zij. Zorg dat je recht vooruit kijkt.
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. Houd deze houding aan totdat de timer van 3 seconden is afgelopen.
 onboarding-automatic_mounting-put_trackers_on-title = Doe je trackers aan
 onboarding-automatic_mounting-put_trackers_on-description = Om montagerichtingen te kalibreren gaan we gebruik maken van de trackers die je net hebt toegewezen. Doe al je trackers aan, je kunt zien welke trackers welke zijn in de figuur rechts.
 onboarding-automatic_mounting-put_trackers_on-next = Ik heb al mijn trackers aan
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = Welke verhoudingskalibratiemethode moet worden gebruikt?
-# Multiline string
-onboarding-choose_proportions-description-v1 =
-    Lichaamsverhoudingen worden gebruikt om de afmetingen van je lichaam te bepalen. Deze informatie is nodig om de posities van de trackers te berekenen.
-    Als de verhoudingen van je lichaam niet overeenkomen met de opgeslagen waarden, zal de tracking-precisie slechter zijn. Je kunt dan last krijgen van ongemakkelijke effecten zoals schuiven of glijden, of kan je lichaam niet goed overeenkomen met je avatar in VR.
-    <b>Je hoeft je lichaam maar één keer te meten!</b> Tenzij de metingen onjuist zijn of je lichaam is veranderd, hoef je dit niet opnieuw te doen.
-onboarding-choose_proportions-auto_proportions = Automatische verhoudingen
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = Aanbevolen
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    Deze functie zal je lichaamsverhoudingen schatten door een sample van je bewegingen op te nemen en deze door een algoritme te laten analyseren. 
-    <b>Hiervoor moet je headset (HMD) verbonden zijn met SlimeVR en op je hoofd zitten!</b>
-onboarding-choose_proportions-manual_proportions = Handmatige lichaamsverhoudingen
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = Voor kleine details
-onboarding-choose_proportions-manual_proportions-description = Hier kan je jouw verhoudingen handmatig aanpassen
-onboarding-choose_proportions-export = Export proporties
-onboarding-choose_proportions-import = Importeer proporties
-onboarding-choose_proportions-import-success = geïmporteerd
-onboarding-choose_proportions-import-failed = Mislukt
-onboarding-choose_proportions-file_type = Lichaamsproporties bestand
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = Ga terug naar de reset tutorial
 onboarding-manual_proportions-title = Handmatige lichaamsverhoudingen
-onboarding-manual_proportions-precision = Precisie-aanpassing
-onboarding-manual_proportions-auto = Automatische kalibratie
-onboarding-manual_proportions-ratio = Aanpassen via verhoudingen
+onboarding-manual_proportions-fine_tuning_button = Automatisch afstemmen van verhoudingen
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Sluit een VR-headset aan om automatische fijnafstelling te gebruiken
+onboarding-manual_proportions-export = Export proporties
+onboarding-manual_proportions-import = Importeer proporties
+onboarding-manual_proportions-file_type = Lichaamsproporties bestand
+onboarding-manual_proportions-normal_increment = Normale verhoging
+onboarding-manual_proportions-precise_increment = Nauwkeurige verhoging
+onboarding-manual_proportions-grouped_proportions = Gegroepeerde verhoudingen
+onboarding-manual_proportions-all_proportions = Alle verhoudingen
+onboarding-manual_proportions-estimated_height = Geschatte gebruikerslengte
 
 ## Tracker automatic proportions setup
 
@@ -981,21 +1215,31 @@ onboarding-automatic_proportions-requirements-title = Vereisten
 # Each line of text is a different list item
 onboarding-automatic_proportions-requirements-descriptionv2 = Je hebt voldaan aan de minimale vereisten om je voeten te tracken (over het algemeen 5 trackers). Je hebt je trackers en headset aan en draagt ze. Je trackers en headset zijn verbonden met de SlimeVR server en werken naar behoren (zonder haperingen, loskoppelingen etc.). Je headset stuurt positiedata naar de SlimeVR server (dit vereist doorgaans dat SteamVR draait en verbonden is met SlimeVR via de SlimeVR SteamVR-driver). De tracking werkt en registreert je bewegingen nauwkeurig (je hebt bijvoorbeeld een volledige reset uitgevoerd en de trackers bewegen in de juiste richting bij schoppen, bukken, zitten etc.).
 onboarding-automatic_proportions-requirements-next = Ik heb de vereisten gelezen
-onboarding-automatic_proportions-check_height-title = Controleer je lengte
-onboarding-automatic_proportions-check_height-description =
-    We gebruiken je lengte als een basis voor onze metingen middels de HMD's hoogte, hiermee bepalen we je echte lengte.
-    Maar het is beter om zelf te controleren of dit klopt.
+onboarding-automatic_proportions-check_height-title-v3 = Meet de hoogte van uw headset
+onboarding-automatic_proportions-check_height-description-v2 = De hoogte van uw headset (HMD) moet iets minder zijn dan uw volledige lengte, aangezien headsets uw ooghoogte meten. Deze meting wordt gebruikt als basis voor uw lichaamsverhoudingen.
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = Druk op de knop terwijl je <u>rechtop</u> staat om je lengte te berekenen. Je hebt 3 seconden na dat je op de knop drukt!
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = Begin met meten terwijl je <u>rechtop</u> staat om je lengte te meten. Let erop dat je je handen niet hoger dan je headset tilt, want dat kan de meting beïnvloeden!
 onboarding-automatic_proportions-check_height-guardian_tip = Als je een losse VR-bril gebruikt, zorg er dan voor dat je guardian/veilige zone is ingeschakeld zodat je lengte correct is gekalibreerd!
-onboarding-automatic_proportions-check_height-fetch_height = Ik sta!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Onbekend
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = Je HMD lengte is
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = Je echte lengte is
+onboarding-automatic_proportions-check_height-hmd_height2 = De hoogte van uw headset is:
+onboarding-automatic_proportions-check_height-measure-start = Begin met meten
+onboarding-automatic_proportions-check_height-measure-stop = Stoppen met meten
+onboarding-automatic_proportions-check_height-measure-reset = Probeer opnieuw te meten
 onboarding-automatic_proportions-check_height-next_step = Ze zijn goed
+onboarding-automatic_proportions-check_floor_height-title = Meet uw vloerhoogte (optioneel)
+onboarding-automatic_proportions-check_floor_height-description = In sommige gevallen wordt uw vloerhoogte mogelijk niet correct ingesteld door uw headset, waardoor de hoogte van de headset hoger wordt gemeten dan zou moeten. U kunt de "hoogte" van uw vloer meten om de hoogte van uw headset te corrigeren.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = Begin met meten en zet een controller op je vloer om de hoogte te meten. Als je zeker weet dat je vloerhoogte klopt, kun je deze stap overslaan.
+# Shows an element below it
+onboarding-automatic_proportions-check_floor_height-floor_height = Uw vloerhoogte is:
+onboarding-automatic_proportions-check_floor_height-full_height = Uw geschatte volledige lengte is:
+onboarding-automatic_proportions-check_floor_height-measure-start = Begin met meten
+onboarding-automatic_proportions-check_floor_height-measure-stop = Stoppen met meten
+onboarding-automatic_proportions-check_floor_height-measure-reset = Probeer opnieuw te meten
+onboarding-automatic_proportions-check_floor_height-skip_step = Sla deze stap over en sla op.
+onboarding-automatic_proportions-check_floor_height-next_step = Gebruik vloerhoogte en bespaar
 onboarding-automatic_proportions-start_recording-title = Zorg dat je klaar bent om te bewegen
 onboarding-automatic_proportions-start_recording-description = We gaan nu enkele specifieke houdingen en bewegingen opnemen. Deze worden in het volgende scherm geprompt. Zorg dat je klaar bent om te beginnen als de knop wordt ingedrukt!
 onboarding-automatic_proportions-start_recording-next = Start opname
@@ -1030,6 +1274,73 @@ onboarding-automatic_proportions-error_modal-v2 =
     Dit is waarschijnlijk een probleem met de montagekalibratie. Zorg ervoor dat je tracking goed werkt voordat je het opnieuw probeert.
      <docs>Bekijk de documentatie</docs> of word lid van onze <discord>Discord</discord> voor hulp ^_^
 onboarding-automatic_proportions-error_modal-confirm = Begrepen!
+onboarding-automatic_proportions-smol_warning =
+    Uw ingestelde lengte van { $height } is lager dan de toegestane minimumlengte van { $minHeight }.
+    <b>Voer de metingen opnieuw uit en controleer of ze correct zijn.</b>
+onboarding-automatic_proportions-smol_warning-cancel = Ga terug
+
+## Tracker scaled proportions setup
+
+onboarding-scaled_proportions-title = Geschaalde proporties
+onboarding-scaled_proportions-description =
+    Voor een correcte werking van de SlimeVR-trackers hebben we de lengte van uw botten nodig.
+    We gebruiken hiervoor een gemiddelde lichaamsverhouding, geschaald op basis van uw lengte.
+onboarding-scaled_proportions-manual_height-title = Configureer uw lengte
+onboarding-scaled_proportions-manual_height-description-v2 = Deze lengte wordt gebruikt als basis voor je lichaamsverhoudingen.
+onboarding-scaled_proportions-manual_height-missing_steamvr =
+    SteamVR is momenteel niet verbonden met SlimeVR, dus metingen kunnen niet worden gebaseerd op je headset.
+    <b>Ga verder op eigen risico of raadpleeg de documentatie!</b>
+onboarding-scaled_proportions-manual_height-height-v2 = Uw volledige lengte is
+onboarding-scaled_proportions-manual_height-estimated_height = De geschatte hoogte van uw headset is:
+onboarding-scaled_proportions-manual_height-next_step = Opslaan en doorgaan
+onboarding-scaled_proportions-manual_height-warning =
+    Je gebruikt momenteel de handmatige manier om geschaalde verhoudingen in te stellen!
+    <b>Deze modus wordt alleen aanbevolen als je geen HMD met SlimeVR gebruikt.</b>
+    
+    Om de automatische geschaalde verhoudingen te kunnen gebruiken, doe het volgende:
+onboarding-scaled_proportions-manual_height-warning-no_hmd = Sluit een VR-headset aan
+onboarding-scaled_proportions-manual_height-warning-no_controllers = Zorg ervoor dat je controllers zijn verbonden en correct aan je handen zijn toegewezen
+
+## Tracker scaled proportions reset
+
+onboarding-scaled_proportions-reset_proportion-title = Reset je lichaamsverhoudingen
+onboarding-scaled_proportions-reset_proportion-description = Om je lichaamsverhoudingen op basis van je lengte in te stellen, moet je nu al je verhoudingen resetten. Dit zal alle verhoudingen die je hebt ingesteld wissen en een basisconfiguratie bieden.
+onboarding-scaled_proportions-done-title = Lichaamsverhoudingen ingesteld
+onboarding-scaled_proportions-done-description = Je lichaamsverhoudingen zouden nu gebaseerd moeten zijn op je lengte
+
+## Stay Aligned setup
+
+onboarding-stay_aligned-title = Blijf in lijn
+onboarding-stay_aligned-description = Stel Blijf in lijn in om je trackers in lijn te houden.
+onboarding-stay_aligned-put_trackers_on-title = Doe je trackers aan
+onboarding-stay_aligned-put_trackers_on-description = Om je ontspannen houdingen op te slaan, gebruiken we de trackers die je zojuist hebt toegewezen. Doe al je trackers om; je kunt zien welke welke zijn op de afbeelding rechts.
+onboarding-stay_aligned-put_trackers_on-trackers_warning = Je hebt momenteel minder dan 5 trackers aangesloten en toegewezen! Dit is het minimale aantal trackers dat nodig is om Blijf in lijn goed te laten werken.
+onboarding-stay_aligned-put_trackers_on-next = Ik heb al mijn trackers aan
+onboarding-stay_aligned-verify_mounting-title = Controleer je montage
+onboarding-stay_aligned-verify_mounting-step-0 = Blijf in lijn vereist een goede montage. Anders krijg je geen goede ervaring met Blijf in lijn.
+onboarding-stay_aligned-verify_mounting-step-1 = 1. Beweeg terwijl je staat.
+onboarding-stay_aligned-verify_mounting-step-2 = 2. Ga zitten en beweeg je benen en voeten.
+onboarding-stay_aligned-verify_mounting-step-3 = 3. Als je trackers niet op de juiste plek zitten, druk dan op "Montagekalibratie opnieuw uitvoeren".
+onboarding-stay_aligned-verify_mounting-redo_mounting = Montagekalibratie opnieuw uitvoeren
+onboarding-stay_aligned-preparation-title = Voorbereiding
+onboarding-stay_aligned-preparation-tip = Zorg dat je rechtop staat. Blijf recht vooruit kijken en houd je armen langs je zij.
+onboarding-stay_aligned-relaxed_poses-standing-title = Ontspannen Staande Houding
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Ga in een comfortabele houding staan. Ontspan!
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Druk op de knop "Houding opslaan".
+onboarding-stay_aligned-relaxed_poses-sitting-title = Ontspannen Zittende Houding op Stoel
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Ga comfortabel zitten. Ontspan!
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Druk op de knop "Houding opslaan".
+onboarding-stay_aligned-relaxed_poses-flat-title = Ontspannen Zittende Houding op de Vloer
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Ga op de vloer zitten met je benen voor je uit. Ontspan!
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Druk op de knop "Houding opslaan".
+onboarding-stay_aligned-relaxed_poses-skip_step = Overslaan
+onboarding-stay_aligned-done-title = Blijf in lijn ingeschakeld!
+onboarding-stay_aligned-done-description = Je Blijf in lijn-instelling is voltooid!
+onboarding-stay_aligned-done-description-2 = De setup is voltooid! Je kunt het proces opnieuw starten als je de houdingen opnieuw wilt kalibreren.
+onboarding-stay_aligned-previous_step = Vorige
+onboarding-stay_aligned-next_step = Volgende
+onboarding-stay_aligned-restart = Herstarten
+onboarding-stay_aligned-done = Klaar
 
 ## Home
 
@@ -1054,6 +1365,11 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = De { $trackerName } tracker heeft een error.
 status_system-StatusUnassignedHMD = De VR-headset moet worden toegewezen als hoofdtracker.
+status_system-StatusPublicNetwork =
+    { $count ->
+        [one] Je netwerkprofiel staat momenteel ingesteld op Openbaar ({ $adapters }). Dit wordt niet aanbevolen voor een goede werking van SlimeVR. <PublicFixLink>Hier lees je hoe je het kunt oplossen.</PublicFixLink>
+       *[other] Sommige van je netwerkadapters staan ingesteld op openbaar: { $adapters }. Dit wordt niet aanbevolen voor een goede werking van SlimeVR. <PublicFixLink>Hier lees je hoe je dit kunt oplossen.</PublicFixLink>
+    }
 
 ## Firmware tool globals
 
@@ -1066,7 +1382,7 @@ firmware_tool-loading = Laden...
 ## Firmware tool Steps
 
 firmware_tool = DIY firmware-tool
-firmware_tool-description = Hiermee kunt u uw DIY-trackers configureren en flashen
+firmware_tool-description = Hiermee kan je uw DIY-trackers configureren en flashen
 firmware_tool-not_available = Oeps, de firmwaretool is momenteel niet beschikbaar. Kom later terug!
 firmware_tool-not_compatible = De firmwaretool is niet compatibel met deze versie van de server. Gelieve te updaten!
 firmware_tool-board_step = Selecteer je bord
@@ -1079,11 +1395,80 @@ firmware_tool-board_pins_step-enable_led = LED inschakelen
 firmware_tool-board_pins_step-led_pin =
     .label = LED-pin
     .placeholder = Voer het adres van de LED-pin in
+firmware_tool-board_pins_step-battery_type = Selecteer het batterijtype
+firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = Externe batterij
+firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = Interne batterij
+firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = Interne MCP3021
+firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = MCP3021
+firmware_tool-board_pins_step-battery_sensor_pin =
+    .label = Batterij sensor Pin
+    .placeholder = Voer het pin-adres van de batterij sensor in
+firmware_tool-board_pins_step-battery_resistor =
+    .label = Batterij Weerstand (Ohm)
+    .placeholder = Voer de waarde van de batterijweerstand in
+firmware_tool-board_pins_step-battery_shield_resistor-0 =
+    .label = Batterij Shield R1 (Ohm)
+    .placeholder = Voer de waarde in van Battery Shield R1
+firmware_tool-board_pins_step-battery_shield_resistor-1 =
+    .label = Batterij Shield R2 (Ohm)
+    .placeholder = Voer de waarde in van Battery Shield R2
+firmware_tool-add_imus_step = Declareer uw IMU's
+firmware_tool-add_imus_step-description =
+    Voeg de IMU's toe die je tracker heeft
+    Als je de SlimeVR-documentatie hebt gevolgd, zouden de standaardwaarden correct moeten zijn.
+firmware_tool-add_imus_step-imu_type-label = IMU-type
+firmware_tool-add_imus_step-imu_type-placeholder = Selecteer het type IMU
+firmware_tool-add_imus_step-imu_rotation =
+    .label = IMU-rotatie (graden)
+    .placeholder = Rotatie van de IMU
+firmware_tool-add_imus_step-scl_pin =
+    .label = SCL-pin
+    .placeholder = Pin-adres van SCL
+firmware_tool-add_imus_step-sda_pin =
+    .label = SDA-pin
+    .placeholder = Pin-adres van SDA
+firmware_tool-add_imus_step-int_pin =
+    .label = INT-pin
+    .placeholder = Pin-adres van INT
+firmware_tool-add_imus_step-optional_tracker =
+    .label = Optionele tracker
+firmware_tool-add_imus_step-show_less = Toon minder
+firmware_tool-add_imus_step-show_more = Toon meer
+firmware_tool-add_imus_step-add_more = Voeg meer IMU's toe
+firmware_tool-select_firmware_step = Selecteer de firmwareversie
+firmware_tool-select_firmware_step-description = Kies de versie van de firmware die je wilt gebruiken
+firmware_tool-select_firmware_step-show-third-party =
+    .label = Firmware van derden weergeven
+firmware_tool-flash_method_step = Flashing methode
+firmware_tool-flash_method_step-description = Kies de flashingsmethode die je wilt gebruiken
+firmware_tool-flash_method_step-ota =
+    .label = OTA
+    .description = Gebruik de draadloze methode. Je tracker zal de Wi-Fi gebruiken om de firmware bij te werken. Werkt alleen op reeds geconfigureerde trackers.
+firmware_tool-flash_method_step-serial =
+    .label = Serial
+    .description = Gebruik een USB-kabel om je tracker bij te werken.
+firmware_tool-flashbtn_step = Druk op de bootknop
+firmware_tool-flashbtn_step-description = Voordat u naar de volgende stap gaat, zijn er een paar dingen die u moet doen.
+firmware_tool-flashbtn_step-board_SLIMEVR = Zet de tracker uit, verwijder de behuizing (indien aanwezig), verbind een USB-kabel met deze computer en voer vervolgens een van de volgende stappen uit, afhankelijk van de revisie van uw SlimeVR-board:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Zet de tracker aan terwijl u het tweede rechthoekige FLASH-pad vanaf de rand aan de bovenkant van het board kortsluit, en het metalen schild van de microcontroller.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Zet de tracker aan terwijl u het ronde FLASH-pad aan de bovenkant van het board kortsluit, en het metalen schild van de microcontroller.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Zet de tracker aan terwijl u de FLASH-knop aan de bovenkant van het board indrukt.
+firmware_tool-flashbtn_step-board_OTHER =
+    Voordat u gaat flashen, moet de tracker waarschijnlijk in de bootloader-modus worden gezet.
+    Meestal betekent dit het indrukken van de bootknop op het board voordat het flashproces begint.
+    Als het flashproces time-out bij het begin van het flashen, betekent dit waarschijnlijk dat de tracker niet in de bootloader-modus stond.
+    Raadpleeg de flitsinstructies van uw board om te weten hoe u de bootloader-modus inschakelt.
+firmware_tool-flash_method_ota-devices = Gedetecteerde OTA-apparaten:
+firmware_tool-flash_method_ota-no_devices = Er zijn geen boards die via OTA bijgewerkt kunnen worden, zorg ervoor dat u het juiste boardtype heeft geselecteerd.
+firmware_tool-flash_method_serial-wifi = Wi-Fi-gegevens:
+firmware_tool-flash_method_serial-devices-label = Gedetecteerde serial apparaten:
+firmware_tool-flash_method_serial-devices-placeholder = Selecteer een serieel apparaat
+firmware_tool-flash_method_serial-no_devices = Er zijn geen compatibele seriële apparaten gedetecteerd, zorg ervoor dat de tracker is aangesloten.
 firmware_tool-build_step = Aan het bouwen
 firmware_tool-build_step-description = De firmware wordt gebouwd, even geduld a.u.b.
 firmware_tool-flashing_step = Firmware aan het uploaden
 firmware_tool-flashing_step-description = Je trackers worden geflashed, volg de instructies op het scherm
-firmware_tool-flashing_step-warning = Trek de tracker niet los en start hem niet opnieuw op tijdens het uploadproces, tenzij dit wordt verteld, hierdoor kan je bord onbruikbaar worden
+firmware_tool-flashing_step-warning-v2 = Koppel de tracker niet los en zet hem niet uit tijdens het uploadproces, tenzij dit wordt aangegeven. Dit kan je apparaat onbruikbaar maken.
 firmware_tool-flashing_step-flash_more = Flash meer trackers
 firmware_tool-flashing_step-exit = Sluit
 
@@ -1094,17 +1479,24 @@ firmware_tool-build-DOWNLOADING_FIRMWARE = Firmware wordt gedownload
 firmware_tool-build-EXTRACTING_FIRMWARE = Firmware wordt uitgepakt
 firmware_tool-build-SETTING_UP_DEFINES = Configureren van de definities
 firmware_tool-build-BUILDING = Firmware wordt gebouwd
+firmware_tool-build-SAVING = De build opslaan
+firmware_tool-build-DONE = Build voltooid
 firmware_tool-build-ERROR = Kan de firmware niet bouwen
 
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = Firmware wordt gedownload
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Zet je tracker uit en daarna weer aan.
+firmware_update-status-AUTHENTICATING = Authenticatie met de mcu
 firmware_update-status-UPLOADING = Firmware wordt geüpload
+firmware_update-status-SYNCING_WITH_MCU = Synchroniseren met de mcu
+firmware_update-status-REBOOTING = De update toepassen
 firmware_update-status-PROVISIONING = Wi-Fi-inloggegevens instellen
 firmware_update-status-DONE = Update voltooid!
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = Kan het apparaat niet vinden
 firmware_update-status-ERROR_TIMEOUT = Er is een time-out opgetreden voor het updateproces
 firmware_update-status-ERROR_DOWNLOAD_FAILED = Kan de firmware niet downloaden
+firmware_update-status-ERROR_AUTHENTICATION_FAILED = Kan niet verifiëren met de mcu
 firmware_update-status-ERROR_UPLOAD_FAILED = Kan de firmware niet uploaden
 firmware_update-status-ERROR_PROVISIONING_FAILED = Kan de Wi-Fi-inloggegevens niet instellen
 firmware_update-status-ERROR_UNSUPPORTED_METHOD = De updatemethode wordt niet ondersteund
@@ -1120,6 +1512,7 @@ firmware_update-changelog-title = Bijwerken naar { $version }
 firmware_update-looking_for_devices = Op zoek naar apparaten om bij te werken...
 firmware_update-retry = Opnieuw
 firmware_update-update = Geselecteerde trackers bijwerken
+firmware_update-exit = Sluit
 
 ## Tray Menu
 
@@ -1146,3 +1539,53 @@ unknown_device-modal-title = Er is een nieuwe tracker gevonden!
 unknown_device-modal-description = Er is een nieuwe tracker gevonden met MAC-adres <b>{ $deviceId }</b>. Wil je deze verbinden met SlimeVR?
 unknown_device-modal-confirm = Tuurlijk!
 unknown_device-modal-forget = Negeer het
+# VRChat config warnings
+vrc_config-page-title = VRChat-configuratie waarschuwingen
+vrc_config-page-desc = Deze pagina toont de status van je VRChat-instellingen en welke instellingen niet compatibel zijn met SlimeVR. Het wordt sterk aanbevolen om eventuele waarschuwingen hier te verhelpen voor de beste gebruikservaring met SlimeVR.
+vrc_config-page-help = Kan je de instellingen niet finden?
+vrc_config-page-help-desc = Bekijk onze <a>documentatie over dit onderwerp!</a>
+vrc_config-page-big_menu = Tracking & IK (Hoofdmenu)
+vrc_config-page-big_menu-desc = IK-instellingen in het hoofdmenu
+vrc_config-page-wrist_menu = Tracking & IK (Polsmenu)
+vrc_config-page-wrist_menu-desc = IK-instellingen in het kleine polsmenu
+vrc_config-on = Aan
+vrc_config-off = Uit
+vrc_config-invalid = Je VRChat-instellingen zijn verkeerd geconfigureerd!
+vrc_config-show_more = Toon meer
+vrc_config-setting_name = Naam van de VRChat-instelling
+vrc_config-recommended_value = Aanbevolen waarde
+vrc_config-current_value = Huidige waarde
+vrc_config-mute = Waarschuwing dempen
+vrc_config-mute-btn = Dempen
+vrc_config-unmute-btn = Dempen opheffen
+vrc_config-legacy_mode = Use Legacy IK Solving
+vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
+vrc_config-shoulder_width_compensation = Shoulder Width Compensation
+vrc_config-spine_mode = FBT Spine Mode
+vrc_config-tracker_model = FBT Tracker Model
+vrc_config-avatar_measurement_type = Avatar Measurement
+vrc_config-calibration_range = Calibration Range
+vrc_config-calibration_visuals = Display Calibration Visuals
+vrc_config-user_height = User Real Height
+vrc_config-spine_mode-UNKNOWN = Onbekend
+vrc_config-spine_mode-LOCK_BOTH = Lock Both
+vrc_config-spine_mode-LOCK_HEAD = Lock Head
+vrc_config-spine_mode-LOCK_HIP = Lock Hip
+vrc_config-tracker_model-UNKNOWN = Onbekend
+vrc_config-tracker_model-AXIS = Axis
+vrc_config-tracker_model-BOX = Box
+vrc_config-tracker_model-SPHERE = Sphere
+vrc_config-tracker_model-SYSTEM = Systeem
+vrc_config-avatar_measurement_type-UNKNOWN = Onbekend
+vrc_config-avatar_measurement_type-HEIGHT = Height
+vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
+
+## Error collection consent modal
+
+error_collection_modal-title = Kunnen we fouten verzamelen?
+error_collection_modal-description_v2 =
+    { settings-interface-behavior-error_tracking-description_v2 }
+    
+    U kunt deze instelling later wijzigen in de sectie Gedrag van de instellingenpagina.
+error_collection_modal-confirm = Ik ben akkoord
+error_collection_modal-cancel = Ik wil het niet

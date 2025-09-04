@@ -1,22 +1,14 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { BVHButton } from './BVHButton';
-import { ClearDriftCompensationButton } from './ClearDriftCompensationButton';
 import { TrackingPauseButton } from './TrackingPauseButton';
 import { ResetButton } from './home/ResetButton';
 import { OverlayWidget } from './widgets/OverlayWidget';
 import { TipBox } from './commons/TipBox';
 import { DeveloperModeWidget } from './widgets/DeveloperModeWidget';
 import { useConfig } from '@/hooks/config';
-import {
-  ResetType,
-  RpcMessage,
-  SettingsRequestT,
-  SettingsResponseT,
-  StatusData,
-} from 'solarxr-protocol';
-import { useEffect, useMemo, useState } from 'react';
+import { ResetType, StatusData } from 'solarxr-protocol';
+import { useMemo } from 'react';
 import { parseStatusToLocale, useStatusContext } from '@/hooks/status-system';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { ClearMountingButton } from './ClearMountingButton';
 import { ToggleableSkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
 import { useAtomValue } from 'jotai';
@@ -56,17 +48,6 @@ function UnprioritizedStatuses() {
 
 export function WidgetsComponent() {
   const { config } = useConfig();
-  const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
-  const [driftCompensationEnabled, setDriftCompensationEnabled] =
-    useState(false);
-  useEffect(() => {
-    sendRPCPacket(RpcMessage.SettingsRequest, new SettingsRequestT());
-  }, []);
-
-  useRPCPacket(RpcMessage.SettingsResponse, (settings: SettingsResponseT) => {
-    if (settings.driftCompensation != null)
-      setDriftCompensationEnabled(settings.driftCompensation.enabled);
-  });
 
   return (
     <>
@@ -74,12 +55,21 @@ export function WidgetsComponent() {
         <ResetButton type={ResetType.Yaw} size="big"></ResetButton>
         <ResetButton type={ResetType.Full} size="big"></ResetButton>
         <ResetButton type={ResetType.Mounting} size="big"></ResetButton>
+        <ResetButton
+          type={ResetType.Mounting}
+          size="big"
+          bodyPartsToReset="feet"
+        ></ResetButton>
+        <ResetButton
+          type={ResetType.Mounting}
+          size="big"
+          bodyPartsToReset="fingers"
+        ></ResetButton>
         <ClearMountingButton></ClearMountingButton>
-        <BVHButton></BVHButton>
+        {(typeof __ANDROID__ === 'undefined' || !__ANDROID__?.isThere()) && (
+          <BVHButton></BVHButton>
+        )}
         <TrackingPauseButton></TrackingPauseButton>
-        <ClearDriftCompensationButton
-          disabled={!driftCompensationEnabled}
-        ></ClearDriftCompensationButton>
       </div>
       <div className="w-full">
         <OverlayWidget></OverlayWidget>

@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.processor.skeleton
 
 import dev.slimevr.VRServer
+import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.Constraint
@@ -8,9 +9,12 @@ import dev.slimevr.tracking.processor.Constraint.Companion.ConstraintType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
+import dev.slimevr.tracking.processor.stayaligned.StayAligned
+import dev.slimevr.tracking.processor.stayaligned.trackers.TrackerSkeleton
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
+import dev.slimevr.tracking.trackers.TrackerUtils
 import dev.slimevr.tracking.trackers.TrackerUtils.getFirstAvailableTracker
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
@@ -26,6 +30,7 @@ import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
+import solarxr_protocol.datatypes.BodyPart
 import java.lang.IllegalArgumentException
 import kotlin.properties.Delegates
 
@@ -210,6 +215,10 @@ class HumanSkeleton(
 	var tapDetectionManager = TapDetectionManager(this)
 	var localizer = Localizer(this)
 
+	// Stay Aligned
+	var trackerSkeleton = TrackerSkeleton(this)
+	var stayAlignedConfig = StayAlignedConfig()
+
 	// Constructors
 	init {
 		assembleSkeleton()
@@ -231,6 +240,7 @@ class HumanSkeleton(
 		)
 		legTweaks.setConfig(server.configManager.vrConfig.legTweaks)
 		localizer.setEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION))
+		stayAlignedConfig = server.configManager.vrConfig.stayAlignedConfig
 	}
 
 	constructor(
@@ -448,6 +458,9 @@ class HumanSkeleton(
 
 		// Update bones tracker field
 		refreshBoneTracker()
+
+		// Update tracker skeleton
+		trackerSkeleton = TrackerSkeleton(this)
 	}
 
 	/**
@@ -503,6 +516,8 @@ class HumanSkeleton(
 	@VRServerThread
 	fun updatePose() {
 		tapDetectionManager.update()
+
+		StayAligned.adjustNextTracker(trackerSkeleton, stayAlignedConfig)
 
 		updateTransforms()
 		updateBones()
@@ -1502,17 +1517,21 @@ class HumanSkeleton(
 			rightLittleDistalTracker,
 		)
 
-	fun resetTrackersFull(resetSourceName: String?) {
+	@JvmOverloads
+	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			// Always reset the head (ifs in resetsHandler)
-			it.resetsHandler.resetFull(referenceRotation)
+			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
+				// Always reset the head (ifs in resetsHandler)
+				it.resetsHandler.resetFull(referenceRotation)
+			}
 			referenceRotation = it.getRotation()
 		}
+
 		// Resets all axes of the trackers with the HMD as reference.
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsReset
-			if (tracker != null && (tracker.needsReset || tracker.isHmd)) {
+			if (tracker != null && (tracker.needsReset || tracker.isHmd) && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
 				tracker.resetsHandler.resetFull(referenceRotation)
 			}
 		}
@@ -1528,19 +1547,22 @@ class HumanSkeleton(
 	}
 
 	@VRServerThread
-	fun resetTrackersYaw(resetSourceName: String?) {
+	@JvmOverloads
+	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
 		// Resets the yaw of the trackers with the head as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			// Only reset if head needsReset and isn't computed
-			if (it.needsReset && !it.isComputed) {
-				it.resetsHandler.resetYaw(referenceRotation)
+			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
+				// Only reset if head needsReset and isn't computed
+				if (it.needsReset && !it.isComputed) {
+					it.resetsHandler.resetYaw(referenceRotation)
+				}
 			}
 			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsReset
-			if (tracker != null && tracker.needsReset) {
+			if (tracker != null && tracker.needsReset && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
 				tracker.resetsHandler.resetYaw(referenceRotation)
 			}
 		}
@@ -1548,8 +1570,13 @@ class HumanSkeleton(
 		LogManager.info("[HumanSkeleton] Reset: yaw ($resetSourceName)")
 	}
 
+	/**
+	 * if bodyParts is empty, this resets mounting for all trackers.
+	 * Keep in mind TrackerResetsHandler.kt has some logic as well for which trackers get reset (feet)
+	 */
 	@VRServerThread
-	fun resetTrackersMounting(resetSourceName: String?) {
+	@JvmOverloads
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int>) {
 		val trackersToReset = trackersToReset
 
 		// TODO: PLEASE rewrite this handling at some point in the future... This is so
@@ -1565,16 +1592,21 @@ class HumanSkeleton(
 		// Resets the mounting orientation of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			// Only reset if head needsMounting or is computed but not HMD
-			if (it.needsMounting || (it.isComputed && !it.isHmd)) {
-				it.resetsHandler.resetMounting(referenceRotation)
+			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
+				// Only reset if head needsMounting or is computed but not HMD
+				if (it.needsMounting || (it.isComputed && !it.isHmd)) {
+					it.resetsHandler.resetMounting(referenceRotation)
+				}
 			}
 			referenceRotation = it.getRotation()
 		}
+
+		// If onlyFeet is true, feet will be forced to be mounting reset in their reset handlers.
+		val onlyFeet = bodyParts.isNotEmpty() && bodyParts.all { it == BodyPart.LEFT_FOOT || it == BodyPart.RIGHT_FOOT }
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsMounting
-			if (tracker != null && tracker.needsMounting) {
-				tracker.resetsHandler.resetMounting(referenceRotation)
+			if (tracker != null && tracker.needsMounting && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
+				tracker.resetsHandler.resetMounting(referenceRotation, onlyFeet)
 			}
 		}
 		legTweaks.resetBuffer()

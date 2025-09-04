@@ -7,8 +7,13 @@
 
 ## Websocket (server) status
 
-websocket-connecting = يتم التوصيل بالسيرفر
-websocket-connection_lost = انقطع الاتصال بالسيرفر. يتم إعادة التوصيل...
+websocket-connecting = جاري التحميل
+websocket-connection_lost = تعطل الخادم!
+websocket-connection_lost-desc = يبدو أن خادم SlimeVR تعطل. تحقق من السجلات وأعد تشغيل البرنامج
+websocket-timedout = تعذر الاتصال بالخادم
+websocket-timedout-desc = يبدو أن خادم SlimeVR قد تعطل أو انتهت مهلته. تحقق من السجلات وأعد تشغيل البرنامج
+websocket-error-close = الخروج من SlimeVR
+websocket-error-logs = افتح مجلد السجلات
 
 ## Update notification
 
@@ -49,12 +54,72 @@ body_part-LEFT_HAND = اليد اليسرى
 body_part-LEFT_UPPER_LEG = الفخذ الأيسر
 body_part-LEFT_LOWER_LEG = الكاحل الأيسر
 body_part-LEFT_FOOT = القدم اليسرى
+body_part-LEFT_THUMB_METACARPAL = عظم مشط الإبهام الأيسر
+body_part-LEFT_THUMB_PROXIMAL = الإبهام الأيسر القريب
+body_part-LEFT_THUMB_DISTAL = الإبهام الأيسر البعيد
+body_part-LEFT_INDEX_PROXIMAL = السبابة اليسرى القريبة
+body_part-LEFT_INDEX_INTERMEDIATE = السبابة اليسرى المتوسطة
+body_part-LEFT_INDEX_DISTAL = السبابة اليسرى البعيدة
+body_part-LEFT_MIDDLE_PROXIMAL = الجزء الأوسط الأيسر القريب
+body_part-LEFT_MIDDLE_INTERMEDIATE = الوسط الأيسر المتوسط
+body_part-LEFT_MIDDLE_DISTAL = الجزء الأوسط الأيسر البعيد
+body_part-LEFT_RING_PROXIMAL = الحلقة اليسرى القريبة
+body_part-LEFT_RING_INTERMEDIATE = الحلقة اليسرى المتوسطة
+body_part-LEFT_RING_DISTAL = الحلقة اليسرى البعيدة
+body_part-LEFT_LITTLE_PROXIMAL = الجزء الأيسر الصغير القريب
+body_part-LEFT_LITTLE_INTERMEDIATE = اليسار الصغير المتوسط
+body_part-LEFT_LITTLE_DISTAL = الجزء البعيد الأيسر الصغير
+body_part-RIGHT_THUMB_METACARPAL = مشط الإبهام الأيمن
+body_part-RIGHT_THUMB_PROXIMAL = الإبهام الأيمن القريب
+body_part-RIGHT_THUMB_DISTAL = الإبهام الأيمن البعيد
+body_part-RIGHT_INDEX_PROXIMAL = السبابة اليمنى القريبة
+body_part-RIGHT_INDEX_INTERMEDIATE = السبابة اليمنى المتوسطة
+body_part-RIGHT_INDEX_DISTAL = السبابة اليمنى البعيدة
+body_part-RIGHT_MIDDLE_PROXIMAL = منتصف اليمين القريب
+body_part-RIGHT_MIDDLE_INTERMEDIATE = الوسط الأيمن المتوسط
+body_part-RIGHT_MIDDLE_DISTAL = منتصف اليمين البعيد
+body_part-RIGHT_RING_PROXIMAL = الحلقة اليمنى القريبة
+body_part-RIGHT_RING_INTERMEDIATE = الحلقة اليمنى المتوسطة
+body_part-RIGHT_RING_DISTAL = الحلقة اليمنى البعيدة
+body_part-RIGHT_LITTLE_PROXIMAL = الجزء القريب الأيمن الصغير
+body_part-RIGHT_LITTLE_INTERMEDIATE = المتوسط ​​الصغير الأيمن
+body_part-RIGHT_LITTLE_DISTAL = الجزء البعيد الصغير الأيمن
+
+## BoardType
+
+board_type-UNKNOWN = مجهول
+board_type-NODEMCU = NodeMCU
+board_type-CUSTOM = لوحة مخصصة
+board_type-WROOM32 = WROOM32
+board_type-WEMOSD1MINI = Wemos D1 Mini
+board_type-TTGO_TBASE = TTGO T-Base
+board_type-ESP01 = ESP-01
+board_type-SLIMEVR = سلايم في آر
+board_type-LOLIN_C3_MINI = Lolin C3 Mini
+board_type-BEETLE32C3 = Beetle ESP32-C3
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = رانجلر جويكونز
+board_type-MOCOPI = سوني موكوبي (Mocopi)
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = قفاز SlimeVR تطوير IMU
 
 ## Proportions
 
 skeleton_bone-NONE = غير محدد
 skeleton_bone-HEAD = إمالة الرأس
+skeleton_bone-HEAD-desc =
+    هذه هي المسافة من سماعة الرأس إلى منتصف رأسك.
+    لضبط المسافة ، هز رأسك من اليسار إلى اليمين كما لو كنت لا توافق وقم بتعديله
+    حتى أي حركة في أجهزة التتبع الأخرى لا تكاد تذكر.
 skeleton_bone-NECK = طول العنق
+skeleton_bone-NECK-desc =
+    هذه هي المسافة من منتصف رأسك إلى قاعدة رقبتك.
+    لضبطها ، حرك رأسك لأعلى ولأسفل كما لو كنت تومئ رأسك أو تميل رأسك
+    إلى اليسار واليمين وقم بتعديله حتى تصبح أي حركة في أجهزة التتبع الأخرى ضئيلة.
 skeleton_bone-torso_group = طول الجذع
 skeleton_bone-UPPER_CHEST = طول أعلى الصدر
 skeleton_bone-CHEST_OFFSET = درجة تشريد الصدر
@@ -81,6 +146,14 @@ skeleton_bone-ELBOW_OFFSET = درجة تشريد الكوع
 ## Tracker reset buttons
 
 reset-reset_all = إعادة تعيين جميع النسب
+reset-reset_all_warning-v2 =
+    <b>تحذير:</b> ستتم إعادة تعيين النسب إلى الإعدادات الافتراضية التي تم تحجيمها إلى الارتفاع الذي تم تكوينه.
+    هل أنت متأكد من أنك تريد القيام بذلك؟
+reset-reset_all_warning-reset = إعادة تعيين النسب
+reset-reset_all_warning-cancel = إلغاء
+reset-reset_all_warning_default-v2 =
+    <b>تحذير:</b> لم يتم ضبط طولك، وسيتم إعادة تعيين نسبك إلى الإعدادات الافتراضية مع الارتفاع الافتراضي.
+    هل أنت متأكد من أنك تريد القيام بذلك؟
 reset-full = اعاده تعيين
 reset-mounting = إعادة تعيين التركيب
 reset-yaw = إعادة تعيين الانعراج
@@ -142,9 +215,12 @@ widget-developer_mode-more_info = المزيد
 ## Widget: IMU Visualizer
 
 widget-imu_visualizer = دوران
+widget-imu_visualizer-preview = عرض
+widget-imu_visualizer-hide = إخفاء
 widget-imu_visualizer-rotation_raw = صافي
 widget-imu_visualizer-rotation_preview = عرض مسبق
-widget-imu_visualizer-rotation_hide = إخفاء
+widget-imu_visualizer-acceleration = التسارع
+widget-imu_visualizer-position = الموضع
 
 ## Widget: Skeleton Visualizer
 
@@ -196,9 +272,17 @@ tracker-infos-url = عنوان URL لجهاز التعقب
 tracker-infos-version = إصدار البرنامج الثابت
 tracker-infos-hardware_rev = مراجعة الأجهزة
 tracker-infos-hardware_identifier = معرف الجهاز
+tracker-infos-data_support = دعم البيانات
 tracker-infos-imu = مستشعر IMU
 tracker-infos-board_type = اللوحة الرئيسية
 tracker-infos-network_version = نسخة البروتوكول
+tracker-infos-magnetometer = المقياس المغناطيسي
+tracker-infos-magnetometer-status-v1 =
+    { $status ->
+        [DISABLED] ملغي
+        [ENABLED] فعال
+       *[NOT_SUPPORTED] غير مدعوم
+    }
 
 ## Tracker settings
 
@@ -213,14 +297,27 @@ tracker-settings-mounting_section-edit = تعديل التركيب
 tracker-settings-drift_compensation_section = السماح بتعويض الانجراف
 tracker-settings-drift_compensation_section-description = هل يجب أن يعوض جهاز التعقب عن انحرافه عند تمكين تعويض الانجراف؟
 tracker-settings-drift_compensation_section-edit = السماح بتعويض الانجراف
+tracker-settings-use_mag = اسمح بالمقياس المغناطيسي على هذا المتتبع
+# Multiline!
+tracker-settings-use_mag-description =
+    هل يجب أن يستخدم هذا المتتبع مقياس المغناطيسية لتقليل الانجراف عند السماح باستخدام المقياس المغناطيسي؟ <b>من فضلا لا تغلق جهاز التتبع الخاص بك أثناء تبديل هذا!</b>
+    
+    تحتاج إلى السماح باستخدام مقياس المغناطيسية أولا ، <magSetting>انقر هنا للذهاب إلى الإعداد</magSetting>.
+tracker-settings-use_mag-label = السماح بالمقياس المغناطيسي
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
 tracker-settings-name_section = اسم جهاز التعقب
 tracker-settings-name_section-description = أعطها لقب لطيف :)
 tracker-settings-name_section-placeholder = ساق نايتي بيست اليسرى
+tracker-settings-name_section-label = اسم جهاز التعقب
 tracker-settings-forget = انسي جهاز التعقب
 tracker-settings-forget-description = يزيل جهاز التعقب من خادم SlimeVR ويمنعه من الاتصال به حتى يتم إعادة تشغيل الخادم. لن تضيع تكوين جهاز التعقب.
 tracker-settings-forget-label = ننسى جهاز التعقب
+tracker-settings-update-unavailable = لا يمكن تحديثه (اصنعها بنفسك)
+tracker-settings-update-up_to_date = حديث
+tracker-settings-update-available = { $versionName } متاح الآن
+tracker-settings-update = التحديث الآن
+tracker-settings-update-title = إصدار البرنامج الثابت
 
 ## Tracker part card info
 
@@ -296,6 +393,9 @@ settings-sidebar-utils = الأدوات المساعدة
 settings-sidebar-serial = وحدة التحكم التسلسلية
 settings-sidebar-appearance = مظهر
 settings-sidebar-notifications = إشعارات
+settings-sidebar-behavior = سلوك
+settings-sidebar-firmware-tool = أداة برامج الجهاز المصنوع بنفسك
+settings-sidebar-advanced = متقدم
 
 ## SteamVR settings
 
@@ -310,10 +410,14 @@ settings-general-steamvr-description =
     مفيد فقط للألعاب أو التطبيقات التي تدعم أجهزة تعقب معينة.
 settings-general-steamvr-trackers-waist = الخصر
 settings-general-steamvr-trackers-chest = الصدر
-settings-general-steamvr-trackers-feet = القدمين
-settings-general-steamvr-trackers-knees = الركبتين
-settings-general-steamvr-trackers-elbows = الكوعين
-settings-general-steamvr-trackers-hands = اليدين
+settings-general-steamvr-trackers-left_foot = القدم اليسرى
+settings-general-steamvr-trackers-right_foot = القدم اليمنى
+settings-general-steamvr-trackers-left_knee = الركبة اليسرى
+settings-general-steamvr-trackers-right_knee = الركبة اليمنى
+settings-general-steamvr-trackers-left_elbow = الكوع الأيسر
+settings-general-steamvr-trackers-right_elbow = الكوع الأيمن
+settings-general-steamvr-trackers-left_hand = اليد اليسرى
+settings-general-steamvr-trackers-right_hand = اليد اليمنى
 settings-general-steamvr-trackers-tracker_toggling = تعيين جهاز التعقب تلقائي
 settings-general-steamvr-trackers-tracker_toggling-description = يتعامل تلقائيا مع تبديل أجهزة تعقب SteamVR أو إيقاف تشغيلها اعتمادا على مهام التعقب الحالية
 settings-general-steamvr-trackers-tracker_toggling-label = تعيين جهاز التعقب التلقائي
@@ -339,14 +443,39 @@ settings-general-tracker_mechanics-filtering-type-smoothing-description = ينع
 settings-general-tracker_mechanics-filtering-type-prediction = التنبؤ
 settings-general-tracker_mechanics-filtering-type-prediction-description = يقلل من وقت الإستجابة ويجعل الحركات أكثر سرعة ، ولكنه قد يزيد من التوتر.
 settings-general-tracker_mechanics-filtering-amount = المبلغ
+settings-general-tracker_mechanics-yaw-reset-smooth-time = إعادة ضبط الانعراج على نحو سلس (يتعطل التنعيم 0 ثوان)
 settings-general-tracker_mechanics-drift_compensation = تعويض الانجراف
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
     يعوض عن انجراف انعراج وحدة IMU بتطبيق دوران عكسي.
     قم بتغيير كمية التعويض وعدد عمليات إعادة التعيين التي يتم أخذها في الاعتبار.
 settings-general-tracker_mechanics-drift_compensation-enabled-label = تعويض الانجراف
+settings-general-tracker_mechanics-drift_compensation-prediction = التنبؤ بتعويض الانحراف
+# This cares about multilines
+settings-general-tracker_mechanics-drift_compensation-prediction-description =
+    يتنبأ بتعويض انحراف الانعراج خارج النطاق المقاس مسبقا.
+    قم بتمكين هذا إذا كانت أجهزة التتبع تدور باستمرار على محور الانعراج.
+settings-general-tracker_mechanics-drift_compensation-prediction-label = التنبؤ بتعويض الانحراف
+settings-general-tracker_mechanics-drift_compensation_warning =
+    <b>تحذير:</b> استخدم تعويض الانحراف فقط إذا كنت بحاجة إلى إعادة الضبط
+    في كثير من الأحيان (كل ~ 5-10 دقائق).
+    
+    تتضمن بعض وحدات IMU المعرضة لإعادة الضبط المتكرر ما يلي:
+    Joy-Cons و owoTrack و MPUs (بدون برامج ثابتة حديثة).
+settings-general-tracker_mechanics-drift_compensation_warning-cancel = إلغاء
+settings-general-tracker_mechanics-drift_compensation_warning-done = أتفهم
 settings-general-tracker_mechanics-drift_compensation-amount-label = مبلغ التعويض
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = استخدام ما يصل إلى x عمليات إعادة التعيين الأخيرة
+settings-general-tracker_mechanics-save_mounting_reset = حفظ معايرة إعادة ضبط التركيب التلقائي
+settings-general-tracker_mechanics-save_mounting_reset-description =
+    يحفظ معايرة إعادة تعيين التثبيت التلقائي لأجهزة التتبع بين عمليات إعادة التشغيل. مفيد
+    عند ارتداء بدلة حيث لا تتحرك المتتبعات بين الجلسات. <b>لا ينصح به للمستخدمين العاديين!</b>
+settings-general-tracker_mechanics-save_mounting_reset-enabled-label = حفظ إعادة تعيين التركيب
+settings-general-tracker_mechanics-use_mag_on_all_trackers = استخدم المقياس المغناطيسي على جميع أجهزة تتبع IMU التي تدعمه
+settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
+    يستخدم المقياس المغناطيسي على جميع أجهزة التعقب التي تحتوي على برامج ثابتة متوافقة له ، مما يقلل من الانحراف في البيئات المغناطيسية المستقرة.
+    يمكن تعطيله لكل جهاز تعقب في إعدادات التعقب. <b>من فضلك لا تغلق أيا من أجهزة التعقب أثناء تبديل هذا!</b>
+settings-general-tracker_mechanics-use_mag_on_all_trackers-label = استخدم المقياس المغناطيسي على أجهزة التعقب
 
 ## FK/Tracking settings
 
@@ -370,9 +499,17 @@ settings-general-fk_settings-leg_tweak-foot_plant-description = تثبيت اص�
 settings-general-fk_settings-leg_fk = تعقب الساق
 settings-general-fk_settings-leg_fk-reset_mounting_feet-description = تمكين إعادة ضبط تركيب القدمين عن طريق المشي على رؤوس الأصابع.
 settings-general-fk_settings-leg_fk-reset_mounting_feet = إعادة تعيين تركيب القدمين
+settings-general-fk_settings-enforce_joint_constraints = حدود الهيكل العظمي
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = فرض القيود
+settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = منع المفاصل من الدوران إلى ما بعد الحد الأقصى
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints = التصحيح مع قيود
+settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = تصحيح دوران المفاصل عندما تتجاوز حدودها
 settings-general-fk_settings-arm_fk = تعقب الذراع
 settings-general-fk_settings-arm_fk-description = تغيير طريقة تعقب الذراعين.
 settings-general-fk_settings-arm_fk-force_arms = إجبار الذراعين من ايتش أم دي
+settings-general-fk_settings-reset_settings = إعادة تعيين الإعدادات
+settings-general-fk_settings-reset_settings-reset_hmd_pitch-description = أعد تعيين درجة جهاز الرأس (الدوران الرأسي) عند إجراء إعادة تعيين كاملة. مفيد في حالة ارتداء جهاز الرأس على الجبهة ل VTubing أو mocap. لا تقم بتمكين لVR.
+settings-general-fk_settings-reset_settings-reset_hmd_pitch = إعادة تعيين درجة جهاز الرأس
 settings-general-fk_settings-arm_fk-reset_mode-description = قم بتغيير وضع الذراع المتوقع لإعادة ضبط المتصاعد.
 settings-general-fk_settings-arm_fk-back = العودة
 settings-general-fk_settings-arm_fk-back-description = الوضع الافتراضي، مع وضع الذراعين العلويين إلى الخلف والساعدين للأمام.
@@ -398,9 +535,6 @@ settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = مت�
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = متوسط انحراف الركبتين ولفة مع الكاحلين
 settings-general-fk_settings-self_localization-title = وضع Mocap
 settings-general-fk_settings-self_localization-description = يسمح وضع Mocap للهيكل العظمي بتعقب موضعه تقريبا بدون سماعة رأس أو أجهزة تعقب أخرى. لاحظ أن هذا يتطلب أجهزة تعقب القدمين والرأس للعمل ولا تزال تجريبية.
-settings-general-fk_settings-vive_emulation-title = محاكاة فايف
-settings-general-fk_settings-vive_emulation-description = محاكاة مشاكل تعقب الخصر التي تعاني منها أجهزة تعقب فايف. هذه مزحة وتجعل التتبع أسوأ.
-settings-general-fk_settings-vive_emulation-label = تمكين محاكاة فايف
 
 ## Gesture control settings (tracker tapping)
 
@@ -449,6 +583,9 @@ settings-general-interface-dev_mode = وضع المطوّر
 settings-general-interface-dev_mode-description = يمكن أن يكون هذا الوضع مفيدًا إذا كنت بحاجة إلى بيانات متعمقة أو للتفاعل مع أجهزة التعقب المتصلة على مستوى أكثر تقدمًا.
 settings-general-interface-dev_mode-label = وضع المطوّر
 settings-general-interface-theme = موضوع اللون
+settings-general-interface-show-navbar-onboarding = إظهار "{ navbar-onboarding }" على قائمة التنقل
+settings-general-interface-show-navbar-onboarding-description = يغير هذا إذا ظهر الزر "{ navbar-onboarding }" على قائمة التنقل.
+settings-general-interface-show-navbar-onboarding-label = إظهار "{ navbar-onboarding }"
 settings-general-interface-lang = اختر اللغة
 settings-general-interface-lang-description = قم بتغيير اللغة الافتراضية التي تريد استخدامها.
 settings-general-interface-lang-placeholder = اختر اللغة التي تريد استخدامها
@@ -460,6 +597,9 @@ settings-interface-appearance-font-os_font = خط نظام التشغيل
 settings-interface-appearance-font-slime_font = الخط الافتراضي
 settings-interface-appearance-font_size = قياس الخط الأساسي
 settings-interface-appearance-font_size-description = يؤثر هذا على حجم خط الواجهة بأكملها باستثناء لوحة الإعدادات هذه.
+settings-interface-appearance-decorations = استخدم الزخارف الأصلية للنظام
+settings-interface-appearance-decorations-description = لن يؤدي هذا إلى عرض الشريط الأعلى للواجهة وسيستخدم نظام التشغيل بدلا من ذلك.
+settings-interface-appearance-decorations-label = استخدم الزخارف الأصلية
 
 ## Notification settings
 
@@ -474,9 +614,29 @@ settings-general-interface-feedback_sound-volume = حجم صوت ردود الف
 settings-general-interface-connected_trackers_warning = تحذير عن أجهزة التعقب المتصلة
 settings-general-interface-connected_trackers_warning-description = سيعرض هذا الخيار نافذة كل مرة تحاول فيها الخروج من SlimeVR أثناء وجود جهاز أو أكثر من أجهزة التعقب المتصلة. سيذكرك بإيقاف تشغيل أجهزة التعقب عند الانتهاء للحفاظ على عمر البطارية.
 settings-general-interface-connected_trackers_warning-label = تحذير عن أجهزة التعقب المتصلة عند الخروج
+
+## Behavior settings
+
+settings-interface-behavior = السلوك
+settings-general-interface-dev_mode = وضع المطوّر
+settings-general-interface-dev_mode-description = يمكن أن يكون هذا الوضع مفيدًا إذا كنت بحاجة إلى بيانات متعمقة أو للتفاعل مع أجهزة التعقب المتصلة على مستوى أكثر تقدمًا.
+settings-general-interface-dev_mode-label = وضع المطوّر
 settings-general-interface-use_tray = تصغير إلى علبة النظام
 settings-general-interface-use_tray-description = يتيح لك إغلاق النافذة دون إغلاق خادم SlimeVR حتى تتمكن من الاستمرار في استخدامه دون إزعاجك من واجهة المستخدم الرسومية.
 settings-general-interface-use_tray-label = تصغير إلى علبة النظام
+settings-general-interface-discord_presence = مشاركة النشاط على Discord
+settings-general-interface-discord_presence-description = يخبر عميل Discord الخاص بك أنك تستخدم SlimeVR جنبا إلى جنب مع عدد أجهزة تعقب IMU التي تستخدمها.
+settings-general-interface-discord_presence-label = مشاركة النشاط على Discord
+settings-general-interface-discord_presence-message =
+    { $amount ->
+        [0] صفر
+        [zero] صفر
+        [one] واحد
+        [two] اثنان
+        [few] قليل
+        [many] كثيرة
+       *[other] أخرى
+    }
 
 ## Serial settings
 
@@ -528,15 +688,10 @@ settings-osc-router-network-address-placeholder = عنوان آي بي في 4
 ## OSC VRChat settings
 
 settings-osc-vrchat = أجهزة تعقب "في ار تشات أوه أس سي"
-# This cares about multilines
-settings-osc-vrchat-description =
-    قم بتغيير الإعدادات الخاصة ب في ار تشات لتلقي بيانات ايتش أم دي وإرسالها
-    بيانات أجهزة تعقب لتعقب الجسم (يعمل على كوست مستقل).
 settings-osc-vrchat-enable = تمكين
 settings-osc-vrchat-enable-description = بتبديل إرسال واستقبال البيانات.
 settings-osc-vrchat-enable-label = تمكين
 settings-osc-vrchat-network = منافذ الشبكة
-settings-osc-vrchat-network-description = قم بتعيين المنافذ للاستماع وإرسال البيانات إلى في ار تشات
 settings-osc-vrchat-network-port_in =
     .label = منفذ الدخول
     .placeholder = منفذ الدخول (الإفتراضي: 9001)
@@ -544,7 +699,6 @@ settings-osc-vrchat-network-port_out =
     .label = منفذ الخروج
     .placeholder = منفذ الخروج (الإفتراضي: 9000)
 settings-osc-vrchat-network-address = عنوان الشبكة
-settings-osc-vrchat-network-address-description = اختر العنوان الذي تريد إرسال البيانات إلى في ار تشات (تحقق من إعدادات واي فاي على جهازك)
 settings-osc-vrchat-network-address-placeholder = عنوان آي بي الخاص بفي ار تشات
 settings-osc-vrchat-network-trackers = أجهزة التعقب
 settings-osc-vrchat-network-trackers-description = تبديل إرسال أجهزة تتبع محددة عبر أوه أس سي.
@@ -577,16 +731,13 @@ settings-osc-vmc-network-address-description = قم بتعيين العنوان 
 settings-osc-vmc-network-address-placeholder = عنوان آي بي في 4
 settings-osc-vmc-vrm = نموذج في ار إم
 settings-osc-vmc-vrm-description = قم بتحميل نموذج في ار إم للسماح بتركيز الرأس وتمكين توافق أعلى مع تطبيقات الأخرى
-settings-osc-vmc-vrm-model_unloaded = لم يتم تحميل أي نموذج
-settings-osc-vmc-vrm-model_loaded =
-    { $titled ->
-        [true] تحميل النموذج: { $name }
-       *[other] تم تحميل نموذج بدون عنوان
-    }
 settings-osc-vmc-vrm-file_select = اسحب نموذج وأفلته لاستخدامه أو <u> تصفح </ u>
 settings-osc-vmc-anchor_hip = ثبت في الوركين
 settings-osc-vmc-anchor_hip-description = ثبت التعقب في الوركين، هو مفيد إن كنت تيوبنغ جالسًا. في حالة التعطيل، قم بتحميل نموذج في ار إم.
 settings-osc-vmc-anchor_hip-label = ثبت في الوركين
+
+## Advanced settings
+
 
 ## Setup/onboarding menu
 
@@ -697,7 +848,6 @@ onboarding-connect_tracker-next = لقد قمت بتوصيل جميع أجهزة
 
 onboarding-calibration_tutorial = برنامج تعليم معايرة IMU
 onboarding-calibration_tutorial-subtitle = سوف يساعد هذا في تقليل الانجراف التعقب!
-onboarding-calibration_tutorial-description = كل مرة تقوم بتشغيل أجهزة التعقب، يجب أن تستريح للحظة على سطح مستوٍ للمعايرة. لنفعل الشيء نفسه بالنقر فوق الزر "{ onboarding-calibration_tutorial-calibrate }" ، <b>لا تحركها!</b>
 onboarding-calibration_tutorial-calibrate = وضعت أجهزة التعقب على الطاولة
 onboarding-calibration_tutorial-status-waiting = بانتظارك
 onboarding-calibration_tutorial-status-calibrating = جاري المعايرة
@@ -809,12 +959,12 @@ onboarding-choose_mounting = ما طريقة معايرة التركيب الم�
 # Multiline text
 onboarding-choose_mounting-description = اتجاه التركيب يصحح وضع أجهزة التعقب على جسمك.
 onboarding-choose_mounting-auto_mounting = التركيب التلقائي
-# Italized text
-onboarding-choose_mounting-auto_mounting-label = تجريبي
+# Italicized text
+onboarding-choose_mounting-auto_mounting-label-v2 = الموصى به
 onboarding-choose_mounting-auto_mounting-description = سيكتشف هذا تلقائيًا اتجاهات التركيب لجميع أجهزة التعقب من وضعين
 onboarding-choose_mounting-manual_mounting = التركيب اليدوي
-# Italized text
-onboarding-choose_mounting-manual_mounting-label = المستحسن
+# Italicized text
+onboarding-choose_mounting-manual_mounting-label-v2 = قد لا تكون الدقة كافية
 onboarding-choose_mounting-manual_mounting-description = سيسمح لك باختيار اتجاه التثبيت يدويًا لكل جهاز تعقب
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
@@ -847,44 +997,19 @@ onboarding-automatic_mounting-mounting_reset-title = إعادة تعيين ال�
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. قرفص في وضع "التزلج" مع ثني ساقيك ، وإمالة الجزء العلوي من جسمك إلى الأمام ، وثني ذراعيك.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. اضغط على زر "إعادة تعيين التركيب" وانتظر لمدة 3 ثوان قبل إعادة تعيين دوران تركيب أجهزة التعقب.
 onboarding-automatic_mounting-preparation-title = التحضير
-onboarding-automatic_mounting-preparation-step-0 = 1. قف بشكل مستقيم مع ذراعيك على جانبيك.
-onboarding-automatic_mounting-preparation-step-1 = اضغط على زر "إعادة ضبط" و انتظر لمدة 3 ثوانٍ قبل إعادة تعيين أجهزة التعقب.
 onboarding-automatic_mounting-put_trackers_on-title = ارتدي أجهزة التعقب
 onboarding-automatic_mounting-put_trackers_on-description = لمعايرة دوران التركيب، سنستخدم أجهزة التعقب التي قمت بتعيينها. ارتدي جميع أجهزة التعقب، يمكنك معرفة أي منها في المستند على اليمين.
 onboarding-automatic_mounting-put_trackers_on-next = ارتديت جميع أجهزة التعقب.
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = ما هي طريقة معايرة النسب التي يجب استخدامها؟
-# Multiline string
-onboarding-choose_proportions-description-v1 =
-    تستخدم نسب الجسم لمعرفة قياسات جسمك. إنهم مطالبون لحساب مواقع أجهزة التعقب.
-    عندما لا تتطابق نسب جسمك مع تلك المحفوظة ، ستكون دقة التعقب أسوأ وستلاحظ أشياء مثل التزلج أو الانزلاق ، أو أن جسمك لا يتطابق مع صورتك الرمزية جيدا.
-    <b>ما عليك سوى قياس جسمك مرة واحدة!</b> إن لم تكن خاطئة أو تغير جسمك ، فلن تحتاج إلى القيام بها مرة أخرى.
-onboarding-choose_proportions-auto_proportions = النسب التلقائية
-# Italized text
-onboarding-choose_proportions-auto_proportions-subtitle = الموصى به
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    سيؤدي ذلك إلى تخمين نسبك عن طريق تسجيل عينة من تحركاتك وتمريرها عبر خوارزمية.
-    
-    <b>يتطلب ذلك توصيل جهاز الواقع الافتراضي (HMD) ب SlimeVR و وضعها  على رأسك!</b>
-onboarding-choose_proportions-manual_proportions = النسب اليدوية
-# Italized text
-onboarding-choose_proportions-manual_proportions-subtitle = للمسات الصغيرة
-onboarding-choose_proportions-manual_proportions-description = سيسمح لك بتعديل النسب يدويًا عن طريق تعديلها مباشرة
-onboarding-choose_proportions-export = تصدير النسب
-onboarding-choose_proportions-import = استيراد النسب
-onboarding-choose_proportions-import-success = تم استيراده
-onboarding-choose_proportions-import-failed = فشل
-onboarding-choose_proportions-file_type = ملف نسب الجسم
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = العودة إلى برنامج تعليم إعادة التعيين
 onboarding-manual_proportions-title = نسب الجسم اليدوية
-onboarding-manual_proportions-precision = ضبط الدقة
-onboarding-manual_proportions-auto = المعايرة التلقائية
-onboarding-manual_proportions-ratio = اضبط حسب مجموعات النسب
+onboarding-manual_proportions-fine_tuning_button = ضبط النسب تلقائيا
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = يرجى توصيل سماعة رأس VR لاستخدام الضبط الدقيق التلقائي
+onboarding-manual_proportions-export = تصدير النسب
+onboarding-manual_proportions-import = استيراد النسب
+onboarding-manual_proportions-file_type = ملف نسب الجسم
 
 ## Tracker automatic proportions setup
 
@@ -905,21 +1030,33 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     يقوم جهاز الواقع الافتراضي بالإبلاغ عن البيانات الموضعية إلى خادم SlimeVR (وهذا يعني عموما تشغيل SteamVR وتوصيله ب SlimeVR باستخدام برنامج تشغيل SteamVR الخاص ب SlimeVR).
     يعمل التتبع الخاص بك ويمثل تحركاتك بدقة (على سبيل المثال ، لقد أجريت إعادة تعيين كاملة وتتحرك في الاتجاه الصحيح عند الركل, الانحناء, الجلوس, إلخ).
 onboarding-automatic_proportions-requirements-next = لقد قرأت المتطلبات
-onboarding-automatic_proportions-check_height-title = تحقق من طولك
-onboarding-automatic_proportions-check_height-description = نستخدم طولك كأساس لقياساتنا باستخدام ارتفاع HMD كتقريب لطولك الفعلي ، ولكن من الأفضل التحقق مما إذا كانت صحيحة بنفسك!
+onboarding-automatic_proportions-check_height-title-v3 = قم بقياس ارتفاع سماعة الرأس
+onboarding-automatic_proportions-check_height-description-v2 = يجب أن يكون ارتفاع سماعة الرأس (HMD) أقل قليلا من طولك الكامل ، حيث تقيس سماعات الرأس ارتفاع عينيك. سيتم استخدام هذا القياس كخط أساس لنسب جسمك.
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = يرجى الضغط على الزر أثناء الوقوف <u>في وضع مستقيم</u> لحساب طولك. لديك 3 ثوان بعد الضغط على الزر!
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = ابدأ في القياس أثناء الوقوف <u>في وضع مستقيم</u> لقياس طولك. احرص على عدم رفع يديك أعلى من سماعة الرأس ، لأنها قد تؤثر على القياس!
 onboarding-automatic_proportions-check_height-guardian_tip =
     إذا كنت تستخدم سماعة رأس VR مستقلة ، فتأكد من تشغيل حدود الحارس /
     لكي يكون طولك صحيحا!
-onboarding-automatic_proportions-check_height-fetch_height = أنا واقف!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = مجهول
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = طولك من خلال HMD
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = لذا فإن طولك الفعلي هو
+onboarding-automatic_proportions-check_height-hmd_height2 = ارتفاع سماعة الرأس هو:
+onboarding-automatic_proportions-check_height-measure-start = ابدأ القياس
+onboarding-automatic_proportions-check_height-measure-stop = توقف عن القياس
+onboarding-automatic_proportions-check_height-measure-reset = إعادة محاولة القياس
 onboarding-automatic_proportions-check_height-next_step = انهم بخير
+onboarding-automatic_proportions-check_floor_height-title = قم بقياس الارتفاع عن الأرض (اختياري)
+onboarding-automatic_proportions-check_floor_height-description = في بعض الحالات، قد لا يتم ضبط الارتفاع عن الأرض بشكل صحيح بواسطة سماعة الرأس، مما يتسبب في قياس ارتفاع سماعة الرأس على أنه أعلى مما ينبغي. يمكنك قياس "الارتفاع" عن الأرض لتصحيح ارتفاع سماعة الرأس.
+# All the text is in bold!
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = ابدأ بقياس و ضع وحدة التحكم على الأرض لقياس ارتفاعها. إذا كنت متأكدا من صحة الارتفاع عن الأرض ، فيمكنك تخطي هذه الخطوة.
+# Shows an element below it
+onboarding-automatic_proportions-check_floor_height-floor_height = الارتفاع عن الأرض هو:
+onboarding-automatic_proportions-check_floor_height-full_height = طولك الكامل المقدر هو:
+onboarding-automatic_proportions-check_floor_height-measure-start = ابدأ القياس
+onboarding-automatic_proportions-check_floor_height-measure-stop = توقف عن القياس
+onboarding-automatic_proportions-check_floor_height-measure-reset = إعد محاولة القياس
+onboarding-automatic_proportions-check_floor_height-skip_step = تخطي الخطوة وحفظ
+onboarding-automatic_proportions-check_floor_height-next_step = استخدم الارتفاع عن الأرض وحفظه
 onboarding-automatic_proportions-start_recording-title = استعد للتحرك
 onboarding-automatic_proportions-start_recording-description = سنقوم الآن بتسجيل بعض الوضعيات والحركات المحددة. ستتم مطالبتك بذلك في الشاشة التالية. كن مستعدا للبدء عند الضغط على الزر!
 onboarding-automatic_proportions-start_recording-next = بدء التسجيل
@@ -953,10 +1090,33 @@ onboarding-automatic_proportions-verify_results-redo = إعادة التسجيل
 onboarding-automatic_proportions-verify_results-confirm = تبدو صحيحة
 onboarding-automatic_proportions-done-title = تم قياس الجسم و حفظه.
 onboarding-automatic_proportions-done-description = اكتملت معايرة نسب جسمك!
-onboarding-automatic_proportions-error_modal =
-    <b>تحذير:</b> تم العثور على خطأ أثناء تقدير النسب!
-    يرجى <docs>التحقق من المستندات</docs> أو الانضمام إلى <discord>Discord</discord> للحصول على المساعدة ^_^
+onboarding-automatic_proportions-error_modal-v2 =
+    <b>تحذير:</b> حدث خطأ أثناء تقدير النسب!
+    من المحتمل أن تكون هذه مشكلة معايرة التركيب. تأكد من أن التعقب يعمل بشكل صحيح قبل المحاولة مرة أخرى.
+    يرجى <docs>التحقق من التعليمات</docs> أو الانضمام إلى <discord>Discord</discord> للحصول على المساعدة ^_^
 onboarding-automatic_proportions-error_modal-confirm = مفهوم!
+onboarding-automatic_proportions-smol_warning =
+    الارتفاع الذي تم تكوينه هو { $height } و هو أصغر من الحد الأدنى للارتفاع المقبول البالغ { $minHeight }.
+    <b>يرجى إعادة القياسات والتأكد من صحتها.</b>
+onboarding-automatic_proportions-smol_warning-cancel = الرجوع
+
+## Tracker scaled proportions setup
+
+onboarding-scaled_proportions-title = النسب المقاسة
+onboarding-scaled_proportions-description = لكي تعمل أجهزة التعقب SlimeVR ، نحتاج إلى معرفة طول عظامك. ستستخدم نسبة متوسطة وقياسها بناء على طولك.
+onboarding-scaled_proportions-manual_height-title = تكوين طولك
+onboarding-scaled_proportions-manual_height-description-v2 = سيتم استخدام هذا الطول كخط أساس لنسب جسمك.
+onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR غير متصل حاليا ب SlimeVR ، لذلك لا يمكن أن تستند القياسات إلى سماعة الرأس الخاصة بك. <b>تابع على مسؤوليتك الخاصة أو تحقق من المستندات!</b>
+onboarding-scaled_proportions-manual_height-height-v2 = طولك الكامل هو
+onboarding-scaled_proportions-manual_height-estimated_height = الارتفاع المقدر لسماعة الرأس هو:
+onboarding-scaled_proportions-manual_height-next_step = المتابعة والحفظ
+onboarding-scaled_proportions-manual_height-warning-no_hmd = وصّل سماعة رأس VR
+
+## Tracker scaled proportions reset
+
+
+## Stay Aligned setup
+
 
 ## Home
 
@@ -980,6 +1140,21 @@ status_system-StatusSteamVRDisconnected =
        *[other] حاليًا غير متصل بـ SteamVR عبر برنامج تشغيل SlimeVR.
     }
 status_system-StatusTrackerError = يحتوي جهاز التعقب { $trackerName } على خطأ.
+
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
 
 ## Tray Menu
 
@@ -1008,3 +1183,6 @@ unknown_device-modal-description =
     هل تريد توصيله ب SlimeVR؟
 unknown_device-modal-confirm = أكيد
 unknown_device-modal-forget = تجاهلها
+
+## Error collection consent modal
+
