@@ -10,8 +10,6 @@ use std::{
 
 use clap::Parser;
 use const_format::concatcp;
-use flexi_logger::{style, DeferredNow};
-use log::Record;
 use shadow_rs::shadow;
 use tempfile::Builder;
 
@@ -217,32 +215,4 @@ pub fn valid_java_paths() -> Vec<(OsString, i32)> {
 				.filter(|(_p, code)| *code >= MINIMUM_JAVA_VERSION)
 		})
 		.collect()
-}
-
-pub fn logger_format(
-	w: &mut dyn std::io::Write,
-	_now: &mut DeferredNow,
-	record: &Record,
-	ansi: bool,
-) -> Result<(), std::io::Error> {
-	let level = record.level();
-	let module_path = record.module_path().unwrap_or("<unnamed>");
-	// Optionally print target
-	let target = if module_path.starts_with(record.target()) {
-		"".to_string()
-	} else {
-		format!(", {}", record.target())
-	};
-	// A toggle for ansi formatting, mainly disabled for file logs, but enabled for terminal logs.
-	if ansi {
-		write!(
-			w,
-			"{} [{}{target}] {}",
-			style(level).paint(level.to_string()),
-			module_path,
-			style(level).paint(record.args().to_string())
-		)
-	} else {
-		write!(w, "{} [{}{target}] {}", level, module_path, record.args())
-	}
 }

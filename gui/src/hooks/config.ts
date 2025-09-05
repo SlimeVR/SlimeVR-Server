@@ -5,7 +5,7 @@ import {
 } from '@/components/widgets/DeveloperModeWidget';
 import { error } from '@/utils/logging';
 import { useDebouncedEffect } from './timeout';
-import { createStore, Store } from '@tauri-apps/plugin-store';
+import { load, Store } from '@tauri-apps/plugin-store';
 import { useIsTauri } from './breakpoint';
 import { waitUntil } from '@/utils/a11y';
 import { isTauri } from '@tauri-apps/api/core';
@@ -78,17 +78,17 @@ export const defaultConfig: Config = {
 };
 
 interface CrossStorage {
-  set(key: string, value: string): Promise<void>;
-  get(key: string): Promise<string | null>;
+  set(key: string, value: unknown): Promise<void>;
+  get<T>(key: string): Promise<T | undefined>;
 }
 
 const localStore: CrossStorage = {
-  get: async (key) => localStorage.getItem(key),
-  set: async (key, value) => localStorage.setItem(key, value),
+  get: async <T>(key: string) => (localStorage.getItem(key) as T) ?? undefined,
+  set: async (key, value) => localStorage.setItem(key, value as string),
 };
 
 const store: CrossStorage = isTauri()
-  ? await createStore('gui-settings.dat', { autoSave: 100 as never })
+  ? await load('gui-settings.dat', { autoSave: 100, defaults: {} })
   : localStore;
 
 function fallbackToDefaults(loadedConfig: any): Config {
@@ -99,7 +99,7 @@ function fallbackToDefaults(loadedConfig: any): Config {
 // allows to load everything before the first render
 export const loadConfig = async () => {
   try {
-    const migrated = await store.get('configMigratedToTauri');
+    const migrated = await store.get<string>('configMigratedToTauri');
     if (!migrated) {
       const oldConfig = localStorage.getItem('config.json');
 
@@ -108,7 +108,7 @@ export const loadConfig = async () => {
       store.set('configMigratedToTauri', 'true');
     }
 
-    const json = await store.get('config.json');
+    const json = await store.get<string>('config.json');
 
     if (!json) throw new Error('Config has ceased existing for some reason');
 
