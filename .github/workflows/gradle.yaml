@@ -144,7 +144,7 @@ jobs:
             ./SlimeVR-android.apk
 
   bundle-ios:
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
         with:
@@ -169,13 +169,13 @@ jobs:
           node-version-file: '.node-version'
           cache: 'pnpm'
 
+      - run: pnpm i
+
       - name: Build GUI
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           NODE_OPTIONS: --max-old-space-size=4096
-        run: |
-          pnpm i
-          cd gui && pnpm run build
+        run: cd gui && pnpm run build
 
       - name: Build with Gradle
         run: ./gradlew :server:ios:createIPA
