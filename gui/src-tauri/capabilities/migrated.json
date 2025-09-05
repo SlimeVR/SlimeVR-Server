@@ -49,6 +49,7 @@
         }
       ]
     },
-    "opener:default"
+    "opener:default",
+    "log:default"
   ]
 }
