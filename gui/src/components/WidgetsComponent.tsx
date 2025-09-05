@@ -12,7 +12,11 @@ import { parseStatusToLocale, useStatusContext } from '@/hooks/status-system';
 import { ClearMountingButton } from './ClearMountingButton';
 import { ToggleableSkeletonVisualizerWidget } from './widgets/SkeletonVisualizerWidget';
 import { useAtomValue } from 'jotai';
-import { flatTrackersAtom } from '@/store/app-store';
+import {
+  feetAssignedTrackers,
+  fingerAssignedTrackers,
+  flatTrackersAtom,
+} from '@/store/app-store';
 import { A } from './commons/A';
 
 function UnprioritizedStatuses() {
@@ -48,6 +52,8 @@ function UnprioritizedStatuses() {
 
 export function WidgetsComponent() {
   const { config } = useConfig();
+  const hasFeetTrackers = useAtomValue(feetAssignedTrackers);
+  const hasFingerTrackers = useAtomValue(fingerAssignedTrackers);
 
   return (
     <>
@@ -55,16 +61,20 @@ export function WidgetsComponent() {
         <ResetButton type={ResetType.Yaw} size="big"></ResetButton>
         <ResetButton type={ResetType.Full} size="big"></ResetButton>
         <ResetButton type={ResetType.Mounting} size="big"></ResetButton>
-        <ResetButton
-          type={ResetType.Mounting}
-          size="big"
-          bodyPartsToReset="feet"
-        ></ResetButton>
-        <ResetButton
-          type={ResetType.Mounting}
-          size="big"
-          bodyPartsToReset="fingers"
-        ></ResetButton>
+        {hasFeetTrackers && (
+          <ResetButton
+            type={ResetType.Mounting}
+            size="big"
+            bodyPartsToReset="feet"
+          ></ResetButton>
+        )}
+        {hasFingerTrackers && (
+          <ResetButton
+            type={ResetType.Mounting}
+            size="big"
+            bodyPartsToReset="fingers"
+          ></ResetButton>
+        )}
         <ClearMountingButton></ClearMountingButton>
         {(typeof __ANDROID__ === 'undefined' || !__ANDROID__?.isThere()) && (
           <BVHButton></BVHButton>
