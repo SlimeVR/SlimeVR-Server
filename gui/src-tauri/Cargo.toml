@@ -28,13 +28,15 @@ shadow-rs = "0.35"
 [dependencies]
 serde_json = "1"
 serde = { version = "1", features = ["derive"] }
-tauri = { version = "2.0", features = ["devtools", "tray-icon", "image-png", "rustls-tls"] }
-tauri-runtime = "2.0"
-tauri-plugin-dialog = "2.0"
-tauri-plugin-fs = "2.4.1"
-tauri-plugin-os = "2.0"
-tauri-plugin-shell = "2.0"
-tauri-plugin-store = "2.0"
+tauri = { version = "2", features = ["devtools", "tray-icon", "image-png", "rustls-tls"] }
+tauri-runtime = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-http = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-os = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-store = "2"
 flexi_logger = "0.29"
 log-panics = { version = "2", features = ["with-backtrace"] }
 log = "0.4"
@@ -54,7 +56,6 @@ dirs-next = "2.0.0"
 discord-sdk = "0.3.6"
 tokio = { version = "1.37.0", features = ["time"] }
 itertools = "0.13.0"
-tauri-plugin-http = "2.5.0"
 
 [target.'cfg(windows)'.dependencies]
 win32job = "1"

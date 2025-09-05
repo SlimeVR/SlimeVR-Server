@@ -43,7 +43,7 @@ import { StatusProvider } from './components/providers/StatusSystemContext';
 import { VersionUpdateModal } from './components/VersionUpdateModal';
 import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
 import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
-import { open } from '@tauri-apps/plugin-shell';
+import { openUrl } from '@tauri-apps/plugin-opener';
 import semver from 'semver';
 import { useBreakpoint, useIsTauri } from './hooks/breakpoint';
 import { VRModePage } from './components/vr-mode/VRModePage';
@@ -278,7 +278,7 @@ export default function App() {
   useEffect(() => {
     function onKeyboard(ev: KeyboardEvent) {
       if (ev.key === 'F1') {
-        return open(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'));
+        return openUrl(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'));
       }
     }
 

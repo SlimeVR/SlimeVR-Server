@@ -9,7 +9,9 @@
     grid-template:
       't t t' var(--topbar-h)
       's c w' calc(100% - var(--topbar-h))
-      / var(--navbar-w) calc(100% - var(--navbar-w) - var(--widget-w)) var(--widget-w);
+      / var(--navbar-w) calc(100% - var(--navbar-w) - var(--widget-w)) var(
+        --widget-w
+      );
   }
 
   @screen mobile {

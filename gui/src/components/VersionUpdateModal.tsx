@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { BaseModal } from './commons/BaseModal';
 import { Button } from './commons/Button';
 import { Typography } from './commons/Typography';
-import { open } from '@tauri-apps/plugin-shell';
+import { openUrl } from '@tauri-apps/plugin-opener';
 import semver from 'semver';
 import { GH_REPO, VersionContext } from '@/App';
 import { error } from '@/utils/logging';
@@ -54,7 +54,7 @@ export function VersionUpdateModal() {
               const url = document.body.classList.contains('windows')
                 ? 'https://slimevr.dev/download'
                 : `https://github.com/${GH_REPO}/releases/latest`;
-              await open(url).catch(() => window.open(url, '_blank'));
+              await openUrl(url).catch(() => window.open(url, '_blank'));
               closeModal();
             }}
           >
