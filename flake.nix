@@ -171,8 +171,6 @@
 
           enterShell = with pkgs; ''
             # Export a LD_LIBRARY_PATH without libudev-zero as libgudev not likey
-            export ANDROID_HOME="/home/uri/Android/Sdk"
-            export NDK_HOME="/home/uri/Android/Sdk/ndk/29.0.14033849"
             export SLIMEVR_RUST_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
             export LD_LIBRARY_PATH="${libudev-zero}/lib:${libayatana-appindicator}/lib:$LD_LIBRARY_PATH"
             # GStreamer plugins won't be found without this
