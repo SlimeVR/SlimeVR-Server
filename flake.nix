@@ -57,11 +57,36 @@
         _module.args.pkgs = import self.inputs.nixpkgs {
           inherit system;
           overlays = [nixgl.overlay];
+          # Allow android SDK
+          # config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+          #   "android-sdk-cmdline-tools"
+          #   "android-sdk-platform-tools"
+          #   "platform-tools"
+          #   "android-sdk-tools"
+          #   "android-sdk-emulator"
+          #   "android-sdk-system-image-32-google_apis_playstore-arm64-v8a-system-image-32-google_apis_playstore-x86_64"
+          #   "system-image-32-google_apis_playstore-arm64-v8a"
+          #   "system-image-32-google_apis_playstore-x86_64"
+          #   "android-sdk-system-image-34-google_apis_playstore-arm64-v8a-system-image-34-google_apis_playstore-x86_64"
+          #   "system-image-34-google_apis_playstore-arm64-v8a"
+          #   "system-image-34-google_apis_playstore-x86_64"
+          #   "emulator"
+          #   "tools"
+          #   "android-sdk-build-tools"
+          #   "build-tools"
+          #   "android-sdk-platforms"
+          #   "platforms"
+          #   "cmake"
+          #   "android-sdk-ndk"
+          #   "ndk"
+          #   "android-sdk-extras-google-gcm"
+          #   "extras-google-gcm"
+          #   "cmdline-tools"
+          # ];
         };
 
         devenv.shells.default = let
           fenixpkgs = inputs'.fenix.packages;
-          rust_toolchain = lib.importTOML ./rust-toolchain.toml;
         in {
           name = "slimevr";
 
@@ -76,6 +101,7 @@
             (with pkgs; [
               pkgs.nixgl.nixGLIntel
               cacert
+              stow
             ])
             ++ lib.optionals pkgs.stdenv.isLinux (with pkgs; [
               atk
@@ -118,6 +144,12 @@
           };
           languages.kotlin.enable = true;
 
+          # android = {
+          #   enable = true;
+          #   googleAPIs.enable = false;
+          #   googleTVAddOns.enable = false;
+          # };
+
           languages.javascript = {
             enable = true;
             corepack.enable = true;
@@ -127,11 +159,10 @@
 
           languages.rust = {
             enable = true;
-            toolchain = fenixpkgs.fromToolchainName {
-              name = rust_toolchain.toolchain.channel;
-              sha256 = "sha256-yMuSb5eQPO/bHv+Bcf/US8LVMbf/G/0MSfiPwBhiPpk=";
+            toolchainPackage = fenixpkgs.fromToolchainFile {
+              file = ./rust-toolchain.toml;
+              sha256 = "sha256-+9FmLhAOezBZCOziO0Qct1NOrfpjNsXxc/8I0c7BdKE=";
             };
-            components = rust_toolchain.toolchain.components;
           };
 
           env = {
@@ -140,6 +171,8 @@
 
           enterShell = with pkgs; ''
             # Export a LD_LIBRARY_PATH without libudev-zero as libgudev not likey
+            export ANDROID_HOME="/home/uri/Android/Sdk"
+            export NDK_HOME="/home/uri/Android/Sdk/ndk/29.0.14033849"
             export SLIMEVR_RUST_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
             export LD_LIBRARY_PATH="${libudev-zero}/lib:${libayatana-appindicator}/lib:$LD_LIBRARY_PATH"
             # GStreamer plugins won't be found without this

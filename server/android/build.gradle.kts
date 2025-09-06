@@ -7,14 +7,24 @@
  */
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
 	kotlin("android")
 	kotlin("plugin.serialization")
 	id("com.github.gmazzo.buildconfig")
 
-	id("com.android.application") version "8.6.1"
+	id("com.android.application")
 	id("org.ajoberstar.grgit")
+	id("rust")
+}
+
+val tauriProperties = Properties().apply {
+	val propFile = file("tauri.properties")
+	if (propFile.exists()) {
+		propFile.inputStream().use { load(it) }
+	}
 }
 
 kotlin {
@@ -26,17 +36,6 @@ java {
 	toolchain {
 		languageVersion.set(JavaLanguageVersion.of(17))
 	}
-}
-
-tasks.register<Copy>("copyGuiAssets") {
-	from(rootProject.layout.projectDirectory.dir("gui/dist"))
-	into(layout.projectDirectory.dir("src/main/resources/web-gui"))
-	if (inputs.sourceFiles.isEmpty) {
-		throw GradleException("You need to run \"pnpm run build\" on the gui folder first!")
-	}
-}
-tasks.preBuild {
-	dependsOn(":server:android:copyGuiAssets")
 }
 
 tasks.withType<KotlinCompile> {
@@ -61,6 +60,14 @@ repositories {
 	google()
 }
 
+rust {
+	rootDirRel = if (projectDir.absolutePath.contains("gen/android")) {
+		"../../../../../"
+	} else {
+		"../../gui/src-tauri"
+	}
+}
+
 dependencies {
 	implementation(project(":server:core"))
 
@@ -68,17 +75,15 @@ dependencies {
 	implementation("org.apache.commons:commons-lang3:3.15.0")
 
 	// Android stuff
-	implementation("androidx.appcompat:appcompat:1.7.0")
+	implementation("androidx.webkit:webkit:1.14.0")
+	implementation("androidx.appcompat:appcompat:1.7.1")
+	implementation("androidx.activity:activity-ktx:1.10.1")
 	implementation("androidx.core:core-ktx:1.13.1")
 	implementation("com.google.android.material:material:1.12.0")
 	implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 	implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 	androidTestImplementation("androidx.test.ext:junit:1.2.1")
 	androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
-	// For hosting web GUI
-	implementation("io.ktor:ktor-server-core:2.3.12")
-	implementation("io.ktor:ktor-server-netty:2.3.10")
-	implementation("io.ktor:ktor-server-caching-headers:2.3.12")
 
 	// Serial
 	implementation("com.github.mik3y:usb-serial-for-android:3.7.0")
@@ -90,34 +95,18 @@ extra.apply {
 	set("gitVersionName", grgit.describe(mapOf("tags" to true, "always" to true)))
 }
 android {
-	// The app's namespace. Used primarily to access app resources.
-
 	namespace = "dev.slimevr.android"
-
-	/* compileSdk specifies the Android API level Gradle should use to
-		compile your app. This means your app can use the API features included in
-		this API level and lower. */
-
 	compileSdk = 35
-
-	/* The defaultConfig block encapsulates default settings and entries for all
-		build variants and can override some attributes in main/AndroidManifest.xml
-		dynamically from the build system. You can configure product flavors to override
-		these values for different versions of your app. */
 
 	packaging {
 		resources.excludes.add("META-INF/*")
 	}
 
 	defaultConfig {
-
-		// Uniquely identifies the package for publishing.
+		manifestPlaceholders["usesCleartextTraffic"] = "false"
 		applicationId = "dev.slimevr.server.android"
 
-		// Defines the minimum API level required to run the app.
 		minSdk = 26
-
-		// Specifies the API level used to test the app.
 		targetSdk = 35
 
 		// adds an offset of the version code as we might do apk releases in the middle of actual
@@ -128,8 +117,27 @@ android {
 
 		// Defines a user-friendly version name for your app.
 		versionName = extra["gitVersionName"] as? String ?: "v0.0.0"
+		setProperty("archivesBaseName", "app")
 
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+		ndk {
+			abiFilters += listOf("x86", "x86_64", "arm64-v8a", "armeabi-v7a")
+		}
+	}
+
+	signingConfigs {
+		create("release") {
+			val keystorePropertiesFile = rootProject.file("keystore.properties")
+			val keystoreProperties = Properties()
+			if (keystorePropertiesFile.exists()) {
+				keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+			}
+
+			keyAlias = keystoreProperties["keyAlias"] as String?
+			keyPassword = keystoreProperties["password"] as String?
+			storeFile = keystoreProperties["storeFile"]?.let { file(it) }
+			storePassword = keystoreProperties["password"] as String?
+		}
 	}
 
 	/*	The buildTypes block is where you can configure multiple build types.
@@ -139,15 +147,25 @@ android {
 		build type applies ProGuard settings and is not signed by default. */
 
 	buildTypes {
-
-		/*	By default, Android Studio configures the release build type to enable code
-			shrinking, using minifyEnabled, and specifies the default ProGuard rules file. */
-
+		getByName("debug") {
+			manifestPlaceholders["usesCleartextTraffic"] = "true"
+			isDebuggable = true
+			isJniDebuggable = true
+			isMinifyEnabled = false
+			packaging {
+				jniLibs.keepDebugSymbols.add("*/arm64-v8a/*.so")
+				jniLibs.keepDebugSymbols.add("*/armeabi-v7a/*.so")
+				jniLibs.keepDebugSymbols.add("*/x86/*.so")
+				jniLibs.keepDebugSymbols.add("*/x86_64/*.so")
+			}
+		}
 		getByName("release") {
-			isMinifyEnabled = true // Enables code shrinking for the release build type.
+			isMinifyEnabled = true
+			signingConfig = signingConfigs.getByName("release")
 			proguardFiles(
-				getDefaultProguardFile("proguard-android.txt"),
-				"proguard-rules.pro",
+				*fileTree(".") { include("**/*.pro") }
+					.plus(getDefaultProguardFile("proguard-android-optimize.txt"))
+					.toList().toTypedArray(),
 			)
 		}
 	}
@@ -159,4 +177,13 @@ android {
 	kotlinOptions {
 		jvmTarget = "17"
 	}
+	buildFeatures {
+		buildConfig = true
+	}
+}
+
+try {
+	apply(from = "tauri.build.gradle.kts")
+} catch (e: Exception) {
+	println("Couldn't enable tauri stuff")
 }
