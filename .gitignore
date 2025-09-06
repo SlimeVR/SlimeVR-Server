@@ -36,6 +36,8 @@ build/
 
 # Rust build artifacts
 /target
+/.tauri
+/tauri.settings.gradle
 
 # direnv has been claimed for Nix usage
 .direnv/
@@ -43,6 +45,8 @@ build/
 
 # Ignore Android local properties
 local.properties
+keystore.properties
+/.android
 
 # Ignore temporary config
 vrconfig.yml.tmp

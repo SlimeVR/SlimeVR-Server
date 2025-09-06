@@ -2,3 +2,4 @@
 channel = "1.82"
 profile = "default"
 components = ["rustc", "cargo", "clippy", "rustfmt", "rust-analyzer", "rust-src"]
+targets = ["x86_64-linux-android", "aarch64-linux-android", "armv7-linux-androideabi", "i686-linux-android"]
