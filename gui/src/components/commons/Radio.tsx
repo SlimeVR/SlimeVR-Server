@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { Control, Controller } from 'react-hook-form';
-import { Typography } from './Typography';
 import { ReactNode } from 'react';
+import { Typography } from './Typography';
 
 export function Radio({
   control,
@@ -49,7 +49,7 @@ export function Radio({
             {...props}
           />
           <div className="flex flex-col gap-2 pointer-events-none">
-            {children ? children : <Typography bold>{label}</Typography>}
+            {children || <Typography bold>{label}</Typography>}
             {description && (
               <Typography variant="standard" color="secondary">
                 {description}

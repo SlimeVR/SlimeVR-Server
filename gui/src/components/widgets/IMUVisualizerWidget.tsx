@@ -14,6 +14,9 @@ import { Gltf } from '@react-three/drei';
 import { ErrorBoundary } from 'react-error-boundary';
 import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
 
+// FIXME: I don't know what's happening with the typing on here
+/* eslint-disable react/no-unknown-property */
+
 const groundColor = '#4444aa';
 
 const scale = 6.5;
@@ -58,7 +61,7 @@ function SceneRenderer({
         intensity={4000}
       />
       <group quaternion={[quat.x, quat.y, quat.z, quat.w]}>
-        <TrackerModel model={model}></TrackerModel>
+        <TrackerModel model={model} />
         <axesHelper args={[10]} />
       </group>
 
@@ -214,7 +217,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
               model={
                 isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'
               }
-            ></SceneRenderer>
+            />
           </ErrorBoundary>
         </>
       )}

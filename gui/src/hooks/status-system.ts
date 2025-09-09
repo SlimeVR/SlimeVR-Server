@@ -15,10 +15,10 @@ import {
   StatusUnassignedHMDT,
   TrackerDataT,
 } from 'solarxr-protocol';
-import { useWebsocketAPI } from './websocket-api';
 import { FluentVariable } from '@fluent/bundle';
 import { ReactLocalization } from '@fluent/react';
 import { FlatDeviceTracker } from '@/store/app-store';
+import { useWebsocketAPI } from './websocket-api';
 
 type StatusSystemStateAction =
   | StatusSystemStateFixedAction
@@ -41,15 +41,11 @@ interface StatusSystemStateNewAction {
 }
 
 interface StatusSystemState {
-  statuses: {
-    [id: number]: StatusMessageT;
-  };
+  statuses: Record<number, StatusMessageT>;
 }
 
 export interface StatusSystemContext {
-  statuses: {
-    [id: number]: StatusMessageT;
-  };
+  statuses: Record<number, StatusMessageT>;
 }
 
 function reducer(
@@ -158,7 +154,7 @@ export function parseStatusToLocale(
       const name = tracker.tracker.info?.customName
         ? tracker.tracker.info?.customName
         : tracker.tracker.info?.bodyPart
-          ? l10n.getString('body_part-' + BodyPart[tracker.tracker.info?.bodyPart])
+          ? l10n.getString(`body_part-${BodyPart[tracker.tracker.info?.bodyPart]}`)
           : tracker.tracker.info?.displayName || 'unknown';
       if (typeof name !== 'string') {
         return {

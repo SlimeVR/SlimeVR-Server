@@ -26,11 +26,11 @@ import { Button } from '@/components/commons/Button';
 import { Input } from '@/components/commons/Input';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { useOnboarding } from '@/hooks/onboarding';
-import { DeviceCardControl } from './DeviceCard';
 import { getTrackerName } from '@/hooks/tracker';
 import { ObjectSchema, object, string } from 'yup';
 import { useAtomValue } from 'jotai';
 import { devicesAtom } from '@/store/app-store';
+import { DeviceCardControl } from './DeviceCard';
 
 interface FlashingMethodForm {
   flashingMethod?: string;
@@ -40,7 +40,7 @@ interface FlashingMethodForm {
     password?: string;
   };
   ota?: {
-    selectedDevices: { [key: string]: boolean };
+    selectedDevices: Record<string, boolean>;
   };
 }
 
@@ -129,7 +129,7 @@ function SerialDevicesList({
   return (
     <>
       <Localized id="firmware_tool-flash_method_serial-wifi">
-        <Typography variant="section-title"></Typography>
+        <Typography variant="section-title" />
       </Localized>
       <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3 text-background-10">
         <Localized
@@ -156,11 +156,11 @@ function SerialDevicesList({
         </Localized>
       </div>
       <Localized id="firmware_tool-flash_method_serial-devices-label">
-        <Typography variant="section-title"></Typography>
+        <Typography variant="section-title" />
       </Localized>
       {Object.keys(devices).length === 0 ? (
         <Localized id="firmware_tool-flash_method_serial-no_devices">
-          <Typography variant="standard" color="secondary"></Typography>
+          <Typography variant="standard" color="secondary" />
         </Localized>
       ) : (
         <Dropdown
@@ -175,7 +175,7 @@ function SerialDevicesList({
           )}
           display="block"
           direction="down"
-        ></Dropdown>
+        />
       )}
     </>
   );
@@ -270,11 +270,11 @@ function OTADevicesList({
   return (
     <>
       <Localized id="firmware_tool-flash_method_ota-devices">
-        <Typography variant="section-title"></Typography>
+        <Typography variant="section-title" />
       </Localized>
       {devices.length === 0 && (
         <Localized id="firmware_tool-flash_method_ota-no_devices">
-          <Typography color="secondary"></Typography>
+          <Typography color="secondary" />
         </Localized>
       )}
       <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-2">
@@ -284,7 +284,7 @@ function OTADevicesList({
             key={device.id?.id ?? 0}
             name={`ota.selectedDevices.id-${device.id?.id ?? 0}`}
             deviceNames={deviceNames(device)}
-          ></DeviceCardControl>
+          />
         ))}
       </div>
     </>
@@ -344,84 +344,78 @@ export function FlashingMethodStep({
   const flashingMethod = watch('flashingMethod');
 
   return (
-    <>
-      <div className="flex flex-col w-full">
-        <div className="flex flex-grow flex-col gap-4">
-          <Typography color="secondary">
-            {l10n.getString('firmware_tool-flash_method_step-description')}
-          </Typography>
-        </div>
-        <div className="my-4">
-          {!isGlobalLoading && (
-            <div className="flex flex-col gap-3">
-              <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3">
-                <Localized
-                  id="firmware_tool-flash_method_step-ota"
-                  attrs={{ label: true, description: true }}
-                >
-                  <Radio
-                    control={control}
-                    name="flashingMethod"
-                    value={FirmwareUpdateMethod.OTAFirmwareUpdate.toString()}
-                    label=""
-                  ></Radio>
-                </Localized>
-                <Localized
-                  id="firmware_tool-flash_method_step-serial"
-                  attrs={{ label: true, description: true }}
-                >
-                  <Radio
-                    control={control}
-                    name="flashingMethod"
-                    value={FirmwareUpdateMethod.SerialFirmwareUpdate.toString()}
-                    label=""
-                  ></Radio>
-                </Localized>
-              </div>
-              {flashingMethod ===
-                FirmwareUpdateMethod.SerialFirmwareUpdate.toString() && (
-                <SerialDevicesList
+    <div className="flex flex-col w-full">
+      <div className="flex flex-grow flex-col gap-4">
+        <Typography color="secondary">
+          {l10n.getString('firmware_tool-flash_method_step-description')}
+        </Typography>
+      </div>
+      <div className="my-4">
+        {!isGlobalLoading && (
+          <div className="flex flex-col gap-3">
+            <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3">
+              <Localized
+                id="firmware_tool-flash_method_step-ota"
+                attrs={{ label: true, description: true }}
+              >
+                <Radio
                   control={control}
-                  watch={watch}
-                  reset={reset}
-                ></SerialDevicesList>
-              )}
-              {flashingMethod ===
-                FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
-                <OTADevicesList
+                  name="flashingMethod"
+                  value={FirmwareUpdateMethod.OTAFirmwareUpdate.toString()}
+                  label=""
+                />
+              </Localized>
+              <Localized
+                id="firmware_tool-flash_method_step-serial"
+                attrs={{ label: true, description: true }}
+              >
+                <Radio
                   control={control}
-                  watch={watch}
-                  reset={reset}
-                ></OTADevicesList>
-              )}
-              <div className="flex justify-between">
-                <Localized id="firmware_tool-previous_step">
-                  <Button variant="secondary" onClick={prevStep}></Button>
-                </Localized>
-                <Localized id="firmware_tool-next_step">
-                  <Button
-                    variant="primary"
-                    disabled={
-                      !isValid ||
-                      selectedDevices === null ||
-                      selectedDevices.length === 0
-                    }
-                    onClick={nextStep}
-                  ></Button>
-                </Localized>
-              </div>
-            </div>
-          )}
-          {isGlobalLoading && (
-            <div className="flex justify-center flex-col items-center gap-3 h-44">
-              <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware_tool-loading">
-                <Typography color="secondary"></Typography>
+                  name="flashingMethod"
+                  value={FirmwareUpdateMethod.SerialFirmwareUpdate.toString()}
+                  label=""
+                />
               </Localized>
             </div>
-          )}
-        </div>
+            {flashingMethod ===
+              FirmwareUpdateMethod.SerialFirmwareUpdate.toString() && (
+              <SerialDevicesList
+                control={control}
+                watch={watch}
+                reset={reset}
+              />
+            )}
+            {flashingMethod ===
+              FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
+              <OTADevicesList control={control} watch={watch} reset={reset} />
+            )}
+            <div className="flex justify-between">
+              <Localized id="firmware_tool-previous_step">
+                <Button variant="secondary" onClick={prevStep} />
+              </Localized>
+              <Localized id="firmware_tool-next_step">
+                <Button
+                  variant="primary"
+                  disabled={
+                    !isValid ||
+                    selectedDevices === null ||
+                    selectedDevices.length === 0
+                  }
+                  onClick={nextStep}
+                />
+              </Localized>
+            </div>
+          </div>
+        )}
+        {isGlobalLoading && (
+          <div className="flex justify-center flex-col items-center gap-3 h-44">
+            <LoaderIcon slimeState={SlimeState.JUMPY} />
+            <Localized id="firmware_tool-loading">
+              <Typography color="secondary" />
+            </Localized>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }

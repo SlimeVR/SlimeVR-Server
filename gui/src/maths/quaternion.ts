@@ -12,7 +12,12 @@ export const rotationToQuatMap = {
   BACK: new Quaternion(0, 0, 0, 1),
 };
 
-export type QuatObject = { x: number; y: number; z: number; w: number };
+export interface QuatObject {
+  x: number;
+  y: number;
+  z: number;
+  w: number;
+}
 
 export function QuaternionFromQuatT(q?: QuatObject | null) {
   return q ? new Quaternion(q.x, q.y, q.z, q.w) : new Quaternion();

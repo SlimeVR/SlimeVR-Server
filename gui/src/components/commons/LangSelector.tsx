@@ -30,7 +30,7 @@ export function LangSelector({
               className="inline-block w-auto h-[1em] -translate-y-[0.05em]"
               src={emoji}
             />
-            {' ' + name}
+            {` ${name}`}
           </div>
         ),
         label: name,
@@ -59,6 +59,6 @@ export function LangSelector({
       items={languagesItems}
       direction={direction}
       alignment={alignment}
-    ></Dropdown>
+    />
   );
 }

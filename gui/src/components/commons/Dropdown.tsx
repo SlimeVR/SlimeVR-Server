@@ -68,7 +68,7 @@ export function DropdownItems({
       <div
         className="z-[999] fixed top-0 w-full h-full"
         onClick={onBackdropClick}
-      ></div>
+      />
       <div
         ref={ref}
         className={classNames(
@@ -80,7 +80,7 @@ export function DropdownItems({
           itemBounds?.height == 0 && 'opacity-0' // Avoid flicker while the component find its position
         )}
         style={{
-          maxHeight: maxHeight,
+          maxHeight,
           left:
             alignment === 'left'
               ? dropdownBounds.left
@@ -117,6 +117,7 @@ export function DropdownItems({
                 onSelectItem(item);
               }}
               key={item.value}
+              role="button"
               tabIndex={0}
               data-checked={item.value === value}
             >
@@ -194,6 +195,7 @@ export function Dropdown({
             )}
             onClick={() => setOpen((open) => !open)}
             onKeyDown={(ev) => a11yClick(ev) && setOpen((open) => !open)}
+            role="button"
             tabIndex={0}
           >
             <div className="flex-grow text-standard first:pointer-events-none">
@@ -208,7 +210,7 @@ export function Dropdown({
                 direction == 'down' && 'rotate-0'
               )}
             >
-              <ArrowDownIcon size={16}></ArrowDownIcon>
+              <ArrowDownIcon size={16} />
             </div>
           </div>
           {isOpen &&
@@ -230,7 +232,7 @@ export function Dropdown({
                 onBackdropClick={() => {
                   setOpen(false);
                 }}
-              ></DropdownItems>,
+              />,
               document.body
             )}
         </>

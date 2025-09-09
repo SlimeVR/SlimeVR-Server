@@ -47,7 +47,7 @@ export function OSCRouterSettings() {
 
   const { reset, control, watch, handleSubmit } =
     useForm<OSCRouterSettingsForm>({
-      defaultValues: defaultValues,
+      defaultValues,
     });
 
   const onSubmit = (values: OSCRouterSettingsForm) => {
@@ -99,22 +99,21 @@ export function OSCRouterSettings() {
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<RouterIcon></RouterIcon>} id="router">
+        <SettingsPagePaneLayout icon={<RouterIcon />} id="router">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-osc-router')}
             </Typography>
             <div className="flex flex-col pt-2 pb-4">
-              <>
-                {l10n
-                  .getString('settings-osc-router-description')
-                  .split('\n')
-                  .map((line, i) => (
-                    <Typography color="secondary" key={i}>
-                      {line}
-                    </Typography>
-                  ))}
-              </>
+              {l10n
+                .getString('settings-osc-router-description')
+                .split('\n')
+                .map((line, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
             </div>
             <Typography bold>
               {l10n.getString('settings-osc-router-enable')}
@@ -137,16 +136,15 @@ export function OSCRouterSettings() {
               {l10n.getString('settings-osc-router-network')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <>
-                {l10n
-                  .getString('settings-osc-router-network-description')
-                  .split('\n')
-                  .map((line, i) => (
-                    <Typography color="secondary" key={i}>
-                      {line}
-                    </Typography>
-                  ))}
-              </>
+              {l10n
+                .getString('settings-osc-router-network-description')
+                .split('\n')
+                .map((line, i) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Typography color="secondary" key={i}>
+                    {line}
+                  </Typography>
+                ))}
             </div>
             <div className="grid grid-cols-2 gap-3 pb-5">
               <Localized
@@ -160,7 +158,7 @@ export function OSCRouterSettings() {
                   name="router.oscSettings.portIn"
                   placeholder="9002"
                   label=""
-                ></Input>
+                />
               </Localized>
               <Localized
                 id="settings-osc-router-network-port_out"
@@ -173,7 +171,7 @@ export function OSCRouterSettings() {
                   name="router.oscSettings.portOut"
                   placeholder="9000"
                   label=""
-                ></Input>
+                />
               </Localized>
             </div>
             <Typography bold>
@@ -200,7 +198,7 @@ export function OSCRouterSettings() {
                   'settings-osc-router-network-address-placeholder'
                 )}
                 label=""
-              ></Input>
+              />
             </div>
           </>
         </SettingsPagePaneLayout>

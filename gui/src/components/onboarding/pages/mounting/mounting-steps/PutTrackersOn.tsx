@@ -46,7 +46,7 @@ export function PutTrackersOnStep({
               width={150}
               dotsSize={15}
               variant="dots"
-              hideUnassigned={true}
+              hideUnassigned
             />
           </div>
         )}
@@ -75,7 +75,7 @@ export function PutTrackersOnStep({
             width={150}
             dotsSize={15}
             variant="dots"
-            hideUnassigned={true}
+            hideUnassigned
           />
         </div>
       )}

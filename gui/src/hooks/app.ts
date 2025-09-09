@@ -9,13 +9,13 @@ import {
   StartDataFeedT,
 } from 'solarxr-protocol';
 import { playSoundOnResetEnded, playSoundOnResetStarted } from '@/sounds/sounds';
-import { useConfig } from './config';
-import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';
-import { useWebsocketAPI } from './websocket-api';
 import { error } from '@/utils/logging';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { bonesAtom, datafeedAtom, devicesAtom } from '@/store/app-store';
 import { updateSentryContext } from '@/utils/sentry';
+import { useConfig } from './config';
+import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';
+import { useWebsocketAPI } from './websocket-api';
 import { fetchCurrentFirmwareRelease, FirmwareRelease } from './firmware-update';
 
 export interface AppContext {

@@ -48,7 +48,7 @@ export function TooSmolModal({
         <div className="flex flex-col flex-grow items-center gap-3">
           <Localized
             id="onboarding-automatic_proportions-smol_warning"
-            elems={{ b: <b></b> }}
+            elems={{ b: <b /> }}
             vars={{
               height: mFormat.format((hmdHeight ?? 0) - (floorHeight ?? 0)),
               minHeight: mFormat.format(MIN_HEIGHT),
