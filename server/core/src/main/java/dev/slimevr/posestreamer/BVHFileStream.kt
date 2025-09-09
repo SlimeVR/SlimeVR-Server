@@ -20,28 +20,19 @@ class BVHFileStream : PoseDataStream {
 	private var frameCount: Long = 0
 	private var frameCountOffset: Long = 0
 
-	constructor(outputStream: OutputStream) : super(outputStream) {
+	constructor(outputStream: OutputStream, bvhSettings: BVHSettings = BVHSettings.BLENDER) : super(outputStream) {
+		this.bvhSettings = bvhSettings
 		writer = BufferedWriter(OutputStreamWriter(outputStream), 4096)
 	}
 
-	constructor(outputStream: OutputStream, bvhSettings: BVHSettings) : this(outputStream) {
+	constructor(file: File, bvhSettings: BVHSettings = BVHSettings.BLENDER) : super(file) {
 		this.bvhSettings = bvhSettings
-	}
-
-	constructor(file: File) : super(file) {
 		writer = BufferedWriter(OutputStreamWriter(outputStream), 4096)
 	}
 
-	constructor(file: File, bvhSettings: BVHSettings) : this(file) {
+	constructor(file: String, bvhSettings: BVHSettings = BVHSettings.BLENDER) : super(file) {
 		this.bvhSettings = bvhSettings
-	}
-
-	constructor(file: String) : super(file) {
 		writer = BufferedWriter(OutputStreamWriter(outputStream), 4096)
-	}
-
-	constructor(file: String, bvhSettings: BVHSettings) : this(file) {
-		this.bvhSettings = bvhSettings
 	}
 
 	private fun getBufferedFrameCount(frameCount: Long): String {
