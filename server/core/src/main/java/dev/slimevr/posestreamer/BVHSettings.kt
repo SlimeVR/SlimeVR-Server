@@ -5,14 +5,12 @@ class BVHSettings {
 		private set
 	var positionScale: Float = 100f
 		private set
-	private var writeEndNodes = false
 
 	constructor()
 
 	constructor(source: BVHSettings) {
 		this.offsetScale = source.offsetScale
 		this.positionScale = source.positionScale
-		this.writeEndNodes = source.writeEndNodes
 	}
 
 	fun setOffsetScale(offsetScale: Float): BVHSettings {
@@ -22,13 +20,6 @@ class BVHSettings {
 
 	fun setPositionScale(positionScale: Float): BVHSettings {
 		this.positionScale = positionScale
-		return this
-	}
-
-	fun shouldWriteEndNodes(): Boolean = writeEndNodes
-
-	fun setWriteEndNodes(writeEndNodes: Boolean): BVHSettings {
-		this.writeEndNodes = writeEndNodes
 		return this
 	}
 
