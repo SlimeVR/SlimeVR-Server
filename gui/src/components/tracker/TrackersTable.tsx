@@ -1,6 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { IPv4 } from 'ip-num/IPNumber';
+import { IPv4 } from 'ip-num';
 import { MouseEventHandler, ReactNode, useMemo, useState } from 'react';
 import {
   TrackerDataT,
