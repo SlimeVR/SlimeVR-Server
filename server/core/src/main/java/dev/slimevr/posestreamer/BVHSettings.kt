@@ -1,9 +1,13 @@
 package dev.slimevr.posestreamer
 
+import dev.slimevr.tracking.processor.BoneType
+
 class BVHSettings {
 	var offsetScale: Float = 100f
 		private set
 	var positionScale: Float = 100f
+		private set
+	var rootBone: BoneType = BoneType.HIP
 		private set
 
 	constructor()
@@ -20,6 +24,11 @@ class BVHSettings {
 
 	fun setPositionScale(positionScale: Float): BVHSettings {
 		this.positionScale = positionScale
+		return this
+	}
+
+	fun setRootBone(rootBone: BoneType): BVHSettings {
+		this.rootBone = rootBone
 		return this
 	}
 

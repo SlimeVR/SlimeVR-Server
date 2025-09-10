@@ -143,7 +143,7 @@ class BVHFileStream : PoseDataStream {
 	@Throws(IOException::class)
 	override fun writeHeader(skeleton: HumanSkeleton, streamer: PoseStreamer) {
 		writer.write("HIERARCHY\n")
-		writeSkeletonDef(skeleton.headBone)
+		writeSkeletonDef(skeleton.getBone(bvhSettings.rootBone))
 
 		writer.write("MOTION\n")
 		writer.write("Frames: ")
@@ -173,7 +173,7 @@ class BVHFileStream : PoseDataStream {
 
 	@Throws(IOException::class)
 	override fun writeFrame(skeleton: HumanSkeleton) {
-		val rootBone = skeleton.headBone
+		val rootBone = skeleton.getBone(bvhSettings.rootBone)
 
 		val rootPos = rootBone.getPosition()
 
