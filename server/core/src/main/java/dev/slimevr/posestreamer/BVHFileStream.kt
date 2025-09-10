@@ -44,7 +44,7 @@ class BVHFileStream : PoseDataStream {
 
 	private fun internalNavigateSkeleton(
 		bone: Bone,
-		header: (bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean) -> Unit,
+		header: (bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, isParent: Boolean) -> Unit,
 		footer: (distance: Int) -> Unit,
 		lastBone: Bone? = null,
 		invertParentRot: Quaternion = Quaternion.IDENTITY,
@@ -60,7 +60,7 @@ class BVHFileStream : PoseDataStream {
 
 		val hasBranch = visitParent || childCount > 0
 
-		header(bone, lastBone, invertParentRot, distance, hasBranch)
+		header(bone, lastBone, invertParentRot, distance, hasBranch, isParent)
 
 		if (hasBranch) {
 			// Cache this inverted rotation to reduce computation for each branch
@@ -82,13 +82,13 @@ class BVHFileStream : PoseDataStream {
 
 	private fun navigateSkeleton(
 		root: Bone,
-		header: (bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean) -> Unit,
+		header: (bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, isParent: Boolean) -> Unit,
 		footer: (distance: Int) -> Unit = {},
 	) {
 		internalNavigateSkeleton(root, header, footer)
 	}
 
-	private fun writeBoneDefHeader(bone: Bone?, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean) {
+	private fun writeBoneDefHeader(bone: Bone?, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, isParent: Boolean) {
 		val indentLevel = StringUtils.repeat("\t", distance)
 		val nextIndentLevel = indentLevel + "\t"
 
@@ -104,7 +104,7 @@ class BVHFileStream : PoseDataStream {
 		// Ignore the root and endpoint offsets
 		if (bone != null && lastBone != null) {
 			writer.write(
-				"${nextIndentLevel}OFFSET 0.0 ${-lastBone.length * bvhSettings.offsetScale} 0.0\n",
+				"${nextIndentLevel}OFFSET 0.0 ${(if (isParent) lastBone.length else -lastBone.length) * bvhSettings.offsetScale} 0.0\n",
 			)
 		} else {
 			writer.write("${nextIndentLevel}OFFSET 0.0 0.0 0.0\n")
@@ -125,7 +125,7 @@ class BVHFileStream : PoseDataStream {
 			// We use null for convenience and treat it as an end node (no bone)
 			if (!hasBranch) {
 				val endDistance = distance + 1
-				writeBoneDefHeader(null, bone, Quaternion.IDENTITY, endDistance, false)
+				writeBoneDefHeader(null, bone, Quaternion.IDENTITY, endDistance, false, false)
 				writeBoneDefFooter(endDistance)
 			}
 		}
@@ -161,7 +161,7 @@ class BVHFileStream : PoseDataStream {
 		writer.write("Frame Time: ${streamer.frameInterval}\n")
 	}
 
-	private fun writeBoneRot(bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean) {
+	private fun writeBoneRot(bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, isParent: Boolean) {
 		val rot = invertParentRot * bone.getGlobalRotation()
 		val angles = rot.toEulerAngles(EulerOrder.ZXY)
 
