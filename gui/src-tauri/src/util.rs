@@ -109,6 +109,21 @@ pub fn show_error(text: &str) -> bool {
 		== MessageDialogResult::Ok
 }
 
+pub fn get_log_dir(context: &tauri::Context) -> tauri::Result<PathBuf> {
+	use tauri::Error;
+	#[cfg(target_os = "macos")]
+	let path = dirs_next::home_dir()
+		.ok_or(Error::UnknownPath)
+		.map(|dir| dir.join("Library/Logs").join(&context.config().identifier))?;
+
+	#[cfg(not(target_os = "macos"))]
+	let path = dirs_next::data_dir()
+		.ok_or(Error::UnknownPath)
+		.map(|dir| dir.join(&context.config().identifier).join("logs"))?;
+
+	Ok(path)
+}
+
 #[cfg(mobile)]
 pub fn show_error(text: &str) -> bool {
 	// needs to do native stuff on mobile

@@ -17,6 +17,7 @@ use tauri::Emitter;
 use tauri::WindowEvent;
 use tauri::{Manager, RunEvent};
 use tauri_plugin_shell::process::CommandChild;
+use util::get_log_dir;
 
 use crate::util::{
 	get_launch_path, show_error, valid_java_paths, Cli, JAVA_BIN, MINIMUM_JAVA_VERSION,
@@ -203,7 +204,8 @@ fn setup_tauri(
 		.plugin(
 			tauri_plugin_log::Builder::new()
 				.target(tauri_plugin_log::Target::new(
-					tauri_plugin_log::TargetKind::LogDir {
+					tauri_plugin_log::TargetKind::Folder {
+						path: get_log_dir(&context)?,
 						file_name: Some("slimevr".to_string()),
 					},
 				))
