@@ -223,7 +223,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 	@Synchronized
 	private fun writeSerial(serialText: String, print: Boolean = false) {
 		try {
-			usbIoManager?.writeAsync("${serialText}\n".toByteArray())
+			currentPort?.port?.write("${serialText}\n".toByteArray(), 0)
 			if (print) {
 				addLog("-> $serialText\n")
 			}
@@ -272,7 +272,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 	}
 
 	override fun write(buff: ByteArray) {
-		usbIoManager?.writeAsync(buff)
+		currentPort?.port?.write(buff, 0)
 	}
 
 	@Synchronized
