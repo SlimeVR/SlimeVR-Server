@@ -16,6 +16,8 @@ public class WebviewController extends UIViewController {
 		UIView view = getView();
 
 		view.setBackgroundColor(UIColor.purple());
+		setEdgesForExtendedLayout(UIRectEdge.All);
+		setExtendedLayoutIncludesOpaqueBars(true);
 	}
 
 	@Override
