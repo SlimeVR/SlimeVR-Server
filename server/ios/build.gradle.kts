@@ -1,6 +1,7 @@
 plugins {
 	`java-library`
 	id("robovm")
+	id("org.ajoberstar.grgit")
 }
 
 java {
@@ -41,6 +42,19 @@ tasks.launchIOSDevice {
 }
 tasks.robovmArchive {
 	dependsOn(tasks.build)
+}
+
+tasks.register("makeLocalProperties") {
+	File("${project.projectDir}/robovm.local.properties").writeText(
+		"""
+		app.version=${grgit.describe(mapOf("tags" to true, "always" to true))}
+		app.build=${grgit.tag.list().size}
+		""".trimIndent(),
+	)
+}
+
+tasks.build {
+	dependsOn(":server:ios:makeLocalProperties")
 }
 
 robovm {
