@@ -28,16 +28,16 @@ class RPCTrackingPause(private val rpcHandler: RPCHandler, private val api: Prot
 		}
 	}
 
-	private fun getPauseStateResponse(trackingPaused: Boolean): ByteBuffer {
+	private fun getPauseStateResponse(trackingPaused: Boolean, messageHeader: RpcMessageHeader? = null): ByteBuffer {
 		val fbb = FlatBufferBuilder(32)
 		val state = TrackingPauseStateResponse.createTrackingPauseStateResponse(fbb, trackingPaused)
-		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.TrackingPauseStateResponse, state)
+		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.TrackingPauseStateResponse, state, messageHeader)
 		fbb.finish(outbound)
 		return fbb.dataBuffer()
 	}
 
 	private fun onTrackingPauseStateRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
-		conn.send(getPauseStateResponse(currentPauseState))
+		conn.send(getPauseStateResponse(currentPauseState, messageHeader))
 	}
 
 	override fun onTrackingPause(trackingPaused: Boolean) {
