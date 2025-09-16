@@ -27,6 +27,14 @@ const hash = (str: string) => {
 const firstAsset = (assets: any[], name: string) =>
   assets.find((asset: any) => asset.name === name && asset.browser_download_url);
 
+const todaysRange = (deployData: [number, Date][]): number => {
+  let minRange = 0;
+  for (const [range, date] of deployData) {
+    if (Date.now() >= date.getTime()) minRange = range;
+  }
+  return minRange;
+};
+
 const checkUserCanUpdate = async (url: string, fwVersion: string) => {
   if (!url) return true;
   const deployDataJson = JSON.parse(
@@ -57,11 +65,7 @@ const checkUserCanUpdate = async (url: string, fwVersion: string) => {
   )
     return false; // Dates in the wrong order / cancel
 
-  const todayUpdateRange = deployData.find(([, date], index) => {
-    if (index === 0 && Date.now() < date.getTime()) return true;
-    return Date.now() >= date.getTime();
-  })?.[0];
-
+  const todayUpdateRange = todaysRange(deployData);
   if (!todayUpdateRange) return false;
 
   const uniqueUserKey = `${await hostname()}-${await locale()}-${platform()}-${version()}`;
