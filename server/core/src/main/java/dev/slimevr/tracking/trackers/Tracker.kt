@@ -328,8 +328,9 @@ class Tracker @JvmOverloads constructor(
 
 	/**
 	 * Tells the tracker that it received new data
+	 * NOTE: Use only when rotation is received
 	 */
-	fun dataTick(newRot: Boolean = true, newAccel: Boolean = false, newPos: Boolean = false) {
+	fun dataTick() {
 		timer.update()
 		timeAtLastUpdate = System.currentTimeMillis()
 		if (trackRotDirection) {
