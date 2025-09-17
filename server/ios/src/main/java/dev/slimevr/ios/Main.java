@@ -128,7 +128,10 @@ public class Main extends UIApplicationDelegateAdapter {
 							final boolean hasTrackers = vrServer
 								.getAllTrackers()
 								.stream()
-								.anyMatch((tracker) -> !tracker.isComputed());
+								.anyMatch(
+									(tracker) -> !tracker.isComputed()
+										&& tracker.getStatus().getSendData()
+								);
 							DispatchQueue
 								.getMainQueue()
 								.sync(
