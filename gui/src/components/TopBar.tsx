@@ -232,19 +232,22 @@ export function TopBar({
               </>
             )}
 
-            {!isTauri && !showVersionMobile && !config?.decorations && (
-              <div
-                className="flex flex-row gap-2"
-                {...(doesMatchSettings ? showVersionBind : {})}
-              >
+            {!isTauri &&
+              !showVersionMobile &&
+              !config?.decorations &&
+              !window.__IOS__ && (
                 <div
-                  className="flex justify-around flex-col xs:hidden"
-                  data-tauri-drag-region
+                  className="flex flex-row gap-2"
+                  {...(doesMatchSettings ? showVersionBind : {})}
                 >
-                  <Typography variant="section-title">SlimeVR</Typography>
+                  <div
+                    className="flex justify-around flex-col xs:hidden"
+                    data-tauri-drag-region
+                  >
+                    <Typography variant="section-title">SlimeVR</Typography>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
           <div
             className="flex justify-end items-center px-2 gap-2 z-50"

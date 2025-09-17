@@ -60,7 +60,10 @@ export function MainLayout({
   return (
     <div className="">
       <div className="main-layout w-full h-screen">
-        <div style={{ gridArea: 't' }}>
+        <div
+          style={{ gridArea: 't' }}
+          className={classNames(window.__IOS__ && 'mobile:mt-10')}
+        >
           <TopBar></TopBar>
         </div>
         <div style={{ gridArea: 's' }} className="overflow-y-auto">
@@ -71,7 +74,8 @@ export function MainLayout({
           className={classNames(
             'overflow-y-auto mr-2 my-2 mobile:m-0',
             'flex flex-col rounded-xl',
-            background && 'bg-background-70'
+            background && 'bg-background-70',
+            window.__IOS__ && 'mobile:mt-10'
           )}
         >
           {children}
