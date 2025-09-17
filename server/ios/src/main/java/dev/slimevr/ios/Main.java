@@ -68,6 +68,31 @@ public class Main extends UIApplicationDelegateAdapter {
 		}
 	}
 
+	@Override
+	public void didEnterBackground(UIApplication application) {
+		if (VRServer.Companion.getInstanceInitialized()) {
+			VRServer.Companion.getInstance().interrupt();
+		}
+
+		super.didEnterBackground(application);
+	}
+
+	@Override
+	public void willTerminate(UIApplication application) {
+		if (VRServer.Companion.getInstanceInitialized()) {
+			VRServer.Companion.getInstance().interrupt();
+		}
+
+		super.willTerminate(application);
+	}
+
+	@Override
+	public void didBecomeActive(UIApplication application) {
+		runServer();
+
+		super.didBecomeActive(application);
+	}
+
 	public static void runServer() {
 		var thread = new Thread(() -> {
 			try {
@@ -96,7 +121,7 @@ public class Main extends UIApplicationDelegateAdapter {
 
 						@Override
 						public void run() {
-							if (tick++ >= 60) {
+							if (tick++ >= 150) {
 								tick = 0;
 								UIApplication
 									.getSharedApplication()

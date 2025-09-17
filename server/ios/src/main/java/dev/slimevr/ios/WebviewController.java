@@ -1,6 +1,5 @@
 package dev.slimevr.ios;
 
-import dev.slimevr.VRServer;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.*;
 import org.robovm.apple.uniformtypeid.UTType;
@@ -22,10 +21,6 @@ public class WebviewController extends UIViewController {
 	public void loadView() {
 		super.loadView();
 		UIView view = getView();
-
-		if (!VRServer.Companion.getInstanceInitialized()) {
-			Main.runServer();
-		}
 
 		var config = new WKWebViewConfiguration();
 		config.setURLSchemeHandler(new WKURLSchemeHandler() {
