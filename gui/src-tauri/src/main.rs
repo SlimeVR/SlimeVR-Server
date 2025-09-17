@@ -1,6 +1,7 @@
 #![cfg_attr(all(not(debug_assertions), windows), windows_subsystem = "windows")]
 use std::env;
 use std::panic;
+use std::path::Path;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
 use std::sync::Arc;
@@ -55,6 +56,33 @@ fn erroring(msg: String) {
 #[tauri::command]
 fn warning(msg: String) {
 	log::warn!(target: "webview", "{}", msg)
+}
+
+#[tauri::command]
+fn open_config_folder(app_handle: tauri::AppHandle) {
+	let path = app_handle
+		.path()
+		.app_config_dir()
+		.unwrap_or_else(|_| Path::new(".").to_path_buf());
+
+	if let Err(err) = open::that(path) {
+		eprintln!("Failed to open config folder: {}", err);
+	}
+}
+
+#[tauri::command]
+fn open_logs_folder(app_handle: tauri::AppHandle) {
+	#[cfg(windows)]
+	let path = app_handle.path().app_data_dir().map(|dir| dir.join("logs"));
+
+	#[cfg(unix)]
+	let path = app_handle.path().app_log_dir();
+
+	if let Err(err) =
+		open::that(path.unwrap_or_else(|_| Path::new("./logs/").to_path_buf()))
+	{
+		eprintln!("Failed to open logs folder: {}", err);
+	}
 }
 
 fn main() -> Result<()> {
@@ -226,11 +254,14 @@ fn setup_tauri(
 		.plugin(tauri_plugin_os::init())
 		.plugin(tauri_plugin_shell::init())
 		.plugin(tauri_plugin_store::Builder::default().build())
+		.plugin(tauri_plugin_http::init())
 		.invoke_handler(tauri::generate_handler![
 			update_window_state,
 			logging,
 			erroring,
 			warning,
+			open_config_folder,
+			open_logs_folder,
 			tray::update_translations,
 			tray::update_tray_text,
 			tray::is_tray_available,

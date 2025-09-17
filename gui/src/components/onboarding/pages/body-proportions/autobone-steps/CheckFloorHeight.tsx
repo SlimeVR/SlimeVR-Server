@@ -12,7 +12,11 @@ import { Typography } from '@/components/commons/Typography';
 import { Localized, useLocalization } from '@fluent/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useLocaleConfig } from '@/i18n/config';
-import { useHeightContext } from '@/hooks/height';
+import {
+  EYE_HEIGHT_TO_HEIGHT_RATIO,
+  useHeightContext,
+  validateHeight,
+} from '@/hooks/height';
 import { useInterval } from '@/hooks/timeout';
 import { TooSmolModal } from './TooSmolModal';
 
@@ -26,8 +30,7 @@ export function CheckFloorHeightStep({
   variant: 'onboarding' | 'alone';
 }) {
   const { l10n } = useLocalization();
-  const { floorHeight, hmdHeight, setFloorHeight, validateHeight } =
-    useHeightContext();
+  const { floorHeight, hmdHeight, setFloorHeight } = useHeightContext();
   const [fetchHeight, setFetchHeight] = useState(false);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [isOpen, setOpen] = useState(false);
@@ -137,7 +140,8 @@ export function CheckFloorHeightStep({
                 </Typography>
                 <Typography>
                   {mFormat.format(
-                    ((hmdHeight ?? 0) - (floorHeight ?? 0)) / 0.936
+                    ((hmdHeight ?? 0) - (floorHeight ?? 0)) /
+                      EYE_HEIGHT_TO_HEIGHT_RATIO
                   )}
                 </Typography>
               </div>

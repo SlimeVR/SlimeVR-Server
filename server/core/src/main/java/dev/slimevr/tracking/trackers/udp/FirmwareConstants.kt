@@ -55,6 +55,7 @@ enum class BoardType(val id: UInt) {
 	HARITORA(18u),
 	ESP32C6DEVKITC1(19u),
 	GLOVE_IMU_SLIMEVR_DEV(20u),
+	GESTURES(21u),
 	DEV_RESERVED(250u),
 	;
 
@@ -78,6 +79,7 @@ enum class BoardType(val id: UInt) {
 		WRANGLER -> "Wrangler Joycons"
 		MOCOPI -> "Sony Mocopi"
 		WEMOSWROOM02 -> "Wemos Wroom-02 D1 Mini"
+		GESTURES -> "litten Yº by Gestures"
 		XIAO_ESP32C3 -> "Seeed Studio XIAO ESP32C3"
 		HARITORA -> "Haritora"
 		ESP32C6DEVKITC1 -> "Espressif ESP32-C6 DevKitC-1"

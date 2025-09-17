@@ -1,68 +1,86 @@
-import { fetchResourceUrl } from '@/utils/tauri';
 import { ResetType } from 'solarxr-protocol';
+import Xylophone, { ValidNote } from './xylophone';
 
-const tapSetupSound1 = new Audio(await fetchResourceUrl('/sounds/first-tap.mp3'));
-const tapSetupSound2 = new Audio(await fetchResourceUrl('/sounds/second-tap.mp3'));
-const tapSetupSound3 = new Audio(await fetchResourceUrl('/sounds/third-tap.mp3'));
-const tapSetupSound4 = new Audio(await fetchResourceUrl('/sounds/fourth-tap.mp3'));
-const tapSetupSound5 = new Audio(await fetchResourceUrl('/sounds/fifth-tap.mp3'));
-const tapSetupSoundEnd = new Audio(await fetchResourceUrl('/sounds/end-tap.mp3'));
-const tapSetupExtraSound = new Audio(
-  await fetchResourceUrl('/sounds/tapextrasetup.mp3')
-);
+const tones: ValidNote[][] = [
+  ['E3', 'G3', 'B3'],
+  ['G3', 'B3', 'D4'],
+  ['B3', 'D4', 'F#4'],
+  ['D4', 'F#4', 'A4'],
+  ['F#4', 'A4', 'C#5'],
+];
 
-function restartAndPlay(audio: HTMLAudioElement, volume: number) {
-  audio.volume = Math.min(1, Math.pow(volume, Math.E) + 0.05);
-  if (audio.paused) {
-    audio.play();
-  } else {
-    audio.currentTime = 0;
-  }
-}
+const xylophone = new Xylophone();
 
-export function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
+export async function playSoundOnResetEnded(resetType: ResetType, volume = 1) {
   switch (resetType) {
     case ResetType.Yaw: {
-      restartAndPlay(tapSetupSound2, volume);
+      xylophone.play({
+        notes: ['C4'],
+        offset: 0.15,
+        type: 'custom',
+        volume,
+      });
       break;
     }
     case ResetType.Full: {
-      restartAndPlay(tapSetupSound3, volume);
+      xylophone.play({
+        notes: ['E3', 'G3'],
+        offset: 0.15,
+        type: 'custom',
+        volume,
+      });
       break;
     }
     case ResetType.Mounting: {
-      restartAndPlay(tapSetupSound4, volume);
+      xylophone.play({
+        notes: ['G3', 'B3', 'D4'],
+        offset: 0.15,
+        type: 'custom',
+        volume,
+      });
       break;
     }
   }
 }
 
-export function playSoundOnResetStarted(volume = 1) {
-  restartAndPlay(tapSetupSound1, volume);
+export async function playSoundOnResetStarted(volume = 1) {
+  await xylophone.play({
+    notes: ['A4'],
+    offset: 0.4,
+    type: 'custom',
+    volume,
+  });
 }
 
-let lastKnownVolume = 1;
-/* Easter egg */
-tapSetupSoundEnd.onended = () => {
-  if (Math.floor(Math.random() * 12000) !== 0) return;
-  restartAndPlay(tapSetupExtraSound, lastKnownVolume);
-};
-
-const order = [
-  tapSetupSound1,
-  tapSetupSound2,
-  tapSetupSound3,
-  tapSetupSound4,
-  tapSetupSound5,
-  tapSetupSoundEnd,
-  tapSetupSoundEnd,
-  tapSetupSoundEnd,
-];
 let lastTap = 0;
-export function playTapSetupSound(volume = 1) {
-  lastKnownVolume = volume;
-  restartAndPlay(order[lastTap++], volume);
-  if (lastTap >= order.length) {
+export async function playTapSetupSound(volume = 1) {
+  if (Math.floor(Math.random() * 12000) !== 0) {
+    xylophone.play({
+      notes: tones[lastTap],
+      offset: 0.15,
+      type: 'custom',
+      volume,
+    });
+  } else {
+    xylophone.play([
+      {
+        notes: ['G#3', 'A#3', 'C#4', 'A#3'],
+        offset: 0.15,
+        length: 1,
+        type: 'custom',
+        volume,
+      },
+      {
+        notes: ['F4', 'F4', 'D#4'],
+        offset: 0.45,
+        length: 2,
+        type: 'custom',
+        volume,
+      },
+    ]);
+  }
+  lastTap++;
+  if (lastTap >= tones.length) {
     lastTap = 0;
   }
 }

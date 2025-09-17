@@ -5,8 +5,13 @@
 # translators on what it means
 
 ## Websocket (server) status
-websocket-connecting = Connecting to the server
-websocket-connection_lost = Connection lost to the server. Trying to reconnect...
+websocket-connecting = Loading...
+websocket-connection_lost = The server crashed!
+websocket-connection_lost-desc = It looks like the SlimeVR server crashed. Check the logs and restart the program.
+websocket-timedout = Could not connect to the server
+websocket-timedout-desc = It looks like the SlimeVR server crashed or timed out. Check the logs and restart the program.
+websocket-error-close = Exit SlimeVR
+websocket-error-logs = Open the logs Folder
 
 ## Update notification
 version_update-title = New version available: { $version }
@@ -18,8 +23,8 @@ version_update-close = Close
 tips-find_tracker = Not sure which tracker is which? Shake a tracker and it will highlight the corresponding item.
 tips-do_not_move_heels = Ensure your heels do not move during recording!
 tips-file_select = Drag & drop files to use, or <u>browse</u>.
-tips-tap_setup = You can slowly tap 2 times your tracker to choose it instead of selecting it from the menu.
-tips-turn_on_tracker = Using official SlimeVR trackers? Remember to <b><em>turn on your tracker</em></b> after connecting it to the PC!
+tips-tap_setup = You can slowly tap your tracker 2 times to choose it instead of selecting it from the menu.
+tips-turn_on_tracker = Using official SlimeVR trackers? Don't forget to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 tips-failed_webgl = Failed to initialize WebGL.
 
 ## Body parts
@@ -99,44 +104,141 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
 ## Proportions
 skeleton_bone-NONE = None
 skeleton_bone-HEAD = Head Shift
+skeleton_bone-HEAD-desc =
+    This is the distance from your headset to the middle of your head.
+    To adjust it, shake your head left to right as if you're disagreeing and modify
+    it until any movement in other trackers is negligible.
 skeleton_bone-NECK = Neck Length
+skeleton_bone-NECK-desc =
+    This is the distance from the middle of your head to the base of your neck.
+    To adjust it, move your head up and down as if you're nodding or tilt your head
+    to the left and right and modify it until any movement in other trackers is negligible.
 skeleton_bone-torso_group = Torso length
+skeleton_bone-torso_group-desc =
+    This is the distance from the base of your neck to your hips.
+    To adjust it, modify it standing up straight until your virtual hips line
+    up with your real ones.
 skeleton_bone-UPPER_CHEST = Upper Chest Length
+skeleton_bone-UPPER_CHEST-desc =
+    This is the distance from the base of your neck to the middle of your chest.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-CHEST_OFFSET = Chest Offset
+skeleton_bone-CHEST_OFFSET-desc =
+    This can be adjusted to move your virtual chest tracker up or down in order to aid
+    with calibration in certain games or applications that may expect it to be higher or lower.
 skeleton_bone-CHEST = Chest Length
+skeleton_bone-CHEST-desc =
+    This is the distance from the middle of your chest to the middle of your spine.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-WAIST = Waist Length
+skeleton_bone-WAIST-desc =
+    This is the distance from the middle of your spine to your belly button.
+    To adjust it, adjust your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches with your real one.
 skeleton_bone-HIP = Hip Length
+skeleton_bone-HIP-desc =
+    This is the distance from your belly button to your hips.
+    To adjust it, set your Torso Length properly and modify it in various positions
+    (sitting down, bending over, lying down, etc.) until your virtual spine matches your real one.
 skeleton_bone-HIP_OFFSET = Hip Offset
+skeleton_bone-HIP_OFFSET-desc =
+    This can be adjusted to move your virtual hip tracker up or down in order to aid
+    with calibration in certain games or applications that may expect it to be on your waist.
 skeleton_bone-HIPS_WIDTH = Hips Width
+skeleton_bone-HIPS_WIDTH-desc =
+    This is the distance between the start of your legs.
+    To adjust it, perform a full reset with your legs straight and modify it until
+    your virtual legs match up with your real ones horizontally.
 skeleton_bone-leg_group = Leg length
+skeleton_bone-leg_group-desc =
+    This is the distance from your hips to your feet.
+    To adjust it, adjust your Torso Length properly and modify it
+    until your virtual feet are at the same level as your real ones.
 skeleton_bone-UPPER_LEG = Upper Leg Length
+skeleton_bone-UPPER_LEG-desc =
+    This is the distance from your hips to your knees.
+    To adjust it, adjust your Leg Length properly and modify it
+    until your virtual knees are at the same level as your real ones.
 skeleton_bone-LOWER_LEG = Lower Leg Length
+skeleton_bone-LOWER_LEG-desc =
+    This is the distance from your knees to your ankles.
+    To adjust it, adjust your Leg Length properly and modify it
+    until your virtual knees are at the same level as your real ones.
 skeleton_bone-FOOT_LENGTH = Foot Length
+skeleton_bone-FOOT_LENGTH-desc =
+    This is the distance from your ankles to your toes.
+    To adjust it, tiptoe and modify it until your virtual feet stay in place.
 skeleton_bone-FOOT_SHIFT = Foot Shift
+skeleton_bone-FOOT_SHIFT-desc =
+    This value is the horizontal distance from your knee to your ankle.
+    It accounts for your lower legs going backwards when standing up straight.
+    To adjust it, set Foot Length to 0, perform a full reset and modify it until your virtual
+    feet line up with the middle of your ankles.
 skeleton_bone-SKELETON_OFFSET = Skeleton Offset
+skeleton_bone-SKELETON_OFFSET-desc =
+    This can be adjusted to offset all your trackers forward or backward.
+    It can be used to help with calibration in certain games or applications
+    that may expect your trackers to be more forward.
 skeleton_bone-SHOULDERS_DISTANCE = Shoulders Distance
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    This is the vertical distance from the base of your neck to your shoulders.
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
+    line up vertically with your real shoulders.
 skeleton_bone-SHOULDERS_WIDTH = Shoulders Width
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    This is the horizontal distance from the base of your neck to your shoulders.
+    To adjust it, set Upper Arm Length to 0 and modify it until your virtual elbow trackers
+    line up horizontally with your real shoulders.
 skeleton_bone-arm_group = Arm length
+skeleton_bone-arm_group-desc =
+    This is the distance from your shoulders to your wrists.
+    To adjust it, adjust Shoulders Distance properly, set Hand Distance Y
+    to 0 and modify it until your hand trackers line up with your wrists.
 skeleton_bone-UPPER_ARM = Upper Arm Length
+skeleton_bone-UPPER_ARM-desc =
+    This is the distance from your shoulders to your elbows.
+    To adjust it, adjust Arm Length properly and modify it until
+    your elbow trackers line up with your real elbows.
 skeleton_bone-LOWER_ARM = Lower Arm Length
+skeleton_bone-LOWER_ARM-desc =
+    This is the distance from your elbows to your wrists.
+    To adjust it, adjust Arm Length properly and modify it until
+    your elbow trackers line up with your real elbows.
 skeleton_bone-HAND_Y = Hand Distance Y
+skeleton_bone-HAND_Y-desc =
+    This is the vertical distance from your wrists to the middle of your hand.
+    To adjust it for motion capture, adjust Arm Length properly and modify it until your
+    hand trackers line up vertically with the middle of your hands.
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
+    modify it until your elbow trackers line up vertically with your wrists.
 skeleton_bone-HAND_Z = Hand Distance Z
+skeleton_bone-HAND_Z-desc =
+    This is the horizontal distance from your wrists to the middle of your hand.
+    To adjust it for motion capture, set it to 0.
+    To adjust it for elbow tracking from your controllers, set Arm Length to 0 and
+    modify it until your elbow trackers line up horizontally with your wrists.
 skeleton_bone-ELBOW_OFFSET = Elbow Offset
+skeleton_bone-ELBOW_OFFSET-desc =
+    This can be adjusted to move your virtual elbow trackers up or down in order to aid
+    with VRChat accidentally binding an elbow tracker to the chest.
 
 ## Tracker reset buttons
 reset-reset_all = Reset all proportions
-reset-reset_all_warning =
-    <b>Warning:</b> This will reset your proportions to being just based on your height.
+reset-reset_all_warning-v2 =
+    <b>Warning:</b> Your proportions will be reset to defaults scaled to your configured height.
     Are you sure you want to do this?
 reset-reset_all_warning-reset = Reset proportions
 reset-reset_all_warning-cancel = Cancel
-reset-reset_all_warning_default =
-    <b>Warning:</b> You currently don't have your height defined, which
-    will make the proportions be based on a default height.
+reset-reset_all_warning_default-v2 =
+    <b>Warning:</b> Your height has not been configured, your proportions will be reset to defaults with the default height.
     Are you sure you want to do this?
 
 reset-full = Full Reset
 reset-mounting = Reset Mounting
+reset-mounting-feet = Reset Feet Mounting
+reset-mounting-fingers = Reset Fingers Mounting
 reset-yaw = Yaw Reset
 
 ## Serial detection stuff
@@ -159,6 +261,7 @@ navbar-settings = Settings
 ## Biovision hierarchy recording
 bvh-start_recording = Record BVH
 bvh-recording = Recording...
+bvh-save_title = Save BVH recording
 
 ## Tracking pause
 tracking-unpaused = Pause tracking
@@ -173,7 +276,7 @@ widget-overlay-is_mirrored_label = Display Overlay as Mirror
 widget-drift_compensation-clear = Clear drift compensation
 
 ## Widget: Clear Reset Mounting
-widget-clear_mounting = Clear reset mounting
+widget-clear_mounting = Clear Reset Mounting
 
 ## Widget: Developer settings
 widget-developer_mode = Developer Mode
@@ -193,6 +296,7 @@ widget-imu_visualizer-rotation_raw = Raw rotation
 widget-imu_visualizer-rotation_preview = Preview rotation
 widget-imu_visualizer-acceleration = Acceleration
 widget-imu_visualizer-position = Position
+widget-imu_visualizer-stay_aligned = Stay Aligned
 
 ## Widget: Skeleton Visualizer
 widget-skeleton_visualizer-preview = Skeleton preview
@@ -217,6 +321,7 @@ tracker-table-column-temperature = Temp. °C
 tracker-table-column-linear-acceleration = Accel. X/Y/Z
 tracker-table-column-rotation = Rotation X/Y/Z
 tracker-table-column-position = Position X/Y/Z
+tracker-table-column-stay_aligned = Stay Aligned
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -229,7 +334,7 @@ tracker-rotation-back = Back
 tracker-rotation-back_left = Back-Left
 tracker-rotation-back_right = Back-Right
 tracker-rotation-custom = Custom
-tracker-rotation-overriden = (overriden by mounting reset)
+tracker-rotation-overriden = (overridden by mounting reset)
 
 ## Tracker information
 tracker-infos-manufacturer = Manufacturer
@@ -276,10 +381,12 @@ tracker-settings-name_section-description = Give it a cute nickname :)
 tracker-settings-name_section-placeholder = NightyBeast's left leg
 tracker-settings-name_section-label = Tracker name
 tracker-settings-forget = Forget tracker
-tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevent it from connecting to it until the server is restarted. The configuration of the tracker won't be lost.
+tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevents it from connecting until the server is restarted. The configuration of the tracker won't be lost.
 tracker-settings-forget-label = Forget tracker
 tracker-settings-update-unavailable = Cannot be updated (DIY)
+tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
 tracker-settings-update-up_to_date = Up to date
+tracker-settings-update-blocked = Update not available. No other releases available
 tracker-settings-update-available = { $versionName } is now available
 tracker-settings-update = Update now
 tracker-settings-update-title = Firmware version
@@ -290,7 +397,7 @@ tracker-part_card-unassigned = Unassigned
 
 ## Body assignment menu
 body_assignment_menu = Where do you want this tracker to be?
-body_assignment_menu-description = Choose a location where you want this tracker to be assigned. Alternatively you can choose to manage all trackers at once instead of one by one.
+body_assignment_menu-description = Choose a location where you want this tracker to be assigned. Alternatively, you can choose to manage all trackers at once instead of one by one.
 body_assignment_menu-show_advanced_locations = Show advanced assign locations
 body_assignment_menu-manage_trackers = Manage all trackers
 body_assignment_menu-unassign_tracker = Unassign tracker
@@ -333,8 +440,8 @@ tracker_selection_menu-dont_assign = Unassign
 # This line cares about multilines.
 # <b>text</b> means that the text should be bold.
 tracker_selection_menu-neck_warning =
-    <b>Warning:</b> A neck tracker can be deadly if adjusted too tightly,
-    the strap could cut the circulation to your head!
+    <b>Warning:</b> A neck tracker can be deadly if adjusted too tightly;
+    the strap could cut off circulation to your head!
 tracker_selection_menu-neck_warning-done = I understand the risks
 tracker_selection_menu-neck_warning-cancel = Cancel
 
@@ -346,6 +453,7 @@ mounting_selection_menu-close = Close
 settings-sidebar-title = Settings
 settings-sidebar-general = General
 settings-sidebar-tracker_mechanics = Tracker mechanics
+settings-sidebar-stay_aligned = Stay Aligned
 settings-sidebar-fk_settings = Tracking settings
 settings-sidebar-gesture_control = Gesture control
 settings-sidebar-interface = Interface
@@ -355,7 +463,9 @@ settings-sidebar-utils = Utilities
 settings-sidebar-serial = Serial console
 settings-sidebar-appearance = Appearance
 settings-sidebar-notifications = Notifications
+settings-sidebar-behavior = Behavior
 settings-sidebar-firmware-tool = DIY Firmware Tool
+settings-sidebar-vrc_warnings = VRChat Config Warnings
 settings-sidebar-advanced = Advanced
 
 ## SteamVR settings
@@ -379,7 +489,7 @@ settings-general-steamvr-trackers-right_elbow = Right elbow
 settings-general-steamvr-trackers-left_hand = Left hand
 settings-general-steamvr-trackers-right_hand = Right hand
 settings-general-steamvr-trackers-tracker_toggling = Automatic tracker assignment
-settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments
+settings-general-steamvr-trackers-tracker_toggling-description = Automatically handles toggling SteamVR trackers on or off depending on your current tracker assignments.
 settings-general-steamvr-trackers-tracker_toggling-label = Automatic tracker assignment
 settings-general-steamvr-trackers-hands-warning = <b>Warning:</b> hand trackers will override your controllers.
     Are you sure?
@@ -392,7 +502,7 @@ settings-general-tracker_mechanics-filtering = Filtering
 # This also cares about multilines
 settings-general-tracker_mechanics-filtering-description =
     Choose the filtering type for your trackers.
-    Prediction predicts movement while smoothing smoothens movement.
+    Prediction predicts movement while smoothing smooths movement.
 settings-general-tracker_mechanics-filtering-type = Filtering type
 settings-general-tracker_mechanics-filtering-type-none = No filtering
 settings-general-tracker_mechanics-filtering-type-none-description = Use rotations as is. Will not do any filtering.
@@ -405,8 +515,8 @@ settings-general-tracker_mechanics-yaw-reset-smooth-time = Yaw reset smooth time
 settings-general-tracker_mechanics-drift_compensation = Drift compensation
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-description =
-    Compensates IMU yaw drift by applying an inverse rotation.
-    Change amount of compensation and up to how many resets are taken into account.
+    Compensates for IMU yaw drift by applying an inverse rotation.
+    Change the amount of compensation and the number of resets taken into account.
     This should only be used if you need to reset very often!
 settings-general-tracker_mechanics-drift_compensation-enabled-label = Drift compensation
 settings-general-tracker_mechanics-drift_compensation-prediction = Drift compensation prediction
@@ -436,6 +546,26 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     Can be disabled per tracker in the tracker's settings. <b>Please don't shutdown any of the trackers while toggling this!</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Use magnetometer on trackers
 
+settings-stay_aligned = Stay Aligned
+settings-stay_aligned-description = Stay Aligned reduces drift by gradually adjusting your trackers to match your relaxed poses.
+settings-stay_aligned-setup-label = Setup Stay Aligned
+settings-stay_aligned-setup-description = You must complete "Setup Stay Aligned" to enable Stay Aligned.
+settings-stay_aligned-warnings-drift_compensation = ⚠ Please turn off Drift Compensation! Drift Compensation will conflict with Stay Aligned.
+settings-stay_aligned-enabled-label = Adjust trackers
+settings-stay_aligned-hide_yaw_correction-label = Hide adjustment (to compare with no Stay Aligned)
+settings-stay_aligned-general-label = General
+settings-stay_aligned-relaxed_poses-label = Relaxed Poses
+settings-stay_aligned-relaxed_poses-description = Stay Aligned uses your relaxed poses to keep the trackers aligned. Use "Setup Stay Aligned" to update these poses.
+settings-stay_aligned-relaxed_poses-standing = Adjust trackers while standing
+settings-stay_aligned-relaxed_poses-sitting = Adjust trackers while sitting in a chair
+settings-stay_aligned-relaxed_poses-flat = Adjust trackers while sitting on the floor, or lying on your back
+settings-stay_aligned-relaxed_poses-save_pose = Save pose
+settings-stay_aligned-relaxed_poses-reset_pose = Reset pose
+settings-stay_aligned-relaxed_poses-close = Close
+settings-stay_aligned-debug-label = Debugging
+settings-stay_aligned-debug-description = Please include your settings when reporting problems about Stay Aligned.
+settings-stay_aligned-debug-copy-label = Copy settings to clipboard
+
 ## FK/Tracking settings
 settings-general-fk_settings = Tracking settings
 
@@ -451,13 +581,13 @@ settings-general-fk_settings-leg_tweak-skating_correction = Skating correction
 settings-general-fk_settings-leg_tweak-toe_snap = Toe snap
 settings-general-fk_settings-leg_tweak-foot_plant = Foot plant
 settings-general-fk_settings-leg_tweak-skating_correction-amount = Skating correction strength
-settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction corrects for ice skating but can decrease accuracy in certain movement patterns. When enabling this make sure to full reset and recalibrate in game.
-settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can Reduce or even eliminates clipping through the floor. When enabling this, make sure to full reset and recalibrate in game.
-settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if feet trackers are not in use.
+settings-general-fk_settings-leg_tweak-skating_correction-description = Skating-correction corrects for ice skating, but can decrease accuracy in certain movement patterns. When enabling this, make sure to perform a full reset and recalibrate in-game.
+settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip can reduce or eliminate clipping through the floor. When enabling this, make sure to perform a full reset and recalibrate in-game.
+settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap attempts to guess the rotation of your feet if foot trackers are not in use.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant rotates your feet to be parallel to the ground when in contact.
 settings-general-fk_settings-leg_fk = Leg tracking
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Enable feet Mounting Reset by tiptoeing.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Feet Mounting Reset
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Force feet mounting reset during general mounting resets.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Force feet mounting reset
 settings-general-fk_settings-enforce_joint_constraints = Skeletal Limits
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Enforce constraints
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Prevents joints from rotating past their limit
@@ -476,11 +606,11 @@ settings-general-fk_settings-arm_fk-reset_mode-description = Change which arm po
 settings-general-fk_settings-arm_fk-back = Back
 settings-general-fk_settings-arm_fk-back-description = The default mode, with the upper arms going back and lower arms going forward.
 settings-general-fk_settings-arm_fk-tpose_up = T-pose (up)
-settings-general-fk_settings-arm_fk-tpose_up-description = Expects your arms to be down on the sides during Full Reset, and 90 degrees up to the sides during Mounting Reset.
+settings-general-fk_settings-arm_fk-tpose_up-description = Expects your arms to be down at your sides during Full Reset, and 90 degrees up to the sides during Mounting Reset.
 settings-general-fk_settings-arm_fk-tpose_down = T-pose (down)
-settings-general-fk_settings-arm_fk-tpose_down-description = Expects your arms to be 90 degrees up to the sides during Full Reset, and down on the sides during Mounting Reset.
+settings-general-fk_settings-arm_fk-tpose_down-description = Expects your arms to be 90 degrees up to the sides during Full Reset, and down at your sides during Mounting Reset.
 settings-general-fk_settings-arm_fk-forward = Forward
-settings-general-fk_settings-arm_fk-forward-description = Expects your arms to be up 90 degrees forward. Useful for VTubing.
+settings-general-fk_settings-arm_fk-forward-description = Expects your arms to be raised forward at 90 degrees. Useful for VTubing.
 settings-general-fk_settings-skeleton_settings-toggles = Skeleton toggles
 settings-general-fk_settings-skeleton_settings-description = Toggle skeleton settings on or off. It is recommended to leave these on.
 settings-general-fk_settings-skeleton_settings-extended_spine_model = Extended spine model
@@ -535,10 +665,10 @@ settings-general-interface-dev_mode-description = This mode can be useful if you
 settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-theme = Color theme
 settings-general-interface-show-navbar-onboarding = Show "{ navbar-onboarding }" on navigation bar
-settings-general-interface-show-navbar-onboarding-description = This changes if the "{ navbar-onboarding }" button shows on the navigation bar.
+settings-general-interface-show-navbar-onboarding-description = This changes whether the "{ navbar-onboarding }" button shows on the navigation bar.
 settings-general-interface-show-navbar-onboarding-label = Show "{ navbar-onboarding }"
 settings-general-interface-lang = Select language
-settings-general-interface-lang-description = Change the default language you want to use.
+settings-general-interface-lang-description = Change the default language.
 settings-general-interface-lang-placeholder = Select the language to use
 # Keep the font name untranslated
 settings-interface-appearance-font = GUI font
@@ -555,17 +685,23 @@ settings-interface-appearance-decorations-label = Use native decorations
 ## Notification settings
 settings-interface-notifications = Notifications
 settings-general-interface-serial_detection = Serial device detection
-settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug a new serial device that could be a tracker. It helps improving the setup process of a tracker.
+settings-general-interface-serial_detection-description = This option will show a pop-up every time you plug in a new serial device that could be a tracker. It helps to improve the setup process of a tracker.
 settings-general-interface-serial_detection-label = Serial device detection
 settings-general-interface-feedback_sound = Feedback sound
-settings-general-interface-feedback_sound-description = This option will play a sound when a reset is triggered.
+settings-general-interface-feedback_sound-description = This option plays a sound when a reset is triggered.
 settings-general-interface-feedback_sound-label = Feedback sound
 settings-general-interface-feedback_sound-volume = Feedback sound volume
 settings-general-interface-connected_trackers_warning = Connected trackers warning
 settings-general-interface-connected_trackers_warning-description = This option will show a pop-up every time you try exiting SlimeVR while having one or more connected trackers. It reminds you to turn off your trackers when you are done to preserve battery life.
 settings-general-interface-connected_trackers_warning-label = Connected trackers warning on exit
+
+## Behavior settings
+settings-interface-behavior = Behavior
+settings-general-interface-dev_mode = Developer Mode
+settings-general-interface-dev_mode-description = This mode can be useful if you need in-depth data or need to interact with connected trackers on a more advanced level.
+settings-general-interface-dev_mode-label = Developer Mode
 settings-general-interface-use_tray = Minimize to system tray
-settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bothering you.
+settings-general-interface-use_tray-description = Lets you close the window without closing the SlimeVR Server so you can continue using it without having the GUI bother you.
 settings-general-interface-use_tray-label = Minimize to system tray
 settings-general-interface-discord_presence = Share activity on Discord
 settings-general-interface-discord_presence-description = Tells your Discord client that you are using SlimeVR along with the number of IMU trackers you are using.
@@ -575,6 +711,18 @@ settings-general-interface-discord_presence-message = { $amount ->
     [one] Using 1 tracker
     *[other] Using { $amount } trackers
 }
+settings-interface-behavior-error_tracking = Error collection via Sentry.io
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>Do you consent to the collection of anonymized error data?</h1>
+
+    <b>We do not collect personal information</b> such as your IP address or wireless credentials. SlimeVR values your privacy!
+
+    To provide the best user experience, we collect anonymized error reports, performance metrics, and operating system information. This helps us detect bugs and issues with SlimeVR. These metrics are collected via Sentry.io.
+
+settings-interface-behavior-error_tracking-label = Send errors to developers
+settings-interface-behavior-bvh_directory = Directory to save BVH recordings
+settings-interface-behavior-bvh_directory-description = Choose a directory to save your BVH recordings instead of having to choose where to save them each time.
+settings-interface-behavior-bvh_directory-label = Directory for BVH recordings
 
 ## Serial settings
 settings-serial = Serial Console
@@ -604,7 +752,7 @@ settings-osc-router = OSC router
 # This cares about multilines
 settings-osc-router-description =
     Forward OSC messages from another program.
-    Useful for using another OSC program with VRChat for example.
+    Useful for using another OSC program with VRChat, for example.
 settings-osc-router-enable = Enable
 settings-osc-router-enable-description = Toggle the forwarding of messages.
 settings-osc-router-enable-label = Enable
@@ -664,7 +812,7 @@ settings-osc-vmc = Virtual Motion Capture
 # This cares about multilines
 settings-osc-vmc-description =
     Change settings specific to the VMC (Virtual Motion Capture) protocol
-        to send SlimeVR's bone data and receive bone data from other apps.
+    to send SlimeVR's bone data and receive bone data from other apps.
 settings-osc-vmc-enable = Enable
 settings-osc-vmc-enable-description = Toggle the sending and receiving of data.
 settings-osc-vmc-enable-label = Enable
@@ -712,9 +860,12 @@ settings-utils-advanced-reset_warning =
 settings-utils-advanced-reset_warning-reset = Reset settings
 settings-utils-advanced-reset_warning-cancel = Cancel
 
-settings-utils-advanced-open_data = Data folder
-settings-utils-advanced-open_data-description = Open SlimeVR's data folder in file explorer, containing config and log files.
+settings-utils-advanced-open_data-v1 = Config folder
+settings-utils-advanced-open_data-description-v1 = Open SlimeVR's config folder in file explorer, containing the configuration
 settings-utils-advanced-open_data-label = Open folder
+settings-utils-advanced-open_logs = Logs folder
+settings-utils-advanced-open_logs-description = Open SlimeVR's logs folder in file explorer, containing the logs of the app
+settings-utils-advanced-open_logs-label = Open folder
 
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
@@ -747,30 +898,30 @@ onboarding-wifi_creds-password =
 ## Mounting setup
 onboarding-reset_tutorial-back = Go Back to Mounting calibration
 onboarding-reset_tutorial = Reset tutorial
-onboarding-reset_tutorial-explanation = While you use your trackers they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
+onboarding-reset_tutorial-explanation = While you use your trackers, they might get out of alignment because of IMU yaw drift, or because you might have moved them physically. You have several ways to fix this.
 onboarding-reset_tutorial-skip = Skip step
 # Cares about multiline
-onboarding-reset_tutorial-0 = Tap { $taps } times the highlighted tracker for triggering yaw reset.
+onboarding-reset_tutorial-0 = Tap the highlighted tracker { $taps } times to trigger a yaw reset.
 
     This will make the trackers face the same direction as your headset (HMD).
 # Cares about multiline
-onboarding-reset_tutorial-1 = Tap { $taps } times the highlighted tracker for triggering full reset.
+onboarding-reset_tutorial-1 = Tap the highlighted tracker { $taps } times to trigger a full reset.
 
     You need to be standing for this (i-pose). There is a 3 seconds delay (configurable) before it actually happens.
     This fully resets the position and rotation of all your trackers. It should fix most issues.
 # Cares about multiline
-onboarding-reset_tutorial-2 = Tap { $taps } times the highlighted tracker for triggering mounting reset.
+onboarding-reset_tutorial-2 = Tap the highlighted tracker { $taps } times to trigger a mounting reset.
 
-    Mounting reset helps on how the trackers are actually put on you, so if you accidentally moved them and changed how they are oriented by a big amount, this will help.
+    Mounting reset adjusts for how trackers are placed on your body. If they've moved or rotated significantly, this helps recalibrate their orientation.
 
-    You need to be on a pose like you are skiing like it's shown on the Automatic Mounting wizard and you have a 3 second delay (configurable) before it gets triggered.
+    You need to be in a pose like you are skiing as shown in the Automatic Mounting wizard, and you have a 3 second delay (configurable) before it gets triggered.
 
 ## Setup start
 onboarding-home = Welcome to SlimeVR
 onboarding-home-start = Let's get set up!
 
 ## Enter VR part of setup
-onboarding-enter_vr-back = Go Back to Tracker assignent
+onboarding-enter_vr-back = Go Back to Tracker assignment
 onboarding-enter_vr-title = Time to enter VR!
 onboarding-enter_vr-description = Put on all your trackers and then enter VR!
 onboarding-enter_vr-ready = I'm ready
@@ -796,6 +947,17 @@ onboarding-connect_tracker-connection_status-looking_for_server = Looking for se
 onboarding-connect_tracker-connection_status-connection_error = Unable to connect to Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = Could not find the server
 onboarding-connect_tracker-connection_status-done = Connected to the Server
+onboarding-connect_tracker-connection_status-no_serial_log = Could not get logs from the tracker
+onboarding-connect_tracker-connection_status-no_serial_device_found = Could not find a tracker from USB
+onboarding-connect_serial-error-modal-no_serial_log = Is the tracker turned on?
+onboarding-connect_serial-error-modal-no_serial_log-desc = Make sure the tracker is turned on and connected to your computer.
+onboarding-connect_serial-error-modal-no_serial_device_found = No trackers detected
+onboarding-connect_serial-error-modal-no_serial_device_found-desc =
+    Please connect a tracker with the provided USB cable to your computer and turn the tracker on.
+    If this does not work:
+      - try using a different USB cable
+      - try using a different USB port
+      - try reinstalling the SlimeVR server and select "USB Drivers" in the components section
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -811,8 +973,8 @@ onboarding-connect_tracker-next = I connected all my trackers
 ## Tracker calibration tutorial
 onboarding-calibration_tutorial = IMU Calibration Tutorial
 onboarding-calibration_tutorial-subtitle = This will help reduce tracker drifting!
-onboarding-calibration_tutorial-description = Every time you turn on your trackers, they need to rest for a moment on a flat surface to calibrate. Let's do the same thing by clicking the "{ onboarding-calibration_tutorial-calibrate }" button, <b>do not move them!</b>
-onboarding-calibration_tutorial-calibrate = I placed my trackers on the table
+onboarding-calibration_tutorial-description-v1 = After turning on your trackers, place them on a stable surface for a moment to allow for calibration. Calibration can be performed at any time after the trackers are powered on—this page simply provides a tutorial. To begin, click the "{ onboarding-calibration_tutorial-calibrate }" button, then <b>do not move your trackers!</b>
+onboarding-calibration_tutorial-calibrate = I placed my trackers on a table
 onboarding-calibration_tutorial-status-waiting = Waiting for you
 onboarding-calibration_tutorial-status-calibrating = Calibrating
 onboarding-calibration_tutorial-status-success = Nice!
@@ -960,53 +1122,29 @@ onboarding-automatic_mounting-mounting_reset-title = Mounting Reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pose with your legs bent, your upper body tilted forwards, and your arms bent.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Reset Mounting" button and wait for 3 seconds before the trackers' mounting orientations will reset.
 onboarding-automatic_mounting-preparation-title = Preparation
-onboarding-automatic_mounting-preparation-step-0 = 1. Stand upright with your arms to your sides.
-onboarding-automatic_mounting-preparation-step-1 = 2. Press the "Full Reset" button and wait for 3 seconds before the trackers will reset.
+onboarding-automatic_mounting-preparation-v2-step-0 = 1. Press the "Full Reset" button.
+onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stand upright with your arms to your sides. Make sure to look forward.
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. Hold the position until the 3s timer ends.
 onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
 onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting orientations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
 
-## Tracker proportions method choose
-onboarding-choose_proportions = What proportion calibration method to use?
-# Multiline string
-onboarding-choose_proportions-description-v1 = Body proportions are used to know the measurements of your body. They're required to calculate the trackers' positions.
-    When proportions of your body don't match the ones saved, your tracking precision will be worse and you will notice things like skating or sliding, or your body not matching your avatar well.
-    <b>You only need to measure your body once!</b> Unless they are wrong or your body has changed, then you don't need to do them again.
-onboarding-choose_proportions-auto_proportions = Automatic proportions
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = Recommended
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    This will guess your proportions by recording a sample of your movements and passing it through an algorithm.
-
-    <b>This requires having your headset (HMD) connected to SlimeVR and on your head!</b>
-onboarding-choose_proportions-manual_proportions = Manual proportions
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = For small touches
-onboarding-choose_proportions-manual_proportions-description = This will let you adjust your proportions manually by modifying them directly
-onboarding-choose_proportions-scaled_proportions = Scaled proportions
-# Italized text
-onboarding-choose_proportions-scaled_proportions-subtitle = Recommended for new users
-# Multiline string
-onboarding-choose_proportions-scaled_proportions-description =
-    This will scale the proportions of an average human body based on your height, this will help for basic full-body tracking.
-
-    <b>This requires having your headset (HMD) connected to SlimeVR and on your head!</b>
-onboarding-choose_proportions-scaled_proportions-button = Scaled proportions
-onboarding-choose_proportions-export = Export proportions
-onboarding-choose_proportions-import = Import proportions
-onboarding-choose_proportions-import-success = Imported
-onboarding-choose_proportions-import-failed = Failed
-onboarding-choose_proportions-file_type = Body proportions file
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 onboarding-manual_proportions-back = Go Back to Reset tutorial
 onboarding-manual_proportions-title = Manual Body Proportions
-onboarding-manual_proportions-precision = Precision adjust
-onboarding-manual_proportions-auto = Automatic proportions
-onboarding-manual_proportions-ratio = Adjust by ratio groups
+onboarding-manual_proportions-fine_tuning_button = Automatically fine tune proportions
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = Please connect a VR headset to use automatic fine tuning
+onboarding-manual_proportions-export = Export proportions
+onboarding-manual_proportions-import = Import proportions
+onboarding-manual_proportions-file_type = Body proportions file
+onboarding-manual_proportions-normal_increment = Normal increment
+onboarding-manual_proportions-precise_increment = Precise increment
+onboarding-manual_proportions-grouped_proportions = Grouped proportions
+onboarding-manual_proportions-all_proportions = All proportions
+onboarding-manual_proportions-estimated_height = Estimated user height
 
 ## Tracker automatic proportions setup
-onboarding-automatic_proportions-back = Go Back to Reset tutorial
+onboarding-automatic_proportions-back = Go Back to Manual Proportions
 onboarding-automatic_proportions-title = Measure your body
 onboarding-automatic_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This short calibration will measure it for you.
 onboarding-automatic_proportions-manual = Manual proportions
@@ -1027,9 +1165,9 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
 onboarding-automatic_proportions-requirements-next = I have read the requirements
 
 onboarding-automatic_proportions-check_height-title-v3 = Measure your headset height
-onboarding-automatic_proportions-check_height-description-v2 = Your headset (HMD) height should be slightly less than your full height, as headsets measure your eye height. This measurement will be used as a baseline for your body proportions.
+onboarding-automatic_proportions-check_height-description-v2 = Your headset (HMD) height should be slightly less than your full height because headsets measure your eye height. This measurement will be used as a baseline for your body proportions.
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning-v3 = Start measuring while standing <u>upright</u> to measure your height. Be careful to not raise your hands higher than your headset, as they may affect the measurement!
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = Start measuring while standing <u>upright</u> to measure your height. Be careful not to raise your hands higher than your headset, as they may affect the measurement!
 onboarding-automatic_proportions-check_height-guardian_tip = If you are using a standalone VR headset, make sure to have your guardian /
     boundary turned on so that your height is correct!
 # Context is that the height is unknown
@@ -1064,9 +1202,9 @@ onboarding-automatic_proportions-recording-description-p1 = Make the moves shown
 # Each line of text is a different list item
 onboarding-automatic_proportions-recording-steps =
     Standing up straight, roll your head in a circle.
-    Bend your back forwards and squat. While squatting, look to your left, then to your right.
-    Twist your upper body to the left (counter-clockwise), then reach down towards the ground.
-    Twist your upper body to the right (clockwise), then reach down towards the ground.
+    Bend your back forward and squat. While squatting, look to your left, then to your right.
+    Twist your upper body to the left (counter-clockwise), then reach down toward the ground.
+    Twist your upper body to the right (clockwise), then reach down toward the ground.
     Roll your hips in a circular motion as if you're using a hula hoop.
     If there is time left on the recording, you can repeat these steps until it's finished.
 onboarding-automatic_proportions-recording-processing = Processing the result
@@ -1100,16 +1238,57 @@ onboarding-automatic_proportions-smol_warning-cancel = Go back
 onboarding-scaled_proportions-title = Scaled proportions
 onboarding-scaled_proportions-description = For SlimeVR trackers to work, we need to know the length of your bones. This will use an average proportion and scale it based on your height.
 onboarding-scaled_proportions-manual_height-title = Configure your height
-onboarding-scaled_proportions-manual_height-description = Your headset (HMD) height should be slightly less than your full height, as headsets measure your eye height. This height will be used as a baseline for your body proportions.
+onboarding-scaled_proportions-manual_height-description-v2 = This height will be used as a baseline for your body proportions.
 onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR is not currently connected to SlimeVR, so measurements can't be based on your headset. <b>Proceed at your own risk or check the docs!</b>
-onboarding-scaled_proportions-manual_height-height = Your headset height is
+onboarding-scaled_proportions-manual_height-height-v2 = Your full height is
+onboarding-scaled_proportions-manual_height-estimated_height = Your estimated headset height is:
 onboarding-scaled_proportions-manual_height-next_step = Continue and save
+onboarding-scaled_proportions-manual_height-warning =
+    You are currently using the manual way of setting up scaled proportions!
+    <b>This mode is recommended only if you do not use an HMD with SlimeVR.</b>
+
+    To be able to use the automatic scaled proportions please:
+onboarding-scaled_proportions-manual_height-warning-no_hmd = Connect a VR Headset
+onboarding-scaled_proportions-manual_height-warning-no_controllers = Make sure your controllers are connected and correctly assigned to your hands
 
 ## Tracker scaled proportions reset
 onboarding-scaled_proportions-reset_proportion-title = Reset your body proportions
 onboarding-scaled_proportions-reset_proportion-description = To set your body proportions based on your height, you need to now reset all of your proportions. This will clear any proportions you have configured and provide a baseline configuration.
 onboarding-scaled_proportions-done-title = Body proportions set
 onboarding-scaled_proportions-done-description = Your body proportions should now be configured based on your height.
+
+## Stay Aligned setup
+onboarding-stay_aligned-title = Stay Aligned
+onboarding-stay_aligned-description = Configure Stay Aligned to keep your trackers aligned.
+onboarding-stay_aligned-put_trackers_on-title = Put on your trackers
+onboarding-stay_aligned-put_trackers_on-description = To save your resting poses, we'll use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
+onboarding-stay_aligned-put_trackers_on-trackers_warning = You have fewer than 5 trackers currently connected and assigned! This is the minimum amount of trackers required for Stay Aligned to function properly.
+onboarding-stay_aligned-put_trackers_on-next = I have all my trackers on
+onboarding-stay_aligned-verify_mounting-title = Check your Mounting
+onboarding-stay_aligned-verify_mounting-step-0 = Stay Aligned requires good mounting. Otherwise, you won't get a good experience with Stay Aligned.
+onboarding-stay_aligned-verify_mounting-step-1 = 1. Move around while standing.
+onboarding-stay_aligned-verify_mounting-step-2 = 2. Sit down and move your legs and feet.
+onboarding-stay_aligned-verify_mounting-step-3 = 3. If your trackers aren't in the right place, press "Redo Mounting Calibration".
+onboarding-stay_aligned-verify_mounting-redo_mounting = Redo Mounting calibration
+onboarding-stay_aligned-preparation-title = Preparation
+onboarding-stay_aligned-preparation-tip = Make sure to stand upright. Keep looking forward with your arms down at your sides.
+onboarding-stay_aligned-relaxed_poses-standing-title = Relaxed Standing Pose
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. Stand in a comfortable position. Relax!
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 2. Press the "Save pose" button.
+onboarding-stay_aligned-relaxed_poses-sitting-title = Relaxed Sitting in Chair Pose
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. Sit in a comfortable position. Relax!
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 2. Press the "Save pose" button.
+onboarding-stay_aligned-relaxed_poses-flat-title = Relaxed Sitting on Floor Pose
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. Sit on the floor with your legs in front. Relax!
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 2. Press the "Save pose" button.
+onboarding-stay_aligned-relaxed_poses-skip_step = Skip
+onboarding-stay_aligned-done-title = Stay Aligned enabled!
+onboarding-stay_aligned-done-description = Your Stay Aligned setup is complete!
+onboarding-stay_aligned-done-description-2 = Setup is complete! You may restart the process if you want to recalibrate the poses.
+onboarding-stay_aligned-previous_step = Previous
+onboarding-stay_aligned-next_step = Next
+onboarding-stay_aligned-restart = Restart
+onboarding-stay_aligned-done = Done
 
 ## Home
 home-no_trackers = No trackers detected or assigned
@@ -1130,6 +1309,10 @@ status_system-StatusSteamVRDisconnected = { $type ->
 }
 status_system-StatusTrackerError = The { $trackerName } tracker has an error.
 status_system-StatusUnassignedHMD = The VR headset should be assigned as a head tracker.
+status_system-StatusPublicNetwork = {$count ->
+    [one] Your network profile is currently set to Public ({$adapters}). This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+    *[many] Some of your network adapters are set to public: {$adapters}. This is not recommended for SlimeVR to function properly. <PublicFixLink>See how to fix it here.</PublicFixLink>
+}
 
 
 ## Firmware tool globals
@@ -1153,7 +1336,7 @@ firmware_tool-board_step-description = Select one of the boards listed below.
 firmware_tool-board_pins_step = Check the pins
 firmware_tool-board_pins_step-description =
     Please verify that the selected pins are correct.
-    If you followed the SlimeVR documentation the defaults values should be correct
+    If you followed the SlimeVR documentation, the default values should be correct.
 firmware_tool-board_pins_step-enable_led = Enable LED
 firmware_tool-board_pins_step-led_pin =
     .label = LED Pin
@@ -1181,8 +1364,8 @@ firmware_tool-board_pins_step-battery_shield_resistor-1 =
 
 firmware_tool-add_imus_step = Declare your IMUs
 firmware_tool-add_imus_step-description =
-    Please add the IMUs that your tracker has
-    If you followed the SlimeVR documentation the defaults values should be correct
+    Please add the IMUs that your tracker has.
+    If you followed the SlimeVR documentation, the default values should be correct.
 firmware_tool-add_imus_step-imu_type-label = IMU type
 firmware_tool-add_imus_step-imu_type-placeholder = Select the type of IMU
 firmware_tool-add_imus_step-imu_rotation =
@@ -1214,23 +1397,23 @@ firmware_tool-flash_method_step-description =
     Please select the flashing method you want to use
 firmware_tool-flash_method_step-ota =
     .label = OTA
-    .description = Use the over the air method. Your tracker will use the Wi-Fi to update it's firmware. Works only on already setup trackers.
+    .description = Use the over-the-air method. Your tracker will use Wi-Fi to update its firmware. Only works on trackers that have been set up.
 firmware_tool-flash_method_step-serial =
     .label = Serial
     .description = Use a USB cable to update your tracker.
 
 firmware_tool-flashbtn_step = Press the boot btn
-firmware_tool-flashbtn_step-description = Before going into the next step there is a few things you need to do
+firmware_tool-flashbtn_step-description = Before going to the next step, there are a few things you need to do
 
-firmware_tool-flashbtn_step-board_SLIMEVR = Turn off the tracker, remove the case (if any), connect a USB cable to this computer, then do one of the following steps according to your SlimeVR board revision:
-firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board, and the metal shield of the microcontroller
-firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board, and the metal shield of the microcontroller
-firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Turn on the tracker while pushing in the FLASH button on the top side of the board
+firmware_tool-flashbtn_step-board_SLIMEVR = Turn off the tracker, remove the case (if any), connect the USB cable to your computer, then follow the appropriate steps for your SlimeVR board revision:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11 = Turn on the tracker while shorting the second rectangular FLASH pad from the edge on the top side of the board to the metal shield of the microcontroller.
+firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Turn on the tracker while shorting the circular FLASH pad on the top side of the board to the metal shield of the microcontroller.
+firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Turn on the tracker while pushing in the FLASH button on the top side of the board.
 
-firmware_tool-flashbtn_step-board_OTHER = Before flashing you will probably need to put the tracker into bootloader mode.
-    Most of the time it means pressing the boot button on the board before the flashing process starts.
-    If the flashing process timeout at the begining of the flashing it probably means that the tracker was not in bootloader mode
-    Please refer to the flashing instructions of your board to know how to turn on the boatloader mode
+firmware_tool-flashbtn_step-board_OTHER = Before flashing, you will probably need to put the tracker into bootloader mode.
+    Most of the time, this means pressing the boot button on the board before the flashing process starts.
+    If the flashing process times out at the start, it probably means that the tracker was not in bootloader mode.
+    Refer to your board's flashing instructions to learn how to enter bootloader mode.
 
 
 
@@ -1248,7 +1431,7 @@ firmware_tool-build_step-description =
 firmware_tool-flashing_step = Flashing
 firmware_tool-flashing_step-description =
     Your trackers are flashing, please follow the instructions on the screen
-firmware_tool-flashing_step-warning = Do not unplug or restart the tracker during the upload process unless told to, it may make your board unusable
+firmware_tool-flashing_step-warning-v2 = Do not unplug or turn off the tracker during the upload process unless told to, it may make your board unusable
 firmware_tool-flashing_step-flash_more = Flash more trackers
 firmware_tool-flashing_step-exit = Exit
 
@@ -1264,7 +1447,7 @@ firmware_tool-build-ERROR = Unable to build the firmware
 
 ## Firmware update status
 firmware_update-status-DOWNLOADING = Downloading the firmware
-firmware_update-status-NEED_MANUAL_REBOOT = Please restart the tracker
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = Please turn your tracker off and on again
 firmware_update-status-AUTHENTICATING = Authenticating with the mcu
 firmware_update-status-UPLOADING = Uploading the firmware
 firmware_update-status-SYNCING_WITH_MCU = Syncing with the mcu
@@ -1283,8 +1466,8 @@ firmware_update-status-ERROR_UNKNOWN = Unknown error
 ## Dedicated Firmware Update Page
 firmware_update-title = Firmware update
 firmware_update-devices = Available Devices
-firmware_update-devices-description = Please select the trackers you want to update to the latest version of SlimeVR firmware
-firmware_update-no_devices = Plase make sure that the trackers you want to update are ON and connected to the Wi-Fi!
+firmware_update-devices-description = Please select the trackers you want to update to the latest version of SlimeVR firmware.
+firmware_update-no_devices = Please make sure that the trackers you want to update are ON and connected to the Wi-Fi!
 firmware_update-changelog-title = Updating to {$version}
 firmware_update-looking_for_devices = Looking for devices to update...
 firmware_update-retry = Retry
@@ -1299,7 +1482,7 @@ tray_menu-quit = Quit
 ## First exit modal
 tray_or_exit_modal-title = What should the close button do?
 # Multiline text
-tray_or_exit_modal-description = This lets you choose whether you want to exit the server or to minimize it to the tray when pressing the close button.
+tray_or_exit_modal-description = Choose whether to exit the server or minimize it to the tray when clicking the close button.
 
     You can change this later in the interface settings!
 tray_or_exit_modal-radio-exit = Exit on close
@@ -1313,3 +1496,56 @@ unknown_device-modal-description = There is a new tracker with MAC address <b>{$
     Do you want to connect it to SlimeVR?
 unknown_device-modal-confirm = Sure!
 unknown_device-modal-forget = Ignore it
+
+
+# VRChat config warnings
+vrc_config-page-title = VRChat configuration warnings
+vrc_config-page-desc = This page shows the state of your VRChat settings and shows what settings are incompatible with SlimeVR. It is highly recommended that you fix any warnings showing up here for the best user experience with SlimeVR.
+vrc_config-page-help = Can't find the settings?
+vrc_config-page-help-desc = Check out our <a>documentation on this topic!</a>
+vrc_config-page-big_menu = Tracking & IK (Big Menu)
+vrc_config-page-big_menu-desc = Settings related to IK in the big settings menu
+vrc_config-page-wrist_menu = Tracking & IK (Wrist Menu)
+vrc_config-page-wrist_menu-desc = Settings related to IK in small settings menu (wrist menu)
+vrc_config-on = On
+vrc_config-off = Off
+vrc_config-invalid = You have misconfigured VRChat settings!
+vrc_config-show_more = Show more
+vrc_config-setting_name = VRChat Setting name
+vrc_config-recommended_value = Recommended Value
+vrc_config-current_value = Current Value
+vrc_config-mute = Mute Warning
+vrc_config-mute-btn = Mute
+vrc_config-unmute-btn = Unmute
+vrc_config-legacy_mode = Use Legacy IK Solving
+vrc_config-disable_shoulder_tracking = Disable Shoulder Tracking
+vrc_config-shoulder_width_compensation = Shoulder Width Compensation
+vrc_config-spine_mode = FBT Spine Mode
+vrc_config-tracker_model = FBT Tracker Model
+vrc_config-avatar_measurement_type = Avatar Measurement
+vrc_config-calibration_range = Calibration Range
+vrc_config-calibration_visuals = Display Calibration Visuals
+vrc_config-user_height = User Real Height
+
+vrc_config-spine_mode-UNKNOWN = Unknown
+vrc_config-spine_mode-LOCK_BOTH = Lock Both
+vrc_config-spine_mode-LOCK_HEAD = Lock Head
+vrc_config-spine_mode-LOCK_HIP = Lock Hip
+
+vrc_config-tracker_model-UNKNOWN = Unknown
+vrc_config-tracker_model-AXIS = Axis
+vrc_config-tracker_model-BOX = Box
+vrc_config-tracker_model-SPHERE = Sphere
+vrc_config-tracker_model-SYSTEM = System
+
+vrc_config-avatar_measurement_type-UNKNOWN = Unknown
+vrc_config-avatar_measurement_type-HEIGHT = Height
+vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
+
+## Error collection consent modal
+error_collection_modal-title = Can we collect errors?
+error_collection_modal-description_v2 = { settings-interface-behavior-error_tracking-description_v2 }
+
+    You can change this setting later in the Behavior section of the settings page.
+error_collection_modal-confirm = I agree
+error_collection_modal-cancel = I don't want to

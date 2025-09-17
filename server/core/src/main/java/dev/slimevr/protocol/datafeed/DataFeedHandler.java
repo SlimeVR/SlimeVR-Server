@@ -54,7 +54,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(300);
 
-		int messageOffset = this.buildDatafeed(fbb, req.config().unpack());
+		int messageOffset = this.buildDatafeed(fbb, req.config().unpack(), 0);
 
 		DataFeedMessageHeader.startDataFeedMessageHeader(fbb);
 		DataFeedMessageHeader.addMessage(fbb, messageOffset);
@@ -70,7 +70,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 		conn.send(fbb.dataBuffer());
 	}
 
-	public int buildDatafeed(FlatBufferBuilder fbb, DataFeedConfigT config) {
+	public int buildDatafeed(FlatBufferBuilder fbb, DataFeedConfigT config, int index) {
 		int devicesOffset = DataFeedBuilder
 			.createDevicesData(
 				fbb,
@@ -98,7 +98,21 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 				h.getAllBones()
 			);
 
-		return DataFeedUpdate.createDataFeedUpdate(fbb, devicesOffset, trackersOffset, bonesOffset);
+		int stayAlignedPoseOffset = 0;
+		if (config.getStayAlignedPoseMask()) {
+			stayAlignedPoseOffset = DataFeedBuilderKotlin.INSTANCE
+				.createStayAlignedPose(fbb, this.api.server.humanPoseManager.skeleton);
+		}
+
+		return DataFeedUpdate
+			.createDataFeedUpdate(
+				fbb,
+				devicesOffset,
+				trackersOffset,
+				bonesOffset,
+				stayAlignedPoseOffset,
+				index
+			);
 	}
 
 	public void sendDataFeedUpdate() {
@@ -120,7 +134,7 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 						fbb = new FlatBufferBuilder(300);
 					}
 
-					int messageOffset = this.buildDatafeed(fbb, configT);
+					int messageOffset = this.buildDatafeed(fbb, configT, index);
 
 					DataFeedMessageHeader.startDataFeedMessageHeader(fbb);
 					DataFeedMessageHeader.addMessage(fbb, messageOffset);

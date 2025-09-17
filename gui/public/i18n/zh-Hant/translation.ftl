@@ -7,8 +7,13 @@
 
 ## Websocket (server) status
 
-websocket-connecting = 正在連接伺服器
-websocket-connection_lost = 與伺服器的連線已中斷，正在嘗試重新連線……
+websocket-connecting = 載入中…
+websocket-connection_lost = 伺服器當機了！
+websocket-connection_lost-desc = SlimeVR 伺服器程式似乎當機了。請檢查日誌並重新啟動程式
+websocket-timedout = 無法連接到伺服器
+websocket-timedout-desc = SlimeVR 伺服器程式似乎已當機或逾時。請檢查日誌並重新啟動程式
+websocket-error-close = 退出 SlimeVR
+websocket-error-logs = 開啟日誌資料夾
 
 ## Update notification
 
@@ -92,48 +97,146 @@ board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
-board_type-ES32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
+board_type-OWOTRACK = owoTrack
+board_type-WRANGLER = Wrangler Joy-Con
+board_type-MOCOPI = Sony mocopi
+board_type-WEMOSWROOM02 = WeMos WROOM-02 D1 Mini
+board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
+board_type-HARITORA = Haritora
+board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
+board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU 手套
 
 ## Proportions
 
 skeleton_bone-NONE = 無
 skeleton_bone-HEAD = 頭部偏移
+skeleton_bone-HEAD-desc =
+    這是從頭戴顯示器到頭中央的距離。
+    若要調整，請左右搖頭（如不同意、否定般的樣子），檢查其他追蹤器的數值跳
+    動並變更此參數，直到數值跳動小到可以忽略不計。
 skeleton_bone-NECK = 頸部長度
+skeleton_bone-NECK-desc =
+    這是從頭中央到脖子底部的距離。
+    若要調整，請上下點頭（如同意、肯定般的樣子），或將頭倒向兩側肩膀，檢查
+    其他追蹤器的數值跳動並變更此參數，直到數值跳動小到可以忽略不計。
 skeleton_bone-torso_group = 軀幹長度
+skeleton_bone-torso_group-desc =
+    這是從脖子底部到臀部的距離。
+    若要調整，請站立並調整此參數，直到虛擬的臀部與實際臀部對齊。
 skeleton_bone-UPPER_CHEST = 上胸長度
+skeleton_bone-UPPER_CHEST-desc =
+    這是從脖子底部到胸部中間的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-CHEST_OFFSET = 胸部偏移
+skeleton_bone-CHEST_OFFSET-desc =
+    調整胸部追蹤器的上下補償。某些遊戲或是應用程式可能會期待追蹤器比較上面
+    或下面，可以透過調整本數值來校正。
 skeleton_bone-CHEST = 胸部長度
+skeleton_bone-CHEST-desc =
+    這是從胸部中間到脊椎中間的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-WAIST = 腰部長度
+skeleton_bone-WAIST-desc =
+    這是從脊椎中間到肚臍的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-HIP = 臀部長度
+skeleton_bone-HIP-desc =
+    這是從肚臍到臀部的距離。
+    若要調整，請適當調整軀幹長度，檢查各種姿勢（坐下、彎腰、躺下等）並進行
+    修改，直到虛擬的脊椎與實際脊椎對齊。
 skeleton_bone-HIP_OFFSET = 臀部偏移
+skeleton_bone-HIP_OFFSET-desc =
+    調整臀部追蹤器的上下補償。某些遊戲或是應用程式可能會期待追蹤器在腰部，
+    可以透過調整本數值來校正。
 skeleton_bone-HIPS_WIDTH = 臀部寬度
+skeleton_bone-HIPS_WIDTH-desc =
+    這是兩腿之間的起始距離。
+    若要調整，請站直進行完整重置後，修改到虛擬的腿部與實際腿部對齊。
 skeleton_bone-leg_group = 腿部長度
+skeleton_bone-leg_group-desc =
+    這是從臀部到腳部的距離。
+    若要調整，請適當調整軀幹長度後，修改此數值，直到虛擬的腳部
+    與實際腳部的高度一致。
 skeleton_bone-UPPER_LEG = 大腿長度
+skeleton_bone-UPPER_LEG-desc =
+    這是從臀部到膝蓋的距離。
+    若要調整，請適當調整腿部長度後，修改此數值，直到虛擬的膝蓋
+    與實際膝蓋的高度一致。
 skeleton_bone-LOWER_LEG = 小腿長度
+skeleton_bone-LOWER_LEG-desc =
+    這是從膝蓋到腳踝的距離。
+    若要調整，請適當調整腿部長度後，修改此數值，直到虛擬的膝蓋
+    與實際膝蓋的高度一致。
 skeleton_bone-FOOT_LENGTH = 腳部長度
+skeleton_bone-FOOT_LENGTH-desc =
+    這是從腳踝到腳趾的距離。
+    若要調整，請踮起腳尖，修改此數值，直到虛擬的腳部與實際腳部對齊。
 skeleton_bone-FOOT_SHIFT = 腳部偏移
+skeleton_bone-FOOT_SHIFT-desc =
+    這是從膝蓋到腳踝的水平距離。
+    這個數值可以校正站直時小腿會向後移動的問題。
+    若要調整，請將腳部長度設為 0，進行完整重置後再修改，直到虛擬腳部與
+    腳踝中間對齊。
 skeleton_bone-SKELETON_OFFSET = 骨骼偏移
+skeleton_bone-SKELETON_OFFSET-desc =
+    調整全部追蹤器的向前或向後補償。某些遊戲或是應用程式可能會期待追蹤器
+    比較前面，可以透過調整本數值來校正。
 skeleton_bone-SHOULDERS_DISTANCE = 肩膀距離
+skeleton_bone-SHOULDERS_DISTANCE-desc =
+    這是從脖子底部到肩膀的垂直距離。
+    若要調整，請將上臂長度設為 0 再修改，直到虛擬的肘部追蹤器與
+    實際的肩膀垂直對齊。
 skeleton_bone-SHOULDERS_WIDTH = 肩膀寬度
+skeleton_bone-SHOULDERS_WIDTH-desc =
+    這是從脖子底部到肩膀的水平距離。
+    若要調整，請將上臂長度設為 0 再修改，直到虛擬的肘部追蹤器與
+    實際的肩膀水平對齊。
 skeleton_bone-arm_group = 手臂長度
+skeleton_bone-arm_group-desc =
+    這是從肩膀到手腕的距離。
+    若要調整，請適當調整肩膀距離，將手部距離 Y 設定為 0 再修改，
+    直到虛擬的手部追蹤器與手腕對齊。
 skeleton_bone-UPPER_ARM = 上臂長度
+skeleton_bone-UPPER_ARM-desc =
+    這是從肩膀到手肘的距離。
+    若要調整，請適當調整手臂長度後，修改此數值，直到虛擬的
+    手肘追蹤器與實際手肘的位置一致。
 skeleton_bone-LOWER_ARM = 前臂長度
+skeleton_bone-LOWER_ARM-desc =
+    這是從手肘到手腕的距離。
+    若要調整，請適當調整手臂長度後，修改此數值，直到虛擬的
+    手肘追蹤器與實際手肘的位置一致。
 skeleton_bone-HAND_Y = 手部距離Y
+skeleton_bone-HAND_Y-desc =
+    這是從手腕到手中間的垂直距離。
+    若要調整以進行動作捕捉，請適當調整手臂長度後修改此數值，直到虛擬的手部追蹤器
+    與實際的手中間垂直對齊。
+    若要調整以從控制器進行肘部跟蹤，請將手臂長度設為 0 後修改此數值，直到虛擬的肘
+    部追蹤器與實際的手腕垂直對齊。
 skeleton_bone-HAND_Z = 手部距離Z
+skeleton_bone-HAND_Z-desc =
+    這是從手腕到手中間的水平距離。
+    若要調整以進行動作捕捉，請將此值設定為 0。
+    若要調整以從控制器進行肘部跟蹤，請將手臂長度設為 0 後修改此數值，直到虛擬的肘
+    部追蹤器與實際的手腕水平對齊。
 skeleton_bone-ELBOW_OFFSET = 肘部偏移
+skeleton_bone-ELBOW_OFFSET-desc = 將虛擬的肘部追蹤器向上或向下調整，以避免 VRChat 將肘部追蹤器綁到胸部。
 
 ## Tracker reset buttons
 
 reset-reset_all = 重置軀幹比例
-reset-reset_all_warning =
-    <b>警告：</b> 這會將軀幹比例重置為僅基於身高的比例。
-    你確定要執行此操作嗎？
+reset-reset_all_warning-v2 =
+    <b>警告：</b>軀幹比例將會重置成預設值，並依你的身高等比例調整。
+    確定要繼續嗎？
 reset-reset_all_warning-reset = 重置軀幹比例
 reset-reset_all_warning-cancel = 取消
-reset-reset_all_warning_default =
-    <b>警告：</b>目前還沒有設定你身高，
-    軀幹比例將會依預設身高來計算。
-    你確定要繼續嗎？
+reset-reset_all_warning_default-v2 =
+    <b>警告：</b>由於尚未設定身高，軀幹比例將會重置為使用預設身高的預設值。
+    確定要繼續嗎？
 reset-full = 完整重置
 reset-mounting = 配戴重置
 reset-yaw = 左右偏擺重置
@@ -187,7 +290,7 @@ widget-developer_mode = 開發者選項
 widget-developer_mode-high_contrast = 高對比 UI
 widget-developer_mode-precise_rotation = 顯示精確旋轉
 widget-developer_mode-fast_data_feed = 快速資料更新
-widget-developer_mode-filter_slimes_and_hmd = 只顯示 Slime 追蹤器與頭戴顯示器
+widget-developer_mode-filter_slimes_and_hmd = 只顯示 SlimeVR 追蹤器與頭戴顯示器
 widget-developer_mode-sort_by_name = 依名稱排序
 widget-developer_mode-raw_slime_rotation = 顯示原始旋轉
 widget-developer_mode-more_info = 更多資訊
@@ -201,6 +304,7 @@ widget-imu_visualizer-rotation_raw = 原始旋轉
 widget-imu_visualizer-rotation_preview = 預覽
 widget-imu_visualizer-acceleration = 加速度
 widget-imu_visualizer-position = 位置
+widget-imu_visualizer-stay_aligned = 持續校正
 
 ## Widget: Skeleton Visualizer
 
@@ -228,6 +332,7 @@ tracker-table-column-temperature = 溫度 ℃
 tracker-table-column-linear-acceleration = 加速度 X/Y/Z
 tracker-table-column-rotation = 旋轉 X/Y/Z
 tracker-table-column-position = 位置 X/Y/Z
+tracker-table-column-stay_aligned = 持續校正
 tracker-table-column-url = URL
 
 ## Tracker rotation
@@ -294,6 +399,7 @@ tracker-settings-forget = 忘記追蹤器
 tracker-settings-forget-description = 從 SlimeVR 伺服器程式中移除該追蹤器，且直到重新啟動伺服器前不會再次連接。該追蹤器的設定不會遺失。
 tracker-settings-forget-label = 忘記追蹤器
 tracker-settings-update-unavailable = 無法更新 (DIY)
+tracker-settings-update-low-battery = 無法更新，電池電量低於 50%
 tracker-settings-update-up_to_date = 已為最新版本
 tracker-settings-update-available = 版本 { $versionName } 可供更新
 tracker-settings-update = 立即更新
@@ -364,6 +470,7 @@ mounting_selection_menu-close = 關閉
 settings-sidebar-title = 設定
 settings-sidebar-general = 一般設定
 settings-sidebar-tracker_mechanics = 追蹤機制
+settings-sidebar-stay_aligned = 持續校正
 settings-sidebar-fk_settings = 追蹤設定
 settings-sidebar-gesture_control = 手勢控制
 settings-sidebar-interface = 使用者介面
@@ -373,7 +480,9 @@ settings-sidebar-utils = 工具
 settings-sidebar-serial = 串列埠終端
 settings-sidebar-appearance = 外觀
 settings-sidebar-notifications = 通知
+settings-sidebar-behavior = 行為
 settings-sidebar-firmware-tool = DIY 韌體工具
+settings-sidebar-vrc_warnings = VRChat 配置警告
 settings-sidebar-advanced = 進階
 
 ## SteamVR settings
@@ -455,6 +564,25 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-description =
     在所有有韌體支援的追蹤器上使用磁力計，在磁場穩定的環境中可以減緩偏移。
     開啟此選項後，可以個別在追蹤器選項內停用磁力計。<b>切換此選項時請勿關閉任何一個追蹤器的電源！</b>
 settings-general-tracker_mechanics-use_mag_on_all_trackers-label = 在追蹤器上啟用磁力計
+settings-stay_aligned = 持續校正
+settings-stay_aligned-description = 持續校正功能會逐漸調整追蹤器以對齊到設定的放鬆姿態，進而減少追蹤器偏移的影響。
+settings-stay_aligned-setup-label = 設定持續校正
+settings-stay_aligned-setup-description = 完成「設定持續校正」後，才可啟用持續校正功能。
+settings-stay_aligned-warnings-drift_compensation = ⚠ 啟用持續校正時請關閉偏移補償功能，避免發生干擾。
+settings-stay_aligned-enabled-label = 調整追蹤器
+settings-stay_aligned-hide_yaw_correction-label = 隱藏調整效果（可與關閉持續校正的效果對比）
+settings-stay_aligned-general-label = 一般設定
+settings-stay_aligned-relaxed_poses-label = 放鬆的姿態
+settings-stay_aligned-relaxed_poses-description = 持續校正功能會使用各種放鬆的姿態保持追蹤器的定位。請使用「設定持續校正」來更新設定的姿態。
+settings-stay_aligned-relaxed_poses-standing = 使用站立姿勢調整追蹤器
+settings-stay_aligned-relaxed_poses-sitting = 使用坐在椅子上的姿勢調整追蹤器
+settings-stay_aligned-relaxed_poses-flat = 使用坐在地板上或躺下的姿勢調整追蹤器
+settings-stay_aligned-relaxed_poses-save_pose = 儲存姿勢
+settings-stay_aligned-relaxed_poses-reset_pose = 重置姿勢
+settings-stay_aligned-relaxed_poses-close = 關閉
+settings-stay_aligned-debug-label = 除錯資訊
+settings-stay_aligned-debug-description = 在回報與持續校正相關的問題時，請附上以下設定參數。
+settings-stay_aligned-debug-copy-label = 複製設定參數進剪貼簿
 
 ## FK/Tracking settings
 
@@ -467,11 +595,11 @@ settings-general-fk_settings-leg_tweak-floor_clip = 地板限制
 # why the name - without this enabled the feet will often slide across the ground as if your skating across the ground,
 # since this largely prevents this it corrects for it hence skating correction (note this may be renamed to sliding correction)
 # definition - Guesses when each foot is in contact with the ground and uses that information to improve tracking
-settings-general-fk_settings-leg_tweak-skating_correction = 腳滑修正
+settings-general-fk_settings-leg_tweak-skating_correction = 腳滑補正
 settings-general-fk_settings-leg_tweak-toe_snap = 腳趾跟地
 settings-general-fk_settings-leg_tweak-foot_plant = 腳底貼地
-settings-general-fk_settings-leg_tweak-skating_correction-amount = 腳滑修正量
-settings-general-fk_settings-leg_tweak-skating_correction-description = 腳滑修正功能可以矯正腳滑溜冰的問題，但會降低某些動作的準確度。啟用本功能前請進行完整重置，並在遊戲內進行校正。
+settings-general-fk_settings-leg_tweak-skating_correction-amount = 腳滑補正量
+settings-general-fk_settings-leg_tweak-skating_correction-description = 腳滑補正功能可以矯正腳滑溜冰的問題，但會降低某些動作的準確度。啟用本功能前請進行完整重置，並在遊戲內進行校正。
 settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制功能可以減輕甚至解決腳部穿入地板的情況。啟用本功能前請進行完整重置，並在遊戲內進行校正。
 settings-general-fk_settings-leg_tweak-toe_snap-description = 腳趾跟地功能在沒有腳部的追蹤器時，會嘗試猜測腳掌的旋轉角度。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 腳底貼地功能會在腳底與地面接觸時，將腳部旋轉成與地板平行。
@@ -514,9 +642,6 @@ settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = 膝�
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = 膝部的偏航軸與翻滾軸，與腳踝定位平均的比例
 settings-general-fk_settings-self_localization-title = 動作捕捉模式
 settings-general-fk_settings-self_localization-description = 動作捕捉模式允許在沒有頭戴顯示器或其他追蹤器時，粗略的追蹤身體骨架的定位。請注意，本功能需要腳部與頭部的追蹤器，並且本功能仍在實驗階段。
-settings-general-fk_settings-vive_emulation-title = Vive 模擬
-settings-general-fk_settings-vive_emulation-description = 模擬 Vive 追蹤器的腰部追蹤失效問題。（ 註：這是一個玩笑功能，會降低追蹤品質。）
-settings-general-fk_settings-vive_emulation-label = 開啟 Vive 模擬
 
 ## Gesture control settings (tracker tapping)
 
@@ -567,7 +692,7 @@ settings-interface-appearance-font-slime_font = 預設字體
 settings-interface-appearance-font_size = 文字縮放
 settings-interface-appearance-font_size-description = 本設定會影響整個 UI 的文字大小，除了本設定面板以外。
 settings-interface-appearance-decorations = 使用系統原生的視窗邊框
-settings-interface-appearance-decorations-description = 不顯示標題列 UI，替換成作業系統提供的標題列。
+settings-interface-appearance-decorations-description = 不顯示標題列 UI，使用作業系統提供的標題列。
 settings-interface-appearance-decorations-label = 使用原生的視窗邊框
 
 ## Notification settings
@@ -583,6 +708,13 @@ settings-general-interface-feedback_sound-volume = 聲音回饋音量
 settings-general-interface-connected_trackers_warning = 已連接追蹤器警告
 settings-general-interface-connected_trackers_warning-description = 啟用本選項後，每次當退出 SlimeVR 時仍有追蹤器連接著會顯示通知，提醒你在使用完畢時關閉追蹤器電源來節省電池電量。
 settings-general-interface-connected_trackers_warning-label = 當退出程式時，有追蹤器連接中則顯示警告
+
+## Behavior settings
+
+settings-interface-behavior = 行為
+settings-general-interface-dev_mode = 開發者模式
+settings-general-interface-dev_mode-description = 本功能會提供更深入的資料，也能與已連線的追蹤器進行更進一步的控制。
+settings-general-interface-dev_mode-label = 開發者模式
 settings-general-interface-use_tray = 最小化到系統列
 settings-general-interface-use_tray-description = 本選項可以讓你在關閉視窗時不會關閉 SlimeVR 的伺服器程式，讓你在不受圖形介面的打擾下繼續使用追蹤器。
 settings-general-interface-use_tray-label = 最小化到系統列
@@ -594,6 +726,14 @@ settings-general-interface-discord_presence-message =
         [0] 正在捕捉史萊姆
        *[other] 正在使用 { $amount } 個追蹤器
     }
+settings-interface-behavior-error_tracking = 透過 Sentry.io 收集錯誤資訊
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>你是否同意我們蒐集匿名化的錯誤資料？</h1>
+    
+    <b>我們不會收集個人資訊</b> ，例如你的 IP 位址或無線網路認證資訊。SlimeVR 重視你的隱私！
+    
+    為了提供最佳的使用者體驗，我們會蒐集匿名化的錯誤報告、性能指標和作業系統資訊，這會對我們檢測 SlimeVR 的錯誤和問題有所幫助。我們會透過 Sentry.io 來蒐集這些指標。
+settings-interface-behavior-error_tracking-label = 向開發者傳送錯誤資訊
 
 ## Serial settings
 
@@ -649,10 +789,16 @@ settings-osc-vrchat = VRChat OSC 追蹤器
 settings-osc-vrchat-description-v1 =
     變更 OSC 追蹤器標準的設定，該標準可用於傳送追蹤器資料到不使用 SteamVR 的應用程式（例如 Quest 單機版）。
     請確保 VRChat 中的動作選單內，OSC 設定「選項→OSC→已啟用」已經開啟。
-    SlimeVR 若要能透過 VRChat 接收頭戴顯示器以及控制器的資料，請進入主選單的設定，並開啟「追蹤 & IK→允許透過 OSC 發送頭部與腕部的 VR 追蹤數據」。
 settings-osc-vrchat-enable = 啟用
 settings-osc-vrchat-enable-description = 切換資料的傳送和接收。
 settings-osc-vrchat-enable-label = 啟用
+settings-osc-vrchat-oscqueryEnabled = 啟用 OSCQuery
+settings-osc-vrchat-oscqueryEnabled-description =
+    OSCQuery 會自動偵測並發送數據給正在執行中的 VRChat 程式。
+    也會把自己廣告給其他應用程式，以接收頭戴顯示器與控制器的數據。
+    要允許從 VRChat 接收頭戴顯示器與控制器的數據，請進入主選單的設定
+    在「追蹤 & IK」下，啟用「允許透過 OSC 發送頭部與腕部的 VR 追蹤數據」。
+settings-osc-vrchat-oscqueryEnabled-label = 啟用 OSCQuery
 settings-osc-vrchat-network = 連接埠
 settings-osc-vrchat-network-description-v1 = 設定收發追蹤器資料的連接埠埠號，使用 VRChat 不須更改。
 settings-osc-vrchat-network-port_in =
@@ -730,9 +876,12 @@ settings-utils-advanced-reset_warning =
     }
 settings-utils-advanced-reset_warning-reset = 重置設定
 settings-utils-advanced-reset_warning-cancel = 取消
-settings-utils-advanced-open_data = 數據資料夾
-settings-utils-advanced-open_data-description = 在檔案管理器中開啟 SlimeVR 的數據資料夾，該資料夾包含設定與記錄檔。
+settings-utils-advanced-open_data-v1 = 設定資料夾
+settings-utils-advanced-open_data-description-v1 = 在檔案管理器中開啟 SlimeVR 的設定資料夾，該資料夾包含程式的設定。
 settings-utils-advanced-open_data-label = 打開資料夾
+settings-utils-advanced-open_logs = 記錄檔資料夾
+settings-utils-advanced-open_logs-description = 在檔案管理器中開啟 SlimeVR 的記錄檔資料夾，該資料夾包含程式的記錄檔。
+settings-utils-advanced-open_logs-label = 打開資料夾
 
 ## Setup/onboarding menu
 
@@ -824,6 +973,17 @@ onboarding-connect_tracker-connection_status-looking_for_server = 正在尋找�
 onboarding-connect_tracker-connection_status-connection_error = 無法連線到 Wi-Fi
 onboarding-connect_tracker-connection_status-could_not_find_server = 未尋找到可用的伺服器
 onboarding-connect_tracker-connection_status-done = 已連線到伺服器
+onboarding-connect_tracker-connection_status-no_serial_log = 無法從追蹤器取得紀錄訊息
+onboarding-connect_tracker-connection_status-no_serial_device_found = 無法透過 USB 找到追蹤器
+onboarding-connect_serial-error-modal-no_serial_log = 追蹤器電源開了嗎？
+onboarding-connect_serial-error-modal-no_serial_log-desc = 請確認追蹤器電源已開啟，並連接到這台電腦上
+onboarding-connect_serial-error-modal-no_serial_device_found = 找不到追蹤器
+onboarding-connect_serial-error-modal-no_serial_device_found-desc =
+    請使用隨附的 USB 傳輸線將追蹤器連接到你的電腦後，再打開追蹤器電源。
+    如果還是不行，請嘗試以下操作：
+      - 使用另一條 USB 傳輸線
+      - 使用另一個 USB 插座
+      - 重新安裝 SlimeVR 伺服器程式，然後在安裝元件部分將「USB drivers」打勾
 # $amount (Number) - Amount of trackers connected (this is a number, but you can use CLDR plural rules for your language)
 # More info on https://www.unicode.org/cldr/cldr-aux/charts/22/supplemental/language_plural_rules.html
 # English in this case only has 2 plural rules, which are "one" and "other",
@@ -998,53 +1158,27 @@ onboarding-automatic_mounting-mounting_reset-title = 配戴重置
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 雙腿彎曲以滑雪的姿勢蹲下，上身向前傾斜，手臂彎曲。
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. 按下「配戴重置」按鈕並等待 3 秒鐘，追蹤器的配戴方向將被重置。
 onboarding-automatic_mounting-preparation-title = 準備
-onboarding-automatic_mounting-preparation-step-0 = 1. 身體直立，雙臂放在身體兩側。
-onboarding-automatic_mounting-preparation-step-1 = 2. 按下「完整重置」按鈕，等待 3 秒鐘，追蹤器將會重置。
+onboarding-automatic_mounting-preparation-v2-step-0 = 1. 請按下「完整重置」按鈕。
+onboarding-automatic_mounting-preparation-v2-step-1 = 2. 站直，雙臂放在身體兩側，確保向前直視。
+onboarding-automatic_mounting-preparation-v2-step-2 = 3. 保持姿勢直到 3 秒倒數結束。
 onboarding-automatic_mounting-put_trackers_on-title = 請戴好追蹤器
 onboarding-automatic_mounting-put_trackers_on-description = 為了校準配戴方向，我們將使用剛才分配的追蹤器。戴上你所有的追蹤器，你可以在右邊的圖中看到追蹤器的對應部位。
 onboarding-automatic_mounting-put_trackers_on-next = 我所有的追蹤器都戴好了！
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = 要使用哪一種軀幹比例的校正方式？
-# Multiline string
-onboarding-choose_proportions-description-v1 =
-    軀幹比例用於取得身體各個部位的長短，為計算追蹤器的位置而有所必要。
-    當你的軀幹比例與設定的比例有差異時，追蹤精確度會變差，你可能會注意到出現腳滑溜冰的情形，或者你的身體與你的虛擬角色對不太上。
-    <b>軀幹比例的測量只需要進行一次！</b>除非設定有誤，或是身材有明顯變化，本設定不需要重複進行。
-onboarding-choose_proportions-auto_proportions = 自動軀幹比例校正
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = 推薦使用
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    本選項會從你的身體動作錄製一段樣本，並通過演算法來推算你的軀幹比例。
-    
-    <b>使用本功能需要連接頭戴顯示器到 SlimeVR，並且配戴在頭部！</b>
-onboarding-choose_proportions-manual_proportions = 手動軀幹比例校正
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = 適合進行微調
-onboarding-choose_proportions-manual_proportions-description = 本選項可以讓你直接修改軀幹比例的設定值
-onboarding-choose_proportions-scaled_proportions = 標準軀幹比例
-# Italized text
-onboarding-choose_proportions-scaled_proportions-subtitle = 推薦新使用者使用
-# Multiline string
-onboarding-choose_proportions-scaled_proportions-description =
-    使用人體的平均軀幹比例，依照你的身高進行縮放調整，可用於基本的全身追蹤。
-    
-    <b>本選項需要連接頭戴顯示器 (HMD) 到 SlimeVR，並且戴上頭部。</b>
-onboarding-choose_proportions-scaled_proportions-button = 標準軀幹比例
-onboarding-choose_proportions-export = 匯出軀幹比例
-onboarding-choose_proportions-import = 匯入軀幹比例
-onboarding-choose_proportions-import-success = 匯入成功
-onboarding-choose_proportions-import-failed = 匯入失敗
-onboarding-choose_proportions-file_type = 軀幹比例描述檔
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = 返回重置教學
 onboarding-manual_proportions-title = 手動調整軀幹比例
-onboarding-manual_proportions-precision = 精確調整
-onboarding-manual_proportions-auto = 進行自動校正
-onboarding-manual_proportions-ratio = 依比例分組調整
+onboarding-manual_proportions-fine_tuning_button = 自動微調軀幹比例
+onboarding-manual_proportions-fine_tuning_button-disabled-tooltip = 請連接 VR 頭戴顯示器以使用此功能
+onboarding-manual_proportions-export = 匯出軀幹比例
+onboarding-manual_proportions-import = 匯入軀幹比例
+onboarding-manual_proportions-file_type = 軀幹比例描述檔
+onboarding-manual_proportions-normal_increment = 正常調整
+onboarding-manual_proportions-precise_increment = 精確調整
+onboarding-manual_proportions-grouped_proportions = 分組調整軀幹比例
+onboarding-manual_proportions-all_proportions = 全部軀幹比例
+onboarding-manual_proportions-estimated_height = 預估的使用者身高
 
 ## Tracker automatic proportions setup
 
@@ -1067,25 +1201,26 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     頭戴顯示器會回報定位資料給 SlimeVR 伺服器（通常為執行 SteamVR 並透過 SlimeVR 的 SteamVR 驅動程式來連接 SlimeVR）。
     追蹤狀態正常且能反映你的移動姿態（例如，進行完全重置後，踢腿、彎曲、坐下時的肢體方向是正確的）。
 onboarding-automatic_proportions-requirements-next = 我已閱讀使用需求
-onboarding-automatic_proportions-check_height-title-v2 = 測量你的身高
+onboarding-automatic_proportions-check_height-title-v3 = 測量頭戴顯示器高度
 onboarding-automatic_proportions-check_height-description-v2 = 你的頭戴顯示器 (HMD) 高度應略小於您的身高全長，因為頭戴顯示器會測量你的眼睛高度。本測量會被做為計算軀幹比例的基礎值。
 # All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning-v2 = 在<u>直立</u>時開始測量以計算出你的身高。請注意不要將手抬高過於頭戴顯示器，因為會影響測量。
+onboarding-automatic_proportions-check_height-calculation_warning-v3 = 在<u>直立</u>時開始測量以量出你的身高。請注意不要將手抬高過於頭戴顯示器，因為會影響測量。
 onboarding-automatic_proportions-check_height-guardian_tip = 如果你使用的是一體式 VR 頭戴顯示器，請確認守護神/邊界設定已經開啟，以確保身高能正確測量。
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = 不明
 # Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height2 = 你的頭戴顯示器高度是：
+onboarding-automatic_proportions-check_height-hmd_height2 = 頭戴顯示器的高度為：
 onboarding-automatic_proportions-check_height-measure-start = 開始測量
 onboarding-automatic_proportions-check_height-measure-stop = 停止測量
 onboarding-automatic_proportions-check_height-measure-reset = 重新測量
-onboarding-automatic_proportions-check_height-next_step = 數值沒問題
+onboarding-automatic_proportions-check_height-next_step = 使用頭戴顯示器高度
 onboarding-automatic_proportions-check_floor_height-title = 測量地板高度（選用）
 onboarding-automatic_proportions-check_floor_height-description = 在某些情況下，頭戴顯示器可能無法正確設定地板高度，導致頭戴顯示器測得的高度高於應有的高度。你可以測量地板的「高度」以校正頭戴顯示器的高度。
 # All the text is in bold!
-onboarding-automatic_proportions-check_floor_height-calculation_warning = 如果你確定地板的高度是正確的，可以跳過此步驟。
+onboarding-automatic_proportions-check_floor_height-calculation_warning-v2 = 開始測量並將控制器擺放在地板上以測量地板高度。若你確定地板高度是正確的，本步驟可以跳過。
 # Shows an element below it
 onboarding-automatic_proportions-check_floor_height-floor_height = 你的地板高度是：
+onboarding-automatic_proportions-check_floor_height-full_height = 你的估計身高是：
 onboarding-automatic_proportions-check_floor_height-measure-start = 開始測量
 onboarding-automatic_proportions-check_floor_height-measure-stop = 停止測量
 onboarding-automatic_proportions-check_floor_height-measure-reset = 重新測量
@@ -1128,13 +1263,21 @@ onboarding-automatic_proportions-smol_warning-cancel = 返回
 
 ## Tracker scaled proportions setup
 
-onboarding-scaled_proportions-title = 標準軀幹比例
+onboarding-scaled_proportions-title = 縮放型軀幹比例
 onboarding-scaled_proportions-description = 為了讓 SlimeVR 追蹤器正常使用，我們需要知道你的骨骼長度。本流程會使用人體的平均軀幹比例並依照你的身高縮放調整。
 onboarding-scaled_proportions-manual_height-title = 設定你的身高
-onboarding-scaled_proportions-manual_height-description = 你的頭戴顯示器 (HMD) 高度應略小於您的身高全長，因為頭戴顯示器會測量你的眼睛高度。測量出的高度會被做為計算軀幹比例的基礎值。
+onboarding-scaled_proportions-manual_height-description-v2 = 身高會當作軀幹比例設定的基礎。
 onboarding-scaled_proportions-manual_height-missing_steamvr = SteamVR 目前尚未連接到 SlimeVR，因此無法根據頭戴顯示器測量身高。<b>請查閱說明文件，繼續操作請自行承擔風險！</b>
-onboarding-scaled_proportions-manual_height-height = 你的頭戴顯示器高度是
+onboarding-scaled_proportions-manual_height-height-v2 = 你的身高全長為
+onboarding-scaled_proportions-manual_height-estimated_height = 頭戴顯示器估計高度為：
 onboarding-scaled_proportions-manual_height-next_step = 繼續並儲存
+onboarding-scaled_proportions-manual_height-warning =
+    你現在正在手動設定縮放型軀幹比例，<b>這個方法僅在你使用 SlimeVR
+    不使用頭戴顯示器時推薦使用。</b>
+    
+    若要能自動設定縮放型軀幹比例，請按照以下步驟：
+onboarding-scaled_proportions-manual_height-warning-no_hmd = 連接 VR 頭戴顯示器
+onboarding-scaled_proportions-manual_height-warning-no_controllers = 檢查 VR 控制器是否正常連接，並在 SlimeVR 介面中分配到你的雙手
 
 ## Tracker scaled proportions reset
 
@@ -1142,6 +1285,40 @@ onboarding-scaled_proportions-reset_proportion-title = 重置軀幹比例
 onboarding-scaled_proportions-reset_proportion-description = 要依照身高設定軀幹比例，你現在需要重置相關設定。本按鈕會清除以前所設定的軀幹比例並提供基本配置。
 onboarding-scaled_proportions-done-title = 軀幹比例已設定
 onboarding-scaled_proportions-done-description = 軀幹比例現在已經依照你的身高設定。
+
+## Stay Aligned setup
+
+onboarding-stay_aligned-title = 持續校正
+onboarding-stay_aligned-description = 設定持續校正功能讓追蹤器保持對齊狀態。
+onboarding-stay_aligned-put_trackers_on-title = 請戴好追蹤器
+onboarding-stay_aligned-put_trackers_on-description = 為了保存放鬆中的姿態，我們將使用你剛才分配的追蹤器。戴上你所有的追蹤器，你可以在右邊的圖中看到追蹤器的對應部位。
+onboarding-stay_aligned-put_trackers_on-trackers_warning = 你目前已連接與分配的追蹤器少於 5 個，持續校正功能需要 5 個以上的追蹤器才能正常運作。
+onboarding-stay_aligned-put_trackers_on-next = 我所有的追蹤器都戴好了
+onboarding-stay_aligned-verify_mounting-title = 確認追蹤器的配戴狀態
+onboarding-stay_aligned-verify_mounting-step-0 = 持續校正功能需要良好的追蹤器配戴固定，否則體驗會不如預期。
+onboarding-stay_aligned-verify_mounting-step-1 = 1. 請站著四處走動。
+onboarding-stay_aligned-verify_mounting-step-2 = 2. 坐下並擺動你的腿跟腳。
+onboarding-stay_aligned-verify_mounting-step-3 = 3. 如果虛擬追蹤器不在正確的位置上，請調整追蹤器並重複這個流程。
+onboarding-stay_aligned-verify_mounting-redo_mounting = 重做配戴校正
+onboarding-stay_aligned-preparation-title = 準備
+onboarding-stay_aligned-preparation-tip = 請確保站直。你必須向前直視，並且兩臂垂到身體兩側。
+onboarding-stay_aligned-relaxed_poses-standing-title = 放鬆的站立姿勢
+onboarding-stay_aligned-relaxed_poses-standing-step-0 = 1. 請以舒適的姿態站著，保持放鬆。
+onboarding-stay_aligned-relaxed_poses-standing-step-1-v2 = 3. 請按下「儲存姿勢」按鈕。
+onboarding-stay_aligned-relaxed_poses-sitting-title = 放鬆的坐在椅子上的姿勢
+onboarding-stay_aligned-relaxed_poses-sitting-step-0 = 1. 請以舒適的姿態坐著，保持放鬆。
+onboarding-stay_aligned-relaxed_poses-sitting-step-1-v2 = 3. 請按下「儲存姿勢」按鈕。
+onboarding-stay_aligned-relaxed_poses-flat-title = 放鬆的坐在地板上的姿勢
+onboarding-stay_aligned-relaxed_poses-flat-step-0 = 1. 請以舒適的姿態坐在地板上，腿部朝前，保持放鬆。
+onboarding-stay_aligned-relaxed_poses-flat-step-1-v2 = 3. 請按下「儲存姿勢」按鈕。
+onboarding-stay_aligned-relaxed_poses-skip_step = 跳過
+onboarding-stay_aligned-done-title = 持續校正已啟用！
+onboarding-stay_aligned-done-description = 持續校正功能設定完成。
+onboarding-stay_aligned-done-description-2 = 設定完成。若需要重新校正姿勢，可以重新進行這個流程。
+onboarding-stay_aligned-previous_step = 上一步
+onboarding-stay_aligned-next_step = 下一步
+onboarding-stay_aligned-restart = 重新開始
+onboarding-stay_aligned-done = 完成
 
 ## Home
 
@@ -1166,6 +1343,7 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = 追蹤器{ $trackerName }發生錯誤
 status_system-StatusUnassignedHMD = VR 頭戴顯示器應被分配為頭部追蹤器。
+status_system-StatusPublicNetwork = 你的網路設定檔目前設為「公開」，SlimeVR 為了能正常運作，不建議如此設定。 <PublicFixLink>此處提供修正的方法。</PublicFixLink>
 
 ## Firmware tool globals
 
@@ -1253,7 +1431,7 @@ firmware_tool-flashbtn_step-board_OTHER =
     在燒錄前，你可能需要將追蹤器切換進 Bootloader（開機載入程式）。
     多數狀況下，在燒錄開始前按下 BOOT 按鈕即可開始燒錄。
     如果燒錄進度開始時就已逾時，表示追蹤器未能進入 Bootloader 模式，
-    請參考開發板燒錄韌體的說明文件，以得知進入 Bootloader 模式的方法。
+    請參考追蹤器主板燒錄韌體的說明文件，以得知進入 Bootloader 模式的方法。
 firmware_tool-flash_method_ota-devices = 偵測到的 OTA 裝置：
 firmware_tool-flash_method_ota-no_devices = 找不到可以使用 OTA 更新的主板，請確認所選擇的主板類型
 firmware_tool-flash_method_serial-wifi = Wi-Fi 認證資訊：
@@ -1264,7 +1442,7 @@ firmware_tool-build_step = 建置中
 firmware_tool-build_step-description = 韌體正在建置中，請稍後
 firmware_tool-flashing_step = 燒錄中
 firmware_tool-flashing_step-description = 追蹤器燒錄中，請遵循畫面上的指示
-firmware_tool-flashing_step-warning = 除非特別指示，燒錄中請勿移除或是重啟追蹤器，否則可能導致主板無法使用。
+firmware_tool-flashing_step-warning-v2 = 除非特別指示，燒錄中請勿移除或是關閉追蹤器，否則可能導致主板無法使用
 firmware_tool-flashing_step-flash_more = 燒錄更多追蹤器
 firmware_tool-flashing_step-exit = 離開
 
@@ -1282,11 +1460,11 @@ firmware_tool-build-ERROR = 無法建置韌體
 ## Firmware update status
 
 firmware_update-status-DOWNLOADING = 正在下載韌體
-firmware_update-status-NEED_MANUAL_REBOOT = 正在等待使用者重啟追蹤器
+firmware_update-status-NEED_MANUAL_REBOOT-v2 = 請關閉追蹤器的電源再打開
 firmware_update-status-AUTHENTICATING = 正在與 MCU 認證
 firmware_update-status-UPLOADING = 正在上傳韌體
 firmware_update-status-SYNCING_WITH_MCU = 正在與 MCU 同步
-firmware_update-status-REBOOTING = 正在重啟追蹤器
+firmware_update-status-REBOOTING = 正在套用更新
 firmware_update-status-PROVISIONING = 正在設定 Wi-Fi 認證資訊
 firmware_update-status-DONE = 更新完成！
 firmware_update-status-ERROR_DEVICE_NOT_FOUND = 找不到裝置
@@ -1337,3 +1515,53 @@ unknown_device-modal-description =
     要將它連接到 SlimeVR 嗎？
 unknown_device-modal-confirm = 好喔！
 unknown_device-modal-forget = 別管它
+# VRChat config warnings
+vrc_config-page-title = VRChat 設定警告
+vrc_config-page-desc = 本頁會顯示 VRChat 的設定並顯示哪些設定與 SlimeVR 不相容。非常建議您根據這裡顯示的警告來修改設定，以獲得最佳的 SlimeVR 使用體驗。
+vrc_config-page-help = 找不到設定在哪裡嗎？
+vrc_config-page-help-desc = 請查閱<a>本主題的相關文件</a>
+vrc_config-page-big_menu = 追蹤 & IK（主選單）
+vrc_config-page-big_menu-desc = 主選單中與 IK （逆向運動學）相關的設定
+vrc_config-page-wrist_menu = 追蹤 & IK（快速選單）
+vrc_config-page-wrist_menu-desc = 快速選單中與 IK （逆向運動學）相關的設定
+vrc_config-on = 開啟
+vrc_config-off = 關閉
+vrc_config-invalid = VRChat 的設定有誤！
+vrc_config-show_more = 顯示更多
+vrc_config-setting_name = VRChat 設定名稱
+vrc_config-recommended_value = 建議設定
+vrc_config-current_value = 目前設定
+vrc_config-mute = 消除警告
+vrc_config-mute-btn = 消除
+vrc_config-unmute-btn = 復歸
+vrc_config-legacy_mode = 使用傳統 IK 解決方案
+vrc_config-disable_shoulder_tracking = 停用肩膀追蹤
+vrc_config-shoulder_width_compensation = 肩寬補償
+vrc_config-spine_mode = FBT 脊椎模式
+vrc_config-tracker_model = FBT 追蹤器形狀
+vrc_config-avatar_measurement_type = 角色測量
+vrc_config-calibration_range = 校正範圍
+vrc_config-calibration_visuals = 顯示 FBT 校正範圍
+vrc_config-user_height = 用戶真實身高
+vrc_config-spine_mode-UNKNOWN = 不明
+vrc_config-spine_mode-LOCK_BOTH = 同時鎖定
+vrc_config-spine_mode-LOCK_HEAD = 鎖定頭部
+vrc_config-spine_mode-LOCK_HIP = 鎖定臀部
+vrc_config-tracker_model-UNKNOWN = 不明
+vrc_config-tracker_model-AXIS = 軸
+vrc_config-tracker_model-BOX = 箱型
+vrc_config-tracker_model-SPHERE = 球型
+vrc_config-tracker_model-SYSTEM = 系統
+vrc_config-avatar_measurement_type-UNKNOWN = 不明
+vrc_config-avatar_measurement_type-HEIGHT = 身高
+vrc_config-avatar_measurement_type-ARM_SPAN = 臂展
+
+## Error collection consent modal
+
+error_collection_modal-title = 我們可以蒐集錯誤資訊嗎？
+error_collection_modal-description_v2 =
+    { settings-interface-behavior-error_tracking-description_v2 }
+    
+    若之後要變更此設定，可以在「詳細設定」頁面中的「行為」來變更。
+error_collection_modal-confirm = 我同意
+error_collection_modal-cancel = 我不想要

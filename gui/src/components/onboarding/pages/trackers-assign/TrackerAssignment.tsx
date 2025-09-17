@@ -14,10 +14,8 @@ import {
   ChangeSettingsRequestT,
   TapDetectionSetupNotificationT,
 } from 'solarxr-protocol';
-import { FlatDeviceTracker } from '@/hooks/app';
 import { useChokerWarning } from '@/hooks/choker-warning';
 import { useOnboarding } from '@/hooks/onboarding';
-import { useTrackers } from '@/hooks/tracker';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
 import { CheckBox } from '@/components/commons/Checkbox';
@@ -34,6 +32,12 @@ import { defaultConfig, useConfig } from '@/hooks/config';
 import { playTapSetupSound } from '@/sounds/sounds';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { TrackerAssignOptions } from './TrackerAssignOptions';
+import { useAtomValue } from 'jotai';
+import {
+  assignedTrackersAtom,
+  FlatDeviceTracker,
+  flatTrackersAtom,
+} from '@/store/app-store';
 
 export type BodyPartError = {
   label: string | undefined;
@@ -51,7 +55,6 @@ export function TrackersAssignPage() {
   const { isMobile } = useBreakpoint('mobile');
   const { l10n } = useLocalization();
   const { config, setConfig } = useConfig();
-  const { useAssignedTrackers, trackers } = useTrackers();
   const { applyProgress, state } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const defaultValues = {
@@ -62,7 +65,10 @@ export function TrackersAssignPage() {
   }>({ defaultValues });
   const { mirrorView } = watch();
   const [selectedRole, setSelectRole] = useState<BodyPart>(BodyPart.NONE);
-  const assignedTrackers = useAssignedTrackers();
+
+  const assignedTrackers = useAtomValue(assignedTrackersAtom);
+  const trackers = useAtomValue(flatTrackersAtom);
+
   useEffect(() => {
     setConfig({ mirrorView });
   }, [mirrorView]);
@@ -210,8 +216,7 @@ export function TrackersAssignPage() {
       assignreq.bodyPosition = role;
       assignreq.mountingOrientation = rotation;
       assignreq.trackerId = trackerId;
-      assignreq.allowDriftCompensation =
-        tracker?.tracker?.info?.allowDriftCompensation ?? true;
+      assignreq.allowDriftCompensation = false;
 
       sendRPCPacket(RpcMessage.AssignTrackerRequest, assignreq);
     };

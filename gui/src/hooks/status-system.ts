@@ -4,6 +4,7 @@ import {
   RpcMessage,
   StatusData,
   StatusMessageT,
+  StatusPublicNetworkT,
   StatusSteamVRDisconnectedT,
   StatusSystemFixedT,
   StatusSystemRequestT,
@@ -16,8 +17,8 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { FluentVariable } from '@fluent/bundle';
-import { FlatDeviceTracker } from './app';
 import { ReactLocalization } from '@fluent/react';
+import { FlatDeviceTracker } from '@/store/app-store';
 
 type StatusSystemStateAction =
   | StatusSystemStateFixedAction
@@ -125,6 +126,13 @@ export function parseStatusToLocale(
     case StatusData.StatusTrackerReset:
     case StatusData.StatusUnassignedHMD:
       return {};
+    case StatusData.StatusPublicNetwork: {
+      const data = status.data as StatusPublicNetworkT;
+      return {
+        adapters: data.adapters.join(', '),
+        count: data.adapters.length,
+      };
+    }
     case StatusData.StatusSteamVRDisconnected: {
       const data = status.data as StatusSteamVRDisconnectedT;
       if (typeof data.bridgeSettingsName === 'string') {

@@ -1,7 +1,7 @@
 package dev.slimevr.tracking.processor.skeleton
 
-import com.jme3.math.FastMath
 import dev.slimevr.VRServer
+import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.processor.Constraint
@@ -9,9 +9,12 @@ import dev.slimevr.tracking.processor.Constraint.Companion.ConstraintType
 import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
 import dev.slimevr.tracking.processor.config.SkeletonConfigValues
+import dev.slimevr.tracking.processor.stayaligned.StayAligned
+import dev.slimevr.tracking.processor.stayaligned.trackers.TrackerSkeleton
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerRole
+import dev.slimevr.tracking.trackers.TrackerUtils
 import dev.slimevr.tracking.trackers.TrackerUtils.getFirstAvailableTracker
 import dev.slimevr.tracking.trackers.TrackerUtils.getTrackerForSkeleton
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
@@ -19,8 +22,6 @@ import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
-import io.github.axisangles.ktmath.EulerAngles
-import io.github.axisangles.ktmath.EulerOrder
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.I
 import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
@@ -29,7 +30,7 @@ import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.NEG_Y
 import io.github.axisangles.ktmath.Vector3.Companion.NULL
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
-import solarxr_protocol.rpc.StatusData
+import solarxr_protocol.datatypes.BodyPart
 import java.lang.IllegalArgumentException
 import kotlin.properties.Delegates
 
@@ -57,8 +58,8 @@ class HumanSkeleton(
 	// Arm bones
 	val leftUpperShoulderBone = Bone(BoneType.LEFT_UPPER_SHOULDER, Constraint(ConstraintType.COMPLETE))
 	val rightUpperShoulderBone = Bone(BoneType.RIGHT_UPPER_SHOULDER, Constraint(ConstraintType.COMPLETE))
-	val leftShoulderBone = Bone(BoneType.LEFT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 10f))
-	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 10f))
+	val leftShoulderBone = Bone(BoneType.LEFT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 30f))
+	val rightShoulderBone = Bone(BoneType.RIGHT_SHOULDER, Constraint(ConstraintType.TWIST_SWING, 0f, 30f))
 	val leftUpperArmBone = Bone(BoneType.LEFT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
 	val rightUpperArmBone = Bone(BoneType.RIGHT_UPPER_ARM, Constraint(ConstraintType.TWIST_SWING, 120f, 180f))
 	val leftLowerArmBone = Bone(BoneType.LEFT_LOWER_ARM, Constraint(ConstraintType.LOOSE_HINGE, 0f, -180f, 40f))
@@ -215,6 +216,10 @@ class HumanSkeleton(
 	var localizer = Localizer(this)
 	var ikSolver = IKSolver(headBone)
 
+	// Stay Aligned
+	var trackerSkeleton = TrackerSkeleton(this)
+	var stayAlignedConfig = StayAlignedConfig()
+
 	// Constructors
 	init {
 		assembleSkeleton()
@@ -236,6 +241,7 @@ class HumanSkeleton(
 		)
 		legTweaks.setConfig(server.configManager.vrConfig.legTweaks)
 		localizer.setEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION))
+		stayAlignedConfig = server.configManager.vrConfig.stayAlignedConfig
 	}
 
 	constructor(
@@ -456,6 +462,9 @@ class HumanSkeleton(
 
 		// Update bones tracker field
 		refreshBoneTracker()
+
+		// Update tracker skeleton
+		trackerSkeleton = TrackerSkeleton(this)
 	}
 
 	/**
@@ -511,6 +520,8 @@ class HumanSkeleton(
 	@VRServerThread
 	fun updatePose() {
 		tapDetectionManager.update()
+
+		StayAligned.adjustNextTracker(trackerSkeleton, stayAlignedConfig)
 
 		updateTransforms()
 		updateBones()
@@ -814,11 +825,6 @@ class HumanSkeleton(
 						var hipRot = it.getRotation()
 						var chestRot = chest.getRotation()
 
-						// Get the rotation relative to where we expect the hip to be
-						if (chestRot.times(FORWARD_QUATERNION).dot(hipRot) < 0.0f) {
-							hipRot = hipRot.unaryMinus()
-						}
-
 						// Interpolate between the chest and the hip
 						chestRot = chestRot.interpQ(hipRot, waistFromChestHipAveraging)
 
@@ -830,15 +836,6 @@ class HumanSkeleton(
 							var leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
 							var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
 							var chestRot = chest.getRotation()
-
-							// Get the rotation relative to where we expect the upper legs to be
-							val expectedUpperLegsRot = chestRot.times(FORWARD_QUATERNION)
-							if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
-								leftLegRot = leftLegRot.unaryMinus()
-							}
-							if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
-								rightLegRot = rightLegRot.unaryMinus()
-							}
 
 							// Interpolate between the pelvis, averaged from the legs, and the chest
 							chestRot = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), waistFromChestLegsAveraging).unit()
@@ -856,15 +853,6 @@ class HumanSkeleton(
 					var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
 					var waistRot = it.getRotation()
 
-					// Get the rotation relative to where we expect the upper legs to be
-					val expectedUpperLegsRot = waistRot.times(FORWARD_QUATERNION)
-					if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
-						leftLegRot = leftLegRot.unaryMinus()
-					}
-					if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
-						rightLegRot = rightLegRot.unaryMinus()
-					}
-
 					// Interpolate between the pelvis, averaged from the legs, and the chest
 					waistRot = waistRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromWaistLegsAveraging).unit()
 
@@ -877,15 +865,6 @@ class HumanSkeleton(
 						var leftLegRot = leftUpperLegTracker?.getRotation() ?: IDENTITY
 						var rightLegRot = rightUpperLegTracker?.getRotation() ?: IDENTITY
 						var chestRot = it.getRotation()
-
-						// Get the rotation relative to where we expect the upper legs to be
-						val expectedUpperLegsRot = chestRot.times(FORWARD_QUATERNION)
-						if (expectedUpperLegsRot.dot(leftLegRot) < 0.0f) {
-							leftLegRot = leftLegRot.unaryMinus()
-						}
-						if (expectedUpperLegsRot.dot(rightLegRot) < 0.0f) {
-							rightLegRot = rightLegRot.unaryMinus()
-						}
 
 						// Interpolate between the pelvis, averaged from the legs, and the chest
 						chestRot = chestRot.interpQ(leftLegRot.lerpQ(rightLegRot, 0.5f), hipFromChestLegsAveraging).unit()
@@ -1141,24 +1120,11 @@ class HumanSkeleton(
 		rightKnee: Quaternion,
 		hip: Quaternion,
 	): Quaternion {
-		// Get the knees' rotation relative to where we expect them to be.
-		// The angle between your knees and hip can be over 180 degrees...
-		var leftKneeRot = leftKnee
-		var rightKneeRot = rightKnee
-
-		val kneeRot = hip.times(FORWARD_QUATERNION)
-		if (kneeRot.dot(leftKneeRot) < 0.0f) {
-			leftKneeRot = leftKneeRot.unaryMinus()
-		}
-		if (kneeRot.dot(rightKneeRot) < 0.0f) {
-			rightKneeRot = rightKneeRot.unaryMinus()
-		}
-
 		// R = InverseHip * (LeftLeft + RightLeg)
 		// C = Quaternion(R.w, -R.x, 0, 0)
 		// Pelvis = Hip * R * C
 		// normalize(Pelvis)
-		val r = hip.inv() * (leftKneeRot + rightKneeRot)
+		val r = hip.inv() * (leftKnee + rightKnee)
 		val c = Quaternion(r.w, -r.x, 0f, 0f)
 		return (hip * r * c).unit()
 	}
@@ -1555,17 +1521,21 @@ class HumanSkeleton(
 			rightLittleDistalTracker,
 		)
 
-	fun resetTrackersFull(resetSourceName: String?) {
+	@JvmOverloads
+	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			// Always reset the head (ifs in resetsHandler)
-			it.resetsHandler.resetFull(referenceRotation)
+			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
+				// Always reset the head (ifs in resetsHandler)
+				it.resetsHandler.resetFull(referenceRotation)
+			}
 			referenceRotation = it.getRotation()
 		}
+
 		// Resets all axes of the trackers with the HMD as reference.
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsReset
-			if (tracker != null && (tracker.needsReset || tracker.isHmd)) {
+			if (tracker != null && (tracker.needsReset || tracker.isHmd) && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
 				tracker.resetsHandler.resetFull(referenceRotation)
 			}
 		}
@@ -1582,19 +1552,22 @@ class HumanSkeleton(
 	}
 
 	@VRServerThread
-	fun resetTrackersYaw(resetSourceName: String?) {
+	@JvmOverloads
+	fun resetTrackersYaw(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
 		// Resets the yaw of the trackers with the head as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			// Only reset if head needsReset and isn't computed
-			if (it.needsReset && !it.isComputed) {
-				it.resetsHandler.resetYaw(referenceRotation)
+			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
+				// Only reset if head needsReset and isn't computed
+				if (it.needsReset && !it.isComputed) {
+					it.resetsHandler.resetYaw(referenceRotation)
+				}
 			}
 			referenceRotation = it.getRotation()
 		}
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsReset
-			if (tracker != null && tracker.needsReset) {
+			if (tracker != null && tracker.needsReset && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
 				tracker.resetsHandler.resetYaw(referenceRotation)
 			}
 		}
@@ -1602,10 +1575,21 @@ class HumanSkeleton(
 		LogManager.info("[HumanSkeleton] Reset: yaw ($resetSourceName)")
 	}
 
+	/**
+	 * if bodyParts is empty, this resets mounting for all trackers.
+	 * Keep in mind TrackerResetsHandler.kt has some logic as well for which trackers get reset (feet)
+	 */
 	@VRServerThread
-	fun resetTrackersMounting(resetSourceName: String?) {
-		val server = humanPoseManager.server
-		if (server != null && server.statusSystem.hasStatusType(StatusData.StatusTrackerReset)) {
+	@JvmOverloads
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int>) {
+		val trackersToReset = trackersToReset
+
+		// TODO: PLEASE rewrite this handling at some point in the future... This is so
+		//  hacky!! Surely there's a better way to check reset status - Butterscotch
+		// If there's a server present (required for status) and any tracker reports a
+		// non-zero reset status (indicates reset required), then block mounting reset,
+		// as it requires a full reset first
+		if (humanPoseManager.server != null && trackersToReset.any { it != null && it.lastResetStatus != 0u }) {
 			LogManager.info("[HumanSkeleton] Reset: mounting ($resetSourceName) failed, reset required")
 			return
 		}
@@ -1613,16 +1597,21 @@ class HumanSkeleton(
 		// Resets the mounting orientation of the trackers with the HMD as reference.
 		var referenceRotation = IDENTITY
 		headTracker?.let {
-			// Only reset if head needsMounting or is computed but not HMD
-			if (it.needsMounting || (it.isComputed && !it.isHmd)) {
-				it.resetsHandler.resetMounting(referenceRotation)
+			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {
+				// Only reset if head needsMounting or is computed but not HMD
+				if (it.needsMounting || (it.isComputed && !it.isHmd)) {
+					it.resetsHandler.resetMounting(referenceRotation)
+				}
 			}
 			referenceRotation = it.getRotation()
 		}
+
+		// If onlyFeet is true, feet will be forced to be mounting reset in their reset handlers.
+		val onlyFeet = bodyParts.isNotEmpty() && bodyParts.all { it == BodyPart.LEFT_FOOT || it == BodyPart.RIGHT_FOOT }
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsMounting
-			if (tracker != null && tracker.needsMounting) {
-				tracker.resetsHandler.resetMounting(referenceRotation)
+			if (tracker != null && tracker.needsMounting && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
+				tracker.resetsHandler.resetMounting(referenceRotation, onlyFeet)
 			}
 		}
 		legTweaks.resetBuffer()
@@ -1746,14 +1735,5 @@ class HumanSkeleton(
 		val newState = !pauseTracking
 		setPauseTracking(newState, sourceName)
 		return newState
-	}
-
-	companion object {
-		val FORWARD_QUATERNION = EulerAngles(
-			EulerOrder.YZX,
-			FastMath.HALF_PI,
-			0f,
-			0f,
-		).toQuaternion()
 	}
 }

@@ -27,25 +27,32 @@ export function TrackerBattery({
     minimumFractionDigits: 2,
   });
 
+  const charging = (voltage || 0) > 4.3;
+  const showVoltage = voltage && config?.debug;
+
   return (
     <div className="flex gap-2">
       <div className="flex flex-col justify-around">
-        <BatteryIcon
-          value={value}
-          disabled={disabled}
-          charging={(voltage || 0) > 4.3}
-        />
+        <BatteryIcon value={value} disabled={disabled} charging={charging} />
       </div>
-      <div className="w-10">
-        <Typography color={textColor}>
-          {percentFormatter.format(value)}
-        </Typography>
-        {voltage && config?.debug && (
-          <Typography color={textColor}>
-            {voltageFormatter.format(voltage)}V
-          </Typography>
-        )}
-      </div>
+      {((!charging || showVoltage) && (
+        <div className="w-10">
+          {!charging && (
+            <Typography color={textColor}>
+              {percentFormatter.format(value)}
+            </Typography>
+          )}
+          {showVoltage && (
+            <Typography color={textColor}>
+              {voltageFormatter.format(voltage)}V
+            </Typography>
+          )}
+        </div>
+      )) || (
+        <div className="flex flex-col justify-center w-10">
+          <div className="w-5 h-1 bg-background-30 rounded-full"></div>
+        </div>
+      )}
     </div>
   );
 }

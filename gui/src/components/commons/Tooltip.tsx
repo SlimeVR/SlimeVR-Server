@@ -18,6 +18,7 @@ interface TooltipProps {
   children: ReactElement;
   preferedDirection: 'top' | 'left' | 'right' | 'bottom';
   mode?: 'corner' | 'center';
+  disabled?: boolean;
 }
 
 interface TooltipPos {
@@ -355,6 +356,10 @@ export function DrawerTooltip({
     }
   };
 
+  const scroll = () => {
+    close();
+  };
+
   const open = () => {
     if (drawerStyle) return;
     clearEffect();
@@ -374,6 +379,8 @@ export function DrawerTooltip({
 
       elem.addEventListener('mousedown', touchStart); // for debug on desktop
       elem.addEventListener('mouseup', touchEnd); // for debug on desktop
+      elem.addEventListener('scroll', scroll);
+
       elem.addEventListener('click', touchEnd);
       elem.addEventListener('touchstart', touchStart);
       elem.addEventListener('touchend', touchEnd);
@@ -381,6 +388,8 @@ export function DrawerTooltip({
       return () => {
         elem.removeEventListener('mousedown', touchStart); // for debug on desktop
         elem.removeEventListener('mouseup', touchEnd); // for debug on desktop
+        elem.removeEventListener('scroll', scroll);
+
         elem.removeEventListener('touchstart', touchStart);
         elem.removeEventListener('touchend', touchEnd);
         clearTimeout(touchTimeout.current);
@@ -436,29 +445,32 @@ export function Tooltip({
   children,
   preferedDirection,
   mode = 'center',
+  disabled = false,
 }: TooltipProps) {
   const childRef = useRef<HTMLDivElement | null>(null);
   const { isMobile } = useBreakpoint('mobile');
+
+  const portal = createPortal(
+    isMobile ? (
+      <DrawerTooltip childRef={childRef}>{content}</DrawerTooltip>
+    ) : (
+      <FloatingTooltip
+        preferedDirection={preferedDirection}
+        mode={mode}
+        childRef={childRef}
+      >
+        {content}
+      </FloatingTooltip>
+    ),
+    document.body
+  );
 
   return (
     <>
       <div className="contents" ref={childRef}>
         {children}
       </div>
-      {createPortal(
-        isMobile ? (
-          <DrawerTooltip childRef={childRef}>{content}</DrawerTooltip>
-        ) : (
-          <FloatingTooltip
-            preferedDirection={preferedDirection}
-            mode={mode}
-            childRef={childRef}
-          >
-            {content}
-          </FloatingTooltip>
-        ),
-        document.body
-      )}
+      {!disabled && portal}
     </>
   );
 }

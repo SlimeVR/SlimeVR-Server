@@ -2,9 +2,7 @@
   "identifier": "migrated",
   "description": "permissions that were migrated from v1",
   "local": true,
-  "windows": [
-    "main"
-  ],
+  "windows": ["main"],
   "permissions": [
     "core:default",
     "core:window:allow-close",
@@ -19,11 +17,28 @@
     "core:window:allow-set-decorations",
     "store:default",
     "os:allow-os-type",
+    "os:allow-hostname",
+    "os:allow-locale",
+    "dialog:allow-open",
     "dialog:allow-save",
     "shell:allow-open",
     "store:allow-get",
     "store:allow-set",
     "store:allow-save",
-    "fs:allow-write-text-file"
+    "fs:allow-write-text-file",
+    "fs:allow-read-text-file",
+    "fs:allow-exists",
+    {
+      "identifier": "fs:scope",
+      "allow": [{ "path": "$APPDATA" }, { "path": "$APPDATA/**" }]
+    },
+    {
+      "identifier": "http:default",
+      "allow": [
+        {
+          "url": "https://github.com/SlimeVR/SlimeVR-Tracker-ESP/releases/download/*"
+        }
+      ]
+    }
   ]
 }

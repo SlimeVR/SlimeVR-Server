@@ -9,6 +9,11 @@
 
 websocket-connecting = Đang kết nối với máy chủ
 websocket-connection_lost = Kết nối với máy chủ đã mất. Đang kết nối lại...
+websocket-connection_lost-desc = Máy chủ SlimeVR bị dừng. Hãy kiểm tra nhật ký logs và khởi động lại chương trình.
+websocket-timedout = Không thể tìm thấy máy chủ
+websocket-timedout-desc = Có vẻ như máy chủ SlimeVR đã bị sập hoặc hết thời gian chờ. Vui lòng kiểm tra nhật ký logs và khởi động lại chương trình.
+websocket-error-close = Thoát SlimeVR
+websocket-error-logs = Mở thư mục nhật ký logs
 
 ## Update notification
 
@@ -49,6 +54,11 @@ body_part-LEFT_HAND = Tay trái
 body_part-LEFT_UPPER_LEG = Bắp chân trái
 body_part-LEFT_LOWER_LEG = Cẳng chân trái
 body_part-LEFT_FOOT = Bàn chân trái
+
+## BoardType
+
+board_type-MOCOPI = Sony Mocopi
+board_type-WEMOSWROOM02 = Wemos Wroom-02 D1 Mini
 
 ## Proportions
 
@@ -421,9 +431,6 @@ settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Tính
 settings-general-fk_settings-skeleton_settings-interp_knee_ankle = Tính trung bình của chiều quay đầu gối ngáp và lăn bằng mắt cá chân '
 settings-general-fk_settings-self_localization-title = Chế độ Mocap
 settings-general-fk_settings-self_localization-description = Chế độ Mocap cho phép bộ xương theo dõi đại khái vị trí của chính nó mà không cần kính VR hoặc các thiết bị theo dõi khác. Lưu ý rằng điều này yêu cầu bộ theo dõi chân và đầu để hoạt động và chức năng này vẫn đang trong quá trình thử nghiệm.
-settings-general-fk_settings-vive_emulation-title = Giả lập tracker Vive
-settings-general-fk_settings-vive_emulation-description = Giả lập cách tracker của Vive gặp vấn đề với việc theo dõi eo, đây là 1 tính năng được làm cho vui và sẽ làm giảm độ chính xác
-settings-general-fk_settings-vive_emulation-label = Giả lập tracker Vive
 
 ## Gesture control settings (tracker tapping)
 
@@ -485,6 +492,12 @@ settings-general-interface-feedback_sound-volume = Âm lượng phản hồi
 settings-general-interface-connected_trackers_warning = Cảnh báo với thiết bị đã kết nối
 settings-general-interface-connected_trackers_warning-description = Tùy chọn này sẽ hiển thị cửa sổ bật lên mỗi khi bạn thử thoát khỏi SlimeVR trong khi có một hoặc nhiều thiết bị theo dõi được kết nối. Nó nhắc nhở bạn tắt trình theo dõi khi bạn hoàn tất để duy trì tuổi thọ pin.
 settings-general-interface-connected_trackers_warning-label = Cảnh báo thiết bị đã kết nối khi thoát chương trình
+
+## Behavior settings
+
+settings-general-interface-dev_mode = Chế độ nhà phát triển
+settings-general-interface-dev_mode-description = Hữu dụng nếu cần thêm thông tin chi tiết của tracker hay can thiệp sâu hơn vào tracker
+settings-general-interface-dev_mode-label = Chế độ nhà phát triển
 settings-general-interface-use_tray = Thu nhỏ vào khay hệ thống
 settings-general-interface-use_tray-description = Cho phép bạn đóng cửa sổ mà không cần đóng máy chủ SlimeVR để bạn có thể tiếp tục sử dụng nó mà không bị GUI làm phiền.
 settings-general-interface-use_tray-label = Thu nhỏ vào khay hệ thống
@@ -601,12 +614,6 @@ settings-osc-vmc-network-address-description = Chọn địa chỉ để gửi d
 settings-osc-vmc-network-address-placeholder = Địa chỉ IPV4
 settings-osc-vmc-vrm = Model VRM
 settings-osc-vmc-vrm-description = Tải mô hình VRM để cho phép neo đầu và cho phép khả năng tương thích cao hơn với các ứng dụng khác.
-settings-osc-vmc-vrm-model_unloaded = Chưa có mô hình tải lên
-settings-osc-vmc-vrm-model_loaded =
-    { $titled ->
-        [true] Mô hình đã được tải: { $name }
-       *[other] Mô hình chưa có tiêu đề đã được tải
-    }
 settings-osc-vmc-vrm-file_select = Kéo và thả mô hình để sử dụng hoặc <u>duyệt file</u>
 settings-osc-vmc-anchor_hip = Cố định ở hông
 settings-osc-vmc-anchor_hip-description = Cố định theo dõi ở hông, hữu ích cho VTubing ngồi. Nếu tắt, hãy tải mô hình VRM.
@@ -622,8 +629,6 @@ settings-utils-advanced-reset-gui = Đặt lại cài đặt GUI
 settings-utils-advanced-reset-all-label = Đặt lại tất cả
 settings-utils-advanced-reset_warning-reset = Đặt lại cài đặt
 settings-utils-advanced-reset_warning-cancel = Hủy
-settings-utils-advanced-open_data = Thư mục dữ liệu
-settings-utils-advanced-open_data-description = Mở thư mục dữ liệu của SlimeVR trong tệp, chứa các tệp cấu hình và logs.
 settings-utils-advanced-open_data-label = Mở thư mục
 
 ## Setup/onboarding menu
@@ -731,7 +736,6 @@ onboarding-connect_tracker-next = Đã kết nối với tất cả tracker
 
 onboarding-calibration_tutorial = Hướng dẫn hiệu chuẩn IMU
 onboarding-calibration_tutorial-subtitle = Cái này sẽ giúp giảm trôi trượt theo dõi!
-onboarding-calibration_tutorial-description = Mỗi khi bạn bật thiết bị theo dõi, chúng cần nghỉ ngơi một lúc trên bề mặt phẳng để hiệu chỉnh. Hãy làm điều tương tự bằng cách nhấp vào nút "{ onboarding-calibration_tutorial-calibrate }", <b>và không di chuyển chúng!</b>
 onboarding-calibration_tutorial-calibrate = Tôi đã đặt thiết bị theo dõi của mình lên bàn
 onboarding-calibration_tutorial-status-waiting = Đang chờ bạn hoàn thành
 onboarding-calibration_tutorial-status-calibrating = Đang hiệu chuẩn
@@ -895,44 +899,14 @@ onboarding-automatic_mounting-mounting_reset-title = Đặt lại hướng gắn
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Đứng khom người như tư thế trượt tuyết với đầu gối khom lại, thân trên hướng tới trước và hai tay co lại để giữ thăng bằng như hình bên
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Nhấn nút đặt lại và chờ 3 giây trước khi hệ thống cân chỉnh hướng gắn tracker
 onboarding-automatic_mounting-preparation-title = Chuẩn bị tư thế
-onboarding-automatic_mounting-preparation-step-0 = 1. Đứng thẳng với hai tay duỗi thẳng
-onboarding-automatic_mounting-preparation-step-1 = 2. Nhấn nút đặt lại và chờ 3 giây trước khi tracker được đặt lại.
 onboarding-automatic_mounting-put_trackers_on-title = Đeo tracker lên người
 onboarding-automatic_mounting-put_trackers_on-description = Để cân chỉnh hướng gắn của tracker, SlimeVR sẽ tiến hành đo góc nghiêng của tracker khi đang đeo để cân chỉnh hướng gắn, hãy đeo tracker theo đúng vị trí đã thiết lập
 onboarding-automatic_mounting-put_trackers_on-next = Tiếp tục
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = Phương pháp hiệu chuẩn tỷ lệ nào để sử dụng?
-# Multiline string
-onboarding-choose_proportions-description-v1 =
-    Tỷ lệ cơ thể được sử dụng để biết các số đo của cơ thể bạn. Họ được yêu cầu tính toán vị trí của trình theo dõi.
-    Khi tỷ lệ cơ thể của bạn không khớp với tỷ lệ được lưu, độ chính xác theo dõi của bạn sẽ kém hơn và bạn sẽ nhận thấy những thứ như trượt băng hoặc trượt, hoặc cơ thể của bạn không khớp với hình đại diện của bạn.
-    <b>Bạn chỉ cần đo cơ thể của bạn một lần!</b> Trừ khi chúng sai hoặc cơ thể bạn đã thay đổi, thì bạn không cần phải làm lại.
-onboarding-choose_proportions-auto_proportions = Đo kích thước cơ thể tự động
-# Italicized text
-onboarding-choose_proportions-auto_proportions-subtitle = Khuyến khích dùng
-onboarding-choose_proportions-auto_proportions-descriptionv3 =
-    Tính năng này sẽ đoán tỷ lệ cơ thể của bạn bằng cách ghi lại một mẫu chuyển động của bạn và chuyển nó qua một thuật toán.
-    
-    <b>Tính năng này sẽ yêu cầu headset của bạn (HMD) được kết nối với SlimeVR và đang nằm ở trên đầu của bạn!</b>
-onboarding-choose_proportions-manual_proportions = Đo kích thước cơ thể thủ công
-# Italicized text
-onboarding-choose_proportions-manual_proportions-subtitle = Cho chính xác
-onboarding-choose_proportions-manual_proportions-description = Tính năng này sẽ cho phép bạn điều chỉnh tỉ lệ cơ thể của mình theo cách thủ công bằng cách chỉnh sửa các con số một cách trực tiếp
-onboarding-choose_proportions-export = Xuất tỉ lệ cơ thể
-onboarding-choose_proportions-import = Nhập tỉ lệ cơ thể
-onboarding-choose_proportions-import-success = Đã được nhập
-onboarding-choose_proportions-import-failed = Thất bại
-onboarding-choose_proportions-file_type = File tỉ lệ cơ thể
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = Quay lại cân chỉnh hướng gắn
 onboarding-manual_proportions-title = Đo kích thước cơ thể thủ công
-onboarding-manual_proportions-precision = Cân chỉnh cụ thể (giảm hệ số chỉnh)
-onboarding-manual_proportions-auto = Đo kích thước cơ thể tự động
-onboarding-manual_proportions-ratio = Điều chỉnh theo nhóm tỷ lệ
 
 ## Tracker automatic proportions setup
 
@@ -953,20 +927,11 @@ onboarding-automatic_proportions-requirements-descriptionv2 =
     Headset của bạn đang báo cáo dữ liệu vị trí cho máy chủ SlimeVR (điều này thường có nghĩa là SteamVR đang chạy và kết nối với SlimeVR bằng driver SteamVR của SlimeVR).
     Tracking của bạn đang hoạt động và thể hiện chính xác các chuyển động của bạn (ví dụ: bạn đã thực hiện thiết đặt lại hoàn toàn và chúng di chuyển đúng hướng khi đá, cúi xuống, ngồi, v.v.).
 onboarding-automatic_proportions-requirements-next = Tôi đã đọc các yêu cầu
-onboarding-automatic_proportions-check_height-title = Kiểm tra chiều cao của bạn
-onboarding-automatic_proportions-check_height-description = Chúng tôi sử dụng chiều cao của bạn làm cơ sở cho các phép đo của chúng tôi bằng cách sử dụng chiều cao của headset (HMD) làm chiều cao ước tính thực tế của bạn, nhưng tốt hơn hết bạn nên tự kiểm tra xem chúng có đúng không!
-# All the text is in bold!
-onboarding-automatic_proportions-check_height-calculation_warning = Vui lòng nhấn nút trong khi đứng <u>thẳng</u> để tính chiều cao của bạn. Bạn có 3 giây sau khi nhấn nút!
 onboarding-automatic_proportions-check_height-guardian_tip =
     Nếu bạn đang sử dụng Kính VR Standalone, hãy đảm bảo có guardian /
     Ranh giới được bật để chiều cao của bạn là chính xác!
-onboarding-automatic_proportions-check_height-fetch_height = Tôi đang đứng!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Không rõ
-# Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = Chiều cao của HMD là
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = vậy chiều cao thật của bạn là
 onboarding-automatic_proportions-check_height-next_step = Những chỉ số này là đúng
 onboarding-automatic_proportions-start_recording-title = Chuẩn bị đo
 onboarding-automatic_proportions-start_recording-description = Phần mềm sẽ đo một số chuyển động, cử chỉ cụ thể, hãy chuẩn bị cho việc di chuyển theo yêu cầu trong phần tiếp theo
@@ -997,10 +962,16 @@ onboarding-automatic_proportions-verify_results-redo = Thử lại
 onboarding-automatic_proportions-verify_results-confirm = Kết quả tương đối chính xác
 onboarding-automatic_proportions-done-title = Đã lưu chỉ số đo
 onboarding-automatic_proportions-done-description = Quá trình đo đã hoàn tất
-onboarding-automatic_proportions-error_modal =
-    <b>Lưu ý:</b> Một lỗi đã được tìm thấy trong khi ước tính tỷ lệ cơ thể!
-    Vui lòng <docs>kiểm tra hướng dẫn</docs> hoặc tham gia <discord>Discord</discord> của chúng tôi để được trợ giúp ^_^
 onboarding-automatic_proportions-error_modal-confirm = Đã hiểu!
+
+## Tracker scaled proportions setup
+
+
+## Tracker scaled proportions reset
+
+
+## Stay Aligned setup
+
 
 ## Home
 
@@ -1025,6 +996,21 @@ status_system-StatusSteamVRDisconnected =
     }
 status_system-StatusTrackerError = Tracker { $trackerName } có lỗi.
 status_system-StatusUnassignedHMD = Kính thực tế ảo VR này nên được giao là bộ theo dõi đầu.
+
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
 
 ## Tray Menu
 
@@ -1053,3 +1039,6 @@ unknown_device-modal-description =
     Bạn có muốn kết nối nó với SlimeVR không?
 unknown_device-modal-confirm = Chắc!
 unknown_device-modal-forget = Bỏ qua
+
+## Error collection consent modal
+

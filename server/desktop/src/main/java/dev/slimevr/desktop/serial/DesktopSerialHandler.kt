@@ -204,9 +204,9 @@ class DesktopSerialHandler :
 		}
 	}
 
-	fun addLog(str: String) {
+	fun addLog(str: String, server: Boolean = true) {
 		LogManager.info("[Serial] $str")
-		listeners.forEach { it.onSerialLog(str) }
+		listeners.forEach { it.onSerialLog(str, server) }
 	}
 
 	override fun getListeningEvents(): Int = (
@@ -219,7 +219,7 @@ class DesktopSerialHandler :
 			SerialPort.LISTENING_EVENT_DATA_RECEIVED -> {
 				val newData = event.receivedData
 				val s = StandardCharsets.UTF_8.decode(ByteBuffer.wrap(newData)).toString()
-				addLog(s)
+				addLog(s, false)
 			}
 
 			SerialPort.LISTENING_EVENT_PORT_DISCONNECTED -> {

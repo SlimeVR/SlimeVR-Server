@@ -7,12 +7,13 @@ import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
 import dev.slimevr.bridge.Bridge
 import dev.slimevr.desktop.firmware.DesktopSerialFlashingHandler
+import dev.slimevr.desktop.games.vrchat.DesktopVRCConfigHandler
 import dev.slimevr.desktop.platform.SteamVRBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketBridge
 import dev.slimevr.desktop.platform.linux.UnixSocketRpcBridge
 import dev.slimevr.desktop.platform.windows.WindowsNamedPipeBridge
 import dev.slimevr.desktop.serial.DesktopSerialHandler
-import dev.slimevr.desktop.tracking.trackers.hid.TrackersHID
+import dev.slimevr.desktop.tracking.trackers.hid.DesktopHIDManager
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.OperatingSystem
 import io.eiren.util.collections.FastList
@@ -123,12 +124,15 @@ fun main(args: Array<String>) {
 			::provideBridges,
 			{ _ -> DesktopSerialHandler() },
 			{ _ -> DesktopSerialFlashingHandler() },
+			{ _ -> DesktopVRCConfigHandler() },
 			configPath = configDir,
 		)
 		vrServer.start()
 
+		NetworkProfileChecker(vrServer)
+
 		// Start service for USB HID trackers
-		TrackersHID(
+		DesktopHIDManager(
 			"Sensors HID service",
 		) { tracker: Tracker -> vrServer.registerTracker(tracker) }
 
@@ -141,6 +145,7 @@ fun main(args: Array<String>) {
 				}
 			}
 		}
+
 		vrServer.join()
 		scanner.join()
 		LogManager.closeLogger()

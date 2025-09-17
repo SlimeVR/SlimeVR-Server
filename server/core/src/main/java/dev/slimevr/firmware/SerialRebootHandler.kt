@@ -31,7 +31,7 @@ class SerialRebootHandler(
 		currentPort = null
 	}
 
-	override fun onSerialLog(str: String) {
+	override fun onSerialLog(str: String, ignored: Boolean) {
 		if (str.contains("starting up...")) {
 			val foundPort = watchRestartQueue.find { it.first.id == currentPort?.portLocation }
 			if (foundPort != null) {

@@ -9,21 +9,18 @@ import { BugIcon } from '@/components/commons/icon/BugIcon';
 import { Button } from '@/components/commons/Button';
 import { SettingsResetModal } from '@/components/settings/SettingsResetModal';
 
-import { open } from '@tauri-apps/plugin-shell';
 import { error } from '@/utils/logging';
-import { appConfigDir } from '@tauri-apps/api/path';
 import { defaultConfig as defaultGUIConfig, useConfig } from '@/hooks/config';
 import { defaultValues as defaultDevConfig } from '@/components/widgets/DeveloperModeWidget';
 import { RpcMessage, SettingsResetRequestT } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
+import { invoke } from '@tauri-apps/api/core';
 
 function guiDefaults() {
   // Destructure the properties to exclude "lang"
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { lang, ...guiDefaults } = defaultGUIConfig;
 
-  // Include "devSettings" which has all the properties of "defaultDevConfig"
-  // @ts-expect-error "devSettings" is not in the "guiDefaults" object but we want to include it (from "defaultDevConfig")
   guiDefaults.devSettings = defaultDevConfig;
 
   return guiDefaults;
@@ -40,8 +37,15 @@ export function AdvancedSettings() {
 
   const openConfigFolder = async () => {
     try {
-      const configPath = await appConfigDir();
-      await open('file://' + configPath);
+      await invoke<string | null>('open_config_folder');
+    } catch (err) {
+      error('Failed to open config folder:', err);
+    }
+  };
+
+  const openLogsFolder = async () => {
+    try {
+      await invoke<string | null>('open_logs_folder');
     } catch (err) {
       error('Failed to open config folder:', err);
     }
@@ -165,12 +169,12 @@ export function AdvancedSettings() {
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
                   <Typography bold>
-                    {l10n.getString('settings-utils-advanced-open_data')}
+                    {l10n.getString('settings-utils-advanced-open_data-v1')}
                   </Typography>
                   <div className="flex flex-col">
                     <Typography color="secondary">
                       {l10n.getString(
-                        'settings-utils-advanced-open_data-description'
+                        'settings-utils-advanced-open_data-description-v1'
                       )}
                     </Typography>
                   </div>
@@ -178,6 +182,26 @@ export function AdvancedSettings() {
                 <div className="flex flex-col nsm:pt-2">
                   <Button variant="secondary" onClick={openConfigFolder}>
                     {l10n.getString('settings-utils-advanced-open_data-label')}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
+                <div>
+                  <Typography bold>
+                    {l10n.getString('settings-utils-advanced-open_logs')}
+                  </Typography>
+                  <div className="flex flex-col">
+                    <Typography color="secondary">
+                      {l10n.getString(
+                        'settings-utils-advanced-open_logs-description'
+                      )}
+                    </Typography>
+                  </div>
+                </div>
+                <div className="flex flex-col nsm:pt-2">
+                  <Button variant="secondary" onClick={openLogsFolder}>
+                    {l10n.getString('settings-utils-advanced-open_logs-label')}
                   </Button>
                 </div>
               </div>

@@ -1,4 +1,4 @@
-import { useLocalization } from '@fluent/react';
+import { Localized, useLocalization } from '@fluent/react';
 import { useOnboarding } from '@/hooks/onboarding';
 import { Typography } from '@/components/commons/Typography';
 import { StepperSlider } from '@/components/onboarding/StepperSlider';
@@ -8,9 +8,12 @@ import { CheckFloorHeightStep } from './autobone-steps/CheckFloorHeight';
 import { ResetProportionsStep } from './scaled-steps/ResetProportions';
 import { DoneStep } from './scaled-steps/Done';
 import { useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
 import { ManualHeightStep } from './scaled-steps/ManualHeightStep';
-import { useTrackers } from '@/hooks/tracker';
+import { Button } from '@/components/commons/Button';
+import { WarningBox } from '@/components/commons/TipBox';
+import { useMemo } from 'react';
+import { useAtomValue } from 'jotai';
+import { flatTrackersAtom } from '@/store/app-store';
 import { BodyPart } from 'solarxr-protocol';
 
 export function ScaledProportionsPage() {
@@ -18,17 +21,25 @@ export function ScaledProportionsPage() {
   const { applyProgress, state } = useOnboarding();
   const heightContext = useProvideHeightContext();
   const navigate = useNavigate();
-  const { trackers } = useTrackers();
+  const trackers = useAtomValue(flatTrackersAtom);
 
-  const hmdTracker = useMemo(
-    () =>
-      trackers.some(
+  const { hasHmd, hasHandControllers } = useMemo(() => {
+    const hasHmd = trackers.some(
+      (tracker) =>
+        tracker.tracker.info?.bodyPart === BodyPart.HEAD &&
+        (tracker.tracker.info.isHmd || tracker.tracker.position?.y)
+    );
+    const hasHandControllers =
+      trackers.filter(
         (tracker) =>
-          tracker.tracker.info?.bodyPart === BodyPart.HEAD &&
-          (tracker.tracker.info.isHmd || tracker.tracker.position?.y)
-      ),
-    [trackers]
-  );
+          tracker.tracker.info?.bodyPart === BodyPart.LEFT_HAND ||
+          tracker.tracker.info?.bodyPart === BodyPart.RIGHT_HAND
+      ).length >= 2;
+
+    return { hasHmd, hasHandControllers };
+  }, [trackers]);
+
+  const canDoAuto = hasHmd && hasHandControllers;
 
   applyProgress(0.9);
 
@@ -46,11 +57,37 @@ export function ScaledProportionsPage() {
               </Typography>
             </div>
           </div>
+
+          {!canDoAuto && (
+            <WarningBox>
+              <Localized
+                id="onboarding-scaled_proportions-manual_height-warning"
+                elems={{ b: <b></b> }}
+              >
+                <Typography
+                  whitespace="whitespace-pre-line"
+                  color="text-background-60"
+                ></Typography>
+              </Localized>
+              <ul className="list-disc ml-8">
+                {!hasHmd && (
+                  <Localized id="onboarding-scaled_proportions-manual_height-warning-no_hmd">
+                    <li></li>
+                  </Localized>
+                )}
+                {!hasHandControllers && (
+                  <Localized id="onboarding-scaled_proportions-manual_height-warning-no_controllers">
+                    <li></li>
+                  </Localized>
+                )}
+              </ul>
+            </WarningBox>
+          )}
           <div className="flex">
             <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
               steps={
-                !hmdTracker
+                !canDoAuto
                   ? [
                       { type: 'numbered', component: ManualHeightStep },
                       { type: 'numbered', component: ResetProportionsStep },
@@ -63,11 +100,20 @@ export function ScaledProportionsPage() {
                       { type: 'fullsize', component: DoneStep },
                     ]
               }
-              back={() =>
-                navigate('/onboarding/body-proportions/choose', { state })
-              }
+              back={() => navigate('/onboarding/reset-tutorial', { state })}
             ></StepperSlider>
           </div>
+          {state.alonePage && (
+            <div className="flex justify-end">
+              <Localized id="onboarding-manual_proportions-title">
+                <Button
+                  to="/onboarding/body-proportions/manual"
+                  variant="secondary"
+                  state={{ alonePage: state.alonePage }}
+                ></Button>
+              </Localized>
+            </div>
+          )}
         </div>
       </div>
     </HeightContextC.Provider>

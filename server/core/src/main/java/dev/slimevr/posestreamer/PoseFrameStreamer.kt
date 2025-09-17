@@ -6,22 +6,29 @@ import dev.slimevr.poseframeformat.player.TrackerFramesPlayer
 import dev.slimevr.tracking.processor.HumanPoseManager
 import java.io.File
 
-class PoseFrameStreamer(poseFrames: PoseFrames) : PoseStreamer() {
-	val trackerFramesPlayer: TrackerFramesPlayer = TrackerFramesPlayer(poseFrames)
-	val humanPoseManager: HumanPoseManager = HumanPoseManager(trackerFramesPlayer.trackers.toList())
+class PoseFrameStreamer : PoseStreamer {
 
-	constructor(path: String) : this(File(path))
-	constructor(file: File) : this(readFromFile(file))
+	val player: TrackerFramesPlayer
+	val hpm: HumanPoseManager
 
-	init {
-		skeleton = humanPoseManager.skeleton
+	private constructor(
+		player: TrackerFramesPlayer,
+		hpm: HumanPoseManager,
+	) : super(hpm.skeleton) {
+		this.player = player
+		this.hpm = hpm
 	}
+
+	constructor(player: TrackerFramesPlayer) : this(player, HumanPoseManager(player.trackers.toList()))
+	constructor(poseFrames: PoseFrames) : this(TrackerFramesPlayer(poseFrames))
+	constructor(file: File) : this(readFromFile(file))
+	constructor(path: String) : this(File(path))
 
 	@Synchronized
 	fun streamAllFrames() {
-		for (i in 0 until trackerFramesPlayer.maxFrameCount) {
-			trackerFramesPlayer.setCursors(i)
-			humanPoseManager.update()
+		for (i in 0 until player.maxFrameCount) {
+			player.setCursors(i)
+			hpm.update()
 			captureFrame()
 		}
 	}

@@ -1,7 +1,104 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package dev.slimevr.tracking.trackers
 
+import dev.slimevr.tracking.trackers.TrackerPosition.*
 import io.github.axisangles.ktmath.Quaternion
 import solarxr_protocol.datatypes.BodyPart
+
+fun TrackerPosition?.isThigh(): Boolean {
+	this?.let {
+		return it == LEFT_UPPER_LEG ||
+			it == RIGHT_UPPER_LEG
+	}
+	return false
+}
+
+fun TrackerPosition?.isLeftArm(): Boolean {
+	this?.let {
+		return it == LEFT_SHOULDER ||
+			it == LEFT_UPPER_ARM ||
+			it == LEFT_LOWER_ARM ||
+			it == LEFT_HAND
+	}
+	return false
+}
+
+fun TrackerPosition?.isRightArm(): Boolean {
+	this?.let {
+		return it == RIGHT_SHOULDER ||
+			it == RIGHT_UPPER_ARM ||
+			it == RIGHT_LOWER_ARM ||
+			it == RIGHT_HAND
+	}
+	return false
+}
+
+fun TrackerPosition?.isLeftLowerArm(): Boolean {
+	this?.let {
+		return it == LEFT_LOWER_ARM ||
+			it == LEFT_HAND
+	}
+	return false
+}
+
+fun TrackerPosition?.isRightLowerArm(): Boolean {
+	this?.let {
+		return it == RIGHT_LOWER_ARM ||
+			it == RIGHT_HAND
+	}
+	return false
+}
+
+fun TrackerPosition?.isFoot(): Boolean {
+	this?.let {
+		return it == LEFT_FOOT ||
+			it == RIGHT_FOOT
+	}
+	return false
+}
+
+fun TrackerPosition?.isLeftFinger(): Boolean {
+	this?.let {
+		return it == LEFT_THUMB_METACARPAL ||
+			it == LEFT_THUMB_PROXIMAL ||
+			it == LEFT_THUMB_DISTAL ||
+			it == LEFT_INDEX_PROXIMAL ||
+			it == LEFT_INDEX_INTERMEDIATE ||
+			it == LEFT_INDEX_DISTAL ||
+			it == LEFT_MIDDLE_PROXIMAL ||
+			it == LEFT_MIDDLE_INTERMEDIATE ||
+			it == LEFT_MIDDLE_DISTAL ||
+			it == LEFT_RING_PROXIMAL ||
+			it == LEFT_RING_INTERMEDIATE ||
+			it == LEFT_RING_DISTAL ||
+			it == LEFT_LITTLE_PROXIMAL ||
+			it == LEFT_LITTLE_INTERMEDIATE ||
+			it == LEFT_LITTLE_DISTAL
+	}
+	return false
+}
+
+fun TrackerPosition?.isRightFinger(): Boolean {
+	this?.let {
+		return it == RIGHT_THUMB_METACARPAL ||
+			it == RIGHT_THUMB_PROXIMAL ||
+			it == RIGHT_THUMB_DISTAL ||
+			it == RIGHT_INDEX_PROXIMAL ||
+			it == RIGHT_INDEX_INTERMEDIATE ||
+			it == RIGHT_INDEX_DISTAL ||
+			it == RIGHT_MIDDLE_PROXIMAL ||
+			it == RIGHT_MIDDLE_INTERMEDIATE ||
+			it == RIGHT_MIDDLE_DISTAL ||
+			it == RIGHT_RING_PROXIMAL ||
+			it == RIGHT_RING_INTERMEDIATE ||
+			it == RIGHT_RING_DISTAL ||
+			it == RIGHT_LITTLE_PROXIMAL ||
+			it == RIGHT_LITTLE_INTERMEDIATE ||
+			it == RIGHT_LITTLE_DISTAL
+	}
+	return false
+}
 
 /**
  * Represents a position on the body that a tracker could be placed. Any bone is

@@ -39,12 +39,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	}
 
 	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
-		val fbb = FlatBufferBuilder(32)
-
-		val settings = RPCSettingsBuilder.createSettingsResponse(fbb, api.server)
-		val outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)
-		fbb.finish(outbound)
-		conn.send(fbb.dataBuffer())
+		rpcHandler.sendSettingsChangedResponse(conn, messageHeader)
 	}
 
 	fun onChangeSettingsRequest(conn: GenericConnection?, messageHeader: RpcMessageHeader) {
@@ -353,6 +348,25 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			resetsConfig.yawResetSmoothTime = req.resetsSettings().yawResetSmoothTime()
 			resetsConfig.resetHmdPitch = req.resetsSettings().resetHmdPitch()
 			resetsConfig.updateTrackersResetsSettings()
+		}
+
+		if (req.stayAligned() != null) {
+			val config = api.server.configManager.vrConfig.stayAlignedConfig
+			val requestConfig = req.stayAligned()
+			config.enabled = requestConfig.enabled()
+			config.hideYawCorrection = requestConfig.hideYawCorrection()
+			config.standingRelaxedPose.enabled = requestConfig.standingEnabled()
+			config.standingRelaxedPose.upperLegAngleInDeg = requestConfig.standingUpperLegAngle()
+			config.standingRelaxedPose.lowerLegAngleInDeg = requestConfig.standingLowerLegAngle()
+			config.standingRelaxedPose.footAngleInDeg = requestConfig.standingFootAngle()
+			config.sittingRelaxedPose.enabled = requestConfig.sittingEnabled()
+			config.sittingRelaxedPose.upperLegAngleInDeg = requestConfig.sittingUpperLegAngle()
+			config.sittingRelaxedPose.lowerLegAngleInDeg = requestConfig.sittingLowerLegAngle()
+			config.sittingRelaxedPose.footAngleInDeg = requestConfig.sittingFootAngle()
+			config.flatRelaxedPose.enabled = requestConfig.flatEnabled()
+			config.flatRelaxedPose.upperLegAngleInDeg = requestConfig.flatUpperLegAngle()
+			config.flatRelaxedPose.lowerLegAngleInDeg = requestConfig.flatLowerLegAngle()
+			config.flatRelaxedPose.footAngleInDeg = requestConfig.flatFootAngle()
 		}
 
 		api.server.configManager.saveConfig()

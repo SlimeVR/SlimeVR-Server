@@ -7,6 +7,7 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.ServerSocket
+import java.net.Socket
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.util.*
@@ -20,6 +21,10 @@ class OTAUpdateTask(
 	private val statusCallback: Consumer<UpdateStatusEvent<Int>>,
 ) {
 	private val receiveBuffer: ByteArray = ByteArray(38)
+	var socketServer: ServerSocket? = null
+	var uploadSocket: Socket? = null
+	var authSocket: DatagramSocket? = null
+	var canceled: Boolean = false
 
 	@Throws(NoSuchAlgorithmException::class)
 	private fun bytesToMd5(bytes: ByteArray): String {
@@ -36,6 +41,7 @@ class OTAUpdateTask(
 	private fun authenticate(localPort: Int): Boolean {
 		try {
 			DatagramSocket().use { socket ->
+				authSocket = socket
 				statusCallback.accept(UpdateStatusEvent(deviceId, FirmwareUpdateStatus.AUTHENTICATING))
 				LogManager.info("[OTAUpdate] Sending OTA invitation to: $deviceIp")
 
@@ -98,15 +104,15 @@ class OTAUpdateTask(
 			LogManager.info("[OTAUpdate] Waiting for device...")
 
 			val connection = serverSocket.accept()
+			this.uploadSocket = connection
 			connection.setSoTimeout(1000)
-
 			val dos = DataOutputStream(connection.getOutputStream())
 			val dis = DataInputStream(connection.getInputStream())
 
 			LogManager.info("[OTAUpdate] Upload size: ${firmware.size} bytes")
 			var offset = 0
 			val chunkSize = 2048
-			while (offset != firmware.size) {
+			while (offset != firmware.size && !canceled) {
 				statusCallback.accept(
 					UpdateStatusEvent(
 						deviceId,
@@ -126,6 +132,7 @@ class OTAUpdateTask(
 				// for the OK response. Saving time
 				dis.skipNBytes(4)
 			}
+			if (canceled) return false
 
 			LogManager.info("[OTAUpdate] Waiting for result...")
 			// We set the timeout of the connection bigger as it can take some time for the MCU
@@ -143,6 +150,7 @@ class OTAUpdateTask(
 
 	fun run() {
 		ServerSocket(0).use { serverSocket ->
+			socketServer = serverSocket
 			if (!authenticate(serverSocket.localPort)) {
 				statusCallback.accept(
 					UpdateStatusEvent(
@@ -170,6 +178,13 @@ class OTAUpdateTask(
 				),
 			)
 		}
+	}
+
+	fun cancel() {
+		canceled = true
+		socketServer?.close()
+		authSocket?.close()
+		uploadSocket?.close()
 	}
 
 	companion object {
