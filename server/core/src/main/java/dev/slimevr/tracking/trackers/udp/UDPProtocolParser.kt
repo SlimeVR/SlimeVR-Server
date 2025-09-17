@@ -116,6 +116,7 @@ class UDPProtocolParser {
 		PACKET_FEATURE_FLAGS -> UDPPacket22FeatureFlags()
 		PACKET_ACK_CONFIG_CHANGE -> UDPPacket24AckConfigChange()
 		PACKET_FLEX_DATA -> UDPPacket26FlexData()
+		PACKET_POSITION -> UDPPacket27Position()
 		PACKET_PROTOCOL_CHANGE -> UDPPacket200ProtocolChange()
 		else -> null
 	}
@@ -152,6 +153,7 @@ class UDPProtocolParser {
 		const val PACKET_ACK_CONFIG_CHANGE = 24
 		const val PACKET_SET_CONFIG_FLAG = 25
 		const val PACKET_FLEX_DATA = 26
+		const val PACKET_POSITION = 27
 		const val PACKET_BUNDLE = 100
 		const val PACKET_BUNDLE_COMPACT = 101
 		const val PACKET_PROTOCOL_CHANGE = 200
