@@ -248,27 +248,33 @@ export function InterfaceSettings() {
               </>
             )}
 
-            <Typography bold>
-              {l10n.getString('settings-general-interface-discord_presence')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-interface-discord_presence-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="behavior.discordPresence"
-                label={l10n.getString(
-                  'settings-general-interface-discord_presence-label'
-                )}
-              />
-            </div>
+            {isTauri() && (
+              <>
+                <Typography bold>
+                  {l10n.getString(
+                    'settings-general-interface-discord_presence'
+                  )}
+                </Typography>
+                <div className="flex flex-col pt-1 pb-2">
+                  <Typography color="secondary">
+                    {l10n.getString(
+                      'settings-general-interface-discord_presence-description'
+                    )}
+                  </Typography>
+                </div>
+                <div className="grid sm:grid-cols-2 pb-4">
+                  <CheckBox
+                    variant="toggle"
+                    control={control}
+                    outlined
+                    name="behavior.discordPresence"
+                    label={l10n.getString(
+                      'settings-general-interface-discord_presence-label'
+                    )}
+                  />
+                </div>
+              </>
+            )}
 
             <Typography bold>
               {l10n.getString('settings-general-interface-dev_mode')}

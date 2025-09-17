@@ -66,7 +66,7 @@ export function WidgetsComponent() {
           bodyPartsToReset="fingers"
         ></ResetButton>
         <ClearMountingButton></ClearMountingButton>
-        {(window.__IOS__ ||
+        {(!window.__IOS__ ||
           typeof __ANDROID__ === 'undefined' ||
           !__ANDROID__?.isThere()) && <BVHButton></BVHButton>}
         <TrackingPauseButton></TrackingPauseButton>
