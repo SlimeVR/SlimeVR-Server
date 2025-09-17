@@ -16,8 +16,6 @@ public class WebviewController extends UIViewController {
 		UIView view = getView();
 
 		view.setBackgroundColor(UIColor.purple());
-		setEdgesForExtendedLayout(UIRectEdge.All);
-		setExtendedLayoutIncludesOpaqueBars(true);
 	}
 
 	@Override
@@ -87,5 +85,6 @@ public class WebviewController extends UIViewController {
 
 		var req = new NSURLRequest(new NSURL("slimevr:///"));
 		webView.loadRequest(req);
+		webView.getScrollView().setContentInsetAdjustmentBehavior(UIScrollViewContentInsetAdjustmentBehavior.Never);
 	}
 }
