@@ -75,7 +75,7 @@ export function MainLayout({
             'overflow-y-auto mr-2 my-2 mobile:m-0',
             'flex flex-col rounded-xl',
             background && 'bg-background-70',
-            window.__IOS__ && 'mt-10'
+            window.__IOS__ && 'mobile:mt-10'
           )}
         >
           {children}
