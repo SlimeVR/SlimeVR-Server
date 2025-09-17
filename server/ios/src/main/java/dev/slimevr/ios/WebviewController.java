@@ -78,7 +78,7 @@ public class WebviewController extends UIViewController {
 			.addUserScript(
 				new WKUserScript(
 					"window.__IOS__ = true;",
-					WKUserScriptInjectionTime.AtDocumentStart,
+					WKUserScriptInjectionTime.AtDocumentEnd,
 					false
 				)
 			);
