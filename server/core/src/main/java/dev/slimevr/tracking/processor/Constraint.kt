@@ -52,11 +52,13 @@ class Constraint(
 		if (constraintType == ConstraintType.COMPLETE) return thisBone.getGlobalRotation()
 
 		// If there is no parent and this is not a complete constraint accept the rotation as is.
-		if (thisBone.parent == null) return rotation
+		// TODO: This was changed due to a race condition with the RPC thread, see
+		//  https://github.com/SlimeVR/SlimeVR-Server/issues/1534 for more information.
+		val parent = thisBone.parent ?: return rotation
 
-		val localRotation = getLocalRotation(rotation, thisBone)
+		val localRotation = getLocalRotation(rotation, thisBone, parent)
 		val constrainedRotation = constraintFunction(localRotation, swingRad, twistRad, allowedDeviationRad)
-		return getWorldRotationFromLocal(constrainedRotation, thisBone)
+		return getWorldRotationFromLocal(constrainedRotation, thisBone, parent)
 	}
 
 	/**
@@ -90,14 +92,12 @@ class Constraint(
 				ConstraintType.LOOSE_HINGE -> looseHingeConstraint
 			}
 
-		private fun getLocalRotation(rotation: Quaternion, thisBone: Bone): Quaternion {
-			val parent = thisBone.parent!!
+		private fun getLocalRotation(rotation: Quaternion, thisBone: Bone, parent: Bone): Quaternion {
 			val localRotationOffset = parent.rotationOffset.inv() * thisBone.rotationOffset
 			return (parent.getGlobalRotation() * localRotationOffset).inv() * rotation
 		}
 
-		private fun getWorldRotationFromLocal(rotation: Quaternion, thisBone: Bone): Quaternion {
-			val parent = thisBone.parent!!
+		private fun getWorldRotationFromLocal(rotation: Quaternion, thisBone: Bone, parent: Bone): Quaternion {
 			val localRotationOffset = parent.rotationOffset.inv() * thisBone.rotationOffset
 			return (parent.getGlobalRotation() * localRotationOffset * rotation).unit()
 		}
