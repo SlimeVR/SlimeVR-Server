@@ -1,5 +1,6 @@
 package dev.slimevr.ios;
 
+import dev.slimevr.VRServer;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.*;
 import org.robovm.apple.uniformtypeid.UTType;
@@ -89,6 +90,9 @@ public class WebviewController extends UIViewController {
 	public void viewDidLoad() {
 		super.viewDidLoad();
 
+		if (!VRServer.Companion.getInstanceInitialized()) {
+			Main.runServer();
+		}
 		webView
 			.getScrollView()
 			.setContentInsetAdjustmentBehavior(UIScrollViewContentInsetAdjustmentBehavior.Never);

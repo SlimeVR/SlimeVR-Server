@@ -72,6 +72,11 @@ public class Main extends UIApplicationDelegateAdapter {
 	public void didEnterBackground(UIApplication application) {
 		if (VRServer.Companion.getInstanceInitialized()) {
 			VRServer.Companion.getInstance().interrupt();
+			try {
+				VRServer.Companion.getInstance().join();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		super.didEnterBackground(application);
@@ -81,6 +86,11 @@ public class Main extends UIApplicationDelegateAdapter {
 	public void willTerminate(UIApplication application) {
 		if (VRServer.Companion.getInstanceInitialized()) {
 			VRServer.Companion.getInstance().interrupt();
+			try {
+				VRServer.Companion.getInstance().join();
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
 		}
 
 		super.willTerminate(application);
@@ -88,8 +98,6 @@ public class Main extends UIApplicationDelegateAdapter {
 
 	@Override
 	public void didBecomeActive(UIApplication application) {
-		runServer();
-
 		super.didBecomeActive(application);
 	}
 
@@ -107,7 +115,6 @@ public class Main extends UIApplicationDelegateAdapter {
 				Foundation.log("%@\n%@", new NSString(e.toString()), new NSString(sStackTrace));
 			}
 			try {
-				UIApplication.getSharedApplication().setIdleTimerDisabled(false);
 				var vrServer = new VRServer(
 					getString(
 						getAppFolder()
@@ -115,26 +122,24 @@ public class Main extends UIApplicationDelegateAdapter {
 					)
 				);
 				vrServer.start();
-				{
-					vrServer.addOnTick(new Runnable() {
-						int tick = 0;
+				vrServer.addOnTick(new Runnable() {
+					int tick = 0;
 
-						@Override
-						public void run() {
-							if (tick++ >= 150) {
-								tick = 0;
-								UIApplication
-									.getSharedApplication()
-									.setIdleTimerDisabled(
-										vrServer
-											.getAllTrackers()
-											.stream()
-											.anyMatch((tracker) -> !tracker.isComputed())
-									);
-							}
+					@Override
+					public void run() {
+						if (tick++ >= 1000) {
+							tick = 0;
+							UIApplication
+								.getSharedApplication()
+								.setIdleTimerDisabled(
+									vrServer
+										.getAllTrackers()
+										.stream()
+										.anyMatch((tracker) -> !tracker.isComputed())
+								);
 						}
-					});
-				}
+					}
+				});
 				new Keybinding(vrServer);
 				vrServer.join();
 				LogManager.closeLogger();
@@ -145,8 +150,6 @@ public class Main extends UIApplicationDelegateAdapter {
 				e.printStackTrace(pw);
 				String sStackTrace = sw.toString();
 				Foundation.log("%@\n%@", new NSString(e.toString()), new NSString(sStackTrace));
-			} finally {
-				UIApplication.getSharedApplication().setIdleTimerDisabled(false);
 			}
 		}, "SlimeVR Main Thread");
 		thread.setUncaughtExceptionHandler((th, e) -> {
