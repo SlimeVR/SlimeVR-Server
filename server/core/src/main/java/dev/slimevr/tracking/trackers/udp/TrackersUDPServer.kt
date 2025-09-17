@@ -580,7 +580,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
 				tracker.position = packet.position
-				tracker.dataTick()
+				tracker.dataTick(newRot = false, newPos = true)
 			}
 
 			is UDPPacket200ProtocolChange -> {}
