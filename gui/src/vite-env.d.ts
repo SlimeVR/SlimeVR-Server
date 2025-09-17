@@ -12,6 +12,7 @@ declare const __ANDROID__:
 
 interface Window {
   readonly isTauri: boolean;
+  readonly __IOS__: boolean | undefined;
 }
 
 declare module 'tailwind-gradient-mask-image';

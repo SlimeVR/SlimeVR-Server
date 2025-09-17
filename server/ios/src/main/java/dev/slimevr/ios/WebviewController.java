@@ -73,6 +73,16 @@ public class WebviewController extends UIViewController {
 				return type.getPreferredMIMEType();
 			}
 		}, "slimevr");
+		var userContent = new WKUserContentController();
+		userContent
+			.addUserScript(
+				new WKUserScript(
+					"globalThis.__IOS__ = true;",
+					WKUserScriptInjectionTime.AtDocumentStart,
+					false
+				)
+			);
+		config.setUserContentController(userContent);
 		webView = new WKWebView(view.getFrame(), config);
 		if (webView != null) {
 			view.addSubview(webView);
@@ -83,8 +93,11 @@ public class WebviewController extends UIViewController {
 	public void viewDidLoad() {
 		super.viewDidLoad();
 
+		webView
+			.getScrollView()
+			.setContentInsetAdjustmentBehavior(UIScrollViewContentInsetAdjustmentBehavior.Never);
+		webView.getScrollView().setScrollEnabled(false);
 		var req = new NSURLRequest(new NSURL("slimevr:///"));
 		webView.loadRequest(req);
-		webView.getScrollView().setContentInsetAdjustmentBehavior(UIScrollViewContentInsetAdjustmentBehavior.Never);
 	}
 }
