@@ -12,6 +12,8 @@ import { FileIcon } from './icon/FileIcon';
 import { UploadFileIcon } from './icon/UploadFileIcon';
 import { Typography } from './Typography';
 import { CloseIcon } from './icon/CloseIcon';
+import { FolderIcon } from './icon/FolderIcon';
+import { UploadFolderIcon } from './icon/UploadFolderIcon';
 
 interface InputProps {
   variant?: 'primary' | 'secondary';
@@ -22,9 +24,11 @@ interface InputProps {
 export const FileInputContentBlank = ({
   isDragging,
   label,
+  directory = false,
 }: {
   isDragging: boolean;
   label: string;
+  directory?: boolean;
 }) => {
   return (
     <div
@@ -36,7 +40,11 @@ export const FileInputContentBlank = ({
       )}
     >
       <span className="flex items-center space-x-2 pointer-events-none">
-        <UploadFileIcon isDragging={isDragging} />
+        {directory ? (
+          <UploadFolderIcon isDragging={isDragging} />
+        ) : (
+          <UploadFileIcon isDragging={isDragging} />
+        )}
         <div>
           <Localized
             id={label}
@@ -57,10 +65,12 @@ export const FileInputContentBlank = ({
 
 export const FileInputContentFile = ({
   importedFileName,
+  directory = false,
   onClearPicker,
 }: {
   importedFileName: string;
   onClearPicker: () => any;
+  directory?: boolean;
 }) => {
   return (
     <div
@@ -72,7 +82,7 @@ export const FileInputContentFile = ({
     >
       <div className="flex items-center space-x-2">
         <div className="flex items-center space-x-2 px-4">
-          <FileIcon />
+          {directory ? <FolderIcon /> : <FileIcon />}
           <span>{importedFileName}</span>
         </div>
         <span className="flex-grow"></span>
