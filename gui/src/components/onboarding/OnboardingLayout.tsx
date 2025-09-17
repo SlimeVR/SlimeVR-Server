@@ -6,6 +6,7 @@ import { useBreakpoint } from '@/hooks/breakpoint';
 import { SkipSetupButton } from './SkipSetupButton';
 import { SkipSetupWarningModal } from './SkipSetupWarningModal';
 import './OnboardingLayout.scss';
+import classNames from 'classnames';
 
 export function OnboardingLayout({ children }: { children: ReactNode }) {
   const { isMobile } = useBreakpoint('mobile');
@@ -14,10 +15,16 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
 
   return !state.alonePage ? (
     <div className="onboarding-layout h-full">
-      <div style={{ gridArea: 't' }}>
+      <div
+        style={{ gridArea: 't' }}
+        className={classNames(window.__IOS__ && 'mt-9')}
+      >
         <TopBar progress={state.progress}></TopBar>
       </div>
-      <div style={{ gridArea: 'c' }} className="mt-2 relative">
+      <div
+        style={{ gridArea: 'c' }}
+        className={classNames('relative', window.__IOS__ ? 'mt-11' : 'mt-2')}
+      >
         <div className="absolute top-12 mobile:top-0 right-2 z-50">
           <SkipSetupButton
             visible={true}

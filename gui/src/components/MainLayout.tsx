@@ -62,7 +62,7 @@ export function MainLayout({
       <div className="main-layout w-full h-screen">
         <div
           style={{ gridArea: 't' }}
-          className={classNames(window.__IOS__ && 'mt-8')}
+          className={classNames(window.__IOS__ && 'mt-9')}
         >
           <TopBar></TopBar>
         </div>
@@ -72,7 +72,7 @@ export function MainLayout({
         <div
           style={{
             gridArea: 'c',
-            marginTop: window.__IOS__ ? '2rem' : undefined,
+            marginTop: window.__IOS__ ? '2.25rem' : undefined,
           }}
           className={classNames(
             'overflow-y-auto mr-2 my-2 mobile:m-0',

@@ -171,14 +171,16 @@ export function TopBar({
                   <SlimeVRIcon></SlimeVRIcon>
                 </NavLink>
               )}
-              {(isTauri || !isMobile) && !config?.decorations && (
-                <div
-                  className={classNames('flex justify-around flex-col')}
-                  data-tauri-drag-region
-                >
-                  <Typography>SlimeVR</Typography>
-                </div>
-              )}
+              {(isTauri || !isMobile) &&
+                !config?.decorations &&
+                !window.__IOS__ && (
+                  <div
+                    className={classNames('flex justify-around flex-col')}
+                    data-tauri-drag-region
+                  >
+                    <Typography>SlimeVR</Typography>
+                  </div>
+                )}
               {(!(isMobile && !config?.decorations) || showVersionMobile) && (
                 <>
                   <VersionTag></VersionTag>
