@@ -579,7 +579,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			is UDPPacket27Position -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				tracker.setPosition(packet.position)
+				tracker.position = packet.position
 				tracker.dataTick()
 			}
 
