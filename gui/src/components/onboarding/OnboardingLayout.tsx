@@ -17,13 +17,16 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
     <div className="onboarding-layout h-full">
       <div
         style={{ gridArea: 't' }}
-        className={classNames(window.__IOS__ && 'mt-9')}
+        className={classNames(window.__IOS__ && 'mobile:mt-10')}
       >
         <TopBar progress={state.progress}></TopBar>
       </div>
       <div
         style={{ gridArea: 'c' }}
-        className={classNames('relative', window.__IOS__ ? 'mt-11' : 'mt-2')}
+        className={classNames(
+          'relative mt-2',
+          window.__IOS__ && 'mobile:mt-12'
+        )}
       >
         <div className="absolute top-12 mobile:top-0 right-2 z-50">
           <SkipSetupButton

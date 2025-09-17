@@ -9,6 +9,7 @@ import { useLocalization } from '@fluent/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './SettingsLayout.scss';
 import { useVRCConfig } from '@/hooks/vrc-config';
+import classNames from 'classnames';
 
 export function SettingSelectorMobile() {
   const { l10n } = useLocalization();
@@ -84,7 +85,12 @@ export function SettingSelectorMobile() {
   };
 
   return (
-    <div className="fixed top-12 z-50 px-4 w-full">
+    <div
+      className={classNames(
+        'fixed top-12 z-50 px-4 w-full',
+        window.__IOS__ && 'mobile:mt-10'
+      )}
+    >
       <Dropdown
         control={control}
         display="block"
@@ -107,7 +113,10 @@ export function SettingsLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <div className="settings-layout h-full">
-        <div style={{ gridArea: 't' }}>
+        <div
+          style={{ gridArea: 't' }}
+          className={classNames(window.__IOS__ && 'mobile:mt-10')}
+        >
           <TopBar></TopBar>
         </div>
         <div style={{ gridArea: 'n' }}>
@@ -118,7 +127,10 @@ export function SettingsLayout({ children }: { children: ReactNode }) {
         </div>
         <div
           style={{ gridArea: 'c' }}
-          className="xs:pl-2 xs:pb-2 xs:mt-2 mobile:mt-7 overflow-y-auto"
+          className={classNames(
+            'xs:pl-2 xs:pb-2 xs:mt-2 overflow-y-auto',
+            window.__IOS__ ? 'mobile:mt-[4.25rem]' : 'mobile:mt-7'
+          )}
         >
           {isMobile && <SettingSelectorMobile></SettingSelectorMobile>}
           {children}

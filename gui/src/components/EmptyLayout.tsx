@@ -8,7 +8,7 @@ export function EmptyLayout({ children }: { children: ReactNode }) {
     <div className="empty-layout h-full">
       <div
         style={{ gridArea: 't' }}
-        className={classNames(window.__IOS__ && 'mt-9')}
+        className={classNames(window.__IOS__ && 'mobile:mt-10')}
       >
         <TopBar></TopBar>
       </div>
