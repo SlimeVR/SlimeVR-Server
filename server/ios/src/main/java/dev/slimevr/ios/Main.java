@@ -1,6 +1,7 @@
 package dev.slimevr.ios;
 
 import dev.slimevr.ios.logging.FoundationLogPrintStream;
+import org.robovm.apple.dispatch.DispatchQueue;
 import org.robovm.apple.foundation.*;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
@@ -96,11 +97,6 @@ public class Main extends UIApplicationDelegateAdapter {
 		super.willTerminate(application);
 	}
 
-	@Override
-	public void didBecomeActive(UIApplication application) {
-		super.didBecomeActive(application);
-	}
-
 	public static void runServer() {
 		var thread = new Thread(() -> {
 			try {
@@ -129,13 +125,16 @@ public class Main extends UIApplicationDelegateAdapter {
 					public void run() {
 						if (tick++ >= 1000) {
 							tick = 0;
-							UIApplication
-								.getSharedApplication()
-								.setIdleTimerDisabled(
-									vrServer
-										.getAllTrackers()
-										.stream()
-										.anyMatch((tracker) -> !tracker.isComputed())
+							final boolean hasTrackers = vrServer
+								.getAllTrackers()
+								.stream()
+								.anyMatch((tracker) -> !tracker.isComputed());
+							DispatchQueue
+								.getMainQueue()
+								.sync(
+									() -> UIApplication
+										.getSharedApplication()
+										.setIdleTimerDisabled(hasTrackers)
 								);
 						}
 					}
