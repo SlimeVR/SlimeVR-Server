@@ -28,11 +28,11 @@ const firstAsset = (assets: any[], name: string) =>
   assets.find((asset: any) => asset.name === name && asset.browser_download_url);
 
 const todaysRange = (deployData: [number, Date][]): number => {
-  let minRange = 0;
+  let maxRange = 0;
   for (const [range, date] of deployData) {
-    if (Date.now() >= date.getTime()) minRange = range;
+    if (Date.now() >= date.getTime()) maxRange = range;
   }
-  return minRange;
+  return maxRange;
 };
 
 const checkUserCanUpdate = async (url: string, fwVersion: string) => {
