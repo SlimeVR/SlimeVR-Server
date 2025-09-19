@@ -206,6 +206,11 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    // don't show update stuff when on android
+    if (window.__ANDROID__?.isThere()) {
+      setUpdateFound('');
+      return;
+    }
     async function fetchReleases() {
       const releases = await fetch(
         `https://api.github.com/repos/${GH_REPO}/releases`
