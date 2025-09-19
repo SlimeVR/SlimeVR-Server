@@ -6,10 +6,8 @@ import {
   ResetStatus,
   ResetType,
   RpcMessage,
-  TrackingChecklistStepId,
 } from 'solarxr-protocol';
 import { useConfig } from './config';
-import { useTrackingChecklist } from './tracking-checklist';
 import { useWebsocketAPI } from './websocket-api';
 import { useCountdown } from './countdown';
 
@@ -21,19 +19,10 @@ export function useReset(type: ResetType, onReseted?: () => void) {
   const finishedTimeoutRef = useRef(-1);
   const [status, setStatus] = useState<ResetBtnStatus>('idle');
 
-  const { visibleSteps } = useTrackingChecklist();
-  const needsFullReset = useMemo(
-    () =>
-      type == ResetType.Mounting &&
-      visibleSteps.some(
-        (step) => step.id === TrackingChecklistStepId.FULL_RESET && !step.valid
-      ),
-    [visibleSteps, type]
-  );
-
   const reset = () => {
     const req = new ResetRequestT();
     req.resetType = type;
+    req.bodyParts = [];
     sendRPCPacket(RpcMessage.ResetRequest, req);
   };
 
@@ -99,10 +88,10 @@ export function useReset(type: ResetType, onReseted?: () => void) {
     switch (type) {
       case ResetType.Yaw:
         return 'reset-yaw';
-      case ResetType.Mounting:
-        return 'reset-mounting';
       case ResetType.Full:
         return 'reset-full';
+      default:
+        return 'unhandled';
     }
   }, [type]);
 
@@ -110,8 +99,10 @@ export function useReset(type: ResetType, onReseted?: () => void) {
     triggerReset,
     timer,
     status,
-    disabled: status === 'counting' || needsFullReset,
+    disabled: status === 'counting',
     name,
     duration,
   };
 }
+
+export function useMountingReset() {}

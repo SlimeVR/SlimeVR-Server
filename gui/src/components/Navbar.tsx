@@ -8,7 +8,6 @@ import { RulerIcon } from './commons/icon/RulerIcon';
 import { SparkleIcon } from './commons/icon/SparkleIcon';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { useConfig } from '@/hooks/config';
-import { Tooltip } from './commons/Tooltip';
 import { HomeIcon } from './commons/icon/HomeIcon';
 import { SkiIcon } from './commons/icon/SkiIcon';
 
@@ -25,43 +24,43 @@ export function NavButton({
   state?: any;
   icon: ReactNode;
 }) {
-  const { isMobile } = useBreakpoint('mobile');
   const doesMatch = useMatch({
     path: match || to,
   });
 
   return (
-    <Tooltip
-      disabled={isMobile}
-      preferedDirection={'right'}
-      content={<div className="text-xl">{children}</div>}
-      variant="floating"
+    <NavLink
+      to={to}
+      state={state}
+      className={classnames(
+        'flex flex-col justify-center xs:gap-4 mobile:gap-2',
+        'xs:w-[85px] mobile:w-[65px] mobile:h-[65px]',
+        'xs:py-3 mobile:py-4 rounded-md mobile:rounded-b-none group select-text',
+        {
+          'bg-accent-background-50 fill-accent-background-20': doesMatch,
+          'hover:bg-background-70': !doesMatch,
+        }
+      )}
     >
-      <NavLink
-        to={to}
-        state={state}
-        className={classnames(
-          'flex flex-col justify-center xs:gap-4 mobile:gap-2',
-          'xs:w-[65px] xs:h-[65px] mobile:w-[65px] mobile:h-[65px]',
-          'xs:py-3 mobile:py-4 rounded-md mobile:rounded-b-none group select-text',
-          {
-            'bg-accent-background-50 fill-accent-background-20': doesMatch,
-            'hover:bg-background-70': !doesMatch,
-          }
-        )}
-      >
-        <div className="flex justify-around">
-          <div
-            className={classnames('scale-[150%]', {
-              'fill-accent-lighter': doesMatch,
-              'fill-background-40': !doesMatch,
-            })}
-          >
-            {icon}
-          </div>
+      <div className="flex justify-around">
+        <div
+          className={classnames('scale-[150%]', {
+            'fill-accent-lighter': doesMatch,
+            'fill-background-40': !doesMatch,
+          })}
+        >
+          {icon}
         </div>
-      </NavLink>
-    </Tooltip>
+      </div>
+      <div
+        className={classnames('text-center mobile:hidden', {
+          'text-accent-background-10': doesMatch,
+          'text-background-10': !doesMatch,
+        })}
+      >
+        {children}
+      </div>
+    </NavLink>
   );
 }
 

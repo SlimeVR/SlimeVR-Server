@@ -9,6 +9,7 @@ import {
 } from 'solarxr-protocol';
 import { selectAtom } from 'jotai/utils';
 import { isEqual } from '@react-hookz/deep-equal';
+import { FEET_BODY_PARTS, FINGER_BODY_PARTS } from '@/hooks/body-parts';
 
 export interface FlatDeviceTracker {
   device?: DeviceDataT;
@@ -99,3 +100,15 @@ export const trackerFromIdAtom = ({
     (a) => a,
     isEqual
   );
+
+export const feetAssignedTrackers = atom((get) =>
+  get(assignedTrackersAtom).some(
+    (t) => t.tracker.info?.bodyPart && FEET_BODY_PARTS.includes(t.tracker.info.bodyPart)
+  )
+);
+
+export const fingerAssignedTrackers = atom((get) =>
+  get(assignedTrackersAtom).some(
+    (t) => t.tracker.info?.bodyPart && FINGER_BODY_PARTS.has(t.tracker.info.bodyPart)
+  )
+);
