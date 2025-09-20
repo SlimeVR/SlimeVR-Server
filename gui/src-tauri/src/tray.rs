@@ -1,5 +1,6 @@
 use std::{collections::HashMap, sync::Mutex};
 
+use crate::cross::TrayAvailable;
 use tauri::{
 	include_image,
 	menu::{Menu, MenuBuilder, MenuItemBuilder, MenuItemKind},
@@ -8,7 +9,6 @@ use tauri::{
 };
 
 pub struct TrayMenu<R: Runtime>(Menu<R>);
-pub struct TrayAvailable(pub bool);
 
 pub struct TrayTranslations {
 	store: Mutex<HashMap<String, String>>,
@@ -20,11 +20,6 @@ impl TrayTranslations {
 		lock.get(key)
 			.map_or_else(|| key.to_string(), |v| v.to_string())
 	}
-}
-
-#[tauri::command]
-pub fn is_tray_available(tray_available: State<TrayAvailable>) -> bool {
-	tray_available.0
 }
 
 #[tauri::command]

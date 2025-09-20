@@ -1,0 +1,6 @@
+{
+    "build": {
+        "beforeDevCommand": "pnpm run start --host"
+    },
+    "identifier": "dev.slimevr.android"
+}
