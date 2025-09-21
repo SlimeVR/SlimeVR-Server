@@ -48,6 +48,9 @@ enum class MountingMethods(val id: Int) {
 
 class ResetsConfig {
 
+	// Always reset mounting for feet
+	var resetMountingFeet = false
+
 	// Reset mode used for the arms
 	var mode = ArmsResetModes.BACK
 

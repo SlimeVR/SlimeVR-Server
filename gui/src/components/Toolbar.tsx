@@ -1,30 +1,26 @@
 import { Typography } from './commons/Typography';
 import classNames from 'classnames';
+import { ResetType } from 'solarxr-protocol';
 import {
-  ClearMountingResetRequestT,
-  ResetType,
-  RpcMessage,
-} from 'solarxr-protocol';
-import { ResetBtnStatus, useReset } from '@/hooks/reset';
+  BODY_PARTS_GROUPS,
+  MountingResetGroup,
+  ResetBtnStatus,
+  useReset,
+  UseResetOptions,
+} from '@/hooks/reset';
 import { Tooltip } from './commons/Tooltip';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom, connectedTrackersAtom } from '@/store/app-store';
-import { ClearIcon } from './commons/icon/ClearIcon';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { useMemo, useState } from 'react';
 import { HomeSettingsModal } from './home/HomeSettingsModal';
-import { SkiIcon } from './commons/icon/SkiIcon';
-import { FullResetIcon, YawResetIcon } from './commons/icon/ResetIcon';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { QuaternionFromQuatT, similarQuaternions } from '@/maths/quaternion';
-import { Quaternion } from 'three';
 import { LayoutIcon } from './commons/icon/LayoutIcon';
-import { FootIcon } from './commons/icon/FootIcon';
-import { FingersIcon } from './commons/icon/FingersIcon';
+import { ResetButtonIcon } from './home/ResetButton';
 
 const MAINBUTTON_CLASSES = ({ disabled }: { disabled: boolean }) =>
   classNames(
-    'p-2 flex justify-center px-4 gap-4 h-full items-center bg-background-60 relative overflow-clip aspect-square md:aspect-auto',
+    'relative overflow-clip',
+    'flex h-full items-center justify-center gap-2 px-4 bg-background-60 rounded-lg fill-background-10 aspect-square md:aspect-auto',
     {
       'cursor-pointer hover:bg-background-50 bg-background-60': !disabled,
       'cursor-not-allowed bg-background-70 brightness-75': disabled,
@@ -49,20 +45,20 @@ function ButtonProgress({
   );
 }
 
-function BasicResetButton({ type }: { type: ResetType }) {
+function BasicResetButton(options: UseResetOptions & { customName?: string }) {
   const { isMd } = useBreakpoint('md');
-  const { triggerReset, status, name, timer, disabled, duration } =
-    useReset(type);
-
-  const icon = useMemo(() => {
-    switch (type) {
-      case ResetType.Yaw:
-        return <YawResetIcon width={24} />;
-    }
-    return <FullResetIcon width={24} />;
-  }, [type]);
+  const {
+    triggerReset,
+    status,
+    name: resetName,
+    timer,
+    disabled,
+    duration,
+  } = useReset(options);
 
   const progress = status === 'counting' ? 1 - (timer - 1) / duration : 0;
+
+  const name = options.customName || resetName;
 
   return (
     <Tooltip
@@ -79,13 +75,14 @@ function BasicResetButton({ type }: { type: ResetType }) {
       >
         <div
           className={classNames({
-            'animate-spin-ccw': status === 'finished',
+            // 'animate-spin-ccw': status === 'finished',
+            'animate-skiing': status === 'finished',
           })}
           style={{
             animationIterationCount: 1,
           }}
         >
-          {icon}
+          <ResetButtonIcon {...options} />
         </div>
 
         <div className="hidden md:block">
@@ -101,249 +98,40 @@ function BasicResetButton({ type }: { type: ResetType }) {
   );
 }
 
-const _q = new Quaternion();
-function MountingCalibrationButton() {
-  const { isNmd } = useBreakpoint('nmd');
-  const { triggerReset, status, name, timer, disabled, duration } = useReset(
-    ResetType.Mounting
-  );
-  const assignedTrackers = useAtomValue(assignedTrackersAtom);
-
-  const { sendRPCPacket } = useWebsocketAPI();
-  const trackerWithMounting = useMemo(
-    () =>
-      assignedTrackers.some(
-        (d) =>
-          !similarQuaternions(
-            QuaternionFromQuatT(d?.tracker.info?.mountingResetOrientation),
-            _q
-          )
-      ),
-    [assignedTrackers]
-  );
-
-  const clearMounting = () => {
-    const record = new ClearMountingResetRequestT();
-    sendRPCPacket(RpcMessage.ClearMountingResetRequest, record);
-  };
-
-  const progress = status === 'counting' ? 1 - (timer - 1) / duration : 0;
-
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <div
-        className={classNames('flex relative')}
-        style={{
-          animationIterationCount: 1,
-        }}
-      >
-        <div className="rounded-lg overflow-clip flex w-full">
-          <Tooltip
-            disabled={!isNmd}
-            content={
-              <Typography textAlign="text-center" id={name}></Typography>
-            }
-            preferedDirection="top"
-          >
-            <div
-              className={classNames(
-                MAINBUTTON_CLASSES({ disabled }),
-                'flex-grow'
-              )}
-              onClick={() => !disabled && setOpen(true)}
-            >
-              <div
-                className={classNames(
-                  {
-                    'animate-skiing': status === 'finished',
-                  },
-                  'fill-background-10'
-                )}
-                style={{
-                  animationIterationCount: 1,
-                }}
-              >
-                <SkiIcon size={24} />
-              </div>
-              <div className="hidden md:block">
-                <Typography
-                  variant="section-title"
-                  textAlign="text-center"
-                  id={name}
-                ></Typography>
-              </div>
-            </div>
-          </Tooltip>
-          <Tooltip
-            content={
-              <Typography variant="vr-accessible">
-                Clear Mounting Calibration
-              </Typography>
-            }
-            preferedDirection="top"
-          >
-            <div
-              className={classNames(
-                MAINBUTTON_CLASSES({
-                  disabled: !trackerWithMounting || disabled,
-                }),
-                'fill-background-10 rounded-r-lg border-l-[2px] border-background-50 md:w-16 aspect-square md:aspect-auto'
-              )}
-              onClick={() => trackerWithMounting && !disabled && clearMounting}
-            >
-              <div className="rotate-12">
-                <ClearIcon></ClearIcon>
-              </div>
-            </div>
-          </Tooltip>
-          <ButtonProgress progress={progress} status={status}></ButtonProgress>
-        </div>
-
-        <div
-          className={classNames(
-            'absolute bottom-0 left-0 translate-y-full w-full z-[60]',
-            {
-              hidden: !open,
-            }
-          )}
-        >
-          <div className="h-20 flex relative rounded-lg overflow-clip mt-2">
-            <Tooltip
-              disabled={!isNmd}
-              content={
-                <Typography textAlign="text-center" id={name}></Typography>
-              }
-              preferedDirection="top"
-            >
-              <div
-                className={classNames(
-                  MAINBUTTON_CLASSES({ disabled }),
-                  'flex-grow'
-                )}
-                onClick={() => !disabled && setOpen(false) && triggerReset()}
-              >
-                <div
-                  className={classNames(
-                    {
-                      'animate-skiing': status === 'finished',
-                    },
-                    'fill-background-10'
-                  )}
-                  style={{
-                    animationIterationCount: 1,
-                  }}
-                >
-                  <SkiIcon size={22} />
-                </div>
-                <div className="hidden md:block">
-                  <Typography variant="section-title" textAlign="text-center">
-                    Body mounting calibration
-                  </Typography>
-                </div>
-              </div>
-            </Tooltip>
-          </div>
-          <div className="h-20 flex relative rounded-lg overflow-clip mt-2">
-            <Tooltip
-              disabled={!isNmd}
-              content={
-                <Typography textAlign="text-center" id={name}></Typography>
-              }
-              preferedDirection="top"
-            >
-              <div
-                className={classNames(
-                  MAINBUTTON_CLASSES({ disabled }),
-                  'flex-grow'
-                )}
-                onClick={() => !disabled && setOpen(true)}
-              >
-                <div
-                  className={classNames(
-                    {
-                      'animate-skiing': status === 'finished',
-                    },
-                    'fill-background-10'
-                  )}
-                  style={{
-                    animationIterationCount: 1,
-                  }}
-                >
-                  <FootIcon />
-                </div>
-                <div className="hidden md:block">
-                  <Typography variant="section-title" textAlign="text-center">
-                    Feet mounting calibration
-                  </Typography>
-                </div>
-              </div>
-            </Tooltip>
-          </div>
-          <div className="h-20 flex relative rounded-lg overflow-clip mt-2">
-            <Tooltip
-              disabled={!isNmd}
-              content={
-                <Typography textAlign="text-center" id={name}></Typography>
-              }
-              preferedDirection="top"
-            >
-              <div
-                className={classNames(
-                  MAINBUTTON_CLASSES({ disabled }),
-                  'bg-background-70',
-                  'flex-grow'
-                )}
-                onClick={() => !disabled && setOpen(true)}
-              >
-                <div
-                  className={classNames(
-                    {
-                      'animate-skiing': status === 'finished',
-                    },
-                    'fill-background-50'
-                  )}
-                  style={{
-                    animationIterationCount: 1,
-                  }}
-                >
-                  <FingersIcon width={20} />
-                </div>
-                <div className="hidden md:block">
-                  <Typography
-                    variant="section-title"
-                    textAlign="text-center"
-                    color="text-background-50"
-                  >
-                    Fingers Mounting calibration
-                  </Typography>
-                </div>
-              </div>
-            </Tooltip>
-          </div>
-        </div>
-      </div>
-      <div
-        className={classNames(
-          'fixed top-0 left-0 w-screen h-screen bg-background-90 z-50 bg-opacity-50',
-          { hidden: !open }
-        )}
-        onClick={() => setOpen(false)}
-      ></div>
-    </>
-  );
-}
-
 export function Toolbar({ showSettings }: { showSettings: boolean }) {
   const trackers = useAtomValue(connectedTrackersAtom);
+  const assignedTrackers = useAtomValue(assignedTrackersAtom);
+
   const settingsOpenState = useState(false);
   const [, setSettingsOpen] = settingsOpenState;
+
+  const { visibleGroups, groupVisibility } = useMemo(() => {
+    const groupVisibility = Object.keys(BODY_PARTS_GROUPS)
+      .filter((k) => ['fingers'].includes(k))
+      .reduce(
+        (curr, key) => {
+          const group = key as MountingResetGroup;
+          curr[group] = assignedTrackers.some(
+            ({ tracker }) =>
+              tracker.info?.bodyPart &&
+              BODY_PARTS_GROUPS[group].includes(tracker.info?.bodyPart)
+          );
+
+          return curr;
+        },
+        {} as Record<MountingResetGroup, boolean>
+      );
+
+    return {
+      groupVisibility,
+      visibleGroups: Object.values(groupVisibility).filter((v) => v).length,
+    };
+  }, [assignedTrackers]);
 
   return (
     <>
       <HomeSettingsModal open={settingsOpenState}></HomeSettingsModal>
-      <div className="flex mobile:py-2 flex-col items-center bg-background-70 rounded-t-lg h-[var(--toolbar-h)] mr-2 mt-2 mobile:mr-0">
+      <div className="flex mobile:py-2 flex-col items-center bg-background-70 rounded-t-lg h-[var(--toolbar-h)] mr-2 xs:mt-2 mobile:mr-0">
         <div className="px-1 py-3 w-full divide-x-2 divide-background-50 flex justify-center md:justify-start">
           <div className="flex-col flex gap-1 px-2 md:w-[60%]">
             <Typography variant="section-title">Drift Resets</Typography>
@@ -353,30 +141,32 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
             </div>
           </div>
           <div className="flex-col flex gap-1 px-2 md:flex-grow">
-            <div className="">
-              <Typography variant="section-title">
-                Mounting Calibration
-              </Typography>
-            </div>
-            <div className="gap-2 md:h-[72px] h-[62px] w-full grid-cols-3 grid">
-              <div className="flex h-full items-center justify-center gap-2 px-4 bg-background-60 rounded-lg fill-background-10 aspect-square md:aspect-auto">
-                <SkiIcon></SkiIcon>
-                <div className="hidden md:inline-block">
-                  <Typography>Body</Typography>
-                </div>
-              </div>
-              <div className="flex h-full items-center justify-center gap-2 px-4 bg-background-60 rounded-lg fill-background-10 aspect-square md:aspect-auto">
-                <FootIcon></FootIcon>
-                <div className="hidden md:inline-block">
-                  <Typography>Foot</Typography>
-                </div>
-              </div>
-              <div className="flex h-full items-center justify-center gap-2 px-4 bg-background-60 rounded-lg fill-background-10 aspect-square md:aspect-auto">
-                <FingersIcon width={16}></FingersIcon>
-                <div className="hidden md:inline-block">
-                  <Typography>Fingers</Typography>
-                </div>
-              </div>
+            <Typography variant="section-title">
+              Mounting Calibration
+            </Typography>
+            <div
+              className="gap-2 md:h-[72px] h-[62px] w-full md:grid flex"
+              style={{
+                gridTemplateColumns: `repeat(calc(2 + ${visibleGroups}), 1fr)`,
+              }}
+            >
+              <BasicResetButton
+                type={ResetType.Mounting}
+                group={'default'}
+                customName="Body"
+              ></BasicResetButton>
+              <BasicResetButton
+                type={ResetType.Mounting}
+                group={'feet'}
+                customName="Feet"
+              ></BasicResetButton>
+              {groupVisibility['fingers'] && (
+                <BasicResetButton
+                  type={ResetType.Mounting}
+                  group={'fingers'}
+                  customName="Fingers"
+                ></BasicResetButton>
+              )}
             </div>
           </div>
         </div>

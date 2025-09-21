@@ -9,6 +9,7 @@ import { useWebsocketAPI } from './websocket-api';
 import { useEffect, useState } from 'react';
 
 export interface ResetSettingsForm {
+  resetMountingFeet: boolean;
   armsMountingResetMode: number;
   yawResetSmoothTime: number;
   saveMountingReset: boolean;
@@ -16,6 +17,7 @@ export interface ResetSettingsForm {
 }
 
 export const defaultResetSettings = {
+  resetMountingFeet: false,
   armsMountingResetMode: 0,
   yawResetSmoothTime: 0.0,
   saveMountingReset: false,
@@ -24,6 +26,7 @@ export const defaultResetSettings = {
 
 export function loadResetSettings(resetSettingsForm: ResetSettingsForm) {
   const resetsSettings = new ResetsSettingsT();
+  resetsSettings.resetMountingFeet = resetSettingsForm.resetMountingFeet;
   resetsSettings.armsMountingResetMode = resetSettingsForm.armsMountingResetMode;
   resetsSettings.yawResetSmoothTime = resetSettingsForm.yawResetSmoothTime;
   resetsSettings.saveMountingReset = resetSettingsForm.saveMountingReset;

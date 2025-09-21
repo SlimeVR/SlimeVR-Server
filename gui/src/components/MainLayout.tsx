@@ -12,6 +12,9 @@ import { useWebsocketAPI } from '@/hooks/websocket-api';
 import './MainLayout.scss';
 import { Toolbar } from './Toolbar';
 import { Sidebar } from './Sidebar';
+import { TrackingChecklistMobile } from './tracking-checklist/TrackingChecklist';
+import { ArrowRightIcon } from './commons/icon/ArrowIcons';
+import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 
 export function MainLayout({
   children,
@@ -26,6 +29,7 @@ export function MainLayout({
   showToolbarSettings?: boolean;
   full?: boolean;
 }) {
+  const { completion } = useTrackingChecklist();
   const { sendRPCPacket } = useWebsocketAPI();
   const [ProportionsLastPageOpen, setProportionsLastPageOpen] = useState(true);
 
@@ -61,7 +65,11 @@ export function MainLayout({
   });
 
   return (
-    <div className={classNames('main-layout w-full h-screen', full && 'full')}>
+    <div
+      className={classNames('main-layout w-full h-screen', full && 'full', {
+        'checklist-ok': completion === 'complete',
+      })}
+    >
       <div style={{ gridArea: 't' }}>
         <TopBar></TopBar>
       </div>
@@ -80,6 +88,9 @@ export function MainLayout({
       >
         {children}
       </div>
+      {full && isMobile && completion !== 'complete' && (
+        <TrackingChecklistMobile></TrackingChecklistMobile>
+      )}
       {full && (
         <div style={{ gridArea: 'b' }}>
           <Toolbar showSettings={showToolbarSettings}></Toolbar>

@@ -62,6 +62,7 @@ import { VRCWarningsPage } from './components/vrc/VRCWarningsPage';
 import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/StayAlignedSetup';
 import { TrackingChecklistProvider } from './components/tracking-checklist/TrackingChecklistProvider';
 import { HomeScreenSettings } from './components/settings/pages/HomeScreenSettings';
+import { ChecklistPage } from './components/tracking-checklist/TrackingChecklist';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -102,6 +103,14 @@ function Layout() {
             element={
               <MainLayout isMobile={isMobile} full>
                 <VRModePage />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/checklist"
+            element={
+              <MainLayout isMobile={isMobile}>
+                <ChecklistPage />
               </MainLayout>
             }
           />
@@ -208,6 +217,11 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    // don't show update stuff when on android
+    if (window.__ANDROID__?.isThere()) {
+      setUpdateFound('');
+      return;
+    }
     async function fetchReleases() {
       const releases = await fetch(
         `https://api.github.com/repos/${GH_REPO}/releases`

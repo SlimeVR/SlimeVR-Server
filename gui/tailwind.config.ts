@@ -242,31 +242,31 @@ const config = {
             transform: 'rotate(0deg) translateX(0%) translateY(0%)',
           },
           '10%': {
-            transform: 'rotate(12deg) translateX(-2%) translateY(2%)',
+            transform: 'rotate(12deg) translateX(-5%) translateY(5%)',
           },
           '20%': {
             transform: 'rotate(10deg) translateX(0%) translateY(0%)',
           },
           '30%': {
-            transform: 'rotate(12deg) translateX(2%) translateY(-2%)',
+            transform: 'rotate(12deg) translateX(5%) translateY(-5%)',
           },
           '40%': {
             transform: 'rotate(10deg) translateX(0%) translateY(0%)',
           },
           '50%': {
-            transform: 'rotate(12deg) translateX(-2%) translateY(2%)',
+            transform: 'rotate(12deg) translateX(-5%) translateY(5%)',
           },
           '60%': {
             transform: 'rotate(10deg) translateX(0%) translateY(0%)',
           },
           '70%': {
-            transform: 'rotate(12deg) translateX(2%) translateY(-2%)',
+            transform: 'rotate(12deg) translateX(5%) translateY(-5%)',
           },
           '80%': {
             transform: 'rotate(10deg) translateX(0%) translateY(0%)',
           },
           '90%': {
-            transform: 'rotate(10deg) translateX(-2%) translateY(2%)',
+            transform: 'rotate(10deg) translateX(-5%) translateY(5%)',
           },
         },
       },

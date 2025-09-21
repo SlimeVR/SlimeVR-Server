@@ -1,5 +1,5 @@
 :root {
-  --toolbar-h: 152px;
+  --toolbar-h: 140px;
 }
 
 .main-layout {
@@ -38,13 +38,22 @@
   }
 
   @screen mobile {
-    --toolbar-h: 125px;
+    --checklist-h: 30px;
+
+    &.checklist-ok {
+      --checklist-h: 0px;
+    }
 
     &.full {
       grid-template:
         't' var(--topbar-h)
+        'l' var(--checklist-h)
         'b' var(--toolbar-h)
-        'c' calc(100% - var(--topbar-h) - var(--toolbar-h) - var(--navbar-h))
+        'c' calc(
+          100% - var(--topbar-h) - var(--checklist-h) - var(--toolbar-h) - var(
+              --navbar-h
+            )
+        )
         'n' calc(var(--navbar-h))
         / 100%;
     }

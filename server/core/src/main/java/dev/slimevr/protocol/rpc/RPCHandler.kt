@@ -36,7 +36,6 @@ import solarxr_protocol.rpc.*
 import kotlin.io.path.Path
 
 class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeader>() {
-	private var currTransactionId: Long = 0
 	private val mainScope = CoroutineScope(SupervisorJob())
 
 	init {
@@ -241,7 +240,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val localIp = getLocalIp() ?: return
 		val response = ServerInfosResponse
 			.createServerInfosResponse(fbb, fbb.createString(localIp))
-		val outbound = this.createRPCMessage(fbb, RpcMessage.ServerInfosResponse, response)
+		val outbound = this.createRPCMessage(fbb, RpcMessage.ServerInfosResponse, response, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -254,7 +253,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val config = api.server.configManager.vrConfig.overlay
 		val response = OverlayDisplayModeResponse
 			.createOverlayDisplayModeResponse(fbb, config.isVisible, config.isMirrored)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.OverlayDisplayModeResponse, response)
+		val outbound = this.createRPCMessage(fbb, RpcMessage.OverlayDisplayModeResponse, response, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -286,7 +285,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		// might not be a good idea maybe let the client ask again
 		val fbb = FlatBufferBuilder(300)
 		val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config)
+		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -300,7 +299,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		val fbb = FlatBufferBuilder(300)
 		val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config)
+		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -335,7 +334,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val fbb = FlatBufferBuilder(40)
 		val status = RecordBVHStatus
 			.createRecordBVHStatus(fbb, api.server.bvhRecorder.isRecording)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status)
+		val outbound = this.createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -346,7 +345,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val fbb = FlatBufferBuilder(40)
 		val status = RecordBVHStatus
 			.createRecordBVHStatus(fbb, api.server.bvhRecorder.isRecording)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status)
+		val outbound = this.createRPCMessage(fbb, RpcMessage.RecordBVHStatus, status, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -500,13 +499,16 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		}
 	}
 
-	fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int): Int {
+	@JvmOverloads
+	fun createRPCMessage(fbb: FlatBufferBuilder, messageType: Byte, messageOffset: Int, respondTo: RpcMessageHeader? = null): Int {
 		val data = IntArray(1)
 
 		RpcMessageHeader.startRpcMessageHeader(fbb)
 		RpcMessageHeader.addMessage(fbb, messageOffset)
 		RpcMessageHeader.addMessageType(fbb, messageType)
-		RpcMessageHeader.addTxId(fbb, TransactionId.createTransactionId(fbb, currTransactionId++))
+		respondTo?.txId()?.let { txId ->
+			RpcMessageHeader.addTxId(fbb, TransactionId.createTransactionId(fbb, txId.id()))
+		}
 		data[0] = RpcMessageHeader.endRpcMessageHeader(fbb)
 
 		val messages = MessageBundle.createRpcMsgsVector(fbb, data)
@@ -530,7 +532,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		val response = StatusSystemResponseT()
 		response.currentStatuses = statuses
 		val offset = StatusSystemResponse.pack(fbb, response)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.StatusSystemResponse, offset)
+		val outbound = this.createRPCMessage(fbb, RpcMessage.StatusSystemResponse, offset, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}
@@ -562,7 +564,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 					0f,
 				)
 		}
-		fbb.finish(createRPCMessage(fbb, RpcMessage.HeightResponse, response))
+		fbb.finish(createRPCMessage(fbb, RpcMessage.HeightResponse, response, messageHeader))
 		conn.send(fbb.dataBuffer())
 	}
 
@@ -577,7 +579,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 				0,
 				api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers,
 			)
-			fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+			fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response, messageHeader))
 			conn.send(fbb.dataBuffer())
 			return
 		}
@@ -589,7 +591,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			trackerId,
 			tracker.config.shouldHaveMagEnabled == true,
 		)
-		fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+		fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response, messageHeader))
 		conn.send(fbb.dataBuffer())
 	}
 
@@ -609,7 +611,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 					0,
 					api.server.configManager.vrConfig.server.useMagnetometerOnAllTrackers,
 				)
-				fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+				fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response, messageHeader))
 				conn.send(fbb.dataBuffer())
 			}
 			return
@@ -628,7 +630,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 				trackerId,
 				state,
 			)
-			fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+			fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response, messageHeader))
 			conn.send(fbb.dataBuffer())
 			return
 		}
@@ -645,7 +647,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 				trackerId,
 				state,
 			)
-			fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response))
+			fbb.finish(createRPCMessage(fbb, RpcMessage.MagToggleResponse, response, messageHeader))
 			conn.send(fbb.dataBuffer())
 		}
 	}
@@ -665,7 +667,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		configManager.saveConfig()
 
-		sendSettingsChangedResponse(conn)
+		sendSettingsChangedResponse(conn, messageHeader)
 	}
 
 	private fun onDetectStayAlignedRelaxedPoseRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
@@ -697,7 +699,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		LogManager.info("[detectStayAlignedRelaxedPose] pose=$pose $relaxedPose")
 
-		sendSettingsChangedResponse(conn)
+		sendSettingsChangedResponse(conn, messageHeader)
 	}
 
 	private fun onResetStayAlignedRelaxedPoseRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {
@@ -725,13 +727,13 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 
 		LogManager.info("[resetStayAlignedRelaxedPose] pose=$pose")
 
-		sendSettingsChangedResponse(conn)
+		sendSettingsChangedResponse(conn, messageHeader)
 	}
 
-	fun sendSettingsChangedResponse(conn: GenericConnection) {
+	fun sendSettingsChangedResponse(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
 		val fbb = FlatBufferBuilder(32)
 		val settings = RPCSettingsBuilder.createSettingsResponse(fbb, api.server)
-		val outbound = createRPCMessage(fbb, RpcMessage.SettingsResponse, settings)
+		val outbound = createRPCMessage(fbb, RpcMessage.SettingsResponse, settings, messageHeader)
 		fbb.finish(outbound)
 		conn.send(fbb.dataBuffer())
 	}

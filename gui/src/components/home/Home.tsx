@@ -9,6 +9,7 @@ import { HeadsetIcon } from '@/components/commons/icon/HeadsetIcon';
 import { useAtomValue } from 'jotai';
 import { flatTrackersAtom } from '@/store/app-store';
 import { useTrackingChecklist } from '@/hooks/tracking-checklist';
+import { Checklist } from '@/components/commons/icon/ChecklistIcon';
 
 export function Home() {
   const { l10n } = useLocalization();
@@ -30,6 +31,12 @@ export function Home() {
         className="xs:hidden absolute z-50 h-12 w-12 rounded-full bg-accent-background-30 bottom-3 right-3 flex justify-center items-center fill-background-10"
       >
         <HeadsetIcon></HeadsetIcon>
+      </NavLink>
+      <NavLink
+        to="/checklist"
+        className="xs:hidden absolute z-50 h-12 w-12 rounded-full bg-accent-background-30 bottom-[70px] right-3 flex justify-center items-center fill-background-10"
+      >
+        <Checklist></Checklist>
       </NavLink>
       <div className="overflow-y-auto flex flex-col gap-3">
         {trackers.length === 0 && (

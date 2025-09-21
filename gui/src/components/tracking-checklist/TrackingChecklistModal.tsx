@@ -12,7 +12,9 @@ export function TrackingChecklistModal({
   return (
     <BaseModal
       isOpen={open[0]}
-      appendClasses={'max-w-xl w-full'}
+      appendClasses={
+        'max-w-xl md:w-full mobile:max-h-[400px] mobile:overflow-y-auto'
+      }
       closeable
       onRequestClose={() => {
         open[1](false);

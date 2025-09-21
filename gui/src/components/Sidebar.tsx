@@ -22,12 +22,11 @@ import { useBHV } from '@/hooks/bvh';
 import { usePauseTracking } from '@/hooks/pause-tracking';
 import { PlayIcon } from './commons/icon/PlayIcon';
 
-function PreviewSection({ closed }: { closed: boolean }) {
-  const { config, setConfig } = useConfig();
-  const [disabledRender, setDisabledRender] = useState(config?.skeletonPreview);
+export function PreviewControls({ open }: { open: boolean }) {
   const [userHeight, setUserHeight] = useState('');
   const { currentLocales } = useLocaleConfig();
   const { useRPCPacket, sendRPCPacket } = useWebsocketAPI();
+
   const {
     state: bvhState,
     toggle: toggleBVH,
@@ -43,7 +42,6 @@ function PreviewSection({ closed }: { closed: boolean }) {
     });
     return { cmFormat };
   }, [currentLocales]);
-
   useRPCPacket(
     RpcMessage.SkeletonConfigResponse,
     (data: SkeletonConfigResponseT) => {
@@ -59,43 +57,8 @@ function PreviewSection({ closed }: { closed: boolean }) {
     );
   }, []);
 
-  const toggleRender = () => {
-    setConfig({ skeletonPreview: disabledRender });
-  };
-
-  useLayoutEffect(() => {
-    // need useLayoutEffect to make sure that the state is corect before the first render of the skeleton
-    setDisabledRender(!config?.skeletonPreview);
-  }, [config]);
-
   return (
-    <div
-      className={classNames(
-        'transition-opacity duration-500 delay-500 h-full relative',
-        {
-          'opacity-0': !closed,
-          'opacity-100': closed,
-        }
-      )}
-    >
-      <SkeletonVisualizerWidget
-        disabled={disabledRender}
-        toggleDisabled={() => toggleRender()}
-        onInit={(context) => {
-          context.addView({
-            left: 0,
-            bottom: 0,
-            width: 1,
-            height: 1,
-            position: new Vector3(3, 2.5, -3),
-            onHeightChange(v, newHeight) {
-              v.controls.target.set(0, newHeight / 2.2, 0.1);
-              const scale = Math.max(1, newHeight) / 1.3;
-              v.camera.zoom = 1 / scale;
-            },
-          });
-        }}
-      ></SkeletonVisualizerWidget>
+    <>
       <Tooltip
         preferedDirection="bottom"
         content={
@@ -106,23 +69,12 @@ function PreviewSection({ closed }: { closed: boolean }) {
           className={classNames(
             'h-10 bg-background-60 p-4 flex items-center rounded-lg justify-center cursor-help w-fit top-2 left-2 absolute',
             {
-              'opacity-0': !closed,
-              'opacity-100': closed,
+              'opacity-0': !open,
+              'opacity-100': open,
             }
           )}
         >
           <Typography variant="section-title">{userHeight}</Typography>
-        </div>
-      </Tooltip>
-      <Tooltip
-        preferedDirection="bottom"
-        content={<Typography>Disable rendering</Typography>}
-      >
-        <div
-          className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-2 top-2 bg-background-60 hover:bg-background-50"
-          onClick={() => toggleRender()}
-        >
-          <EyeIcon width={18} closed={!disabledRender}></EyeIcon>
         </div>
       </Tooltip>
       <div className="absolute bottom-0 pb-4 flex justify-center w-full">
@@ -187,6 +139,63 @@ function PreviewSection({ closed }: { closed: boolean }) {
           </Tooltip>
         </div>
       </div>
+    </>
+  );
+}
+
+function PreviewSection({ open }: { open: boolean }) {
+  const { config, setConfig } = useConfig();
+  const [disabledRender, setDisabledRender] = useState(config?.skeletonPreview);
+
+  const toggleRender = () => {
+    setConfig({ skeletonPreview: disabledRender });
+  };
+
+  useLayoutEffect(() => {
+    // need useLayoutEffect to make sure that the state is corect before the first render of the skeleton
+    setDisabledRender(!config?.skeletonPreview);
+  }, [config]);
+
+  return (
+    <div
+      className={classNames(
+        'transition-opacity duration-500 delay-500 h-full relative',
+        {
+          'opacity-0': !open,
+          'opacity-100': open,
+        }
+      )}
+    >
+      <SkeletonVisualizerWidget
+        disabled={disabledRender}
+        toggleDisabled={() => toggleRender()}
+        onInit={(context) => {
+          context.addView({
+            left: 0,
+            bottom: 0,
+            width: 1,
+            height: 1,
+            position: new Vector3(3, 2.5, -3),
+            onHeightChange(v, newHeight) {
+              v.controls.target.set(0, newHeight / 2.2, 0.1);
+              const scale = Math.max(1, newHeight) / 1.3;
+              v.camera.zoom = 1 / scale;
+            },
+          });
+        }}
+      ></SkeletonVisualizerWidget>
+      <Tooltip
+        preferedDirection="bottom"
+        content={<Typography>Disable rendering</Typography>}
+      >
+        <div
+          className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-2 top-2 bg-background-60 hover:bg-background-50"
+          onClick={() => toggleRender()}
+        >
+          <EyeIcon width={18} closed={!disabledRender}></EyeIcon>
+        </div>
+      </Tooltip>
+      <PreviewControls open={open}></PreviewControls>
     </div>
   );
 }
@@ -235,7 +244,7 @@ export function Sidebar() {
         className="transition-[height] duration-500 rounded-lg my-2 bg-background-70 overflow-clip"
         style={{ height: previewSize }}
       >
-        <PreviewSection closed={closed} />
+        <PreviewSection open={closed} />
       </div>
     </>
   );

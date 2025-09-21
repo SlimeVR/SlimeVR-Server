@@ -20,10 +20,15 @@ import { A } from '@/components/commons/A';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { ProgressBar } from '@/components/commons/ProgressBar';
 import { CrossIcon } from '@/components/commons/icon/CrossIcon';
-import { ArrowDownIcon } from '@/components/commons/icon/ArrowIcons';
+import {
+  ArrowDownIcon,
+  ArrowRightIcon,
+} from '@/components/commons/icon/ArrowIcons';
 import { Localized } from '@fluent/react';
 import { WrenchIcon } from '@/components/commons/icon/WrenchIcons';
 import { TrackingChecklistModal } from './TrackingChecklistModal';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 function Step({
   step: { status, id, optional, firstRequired },
@@ -276,7 +281,7 @@ const stepContentLookup: Record<
           />
         </div>
         <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
-          <ResetButton type={ResetType.Mounting}></ResetButton>
+          <ResetButton type={ResetType.Mounting} group="default"></ResetButton>
           {step.ignorable && (
             <Button
               id="tracking_checklist-ignore"
@@ -314,11 +319,46 @@ const stepContentLookup: Record<
   },
 };
 
+export function TrackingChecklistMobile() {
+  const context = useTrackingChecklist();
+  const { completion, firstRequired, warnings } = context;
+
+  return (
+    <div style={{ gridArea: 'l' }}>
+      <NavLink
+        to="/checklist"
+        className={classNames(
+          'bg-accent-background-30 h-full flex items-center justify-between px-2 fill-background-10 no-underline',
+          {
+            'bg-status-critical': completion === 'incomplete',
+            'bg-status-warning text-background-90 fill-background-90':
+              completion === 'partial',
+          }
+        )}
+      >
+        <div className={'flex flex-col justify-center'}>
+          {completion === 'incomplete' ? 'Required:' : 'Warning:'}{' '}
+          <Localized
+            id={
+              trackingchecklistIdtoLabel[
+                firstRequired?.id ?? warnings[0]?.id ?? 0
+              ]
+            }
+          />
+        </div>
+        <ArrowRightIcon></ArrowRightIcon>
+      </NavLink>
+    </div>
+  );
+}
+
 export function TrackingChecklist({
+  closable = true,
   closed,
   closing,
   toggleClosed,
 }: {
+  closable?: boolean;
   closed: boolean;
   closing: boolean;
   toggleClosed: () => void;
@@ -361,13 +401,15 @@ export function TrackingChecklist({
             >
               <WrenchIcon width={15}></WrenchIcon>
             </div>
-            <div
-              className="flex gap-1 items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-8 h-8 hover:bg-background-50"
-              onClick={() => toggleClosed()}
-            >
-              {closed && <ArrowDownIcon size={25}></ArrowDownIcon>}
-              {!closed && <CrossIcon size={25}></CrossIcon>}
-            </div>
+            {closable && (
+              <div
+                className="flex gap-1 items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-8 h-8 hover:bg-background-50"
+                onClick={() => toggleClosed()}
+              >
+                {closed && <ArrowDownIcon size={25}></ArrowDownIcon>}
+                {!closed && <CrossIcon size={25}></CrossIcon>}
+              </div>
+            )}
           </div>
         </div>
         <div
@@ -454,5 +496,25 @@ export function TrackingChecklist({
       </div>
       <TrackingChecklistModal open={settingsOpenState}></TrackingChecklistModal>
     </>
+  );
+}
+
+export function ChecklistPage() {
+  const nav = useNavigate();
+  const { isMobile } = useBreakpoint('mobile');
+
+  useEffect(() => {
+    if (!isMobile) nav('/');
+  }, [isMobile]);
+
+  return (
+    <div className="rounded-t-lg h-full">
+      <TrackingChecklist
+        closable={false}
+        closed={false}
+        closing={false}
+        toggleClosed={() => {}}
+      ></TrackingChecklist>
+    </div>
   );
 }

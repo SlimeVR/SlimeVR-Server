@@ -40,7 +40,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 	}
 
 	fun onSettingsRequest(conn: GenericConnection, messageHeader: RpcMessageHeader?) {
-		rpcHandler.sendSettingsChangedResponse(conn)
+		rpcHandler.sendSettingsChangedResponse(conn, messageHeader)
 	}
 
 	fun onChangeSettingsRequest(conn: GenericConnection?, messageHeader: RpcMessageHeader) {
@@ -343,6 +343,7 @@ class RPCSettingsHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) {
 			if (mode != null) {
 				resetsConfig.mode = mode
 			}
+			resetsConfig.resetMountingFeet = req.resetsSettings().resetMountingFeet()
 			resetsConfig.saveMountingReset = req.resetsSettings().saveMountingReset()
 			resetsConfig.yawResetSmoothTime = req.resetsSettings().yawResetSmoothTime()
 			resetsConfig.resetHmdPitch = req.resetsSettings().resetHmdPitch()

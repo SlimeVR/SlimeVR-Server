@@ -24,10 +24,11 @@ export function InnerTauriFileInput({
     <div ref={ref} onClick={async () => onChange(await open({ directory }))}>
       {value !== null
         ? FileInputContentFile({
+            directory,
             importedFileName: value,
             onClearPicker: () => onChange(null),
           })
-        : FileInputContentBlank({ isDragging: false, label })}
+        : FileInputContentBlank({ isDragging: false, label, directory })}
     </div>
   );
 }

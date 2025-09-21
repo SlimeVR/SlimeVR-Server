@@ -46,7 +46,8 @@ export function useBHV() {
   });
 
   return {
-    available: typeof __ANDROID__ === 'undefined' || !__ANDROID__?.isThere(),
+    available:
+      typeof window.__ANDROID__ === 'undefined' || !window.__ANDROID__?.isThere(),
     state,
     toggle,
   };
