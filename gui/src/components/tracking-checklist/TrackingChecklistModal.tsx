@@ -21,14 +21,14 @@ export function TrackingChecklistModal({
       }}
     >
       <div className="flex flex-col gap-4">
-        <Typography variant="main-title">
-          Tracking Checklist Settings
-        </Typography>
+        <Typography variant="main-title" id="tracking_checklist-settings" />
         <TrackingChecklistSettings variant="modal"></TrackingChecklistSettings>
         <div className="flex justify-end">
-          <Button variant="tertiary" onClick={() => open[1](false)}>
-            Close
-          </Button>
+          <Button
+            variant="tertiary"
+            onClick={() => open[1](false)}
+            id="tracking_checklist-settings-close"
+          />
         </div>
       </div>
     </BaseModal>

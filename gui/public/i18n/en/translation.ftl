@@ -869,6 +869,16 @@ settings-utils-advanced-open_logs = Logs folder
 settings-utils-advanced-open_logs-description = Open SlimeVR's logs folder in file explorer, containing the logs of the app
 settings-utils-advanced-open_logs-label = Open folder
 
+## Home Screen
+settings-home-list-layout = Trackers list layout
+settings-home-list-layout-desc = Select one of the possible layouts of the home screen
+settings-home-list-layout-grid = Grid
+settings-home-list-layout-table = Table
+
+## Tracking Checlist
+settings-tracking_checklist-active_steps = Active Steps
+settings-tracking_checklist-active_steps-desc = List all the steps that will show in the tracking checklist. You can either disable or enable ignorable steps
+
 ## Setup/onboarding menu
 onboarding-skip = Skip setup
 onboarding-continue = Continue
@@ -1294,6 +1304,8 @@ onboarding-stay_aligned-done = Done
 
 ## Home
 home-no_trackers = No trackers detected or assigned
+home-settings = Home Page Settings
+home-settings-close = Close
 
 ## Trackers Still On notification
 trackers_still_on-modal-title = Trackers still on
@@ -1553,6 +1565,15 @@ error_collection_modal-confirm = I agree
 error_collection_modal-cancel = I don't want to
 
 
+tracking_checklist = Tracking Checklist
+tracking_checklist-settings = Tracking Checklist Settings
+tracking_checklist-settings-close = Close
+tracking_checklist-status-incomplete = You are not prepared to use SlimeVR!
+tracking_checklist-status-partial = {$count ->
+    [one] You have 1 warning!
+    *[many] You have {$count} warnings!
+}
+tracking_checklist-status-complete = You are prepared to use SlimeVR!
 tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
 tracking_checklist-FULL_RESET = Perform a full Reset
 tracking_checklist-FULL_RESET-desc = Some Trackers need a reset to be performed
@@ -1585,4 +1606,8 @@ tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
 
 tracking_checklist-ignore = Ignore
 
-sidebar-preview-mocap_mode_soon = Mocap Mode (Soon™)
+preview-mocap_mode_soon = Mocap Mode (Soon™)
+preview-disable_render = Disable rendering
+
+toolbar-mounting_calibration = Mounting Calibration
+toolbar-connected_trackers = {$count} trackers connected

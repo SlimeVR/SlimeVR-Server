@@ -19,12 +19,14 @@ export function HomeSettingsModal({
       }}
     >
       <div className="flex flex-col gap-4">
-        <Typography variant="main-title">Home Page Settings</Typography>
+        <Typography variant="main-title" id="home-settings" />
         <HomeLayoutSettings></HomeLayoutSettings>
         <div className="flex justify-end">
-          <Button variant="tertiary" onClick={() => open[1](false)}>
-            Close
-          </Button>
+          <Button
+            variant="tertiary"
+            onClick={() => open[1](false)}
+            id="home-settings-close"
+          />
         </div>
       </div>
     </BaseModal>

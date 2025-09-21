@@ -13,7 +13,6 @@ import './MainLayout.scss';
 import { Toolbar } from './Toolbar';
 import { Sidebar } from './Sidebar';
 import { TrackingChecklistMobile } from './tracking-checklist/TrackingChecklist';
-import { ArrowRightIcon } from './commons/icon/ArrowIcons';
 import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 
 export function MainLayout({

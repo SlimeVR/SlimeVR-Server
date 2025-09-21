@@ -141,9 +141,10 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
             </div>
           </div>
           <div className="flex-col flex gap-1 px-2 md:flex-grow">
-            <Typography variant="section-title">
-              Mounting Calibration
-            </Typography>
+            <Typography
+              variant="section-title"
+              id="toolbar-mounting_calibration"
+            />
             <div
               className="gap-2 md:h-[72px] h-[62px] w-full md:grid flex"
               style={{
@@ -171,9 +172,11 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
           </div>
         </div>
         <div className="flex w-full gap-2 items-center px-4 h-5">
-          <Typography color="secondary">
-            {trackers.length} trackers connected
-          </Typography>
+          <Typography
+            color="secondary"
+            id="toolbar-connected_trackers"
+            vars={{ count: trackers.length }}
+          />
           <div className="bg-background-50 h-[2px] rounded-lg flex-grow"></div>
           {showSettings && (
             <div

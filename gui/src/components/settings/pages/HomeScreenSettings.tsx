@@ -65,11 +65,11 @@ export function TrackingChecklistSettings({
   return (
     <div className="flex flex-col">
       <div className="flex flex-col pt-4 pb-2">
-        <Typography bold>Active Steps</Typography>
-        <Typography color="secondary">
-          List all the steps that will show in the tracking checklist. You can
-          either disable or enable ignorable steps
-        </Typography>
+        <Typography bold id="settings-tracking_checklist-active_steps" />
+        <Typography
+          color="secondary"
+          id="settings-tracking_checklist-active_steps-desc"
+        />
       </div>
       <form
         className="grid grid-cols-2 gap-2 mobile:flex flex-col"
@@ -139,14 +139,12 @@ export function HomeLayoutSettings() {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-col pt-4 pb-2">
-        <Typography bold>Trackers list layout</Typography>
-        <Typography color="secondary">
-          Select one of the possible layouts of the home screen
-        </Typography>
+        <Typography bold id="settings-home-list-layout" />
+        <Typography color="secondary" id="settings-home-list-layout-desc" />
       </div>
       <div className="flex gap-4">
         <LayoutSelector
-          name="Grid"
+          name="settings-home-list-layout-grid"
           active={config?.homeLayout === 'default'}
           onClick={() => setLayout('default')}
         >
@@ -158,7 +156,7 @@ export function HomeLayoutSettings() {
           </div>
         </LayoutSelector>
         <LayoutSelector
-          name="Table"
+          name="settings-home-list-layout-table"
           active={config?.homeLayout === 'table'}
           onClick={() => setLayout('table')}
         >
@@ -179,15 +177,11 @@ export function HomeScreenSettings() {
     <SettingsPageLayout>
       <div className="flex flex-col gap-2">
         <SettingsPagePaneLayout icon={<HomeIcon></HomeIcon>}>
-          <Typography variant="main-title" id="home">
-            Home Screen Settings
-          </Typography>
+          <Typography variant="main-title" id="home-settings" />
           <HomeLayoutSettings></HomeLayoutSettings>
         </SettingsPagePaneLayout>
         <SettingsPagePaneLayout icon={<CheckIcon size={18}></CheckIcon>}>
-          <Typography variant="main-title" id="checklist">
-            Tracking Checklist
-          </Typography>
+          <Typography variant="main-title" id="tracking_checklist" />
           <TrackingChecklistSettings variant="settings"></TrackingChecklistSettings>
         </SettingsPagePaneLayout>
       </div>

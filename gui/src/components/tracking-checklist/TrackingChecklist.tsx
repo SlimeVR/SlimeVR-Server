@@ -392,7 +392,7 @@ export function TrackingChecklist({
           )}
         >
           <div className="gap-2 flex fill-background-40">
-            <Typography variant="section-title">Tracking checklist</Typography>
+            <Typography variant="section-title" id="tracking_checklist" />
           </div>
           <div className="flex gap-1">
             <div
@@ -452,19 +452,23 @@ export function TrackingChecklist({
             </div>
             <div className={'flex flex-col justify-center'}>
               {completion === 'incomplete' && (
-                <Typography variant="section-title">
-                  You are not prepared to use SlimeVR!
-                </Typography>
+                <Typography
+                  variant="section-title"
+                  id="tracking_checklist-status-incomplete"
+                />
               )}
               {completion === 'partial' && (
-                <Typography variant="section-title">
-                  You have {warnings.length} warnings!
-                </Typography>
+                <Typography
+                  variant="section-title"
+                  id="tracking_checklist-status-partial"
+                  vars={{ count: warnings.length }}
+                />
               )}
               {completion == 'complete' && (
-                <Typography variant="section-title">
-                  You are prepared to use SlimeVR!
-                </Typography>
+                <Typography
+                  variant="section-title"
+                  id="tracking_checklist-status-complete"
+                />
               )}
             </div>
           </div>

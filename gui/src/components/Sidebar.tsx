@@ -128,7 +128,7 @@ export function PreviewControls({ open }: { open: boolean }) {
             content={
               <Typography
                 variant="section-title"
-                id="sidebar-preview-mocap_mode_soon"
+                id="preview-mocap_mode_soon"
               ></Typography>
             }
             preferedDirection="top"
@@ -186,7 +186,7 @@ function PreviewSection({ open }: { open: boolean }) {
       ></SkeletonVisualizerWidget>
       <Tooltip
         preferedDirection="bottom"
-        content={<Typography>Disable rendering</Typography>}
+        content={<Typography id="preview-disable_render" />}
       >
         <div
           className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-2 top-2 bg-background-60 hover:bg-background-50"
