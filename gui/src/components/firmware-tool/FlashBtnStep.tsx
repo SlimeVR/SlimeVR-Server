@@ -22,7 +22,7 @@ export function FlashBtnStep({
     <>
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('firmware_tool-flashbtn_step-description')}
           </Typography>
           {defaultConfig?.boardConfig.type ===

@@ -182,10 +182,10 @@ export function StayAlignedSettings({
           {l10n.getString('settings-stay_aligned')}
         </Typography>
         <div className="mt-2">
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('settings-stay_aligned-description')}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('settings-stay_aligned-setup-description')}
           </Typography>
           <div className="flex mt-2">
@@ -199,7 +199,7 @@ export function StayAlignedSettings({
           </div>
         </div>
         <div className="mt-6">
-          <Typography bold>
+          <Typography variant="section-title">
             {l10n.getString('settings-stay_aligned-general-label')}
           </Typography>
           <div className="grid sm:grid-cols-2 gap-3 mt-2">
@@ -224,11 +224,11 @@ export function StayAlignedSettings({
           </div>
         </div>
         <div className="mt-6">
-          <Typography bold>
+          <Typography variant="section-title">
             {l10n.getString('settings-stay_aligned-relaxed_poses-label')}
           </Typography>
           <div className="mt-2">
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString(
                 'settings-stay_aligned-relaxed_poses-description'
               )}
@@ -305,11 +305,11 @@ export function StayAlignedSettings({
           </div>
         </div>
         <div className="mt-6">
-          <Typography bold>
+          <Typography variant="section-title">
             {l10n.getString('settings-stay_aligned-debug-label')}
           </Typography>
           <div className="mt-2">
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString('settings-stay_aligned-debug-description')}
             </Typography>
           </div>

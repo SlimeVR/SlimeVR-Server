@@ -26,7 +26,7 @@ export function ResetProportionsStep({
             )}
           </Typography>
           <div>
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString(
                 'onboarding-scaled_proportions-reset_proportion-description'
               )}

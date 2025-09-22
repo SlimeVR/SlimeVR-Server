@@ -20,7 +20,7 @@ export function DoneStep({
         <Typography variant="section-title">
           {l10n.getString('onboarding-automatic_mounting-done-title')}
         </Typography>
-        <Typography color="secondary">
+        <Typography>
           {l10n.getString('onboarding-automatic_mounting-done-description')}
         </Typography>
       </div>

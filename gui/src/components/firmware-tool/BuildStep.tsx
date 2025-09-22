@@ -68,7 +68,7 @@ export function BuildStep({
     <>
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('firmware_tool-build_step-description')}
           </Typography>
         </div>
@@ -82,7 +82,7 @@ export function BuildStep({
                     : SlimeState.SAD
                 }
               ></LoaderIcon>
-              <Typography variant="section-title" color="secondary">
+              <Typography variant="section-title">
                 {l10n.getString('firmware_tool-build-' + buildStatus.status)}
               </Typography>
             </div>
@@ -91,7 +91,7 @@ export function BuildStep({
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
               <Localized id="firmware_tool-loading">
-                <Typography color="secondary"></Typography>
+                <Typography></Typography>
               </Localized>
             </div>
           )}

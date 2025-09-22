@@ -72,7 +72,7 @@ export function CheckFloorHeightStep({
               )}
             </Typography>
             <div>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'onboarding-automatic_proportions-check_floor_height-description'
                 )}
@@ -81,7 +81,7 @@ export function CheckFloorHeightStep({
                 id="onboarding-automatic_proportions-check_floor_height-calculation_warning-v2"
                 elems={{ u: <span className="underline"></span> }}
               >
-                <Typography color="secondary" bold>
+                <Typography bold>
                   Press the button to get your height!
                 </Typography>
               </Localized>

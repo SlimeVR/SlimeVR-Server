@@ -128,7 +128,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
 
       {tracker.position && (
         <div className="flex justify-between">
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('widget-imu_visualizer-position')}
           </Typography>
           <Typography>{formatVector3(tracker.position, 2)}</Typography>
@@ -136,14 +136,14 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
       )}
 
       <div className="flex justify-between">
-        <Typography color="secondary">
+        <Typography>
           {l10n.getString('widget-imu_visualizer-rotation_raw')}
         </Typography>
         <Typography>{formatVector3(rotationRaw, 2)}</Typography>
       </div>
 
       <div className="flex justify-between">
-        <Typography color="secondary">
+        <Typography>
           {l10n.getString('widget-imu_visualizer-rotation_preview')}
         </Typography>
         <Typography>{formatVector3(rotationIdent, 2)}</Typography>
@@ -151,7 +151,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
 
       {tracker.linearAcceleration && (
         <div className="flex justify-between">
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('widget-imu_visualizer-acceleration')}
           </Typography>
           <Typography>
@@ -162,7 +162,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
 
       {tracker.rawMagneticVector && (
         <div className="flex justify-between">
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('tracker-infos-magnetometer')}
           </Typography>
           <Typography>{formatVector3(tracker.rawMagneticVector, 1)}</Typography>
@@ -171,7 +171,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
 
       {!!tracker.stayAligned && (
         <div className="flex justify-between">
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('widget-imu_visualizer-stay_aligned')}
           </Typography>
           <StayAlignedInfo color="primary" tracker={tracker} />

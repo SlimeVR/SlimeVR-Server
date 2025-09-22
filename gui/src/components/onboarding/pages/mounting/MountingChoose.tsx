@@ -17,16 +17,12 @@ export function MountingChoose() {
   return (
     <>
       <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative overflow-y-auto px-4 pb-4">
-        <div className="flex flex-col gap-4 justify-center">
+        <div className="flex flex-col gap-8 justify-center">
           <div className="xs:w-10/12 xs:max-w-[666px]">
             <Typography variant="main-title">
               {l10n.getString('onboarding-choose_mounting')}
             </Typography>
-            <Typography
-              variant="standard"
-              color="secondary"
-              whitespace="whitespace-pre-line"
-            >
+            <Typography variant="standard" whitespace="whitespace-pre-line">
               {l10n.getString('onboarding-choose_mounting-description')}
             </Typography>
           </div>
@@ -37,12 +33,19 @@ export function MountingChoose() {
           >
             <div
               className={classNames(
-                'rounded-lg p-4 flex',
+                'rounded-lg p-4 flex relative',
                 !state.alonePage && 'bg-background-70',
                 state.alonePage && 'bg-background-60'
               )}
             >
-              <div className="flex flex-col gap-4">
+              <div className="bg-accent-background-30 absolute -left-4 -top-5 p-1.5 rounded-lg">
+                <Typography variant="vr-accessible" italic>
+                  {l10n.getString(
+                    'onboarding-choose_mounting-auto_mounting-label-v2'
+                  )}
+                </Typography>
+              </div>
+              <div className="flex flex-col gap-4 ">
                 <div className="flex flex-grow flex-col gap-4 max-w-sm">
                   <div>
                     <Typography variant="main-title" bold>
@@ -50,14 +53,9 @@ export function MountingChoose() {
                         'onboarding-choose_mounting-auto_mounting'
                       )}
                     </Typography>
-                    <Typography variant="vr-accessible" italic>
-                      {l10n.getString(
-                        'onboarding-choose_mounting-auto_mounting-label-v2'
-                      )}
-                    </Typography>
                   </div>
                   <div>
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'onboarding-choose_mounting-auto_mounting-description'
                       )}
@@ -98,14 +96,9 @@ export function MountingChoose() {
                         'onboarding-choose_mounting-manual_mounting'
                       )}
                     </Typography>
-                    <Typography variant="vr-accessible" italic>
-                      {l10n.getString(
-                        'onboarding-choose_mounting-manual_mounting-label-v2'
-                      )}
-                    </Typography>
                   </div>
                   <div>
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'onboarding-choose_mounting-manual_mounting-description'
                       )}

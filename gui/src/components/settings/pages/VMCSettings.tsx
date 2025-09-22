@@ -137,17 +137,15 @@ export function VMCSettings() {
                   .getString('settings-osc-vmc-description')
                   .split('\n')
                   .map((line, i) => (
-                    <Typography color="secondary" key={i}>
-                      {line}
-                    </Typography>
+                    <Typography key={i}>{line}</Typography>
                   ))}
               </>
             </div>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-enable')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('settings-osc-vmc-enable-description')}
               </Typography>
             </div>
@@ -160,7 +158,7 @@ export function VMCSettings() {
                 label={l10n.getString('settings-osc-vmc-enable-label')}
               />
             </div>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-network')}
             </Typography>
             <div className="flex flex-col pb-2">
@@ -169,9 +167,7 @@ export function VMCSettings() {
                   .getString('settings-osc-vmc-network-description')
                   .split('\n')
                   .map((line, i) => (
-                    <Typography color="secondary" key={i}>
-                      {line}
-                    </Typography>
+                    <Typography key={i}>{line}</Typography>
                   ))}
               </>
             </div>
@@ -203,11 +199,11 @@ export function VMCSettings() {
                 ></Input>
               </Localized>
             </div>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-network-address')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('settings-osc-vmc-network-address-description')}
               </Typography>
             </div>
@@ -227,11 +223,11 @@ export function VMCSettings() {
                 label=""
               ></Input>
             </div>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-vrm')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('settings-osc-vmc-vrm-description')}
               </Typography>
             </div>
@@ -254,11 +250,11 @@ export function VMCSettings() {
               ></FileInput>
               {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
             </div>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-anchor_hip')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('settings-osc-vmc-anchor_hip-description')}
               </Typography>
             </div>
@@ -271,11 +267,11 @@ export function VMCSettings() {
                 label={l10n.getString('settings-osc-vmc-anchor_hip-label')}
               />
             </div>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-mirror_tracking')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('settings-osc-vmc-mirror_tracking-description')}
               </Typography>
             </div>

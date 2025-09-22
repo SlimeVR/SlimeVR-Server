@@ -28,7 +28,7 @@ export function PutTrackersOnStep({
             )}
           </Typography>
           <div>
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString(
                 'onboarding-automatic_mounting-put_trackers_on-description'
               )}

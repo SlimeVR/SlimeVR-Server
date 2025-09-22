@@ -136,7 +136,7 @@ export function StayAlignedSetup() {
           <Typography variant="main-title">
             {l10n.getString('onboarding-stay_aligned-title')}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('onboarding-stay_aligned-description')}
           </Typography>
         </div>

@@ -42,7 +42,7 @@ export function VerifyResultsStep({
             )}
           </Typography>
           <div>
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString(
                 'onboarding-automatic_proportions-verify_results-description'
               )}
@@ -65,7 +65,7 @@ export function VerifyResultsStep({
             >
               {bodyParts?.map(({ bone, label, value }) => (
                 <div className="flex justify-between" key={bone}>
-                  <Typography color="secondary">{label}</Typography>
+                  <Typography>{label}</Typography>
                   <Typography bold sentryMask>
                     {(value * 100).toFixed(2)} CM
                   </Typography>
