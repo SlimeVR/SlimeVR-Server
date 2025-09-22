@@ -221,11 +221,7 @@ public class TapDetectionManager {
 			// However, feet being reset or not will end up being decided on a
 			// per-tracker basis
 			// due to the setting being in ResetsConfig.kt
-			skeleton
-				.resetTrackersMounting(
-					resetSourceName,
-					TrackerUtils.INSTANCE.getAllBodyPartsButFingers()
-				);
+			humanPoseManager.resetTrackersMounting(resetSourceName);
 
 			mountingResetDetector.resetDetector();
 			mountingResetAllowPlaySound = true;

@@ -102,4 +102,17 @@ object TrackerUtils {
 		BodyPart.RIGHT_HAND, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER,
 		BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT,
 	)
+
+	val allBodyPartsButFingersAndFeets = listOf(
+		BodyPart.HEAD, BodyPart.NECK, BodyPart.UPPER_CHEST,
+		BodyPart.CHEST, BodyPart.WAIST, BodyPart.HIP,
+		BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG, BodyPart.LEFT_LOWER_LEG,
+		BodyPart.RIGHT_LOWER_LEG, BodyPart.LEFT_LOWER_ARM, BodyPart.RIGHT_LOWER_ARM,
+		BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM, BodyPart.LEFT_HAND,
+		BodyPart.RIGHT_HAND, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER
+	)
+
+	val feetsBodyParts = listOf(
+		BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT
+	)
 }

@@ -9,6 +9,7 @@ import dev.slimevr.games.vrchat.VRCConfigValidity
 import dev.slimevr.games.vrchat.VRCConfigValues
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
+import dev.slimevr.tracking.trackers.TrackerUtils
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import solarxr_protocol.datatypes.DeviceIdT
 import solarxr_protocol.datatypes.TrackerIdT
@@ -31,6 +32,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 	// Simple flag set to true if reset mounting was performed at least once.
 	// This value is only runtime and never saved
 	var resetMountingCompleted = false
+	var feetResetMountingCompleted = false
 
 	init {
 		vrServer.vrcConfigManager.addListener(this)
@@ -127,6 +129,17 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 
 		steps.add(
 			TrackingChecklistStepT().apply {
+				id = TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION
+				valid = false
+				enabled = false
+				optional = false
+				ignorable = true
+				visibility = TrackingChecklistStepVisibility.ALWAYS
+			},
+		)
+
+		steps.add(
+			TrackingChecklistStepT().apply {
 				id = TrackingChecklistStepId.UNASSIGNED_HMD
 				enabled = true
 				optional = false
@@ -163,7 +176,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 			assignedTrackers.filter { it.isImu() && it.trackerDataType != TrackerDataType.FLEX_ANGLE }
 
 		val trackersWithError =
-			imuTrackers.filter { it.status === TrackerStatus.ERROR }
+			imuTrackers.filter { it.status == TrackerStatus.ERROR }
 		updateValidity(
 			TrackingChecklistStepId.TRACKER_ERROR,
 			trackersWithError.isEmpty(),
@@ -278,6 +291,14 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		updateValidity(TrackingChecklistStepId.MOUNTING_CALIBRATION, resetMountingCompleted) {
 			it.enabled = vrServer.configManager.vrConfig.resetsConfig.preferedMountingMethod == MountingMethods.AUTOMATIC
 		}
+
+		updateValidity(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION, feetResetMountingCompleted) {
+			it.enabled =
+				vrServer.configManager.vrConfig.resetsConfig.preferedMountingMethod == MountingMethods.AUTOMATIC
+					&& !vrServer.configManager.vrConfig.resetsConfig.resetMountingFeet
+					&& imuTrackers.any { t -> TrackerUtils.feetsBodyParts.contains(t.trackerPosition?.bodyPart) }
+		}
+
 
 		updateValidity(TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED, vrServer.configManager.vrConfig.stayAlignedConfig.enabled)
 

@@ -109,6 +109,7 @@ export const feetAssignedTrackers = atom((get) =>
 
 export const fingerAssignedTrackers = atom((get) =>
   get(assignedTrackersAtom).some(
-    (t) => t.tracker.info?.bodyPart && FINGER_BODY_PARTS.has(t.tracker.info.bodyPart)
+    (t) =>
+      t.tracker.info?.bodyPart && FINGER_BODY_PARTS.includes(t.tracker.info.bodyPart)
   )
 );

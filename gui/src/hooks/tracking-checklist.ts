@@ -24,6 +24,8 @@ export const trackingchecklistIdtoLabel: Record<TrackingChecklistStepId, string>
     'tracking_checklist-NETWORK_PROFILE_PUBLIC',
   [TrackingChecklistStepId.MOUNTING_CALIBRATION]:
     'tracking_checklist-MOUNTING_CALIBRATION',
+  [TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION]:
+    'tracking_checklist-FEET_MOUNTING_CALIBRATION',
   [TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED]:
     'tracking_checklist-STAY_ALIGNED_CONFIGURED',
 };

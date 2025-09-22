@@ -237,8 +237,8 @@ reset-reset_all_warning_default-v2 =
 
 reset-full = Full Reset
 reset-mounting = Mounting Calibration
-reset-mounting-feet = Reset Feet Mounting
-reset-mounting-fingers = Reset Fingers Mounting
+reset-mounting-feet = Feet Calibration
+reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
 
 ## Serial detection stuff
@@ -1133,6 +1133,10 @@ onboarding-automatic_mounting-done-restart = Try again
 onboarding-automatic_mounting-mounting_reset-title = Mounting Reset
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Squat in a "skiing" pose with your legs bent, your upper body tilted forwards, and your arms bent.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Press the "Mounting calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
+
+onboarding-automatic_mounting-mounting_reset-feet-step-0 = 1. Stand on your toes, both feets pointing forward. Alternatively you can do it siting on a chair.
+onboarding-automatic_mounting-mounting_reset-feet-step-1 = 2. Press the "Feet calibration" button and wait for 3 seconds before the trackers' mounting orientations will reset.
+
 onboarding-automatic_mounting-preparation-title = Preparation
 onboarding-automatic_mounting-preparation-v2-step-0 = 1. Press the "Full Reset" button.
 onboarding-automatic_mounting-preparation-v2-step-1 = 2. Stand upright with your arms to your sides. Make sure to look forward.
@@ -1575,6 +1579,7 @@ tracking_checklist-status-partial = {$count ->
 }
 tracking_checklist-status-complete = You are prepared to use SlimeVR!
 tracking_checklist-MOUNTING_CALIBRATION = Perform a mounting calibration
+tracking_checklist-FEET_MOUNTING_CALIBRATION = Perform a feet mounting calibration
 tracking_checklist-FULL_RESET = Perform a full Reset
 tracking_checklist-FULL_RESET-desc = Some Trackers need a reset to be performed
 tracking_checklist-STEAMVR_DISCONNECTED = SteamVR not running

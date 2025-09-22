@@ -60,6 +60,9 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
 
   const name = options.customName || resetName;
 
+  const skiReset =
+    options.type === ResetType.Mounting && options.group === 'default';
+
   return (
     <Tooltip
       disabled={isMd}
@@ -75,8 +78,8 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
       >
         <div
           className={classNames({
-            // 'animate-spin-ccw': status === 'finished',
-            'animate-skiing': status === 'finished',
+            'animate-spin-ccw': !skiReset && status === 'finished',
+            'animate-skiing': skiReset && status === 'finished',
           })}
           style={{
             animationIterationCount: 1,

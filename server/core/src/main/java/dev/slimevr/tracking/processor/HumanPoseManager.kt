@@ -567,23 +567,19 @@ class HumanPoseManager(val server: VRServer?) {
 	}
 
 	@JvmOverloads
-	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
-		skeleton.resetTrackersMounting(resetSourceName, bodyParts)
-		//FIXME: Should prob take into consideration the different kinds of mounting
-		if (server != null) {
-			server.configManager.vrConfig.resetsConfig.preferedMountingMethod =
-				MountingMethods.AUTOMATIC
-			server.trackingChecklistManager.resetMountingCompleted = true;
-			server.configManager.saveConfig()
-		}
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int>? = null) {
+		if (server === null) return
+
+		val finalBodyParts = bodyParts
+			?: if (server.configManager.vrConfig.resetsConfig.resetMountingFeet)
+				TrackerUtils.allBodyPartsButFingers
+			else TrackerUtils.allBodyPartsButFingersAndFeets
+
+		skeleton.resetTrackersMounting(resetSourceName, finalBodyParts)
 	}
 
 	fun clearTrackersMounting(resetSourceName: String?) {
 		skeleton.clearTrackersMounting(resetSourceName)
-		if (server != null) {
-			server.trackingChecklistManager.resetMountingCompleted = false;
-			server.configManager.saveConfig()
-		}
 	}
 
 	@get:ThreadSafe

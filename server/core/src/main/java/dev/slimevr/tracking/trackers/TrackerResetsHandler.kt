@@ -35,7 +35,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var compensateDrift = false
 	private var driftPrediction = false
 	private var driftCompensationEnabled = false
-	private var resetMountingFeet = false
 	private var armsResetMode = ArmsResetModes.BACK
 	private var yawResetSmoothTime = 0.0f
 	var saveMountingReset = false
@@ -161,7 +160,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Reads/loads reset settings from the given config
 	 */
 	fun readResetConfig(config: ResetsConfig) {
-		resetMountingFeet = config.resetMountingFeet
 		armsResetMode = config.mode
 		yawResetSmoothTime = config.yawResetSmoothTime
 		saveMountingReset = config.saveMountingReset
@@ -383,16 +381,13 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	/**
 	 * Perform the math to align the tracker to go forward
 	 * and stores it in mountRotFix, and adjusts yawFix
-	 * If forceFeet is true, always reset feet regardless of resetMountingFeet's value.
 	 */
-	fun resetMounting(reference: Quaternion, forceFeet: Boolean = false) {
+	fun resetMounting(reference: Quaternion) {
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
 			tracker.trackerFlexHandler.resetMax()
 			tracker.resetFilteringQuats(reference)
 			return
 		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
-			return
-		} else if (!resetMountingFeet && tracker.trackerPosition.isFoot() && !forceFeet) {
 			return
 		}
 

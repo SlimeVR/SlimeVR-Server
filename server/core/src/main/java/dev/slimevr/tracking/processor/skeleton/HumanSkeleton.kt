@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.processor.skeleton
 
 import dev.slimevr.VRServer
+import dev.slimevr.config.MountingMethods
 import dev.slimevr.config.StayAlignedConfig
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.BoneType
@@ -1600,16 +1601,29 @@ class HumanSkeleton(
 			referenceRotation = it.getRotation()
 		}
 
-		// If onlyFeet is true, feet will be forced to be mounting reset in their reset handlers.
-		val onlyFeet = bodyParts.isNotEmpty() && bodyParts.all { it == BodyPart.LEFT_FOOT || it == BodyPart.RIGHT_FOOT }
 		for (tracker in trackersToReset) {
 			// Only reset if tracker needsMounting
 			if (tracker != null && tracker.allowMounting && (bodyParts.isEmpty() || bodyParts.contains(tracker.trackerPosition?.bodyPart))) {
-				tracker.resetsHandler.resetMounting(referenceRotation, onlyFeet)
+				tracker.resetsHandler.resetMounting(referenceRotation)
 			}
 		}
 		legTweaks.resetBuffer()
 		localizer.reset()
+
+		if (humanPoseManager.server != null) {
+			humanPoseManager.server.configManager.vrConfig.resetsConfig.preferedMountingMethod =
+				MountingMethods.AUTOMATIC
+			humanPoseManager.server.trackingChecklistManager.resetMountingCompleted = bodyParts.any { it ->
+				val defaultParts = if (humanPoseManager.server.configManager.vrConfig.resetsConfig.resetMountingFeet)
+					TrackerUtils.allBodyPartsButFingers
+				else TrackerUtils.allBodyPartsButFingersAndFeets
+
+				return@any defaultParts.contains(it)
+			}
+			humanPoseManager.server.trackingChecklistManager.feetResetMountingCompleted = bodyParts.any { TrackerUtils.feetsBodyParts.contains(it) }
+			humanPoseManager.server.configManager.saveConfig()
+		}
+
 		LogManager.info("[HumanSkeleton] Reset: mounting ($resetSourceName)")
 	}
 
@@ -1627,6 +1641,12 @@ class HumanSkeleton(
 		}
 		legTweaks.resetBuffer()
 		LogManager.info("[HumanSkeleton] Clear: mounting ($resetSourceName)")
+
+		if (humanPoseManager.server != null) {
+			humanPoseManager.server.trackingChecklistManager.resetMountingCompleted = false
+			humanPoseManager.server.trackingChecklistManager.feetResetMountingCompleted = false
+			humanPoseManager.server.configManager.saveConfig()
+		}
 	}
 
 	fun updateTapDetectionConfig() {
