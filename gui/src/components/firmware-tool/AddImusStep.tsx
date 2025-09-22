@@ -240,7 +240,7 @@ export function AddImusStep({
     <>
       <div className="flex flex-col w-full">
         <div className="flex flex-col gap-4">
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('firmware_tool-add_imus_step-description')}
           </Typography>
         </div>
@@ -297,7 +297,7 @@ export function AddImusStep({
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
               <Localized id="firmware_tool-loading">
-                <Typography color="secondary"></Typography>
+                <Typography></Typography>
               </Localized>
             </div>
           )}

@@ -160,7 +160,7 @@ function SerialDevicesList({
       </Localized>
       {Object.keys(devices).length === 0 ? (
         <Localized id="firmware_tool-flash_method_serial-no_devices">
-          <Typography variant="standard" color="secondary"></Typography>
+          <Typography variant="standard"></Typography>
         </Localized>
       ) : (
         <Dropdown
@@ -274,7 +274,7 @@ function OTADevicesList({
       </Localized>
       {devices.length === 0 && (
         <Localized id="firmware_tool-flash_method_ota-no_devices">
-          <Typography color="secondary"></Typography>
+          <Typography></Typography>
         </Localized>
       )}
       <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-2">
@@ -347,7 +347,7 @@ export function FlashingMethodStep({
     <>
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('firmware_tool-flash_method_step-description')}
           </Typography>
         </div>
@@ -416,7 +416,7 @@ export function FlashingMethodStep({
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
               <Localized id="firmware_tool-loading">
-                <Typography color="secondary"></Typography>
+                <Typography></Typography>
               </Localized>
             </div>
           )}

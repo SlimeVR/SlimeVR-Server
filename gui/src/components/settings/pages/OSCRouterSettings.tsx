@@ -110,17 +110,15 @@ export function OSCRouterSettings() {
                   .getString('settings-osc-router-description')
                   .split('\n')
                   .map((line, i) => (
-                    <Typography color="secondary" key={i}>
-                      {line}
-                    </Typography>
+                    <Typography key={i}>{line}</Typography>
                   ))}
               </>
             </div>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-router-enable')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('settings-osc-router-enable-description')}
               </Typography>
             </div>
@@ -133,7 +131,7 @@ export function OSCRouterSettings() {
                 label={l10n.getString('settings-osc-router-enable-label')}
               />
             </div>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-router-network')}
             </Typography>
             <div className="flex flex-col pb-2">
@@ -142,9 +140,7 @@ export function OSCRouterSettings() {
                   .getString('settings-osc-router-network-description')
                   .split('\n')
                   .map((line, i) => (
-                    <Typography color="secondary" key={i}>
-                      {line}
-                    </Typography>
+                    <Typography key={i}>{line}</Typography>
                   ))}
               </>
             </div>
@@ -176,11 +172,11 @@ export function OSCRouterSettings() {
                 ></Input>
               </Localized>
             </div>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-router-network-address')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-osc-router-network-address-description'
                 )}

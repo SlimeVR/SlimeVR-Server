@@ -140,17 +140,15 @@ export function VRCOSCSettings() {
                   .getString('settings-osc-vrchat-description-v1')
                   .split('\n')
                   .map((line, i) => (
-                    <Typography color="secondary" key={i}>
-                      {line}
-                    </Typography>
+                    <Typography key={i}>{line}</Typography>
                   ))}
               </>
             </div>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-vrchat-enable')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('settings-osc-vrchat-enable-description')}
               </Typography>
             </div>
@@ -164,18 +162,16 @@ export function VRCOSCSettings() {
               />
             </div>
 
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-vrchat-oscqueryEnabled')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n
                   .getString('settings-osc-vrchat-oscqueryEnabled-description')
                   .split('\n')
                   .map((line, i) => (
-                    <Typography color="secondary" key={i}>
-                      {line}
-                    </Typography>
+                    <Typography key={i}>{line}</Typography>
                   ))}
               </Typography>
             </div>
@@ -191,11 +187,11 @@ export function VRCOSCSettings() {
               />
             </div>
 
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-vrchat-network')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('settings-osc-vrchat-network-description-v1')}
               </Typography>
             </div>
@@ -227,11 +223,11 @@ export function VRCOSCSettings() {
                 ></Input>
               </Localized>
             </div>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-vrchat-network-address')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-osc-vrchat-network-address-description-v1'
                 )}
@@ -253,11 +249,11 @@ export function VRCOSCSettings() {
                 label=""
               ></Input>
             </div>
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-osc-vrchat-network-trackers')}
             </Typography>
             <div className="flex flex-col pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-osc-vrchat-network-trackers-description'
                 )}

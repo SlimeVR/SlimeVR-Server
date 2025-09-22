@@ -51,9 +51,7 @@ export function Radio({
           <div className="flex flex-col gap-2 pointer-events-none">
             {children ? children : <Typography bold>{label}</Typography>}
             {description && (
-              <Typography variant="standard" color="secondary">
-                {description}
-              </Typography>
+              <Typography variant="standard">{description}</Typography>
             )}
           </div>
         </label>

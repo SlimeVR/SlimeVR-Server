@@ -130,11 +130,14 @@ export function InterfaceSettings() {
               {l10n.getString('settings-interface-notifications')}
             </Typography>
 
-            <Typography bold>
-              {l10n.getString('settings-general-interface-serial_detection')}
-            </Typography>
+            <div className="pt-2">
+              <Typography variant="section-title">
+                {l10n.getString('settings-general-interface-serial_detection')}
+              </Typography>
+            </div>
+
             <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-general-interface-serial_detection-description'
                 )}
@@ -152,11 +155,11 @@ export function InterfaceSettings() {
               />
             </div>
 
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-general-interface-feedback_sound')}
             </Typography>
             <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-general-interface-feedback_sound-description'
                 )}
@@ -187,13 +190,13 @@ export function InterfaceSettings() {
               />
             </div>
 
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString(
                 'settings-general-interface-connected_trackers_warning'
               )}
             </Typography>
             <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-general-interface-connected_trackers_warning-description'
                 )}
@@ -221,130 +224,134 @@ export function InterfaceSettings() {
             <Typography variant="main-title">
               {l10n.getString('settings-interface-behavior')}
             </Typography>
+            <div className="pt-2">
+              {isTrayAvailable && (
+                <>
+                  <Typography variant="section-title">
+                    {l10n.getString('settings-general-interface-use_tray')}
+                  </Typography>
+                  <div className="flex flex-col pt-1 pb-2">
+                    <Typography>
+                      {l10n.getString(
+                        'settings-general-interface-use_tray-description'
+                      )}
+                    </Typography>
+                  </div>
+                  <div className="grid sm:grid-cols-2 pb-4">
+                    <CheckBox
+                      variant="toggle"
+                      control={control}
+                      outlined
+                      name="behavior.useTray"
+                      label={l10n.getString(
+                        'settings-general-interface-use_tray-label'
+                      )}
+                    />
+                  </div>
+                </>
+              )}
 
-            {isTrayAvailable && (
-              <>
-                <Typography bold>
-                  {l10n.getString('settings-general-interface-use_tray')}
+              <Typography variant="section-title">
+                {l10n.getString('settings-general-interface-discord_presence')}
+              </Typography>
+              <div className="flex flex-col pt-1 pb-2">
+                <Typography>
+                  {l10n.getString(
+                    'settings-general-interface-discord_presence-description'
+                  )}
                 </Typography>
-                <div className="flex flex-col pt-1 pb-2">
-                  <Typography color="secondary">
+              </div>
+              <div className="grid sm:grid-cols-2 pb-4">
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  outlined
+                  name="behavior.discordPresence"
+                  label={l10n.getString(
+                    'settings-general-interface-discord_presence-label'
+                  )}
+                />
+              </div>
+
+              <Typography variant="section-title">
+                {l10n.getString('settings-general-interface-dev_mode')}
+              </Typography>
+              <div className="flex flex-col pt-1 pb-2">
+                <Typography>
+                  {l10n.getString(
+                    'settings-general-interface-dev_mode-description'
+                  )}
+                </Typography>
+              </div>
+              <div className="grid sm:grid-cols-2 pb-4">
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  outlined
+                  name="behavior.devmode"
+                  label={l10n.getString(
+                    'settings-general-interface-dev_mode-label'
+                  )}
+                />
+              </div>
+
+              <Typography variant="section-title">
+                {l10n.getString('settings-interface-behavior-error_tracking')}
+              </Typography>
+              <div className="flex flex-col pt-1 pb-2">
+                <Localized
+                  id={
+                    'settings-interface-behavior-error_tracking-description_v2'
+                  }
+                  elems={{
+                    b: <b></b>,
+                  }}
+                >
+                  <Typography whitespace="whitespace-pre-line"></Typography>
+                </Localized>
+              </div>
+              <div className="grid sm:grid-cols-2 pb-4">
+                <CheckBox
+                  variant="toggle"
+                  control={control}
+                  outlined
+                  name="behavior.errorTracking"
+                  label={l10n.getString(
+                    'settings-interface-behavior-error_tracking-label'
+                  )}
+                />
+              </div>
+
+              {isTauri() && (
+                <>
+                  <Typography variant="section-title">
                     {l10n.getString(
-                      'settings-general-interface-use_tray-description'
+                      'settings-interface-behavior-bvh_directory'
                     )}
                   </Typography>
-                </div>
-                <div className="grid sm:grid-cols-2 pb-4">
-                  <CheckBox
-                    variant="toggle"
-                    control={control}
-                    outlined
-                    name="behavior.useTray"
-                    label={l10n.getString(
-                      'settings-general-interface-use_tray-label'
-                    )}
-                  />
-                </div>
-              </>
-            )}
-
-            <Typography bold>
-              {l10n.getString('settings-general-interface-discord_presence')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-interface-discord_presence-description'
-                )}
-              </Typography>
+                  <div className="flex flex-col pt-1 pb-2">
+                    <Localized
+                      id={
+                        'settings-interface-behavior-bvh_directory-description'
+                      }
+                    >
+                      <Typography></Typography>
+                    </Localized>
+                  </div>
+                  <div className="grid gap-3 pb-5">
+                    <TauriFileInput
+                      name="behavior.bvhDirectory"
+                      rules={{
+                        required: false,
+                      }}
+                      control={control}
+                      label="settings-interface-behavior-bvh_directory-label"
+                      directory
+                    />
+                  </div>
+                </>
+              )}
             </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="behavior.discordPresence"
-                label={l10n.getString(
-                  'settings-general-interface-discord_presence-label'
-                )}
-              />
-            </div>
-
-            <Typography bold>
-              {l10n.getString('settings-general-interface-dev_mode')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
-                {l10n.getString(
-                  'settings-general-interface-dev_mode-description'
-                )}
-              </Typography>
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="behavior.devmode"
-                label={l10n.getString(
-                  'settings-general-interface-dev_mode-label'
-                )}
-              />
-            </div>
-
-            <Typography bold>
-              {l10n.getString('settings-interface-behavior-error_tracking')}
-            </Typography>
-            <div className="flex flex-col pt-1 pb-2">
-              <Localized
-                id={'settings-interface-behavior-error_tracking-description_v2'}
-                elems={{
-                  b: <b></b>,
-                }}
-              >
-                <Typography
-                  color="secondary"
-                  whitespace="whitespace-pre-line"
-                ></Typography>
-              </Localized>
-            </div>
-            <div className="grid sm:grid-cols-2 pb-4">
-              <CheckBox
-                variant="toggle"
-                control={control}
-                outlined
-                name="behavior.errorTracking"
-                label={l10n.getString(
-                  'settings-interface-behavior-error_tracking-label'
-                )}
-              />
-            </div>
-
-            {isTauri() && (
-              <>
-                <Typography bold>
-                  {l10n.getString('settings-interface-behavior-bvh_directory')}
-                </Typography>
-                <div className="flex flex-col pt-1 pb-2">
-                  <Localized
-                    id={'settings-interface-behavior-bvh_directory-description'}
-                  >
-                    <Typography color="secondary"></Typography>
-                  </Localized>
-                </div>
-                <div className="grid gap-3 pb-5">
-                  <TauriFileInput
-                    name="behavior.bvhDirectory"
-                    rules={{
-                      required: false,
-                    }}
-                    control={control}
-                    label="settings-interface-behavior-bvh_directory-label"
-                    directory
-                  />
-                </div>
-              </>
-            )}
           </>
         </SettingsPagePaneLayout>
 
@@ -356,11 +363,13 @@ export function InterfaceSettings() {
             <Typography variant="main-title">
               {l10n.getString('settings-interface-appearance')}
             </Typography>
-            <Typography bold>
-              {l10n.getString('settings-interface-appearance-decorations')}
-            </Typography>
+            <div className="pt-2">
+              <Typography variant="section-title">
+                {l10n.getString('settings-interface-appearance-decorations')}
+              </Typography>
+            </div>
             <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-interface-appearance-decorations-description'
                 )}
@@ -379,7 +388,7 @@ export function InterfaceSettings() {
             </div>
 
             <div className="pb-4">
-              <Typography bold>
+              <Typography variant="section-title">
                 {l10n.getString('settings-general-interface-theme')}
               </Typography>
               <div className="flex flex-wrap gap-3 pt-2">
@@ -440,13 +449,13 @@ export function InterfaceSettings() {
               </div>
             </div>
 
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString(
                 'settings-general-interface-show-navbar-onboarding'
               )}
             </Typography>
             <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-general-interface-show-navbar-onboarding-description'
                 )}
@@ -464,11 +473,11 @@ export function InterfaceSettings() {
               />
             </div>
 
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-interface-appearance-font')}
             </Typography>
             <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-interface-appearance-font-description'
                 )}
@@ -513,11 +522,11 @@ export function InterfaceSettings() {
               />
             </div>
 
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-interface-appearance-font_size')}
             </Typography>
             <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'settings-interface-appearance-font_size-description'
                 )}
@@ -541,11 +550,11 @@ export function InterfaceSettings() {
               />
             </div>
 
-            <Typography bold>
+            <Typography variant="section-title">
               {l10n.getString('settings-general-interface-lang')}
             </Typography>
             <div className="flex flex-col pt-1 pb-2">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('settings-general-interface-lang-description')}
               </Typography>
             </div>

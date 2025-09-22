@@ -125,7 +125,7 @@ export function ResetTutorialPage() {
           <Typography variant="main-title">
             {l10n.getString('onboarding-reset_tutorial')}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('onboarding-reset_tutorial-explanation')}
           </Typography>
           <div className="flex">
@@ -165,7 +165,7 @@ export function ResetTutorialPage() {
               curIndex >= order.length && 'hidden'
             )}
           >
-            <Typography whitespace="whitespace-pre-line" color="secondary">
+            <Typography whitespace="whitespace-pre-line">
               {l10n.getString(`onboarding-reset_tutorial-${curIndex}`, {
                 taps: tapSettings[curIndex],
               })}
@@ -184,7 +184,7 @@ export function ResetTutorialPage() {
               curIndex >= order.length && 'hidden'
             )}
           >
-            <Typography whitespace="whitespace-pre-line" color="secondary">
+            <Typography whitespace="whitespace-pre-line">
               {l10n.getString(`onboarding-reset_tutorial-${curIndex}`, {
                 taps: tapSettings[curIndex],
               })}

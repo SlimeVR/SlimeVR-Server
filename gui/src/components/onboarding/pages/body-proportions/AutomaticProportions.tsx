@@ -32,7 +32,7 @@ export function AutomaticProportionsPage() {
                 {l10n.getString('onboarding-automatic_proportions-title')}
               </Typography>
               <div>
-                <Typography color="secondary">
+                <Typography>
                   {l10n.getString(
                     'onboarding-automatic_proportions-description'
                   )}

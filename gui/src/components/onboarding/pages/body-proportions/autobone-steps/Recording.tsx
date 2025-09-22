@@ -97,7 +97,7 @@ export function Recording({
               'onboarding-automatic_proportions-recording-description-p0'
             )}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString(
               'onboarding-automatic_proportions-recording-description-p1'
             )}
@@ -110,7 +110,7 @@ export function Recording({
               .split('\n')
               .map((line, i) => (
                 <li key={i}>
-                  <Typography color="secondary">{line}</Typography>
+                  <Typography>{line}</Typography>
                 </li>
               ))}
           </>
@@ -137,7 +137,7 @@ export function Recording({
               )
               .otherwise(() => undefined)}
           ></ProgressBar>
-          <Typography color="secondary">
+          <Typography>
             {match([hasCalibration, hasRecording])
               .returnType<ReactNode>()
               .with([ProcessStatus.PENDING, ProcessStatus.FULFILLED], () =>

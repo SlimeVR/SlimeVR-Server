@@ -99,7 +99,7 @@ export function TrackerPartCard({
             <WarningIcon></WarningIcon>
           </div>
         )}
-        <Typography color="secondary">
+        <Typography variant="section-title">
           {l10n.getString('body_part-' + BodyPart[role])}
         </Typography>
         {td?.map(({ tracker }, index) => (
@@ -110,7 +110,7 @@ export function TrackerPartCard({
           />
         ))}
         {!td && (
-          <Typography>
+          <Typography color="text-background-30">
             {l10n.getString('tracker-part_card-unassigned')}
           </Typography>
         )}
