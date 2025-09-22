@@ -46,7 +46,7 @@ export function ResetButton({
       icon={<ResetButtonIcon {...options} />}
       onClick={triggerReset}
       className={classNames(
-        'border-2 m-1',
+        'border-2 py-[5px]',
         status === 'finished'
           ? 'border-status-success'
           : 'transition-[border-color] duration-500 ease-in-out border-transparent',

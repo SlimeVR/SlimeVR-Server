@@ -1608,6 +1608,11 @@ tracking_checklist-ignore = Ignore
 
 preview-mocap_mode_soon = Mocap Mode (Soon™)
 preview-disable_render = Disable rendering
+preview-disabled_render = Rendering disabled
 
 toolbar-mounting_calibration = Mounting Calibration
+toolbar-mounting_calibration-default = Body
+toolbar-mounting_calibration-feet = Feet
+toolbar-mounting_calibration-fingers = Fingers
+toolbar-drift_reset = Drift Reset
 toolbar-connected_trackers = {$count} trackers connected

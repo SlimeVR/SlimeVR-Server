@@ -284,7 +284,6 @@ const config = {
       animation: {
         'spin-ccw': 'spin-ccw 1s linear infinite',
         skiing: 'skiing 1s linear infinite',
-        'skiing-reset': 'skiing-reset 0.2s linear infinite',
       },
     },
     data: {

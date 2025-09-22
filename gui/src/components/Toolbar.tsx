@@ -134,7 +134,7 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
       <div className="flex mobile:py-2 flex-col items-center bg-background-70 rounded-t-lg h-[var(--toolbar-h)] mr-2 xs:mt-2 mobile:mr-0">
         <div className="px-1 py-3 w-full divide-x-2 divide-background-50 flex justify-center md:justify-start">
           <div className="flex-col flex gap-1 px-2 md:w-[60%]">
-            <Typography variant="section-title">Drift Resets</Typography>
+            <Typography variant="section-title" id="toolbar-drift_reset" />
             <div className="gap-2 md:h-[72px] h-[62px] w-full grid-cols-2 grid">
               <BasicResetButton type={ResetType.Full}></BasicResetButton>
               <BasicResetButton type={ResetType.Yaw}></BasicResetButton>
@@ -154,18 +154,18 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
               <BasicResetButton
                 type={ResetType.Mounting}
                 group={'default'}
-                customName="Body"
+                customName="toolbar-mounting_calibration-default"
               ></BasicResetButton>
               <BasicResetButton
                 type={ResetType.Mounting}
                 group={'feet'}
-                customName="Feet"
+                customName="toolbar-mounting_calibration-feet"
               ></BasicResetButton>
               {groupVisibility['fingers'] && (
                 <BasicResetButton
                   type={ResetType.Mounting}
                   group={'fingers'}
-                  customName="Fingers"
+                  customName="toolbar-mounting_calibration-fingers"
                 ></BasicResetButton>
               )}
             </div>

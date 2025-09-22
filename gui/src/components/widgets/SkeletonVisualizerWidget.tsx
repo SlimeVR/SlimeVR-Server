@@ -433,7 +433,7 @@ export function SkeletonVisualizerWidget({
           onClick={() => toggleDisabled?.()}
         >
           <EyeIcon closed width={20}></EyeIcon>
-          <Typography>Rendering disabled</Typography>
+          <Typography id="preview-disabled_render" />
         </div>
       </div>
       <div
