@@ -19,6 +19,7 @@ import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
+import java.io.File
 import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2_000L
@@ -167,6 +168,10 @@ class Tracker @JvmOverloads constructor(
 	val yawResetSmoothing = InterpolationHandler()
 	var accelAccumulator = AccelAccumulator()
 
+	val csv = File("C:/Users/Butterscotch/Desktop/Tracker Accel", "tracker_$id.csv")
+	val csvOut = csv.writer()
+	val startTime = System.currentTimeMillis()
+
 	init {
 		// IMPORTANT: Look here for the required states of inputs
 		require(!needsReset || (hasRotation && needsReset)) {
@@ -181,6 +186,8 @@ class Tracker @JvmOverloads constructor(
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
+		LogManager.info("Starting recording (probably)")
+		csvOut.write("Time (ms),Acceleration X,Acceleration Y,Acceleration Z,Velocity X,Velocity Y,Velocity Z,Velocity Magnitude,Position X,Position Y,Position Z\n")
 	}
 
 	fun checkReportRequireReset() {
@@ -332,7 +339,7 @@ class Tracker @JvmOverloads constructor(
 		stayAligned.update()
 	}
 
-	var collect = false
+	var collect = true
 	var lastAccel = CircularArrayList<Vector3>(8)
 
 	/**
@@ -362,7 +369,11 @@ class Tracker @JvmOverloads constructor(
 		if (collect) {
 			accelAccumulator.dataTick(accel)
 
-			if (!isInternal && isImu() && accelAccumulator.timer.timeInSeconds > 2f) {
+			val vel = accelAccumulator.velocity
+			val pos = accelAccumulator.offset
+			csvOut.write("${timeAtLastUpdate - startTime},${accel.x},${accel.y},${accel.z},${vel.x},${vel.y},${vel.z},${vel.len()},${pos.x},${pos.y},${pos.z}\n")
+
+			if (!isInternal && isImu() && accelAccumulator.timer.timeInSeconds > 30f) {
 				val offset = Vector3(accelAccumulator.offset.x, 0f, accelAccumulator.offset.z).unit()
 				val dir = Vector3(accelAccumulator.dir.x, 0f, accelAccumulator.dir.z).unit()
 				LogManager.info("[ACCEL OFF] (${offset.x}, ${offset.z})\n[ACCEL DIR] (${dir.x}, ${dir.z})")
