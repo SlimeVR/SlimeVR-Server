@@ -4,12 +4,12 @@
 # Make everyone be able to approve SolarXR submodule changes
 /solarxr-protocol @ButterscotchV @Erimelowo @loucass003
 
-# Make Loucas and Uriel the owners of all GUI stuff
+# Make Loucass the owner of all GUI stuff
 /gui/ @loucass003
 /pnpm-lock.yaml @loucass003
 /pnpm-workspace.yaml @loucass003
 
-# Uriel and Erimel responsible for i18n
+# loucass003 and Erimel responsible for i18n
 /gui/public/i18n/ @loucass003 @Erimelowo
 /gui/src/i18n/ @loucass003 @Erimelowo
 /l10n.toml @loucass003 @Erimelowo
