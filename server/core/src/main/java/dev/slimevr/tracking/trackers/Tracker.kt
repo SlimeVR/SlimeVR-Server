@@ -1,6 +1,7 @@
 package dev.slimevr.tracking.trackers
 
 import dev.slimevr.VRServer
+import dev.slimevr.autobone.StatsCalculator
 import dev.slimevr.config.TrackerConfig
 import dev.slimevr.filtering.CircularArrayList
 import dev.slimevr.tracking.processor.stayaligned.trackers.StayAlignedTrackerState
@@ -10,6 +11,7 @@ import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import dev.slimevr.util.InterpolationHandler
 import io.eiren.util.BufferedTimer
+import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -20,6 +22,7 @@ import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
 import java.io.File
+import java.io.OutputStreamWriter
 import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2_000L
@@ -166,10 +169,9 @@ class Tracker @JvmOverloads constructor(
 
 	val stayAligned = StayAlignedTrackerState(this)
 	val yawResetSmoothing = InterpolationHandler()
-	var accelAccumulator = AccelAccumulator()
 
-	val csv = File("C:/Users/Butterscotch/Desktop/Tracker Accel", "tracker_$id.csv")
-	val csvOut = csv.writer()
+	val csv: File?
+	val csvOut: OutputStreamWriter?
 	val startTime = System.currentTimeMillis()
 
 	init {
@@ -186,8 +188,16 @@ class Tracker @JvmOverloads constructor(
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
-		LogManager.info("Starting recording (probably)")
-		csvOut.write("Time (ms),Acceleration X,Acceleration Y,Acceleration Z,Velocity X,Velocity Y,Velocity Z,Velocity Magnitude,Position X,Position Y,Position Z\n")
+		if (!isInternal && isImu()) {
+			csv = File("C:/Users/Butterscotch/Desktop/Tracker Accel", "tracker_$id.csv")
+			csvOut = csv.writer()
+
+			LogManager.info("Starting recording (probably)")
+			csvOut.write("Time (ms),Acceleration X,Acceleration Y,Acceleration Z,Acceleration Magnitude,Velocity X,Velocity Y,Velocity Z,Velocity Magnitude,Adj Velocity X,Adj Velocity Y,Adj Velocity Z,Adj Velocity Magnitude,Position X,Position Y,Position Z\n")
+		} else {
+			csv = null
+			csvOut = null
+		}
 	}
 
 	fun checkReportRequireReset() {
@@ -339,8 +349,66 @@ class Tracker @JvmOverloads constructor(
 		stayAligned.update()
 	}
 
-	var collect = true
-	var lastAccel = CircularArrayList<Vector3>(8)
+	data class AccelSample(val time: Long, val accel: Vector3)
+	data class AccelTimeline(val resting: Boolean, val samples: FastList<AccelSample> = FastList<AccelSample>())
+
+	var lastFrameRest = true
+	var curFrameRest = true
+
+	val lastSamples = CircularArrayList<AccelSample>(8)
+	val allTimelines = FastList<AccelTimeline>()
+	var curTimeline = AccelTimeline(curFrameRest)
+
+	fun accumSample(accum: AccelAccumulator, sample: AccelSample, lastSampleTime: Long = -1): Float {
+		val delta = if (lastSampleTime >= 0) {
+			(sample.time - lastSampleTime) / 1000f
+		} else {
+			0f
+		}
+		accum.dataTick(sample.accel, delta)
+
+		return delta
+	}
+
+	fun processTimeline(accum: AccelAccumulator, timeline: AccelTimeline, lastSampleTime: Long = -1, action: (accum: AccelAccumulator, sample: AccelSample, delta: Float) -> Unit = { _, _, _ -> }): Long {
+		// If -1, assume we are at the start
+		var lastTime = lastSampleTime
+
+		for (sample in timeline.samples) {
+			val delta = accumSample(accum, sample, lastTime)
+			action(accum, sample, delta)
+			lastTime = sample.time
+		}
+
+		return lastTime
+	}
+
+	fun processRest(accum: AccelAccumulator, timeline: AccelTimeline, lastSampleTime: Long = -1): Pair<Long, Vector3> {
+		val sampleCount = timeline.samples.size.toFloat()
+		var avgY = Vector3.NULL
+
+		val lastTime = processTimeline(accum, timeline, lastSampleTime) { accum, sample, _ ->
+			avgY += accum.velocity / sampleCount
+		}
+
+		return Pair(lastTime, avgY)
+	}
+
+	fun writeTimeline(accum: AccelAccumulator, timeline: AccelTimeline, lastSampleTime: Long = -1, offset: Vector3 = Vector3.NULL, slope: Vector3 = Vector3.NULL): Long {
+		var pos = Vector3.NULL
+		return processTimeline(accum, timeline, lastSampleTime) { accum, sample, delta ->
+			val time = sample.time
+			val accel = accum.acceleration
+			val defVel = accum.velocity
+			val vel = Vector3(
+				defVel.x - ((slope.x * time) + offset.x),
+				defVel.y - ((slope.y * time) + offset.y),
+				defVel.z - ((slope.z * time) + offset.z),
+			)
+			pos += vel * delta
+			csvOut?.write("$time,${accel.x},${accel.y},${accel.z},${accel.len()},${defVel.x},${defVel.y},${defVel.z},${defVel.len()},${vel.x},${vel.y},${vel.z},${vel.len()},${pos.x},${pos.y},${pos.z}\n")
+		}
+	}
 
 	/**
 	 * Tells the tracker that it received new data
@@ -352,42 +420,102 @@ class Tracker @JvmOverloads constructor(
 			filteringHandler.dataTick(getAdjustedRotation())
 		}
 
-		val accel = getAcceleration()
+		if (csvOut != null) {
+			lastFrameRest = curFrameRest
 
-		if (!collect && lastAccel.isNotEmpty()) {
-			val avgAccel = lastAccel.reduce { a, b ->
-				a + b
-			} / lastAccel.size.toFloat()
+			val accel = getAcceleration()
+			val accelLen = accel.len()
+			val sample = AccelSample(timeAtLastUpdate - startTime, accel)
 
-			// If zoomies
-			if (accel.len() - avgAccel.len() > 1f) {
-				accelAccumulator = AccelAccumulator()
-				collect = true
+			// Ensure a minimum sample size, assume resting at start
+			if (lastSamples.size >= 4) {
+				val stats = StatsCalculator()
+				for (sample in lastSamples) {
+					stats.addValue(sample.accel.len())
+				}
+
+				curFrameRest = if (curFrameRest) {
+					stats.mean < 0.3f && accelLen - stats.mean < 0.6f
+				} else {
+					stats.mean < 0.1f && stats.standardDeviation < 0.2f
+				}
 			}
-		}
 
-		if (collect) {
-			accelAccumulator.dataTick(accel)
+			// On rest state change
+			if (curFrameRest != lastFrameRest) {
+				if (curFrameRest) {
+					LogManager.info("[Accel] Tracker $id is now eepy.")
+				} else {
+					LogManager.info("[Accel] Tracker $id now has zoomies!")
+				}
 
-			val vel = accelAccumulator.velocity
-			val pos = accelAccumulator.offset
-			csvOut.write("${timeAtLastUpdate - startTime},${accel.x},${accel.y},${accel.z},${vel.x},${vel.y},${vel.z},${vel.len()},${pos.x},${pos.y},${pos.z}\n")
+				// Cycle the timeline
+				allTimelines.add(curTimeline)
+				curTimeline = AccelTimeline(curFrameRest)
 
-			if (!isInternal && isImu() && accelAccumulator.timer.timeInSeconds > 30f) {
-				val offset = Vector3(accelAccumulator.offset.x, 0f, accelAccumulator.offset.z).unit()
-				val dir = Vector3(accelAccumulator.dir.x, 0f, accelAccumulator.dir.z).unit()
-				LogManager.info("[ACCEL OFF] (${offset.x}, ${offset.z})\n[ACCEL DIR] (${dir.x}, ${dir.z})")
+				// If we were resting, dump the rest samples. We collect the latest
+				// samples when moving, so we don't need to worry about this for the end
+				// of movement.
+				if (!curFrameRest) {
+					for (sample in lastSamples) {
+						curTimeline.samples.add(sample)
+					}
+				}
+				// Flush rest detection
+				lastSamples.clear()
 
-				// if (offset.len() > 10f) {
-				collect = false
-				// }
+				// If we are moving and not for the first time, write the last collected
+				// sample
+				if (!curFrameRest && allTimelines.size >= 3) {
+					val preRest = allTimelines[allTimelines.size - 3]
+					val move = allTimelines[allTimelines.size - 2]
+					val postRest = allTimelines[allTimelines.size - 1]
+
+					val calibAccum = AccelAccumulator()
+					val (preTime, preAvg) = processRest(calibAccum, preRest)
+					val moveTime = processTimeline(calibAccum, move, preTime)
+					val (_, postAvg) = processRest(calibAccum, postRest, moveTime)
+
+					val slope = (postAvg - preAvg) / (moveTime - preTime).toFloat()
+					val offset = slope * -preTime.toFloat()
+
+					LogManager.info("preTime: $preTime\npreAvg: $preAvg\nmoveTime: $moveTime\npostAvg: $postAvg\nslope: $slope\noffset: $offset")
+
+					val outAccum = AccelAccumulator()
+					// val outPreTime = writeTimeline(outAccum, preRest, -1, offset, slope)
+					writeTimeline(outAccum, move, -1, offset, slope)
+					// writeTimeline(outAccum, postRest, outMove, offset, slope)
+				}
 			}
-		} else {
+
 			// Moving avg accel for rest detection
-			if (lastAccel.size == lastAccel.capacity()) {
-				lastAccel.removeLast()
+			if (lastSamples.size == lastSamples.capacity()) {
+				if (curFrameRest) {
+					// Only collect the oldest samples when resting, we want to have the
+					// cleanest rest samples possible. We take the latest samples for
+					// movement.
+					curTimeline.samples.add(lastSamples.removeLast())
+				} else {
+					lastSamples.removeLast()
+				}
 			}
-			lastAccel.add(accel)
+
+			// Collect samples for rest detection at a constant-ish rate if possible
+			if (curFrameRest) {
+				lastSamples.add(sample)
+			} else {
+				// Collect the latest samples when moving
+				curTimeline.samples.add(sample)
+
+				if (lastSamples.isNotEmpty()) {
+					// Try to have TPS at a lower rate
+					if (sample.time - lastSamples.first().time > 100) {
+						lastSamples.add(sample)
+					}
+				} else {
+					lastSamples.add(sample)
+				}
+			}
 		}
 	}
 
