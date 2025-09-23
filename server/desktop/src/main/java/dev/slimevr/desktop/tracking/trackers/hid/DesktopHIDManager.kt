@@ -4,6 +4,7 @@ import dev.slimevr.tracking.trackers.Device
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerStatus
 import dev.slimevr.tracking.trackers.hid.HIDCommon
+import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_PID
 import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_RECEIVER_PID
 import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.HID_TRACKER_RECEIVER_VID
 import dev.slimevr.tracking.trackers.hid.HIDCommon.Companion.PACKET_SIZE
@@ -55,7 +56,7 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 	}
 
 	private fun checkConfigureDevice(hidDevice: HidDevice) {
-		if (hidDevice.vendorId == HID_TRACKER_RECEIVER_VID && hidDevice.productId == HID_TRACKER_RECEIVER_PID) { // TODO: Use correct ids
+		if (hidDevice.vendorId == HID_TRACKER_RECEIVER_VID && (hidDevice.productId == HID_TRACKER_RECEIVER_PID || hidDevice.productId == HID_TRACKER_PID)) { // TODO: Use list of valid ids
 			val serial = hidDevice.serialNumber ?: "Unknown HID Device"
 			if (hidDevice.isClosed) {
 				if (!hidDevice.open()) {
@@ -208,11 +209,23 @@ class DesktopHIDManager(name: String, private val trackersConsumer: Consumer<Tra
 	}
 
 	private fun deviceEnumerate() {
-		var root: HidDeviceInfoStructure? = null
+		var rootReceivers: HidDeviceInfoStructure? = null
+		var rootTrackers: HidDeviceInfoStructure? = null
 		try {
-			root = HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_RECEIVER_PID) // TODO: change to proper vendorId and productId, need to enum all appropriate productId
+			rootReceivers = HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_RECEIVER_PID) // TODO: Use list of ids
+			rootTrackers = HidApi.enumerateDevices(HID_TRACKER_RECEIVER_VID, HID_TRACKER_PID) // TODO: Use list of ids
 		} catch (e: Throwable) {
 			LogManager.severe("[TrackerServer] Couldn't enumerate HID devices", e)
+		}
+		var root: HidDeviceInfoStructure? = rootReceivers
+		if (root == null) {
+			root = rootTrackers
+		} else {
+			var last: HidDeviceInfoStructure = root
+			while (last.hasNext()) {
+				last = last.next()
+			}
+			last.next = rootTrackers
 		}
 		val hidDeviceList: MutableList<HidDevice> = mutableListOf()
 		if (root != null) {
