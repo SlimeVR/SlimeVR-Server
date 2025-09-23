@@ -89,7 +89,10 @@ class BVHFileStream : PoseDataStream {
 							"OFFSET " +
 							0 +
 							" "
-						) + -bone.parent!!.length * offsetScale + " " +
+						) +
+						-bone.parent!!.length *
+						offsetScale +
+						" " +
 						0 +
 						"\n",
 				)

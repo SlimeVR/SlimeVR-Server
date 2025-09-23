@@ -41,8 +41,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		 * @param vz the rotation vector's z component
 		 * @return the new quaternion
 		 **/
-		fun fromRotationVector(vx: Float, vy: Float, vz: Float): Quaternion =
-			fromRotationVector(Vector3(vx, vy, vz))
+		fun fromRotationVector(vx: Float, vy: Float, vz: Float): Quaternion = fromRotationVector(Vector3(vx, vy, vz))
 
 		/**
 		 * finds Q, the smallest-angled quaternion whose local u direction aligns with
@@ -65,8 +64,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		 * Derived from the axis-angle representation in
 		 * https://en.wikipedia.org/wiki/Axis%E2%80%93angle_representation#Unit_quaternions
 		 */
-		fun rotationAroundXAxis(angle: Float): Quaternion =
-			Quaternion(cos(angle / 2.0f), sin(angle / 2.0f), 0.0f, 0.0f)
+		fun rotationAroundXAxis(angle: Float): Quaternion = Quaternion(cos(angle / 2.0f), sin(angle / 2.0f), 0.0f, 0.0f)
 
 		/**
 		 * Rotation around Y-axis
@@ -74,8 +72,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		 * Derived from the axis-angle representation in
 		 * https://en.wikipedia.org/wiki/Axis%E2%80%93angle_representation#Unit_quaternions
 		 */
-		fun rotationAroundYAxis(angle: Float): Quaternion =
-			Quaternion(cos(angle / 2.0f), 0.0f, sin(angle / 2.0f), 0.0f)
+		fun rotationAroundYAxis(angle: Float): Quaternion = Quaternion(cos(angle / 2.0f), 0.0f, sin(angle / 2.0f), 0.0f)
 
 		/**
 		 * Rotation around Z-axis
@@ -83,8 +80,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		 * Derived from the axis-angle representation in
 		 * https://en.wikipedia.org/wiki/Axis%E2%80%93angle_representation#Unit_quaternions
 		 */
-		fun rotationAroundZAxis(angle: Float): Quaternion =
-			Quaternion(cos(angle / 2.0f), 0.0f, 0.0f, sin(angle / 2.0f))
+		fun rotationAroundZAxis(angle: Float): Quaternion = Quaternion(cos(angle / 2.0f), 0.0f, 0.0f, sin(angle / 2.0f))
 
 		/**
 		 * SlimeVR-specific constants and utils
@@ -130,8 +126,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		this.z + that.z,
 	)
 
-	operator fun plus(that: Float): Quaternion =
-		Quaternion(this.w + that, this.x, this.y, this.z)
+	operator fun plus(that: Float): Quaternion = Quaternion(this.w + that, this.x, this.y, this.z)
 
 	operator fun minus(that: Quaternion): Quaternion = Quaternion(
 		this.w - that.w,
@@ -140,16 +135,14 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 		this.z - that.z,
 	)
 
-	operator fun minus(that: Float): Quaternion =
-		Quaternion(this.w - that, this.x, this.y, this.z)
+	operator fun minus(that: Float): Quaternion = Quaternion(this.w - that, this.x, this.y, this.z)
 
 	/**
 	 * computes the dot product of this quaternion with that quaternion
 	 * @param that the quaternion with which to be dotted
 	 * @return the dot product between quaternions
 	 **/
-	fun dot(that: Quaternion): Float =
-		this.w * that.w + this.x * that.x + this.y * that.y + this.z * that.z
+	fun dot(that: Quaternion): Float = this.w * that.w + this.x * that.x + this.y * that.y + this.z * that.z
 
 	/**
 	 * computes the square of the length of this quaternion
@@ -262,16 +255,14 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param that the quaternion to be nearest to
 	 * @return nearest quaternion
 	 **/
-	fun twinNearest(that: Quaternion): Quaternion =
-		if (this.dot(that) < 0f) -this else this
+	fun twinNearest(that: Quaternion): Quaternion = if (this.dot(that) < 0f) -this else this
 
 	/**
 	 * between this and -this, picks the one furthest from that quaternion
 	 * @param that the quaternion to be furthest from
 	 * @return furthest quaternion
 	 **/
-	fun twinFurthest(that: Quaternion): Quaternion =
-		if (this.dot(that) < 0f) this else -this
+	fun twinFurthest(that: Quaternion): Quaternion = if (this.dot(that) < 0f) this else -this
 
 	/**
 	 * Similar to [twinNearest], but offset so the lower back quadrant is the furthest
@@ -297,16 +288,15 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param t the amount to interpolate
 	 * @return interpolated quaternion
 	 **/
-	fun interpQ(that: Quaternion, t: Float) =
-		if (t == 0f) {
-			this
-		} else if (t == 1f) {
-			that
-		} else if (t < 0.5f) {
-			(that / this).pow(t) * this
-		} else {
-			(this / that).pow(1f - t) * that
-		}
+	fun interpQ(that: Quaternion, t: Float) = if (t == 0f) {
+		this
+	} else if (t == 1f) {
+		that
+	} else if (t < 0.5f) {
+		(that / this).pow(t) * this
+	} else {
+		(this / that).pow(1f - t) * that
+	}
 
 	/**
 	 * interpolates from this quaternion to that quaternion by t in rotation space
@@ -440,12 +430,11 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * First column of rotation matrix in
 	 * https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Conversion_to_and_from_the_matrix_representation
 	 */
-	fun sandwichUnitX(): Vector3 =
-		Vector3(
-			w * w + x * x - y * y - z * z,
-			2.0f * (x * y + w * z),
-			2.0f * (x * z - w * y),
-		)
+	fun sandwichUnitX(): Vector3 = Vector3(
+		w * w + x * x - y * y - z * z,
+		2.0f * (x * y + w * z),
+		2.0f * (x * z - w * y),
+	)
 
 	/**
 	 * Sandwiches the unit Y vector
@@ -453,12 +442,11 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * Second column of rotation matrix in
 	 * https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Conversion_to_and_from_the_matrix_representation
 	 */
-	fun sandwichUnitY(): Vector3 =
-		Vector3(
-			2.0f * (x * y - w * z),
-			w * w - x * x + y * y - z * z,
-			2.0f * (y * z + w * x),
-		)
+	fun sandwichUnitY(): Vector3 = Vector3(
+		2.0f * (x * y - w * z),
+		w * w - x * x + y * y - z * z,
+		2.0f * (y * z + w * x),
+	)
 
 	/**
 	 * Sandwiches the unit Z vector
@@ -466,12 +454,11 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * Third column of rotation matrix in
 	 * https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Conversion_to_and_from_the_matrix_representation
 	 */
-	fun sandwichUnitZ(): Vector3 =
-		Vector3(
-			2.0f * (x * z + w * y),
-			2.0f * (y * z - w * x),
-			w * w - x * x - y * y + z * z,
-		)
+	fun sandwichUnitZ(): Vector3 = Vector3(
+		2.0f * (x * z + w * y),
+		2.0f * (y * z - w * x),
+		w * w - x * x - y * y + z * z,
+	)
 
 	/**
 	 * computes this quaternion's unit length rotation axis
@@ -503,8 +490,7 @@ value class Quaternion(val w: Float, val x: Float, val y: Float, val z: Float) {
 	 * @param order the order in which to decompose this quaternion into euler angles
 	 * @return euler angles
 	 **/
-	fun toEulerAngles(order: EulerOrder): EulerAngles =
-		this.toMatrix().toEulerAnglesAssumingOrthonormal(order)
+	fun toEulerAngles(order: EulerOrder): EulerAngles = this.toMatrix().toEulerAnglesAssumingOrthonormal(order)
 
 	fun toObject() = ObjectQuaternion(w, x, y, z)
 }

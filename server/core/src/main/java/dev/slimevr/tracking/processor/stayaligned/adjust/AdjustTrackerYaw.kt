@@ -176,8 +176,10 @@ object AdjustTrackerYaw {
 	 * Calculates the gradient between two errors. A negative gradient means that there
 	 * is less error in that direction.
 	 */
-	private fun gradient(errors: YawErrors, base: YawErrors) =
-		(errors.lockedError.toL2Norm() - base.lockedError.toL2Norm()) * YAW_ERRORS_LOCKED_ERROR_WEIGHT +
-			(errors.centerError.toL2Norm() - base.centerError.toL2Norm()) * YAW_ERRORS_CENTER_ERROR_WEIGHT +
-			(errors.neighborError.toL2Norm() - base.neighborError.toL2Norm()) * YAW_ERRORS_NEIGHBOR_ERROR_WEIGHT
+	private fun gradient(errors: YawErrors, base: YawErrors) = (errors.lockedError.toL2Norm() - base.lockedError.toL2Norm()) *
+		YAW_ERRORS_LOCKED_ERROR_WEIGHT +
+		(errors.centerError.toL2Norm() - base.centerError.toL2Norm()) *
+		YAW_ERRORS_CENTER_ERROR_WEIGHT +
+		(errors.neighborError.toL2Norm() - base.neighborError.toL2Norm()) *
+		YAW_ERRORS_NEIGHBOR_ERROR_WEIGHT
 }
