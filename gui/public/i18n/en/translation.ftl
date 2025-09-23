@@ -1125,6 +1125,7 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. Hold the position until
 onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
 onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting orientations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
+onboarding-automatic_mounting-return-home = Done
 
 ## Tracker manual proportions setupa
 onboarding-manual_proportions-back = Go Back to Reset tutorial
