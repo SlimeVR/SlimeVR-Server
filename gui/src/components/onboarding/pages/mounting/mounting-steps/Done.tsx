@@ -38,9 +38,9 @@ export function DoneStep({
             {l10n.getString('onboarding-automatic_mounting-next')}
           </Button>
         )}
-        
-        <Button className = "flex gap-3" variant="primary" to="/">
-            {l10n.getString('onboarding-automatic_mounting-return-home')}
+
+        <Button className="flex gap-3" variant="primary" to="/">
+          {l10n.getString('onboarding-automatic_mounting-return-home')}
         </Button>
       </div>
 
