@@ -26,11 +26,6 @@ export function DoneStep({
       </div>
 
       <div className="flex gap-3">
-        
-        <Button className = "flex gap-3" variant="primary" to="/">
-            {l10n.getString('onboarding-automatic_mounting-return-home')}
-        </Button>
-
         <Button
           variant={variant === 'onboarding' ? 'secondary' : 'tertiary'}
           onClick={resetSteps}
@@ -44,6 +39,9 @@ export function DoneStep({
           </Button>
         )}
         
+        <Button className = "flex gap-3" variant="primary" to="/">
+            {l10n.getString('onboarding-automatic_mounting-return-home')}
+        </Button>
       </div>
 
       <SkeletonVisualizerWidget />
