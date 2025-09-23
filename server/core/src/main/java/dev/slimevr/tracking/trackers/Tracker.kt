@@ -23,6 +23,7 @@ import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
 import java.io.File
 import java.io.OutputStreamWriter
+import kotlin.math.abs
 import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2_000L
@@ -193,7 +194,7 @@ class Tracker @JvmOverloads constructor(
 			csvOut = csv.writer()
 
 			LogManager.info("Starting recording (probably)")
-			csvOut.write("Time (ms),Acceleration X,Acceleration Y,Acceleration Z,Acceleration Magnitude,Velocity X,Velocity Y,Velocity Z,Velocity Magnitude,Adj Velocity X,Adj Velocity Y,Adj Velocity Z,Adj Velocity Magnitude,Position X,Position Y,Position Z\n")
+			csvOut.write("Time (ms),Acceleration X,Acceleration Y,Acceleration Z,Acceleration Magnitude,Velocity X,Velocity Y,Velocity Z,Velocity Magnitude,Position X,Position Y,Position Z\n")
 		} else {
 			csv = null
 			csvOut = null
@@ -359,23 +360,23 @@ class Tracker @JvmOverloads constructor(
 	val allTimelines = FastList<AccelTimeline>()
 	var curTimeline = AccelTimeline(curFrameRest)
 
-	fun accumSample(accum: AccelAccumulator, sample: AccelSample, lastSampleTime: Long = -1): Float {
+	fun accumSample(accum: AccelAccumulator, sample: AccelSample, lastSampleTime: Long = -1, accelBias: Vector3 = Vector3.NULL): Float {
 		val delta = if (lastSampleTime >= 0) {
 			(sample.time - lastSampleTime) / 1000f
 		} else {
 			0f
 		}
-		accum.dataTick(sample.accel, delta)
+		accum.dataTick(sample.accel - accelBias, delta)
 
 		return delta
 	}
 
-	fun processTimeline(accum: AccelAccumulator, timeline: AccelTimeline, lastSampleTime: Long = -1, action: (accum: AccelAccumulator, sample: AccelSample, delta: Float) -> Unit = { _, _, _ -> }): Long {
+	fun processTimeline(accum: AccelAccumulator, timeline: AccelTimeline, lastSampleTime: Long = -1, accelBias: Vector3 = Vector3.NULL, action: (accum: AccelAccumulator, sample: AccelSample, delta: Float) -> Unit = { _, _, _ -> }): Long {
 		// If -1, assume we are at the start
 		var lastTime = lastSampleTime
 
 		for (sample in timeline.samples) {
-			val delta = accumSample(accum, sample, lastTime)
+			val delta = accumSample(accum, sample, lastTime, accelBias)
 			action(accum, sample, delta)
 			lastTime = sample.time
 		}
@@ -387,27 +388,24 @@ class Tracker @JvmOverloads constructor(
 		val sampleCount = timeline.samples.size.toFloat()
 		var avgY = Vector3.NULL
 
-		val lastTime = processTimeline(accum, timeline, lastSampleTime) { accum, sample, _ ->
+		val lastTime = processTimeline(accum, timeline, lastSampleTime) { accum, _, _ ->
 			avgY += accum.velocity / sampleCount
 		}
 
 		return Pair(lastTime, avgY)
 	}
 
-	fun writeTimeline(accum: AccelAccumulator, timeline: AccelTimeline, lastSampleTime: Long = -1, offset: Vector3 = Vector3.NULL, slope: Vector3 = Vector3.NULL): Long {
-		var pos = Vector3.NULL
-		return processTimeline(accum, timeline, lastSampleTime) { accum, sample, delta ->
+	fun writeTimeline(accum: AccelAccumulator, timeline: AccelTimeline, lastSampleTime: Long = -1, accelBias: Vector3 = Vector3.NULL): Long {
+		val time = processTimeline(accum, timeline, lastSampleTime, accelBias) { accum, sample, _ ->
 			val time = sample.time
 			val accel = accum.acceleration
-			val defVel = accum.velocity
-			val vel = Vector3(
-				defVel.x - ((slope.x * time) + offset.x),
-				defVel.y - ((slope.y * time) + offset.y),
-				defVel.z - ((slope.z * time) + offset.z),
-			)
-			pos += vel * delta
-			csvOut?.write("$time,${accel.x},${accel.y},${accel.z},${accel.len()},${defVel.x},${defVel.y},${defVel.z},${defVel.len()},${vel.x},${vel.y},${vel.z},${vel.len()},${pos.x},${pos.y},${pos.z}\n")
+			val vel = accum.velocity
+			val pos = accum.offset
+
+			csvOut?.write("$time,${accel.x},${accel.y},${accel.z},${accel.len()},${vel.x},${vel.y},${vel.z},${vel.len()},${pos.x},${pos.y},${pos.z}\n")
 		}
+
+		return time
 	}
 
 	/**
@@ -444,9 +442,9 @@ class Tracker @JvmOverloads constructor(
 			// On rest state change
 			if (curFrameRest != lastFrameRest) {
 				if (curFrameRest) {
-					LogManager.info("[Accel] Tracker $id is now eepy.")
+					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) is now eepy.")
 				} else {
-					LogManager.info("[Accel] Tracker $id now has zoomies!")
+					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) now has zoomies!")
 				}
 
 				// Cycle the timeline
@@ -476,15 +474,33 @@ class Tracker @JvmOverloads constructor(
 					val moveTime = processTimeline(calibAccum, move, preTime)
 					val (_, postAvg) = processRest(calibAccum, postRest, moveTime)
 
-					val slope = (postAvg - preAvg) / (moveTime - preTime).toFloat()
-					val offset = slope * -preTime.toFloat()
+					val slope = (postAvg - preAvg) / ((moveTime - preTime) / 1000f)
+					LogManager.info("preTime: $preTime\npreAvg: $preAvg\nmoveTime: $moveTime\npostAvg: $postAvg\nslope: $slope")
 
-					LogManager.info("preTime: $preTime\npreAvg: $preAvg\nmoveTime: $moveTime\npostAvg: $postAvg\nslope: $slope\noffset: $offset")
+					// Let's just write the preceding data for the graph to look nice
+					writeTimeline(AccelAccumulator(), preRest, -1)
 
 					val outAccum = AccelAccumulator()
-					// val outPreTime = writeTimeline(outAccum, preRest, -1, offset, slope)
-					writeTimeline(outAccum, move, -1, offset, slope)
-					// writeTimeline(outAccum, postRest, outMove, offset, slope)
+					writeTimeline(outAccum, move, -1, slope)
+					// writeTimeline(outAccum, postRest, outMove, slope)
+
+					val pos = outAccum.offset
+					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) final offset: $pos")
+
+					val dir = if (abs(pos.x) > abs(pos.z)) {
+						if (pos.x > 0f) {
+							"right"
+						} else {
+							"left"
+						}
+					} else {
+						if (pos.z > 0f) {
+							"front"
+						} else {
+							"back"
+						}
+					}
+					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) has $dir mounting.")
 				}
 			}
 
