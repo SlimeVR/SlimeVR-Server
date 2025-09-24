@@ -135,7 +135,7 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
     <>
       <HomeSettingsModal open={settingsOpenState}></HomeSettingsModal>
       <div className="flex mobile:py-2 flex-col items-center bg-background-70 rounded-t-lg h-[var(--toolbar-h)] mr-2 xs:mt-2 mobile:mr-0">
-        <div className="px-3 py-3 w-full flex gap-2 justify-center md:justify-start">
+        <div className="px-3 py-3 w-full flex gap-4 justify-center md:justify-start">
           <div className="flex-col flex gap-1 md:w-[60%]">
             <Typography variant="section-title" id="toolbar-drift_reset" />
             <div className="gap-2 md:h-[72px] h-[62px] w-full grid-cols-2 grid">

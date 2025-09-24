@@ -253,8 +253,9 @@ export function TrackerCard({
       >
         {smol && (
           <Tooltip
-            preferedDirection="bottom"
+            preferedDirection="top"
             disabled={!warning}
+            spacing={5}
             content={
               typeof warning === 'object' && (
                 <div className="flex gap-1 items-center text-status-warning">
