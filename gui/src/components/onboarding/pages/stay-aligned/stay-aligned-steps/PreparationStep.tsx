@@ -16,13 +16,13 @@ export function PreparationStep({
     <div className="flex flex-col flex-grow justify-between py-2 gap-2">
       <div className="flex flex-col gap-1">
         <Localized id="onboarding-automatic_mounting-preparation-v2-step-0">
-          <Typography color="secondary"></Typography>
+          <Typography></Typography>
         </Localized>
         <Localized id="onboarding-automatic_mounting-preparation-v2-step-1">
-          <Typography color="secondary"></Typography>
+          <Typography></Typography>
         </Localized>
         <Localized id="onboarding-automatic_mounting-preparation-v2-step-2">
-          <Typography color="secondary"></Typography>
+          <Typography></Typography>
         </Localized>
       </div>
       <Localized id="onboarding-stay_aligned-preparation-tip">

@@ -284,11 +284,11 @@ export function TrackersAssignPage() {
               <Typography variant="main-title" color="accent">
                 {l10n.getString('onboarding-assign_trackers-title')}
               </Typography>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('onboarding-assign_trackers-description')}
               </Typography>
               <div className="flex gap-1">
-                <Typography color="secondary">
+                <Typography>
                   {l10n.getString('onboarding-assign_trackers-assigned', {
                     assigned: assignedTrackers.length,
                     trackers: trackers.length,

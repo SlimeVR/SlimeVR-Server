@@ -151,9 +151,7 @@ export function CalibrationTutorialPage() {
                 id="onboarding-calibration_tutorial-description-v1"
                 elems={{ b: <b></b> }}
               >
-                <Typography color="secondary">
-                  Description on calibration of IMU
-                </Typography>
+                <Typography>Description on calibration of IMU</Typography>
               </Localized>
               <div>
                 <div className="xs:hidden flex flex-row justify-center">

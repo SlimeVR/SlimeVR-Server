@@ -249,10 +249,10 @@ export function ConnectTrackersPage() {
           <Typography variant="main-title">
             {l10n.getString('onboarding-connect_tracker-title')}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('onboarding-connect_tracker-description-p0-v1')}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('onboarding-connect_tracker-description-p1-v1')}
           </Typography>
           <div className="flex flex-col gap-2 py-5">
@@ -299,7 +299,7 @@ export function ConnectTrackersPage() {
                 {l10n.getString('onboarding-connect_tracker-usb')}
               </Typography>
               <div className="flex fill-background-10 gap-1">
-                <Typography color="secondary">
+                <Typography>
                   {l10n.getString(statusLabelMap[provisioningStatus])}
                 </Typography>
               </div>
@@ -337,7 +337,7 @@ export function ConnectTrackersPage() {
           </div>
         </div>
         <div style={{ gridArea: 't' }} className="flex items-center px-5">
-          <Typography color="secondary" bold>
+          <Typography bold>
             {l10n.getString('onboarding-connect_tracker-connected_trackers', {
               amount: connectedIMUTrackers.length,
             })}

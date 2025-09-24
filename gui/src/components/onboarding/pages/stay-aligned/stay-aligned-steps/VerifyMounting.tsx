@@ -11,16 +11,16 @@ export function VerifyMountingStep({
     <div className="flex flex-grow flex-col gap-4 py-2">
       <div className="flex flex-col gap-2">
         <Localized id="onboarding-stay_aligned-verify_mounting-step-0">
-          <Typography color="secondary" />
+          <Typography />
         </Localized>
         <Localized id="onboarding-stay_aligned-verify_mounting-step-1">
-          <Typography color="secondary" />
+          <Typography />
         </Localized>
         <Localized id="onboarding-stay_aligned-verify_mounting-step-2">
-          <Typography color="secondary" />
+          <Typography />
         </Localized>
         <Localized id="onboarding-stay_aligned-verify_mounting-step-3">
-          <Typography color="secondary" />
+          <Typography />
         </Localized>
       </div>
       <div className="flex gap-3 justify-between">

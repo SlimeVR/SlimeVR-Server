@@ -40,7 +40,7 @@ export function SelectFirmwareStep({
     <>
       <div className="flex flex-col w-full">
         <div className="flex justify-between items-center mobile:flex-col gap-4">
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('firmware_tool-select_firmware_step-description')}
           </Typography>
           <div>
@@ -109,7 +109,7 @@ export function SelectFirmwareStep({
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
               <Localized id="firmware_tool-loading">
-                <Typography color="secondary"></Typography>
+                <Typography></Typography>
               </Localized>
             </div>
           )}

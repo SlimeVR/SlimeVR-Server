@@ -31,7 +31,7 @@ export function RequirementsStep({
                 .split('\n')
                 .map((line, i) => (
                   <li key={i}>
-                    <Typography color="secondary">{line}</Typography>
+                    <Typography>{line}</Typography>
                   </li>
                 ))}
             </>

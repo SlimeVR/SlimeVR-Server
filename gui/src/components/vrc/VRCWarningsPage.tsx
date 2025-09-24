@@ -130,7 +130,7 @@ export function VRCWarningsPage() {
           <Typography variant="main-title" />
         </Localized>
         <Localized id={'vrc_config-page-desc'}>
-          <Typography variant="standard" color="secondary" />
+          <Typography variant="standard" />
         </Localized>
       </div>
       <div className="w-full mt-4 gap-2 flex flex-col">
@@ -142,7 +142,7 @@ export function VRCWarningsPage() {
                   <Typography variant="section-title" />
                 </Localized>
                 <Localized id="vrc_config-page-big_menu-desc">
-                  <Typography color="secondary" />
+                  <Typography />
                 </Localized>
                 <Table>
                   <SettingRow
@@ -248,7 +248,7 @@ export function VRCWarningsPage() {
                   <Typography variant="section-title" />
                 </Localized>
                 <Localized id="vrc_config-page-wrist_menu-desc">
-                  <Typography color="secondary" />
+                  <Typography />
                 </Localized>
                 <Table>
                   <SettingRow
@@ -304,7 +304,7 @@ export function VRCWarningsPage() {
             a: <A href="https://docs.slimevr.dev/tools/vrchat-config.html"></A>,
           }}
         >
-          <Typography color="secondary" />
+          <Typography />
         </Localized>
       </div>
     </div>

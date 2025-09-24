@@ -33,7 +33,7 @@ export function AutomaticMountingPage() {
             <Typography variant="main-title">
               {l10n.getString('onboarding-automatic_mounting-title')}
             </Typography>
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString('onboarding-automatic_mounting-description')}
             </Typography>
           </div>

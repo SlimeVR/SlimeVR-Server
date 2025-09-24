@@ -63,11 +63,11 @@ export function AdvancedSettings() {
             <div className="grid gap-4">
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
-                  <Typography bold>
+                  <Typography variant="section-title">
                     {l10n.getString('settings-utils-advanced-reset-gui')}
                   </Typography>
                   <div className="flex flex-col">
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'settings-utils-advanced-reset-gui-description'
                       )}
@@ -95,11 +95,11 @@ export function AdvancedSettings() {
 
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
-                  <Typography bold>
+                  <Typography variant="section-title">
                     {l10n.getString('settings-utils-advanced-reset-server')}
                   </Typography>
                   <div className="flex flex-col">
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'settings-utils-advanced-reset-server-description'
                       )}
@@ -132,11 +132,11 @@ export function AdvancedSettings() {
 
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
-                  <Typography bold>
+                  <Typography variant="section-title">
                     {l10n.getString('settings-utils-advanced-reset-all')}
                   </Typography>
                   <div className="flex flex-col">
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'settings-utils-advanced-reset-all-description'
                       )}
@@ -168,11 +168,11 @@ export function AdvancedSettings() {
 
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
-                  <Typography bold>
+                  <Typography variant="section-title">
                     {l10n.getString('settings-utils-advanced-open_data-v1')}
                   </Typography>
                   <div className="flex flex-col">
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'settings-utils-advanced-open_data-description-v1'
                       )}
@@ -188,11 +188,11 @@ export function AdvancedSettings() {
 
               <div className="sm:grid sm:grid-cols-[1.75fr,_1fr] items-center">
                 <div>
-                  <Typography bold>
+                  <Typography variant="section-title">
                     {l10n.getString('settings-utils-advanced-open_logs')}
                   </Typography>
                   <div className="flex flex-col">
-                    <Typography color="secondary">
+                    <Typography>
                       {l10n.getString(
                         'settings-utils-advanced-open_logs-description'
                       )}

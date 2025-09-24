@@ -27,12 +27,12 @@ export function MountingResetStep({
             )}
           </Typography>
           <div className="flex flex-col gap-2">
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString(
                 'onboarding-automatic_mounting-mounting_reset-step-0'
               )}
             </Typography>
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString(
                 'onboarding-automatic_mounting-mounting_reset-step-1'
               )}

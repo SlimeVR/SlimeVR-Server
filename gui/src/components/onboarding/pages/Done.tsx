@@ -20,7 +20,7 @@ export function DonePage() {
           {l10n.getString('onboarding-done-title')}
         </Typography>
         <div className="flex flex-col items-center">
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('onboarding-done-description')}
           </Typography>
         </div>
