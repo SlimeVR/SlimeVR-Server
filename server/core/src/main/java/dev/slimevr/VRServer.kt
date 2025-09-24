@@ -7,7 +7,6 @@ import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ConfigManager
 import dev.slimevr.firmware.FirmwareUpdateHandler
 import dev.slimevr.firmware.SerialFlashingHandler
-import dev.slimevr.trackingchecklist.TrackingChecklistManager
 import dev.slimevr.games.vrchat.VRCConfigHandler
 import dev.slimevr.games.vrchat.VRCConfigHandlerStub
 import dev.slimevr.games.vrchat.VRChatConfigManager
@@ -29,6 +28,7 @@ import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.processor.skeleton.HumanSkeleton
 import dev.slimevr.tracking.trackers.*
 import dev.slimevr.tracking.trackers.udp.TrackersUDPServer
+import dev.slimevr.trackingchecklist.TrackingChecklistManager
 import dev.slimevr.util.ann.VRServerThread
 import dev.slimevr.websocketapi.WebSocketVRBridge
 import io.eiren.util.ann.ThreadSafe
@@ -121,7 +121,7 @@ class VRServer @JvmOverloads constructor(
 
 	val trackingChecklistManager: TrackingChecklistManager
 
-	val networkProfileChecker: NetworkProfileChecker;
+	val networkProfileChecker: NetworkProfileChecker
 
 	init {
 		// UwU

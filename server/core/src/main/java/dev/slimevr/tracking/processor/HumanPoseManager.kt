@@ -5,7 +5,6 @@ import dev.slimevr.VRServer
 import dev.slimevr.VRServer.Companion.getNextLocalTrackerId
 import dev.slimevr.autobone.errors.BodyProportionError
 import dev.slimevr.config.ConfigManager
-import dev.slimevr.config.MountingMethods
 import dev.slimevr.tracking.processor.config.SkeletonConfigManager
 import dev.slimevr.tracking.processor.config.SkeletonConfigOffsets
 import dev.slimevr.tracking.processor.config.SkeletonConfigToggles
@@ -571,9 +570,11 @@ class HumanPoseManager(val server: VRServer?) {
 		if (server === null) return
 
 		val finalBodyParts = bodyParts
-			?: if (server.configManager.vrConfig.resetsConfig.resetMountingFeet)
+			?: if (server.configManager.vrConfig.resetsConfig.resetMountingFeet) {
 				TrackerUtils.allBodyPartsButFingers
-			else TrackerUtils.allBodyPartsButFingersAndFeets
+			} else {
+				TrackerUtils.allBodyPartsButFingersAndFeets
+			}
 
 		skeleton.resetTrackersMounting(resetSourceName, finalBodyParts)
 	}

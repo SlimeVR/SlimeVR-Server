@@ -1613,16 +1613,20 @@ class HumanSkeleton(
 		if (humanPoseManager.server != null) {
 			humanPoseManager.server.configManager.vrConfig.resetsConfig.preferedMountingMethod =
 				MountingMethods.AUTOMATIC
-			if (!humanPoseManager.server.trackingChecklistManager.resetMountingCompleted)
+			if (!humanPoseManager.server.trackingChecklistManager.resetMountingCompleted) {
 				humanPoseManager.server.trackingChecklistManager.resetMountingCompleted = bodyParts.any { it ->
-					val defaultParts = if (humanPoseManager.server.configManager.vrConfig.resetsConfig.resetMountingFeet)
+					val defaultParts = if (humanPoseManager.server.configManager.vrConfig.resetsConfig.resetMountingFeet) {
 						TrackerUtils.allBodyPartsButFingers
-					else TrackerUtils.allBodyPartsButFingersAndFeets
+					} else {
+						TrackerUtils.allBodyPartsButFingersAndFeets
+					}
 
 					return@any defaultParts.contains(it)
 				}
-			if (!humanPoseManager.server.trackingChecklistManager.feetResetMountingCompleted)
+			}
+			if (!humanPoseManager.server.trackingChecklistManager.feetResetMountingCompleted) {
 				humanPoseManager.server.trackingChecklistManager.feetResetMountingCompleted = bodyParts.any { TrackerUtils.feetsBodyParts.contains(it) }
+			}
 			humanPoseManager.server.configManager.saveConfig()
 		}
 

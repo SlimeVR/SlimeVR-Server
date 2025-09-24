@@ -109,10 +109,11 @@ object TrackerUtils {
 		BodyPart.LEFT_UPPER_LEG, BodyPart.RIGHT_UPPER_LEG, BodyPart.LEFT_LOWER_LEG,
 		BodyPart.RIGHT_LOWER_LEG, BodyPart.LEFT_LOWER_ARM, BodyPart.RIGHT_LOWER_ARM,
 		BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM, BodyPart.LEFT_HAND,
-		BodyPart.RIGHT_HAND, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER
+		BodyPart.RIGHT_HAND, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER,
 	)
 
 	val feetsBodyParts = listOf(
-		BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT
+		BodyPart.LEFT_FOOT,
+		BodyPart.RIGHT_FOOT,
 	)
 }

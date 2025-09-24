@@ -31,7 +31,8 @@ enum class ArmsResetModes(val id: Int) {
 
 enum class MountingMethods(val id: Int) {
 	MANUAL(0),
-	AUTOMATIC(1);
+	AUTOMATIC(1),
+	;
 
 	companion object {
 		val values = MountingMethods.entries.toTypedArray()
@@ -64,7 +65,6 @@ class ResetsConfig {
 	var resetHmdPitch = false
 
 	var preferedMountingMethod = MountingMethods.AUTOMATIC
-
 
 	fun updateTrackersResetsSettings() {
 		for (t in VRServer.instance.allTrackers) {

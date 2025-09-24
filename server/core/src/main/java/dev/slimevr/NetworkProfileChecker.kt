@@ -52,9 +52,9 @@ abstract class NetworkProfileChecker {
 	abstract val publicNetworks: List<NetworkInfo>
 }
 
-class NetworkProfileCheckerStub: NetworkProfileChecker() {
+class NetworkProfileCheckerStub : NetworkProfileChecker() {
 	override val isSupported: Boolean
-		get() = false;
+		get() = false
 	override val publicNetworks: List<NetworkInfo>
 		get() = listOf()
 }

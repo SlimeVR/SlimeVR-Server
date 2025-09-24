@@ -7,7 +7,6 @@ import dev.slimevr.reset.ResetHandler;
 import dev.slimevr.setup.TapSetupHandler;
 import dev.slimevr.tracking.processor.HumanPoseManager;
 import dev.slimevr.tracking.trackers.Tracker;
-import dev.slimevr.tracking.trackers.TrackerUtils;
 import solarxr_protocol.rpc.ResetType;
 import solarxr_protocol.rpc.StatusData;
 

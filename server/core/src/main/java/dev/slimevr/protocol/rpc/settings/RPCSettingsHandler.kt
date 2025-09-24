@@ -3,7 +3,6 @@ package dev.slimevr.protocol.rpc.settings
 import com.google.flatbuffers.FlatBufferBuilder
 import dev.slimevr.bridge.ISteamVRBridge
 import dev.slimevr.config.ArmsResetModes
-import dev.slimevr.config.MountingMethods
 import dev.slimevr.filtering.TrackerFilters
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI

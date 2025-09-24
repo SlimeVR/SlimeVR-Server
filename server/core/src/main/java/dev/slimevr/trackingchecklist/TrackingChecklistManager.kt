@@ -283,7 +283,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 						}
 					}
 				} else {
-					it.extraData = null;
+					it.extraData = null
 				}
 			}
 		}
@@ -294,11 +294,10 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 
 		updateValidity(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION, feetResetMountingCompleted) {
 			it.enabled =
-				vrServer.configManager.vrConfig.resetsConfig.preferedMountingMethod == MountingMethods.AUTOMATIC
-					&& !vrServer.configManager.vrConfig.resetsConfig.resetMountingFeet
-					&& imuTrackers.any { t -> TrackerUtils.feetsBodyParts.contains(t.trackerPosition?.bodyPart) }
+				vrServer.configManager.vrConfig.resetsConfig.preferedMountingMethod == MountingMethods.AUTOMATIC &&
+				!vrServer.configManager.vrConfig.resetsConfig.resetMountingFeet &&
+				imuTrackers.any { t -> TrackerUtils.feetsBodyParts.contains(t.trackerPosition?.bodyPart) }
 		}
-
 
 		updateValidity(TrackingChecklistStepId.STAY_ALIGNED_CONFIGURED, vrServer.configManager.vrConfig.stayAlignedConfig.enabled)
 
@@ -316,12 +315,11 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		}
 	}
 
-
 	override fun onChange(
 		validity: VRCConfigValidity,
 		values: VRCConfigValues,
 		recommended: VRCConfigRecommendedValues,
-		muted: List<String>
+		muted: List<String>,
 	) {
 		updateValidity(
 			TrackingChecklistStepId.VRCHAT_SETTINGS,
@@ -334,7 +332,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 	}
 
 	fun ignoreStep(step: TrackingChecklistStepT, ignore: Boolean) {
-		if (!step.ignorable) return;
+		if (!step.ignorable) return
 		val ignoredSteps = vrServer.configManager.vrConfig.trackingChecklist.ignoredStepsIds
 		if (ignore && !ignoredSteps.contains(step.id)) {
 			ignoredSteps.add(step.id)
@@ -343,5 +341,4 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		}
 		vrServer.configManager.saveConfig()
 	}
-
 }

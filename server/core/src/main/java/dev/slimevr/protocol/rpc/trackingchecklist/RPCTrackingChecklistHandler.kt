@@ -1,10 +1,10 @@
 package dev.slimevr.protocol.rpc.trackingchecklist
 
 import com.google.flatbuffers.FlatBufferBuilder
-import dev.slimevr.trackingchecklist.TrackingChecklistListener
 import dev.slimevr.protocol.GenericConnection
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.RPCHandler
+import dev.slimevr.trackingchecklist.TrackingChecklistListener
 import solarxr_protocol.rpc.*
 
 class RPCTrackingChecklistHandler(

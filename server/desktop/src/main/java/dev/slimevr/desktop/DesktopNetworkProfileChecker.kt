@@ -263,8 +263,7 @@ fun enumerateNetworks(): List<NetworkInfo>? {
 	return null
 }
 
-class DesktopNetworkProfileChecker(private val server: VRServer):
-	NetworkProfileChecker() {
+class DesktopNetworkProfileChecker(private val server: VRServer) : NetworkProfileChecker() {
 	private val updateTickTimer = Timer("NetworkProfileCheck")
 	private var publicNetworksLocal: List<NetworkInfo> = listOf()
 
@@ -272,7 +271,7 @@ class DesktopNetworkProfileChecker(private val server: VRServer):
 		get() = OperatingSystem.currentPlatform == OperatingSystem.WINDOWS
 
 	override val publicNetworks: List<NetworkInfo>
-		get() = publicNetworksLocal;
+		get() = publicNetworksLocal
 
 	init {
 		if (OperatingSystem.currentPlatform == OperatingSystem.WINDOWS) {

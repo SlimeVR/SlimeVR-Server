@@ -116,12 +116,13 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 
 	fun toggleMuteWarning(key: String) {
 		val keys = VRCConfigValidity::class.java.declaredFields.asSequence().map { p -> p.name }
-		if (!keys.contains(key)) return;
+		if (!keys.contains(key)) return
 
-		if (!server.configManager.vrConfig.vrcConfig.mutedWarnings.contains(key))
+		if (!server.configManager.vrConfig.vrcConfig.mutedWarnings.contains(key)) {
 			server.configManager.vrConfig.vrcConfig.mutedWarnings.add(key)
-		else
+		} else {
 			server.configManager.vrConfig.vrcConfig.mutedWarnings.remove(key)
+		}
 
 		server.configManager.saveConfig()
 
@@ -133,7 +134,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 				validity,
 				values,
 				recommended,
-				server.configManager.vrConfig.vrcConfig.mutedWarnings
+				server.configManager.vrConfig.vrcConfig.mutedWarnings,
 			)
 		}
 	}
@@ -195,7 +196,7 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 
 	fun onChange(values: VRCConfigValues) {
 		val recommended = recommendedValues()
-		val validity = checkValidity(values, recommended);
+		val validity = checkValidity(values, recommended)
 		currentValidity = validity
 		currentValues = values
 		listeners.forEach {
