@@ -77,7 +77,7 @@ export function Typography({
         whitespace,
         textAlign,
         italic && 'italic',
-        truncate && 'leading-3 text-ellipsis',
+        truncate && 'leading-[1.2rem] text-ellipsis',
         truncate && (config?.textSize ?? 12) > 12 && 'line-clamp-1',
         truncate && (config?.textSize ?? 12) <= 12 && 'line-clamp-2',
         sentryMask && 'sentry-mask',

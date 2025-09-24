@@ -162,7 +162,7 @@ function TrackerSmol({
         </div>
       </div>
 
-      <div className="flex flex-col flex-grow justify-center gap-1 spacing">
+      <div className="flex flex-col flex-grow justify-center gap-1">
         <Typography bold truncate variant="section-title">
           {trackerName}
         </Typography>
