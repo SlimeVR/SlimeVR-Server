@@ -194,6 +194,13 @@ class VRChatConfigManager(val server: VRServer, private val handler: VRCConfigHa
 		shoulderWidthCompensationOk = values.shoulderWidthCompensation == recommended.shoulderWidthCompensation,
 	)
 
+	fun forceUpdate() {
+		val values = currentValues
+		if (values != null) {
+			this.onChange(values)
+		}
+	}
+
 	fun onChange(values: VRCConfigValues) {
 		val recommended = recommendedValues()
 		val validity = checkValidity(values, recommended)
