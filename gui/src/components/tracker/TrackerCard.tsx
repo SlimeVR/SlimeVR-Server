@@ -4,6 +4,7 @@ import {
   DeviceDataT,
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
+  TrackingChecklistStepT,
 } from 'solarxr-protocol';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerBattery } from './TrackerBattery';
@@ -18,6 +19,8 @@ import { useAppContext } from '@/hooks/app';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { Localized } from '@fluent/react';
 import { checkForUpdate } from '@/hooks/firmware-update';
+import { WarningIcon } from '@/components/commons/icon/WarningIcon';
+import { trackingchecklistIdtoLabel } from '@/hooks/tracking-checklist';
 
 function UpdateIcon({
   showUpdate,
@@ -33,7 +36,7 @@ function UpdateIcon({
     <div className="relative">
       <div
         className={classNames(
-          'absolute rounded-full h-6 w-6 left-1 top-1 bg-accent-background-10 animate-[ping_2s_linear_infinite]',
+          'absolute rounded-full h-6 w-6 left-1 top-1 bg-accent-background-10 animate-[ping_2s_linear_3]',
           showUpdate !== 'can-update' && 'hidden'
         )}
       ></div>
@@ -125,21 +128,42 @@ function TrackerBig({
 function TrackerSmol({
   device,
   tracker,
+  warning,
 }: {
   tracker: TrackerDataT;
   device?: DeviceDataT;
+  warning?: TrackingChecklistStepT | boolean;
 }) {
   const { useName } = useTracker(tracker);
 
   const trackerName = useName();
 
   return (
-    <div className="flex rounded-md py-3 px-4 w-full gap-4 h-16">
-      <div className="flex flex-col justify-center items-center fill-background-10">
-        <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
+    <div className="flex rounded-md py-3 px-4 w-full gap-4 h-[70px]">
+      <div className="flex flex-col justify-center items-center fill-background-10 relative">
+        {warning && (
+          <div className="absolute -right-2 -bottom-3 text-status-warning ">
+            <WarningIcon width={20}></WarningIcon>
+          </div>
+        )}
+        <div
+          className={classNames(
+            'border-[3px] border-opacity-80 rounded-md overflow-clip',
+            {
+              'border-status-warning': warning,
+              'border-transparent': !warning,
+            }
+          )}
+        >
+          <BodyPartIcon
+            bodyPart={tracker.info?.bodyPart}
+            width={40}
+          ></BodyPartIcon>
+        </div>
       </div>
-      <div className="flex flex-col flex-grow justify-center">
-        <Typography bold truncate>
+
+      <div className="flex flex-col flex-grow justify-center gap-1">
+        <Typography bold truncate variant="section-title">
           {trackerName}
         </Typography>
         <TrackerStatus status={tracker.status}></TrackerStatus>
@@ -191,7 +215,7 @@ export function TrackerCard({
   bg?: string;
   shakeHighlight?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
-  warning?: boolean;
+  warning?: TrackingChecklistStepT | boolean;
   showUpdates?: boolean;
 }) {
   const { currentFirmwareRelease } = useAppContext();
@@ -212,8 +236,8 @@ export function TrackerCard({
           'rounded-lg overflow-hidden transition-[box-shadow] duration-200 ease-linear',
           interactable && 'hover:bg-background-50 cursor-pointer',
           outlined && 'outline outline-2 outline-accent-background-40',
-          warning &&
-            'outline outline-2 -outline-offset-2 outline-status-warning',
+          // warning &&
+          //   'outline outline-2 -outline-offset-2 outline-status-warning',
           bg
         )}
         style={
@@ -226,7 +250,27 @@ export function TrackerCard({
             : {}
         }
       >
-        {smol && <TrackerSmol tracker={tracker} device={device}></TrackerSmol>}
+        {smol && (
+          <Tooltip
+            preferedDirection="top"
+            disabled={!warning}
+            spacing={5}
+            content={
+              typeof warning === 'object' && (
+                <div className="flex gap-1 items-center text-status-warning">
+                  <WarningIcon width={20}></WarningIcon>
+                  <Typography id={trackingchecklistIdtoLabel[warning.id]} />
+                </div>
+              )
+            }
+          >
+            <TrackerSmol
+              tracker={tracker}
+              device={device}
+              warning={warning}
+            ></TrackerSmol>
+          </Tooltip>
+        )}
         {!smol && <TrackerBig tracker={tracker} device={device}></TrackerBig>}
       </div>
       {showUpdate &&

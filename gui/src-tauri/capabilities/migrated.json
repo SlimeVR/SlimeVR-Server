@@ -30,7 +30,25 @@
     "fs:allow-exists",
     {
       "identifier": "fs:scope",
-      "allow": [{ "path": "$APPDATA" }, { "path": "$APPDATA/**" }]
+      "allow": [
+        {
+          "path": "$APPDATA"
+        },
+        {
+          "path": "$APPDATA/**"
+        }
+      ]
+    },
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "steam:*"
+        },
+        {
+          "url": "ms-settings:network"
+        }
+      ]
     },
     {
       "identifier": "http:default",

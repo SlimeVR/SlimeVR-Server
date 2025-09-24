@@ -93,7 +93,7 @@ class ReferenceAdjustmentsTests {
 			null,
 			hasRotation = true,
 			imuType = IMUType.UNKNOWN,
-			needsReset = true,
+			allowReset = true,
 		)
 		tracker.setRotation(trackerQuat)
 		tracker.resetsHandler.resetFull(referenceQuat)
@@ -125,7 +125,7 @@ class ReferenceAdjustmentsTests {
 			null,
 			hasRotation = true,
 			imuType = IMUType.UNKNOWN,
-			needsReset = true,
+			allowReset = true,
 		)
 		tracker.setRotation(trackerQuat)
 		tracker.resetsHandler.resetYaw(referenceQuat)
@@ -153,7 +153,7 @@ class ReferenceAdjustmentsTests {
 			null,
 			hasRotation = true,
 			imuType = IMUType.UNKNOWN,
-			needsReset = true,
+			allowReset = true,
 		)
 		tracker.setRotation(trackerQuat)
 		tracker.resetsHandler.resetFull(referenceQuat)
