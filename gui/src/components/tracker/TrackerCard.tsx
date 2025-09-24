@@ -1,9 +1,11 @@
 import { useConfig } from '@/hooks/config';
-import { MouseEventHandler } from 'react';
+import { MouseEventHandler, useMemo } from 'react';
 import {
   DeviceDataT,
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
+  TrackingChecklistStep,
+  TrackingChecklistStepT,
 } from 'solarxr-protocol';
 import { Typography } from '@/components/commons/Typography';
 import { TrackerBattery } from './TrackerBattery';
@@ -19,6 +21,7 @@ import { Tooltip } from '@/components/commons/Tooltip';
 import { Localized } from '@fluent/react';
 import { checkForUpdate } from '@/hooks/firmware-update';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
+import { trackingchecklistIdtoLabel } from '@/hooks/tracking-checklist';
 
 function UpdateIcon({
   showUpdate,
@@ -130,7 +133,7 @@ function TrackerSmol({
 }: {
   tracker: TrackerDataT;
   device?: DeviceDataT;
-  warning?: boolean;
+  warning?: TrackingChecklistStepT | boolean;
 }) {
   const { useName } = useTracker(tracker);
 
@@ -213,7 +216,7 @@ export function TrackerCard({
   bg?: string;
   shakeHighlight?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
-  warning?: boolean;
+  warning?: TrackingChecklistStepT | boolean;
   showUpdates?: boolean;
 }) {
   const { currentFirmwareRelease } = useAppContext();
@@ -249,11 +252,24 @@ export function TrackerCard({
         }
       >
         {smol && (
-          <TrackerSmol
-            tracker={tracker}
-            device={device}
-            warning={warning}
-          ></TrackerSmol>
+          <Tooltip
+            preferedDirection="bottom"
+            disabled={!warning}
+            content={
+              typeof warning === 'object' && (
+                <div className="flex gap-1 items-center text-status-warning">
+                  <WarningIcon width={20}></WarningIcon>
+                  <Typography id={trackingchecklistIdtoLabel[warning.id]} />
+                </div>
+              )
+            }
+          >
+            <TrackerSmol
+              tracker={tracker}
+              device={device}
+              warning={warning}
+            ></TrackerSmol>
+          </Tooltip>
         )}
         {!smol && <TrackerBig tracker={tracker} device={device}></TrackerBig>}
       </div>

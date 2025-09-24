@@ -8,6 +8,7 @@ import {
   useLayoutEffect,
   MutableRefObject,
   useMemo,
+  createElement,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { Typography } from './Typography';
@@ -22,6 +23,8 @@ interface TooltipProps {
   mode?: 'corner' | 'center';
   variant?: 'auto' | 'drawer' | 'floating';
   disabled?: boolean;
+  tag?: string;
+  spacing?: number;
 }
 
 interface TooltipPos {
@@ -83,10 +86,9 @@ const getFloatingTooltipPosition = (
   blockedDirections: Direction[],
   mode: TooltipProps['mode'],
   childrenRect: DOMRect,
-  tooltipRect: DOMRect
+  tooltipRect: DOMRect,
+  spacing: number
 ) => {
-  const spacing = 10;
-
   const getPosition = (
     direction: TooltipProps['preferedDirection']
   ): TooltipPos => {
@@ -234,10 +236,14 @@ export function FloatingTooltip({
   blockedDirections = [],
   mode,
   children,
+  spacing,
 }: {
-  childRef: MutableRefObject<HTMLDivElement | null>;
+  childRef: MutableRefObject<HTMLElement | null>;
   children: ReactNode;
-} & Pick<TooltipProps, 'mode' | 'preferedDirection' | 'blockedDirections'>) {
+} & Pick<
+  TooltipProps,
+  'mode' | 'preferedDirection' | 'blockedDirections' | 'spacing'
+>) {
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [tooltipStyle, setTooltipStyle] = useState<TooltipPos | undefined>();
 
@@ -254,7 +260,8 @@ export function FloatingTooltip({
         blockedDirections,
         mode,
         childrenRect,
-        tooltipRect
+        tooltipRect,
+        spacing ?? 20
       )
     );
   };
@@ -321,7 +328,7 @@ export function DrawerTooltip({
   childRef,
 }: {
   children: ReactNode;
-  childRef: MutableRefObject<HTMLDivElement | null>;
+  childRef: MutableRefObject<HTMLElement | null>;
 }) {
   const touchTimestamp = useRef<number>(0);
   const touchTimeout = useRef<number>(0);
@@ -456,8 +463,10 @@ export function Tooltip({
   mode = 'center',
   variant = 'auto',
   disabled = false,
+  tag = 'div',
+  spacing = 20,
 }: TooltipProps) {
-  const childRef = useRef<HTMLDivElement | null>(null);
+  const childRef = useRef<HTMLElement | null>(null);
   const { isMobile } = useBreakpoint('mobile');
 
   let portal = null;
@@ -470,6 +479,7 @@ export function Tooltip({
         blockedDirections={blockedDirections}
         mode={mode}
         childRef={childRef}
+        spacing={spacing}
       >
         {content}
       </FloatingTooltip>
@@ -486,6 +496,7 @@ export function Tooltip({
         preferedDirection={preferedDirection}
         mode={mode}
         childRef={childRef}
+        spacing={spacing}
       >
         {content}
       </FloatingTooltip>
@@ -493,9 +504,7 @@ export function Tooltip({
 
   return (
     <>
-      <div className="contents" ref={childRef}>
-        {children}
-      </div>
+      {createElement(tag, { className: 'contents', ref: childRef }, children)}
       {!disabled && createPortal(portal, document.body)}
     </>
   );

@@ -6,6 +6,7 @@ import {
   TrackingChecklistStepVisibility,
   IgnoreTrackingChecklistStepRequestT,
   RpcMessage,
+  TrackerIdT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
@@ -38,6 +39,10 @@ export type TrackingChecklistStepStatus =
 export type TrackingChecklistStep = TrackingChecklistStepT & {
   status: TrackingChecklistStepStatus;
   firstRequired: boolean;
+};
+export type HightlightedTrackers = {
+  step: TrackingChecklistStep;
+  trackers: Array<TrackerIdT>;
 };
 
 const stepVisibility = ({ visibility, status, firstRequired }: TrackingChecklistStep) =>
@@ -124,15 +129,15 @@ export function provideTrackingChecklist() {
     [steps]
   );
 
-  const hightlightedTrackers = useMemo(() => {
-    if (!firstRequired || !firstRequired.extraData) return [];
+  const hightlightedTrackers: HightlightedTrackers | undefined = useMemo(() => {
+    if (!firstRequired || !firstRequired.extraData) return undefined;
     if ('trackersId' in firstRequired.extraData) {
-      return firstRequired.extraData.trackersId;
+      return { step: firstRequired, trackers: firstRequired.extraData.trackersId };
     }
-    if ('trackerId' in firstRequired.extraData) {
-      return [firstRequired.extraData.trackerId];
+    if ('trackerId' in firstRequired.extraData && firstRequired.extraData.trackerId) {
+      return { step: firstRequired, trackers: [firstRequired.extraData.trackerId] };
     }
-    return [];
+    return { step: firstRequired, trackers: [] };
   }, [firstRequired]);
 
   const progress = useMemo(() => {

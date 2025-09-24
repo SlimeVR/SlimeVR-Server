@@ -59,11 +59,11 @@ export function Home() {
                 showUpdates
                 interactable
                 warning={
-                  !!hightlightedTrackers.find(
+                  !!hightlightedTrackers?.trackers.find(
                     (t) =>
                       t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
                       t?.trackerNum === tracker.trackerId?.trackerNum
-                  )
+                  ) && hightlightedTrackers.step
                 }
               />
             ))}

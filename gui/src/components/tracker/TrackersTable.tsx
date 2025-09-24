@@ -1,11 +1,10 @@
-import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { IPv4 } from 'ip-num/IPNumber';
-import { MouseEventHandler, ReactNode, useMemo, useState } from 'react';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 import {
   TrackerDataT,
-  TrackerIdT,
   TrackerStatus as TrackerStatusEnum,
+  TrackingChecklistStepT,
 } from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useTracker } from '@/hooks/tracker';
@@ -17,35 +16,13 @@ import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
-import { useTrackingChecklist } from '@/hooks/tracking-checklist';
-
-enum DisplayColumn {
-  NAME,
-  TYPE,
-  BATTERY,
-  PING,
-  TPS,
-  ROTATION,
-  TEMPERATURE,
-  LINEAR_ACCELERATION,
-  POSITION,
-  STAY_ALIGNED,
-  URL,
-}
-
-const displayColumns: { [k: string]: boolean } = {
-  [DisplayColumn.NAME]: true,
-  [DisplayColumn.TYPE]: true,
-  [DisplayColumn.BATTERY]: true,
-  [DisplayColumn.PING]: true,
-  [DisplayColumn.TPS]: true,
-  [DisplayColumn.ROTATION]: true,
-  [DisplayColumn.TEMPERATURE]: true,
-  [DisplayColumn.LINEAR_ACCELERATION]: true,
-  [DisplayColumn.POSITION]: true,
-  [DisplayColumn.STAY_ALIGNED]: true,
-  [DisplayColumn.URL]: true,
-};
+import {
+  HightlightedTrackers,
+  trackingchecklistIdtoLabel,
+  useTrackingChecklist,
+} from '@/hooks/tracking-checklist';
+import { Tooltip } from '@/components/commons/Tooltip';
+import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 
 const isSlime = ({ device }: FlatDeviceTracker) =>
   device?.hardwareInfo?.manufacturer === 'SlimeVR' ||
@@ -57,15 +34,36 @@ const getDeviceName = ({ device }: FlatDeviceTracker) =>
 const getTrackerName = ({ tracker }: FlatDeviceTracker) =>
   tracker?.info?.customName?.toString() || '';
 
-export function TrackerNameCell({ tracker }: { tracker: TrackerDataT }) {
+export function TrackerNameCell({
+  tracker,
+  warning,
+}: {
+  tracker: TrackerDataT;
+  warning: TrackingChecklistStepT | boolean;
+}) {
   const { useName } = useTracker(tracker);
 
   const name = useName();
 
   return (
-    <div className="flex flex-row gap-2">
-      <div className="flex flex-col justify-center items-center fill-background-10">
-        <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
+    <div className="flex gap-2">
+      <div className="flex flex-col justify-center items-center fill-background-10 relative">
+        {warning && (
+          <div className="absolute -left-2 -top-1 text-status-warning ">
+            <WarningIcon width={16}></WarningIcon>
+          </div>
+        )}
+        <div
+          className={classNames(
+            'border-[2px] border-opacity-80 rounded-md overflow-clip',
+            {
+              'border-status-warning': warning,
+              'border-transparent': !warning,
+            }
+          )}
+        >
+          <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
+        </div>
       </div>
       <div className="flex flex-col flex-grow">
         <Typography bold whitespace="whitespace-nowrap">
@@ -102,60 +100,191 @@ export function TrackerRotCell({
   );
 }
 
-export function RowContainer({
+function Header({
+  name,
+  className,
+  first = false,
+  last = false,
+  show = true,
+}: {
+  first?: boolean;
+  last?: boolean;
+  name: string;
+  className?: string;
+  show?: boolean;
+}) {
+  return (
+    <th
+      className={classNames('text-start px-2', {
+        hidden: !show,
+        'pl-4': first,
+        'pr-4': last,
+      })}
+    >
+      <div className={className}>
+        <Typography id={name} whitespace="whitespace-nowrap"></Typography>
+      </div>
+    </th>
+  );
+}
+
+function Cell({
   children,
-  rounded = 'none',
-  hover,
-  tracker,
-  onClick,
-  onMouseOver,
-  onMouseOut,
-  warning,
+  first = false,
+  last = false,
+  show = true,
 }: {
   children: ReactNode;
-  rounded?: 'left' | 'right' | 'none';
-  hover: boolean;
-  tracker: TrackerDataT;
-  onClick?: MouseEventHandler<HTMLDivElement>;
-  onMouseOver?: MouseEventHandler<HTMLDivElement>;
-  onMouseOut?: MouseEventHandler<HTMLDivElement>;
-  warning: boolean;
+  first?: boolean;
+  last?: boolean;
+  show?: boolean;
 }) {
+  const { tracker } = useContext(TrackerRowProvider);
   const { useVelocity } = useTracker(tracker);
 
   const velocity = useVelocity();
 
   return (
-    <div
-      className={classNames(
-        'py-1',
-        rounded === 'left' && 'pl-3',
-        rounded === 'right' && 'pr-3',
-        'overflow-hidden'
-      )}
-    >
+    <td className={classNames('py-2 group overflow-hidden', { hidden: !show })}>
       <div
-        onClick={onClick}
-        onMouseEnter={onMouseOver}
-        onMouseLeave={onMouseOut}
         style={{
           boxShadow: `0px 0px ${Math.floor(velocity * 8)}px ${Math.floor(
             velocity * 8
           )}px rgb(var(--accent-background-30))`,
         }}
         className={classNames(
-          'h-[50px]  flex flex-col justify-center px-3 transition-[box-shadow] duration-200 ease-linear',
-          rounded === 'left' && 'rounded-l-lg border-l-2',
-          rounded === 'right' && 'rounded-r-lg border-r-2',
-          hover ? 'bg-background-50 cursor-pointer' : 'bg-background-60',
-          (warning &&
-            'border-status-warning border-solid border-t-2 border-b-2') ||
-            'border-transparent'
+          { 'rounded-l-md ml-3': first, 'rounded-r-md mr-3': last },
+          'bg-background-60 group-hover:bg-background-50 hover:cursor-pointer p-2 h-[50px] flex items-center'
         )}
       >
         {children}
       </div>
-    </div>
+    </td>
+  );
+}
+
+const TrackerRowProvider = createContext<FlatDeviceTracker>(undefined as never);
+
+function Row({
+  data,
+  hightlightedTrackers,
+  clickedTracker,
+}: {
+  data: FlatDeviceTracker;
+  hightlightedTrackers: HightlightedTrackers | undefined;
+  clickedTracker: (tracker: TrackerDataT) => void;
+}) {
+  const { config } = useConfig();
+  const fontColor = config?.devSettings?.highContrast ? 'primary' : 'secondary';
+  const moreInfo = config?.devSettings?.moreInfo;
+
+  const { tracker, device } = data;
+
+  const warning =
+    !!hightlightedTrackers?.trackers.find(
+      (t) =>
+        t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
+        t?.trackerNum === tracker.trackerId?.trackerNum
+    ) && hightlightedTrackers.step;
+
+  return (
+    <TrackerRowProvider.Provider value={data}>
+      <Tooltip
+        disabled={!warning}
+        preferedDirection="top"
+        content={
+          warning && (
+            <div className="flex gap-1 items-center text-status-warning">
+              <WarningIcon width={20}></WarningIcon>
+              <Typography id={trackingchecklistIdtoLabel[warning.id]} />
+            </div>
+          )
+        }
+        tag="tr"
+        spacing={-5}
+      >
+        <tr className="group" onClick={() => clickedTracker(tracker)}>
+          <Cell first>
+            <TrackerNameCell
+              tracker={tracker}
+              warning={warning}
+            ></TrackerNameCell>
+          </Cell>
+          <Cell>
+            <Typography color={fontColor}>
+              {device?.hardwareInfo?.manufacturer || '--'}
+            </Typography>
+          </Cell>
+          <Cell>
+            {device?.hardwareStatus?.batteryPctEstimate != null && (
+              <TrackerBattery
+                value={device.hardwareStatus.batteryPctEstimate / 100}
+                voltage={device.hardwareStatus.batteryVoltage}
+                disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
+                textColor={fontColor}
+              />
+            )}
+          </Cell>
+          <Cell>
+            {(device?.hardwareStatus?.rssi != null ||
+              device?.hardwareStatus?.ping != null) && (
+              <TrackerWifi
+                rssi={device?.hardwareStatus?.rssi}
+                rssiShowNumeric
+                ping={device?.hardwareStatus?.ping}
+                disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
+                textColor={fontColor}
+              ></TrackerWifi>
+            )}
+          </Cell>
+          <Cell>
+            {tracker.tps && (
+              <Typography color={fontColor}>{tracker.tps}</Typography>
+            )}
+          </Cell>
+          <Cell>
+            <TrackerRotCell
+              tracker={tracker}
+              precise={config?.devSettings?.preciseRotation}
+              referenceAdjusted={!config?.devSettings?.rawSlimeRotation}
+              color={fontColor}
+            />
+          </Cell>
+          <Cell last={!moreInfo}>
+            {tracker?.temp && tracker?.temp?.temp != 0 && (
+              <Typography color={fontColor} whitespace="whitespace-nowrap">
+                {tracker.temp.temp.toFixed(2)}
+              </Typography>
+            )}
+          </Cell>
+          <Cell show={moreInfo}>
+            {tracker.linearAcceleration && (
+              <Typography color={fontColor} whitespace="whitespace-nowrap">
+                {formatVector3(tracker.linearAcceleration, 1)}
+              </Typography>
+            )}
+          </Cell>
+          <Cell show={moreInfo}>
+            {tracker.position && (
+              <Typography color={fontColor} whitespace="whitespace-nowrap">
+                {formatVector3(tracker.position, 2)}
+              </Typography>
+            )}
+          </Cell>
+          <Cell show={moreInfo}>
+            <StayAlignedInfo color={fontColor} tracker={tracker} />
+          </Cell>
+          <Cell last={moreInfo} show={moreInfo}>
+            <Typography color={fontColor} whitespace="whitespace-nowrap">
+              udp://
+              {IPv4.fromNumber(
+                device?.hardwareInfo?.ipAddress?.addr || 0
+              ).toString()}
+            </Typography>
+          </Cell>
+        </tr>
+      </Tooltip>
+    </TrackerRowProvider.Provider>
   );
 }
 
@@ -166,14 +295,8 @@ export function TrackersTable({
   clickedTracker: (tracker: TrackerDataT) => void;
   flatTrackers: FlatDeviceTracker[];
 }) {
-  const { l10n } = useLocalization();
-  const [hoverTracker, setHoverTracker] = useState<TrackerIdT | null>(null);
   const { config } = useConfig();
   const { hightlightedTrackers } = useTrackingChecklist();
-
-  const trackerEqual = (id: TrackerIdT | null) =>
-    id?.trackerNum == hoverTracker?.trackerNum &&
-    (!id?.deviceId || id.deviceId.id == hoverTracker?.deviceId?.id);
 
   const filteringEnabled =
     config?.debug && config?.devSettings?.filterSlimesAndHMD;
@@ -190,207 +313,54 @@ export function TrackersTable({
     return list;
   }, [flatTrackers, filteringEnabled, sortingEnabled]);
 
-  const fontColor = config?.devSettings?.highContrast ? 'primary' : 'secondary';
   const moreInfo = config?.devSettings?.moreInfo;
 
-  const hasTemperature = !!filteredSortedTrackers.find(
-    ({ tracker }) => tracker?.temp && tracker?.temp?.temp != 0
-  );
-  displayColumns[DisplayColumn.TEMPERATURE] = hasTemperature || false;
-  displayColumns[DisplayColumn.POSITION] = moreInfo || false;
-  displayColumns[DisplayColumn.LINEAR_ACCELERATION] = moreInfo || false;
-  displayColumns[DisplayColumn.STAY_ALIGNED] = moreInfo || false;
-  displayColumns[DisplayColumn.URL] = moreInfo || false;
-  const displayColumnsKeys = Object.keys(displayColumns).filter(
-    (k) => displayColumns[k]
-  );
-  const firstColumnId = +displayColumnsKeys[0];
-  const lastColumnId = +displayColumnsKeys[displayColumnsKeys.length - 1];
-
-  function column({
-    id,
-    label,
-    labelClassName,
-    row,
-  }: {
-    id: DisplayColumn;
-    label: string;
-    labelClassName?: string;
-    row: (data: FlatDeviceTracker) => ReactNode | null;
-  }) {
-    let rounded: 'left' | 'right' | 'none' = 'none';
-    if (firstColumnId === id) rounded = 'left';
-    else if (lastColumnId === id) rounded = 'right';
-
-    if (!displayColumns[id]) return <></>;
-
-    return (
-      <div
-        className={classNames('flex flex-col gap-1', {
-          'flex-grow': lastColumnId === id,
-        })}
-      >
-        <div className={`flex px-3 whitespace-nowrap ${labelClassName}`}>
-          {label}
-        </div>
-        {filteredSortedTrackers.map((data, index) => (
-          <RowContainer
-            rounded={rounded}
-            key={index}
-            tracker={data.tracker}
-            onClick={() => clickedTracker(data.tracker)}
-            hover={trackerEqual(data.tracker.trackerId)}
-            onMouseOver={() => setHoverTracker(data.tracker.trackerId)}
-            onMouseOut={() => setHoverTracker(null)}
-            warning={
-              !!hightlightedTrackers.find(
-                (t) =>
-                  t?.deviceId?.id === data.tracker.trackerId?.deviceId?.id &&
-                  t?.trackerNum === data.tracker.trackerId?.trackerNum
-              )
-            }
-          >
-            {row(data) || <></>}
-          </RowContainer>
-        ))}
-      </div>
-    );
-  }
-
   return (
-    <div className="flex w-full overflow-x-auto py-2">
-      {column({
-        id: DisplayColumn.NAME,
-        label: l10n.getString('tracker-table-column-name'),
-        row: ({ tracker }) => (
-          <TrackerNameCell tracker={tracker}></TrackerNameCell>
-        ),
-      })}
-
-      {column({
-        id: DisplayColumn.TYPE,
-        label: l10n.getString('tracker-table-column-type'),
-        row: ({ device }) => (
-          <Typography color={fontColor}>
-            {device?.hardwareInfo?.manufacturer || '--'}
-          </Typography>
-        ),
-      })}
-
-      {column({
-        id: DisplayColumn.BATTERY,
-        label: l10n.getString('tracker-table-column-battery'),
-        row: ({ device, tracker }) =>
-          device?.hardwareStatus?.batteryPctEstimate != null && (
-            <TrackerBattery
-              value={device.hardwareStatus.batteryPctEstimate / 100}
-              voltage={device.hardwareStatus.batteryVoltage}
-              disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-              textColor={fontColor}
-            />
-          ),
-      })}
-
-      {column({
-        id: DisplayColumn.PING,
-        label: l10n.getString('tracker-table-column-ping'),
-        row: ({ device, tracker }) =>
-          (device?.hardwareStatus?.rssi != null ||
-            device?.hardwareStatus?.ping != null) && (
-            <TrackerWifi
-              rssi={device?.hardwareStatus?.rssi}
-              rssiShowNumeric
-              ping={device?.hardwareStatus?.ping}
-              disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-              textColor={fontColor}
-            ></TrackerWifi>
-          ),
-      })}
-
-      {column({
-        id: DisplayColumn.TPS,
-        label: l10n.getString('tracker-table-column-tps'),
-        row: ({ tracker }) => (
-          <Typography color={fontColor}>
-            {tracker?.tps != null ? <>{tracker.tps}</> : <></>}
-          </Typography>
-        ),
-      })}
-
-      {column({
-        id: DisplayColumn.ROTATION,
-        label: l10n.getString('tracker-table-column-rotation'),
-        labelClassName: classNames({
-          'w-44': config?.devSettings?.preciseRotation,
-          'w-32': !config?.devSettings?.preciseRotation,
-        }),
-        row: ({ tracker }) => (
-          <TrackerRotCell
-            tracker={tracker}
-            precise={config?.devSettings?.preciseRotation}
-            referenceAdjusted={!config?.devSettings?.rawSlimeRotation}
-            color={fontColor}
-          />
-        ),
-      })}
-
-      {column({
-        id: DisplayColumn.TEMPERATURE,
-        label: l10n.getString('tracker-table-column-temperature'),
-        row: ({ tracker }) =>
-          tracker?.temp &&
-          tracker?.temp?.temp != 0 && (
-            <Typography color={fontColor} whitespace="whitespace-nowrap">
-              {`${tracker.temp.temp.toFixed(2)}`}
-            </Typography>
-          ),
-      })}
-
-      {column({
-        id: DisplayColumn.LINEAR_ACCELERATION,
-        label: l10n.getString('tracker-table-column-linear-acceleration'),
-        labelClassName: 'w-36',
-        row: ({ tracker }) =>
-          tracker.linearAcceleration && (
-            <Typography color={fontColor} whitespace="whitespace-nowrap">
-              {formatVector3(tracker.linearAcceleration, 1)}
-            </Typography>
-          ),
-      })}
-
-      {column({
-        id: DisplayColumn.POSITION,
-        label: l10n.getString('tracker-table-column-position'),
-        labelClassName: 'w-36',
-        row: ({ tracker }) =>
-          tracker.position && (
-            <Typography color={fontColor} whitespace="whitespace-nowrap">
-              {formatVector3(tracker.position, 2)}
-            </Typography>
-          ),
-      })}
-
-      {column({
-        id: DisplayColumn.STAY_ALIGNED,
-        label: l10n.getString('tracker-table-column-stay_aligned'),
-        labelClassName: 'w-36',
-        row: ({ tracker }) => (
-          <StayAlignedInfo color={fontColor} tracker={tracker} />
-        ),
-      })}
-
-      {column({
-        id: DisplayColumn.URL,
-        label: l10n.getString('tracker-table-column-url'),
-        row: ({ device }) => (
-          <Typography color={fontColor} whitespace="whitespace-nowrap">
-            udp://
-            {IPv4.fromNumber(
-              device?.hardwareInfo?.ipAddress?.addr || 0
-            ).toString()}
-          </Typography>
-        ),
-      })}
+    <div className="w-full overflow-x-auto py-2">
+      <table className="w-full" cellPadding={0} cellSpacing={0}>
+        <tr>
+          <Header name={'tracker-table-column-name'} first></Header>
+          <Header name={'tracker-table-column-type'}></Header>
+          <Header name={'tracker-table-column-battery'}></Header>
+          <Header name={'tracker-table-column-ping'}></Header>
+          <Header name={'tracker-table-column-tps'}></Header>
+          <Header
+            name={'tracker-table-column-rotation'}
+            className={classNames({
+              'w-44': config?.devSettings?.preciseRotation,
+              'w-32': !config?.devSettings?.preciseRotation,
+            })}
+          ></Header>
+          <Header
+            name={'tracker-table-column-temperature'}
+            last={!moreInfo}
+          ></Header>
+          <Header
+            name={'tracker-table-column-linear-acceleration'}
+            className="w-36"
+            show={moreInfo}
+          ></Header>
+          <Header
+            name={'tracker-table-column-position'}
+            className="w-36"
+            show={moreInfo}
+          ></Header>
+          <Header
+            name={'tracker-table-column-stay_aligned'}
+            className="w-36"
+            show={moreInfo}
+            last={moreInfo}
+          ></Header>
+          <Header name={'tracker-table-column-url'} show={moreInfo}></Header>
+        </tr>
+        {filteredSortedTrackers.map((data) => (
+          <Row
+            clickedTracker={clickedTracker}
+            data={data}
+            hightlightedTrackers={hightlightedTrackers}
+          ></Row>
+        ))}
+      </table>
     </div>
   );
 }
