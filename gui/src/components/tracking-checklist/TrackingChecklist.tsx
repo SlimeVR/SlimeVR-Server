@@ -130,18 +130,9 @@ const stepContentLookup: Record<
       <div className="space-y-2.5">
         <Typography id="tracking_checklist-FULL_RESET-desc"></Typography>
         <div>
-          <Typography
-            color="secondary"
-            id="onboarding-automatic_mounting-preparation-v2-step-0"
-          ></Typography>
-          <Typography
-            color="secondary"
-            id="onboarding-automatic_mounting-preparation-v2-step-1"
-          ></Typography>
-          <Typography
-            color="secondary"
-            id="onboarding-automatic_mounting-preparation-v2-step-2"
-          ></Typography>
+          <Typography id="onboarding-automatic_mounting-preparation-v2-step-0"></Typography>
+          <Typography id="onboarding-automatic_mounting-preparation-v2-step-1"></Typography>
+          <Typography id="onboarding-automatic_mounting-preparation-v2-step-2"></Typography>
         </div>
         <div className="grid grid-cols-3 py-1.5 gap-2">
           <div className="flex flex-col bg-background-80 rounded-md relative max-h-52">
@@ -250,7 +241,7 @@ const stepContentLookup: Record<
       <>
         <div className="space-y-2.5">
           <Typography id="tracking_checklist-VRCHAT_SETTINGS-desc"></Typography>
-          <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
+          <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row flex-wrap">
             <Button
               variant="primary"
               to="/vrc-warnings"
