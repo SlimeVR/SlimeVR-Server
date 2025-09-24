@@ -40,7 +40,7 @@ export type TrackingChecklistStep = TrackingChecklistStepT & {
   status: TrackingChecklistStepStatus;
   firstRequired: boolean;
 };
-export type HightlightedTrackers = {
+export type highlightedTrackers = {
   step: TrackingChecklistStep;
   trackers: Array<TrackerIdT>;
 };
@@ -129,7 +129,7 @@ export function provideTrackingChecklist() {
     [steps]
   );
 
-  const hightlightedTrackers: HightlightedTrackers | undefined = useMemo(() => {
+  const highlightedTrackers: highlightedTrackers | undefined = useMemo(() => {
     if (!firstRequired || !firstRequired.extraData) return undefined;
     if ('trackersId' in firstRequired.extraData) {
       return { step: firstRequired, trackers: firstRequired.extraData.trackersId };
@@ -170,7 +170,7 @@ export function provideTrackingChecklist() {
   return {
     ...steps,
     firstRequired,
-    hightlightedTrackers,
+    highlightedTrackers,
     progress,
     completion,
     warnings,

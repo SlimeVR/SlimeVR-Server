@@ -15,7 +15,7 @@ export function Home() {
   const { l10n } = useLocalization();
   const { config } = useConfig();
   const trackers = useAtomValue(flatTrackersAtom);
-  const { hightlightedTrackers } = useTrackingChecklist();
+  const { highlightedTrackers } = useTrackingChecklist();
   const navigate = useNavigate();
 
   const sendToSettings = (tracker: TrackerDataT) => {
@@ -59,11 +59,11 @@ export function Home() {
                 showUpdates
                 interactable
                 warning={
-                  !!hightlightedTrackers?.trackers.find(
+                  !!highlightedTrackers?.trackers.find(
                     (t) =>
                       t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
                       t?.trackerNum === tracker.trackerId?.trackerNum
-                  ) && hightlightedTrackers.step
+                  ) && highlightedTrackers.step
                 }
               />
             ))}

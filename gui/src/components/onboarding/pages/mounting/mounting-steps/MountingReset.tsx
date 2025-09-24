@@ -59,6 +59,7 @@ export function MountingResetStep({
           </Button>
           <ResetButton
             type={ResetType.Mounting}
+            group="default"
             onReseted={nextStep}
           ></ResetButton>
         </div>

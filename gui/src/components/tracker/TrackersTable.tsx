@@ -17,7 +17,7 @@ import { TrackerWifi } from './TrackerWifi';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
 import {
-  HightlightedTrackers,
+  highlightedTrackers,
   trackingchecklistIdtoLabel,
   useTrackingChecklist,
 } from '@/hooks/tracking-checklist';
@@ -167,11 +167,11 @@ const TrackerRowProvider = createContext<FlatDeviceTracker>(undefined as never);
 
 function Row({
   data,
-  hightlightedTrackers,
+  highlightedTrackers,
   clickedTracker,
 }: {
   data: FlatDeviceTracker;
-  hightlightedTrackers: HightlightedTrackers | undefined;
+  highlightedTrackers: highlightedTrackers | undefined;
   clickedTracker: (tracker: TrackerDataT) => void;
 }) {
   const { config } = useConfig();
@@ -181,11 +181,11 @@ function Row({
   const { tracker, device } = data;
 
   const warning =
-    !!hightlightedTrackers?.trackers.find(
+    !!highlightedTrackers?.trackers.find(
       (t) =>
         t?.deviceId?.id === tracker.trackerId?.deviceId?.id &&
         t?.trackerNum === tracker.trackerId?.trackerNum
-    ) && hightlightedTrackers.step;
+    ) && highlightedTrackers.step;
 
   return (
     <TrackerRowProvider.Provider value={data}>
@@ -296,7 +296,7 @@ export function TrackersTable({
   flatTrackers: FlatDeviceTracker[];
 }) {
   const { config } = useConfig();
-  const { hightlightedTrackers } = useTrackingChecklist();
+  const { highlightedTrackers } = useTrackingChecklist();
 
   const filteringEnabled =
     config?.debug && config?.devSettings?.filterSlimesAndHMD;
@@ -357,7 +357,7 @@ export function TrackersTable({
           <Row
             clickedTracker={clickedTracker}
             data={data}
-            hightlightedTrackers={hightlightedTrackers}
+            highlightedTrackers={highlightedTrackers}
           ></Row>
         ))}
       </table>
