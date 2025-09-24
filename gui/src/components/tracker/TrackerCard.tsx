@@ -1,10 +1,9 @@
 import { useConfig } from '@/hooks/config';
-import { MouseEventHandler, useMemo } from 'react';
+import { MouseEventHandler } from 'react';
 import {
   DeviceDataT,
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
-  TrackingChecklistStep,
   TrackingChecklistStepT,
 } from 'solarxr-protocol';
 import { Typography } from '@/components/commons/Typography';
