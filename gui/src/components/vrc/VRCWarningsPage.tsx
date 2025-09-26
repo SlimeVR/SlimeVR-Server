@@ -301,7 +301,12 @@ export function VRCWarningsPage() {
         <Localized
           id={'vrc_config-page-help-desc'}
           elems={{
-            a: <A href="https://docs.slimevr.dev/tools/vrchat-config.html"></A>,
+            a: (
+              <A
+                href="https://docs.slimevr.dev/tools/vrchat-config.html"
+                underline
+              ></A>
+            ),
           }}
         >
           <Typography />

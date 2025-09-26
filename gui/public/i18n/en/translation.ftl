@@ -1366,7 +1366,10 @@ firmware_tool-add_imus_step-description =
     If you followed the SlimeVR documentation, the default values should be correct.
 firmware_tool-add_imus_step-imu_type-label = IMU type
 firmware_tool-add_imus_step-imu_type-placeholder = Select the type of IMU
-firmware_tool-add_imus_step-imu_rotation =
+
+firmware_tool-add_imus_step-imu_rotation-tooltip = Click to open documentation
+firmware_tool-add_imus_step-imu_rotation-tooltip-label = IMU Rotation (Degree)
+firmware_tool-add_imus_step-imu_rotation-tooltip-placeholder = IMU Rotation (Degree)
     .label = IMU Rotation (deg)
     .placeholder = Rotation angle of the IMU
 firmware_tool-add_imus_step-scl_pin =

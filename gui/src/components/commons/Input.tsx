@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { forwardRef, MouseEvent, useMemo, useState } from 'react';
+import { forwardRef, MouseEvent, useMemo, useState, ReactNode } from 'react';
 import {
   Control,
   Controller,
@@ -10,7 +10,7 @@ import { EyeIcon } from './icon/EyeIcon';
 
 interface InputProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
-  label?: string;
+  label?: string | ReactNode;
   name: string;
 }
 
@@ -18,7 +18,7 @@ export const InputInside = forwardRef<
   HTMLInputElement,
   {
     variant?: 'primary' | 'secondary' | 'tertiary';
-    label?: string;
+    label?: string | ReactNode;
     error?: FieldError;
     onChange: () => void;
   } & Partial<HTMLInputElement>

@@ -250,7 +250,10 @@ export function ConnectTrackersPage() {
                 id={`status_system-${StatusData[status.dataType]}`}
                 elems={{
                   PublicFixLink: (
-                    <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
+                    <A
+                      href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"
+                      underline
+                    ></A>
                   ),
                 }}
               >
