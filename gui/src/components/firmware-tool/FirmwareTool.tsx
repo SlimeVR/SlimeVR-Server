@@ -85,9 +85,7 @@ function FirmwareToolContent() {
               .getString('firmware_tool-description')
               .split('\n')
               .map((line, i) => (
-                <Typography color="secondary" key={i}>
-                  {line}
-                </Typography>
+                <Typography key={i}>{line}</Typography>
               ))}
           </>
         </div>

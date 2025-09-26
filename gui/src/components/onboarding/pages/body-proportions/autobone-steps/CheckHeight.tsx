@@ -60,7 +60,7 @@ export function CheckHeightStep({
               )}
             </Typography>
             <div>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'onboarding-automatic_proportions-check_height-description-v2'
                 )}
@@ -69,7 +69,7 @@ export function CheckHeightStep({
                 id="onboarding-automatic_proportions-check_height-calculation_warning-v3"
                 elems={{ u: <span className="underline"></span> }}
               >
-                <Typography color="secondary" bold>
+                <Typography bold>
                   Press the button to get your height!
                 </Typography>
               </Localized>

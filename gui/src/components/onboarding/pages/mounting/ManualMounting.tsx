@@ -99,7 +99,7 @@ export function ManualMountingPage() {
             <Typography variant="main-title">
               {l10n.getString('onboarding-manual_mounting')}
             </Typography>
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString('onboarding-manual_mounting-description')}
             </Typography>
             <TipBox>{l10n.getString('tips-find_tracker')}</TipBox>

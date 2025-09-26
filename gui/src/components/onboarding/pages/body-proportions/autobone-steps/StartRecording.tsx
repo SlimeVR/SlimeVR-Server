@@ -63,7 +63,7 @@ export function StartRecording({
               )}
             </Typography>
             <div>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'onboarding-automatic_proportions-start_recording-description'
                 )}
@@ -76,7 +76,7 @@ export function StartRecording({
                   .split('\n')
                   .map((line, i) => (
                     <li key={i}>
-                      <Typography color="secondary">{line}</Typography>
+                      <Typography>{line}</Typography>
                     </li>
                   ))}
               </>

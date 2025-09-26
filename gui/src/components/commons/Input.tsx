@@ -47,19 +47,19 @@ export const InputInside = forwardRef<
   const classes = useMemo(() => {
     const variantsMap = {
       primary: classNames({
-        'placeholder:text-background-30 bg-background-60 border-background-60':
+        'placeholder:text-background-10 placeholder:italic bg-background-60 border-background-60':
           !disabled,
         'text-background-30 placeholder:text-background-30 border-background-70 bg-background-70':
           disabled,
       }),
       secondary: classNames({
-        'placeholder:text-background-30 bg-background-50 border-background-50':
+        'placeholder:text-background-10 placeholder:italic bg-background-50 border-background-50':
           !disabled,
         'text-background-40 placeholder:text-background-40 border-background-70 bg-background-70':
           disabled,
       }),
       tertiary: classNames({
-        'placeholder:text-background-30 bg-background-40 border-background-40':
+        'placeholder:text-background-10 placeholder:italic bg-background-40 border-background-40':
           !disabled,
         'text-background-30 placeholder:text-background-30 border-background-70 bg-background-70':
           disabled,

@@ -21,13 +21,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 
       - uses: pnpm/action-setup@v4
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
@@ -59,13 +59,13 @@ jobs:
       BUILD_ARCH: ${{ endsWith(matrix.os, 'arm') && 'aarch64' || 'amd64' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           submodules: recursive
 
       - if: startsWith(matrix.os, 'ubuntu')
         name: Set up Linux dependencies
-        uses: awalsh128/cache-apt-pkgs-action@v1.5.1
+        uses: awalsh128/cache-apt-pkgs-action@v1.5.3
         with:
           packages: libgtk-3-dev webkit2gtk-4.1 libappindicator3-dev librsvg2-dev patchelf
           # Increment to invalidate the cache
@@ -85,7 +85,7 @@ jobs:
 
       - uses: pnpm/action-setup@v4
       - name: Use Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'

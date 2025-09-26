@@ -52,7 +52,7 @@ export function ScaledProportionsPage() {
               {l10n.getString('onboarding-scaled_proportions-title')}
             </Typography>
             <div>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('onboarding-scaled_proportions-description')}
               </Typography>
             </div>

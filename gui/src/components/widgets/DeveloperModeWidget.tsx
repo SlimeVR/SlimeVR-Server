@@ -75,9 +75,7 @@ export function DeveloperModeWidget() {
   return (
     <form className="bg-background-60 flex flex-col w-full rounded-md px-2">
       <div className="mt-2 px-1">
-        <Typography color="secondary">
-          {l10n.getString('widget-developer_mode')}
-        </Typography>
+        <Typography>{l10n.getString('widget-developer_mode')}</Typography>
       </div>
       {Object.entries(toggles).map(makeToggle)}
     </form>

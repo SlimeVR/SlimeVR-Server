@@ -240,9 +240,7 @@ export function Serial() {
               .getString('settings-serial-description')
               .split('\n')
               .map((line, i) => (
-                <Typography color="secondary" key={i}>
-                  {line}
-                </Typography>
+                <Typography key={i}>{line}</Typography>
               ))}
           </>
         </div>
