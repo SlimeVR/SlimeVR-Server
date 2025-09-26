@@ -51,6 +51,7 @@ export function OSCRouterSettings() {
     });
 
   const formValues = watch();
+  const bannedPorts = [6969, 21110];
 
   const onSubmit = (values: OSCRouterSettingsForm) => {
     const settings = new ChangeSettingsRequestT();
@@ -165,6 +166,12 @@ export function OSCRouterSettings() {
                           'settings-osc-router-network-ports_match_error'
                         );
                       }
+                      if (bannedPorts.includes(Number(portIn))) {
+                        return l10n.getString(
+                          'settings-osc-vrchat-network-port_banned_error',
+                          { port: portIn }
+                        );
+                      }
                     },
                   }}
                   name="router.oscSettings.portIn"
@@ -189,6 +196,12 @@ export function OSCRouterSettings() {
                       ) {
                         return l10n.getString(
                           'settings-osc-router-network-ports_match_error'
+                        );
+                      }
+                      if (bannedPorts.includes(Number(portOut))) {
+                        return l10n.getString(
+                          'settings-osc-vrchat-network-port_banned_error',
+                          { port: portOut }
                         );
                       }
                     },
