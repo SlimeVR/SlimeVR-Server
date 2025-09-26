@@ -171,7 +171,10 @@ export function TrackerSettingsPage() {
     tracker?.device?.hardwareInfo &&
     checkForUpdate(currentFirmwareRelease, tracker?.device);
   const updateUnavailable =
-    tracker?.device?.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
+    (
+        tracker?.device?.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR &&
+        tracker?.device?.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR_V1_2
+    ) ||
     !semver.valid(
       tracker?.device?.hardwareInfo?.firmwareVersion?.toString() ?? 'none'
     );
