@@ -14,7 +14,7 @@ import { SlimeVRIcon } from './commons/icon/SimevrIcon';
 import { ProgressBar } from './commons/ProgressBar';
 import { Typography } from './commons/Typography';
 import { DownloadIcon } from './commons/icon/DownloadIcon';
-import { open } from '@tauri-apps/plugin-shell';
+import { openUrl } from '@tauri-apps/plugin-opener';
 import { DOCS_SITE, GH_REPO, VersionContext } from '@/App';
 import classNames from 'classnames';
 import { QuestionIcon } from './commons/icon/QuestionIcon';
@@ -47,7 +47,7 @@ export function VersionTag() {
       )}
       onClick={() => {
         const url = `https://github.com/${GH_REPO}/releases`;
-        open(url).catch(() => window.open(url, '_blank'));
+        openUrl(url).catch(() => window.open(url, '_blank'));
       }}
     >
       {(__VERSION_TAG__ || __COMMIT_HASH__) + (__GIT_CLEAN__ ? '' : '-dirty')}
@@ -203,7 +203,7 @@ export function TopBar({
                     const url = document.body.classList.contains('windows')
                       ? 'https://slimevr.dev/download'
                       : `https://github.com/${GH_REPO}/releases/latest`;
-                    open(url).catch(() => window.open(url, '_blank'));
+                    openUrl(url).catch(() => window.open(url, '_blank'));
                   }}
                 >
                   <DownloadIcon></DownloadIcon>
@@ -266,7 +266,9 @@ export function TopBar({
                   'hover:bg-background-60 rounded-full w-7 h-7 cursor-pointer'
                 )}
                 onClick={() =>
-                  open(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'))
+                  openUrl(DOCS_SITE).catch(() =>
+                    window.open(DOCS_SITE, '_blank')
+                  )
                 }
               >
                 <QuestionIcon></QuestionIcon>

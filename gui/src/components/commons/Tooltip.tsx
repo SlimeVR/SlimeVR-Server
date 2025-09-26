@@ -333,7 +333,7 @@ export function DrawerTooltip({
       elem.classList.add(classNames('duration-500'));
       touchTimeout.current = setTimeout(() => {
         open();
-      }, TOOLTIP_DELAY);
+      }, TOOLTIP_DELAY) as unknown as number;
     }
   };
 
