@@ -63,11 +63,12 @@ export function Serial() {
   useEffect(() => {
     const callback = subscribe({
       name: 'port',
+      exact: true,
       formState: {
-        value: true,
+        values: true,
       },
-      callback: ({ port }) => {
-        openSerial(port);
+      callback: ({ values }) => {
+        openSerial(values.port);
         setConsole('');
       },
     });
