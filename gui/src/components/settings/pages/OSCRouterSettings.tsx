@@ -50,6 +50,8 @@ export function OSCRouterSettings() {
       defaultValues: defaultValues,
     });
 
+  const formValues = watch();
+
   const onSubmit = (values: OSCRouterSettingsForm) => {
     const settings = new ChangeSettingsRequestT();
 
@@ -152,7 +154,19 @@ export function OSCRouterSettings() {
                 <Input
                   type="number"
                   control={control}
-                  rules={{ required: true }}
+                  rules={{
+                    required: true,
+                    validate: (portIn) => {
+                      if (
+                        Number(portIn) ===
+                        Number(formValues.router.oscSettings.portOut)
+                      ) {
+                        return l10n.getString(
+                          'settings-osc-router-network-ports_match_error'
+                        );
+                      }
+                    },
+                  }}
                   name="router.oscSettings.portIn"
                   placeholder="9002"
                   label=""
@@ -165,7 +179,20 @@ export function OSCRouterSettings() {
                 <Input
                   type="number"
                   control={control}
-                  rules={{ required: true }}
+                  rules={{
+                    required: true,
+                    validate: (portOut) => {
+                      console.log(portOut, formValues);
+                      if (
+                        Number(portOut) ===
+                        Number(formValues.router.oscSettings.portIn)
+                      ) {
+                        return l10n.getString(
+                          'settings-osc-router-network-ports_match_error'
+                        );
+                      }
+                    },
+                  }}
                   name="router.oscSettings.portOut"
                   placeholder="9000"
                   label=""

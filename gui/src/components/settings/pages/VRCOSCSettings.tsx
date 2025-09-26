@@ -70,6 +70,8 @@ export function VRCOSCSettings() {
     defaultValues,
   });
 
+  const formValues = watch();
+
   const onSubmit = (values: VRCOSCSettingsForm) => {
     const settings = new ChangeSettingsRequestT();
 
@@ -204,7 +206,18 @@ export function VRCOSCSettings() {
                   type="number"
                   control={control}
                   name="vrchat.oscSettings.portIn"
-                  rules={{ required: true }}
+                  rules={{
+                    required: true,
+                    validate: (portIn) => {
+                      if (
+                        Number(portIn) ===
+                        Number(formValues.vrchat.oscSettings.portOut)
+                      )
+                        return l10n.getString(
+                          'settings-osc-vrchat-network-ports_match_error'
+                        );
+                    },
+                  }}
                   placeholder="9001"
                   label=""
                 ></Input>
@@ -217,7 +230,18 @@ export function VRCOSCSettings() {
                   type="number"
                   control={control}
                   name="vrchat.oscSettings.portOut"
-                  rules={{ required: true }}
+                  rules={{
+                    required: true,
+                    validate: (portOut) => {
+                      if (
+                        Number(portOut) ===
+                        Number(formValues.vrchat.oscSettings.portIn)
+                      )
+                        return l10n.getString(
+                          'settings-osc-vrchat-network-ports_match_error'
+                        );
+                    },
+                  }}
                   placeholder="9000"
                   label=""
                 ></Input>

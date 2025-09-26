@@ -767,6 +767,7 @@ settings-osc-router-network-port_out =
 settings-osc-router-network-address = Network address
 settings-osc-router-network-address-description = Set the address to send out data at.
 settings-osc-router-network-address-placeholder = IPV4 address
+settings-osc-router-network-ports_match_error = The OSC Router in and out ports can't be the same!
 
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
@@ -803,6 +804,7 @@ settings-osc-vrchat-network-trackers-hip = Hip
 settings-osc-vrchat-network-trackers-knees = Knees
 settings-osc-vrchat-network-trackers-feet = Feet
 settings-osc-vrchat-network-trackers-elbows = Elbows
+settings-osc-vrchat-network-ports_match_error = The OSC in and out ports can't be the same!
 
 ## VMC OSC settings
 settings-osc-vmc = Virtual Motion Capture
