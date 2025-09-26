@@ -155,7 +155,7 @@ class DesktopSerialHandler :
 	}
 
 	override fun customCommandRequest(command: String) {
-		writeSerial(command);
+		writeSerial(command)
 	}
 
 	@Synchronized

@@ -250,7 +250,7 @@ class AndroidSerialHandler(val activity: AppCompatActivity) :
 	}
 
 	override fun customCommandRequest(command: String) {
-		writeSerial(command);
+		writeSerial(command)
 	}
 
 	override fun closeSerial() {
