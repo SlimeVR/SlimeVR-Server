@@ -40,3 +40,8 @@ project(":server").projectDir = File("server")
 include(":server:core")
 include(":server:desktop")
 include(":server:android")
+try {
+	apply(from = "tauri.settings.gradle")
+} catch(e: Exception) {
+	println("Couldn't enable tauri stuff")
+}

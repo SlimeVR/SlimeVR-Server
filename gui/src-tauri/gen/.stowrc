@@ -1,0 +1,10 @@
+--ignore='^gui$'
+--ignore='^\..+'
+--ignore='^node_modules$'
+--ignore='^build$'
+--ignore='^(local|keystore).properties$'
+--ignore='^target$'
+--ignore='^assets'
+--ignore='.*\.(toml|yaml|nix|lock|json|md)$'
+-d ../../../../
+-t android
