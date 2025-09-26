@@ -1,5 +1,7 @@
 package dev.slimevr.bridge
 
+import dev.slimevr.inputs.Input
+import dev.slimevr.tracking.processor.ShareableBone
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerRole
 import dev.slimevr.util.ann.VRServerThread
@@ -37,6 +39,24 @@ interface Bridge {
 	 */
 	@VRServerThread
 	fun removeSharedTracker(tracker: Tracker?)
+
+	/**
+	 * Adds a list of finger bones to the bridge. This should only be set
+	 * once the skeleton has initialized. Bridge will send finger data for
+	 * the hand trackers if it serves them.
+	 *
+	 * @param bones
+	 */
+	@VRServerThread
+	fun addFingerBones(bones: List<ShareableBone>)
+
+	/**
+	 * Reports a virtual controller input to the driver.
+	 *
+	 * @param input the object containing the data about the input
+	 */
+	@VRServerThread
+	fun sendInput(input: Input)
 
 	@VRServerThread
 	fun startBridge()
