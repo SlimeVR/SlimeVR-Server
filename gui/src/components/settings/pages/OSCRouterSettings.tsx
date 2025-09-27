@@ -189,7 +189,6 @@ export function OSCRouterSettings() {
                   rules={{
                     required: true,
                     validate: (portOut) => {
-                      console.log(portOut, formValues);
                       if (
                         Number(portOut) ===
                         Number(formValues.router.oscSettings.portIn)
