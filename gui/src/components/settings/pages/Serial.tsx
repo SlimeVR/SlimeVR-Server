@@ -27,6 +27,8 @@ import { save } from '@tauri-apps/plugin-dialog';
 import { writeTextFile } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
 import { waitUntil } from '@/utils/a11y';
+import { PauseIcon } from '@/components/commons/icon/PauseIcon';
+import { PlayIcon } from '@/components/commons/icon/PlayIcon';
 
 export interface SerialForm {
   port: string;
@@ -63,6 +65,8 @@ export function Serial() {
     openSerial(value.port);
     setConsole('');
   };
+
+  const [isPaused, setPaused] = useState(false);
 
   const openSerial = (port: string) => {
     sendRPCPacket(RpcMessage.CloseSerialRequest, new CloseSerialRequestT());
@@ -115,11 +119,34 @@ export function Serial() {
   );
 
   useEffect(() => {
-    if (consoleRef.current)
-      consoleRef.current.scrollTo({
-        top: consoleRef.current.scrollHeight,
-      });
+    if (isPaused) {
+      return;
+    }
+    if (!consoleRef.current) {
+      return;
+    }
+
+    consoleRef.current.scrollTo({
+      top: consoleRef.current.scrollHeight,
+    });
   }, [consoleContent]);
+
+  useEffect(() => {
+    if (!consoleRef.current) {
+      return;
+    }
+
+    consoleRef.current.addEventListener('scroll', () => {
+      if (!consoleRef.current) {
+        return;
+      }
+      setPaused(
+        consoleRef.current.scrollTop +
+          consoleRef.current.getBoundingClientRect().height !==
+          consoleRef.current.scrollHeight
+      );
+    });
+  }, [consoleRef.current]);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -206,6 +233,14 @@ export function Serial() {
     }
   };
 
+  const pauseScroll = () => {
+    setPaused(!isPaused);
+
+    consoleRef.current?.scrollTo({
+      top: consoleRef.current.scrollHeight,
+    });
+  };
+
   return (
     <>
       <BaseModal
@@ -281,6 +316,19 @@ export function Serial() {
               >
                 {l10n.getString('settings-serial-save_logs')}
               </Button>
+              <div className="ml-auto">
+                <Button
+                  variant="quaternary"
+                  onClick={pauseScroll}
+                  icon={
+                    isPaused ? (
+                      <PlayIcon width={16} />
+                    ) : (
+                      <PauseIcon width={16} />
+                    )
+                  }
+                ></Button>
+              </div>
               <div className="w-full mobile:col-span-2">
                 <Dropdown
                   control={control}
