@@ -52,10 +52,9 @@ export function Serial() {
   const [trySendCustomCommand, setTrySendCustomCommand] = useState(false);
 
   const defaultValues = { port: 'Auto' };
-  const { control, watch, handleSubmit, reset, setValue, subscribe } =
-    useForm<SerialForm>({
-      defaultValues,
-    });
+  const { control, watch, reset, setValue, subscribe } = useForm<SerialForm>({
+    defaultValues,
+  });
 
   const port = watch('port');
   const customCommand = watch('customCommand');
