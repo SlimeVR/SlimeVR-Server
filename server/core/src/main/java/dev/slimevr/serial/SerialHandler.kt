@@ -30,7 +30,7 @@ abstract class SerialHandler {
 			// CH341
 			Pair(0x1A86, 0x5523),
 			// CH343
-			pair(0x1A86, 0x55D3)
+			Pair(0x1A86, 0x55D3),
 			// CH9102x
 			Pair(0x1A86, 0x55D4),
 			// / Silabs
