@@ -194,7 +194,7 @@ class Tracker @JvmOverloads constructor(
 			csvOut = csv.writer()
 
 			LogManager.info("Starting recording (probably)")
-			csvOut.write("Time (ms),Acceleration X,Acceleration Y,Acceleration Z,Acceleration Magnitude,Velocity X,Velocity Y,Velocity Z,Velocity Magnitude,Position X,Position Y,Position Z\n")
+			csvOut.write("Time (ms),Acceleration X,Acceleration Y,Acceleration Z,Acceleration Magnitude,Velocity X,Velocity Y,Velocity Z,Velocity Magnitude,Position X,Position Y,Position Z,HMD Position X,HMD Position Y,HMD Position Z\n")
 		} else {
 			csv = null
 			csvOut = null
@@ -350,7 +350,7 @@ class Tracker @JvmOverloads constructor(
 		stayAligned.update()
 	}
 
-	data class AccelSample(val time: Long, val accel: Vector3)
+	data class AccelSample(val time: Long, val accel: Vector3, val hmdPos: Vector3)
 	data class AccelTimeline(val resting: Boolean, val samples: FastList<AccelSample> = FastList<AccelSample>())
 
 	var lastFrameRest = true
@@ -401,8 +401,9 @@ class Tracker @JvmOverloads constructor(
 			val accel = accum.acceleration
 			val vel = accum.velocity
 			val pos = accum.offset
+			val hmd = sample.hmdPos
 
-			csvOut?.write("$time,${accel.x},${accel.y},${accel.z},${accel.len()},${vel.x},${vel.y},${vel.z},${vel.len()},${pos.x},${pos.y},${pos.z}\n")
+			csvOut?.write("$time,${accel.x},${accel.y},${accel.z},${accel.len()},${vel.x},${vel.y},${vel.z},${vel.len()},${pos.x},${pos.y},${pos.z},${hmd.x},${hmd.y},${hmd.z}\n")
 		}
 
 		return time
@@ -423,7 +424,12 @@ class Tracker @JvmOverloads constructor(
 
 			val accel = getAcceleration()
 			val accelLen = accel.len()
-			val sample = AccelSample(timeAtLastUpdate - startTime, accel)
+			val hmdPos = if (VRServer.instanceInitialized) {
+				VRServer.instance.humanPoseManager.skeleton.headTracker?.position ?: Vector3.NULL
+			} else {
+				Vector3.NULL
+			}
+			val sample = AccelSample(timeAtLastUpdate - startTime, accel, hmdPos)
 
 			// Ensure a minimum sample size, assume resting at start
 			if (lastSamples.size >= 4) {
