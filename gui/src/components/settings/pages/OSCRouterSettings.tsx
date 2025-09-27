@@ -18,6 +18,8 @@ import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { boolean, number, object, string } from 'yup';
 
 interface OSCRouterSettingsForm {
   router: {
@@ -45,9 +47,61 @@ export function OSCRouterSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
+  const bannedPorts = [6969, 21110];
   const { reset, control, watch, handleSubmit } =
     useForm<OSCRouterSettingsForm>({
       defaultValues: defaultValues,
+      reValidateMode: 'onChange',
+      mode: 'onChange',
+      resolver: yupResolver(
+        object({
+          router: object({
+            oscSettings: object({
+              enabled: boolean().required(),
+              portIn: number()
+                .typeError(' ')
+                .required()
+                .test(
+                  'ports-dont-match',
+                  l10n.getString(
+                    'settings-osc-router-network-ports_match_error'
+                  ),
+                  (port, context) => port != context.parent.portOut
+                )
+                .notOneOf(bannedPorts, (context) =>
+                  l10n.getString(
+                    'settings-osc-router-network-port_banned_error',
+                    { port: context.originalValue }
+                  )
+                ),
+              portOut: number()
+                .typeError(' ')
+                .required()
+                .test(
+                  'ports-dont-match',
+                  l10n.getString(
+                    'settings-osc-router-network-ports_match_error'
+                  ),
+                  (port, context) => port != context.parent.portIn
+                )
+                .notOneOf(bannedPorts, (context) =>
+                  l10n.getString(
+                    'settings-osc-router-network-port_banned_error',
+                    { port: context.originalValue }
+                  )
+                ),
+              address: string()
+                .required(' ')
+                .matches(
+                  /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
+                  {
+                    message: ' ',
+                  }
+                ),
+            }),
+          }),
+        })
+      ),
     });
 
   const onSubmit = (values: OSCRouterSettingsForm) => {
@@ -152,7 +206,6 @@ export function OSCRouterSettings() {
                 <Input
                   type="number"
                   control={control}
-                  rules={{ required: true }}
                   name="router.oscSettings.portIn"
                   placeholder="9002"
                   label=""
@@ -165,7 +218,6 @@ export function OSCRouterSettings() {
                 <Input
                   type="number"
                   control={control}
-                  rules={{ required: true }}
                   name="router.oscSettings.portOut"
                   placeholder="9000"
                   label=""
@@ -186,11 +238,6 @@ export function OSCRouterSettings() {
               <Input
                 type="text"
                 control={control}
-                rules={{
-                  required: true,
-                  pattern:
-                    /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-                }}
                 name="router.oscSettings.address"
                 placeholder={l10n.getString(
                   'settings-osc-router-network-address-placeholder'

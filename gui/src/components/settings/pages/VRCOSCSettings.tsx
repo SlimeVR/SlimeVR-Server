@@ -19,6 +19,8 @@ import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { boolean, number, object, string } from 'yup';
 
 interface VRCOSCSettingsForm {
   vrchat: {
@@ -66,8 +68,66 @@ export function VRCOSCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
+  const bannedPorts = [6969, 21110];
   const { reset, control, watch, handleSubmit } = useForm<VRCOSCSettingsForm>({
     defaultValues,
+    reValidateMode: 'onChange',
+    mode: 'onChange',
+    resolver: yupResolver(
+      object({
+        vrchat: object({
+          oscSettings: object({
+            enabled: boolean().required(),
+            portIn: number()
+              .typeError(' ')
+              .required()
+              .test(
+                'ports-dont-match',
+                l10n.getString('settings-osc-vrchat-network-ports_match_error'),
+                (port, context) => port != context.parent.portOut
+              )
+              .notOneOf(bannedPorts, (context) =>
+                l10n.getString(
+                  'settings-osc-vrchat-network-port_banned_error',
+                  { port: context.originalValue }
+                )
+              ),
+            portOut: number()
+              .typeError(' ')
+              .required()
+              .test(
+                'ports-dont-match',
+                l10n.getString('settings-osc-vrchat-network-ports_match_error'),
+                (port, context) => port != context.parent.portIn
+              )
+              .notOneOf(bannedPorts, (context) =>
+                l10n.getString(
+                  'settings-osc-vrchat-network-port_banned_error',
+                  { port: context.originalValue }
+                )
+              ),
+            address: string()
+              .required(' ')
+              .matches(
+                /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
+                {
+                  message: ' ',
+                }
+              ),
+          }),
+          trackers: object({
+            head: boolean().required(),
+            chest: boolean().required(),
+            elbows: boolean().required(),
+            feet: boolean().required(),
+            knees: boolean().required(),
+            hands: boolean().required(),
+            waist: boolean().required(),
+          }),
+          oscqueryEnabled: boolean().required(),
+        }),
+      })
+    ),
   });
 
   const onSubmit = (values: VRCOSCSettingsForm) => {
@@ -204,7 +264,6 @@ export function VRCOSCSettings() {
                   type="number"
                   control={control}
                   name="vrchat.oscSettings.portIn"
-                  rules={{ required: true }}
                   placeholder="9001"
                   label=""
                 ></Input>
@@ -217,7 +276,6 @@ export function VRCOSCSettings() {
                   type="number"
                   control={control}
                   name="vrchat.oscSettings.portOut"
-                  rules={{ required: true }}
                   placeholder="9000"
                   label=""
                 ></Input>
@@ -238,11 +296,6 @@ export function VRCOSCSettings() {
                 type="text"
                 control={control}
                 name="vrchat.oscSettings.address"
-                rules={{
-                  required: true,
-                  pattern:
-                    /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-                }}
                 placeholder={l10n.getString(
                   'settings-osc-vrchat-network-address-placeholder'
                 )}
