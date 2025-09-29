@@ -52,7 +52,7 @@ export function CheckHeightStep({
   return (
     <>
       <div className="flex flex-col flex-grow">
-        <div className="flex gap-2 flex-grow">
+        <div className="flex gap-2 flex-grow flex-col sm:flex-row">
           <div className="flex flex-grow flex-col gap-4">
             <Typography variant="main-title" bold>
               {l10n.getString(
@@ -82,54 +82,52 @@ export function CheckHeightStep({
                 </TipBox>
               </div>
             </div>
-            <div className="flex flex-grow items-center justify-center">
-              <div className="flex flex-col gap-3 items-center">
-                {!fetchHeight && (
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      setHmdHeight(null);
-                      setFetchHeight(true);
-                    }}
-                  >
-                    <Typography textAlign="text-center">
-                      {l10n.getString(
-                        hmdHeight !== null
-                          ? 'onboarding-automatic_proportions-check_height-measure-reset'
-                          : 'onboarding-automatic_proportions-check_height-measure-start'
-                      )}
-                    </Typography>
-                  </Button>
-                )}
-                {fetchHeight && (
-                  <Button
-                    variant="primary"
-                    onClick={() => {
-                      setFetchHeight(false);
-                    }}
-                  >
-                    <Typography textAlign="text-center">
-                      {l10n.getString(
-                        'onboarding-automatic_proportions-check_height-measure-stop'
-                      )}
-                    </Typography>
-                  </Button>
-                )}
-                <Typography>
-                  {l10n.getString(
-                    'onboarding-automatic_proportions-check_height-hmd_height2'
-                  )}
-                </Typography>
-                <Typography
-                  color={fetchHeight ? 'text-status-success' : undefined}
+            <div className="flex flex-grow items-center gap-3 flex-col justify-center">
+              {!fetchHeight && (
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    setHmdHeight(null);
+                    setFetchHeight(true);
+                  }}
                 >
-                  {hmdHeight === null
-                    ? l10n.getString(
-                        'onboarding-automatic_proportions-check_height-unknown'
-                      )
-                    : mFormat.format(hmdHeight)}
-                </Typography>
-              </div>
+                  <Typography textAlign="text-center">
+                    {l10n.getString(
+                      hmdHeight !== null
+                        ? 'onboarding-automatic_proportions-check_height-measure-reset'
+                        : 'onboarding-automatic_proportions-check_height-measure-start'
+                    )}
+                  </Typography>
+                </Button>
+              )}
+              {fetchHeight && (
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    setFetchHeight(false);
+                  }}
+                >
+                  <Typography textAlign="text-center">
+                    {l10n.getString(
+                      'onboarding-automatic_proportions-check_height-measure-stop'
+                    )}
+                  </Typography>
+                </Button>
+              )}
+              <Typography>
+                {l10n.getString(
+                  'onboarding-automatic_proportions-check_height-hmd_height2'
+                )}
+              </Typography>
+              <Typography
+                color={fetchHeight ? 'text-status-success' : undefined}
+              >
+                {hmdHeight === null
+                  ? l10n.getString(
+                      'onboarding-automatic_proportions-check_height-unknown'
+                    )
+                  : mFormat.format(hmdHeight)}
+              </Typography>
             </div>
           </div>
           <div className="self-center">

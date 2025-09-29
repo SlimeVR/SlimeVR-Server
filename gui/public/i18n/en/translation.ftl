@@ -27,6 +27,13 @@ tips-tap_setup = You can slowly tap your tracker 2 times to choose it instead of
 tips-turn_on_tracker = Using official SlimeVR trackers? Don't forget to <b><em>turn on your tracker</em></b> after connecting it to the PC!
 tips-failed_webgl = Failed to initialize WebGL.
 
+## Units
+unit-meter = Meter
+unit-foot = Feet
+unit-inch = Inch
+unit-cm = cm
+
+
 ## Body parts
 body_part-NONE = Unassigned
 body_part-HEAD = Head

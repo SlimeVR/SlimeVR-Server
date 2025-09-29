@@ -151,7 +151,7 @@ export function StepperSlider({
   );
 
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div className="w-full h-full flex flex-col gap-4">
       <div className="w-full flex" ref={ref}>
         <div
           className={classNames('flex gap-8', {
