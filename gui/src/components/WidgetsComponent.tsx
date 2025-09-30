@@ -14,6 +14,7 @@ import { ToggleableSkeletonVisualizerWidget } from './widgets/SkeletonVisualizer
 import { useAtomValue } from 'jotai';
 import { flatTrackersAtom } from '@/store/app-store';
 import { A } from './commons/A';
+import { DOCS_SITE } from '@/App';
 
 function UnprioritizedStatuses() {
   const { l10n } = useLocalization();

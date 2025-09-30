@@ -22,6 +22,7 @@ import { useGetFirmwaresImus } from '@/firmware-tool-api/firmwareToolComponents'
 import { CheckBox } from '@/components/commons/Checkbox';
 import { Tooltip } from '@/components/commons/Tooltip';
 import { A } from '@/components/commons/A';
+import { DOCS_SITE } from '@/App';
 
 function IMUCard({
   control,

@@ -14,6 +14,7 @@ import classNames from 'classnames';
 import { useLocaleConfig } from '@/i18n/config';
 import { A } from '@/components/commons/A';
 import { Button } from '@/components/commons/Button';
+import { DOCS_SITE } from '@/App';
 
 function SettingRow({
   name,

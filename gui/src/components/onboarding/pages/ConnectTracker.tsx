@@ -27,6 +27,7 @@ import { BaseModal } from '@/components/commons/BaseModal';
 import { useStatusContext } from '@/hooks/status-system';
 import { A } from '@/components/commons/A';
 import { CONNECT_TRACKER } from '@/utils/tauri';
+import { DOCS_SITE } from '@/App';
 
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
