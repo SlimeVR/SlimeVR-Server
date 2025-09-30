@@ -304,7 +304,7 @@ export function VRCWarningsPage() {
           elems={{
             a: (
               <A
-                href="https://docs.slimevr.dev/tools/vrchat-config.html"
+                href=`${DOCS_SITE}/tools/vrchat-config.html`
                 underline
               ></A>
             ),
