@@ -835,6 +835,10 @@ settings-osc-vmc-mirror_tracking = Mirror tracking
 settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
 settings-osc-vmc-mirror_tracking-label = Mirror tracking
 
+## Common OSC settings
+settings-osc-common-network-ports_match_error = The OSC Router in and out ports can't be the same!
+settings-osc-common-network-port_banned_error = The port { $port } can't be used!
+
 ## Advanced settings
 settings-utils-advanced = Advanced
 
