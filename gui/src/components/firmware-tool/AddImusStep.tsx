@@ -89,7 +89,7 @@ function IMUCard({
                   >
                     <div className="flex cursor-help group">
                       <A
-                        href="https://docs.slimevr.dev/firmware/configuring-project.html#adjust-imu-board-rotation"
+                        href=`${DOCS_SITE}/firmware/configuring-project.html#adjust-imu-board-rotation`
                         className="hover:underline"
                       >
                         {l10n.getString(
@@ -97,7 +97,7 @@ function IMUCard({
                         )}
                       </A>
                       <div className="group-hover:opacity-100 group-hover:underline opacity-65 ml-1 scale-[0.65] border-2 border-solid text-xs w-5 h-5 flex justify-center items-center rounded-full">
-                        <A href="https://docs.slimevr.dev/firmware/configuring-project.html#adjust-imu-board-rotation">
+                        <A href=`${DOCS_SITE}/firmware/configuring-project.html#adjust-imu-board-rotation`>
                           i
                         </A>
                       </div>
