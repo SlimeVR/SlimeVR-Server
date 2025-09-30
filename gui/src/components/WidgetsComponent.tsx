@@ -35,7 +35,7 @@ function UnprioritizedStatuses() {
           elems={{
             PublicFixLink: (
               <A
-                href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"
+                href=`${DOCS_SITE}/common-issues.html#network-profile-is-currently-set-to-public`
                 underline
               ></A>
             ),
