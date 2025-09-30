@@ -40,9 +40,10 @@ export function AutoboneErrorModal({
               docs: (
                 <A
                   href={`${DOCS_SITE}/server/body-config.html#common-issues--debugging`}
+                  underline
                 ></A>
               ),
-              discord: <A href={SLIMEVR_DISCORD}></A>,
+              discord: <A href={SLIMEVR_DISCORD} underline></A>,
             }}
           >
             <WarningBox>
