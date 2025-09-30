@@ -20,16 +20,15 @@ import {
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { boolean, number, object, string } from 'yup';
+import { boolean, object } from 'yup';
+import {
+  OSCSettings,
+  useOscSettingsValidator,
+} from '@/hooks/osc-setting-validator';
 
 interface VRCOSCSettingsForm {
   vrchat: {
-    oscSettings: {
-      enabled: boolean;
-      portIn: number;
-      portOut: number;
-      address: string;
-    };
+    oscSettings: OSCSettings;
     trackers: {
       head: boolean;
       chest: boolean;
@@ -67,8 +66,8 @@ const defaultValues = {
 export function VRCOSCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { oscValidator } = useOscSettingsValidator();
 
-  const bannedPorts = [6969, 21110];
   const { reset, control, watch, handleSubmit } = useForm<VRCOSCSettingsForm>({
     defaultValues,
     reValidateMode: 'onChange',
@@ -76,45 +75,7 @@ export function VRCOSCSettings() {
     resolver: yupResolver(
       object({
         vrchat: object({
-          oscSettings: object({
-            enabled: boolean().required(),
-            portIn: number()
-              .typeError(' ')
-              .required()
-              .test(
-                'ports-dont-match',
-                l10n.getString('settings-osc-vrchat-network-ports_match_error'),
-                (port, context) => port != context.parent.portOut
-              )
-              .notOneOf(bannedPorts, (context) =>
-                l10n.getString(
-                  'settings-osc-vrchat-network-port_banned_error',
-                  { port: context.originalValue }
-                )
-              ),
-            portOut: number()
-              .typeError(' ')
-              .required()
-              .test(
-                'ports-dont-match',
-                l10n.getString('settings-osc-vrchat-network-ports_match_error'),
-                (port, context) => port != context.parent.portIn
-              )
-              .notOneOf(bannedPorts, (context) =>
-                l10n.getString(
-                  'settings-osc-vrchat-network-port_banned_error',
-                  { port: context.originalValue }
-                )
-              ),
-            address: string()
-              .required(' ')
-              .matches(
-                /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-                {
-                  message: ' ',
-                }
-              ),
-          }),
+          oscSettings: oscValidator,
           trackers: object({
             head: boolean().required(),
             chest: boolean().required(),

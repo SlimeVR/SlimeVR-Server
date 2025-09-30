@@ -767,8 +767,6 @@ settings-osc-router-network-port_out =
 settings-osc-router-network-address = Network address
 settings-osc-router-network-address-description = Set the address to send out data at.
 settings-osc-router-network-address-placeholder = IPV4 address
-settings-osc-router-network-ports_match_error = The OSC Router in and out ports can't be the same!
-settings-osc-router-network-port_banned_error = The port { $port } can't be used!
 
 ## OSC VRChat settings
 settings-osc-vrchat = VRChat OSC Trackers
@@ -805,8 +803,6 @@ settings-osc-vrchat-network-trackers-hip = Hip
 settings-osc-vrchat-network-trackers-knees = Knees
 settings-osc-vrchat-network-trackers-feet = Feet
 settings-osc-vrchat-network-trackers-elbows = Elbows
-settings-osc-vrchat-network-ports_match_error = The OSC in and out ports can't be the same!
-settings-osc-vrchat-network-port_banned_error = The port { $port } can't be used!
 
 ## VMC OSC settings
 settings-osc-vmc = Virtual Motion Capture
@@ -838,6 +834,10 @@ settings-osc-vmc-anchor_hip-label = Anchor at hips
 settings-osc-vmc-mirror_tracking = Mirror tracking
 settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
 settings-osc-vmc-mirror_tracking-label = Mirror tracking
+
+## Common OSC settings
+settings-osc-common-network-ports_match_error = The OSC Router in and out ports can't be the same!
+settings-osc-common-network-port_banned_error = The port { $port } can't be used!
 
 ## Advanced settings
 settings-utils-advanced = Advanced
