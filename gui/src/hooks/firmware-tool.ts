@@ -65,6 +65,8 @@ export const boardTypeToFirmwareToolBoardType: Record<
   [BoardType.ESP32C6DEVKITC1]: null,
   [BoardType.GLOVE_IMU_SLIMEVR_DEV]: null,
   [BoardType.GESTURES]: null,
+  [BoardType.SLIMEVR_V1_2]: null,
+  [BoardType.ESP32S3_SUPERMINI]: null,
 };
 
 export const firmwareToolToBoardType: Record<CreateBoardConfigDTO['type'], BoardType> =

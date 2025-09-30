@@ -100,6 +100,8 @@ board_type-XIAO_ESP32C3 = Seeed Studio XIAO ESP32C3
 board_type-HARITORA = Haritora
 board_type-ESP32C6DEVKITC1 = Espressif ESP32-C6 DevKitC-1
 board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev IMU Glove
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
+board_type-ESP32S3_SUPERMINI = ESP32-S3 SuperMini
 
 ## Proportions
 skeleton_bone-NONE = None
