@@ -6,7 +6,7 @@ export function TrackerWifi({
   ping,
   rssiShowNumeric,
   disabled,
-  textColor = 'secondary',
+  textColor = 'primary',
 }: {
   rssi: number | null;
   ping: number | null;

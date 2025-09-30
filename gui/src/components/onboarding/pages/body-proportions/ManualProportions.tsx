@@ -477,7 +477,6 @@ export function ManualProportionsPage() {
             <div className="h-14 flex flex-grow items-center">
               <ResetButton
                 type={ResetType.Full}
-                size="small"
                 className="w-full h-full bg-background-50 hover:bg-background-40 text-background-10"
               ></ResetButton>
             </div>

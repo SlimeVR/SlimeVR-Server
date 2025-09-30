@@ -90,8 +90,8 @@ class HIDCommon {
 					userEditable = true,
 					imuType = sensorType,
 					allowFiltering = true,
-					needsReset = true,
-					needsMounting = true,
+					allowReset = true,
+					allowMounting = true,
 					usesTimeout = false,
 					magStatus = magStatus,
 				)

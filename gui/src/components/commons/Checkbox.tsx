@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
 
 export const CHECKBOX_CLASSES = classNames(
-  'bg-background-50 border-background-50 rounded-md w-5 h-5 text-accent-background-30 focus:border-accent-background-40 focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent'
+  'bg-background-50 border-background-50 cursor-pointer rounded-md w-5 h-5 text-accent-background-30 focus:border-accent-background-40 focus:ring-transparent focus:ring-offset-transparent focus:outline-transparent'
 );
 
 export function CheckBox({
@@ -29,7 +29,9 @@ export function CheckBox({
   const classes = useMemo(() => {
     const vriantsMap = {
       checkbox: {
-        checkbox: CHECKBOX_CLASSES,
+        checkbox: classNames(CHECKBOX_CLASSES, {
+          'brightness-50 hover:cursor-not-allowed': disabled,
+        }),
         toggle: '',
         pin: '',
       },
@@ -42,7 +44,7 @@ export function CheckBox({
       },
     };
     return vriantsMap[variant];
-  }, [variant]);
+  }, [variant, disabled]);
 
   return (
     <Controller
@@ -66,8 +68,8 @@ export function CheckBox({
               'w-full py-3 flex gap-2 items-center text-standard-bold',
               {
                 'px-3': outlined,
-                'cursor-pointer': !disabled || !loading,
-                'cursor-default': disabled || loading,
+                'cursor-pointer': !disabled && !loading,
+                'cursor-not-allowed': disabled || loading,
               }
             )}
           >
