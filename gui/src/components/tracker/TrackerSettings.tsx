@@ -41,7 +41,6 @@ import { useSetAtom } from 'jotai';
 import { ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
 import { TrackerGraph } from './TrackerGraph';
-import { useConfig } from '@/hooks/config';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -76,8 +75,6 @@ export function TrackerSettingsPage() {
   const { trackerName } = watch();
 
   const tracker = useTrackerFromId(trackernum, deviceid);
-
-  const { config } = useConfig();
 
   const onDirectionSelected = (mountingOrientationDegrees: Quaternion) => {
     if (!tracker) return;
@@ -509,9 +506,7 @@ export function TrackerSettingsPage() {
               </Button>
             </div>
           )}
-          {config?.debug && tracker && (
-            <TrackerGraph tracker={tracker.tracker} />
-          )}
+          {tracker && <TrackerGraph tracker={tracker.tracker} />}
         </div>
       </div>
     </form>

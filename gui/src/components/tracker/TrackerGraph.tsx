@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { TrackerDataT } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
+import { useConfig } from '@/hooks/config';
 
 export function TrackerGraph({ tracker }: { tracker: TrackerDataT }) {
   const { l10n } = useLocalization();
+  const { config } = useConfig();
 
   type AxisData = {
     x: number;
@@ -70,47 +72,6 @@ export function TrackerGraph({ tracker }: { tracker: TrackerDataT }) {
     }
   }, [showTrackerGraph]);
 
-  const options = {
-    responsive: true,
-    animation: false,
-    plugins: {
-      title: {
-        display: true,
-        text: l10n.getString(
-          tracker?.info?.isImu
-            ? 'tracker-settings-graph-acceleration-title'
-            : 'tracker-settings-graph-position-title'
-        ),
-      },
-      tooltip: {
-        mode: 'index',
-        intersect: false,
-        animation: false,
-        callbacks: {
-          title: () => '',
-        },
-      },
-    },
-    scales: {
-      x: {
-        type: 'linear',
-        min: 0,
-        max: secondDuration,
-      },
-      y: {
-        min: -4,
-        max: 4,
-      },
-    },
-    elements: {
-      point: {
-        radius: 0,
-      },
-    },
-    parsing: false,
-    normalized: true,
-  } as const;
-
   return (
     <>
       <Button
@@ -125,33 +86,91 @@ export function TrackerGraph({ tracker }: { tracker: TrackerDataT }) {
         )}
       </Button>
       {showTrackerGraph && (
-        <Line
-          options={options}
-          data={{
-            labels: ['X', 'Y', 'Z'],
-            datasets: [
-              {
-                label: 'X',
-                data: chartData.x,
-                borderColor: 'rgb(200, 50, 50)',
-                backgroundColor: 'rgb(200, 100, 100)',
+        <div className="h-96">
+          <Line
+            options={{
+              responsive: true,
+              animation: false,
+              font: {
+                family: config?.fonts.map((font) => `"${font}"`).join(','),
+                size: config?.textSize,
               },
-              {
-                label: 'Y',
-                data: chartData.y,
-                borderColor: 'rgb(50, 200, 50)',
-                backgroundColor: 'rgb(100, 200, 100)',
+              plugins: {
+                title: {
+                  display: true,
+                  text: l10n.getString(
+                    tracker?.info?.isImu
+                      ? 'tracker-settings-graph-acceleration-title'
+                      : 'tracker-settings-graph-position-title'
+                  ),
+                  color: 'white',
+                },
+                tooltip: {
+                  mode: 'index',
+                  intersect: false,
+                  animation: false,
+                  callbacks: {
+                    title: () => '',
+                  },
+                },
+                legend: {
+                  labels: {
+                    color: 'white',
+                  },
+                },
               },
-              {
-                label: 'Z',
-                data: chartData.z,
-                borderColor: 'rgb(50, 50, 200)',
-                backgroundColor: 'rgb(100, 100, 200)',
+              scales: {
+                x: {
+                  type: 'linear',
+                  min: 0,
+                  max: secondDuration,
+                  ticks: {
+                    color: 'white',
+                  },
+                },
+                y: {
+                  min: -4,
+                  max: 4,
+                  ticks: {
+                    color: 'white',
+                  },
+                },
               },
-            ],
-          }}
-          id="tracker-graph"
-        />
+              elements: {
+                point: {
+                  radius: 0,
+                },
+              },
+              parsing: false,
+              normalized: true,
+              maintainAspectRatio: false,
+            }}
+            data={{
+              labels: ['X', 'Y', 'Z'],
+              datasets: [
+                {
+                  label: 'X',
+                  data: chartData.x,
+                  borderColor: 'rgb(200, 50, 50)',
+                  backgroundColor: 'rgb(200, 100, 100)',
+                },
+                {
+                  label: 'Y',
+                  data: chartData.y,
+                  borderColor: 'rgb(50, 200, 50)',
+                  backgroundColor: 'rgb(100, 200, 100)',
+                },
+                {
+                  label: 'Z',
+                  data: chartData.z,
+                  borderColor: 'rgb(50, 50, 200)',
+                  backgroundColor: 'rgb(100, 100, 200)',
+                },
+              ],
+            }}
+            id="tracker-graph"
+          />
+        </div>
       )}
     </>
   );
