@@ -252,7 +252,7 @@ export function ConnectTrackersPage() {
                 elems={{
                   PublicFixLink: (
                     <A
-                      href=`${DOCS_SITE}/common-issues.html#network-profile-is-currently-set-to-public`
+                      href={`${DOCS_SITE}/common-issues.html#network-profile-is-currently-set-to-public`}
                       underline
                     ></A>
                   ),

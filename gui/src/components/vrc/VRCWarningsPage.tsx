@@ -302,12 +302,7 @@ export function VRCWarningsPage() {
         <Localized
           id={'vrc_config-page-help-desc'}
           elems={{
-            a: (
-              <A
-                href=`${DOCS_SITE}/tools/vrchat-config.html`
-                underline
-              ></A>
-            ),
+            a: <A href={`${DOCS_SITE}/tools/vrchat-config.html`} underline></A>,
           }}
         >
           <Typography />
