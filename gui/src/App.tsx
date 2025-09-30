@@ -61,6 +61,16 @@ import { FirmwareUpdate } from './components/firmware-update/FirmwareUpdate';
 import { ConnectionLost } from './components/onboarding/pages/ConnectionLost';
 import { VRCWarningsPage } from './components/vrc/VRCWarningsPage';
 import { StayAlignedSetup } from './components/onboarding/pages/stay-aligned/StayAlignedSetup';
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+} from 'chart.js';
 
 export const GH_REPO = 'SlimeVR/SlimeVR-Server';
 export const VersionContext = createContext('');
@@ -72,6 +82,16 @@ const SentryRoutes = withSentryReactRouterV6Routing(Routes);
 function Layout() {
   const { isMobile } = useBreakpoint('mobile');
   useDiscordPresence();
+
+  ChartJS.register(
+    Title,
+    Tooltip,
+    Legend,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement
+  );
 
   return (
     <>
