@@ -154,6 +154,10 @@ class DesktopSerialHandler :
 		writeSerial("GET WIFISCAN")
 	}
 
+	override fun customCommandRequest(command: String) {
+		writeSerial(command)
+	}
+
 	@Synchronized
 	override fun closeSerial() {
 		try {

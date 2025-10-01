@@ -12,6 +12,7 @@ import solarxr_protocol.rpc.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 
@@ -43,6 +44,11 @@ public class RPCSerialHandler implements SerialListener {
 			.registerPacketListener(
 				RpcMessage.SerialTrackerGetWifiScanRequest,
 				this::onSerialTrackerGetWifiScanRequest
+			);
+		rpcHandler
+			.registerPacketListener(
+				RpcMessage.SerialTrackerCustomCommandRequest,
+				this::onSerialTrackerCustomCommandRequest
 			);
 		rpcHandler.registerPacketListener(RpcMessage.SetWifiRequest, this::onSetWifiRequest);
 		rpcHandler.registerPacketListener(RpcMessage.OpenSerialRequest, this::onOpenSerialRequest);
@@ -174,6 +180,19 @@ public class RPCSerialHandler implements SerialListener {
 			return;
 
 		this.api.server.serialHandler.wifiScanRequest();
+	}
+
+	public void onSerialTrackerCustomCommandRequest(
+		GenericConnection conn,
+		RpcMessageHeader messageHeader
+	) {
+		SerialTrackerCustomCommandRequest req = (SerialTrackerCustomCommandRequest) messageHeader
+			.message(new SerialTrackerCustomCommandRequest());
+
+		if (req == null || req.command() == null)
+			return;
+
+		this.api.server.serialHandler.customCommandRequest(Objects.requireNonNull(req.command()));
 	}
 
 	private void onRequestSerialDevices(GenericConnection conn, RpcMessageHeader messageHeader) {
