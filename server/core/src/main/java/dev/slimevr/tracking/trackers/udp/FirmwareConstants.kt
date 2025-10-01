@@ -153,6 +153,30 @@ enum class MagnetometerStatus {
 	}
 }
 
+enum class RestCalibrationStatus {
+	NOT_SUPPORTED,
+	NOT_CALIBRATED,
+	CALIBRATED,
+	;
+
+	fun getSolarType(): Int = this.ordinal
+
+	companion object {
+		private val byId = entries.associateBy { it.ordinal.toUByte() }
+
+		@JvmStatic
+		fun getById(id: UByte): RestCalibrationStatus? = byId[id]
+
+		@JvmStatic
+		fun fromBoolean(value: Boolean?): RestCalibrationStatus =
+			when (value) {
+				null -> NOT_SUPPORTED
+				true -> CALIBRATED
+				false -> NOT_CALIBRATED
+			}
+	}
+}
+
 @JvmInline
 value class SensorConfig(val v: UShort) {
 	val magStatus

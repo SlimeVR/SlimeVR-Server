@@ -6,6 +6,7 @@ import dev.slimevr.tracking.processor.stayaligned.trackers.StayAlignedTrackerSta
 import dev.slimevr.tracking.trackers.TrackerPosition.Companion.getByDesignation
 import dev.slimevr.tracking.trackers.udp.IMUType
 import dev.slimevr.tracking.trackers.udp.MagnetometerStatus
+import dev.slimevr.tracking.trackers.udp.RestCalibrationStatus
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import dev.slimevr.util.InterpolationHandler
 import io.eiren.util.BufferedTimer
@@ -84,6 +85,7 @@ class Tracker @JvmOverloads constructor(
 	 */
 	val trackRotDirection: Boolean = true,
 	magStatus: MagnetometerStatus = MagnetometerStatus.NOT_SUPPORTED,
+	restCalibrationStatus: RestCalibrationStatus = RestCalibrationStatus.NOT_SUPPORTED,
 	/**
 	 * Rotation by default.
 	 * NOT the same as hasRotation (other data types emulate rotation)
@@ -106,6 +108,8 @@ class Tracker @JvmOverloads constructor(
 	var temperature: Float? = null
 	var customName: String? = null
 	var magStatus: MagnetometerStatus = magStatus
+		private set
+	var restCalibrationStatus: RestCalibrationStatus = restCalibrationStatus
 		private set
 
 	/**
@@ -472,6 +476,10 @@ class Tracker @JvmOverloads constructor(
 		} else {
 			MagnetometerStatus.DISABLED
 		}
+	}
+
+	internal fun setRestCalibrationPrivate(status: RestCalibrationStatus) {
+		restCalibrationStatus = status
 	}
 
 	/**
