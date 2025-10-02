@@ -490,20 +490,27 @@ class Tracker @JvmOverloads constructor(
 					writeTimeline(outAccum, move, -1, slope)
 					// writeTimeline(outAccum, postRest, outMove, slope)
 
-					val pos = outAccum.offset
-					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) final offset: $pos")
+					// We need to compare offsets of HMD and tracker
+					val hmdStart = move.samples.first().hmdPos
+					val hmdEnd = move.samples.last().hmdPos
+					val hmdOff = hmdEnd - hmdStart
+
+					// Swap X and Z, we might just be aligning accel wrong?
+					// TODO: Check if accel is actually correct
+					val pos = Vector3(outAccum.offset.z, outAccum.offset.y, outAccum.offset.x)
+					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) final offset: $pos\nHmd offset: $hmdOff\nDiff: ${pos - hmdOff}")
 
 					val dir = if (abs(pos.x) > abs(pos.z)) {
 						if (pos.x > 0f) {
-							"right"
-						} else {
-							"left"
-						}
-					} else {
-						if (pos.z > 0f) {
 							"front"
 						} else {
 							"back"
+						}
+					} else {
+						if (pos.z > 0f) {
+							"right"
+						} else {
+							"left"
 						}
 					}
 					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) has $dir mounting.")
