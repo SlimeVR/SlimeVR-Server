@@ -1,14 +1,58 @@
-package dev.slimevr.tracking.processor;
+@file:Suppress("ktlint:standard:no-wildcard-imports")
 
-import solarxr_protocol.datatypes.BodyPart;
+package dev.slimevr.tracking.processor
 
+import dev.slimevr.tracking.processor.BoneType.*
+import solarxr_protocol.datatypes.BodyPart
+
+fun BoneType?.isLeftFinger(): Boolean {
+	this?.let {
+		return it == LEFT_THUMB_METACARPAL ||
+			it == LEFT_THUMB_PROXIMAL ||
+			it == LEFT_THUMB_DISTAL ||
+			it == LEFT_INDEX_PROXIMAL ||
+			it == LEFT_INDEX_INTERMEDIATE ||
+			it == LEFT_INDEX_DISTAL ||
+			it == LEFT_MIDDLE_PROXIMAL ||
+			it == LEFT_MIDDLE_INTERMEDIATE ||
+			it == LEFT_MIDDLE_DISTAL ||
+			it == LEFT_RING_PROXIMAL ||
+			it == LEFT_RING_INTERMEDIATE ||
+			it == LEFT_RING_DISTAL ||
+			it == LEFT_LITTLE_PROXIMAL ||
+			it == LEFT_LITTLE_INTERMEDIATE ||
+			it == LEFT_LITTLE_DISTAL
+	}
+	return false
+}
+
+fun BoneType?.isRightFinger(): Boolean {
+	this?.let {
+		return it == RIGHT_THUMB_METACARPAL ||
+			it == RIGHT_THUMB_PROXIMAL ||
+			it == RIGHT_THUMB_DISTAL ||
+			it == RIGHT_INDEX_PROXIMAL ||
+			it == RIGHT_INDEX_INTERMEDIATE ||
+			it == RIGHT_INDEX_DISTAL ||
+			it == RIGHT_MIDDLE_PROXIMAL ||
+			it == RIGHT_MIDDLE_INTERMEDIATE ||
+			it == RIGHT_MIDDLE_DISTAL ||
+			it == RIGHT_RING_PROXIMAL ||
+			it == RIGHT_RING_INTERMEDIATE ||
+			it == RIGHT_RING_DISTAL ||
+			it == RIGHT_LITTLE_PROXIMAL ||
+			it == RIGHT_LITTLE_INTERMEDIATE ||
+			it == RIGHT_LITTLE_DISTAL
+	}
+	return false
+}
 
 /**
  * Keys for all the bones in the skeleton.
  */
-public enum BoneType {
+enum class BoneType {
 	HEAD(BodyPart.HEAD),
-	HEAD_TRACKER(),
+	HEAD_TRACKER,
 	NECK(BodyPart.NECK),
 	UPPER_CHEST(BodyPart.UPPER_CHEST),
 	CHEST_TRACKER,
@@ -71,17 +115,21 @@ public enum BoneType {
 	RIGHT_RING_DISTAL(BodyPart.RIGHT_RING_DISTAL),
 	RIGHT_LITTLE_PROXIMAL(BodyPart.RIGHT_LITTLE_PROXIMAL),
 	RIGHT_LITTLE_INTERMEDIATE(BodyPart.RIGHT_LITTLE_INTERMEDIATE),
-	RIGHT_LITTLE_DISTAL(BodyPart.RIGHT_LITTLE_DISTAL);
+	RIGHT_LITTLE_DISTAL(BodyPart.RIGHT_LITTLE_DISTAL),
+	;
 
-	public static final BoneType[] values = values();
+	@JvmField
+	val bodyPart: Int
 
-	public final int bodyPart;
-
-	BoneType() {
-		this.bodyPart = BodyPart.NONE;
+	constructor() {
+		this.bodyPart = BodyPart.NONE
 	}
 
-	BoneType(int associatedBodyPart) {
-		this.bodyPart = associatedBodyPart;
+	constructor(associatedBodyPart: Int) {
+		this.bodyPart = associatedBodyPart
+	}
+
+	companion object {
+		val values: Array<BoneType> = entries.toTypedArray()
 	}
 }
