@@ -476,12 +476,12 @@ class Tracker @JvmOverloads constructor(
 					val postRest = allTimelines[allTimelines.size - 1]
 
 					val calibAccum = AccelAccumulator()
-					val (preTime, preAvg) = processRest(calibAccum, preRest)
-					val moveTime = processTimeline(calibAccum, move, preTime)
+					// We don't need the pre-rest time
+					val moveTime = processTimeline(calibAccum, move)
 					val (_, postAvg) = processRest(calibAccum, postRest, moveTime)
 
-					val slope = (postAvg - preAvg) / ((moveTime - preTime) / 1000f)
-					LogManager.info("preTime: $preTime\npreAvg: $preAvg\nmoveTime: $moveTime\npostAvg: $postAvg\nslope: $slope")
+					val slope = postAvg / (moveTime / 1000f)
+					LogManager.info("moveTime: $moveTime\npostAvg: $postAvg\nslope: $slope")
 
 					// Let's just write the preceding data for the graph to look nice
 					writeTimeline(AccelAccumulator(), preRest, -1)
