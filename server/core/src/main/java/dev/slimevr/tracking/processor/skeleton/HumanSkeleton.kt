@@ -99,6 +99,12 @@ class HumanSkeleton(
 	val rightLittleProximalBone = Bone(BoneType.RIGHT_LITTLE_PROXIMAL, Constraint(ConstraintType.COMPLETE))
 	val rightLittleIntermediateBone = Bone(BoneType.RIGHT_LITTLE_INTERMEDIATE, Constraint(ConstraintType.COMPLETE))
 	val rightLittleDistalBone = Bone(BoneType.RIGHT_LITTLE_DISTAL, Constraint(ConstraintType.COMPLETE))
+	val leftToe1Bone = Bone(BoneType.LEFT_TOE_1, Constraint(ConstraintType.COMPLETE))
+	val leftToe2Bone = Bone(BoneType.LEFT_TOE_2, Constraint(ConstraintType.COMPLETE))
+	val leftToe3Bone = Bone(BoneType.LEFT_TOE_3, Constraint(ConstraintType.COMPLETE))
+	val rightToe1Bone = Bone(BoneType.RIGHT_TOE_1, Constraint(ConstraintType.COMPLETE))
+	val rightToe2Bone = Bone(BoneType.RIGHT_TOE_2, Constraint(ConstraintType.COMPLETE))
+	val rightToe3Bone = Bone(BoneType.RIGHT_TOE_3, Constraint(ConstraintType.COMPLETE))
 
 	// Tracker bones
 	val headTrackerBone = Bone(BoneType.HEAD_TRACKER, Constraint(ConstraintType.COMPLETE))
@@ -112,6 +118,12 @@ class HumanSkeleton(
 	val rightElbowTrackerBone = Bone(BoneType.RIGHT_ELBOW_TRACKER, Constraint(ConstraintType.COMPLETE))
 	val leftHandTrackerBone = Bone(BoneType.LEFT_HAND_TRACKER, Constraint(ConstraintType.COMPLETE))
 	val rightHandTrackerBone = Bone(BoneType.RIGHT_HAND_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val leftToe1TrackerBone = Bone(BoneType.LEFT_TOE_1_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val leftToe2TrackerBone = Bone(BoneType.LEFT_TOE_2_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val leftToe3TrackerBone = Bone(BoneType.LEFT_TOE_3_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val rightToe1TrackerBone = Bone(BoneType.RIGHT_TOE_1_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val rightToe2TrackerBone = Bone(BoneType.RIGHT_TOE_2_TRACKER, Constraint(ConstraintType.COMPLETE))
+	val rightToe3TrackerBone = Bone(BoneType.RIGHT_TOE_3_TRACKER, Constraint(ConstraintType.COMPLETE))
 
 	// Buffers
 	var hasSpineTracker = false
@@ -176,6 +188,12 @@ class HumanSkeleton(
 	var rightLittleProximalTracker: Tracker? = null
 	var rightLittleIntermediateTracker: Tracker? = null
 	var rightLittleDistalTracker: Tracker? = null
+	var leftToe1Tracker: Tracker? = null
+	var leftToe2Tracker: Tracker? = null
+	var leftToe3Tracker: Tracker? = null
+	var rightToe1Tracker: Tracker? = null
+	var rightToe2Tracker: Tracker? = null
+	var rightToe3Tracker: Tracker? = null
 
 	// Output trackers
 	var computedHeadTracker: Tracker? = null
@@ -189,6 +207,13 @@ class HumanSkeleton(
 	var computedRightElbowTracker: Tracker? = null
 	var computedLeftHandTracker: Tracker? = null
 	var computedRightHandTracker: Tracker? = null
+
+	var computedLeftToe1Tracker: Tracker? = null
+	var computedLeftToe2Tracker: Tracker? = null
+	var computedLeftToe3Tracker: Tracker? = null
+	var computedRightToe1Tracker: Tracker? = null
+	var computedRightToe2Tracker: Tracker? = null
+	var computedRightToe3Tracker: Tracker? = null
 
 	// Toggles
 	private var extendedSpineModel = false
@@ -284,6 +309,15 @@ class HumanSkeleton(
 		rightUpperLegBone.attachChild(rightKneeTrackerBone)
 		leftFootBone.attachChild(leftFootTrackerBone)
 		rightFootBone.attachChild(rightFootTrackerBone)
+
+		// Attach toe bones
+		leftFootBone.attachChild(leftToe1Bone);
+		leftFootBone.attachChild(leftToe2Bone);
+		leftFootBone.attachChild(leftToe3Bone);
+
+		rightFootBone.attachChild(rightToe1Bone);
+		rightFootBone.attachChild(rightToe2Bone);
+		rightFootBone.attachChild(rightToe3Bone);
 
 		// Attach arms
 		assembleSkeletonArms(false)
@@ -600,9 +634,18 @@ class HumanSkeleton(
 			leftLowerLegBone,
 			leftFootBone,
 			leftFootTrackerBone,
+			leftToe1Bone,
+			leftToe1TrackerBone,
+			leftToe2Bone,
+			leftToe2TrackerBone,
+			leftToe3Bone,
+			leftToe3TrackerBone,
 			leftUpperLegTracker,
 			leftLowerLegTracker,
 			leftFootTracker,
+			leftToe1Tracker,
+			leftToe2Tracker,
+			leftToe3Tracker
 		)
 
 		// Right leg
@@ -612,9 +655,18 @@ class HumanSkeleton(
 			rightLowerLegBone,
 			rightFootBone,
 			rightFootTrackerBone,
+			rightToe1Bone,
+			rightToe1TrackerBone,
+			rightToe2Bone,
+			rightToe2TrackerBone,
+			rightToe3Bone,
+			rightToe3TrackerBone,
 			rightUpperLegTracker,
 			rightLowerLegTracker,
 			rightFootTracker,
+			rightToe1Tracker,
+			rightToe2Tracker,
+			rightToe3Tracker
 		)
 
 		// Left arm
@@ -932,9 +984,18 @@ class HumanSkeleton(
 		lowerLegBone: Bone,
 		footBone: Bone,
 		footTrackerBone: Bone,
+		toe1Bone: Bone,
+		toe1TrackerBone: Bone,
+		toe2Bone: Bone,
+		toe2TrackerBone: Bone,
+		toe3Bone: Bone,
+		toe3TrackerBone: Bone,
 		upperLegTracker: Tracker?,
 		lowerLegTracker: Tracker?,
 		footTracker: Tracker?,
+		toe1Tracker: Tracker?,
+		toe2Tracker: Tracker?,
+		toe3Tracker: Tracker?,
 	) {
 		var legRot = IDENTITY
 
@@ -964,6 +1025,18 @@ class HumanSkeleton(
 		// Set foot rotation
 		footBone.setRotation(legRot)
 		footTrackerBone.setRotation(legRot)
+
+		toe1Tracker?.let { legRot = it.getRotation() }
+		toe1Bone.setRotation(legRot)
+		toe1TrackerBone.setRotation(legRot)
+
+		toe2Tracker?.let { legRot = it.getRotation() }
+		toe2Bone.setRotation(legRot)
+		toe2TrackerBone.setRotation(legRot)
+
+		toe3Tracker?.let { legRot = it.getRotation() }
+		toe3Bone.setRotation(legRot)
+		toe3TrackerBone.setRotation(legRot)
 
 		// Extended knee model
 		if (extendedKneeModel) {
@@ -1164,6 +1237,14 @@ class HumanSkeleton(
 		updateComputedTracker(computedRightElbowTracker, rightElbowTrackerBone)
 		updateComputedTracker(computedLeftHandTracker, leftHandTrackerBone)
 		updateComputedTracker(computedRightHandTracker, rightHandTrackerBone)
+
+
+		updateComputedTracker(computedLeftToe1Tracker, leftToe1TrackerBone)
+		updateComputedTracker(computedLeftToe2Tracker, leftToe1TrackerBone)
+		updateComputedTracker(computedLeftToe3Tracker, leftToe1TrackerBone)
+		updateComputedTracker(computedRightToe1Tracker, rightToe1TrackerBone)
+		updateComputedTracker(computedRightToe2Tracker, rightToe1TrackerBone)
+		updateComputedTracker(computedRightToe3Tracker, rightToe1TrackerBone)
 	}
 
 	private fun updateComputedTracker(computedTracker: Tracker?, trackerBone: Bone) {
@@ -1330,6 +1411,18 @@ class HumanSkeleton(
 		BoneType.RIGHT_LITTLE_PROXIMAL -> rightLittleProximalBone
 		BoneType.RIGHT_LITTLE_INTERMEDIATE -> rightLittleIntermediateBone
 		BoneType.RIGHT_LITTLE_DISTAL -> rightLittleDistalBone
+		BoneType.LEFT_TOE_1 -> leftToe1Bone
+		BoneType.LEFT_TOE_1_TRACKER -> leftToe1TrackerBone
+		BoneType.LEFT_TOE_2 -> leftToe2Bone
+		BoneType.LEFT_TOE_2_TRACKER -> leftToe2TrackerBone
+		BoneType.LEFT_TOE_3 -> leftToe3Bone
+		BoneType.LEFT_TOE_3_TRACKER -> leftToe3TrackerBone
+		BoneType.RIGHT_TOE_1 -> rightToe1Bone
+		BoneType.RIGHT_TOE_1_TRACKER -> rightToe1TrackerBone
+		BoneType.RIGHT_TOE_2 -> rightToe2Bone
+		BoneType.RIGHT_TOE_2_TRACKER -> rightToe2TrackerBone
+		BoneType.RIGHT_TOE_3 -> rightToe3Bone
+		BoneType.RIGHT_TOE_3_TRACKER -> rightToe3TrackerBone
 	}
 
 	private fun getTrackerForBone(bone: BoneType?): Tracker? = when (bone) {
@@ -1353,6 +1446,12 @@ class HumanSkeleton(
 		BoneType.RIGHT_LOWER_ARM -> rightLowerArmTracker
 		BoneType.LEFT_HAND -> leftHandTracker
 		BoneType.RIGHT_HAND -> rightHandTracker
+		BoneType.LEFT_TOE_1 -> leftToe1Tracker
+		BoneType.LEFT_TOE_2 -> leftToe2Tracker
+		BoneType.LEFT_TOE_3 -> leftToe3Tracker
+		BoneType.RIGHT_TOE_1 -> rightToe1Tracker
+		BoneType.RIGHT_TOE_2 -> rightToe2Tracker
+		BoneType.RIGHT_TOE_3 -> rightToe3Tracker
 		else -> null
 	}
 
@@ -1415,6 +1514,7 @@ class HumanSkeleton(
 			rightLittleProximalBone,
 			rightLittleIntermediateBone,
 			rightLittleDistalBone,
+
 		)
 
 	/**
@@ -1542,6 +1642,12 @@ class HumanSkeleton(
 			rightLittleProximalTracker,
 			rightLittleIntermediateTracker,
 			rightLittleDistalTracker,
+			leftToe1Tracker,
+			leftToe2Tracker,
+			leftToe2Tracker,
+			rightToe1Tracker,
+			rightToe2Tracker,
+			rightToe2Tracker,
 		)
 
 	@JvmOverloads
