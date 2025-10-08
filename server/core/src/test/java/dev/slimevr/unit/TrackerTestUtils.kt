@@ -86,4 +86,11 @@ object TrackerTestUtils {
 		FastMath.isApproxEqual(v1.x, v2.x, tolerance) &&
 			FastMath.isApproxEqual(v1.y, v2.y, tolerance) &&
 			FastMath.isApproxEqual(v1.z, v2.z, tolerance)
+
+	fun assertVectorApproxEqual(expected: Vector3, actual: Vector3, message: String?) {
+		if (!vectorApproxEqual(expected, actual)) {
+			AssertionFailureBuilder.assertionFailure().message(message)
+				.expected(expected).actual(actual).buildAndThrow()
+		}
+	}
 }
