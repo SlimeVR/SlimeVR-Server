@@ -164,6 +164,12 @@ enum class TrackerPosition(
 	RIGHT_LITTLE_PROXIMAL("body:right_little_proximal", null, BodyPart.RIGHT_LITTLE_PROXIMAL, 48),
 	RIGHT_LITTLE_INTERMEDIATE("body:right_little_intermediate", null, BodyPart.RIGHT_LITTLE_INTERMEDIATE, 49),
 	RIGHT_LITTLE_DISTAL("body:right_little_distal", null, BodyPart.RIGHT_LITTLE_DISTAL, 50),
+	LEFT_TOE_1("body:left_toe_1", TrackerRole.GENERIC_CONTROLLER, BodyPart.LEFT_TOE_1, 51),
+	LEFT_TOE_2("body:left_toe_2", TrackerRole.GENERIC_CONTROLLER, BodyPart.LEFT_TOE_2, 52),
+	LEFT_TOE_3("body:left_toe_3", TrackerRole.GENERIC_CONTROLLER, BodyPart.LEFT_TOE_3, 53),
+	RIGHT_TOE_1("body:right_toe_1", TrackerRole.GENERIC_CONTROLLER, BodyPart.RIGHT_TOE_1, 54),
+	RIGHT_TOE_2("body:right_toe_2", TrackerRole.GENERIC_CONTROLLER, BodyPart.RIGHT_TOE_2, 55),
+	RIGHT_TOE_3("body:right_toe_3", TrackerRole.GENERIC_CONTROLLER, BodyPart.RIGHT_TOE_3, 56),
 	;
 
 	/**
