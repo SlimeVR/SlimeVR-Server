@@ -88,8 +88,7 @@ class LockedErrorVisitor(
 		errors.add(error(tracker))
 	}
 
-	private fun error(tracker: Tracker): Angle =
-		yawDifference(tracker.getAdjustedRotationForceStayAligned(), lockedRotation)
+	private fun error(tracker: Tracker): Angle = yawDifference(tracker.getAdjustedRotationForceStayAligned(), lockedRotation)
 
 	companion object {
 

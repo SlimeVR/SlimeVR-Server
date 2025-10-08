@@ -216,7 +216,8 @@ class UnityArmature(localRot: Boolean) {
 				val hipsAverage = (
 					leftHipNode.worldTransform.translation +
 						rightHipNode.worldTransform.translation
-					) * 0.5f
+					) *
+					0.5f
 				node.worldTransform.translation * 2f - hipsAverage + rootPosition
 			} else {
 				node.worldTransform.translation + rootPosition
@@ -233,7 +234,8 @@ class UnityArmature(localRot: Boolean) {
 				val hipsAverage = (
 					leftHipNode.worldTransform.translation +
 						rightHipNode.worldTransform.translation
-					) * 0.5f
+					) *
+					0.5f
 				node.worldTransform.translation * 2f - hipsAverage + rootPosition
 			} else {
 				node.localTransform.translation
