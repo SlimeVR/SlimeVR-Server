@@ -221,6 +221,55 @@ class HumanPoseManager(val server: VRServer?) {
 					TrackerPosition.RIGHT_HAND,
 				),
 			)
+		computedTrackers
+			.add(
+				makeComputedTracker(
+					"human://LEFT_TOE1",
+					"Computed left toe1",
+					TrackerPosition.LEFT_TOE_1,
+				),
+			)
+		computedTrackers
+			.add(
+				makeComputedTracker(
+					"human://LEFT_TOE2",
+					"Computed left toe2",
+					TrackerPosition.LEFT_TOE_2,
+				),
+			)
+		computedTrackers
+			.add(
+				makeComputedTracker(
+					"human://LEFT_TOE3",
+					"Computed left toe3",
+					TrackerPosition.LEFT_TOE_3,
+				),
+			)
+		computedTrackers
+			.add(
+				makeComputedTracker(
+					"human://RIGHT_TOE1",
+					"Computed right toe1",
+					TrackerPosition.RIGHT_TOE_1,
+				),
+			)
+		computedTrackers
+			.add(
+				makeComputedTracker(
+					"human://RIGHT_TOE2",
+					"Computed right toe2",
+					TrackerPosition.RIGHT_TOE_2,
+				),
+			)
+		computedTrackers
+			.add(
+				makeComputedTracker(
+					"human://RIGHT_TOE3",
+					"Computed right toe3",
+					TrackerPosition.RIGHT_TOE_3,
+				),
+			)
+
 
 		connectComputedHumanPoseTrackers()
 	}
