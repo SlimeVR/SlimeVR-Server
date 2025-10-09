@@ -22,4 +22,18 @@ class StayAlignedRelaxedPoseConfig {
 	 * Angle between the foot and the center yaw.
 	 */
 	var footAngleInDeg = 0.0f
+
+	/**
+	 * Angle between the toe1 and the center yaw.
+	 */
+	var toe1AngleInDeg = 0.0f
+	/**
+	 * Angle between the toe2 and the center yaw.
+	 */
+	var toe2AngleInDeg = 0.0f
+
+	/**
+	 * Angle between the toe3 and the center yaw.
+	 */
+	var toe3AngleInDeg = 0.0f
 }
