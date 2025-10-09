@@ -161,4 +161,26 @@ class NeighborErrorVisitor(
 			)
 		}
 	}
+	override fun visitToeTracker(
+		side: Side,
+		tracker: Tracker,
+		aboveFoot: Tracker?,
+		oppositeToe: Tracker?,
+		toeNumber: Int
+	) {
+		if (aboveFoot != null) {
+			val extraToeYaw = when (toeNumber) {
+				1 -> extraYaw(side, relaxedPose.toe1)
+				2 -> extraYaw(side, relaxedPose.toe2)
+				3 -> extraYaw(side, relaxedPose.toe3)
+				else -> extraYaw(side, relaxedPose.toe1)
+			}
+			errors.add(
+				trackerYaw(aboveFoot) -
+					extraYaw(side, relaxedPose.foot) +
+					extraToeYaw -
+					trackerYaw(tracker),
+			)
+		}
+	}
 }
