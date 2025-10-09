@@ -419,9 +419,16 @@ class HumanSkeleton(
 		leftUpperLegTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_UPPER_LEG)
 		leftLowerLegTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_LOWER_LEG)
 		leftFootTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_FOOT)
+		leftToe1Tracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_TOE_1)
+		leftToe2Tracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_TOE_2)
+		leftToe3Tracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_TOE_3)
+
 		rightUpperLegTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_UPPER_LEG)
 		rightLowerLegTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_LOWER_LEG)
 		rightFootTracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_FOOT)
+		rightToe1Tracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_TOE_1)
+		rightToe2Tracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_TOE_2)
+		rightToe3Tracker = getTrackerForSkeleton(trackers, TrackerPosition.RIGHT_TOE_3)
 
 		// Arms
 		leftLowerArmTracker = getTrackerForSkeleton(trackers, TrackerPosition.LEFT_LOWER_ARM)

@@ -87,6 +87,15 @@ class LockedErrorVisitor(
 	) {
 		errors.add(error(tracker))
 	}
+	override fun visitToeTracker(
+		side: Side,
+		tracker: Tracker,
+		aboveFoot: Tracker?,
+		oppositeToe: Tracker?,
+		toeNumber: Int
+	) {
+		errors.add(error(tracker))
+	}
 
 	private fun error(tracker: Tracker): Angle = yawDifference(tracker.getAdjustedRotationForceStayAligned(), lockedRotation)
 
