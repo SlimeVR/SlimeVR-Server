@@ -177,6 +177,42 @@ export const mapPart: Record<
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
+  [BodyPart.LEFT_TOE_1]: ({ width, currentLocales }) =>
+     currentLocales.includes('en-x-owo') ? (
+       <PawIcon></PawIcon>
+     ) : (
+       <FootIcon width={width} flipped></FootIcon>
+     ),
+  [BodyPart.LEFT_TOE_2]: ({ width, currentLocales }) =>
+      currentLocales.includes('en-x-owo') ? (
+        <PawIcon></PawIcon>
+      ) : (
+        <FootIcon width={width} flipped></FootIcon>
+      ),
+  [BodyPart.LEFT_TOE_3]: ({ width, currentLocales }) =>
+       currentLocales.includes('en-x-owo') ? (
+         <PawIcon></PawIcon>
+       ) : (
+         <FootIcon width={width} flipped></FootIcon>
+       ),
+  [BodyPart.RIGHT_TOE_1]: ({ width, currentLocales }) =>
+        currentLocales.includes('en-x-owo') ? (
+          <PawIcon></PawIcon>
+        ) : (
+          <FootIcon width={width} flipped></FootIcon>
+        ),
+  [BodyPart.RIGHT_TOE_2]: ({ width, currentLocales }) =>
+         currentLocales.includes('en-x-owo') ? (
+           <PawIcon></PawIcon>
+         ) : (
+           <FootIcon width={width} flipped></FootIcon>
+         ),
+  [BodyPart.RIGHT_TOE_3]: ({ width, currentLocales }) =>
+          currentLocales.includes('en-x-owo') ? (
+            <PawIcon></PawIcon>
+          ) : (
+            <FootIcon width={width} flipped></FootIcon>
+          ),
 };
 
 export function BodyPartIcon({
