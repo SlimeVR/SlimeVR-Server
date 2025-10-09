@@ -100,7 +100,8 @@ object TrackerUtils {
 		BodyPart.RIGHT_LOWER_LEG, BodyPart.LEFT_LOWER_ARM, BodyPart.RIGHT_LOWER_ARM,
 		BodyPart.LEFT_UPPER_ARM, BodyPart.RIGHT_UPPER_ARM, BodyPart.LEFT_HAND,
 		BodyPart.RIGHT_HAND, BodyPart.LEFT_SHOULDER, BodyPart.RIGHT_SHOULDER,
-		BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT,
+		BodyPart.LEFT_FOOT, BodyPart.LEFT_TOE_1, BodyPart.LEFT_TOE_2, BodyPart.LEFT_TOE_3,
+		BodyPart.RIGHT_FOOT, BodyPart.RIGHT_TOE_1, BodyPart.RIGHT_TOE_2, BodyPart.RIGHT_TOE_3,
 	)
 
 	val allBodyPartsButFingersAndFeets = listOf(

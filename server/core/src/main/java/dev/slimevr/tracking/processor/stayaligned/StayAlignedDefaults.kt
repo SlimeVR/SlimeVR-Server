@@ -26,6 +26,9 @@ object StayAlignedDefaults {
 			upperLeg = Angle.ofDeg(0.0f),
 			lowerLeg = Angle.ofDeg(0.0f),
 			foot = Angle.ofDeg(0.0f),
+			toe1 =  Angle.ofDeg(0.0f),
+			toe2 =  Angle.ofDeg(0.0f),
+			toe3 =  Angle.ofDeg(0.0f),
 		)
 
 	// Weights to calculate the average yaw of the skeleton
