@@ -196,23 +196,23 @@ export const mapPart: Record<
          <FootIcon width={width} flipped></FootIcon>
        ),
   [BodyPart.RIGHT_TOE_1]: ({ width, currentLocales }) =>
-        currentLocales.includes('en-x-owo') ? (
-          <PawIcon></PawIcon>
-        ) : (
+       currentLocales.includes('en-x-owo') ? (
+         <PawIcon></PawIcon>
+       ) : (
           <FootIcon width={width} flipped></FootIcon>
-        ),
+       ),
   [BodyPart.RIGHT_TOE_2]: ({ width, currentLocales }) =>
-         currentLocales.includes('en-x-owo') ? (
-           <PawIcon></PawIcon>
-         ) : (
-           <FootIcon width={width} flipped></FootIcon>
-         ),
+       currentLocales.includes('en-x-owo') ? (
+          <PawIcon></PawIcon>
+       ) : (
+          <FootIcon width={width} flipped></FootIcon>
+       ),
   [BodyPart.RIGHT_TOE_3]: ({ width, currentLocales }) =>
-          currentLocales.includes('en-x-owo') ? (
-            <PawIcon></PawIcon>
-          ) : (
+       currentLocales.includes('en-x-owo') ? (
+          <PawIcon></PawIcon>
+       ) : (
             <FootIcon width={width} flipped></FootIcon>
-          ),
+       ),
 };
 
 export function BodyPartIcon({
