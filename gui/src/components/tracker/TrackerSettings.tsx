@@ -170,7 +170,11 @@ export function TrackerSettingsPage() {
     currentFirmwareRelease &&
     tracker?.device?.hardwareInfo &&
     checkForUpdate(currentFirmwareRelease, tracker?.device);
-  const updateUnavailable = needUpdate === null;
+  const updateUnavailable =
+    tracker?.device?.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
+    !semver.valid(
+      tracker?.device?.hardwareInfo?.firmwareVersion?.toString() ?? 'none'
+    );
 
   return (
     <form
@@ -212,19 +216,12 @@ export function TrackerSettingsPage() {
                 </Typography>
                 <Typography>-</Typography>
                 {updateUnavailable && (
-                  <Localized id="tracker-settings-update-unavailable-v2">
-                    <Typography>No releases found</Typography>
+                  <Localized id="tracker-settings-update-unavailable">
+                    <Typography>Cannot be updated (DIY)</Typography>
                   </Localized>
                 )}
                 {!updateUnavailable && (
                   <>
-                    {needUpdate === 'unavailable' && (
-                      <Localized id="tracker-settings-update-incompatible">
-                        <Typography>
-                          Cannot be updated, Incompatible board
-                        </Typography>
-                      </Localized>
-                    )}
                     {needUpdate === 'blocked' && (
                       // This happens only if no update is available and or the user is not in the current stagged
                       <Localized id="tracker-settings-update-blocked">

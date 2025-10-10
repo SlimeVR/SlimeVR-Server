@@ -4,10 +4,7 @@
  * @version 0.0.1
  */
 import * as reactQuery from '@tanstack/react-query';
-import {
-  useFirmwareToolContext,
-  FirmwareToolContext,
-} from './firmwareToolContext';
+import { useFirmwareToolContext, FirmwareToolContext } from './firmwareToolContext';
 import type * as Fetcher from './firmwareToolFetcher';
 import { firmwareToolFetch } from './firmwareToolFetcher';
 import type * as Schemas from './firmwareToolSchemas';
@@ -30,16 +27,7 @@ export const fetchGetIsCompatibleVersion = (
   signal?: AbortSignal
 ) =>
   firmwareToolFetch<
-    | {
-        success: true;
-      }
-    | {
-        success: false;
-        reason: {
-          message: string;
-          versions: string;
-        };
-      },
+    Schemas.VerionCheckResponse,
     GetIsCompatibleVersionError,
     undefined,
     {},
@@ -50,51 +38,20 @@ export const fetchGetIsCompatibleVersion = (
 /**
  * Is this api compatible with the server version given
  */
-export const useGetIsCompatibleVersion = <
-  TData =
-    | {
-        success: true;
-      }
-    | {
-        success: false;
-        reason: {
-          message: string;
-          versions: string;
-        };
-      },
->(
+export const useGetIsCompatibleVersion = <TData = Schemas.VerionCheckResponse>(
   variables: GetIsCompatibleVersionVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
-      | {
-          success: true;
-        }
-      | {
-          success: false;
-          reason: {
-            message: string;
-            versions: string;
-          };
-        },
+      Schemas.VerionCheckResponse,
       GetIsCompatibleVersionError,
       TData
     >,
     'queryKey' | 'queryFn' | 'initialData'
   >
 ) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } =
-    useFirmwareToolContext(options);
+  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
   return reactQuery.useQuery<
-    | {
-        success: true;
-      }
-    | {
-        success: false;
-        reason: {
-          message: string;
-          versions: string;
-        };
-      },
+    Schemas.VerionCheckResponse,
     GetIsCompatibleVersionError,
     TData
   >({
@@ -110,6 +67,504 @@ export const useGetIsCompatibleVersion = <
   });
 };
 
+export type GetFirmwaresError = Fetcher.ErrorWrapper<undefined>;
+
+export type GetFirmwaresResponse = Schemas.FirmwareDTO[];
+
+export type GetFirmwaresVariables = FirmwareToolContext['fetcherOptions'];
+
+/**
+ * List all the built firmwares
+ */
+export const fetchGetFirmwares = (
+  variables: GetFirmwaresVariables,
+  signal?: AbortSignal
+) =>
+  firmwareToolFetch<GetFirmwaresResponse, GetFirmwaresError, undefined, {}, {}, {}>({
+    url: '/firmwares',
+    method: 'get',
+    ...variables,
+    signal,
+  });
+
+/**
+ * List all the built firmwares
+ */
+export const useGetFirmwares = <TData = GetFirmwaresResponse>(
+  variables: GetFirmwaresVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<GetFirmwaresResponse, GetFirmwaresError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
+  return reactQuery.useQuery<GetFirmwaresResponse, GetFirmwaresError, TData>({
+    queryKey: queryKeyFn({
+      path: '/firmwares',
+      operationId: 'getFirmwares',
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetFirmwares({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type PostFirmwaresBuildError = Fetcher.ErrorWrapper<{
+  status: 400;
+  payload: Schemas.VersionNotFoundExeption;
+}>;
+
+export type PostFirmwaresBuildVariables = {
+  body: Schemas.CreateBuildFirmwareDTO;
+} & FirmwareToolContext['fetcherOptions'];
+
+/**
+ * Build a firmware from the requested configuration
+ */
+export const fetchPostFirmwaresBuild = (
+  variables: PostFirmwaresBuildVariables,
+  signal?: AbortSignal
+) =>
+  firmwareToolFetch<
+    Schemas.BuildResponseDTO,
+    PostFirmwaresBuildError,
+    Schemas.CreateBuildFirmwareDTO,
+    {},
+    {},
+    {}
+  >({ url: '/firmwares/build', method: 'post', ...variables, signal });
+
+/**
+ * Build a firmware from the requested configuration
+ */
+export const usePostFirmwaresBuild = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.BuildResponseDTO,
+      PostFirmwaresBuildError,
+      PostFirmwaresBuildVariables
+    >,
+    'mutationFn'
+  >
+) => {
+  const { fetcherOptions } = useFirmwareToolContext();
+  return reactQuery.useMutation<
+    Schemas.BuildResponseDTO,
+    PostFirmwaresBuildError,
+    PostFirmwaresBuildVariables
+  >({
+    mutationFn: (variables: PostFirmwaresBuildVariables) =>
+      fetchPostFirmwaresBuild({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type GetFirmwaresBuildStatusIdPathParams = {
+  id: string;
+};
+
+export type GetFirmwaresBuildStatusIdError = Fetcher.ErrorWrapper<undefined>;
+
+export type GetFirmwaresBuildStatusIdVariables = {
+  pathParams: GetFirmwaresBuildStatusIdPathParams;
+} & FirmwareToolContext['fetcherOptions'];
+
+/**
+ * Get the build status of a firmware
+ * This is a SSE (Server Sent Event)
+ * you can use the web browser api to check for the build status and update the ui in real time
+ */
+export const fetchGetFirmwaresBuildStatusId = (
+  variables: GetFirmwaresBuildStatusIdVariables,
+  signal?: AbortSignal
+) =>
+  firmwareToolFetch<
+    Schemas.ObservableType,
+    GetFirmwaresBuildStatusIdError,
+    undefined,
+    {},
+    {},
+    GetFirmwaresBuildStatusIdPathParams
+  >({
+    url: '/firmwares/build-status/{id}',
+    method: 'get',
+    ...variables,
+    signal,
+  });
+
+/**
+ * Get the build status of a firmware
+ * This is a SSE (Server Sent Event)
+ * you can use the web browser api to check for the build status and update the ui in real time
+ */
+export const useGetFirmwaresBuildStatusId = <TData = Schemas.ObservableType>(
+  variables: GetFirmwaresBuildStatusIdVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.ObservableType,
+      GetFirmwaresBuildStatusIdError,
+      TData
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
+  return reactQuery.useQuery<
+    Schemas.ObservableType,
+    GetFirmwaresBuildStatusIdError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: '/firmwares/build-status/{id}',
+      operationId: 'getFirmwaresBuildStatusId',
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetFirmwaresBuildStatusId({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type GetFirmwaresBoardsError = Fetcher.ErrorWrapper<undefined>;
+
+export type GetFirmwaresBoardsResponse = string[];
+
+export type GetFirmwaresBoardsVariables = FirmwareToolContext['fetcherOptions'];
+
+/**
+ * List all the possible board types
+ */
+export const fetchGetFirmwaresBoards = (
+  variables: GetFirmwaresBoardsVariables,
+  signal?: AbortSignal
+) =>
+  firmwareToolFetch<
+    GetFirmwaresBoardsResponse,
+    GetFirmwaresBoardsError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: '/firmwares/boards', method: 'get', ...variables, signal });
+
+/**
+ * List all the possible board types
+ */
+export const useGetFirmwaresBoards = <TData = GetFirmwaresBoardsResponse>(
+  variables: GetFirmwaresBoardsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      GetFirmwaresBoardsResponse,
+      GetFirmwaresBoardsError,
+      TData
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
+  return reactQuery.useQuery<
+    GetFirmwaresBoardsResponse,
+    GetFirmwaresBoardsError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: '/firmwares/boards',
+      operationId: 'getFirmwaresBoards',
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetFirmwaresBoards({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type GetFirmwaresVersionsError = Fetcher.ErrorWrapper<undefined>;
+
+export type GetFirmwaresVersionsResponse = Schemas.ReleaseDTO[];
+
+export type GetFirmwaresVersionsVariables = FirmwareToolContext['fetcherOptions'];
+
+/**
+ * List all the possible versions to build a firmware from
+ */
+export const fetchGetFirmwaresVersions = (
+  variables: GetFirmwaresVersionsVariables,
+  signal?: AbortSignal
+) =>
+  firmwareToolFetch<
+    GetFirmwaresVersionsResponse,
+    GetFirmwaresVersionsError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: '/firmwares/versions', method: 'get', ...variables, signal });
+
+/**
+ * List all the possible versions to build a firmware from
+ */
+export const useGetFirmwaresVersions = <TData = GetFirmwaresVersionsResponse>(
+  variables: GetFirmwaresVersionsVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      GetFirmwaresVersionsResponse,
+      GetFirmwaresVersionsError,
+      TData
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
+  return reactQuery.useQuery<
+    GetFirmwaresVersionsResponse,
+    GetFirmwaresVersionsError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: '/firmwares/versions',
+      operationId: 'getFirmwaresVersions',
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetFirmwaresVersions({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type GetFirmwaresImusError = Fetcher.ErrorWrapper<undefined>;
+
+export type GetFirmwaresImusResponse = Schemas.Imudto[];
+
+export type GetFirmwaresImusVariables = FirmwareToolContext['fetcherOptions'];
+
+/**
+ * List all the possible imus to use
+ */
+export const fetchGetFirmwaresImus = (
+  variables: GetFirmwaresImusVariables,
+  signal?: AbortSignal
+) =>
+  firmwareToolFetch<
+    GetFirmwaresImusResponse,
+    GetFirmwaresImusError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: '/firmwares/imus', method: 'get', ...variables, signal });
+
+/**
+ * List all the possible imus to use
+ */
+export const useGetFirmwaresImus = <TData = GetFirmwaresImusResponse>(
+  variables: GetFirmwaresImusVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<GetFirmwaresImusResponse, GetFirmwaresImusError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
+  return reactQuery.useQuery<GetFirmwaresImusResponse, GetFirmwaresImusError, TData>({
+    queryKey: queryKeyFn({
+      path: '/firmwares/imus',
+      operationId: 'getFirmwaresImus',
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetFirmwaresImus({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type GetFirmwaresBatteriesError = Fetcher.ErrorWrapper<undefined>;
+
+export type GetFirmwaresBatteriesResponse = string[];
+
+export type GetFirmwaresBatteriesVariables = FirmwareToolContext['fetcherOptions'];
+
+/**
+ * List all the battery types
+ */
+export const fetchGetFirmwaresBatteries = (
+  variables: GetFirmwaresBatteriesVariables,
+  signal?: AbortSignal
+) =>
+  firmwareToolFetch<
+    GetFirmwaresBatteriesResponse,
+    GetFirmwaresBatteriesError,
+    undefined,
+    {},
+    {},
+    {}
+  >({ url: '/firmwares/batteries', method: 'get', ...variables, signal });
+
+/**
+ * List all the battery types
+ */
+export const useGetFirmwaresBatteries = <TData = GetFirmwaresBatteriesResponse>(
+  variables: GetFirmwaresBatteriesVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      GetFirmwaresBatteriesResponse,
+      GetFirmwaresBatteriesError,
+      TData
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
+  return reactQuery.useQuery<
+    GetFirmwaresBatteriesResponse,
+    GetFirmwaresBatteriesError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: '/firmwares/batteries',
+      operationId: 'getFirmwaresBatteries',
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetFirmwaresBatteries({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type GetFirmwaresDefaultConfigBoardPathParams = {
+  board:
+    | 'BOARD_SLIMEVR'
+    | 'BOARD_NODEMCU'
+    | 'BOARD_WROOM32'
+    | 'BOARD_WEMOSD1MINI'
+    | 'BOARD_TTGO_TBASE'
+    | 'BOARD_ESP01'
+    | 'BOARD_LOLIN_C3_MINI'
+    | 'BOARD_BEETLE32C3'
+    | 'BOARD_ES32C3DEVKITM1';
+};
+
+export type GetFirmwaresDefaultConfigBoardError = Fetcher.ErrorWrapper<undefined>;
+
+export type GetFirmwaresDefaultConfigBoardVariables = {
+  pathParams: GetFirmwaresDefaultConfigBoardPathParams;
+} & FirmwareToolContext['fetcherOptions'];
+
+/**
+ * Gives the default pins / configuration of a given board
+ */
+export const fetchGetFirmwaresDefaultConfigBoard = (
+  variables: GetFirmwaresDefaultConfigBoardVariables,
+  signal?: AbortSignal
+) =>
+  firmwareToolFetch<
+    Schemas.DefaultBuildConfigDTO,
+    GetFirmwaresDefaultConfigBoardError,
+    undefined,
+    {},
+    {},
+    GetFirmwaresDefaultConfigBoardPathParams
+  >({
+    url: '/firmwares/default-config/{board}',
+    method: 'get',
+    ...variables,
+    signal,
+  });
+
+/**
+ * Gives the default pins / configuration of a given board
+ */
+export const useGetFirmwaresDefaultConfigBoard = <
+  TData = Schemas.DefaultBuildConfigDTO,
+>(
+  variables: GetFirmwaresDefaultConfigBoardVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<
+      Schemas.DefaultBuildConfigDTO,
+      GetFirmwaresDefaultConfigBoardError,
+      TData
+    >,
+    'queryKey' | 'queryFn' | 'initialData'
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
+  return reactQuery.useQuery<
+    Schemas.DefaultBuildConfigDTO,
+    GetFirmwaresDefaultConfigBoardError,
+    TData
+  >({
+    queryKey: queryKeyFn({
+      path: '/firmwares/default-config/{board}',
+      operationId: 'getFirmwaresDefaultConfigBoard',
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetFirmwaresDefaultConfigBoard({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
+export type GetFirmwaresIdPathParams = {
+  id: string;
+};
+
+export type GetFirmwaresIdError = Fetcher.ErrorWrapper<{
+  status: 404;
+  payload: Schemas.HttpException;
+}>;
+
+export type GetFirmwaresIdVariables = {
+  pathParams: GetFirmwaresIdPathParams;
+} & FirmwareToolContext['fetcherOptions'];
+
+/**
+ * Get the inforamtions about a firmware from its id
+ * also provide more informations than the simple list, like pins and imus and files
+ */
+export const fetchGetFirmwaresId = (
+  variables: GetFirmwaresIdVariables,
+  signal?: AbortSignal
+) =>
+  firmwareToolFetch<
+    Schemas.FirmwareDetailDTO,
+    GetFirmwaresIdError,
+    undefined,
+    {},
+    {},
+    GetFirmwaresIdPathParams
+  >({ url: '/firmwares/{id}', method: 'get', ...variables, signal });
+
+/**
+ * Get the inforamtions about a firmware from its id
+ * also provide more informations than the simple list, like pins and imus and files
+ */
+export const useGetFirmwaresId = <TData = Schemas.FirmwareDetailDTO>(
+  variables: GetFirmwaresIdVariables,
+  options?: Omit<
+    reactQuery.UseQueryOptions<Schemas.FirmwareDetailDTO, GetFirmwaresIdError, TData>,
+    'queryKey' | 'queryFn' | 'initialData'
+  >
+) => {
+  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
+  return reactQuery.useQuery<Schemas.FirmwareDetailDTO, GetFirmwaresIdError, TData>({
+    queryKey: queryKeyFn({
+      path: '/firmwares/{id}',
+      operationId: 'getFirmwaresId',
+      variables,
+    }),
+    queryFn: ({ signal }) =>
+      fetchGetFirmwaresId({ ...fetcherOptions, ...variables }, signal),
+    ...options,
+    ...queryOptions,
+  });
+};
+
 export type GetHealthError = Fetcher.ErrorWrapper<undefined>;
 
 export type GetHealthVariables = FirmwareToolContext['fetcherOptions'];
@@ -118,10 +573,7 @@ export type GetHealthVariables = FirmwareToolContext['fetcherOptions'];
  * Gives the status of the api
  * this endpoint will always return true
  */
-export const fetchGetHealth = (
-  variables: GetHealthVariables,
-  signal?: AbortSignal
-) =>
+export const fetchGetHealth = (variables: GetHealthVariables, signal?: AbortSignal) =>
   firmwareToolFetch<boolean, GetHealthError, undefined, {}, {}, {}>({
     url: '/health',
     method: 'get',
@@ -133,15 +585,14 @@ export const fetchGetHealth = (
  * Gives the status of the api
  * this endpoint will always return true
  */
-export const useGetHealth = <TData = boolean,>(
+export const useGetHealth = <TData = boolean>(
   variables: GetHealthVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<boolean, GetHealthError, TData>,
     'queryKey' | 'queryFn' | 'initialData'
   >
 ) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } =
-    useFirmwareToolContext(options);
+  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
   return reactQuery.useQuery<boolean, GetHealthError, TData>({
     queryKey: queryKeyFn({
       path: '/health',
@@ -155,229 +606,6 @@ export const useGetHealth = <TData = boolean,>(
   });
 };
 
-export type GetFirmwareSourcesError = Fetcher.ErrorWrapper<undefined>;
-
-export type GetFirmwareSourcesResponse = Schemas.FirmwareSource[];
-
-export type GetFirmwareSourcesVariables = FirmwareToolContext['fetcherOptions'];
-
-/**
- * List all the sources you can build a firmware from
- */
-export const fetchGetFirmwareSources = (
-  variables: GetFirmwareSourcesVariables,
-  signal?: AbortSignal
-) =>
-  firmwareToolFetch<
-    GetFirmwareSourcesResponse,
-    GetFirmwareSourcesError,
-    undefined,
-    {},
-    {},
-    {}
-  >({ url: '/firmware/sources', method: 'get', ...variables, signal });
-
-/**
- * List all the sources you can build a firmware from
- */
-export const useGetFirmwareSources = <TData = GetFirmwareSourcesResponse,>(
-  variables: GetFirmwareSourcesVariables,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      GetFirmwareSourcesResponse,
-      GetFirmwareSourcesError,
-      TData
-    >,
-    'queryKey' | 'queryFn' | 'initialData'
-  >
-) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } =
-    useFirmwareToolContext(options);
-  return reactQuery.useQuery<
-    GetFirmwareSourcesResponse,
-    GetFirmwareSourcesError,
-    TData
-  >({
-    queryKey: queryKeyFn({
-      path: '/firmware/sources',
-      operationId: 'getFirmwareSources',
-      variables,
-    }),
-    queryFn: ({ signal }) =>
-      fetchGetFirmwareSources({ ...fetcherOptions, ...variables }, signal),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export type GetFirmwareBoardDefaultsQueryParams = {
-  source: string;
-  board: string;
-  version: string;
-};
-
-export type GetFirmwareBoardDefaultsError = Fetcher.ErrorWrapper<undefined>;
-
-export type GetFirmwareBoardDefaultsVariables = {
-  queryParams: GetFirmwareBoardDefaultsQueryParams;
-} & FirmwareToolContext['fetcherOptions'];
-
-/**
- * Fet the defaults of a specific board on a specific firmware
- */
-export const fetchGetFirmwareBoardDefaults = (
-  variables: GetFirmwareBoardDefaultsVariables,
-  signal?: AbortSignal
-) =>
-  firmwareToolFetch<
-    Schemas.FirmwareBoardDefaultsNullable,
-    GetFirmwareBoardDefaultsError,
-    undefined,
-    {},
-    GetFirmwareBoardDefaultsQueryParams,
-    {}
-  >({ url: '/firmware/board-defaults', method: 'get', ...variables, signal });
-
-/**
- * Fet the defaults of a specific board on a specific firmware
- */
-export const useGetFirmwareBoardDefaults = <
-  TData = Schemas.FirmwareBoardDefaultsNullable,
->(
-  variables: GetFirmwareBoardDefaultsVariables,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.FirmwareBoardDefaultsNullable,
-      GetFirmwareBoardDefaultsError,
-      TData
-    >,
-    'queryKey' | 'queryFn' | 'initialData'
-  >
-) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } =
-    useFirmwareToolContext(options);
-  return reactQuery.useQuery<
-    Schemas.FirmwareBoardDefaultsNullable,
-    GetFirmwareBoardDefaultsError,
-    TData
-  >({
-    queryKey: queryKeyFn({
-      path: '/firmware/board-defaults',
-      operationId: 'getFirmwareBoardDefaults',
-      variables,
-    }),
-    queryFn: ({ signal }) =>
-      fetchGetFirmwareBoardDefaults(
-        { ...fetcherOptions, ...variables },
-        signal
-      ),
-    ...options,
-    ...queryOptions,
-  });
-};
-
-export type PostFirmwareBuildError = Fetcher.ErrorWrapper<undefined>;
-
-export type PostFirmwareBuildVariables = {
-  body: Schemas.BuildFirmwareBody;
-} & FirmwareToolContext['fetcherOptions'];
-
-export const fetchPostFirmwareBuild = (
-  variables: PostFirmwareBuildVariables,
-  signal?: AbortSignal
-) =>
-  firmwareToolFetch<
-    Schemas.BuildStatusBasic | Schemas.BuildStatusDone,
-    PostFirmwareBuildError,
-    Schemas.BuildFirmwareBody,
-    {},
-    {},
-    {}
-  >({ url: '/firmware/build', method: 'post', ...variables, signal });
-
-export const usePostFirmwareBuild = (
-  options?: Omit<
-    reactQuery.UseMutationOptions<
-      Schemas.BuildStatusBasic | Schemas.BuildStatusDone,
-      PostFirmwareBuildError,
-      PostFirmwareBuildVariables
-    >,
-    'mutationFn'
-  >
-) => {
-  const { fetcherOptions } = useFirmwareToolContext();
-  return reactQuery.useMutation<
-    Schemas.BuildStatusBasic | Schemas.BuildStatusDone,
-    PostFirmwareBuildError,
-    PostFirmwareBuildVariables
-  >({
-    mutationFn: (variables: PostFirmwareBuildVariables) =>
-      fetchPostFirmwareBuild({ ...fetcherOptions, ...variables }),
-    ...options,
-  });
-};
-
-export type GetFirmwareIdPathParams = {
-  id: string;
-};
-
-export type GetFirmwareIdError = Fetcher.ErrorWrapper<undefined>;
-
-export type GetFirmwareIdVariables = {
-  pathParams: GetFirmwareIdPathParams;
-} & FirmwareToolContext['fetcherOptions'];
-
-/**
- * Get the inforamtions about a firmware from its id
- * also provide more informations than the simple list, like pins and imus and files
- */
-export const fetchGetFirmwareId = (
-  variables: GetFirmwareIdVariables,
-  signal?: AbortSignal
-) =>
-  firmwareToolFetch<
-    Schemas.FirmwareWithFiles,
-    GetFirmwareIdError,
-    undefined,
-    {},
-    {},
-    GetFirmwareIdPathParams
-  >({ url: '/firmware/{id}', method: 'get', ...variables, signal });
-
-/**
- * Get the inforamtions about a firmware from its id
- * also provide more informations than the simple list, like pins and imus and files
- */
-export const useGetFirmwareId = <TData = Schemas.FirmwareWithFiles,>(
-  variables: GetFirmwareIdVariables,
-  options?: Omit<
-    reactQuery.UseQueryOptions<
-      Schemas.FirmwareWithFiles,
-      GetFirmwareIdError,
-      TData
-    >,
-    'queryKey' | 'queryFn' | 'initialData'
-  >
-) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } =
-    useFirmwareToolContext(options);
-  return reactQuery.useQuery<
-    Schemas.FirmwareWithFiles,
-    GetFirmwareIdError,
-    TData
-  >({
-    queryKey: queryKeyFn({
-      path: '/firmware/{id}',
-      operationId: 'getFirmwareId',
-      variables,
-    }),
-    queryFn: ({ signal }) =>
-      fetchGetFirmwareId({ ...fetcherOptions, ...variables }, signal),
-    ...options,
-    ...queryOptions,
-  });
-};
-
 export type QueryOperation =
   | {
       path: '/is-compatible/{version}';
@@ -385,22 +613,47 @@ export type QueryOperation =
       variables: GetIsCompatibleVersionVariables;
     }
   | {
+      path: '/firmwares';
+      operationId: 'getFirmwares';
+      variables: GetFirmwaresVariables;
+    }
+  | {
+      path: '/firmwares/build-status/{id}';
+      operationId: 'getFirmwaresBuildStatusId';
+      variables: GetFirmwaresBuildStatusIdVariables;
+    }
+  | {
+      path: '/firmwares/boards';
+      operationId: 'getFirmwaresBoards';
+      variables: GetFirmwaresBoardsVariables;
+    }
+  | {
+      path: '/firmwares/versions';
+      operationId: 'getFirmwaresVersions';
+      variables: GetFirmwaresVersionsVariables;
+    }
+  | {
+      path: '/firmwares/imus';
+      operationId: 'getFirmwaresImus';
+      variables: GetFirmwaresImusVariables;
+    }
+  | {
+      path: '/firmwares/batteries';
+      operationId: 'getFirmwaresBatteries';
+      variables: GetFirmwaresBatteriesVariables;
+    }
+  | {
+      path: '/firmwares/default-config/{board}';
+      operationId: 'getFirmwaresDefaultConfigBoard';
+      variables: GetFirmwaresDefaultConfigBoardVariables;
+    }
+  | {
+      path: '/firmwares/{id}';
+      operationId: 'getFirmwaresId';
+      variables: GetFirmwaresIdVariables;
+    }
+  | {
       path: '/health';
       operationId: 'getHealth';
       variables: GetHealthVariables;
-    }
-  | {
-      path: '/firmware/sources';
-      operationId: 'getFirmwareSources';
-      variables: GetFirmwareSourcesVariables;
-    }
-  | {
-      path: '/firmware/board-defaults';
-      operationId: 'getFirmwareBoardDefaults';
-      variables: GetFirmwareBoardDefaultsVariables;
-    }
-  | {
-      path: '/firmware/{id}';
-      operationId: 'getFirmwareId';
-      variables: GetFirmwareIdVariables;
     };

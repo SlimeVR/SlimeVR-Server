@@ -8,7 +8,7 @@ export interface FirmwareRelease {
   name: string;
   version: string;
   changelog: string;
-  firmwareFiles: Partial<Record<BoardType, string>>;
+  firmwareFile: string;
   userCanUpdate: boolean;
 }
 
@@ -89,9 +89,7 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
   const processedReleses = [];
   for (const release of releases) {
     const fwAsset = firstAsset(release.assets, 'BOARD_SLIMEVR-firmware.bin');
-    const fw12Asset = firstAsset(release.assets, 'BOARD_SLIMEVR_V1_2-firmware.bin');
-    if (!release.assets || (!fwAsset && !fw12Asset) /* || release.prerelease */)
-      continue;
+    if (!release.assets || !fwAsset /* || release.prerelease */) continue;
 
     let version = release.tag_name;
     if (version.charAt(0) === 'v') {
@@ -107,10 +105,7 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
       name: release.name,
       version,
       changelog: release.body,
-      firmwareFiles: {
-        [BoardType.SLIMEVR]: fwAsset.browser_download_url,
-        [BoardType.SLIMEVR_V1_2]: fw12Asset.browser_download_url,
-      },
+      firmwareFile: fwAsset.browser_download_url,
       userCanUpdate,
     });
 
@@ -128,10 +123,7 @@ export function checkForUpdate(
   if (!currentFirmwareRelease.userCanUpdate) return 'blocked';
 
   if (
-    !device.hardwareInfo?.officialBoardType ||
-    ![BoardType.SLIMEVR, BoardType.SLIMEVR_V1_2].includes(
-      device.hardwareInfo.officialBoardType
-    ) ||
+    device.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
     !semver.valid(currentFirmwareRelease.version) ||
     !semver.valid(device.hardwareInfo.firmwareVersion?.toString() ?? 'none')
   ) {

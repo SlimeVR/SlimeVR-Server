@@ -1,5 +1,20 @@
 import { createContext, useContext, useState } from 'react';
 import {
+  fetchGetFirmwaresDefaultConfigBoard,
+  useGetHealth,
+  useGetIsCompatibleVersion,
+} from '@/firmware-tool-api/firmwareToolComponents';
+import {
+  BuildResponseDTO,
+  CreateBoardConfigDTO,
+  CreateBuildFirmwareDTO,
+  DefaultBuildConfigDTO,
+  FirmwareFileDTO,
+} from '@/firmware-tool-api/firmwareToolSchemas';
+import { BoardPinsForm } from '@/components/firmware-tool/BoardPinsStep';
+import { DeepPartial } from 'react-hook-form';
+import {
+  BoardType,
   DeviceIdT,
   FirmwarePartT,
   FirmwareUpdateMethod,
@@ -10,19 +25,52 @@ import {
   SerialFirmwareUpdateT,
 } from 'solarxr-protocol';
 import { OnboardingContext } from './onboarding';
-import {
-  BoardDefaults,
-  FirmwareBoardDefaultsNullable,
-  FirmwareSource,
-  FirmwareWithFiles,
-} from '@/firmware-tool-api/firmwareToolSchemas';
-import { GetFirmwareBoardDefaultsQueryParams } from '@/firmware-tool-api/firmwareToolComponents';
 
+export type PartialBuildFirmware = DeepPartial<CreateBuildFirmwareDTO>;
+export type FirmwareBuildStatus = BuildResponseDTO;
 export type SelectedDevice = {
   type: FirmwareUpdateMethod;
   deviceId: string | number;
   deviceNames: string[];
 };
+
+export const boardTypeToFirmwareToolBoardType: Record<
+  Exclude<
+    BoardType,
+    // This boards will not be handled by the firmware tool.
+    // These are either impossible to compile automatically or deprecated
+    | BoardType.CUSTOM
+    | BoardType.SLIMEVR_DEV
+    | BoardType.SLIMEVR_LEGACY
+    | BoardType.OWOTRACK
+    | BoardType.WRANGLER
+    | BoardType.MOCOPI
+    | BoardType.HARITORA
+    | BoardType.DEV_RESERVED
+  >,
+  CreateBoardConfigDTO['type'] | null
+> = {
+  [BoardType.UNKNOWN]: null,
+  [BoardType.NODEMCU]: 'BOARD_NODEMCU',
+  [BoardType.WROOM32]: 'BOARD_WROOM32',
+  [BoardType.WEMOSD1MINI]: 'BOARD_WEMOSD1MINI',
+  [BoardType.TTGO_TBASE]: 'BOARD_TTGO_TBASE',
+  [BoardType.ESP01]: 'BOARD_ESP01',
+  [BoardType.SLIMEVR]: 'BOARD_SLIMEVR',
+  [BoardType.LOLIN_C3_MINI]: 'BOARD_LOLIN_C3_MINI',
+  [BoardType.BEETLE32C3]: 'BOARD_BEETLE32C3',
+  [BoardType.ESP32C3DEVKITM1]: 'BOARD_ES32C3DEVKITM1',
+  [BoardType.WEMOSWROOM02]: null,
+  [BoardType.XIAO_ESP32C3]: null,
+  [BoardType.ESP32C6DEVKITC1]: null,
+  [BoardType.GLOVE_IMU_SLIMEVR_DEV]: null,
+  [BoardType.GESTURES]: null,
+};
+
+export const firmwareToolToBoardType: Record<CreateBoardConfigDTO['type'], BoardType> =
+  Object.fromEntries(
+    Object.entries(boardTypeToFirmwareToolBoardType).map((a) => a.reverse())
+  );
 
 export const firmwareUpdateErrorStatus = [
   FirmwareUpdateStatus.ERROR_AUTHENTICATION_FAILED,
@@ -61,7 +109,24 @@ export const firmwareUpdateStatusLabel: Record<FirmwareUpdateStatus, string> = {
   [FirmwareUpdateStatus.ERROR_UNKNOWN]: 'firmware_update-status-ERROR_UNKNOWN',
 };
 
-export type FirmwareToolContext = ReturnType<typeof provideFirmwareTool>;
+export interface FirmwareToolContext {
+  selectBoard: (boardType: CreateBoardConfigDTO['type']) => Promise<void>;
+  selectVersion: (version: CreateBuildFirmwareDTO['version']) => void;
+  updatePins: (form: BoardPinsForm) => void;
+  updateImus: (imus: CreateBuildFirmwareDTO['imusConfig']) => void;
+  setBuildStatus: (buildStatus: FirmwareBuildStatus) => void;
+  selectDevices: (device: SelectedDevice[] | null) => void;
+  retry: () => void;
+  buildStatus: FirmwareBuildStatus;
+  defaultConfig: DefaultBuildConfigDTO | null;
+  newConfig: PartialBuildFirmware | null;
+  selectedDevices: SelectedDevice[] | null;
+  isStepLoading: boolean;
+  isGlobalLoading: boolean;
+  isCompatible: boolean;
+  isError: boolean;
+}
+
 export const FirmwareToolContextC = createContext<FirmwareToolContext>(
   undefined as any
 );
@@ -74,23 +139,97 @@ export function useFirmwareTool() {
   return context;
 }
 
-export function provideFirmwareTool() {
-  const [selectedSource, setSelectedSource] = useState<{
-    source: GetFirmwareBoardDefaultsQueryParams;
-    default: FirmwareBoardDefaultsNullable;
-  }>();
+export function useFirmwareToolContext(): FirmwareToolContext {
+  const [defaultConfig, setDefaultConfig] = useState<DefaultBuildConfigDTO | null>(
+    null
+  );
+  const [selectedDevices, selectDevices] = useState<SelectedDevice[] | null>(null);
+  const [newConfig, setNewConfig] = useState<PartialBuildFirmware>({});
+  const [isLoading, setLoading] = useState(false);
+  const { isError, isLoading: isInitialLoading, refetch } = useGetHealth({});
+  const compatibilityCheckEnabled = !!__VERSION_TAG__;
+  const { isLoading: isCompatibilityLoading, data: compatibilityData } =
+    useGetIsCompatibleVersion(
+      { pathParams: { version: __VERSION_TAG__ } },
+      { enabled: compatibilityCheckEnabled }
+    );
+  const [buildStatus, setBuildStatus] = useState<FirmwareBuildStatus>({
+    status: 'CREATING_BUILD_FOLDER',
+    id: '',
+  });
 
   return {
-    selectedSource,
-    setSelectedSource,
+    selectBoard: async (boardType: CreateBoardConfigDTO['type']) => {
+      setLoading(true);
+      const boardDefaults = await fetchGetFirmwaresDefaultConfigBoard({
+        pathParams: { board: boardType },
+      });
+      setDefaultConfig(boardDefaults);
+      if (boardDefaults.shouldOnlyUseDefaults) {
+        setNewConfig((currConfig) => ({
+          ...currConfig,
+          ...boardDefaults,
+          imusConfig: boardDefaults.imuDefaults,
+        }));
+      } else {
+        setNewConfig((currConfig) => ({
+          ...currConfig,
+          boardConfig: { ...currConfig.boardConfig, type: boardType },
+          imusConfig: [],
+        }));
+      }
+      setLoading(false);
+    },
+    updatePins: (form: BoardPinsForm) => {
+      setNewConfig((currConfig) => {
+        return {
+          ...currConfig,
+          imusConfig: [...(currConfig?.imusConfig || [])],
+          boardConfig: {
+            ...currConfig.boardConfig,
+            ...form,
+            batteryResistances: form.batteryResistances.map((r) => Number(r)),
+          },
+        };
+      });
+    },
+    updateImus: (imus: CreateBuildFirmwareDTO['imusConfig']) => {
+      setNewConfig((currConfig) => {
+        return {
+          ...currConfig,
+          imusConfig: imus.map(({ rotation, ...fields }) => ({
+            ...fields,
+            rotation: Number(rotation),
+          })), // Make sure that the rotation is handled as number
+        };
+      });
+    },
+    retry: async () => {
+      setLoading(true);
+      await refetch();
+      setLoading(false);
+    },
+    selectVersion: (version: CreateBuildFirmwareDTO['version']) => {
+      setNewConfig((currConfig) => ({ ...currConfig, version }));
+    },
+    setBuildStatus,
+    selectDevices,
+    selectedDevices,
+    buildStatus,
+    defaultConfig,
+    newConfig,
+    isStepLoading: isLoading,
+    isGlobalLoading: isInitialLoading || isCompatibilityLoading,
+    isCompatible: !compatibilityCheckEnabled || (compatibilityData?.success ?? false),
+    isError: isError || (!compatibilityData?.success && compatibilityCheckEnabled),
   };
 }
 
 export const getFlashingRequests = (
   devices: SelectedDevice[],
-  firmwareFiles: FirmwareWithFiles['files'],
+  firmwareFiles: FirmwareFileDTO[],
   onboardingState: OnboardingContext['state'],
-  defaultConfig: BoardDefaults | null
+  defaultConfig: DefaultBuildConfigDTO | null
 ) => {
   const firmware = firmwareFiles.find(({ isFirmware }) => isFirmware);
   if (!firmware) throw new Error('invalid state - no firmware to find');
@@ -105,7 +244,7 @@ export const getFlashingRequests = (
 
         const part = new FirmwarePartT();
         part.offset = 0;
-        part.url = firmware.filePath;
+        part.url = firmware.url;
 
         const method = new OTAFirmwareUpdateT();
         method.deviceId = dId;
@@ -128,13 +267,12 @@ export const getFlashingRequests = (
         method.deviceId = id;
         method.ssid = onboardingState.wifi.ssid;
         method.password = onboardingState.wifi.password;
-        method.needManualReboot =
-          defaultConfig?.flashingRules.needManualReboot ?? false;
+        method.needManualReboot = defaultConfig?.needManualReboot ?? false;
 
-        method.firmwarePart = firmwareFiles.map(({ offset, filePath }) => {
+        method.firmwarePart = firmwareFiles.map(({ offset, url }) => {
           const part = new FirmwarePartT();
           part.offset = offset;
-          part.url = filePath;
+          part.url = url;
           return part;
         });
 
