@@ -26,7 +26,9 @@ export function FlashBtnStep({
             {l10n.getString('firmware_tool-flashbtn_step-description')}
           </Typography>
           {defaultConfig?.boardConfig.type ===
-          boardTypeToFirmwareToolBoardType[BoardType.SLIMEVR] ? (
+            boardTypeToFirmwareToolBoardType[BoardType.SLIMEVR] ||
+          defaultConfig?.boardConfig.type ===
+            boardTypeToFirmwareToolBoardType[BoardType.SLIMEVR_V1_2] ? (
             <>
               <Typography variant="standard" whitespace="whitespace-pre">
                 {l10n.getString('firmware_tool-flashbtn_step-board_SLIMEVR')}
