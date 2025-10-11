@@ -99,6 +99,8 @@ class HumanSkeleton(
 	val rightLittleProximalBone = Bone(BoneType.RIGHT_LITTLE_PROXIMAL, Constraint(ConstraintType.COMPLETE))
 	val rightLittleIntermediateBone = Bone(BoneType.RIGHT_LITTLE_INTERMEDIATE, Constraint(ConstraintType.COMPLETE))
 	val rightLittleDistalBone = Bone(BoneType.RIGHT_LITTLE_DISTAL, Constraint(ConstraintType.COMPLETE))
+
+	// Toe bones
 	val leftToe1Bone = Bone(BoneType.LEFT_TOE_1, Constraint(ConstraintType.COMPLETE))
 	val leftToe2Bone = Bone(BoneType.LEFT_TOE_2, Constraint(ConstraintType.COMPLETE))
 	val leftToe3Bone = Bone(BoneType.LEFT_TOE_3, Constraint(ConstraintType.COMPLETE))
