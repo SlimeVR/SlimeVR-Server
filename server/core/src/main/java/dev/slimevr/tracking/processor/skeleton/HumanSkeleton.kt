@@ -99,6 +99,8 @@ class HumanSkeleton(
 	val rightLittleProximalBone = Bone(BoneType.RIGHT_LITTLE_PROXIMAL, Constraint(ConstraintType.COMPLETE))
 	val rightLittleIntermediateBone = Bone(BoneType.RIGHT_LITTLE_INTERMEDIATE, Constraint(ConstraintType.COMPLETE))
 	val rightLittleDistalBone = Bone(BoneType.RIGHT_LITTLE_DISTAL, Constraint(ConstraintType.COMPLETE))
+
+	// Toe bones
 	val leftToe1Bone = Bone(BoneType.LEFT_TOE_1, Constraint(ConstraintType.COMPLETE))
 	val leftToe2Bone = Bone(BoneType.LEFT_TOE_2, Constraint(ConstraintType.COMPLETE))
 	val leftToe3Bone = Bone(BoneType.LEFT_TOE_3, Constraint(ConstraintType.COMPLETE))
@@ -554,6 +556,12 @@ class HumanSkeleton(
 			TrackerPosition.RIGHT_UPPER_ARM -> computedRightElbowTracker = tracker
 			TrackerPosition.LEFT_HAND -> computedLeftHandTracker = tracker
 			TrackerPosition.RIGHT_HAND -> computedRightHandTracker = tracker
+			TrackerPosition.LEFT_TOE_1 -> computedLeftToe1Tracker = tracker
+			TrackerPosition.LEFT_TOE_2 -> computedLeftToe2Tracker = tracker
+			TrackerPosition.LEFT_TOE_3 -> computedLeftToe3Tracker = tracker
+			TrackerPosition.RIGHT_TOE_1 -> computedRightToe1Tracker = tracker
+			TrackerPosition.RIGHT_TOE_2 -> computedRightToe2Tracker = tracker
+			TrackerPosition.RIGHT_TOE_3 -> computedRightToe3Tracker = tracker
 			else -> {}
 		}
 	}
@@ -573,6 +581,13 @@ class HumanSkeleton(
 		TrackerRole.RIGHT_ELBOW -> computedRightElbowTracker!!
 		TrackerRole.LEFT_HAND -> computedLeftHandTracker!!
 		TrackerRole.RIGHT_HAND -> computedRightHandTracker!!
+		TrackerRole.LEFT_TOE_1 -> computedLeftToe1Tracker!!
+		TrackerRole.LEFT_TOE_2 -> computedLeftToe2Tracker!!
+		TrackerRole.LEFT_TOE_3 -> computedLeftToe3Tracker!!
+		TrackerRole.RIGHT_TOE_1 -> computedRightToe1Tracker!!
+		TrackerRole.RIGHT_TOE_2 -> computedRightToe2Tracker!!
+		TrackerRole.RIGHT_TOE_3 -> computedRightToe3Tracker!!
+
 		else -> throw IllegalArgumentException("Unsupported computed tracker's TrackerRole in HumanSkeleton")
 	}
 
@@ -1244,14 +1259,12 @@ class HumanSkeleton(
 		updateComputedTracker(computedRightElbowTracker, rightElbowTrackerBone)
 		updateComputedTracker(computedLeftHandTracker, leftHandTrackerBone)
 		updateComputedTracker(computedRightHandTracker, rightHandTrackerBone)
-
-
 		updateComputedTracker(computedLeftToe1Tracker, leftToe1TrackerBone)
-		updateComputedTracker(computedLeftToe2Tracker, leftToe1TrackerBone)
-		updateComputedTracker(computedLeftToe3Tracker, leftToe1TrackerBone)
+		updateComputedTracker(computedLeftToe2Tracker, leftToe2TrackerBone)
+		updateComputedTracker(computedLeftToe3Tracker, leftToe3TrackerBone)
 		updateComputedTracker(computedRightToe1Tracker, rightToe1TrackerBone)
-		updateComputedTracker(computedRightToe2Tracker, rightToe1TrackerBone)
-		updateComputedTracker(computedRightToe3Tracker, rightToe1TrackerBone)
+		updateComputedTracker(computedRightToe2Tracker, rightToe2TrackerBone)
+		updateComputedTracker(computedRightToe3Tracker, rightToe3TrackerBone)
 	}
 
 	private fun updateComputedTracker(computedTracker: Tracker?, trackerBone: Bone) {

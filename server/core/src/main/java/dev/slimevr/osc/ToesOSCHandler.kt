@@ -7,7 +7,11 @@ import dev.slimevr.VRServer
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.osc.OSCHandler
 import dev.slimevr.osc.VRCOSCHandler
+import dev.slimevr.tracking.processor.Bone
+import dev.slimevr.tracking.processor.BoneType
 import dev.slimevr.tracking.trackers.Tracker
+import dev.slimevr.tracking.trackers.TrackerPosition
+import dev.slimevr.tracking.trackers.TrackerRole
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import java.io.Closeable
@@ -50,57 +54,60 @@ public class ToesOSCHandler(
 
 
 	public override fun update() {
-		if (config.enabled) {
-			try {
-				// LEFT FOOT + TOES
-				server.humanPoseManager.skeleton.leftFootTracker?.let { leftFoot ->
-					var lastAssigned: Tracker? = null
-					var next: Tracker?
+		if (!config.enabled) return
 
-					next = server.humanPoseManager.skeleton.leftToe1Tracker
-					if (next != null) {
-						lastAssigned = next
-						processToeSide(leftFoot, lastAssigned, FootSide.Left, 0)
+		try {
+			val trackers = server.humanPoseManager
 
-						next = server.humanPoseManager.skeleton.leftToe2Tracker
-						if (next != null) lastAssigned = next
-						processToeSide(leftFoot, lastAssigned, FootSide.Left, 1)
-						processToeSide(leftFoot, lastAssigned, FootSide.Left, 2)
+			// LEFT FOOT + TOES
+			trackers.getBone(BoneType.LEFT_FOOT)?.let { leftFoot ->
+				val leftToes = listOf(
+					BoneType.LEFT_TOE_1,
+					BoneType.LEFT_TOE_2,
+					BoneType.LEFT_TOE_3
+				).mapNotNull { pos -> trackers.getBone(pos) }
 
-						next = server.humanPoseManager.skeleton.leftToe3Tracker
-						if (next != null) lastAssigned = next
-						processToeSide(leftFoot, lastAssigned, FootSide.Left, 3)
-						processToeSide(leftFoot, lastAssigned, FootSide.Left, 4)
-					}
-				}
-
-				// RIGHT FOOT + TOES
-				server.humanPoseManager.skeleton.rightFootTracker?.let { rightFoot ->
-					var lastAssigned: Tracker? = null
-					var next: Tracker?
-
-					next = server.humanPoseManager.skeleton.rightToe1Tracker
-					if (next != null) {
-						lastAssigned = next
-						processToeSide(rightFoot, lastAssigned, FootSide.Right, 0)
-
-						next = server.humanPoseManager.skeleton.rightToe2Tracker
-						if (next != null) lastAssigned = next
-						processToeSide(rightFoot, lastAssigned, FootSide.Right, 1)
-						processToeSide(rightFoot, lastAssigned, FootSide.Right, 2)
-
-						next = server.humanPoseManager.skeleton.rightToe3Tracker
-						if (next != null) lastAssigned = next
-						processToeSide(rightFoot, lastAssigned, FootSide.Right, 3)
-						processToeSide(rightFoot, lastAssigned, FootSide.Right, 4)
-					}
-				}
-			} catch (ex: Exception) {
-				println("ToeLoop error: ${ex.message}")
+				processToesForFoot(leftFoot, leftToes, FootSide.Left)
 			}
+
+			// RIGHT FOOT + TOES
+			trackers.getBone(BoneType.RIGHT_FOOT)?.let { rightFoot ->
+				val rightToes = listOf(
+					BoneType.RIGHT_TOE_1,
+					BoneType.RIGHT_TOE_2,
+					BoneType.RIGHT_TOE_3
+				).mapNotNull { pos -> trackers.getBone(pos) }
+
+				processToesForFoot(rightFoot, rightToes, FootSide.Right)
+			}
+
+		} catch (ex: Exception) {
+			println("ToeLoop error: ${ex.message}")
 		}
 	}
 
+
+	private fun processToesForFoot(foot: Bone, toeTrackers: List<Bone>, side: FootSide) {
+		var lastAssigned: Bone? = null
+
+		for ((segmentIndex, tracker) in toeTrackers.withIndex()) {
+			if (tracker != null) {
+				lastAssigned = tracker
+			}
+
+			when (segmentIndex) {
+				0 -> processToeSide(foot, lastAssigned!!, side, 0)
+				1 -> {
+					processToeSide(foot, lastAssigned!!, side, 1)
+					processToeSide(foot, lastAssigned!!, side, 2)
+				}
+				2 -> {
+					processToeSide(foot, lastAssigned!!, side, 3)
+					processToeSide(foot, lastAssigned!!, side, 4)
+				}
+			}
+		}
+	}
 
 	override fun getOscSender(): OSCPortOut? = oscPort
 	override fun getPortOut(): Int = oscPortPort
@@ -109,15 +116,15 @@ public class ToesOSCHandler(
 	override fun getOscReceiver(): OSCPortIn? = null
 	override fun getPortIn(): Int = -1
 
-	private fun processToeSide(foot: Tracker, toe: Tracker, side: FootSide, toeNumber: Int) {
-		val footRot = foot.getRotation()
-		val toeRot = toe.getRotation()
-		val currentRelative = (footRot.conj() * toeRot)
+	private fun processToeSide(foot: Bone, toe: Bone, side: FootSide, toeNumber: Int) {
+		val footRot = foot.getGlobalRotation()
+		val toeRot = toe.getGlobalRotation()
+		val currentRelative = (footRot.inv() * toeRot)
 
 		val euler = quaternionToEulerDegrees(currentRelative)
 
-		// Left foot seems to give us inverted values for some reason, so we undo the inversion.
-		val pitch = euler.y * if (side == FootSide.Left) -1f else 1f
+		// Right foot seems to give us inverted values for some reason, so we undo the inversion.
+		val pitch = euler.y * if(side == FootSide.Right) -1 else 1
 
 		val tipToe = pitch < -14f
 		val bending = pitch > 15f && !tipToe
@@ -192,6 +199,7 @@ private fun quaternionToEulerDegrees(q: Quaternion): Vector3 {
 		roll.toDegrees()
 	)
 }
+
 
 private fun Float.toDegrees() = Math.toDegrees(this.toDouble()).toFloat()
 private fun clamp(v: Float, min: Float, max: Float): Float = max(min, min(v, max))
