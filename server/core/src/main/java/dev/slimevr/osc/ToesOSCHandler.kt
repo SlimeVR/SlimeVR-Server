@@ -4,7 +4,9 @@ import com.illposed.osc.OSCMessage
 import com.illposed.osc.transport.OSCPortIn
 import com.illposed.osc.transport.OSCPortOut
 import dev.slimevr.VRServer
+import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.osc.OSCHandler
+import dev.slimevr.osc.VRCOSCHandler
 import dev.slimevr.tracking.trackers.Tracker
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
@@ -14,83 +16,91 @@ import kotlin.math.*
 
 public class ToesOSCHandler(
 	private val server: VRServer,
-	private var oscPort: OSCPortOut? = null
+	private val config: VRCOSCConfig,
 ) : OSCHandler {
+	private var oscPort: OSCPortOut? = null
 	private val persistedValues = mutableMapOf<String, Boolean>()
 	private var oscPortAddress: InetAddress? = null
 	private var oscPortPort: Int = 9000
 
 	override fun refreshSettings(refreshRouterSettings: Boolean) {
-		TODO("Not yet implemented")
+		updateOscSender(config.portOut, config.address);
 	}
+
 	override fun updateOscReceiver(portIn: Int, args: Array<out String?>?) {
-
+		// We don't currently do any OSC receiving here
 	}
 
+	init {
+		refreshSettings(false)
+	}
 	override fun updateOscSender(portOut: Int, address: String?) {
 		try {
 			oscPort?.close()
-			if (address != null) {
-				val inet = InetAddress.getByName(address)
-				oscPort = OSCPortOut(inet, portOut)
-				oscPortAddress = inet
+			if (portOut != null) {
+				val inetAddress = InetAddress.getByName(address)
+				oscPort = OSCPortOut(inetAddress, portOut)
+				oscPortAddress = inetAddress
 				oscPortPort = portOut
 			}
 		} catch (e: Exception) {
-			println("Failed to open OSC sender on $address:$portOut: ${e.message}")
+			println("Failed to open Toes OSC sender: ${e.message}")
 		}
 	}
 
 
 	public override fun update() {
-		try {
-			// LEFT FOOT + TOES
-			server.humanPoseManager.skeleton.leftFootTracker?.let { leftFoot ->
-				var lastAssigned: Tracker? = null
-				var next: Tracker?
+		if (config.enabled) {
+			try {
+				// LEFT FOOT + TOES
+				server.humanPoseManager.skeleton.leftFootTracker?.let { leftFoot ->
+					var lastAssigned: Tracker? = null
+					var next: Tracker?
 
-				next = server.humanPoseManager.skeleton.leftToe1Tracker
-				if (next != null) {
-					lastAssigned = next
-					processToeSide(leftFoot, lastAssigned, FootSide.Left, 0)
+					next = server.humanPoseManager.skeleton.leftToe1Tracker
+					if (next != null) {
+						lastAssigned = next
+						processToeSide(leftFoot, lastAssigned, FootSide.Left, 0)
 
-					next = server.humanPoseManager.skeleton.leftToe2Tracker
-					if (next != null) lastAssigned = next
-					processToeSide(leftFoot, lastAssigned, FootSide.Left, 1)
-					processToeSide(leftFoot, lastAssigned, FootSide.Left, 2)
+						next = server.humanPoseManager.skeleton.leftToe2Tracker
+						if (next != null) lastAssigned = next
+						processToeSide(leftFoot, lastAssigned, FootSide.Left, 1)
+						processToeSide(leftFoot, lastAssigned, FootSide.Left, 2)
 
-					next = server.humanPoseManager.skeleton.leftToe3Tracker
-					if (next != null) lastAssigned = next
-					processToeSide(leftFoot, lastAssigned, FootSide.Left, 3)
-					processToeSide(leftFoot, lastAssigned, FootSide.Left, 4)
+						next = server.humanPoseManager.skeleton.leftToe3Tracker
+						if (next != null) lastAssigned = next
+						processToeSide(leftFoot, lastAssigned, FootSide.Left, 3)
+						processToeSide(leftFoot, lastAssigned, FootSide.Left, 4)
+					}
 				}
-			}
 
-			// RIGHT FOOT + TOES
-			server.humanPoseManager.skeleton.rightFootTracker?.let { rightFoot ->
-				var lastAssigned: Tracker? = null
-				var next: Tracker?
+				// RIGHT FOOT + TOES
+				server.humanPoseManager.skeleton.rightFootTracker?.let { rightFoot ->
+					var lastAssigned: Tracker? = null
+					var next: Tracker?
 
-				next = server.humanPoseManager.skeleton.rightToe1Tracker
-				if (next != null) {
-					lastAssigned = next
-					processToeSide(rightFoot, lastAssigned, FootSide.Right, 0)
+					next = server.humanPoseManager.skeleton.rightToe1Tracker
+					if (next != null) {
+						lastAssigned = next
+						processToeSide(rightFoot, lastAssigned, FootSide.Right, 0)
 
-					next = server.humanPoseManager.skeleton.rightToe2Tracker
-					if (next != null) lastAssigned = next
-					processToeSide(rightFoot, lastAssigned, FootSide.Right, 1)
-					processToeSide(rightFoot, lastAssigned, FootSide.Right, 2)
+						next = server.humanPoseManager.skeleton.rightToe2Tracker
+						if (next != null) lastAssigned = next
+						processToeSide(rightFoot, lastAssigned, FootSide.Right, 1)
+						processToeSide(rightFoot, lastAssigned, FootSide.Right, 2)
 
-					next = server.humanPoseManager.skeleton.rightToe2Tracker
-					if (next != null) lastAssigned = next
-					processToeSide(rightFoot, lastAssigned, FootSide.Right, 3)
-					processToeSide(rightFoot, lastAssigned, FootSide.Right, 4)
+						next = server.humanPoseManager.skeleton.rightToe3Tracker
+						if (next != null) lastAssigned = next
+						processToeSide(rightFoot, lastAssigned, FootSide.Right, 3)
+						processToeSide(rightFoot, lastAssigned, FootSide.Right, 4)
+					}
 				}
+			} catch (ex: Exception) {
+				println("ToeLoop error: ${ex.message}")
 			}
-		} catch (ex: Exception) {
-			println("ToeLoop error: ${ex.message}")
 		}
 	}
+
 
 	override fun getOscSender(): OSCPortOut? = oscPort
 	override fun getPortOut(): Int = oscPortPort
@@ -113,14 +123,6 @@ public class ToesOSCHandler(
 		setTipToeValueBool(side, tipToe)
 		setToeValueBool(toeNumber, side, bending)
 		setToeValueFloat(toeNumber, side, -clamp(pitch / 30f, -1f, 1f))
-	}
-
-
-	private fun normalizeAngle(angle: Float): Float {
-		var a = angle % 360f
-		if (a > 180f) a -= 360f
-		if (a < -180f) a += 360f
-		return a
 	}
 
 	fun setToeValueBool(toeNumber: Int, footSide: FootSide, value: Boolean) {
