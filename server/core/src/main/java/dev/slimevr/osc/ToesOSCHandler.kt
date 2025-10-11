@@ -115,7 +115,9 @@ public class ToesOSCHandler(
 		val currentRelative = (footRot.conj() * toeRot)
 
 		val euler = quaternionToEulerDegrees(currentRelative)
-		val pitch = euler.x
+
+		// Left foot seems to give us inverted values for some reason, so we undo the inversion.
+		val pitch = euler.y * if (side == FootSide.Left) -1f else 1f
 
 		val tipToe = pitch < -14f
 		val bending = pitch > 15f && !tipToe
