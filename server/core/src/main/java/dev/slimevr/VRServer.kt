@@ -266,6 +266,7 @@ class VRServer @JvmOverloads constructor(
 			}
 			vrcOSCHandler.update()
 			vMCHandler.update()
+			toesOSCHandler.update()
 			// final long time = System.currentTimeMillis() - start;
 			try {
 				sleep(1) // 1000Hz
