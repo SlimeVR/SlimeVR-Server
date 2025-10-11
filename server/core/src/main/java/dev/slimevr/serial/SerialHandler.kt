@@ -14,6 +14,7 @@ abstract class SerialHandler {
 	abstract fun factoryResetRequest()
 	abstract fun infoRequest()
 	abstract fun wifiScanRequest()
+	abstract fun customCommandRequest(command: String)
 	abstract fun closeSerial()
 	abstract fun write(buff: ByteArray)
 	abstract fun setWifi(ssid: String, passwd: String)
@@ -66,6 +67,8 @@ class SerialHandlerStub : SerialHandler() {
 	override fun infoRequest() {}
 
 	override fun wifiScanRequest() {}
+
+	override fun customCommandRequest(command: String) {}
 
 	override fun closeSerial() {}
 
