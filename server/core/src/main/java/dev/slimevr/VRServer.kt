@@ -140,7 +140,6 @@ class VRServer @JvmOverloads constructor(
 		// AutoBone requires HumanPoseManager first
 		autoBoneHandler = AutoBoneHandler(this)
 		firmwareUpdateHandler = FirmwareUpdateHandler(this)
-		toesOSCHandler = ToesOSCHandler(this);
 		vrcConfigManager = VRChatConfigManager(this, vrcConfigHandlerProvider(this))
 		networkProfileChecker = networkProfileProvider(this)
 		trackingChecklistManager = TrackingChecklistManager(this)
@@ -172,7 +171,10 @@ class VRServer @JvmOverloads constructor(
 			humanPoseManager,
 			configManager.vrConfig.vmc,
 		)
-
+		toesOSCHandler = ToesOSCHandler(
+			this,
+			configManager.vrConfig.vrcOSC
+		)
 		// Initialize OSC router
 		val oscHandlers = FastList<OSCHandler>()
 		oscHandlers.add(vrcOSCHandler)
