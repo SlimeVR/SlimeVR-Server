@@ -171,6 +171,7 @@ export interface IMeasure {
   offset?: number;
   type?: OscillatorOptions['type'];
   volume?: number;
+  loudness?: number[];
 }
 
 export interface INote {
@@ -219,18 +220,21 @@ export default class Xylophone {
 
       return;
     }
-    let i = 0;
     await Promise.all(
-      measure.notes.map((note) => {
+      measure.notes.map((note, i) => {
         let offset = delay;
-        if (measure.offset) offset += measure.offset * i++;
+        if (measure.offset) offset += measure.offset * i;
+        let volume = measure.volume;
+        if (volume && measure.loudness) {
+          volume *= measure.loudness[i];
+        }
 
         return this.playTone({
           length: measure.length,
           note,
           offset,
           type: measure.type,
-          volume: measure.volume,
+          volume,
         });
       })
     );
@@ -302,7 +306,16 @@ export default class Xylophone {
       );
       const gain = Math.min(1, Math.pow(volume ?? 1, Math.E) * freqGain) * 0.5;
 
-      this.oscillator.frequency.value = Xylophone.toHertz(note);
+      // this.oscillator.frequency.value = Xylophone.toHertz(note);
+      this.oscillator.frequency.setValueAtTime(0.5 * Xylophone.toHertz(note), offset);
+      this.oscillator.frequency.linearRampToValueAtTime(
+        1 * Xylophone.toHertz(note),
+        offset + 0.05
+      );
+      this.oscillator.frequency.exponentialRampToValueAtTime(
+        Xylophone.toHertz(note) + 5,
+        offset + length
+      );
       this.gainNode.gain.setValueAtTime(0, offset);
       this.gainNode.gain.linearRampToValueAtTime(1 * gain, offset + 0.02);
 
