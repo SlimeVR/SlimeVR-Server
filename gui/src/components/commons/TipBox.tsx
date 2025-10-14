@@ -18,7 +18,7 @@ export function TipBox({
   return (
     <div
       className={classNames(
-        'flex flex-row gap-4 bg-accent-background-50 p-4 rounded-md',
+        'flex flex-row gap-4 bg-accent-background-50 p-2 rounded-md',
         className
       )}
     >
@@ -55,7 +55,7 @@ export function WarningBox({
   hideIcon?: boolean;
 }) {
   return (
-    <div className="flex flex-row gap-4 bg-status-warning p-4 rounded-md">
+    <div className="flex flex-row gap-4 bg-status-warning p-2 rounded-md">
       <div
         className={classNames(
           'text-background-60 flex flex-col justify-center',
