@@ -17,6 +17,7 @@ use tauri::Emitter;
 use tauri::WindowEvent;
 use tauri::{Manager, RunEvent};
 use tauri_plugin_shell::process::CommandChild;
+use util::get_log_dir;
 
 use crate::util::{
 	get_launch_path, show_error, valid_java_paths, Cli, JAVA_BIN, MINIMUM_JAVA_VERSION,
@@ -44,21 +45,6 @@ fn update_window_state(
 }
 
 #[tauri::command]
-fn logging(msg: String) {
-	log::info!(target: "webview", "{}", msg)
-}
-
-#[tauri::command]
-fn erroring(msg: String) {
-	log::error!(target: "webview", "{}", msg)
-}
-
-#[tauri::command]
-fn warning(msg: String) {
-	log::warn!(target: "webview", "{}", msg)
-}
-
-#[tauri::command]
 fn open_config_folder(app_handle: tauri::AppHandle) {
 	let path = app_handle
 		.path()
@@ -66,7 +52,7 @@ fn open_config_folder(app_handle: tauri::AppHandle) {
 		.unwrap_or_else(|_| Path::new(".").to_path_buf());
 
 	if let Err(err) = open::that(path) {
-		eprintln!("Failed to open config folder: {}", err);
+		log::error!("Failed to open config folder: {}", err);
 	}
 }
 
@@ -81,7 +67,7 @@ fn open_logs_folder(app_handle: tauri::AppHandle) {
 	if let Err(err) =
 		open::that(path.unwrap_or_else(|_| Path::new("./logs/").to_path_buf()))
 	{
-		eprintln!("Failed to open logs folder: {}", err);
+		log::error!("Failed to open logs folder: {}", err);
 	}
 }
 
@@ -96,9 +82,6 @@ fn main() -> Result<()> {
 
 	let cli = Cli::parse();
 	let tauri_context = tauri::generate_context!();
-
-	// Set up loggers and global handlers
-	let _logger = setup_logger(&tauri_context);
 
 	// Ensure child processes die when spawned on windows
 	// and then check for WebView2's existence
@@ -123,37 +106,6 @@ fn main() -> Result<()> {
 	tauri_build_result(build_result, exit_flag, backend);
 
 	Ok(())
-}
-
-fn setup_logger(context: &tauri::Context) -> Result<flexi_logger::LoggerHandle> {
-	use flexi_logger::{
-		Age, Cleanup, Criterion, Duplicate, FileSpec, Logger, Naming, WriteMode,
-	};
-	use tauri::Error;
-
-	// Based on https://docs.rs/tauri/2.0.0-alpha.10/src/tauri/path/desktop.rs.html#238-256
-	#[cfg(target_os = "macos")]
-	let path = dirs_next::home_dir()
-		.ok_or(Error::UnknownPath)
-		.map(|dir| dir.join("Library/Logs").join(&context.config().identifier));
-
-	#[cfg(not(target_os = "macos"))]
-	let path = dirs_next::data_dir()
-		.ok_or(Error::UnknownPath)
-		.map(|dir| dir.join(&context.config().identifier).join("logs"));
-
-	Ok(Logger::try_with_env_or_str("info")?
-		.log_to_file(FileSpec::default().directory(path.expect("We need a log dir")))
-		.format_for_files(|w, now, record| util::logger_format(w, now, record, false))
-		.format_for_stderr(|w, now, record| util::logger_format(w, now, record, true))
-		.rotate(
-			Criterion::Age(Age::Day),
-			Naming::Timestamps,
-			Cleanup::KeepLogFiles(2),
-		)
-		.duplicate_to_stderr(Duplicate::All)
-		.write_mode(WriteMode::BufferAndFlush)
-		.start()?)
 }
 
 #[cfg(windows)]
@@ -249,6 +201,19 @@ fn setup_tauri(
 ) -> Result<tauri::App, tauri::Error> {
 	let exit_flag_terminated = exit_flag.clone();
 	tauri::Builder::default()
+		.plugin(
+			tauri_plugin_log::Builder::new()
+				.target(tauri_plugin_log::Target::new(
+					tauri_plugin_log::TargetKind::Folder {
+						path: get_log_dir(&context)?,
+						file_name: Some("slimevr".to_string()),
+					},
+				))
+				.max_file_size(30_000 /* bytes */)
+				.rotation_strategy(tauri_plugin_log::RotationStrategy::KeepSome(3))
+				.build(),
+		)
+		.plugin(tauri_plugin_opener::init())
 		.plugin(tauri_plugin_dialog::init())
 		.plugin(tauri_plugin_fs::init())
 		.plugin(tauri_plugin_os::init())
@@ -257,9 +222,6 @@ fn setup_tauri(
 		.plugin(tauri_plugin_http::init())
 		.invoke_handler(tauri::generate_handler![
 			update_window_state,
-			logging,
-			erroring,
-			warning,
 			open_config_folder,
 			open_logs_folder,
 			tray::update_translations,
@@ -271,6 +233,7 @@ fn setup_tauri(
 			presence::create_discord_client,
 		])
 		.setup(move |app| {
+			log::info!("SlimeVR started!");
 			let window_state =
 				WindowState::open_state(app.path().app_config_dir().unwrap())
 					.unwrap_or_default();
