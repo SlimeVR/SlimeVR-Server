@@ -22,6 +22,7 @@ use crate::util::{
 	get_launch_path, show_error, valid_java_paths, Cli, JAVA_BIN, MINIMUM_JAVA_VERSION,
 };
 
+mod cross;
 mod presence;
 mod state;
 mod tray;
@@ -106,6 +107,7 @@ fn main() -> Result<()> {
 	setup_webview2()?;
 
 	// Check for environment variables that can affect the server, and if so, warn in log and GUI
+	#[cfg(desktop)]
 	check_environment_variables();
 
 	// Spawn server process
@@ -189,6 +191,7 @@ fn setup_webview2() -> Result<()> {
 	Ok(())
 }
 
+#[cfg(desktop)]
 fn check_environment_variables() {
 	use itertools::Itertools;
 	const ENVS_TO_CHECK: &[&str] = &["_JAVA_OPTIONS", "JAVA_TOOL_OPTIONS"];
@@ -264,7 +267,7 @@ fn setup_tauri(
 			open_logs_folder,
 			tray::update_translations,
 			tray::update_tray_text,
-			tray::is_tray_available,
+			cross::is_tray_available,
 			presence::discord_client_exists,
 			presence::update_presence,
 			presence::clear_presence,
@@ -299,7 +302,7 @@ fn setup_tauri(
 				tray::create_tray(handle)?;
 				presence::create_presence(handle)?;
 			} else {
-				app.manage(tray::TrayAvailable(false));
+				app.manage(cross::TrayAvailable(false));
 			}
 
 			app.manage(Mutex::new(window_state));
