@@ -14,12 +14,14 @@ function Selector({
   text,
   active,
   disabled,
+  devBranch,
   official,
   onClick,
 }: {
   text: string;
   active: boolean;
   official?: boolean;
+  devBranch?: boolean;
   disabled?: boolean;
   onClick: () => void;
 }) {
@@ -38,8 +40,23 @@ function Selector({
       }}
     >
       {official && (
-        <div className="absolute px-2 py-0.5 rounded-md bg-accent-background-20 -top-2 -right-2">
+        <div
+          className={classNames(
+            'absolute px-2 py-0.5 rounded-md bg-accent-background-20 -top-2 -right-2',
+            { 'brightness-20': disabled, 'brightness-50': !active }
+          )}
+        >
           <Typography>Official</Typography>
+        </div>
+      )}
+      {devBranch && (
+        <div
+          className={classNames(
+            'absolute px-2 py-0.5 rounded-md bg-status-warning -top-2 -right-2',
+            { 'brightness-20': disabled, 'brightness-50': !active }
+          )}
+        >
+          <Typography color="text-background-90">Dev Branch</Typography>
         </div>
       )}
       {text}
@@ -63,46 +80,72 @@ export function SelectSourceSetep({
     version?: string;
     board?: string;
   }>();
-  const { isFetching, data: sources } = useGetFirmwareSources({});
+  const {
+    isFetching,
+    isError,
+    data: sources,
+    refetch,
+  } = useGetFirmwareSources({});
 
   const { possibleBoards, possibleVersions, sourcesGroupped } = useMemo(() => {
     return {
-      sourcesGroupped: sources?.reduce(
-        (curr, source) => {
-          if (!curr.find(({ name }) => source.source === name))
-            curr.push({
-              name: source.source,
-              official: source.official,
-              disabled:
-                !partialBoard?.board ||
-                !source.availableBoards.includes(partialBoard.board),
-            });
+      sourcesGroupped: sources
+        ?.reduce(
+          (curr, source) => {
+            if (!curr.find(({ name }) => source.source === name))
+              curr.push({
+                name: source.source,
+                official: source.official,
+                disabled:
+                  !partialBoard?.board ||
+                  !source.availableBoards.includes(partialBoard.board),
+              });
+            return curr;
+          },
+          [] as { name: string; official: boolean; disabled: boolean }[]
+        )
+        .sort((a, b) => {
+          if (a.official !== b.official) return a.official ? -1 : 1;
+          return a.name.localeCompare(b.name);
+        }),
+      possibleBoards: sources
+        ?.reduce((curr, source) => {
+          const unknownBoards = source.availableBoards.filter(
+            (b) => !curr.includes(b)
+          );
+          curr.push(...unknownBoards);
           return curr;
-        },
-        [] as { name: string; official: boolean; disabled: boolean }[]
-      ),
-      possibleBoards: sources?.reduce((curr, source) => {
-        const unknownBoards = source.availableBoards.filter(
-          (b) => !curr.includes(b)
-        );
-        curr.push(...unknownBoards);
-        return curr;
-      }, [] as string[]),
-      possibleVersions: sources?.reduce(
-        (curr, source) => {
-          if (!curr.find(({ name }) => source.version === name))
-            curr.push({
-              disabled:
-                !partialBoard?.board ||
-                !source.availableBoards.includes(partialBoard.board) ||
-                source.source !== partialBoard.source,
-              name: source.version,
-            });
+        }, [] as string[])
+        .sort((a, b) => {
+          // Sort official board type first
+          const aStartsWithBoard = a.startsWith('BOARD_SLIMEVR_');
+          const bStartsWithBoard = b.startsWith('BOARD_SLIMEVR_');
 
-          return curr;
-        },
-        [] as { name: string; disabled: boolean }[]
-      ),
+          if (aStartsWithBoard && !bStartsWithBoard) return -1;
+          if (!aStartsWithBoard && bStartsWithBoard) return 1;
+          return a.localeCompare(b);
+        }),
+      possibleVersions: sources
+        ?.reduce(
+          (curr, source) => {
+            if (!curr.find(({ name }) => source.version === name))
+              curr.push({
+                disabled:
+                  !partialBoard?.board ||
+                  !source.availableBoards.includes(partialBoard.board) ||
+                  source.source !== partialBoard.source,
+                name: source.version,
+                isBranch: !!source.branch,
+              });
+
+            return curr;
+          },
+          [] as { name: string; disabled: boolean; isBranch: boolean }[]
+        )
+        .sort((a, b) => {
+          if (a.isBranch !== b.isBranch) return a.isBranch ? 1 : -1;
+          return a.name.localeCompare(b.name);
+        }),
     };
   }, [sources, partialBoard]);
 
@@ -137,8 +180,8 @@ export function SelectSourceSetep({
           </Typography>
         </div>
         <div className="my-4">
-          {!isFetching && (
-            <>
+          {!isFetching && !isError && (
+            <div className="flex flex-col gap-2">
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="flex flex-col gap-1 w-full">
                   <Localized id="firmware_tool-select_source-board_type">
@@ -152,12 +195,16 @@ export function SelectSourceSetep({
                         onClick={() => {
                           setPartialBoard({ board });
                         }}
-                        text={board}
+                        text={l10n.getString(
+                          `board_type-${board.replace('BOARD_', '')}`,
+                          undefined,
+                          board.replace('BOARD_', '').replaceAll('_', ' ')
+                        )}
                       ></Selector>
                     ))}
                   </div>
                 </div>
-                <div className="flex flex-col  gap-1 w-full">
+                <div className="flex flex-col gap-1 w-full">
                   <Localized id="firmware_tool-select_source-firmware">
                     <Typography variant="section-title"></Typography>
                   </Localized>
@@ -189,6 +236,10 @@ export function SelectSourceSetep({
                         active={partialBoard?.version === name}
                         disabled={disabled}
                         key={`${name}`}
+                        devBranch={
+                          partialBoard?.source?.startsWith('SlimeVR/') &&
+                          name === 'llelievr/board-defaults'
+                        }
                         onClick={() => {
                           setPartialBoard((curr) => ({
                             ...curr,
@@ -214,7 +265,7 @@ export function SelectSourceSetep({
                   ></Button>
                 </Localized>
               </div>
-            </>
+            </div>
           )}
 
           {isFetching && (
@@ -222,6 +273,17 @@ export function SelectSourceSetep({
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
               <Localized id="firmware_tool-loading">
                 <Typography></Typography>
+              </Localized>
+            </div>
+          )}
+          {isError && (
+            <div className="flex justify-center flex-col items-center gap-3 h-44">
+              <LoaderIcon slimeState={SlimeState.SAD}></LoaderIcon>
+              <Localized id="firmware_tool-select_source-error">
+                <Typography></Typography>
+              </Localized>
+              <Localized id="firmware_tool-retry">
+                <Button variant="primary" onClick={() => refetch()}></Button>
               </Localized>
             </div>
           )}

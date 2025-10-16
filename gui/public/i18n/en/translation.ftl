@@ -1332,6 +1332,7 @@ firmware_tool-not_compatible = The firmware tool is not compatible with this ver
 
 firmware_tool-select_source = Select the firmware to flash
 firmware_tool-select_source-description = Select the firmware you want to flash on your board
+firmware_tool-select_source-error = Unable to load Sources
 firmware_tool-select_source-board_type = Board Type
 firmware_tool-select_source-firmware = Firmware Source
 firmware_tool-select_source-version = Firmware Version
