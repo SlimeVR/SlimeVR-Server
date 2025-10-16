@@ -243,6 +243,8 @@ reset-reset_all_warning_default-v2 =
     Czy na pewno chcesz to zrobić?
 reset-full = Pełny Reset
 reset-mounting = Zresetuj położenie
+reset-mounting-feet = Zresetuj mocowanie stóp
+reset-mounting-fingers = Zresetuj mocowanie palców
 reset-yaw = Reset odchylenia
 
 ## Serial detection stuff
@@ -610,8 +612,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip może
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap próbuje odgadnąć obrót twoich stóp, jeśli trackery stóp nie są używane.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant obraca stopy, aby były równoległe do podłoża podczas kontaktu.
 settings-general-fk_settings-leg_fk = Śledzenie nóg
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Włącz resetowanie montażu stóp, chodząc na palcach.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Reset mocowania stóp
 settings-general-fk_settings-enforce_joint_constraints = Limity szkieletowe
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Wymuszanie ograniczeń
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zapobiega obracaniu się stawów poza ich limit
