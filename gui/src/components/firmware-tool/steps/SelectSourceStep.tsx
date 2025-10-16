@@ -28,7 +28,7 @@ function Selector({
       className={classNames(
         'p-3 rounded-md hover:bg-background-50 w-full cursor-pointer relative',
         {
-          'bg-background-50 text-background-10': active, // FIXME: use selected source
+          'bg-background-50 text-background-10': active,
           'bg-background-60': !active,
           'bg-background-80 text-background-50': disabled,
         }

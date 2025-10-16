@@ -42,18 +42,6 @@ export function BuildStep({
         },
       });
 
-      // const originalStatus = await fetchGetFirmwareId({
-      //   pathParams: { id: res.id },
-      // });
-      // if (originalStatus.status === 'DONE') {
-      //   setBuildStatus({
-      //     id: res.id,
-      //     status: 'DONE',
-      //     files: originalStatus.files,
-      //   });
-      //   return; // Build already done no need to watch for status changes
-      // }
-
       setBuildStatus(res);
       if (res.status !== 'DONE') {
         const events = new EventSource(
