@@ -5,10 +5,7 @@ import { useFirmwareTool } from '@/hooks/firmware-tool';
 import { useEffect, useMemo, useState } from 'react';
 import { firmwareToolBaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
 import { Button } from '@/components/commons/Button';
-import {
-  fetchGetFirmwareId,
-  fetchPostFirmwareBuild,
-} from '@/firmware-tool-api/firmwareToolComponents';
+import { fetchPostFirmwareBuild } from '@/firmware-tool-api/firmwareToolComponents';
 import {
   BuildStatusBasic,
   BuildStatusDone,

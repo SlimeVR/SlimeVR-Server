@@ -270,7 +270,6 @@ function OTADevicesList({
 
 export function FlashingMethodStep({
   nextStep,
-  prevStep,
   goTo,
 }: {
   nextStep: () => void;

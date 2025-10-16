@@ -218,7 +218,14 @@ export function FirmwareUpdate() {
       if (!firmwareFile) continue;
       const requests = getFlashingRequests(
         devices,
-        [{ isFirmware: true, firmwareId: '', url: firmwareFile, offset: 0 }],
+        [
+          {
+            isFirmware: true,
+            firmwareId: '',
+            filePath: firmwareFile,
+            offset: 0,
+          },
+        ],
         { wifi: undefined, alonePage: false, progress: 0 }, // we do not use serial
         null // we do not use serial
       );

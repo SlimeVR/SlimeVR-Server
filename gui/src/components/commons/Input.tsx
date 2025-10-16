@@ -21,7 +21,7 @@ export const InputInside = forwardRef<
     variant?: 'primary' | 'secondary' | 'tertiary';
     label?: string;
     error?: FieldError;
-    autocomplete?: boolean;
+    autocomplete?: boolean | string;
   } & Partial<React.HTMLProps<HTMLInputElement>>
 >(function AppInput(
   {
@@ -130,7 +130,7 @@ export const Input = ({
 }: {
   rules?: UseControllerProps<any>['rules'];
   control: Control<any>;
-  autocomplete?: boolean;
+  autocomplete?: boolean | string;
 } & InputProps &
   Partial<React.HTMLProps<HTMLInputElement>>) => {
   return (

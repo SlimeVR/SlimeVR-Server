@@ -144,7 +144,6 @@ export function DropdownInside({
   value,
   onChange,
   error,
-  name,
 }: DropdownProps & {
   name: string;
   value: string;
