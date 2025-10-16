@@ -5,16 +5,11 @@ import {
   FirmwareToolContextC,
   provideFirmwareTool,
 } from '@/hooks/firmware-tool';
-import { AddImusStep } from './AddImusStep';
-import { SelectBoardStep } from './SelectBoardStep';
-import { BoardPinsStep } from './BoardPinsStep';
-import VerticalStepper from '@/components/commons/VerticalStepper';
+import VerticalStepper, {
+  VerticalStep,
+} from '@/components/commons/VerticalStepper';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { Button } from '@/components/commons/Button';
-import { SelectFirmwareStep } from './SelectFirmwareStep';
-import { BuildStep } from './BuildStep';
-import { FlashingMethodStep } from './FlashingMethodStep';
-import { FlashingStep } from './FlashingStep';
 import { useMemo } from 'react';
 import {
   useGetHealth,
@@ -22,6 +17,11 @@ import {
 } from '@/firmware-tool-api/firmwareToolComponents';
 import { SelectSourceSetep } from './steps/SelectSourceStep';
 import { BoardDefaultsStep } from './steps/BoardDefaultsStep';
+import { BuildStep } from './steps/BuildStep';
+import { FlashingMethodStep } from './steps/FlashingMethodStep';
+import { FirmwareUpdateMethod } from 'solarxr-protocol';
+import { FlashBtnStep } from './steps/FlashBtnStep';
+import { FlashingStep } from './steps/FlashingStep';
 
 function FirmwareToolContent() {
   const { l10n } = useLocalization();
@@ -39,58 +39,48 @@ function FirmwareToolContent() {
     !compatibilityCheckEnabled || (compatibilityData?.success ?? false);
 
   const steps = useMemo(() => {
-    const steps = [
+    const steps: VerticalStep[] = [
       {
         id: 'SelectSource',
         component: SelectSourceSetep,
-        title: l10n.getString('firmware_tool-step-select_source'),
+        title: l10n.getString('firmware_tool-select_source'),
       },
       {
+        id: 'Defaults',
         component: BoardDefaultsStep,
-        title: l10n.getString('firmware_tool-step-board_defaults'),
+        title: l10n.getString('firmware_tool-board_defaults'),
       },
-      // {
-      //   component: BoardPinsStep,
-      //   title: l10n.getString('firmware_tool-board_pins_step'),
-      // },
-      // {
-      //   component: AddImusStep,
-      //   title: l10n.getString('firmware_tool-add_imus_step'),
-      // },
-      // {
-      //   id: 'SelectFirmware',
-      //   component: SelectFirmwareStep,
-      //   title: l10n.getString('firmware_tool-select_firmware_step'),
-      // },
-      // {
-      //   component: FlashingMethodStep,
-      //   id: 'FlashingMethod',
-      //   title: l10n.getString('firmware_tool-flash_method_step'),
-      // },
-      // {
-      //   component: BuildStep,
-      //   title: l10n.getString('firmware_tool-build_step'),
-      // },
-      // {
-      //   component: FlashingStep,
-      //   title: l10n.getString('firmware_tool-flashing_step'),
-      // },
+      {
+        id: 'Build',
+        component: BuildStep,
+        title: l10n.getString('firmware_tool-build_step'),
+      },
+      {
+        component: FlashingMethodStep,
+        title: l10n.getString('firmware_tool-flash_method_step'),
+      },
+      {
+        component: FlashingStep,
+        title: l10n.getString('firmware_tool-flashing_step'),
+      },
     ];
 
-    // if (
-    //   context.defaultConfig?.needBootPress &&
-    //   context.selectedDevices?.find(
-    //     ({ type }) => type === FirmwareUpdateMethod.SerialFirmwareUpdate
-    //   )
-    // ) {
-    //   steps.splice(5, 0, {
-    //     component: FlashBtnStep,
-    //     title: l10n.getString('firmware_tool-flashbtn_step'),
-    //   });
-    // }
+    if (
+      context.selectedDefault?.flashingRules.needBootPress &&
+      context.selectedDevices?.find(
+        ({ type }) => type === FirmwareUpdateMethod.SerialFirmwareUpdate
+      )
+    ) {
+      steps.splice(4, 0, {
+        component: FlashBtnStep,
+        title: l10n.getString('firmware_tool-flashbtn_step'),
+      });
+    }
     return steps;
   }, [
-    /* context.defaultConfig?.needBootPress, context.selectedDevices */ l10n,
+    context.selectedDefault?.flashingRules.needBootPress,
+    context.selectedDevices,
+    l10n,
   ]);
 
   const retry = async () => {

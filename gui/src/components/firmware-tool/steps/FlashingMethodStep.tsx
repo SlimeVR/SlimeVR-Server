@@ -1,10 +1,6 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
-import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
-import {
-  boardTypeToFirmwareToolBoardType,
-  useFirmwareTool,
-} from '@/hooks/firmware-tool';
+import { useFirmwareTool } from '@/hooks/firmware-tool';
 import { Control, UseFormReset, UseFormWatch, useForm } from 'react-hook-form';
 import { Radio } from '@/components/commons/Radio';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -12,7 +8,6 @@ import { useEffect, useLayoutEffect, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import {
-  BoardType,
   DeviceDataT,
   FirmwareUpdateMethod,
   NewSerialDeviceResponseT,
@@ -26,11 +21,11 @@ import { Button } from '@/components/commons/Button';
 import { Input } from '@/components/commons/Input';
 import { Dropdown } from '@/components/commons/Dropdown';
 import { useOnboarding } from '@/hooks/onboarding';
-import { DeviceCardControl } from './DeviceCard';
 import { getTrackerName } from '@/hooks/tracker';
 import { ObjectSchema, object, string } from 'yup';
 import { useAtomValue } from 'jotai';
 import { devicesAtom } from '@/store/app-store';
+import { DeviceCardControl } from '@/components/firmware-tool/DeviceCard';
 
 interface FlashingMethodForm {
   flashingMethod?: string;
@@ -191,24 +186,11 @@ function OTADevicesList({
   reset: UseFormReset<FlashingMethodForm>;
 }) {
   const { l10n } = useLocalization();
-  const { selectDevices, newConfig } = useFirmwareTool();
+  const { selectDevices } = useFirmwareTool();
   const allDevices = useAtomValue(devicesAtom);
 
   const devices =
-    allDevices.filter(({ trackers, hardwareInfo }) => {
-      // We make sure the device is not one of these types
-      if (
-        hardwareInfo?.officialBoardType === BoardType.SLIMEVR_LEGACY ||
-        hardwareInfo?.officialBoardType === BoardType.SLIMEVR_DEV ||
-        hardwareInfo?.officialBoardType === BoardType.CUSTOM ||
-        hardwareInfo?.officialBoardType === BoardType.OWOTRACK ||
-        hardwareInfo?.officialBoardType === BoardType.WRANGLER ||
-        hardwareInfo?.officialBoardType === BoardType.MOCOPI ||
-        hardwareInfo?.officialBoardType === BoardType.HARITORA ||
-        hardwareInfo?.officialBoardType === BoardType.DEV_RESERVED
-      )
-        return false;
-
+    allDevices.filter(({ trackers }) => {
       // if the device has no trackers it is prob misconfigured so we skip for safety
       if (trackers.length <= 0) return false;
 
@@ -216,12 +198,7 @@ function OTADevicesList({
       // could cause an error during the update
       if (!trackers.every(({ status }) => status === TrackerStatus.OK))
         return false;
-
-      const boardType = hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN;
-      return (
-        boardTypeToFirmwareToolBoardType[boardType] ===
-        newConfig?.boardConfig?.type
-      );
+      return true;
     }) || [];
 
   const deviceNames = ({ trackers }: DeviceDataT) =>
@@ -294,13 +271,15 @@ function OTADevicesList({
 export function FlashingMethodStep({
   nextStep,
   prevStep,
+  goTo,
 }: {
   nextStep: () => void;
   prevStep: () => void;
+  goTo: (to: string) => void;
   isActive: boolean;
 }) {
   const { l10n } = useLocalization();
-  const { isGlobalLoading, selectedDevices } = useFirmwareTool();
+  const { selectedDevices, selectedDefault } = useFirmwareTool();
 
   const {
     control,
@@ -352,74 +331,73 @@ export function FlashingMethodStep({
           </Typography>
         </div>
         <div className="my-4">
-          {!isGlobalLoading && (
-            <div className="flex flex-col gap-3">
-              <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3">
-                <Localized
-                  id="firmware_tool-flash_method_step-ota"
-                  attrs={{ label: true, description: true }}
-                >
-                  <Radio
-                    control={control}
-                    name="flashingMethod"
-                    value={FirmwareUpdateMethod.OTAFirmwareUpdate.toString()}
-                    label=""
-                  ></Radio>
-                </Localized>
-                <Localized
-                  id="firmware_tool-flash_method_step-serial"
-                  attrs={{ label: true, description: true }}
-                >
-                  <Radio
-                    control={control}
-                    name="flashingMethod"
-                    value={FirmwareUpdateMethod.SerialFirmwareUpdate.toString()}
-                    label=""
-                  ></Radio>
-                </Localized>
-              </div>
-              {flashingMethod ===
-                FirmwareUpdateMethod.SerialFirmwareUpdate.toString() && (
-                <SerialDevicesList
+          <div className="flex flex-col gap-3">
+            <div className="grid xs-settings:grid-cols-2 mobile-settings:grid-cols-1 gap-3">
+              <Localized
+                id="firmware_tool-flash_method_step-ota"
+                attrs={{ label: true, description: true }}
+              >
+                <Radio
                   control={control}
-                  watch={watch}
-                  reset={reset}
-                ></SerialDevicesList>
-              )}
-              {flashingMethod ===
-                FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
-                <OTADevicesList
+                  name="flashingMethod"
+                  value={FirmwareUpdateMethod.OTAFirmwareUpdate.toString()}
+                  label=""
+                ></Radio>
+              </Localized>
+              <Localized
+                id="firmware_tool-flash_method_step-serial"
+                attrs={{ label: true, description: true }}
+              >
+                <Radio
                   control={control}
-                  watch={watch}
-                  reset={reset}
-                ></OTADevicesList>
-              )}
-              <div className="flex justify-between">
-                <Localized id="firmware_tool-previous_step">
-                  <Button variant="secondary" onClick={prevStep}></Button>
-                </Localized>
-                <Localized id="firmware_tool-next_step">
-                  <Button
-                    variant="primary"
-                    disabled={
-                      !isValid ||
-                      selectedDevices === null ||
-                      selectedDevices.length === 0
-                    }
-                    onClick={nextStep}
-                  ></Button>
-                </Localized>
-              </div>
-            </div>
-          )}
-          {isGlobalLoading && (
-            <div className="flex justify-center flex-col items-center gap-3 h-44">
-              <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware_tool-loading">
-                <Typography></Typography>
+                  name="flashingMethod"
+                  value={FirmwareUpdateMethod.SerialFirmwareUpdate.toString()}
+                  label=""
+                ></Radio>
               </Localized>
             </div>
-          )}
+            {flashingMethod ===
+              FirmwareUpdateMethod.SerialFirmwareUpdate.toString() && (
+              <SerialDevicesList
+                control={control}
+                watch={watch}
+                reset={reset}
+              ></SerialDevicesList>
+            )}
+            {flashingMethod ===
+              FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
+              <OTADevicesList
+                control={control}
+                watch={watch}
+                reset={reset}
+              ></OTADevicesList>
+            )}
+            <div className="flex justify-between">
+              <Localized id="firmware_tool-previous_step">
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    if (selectedDefault?.flashingRules.shouldOnlyUseDefaults) {
+                      goTo('SelectSource');
+                    } else {
+                      goTo('Defaults');
+                    }
+                  }}
+                ></Button>
+              </Localized>
+              <Localized id="firmware_tool-next_step">
+                <Button
+                  variant="primary"
+                  disabled={
+                    !isValid ||
+                    selectedDevices === null ||
+                    selectedDevices.length === 0
+                  }
+                  onClick={nextStep}
+                ></Button>
+              </Localized>
+            </div>
+          </div>
         </div>
       </div>
     </>

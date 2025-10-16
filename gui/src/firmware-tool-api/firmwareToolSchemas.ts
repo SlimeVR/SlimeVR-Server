@@ -14,7 +14,14 @@ export type FirmwareSource = {
 
 export type FirmwareBoardDefaults = {
   schema: void;
-  defaults: BoardDefaults;
+  data: DefaultsFile;
+};
+
+export type DefaultsFile = {
+  toolchain: 'platformio';
+  defaults: {
+    [key: string]: BoardDefaults;
+  };
 };
 
 export type BoardDefaults = {
@@ -61,7 +68,7 @@ export type BuildFirmwareBody = {
   source: string;
   board: string;
   version: string;
-  values: void;
+  values: BoardDefaults;
 };
 
 export type FirmwareWithFiles = {
@@ -94,5 +101,5 @@ export type FirmwareWithFiles = {
 
 export type FirmwareBoardDefaultsNullable = {
   schema: void;
-  defaults: BoardDefaults;
+  data: DefaultsFile;
 } | null;

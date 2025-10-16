@@ -56,7 +56,8 @@ export function SelectSourceSetep({
   goTo: (id: string) => void;
 }) {
   const { l10n } = useLocalization();
-  const { setSelectedSource, selectedSource } = useFirmwareTool();
+  const { setSelectedSource, selectedSource, selectedDefault } =
+    useFirmwareTool();
   const [partialBoard, setPartialBoard] = useState<{
     source?: string;
     version?: string;
@@ -114,12 +115,12 @@ export function SelectSourceSetep({
       };
       fetchGetFirmwareBoardDefaults({
         queryParams: params,
-      }).then((board) =>
+      }).then((board) => {
         setSelectedSource({
           source: params,
           default: board,
-        })
-      );
+        });
+      });
     }
   }, [partialBoard]);
 
@@ -132,16 +133,18 @@ export function SelectSourceSetep({
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
           <Typography>
-            {l10n.getString('firmware_tool-board_step-description')}
+            {l10n.getString('firmware_tool-select_source-description')}
           </Typography>
         </div>
         <div className="my-4">
           {!isFetching && (
             <>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="flex flex-col gap-2 w-full">
-                  <Typography variant="section-title">Board Type</Typography>
-                  <div className="flex flex-col gap-2">
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="flex flex-col gap-1 w-full">
+                  <Localized id="firmware_tool-select_source-board_type">
+                    <Typography variant="section-title"></Typography>
+                  </Localized>
+                  <div className="flex flex-col gap-2 md:max-h-[300px] overflow-y-auto bg-background-80 rounded-lg p-4">
                     {possibleBoards?.map((board) => (
                       <Selector
                         active={partialBoard?.board === board}
@@ -154,11 +157,11 @@ export function SelectSourceSetep({
                     ))}
                   </div>
                 </div>
-                <div className="flex flex-col gap-2 w-full">
-                  <Typography variant="section-title">
-                    Firmware Source
-                  </Typography>
-                  <div className="flex flex-col gap-2">
+                <div className="flex flex-col  gap-1 w-full">
+                  <Localized id="firmware_tool-select_source-firmware">
+                    <Typography variant="section-title"></Typography>
+                  </Localized>
+                  <div className="flex flex-col gap-2 md:max-h-[300px] overflow-y-auto bg-background-80 rounded-lg p-4">
                     {sourcesGroupped?.map(({ name, official, disabled }) => (
                       <Selector
                         active={partialBoard?.source === name}
@@ -176,11 +179,11 @@ export function SelectSourceSetep({
                     ))}
                   </div>
                 </div>
-                <div className="flex flex-col gap-2 w-full">
-                  <Typography variant="section-title">
-                    Firmware Version
-                  </Typography>
-                  <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-1 w-full">
+                  <Localized id="firmware_tool-select_source-version">
+                    <Typography variant="section-title"></Typography>
+                  </Localized>
+                  <div className="flex flex-col gap-2 md:max-h-[300px] overflow-y-auto bg-background-80 rounded-lg p-4">
                     {possibleVersions?.map(({ name, disabled }) => (
                       <Selector
                         active={partialBoard?.version === name}
@@ -204,14 +207,9 @@ export function SelectSourceSetep({
                     variant="primary"
                     disabled={!selectedSource}
                     onClick={() => {
-                      //   if (
-                      //     selectedSource?.default?.defaults.flashingRules
-                      //       .shouldOnlyUseDefaults
-                      //   ) {
-                      //     goTo('SelectFirmware');
-                      //   } else {
-                      nextStep();
-                      //   }
+                      if (selectedDefault?.flashingRules.shouldOnlyUseDefaults)
+                        goTo('Build');
+                      else nextStep();
                     }}
                   ></Button>
                 </Localized>

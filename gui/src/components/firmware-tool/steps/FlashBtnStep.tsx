@@ -1,22 +1,12 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
-import {
-  boardTypeToFirmwareToolBoardType,
-  useFirmwareTool,
-} from '@/hooks/firmware-tool';
-import { BoardType } from 'solarxr-protocol';
+import { useFirmwareTool } from '@/hooks/firmware-tool';
+import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
 
-export function FlashBtnStep({
-  nextStep,
-}: {
-  nextStep: () => void;
-  prevStep: () => void;
-  goTo: (id: string) => void;
-  isActive: boolean;
-}) {
+export function FlashBtnStep({ nextStep }: VerticalStepComponentProps) {
   const { l10n } = useLocalization();
-  const { defaultConfig } = useFirmwareTool();
+  const { selectedSource } = useFirmwareTool();
 
   return (
     <>
@@ -25,10 +15,8 @@ export function FlashBtnStep({
           <Typography>
             {l10n.getString('firmware_tool-flashbtn_step-description')}
           </Typography>
-          {defaultConfig?.boardConfig.type ===
-            boardTypeToFirmwareToolBoardType[BoardType.SLIMEVR] ||
-          defaultConfig?.boardConfig.type ===
-            boardTypeToFirmwareToolBoardType[BoardType.SLIMEVR_V1_2] ? (
+          {selectedSource?.source.board === 'BOARD_SLIMEVR' ||
+          selectedSource?.source.board === 'BOARD_SLIMEVR_V1_2' ? (
             <>
               <Typography variant="standard" whitespace="whitespace-pre">
                 {l10n.getString('firmware_tool-flashbtn_step-board_SLIMEVR')}

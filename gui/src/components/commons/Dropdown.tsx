@@ -1,6 +1,11 @@
 import classNames from 'classnames';
 import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Control, Controller, UseControllerProps } from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  FieldError,
+  UseControllerProps,
+} from 'react-hook-form';
 import { a11yClick } from '@/utils/a11y';
 import { createPortal } from 'react-dom';
 import { ArrowDownIcon } from './icon/ArrowIcons';
@@ -11,11 +16,10 @@ interface DropdownProps {
   alignment?: 'right' | 'left';
   display?: 'fit' | 'block';
   placeholder: string;
-  control: Control<any>;
   name: string;
   items: DropdownItem[];
   maxHeight?: string | number;
-  rules?: UseControllerProps<any>['rules'];
+  error?: FieldError;
 }
 
 type DropdownItemsProps = Pick<
@@ -129,18 +133,23 @@ export function DropdownItems({
   );
 }
 
-export function Dropdown({
+export function DropdownInside({
   direction = 'up',
   variant = 'primary',
   alignment = 'right',
   display = 'fit',
   maxHeight = '50vh',
   placeholder,
-  control,
-  rules,
-  name,
   items = [],
-}: DropdownProps) {
+  value,
+  onChange,
+  error,
+  name,
+}: DropdownProps & {
+  name: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [isOpen, setOpenState] = useState(false);
   const [dropdownBounds, setDropdownBounds] = useState<DOMRect>();
@@ -171,69 +180,93 @@ export function Dropdown({
     updateBounds();
     setOpenState(open);
   };
+  return (
+    <>
+      <div className="relative">
+        <div
+          ref={ref}
+          className={classNames(
+            'min-h-[42px] text-background-10 px-3 py-3 rounded-md focus:ring-4 dropdown',
+            'flex cursor-pointer',
+            variant == 'primary' && 'bg-background-60 hover:bg-background-50',
+            variant == 'secondary' && 'bg-background-70 hover:bg-background-60',
+            variant == 'tertiary' &&
+              'bg-accent-background-30 hover:bg-accent-background-20',
+            display === 'fit' && 'w-fit',
+            display === 'block' && 'w-full'
+          )}
+          onClick={() => setOpen((open) => !open)}
+          onKeyDown={(ev) => a11yClick(ev) && setOpen((open) => !open)}
+          tabIndex={0}
+        >
+          <div className="flex-grow text-standard first:pointer-events-none">
+            {items.find((i) => i.value == value)?.component ||
+              items.find((i) => i.value == value)?.label ||
+              placeholder}
+          </div>
+          <div
+            className={classNames(
+              'ml-2 fill-background-10 flex items-center',
+              direction == 'up' && 'rotate-180',
+              direction == 'down' && 'rotate-0'
+            )}
+          >
+            <ArrowDownIcon size={16}></ArrowDownIcon>
+          </div>
+        </div>
+        {error?.message && (
+          <div className="absolute top-[38px] z-0 pt-1.5 bg-background-70 px-1 w-full rounded-b-md text-status-critical">
+            {error.message}
+          </div>
+        )}
+      </div>
+      {isOpen &&
+        dropdownBounds &&
+        createPortal(
+          <DropdownItems
+            items={items}
+            dropdownBounds={dropdownBounds}
+            direction={direction}
+            display={display}
+            alignment={alignment}
+            maxHeight={maxHeight}
+            variant={variant}
+            value={value}
+            onSelectItem={(item) => {
+              setOpen(false);
+              onChange(item.value);
+            }}
+            onBackdropClick={() => {
+              setOpen(false);
+            }}
+          ></DropdownItems>,
+          document.body
+        )}
+    </>
+  );
+}
 
+export function Dropdown({
+  name,
+  control,
+  rules,
+  ...props
+}: DropdownProps & {
+  control: Control<any>;
+  rules?: UseControllerProps<any>['rules'];
+}) {
   return (
     <Controller
       control={control}
       name={name}
       rules={rules}
       render={({ field: { onChange, value } }) => (
-        <>
-          <div
-            ref={ref}
-            className={classNames(
-              'min-h-[42px] text-background-10 px-5 py-3 rounded-md focus:ring-4 text-center dropdown',
-              'flex cursor-pointer',
-              variant == 'primary' && 'bg-background-60 hover:bg-background-50',
-              variant == 'secondary' &&
-                'bg-background-70 hover:bg-background-60',
-              variant == 'tertiary' &&
-                'bg-accent-background-30 hover:bg-accent-background-20',
-              display === 'fit' && 'w-fit',
-              display === 'block' && 'w-full'
-            )}
-            onClick={() => setOpen((open) => !open)}
-            onKeyDown={(ev) => a11yClick(ev) && setOpen((open) => !open)}
-            tabIndex={0}
-          >
-            <div className="flex-grow text-standard first:pointer-events-none">
-              {items.find((i) => i.value == value)?.component ||
-                items.find((i) => i.value == value)?.label ||
-                placeholder}
-            </div>
-            <div
-              className={classNames(
-                'ml-2 fill-background-10 flex items-center',
-                direction == 'up' && 'rotate-180',
-                direction == 'down' && 'rotate-0'
-              )}
-            >
-              <ArrowDownIcon size={16}></ArrowDownIcon>
-            </div>
-          </div>
-          {isOpen &&
-            dropdownBounds &&
-            createPortal(
-              <DropdownItems
-                items={items}
-                dropdownBounds={dropdownBounds}
-                direction={direction}
-                display={display}
-                alignment={alignment}
-                maxHeight={maxHeight}
-                variant={variant}
-                value={value}
-                onSelectItem={(item) => {
-                  setOpen(false);
-                  onChange(item.value);
-                }}
-                onBackdropClick={() => {
-                  setOpen(false);
-                }}
-              ></DropdownItems>,
-              document.body
-            )}
-        </>
+        <DropdownInside
+          {...props}
+          name={name}
+          onChange={onChange}
+          value={value}
+        ></DropdownInside>
       )}
     />
   );
