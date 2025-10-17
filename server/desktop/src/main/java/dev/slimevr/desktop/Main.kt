@@ -125,11 +125,10 @@ fun main(args: Array<String>) {
 			{ _ -> DesktopSerialHandler() },
 			{ _ -> DesktopSerialFlashingHandler() },
 			{ _ -> DesktopVRCConfigHandler() },
+			{ server -> DesktopNetworkProfileChecker(server) },
 			configPath = configDir,
 		)
 		vrServer.start()
-
-		NetworkProfileChecker(vrServer)
 
 		// Start service for USB HID trackers
 		DesktopHIDManager(
