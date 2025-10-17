@@ -293,7 +293,7 @@ tracker-settings-use_mag = Magnetometer auf diesem Tracker zulassen
 # Multiline!
 tracker-settings-use_mag-description =
     Soll dieser Tracker das Magnetometer verwenden um Drift zu reduzieren, wenn die Verwendung von Magnetometer erlaubt ist? <b> Bitten schalten Sie den Tracker nicht aus, während Sie diese Einstellung umschalten!</b>
-    
+
     Sie müssen zuerst die Verwendung des Magnetometers zulassen, <magSetting>klicken Sie hier, um zu den Einstellungen zu gelangen</magSetting>.
 tracker-settings-use_mag-label = Magnetometer zulassen
 # The .<name> means it's an attribute and it's related to the top key.
@@ -450,9 +450,9 @@ settings-general-tracker_mechanics-drift_compensation-prediction-description =
     Aktivieren Sie diese Funktion, wenn sich der Tracker kontinuierlich um die gier-Achse dreht.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Prognose der Driftkompensation
 settings-general-tracker_mechanics-drift_compensation_warning =
-    <b>Warnung:</b> Verwenden Sie die Driftkompensation nur, wenn sie sehr oft 
+    <b>Warnung:</b> Verwenden Sie die Driftkompensation nur, wenn sie sehr oft
     reseten müssen (alle ~5-10 Minuten).
-    
+
     Zu den IMUs, die häufig einen Reset benötigen, gehören:
     Joy-Cons, owoTrack und MPUs (ohne aktuelle Firmware).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Abbrechen
@@ -461,7 +461,7 @@ settings-general-tracker_mechanics-drift_compensation-amount-label = Kompensieru
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Nutze die letzten x Resets
 settings-general-tracker_mechanics-save_mounting_reset = Automatische Befestigungs-Reset Kalibrierung speichern
 settings-general-tracker_mechanics-save_mounting_reset-description =
-    Speichert die automatische Befestigungs-Reset Kalibrierung für die Tracker zwischen den Neustarts. Nützlich 
+    Speichert die automatische Befestigungs-Reset Kalibrierung für die Tracker zwischen den Neustarts. Nützlich
     wenn Sie einen Anzug tragen, bei dem sich die Tracker zwischen den Sitzungen nicht bewegen. <b>Für normale Benutzer nicht zu empfehlen!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Befestigungs-Reset speichern
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Verwende das Magnetometer auf allen IMU-Trackern, die dies unterstützen.
@@ -618,9 +618,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Fehlererfassung über Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Sind Sie mit der Erhebung anonymisierter Fehlerdaten einverstanden?</h1>
-    
+
     <b>Wir erfassen keine personenbezogenen Daten,</b> wie Ihre IP-Adresse oder WLAN-Zugangsdaten. SlimeVR respektiert Ihre Privatsphäre!
-    
+
     Um die bestmögliche Benutzererfahrung zu bieten, erfassen wir anonymisierte Fehlerberichte, Leistungsmetriken und Informationen zum Betriebssystem. Dies hilft uns, Fehler und Probleme mit SlimeVR zu erkennen. Diese Metriken werden über Sentry.io erfasst.
 settings-interface-behavior-error_tracking-label = Fehler an Entwickler senden
 
@@ -641,7 +641,6 @@ settings-serial-factory_reset-warning =
     Das bedeutet, dass Wi-Fi- und Kalibrierungseinstellungen <b>verloren gehen!</b>
 settings-serial-factory_reset-warning-ok = Ich weiß, was ich tue
 settings-serial-factory_reset-warning-cancel = Abbruch
-settings-serial-get_infos = Informationen abrufen
 settings-serial-serial_select = Wählen Sie einen seriellen Anschluss
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = WLAN-Scan
@@ -679,7 +678,7 @@ settings-osc-vrchat = VRChat-OSC-Trackers
 # This cares about multilines
 settings-osc-vrchat-description-v1 =
     Ändern Sie die Einstellungen, die speziell für den OSC-Trackers-Standard verwendet werden, um Tracking-Daten an Anwendungen ohne SteamVR zu senden (z. B. für Quest Standalone).
-    Stellen Sie sicher, dass Sie OSC in VRChat über das Aktionsmenü unter OSC > Aktiviert einschalten. 
+    Stellen Sie sicher, dass Sie OSC in VRChat über das Aktionsmenü unter OSC > Aktiviert einschalten.
     Um das Empfangen von HMD- und Controller-Daten von VRChat zu ermöglichen, gehen Sie in Ihrem Hauptmenü
     zu den Einstellungen unter Tracking & IK > Erlaube das Senden von Kopf- und Handgelenk-VR-Tracking-OSC-Daten.
 settings-osc-vrchat-enable = Aktivieren
@@ -812,20 +811,20 @@ onboarding-reset_tutorial-skip = Schritt überspringen
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Tippen Sie { $taps } mal auf den markierten Tracker, um den horizontalen Reset auszulösen.
-    
+
     Dadurch zeigen die Tracker in die gleiche Richtung wie Ihre VR-Brille.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Tippen Sie { $taps } mal auf den markierten Tracker, um einen vollständigen Reset auszulösen.
-    
+
     Sie müssen dafür in einer I-Pose stehen. Es gibt eine Verzögerung von 3 Sekunden (konfigurierbar), bevor der Reset tatsächlich durchgeführt wird.
     Dadurch werden die Position und Rotation aller Ihrer Tracker vollständig zurückgesetzt. Dies sollte die meisten Probleme beheben.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Tippen Sie { $taps } mal auf den markierten Tracker um einen Befestigungs-Reset auszulösen.
-    
+
     Ein Befestigungs-Reset hilft dabei, die Tracker neu auszurichten, so wie diese tatsächlich an Ihnen angebracht sind. Zum Beispiel, wenn Sie ein Tracker versehentlich verschoben haben und dessen Orientierung sich stark verändert hat.
-    
+
     Sie müssen sich in einer "Skifahren"-Pose, wie im Befestigungs-Assistenten gezeigt wird, befinden. Nach dem Auslösen wird der Reset nach 3 Sekunden (konfigurierbar) durchgeführt.
 
 ## Setup start
@@ -1165,7 +1164,7 @@ onboarding-scaled_proportions-manual_height-next_step = Fortfahren und speichern
 onboarding-scaled_proportions-manual_height-warning =
     Sie verwenden derzeit die manuelle Methode zur Einrichtung skalierter Proportionen!
     <b>Dieser Modus wird nur empfohlen, wenn Sie kein VR-Headset mit SlimeVR verwenden.</b>
-    
+
     Um die automatische Skalierung der Proportionen nutzen zu können, bitte:
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Schließen Sie ein VR-Headset an
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Stellen Sie sicher, dass Ihre Controller verbunden und korrekt den Händen zugewiesen sind
@@ -1356,7 +1355,7 @@ tray_or_exit_modal-title = Was soll der Schließen-Knopf tun?
 # Multiline text
 tray_or_exit_modal-description =
     Hier können Sie auswählen, ob sich der Server beim Schließen beenden oder in den Infobereich minimiert werden soll.
-    
+
     Sie können dies später in den Einstellungen der Bedienoberfläche ändern!
 tray_or_exit_modal-radio-exit = Beenden
 tray_or_exit_modal-radio-tray = In den Infobereich minimieren
@@ -1377,7 +1376,7 @@ unknown_device-modal-forget = Ignorieren
 error_collection_modal-title = Können wir Fehler sammeln?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-    
+
     Sie können diese Einstellung später im Abschnitt Verhalten auf der Einstellungsseite ändern.
 error_collection_modal-confirm = Ich stimme zu
 error_collection_modal-cancel = Ich will nicht

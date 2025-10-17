@@ -302,7 +302,7 @@ tracker-settings-use_mag = Permitir magnetómetro en este tracker
 # Multiline!
 tracker-settings-use_mag-description =
     ¿Debería este tracker usar el magnetómetro para reducir el drift cuando se permita el uso de este? <b>¡Por favor, no apague su tracker mientras activas esto!</b>
-    
+
     Primero debe permitir el uso del magnetómetro, <magSetting>haga clic aquí para ir a la configuración</magSetting>.
 tracker-settings-use_mag-label = Permitir magnetómetro
 # The .<name> means it's an attribute and it's related to the top key.
@@ -459,7 +459,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = Predicc
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Advertencia:</b> Utilice la compensación de drift solo si necesita restablecer
     muy a menudo (cada ~5-10 minutos).
-    
+
     Algunas IMU propensas a restablecimientos frecuentes incluyen:
     Joy-Cons, owoTrack y MPUs (sin firmware reciente).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancelar
@@ -468,7 +468,7 @@ settings-general-tracker_mechanics-drift_compensation-amount-label = Cantidad de
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = Usar los últimos X reinicios.
 settings-general-tracker_mechanics-save_mounting_reset = Guardar la calibración de reajuste de montaje automático
 settings-general-tracker_mechanics-save_mounting_reset-description =
-    Guarda las calibraciones de reajuste de montaje automático para los trackers entre reinicios. Útil 
+    Guarda las calibraciones de reajuste de montaje automático para los trackers entre reinicios. Útil
     cuando se lleva un traje en el que los trackers no se mueven entre sesiones. <b>No recomendado para usuarios normales!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = Guardar restablecimiento de montaje
 settings-general-tracker_mechanics-use_mag_on_all_trackers = Usar el magnetómetro en todos los trackers IMU que lo soporten
@@ -631,9 +631,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Recopilación de errores a través de Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>¿Da su consentimiento para la recopilación de datos de error anónimos?</h1>
-    
+
     <b>No recopilamos información personal</b> , como su dirección IP o credenciales inalámbricas. ¡SlimeVR valora tu privacidad!
-    
+
     Para proporcionar la mejor experiencia de usuario, recopilamos informes de errores anónimos, métricas de rendimiento e información del sistema operativo. Esto nos ayuda a detectar errores y problemas con SlimeVR. Estas métricas se recopilan a través de Sentry.io.
 settings-interface-behavior-error_tracking-label = Enviar errores a los desarrolladores
 
@@ -654,7 +654,6 @@ settings-serial-factory_reset-warning =
     Esto significa que los ajustes de Wi-Fi y calibración <b>se perderán</b>.
 settings-serial-factory_reset-warning-ok = Sé lo que estoy haciendo
 settings-serial-factory_reset-warning-cancel = Cancelar
-settings-serial-get_infos = Obtener información
 settings-serial-serial_select = Selecciona un puerto serial
 settings-serial-auto_dropdown_item = Automático
 settings-serial-get_wifi_scan = Obtener escaneo WiFi
@@ -827,20 +826,20 @@ onboarding-reset_tutorial-skip = Omitir paso
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Toque { $taps } veces el rastreador resaltado para activar el restablecimiento horizontal.
-    
+
     Esto hará que los trackers miren en la misma dirección que tu visor (HMD).
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Toque { $taps } veces el rastreador resaltado para activar el reinicio completo.
-    
+
     Para ello es necesario estar de pie (pose i). Hay un retraso de 3 segundos (configurable) antes de que realmente suceda.
     Esto restablece completamente la posición y la rotación de todos sus trackers. Debería solucionar la mayoría de los problemas.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Toque { $taps } veces el tracker resaltado para activar el restablecimiento de montura.
-    
+
     El restablecimiento de montura ayuda en cómo los trackers están realmente colocados en ti, así que si accidentalmente los moviste y cambiaste su orientación por una gran cantidad, esto ayudará.
-    
+
     Necesitas estar en una pose como si estuvieras esquiando como se muestra en el asistente de montaje automático y tienes un retraso de 3 segundos (configurable) antes de que se active.
 
 ## Setup start
@@ -1175,7 +1174,7 @@ onboarding-scaled_proportions-manual_height-next_step = Continuar y guardar
 onboarding-scaled_proportions-manual_height-warning =
     ¡Actualmente está utilizando la forma manual de configurar proporciones escaladas!
     <b>Este modo solo se recomienda si no se utiliza un HMD con SlimeVR</b>
-    
+
     Para poder utilizar las proporciones escaladas automáticamente, por favor:
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Conecte un visor de RV
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Asegúrese de que sus controladores estén conectados y asignados correctamente a sus manos
@@ -1369,7 +1368,7 @@ tray_or_exit_modal-title = ¿Qué debe hacer el botón de cierre?
 # Multiline text
 tray_or_exit_modal-description =
     Esto te permite elegir si quieres salir de la aplicación o minimizarlo a la bandeja al pulsar el botón de cerrar.
-    
+
     ¡Puedes cambiar esto más tarde en la configuración de la interfaz!
 tray_or_exit_modal-radio-exit = Salir al cerrar
 tray_or_exit_modal-radio-tray = Minimizar a la bandeja
@@ -1390,7 +1389,7 @@ unknown_device-modal-forget = Ignóralo
 error_collection_modal-title = ¿Podemos recopilar errores?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-    
+
     Puede cambiar esta configuración más adelante en la sección Comportamiento de la página de configuración.
 error_collection_modal-confirm = Acepto
 error_collection_modal-cancel = No quiero

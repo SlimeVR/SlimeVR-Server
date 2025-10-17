@@ -737,7 +737,6 @@ settings-serial-factory_reset-warning =
     Which means Wi-Fi and calibration settings <b>will all be lost!</b>
 settings-serial-factory_reset-warning-ok = I know what I'm doing
 settings-serial-factory_reset-warning-cancel = Cancel
-settings-serial-get_infos = Get Infos
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Get WiFi Scan
