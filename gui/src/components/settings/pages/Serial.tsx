@@ -303,9 +303,6 @@ export function Serial() {
               >
                 {l10n.getString('settings-serial-factory_reset')}
               </Button>
-              <Button variant="quaternary" onClick={getInfos}>
-                {l10n.getString('settings-serial-get_infos')}
-              </Button>
               <Button variant="quaternary" onClick={getWifiScan}>
                 {l10n.getString('settings-serial-get_wifi_scan')}
               </Button>
