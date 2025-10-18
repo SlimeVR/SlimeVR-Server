@@ -14,6 +14,7 @@ import { Vector3 } from 'three';
 import { useTimeout } from '@/hooks/timeout';
 import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
+import { RestCalibrationStatus } from 'solarxr-protocol';
 
 export enum CalibrationStatus {
   SUCCESS,
@@ -40,9 +41,25 @@ export function CalibrationTutorialPage() {
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const restCalibrationTrackers =
     useRestCalibrationTrackers(connectedIMUTrackers);
+
+  const useRestCalibrationFlag = useMemo(
+    () =>
+      restCalibrationTrackers.length > 0 &&
+      restCalibrationTrackers.every(
+        (tracker) =>
+          tracker.tracker.info?.restCalibrationStatus !==
+          RestCalibrationStatus.NOT_SUPPORTED
+      ),
+    [restCalibrationTrackers]
+  );
+
   const [rested, setRested] = useState(false);
   const lastValueMap = useRef(new Map<number, Vector3[]>());
   useEffect(() => {
+    if (useRestCalibrationFlag) {
+      return;
+    }
+
     const accelLength = restCalibrationTrackers.every((x) => {
       if (
         x.tracker.trackerId?.trackerNum === undefined ||
@@ -71,6 +88,29 @@ export function CalibrationTutorialPage() {
   }, [restCalibrationTrackers]);
 
   useEffect(() => {
+    if (!useRestCalibrationFlag) {
+      return;
+    }
+
+    if (
+      restCalibrationTrackers.some(
+        (tracker) =>
+          tracker.tracker.info?.restCalibrationStatus !==
+          RestCalibrationStatus.CALIBRATED
+      )
+    ) {
+      return;
+    }
+
+    setCalibrationStatus(CalibrationStatus.SUCCESS);
+    abortCountdown();
+  }, [restCalibrationTrackers]);
+
+  useEffect(() => {
+    if (useRestCalibrationFlag) {
+      return;
+    }
+
     if (calibrationStatus === CalibrationStatus.CALIBRATING && !rested) {
       setCalibrationStatus(CalibrationStatus.ERROR);
       abortCountdown();
@@ -129,7 +169,11 @@ export function CalibrationTutorialPage() {
                 </Typography>
               </div>
               <Localized
-                id="onboarding-calibration_tutorial-description-v1"
+                id={
+                  useRestCalibrationFlag
+                    ? 'onboarding-calibration_tutorial-description-no-ready-v1'
+                    : 'onboarding-calibration_tutorial-description-v1'
+                }
                 elems={{ b: <b></b> }}
               >
                 <Typography>Description on calibration of IMU</Typography>
@@ -177,7 +221,9 @@ export function CalibrationTutorialPage() {
                   disabled={isCounting || !rested}
                   className={classNames(
                     'xs:ml-auto',
-                    CalibrationStatus.SUCCESS === calibrationStatus && 'hidden'
+                    (CalibrationStatus.SUCCESS === calibrationStatus ||
+                      useRestCalibrationFlag) &&
+                      'hidden'
                   )}
                 >
                   {l10n.getString('onboarding-calibration_tutorial-calibrate')}
@@ -187,8 +233,14 @@ export function CalibrationTutorialPage() {
                   to="/onboarding/assign-tutorial"
                   className={classNames(
                     'xs:ml-auto',
-                    CalibrationStatus.SUCCESS !== calibrationStatus && 'hidden'
+                    CalibrationStatus.SUCCESS !== calibrationStatus &&
+                      !useRestCalibrationFlag &&
+                      'hidden'
                   )}
+                  disabled={
+                    useRestCalibrationFlag &&
+                    calibrationStatus !== CalibrationStatus.SUCCESS
+                  }
                 >
                   {l10n.getString('onboarding-continue')}
                 </Button>
