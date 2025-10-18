@@ -76,14 +76,12 @@ object TrackerTestUtils {
 		}
 	}
 
-	fun quatApproxEqual(q1: Quaternion, q2: Quaternion, tolerance: Float = FastMath.ZERO_TOLERANCE): Boolean =
-		FastMath.isApproxEqual(q1.w, q2.w, tolerance) &&
-			FastMath.isApproxEqual(q1.x, q2.x, tolerance) &&
-			FastMath.isApproxEqual(q1.y, q2.y, tolerance) &&
-			FastMath.isApproxEqual(q1.z, q2.z, tolerance)
+	fun quatApproxEqual(q1: Quaternion, q2: Quaternion, tolerance: Float = FastMath.ZERO_TOLERANCE): Boolean = FastMath.isApproxEqual(q1.w, q2.w, tolerance) &&
+		FastMath.isApproxEqual(q1.x, q2.x, tolerance) &&
+		FastMath.isApproxEqual(q1.y, q2.y, tolerance) &&
+		FastMath.isApproxEqual(q1.z, q2.z, tolerance)
 
-	fun vectorApproxEqual(v1: Vector3, v2: Vector3, tolerance: Float = FastMath.ZERO_TOLERANCE): Boolean =
-		FastMath.isApproxEqual(v1.x, v2.x, tolerance) &&
-			FastMath.isApproxEqual(v1.y, v2.y, tolerance) &&
-			FastMath.isApproxEqual(v1.z, v2.z, tolerance)
+	fun vectorApproxEqual(v1: Vector3, v2: Vector3, tolerance: Float = FastMath.ZERO_TOLERANCE): Boolean = FastMath.isApproxEqual(v1.x, v2.x, tolerance) &&
+		FastMath.isApproxEqual(v1.y, v2.y, tolerance) &&
+		FastMath.isApproxEqual(v1.z, v2.z, tolerance)
 }
