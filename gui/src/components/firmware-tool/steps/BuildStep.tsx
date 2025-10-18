@@ -1,19 +1,19 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
-import { fetchPostFirmwaresBuild } from '@/firmware-tool-api/firmwareToolComponents';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { useFirmwareTool } from '@/hooks/firmware-tool';
-import {
-  BuildResponseDTO,
-  CreateBuildFirmwareDTO,
-} from '@/firmware-tool-api/firmwareToolSchemas';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { firmwareToolBaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
 import { Button } from '@/components/commons/Button';
+import { fetchPostFirmwareBuild } from '@/firmware-tool-api/firmwareToolComponents';
+import {
+  BuildStatusBasic,
+  BuildStatusDone,
+} from '@/firmware-tool-api/firmwareToolSchemas';
 
 export function BuildStep({
   isActive,
-  goTo,
+  prevStep,
   nextStep,
 }: {
   nextStep: () => void;
@@ -22,23 +22,33 @@ export function BuildStep({
   isActive: boolean;
 }) {
   const { l10n } = useLocalization();
-  const { isGlobalLoading, newConfig, setBuildStatus, buildStatus } =
-    useFirmwareTool();
+  const { selectedSource, setFiles } = useFirmwareTool();
+  const [buildStatus, setBuildStatus] = useState<
+    BuildStatusDone | BuildStatusBasic
+  >({ status: 'QUEUED', id: '' });
 
   const startBuild = async () => {
+    if (!selectedSource) throw 'invalid state - no source';
+
     try {
-      const res = await fetchPostFirmwaresBuild({
-        body: newConfig as CreateBuildFirmwareDTO,
+      const values =
+        selectedSource.default?.data.defaults[selectedSource.source.board];
+      if (!values) throw 'invalid state - no values';
+
+      const res = await fetchPostFirmwareBuild({
+        body: {
+          ...selectedSource.source,
+          values,
+        },
       });
 
       setBuildStatus(res);
       if (res.status !== 'DONE') {
         const events = new EventSource(
-          `${firmwareToolBaseUrl}/firmwares/build-status/${res.id}`
+          `${firmwareToolBaseUrl}/firmware/build-status/${res.id}`
         );
         events.onmessage = ({ data }) => {
-          const buildEvent: BuildResponseDTO = JSON.parse(data);
-          setBuildStatus(buildEvent);
+          setBuildStatus(JSON.parse(data));
         };
       }
     } catch (e) {
@@ -55,6 +65,7 @@ export function BuildStep({
   useEffect(() => {
     if (!isActive) return;
     if (buildStatus.status === 'DONE') {
+      setFiles(buildStatus.files);
       nextStep();
     }
   }, [buildStatus]);
@@ -73,35 +84,32 @@ export function BuildStep({
           </Typography>
         </div>
         <div className="my-4">
-          {!isGlobalLoading && (
-            <div className="flex justify-center flex-col items-center gap-3 h-44">
-              <LoaderIcon
-                slimeState={
-                  buildStatus.status !== 'ERROR'
-                    ? SlimeState.JUMPY
-                    : SlimeState.SAD
-                }
-              ></LoaderIcon>
-              <Typography variant="section-title">
-                {l10n.getString('firmware_tool-build-' + buildStatus.status)}
-              </Typography>
-            </div>
-          )}
-          {isGlobalLoading && (
-            <div className="flex justify-center flex-col items-center gap-3 h-44">
-              <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
-              <Localized id="firmware_tool-loading">
-                <Typography></Typography>
-              </Localized>
-            </div>
-          )}
+          <div className="flex justify-center flex-col items-center gap-3 h-44">
+            <LoaderIcon
+              slimeState={
+                buildStatus.status !== 'ERROR'
+                  ? SlimeState.JUMPY
+                  : SlimeState.SAD
+              }
+            ></LoaderIcon>
+            <Typography variant="section-title">
+              {l10n.getString('firmware_tool-build-' + buildStatus.status)}
+            </Typography>
+          </div>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-2">
+          <Localized id="firmware_tool-previous_step">
+            <Button
+              variant="secondary"
+              disabled={hasPendingBuild}
+              onClick={prevStep}
+            ></Button>
+          </Localized>
           <Localized id="firmware_tool-retry">
             <Button
               variant="secondary"
               disabled={hasPendingBuild}
-              onClick={() => goTo('FlashingMethod')}
+              onClick={() => startBuild()}
             ></Button>
           </Localized>
         </div>

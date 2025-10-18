@@ -3,6 +3,7 @@ import { Typography } from '@/components/commons/Typography';
 import { getTrackerName } from '@/hooks/tracker';
 import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  BoardType,
   DeviceDataT,
   DeviceIdTableT,
   FirmwareUpdateMethod,
@@ -38,6 +39,8 @@ import { checkForUpdate } from '@/hooks/firmware-update';
 interface FirmwareUpdateForm {
   selectedDevices: { [key: string]: boolean };
 }
+
+type SelectedDeviceWithBoard = SelectedDevice & { board: BoardType };
 
 interface UpdateStatus {
   status: FirmwareUpdateStatus;
@@ -196,21 +199,41 @@ export function FirmwareUpdate() {
     };
   }, []);
 
-  const queueFlashing = (selectedDevices: SelectedDevice[]) => {
+  const queueFlashing = (selectedDevices: SelectedDeviceWithBoard[]) => {
     clear();
     pendingDevicesRef.current = selectedDevices;
-    const firmwareFile = currentFirmwareRelease?.firmwareFile;
-    if (!firmwareFile) throw new Error('invalid state - no firmware file');
-    const requests = getFlashingRequests(
-      selectedDevices,
-      [{ isFirmware: true, firmwareId: '', url: firmwareFile, offset: 0 }],
-      { wifi: undefined, alonePage: false, progress: 0 }, // we do not use serial
-      null // we do not use serial
-    );
 
-    requests.forEach((req) => {
-      sendRPCPacket(RpcMessage.FirmwareUpdateRequest, req);
-    });
+    if (!currentFirmwareRelease)
+      throw new Error('invalid state - no fw release');
+
+    const groupedByBoard = selectedDevices.reduce((curr, device) => {
+      const boards = curr.get(device.board) ?? [];
+      boards.push(device);
+      curr.set(device.board, boards);
+      return curr;
+    }, new Map<BoardType, SelectedDeviceWithBoard[]>());
+    for (const [board, devices] of groupedByBoard) {
+      if (board === BoardType.UNKNOWN) continue;
+      const firmwareFile = currentFirmwareRelease.firmwareFiles[board];
+      if (!firmwareFile) continue;
+      const requests = getFlashingRequests(
+        devices,
+        [
+          {
+            isFirmware: true,
+            firmwareId: '',
+            filePath: firmwareFile,
+            offset: 0,
+          },
+        ],
+        { wifi: undefined, alonePage: false, progress: 0 }, // we do not use serial
+        null // we do not use serial
+      );
+
+      requests.forEach((req) => {
+        sendRPCPacket(RpcMessage.FirmwareUpdateRequest, req);
+      });
+    }
   };
 
   const trackerWithErrors = useMemo(
@@ -281,11 +304,12 @@ export function FirmwareUpdate() {
           {
             type: FirmwareUpdateMethod.OTAFirmwareUpdate,
             deviceId: id,
+            board: device.hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN,
             deviceNames: deviceNames(device, l10n),
           },
         ];
       },
-      [] as SelectedDevice[]
+      [] as SelectedDeviceWithBoard[]
     );
     if (!selectedDevices)
       throw new Error('invalid state - no selected devices');
