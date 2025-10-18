@@ -390,6 +390,10 @@ tracker-settings-update-blocked = Update not available. No other releases availa
 tracker-settings-update-available = { $versionName } is now available
 tracker-settings-update = Update now
 tracker-settings-update-title = Firmware version
+tracker-settings-graph-acceleration-title = Tracker Acceleration
+tracker-settings-graph-position-title = Tracker Position
+tracker-settings-graph-show-title = Show Tracker Graph
+tracker-settings-graph-hide-title = Hide Tracker Graph
 
 ## Tracker part card info
 tracker-part_card-no_name = No name
