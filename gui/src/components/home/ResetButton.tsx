@@ -1,7 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  BodyPart,
   ResetRequestT,
   ResetType,
   RpcMessage,
@@ -25,6 +24,7 @@ import { useStatusContext } from '@/hooks/status-system';
 import classNames from 'classnames';
 import { FootIcon } from '@/components/commons/icon/FootIcon';
 import { FingersIcon } from '@/components/commons/icon/FingersIcon';
+import { FEET_BODY_PARTS, FINGER_BODY_PARTS } from '@/store/app-store';
 
 export function ResetButton({
   type,
@@ -55,40 +55,6 @@ export function ResetButton({
     [statuses]
   );
 
-  const feetBodyParts = [BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT];
-  const fingerBodyParts = [
-    BodyPart.LEFT_THUMB_METACARPAL,
-    BodyPart.LEFT_THUMB_PROXIMAL,
-    BodyPart.LEFT_THUMB_DISTAL,
-    BodyPart.LEFT_INDEX_PROXIMAL,
-    BodyPart.LEFT_INDEX_INTERMEDIATE,
-    BodyPart.LEFT_INDEX_DISTAL,
-    BodyPart.LEFT_MIDDLE_PROXIMAL,
-    BodyPart.LEFT_MIDDLE_INTERMEDIATE,
-    BodyPart.LEFT_MIDDLE_DISTAL,
-    BodyPart.LEFT_RING_PROXIMAL,
-    BodyPart.LEFT_RING_INTERMEDIATE,
-    BodyPart.LEFT_RING_DISTAL,
-    BodyPart.LEFT_LITTLE_PROXIMAL,
-    BodyPart.LEFT_LITTLE_INTERMEDIATE,
-    BodyPart.LEFT_LITTLE_DISTAL,
-    BodyPart.RIGHT_THUMB_METACARPAL,
-    BodyPart.RIGHT_THUMB_PROXIMAL,
-    BodyPart.RIGHT_THUMB_DISTAL,
-    BodyPart.RIGHT_INDEX_PROXIMAL,
-    BodyPart.RIGHT_INDEX_INTERMEDIATE,
-    BodyPart.RIGHT_INDEX_DISTAL,
-    BodyPart.RIGHT_MIDDLE_PROXIMAL,
-    BodyPart.RIGHT_MIDDLE_INTERMEDIATE,
-    BodyPart.RIGHT_MIDDLE_DISTAL,
-    BodyPart.RIGHT_RING_PROXIMAL,
-    BodyPart.RIGHT_RING_INTERMEDIATE,
-    BodyPart.RIGHT_RING_DISTAL,
-    BodyPart.RIGHT_LITTLE_PROXIMAL,
-    BodyPart.RIGHT_LITTLE_INTERMEDIATE,
-    BodyPart.RIGHT_LITTLE_DISTAL,
-  ];
-
   const reset = () => {
     const req = new ResetRequestT();
     req.resetType = type;
@@ -98,10 +64,10 @@ export function ResetButton({
         req.bodyParts = [];
         break;
       case 'feet':
-        req.bodyParts = feetBodyParts;
+        req.bodyParts = FEET_BODY_PARTS;
         break;
       case 'fingers':
-        req.bodyParts = fingerBodyParts;
+        req.bodyParts = [...FINGER_BODY_PARTS.values()];
         break;
     }
     sendRPCPacket(RpcMessage.ResetRequest, req);
