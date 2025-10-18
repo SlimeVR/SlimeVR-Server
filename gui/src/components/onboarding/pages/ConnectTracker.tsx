@@ -24,7 +24,7 @@ import './ConnectTracker.scss';
 import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { BaseModal } from '@/components/commons/BaseModal';
-import { useStatusContext } from '@/hooks/status-system';
+import { parseStatusToLocale, useStatusContext } from '@/hooks/status-system';
 import { A } from '@/components/commons/A';
 import { CONNECT_TRACKER } from '@/utils/tauri';
 
@@ -248,6 +248,7 @@ export function ConnectTrackersPage() {
               <Localized
                 key={status.id}
                 id={`status_system-${StatusData[status.dataType]}`}
+                vars={parseStatusToLocale(status, connectedIMUTrackers, l10n)}
                 elems={{
                   PublicFixLink: (
                     <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
