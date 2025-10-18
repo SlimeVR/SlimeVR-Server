@@ -27,6 +27,7 @@ import { BaseModal } from '@/components/commons/BaseModal';
 import { parseStatusToLocale, useStatusContext } from '@/hooks/status-system';
 import { A } from '@/components/commons/A';
 import { CONNECT_TRACKER } from '@/utils/tauri';
+import { DOCS_SITE } from '@/App';
 
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
@@ -251,7 +252,10 @@ export function ConnectTrackersPage() {
                 vars={parseStatusToLocale(status, connectedIMUTrackers, l10n)}
                 elems={{
                   PublicFixLink: (
-                    <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
+                    <A
+                      href={`${DOCS_SITE}/common-issues.html#network-profile-is-currently-set-to-public`}
+                      underline
+                    ></A>
                   ),
                 }}
               >

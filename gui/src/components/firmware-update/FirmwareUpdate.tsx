@@ -96,7 +96,9 @@ const StatusList = ({ status }: { status: Record<string, UpdateStatus> }) => {
 };
 
 const MarkdownLink = (props: ComponentProps<'a'>) => (
-  <A href={props.href}>{props.children}</A>
+  <A href={props.href} underline>
+    {props.children}
+  </A>
 );
 
 export function FirmwareUpdate() {

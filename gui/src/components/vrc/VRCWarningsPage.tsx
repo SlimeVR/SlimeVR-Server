@@ -14,6 +14,7 @@ import classNames from 'classnames';
 import { useLocaleConfig } from '@/i18n/config';
 import { A } from '@/components/commons/A';
 import { Button } from '@/components/commons/Button';
+import { DOCS_SITE } from '@/App';
 
 function SettingRow({
   name,
@@ -301,7 +302,7 @@ export function VRCWarningsPage() {
         <Localized
           id={'vrc_config-page-help-desc'}
           elems={{
-            a: <A href="https://docs.slimevr.dev/tools/vrchat-config.html"></A>,
+            a: <A href={`${DOCS_SITE}/tools/vrchat-config.html`} underline></A>,
           }}
         >
           <Typography />
