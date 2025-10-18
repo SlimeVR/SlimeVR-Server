@@ -103,7 +103,7 @@ skeleton_bone-HEAD-desc =
 skeleton_bone-NECK = Halsens längd
 skeleton_bone-NECK-desc =
     Detta är distansen från mittpunkten av ditt huvud till din nackes bas.
-    För att justera det, skaka ditt huvud upp och ner, som om att du säger ja eller luta ditt 
+    För att justera det, skaka ditt huvud upp och ner, som om att du säger ja eller luta ditt
     huvud höger eller vänster och modifiera det tills någon rörelse i andra rörelsesensorer är obetydlig.
 skeleton_bone-torso_group = Halsens längd
 skeleton_bone-torso_group-desc =
@@ -146,7 +146,7 @@ skeleton_bone-HIPS_WIDTH-desc =
 skeleton_bone-leg_group = Benlängd
 skeleton_bone-leg_group-desc =
     Detta är distansen från dina höfter till dina fötter.
-    För att justera det, justera din Torso-längd ordentligt och modifiera 
+    För att justera det, justera din Torso-längd ordentligt och modifiera
     den tills dina virtuella fötter är på samma nivå som dina riktiga.
 skeleton_bone-UPPER_LEG = Längd på övre delen av benet
 skeleton_bone-UPPER_LEG-desc =
@@ -166,7 +166,7 @@ skeleton_bone-FOOT_SHIFT = Fotförskjutning
 skeleton_bone-FOOT_SHIFT-desc =
     Detta värde är den horisontella distansen från dina ditt knä till din fotled.
     den tar hänsyn till att dina underben går baklänges när du står rakt upp.
-    För att justera det, ställ fotens längd till 0, utför en full återställning och modifiera den tills 
+    För att justera det, ställ fotens längd till 0, utför en full återställning och modifiera den tills
     dina virtuella fötter matchar mitten av dina fotleder.
 skeleton_bone-SKELETON_OFFSET = Skelettets förskjutning
 skeleton_bone-SKELETON_OFFSET-desc =
@@ -186,7 +186,7 @@ skeleton_bone-SHOULDERS_WIDTH-desc =
 skeleton_bone-arm_group = Armlängd
 skeleton_bone-arm_group-desc =
     Detta är avståndet från dina axlar till dina handleder.
-    För att justera det, justera Avståndet mellan axlar ordentligt, ändra Handavstånd Y 
+    För att justera det, justera Avståndet mellan axlar ordentligt, ändra Handavstånd Y
     till 0 och modifiera tills dina hand-sensorer är i linje med dina handleder.
 skeleton_bone-UPPER_ARM = Längd på överarm
 skeleton_bone-UPPER_ARM-desc =
@@ -196,7 +196,7 @@ skeleton_bone-UPPER_ARM-desc =
 skeleton_bone-LOWER_ARM = Längd på underarm
 skeleton_bone-LOWER_ARM-desc =
     Detta är avståndet från dina armbågar till dina handleder.
-    För att justera det, justera Armlängd ordentligt och modifiera det 
+    För att justera det, justera Armlängd ordentligt och modifiera det
     tills dina armbågs-spårare matchar med dina riktiga armbågar.
 skeleton_bone-HAND_Y = Handavstånd Y
 skeleton_bone-HAND_Y-desc =
@@ -376,7 +376,7 @@ tracker-settings-use_mag = Aktivera magnetometer på denna sensorn.
 # Multiline!
 tracker-settings-use_mag-description =
     Ska denna sensorn använda magnetometern för att minska drift när magnetometer-användning är tillåten? <b> Var vänlig och stäng inte av sensorn när du växlar av och på denna inställningen! <b>
-    
+
     Du behöver tillåta magnetometer-användning först <magSetting> klicka här för att gå till inställningen </magSetting>.
 tracker-settings-use_mag-label = Tillåt magnetometer
 # The .<name> means it's an attribute and it's related to the top key.
@@ -687,9 +687,9 @@ settings-general-interface-discord_presence-label = Dela aktivitet på Discord
 settings-interface-behavior-error_tracking = Error samling via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Tillåter du samlingen av anonym error-data?</h1>
-    
+
     <b>Vi samlar inte personlig information</b> så som din IP adress eller trådlösa referenser. Slimevr värdesätter din integritet!
-    
+
     För att tillhandhålla den bästa användarupplevelsen, så samlar vi anonyma error-raporter, prestandamått och operativsystems-info. Detta hjälper oss upptäcka buggar och problem med Slimevr. Dessa rapporterna samlas via Sentry.io.
 settings-interface-behavior-error_tracking-label = Skicka errors till utväcklare
 
@@ -708,7 +708,6 @@ settings-serial-factory_reset-warning =
     Det innebär att Wi-Fi- och kalibreringsinställningar <b>kommer att gå förlorade!</b>
 settings-serial-factory_reset-warning-ok = Jag vet vad jag gör
 settings-serial-factory_reset-warning-cancel = Avbryt
-settings-serial-get_infos = Få information
 settings-serial-serial_select = Välj en serieport
 settings-serial-auto_dropdown_item = Automatiskt
 settings-serial-get_wifi_scan = Hämta WiFi-skanning
@@ -740,7 +739,7 @@ settings-osc-vrchat-oscqueryEnabled = Aktivera OSCQuery
 settings-osc-vrchat-oscqueryEnabled-description =
     OSCQuery känner automatiskt av körande instanser av VRChat och skickar data till OSCQuery.
     De kan även annonsera sig själva till VRChat för att få HMD och kontrollerdata.
-    För att tillåta samling av HMD och kontrollerdata från VRChat, gå till din huvudmenys inställningar 
+    För att tillåta samling av HMD och kontrollerdata från VRChat, gå till din huvudmenys inställningar
     under "Tracking & IK" och tillåt "Allow Sending Head and Wrist VR Tracking OSC Data"
 settings-osc-vrchat-oscqueryEnabled-label = Aktivera OSCQuery
 settings-osc-vrchat-network = Nätverksportar
@@ -862,7 +861,7 @@ onboarding-reset_tutorial-skip = Hoppa över steg
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Tryck { $taps } gånger på den markerade trackern för att utlösa yaw reset.
-    
+
     Detta gör att spårarna vänds i samma riktning som ditt headset (HMD).
 
 ## Setup start
@@ -1062,7 +1061,7 @@ onboarding-choose_mounting-manual_modal-title =
     Är du säker på att du vill göra
     den automatiska monterings-kalibreringen?
 onboarding-choose_mounting-manual_modal-description =
-    <b>Den manuella monterings-kalibreringen är rekommenderad för nya användare</b>, eftersom den automatiska monterings-kalibreringen kan vara svår att få rätt första gången 
+    <b>Den manuella monterings-kalibreringen är rekommenderad för nya användare</b>, eftersom den automatiska monterings-kalibreringen kan vara svår att få rätt första gången
     och kan behöva lite träning för att få rätt.
 onboarding-choose_mounting-manual_modal-confirm = Jag är säker på vad jag gör
 onboarding-choose_mounting-manual_modal-cancel = Avbryt
@@ -1254,7 +1253,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Armspann
 error_collection_modal-title = Kan vi samla errors?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-    
+
     Du kan ändra denna inställningen senare i beteende-sektionen av inställnings-sidan
 error_collection_modal-confirm = Jag tillåter.
 error_collection_modal-cancel = Jag vill inte

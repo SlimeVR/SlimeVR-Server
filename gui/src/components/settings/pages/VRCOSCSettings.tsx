@@ -19,15 +19,16 @@ import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { boolean, object } from 'yup';
+import {
+  OSCSettings,
+  useOscSettingsValidator,
+} from '@/hooks/osc-setting-validator';
 
 interface VRCOSCSettingsForm {
   vrchat: {
-    oscSettings: {
-      enabled: boolean;
-      portIn: number;
-      portOut: number;
-      address: string;
-    };
+    oscSettings: OSCSettings;
     trackers: {
       head: boolean;
       chest: boolean;
@@ -65,9 +66,29 @@ const defaultValues = {
 export function VRCOSCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { oscValidator } = useOscSettingsValidator();
 
   const { reset, control, watch, handleSubmit } = useForm<VRCOSCSettingsForm>({
     defaultValues,
+    reValidateMode: 'onChange',
+    mode: 'onChange',
+    resolver: yupResolver(
+      object({
+        vrchat: object({
+          oscSettings: oscValidator,
+          trackers: object({
+            head: boolean().required(),
+            chest: boolean().required(),
+            elbows: boolean().required(),
+            feet: boolean().required(),
+            knees: boolean().required(),
+            hands: boolean().required(),
+            waist: boolean().required(),
+          }),
+          oscqueryEnabled: boolean().required(),
+        }),
+      })
+    ),
   });
 
   const onSubmit = (values: VRCOSCSettingsForm) => {
@@ -204,7 +225,6 @@ export function VRCOSCSettings() {
                   type="number"
                   control={control}
                   name="vrchat.oscSettings.portIn"
-                  rules={{ required: true }}
                   placeholder="9001"
                   label=""
                 ></Input>
@@ -217,7 +237,6 @@ export function VRCOSCSettings() {
                   type="number"
                   control={control}
                   name="vrchat.oscSettings.portOut"
-                  rules={{ required: true }}
                   placeholder="9000"
                   label=""
                 ></Input>
@@ -238,11 +257,6 @@ export function VRCOSCSettings() {
                 type="text"
                 control={control}
                 name="vrchat.oscSettings.address"
-                rules={{
-                  required: true,
-                  pattern:
-                    /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-                }}
                 placeholder={l10n.getString(
                   'settings-osc-vrchat-network-address-placeholder'
                 )}
