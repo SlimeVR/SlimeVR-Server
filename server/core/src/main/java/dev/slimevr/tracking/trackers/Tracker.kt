@@ -452,9 +452,13 @@ class Tracker @JvmOverloads constructor(
 					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) is now eepy.")
 
 					curTimeline?.let { move ->
+						val firstSample = move.samples.first()
+						val lastSample = move.samples.last()
+
 						val calibAccum = AccelAccumulator()
-						// We don't need the pre-rest time
-						val moveTime = processTimeline(calibAccum, move)
+						processTimeline(calibAccum, move)
+
+						val moveTime = lastSample.time - firstSample.time
 						val postAvg = calibAccum.velocity
 
 						// Assume the velocity at the end is the resting velocity
@@ -465,9 +469,7 @@ class Tracker @JvmOverloads constructor(
 						writeTimeline(outAccum, move, accelBias = slope)
 
 						// We need to compare offsets of HMD and tracker
-						val hmdStart = move.samples.first().hmdPos
-						val hmdEnd = move.samples.last().hmdPos
-						val hmdOff = hmdEnd - hmdStart
+						val hmdOff = lastSample.hmdPos - firstSample.hmdPos
 
 						// Swap X and Z, we might just be aligning accel wrong?
 						// TODO: Check if accel is actually correct
