@@ -358,7 +358,9 @@ class Tracker @JvmOverloads constructor(
 
 	val lastSamples = CircularArrayList<AccelSample>(8)
 	val allTimelines = FastList<AccelTimeline>()
-	var curTimeline = AccelTimeline(curFrameRest)
+	var curTimeline: AccelTimeline? = null
+
+	var resetNext = false
 
 	fun accumSample(accum: AccelAccumulator, sample: AccelSample, lastSampleTime: Long = -1, accelBias: Vector3 = Vector3.NULL): Float {
 		val delta = if (lastSampleTime >= 0) {
@@ -454,41 +456,37 @@ class Tracker @JvmOverloads constructor(
 				}
 
 				// Cycle the timeline
-				allTimelines.add(curTimeline)
-				curTimeline = AccelTimeline(curFrameRest)
+				if (curTimeline != null) {
+					allTimelines.add(curTimeline)
+					curTimeline = null
+				}
 
 				// If we were resting, dump the rest samples. We collect the latest
 				// samples when moving, so we don't need to worry about this for the end
 				// of movement.
 				if (!curFrameRest) {
+					curTimeline = AccelTimeline(false)
 					for (sample in lastSamples) {
-						curTimeline.samples.add(sample)
+						curTimeline?.samples?.add(sample)
 					}
 				}
 				// Flush rest detection
 				lastSamples.clear()
 
-				// If we are moving and not for the first time, write the last collected
-				// sample
-				if (!curFrameRest && allTimelines.size >= 3) {
-					val preRest = allTimelines[allTimelines.size - 3]
-					val move = allTimelines[allTimelines.size - 2]
-					val postRest = allTimelines[allTimelines.size - 1]
+				// If we are done moving, write the collected sample
+				if (curFrameRest) {
+					val move = allTimelines.last()
 
 					val calibAccum = AccelAccumulator()
 					// We don't need the pre-rest time
 					val moveTime = processTimeline(calibAccum, move)
-					val (_, postAvg) = processRest(calibAccum, postRest, moveTime)
 
-					val slope = postAvg / (moveTime / 1000f)
-					LogManager.info("moveTime: $moveTime\npostAvg: $postAvg\nslope: $slope")
-
-					// Let's just write the preceding data for the graph to look nice
-					writeTimeline(AccelAccumulator(), preRest, -1)
+					// Assume the velocity at the end is the resting velocity
+					val slope = calibAccum.velocity / (moveTime / 1000f)
+					LogManager.info("moveTime: $moveTime\npostAvg: ${calibAccum.velocity}\nslope: $slope")
 
 					val outAccum = AccelAccumulator()
-					writeTimeline(outAccum, move, -1, slope)
-					// writeTimeline(outAccum, postRest, outMove, slope)
+					writeTimeline(outAccum, move, accelBias = slope)
 
 					// We need to compare offsets of HMD and tracker
 					val hmdStart = move.samples.first().hmdPos
@@ -514,19 +512,33 @@ class Tracker @JvmOverloads constructor(
 						}
 					}
 					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) has $dir mounting.")
+
+					if (resetNext) {
+						resetNext = false
+
+						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) setting mounting!")
+						val mount = when (dir) {
+							"front" -> Quaternion.SLIMEVR.FRONT
+
+							"back" -> Quaternion.SLIMEVR.BACK
+
+							"left" -> Quaternion.SLIMEVR.LEFT
+
+							"right" -> Quaternion.SLIMEVR.RIGHT
+
+							else -> {
+								Quaternion.SLIMEVR.FRONT
+							}
+						}
+
+						resetsHandler.mountingOrientation = mount
+					}
 				}
 			}
 
 			// Moving avg accel for rest detection
 			if (lastSamples.size == lastSamples.capacity()) {
-				if (curFrameRest) {
-					// Only collect the oldest samples when resting, we want to have the
-					// cleanest rest samples possible. We take the latest samples for
-					// movement.
-					curTimeline.samples.add(lastSamples.removeLast())
-				} else {
-					lastSamples.removeLast()
-				}
+				lastSamples.removeLast()
 			}
 
 			// Collect samples for rest detection at a constant-ish rate if possible
@@ -534,7 +546,7 @@ class Tracker @JvmOverloads constructor(
 				lastSamples.add(sample)
 			} else {
 				// Collect the latest samples when moving
-				curTimeline.samples.add(sample)
+				curTimeline?.samples?.add(sample)
 
 				if (lastSamples.isNotEmpty()) {
 					// Try to have TPS at a lower rate
