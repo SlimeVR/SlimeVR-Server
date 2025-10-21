@@ -101,12 +101,12 @@ class HumanSkeleton(
 	val rightLittleDistalBone = Bone(BoneType.RIGHT_LITTLE_DISTAL, Constraint(ConstraintType.COMPLETE))
 
 	// Toe bones
-	val leftToe1Bone = Bone(BoneType.LEFT_TOE_1, Constraint(ConstraintType.COMPLETE))
-	val leftToe2Bone = Bone(BoneType.LEFT_TOE_2, Constraint(ConstraintType.COMPLETE))
-	val leftToe3Bone = Bone(BoneType.LEFT_TOE_3, Constraint(ConstraintType.COMPLETE))
-	val rightToe1Bone = Bone(BoneType.RIGHT_TOE_1, Constraint(ConstraintType.COMPLETE))
-	val rightToe2Bone = Bone(BoneType.RIGHT_TOE_2, Constraint(ConstraintType.COMPLETE))
-	val rightToe3Bone = Bone(BoneType.RIGHT_TOE_3, Constraint(ConstraintType.COMPLETE))
+	val leftAbductorHallucisBone = Bone(BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS, Constraint(ConstraintType.COMPLETE))
+	val leftDigitorumBrevisBone = Bone(BoneType.LEFT_TOES_DIGITORUM_BREVIS, Constraint(ConstraintType.COMPLETE))
+	val leftAbductorDigitiMinimiBone = Bone(BoneType.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI, Constraint(ConstraintType.COMPLETE))
+	val rightAbductorHallucisBone = Bone(BoneType.RIGHT_TOES_ABDUCTOR_HALLUCIS, Constraint(ConstraintType.COMPLETE))
+	val rightDigitorumBrevisBone = Bone(BoneType.RIGHT_TOES_DIGITORUM_BREVIS, Constraint(ConstraintType.COMPLETE))
+	val rightAbductorDigitiMinimiBone = Bone(BoneType.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI, Constraint(ConstraintType.COMPLETE))
 
 	// Toe bones
 	val leftAbductorHallucisBone = Bone(BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS, Constraint(ConstraintType.COMPLETE))
