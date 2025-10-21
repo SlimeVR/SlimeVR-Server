@@ -357,7 +357,6 @@ class Tracker @JvmOverloads constructor(
 	var curFrameRest = true
 
 	val lastSamples = CircularArrayList<AccelSample>(8)
-	val allTimelines = FastList<AccelTimeline>()
 	var curTimeline: AccelTimeline? = null
 
 	var resetNext = false
@@ -451,89 +450,79 @@ class Tracker @JvmOverloads constructor(
 			if (curFrameRest != lastFrameRest) {
 				if (curFrameRest) {
 					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) is now eepy.")
+
+					curTimeline?.let { move ->
+						val calibAccum = AccelAccumulator()
+						// We don't need the pre-rest time
+						val moveTime = processTimeline(calibAccum, move)
+						val postAvg = calibAccum.velocity
+
+						// Assume the velocity at the end is the resting velocity
+						val slope = postAvg / (moveTime / 1000f)
+						LogManager.info("moveTime: $moveTime\npostAvg: $postAvg\nslope: $slope")
+
+						val outAccum = AccelAccumulator()
+						writeTimeline(outAccum, move, accelBias = slope)
+
+						// We need to compare offsets of HMD and tracker
+						val hmdStart = move.samples.first().hmdPos
+						val hmdEnd = move.samples.last().hmdPos
+						val hmdOff = hmdEnd - hmdStart
+
+						// Swap X and Z, we might just be aligning accel wrong?
+						// TODO: Check if accel is actually correct
+						val pos = Vector3(outAccum.offset.z, outAccum.offset.y, outAccum.offset.x)
+						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) final offset: $pos\nHmd offset: $hmdOff\nDiff: ${pos - hmdOff}")
+
+						val dir = if (abs(pos.x) > abs(pos.z)) {
+							if (pos.x > 0f) {
+								"front"
+							} else {
+								"back"
+							}
+						} else {
+							if (pos.z > 0f) {
+								"right"
+							} else {
+								"left"
+							}
+						}
+						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) has $dir mounting.")
+
+						if (resetNext) {
+							resetNext = false
+
+							LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) setting mounting!")
+							val mount = when (dir) {
+								"front" -> Quaternion.SLIMEVR.FRONT
+
+								"back" -> Quaternion.SLIMEVR.BACK
+
+								"left" -> Quaternion.SLIMEVR.LEFT
+
+								"right" -> Quaternion.SLIMEVR.RIGHT
+
+								else -> {
+									Quaternion.SLIMEVR.FRONT
+								}
+							}
+
+							resetsHandler.mountingOrientation = mount
+						}
+					}
+					curTimeline = null
 				} else {
 					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) now has zoomies!")
-				}
 
-				// Cycle the timeline
-				if (curTimeline != null) {
-					allTimelines.add(curTimeline)
-					curTimeline = null
-				}
-
-				// If we were resting, dump the rest samples. We collect the latest
-				// samples when moving, so we don't need to worry about this for the end
-				// of movement.
-				if (!curFrameRest) {
+					// Cycle timeline
 					curTimeline = AccelTimeline(false)
 					for (sample in lastSamples) {
 						curTimeline?.samples?.add(sample)
 					}
 				}
+
 				// Flush rest detection
 				lastSamples.clear()
-
-				// If we are done moving, write the collected sample
-				if (curFrameRest) {
-					val move = allTimelines.last()
-
-					val calibAccum = AccelAccumulator()
-					// We don't need the pre-rest time
-					val moveTime = processTimeline(calibAccum, move)
-
-					// Assume the velocity at the end is the resting velocity
-					val slope = calibAccum.velocity / (moveTime / 1000f)
-					LogManager.info("moveTime: $moveTime\npostAvg: ${calibAccum.velocity}\nslope: $slope")
-
-					val outAccum = AccelAccumulator()
-					writeTimeline(outAccum, move, accelBias = slope)
-
-					// We need to compare offsets of HMD and tracker
-					val hmdStart = move.samples.first().hmdPos
-					val hmdEnd = move.samples.last().hmdPos
-					val hmdOff = hmdEnd - hmdStart
-
-					// Swap X and Z, we might just be aligning accel wrong?
-					// TODO: Check if accel is actually correct
-					val pos = Vector3(outAccum.offset.z, outAccum.offset.y, outAccum.offset.x)
-					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) final offset: $pos\nHmd offset: $hmdOff\nDiff: ${pos - hmdOff}")
-
-					val dir = if (abs(pos.x) > abs(pos.z)) {
-						if (pos.x > 0f) {
-							"front"
-						} else {
-							"back"
-						}
-					} else {
-						if (pos.z > 0f) {
-							"right"
-						} else {
-							"left"
-						}
-					}
-					LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) has $dir mounting.")
-
-					if (resetNext) {
-						resetNext = false
-
-						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) setting mounting!")
-						val mount = when (dir) {
-							"front" -> Quaternion.SLIMEVR.FRONT
-
-							"back" -> Quaternion.SLIMEVR.BACK
-
-							"left" -> Quaternion.SLIMEVR.LEFT
-
-							"right" -> Quaternion.SLIMEVR.RIGHT
-
-							else -> {
-								Quaternion.SLIMEVR.FRONT
-							}
-						}
-
-						resetsHandler.mountingOrientation = mount
-					}
-				}
 			}
 
 			// Moving avg accel for rest detection
