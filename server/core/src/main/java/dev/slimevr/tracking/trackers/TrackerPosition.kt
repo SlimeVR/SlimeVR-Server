@@ -164,12 +164,12 @@ enum class TrackerPosition(
 	RIGHT_LITTLE_PROXIMAL("body:right_little_proximal", null, BodyPart.RIGHT_LITTLE_PROXIMAL, 48),
 	RIGHT_LITTLE_INTERMEDIATE("body:right_little_intermediate", null, BodyPart.RIGHT_LITTLE_INTERMEDIATE, 49),
 	RIGHT_LITTLE_DISTAL("body:right_little_distal", null, BodyPart.RIGHT_LITTLE_DISTAL, 50),
-	LEFT_TOE_1("body:left_toe_1", TrackerRole.LEFT_TOE_1, BodyPart.LEFT_TOE_1, 51),
-	LEFT_TOE_2("body:left_toe_2", TrackerRole.LEFT_TOE_2, BodyPart.LEFT_TOE_2, 52),
-	LEFT_TOE_3("body:left_toe_3", TrackerRole.LEFT_TOE_3, BodyPart.LEFT_TOE_3, 53),
-	RIGHT_TOE_1("body:right_toe_1", TrackerRole.RIGHT_TOE_1, BodyPart.RIGHT_TOE_1, 54),
-	RIGHT_TOE_2("body:right_toe_2", TrackerRole.RIGHT_TOE_2, BodyPart.RIGHT_TOE_2, 55),
-	RIGHT_TOE_3("body:right_toe_3", TrackerRole.RIGHT_TOE_3, BodyPart.RIGHT_TOE_3, 56),
+	LEFT_TOES_ABDUCTOR_HALLUCIS("body:left_toes_abductor_hallucis", TrackerRole.LEFT_TOES_ABDUCTOR_HALLUCIS, BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS, 51),
+	LEFT_TOES_DIGITORUM_BREVIS("body:left_toes_digitorum_brevis", TrackerRole.LEFT_TOES_DIGITORUM_BREVIS, BodyPart.LEFT_TOES_DIGITORUM_BREVIS, 52),
+	LEFT_TOES_ABDUCTOR_DIGITI_MINIMI("body:left_toes_abductor_digiti_minimi", TrackerRole.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI, BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI, 53),
+	RIGHT_TOES_ABDUCTOR_HALLUCIS("body:right_toes_abductor_hallucis", TrackerRole.RIGHT_TOES_ABDUCTOR_HALLUCIS, BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS, 54),
+	RIGHT_TOES_DIGITORUM_BREVIS("body:right_toes_digitorum_brevis", TrackerRole.RIGHT_TOES_DIGITORUM_BREVIS, BodyPart.RIGHT_TOES_DIGITORUM_BREVIS, 55),
+	RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI("body:right_toes_abductor_digiti_minimi", TrackerRole.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI, BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI, 56),
 	;
 
 	/**

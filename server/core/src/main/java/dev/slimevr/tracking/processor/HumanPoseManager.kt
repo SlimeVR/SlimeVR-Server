@@ -224,49 +224,49 @@ class HumanPoseManager(val server: VRServer?) {
 		computedTrackers
 			.add(
 				makeComputedTracker(
-					"human://LEFT_TOE_1",
-					"Computed left toe1",
-					TrackerPosition.LEFT_TOE_1,
+					"human://LEFT_TOES_ABDUCTOR_HALLUCIS",
+					"Computed left abductor hallucis",
+					TrackerPosition.LEFT_TOES_ABDUCTOR_HALLUCIS,
 				),
 			)
 		computedTrackers
 			.add(
 				makeComputedTracker(
-					"human://LEFT_TOE_2",
-					"Computed left toe2",
-					TrackerPosition.LEFT_TOE_2,
+					"human://LEFT_TOES_DIGITORUM_BREVIS",
+					"Computed left digitorum brevis",
+					TrackerPosition.LEFT_TOES_DIGITORUM_BREVIS,
 				),
 			)
 		computedTrackers
 			.add(
 				makeComputedTracker(
-					"human://LEFT_TOE_3",
-					"Computed left toe3",
-					TrackerPosition.LEFT_TOE_3,
+					"human://LEFT_TOES_ABDUCTOR_DIGITI_MINIMI",
+					"Computed left abductor digiti minimi",
+					TrackerPosition.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI,
 				),
 			)
 		computedTrackers
 			.add(
 				makeComputedTracker(
-					"human://RIGHT_TOE_1",
-					"Computed right toe1",
-					TrackerPosition.RIGHT_TOE_1,
+					"human://RIGHT_TOES_ABDUCTOR_HALLUCIS",
+					"Computed right abductor hallucis",
+					TrackerPosition.RIGHT_TOES_ABDUCTOR_HALLUCIS,
 				),
 			)
 		computedTrackers
 			.add(
 				makeComputedTracker(
-					"human://RIGHT_TOE_2",
-					"Computed right toe2",
-					TrackerPosition.RIGHT_TOE_2,
+					"human://RIGHT_TOES_DIGITORUM_BREVIS",
+					"Computed right digitorum brevis",
+					TrackerPosition.RIGHT_TOES_DIGITORUM_BREVIS,
 				),
 			)
 		computedTrackers
 			.add(
 				makeComputedTracker(
-					"human://RIGHT_TOE_3",
-					"Computed right toe3",
-					TrackerPosition.RIGHT_TOE_3,
+					"human://RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI",
+					"Computed right abductor digiti minimi",
+					TrackerPosition.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI,
 				),
 			)
 
