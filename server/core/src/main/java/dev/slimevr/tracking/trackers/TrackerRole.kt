@@ -31,12 +31,12 @@ enum class TrackerRole(val id: Int, val roleHint: String, val viveRole: String) 
 	HMD(19, "", ""),
 	BEACON(20, "", ""),
 	GENERIC_CONTROLLER(21, "vive_tracker_handed", "TrackerRole_Handed"),
-	LEFT_TOE_1(22, "vive_tracker_left_toe_1", "TrackerRole_Left_Toe_1"),
-	LEFT_TOE_2(23, "vive_tracker_left_toe_2", "TrackerRole_Left_Toe_2"),
-	LEFT_TOE_3(24, "vive_tracker_left_toe_3", "TrackerRole_Left_Toe_3"),
-	RIGHT_TOE_1(25, "vive_tracker_right_toe_1", "TrackerRole_Right_Toe_1"),
-	RIGHT_TOE_2(26, "vive_tracker_right_toe_2", "TrackerRole_Right_Toe_2"),
-	RIGHT_TOE_3(27, "vive_tracker_right_toe_3", "TTrackerRole_Right_Toe_3"),
+	LEFT_TOES_ABDUCTOR_HALLUCIS(22, "vive_tracker_left_toes_abductor_hallucis", "TrackerRole_Left_Toes_Abductor_Hallucis"),
+	LEFT_TOES_DIGITORUM_BREVIS(23, "vive_tracker_left_toes_digitorum_brevis", "TrackerRole_Left_Toes_Digitorum_Brevis"),
+	LEFT_TOES_ABDUCTOR_DIGITI_MINIMI(24, "vive_tracker_left_toes_abductor_digiti_minimi", "TrackerRole_Left_Toes_Abductor_Digiti_Minimi"),
+	RIGHT_TOES_ABDUCTOR_HALLUCIS(25, "vive_tracker_right_toes_abductor_hallucis", "TrackerRole_Right_Toes_Abductor_Hallucis"),
+	RIGHT_TOES_DIGITORUM_BREVIS(26, "vive_tracker_right_toes_digitorum_brevis", "TrackerRole_Right_Toes_Digitorum_Brevis"),
+	RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI(27, "vive_tracker_right_toes_abductor_digiti_minimi", "TrackerRole_Right_Toes_Abductor_Digiti_Minimi"),
 	;
 
 	companion object {
