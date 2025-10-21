@@ -37,6 +37,7 @@ interface VRCOSCSettingsForm {
       knees: boolean;
       hands: boolean;
       waist: boolean;
+      toes: boolean;
     };
     oscqueryEnabled: boolean;
   };
@@ -58,6 +59,7 @@ const defaultValues = {
       knees: false,
       hands: false,
       waist: false,
+      toes: false
     },
     oscqueryEnabled: true,
   },
