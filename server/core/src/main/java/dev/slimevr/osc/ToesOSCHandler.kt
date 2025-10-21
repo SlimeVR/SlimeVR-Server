@@ -96,14 +96,14 @@ public class ToesOSCHandler(
 			}
 
 			when (segmentIndex) {
-				0 -> processToeSide(foot, lastAssigned!!, side, 0)
+				0 -> processToe(foot, lastAssigned!!, side, 0)
 				1 -> {
-					processToeSide(foot, lastAssigned!!, side, 1)
-					processToeSide(foot, lastAssigned!!, side, 2)
+					processToe(foot, lastAssigned!!, side, 1)
+					processToe(foot, lastAssigned!!, side, 2)
 				}
 				2 -> {
-					processToeSide(foot, lastAssigned!!, side, 3)
-					processToeSide(foot, lastAssigned!!, side, 4)
+					processToe(foot, lastAssigned!!, side, 3)
+					processToe(foot, lastAssigned!!, side, 4)
 				}
 			}
 		}
@@ -116,21 +116,21 @@ public class ToesOSCHandler(
 	override fun getOscReceiver(): OSCPortIn? = null
 	override fun getPortIn(): Int = -1
 
-	private fun processToeSide(foot: Bone, toe: Bone, side: FootSide, toeNumber: Int) {
+	private fun processToe(foot: Bone, toe: Bone, side: FootSide, toeNumber: Int) {
 		val footRot = foot.getGlobalRotation()
 		val toeRot = toe.getGlobalRotation()
 		val currentRelative = (footRot.inv() * toeRot)
 
 		val euler = quaternionToEulerDegrees(currentRelative)
 
-		val pitch = -(euler.z + 90)
+		val pitch = (euler.z + 90)
 
 		val tipToe = pitch < -14f
 		val bending = pitch > 15f && !tipToe
 
 		setTipToeValueBool(side, tipToe)
 		setToeValueBool(toeNumber, side, bending)
-		setToeValueFloat(toeNumber, side, -clamp(pitch / 30f, -1f, 1f))
+		setToeValueFloat(toeNumber, side, clamp(pitch / 30f, -1f, 1f))
 	}
 
 	fun setToeValueBool(toeNumber: Int, footSide: FootSide, value: Boolean) {
