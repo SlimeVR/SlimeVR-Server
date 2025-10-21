@@ -170,10 +170,10 @@ class NeighborErrorVisitor(
 	) {
 		if (aboveFoot != null) {
 			val extraToeYaw = when (toeNumber) {
-				1 -> extraYaw(side, relaxedPose.toe1)
-				2 -> extraYaw(side, relaxedPose.toe2)
-				3 -> extraYaw(side, relaxedPose.toe3)
-				else -> extraYaw(side, relaxedPose.toe1)
+				1 -> extraYaw(side, relaxedPose.abductorHallucis)
+				2 -> extraYaw(side, relaxedPose.digitorumBrevis)
+				3 -> extraYaw(side, relaxedPose.abductorDigitiMinimi)
+				else -> extraYaw(side, relaxedPose.abductorHallucis)
 			}
 			errors.add(
 				trackerYaw(aboveFoot) -

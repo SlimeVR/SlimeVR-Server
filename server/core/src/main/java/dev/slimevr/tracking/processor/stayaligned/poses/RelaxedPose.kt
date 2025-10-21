@@ -11,15 +11,15 @@ class RelaxedPose(
 	val upperLeg: Angle,
 	val lowerLeg: Angle,
 	val foot: Angle,
-	val toe1: Angle,
-	val toe2: Angle,
-	val toe3: Angle,
+	val abductorHallucis: Angle,
+	val digitorumBrevis: Angle,
+	val abductorDigitiMinimi: Angle,
 ) {
 	override fun toString(): String = "upperLeg=$upperLeg lowerLeg=$lowerLeg foot=$foot"
 
 	companion object {
 
-		val ZERO = RelaxedPose(Angle.ZERO, Angle.ZERO, Angle.ZERO, Angle.ZERO, toe2 = Angle.ZERO, toe3 = Angle.ZERO)
+		val ZERO = RelaxedPose(Angle.ZERO, Angle.ZERO, Angle.ZERO, Angle.ZERO, digitorumBrevis = Angle.ZERO, abductorDigitiMinimi = Angle.ZERO)
 
 		/**
 		 * Gets the relaxed angles for a particular pose. May provide defaults if the
@@ -37,9 +37,9 @@ class RelaxedPose(
 							Angle.ofDeg(poseConfig.upperLegAngleInDeg),
 							Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
 							Angle.ofDeg(poseConfig.footAngleInDeg),
-							Angle.ofDeg(poseConfig.toe1AngleInDeg),
-							Angle.ofDeg(poseConfig.toe2AngleInDeg),
-							Angle.ofDeg(poseConfig.toe3AngleInDeg),
+							Angle.ofDeg(poseConfig.abductorHallucisAngleInDeg),
+							Angle.ofDeg(poseConfig.digitorumBrevisAngleInDeg),
+							Angle.ofDeg(poseConfig.abductorDigitiMinimiAngleInDeg),
 						)
 					} else {
 						null
@@ -53,9 +53,9 @@ class RelaxedPose(
 							Angle.ofDeg(poseConfig.upperLegAngleInDeg),
 							Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
 							Angle.ofDeg(poseConfig.footAngleInDeg),
-							Angle.ofDeg(poseConfig.toe1AngleInDeg),
-							Angle.ofDeg(poseConfig.toe2AngleInDeg),
-							Angle.ofDeg(poseConfig.toe3AngleInDeg),
+							Angle.ofDeg(poseConfig.abductorHallucisAngleInDeg),
+							Angle.ofDeg(poseConfig.digitorumBrevisAngleInDeg),
+							Angle.ofDeg(poseConfig.abductorDigitiMinimiAngleInDeg),
 						)
 					} else {
 						null
@@ -71,9 +71,9 @@ class RelaxedPose(
 							Angle.ofDeg(poseConfig.upperLegAngleInDeg),
 							Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
 							Angle.ofDeg(poseConfig.footAngleInDeg),
-							Angle.ofDeg(poseConfig.toe1AngleInDeg),
-							Angle.ofDeg(poseConfig.toe2AngleInDeg),
-							Angle.ofDeg(poseConfig.toe3AngleInDeg),
+							Angle.ofDeg(poseConfig.abductorHallucisAngleInDeg),
+							Angle.ofDeg(poseConfig.digitorumBrevisAngleInDeg),
+							Angle.ofDeg(poseConfig.abductorDigitiMinimiAngleInDeg),
 						)
 					} else {
 						null
@@ -152,26 +152,26 @@ class RelaxedPose(
 				}
 			}
 
-			var toe1Angle = Angle.ZERO
-			humanSkeleton.leftToe1Tracker?.let { left ->
-				humanSkeleton.rightToe1Tracker?.let { right ->
-					toe1Angle = halfAngleBetween(left, right)
+			var abductorHallucisAngle = Angle.ZERO
+			humanSkeleton.leftAbductorHallucisTracker?.let { left ->
+				humanSkeleton.rightAbductorHallucisTracker?.let { right ->
+					abductorHallucisAngle = halfAngleBetween(left, right)
 				}
 			}
-			var toe2Angle = Angle.ZERO
-			humanSkeleton.leftToe2Tracker?.let { left ->
-				humanSkeleton.rightToe2Tracker?.let { right ->
-					toe2Angle = halfAngleBetween(left, right)
+			var digitorumBrevisAngle = Angle.ZERO
+			humanSkeleton.leftDigitorumBrevisTracker?.let { left ->
+				humanSkeleton.rightDigitorumBrevisTracker?.let { right ->
+					digitorumBrevisAngle = halfAngleBetween(left, right)
 				}
 			}
-			var toe3Angle = Angle.ZERO
-			humanSkeleton.leftToe3Tracker?.let { left ->
-				humanSkeleton.rightToe3Tracker?.let { right ->
-					toe3Angle = halfAngleBetween(left, right)
+			var abductorDigitiMinimiAngle = Angle.ZERO
+			humanSkeleton.leftAbductorDigitiMinimiTracker?.let { left ->
+				humanSkeleton.rightAbductorDigitiMinimiTracker?.let { right ->
+					abductorDigitiMinimiAngle = halfAngleBetween(left, right)
 				}
 			}
 
-			return RelaxedPose(upperLegAngle, lowerLegAngle, footAngle,toe1Angle, toe2Angle, toe3Angle)
+			return RelaxedPose(upperLegAngle, lowerLegAngle, footAngle,abductorHallucisAngle, digitorumBrevisAngle, abductorDigitiMinimiAngle)
 		}
 	}
 }
