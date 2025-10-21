@@ -319,6 +319,15 @@ export function VRCOSCSettings() {
                   'settings-osc-vrchat-network-trackers-elbows'
                 )}
               />
+              <CheckBox
+                variant="toggle"
+                outlined
+                control={control}
+                name="vrchat.trackers.toes"
+                label={l10n.getString(
+                  'settings-osc-vrchat-network-trackers-toes'
+                )}
+              />
             </div>
           </>
         </SettingsPagePaneLayout>

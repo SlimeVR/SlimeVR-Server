@@ -833,6 +833,7 @@ settings-osc-vrchat-network-trackers-hip = Hip
 settings-osc-vrchat-network-trackers-knees = Knees
 settings-osc-vrchat-network-trackers-feet = Feet
 settings-osc-vrchat-network-trackers-elbows = Elbows
+settings-osc-vrchat-network-trackers-toes = Toes
 
 ## VMC OSC settings
 settings-osc-vmc = Virtual Motion Capture
