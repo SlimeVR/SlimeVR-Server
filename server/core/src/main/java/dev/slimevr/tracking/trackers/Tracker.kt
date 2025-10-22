@@ -499,7 +499,7 @@ class Tracker @JvmOverloads constructor(
 							}
 						}
 
-						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}):\nTracker: $tracker\nHmd: $hmd\nError: ${tracker.len() - hmd.len()}\nResult: $result ($dir)")
+						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}):\nTracker: $tracker\nHmd: $hmd\nErr: ${tracker.len() - hmd.len()}\nResult: $result ($dir)")
 
 						if (resetNext) {
 							resetNext = false
