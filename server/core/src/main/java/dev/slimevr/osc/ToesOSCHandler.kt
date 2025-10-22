@@ -123,7 +123,7 @@ public class ToesOSCHandler(
 
 		val euler = quaternionToEulerDegrees(currentRelative)
 
-		val pitch = (euler.z + 90)
+		val pitch = euler.z
 
 		val tipToe = pitch < -14f
 		val bending = pitch > 15f && !tipToe
