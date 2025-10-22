@@ -398,12 +398,15 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	fun writeTimeline(accum: AccelAccumulator, timeline: AccelTimeline, lastSampleTime: Long = -1, accelBias: Vector3 = Vector3.NULL): Long {
+		// Accel position is only the offset, so let's make the HMD an offset too
+		val initHmd = timeline.samples.first().hmdPos
+
 		val time = processTimeline(accum, timeline, lastSampleTime, accelBias) { accum, sample, _ ->
 			val time = sample.time
 			val accel = accum.acceleration
 			val vel = accum.velocity
 			val pos = accum.offset
-			val hmd = sample.hmdPos
+			val hmd = sample.hmdPos - initHmd
 
 			csvOut?.write("$time,${accel.x},${accel.y},${accel.z},${accel.len()},${vel.x},${vel.y},${vel.z},${vel.len()},${pos.x},${pos.y},${pos.z},${hmd.x},${hmd.y},${hmd.z}\n")
 		}
