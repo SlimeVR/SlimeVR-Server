@@ -9,6 +9,9 @@ export const SIDES = [
     upperLeg: BodyPart.LEFT_UPPER_LEG,
     lowerLeg: BodyPart.LEFT_LOWER_LEG,
     foot: BodyPart.LEFT_FOOT,
+    toesAbductorHallucis: BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS,
+    toesDigitorumBrevis: BodyPart.LEFT_TOES_DIGITORUM_BREVIS,
+    toesAbductorDigitiMinimi: BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI,
   },
   {
     shoulder: BodyPart.RIGHT_SHOULDER,
@@ -18,6 +21,9 @@ export const SIDES = [
     upperLeg: BodyPart.RIGHT_UPPER_LEG,
     lowerLeg: BodyPart.RIGHT_LOWER_LEG,
     foot: BodyPart.RIGHT_FOOT,
+    toesAbductorHallucis: BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS,
+    toesDigitorumBrevis: BodyPart.RIGHT_TOES_DIGITORUM_BREVIS,
+    toesAbductorDigitiMinimi: BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI,
   },
 ];
 
@@ -122,6 +128,28 @@ export function PersonFrontIcon({ mirror = true }: { mirror?: boolean }) {
       />
 
       <circle
+         className="body-part-circle"
+          cx="90"
+          cy="395"
+          r={CIRCLE_RADIUS}
+          id={BodyPart[SIDES[right].toesAbductorHallucis]}
+      />
+      <circle
+          className="body-part-circle"
+          cx="102"
+          cy="395"
+          r={CIRCLE_RADIUS}
+          id={BodyPart[SIDES[right].toesDigitorumBrevis]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="114"
+        cy="395"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[SIDES[right].toesAbductorDigitiMinimi]}
+      />
+
+      <circle
         className="body-part-circle"
         cx="15"
         cy="207"
@@ -171,6 +199,27 @@ export function PersonFrontIcon({ mirror = true }: { mirror?: boolean }) {
         cy="372"
         r={CIRCLE_RADIUS}
         id={BodyPart[SIDES[left].foot]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="75"
+        cy="395"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[SIDES[left].toesAbductorHallucis]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="62"
+        cy="395"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[SIDES[left].toesDigitorumBrevis]}
+      />
+      <circle
+        className="body-part-circle"
+        cx="50"
+        cy="395"
+        r={CIRCLE_RADIUS}
+        id={BodyPart[SIDES[left].toesAbductorDigitiMinimi]}
       />
     </svg>
   );
