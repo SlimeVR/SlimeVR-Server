@@ -85,13 +85,16 @@ body_part-RIGHT_RING_INTERMEDIATE = Right ring intermediate
 body_part-RIGHT_RING_DISTAL = Right ring distal
 body_part-RIGHT_LITTLE_PROXIMAL = Right little proximal
 body_part-RIGHT_LITTLE_INTERMEDIATE = Right little intermediate
-body_part-RIGHT_LITTLE_DISTAL = Right little distal
+body_part-RIGHT_LITTLE_DISTAL = Right little
+body_part-LEFT_TOES = Left Toes
 body_part-LEFT_TOES_ABDUCTOR_HALLUCIS = Left Big Toe
 body_part-LEFT_TOES_DIGITORUM_BREVIS = Left Middle Toes
 body_part-LEFT_TOES_ABDUCTOR_DIGITI_MINIMI = Left Pinky
+body_part-RIGHT_TOES = Right Toes
 body_part-RIGHT_TOES_ABDUCTOR_HALLUCIS = Right Big Toe
 body_part-RIGHT_TOES_DIGITORUM_BREVIS = Right Middle Toes
 body_part-RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI = Right Pinky
+
 ## BoardType
 board_type-UNKNOWN = Unknown
 board_type-NODEMCU = NodeMCU
