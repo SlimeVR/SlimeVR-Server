@@ -203,6 +203,13 @@ export function PersonFrontIcon({ mirror = true }: { mirror?: boolean }) {
       <circle
         className="body-part-circle"
         cx="75"
+        cy="410"
+        r={CIRCLE_RADIUS}
+        id="left-toes"
+      />
+      <circle
+        className="body-part-circle"
+        cx="75"
         cy="395"
         r={CIRCLE_RADIUS}
         id={BodyPart[SIDES[left].toesAbductorHallucis]}
