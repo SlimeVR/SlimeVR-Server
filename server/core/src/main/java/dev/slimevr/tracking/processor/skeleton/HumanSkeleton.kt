@@ -1533,6 +1533,13 @@ class HumanSkeleton(
 			rightLittleIntermediateBone,
 			rightLittleDistalBone,
 
+			leftAbductorHallucisBone,
+			leftDigitorumBrevisBone,
+			leftAbductorDigitiMinimiBone,
+
+			rightAbductorHallucisBone,
+			rightDigitorumBrevisBone,
+			rightAbductorDigitiMinimiBone,
 		)
 
 	/**
@@ -1584,6 +1591,7 @@ class HumanSkeleton(
 			rightLittleProximalBone,
 			rightLittleIntermediateBone,
 			rightLittleDistalBone,
+
 		)
 
 	val hmdHeight: Float
