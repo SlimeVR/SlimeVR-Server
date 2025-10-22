@@ -24,6 +24,7 @@ import solarxr_protocol.rpc.StatusTrackerResetT
 import java.io.File
 import java.io.OutputStreamWriter
 import kotlin.math.abs
+import kotlin.math.atan2
 import kotlin.properties.Delegates
 
 const val TIMEOUT_MS = 2_000L
@@ -410,6 +411,11 @@ class Tracker @JvmOverloads constructor(
 		return time
 	}
 
+	fun angle(vector: Vector3): Quaternion {
+		val yaw = atan2(vector.x, vector.z)
+		return Quaternion.rotationAroundYAxis(yaw)
+	}
+
 	/**
 	 * Tells the tracker that it received new data
 	 */
@@ -463,33 +469,37 @@ class Tracker @JvmOverloads constructor(
 
 						// Assume the velocity at the end is the resting velocity
 						val slope = postAvg / (moveTime / 1000f)
-						LogManager.info("moveTime: $moveTime\npostAvg: $postAvg\nslope: $slope")
+						// LogManager.info("moveTime: $moveTime\npostAvg: $postAvg\nslope: $slope")
 
 						val outAccum = AccelAccumulator()
 						writeTimeline(outAccum, move, accelBias = slope)
 
 						// We need to compare offsets of HMD and tracker
 						val hmdOff = lastSample.hmdPos - firstSample.hmdPos
+						val trackerOff = outAccum.offset
 
-						// Swap X and Z, we might just be aligning accel wrong?
-						// TODO: Check if accel is actually correct
-						val pos = Vector3(outAccum.offset.z, outAccum.offset.y, outAccum.offset.x)
-						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) final offset: $pos\nHmd offset: $hmdOff\nDiff: ${pos - hmdOff}")
+						val hmd = Vector3(hmdOff.x, 0f, hmdOff.z)
+						val tracker = Vector3(trackerOff.x, 0f, trackerOff.z)
 
-						val dir = if (abs(pos.x) > abs(pos.z)) {
-							if (pos.x > 0f) {
+						val hmdRot = angle(hmd.unit()).inv()
+						val trackerRot = angle(tracker.unit())
+						val result = (trackerRot * hmdRot).sandwichUnitZ()
+
+						val dir = if (abs(result.x) > abs(result.z)) {
+							if (result.x > 0f) {
 								"front"
 							} else {
 								"back"
 							}
 						} else {
-							if (pos.z > 0f) {
-								"right"
-							} else {
+							if (result.z > 0f) {
 								"left"
+							} else {
+								"right"
 							}
 						}
-						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) has $dir mounting.")
+
+						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}):\nTracker: $tracker\nHmd: $hmd\nError: ${tracker.len() - hmd.len()}\nResult: $result ($dir)")
 
 						if (resetNext) {
 							resetNext = false
