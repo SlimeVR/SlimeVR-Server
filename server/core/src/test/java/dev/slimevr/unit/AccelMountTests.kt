@@ -39,11 +39,26 @@ class AccelMountTests {
 
 	companion object {
 		val testSet = arrayOf(
-			AlignTest(Vector3.POS_Z, Vector3.POS_Z, Vector3.POS_Z),
-			AlignTest(Vector3.POS_Z, Vector3.NEG_Z, Vector3.NEG_Z),
-			AlignTest(Vector3.NEG_Z, Vector3.NEG_Z, Vector3.POS_Z),
-			AlignTest(Vector3.POS_X, Vector3.POS_X, Vector3.POS_Z),
+			// Front mount
 			AlignTest(Vector3.POS_X, Vector3.NEG_Z, Vector3.POS_X),
+			AlignTest(Vector3.NEG_X, Vector3.POS_Z, Vector3.POS_X),
+			AlignTest(Vector3.POS_Z, Vector3.POS_X, Vector3.POS_X),
+			AlignTest(Vector3.NEG_Z, Vector3.NEG_X, Vector3.POS_X),
+			// Right mount
+			AlignTest(Vector3.POS_X, Vector3.NEG_X, Vector3.NEG_Z),
+			AlignTest(Vector3.NEG_X, Vector3.POS_X, Vector3.NEG_Z),
+			AlignTest(Vector3.POS_Z, Vector3.NEG_Z, Vector3.NEG_Z),
+			AlignTest(Vector3.NEG_Z, Vector3.POS_Z, Vector3.NEG_Z),
+			// Back mount
+			AlignTest(Vector3.POS_X, Vector3.POS_Z, Vector3.NEG_X),
+			AlignTest(Vector3.NEG_X, Vector3.NEG_Z, Vector3.NEG_X),
+			AlignTest(Vector3.POS_Z, Vector3.NEG_X, Vector3.NEG_X),
+			AlignTest(Vector3.NEG_Z, Vector3.POS_X, Vector3.NEG_X),
+			// Left mount
+			AlignTest(Vector3.POS_X, Vector3.POS_X, Vector3.POS_Z),
+			AlignTest(Vector3.NEG_X, Vector3.NEG_X, Vector3.POS_Z),
+			AlignTest(Vector3.POS_Z, Vector3.POS_Z, Vector3.POS_Z),
+			AlignTest(Vector3.NEG_Z, Vector3.NEG_Z, Vector3.POS_Z),
 		)
 	}
 }
