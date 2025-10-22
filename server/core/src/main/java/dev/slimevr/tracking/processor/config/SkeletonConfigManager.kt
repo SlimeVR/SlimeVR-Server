@@ -348,13 +348,48 @@ class SkeletonConfigManager(
 				0f,
 			)
 
-			BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS, BoneType.LEFT_TOES_DIGITORUM_BREVIS, BoneType.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI,
-			BoneType.RIGHT_TOES_ABDUCTOR_HALLUCIS, BoneType.RIGHT_TOES_DIGITORUM_BREVIS, BoneType.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI,
+			BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS,
+				-> setNodeOffset(
+				nodeOffset,
+				getOffset(SkeletonConfigOffsets.FOOT_LENGTH) * 0.2f,
+				0f,
+				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH) * 0.2f,
+			)
+			BoneType.LEFT_TOES_DIGITORUM_BREVIS
+			-> setNodeOffset(
+				nodeOffset,
+				0f,
+				0f,
+				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH) * 0.2f,
+			)
+			BoneType.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI
+				-> setNodeOffset(
+				nodeOffset,
+				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH) * 0.2f,
+				0f,
+				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH) * 0.2f,
+			)
+
+			BoneType.RIGHT_TOES_ABDUCTOR_HALLUCIS,
+				-> setNodeOffset(
+				nodeOffset,
+				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH) * 0.2f,
+				0f,
+				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH) * 0.2f,
+			)
+			BoneType.RIGHT_TOES_DIGITORUM_BREVIS
 				-> setNodeOffset(
 				nodeOffset,
 				0f,
-				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH) * 0.2f,
 				0f,
+				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH) * 0.2f,
+			)
+			BoneType.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI
+				-> setNodeOffset(
+				nodeOffset,
+				getOffset(SkeletonConfigOffsets.FOOT_LENGTH) * 0.2f,
+				0f,
+				-getOffset(SkeletonConfigOffsets.FOOT_LENGTH) * 0.2f,
 			)
 			else -> {}
 		}
