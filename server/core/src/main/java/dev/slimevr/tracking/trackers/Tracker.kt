@@ -485,17 +485,17 @@ class Tracker @JvmOverloads constructor(
 						val trackerRot = angle(tracker.unit())
 						val result = (trackerRot * hmdRot).sandwichUnitZ()
 
-						val dir = if (abs(result.x) > abs(result.z)) {
-							if (result.x > 0f) {
+						val dir = if (abs(result.z) > abs(result.x)) {
+							if (result.z > 0f) {
 								"front"
 							} else {
 								"back"
 							}
 						} else {
-							if (result.z > 0f) {
-								"left"
-							} else {
+							if (result.x > 0f) {
 								"right"
+							} else {
+								"left"
 							}
 						}
 
