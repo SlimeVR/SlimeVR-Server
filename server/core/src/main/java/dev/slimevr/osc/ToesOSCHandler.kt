@@ -62,10 +62,10 @@ public class ToesOSCHandler(
 			// LEFT FOOT + TOES
 			trackers.getBone(BoneType.LEFT_FOOT)?.let { leftFoot ->
 				val leftToes = listOf(
-					BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS,
-					BoneType.LEFT_TOES_DIGITORUM_BREVIS,
-					BoneType.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI
-				).mapNotNull { pos -> trackers.getBone(pos) }
+					trackers.getBone(BoneType.LEFT_TOES_ABDUCTOR_HALLUCIS),
+					trackers.getBone(BoneType.LEFT_TOES_DIGITORUM_BREVIS),
+					trackers.getBone(BoneType.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI)
+				)
 
 				processToesForFoot(leftFoot, leftToes, FootSide.Left)
 			}
@@ -73,10 +73,10 @@ public class ToesOSCHandler(
 			// RIGHT FOOT + TOES
 			trackers.getBone(BoneType.RIGHT_FOOT)?.let { rightFoot ->
 				val rightToes = listOf(
-					BoneType.RIGHT_TOES_ABDUCTOR_HALLUCIS,
-					BoneType.RIGHT_TOES_DIGITORUM_BREVIS,
-					BoneType.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI
-				).mapNotNull { pos -> trackers.getBone(pos) }
+					trackers.getBone(BoneType.RIGHT_TOES_ABDUCTOR_HALLUCIS),
+					trackers.getBone(BoneType.RIGHT_TOES_DIGITORUM_BREVIS),
+					trackers.getBone(BoneType.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI)
+				)
 
 				processToesForFoot(rightFoot, rightToes, FootSide.Right)
 			}
