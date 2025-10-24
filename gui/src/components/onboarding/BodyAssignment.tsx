@@ -163,14 +163,12 @@ export function BodyAssignment({
   const left = +!mirror;
   const right = +mirror;
 
-const hasBodyPart = useCallback(
-  (part: BodyPart) => {
-    const result = assignMode === AssignMode.All || ASSIGNMENT_MODES[assignMode].indexOf(part) > -1;
-    console.log('Checking hasBodyPart for', BodyPart[part], '=>', result);
-    return result;
-  },
-  [assignMode]
-);
+  const hasBodyPart = useCallback(
+    (part: BodyPart) =>
+      assignMode === AssignMode.All ||
+      ASSIGNMENT_MODES[assignMode].indexOf(part) > -1,
+    [assignMode]
+  );
 
 
   return (
