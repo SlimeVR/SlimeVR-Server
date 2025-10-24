@@ -284,8 +284,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				if (tracker.trackerPosition.isFoot()) {
 					// Feet are rotated by 90 deg pitch, this means we're relying on IMU rotation
 					//  to be set correctly here.
-					val pitchOffset = mountingOrientation.inv() * (QuarterPitch * mountingOrientation)
-					fixGyroscope(mountingAdjustedRotation * tposeDownFix * pitchOffset)
+					fixGyroscope(tracker.getRawRotation() * tposeDownFix * QuarterPitch * mountingOrientation)
 				} else {
 					fixGyroscope(mountingAdjustedRotation * tposeDownFix)
 				}
