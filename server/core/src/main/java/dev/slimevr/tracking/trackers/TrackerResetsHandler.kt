@@ -59,16 +59,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	// Reference adjustment quats
 
 	/**
-	 * Gyro fix is set by full reset. This sets the current y rotation to 0, correcting
-	 * for initial yaw rotation and the rotation incurred by mounting orientation. This
-	 * is a local offset in rotation and does not affect the axes of rotation.
-	 *
-	 * This rotation is only used to compute [attachmentFix], otherwise [yawFix] would
-	 * correct for the same rotation.
-	 */
-	private var gyroFix = Quaternion.IDENTITY
-
-	/**
 	 * Attachment fix is set by full reset. This sets the current x and z rotations to
 	 * 0, correcting for initial pitch and roll rotation. This is a global offset in
 	 * rotation and affects the axes of rotation.
@@ -204,8 +194,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 */
 	private fun adjustToReference(rotation: Quaternion): Quaternion {
 		var rot = rotation
-		// Correct for initial local yaw offset
-		rot = gyroFix * rot
 		// Correct for global pitch/roll offset
 		rot *= attachmentFix
 		// Correct for global yaw offset (do not affect local yaw)
@@ -282,8 +270,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		val rotation = tracker.getRawRotation()
 
 		// Gyrofix
-		if (tracker.needsMounting || (tracker.trackerPosition == TrackerPosition.HEAD && !tracker.isHmd)) {
-			gyroFix = if (tracker.isComputed) {
+		val gyroFix = if (tracker.needsMounting || (tracker.trackerPosition == TrackerPosition.HEAD && !tracker.isHmd)) {
+			if (tracker.isComputed) {
 				fixGyroscope(rotation)
 			} else {
 				if (tracker.trackerPosition.isFoot()) {
@@ -294,6 +282,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 					fixGyroscope(rotation * tposeDownFix)
 				}
 			}
+		} else {
+			Quaternion.IDENTITY
 		}
 
 		// Mounting for computed trackers
@@ -316,7 +306,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 				Quaternion.IDENTITY
 			}
 		} else {
-			fixAttachment(rotation)
+			(gyroFix * rotation).inv()
 		}
 
 		// Rotate attachmentFix by 180 degrees as a workaround for t-pose (down)
@@ -328,7 +318,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Don't adjust yaw if head and computed
 		if (tracker.trackerPosition != TrackerPosition.HEAD || !tracker.isComputed) {
-			yawFix = fixYaw(rotation, reference)
+			yawFix = gyroFix * reference.project(Vector3.POS_Y).unit()
 			tracker.yawResetSmoothing.reset()
 		}
 
@@ -424,7 +414,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 
 		// Get the current calibrated rotation
 		var rotBuf = adjustToDrift(tracker.getRawRotation())
-		rotBuf = gyroFix * rotBuf
 		rotBuf *= attachmentFix
 		rotBuf = mountingOrientation.inv() * (rotBuf * mountingOrientation)
 		rotBuf = yawFix * rotBuf
@@ -489,11 +478,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	//  the pitch.
 	private fun fixGyroscope(sensorRotation: Quaternion): Quaternion = getYawQuaternion(sensorRotation, EulerOrder.YXZ).inv()
 
-	private fun fixAttachment(sensorRotation: Quaternion): Quaternion = (gyroFix * sensorRotation).inv()
-
 	private fun fixYaw(sensorRotation: Quaternion, reference: Quaternion): Quaternion {
-		var rot = gyroFix * sensorRotation
-		rot *= attachmentFix
+		var rot = sensorRotation * attachmentFix
 		// We need to fix the global yaw offset for the euler yaw calculation
 		if (!tracker.isHmd || tracker.trackerPosition != TrackerPosition.HEAD) {
 			rot = mountingOrientation.inv() * (rot * mountingOrientation)
