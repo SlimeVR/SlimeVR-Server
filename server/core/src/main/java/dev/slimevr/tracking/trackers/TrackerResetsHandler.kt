@@ -27,6 +27,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		Math.PI.toFloat(),
 		0f,
 	).toQuaternion()
+	private val QuarterPitch = Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
+
 	private var driftAmount = 0f
 	private var averagedDriftQuat = Quaternion.IDENTITY
 	private var rotationSinceReset = Quaternion.IDENTITY
@@ -279,7 +281,14 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			gyroFix = if (tracker.isComputed) {
 				fixGyroscope(tracker.getRawRotation())
 			} else {
-				fixGyroscope(mountingAdjustedRotation * tposeDownFix)
+				if (tracker.trackerPosition.isFoot()) {
+					// Feet are rotated by 90 deg pitch, this means we're relying on IMU rotation
+					//  to be set correctly here.
+					val pitchOffset = mountingOrientation.inv() * (QuarterPitch * mountingOrientation)
+					fixGyroscope(mountingAdjustedRotation * tposeDownFix * pitchOffset)
+				} else {
+					fixGyroscope(mountingAdjustedRotation * tposeDownFix)
+				}
 			}
 		}
 
@@ -468,7 +477,12 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		mountRotFix = Quaternion.IDENTITY
 	}
 
-	private fun fixGyroscope(sensorRotation: Quaternion): Quaternion = getYawQuaternion(sensorRotation).inv()
+	// EulerOrder.YXZ is actually better for gyroscope fix, as it can get yaw at any roll.
+	//  Consequentially, instead of the roll being limited, the pitch is limited to
+	//  90 degrees from the yaw plane. This means trackers may be mounted upside down
+	//  or with incorrectly configured IMU rotation, but we will need to compensate for
+	//  the pitch.
+	private fun fixGyroscope(sensorRotation: Quaternion): Quaternion = getYawQuaternion(sensorRotation, EulerOrder.YXZ).inv()
 
 	private fun fixAttachment(sensorRotation: Quaternion): Quaternion = (gyroFix * sensorRotation).inv()
 
@@ -486,7 +500,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	// In both cases, the isolated yaw value changes
 	// with the tracker's roll when pointing forward.
 	// calling twinNearest() makes sure this rotation has the wanted polarity (+-).
-	private fun getYawQuaternion(rot: Quaternion): Quaternion = EulerAngles(EulerOrder.YZX, 0f, rot.toEulerAngles(EulerOrder.YZX).y, 0f).toQuaternion().twinNearest(rot)
+	private fun getYawQuaternion(rot: Quaternion, order: EulerOrder = EulerOrder.YZX): Quaternion = EulerAngles(order, 0f, rot.toEulerAngles(order).y, 0f).toQuaternion().twinNearest(rot)
 
 	private fun makeIdentityAdjustmentQuatsFull() {
 		val sensorRotation = tracker.getRawRotation()
