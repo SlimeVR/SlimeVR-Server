@@ -19,7 +19,7 @@ class RelaxedPose(
 
 	companion object {
 
-		val ZERO = RelaxedPose(Angle.ZERO, Angle.ZERO, Angle.ZERO, Angle.ZERO, digitorumBrevis = Angle.ZERO, abductorDigitiMinimi = Angle.ZERO)
+		val ZERO = RelaxedPose(Angle.ZERO, Angle.ZERO, Angle.ZERO, Angle.ZERO, Angle.ZERO, Angle.ZERO)
 
 		/**
 		 * Gets the relaxed angles for a particular pose. May provide defaults if the
