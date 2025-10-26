@@ -485,6 +485,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			rot = mountingOrientation.inv() * (rot * mountingOrientation)
 		}
 		rot = mountRotFix.inv() * (rot * mountRotFix)
+		// TODO: Get diff from ref to rot, use euler angle (YZX) yaw as output.
+		//  This prevents pitch and roll from affecting the alignment.
 		rot = getYawQuaternion(rot)
 		return rot.inv() * reference.project(Vector3.POS_Y).unit()
 	}
