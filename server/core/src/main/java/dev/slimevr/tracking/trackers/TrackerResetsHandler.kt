@@ -412,7 +412,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			return
 		}
 
-		tracker.resetNext = true
+		tracker.startMounting()
 		return
 
 		constraintFix = Quaternion.IDENTITY

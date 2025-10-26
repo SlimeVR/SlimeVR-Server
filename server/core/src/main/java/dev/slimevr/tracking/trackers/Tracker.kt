@@ -21,8 +21,6 @@ import solarxr_protocol.rpc.StatusData
 import solarxr_protocol.rpc.StatusDataUnion
 import solarxr_protocol.rpc.StatusTrackerErrorT
 import solarxr_protocol.rpc.StatusTrackerResetT
-import java.io.File
-import java.io.OutputStreamWriter
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.properties.Delegates
@@ -172,10 +170,6 @@ class Tracker @JvmOverloads constructor(
 	val stayAligned = StayAlignedTrackerState(this)
 	val yawResetSmoothing = InterpolationHandler()
 
-	val csv: File?
-	val csvOut: OutputStreamWriter?
-	val startTime = System.currentTimeMillis()
-
 	init {
 		// IMPORTANT: Look here for the required states of inputs
 		require(!needsReset || (hasRotation && needsReset)) {
@@ -190,6 +184,7 @@ class Tracker @JvmOverloads constructor(
 // 		require(device != null && _trackerNum == null) {
 // 			"If ${::device.name} exists, then ${::trackerNum.name} must not be null"
 // 		}
+		/*
 		if (!isInternal && isImu()) {
 			csv = File("C:/Users/Butterscotch/Desktop/Tracker Accel", "tracker_$id.csv")
 			csvOut = csv.writer()
@@ -200,6 +195,7 @@ class Tracker @JvmOverloads constructor(
 			csv = null
 			csvOut = null
 		}
+		 */
 	}
 
 	fun checkReportRequireReset() {
@@ -351,6 +347,9 @@ class Tracker @JvmOverloads constructor(
 		stayAligned.update()
 	}
 
+	val minDur = 2000L
+	var startTime = System.currentTimeMillis()
+
 	data class AccelSample(val time: Long, val accel: Vector3, val hmdPos: Vector3)
 	data class AccelTimeline(val resting: Boolean, val samples: FastList<AccelSample> = FastList<AccelSample>())
 
@@ -408,7 +407,7 @@ class Tracker @JvmOverloads constructor(
 			val pos = accum.offset
 			val hmd = sample.hmdPos - initHmd
 
-			csvOut?.write("$time,${accel.x},${accel.y},${accel.z},${accel.len()},${vel.x},${vel.y},${vel.z},${vel.len()},${pos.x},${pos.y},${pos.z},${hmd.x},${hmd.y},${hmd.z}\n")
+			// csvOut?.write("$time,${accel.x},${accel.y},${accel.z},${accel.len()},${vel.x},${vel.y},${vel.z},${vel.len()},${pos.x},${pos.y},${pos.z},${hmd.x},${hmd.y},${hmd.z}\n")
 		}
 
 		return time
@@ -417,6 +416,11 @@ class Tracker @JvmOverloads constructor(
 	fun angle(vector: Vector3): Quaternion {
 		val yaw = atan2(vector.x, vector.z)
 		return Quaternion.rotationAroundYAxis(yaw)
+	}
+
+	fun startMounting() {
+		resetNext = true
+		startTime = System.currentTimeMillis()
 	}
 
 	/**
@@ -429,7 +433,7 @@ class Tracker @JvmOverloads constructor(
 			filteringHandler.dataTick(getAdjustedRotation())
 		}
 
-		if (csvOut != null) {
+		if (resetNext) {
 			lastFrameRest = curFrameRest
 
 			val accel = getAcceleration()
@@ -451,7 +455,7 @@ class Tracker @JvmOverloads constructor(
 				curFrameRest = if (curFrameRest) {
 					stats.mean < 0.3f && accelLen - stats.mean < 0.6f
 				} else {
-					stats.mean < 0.1f && stats.standardDeviation < 0.2f
+					stats.mean < 0.1f && stats.standardDeviation < 0.2f && sample.time >= minDur
 				}
 			}
 
@@ -475,7 +479,7 @@ class Tracker @JvmOverloads constructor(
 						// LogManager.info("moveTime: $moveTime\npostAvg: $postAvg\nslope: $slope")
 
 						val outAccum = AccelAccumulator()
-						writeTimeline(outAccum, move, accelBias = slope)
+						processTimeline(outAccum, move, accelBias = slope)
 
 						// We need to compare offsets of HMD and tracker
 						val hmdOff = lastSample.hmdPos - firstSample.hmdPos
@@ -486,29 +490,30 @@ class Tracker @JvmOverloads constructor(
 
 						val hmdRot = angle(hmd.unit()).inv()
 						val trackerRot = angle(tracker.unit())
-						val result = (trackerRot * hmdRot).sandwichUnitZ()
+						val mountRot = trackerRot * hmdRot
 
-						val dir = if (abs(result.z) > abs(result.x)) {
-							if (result.z > 0f) {
+						val mountVec = mountRot.sandwichUnitZ()
+						val mountText = if (abs(mountVec.z) > abs(mountVec.x)) {
+							if (mountVec.z > 0f) {
 								"front"
 							} else {
 								"back"
 							}
 						} else {
-							if (result.x > 0f) {
+							if (mountVec.x > 0f) {
 								"right"
 							} else {
 								"left"
 							}
 						}
 
-						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}):\nTracker: $tracker\nHmd: $hmd\nErr: ${tracker.len() - hmd.len()}\nResult: $result ($dir)")
+						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}):\nTracker: $tracker\nHmd: $hmd\nErr: ${tracker.len() - hmd.len()}\nResult: $mountVec ($mountText)")
 
 						if (resetNext) {
 							resetNext = false
 
 							LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) setting mounting!")
-							val mount = when (dir) {
+							val mount = when (mountText) {
 								"front" -> Quaternion.SLIMEVR.FRONT
 
 								"back" -> Quaternion.SLIMEVR.BACK
