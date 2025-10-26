@@ -9,6 +9,7 @@ import dev.slimevr.Keybinding
 import dev.slimevr.VRServer
 import dev.slimevr.android.serial.AndroidSerialHandler
 import dev.slimevr.android.tracking.trackers.hid.AndroidHIDManager
+import dev.slimevr.config.ConfigManager
 import dev.slimevr.tracking.trackers.Tracker
 import io.eiren.util.logging.LogManager
 import io.ktor.http.CacheControl
@@ -51,8 +52,12 @@ fun main(activity: AppCompatActivity) {
 		}
 
 		try {
+			val configPath = File(activity.filesDir, "vrconfig.yml").absolutePath
+			val configManager = ConfigManager(configPath)
+			configManager.loadConfig()
+
 			vrServer = VRServer(
-				configPath = File(activity.filesDir, "vrconfig.yml").absolutePath,
+				configManager = configManager,
 				serialHandlerProvider = { _ -> AndroidSerialHandler(activity) },
 				acquireMulticastLock = {
 					val wifi = activity.getSystemService(Context.WIFI_SERVICE) as WifiManager
