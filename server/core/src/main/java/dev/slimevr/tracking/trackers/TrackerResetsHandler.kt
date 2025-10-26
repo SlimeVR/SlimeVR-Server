@@ -198,9 +198,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		rot *= attachmentFix
 		// Correct for global yaw offset (do not affect local yaw)
 		if (!tracker.isHmd || tracker.trackerPosition != TrackerPosition.HEAD) {
-			rot = mountingOrientation.inv() * (rot * mountingOrientation)
+			rot = mountingOrientation.inv() * rot * mountingOrientation
 		}
-		rot = mountRotFix.inv() * (rot * mountRotFix)
+		rot = mountRotFix.inv() * rot * mountRotFix
 		// T-pose global correction
 		rot *= tposeDownFix
 		// Align local yaw with reference
@@ -415,7 +415,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		// Get the current calibrated rotation
 		var rotBuf = adjustToDrift(tracker.getRawRotation())
 		rotBuf *= attachmentFix
-		rotBuf = mountingOrientation.inv() * (rotBuf * mountingOrientation)
+		rotBuf = mountingOrientation.inv() * rotBuf * mountingOrientation
 		rotBuf = yawFix * rotBuf
 
 		// Adjust buffer to reference
@@ -482,9 +482,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		var rot = sensorRotation * attachmentFix
 		// We need to fix the global yaw offset for the euler yaw calculation
 		if (!tracker.isHmd || tracker.trackerPosition != TrackerPosition.HEAD) {
-			rot = mountingOrientation.inv() * (rot * mountingOrientation)
+			rot = mountingOrientation.inv() * rot * mountingOrientation
 		}
-		rot = mountRotFix.inv() * (rot * mountRotFix)
+		rot = mountRotFix.inv() * rot * mountRotFix
 		// TODO: Get diff from ref to rot, use euler angle (YZX) yaw as output.
 		//  This prevents pitch and roll from affecting the alignment.
 		rot = getYawQuaternion(rot)

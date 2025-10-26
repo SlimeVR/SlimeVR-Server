@@ -35,7 +35,7 @@ class MountingResetTests {
 
 	private fun checkResetMounting(expected: Quaternion, reference: Quaternion) {
 		// Compute the pitch/roll for the expected mounting
-		val trackerRot = (expected * (TrackerTestUtils.frontRot / expected))
+		val trackerRot = expected * TrackerTestUtils.frontRot / expected
 
 		val tracker = Tracker(
 			null,
@@ -120,7 +120,7 @@ class MountingResetTests {
 		val expected = Quaternion.SLIMEVR.RIGHT
 		val reference = EulerAngles(EulerOrder.YZX, FastMath.PI / 8f, FastMath.HALF_PI, 0f).toQuaternion()
 		// Compute the pitch/roll for the expected mounting
-		val trackerRot = (expected * (TrackerTestUtils.frontRot / expected))
+		val trackerRot = expected * TrackerTestUtils.frontRot / expected
 
 		val tracker = Tracker(
 			null,
