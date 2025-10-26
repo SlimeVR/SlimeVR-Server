@@ -118,5 +118,5 @@ class SkeletonResetTests {
 		}
 	}
 
-	fun mkTrackMount(rot: Quaternion): Quaternion = rot * (TrackerTestUtils.frontRot / rot)
+	fun mkTrackMount(rot: Quaternion): Quaternion = rot * TrackerTestUtils.frontRot / rot
 }
