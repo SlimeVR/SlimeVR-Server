@@ -80,7 +80,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * [mountingOrientation] will apply.
 	 */
 	var mountRotFix = Quaternion.IDENTITY
-		private set
 
 	/**
 	 * Yaw fix is set by yaw reset. This sets the current y rotation to match the

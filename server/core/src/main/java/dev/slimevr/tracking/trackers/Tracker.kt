@@ -513,21 +513,7 @@ class Tracker @JvmOverloads constructor(
 							resetNext = false
 
 							LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) setting mounting!")
-							val mount = when (mountText) {
-								"front" -> Quaternion.SLIMEVR.FRONT
-
-								"back" -> Quaternion.SLIMEVR.BACK
-
-								"left" -> Quaternion.SLIMEVR.LEFT
-
-								"right" -> Quaternion.SLIMEVR.RIGHT
-
-								else -> {
-									Quaternion.SLIMEVR.FRONT
-								}
-							}
-
-							resetsHandler.mountingOrientation = mount
+							resetsHandler.mountRotFix *= mountRot
 						}
 					}
 					curTimeline = null
