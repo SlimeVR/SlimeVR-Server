@@ -1,0 +1,18 @@
+[Desktop Entry]
+Categories=Game;GTK;
+Comment=An app for facilitating full-body tracking in virtual reality
+Exec=bash -c "WEBKIT_DISABLE_DMABUF_RENDERER=1 WAYLAND_DISPLAY=0 slimevr"
+GenericName=Full-body tracking
+Icon=slimevr
+Keywords=FBT;VR;Steam;VRChat;IMU
+Name=SlimeVR (safe mode)
+NoDisplay=false
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+Version=1.5
+X-KDE-SubstituteUID=false
+X-KDE-Username=

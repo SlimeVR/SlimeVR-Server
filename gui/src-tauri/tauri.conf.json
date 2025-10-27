@@ -33,7 +33,8 @@
         ],
         "files": {
           "/usr/share/slimevr/slimevr.jar": "../../server/desktop/build/libs/slimevr.jar",
-          "/usr/lib/udev/rules.d/69-slimevr.rules": "./69-slimevr-devices.rules"
+          "/usr/lib/udev/rules.d/69-slimevr.rules": "./69-slimevr-devices.rules",
+          "/usr/share/applications/safe-mode.dev.slimevr.SlimeVR.desktop": "./safe-mode.dev.slimevr.SlimeVR.desktop"
         },
         "desktopTemplate": "./dev.slimevr.SlimeVR.desktop"
       }
