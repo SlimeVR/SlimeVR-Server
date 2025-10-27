@@ -164,7 +164,7 @@ jobs:
           path: server/desktop/build/libs/
 
       - name: Set up Linux dependencies
-        uses: awalsh128/cache-apt-pkgs-action@v1.5.3
+        uses: awalsh128/cache-apt-pkgs-action@v1.6.0
         with:
           packages: |
             build-essential curl wget file libssl-dev libgtk-3-dev libappindicator3-dev librsvg2-dev
