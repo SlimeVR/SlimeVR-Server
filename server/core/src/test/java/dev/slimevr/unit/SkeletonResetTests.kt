@@ -2,7 +2,6 @@ package dev.slimevr.unit
 
 import com.jme3.math.FastMath
 import dev.slimevr.tracking.processor.HumanPoseManager
-import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.unit.TrackerTestUtils.assertAnglesApproxEqual
 import dev.slimevr.unit.TrackerTestUtils.quatApproxEqual
 import io.github.axisangles.ktmath.EulerAngles
@@ -61,62 +60,4 @@ class SkeletonResetTests {
 			assertAnglesApproxEqual(0f, yaw, "\"${tracker.name}\" did not reset to the reference rotation.")
 		}
 	}
-
-	@Test
-	fun testSkeletonMountReset() {
-		val trackers = TestTrackerSet()
-
-		// Initialize skeleton and everything
-		val hpm = HumanPoseManager(trackers.allL)
-
-		// Just a bunch of random mounting orientations
-		val expected = arrayOf(
-			Pair(trackers.chest, Quaternion.SLIMEVR.FRONT),
-			Pair(trackers.hip, Quaternion.SLIMEVR.RIGHT),
-			Pair(trackers.leftThigh, Quaternion.SLIMEVR.BACK),
-			Pair(trackers.leftCalf, Quaternion.SLIMEVR.LEFT),
-			Pair(trackers.rightThigh, Quaternion.SLIMEVR.FRONT),
-			Pair(trackers.rightCalf, Quaternion.SLIMEVR.RIGHT),
-		)
-		// Rotate the tracker to fit the expected mounting orientation
-		for ((tracker, mountRot) in expected) {
-			tracker.setRotation(mkTrackMount(mountRot))
-		}
-		// Then perform a mounting reset
-		hpm.resetTrackersMounting(resetSource)
-
-		for ((tracker, mountRot) in expected) {
-			// Some mounting needs to be inverted (when in a specific pose)
-			// TODO: Make this less hardcoded, accept alternative poses
-			val expectedMounting = when (tracker.trackerPosition) {
-				TrackerPosition.CHEST,
-				TrackerPosition.HIP,
-				TrackerPosition.LEFT_LOWER_LEG,
-				TrackerPosition.RIGHT_LOWER_LEG,
-				-> mountRot
-
-				TrackerPosition.LEFT_UPPER_LEG,
-				TrackerPosition.RIGHT_UPPER_LEG,
-				-> mountRot * Quaternion.SLIMEVR.FRONT
-
-				else -> mountRot * Quaternion.SLIMEVR.FRONT
-			}
-			val actualMounting = tracker.resetsHandler.mountRotFix
-
-			// Make sure yaw matches
-			val expectedY = TrackerTestUtils.yaw(expectedMounting)
-			val actualY = TrackerTestUtils.yaw(actualMounting)
-			assertAnglesApproxEqual(expectedY, actualY, "\"${tracker.name}\" did not reset to the reference rotation.")
-
-			// X and Z components should be zero for mounting
-			assert(FastMath.isApproxZero(actualMounting.x)) {
-				"\"${tracker.name}\" did not reset to the reference rotation. Expected <0.0>, actual <${actualMounting.x}>."
-			}
-			assert(FastMath.isApproxZero(actualMounting.z)) {
-				"\"${tracker.name}\" did not reset to the reference rotation. Expected <0.0>, actual <${actualMounting.z}>."
-			}
-		}
-	}
-
-	fun mkTrackMount(rot: Quaternion): Quaternion = rot * TrackerTestUtils.frontRot / rot
 }

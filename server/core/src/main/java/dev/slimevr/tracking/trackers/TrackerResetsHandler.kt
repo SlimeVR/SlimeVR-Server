@@ -395,6 +395,20 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		tracker.resetFilteringQuats(reference)
 	}
 
+	fun resetMountingAccel(reference: Quaternion, forceFeet: Boolean = false) {
+		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
+			tracker.trackerFlexHandler.resetMax()
+			tracker.resetFilteringQuats(reference)
+			return
+		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
+			return
+		} else if (!resetMountingFeet && tracker.trackerPosition.isFoot() && !forceFeet) {
+			return
+		}
+
+		tracker.startMounting()
+	}
+
 	/**
 	 * Perform the math to align the tracker to go forward
 	 * and stores it in mountRotFix, and adjusts yawFix
@@ -410,9 +424,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		} else if (!resetMountingFeet && tracker.trackerPosition.isFoot() && !forceFeet) {
 			return
 		}
-
-		tracker.startMounting()
-		return
 
 		constraintFix = Quaternion.IDENTITY
 
