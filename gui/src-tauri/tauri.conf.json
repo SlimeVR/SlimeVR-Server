@@ -15,7 +15,8 @@
         ],
         "files": {
           "/usr/share/slimevr/slimevr.jar": "../../server/desktop/build/libs/slimevr.jar",
-          "/lib/udev/rules.d/69-slimevr.rules": "./69-slimevr-devices.rules"
+          "/lib/udev/rules.d/69-slimevr.rules": "./69-slimevr-devices.rules",
+          "/usr/share/applications/safe-mode.dev.slimevr.SlimeVR.desktop": "./safe-mode.dev.slimevr.SlimeVR.desktop"
         },
         "desktopTemplate": "./dev.slimevr.SlimeVR.desktop",
         "section": "contrib/games"
