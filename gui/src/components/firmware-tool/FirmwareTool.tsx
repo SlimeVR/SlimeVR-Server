@@ -56,6 +56,7 @@ function FirmwareToolContent() {
         title: l10n.getString('firmware_tool-build_step'),
       },
       {
+        id: 'FlashingMethod',
         component: FlashingMethodStep,
         title: l10n.getString('firmware_tool-flash_method_step'),
       },
@@ -82,10 +83,6 @@ function FirmwareToolContent() {
     context.selectedDevices,
     l10n,
   ]);
-
-  const retry = async () => {
-    await refetch();
-  };
 
   return (
     <FirmwareToolContextC.Provider value={context}>
@@ -117,7 +114,7 @@ function FirmwareToolContent() {
                 </Localized>
               )}
               <Localized id="firmware_tool-retry">
-                <Button variant="primary" onClick={retry}></Button>
+                <Button variant="primary" onClick={() => refetch()}></Button>
               </Localized>
             </div>
           )}

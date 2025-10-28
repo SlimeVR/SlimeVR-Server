@@ -89,6 +89,7 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
 board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
@@ -1336,6 +1337,8 @@ firmware_tool-select_source-error = Unable to load Sources
 firmware_tool-select_source-board_type = Board Type
 firmware_tool-select_source-firmware = Firmware Source
 firmware_tool-select_source-version = Firmware Version
+firmware_tool-select_source-official = Official
+firmware_tool-select_source-dev = Dev
 
 firmware_tool-board_defaults = Configure your board
 firmware_tool-board_defaults-description = Set the pins or settings relative to your hardware
@@ -1348,12 +1351,17 @@ firmware_tool-board_defaults-error-format-number = Not a number
 firmware_tool-flash_method_step = Flashing Method
 firmware_tool-flash_method_step-description =
     Please select the flashing method you want to use
-firmware_tool-flash_method_step-ota =
-    .label = OTA
+
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
     .description = Use the over-the-air method. Your tracker will use Wi-Fi to update its firmware. Only works on trackers that have been set up.
-firmware_tool-flash_method_step-serial =
-    .label = Serial
+firmware_tool-flash_method_step-ota-info =
+    We use your wifi credentials to flash the tracker and confirm that everything worked correctly.
+    <b>We do not store your wifi credentials!</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
     .description = Use a USB cable to update your tracker.
+
 
 firmware_tool-flashbtn_step = Press the boot btn
 firmware_tool-flashbtn_step-description = Before going to the next step, there are a few things you need to do
@@ -1368,8 +1376,10 @@ firmware_tool-flashbtn_step-board_OTHER = Before flashing, you will probably nee
     If the flashing process times out at the start, it probably means that the tracker was not in bootloader mode.
     Refer to your board's flashing instructions to learn how to enter bootloader mode.
 
+firmware_tool-flash_method_ota-title = Flashing over Wi-Fi
 firmware_tool-flash_method_ota-devices = Detected OTA Devices:
 firmware_tool-flash_method_ota-no_devices = There are no boards that can be updated using OTA, make sure you selected the correct board type
+firmware_tool-flash_method_serial-title = Flashing over USB
 firmware_tool-flash_method_serial-wifi = Wi-Fi Credentials:
 firmware_tool-flash_method_serial-devices-label = Detected Serial Devices:
 firmware_tool-flash_method_serial-devices-placeholder = Select a serial device

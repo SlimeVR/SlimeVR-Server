@@ -1,4 +1,4 @@
-import { Localized, useLocalization } from '@fluent/react';
+import { Localized } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { LoaderIcon, SlimeState } from '@/components/commons/icon/LoaderIcon';
 import { useFirmwareTool } from '@/hooks/firmware-tool';
@@ -9,19 +9,19 @@ import {
   useGetFirmwareSources,
 } from '@/firmware-tool-api/firmwareToolComponents';
 import { useEffect, useMemo, useState } from 'react';
+import { useSafeLocalization } from '@/i18n/config';
 
 function Selector({
   text,
   active,
   disabled,
-  devBranch,
-  official,
+  tag,
   onClick,
 }: {
   text: string;
   active: boolean;
   official?: boolean;
-  devBranch?: boolean;
+  tag?: 'official' | 'dev';
   disabled?: boolean;
   onClick: () => void;
 }) {
@@ -39,24 +39,28 @@ function Selector({
         if (!disabled) onClick();
       }}
     >
-      {official && (
+      {tag === 'official' && (
         <div
           className={classNames(
             'absolute px-2 py-0.5 rounded-md bg-accent-background-20 -top-2 -right-2',
             { 'brightness-20': disabled, 'brightness-50': !active }
           )}
         >
-          <Typography>Official</Typography>
+          <Localized id="firmware_tool-select_source-official">
+            <Typography></Typography>
+          </Localized>
         </div>
       )}
-      {devBranch && (
+      {tag === 'dev' && (
         <div
           className={classNames(
             'absolute px-2 py-0.5 rounded-md bg-status-warning -top-2 -right-2',
             { 'brightness-20': disabled, 'brightness-50': !active }
           )}
         >
-          <Typography color="text-background-90">Dev Branch</Typography>
+          <Localized id="firmware_tool-select_source-dev">
+            <Typography color="text-background-90"></Typography>
+          </Localized>
         </div>
       )}
       {text}
@@ -72,7 +76,7 @@ export function SelectSourceSetep({
   prevStep: () => void;
   goTo: (id: string) => void;
 }) {
-  const { l10n } = useLocalization();
+  const { l10n, getStringOrNull } = useSafeLocalization();
   const { setSelectedSource, selectedSource, selectedDefault } =
     useFirmwareTool();
   const [partialBoard, setPartialBoard] = useState<{
@@ -118,11 +122,14 @@ export function SelectSourceSetep({
         }, [] as string[])
         .sort((a, b) => {
           // Sort official board type first
-          const aStartsWithBoard = a.startsWith('BOARD_SLIMEVR_');
-          const bStartsWithBoard = b.startsWith('BOARD_SLIMEVR_');
+          const aStartsWithBoard = a.startsWith('BOARD_SLIMEVR');
+          const bStartsWithBoard = b.startsWith('BOARD_SLIMEVR');
 
           if (aStartsWithBoard && !bStartsWithBoard) return -1;
           if (!aStartsWithBoard && bStartsWithBoard) return 1;
+
+          if (a === 'BOARD_SLIMEVR_DEV' && b !== 'BOARD_SLIMEVR_DEV') return 1;
+          if (a !== 'BOARD_SLIMEVR_DEV' && b === 'BOARD_SLIMEVR_DEV') return -1;
           return a.localeCompare(b);
         }),
       possibleVersions: sources
@@ -187,7 +194,7 @@ export function SelectSourceSetep({
                   <Localized id="firmware_tool-select_source-board_type">
                     <Typography variant="section-title"></Typography>
                   </Localized>
-                  <div className="flex flex-col gap-2 md:max-h-[300px] overflow-y-auto bg-background-80 rounded-lg p-4">
+                  <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
                     {possibleBoards?.map((board) => (
                       <Selector
                         active={partialBoard?.board === board}
@@ -195,11 +202,18 @@ export function SelectSourceSetep({
                         onClick={() => {
                           setPartialBoard({ board });
                         }}
-                        text={l10n.getString(
-                          `board_type-${board.replace('BOARD_', '')}`,
-                          undefined,
-                          board.replace('BOARD_', '').replaceAll('_', ' ')
-                        )}
+                        tag={
+                          board.startsWith('BOARD_SLIMEVR')
+                            ? board === 'BOARD_SLIMEVR_DEV'
+                              ? 'dev'
+                              : 'official'
+                            : undefined
+                        }
+                        text={
+                          getStringOrNull(
+                            `board_type-${board.replace('BOARD_', '')}`
+                          ) ?? board.replace('BOARD_', '').replaceAll('_', ' ')
+                        }
                       ></Selector>
                     ))}
                   </div>
@@ -208,13 +222,13 @@ export function SelectSourceSetep({
                   <Localized id="firmware_tool-select_source-firmware">
                     <Typography variant="section-title"></Typography>
                   </Localized>
-                  <div className="flex flex-col gap-2 md:max-h-[300px] overflow-y-auto bg-background-80 rounded-lg p-4">
+                  <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
                     {sourcesGroupped?.map(({ name, official, disabled }) => (
                       <Selector
                         active={partialBoard?.source === name}
                         disabled={disabled}
                         key={`${name}`}
-                        official={official}
+                        tag={official ? 'official' : undefined}
                         onClick={() => {
                           setPartialBoard((curr) => ({
                             ...curr,
@@ -230,15 +244,17 @@ export function SelectSourceSetep({
                   <Localized id="firmware_tool-select_source-version">
                     <Typography variant="section-title"></Typography>
                   </Localized>
-                  <div className="flex flex-col gap-2 md:max-h-[300px] overflow-y-auto bg-background-80 rounded-lg p-4">
+                  <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
                     {possibleVersions?.map(({ name, disabled }) => (
                       <Selector
                         active={partialBoard?.version === name}
                         disabled={disabled}
                         key={`${name}`}
-                        devBranch={
+                        tag={
                           partialBoard?.source?.startsWith('SlimeVR/') &&
                           name === 'llelievr/board-defaults'
+                            ? 'dev'
+                            : undefined
                         }
                         onClick={() => {
                           setPartialBoard((curr) => ({

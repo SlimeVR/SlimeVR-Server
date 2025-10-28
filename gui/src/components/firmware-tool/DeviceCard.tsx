@@ -19,6 +19,7 @@ interface DeviceCardProps {
   deviceNames: string[];
   status?: FirmwareUpdateStatus;
   online?: boolean | null;
+  color?: string;
 }
 
 interface DeviceCardControlProps {
@@ -60,6 +61,7 @@ export function DeviceCardControl({
   progress,
   disabled = false,
   online = null,
+  color = 'bg-background-60',
   ...props
 }: DeviceCardControlProps & DeviceCardProps) {
   const cardborder = useMemo(() => {
@@ -80,8 +82,9 @@ export function DeviceCardControl({
   return (
     <div
       className={classNames(
-        'rounded-md bg-background-60 h-[86px] pt-2 flex flex-col justify-between border-2 relative',
-        cardborder
+        'rounded-md h-[86px] pt-2 flex flex-col justify-between border-2 relative',
+        cardborder,
+        color
       )}
     >
       {control && name ? (

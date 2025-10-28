@@ -202,7 +202,7 @@ export function BoardDefaultsStep({
       <div className="flex flex-col w-full gap-4">
         <div className="flex flex-grow flex-col gap-4">
           <Typography>
-            {l10n.getString('firmware_tool-board_step-description')}
+            {l10n.getString('firmware_tool-board_defaults-description')}
           </Typography>
         </div>
         <BoardDefaultsGraph graph={graph}></BoardDefaultsGraph>

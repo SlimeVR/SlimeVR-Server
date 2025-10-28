@@ -14,6 +14,7 @@ import {
 export function BuildStep({
   isActive,
   prevStep,
+  goTo,
   nextStep,
 }: {
   nextStep: () => void;
@@ -22,7 +23,7 @@ export function BuildStep({
   isActive: boolean;
 }) {
   const { l10n } = useLocalization();
-  const { selectedSource, setFiles } = useFirmwareTool();
+  const { selectedSource, setFiles, selectedDefault } = useFirmwareTool();
   const [buildStatus, setBuildStatus] = useState<
     BuildStatusDone | BuildStatusBasic
   >({ status: 'QUEUED', id: '' });
@@ -102,7 +103,13 @@ export function BuildStep({
             <Button
               variant="secondary"
               disabled={hasPendingBuild}
-              onClick={prevStep}
+              onClick={() => {
+                if (selectedDefault?.flashingRules.shouldOnlyUseDefaults) {
+                  goTo('SelectSource');
+                } else {
+                  prevStep();
+                }
+              }}
             ></Button>
           </Localized>
           <Localized id="firmware_tool-retry">

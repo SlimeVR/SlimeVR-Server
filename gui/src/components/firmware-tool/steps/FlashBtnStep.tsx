@@ -4,7 +4,10 @@ import { Button } from '@/components/commons/Button';
 import { useFirmwareTool } from '@/hooks/firmware-tool';
 import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
 
-export function FlashBtnStep({ nextStep }: VerticalStepComponentProps) {
+export function FlashBtnStep({
+  nextStep,
+  prevStep,
+}: VerticalStepComponentProps) {
   const { l10n } = useLocalization();
   const { selectedSource } = useFirmwareTool();
 
@@ -59,7 +62,15 @@ export function FlashBtnStep({ nextStep }: VerticalStepComponentProps) {
               </Typography>
             </>
           )}
-          <div className="flex justify-end">
+          <div className="flex justify-between">
+            <Localized id="firmware_tool-previous_step">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  prevStep();
+                }}
+              ></Button>
+            </Localized>
             <Localized id="firmware_tool-next_step">
               <Button
                 variant="primary"
