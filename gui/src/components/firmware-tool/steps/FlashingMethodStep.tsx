@@ -1,6 +1,6 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
-import { useFirmwareTool } from '@/hooks/firmware-tool';
+import { SelectedDevice, useFirmwareTool } from '@/hooks/firmware-tool';
 import { Control, UseFormReset, UseFormWatch, useForm } from 'react-hook-form';
 import { Radio } from '@/components/commons/Radio';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -216,10 +216,12 @@ function SerialDevicesList({
 }
 
 function OTADevicesList({
+  isActive,
   control,
   watch,
   reset,
 }: {
+  isActive: boolean;
   control: Control<FlashingMethodForm>;
   watch: UseFormWatch<FlashingMethodForm>;
   reset: UseFormReset<FlashingMethodForm>;
@@ -248,37 +250,40 @@ function OTADevicesList({
   const selectedDevices = watch('ota.selectedDevices');
 
   useLayoutEffect(() => {
-    reset({
-      flashingMethod: FirmwareUpdateMethod.OTAFirmwareUpdate.toString(),
-      ota: {
-        selectedDevices: devices.reduce(
-          (curr, { id }) => ({ ...curr, [id?.id ?? 0]: false }),
-          {}
-        ),
-      },
-      serial: undefined,
-    });
-    selectDevices(null);
-  }, []);
+    if (isActive) {
+      reset({
+        flashingMethod: FirmwareUpdateMethod.OTAFirmwareUpdate.toString(),
+        ota: {
+          selectedDevices: devices.reduce(
+            (curr, { id }) => ({ ...curr, [id?.id ?? 0]: false }),
+            {}
+          ),
+        },
+        serial: undefined,
+      });
+      selectDevices(null);
+    }
+  }, [isActive]);
 
   useEffect(() => {
     if (selectedDevices) {
       selectDevices(
-        Object.keys(selectedDevices)
-          .filter((d) => selectedDevices[d])
-          .map((id) => id.substring('id-'.length))
-          .map((id) => {
-            const device = devices.find(
-              ({ id: dId }) => id === dId?.id.toString()
-            );
-
-            if (!device) throw new Error('no device found');
-            return {
+        Object.keys(selectedDevices).reduce((curr, id) => {
+          if (!selectedDevices[id]) return curr;
+          const deviceId = id.substring('id-'.length);
+          const device = devices.find(
+            ({ id: dId }) => deviceId === dId?.id.toString()
+          );
+          if (!device) return curr;
+          return [
+            ...curr,
+            {
               type: FirmwareUpdateMethod.OTAFirmwareUpdate,
-              deviceId: id,
+              deviceId,
               deviceNames: deviceNames(device),
-            };
-          })
+            },
+          ];
+        }, [] as SelectedDevice[])
       );
     }
   }, [JSON.stringify(selectedDevices)]);
@@ -371,6 +376,12 @@ export function FlashingMethodStep({
 
   const flashingMethod = watch('flashingMethod');
 
+  console.log(
+    !isValid,
+    selectedDevices === null,
+    selectedDevices?.length === 0
+  );
+
   return (
     <>
       <div className="flex flex-col w-full">
@@ -418,6 +429,7 @@ export function FlashingMethodStep({
               {flashingMethod ===
                 FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
                 <OTADevicesList
+                  isActive={isActive}
                   control={control}
                   watch={watch}
                   reset={reset}

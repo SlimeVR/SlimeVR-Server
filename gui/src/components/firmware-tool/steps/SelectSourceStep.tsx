@@ -84,6 +84,7 @@ export function SelectSourceSetep({
     version?: string;
     board?: string;
   }>();
+
   const {
     isFetching,
     isError,
@@ -171,6 +172,8 @@ export function SelectSourceSetep({
           default: board,
         });
       });
+    } else {
+      setSelectedSource(undefined);
     }
   }, [partialBoard]);
 
