@@ -29,6 +29,9 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	).toQuaternion()
 	private val QuarterPitch = Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
 
+	// TODO: Set this offset to Quaternion.IDENTITY when the firmware is corrected!
+	val SensorOffsetCorrection = Quaternion.rotationAroundZAxis(FastMath.HALF_PI)
+
 	private var driftAmount = 0f
 	private var averagedDriftQuat = Quaternion.IDENTITY
 	private var rotationSinceReset = Quaternion.IDENTITY
@@ -182,9 +185,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun getIdentityAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion = adjustToDrift(adjustToIdentity(rotation))
 
 	/**
-	 * Get the adjusted accel from yawFixZeroReference
+	 * Get the reference adjusted accel.
 	 */
-	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 = (adjustToReference(rawRot) / yawFix).sandwich(accel)
+	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 =
+		(SensorOffsetCorrection * attachmentFix * mountingOrientation * mountRotFix * adjustToReference(rawRot)).sandwich(accel)
 
 	/**
 	 * Converts raw or filtered rotation into reference- and

@@ -427,8 +427,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 			is UDPPacket4Acceleration -> {
 				tracker = connection?.getTracker(packet.sensorId)
 				if (tracker == null) return
-				// Switch x and y around to adjust for different axes
-				tracker.setAcceleration(Vector3(packet.acceleration.y, packet.acceleration.x, packet.acceleration.z))
+				// If sensorOffset was applied to accel correctly, the axes will already
+				//  be correct for SlimeVR
+				tracker.setAcceleration(packet.acceleration)
 			}
 
 			is UDPPacket10PingPong -> {
