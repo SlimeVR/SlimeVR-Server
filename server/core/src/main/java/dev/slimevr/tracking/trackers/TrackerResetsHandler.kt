@@ -183,9 +183,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	fun getIdentityAdjustedDriftRotationFrom(rotation: Quaternion): Quaternion = adjustToDrift(adjustToIdentity(rotation))
 
 	/**
-	 * Get the adjusted accel from yawFixZeroReference
+	 * Get the reference adjusted accel.
 	 */
-	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 = (adjustToReference(rawRot) / yawFix).sandwich(accel)
+	// All IMU axis corrections need to be inverse (maybe find out why...)
+	// Order is VERY important here! Please be extremely careful! >~>
+	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 = (adjustToReference(rawRot) * (attachmentFix * mountingOrientation * mountRotFix * tposeDownFix).inv()).sandwich(accel)
 
 	/**
 	 * Converts raw or filtered rotation into reference- and

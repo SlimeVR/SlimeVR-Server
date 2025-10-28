@@ -93,6 +93,9 @@ class Tracker @JvmOverloads constructor(
 	private val timer = BufferedTimer(1f)
 	private var timeAtLastUpdate: Long = System.currentTimeMillis()
 	private var _rotation = Quaternion.IDENTITY
+
+	// IMU: +z forward, +x left, +y up
+	// SlimeVR: +z backward, +x right, +y up
 	private var _acceleration = Vector3.NULL
 	private var _magVector = Vector3.NULL
 	var position = Vector3.NULL
