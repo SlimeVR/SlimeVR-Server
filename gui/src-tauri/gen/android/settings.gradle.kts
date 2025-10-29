@@ -1,0 +1,1 @@
+../../../../../SlimeVR-Server/settings.gradle.kts
