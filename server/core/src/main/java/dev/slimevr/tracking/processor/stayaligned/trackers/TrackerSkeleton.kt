@@ -41,10 +41,16 @@ class TrackerSkeleton(skeleton: HumanSkeleton) {
 			leftUpperLegTracker,
 			leftLowerLegTracker,
 			leftFootTracker,
+			leftAbductorHallucisTracker,
+			leftDigitorumBrevisTracker,
+			leftAbductorDigitiMinimiTracker,
 			// Right leg
 			rightUpperLegTracker,
 			rightLowerLegTracker,
 			rightFootTracker,
+			rightAbductorHallucisTracker,
+			rightDigitorumBrevisTracker,
+			rightAbductorDigitiMinimiTracker
 		)
 	}
 
@@ -82,9 +88,15 @@ class TrackerSkeleton(skeleton: HumanSkeleton) {
 	val leftUpperLeg = skeleton.leftUpperLegTracker
 	val leftLowerLeg = skeleton.leftLowerLegTracker
 	val leftFoot = skeleton.leftFootTracker
+	val leftAbductorHallucis = skeleton.leftAbductorHallucisTracker
+	val leftDigitorumBrevis = skeleton.leftDigitorumBrevisTracker
+	val leftAbductorDigitiMinimi = skeleton.leftAbductorDigitiMinimiTracker
 	val rightUpperLeg = skeleton.rightUpperLegTracker
 	val rightLowerLeg = skeleton.rightLowerLegTracker
 	val rightFoot = skeleton.rightFootTracker
+	val rightAbductorHallucis = skeleton.rightAbductorHallucisTracker
+	val rightDigitorumBrevis = skeleton.rightDigitorumBrevisTracker
+	val rightAbductorDigitiMinimi = skeleton.rightAbductorDigitiMinimiTracker
 
 	/**
 	 * Visits a tracker within the skeleton.
@@ -217,6 +229,39 @@ class TrackerSkeleton(skeleton: HumanSkeleton) {
 					)
 				}
 
+			TrackerPosition.LEFT_TOES_ABDUCTOR_HALLUCIS ->
+				if (tracker == leftAbductorHallucis) {
+					visitor.visitToeTracker(
+						Side.LEFT,
+						tracker,
+						leftFoot,
+						rightAbductorHallucis,
+						1
+					)
+				}
+
+			TrackerPosition.LEFT_TOES_DIGITORUM_BREVIS ->
+				if (tracker == leftDigitorumBrevis) {
+					visitor.visitToeTracker(
+						Side.LEFT,
+						tracker,
+						leftFoot,
+						rightDigitorumBrevis,
+						2
+					)
+				}
+
+			TrackerPosition.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI ->
+				if (tracker == leftAbductorDigitiMinimi) {
+					visitor.visitToeTracker(
+						Side.LEFT,
+						tracker,
+						leftFoot,
+						rightAbductorDigitiMinimi,
+						3
+					)
+				}
+
 			TrackerPosition.RIGHT_FOOT ->
 				if (tracker == rightFoot) {
 					visitor.visitFootTracker(
@@ -224,6 +269,39 @@ class TrackerSkeleton(skeleton: HumanSkeleton) {
 						tracker,
 						rightLowerLeg,
 						leftFoot,
+					)
+				}
+			TrackerPosition.RIGHT_TOES_ABDUCTOR_HALLUCIS ->
+				if (tracker == rightAbductorHallucis) {
+					visitor.visitToeTracker(
+						Side.RIGHT,
+						tracker,
+						rightFoot,
+						leftAbductorHallucis,
+						1
+					)
+				}
+
+			TrackerPosition.RIGHT_TOES_DIGITORUM_BREVIS ->
+				if (tracker == rightDigitorumBrevis) {
+					visitor.visitToeTracker(
+						Side.RIGHT,
+						tracker,
+						rightFoot,
+						leftDigitorumBrevis,
+						2
+					)
+				}
+
+
+			TrackerPosition.RIGHT_TOES_DIGITORUM_BREVIS ->
+				if (tracker == rightDigitorumBrevis) {
+					visitor.visitToeTracker(
+						Side.RIGHT,
+						tracker,
+						rightFoot,
+						leftDigitorumBrevis,
+						3
 					)
 				}
 
@@ -410,6 +488,17 @@ class TrackerSkeleton(skeleton: HumanSkeleton) {
 			tracker: Tracker,
 			aboveLowerLeg: Tracker?,
 			oppositeFoot: Tracker?,
+		)
+
+		/**
+		 * Visits a toe tracker.
+		 */
+		fun visitToeTracker(
+			side: Side,
+			tracker: Tracker,
+			aboveFoot: Tracker?,
+			oppositeToe: Tracker?,
+			toeNumber: Int
 		)
 	}
 }

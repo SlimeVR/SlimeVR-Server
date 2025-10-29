@@ -20,10 +20,21 @@ export const LEGS_PARTS = new Set([
   BodyPart.LEFT_LOWER_LEG,
   BodyPart.RIGHT_LOWER_LEG,
 ]);
+
+export const TOES_PARTS = new Set([
+  BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS,
+  BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS,
+  BodyPart.LEFT_TOES_DIGITORUM_BREVIS,
+  BodyPart.RIGHT_TOES_DIGITORUM_BREVIS,
+  BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI,
+  BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI,
+]);
+
 export const LOWER_BODY = new Set([
   BodyPart.LEFT_FOOT,
   BodyPart.RIGHT_FOOT,
   ...LEGS_PARTS,
+  ...TOES_PARTS,
 ]);
 export const SPINE_PARTS = [
   BodyPart.UPPER_CHEST,
@@ -34,6 +45,14 @@ export const SPINE_PARTS = [
 export const ASSIGNMENT_RULES: Partial<
   Record<BodyPart, (BodyPart | BodyPart[])[]>
 > = {
+  [BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS]: [BodyPart.LEFT_FOOT],
+  [BodyPart.LEFT_TOES_DIGITORUM_BREVIS]: [BodyPart.LEFT_FOOT],
+  [BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI]: [BodyPart.LEFT_FOOT],
+
+  [BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS]: [BodyPart.RIGHT_FOOT],
+  [BodyPart.RIGHT_TOES_DIGITORUM_BREVIS]: [BodyPart.RIGHT_FOOT],
+  [BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI]: [BodyPart.RIGHT_FOOT],
+
   [BodyPart.LEFT_FOOT]: [
     BodyPart.LEFT_LOWER_LEG,
     BodyPart.LEFT_UPPER_LEG,
@@ -90,6 +109,7 @@ export const ASSIGNMENT_MODES: Record<AssignMode, BodyPart[]> = {
     ...SPINE_PARTS,
     ...ARMS_PARTS,
     ...LEGS_PARTS,
+    ...TOES_PARTS,
   ],
 };
 
@@ -149,6 +169,7 @@ export function BodyAssignment({
       ASSIGNMENT_MODES[assignMode].indexOf(part) > -1,
     [assignMode]
   );
+
 
   return (
     <>
@@ -263,6 +284,37 @@ export function BodyAssignment({
                   direction="right"
                 />
               )}
+             {hasBodyPart(SIDES[left].toesAbductorHallucis) && (
+               <TrackerPartCard
+                 onlyAssigned={onlyAssigned}
+                 roleError={rolesWithErrors[SIDES[left].toesAbductorHallucis]?.label}
+                 td={trackerPartGrouped[SIDES[left].toesAbductorHallucis]}
+                 role={SIDES[left].toesAbductorHallucis}
+                 onClick={() => onRoleSelected(SIDES[left].toesAbductorHallucis)}
+                 direction="right"
+               />
+             )}
+             {hasBodyPart(SIDES[left].toesDigitorumBrevis) && (
+               <TrackerPartCard
+                 onlyAssigned={onlyAssigned}
+                 roleError={rolesWithErrors[SIDES[left].toesDigitorumBrevis]?.label}
+                 td={trackerPartGrouped[SIDES[left].toesDigitorumBrevis]}
+                 role={SIDES[left].toesDigitorumBrevis}
+                 onClick={() => onRoleSelected(SIDES[left].toesDigitorumBrevis)}
+                 direction="right"
+               />
+             )}
+             {hasBodyPart(SIDES[left].toesAbductorDigitiMinimi) && (
+               <TrackerPartCard
+                 onlyAssigned={onlyAssigned}
+                 roleError={rolesWithErrors[SIDES[left].toesAbductorDigitiMinimi]?.label}
+                 td={trackerPartGrouped[SIDES[left].toesAbductorDigitiMinimi]}
+                 role={SIDES[left].toesAbductorDigitiMinimi}
+                 onClick={() => onRoleSelected(SIDES[left].toesAbductorDigitiMinimi)}
+                 direction="right"
+               />
+             )}
+
             </div>
           </div>
         }
@@ -392,6 +444,37 @@ export function BodyAssignment({
                   direction="left"
                 />
               )}
+              {hasBodyPart(SIDES[right].toesAbductorHallucis) && (
+                <TrackerPartCard
+                  onlyAssigned={onlyAssigned}
+                  roleError={rolesWithErrors[SIDES[right].toesAbductorHallucis]?.label}
+                  td={trackerPartGrouped[SIDES[right].toesAbductorHallucis]}
+                  role={SIDES[right].toesAbductorHallucis}
+                  onClick={() => onRoleSelected(SIDES[right].toesAbductorHallucis)}
+                  direction="left"
+                />
+              )}
+              {hasBodyPart(SIDES[right].toesDigitorumBrevis) && (
+                <TrackerPartCard
+                  onlyAssigned={onlyAssigned}
+                  roleError={rolesWithErrors[SIDES[right].toesDigitorumBrevis]?.label}
+                  td={trackerPartGrouped[SIDES[right].toesDigitorumBrevis]}
+                  role={SIDES[right].toesDigitorumBrevis}
+                  onClick={() => onRoleSelected(SIDES[right].toesDigitorumBrevis)}
+                  direction="left"
+                />
+              )}
+              {hasBodyPart(SIDES[right].toesAbductorDigitiMinimi) && (
+                <TrackerPartCard
+                  onlyAssigned={onlyAssigned}
+                  roleError={rolesWithErrors[SIDES[right].toesAbductorDigitiMinimi]?.label}
+                  td={trackerPartGrouped[SIDES[right].toesAbductorDigitiMinimi]}
+                  role={SIDES[right].toesAbductorDigitiMinimi}
+                  onClick={() => onRoleSelected(SIDES[right].toesAbductorDigitiMinimi)}
+                  direction="left"
+                />
+              )}
+
             </div>
           </div>
         }

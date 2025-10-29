@@ -188,6 +188,60 @@ export const mapPart: Record<
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
+  [BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      ></PawIcon>
+    ) : (
+      <FootIcon width={width} flipped></FootIcon>
+    ),
+  [BodyPart.LEFT_TOES_DIGITORUM_BREVIS]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      ></PawIcon>
+    ) : (
+      <FootIcon width={width} flipped></FootIcon>
+    ),
+  [BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      ></PawIcon>
+    ) : (
+      <FootIcon width={width} flipped></FootIcon>
+    ),
+  [BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      ></PawIcon>
+    ) : (
+      <FootIcon width={width} flipped></FootIcon>
+    ),
+  [BodyPart.RIGHT_TOES_DIGITORUM_BREVIS]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      ></PawIcon>
+    ) : (
+      <FootIcon width={width} flipped></FootIcon>
+    ),
+  [BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI]: ({ width, currentLocales }) =>
+    currentLocales.includes('en-x-owo') ? (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      ></PawIcon>
+    ) : (
+      <FootIcon width={width} flipped></FootIcon>
+    ),
 };
 
 export function MountingBodyPartIcon({
