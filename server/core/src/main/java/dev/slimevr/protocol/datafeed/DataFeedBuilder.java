@@ -153,6 +153,12 @@ public class DataFeedBuilder {
 
 		TrackerInfo.addDataSupport(fbb, tracker.getTrackerDataType().getSolarType());
 
+		TrackerInfo
+			.addRestCalibrationStatus(
+				fbb,
+				tracker.getRestCalibrationStatus().getSolarType()
+			);
+
 		return TrackerInfo.endTrackerInfo(fbb);
 	}
 
