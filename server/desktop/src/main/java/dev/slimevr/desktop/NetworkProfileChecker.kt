@@ -59,12 +59,11 @@ enum class ConnectivityFlags(val value: Int) {
 	;
 
 	companion object {
-		fun fromInt(value: Int): Set<ConnectivityFlags> =
-			if (value == 0) {
-				setOf(DISCONNECTED)
-			} else {
-				values().filter { it != DISCONNECTED && (value and it.value) != 0 }.toSet()
-			}
+		fun fromInt(value: Int): Set<ConnectivityFlags> = if (value == 0) {
+			setOf(DISCONNECTED)
+		} else {
+			values().filter { it != DISCONNECTED && (value and it.value) != 0 }.toSet()
+		}
 	}
 }
 
