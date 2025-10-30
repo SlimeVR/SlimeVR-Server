@@ -488,13 +488,13 @@ class Tracker @JvmOverloads constructor(
 						val hmd = Vector3(hmdOff.x, 0f, hmdOff.z)
 						val tracker = Vector3(trackerOff.x, 0f, trackerOff.z)
 
-						val hmdRot = angle(hmd.unit()).inv()
+						val hmdRot = angle(hmd.unit())
 						val trackerRot = angle(tracker.unit())
-						val mountRot = trackerRot * hmdRot
+						val mountRot = trackerRot * hmdRot.inv()
 
-						val mountVec = mountRot.sandwichUnitZ()
+						val mountVec = (resetsHandler.mountingOrientation * resetsHandler.mountRotFix * mountRot).inv().sandwich(Vector3.POS_Z)
 						val mountText = if (abs(mountVec.z) > abs(mountVec.x)) {
-							if (mountVec.z > 0f) {
+							if (mountVec.z < 0f) {
 								"front"
 							} else {
 								"back"
@@ -508,13 +508,8 @@ class Tracker @JvmOverloads constructor(
 						}
 
 						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}):\nTracker: $trackerOff\nHmd: $hmdOff\nErr: ${tracker.len() - hmd.len()}\nResult: $mountVec ($mountText)")
-
-						if (resetNext) {
-							resetNext = false
-
-							LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}) setting mounting!")
-							resetsHandler.mountRotFix *= mountRot
-						}
+						resetsHandler.mountRotFix *= mountRot
+						resetNext = false
 					}
 					curTimeline = null
 				} else {
