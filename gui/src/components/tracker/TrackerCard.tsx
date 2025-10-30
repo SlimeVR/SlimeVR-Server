@@ -101,7 +101,6 @@ function TrackerBig({
               <TrackerBattery
                 voltage={device.hardwareStatus.batteryVoltage}
                 value={device.hardwareStatus.batteryPctEstimate / 100}
-                disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />
             )}
             <div className="flex gap-2">
@@ -151,7 +150,6 @@ function TrackerSmol({
               <TrackerBattery
                 voltage={device.hardwareStatus.batteryVoltage}
                 value={device.hardwareStatus.batteryPctEstimate / 100}
-                disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               />
             )}
           </div>
