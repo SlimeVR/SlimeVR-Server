@@ -1,14 +1,20 @@
 import classNames from 'classnames';
-import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Control, Controller, UseControllerProps } from 'react-hook-form';
+import { ArrowDownIcon, ArrowUpIcon } from './icon/ArrowIcons';
 import { a11yClick } from '@/utils/a11y';
-import { createPortal } from 'react-dom';
-import { ArrowDownIcon } from './icon/ArrowIcons';
 
-interface DropdownProps {
+type DropdownItem = {
+  value: string;
+  label: ReactNode;
+};
+
+export type DropdownDirection = 'up' | 'down';
+
+type DropdownProps = {
   direction?: DropdownDirection;
   variant?: 'primary' | 'secondary' | 'tertiary';
-  alignment?: 'right' | 'left';
+  alignment?: 'left' | 'right';
   display?: 'fit' | 'block';
   placeholder: string;
   control: Control<any>;
@@ -16,116 +22,119 @@ interface DropdownProps {
   items: DropdownItem[];
   maxHeight?: string | number;
   rules?: UseControllerProps<any>['rules'];
-}
-
-type DropdownItemsProps = Pick<
-  DropdownProps,
-  'direction' | 'variant' | 'alignment' | 'display' | 'items' | 'maxHeight'
-> & {
-  onSelectItem: (item: DropdownItem) => void;
-  onBackdropClick: () => void;
-  value: string;
-  dropdownBounds: DOMRect;
 };
 
-export interface DropdownItem {
-  label?: string;
-  component?: ReactNode;
-  value: string;
-  fontName?: string;
-}
-
-export type DropdownDirection = 'up' | 'down';
-
-export function DropdownItems({
-  display,
-  direction,
+function DropdownItem({
+  item,
   variant,
-  alignment,
-  items,
-  maxHeight,
+  onSelected,
+  isOpen,
   value,
-  dropdownBounds,
-  onSelectItem,
-  onBackdropClick,
-}: DropdownItemsProps) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [itemBounds, setItemBounds] = useState<DOMRect>();
-
-  const updateBounds = () => {
-    if (!ref.current) return;
-    setItemBounds(ref.current?.getBoundingClientRect());
+}: {
+  item: DropdownItem;
+  variant: Required<DropdownProps>['variant'];
+  onSelected: () => void;
+  isOpen: boolean;
+  value: any;
+}) {
+  const variantStyles = {
+    primary:
+      'text-background-20 checked-hover:text-background-10 checked-hover:bg-background-50 focus:text-background-10 focus:bg-background-50',
+    secondary:
+      'text-background-20 checked-hover:text-background-10 checked-hover:bg-background-60 focus:text-background-10 focus:bg-background-60',
+    tertiary:
+      'bg-accent-background-30 checked-hover:bg-accent-background-20 focus:bg-accent-background-20',
   };
 
-  useLayoutEffect(() => {
-    updateBounds();
-  }, []);
+  const ref = useRef<HTMLDivElement>(null);
 
-  const GAP = 8;
+  useEffect(() => {
+    if (isOpen && value === item.value) {
+      ref.current?.focus();
+      ref.current?.scrollIntoView();
+    }
+  }, [isOpen]);
 
   return (
-    <>
-      <div
-        className="z-[999] fixed top-0 w-full h-full"
-        onClick={onBackdropClick}
-      ></div>
-      <div
-        ref={ref}
-        className={classNames(
-          'z-[1000] fixed rounded shadow',
-          'overflow-y-auto dropdown-scroll overflow-x-hidden text-background-10',
-          variant == 'primary' && 'bg-background-60',
-          variant == 'secondary' && 'bg-background-70',
-          variant == 'tertiary' && 'bg-accent-background-30',
-          itemBounds?.height == 0 && 'opacity-0' // Avoid flicker while the component find its position
-        )}
-        style={{
-          maxHeight: maxHeight,
-          left:
-            alignment === 'left'
-              ? dropdownBounds.left
-              : dropdownBounds.left +
-                dropdownBounds.width -
-                (itemBounds?.width ?? 0),
-          top:
-            direction == 'down'
-              ? dropdownBounds.bottom + GAP
-              : dropdownBounds.top - (itemBounds?.height ?? 0) - GAP,
-          minWidth: display === 'block' ? dropdownBounds.width : 'inherit',
-        }}
+    <div
+      className={classNames(
+        'py-2 px-4 min-w-max cursor-pointer outline-none',
+        variantStyles[variant]
+      )}
+      onClick={onSelected}
+      onKeyDown={(e) => a11yClick(e) && onSelected()}
+      tabIndex={isOpen ? 0 : -1}
+      aria-hidden={!isOpen}
+      data-checked={item.value === value}
+      ref={ref}
+    >
+      {item.label}
+    </div>
+  );
+}
+
+function DropdownList({
+  isOpen,
+  onSelect,
+  value,
+  display,
+  alignment,
+  direction,
+  items,
+  variant,
+  maxHeight,
+}: {
+  isOpen: boolean;
+  onSelect: (item: DropdownItem) => void;
+  value: any;
+} & Pick<
+  Required<DropdownProps>,
+  'display' | 'alignment' | 'direction' | 'items' | 'variant' | 'maxHeight'
+>) {
+  const variantStyles = {
+    primary: 'bg-background-60',
+    secondary: 'bg-background-70',
+    tertiary: 'bg-accent-background-30',
+  };
+
+  const getDisplayClasses = () => {
+    if (display === 'block') {
+      return 'inset-x-0';
+    }
+    return alignment === 'left' ? 'left-0 w-max' : 'right-0 w-max';
+  };
+
+  return (
+    <div
+      className={classNames(
+        'grid absolute overflow-hidden transition-[grid-template-rows] rounded',
+        isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
+        direction === 'up' ? 'bottom-full mb-3' : 'top-full mt-3',
+        getDisplayClasses(),
+        variantStyles[variant]
+      )}
+      onTransitionEnd={(e) => {
+        if (!isOpen) {
+          (e.target as HTMLDivElement).scrollTo({ top: 0 });
+        }
+      }}
+    >
+      <ul
+        className="flex flex-col min-h-0 text-sm overflow-y-scroll dropdown-scroll overscroll-contain"
+        style={{ maxHeight }}
       >
-        <ul className="py-1 text-sm flex flex-col">
-          {items.map((item) => (
-            <li
-              style={item.fontName ? { fontFamily: item.fontName } : {}}
-              className={classNames(
-                'py-2 px-4 min-w-max cursor-pointer first-of-type:*:pointer-events-none',
-                variant == 'primary' &&
-                  'checked-hover:bg-background-50 text-background-20 ' +
-                    'checked-hover:text-background-10',
-                variant == 'secondary' &&
-                  'checked-hover:bg-background-60 text-background-20 ' +
-                    'checked-hover:text-background-10',
-                variant == 'tertiary' &&
-                  'bg-accent-background-30 checked-hover:bg-accent-background-20'
-              )}
-              onClick={() => {
-                onSelectItem(item);
-              }}
-              onKeyDown={(ev) => {
-                if (!a11yClick(ev)) return;
-                onSelectItem(item);
-              }}
-              key={item.value}
-              tabIndex={0}
-              data-checked={item.value === value}
-            >
-              {item.component || item.label}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </>
+        {items.map((item) => (
+          <DropdownItem
+            item={item}
+            variant={variant}
+            onSelected={() => onSelect(item)}
+            isOpen={isOpen}
+            key={item.value}
+            value={value}
+          />
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -134,107 +143,89 @@ export function Dropdown({
   variant = 'primary',
   alignment = 'right',
   display = 'fit',
-  maxHeight = '50vh',
   placeholder,
   control,
-  rules,
   name,
-  items = [],
+  items,
+  maxHeight = '50vh',
+  rules,
 }: DropdownProps) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [isOpen, setOpenState] = useState(false);
-  const [dropdownBounds, setDropdownBounds] = useState<DOMRect>();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const updateBounds = () => {
-    if (!ref.current) return;
-    setDropdownBounds(ref.current?.getBoundingClientRect());
+  const variantStyles = {
+    primary: 'bg-background-60 hover:bg-background-50',
+    secondary: 'bg-background-70 hover:bg-background-60',
+    tertiary: 'bg-accent-background-30 hover:bg-accent-background-20',
   };
 
-  const onResize = () => {
-    // We could have two behaviours here:
-    // 1 - We update the bounds of the dropdown so the size and position match.
-    //    Works but have a slight delay when resizing, kinda looks laggy
-    // 2 - We close the dropdown on resize.
-    //     We could consider this as the same as clicking outside of the dropdown
-    //     This is the approach choosen RN
-    setOpen(false);
+  const displayStyles = {
+    fit: 'w-fit',
+    block: 'w-full',
   };
 
-  useEffect(() => {
-    window.addEventListener('resize', onResize);
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  }, []);
+  const getShownValue = (value: any) =>
+    value
+      ? (items.find((item) => item.value === value)?.label ?? placeholder)
+      : placeholder;
 
-  const setOpen = (open: boolean | ((prevState: boolean) => boolean)) => {
-    updateBounds();
-    setOpenState(open);
-  };
+  const ref = useRef<HTMLDivElement>(null);
 
   return (
     <Controller
-      control={control}
       name={name}
+      control={control}
       rules={rules}
       render={({ field: { onChange, value } }) => (
         <>
           <div
-            ref={ref}
             className={classNames(
-              'min-h-[42px] text-background-10 px-5 py-3 rounded-md focus:ring-4 text-center dropdown',
-              'flex cursor-pointer',
-              variant == 'primary' && 'bg-background-60 hover:bg-background-50',
-              variant == 'secondary' &&
-                'bg-background-70 hover:bg-background-60',
-              variant == 'tertiary' &&
-                'bg-accent-background-30 hover:bg-accent-background-20',
-              display === 'fit' && 'w-fit',
-              display === 'block' && 'w-full'
+              'min-h-[42px] text-background-10 text-left dropdown relative',
+              displayStyles[display]
             )}
-            onClick={() => setOpen((open) => !open)}
-            onKeyDown={(ev) => a11yClick(ev) && setOpen((open) => !open)}
-            tabIndex={0}
+            onClick={() => setIsOpen(!isOpen)}
+            onKeyDown={(e) => a11yClick(e) && setIsOpen(!isOpen)}
+            onBlur={(e) => {
+              if (e.currentTarget.contains(e.relatedTarget)) {
+                return;
+              }
+
+              setIsOpen(false);
+            }}
           >
-            <div className="flex-grow text-standard first:pointer-events-none">
-              {items.find((i) => i.value == value)?.component ||
-                items.find((i) => i.value == value)?.label ||
-                placeholder}
-            </div>
             <div
               className={classNames(
-                'ml-2 fill-background-10 flex items-center',
-                direction == 'up' && 'rotate-180',
-                direction == 'down' && 'rotate-0'
+                'flex flex-row justify-between items-center gap-2 pl-3 pr-5 py-3 rounded-md cursor-pointer focus:ring-4',
+                variantStyles[variant]
               )}
+              tabIndex={0}
+              ref={ref}
             >
-              <ArrowDownIcon size={16}></ArrowDownIcon>
+              {getShownValue(value)}
+              <div className="fill-background-10">
+                {direction === 'up' ? (
+                  <ArrowUpIcon size={16} />
+                ) : (
+                  <ArrowDownIcon size={16} />
+                )}
+              </div>
             </div>
+            <DropdownList
+              alignment={alignment}
+              direction={direction}
+              display={display}
+              isOpen={isOpen}
+              items={items}
+              onSelect={(item: DropdownItem) => {
+                onChange(item.value);
+                ref.current?.focus();
+              }}
+              variant={variant}
+              maxHeight={maxHeight}
+              value={value}
+            />
           </div>
-          {isOpen &&
-            dropdownBounds &&
-            createPortal(
-              <DropdownItems
-                items={items}
-                dropdownBounds={dropdownBounds}
-                direction={direction}
-                display={display}
-                alignment={alignment}
-                maxHeight={maxHeight}
-                variant={variant}
-                value={value}
-                onSelectItem={(item) => {
-                  setOpen(false);
-                  onChange(item.value);
-                }}
-                onBackdropClick={() => {
-                  setOpen(false);
-                }}
-              ></DropdownItems>,
-              document.body
-            )}
         </>
       )}
-    />
+    ></Controller>
   );
 }

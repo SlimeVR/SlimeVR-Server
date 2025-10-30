@@ -23,7 +23,7 @@ export function LangSelector({
   const languagesItems = useMemo(
     () =>
       langs.map(({ key, name, emoji }) => ({
-        component: (
+        label: (
           <div>
             <img
               draggable="false"
@@ -33,7 +33,6 @@ export function LangSelector({
             {' ' + name}
           </div>
         ),
-        label: name,
         value: key,
       })),
     []

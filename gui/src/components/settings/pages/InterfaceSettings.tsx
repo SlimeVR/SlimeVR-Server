@@ -79,6 +79,30 @@ export function InterfaceSettings() {
     },
   });
 
+  const fontOptions = [
+    {
+      label: l10n.getString('settings-interface-appearance-font-slime_font'),
+      value: 'poppins',
+      fontName: 'poppins, Noto Sans CJK',
+    },
+    {
+      label: 'OpenDyslexic',
+      value: 'OpenDyslexic',
+      fontName: 'OpenDyslexic',
+    },
+    { label: 'Lexend', value: 'Lexend', fontName: 'Lexend' },
+    { label: 'Ubuntu', value: 'Ubuntu', fontName: 'Ubuntu' },
+    {
+      label: 'Noto Sans (CJK)',
+      value: 'Noto Sans CJK',
+      fontName: 'Noto Sans CJK',
+    },
+    {
+      label: l10n.getString('settings-interface-appearance-font-os_font'),
+      value: 'ui-sans-serif',
+    },
+  ];
+
   const onSubmit = (values: InterfaceSettingsForm) => {
     setConfig({
       watchNewDevices: values.notifications.watchNewDevices,
@@ -491,33 +515,14 @@ export function InterfaceSettings() {
                   'settings-interface-appearance-font-placeholder'
                 )}
                 /* Supports multiple items by separating them with a comma */
-                items={[
-                  {
-                    label: l10n.getString(
-                      'settings-interface-appearance-font-slime_font'
-                    ),
-                    value: 'poppins',
-                    fontName: 'poppins, Noto Sans CJK',
-                  },
-                  {
-                    label: 'OpenDyslexic',
-                    value: 'OpenDyslexic',
-                    fontName: 'OpenDyslexic',
-                  },
-                  { label: 'Lexend', value: 'Lexend', fontName: 'Lexend' },
-                  { label: 'Ubuntu', value: 'Ubuntu', fontName: 'Ubuntu' },
-                  {
-                    label: 'Noto Sans (CJK)',
-                    value: 'Noto Sans CJK',
-                    fontName: 'Noto Sans CJK',
-                  },
-                  {
-                    label: l10n.getString(
-                      'settings-interface-appearance-font-os_font'
-                    ),
-                    value: 'ui-sans-serif',
-                  },
-                ]}
+                items={fontOptions.map((option) => ({
+                  label: (
+                    <span style={{ fontFamily: option.fontName }}>
+                      {option.label}
+                    </span>
+                  ),
+                  value: option.value,
+                }))}
                 alignment="left"
               />
             </div>
