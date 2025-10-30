@@ -10,7 +10,6 @@ import io.eiren.util.Util
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
-import io.github.axisangles.ktmath.Vector3
 import kotlinx.coroutines.*
 import solarxr_protocol.rpc.ResetType
 import java.net.DatagramPacket
@@ -394,8 +393,9 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				if (tracker == null) return
 				tracker.setRotation(rot)
 				if (packet is UDPPacket23RotationAndAcceleration) {
-					// Switch x and y around to adjust for different axes
-					tracker.setAcceleration(Vector3(packet.acceleration.y, packet.acceleration.x, packet.acceleration.z))
+					// If sensorOffset was applied to accel correctly, the axes will already
+					//  be correct for SlimeVR
+					tracker.setAcceleration(packet.acceleration)
 				}
 				tracker.dataTick()
 			}

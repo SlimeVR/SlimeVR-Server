@@ -30,7 +30,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private val QuarterPitch = Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
 
 	// TODO: Set this offset to Quaternion.IDENTITY when the firmware is corrected!
-	val SensorOffsetCorrection = Quaternion.rotationAroundZAxis(FastMath.HALF_PI)
+	// 270 deg (default for officials)
+	val SensorOffsetCorrection = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
 
 	private var driftAmount = 0f
 	private var averagedDriftQuat = Quaternion.IDENTITY
@@ -187,8 +188,10 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	/**
 	 * Get the reference adjusted accel.
 	 */
+	// All IMU axis corrections need to be inverse (maybe find out why...)
+	// Order is VERY important here! Please be extremely careful! >~>
 	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 =
-		(SensorOffsetCorrection * attachmentFix * mountingOrientation * mountRotFix * adjustToReference(rawRot)).sandwich(accel)
+		(adjustToReference(rawRot) * (attachmentFix * mountingOrientation * mountRotFix * tposeDownFix).inv() * SensorOffsetCorrection).sandwich(accel)
 
 	/**
 	 * Converts raw or filtered rotation into reference- and
