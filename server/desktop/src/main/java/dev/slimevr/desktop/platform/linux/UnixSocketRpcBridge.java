@@ -39,7 +39,9 @@ public class UnixSocketRpcBridge implements dev.slimevr.bridge.Bridge,
 		File socketFile = new File(socketPath);
 		if (socketFile.exists()) {
 			if (SocketUtils.isSocketInUse(socketPath)) {
-				throw new RuntimeException(socketPath + " socket is already in use by another process.");
+				throw new RuntimeException(
+					socketPath + " socket is already in use by another process."
+				);
 			} else {
 				LogManager.warning("[SolarXR Bridge] Cleaning up stale socket: " + socketPath);
 				if (!socketFile.delete()) {

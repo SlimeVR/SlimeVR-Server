@@ -47,7 +47,9 @@ public class UnixSocketBridge extends SteamVRBridge implements AutoCloseable {
 		File socketFile = new File(socketPath);
 		if (socketFile.exists()) {
 			if (SocketUtils.isSocketInUse(socketPath)) {
-				throw new RuntimeException(socketPath + " socket is already in use by another process.");
+				throw new RuntimeException(
+					socketPath + " socket is already in use by another process."
+				);
 			} else {
 				LogManager.warning("[" + bridgeName + "] Cleaning up stale socket: " + socketPath);
 				if (!socketFile.delete()) {
