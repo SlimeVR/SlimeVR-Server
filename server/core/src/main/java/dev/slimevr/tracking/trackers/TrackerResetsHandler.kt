@@ -6,7 +6,6 @@ import dev.slimevr.config.ArmsResetModes
 import dev.slimevr.config.DriftCompensationConfig
 import dev.slimevr.config.ResetsConfig
 import dev.slimevr.filtering.CircularArrayList
-import dev.slimevr.tracking.trackers.hid.HIDDevice
 import dev.slimevr.tracking.trackers.udp.TrackerDataType
 import io.github.axisangles.ktmath.EulerAngles
 import io.github.axisangles.ktmath.EulerOrder
@@ -29,14 +28,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		0f,
 	).toQuaternion()
 	private val QuarterPitch = Quaternion.rotationAroundXAxis(FastMath.HALF_PI)
-
-	// TODO: Set this offset to Quaternion.IDENTITY when the firmware is corrected!
-	// 270 deg (default for officials)
-	val SensorOffsetCorrection = if (tracker.device is HIDDevice) {
-		Quaternion.IDENTITY
-	} else {
-		Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
-	}
 
 	private var driftAmount = 0f
 	private var averagedDriftQuat = Quaternion.IDENTITY
@@ -196,7 +187,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	// All IMU axis corrections need to be inverse (maybe find out why...)
 	// Order is VERY important here! Please be extremely careful! >~>
 	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 =
-		(adjustToReference(rawRot) * (attachmentFix * mountingOrientation * mountRotFix * tposeDownFix).inv() * SensorOffsetCorrection).sandwich(accel)
+		(adjustToReference(rawRot) * (attachmentFix * mountingOrientation * mountRotFix * tposeDownFix).inv()).sandwich(accel)
 
 	/**
 	 * Converts raw or filtered rotation into reference- and

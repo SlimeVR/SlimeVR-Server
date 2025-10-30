@@ -9,6 +9,7 @@ import dev.slimevr.tracking.trackers.*
 import io.eiren.util.Util
 import io.eiren.util.collections.FastList
 import io.eiren.util.logging.LogManager
+import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Quaternion.Companion.fromRotationVector
 import kotlinx.coroutines.*
 import solarxr_protocol.rpc.ResetType
@@ -395,7 +396,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				if (packet is UDPPacket23RotationAndAcceleration) {
 					// If sensorOffset was applied to accel correctly, the axes will already
 					//  be correct for SlimeVR
-					tracker.setAcceleration(packet.acceleration)
+					tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
 				}
 				tracker.dataTick()
 			}
@@ -429,7 +430,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				if (tracker == null) return
 				// If sensorOffset was applied to accel correctly, the axes will already
 				//  be correct for SlimeVR
-				tracker.setAcceleration(packet.acceleration)
+				tracker.setAcceleration(SENSOR_OFFSET_CORRECTION.sandwich(packet.acceleration))
 			}
 
 			is UDPPacket10PingPong -> {
@@ -607,6 +608,10 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		 * Change between IMU axes and OpenGL/SteamVR axes
 		 */
 		private val AXES_OFFSET = fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
+
+		// TODO: Set this offset to Quaternion.IDENTITY when the firmware is corrected!
+		// 270 deg (-90 deg) default for officials
+		private val SENSOR_OFFSET_CORRECTION = Quaternion.rotationAroundZAxis(-FastMath.HALF_PI)
 		private const val RESET_SOURCE_NAME = "TrackerServer"
 		private fun packetToString(packet: DatagramPacket?): String {
 			val sb = StringBuilder()
