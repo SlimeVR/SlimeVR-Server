@@ -72,7 +72,7 @@ export function DropdownItems({
       <div
         className="z-[999] fixed top-0 w-full h-full"
         onClick={onBackdropClick}
-      ></div>
+      />
       <div
         ref={ref}
         className={classNames(
@@ -210,7 +210,7 @@ export function DropdownInside({
               direction == 'down' && 'rotate-0'
             )}
           >
-            <ArrowDownIcon size={16}></ArrowDownIcon>
+            <ArrowDownIcon size={16} />
           </div>
         </div>
         {error?.message && (
@@ -238,7 +238,7 @@ export function DropdownInside({
             onBackdropClick={() => {
               setOpen(false);
             }}
-          ></DropdownItems>,
+          />,
           document.body
         )}
     </>
@@ -265,7 +265,7 @@ export function Dropdown({
           name={name}
           onChange={onChange}
           value={value}
-        ></DropdownInside>
+        />
       )}
     />
   );

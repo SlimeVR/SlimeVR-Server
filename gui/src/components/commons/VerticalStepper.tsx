@@ -66,7 +66,7 @@ export function VerticalStep({
         )}
       >
         {isPrevious ? (
-          <CheckIcon></CheckIcon>
+          <CheckIcon />
         ) : (
           <Typography variant="section-title">{index + 1}</Typography>
         )}
@@ -141,7 +141,7 @@ export default function VerticalStepper({
             prevStep={prevStep}
             goTo={goTo}
             isActive={currStep === index}
-          ></StepComponent>
+          />
         </VerticalStep>
       ))}
     </ol>

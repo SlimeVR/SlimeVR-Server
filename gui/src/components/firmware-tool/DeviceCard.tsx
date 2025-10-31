@@ -101,18 +101,18 @@ export function DeviceCardControl({
                   checked={value || false}
                   type="checkbox"
                   disabled={disabled}
-                ></input>
+                />
               </div>
 
               <div className="w-full">
-                <DeviceCardContent {...props}></DeviceCardContent>
+                <DeviceCardContent {...props} />
               </div>
             </label>
           )}
-        ></Controller>
+        />
       ) : (
         <div className="px-2 h-full">
-          <DeviceCardContent {...props}></DeviceCardContent>
+          <DeviceCardContent {...props} />
         </div>
       )}
       <div
@@ -129,7 +129,7 @@ export function DeviceCardControl({
           bottom
           height={6}
           colorClass="bg-accent-background-20"
-        ></ProgressBar>
+        />
       </div>
       {online !== null && (
         <div className="absolute top-2 right-2">
@@ -137,7 +137,7 @@ export function DeviceCardControl({
             status={
               online ? TrackerStatusEnum.OK : TrackerStatusEnum.DISCONNECTED
             }
-          ></TrackerStatus>
+          />
         </div>
       )}
     </div>

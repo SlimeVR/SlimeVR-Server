@@ -92,7 +92,7 @@ export function ManualMountingPage() {
         isOpen={selectedRole !== BodyPart.NONE}
         onClose={() => setSelectRole(BodyPart.NONE)}
         onDirectionSelected={onDirectionSelected}
-      ></MountingSelectionMenu>
+      />
       <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center relative overflow-y-auto">
         <div className="flex xs:flex-row mobile:flex-col h-full px-8 xs:w-full xs:justify-center mobile:px-4 items-center">
           <div className="flex flex-col w-full xs:max-w-sm gap-3">
@@ -125,7 +125,7 @@ export function ManualMountingPage() {
               onlyAssigned={true}
               assignMode={AssignMode.All}
               onRoleSelected={setSelectRole}
-            ></BodyAssignment>
+            />
           </div>
         </div>
       </div>

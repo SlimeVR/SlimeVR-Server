@@ -36,13 +36,13 @@ export function AutoboneErrorModal({
           <Localized
             id="onboarding-automatic_proportions-error_modal-v2"
             elems={{
-              b: <b></b>,
+              b: <b />,
               docs: (
                 <A
                   href={`${DOCS_SITE}/server/body-config.html#common-issues--debugging`}
-                ></A>
+                />
               ),
-              discord: <A href={SLIMEVR_DISCORD}></A>,
+              discord: <A href={SLIMEVR_DISCORD} />,
             }}
           >
             <WarningBox>

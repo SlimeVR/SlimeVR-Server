@@ -99,16 +99,13 @@ export function TrackerAssignOptions({
           ([mode, trackersCount]) => ({
             component: (
               <div className="flex flex-row gap-2 py-1 text-left">
-                <ItemContent
-                  mode={mode}
-                  trackersCount={trackersCount}
-                ></ItemContent>
+                <ItemContent mode={mode} trackersCount={trackersCount} />
               </div>
             ),
             value: mode,
           })
         )}
-      ></Dropdown>
+      />
     );
 
   return Object.entries(ASSIGN_MODE_OPTIONS).map(([mode, trackersCount]) => (
@@ -123,7 +120,7 @@ export function TrackerAssignOptions({
       className="hidden"
     >
       <div className="flex flex-row md:gap-4 gap-2">
-        <ItemContent mode={mode} trackersCount={trackersCount}></ItemContent>
+        <ItemContent mode={mode} trackersCount={trackersCount} />
       </div>
     </Radio>
   ));

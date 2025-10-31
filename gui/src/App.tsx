@@ -75,9 +75,9 @@ function Layout() {
 
   return (
     <>
-      <SerialDetectionModal></SerialDetectionModal>
-      <VersionUpdateModal></VersionUpdateModal>
-      <UnknownDeviceModal></UnknownDeviceModal>
+      <SerialDetectionModal />
+      <VersionUpdateModal />
+      <UnknownDeviceModal />
       <SentryRoutes>
         <Route element={<AppLayout />}>
           <Route
@@ -158,7 +158,7 @@ function Layout() {
             />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
             <Route path="enter-vr" element={<EnterVRPage />} />
-            <Route path="mounting/choose" element={<MountingChoose />}></Route>
+            <Route path="mounting/choose" element={<MountingChoose />} />
             <Route path="mounting/auto" element={<AutomaticMountingPage />} />
             <Route path="mounting/manual" element={<ManualMountingPage />} />
             <Route path="reset-tutorial" element={<ResetTutorialPage />} />
@@ -177,7 +177,7 @@ function Layout() {
             <Route path="stay-aligned" element={<StayAlignedSetup />} />
             <Route path="done" element={<DonePage />} />
           </Route>
-          <Route path="*" element={<TopBar></TopBar>}></Route>
+          <Route path="*" element={<TopBar />} />
         </Route>
       </SentryRoutes>
     </>
@@ -301,10 +301,8 @@ export default function App() {
                 <VersionContext.Provider value={updateFound}>
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
                     <Preload />
-                    {!websocketAPI.isConnected && (
-                      <ConnectionLost></ConnectionLost>
-                    )}
-                    {websocketAPI.isConnected && <Layout></Layout>}
+                    {!websocketAPI.isConnected && <ConnectionLost />}
+                    {websocketAPI.isConnected && <Layout />}
                   </div>
                 </VersionContext.Provider>
               </StatusProvider>

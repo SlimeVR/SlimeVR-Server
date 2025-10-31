@@ -81,11 +81,11 @@ export function Recording({
           setModalOpen(false);
           resetSteps();
         }}
-      ></AutoboneErrorModal>
+      />
       <div className="flex flex-col items-center w-full justify-between">
         <div className="flex gap-1 flex-col justify-center items-center">
           <div className="flex text-status-critical justify-center items-center gap-1">
-            <div className="w-2 h-2 rounded-lg bg-status-critical"></div>
+            <div className="w-2 h-2 rounded-lg bg-status-critical" />
             <Typography color="text-status-critical">
               {l10n.getString(
                 'onboarding-automatic_proportions-recording-title'
@@ -136,7 +136,7 @@ export function Recording({
                 () => 'bg-status-success'
               )
               .otherwise(() => undefined)}
-          ></ProgressBar>
+          />
           <Typography>
             {match([hasCalibration, hasRecording])
               .returnType<ReactNode>()
@@ -160,7 +160,7 @@ export function Recording({
           className="absolute w-[100px] h-[100px] top-0 bottom-0 left-0 right-0 m-auto fill-background-20"
           hidden={!paused}
         >
-          <PlayCircleIcon width={100}></PlayCircleIcon>
+          <PlayCircleIcon width={100} />
         </div>
 
         <video
@@ -173,7 +173,7 @@ export function Recording({
           playsInline
           controls={false}
           poster="/images/autobone-poster.webp"
-        ></video>
+        />
       </button>
     </div>
   );

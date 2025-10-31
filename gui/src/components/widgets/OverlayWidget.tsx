@@ -75,13 +75,13 @@ export function OverlayWidget() {
         name="isVisible"
         variant="toggle"
         label={l10n.getString('widget-overlay-is_visible_label')}
-      ></CheckBox>
+      />
       <CheckBox
         control={control}
         name="isMirrored"
         variant="toggle"
         label={l10n.getString('widget-overlay-is_mirrored_label')}
-      ></CheckBox>
+      />
     </form>
   ) : (
     <></>
