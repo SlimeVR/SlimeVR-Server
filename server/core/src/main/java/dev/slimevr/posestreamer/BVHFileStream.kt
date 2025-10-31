@@ -20,28 +20,19 @@ class BVHFileStream : PoseDataStream {
 	private var frameCount: Long = 0
 	private var frameCountOffset: Long = 0
 
-	constructor(outputStream: OutputStream) : super(outputStream) {
+	constructor(outputStream: OutputStream, bvhSettings: BVHSettings = BVHSettings.BLENDER) : super(outputStream) {
+		this.bvhSettings = bvhSettings
 		writer = BufferedWriter(OutputStreamWriter(outputStream), 4096)
 	}
 
-	constructor(outputStream: OutputStream, bvhSettings: BVHSettings) : this(outputStream) {
+	constructor(file: File, bvhSettings: BVHSettings = BVHSettings.BLENDER) : super(file) {
 		this.bvhSettings = bvhSettings
-	}
-
-	constructor(file: File) : super(file) {
 		writer = BufferedWriter(OutputStreamWriter(outputStream), 4096)
 	}
 
-	constructor(file: File, bvhSettings: BVHSettings) : this(file) {
+	constructor(file: String, bvhSettings: BVHSettings = BVHSettings.BLENDER) : super(file) {
 		this.bvhSettings = bvhSettings
-	}
-
-	constructor(file: String) : super(file) {
 		writer = BufferedWriter(OutputStreamWriter(outputStream), 4096)
-	}
-
-	constructor(file: String, bvhSettings: BVHSettings) : this(file) {
-		this.bvhSettings = bvhSettings
 	}
 
 	private fun getBufferedFrameCount(frameCount: Long): String {
@@ -51,83 +42,108 @@ class BVHFileStream : PoseDataStream {
 		return if (bufferCount > 0) frameString + StringUtils.repeat(' ', bufferCount) else frameString
 	}
 
-	private fun isEndBone(bone: Bone?): Boolean = bone == null || (!bvhSettings.shouldWriteEndNodes() && bone.children.isEmpty())
+	private fun internalNavigateSkeleton(
+		bone: Bone,
+		header: (bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, isParent: Boolean) -> Unit,
+		footer: (distance: Int) -> Unit,
+		lastBone: Bone? = null,
+		invertParentRot: Quaternion = Quaternion.IDENTITY,
+		distance: Int = 0,
+		isParent: Boolean = false,
+	) {
+		val parent = bone.parent
+		// If we're visiting the parents or at root, continue to the next parent
+		val visitParent = (isParent || lastBone == null) && parent != null
 
-	@Throws(IOException::class)
-	private fun writeBoneHierarchy(bone: Bone?, level: Int = 0) {
-		// Treat null as bone. This allows for simply writing empty end bones
-		val isEndBone = isEndBone(bone)
+		val children = bone.children
+		val childCount = children.size - (if (isParent) 1 else 0)
 
-		// Don't write end sites at populated bones, BVH parsers don't like that
-		// Ex case caught: `joint{ joint{ end }, end, end }` outputs `joint{ end
-		// }` instead
-		// Ex case let through: `joint{ end }`
-		val isSingleChild = (bone?.parent?.children?.size ?: 0) <= 1
-		if (isEndBone && !isSingleChild) {
-			return
+		val hasBranch = visitParent || childCount > 0
+
+		header(bone, lastBone, invertParentRot, distance, hasBranch, isParent)
+
+		if (hasBranch) {
+			// Cache this inverted rotation to reduce computation for each branch
+			val thisInvertRot = bone.getGlobalRotation().inv()
+
+			if (visitParent) {
+				internalNavigateSkeleton(parent, header, footer, bone, thisInvertRot, distance + 1, true)
+			}
+
+			for (child in children) {
+				// If we're a parent, ignore the child
+				if (isParent && child == lastBone) continue
+				internalNavigateSkeleton(child, header, footer, bone, thisInvertRot, distance + 1, false)
+			}
 		}
 
-		val indentLevel = StringUtils.repeat("\t", level)
+		footer(distance)
+	}
+
+	private fun navigateSkeleton(
+		root: Bone,
+		header: (bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, isParent: Boolean) -> Unit,
+		footer: (distance: Int) -> Unit = {},
+	) {
+		internalNavigateSkeleton(root, header, footer)
+	}
+
+	private fun writeBoneDefHeader(bone: Bone?, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, isParent: Boolean) {
+		val indentLevel = StringUtils.repeat("\t", distance)
 		val nextIndentLevel = indentLevel + "\t"
 
 		// Handle ends
-		if (isEndBone) {
-			writer.write(indentLevel + "End Site\n")
+		if (bone == null) {
+			writer.write("${indentLevel}End Site\n")
 		} else {
 			writer
-				.write((if (level > 0) indentLevel + "JOINT " else "ROOT ") + bone!!.boneType + "\n")
+				.write("${indentLevel}${if (distance > 0) "JOINT" else "ROOT"} ${bone.boneType}\n")
 		}
 		writer.write("$indentLevel{\n")
 
-		// Ignore the root offset and original root offset
-		if (level > 0 && bone != null && bone.parent != null) {
-			val offsetScale = bvhSettings.offsetScale
-			writer
-				.write(
-					(
-						nextIndentLevel +
-							"OFFSET " +
-							0 +
-							" "
-						) + -bone.parent!!.length * offsetScale + " " +
-						0 +
-						"\n",
-				)
+		// Ignore the root and endpoint offsets
+		if (bone != null && lastBone != null) {
+			writer.write(
+				"${nextIndentLevel}OFFSET 0.0 ${(if (isParent) lastBone.length else -lastBone.length) * bvhSettings.offsetScale} 0.0\n",
+			)
 		} else {
-			writer.write(nextIndentLevel + "OFFSET 0.0 0.0 0.0\n")
+			writer.write("${nextIndentLevel}OFFSET 0.0 0.0 0.0\n")
 		}
 
-		// Handle ends
-		if (!isEndBone) {
+		// Define channels
+		if (bone != null) {
 			// Only give position for root
-			if (level > 0) {
-				writer.write(nextIndentLevel + "CHANNELS 3 Zrotation Xrotation Yrotation\n")
+			if (lastBone != null) {
+				writer.write("${nextIndentLevel}CHANNELS 3 Zrotation Xrotation Yrotation\n")
 			} else {
-				writer
-					.write(
-						nextIndentLevel +
-							"CHANNELS 6 Xposition Yposition Zposition Zrotation Xrotation Yrotation\n",
-					)
+				writer.write(
+					"${nextIndentLevel}CHANNELS 6 Xposition Yposition Zposition Zrotation Xrotation Yrotation\n",
+				)
 			}
 
-			// If the bone has children
-			if (bone!!.children.isNotEmpty()) {
-				for (childBone in bone.children) {
-					writeBoneHierarchy(childBone, level + 1)
-				}
-			} else {
-				// Write an empty end bone
-				writeBoneHierarchy(null, level + 1)
+			// Write an empty end bone if there are no branches
+			// We use null for convenience and treat it as an end node (no bone)
+			if (!hasBranch) {
+				val endDistance = distance + 1
+				writeBoneDefHeader(null, bone, Quaternion.IDENTITY, endDistance, false, false)
+				writeBoneDefFooter(endDistance)
 			}
 		}
+	}
 
-		writer.write("$indentLevel}\n")
+	private fun writeBoneDefFooter(level: Int) {
+		// Closing bracket
+		writer.write("${StringUtils.repeat("\t", level)}}\n")
+	}
+
+	private fun writeSkeletonDef(rootBone: Bone) {
+		navigateSkeleton(rootBone, ::writeBoneDefHeader, ::writeBoneDefFooter)
 	}
 
 	@Throws(IOException::class)
 	override fun writeHeader(skeleton: HumanSkeleton, streamer: PoseStreamer) {
 		writer.write("HIERARCHY\n")
-		writeBoneHierarchy(skeleton.headBone)
+		writeSkeletonDef(skeleton.getBone(bvhSettings.rootBone))
 
 		writer.write("MOTION\n")
 		writer.write("Frames: ")
@@ -145,41 +161,19 @@ class BVHFileStream : PoseDataStream {
 		writer.write("Frame Time: ${streamer.frameInterval}\n")
 	}
 
-	@Throws(IOException::class)
-	private fun writeBoneHierarchyRotation(bone: Bone, inverseRootRot: Quaternion?) {
-		var rot = bone.getGlobalRotation()
-
-		// Adjust to local rotation
-		if (inverseRootRot != null) {
-			rot = inverseRootRot * rot
-		}
-
-		// Pitch (X), Yaw (Y), Roll (Z)
+	private fun writeBoneRot(bone: Bone, lastBone: Bone?, invertParentRot: Quaternion, distance: Int, hasBranch: Boolean, isParent: Boolean) {
+		val rot = invertParentRot * bone.getGlobalRotation()
 		val angles = rot.toEulerAngles(EulerOrder.ZXY)
 
 		// Output in order of roll (Z), pitch (X), yaw (Y) (extrinsic)
+		// Assume spacing is needed at the start (we start with position with no following space)
 		writer
-			.write("${angles.z * FastMath.RAD_TO_DEG} ${angles.x * FastMath.RAD_TO_DEG} ${angles.y * FastMath.RAD_TO_DEG}")
-
-		// Get inverse rotation for child local rotations
-		if (bone.children.isNotEmpty()) {
-			val inverseRot = bone.getGlobalRotation().inv()
-			for (childBode in bone.children) {
-				if (isEndBone(childBode)) {
-					// If it's an end bone, skip
-					continue
-				}
-
-				// Add spacing
-				writer.write(" ")
-				writeBoneHierarchyRotation(childBode, inverseRot)
-			}
-		}
+			.write(" ${angles.z * FastMath.RAD_TO_DEG} ${angles.x * FastMath.RAD_TO_DEG} ${angles.y * FastMath.RAD_TO_DEG}")
 	}
 
 	@Throws(IOException::class)
 	override fun writeFrame(skeleton: HumanSkeleton) {
-		val rootBone = skeleton.headBone
+		val rootBone = skeleton.getBone(bvhSettings.rootBone)
 
 		val rootPos = rootBone.getPosition()
 
@@ -188,10 +182,7 @@ class BVHFileStream : PoseDataStream {
 		writer
 			.write("${rootPos.x * positionScale} ${rootPos.y * positionScale} ${rootPos.z * positionScale}")
 
-		// Add spacing
-		writer.write(" ")
-		writeBoneHierarchyRotation(rootBone, null)
-
+		navigateSkeleton(rootBone, ::writeBoneRot)
 		writer.newLine()
 
 		frameCount++
