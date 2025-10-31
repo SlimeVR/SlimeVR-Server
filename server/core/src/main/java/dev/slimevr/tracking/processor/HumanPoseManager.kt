@@ -534,7 +534,7 @@ class HumanPoseManager(val server: VRServer?) {
 
 				// Get the difference between last reset and now
 				val difference = tracker
-					.getRotation() * tracker.resetsHandler.lastResetQuaternion!!.inv()
+					.getRotationNoResetSmooth() * tracker.resetsHandler.lastResetQuaternion!!.inv()
 				// Get the pure yaw
 				var trackerDriftAngle = abs(
 					(
