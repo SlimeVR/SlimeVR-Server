@@ -129,7 +129,7 @@
             enable = true;
             toolchain = fenixpkgs.fromToolchainName {
               name = rust_toolchain.toolchain.channel;
-              sha256 = "sha256-yMuSb5eQPO/bHv+Bcf/US8LVMbf/G/0MSfiPwBhiPpk=";
+              sha256 = "sha256-+9FmLhAOezBZCOziO0Qct1NOrfpjNsXxc/8I0c7BdKE=";
             };
             components = rust_toolchain.toolchain.components;
           };
