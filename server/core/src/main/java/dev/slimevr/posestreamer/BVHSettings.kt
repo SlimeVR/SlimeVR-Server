@@ -1,18 +1,20 @@
 package dev.slimevr.posestreamer
 
+import dev.slimevr.tracking.processor.BoneType
+
 class BVHSettings {
 	var offsetScale: Float = 100f
 		private set
 	var positionScale: Float = 100f
 		private set
-	private var writeEndNodes = false
+	var rootBone: BoneType = BoneType.HIP
+		private set
 
 	constructor()
 
 	constructor(source: BVHSettings) {
 		this.offsetScale = source.offsetScale
 		this.positionScale = source.positionScale
-		this.writeEndNodes = source.writeEndNodes
 	}
 
 	fun setOffsetScale(offsetScale: Float): BVHSettings {
@@ -25,10 +27,8 @@ class BVHSettings {
 		return this
 	}
 
-	fun shouldWriteEndNodes(): Boolean = writeEndNodes
-
-	fun setWriteEndNodes(writeEndNodes: Boolean): BVHSettings {
-		this.writeEndNodes = writeEndNodes
+	fun setRootBone(rootBone: BoneType): BVHSettings {
+		this.rootBone = rootBone
 		return this
 	}
 

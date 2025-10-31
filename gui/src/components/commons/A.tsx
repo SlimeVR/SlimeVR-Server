@@ -1,4 +1,4 @@
-import { open } from '@tauri-apps/plugin-shell';
+import { openUrl } from '@tauri-apps/plugin-opener';
 import { ReactNode } from 'react';
 
 export function A({ href, children }: { href?: string; children?: ReactNode }) {
@@ -6,7 +6,7 @@ export function A({ href, children }: { href?: string; children?: ReactNode }) {
     <a
       href="javascript:void(0)"
       onClick={() =>
-        href && open(href).catch(() => window.open(href, '_blank'))
+        href && openUrl(href).catch(() => window.open(href, '_blank'))
       }
       className="underline"
     >

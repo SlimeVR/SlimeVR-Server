@@ -118,7 +118,7 @@ export function ResetButton({
       finishedTimeoutRef.current = setTimeout(() => {
         setFinished(false);
         finishedTimeoutRef.current = -1;
-      }, 2000);
+      }, 2000) as unknown as number;
       if (onReseted) onReseted();
     },
   });

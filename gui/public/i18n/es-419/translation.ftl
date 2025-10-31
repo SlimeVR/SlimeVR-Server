@@ -391,7 +391,7 @@ tracker-settings-use_mag = Permitir el uso del magnetómetro en este tracker
 # Multiline!
 tracker-settings-use_mag-description =
     ¿Debería este tracker usar el magnetómetro para reducir la desviacion cuando se permite el uso del magnetómetro? <b>¡Por favor, no apagues tu tracker mientras alternas esto!</b>
-    
+
     Primero debes permitir el uso del magnetómetro, <magSetting>haga clic aquí para ir al ajuste</magSetting>.
 tracker-settings-use_mag-label = Permitir el uso del magnetómetro
 # The .<name> means it's an attribute and it's related to the top key.
@@ -552,7 +552,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = Compens
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Advertencia:</b> Solo usa la compensación de desviación si necesitas reiniciar
     muy seguido (cada ~5-10 minutos).
-    
+
     Algunos IMUs propensos a reinicios frecuentes incluyen:
     Joy-Cons, owoTrack y MPU (sin un firmware reciente).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancelar
@@ -739,9 +739,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Recopilación de errores a través de Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Consientes a la recopilación de datos de errores anonimizados?</h1>
-    
+
     <b>No recopilamos información personal</b> como tu dirección IP o credenciales del Wi-Fi. ¡SlimeVR respeta tu privacidad!
-    
+
     Para proveer la mejor experiencia de usuario, recopilamos reportes de errores anonimizados, métricas de rendimiento, e información del sistema operativo. Esto nos ayuda a detectar errores y problemas con SlimeVR. Estas métricas son recopiladas a través de Sentry.io.
 settings-interface-behavior-error_tracking-label = Enviar errores a los desarrolladores
 
@@ -762,7 +762,6 @@ settings-serial-factory_reset-warning =
     ¡Esto significa que los ajustes de calibración y Wi-Fi <b>se perderán</b>!
 settings-serial-factory_reset-warning-ok = Sé lo que estoy haciendo
 settings-serial-factory_reset-warning-cancel = Cancelar
-settings-serial-get_infos = Obtener información
 settings-serial-serial_select = Selecciona un puerto serial
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Obtener escaneo WiFi
@@ -802,7 +801,7 @@ settings-osc-vrchat-description-v1 =
     Cambia los ajustes específicos de los trackers OSC utilizados para enviar
     datos de seguimiento a aplicaciones sin SteamVR (ej. VRChat en Quest).
     Asegúrate de activar OSC en VRChat a través del menú Acción en OSC > Activado.
-    Para permitir la recepción de datos del HMD y de los mandos desde VRChat, ve a los ajustes de tu menú principal 
+    Para permitir la recepción de datos del HMD y de los mandos desde VRChat, ve a los ajustes de tu menú principal
     en Tracking & IK > Permitir el envío de datos OSC de seguimiento de RV de cabeza y muñeca.
 settings-osc-vrchat-enable = Habilitar
 settings-osc-vrchat-enable-description = Habilita el envio y recibo de datos.
@@ -937,20 +936,20 @@ onboarding-reset_tutorial-skip = Saltar paso
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio horizontal.
-    
+
     Esto va a hacer que tus sensores miren para la misma dirección que tu HMD.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio completo.
-    
+
     Se requiere que estas de forma parada (pose en i). Esto tiene un delay de 3 segundos (configurable) antes de que actualmente suceda.
     Esto reinicia completamente la posición y rotación de todos tus sensores, debería de arreglar la mayoría de tus problemas.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Toca { $taps } veces el tracker resaltado para activar el reinicio de montura.
-    
+
     El reinicio de montura ayuda en como tus sensores están puestos en tu cuerpo, ya que si los movistes o cambiaste para donde están orientados bastante, esto debería de ayudar.
-    
+
     Requiere que estas en una pose como que estás esquiando, como se muestra en el tutorial de montura automática y tenes un retraso de 3 segundos (configurable) antes de que actualmente suceda.
 
 ## Setup start
@@ -1303,9 +1302,9 @@ onboarding-scaled_proportions-manual_height-estimated_height = La altura estimad
 onboarding-scaled_proportions-manual_height-next_step = Continuar y guardar
 onboarding-scaled_proportions-manual_height-warning =
     Actualmente estás utilizando la manera manual para configurar las proporciones escaladas!
-    
+
     <b>Este modo solo es recomendado si no utilizas un HMD con SlimeVR</b>
-    
+
     Para poder utilizar las proporciones escaladas automáticas, por favor:
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Conecta un visor VR
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Asegurate de que tus mandos están conectados y correctamente asignados a tus manos
@@ -1460,7 +1459,7 @@ firmware_tool-flashbtn_step-board_SLIMEVR-r12 = Encienda el sensor mientras cort
 firmware_tool-flashbtn_step-board_SLIMEVR-r14 = Encienda el sensor mientras presiona el botón FLASH en la parte superior de la placa
 firmware_tool-flashbtn_step-board_OTHER =
     Antes de flashear, probablemente tendrá que poner el sensor en modo bootloader.
-    La mayoría de las veces, esto significa presionar el botón de boot en la placa antes de que comience el proceso de flasheo. Si el proceso de flasheo se agota al comienzo, probablemente significa que el sensor no estaba en modo bootloader. 
+    La mayoría de las veces, esto significa presionar el botón de boot en la placa antes de que comience el proceso de flasheo. Si el proceso de flasheo se agota al comienzo, probablemente significa que el sensor no estaba en modo bootloader.
     Por favor, consulte las instrucciones de flasheo de su placa para saber cómo activar el modo bootloader.
 firmware_tool-flash_method_ota-devices = Dispositivos OTA detectados:
 firmware_tool-flash_method_ota-no_devices = No hay placas que se puedan actualizar mediante OTA, asegúrese de seleccionar el tipo de placa correcto
@@ -1530,7 +1529,7 @@ tray_or_exit_modal-title = ¿Que debería hacer el botón de cerrar?
 # Multiline text
 tray_or_exit_modal-description =
     Esto te deja escoger si quieres cerrar el servidor o minimizarlo a la bandeja cuando se presiona el botón de cerrar.
-    
+
     ¡Puedes cambiar esto luego en los ajustes de la interfaz!
 tray_or_exit_modal-radio-exit = Salir al cerrar
 tray_or_exit_modal-radio-tray = Minimizar a la bandeja del sistema
@@ -1591,7 +1590,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Longitud del brazo
 error_collection_modal-title = ¿Podemos recopilar errores?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-    
+
     Tu puedes cambiar esta configuración más tarde en la sección de comportamiento de la pagina de configuración.
 error_collection_modal-confirm = Acepto
 error_collection_modal-cancel = No quiero

@@ -328,6 +328,7 @@ class Tracker @JvmOverloads constructor(
 
 	/**
 	 * Tells the tracker that it received new data
+	 * NOTE: Use only when rotation is received
 	 */
 	fun dataTick() {
 		timer.update()
@@ -411,21 +412,28 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	/**
-	 * Get the rotation of the tracker after the resetsHandler's corrections and filtering if applicable
+	 * Get the rotation of the tracker after the resetsHandler's corrections, filtering,
+	 * and reset smoothing if applicable
 	 */
 	fun getRotation(): Quaternion {
-		var rot = if (trackRotDirection) {
-			filteringHandler.getFilteredRotation()
-		} else {
-			// Get non-filtered rotation
-			getAdjustedRotation()
-		}
+		var rot = getRotationNoResetSmooth()
 
 		if (yawResetSmoothing.remainingTime > 0f) {
 			rot = yawResetSmoothing.curRotation * rot
 		}
 
 		return rot
+	}
+
+	/**
+	 * Get the rotation of the tracker after the resetsHandler's corrections and
+	 * filtering if applicable
+	 */
+	fun getRotationNoResetSmooth(): Quaternion = if (trackRotDirection) {
+		filteringHandler.getFilteredRotation()
+	} else {
+		// Get non-filtered rotation
+		getAdjustedRotation()
 	}
 
 	/**
