@@ -263,7 +263,7 @@ tracker-settings-use_mag = 이 트래커에서 자력계 활성화하기
 # Multiline!
 tracker-settings-use_mag-description =
     이 트래커는 자력계 사용이 허용될 때 드리프트를 줄이기 위해 자력계를 사용해야 합니까? <b>이것을 토글하는 동안 트래커를 종료하지 마십시오!</b>
-    
+
     먼저 자력계를 사용하도록 설정한 다음, <magSetting>여기를 클릭하여 설정으로 이동하세요</magSetting>.
 tracker-settings-use_mag-label = 자력계 활성화
 # The .<name> means it's an attribute and it's related to the top key.
@@ -383,7 +383,7 @@ settings-general-steamvr-trackers-tracker_toggling = 자동 트래커 할당
 settings-general-steamvr-trackers-tracker_toggling-description = 지정한 트래커 할당 상태에 따라 SteamVR 트래커를 자동으로 켜고 끄기
 settings-general-steamvr-trackers-tracker_toggling-label = 자동 트래커 할당
 settings-general-steamvr-trackers-hands-warning =
-    <b>경고:</b> 핸드 트래커를 사용하면 VR 컨트롤러가 작동하지 않아요. 
+    <b>경고:</b> 핸드 트래커를 사용하면 VR 컨트롤러가 작동하지 않아요.
     그래도 사용할까요?
 settings-general-steamvr-trackers-hands-warning-cancel = 취소
 settings-general-steamvr-trackers-hands-warning-done = 확인
@@ -414,12 +414,12 @@ settings-general-tracker_mechanics-drift_compensation-enabled-label = 틀어짐 
 settings-general-tracker_mechanics-drift_compensation-prediction = 틀어짐 보정 예측
 # This cares about multilines
 settings-general-tracker_mechanics-drift_compensation-prediction-description =
-    점점 심하게 틀어지는 트래커의 틀어짐 방향을 예측해요. 
+    점점 심하게 틀어지는 트래커의 틀어짐 방향을 예측해요.
     틀어짐 보정을 사용해도 트래커가 Yaw 축에서 계속 틀어지면 이 옵션을 켜세요.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = 예측해서 틀어짐 보정하기
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>경고:</b> 트래커를 지나치게 자주 정렬해야 하는 경우에만 틀어짐 보정을 사용하세요 (5~10분마다).
-    
+
     Joy-Con, owoTrack 및 MPU 시리즈 IMU(최신 펌웨어 제외)
     등과 같은 트래커들이 해당합니다.
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = 취소
@@ -428,7 +428,7 @@ settings-general-tracker_mechanics-drift_compensation-amount-label = 보정 강�
 settings-general-tracker_mechanics-drift_compensation-max_resets-label = 보정에 사용할 최근 정렬 횟수
 settings-general-tracker_mechanics-save_mounting_reset = 자동 착용 방향 정렬 보정값 저장
 settings-general-tracker_mechanics-save_mounting_reset-description =
-    트래커의 착용 방향 정렬 보정값을 저장합니다. 트래커들의 위치가 고정된 
+    트래커의 착용 방향 정렬 보정값을 저장합니다. 트래커들의 위치가 고정된
     모션 캡처 슈트 같은 것을 사용할 때 유용해요. <b>일반 사용자들에게는 권장되지 않아요!</b>
 settings-general-tracker_mechanics-save_mounting_reset-enabled-label = 착용 방향 정렬 저장
 settings-general-tracker_mechanics-use_mag_on_all_trackers = 자력계를 지원하는 모든 IMU 트래커에서 자력계 활성화
@@ -595,7 +595,6 @@ settings-serial-factory_reset-warning =
     계속하면 Wi-Fi와 캘리브레이션 정보도 <b>모두 삭제됩니다!</b>
 settings-serial-factory_reset-warning-ok = 네! 알고 있어요.
 settings-serial-factory_reset-warning-cancel = 취소
-settings-serial-get_infos = 정보 가져오기
 settings-serial-serial_select = 시리얼 포트 선택
 settings-serial-auto_dropdown_item = 자동
 settings-serial-get_wifi_scan = WiFi 검색
@@ -760,20 +759,20 @@ onboarding-reset_tutorial-skip = 단계 건너뛰기
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Yaw 정렬을 시도하려면 강조된 트래커를 { $taps }번 탭하세요.
-    
+
     그러면 트래커는 HMD가 바라보는 면과 같은 방향으로 정렬될 거예요.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     전체 정렬을 시도하려면 강조된 트래커를 { $taps }번 탭하세요.
-    
+
     탭한 다음 3초 뒤에(설정에서 변경 가능) 실제 보정이 이뤄지기 때문에 그 사이에 일어나서 차렷 자세로 보정을 기다리면 돼요.
     전체 정렬은 모든 트래커의 위치와 각도를 원래대로 되돌리기 때문에 대부분의 틀어짐 문제를 해결할 수 있어요.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     착용 방향 정렬을 시도하려면 강조된 트래커를 { $taps }번 탭하세요.
-    
+
     착용 방향 정렬은 실제로 몸에 있는 트래커의 위치를 감지할 수 있어요. 트래커를 정확한 방향으로 착용하지 않거나 실수로 움직여서 트래커가 미끄러져도 착용 방향 정렬을 통해 해결할 수 있어요.
-    
+
     자동 착용 방향 설정 마법사에서 봤던 것처럼 스키를 타는 듯한 자세로 몸을 구부리고 있으세요. 탭한 다음 3초 뒤에(설정에서 변경 가능) 보정이 시작될 거예요.
 
 ## Setup start
@@ -1060,7 +1059,7 @@ onboarding-automatic_proportions-recording-description-p0 = 기록하는 중...
 onboarding-automatic_proportions-recording-description-p1 = 아래에 표시된 동작을 따라 하세요
 # Each line of text is a different list item
 onboarding-automatic_proportions-recording-steps =
-    자리에서 똑바로 일어나서, 머리를 원을 그리듯이 움직이세요. 
+    자리에서 똑바로 일어나서, 머리를 원을 그리듯이 움직이세요.
     등을 앞으로 구부리고 스쿼트를 하듯이 몸을 낮추세요. 그대로 왼쪽을 바라본 다음 오른쪽을 바라보세요.
     상체를 왼쪽(시계 반대 방향)으로 비틀어서 바닥을 향해 손을 뻗으세요.
     상체를 오른쪽(시계 방향)으로 비틀어서 바닥을 향해 손을 뻗으세요.
@@ -1285,7 +1284,7 @@ tray_or_exit_modal-title = 닫기 버튼이 무엇을 하도록 할까요?
 # Multiline text
 tray_or_exit_modal-description =
     이 옵션은 닫기 버튼을 누를 때 서버를 종료할지 또는 시스템 트레이로 최소화할지를 결정합니다.
-    
+
     언제든지 설정의 인터페이스 탭에서 변경하실 수 있어요!
 tray_or_exit_modal-radio-exit = SlimeVR 종료하기
 tray_or_exit_modal-radio-tray = 작업 표시줄로 최소화

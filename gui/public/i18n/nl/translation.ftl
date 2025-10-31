@@ -113,12 +113,12 @@ skeleton_bone-NONE = Geen
 skeleton_bone-HEAD = Hoofdverschuiving
 skeleton_bone-HEAD-desc =
     Dit is de afstand tussen je headset en het midden van je hoofd.
-    Om dit aan te passen, schud je je hoofd naar links en rechts alsof je 'nee' zegt, 
+    Om dit aan te passen, schud je je hoofd naar links en rechts alsof je 'nee' zegt,
     pas het aan totdat beweging van de andere trackers te verwaarlozen is.
 skeleton_bone-NECK = Neklengte
 skeleton_bone-NECK-desc =
     Dit is de afstand tussen het midden van je hoofd en de basis van je nek.
-    Om dit aan te passen, beweeg je je hoofd op en neer alsof je knikt, of kantel je je hoofd 
+    Om dit aan te passen, beweeg je je hoofd op en neer alsof je knikt, of kantel je je hoofd
     naar links en rechts. Wijzig de positie totdat beweging in andere trackers verwaarloosbaar is.
 skeleton_bone-torso_group = Romp lengte
 skeleton_bone-torso_group-desc =
@@ -128,7 +128,7 @@ skeleton_bone-torso_group-desc =
 skeleton_bone-UPPER_CHEST = Bovenborst Lengte
 skeleton_bone-UPPER_CHEST-desc =
     Dit is de afstand tussen de basis van je nek en het midden van je borst.
-    Om dit aan te passen, stel je de torso-lengte correct af en pas je deze aan in verschillende houdingen 
+    Om dit aan te passen, stel je de torso-lengte correct af en pas je deze aan in verschillende houdingen
     (zitten, bukken, liggen, enz.) totdat je virtuele ruggengraat overeenkomt met je echte.
 skeleton_bone-CHEST_OFFSET = Borstoffset
 skeleton_bone-CHEST_OFFSET-desc =
@@ -137,12 +137,12 @@ skeleton_bone-CHEST_OFFSET-desc =
 skeleton_bone-CHEST = Borstafstand
 skeleton_bone-CHEST-desc =
     Dit is de afstand van het midden van je borst tot het midden van je ruggengraat.
-    Om dit aan te passen, stel je de torso-lengte correct af en pas je deze aan in verschillende houdingen 
+    Om dit aan te passen, stel je de torso-lengte correct af en pas je deze aan in verschillende houdingen
     (zitten, bukken, liggen, enz.) totdat je virtuele ruggengraat overeenkomt met je echte.
 skeleton_bone-WAIST = Taille lengte
 skeleton_bone-WAIST-desc =
     Dit is de afstand van het midden van je ruggengraat tot je navel.
-    Om dit aan te passen, stel je de torso-lengte correct af en pas je deze aan in verschillende houdingen 
+    Om dit aan te passen, stel je de torso-lengte correct af en pas je deze aan in verschillende houdingen
     (zitten, bukken, liggen, enz.) totdat je virtuele ruggengraat overeenkomt met je echte.
 skeleton_bone-HIP = Heuplengte
 skeleton_bone-HIP-desc =
@@ -200,7 +200,7 @@ skeleton_bone-SHOULDERS_WIDTH-desc =
 skeleton_bone-arm_group = Armlengte
 skeleton_bone-arm_group-desc =
     Dit is de afstand van je schouders tot je polsen.
-    Om dit aan te passen, pas je de schouderafstand correct aan, stel je Handafstand Y in op 0, 
+    Om dit aan te passen, pas je de schouderafstand correct aan, stel je Handafstand Y in op 0,
     en pas je deze aan totdat je handtrackers op één lijn liggen met je polsen.
 skeleton_bone-UPPER_ARM = Bovenarmlengte
 skeleton_bone-UPPER_ARM-desc =
@@ -215,15 +215,15 @@ skeleton_bone-LOWER_ARM-desc =
 skeleton_bone-HAND_Y = Afstand hand Y
 skeleton_bone-HAND_Y-desc =
     Dit is de verticale afstand van je polsen tot het midden van je hand.
-    Om dit aan te passen voor motion capture, pas je de armlengte correct aan 
-    en pas je deze aan totdat je handtrackers verticaal uitgelijnd zijn met het midden van je handen. 
-    Wil je het aanpassen voor elleboogtracking vanaf je controllers, 
+    Om dit aan te passen voor motion capture, pas je de armlengte correct aan
+    en pas je deze aan totdat je handtrackers verticaal uitgelijnd zijn met het midden van je handen.
+    Wil je het aanpassen voor elleboogtracking vanaf je controllers,
     stel dan de armlengte in op 0 en pas je deze aan totdat je elleboogtrackers verticaal op één lijn liggen met je polsen.
 skeleton_bone-HAND_Z = Afstand hand Z
 skeleton_bone-HAND_Z-desc =
     Dit is de horizontale afstand van je polsen tot het midden van je hand.
     Als je dit wilt aanpassen voor motion capture, stel je deze in op 0.
-    Wil je het aanpassen voor elleboogtracking vanaf je controllers, stel dan de armlengte in op 0 
+    Wil je het aanpassen voor elleboogtracking vanaf je controllers, stel dan de armlengte in op 0
     en pas je deze aan totdat je elleboogtrackers horizontaal op één lijn liggen met je polsen.
 skeleton_bone-ELBOW_OFFSET = Elleboogoffset
 skeleton_bone-ELBOW_OFFSET-desc = Dit kan worden aangepast om je virtuele elleboogtrackers omhoog of omlaag te verplaatsen, zodat wordt voorkomen dat VRChat per ongeluk een elleboogtracker aan de borst koppelt.
@@ -550,7 +550,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = Voorspe
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Waarschuwing:</b> Gebruik alleen driftcompensatie als je heel vaak
     moet resetten (elke ~5-10 minuten).
-    
+
     IMU's die vaak worden gereset, zijn onder ander:
     Joy-Cons, owoTrack en MPU's (zonder recente firmware).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Annuleren
@@ -738,9 +738,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Foutverzameling via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Geeft u toestemming voor het verzamelen van geanonimiseerde foutgegevens?</h1>
-    
+
     <b>We verzamelen geen persoonlijke informatie</b> zoals uw IP-adres of draadloze inloggegevens. SlimeVR hecht veel waarde aan uw privacy!
-    
+
     Om de beste gebruikerservaring te bieden, verzamelen we geanonimiseerde foutrapporten, prestatiestatistieken en informatie over het besturingssysteem. Dit helpt ons bij het detecteren van fouten en problemen met SlimeVR. Deze statistieken worden verzameld via Sentry.io.
 settings-interface-behavior-error_tracking-label = Stuur fouten naar de ontwikkelaars
 settings-interface-behavior-bvh_directory = Map om BVH-opnames op te slaan
@@ -764,7 +764,6 @@ settings-serial-factory_reset-warning =
     Wat betekent dat Wi-Fi en kalibratie-instellingen <b>allemaal verloren gaan!</b>
 settings-serial-factory_reset-warning-ok = Ik weet wat ik doe
 settings-serial-factory_reset-warning-cancel = Annuleren
-settings-serial-get_infos = Informatie ophalen
 settings-serial-serial_select = Selecteer een seriële poort
 settings-serial-auto_dropdown_item = Automatisch
 settings-serial-get_wifi_scan = WiFi-scan uitvoeren
@@ -877,7 +876,7 @@ settings-utils-advanced-reset-all-label = Alles resetten
 settings-utils-advanced-reset_warning =
     { $type ->
         [gui]
-            <b>Waarschuwing</b>Hiermee worden al uw GUI instellingen teruggezet naar de standaardinstellingen. 
+            <b>Waarschuwing</b>Hiermee worden al uw GUI instellingen teruggezet naar de standaardinstellingen.
             Weet u zeker dat u dit wilt doen?
         [server]
             <b>Waarschuwing</b>Hiermee worden al uw tracking instellingen teruggezet naar de standaardinstellingen.
@@ -934,20 +933,20 @@ onboarding-reset_tutorial-skip = Stap overslaan
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Tik { $taps } keer op de gemarkeerde tracker om de yaw-reset te activeren.
-    
+
     Hierdoor staan de trackers in dezelfde richting als je HMD.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Tik { $taps } keer op de gemarkeerde tracker om een volledige reset uit te voeren.
-    
+
     Hiervoor moet je staan (i-pose). Er is een vertraging van 3 seconden (instelbaar) voordat het daadwerkelijk gebeurt.
     Hiermee wordt de positie en rotatie van al je trackers volledig gereset. Dit zou de meeste problemen moeten oplossen.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Tik { $taps } keer op de gemarkeerde tracker om de montage opnieuw in te stellen.
-    
+
     Montage-reset helpt bij hoe de trackers daadwerkelijk op je worden geplaatst, dus als je ze per ongeluk hebt verplaatst en de oriëntatie ervan voor een groot deel hebt veranderd, zal dit helpen.
-    
+
     Je moet in een houding staan alsof je aan het skiën bent, zoals wordt weergegeven in de Automatische montage wizard, je hebt een vertraging van 3 seconden (instelbaar) voordat deze wordt geactiveerd.
 
 ## Setup start
@@ -1296,7 +1295,7 @@ onboarding-scaled_proportions-manual_height-next_step = Opslaan en doorgaan
 onboarding-scaled_proportions-manual_height-warning =
     Je gebruikt momenteel de handmatige manier om geschaalde verhoudingen in te stellen!
     <b>Deze modus wordt alleen aanbevolen als je geen HMD met SlimeVR gebruikt.</b>
-    
+
     Om de automatische geschaalde verhoudingen te kunnen gebruiken, doe het volgende:
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Sluit een VR-headset aan
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Zorg ervoor dat je controllers zijn verbonden en correct aan je handen zijn toegewezen
@@ -1526,7 +1525,7 @@ tray_or_exit_modal-title = Wat is de actie van de sluitknop?
 # Multiline text
 tray_or_exit_modal-description =
     Hiermee kun je kiezen wat er gebeurt als je op de sluitknop klikt: het programma afsluiten of minimaliseren naar het systeemvak.
-    
+
     Deze instelling kun je later altijd nog wijzigen in de interface instellingen!
 tray_or_exit_modal-radio-exit = Afsluiten bij sluiten
 tray_or_exit_modal-radio-tray = Minimaliseren naar systeemvak
@@ -1585,7 +1584,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
 error_collection_modal-title = Kunnen we fouten verzamelen?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-    
+
     U kunt deze instelling later wijzigen in de sectie Gedrag van de instellingenpagina.
 error_collection_modal-confirm = Ik ben akkoord
 error_collection_modal-cancel = Ik wil het niet

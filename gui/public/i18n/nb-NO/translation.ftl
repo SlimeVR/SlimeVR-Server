@@ -399,9 +399,9 @@ settings-general-interface-dev_mode-description = Denne modusen kan være hjelps
 settings-general-interface-dev_mode-label = Utvikler modus
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Samtykker du til innsamling av anonymiserte feildata?</h1>
-    
+
     <b>Vi samler ikke inn personlig informasjon</b> slik som din IP-adresse eller trådløs-legitimasjon. SlimeVR verdsetter ditt personvern!
-    
+
     For å gi deg den beste brukeropplevelsen, samler vi inn anonymiserte feilrapporter, ytelsesmålinger og informasjon om operativsystemet. Dette hjelper oss med å oppdage feil og problemer med SlimeVR. Disse beregningene samles inn via Sentry.io.
 settings-interface-behavior-error_tracking-label = Send feilmeldinger til utviklere
 
@@ -422,7 +422,6 @@ settings-serial-factory_reset-warning =
     Som betyr at Wi-Fi og kalibrerings innstillingene dine </b>vil bli tapt!</b>
 settings-serial-factory_reset-warning-ok = Jeg vet hva jeg driver med
 settings-serial-factory_reset-warning-cancel = Avslutt
-settings-serial-get_infos = Få info
 settings-serial-serial_select = Velg en serieport
 settings-serial-auto_dropdown_item = Auto
 
@@ -685,4 +684,3 @@ tray_or_exit_modal-cancel = Avbryt
 
 
 ## Error collection consent modal
-
