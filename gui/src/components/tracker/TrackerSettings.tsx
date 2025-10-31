@@ -40,6 +40,7 @@ import semver from 'semver';
 import { useSetAtom } from 'jotai';
 import { ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
+import { TrackerGraph } from './TrackerGraph';
 
 const rotationsLabels: [Quaternion, string][] = [
   [rotationToQuatMap.BACK, 'tracker-rotation-back'],
@@ -505,6 +506,7 @@ export function TrackerSettingsPage() {
               </Button>
             </div>
           )}
+          {tracker && <TrackerGraph tracker={tracker.tracker} />}
         </div>
       </div>
     </form>
