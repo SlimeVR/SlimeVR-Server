@@ -49,7 +49,7 @@ export function SingleTrackerBodyAssignmentMenu({
               <Typography variant="mobile-title" bold>
                 {l10n.getString('body_assignment_menu')}
               </Typography>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('body_assignment_menu-description')}
               </Typography>
               <div className="flex">

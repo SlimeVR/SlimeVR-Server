@@ -27,7 +27,7 @@ export function SelectBoardStep({
     <>
       <div className="flex flex-col w-full">
         <div className="flex flex-grow flex-col gap-4">
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('firmware_tool-board_step-description')}
           </Typography>
         </div>
@@ -91,7 +91,7 @@ export function SelectBoardStep({
             <div className="flex justify-center flex-col items-center gap-3 h-44">
               <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
               <Localized id="firmware_tool-loading">
-                <Typography color="secondary"></Typography>
+                <Typography></Typography>
               </Localized>
             </div>
           )}

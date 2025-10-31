@@ -11,7 +11,7 @@ export function DoneStep({ goTo }: VerticalStepComponentProps) {
           <Typography variant="main-title"></Typography>
         </Localized>
         <Localized id="onboarding-stay_aligned-done-description-2">
-          <Typography color="secondary"></Typography>
+          <Typography></Typography>
         </Localized>
       </div>
       <div className="flex gap-3 justify-between">

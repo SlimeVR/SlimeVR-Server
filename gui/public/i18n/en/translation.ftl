@@ -740,7 +740,6 @@ settings-serial-factory_reset-warning =
     Which means Wi-Fi and calibration settings <b>will all be lost!</b>
 settings-serial-factory_reset-warning-ok = I know what I'm doing
 settings-serial-factory_reset-warning-cancel = Cancel
-settings-serial-get_infos = Get Infos
 settings-serial-serial_select = Select a serial port
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Get WiFi Scan
@@ -837,6 +836,10 @@ settings-osc-vmc-anchor_hip-label = Anchor at hips
 settings-osc-vmc-mirror_tracking = Mirror tracking
 settings-osc-vmc-mirror_tracking-description = Mirror the tracking horizontally.
 settings-osc-vmc-mirror_tracking-label = Mirror tracking
+
+## Common OSC settings
+settings-osc-common-network-ports_match_error = The OSC Router in and out ports can't be the same!
+settings-osc-common-network-port_banned_error = The port { $port } can't be used!
 
 ## Advanced settings
 settings-utils-advanced = Advanced
@@ -1128,6 +1131,7 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. Hold the position until
 onboarding-automatic_mounting-put_trackers_on-title = Put on your trackers
 onboarding-automatic_mounting-put_trackers_on-description = To calibrate mounting orientations, we're gonna use the trackers you just assigned. Put on all your trackers, you can see which are which in the figure to the right.
 onboarding-automatic_mounting-put_trackers_on-next = I have all my trackers on
+onboarding-automatic_mounting-return-home = Done
 
 ## Tracker manual proportions setupa
 onboarding-manual_proportions-back = Go Back to Reset tutorial

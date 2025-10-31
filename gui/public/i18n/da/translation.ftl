@@ -378,7 +378,6 @@ settings-serial-factory_reset-warning =
     Hvilket betyder, at alle Wi-Fi- og kalibreringsindstillinger <b>går tabt!</b>
 settings-serial-factory_reset-warning-ok = Jeg ved hvad jeg laver
 settings-serial-factory_reset-warning-cancel = Annuller
-settings-serial-get_infos = Hent oplysninger
 settings-serial-serial_select = Vælg en seriel port
 settings-serial-auto_dropdown_item = Auto
 

@@ -490,7 +490,7 @@ export function ManualProportionsPage() {
               }
             >
               <div className="h-14 bg-background-50 p-4 flex items-center rounded-lg min-w-36 justify-center">
-                <Typography variant="main-title">
+                <Typography variant="main-title" whitespace="whitespace-nowrap">
                   {cmFormat.format((userHeight * 100) / 0.936)}
                 </Typography>
               </div>

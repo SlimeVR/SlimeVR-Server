@@ -1,6 +1,6 @@
 import { Localized, useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { IPv4 } from 'ip-num/IPNumber';
+import { IPv4 } from 'ip-num';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -211,10 +211,10 @@ export function TrackerSettingsPage() {
                 </Typography>
               </Localized>
               <div className="flex gap-2">
-                <Typography color="secondary">
+                <Typography>
                   v{tracker?.device?.hardwareInfo?.firmwareVersion}
                 </Typography>
-                <Typography color="secondary">-</Typography>
+                <Typography>-</Typography>
                 {updateUnavailable && (
                   <Localized id="tracker-settings-update-unavailable">
                     <Typography>Cannot be updated (DIY)</Typography>
@@ -272,7 +272,7 @@ export function TrackerSettingsPage() {
 
           <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2 overflow-x-auto">
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-manufacturer')}
               </Typography>
               <Typography>
@@ -280,13 +280,13 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-display_name')}
               </Typography>
               <Typography>{tracker?.tracker.info?.displayName}</Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-custom_name')}
               </Typography>
               <Typography sentry-mask>
@@ -294,9 +294,7 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
-                {l10n.getString('tracker-infos-url')}
-              </Typography>
+              <Typography>{l10n.getString('tracker-infos-url')}</Typography>
               <Typography>
                 udp://
                 {IPv4.fromNumber(
@@ -305,7 +303,7 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-hardware_identifier')}
               </Typography>
               <Typography>
@@ -313,7 +311,7 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-data_support')}
               </Typography>
               <Typography>
@@ -323,9 +321,7 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
-                {l10n.getString('tracker-infos-imu')}
-              </Typography>
+              <Typography>{l10n.getString('tracker-infos-imu')}</Typography>
               <Typography>
                 {tracker?.tracker.info?.imuType
                   ? ImuType[tracker?.tracker.info?.imuType]
@@ -333,13 +329,13 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-board_type')}
               </Typography>
               <Typography>{boardType}</Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-magnetometer')}
               </Typography>
               <Typography>
@@ -352,7 +348,7 @@ export function TrackerSettingsPage() {
               </Typography>
             </div>
             <div className="flex justify-between">
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-infos-network_version')}
               </Typography>
               <Typography>
@@ -377,7 +373,7 @@ export function TrackerSettingsPage() {
             <Typography variant="section-title">
               {l10n.getString('tracker-settings-assignment_section')}
             </Typography>
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString(
                 'tracker-settings-assignment_section-description'
               )}
@@ -419,7 +415,7 @@ export function TrackerSettingsPage() {
               <Typography variant="section-title">
                 {l10n.getString('tracker-settings-mounting_section')}
               </Typography>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString(
                   'tracker-settings-mounting_section-description'
                 )}
@@ -468,7 +464,7 @@ export function TrackerSettingsPage() {
             <Typography variant="section-title">
               {l10n.getString('tracker-settings-name_section')}
             </Typography>
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString('tracker-settings-name_section-description')}
             </Typography>
             <Input
@@ -488,7 +484,7 @@ export function TrackerSettingsPage() {
               <Typography variant="section-title">
                 {l10n.getString('tracker-settings-forget')}
               </Typography>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('tracker-settings-forget-description')}
               </Typography>
               <Button

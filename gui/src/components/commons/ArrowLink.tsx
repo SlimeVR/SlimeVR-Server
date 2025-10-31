@@ -28,7 +28,7 @@ export function ArrowLink({
     };
     return classNames(
       variantsMap[variant],
-      'flex gap-2 hover:fill-background-10 hover:text-background-10 fill-background-30 text-background-30'
+      'flex gap-2 hover:fill-background-10 fill-background-30 text-background-10'
     );
   }, [variant]);
 

@@ -175,7 +175,7 @@ skeleton_bone-FOOT_SHIFT = Correzione per i piedi
 skeleton_bone-FOOT_SHIFT-desc =
     Questo valore è la distanza orizzontale dal ginocchio alla caviglia.
     Tiene conto del fatto che la parte inferiore delle gambe va all'indietro quando si sta in piedi.
-    Per regolarla, impostare la lunghezza dei piedi su 0, eseguire un reset completo e modificarla 
+    Per regolarla, impostare la lunghezza dei piedi su 0, eseguire un reset completo e modificarla
     finché i piedi virtuali di non si allineano al centro delle caviglie.
 skeleton_bone-SKELETON_OFFSET = Correzione per lo scheletro
 skeleton_bone-SKELETON_OFFSET-desc =
@@ -384,7 +384,7 @@ tracker-settings-use_mag = Consenti il magnetometro su questo tracker
 # Multiline!
 tracker-settings-use_mag-description =
     Vuoi consentire al tracker l'utilizzo del magnetometro per ridurre il drift quando l'uso del magnetometro è consentito? <b>Per favore non spegnere il tracker durante l'attivazione!</b>
-    
+
     È necessario prima consentire l'utilizzo del magnetometro, <magSetting>fare clic qui per accedere alle impostazioni</magSetting>.
 tracker-settings-use_mag-label = Consenti magnetometro
 # The .<name> means it's an attribute and it's related to the top key.
@@ -541,9 +541,9 @@ settings-general-tracker_mechanics-drift_compensation-prediction-description =
     Abilita questa opzione se i tuoi tracker perdono continuano l'orientamento.
 settings-general-tracker_mechanics-drift_compensation-prediction-label = Compensazione del drift predittiva
 settings-general-tracker_mechanics-drift_compensation_warning =
-    <b>Attenzione:</b> Utilizzare la compensazione del drift solo se è necessario il ripristino 
+    <b>Attenzione:</b> Utilizzare la compensazione del drift solo se è necessario il ripristino
     molto spesso (ogni ~5-10 minuti).
-    
+
     Alcune IMU che sono soggetti a frequenti ripristini includono:
     Joy-Con, owoTrack e MPU (senza firmware recente).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Annulla
@@ -732,9 +732,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Raccolta degli errori tramite Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Acconsenti alla raccolta di dati di errore anonimizzati?</h1>
-    
+
     <b>Non raccogliamo informazioni personali</b> come l'indirizzo IP o le credenziali wireless. SlimeVR ha a cuore la tua privacy!
-    
+
     Per offrire la migliore esperienza utente, raccogliamo segnalazioni di errori anonime, metriche delle prestazioni e informazioni sul sistema operativo. Questo ci aiuta a rilevare bug e problemi con SlimeVR. Queste metriche vengono raccolte tramite Sentry.io.
 settings-interface-behavior-error_tracking-label = Invia errori agli sviluppatori
 
@@ -755,7 +755,6 @@ settings-serial-factory_reset-warning =
     Ciò significa che le impostazioni Wi-Fi e di calibrazione <b>andranno tutte perse!</b>
 settings-serial-factory_reset-warning-ok = Capisco cosa sto facendo
 settings-serial-factory_reset-warning-cancel = Annulla
-settings-serial-get_infos = Ottieni informazioni
 settings-serial-serial_select = Seleziona una porta seriale
 settings-serial-auto_dropdown_item = Automatico
 settings-serial-get_wifi_scan = Elenca WiFi Network
@@ -929,21 +928,21 @@ onboarding-reset_tutorial-explanation = Mentre usi i tuoi tracker, potrebbero pe
 onboarding-reset_tutorial-skip = Salta passaggio
 # Cares about multiline
 onboarding-reset_tutorial-0 =
-    Tocca { $taps } volte il tracker evidenziato per eseguire il ripristino dell'orientamento. 
-    
+    Tocca { $taps } volte il tracker evidenziato per eseguire il ripristino dell'orientamento.
+
     Ciò farà sì che i tracker siano rivolti nella stessa direzione del tuo HMD.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Tocca { $taps } volte il tracker evidenziato per eseguire il ripristino completo.
-    
+
     Devi stare in piedi drittə per questo (I-pose). C'è un ritardo di 3 secondi (configurabile) prima che accada effettivamente.
     Questo ripristinerà  completamente la posizione e la rotazione di tutti i tuoi tracker. Dovrebbe risolvere la maggior parte dei problemi.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
-    Tocca { $taps } volte il tracker evidenziato per eseguire il ripristino del posizionamento. 
-    
+    Tocca { $taps } volte il tracker evidenziato per eseguire il ripristino del posizionamento.
+
     Il ripristino del posizionamento aiuta a determinare come i tracker vengono effettivamente posizionati su di te, quindi se li hai spostati accidentalmente e hai cambiato il modo in cui sono orientati di una grande quantità, questo aiuterà.
-    
+
     Devi essere in posa come se stessi sciando come mostrato nella procedura guidata di posizionamento automatico e ha un ritardo di 3 secondi (configurabile) prima che venga attivato.
 
 ## Setup start
@@ -1298,7 +1297,7 @@ onboarding-scaled_proportions-manual_height-next_step = Continua e salva
 onboarding-scaled_proportions-manual_height-warning =
     Al momento stai utilizzando il metodo manuale per impostare le proporzioni in scala!
     <b>Questa modalità è consigliata solo se non si utilizza un Visore con SlimeVR</b>
-    
+
     Per poter utilizzare le proporzioni in scala automatica, si prega di:
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Collegare un visore VR
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Assicurarsi che i controller siano collegati e assegnati correttamente alle mani
@@ -1524,7 +1523,7 @@ tray_or_exit_modal-title = Cosa dovrebbe fare il pulsante di chiusura?
 # Multiline text
 tray_or_exit_modal-description =
     Questa opzione ti permette di scegliere se si desidera uscire dal server o ridurlo a icona nella barra delle applicationi quando si preme il pulsante di chiusura.
-    
+
     Puoi cambiare la tua scelta in seguito nelle impostazioni dell'interfaccia!
 tray_or_exit_modal-radio-exit = Termina alla chiusura
 tray_or_exit_modal-radio-tray = Riduci a icona nella barra delle applicazioni
@@ -1585,7 +1584,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Apertura del braccio
 error_collection_modal-title = Possiamo raccogliere gli errori?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-    
+
     Puoi modificare questa impostazione in un secondo momento nella sezione Comportamento delle impostazioni.
 error_collection_modal-confirm = Acconsento
 error_collection_modal-cancel = Non acconsento

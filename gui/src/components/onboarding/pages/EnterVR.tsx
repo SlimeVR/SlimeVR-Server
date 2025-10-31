@@ -22,7 +22,7 @@ export function EnterVRPage() {
               <Typography variant="main-title">
                 {l10n.getString('onboarding-enter_vr-title')}
               </Typography>
-              <Typography color="secondary">
+              <Typography>
                 {l10n.getString('onboarding-enter_vr-description')}
               </Typography>
             </div>

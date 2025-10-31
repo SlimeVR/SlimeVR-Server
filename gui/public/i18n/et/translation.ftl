@@ -449,7 +449,6 @@ settings-serial-factory_reset-warning =
     Mis tähendab et WI-FI ja kalibreerimis sätted <b>kustutatakse!</b>
 settings-serial-factory_reset-warning-ok = Ma tean mida ma teen
 settings-serial-factory_reset-warning-cancel = Tühista
-settings-serial-get_infos = Saa infot
 settings-serial-serial_select = Valige jadaport
 settings-serial-auto_dropdown_item = Auto
 
@@ -579,20 +578,20 @@ onboarding-reset_tutorial-skip = Jäta samm vahele
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Puudutage { $taps } korda esiletõstetud jälgijat, et käivitada lengerduse lähtestamine.
-    
+
     See setib jälgijad teie HMD-ga samas suunas.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Täieliku lähtestamise käivitamiseks puudutage esiletõstetud jälgijat { $taps } korda.
-    
+
     Sa pead seisma (i-poosis). Enne kui see juhtub, on 3-sekundiline viivitus (konfigureeritav).
     See lähtestab täielikult kõigi teie jälgijate asukoha ja pöörlemise. See peaks lahendama enamiku probleeme.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Puudutage { $taps } korda esiletõstetud jälgijat, et lähtestada paigaldus.
-    
+
     Paigaldamise lähtestamine aitab kaasa sellele, kuidas jälgijad teile tegelikult pannakse, nii et kui te neid kogemata liigutasite ja muutsite nende orientatsiooni suure summa võrra, aitab see.
-    
+
     Peate olema poosis, nagu suusatate, nagu see on näidatud automaatse paigaldamise viisardil, ja teil on 3-sekundiline viivitus (konfigureeritav), enne kui see käivitub.
 
 ## Setup start

@@ -68,9 +68,7 @@ export function OverlayWidget() {
   return !loading ? (
     <form className="bg-background-60 flex flex-col w-full rounded-md px-2">
       <div className="mt-2 px-1">
-        <Typography color="secondary">
-          {l10n.getString('widget-overlay')}
-        </Typography>
+        <Typography>{l10n.getString('widget-overlay')}</Typography>
       </div>
       <CheckBox
         control={control}

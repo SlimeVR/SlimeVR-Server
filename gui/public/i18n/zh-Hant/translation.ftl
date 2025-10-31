@@ -239,6 +239,8 @@ reset-reset_all_warning_default-v2 =
     確定要繼續嗎？
 reset-full = 完整重置
 reset-mounting = 配戴重置
+reset-mounting-feet = 重置腳部配戴
+reset-mounting-fingers = 重置手指配戴
 reset-yaw = 左右偏擺重置
 
 ## Serial detection stuff
@@ -264,6 +266,7 @@ navbar-settings = 詳細設定
 
 bvh-start_recording = 錄製 BVH 檔案
 bvh-recording = 錄製中…
+bvh-save_title = 儲存 BVH 紀錄
 
 ## Tracking pause
 
@@ -386,7 +389,7 @@ tracker-settings-use_mag = 允許使用這個追蹤器的磁力計
 # Multiline!
 tracker-settings-use_mag-description =
     如果「在追蹤器上啟用磁力計」功能已開啟，是否要在這個追蹤器上啟用它來減緩偏移？<b>切換本選項時請勿關閉追蹤器的電源！</b>
-    
+
     請先開啟「在追蹤器上啟用磁力計」功能，<magSetting>點選此處以移動至該設定</magSetting>。
 tracker-settings-use_mag-label = 允許使用這個追蹤器的磁力計
 # The .<name> means it's an attribute and it's related to the top key.
@@ -401,6 +404,7 @@ tracker-settings-forget-label = 忘記追蹤器
 tracker-settings-update-unavailable = 無法更新 (DIY)
 tracker-settings-update-low-battery = 無法更新，電池電量低於 50%
 tracker-settings-update-up_to_date = 已為最新版本
+tracker-settings-update-blocked = 無法更新，沒有其他可用版本。
 tracker-settings-update-available = 版本 { $versionName } 可供更新
 tracker-settings-update = 立即更新
 tracker-settings-update-title = 韌體版本
@@ -547,7 +551,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = 偏移�
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>警告：</b> 只有在需要頻繁重置（約 5~10 分鐘重置一次）
     的時候才開啟此選項。
-    
+
     容易頻繁重置的 IMU 包括：
     Joy-Con、owoTrack、MPU（非近期韌體）。
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = 取消
@@ -604,8 +608,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制功�
 settings-general-fk_settings-leg_tweak-toe_snap-description = 腳趾跟地功能在沒有腳部的追蹤器時，會嘗試猜測腳掌的旋轉角度。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 腳底貼地功能會在腳底與地面接觸時，將腳部旋轉成與地板平行。
 settings-general-fk_settings-leg_fk = 腿部追蹤
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = 開啟腳部配戴重置，進行配戴重置時需要踮起腳尖。
-settings-general-fk_settings-leg_fk-reset_mounting_feet = 腳部配戴重置
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 使用普通的重置配戴時，一併重置腳部配戴。
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = 強制重置腳部配戴
 settings-general-fk_settings-enforce_joint_constraints = 骨架限制
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 約束關節旋轉
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免關節旋轉超出極限
@@ -729,11 +733,14 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = 透過 Sentry.io 收集錯誤資訊
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>你是否同意我們蒐集匿名化的錯誤資料？</h1>
-    
+
     <b>我們不會收集個人資訊</b> ，例如你的 IP 位址或無線網路認證資訊。SlimeVR 重視你的隱私！
-    
+
     為了提供最佳的使用者體驗，我們會蒐集匿名化的錯誤報告、性能指標和作業系統資訊，這會對我們檢測 SlimeVR 的錯誤和問題有所幫助。我們會透過 Sentry.io 來蒐集這些指標。
 settings-interface-behavior-error_tracking-label = 向開發者傳送錯誤資訊
+settings-interface-behavior-bvh_directory = BVH 紀錄儲存目錄
+settings-interface-behavior-bvh_directory-description = 選擇儲存 BVH 紀錄文件的目錄，如此每次錄製 BVH 時不需要選擇儲存位置。
+settings-interface-behavior-bvh_directory-label = 存放 BVH 紀錄的目錄
 
 ## Serial settings
 
@@ -750,7 +757,6 @@ settings-serial-factory_reset-warning =
     亦即其 Wi-Fi 與追蹤器校正的設定<b>將會全部刪除</b>。
 settings-serial-factory_reset-warning-ok = 我確實要執行出廠設定
 settings-serial-factory_reset-warning-cancel = 取消
-settings-serial-get_infos = 取得資訊
 settings-serial-serial_select = 選擇串列埠
 settings-serial-auto_dropdown_item = 自動
 settings-serial-get_wifi_scan = 取得 Wi-Fi 掃描
@@ -879,8 +885,8 @@ settings-utils-advanced-reset_warning-cancel = 取消
 settings-utils-advanced-open_data-v1 = 設定資料夾
 settings-utils-advanced-open_data-description-v1 = 在檔案管理器中開啟 SlimeVR 的設定資料夾，該資料夾包含程式的設定。
 settings-utils-advanced-open_data-label = 打開資料夾
-settings-utils-advanced-open_logs = 記錄檔資料夾
-settings-utils-advanced-open_logs-description = 在檔案管理器中開啟 SlimeVR 的記錄檔資料夾，該資料夾包含程式的記錄檔。
+settings-utils-advanced-open_logs = 紀錄檔資料夾
+settings-utils-advanced-open_logs-description = 在檔案管理器中開啟 SlimeVR 的紀錄檔資料夾，該資料夾包含程式的紀錄檔。
 settings-utils-advanced-open_logs-label = 打開資料夾
 
 ## Setup/onboarding menu
@@ -922,20 +928,20 @@ onboarding-reset_tutorial-skip = 跳過本步驟
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     對所標記之追蹤器敲擊 { $taps } 次即可觸發左右偏擺重置。
-    
+
     追蹤器將會調整與頭戴顯示器所面對的方向一致。
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     對所標記之追蹤器敲擊 { $taps } 次即可觸發完整重置。
-    
+
     做此校正時必須站直，觸發 3 秒後（可修改）才會真正進行重置。
     追蹤器的定位與旋轉將會被完全重置，應該可以解決大多數的問題。
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     對所標記之追蹤器敲擊 { $taps } 次即可觸發配戴重置。
-    
+
     配戴重置能對追蹤器實際的配戴方式進行調整，因此若你不小心移動到追蹤器，或是大幅度的變更配戴方向，這個功能會有所幫助。
-    
+
     做此校正時需要進行滑雪姿勢，如自動配戴校正的畫面所示。在觸發 3 秒後（可修改）才會真正進行重置。
 
 ## Setup start
@@ -1000,7 +1006,7 @@ onboarding-connect_tracker-next = 所有的追蹤器都連接好了
 
 onboarding-calibration_tutorial = IMU 校正教學
 onboarding-calibration_tutorial-subtitle = 進行這項操作可以有效減少追蹤器發生飄移的機會
-onboarding-calibration_tutorial-description = 每次在打開追蹤器的開關時，需要將追蹤器平置一下來進行自動校正。你也可以透過按下「{ onboarding-calibration_tutorial-calibrate }」按鈕來進行手動校正，<b>校正過程中請勿移動追蹤器</b>。
+onboarding-calibration_tutorial-description-v1 = 開啟追蹤器開關後，將其放置在穩定的平面上一段時間以便進行校正。本頁僅提供操作教學——追蹤器電源開啟後即可隨時進行校正，無須回到本頁進行。首先請點選「{ onboarding-calibration_tutorial-calibrate }」按鈕，然後<b>不要移動追蹤器！</b>
 onboarding-calibration_tutorial-calibrate = 追蹤器已經放置在桌上了
 onboarding-calibration_tutorial-status-waiting = 正在等待你完成動作
 onboarding-calibration_tutorial-status-calibrating = 校正中
@@ -1274,7 +1280,7 @@ onboarding-scaled_proportions-manual_height-next_step = 繼續並儲存
 onboarding-scaled_proportions-manual_height-warning =
     你現在正在手動設定縮放型軀幹比例，<b>這個方法僅在你使用 SlimeVR
     不使用頭戴顯示器時推薦使用。</b>
-    
+
     若要能自動設定縮放型軀幹比例，請按照以下步驟：
 onboarding-scaled_proportions-manual_height-warning-no_hmd = 連接 VR 頭戴顯示器
 onboarding-scaled_proportions-manual_height-warning-no_controllers = 檢查 VR 控制器是否正常連接，並在 SlimeVR 介面中分配到你的雙手
@@ -1500,7 +1506,7 @@ tray_or_exit_modal-title = 關閉視窗的動作是什麼？
 # Multiline text
 tray_or_exit_modal-description =
     你可以選擇在關閉視窗時，一併退出伺服器程式，或是將視窗最小化到系統列圖示中。
-    
+
     本設定之後也可以在使用者介面設定中更改。
 tray_or_exit_modal-radio-exit = 退出 SlimeVR
 tray_or_exit_modal-radio-tray = 最小化到系統列
@@ -1561,7 +1567,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = 臂展
 error_collection_modal-title = 我們可以蒐集錯誤資訊嗎？
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-    
+
     若之後要變更此設定，可以在「詳細設定」頁面中的「行為」來變更。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 我不想要
