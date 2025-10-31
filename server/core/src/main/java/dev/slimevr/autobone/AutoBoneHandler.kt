@@ -123,7 +123,7 @@ class AutoBoneHandler(private val server: VRServer) {
 
 				// Save a recurring recording for users to send as debug info
 				announceProcessStatus(AutoBoneProcessType.RECORD, "Saving recording...")
-				autoBone.saveRecording(frames, "LastABRecording.pfr")
+				autoBone.saveRecording(frames, "LastABRecording.pfs")
 				if (autoBone.globalConfig.saveRecordings) {
 					announceProcessStatus(
 						AutoBoneProcessType.RECORD,
