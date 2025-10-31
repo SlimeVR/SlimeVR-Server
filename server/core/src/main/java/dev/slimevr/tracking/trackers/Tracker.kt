@@ -328,6 +328,7 @@ class Tracker @JvmOverloads constructor(
 
 	/**
 	 * Tells the tracker that it received new data
+	 * NOTE: Use only when rotation is received
 	 */
 	fun dataTick() {
 		timer.update()
