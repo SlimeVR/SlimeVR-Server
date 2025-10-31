@@ -59,18 +59,22 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
 
     // If a timer was already running / clear it
     abortCountdown();
-    if (finishedTimeoutRef.current !== -1) clearTimeout(finishedTimeoutRef.current);
-
-    // After 2s go back to idle state
-    finishedTimeoutRef.current = setTimeout(() => {
-      if (status === 'finished') {
-        setStatus('idle'); // only do that if we were on finished status. Allows to reset the outlined border
-      }
-      finishedTimeoutRef.current = -1;
-    }, 2000);
 
     if (onReseted) onReseted();
   };
+
+  useEffect(() => {
+    if (status === 'finished') {
+      finishedTimeoutRef.current = setTimeout(() => {
+        setStatus('idle'); // only do that if we were on finished status. Allows to reset the outlined border
+      }, 2000);
+    } else {
+      clearTimeout(finishedTimeoutRef.current);
+    }
+    return () => {
+      clearTimeout(finishedTimeoutRef.current);
+    };
+  }, [status]);
 
   const maybePlaySoundOnResetEnd = (type: ResetType) => {
     if (!config?.feedbackSound) return;
@@ -92,7 +96,6 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
 
   useEffect(() => {
     return () => {
-      if (finishedTimeoutRef.current !== -1) clearTimeout(finishedTimeoutRef.current);
       abortCountdown();
     };
   }, []);

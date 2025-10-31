@@ -428,7 +428,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 					req.mountingOrientation().y(),
 					req.mountingOrientation().z(),
 				)
-				api.server.configManager.vrConfig.resetsConfig.preferedMountingMethod =
+				api.server.configManager.vrConfig.resetsConfig.lastMountingMethod =
 					MountingMethods.MANUAL
 			}
 		}

@@ -1611,7 +1611,7 @@ class HumanSkeleton(
 		localizer.reset()
 
 		if (humanPoseManager.server != null) {
-			humanPoseManager.server.configManager.vrConfig.resetsConfig.preferedMountingMethod =
+			humanPoseManager.server.configManager.vrConfig.resetsConfig.lastMountingMethod =
 				MountingMethods.AUTOMATIC
 			if (!humanPoseManager.server.trackingChecklistManager.resetMountingCompleted) {
 				humanPoseManager.server.trackingChecklistManager.resetMountingCompleted = bodyParts.any { it ->
