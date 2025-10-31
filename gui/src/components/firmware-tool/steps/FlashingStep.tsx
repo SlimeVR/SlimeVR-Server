@@ -17,11 +17,11 @@ import {
   RpcMessage,
 } from 'solarxr-protocol';
 import { useOnboarding } from '@/hooks/onboarding';
-import { DeviceCardControl } from './DeviceCard';
 import { WarningBox } from '@/components/commons/TipBox';
 import { Button } from '@/components/commons/Button';
 import { useNavigate } from 'react-router-dom';
 import { firmwareToolS3BaseUrl } from '@/firmware-tool-api/firmwareToolFetcher';
+import { DeviceCardControl } from '@/components/firmware-tool/DeviceCard';
 
 export function FlashingStep({
   goTo,
@@ -34,7 +34,7 @@ export function FlashingStep({
 }) {
   const nav = useNavigate();
   const { l10n } = useLocalization();
-  const { selectedDevices, buildStatus, selectDevices, defaultConfig } =
+  const { selectedDevices, selectDevices, files, selectedDefault } =
     useFirmwareTool();
   const { state: onboardingState } = useOnboarding();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
@@ -57,16 +57,16 @@ export function FlashingStep({
 
   const queueFlashing = (selectedDevices: SelectedDevice[]) => {
     clear();
-    if (!buildStatus.firmwareFiles)
-      throw new Error('invalid state - no firmware files');
+    if (!files) throw new Error('invalid state - no firmware files');
+    if (!selectedDefault) throw new Error('invalid state - no slected default');
     const requests = getFlashingRequests(
       selectedDevices,
-      buildStatus.firmwareFiles.map(({ url, ...fields }) => ({
-        url: `${firmwareToolS3BaseUrl}/${url}`,
+      files.map(({ filePath, ...fields }) => ({
+        filePath: `${firmwareToolS3BaseUrl}/${filePath}`,
         ...fields,
       })),
       onboardingState,
-      defaultConfig
+      selectedDefault
     );
 
     requests.forEach((req) => {

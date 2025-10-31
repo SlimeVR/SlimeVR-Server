@@ -27,6 +27,7 @@
     "@tauri-apps/plugin-store": "~2",
     "@tweenjs/tween.js": "^25.0.0",
     "@twemoji/svg": "^15.0.0",
+    "ajv": "^8.17.1",
     "browser-fs-access": "^0.35.0",
     "classnames": "^2.5.1",
     "flatbuffers": "22.10.26",

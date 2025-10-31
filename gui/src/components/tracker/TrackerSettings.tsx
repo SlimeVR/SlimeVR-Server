@@ -36,7 +36,6 @@ import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
-import semver from 'semver';
 import { useSetAtom } from 'jotai';
 import { ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
@@ -170,11 +169,7 @@ export function TrackerSettingsPage() {
     currentFirmwareRelease &&
     tracker?.device?.hardwareInfo &&
     checkForUpdate(currentFirmwareRelease, tracker?.device);
-  const updateUnavailable =
-    tracker?.device?.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
-    !semver.valid(
-      tracker?.device?.hardwareInfo?.firmwareVersion?.toString() ?? 'none'
-    );
+  const updateUnavailable = needUpdate === null;
 
   return (
     <form
@@ -216,12 +211,19 @@ export function TrackerSettingsPage() {
                 </Typography>
                 <Typography>-</Typography>
                 {updateUnavailable && (
-                  <Localized id="tracker-settings-update-unavailable">
-                    <Typography>Cannot be updated (DIY)</Typography>
+                  <Localized id="tracker-settings-update-unavailable-v2">
+                    <Typography>No releases found</Typography>
                   </Localized>
                 )}
                 {!updateUnavailable && (
                   <>
+                    {needUpdate === 'unavailable' && (
+                      <Localized id="tracker-settings-update-incompatible">
+                        <Typography>
+                          Cannot be updated, Incompatible board
+                        </Typography>
+                      </Localized>
+                    )}
                     {needUpdate === 'blocked' && (
                       // This happens only if no update is available and or the user is not in the current stagged
                       <Localized id="tracker-settings-update-blocked">
