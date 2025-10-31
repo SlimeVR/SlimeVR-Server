@@ -53,6 +53,9 @@ export function Serial() {
   const [tryFactoryReset, setTryFactoryReset] = useState(false);
   const [trySendCustomCommand, setTrySendCustomCommand] = useState(false);
 
+  const [acceptedCustomCommandWarning, setAcceptedCustomCommandWarning] =
+    useState(false);
+
   const defaultValues = { port: 'Auto' };
   const { control, watch, reset, setValue, subscribe } = useForm<SerialForm>({
     defaultValues,
@@ -305,7 +308,13 @@ export function Serial() {
           >
             {l10n.getString('settings-serial-send_command-warning-cancel')}
           </Button>
-          <Button variant="primary" onClick={() => sendCustomSerialCommand()}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setAcceptedCustomCommandWarning(true);
+              sendCustomSerialCommand();
+            }}
+          >
             {l10n.getString('settings-serial-send_command-warning-ok')}
           </Button>
         </div>
@@ -378,7 +387,11 @@ export function Serial() {
                     return;
                   }
                   e.preventDefault();
-                  setTrySendCustomCommand(true);
+                  if (!acceptedCustomCommandWarning) {
+                    setTrySendCustomCommand(true);
+                  } else {
+                    sendCustomSerialCommand();
+                  }
                 }}
               >
                 <div className="flex-grow">
