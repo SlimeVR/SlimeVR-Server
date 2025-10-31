@@ -14,6 +14,7 @@ import { ToggleableSkeletonVisualizerWidget } from './widgets/SkeletonVisualizer
 import { useAtomValue } from 'jotai';
 import { flatTrackersAtom } from '@/store/app-store';
 import { A } from './commons/A';
+import { DOCS_SITE } from '@/App';
 
 function UnprioritizedStatuses() {
   const { l10n } = useLocalization();
@@ -33,7 +34,10 @@ function UnprioritizedStatuses() {
           key={status.id}
           elems={{
             PublicFixLink: (
-              <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
+              <A
+                href={`${DOCS_SITE}/common-issues.html#network-profile-is-currently-set-to-public`}
+                underline
+              ></A>
             ),
           }}
         >
