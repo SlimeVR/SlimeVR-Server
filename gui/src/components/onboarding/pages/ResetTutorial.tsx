@@ -39,9 +39,7 @@ export function ResetTutorialPage() {
         )
         .sort(
           (a, b) =>
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             TORSO_PARTS.indexOf(a.tracker.info!.bodyPart)! -
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             TORSO_PARTS.indexOf(b.tracker.info!.bodyPart)!
         ),
     [assignedTrackers]
@@ -55,9 +53,7 @@ export function ResetTutorialPage() {
         )
         .sort(
           (a, b) =>
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             RIGHT_LEG_PARTS.indexOf(a.tracker.info!.bodyPart)! -
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             RIGHT_LEG_PARTS.indexOf(b.tracker.info!.bodyPart)!
         ),
     [assignedTrackers]
@@ -71,9 +67,7 @@ export function ResetTutorialPage() {
         )
         .sort(
           (a, b) =>
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             LEFT_LEG_PARTS.indexOf(a.tracker.info!.bodyPart)! -
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             LEFT_LEG_PARTS.indexOf(b.tracker.info!.bodyPart)!
         ),
     [assignedTrackers]
@@ -177,7 +171,7 @@ export function ResetTutorialPage() {
             width={isMobile ? 160 : undefined}
             trackers={[order[curIndex]]}
             hideUnassigned={true}
-          ></BodyDisplay>
+          />
           <div
             className={classNames(
               'self-center w-72 md-max:hidden',

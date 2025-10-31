@@ -62,22 +62,22 @@ export function ScaledProportionsPage() {
             <WarningBox>
               <Localized
                 id="onboarding-scaled_proportions-manual_height-warning"
-                elems={{ b: <b></b> }}
+                elems={{ b: <b /> }}
               >
                 <Typography
                   whitespace="whitespace-pre-line"
                   color="text-background-60"
-                ></Typography>
+                />
               </Localized>
               <ul className="list-disc ml-8">
                 {!hasHmd && (
                   <Localized id="onboarding-scaled_proportions-manual_height-warning-no_hmd">
-                    <li></li>
+                    <li />
                   </Localized>
                 )}
                 {!hasHandControllers && (
                   <Localized id="onboarding-scaled_proportions-manual_height-warning-no_controllers">
-                    <li></li>
+                    <li />
                   </Localized>
                 )}
               </ul>
@@ -101,7 +101,7 @@ export function ScaledProportionsPage() {
                     ]
               }
               back={() => navigate('/onboarding/reset-tutorial', { state })}
-            ></StepperSlider>
+            />
           </div>
           {state.alonePage && (
             <div className="flex justify-end">
@@ -110,7 +110,7 @@ export function ScaledProportionsPage() {
                   to="/onboarding/body-proportions/manual"
                   variant="secondary"
                   state={{ alonePage: state.alonePage }}
-                ></Button>
+                />
               </Localized>
             </div>
           )}

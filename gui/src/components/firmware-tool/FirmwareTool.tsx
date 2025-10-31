@@ -103,26 +103,26 @@ function FirmwareToolContent() {
         <div className="m-4 h-full">
           {isError && (
             <div className="w-full flex flex-col justify-center items-center gap-3 h-full">
-              <LoaderIcon slimeState={SlimeState.SAD}></LoaderIcon>
+              <LoaderIcon slimeState={SlimeState.SAD} />
               {!isCompatible ? (
                 <Localized id="firmware_tool-not_compatible">
-                  <Typography variant="section-title"></Typography>
+                  <Typography variant="section-title" />
                 </Localized>
               ) : (
                 <Localized id="firmware_tool-not_available">
-                  <Typography variant="section-title"></Typography>
+                  <Typography variant="section-title" />
                 </Localized>
               )}
               <Localized id="firmware_tool-retry">
-                <Button variant="primary" onClick={() => refetch()}></Button>
+                <Button variant="primary" onClick={() => refetch()} />
               </Localized>
             </div>
           )}
           {isLoading && (
             <div className="w-full flex flex-col justify-center items-center gap-3 h-full">
-              <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
+              <LoaderIcon slimeState={SlimeState.JUMPY} />
               <Localized id="firmware_tool-loading">
-                <Typography variant="section-title"></Typography>
+                <Typography variant="section-title" />
               </Localized>
             </div>
           )}

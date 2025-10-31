@@ -155,7 +155,7 @@ export function TopBar({
   return (
     <>
       <div className="flex gap-0 flex-col">
-        <div className="h-[3px]"></div>
+        <div className="h-[3px]" />
         <div data-tauri-drag-region className="flex gap-2 h-[38px] z-50">
           <div
             className="flex px-2 py-2 justify-around z-50"
@@ -168,7 +168,7 @@ export function TopBar({
                   className="flex justify-around flex-col select-all"
                   data-tauri-drag-region
                 >
-                  <SlimeVRIcon></SlimeVRIcon>
+                  <SlimeVRIcon />
                 </NavLink>
               )}
               {(isTauri || !isMobile) && !config?.decorations && (
@@ -181,7 +181,7 @@ export function TopBar({
               )}
               {(!(isMobile && !config?.decorations) || showVersionMobile) && (
                 <>
-                  <VersionTag></VersionTag>
+                  <VersionTag />
                   {doesMatchSettings && (
                     <div
                       className={classNames(
@@ -206,7 +206,7 @@ export function TopBar({
                     openUrl(url).catch(() => window.open(url, '_blank'));
                   }}
                 >
-                  <DownloadIcon></DownloadIcon>
+                  <DownloadIcon />
                 </div>
               )}
             </div>
@@ -222,11 +222,7 @@ export function TopBar({
                   data-tauri-drag-region
                 >
                   {progress !== undefined && (
-                    <ProgressBar
-                      progress={progress}
-                      height={3}
-                      parts={3}
-                    ></ProgressBar>
+                    <ProgressBar progress={progress} height={3} parts={3} />
                   )}
                 </div>
               </>
@@ -256,7 +252,7 @@ export function TopBar({
               data-tauri-drag-region
               state={{ scrollTo: 'steamvr' }}
             >
-              <GearIcon></GearIcon>
+              <GearIcon />
             </NavLink>
 
             {!isMobile && (
@@ -271,7 +267,7 @@ export function TopBar({
                   )
                 }
               >
-                <QuestionIcon></QuestionIcon>
+                <QuestionIcon />
               </div>
             )}
 
@@ -281,19 +277,19 @@ export function TopBar({
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
                   onClick={() => getCurrentWindow().minimize()}
                 >
-                  <MinimiseIcon></MinimiseIcon>
+                  <MinimiseIcon />
                 </div>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
                   onClick={() => getCurrentWindow().toggleMaximize()}
                 >
-                  <MaximiseIcon></MaximiseIcon>
+                  <MaximiseIcon />
                 </div>
                 <div
                   className="flex items-center justify-center hover:bg-background-60 rounded-full w-7 h-7"
                   onClick={() => tryCloseApp()}
                 >
-                  <CloseIcon></CloseIcon>
+                  <CloseIcon />
                 </div>
               </>
             )}
@@ -301,7 +297,7 @@ export function TopBar({
         </div>
         {isMobile && progress !== undefined && (
           <div className="flex gap-2 px-2 h-6 mb-2 justify-center flex-col border-b border-accent-background-30">
-            <ProgressBar progress={progress} height={3} parts={3}></ProgressBar>
+            <ProgressBar progress={progress} height={3} parts={3} />
           </div>
         )}
       </div>
@@ -335,7 +331,7 @@ export function TopBar({
           setConnectedTrackerWarning(false);
           getCurrentWindow().requestUserAttention(null);
         }}
-      ></TrackersStillOnModal>
+      />
       <ErrorConsentModal
         isOpen={config?.errorTracking === null}
         accept={() => setConfig({ errorTracking: true })}

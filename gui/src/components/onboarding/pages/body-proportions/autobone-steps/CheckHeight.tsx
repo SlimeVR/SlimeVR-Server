@@ -67,7 +67,7 @@ export function CheckHeightStep({
               </Typography>
               <Localized
                 id="onboarding-automatic_proportions-check_height-calculation_warning-v3"
-                elems={{ u: <span className="underline"></span> }}
+                elems={{ u: <span className="underline" /> }}
               >
                 <Typography bold>
                   Press the button to get your height!

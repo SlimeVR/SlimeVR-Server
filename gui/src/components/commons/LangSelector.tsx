@@ -59,6 +59,6 @@ export function LangSelector({
       items={languagesItems}
       direction={direction}
       alignment={alignment}
-    ></Dropdown>
+    />
   );
 }

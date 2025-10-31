@@ -59,7 +59,7 @@ export function DeveloperModeWidget() {
       variant="toggle"
       name={name}
       label={l10n.getString(`widget-developer_mode-${label}`)}
-    ></CheckBox>
+    />
   );
 
   const toggles = {

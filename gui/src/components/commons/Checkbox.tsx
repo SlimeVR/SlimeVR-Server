@@ -101,7 +101,7 @@ export const CheckboxInternal = forwardRef<
                 'right-0': checked && !loading,
                 'bg-background-30': disabled,
               })}
-            ></div>
+            />
           </div>
         )}
         {label}
@@ -144,7 +144,7 @@ export function CheckBox({
           checked={value}
           onChange={onChange}
           ref={ref}
-        ></CheckboxInternal>
+        />
       )}
     />
   );

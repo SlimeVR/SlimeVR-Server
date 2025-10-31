@@ -139,7 +139,7 @@ export function VMCSettings() {
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<VMCIcon></VMCIcon>} id="vmc">
+        <SettingsPagePaneLayout icon={<VMCIcon />} id="vmc">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-osc-vmc')}
@@ -195,7 +195,7 @@ export function VMCSettings() {
                   name="vmc.oscSettings.portIn"
                   placeholder="9002"
                   label=""
-                ></Input>
+                />
               </Localized>
               <Localized
                 id="settings-osc-vmc-network-port_out"
@@ -207,7 +207,7 @@ export function VMCSettings() {
                   name="vmc.oscSettings.portOut"
                   placeholder="9000"
                   label=""
-                ></Input>
+                />
               </Localized>
             </div>
             <Typography variant="section-title">
@@ -227,7 +227,7 @@ export function VMCSettings() {
                   'settings-osc-vmc-network-address-placeholder'
                 )}
                 label=""
-              ></Input>
+              />
             </div>
             <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-vrm')}
@@ -253,7 +253,7 @@ export function VMCSettings() {
                 }
                 label="settings-osc-vmc-vrm-file_select"
                 accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
-              ></FileInput>
+              />
               {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
             </div>
             <Typography variant="section-title">

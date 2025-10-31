@@ -57,13 +57,13 @@ export function TrayOrExitModal({
             name="exitType"
             label={l10n.getString('tray_or_exit_modal-radio-exit')}
             value="0"
-          ></Radio>
+          />
           <Radio
             control={control}
             name="exitType"
             label={l10n.getString('tray_or_exit_modal-radio-tray')}
             value="1"
-          ></Radio>
+          />
         </div>
 
         <Button type="submit" variant="primary">

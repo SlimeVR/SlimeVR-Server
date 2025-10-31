@@ -61,10 +61,10 @@ export function MainLayout({
     <div className="">
       <div className="main-layout w-full h-screen">
         <div style={{ gridArea: 't' }}>
-          <TopBar></TopBar>
+          <TopBar />
         </div>
         <div style={{ gridArea: 's' }} className="overflow-y-auto">
-          <Navbar></Navbar>
+          <Navbar />
         </div>
         <div
           style={{ gridArea: 'c' }}
@@ -81,7 +81,7 @@ export function MainLayout({
             style={{ gridArea: 'w' }}
             className="overflow-y-auto mr-2 my-2 rounded-xl bg-background-70 flex flex-col gap-2 p-2 widgets"
           >
-            <WidgetsComponent></WidgetsComponent>
+            <WidgetsComponent />
           </div>
         )}
       </div>

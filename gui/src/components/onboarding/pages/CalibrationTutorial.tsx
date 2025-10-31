@@ -130,18 +130,18 @@ export function CalibrationTutorialPage() {
               </div>
               <Localized
                 id="onboarding-calibration_tutorial-description-v1"
-                elems={{ b: <b></b> }}
+                elems={{ b: <b /> }}
               >
                 <Typography>Description on calibration of IMU</Typography>
               </Localized>
               <div>
                 <div className="xs:hidden flex flex-row justify-center">
                   <div className="stroke-none fill-background-10 ">
-                    <TaybolIcon width="220"></TaybolIcon>
+                    <TaybolIcon width="220" />
                   </div>
                 </div>
                 <div className="flex justify-center">
-                  <LoaderIcon slimeState={slimeStatus}></LoaderIcon>
+                  <LoaderIcon slimeState={slimeStatus} />
                 </div>
                 <ProgressBar
                   progress={
@@ -155,7 +155,7 @@ export function CalibrationTutorialPage() {
                   height={14}
                   animated={true}
                   colorClass={progressBarClass}
-                ></ProgressBar>
+                />
               </div>
               <div className="flex justify-center">
                 <Typography variant="section-title">{progressText}</Typography>
@@ -204,7 +204,7 @@ export function CalibrationTutorialPage() {
           </div>
           <div className="mobile:hidden flex self-center w-[32rem] mobile:absolute">
             <div className="stroke-none xs:fill-background-10 mobile:fill-background-50 mobile:blur-sm">
-              <TaybolIcon width="450"></TaybolIcon>
+              <TaybolIcon width="450" />
             </div>
           </div>
         </div>

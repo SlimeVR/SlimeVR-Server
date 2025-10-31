@@ -41,7 +41,7 @@ export function AutomaticMountingPage() {
             <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
               steps={steps}
-            ></StepperSlider>
+            />
           </div>
         </div>
       </div>

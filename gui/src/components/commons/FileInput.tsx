@@ -49,7 +49,7 @@ export const FileInputContentBlank = ({
           <Localized
             id={label}
             elems={{
-              u: <span className="underline text-background-20"></span>,
+              u: <span className="underline text-background-20" />,
             }}
           >
             <Typography>
@@ -85,7 +85,7 @@ export const FileInputContentFile = ({
           {directory ? <FolderIcon /> : <FileIcon />}
           <span>{importedFileName}</span>
         </div>
-        <span className="flex-grow"></span>
+        <span className="flex-grow" />
         <a
           href="#"
           className="h-12 w-12 hover:bg-accent-background-20 cursor-pointer"
@@ -188,7 +188,7 @@ export const FileInputInside = forwardRef<
         accept={accept}
         multiple={multiple}
         capture={capture}
-      ></input>
+      />
     </label>
   );
 });
@@ -233,7 +233,7 @@ export const FileInput = ({
           capture={capture}
           multiple={multiple}
           importedFileName={importedFileName}
-        ></FileInputInside>
+        />
       )}
     />
   );
