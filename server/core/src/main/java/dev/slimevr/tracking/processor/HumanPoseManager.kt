@@ -589,6 +589,11 @@ class HumanPoseManager(val server: VRServer?) {
 	}
 
 	@VRServerThread
+	fun setIKSolverEnabled(value: Boolean) {
+		skeleton.setIKSolverEnabled(value)
+	}
+
+	@VRServerThread
 	fun setFloorClipEnabled(value: Boolean) {
 		skeleton.setFloorclipEnabled(value)
 		if (server != null) {
