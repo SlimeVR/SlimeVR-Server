@@ -7,6 +7,7 @@ import {
   UseControllerProps,
 } from 'react-hook-form';
 import { EyeIcon } from './icon/EyeIcon';
+import { Typography } from './Typography';
 
 interface InputProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
@@ -20,8 +21,8 @@ export const InputInside = forwardRef<
     variant?: 'primary' | 'secondary' | 'tertiary';
     label?: string;
     error?: FieldError;
-    onChange: () => void;
-  } & Partial<HTMLInputElement>
+    autocomplete?: boolean | string;
+  } & Partial<React.HTMLProps<HTMLInputElement>>
 >(function AppInput(
   {
     type,
@@ -70,7 +71,7 @@ export const InputInside = forwardRef<
       variantsMap[variant],
       'w-full focus:ring-transparent focus:ring-offset-transparent min-h-[42px] z-10',
       'focus:outline-transparent rounded-md focus:border-accent-background-40',
-      'text-standard relative transition-colors',
+      'text-standard text-background-10 relative transition-colors',
       error && 'border-status-critical border-1'
     );
   }, [variant, disabled, error]);
@@ -83,7 +84,7 @@ export const InputInside = forwardRef<
 
   return (
     <label className="flex flex-col gap-1">
-      {label}
+      <Typography>{label}</Typography>
       <div className="relative w-full">
         <input
           type={forceText ? 'text' : type}
@@ -122,15 +123,16 @@ export const Input = ({
   name,
   placeholder,
   label,
-  autocomplete,
+  autocomplete = false,
   disabled,
   variant = 'primary',
   rules,
 }: {
   rules?: UseControllerProps<any>['rules'];
   control: Control<any>;
+  autocomplete?: boolean | string;
 } & InputProps &
-  Partial<HTMLInputElement>) => {
+  Partial<React.HTMLProps<HTMLInputElement>>) => {
   return (
     <Controller
       control={control}

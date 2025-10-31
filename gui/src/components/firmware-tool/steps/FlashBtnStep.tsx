@@ -1,22 +1,15 @@
 import { Localized, useLocalization } from '@fluent/react';
 import { Typography } from '@/components/commons/Typography';
 import { Button } from '@/components/commons/Button';
-import {
-  boardTypeToFirmwareToolBoardType,
-  useFirmwareTool,
-} from '@/hooks/firmware-tool';
-import { BoardType } from 'solarxr-protocol';
+import { useFirmwareTool } from '@/hooks/firmware-tool';
+import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
 
 export function FlashBtnStep({
   nextStep,
-}: {
-  nextStep: () => void;
-  prevStep: () => void;
-  goTo: (id: string) => void;
-  isActive: boolean;
-}) {
+  prevStep,
+}: VerticalStepComponentProps) {
   const { l10n } = useLocalization();
-  const { defaultConfig } = useFirmwareTool();
+  const { selectedSource } = useFirmwareTool();
 
   return (
     <>
@@ -25,8 +18,8 @@ export function FlashBtnStep({
           <Typography>
             {l10n.getString('firmware_tool-flashbtn_step-description')}
           </Typography>
-          {defaultConfig?.boardConfig.type ===
-          boardTypeToFirmwareToolBoardType[BoardType.SLIMEVR] ? (
+          {selectedSource?.source.board === 'BOARD_SLIMEVR' ||
+          selectedSource?.source.board === 'BOARD_SLIMEVR_V1_2' ? (
             <>
               <Typography variant="standard" whitespace="whitespace-pre">
                 {l10n.getString('firmware_tool-flashbtn_step-board_SLIMEVR')}
@@ -69,7 +62,15 @@ export function FlashBtnStep({
               </Typography>
             </>
           )}
-          <div className="flex justify-end">
+          <div className="flex justify-between">
+            <Localized id="firmware_tool-previous_step">
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  prevStep();
+                }}
+              ></Button>
+            </Localized>
             <Localized id="firmware_tool-next_step">
               <Button
                 variant="primary"

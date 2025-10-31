@@ -89,6 +89,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR Dev Board
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -383,7 +385,8 @@ tracker-settings-name_section-label = Tracker name
 tracker-settings-forget = Forget tracker
 tracker-settings-forget-description = Removes the tracker from the SlimeVR Server and prevents it from connecting until the server is restarted. The configuration of the tracker won't be lost.
 tracker-settings-forget-label = Forget tracker
-tracker-settings-update-unavailable = Cannot be updated (DIY)
+tracker-settings-update-unavailable-v2 = No releases found
+tracker-settings-update-incompatible = Cannot update. Incompatible board
 tracker-settings-update-low-battery = Cannot update. Battery lower than 50%
 tracker-settings-update-up_to_date = Up to date
 tracker-settings-update-blocked = Update not available. No other releases available
@@ -1334,77 +1337,37 @@ firmware_tool-description =
 firmware_tool-not_available = Oops, the firmware tool is not available at the moment. Come back later!
 firmware_tool-not_compatible = The firmware tool is not compatible with this version of the server. Please update your server!
 
-firmware_tool-board_step = Select your Board
-firmware_tool-board_step-description = Select one of the boards listed below.
+firmware_tool-select_source = Select the firmware to flash
+firmware_tool-select_source-description = Select the firmware you want to flash on your board
+firmware_tool-select_source-error = Unable to load Sources
+firmware_tool-select_source-board_type = Board Type
+firmware_tool-select_source-firmware = Firmware Source
+firmware_tool-select_source-version = Firmware Version
+firmware_tool-select_source-official = Official
+firmware_tool-select_source-dev = Dev
 
-firmware_tool-board_pins_step = Check the pins
-firmware_tool-board_pins_step-description =
-    Please verify that the selected pins are correct.
-    If you followed the SlimeVR documentation, the default values should be correct.
-firmware_tool-board_pins_step-enable_led = Enable LED
-firmware_tool-board_pins_step-led_pin =
-    .label = LED Pin
-    .placeholder = Enter the pin address of the LED
-
-firmware_tool-board_pins_step-battery_type = Select the battery type
-firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = External battery
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = Internal battery
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = Internal MCP3021
-firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = MCP3021
-
-
-firmware_tool-board_pins_step-battery_sensor_pin =
-    .label = Battery sensor Pin
-    .placeholder = Enter the pin address of battery sensor
-firmware_tool-board_pins_step-battery_resistor =
-    .label = Battery Resistor (Ohms)
-    .placeholder = Enter the value of battery resistor
-firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = Battery Shield R1 (Ohms)
-    .placeholder = Enter the value of Battery Shield R1
-firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = Battery Shield R2 (Ohms)
-    .placeholder = Enter the value of Battery Shield R2
-
-firmware_tool-add_imus_step = Declare your IMUs
-firmware_tool-add_imus_step-description =
-    Please add the IMUs that your tracker has.
-    If you followed the SlimeVR documentation, the default values should be correct.
-firmware_tool-add_imus_step-imu_type-label = IMU type
-firmware_tool-add_imus_step-imu_type-placeholder = Select the type of IMU
-firmware_tool-add_imus_step-imu_rotation =
-    .label = IMU Rotation (deg)
-    .placeholder = Rotation angle of the IMU
-firmware_tool-add_imus_step-scl_pin =
-    .label = SCL Pin
-    .placeholder = Pin address of SCL
-firmware_tool-add_imus_step-sda_pin =
-    .label = SDA Pin
-    .placeholder = Pin address of SDA
-firmware_tool-add_imus_step-int_pin =
-    .label = INT Pin
-    .placeholder = Pin address of INT
-firmware_tool-add_imus_step-optional_tracker =
-    .label = Optional tracker
-firmware_tool-add_imus_step-show_less = Show Less
-firmware_tool-add_imus_step-show_more = Show More
-firmware_tool-add_imus_step-add_more = Add more IMUs
-
-firmware_tool-select_firmware_step = Select the firmware version
-firmware_tool-select_firmware_step-description =
-    Please choose what version of the firmware you want to use
-firmware_tool-select_firmware_step-show-third-party =
-    .label = Show third party firmwares
+firmware_tool-board_defaults = Configure your board
+firmware_tool-board_defaults-description = Set the pins or settings relative to your hardware
+firmware_tool-board_defaults-add = Add
+firmware_tool-board_defaults-reset = Reset to Default
+firmware_tool-board_defaults-error-required = Required field
+firmware_tool-board_defaults-error-format = Invalid format
+firmware_tool-board_defaults-error-format-number = Not a number
 
 firmware_tool-flash_method_step = Flashing Method
 firmware_tool-flash_method_step-description =
     Please select the flashing method you want to use
-firmware_tool-flash_method_step-ota =
-    .label = OTA
+
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
     .description = Use the over-the-air method. Your tracker will use Wi-Fi to update its firmware. Only works on trackers that have been set up.
-firmware_tool-flash_method_step-serial =
-    .label = Serial
+firmware_tool-flash_method_step-ota-info =
+    We use your wifi credentials to flash the tracker and confirm that everything worked correctly.
+    <b>We do not store your wifi credentials!</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
     .description = Use a USB cable to update your tracker.
+
 
 firmware_tool-flashbtn_step = Press the boot btn
 firmware_tool-flashbtn_step-description = Before going to the next step, there are a few things you need to do
@@ -1419,10 +1382,10 @@ firmware_tool-flashbtn_step-board_OTHER = Before flashing, you will probably nee
     If the flashing process times out at the start, it probably means that the tracker was not in bootloader mode.
     Refer to your board's flashing instructions to learn how to enter bootloader mode.
 
-
-
+firmware_tool-flash_method_ota-title = Flashing over Wi-Fi
 firmware_tool-flash_method_ota-devices = Detected OTA Devices:
 firmware_tool-flash_method_ota-no_devices = There are no boards that can be updated using OTA, make sure you selected the correct board type
+firmware_tool-flash_method_serial-title = Flashing over USB
 firmware_tool-flash_method_serial-wifi = Wi-Fi Credentials:
 firmware_tool-flash_method_serial-devices-label = Detected Serial Devices:
 firmware_tool-flash_method_serial-devices-placeholder = Select a serial device
@@ -1440,10 +1403,10 @@ firmware_tool-flashing_step-flash_more = Flash more trackers
 firmware_tool-flashing_step-exit = Exit
 
 ## firmware tool build status
+firmware_tool-build-QUEUED = Waiting to build....
 firmware_tool-build-CREATING_BUILD_FOLDER = Creating the build folder
-firmware_tool-build-DOWNLOADING_FIRMWARE = Downloading the firmware
-firmware_tool-build-EXTRACTING_FIRMWARE = Extracting the firmware
-firmware_tool-build-SETTING_UP_DEFINES = Configuring the defines
+firmware_tool-build-DOWNLOADING_SOURCE = Downloading the source code
+firmware_tool-build-EXTRACTING_SOURCE = Extracting the source code
 firmware_tool-build-BUILDING = Building the firmware
 firmware_tool-build-SAVING = Saving the build
 firmware_tool-build-DONE = Build Complete
