@@ -1,8 +1,16 @@
 import classNames from 'classnames';
-import { ReactNode, useEffect, useRef, useState } from 'react';
-import { Control, Controller, UseControllerProps } from 'react-hook-form';
+import {
+  forwardRef,
+  ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import { Control, useController, UseControllerProps } from 'react-hook-form';
 import { ArrowDownIcon, ArrowUpIcon } from './icon/ArrowIcons';
 import { a11yClick } from '@/utils/a11y';
+import { createPortal } from 'react-dom';
 
 type DropdownItem = {
   value: string;
@@ -73,51 +81,73 @@ function DropdownItem({
   );
 }
 
-function DropdownList({
-  isOpen,
-  onSelect,
-  value,
-  display,
-  alignment,
-  direction,
-  items,
-  variant,
-  maxHeight,
-}: {
+type DropdownListProps = {
   isOpen: boolean;
   onSelect: (item: DropdownItem) => void;
   value: any;
 } & Pick<
   Required<DropdownProps>,
   'display' | 'alignment' | 'direction' | 'items' | 'variant' | 'maxHeight'
->) {
+>;
+
+const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
+  {
+    isOpen,
+    onSelect,
+    value,
+    display,
+    alignment,
+    direction,
+    items,
+    variant,
+    maxHeight,
+  },
+  ref
+) {
   const variantStyles = {
     primary: 'bg-background-60',
     secondary: 'bg-background-70',
     tertiary: 'bg-accent-background-30',
   };
 
-  const getDisplayClasses = () => {
+  const getDisplayStyle = () => {
     if (display === 'block') {
-      return 'inset-x-0';
+      return {
+        left: 'var(--dropdown-field-left)',
+        right: 'var(--dropdown-field-right)',
+      };
     }
-    return alignment === 'left' ? 'left-0 w-max' : 'right-0 w-max';
+    return alignment === 'left'
+      ? { left: 'var(--dropdown-field-left)' }
+      : { right: 'var(--dropdown-field-right)' };
+  };
+
+  const directionStyles = {
+    up: {
+      bottom: 'calc(var(--dropdown-field-top) + 0.75rem)',
+    },
+    down: {
+      top: 'calc(var(--dropdown-field-bottom) + 0.75rem)',
+    },
   };
 
   return (
     <div
       className={classNames(
-        'grid absolute overflow-hidden transition-[grid-template-rows] rounded',
+        'grid fixed overflow-hidden transition-[grid-template-rows] rounded',
         isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
-        direction === 'up' ? 'bottom-full mb-3' : 'top-full mt-3',
-        getDisplayClasses(),
         variantStyles[variant]
       )}
+      style={{
+        ...getDisplayStyle(),
+        ...directionStyles[direction],
+      }}
       onTransitionEnd={(e) => {
         if (!isOpen) {
           (e.target as HTMLDivElement).scrollTo({ top: 0 });
         }
       }}
+      ref={ref}
     >
       <ul
         className="flex flex-col min-h-0 text-sm overflow-y-scroll dropdown-scroll overscroll-contain"
@@ -136,7 +166,7 @@ function DropdownList({
       </ul>
     </div>
   );
-}
+});
 
 export function Dropdown({
   direction = 'up',
@@ -151,6 +181,13 @@ export function Dropdown({
   rules,
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const {
+    field: { value, onChange },
+  } = useController({ name, control, rules });
+
+  useEffect(() => {
+    ref.current?.focus();
+  }, [value]);
 
   const variantStyles = {
     primary: 'bg-background-60 hover:bg-background-50',
@@ -169,63 +206,86 @@ export function Dropdown({
       : placeholder;
 
   const ref = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  const updateFieldBoundingRect = () => {
+    if (!ref.current || !listRef.current) {
+      return;
+    }
+    const boundingRect = ref.current.getBoundingClientRect();
+
+    const left = boundingRect.left;
+    const right = window.innerWidth - boundingRect.right;
+    const top = window.innerHeight - boundingRect.top;
+    const bottom = boundingRect.bottom;
+    listRef.current?.style.setProperty('--dropdown-field-left', `${left}px`);
+    listRef.current?.style.setProperty('--dropdown-field-right', `${right}px`);
+    listRef.current?.style.setProperty('--dropdown-field-top', `${top}px`);
+    listRef.current?.style.setProperty(
+      '--dropdown-field-bottom',
+      `${bottom}px`
+    );
+  };
+  useLayoutEffect(updateFieldBoundingRect, [ref.current]);
+  window.addEventListener('scroll', updateFieldBoundingRect, true);
+  window.addEventListener('resize', updateFieldBoundingRect, true);
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      rules={rules}
-      render={({ field: { onChange, value } }) => (
-        <>
-          <div
-            className={classNames(
-              'min-h-[42px] text-background-10 text-left dropdown relative',
-              displayStyles[display]
-            )}
-            onClick={() => setIsOpen(!isOpen)}
-            onKeyDown={(e) => a11yClick(e) && setIsOpen(!isOpen)}
-            onBlur={(e) => {
-              if (e.currentTarget.contains(e.relatedTarget)) {
-                return;
-              }
+    <>
+      <div
+        className={classNames(
+          'min-h-[42px] text-background-10 text-left dropdown',
+          displayStyles[display]
+        )}
+        onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={(e) => a11yClick(e) && setIsOpen(!isOpen)}
+        onBlur={(e) => {
+          if (
+            e.currentTarget.contains(e.relatedTarget) ||
+            listRef?.current?.contains(e.relatedTarget)
+          ) {
+            return;
+          }
 
-              setIsOpen(false);
-            }}
-          >
-            <div
-              className={classNames(
-                'flex flex-row justify-between items-center gap-2 pl-3 pr-5 py-3 rounded-md cursor-pointer focus:ring-4',
-                variantStyles[variant]
-              )}
-              tabIndex={0}
-              ref={ref}
-            >
-              {getShownValue(value)}
-              <div className="fill-background-10">
-                {direction === 'up' ? (
-                  <ArrowUpIcon size={16} />
-                ) : (
-                  <ArrowDownIcon size={16} />
-                )}
-              </div>
-            </div>
-            <DropdownList
-              alignment={alignment}
-              direction={direction}
-              display={display}
-              isOpen={isOpen}
-              items={items}
-              onSelect={(item: DropdownItem) => {
-                onChange(item.value);
-                ref.current?.focus();
-              }}
-              variant={variant}
-              maxHeight={maxHeight}
-              value={value}
-            />
+          setIsOpen(false);
+        }}
+      >
+        <div
+          className={classNames(
+            'flex flex-row justify-between items-center gap-2 pl-3 pr-5 py-3 rounded-md cursor-pointer focus:ring-4',
+            variantStyles[variant]
+          )}
+          tabIndex={0}
+          ref={ref}
+        >
+          {getShownValue(value)}
+          <div className="fill-background-10">
+            {direction === 'up' ? (
+              <ArrowUpIcon size={16} />
+            ) : (
+              <ArrowDownIcon size={16} />
+            )}
           </div>
-        </>
-      )}
-    ></Controller>
+        </div>
+        {createPortal(
+          <DropdownList
+            alignment={alignment}
+            direction={direction}
+            display={display}
+            isOpen={isOpen}
+            items={items}
+            onSelect={(item: DropdownItem) => {
+              ref.current?.focus();
+              onChange(item.value);
+            }}
+            variant={variant}
+            maxHeight={maxHeight}
+            value={value}
+            ref={listRef}
+          />,
+          document.body
+        )}
+      </div>
+    </>
   );
 }
