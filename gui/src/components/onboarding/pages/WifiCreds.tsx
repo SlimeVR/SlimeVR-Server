@@ -35,9 +35,7 @@ export function WifiCredsPage() {
                 .getString('onboarding-wifi_creds-description')
                 .split('\n')
                 .map((line, i) => (
-                  <Typography color="secondary" key={i}>
-                    {line}
-                  </Typography>
+                  <Typography key={i}>{line}</Typography>
                 ))}
             </>
             {!state.alonePage && (

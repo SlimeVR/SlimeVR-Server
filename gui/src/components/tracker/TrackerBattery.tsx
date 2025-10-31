@@ -7,7 +7,7 @@ export function TrackerBattery({
   value,
   voltage,
   disabled,
-  textColor = 'secondary',
+  textColor = 'primary',
 }: {
   /**
    * a [0, 1] value range is expected

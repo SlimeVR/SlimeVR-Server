@@ -90,7 +90,7 @@ export function ManualHeightStep({
             )}
           </Typography>
           <div>
-            <Typography color="secondary">
+            <Typography>
               {l10n.getString(
                 'onboarding-scaled_proportions-manual_height-description-v2'
               )}

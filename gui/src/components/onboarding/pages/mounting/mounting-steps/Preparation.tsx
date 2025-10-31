@@ -26,13 +26,13 @@ export function PreparationStep({
           </Typography>
           <div>
             <Localized id="onboarding-automatic_mounting-preparation-v2-step-0">
-              <Typography color="secondary"></Typography>
+              <Typography></Typography>
             </Localized>
             <Localized id="onboarding-automatic_mounting-preparation-v2-step-1">
-              <Typography color="secondary"></Typography>
+              <Typography></Typography>
             </Localized>
             <Localized id="onboarding-automatic_mounting-preparation-v2-step-2">
-              <Typography color="secondary"></Typography>
+              <Typography></Typography>
             </Localized>
           </div>
         </div>

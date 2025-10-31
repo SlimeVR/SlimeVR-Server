@@ -320,7 +320,7 @@ export function FirmwareUpdate() {
               <Typography variant="section-title"></Typography>
             </Localized>
             <Localized id="firmware_update-devices-description">
-              <Typography variant="standard" color="secondary"></Typography>
+              <Typography variant="standard"></Typography>
             </Localized>
             <div className="flex flex-col gap-4 overflow-y-auto xs:max-h-[530px]">
               {devices.length === 0 &&

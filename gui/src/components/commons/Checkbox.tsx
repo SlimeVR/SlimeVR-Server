@@ -53,7 +53,7 @@ export function CheckBox({
           className={classNames(
             {
               'rounded-lg': outlined,
-              'text-background-30': !outlined || disabled,
+              'text-background-10': !outlined || disabled,
               'bg-background-60': outlined && color === 'primary',
               'bg-background-70': outlined && color === 'secondary',
               'bg-background-50': outlined && color === 'tertiary',

@@ -43,7 +43,7 @@ const ItemContent = ({
             mode,
           })}
         </Typography>
-        <Typography variant="standard" color="secondary">
+        <Typography variant="standard">
           {l10n.getString('onboarding-assign_trackers-option-description', {
             mode,
           })}

@@ -117,7 +117,7 @@ skeleton_bone-ELBOW_OFFSET = Odsazení loktů
 
 reset-reset_all = Obnovit nastavení proporcí
 reset-reset_all_warning-v2 =
-    <b>Varování:</b> vyše proporce budou obnoveny do výchozích hodnot založených na vaší nakonfigurované výšce. 
+    <b>Varování:</b> vyše proporce budou obnoveny do výchozích hodnot založených na vaší nakonfigurované výšce.
     Jste si jistí že chcete udělat?
 reset-reset_all_warning-reset = Obnovit proporce
 reset-reset_all_warning-cancel = Zrušit
@@ -273,7 +273,7 @@ tracker-settings-use_mag = Povolit magnetometr na tomto trackeru
 # Multiline!
 tracker-settings-use_mag-description =
     Měl by tento tracker používat magnetometer k redukci driftu když je použití magnetometru povoleno? <b> Prosím nevypínejte váš tracker při přepínání tohoto nastavení!</b>
-    
+
     Nejprve musíte povolit používání magnetometru, <magSetting>Kliknutím zde přejdete k nastavená magnetometru</magSetting>.
 tracker-settings-use_mag-label = Povolit magnetometr
 # The .<name> means it's an attribute and it's related to the top key.
@@ -434,7 +434,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = Predikc
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Varování:</b> Kompenzaci driftu používejte pouze tehdy kdy musíte resetovat
     Neobvykle často (každých ~5-10 minut).
-    
+
     Některé IMU které náchylné k častým resetům zahrnují:
     Joy-Cons, owoTrack a MPU (bez aktuálního firmwaru).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Zrušit
@@ -613,9 +613,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Sběr chyb prostřednictvím Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Souhlasíte se shromažďováním anonymizovaých údajů o chybých?</h1>
-    
+
     <b>Neschrožďujeme osobní udaje!</b> pro příklad IP adresy nebo přihlašovací údaje k sítím Wi-Fi. SlimeVR respektuje vaše soukromí!
-    
+
     Aby jsme mohli poskytnout nejlepší zážitek uživatelům, schromažďujeme proto anonymizované zprávy o chybých, metriky výkon a informace o operačním systém. To nám pomáhá zjištovat chyby a problémy s SlimeVR. Tyto matriky jsou schromažďovány prostřednictvím Sentry.io.
 settings-interface-behavior-error_tracking-label = Odeslat chyby vývojářům
 
@@ -636,7 +636,6 @@ settings-serial-factory_reset-warning =
     To znamená, že nastavení Wi-Fi a kalibrace <b>budou ztracena!</b>
 settings-serial-factory_reset-warning-ok = Vím, co dělám
 settings-serial-factory_reset-warning-cancel = Zrušit
-settings-serial-get_infos = Získat informace
 settings-serial-serial_select = Vyberte sériový port
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skenovat WiFi
@@ -804,12 +803,12 @@ onboarding-reset_tutorial-skip = Přeskočit krok
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Klepněte na zvýrazněný snímač { $taps } krát pro resetování rotace.
-    
+
     Tím nastavíte snímače tak, aby směřovaly stejným směrem jako váš headset (HMD).
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Pro plný reset poklepejte { $taps } krát na zvýrazněný tracker.
-    
+
     Pro tuto funkci musíte stát v základní pozici (ruce podél těla). Před provedením resetu je zde 3 sekundová prodleva (lze nastavit).
     Tímto se kompletně resetuje pozice a rotace všech vašich trackerů, což by mělo vyřešit většinu problémů.
 
@@ -1102,7 +1101,7 @@ onboarding-scaled_proportions-manual_height-next_step = Uložit a pokračovat
 onboarding-scaled_proportions-manual_height-warning =
     Právě používáte manuální způsob nastavení škálování proporcí!
     <b>Tento režim je doporučen pouze pokud nepoužíváte HMD s SlimeVR</b>
-    
+
     Abyste mohli používat automatcky škálované proporce, prosím:
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Připojte VR headset
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Ujistěte se, že jsou vaše ovladače připojeny a správně přirazeny k vaším rukám
@@ -1308,7 +1307,7 @@ tray_or_exit_modal-title = Co chcete aby "křížek" udělal?
 # Multiline text
 tray_or_exit_modal-description =
     Tímto si zvolíte, zda chcete při stisknutí tlačítka pro zavření ukončit server, nebo jej pouze minimalizovat do systémové lišty.
-    
+
     Toto nastavení můžete později změnit v nastavení aplikace.
 tray_or_exit_modal-radio-exit = Ukončit při zavření
 tray_or_exit_modal-radio-tray = Minimalizovat
@@ -1363,7 +1362,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Rozpětí paží
 error_collection_modal-title = Můžeme sbírat chyby?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-    
+
     Tohle lze později změnit v sekci Chování v nastavení.
 error_collection_modal-confirm = Souhlasím
 error_collection_modal-cancel = Nesouhlasím

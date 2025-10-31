@@ -24,7 +24,7 @@ import './ConnectTracker.scss';
 import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { BaseModal } from '@/components/commons/BaseModal';
-import { useStatusContext } from '@/hooks/status-system';
+import { parseStatusToLocale, useStatusContext } from '@/hooks/status-system';
 import { A } from '@/components/commons/A';
 import { CONNECT_TRACKER } from '@/utils/tauri';
 
@@ -221,10 +221,10 @@ export function ConnectTrackersPage() {
           <Typography variant="main-title">
             {l10n.getString('onboarding-connect_tracker-title')}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('onboarding-connect_tracker-description-p0-v1')}
           </Typography>
-          <Typography color="secondary">
+          <Typography>
             {l10n.getString('onboarding-connect_tracker-description-p1-v1')}
           </Typography>
           <div className="flex flex-col gap-2 py-5">
@@ -248,6 +248,7 @@ export function ConnectTrackersPage() {
               <Localized
                 key={status.id}
                 id={`status_system-${StatusData[status.dataType]}`}
+                vars={parseStatusToLocale(status, connectedIMUTrackers, l10n)}
                 elems={{
                   PublicFixLink: (
                     <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
@@ -281,7 +282,7 @@ export function ConnectTrackersPage() {
                 {l10n.getString('onboarding-connect_tracker-usb')}
               </Typography>
               <div className="flex fill-background-10 gap-1">
-                <Typography color="secondary">
+                <Typography>
                   {l10n.getString(statusLabelMap[provisioningStatus])}
                 </Typography>
               </div>
@@ -319,7 +320,7 @@ export function ConnectTrackersPage() {
           </div>
         </div>
         <div style={{ gridArea: 't' }} className="flex items-center px-5">
-          <Typography color="secondary" bold>
+          <Typography bold>
             {l10n.getString('onboarding-connect_tracker-connected_trackers', {
               amount: connectedIMUTrackers.length,
             })}

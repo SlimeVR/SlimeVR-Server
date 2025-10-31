@@ -269,7 +269,7 @@ tracker-settings-use_mag = Permitir o uso do magnetômetro neste tracker
 # Multiline!
 tracker-settings-use_mag-description =
     Esse tracker deve usar o magnetômetro para reduzir o drift quando o uso de magnetômetro estiver permitido? <b>Não desligue seu tracker enquanto altera esta opção!</b>
-    
+
     Você precisa permitir o uso de magnetômetro primeiro, <magSetting>clique aqui para ir para as configurações</magSetting>.
 tracker-settings-use_mag-label = Permitir o uso do magnetômetro
 # The .<name> means it's an attribute and it's related to the top key.
@@ -429,7 +429,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = Prediç
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Aviso:</b> Use a compensação de drift somente se você precisar resetar
     com muita frequência (a cada 5 a 10 minutos).
-    
+
     Algumas IMUs sujeitas a resets mais frequentes incluem:
     Joy-Cons, owoTrack e MPUs (sem firmware recente).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Cancelar
@@ -601,9 +601,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Coleta de erros via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Você <h1>concorda com a coleta de dados de erro anônimos?</h1><b></h1> <b>Não coletamos informações pessoais</b></b>, como seu endereço IP ou credenciais de rede sem fio. A SlimeVR valoriza sua privacidade!
-    
+
     Para oferecer a melhor experiência ao usuário, coletamos relatórios de erros anônimos, métricas de desempenho e informações do sistema operacional. Isso nos ajuda a detectar bugs e problemas com o SlimeVR. Essas métricas são coletadas pelo Sentry.io.
-    
+
     Traduzido com a versão gratuita do tradutor - DeepL.com
 settings-interface-behavior-error_tracking-label = Enviar erros para os desenvolvedores
 
@@ -624,7 +624,6 @@ settings-serial-factory_reset-warning =
     Que significa que as opções de Wi-Fi e calibrações <b>vão ser todos perdidos!</b>
 settings-serial-factory_reset-warning-ok = Eu sei o que estou fazendo
 settings-serial-factory_reset-warning-cancel = Cancelar
-settings-serial-get_infos = Obter informações
 settings-serial-serial_select = Selecione uma porta serial
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Obter varredura WiFi
@@ -798,20 +797,20 @@ onboarding-reset_tutorial-skip = Pular passo
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Toque { $taps } vezes no tracker destacado para acionar o reset de guinada.
-    
+
     Isso fará com que os trackers fiquem na mesma direção que o seu headset (HMD).
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Toque { $taps } vezes no tracker destacado para acionar o reset completo.
-    
+
     Você precisa estar em pé para isso (pose-i). Há um atraso de 3 segundos (configurável) antes que realmente aconteça.
     Isso reseta completamente a posição e rotação de todos os seus trackers. Deve corrigir a maioria dos problemas.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Toque { $taps } vezes no tracker destacado para acionar o reset de posição.
-    
+
     O reset de posição ajuda a ajustar como os trackers estão realmente colocados em você, então, se você os moveu acidentalmente e alterou significativamente a orientação, isso ajudará.
-    
+
     Você precisa estar em uma pose como se estivesse esquiando, como é mostrado no Assistente de Posição Automática, e há um atraso de 3 segundos (configurável) antes que seja acionado.
 
 ## Setup start
@@ -1330,7 +1329,7 @@ tray_or_exit_modal-title = Qual deve ser a função do botão Fechar?
 # Multiline text
 tray_or_exit_modal-description =
     Isso permite que você escolha se deseja sair do servidor ou minimizá-lo na bandeja ao pressionar o botão Fechar.
-    
+
     Você pode alterar isso depois nas configurações da interface!
 tray_or_exit_modal-radio-exit = Sair ao Fechar
 tray_or_exit_modal-radio-tray = Minimizar para a bandeja do sistema

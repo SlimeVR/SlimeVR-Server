@@ -243,6 +243,8 @@ reset-reset_all_warning_default-v2 =
     Czy na pewno chcesz to zrobić?
 reset-full = Pełny Reset
 reset-mounting = Zresetuj położenie
+reset-mounting-feet = Zresetuj mocowanie stóp
+reset-mounting-fingers = Zresetuj mocowanie palców
 reset-yaw = Reset odchylenia
 
 ## Serial detection stuff
@@ -610,8 +612,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Floor-clip może
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap próbuje odgadnąć obrót twoich stóp, jeśli trackery stóp nie są używane.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant obraca stopy, aby były równoległe do podłoża podczas kontaktu.
 settings-general-fk_settings-leg_fk = Śledzenie nóg
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Włącz resetowanie montażu stóp, chodząc na palcach.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Reset mocowania stóp
 settings-general-fk_settings-enforce_joint_constraints = Limity szkieletowe
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Wymuszanie ograniczeń
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zapobiega obracaniu się stawów poza ich limit
@@ -746,9 +746,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Zbieranie błędów za pomocą Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Czy wyrażasz zgodę na gromadzenie anonimowych danych o błędach?</h1>
-    
+
     <b>Nie gromadzimy danych osobowych</b> , takich jak adres IP lub dane uwierzytelniające sieci bezprzewodowej. SlimeVR ceni Twoją prywatność!
-    
+
     Aby zapewnić jak najlepsze wrażenia użytkownika, gromadzimy anonimowe raporty o błędach, wskaźniki wydajności i informacje o systemie operacyjnym. Pomaga nam to wykrywać błędy i problemy ze SlimeVR. Dane te są zbierane za pomocą Sentry.io.
 settings-interface-behavior-error_tracking-label = Wysyłanie błędów do deweloperów
 settings-interface-behavior-bvh_directory = Ścieżka do zapisywania nagrań BVH
@@ -772,7 +772,6 @@ settings-serial-factory_reset-warning =
     Co oznacza, że ustawienia Wi-Fi i kalibracji <b>zostaną utracone!</b>
 settings-serial-factory_reset-warning-ok = Wiem co robię
 settings-serial-factory_reset-warning-cancel = Anuluj
-settings-serial-get_infos = Uzyskaj informacje
 settings-serial-serial_select = Wybierz port szeregowy
 settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Skanuj sieci WiFi
@@ -943,20 +942,20 @@ onboarding-reset_tutorial-skip = Pomiń krok
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Stuknij { $taps } razy podświetlony tracker, aby uruchomić reset odchylenia.
-    
+
     Spowoduje to, że trackery będą skierowane w tym samym kierunku, co Twój HMD.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Stuknij { $taps } razy podświetlony tracker, aby wywołać pełny reset.
-    
+
     Musisz stać, aby to zrobić (i-pozycja). Istnieje 3-sekundowe opóźnienie (konfigurowalne), zanim to nastąpi.
     Spowoduje to całkowite zresetowanie pozycji i rotacji wszystkich trackerów. Powinien rozwiązać większość problemów.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Stuknij { $taps } razy podświetlony tracker, aby uruchomić reset montażu.
-    
+
     Resetowanie montażu pomaga w tym, w jaki sposób trackery są faktycznie zakładane na ciebie, więc jeśli przypadkowo je przeniosłeś i zmieniłeś ich orientację o dużą ilość, to pomoże.
-    
+
     Musisz być w pozie, jakbyś jechał na nartach, tak jak jest to pokazane w kreatorze automatycznego montażu, i masz 3-sekundowe opóźnienie (konfigurowalne), zanim zostanie uruchomione.
 
 ## Setup start
@@ -1317,7 +1316,7 @@ onboarding-scaled_proportions-manual_height-next_step = Kontynuuj i zapisz
 onboarding-scaled_proportions-manual_height-warning =
     Obecnie korzystasz z ręcznego sposobu ustawiania proporcji w skali rozgrywki!
     <b>Ten tryb jest zalecany tylko wtedy, gdy nie używasz gogli ze SlimeVR</b>
-    
+
     Aby móc korzystać z automatycznie skalowanych proporcji, należy:
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Podłącz gogle VR
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Upewnij się, że kontrolery są podłączone i prawidłowo przypisane do Twoich rąk
@@ -1612,7 +1611,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Rozpiętość ramion
 error_collection_modal-title = Czy możemy zbierać błędy?
 error_collection_modal-description_v2 =
     { ustawienia-interfejsu-zachowanie-error_tracking-description_v2 }
-    
+
     To ustawienie można zmienić później w sekcji Zachowanie na stronie ustawień.
 error_collection_modal-confirm = Zgadzam się
 error_collection_modal-cancel = Nie chcę

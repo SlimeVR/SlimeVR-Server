@@ -246,7 +246,7 @@ tracker-settings-drift_compensation_section-edit = ドリフト補正を行う
 # Multiline!
 tracker-settings-use_mag-description =
     このトラッカーは、マグネトメーターの使用が許可されている場合、ドリフトを減らすためにマグネトメーターを使用すべきですか？ <b>設定を切り替える際は、トラッカーをシャットダウンしないでください！</b>
-    
+
     まず、マグネトメーターの使用を許可する必要があります。<magSetting>設定に移動するにはここをクリックしてください</magSetting>。
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
@@ -486,7 +486,6 @@ settings-serial-reboot = リブート
 settings-serial-factory_reset = ファクトリーリセット
 settings-serial-factory_reset-warning-ok = 自分が何しているかを知っています。
 settings-serial-factory_reset-warning-cancel = キャンセル
-settings-serial-get_infos = 情報取得
 settings-serial-serial_select = シリアルポートを選択
 settings-serial-auto_dropdown_item = 自動
 
@@ -797,4 +796,3 @@ unknown_device-modal-confirm = もちろん!
 unknown_device-modal-forget = 無視する
 
 ## Error collection consent modal
-
