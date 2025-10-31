@@ -17,13 +17,16 @@ export function useCountdown({
   const startCountdown = () => {
     setIsCounting(true);
     setDisplayTimer(duration);
+    if (countdownTimer.current) {
+      clearTimer();
+    }
+
     counter.current = 0;
     countdownTimer.current = setInterval(
       () => {
         counter.current++;
         setDisplayTimer(duration - counter.current);
         if (counter.current >= duration) {
-          clearInterval(countdownTimer.current);
           resetEnd();
         }
       },
@@ -31,15 +34,20 @@ export function useCountdown({
     );
   };
 
+  const clearTimer = () => {
+    clearInterval(countdownTimer.current);
+    countdownTimer.current = undefined;
+  }
+
   const resetEnd = () => {
     setIsCounting(false);
-    clearInterval(countdownTimer.current);
+    clearTimer()
     onCountdownEnd();
   };
 
   const abortCountdown = () => {
     setIsCounting(false);
-    clearInterval(countdownTimer.current);
+    clearTimer()
   };
 
   return {

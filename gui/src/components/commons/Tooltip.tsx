@@ -391,17 +391,12 @@ export function DrawerTooltip({
     if (childRef.current && childRef.current.children[0]) {
       const elem = childRef.current.children[0] as HTMLElement;
 
-      elem.addEventListener('mousedown', touchStart); // for debug on desktop
-      elem.addEventListener('mouseup', touchEnd); // for debug on desktop
       elem.addEventListener('scroll', scroll);
 
-      elem.addEventListener('click', touchEnd);
       elem.addEventListener('touchstart', touchStart);
       elem.addEventListener('touchend', touchEnd);
 
       return () => {
-        elem.removeEventListener('mousedown', touchStart); // for debug on desktop
-        elem.removeEventListener('mouseup', touchEnd); // for debug on desktop
         elem.removeEventListener('scroll', scroll);
 
         elem.removeEventListener('touchstart', touchStart);

@@ -44,9 +44,9 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
     sendRPCPacket(RpcMessage.ResetRequest, req);
   };
 
-  const duration = 3;
+  const duration = options.type === ResetType.Yaw ? 0 : 3;
   const { startCountdown, timer, abortCountdown } = useCountdown({
-    duration: options.type === ResetType.Yaw ? 0 : duration,
+    duration,
     onCountdownEnd: () => {
       maybePlaySoundOnResetEnd(options.type);
       reset();
@@ -63,7 +63,9 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
 
     // After 2s go back to idle state
     finishedTimeoutRef.current = setTimeout(() => {
-      setStatus('idle');
+      if (status === 'finished') {
+        setStatus('idle'); // only do that if we were on finished status. Allows to reset the outlined border
+      }
       finishedTimeoutRef.current = -1;
     }, 2000);
 
@@ -82,6 +84,7 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
   };
 
   const triggerReset = () => {
+    abortCountdown();
     setStatus('counting');
     startCountdown();
     maybePlaySoundOnResetStart();
@@ -90,6 +93,7 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
   useEffect(() => {
     return () => {
       if (finishedTimeoutRef.current !== -1) clearTimeout(finishedTimeoutRef.current);
+      abortCountdown();
     };
   }, []);
 

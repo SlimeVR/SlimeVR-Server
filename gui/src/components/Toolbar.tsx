@@ -70,7 +70,11 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
       preferedDirection="top"
     >
       <div
-        className={classNames(MAINBUTTON_CLASSES({ disabled }), 'rounded-lg')}
+        className={classNames(
+          MAINBUTTON_CLASSES({ disabled }),
+          'rounded-lg',
+          'absolute'
+        )}
         style={{
           animationIterationCount: 1,
         }}
@@ -80,6 +84,7 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
           className={classNames({
             'animate-spin-ccw': !skiReset && status === 'finished',
             'animate-skiing': skiReset && status === 'finished',
+            'opacity-0': status === 'counting',
           })}
           style={{
             animationIterationCount: 1,
@@ -88,14 +93,29 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
           <ResetButtonIcon {...options} />
         </div>
 
-        <div className="hidden md:block">
+        <div
+          className={classNames('hidden md:block relative', {
+            'opacity-0': status === 'counting',
+          })}
+        >
           <Typography
             variant="section-title"
             textAlign="text-center"
             id={name}
           ></Typography>
         </div>
+
         <ButtonProgress progress={progress} status={status}></ButtonProgress>
+        <div
+          className={classNames(
+            { 'opacity-0': status !== 'counting', 'animate-timer-tick': status === 'counting' },
+            'absolute top-0 h-full flex items-center justify-center'
+          )}
+        >
+          <Typography variant="main-title" textAlign="text-center">
+            {timer}
+          </Typography>
+        </div>
       </div>
     </Tooltip>
   );

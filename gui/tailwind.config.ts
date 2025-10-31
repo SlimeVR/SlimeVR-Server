@@ -3,6 +3,7 @@ import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
 import gradient from 'tailwind-gradient-mask-image';
 import type { Config } from 'tailwindcss';
+import { transform } from 'typescript';
 
 const colors = {
   'blue-gray': {
@@ -229,6 +230,14 @@ const config = {
             'animation-timing-function': 'cubic-bezier(0.8, 0, 1, 1)',
           },
         },
+        'timer-tick': {
+          "0%, 40%": {
+            transform: 'scale(1)',
+          },
+          "20%": {
+            transform: 'scale(1.3)',
+          },
+        },
         'spin-ccw': {
           '0%': {
             transform: 'rotate(0deg)',
@@ -283,6 +292,7 @@ const config = {
       },
       animation: {
         'spin-ccw': 'spin-ccw 1s linear infinite',
+        'timer-tick': 'timer-tick 1s linear infinite',
         skiing: 'skiing 1s linear infinite',
       },
     },
