@@ -93,13 +93,13 @@ class SkeletonResetTests {
 				TrackerPosition.HIP,
 				TrackerPosition.LEFT_LOWER_LEG,
 				TrackerPosition.RIGHT_LOWER_LEG,
-				-> mountRot * Quaternion.SLIMEVR.FRONT
+				-> mountRot
 
 				TrackerPosition.LEFT_UPPER_LEG,
 				TrackerPosition.RIGHT_UPPER_LEG,
-				-> mountRot
+				-> mountRot * Quaternion.SLIMEVR.FRONT
 
-				else -> mountRot
+				else -> mountRot * Quaternion.SLIMEVR.FRONT
 			}
 			val actualMounting = tracker.resetsHandler.mountRotFix
 
@@ -118,5 +118,5 @@ class SkeletonResetTests {
 		}
 	}
 
-	fun mkTrackMount(rot: Quaternion): Quaternion = rot * (TrackerTestUtils.frontRot / rot)
+	fun mkTrackMount(rot: Quaternion): Quaternion = rot * TrackerTestUtils.frontRot / rot
 }
