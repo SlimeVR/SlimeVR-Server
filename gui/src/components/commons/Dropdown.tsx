@@ -38,12 +38,16 @@ function DropdownItem({
   onSelected,
   isOpen,
   value,
+  innerFocusValue,
+  name,
 }: {
   item: DropdownItem;
   variant: Required<DropdownProps>['variant'];
   onSelected: () => void;
   isOpen: boolean;
   value: any;
+  innerFocusValue: string | null;
+  name: string;
 }) {
   const variantStyles = {
     primary:
@@ -57,24 +61,41 @@ function DropdownItem({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isOpen && value === item.value) {
-      ref.current?.focus();
-      ref.current?.scrollIntoView();
+    if (!innerFocusValue) {
+      return;
+    }
+    if (innerFocusValue === item.value) {
+      ref.current?.scrollIntoView({ block: 'nearest' });
+    }
+  }, [innerFocusValue]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    if (
+      innerFocusValue === item.value ||
+      (!innerFocusValue && item.value === value)
+    ) {
+      ref.current?.scrollIntoView({ block: 'nearest' });
     }
   }, [isOpen]);
 
   return (
     <div
       className={classNames(
-        'py-2 px-4 min-w-max cursor-pointer outline-none',
-        variantStyles[variant]
+        'py-2 px-4 min-w-max cursor-pointer',
+        variantStyles[variant],
+        innerFocusValue === item.value && 'ring-inset ring-4'
       )}
       onClick={onSelected}
       onKeyDown={(e) => a11yClick(e) && onSelected()}
-      tabIndex={isOpen ? 0 : -1}
+      tabIndex={-1}
       aria-hidden={!isOpen}
       data-checked={item.value === value}
       ref={ref}
+      id={`__dropdownList-${name}-item-${item.value}`}
     >
       {item.label}
     </div>
@@ -85,9 +106,16 @@ type DropdownListProps = {
   isOpen: boolean;
   onSelect: (item: DropdownItem) => void;
   value: any;
+  innerFocusValue: string | null;
 } & Pick<
   Required<DropdownProps>,
-  'display' | 'alignment' | 'direction' | 'items' | 'variant' | 'maxHeight'
+  | 'display'
+  | 'alignment'
+  | 'direction'
+  | 'items'
+  | 'variant'
+  | 'maxHeight'
+  | 'name'
 >;
 
 const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
@@ -95,12 +123,14 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
     isOpen,
     onSelect,
     value,
+    innerFocusValue,
     display,
     alignment,
     direction,
     items,
     variant,
     maxHeight,
+    name,
   },
   ref
 ) {
@@ -148,6 +178,7 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
         }
       }}
       ref={ref}
+      id={`__dropdownList-${name}`}
     >
       <ul
         className="flex flex-col min-h-0 text-sm overflow-y-scroll dropdown-scroll overscroll-contain"
@@ -161,6 +192,8 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
             isOpen={isOpen}
             key={item.value}
             value={value}
+            innerFocusValue={innerFocusValue}
+            name={name}
           />
         ))}
       </ul>
@@ -185,7 +218,7 @@ export function Dropdown({
     field: { value, onChange },
   } = useController({ name, control, rules });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     ref.current?.focus();
   }, [value]);
 
@@ -207,6 +240,21 @@ export function Dropdown({
 
   const ref = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+
+  const [innerFocusIndex, setInnerFocusIndex] = useState<number | null>(null);
+  const getCurrentActiveIndex = () => {
+    return items.findIndex((item) => item.value === value);
+  };
+  const innerFocusPrev = () => {
+    const current = innerFocusIndex ?? getCurrentActiveIndex();
+
+    setInnerFocusIndex(current > 0 ? current - 1 : current);
+  };
+  const innerFocusNext = () => {
+    const current = innerFocusIndex ?? getCurrentActiveIndex();
+
+    setInnerFocusIndex(current < items.length - 1 ? current + 1 : current);
+  };
 
   const updateFieldBoundingRect = () => {
     if (!ref.current || !listRef.current) {
@@ -230,6 +278,12 @@ export function Dropdown({
   window.addEventListener('scroll', updateFieldBoundingRect, true);
   window.addEventListener('resize', updateFieldBoundingRect, true);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setInnerFocusIndex(null);
+    }
+  }, [isOpen]);
+
   return (
     <>
       <div
@@ -238,7 +292,56 @@ export function Dropdown({
           displayStyles[display]
         )}
         onClick={() => setIsOpen(!isOpen)}
-        onKeyDown={(e) => a11yClick(e) && setIsOpen(!isOpen)}
+        onKeyDown={(e) => {
+          if (!isOpen) {
+            if (a11yClick(e)) {
+              setInnerFocusIndex(
+                items.findIndex((item) => item.value === value)
+              );
+              setIsOpen(!isOpen);
+              return;
+            }
+
+            if (e.key === 'ArrowDown') {
+              setInnerFocusIndex(0);
+              setIsOpen(true);
+              return;
+            }
+
+            if (e.key === 'ArrowUp') {
+              setInnerFocusIndex(items.length - 1);
+              setIsOpen(true);
+              return;
+            }
+          } else {
+            if (a11yClick(e)) {
+              if (innerFocusIndex === null) {
+                setIsOpen(false);
+                return;
+              }
+
+              onChange(items[innerFocusIndex].value);
+              setIsOpen(false);
+            }
+            switch (e.key) {
+              case 'ArrowUp':
+                innerFocusPrev();
+                return;
+              case 'ArrowDown':
+                innerFocusNext();
+                return;
+              case 'Escape':
+                setIsOpen(false);
+                return;
+              case 'Home':
+                setInnerFocusIndex(0);
+                return;
+              case 'End':
+                setInnerFocusIndex(items.length - 1);
+                return;
+            }
+          }
+        }}
         onBlur={(e) => {
           if (
             e.currentTarget.contains(e.relatedTarget) ||
@@ -257,6 +360,13 @@ export function Dropdown({
           )}
           tabIndex={0}
           ref={ref}
+          aria-controls={`__dropdownList-${name}`}
+          aria-activedescendant={
+            innerFocusIndex === null
+              ? ''
+              : `__dropdownList-${name}-item-${items[innerFocusIndex].value}`
+          }
+          role="combobox"
         >
           {getShownValue(value)}
           <div className="fill-background-10">
@@ -282,6 +392,10 @@ export function Dropdown({
             maxHeight={maxHeight}
             value={value}
             ref={listRef}
+            innerFocusValue={
+              innerFocusIndex === null ? null : items[innerFocusIndex].value
+            }
+            name={name}
           />,
           document.body
         )}
