@@ -29,74 +29,26 @@ export const mapPart: Record<
   [BodyPart.HIP]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.LEFT_HIP]: ({ width }) => <FootIcon width={width}></FootIcon>, // Unused
   [BodyPart.RIGHT_HIP]: ({ width }) => <FootIcon width={width}></FootIcon>, // Unused
-  [BodyPart.LEFT_FOOT]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      ></PawIcon>
-    ) : (
-      <FootIcon width={width}></FootIcon>
-    ),
+  [BodyPart.LEFT_FOOT]: renderLeftFootIcon,
   [BodyPart.LEFT_HAND]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.LEFT_LOWER_ARM]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.LEFT_LOWER_LEG]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      ></PawIcon>
-    ) : (
-      <FootIcon width={width}></FootIcon>
-    ),
+  [BodyPart.LEFT_LOWER_LEG]: renderLeftFootIcon,
   [BodyPart.LEFT_SHOULDER]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.LEFT_UPPER_ARM]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.LEFT_UPPER_LEG]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      ></PawIcon>
-    ) : (
-      <FootIcon width={width}></FootIcon>
-    ),
+  [BodyPart.LEFT_UPPER_LEG]: renderLeftFootIcon,
   [BodyPart.NECK]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.NONE]: ({ width }) => <FootIcon width={width}></FootIcon>,
-  [BodyPart.RIGHT_FOOT]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      ></PawIcon>
-    ) : (
-      <FootIcon width={width} flipped></FootIcon>
-    ),
+  [BodyPart.RIGHT_FOOT]: renderRightFootIcon,
   [BodyPart.RIGHT_HAND]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.RIGHT_LOWER_ARM]: ({ width }) => (
     <FootIcon width={width}></FootIcon>
   ),
-  [BodyPart.RIGHT_LOWER_LEG]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      ></PawIcon>
-    ) : (
-      <FootIcon width={width} flipped></FootIcon>
-    ),
+  [BodyPart.RIGHT_LOWER_LEG]: renderRightFootIcon,
   [BodyPart.RIGHT_SHOULDER]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.RIGHT_UPPER_ARM]: ({ width }) => (
     <FootIcon width={width}></FootIcon>
   ),
-  [BodyPart.RIGHT_UPPER_LEG]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      ></PawIcon>
-    ) : (
-      <FootIcon width={width} flipped></FootIcon>
-    ),
+  [BodyPart.RIGHT_UPPER_LEG]: renderRightFootIcon,
   [BodyPart.WAIST]: ({ width }) => <FootIcon width={width}></FootIcon>,
   [BodyPart.LEFT_THUMB_METACARPAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
@@ -188,61 +140,43 @@ export const mapPart: Record<
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
-  [BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      ></PawIcon>
-    ) : (
-      <FootIcon width={width} flipped></FootIcon>
-    ),
-  [BodyPart.LEFT_TOES_DIGITORUM_BREVIS]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      ></PawIcon>
-    ) : (
-      <FootIcon width={width} flipped></FootIcon>
-    ),
-  [BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      ></PawIcon>
-    ) : (
-      <FootIcon width={width} flipped></FootIcon>
-    ),
-  [BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      ></PawIcon>
-    ) : (
-      <FootIcon width={width} flipped></FootIcon>
-    ),
-  [BodyPart.RIGHT_TOES_DIGITORUM_BREVIS]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      ></PawIcon>
-    ) : (
-      <FootIcon width={width} flipped></FootIcon>
-    ),
-  [BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon
-        width={width ? width * 0.75 : undefined}
-        transform="translate(40, -50)"
-      ></PawIcon>
-    ) : (
-      <FootIcon width={width} flipped></FootIcon>
-    ),
+  [BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS]: renderLeftFootIcon,
+  [BodyPart.LEFT_TOES_DIGITORUM_BREVIS]: renderLeftFootIcon,
+  [BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI]: renderLeftFootIcon,
+  [BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS]: renderRightFootIcon,
+  [BodyPart.RIGHT_TOES_DIGITORUM_BREVIS]: renderRightFootIcon,
+  [BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI]: renderRightFootIcon,
 };
+
+function renderLeftFootIcon({ width, currentLocales }) {
+  const isOwo = currentLocales.includes('en-x-owo');
+
+  if (isOwo) {
+    return (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      />
+    );
+  }
+
+  return <FootIcon width={width} />;
+}
+
+function renderRightFootIcon({ width, currentLocales }) {
+  const isOwo = currentLocales.includes('en-x-owo');
+
+  if (isOwo) {
+    return (
+      <PawIcon
+        width={width ? width * 0.75 : undefined}
+        transform="translate(40, -50)"
+      />
+    );
+  }
+
+  return <FootIcon width={width} flipped />;
+}
 
 export function MountingBodyPartIcon({
   bodyPart = BodyPart.NONE,

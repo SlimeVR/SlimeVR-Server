@@ -36,12 +36,7 @@ export const mapPart: Record<
   [BodyPart.HIP]: ({ width }) => <HipIcon width={width}></HipIcon>,
   [BodyPart.LEFT_HIP]: ({ width }) => <HipIcon width={width}></HipIcon>, // Unused
   [BodyPart.RIGHT_HIP]: ({ width }) => <HipIcon width={width}></HipIcon>, // Unused
-  [BodyPart.LEFT_FOOT]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon></PawIcon>
-    ) : (
-      <FootIcon width={width}></FootIcon>
-    ),
+  [BodyPart.LEFT_FOOT]: renderFootLeft,
   [BodyPart.LEFT_HAND]: ({ width }) => (
     <ControllerIcon width={width}></ControllerIcon>
   ),
@@ -62,12 +57,7 @@ export const mapPart: Record<
   ),
   [BodyPart.NECK]: ({ width }) => <NeckIcon width={width}></NeckIcon>,
   [BodyPart.NONE]: ({ width }) => <SlimeVRIcon width={width}></SlimeVRIcon>,
-  [BodyPart.RIGHT_FOOT]: ({ width, currentLocales }) =>
-    currentLocales.includes('en-x-owo') ? (
-      <PawIcon></PawIcon>
-    ) : (
-      <FootIcon width={width} flipped></FootIcon>
-    ),
+  [BodyPart.RIGHT_FOOT]: renderFootRight,
   [BodyPart.RIGHT_HAND]: ({ width }) => (
     <ControllerIcon width={width} flipped></ControllerIcon>
   ),
@@ -177,43 +167,27 @@ export const mapPart: Record<
   [BodyPart.RIGHT_LITTLE_DISTAL]: ({ width }) => (
     <FingersIcon width={width}></FingersIcon>
   ),
-  [BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS]: ({ width, currentLocales }) =>
-     currentLocales.includes('en-x-owo') ? (
-       <PawIcon></PawIcon>
-     ) : (
-       <FootIcon width={width} flipped></FootIcon>
-     ),
-  [BodyPart.LEFT_TOES_DIGITORUM_BREVIS]: ({ width, currentLocales }) =>
-      currentLocales.includes('en-x-owo') ? (
-        <PawIcon></PawIcon>
-      ) : (
-        <FootIcon width={width} flipped></FootIcon>
-      ),
-  [BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI]: ({ width, currentLocales }) =>
-       currentLocales.includes('en-x-owo') ? (
-         <PawIcon></PawIcon>
-       ) : (
-         <FootIcon width={width} flipped></FootIcon>
-       ),
-  [BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS]: ({ width, currentLocales }) =>
-       currentLocales.includes('en-x-owo') ? (
-         <PawIcon></PawIcon>
-       ) : (
-          <FootIcon width={width} flipped></FootIcon>
-       ),
-  [BodyPart.RIGHT_TOES_DIGITORUM_BREVIS]: ({ width, currentLocales }) =>
-       currentLocales.includes('en-x-owo') ? (
-          <PawIcon></PawIcon>
-       ) : (
-          <FootIcon width={width} flipped></FootIcon>
-       ),
-  [BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI]: ({ width, currentLocales }) =>
-       currentLocales.includes('en-x-owo') ? (
-          <PawIcon></PawIcon>
-       ) : (
-            <FootIcon width={width} flipped></FootIcon>
-       ),
+  [BodyPart.LEFT_TOES_ABDUCTOR_HALLUCIS]: renderFootLeft,
+  [BodyPart.LEFT_TOES_DIGITORUM_BREVIS]: renderFootLeft,
+  [BodyPart.LEFT_TOES_ABDUCTOR_DIGITI_MINIMI]: renderFootLeft,
+  [BodyPart.RIGHT_TOES_ABDUCTOR_HALLUCIS]: renderFootRight,
+  [BodyPart.RIGHT_TOES_DIGITORUM_BREVIS]: renderFootRight,
+  [BodyPart.RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI]: renderFootRight,
 };
+
+function renderFootLeft({ width, currentLocales }) {
+  if (currentLocales.includes('en-x-owo')) {
+    return <PawIcon />;
+  }
+  return <FootIcon width={width} />;
+}
+
+function renderFootRight({ width, currentLocales }) {
+  if (currentLocales.includes('en-x-owo')) {
+    return <PawIcon />;
+  }
+  return <FootIcon width={width} flipped />;
+}
 
 export function BodyPartIcon({
   bodyPart = BodyPart.NONE,
