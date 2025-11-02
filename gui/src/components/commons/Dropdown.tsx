@@ -7,7 +7,12 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Control, useController, UseControllerProps } from 'react-hook-form';
+import {
+  Control,
+  FieldError,
+  useController,
+  UseControllerProps,
+} from 'react-hook-form';
 import { ArrowDownIcon, ArrowUpIcon } from './icon/ArrowIcons';
 import { a11yClick } from '@/utils/a11y';
 import { createPortal } from 'react-dom';
@@ -25,11 +30,10 @@ type DropdownProps = {
   alignment?: 'left' | 'right';
   display?: 'fit' | 'block';
   placeholder: string;
-  control: Control<any>;
   name: string;
   items: DropdownItem[];
   maxHeight?: string | number;
-  rules?: UseControllerProps<any>['rules'];
+  error?: FieldError;
 };
 
 function DropdownItem({
@@ -60,7 +64,7 @@ function DropdownItem({
 
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!innerFocusValue) {
       return;
     }
@@ -69,7 +73,7 @@ function DropdownItem({
     }
   }, [innerFocusValue]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isOpen) {
       return;
     }
@@ -164,7 +168,7 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
   return (
     <div
       className={classNames(
-        'grid fixed overflow-hidden transition-[grid-template-rows] rounded',
+        'grid fixed z-50 overflow-hidden transition-[grid-template-rows] rounded',
         isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
         variantStyles[variant]
       )}
@@ -201,22 +205,20 @@ const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
   );
 });
 
-export function Dropdown({
+export function DropdownInside({
   direction = 'up',
   variant = 'primary',
   alignment = 'right',
   display = 'fit',
   placeholder,
-  control,
   name,
   items,
   maxHeight = '50vh',
-  rules,
-}: DropdownProps) {
+  value,
+  onChange,
+  error,
+}: DropdownProps & { value: string; onChange: (value: string) => void }) {
   const [isOpen, setIsOpen] = useState(false);
-  const {
-    field: { value, onChange },
-  } = useController({ name, control, rules });
 
   useLayoutEffect(() => {
     ref.current?.focus();
@@ -299,22 +301,26 @@ export function Dropdown({
                 items.findIndex((item) => item.value === value)
               );
               setIsOpen(!isOpen);
+              e.preventDefault();
               return;
             }
 
             if (e.key === 'ArrowDown') {
               setInnerFocusIndex(0);
               setIsOpen(true);
+              e.preventDefault();
               return;
             }
 
             if (e.key === 'ArrowUp') {
               setInnerFocusIndex(items.length - 1);
               setIsOpen(true);
+              e.preventDefault();
               return;
             }
           } else {
             if (a11yClick(e)) {
+              e.preventDefault();
               if (innerFocusIndex === null) {
                 setIsOpen(false);
                 return;
@@ -326,9 +332,11 @@ export function Dropdown({
             switch (e.key) {
               case 'ArrowUp':
                 innerFocusPrev();
+                e.preventDefault();
                 return;
               case 'ArrowDown':
                 innerFocusNext();
+                e.preventDefault();
                 return;
               case 'Escape':
                 setIsOpen(false);
@@ -355,7 +363,7 @@ export function Dropdown({
       >
         <div
           className={classNames(
-            'flex flex-row justify-between items-center gap-2 pl-3 pr-5 py-3 rounded-md cursor-pointer focus:ring-4',
+            'flex flex-row justify-between items-center gap-2 pl-3 pr-5 py-3 rounded-md cursor-pointer focus:ring-4 relative',
             variantStyles[variant]
           )}
           tabIndex={0}
@@ -377,6 +385,9 @@ export function Dropdown({
             )}
           </div>
         </div>
+        {error?.message && (
+          <div className="text-status-critical">{error.message}</div>
+        )}
         {createPortal(
           <DropdownList
             alignment={alignment}
@@ -401,5 +412,23 @@ export function Dropdown({
         )}
       </div>
     </>
+  );
+}
+
+export function Dropdown({
+  control,
+  name,
+  rules,
+  ...props
+}: DropdownProps & {
+  control: Control<any>;
+  rules?: UseControllerProps<any>['rules'];
+}) {
+  const {
+    field: { value, onChange },
+  } = useController({ name, control, rules });
+
+  return (
+    <DropdownInside value={value} name={name} {...props} onChange={onChange} />
   );
 }
