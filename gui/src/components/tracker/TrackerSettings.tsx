@@ -1,6 +1,6 @@
 import { Localized, useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { IPv4 } from 'ip-num/IPNumber';
+import { IPv4 } from 'ip-num';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -36,7 +36,6 @@ import { TrackerCard } from './TrackerCard';
 import { Quaternion } from 'three';
 import { useAppContext } from '@/hooks/app';
 import { MagnetometerToggleSetting } from '@/components/settings/pages/MagnetometerToggleSetting';
-import semver from 'semver';
 import { useSetAtom } from 'jotai';
 import { ignoredTrackersAtom } from '@/store/app-store';
 import { checkForUpdate } from '@/hooks/firmware-update';
@@ -170,11 +169,7 @@ export function TrackerSettingsPage() {
     currentFirmwareRelease &&
     tracker?.device?.hardwareInfo &&
     checkForUpdate(currentFirmwareRelease, tracker?.device);
-  const updateUnavailable =
-    tracker?.device?.hardwareInfo?.officialBoardType !== BoardType.SLIMEVR ||
-    !semver.valid(
-      tracker?.device?.hardwareInfo?.firmwareVersion?.toString() ?? 'none'
-    );
+  const updateUnavailable = needUpdate === null;
 
   return (
     <form
@@ -185,14 +180,14 @@ export function TrackerSettingsPage() {
         isOpen={selectBodypart}
         onClose={() => setSelectBodypart(false)}
         onRoleSelected={onRoleSelected}
-      ></SingleTrackerBodyAssignmentMenu>
+      />
       <MountingSelectionMenu
         bodyPart={tracker?.tracker.info?.bodyPart}
         currRotation={currRotation}
         isOpen={selectRotation}
         onClose={() => setSelectRotation(false)}
         onDirectionSelected={onDirectionSelected}
-      ></MountingSelectionMenu>
+      />
       <div className="flex gap-2 max-md:flex-wrap md:flex-row xs:flex-col mobile:flex-col">
         <div className="flex flex-col w-full md:max-w-xs gap-2">
           {tracker && (
@@ -201,7 +196,7 @@ export function TrackerSettingsPage() {
               device={tracker?.device}
               tracker={tracker?.tracker}
               shakeHighlight={false}
-            ></TrackerCard>
+            />
           )}
           {
             <div className="flex flex-col bg-background-70 p-3 rounded-lg gap-2">
@@ -216,12 +211,19 @@ export function TrackerSettingsPage() {
                 </Typography>
                 <Typography>-</Typography>
                 {updateUnavailable && (
-                  <Localized id="tracker-settings-update-unavailable">
-                    <Typography>Cannot be updated (DIY)</Typography>
+                  <Localized id="tracker-settings-update-unavailable-v2">
+                    <Typography>No releases found</Typography>
                   </Localized>
                 )}
                 {!updateUnavailable && (
                   <>
+                    {needUpdate === 'unavailable' && (
+                      <Localized id="tracker-settings-update-incompatible">
+                        <Typography>
+                          Cannot be updated, Incompatible board
+                        </Typography>
+                      </Localized>
+                    )}
                     {needUpdate === 'blocked' && (
                       // This happens only if no update is available and or the user is not in the current stagged
                       <Localized id="tracker-settings-update-blocked">
@@ -250,7 +252,7 @@ export function TrackerSettingsPage() {
                         id="tracker-settings-update-low-battery"
                         vars={{ versionName: currentFirmwareRelease.name }}
                       >
-                        <Typography color="text-status-critical"></Typography>
+                        <Typography color="text-status-critical" />
                       </Localized>
                     )}
                   </>
@@ -357,9 +359,7 @@ export function TrackerSettingsPage() {
             </div>
           </div>
           {tracker?.tracker && (
-            <IMUVisualizerWidget
-              tracker={tracker?.tracker}
-            ></IMUVisualizerWidget>
+            <IMUVisualizerWidget tracker={tracker?.tracker} />
           )}
         </div>
         <div className="flex flex-col flex-grow  bg-background-70 rounded-lg p-5 gap-3">
@@ -381,9 +381,7 @@ export function TrackerSettingsPage() {
             <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
               <div className="flex gap-3 items-center fill-background-10">
                 {tracker?.tracker.info?.bodyPart !== BodyPart.NONE && (
-                  <BodyPartIcon
-                    bodyPart={tracker?.tracker.info?.bodyPart}
-                  ></BodyPartIcon>
+                  <BodyPartIcon bodyPart={tracker?.tracker.info?.bodyPart} />
                 )}
                 {tracker?.tracker.info?.bodyPart === BodyPart.NONE && (
                   <WarningIcon className="fill-status-warning" />
@@ -422,7 +420,7 @@ export function TrackerSettingsPage() {
               </Typography>
               <div className="flex justify-between bg-background-80 w-full p-3 rounded-lg">
                 <div className="flex gap-3 items-center">
-                  <BodyPartIcon bodyPart={BodyPart.NONE}></BodyPartIcon>
+                  <BodyPartIcon bodyPart={BodyPart.NONE} />
                   <Typography>
                     {l10n.getString(
                       (rotationsLabels.find((q) =>
@@ -477,7 +475,7 @@ export function TrackerSettingsPage() {
               autocomplete="off"
               rules={undefined}
               label={l10n.getString('tracker-settings-name_section-label')}
-            ></Input>
+            />
           </div>
           {macAddress && (
             <div className="flex flex-col gap-2 w-full mt-3">

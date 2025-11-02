@@ -396,6 +396,20 @@ data class UDPPacket26FlexData(
 	}
 }
 
+data class UDPPacket27Position(
+	var position: Vector3 = Vector3.NULL,
+) : UDPPacket(27),
+	SensorSpecificPacket {
+	override var sensorId = 0
+	override fun readData(buf: ByteBuffer) {
+		sensorId = buf.get().toInt() and 0xFF
+		val x = UDPUtils.getSafeBufferFloat(buf)
+		val y = UDPUtils.getSafeBufferFloat(buf)
+		val z = UDPUtils.getSafeBufferFloat(buf)
+		position = Vector3(x, y, z)
+	}
+}
+
 data class UDPPacket200ProtocolChange(
 	var targetProtocol: Int = 0,
 	var targetProtocolVersion: Int = 0,

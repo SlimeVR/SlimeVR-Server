@@ -97,7 +97,7 @@ export function SettingSelectorMobile() {
         // There is always an option selected placholder is not used
         placeholder=""
         name="link"
-      ></Dropdown>
+      />
     </div>
   );
 }
@@ -108,19 +108,19 @@ export function SettingsLayout({ children }: { children: ReactNode }) {
     <>
       <div className="settings-layout h-full">
         <div style={{ gridArea: 't' }}>
-          <TopBar></TopBar>
+          <TopBar />
         </div>
         <div style={{ gridArea: 'n' }}>
-          <Navbar></Navbar>
+          <Navbar />
         </div>
         <div style={{ gridArea: 's' }} className="my-2 mobile:hidden">
-          <SettingsSidebar></SettingsSidebar>
+          <SettingsSidebar />
         </div>
         <div
           style={{ gridArea: 'c' }}
           className="xs:pl-2 xs:pb-2 xs:mt-2 mobile:mt-7 overflow-y-auto"
         >
-          {isMobile && <SettingSelectorMobile></SettingSelectorMobile>}
+          {isMobile && <SettingSelectorMobile />}
           {children}
         </div>
       </div>

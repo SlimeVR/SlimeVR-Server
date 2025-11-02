@@ -6,6 +6,7 @@ import dev.slimevr.Keybinding
 import dev.slimevr.SLIMEVR_IDENTIFIER
 import dev.slimevr.VRServer
 import dev.slimevr.bridge.Bridge
+import dev.slimevr.config.ConfigManager
 import dev.slimevr.desktop.firmware.DesktopSerialFlashingHandler
 import dev.slimevr.desktop.games.vrchat.DesktopVRCConfigHandler
 import dev.slimevr.desktop.platform.SteamVRBridge
@@ -27,6 +28,7 @@ import org.apache.commons.lang3.SystemUtils
 import java.io.File
 import java.io.IOException
 import java.lang.System
+import java.net.DatagramSocket
 import java.net.ServerSocket
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -96,21 +98,25 @@ fun main(args: Array<String>) {
 		LogManager.closeLogger()
 		return
 	}
+
+	val configDir = resolveConfig()
+	LogManager.info("Using config dir: $configDir")
+
+	val configManager = ConfigManager(configDir)
+	configManager.loadConfig()
+
 	try {
-		// This is disabled because the config can't be read at this point
-		// ServerSocket(6969).close()
+		DatagramSocket(configManager.vrConfig.server.trackerPort).close()
 		ServerSocket(21110).close()
 	} catch (e: IOException) {
+		val message = "SlimeVR start-up error! A required port (${configManager.vrConfig.server.trackerPort} and 21110) is busy. " +
+			"Make sure there is no other instance of SlimeVR Server running."
 		LogManager
-			.severe(
-				"SlimeVR start-up error! Required ports are busy. " +
-					"Make sure there is no other instance of SlimeVR Server running.",
-			)
+			.severe(message)
 		JOptionPane
 			.showMessageDialog(
 				null,
-				"SlimeVR start-up error! Required ports are busy. " +
-					"Make sure there is no other instance of SlimeVR Server running.",
+				message,
 				"SlimeVR: Ports are busy",
 				JOptionPane.ERROR_MESSAGE,
 			)
@@ -118,14 +124,12 @@ fun main(args: Array<String>) {
 		return
 	}
 	try {
-		val configDir = resolveConfig()
-		LogManager.info("Using config dir: $configDir")
 		val vrServer = VRServer(
 			::provideBridges,
 			{ _ -> DesktopSerialHandler() },
 			{ _ -> DesktopSerialFlashingHandler() },
 			{ _ -> DesktopVRCConfigHandler() },
-			configPath = configDir,
+			configManager = configManager,
 		)
 		vrServer.start()
 

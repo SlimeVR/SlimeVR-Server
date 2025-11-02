@@ -249,7 +249,7 @@ export function Serial() {
       >
         <Localized
           id="settings-serial-factory_reset-warning"
-          elems={{ b: <b></b> }}
+          elems={{ b: <b /> }}
         >
           <WarningBox>
             <b>Warning:</b> This will reset the tracker to factory settings.
@@ -324,7 +324,7 @@ export function Serial() {
                       <PauseIcon width={16} />
                     )
                   }
-                ></Button>
+                />
               </div>
               <div className="w-full mobile:col-span-2">
                 <Dropdown
@@ -336,7 +336,7 @@ export function Serial() {
                     label: device.name?.toString() || 'error',
                     value: device.port?.toString() || 'error',
                   }))}
-                ></Dropdown>
+                />
               </div>
             </div>
           </div>

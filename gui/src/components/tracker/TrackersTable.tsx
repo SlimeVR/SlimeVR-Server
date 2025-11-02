@@ -1,6 +1,6 @@
 import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
-import { IPv4 } from 'ip-num/IPNumber';
+import { IPv4 } from 'ip-num';
 import { MouseEventHandler, ReactNode, useMemo, useState } from 'react';
 import {
   TrackerDataT,
@@ -65,13 +65,13 @@ export function TrackerNameCell({ tracker }: { tracker: TrackerDataT }) {
   return (
     <div className="flex flex-row gap-2">
       <div className="flex flex-col justify-center items-center fill-background-10">
-        <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
+        <BodyPartIcon bodyPart={tracker.info?.bodyPart} />
       </div>
       <div className="flex flex-col flex-grow">
         <Typography bold whitespace="whitespace-nowrap">
           {name}
         </Typography>
-        <TrackerStatus status={tracker.status}></TrackerStatus>
+        <TrackerStatus status={tracker.status} />
       </div>
     </div>
   );
@@ -258,9 +258,7 @@ export function TrackersTable({
       {column({
         id: DisplayColumn.NAME,
         label: l10n.getString('tracker-table-column-name'),
-        row: ({ tracker }) => (
-          <TrackerNameCell tracker={tracker}></TrackerNameCell>
-        ),
+        row: ({ tracker }) => <TrackerNameCell tracker={tracker} />,
       })}
 
       {column({
@@ -299,7 +297,7 @@ export function TrackersTable({
               ping={device?.hardwareStatus?.ping}
               disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
               textColor={fontColor}
-            ></TrackerWifi>
+            />
           ),
       })}
 

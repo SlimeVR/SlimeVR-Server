@@ -15,7 +15,7 @@ export function HomePage() {
     <>
       <div className="flex relative flex-col gap-5 h-full items-center w-full justify-center px-4 overflow-clip">
         <div className="flex flex-col gap-5 items-center z-10 scale-150 mb-20">
-          <SlimeVRIcon></SlimeVRIcon>
+          <SlimeVRIcon />
           <Typography variant="mobile-title">
             {l10n.getString('onboarding-home')}
           </Typography>
@@ -33,7 +33,7 @@ export function HomePage() {
             height: '300vw',
             width: '300vw',
           }}
-        ></div>
+        />
         <img
           className="absolute"
           src="/images/slime-girl.webp"
