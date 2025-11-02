@@ -44,9 +44,11 @@ const MODIFIED: &str = if build::GIT_CLEAN { "" } else { "-dirty" };
 )]
 pub struct Cli {
 	#[clap(short, long)]
-	display_console: bool,
+	pub display_console: bool,
 	#[clap(long)]
-	launch_from_path: Option<PathBuf>,
+	pub launch_from_path: Option<PathBuf>,
+	#[clap(long)]
+	pub no_start_server: bool,
 	#[clap(flatten)]
 	verbose: clap_verbosity_flag::Verbosity,
 }
