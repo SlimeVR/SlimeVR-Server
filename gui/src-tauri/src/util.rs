@@ -1,10 +1,9 @@
 #[cfg(windows)]
 use std::os::windows::process::CommandExt;
 use std::{
-	env,
 	ffi::{OsStr, OsString},
 	io::Write,
-	path::{Path, PathBuf},
+	path::PathBuf,
 	process::{Child, Stdio},
 };
 
@@ -50,32 +49,6 @@ pub struct Cli {
 	launch_from_path: Option<PathBuf>,
 	#[clap(flatten)]
 	verbose: clap_verbosity_flag::Verbosity,
-}
-
-pub fn is_valid_path(path: &Path) -> bool {
-	path.join("slimevr.jar").exists()
-}
-
-pub fn get_launch_path(cli: Cli) -> Option<PathBuf> {
-	let paths = [
-		cli.launch_from_path,
-		// AppImage passes the fakeroot in `APPDIR` env var.
-		env::var_os("APPDIR").map(|a| PathBuf::from(a).join("usr/share/slimevr/")),
-		env::current_dir().ok(),
-		// getcwd in Mac can't be trusted, so let's get the executable's path
-		env::current_exe()
-			.map(|mut f| {
-				f.pop();
-				f
-			})
-			.ok(),
-		Some(PathBuf::from(env!("CARGO_MANIFEST_DIR"))),
-		// For flatpak container
-		Some(PathBuf::from("/app/share/slimevr/")),
-		Some(PathBuf::from("/usr/share/slimevr/")),
-	];
-
-	paths.into_iter().flatten().find(|x| is_valid_path(x))
 }
 
 pub fn spawn_java(java: &OsStr, java_version: &OsStr) -> std::io::Result<Child> {
