@@ -194,6 +194,10 @@ fn find_server_jar(cli: &Cli) -> Option<PathBuf> {
 		.find(|x| x.exists())
 }
 
+fn server_running() -> bool {
+	std::net::TcpListener::bind("127.0.0.1:21110").is_err()
+}
+
 fn setup_tauri(
 	cli: Cli,
 	context: tauri::Context,
@@ -267,6 +271,11 @@ fn setup_tauri(
 			}
 
 			app.manage(Mutex::new(window_state));
+
+			if server_running() {
+				log::info!("Skipping server start: server is already running.");
+				return Ok(());
+			}
 
 			struct ServerStartInfo {
 				server_jar: PathBuf,
