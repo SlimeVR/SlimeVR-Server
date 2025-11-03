@@ -246,16 +246,14 @@ export function StayAlignedSettings({
                 )}
                 disabled={!config.setupComplete || !hasStandingPose}
               />
-              <StandingRelaxedPoseModal
-                open={openStanding}
-              ></StandingRelaxedPoseModal>
+              <StandingRelaxedPoseModal open={openStanding} />
               <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
                 <Button
                   variant="primary"
                   className="w-full max-w-32"
                   disabled={!config.setupComplete}
                   onClick={() => openStanding[1](true)}
-                ></Button>
+                />
               </Localized>
             </div>
             <div className="flex gap-2">
@@ -269,16 +267,14 @@ export function StayAlignedSettings({
                 )}
                 disabled={!config.setupComplete || !hasSittingPose}
               />
-              <SittingRelaxedPoseModal
-                open={openSitting}
-              ></SittingRelaxedPoseModal>
+              <SittingRelaxedPoseModal open={openSitting} />
               <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
                 <Button
                   variant="primary"
                   className="w-full max-w-32"
                   disabled={!config.setupComplete}
                   onClick={() => openSitting[1](true)}
-                ></Button>
+                />
               </Localized>
             </div>
             <div className="flex gap-2">
@@ -292,14 +288,14 @@ export function StayAlignedSettings({
                 )}
                 disabled={!config.setupComplete || !hasFlatPose}
               />
-              <FlatRelaxedPoseModal open={openFlat}></FlatRelaxedPoseModal>
+              <FlatRelaxedPoseModal open={openFlat} />
               <Localized id="settings-stay_aligned-relaxed_poses-save_pose">
                 <Button
                   variant="primary"
                   className="w-full max-w-32"
                   disabled={!config.setupComplete}
                   onClick={() => openFlat[1](true)}
-                ></Button>
+                />
               </Localized>
             </div>
           </div>

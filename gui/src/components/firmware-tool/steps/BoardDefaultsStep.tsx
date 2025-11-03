@@ -39,7 +39,7 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
                 className="p-2 rounded-full fill-background-10 hover:bg-background-50 hover:fill-status-critical cursor-pointer"
                 onClick={() => onDelete && onDelete()}
               >
-                <TrashIcon size={20}></TrashIcon>
+                <TrashIcon size={20} />
               </div>
             )}
           </div>
@@ -65,7 +65,7 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
             checked={c.value}
             variant="toggle"
             outlined
-          ></CheckboxInternal>
+          />
         </div>
       );
     }
@@ -86,7 +86,7 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
             }
             variant="primary"
             onChange={(e) => c.onMutate(e.currentTarget.value)}
-          ></InputInside>
+          />
         </div>
       );
     }
@@ -109,7 +109,7 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
             value={c.value}
             variant="secondary"
             maxHeight={200}
-          ></DropdownInside>
+          />
         </div>
       );
     }
@@ -140,7 +140,7 @@ function BoardDefaultsGraph({ graph }: { graph: ComponentNode[] }) {
               <div className="flex flex-col justify-center">
                 <div className="flex justify-center">
                   <Localized id="firmware_tool-board_defaults-add">
-                    <Button variant="primary" onClick={c.add}></Button>
+                    <Button variant="primary" onClick={c.add} />
                   </Localized>
                 </div>
               </div>
@@ -205,21 +205,17 @@ export function BoardDefaultsStep({
             {l10n.getString('firmware_tool-board_defaults-description')}
           </Typography>
         </div>
-        <BoardDefaultsGraph graph={graph}></BoardDefaultsGraph>
+        <BoardDefaultsGraph graph={graph} />
         <div className="flex justify-between">
           <Localized id="firmware_tool-previous_step">
-            <Button variant="secondary" onClick={prevStep}></Button>
+            <Button variant="secondary" onClick={prevStep} />
           </Localized>
           <div className="flex gap-2">
             <Localized id="firmware_tool-board_defaults-reset">
-              <Button variant="secondary" onClick={reset}></Button>
+              <Button variant="secondary" onClick={reset} />
             </Localized>
             <Localized id="firmware_tool-ok">
-              <Button
-                variant="primary"
-                disabled={!valid}
-                onClick={submit}
-              ></Button>
+              <Button variant="primary" disabled={!valid} onClick={submit} />
             </Localized>
           </div>
         </div>

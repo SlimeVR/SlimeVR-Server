@@ -63,7 +63,7 @@ export function UnknownDeviceModal() {
             </Typography>
             <Localized
               id="unknown_device-modal-description"
-              elems={{ b: <b></b> }}
+              elems={{ b: <b /> }}
               vars={{ deviceId: currentTracker ?? 'ERROR' }}
             >
               <Typography

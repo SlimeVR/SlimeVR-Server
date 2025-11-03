@@ -395,7 +395,7 @@ export function BodyAssignment({
             </div>
           </div>
         }
-      ></BodyInteractions>
+      />
     </>
   );
 }

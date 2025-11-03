@@ -121,7 +121,6 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     });
     const promise = invoke('update_translations', { newI18n });
     return () => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       promise.then(() => {});
     };
   }, [l10n]);

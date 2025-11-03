@@ -98,13 +98,13 @@ export const InputInside = forwardRef<
           value={computedValue} // Do we want that behaviour ?
           disabled={disabled}
           ref={ref}
-        ></input>
+        />
         {type === 'password' && (
           <div
             className="fill-background-10 absolute inset-y-0 right-0 pr-6 z-10 my-auto w-[16px] h-[16px] cursor-pointer"
             onClick={togglePassword}
           >
-            <EyeIcon width={16} closed={forceText}></EyeIcon>
+            <EyeIcon width={16} closed={forceText} />
           </div>
         )}
         {error?.message && (
@@ -154,7 +154,7 @@ export const Input = ({
           onChange={onChange}
           ref={ref}
           name={name}
-        ></InputInside>
+        />
       )}
     />
   );

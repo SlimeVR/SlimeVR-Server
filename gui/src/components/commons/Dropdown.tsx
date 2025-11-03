@@ -1,272 +1,434 @@
 import classNames from 'classnames';
-import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  forwardRef,
+  ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   Control,
-  Controller,
   FieldError,
+  useController,
   UseControllerProps,
 } from 'react-hook-form';
+import { ArrowDownIcon, ArrowUpIcon } from './icon/ArrowIcons';
 import { a11yClick } from '@/utils/a11y';
 import { createPortal } from 'react-dom';
-import { ArrowDownIcon } from './icon/ArrowIcons';
 
-interface DropdownProps {
+type DropdownItem = {
+  value: string;
+  label: ReactNode;
+};
+
+export type DropdownDirection = 'up' | 'down';
+
+type DropdownProps = {
   direction?: DropdownDirection;
   variant?: 'primary' | 'secondary' | 'tertiary';
-  alignment?: 'right' | 'left';
+  alignment?: 'left' | 'right';
   display?: 'fit' | 'block';
   placeholder: string;
   name: string;
   items: DropdownItem[];
   maxHeight?: string | number;
   error?: FieldError;
-}
-
-type DropdownItemsProps = Pick<
-  DropdownProps,
-  'direction' | 'variant' | 'alignment' | 'display' | 'items' | 'maxHeight'
-> & {
-  onSelectItem: (item: DropdownItem) => void;
-  onBackdropClick: () => void;
-  value: string;
-  dropdownBounds: DOMRect;
 };
 
-export interface DropdownItem {
-  label?: string;
-  component?: ReactNode;
-  value: string;
-  fontName?: string;
-}
-
-export type DropdownDirection = 'up' | 'down';
-
-export function DropdownItems({
-  display,
-  direction,
+function DropdownItem({
+  item,
   variant,
-  alignment,
-  items,
-  maxHeight,
+  onSelected,
+  isOpen,
   value,
-  dropdownBounds,
-  onSelectItem,
-  onBackdropClick,
-}: DropdownItemsProps) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [itemBounds, setItemBounds] = useState<DOMRect>();
-
-  const updateBounds = () => {
-    if (!ref.current) return;
-    setItemBounds(ref.current?.getBoundingClientRect());
+  innerFocusValue,
+  name,
+}: {
+  item: DropdownItem;
+  variant: Required<DropdownProps>['variant'];
+  onSelected: () => void;
+  isOpen: boolean;
+  value: any;
+  innerFocusValue: string | null;
+  name: string;
+}) {
+  const variantStyles = {
+    primary:
+      'text-background-20 checked-hover:text-background-10 checked-hover:bg-background-50 focus:text-background-10 focus:bg-background-50',
+    secondary:
+      'text-background-20 checked-hover:text-background-10 checked-hover:bg-background-60 focus:text-background-10 focus:bg-background-60',
+    tertiary:
+      'bg-accent-background-30 checked-hover:bg-accent-background-20 focus:bg-accent-background-20',
   };
 
-  useLayoutEffect(() => {
-    updateBounds();
-  }, []);
+  const ref = useRef<HTMLDivElement>(null);
 
-  const GAP = 8;
+  useLayoutEffect(() => {
+    if (!innerFocusValue) {
+      return;
+    }
+    if (innerFocusValue === item.value) {
+      ref.current?.scrollIntoView({ block: 'nearest' });
+    }
+  }, [innerFocusValue]);
+
+  useLayoutEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    if (
+      innerFocusValue === item.value ||
+      (!innerFocusValue && item.value === value)
+    ) {
+      ref.current?.scrollIntoView({ block: 'nearest' });
+    }
+  }, [isOpen]);
 
   return (
-    <>
-      <div
-        className="z-[999] fixed top-0 w-full h-full"
-        onClick={onBackdropClick}
-      ></div>
-      <div
-        ref={ref}
-        className={classNames(
-          'z-[1000] fixed rounded shadow',
-          'overflow-y-auto dropdown-scroll overflow-x-hidden text-background-10',
-          variant == 'primary' && 'bg-background-60',
-          variant == 'secondary' && 'bg-background-70',
-          variant == 'tertiary' && 'bg-accent-background-30',
-          itemBounds?.height == 0 && 'opacity-0' // Avoid flicker while the component find its position
-        )}
-        style={{
-          maxHeight: maxHeight,
-          left:
-            alignment === 'left'
-              ? dropdownBounds.left
-              : dropdownBounds.left +
-                dropdownBounds.width -
-                (itemBounds?.width ?? 0),
-          top:
-            direction == 'down'
-              ? dropdownBounds.bottom + GAP
-              : dropdownBounds.top - (itemBounds?.height ?? 0) - GAP,
-          minWidth: display === 'block' ? dropdownBounds.width : 'inherit',
-        }}
-      >
-        <ul className="py-1 text-sm flex flex-col">
-          {items.map((item) => (
-            <li
-              style={item.fontName ? { fontFamily: item.fontName } : {}}
-              className={classNames(
-                'py-2 px-4 min-w-max cursor-pointer first-of-type:*:pointer-events-none',
-                variant == 'primary' &&
-                  'checked-hover:bg-background-50 text-background-20 ' +
-                    'checked-hover:text-background-10',
-                variant == 'secondary' &&
-                  'checked-hover:bg-background-60 text-background-20 ' +
-                    'checked-hover:text-background-10',
-                variant == 'tertiary' &&
-                  'bg-accent-background-30 checked-hover:bg-accent-background-20'
-              )}
-              onClick={() => {
-                onSelectItem(item);
-              }}
-              onKeyDown={(ev) => {
-                if (!a11yClick(ev)) return;
-                onSelectItem(item);
-              }}
-              key={item.value}
-              tabIndex={0}
-              data-checked={item.value === value}
-            >
-              {item.component || item.label}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </>
+    <div
+      className={classNames(
+        'py-2 px-4 min-w-max cursor-pointer',
+        variantStyles[variant],
+        innerFocusValue === item.value && 'ring-inset ring-4'
+      )}
+      onClick={onSelected}
+      onKeyDown={(e) => a11yClick(e) && onSelected()}
+      tabIndex={-1}
+      aria-hidden={!isOpen}
+      data-checked={item.value === value}
+      ref={ref}
+      id={`__dropdownList-${name}-item-${item.value}`}
+    >
+      {item.label}
+    </div>
   );
 }
+
+type DropdownListProps = {
+  isOpen: boolean;
+  onSelect: (item: DropdownItem) => void;
+  value: any;
+  innerFocusValue: string | null;
+} & Pick<
+  Required<DropdownProps>,
+  | 'display'
+  | 'alignment'
+  | 'direction'
+  | 'items'
+  | 'variant'
+  | 'maxHeight'
+  | 'name'
+>;
+
+const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function (
+  {
+    isOpen,
+    onSelect,
+    value,
+    innerFocusValue,
+    display,
+    alignment,
+    direction,
+    items,
+    variant,
+    maxHeight,
+    name,
+  },
+  ref
+) {
+  const variantStyles = {
+    primary: 'bg-background-60',
+    secondary: 'bg-background-70',
+    tertiary: 'bg-accent-background-30',
+  };
+
+  const getDisplayStyle = () => {
+    if (display === 'block') {
+      return {
+        left: 'var(--dropdown-field-left)',
+        right: 'var(--dropdown-field-right)',
+      };
+    }
+    return alignment === 'left'
+      ? { left: 'var(--dropdown-field-left)' }
+      : { right: 'var(--dropdown-field-right)' };
+  };
+
+  const directionStyles = {
+    up: {
+      bottom: 'calc(var(--dropdown-field-top) + 0.75rem)',
+    },
+    down: {
+      top: 'calc(var(--dropdown-field-bottom) + 0.75rem)',
+    },
+  };
+
+  return (
+    <div
+      className={classNames(
+        'grid fixed z-50 overflow-hidden transition-[grid-template-rows] rounded',
+        isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
+        variantStyles[variant]
+      )}
+      style={{
+        ...getDisplayStyle(),
+        ...directionStyles[direction],
+      }}
+      onTransitionEnd={(e) => {
+        if (!isOpen) {
+          (e.target as HTMLDivElement).scrollTo({ top: 0 });
+        }
+      }}
+      ref={ref}
+      id={`__dropdownList-${name}`}
+    >
+      <ul
+        className="flex flex-col min-h-0 text-sm overflow-y-scroll dropdown-scroll overscroll-contain"
+        style={{ maxHeight }}
+      >
+        {items.map((item) => (
+          <DropdownItem
+            item={item}
+            variant={variant}
+            onSelected={() => onSelect(item)}
+            isOpen={isOpen}
+            key={item.value}
+            value={value}
+            innerFocusValue={innerFocusValue}
+            name={name}
+          />
+        ))}
+      </ul>
+    </div>
+  );
+});
 
 export function DropdownInside({
   direction = 'up',
   variant = 'primary',
   alignment = 'right',
   display = 'fit',
-  maxHeight = '50vh',
   placeholder,
-  items = [],
+  name,
+  items,
+  maxHeight = '50vh',
   value,
   onChange,
   error,
-}: DropdownProps & {
-  name: string;
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [isOpen, setOpenState] = useState(false);
-  const [dropdownBounds, setDropdownBounds] = useState<DOMRect>();
+}: DropdownProps & { value: string; onChange: (value: string) => void }) {
+  const [isOpen, setIsOpen] = useState(false);
 
-  const updateBounds = () => {
-    if (!ref.current) return;
-    setDropdownBounds(ref.current?.getBoundingClientRect());
+  useLayoutEffect(() => {
+    ref.current?.focus();
+  }, [value]);
+
+  const variantStyles = {
+    primary: 'bg-background-60 hover:bg-background-50',
+    secondary: 'bg-background-70 hover:bg-background-60',
+    tertiary: 'bg-accent-background-30 hover:bg-accent-background-20',
   };
 
-  const onResize = () => {
-    // We could have two behaviours here:
-    // 1 - We update the bounds of the dropdown so the size and position match.
-    //    Works but have a slight delay when resizing, kinda looks laggy
-    // 2 - We close the dropdown on resize.
-    //     We could consider this as the same as clicking outside of the dropdown
-    //     This is the approach choosen RN
-    setOpen(false);
+  const displayStyles = {
+    fit: 'w-fit',
+    block: 'w-full',
   };
+
+  const getShownValue = (value: any) =>
+    value
+      ? (items.find((item) => item.value === value)?.label ?? placeholder)
+      : placeholder;
+
+  const ref = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  const [innerFocusIndex, setInnerFocusIndex] = useState<number | null>(null);
+  const getCurrentActiveIndex = () => {
+    return items.findIndex((item) => item.value === value);
+  };
+  const innerFocusPrev = () => {
+    const current = innerFocusIndex ?? getCurrentActiveIndex();
+
+    setInnerFocusIndex(current > 0 ? current - 1 : current);
+  };
+  const innerFocusNext = () => {
+    const current = innerFocusIndex ?? getCurrentActiveIndex();
+
+    setInnerFocusIndex(current < items.length - 1 ? current + 1 : current);
+  };
+
+  const updateFieldBoundingRect = () => {
+    if (!ref.current || !listRef.current) {
+      return;
+    }
+    const boundingRect = ref.current.getBoundingClientRect();
+
+    const left = boundingRect.left;
+    const right = window.innerWidth - boundingRect.right;
+    const top = window.innerHeight - boundingRect.top;
+    const bottom = boundingRect.bottom;
+    listRef.current?.style.setProperty('--dropdown-field-left', `${left}px`);
+    listRef.current?.style.setProperty('--dropdown-field-right', `${right}px`);
+    listRef.current?.style.setProperty('--dropdown-field-top', `${top}px`);
+    listRef.current?.style.setProperty(
+      '--dropdown-field-bottom',
+      `${bottom}px`
+    );
+  };
+  useLayoutEffect(updateFieldBoundingRect, [ref.current]);
+  window.addEventListener('scroll', updateFieldBoundingRect, true);
+  window.addEventListener('resize', updateFieldBoundingRect, true);
 
   useEffect(() => {
-    window.addEventListener('resize', onResize);
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  }, []);
+    if (!isOpen) {
+      setInnerFocusIndex(null);
+    }
+  }, [isOpen]);
 
-  const setOpen = (open: boolean | ((prevState: boolean) => boolean)) => {
-    updateBounds();
-    setOpenState(open);
-  };
   return (
     <>
-      <div className="relative">
+      <div
+        className={classNames(
+          'min-h-[42px] text-background-10 text-left dropdown',
+          displayStyles[display]
+        )}
+        onClick={() => setIsOpen(!isOpen)}
+        onKeyDown={(e) => {
+          if (!isOpen) {
+            if (a11yClick(e)) {
+              setInnerFocusIndex(
+                items.findIndex((item) => item.value === value)
+              );
+              setIsOpen(!isOpen);
+              e.preventDefault();
+              return;
+            }
+
+            if (e.key === 'ArrowDown') {
+              setInnerFocusIndex(0);
+              setIsOpen(true);
+              e.preventDefault();
+              return;
+            }
+
+            if (e.key === 'ArrowUp') {
+              setInnerFocusIndex(items.length - 1);
+              setIsOpen(true);
+              e.preventDefault();
+              return;
+            }
+          } else {
+            if (a11yClick(e)) {
+              e.preventDefault();
+              if (innerFocusIndex === null) {
+                setIsOpen(false);
+                return;
+              }
+
+              onChange(items[innerFocusIndex].value);
+              setIsOpen(false);
+            }
+            switch (e.key) {
+              case 'ArrowUp':
+                innerFocusPrev();
+                e.preventDefault();
+                return;
+              case 'ArrowDown':
+                innerFocusNext();
+                e.preventDefault();
+                return;
+              case 'Escape':
+                setIsOpen(false);
+                return;
+              case 'Home':
+                setInnerFocusIndex(0);
+                return;
+              case 'End':
+                setInnerFocusIndex(items.length - 1);
+                return;
+            }
+          }
+        }}
+        onBlur={(e) => {
+          if (
+            e.currentTarget.contains(e.relatedTarget) ||
+            listRef?.current?.contains(e.relatedTarget)
+          ) {
+            return;
+          }
+
+          setIsOpen(false);
+        }}
+      >
         <div
-          ref={ref}
           className={classNames(
-            'min-h-[42px] text-background-10 px-3 py-3 rounded-md focus:ring-4 dropdown',
-            'flex cursor-pointer',
-            variant == 'primary' && 'bg-background-60 hover:bg-background-50',
-            variant == 'secondary' && 'bg-background-70 hover:bg-background-60',
-            variant == 'tertiary' &&
-              'bg-accent-background-30 hover:bg-accent-background-20',
-            display === 'fit' && 'w-fit',
-            display === 'block' && 'w-full'
+            'flex flex-row justify-between items-center gap-2 pl-3 pr-5 py-3 rounded-md cursor-pointer focus:ring-4 relative',
+            variantStyles[variant]
           )}
-          onClick={() => setOpen((open) => !open)}
-          onKeyDown={(ev) => a11yClick(ev) && setOpen((open) => !open)}
           tabIndex={0}
+          ref={ref}
+          aria-controls={`__dropdownList-${name}`}
+          aria-activedescendant={
+            innerFocusIndex === null
+              ? ''
+              : `__dropdownList-${name}-item-${items[innerFocusIndex].value}`
+          }
+          role="combobox"
         >
-          <div className="flex-grow text-standard first:pointer-events-none">
-            {items.find((i) => i.value == value)?.component ||
-              items.find((i) => i.value == value)?.label ||
-              placeholder}
-          </div>
-          <div
-            className={classNames(
-              'ml-2 fill-background-10 flex items-center',
-              direction == 'up' && 'rotate-180',
-              direction == 'down' && 'rotate-0'
+          {getShownValue(value)}
+          <div className="fill-background-10">
+            {direction === 'up' ? (
+              <ArrowUpIcon size={16} />
+            ) : (
+              <ArrowDownIcon size={16} />
             )}
-          >
-            <ArrowDownIcon size={16}></ArrowDownIcon>
           </div>
         </div>
         {error?.message && (
-          <div className="absolute top-[38px] z-0 pt-1.5 bg-background-70 px-1 w-full rounded-b-md text-status-critical">
-            {error.message}
-          </div>
+          <div className="text-status-critical">{error.message}</div>
         )}
-      </div>
-      {isOpen &&
-        dropdownBounds &&
-        createPortal(
-          <DropdownItems
-            items={items}
-            dropdownBounds={dropdownBounds}
+        {createPortal(
+          <DropdownList
+            alignment={alignment}
             direction={direction}
             display={display}
-            alignment={alignment}
-            maxHeight={maxHeight}
-            variant={variant}
-            value={value}
-            onSelectItem={(item) => {
-              setOpen(false);
+            isOpen={isOpen}
+            items={items}
+            onSelect={(item: DropdownItem) => {
+              ref.current?.focus();
               onChange(item.value);
             }}
-            onBackdropClick={() => {
-              setOpen(false);
-            }}
-          ></DropdownItems>,
+            variant={variant}
+            maxHeight={maxHeight}
+            value={value}
+            ref={listRef}
+            innerFocusValue={
+              innerFocusIndex === null ? null : items[innerFocusIndex].value
+            }
+            name={name}
+          />,
           document.body
         )}
+      </div>
     </>
   );
 }
 
 export function Dropdown({
-  name,
   control,
+  name,
   rules,
   ...props
 }: DropdownProps & {
   control: Control<any>;
   rules?: UseControllerProps<any>['rules'];
 }) {
+  const {
+    field: { value, onChange },
+  } = useController({ name, control, rules });
+
   return (
-    <Controller
-      control={control}
-      name={name}
-      rules={rules}
-      render={({ field: { onChange, value } }) => (
-        <DropdownInside
-          {...props}
-          name={name}
-          onChange={onChange}
-          value={value}
-        ></DropdownInside>
-      )}
-    />
+    <DropdownInside value={value} name={name} {...props} onChange={onChange} />
   );
 }

@@ -28,7 +28,7 @@ export function TipBox({
           hideIcon && 'hidden'
         )}
       >
-        <BulbIcon></BulbIcon>
+        <BulbIcon />
       </div>
       <div className="flex flex-col">
         <Typography
@@ -62,7 +62,7 @@ export function WarningBox({
           hideIcon && 'hidden'
         )}
       >
-        <WarningIcon></WarningIcon>
+        <WarningIcon />
       </div>
       <div className="flex flex-col justify-center w-full">
         <Typography

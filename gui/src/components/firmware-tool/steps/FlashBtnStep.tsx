@@ -32,7 +32,7 @@ export function FlashBtnStep({
                       'firmware_tool-flashbtn_step-board_SLIMEVR-r11'
                     )}
                   </Typography>
-                  <img src="/images/R11_board_reset.webp"></img>
+                  <img src="/images/R11_board_reset.webp" />
                 </div>
                 <div className="bg-background-80 p-2 rounded-lg gap-2 flex flex-col justify-between">
                   <Typography variant="main-title">R12</Typography>
@@ -41,7 +41,7 @@ export function FlashBtnStep({
                       'firmware_tool-flashbtn_step-board_SLIMEVR-r12'
                     )}
                   </Typography>
-                  <img src="/images/R12_board_reset.webp"></img>
+                  <img src="/images/R12_board_reset.webp" />
                 </div>
 
                 <div className="bg-background-80 p-2 rounded-lg gap-2 flex flex-col justify-between">
@@ -51,7 +51,7 @@ export function FlashBtnStep({
                       'firmware_tool-flashbtn_step-board_SLIMEVR-r14'
                     )}
                   </Typography>
-                  <img src="/images/R14_board_reset_sw.webp"></img>
+                  <img src="/images/R14_board_reset_sw.webp" />
                 </div>
               </div>
             </>
@@ -69,7 +69,7 @@ export function FlashBtnStep({
                 onClick={() => {
                   prevStep();
                 }}
-              ></Button>
+              />
             </Localized>
             <Localized id="firmware_tool-next_step">
               <Button
@@ -77,7 +77,7 @@ export function FlashBtnStep({
                 onClick={() => {
                   nextStep();
                 }}
-              ></Button>
+              />
             </Localized>
           </div>
         </div>

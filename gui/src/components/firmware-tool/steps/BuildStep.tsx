@@ -92,7 +92,7 @@ export function BuildStep({
                   ? SlimeState.JUMPY
                   : SlimeState.SAD
               }
-            ></LoaderIcon>
+            />
             <Typography variant="section-title">
               {l10n.getString('firmware_tool-build-' + buildStatus.status)}
             </Typography>
@@ -110,14 +110,14 @@ export function BuildStep({
                   prevStep();
                 }
               }}
-            ></Button>
+            />
           </Localized>
           <Localized id="firmware_tool-retry">
             <Button
               variant="secondary"
               disabled={hasPendingBuild}
               onClick={() => startBuild()}
-            ></Button>
+            />
           </Localized>
         </div>
       </div>

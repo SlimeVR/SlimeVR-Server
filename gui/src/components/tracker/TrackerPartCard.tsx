@@ -96,7 +96,7 @@ export function TrackerPartCard({
               direction === 'right' ? '-right-6' : '-left-6'
             )}
           >
-            <WarningIcon></WarningIcon>
+            <WarningIcon />
           </div>
         )}
         <Typography variant="section-title">

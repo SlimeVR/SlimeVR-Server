@@ -47,7 +47,7 @@ function Selector({
           )}
         >
           <Localized id="firmware_tool-select_source-official">
-            <Typography></Typography>
+            <Typography />
           </Localized>
         </div>
       )}
@@ -59,7 +59,7 @@ function Selector({
           )}
         >
           <Localized id="firmware_tool-select_source-dev">
-            <Typography color="text-background-90"></Typography>
+            <Typography color="text-background-90" />
           </Localized>
         </div>
       )}
@@ -195,7 +195,7 @@ export function SelectSourceSetep({
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="flex flex-col gap-1 w-full">
                   <Localized id="firmware_tool-select_source-board_type">
-                    <Typography variant="section-title"></Typography>
+                    <Typography variant="section-title" />
                   </Localized>
                   <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
                     {possibleBoards?.map((board) => (
@@ -217,13 +217,13 @@ export function SelectSourceSetep({
                             `board_type-${board.replace('BOARD_', '')}`
                           ) ?? board.replace('BOARD_', '').replaceAll('_', ' ')
                         }
-                      ></Selector>
+                      />
                     ))}
                   </div>
                 </div>
                 <div className="flex flex-col gap-1 w-full">
                   <Localized id="firmware_tool-select_source-firmware">
-                    <Typography variant="section-title"></Typography>
+                    <Typography variant="section-title" />
                   </Localized>
                   <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
                     {sourcesGroupped?.map(({ name, official, disabled }) => (
@@ -239,13 +239,13 @@ export function SelectSourceSetep({
                           }));
                         }}
                         text={formatSource(name, official)}
-                      ></Selector>
+                      />
                     ))}
                   </div>
                 </div>
                 <div className="flex flex-col gap-1 w-full">
                   <Localized id="firmware_tool-select_source-version">
-                    <Typography variant="section-title"></Typography>
+                    <Typography variant="section-title" />
                   </Localized>
                   <div className="flex flex-col gap-4 md:max-h-[305px] overflow-y-auto bg-background-80 rounded-lg p-4">
                     {possibleVersions?.map(({ name, disabled }) => (
@@ -266,7 +266,7 @@ export function SelectSourceSetep({
                           }));
                         }}
                         text={name}
-                      ></Selector>
+                      />
                     ))}
                   </div>
                 </div>
@@ -281,7 +281,7 @@ export function SelectSourceSetep({
                         goTo('Build');
                       else nextStep();
                     }}
-                  ></Button>
+                  />
                 </Localized>
               </div>
             </div>
@@ -289,20 +289,20 @@ export function SelectSourceSetep({
 
           {isFetching && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
-              <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
+              <LoaderIcon slimeState={SlimeState.JUMPY} />
               <Localized id="firmware_tool-loading">
-                <Typography></Typography>
+                <Typography />
               </Localized>
             </div>
           )}
           {isError && (
             <div className="flex justify-center flex-col items-center gap-3 h-44">
-              <LoaderIcon slimeState={SlimeState.SAD}></LoaderIcon>
+              <LoaderIcon slimeState={SlimeState.SAD} />
               <Localized id="firmware_tool-select_source-error">
-                <Typography></Typography>
+                <Typography />
               </Localized>
               <Localized id="firmware_tool-retry">
-                <Button variant="primary" onClick={() => refetch()}></Button>
+                <Button variant="primary" onClick={() => refetch()} />
               </Localized>
             </div>
           )}

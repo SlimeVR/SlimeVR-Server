@@ -110,7 +110,7 @@ export function OSCRouterSettings() {
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<RouterIcon></RouterIcon>} id="router">
+        <SettingsPagePaneLayout icon={<RouterIcon />} id="router">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-osc-router')}
@@ -166,7 +166,7 @@ export function OSCRouterSettings() {
                   name="router.oscSettings.portIn"
                   placeholder="9002"
                   label=""
-                ></Input>
+                />
               </Localized>
               <Localized
                 id="settings-osc-router-network-port_out"
@@ -178,7 +178,7 @@ export function OSCRouterSettings() {
                   name="router.oscSettings.portOut"
                   placeholder="9000"
                   label=""
-                ></Input>
+                />
               </Localized>
             </div>
             <Typography variant="section-title">
@@ -200,7 +200,7 @@ export function OSCRouterSettings() {
                   'settings-osc-router-network-address-placeholder'
                 )}
                 label=""
-              ></Input>
+              />
             </div>
           </>
         </SettingsPagePaneLayout>

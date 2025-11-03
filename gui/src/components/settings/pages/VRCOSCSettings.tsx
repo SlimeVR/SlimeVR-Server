@@ -150,7 +150,7 @@ export function VRCOSCSettings() {
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<VRCIcon></VRCIcon>} id="vrchat">
+        <SettingsPagePaneLayout icon={<VRCIcon />} id="vrchat">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-osc-vrchat')}
@@ -227,7 +227,7 @@ export function VRCOSCSettings() {
                   name="vrchat.oscSettings.portIn"
                   placeholder="9001"
                   label=""
-                ></Input>
+                />
               </Localized>
               <Localized
                 id="settings-osc-vrchat-network-port_out"
@@ -239,7 +239,7 @@ export function VRCOSCSettings() {
                   name="vrchat.oscSettings.portOut"
                   placeholder="9000"
                   label=""
-                ></Input>
+                />
               </Localized>
             </div>
             <Typography variant="section-title">
@@ -261,7 +261,7 @@ export function VRCOSCSettings() {
                   'settings-osc-vrchat-network-address-placeholder'
                 )}
                 label=""
-              ></Input>
+              />
             </div>
             <Typography variant="section-title">
               {l10n.getString('settings-osc-vrchat-network-trackers')}

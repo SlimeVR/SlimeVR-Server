@@ -40,7 +40,7 @@ export function NeckWarningModal({
         <div className="flex w-full flex-col flex-grow items-center gap-3">
           <Localized
             id="tracker_selection_menu-neck_warning"
-            elems={{ b: <b></b> }}
+            elems={{ b: <b /> }}
           >
             <WarningBox>
               <b>Warning:</b> A neck tracker can be deadly if adjusted too

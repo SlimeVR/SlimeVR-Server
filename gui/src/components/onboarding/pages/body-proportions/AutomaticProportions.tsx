@@ -53,7 +53,7 @@ export function AutomaticProportionsPage() {
                   { type: 'numbered', component: VerifyResultsStep },
                   { type: 'fullsize', component: DoneStep },
                 ]}
-              ></StepperSlider>
+              />
             </div>
           </div>
         </div>

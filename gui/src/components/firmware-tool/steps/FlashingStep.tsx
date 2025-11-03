@@ -185,7 +185,7 @@ export function FlashingStep({
                 progress={val.progress}
                 key={id}
                 deviceNames={val.deviceNames}
-              ></DeviceCardControl>
+              />
             );
           })}
           <div className="flex gap-2 self-end">
@@ -194,14 +194,14 @@ export function FlashingStep({
                 variant="secondary"
                 disabled={trackerWithErrors.length === 0}
                 onClick={retryError}
-              ></Button>
+              />
             </Localized>
             <Localized id="firmware_tool-flashing_step-flash_more">
               <Button
                 variant="secondary"
                 disabled={hasPendingTrackers}
                 onClick={() => goTo('FlashingMethod')}
-              ></Button>
+              />
             </Localized>
             <Localized id="firmware_tool-flashing_step-exit">
               <Button
@@ -210,7 +210,7 @@ export function FlashingStep({
                   clear();
                   nav('/');
                 }}
-              ></Button>
+              />
             </Localized>
           </div>
         </div>

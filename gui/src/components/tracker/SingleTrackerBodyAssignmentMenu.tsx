@@ -70,7 +70,7 @@ export function SingleTrackerBodyAssignmentMenu({
                 onlyAssigned={false}
                 assignMode={config?.assignMode ?? defaultConfig.assignMode}
                 onRoleSelected={tryOpenChokerWarning}
-              ></BodyAssignment>
+              />
               <div className="flex justify-center">
                 <Button
                   variant="secondary"
@@ -91,7 +91,7 @@ export function SingleTrackerBodyAssignmentMenu({
         )}
         onClose={() => closeChokerWarning(true)}
         accept={() => closeChokerWarning(false)}
-      ></NeckWarningModal>
+      />
     </>
   );
 }

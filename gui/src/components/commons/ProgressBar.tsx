@@ -28,7 +28,7 @@ export function ProgressBar({
           animated={animated}
           parts={parts}
           bottom={bottom}
-        ></Bar>
+        />
       ))}
     </div>
   );
@@ -74,7 +74,7 @@ export function Bar({
           width: `${value * 100}%`,
           height: `${height}px`,
         }}
-      ></div>
+      />
     </div>
   );
 }

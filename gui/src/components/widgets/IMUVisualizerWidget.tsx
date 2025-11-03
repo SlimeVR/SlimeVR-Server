@@ -58,7 +58,7 @@ function SceneRenderer({
         intensity={4000}
       />
       <group quaternion={[quat.x, quat.y, quat.z, quat.w]}>
-        <TrackerModel model={model}></TrackerModel>
+        <TrackerModel model={model} />
         <axesHelper args={[10]} />
       </group>
 
@@ -214,7 +214,7 @@ export function IMUVisualizerWidget({ tracker }: { tracker: TrackerDataT }) {
               model={
                 isExtension ? '/models/extension.gltf' : '/models/tracker.gltf'
               }
-            ></SceneRenderer>
+            />
           </ErrorBoundary>
         </>
       )}

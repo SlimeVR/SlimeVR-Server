@@ -148,18 +148,18 @@ function SerialDevicesList({
   return (
     <div className="p-4 rounded-lg bg-background-60 w-full flex flex-col gap-3">
       <Localized id="firmware_tool-flash_method_serial-title">
-        <Typography variant="main-title"></Typography>
+        <Typography variant="main-title" />
       </Localized>
       <Localized id="firmware_tool-flash_method_serial-wifi">
-        <Typography variant="section-title"></Typography>
+        <Typography variant="section-title" />
       </Localized>
       <div className="flex flex-col gap-3 text-background-10">
         <TipBox>
           <Localized
             id={'firmware_tool-flash_method_step-ota-info'}
-            elems={{ b: <b></b> }}
+            elems={{ b: <b /> }}
           >
-            <Typography whitespace="whitespace-pre-wrap"></Typography>
+            <Typography whitespace="whitespace-pre-wrap" />
           </Localized>
         </TipBox>
         <Localized
@@ -186,13 +186,13 @@ function SerialDevicesList({
         </Localized>
       </div>
       <Localized id="firmware_tool-flash_method_serial-devices-label">
-        <Typography variant="section-title"></Typography>
+        <Typography variant="section-title" />
       </Localized>
       {Object.keys(devices).length === 0 && !loading ? (
         <div className="flex justify-center items-center flex-col gap-4 py-4">
-          <LoaderIcon slimeState={SlimeState.SAD}></LoaderIcon>
+          <LoaderIcon slimeState={SlimeState.SAD} />
           <Localized id="firmware_tool-flash_method_serial-no_devices">
-            <Typography variant="standard"></Typography>
+            <Typography variant="standard" />
           </Localized>
         </div>
       ) : (
@@ -209,7 +209,7 @@ function SerialDevicesList({
           display="block"
           direction="down"
           variant="secondary"
-        ></Dropdown>
+        />
       )}
     </div>
   );
@@ -291,16 +291,16 @@ function OTADevicesList({
   return (
     <div className="p-4 rounded-lg bg-background-60 w-full flex flex-col gap-3">
       <Localized id="firmware_tool-flash_method_ota-title">
-        <Typography variant="main-title"></Typography>
+        <Typography variant="main-title" />
       </Localized>
       <Localized id="firmware_tool-flash_method_ota-devices">
-        <Typography variant="section-title"></Typography>
+        <Typography variant="section-title" />
       </Localized>
       {devices.length === 0 && (
         <div className="flex justify-center items-center flex-col gap-4 py-4">
-          <LoaderIcon slimeState={SlimeState.SAD}></LoaderIcon>
+          <LoaderIcon slimeState={SlimeState.SAD} />
           <Localized id="firmware_tool-flash_method_ota-no_devices">
-            <Typography variant="standard"></Typography>
+            <Typography variant="standard" />
           </Localized>
         </div>
       )}
@@ -312,7 +312,7 @@ function OTADevicesList({
             name={`ota.selectedDevices.id-${device.id?.id ?? 0}`}
             deviceNames={deviceNames(device)}
             color="bg-background-70"
-          ></DeviceCardControl>
+          />
         ))}
       </div>
     </div>
@@ -402,7 +402,7 @@ export function FlashingMethodStep({
                   name="flashingMethod"
                   value={FirmwareUpdateMethod.OTAFirmwareUpdate.toString()}
                   label=""
-                ></Radio>
+                />
               </Localized>
               <Localized
                 id="firmware_tool-flash_method_step-serial-v2"
@@ -413,7 +413,7 @@ export function FlashingMethodStep({
                   name="flashingMethod"
                   value={FirmwareUpdateMethod.SerialFirmwareUpdate.toString()}
                   label=""
-                ></Radio>
+                />
               </Localized>
             </div>
             <div className="flex flex-grow">
@@ -424,7 +424,7 @@ export function FlashingMethodStep({
                   control={control}
                   watch={watch}
                   reset={reset}
-                ></SerialDevicesList>
+                />
               )}
               {flashingMethod ===
                 FirmwareUpdateMethod.OTAFirmwareUpdate.toString() && (
@@ -433,7 +433,7 @@ export function FlashingMethodStep({
                   control={control}
                   watch={watch}
                   reset={reset}
-                ></OTADevicesList>
+                />
               )}
             </div>
           </div>
@@ -448,7 +448,7 @@ export function FlashingMethodStep({
                     goTo('Defaults');
                   }
                 }}
-              ></Button>
+              />
             </Localized>
             <Localized id="firmware_tool-next_step">
               <Button
@@ -459,7 +459,7 @@ export function FlashingMethodStep({
                   selectedDevices.length === 0
                 }
                 onClick={nextStep}
-              ></Button>
+              />
             </Localized>
           </div>
         </div>
