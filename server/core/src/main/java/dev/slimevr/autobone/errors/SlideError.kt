@@ -20,7 +20,8 @@ class SlideError : IAutoBoneError {
 			return (
 				getSlideError(skeleton1, skeleton2, BoneType.LEFT_LOWER_LEG) +
 					getSlideError(skeleton1, skeleton2, BoneType.RIGHT_LOWER_LEG)
-				) / 2f
+				) /
+				2f
 		}
 
 		fun getSlideError(
