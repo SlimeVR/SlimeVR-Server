@@ -12,8 +12,7 @@ class RelaxedPose(
 	val lowerLeg: Angle,
 	val foot: Angle,
 ) {
-	override fun toString(): String =
-		"upperLeg=$upperLeg lowerLeg=$lowerLeg foot=$foot"
+	override fun toString(): String = "upperLeg=$upperLeg lowerLeg=$lowerLeg foot=$foot"
 
 	companion object {
 
@@ -26,55 +25,54 @@ class RelaxedPose(
 		fun forPose(
 			playerPose: PlayerPose,
 			config: StayAlignedConfig,
-		) =
-			when (playerPose) {
-				PlayerPose.STANDING -> {
-					val poseConfig = config.standingRelaxedPose
-					if (poseConfig.enabled) {
-						RelaxedPose(
-							Angle.ofDeg(poseConfig.upperLegAngleInDeg),
-							Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
-							Angle.ofDeg(poseConfig.footAngleInDeg),
-						)
-					} else {
-						null
-					}
-				}
-
-				PlayerPose.SITTING_IN_CHAIR -> {
-					val poseConfig = config.sittingRelaxedPose
-					if (poseConfig.enabled) {
-						RelaxedPose(
-							Angle.ofDeg(poseConfig.upperLegAngleInDeg),
-							Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
-							Angle.ofDeg(poseConfig.footAngleInDeg),
-						)
-					} else {
-						null
-					}
-				}
-
-				PlayerPose.SITTING_ON_GROUND,
-				PlayerPose.LYING_ON_BACK,
-				-> {
-					val poseConfig = config.flatRelaxedPose
-					if (poseConfig.enabled) {
-						RelaxedPose(
-							Angle.ofDeg(poseConfig.upperLegAngleInDeg),
-							Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
-							Angle.ofDeg(poseConfig.footAngleInDeg),
-						)
-					} else {
-						null
-					}
-				}
-
-				PlayerPose.KNEELING ->
-					StayAlignedDefaults.RELAXED_POSE_KNEELING
-
-				else ->
+		) = when (playerPose) {
+			PlayerPose.STANDING -> {
+				val poseConfig = config.standingRelaxedPose
+				if (poseConfig.enabled) {
+					RelaxedPose(
+						Angle.ofDeg(poseConfig.upperLegAngleInDeg),
+						Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
+						Angle.ofDeg(poseConfig.footAngleInDeg),
+					)
+				} else {
 					null
+				}
 			}
+
+			PlayerPose.SITTING_IN_CHAIR -> {
+				val poseConfig = config.sittingRelaxedPose
+				if (poseConfig.enabled) {
+					RelaxedPose(
+						Angle.ofDeg(poseConfig.upperLegAngleInDeg),
+						Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
+						Angle.ofDeg(poseConfig.footAngleInDeg),
+					)
+				} else {
+					null
+				}
+			}
+
+			PlayerPose.SITTING_ON_GROUND,
+			PlayerPose.LYING_ON_BACK,
+			-> {
+				val poseConfig = config.flatRelaxedPose
+				if (poseConfig.enabled) {
+					RelaxedPose(
+						Angle.ofDeg(poseConfig.upperLegAngleInDeg),
+						Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
+						Angle.ofDeg(poseConfig.footAngleInDeg),
+					)
+				} else {
+					null
+				}
+			}
+
+			PlayerPose.KNEELING ->
+				StayAlignedDefaults.RELAXED_POSE_KNEELING
+
+			else ->
+				null
+		}
 
 		/**
 		 * Gets the relaxed angles from the trackers.

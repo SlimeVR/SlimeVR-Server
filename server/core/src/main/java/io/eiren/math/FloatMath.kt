@@ -140,7 +140,9 @@ object FloatMath {
 		targetEnd: Float,
 	): Float = (
 		targetStart +
-			(value - sourceStart) * (targetEnd - targetStart) / (sourceEnd - sourceStart)
+			(value - sourceStart) *
+			(targetEnd - targetStart) /
+			(sourceEnd - sourceStart)
 		)
 
 	/**

@@ -437,16 +437,36 @@ class HumanSkeleton(
 		hasKneeTrackers = leftUpperLegTracker != null && rightUpperLegTracker != null
 		hasLeftArmTracker = leftLowerArmTracker != null || leftUpperArmTracker != null
 		hasRightArmTracker = rightLowerArmTracker != null || rightUpperArmTracker != null
-		hasLeftFingerTracker = leftThumbMetacarpalTracker != null || leftThumbProximalTracker != null || leftThumbDistalTracker != null ||
-			leftIndexProximalTracker != null || leftIndexIntermediateTracker != null || leftIndexDistalTracker != null ||
-			leftMiddleProximalTracker != null || leftMiddleIntermediateTracker != null || leftMiddleDistalTracker != null ||
-			leftRingProximalTracker != null || leftRingIntermediateTracker != null || leftRingDistalTracker != null ||
-			leftLittleProximalTracker != null || leftLittleIntermediateTracker != null || leftLittleDistalTracker != null
-		hasRightFingerTracker = rightThumbMetacarpalTracker != null || rightThumbProximalTracker != null || rightThumbDistalTracker != null ||
-			rightIndexProximalTracker != null || rightIndexIntermediateTracker != null || rightIndexDistalTracker != null ||
-			rightMiddleProximalTracker != null || rightMiddleIntermediateTracker != null || rightMiddleDistalTracker != null ||
-			rightRingProximalTracker != null || rightRingIntermediateTracker != null || rightRingDistalTracker != null ||
-			rightLittleProximalTracker != null || rightLittleIntermediateTracker != null || rightLittleDistalTracker != null
+		hasLeftFingerTracker = leftThumbMetacarpalTracker != null ||
+			leftThumbProximalTracker != null ||
+			leftThumbDistalTracker != null ||
+			leftIndexProximalTracker != null ||
+			leftIndexIntermediateTracker != null ||
+			leftIndexDistalTracker != null ||
+			leftMiddleProximalTracker != null ||
+			leftMiddleIntermediateTracker != null ||
+			leftMiddleDistalTracker != null ||
+			leftRingProximalTracker != null ||
+			leftRingIntermediateTracker != null ||
+			leftRingDistalTracker != null ||
+			leftLittleProximalTracker != null ||
+			leftLittleIntermediateTracker != null ||
+			leftLittleDistalTracker != null
+		hasRightFingerTracker = rightThumbMetacarpalTracker != null ||
+			rightThumbProximalTracker != null ||
+			rightThumbDistalTracker != null ||
+			rightIndexProximalTracker != null ||
+			rightIndexIntermediateTracker != null ||
+			rightIndexDistalTracker != null ||
+			rightMiddleProximalTracker != null ||
+			rightMiddleIntermediateTracker != null ||
+			rightMiddleDistalTracker != null ||
+			rightRingProximalTracker != null ||
+			rightRingIntermediateTracker != null ||
+			rightRingDistalTracker != null ||
+			rightLittleProximalTracker != null ||
+			rightLittleIntermediateTracker != null ||
+			rightLittleDistalTracker != null
 
 		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true)
@@ -1208,7 +1228,8 @@ class HumanSkeleton(
 		}
 		// If trackingArmFromController, reverse
 		if (((boneType == BoneType.LEFT_LOWER_ARM || boneType == BoneType.LEFT_HAND) && isTrackingLeftArmFromController) ||
-			(boneType == BoneType.RIGHT_LOWER_ARM || boneType == BoneType.RIGHT_HAND) && isTrackingRightArmFromController
+			(boneType == BoneType.RIGHT_LOWER_ARM || boneType == BoneType.RIGHT_HAND) &&
+			isTrackingRightArmFromController
 		) {
 			transOffset = -transOffset
 		}

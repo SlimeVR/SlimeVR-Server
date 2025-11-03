@@ -43,7 +43,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 				",solarxr_protocol.rpc.*,kotlinx.coroutines.*,com.illposed.osc.*,android.app.*",
 			"ij_kotlin_allow_trailing_comma" to true,
 		)
-	val ktlintVersion = "1.2.1"
+	val ktlintVersion = "1.7.1"
 	kotlinGradle {
 		target("**/*.gradle.kts") // default target for kotlinGradle
 		ktlint(ktlintVersion)
@@ -61,8 +61,8 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 
 		removeUnusedImports()
 		// Use eclipse JDT formatter
-		eclipse()
+		eclipse("4.36")
 			.configFile("spotless.xml")
-			.withP2Mirrors(mapOf("https://download.eclipse.org/" to "https://mirror.umd.edu/eclipse/"))
+		// .withP2Mirrors(mapOf("https://download.eclipse.org/" to "https://mirror.umd.edu/eclipse/"))
 	}
 }

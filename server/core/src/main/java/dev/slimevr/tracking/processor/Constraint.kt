@@ -84,13 +84,12 @@ class Constraint(
 			COMPLETE,
 		}
 
-		private fun constraintTypeToFunc(type: ConstraintType) =
-			when (type) {
-				ConstraintType.COMPLETE -> completeConstraint
-				ConstraintType.TWIST_SWING -> twistSwingConstraint
-				ConstraintType.HINGE -> hingeConstraint
-				ConstraintType.LOOSE_HINGE -> looseHingeConstraint
-			}
+		private fun constraintTypeToFunc(type: ConstraintType) = when (type) {
+			ConstraintType.COMPLETE -> completeConstraint
+			ConstraintType.TWIST_SWING -> twistSwingConstraint
+			ConstraintType.HINGE -> hingeConstraint
+			ConstraintType.LOOSE_HINGE -> looseHingeConstraint
+		}
 
 		private fun getLocalRotation(rotation: Quaternion, thisBone: Bone, parent: Bone): Quaternion {
 			val localRotationOffset = parent.rotationOffset.inv() * thisBone.rotationOffset
