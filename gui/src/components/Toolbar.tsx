@@ -37,7 +37,7 @@ function ButtonProgress({
   return (
     <div
       className={classNames(
-        'absolute top-0 left-0 w-0 h-full bg-accent-background-20 opacity-50 transition-all duration-1000 ease-linear',
+        'absolute top-0 left-0 w-0 h-full bg-accent-background-20 opacity-50 transition-all ease-linear',
         { 'duration-150': status === 'finished' }
       )}
       style={{ width: `${progress * 100}%` }}
@@ -56,7 +56,7 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
     duration,
   } = useReset(options);
 
-  const progress = status === 'counting' ? 1 - (timer - 1) / duration : 0;
+  const progress = status === 'counting' ? 1 - timer / duration : 0;
 
   const name = options.customName || resetName;
 
