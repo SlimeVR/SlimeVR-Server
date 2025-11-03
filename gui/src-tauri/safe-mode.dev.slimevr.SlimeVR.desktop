@@ -2,7 +2,7 @@
 Version=1.5
 Categories=Game;GTK;
 Exec=bash -c "WEBKIT_DISABLE_DMABUF_RENDERER=1 WAYLAND_DISPLAY=0 slimevr"
-Icon={{icon}}
+Icon=slimevr
 
 Name=SlimeVR (safe mode)
 GenericName=Full-body tracking
