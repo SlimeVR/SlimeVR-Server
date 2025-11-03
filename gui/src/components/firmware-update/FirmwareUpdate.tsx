@@ -3,6 +3,7 @@ import { Typography } from '@/components/commons/Typography';
 import { getTrackerName } from '@/hooks/tracker';
 import { ComponentProps, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  BoardType,
   DeviceDataT,
   DeviceIdTableT,
   FirmwareUpdateMethod,
@@ -38,6 +39,8 @@ import { checkForUpdate } from '@/hooks/firmware-update';
 interface FirmwareUpdateForm {
   selectedDevices: { [key: string]: boolean };
 }
+
+type SelectedDeviceWithBoard = SelectedDevice & { board: BoardType };
 
 interface UpdateStatus {
   status: FirmwareUpdateStatus;
@@ -90,7 +93,7 @@ const StatusList = ({ status }: { status: Record<string, UpdateStatus> }) => {
         online={device?.trackers.some(
           ({ status }) => status === TrackerStatus.OK
         )}
-      ></DeviceCardControl>
+      />
     );
   });
 };
@@ -196,21 +199,41 @@ export function FirmwareUpdate() {
     };
   }, []);
 
-  const queueFlashing = (selectedDevices: SelectedDevice[]) => {
+  const queueFlashing = (selectedDevices: SelectedDeviceWithBoard[]) => {
     clear();
     pendingDevicesRef.current = selectedDevices;
-    const firmwareFile = currentFirmwareRelease?.firmwareFile;
-    if (!firmwareFile) throw new Error('invalid state - no firmware file');
-    const requests = getFlashingRequests(
-      selectedDevices,
-      [{ isFirmware: true, firmwareId: '', url: firmwareFile, offset: 0 }],
-      { wifi: undefined, alonePage: false, progress: 0 }, // we do not use serial
-      null // we do not use serial
-    );
 
-    requests.forEach((req) => {
-      sendRPCPacket(RpcMessage.FirmwareUpdateRequest, req);
-    });
+    if (!currentFirmwareRelease)
+      throw new Error('invalid state - no fw release');
+
+    const groupedByBoard = selectedDevices.reduce((curr, device) => {
+      const boards = curr.get(device.board) ?? [];
+      boards.push(device);
+      curr.set(device.board, boards);
+      return curr;
+    }, new Map<BoardType, SelectedDeviceWithBoard[]>());
+    for (const [board, devices] of groupedByBoard) {
+      if (board === BoardType.UNKNOWN) continue;
+      const firmwareFile = currentFirmwareRelease.firmwareFiles[board];
+      if (!firmwareFile) continue;
+      const requests = getFlashingRequests(
+        devices,
+        [
+          {
+            isFirmware: true,
+            firmwareId: '',
+            filePath: firmwareFile,
+            offset: 0,
+          },
+        ],
+        { wifi: undefined, alonePage: false, progress: 0 }, // we do not use serial
+        null // we do not use serial
+      );
+
+      requests.forEach((req) => {
+        sendRPCPacket(RpcMessage.FirmwareUpdateRequest, req);
+      });
+    }
   };
 
   const trackerWithErrors = useMemo(
@@ -281,11 +304,12 @@ export function FirmwareUpdate() {
           {
             type: FirmwareUpdateMethod.OTAFirmwareUpdate,
             deviceId: id,
+            board: device.hardwareInfo?.officialBoardType ?? BoardType.UNKNOWN,
             deviceNames: deviceNames(device, l10n),
           },
         ];
       },
-      [] as SelectedDevice[]
+      [] as SelectedDeviceWithBoard[]
     );
     if (!selectedDevices)
       throw new Error('invalid state - no selected devices');
@@ -312,15 +336,15 @@ export function FirmwareUpdate() {
     <div className="flex flex-col p-4 w-full items-center justify-center">
       <div className="mobile:w-full w-10/12 h-full flex flex-col gap-2">
         <Localized id="firmware_update-title">
-          <Typography variant="main-title"></Typography>
+          <Typography variant="main-title" />
         </Localized>
         <div className="grid md:grid-cols-2 xs:grid-cols-1 gap-5">
           <div className="flex flex-col gap-2">
             <Localized id="firmware_update-devices">
-              <Typography variant="section-title"></Typography>
+              <Typography variant="section-title" />
             </Localized>
             <Localized id="firmware_update-devices-description">
-              <Typography variant="standard"></Typography>
+              <Typography variant="standard" />
             </Localized>
             <div className="flex flex-col gap-4 overflow-y-auto xs:max-h-[530px]">
               {devices.length === 0 &&
@@ -337,9 +361,9 @@ export function FirmwareUpdate() {
               )}
               <div className="flex flex-col gap-4 h-full">
                 {statusKeys.length > 0 ? (
-                  <StatusList status={status}></StatusList>
+                  <StatusList status={status} />
                 ) : (
-                  <DeviceList control={control} devices={devices}></DeviceList>
+                  <DeviceList control={control} devices={devices} />
                 )}
                 {devices.length === 0 && statusKeys.length === 0 && (
                   <div
@@ -347,9 +371,9 @@ export function FirmwareUpdate() {
                       'rounded-xl bg-background-60 justify-center flex-col items-center flex pb-10 py-5 gap-5'
                     )}
                   >
-                    <LoaderIcon slimeState={SlimeState.JUMPY}></LoaderIcon>
+                    <LoaderIcon slimeState={SlimeState.JUMPY} />
                     <Localized id="firmware_update-looking_for_devices">
-                      <Typography></Typography>
+                      <Typography />
                     </Localized>
                   </div>
                 )}
@@ -361,7 +385,7 @@ export function FirmwareUpdate() {
               id="firmware_update-changelog-title"
               vars={{ version: currentFirmwareRelease?.name ?? 'unknown' }}
             >
-              <Typography variant="main-title"></Typography>
+              <Typography variant="main-title" />
             </Localized>
             <div className="overflow-y-scroll max-h-[430px] md:h-[430px] bg-background-60 rounded-lg p-4">
               <Markdown
@@ -380,25 +404,21 @@ export function FirmwareUpdate() {
         </div>
         <div className="flex justify-end pb-2 gap-2 mobile:flex-col">
           <Localized id="firmware_update-retry">
-            <Button
-              variant="secondary"
-              disabled={!canRetry}
-              onClick={retry}
-            ></Button>
+            <Button variant="secondary" disabled={!canRetry} onClick={retry} />
           </Localized>
           <Localized id="firmware_update-update">
             <Button
               variant="primary"
               disabled={!canStartUpdate}
               onClick={startUpdate}
-            ></Button>
+            />
           </Localized>
           <Localized id="firmware_update-exit">
             <Button
               variant="primary"
               onClick={exit}
               disabled={hasPendingTrackers}
-            ></Button>
+            />
           </Localized>
         </div>
       </div>

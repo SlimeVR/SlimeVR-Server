@@ -13,6 +13,7 @@ import {
   SerialTrackerRebootRequestT,
   SerialUpdateResponseT,
   SerialTrackerGetWifiScanRequestT,
+  SerialTrackerCustomCommandRequestT,
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { Button } from '@/components/commons/Button';
@@ -27,9 +28,13 @@ import { save } from '@tauri-apps/plugin-dialog';
 import { writeTextFile } from '@tauri-apps/plugin-fs';
 import { error } from '@/utils/logging';
 import { waitUntil } from '@/utils/a11y';
+import { Input } from '@/components/commons/Input';
+import { PauseIcon } from '@/components/commons/icon/PauseIcon';
+import { PlayIcon } from '@/components/commons/icon/PlayIcon';
 
 export interface SerialForm {
   port: string;
+  customCommand: string;
 }
 
 export function Serial() {
@@ -46,23 +51,36 @@ export function Serial() {
   >([]);
 
   const [tryFactoryReset, setTryFactoryReset] = useState(false);
+  const [trySendCustomCommand, setTrySendCustomCommand] = useState(false);
+
+  const [acceptedCustomCommandWarning, setAcceptedCustomCommandWarning] =
+    useState(false);
 
   const defaultValues = { port: 'Auto' };
-  const { control, watch, handleSubmit, reset } = useForm<SerialForm>({
+  const { control, watch, reset, setValue, subscribe } = useForm<SerialForm>({
     defaultValues,
   });
 
-  const { port } = watch();
+  const port = watch('port');
+  const customCommand = watch('customCommand');
 
   useEffect(() => {
-    const subscription = watch(() => handleSubmit(onSubmit)());
-    return () => subscription.unsubscribe();
-  }, []);
+    const callback = subscribe({
+      name: 'port',
+      exact: true,
+      formState: {
+        values: true,
+      },
+      callback: ({ values }) => {
+        openSerial(values.port);
+        setConsole('');
+      },
+    });
 
-  const onSubmit = (value: SerialForm) => {
-    openSerial(value.port);
-    setConsole('');
-  };
+    return () => callback();
+  }, [subscribe]);
+
+  const [isPaused, setPaused] = useState(false);
 
   const openSerial = (port: string) => {
     sendRPCPacket(RpcMessage.CloseSerialRequest, new CloseSerialRequestT());
@@ -115,11 +133,34 @@ export function Serial() {
   );
 
   useEffect(() => {
-    if (consoleRef.current)
-      consoleRef.current.scrollTo({
-        top: consoleRef.current.scrollHeight,
-      });
+    if (isPaused) {
+      return;
+    }
+    if (!consoleRef.current) {
+      return;
+    }
+
+    consoleRef.current.scrollTo({
+      top: consoleRef.current.scrollHeight,
+    });
   }, [consoleContent]);
+
+  useEffect(() => {
+    if (!consoleRef.current) {
+      return;
+    }
+
+    consoleRef.current.addEventListener('scroll', () => {
+      if (!consoleRef.current) {
+        return;
+      }
+      setPaused(
+        consoleRef.current.scrollTop +
+          consoleRef.current.getBoundingClientRect().height !==
+          consoleRef.current.scrollHeight
+      );
+    });
+  }, [consoleRef.current]);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -160,6 +201,15 @@ export function Serial() {
       RpcMessage.SerialTrackerGetWifiScanRequest,
       new SerialTrackerGetWifiScanRequestT()
     );
+  };
+  const sendCustomSerialCommand = () => {
+    sendRPCPacket(
+      RpcMessage.SerialTrackerCustomCommandRequest,
+      new SerialTrackerCustomCommandRequestT(customCommand)
+    );
+
+    setTrySendCustomCommand(false);
+    setValue('customCommand', '');
   };
 
   const isTauri = useIsTauri();
@@ -206,6 +256,14 @@ export function Serial() {
     }
   };
 
+  const pauseScroll = () => {
+    setPaused(!isPaused);
+
+    consoleRef.current?.scrollTo({
+      top: consoleRef.current.scrollHeight,
+    });
+  };
+
   return (
     <>
       <BaseModal
@@ -214,7 +272,7 @@ export function Serial() {
       >
         <Localized
           id="settings-serial-factory_reset-warning"
-          elems={{ b: <b></b> }}
+          elems={{ b: <b /> }}
         >
           <WarningBox>
             <b>Warning:</b> This will reset the tracker to factory settings.
@@ -227,6 +285,37 @@ export function Serial() {
           </Button>
           <Button variant="primary" onClick={factoryReset}>
             {l10n.getString('settings-serial-factory_reset-warning-ok')}
+          </Button>
+        </div>
+      </BaseModal>
+      <BaseModal
+        isOpen={trySendCustomCommand}
+        onRequestClose={() => setTrySendCustomCommand(false)}
+      >
+        <Localized
+          id="settings-serial-send_command-warning"
+          elems={{ b: <b></b> }}
+        >
+          <WarningBox>
+            <b>Warning:</b> Running serial commands can lead to data loss or
+            brick the trackers.
+          </WarningBox>
+        </Localized>
+        <div className="flex flex-row gap-3 pt-5 place-content-center">
+          <Button
+            variant="secondary"
+            onClick={() => setTrySendCustomCommand(false)}
+          >
+            {l10n.getString('settings-serial-send_command-warning-cancel')}
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setAcceptedCustomCommandWarning(true);
+              sendCustomSerialCommand();
+            }}
+          >
+            {l10n.getString('settings-serial-send_command-warning-ok')}
           </Button>
         </div>
       </BaseModal>
@@ -268,9 +357,6 @@ export function Serial() {
               >
                 {l10n.getString('settings-serial-factory_reset')}
               </Button>
-              <Button variant="quaternary" onClick={getInfos}>
-                {l10n.getString('settings-serial-get_infos')}
-              </Button>
               <Button variant="quaternary" onClick={getWifiScan}>
                 {l10n.getString('settings-serial-get_wifi_scan')}
               </Button>
@@ -281,6 +367,52 @@ export function Serial() {
               >
                 {l10n.getString('settings-serial-save_logs')}
               </Button>
+              <div className="ml-auto">
+                <Button
+                  variant="quaternary"
+                  onClick={pauseScroll}
+                  icon={
+                    isPaused ? (
+                      <PlayIcon width={16} />
+                    ) : (
+                      <PauseIcon width={16} />
+                    )
+                  }
+                />
+              </div>
+              <form
+                className="w-full flex flex-row gap-2 mobile:col-span-2"
+                onSubmit={(e) => {
+                  if (!isSerialOpen) {
+                    return;
+                  }
+                  e.preventDefault();
+                  if (!acceptedCustomCommandWarning) {
+                    setTrySendCustomCommand(true);
+                  } else {
+                    sendCustomSerialCommand();
+                  }
+                }}
+              >
+                <div className="flex-grow">
+                  <Input
+                    control={control}
+                    name="customCommand"
+                    className="flex-grow"
+                    placeholder={l10n.getString(
+                      'settings-serial-send_command-placeholder'
+                    )}
+                  />
+                </div>
+                <Button
+                  variant="quaternary"
+                  disabled={!isSerialOpen}
+                  type="submit"
+                >
+                  {l10n.getString('settings-serial-send_command')}
+                </Button>
+              </form>
+
               <div className="w-full mobile:col-span-2">
                 <Dropdown
                   control={control}
@@ -291,7 +423,7 @@ export function Serial() {
                     label: device.name?.toString() || 'error',
                     value: device.port?.toString() || 'error',
                   }))}
-                ></Dropdown>
+                />
               </div>
             </div>
           </div>

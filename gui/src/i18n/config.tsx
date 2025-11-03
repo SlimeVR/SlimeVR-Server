@@ -1,6 +1,10 @@
 import { match } from '@formatjs/intl-localematcher';
-import { FluentBundle, FluentResource } from '@fluent/bundle';
-import { LocalizationProvider, ReactLocalization } from '@fluent/react';
+import { FluentBundle, FluentResource, FluentVariable } from '@fluent/bundle';
+import {
+  LocalizationProvider,
+  ReactLocalization,
+  useLocalization,
+} from '@fluent/react';
 import {
   Children,
   ReactNode,
@@ -117,7 +121,6 @@ export function AppLocalizationProvider(props: AppLocalizationProviderProps) {
     });
     const promise = invoke('update_translations', { newI18n });
     return () => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       promise.then(() => {});
     };
   }, [l10n]);
@@ -145,4 +148,30 @@ export function useLocaleConfig() {
     );
   }
   return context;
+}
+
+export function useSafeLocalization() {
+  const l = useLocalization();
+
+  return {
+    ...l,
+    getStringOrNull: (
+      id: string,
+      vars?: Record<string, FluentVariable> | null
+    ): string | null => {
+      const bundle = l.l10n.getBundle(id);
+      if (bundle) {
+        const msg = bundle.getMessage(id);
+        if (msg && msg.value) {
+          const errors: Array<Error> = [];
+          const value = bundle.formatPattern(msg.value, vars, errors);
+          for (const error of errors) {
+            l.l10n.reportError(error);
+          }
+          return value;
+        }
+      }
+      return null;
+    },
+  };
 }

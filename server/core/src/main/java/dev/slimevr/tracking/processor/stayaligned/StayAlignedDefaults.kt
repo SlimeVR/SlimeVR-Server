@@ -13,11 +13,12 @@ import kotlin.time.Duration.Companion.seconds
 object StayAlignedDefaults {
 
 	// Rest detector for detecting when trackers are at rest
-	fun makeRestDetector() = RestDetector(
-		maxRotation = Angle.ofDeg(2.0f),
-		enterRestTime = 1.seconds,
-		enterMovingTime = 3.seconds,
-	)
+	fun makeRestDetector() =
+		RestDetector(
+			maxRotation = Angle.ofDeg(2.0f),
+			enterRestTime = 1.seconds,
+			enterMovingTime = 3.seconds,
+		)
 
 	// Relaxed pose for kneeling. This isn't that common, so we don't want to ask
 	// players to provide this relaxed pose during setup.

@@ -186,7 +186,8 @@ object PfsIO {
 		null
 	}
 
-	fun readFromFile(file: File): PoseFrames = DataInputStream(BufferedInputStream(FileInputStream(file))).use { readFrames(it) }
+	fun readFromFile(file: File): PoseFrames =
+		DataInputStream(BufferedInputStream(FileInputStream(file))).use { readFrames(it) }
 
 	fun tryReadFromFile(file: File): PoseFrames? = try {
 		readFromFile(file)

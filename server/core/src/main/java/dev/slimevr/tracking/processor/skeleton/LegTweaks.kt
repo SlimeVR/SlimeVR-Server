@@ -369,15 +369,11 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 		// update the buffer
 		val leftFloorLevel: Float = (
-			floorLevel +
-				footLength *
-				getFootOffset(leftFootRotation) -
+			floorLevel + footLength * getFootOffset(leftFootRotation) -
 				currentDisengagementOffset
 			)
 		val rightFloorLevel: Float = (
-			floorLevel +
-				footLength *
-				getFootOffset(rightFootRotation) -
+			floorLevel + footLength * getFootOffset(rightFootRotation) -
 				currentDisengagementOffset
 			)
 		val leftFootAccel =
@@ -431,17 +427,12 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 		// move the feet to their new positions
 		if (leftFootPosition.y
-			< floorLevel +
-			footLength *
-			leftOffset -
+			< floorLevel + footLength * leftOffset -
 			currentDisengagementOffset
 		) {
 			val displacement = abs(
 				(
-					floorLevel +
-						footLength *
-						leftOffset -
-						leftFootPosition.y -
+					floorLevel + footLength * leftOffset - leftFootPosition.y -
 						currentDisengagementOffset
 					),
 			)
@@ -459,17 +450,12 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 		}
 
 		if (rightFootPosition.y
-			< floorLevel +
-			footLength *
-			rightOffset -
+			< floorLevel + footLength * rightOffset -
 			currentDisengagementOffset
 		) {
 			val displacement = abs(
 				(
-					floorLevel +
-						footLength *
-						rightOffset -
-						rightFootPosition.y -
+					floorLevel + footLength * rightOffset - rightFootPosition.y -
 						currentDisengagementOffset
 					),
 			)
@@ -565,46 +551,38 @@ class LegTweaks(private val skeleton: HumanSkeleton) {
 
 			if (x * footDif.x > 0) {
 				newX += (
-					x *
-						weight +
+					x * weight +
 						(
 							constantCorrection
-								*
-								(if (x > 0) 1 else -1) /
+								* (if (x > 0) 1 else -1) /
 								bufferHead.getTimeDelta()
 							)
 					)
 			} else if (x * footDif.x < 0) {
 				newX -= (
-					x *
-						weight +
+					x * weight +
 						(
 							constantCorrection
-								*
-								(if (x > 0) 1 else -1) /
+								* (if (x > 0) 1 else -1) /
 								bufferHead.getTimeDelta()
 							)
 					)
 			}
 			if (z * footDif.z > 0) {
 				newZ += (
-					z *
-						weight +
+					z * weight +
 						(
 							constantCorrection
-								*
-								(if (z > 0) 1 else -1) /
+								* (if (z > 0) 1 else -1) /
 								bufferHead.getTimeDelta()
 							)
 					)
 			} else if (z * footDif.z < 0) {
 				newZ -= (
-					z *
-						weight +
+					z * weight +
 						(
 							constantCorrection
-								*
-								(if (z > 0) 1 else -1) /
+								* (if (z > 0) 1 else -1) /
 								bufferHead.getTimeDelta()
 							)
 					)

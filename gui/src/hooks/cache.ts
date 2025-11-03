@@ -1,15 +1,17 @@
 import { isTauri } from '@tauri-apps/api/core';
-import { createStore } from '@tauri-apps/plugin-store';
+import { LazyStore } from '@tauri-apps/plugin-store';
 
 interface CrossStorage {
-  set(key: string, value: string): Promise<void>;
-  get(key: string): Promise<string | null>;
+  set(key: string, value: unknown): Promise<void>;
+  get<T>(key: string): Promise<T | undefined>;
   delete(key: string): Promise<boolean>;
 }
 
 const localStore: CrossStorage = {
-  get: async (key) => localStorage.getItem(`slimevr-cache/${key}`),
-  set: async (key, value) => localStorage.setItem(`slimevr-cache/${key}`, value),
+  get: async <T>(key: string) =>
+    (localStorage.getItem(`slimevr-cache/${key}`) as T) ?? undefined,
+  set: async (key, value) =>
+    localStorage.setItem(`slimevr-cache/${key}`, value as string),
   delete: async (key) => {
     localStorage.removeItem(`slimevr-cache/${key}`);
     return true;
@@ -17,11 +19,11 @@ const localStore: CrossStorage = {
 };
 
 const store: CrossStorage = isTauri()
-  ? await createStore('gui-cache.dat', { autoSave: 100 as never })
+  ? new LazyStore('gui-cache.dat', { autoSave: 100, defaults: {} })
   : localStore;
 
 export async function cacheGet(key: string): Promise<string | null> {
-  const itemStr = await store.get(key);
+  const itemStr = await store.get<string>(key);
 
   if (!itemStr) {
     return null;

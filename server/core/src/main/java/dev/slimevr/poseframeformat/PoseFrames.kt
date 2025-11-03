@@ -46,7 +46,6 @@ class PoseFrames : Iterable<Array<TrackerFrame?>> {
 	}
 
 	// region Data Utilities
-
 	/**
 	 * @return The maximum Y value of the [TrackerFrames] associated with the
 	 * [TrackerPosition.HEAD] tracker position on the first frame, otherwise `0f` if

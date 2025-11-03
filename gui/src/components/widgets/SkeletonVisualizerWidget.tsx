@@ -424,7 +424,7 @@ function SkeletonVisualizer({
 
   return (
     <div ref={containerRef} className={classNames('w-full h-full')}>
-      <canvas ref={canvasRef} className="w-full h-full"></canvas>
+      <canvas ref={canvasRef} className="w-full h-full" />
     </div>
   );
 }
@@ -457,7 +457,7 @@ export function SkeletonVisualizerWidget({
         </Typography>
       }
     >
-      <SkeletonVisualizer onInit={onInit}></SkeletonVisualizer>
+      <SkeletonVisualizer onInit={onInit} />
     </ErrorBoundary>
   );
 }

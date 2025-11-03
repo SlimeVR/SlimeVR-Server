@@ -2,6 +2,7 @@ import { FlatCompat } from '@eslint/eslintrc';
 import eslint from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import stylistic from '@stylistic/eslint-plugin';
 
 const compat = new FlatCompat();
 
@@ -41,6 +42,7 @@ export const gui = [
     files: ['src/**/*.{js,jsx,ts,tsx,json}'],
     plugins: {
       '@typescript-eslint': tseslint.plugin,
+      '@stylistic': stylistic,
     },
     rules: {
       'react/react-in-jsx-scope': 'off',
@@ -60,6 +62,7 @@ export const gui = [
           ignoreRestSiblings: true,
         },
       ],
+      '@stylistic/jsx-self-closing-comp': 'error',
     },
     settings: {
       'import/resolver': {

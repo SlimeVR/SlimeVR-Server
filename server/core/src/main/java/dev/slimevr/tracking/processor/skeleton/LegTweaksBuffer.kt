@@ -501,8 +501,7 @@ class LegTweaksBuffer @Suppress("ktlint") constructor() {
 		leftFootSensitivityVel = (
 			(
 				leftFootScalarAccel +
-					leftFootScalarVel /
-					2.0f
+					leftFootScalarVel / 2.0f
 				) *
 				FastMath.clamp(
 					pressureScalars[0] * 2.0f,
@@ -513,8 +512,7 @@ class LegTweaksBuffer @Suppress("ktlint") constructor() {
 		rightFootSensitivityVel = (
 			(
 				rightFootScalarAccel +
-					rightFootScalarVel /
-					2.0f
+					rightFootScalarVel / 2.0f
 				) *
 				FastMath.clamp(
 					pressureScalars[1] * 2.0f,
@@ -537,8 +535,7 @@ class LegTweaksBuffer @Suppress("ktlint") constructor() {
 			} else if (accelMagnitude > MIN_SCALAR_ACCEL) {
 				return (
 					PARAM_SCALAR_MAX
-						*
-						(accelMagnitude - MIN_SCALAR_ACCEL) /
+						* (accelMagnitude - MIN_SCALAR_ACCEL) /
 						(MAX_SCALAR_ACCEL - MIN_SCALAR_ACCEL)
 					)
 			}
@@ -565,8 +562,7 @@ class LegTweaksBuffer @Suppress("ktlint") constructor() {
 			} else if (velocityDiffMagnitude > MIN_SCALAR_DORMANT) {
 				return (
 					PARAM_SCALAR_MAX
-						*
-						(velocityDiffMagnitude - MIN_SCALAR_DORMANT) /
+						* (velocityDiffMagnitude - MIN_SCALAR_DORMANT) /
 						(MAX_SCALAR_DORMANT - MIN_SCALAR_DORMANT)
 					)
 			}
@@ -583,8 +579,7 @@ class LegTweaksBuffer @Suppress("ktlint") constructor() {
 		}
 		return (
 			PARAM_SCALAR_MAX
-				*
-				(velocityDiffAbs - MIN_SCALAR_ACTIVE) /
+				* (velocityDiffAbs - MIN_SCALAR_ACTIVE) /
 				(MAX_SCALAR_ACTIVE - MIN_SCALAR_ACTIVE) -
 				PARAM_SCALAR_MID
 			)
@@ -607,8 +602,7 @@ class LegTweaksBuffer @Suppress("ktlint") constructor() {
 			GRAVITY_MAGNITUDE * leftFootVector.y / leftFootVector.len()
 		val rightFootMagnitude: Float = (
 			GRAVITY_MAGNITUDE
-				*
-				rightFootVector.y /
+				* rightFootVector.y /
 				rightFootVector.len()
 			)
 

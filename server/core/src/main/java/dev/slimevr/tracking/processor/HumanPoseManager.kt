@@ -340,7 +340,6 @@ class HumanPoseManager(val server: VRServer?) {
 
 	// #endregion
 	// #region config methods
-
 	/**
 	 * @param key the offset from which to get the corresponding value
 	 * @return the offset in config corresponding to the key
@@ -527,8 +526,7 @@ class HumanPoseManager(val server: VRServer?) {
 			if ((
 					tracker.isImu() &&
 						tracker.needsReset
-					) &&
-				tracker.resetsHandler.lastResetQuaternion != null
+					) && tracker.resetsHandler.lastResetQuaternion != null
 			) {
 				if (trackersDriftText.isNotEmpty()) {
 					trackersDriftText.append(" | ")
@@ -536,8 +534,7 @@ class HumanPoseManager(val server: VRServer?) {
 
 				// Get the difference between last reset and now
 				val difference = tracker
-					.getRotation() *
-					tracker.resetsHandler.lastResetQuaternion!!.inv()
+					.getRotation() * tracker.resetsHandler.lastResetQuaternion!!.inv()
 				// Get the pure yaw
 				var trackerDriftAngle = abs(
 					(

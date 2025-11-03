@@ -178,11 +178,8 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	fun checkReportRequireReset() {
-		if (needsReset &&
-			trackerPosition != null &&
-			lastResetStatus == 0u &&
-			!status.reset &&
-			(isImu() || !statusResetRecently && trackerDataType != TrackerDataType.FLEX_ANGLE)
+		if (needsReset && trackerPosition != null && lastResetStatus == 0u &&
+			!status.reset && (isImu() || !statusResetRecently && trackerDataType != TrackerDataType.FLEX_ANGLE)
 		) {
 			reportRequireReset()
 		} else if (lastResetStatus != 0u && (trackerPosition == null || status.reset)) {

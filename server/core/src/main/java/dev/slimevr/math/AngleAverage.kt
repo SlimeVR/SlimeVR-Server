@@ -23,14 +23,16 @@ class AngleAverage {
 	/**
 	 * Gets the average angle.
 	 */
-	fun toAngle(): Angle = if (isEmpty()) {
-		Angle.ZERO
-	} else {
-		Angle.ofRad(atan2(sumY, sumX))
-	}
+	fun toAngle(): Angle =
+		if (isEmpty()) {
+			Angle.ZERO
+		} else {
+			Angle.ofRad(atan2(sumY, sumX))
+		}
 
 	/**
 	 * Whether there are any angles to average.
 	 */
-	fun isEmpty() = sumX == 0.0f && sumY == 0.0f
+	fun isEmpty() =
+		sumX == 0.0f && sumY == 0.0f
 }

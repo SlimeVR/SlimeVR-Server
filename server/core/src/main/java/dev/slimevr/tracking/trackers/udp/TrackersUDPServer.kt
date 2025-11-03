@@ -233,8 +233,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				}
 			}
 		} else if (magStatus == MagnetometerStatus.DISABLED &&
-			VRServer.instance.configManager.vrConfig.server.useMagnetometerOnAllTrackers &&
-			imuTracker.config.shouldHaveMagEnabled == true
+			VRServer.instance.configManager.vrConfig.server.useMagnetometerOnAllTrackers && imuTracker.config.shouldHaveMagEnabled == true
 		) {
 			mainScope.launch {
 				withTimeoutOrNull(MAG_TIMEOUT) {

@@ -19,6 +19,7 @@ interface DeviceCardProps {
   deviceNames: string[];
   status?: FirmwareUpdateStatus;
   online?: boolean | null;
+  color?: string;
 }
 
 interface DeviceCardControlProps {
@@ -60,6 +61,7 @@ export function DeviceCardControl({
   progress,
   disabled = false,
   online = null,
+  color = 'bg-background-60',
   ...props
 }: DeviceCardControlProps & DeviceCardProps) {
   const cardborder = useMemo(() => {
@@ -80,8 +82,9 @@ export function DeviceCardControl({
   return (
     <div
       className={classNames(
-        'rounded-md bg-background-60 h-[86px] pt-2 flex flex-col justify-between border-2 relative',
-        cardborder
+        'rounded-md h-[86px] pt-2 flex flex-col justify-between border-2 relative',
+        cardborder,
+        color
       )}
     >
       {control && name ? (
@@ -98,18 +101,18 @@ export function DeviceCardControl({
                   checked={value || false}
                   type="checkbox"
                   disabled={disabled}
-                ></input>
+                />
               </div>
 
               <div className="w-full">
-                <DeviceCardContent {...props}></DeviceCardContent>
+                <DeviceCardContent {...props} />
               </div>
             </label>
           )}
-        ></Controller>
+        />
       ) : (
         <div className="px-2 h-full">
-          <DeviceCardContent {...props}></DeviceCardContent>
+          <DeviceCardContent {...props} />
         </div>
       )}
       <div
@@ -126,7 +129,7 @@ export function DeviceCardControl({
           bottom
           height={6}
           colorClass="bg-accent-background-20"
-        ></ProgressBar>
+        />
       </div>
       {online !== null && (
         <div className="absolute top-2 right-2">
@@ -134,7 +137,7 @@ export function DeviceCardControl({
             status={
               online ? TrackerStatusEnum.OK : TrackerStatusEnum.DISCONNECTED
             }
-          ></TrackerStatus>
+          />
         </div>
       )}
     </div>

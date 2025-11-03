@@ -21,10 +21,11 @@ object TrackerYaw {
 	/**
 	 * Whether we can get the yaw of a tracker.
 	 */
-	fun hasTrackerYaw(tracker: Tracker) = Angle.absBetween(
-		tracker.getAdjustedRotationForceStayAligned().sandwichUnitX(),
-		Vector3.POS_Y,
-	) > MIN_ON_SIDE_ANGLE
+	fun hasTrackerYaw(tracker: Tracker) =
+		Angle.absBetween(
+			tracker.getAdjustedRotationForceStayAligned().sandwichUnitX(),
+			Vector3.POS_Y,
+		) > MIN_ON_SIDE_ANGLE
 
 	/**
 	 * Gets the yaw of the tracker, for trackers that are not on its side.
@@ -38,19 +39,21 @@ object TrackerYaw {
 	 * singularity for this rotation to get "some" yaw, but this yaw will be very
 	 * different from the from YZX. DO NOT ATTEMPT!
 	 */
-	fun trackerYaw(tracker: Tracker) = Angle.ofRad(
-		tracker.getAdjustedRotationForceStayAligned()
-			.toEulerAngles(EulerOrder.YZX)
-			.y,
-	)
+	fun trackerYaw(tracker: Tracker) =
+		Angle.ofRad(
+			tracker.getAdjustedRotationForceStayAligned()
+				.toEulerAngles(EulerOrder.YZX)
+				.y,
+		)
 
 	/**
 	 * Applies an extra yaw in the specified direction.
 	 */
-	fun extraYaw(direction: Side, angle: Angle) = when (direction) {
-		Side.LEFT -> angle
-		Side.RIGHT -> -angle
-	}
+	fun extraYaw(direction: Side, angle: Angle) =
+		when (direction) {
+			Side.LEFT -> angle
+			Side.RIGHT -> -angle
+		}
 
 	private val MIN_ON_SIDE_ANGLE = Angle.ofDeg(30.0f)
 }

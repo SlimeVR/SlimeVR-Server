@@ -385,10 +385,8 @@ class VRCOSCHandler(
 							event.message.arguments[0] as Float,
 							event.message.arguments[1] as Float,
 							-(event.message.arguments[2] as Float),
-						) -
-							receivingPositionOffset,
-					) +
-						postReceivingPositionOffset
+						) - receivingPositionOffset,
+					) + postReceivingPositionOffset
 				} else {
 					// Update tracker rotation
 					val (w, x, y, z) = EulerAngles(
