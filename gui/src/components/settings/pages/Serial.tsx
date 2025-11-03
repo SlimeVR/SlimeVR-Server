@@ -294,7 +294,7 @@ export function Serial() {
       >
         <Localized
           id="settings-serial-send_command-warning"
-          elems={{ b: <b></b> }}
+          elems={{ b: <b /> }}
         >
           <WarningBox>
             <b>Warning:</b> Running serial commands can lead to data loss or
