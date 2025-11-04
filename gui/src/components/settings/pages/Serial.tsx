@@ -154,10 +154,11 @@ export function Serial() {
       if (!consoleRef.current) {
         return;
       }
+      const bottomAllowance = 10;
       setPaused(
         consoleRef.current.scrollTop +
-          consoleRef.current.getBoundingClientRect().height !==
-          consoleRef.current.scrollHeight
+          consoleRef.current.getBoundingClientRect().height <
+          consoleRef.current.scrollHeight - bottomAllowance
       );
     });
   }, [consoleRef.current]);
