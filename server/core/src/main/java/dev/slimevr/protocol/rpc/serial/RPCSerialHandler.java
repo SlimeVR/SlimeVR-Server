@@ -1,6 +1,7 @@
 package dev.slimevr.protocol.rpc.serial;
 
 import com.google.flatbuffers.FlatBufferBuilder;
+import dev.slimevr.VRServer;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.rpc.RPCHandler;
@@ -247,13 +248,15 @@ public class RPCSerialHandler implements SerialListener {
 
 		conn.getContext().setUseSerial(true);
 
-		try {
-			this.api.server.serialHandler.openSerial(req.port(), req.auto());
-		} catch (Exception e) {
-			LogManager.severe("Unable to open serial port", e);
-		} catch (Throwable e) {
-			LogManager.severe("Using serial ports is not supported on this platform", e);
-		}
+		this.api.server.queueTask(() -> {
+			try {
+				this.api.server.serialHandler.openSerial(req.port(), req.auto());
+			} catch (Exception e) {
+				LogManager.severe("Unable to open serial port", e);
+			} catch (Throwable e) {
+				LogManager.severe("Using serial ports is not supported on this platform", e);
+			}
+		});
 
 		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
 		SerialUpdateResponse.startSerialUpdateResponse(fbb);
