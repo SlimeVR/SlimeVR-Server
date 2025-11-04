@@ -1,7 +1,6 @@
 package dev.slimevr.protocol.rpc.serial;
 
 import com.google.flatbuffers.FlatBufferBuilder;
-import dev.slimevr.VRServer;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
 import dev.slimevr.protocol.rpc.RPCHandler;
