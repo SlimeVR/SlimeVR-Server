@@ -108,8 +108,14 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
       version,
       changelog: release.body,
       firmwareFiles: {
-        [BoardType.SLIMEVR]: { url: fwAsset.browser_download_url, digest: fwAsset.digest },
-        [BoardType.SLIMEVR_V1_2]: { url: fw12Asset.browser_download_url, digest: fwAsset.digest},
+        [BoardType.SLIMEVR]: {
+          url: fwAsset.browser_download_url,
+          digest: fwAsset.digest,
+        },
+        [BoardType.SLIMEVR_V1_2]: {
+          url: fw12Asset.browser_download_url,
+          digest: fwAsset.digest,
+        },
       },
       userCanUpdate,
     });

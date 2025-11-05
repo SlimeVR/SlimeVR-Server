@@ -143,7 +143,7 @@ export function SelectSourceSetep({
                   !source.availableBoards.includes(partialBoard.board) ||
                   source.source !== partialBoard.source,
                 name: source.version,
-                isBranch: !!source.branch,
+                isBranch: source.branch == source.version,
               });
 
             return curr;
