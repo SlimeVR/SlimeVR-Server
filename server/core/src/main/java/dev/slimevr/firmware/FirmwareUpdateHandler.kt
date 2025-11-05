@@ -61,11 +61,6 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 	private val updatingDevicesStatus: MutableMap<UpdateDeviceId<*>, UpdateStatusEvent<*>> =
 		ConcurrentHashMap()
 	private val listeners: MutableList<FirmwareUpdateListener> = CopyOnWriteArrayList()
-	private val firmwareCache =
-		InMemoryKache<String, Array<DownloadedFirmwarePart>>(maxSize = 5 * 1024 * 1024) {
-			strategy = KacheStrategy.LRU
-			sizeCalculator = { _, parts -> parts.sumOf { it.firmware.size }.toLong() }
-		}
 	private val mainScope: CoroutineScope = CoroutineScope(SupervisorJob())
 	private var clearJob: Deferred<Unit>? = null
 
@@ -299,19 +294,26 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 
 		try {
 			val toDownloadParts = getFirmwareParts(request)
-			val firmwareParts =
-				firmwareCache.getOrPut(toDownloadParts.joinToString("|") { "${it.url}#${it.offset}#${it.digest}" }) {
-					withTimeoutOrNull(30_000) {
-						toDownloadParts.map {
-							val firmware = downloadFirmware(it.url)
-								?: error("unable to download firmware part")
-							DownloadedFirmwarePart(
-								firmware,
-								it.offset,
-							)
-						}.toTypedArray()
-					}
+			val firmwareParts = try {
+				withTimeoutOrNull(30_000) {
+					toDownloadParts.map {
+						val firmware = downloadFirmware(it.url, it.digest)
+						DownloadedFirmwarePart(
+							firmware,
+							it.offset,
+						)
+					}.toTypedArray()
 				}
+			} catch (e: Exception) {
+				onStatusChange(
+					UpdateStatusEvent(
+						deviceId,
+						FirmwareUpdateStatus.ERROR_DOWNLOAD_FAILED,
+					),
+				)
+				LogManager.severe("[FirmwareUpdateHandler] Unable to download firmware", e)
+				return@coroutineScope
+			}
 
 			val job = launch {
 				withTimeout(2 * 60 * 1000) {
@@ -485,44 +487,34 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 	}
 }
 
-
-fun downloadFirmware(url: String, expectedDigest: String? = null): ByteArray? {
+fun downloadFirmware(url: String, expectedDigest: String): ByteArray {
 	val outputStream = ByteArrayOutputStream()
 
-	try {
-		val chunk = ByteArray(4096)
-		var bytesRead: Int
-		val stream: InputStream = URL(url).openStream()
-		while (stream.read(chunk).also { bytesRead = it } > 0) {
-			outputStream.write(chunk, 0, bytesRead)
-		}
-
-		val downloadedData = outputStream.toByteArray()
-
-		// Verify checksum if provided
-		if (expectedDigest != null) {
-			if (!verifyChecksum(downloadedData, expectedDigest)) {
-				error("Checksum verification failed for $url")
-			}
-		}
-
-		return downloadedData
-	} catch (e: IOException) {
-		error("Can't download firmware $url")
+	val chunk = ByteArray(4096)
+	var bytesRead: Int
+	val stream: InputStream = URL(url).openStream()
+	while (stream.read(chunk).also { bytesRead = it } > 0) {
+		outputStream.write(chunk, 0, bytesRead)
 	}
+
+	val downloadedData = outputStream.toByteArray()
+
+	if (!verifyChecksum(downloadedData, expectedDigest)) {
+		error("Checksum verification failed for $url")
+	}
+
+	return downloadedData
 }
 
 fun verifyChecksum(data: ByteArray, expectedDigest: String): Boolean {
-	// Parse the digest format: "sha256:873cc2c5..."
 	val parts = expectedDigest.split(":", limit = 2)
 	if (parts.size != 2) {
-		error("Invalid digest format. Expected 'algorithm:hash'")
+		error("Invalid digest format. Expected 'algorithm:hash' got $expectedDigest")
 	}
 
 	val algorithm = parts[0].uppercase().replace("-", "")
 	val expectedHash = parts[1].lowercase()
 
-	// Calculate the actual hash
 	val messageDigest = MessageDigest.getInstance(algorithm)
 	val actualHash = messageDigest.digest(data).joinToString("") {
 		"%02x".format(it)
