@@ -114,7 +114,7 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
         },
         [BoardType.SLIMEVR_V1_2]: {
           url: fw12Asset.browser_download_url,
-          digest: fwAsset.digest,
+          digest: fw12Asset.digest,
         },
       },
       userCanUpdate,
