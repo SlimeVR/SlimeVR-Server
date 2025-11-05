@@ -247,21 +247,24 @@ public class RPCSerialHandler implements SerialListener {
 
 		conn.getContext().setUseSerial(true);
 
-		try {
-			this.api.server.serialHandler.openSerial(req.port(), req.auto());
-		} catch (Exception e) {
-			LogManager.severe("Unable to open serial port", e);
-		} catch (Throwable e) {
-			LogManager.severe("Using serial ports is not supported on this platform", e);
-		}
+		this.api.server.queueTask(() -> {
+			try {
+				this.api.server.serialHandler.openSerial(req.port(), req.auto());
+			} catch (Exception e) {
+				LogManager.severe("Unable to open serial port", e);
+			} catch (Throwable e) {
+				LogManager.severe("Using serial ports is not supported on this platform", e);
+			}
 
-		FlatBufferBuilder fbb = new FlatBufferBuilder(32);
-		SerialUpdateResponse.startSerialUpdateResponse(fbb);
-		SerialUpdateResponse.addClosed(fbb, !this.api.server.serialHandler.isConnected());
-		int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
-		int outbound = rpcHandler.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
-		fbb.finish(outbound);
-		conn.send(fbb.dataBuffer());
+			FlatBufferBuilder fbb = new FlatBufferBuilder(32);
+			SerialUpdateResponse.startSerialUpdateResponse(fbb);
+			SerialUpdateResponse.addClosed(fbb, !this.api.server.serialHandler.isConnected());
+			int update = SerialUpdateResponse.endSerialUpdateResponse(fbb);
+			int outbound = rpcHandler
+				.createRPCMessage(fbb, RpcMessage.SerialUpdateResponse, update);
+			fbb.finish(outbound);
+			conn.send(fbb.dataBuffer());
+		});
 	}
 
 	public void onCloseSerialRequest(GenericConnection conn, RpcMessageHeader messageHeader) {

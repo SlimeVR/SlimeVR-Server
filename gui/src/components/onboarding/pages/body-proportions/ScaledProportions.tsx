@@ -83,7 +83,7 @@ export function ScaledProportionsPage() {
               </ul>
             </WarningBox>
           )}
-          <div className="flex">
+          <div className="flex min-h-0">
             <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
               steps={

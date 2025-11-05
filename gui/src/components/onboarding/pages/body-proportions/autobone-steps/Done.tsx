@@ -24,7 +24,7 @@ export function DoneStep({ variant }: { variant: 'onboarding' | 'alone' }) {
           </Button>
         )}
       </div>
-      <div className="flex flex-grow max-h-[450px]">
+      <div className="flex flex-grow max-h-[450px] w-full">
         <SkeletonVisualizerWidget />
       </div>
     </div>
