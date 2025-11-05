@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.URL
+import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
@@ -297,10 +298,9 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 		)
 
 		try {
-			// We add the firmware to an LRU cache
 			val toDownloadParts = getFirmwareParts(request)
 			val firmwareParts =
-				firmwareCache.getOrPut(toDownloadParts.joinToString("|") { "${it.url}#${it.offset}" }) {
+				firmwareCache.getOrPut(toDownloadParts.joinToString("|") { "${it.url}#${it.offset}#${it.digest}" }) {
 					withTimeoutOrNull(30_000) {
 						toDownloadParts.map {
 							val firmware = downloadFirmware(it.url)
@@ -485,7 +485,8 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 	}
 }
 
-fun downloadFirmware(url: String): ByteArray? {
+
+fun downloadFirmware(url: String, expectedDigest: String? = null): ByteArray? {
 	val outputStream = ByteArrayOutputStream()
 
 	try {
@@ -495,9 +496,37 @@ fun downloadFirmware(url: String): ByteArray? {
 		while (stream.read(chunk).also { bytesRead = it } > 0) {
 			outputStream.write(chunk, 0, bytesRead)
 		}
+
+		val downloadedData = outputStream.toByteArray()
+
+		// Verify checksum if provided
+		if (expectedDigest != null) {
+			if (!verifyChecksum(downloadedData, expectedDigest)) {
+				error("Checksum verification failed for $url")
+			}
+		}
+
+		return downloadedData
 	} catch (e: IOException) {
-		error("Cant download firmware $url")
+		error("Can't download firmware $url")
+	}
+}
+
+fun verifyChecksum(data: ByteArray, expectedDigest: String): Boolean {
+	// Parse the digest format: "sha256:873cc2c5..."
+	val parts = expectedDigest.split(":", limit = 2)
+	if (parts.size != 2) {
+		error("Invalid digest format. Expected 'algorithm:hash'")
 	}
 
-	return outputStream.toByteArray()
+	val algorithm = parts[0].uppercase().replace("-", "")
+	val expectedHash = parts[1].lowercase()
+
+	// Calculate the actual hash
+	val messageDigest = MessageDigest.getInstance(algorithm)
+	val actualHash = messageDigest.digest(data).joinToString("") {
+		"%02x".format(it)
+	}
+
+	return actualHash == expectedHash
 }
