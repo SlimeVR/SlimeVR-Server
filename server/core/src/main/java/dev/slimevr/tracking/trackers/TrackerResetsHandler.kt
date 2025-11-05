@@ -185,7 +185,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	/**
 	 * Get the reference adjusted accel.
 	 */
-	// All IMU axis corrections need to be inverse (maybe find out why...)
+	// All IMU axis corrections are inverse to undo `adjustToReference` after local yaw offsets are added
 	// Order is VERY important here! Please be extremely careful! >~>
 	fun getReferenceAdjustedAccel(rawRot: Quaternion, accel: Vector3): Vector3 = (adjustToReference(rawRot) * (attachmentFix * mountingOrientation * mountRotFix * tposeDownFix).inv()).sandwich(accel)
 
@@ -198,7 +198,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		var rot = rotation
 		// Correct for global pitch/roll offset
 		rot *= attachmentFix
-		// Correct for global yaw offset (do not affect local yaw)
+		// Correct for global yaw offset without affecting local yaw so we can change this
+		// later without invalidating local yaw offset corrections
 		if (!tracker.isHmd || tracker.trackerPosition != TrackerPosition.HEAD) {
 			rot = mountingOrientation.inv() * rot * mountingOrientation
 		}
