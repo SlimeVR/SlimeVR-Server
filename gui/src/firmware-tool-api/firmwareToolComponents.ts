@@ -4,7 +4,10 @@
  * @version 0.0.1
  */
 import * as reactQuery from '@tanstack/react-query';
-import { useFirmwareToolContext, FirmwareToolContext } from './firmwareToolContext';
+import {
+  useFirmwareToolContext,
+  FirmwareToolContext,
+} from './firmwareToolContext';
 import type * as Fetcher from './firmwareToolFetcher';
 import { firmwareToolFetch } from './firmwareToolFetcher';
 import type * as Schemas from './firmwareToolSchemas';
@@ -79,7 +82,8 @@ export const useGetIsCompatibleVersion = <
     'queryKey' | 'queryFn' | 'initialData'
   >
 ) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useFirmwareToolContext(options);
   return reactQuery.useQuery<
     | {
         success: true;
@@ -114,7 +118,10 @@ export type GetHealthVariables = FirmwareToolContext['fetcherOptions'];
  * Gives the status of the api
  * this endpoint will always return true
  */
-export const fetchGetHealth = (variables: GetHealthVariables, signal?: AbortSignal) =>
+export const fetchGetHealth = (
+  variables: GetHealthVariables,
+  signal?: AbortSignal
+) =>
   firmwareToolFetch<boolean, GetHealthError, undefined, {}, {}, {}>({
     url: '/health',
     method: 'get',
@@ -126,14 +133,15 @@ export const fetchGetHealth = (variables: GetHealthVariables, signal?: AbortSign
  * Gives the status of the api
  * this endpoint will always return true
  */
-export const useGetHealth = <TData = boolean>(
+export const useGetHealth = <TData = boolean,>(
   variables: GetHealthVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<boolean, GetHealthError, TData>,
     'queryKey' | 'queryFn' | 'initialData'
   >
 ) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useFirmwareToolContext(options);
   return reactQuery.useQuery<boolean, GetHealthError, TData>({
     queryKey: queryKeyFn({
       path: '/health',
@@ -172,7 +180,7 @@ export const fetchGetFirmwareSources = (
 /**
  * List all the sources you can build a firmware from
  */
-export const useGetFirmwareSources = <TData = GetFirmwareSourcesResponse>(
+export const useGetFirmwareSources = <TData = GetFirmwareSourcesResponse,>(
   variables: GetFirmwareSourcesVariables,
   options?: Omit<
     reactQuery.UseQueryOptions<
@@ -183,7 +191,8 @@ export const useGetFirmwareSources = <TData = GetFirmwareSourcesResponse>(
     'queryKey' | 'queryFn' | 'initialData'
   >
 ) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useFirmwareToolContext(options);
   return reactQuery.useQuery<
     GetFirmwareSourcesResponse,
     GetFirmwareSourcesError,
@@ -245,7 +254,8 @@ export const useGetFirmwareBoardDefaults = <
     'queryKey' | 'queryFn' | 'initialData'
   >
 ) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useFirmwareToolContext(options);
   return reactQuery.useQuery<
     Schemas.FirmwareBoardDefaultsNullable,
     GetFirmwareBoardDefaultsError,
@@ -257,7 +267,10 @@ export const useGetFirmwareBoardDefaults = <
       variables,
     }),
     queryFn: ({ signal }) =>
-      fetchGetFirmwareBoardDefaults({ ...fetcherOptions, ...variables }, signal),
+      fetchGetFirmwareBoardDefaults(
+        { ...fetcherOptions, ...variables },
+        signal
+      ),
     ...options,
     ...queryOptions,
   });
@@ -335,15 +348,24 @@ export const fetchGetFirmwareId = (
  * Get the inforamtions about a firmware from its id
  * also provide more informations than the simple list, like pins and imus and files
  */
-export const useGetFirmwareId = <TData = Schemas.FirmwareWithFiles>(
+export const useGetFirmwareId = <TData = Schemas.FirmwareWithFiles,>(
   variables: GetFirmwareIdVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<Schemas.FirmwareWithFiles, GetFirmwareIdError, TData>,
+    reactQuery.UseQueryOptions<
+      Schemas.FirmwareWithFiles,
+      GetFirmwareIdError,
+      TData
+    >,
     'queryKey' | 'queryFn' | 'initialData'
   >
 ) => {
-  const { fetcherOptions, queryOptions, queryKeyFn } = useFirmwareToolContext(options);
-  return reactQuery.useQuery<Schemas.FirmwareWithFiles, GetFirmwareIdError, TData>({
+  const { fetcherOptions, queryOptions, queryKeyFn } =
+    useFirmwareToolContext(options);
+  return reactQuery.useQuery<
+    Schemas.FirmwareWithFiles,
+    GetFirmwareIdError,
+    TData
+  >({
     queryKey: queryKeyFn({
       path: '/firmware/{id}',
       operationId: 'getFirmwareId',
