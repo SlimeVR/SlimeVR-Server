@@ -36,7 +36,6 @@ const todaysRange = (deployData: [number, Date][]): number => {
 };
 
 const checkUserCanUpdate = async (url: string, fwVersion: string) => {
-  if (!url) return true;
   const deployDataJson = JSON.parse(
     (await cacheWrap(
       `firmware-${fwVersion}-deploy`,
@@ -47,7 +46,7 @@ const checkUserCanUpdate = async (url: string, fwVersion: string) => {
       60 * 60 * 1000
     )) || 'null'
   );
-  if (!deployDataJson) return true;
+  if (!deployDataJson) return false;
 
   const deployData = (
     Object.entries(deployDataJson).map(([key, val]) => {
@@ -105,7 +104,7 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
     }
 
     const userCanUpdate = await checkUserCanUpdate(
-      deployAsset?.browser_download_url,
+      deployAsset.browser_download_url,
       version
     );
     processedReleses.push({
