@@ -90,7 +90,13 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
   for (const release of releases) {
     const fwAsset = firstAsset(release.assets, 'BOARD_SLIMEVR-firmware.bin');
     const fw12Asset = firstAsset(release.assets, 'BOARD_SLIMEVR_V1_2-firmware.bin');
-    if (!release.assets || (!fwAsset && !fw12Asset) /* || release.prerelease */)
+    const deployAsset = firstAsset(release.assets, 'deploy.json');
+    if (
+      !release.assets ||
+      !deployAsset ||
+      (!fwAsset && !fw12Asset) ||
+      release.prerelease
+    )
       continue;
 
     let version = release.tag_name;
@@ -98,7 +104,6 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
       version = version.substring(1);
     }
 
-    const deployAsset = firstAsset(release.assets, 'deploy.json');
     const userCanUpdate = await checkUserCanUpdate(
       deployAsset?.browser_download_url,
       version

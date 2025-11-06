@@ -55,13 +55,13 @@ export async function cacheWrap(
   orDefault: () => Promise<string | null>,
   ttl: number | undefined
 ) {
-  const realItem = await store.get(key);
+  const realItem = await cacheGet(key);
   if (!realItem) {
     const defaultItem = await orDefault();
     await cacheSet(key, defaultItem, ttl);
     return defaultItem;
   } else {
-    return (await cacheGet(key))!;
+    return realItem;
   }
 }
 
