@@ -26,7 +26,6 @@ export type DefaultsFile = {
 
 export type BoardDefaults = {
   values: void;
-  editable: string[];
   flashingRules: {
     applicationOffset: number;
     needBootPress: boolean;
@@ -59,6 +58,7 @@ export type BuildStatusDone = {
   files: {
     filePath: string;
     offset: number;
+    digest: string;
     isFirmware: boolean;
     firmwareId: string;
   }[];
@@ -94,6 +94,7 @@ export type FirmwareWithFiles = {
   files: {
     filePath: string;
     offset: number;
+    digest: string;
     isFirmware: boolean;
     firmwareId: string;
   }[];

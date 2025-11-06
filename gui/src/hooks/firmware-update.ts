@@ -8,7 +8,7 @@ export interface FirmwareRelease {
   name: string;
   version: string;
   changelog: string;
-  firmwareFiles: Partial<Record<BoardType, string>>;
+  firmwareFiles: Partial<Record<BoardType, { url: string; digest: string }>>;
   userCanUpdate: boolean;
 }
 
@@ -108,8 +108,14 @@ export async function fetchCurrentFirmwareRelease(): Promise<FirmwareRelease | n
       version,
       changelog: release.body,
       firmwareFiles: {
-        [BoardType.SLIMEVR]: fwAsset.browser_download_url,
-        [BoardType.SLIMEVR_V1_2]: fw12Asset.browser_download_url,
+        [BoardType.SLIMEVR]: {
+          url: fwAsset.browser_download_url,
+          digest: fwAsset.digest,
+        },
+        [BoardType.SLIMEVR_V1_2]: {
+          url: fw12Asset.browser_download_url,
+          digest: fw12Asset.digest,
+        },
       },
       userCanUpdate,
     });
