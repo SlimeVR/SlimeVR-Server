@@ -1674,10 +1674,11 @@ class HumanSkeleton(
 			rightLittleDistalTracker,
 			leftAbductorHallucisTracker,
 			leftDigitorumBrevisTracker,
-			leftDigitorumBrevisTracker,
+			leftAbductorDigitiMinimiTracker,
 			rightAbductorHallucisTracker,
 			rightDigitorumBrevisTracker,
 			rightDigitorumBrevisTracker,
+			rightAbductorDigitiMinimiTracker
 		)
 
 	@JvmOverloads
