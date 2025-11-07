@@ -11,6 +11,7 @@ import dev.slimevr.util.ann.VRServerThread
 import io.eiren.util.ann.Synchronize
 import io.eiren.util.ann.ThreadSafe
 import io.eiren.util.collections.FastList
+import io.eiren.util.logging.LogManager
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import java.util.Queue
@@ -43,6 +44,8 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 
 	@BridgeThread
 	protected abstract fun sendMessageReal(message: ProtobufMessage?): Boolean
+
+	private var remoteProtocolVersion: Int = 0
 
 	@BridgeThread
 	protected fun messageReceived(message: ProtobufMessage) {
@@ -137,6 +140,8 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 			trackerAddedReceived(message.trackerAdded)
 		} else if (message.hasBattery()) {
 			batteryReceived(message.battery)
+		} else if (message.hasVersion()) {
+			versionReceived(message.version)
 		}
 	}
 
@@ -164,6 +169,15 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 
 				)
 			tracker.dataTick()
+		}
+	}
+
+	@VRServerThread
+	protected open fun versionReceived(versionMessage: Version) {
+		remoteProtocolVersion = versionMessage.protocolVersion
+		LogManager.info("[ProtobufBridge] Driver protocol version matches the server protocol version: $remoteProtocolVersion")
+		if (remoteProtocolVersion != PROTOCOL_VERSION) {
+			LogManager.warning("[ProtobufBridge] Driver protocol version ($remoteProtocolVersion) doesn't match the server protocol version ($PROTOCOL_VERSION)")
 		}
 	}
 
@@ -274,5 +288,6 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 
 	companion object {
 		private const val resetSourceNamePrefix = "ProtobufBridge"
+		private const val PROTOCOL_VERSION = 1
 	}
 }
