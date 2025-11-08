@@ -6,15 +6,10 @@ import com.illposed.osc.transport.OSCPortOut
 import dev.slimevr.VRServer
 import dev.slimevr.config.VRCOSCConfig
 import dev.slimevr.osc.OSCHandler
-import dev.slimevr.osc.VRCOSCHandler
 import dev.slimevr.tracking.processor.Bone
 import dev.slimevr.tracking.processor.BoneType
-import dev.slimevr.tracking.trackers.Tracker
-import dev.slimevr.tracking.trackers.TrackerPosition
-import dev.slimevr.tracking.trackers.TrackerRole
 import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
-import java.io.Closeable
 import java.net.InetAddress
 import kotlin.math.*
 
@@ -54,8 +49,6 @@ public class ToesOSCHandler(
 
 
 	public override fun update() {
-		if (!config.enabled) return
-
 		try {
 			val trackers = server.humanPoseManager
 
@@ -96,14 +89,14 @@ public class ToesOSCHandler(
 			}
 
 			when (segmentIndex) {
-				0 -> processToe(foot, lastAssigned!!, side, 0)
+				0 -> processToe(foot, lastAssigned!!, side, 0,oppositeSide(side))
 				1 -> {
-					processToe(foot, lastAssigned!!, side, 1)
-					processToe(foot, lastAssigned!!, side, 2)
+					processToe(foot, lastAssigned!!, side, 1, oppositeSide(side))
+					processToe(foot, lastAssigned!!, side, 2, oppositeSide(side))
 				}
 				2 -> {
-					processToe(foot, lastAssigned!!, side, 3)
-					processToe(foot, lastAssigned!!, side, 4)
+					processToe(foot, lastAssigned!!, side, 3,side)
+					processToe(foot, lastAssigned!!, side, 4, side)
 				}
 			}
 		}
@@ -115,8 +108,17 @@ public class ToesOSCHandler(
 
 	override fun getOscReceiver(): OSCPortIn? = null
 	override fun getPortIn(): Int = -1
-
-	private fun processToe(foot: Bone, toe: Bone, side: FootSide, toeNumber: Int) {
+	private fun oppositeSide(side: FootSide) : FootSide{
+		when(side){
+			FootSide.Left ->{
+				return FootSide.Right;
+			}
+			FootSide.Right -> {
+				return FootSide.Left;
+			}
+		}
+	}
+	private fun processToe(foot: Bone, toe: Bone, side: FootSide, toeNumber: Int, splayDirection: FootSide) {
 		val footRot = foot.getGlobalRotation()
 		val toeRot = toe.getGlobalRotation()
 		val currentRelative = (footRot.inv() * toeRot)
@@ -124,17 +126,33 @@ public class ToesOSCHandler(
 		val euler = quaternionToEulerDegrees(currentRelative)
 
 		val pitch = euler.z
-
+ 		val yaw = euler.y
+if(toeNumber == 4){
+	val debug = true
+}
 		val tipToe = pitch < -14f
 		val bending = pitch > 15f && !tipToe
+		val splayed = when (splayDirection) {
+			FootSide.Left -> yaw < (-7f)
+			FootSide.Right -> yaw > (7f)
+		}
 
 		setTipToeValueBool(side, tipToe)
-		setToeValueBool(toeNumber, side, bending)
+		setToeBentValueBool(toeNumber, side, bending)
+		setToeSplayValueBool(toeNumber, side, splayed);
 		setToeValueFloat(toeNumber, side, clamp(pitch / 30f, -1f, 1f))
 	}
 
-	fun setToeValueBool(toeNumber: Int, footSide: FootSide, value: Boolean) {
-		val key = "/avatar/parameters/Toe${footSide.name}${toeNumber + 1}Bool"
+	fun setToeBentValueBool(toeNumber: Int, footSide: FootSide, value: Boolean) {
+		val key = "/avatar/parameters/ToeBent${footSide.name}${toeNumber + 1}Bool"
+		if (persistedValues[key] != value) {
+			sendOsc(key, value)
+			persistedValues[key] = value
+		}
+	}
+
+	fun setToeSplayValueBool(toeNumber: Int, footSide: FootSide, value: Boolean) {
+		val key = "/avatar/parameters/ToeSplay${footSide.name}${toeNumber + 1}"
 		if (persistedValues[key] != value) {
 			sendOsc(key, value)
 			persistedValues[key] = value
@@ -152,16 +170,6 @@ public class ToesOSCHandler(
 	fun setToeValueFloat(toeNumber: Int, footSide: FootSide, value: Float) {
 		val key = "/avatar/parameters/Toe${footSide.name}${toeNumber + 1}Float"
 		sendOsc(key, value)
-	}
-
-	fun getToeValue(toeNumber: Int, footSide: FootSide): Boolean {
-		val key = "/avatar/parameters/Toe${footSide.name}${toeNumber + 1}"
-		return persistedValues[key] ?: false
-	}
-
-	fun getTipToeValue(footSide: FootSide): Boolean {
-		val key = "/avatar/parameters/Toe${footSide.name}"
-		return persistedValues[key] ?: false
 	}
 
 	private fun sendOsc(address: String, value: Any) {
