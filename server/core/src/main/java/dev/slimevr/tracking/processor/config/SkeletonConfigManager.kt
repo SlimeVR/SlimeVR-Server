@@ -290,7 +290,7 @@ class SkeletonConfigManager(
 				nodeOffset,
 				0f,
 				-getOffset(SkeletonConfigOffsets.HAND_Y),
-				-getOffset(SkeletonConfigOffsets.HAND_Z),
+				0f,
 			)
 
 			BoneType.LEFT_ELBOW_TRACKER, BoneType.RIGHT_ELBOW_TRACKER -> setNodeOffset(
