@@ -39,6 +39,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var yawResetSmoothTime = 0.0f
 	var saveMountingReset = false
 	var resetHmdPitch = false
+	var stepMounting = false
 	var allowDriftCompensation = false
 	var lastResetQuaternion: Quaternion? = null
 
@@ -164,6 +165,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		yawResetSmoothTime = config.yawResetSmoothTime
 		saveMountingReset = config.saveMountingReset
 		resetHmdPitch = config.resetHmdPitch
+		stepMounting = config.stepMounting
 	}
 
 	fun trySetMountingReset(quat: Quaternion) {
@@ -392,18 +394,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		tracker.resetFilteringQuats(reference)
 	}
 
-	fun resetMountingAccel(reference: Quaternion) {
-		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
-			tracker.trackerFlexHandler.resetMax()
-			tracker.resetFilteringQuats(reference)
-			return
-		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
-			return
-		}
-
-		tracker.startMounting()
-	}
-
 	/**
 	 * Perform the math to align the tracker to go forward
 	 * and stores it in mountRotFix, and adjusts yawFix
@@ -414,6 +404,11 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			tracker.resetFilteringQuats(reference)
 			return
 		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
+			return
+		}
+
+		if (stepMounting) {
+			tracker.startMounting()
 			return
 		}
 
