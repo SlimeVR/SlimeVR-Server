@@ -253,6 +253,9 @@ public class DataFeedBuilder {
 		if (mask.getStayAligned()) {
 			TrackerData.addStayAligned(fbb, stayAlignedOffset);
 		}
+		if (mask.getAccelRecordingInProgress()) {
+			TrackerData.addAccelRecordingInProgress(fbb, tracker.getAccelMountInProgress());
+		}
 
 		return TrackerData.endTrackerData(fbb);
 	}

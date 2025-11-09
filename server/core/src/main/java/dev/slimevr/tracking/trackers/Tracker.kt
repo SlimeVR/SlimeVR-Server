@@ -293,7 +293,7 @@ class Tracker @JvmOverloads constructor(
 	val lastSamples = CircularArrayList<AccelSample>(8)
 	var curTimeline: AccelTimeline? = null
 
-	var resetNext = false
+	var accelMountInProgress = false
 
 	fun accumSample(accum: AccelAccumulator, sample: AccelSample, lastSampleTime: Long = -1, accelBias: Vector3 = Vector3.NULL): Float {
 		val delta = if (lastSampleTime >= 0) {
@@ -353,7 +353,7 @@ class Tracker @JvmOverloads constructor(
 	}
 
 	fun startMounting() {
-		resetNext = true
+		accelMountInProgress = true
 		startTime = System.currentTimeMillis()
 	}
 
@@ -368,7 +368,7 @@ class Tracker @JvmOverloads constructor(
 			filteringHandler.dataTick(getAdjustedRotation())
 		}
 
-		if (resetNext) {
+		if (accelMountInProgress) {
 			lastFrameRest = curFrameRest
 
 			val accel = getAcceleration()
@@ -444,7 +444,7 @@ class Tracker @JvmOverloads constructor(
 
 						LogManager.info("[Accel] Tracker $id (${trackerPosition?.designation}):\nTracker: $trackerOff\nHmd: $hmdOff\nErr: ${tracker.len() - hmd.len()}\nResult: $mountVec ($mountText)")
 						resetsHandler.mountRotFix *= mountRot
-						resetNext = false
+						accelMountInProgress = false
 					}
 					curTimeline = null
 				} else {
