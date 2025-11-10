@@ -1,20 +1,12 @@
 package dev.slimevr.protocol;
 
-import solarxr_protocol.data_feed.DataFeedConfigT;
-
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ConnectionContext {
 
-	private final List<DataFeedConfigT> dataFeedConfigList = new ArrayList<>();
-
-	// I did it in a separate array because it was more convenient than making a
-	// parent object of the DataFeedConfigT
-	// idk if it should be a concern or not, i think it is fine tbh
-	// Futurabeast
-	private final List<Long> dataFeedTimers = new ArrayList<>();
+	private final List<DataFeed> dataFeedList = new ArrayList<>();
 
 	private final List<Integer> subscribedTopics = new ArrayList<>();
 
@@ -23,17 +15,8 @@ public class ConnectionContext {
 	private boolean useProvisioning = false;
 	private boolean useAutoBone = false;
 
-	public List<DataFeedConfigT> getDataFeedConfigList() {
-		return dataFeedConfigList;
-	}
-
-	public List<Long> getDataFeedTimers() {
-		return dataFeedTimers;
-	}
-
-	public void clearDataFeeds() {
-		this.dataFeedConfigList.clear();
-		this.dataFeedTimers.clear();
+	public List<DataFeed> getDataFeedList() {
+		return dataFeedList;
 	}
 
 	public List<Integer> getSubscribedTopics() {
