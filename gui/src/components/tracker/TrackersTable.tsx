@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { IPv4 } from 'ip-num';
 import { MouseEventHandler, ReactNode, useMemo, useState } from 'react';
 import {
+  BodyPart,
   TrackerDataT,
   TrackerIdT,
   TrackerStatus as TrackerStatusEnum,
@@ -47,12 +48,12 @@ const displayColumns: { [k: string]: boolean } = {
   [DisplayColumn.URL]: true,
 };
 
+const isHMD = ({ tracker }: FlatDeviceTracker) =>
+  tracker.info?.isHmd || tracker.info?.bodyPart === BodyPart.HEAD;
+
 const isSlime = ({ device }: FlatDeviceTracker) =>
   device?.hardwareInfo?.manufacturer === 'SlimeVR' ||
   device?.hardwareInfo?.manufacturer === 'HID Device';
-
-const getDeviceName = ({ device }: FlatDeviceTracker) =>
-  device?.customName?.toString() || '';
 
 const getTrackerName = ({ tracker }: FlatDeviceTracker) =>
   tracker?.info?.customName?.toString() || '';
@@ -181,7 +182,7 @@ export function TrackersTable({
   // TODO: fix memo
   const filteredSortedTrackers = useMemo(() => {
     const list = filteringEnabled
-      ? flatTrackers.filter((t) => getDeviceName(t) === 'HMD' || isSlime(t))
+      ? flatTrackers.filter((t) => isHMD(t) || isSlime(t))
       : flatTrackers;
 
     if (sortingEnabled) {
