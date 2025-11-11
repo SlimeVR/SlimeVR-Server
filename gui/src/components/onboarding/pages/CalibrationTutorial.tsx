@@ -53,13 +53,11 @@ export function CalibrationTutorialPage() {
       if (
         x.device?.id?.id === undefined ||
         x.tracker.trackerId?.trackerNum === undefined ||
-        x.tracker.trackerId.deviceId?.id === undefined ||
         !x.tracker.linearAcceleration
       )
         return false;
 
-      const trackerId = x.device.id.id;
-      //        x.tracker.trackerId.trackerNum + (x.tracker.trackerId.deviceId.id << 8);
+      const trackerId = x.tracker.trackerId.trackerNum + (x.device.id.id << 8);
       const lastValue = lastValueMap.current.get(trackerId) ?? new Vector3();
       lastValueMap.current.set(trackerId, lastValue);
 
@@ -90,7 +88,7 @@ export function CalibrationTutorialPage() {
     }
 
     setRested(settled || restCalibrationTrackers.length === 0);
-  }, [restCalibrationTrackers]);
+  }, [restCalibrationTrackers, settled, isCounting]);
 
   useEffect(() => {
     if (calibrationStatus === CalibrationStatus.CALIBRATING && !rested) {
@@ -152,18 +150,18 @@ export function CalibrationTutorialPage() {
               </div>
               <Localized
                 id="onboarding-calibration_tutorial-description-v1"
-                elems={{ b: <b></b> }}
+                elems={{ b: <b /> }}
               >
                 <Typography>Description on calibration of IMU</Typography>
               </Localized>
               <div>
                 <div className="xs:hidden flex flex-row justify-center">
                   <div className="stroke-none fill-background-10 ">
-                    <TaybolIcon width="220"></TaybolIcon>
+                    <TaybolIcon width="220" />
                   </div>
                 </div>
                 <div className="flex justify-center">
-                  <LoaderIcon slimeState={slimeStatus}></LoaderIcon>
+                  <LoaderIcon slimeState={slimeStatus} />
                 </div>
                 <ProgressBar
                   progress={
@@ -177,7 +175,7 @@ export function CalibrationTutorialPage() {
                   height={14}
                   animated={true}
                   colorClass={progressBarClass}
-                ></ProgressBar>
+                />
               </div>
               <div className="flex justify-center">
                 <Typography variant="section-title">{progressText}</Typography>
@@ -226,7 +224,7 @@ export function CalibrationTutorialPage() {
           </div>
           <div className="mobile:hidden flex self-center w-[32rem] mobile:absolute">
             <div className="stroke-none xs:fill-background-10 mobile:fill-background-50 mobile:blur-sm">
-              <TaybolIcon width="450"></TaybolIcon>
+              <TaybolIcon width="450" />
             </div>
           </div>
         </div>

@@ -73,8 +73,8 @@ function Step({
             status === 'invalid' && optional && 'bg-background-50'
           )}
         >
-          {status === 'skipped' && <CheckIcon size={10}></CheckIcon>}
-          {status === 'complete' && <CheckIcon size={10}></CheckIcon>}
+          {status === 'skipped' && <CheckIcon size={10} />}
+          {status === 'complete' && <CheckIcon size={10} />}
           {(status === 'invalid' || status === 'blocked') && (
             <div
               className={classNames(
@@ -90,7 +90,7 @@ function Step({
           <Localized id={trackingchecklistIdtoLabel[id]} />
           {canBeOpened && (
             <div className="fill-background-30 group-hover:scale-125 group-hover:fill-background-20 transition-transform">
-              <ArrowDownIcon size={20}></ArrowDownIcon>
+              <ArrowDownIcon size={20} />
             </div>
           )}
         </div>
@@ -112,14 +112,14 @@ const stepContentLookup: Record<
   [TrackingChecklistStepId.TRACKERS_REST_CALIBRATION]: (step, { toggle }) => {
     return (
       <div className="space-y-2.5">
-        <Typography id="tracking_checklist-TRACKERS_REST_CALIBRATION-desc"></Typography>
+        <Typography id="tracking_checklist-TRACKERS_REST_CALIBRATION-desc" />
         <div className="flex justify-end">
           {step.ignorable && (
             <Button
               id="tracking_checklist-ignore"
               variant="secondary"
               onClick={() => toggle(step.id)}
-            ></Button>
+            />
           )}
         </div>
       </div>
@@ -128,15 +128,15 @@ const stepContentLookup: Record<
   [TrackingChecklistStepId.FULL_RESET]: () => {
     return (
       <div className="space-y-2.5">
-        <Typography id="tracking_checklist-FULL_RESET-desc"></Typography>
+        <Typography id="tracking_checklist-FULL_RESET-desc" />
         <div>
-          <Typography id="onboarding-automatic_mounting-preparation-v2-step-0"></Typography>
-          <Typography id="onboarding-automatic_mounting-preparation-v2-step-1"></Typography>
-          <Typography id="onboarding-automatic_mounting-preparation-v2-step-2"></Typography>
+          <Typography id="onboarding-automatic_mounting-preparation-v2-step-0" />
+          <Typography id="onboarding-automatic_mounting-preparation-v2-step-1" />
+          <Typography id="onboarding-automatic_mounting-preparation-v2-step-2" />
         </div>
         <div className="grid grid-cols-3 py-1.5 gap-2">
           <div className="flex flex-col bg-background-80 rounded-md relative max-h-52">
-            <CheckIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success"></CheckIcon>
+            <CheckIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success" />
             <img
               src="/images/reset/FullResetPose.webp"
               className="h-full object-contain scale-110"
@@ -144,7 +144,7 @@ const stepContentLookup: Record<
             />
           </div>
           <div className="flex flex-col bg-background-80 rounded-md relative max-h-52">
-            <CheckIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success"></CheckIcon>
+            <CheckIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success" />
             <img
               src="/images/reset/FullResetPoseSide.webp"
               className="h-full object-contain scale-110"
@@ -152,7 +152,7 @@ const stepContentLookup: Record<
             />
           </div>
           <div className="flex flex-col bg-background-80 rounded-md relative max-h-52">
-            <CrossIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-critical"></CrossIcon>
+            <CrossIcon className="md:w-9 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-critical" />
             <img
               src="/images/reset/FullResetPoseWrong.webp"
               className="h-full object-contain scale-110"
@@ -161,7 +161,7 @@ const stepContentLookup: Record<
           </div>
         </div>
         <div className="flex">
-          <ResetButton type={ResetType.Full}></ResetButton>
+          <ResetButton type={ResetType.Full} />
         </div>
       </div>
     );
@@ -170,19 +170,19 @@ const stepContentLookup: Record<
     return (
       <>
         <div className="space-y-2.5">
-          <Typography id="tracking_checklist-STEAMVR_DISCONNECTED-desc"></Typography>
+          <Typography id="tracking_checklist-STEAMVR_DISCONNECTED-desc" />
           <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
             <Button
               id="tracking_checklist-STEAMVR_DISCONNECTED-open"
               variant="primary"
               onClick={() => openUrl('steam://run/250820')}
-            ></Button>
+            />
             {step.ignorable && (
               <Button
                 id="tracking_checklist-ignore"
                 variant="secondary"
                 onClick={() => toggle(step.id)}
-              ></Button>
+              />
             )}
           </div>
         </div>
@@ -190,12 +190,10 @@ const stepContentLookup: Record<
     );
   },
   [TrackingChecklistStepId.TRACKER_ERROR]: () => {
-    return <Typography id="tracking_checklist-TRACKER_ERROR-desc"></Typography>;
+    return <Typography id="tracking_checklist-TRACKER_ERROR-desc" />;
   },
   [TrackingChecklistStepId.UNASSIGNED_HMD]: () => {
-    return (
-      <Typography id="tracking_checklist-UNASSIGNED_HMD-desc"></Typography>
-    );
+    return <Typography id="tracking_checklist-UNASSIGNED_HMD-desc" />;
   },
   [TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC]: (step, { toggle }) => {
     const data = step.extraData as TrackingChecklistPublicNetworksT | null;
@@ -213,23 +211,23 @@ const stepContentLookup: Record<
                 <A
                   className="text-background-20"
                   href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"
-                ></A>
+                />
               ),
             }}
             whitespace="whitespace-pre-wrap"
-          ></Typography>
+          />
           <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
             <Button
               id="tracking_checklist-NETWORK_PROFILE_PUBLIC-open"
               variant="primary"
               onClick={() => openUrl('ms-settings:network')}
-            ></Button>
+            />
             {step.ignorable && (
               <Button
                 id="tracking_checklist-ignore"
                 variant="secondary"
                 onClick={() => toggle(step.id)}
-              ></Button>
+              />
             )}
           </div>
         </div>
@@ -240,19 +238,19 @@ const stepContentLookup: Record<
     return (
       <>
         <div className="space-y-2.5">
-          <Typography id="tracking_checklist-VRCHAT_SETTINGS-desc"></Typography>
+          <Typography id="tracking_checklist-VRCHAT_SETTINGS-desc" />
           <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row flex-wrap">
             <Button
               variant="primary"
               to="/vrc-warnings"
               id="tracking_checklist-VRCHAT_SETTINGS-open"
-            ></Button>
+            />
             {step.ignorable && (
               <Button
                 id="tracking_checklist-ignore"
                 variant="secondary"
                 onClick={() => toggle(step.id)}
-              ></Button>
+              />
             )}
           </div>
         </div>
@@ -262,8 +260,8 @@ const stepContentLookup: Record<
   [TrackingChecklistStepId.MOUNTING_CALIBRATION]: (step, { toggle }) => {
     return (
       <div className="space-y-2.5">
-        <Typography id="onboarding-automatic_mounting-mounting_reset-step-0"></Typography>
-        <Typography id="onboarding-automatic_mounting-mounting_reset-step-1"></Typography>
+        <Typography id="onboarding-automatic_mounting-mounting_reset-step-0" />
+        <Typography id="onboarding-automatic_mounting-mounting_reset-step-1" />
         <div className="flex w-full justify-center">
           <img
             src="/images/mounting-reset-pose.webp"
@@ -272,13 +270,13 @@ const stepContentLookup: Record<
           />
         </div>
         <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
-          <ResetButton type={ResetType.Mounting} group="default"></ResetButton>
+          <ResetButton type={ResetType.Mounting} group="default" />
           {step.ignorable && (
             <Button
               id="tracking_checklist-ignore"
               variant="secondary"
               onClick={() => toggle(step.id)}
-            ></Button>
+            />
           )}
         </div>
       </div>
@@ -287,8 +285,8 @@ const stepContentLookup: Record<
   [TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION]: (step, { toggle }) => {
     return (
       <div className="space-y-2.5">
-        <Typography id="onboarding-automatic_mounting-mounting_reset-feet-step-0"></Typography>
-        <Typography id="onboarding-automatic_mounting-mounting_reset-feet-step-1"></Typography>
+        <Typography id="onboarding-automatic_mounting-mounting_reset-feet-step-0" />
+        <Typography id="onboarding-automatic_mounting-mounting_reset-feet-step-1" />
         <div className="flex w-full gap-2">
           <div className="flex flex-col bg-background-80 rounded-md w-full">
             <img
@@ -306,13 +304,13 @@ const stepContentLookup: Record<
           </div>
         </div>
         <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
-          <ResetButton type={ResetType.Mounting} group="feet"></ResetButton>
+          <ResetButton type={ResetType.Mounting} group="feet" />
           {step.ignorable && (
             <Button
               id="tracking_checklist-ignore"
               variant="secondary"
               onClick={() => toggle(step.id)}
-            ></Button>
+            />
           )}
         </div>
       </div>
@@ -322,20 +320,20 @@ const stepContentLookup: Record<
     return (
       <>
         <div className="space-y-2.5">
-          <Typography id="tracking_checklist-STAY_ALIGNED_CONFIGURED-desc"></Typography>
+          <Typography id="tracking_checklist-STAY_ALIGNED_CONFIGURED-desc" />
           <div className="flex justify-between sm:items-center gap-1 flex-col sm:flex-row">
             <Button
               id="tracking_checklist-STAY_ALIGNED_CONFIGURED-open"
               variant="primary"
               to="/onboarding/stay-aligned"
               state={{ alonePage: true }}
-            ></Button>
+            />
             {step.ignorable && (
               <Button
                 id="tracking_checklist-ignore"
                 variant="secondary"
                 onClick={() => toggle(step.id)}
-              ></Button>
+              />
             )}
           </div>
         </div>
@@ -371,7 +369,7 @@ export function TrackingChecklistMobile() {
             }
           />
         </div>
-        <ArrowRightIcon></ArrowRightIcon>
+        <ArrowRightIcon />
       </NavLink>
     </div>
   );
@@ -424,15 +422,15 @@ export function TrackingChecklist({
               className="flex gap-1 items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-8 h-8 hover:bg-background-50"
               onClick={() => setSettingsOpen(true)}
             >
-              <WrenchIcon width={15}></WrenchIcon>
+              <WrenchIcon width={15} />
             </div>
             {closable && (
               <div
                 className="flex gap-1 items-center justify-center fill-background-40 hover:fill-background-30 cursor-pointer rounded-full w-8 h-8 hover:bg-background-50"
                 onClick={() => toggleClosed()}
               >
-                {closed && <ArrowDownIcon size={25}></ArrowDownIcon>}
-                {!closed && <CrossIcon size={25}></CrossIcon>}
+                {closed && <ArrowDownIcon size={25} />}
+                {!closed && <CrossIcon size={25} />}
               </div>
             )}
           </div>
@@ -473,7 +471,7 @@ export function TrackingChecklist({
                     completion === 'incomplete',
                   'bg-status-warning animate-pulse': completion === 'partial',
                 })}
-              ></div>
+              />
             </div>
             <div className={'flex flex-col justify-center'}>
               {completion === 'incomplete' && (
@@ -513,17 +511,17 @@ export function TrackingChecklist({
                     ? 'bg-status-warning'
                     : 'bg-status-success'
               }
-            ></ProgressBar>
+            />
           )}
 
           <div className="absolute bottom-0 right-0 w-20 h-20 overflow-clip pointer-events-none">
             <div className="-rotate-45 translate-x-3.5 translate-y-3.5">
-              <LoaderIcon slimeState={slimeState}></LoaderIcon>
+              <LoaderIcon slimeState={slimeState} />
             </div>
           </div>
         </div>
       </div>
-      <TrackingChecklistModal open={settingsOpenState}></TrackingChecklistModal>
+      <TrackingChecklistModal open={settingsOpenState} />
     </>
   );
 }
@@ -543,7 +541,7 @@ export function ChecklistPage() {
         closed={false}
         closing={false}
         toggleClosed={() => {}}
-      ></TrackingChecklist>
+      />
     </div>
   );
 }

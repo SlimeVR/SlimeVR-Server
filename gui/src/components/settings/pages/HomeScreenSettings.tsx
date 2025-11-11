@@ -86,7 +86,7 @@ export function TrackingChecklistSettings({
                 label={l10n.getString(trackingchecklistIdtoLabel[step.id])}
                 outlined
                 color={variant === 'settings' ? 'primary' : 'secondary'}
-              ></CheckBox>
+              />
             </div>
           ))}
       </form>
@@ -117,14 +117,14 @@ export function LayoutSelector({
       onClick={onClick}
     >
       <div className="px-2 pt-2 pb-1">
-        <Typography id={name}></Typography>
+        <Typography id={name} />
       </div>
       <div
         className={classNames('h-[2px] w-full mb-2', {
           'group-hover:bg-background-40 bg-background-50': !active,
           'bg-accent-background-20': active,
         })}
-      ></div>
+      />
       {children}
     </div>
   );
@@ -149,10 +149,10 @@ export function HomeLayoutSettings() {
           onClick={() => setLayout('default')}
         >
           <div className="grid grid-cols-2 gap-2 p-2">
-            <div className="h-2 rounded-lg bg-background-40"></div>
-            <div className="h-2 rounded-lg bg-background-40"></div>
-            <div className="h-2 rounded-lg bg-background-40"></div>
-            <div className="h-2 rounded-lg bg-background-40"></div>
+            <div className="h-2 rounded-lg bg-background-40" />
+            <div className="h-2 rounded-lg bg-background-40" />
+            <div className="h-2 rounded-lg bg-background-40" />
+            <div className="h-2 rounded-lg bg-background-40" />
           </div>
         </LayoutSelector>
         <LayoutSelector
@@ -161,10 +161,10 @@ export function HomeLayoutSettings() {
           onClick={() => setLayout('table')}
         >
           <div className="grid grid-cols-1 gap-2 p-2">
-            <div className="h-2 rounded-lg bg-background-40"></div>
-            <div className="h-2 rounded-lg bg-background-40"></div>
-            <div className="h-2 rounded-lg bg-background-40"></div>
-            <div className="h-2 rounded-lg bg-background-40"></div>
+            <div className="h-2 rounded-lg bg-background-40" />
+            <div className="h-2 rounded-lg bg-background-40" />
+            <div className="h-2 rounded-lg bg-background-40" />
+            <div className="h-2 rounded-lg bg-background-40" />
           </div>
         </LayoutSelector>
       </div>
@@ -176,13 +176,13 @@ export function HomeScreenSettings() {
   return (
     <SettingsPageLayout>
       <div className="flex flex-col gap-2">
-        <SettingsPagePaneLayout icon={<HomeIcon></HomeIcon>}>
+        <SettingsPagePaneLayout icon={<HomeIcon />}>
           <Typography variant="main-title" id="home-settings" />
-          <HomeLayoutSettings></HomeLayoutSettings>
+          <HomeLayoutSettings />
         </SettingsPagePaneLayout>
-        <SettingsPagePaneLayout icon={<CheckIcon size={18}></CheckIcon>}>
+        <SettingsPagePaneLayout icon={<CheckIcon size={18} />}>
           <Typography variant="main-title" id="tracking_checklist" />
-          <TrackingChecklistSettings variant="settings"></TrackingChecklistSettings>
+          <TrackingChecklistSettings variant="settings" />
         </SettingsPagePaneLayout>
       </div>
     </SettingsPageLayout>

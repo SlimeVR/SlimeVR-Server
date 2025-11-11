@@ -94,7 +94,7 @@ function Dot({
           height: dotSize,
           outlineWidth: globalVelocity * 2 + 2,
         }}
-      ></div>
+      />
       {trackers?.map(({ tracker }, index) => (
         <Tracker
           tracker={tracker}
@@ -187,7 +187,7 @@ export function BodyDisplay({
           variant === 'tracker-select' && 'mx-10'
         )}
       >
-        <PersonFrontIcon width={width}></PersonFrontIcon>
+        <PersonFrontIcon width={width} />
         {slotsButtonsPos.map((dotData) => (
           <Dot
             {...dotData}

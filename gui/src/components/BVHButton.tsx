@@ -64,7 +64,7 @@ export function BVHButton(props: React.HTMLAttributes<HTMLButtonElement>) {
           'border',
           recording ? 'border-status-critical' : 'border-transparent'
         )}
-      ></BigButton>
+      />
     </Localized>
   );
 }

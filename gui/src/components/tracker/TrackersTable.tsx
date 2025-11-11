@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { IPv4 } from 'ip-num/IPNumber';
 import { createContext, ReactNode, useContext, useMemo } from 'react';
 import {
+  BodyPart,
   TrackerDataT,
   TrackerStatus as TrackerStatusEnum,
   TrackingChecklistStepT,
@@ -24,12 +25,12 @@ import {
 import { Tooltip } from '@/components/commons/Tooltip';
 import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 
+const isHMD = ({ tracker }: FlatDeviceTracker) =>
+  tracker.info?.isHmd || tracker.info?.bodyPart === BodyPart.HEAD;
+
 const isSlime = ({ device }: FlatDeviceTracker) =>
   device?.hardwareInfo?.manufacturer === 'SlimeVR' ||
   device?.hardwareInfo?.manufacturer === 'HID Device';
-
-const getDeviceName = ({ device }: FlatDeviceTracker) =>
-  device?.customName?.toString() || '';
 
 const getTrackerName = ({ tracker }: FlatDeviceTracker) =>
   tracker?.info?.customName?.toString() || '';
@@ -50,7 +51,7 @@ export function TrackerNameCell({
       <div className="flex flex-col justify-center items-center fill-background-10 relative">
         {warning && (
           <div className="absolute -left-2 -top-1 text-status-warning ">
-            <WarningIcon width={16}></WarningIcon>
+            <WarningIcon width={16} />
           </div>
         )}
         <div
@@ -62,14 +63,14 @@ export function TrackerNameCell({
             }
           )}
         >
-          <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
+          <BodyPartIcon bodyPart={tracker.info?.bodyPart} />
         </div>
       </div>
       <div className="flex flex-col flex-grow">
         <Typography bold whitespace="whitespace-nowrap">
           {name}
         </Typography>
-        <TrackerStatus status={tracker.status}></TrackerStatus>
+        <TrackerStatus status={tracker.status} />
       </div>
     </div>
   );
@@ -122,7 +123,7 @@ function Header({
       })}
     >
       <div className={className}>
-        <Typography id={name} whitespace="whitespace-nowrap"></Typography>
+        <Typography id={name} whitespace="whitespace-nowrap" />
       </div>
     </th>
   );
@@ -195,7 +196,7 @@ function Row({
         content={
           warning && (
             <div className="flex gap-1 items-center text-status-warning">
-              <WarningIcon width={20}></WarningIcon>
+              <WarningIcon width={20} />
               <Typography id={trackingchecklistIdtoLabel[warning.id]} />
             </div>
           )
@@ -205,10 +206,7 @@ function Row({
       >
         <tr className="group" onClick={() => clickedTracker(tracker)}>
           <Cell first>
-            <TrackerNameCell
-              tracker={tracker}
-              warning={warning}
-            ></TrackerNameCell>
+            <TrackerNameCell tracker={tracker} warning={warning} />
           </Cell>
           <Cell>
             <Typography color={fontColor}>
@@ -234,7 +232,7 @@ function Row({
                 ping={device?.hardwareStatus?.ping}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
                 textColor={fontColor}
-              ></TrackerWifi>
+              />
             )}
           </Cell>
           <Cell>
@@ -304,7 +302,7 @@ export function TrackersTable({
   // TODO: fix memo
   const filteredSortedTrackers = useMemo(() => {
     const list = filteringEnabled
-      ? flatTrackers.filter((t) => getDeviceName(t) === 'HMD' || isSlime(t))
+      ? flatTrackers.filter((t) => isHMD(t) || isSlime(t))
       : flatTrackers;
 
     if (sortingEnabled) {
@@ -319,46 +317,43 @@ export function TrackersTable({
     <div className="w-full overflow-x-auto py-2">
       <table className="w-full" cellPadding={0} cellSpacing={0}>
         <tr>
-          <Header name={'tracker-table-column-name'} first></Header>
-          <Header name={'tracker-table-column-type'}></Header>
-          <Header name={'tracker-table-column-battery'}></Header>
-          <Header name={'tracker-table-column-ping'}></Header>
-          <Header name={'tracker-table-column-tps'}></Header>
+          <Header name={'tracker-table-column-name'} first />
+          <Header name={'tracker-table-column-type'} />
+          <Header name={'tracker-table-column-battery'} />
+          <Header name={'tracker-table-column-ping'} />
+          <Header name={'tracker-table-column-tps'} />
           <Header
             name={'tracker-table-column-rotation'}
             className={classNames({
               'w-44': config?.devSettings?.preciseRotation,
               'w-32': !config?.devSettings?.preciseRotation,
             })}
-          ></Header>
-          <Header
-            name={'tracker-table-column-temperature'}
-            last={!moreInfo}
-          ></Header>
+          />
+          <Header name={'tracker-table-column-temperature'} last={!moreInfo} />
           <Header
             name={'tracker-table-column-linear-acceleration'}
             className="w-36"
             show={moreInfo}
-          ></Header>
+          />
           <Header
             name={'tracker-table-column-position'}
             className="w-36"
             show={moreInfo}
-          ></Header>
+          />
           <Header
             name={'tracker-table-column-stay_aligned'}
             className="w-36"
             show={moreInfo}
             last={moreInfo}
-          ></Header>
-          <Header name={'tracker-table-column-url'} show={moreInfo}></Header>
+          />
+          <Header name={'tracker-table-column-url'} show={moreInfo} />
         </tr>
         {filteredSortedTrackers.map((data) => (
           <Row
             clickedTracker={clickedTracker}
             data={data}
             highlightedTrackers={highlightedTrackers}
-          ></Row>
+          />
         ))}
       </table>
     </div>

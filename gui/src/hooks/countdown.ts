@@ -37,17 +37,17 @@ export function useCountdown({
   const clearTimer = () => {
     clearInterval(countdownTimer.current);
     countdownTimer.current = undefined;
-  }
+  };
 
   const resetEnd = () => {
     setIsCounting(false);
-    clearTimer()
+    clearTimer();
     onCountdownEnd();
   };
 
   const abortCountdown = () => {
     setIsCounting(false);
-    clearTimer()
+    clearTimer();
   };
 
   return {

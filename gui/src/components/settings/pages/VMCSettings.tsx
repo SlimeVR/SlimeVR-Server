@@ -21,15 +21,16 @@ import {
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
 import { error } from '@/utils/logging';
+import {
+  OSCSettings,
+  useOscSettingsValidator,
+} from '@/hooks/osc-setting-validator';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { boolean, object } from 'yup';
 
 interface VMCSettingsForm {
   vmc: {
-    oscSettings: {
-      enabled: boolean;
-      portIn: number;
-      portOut: number;
-      address: string;
-    };
+    oscSettings: OSCSettings;
     vrmJson?: FileList;
     anchorHip: boolean;
     mirrorTracking: boolean;
@@ -53,9 +54,21 @@ export function VMCSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
   const [modelName, setModelName] = useState<string | null>(null);
+  const { oscValidator } = useOscSettingsValidator();
 
   const { reset, control, watch, handleSubmit } = useForm<VMCSettingsForm>({
     defaultValues,
+    reValidateMode: 'onChange',
+    mode: 'onChange',
+    resolver: yupResolver(
+      object({
+        vmc: object({
+          oscSettings: oscValidator,
+          anchorHip: boolean().required(),
+          mirrorTracking: boolean().required(),
+        }),
+      })
+    ),
   });
 
   const onSubmit = async (values: VMCSettingsForm) => {
@@ -126,7 +139,7 @@ export function VMCSettings() {
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<VMCIcon></VMCIcon>} id="vmc">
+        <SettingsPagePaneLayout icon={<VMCIcon />} id="vmc">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-osc-vmc')}
@@ -180,10 +193,9 @@ export function VMCSettings() {
                   type="number"
                   control={control}
                   name="vmc.oscSettings.portIn"
-                  rules={{ required: true }}
                   placeholder="9002"
                   label=""
-                ></Input>
+                />
               </Localized>
               <Localized
                 id="settings-osc-vmc-network-port_out"
@@ -193,10 +205,9 @@ export function VMCSettings() {
                   type="number"
                   control={control}
                   name="vmc.oscSettings.portOut"
-                  rules={{ required: true }}
                   placeholder="9000"
                   label=""
-                ></Input>
+                />
               </Localized>
             </div>
             <Typography variant="section-title">
@@ -212,16 +223,11 @@ export function VMCSettings() {
                 type="text"
                 control={control}
                 name="vmc.oscSettings.address"
-                rules={{
-                  required: true,
-                  pattern:
-                    /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-                }}
                 placeholder={l10n.getString(
                   'settings-osc-vmc-network-address-placeholder'
                 )}
                 label=""
-              ></Input>
+              />
             </div>
             <Typography variant="section-title">
               {l10n.getString('settings-osc-vmc-vrm')}
@@ -247,7 +253,7 @@ export function VMCSettings() {
                 }
                 label="settings-osc-vmc-vrm-file_select"
                 accept="model/gltf-binary, model/gltf+json, model/vrml, .vrm, .glb, .gltf"
-              ></FileInput>
+              />
               {/* For some reason, linux (GNOME) is detecting the VRM file is a VRML */}
             </div>
             <Typography variant="section-title">

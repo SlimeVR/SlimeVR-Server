@@ -198,7 +198,7 @@ export function BodyInteractions({
         className="absolute w-full h-full top-0 z-10"
         width="100%"
         height="100%"
-      ></canvas>
+      />
       <div className="flex">
         <div ref={leftContainerRef} className="z-10">
           {leftControls}
@@ -210,7 +210,7 @@ export function BodyInteractions({
             variant === 'tracker-select' && 'mobile:mx-0 xs:mx-10'
           )}
         >
-          <PersonFrontIcon width={width} mirror={mirror}></PersonFrontIcon>
+          <PersonFrontIcon width={width} mirror={mirror} />
           {slotsButtonsPos.map(
             ({ top, left, height, width, id, hidden, buttonOffset }) => (
               <div
@@ -234,7 +234,7 @@ export function BodyInteractions({
                         height: dotsSize,
                         animationDuration: '1.5s',
                       }}
-                    ></div>
+                    />
                   )}
                   <div
                     className={classNames(
@@ -249,7 +249,7 @@ export function BodyInteractions({
                       width: dotsSize,
                       height: dotsSize,
                     }}
-                  ></div>
+                  />
                 </div>
               </div>
             )

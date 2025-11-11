@@ -41,7 +41,7 @@ function ButtonProgress({
         { 'duration-150': status === 'finished' }
       )}
       style={{ width: `${progress * 100}%` }}
-    ></div>
+    />
   );
 }
 
@@ -66,7 +66,7 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
   return (
     <Tooltip
       disabled={isMd}
-      content={<Typography textAlign="text-center" id={name}></Typography>}
+      content={<Typography textAlign="text-center" id={name} />}
       preferedDirection="top"
     >
       <div
@@ -102,13 +102,16 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
             variant="section-title"
             textAlign="text-center"
             id={name}
-          ></Typography>
+          />
         </div>
 
-        <ButtonProgress progress={progress} status={status}></ButtonProgress>
+        <ButtonProgress progress={progress} status={status} />
         <div
           className={classNames(
-            { 'opacity-0': status !== 'counting', 'animate-timer-tick': status === 'counting' },
+            {
+              'opacity-0': status !== 'counting',
+              'animate-timer-tick': status === 'counting',
+            },
             'absolute top-0 h-full flex items-center justify-center'
           )}
         >
@@ -153,14 +156,14 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
 
   return (
     <>
-      <HomeSettingsModal open={settingsOpenState}></HomeSettingsModal>
+      <HomeSettingsModal open={settingsOpenState} />
       <div className="flex mobile:py-2 flex-col items-center bg-background-70 rounded-t-lg h-[var(--toolbar-h)] mr-2 xs:mt-2 mobile:mr-0">
         <div className="px-3 py-3 w-full flex gap-4 justify-center md:justify-start">
           <div className="flex-col flex gap-1 md:w-[60%]">
             <Typography variant="section-title" id="toolbar-drift_reset" />
             <div className="gap-2 md:h-[72px] h-[62px] w-full grid-cols-2 grid">
-              <BasicResetButton type={ResetType.Full}></BasicResetButton>
-              <BasicResetButton type={ResetType.Yaw}></BasicResetButton>
+              <BasicResetButton type={ResetType.Full} />
+              <BasicResetButton type={ResetType.Yaw} />
             </div>
           </div>
           <div className="flex-col flex gap-1 md:flex-grow">
@@ -178,18 +181,18 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
                 type={ResetType.Mounting}
                 group={'default'}
                 customName="toolbar-mounting_calibration-default"
-              ></BasicResetButton>
+              />
               <BasicResetButton
                 type={ResetType.Mounting}
                 group={'feet'}
                 customName="toolbar-mounting_calibration-feet"
-              ></BasicResetButton>
+              />
               {groupVisibility['fingers'] && (
                 <BasicResetButton
                   type={ResetType.Mounting}
                   group={'fingers'}
                   customName="toolbar-mounting_calibration-fingers"
-                ></BasicResetButton>
+                />
               )}
             </div>
           </div>
@@ -200,13 +203,13 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
             id="toolbar-connected_trackers"
             vars={{ count: trackers.length }}
           />
-          <div className="bg-background-50 h-[2px] rounded-lg flex-grow"></div>
+          <div className="bg-background-50 h-[2px] rounded-lg flex-grow" />
           {showSettings && (
             <div
               className="fill-background-30 hover:fill-background-20 cursor-pointer"
               onClick={() => setSettingsOpen(true)}
             >
-              <LayoutIcon size={18}></LayoutIcon>
+              <LayoutIcon size={18} />
             </div>
           )}
         </div>

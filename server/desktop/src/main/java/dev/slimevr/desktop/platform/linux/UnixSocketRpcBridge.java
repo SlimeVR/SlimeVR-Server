@@ -35,10 +35,22 @@ public class UnixSocketRpcBridge implements dev.slimevr.bridge.Bridge,
 	) {
 		this.socketPath = socketPath;
 		this.protocolAPI = server.protocolAPI;
+
 		File socketFile = new File(socketPath);
-		if (socketFile.exists())
-			throw new RuntimeException(socketPath + " socket already exists.");
+		if (socketFile.exists()) {
+			if (SocketUtils.isSocketInUse(socketPath)) {
+				throw new RuntimeException(
+					socketPath + " socket is already in use by another process."
+				);
+			} else {
+				LogManager.warning("[SolarXR Bridge] Cleaning up stale socket: " + socketPath);
+				if (!socketFile.delete()) {
+					throw new RuntimeException("Failed to delete stale socket: " + socketPath);
+				}
+			}
+		}
 		socketFile.deleteOnExit();
+
 		try {
 			socket = ServerSocketChannel.open(StandardProtocolFamily.UNIX);
 			selector = Selector.open();

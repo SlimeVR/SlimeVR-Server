@@ -70,10 +70,10 @@ export function MainLayout({
       })}
     >
       <div style={{ gridArea: 't' }}>
-        <TopBar></TopBar>
+        <TopBar />
       </div>
       <div style={{ gridArea: 'n' }} className="overflow-y-auto">
-        <Navbar></Navbar>
+        <Navbar />
       </div>
 
       <div
@@ -88,16 +88,16 @@ export function MainLayout({
         {children}
       </div>
       {full && isMobile && completion !== 'complete' && (
-        <TrackingChecklistMobile></TrackingChecklistMobile>
+        <TrackingChecklistMobile />
       )}
       {full && (
         <div style={{ gridArea: 'b' }}>
-          <Toolbar showSettings={showToolbarSettings}></Toolbar>
+          <Toolbar showSettings={showToolbarSettings} />
         </div>
       )}
       {!isMobile && full && (
         <div style={{ gridArea: 's' }} className="mr-2">
-          <Sidebar></Sidebar>
+          <Sidebar />
         </div>
       )}
     </div>

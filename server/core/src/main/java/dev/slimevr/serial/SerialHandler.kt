@@ -14,6 +14,7 @@ abstract class SerialHandler {
 	abstract fun factoryResetRequest()
 	abstract fun infoRequest()
 	abstract fun wifiScanRequest()
+	abstract fun customCommandRequest(command: String)
 	abstract fun closeSerial()
 	abstract fun write(buff: ByteArray)
 	abstract fun setWifi(ssid: String, passwd: String)
@@ -44,8 +45,7 @@ abstract class SerialHandler {
 			// VNC2 with FT232Slave
 			Pair(0x0403, 0x6001),
 		)
-		fun isKnownBoard(port: SerialPort): Boolean =
-			supportedSerial.contains(Pair(port.vendorId, port.productId))
+		fun isKnownBoard(port: SerialPort): Boolean = supportedSerial.contains(Pair(port.vendorId, port.productId))
 	}
 }
 
@@ -66,6 +66,8 @@ class SerialHandlerStub : SerialHandler() {
 	override fun infoRequest() {}
 
 	override fun wifiScanRequest() {}
+
+	override fun customCommandRequest(command: String) {}
 
 	override fun closeSerial() {}
 

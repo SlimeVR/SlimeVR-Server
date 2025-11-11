@@ -479,7 +479,6 @@ settings-serial-factory_reset-warning =
     Tämä tarkoittaa, että Wi-Fi- ja kalibrointiasetukset <b>menetetään kokonaan!</b>
 settings-serial-factory_reset-warning-ok = Tiedän mitä teen
 settings-serial-factory_reset-warning-cancel = Peruuta
-settings-serial-get_infos = Hanki tietoja
 settings-serial-serial_select = Valitse sarjaportti
 settings-serial-auto_dropdown_item = Autom.
 settings-serial-file_type = Teksti
@@ -607,20 +606,20 @@ onboarding-reset_tutorial-skip = Ohita vaihe
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Napauta { $taps } kertaa korostettua jäljitintä käynnistääksesi kallistuman nollauksen.
-    
+
     Tämä osoittaa jäljittimet samaan suuntaan kuin HMD.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Napauta { $taps } kertaa korostettua jäljitintä käynnistääksesi täysinollauksen.
-    
+
     Sinun on seisottava paikallasi (i-pose) tätä varten. On 3 sekunnin viive (muokattavissa), ennen kuin se tapahtuu.
     Tämä täysin nollaa kaikkien jäljittimien sijainnin ja kierron. Sen pitäisi korjata useimmat ongelmat.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Napauta { $taps } kertaa korostettua jäljitintä käynnistääksesi asennuksen nollaus.
-    
+
     Asennuksen nollaus auttaa siinä, kuinka jäljittimet on todella asetettu sinulla, joten jos vahingossa siirsit ja muutit suuresti niiden suuntaa, tämä auttaa.
-    
+
     Sinun on oltava hiihto-asennossa, kuten on näytettynä Automaattisessa Asennuksessa ja sinulla on 3 sekunnin viive (muokattavissa), ennen kuin se käynnistyy.
 
 ## Setup start
@@ -910,4 +909,3 @@ status_system-StatusTrackerError = { $trackerName } jäljittimessä on virhe
 
 
 ## Unknown device modal
-

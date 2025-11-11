@@ -70,7 +70,7 @@ export function TrackerSelectionMenu({
                           bodyPart ===
                           (fd.tracker.info?.bodyPart || BodyPart.NONE)
                         }
-                      ></TrackerCard>
+                      />
                     ))}
                   </div>
                 </>
@@ -90,7 +90,7 @@ export function TrackerSelectionMenu({
                     outlined={
                       bodyPart === (fd.tracker.info?.bodyPart || BodyPart.NONE)
                     }
-                  ></TrackerCard>
+                  />
                 ))}
               </div>
             </div>

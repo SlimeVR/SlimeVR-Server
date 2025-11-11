@@ -34,7 +34,7 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const { config } = useConfig();
-  const finishedTimeoutRef = useRef(-1);
+  const finishedTimeoutRef = useRef<NodeJS.Timeout>();
   const [status, setStatus] = useState<ResetBtnStatus>('idle');
 
   const reset = () => {

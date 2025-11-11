@@ -378,7 +378,7 @@ function SkeletonVisualizer({
 
   return (
     <div ref={containerRef} className={classNames('w-full h-full')}>
-      <canvas ref={canvasRef} className="w-full h-full"></canvas>
+      <canvas ref={canvasRef} className="w-full h-full" />
     </div>
   );
 }
@@ -416,10 +416,7 @@ export function SkeletonVisualizerWidget({
         })}
       >
         <ErrorBoundary onError={() => setError(true)} fallback={<></>}>
-          <SkeletonVisualizer
-            onInit={onInit}
-            disabled={disabled}
-          ></SkeletonVisualizer>
+          <SkeletonVisualizer onInit={onInit} disabled={disabled} />
         </ErrorBoundary>
       </div>
       <div
@@ -432,7 +429,7 @@ export function SkeletonVisualizerWidget({
           className="bg-background-90 rounded-lg p-2 px-3 flex gap-2 items-center hover:bg-background-60 cursor-pointer"
           onClick={() => toggleDisabled?.()}
         >
-          <EyeIcon closed width={20}></EyeIcon>
+          <EyeIcon closed width={20} />
           <Typography id="preview-disabled_render" />
         </div>
       </div>

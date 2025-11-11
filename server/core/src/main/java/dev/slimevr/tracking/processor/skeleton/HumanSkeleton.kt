@@ -214,6 +214,7 @@ class HumanSkeleton(
 	var legTweaks = LegTweaks(this)
 	var tapDetectionManager = TapDetectionManager(this)
 	var localizer = Localizer(this)
+	var ikSolver = IKSolver(headBone)
 
 	// Stay Aligned
 	var trackerSkeleton = TrackerSkeleton(this)
@@ -436,16 +437,36 @@ class HumanSkeleton(
 		hasKneeTrackers = leftUpperLegTracker != null && rightUpperLegTracker != null
 		hasLeftArmTracker = leftLowerArmTracker != null || leftUpperArmTracker != null
 		hasRightArmTracker = rightLowerArmTracker != null || rightUpperArmTracker != null
-		hasLeftFingerTracker = leftThumbMetacarpalTracker != null || leftThumbProximalTracker != null || leftThumbDistalTracker != null ||
-			leftIndexProximalTracker != null || leftIndexIntermediateTracker != null || leftIndexDistalTracker != null ||
-			leftMiddleProximalTracker != null || leftMiddleIntermediateTracker != null || leftMiddleDistalTracker != null ||
-			leftRingProximalTracker != null || leftRingIntermediateTracker != null || leftRingDistalTracker != null ||
-			leftLittleProximalTracker != null || leftLittleIntermediateTracker != null || leftLittleDistalTracker != null
-		hasRightFingerTracker = rightThumbMetacarpalTracker != null || rightThumbProximalTracker != null || rightThumbDistalTracker != null ||
-			rightIndexProximalTracker != null || rightIndexIntermediateTracker != null || rightIndexDistalTracker != null ||
-			rightMiddleProximalTracker != null || rightMiddleIntermediateTracker != null || rightMiddleDistalTracker != null ||
-			rightRingProximalTracker != null || rightRingIntermediateTracker != null || rightRingDistalTracker != null ||
-			rightLittleProximalTracker != null || rightLittleIntermediateTracker != null || rightLittleDistalTracker != null
+		hasLeftFingerTracker = leftThumbMetacarpalTracker != null ||
+			leftThumbProximalTracker != null ||
+			leftThumbDistalTracker != null ||
+			leftIndexProximalTracker != null ||
+			leftIndexIntermediateTracker != null ||
+			leftIndexDistalTracker != null ||
+			leftMiddleProximalTracker != null ||
+			leftMiddleIntermediateTracker != null ||
+			leftMiddleDistalTracker != null ||
+			leftRingProximalTracker != null ||
+			leftRingIntermediateTracker != null ||
+			leftRingDistalTracker != null ||
+			leftLittleProximalTracker != null ||
+			leftLittleIntermediateTracker != null ||
+			leftLittleDistalTracker != null
+		hasRightFingerTracker = rightThumbMetacarpalTracker != null ||
+			rightThumbProximalTracker != null ||
+			rightThumbDistalTracker != null ||
+			rightIndexProximalTracker != null ||
+			rightIndexIntermediateTracker != null ||
+			rightIndexDistalTracker != null ||
+			rightMiddleProximalTracker != null ||
+			rightMiddleIntermediateTracker != null ||
+			rightMiddleDistalTracker != null ||
+			rightRingProximalTracker != null ||
+			rightRingIntermediateTracker != null ||
+			rightRingDistalTracker != null ||
+			rightLittleProximalTracker != null ||
+			rightLittleIntermediateTracker != null ||
+			rightLittleDistalTracker != null
 
 		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true)
@@ -455,6 +476,9 @@ class HumanSkeleton(
 
 		// Update tap detection's trackers
 		tapDetectionManager.updateConfig(trackers)
+
+		// Rebuild Ik Solver
+		ikSolver.buildChains(trackers)
 
 		// Update bones tracker field
 		refreshBoneTracker()
@@ -1173,7 +1197,7 @@ class HumanSkeleton(
 
 			SkeletonConfigToggles.SELF_LOCALIZATION -> localizer.setEnabled(newValue)
 
-			SkeletonConfigToggles.USE_POSITION -> newValue
+			SkeletonConfigToggles.USE_POSITION -> ikSolver.enabled = newValue
 
 			SkeletonConfigToggles.ENFORCE_CONSTRAINTS -> enforceConstraints = newValue
 
@@ -1204,7 +1228,8 @@ class HumanSkeleton(
 		}
 		// If trackingArmFromController, reverse
 		if (((boneType == BoneType.LEFT_LOWER_ARM || boneType == BoneType.LEFT_HAND) && isTrackingLeftArmFromController) ||
-			(boneType == BoneType.RIGHT_LOWER_ARM || boneType == BoneType.RIGHT_HAND) && isTrackingRightArmFromController
+			(boneType == BoneType.RIGHT_LOWER_ARM || boneType == BoneType.RIGHT_HAND) &&
+			isTrackingRightArmFromController
 		) {
 			transOffset = -transOffset
 		}
@@ -1543,6 +1568,7 @@ class HumanSkeleton(
 		}
 		legTweaks.resetBuffer()
 		localizer.reset()
+		ikSolver.resetOffsets()
 		LogManager.info("[HumanSkeleton] Reset: full ($resetSourceName)")
 	}
 
@@ -1718,6 +1744,14 @@ class HumanSkeleton(
 	@VRServerThread
 	fun setLegTweaksEnabled(value: Boolean) {
 		legTweaks.enabled = value
+	}
+
+	/**
+	 * enable/disable IK solver (for Autobone)
+	 */
+	@VRServerThread
+	fun setIKSolverEnabled(value: Boolean) {
+		ikSolver.enabled = value
 	}
 
 	@VRServerThread

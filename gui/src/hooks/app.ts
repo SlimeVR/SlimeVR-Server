@@ -75,7 +75,12 @@ export function useProvideAppContext(): AppContext {
   });
 
   useEffect(() => {
-    fetchCurrentFirmwareRelease().then((res) => setCurrentFirmwareRelease(res));
+    const interval = setInterval(() => {
+      fetchCurrentFirmwareRelease().then((res) => setCurrentFirmwareRelease(res));
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   return {

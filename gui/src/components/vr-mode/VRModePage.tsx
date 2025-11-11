@@ -31,14 +31,14 @@ export function VRModePage() {
             },
           });
         }}
-      ></SkeletonVisualizerWidget>
+      />
       <NavLink
         to="/checklist"
         className="xs:hidden absolute z-50 h-12 w-12 rounded-full bg-accent-background-30 bottom-3 right-3 flex justify-center items-center fill-background-10"
       >
-        <Checklist></Checklist>
+        <Checklist />
       </NavLink>
-      <PreviewControls open></PreviewControls>
+      <PreviewControls open />
     </div>
   );
 }

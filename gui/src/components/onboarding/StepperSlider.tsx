@@ -83,9 +83,7 @@ export function StepDot({
       )}
       onClick={onClick}
     >
-      {active && (
-        <div className="flex h-2 w-2 rounded-full bg-background-10"></div>
-      )}
+      {active && <div className="flex h-2 w-2 rounded-full bg-background-10" />}
       {done && <CheckIcon />}
     </div>
   );
@@ -183,7 +181,7 @@ export function StepperSlider({
         {Array.from({ length: steps.length }).map((_, index) => (
           <div key={index} className="flex items-center gap-2">
             {index !== 0 && (
-              <div className="w-5 h-1 bg-background-50 rounded-full"></div>
+              <div className="w-5 h-1 bg-background-50 rounded-full" />
             )}
             <StepDot
               active={index === step}

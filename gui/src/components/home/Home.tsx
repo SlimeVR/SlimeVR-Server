@@ -30,13 +30,13 @@ export function Home() {
         to="/vr-mode"
         className="xs:hidden absolute z-50 h-12 w-12 rounded-full bg-accent-background-30 bottom-3 right-3 flex justify-center items-center fill-background-10"
       >
-        <HeadsetIcon></HeadsetIcon>
+        <HeadsetIcon />
       </NavLink>
       <NavLink
         to="/checklist"
         className="xs:hidden absolute z-50 h-12 w-12 rounded-full bg-accent-background-30 bottom-[70px] right-3 flex justify-center items-center fill-background-10"
       >
-        <Checklist></Checklist>
+        <Checklist />
       </NavLink>
       <div className="overflow-y-auto flex flex-col gap-3">
         {trackers.length === 0 && (
@@ -74,7 +74,7 @@ export function Home() {
             <TrackersTable
               flatTrackers={trackers}
               clickedTracker={(tracker) => sendToSettings(tracker)}
-            ></TrackersTable>
+            />
           </div>
         )}
       </div>

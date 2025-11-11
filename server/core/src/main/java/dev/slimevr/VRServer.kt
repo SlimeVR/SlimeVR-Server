@@ -58,12 +58,8 @@ class VRServer @JvmOverloads constructor(
 	vrcConfigHandlerProvider: (VRServer) -> VRCConfigHandler = { _ -> VRCConfigHandlerStub() },
 	networkProfileProvider: (VRServer) -> NetworkProfileChecker = { _ -> NetworkProfileCheckerStub() },
 	acquireMulticastLock: () -> Any? = { null },
-	// configPath is used by VRWorkout, do not remove!
-	configPath: String,
+	@JvmField val configManager: ConfigManager,
 ) : Thread("VRServer") {
-
-	@JvmField
-	val configManager: ConfigManager
 
 	@JvmField
 	val humanPoseManager: HumanPoseManager
@@ -125,8 +121,6 @@ class VRServer @JvmOverloads constructor(
 
 	init {
 		// UwU
-		configManager = ConfigManager(configPath)
-		configManager.loadConfig()
 		deviceManager = DeviceManager(this)
 		serialHandler = serialHandlerProvider(this)
 		serialFlashingHandler = flashingHandlerProvider(this)

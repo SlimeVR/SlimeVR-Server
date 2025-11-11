@@ -527,7 +527,6 @@ settings-serial-factory_reset-warning =
     Đặt lại bao gồm tất cả các cài đặt Wi-Fi và hiệu chuẩn (Calibrate) <b>sẽ bị mất!</b>
 settings-serial-factory_reset-warning-ok = Tôi biết mình đang làm gì
 settings-serial-factory_reset-warning-cancel = Hủy
-settings-serial-get_infos = Lấy thông tin
 settings-serial-serial_select = Chọn cổng Serial
 settings-serial-auto_dropdown_item = Tự động
 settings-serial-get_wifi_scan = Quét WiFi
@@ -669,20 +668,20 @@ onboarding-reset_tutorial-skip = Bỏ qua bước
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Nhấn { $taps } lần thiết bị được đánh dấu để kích hoạt đặt lại chiều quay.
-    
+
     Điều này sẽ làm cho các trình theo dõi quay mặt về cùng hướng với kính thực thế ảo (HMD) của bạn.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Nhấn vào { $taps } lần thiết bị được đánh dấu để kích hoạt đặt lại toàn bộ.
-    
+
     Bạn cần phải đứng thẳng tay để làm việc này (i-pose). Có độ trễ 3 giây (có thể định cấu hình) trước khi nó thực sự xảy ra.
     Điều này đặt lại hoàn toàn vị trí và xoay của tất cả các trình theo dõi của bạn. Nó sẽ khắc phục hầu hết các vấn đề.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Nhấn vào { $taps } lần thiết bị được đánh dấu để kích hoạt đặt lại lắp.
-    
+
     Thiết lập lại gắn kết giúp ích cho cách các trình theo dõi thực sự được đặt vào bạn, vì vậy nếu bạn vô tình di chuyển chúng và thay đổi cách chúng được định hướng với số lượng lớn, điều này sẽ hữu ích.
-    
+
     Bạn cần phải ở trên một tư thế như bạn đang trượt tuyết như nó được hiển thị trên trình hướng dẫn gắn tự động và bạn có độ trễ 3 giây (có thể định cấu hình) trước khi nó được kích hoạt.
 
 ## Setup start
@@ -870,7 +869,7 @@ onboarding-choose_mounting-manual_mounting-label-v2 = Có thể không đủ ch�
 onboarding-choose_mounting-manual_mounting-description = Điều này sẽ cho phép bạn chọn hướng lắp theo cách thủ công cho từng thiết bị
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
-    Bạn có chắc chắn muốn 
+    Bạn có chắc chắn muốn
     đo hướng quay tự động?
 onboarding-choose_mounting-manual_modal-description = <b>Hiệu chuẩn lắp thủ công được khuyến nghị cho người dùng mới</b>, vì các tư thế của hiệu chuẩn lắp tự động có thể khó thực hiện ngay trước và có thể cần một số thực hành.
 onboarding-choose_mounting-manual_modal-confirm = Tôi chắc chắn về những gì tôi đang làm
@@ -1024,7 +1023,7 @@ tray_or_exit_modal-title = Nút đóng nên làm gì?
 # Multiline text
 tray_or_exit_modal-description =
     Điều này cho phép bạn chọn xem bạn muốn thoát khỏi chương trình hoặc thu nhỏ nó vào khay khi nhấn nút đóng.
-    
+
     Bạn có thể thay đổi điều này sau trong cài đặt giao diện.
 tray_or_exit_modal-radio-exit = Thoát khi đóng
 tray_or_exit_modal-radio-tray = Thu nhỏ vào khay hệ thống
@@ -1041,4 +1040,3 @@ unknown_device-modal-confirm = Chắc!
 unknown_device-modal-forget = Bỏ qua
 
 ## Error collection consent modal
-

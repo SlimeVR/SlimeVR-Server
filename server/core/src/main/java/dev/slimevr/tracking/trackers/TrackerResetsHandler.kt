@@ -51,6 +51,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 	// Reference adjustment quats
+
 	/**
 	 * Gyro fix is set by full reset. This sets the current y rotation to 0, correcting
 	 * for initial yaw rotation and the rotation incurred by mounting orientation. This

@@ -335,6 +335,7 @@ class HumanPoseManager(val server: VRServer?) {
 
 	// #endregion
 	// #region config methods
+
 	/**
 	 * @param key the offset from which to get the corresponding value
 	 * @return the offset in config corresponding to the key
@@ -529,7 +530,8 @@ class HumanPoseManager(val server: VRServer?) {
 
 				// Get the difference between last reset and now
 				val difference = tracker
-					.getRotation() * tracker.resetsHandler.lastResetQuaternion!!.inv()
+					.getRotationNoResetSmooth() *
+					tracker.resetsHandler.lastResetQuaternion!!.inv()
 				// Get the pure yaw
 				var trackerDriftAngle = abs(
 					(
@@ -588,6 +590,11 @@ class HumanPoseManager(val server: VRServer?) {
 	@VRServerThread
 	fun setLegTweaksEnabled(value: Boolean) {
 		skeleton.setLegTweaksEnabled(value)
+	}
+
+	@VRServerThread
+	fun setIKSolverEnabled(value: Boolean) {
+		skeleton.setIKSolverEnabled(value)
 	}
 
 	@VRServerThread

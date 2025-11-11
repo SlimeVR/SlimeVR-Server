@@ -45,7 +45,7 @@ export function TrackingPauseButton(
         }
         onClick={toggleTracking}
         className={classNames(props.className, 'min-h-24')}
-      ></BigButton>
+      />
     </Localized>
   );
 }

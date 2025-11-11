@@ -86,7 +86,7 @@ export function InvalidNetworkProfileWarning({
         id="tracking_checklist-NETWORK_PROFILE_PUBLIC-desc"
         elems={{
           PublicFixLink: (
-            <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public"></A>
+            <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public" />
           ),
         }}
         vars={{
@@ -217,21 +217,21 @@ export function ConnectTrackersPage() {
       >
         <div className="flex flex-col items-center gap-2 ">
           <Localized id={(errorLabelMap as any)[provisioningStatus]}>
-            <Typography variant="main-title"></Typography>
+            <Typography variant="main-title" />
           </Localized>
           <Localized id={`${(errorLabelMap as any)[provisioningStatus]}-desc`}>
             <Typography
               variant="standard"
               whitespace="whitespace-pre-wrap"
               block
-            ></Typography>
+            />
           </Localized>
           <video
             src={CONNECT_TRACKER}
             loop
             autoPlay
             className="w-full aspect-video rounded-md mt-2"
-          ></video>
+          />
           <div className="flex gap-3 pt-5 justify-end w-full">
             <Button
               variant="tertiary"
@@ -267,7 +267,7 @@ export function ConnectTrackersPage() {
           </div>
           <Localized
             id={currentTip}
-            elems={{ em: <em className="italic"></em>, b: <b></b> }}
+            elems={{ em: <em className="italic" />, b: <b /> }}
           >
             <TipBox>Conditional tip</TipBox>
           </Localized>
@@ -291,7 +291,7 @@ export function ConnectTrackersPage() {
                 'right-5 bottom-8'
               )}
             >
-              <LoaderIcon slimeState={slimeStatus}></LoaderIcon>
+              <LoaderIcon slimeState={slimeStatus} />
             </div>
 
             <div className="flex flex-col grow self-center">
@@ -308,7 +308,7 @@ export function ConnectTrackersPage() {
                 height={14}
                 animated={true}
                 colorClass={progressBarClass}
-              ></ProgressBar>
+              />
             </div>
           </div>
           <div className="flex flex-row mt-4 gap-3">
@@ -356,14 +356,14 @@ export function ConnectTrackersPage() {
                       'rounded-xl h-16 animate-pulse',
                       state.alonePage ? 'bg-background-80' : 'bg-background-70'
                     )}
-                  ></div>
+                  />
                 )}
                 {tracker && (
                   <TrackerCard
                     tracker={tracker.tracker}
                     device={tracker.device}
                     smol
-                  ></TrackerCard>
+                  />
                 )}
               </div>
             ))}
