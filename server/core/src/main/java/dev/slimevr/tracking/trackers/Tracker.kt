@@ -116,6 +116,8 @@ class Tracker @JvmOverloads constructor(
 	var signalStrength: Int? = null
 	var temperature: Float? = null
 	var customName: String? = null
+	var leftTapPressed: Boolean = false
+	var rightTapPressed: Boolean = false
 	var magStatus: MagnetometerStatus = magStatus
 		private set
 
