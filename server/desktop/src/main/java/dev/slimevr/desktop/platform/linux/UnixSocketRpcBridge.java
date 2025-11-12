@@ -1,12 +1,15 @@
 package dev.slimevr.desktop.platform.linux;
 
 import dev.slimevr.bridge.BridgeThread;
+import dev.slimevr.inputs.Input;
 import dev.slimevr.protocol.GenericConnection;
 import dev.slimevr.protocol.ProtocolAPI;
+import dev.slimevr.tracking.processor.ShareableBone;
 import dev.slimevr.tracking.trackers.Tracker;
 import dev.slimevr.util.ann.VRServerThread;
 import dev.slimevr.VRServer;
 import io.eiren.util.logging.LogManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,6 +90,10 @@ public class UnixSocketRpcBridge implements dev.slimevr.bridge.Bridge,
 	}
 
 	@Override
+	public void addFingerBones(@NotNull List<ShareableBone> bones) {
+	}
+
+	@Override
 	@VRServerThread
 	public void startBridge() {
 		this.runnerThread.start();
@@ -147,5 +154,10 @@ public class UnixSocketRpcBridge implements dev.slimevr.bridge.Bridge,
 			.stream()
 			.map(key -> (GenericConnection) key.attachment())
 			.filter(conn -> conn != null);
+	}
+
+	@Override
+	public void sendInput(@NotNull Input input) {
+
 	}
 }
