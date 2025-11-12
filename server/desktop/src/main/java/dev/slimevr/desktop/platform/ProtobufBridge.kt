@@ -175,8 +175,9 @@ abstract class ProtobufBridge(@JvmField protected val bridgeName: String) : ISte
 	@VRServerThread
 	protected open fun versionReceived(versionMessage: Version) {
 		remoteProtocolVersion = versionMessage.protocolVersion
-		LogManager.info("[ProtobufBridge] Driver protocol version matches the server protocol version: $remoteProtocolVersion")
-		if (remoteProtocolVersion != PROTOCOL_VERSION) {
+		if (remoteProtocolVersion == PROTOCOL_VERSION) {
+			LogManager.info("[ProtobufBridge] Driver protocol version matches the server protocol version: $remoteProtocolVersion")
+		} else {
 			LogManager.warning("[ProtobufBridge] Driver protocol version ($remoteProtocolVersion) doesn't match the server protocol version ($PROTOCOL_VERSION)")
 		}
 	}
