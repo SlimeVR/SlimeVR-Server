@@ -522,7 +522,8 @@ class HumanPoseManager(val server: VRServer?) {
 			if ((
 					tracker.isImu() &&
 						tracker.allowReset
-					) && tracker.resetsHandler.lastResetQuaternion != null
+					) &&
+				tracker.resetsHandler.lastResetQuaternion != null
 			) {
 				if (trackersDriftText.isNotEmpty()) {
 					trackersDriftText.append(" | ")

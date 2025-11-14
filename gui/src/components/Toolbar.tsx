@@ -52,11 +52,12 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
     status,
     name: resetName,
     timer,
+    progress: resetProress,
     disabled,
     duration,
   } = useReset(options);
 
-  const progress = status === 'counting' ? 1 - timer / duration : 0;
+  const progress = status === 'counting' ? resetProress / duration : 0;
 
   const name = options.customName || resetName;
 

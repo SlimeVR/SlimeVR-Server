@@ -18,6 +18,7 @@ import dev.slimevr.posestreamer.BVHRecorder
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
 import dev.slimevr.reset.ResetHandler
+import dev.slimevr.reset.resetTimer
 import dev.slimevr.serial.ProvisioningHandler
 import dev.slimevr.serial.SerialHandler
 import dev.slimevr.serial.SerialHandlerStub
@@ -339,40 +340,52 @@ class VRServer @JvmOverloads constructor(
 		}
 	}
 
-	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long) {
-		if (delay > 0) {
-			resetHandler.sendStarted(ResetType.Full)
-		}
-		timer.schedule(delay) {
-			queueTask {
-				humanPoseManager.resetTrackersFull(resetSourceName)
-				resetHandler.sendFinished(ResetType.Full)
+	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long, bodyParts: List<Int> = ArrayList()) {
+		resetTimer(
+			timer,
+			delay,
+			onTick = {
+				progress -> resetHandler.sendStarted(ResetType.Full, bodyParts, progress, delay.toInt())
+		  	},
+			onComplete = {
+				queueTask {
+					humanPoseManager.resetTrackersFull(resetSourceName, bodyParts)
+					resetHandler.sendFinished(ResetType.Full, bodyParts)
+				}
 			}
-		}
+		)
 	}
 
-	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long) {
-		if (delay > 0) {
-			resetHandler.sendStarted(ResetType.Yaw)
-		}
-		timer.schedule(delay) {
-			queueTask {
-				humanPoseManager.resetTrackersYaw(resetSourceName)
-				resetHandler.sendFinished(ResetType.Yaw)
+	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
+		resetTimer(
+			timer,
+			delay,
+			onTick = {
+					progress -> resetHandler.sendStarted(ResetType.Yaw, bodyParts, progress, delay.toInt())
+			},
+			onComplete = {
+				queueTask {
+					humanPoseManager.resetTrackersYaw(resetSourceName, bodyParts)
+					resetHandler.sendFinished(ResetType.Yaw, bodyParts)
+				}
 			}
-		}
+		)
 	}
 
-	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long) {
-		if (delay > 0) {
-			resetHandler.sendStarted(ResetType.Mounting)
-		}
-		timer.schedule(delay) {
-			queueTask {
-				humanPoseManager.resetTrackersMounting(resetSourceName)
-				resetHandler.sendFinished(ResetType.Mounting)
+	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long, bodyParts: List<Int>? = null) {
+		resetTimer(
+			timer,
+			delay,
+			onTick = {
+					progress -> resetHandler.sendStarted(ResetType.Mounting, bodyParts, progress, delay.toInt())
+			},
+			onComplete = {
+				queueTask {
+					humanPoseManager.resetTrackersMounting(resetSourceName, bodyParts)
+					resetHandler.sendFinished(ResetType.Mounting, bodyParts)
+				}
 			}
-		}
+		)
 	}
 
 	fun scheduleSetPauseTracking(pauseTracking: Boolean, sourceName: String?, delay: Long) {

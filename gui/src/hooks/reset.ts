@@ -1,4 +1,3 @@
-import { playSoundOnResetEnded, playSoundOnResetStarted } from '@/sounds/sounds';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   BodyPart,
@@ -8,9 +7,7 @@ import {
   ResetType,
   RpcMessage,
 } from 'solarxr-protocol';
-import { useConfig } from './config';
 import { useWebsocketAPI } from './websocket-api';
-import { useCountdown } from './countdown';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom } from '@/store/app-store';
 import { FEET_BODY_PARTS, FINGER_BODY_PARTS } from './body-parts';
@@ -33,33 +30,22 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
 
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
-  const { config } = useConfig();
   const finishedTimeoutRef = useRef<NodeJS.Timeout>();
   const [status, setStatus] = useState<ResetBtnStatus>('idle');
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
 
-  const reset = () => {
+  const parts = BODY_PARTS_GROUPS['group' in options ? options.group : 'default'];
+
+  const triggerReset = () => {
     const req = new ResetRequestT();
     req.resetType = options.type;
-    req.bodyParts = BODY_PARTS_GROUPS['group' in options ? options.group : 'default'];
+    req.bodyParts = parts;
     sendRPCPacket(RpcMessage.ResetRequest, req);
   };
 
-  const duration = options.type === ResetType.Yaw ? 0 : 3;
-  const { startCountdown, timer, abortCountdown } = useCountdown({
-    duration,
-    onCountdownEnd: () => {
-      maybePlaySoundOnResetEnd(options.type);
-      reset();
-      onResetFinished();
-    },
-  });
-
   const onResetFinished = () => {
     setStatus('finished');
-
-    // If a timer was already running / clear it
-    abortCountdown();
-
     if (onReseted) onReseted();
   };
 
@@ -76,39 +62,32 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
     };
   }, [status]);
 
-  const maybePlaySoundOnResetEnd = (type: ResetType) => {
-    if (!config?.feedbackSound) return;
-    playSoundOnResetEnded(type, config?.feedbackSoundVolume);
+  const onResetProgress = (progress: number, duration: number) => {
+    setProgress(progress / 1000);
+    setDuration(duration / 1000);
   };
 
-  const maybePlaySoundOnResetStart = () => {
-    if (!config?.feedbackSound) return;
-    if (options.type !== ResetType.Yaw)
-      playSoundOnResetStarted(config?.feedbackSoundVolume);
-  };
-
-  const triggerReset = () => {
-    abortCountdown();
-    setStatus('counting');
-    startCountdown();
-    maybePlaySoundOnResetStart();
-  };
-
-  useEffect(() => {
-    return () => {
-      abortCountdown();
-    };
-  }, []);
-
-  useRPCPacket(RpcMessage.ResetResponse, ({ status, resetType }: ResetResponseT) => {
-    if (resetType !== options.type) return;
-    switch (status) {
-      case ResetStatus.FINISHED: {
-        onResetFinished();
-        break;
+  useRPCPacket(
+    RpcMessage.ResetResponse,
+    ({ status, resetType, progress, duration, bodyParts }: ResetResponseT) => {
+      if (
+        resetType !== options.type ||
+        JSON.stringify(parts) !== JSON.stringify(bodyParts)
+      )
+        return;
+      switch (status) {
+        case ResetStatus.FINISHED: {
+          onResetFinished();
+          break;
+        }
+        case ResetStatus.STARTED: {
+          setStatus('counting');
+          onResetProgress(progress, duration);
+          break;
+        }
       }
     }
-  });
+  );
 
   const name = useMemo(() => {
     switch (options.type) {
@@ -140,11 +119,12 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
 
   return {
     triggerReset,
-    timer,
+    progress,
+    duration,
     status,
     disabled,
     name,
-    duration,
+    timer: duration - progress,
   };
 }
 

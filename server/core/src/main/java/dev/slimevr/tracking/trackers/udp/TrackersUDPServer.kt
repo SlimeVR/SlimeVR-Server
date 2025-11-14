@@ -531,14 +531,15 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				when (packet.type) {
 					UDPPacket21UserAction.RESET_FULL -> {
 						name = "Full reset"
-						VRServer.instance.resetHandler.sendStarted(ResetType.Full)
-						VRServer.instance.resetTrackersFull(RESET_SOURCE_NAME)
+						VRServer.instance.scheduleResetTrackersFull(
+							RESET_SOURCE_NAME,
+							(VRServer.instance.configManager.vrConfig.resetsConfig.fullResetDelay * 1000).toLong(),
+						)
 					}
 
 					UDPPacket21UserAction.RESET_YAW -> {
 						name = "Yaw reset"
-						VRServer.instance.resetHandler.sendStarted(ResetType.Yaw)
-						VRServer.instance.resetTrackersYaw(RESET_SOURCE_NAME)
+						VRServer.instance.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (VRServer.instance.configManager.vrConfig.resetsConfig.yawResetDelay * 1000).toLong())
 					}
 
 					UDPPacket21UserAction.RESET_MOUNTING -> {
@@ -547,7 +548,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							.instance
 							.resetHandler
 							.sendStarted(ResetType.Mounting)
-						VRServer.instance.resetTrackersMounting(RESET_SOURCE_NAME)
+						VRServer.instance.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (VRServer.instance.configManager.vrConfig.resetsConfig.mountingResetDelay * 1000).toLong())
 					}
 
 					UDPPacket21UserAction.PAUSE_TRACKING -> {

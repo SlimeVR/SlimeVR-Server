@@ -204,8 +204,8 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 						trackersId = buildTrackersIds(trackerRequireReset)
 					}
 				}
-				resetMountingCompleted = false;
-				feetResetMountingCompleted = false;
+				resetMountingCompleted = false
+				feetResetMountingCompleted = false
 			} else {
 				it.extraData = null
 			}

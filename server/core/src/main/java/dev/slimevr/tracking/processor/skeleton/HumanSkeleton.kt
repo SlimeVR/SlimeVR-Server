@@ -212,7 +212,7 @@ class HumanSkeleton(
 
 	// Modules
 	var legTweaks = LegTweaks(this)
-	var tapDetectionManager = TapDetectionManager(this)
+	var tapDetectionManager: TapDetectionManager? = null
 	var localizer = Localizer(this)
 	var ikSolver = IKSolver(headBone)
 
@@ -232,12 +232,9 @@ class HumanSkeleton(
 	) : this(humanPoseManager) {
 		setTrackersFromList(server.allTrackers)
 		tapDetectionManager = TapDetectionManager(
+			server,
 			this,
 			humanPoseManager,
-			server.configManager.vrConfig.tapDetection,
-			server.resetHandler,
-			server.tapSetupHandler,
-			server.allTrackers,
 		)
 		legTweaks.setConfig(server.configManager.vrConfig.legTweaks)
 		localizer.setEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION))
@@ -475,7 +472,7 @@ class HumanSkeleton(
 		humanPoseManager.updateNodeOffsetsInSkeleton()
 
 		// Update tap detection's trackers
-		tapDetectionManager.updateConfig(trackers)
+		tapDetectionManager?.refresh()
 
 		// Rebuild Ik Solver
 		ikSolver.buildChains(trackers)
@@ -539,7 +536,7 @@ class HumanSkeleton(
 	 */
 	@VRServerThread
 	fun updatePose() {
-		tapDetectionManager.update()
+		tapDetectionManager?.update()
 
 		StayAligned.adjustNextTracker(trackerSkeleton, stayAlignedConfig)
 
@@ -1682,7 +1679,7 @@ class HumanSkeleton(
 	}
 
 	fun updateTapDetectionConfig() {
-		tapDetectionManager.updateConfig(null)
+		tapDetectionManager?.refresh()
 	}
 
 	fun updateLegTweaksConfig() {
