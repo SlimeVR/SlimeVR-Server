@@ -10,11 +10,9 @@ import {
 } from '@/hooks/reset';
 import { Tooltip } from './commons/Tooltip';
 import { useAtomValue } from 'jotai';
-import { assignedTrackersAtom, connectedTrackersAtom } from '@/store/app-store';
+import { assignedTrackersAtom } from '@/store/app-store';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { useMemo, useState } from 'react';
-import { HomeSettingsModal } from './home/HomeSettingsModal';
-import { LayoutIcon } from './commons/icon/LayoutIcon';
+import { useMemo } from 'react';
 import { ResetButtonIcon } from './home/ResetButton';
 
 const MAINBUTTON_CLASSES = ({ disabled }: { disabled: boolean }) =>
@@ -197,22 +195,6 @@ export function Toolbar() {
             </div>
           </div>
         </div>
-        {/* <div className="flex w-full gap-2 items-center px-4 h-5">
-          <Typography
-            color="secondary"
-            id="toolbar-assigned_trackers"
-            vars={{ count: trackers.length }}
-          />
-          <div className="bg-background-50 h-[2px] rounded-lg flex-grow" />
-          {showSettings && (
-            <div
-              className="fill-background-30 hover:fill-background-20 cursor-pointer"
-              onClick={() => setSettingsOpen(true)}
-            >
-              <LayoutIcon size={18} />
-            </div>
-          )}
-        </div> */}
       </div>
     </>
   );
