@@ -124,11 +124,7 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
 }
 
 export function Toolbar() {
-  // const trackers = useAtomValue(connectedTrackersAtom);
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
-
-  // const settingsOpenState = useState(false);
-  // const [, setSettingsOpen] = settingsOpenState;
 
   const { visibleGroups, groupVisibility } = useMemo(() => {
     const groupVisibility = Object.keys(BODY_PARTS_GROUPS)
