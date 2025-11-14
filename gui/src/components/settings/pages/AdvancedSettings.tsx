@@ -18,7 +18,7 @@ import { invoke } from '@tauri-apps/api/core';
 
 function guiDefaults() {
   // Destructure the properties to exclude "lang"
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const { lang, ...guiDefaults } = defaultGUIConfig;
 
   guiDefaults.devSettings = defaultDevConfig;
@@ -54,7 +54,7 @@ export function AdvancedSettings() {
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<BugIcon></BugIcon>} id="advanced">
+        <SettingsPagePaneLayout icon={<BugIcon />} id="advanced">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-utils-advanced')}
@@ -89,7 +89,7 @@ export function AdvancedSettings() {
                     onClose={() => setShowWarningGUI(false)}
                     isOpen={showWarningGUI}
                     variant="gui"
-                  ></SettingsResetModal>
+                  />
                 </div>
               </div>
 
@@ -126,7 +126,7 @@ export function AdvancedSettings() {
                     onClose={() => setShowWarningServer(false)}
                     isOpen={showWarningServer}
                     variant="server"
-                  ></SettingsResetModal>
+                  />
                 </div>
               </div>
 
@@ -162,7 +162,7 @@ export function AdvancedSettings() {
                     onClose={() => setShowWarningAll(false)}
                     isOpen={showWarningAll}
                     variant="all"
-                  ></SettingsResetModal>
+                  />
                 </div>
               </div>
 

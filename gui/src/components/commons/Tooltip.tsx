@@ -346,7 +346,7 @@ export function DrawerTooltip({
       elem.classList.add(classNames('duration-500'));
       touchTimeout.current = setTimeout(() => {
         open();
-      }, TOOLTIP_DELAY);
+      }, TOOLTIP_DELAY) as unknown as number;
     }
   };
 
@@ -390,17 +390,12 @@ export function DrawerTooltip({
     if (childRef.current && childRef.current.children[0]) {
       const elem = childRef.current.children[0] as HTMLElement;
 
-      elem.addEventListener('mousedown', touchStart); // for debug on desktop
-      elem.addEventListener('mouseup', touchEnd); // for debug on desktop
       elem.addEventListener('scroll', scroll);
 
-      elem.addEventListener('click', touchEnd);
       elem.addEventListener('touchstart', touchStart);
       elem.addEventListener('touchend', touchEnd);
 
       return () => {
-        elem.removeEventListener('mousedown', touchStart); // for debug on desktop
-        elem.removeEventListener('mouseup', touchEnd); // for debug on desktop
         elem.removeEventListener('scroll', scroll);
 
         elem.removeEventListener('touchstart', touchStart);
@@ -420,7 +415,7 @@ export function DrawerTooltip({
           opacity: drawerStyle ? 0.5 : 0,
           pointerEvents: drawerStyle ? 'all' : 'none',
         }}
-      ></div>
+      />
       <div
         className={classNames(
           'fixed z-50 w-full text-background-10 max-h-full -bottom-full transition-all overflow-clip'
@@ -439,7 +434,7 @@ export function DrawerTooltip({
               className="absolute right-4 top-3 h-6 w-6 bg-background-70 rounded-full flex justify-center items-center"
               onClick={() => close()}
             >
-              <CloseIcon size={20} className="stroke-white"></CloseIcon>
+              <CloseIcon size={20} className="stroke-white" />
             </button>
           </div>
           <div

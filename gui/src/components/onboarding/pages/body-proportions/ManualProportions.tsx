@@ -217,7 +217,7 @@ function ImportExportButtons() {
     <>
       <div className="flex">
         <IconButton
-          icon={<UploadFileIcon width={25}></UploadFileIcon>}
+          icon={<UploadFileIcon width={25} />}
           onClick={onImport}
           className={classNames(
             'transition-colors',
@@ -226,13 +226,13 @@ function ImportExportButtons() {
           )}
         >
           <Localized id="onboarding-manual_proportions-import">
-            <Typography variant="standard"></Typography>
+            <Typography variant="standard" />
           </Localized>
         </IconButton>
       </div>
       <div className="flex">
         <IconButton
-          icon={<ImportIcon size={25}></ImportIcon>}
+          icon={<ImportIcon size={25} />}
           onClick={() => {
             exporting.current = true;
 
@@ -243,7 +243,7 @@ function ImportExportButtons() {
           }}
         >
           <Localized id="onboarding-manual_proportions-export">
-            <Typography variant="standard"></Typography>
+            <Typography variant="standard" />
           </Localized>
         </IconButton>
       </div>
@@ -265,26 +265,26 @@ function LinearRatioToggle({ control }: { control: ManualProportionControls }) {
         <>
           {value ? (
             <IconButton
-              icon={<PercentIcon size={25}></PercentIcon>}
+              icon={<PercentIcon size={25} />}
               onClick={() => onChange(!value)}
             >
               <Localized id="onboarding-manual_proportions-grouped_proportions">
-                <Typography variant="standard"></Typography>
+                <Typography variant="standard" />
               </Localized>
             </IconButton>
           ) : (
             <IconButton
-              icon={<RulerIcon width={25}></RulerIcon>}
+              icon={<RulerIcon width={25} />}
               onClick={() => onChange(!value)}
             >
               <Localized id="onboarding-manual_proportions-all_proportions">
-                <Typography variant="standard"></Typography>
+                <Typography variant="standard" />
               </Localized>
             </IconButton>
           )}
         </>
       )}
-    ></Controller>
+    />
   );
 }
 
@@ -301,7 +301,7 @@ function PreciseToggle({ control }: { control: ManualProportionControls }) {
               onClick={() => onChange(!value)}
             >
               <Localized id="onboarding-manual_proportions-normal_increment">
-                <Typography variant="standard"></Typography>
+                <Typography variant="standard" />
               </Localized>
             </IconButton>
           ) : (
@@ -310,13 +310,13 @@ function PreciseToggle({ control }: { control: ManualProportionControls }) {
               onClick={() => onChange(!value)}
             >
               <Localized id="onboarding-manual_proportions-precise_increment">
-                <Typography variant="standard"></Typography>
+                <Typography variant="standard" />
               </Localized>
             </IconButton>
           )}
         </>
       )}
-    ></Controller>
+    />
   );
 }
 
@@ -348,18 +348,18 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
   return (
     <div className="bg-background-60 rounded-md flex gap-2">
       <div className="flex">
-        <LinearRatioToggle control={control}></LinearRatioToggle>
+        <LinearRatioToggle control={control} />
       </div>
       <div className="flex">
-        <PreciseToggle control={control}></PreciseToggle>
+        <PreciseToggle control={control} />
       </div>
       <div className="flex">
         <IconButton
-          icon={<FullResetIcon width={20}></FullResetIcon>}
+          icon={<FullResetIcon width={20} />}
           onClick={() => setShowWarning(true)}
         >
           <Localized id="reset-reset_all">
-            <Typography variant="standard"></Typography>
+            <Typography variant="standard" />
           </Localized>
         </IconButton>
       </div>
@@ -374,11 +374,11 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
                   : 'onboarding-manual_proportions-fine_tuning_button'
               }
             >
-              <Typography variant="standard"></Typography>
+              <Typography variant="standard" />
             </Localized>
           }
           disabled={!canUseFineTuning}
-          icon={<HumanIcon width={20}></HumanIcon>}
+          icon={<HumanIcon width={20} />}
           onClick={() =>
             nav('/onboarding/body-proportions/auto', {
               state: { alonePage: state.alonePage },
@@ -386,12 +386,12 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
           }
         >
           <Localized id={'onboarding-manual_proportions-fine_tuning_button'}>
-            <Typography variant="standard"></Typography>
+            <Typography variant="standard" />
           </Localized>
         </IconButton>
       </div>
-      <div className="flex flex-grow"></div>
-      <ImportExportButtons></ImportExportButtons>
+      <div className="flex flex-grow" />
+      <ImportExportButtons />
       <ProportionsResetModal
         accept={() => {
           resetAll();
@@ -399,7 +399,7 @@ function ButtonsControl({ control }: { control: ManualProportionControls }) {
         }}
         onClose={() => setShowWarning(false)}
         isOpen={showWarning}
-      ></ProportionsResetModal>
+      />
     </div>
   );
 }
@@ -455,13 +455,13 @@ export function ManualProportionsPage() {
               Back to Body Proportions
             </ArrowLink>
           </div>
-          <ButtonsControl control={control}></ButtonsControl>
+          <ButtonsControl control={control}/>
           <div className="bg-background-60 h-20 rounded-md flex-grow overflow-y-auto">
             <BodyProportions
               precise={precise ?? defaultValues.precise}
               type={ratio ? 'ratio' : 'linear'}
               variant={state.alonePage ? 'alone' : 'onboarding'}
-            ></BodyProportions>
+            />
           </div>
         </div>
         <div className="rounded-md overflow-clip w-1/3 bg-background-60 hidden mobile:hidden sm:flex relative">
@@ -488,18 +488,18 @@ export function ManualProportionsPage() {
               <ResetButton
                 type={ResetType.Full}
                 className="w-full h-full bg-background-50 hover:bg-background-40 text-background-10"
-              ></ResetButton>
+              />
             </div>
             <Tooltip
               preferedDirection="bottom"
               content={
                 <Localized id="onboarding-manual_proportions-estimated_height">
-                  <Typography></Typography>
+                  <Typography />
                 </Localized>
               }
             >
               <div className="h-14 bg-background-50 p-4 flex items-center rounded-lg min-w-36 justify-center">
-                <Typography variant="main-title">
+                <Typography variant="main-title" whitespace="whitespace-nowrap">
                   {cmFormat.format((userHeight * 100) / 0.936)}
                 </Typography>
               </div>

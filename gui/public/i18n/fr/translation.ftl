@@ -118,7 +118,7 @@ skeleton_bone-HEAD-desc =
 skeleton_bone-NECK = Longueur du cou
 skeleton_bone-NECK-desc =
     Ceci est la distance entre le milieu de votre tête et la base de votre cou.
-    Pour l’ajuster, hochez votre tête de haut en bas ou inclinez votre tête de gauche à droite et modifiez-la 
+    Pour l’ajuster, hochez votre tête de haut en bas ou inclinez votre tête de gauche à droite et modifiez-la
     jusqu’à ce que vos capteurs bougent le moins possible.
 skeleton_bone-torso_group = Longueur du torse
 skeleton_bone-torso_group-desc =
@@ -244,6 +244,8 @@ reset-reset_all_warning_default-v2 =
     Êtes-vous sûr de vouloir faire cela ?
 reset-full = Réinitialisation complète
 reset-mounting = Réinitialiser l'alignement
+reset-mounting-feet = Réinitialiser l'alignement des pieds
+reset-mounting-fingers = Réinitialiser l'alignement des doigts
 reset-yaw = Réinitialisation horizontale
 
 ## Serial detection stuff
@@ -392,7 +394,7 @@ tracker-settings-use_mag = Autoriser l'utilisation du magnétomètre sur ce capt
 # Multiline!
 tracker-settings-use_mag-description =
     Est-ce que ce capteur devrait utiliser son magnétomètre pour réduire la dérive lorsque l'utilisation du magnétomètre est autorisée ? <b>N'éteignez pas votre capteur pendant que vous changez cette option !</b>
-    
+
     Vous devez d'abord autoriser l'utilisation du magnétomètre dans les paramètres. <magSetting>Cliquez ici pour y accéder</magSetting>.
 tracker-settings-use_mag-label = Autoriser le magnétomètre
 # The .<name> means it's an attribute and it's related to the top key.
@@ -554,7 +556,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = Prédic
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Avertissement:</b> n'utilisez la compensation de la dérive que si vous devez
     réinitialiser très souvent (toutes les ~5-10 minutes).
-    
+
     Voici quelques IMUs sujets à des réinitialisations fréquentes :
     Joy-Cons, owoTrack et MPUs (sans micrologiciel récent).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Annuler
@@ -611,8 +613,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Le limitage au s
 settings-general-fk_settings-leg_tweak-toe_snap-description = La correction des orteils estime l'orientation de vos pieds si vous ne portez pas de capteurs sur ses derniers.
 settings-general-fk_settings-leg_tweak-foot_plant-description = La correction des pieds oriente vos pieds pour qu'ils soient parallèles au sol lorsqu'ils le touche.
 settings-general-fk_settings-leg_fk = Capture des jambes
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Activer la réinitialisation de l'alignement des pieds en allant sur la pointe des pieds.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Réinitialisation de l'alignement des pieds
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = Forcer la réinitialisation de l'alignement des pieds pendant la réinitialisation d'alignement générale.
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = Forcer la réinitialisation de l'alignement des pieds
 settings-general-fk_settings-enforce_joint_constraints = Limites squelettiques
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Appliquer les contraintes
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Empêche les articulations de tourner au-delà de leur limite
@@ -742,9 +744,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Collecte des erreurs via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Consentez-vous à la collecte de données d'erreur anonymisée ?</h1>
-    
+
     <b>Nous ne collectons pas d'informations personnelles</b> telles que votre adresse IP ou vos identifiants Wi-Fi. SlimeVR accorde une grande importance à votre vie privée !
-    
+
     Pour offrir la meilleure expérience utilisateur possible, nous collectons des rapports d'erreurs anonymisés, des mesures de performance et des informations sur le système d'exploitation. Cela nous aide à détecter les bugs et les problèmes liés à SlimeVR. Ces données sont collectées via Sentry.io.
 settings-interface-behavior-error_tracking-label = Envoyer les erreurs aux développeurs
 settings-interface-behavior-bvh_directory = Répertoire pour sauvegarder les enregistrements BVH
@@ -768,7 +770,6 @@ settings-serial-factory_reset-warning =
             Ce qui signifie que les paramètres de Wi-Fi et de calibration <b>seront tous perdus !</b>
 settings-serial-factory_reset-warning-ok = Je sais ce que je fais
 settings-serial-factory_reset-warning-cancel = Annuler
-settings-serial-get_infos = Obtenir des informations
 settings-serial-serial_select = Sélectionnez un port série
 settings-serial-auto_dropdown_item = Automatique
 settings-serial-get_wifi_scan = Obtenir scan WiFi
@@ -941,20 +942,20 @@ onboarding-reset_tutorial-skip = Sauter l'étape
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour effectuer une réinitialisation horizontale.
-    
+
     Cela orientera les capteurs dans la même direction que votre casque VR.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour effectuer une réinitialisation complète.
-    
+
     Vous devrez restez en position « i » (droit debout, bras le long du corps). Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
     Cela réinitialise complètement la position et la rotation de tout vos capteurs, ce qui devrait corriger la plupart des problèmes.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour réinitialiser l'alignement des capteurs.
-    
+
     La réinitialisation de l'alignement des capteurs aide à définir la façon dont ces derniers sont portés sur vous. Cela aidera si vous en avez déplacé un sur vous accidentellement.
-    
+
     Accroupissez-vous dans une position de « ski » comme affiché sur l'assistant d'alignement des capteurs. Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
 
 ## Setup start
@@ -1308,7 +1309,7 @@ onboarding-scaled_proportions-manual_height-next_step = Continuer et enregistrer
 onboarding-scaled_proportions-manual_height-warning =
     Vous utilisez actuellement le réglage manuel de la mise à l'échelle des proportions !
     <b>Ce mode est recommandé uniquement si vous n'utilisez pas de casque VR avec SlimeVR</b>
-    
+
     Pour pouvoir utiliser les proportions mises à l’échelle automatiquement, veuillez :
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Connecter un casque VR
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Assurez-vous que vos manettes sont connectées et correctement assignées à vos mains
@@ -1594,7 +1595,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Envergure des bras
 error_collection_modal-title = Avons nous l'autorisation de collecter les erreurs ?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-    
+
     Vous pouvez modifier ce paramètre ultérieurement dans la section "Comportement" des paramètres.
 error_collection_modal-confirm = Je suis d'accord
 error_collection_modal-cancel = Je ne veux pas

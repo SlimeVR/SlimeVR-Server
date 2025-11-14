@@ -42,7 +42,7 @@ import { MountingChoose } from './components/onboarding/pages/mounting/MountingC
 import { VersionUpdateModal } from './components/VersionUpdateModal';
 import { CalibrationTutorialPage } from './components/onboarding/pages/CalibrationTutorial';
 import { AssignmentTutorialPage } from './components/onboarding/pages/assignment-preparation/AssignmentTutorial';
-import { open } from '@tauri-apps/plugin-shell';
+import { openUrl } from '@tauri-apps/plugin-opener';
 import semver from 'semver';
 import { useBreakpoint, useIsTauri } from './hooks/breakpoint';
 import { VRModePage } from './components/vr-mode/VRModePage';
@@ -77,15 +77,15 @@ function Layout() {
 
   return (
     <>
-      <SerialDetectionModal></SerialDetectionModal>
-      <VersionUpdateModal></VersionUpdateModal>
-      <UnknownDeviceModal></UnknownDeviceModal>
+      <SerialDetectionModal />
+      <VersionUpdateModal />
+      <UnknownDeviceModal />
       <SentryRoutes>
         <Route element={<AppLayout />}>
           <Route
             path="/"
             element={
-              <MainLayout isMobile={isMobile} full showToolbarSettings>
+              <MainLayout isMobile={isMobile} full>
                 <Home />
               </MainLayout>
             }
@@ -169,7 +169,7 @@ function Layout() {
             />
             <Route path="trackers-assign" element={<TrackersAssignPage />} />
             <Route path="enter-vr" element={<EnterVRPage />} />
-            <Route path="mounting/choose" element={<MountingChoose />}></Route>
+            <Route path="mounting/choose" element={<MountingChoose />} />
             <Route path="mounting/auto" element={<AutomaticMountingPage />} />
             <Route path="mounting/manual" element={<ManualMountingPage />} />
             <Route path="reset-tutorial" element={<ResetTutorialPage />} />
@@ -188,7 +188,7 @@ function Layout() {
             <Route path="stay-aligned" element={<StayAlignedSetup />} />
             <Route path="done" element={<DonePage />} />
           </Route>
-          <Route path="*" element={<TopBar></TopBar>}></Route>
+          <Route path="*" element={<TopBar />} />
         </Route>
       </SentryRoutes>
     </>
@@ -294,7 +294,7 @@ export default function App() {
   useEffect(() => {
     function onKeyboard(ev: KeyboardEvent) {
       if (ev.key === 'F1') {
-        return open(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'));
+        return openUrl(DOCS_SITE).catch(() => window.open(DOCS_SITE, '_blank'));
       }
     }
 
@@ -312,10 +312,8 @@ export default function App() {
                 <VersionContext.Provider value={updateFound}>
                   <div className="h-full w-full text-standard bg-background-80 text-background-10">
                     <Preload />
-                    {!websocketAPI.isConnected && (
-                      <ConnectionLost></ConnectionLost>
-                    )}
-                    {websocketAPI.isConnected && <Layout></Layout>}
+                    {!websocketAPI.isConnected && <ConnectionLost />}
+                    {websocketAPI.isConnected && <Layout />}
                   </div>
                 </VersionContext.Provider>
               </TrackingChecklistProvider>

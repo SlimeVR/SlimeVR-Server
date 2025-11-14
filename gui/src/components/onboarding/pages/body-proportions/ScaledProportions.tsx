@@ -65,7 +65,7 @@ function IncrementButton({
       <Typography
         id={`unit-${unit}`}
         color={disabled ? 'text-background-40' : 'primary'}
-      ></Typography>
+       />
     </div>
   );
 }
@@ -95,7 +95,7 @@ function UnitSelector({
       <Typography
         variant={isSm ? 'standard' : 'section-title'}
         id={name}
-      ></Typography>
+       />
     </div>
   );
 }
@@ -176,13 +176,13 @@ function HeightSelectionInput({ auto }: { auto: boolean }) {
       <div className="flex gap-2 h-full">
         {unit === 'foot' && (
           <>
-            <div className="aspect-square bg-background-80 opacity-50 rounded-md items-center justify-center flex-col hidden md:flex"></div>
+            <div className="aspect-square bg-background-80 opacity-50 rounded-md items-center justify-center flex-col hidden md:flex" />
             <IncrementButton
               value={-1}
               unit={'inch'}
               onClick={() => increment('inch', -1)}
               disabled={auto || minimalHeight}
-            ></IncrementButton>
+             />
           </>
         )}
         {unit === 'meter' && (
@@ -192,13 +192,13 @@ function HeightSelectionInput({ auto }: { auto: boolean }) {
               unit={'cm'}
               onClick={() => increment('cm', -10)}
               disabled={auto || minimalHeight10cm}
-            ></IncrementButton>
+             />
             <IncrementButton
               value={-1}
               unit={'cm'}
               onClick={() => increment('cm', -1)}
               disabled={auto || minimalHeight}
-            ></IncrementButton>
+             />
           </>
         )}
       </div>
@@ -211,12 +211,12 @@ function HeightSelectionInput({ auto }: { auto: boolean }) {
             active={unit === 'meter'}
             name="unit-meter"
             onClick={() => setUnit('meter')}
-          ></UnitSelector>
+           />
           <UnitSelector
             active={unit === 'foot'}
             name="unit-foot"
             onClick={() => setUnit('foot')}
-          ></UnitSelector>
+           />
         </div>
       </div>
       <div className="flex gap-2 h-full">
@@ -227,8 +227,8 @@ function HeightSelectionInput({ auto }: { auto: boolean }) {
               unit={'inch'}
               onClick={() => increment('inch', 1)}
               disabled={auto}
-            ></IncrementButton>
-            <div className="aspect-square bg-background-80 opacity-50 rounded-md items-center justify-center flex-col hidden md:flex"></div>
+             />
+            <div className="aspect-square bg-background-80 opacity-50 rounded-md items-center justify-center flex-col hidden md:flex" />
           </>
         )}
         {unit === 'meter' && (
@@ -238,13 +238,13 @@ function HeightSelectionInput({ auto }: { auto: boolean }) {
               unit={'cm'}
               onClick={() => increment('cm', 1)}
               disabled={auto}
-            ></IncrementButton>
+             />
             <IncrementButton
               value={10}
               unit={'cm'}
               onClick={() => increment('cm', 10)}
               disabled={auto}
-            ></IncrementButton>
+             />
           </>
         )}
       </div>
@@ -327,7 +327,7 @@ export function ScaledProportionsPage() {
                 )}
                 <HeightSelectionInput
                   auto={auto !== false}
-                ></HeightSelectionInput>
+                 />
               </div>
               {auto && (
                 <>
@@ -375,12 +375,12 @@ export function ScaledProportionsPage() {
                     <ul className="list-disc ml-8 text-standard">
                       {!hasHmd && (
                         <Localized id="onboarding-scaled_proportions-manual_height-warning-no_hmd">
-                          <li></li>
+                          <li />
                         </Localized>
                       )}
                       {!hasHandControllers && (
                         <Localized id="onboarding-scaled_proportions-manual_height-warning-no_controllers">
-                          <li></li>
+                          <li />
                         </Localized>
                       )}
                     </ul>
@@ -435,7 +435,7 @@ export function ScaledProportionsPage() {
                     className={classNames(
                       'h-[21px] w-[21px] rounded-full bg-status-critical animate-pulse'
                     )}
-                  ></div>
+                   />
                 </div>
                 <Typography variant="main-title">
                   Recording your Height...
@@ -469,7 +469,7 @@ export function ScaledProportionsPage() {
                     className={classNames(
                       'h-[21px] w-[21px] rounded-full bg-status-critical animate-pulse'
                     )}
-                  ></div>
+                   />
                 </div>
                 <Typography variant="main-title">
                   Recording your Floor Height...

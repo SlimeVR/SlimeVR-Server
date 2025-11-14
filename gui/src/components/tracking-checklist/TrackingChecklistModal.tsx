@@ -22,7 +22,7 @@ export function TrackingChecklistModal({
     >
       <div className="flex flex-col gap-4">
         <Typography variant="main-title" id="tracking_checklist-settings" />
-        <TrackingChecklistSettings variant="modal"></TrackingChecklistSettings>
+        <TrackingChecklistSettings variant="modal" />
         <div className="flex justify-end">
           <Button
             variant="tertiary"

@@ -104,8 +104,7 @@ class FileLogHandler @JvmOverloads constructor(
 
 		// Log name should have at least two separators, one integer, and at
 		// least one char for the datetime (4 chars)
-		if (!name.startsWith(logTag) || !name.endsWith(logSuffix) || name.length < (logTag.length + logSuffix.length + 4)
-		) {
+		if (!name.startsWith(logTag) || !name.endsWith(logSuffix) || name.length < (logTag.length + logSuffix.length + 4)) {
 			// Ignore non-matching files
 			return null
 		}

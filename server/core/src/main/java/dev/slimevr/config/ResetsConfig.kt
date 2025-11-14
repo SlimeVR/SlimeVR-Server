@@ -64,7 +64,11 @@ class ResetsConfig {
 	// Reset the HMD's pitch upon full reset
 	var resetHmdPitch = false
 
-	var preferedMountingMethod = MountingMethods.AUTOMATIC
+	var lastMountingMethod = MountingMethods.AUTOMATIC
+
+	var yawResetDelay = 0.0f
+	var fullResetDelay = 3.0f
+	var mountingResetDelay = 3.0f
 
 	fun updateTrackersResetsSettings() {
 		for (t in VRServer.instance.allTrackers) {

@@ -383,7 +383,7 @@ tracker-settings-use_mag = 允许使用这个追踪器的磁力计
 # Multiline!
 tracker-settings-use_mag-description =
     如果「在追踪器上启用磁力计」已启用，是否要在这个追踪器上启用它来减轻飘移？<b>切换本选项时请勿关闭追踪器的电源！</b>
-    
+
     请先启用「在追踪器上启用磁力计」功能，<magSetting>点选此处以移动至该设定</magSetting>。
 tracker-settings-use_mag-label = 允许使用这个追踪器的磁力计
 # The .<name> means it's an attribute and it's related to the top key.
@@ -543,9 +543,9 @@ settings-general-tracker_mechanics-drift_compensation-prediction-description =
     适用于追踪器在偏航轴上持续旋转的场景。
 settings-general-tracker_mechanics-drift_compensation-prediction-label = 预测式漂移补偿
 settings-general-tracker_mechanics-drift_compensation_warning =
-    <b>警告：</b> 仅在需要经常重置偏航角 
+    <b>警告：</b> 仅在需要经常重置偏航角
     (大概5~10分钟左右需要重置一次) 时使用漂移补偿。
-    
+
     一些可能需要此补偿的 IMU 包括：
     Joy-Cons、owoTrack 和 MPU（使用旧DMP固件）。
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = 取消
@@ -602,8 +602,8 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制可�
 settings-general-fk_settings-leg_tweak-toe_snap-description = 脚趾着地可以在没有脚部追踪器的情况下尝试猜测脚部的俯仰。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 脚掌着地会在脚与地面接触时保持脚掌与地板平行。
 settings-general-fk_settings-leg_fk = 腿部追踪
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = 开启脚部佩戴重置。（佩戴重置时需要踮起脚尖）
-settings-general-fk_settings-leg_fk-reset_mounting_feet = 脚部佩戴重置
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 在进行普通佩戴重置时强制进行脚部佩戴重置。
+settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = 强制脚部佩戴重置
 settings-general-fk_settings-enforce_joint_constraints = 骨骼限制
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 强制约束
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免关节旋转超过人体骨骼角度限制
@@ -727,9 +727,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = 通过 Sentry.io 收集错误信息
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>您是否同意收集匿名的错误信息？</h1>
-    
+
     <b>我们不会收集您的个人信息</b> ，例如您的 IP 地址或 WiFi 信息。SlimeVR 重视您的隐私！
-    
+
     为了提供最佳用户体验，我们会收集匿名错误报告、性能指标和操作系统信息。这有助于我们检测 SlimeVR 的错误和问题。这些指标将通过 Sentry.io 收集。
 settings-interface-behavior-error_tracking-label = 向开发人员发送错误信息
 settings-interface-behavior-bvh_directory = BVH记录保存目录
@@ -753,7 +753,6 @@ settings-serial-factory_reset-warning =
     这意味着 Wi-Fi 凭据和校准数据 <b>都将丢失！</b>
 settings-serial-factory_reset-warning-ok = 我已知晓
 settings-serial-factory_reset-warning-cancel = 取消
-settings-serial-get_infos = 获取信息
 settings-serial-serial_select = 选择串行端口
 settings-serial-auto_dropdown_item = 自动
 settings-serial-get_wifi_scan = 扫描可用WiFi
@@ -927,20 +926,20 @@ onboarding-reset_tutorial-skip = 跳过步骤
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     敲击 { $taps } 次高亮显示的追踪器以触发航向轴重置。
-    
+
     这将使追踪器朝向与您的头显相同的方向。
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     敲击 { $taps } 次高亮显示的追踪器以触发完整重置。
-    
+
     此功能需要你站直（i-pose）后使用。 在重置实际发生前有 3 秒延迟（可配置）。
     这将完全重置所有追踪器的位置和旋转，应该能解决大多数问题。
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     敲击 { $taps } 次高亮显示的追踪器以触发佩戴重置。
-    
+
     佩戴重置能对追踪器实际的配戴方式进行调整，所以如果你不小心移动了追踪器并将它们的佩戴方向改变了很多，这个功能将有所帮助。
-    
+
     你需要摆出一个像滑雪那样的姿势，就像在运行自动设置佩戴向导时做的那样，在重置实际发生前有 3 秒延迟（可配置）。
 
 ## Setup start
@@ -1279,7 +1278,7 @@ onboarding-scaled_proportions-manual_height-next_step = 保存并继续
 onboarding-scaled_proportions-manual_height-warning =
     您当前正在手动设置缩放身体比例！
     <b>建议只在您不使用头戴显示器时使用此模式</b>
-    
+
     为了能够使用自动缩放身体比例，请：
 onboarding-scaled_proportions-manual_height-warning-no_hmd = 连接 VR 头戴显示器
 onboarding-scaled_proportions-manual_height-warning-no_controllers = 确保您的控制器已连接并正确分配到手部
@@ -1393,7 +1392,7 @@ firmware_tool-board_pins_step-battery_shield_resistor-1 =
     .placeholder = 请输入开发板载对输入分压电阻 R2 的值。
 firmware_tool-add_imus_step = 添加您的 IMU
 firmware_tool-add_imus_step-description =
-    请添加您的追踪器所配备的 IMU 传感器。  
+    请添加您的追踪器所配备的 IMU 传感器。
     如果您遵循了 SlimeVR 文档，默认值应该是正确的。
 firmware_tool-add_imus_step-imu_type-label = IMU 类型
 firmware_tool-add_imus_step-imu_type-placeholder = 选择 IMU 类型
@@ -1433,9 +1432,9 @@ firmware_tool-flashbtn_step-board_SLIMEVR-r11 = 在短接电路板正面边缘�
 firmware_tool-flashbtn_step-board_SLIMEVR-r12 = 在短接电路板正面圆形 FLASH 焊盘和单片机模块的金属屏蔽罩的时候，打开追踪器电源。
 firmware_tool-flashbtn_step-board_SLIMEVR-r14 = 在按住电路板正面的 FLASH 按钮的时候，打开追踪器的电源。
 firmware_tool-flashbtn_step-board_OTHER =
-    在烧录固件之前，您可能需要将追踪器置于bootloader模式。  
-    通常这意味着在开始固件烧录过程之前，按下板上的引导/boot按钮。  
-    如果固件烧录过程在开始时超时，这通常表示追踪器没有处于bootloader模式。  
+    在烧录固件之前，您可能需要将追踪器置于bootloader模式。
+    通常这意味着在开始固件烧录过程之前，按下板上的引导/boot按钮。
+    如果固件烧录过程在开始时超时，这通常表示追踪器没有处于bootloader模式。
     请参考您的追踪器电路板的固件烧录说明，了解如何进入bootloader模式。
 firmware_tool-flash_method_ota-devices = 检测到的 OTA 设备：
 firmware_tool-flash_method_ota-no_devices = 没有可以使用 OTA 更新的电路板，请确保选择了正确的电路板类型
@@ -1565,7 +1564,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = 臂展
 error_collection_modal-title = 我们可以收集错误信息吗？
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-    
+
     您可以稍后在设置页面的行为部分中更改此设置。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 还是算了

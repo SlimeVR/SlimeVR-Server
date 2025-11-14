@@ -4,73 +4,27 @@ import dev.slimevr.tracking.trackers.Tracker
 import java.util.*
 
 // class that monitors the acceleration of the waist, hip, chest or upper chest trackers to detect taps
-// and use this to trigger a varaity of resets (if your wondering why no single tap class exists, it's because
+// and use this to trigger a variety of resets (if your wondering why no single tap class exists, it's because
 // to many false positives)
-class TapDetection {
-	// server and related classes
-	private val skeleton: HumanSkeleton?
+class TapDetection(val skeleton: HumanSkeleton, val trackerToWatch: Tracker, val numberTrackersOverThreshold: Int, val tapToComplete: Int, val onTapCompleted: () -> Unit) {
 
-	// tap detection
-	@JvmField
-	var enabled: Boolean = false
 	private val accelList = LinkedList<FloatArray>()
-	private val tapTimes = LinkedList<Float>()
-	var tracker: Tracker? = null
-		private set
-	private var numberTrackersOverThreshold = 1
-
-	private var timeWindowNS = 0.6f * NS_CONVERTER
-
-	// state
-	var detectionTime: Float = -1.0f
-		private set
-	var taps: Int = 0
-		private set
+	private val tapTimestamps = LinkedList<Float>()
+	private var timeWindowNS = 0.3f * tapToComplete * NS_CONVERTER
 	private var waitForLowAccel = false
 
-	constructor(skeleton: HumanSkeleton?) {
-		this.skeleton = skeleton
-	}
-
-	constructor(
-		skeleton: HumanSkeleton?,
-		trackerToWatch: Tracker?,
-	) {
-		this.skeleton = skeleton
-		this.tracker = trackerToWatch
-	}
-
-	// set the tracker to watch and detect taps on
-	fun setTrackerToWatch(tracker: Tracker?) {
-		this.tracker = tracker
-	}
-
-	fun setNumberTrackersOverThreshold(numberTrackersOverThreshold: Int) {
-		this.numberTrackersOverThreshold = numberTrackersOverThreshold
-	}
-
 	// reset the lists for detecting taps
-	fun resetDetector() {
-		tapTimes.clear()
+	fun reset() {
+		tapTimestamps.clear()
 		accelList.clear()
-		taps = 0
-	}
-
-	// set the max taps this detector is configured to detect
-	fun setMaxTaps(maxTaps: Int) {
-		timeWindowNS = 0.3f * maxTaps * NS_CONVERTER
+		waitForLowAccel = false
 	}
 
 	// main function for tap detection
 	fun update() {
-		if (skeleton == null || !enabled) return
-
-		if (tracker == null) return
-
 		// get the acceleration of the tracker and add it to the list
 		val time = System.nanoTime().toFloat()
-		val listval = floatArrayOf(tracker!!.getAcceleration().len(), time)
-		accelList.add(listval)
+		accelList.add(floatArrayOf(trackerToWatch.getAcceleration().len(), time))
 
 		// remove old values from the list (if they are too old)
 		while (time - accelList.first()[1] > CLUMP_TIME_NS) {
@@ -82,7 +36,7 @@ class TapDetection {
 		if (accelDelta > NEEDED_ACCEL_DELTA && !waitForLowAccel) {
 			// after a tap is added to the list, a lower acceleration
 			// is needed before another tap can be added
-			tapTimes.add(time)
+			tapTimestamps.add(time)
 			waitForLowAccel = true
 		}
 
@@ -92,25 +46,23 @@ class TapDetection {
 		}
 
 		// remove old taps from the list (if they are too old)
-		if (!tapTimes.isEmpty()) {
-			while (time - tapTimes.first() > timeWindowNS) {
-				tapTimes.removeFirst()
-				if (tapTimes.isEmpty()) return
+		if (!tapTimestamps.isEmpty()) {
+			while (time - tapTimestamps.first() > timeWindowNS) {
+				tapTimestamps.removeFirst()
+				if (tapTimestamps.isEmpty()) return
 			}
 		}
 
-		// if the user is moving their body too much, reset the tap list
-		if (!isUserStatic(tracker!!)) {
-			tapTimes.clear()
-			accelList.clear()
+		// if we have no taps within the timeframe or
+		// if the user is moving their body too much, reset the tap detector
+		if (!isUserStatic(trackerToWatch)) {
+			reset()
+			return
 		}
 
-		// get the amount of taps in the list
-		// and set the detection time
-		val newTaps = tapTimes.size
-		if (newTaps > taps) {
-			taps = newTaps
-			detectionTime = time
+		if (tapTimestamps.size >= tapToComplete) {
+			onTapCompleted()
+			reset()
 		}
 	}
 
@@ -141,7 +93,7 @@ class TapDetection {
 	// you need two or more trackers for this feature to be reliable)
 	private fun isUserStatic(trackerToExclude: Tracker): Boolean {
 		var num = 0
-		if (skeleton!!.upperChestTracker != null &&
+		if (skeleton.upperChestTracker != null &&
 			skeleton.upperChestTracker != trackerToExclude
 		) {
 			if (skeleton.upperChestTracker!!.getAcceleration().lenSq()
@@ -155,8 +107,7 @@ class TapDetection {
 		) {
 			if (skeleton.chestTracker!!.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED) num++
 		}
-		if (skeleton.hipTracker != null && skeleton.hipTracker != trackerToExclude
-		) {
+		if (skeleton.hipTracker != null && skeleton.hipTracker != trackerToExclude) {
 			if (skeleton.hipTracker!!.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED) num++
 		}
 		if (skeleton.waistTracker != null &&
@@ -185,8 +136,7 @@ class TapDetection {
 		if (skeleton.leftFootTracker != null &&
 			skeleton.leftFootTracker != trackerToExclude
 		) {
-			if (skeleton.leftFootTracker!!.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED
-			) {
+			if (skeleton.leftFootTracker!!.getAcceleration().lenSq() > ALLOWED_BODY_ACCEL_SQUARED) {
 				num++
 			}
 		}

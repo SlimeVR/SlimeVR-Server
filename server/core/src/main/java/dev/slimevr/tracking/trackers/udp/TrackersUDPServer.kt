@@ -253,7 +253,8 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				}
 			}
 		} else if (magStatus == MagnetometerStatus.DISABLED &&
-			VRServer.instance.configManager.vrConfig.server.useMagnetometerOnAllTrackers && imuTracker.config.shouldHaveMagEnabled == true
+			VRServer.instance.configManager.vrConfig.server.useMagnetometerOnAllTrackers &&
+			imuTracker.config.shouldHaveMagEnabled == true
 		) {
 			mainScope.launch {
 				withTimeoutOrNull(MAG_TIMEOUT) {
@@ -530,14 +531,15 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				when (packet.type) {
 					UDPPacket21UserAction.RESET_FULL -> {
 						name = "Full reset"
-						VRServer.instance.resetHandler.sendStarted(ResetType.Full)
-						VRServer.instance.resetTrackersFull(RESET_SOURCE_NAME)
+						VRServer.instance.scheduleResetTrackersFull(
+							RESET_SOURCE_NAME,
+							(VRServer.instance.configManager.vrConfig.resetsConfig.fullResetDelay * 1000).toLong(),
+						)
 					}
 
 					UDPPacket21UserAction.RESET_YAW -> {
 						name = "Yaw reset"
-						VRServer.instance.resetHandler.sendStarted(ResetType.Yaw)
-						VRServer.instance.resetTrackersYaw(RESET_SOURCE_NAME)
+						VRServer.instance.scheduleResetTrackersYaw(RESET_SOURCE_NAME, (VRServer.instance.configManager.vrConfig.resetsConfig.yawResetDelay * 1000).toLong())
 					}
 
 					UDPPacket21UserAction.RESET_MOUNTING -> {
@@ -546,7 +548,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 							.instance
 							.resetHandler
 							.sendStarted(ResetType.Mounting)
-						VRServer.instance.resetTrackersMounting(RESET_SOURCE_NAME)
+						VRServer.instance.scheduleResetTrackersMounting(RESET_SOURCE_NAME, (VRServer.instance.configManager.vrConfig.resetsConfig.mountingResetDelay * 1000).toLong())
 					}
 
 					UDPPacket21UserAction.PAUSE_TRACKING -> {
@@ -595,6 +597,13 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 					tracker.trackerFlexHandler.setFlexAngle(packet.flexData)
 				}
 				tracker.dataTick()
+			}
+
+			is UDPPacket27Position -> {
+				tracker = connection?.getTracker(packet.sensorId)
+				if (tracker == null) return
+				tracker.position = packet.position
+				// dont call dataTick here as this is just position update
 			}
 
 			is UDPPacket200ProtocolChange -> {}

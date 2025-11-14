@@ -212,8 +212,9 @@ class HumanSkeleton(
 
 	// Modules
 	var legTweaks = LegTweaks(this)
-	var tapDetectionManager = TapDetectionManager(this)
+	var tapDetectionManager: TapDetectionManager? = null
 	var localizer = Localizer(this)
+	var ikSolver = IKSolver(headBone)
 
 	// Stay Aligned
 	var trackerSkeleton = TrackerSkeleton(this)
@@ -231,12 +232,9 @@ class HumanSkeleton(
 	) : this(humanPoseManager) {
 		setTrackersFromList(server.allTrackers)
 		tapDetectionManager = TapDetectionManager(
+			server,
 			this,
 			humanPoseManager,
-			server.configManager.vrConfig.tapDetection,
-			server.resetHandler,
-			server.tapSetupHandler,
-			server.allTrackers,
 		)
 		legTweaks.setConfig(server.configManager.vrConfig.legTweaks)
 		localizer.setEnabled(humanPoseManager.getToggle(SkeletonConfigToggles.SELF_LOCALIZATION))
@@ -436,16 +434,36 @@ class HumanSkeleton(
 		hasKneeTrackers = leftUpperLegTracker != null && rightUpperLegTracker != null
 		hasLeftArmTracker = leftLowerArmTracker != null || leftUpperArmTracker != null
 		hasRightArmTracker = rightLowerArmTracker != null || rightUpperArmTracker != null
-		hasLeftFingerTracker = leftThumbMetacarpalTracker != null || leftThumbProximalTracker != null || leftThumbDistalTracker != null ||
-			leftIndexProximalTracker != null || leftIndexIntermediateTracker != null || leftIndexDistalTracker != null ||
-			leftMiddleProximalTracker != null || leftMiddleIntermediateTracker != null || leftMiddleDistalTracker != null ||
-			leftRingProximalTracker != null || leftRingIntermediateTracker != null || leftRingDistalTracker != null ||
-			leftLittleProximalTracker != null || leftLittleIntermediateTracker != null || leftLittleDistalTracker != null
-		hasRightFingerTracker = rightThumbMetacarpalTracker != null || rightThumbProximalTracker != null || rightThumbDistalTracker != null ||
-			rightIndexProximalTracker != null || rightIndexIntermediateTracker != null || rightIndexDistalTracker != null ||
-			rightMiddleProximalTracker != null || rightMiddleIntermediateTracker != null || rightMiddleDistalTracker != null ||
-			rightRingProximalTracker != null || rightRingIntermediateTracker != null || rightRingDistalTracker != null ||
-			rightLittleProximalTracker != null || rightLittleIntermediateTracker != null || rightLittleDistalTracker != null
+		hasLeftFingerTracker = leftThumbMetacarpalTracker != null ||
+			leftThumbProximalTracker != null ||
+			leftThumbDistalTracker != null ||
+			leftIndexProximalTracker != null ||
+			leftIndexIntermediateTracker != null ||
+			leftIndexDistalTracker != null ||
+			leftMiddleProximalTracker != null ||
+			leftMiddleIntermediateTracker != null ||
+			leftMiddleDistalTracker != null ||
+			leftRingProximalTracker != null ||
+			leftRingIntermediateTracker != null ||
+			leftRingDistalTracker != null ||
+			leftLittleProximalTracker != null ||
+			leftLittleIntermediateTracker != null ||
+			leftLittleDistalTracker != null
+		hasRightFingerTracker = rightThumbMetacarpalTracker != null ||
+			rightThumbProximalTracker != null ||
+			rightThumbDistalTracker != null ||
+			rightIndexProximalTracker != null ||
+			rightIndexIntermediateTracker != null ||
+			rightIndexDistalTracker != null ||
+			rightMiddleProximalTracker != null ||
+			rightMiddleIntermediateTracker != null ||
+			rightMiddleDistalTracker != null ||
+			rightRingProximalTracker != null ||
+			rightRingIntermediateTracker != null ||
+			rightRingDistalTracker != null ||
+			rightLittleProximalTracker != null ||
+			rightLittleIntermediateTracker != null ||
+			rightLittleDistalTracker != null
 
 		// Rebuilds the arm skeleton nodes attachments
 		assembleSkeletonArms(true)
@@ -454,7 +472,10 @@ class HumanSkeleton(
 		humanPoseManager.updateNodeOffsetsInSkeleton()
 
 		// Update tap detection's trackers
-		tapDetectionManager.updateConfig(trackers)
+		tapDetectionManager?.refresh()
+
+		// Rebuild Ik Solver
+		ikSolver.buildChains(trackers)
 
 		// Update bones tracker field
 		refreshBoneTracker()
@@ -515,7 +536,7 @@ class HumanSkeleton(
 	 */
 	@VRServerThread
 	fun updatePose() {
-		tapDetectionManager.update()
+		tapDetectionManager?.update()
 
 		StayAligned.adjustNextTracker(trackerSkeleton, stayAlignedConfig)
 
@@ -1173,7 +1194,7 @@ class HumanSkeleton(
 
 			SkeletonConfigToggles.SELF_LOCALIZATION -> localizer.setEnabled(newValue)
 
-			SkeletonConfigToggles.USE_POSITION -> newValue
+			SkeletonConfigToggles.USE_POSITION -> ikSolver.enabled = newValue
 
 			SkeletonConfigToggles.ENFORCE_CONSTRAINTS -> enforceConstraints = newValue
 
@@ -1204,7 +1225,8 @@ class HumanSkeleton(
 		}
 		// If trackingArmFromController, reverse
 		if (((boneType == BoneType.LEFT_LOWER_ARM || boneType == BoneType.LEFT_HAND) && isTrackingLeftArmFromController) ||
-			(boneType == BoneType.RIGHT_LOWER_ARM || boneType == BoneType.RIGHT_HAND) && isTrackingRightArmFromController
+			(boneType == BoneType.RIGHT_LOWER_ARM || boneType == BoneType.RIGHT_HAND) &&
+			isTrackingRightArmFromController
 		) {
 			transOffset = -transOffset
 		}
@@ -1543,6 +1565,7 @@ class HumanSkeleton(
 		}
 		legTweaks.resetBuffer()
 		localizer.reset()
+		ikSolver.resetOffsets()
 		LogManager.info("[HumanSkeleton] Reset: full ($resetSourceName)")
 	}
 
@@ -1611,7 +1634,7 @@ class HumanSkeleton(
 		localizer.reset()
 
 		if (humanPoseManager.server != null) {
-			humanPoseManager.server.configManager.vrConfig.resetsConfig.preferedMountingMethod =
+			humanPoseManager.server.configManager.vrConfig.resetsConfig.lastMountingMethod =
 				MountingMethods.AUTOMATIC
 			if (!humanPoseManager.server.trackingChecklistManager.resetMountingCompleted) {
 				humanPoseManager.server.trackingChecklistManager.resetMountingCompleted = bodyParts.any { it ->
@@ -1656,7 +1679,7 @@ class HumanSkeleton(
 	}
 
 	fun updateTapDetectionConfig() {
-		tapDetectionManager.updateConfig(null)
+		tapDetectionManager?.refresh()
 	}
 
 	fun updateLegTweaksConfig() {
@@ -1718,6 +1741,14 @@ class HumanSkeleton(
 	@VRServerThread
 	fun setLegTweaksEnabled(value: Boolean) {
 		legTweaks.enabled = value
+	}
+
+	/**
+	 * enable/disable IK solver (for Autobone)
+	 */
+	@VRServerThread
+	fun setIKSolverEnabled(value: Boolean) {
+		ikSolver.enabled = value
 	}
 
 	@VRServerThread

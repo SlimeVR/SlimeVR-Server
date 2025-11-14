@@ -62,7 +62,7 @@ export function PreviewControls({ open }: { open: boolean }) {
       <Tooltip
         preferedDirection="bottom"
         content={
-          <Typography id="onboarding-manual_proportions-estimated_height"></Typography>
+          <Typography id="onboarding-manual_proportions-estimated_height" />
         }
       >
         <div
@@ -89,7 +89,7 @@ export function PreviewControls({ open }: { open: boolean }) {
                       ? 'bvh-start_recording'
                       : 'bvh-stop_recording'
                   }
-                ></Typography>
+                />
               }
               preferedDirection="top"
             >
@@ -100,7 +100,7 @@ export function PreviewControls({ open }: { open: boolean }) {
                 )}
                 onClick={() => toggleBVH()}
               >
-                {bvhState === 'idle' && <RecordIcon width={20}></RecordIcon>}
+                {bvhState === 'idle' && <RecordIcon width={20} />}
                 {bvhState !== 'idle' && (
                   <div className="w-5 h-5 rounded-full bg-status-critical animate-pulse" />
                 )}
@@ -112,7 +112,7 @@ export function PreviewControls({ open }: { open: boolean }) {
               <Typography
                 variant="section-title"
                 id={paused ? 'tracking-paused' : 'tracking-unpaused'}
-              ></Typography>
+              />
             }
             preferedDirection="top"
           >
@@ -120,8 +120,8 @@ export function PreviewControls({ open }: { open: boolean }) {
               className="flex justify-center items-center w-14 h-14 rounded-full bg-background-60 hover:bg-background-50 cursor-pointer"
               onClick={() => toggleTracking()}
             >
-              {!paused && <PauseIcon width={25}></PauseIcon>}
-              {paused && <PlayIcon width={25}></PlayIcon>}
+              {!paused && <PauseIcon width={25} />}
+              {paused && <PlayIcon width={25} />}
             </div>
           </Tooltip>
           <Tooltip
@@ -129,12 +129,12 @@ export function PreviewControls({ open }: { open: boolean }) {
               <Typography
                 variant="section-title"
                 id="preview-mocap_mode_soon"
-              ></Typography>
+              />
             }
             preferedDirection="top"
           >
             <div className="flex justify-center items-center w-10 h-10 rounded-full cursor-not-allowed">
-              <HumanIcon width={20}></HumanIcon>
+              <HumanIcon width={20} />
             </div>
           </Tooltip>
         </div>
@@ -183,7 +183,7 @@ function PreviewSection({ open }: { open: boolean }) {
             },
           });
         }}
-      ></SkeletonVisualizerWidget>
+      />
       <Tooltip
         preferedDirection="bottom"
         content={<Typography id="preview-disable_render" />}
@@ -192,10 +192,10 @@ function PreviewSection({ open }: { open: boolean }) {
           className="flex justify-center items-center w-10 h-10 cursor-pointer rounded-full fill-background-10 absolute right-2 top-2 bg-background-60 hover:bg-background-50"
           onClick={() => toggleRender()}
         >
-          <EyeIcon width={18} closed={!disabledRender}></EyeIcon>
+          <EyeIcon width={18} closed={!disabledRender} />
         </div>
       </Tooltip>
-      <PreviewControls open={open}></PreviewControls>
+      <PreviewControls open={open} />
     </div>
   );
 }
@@ -238,7 +238,7 @@ export function Sidebar() {
           closed={closed}
           closing={closing}
           toggleClosed={toggleClosed}
-        ></TrackingChecklist>
+        />
       </div>
       <div
         className="transition-[height] duration-500 rounded-lg my-2 bg-background-70 overflow-clip"

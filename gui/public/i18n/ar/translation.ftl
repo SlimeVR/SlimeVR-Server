@@ -301,7 +301,7 @@ tracker-settings-use_mag = اسمح بالمقياس المغناطيسي على
 # Multiline!
 tracker-settings-use_mag-description =
     هل يجب أن يستخدم هذا المتتبع مقياس المغناطيسية لتقليل الانجراف عند السماح باستخدام المقياس المغناطيسي؟ <b>من فضلا لا تغلق جهاز التتبع الخاص بك أثناء تبديل هذا!</b>
-    
+
     تحتاج إلى السماح باستخدام مقياس المغناطيسية أولا ، <magSetting>انقر هنا للذهاب إلى الإعداد</magSetting>.
 tracker-settings-use_mag-label = السماح بالمقياس المغناطيسي
 # The .<name> means it's an attribute and it's related to the top key.
@@ -459,7 +459,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = الت�
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>تحذير:</b> استخدم تعويض الانحراف فقط إذا كنت بحاجة إلى إعادة الضبط
     في كثير من الأحيان (كل ~ 5-10 دقائق).
-    
+
     تتضمن بعض وحدات IMU المعرضة لإعادة الضبط المتكرر ما يلي:
     Joy-Cons و owoTrack و MPUs (بدون برامج ثابتة حديثة).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = إلغاء
@@ -497,8 +497,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = يمكن أن ي
 settings-general-fk_settings-leg_tweak-toe_snap-description = الانجذاب إلى أصابع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
 settings-general-fk_settings-leg_tweak-foot_plant-description = تثبيت اصبع القدم يحاول تخمين دوران قدميك إذا لم تكن أجهزة تعقب القدم قيد الاستخدام.
 settings-general-fk_settings-leg_fk = تعقب الساق
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = تمكين إعادة ضبط تركيب القدمين عن طريق المشي على رؤوس الأصابع.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = إعادة تعيين تركيب القدمين
 settings-general-fk_settings-enforce_joint_constraints = حدود الهيكل العظمي
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = فرض القيود
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = منع المفاصل من الدوران إلى ما بعد الحد الأقصى
@@ -637,6 +635,14 @@ settings-general-interface-discord_presence-message =
         [many] كثيرة
        *[other] أخرى
     }
+settings-interface-behavior-error_tracking = جمع الأخطاء عبر Sentry.io
+settings-interface-behavior-error_tracking-description_v2 =
+    <h1>هل توافق على جمع بيانات الخطأ مجهولة المصدر؟</h1>
+
+    <b>نحن لا نجمع معلومات شخصية</b> مثل عنوان IP الخاص بك أو بيانات الاعتماد اللاسلكية. يقدر SlimeVR خصوصيتك!
+
+    لتوفير أفضل تجربة للمستخدم، نقوم بجمع تقارير الأخطاء ومقاييس الأداء ومعلومات نظام التشغيل مجهولة المصدر. يساعدنا هذا في اكتشاف الأخطاء والمشكلات المتعلقة ب SlimeVR. يتم جمع هذه المقاييس عبر Sentry.io.
+settings-interface-behavior-error_tracking-label = إرسال الأخطاء إلى المطورين
 
 ## Serial settings
 
@@ -655,10 +661,11 @@ settings-serial-factory_reset-warning =
     مما يعني أن إعدادات واي فاي والمعايرة <b>ستفقد جميعا!</b>
 settings-serial-factory_reset-warning-ok = أنا أعرف ماذا أفعل
 settings-serial-factory_reset-warning-cancel = إلغاء
-settings-serial-get_infos = احصل على معلومات
 settings-serial-serial_select = اختر منفذ تسلسلي
 settings-serial-auto_dropdown_item = تلقائي
 settings-serial-get_wifi_scan = احصل على فحص WiFi
+settings-serial-file_type = نص عادي
+settings-serial-save_logs = حفظ في ملف
 
 ## OSC router settings
 
@@ -688,9 +695,21 @@ settings-osc-router-network-address-placeholder = عنوان آي بي في 4
 ## OSC VRChat settings
 
 settings-osc-vrchat = أجهزة تعقب "في ار تشات أوه أس سي"
+# This cares about multilines
+settings-osc-vrchat-description-v1 =
+    تغيير الإعدادات الخاصة بمعيار أجهزة تعقب OSC  المستخدم لإرسال
+    بيانات التعقب  إلى التطبيقات التي لا تحتوي على SteamVR (مثل Quest المستقل).
+    تأكد من تمكين OSC في VRChat عبر قائمة الإجراءات ضمن OSC > ممكن.
 settings-osc-vrchat-enable = تمكين
 settings-osc-vrchat-enable-description = بتبديل إرسال واستقبال البيانات.
 settings-osc-vrchat-enable-label = تمكين
+settings-osc-vrchat-oscqueryEnabled = تمكين OSCQuery
+settings-osc-vrchat-oscqueryEnabled-description =
+    يكتشف OSCQuery تلقائيا مثيلات VRChat قيد التشغيل ويرسل البيانات إليها.
+    يمكنه أيضا الإعلان عن نفسه لهم من أجل تلقي بيانات HMD ووحدة التحكم.
+    للسماح بتلقي بيانات HMD ووحدة التحكم من VRChat ، انتقل إلى إعدادات القائمة الرئيسية
+    ضمن "التتبع و IK (الحركة العكسية)" وتمكين "السماح بإرسال بيانات OSC لتتبع الرأس والمعصم".
+settings-osc-vrchat-oscqueryEnabled-label = تمكين OSCQuery
 settings-osc-vrchat-network = منافذ الشبكة
 settings-osc-vrchat-network-port_in =
     .label = منفذ الدخول
@@ -777,20 +796,20 @@ onboarding-reset_tutorial-skip = تخطى الخطوة
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     اضغط على جهاز التعقب  المحدد { $taps } مرات لتشغيل إعادة ضبط الانعراج.
-    
+
     سيؤدي ذلك إلى جعل أجهزة التعقب تواجه نفس اتجاه HMD الخاص بك.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     اضغط على جهاز التعقب المحدد { $taps } مرات لتشغيل إعادة تعيين كاملة.
-    
+
     يجب أن تكون واقفًا (i-pose). هناك تأخير لمدة 3 ثوان (قابل للتكوين) قبل إعادة التعيين بالكامل.
     هذا يعيد تعيين موضع ودوران جميع جهاز التعقب. يجب أن يحل معظم المشاكل.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     اضغط على المتتبع المحدد { $taps } مرات لتشغيل إعادة تعيين متصاعد.
-    
+
     يساعد إعادة التعيين المتصاعد في تحديد كيفية وضع أجهزة التعقب عليك بالفعل. لذلك إذا قمت بنقلهم عن طريق الخطأ وغيرت كيفية توجيههم بمقدار كبير ، فسيساعد ذلك.
-    
+
     يجب أن تكون في وضع تزلج كما هو موضح في معالج "التثبيت التلقائي" ولديك تأخير لمدة 3 ثوانٍ (قابل للتكوين) قبل أن يتم تشغيله.
 
 ## Setup start
@@ -968,7 +987,7 @@ onboarding-choose_mounting-manual_mounting-label-v2 = قد لا تكون الد�
 onboarding-choose_mounting-manual_mounting-description = سيسمح لك باختيار اتجاه التثبيت يدويًا لكل جهاز تعقب
 # Multiline text
 onboarding-choose_mounting-manual_modal-title =
-    هل أنت متأكد من أنك تريد 
+    هل أنت متأكد من أنك تريد
     معايرة التركيب التلقائي؟
 onboarding-choose_mounting-manual_modal-description = <b>يوصى بمعايرة التركيب اليدوي للمستخدمين الجدد</b> ، حيث قد يكون من الصعب الحصول على أوضاع معايرة التركيب التلقائي الصحيحة من اول مرة وقد تتطلب بعض التمرين.
 onboarding-choose_mounting-manual_modal-confirm = أنا أعرف ماذا أفعل
@@ -1168,7 +1187,7 @@ tray_or_exit_modal-title = ماذا يجب أن يفعل زر الإغلاق؟
 # Multiline text
 tray_or_exit_modal-description =
     يتيح لك ذلك اختيار ما إذا كنت تريد الخروج من الخادم أو تصغيره إلى علبة النظام عند الضغط على زر الإغلاق.
-    
+
     يمكنك تغيير هذا لاحقا في إعدادات الواجهة!
 tray_or_exit_modal-radio-exit = الخروج عند الإغلاق
 tray_or_exit_modal-radio-tray = تصغير إلى علبة النظام
@@ -1185,4 +1204,3 @@ unknown_device-modal-confirm = أكيد
 unknown_device-modal-forget = تجاهلها
 
 ## Error collection consent modal
-

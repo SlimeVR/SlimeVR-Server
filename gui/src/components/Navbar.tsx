@@ -70,13 +70,13 @@ export function MainLinks() {
 
   return (
     <>
-      <NavButton to="/" icon={<HomeIcon></HomeIcon>}>
+      <NavButton to="/" icon={<HomeIcon />}>
         {l10n.getString('navbar-home')}
       </NavButton>
       <NavButton
         to="/onboarding/trackers-assign"
         state={{ alonePage: true }}
-        icon={<HumanIcon></HumanIcon>}
+        icon={<HumanIcon />}
       >
         {l10n.getString('navbar-trackers_assign')}
       </NavButton>
@@ -84,7 +84,7 @@ export function MainLinks() {
         to="/onboarding/mounting/choose"
         match="/onboarding/mounting/*"
         state={{ alonePage: true }}
-        icon={<SkiIcon></SkiIcon>}
+        icon={<SkiIcon />}
       >
         {l10n.getString('navbar-mounting')}
       </NavButton>
@@ -92,12 +92,12 @@ export function MainLinks() {
         to="/onboarding/body-proportions/scaled"
         match="/onboarding/body-proportions/*"
         state={{ alonePage: true }}
-        icon={<RulerIcon></RulerIcon>}
+        icon={<RulerIcon />}
       >
         {l10n.getString('navbar-body_proportions')}
       </NavButton>
       {config?.showNavbarOnboarding && (
-        <NavButton to="/onboarding/home" icon={<SparkleIcon></SparkleIcon>}>
+        <NavButton to="/onboarding/home" icon={<SparkleIcon />}>
           {l10n.getString('navbar-onboarding')}
         </NavButton>
       )}
@@ -111,18 +111,18 @@ export function Navbar() {
 
   return isMobile ? (
     <div className="flex flex-row justify-around px-2 pt-2 bg-background-80 gap-2">
-      <MainLinks></MainLinks>
+      <MainLinks />
     </div>
   ) : (
     <div className="flex flex-col h-full p-2 gap-2">
       <div className="flex flex-col flex-grow gap-2">
-        <MainLinks></MainLinks>
+        <MainLinks />
       </div>
       <NavButton
         to="/settings/trackers"
         match="/settings/*"
         state={{ scrollTo: 'steamvr' }}
-        icon={<GearIcon></GearIcon>}
+        icon={<GearIcon />}
       >
         {l10n.getString('navbar-settings')}
       </NavButton>

@@ -58,7 +58,7 @@ export function ProportionsResetModal({
                 ? 'reset-reset_all_warning_default-v2'
                 : 'reset-reset_all_warning-v2'
             }
-            elems={{ b: <b></b> }}
+            elems={{ b: <b /> }}
           >
             <WarningBox>
               <b>Warning:</b> This will reset your proportions to being just

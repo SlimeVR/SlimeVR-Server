@@ -10,6 +10,5 @@ class AngleErrors {
 		sumSqrErrors += error.toRad() * error.toRad()
 	}
 
-	fun toL2Norm() =
-		Angle.ofRad(sqrt(sumSqrErrors))
+	fun toL2Norm() = Angle.ofRad(sqrt(sumSqrErrors))
 }

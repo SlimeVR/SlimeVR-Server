@@ -120,7 +120,7 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 			TrackingChecklistStepT().apply {
 				id = TrackingChecklistStepId.MOUNTING_CALIBRATION
 				valid = false
-				enabled = vrServer.configManager.vrConfig.resetsConfig.preferedMountingMethod == MountingMethods.AUTOMATIC
+				enabled = vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC
 				optional = false
 				ignorable = true
 				visibility = TrackingChecklistStepVisibility.ALWAYS
@@ -204,6 +204,8 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 						trackersId = buildTrackersIds(trackerRequireReset)
 					}
 				}
+				resetMountingCompleted = false
+				feetResetMountingCompleted = false
 			} else {
 				it.extraData = null
 			}
@@ -289,12 +291,12 @@ class TrackingChecklistManager(private val vrServer: VRServer) : VRCConfigListen
 		}
 
 		updateValidity(TrackingChecklistStepId.MOUNTING_CALIBRATION, resetMountingCompleted) {
-			it.enabled = vrServer.configManager.vrConfig.resetsConfig.preferedMountingMethod == MountingMethods.AUTOMATIC
+			it.enabled = vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC
 		}
 
 		updateValidity(TrackingChecklistStepId.FEET_MOUNTING_CALIBRATION, feetResetMountingCompleted) {
 			it.enabled =
-				vrServer.configManager.vrConfig.resetsConfig.preferedMountingMethod == MountingMethods.AUTOMATIC &&
+				vrServer.configManager.vrConfig.resetsConfig.lastMountingMethod == MountingMethods.AUTOMATIC &&
 				!vrServer.configManager.vrConfig.resetsConfig.resetMountingFeet &&
 				imuTrackers.any { t -> TrackerUtils.feetsBodyParts.contains(t.trackerPosition?.bodyPart) }
 		}

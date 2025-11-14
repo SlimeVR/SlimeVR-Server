@@ -37,7 +37,7 @@ export function AssignmentTutorialPage() {
                   </Typography>
                 </div>
                 <div className="stroke-background-10 fill-background-10 flex justify-center">
-                  <StickerSlime width="65%"></StickerSlime>
+                  <StickerSlime width="65%" />
                 </div>
               </div>
               <div className="flex flex-col gap-10 xs:w-1/4">
@@ -49,7 +49,7 @@ export function AssignmentTutorialPage() {
                   </Typography>
                 </div>
                 <div className="fill-background-10 stroke-background-10 flex justify-center">
-                  <TrackerArrow width="75%"></TrackerArrow>
+                  <TrackerArrow width="75%" />
                 </div>
                 <div>
                   <Typography variant="section-title">
@@ -59,7 +59,7 @@ export function AssignmentTutorialPage() {
                   </Typography>
                 </div>
                 <div className="fill-background-10 stroke-background-10 flex justify-center">
-                  <ExtensionArrow width="75%"></ExtensionArrow>
+                  <ExtensionArrow width="75%" />
                 </div>
               </div>
             </div>

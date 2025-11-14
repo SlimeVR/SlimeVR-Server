@@ -19,10 +19,9 @@ export function ResetButtonIcon(options: UseResetOptions) {
   if (options.type === ResetType.Yaw) return <YawResetIcon width={18} />;
   if (options.type === ResetType.Full) return <FullResetIcon width={18} />;
   if (options.type === ResetType.Mounting) {
-    if (options.group === 'default') return <SkiIcon></SkiIcon>;
-    if (options.group === 'feet') return <FootIcon></FootIcon>;
-    if (options.group === 'fingers')
-      return <FingersIcon width={16}></FingersIcon>;
+    if (options.group === 'default') return <SkiIcon />;
+    if (options.group === 'feet') return <FootIcon />;
+    if (options.group === 'fingers') return <FingersIcon width={16} />;
   }
 }
 
@@ -57,10 +56,10 @@ export function ResetButton({
     >
       <div className="flex flex-col">
         <div className="opacity-0 h-0">
-          {children || <Localized id={name}></Localized>}
+          {children || <Localized id={name} />}
         </div>
         {status !== 'counting' || options.type === ResetType.Yaw
-          ? children || <Localized id={name}></Localized>
+          ? children || <Localized id={name} />
           : String(timer)}
       </div>
     </Button>

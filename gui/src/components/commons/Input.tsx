@@ -7,6 +7,7 @@ import {
   UseControllerProps,
 } from 'react-hook-form';
 import { EyeIcon } from './icon/EyeIcon';
+import { Typography } from './Typography';
 
 interface InputProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
@@ -20,8 +21,8 @@ export const InputInside = forwardRef<
     variant?: 'primary' | 'secondary' | 'tertiary';
     label?: string;
     error?: FieldError;
-    onChange: () => void;
-  } & Partial<HTMLInputElement>
+    autocomplete?: boolean | string;
+  } & Partial<React.HTMLProps<HTMLInputElement>>
 >(function AppInput(
   {
     type,
@@ -70,7 +71,7 @@ export const InputInside = forwardRef<
       variantsMap[variant],
       'w-full focus:ring-transparent focus:ring-offset-transparent min-h-[42px] z-10',
       'focus:outline-transparent rounded-md focus:border-accent-background-40',
-      'text-standard relative transition-colors',
+      'text-standard text-background-10 relative transition-colors',
       error && 'border-status-critical border-1'
     );
   }, [variant, disabled, error]);
@@ -83,7 +84,7 @@ export const InputInside = forwardRef<
 
   return (
     <label className="flex flex-col gap-1">
-      {label}
+      {label && <Typography>{label}</Typography>}
       <div className="relative w-full">
         <input
           type={forceText ? 'text' : type}
@@ -97,13 +98,13 @@ export const InputInside = forwardRef<
           value={computedValue} // Do we want that behaviour ?
           disabled={disabled}
           ref={ref}
-        ></input>
+        />
         {type === 'password' && (
           <div
             className="fill-background-10 absolute inset-y-0 right-0 pr-6 z-10 my-auto w-[16px] h-[16px] cursor-pointer"
             onClick={togglePassword}
           >
-            <EyeIcon width={16} closed={forceText}></EyeIcon>
+            <EyeIcon width={16} closed={forceText} />
           </div>
         )}
         {error?.message && (
@@ -122,15 +123,16 @@ export const Input = ({
   name,
   placeholder,
   label,
-  autocomplete,
+  autocomplete = false,
   disabled,
   variant = 'primary',
   rules,
 }: {
   rules?: UseControllerProps<any>['rules'];
   control: Control<any>;
+  autocomplete?: boolean | string;
 } & InputProps &
-  Partial<HTMLInputElement>) => {
+  Partial<React.HTMLProps<HTMLInputElement>>) => {
   return (
     <Controller
       control={control}
@@ -152,7 +154,7 @@ export const Input = ({
           onChange={onChange}
           ref={ref}
           name={name}
-        ></InputInside>
+        />
       )}
     />
   );

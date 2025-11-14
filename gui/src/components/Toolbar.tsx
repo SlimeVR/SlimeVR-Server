@@ -10,11 +10,9 @@ import {
 } from '@/hooks/reset';
 import { Tooltip } from './commons/Tooltip';
 import { useAtomValue } from 'jotai';
-import { assignedTrackersAtom, connectedTrackersAtom } from '@/store/app-store';
+import { assignedTrackersAtom } from '@/store/app-store';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import { useMemo, useState } from 'react';
-import { HomeSettingsModal } from './home/HomeSettingsModal';
-import { LayoutIcon } from './commons/icon/LayoutIcon';
+import { useMemo } from 'react';
 import { ResetButtonIcon } from './home/ResetButton';
 
 const MAINBUTTON_CLASSES = ({ disabled }: { disabled: boolean }) =>
@@ -37,11 +35,11 @@ function ButtonProgress({
   return (
     <div
       className={classNames(
-        'absolute top-0 left-0 w-0 h-full bg-accent-background-20 opacity-50 transition-all duration-1000 ease-linear',
+        'absolute top-0 left-0 w-0 h-full bg-accent-background-20 opacity-50 transition-all ease-linear',
         { 'duration-150': status === 'finished' }
       )}
       style={{ width: `${progress * 100}%` }}
-    ></div>
+    />
   );
 }
 
@@ -52,11 +50,12 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
     status,
     name: resetName,
     timer,
+    progress: resetProress,
     disabled,
     duration,
   } = useReset(options);
 
-  const progress = status === 'counting' ? 1 - (timer - 1) / duration : 0;
+  const progress = status === 'counting' ? resetProress / duration : 0;
 
   const name = options.customName || resetName;
 
@@ -66,11 +65,15 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
   return (
     <Tooltip
       disabled={isMd}
-      content={<Typography textAlign="text-center" id={name}></Typography>}
+      content={<Typography textAlign="text-center" id={name} />}
       preferedDirection="top"
     >
       <div
-        className={classNames(MAINBUTTON_CLASSES({ disabled }), 'rounded-lg')}
+        className={classNames(
+          MAINBUTTON_CLASSES({ disabled }),
+          'rounded-lg',
+          'absolute'
+        )}
         style={{
           animationIterationCount: 1,
         }}
@@ -80,6 +83,7 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
           className={classNames({
             'animate-spin-ccw': !skiReset && status === 'finished',
             'animate-skiing': skiReset && status === 'finished',
+            'opacity-0': status === 'counting',
           })}
           style={{
             animationIterationCount: 1,
@@ -88,25 +92,39 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
           <ResetButtonIcon {...options} />
         </div>
 
-        <div className="hidden md:block">
+        <div
+          className={classNames('hidden md:block relative', {
+            'opacity-0': status === 'counting',
+          })}
+        >
           <Typography
             variant="section-title"
             textAlign="text-center"
             id={name}
-          ></Typography>
+          />
         </div>
-        <ButtonProgress progress={progress} status={status}></ButtonProgress>
+
+        <ButtonProgress progress={progress} status={status} />
+        <div
+          className={classNames(
+            {
+              'opacity-0': status !== 'counting',
+              'animate-timer-tick': status === 'counting',
+            },
+            'absolute top-0 h-full flex items-center justify-center'
+          )}
+        >
+          <Typography variant="main-title" textAlign="text-center">
+            {timer}
+          </Typography>
+        </div>
       </div>
     </Tooltip>
   );
 }
 
-export function Toolbar({ showSettings }: { showSettings: boolean }) {
-  const trackers = useAtomValue(connectedTrackersAtom);
+export function Toolbar() {
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
-
-  const settingsOpenState = useState(false);
-  const [, setSettingsOpen] = settingsOpenState;
 
   const { visibleGroups, groupVisibility } = useMemo(() => {
     const groupVisibility = Object.keys(BODY_PARTS_GROUPS)
@@ -133,14 +151,13 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
 
   return (
     <>
-      <HomeSettingsModal open={settingsOpenState}></HomeSettingsModal>
       <div className="flex mobile:py-2 flex-col items-center bg-background-70 rounded-t-lg h-[var(--toolbar-h)] mr-2 xs:mt-2 mobile:mr-0">
         <div className="px-3 py-3 w-full flex gap-4 justify-center md:justify-start">
           <div className="flex-col flex gap-1 md:w-[60%]">
             <Typography variant="section-title" id="toolbar-drift_reset" />
             <div className="gap-2 md:h-[72px] h-[62px] w-full grid-cols-2 grid">
-              <BasicResetButton type={ResetType.Full}></BasicResetButton>
-              <BasicResetButton type={ResetType.Yaw}></BasicResetButton>
+              <BasicResetButton type={ResetType.Full} />
+              <BasicResetButton type={ResetType.Yaw} />
             </div>
           </div>
           <div className="flex-col flex gap-1 md:flex-grow">
@@ -158,37 +175,21 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
                 type={ResetType.Mounting}
                 group={'default'}
                 customName="toolbar-mounting_calibration-default"
-              ></BasicResetButton>
+              />
               <BasicResetButton
                 type={ResetType.Mounting}
                 group={'feet'}
                 customName="toolbar-mounting_calibration-feet"
-              ></BasicResetButton>
+              />
               {groupVisibility['fingers'] && (
                 <BasicResetButton
                   type={ResetType.Mounting}
                   group={'fingers'}
                   customName="toolbar-mounting_calibration-fingers"
-                ></BasicResetButton>
+                />
               )}
             </div>
           </div>
-        </div>
-        <div className="flex w-full gap-2 items-center px-4 h-5">
-          <Typography
-            color="secondary"
-            id="toolbar-connected_trackers"
-            vars={{ count: trackers.length }}
-          />
-          <div className="bg-background-50 h-[2px] rounded-lg flex-grow"></div>
-          {showSettings && (
-            <div
-              className="fill-background-30 hover:fill-background-20 cursor-pointer"
-              onClick={() => setSettingsOpen(true)}
-            >
-              <LayoutIcon size={18}></LayoutIcon>
-            </div>
-          )}
         </div>
       </div>
     </>

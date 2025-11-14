@@ -20,7 +20,7 @@ export function HomeSettingsModal({
     >
       <div className="flex flex-col gap-4">
         <Typography variant="main-title" id="home-settings" />
-        <HomeLayoutSettings></HomeLayoutSettings>
+        <HomeLayoutSettings />
         <div className="flex justify-end">
           <Button
             variant="tertiary"

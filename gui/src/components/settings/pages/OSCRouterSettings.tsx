@@ -18,15 +18,16 @@ import {
   SettingsPageLayout,
   SettingsPagePaneLayout,
 } from '@/components/settings/SettingsPageLayout';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { object } from 'yup';
+import {
+  OSCSettings,
+  useOscSettingsValidator,
+} from '@/hooks/osc-setting-validator';
 
 interface OSCRouterSettingsForm {
   router: {
-    oscSettings: {
-      enabled: boolean;
-      portIn: number;
-      portOut: number;
-      address: string;
-    };
+    oscSettings: OSCSettings;
   };
 }
 
@@ -44,10 +45,20 @@ const defaultValues = {
 export function OSCRouterSettings() {
   const { l10n } = useLocalization();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
+  const { oscValidator } = useOscSettingsValidator();
 
   const { reset, control, watch, handleSubmit } =
     useForm<OSCRouterSettingsForm>({
       defaultValues: defaultValues,
+      reValidateMode: 'onChange',
+      mode: 'onChange',
+      resolver: yupResolver(
+        object({
+          router: object({
+            oscSettings: oscValidator,
+          }),
+        })
+      ),
     });
 
   const onSubmit = (values: OSCRouterSettingsForm) => {
@@ -99,7 +110,7 @@ export function OSCRouterSettings() {
   return (
     <SettingsPageLayout>
       <form className="flex flex-col gap-2 w-full">
-        <SettingsPagePaneLayout icon={<RouterIcon></RouterIcon>} id="router">
+        <SettingsPagePaneLayout icon={<RouterIcon />} id="router">
           <>
             <Typography variant="main-title">
               {l10n.getString('settings-osc-router')}
@@ -152,11 +163,10 @@ export function OSCRouterSettings() {
                 <Input
                   type="number"
                   control={control}
-                  rules={{ required: true }}
                   name="router.oscSettings.portIn"
                   placeholder="9002"
                   label=""
-                ></Input>
+                />
               </Localized>
               <Localized
                 id="settings-osc-router-network-port_out"
@@ -165,11 +175,10 @@ export function OSCRouterSettings() {
                 <Input
                   type="number"
                   control={control}
-                  rules={{ required: true }}
                   name="router.oscSettings.portOut"
                   placeholder="9000"
                   label=""
-                ></Input>
+                />
               </Localized>
             </div>
             <Typography variant="section-title">
@@ -186,17 +195,12 @@ export function OSCRouterSettings() {
               <Input
                 type="text"
                 control={control}
-                rules={{
-                  required: true,
-                  pattern:
-                    /^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/i,
-                }}
                 name="router.oscSettings.address"
                 placeholder={l10n.getString(
                   'settings-osc-router-network-address-placeholder'
                 )}
                 label=""
-              ></Input>
+              />
             </div>
           </>
         </SettingsPagePaneLayout>

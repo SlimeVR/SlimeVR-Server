@@ -26,19 +26,19 @@ export function PreparationStep({
           </Typography>
           <div>
             <Localized id="onboarding-automatic_mounting-preparation-v2-step-0">
-              <Typography></Typography>
+              <Typography />
             </Localized>
             <Localized id="onboarding-automatic_mounting-preparation-v2-step-1">
-              <Typography></Typography>
+              <Typography />
             </Localized>
             <Localized id="onboarding-automatic_mounting-preparation-v2-step-2">
-              <Typography></Typography>
+              <Typography />
             </Localized>
           </div>
         </div>
         <div className="grid grid-cols-3 py-4 gap-2">
           <div className="flex flex-col bg-background-70 rounded-md relative max-h-64">
-            <CheckIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success"></CheckIcon>
+            <CheckIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success" />
             <img
               src="/images/reset/FullResetPose.webp"
               className="h-full object-contain"
@@ -46,7 +46,7 @@ export function PreparationStep({
             />
           </div>
           <div className="flex flex-col bg-background-70 rounded-md relative max-h-64">
-            <CheckIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success"></CheckIcon>
+            <CheckIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-success" />
             <img
               src="/images/reset/FullResetPoseSide.webp"
               className="h-full object-contain"
@@ -54,7 +54,7 @@ export function PreparationStep({
             />
           </div>
           <div className="flex flex-col bg-background-70 rounded-md relative max-h-64">
-            <CrossIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-critical"></CrossIcon>
+            <CrossIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 right-2 fill-status-critical" />
             <img
               src="/images/reset/FullResetPoseWrong.webp"
               className="h-full object-contain"
@@ -69,7 +69,7 @@ export function PreparationStep({
           >
             {l10n.getString('onboarding-automatic_mounting-prev_step')}
           </Button>
-          <ResetButton type={ResetType.Full} onReseted={nextStep}></ResetButton>
+          <ResetButton type={ResetType.Full} onReseted={nextStep} />
         </div>
       </div>
     </div>

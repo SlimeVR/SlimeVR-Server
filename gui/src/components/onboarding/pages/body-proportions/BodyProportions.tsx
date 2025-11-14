@@ -1,4 +1,4 @@
-import { Localized, useLocalization } from '@fluent/react';
+import { useLocalization } from '@fluent/react';
 import classNames from 'classnames';
 import { MouseEventHandler, ReactNode, useMemo, useState } from 'react';
 import {
@@ -61,9 +61,9 @@ function OpenGroupButton({
       onClick={toggleOpen}
     >
       {open ? (
-        <ArrowUpIcon size={isXs ? 50 : 30}></ArrowUpIcon>
+        <ArrowUpIcon size={isXs ? 50 : 30}/>
       ) : (
-        <ArrowDownIcon size={isXs ? 50 : 30}></ArrowDownIcon>
+        <ArrowDownIcon size={isXs ? 50 : 30}/>
       )}
     </div>
   );
@@ -172,7 +172,7 @@ function ProportionItem({
                   variant="standard"
                   whitespace="whitespace-pre-wrap"
                   id={`${part.label}-desc`}
-                ></Typography>
+                />
               }
               preferedDirection="bottom"
             >
@@ -186,7 +186,7 @@ function ProportionItem({
                   open={open}
                   toggleOpen={() => {}}
                   part={part}
-                ></OpenGroupButton>
+                />
               )}
             </div>
           </div>
@@ -263,7 +263,7 @@ function ProportionItem({
               open={open}
               toggleOpen={toggleOpen}
               part={part}
-            ></OpenGroupButton>
+            />
           )}
         </div>
       </div>
@@ -283,7 +283,7 @@ function ProportionItem({
                 precise={precise}
                 part={part}
                 onBoneChange={onBoneChange}
-              ></ProportionItem>
+              />
             ))}
           </div>
         </div>
@@ -316,7 +316,7 @@ export function BodyProportions({
               part={part}
               precise={precise}
               onBoneChange={changeBoneValue}
-            ></ProportionItem>
+            />
           ))}
         </div>
       </div>

@@ -39,7 +39,7 @@ function UpdateIcon({
           'absolute rounded-full h-6 w-6 left-1 top-1 bg-accent-background-10 animate-[ping_2s_linear_3]',
           showUpdate !== 'can-update' && 'hidden'
         )}
-      ></div>
+      />
       <div
         className={classNames(
           'absolute rounded-full h-8 w-8 justify-center flex items-center',
@@ -48,7 +48,7 @@ function UpdateIcon({
             : 'hover:bg-background-40 hover:cursor-pointer bg-background-50'
         )}
       >
-        <DownloadIcon width={15}></DownloadIcon>
+        <DownloadIcon width={15} />
       </div>
     </div>
   );
@@ -58,7 +58,7 @@ function UpdateIcon({
       preferedDirection="top"
       content={
         <Localized id={'tracker-settings-update-low-battery'}>
-          <Typography></Typography>
+          <Typography />
         </Localized>
       }
     >
@@ -87,7 +87,7 @@ function TrackerBig({
   return (
     <div className="flex flex-col justify-center rounded-md py-3 pr-4 pl-4 w-full gap-2 box-border my-8 px-6 h-32">
       <div className="flex justify-center fill-background-10">
-        <BodyPartIcon bodyPart={tracker.info?.bodyPart}></BodyPartIcon>
+        <BodyPartIcon bodyPart={tracker.info?.bodyPart} />
       </div>
       <div className="flex justify-center">
         <Typography bold truncate>
@@ -95,7 +95,7 @@ function TrackerBig({
         </Typography>
       </div>
       <div className="flex justify-center">
-        <TrackerStatus status={tracker.status}></TrackerStatus>
+        <TrackerStatus status={tracker.status} />
       </div>
       <div className="min-h-9 flex text-default justify-center gap-5 flex-wrap items-center">
         {device && device.hardwareStatus && (
@@ -115,7 +115,7 @@ function TrackerBig({
                   rssiShowNumeric={config?.debug}
                   ping={device.hardwareStatus.ping}
                   disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-                ></TrackerWifi>
+                />
               )}
             </div>
           </>
@@ -143,7 +143,7 @@ function TrackerSmol({
       <div className="flex flex-col justify-center items-center fill-background-10 relative">
         {warning && (
           <div className="absolute -right-2 -bottom-3 text-status-warning ">
-            <WarningIcon width={20}></WarningIcon>
+            <WarningIcon width={20} />
           </div>
         )}
         <div
@@ -155,10 +155,7 @@ function TrackerSmol({
             }
           )}
         >
-          <BodyPartIcon
-            bodyPart={tracker.info?.bodyPart}
-            width={40}
-          ></BodyPartIcon>
+          <BodyPartIcon bodyPart={tracker.info?.bodyPart} width={40} />
         </div>
       </div>
 
@@ -166,7 +163,7 @@ function TrackerSmol({
         <Typography bold truncate variant="section-title">
           {trackerName}
         </Typography>
-        <TrackerStatus status={tracker.status}></TrackerStatus>
+        <TrackerStatus status={tracker.status} />
       </div>
       {device && device.hardwareStatus && (
         <>
@@ -186,7 +183,7 @@ function TrackerSmol({
                 rssi={device.hardwareStatus.rssi}
                 ping={device.hardwareStatus.ping}
                 disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-              ></TrackerWifi>
+              />
             )}
           </div>
         </>
@@ -258,26 +255,20 @@ export function TrackerCard({
             content={
               typeof warning === 'object' && (
                 <div className="flex gap-1 items-center text-status-warning">
-                  <WarningIcon width={20}></WarningIcon>
+                  <WarningIcon width={20} />
                   <Typography id={trackingchecklistIdtoLabel[warning.id]} />
                 </div>
               )
             }
           >
-            <TrackerSmol
-              tracker={tracker}
-              device={device}
-              warning={warning}
-            ></TrackerSmol>
+            <TrackerSmol tracker={tracker} device={device} warning={warning} />
           </Tooltip>
         )}
-        {!smol && <TrackerBig tracker={tracker} device={device}></TrackerBig>}
+        {!smol && <TrackerBig tracker={tracker} device={device} />}
       </div>
       {showUpdate &&
         showUpdate !== 'unavailable' &&
-        showUpdate !== 'updated' && (
-          <UpdateIcon showUpdate={showUpdate}></UpdateIcon>
-        )}
+        showUpdate !== 'updated' && <UpdateIcon showUpdate={showUpdate} />}
     </div>
   );
 }

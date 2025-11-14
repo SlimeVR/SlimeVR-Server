@@ -503,7 +503,6 @@ settings-serial-factory_reset-warning =
     Це означає, що Wi-Fi та налаштування калібрування <b>будуть втрачені!</b>
 settings-serial-factory_reset-warning-ok = Я знаю, що роблю
 settings-serial-factory_reset-warning-cancel = Скасувати
-settings-serial-get_infos = Отримати інформацію
 settings-serial-serial_select = Вибір послідовного порту
 settings-serial-auto_dropdown_item = Автоматично
 settings-serial-get_wifi_scan = Сканувати мережу Wi-Fi
@@ -632,20 +631,20 @@ onboarding-reset_tutorial-skip = Пропустити крок
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Торкніться { $taps } виділеного трекера, щоб запустити скидання нахилу.
-    
+
     Це змусить трекери дивитися в тому ж напрямку, що і ваш шолом.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Торкніться { $taps } разів виділеного трекера, щоб ініціювати повне скидання.
-    
+
     Для цього потрібно стояти (i-поза). Існує затримка 3 секунди (можна налаштувати), перш ніж воно спрацює.
     Це повністю скидає розташування всіх ваших трекерів, та має вирішити більшість проблем.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Торкніться { $taps } разів виділеного трекеру, щоб активувати скидання положення.
-    
+
     Скидання положення допомагає в тому, як трекери насправді надягнені на вас, тому, якщо ви випадково перемістили їх та змінили місце розташування, це допоможе.
-    
+
     Вам потрібно бути в позі, ніби ви катаєтеся на лижах, як показано на майстрі автоматичної прив'язки положення. У вас є затримка у 3 секунди (можна налаштувати), перш ніж спрацює скидання.
 
 ## Setup start
@@ -860,4 +859,3 @@ unknown_device-modal-confirm = Звісно!
 unknown_device-modal-forget = Ігнорувати
 
 ## Error collection consent modal
-
