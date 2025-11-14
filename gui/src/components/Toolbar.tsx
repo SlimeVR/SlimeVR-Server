@@ -35,10 +35,15 @@ function ButtonProgress({
   return (
     <div
       className={classNames(
-        'absolute top-0 left-0 w-0 h-full bg-accent-background-20 opacity-50 transition-all ease-linear',
-        { 'duration-150': status === 'finished' }
+        'absolute top-0 left-0 w-0 h-full bg-accent-background-20 opacity-50'
       )}
-      style={{ width: `${progress * 100}%` }}
+      style={{
+        width: `${progress * 100}%`,
+        transition:
+          status === 'counting'
+            ? 'width 0.3s cubic-bezier(0.68, -0.8, 0.32, 1.8)'
+            : 'width 1s linear',
+      }}
     />
   );
 }

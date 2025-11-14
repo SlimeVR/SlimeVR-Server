@@ -70,10 +70,10 @@ const resetSounds = {
 
 function restartAndPlay(audio: HTMLAudioElement, volume: number) {
   try {
-    audio.volume = Math.min(1, Math.pow(volume, Math.E) + 0.05);
-    audio.currentTime = 0;
 
     audio.load(); // LINUX: Solves wierd bug where webkit would unload sounds wierdly and make the sounds not play anymore
+    audio.volume = Math.min(1, Math.pow(volume, Math.E) + 0.05);
+    audio.currentTime = 0;
     const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.catch((error) => {
@@ -95,8 +95,9 @@ export function handleResetSounds(
     if (progress === 0) restartAndPlay(sounds.initial, volume);
 
     const tickIndex = (progress / 1000) % sounds.tick.length;
-    if (progress >= 0 && sounds.tick[tickIndex])
+    if (progress >= 1 && sounds.tick[tickIndex]) {
       restartAndPlay(sounds.tick[tickIndex], volume);
+    }
   }
 
   if (status === ResetStatus.FINISHED) {
