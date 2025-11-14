@@ -51,6 +51,11 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
     if (onReseted) onReseted();
   };
 
+  const onResetCanceled = () => {
+    if (status !== 'finished')
+      setStatus('idle');
+  }
+
   useEffect(() => {
     if (status === 'finished') {
       finishedTimeoutRef.current = setTimeout(() => {
@@ -72,17 +77,15 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
   useRPCPacket(
     RpcMessage.ResetResponse,
     ({ status, resetType, progress, duration, bodyParts }: ResetResponseT) => {
-      console.log(
-        JSON.stringify(parts) !== JSON.stringify(bodyParts),
-        parts,
-        bodyParts
-      );
+
       if (
         resetType !== options.type ||
         (resetType == ResetType.Mounting &&
           JSON.stringify(parts) !== JSON.stringify(bodyParts))
-      )
+      ) {
+        onResetCanceled()
         return;
+      }
       onResetProgress(progress, duration);
       switch (status) {
         case ResetStatus.FINISHED: {
