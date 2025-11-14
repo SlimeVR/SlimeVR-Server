@@ -350,7 +350,7 @@ class VRServer @JvmOverloads constructor(
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersFull(resetSourceName, bodyParts)
-					resetHandler.sendFinished(ResetType.Full, bodyParts)
+					resetHandler.sendFinished(ResetType.Full, bodyParts, delay.toInt())
 				}
 			},
 		)
@@ -366,7 +366,7 @@ class VRServer @JvmOverloads constructor(
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersYaw(resetSourceName, bodyParts)
-					resetHandler.sendFinished(ResetType.Yaw, bodyParts)
+					resetHandler.sendFinished(ResetType.Yaw, bodyParts, delay.toInt())
 				}
 			},
 		)
@@ -382,7 +382,7 @@ class VRServer @JvmOverloads constructor(
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersMounting(resetSourceName, bodyParts)
-					resetHandler.sendFinished(ResetType.Mounting, bodyParts)
+					resetHandler.sendFinished(ResetType.Mounting, bodyParts, delay.toInt())
 				}
 			},
 		)

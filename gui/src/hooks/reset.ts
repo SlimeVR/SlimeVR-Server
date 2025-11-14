@@ -11,6 +11,7 @@ import { useWebsocketAPI } from './websocket-api';
 import { useAtomValue } from 'jotai';
 import { assignedTrackersAtom } from '@/store/app-store';
 import { FEET_BODY_PARTS, FINGER_BODY_PARTS } from './body-parts';
+import { useLocaleConfig } from '@/i18n/config';
 
 export type ResetBtnStatus = 'idle' | 'counting' | 'finished';
 
@@ -28,6 +29,7 @@ export const BODY_PARTS_GROUPS: Record<MountingResetGroup, BodyPart[]> = {
 export function useReset(options: UseResetOptions, onReseted?: () => void) {
   if (options.type === ResetType.Mounting && !options.group) options.group = 'default';
 
+  const { currentLocales } = useLocaleConfig();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   const finishedTimeoutRef = useRef<NodeJS.Timeout>();
@@ -70,11 +72,18 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
   useRPCPacket(
     RpcMessage.ResetResponse,
     ({ status, resetType, progress, duration, bodyParts }: ResetResponseT) => {
+      console.log(
+        JSON.stringify(parts) !== JSON.stringify(bodyParts),
+        parts,
+        bodyParts
+      );
       if (
         resetType !== options.type ||
-        JSON.stringify(parts) !== JSON.stringify(bodyParts)
+        (resetType == ResetType.Mounting &&
+          JSON.stringify(parts) !== JSON.stringify(bodyParts))
       )
         return;
+      onResetProgress(progress, duration);
       switch (status) {
         case ResetStatus.FINISHED: {
           onResetFinished();
@@ -82,7 +91,6 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
         }
         case ResetStatus.STARTED: {
           setStatus('counting');
-          onResetProgress(progress, duration);
           break;
         }
       }
@@ -117,6 +125,17 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
       disabled = true;
   }
 
+  const localized = useMemo(
+    () =>
+      Intl.NumberFormat('en-US', {
+        maximumFractionDigits: 1,
+        unit: 'second',
+        unitDisplay: 'narrow',
+        style: 'unit',
+      }),
+    [currentLocales]
+  );
+
   return {
     triggerReset,
     progress,
@@ -124,7 +143,7 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
     status,
     disabled,
     name,
-    timer: duration - progress,
+    timer: localized.format(duration - progress),
   };
 }
 

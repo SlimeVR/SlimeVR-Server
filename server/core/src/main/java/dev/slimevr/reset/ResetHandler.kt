@@ -10,8 +10,8 @@ class ResetHandler {
 		this.listeners.forEach { listener: ResetListener -> listener.onStarted(resetType, bodyParts, progress, duration) }
 	}
 
-	fun sendFinished(resetType: Int, bodyParts: List<Int>? = null) {
-		this.listeners.forEach { listener: ResetListener -> listener.onFinished(resetType, bodyParts) }
+	fun sendFinished(resetType: Int, bodyParts: List<Int>? = null, duration: Int) {
+		this.listeners.forEach { listener: ResetListener -> listener.onFinished(resetType, bodyParts, duration) }
 	}
 
 	fun addListener(listener: ResetListener) {
