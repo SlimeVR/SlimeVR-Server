@@ -73,6 +73,7 @@ function restartAndPlay(audio: HTMLAudioElement, volume: number) {
     audio.volume = Math.min(1, Math.pow(volume, Math.E) + 0.05);
     audio.currentTime = 0;
 
+    audio.load(); // LINUX: Solves wierd bug where webkit would unload sounds wierdly and make the sounds not play anymore
     const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.catch((error) => {
