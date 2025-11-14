@@ -1596,4 +1596,5 @@ toolbar-mounting_calibration-default = Body
 toolbar-mounting_calibration-feet = Feet
 toolbar-mounting_calibration-fingers = Fingers
 toolbar-drift_reset = Drift Reset
-toolbar-connected_trackers = {$count} trackers connected
+toolbar-assigned_trackers = {$count} trackers assigned
+toolbar-unassigned_trackers = {$count} trackers unassigned

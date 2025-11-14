@@ -85,7 +85,7 @@ function Layout() {
           <Route
             path="/"
             element={
-              <MainLayout isMobile={isMobile} full showToolbarSettings>
+              <MainLayout isMobile={isMobile} full>
                 <Home />
               </MainLayout>
             }

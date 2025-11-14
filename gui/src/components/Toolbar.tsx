@@ -125,12 +125,12 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
   );
 }
 
-export function Toolbar({ showSettings }: { showSettings: boolean }) {
-  const trackers = useAtomValue(connectedTrackersAtom);
+export function Toolbar() {
+  // const trackers = useAtomValue(connectedTrackersAtom);
   const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
-  const settingsOpenState = useState(false);
-  const [, setSettingsOpen] = settingsOpenState;
+  // const settingsOpenState = useState(false);
+  // const [, setSettingsOpen] = settingsOpenState;
 
   const { visibleGroups, groupVisibility } = useMemo(() => {
     const groupVisibility = Object.keys(BODY_PARTS_GROUPS)
@@ -157,7 +157,6 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
 
   return (
     <>
-      <HomeSettingsModal open={settingsOpenState} />
       <div className="flex mobile:py-2 flex-col items-center bg-background-70 rounded-t-lg h-[var(--toolbar-h)] mr-2 xs:mt-2 mobile:mr-0">
         <div className="px-3 py-3 w-full flex gap-4 justify-center md:justify-start">
           <div className="flex-col flex gap-1 md:w-[60%]">
@@ -198,10 +197,10 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
             </div>
           </div>
         </div>
-        <div className="flex w-full gap-2 items-center px-4 h-5">
+        {/* <div className="flex w-full gap-2 items-center px-4 h-5">
           <Typography
             color="secondary"
-            id="toolbar-connected_trackers"
+            id="toolbar-assigned_trackers"
             vars={{ count: trackers.length }}
           />
           <div className="bg-background-50 h-[2px] rounded-lg flex-grow" />
@@ -213,7 +212,7 @@ export function Toolbar({ showSettings }: { showSettings: boolean }) {
               <LayoutIcon size={18} />
             </div>
           )}
-        </div>
+        </div> */}
       </div>
     </>
   );

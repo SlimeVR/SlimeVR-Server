@@ -20,7 +20,6 @@ export function MainLayout({
   background = true,
   full = false,
   isMobile = undefined,
-  showToolbarSettings = false,
 }: {
   children: ReactNode;
   background?: boolean;
@@ -92,7 +91,7 @@ export function MainLayout({
       )}
       {full && (
         <div style={{ gridArea: 'b' }}>
-          <Toolbar showSettings={showToolbarSettings} />
+          <Toolbar />
         </div>
       )}
       {!isMobile && full && (
