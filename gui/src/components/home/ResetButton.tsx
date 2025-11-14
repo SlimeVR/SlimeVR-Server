@@ -1,219 +1,67 @@
-import { useLocalization } from '@fluent/react';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  BodyPart,
-  ResetRequestT,
-  ResetType,
-  RpcMessage,
-  StatusData,
-} from 'solarxr-protocol';
-import { useConfig } from '@/hooks/config';
-import { useCountdown } from '@/hooks/countdown';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
-import {
-  playSoundOnResetEnded,
-  playSoundOnResetStarted,
-} from '@/sounds/sounds';
-import { BigButton } from '@/components/commons/BigButton';
+import { Localized } from '@fluent/react';
+import { ResetType } from 'solarxr-protocol';
 import { Button } from '@/components/commons/Button';
-import {
-  MountingResetIcon,
-  YawResetIcon,
-  FullResetIcon,
-} from '@/components/commons/icon/ResetIcon';
-import { useStatusContext } from '@/hooks/status-system';
 import classNames from 'classnames';
+import { useReset, UseResetOptions } from '@/hooks/reset';
+import {
+  FullResetIcon,
+  YawResetIcon,
+} from '@/components/commons/icon/ResetIcon';
+import { ReactNode } from 'react';
+import { SkiIcon } from '@/components/commons/icon/SkiIcon';
 import { FootIcon } from '@/components/commons/icon/FootIcon';
 import { FingersIcon } from '@/components/commons/icon/FingersIcon';
 
+export function ResetButtonIcon(options: UseResetOptions) {
+  if (options.type === ResetType.Mounting && !options.group)
+    options.group = 'default';
+
+  if (options.type === ResetType.Yaw) return <YawResetIcon width={18} />;
+  if (options.type === ResetType.Full) return <FullResetIcon width={18} />;
+  if (options.type === ResetType.Mounting) {
+    if (options.group === 'default') return <SkiIcon />;
+    if (options.group === 'feet') return <FootIcon />;
+    if (options.group === 'fingers') return <FingersIcon width={16} />;
+  }
+}
+
 export function ResetButton({
-  type,
-  size = 'big',
-  bodyPartsToReset = 'default',
   className,
   onReseted,
+  children,
+  ...options
 }: {
   className?: string;
-  type: ResetType;
-  size: 'big' | 'small';
-  bodyPartsToReset?: 'default' | 'feet' | 'fingers';
+  children?: ReactNode;
   onReseted?: () => void;
-}) {
-  const { l10n } = useLocalization();
-  const { sendRPCPacket } = useWebsocketAPI();
-  const { statuses } = useStatusContext();
-  const { config } = useConfig();
-  const finishedTimeoutRef = useRef(-1);
-  const [isFinished, setFinished] = useState(false);
-
-  const needsFullReset = useMemo(
-    () =>
-      type === ResetType.Mounting &&
-      Object.values(statuses).some(
-        (status) => status.dataType === StatusData.StatusTrackerReset
-      ),
-    [statuses]
+} & UseResetOptions) {
+  const { triggerReset, status, timer, disabled, name } = useReset(
+    options,
+    onReseted
   );
 
-  const feetBodyParts = [BodyPart.LEFT_FOOT, BodyPart.RIGHT_FOOT];
-  const fingerBodyParts = [
-    BodyPart.LEFT_THUMB_METACARPAL,
-    BodyPart.LEFT_THUMB_PROXIMAL,
-    BodyPart.LEFT_THUMB_DISTAL,
-    BodyPart.LEFT_INDEX_PROXIMAL,
-    BodyPart.LEFT_INDEX_INTERMEDIATE,
-    BodyPart.LEFT_INDEX_DISTAL,
-    BodyPart.LEFT_MIDDLE_PROXIMAL,
-    BodyPart.LEFT_MIDDLE_INTERMEDIATE,
-    BodyPart.LEFT_MIDDLE_DISTAL,
-    BodyPart.LEFT_RING_PROXIMAL,
-    BodyPart.LEFT_RING_INTERMEDIATE,
-    BodyPart.LEFT_RING_DISTAL,
-    BodyPart.LEFT_LITTLE_PROXIMAL,
-    BodyPart.LEFT_LITTLE_INTERMEDIATE,
-    BodyPart.LEFT_LITTLE_DISTAL,
-    BodyPart.RIGHT_THUMB_METACARPAL,
-    BodyPart.RIGHT_THUMB_PROXIMAL,
-    BodyPart.RIGHT_THUMB_DISTAL,
-    BodyPart.RIGHT_INDEX_PROXIMAL,
-    BodyPart.RIGHT_INDEX_INTERMEDIATE,
-    BodyPart.RIGHT_INDEX_DISTAL,
-    BodyPart.RIGHT_MIDDLE_PROXIMAL,
-    BodyPart.RIGHT_MIDDLE_INTERMEDIATE,
-    BodyPart.RIGHT_MIDDLE_DISTAL,
-    BodyPart.RIGHT_RING_PROXIMAL,
-    BodyPart.RIGHT_RING_INTERMEDIATE,
-    BodyPart.RIGHT_RING_DISTAL,
-    BodyPart.RIGHT_LITTLE_PROXIMAL,
-    BodyPart.RIGHT_LITTLE_INTERMEDIATE,
-    BodyPart.RIGHT_LITTLE_DISTAL,
-  ];
-
-  const reset = () => {
-    const req = new ResetRequestT();
-    req.resetType = type;
-    switch (bodyPartsToReset) {
-      case 'default':
-        // Server handles it. Usually all body parts except fingers.
-        req.bodyParts = [];
-        break;
-      case 'feet':
-        req.bodyParts = feetBodyParts;
-        break;
-      case 'fingers':
-        req.bodyParts = fingerBodyParts;
-        break;
-    }
-    sendRPCPacket(RpcMessage.ResetRequest, req);
-  };
-
-  const { isCounting, startCountdown, timer } = useCountdown({
-    duration: type === ResetType.Yaw ? 0 : undefined,
-    onCountdownEnd: () => {
-      maybePlaySoundOnResetEnd(type);
-      reset();
-      setFinished(true);
-      if (finishedTimeoutRef.current !== -1)
-        clearTimeout(finishedTimeoutRef.current);
-      finishedTimeoutRef.current = setTimeout(() => {
-        setFinished(false);
-        finishedTimeoutRef.current = -1;
-      }, 2000) as unknown as number;
-      if (onReseted) onReseted();
-    },
-  });
-
-  const text = useMemo(() => {
-    switch (type) {
-      case ResetType.Yaw:
-        return l10n.getString(
-          'reset-yaw' +
-            (bodyPartsToReset !== 'default' ? '-' + bodyPartsToReset : '')
-        );
-      case ResetType.Mounting:
-        return l10n.getString(
-          'reset-mounting' +
-            (bodyPartsToReset !== 'default' ? '-' + bodyPartsToReset : '')
-        );
-      case ResetType.Full:
-        return l10n.getString(
-          'reset-full' +
-            (bodyPartsToReset !== 'default' ? '-' + bodyPartsToReset : '')
-        );
-    }
-  }, [type, bodyPartsToReset]);
-
-  const getIcon = () => {
-    switch (type) {
-      case ResetType.Yaw:
-        return <YawResetIcon width={20} />;
-      case ResetType.Mounting:
-        switch (bodyPartsToReset) {
-          case 'default':
-            return <MountingResetIcon width={20} />;
-          case 'feet':
-            return <FootIcon width={30} />;
-          case 'fingers':
-            return <FingersIcon width={20} />;
-        }
-    }
-    return <FullResetIcon width={20} />;
-  };
-
-  const maybePlaySoundOnResetEnd = (type: ResetType) => {
-    if (!config?.feedbackSound) return;
-    playSoundOnResetEnded(type, config?.feedbackSoundVolume);
-  };
-
-  const maybePlaySoundOnResetStart = () => {
-    if (!config?.feedbackSound) return;
-    if (type !== ResetType.Yaw)
-      playSoundOnResetStarted(config?.feedbackSoundVolume);
-  };
-
-  const triggerReset = () => {
-    setFinished(false);
-    startCountdown();
-    maybePlaySoundOnResetStart();
-  };
-
-  useEffect(() => {
-    return () => {
-      if (finishedTimeoutRef.current !== -1)
-        clearTimeout(finishedTimeoutRef.current);
-    };
-  }, []);
-
-  return size === 'small' ? (
+  return (
     <Button
-      icon={getIcon()}
+      icon={<ResetButtonIcon {...options} />}
       onClick={triggerReset}
       className={classNames(
-        'border-2',
-        isFinished
+        'border-2 py-[5px]',
+        status === 'finished'
           ? 'border-status-success'
           : 'transition-[border-color] duration-500 ease-in-out border-transparent',
         className
       )}
       variant="primary"
-      disabled={isCounting || needsFullReset}
+      disabled={disabled}
     >
-      {!isCounting || type === ResetType.Yaw ? text : String(timer)}
+      <div className="flex flex-col">
+        <div className="opacity-0 h-0">
+          {children || <Localized id={name} />}
+        </div>
+        {status !== 'counting' || options.type === ResetType.Yaw
+          ? children || <Localized id={name} />
+          : String(timer)}
+      </div>
     </Button>
-  ) : (
-    <BigButton
-      icon={getIcon()}
-      onClick={triggerReset}
-      className={classNames(
-        'border-2',
-        isFinished
-          ? 'border-status-success'
-          : 'transition-[border-color] duration-500 ease-in-out border-transparent',
-        className
-      )}
-      disabled={isCounting || needsFullReset}
-    >
-      {!isCounting || type === ResetType.Yaw ? text : String(timer)}
-    </BigButton>
   );
 }

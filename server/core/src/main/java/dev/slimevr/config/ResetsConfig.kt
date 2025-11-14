@@ -29,6 +29,24 @@ enum class ArmsResetModes(val id: Int) {
 	}
 }
 
+enum class MountingMethods(val id: Int) {
+	MANUAL(0),
+	AUTOMATIC(1),
+	;
+
+	companion object {
+		val values = MountingMethods.entries.toTypedArray()
+
+		@JvmStatic
+		fun fromId(id: Int): MountingMethods? {
+			for (filter in values) {
+				if (filter.id == id) return filter
+			}
+			return null
+		}
+	}
+}
+
 class ResetsConfig {
 
 	// Always reset mounting for feet
@@ -45,6 +63,12 @@ class ResetsConfig {
 
 	// Reset the HMD's pitch upon full reset
 	var resetHmdPitch = false
+
+	var lastMountingMethod = MountingMethods.AUTOMATIC
+
+	var yawResetDelay = 0.0f
+	var fullResetDelay = 3.0f
+	var mountingResetDelay = 3.0f
 
 	fun updateTrackersResetsSettings() {
 		for (t in VRServer.instance.allTrackers) {

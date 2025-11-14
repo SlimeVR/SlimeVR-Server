@@ -15,10 +15,7 @@ import kotlin.math.*
 
 private const val DRIFT_COOLDOWN_MS = 50000L
 
-/**
- * Class taking care of full reset, yaw reset, mounting reset,
- * and drift compensation logic.
- */
+/** Class taking care of full reset, yaw reset, mounting reset, and drift compensation logic. */
 class TrackerResetsHandler(val tracker: Tracker) {
 
 	private val HalfHorizontal = EulerAngles(
@@ -38,7 +35,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	private var compensateDrift = false
 	private var driftPrediction = false
 	private var driftCompensationEnabled = false
-	private var resetMountingFeet = false
 	private var armsResetMode = ArmsResetModes.BACK
 	private var yawResetSmoothTime = 0.0f
 	var saveMountingReset = false
@@ -165,7 +161,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	 * Reads/loads reset settings from the given config
 	 */
 	fun readResetConfig(config: ResetsConfig) {
-		resetMountingFeet = config.resetMountingFeet
 		armsResetMode = config.mode
 		yawResetSmoothTime = config.yawResetSmoothTime
 		saveMountingReset = config.saveMountingReset
@@ -275,7 +270,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		val mountingAdjustedRotation = tracker.getRawRotation() * mountingOrientation
 
 		// Gyrofix
-		if (tracker.needsMounting || (tracker.trackerPosition == TrackerPosition.HEAD && !tracker.isHmd)) {
+		if (tracker.allowMounting || (tracker.trackerPosition == TrackerPosition.HEAD && !tracker.isHmd)) {
 			gyroFix = if (tracker.isComputed) {
 				fixGyroscope(tracker.getRawRotation())
 			} else {
@@ -307,7 +302,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 		}
 
 		// Rotate attachmentFix by 180 degrees as a workaround for t-pose (down)
-		if (tposeDownFix != Quaternion.IDENTITY && tracker.needsMounting) {
+		if (tposeDownFix != Quaternion.IDENTITY && tracker.allowMounting) {
 			attachmentFix *= HalfHorizontal
 		}
 
@@ -329,9 +324,8 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	}
 
 	private fun postProcessResetFull(reference: Quaternion) {
-		if (this.tracker.lastResetStatus != 0u) {
-			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
-			this.tracker.lastResetStatus = 0u
+		if (this.tracker.needReset) {
+			this.tracker.needReset = false
 		}
 
 		tracker.resetFilteringQuats(reference)
@@ -376,13 +370,7 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			)
 		}
 
-		// Remove the status if yaw reset was performed after the tracker
-		// was disconnected and connected.
-		if (this.tracker.lastResetStatus != 0u && this.tracker.statusResetRecently) {
-			VRServer.instance.statusSystem.removeStatus(this.tracker.lastResetStatus)
-			this.tracker.statusResetRecently = false
-			this.tracker.lastResetStatus = 0u
-		}
+		this.tracker.needReset = false
 
 		// Reset Stay Aligned (before resetting filtering, which depends on the
 		// tracker's rotation)
@@ -394,16 +382,13 @@ class TrackerResetsHandler(val tracker: Tracker) {
 	/**
 	 * Perform the math to align the tracker to go forward
 	 * and stores it in mountRotFix, and adjusts yawFix
-	 * If forceFeet is true, always reset feet regardless of resetMountingFeet's value.
 	 */
-	fun resetMounting(reference: Quaternion, forceFeet: Boolean = false) {
+	fun resetMounting(reference: Quaternion) {
 		if (tracker.trackerDataType == TrackerDataType.FLEX_RESISTANCE) {
 			tracker.trackerFlexHandler.resetMax()
 			tracker.resetFilteringQuats(reference)
 			return
 		} else if (tracker.trackerDataType == TrackerDataType.FLEX_ANGLE) {
-			return
-		} else if (!resetMountingFeet && tracker.trackerPosition.isFoot() && !forceFeet) {
 			return
 		}
 

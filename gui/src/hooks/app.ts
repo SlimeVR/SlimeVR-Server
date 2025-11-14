@@ -3,16 +3,13 @@ import {
   DataFeedMessage,
   DataFeedUpdateT,
   ResetResponseT,
-  ResetStatus,
-  ResetType,
   RpcMessage,
   StartDataFeedT,
 } from 'solarxr-protocol';
-import { playSoundOnResetEnded, playSoundOnResetStarted } from '@/sounds/sounds';
+import { handleResetSounds } from '@/sounds/sounds';
 import { useConfig } from './config';
 import { useBonesDataFeedConfig, useDataFeedConfig } from './datafeed-config';
 import { useWebsocketAPI } from './websocket-api';
-import { error } from '@/utils/logging';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { bonesAtom, datafeedAtom, devicesAtom } from '@/store/app-store';
 import { updateSentryContext } from '@/utils/sentry';
@@ -55,23 +52,9 @@ export function useProvideAppContext(): AppContext {
     updateSentryContext(devices);
   }, [devices]);
 
-  useRPCPacket(RpcMessage.ResetResponse, ({ status, resetType }: ResetResponseT) => {
+  useRPCPacket(RpcMessage.ResetResponse, (resetResponse: ResetResponseT) => {
     if (!config?.feedbackSound) return;
-    try {
-      switch (status) {
-        case ResetStatus.STARTED: {
-          if (resetType !== ResetType.Yaw)
-            playSoundOnResetStarted(config?.feedbackSoundVolume);
-          break;
-        }
-        case ResetStatus.FINISHED: {
-          playSoundOnResetEnded(resetType, config?.feedbackSoundVolume);
-          break;
-        }
-      }
-    } catch (e) {
-      error(e);
-    }
+    handleResetSounds(config?.feedbackSoundVolume ?? 1, resetResponse);
   });
 
   useEffect(() => {

@@ -34,8 +34,6 @@ export function OnboardingLayout({ children }: { children: ReactNode }) {
       </div>
     </div>
   ) : (
-    <MainLayout widgets={false} isMobile={isMobile}>
-      {children}
-    </MainLayout>
+    <MainLayout isMobile={isMobile}>{children}</MainLayout>
   );
 }

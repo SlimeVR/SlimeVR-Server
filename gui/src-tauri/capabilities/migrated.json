@@ -42,6 +42,17 @@
       ]
     },
     {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "steam:*"
+        },
+        {
+          "url": "ms-settings:network"
+        }
+      ]
+    },
+    {
       "identifier": "http:default",
       "allow": [
         {

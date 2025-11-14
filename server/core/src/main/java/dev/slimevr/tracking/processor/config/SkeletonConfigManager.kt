@@ -91,6 +91,9 @@ class SkeletonConfigManager(
 		// Re-calculate user height
 		userHeightFromOffsets = calculateUserHeight()
 		userNeckHeightFromOffsets = userHeightFromOffsets - getOffset(SkeletonConfigOffsets.NECK)
+
+		// Update vrc config checker if user height change
+		humanPoseManager?.server?.vrcConfigManager?.forceUpdate()
 	}
 
 	fun setOffset(config: SkeletonConfigOffsets, newValue: Float?) {

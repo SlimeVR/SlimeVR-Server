@@ -20,11 +20,6 @@ import io.github.axisangles.ktmath.Quaternion.Companion.IDENTITY
 import io.github.axisangles.ktmath.Vector3
 import io.github.axisangles.ktmath.Vector3.Companion.POS_Y
 import org.apache.commons.math3.util.Precision
-import solarxr_protocol.datatypes.DeviceIdT
-import solarxr_protocol.datatypes.TrackerIdT
-import solarxr_protocol.rpc.StatusData
-import solarxr_protocol.rpc.StatusDataUnion
-import solarxr_protocol.rpc.StatusUnassignedHMDT
 import java.util.function.Consumer
 import kotlin.math.*
 
@@ -526,7 +521,7 @@ class HumanPoseManager(val server: VRServer?) {
 		for (tracker in server!!.allTrackers) {
 			if ((
 					tracker.isImu() &&
-						tracker.needsReset
+						tracker.allowReset
 					) &&
 				tracker.resetsHandler.lastResetQuaternion != null
 			) {
@@ -574,8 +569,15 @@ class HumanPoseManager(val server: VRServer?) {
 	}
 
 	@JvmOverloads
-	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
-		skeleton.resetTrackersMounting(resetSourceName, bodyParts)
+	fun resetTrackersMounting(resetSourceName: String?, bodyParts: List<Int>? = null) {
+		val finalBodyParts = bodyParts
+			?: if (server?.configManager?.vrConfig?.resetsConfig?.resetMountingFeet == true) {
+				TrackerUtils.allBodyPartsButFingers
+			} else {
+				TrackerUtils.allBodyPartsButFingersAndFeets
+			}
+
+		skeleton.resetTrackersMounting(resetSourceName, finalBodyParts)
 	}
 
 	fun clearTrackersMounting(resetSourceName: String?) {
@@ -677,51 +679,12 @@ class HumanPoseManager(val server: VRServer?) {
 			return
 		}
 		server.allTrackers
-			.filter { !it.isInternal && it.trackerPosition != null }
+			.filter { it.trackerPosition != null }
 			.forEach {
-				it.checkReportRequireReset()
-			}
-	}
-
-	private var lastMissingHmdStatus = 0u
-	fun checkReportMissingHmd() {
-		// Check if this is main skeleton, there is no head tracker currently,
-		// and there is an available HMD one
-		if (server == null) return
-		val tracker = VRServer.instance.allTrackers.firstOrNull { it.isHmd && !it.isInternal && it.status.sendData }
-		if (skeleton.headTracker == null &&
-			lastMissingHmdStatus == 0u &&
-			tracker != null
-		) {
-			reportMissingHmd(tracker)
-		} else if (lastMissingHmdStatus != 0u &&
-			(skeleton.headTracker != null || tracker == null)
-		) {
-			server.statusSystem.removeStatus(lastMissingHmdStatus)
-			lastMissingHmdStatus = 0u
-		}
-	}
-
-	private fun reportMissingHmd(tracker: Tracker) {
-		require(lastMissingHmdStatus == 0u) {
-			"${::lastMissingHmdStatus.name} must be 0u, but was $lastMissingHmdStatus"
-		}
-		require(server != null) {
-			"${::server.name} must not be null"
-		}
-
-		val status = StatusDataUnion().apply {
-			type = StatusData.StatusUnassignedHMD
-			value = StatusUnassignedHMDT().apply {
-				trackerId = TrackerIdT().apply {
-					if (tracker.device != null) {
-						deviceId = DeviceIdT().apply { id = tracker.device.id }
-					}
-					trackerNum = tracker.trackerNum
+				if (it.allowReset && !it.needReset) {
+					it.needReset = true
 				}
 			}
-		}
-		lastMissingHmdStatus = server.statusSystem.addStatus(status, true)
 	}
 
 	// #endregion
