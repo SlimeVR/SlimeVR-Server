@@ -69,8 +69,9 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 		ResetResponse.startResetResponse(fbb)
 		ResetResponse.addResetType(fbb, resetType)
 		ResetResponse.addStatus(fbb, status)
-		if (bodyPartsOffset >= 0)
+		if (bodyPartsOffset >= 0) {
 			ResetResponse.addBodyParts(fbb, bodyPartsOffset)
+		}
 		ResetResponse.addProgress(fbb, progress)
 		ResetResponse.addDuration(fbb, duration)
 		val update = ResetResponse.endResetResponse(fbb)

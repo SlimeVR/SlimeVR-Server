@@ -344,15 +344,15 @@ class VRServer @JvmOverloads constructor(
 		resetTimer(
 			timer,
 			delay,
-			onTick = {
-				progress -> resetHandler.sendStarted(ResetType.Full, bodyParts, progress, delay.toInt())
-		  	},
+			onTick = { progress ->
+				resetHandler.sendStarted(ResetType.Full, bodyParts, progress, delay.toInt())
+			},
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersFull(resetSourceName, bodyParts)
 					resetHandler.sendFinished(ResetType.Full, bodyParts)
 				}
-			}
+			},
 		)
 	}
 
@@ -360,15 +360,15 @@ class VRServer @JvmOverloads constructor(
 		resetTimer(
 			timer,
 			delay,
-			onTick = {
-					progress -> resetHandler.sendStarted(ResetType.Yaw, bodyParts, progress, delay.toInt())
+			onTick = { progress ->
+				resetHandler.sendStarted(ResetType.Yaw, bodyParts, progress, delay.toInt())
 			},
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersYaw(resetSourceName, bodyParts)
 					resetHandler.sendFinished(ResetType.Yaw, bodyParts)
 				}
-			}
+			},
 		)
 	}
 
@@ -376,15 +376,15 @@ class VRServer @JvmOverloads constructor(
 		resetTimer(
 			timer,
 			delay,
-			onTick = {
-					progress -> resetHandler.sendStarted(ResetType.Mounting, bodyParts, progress, delay.toInt())
+			onTick = { progress ->
+				resetHandler.sendStarted(ResetType.Mounting, bodyParts, progress, delay.toInt())
 			},
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersMounting(resetSourceName, bodyParts)
 					resetHandler.sendFinished(ResetType.Mounting, bodyParts)
 				}
-			}
+			},
 		)
 	}
 

@@ -4,21 +4,21 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.function.Consumer
 
 class ResetHandler {
-    private val listeners: MutableList<ResetListener> = CopyOnWriteArrayList()
+	private val listeners: MutableList<ResetListener> = CopyOnWriteArrayList()
 
-    fun sendStarted(resetType: Int, bodyParts: List<Int>? = null, progress: Int = 0, duration: Int = 0) {
-        this.listeners.forEach { listener: ResetListener -> listener.onStarted(resetType, bodyParts, progress, duration) }
-    }
+	fun sendStarted(resetType: Int, bodyParts: List<Int>? = null, progress: Int = 0, duration: Int = 0) {
+		this.listeners.forEach { listener: ResetListener -> listener.onStarted(resetType, bodyParts, progress, duration) }
+	}
 
-    fun sendFinished(resetType: Int, bodyParts: List<Int>? = null,) {
-        this.listeners.forEach { listener: ResetListener -> listener.onFinished(resetType, bodyParts) }
-    }
+	fun sendFinished(resetType: Int, bodyParts: List<Int>? = null) {
+		this.listeners.forEach { listener: ResetListener -> listener.onFinished(resetType, bodyParts) }
+	}
 
-    fun addListener(listener: ResetListener) {
-        this.listeners.add(listener)
-    }
+	fun addListener(listener: ResetListener) {
+		this.listeners.add(listener)
+	}
 
-    fun removeListener(l: ResetListener) {
-        listeners.removeIf { listener: ResetListener -> l === listener }
-    }
+	fun removeListener(l: ResetListener) {
+		listeners.removeIf { listener: ResetListener -> l === listener }
+	}
 }
