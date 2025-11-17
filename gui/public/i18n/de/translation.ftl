@@ -112,9 +112,21 @@ board_type-GLOVE_IMU_SLIMEVR_DEV = SlimeVR Dev-IMU-Handschuh
 skeleton_bone-NONE = Keine
 skeleton_bone-HEAD = Kopfverschiebung
 skeleton_bone-NECK = Halslänge
+skeleton_bone-NECK-desc =
+    Dies ist der Abstand von der Mitte Ihres Kopfes bis zum Ansatz Ihres Nackens.
+    Um diesen anzupassen, nicken Sie mit Ihren Kopf, als würden Sie "ja" sagen, oder neigen Sie Ihren Kopf nach links und rechts. und modifizieren Sie es, bis die Bewegung in anderen Trackern vernachlässigbar ist. Passen Sie den Wert so lange an, bis Bewegungen anderer Tracker kaum noch vorhanden sind.
 skeleton_bone-torso_group = Oberkörperhöhe
+skeleton_bone-torso_group-desc =
+    Dies ist der Abstand vom Ansatz Ihres Nackens bis zu Ihren Hüften.
+    Stehen Sie aufrecht und ändern Sie den Wert, bis Ihre virtuellen Hüften mit Ihren echten übereinstimmen.
 skeleton_bone-UPPER_CHEST = Obere Brustlänge
+skeleton_bone-UPPER_CHEST-desc =
+    Dies ist der Abstand vom Ansatz Ihres Nackens bis zur Mitte Ihrer Brust.
+    Passen Sie zunächst Ihre Rumpflänge korrekt an und verändern Sie dann diesen Wert in verschiedenen Positionen (z. B. im Sitzen, beim Bücken oder Liegen), bis Ihre virtuelle Wirbelsäule mit Ihrer echten übereinstimmt.
 skeleton_bone-CHEST_OFFSET = Brustversatz
+skeleton_bone-CHEST_OFFSET-desc =
+    Dies kann angepasst werden, um Ihren virtuellen Brust-Tracker nach oben oder unten zu verschieben, um
+    die Kalibrierung in bestimmten Spielen oder Anwendungen zu unterstützen, die möglicherweise einen höheren oder niedrigeren Wert erwarten.
 skeleton_bone-CHEST = Brustabstand
 skeleton_bone-WAIST = Taillenabstand
 skeleton_bone-HIP = Hüftlänge
@@ -148,6 +160,7 @@ reset-reset_all_warning_default-v2 =
     Möchten Sie dies wirklich tun?
 reset-full = Reset
 reset-mounting = Befestigungs-Reset
+reset-mounting-feet = Fuß-Befestigungs-Reset
 reset-yaw = Horizontaler Reset
 
 ## Serial detection stuff
@@ -472,6 +485,7 @@ settings-general-tracker_mechanics-use_mag_on_all_trackers-label = Magnetometer 
 settings-stay_aligned = Stay Aligned
 settings-stay_aligned-relaxed_poses-save_pose = Pose speichern
 settings-stay_aligned-relaxed_poses-reset_pose = Pose zurücksetzen
+settings-stay_aligned-relaxed_poses-close = Schließen
 settings-stay_aligned-debug-copy-label = Einstellungen in die Zwischenablage kopieren
 
 ## FK/Tracking settings
@@ -1329,6 +1343,7 @@ vrc_config-current_value = Aktueller Wert
 vrc_config-mute = Warnung stummschalten
 vrc_config-mute-btn = Stummschalten
 vrc_config-unmute-btn = Stummschaltung aufheben
+vrc_config-user_height = Echte Benutzergröße
 vrc_config-tracker_model-UNKNOWN = Unbekannt
 vrc_config-tracker_model-AXIS = Achse
 
