@@ -3,154 +3,72 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    devenv = {
-      url = "github:cachix/devenv";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nix2container = {
-      url = "github:nlewo/nix2container";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    mk-shell-bin.url = "github:rrbutani/nix-mk-shell-bin";
-    nixgl = {
-      url = "github:guibou/nixGL";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    flake-parts.url = "github:hercules-ci/flake-parts";
     fenix = {
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  nixConfig = {
-    extra-trusted-public-keys = "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=";
-    extra-substituters = "https://devenv.cachix.org";
-  };
+  outputs = inputs@{ self, nixpkgs, flake-parts, fenix, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
 
-  outputs = inputs @ {
-    self,
-    flake-parts,
-    nixgl,
-    ...
-  }:
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      imports = [
-        inputs.devenv.flakeModule
-      ];
-      systems = ["x86_64-linux" "i686-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"];
+      perSystem = { system, lib, ... }:
+        let
+          pkgs = import nixpkgs { inherit system; };
 
-      perSystem = {
-        config,
-        self',
-        inputs',
-        pkgs,
-        system,
-        lib,
-        ...
-      }: {
-        # Per-system attributes can be defined here. The self' and inputs'
-        # module parameters provide easy access to attributes of the same
-        # system.
-
-        # Equivalent to  inputs'.nixpkgs.legacyPackages.hello;
-        # packages.default = pkgs.hello;
-        _module.args.pkgs = import self.inputs.nixpkgs {
-          inherit system;
-          overlays = [nixgl.overlay];
-        };
-
-        devenv.shells.default = let
-          fenixpkgs = inputs'.fenix.packages;
           rust_toolchain = lib.importTOML ./rust-toolchain.toml;
+          fenixPkgs = fenix.packages.${system};
+
+          rustToolchainSet = fenixPkgs.fromToolchainName {
+            name = rust_toolchain.toolchain.channel;
+            sha256 = "sha256-+9FmLhAOezBZCOziO0Qct1NOrfpjNsXxc/8I0c7BdKE=";
+          };
         in {
-          name = "slimevr";
 
-          imports = [
-            # This is just like the imports in devenv.nix.
-            # See https://devenv.sh/guides/using-with-flake-parts/#import-a-devenv-module
-            # ./devenv-foo.nix
-          ];
+          devShells.default = pkgs.mkShell {
+            name = "slimevr";
 
-          # https://devenv.sh/reference/options/
-          packages =
-            (with pkgs; [
-              pkgs.nixgl.nixGLIntel
-              cacert
-            ])
-            ++ lib.optionals pkgs.stdenv.isLinux (with pkgs; [
-              atk
-              cairo
-              dbus
-              dbus.lib
-              dprint
-              gdk-pixbuf
-              glib.out
-              glib-networking
-              gobject-introspection
-              gtk3
-              harfbuzz
-              libffi
-              libsoup_3
-              openssl.dev
-              pango
-              pkg-config
-              treefmt
-              webkitgtk_4_1
-              zlib
-              gst_all_1.gstreamer
-              gst_all_1.gst-plugins-base
-              gst_all_1.gst-plugins-good
-              gst_all_1.gst-plugins-bad
-              librsvg
-              freetype
-              expat
-              libayatana-appindicator
-              libusb1
-            ])
-            ++ lib.optionals pkgs.stdenv.isDarwin [
-              pkgs.darwin.apple_sdk.frameworks.Security
-            ];
+            buildInputs =
+              (with pkgs; [
+                cacert
+              ]) ++ lib.optionals pkgs.stdenv.isLinux (with pkgs; [
+                atk cairo dbus dbus.lib dprint gdk-pixbuf glib.out glib-networking
+                gobject-introspection gtk3 harfbuzz libffi libsoup_3 openssl.dev pango
+                pkg-config treefmt webkitgtk_4_1 zlib
+                gst_all_1.gstreamer gst_all_1.gst-plugins-base
+                gst_all_1.gst-plugins-good gst_all_1.gst-plugins-bad
+                librsvg freetype expat libayatana-appindicator udev libusb1
+              ]) ++ lib.optionals pkgs.stdenv.isDarwin [
+                pkgs.darwin.apple_sdk.frameworks.Security
+              ] ++ [
+                pkgs.jdk17
+                pkgs.kotlin
+                rustToolchainSet.rustc
+                rustToolchainSet.cargo
+                rustToolchainSet.rustfmt
+              ];
 
-          languages.java = {
-            enable = true;
-            gradle.enable = true;
-            jdk.package = pkgs.jdk17;
-          };
-          languages.kotlin.enable = true;
+            nativeBuildInputs = with pkgs; [ pnpm nodejs_22 gradle ];
 
-          languages.javascript = {
-            enable = true;
-            corepack.enable = true;
-            pnpm.enable = true;
-            npm.enable = true;
-          };
-
-          languages.rust = {
-            enable = true;
-            toolchain = fenixpkgs.fromToolchainName {
-              name = rust_toolchain.toolchain.channel;
-              sha256 = "sha256-+9FmLhAOezBZCOziO0Qct1NOrfpjNsXxc/8I0c7BdKE=";
-            };
-            components = rust_toolchain.toolchain.components;
-          };
-
-          env = {
+            RUST_BACKTRACE = 1;
             GIO_EXTRA_MODULES = "${pkgs.glib-networking}/lib/gio/modules:${pkgs.dconf.lib}/lib/gio/modules";
-          };
 
-          enterShell = with pkgs; ''
-            # Export a LD_LIBRARY_PATH without libudev-zero as libgudev not likey
-            export SLIMEVR_RUST_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
-            export LD_LIBRARY_PATH="${libudev-zero}/lib:${libayatana-appindicator}/lib:$LD_LIBRARY_PATH"
-            # GStreamer plugins won't be found without this
-            export GST_PLUGIN_SYSTEM_PATH_1_0="${pkgs.gst_all_1.gstreamer.out}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-base}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-good}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-bad}/lib/gstreamer-1.0"
-          '';
+            shellHook = ''
+              export SLIMEVR_RUST_LD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+              export LD_LIBRARY_PATH="${pkgs.udev}/lib:${pkgs.libayatana-appindicator}/lib:$LD_LIBRARY_PATH"
+              export GST_PLUGIN_SYSTEM_PATH_1_0="${pkgs.gst_all_1.gstreamer.out}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-base}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-good}/lib/gstreamer-1.0:${pkgs.gst_all_1.gst-plugins-bad}/lib/gstreamer-1.0"
+
+              # Force linker and pkg-config to use udev from nixpkgs so libgudev/hidapi
+              # resolve against the correct libudev implementation at link time.
+              export PKG_CONFIG_PATH="${pkgs.udev}/lib/pkgconfig:${pkgs.glib}/lib/pkgconfig:$PKG_CONFIG_PATH"
+              export LIBRARY_PATH="${pkgs.udev}/lib:$LIBRARY_PATH"
+              export LD_RUN_PATH="${pkgs.udev}/lib:$LD_RUN_PATH"
+              export NIX_LDFLAGS="-L${pkgs.udev}/lib -ludev $NIX_LDFLAGS"
+              export LDFLAGS="-L${pkgs.udev}/lib -Wl,-rpath,${pkgs.udev}/lib -ludev $LDFLAGS"
+            '';
+          };
         };
-      };
-      flake = {
-        # The usual flake attributes can be defined here, including system-
-        # agnostic ones like nixosModule and system-enumerating ones, although
-        # those are more easily expressed in perSystem.
-      };
     };
 }
