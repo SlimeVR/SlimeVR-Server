@@ -72,7 +72,7 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
     <Tooltip
       disabled={!error && isMd}
       content={error ? <Typography id={error} textAlign="text-center" color='text-status-critical'/> : <Typography textAlign="text-center" id={name} />}
-      spacing={0}
+      spacing={5}
       preferedDirection={error ? 'bottom' : 'top'}
     >
       <div

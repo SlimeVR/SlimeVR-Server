@@ -132,7 +132,10 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
     }
   } else if (options.type === ResetType.Mounting && !serverGuards?.canDoMounting) {
     disabled = true;
-    error = 'reset-error-need_full_reset';
+    error = 'reset-error-mounting-need_full_reset';
+  } else if (options.type === ResetType.Yaw && !serverGuards?.canDoYawReset) {
+    disabled = true;
+    error = 'reset-error-yaw-need_full_reset';
   }
 
 

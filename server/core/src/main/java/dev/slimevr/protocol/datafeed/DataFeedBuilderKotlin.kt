@@ -42,6 +42,6 @@ object DataFeedBuilderKotlin {
 	}
 
 	fun createServerGuard(fbb: FlatBufferBuilder, serverGuards: ServerGuards): Int {
-		return solarxr_protocol.data_feed.server.ServerGuards.createServerGuards(fbb, serverGuards.canDoMounting)
+		return solarxr_protocol.data_feed.server.ServerGuards.createServerGuards(fbb, serverGuards.canDoMounting, serverGuards.canDoYawReset)
 	}
 }
