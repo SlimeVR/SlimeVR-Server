@@ -224,8 +224,9 @@ class FirmwareUpdateHandler(private val server: VRServer) :
 
 			val udpDevice: UDPDevice? =
 				(server.deviceManager.devices.find { device -> device is UDPDevice && device.id == deviceId.id }) as UDPDevice?
-			if (udpDevice === null)
+			if (udpDevice === null) {
 				error("invalid state - device does not exist")
+			}
 
 			if (udpDevice.protocolVersion <= 20) {
 				onStatusChange(
