@@ -389,7 +389,7 @@ tracker-settings-use_mag = 允許使用這個追蹤器的磁力計
 # Multiline!
 tracker-settings-use_mag-description =
     如果「在追蹤器上啟用磁力計」功能已開啟，是否要在這個追蹤器上啟用它來減緩偏移？<b>切換本選項時請勿關閉追蹤器的電源！</b>
-
+    
     請先開啟「在追蹤器上啟用磁力計」功能，<magSetting>點選此處以移動至該設定</magSetting>。
 tracker-settings-use_mag-label = 允許使用這個追蹤器的磁力計
 # The .<name> means it's an attribute and it's related to the top key.
@@ -401,7 +401,6 @@ tracker-settings-name_section-label = 追蹤器名稱
 tracker-settings-forget = 忘記追蹤器
 tracker-settings-forget-description = 從 SlimeVR 伺服器程式中移除該追蹤器，且直到重新啟動伺服器前不會再次連接。該追蹤器的設定不會遺失。
 tracker-settings-forget-label = 忘記追蹤器
-tracker-settings-update-unavailable = 無法更新 (DIY)
 tracker-settings-update-low-battery = 無法更新，電池電量低於 50%
 tracker-settings-update-up_to_date = 已為最新版本
 tracker-settings-update-blocked = 無法更新，沒有其他可用版本。
@@ -551,7 +550,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = 偏移�
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>警告：</b> 只有在需要頻繁重置（約 5~10 分鐘重置一次）
     的時候才開啟此選項。
-
+    
     容易頻繁重置的 IMU 包括：
     Joy-Con、owoTrack、MPU（非近期韌體）。
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = 取消
@@ -608,7 +607,7 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = 地板限制功�
 settings-general-fk_settings-leg_tweak-toe_snap-description = 腳趾跟地功能在沒有腳部的追蹤器時，會嘗試猜測腳掌的旋轉角度。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 腳底貼地功能會在腳底與地面接觸時，將腳部旋轉成與地板平行。
 settings-general-fk_settings-leg_fk = 腿部追蹤
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 使用普通的重置配戴時，一併重置腳部配戴。
+settings-general-fk_settings-leg_fk-reset_mounting_feet-description-v1 = 使用普通的配戴重置時，強制重置腳部配戴。
 settings-general-fk_settings-leg_fk-reset_mounting_feet-v1 = 強制重置腳部配戴
 settings-general-fk_settings-enforce_joint_constraints = 骨架限制
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 約束關節旋轉
@@ -716,9 +715,6 @@ settings-general-interface-connected_trackers_warning-label = 當退出程式時
 ## Behavior settings
 
 settings-interface-behavior = 行為
-settings-general-interface-dev_mode = 開發者模式
-settings-general-interface-dev_mode-description = 本功能會提供更深入的資料，也能與已連線的追蹤器進行更進一步的控制。
-settings-general-interface-dev_mode-label = 開發者模式
 settings-general-interface-use_tray = 最小化到系統列
 settings-general-interface-use_tray-description = 本選項可以讓你在關閉視窗時不會關閉 SlimeVR 的伺服器程式，讓你在不受圖形介面的打擾下繼續使用追蹤器。
 settings-general-interface-use_tray-label = 最小化到系統列
@@ -733,9 +729,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = 透過 Sentry.io 收集錯誤資訊
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>你是否同意我們蒐集匿名化的錯誤資料？</h1>
-
+    
     <b>我們不會收集個人資訊</b> ，例如你的 IP 位址或無線網路認證資訊。SlimeVR 重視你的隱私！
-
+    
     為了提供最佳的使用者體驗，我們會蒐集匿名化的錯誤報告、性能指標和作業系統資訊，這會對我們檢測 SlimeVR 的錯誤和問題有所幫助。我們會透過 Sentry.io 來蒐集這些指標。
 settings-interface-behavior-error_tracking-label = 向開發者傳送錯誤資訊
 settings-interface-behavior-bvh_directory = BVH 紀錄儲存目錄
@@ -856,6 +852,9 @@ settings-osc-vmc-mirror_tracking = 鏡像追蹤
 settings-osc-vmc-mirror_tracking-description = 將追蹤的結果水平鏡像。
 settings-osc-vmc-mirror_tracking-label = 鏡像追蹤
 
+## Common OSC settings
+
+
 ## Advanced settings
 
 settings-utils-advanced = 進階
@@ -928,20 +927,20 @@ onboarding-reset_tutorial-skip = 跳過本步驟
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     對所標記之追蹤器敲擊 { $taps } 次即可觸發左右偏擺重置。
-
+    
     追蹤器將會調整與頭戴顯示器所面對的方向一致。
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     對所標記之追蹤器敲擊 { $taps } 次即可觸發完整重置。
-
+    
     做此校正時必須站直，觸發 3 秒後（可修改）才會真正進行重置。
     追蹤器的定位與旋轉將會被完全重置，應該可以解決大多數的問題。
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     對所標記之追蹤器敲擊 { $taps } 次即可觸發配戴重置。
-
+    
     配戴重置能對追蹤器實際的配戴方式進行調整，因此若你不小心移動到追蹤器，或是大幅度的變更配戴方向，這個功能會有所幫助。
-
+    
     做此校正時需要進行滑雪姿勢，如自動配戴校正的畫面所示。在觸發 3 秒後（可修改）才會真正進行重置。
 
 ## Setup start
@@ -1170,6 +1169,7 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. 保持姿勢直到 3 �
 onboarding-automatic_mounting-put_trackers_on-title = 請戴好追蹤器
 onboarding-automatic_mounting-put_trackers_on-description = 為了校準配戴方向，我們將使用剛才分配的追蹤器。戴上你所有的追蹤器，你可以在右邊的圖中看到追蹤器的對應部位。
 onboarding-automatic_mounting-put_trackers_on-next = 我所有的追蹤器都戴好了！
+onboarding-automatic_mounting-return-home = 完成
 
 ## Tracker manual proportions setupa
 
@@ -1280,7 +1280,7 @@ onboarding-scaled_proportions-manual_height-next_step = 繼續並儲存
 onboarding-scaled_proportions-manual_height-warning =
     你現在正在手動設定縮放型軀幹比例，<b>這個方法僅在你使用 SlimeVR
     不使用頭戴顯示器時推薦使用。</b>
-
+    
     若要能自動設定縮放型軀幹比例，請按照以下步驟：
 onboarding-scaled_proportions-manual_height-warning-no_hmd = 連接 VR 頭戴顯示器
 onboarding-scaled_proportions-manual_height-warning-no_controllers = 檢查 VR 控制器是否正常連接，並在 SlimeVR 介面中分配到你的雙手
@@ -1365,68 +1365,8 @@ firmware_tool = DIY 韌體工具
 firmware_tool-description = 本工具可以配置與燒錄 DIY 追蹤器
 firmware_tool-not_available = 唉呀，現在韌體工具無法使用。請稍後再來！
 firmware_tool-not_compatible = 韌體工具與這個版本的伺服器不相容。請更新伺服器！
-firmware_tool-board_step = 選擇主板
-firmware_tool-board_step-description = 請從以下列出的主板選擇一個。
-firmware_tool-board_pins_step = 檢查腳位
-firmware_tool-board_pins_step-description =
-    請檢查以下選擇的腳位是正確的。
-    若是照著 SlimeVR 的教學來製作追蹤器，預設值應該是正確的
-firmware_tool-board_pins_step-enable_led = 設定 LED
-firmware_tool-board_pins_step-led_pin =
-    .label = LED 腳位
-    .placeholder = 輸入 LED 腳位位址
-firmware_tool-board_pins_step-battery_type = 選擇電池測量電路類型
-firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = 使用外接電阻與板內 ADC 測量（預設）
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = 使用板內低電量警示電路
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = 板內電路 + MCP3021
-firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = 使用外接 MCP3021 測量
-firmware_tool-board_pins_step-battery_sensor_pin =
-    .label = 電量偵測腳位
-    .placeholder = 輸入電量偵測腳位位址
-firmware_tool-board_pins_step-battery_resistor =
-    .label = 電池外接串連電阻（歐姆）
-    .placeholder = 輸入用於偵測電量的電阻阻值
-firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = ADC 對地分壓 R1（歐姆）
-    .placeholder = 輸入開發板上 ADC 對地的分壓電阻阻值
-firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = ADC 對輸入分壓 R2（歐姆）
-    .placeholder = 輸入開發板上 ADC 對輸入的分壓電阻阻值
-firmware_tool-add_imus_step = 設定慣性測量單元 (IMU)
-firmware_tool-add_imus_step-description =
-    請加入追蹤器所使用的 IMU
-    若是照著 SlimeVR 的教學來製作追蹤器，預設值應該是正確的
-firmware_tool-add_imus_step-imu_type-label = IMU 類型
-firmware_tool-add_imus_step-imu_type-placeholder = 選擇 IMU 的類型
-firmware_tool-add_imus_step-imu_rotation =
-    .label = IMU 角度（度）
-    .placeholder = IMU 旋轉的角度
-firmware_tool-add_imus_step-scl_pin =
-    .label = SCL 腳位
-    .placeholder = SCL 的腳位位址
-firmware_tool-add_imus_step-sda_pin =
-    .label = SDA 腳位
-    .placeholder = SDA 腳位位址
-firmware_tool-add_imus_step-int_pin =
-    .label = INT 腳位
-    .placeholder = INT 腳位位址
-firmware_tool-add_imus_step-optional_tracker =
-    .label = 選配追蹤器
-firmware_tool-add_imus_step-show_less = 顯示更少
-firmware_tool-add_imus_step-show_more = 顯示更多
-firmware_tool-add_imus_step-add_more = 新增更多 IMU
-firmware_tool-select_firmware_step = 選擇韌體版本
-firmware_tool-select_firmware_step-description = 請選擇要使用的韌體版本
-firmware_tool-select_firmware_step-show-third-party =
-    .label = 顯示第三方韌體
 firmware_tool-flash_method_step = 燒錄方法
 firmware_tool-flash_method_step-description = 選擇要使用的燒錄方法
-firmware_tool-flash_method_step-ota =
-    .label = OTA
-    .description = 透過 OTA（無線更新），追蹤器會透過 Wi-Fi 來更新韌體。僅適用於已燒錄的追蹤器。
-firmware_tool-flash_method_step-serial =
-    .label = 串列埠
-    .description = 透過 USB 傳輸線更新追蹤器。
 firmware_tool-flashbtn_step = 進入燒錄模式
 firmware_tool-flashbtn_step-description = 在進入下一步前，請先進行以下操作
 firmware_tool-flashbtn_step-board_SLIMEVR = 關閉追蹤器電源，移除外殼（若有的話），並用 USB 線連接到這台電腦上，然後根據你持有的 SlimeVR 追蹤器主板的版本，進行下述操作：
@@ -1455,9 +1395,6 @@ firmware_tool-flashing_step-exit = 離開
 ## firmware tool build status
 
 firmware_tool-build-CREATING_BUILD_FOLDER = 正在建立建置資料夾
-firmware_tool-build-DOWNLOADING_FIRMWARE = 正在下載韌體
-firmware_tool-build-EXTRACTING_FIRMWARE = 正在解壓縮韌體
-firmware_tool-build-SETTING_UP_DEFINES = 正在設定韌體參數
 firmware_tool-build-BUILDING = 正在建置韌體
 firmware_tool-build-SAVING = 正在儲存建置
 firmware_tool-build-DONE = 建置完成
@@ -1506,7 +1443,7 @@ tray_or_exit_modal-title = 關閉視窗的動作是什麼？
 # Multiline text
 tray_or_exit_modal-description =
     你可以選擇在關閉視窗時，一併退出伺服器程式，或是將視窗最小化到系統列圖示中。
-
+    
     本設定之後也可以在使用者介面設定中更改。
 tray_or_exit_modal-radio-exit = 退出 SlimeVR
 tray_or_exit_modal-radio-tray = 最小化到系統列
@@ -1567,7 +1504,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = 臂展
 error_collection_modal-title = 我們可以蒐集錯誤資訊嗎？
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-
+    
     若之後要變更此設定，可以在「詳細設定」頁面中的「行為」來變更。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 我不想要

@@ -398,8 +398,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Ngăn xuyên sà
 settings-general-fk_settings-leg_tweak-toe_snap-description = Đoán hướng xoay chân sẽ đoán hướng xoay của chân đồng thời khóa ngón chân của bạn vào mặt sàn bạn nếu bạn không sử dụng tracker cho chân.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Cân bằng chân sẽ xoay chân song song với mặt đất khi lại gần.
 settings-general-fk_settings-leg_fk = Track chân
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Đặt lại hướng gắn tracker bàn chân bằng cách nhón chân.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Đặt lại hướng gắn tracker bàn chân
 settings-general-fk_settings-arm_fk = Track cánh tay
 settings-general-fk_settings-arm_fk-description = Thay đổi cách cánh tay được track
 settings-general-fk_settings-arm_fk-force_arms = Lấy dữ liệu cánh tay từ kính
@@ -495,9 +493,6 @@ settings-general-interface-connected_trackers_warning-label = Cảnh báo thiế
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Chế độ nhà phát triển
-settings-general-interface-dev_mode-description = Hữu dụng nếu cần thêm thông tin chi tiết của tracker hay can thiệp sâu hơn vào tracker
-settings-general-interface-dev_mode-label = Chế độ nhà phát triển
 settings-general-interface-use_tray = Thu nhỏ vào khay hệ thống
 settings-general-interface-use_tray-description = Cho phép bạn đóng cửa sổ mà không cần đóng máy chủ SlimeVR để bạn có thể tiếp tục sử dụng nó mà không bị GUI làm phiền.
 settings-general-interface-use_tray-label = Thu nhỏ vào khay hệ thống
@@ -621,6 +616,9 @@ settings-osc-vmc-mirror_tracking = Phản chiếu ngược theo dõi cơ thể
 settings-osc-vmc-mirror_tracking-description = Phản chiếu theo dõi theo chiều ngang.
 settings-osc-vmc-mirror_tracking-label = Phản chiếu ngược theo dõi cơ thể
 
+## Common OSC settings
+
+
 ## Advanced settings
 
 settings-utils-advanced = Cài đặt mở rộng
@@ -668,20 +666,20 @@ onboarding-reset_tutorial-skip = Bỏ qua bước
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Nhấn { $taps } lần thiết bị được đánh dấu để kích hoạt đặt lại chiều quay.
-
+    
     Điều này sẽ làm cho các trình theo dõi quay mặt về cùng hướng với kính thực thế ảo (HMD) của bạn.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Nhấn vào { $taps } lần thiết bị được đánh dấu để kích hoạt đặt lại toàn bộ.
-
+    
     Bạn cần phải đứng thẳng tay để làm việc này (i-pose). Có độ trễ 3 giây (có thể định cấu hình) trước khi nó thực sự xảy ra.
     Điều này đặt lại hoàn toàn vị trí và xoay của tất cả các trình theo dõi của bạn. Nó sẽ khắc phục hầu hết các vấn đề.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Nhấn vào { $taps } lần thiết bị được đánh dấu để kích hoạt đặt lại lắp.
-
+    
     Thiết lập lại gắn kết giúp ích cho cách các trình theo dõi thực sự được đặt vào bạn, vì vậy nếu bạn vô tình di chuyển chúng và thay đổi cách chúng được định hướng với số lượng lớn, điều này sẽ hữu ích.
-
+    
     Bạn cần phải ở trên một tư thế như bạn đang trượt tuyết như nó được hiển thị trên trình hướng dẫn gắn tự động và bạn có độ trễ 3 giây (có thể định cấu hình) trước khi nó được kích hoạt.
 
 ## Setup start
@@ -725,10 +723,10 @@ onboarding-connect_tracker-connection_status-done = Đã kết nối đến máy
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers =
     { $amount ->
-        [0] Không có tracker
-        [one] 1 tracker
-       *[other] { $amount } tracker
-    } đã giao
+        [0] Không có tracker đã giao
+        [one] 1 tracker đã giao
+       *[other] { $amount } tracker đã giao
+    }
 onboarding-connect_tracker-next = Đã kết nối với tất cả tracker
 
 ## Tracker calibration tutorial
@@ -761,10 +759,10 @@ onboarding-assign_trackers-description = Chọn vị trí bạn muốn gán trac
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned =
-    { $assigned } trên { $trackers ->
-        [one] 1 tracker
-       *[other] { $trackers } tracker
-    } đã giao
+    { $trackers ->
+        [one] { $assigned } trên 1 tracker đã giao
+       *[other] { $assigned } trên { $trackers } tracker đã giao
+    }
 onboarding-assign_trackers-advanced = Xem thêm vị trí đặt
 onboarding-assign_trackers-next = Hoàn thành
 onboarding-assign_trackers-mirror_view = Xem hình phản chiếu
@@ -1023,7 +1021,7 @@ tray_or_exit_modal-title = Nút đóng nên làm gì?
 # Multiline text
 tray_or_exit_modal-description =
     Điều này cho phép bạn chọn xem bạn muốn thoát khỏi chương trình hoặc thu nhỏ nó vào khay khi nhấn nút đóng.
-
+    
     Bạn có thể thay đổi điều này sau trong cài đặt giao diện.
 tray_or_exit_modal-radio-exit = Thoát khi đóng
 tray_or_exit_modal-radio-tray = Thu nhỏ vào khay hệ thống
@@ -1040,3 +1038,4 @@ unknown_device-modal-confirm = Chắc!
 unknown_device-modal-forget = Bỏ qua
 
 ## Error collection consent modal
+
