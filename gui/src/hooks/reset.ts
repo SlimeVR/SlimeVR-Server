@@ -9,7 +9,7 @@ import {
 } from 'solarxr-protocol';
 import { useWebsocketAPI } from './websocket-api';
 import { useAtomValue } from 'jotai';
-import { assignedTrackersAtom } from '@/store/app-store';
+import { assignedTrackersAtom, serverGuardsAtom } from '@/store/app-store';
 import { FEET_BODY_PARTS, FINGER_BODY_PARTS } from './body-parts';
 import { useLocaleConfig } from '@/i18n/config';
 
@@ -29,6 +29,7 @@ export const BODY_PARTS_GROUPS: Record<MountingResetGroup, BodyPart[]> = {
 export function useReset(options: UseResetOptions, onReseted?: () => void) {
   if (options.type === ResetType.Mounting && !options.group) options.group = 'default';
 
+  const serverGuards = useAtomValue(serverGuardsAtom);
   const { currentLocales } = useLocaleConfig();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
@@ -115,6 +116,7 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
   }, [options.type]);
 
   let disabled = status === 'counting';
+  let error = null;
   if (options.type === ResetType.Mounting && options.group !== 'default') {
     const assignedTrackers = useAtomValue(assignedTrackersAtom);
 
@@ -124,9 +126,16 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
           tracker.info?.bodyPart &&
           BODY_PARTS_GROUPS[options.group].includes(tracker.info?.bodyPart)
       )
-    )
+    ) {
       disabled = true;
+      error = `reset-error-no_${options.group}_tracker`;
+    }
+  } else if (options.type === ResetType.Mounting && !serverGuards?.canDoMounting) {
+    disabled = true;
+    error = 'reset-error-need_full_reset';
   }
+
+
 
   const localized = useMemo(
     () =>
@@ -146,6 +155,7 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
     status,
     disabled,
     name,
+    error,
     timer: localized.format(duration - progress),
   };
 }

@@ -1541,6 +1541,9 @@ class HumanSkeleton(
 
 	@JvmOverloads
 	fun resetTrackersFull(resetSourceName: String?, bodyParts: List<Int> = ArrayList()) {
+
+		humanPoseManager.server?.serverGuards?.scheduleMountingTimeout()
+
 		var referenceRotation = IDENTITY
 		headTracker?.let {
 			if (bodyParts.isEmpty() || bodyParts.contains(BodyPart.HEAD)) {

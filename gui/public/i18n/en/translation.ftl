@@ -242,6 +242,9 @@ reset-mounting = Mounting Calibration
 reset-mounting-feet = Feet Calibration
 reset-mounting-fingers = Fingers Calibration
 reset-yaw = Yaw Reset
+reset-error-no_feet_tracker = No feet tracker assigned
+reset-error-no_feet_tracker = No feet trackers assigned
+reset-error-need_full_reset = Need a full reset before mounting
 
 ## Serial detection stuff
 serial_detection-new_device-p0 = New serial device detected!

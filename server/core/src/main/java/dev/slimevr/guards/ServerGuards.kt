@@ -7,7 +7,7 @@ import kotlin.concurrent.schedule
 
 class ServerGuards() {
 
-	var canDoMounting: Boolean = true
+	var canDoMounting: Boolean = false
 
 	private val timer = Timer()
 	private var mountingTimeoutTask: TimerTask? = null
