@@ -58,7 +58,7 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
     progress: resetProress,
     disabled,
     duration,
-    error
+    error,
   } = useReset(options);
 
   const progress = status === 'counting' ? resetProress / duration : 0;
@@ -71,7 +71,17 @@ function BasicResetButton(options: UseResetOptions & { customName?: string }) {
   return (
     <Tooltip
       disabled={!error && isMd}
-      content={error ? <Typography id={error} textAlign="text-center" color='text-status-critical'/> : <Typography textAlign="text-center" id={name} />}
+      content={
+        error ? (
+          <Typography
+            id={error}
+            textAlign="text-center"
+            color="text-status-critical"
+          />
+        ) : (
+          <Typography textAlign="text-center" id={name} />
+        )
+      }
       spacing={5}
       preferedDirection={error ? 'bottom' : 'top'}
     >

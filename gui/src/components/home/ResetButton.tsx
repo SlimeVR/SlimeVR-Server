@@ -46,7 +46,17 @@ export function ResetButton({
     <Tooltip
       preferedDirection={'top'}
       disabled={!error}
-      content={error ? <Typography id={error} textAlign="text-center" color='text-status-critical'/> : <></>}
+      content={
+        error ? (
+          <Typography
+            id={error}
+            textAlign="text-center"
+            color="text-status-critical"
+          />
+        ) : (
+          <></>
+        )
+      }
     >
       <Button
         icon={<ResetButtonIcon {...options} />}
