@@ -405,7 +405,6 @@ tracker-settings-name_section-label = Nazwa Urządzenia
 tracker-settings-forget = Zapomnij o trackerze
 tracker-settings-forget-description = Usuwa moduł śledzący z serwera SlimeVR i uniemożliwia mu połączenie się z nim do czasu ponownego uruchomienia serwera. Konfiguracja modułu śledzącego nie zostanie utracona.
 tracker-settings-forget-label = Zapomnij o trackerze
-tracker-settings-update-unavailable = Nie można zaktualizować (zrób to sam)
 tracker-settings-update-low-battery = Nie można zaktualizować. Bateria poniżej 50%
 tracker-settings-update-up_to_date = Aktualny
 tracker-settings-update-blocked = Aktualizacja niedostępna. Brak innych wersji
@@ -727,9 +726,6 @@ settings-general-interface-connected_trackers_warning-label = Ostrzeżenie o pod
 ## Behavior settings
 
 settings-interface-behavior = Zachowanie
-settings-general-interface-dev_mode = Tryb Dewelopera
-settings-general-interface-dev_mode-description = Ten tryb przydaje się do sprawdzania większej ilości danych.
-settings-general-interface-dev_mode-label = Tryb Dewelopera
 settings-general-interface-use_tray = Minimalizuj do zasobnika systemowego
 settings-general-interface-use_tray-description = Pozwala zamknąć okno bez wyłączania serwera SlimeVR, aby używać trackerów bez interfejsu graficznego.
 settings-general-interface-use_tray-label = Minimalizuj do zasobnika systemowego
@@ -746,9 +742,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Zbieranie błędów za pomocą Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Czy wyrażasz zgodę na gromadzenie anonimowych danych o błędach?</h1>
-
+    
     <b>Nie gromadzimy danych osobowych</b> , takich jak adres IP lub dane uwierzytelniające sieci bezprzewodowej. SlimeVR ceni Twoją prywatność!
-
+    
     Aby zapewnić jak najlepsze wrażenia użytkownika, gromadzimy anonimowe raporty o błędach, wskaźniki wydajności i informacje o systemie operacyjnym. Pomaga nam to wykrywać błędy i problemy ze SlimeVR. Dane te są zbierane za pomocą Sentry.io.
 settings-interface-behavior-error_tracking-label = Wysyłanie błędów do deweloperów
 settings-interface-behavior-bvh_directory = Ścieżka do zapisywania nagrań BVH
@@ -874,6 +870,9 @@ settings-osc-vmc-mirror_tracking = Odbicie lustrzane śledzenia
 settings-osc-vmc-mirror_tracking-description = Odbij śledzenie w poziomie.
 settings-osc-vmc-mirror_tracking-label = Odbicie lustrzane śledzenia
 
+## Common OSC settings
+
+
 ## Advanced settings
 
 settings-utils-advanced = Zaawansowany
@@ -942,20 +941,20 @@ onboarding-reset_tutorial-skip = Pomiń krok
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Stuknij { $taps } razy podświetlony tracker, aby uruchomić reset odchylenia.
-
+    
     Spowoduje to, że trackery będą skierowane w tym samym kierunku, co Twój HMD.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Stuknij { $taps } razy podświetlony tracker, aby wywołać pełny reset.
-
+    
     Musisz stać, aby to zrobić (i-pozycja). Istnieje 3-sekundowe opóźnienie (konfigurowalne), zanim to nastąpi.
     Spowoduje to całkowite zresetowanie pozycji i rotacji wszystkich trackerów. Powinien rozwiązać większość problemów.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Stuknij { $taps } razy podświetlony tracker, aby uruchomić reset montażu.
-
+    
     Resetowanie montażu pomaga w tym, w jaki sposób trackery są faktycznie zakładane na ciebie, więc jeśli przypadkowo je przeniosłeś i zmieniłeś ich orientację o dużą ilość, to pomoże.
-
+    
     Musisz być w pozie, jakbyś jechał na nartach, tak jak jest to pokazane w kreatorze automatycznego montażu, i masz 3-sekundowe opóźnienie (konfigurowalne), zanim zostanie uruchomione.
 
 ## Setup start
@@ -1316,7 +1315,7 @@ onboarding-scaled_proportions-manual_height-next_step = Kontynuuj i zapisz
 onboarding-scaled_proportions-manual_height-warning =
     Obecnie korzystasz z ręcznego sposobu ustawiania proporcji w skali rozgrywki!
     <b>Ten tryb jest zalecany tylko wtedy, gdy nie używasz gogli ze SlimeVR</b>
-
+    
     Aby móc korzystać z automatycznie skalowanych proporcji, należy:
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Podłącz gogle VR
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Upewnij się, że kontrolery są podłączone i prawidłowo przypisane do Twoich rąk
@@ -1406,68 +1405,8 @@ firmware_tool = Narzędzie do oprogramowania sprzętowego DIY
 firmware_tool-description = Umożliwia konfigurowanie i flashowanie trackerów DIY
 firmware_tool-not_available = Ups, narzędzie do oprogramowania sprzętowego nie jest obecnie dostępne. Wróć później!
 firmware_tool-not_compatible = Narzędzie oprogramowania układowego nie jest kompatybilne z tą wersją serwera. Proszę zaktualizować swój serwer!
-firmware_tool-board_step = Wybierz swoją tablicę
-firmware_tool-board_step-description = Wybierz jedną z plansz wymienionych poniżej.
-firmware_tool-board_pins_step = Sprawdź piny
-firmware_tool-board_pins_step-description =
-    Sprawdź, czy wybrane piny są prawidłowe.¶
-    Jeśli postępowałeś zgodnie z dokumentacją SlimeVR, wartości domyślne powinny być prawidłowe
-firmware_tool-board_pins_step-enable_led = Włącz diodę LED
-firmware_tool-board_pins_step-led_pin =
-    .label = Pin LED
-    .placeholder = Wprowadź adres pin diody LED
-firmware_tool-board_pins_step-battery_type = Wybierz typ baterii
-firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = Bateria zewnętrzna
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = Bateria wewnętrzna
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = Wewnętrzny MCP3021
-firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = MCP3021
-firmware_tool-board_pins_step-battery_sensor_pin =
-    .label = Czujnik akumulatora Pin
-    .placeholder = Wprowadź adres pin czujnika akumulatora
-firmware_tool-board_pins_step-battery_resistor =
-    .label = Rezystor akumulatora (Ohms)
-    .placeholder = Wprowadź wartość rezystora akumulatora
-firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = Osłona akumulatora R1 (Ohms)
-    .placeholder = Wprowadź wartość Battery Shield R1
-firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = Osłona akumulatora R2 (Ohms)
-    .placeholder = Wprowadź wartość Battery Shield R2
-firmware_tool-add_imus_step = Zadeklaruj swoje IMU
-firmware_tool-add_imus_step-description =
-    Dodaj IMU, które posiada Twój tracker¶
-    Jeśli postępowałeś zgodnie z dokumentacją SlimeVR, wartości domyślne powinny być prawidłowe
-firmware_tool-add_imus_step-imu_type-label = Typ IMU
-firmware_tool-add_imus_step-imu_type-placeholder = Wybierz typ IMU
-firmware_tool-add_imus_step-imu_rotation =
-    .label = Obrót IMU (stopnie)
-    .placeholder = Kąt obrotu IMU
-firmware_tool-add_imus_step-scl_pin =
-    .label = SCL Pin
-    .placeholder = Adres PIN SCL
-firmware_tool-add_imus_step-sda_pin =
-    .label = SDA Pin
-    .placeholder = Adres PIN SDA
-firmware_tool-add_imus_step-int_pin =
-    .label = INT Pin
-    .placeholder = Adres PIN INT
-firmware_tool-add_imus_step-optional_tracker =
-    .label = Opcjonalny moduł śledzący
-firmware_tool-add_imus_step-show_less = Pokaż mniej
-firmware_tool-add_imus_step-show_more = Pokaż więcej
-firmware_tool-add_imus_step-add_more = Dodaj więcej IMU
-firmware_tool-select_firmware_step = Wybierz wersję oprogramowania sprzętowego
-firmware_tool-select_firmware_step-description = Wybierz wersję oprogramowania, której chcesz używać
-firmware_tool-select_firmware_step-show-third-party =
-    .label = Pokaż oprogramowanie sprzętowe innych firm
 firmware_tool-flash_method_step = Metoda flashowania
 firmware_tool-flash_method_step-description = Wybierz metodę flashowania, której chcesz użyć
-firmware_tool-flash_method_step-ota =
-    .label = OTA
-    .description = Użyj metody bezprzewodowej. Twój tracker użyje Wi-Fi do aktualizacji oprogramowania sprzętowego. Działa tylko na już skonfigurowanych trackerach.
-firmware_tool-flash_method_step-serial =
-    .label = Serial
-    .description = Aby zaktualizować tracker, użyj kabla USB.
 firmware_tool-flashbtn_step = Naciśnij przycisk zasilania
 firmware_tool-flashbtn_step-description = Zanim przejdziesz do następnego kroku, musisz zrobić kilka rzeczy
 firmware_tool-flashbtn_step-board_SLIMEVR =
@@ -1499,9 +1438,6 @@ firmware_tool-flashing_step-exit = Wyjście
 ## firmware tool build status
 
 firmware_tool-build-CREATING_BUILD_FOLDER = Tworzenie folderu kompilacji
-firmware_tool-build-DOWNLOADING_FIRMWARE = Pobieranie oprogramowania sprzętowego
-firmware_tool-build-EXTRACTING_FIRMWARE = Wyodrębnianie oprogramowania sprzętowego
-firmware_tool-build-SETTING_UP_DEFINES = Konfigurowanie definicji
 firmware_tool-build-BUILDING = Budowa oprogramowania sprzętowego
 firmware_tool-build-SAVING = Zapisywanie kompilacji
 firmware_tool-build-DONE = Budowa ukończona
@@ -1611,7 +1547,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Rozpiętość ramion
 error_collection_modal-title = Czy możemy zbierać błędy?
 error_collection_modal-description_v2 =
     { ustawienia-interfejsu-zachowanie-error_tracking-description_v2 }
-
+    
     To ustawienie można zmienić później w sekcji Zachowanie na stronie ustawień.
 error_collection_modal-confirm = Zgadzam się
 error_collection_modal-cancel = Nie chcę

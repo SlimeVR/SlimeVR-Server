@@ -48,6 +48,9 @@ body_part-LEFT_UPPER_LEG = Vasak reis
 body_part-LEFT_LOWER_LEG = Vasak säär
 body_part-LEFT_FOOT = Vasak jalg
 
+## BoardType
+
+
 ## Proportions
 
 skeleton_bone-NONE = Mitte midagi
@@ -142,7 +145,9 @@ widget-developer_mode-more_info = Rohkem infot
 widget-imu_visualizer = Rotatsiooni
 widget-imu_visualizer-rotation_raw = Toores
 widget-imu_visualizer-rotation_preview = Eelvaade
-widget-imu_visualizer-rotation_hide = Peida
+
+## Widget: Skeleton Visualizer
+
 
 ## Tracker status
 
@@ -298,10 +303,6 @@ settings-general-steamvr-description =
     Kasulik teatud mängudele või äppidele, mis toetavad ainult teatuid jälgijaid.
 settings-general-steamvr-trackers-waist = Vöökoht
 settings-general-steamvr-trackers-chest = Rind
-settings-general-steamvr-trackers-feet = Jalad
-settings-general-steamvr-trackers-knees = Põlved
-settings-general-steamvr-trackers-elbows = Küünarnukid
-settings-general-steamvr-trackers-hands = Käed
 
 ## Tracker mechanics
 
@@ -366,9 +367,6 @@ settings-general-fk_settings-skeleton_settings-interp_hip_legs = Leia keskmine p
 settings-general-fk_settings-skeleton_settings-interp_knee_tracker_ankle = Leia keskmine põlvede lengerdus ja pöörlemine säärte abiga
 settings-general-fk_settings-self_localization-title = Mocapi režiim
 settings-general-fk_settings-self_localization-description = Mocap-režiim võimaldab skeletil ligikaudselt jälgida oma asukohta ilma peakomplekti või muude jälgijateta. Pange tähele, et see nõuab jalgade ja peajälgijate olemasolu ning on endiselt eksperimentaalne.
-settings-general-fk_settings-vive_emulation-title = Vive-i emulatsioon
-settings-general-fk_settings-vive_emulation-description = Emuleeri vöökoha jälgija probleeme mis Vive jälgijatel on. See on nali ja teeb jälgijate täpsuse halvaks.
-settings-general-fk_settings-vive_emulation-label = Luba Vive-i emulatsioon
 
 ## Gesture control settings (tracker tapping)
 
@@ -432,6 +430,9 @@ settings-general-interface-feedback_sound-description = See suvand esitab lähte
 settings-general-interface-feedback_sound-label = Tagasiside heli
 settings-general-interface-feedback_sound-volume = Tagasiside helitugevus
 
+## Behavior settings
+
+
 ## Serial settings
 
 settings-serial = Jadakonsool
@@ -480,15 +481,10 @@ settings-osc-router-network-address-placeholder = IPV4 aadress
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC Jälgija
-# This cares about multilines
-settings-osc-vrchat-description =
-    Muuda VRChat-i spetsiifiliseid seadeid, et saada ja saata HMD andmeid.
-    Jälgijate andmed FBT jaoks (töötab Questi peal ilma arvuti ühenduseta).
 settings-osc-vrchat-enable = Luba
 settings-osc-vrchat-enable-description = Lülitage andmete sisestamine sisse/välja.
 settings-osc-vrchat-enable-label = Luba
 settings-osc-vrchat-network = Võrgupordid
-settings-osc-vrchat-network-description = Lisage võrgupordid andmete saamiseks ja saatmiseks VRChat-i.
 settings-osc-vrchat-network-port_in =
     .label = Võrguport sisse
     .placeholder = Võrguport sisse (vaikimisi: 9001)
@@ -496,7 +492,6 @@ settings-osc-vrchat-network-port_out =
     .label = Võrguport välja
     .placeholder = Võrguport välja (vaikimisi: 9000)
 settings-osc-vrchat-network-address = Võrgu aadress
-settings-osc-vrchat-network-address-description = Vali, mis aadressile saata andmeid VRChat-i jaoks (kontrolli enda Wi-Fi seadeid seadmest).
 settings-osc-vrchat-network-address-placeholder = VRChat ip aadress
 settings-osc-vrchat-network-trackers = Jälgia
 settings-osc-vrchat-network-trackers-description = Lülita sisse/välja teatud jälgijate andmete saatmise OSC kaudu.
@@ -529,16 +524,16 @@ settings-osc-vmc-network-address-description = Valige, millisel aadressil soovit
 settings-osc-vmc-network-address-placeholder = IPV4 aadress
 settings-osc-vmc-vrm = VRM-mudel
 settings-osc-vmc-vrm-description = Laadige VRM-mudel, et võimaldada peaankurdamist ja suuremat ühilduvust teiste rakendustega.
-settings-osc-vmc-vrm-model_unloaded = Mudelit pole laaditud
-settings-osc-vmc-vrm-model_loaded =
-    { $titled ->
-        [true] Mudel laaditud: { $name }
-       *[other] Pealkirjata mudel on laaditud
-    }
 settings-osc-vmc-vrm-file_select = Kasutatava mudeli pukseerimine või <u>sirvimine</u>
 settings-osc-vmc-anchor_hip = Ankurda puusadel
 settings-osc-vmc-anchor_hip-description = Ankurdage jälgimine puusadele, mis on kasulik istuva VTubingu jaoks. Keelamise korral laadige VRM-mudel.
 settings-osc-vmc-anchor_hip-label = Ankurda puusadel
+
+## Common OSC settings
+
+
+## Advanced settings
+
 
 ## Setup/onboarding menu
 
@@ -578,20 +573,20 @@ onboarding-reset_tutorial-skip = Jäta samm vahele
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Puudutage { $taps } korda esiletõstetud jälgijat, et käivitada lengerduse lähtestamine.
-
+    
     See setib jälgijad teie HMD-ga samas suunas.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Täieliku lähtestamise käivitamiseks puudutage esiletõstetud jälgijat { $taps } korda.
-
+    
     Sa pead seisma (i-poosis). Enne kui see juhtub, on 3-sekundiline viivitus (konfigureeritav).
     See lähtestab täielikult kõigi teie jälgijate asukoha ja pöörlemise. See peaks lahendama enamiku probleeme.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Puudutage { $taps } korda esiletõstetud jälgijat, et lähtestada paigaldus.
-
+    
     Paigaldamise lähtestamine aitab kaasa sellele, kuidas jälgijad teile tegelikult pannakse, nii et kui te neid kogemata liigutasite ja muutsite nende orientatsiooni suure summa võrra, aitab see.
-
+    
     Peate olema poosis, nagu suusatate, nagu see on näidatud automaatse paigaldamise viisardil, ja teil on 3-sekundiline viivitus (konfigureeritav), enne kui see käivitub.
 
 ## Setup start
@@ -616,8 +611,6 @@ onboarding-done-close = Sulgege juhend
 
 onboarding-connect_tracker-back = Minge tagasi Wi-Fi andmetesse
 onboarding-connect_tracker-title = Ühendage jälgijad
-onboarding-connect_tracker-description-p0 = Nüüd lähme lõbusa osa juurde, ühendame kõik jälgijad-
-onboarding-connect_tracker-description-p1 = Lihtsalt ühendage kõik jälgijad, mis ei ole ühendatud läbi USB enda arvutisse.
 onboarding-connect_tracker-issue-serial = Mul on probleeme ühenduse loomisega!
 onboarding-connect_tracker-usb = USB Jälgija
 onboarding-connect_tracker-connection_status-none = Jälgijate otsimine
@@ -635,17 +628,16 @@ onboarding-connect_tracker-connection_status-done = Ühendatud serveriga
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers =
     { $amount ->
-        [0] Mitte ühtegi jälgijat ühendatud
-        [one] 1 jälgija
-       *[other] { $amount } jälgijat
-    } connected
+        [0] Mitte ühtegi jälgijat ühendatud connected
+        [one] 1 jälgija connected
+       *[other] { $amount } jälgijat connected
+    }
 onboarding-connect_tracker-next = Olen ühendanud kõik oma jälgijad
 
 ## Tracker calibration tutorial
 
 onboarding-calibration_tutorial = IMU kalibreerimise õpetus
 onboarding-calibration_tutorial-subtitle = See aitab vähendada jälgija driftimist!
-onboarding-calibration_tutorial-description = Iga kord, kui lülitate oma jälgijad sisse, peavad nad kalibreerimiseks hetkeks tasasel pinnal olema. Teeme sama, klõpsates nuppu "{ onboarding-calibration_tutorial-calibrate }", <b>ärge liigutage neid!</b>
 onboarding-calibration_tutorial-calibrate = Panin oma jälgijad lauale
 onboarding-calibration_tutorial-status-waiting = Ootan sind
 onboarding-calibration_tutorial-status-calibrating = Kalibreerimine
@@ -671,10 +663,10 @@ onboarding-assign_trackers-description = Valime mis jälgijad lähevad kuhu. Vaj
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned =
-    { $assigned } of { $trackers ->
-        [one] 1 jälgija
-       *[other] { $trackers } jälgijat
-    } assigned
+    { $trackers ->
+        [one] { $assigned } of 1 jälgija assigned
+       *[other] { $assigned } of { $trackers } jälgijat assigned
+    }
 onboarding-assign_trackers-advanced = Kuva täpsemad määramiskohad
 onboarding-assign_trackers-next = Määrasin kõikide jälgijate asukohad
 
@@ -684,12 +676,8 @@ onboarding-assign_trackers-next = Määrasin kõikide jälgijate asukohad
 ## Tracker mounting method choose
 
 onboarding-choose_mounting-auto_mounting = Automaatne paigaldamine
-# Italized text
-onboarding-choose_mounting-auto_mounting-label = Eksperimentaalne
 onboarding-choose_mounting-auto_mounting-description = See tuvastab automaatselt kõigi teie jälgijate paigaldussuuna 2 poosist
 onboarding-choose_mounting-manual_mounting = Käsitsi paigaldamine
-# Italized text
-onboarding-choose_mounting-manual_mounting-label = Soovitatud
 onboarding-choose_mounting-manual_mounting-description = See võimaldab teil valida iga jälgija paigaldussuuna käsitsi
 
 ## Tracker manual mounting setup
@@ -715,35 +703,14 @@ onboarding-automatic_mounting-mounting_reset-title = Paigalduse lähtestamine
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. Kükita suusaasendis, jalad kõverad, ülakeha kallutatud ettepoole ja käed kõverad.
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. Vajutage "Lähtesta Paigaldusasend" nuppu ja oodage 3 sekuntit ja jälgijate paigaldusasend lähtestatakse.
 onboarding-automatic_mounting-preparation-title = Ettevalmistus
-onboarding-automatic_mounting-preparation-step-0 = 1. Seiske püsti, käed kõrval.
-onboarding-automatic_mounting-preparation-step-1 = 2. Vajutage "Lähtesta" nuppu ja oodage 3 sekundit ja jälgijad lähtestatakse.
 onboarding-automatic_mounting-put_trackers_on-title = Pange kõik jälgijad peale
 onboarding-automatic_mounting-put_trackers_on-description = Et kalibreerida jälgijate paigaldus asendi pööret pange kõik jälgijad peale ja nüüd te näete mis on mis jälgijad paremal pool ekraani.
 onboarding-automatic_mounting-put_trackers_on-next = Mul on kõik jälgijad küljes
 
-## Tracker proportions method choose
-
-onboarding-choose_proportions = Millist proportsiooni kalibreerimismeetodit kasutada?
-# Multiline string
-onboarding-choose_proportions-description =
-    Keha proportsioone kasutatakse teie keha mõõtude tundmiseks. Neid on vaja, et arvutada jälgijate asukohad.
-    Kui teie keha proportsioonid ei vasta salvestatud proportsioonidele, on teie jälgimistäpsus halvem ja märkate selliseid asju nagu jalgade uisutamine või libistamine või keha ei sobi teie avatariga hästi.
-onboarding-choose_proportions-auto_proportions = Automaatsed proportsioonid
-# Italized text
-onboarding-choose_proportions-auto_proportions-subtitle = Soovitatud
-# Italized text
-onboarding-choose_proportions-manual_proportions-subtitle = Väikeste puudutuste jaoks
-onboarding-choose_proportions-manual_proportions-description = See võimaldab teil proportsioone käsitsi reguleerida, muutes neid otseselt
-onboarding-choose_proportions-export = Ekspordi proportsioonid
-onboarding-choose_proportions-file_type = Keha proportsioonide fail
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 onboarding-manual_proportions-back = Mine tagasi lähtestamise õppetusse
 onboarding-manual_proportions-title = Käsitsi keha proportsioonid
-onboarding-manual_proportions-precision = Täpne reguleerimine
-onboarding-manual_proportions-auto = Automaatne kalibreerimine
-onboarding-manual_proportions-ratio = Kohandamine suhtarvugruppide järgi
 
 ## Tracker automatic proportions setup
 
@@ -757,15 +724,8 @@ onboarding-automatic_proportions-put_trackers_on-description = Et kalibreerida t
 onboarding-automatic_proportions-put_trackers_on-next = Mul on kõik jälgijad küljes
 onboarding-automatic_proportions-requirements-title = Nõuded
 onboarding-automatic_proportions-requirements-next = Olen lugenud nõudeid
-onboarding-automatic_proportions-check_height-title = Kontrollige oma pikkust
-onboarding-automatic_proportions-check_height-description = Me kasutame teie pikkust oma mõõtmiste alusena, kasutades HMD kõrgust teie tegeliku kõrguse ligikaudseks arvutamiseks, kuid parem on ise kontrollida, kas need on õiged!
-onboarding-automatic_proportions-check_height-fetch_height = Ma seisan!
 # Context is that the height is unknown
 onboarding-automatic_proportions-check_height-unknown = Tundmatu
-# Shows an element below it
-onboarding-automatic_proportions-check_height-hmd_height1 = Teie HMD kõrgus on
-# Shows an element below it
-onboarding-automatic_proportions-check_height-height1 = nii et teie tegelik kõrgus on
 onboarding-automatic_proportions-check_height-next_step = Nendega on kõik korras
 onboarding-automatic_proportions-start_recording-title = Olge valmis liikuma
 onboarding-automatic_proportions-start_recording-description = Me nüüd salvestame teatud poose ja liigutusi neid näete järgmisel ekraanil. Olge valmis, kui te vajutate nuppu!
@@ -798,9 +758,21 @@ onboarding-automatic_proportions-done-title = Kere mõõdetud ja salvestatud.
 onboarding-automatic_proportions-done-description = Teie keha proportsioonid kalibreerimine on valmis!
 onboarding-automatic_proportions-error_modal-confirm = Sain aru!
 
+## Tracker scaled proportions setup
+
+
+## Tracker scaled proportions reset
+
+
+## Stay Aligned setup
+
+
 ## Home
 
 home-no_trackers = Jälgijaid ei tuvastatud ega määratud
+
+## Trackers Still On notification
+
 
 ## Status system
 
@@ -810,3 +782,30 @@ status_system-StatusSteamVRDisconnected =
        *[other] Praegu ei ole SlimeVR-draiveri kaudu SteamVR-iga ühendatud.
     }
 status_system-StatusTrackerError = Jälgijal { $trackerName } on tõrge.
+
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
+
+## Tray Menu
+
+
+## First exit modal
+
+
+## Unknown device modal
+
+
+## Error collection consent modal
+

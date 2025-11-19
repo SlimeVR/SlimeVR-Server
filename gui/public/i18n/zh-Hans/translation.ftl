@@ -95,6 +95,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR 开发板
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -383,7 +385,7 @@ tracker-settings-use_mag = 允许使用这个追踪器的磁力计
 # Multiline!
 tracker-settings-use_mag-description =
     如果「在追踪器上启用磁力计」已启用，是否要在这个追踪器上启用它来减轻飘移？<b>切换本选项时请勿关闭追踪器的电源！</b>
-
+    
     请先启用「在追踪器上启用磁力计」功能，<magSetting>点选此处以移动至该设定</magSetting>。
 tracker-settings-use_mag-label = 允许使用这个追踪器的磁力计
 # The .<name> means it's an attribute and it's related to the top key.
@@ -395,7 +397,8 @@ tracker-settings-name_section-label = 追踪器名称
 tracker-settings-forget = 忘记追踪器
 tracker-settings-forget-description = 从 SlimeVR 服务器中移除该追踪器，并在服务器重启前不再连接这一追踪器。追踪器的配置信息不会被清除。
 tracker-settings-forget-label = 忘记追踪器
-tracker-settings-update-unavailable = 无法升级（DIY）
+tracker-settings-update-unavailable-v2 = 未找到可用版本
+tracker-settings-update-incompatible = 电路板不兼容，无法升级。
 tracker-settings-update-low-battery = 无法更新。当前电池电量低于 50%
 tracker-settings-update-up_to_date = 已是最新
 tracker-settings-update-blocked = 更新不可用。没有其他可用版本
@@ -545,7 +548,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = 预测�
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>警告：</b> 仅在需要经常重置偏航角
     (大概5~10分钟左右需要重置一次) 时使用漂移补偿。
-
+    
     一些可能需要此补偿的 IMU 包括：
     Joy-Cons、owoTrack 和 MPU（使用旧DMP固件）。
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = 取消
@@ -609,6 +612,9 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 强
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免关节旋转超过人体骨骼角度限制
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = 使用约束修正
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = 当关节旋转超过人体骨骼角度限制时进行修正
+settings-general-fk_settings-ik = 位置数据
+settings-general-fk_settings-ik-use_position = 使用位置数据
+settings-general-fk_settings-ik-use_position-description = 若追踪器支持，使用来自追踪器的位置数据。启用后，请再次进行完全重置并在游戏中重新校准追踪器。
 settings-general-fk_settings-arm_fk = 手臂追踪
 settings-general-fk_settings-arm_fk-description = 即使有手臂位置数据可用，也强制使用头显的数据追踪手臂。
 settings-general-fk_settings-arm_fk-force_arms = 强制使用头显数据追踪手臂
@@ -710,9 +716,6 @@ settings-general-interface-connected_trackers_warning-label = 退出时，有追
 ## Behavior settings
 
 settings-interface-behavior = 行为
-settings-general-interface-dev_mode = 开发者模式
-settings-general-interface-dev_mode-description = 如果你需要深入的资料或对连接的追踪器进行进阶调整，开启此模式将会非常有用。
-settings-general-interface-dev_mode-label = 开发者模式
 settings-general-interface-use_tray = 最小化至任务栏
 settings-general-interface-use_tray-description = 关闭 SlimeVR 窗口时，SlimeVR 服务器将会隐藏至任务栏图标而不会直接退出，可以继续使用。
 settings-general-interface-use_tray-label = 最小化至任务栏
@@ -727,9 +730,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = 通过 Sentry.io 收集错误信息
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>您是否同意收集匿名的错误信息？</h1>
-
+    
     <b>我们不会收集您的个人信息</b> ，例如您的 IP 地址或 WiFi 信息。SlimeVR 重视您的隐私！
-
+    
     为了提供最佳用户体验，我们会收集匿名错误报告、性能指标和操作系统信息。这有助于我们检测 SlimeVR 的错误和问题。这些指标将通过 Sentry.io 收集。
 settings-interface-behavior-error_tracking-label = 向开发人员发送错误信息
 settings-interface-behavior-bvh_directory = BVH记录保存目录
@@ -758,6 +761,11 @@ settings-serial-auto_dropdown_item = 自动
 settings-serial-get_wifi_scan = 扫描可用WiFi
 settings-serial-file_type = 纯文本
 settings-serial-save_logs = 保存到文件
+settings-serial-send_command = 发送
+settings-serial-send_command-placeholder = 输入指令...
+settings-serial-send_command-warning = <b>警告:</b>运行串口命令可能导致数据丢失或使追踪器无法正常工作。
+settings-serial-send_command-warning-ok = 我已知晓
+settings-serial-send_command-warning-cancel = 取消
 
 ## OSC router settings
 
@@ -854,6 +862,11 @@ settings-osc-vmc-mirror_tracking = 镜像追踪
 settings-osc-vmc-mirror_tracking-description = 水平镜像追踪结果
 settings-osc-vmc-mirror_tracking-label = 镜像追踪
 
+## Common OSC settings
+
+settings-osc-common-network-ports_match_error = OSC路由的输入和输出端口不能相同！
+settings-osc-common-network-port_banned_error = 无法使用端口{ $port } !
+
 ## Advanced settings
 
 settings-utils-advanced = 高级选项
@@ -926,20 +939,20 @@ onboarding-reset_tutorial-skip = 跳过步骤
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     敲击 { $taps } 次高亮显示的追踪器以触发航向轴重置。
-
+    
     这将使追踪器朝向与您的头显相同的方向。
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     敲击 { $taps } 次高亮显示的追踪器以触发完整重置。
-
+    
     此功能需要你站直（i-pose）后使用。 在重置实际发生前有 3 秒延迟（可配置）。
     这将完全重置所有追踪器的位置和旋转，应该能解决大多数问题。
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     敲击 { $taps } 次高亮显示的追踪器以触发佩戴重置。
-
+    
     佩戴重置能对追踪器实际的配戴方式进行调整，所以如果你不小心移动了追踪器并将它们的佩戴方向改变了很多，这个功能将有所帮助。
-
+    
     你需要摆出一个像滑雪那样的姿势，就像在运行自动设置佩戴向导时做的那样，在重置实际发生前有 3 秒延迟（可配置）。
 
 ## Setup start
@@ -1168,6 +1181,7 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. 保持姿势，直到 3
 onboarding-automatic_mounting-put_trackers_on-title = 穿戴好追踪器
 onboarding-automatic_mounting-put_trackers_on-description = 为了校准佩戴方向，我们将使用你刚才分配的追踪器。戴上你所有的追踪器，你可以在右边的图中看到哪个追踪器对应哪个。
 onboarding-automatic_mounting-put_trackers_on-next = 所有的追踪器都已开启！
+onboarding-automatic_mounting-return-home = 完成
 
 ## Tracker manual proportions setupa
 
@@ -1278,7 +1292,7 @@ onboarding-scaled_proportions-manual_height-next_step = 保存并继续
 onboarding-scaled_proportions-manual_height-warning =
     您当前正在手动设置缩放身体比例！
     <b>建议只在您不使用头戴显示器时使用此模式</b>
-
+    
     为了能够使用自动缩放身体比例，请：
 onboarding-scaled_proportions-manual_height-warning-no_hmd = 连接 VR 头戴显示器
 onboarding-scaled_proportions-manual_height-warning-no_controllers = 确保您的控制器已连接并正确分配到手部
@@ -1363,68 +1377,30 @@ firmware_tool = DIY固件工具
 firmware_tool-description = 允许您配置和烧录 DIY 追踪器固件
 firmware_tool-not_available = 哦不，固件工具目前不可用。稍后再来！
 firmware_tool-not_compatible = 固件工具与此版本的服务端不兼容。请更新您的服务端！
-firmware_tool-board_step = 选择您的开发板
-firmware_tool-board_step-description = 选择下列开发板之一
-firmware_tool-board_pins_step = 检查引脚
-firmware_tool-board_pins_step-description =
-    请验证所选引脚是否正确。
-    如果您遵循了 SlimeVR 文档，则默认值应该是正确的
-firmware_tool-board_pins_step-enable_led = 启用 LED
-firmware_tool-board_pins_step-led_pin =
-    .label = LED 引脚
-    .placeholder = 输入LED引脚的编号
-firmware_tool-board_pins_step-battery_type = 选择电池测量电路类型
-firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = 使用外接电阻与片内ADC测量（默认）
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = 使用片内低电量告警电路
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = 使用片内低电量告警电路与外接MCP3021测量
-firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = 使用外接MCP3021测量
-firmware_tool-board_pins_step-battery_sensor_pin =
-    .label = 电池检测引脚
-    .placeholder = 输入电池检测引脚的编号
-firmware_tool-board_pins_step-battery_resistor =
-    .label = 电池外接串联电阻（欧姆）
-    .placeholder = 输入电池串联电阻的阻值
-firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = 开发板载对地分压电阻R1（欧姆）
-    .placeholder = 请输入开发板载对地分压电阻 R1 的值。
-firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = 开发板载对输入分压电阻 R2（欧姆）
-    .placeholder = 请输入开发板载对输入分压电阻 R2 的值。
-firmware_tool-add_imus_step = 添加您的 IMU
-firmware_tool-add_imus_step-description =
-    请添加您的追踪器所配备的 IMU 传感器。
-    如果您遵循了 SlimeVR 文档，默认值应该是正确的。
-firmware_tool-add_imus_step-imu_type-label = IMU 类型
-firmware_tool-add_imus_step-imu_type-placeholder = 选择 IMU 类型
-firmware_tool-add_imus_step-imu_rotation =
-    .label = 追踪器旋转（度）
-    .placeholder = 追踪器旋转角度
-firmware_tool-add_imus_step-scl_pin =
-    .label = SCL 引脚
-    .placeholder = SCL 引脚编号
-firmware_tool-add_imus_step-sda_pin =
-    .label = SDA 引脚
-    .placeholder = SDA 引脚编号
-firmware_tool-add_imus_step-int_pin =
-    .label = INT 引脚
-    .placeholder = INT 引脚编号
-firmware_tool-add_imus_step-optional_tracker =
-    .label = 此 IMU 为可选扩展
-firmware_tool-add_imus_step-show_less = 显示更少
-firmware_tool-add_imus_step-show_more = 显示更多
-firmware_tool-add_imus_step-add_more = 添加更多 IMU
-firmware_tool-select_firmware_step = 选择固件版本
-firmware_tool-select_firmware_step-description = 请选择您要使用的固件版本
-firmware_tool-select_firmware_step-show-third-party =
-    .label = 显示第三方固件
+firmware_tool-select_source = 选择要刷写的固件
+firmware_tool-select_source-description = 选择要在电路板上刷写的固件
+firmware_tool-select_source-error = 无法加载固件来源
+firmware_tool-select_source-board_type = 电路板类型
+firmware_tool-select_source-firmware = 固件来源
+firmware_tool-select_source-version = 固件版本
+firmware_tool-select_source-official = 官方
+firmware_tool-select_source-dev = 开发版
+firmware_tool-board_defaults = 配置电路板
+firmware_tool-board_defaults-description = 设置引脚与其他和硬件相关的配置
+firmware_tool-board_defaults-add = 新增
+firmware_tool-board_defaults-reset = 恢复默认设置
+firmware_tool-board_defaults-error-required = 必填字段
+firmware_tool-board_defaults-error-format = 格式无效
+firmware_tool-board_defaults-error-format-number = 不是数字
 firmware_tool-flash_method_step = 固件烧录方式
 firmware_tool-flash_method_step-description = 请选择您要使用的固件烧录方式
-firmware_tool-flash_method_step-ota =
-    .label = OTA
-    .description = 使用无线方式。您的追踪器将通过 Wi-Fi 更新固件。仅适用于已设置好的追踪器。
-firmware_tool-flash_method_step-serial =
-    .label = 串口
-    .description = 使用 USB 数据线更新您的追踪器。
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = 选择无线OTA更新方式。你的追踪器将会使用Wi-Fi来更新固件。只在已设置完成的追踪器上生效。
+firmware_tool-flash_method_step-ota-info = 将会使用你的Wi-Fi凭证来刷写追踪器的固件并确保一切正常。<b>我们不会存储你的Wi-Fi凭证!</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = 使用USB线连接来更新你的追踪器。
 firmware_tool-flashbtn_step = 按下启动/Boot按钮
 firmware_tool-flashbtn_step-description = 在进入下一步之前，您需要做几件事情。
 firmware_tool-flashbtn_step-board_SLIMEVR = 关闭追踪器，拆下外壳（如果有的话），使用 USB 数据线连接到计算机，然后根据您的 SlimeVR 电路板版本执行以下步骤之一：
@@ -1436,8 +1412,10 @@ firmware_tool-flashbtn_step-board_OTHER =
     通常这意味着在开始固件烧录过程之前，按下板上的引导/boot按钮。
     如果固件烧录过程在开始时超时，这通常表示追踪器没有处于bootloader模式。
     请参考您的追踪器电路板的固件烧录说明，了解如何进入bootloader模式。
+firmware_tool-flash_method_ota-title = 通过Wi-Fi刷写
 firmware_tool-flash_method_ota-devices = 检测到的 OTA 设备：
 firmware_tool-flash_method_ota-no_devices = 没有可以使用 OTA 更新的电路板，请确保选择了正确的电路板类型
+firmware_tool-flash_method_serial-title = 通过USB刷写
 firmware_tool-flash_method_serial-wifi = Wi-Fi 凭证：
 firmware_tool-flash_method_serial-devices-label = 检测到的串口设备：
 firmware_tool-flash_method_serial-devices-placeholder = 选择串口设备
@@ -1452,10 +1430,10 @@ firmware_tool-flashing_step-exit = 退出
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = 等待构建中....
 firmware_tool-build-CREATING_BUILD_FOLDER = 正在创建 build 文件夹
-firmware_tool-build-DOWNLOADING_FIRMWARE = 正在下载固件源文件
-firmware_tool-build-EXTRACTING_FIRMWARE = 正在解压固件
-firmware_tool-build-SETTING_UP_DEFINES = 正在配置固件 define 参数
+firmware_tool-build-DOWNLOADING_SOURCE = 正在下载源代码
+firmware_tool-build-EXTRACTING_SOURCE = 正在解压源代码
 firmware_tool-build-BUILDING = 正在构建固件
 firmware_tool-build-SAVING = 正在保存构建结果
 firmware_tool-build-DONE = 构建完成
@@ -1564,7 +1542,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = 臂展
 error_collection_modal-title = 我们可以收集错误信息吗？
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-
+    
     您可以稍后在设置页面的行为部分中更改此设置。
 error_collection_modal-confirm = 我同意
 error_collection_modal-cancel = 还是算了
