@@ -10,6 +10,7 @@ import dev.slimevr.firmware.SerialFlashingHandler
 import dev.slimevr.games.vrchat.VRCConfigHandler
 import dev.slimevr.games.vrchat.VRCConfigHandlerStub
 import dev.slimevr.games.vrchat.VRChatConfigManager
+import dev.slimevr.guards.ServerGuards
 import dev.slimevr.osc.OSCHandler
 import dev.slimevr.osc.OSCRouter
 import dev.slimevr.osc.VMCHandler
@@ -121,6 +122,8 @@ class VRServer @JvmOverloads constructor(
 	val trackingChecklistManager: TrackingChecklistManager
 
 	val networkProfileChecker: NetworkProfileChecker
+
+	val serverGuards = ServerGuards();
 
 	init {
 		// UwU

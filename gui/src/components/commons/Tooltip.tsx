@@ -458,7 +458,7 @@ export function Tooltip({
   variant = 'auto',
   disabled = false,
   tag = 'div',
-  spacing = 20,
+  spacing = 10,
 }: TooltipProps) {
   const childRef = useRef<HTMLElement | null>(null);
   const isAndroid = window.__ANDROID__?.isThere();
