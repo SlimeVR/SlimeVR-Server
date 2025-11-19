@@ -370,8 +370,6 @@ class TrackerResetsHandler(val tracker: Tracker) {
 			)
 		}
 
-		this.tracker.needReset = false
-
 		// Reset Stay Aligned (before resetting filtering, which depends on the
 		// tracker's rotation)
 		tracker.stayAligned.reset()

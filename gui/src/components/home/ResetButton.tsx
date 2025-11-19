@@ -11,6 +11,8 @@ import { ReactNode } from 'react';
 import { SkiIcon } from '@/components/commons/icon/SkiIcon';
 import { FootIcon } from '@/components/commons/icon/FootIcon';
 import { FingersIcon } from '@/components/commons/icon/FingersIcon';
+import { Tooltip } from '@/components/commons/Tooltip';
+import { Typography } from '@/components/commons/Typography';
 
 export function ResetButtonIcon(options: UseResetOptions) {
   if (options.type === ResetType.Mounting && !options.group)
@@ -35,33 +37,49 @@ export function ResetButton({
   children?: ReactNode;
   onReseted?: () => void;
 } & UseResetOptions) {
-  const { triggerReset, status, timer, disabled, name } = useReset(
+  const { triggerReset, status, timer, disabled, name, error } = useReset(
     options,
     onReseted
   );
 
   return (
-    <Button
-      icon={<ResetButtonIcon {...options} />}
-      onClick={triggerReset}
-      className={classNames(
-        'border-2 py-[5px]',
-        status === 'finished'
-          ? 'border-status-success'
-          : 'transition-[border-color] duration-500 ease-in-out border-transparent',
-        className
-      )}
-      variant="primary"
-      disabled={disabled}
+    <Tooltip
+      preferedDirection={'top'}
+      disabled={!error}
+      content={
+        error ? (
+          <Typography
+            id={error}
+            textAlign="text-center"
+            color="text-status-critical"
+          />
+        ) : (
+          <></>
+        )
+      }
     >
-      <div className="flex flex-col">
-        <div className="opacity-0 h-0">
-          {children || <Localized id={name} />}
+      <Button
+        icon={<ResetButtonIcon {...options} />}
+        onClick={triggerReset}
+        className={classNames(
+          'border-2 py-[5px]',
+          status === 'finished'
+            ? 'border-status-success'
+            : 'transition-[border-color] duration-500 ease-in-out border-transparent',
+          className
+        )}
+        variant="primary"
+        disabled={disabled}
+      >
+        <div className="flex flex-col">
+          <div className="opacity-0 h-0">
+            {children || <Localized id={name} />}
+          </div>
+          {status !== 'counting' || options.type === ResetType.Yaw
+            ? children || <Localized id={name} />
+            : String(timer)}
         </div>
-        {status !== 'counting' || options.type === ResetType.Yaw
-          ? children || <Localized id={name} />
-          : String(timer)}
-      </div>
-    </Button>
+      </Button>
+    </Tooltip>
   );
 }

@@ -28,6 +28,12 @@ export const devicesAtom = selectAtom(
   isEqual
 );
 
+export const serverGuardsAtom = selectAtom(
+  datafeedAtom,
+  (datafeed) => datafeed.serverGuards,
+  isEqual
+);
+
 export const flatTrackersAtom = atom((get) => {
   const devices = get(devicesAtom);
 
