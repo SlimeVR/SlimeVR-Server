@@ -162,5 +162,3 @@ export function useReset(options: UseResetOptions, onReseted?: () => void) {
     timer: localized.format(duration - progress),
   };
 }
-
-export function useMountingReset() {}
