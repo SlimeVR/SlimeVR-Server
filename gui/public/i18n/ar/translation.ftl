@@ -7,7 +7,7 @@
 
 ## Websocket (server) status
 
-websocket-connecting = جاري التحميل
+websocket-connecting = جاري التحميل...
 websocket-connection_lost = تعطل الخادم!
 websocket-connection_lost-desc = يبدو أن خادم SlimeVR تعطل. تحقق من السجلات وأعد تشغيل البرنامج
 websocket-timedout = تعذر الاتصال بالخادم
@@ -301,7 +301,7 @@ tracker-settings-use_mag = اسمح بالمقياس المغناطيسي على
 # Multiline!
 tracker-settings-use_mag-description =
     هل يجب أن يستخدم هذا المتتبع مقياس المغناطيسية لتقليل الانجراف عند السماح باستخدام المقياس المغناطيسي؟ <b>من فضلا لا تغلق جهاز التتبع الخاص بك أثناء تبديل هذا!</b>
-
+    
     تحتاج إلى السماح باستخدام مقياس المغناطيسية أولا ، <magSetting>انقر هنا للذهاب إلى الإعداد</magSetting>.
 tracker-settings-use_mag-label = السماح بالمقياس المغناطيسي
 # The .<name> means it's an attribute and it's related to the top key.
@@ -313,7 +313,6 @@ tracker-settings-name_section-label = اسم جهاز التعقب
 tracker-settings-forget = انسي جهاز التعقب
 tracker-settings-forget-description = يزيل جهاز التعقب من خادم SlimeVR ويمنعه من الاتصال به حتى يتم إعادة تشغيل الخادم. لن تضيع تكوين جهاز التعقب.
 tracker-settings-forget-label = ننسى جهاز التعقب
-tracker-settings-update-unavailable = لا يمكن تحديثه (اصنعها بنفسك)
 tracker-settings-update-up_to_date = حديث
 tracker-settings-update-available = { $versionName } متاح الآن
 tracker-settings-update = التحديث الآن
@@ -459,7 +458,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = الت�
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>تحذير:</b> استخدم تعويض الانحراف فقط إذا كنت بحاجة إلى إعادة الضبط
     في كثير من الأحيان (كل ~ 5-10 دقائق).
-
+    
     تتضمن بعض وحدات IMU المعرضة لإعادة الضبط المتكرر ما يلي:
     Joy-Cons و owoTrack و MPUs (بدون برامج ثابتة حديثة).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = إلغاء
@@ -616,9 +615,6 @@ settings-general-interface-connected_trackers_warning-label = تحذير عن أ
 ## Behavior settings
 
 settings-interface-behavior = السلوك
-settings-general-interface-dev_mode = وضع المطوّر
-settings-general-interface-dev_mode-description = يمكن أن يكون هذا الوضع مفيدًا إذا كنت بحاجة إلى بيانات متعمقة أو للتفاعل مع أجهزة التعقب المتصلة على مستوى أكثر تقدمًا.
-settings-general-interface-dev_mode-label = وضع المطوّر
 settings-general-interface-use_tray = تصغير إلى علبة النظام
 settings-general-interface-use_tray-description = يتيح لك إغلاق النافذة دون إغلاق خادم SlimeVR حتى تتمكن من الاستمرار في استخدامه دون إزعاجك من واجهة المستخدم الرسومية.
 settings-general-interface-use_tray-label = تصغير إلى علبة النظام
@@ -638,9 +634,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = جمع الأخطاء عبر Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>هل توافق على جمع بيانات الخطأ مجهولة المصدر؟</h1>
-
+    
     <b>نحن لا نجمع معلومات شخصية</b> مثل عنوان IP الخاص بك أو بيانات الاعتماد اللاسلكية. يقدر SlimeVR خصوصيتك!
-
+    
     لتوفير أفضل تجربة للمستخدم، نقوم بجمع تقارير الأخطاء ومقاييس الأداء ومعلومات نظام التشغيل مجهولة المصدر. يساعدنا هذا في اكتشاف الأخطاء والمشكلات المتعلقة ب SlimeVR. يتم جمع هذه المقاييس عبر Sentry.io.
 settings-interface-behavior-error_tracking-label = إرسال الأخطاء إلى المطورين
 
@@ -711,6 +707,7 @@ settings-osc-vrchat-oscqueryEnabled-description =
     ضمن "التتبع و IK (الحركة العكسية)" وتمكين "السماح بإرسال بيانات OSC لتتبع الرأس والمعصم".
 settings-osc-vrchat-oscqueryEnabled-label = تمكين OSCQuery
 settings-osc-vrchat-network = منافذ الشبكة
+settings-osc-vrchat-network-description-v1 = ضبط المنافذ الاستماع إلى البيانات وإرسالها. يمكن تركها دون أن تمس ل VRChat.
 settings-osc-vrchat-network-port_in =
     .label = منفذ الدخول
     .placeholder = منفذ الدخول (الإفتراضي: 9001)
@@ -718,6 +715,7 @@ settings-osc-vrchat-network-port_out =
     .label = منفذ الخروج
     .placeholder = منفذ الخروج (الإفتراضي: 9000)
 settings-osc-vrchat-network-address = عنوان الشبكة
+settings-osc-vrchat-network-address-description-v1 = اختر العنوان الذي تريد إرسال البيانات إليه. يمكن تركها دون أن تمس ل VRChat.
 settings-osc-vrchat-network-address-placeholder = عنوان آي بي الخاص بفي ار تشات
 settings-osc-vrchat-network-trackers = أجهزة التعقب
 settings-osc-vrchat-network-trackers-description = تبديل إرسال أجهزة تتبع محددة عبر أوه أس سي.
@@ -750,13 +748,48 @@ settings-osc-vmc-network-address-description = قم بتعيين العنوان 
 settings-osc-vmc-network-address-placeholder = عنوان آي بي في 4
 settings-osc-vmc-vrm = نموذج في ار إم
 settings-osc-vmc-vrm-description = قم بتحميل نموذج في ار إم للسماح بتركيز الرأس وتمكين توافق أعلى مع تطبيقات الأخرى
+settings-osc-vmc-vrm-untitled_model = نموذج بدون عنوان
 settings-osc-vmc-vrm-file_select = اسحب نموذج وأفلته لاستخدامه أو <u> تصفح </ u>
 settings-osc-vmc-anchor_hip = ثبت في الوركين
 settings-osc-vmc-anchor_hip-description = ثبت التعقب في الوركين، هو مفيد إن كنت تيوبنغ جالسًا. في حالة التعطيل، قم بتحميل نموذج في ار إم.
 settings-osc-vmc-anchor_hip-label = ثبت في الوركين
+settings-osc-vmc-mirror_tracking = اعكس التعقب
+settings-osc-vmc-mirror_tracking-description = اعكس التعقب أفقيا.
+settings-osc-vmc-mirror_tracking-label = اعكس التعقب
+
+## Common OSC settings
+
 
 ## Advanced settings
 
+settings-utils-advanced = متقدم
+settings-utils-advanced-reset-gui = إعادة تعيين إعدادات واجهة المستخدم الرسومية (GUI)
+settings-utils-advanced-reset-gui-description = قم باستعادة الإعدادات الافتراضية للواجهة.
+settings-utils-advanced-reset-gui-label = إعادة تعيين واجهة المستخدم الرسومية
+settings-utils-advanced-reset-server = إعادة تعيين إعدادات التعقب
+settings-utils-advanced-reset-server-description = استعادة الإعدادات الافتراضية للتعقب.
+settings-utils-advanced-reset-server-label = إعادة تعيين التعقب
+settings-utils-advanced-reset-all = إعادة تعيين جميع الإعدادات
+settings-utils-advanced-reset-all-description = قم باستعادة الإعدادات الافتراضية لكل من الواجهة و التعقب.
+settings-utils-advanced-reset-all-label = إعادة تعيين الكل
+settings-utils-advanced-reset_warning =
+    { $type ->
+        [gui]
+            <b>تحذير:</b> سيؤدي هذا إلى إعادة تعيين جميع الإعدادات الخاصة بك إلى الإعدادات الافتراضية.
+            هل أنت متأكد من أنك تريد القيام بذلك؟
+        [server] <b>تحذير:</b> سيؤدي هذا إلى إعادة تعيين إعدادات التعقب إلى الإعدادات الافتراضية. هل أنت متأكد من أنك تريد القيام بذلك؟
+       *[all]
+            <b>تحذير:</b> سيؤدي هذا إلى إعادة تعيين جميع الإعدادات الخاصة بك إلى الإعدادات الافتراضية.
+            هل أنت متأكد من أنك تريد القيام بذلك؟
+    }
+settings-utils-advanced-reset_warning-reset = إعادة تعيين الإعدادات
+settings-utils-advanced-reset_warning-cancel = إلغاء
+settings-utils-advanced-open_data-v1 = مجلد التكوين
+settings-utils-advanced-open_data-description-v1 = فتح مجلد إعدادات SlimeVR في مستكشف الملفات ، والذي يحتوي على الإعدادات
+settings-utils-advanced-open_data-label = فتح المجلد
+settings-utils-advanced-open_logs = مجلد السجلات
+settings-utils-advanced-open_logs-description = افتح مجلد سجلات SlimeVR في مستكشف الملفات ، والذي يحتوي على سجلات التطبيق
+settings-utils-advanced-open_logs-label = فتح المجلد
 
 ## Setup/onboarding menu
 
@@ -783,6 +816,7 @@ onboarding-wifi_creds-submit = إرسال!
 onboarding-wifi_creds-ssid =
     .label = اسم الواي فاي
     .placeholder = أدخل اسم الواي فاي
+onboarding-wifi_creds-ssid-required = مطلوب اسم Wi-Fi
 onboarding-wifi_creds-password =
     .label = كلمة السر
     .placeholder = أدخل كلمة السر
@@ -796,20 +830,20 @@ onboarding-reset_tutorial-skip = تخطى الخطوة
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     اضغط على جهاز التعقب  المحدد { $taps } مرات لتشغيل إعادة ضبط الانعراج.
-
+    
     سيؤدي ذلك إلى جعل أجهزة التعقب تواجه نفس اتجاه HMD الخاص بك.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     اضغط على جهاز التعقب المحدد { $taps } مرات لتشغيل إعادة تعيين كاملة.
-
+    
     يجب أن تكون واقفًا (i-pose). هناك تأخير لمدة 3 ثوان (قابل للتكوين) قبل إعادة التعيين بالكامل.
     هذا يعيد تعيين موضع ودوران جميع جهاز التعقب. يجب أن يحل معظم المشاكل.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     اضغط على المتتبع المحدد { $taps } مرات لتشغيل إعادة تعيين متصاعد.
-
+    
     يساعد إعادة التعيين المتصاعد في تحديد كيفية وضع أجهزة التعقب عليك بالفعل. لذلك إذا قمت بنقلهم عن طريق الخطأ وغيرت كيفية توجيههم بمقدار كبير ، فسيساعد ذلك.
-
+    
     يجب أن تكون في وضع تزلج كما هو موضح في معالج "التثبيت التلقائي" ولديك تأخير لمدة 3 ثوانٍ (قابل للتكوين) قبل أن يتم تشغيله.
 
 ## Setup start
@@ -840,6 +874,7 @@ onboarding-connect_tracker-issue-serial = أواجه مشكلة في الاتص�
 onboarding-connect_tracker-usb = جهاز تعقب يو أس بي
 onboarding-connect_tracker-connection_status-none = نبحث عن أجهزة التعقب
 onboarding-connect_tracker-connection_status-serial_init = نتواصل بجهاز التسلسلي
+onboarding-connect_tracker-connection_status-obtaining_mac_address = الحصول على عنوان mac الخاص بجهاز التعقب
 onboarding-connect_tracker-connection_status-provisioning = نرسل بيانات اعتماد واي فاي
 onboarding-connect_tracker-connection_status-connecting = جارٍ إرسال بيانات اعتماد الواي فاي
 onboarding-connect_tracker-connection_status-looking_for_server = نبحث عن السرفر
@@ -872,6 +907,7 @@ onboarding-calibration_tutorial-status-waiting = بانتظارك
 onboarding-calibration_tutorial-status-calibrating = جاري المعايرة
 onboarding-calibration_tutorial-status-success = رائع!
 onboarding-calibration_tutorial-status-error = تم نقل جهاز التعقب
+onboarding-calibration_tutorial-skip = تخطي البرنامج التعليمي
 
 ## Tracker assignment tutorial
 
@@ -903,6 +939,31 @@ onboarding-assign_trackers-assigned =
 onboarding-assign_trackers-advanced = إظهار مواقع التعيين المتقدمة
 onboarding-assign_trackers-next = لقد عينت جميع أجهزة التعقب
 onboarding-assign_trackers-mirror_view = عرض المرآة
+onboarding-assign_trackers-option-amount =
+    { $trackersCount ->
+        [zero] صفر
+        [one] واحد
+        [two] اثنان
+        [few] قليلة
+        [many] كثيرة
+       *[other] أخرى
+    }
+onboarding-assign_trackers-option-label =
+    { $mode ->
+        [lower-body] الجسم السفلي
+        [core] أساس الجسم
+        [enhanced-core] الأساس المحسن
+        [full-body] الجسم الكامل
+       *[all] الكل
+    }
+onboarding-assign_trackers-option-description =
+    { $mode ->
+        [lower-body] الحد الأدنى لتعقب الجسم الكامل في الواقع الافتراضي
+        [core] + تحسين تعقب العمود الفقري
+        [enhanced-core] + دوران القدم
+        [full-body] + تعقب الكوع
+       *[all] جميع مهام التعقب المتاحة
+    }
 
 ## Tracker assignment warnings
 
@@ -1130,9 +1191,14 @@ onboarding-scaled_proportions-manual_height-height-v2 = طولك الكامل ه
 onboarding-scaled_proportions-manual_height-estimated_height = الارتفاع المقدر لسماعة الرأس هو:
 onboarding-scaled_proportions-manual_height-next_step = المتابعة والحفظ
 onboarding-scaled_proportions-manual_height-warning-no_hmd = وصّل سماعة رأس VR
+onboarding-scaled_proportions-manual_height-warning-no_controllers = تأكد من توصيل وحدات التحكم الخاصة بك وتخصيصها بشكل صحيح ليديك
 
 ## Tracker scaled proportions reset
 
+onboarding-scaled_proportions-reset_proportion-title = إعادة ضبط نسب جسمك
+onboarding-scaled_proportions-reset_proportion-description = لتعيين نسب جسمك بناء على طولك ، تحتاج إلى إعادة تعيين جميع نسبك. سيؤدي ذلك إلى مسح أي نسب قمت بتكوينها وتوفير تكوين أساسي.
+onboarding-scaled_proportions-done-title = مجموعة نسب الجسم
+onboarding-scaled_proportions-done-description = قد تم الآن تكوين نسب جسمك بناء على طولك.
 
 ## Stay Aligned setup
 
@@ -1159,12 +1225,29 @@ status_system-StatusSteamVRDisconnected =
        *[other] حاليًا غير متصل بـ SteamVR عبر برنامج تشغيل SlimeVR.
     }
 status_system-StatusTrackerError = يحتوي جهاز التعقب { $trackerName } على خطأ.
+status_system-StatusUnassignedHMD = يجب تعيين سماعة رأس VR كجهاز تعقب للرأس.
 
 ## Firmware tool globals
 
+firmware_tool-next_step = الخطوة التالية
+firmware_tool-previous_step = الخطوة السابقة
+firmware_tool-ok = تبدو جيدة
+firmware_tool-retry = اعادة المحاولة
+firmware_tool-loading = تحميل...
 
 ## Firmware tool Steps
 
+firmware_tool = أداة البرامج الثابتة DIY
+firmware_tool-description = يسمح لك بتكوين و لتحديث أجهزة التعقب DIY الخاصة بك
+firmware_tool-not_available = عفوا ، أداة البرامج الثابتة غير متوفرة في الوقت الحالي. عد لاحقا!
+firmware_tool-not_compatible = أداة البرنامج الثابت غير متوافقة مع هذا الإصدار من الخادم. يرجى تحديث الخادم الخاص بك!
+firmware_tool-flash_method_step = طريقة التثبيت
+firmware_tool-flash_method_step-description = الرجاء حدد طريقة التثبيت التي تريد استخدامها
+firmware_tool-flashbtn_step = اضغط على زر التمهيد
+firmware_tool-flashbtn_step-description = قبل الانتقال إل الخطوة التالية، هناك بعض الأشياء التي عليك القيام بها
+firmware_tool-flashbtn_step-board_SLIMEVR = أوقف تشغيل جهاز التعقب، قم بإزالة العلبة (إن وجدت)، وقم بتوصيل كابل USB بهذا الكمبيوتر ، ثم قم بإحدى الخطوات التالية وفقا لمراجعة لوحة SlimeVR:
+firmware_tool-flashbtn_step-board_SLIMEVR-r11 = قم بتشغيل جهاز التعقب أثناء تقصير دائرة لوحة FLASH المستطيلة الثانية من الحافة الموجودة على الجانب العلوي من اللوحة ، والدرع المعدني للمتحكم الدقيق
+firmware_tool-flashbtn_step-board_SLIMEVR-r12 = قم بتشغيل جهاز التعقب أثناء تقصير دائرة لوحة FLASH الدائرية على الجانب العلوي من اللوحة ، والدرع المعدني للمتحكم الدقيق
 
 ## firmware tool build status
 
@@ -1187,7 +1270,7 @@ tray_or_exit_modal-title = ماذا يجب أن يفعل زر الإغلاق؟
 # Multiline text
 tray_or_exit_modal-description =
     يتيح لك ذلك اختيار ما إذا كنت تريد الخروج من الخادم أو تصغيره إلى علبة النظام عند الضغط على زر الإغلاق.
-
+    
     يمكنك تغيير هذا لاحقا في إعدادات الواجهة!
 tray_or_exit_modal-radio-exit = الخروج عند الإغلاق
 tray_or_exit_modal-radio-tray = تصغير إلى علبة النظام
@@ -1204,3 +1287,4 @@ unknown_device-modal-confirm = أكيد
 unknown_device-modal-forget = تجاهلها
 
 ## Error collection consent modal
+

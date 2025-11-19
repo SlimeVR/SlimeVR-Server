@@ -95,6 +95,7 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -394,7 +395,7 @@ tracker-settings-use_mag = Autoriser l'utilisation du magnétomètre sur ce capt
 # Multiline!
 tracker-settings-use_mag-description =
     Est-ce que ce capteur devrait utiliser son magnétomètre pour réduire la dérive lorsque l'utilisation du magnétomètre est autorisée ? <b>N'éteignez pas votre capteur pendant que vous changez cette option !</b>
-
+    
     Vous devez d'abord autoriser l'utilisation du magnétomètre dans les paramètres. <magSetting>Cliquez ici pour y accéder</magSetting>.
 tracker-settings-use_mag-label = Autoriser le magnétomètre
 # The .<name> means it's an attribute and it's related to the top key.
@@ -406,7 +407,8 @@ tracker-settings-name_section-label = Nom personalisé
 tracker-settings-forget = Oublier capteur
 tracker-settings-forget-description = Supprime le capteur du serveur SlimeVR et l'empêche de s'y connecter jusqu'à ce que le serveur soit redémarré. La configuration du capteur ne sera pas perdue.
 tracker-settings-forget-label = Oublier capteur
-tracker-settings-update-unavailable = Ne peut pas être mis à jour (DIY)
+tracker-settings-update-unavailable-v2 = Aucune publication trouvée
+tracker-settings-update-incompatible = Mise à jour impossible. Carte incompatible
 tracker-settings-update-low-battery = Mise à jour impossible. Batterie inférieure à 50 %
 tracker-settings-update-up_to_date = À jour
 tracker-settings-update-blocked = Mise à jour non disponible. Aucune autre version disponible
@@ -556,7 +558,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = Prédic
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Avertissement:</b> n'utilisez la compensation de la dérive que si vous devez
     réinitialiser très souvent (toutes les ~5-10 minutes).
-
+    
     Voici quelques IMUs sujets à des réinitialisations fréquentes :
     Joy-Cons, owoTrack et MPUs (sans micrologiciel récent).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Annuler
@@ -620,6 +622,8 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = App
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Empêche les articulations de tourner au-delà de leur limite
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Corriger avec les contraintes
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Corriger les rotations des articulations lorsqu'elles dépassent leur limite
+settings-general-fk_settings-ik = Données de position
+settings-general-fk_settings-ik-use_position = Utiliser les données de position
 settings-general-fk_settings-arm_fk = Capture des bras
 settings-general-fk_settings-arm_fk-description = Changez la façon dont les bras sont captés.
 settings-general-fk_settings-arm_fk-force_arms = Forcer les bras en provenance du casque VR
@@ -726,9 +730,6 @@ settings-general-interface-connected_trackers_warning-label = Avertissement de c
 ## Behavior settings
 
 settings-interface-behavior = Comportement
-settings-general-interface-dev_mode = Mode développeur
-settings-general-interface-dev_mode-description = Ce mode peut être utile pour avoir des données approfondies ou pour interagir avec des capteurs connectés à un niveau plus avancé.
-settings-general-interface-dev_mode-label = Mode développeur
 settings-general-interface-use_tray = Minimiser dans la zone de notifications
 settings-general-interface-use_tray-description = Vous permet de fermer la fenêtre sans fermer le serveur SlimeVR afin que vous puissiez continuer à l'utiliser sans l'interface graphique.
 settings-general-interface-use_tray-label = Minimiser dans la zone de notifications
@@ -744,9 +745,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Collecte des erreurs via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Consentez-vous à la collecte de données d'erreur anonymisée ?</h1>
-
+    
     <b>Nous ne collectons pas d'informations personnelles</b> telles que votre adresse IP ou vos identifiants Wi-Fi. SlimeVR accorde une grande importance à votre vie privée !
-
+    
     Pour offrir la meilleure expérience utilisateur possible, nous collectons des rapports d'erreurs anonymisés, des mesures de performance et des informations sur le système d'exploitation. Cela nous aide à détecter les bugs et les problèmes liés à SlimeVR. Ces données sont collectées via Sentry.io.
 settings-interface-behavior-error_tracking-label = Envoyer les erreurs aux développeurs
 settings-interface-behavior-bvh_directory = Répertoire pour sauvegarder les enregistrements BVH
@@ -870,6 +871,9 @@ settings-osc-vmc-mirror_tracking = Inverser les mouvements
 settings-osc-vmc-mirror_tracking-description = Inverse les mouvements horizontalement
 settings-osc-vmc-mirror_tracking-label = Inverser les mouvements
 
+## Common OSC settings
+
+
 ## Advanced settings
 
 settings-utils-advanced = Avancé
@@ -942,20 +946,20 @@ onboarding-reset_tutorial-skip = Sauter l'étape
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour effectuer une réinitialisation horizontale.
-
+    
     Cela orientera les capteurs dans la même direction que votre casque VR.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour effectuer une réinitialisation complète.
-
+    
     Vous devrez restez en position « i » (droit debout, bras le long du corps). Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
     Cela réinitialise complètement la position et la rotation de tout vos capteurs, ce qui devrait corriger la plupart des problèmes.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Tapotez { $taps } fois sur le capteur en surbrillance pour réinitialiser l'alignement des capteurs.
-
+    
     La réinitialisation de l'alignement des capteurs aide à définir la façon dont ces derniers sont portés sur vous. Cela aidera si vous en avez déplacé un sur vous accidentellement.
-
+    
     Accroupissez-vous dans une position de « ski » comme affiché sur l'assistant d'alignement des capteurs. Vous aurez un délai de 3 secondes (configurable) avant la réinitialisation.
 
 ## Setup start
@@ -1011,10 +1015,10 @@ onboarding-connect_serial-error-modal-no_serial_device_found-desc =
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers =
     { $amount ->
-        [0] No trackers
-        [one] 1 tracker
-       *[other] { $amount } trackers
-    } connected
+        [0] No trackers connected
+        [one] 1 tracker connected
+       *[other] { $amount } trackers connected
+    }
 onboarding-connect_tracker-next = J'ai connecté tous mes capteurs
 
 ## Tracker calibration tutorial
@@ -1309,7 +1313,7 @@ onboarding-scaled_proportions-manual_height-next_step = Continuer et enregistrer
 onboarding-scaled_proportions-manual_height-warning =
     Vous utilisez actuellement le réglage manuel de la mise à l'échelle des proportions !
     <b>Ce mode est recommandé uniquement si vous n'utilisez pas de casque VR avec SlimeVR</b>
-
+    
     Pour pouvoir utiliser les proportions mises à l’échelle automatiquement, veuillez :
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Connecter un casque VR
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Assurez-vous que vos manettes sont connectées et correctement assignées à vos mains
@@ -1394,68 +1398,8 @@ firmware_tool = Outil de micrologiciel DIY
 firmware_tool-description = Vous permet de configurer et de flash vos capteurs DIY
 firmware_tool-not_available = Oups, l'outil de micrologiciel n'est pas disponible en ce moment. Revenez plus tard !
 firmware_tool-not_compatible = L'outil de micrologiciel n'est pas compatible avec cette version de serveur. Veuillez mettre à jour votre serveur !
-firmware_tool-board_step = Sélectionnez votre carte
-firmware_tool-board_step-description = Sélectionnez l'une des cartes répertoriées ci-dessous.
-firmware_tool-board_pins_step = Vérifiez les broches
-firmware_tool-board_pins_step-description =
-    Veuillez vérifier que les broches sélectionnées sont correctes.
-    Si vous avez suivi la documentation de SlimeVR, les valeurs par défaut devraient être correctes.
-firmware_tool-board_pins_step-enable_led = Activer la LED
-firmware_tool-board_pins_step-led_pin =
-    .label = Broche LED
-    .placeholder = Entrez l'adresse de la broche LED
-firmware_tool-board_pins_step-battery_type = Sélectionnez le type de batterie
-firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = Batterie externe
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = Batterie interne
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = MCP3021 interne
-firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = MCP3021
-firmware_tool-board_pins_step-battery_sensor_pin =
-    .label = Broche du capteur de batterie
-    .placeholder = Entrez l'adresse de la broche du capteur de batterie
-firmware_tool-board_pins_step-battery_resistor =
-    .label = Résistance de la batterie (Ohms)
-    .placeholder = Entrer la valeur de la résistance de la batterie
-firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = Bouclier de batterie R1 (Ohms)
-    .placeholder = Saisir la valeur du bouclier de batterie R1
-firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = Bouclier de batterie R2 (Ohms)
-    .placeholder = Saisir la valeur du bouclier de batterie R1
-firmware_tool-add_imus_step = Déclarez vos IMU
-firmware_tool-add_imus_step-description =
-    Veuillez ajouter les IMUs de votre capteur
-    Si vous avez suivi la documentation de SlimeVR, les valeurs par défaut devraient être correctes
-firmware_tool-add_imus_step-imu_type-label = Type d'IMU
-firmware_tool-add_imus_step-imu_type-placeholder = Sélectionnez le type d'IMU
-firmware_tool-add_imus_step-imu_rotation =
-    .label = Rotation de l'IMU (deg)
-    .placeholder = Angle de rotation de l'IMU
-firmware_tool-add_imus_step-scl_pin =
-    .label = Broche SCL
-    .placeholder = Adresse de la broche SCL
-firmware_tool-add_imus_step-sda_pin =
-    .label = Broche SDA
-    .placeholder = Adresse de la broche SDA
-firmware_tool-add_imus_step-int_pin =
-    .label = Broche INT
-    .placeholder = Adresse de la broche INT
-firmware_tool-add_imus_step-optional_tracker =
-    .label = Capteur optionnel
-firmware_tool-add_imus_step-show_less = Afficher moins
-firmware_tool-add_imus_step-show_more = Afficher plus
-firmware_tool-add_imus_step-add_more = Ajouter plus d'IMUs
-firmware_tool-select_firmware_step = Sélectionnez la version du micrologiciel
-firmware_tool-select_firmware_step-description = Veuillez choisir la version du micrologiciel que vous souhaitez utiliser
-firmware_tool-select_firmware_step-show-third-party =
-    .label = Afficher les micrologiciels de tierces parties
 firmware_tool-flash_method_step = Méthode de flash
 firmware_tool-flash_method_step-description = Veuillez sélectionner la méthode de flash que vous souhaitez utiliser
-firmware_tool-flash_method_step-ota =
-    .label = OTA
-    .description = Utiliser la méthode « over the air ». Votre capteur utilisera le Wi-Fi pour mettre à jour son micrologiciel. Ne fonctionne que sur les capteurs déjà configurés.
-firmware_tool-flash_method_step-serial =
-    .label = Série
-    .description = Utiliser un cable USB pour mettre à jour votre capteur
 firmware_tool-flashbtn_step = Appuyez sur le bouton boot
 firmware_tool-flashbtn_step-description = Avant de passer à l'étape suivante, il y a quelques choses que vous devez faire
 firmware_tool-flashbtn_step-board_SLIMEVR = Éteignez le capteur, retirez le boîtier (s'il y en a un), connectez un câble USB à votre ordinateur, puis effectuez l'une des étapes suivantes en fonction de la révision de votre carte SlimeVR :
@@ -1484,9 +1428,6 @@ firmware_tool-flashing_step-exit = Quitter
 ## firmware tool build status
 
 firmware_tool-build-CREATING_BUILD_FOLDER = Création du dossier de création
-firmware_tool-build-DOWNLOADING_FIRMWARE = Téléchargement du micrologiciel
-firmware_tool-build-EXTRACTING_FIRMWARE = Extraction du micrologiciel
-firmware_tool-build-SETTING_UP_DEFINES = Configuration des définitions
 firmware_tool-build-BUILDING = Création du micrologiciel
 firmware_tool-build-SAVING = Enregistrement du micrologiciel
 firmware_tool-build-DONE = Création terminée
@@ -1595,7 +1536,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Envergure des bras
 error_collection_modal-title = Avons nous l'autorisation de collecter les erreurs ?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-
+    
     Vous pouvez modifier ce paramètre ultérieurement dans la section "Comportement" des paramètres.
 error_collection_modal-confirm = Je suis d'accord
 error_collection_modal-cancel = Je ne veux pas

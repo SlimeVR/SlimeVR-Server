@@ -246,7 +246,7 @@ tracker-settings-drift_compensation_section-edit = ドリフト補正を行う
 # Multiline!
 tracker-settings-use_mag-description =
     このトラッカーは、マグネトメーターの使用が許可されている場合、ドリフトを減らすためにマグネトメーターを使用すべきですか？ <b>設定を切り替える際は、トラッカーをシャットダウンしないでください！</b>
-
+    
     まず、マグネトメーターの使用を許可する必要があります。<magSetting>設定に移動するにはここをクリックしてください</magSetting>。
 # The .<name> means it's an attribute and it's related to the top key.
 # In this case that is the settings for the assignment section.
@@ -394,8 +394,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = フロアクリ�
 settings-general-fk_settings-leg_tweak-toe_snap-description = 足指スナップは足トラッカーを使用していない場合、足の回転を推測しようとします。
 settings-general-fk_settings-leg_tweak-foot_plant-description = 足の着地は足が地面に接触したときに足を地面に平行に回転させます。
 settings-general-fk_settings-leg_fk = 足のトラッキング
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = つま先立ちで足のマウンティングリセットを有効にします。
-settings-general-fk_settings-leg_fk-reset_mounting_feet = 足のマウンティングリセット
 settings-general-fk_settings-arm_fk = アームトラッキング
 settings-general-fk_settings-arm_fk-description = 腕の追従方法を変更する。
 settings-general-fk_settings-arm_fk-force_arms = Force arms from HMD
@@ -446,6 +444,9 @@ settings-general-gesture_control-mountingResetTaps = タップによるマウン
 ## Appearance settings
 
 settings-interface-appearance = 外観
+settings-general-interface-dev_mode = 開発者モード
+settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
+settings-general-interface-dev_mode-label = 開発者モード
 settings-general-interface-theme = カラーテーマ
 settings-general-interface-lang = 言語を選択
 settings-general-interface-lang-description = 使用したいデフォルトの言語を変更する
@@ -469,9 +470,6 @@ settings-general-interface-connected_trackers_warning = 接続されたトラッ
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = 開発者モード
-settings-general-interface-dev_mode-description = このモードは、詳細なデータが必要な場合や、接続されたトラッカーをより高度なレベルで操作する場合に役立ちます。
-settings-general-interface-dev_mode-label = 開発者モード
 settings-general-interface-use_tray-label = システムトレイに最小化する
 
 ## Serial settings
@@ -553,6 +551,9 @@ settings-osc-vmc-network-address = ネットワークアドレス
 settings-osc-vmc-network-address-placeholder = IPV4アドレス
 settings-osc-vmc-vrm = VRMモデル
 
+## Common OSC settings
+
+
 ## Advanced settings
 
 
@@ -624,10 +625,10 @@ onboarding-connect_tracker-connection_status-done = サーバーに接続され�
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers =
     { $amount ->
-        [0] No trackers
-        [one] 1 tracker
-       *[other] { $amount } trackers
-    } connected
+        [0] No trackers connected
+        [one] 1 tracker connected
+       *[other] { $amount } trackers connected
+    }
 onboarding-connect_tracker-next = すべてのトラッカーを接続しました
 
 ## Tracker calibration tutorial
@@ -652,10 +653,10 @@ onboarding-assign_trackers-description = どのトラッカーをどこに置く
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned =
-    { $assigned } of { $trackers ->
-        [one] 1 tracker
-       *[other] { $trackers } trackers
-    } assigned
+    { $trackers ->
+        [one] { $assigned } of 1 tracker assigned
+       *[other] { $assigned } of { $trackers } trackers assigned
+    }
 onboarding-assign_trackers-advanced = 高度な割り当て場所の表示
 onboarding-assign_trackers-next = すべてのトラッカーを割り当てました
 
@@ -689,8 +690,6 @@ onboarding-automatic_mounting-mounting_reset-title = マウントリセット
 onboarding-automatic_mounting-mounting_reset-step-0 = 1. 足を曲げ、上体を前に倒し、腕を曲げた状態で、スキーのポーズでしゃがむ。
 onboarding-automatic_mounting-mounting_reset-step-1 = 2. リセットマウンティングボタンを押し、3秒待つと装着方向がリセットされます。
 onboarding-automatic_mounting-preparation-title = 準備
-onboarding-automatic_mounting-preparation-step-0 = 1. 両手を横に広げて直立します。
-onboarding-automatic_mounting-preparation-step-1 = 2. リセットボタンを押し、3秒待つとリセットされます。
 onboarding-automatic_mounting-put_trackers_on-title = トラッカーを装着する
 onboarding-automatic_mounting-put_trackers_on-description = マウントの方向を較正するために、先ほど割り当てたトラッカーを使用します。右の図でどれがどれだかわかると思います。
 onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカーを装着しました
@@ -699,8 +698,6 @@ onboarding-automatic_mounting-put_trackers_on-next = すべてのトラッカー
 
 onboarding-manual_proportions-back = チュートリアルをリセットする
 onboarding-manual_proportions-title = マニュアルボディプロポーション
-onboarding-manual_proportions-precision = 精度を調整する
-onboarding-manual_proportions-auto = 自動キャリブレーション
 
 ## Tracker automatic proportions setup
 
@@ -743,6 +740,9 @@ onboarding-automatic_proportions-error_modal-confirm = 了解!
 
 
 ## Tracker scaled proportions reset
+
+
+## Stay Aligned setup
 
 
 ## Home
@@ -796,3 +796,4 @@ unknown_device-modal-confirm = もちろん!
 unknown_device-modal-forget = 無視する
 
 ## Error collection consent modal
+

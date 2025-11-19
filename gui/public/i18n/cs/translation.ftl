@@ -273,7 +273,7 @@ tracker-settings-use_mag = Povolit magnetometr na tomto trackeru
 # Multiline!
 tracker-settings-use_mag-description =
     Měl by tento tracker používat magnetometer k redukci driftu když je použití magnetometru povoleno? <b> Prosím nevypínejte váš tracker při přepínání tohoto nastavení!</b>
-
+    
     Nejprve musíte povolit používání magnetometru, <magSetting>Kliknutím zde přejdete k nastavená magnetometru</magSetting>.
 tracker-settings-use_mag-label = Povolit magnetometr
 # The .<name> means it's an attribute and it's related to the top key.
@@ -285,7 +285,6 @@ tracker-settings-name_section-label = Název trackeru
 tracker-settings-forget = Zapomenout tracker
 tracker-settings-forget-description = Odebere tracker z SlimeVR Serveru a zabrání jeho opětovnému připojení do té doby, dokud nebude server restarován. Konfigurace trackeru nebude ztracena.
 tracker-settings-forget-label = Zapomenout tracker
-tracker-settings-update-unavailable = Nelze aktualizovat (DIY)
 tracker-settings-update-low-battery = Nelze provést aktualizaci. Baterie má méně než 50%
 tracker-settings-update-up_to_date = Aktuální
 tracker-settings-update-available = { $versionName } je nyní dostupný
@@ -434,7 +433,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = Predikc
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Varování:</b> Kompenzaci driftu používejte pouze tehdy kdy musíte resetovat
     Neobvykle často (každých ~5-10 minut).
-
+    
     Některé IMU které náchylné k častým resetům zahrnují:
     Joy-Cons, owoTrack a MPU (bez aktuálního firmwaru).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Zrušit
@@ -485,8 +484,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Připnutí k pod
 settings-general-fk_settings-leg_tweak-toe_snap-description = Přichycení špiček se pokouší odhadnout rotaci vašich chodidel v případě, že nepoužíváte trackery chodidel.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Narovnání chodidla při dotyku narovnává chodidla tak, aby byla rovnoběžně se zemí.
 settings-general-fk_settings-leg_fk = Sledování nohou
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Aktivovat reset nasazení nohou stoupnutím na špičky.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Reset nasazení nohou
 settings-general-fk_settings-enforce_joint_constraints = Limity kostry
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Prosazování omezení
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Zabránit rotaci kloubům za jejich limit
@@ -593,9 +590,6 @@ settings-general-interface-connected_trackers_warning-label = Upozornění o př
 ## Behavior settings
 
 settings-interface-behavior = Chování
-settings-general-interface-dev_mode = Vývojářský režim
-settings-general-interface-dev_mode-description = Tento režim může být užitečný, pokud potřebujete podrobné údaje nebo omunikovat s trackerama na pokročilejší úrovni.
-settings-general-interface-dev_mode-label = Vývojářský režim
 settings-general-interface-use_tray = Minimalizovat do oznamovací oblasti
 settings-general-interface-use_tray-description = Umožňuje vám zavřít okno, aniž byste zavřeli SlimeVR Server, takže ho můžete nadále používat bez rozhraní.
 settings-general-interface-use_tray-label = Minimalizovat do oznamovací oblasti
@@ -613,9 +607,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Sběr chyb prostřednictvím Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Souhlasíte se shromažďováním anonymizovaých údajů o chybých?</h1>
-
+    
     <b>Neschrožďujeme osobní udaje!</b> pro příklad IP adresy nebo přihlašovací údaje k sítím Wi-Fi. SlimeVR respektuje vaše soukromí!
-
+    
     Aby jsme mohli poskytnout nejlepší zážitek uživatelům, schromažďujeme proto anonymizované zprávy o chybých, metriky výkon a informace o operačním systém. To nám pomáhá zjištovat chyby a problémy s SlimeVR. Tyto matriky jsou schromažďovány prostřednictvím Sentry.io.
 settings-interface-behavior-error_tracking-label = Odeslat chyby vývojářům
 
@@ -731,6 +725,9 @@ settings-osc-vmc-mirror_tracking = Zrcadlení sledování
 settings-osc-vmc-mirror_tracking-description = Zrcadlit trakování horizontálně.
 settings-osc-vmc-mirror_tracking-label = Zrcadlení trackování
 
+## Common OSC settings
+
+
 ## Advanced settings
 
 settings-utils-advanced = Pokročilé
@@ -803,12 +800,12 @@ onboarding-reset_tutorial-skip = Přeskočit krok
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Klepněte na zvýrazněný snímač { $taps } krát pro resetování rotace.
-
+    
     Tím nastavíte snímače tak, aby směřovaly stejným směrem jako váš headset (HMD).
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Pro plný reset poklepejte { $taps } krát na zvýrazněný tracker.
-
+    
     Pro tuto funkci musíte stát v základní pozici (ruce podél těla). Před provedením resetu je zde 3 sekundová prodleva (lze nastavit).
     Tímto se kompletně resetuje pozice a rotace všech vašich trackerů, což by mělo vyřešit většinu problémů.
 
@@ -870,7 +867,6 @@ onboarding-connect_tracker-next = Připojil jsem všechny své trackery
 
 onboarding-calibration_tutorial = Kalibrační návod pro IMU
 onboarding-calibration_tutorial-subtitle = Tohle pomůže snížit drift trackerů!
-onboarding-calibration_tutorial-description = Po každém zapnutí trackerů je potřeba je na chvíli položit na rovný povrch, aby se zkalibrovaly. Stejný postup provedeme teď kliknutím na tlačítko "{ onboarding-calibration_tutorial-calibrate }". <b>Během kalibrace jimi prosím nehýbejte!</b>
 onboarding-calibration_tutorial-calibrate = Položil jsem trackery na stůl
 onboarding-calibration_tutorial-status-waiting = Čekám na tebe
 onboarding-calibration_tutorial-status-calibrating = Kalibruji
@@ -1101,7 +1097,7 @@ onboarding-scaled_proportions-manual_height-next_step = Uložit a pokračovat
 onboarding-scaled_proportions-manual_height-warning =
     Právě používáte manuální způsob nastavení škálování proporcí!
     <b>Tento režim je doporučen pouze pokud nepoužíváte HMD s SlimeVR</b>
-
+    
     Abyste mohli používat automatcky škálované proporce, prosím:
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Připojte VR headset
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Ujistěte se, že jsou vaše ovladače připojeny a správně přirazeny k vaším rukám
@@ -1168,68 +1164,8 @@ firmware_tool = Nástroj pro DIY firmwere
 firmware_tool-description = Umožní vám konfigurovat a flashovat vaše DIY trackery
 firmware_tool-not_available = Jejda, nástroj pro firmware není v momentální chvíli k dispozici, Vraťte se později!
 firmware_tool-not_compatible = Nástroj pro firmware není kompatibilní s touhle verzí serveru. Aktualizujte prosím svůj server.
-firmware_tool-board_step = Vyberte vaší desku
-firmware_tool-board_step-description = Vyberte jednu z desek uvedené níže.
-firmware_tool-board_pins_step = Zkontrolujte piny
-firmware_tool-board_pins_step-description =
-    Porsím ujistěte se že zvolené piny jsou správně.
-    Jestli jste postupovaly podle SlimeVR dokumentace, tak by měli být výchozí hodnoty správně
-firmware_tool-board_pins_step-enable_led = Povolit LED
-firmware_tool-board_pins_step-led_pin =
-    .label = LED pin
-    .placeholder = Vložte adresu pinu LED
-firmware_tool-board_pins_step-battery_type = Vyberte typ baterie
-firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = Externí baterie
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = Interní baterie
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = Vnitřní MCP3021
-firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = MCP3021
-firmware_tool-board_pins_step-battery_sensor_pin =
-    .label = Pin snímače baterie
-    .placeholder = Vložte adresu pinu na kterém je připojen snímač baterie
-firmware_tool-board_pins_step-battery_resistor =
-    .label = Odpor baterie (Ohmy)
-    .placeholder = Vložte hodnotu rezistoru baterie
-firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = Štít baterie R1 (v Ohmech)
-    .placeholder = Vložte hodnotu štítu baterie R1
-firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = Štít baterie R2 (v Ohmech)
-    .placeholder = Vložte hodnotu štítu baterie R2
-firmware_tool-add_imus_step = Deklarujte své IMU
-firmware_tool-add_imus_step-description =
-    Prosím přidejte IMU které má váš tracker
-    Pokud jste následovali dokumentaci SlimeVR, výchozí hodnoty by měli být správné
-firmware_tool-add_imus_step-imu_type-label = Typ IMU
-firmware_tool-add_imus_step-imu_type-placeholder = Vyberte typ IMU
-firmware_tool-add_imus_step-imu_rotation =
-    .label = Rotace IMU (stupně)
-    .placeholder = Úhel rotace IMU
-firmware_tool-add_imus_step-scl_pin =
-    .label = SCL Pin
-    .placeholder = Adresa SCL pinu
-firmware_tool-add_imus_step-sda_pin =
-    .label = SDA Pin
-    .placeholder = Adresa pinu SDA
-firmware_tool-add_imus_step-int_pin =
-    .label = INT Pin
-    .placeholder = Adresa pinu INT
-firmware_tool-add_imus_step-optional_tracker =
-    .label = Nepovinné trackery
-firmware_tool-add_imus_step-show_less = Zobrazit měné
-firmware_tool-add_imus_step-show_more = Zobrazit více
-firmware_tool-add_imus_step-add_more = Přidat další IMU
-firmware_tool-select_firmware_step = Vyberte verzi firmwaru
-firmware_tool-select_firmware_step-description = Prosím zvolte, jakou verzi firmwaru chcete použít
-firmware_tool-select_firmware_step-show-third-party =
-    .label = Zobrazit firmware třetích stran
 firmware_tool-flash_method_step = Metoda flashování
 firmware_tool-flash_method_step-description = Prosím zvolte metodu flashování, kterou chcete použít
-firmware_tool-flash_method_step-ota =
-    .label = OTA
-    .description = Použití metody "Over The Air" přenos přes vzduch. Vaše trackery použijí Wi-Fi pro aktualizaci jejich firmweru. Metoda funguje pouze na již nastavených a nakonfigorovaných trackerech.
-firmware_tool-flash_method_step-serial =
-    .label = Sériový
-    .description = Použíte USB kabel pro aktualizování vaších trackerů.
 firmware_tool-flashbtn_step = Stiskněte tlačítko bootu btn
 firmware_tool-flashbtn_step-description = Než přejdeme na další krok, je tady pár věcí které musíte udělat
 firmware_tool-flashbtn_step-board_SLIMEVR = Vypněte tracker, vyndejte z obalu (jestli v nějakém je), Připojte USB kabel k tomuto počítači a poté následujte jeden z kroků revize odpovídající k vaší verzi desky trackeru SlimeVR:
@@ -1257,9 +1193,6 @@ firmware_tool-flashing_step-exit = Odejít
 ## firmware tool build status
 
 firmware_tool-build-CREATING_BUILD_FOLDER = Vytváření složky pro sestavení
-firmware_tool-build-DOWNLOADING_FIRMWARE = Stahování firmweru
-firmware_tool-build-EXTRACTING_FIRMWARE = Extrahování firmweru
-firmware_tool-build-SETTING_UP_DEFINES = Konfigurování definicí
 firmware_tool-build-BUILDING = Sestavování firmweru
 firmware_tool-build-SAVING = Ukládání sestavení
 firmware_tool-build-DONE = Sestavení dokončeno
@@ -1307,7 +1240,7 @@ tray_or_exit_modal-title = Co chcete aby "křížek" udělal?
 # Multiline text
 tray_or_exit_modal-description =
     Tímto si zvolíte, zda chcete při stisknutí tlačítka pro zavření ukončit server, nebo jej pouze minimalizovat do systémové lišty.
-
+    
     Toto nastavení můžete později změnit v nastavení aplikace.
 tray_or_exit_modal-radio-exit = Ukončit při zavření
 tray_or_exit_modal-radio-tray = Minimalizovat
@@ -1362,7 +1295,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Rozpětí paží
 error_collection_modal-title = Můžeme sbírat chyby?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-
+    
     Tohle lze později změnit v sekci Chování v nastavení.
 error_collection_modal-confirm = Souhlasím
 error_collection_modal-cancel = Nesouhlasím

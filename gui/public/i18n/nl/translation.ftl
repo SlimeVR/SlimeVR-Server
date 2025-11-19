@@ -402,7 +402,6 @@ tracker-settings-name_section-label = Trackernaam
 tracker-settings-forget = Vergeet tracker
 tracker-settings-forget-description = Verwijdert de tracker van de SlimeVR Server en voorkomt dat deze verbinding kan maken totdat de server opnieuw wordt opgestart. De configuratie van de tracker blijft behouden.
 tracker-settings-forget-label = Vergeet tracker
-tracker-settings-update-unavailable = Kan niet worden bijgewerkt (DIY)
 tracker-settings-update-low-battery = Kan niet worden bijgewerkt. Batterij lager dan 50%
 tracker-settings-update-up_to_date = Up to date.
 tracker-settings-update-blocked = Update is niet beschikbaar. Er zijn geen andere versies beschikbaar.
@@ -550,7 +549,7 @@ settings-general-tracker_mechanics-drift_compensation-prediction-label = Voorspe
 settings-general-tracker_mechanics-drift_compensation_warning =
     <b>Waarschuwing:</b> Gebruik alleen driftcompensatie als je heel vaak
     moet resetten (elke ~5-10 minuten).
-
+    
     IMU's die vaak worden gereset, zijn onder ander:
     Joy-Cons, owoTrack en MPU's (zonder recente firmware).
 settings-general-tracker_mechanics-drift_compensation_warning-cancel = Annuleren
@@ -607,8 +606,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description =
 settings-general-fk_settings-leg_tweak-toe_snap-description = Toe-snap probeert de rotatie van uw voeten te raden als voet-trackers niet worden gebruikt.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Foot-plant roteert je voeten zodat ze evenwijdig aan de grond zijn wanneer ze in contact zijn.
 settings-general-fk_settings-leg_fk = Been tracking
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Schakel Montage Reset voor de voeten in door op je tenen te staan.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Voeten montage reset.
 settings-general-fk_settings-enforce_joint_constraints = Bewegingslimieten van het skelet
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Beperkingen toepassen
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Voorkomt dat gewrichten over hun limiet draaien
@@ -720,9 +717,6 @@ settings-general-interface-connected_trackers_warning-label = Waarschuwing voor 
 ## Behavior settings
 
 settings-interface-behavior = Gedrag
-settings-general-interface-dev_mode = Ontwikkelaarsmodus
-settings-general-interface-dev_mode-description = Deze modus kan nuttig zijn als je diepgaande gegevens nodig hebt of op een geavanceerd niveau wilt communiceren met aangesloten trackers.
-settings-general-interface-dev_mode-label = Ontwikkelaarsmodus
 settings-general-interface-use_tray = Minimaliseren naar systeem vak
 settings-general-interface-use_tray-description = Hiermee kun je het venster sluiten zonder de SlimeVR server te beëindigen, zodat je deze op de achtergrond kunt blijven gebruiken zonder dat de GUI in de weg zit.
 settings-general-interface-use_tray-label = Minimaliseren naar systeem vak
@@ -738,9 +732,9 @@ settings-general-interface-discord_presence-message =
 settings-interface-behavior-error_tracking = Foutverzameling via Sentry.io
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Geeft u toestemming voor het verzamelen van geanonimiseerde foutgegevens?</h1>
-
+    
     <b>We verzamelen geen persoonlijke informatie</b> zoals uw IP-adres of draadloze inloggegevens. SlimeVR hecht veel waarde aan uw privacy!
-
+    
     Om de beste gebruikerservaring te bieden, verzamelen we geanonimiseerde foutrapporten, prestatiestatistieken en informatie over het besturingssysteem. Dit helpt ons bij het detecteren van fouten en problemen met SlimeVR. Deze statistieken worden verzameld via Sentry.io.
 settings-interface-behavior-error_tracking-label = Stuur fouten naar de ontwikkelaars
 settings-interface-behavior-bvh_directory = Map om BVH-opnames op te slaan
@@ -861,6 +855,9 @@ settings-osc-vmc-mirror_tracking = Gespiegelde tracking
 settings-osc-vmc-mirror_tracking-description = De tracking horizontaal spiegelen.
 settings-osc-vmc-mirror_tracking-label = Gespiegelde tracking
 
+## Common OSC settings
+
+
 ## Advanced settings
 
 settings-utils-advanced = Geavanceerd
@@ -933,20 +930,20 @@ onboarding-reset_tutorial-skip = Stap overslaan
 # Cares about multiline
 onboarding-reset_tutorial-0 =
     Tik { $taps } keer op de gemarkeerde tracker om de yaw-reset te activeren.
-
+    
     Hierdoor staan de trackers in dezelfde richting als je HMD.
 # Cares about multiline
 onboarding-reset_tutorial-1 =
     Tik { $taps } keer op de gemarkeerde tracker om een volledige reset uit te voeren.
-
+    
     Hiervoor moet je staan (i-pose). Er is een vertraging van 3 seconden (instelbaar) voordat het daadwerkelijk gebeurt.
     Hiermee wordt de positie en rotatie van al je trackers volledig gereset. Dit zou de meeste problemen moeten oplossen.
 # Cares about multiline
 onboarding-reset_tutorial-2 =
     Tik { $taps } keer op de gemarkeerde tracker om de montage opnieuw in te stellen.
-
+    
     Montage-reset helpt bij hoe de trackers daadwerkelijk op je worden geplaatst, dus als je ze per ongeluk hebt verplaatst en de oriëntatie ervan voor een groot deel hebt veranderd, zal dit helpen.
-
+    
     Je moet in een houding staan alsof je aan het skiën bent, zoals wordt weergegeven in de Automatische montage wizard, je hebt een vertraging van 3 seconden (instelbaar) voordat deze wordt geactiveerd.
 
 ## Setup start
@@ -1002,10 +999,10 @@ onboarding-connect_serial-error-modal-no_serial_device_found-desc =
 # if $amount is 0 then we say "No trackers connected"
 onboarding-connect_tracker-connected_trackers =
     { $amount ->
-        [0] Geen trackers
-        [one] 1 tracker
-       *[other] { $amount } trackers
-    } verbonden
+        [0] Geen trackers verbonden
+        [one] 1 tracker verbonden
+       *[other] { $amount } trackers verbonden
+    }
 onboarding-connect_tracker-next = Ik heb al mijn trackers verbonden
 
 ## Tracker calibration tutorial
@@ -1039,10 +1036,10 @@ onboarding-assign_trackers-description = Laten we de bevesteging van je trackers
 # $assigned (Number) - Trackers that have been assigned a body part
 # $trackers (Number) - Trackers connected to the server
 onboarding-assign_trackers-assigned =
-    { $assigned } van { $trackers ->
-        [one] 1 tracker
-       *[other] { $trackers } trackers
-    } toegewezen
+    { $trackers ->
+        [one] { $assigned } van 1 tracker toegewezen
+       *[other] { $assigned } van { $trackers } trackers toegewezen
+    }
 onboarding-assign_trackers-advanced = Geavanceerde toewijzingslocaties weergeven
 onboarding-assign_trackers-next = Ik heb alle trackers toegewezen
 onboarding-assign_trackers-mirror_view = Gespiegelde weergave
@@ -1295,7 +1292,7 @@ onboarding-scaled_proportions-manual_height-next_step = Opslaan en doorgaan
 onboarding-scaled_proportions-manual_height-warning =
     Je gebruikt momenteel de handmatige manier om geschaalde verhoudingen in te stellen!
     <b>Deze modus wordt alleen aanbevolen als je geen HMD met SlimeVR gebruikt.</b>
-
+    
     Om de automatische geschaalde verhoudingen te kunnen gebruiken, doe het volgende:
 onboarding-scaled_proportions-manual_height-warning-no_hmd = Sluit een VR-headset aan
 onboarding-scaled_proportions-manual_height-warning-no_controllers = Zorg ervoor dat je controllers zijn verbonden en correct aan je handen zijn toegewezen
@@ -1384,68 +1381,8 @@ firmware_tool = DIY firmware-tool
 firmware_tool-description = Hiermee kan je uw DIY-trackers configureren en flashen
 firmware_tool-not_available = Oeps, de firmwaretool is momenteel niet beschikbaar. Kom later terug!
 firmware_tool-not_compatible = De firmwaretool is niet compatibel met deze versie van de server. Gelieve te updaten!
-firmware_tool-board_step = Selecteer je bord
-firmware_tool-board_step-description = Selecteer een van de onderstaande borden.
-firmware_tool-board_pins_step = Controleer de pinnen
-firmware_tool-board_pins_step-description =
-    Controleer of de geselecteerde pinnen correct zijn.
-    Als je de SlimeVR-documentatie hebt gevolgd, zouden de standaardwaarden correct moeten zijn
-firmware_tool-board_pins_step-enable_led = LED inschakelen
-firmware_tool-board_pins_step-led_pin =
-    .label = LED-pin
-    .placeholder = Voer het adres van de LED-pin in
-firmware_tool-board_pins_step-battery_type = Selecteer het batterijtype
-firmware_tool-board_pins_step-battery_type-BAT_EXTERNAL = Externe batterij
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL = Interne batterij
-firmware_tool-board_pins_step-battery_type-BAT_INTERNAL_MCP3021 = Interne MCP3021
-firmware_tool-board_pins_step-battery_type-BAT_MCP3021 = MCP3021
-firmware_tool-board_pins_step-battery_sensor_pin =
-    .label = Batterij sensor Pin
-    .placeholder = Voer het pin-adres van de batterij sensor in
-firmware_tool-board_pins_step-battery_resistor =
-    .label = Batterij Weerstand (Ohm)
-    .placeholder = Voer de waarde van de batterijweerstand in
-firmware_tool-board_pins_step-battery_shield_resistor-0 =
-    .label = Batterij Shield R1 (Ohm)
-    .placeholder = Voer de waarde in van Battery Shield R1
-firmware_tool-board_pins_step-battery_shield_resistor-1 =
-    .label = Batterij Shield R2 (Ohm)
-    .placeholder = Voer de waarde in van Battery Shield R2
-firmware_tool-add_imus_step = Declareer uw IMU's
-firmware_tool-add_imus_step-description =
-    Voeg de IMU's toe die je tracker heeft
-    Als je de SlimeVR-documentatie hebt gevolgd, zouden de standaardwaarden correct moeten zijn.
-firmware_tool-add_imus_step-imu_type-label = IMU-type
-firmware_tool-add_imus_step-imu_type-placeholder = Selecteer het type IMU
-firmware_tool-add_imus_step-imu_rotation =
-    .label = IMU-rotatie (graden)
-    .placeholder = Rotatie van de IMU
-firmware_tool-add_imus_step-scl_pin =
-    .label = SCL-pin
-    .placeholder = Pin-adres van SCL
-firmware_tool-add_imus_step-sda_pin =
-    .label = SDA-pin
-    .placeholder = Pin-adres van SDA
-firmware_tool-add_imus_step-int_pin =
-    .label = INT-pin
-    .placeholder = Pin-adres van INT
-firmware_tool-add_imus_step-optional_tracker =
-    .label = Optionele tracker
-firmware_tool-add_imus_step-show_less = Toon minder
-firmware_tool-add_imus_step-show_more = Toon meer
-firmware_tool-add_imus_step-add_more = Voeg meer IMU's toe
-firmware_tool-select_firmware_step = Selecteer de firmwareversie
-firmware_tool-select_firmware_step-description = Kies de versie van de firmware die je wilt gebruiken
-firmware_tool-select_firmware_step-show-third-party =
-    .label = Firmware van derden weergeven
 firmware_tool-flash_method_step = Flashing methode
 firmware_tool-flash_method_step-description = Kies de flashingsmethode die je wilt gebruiken
-firmware_tool-flash_method_step-ota =
-    .label = OTA
-    .description = Gebruik de draadloze methode. Je tracker zal de Wi-Fi gebruiken om de firmware bij te werken. Werkt alleen op reeds geconfigureerde trackers.
-firmware_tool-flash_method_step-serial =
-    .label = Serial
-    .description = Gebruik een USB-kabel om je tracker bij te werken.
 firmware_tool-flashbtn_step = Druk op de bootknop
 firmware_tool-flashbtn_step-description = Voordat u naar de volgende stap gaat, zijn er een paar dingen die u moet doen.
 firmware_tool-flashbtn_step-board_SLIMEVR = Zet de tracker uit, verwijder de behuizing (indien aanwezig), verbind een USB-kabel met deze computer en voer vervolgens een van de volgende stappen uit, afhankelijk van de revisie van uw SlimeVR-board:
@@ -1474,9 +1411,6 @@ firmware_tool-flashing_step-exit = Sluit
 ## firmware tool build status
 
 firmware_tool-build-CREATING_BUILD_FOLDER = De buildmap maken
-firmware_tool-build-DOWNLOADING_FIRMWARE = Firmware wordt gedownload
-firmware_tool-build-EXTRACTING_FIRMWARE = Firmware wordt uitgepakt
-firmware_tool-build-SETTING_UP_DEFINES = Configureren van de definities
 firmware_tool-build-BUILDING = Firmware wordt gebouwd
 firmware_tool-build-SAVING = De build opslaan
 firmware_tool-build-DONE = Build voltooid
@@ -1525,7 +1459,7 @@ tray_or_exit_modal-title = Wat is de actie van de sluitknop?
 # Multiline text
 tray_or_exit_modal-description =
     Hiermee kun je kiezen wat er gebeurt als je op de sluitknop klikt: het programma afsluiten of minimaliseren naar het systeemvak.
-
+    
     Deze instelling kun je later altijd nog wijzigen in de interface instellingen!
 tray_or_exit_modal-radio-exit = Afsluiten bij sluiten
 tray_or_exit_modal-radio-tray = Minimaliseren naar systeemvak
@@ -1584,7 +1518,7 @@ vrc_config-avatar_measurement_type-ARM_SPAN = Arm Span
 error_collection_modal-title = Kunnen we fouten verzamelen?
 error_collection_modal-description_v2 =
     { settings-interface-behavior-error_tracking-description_v2 }
-
+    
     U kunt deze instelling later wijzigen in de sectie Gedrag van de instellingenpagina.
 error_collection_modal-confirm = Ik ben akkoord
 error_collection_modal-cancel = Ik wil het niet
