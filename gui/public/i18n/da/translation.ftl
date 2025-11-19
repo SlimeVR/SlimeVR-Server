@@ -1,6 +1,3 @@
-### SlimeVR complete GUI translations
-
-
 # Please developers (not translators) don't reuse a key inside another key
 # or concat text with a translation string in the code, use the appropriate
 # features like variables and selectors in each appropriate case!
@@ -50,14 +47,17 @@ body_part-LEFT_UPPER_LEG = Venstre lår
 body_part-LEFT_LOWER_LEG = Venstre ankel
 body_part-LEFT_FOOT = Venstre fod
 
+## BoardType
+
+
 ## Proportions
 
 skeleton_bone-NONE = Ingen
 skeleton_bone-HEAD = Hoved skift
 skeleton_bone-NECK = Hals længde
 skeleton_bone-torso_group = Torso Længde
-skeleton_bone-CHEST = Bryst Længde
 skeleton_bone-CHEST_OFFSET = Bryst Juster
+skeleton_bone-CHEST = Bryst Længde
 skeleton_bone-WAIST = Taljelængde
 skeleton_bone-HIP = Hoftelængde
 skeleton_bone-HIP_OFFSET = Hofte Juster
@@ -103,10 +103,13 @@ navbar-mounting = Montage Kalibrering
 navbar-onboarding = Opsætningsguide
 navbar-settings = Indstillinger
 
-## Bounding volume hierarchy recording
+## Biovision hierarchy recording
 
 bvh-start_recording = Optag BVH
 bvh-recording = Optager...
+
+## Tracking pause
+
 
 ## Widget: Overlay settings
 
@@ -117,6 +120,9 @@ widget-overlay-is_mirrored_label = Vis Overlejring som Spejl
 ## Widget: Drift compensation
 
 widget-drift_compensation-clear = Klar afdriftskompensation
+
+## Widget: Clear Reset Mounting
+
 
 ## Widget: Developer settings
 
@@ -134,7 +140,9 @@ widget-developer_mode-more_info = Mere info
 widget-imu_visualizer = Rotation
 widget-imu_visualizer-rotation_raw = Rå
 widget-imu_visualizer-rotation_preview = Forhåndsvisning
-widget-imu_visualizer-rotation_hide = Skjul
+
+## Widget: Skeleton Visualizer
+
 
 ## Tracker status
 
@@ -279,10 +287,6 @@ settings-general-steamvr-description =
     Nyttig til spil eller apps, der kun understøtter bestemte trackere.
 settings-general-steamvr-trackers-waist = Talje
 settings-general-steamvr-trackers-chest = Bryst
-settings-general-steamvr-trackers-feet = Fødder
-settings-general-steamvr-trackers-knees = Knæ
-settings-general-steamvr-trackers-elbows = Albuer
-settings-general-steamvr-trackers-hands = Hænder
 
 ## Tracker mechanics
 
@@ -326,14 +330,7 @@ settings-general-fk_settings-leg_fk = Bensporing
 settings-general-fk_settings-arm_fk = Arm sporing
 settings-general-fk_settings-arm_fk-description = Tving arme til spore fra HMD, selvom positionshånddata er tilgængelige.
 settings-general-fk_settings-arm_fk-force_arms = Tving arme fra HMD
-settings-general-fk_settings-skeleton_settings = Indstillinger for skelet
 settings-general-fk_settings-skeleton_settings-description = Slå skeletindstillinger til eller fra. Det anbefales at lade disse være på.
-settings-general-fk_settings-skeleton_settings-extended_spine = Udvidet rygsøjle
-settings-general-fk_settings-skeleton_settings-extended_pelvis = Forlænget pelvis
-settings-general-fk_settings-skeleton_settings-extended_knees = Forlænget knæ
-settings-general-fk_settings-vive_emulation-title = Vive emulering
-settings-general-fk_settings-vive_emulation-description = Emuler de taljetrackerproblemer, som Vive-trackere har. Dette er en joke og gør sporing værre.
-settings-general-fk_settings-vive_emulation-label = Aktivér Vive-emulering
 
 ## Gesture control settings (tracker tapping)
 
@@ -347,12 +344,18 @@ settings-general-gesture_control-taps =
     }
 settings-general-gesture_control-yawResetEnabled = Aktivér tryk for at yaw resette
 
-## Interface settings
+## Appearance settings
 
-settings-general-interface = Brugergrænseflade
 settings-general-interface-dev_mode = Udvikler-tilstand
 settings-general-interface-dev_mode-description = Denne tilstand kan være nyttig, hvis du har brug for dybdegående data eller for at interagere med tilsluttede trackere på et mere avanceret niveau.
 settings-general-interface-dev_mode-label = Udvikler-tilstand
+settings-general-interface-theme = Farvetema
+settings-general-interface-lang = Vælg sprog
+settings-general-interface-lang-description = Skift det standardsprog, du vil bruge.
+settings-general-interface-lang-placeholder = Vælg det sprog, der skal bruges
+
+## Notification settings
+
 settings-general-interface-serial_detection = Seriel enhedsregistrering
 settings-general-interface-serial_detection-description = Denne mulighed viser en pop-up, hver gang du tilslutter en ny seriel enhed, der kan være en tracker. Det hjælper med at forbedre opsætningsprocessen for en tracker.
 settings-general-interface-serial_detection-label = Seriel enhedsregistrering
@@ -360,10 +363,9 @@ settings-general-interface-feedback_sound = Feedback lyd
 settings-general-interface-feedback_sound-description = Denne indstilling afspiller en lyd, når du nulstiller
 settings-general-interface-feedback_sound-label = Feedback lyd
 settings-general-interface-feedback_sound-volume = Feedback lydstyrke
-settings-general-interface-theme = Farvetema
-settings-general-interface-lang = Vælg sprog
-settings-general-interface-lang-description = Skift det standardsprog, du vil bruge.
-settings-general-interface-lang-placeholder = Vælg det sprog, der skal bruges
+
+## Behavior settings
+
 
 ## Serial settings
 
@@ -408,14 +410,9 @@ settings-osc-router-network-address-placeholder = IPV4-adresse
 ## OSC VRChat settings
 
 settings-osc-vrchat = VRChat OSC trackere
-# This cares about multilines
-settings-osc-vrchat-description =
-    Skift VRChat-specifikke indstillinger for at modtage HMD-data og sende
-    trackerdata til FBT uden SteamVR (f.eks. Quest standalone).
 settings-osc-vrchat-enable = Aktiver
 settings-osc-vrchat-enable-label = Aktiver
 settings-osc-vrchat-network = Netværksporte
-settings-osc-vrchat-network-description = Indstil portene til at lytte og sende data til VRChat.
 settings-osc-vrchat-network-port_in =
     .label = Port ind
     .placeholder = Port ind (standard: 9001)
@@ -423,7 +420,6 @@ settings-osc-vrchat-network-port_out =
     .label = Port ud
     .placeholder = Port ud (standard: 9000)
 settings-osc-vrchat-network-address = Netværksadresse
-settings-osc-vrchat-network-address-description = Vælg hvilken adresse der skal sende data til VRChat (tjek dine Wi-Fi-indstillinger på din enhed).
 settings-osc-vrchat-network-address-placeholder = VRChat ip-adresse
 settings-osc-vrchat-network-trackers = Trackere
 settings-osc-vrchat-network-trackers-description = Skift afsendelse af specifikke trackere via OSC.
@@ -456,8 +452,13 @@ settings-osc-vmc-network-address-description = Vælg hvilken adresse du vil send
 settings-osc-vmc-network-address-placeholder = IPV4-adresse
 settings-osc-vmc-vrm = VRM-model
 settings-osc-vmc-vrm-description = Indlæs en VRM-model for at tillade hovedanker og muliggøre en højere kompatibilitet med andre applikationer
-settings-osc-vmc-vrm-model_unloaded = Ingen model indlæst
 settings-osc-vmc-vrm-file_select = Træk og slip en model, du vil bruge, eller <u>gennemse</u>
+
+## Common OSC settings
+
+
+## Advanced settings
+
 
 ## Setup/onboarding menu
 
@@ -491,7 +492,6 @@ onboarding-wifi_creds-password =
 
 onboarding-reset_tutorial-back = Gå tilbage til monteringskalibrering
 onboarding-reset_tutorial = Start forfra
-onboarding-reset_tutorial-description = Denne funktion er ikke færdig, bare tryk på fortsæt
 
 ## Setup start
 
@@ -515,8 +515,6 @@ onboarding-done-close = Luk opsætning
 
 onboarding-connect_tracker-back = Gå tilbage til Wi-Fi-oplysninger
 onboarding-connect_tracker-title = Tilslut trackere
-onboarding-connect_tracker-description-p0 = Nu til den sjove del, forbind alle trackere!
-onboarding-connect_tracker-description-p1 = Du skal blot tilslutte alle, der ikke er tilsluttet endnu, via en USB-port.
 onboarding-connect_tracker-issue-serial = Jeg har problemer med at oprette forbindelse!
 onboarding-connect_tracker-usb = USB-tracker
 onboarding-connect_tracker-connection_status-none = Leder efter trackere
@@ -543,6 +541,9 @@ onboarding-connect_tracker-next = Jeg har tilsluttet alle mine trackere
 ## Tracker calibration tutorial
 
 
+## Tracker assignment tutorial
+
+
 ## Tracker assignment setup
 
 onboarding-assign_trackers-back = Gå tilbage til Wi-Fi-oplysninger
@@ -566,12 +567,8 @@ onboarding-assign_trackers-next = Jeg har tildelt alle trackerene
 
 onboarding-choose_mounting = Hvilken monteringskalibreringsmetode vil du bruge?
 onboarding-choose_mounting-auto_mounting = Automatisk montering
-# Italized text
-onboarding-choose_mounting-auto_mounting-subtitle = Anbefalet
 onboarding-choose_mounting-auto_mounting-description = Dette registrerer automatisk monteringsretningerne til alle dine trackere fra 2 stillinger
 onboarding-choose_mounting-manual_mounting = Manuel montering
-# Italized text
-onboarding-choose_mounting-manual_mounting-subtitle = Hvis du ved hvad du laver
 onboarding-choose_mounting-manual_mounting-description = Dette giver dig mulighed for manuelt at vælge monteringsretningen for hver tracker
 
 ## Tracker manual mounting setup
@@ -592,12 +589,7 @@ onboarding-automatic_mounting-put_trackers_on-title = Tag dine trackere på
 onboarding-automatic_mounting-put_trackers_on-description = For at kalibrere rotationer bruger vi de trackere, du lige har tildelt. Tag alle dine trackere på du kan se hvilke der er hvilke i figuren til højre.
 onboarding-automatic_mounting-put_trackers_on-next = Jeg har alle mine trackere på
 
-## Tracker proportions method choose
-
-# Italized text
-onboarding-choose_proportions-auto_proportions-subtitle = Anbefalet
-
-## Tracker manual proportions setup
+## Tracker manual proportions setupa
 
 
 ## Tracker automatic proportions setup
@@ -620,6 +612,48 @@ onboarding-automatic_proportions-verify_results-redo = prøv igen
 onboarding-automatic_proportions-done-title = Krop målt og gemt.
 onboarding-automatic_proportions-done-description = Kalibreringen af dine kropsproportioner er fuldført!
 
+## Tracker scaled proportions setup
+
+
+## Tracker scaled proportions reset
+
+
+## Stay Aligned setup
+
+
 ## Home
 
 home-no_trackers = Ingen trackere registreret eller tildelt
+
+## Trackers Still On notification
+
+
+## Status system
+
+
+## Firmware tool globals
+
+
+## Firmware tool Steps
+
+
+## firmware tool build status
+
+
+## Firmware update status
+
+
+## Dedicated Firmware Update Page
+
+
+## Tray Menu
+
+
+## First exit modal
+
+
+## Unknown device modal
+
+
+## Error collection consent modal
+

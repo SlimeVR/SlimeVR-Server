@@ -18,6 +18,7 @@ import dev.slimevr.posestreamer.BVHRecorder
 import dev.slimevr.protocol.ProtocolAPI
 import dev.slimevr.protocol.rpc.settings.RPCSettingsHandler
 import dev.slimevr.reset.ResetHandler
+import dev.slimevr.reset.ResetTimerManager
 import dev.slimevr.reset.resetTimer
 import dev.slimevr.serial.ProvisioningHandler
 import dev.slimevr.serial.SerialHandler
@@ -102,6 +103,7 @@ class VRServer @JvmOverloads constructor(
 	@JvmField
 	val protocolAPI: ProtocolAPI
 	private val timer = Timer()
+	private val resetTimerManager = ResetTimerManager()
 	val fpsTimer = NanoTimer()
 
 	@JvmField
@@ -342,7 +344,7 @@ class VRServer @JvmOverloads constructor(
 
 	fun scheduleResetTrackersFull(resetSourceName: String?, delay: Long, bodyParts: List<Int> = ArrayList()) {
 		resetTimer(
-			timer,
+			resetTimerManager,
 			delay,
 			onTick = { progress ->
 				resetHandler.sendStarted(ResetType.Full, bodyParts, progress, delay.toInt())
@@ -350,7 +352,7 @@ class VRServer @JvmOverloads constructor(
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersFull(resetSourceName, bodyParts)
-					resetHandler.sendFinished(ResetType.Full, bodyParts)
+					resetHandler.sendFinished(ResetType.Full, bodyParts, delay.toInt())
 				}
 			},
 		)
@@ -358,7 +360,7 @@ class VRServer @JvmOverloads constructor(
 
 	fun scheduleResetTrackersYaw(resetSourceName: String?, delay: Long, bodyParts: List<Int> = TrackerUtils.allBodyPartsButFingers) {
 		resetTimer(
-			timer,
+			resetTimerManager,
 			delay,
 			onTick = { progress ->
 				resetHandler.sendStarted(ResetType.Yaw, bodyParts, progress, delay.toInt())
@@ -366,7 +368,7 @@ class VRServer @JvmOverloads constructor(
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersYaw(resetSourceName, bodyParts)
-					resetHandler.sendFinished(ResetType.Yaw, bodyParts)
+					resetHandler.sendFinished(ResetType.Yaw, bodyParts, delay.toInt())
 				}
 			},
 		)
@@ -374,7 +376,7 @@ class VRServer @JvmOverloads constructor(
 
 	fun scheduleResetTrackersMounting(resetSourceName: String?, delay: Long, bodyParts: List<Int>? = null) {
 		resetTimer(
-			timer,
+			resetTimerManager,
 			delay,
 			onTick = { progress ->
 				resetHandler.sendStarted(ResetType.Mounting, bodyParts, progress, delay.toInt())
@@ -382,7 +384,7 @@ class VRServer @JvmOverloads constructor(
 			onComplete = {
 				queueTask {
 					humanPoseManager.resetTrackersMounting(resetSourceName, bodyParts)
-					resetHandler.sendFinished(ResetType.Mounting, bodyParts)
+					resetHandler.sendFinished(ResetType.Mounting, bodyParts, delay.toInt())
 				}
 			},
 		)

@@ -355,7 +355,6 @@ tracker-settings-name_section-label = Sekiklio pavadinimas
 tracker-settings-forget = Pamiršti sekiklį
 tracker-settings-forget-description = Tai pašalins sekiklį iš SlimeVR serverio ir nebeleis jam prisijungti, kol neperkrausite serverį. Sekiklio nustatymai nebus prarasti.
 tracker-settings-forget-label = Pamiršti sekiklį
-tracker-settings-update-unavailable = Neįmanoma atnaujinti (DIY)
 tracker-settings-update-low-battery = Negalima atnaujinti, baterijos lygis žemesnis nei 50%
 tracker-settings-update-up_to_date = Atnaujinta
 tracker-settings-update-available = Prieinamas atnaujinimas: { $versionName }
@@ -541,8 +540,6 @@ settings-general-fk_settings-leg_tweak-floor_clip-description = Neleidžia pėdo
 settings-general-fk_settings-leg_tweak-toe_snap-description = Bando atspėti pėdų pasukimą, jei nenaudojate pėdų sekiklius.
 settings-general-fk_settings-leg_tweak-foot_plant-description = Pasuka pėdas taip, kad jos būtų lygiagrečios grindims, kai stovite.
 settings-general-fk_settings-leg_fk = Kojų sekimas
-settings-general-fk_settings-leg_fk-reset_mounting_feet-description = Įjungia pėdų tvirtinimo atstatymą atsistojant ant pirštų galų.
-settings-general-fk_settings-leg_fk-reset_mounting_feet = Pėdų tvirtinimo atstatymas
 settings-general-fk_settings-enforce_joint_constraints = Skeletiniai ribojimai
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Taikyti ribojimus
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Neleidžia sąnariams pasisukti už jų fiziologinės ribos.
@@ -593,6 +590,9 @@ settings-general-gesture_control-trackers =
 
 
 ## VMC OSC settings
+
+
+## Common OSC settings
 
 
 ## Advanced settings

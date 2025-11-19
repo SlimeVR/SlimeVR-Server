@@ -102,8 +102,8 @@ class RPCResetHandler(var rpcHandler: RPCHandler, var api: ProtocolAPI) : ResetL
 		sendResetStatusResponse(resetType, ResetStatus.STARTED, bodyParts, progress, duration)
 	}
 
-	override fun onFinished(resetType: Int, bodyParts: List<Int>?) {
-		sendResetStatusResponse(resetType, ResetStatus.FINISHED, bodyParts)
+	override fun onFinished(resetType: Int, bodyParts: List<Int>?, duration: Int) {
+		sendResetStatusResponse(resetType, ResetStatus.FINISHED, bodyParts, duration, duration)
 	}
 
 	fun forAllListeners(action: Consumer<in GenericConnection?>?) {
