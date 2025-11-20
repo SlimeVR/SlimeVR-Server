@@ -615,6 +615,13 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 		 */
 		private val AXES_OFFSET = fromRotationVector(-FastMath.HALF_PI, 0f, 0f)
 		private const val RESET_SOURCE_NAME = "TrackerServer"
+
+		@ExperimentalStdlibApi
+		private val hexFormat = HexFormat {
+			bytes.byteSeparator = ","
+		}
+
+		@OptIn(ExperimentalStdlibApi::class)
 		private fun packetToString(packet: DatagramPacket?): String {
 			val sb = StringBuilder()
 			sb.append("DatagramPacket{")
@@ -628,7 +635,7 @@ class TrackersUDPServer(private val port: Int, name: String, private val tracker
 				sb.append(packet.length)
 				sb.append(',')
 				sb.append('{')
-				sb.append(HexFormat.ofDelimiter(",").formatHex(packet.data, 0, packet.length))
+				sb.append(packet.data.toHexString(0, packet.length, hexFormat))
 				sb.append('}')
 			}
 			sb.append('}')
