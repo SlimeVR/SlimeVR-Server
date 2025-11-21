@@ -95,6 +95,7 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = Carte de développement SlimeVR
 board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
@@ -624,6 +625,7 @@ settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Cor
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Corriger les rotations des articulations lorsqu'elles dépassent leur limite
 settings-general-fk_settings-ik = Données de position
 settings-general-fk_settings-ik-use_position = Utiliser les données de position
+settings-general-fk_settings-ik-use_position-description = Permet d'utiliser les données de position des capteurs qui les fournissent. Assurez-vous de faire une réinitialisation complète et de recalibrer en jeu lorsque vous activez cette option.
 settings-general-fk_settings-arm_fk = Capture des bras
 settings-general-fk_settings-arm_fk-description = Changez la façon dont les bras sont captés.
 settings-general-fk_settings-arm_fk-force_arms = Forcer les bras en provenance du casque VR
@@ -776,6 +778,11 @@ settings-serial-auto_dropdown_item = Automatique
 settings-serial-get_wifi_scan = Obtenir scan WiFi
 settings-serial-file_type = Texte brut
 settings-serial-save_logs = Enregistrer dans un fichier
+settings-serial-send_command = Envoyer
+settings-serial-send_command-placeholder = Commande...
+settings-serial-send_command-warning = <b>Avertissement:</b> Exécuter des commandes en série peut entraîner une perte de données ou rendre les capteurs inutilisables.
+settings-serial-send_command-warning-ok = Je sais ce que je fais
+settings-serial-send_command-warning-cancel = Annuler
 
 ## OSC router settings
 
@@ -873,6 +880,8 @@ settings-osc-vmc-mirror_tracking-label = Inverser les mouvements
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = Les ports d’entrée et de sortie du routeur OSC ne peuvent pas être les mêmes !
+settings-osc-common-network-port_banned_error = Le port { $port } ne peut pas être utilisé !
 
 ## Advanced settings
 
@@ -1199,6 +1208,7 @@ onboarding-automatic_mounting-preparation-v2-step-2 = 3. Maintenez la position j
 onboarding-automatic_mounting-put_trackers_on-title = Enfilez vos capteurs
 onboarding-automatic_mounting-put_trackers_on-description = Pour calibrer l'alignement, nous allons utiliser les capteurs que vous venez d'attribuer.
 onboarding-automatic_mounting-put_trackers_on-next = J'ai tous mes capteurs
+onboarding-automatic_mounting-return-home = Terminé
 
 ## Tracker manual proportions setupa
 
@@ -1398,8 +1408,26 @@ firmware_tool = Outil de micrologiciel DIY
 firmware_tool-description = Vous permet de configurer et de flash vos capteurs DIY
 firmware_tool-not_available = Oups, l'outil de micrologiciel n'est pas disponible en ce moment. Revenez plus tard !
 firmware_tool-not_compatible = L'outil de micrologiciel n'est pas compatible avec cette version de serveur. Veuillez mettre à jour votre serveur !
+firmware_tool-select_source = Sélectionnez le micrologiciel à flasher
+firmware_tool-select_source-description = Sélectionnez le micrologiciel que vous souhaitez flasher sur votre carte
+firmware_tool-select_source-error = Impossible de charger les sources
+firmware_tool-select_source-board_type = Type de carte
+firmware_tool-select_source-firmware = Source du micrologiciel
+firmware_tool-select_source-version = Version du micrologiciel
+firmware_tool-select_source-official = Officiel
+firmware_tool-select_source-dev = Dev
+firmware_tool-board_defaults = Configurez votre carte
+firmware_tool-board_defaults-description = Réglez les broches ou réglages pour votre matériel
+firmware_tool-board_defaults-add = Ajouter
+firmware_tool-board_defaults-reset = Réinitialisation à la valeur par défaut
+firmware_tool-board_defaults-error-required = Champ requis
+firmware_tool-board_defaults-error-format = Format invalide
+firmware_tool-board_defaults-error-format-number = Pas un nombre
 firmware_tool-flash_method_step = Méthode de flash
 firmware_tool-flash_method_step-description = Veuillez sélectionner la méthode de flash que vous souhaitez utiliser
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = Utilisez la méthode « over-the-air ». Votre capteur utilisera le Wi-Fi pour mettre à jour son microgiciel. Cette méthode ne fonctionne que pour les capteurs déjà configurés.
 firmware_tool-flashbtn_step = Appuyez sur le bouton boot
 firmware_tool-flashbtn_step-description = Avant de passer à l'étape suivante, il y a quelques choses que vous devez faire
 firmware_tool-flashbtn_step-board_SLIMEVR = Éteignez le capteur, retirez le boîtier (s'il y en a un), connectez un câble USB à votre ordinateur, puis effectuez l'une des étapes suivantes en fonction de la révision de votre carte SlimeVR :
