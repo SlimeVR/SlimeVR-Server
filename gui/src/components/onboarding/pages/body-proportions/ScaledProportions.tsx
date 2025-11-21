@@ -70,9 +70,12 @@ export function ScaledProportionsPage() {
           )}
           <div className="flex min-h-0">
             <Button onClick={start} variant='primary'>Start</Button>
-            <pre>
+            {status && <pre className='whitespace-pre'>
               {JSON.stringify(status)}
-            </pre>
+
+              Height: {status.userHeight / 0.936}
+              Status: {UserHeightCalibrationStatus[status.status]}
+            </pre>}
             {/* <StepperSlider
               variant={state.alonePage ? 'alone' : 'onboarding'}
               steps={

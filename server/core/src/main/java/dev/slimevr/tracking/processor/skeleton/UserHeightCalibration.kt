@@ -5,11 +5,14 @@ import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
+import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import org.apache.commons.collections4.queue.CircularFifoQueue
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
 import solarxr_protocol.rpc.UserHeightRecordingStatusResponseT
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.math.PI
+import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -51,17 +54,42 @@ fun calculatePositionStdDev(positionSamples: Collection<Vector3>): Float {
 	return sqrt(variance)
 }
 
+// Helper function to rotate a vector by a quaternion
+fun applyRotation(q: Quaternion, v: Vector3): Vector3 {
+	val vQuat = Quaternion(0f, v.x, v.y, v.z)
+	val qConj = q.conj()
+	val rotatedQuat = q * vQuat * qConj
+	return Vector3(rotatedQuat.x, rotatedQuat.y, rotatedQuat.z)
+}
+
+/**
+ * Checks if the HMD is level (pitch and roll are within threshold) by comparing
+ * its world-space UP vector with the World UP vector (0, 1, 0).
+ */
+fun isHmdLevel(hmd: Tracker): Boolean {
+	val q = hmd.getRotation()
+
+	val localUp = Vector3(0f, 1f, 0f)
+	val worldHmdUp = applyRotation(q, localUp)
+	val worldUp = Vector3(0f, 1f, 0f)
+
+	val dotProduct = worldHmdUp.dot(worldUp)
+	return dotProduct >= UserHeightCalibration.HEAD_ANGLE_THRESHOLD
+}
+
 interface UserHeightCalibrationListener {
 	fun onStatusChange(status: UserHeightRecordingStatusResponseT)
 }
 
 class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPoseManager) {
 	var status = UserHeightCalibrationStatus.NONE
-	var canDoFloorHeight = false // Flag updated in checkTrackers()
+	var canDoFloorHeight = false
 
 	var currentHeight = 0f
 	var currentFloorLevel = 0f
 	var lastHeightChange = 0f
+
+	var startTime = 0f
 
 	private val hmdPositionSamples: CircularFifoQueue<Vector3> = CircularFifoQueue(MAX_SAMPLES)
 	private var heightStableStartTime: Float? = null
@@ -75,6 +103,10 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 	private val handTrackers: MutableList<Tracker> = mutableListOf()
 
 	fun start() {
+		clear()
+
+		startTime = System.nanoTime().toFloat()
+
 		if (canDoFloorHeight) {
 			status = UserHeightCalibrationStatus.RECORDING_FLOOR
 			currentFloorLevel = Float.MAX_VALUE
@@ -83,15 +115,22 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 			currentFloorLevel = 0f
 		}
 
+		sendStatusUpdate()
+	}
+
+	fun clear() {
+		status = UserHeightCalibrationStatus.NONE
 		hmdPositionSamples.clear()
 		floorPositionSamples.clear()
 		heightStableStartTime = null
 		floorStableStartTime = null
 		currentHeight = 0f
-		sendStatusUpdate()
+		lastHeightChange = 0f
+		startTime = 0f
 	}
 
 	init {
+		clear()
 		checkTrackers()
 	}
 
@@ -103,8 +142,8 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 					it.trackerPosition == TrackerPosition.LEFT_HAND ||
 						it.trackerPosition == TrackerPosition.RIGHT_HAND
 					) &&
-					!it.isInternal
-				it.hasPosition &&
+					!it.isInternal &&
+					it.hasPosition &&
 					it.status == TrackerStatus.OK
 			},
 		)
@@ -126,15 +165,29 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 	fun tick() {
 		val currentTime = System.nanoTime().toFloat()
 
-		if (status == UserHeightCalibrationStatus.RECORDING_FLOOR) {
-			recordFloor(currentTime)
-		} else if (status == UserHeightCalibrationStatus.RECORDING_HEIGHT) {
-			recordHeight(currentTime)
+		if (active && currentTime - startTime > TIMEOUT_TIME) {
+			status = UserHeightCalibrationStatus.ERROR_TIMEOUT
+			sendStatusUpdate()
+
+			return
 		}
 
-		if (lastHeightChange != 0f && currentTime - lastHeightChange >= UPDATE_DEBOUNCE) {
-			sendStatusUpdate()
-			lastHeightChange = 0f
+		when (status) {
+			UserHeightCalibrationStatus.RECORDING_FLOOR -> {
+				recordFloor(currentTime)
+			}
+
+			UserHeightCalibrationStatus.WAITING_FOR_RISE -> {
+				waitForHmdRise()
+			}
+
+			UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK -> {
+				checkLevelingGate(currentTime)
+			}
+
+			UserHeightCalibrationStatus.RECORDING_HEIGHT -> {
+				recordHeightAndCheckStability(currentTime)
+			}
 		}
 	}
 
@@ -142,12 +195,17 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		val lowestTracker = handTrackers.minByOrNull { it.position.y }
 		val currentLowestPos = lowestTracker?.position ?: return
 
+		if (currentLowestPos.y > MAX_FLOOR_Y) {
+			floorStableStartTime = null
+			return
+		}
+
 		currentFloorLevel = minOf(currentFloorLevel, currentLowestPos.y)
 
 		floorPositionSamples.add(currentLowestPos)
 
 		if (floorPositionSamples.isAtFullCapacity) {
-			val isStable = checkFloorStability()
+			val isStable = calculatePositionStdDev(floorPositionSamples) <= CONTROLLER_POSITION_STD_DEV_THRESHOLD
 
 			if (isStable) {
 				if (floorStableStartTime == null) {
@@ -156,7 +214,7 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 
 				val stableDuration = currentTime - floorStableStartTime!!
 				if (stableDuration >= CONTROLLER_STABILITY_DURATION) {
-					status = UserHeightCalibrationStatus.RECORDING_HEIGHT
+					status = UserHeightCalibrationStatus.WAITING_FOR_RISE
 					sendStatusUpdate()
 				}
 			} else {
@@ -165,7 +223,21 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		}
 	}
 
-	private fun recordHeight(currentTime: Float) {
+	private fun waitForHmdRise() {
+		val localHmd = hmd ?: return
+
+		val relativeHmdY = localHmd.position.y - currentFloorLevel
+
+		if (relativeHmdY >= HMD_RISE_THRESHOLD) {
+			status = UserHeightCalibrationStatus.RECORDING_HEIGHT
+
+			hmdPositionSamples.clear()
+			heightStableStartTime = null
+			sendStatusUpdate()
+		}
+	}
+
+	private fun recordHeightAndCheckStability(currentTime: Float) {
 		val localHmd = hmd ?: return
 
 		val currentPos = localHmd.position
@@ -174,13 +246,22 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		val newHeight = max(currentHeight, relativeY)
 		if (newHeight != currentHeight) {
 			currentHeight = newHeight
-			lastHeightChange = currentTime
+			sendStatusUpdate()
 		}
 
 		hmdPositionSamples.add(currentPos)
 
+		if (!isHmdLevel(localHmd)) {
+			status = UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK
+			heightStableStartTime = null // Reset stability time
+			sendStatusUpdate()
+			return
+		}
+
 		if (hmdPositionSamples.isAtFullCapacity) {
-			val isStable = checkHeightStability()
+			val std = calculatePositionStdDev(hmdPositionSamples)
+			println("STD $std")
+			val isStable = std <= POSITION_STD_DEV_THRESHOLD
 
 			if (isStable) {
 				if (heightStableStartTime == null) {
@@ -189,7 +270,14 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 
 				val stableDuration = currentTime - heightStableStartTime!!
 				if (stableDuration >= HEAD_STABILITY_DURATION) {
-					status = UserHeightCalibrationStatus.DONE
+					status = if (currentHeight < 1.5f) {
+						UserHeightCalibrationStatus.ERROR_TOO_SMALL
+					} else if (currentHeight > 1.936f) {
+						UserHeightCalibrationStatus.ERROR_TOO_HIGH
+					} else {
+						UserHeightCalibrationStatus.DONE
+					}
+
 					sendStatusUpdate()
 				}
 			} else {
@@ -198,14 +286,19 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		}
 	}
 
-	private fun checkFloorStability(): Boolean {
-		val posStdDev = calculatePositionStdDev(floorPositionSamples)
-		return posStdDev <= CONTROLLER_POSITION_STD_DEV_THRESHOLD
-	}
+	/**
+	 * Called when status is WAITING_FOR_FW_LOOK.
+	 * Only checks if the HMD has become level to transition back to RECORDING_HEIGHT.
+	 */
+	private fun checkLevelingGate(currentTime: Float) {
+		val localHmd = hmd ?: return
 
-	private fun checkHeightStability(): Boolean {
-		val posStdDev = calculatePositionStdDev(hmdPositionSamples)
-		return posStdDev <= POSITION_STD_DEV_THRESHOLD
+		hmdPositionSamples.add(localHmd.position)
+
+		if (isHmdLevel(localHmd)) {
+			status = UserHeightCalibrationStatus.RECORDING_HEIGHT
+			sendStatusUpdate()
+		}
 	}
 
 	fun addListener(listener: UserHeightCalibrationListener) {
@@ -222,17 +315,29 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 			this.status = this@UserHeightCalibration.status
 			this.userHeight = this@UserHeightCalibration.currentHeight
 		}
-
+		println("$status | $canDoFloorHeight (${handTrackers.size}) | $currentHeight | $currentFloorLevel")
 		listeners.forEach { it.onStatusChange(res) }
 	}
+
+	val active: Boolean
+		get() {
+			return status == UserHeightCalibrationStatus.RECORDING_HEIGHT || status == UserHeightCalibrationStatus.RECORDING_FLOOR || status == UserHeightCalibrationStatus.WAITING_FOR_RISE || status == UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK
+		}
 
 	companion object {
 		private const val MAX_SAMPLES = 100
 
-		private const val POSITION_STD_DEV_THRESHOLD = 0.01f
+		private const val POSITION_STD_DEV_THRESHOLD = 0.003f
+		private const val HEAD_STABILITY_DURATION = 600_000_000f
+
 		private const val CONTROLLER_POSITION_STD_DEV_THRESHOLD = 0.005f
-		private const val HEAD_STABILITY_DURATION = 2_000_000_000f
-		private const val CONTROLLER_STABILITY_DURATION = 1_000_000_000f
-		private const val UPDATE_DEBOUNCE = 100_000_000f
+		private const val CONTROLLER_STABILITY_DURATION = 300_000_000f
+
+		private const val MAX_FLOOR_Y = 0.10f
+		private const val HMD_RISE_THRESHOLD = 1.0f
+
+		val HEAD_ANGLE_THRESHOLD = cos((PI / 180f) * 15f)
+
+		private const val TIMEOUT_TIME = 30_000_000_000f
 	}
 }
