@@ -106,7 +106,8 @@ public class DataFeedHandler extends ProtocolHandler<DataFeedMessageHeader> {
 
 		int serverGuardsOffset = 0;
 		if (config.getServerGuardsMask()) {
-			serverGuardsOffset = DataFeedBuilderKotlin.INSTANCE.createServerGuard(fbb, this.api.server.getServerGuards());
+			serverGuardsOffset = DataFeedBuilderKotlin.INSTANCE
+				.createServerGuard(fbb, this.api.server.getServerGuards());
 		}
 
 		return DataFeedUpdate

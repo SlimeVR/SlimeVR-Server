@@ -51,6 +51,7 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 		RPCFirmwareUpdateHandler(this, api)
 		RPCVRChatHandler(this, api)
 		RPCTrackingChecklistHandler(this, api)
+		RPCUserHeightCalibration(this, api)
 
 		registerPacketListener(
 			RpcMessage.AssignTrackerRequest,
