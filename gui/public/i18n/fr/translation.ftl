@@ -1428,6 +1428,12 @@ firmware_tool-flash_method_step-description = Veuillez sélectionner la méthode
 firmware_tool-flash_method_step-ota-v2 =
     .label = Wi-Fi
     .description = Utilisez la méthode « over-the-air ». Votre capteur utilisera le Wi-Fi pour mettre à jour son microgiciel. Cette méthode ne fonctionne que pour les capteurs déjà configurés.
+firmware_tool-flash_method_step-ota-info =
+    Nous utilisons vos identifiants wifi pour flasher le capteur et confirmer que tout s'est déroulé correctement.
+    <b>Nous ne stockons pas vos identifiants wifi !</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = Utiliser un cable USB pour mettre à jour votre capteur.
 firmware_tool-flashbtn_step = Appuyez sur le bouton boot
 firmware_tool-flashbtn_step-description = Avant de passer à l'étape suivante, il y a quelques choses que vous devez faire
 firmware_tool-flashbtn_step-board_SLIMEVR = Éteignez le capteur, retirez le boîtier (s'il y en a un), connectez un câble USB à votre ordinateur, puis effectuez l'une des étapes suivantes en fonction de la révision de votre carte SlimeVR :
@@ -1439,8 +1445,10 @@ firmware_tool-flashbtn_step-board_OTHER =
     La plupart du temps, il s'agit d'appuyer sur le bouton boot de la carte avant que le processus de flash ne commence.
     Si le processus de flash expire au début du flash, cela signifie probablement que le capteur n'était pas en mode bootloader
     Veuillez vous référer aux instructions de flash de votre carte pour savoir comment activer le mode boatloader
+firmware_tool-flash_method_ota-title = Flasher via Wi-Fi
 firmware_tool-flash_method_ota-devices = Appareils OTA détectés :
 firmware_tool-flash_method_ota-no_devices = Il n'y a aucune carte pouvant être mise à jour à l'aide d'OTA, assurez-vous d'avoir sélectionné le bon type de carte
+firmware_tool-flash_method_serial-title = Flasher via USB
 firmware_tool-flash_method_serial-wifi = Identifiants Wi-Fi :
 firmware_tool-flash_method_serial-devices-label = Appareils en série détectés :
 firmware_tool-flash_method_serial-devices-placeholder = Sélectionnez un appareil en série
@@ -1455,7 +1463,10 @@ firmware_tool-flashing_step-exit = Quitter
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = En attente de la création...
 firmware_tool-build-CREATING_BUILD_FOLDER = Création du dossier de création
+firmware_tool-build-DOWNLOADING_SOURCE = Téléchargement du code source
+firmware_tool-build-EXTRACTING_SOURCE = Extraction du code source
 firmware_tool-build-BUILDING = Création du micrologiciel
 firmware_tool-build-SAVING = Enregistrement du micrologiciel
 firmware_tool-build-DONE = Création terminée
