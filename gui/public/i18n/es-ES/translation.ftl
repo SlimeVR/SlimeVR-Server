@@ -95,6 +95,7 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -742,6 +743,8 @@ settings-serial-auto_dropdown_item = Automático
 settings-serial-get_wifi_scan = Obtener escaneo WiFi
 settings-serial-file_type = Texto sin formato
 settings-serial-save_logs = Guardar en archivo
+settings-serial-send_command = Enviar
+settings-serial-send_command-warning-cancel = Cancelar
 
 ## OSC router settings
 
