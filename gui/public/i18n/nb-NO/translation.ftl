@@ -394,14 +394,11 @@ settings-general-interface-serial_detection-label = Seriell enhets gjenkjenning
 
 ## Behavior settings
 
-settings-general-interface-dev_mode = Utvikler modus
-settings-general-interface-dev_mode-description = Denne modusen kan være hjelpsom dersom du trenger data som gir mer innsyn eller for å samhandle med tilkoblede sporere på et mer avansert nivå.
-settings-general-interface-dev_mode-label = Utvikler modus
 settings-interface-behavior-error_tracking-description_v2 =
     <h1>Samtykker du til innsamling av anonymiserte feildata?</h1>
-
+    
     <b>Vi samler ikke inn personlig informasjon</b> slik som din IP-adresse eller trådløs-legitimasjon. SlimeVR verdsetter ditt personvern!
-
+    
     For å gi deg den beste brukeropplevelsen, samler vi inn anonymiserte feilrapporter, ytelsesmålinger og informasjon om operativsystemet. Dette hjelper oss med å oppdage feil og problemer med SlimeVR. Disse beregningene samles inn via Sentry.io.
 settings-interface-behavior-error_tracking-label = Send feilmeldinger til utviklere
 
@@ -474,6 +471,9 @@ settings-osc-vrchat-network-trackers-feet = Føtter
 settings-osc-vrchat-network-trackers-elbows = Albuer
 
 ## VMC OSC settings
+
+
+## Common OSC settings
 
 
 ## Advanced settings
@@ -684,3 +684,4 @@ tray_or_exit_modal-cancel = Avbryt
 
 
 ## Error collection consent modal
+
