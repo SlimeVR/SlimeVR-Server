@@ -2,14 +2,14 @@ import { useLocalization } from '@fluent/react';
 import classnames from 'classnames';
 import { ReactNode } from 'react';
 import { NavLink, useMatch } from 'react-router-dom';
-import { CubeIcon } from './commons/icon/CubeIcon';
 import { GearIcon } from './commons/icon/GearIcon';
 import { HumanIcon } from './commons/icon/HumanIcon';
 import { RulerIcon } from './commons/icon/RulerIcon';
 import { SparkleIcon } from './commons/icon/SparkleIcon';
-import { WrenchIcon } from './commons/icon/WrenchIcons';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import { useConfig } from '@/hooks/config';
+import { HomeIcon } from './commons/icon/HomeIcon';
+import { SkiIcon } from './commons/icon/SkiIcon';
 
 export function NavButton({
   to,
@@ -34,7 +34,7 @@ export function NavButton({
       state={state}
       className={classnames(
         'flex flex-col justify-center xs:gap-4 mobile:gap-2',
-        'xs:w-[85px] mobile:w-[80px] mobile:h-[80px]',
+        'xs:w-[85px] mobile:w-[65px] mobile:h-[65px]',
         'xs:py-3 mobile:py-4 rounded-md mobile:rounded-b-none group select-text',
         {
           'bg-accent-background-50 fill-accent-background-20': doesMatch,
@@ -44,16 +44,16 @@ export function NavButton({
     >
       <div className="flex justify-around">
         <div
-          className={classnames('scale-150', {
+          className={classnames('scale-[150%]', {
             'fill-accent-lighter': doesMatch,
-            'fill-background-50': !doesMatch,
+            'fill-background-40': !doesMatch,
           })}
         >
           {icon}
         </div>
       </div>
       <div
-        className={classnames('text-center', {
+        className={classnames('text-center mobile:hidden', {
           'text-accent-background-10': doesMatch,
           'text-background-10': !doesMatch,
         })}
@@ -70,7 +70,7 @@ export function MainLinks() {
 
   return (
     <>
-      <NavButton to="/" icon={<CubeIcon />}>
+      <NavButton to="/" icon={<HomeIcon />}>
         {l10n.getString('navbar-home')}
       </NavButton>
       <NavButton
@@ -84,7 +84,7 @@ export function MainLinks() {
         to="/onboarding/mounting/choose"
         match="/onboarding/mounting/*"
         state={{ alonePage: true }}
-        icon={<WrenchIcon />}
+        icon={<SkiIcon />}
       >
         {l10n.getString('navbar-mounting')}
       </NavButton>

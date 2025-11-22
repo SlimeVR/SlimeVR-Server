@@ -3,19 +3,19 @@ import { useWebsocketAPI } from './websocket-api';
 import {
   RpcMessage,
   VRCAvatarMeasurementType,
+  VRCConfigSettingToggleMuteT,
   VRCConfigStateChangeResponseT,
   VRCConfigStateRequestT,
   VRCSpineMode,
   VRCTrackerModel,
 } from 'solarxr-protocol';
-import { useConfig } from './config';
 
 type NonNull<T> = {
   [P in keyof T]: NonNullable<T[P]>;
 };
 
 export type VRCConfigStateSupported = { isSupported: true } & NonNull<
-  Pick<VRCConfigStateChangeResponseT, 'recommended' | 'state' | 'validity'>
+  Pick<VRCConfigStateChangeResponseT, 'recommended' | 'state' | 'validity' | 'muted'>
 >;
 export type VRCConfigState = { isSupported: false } | VRCConfigStateSupported;
 
@@ -45,7 +45,6 @@ export const avatarMeasurementTypeTranslationMap: Record<
 
 export function useVRCConfig() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
-  const { config, setConfig } = useConfig();
   const [state, setState] = useState<VRCConfigState | null>(null);
 
   useLayoutEffect(() => {
@@ -59,31 +58,20 @@ export function useVRCConfig() {
     }
   );
 
-  const mutedSettings = useMemo(() => {
-    if (!state?.isSupported) return [];
-    return Object.keys(state.validity).filter((k) =>
-      config?.vrcMutedWarnings.includes(k)
-    );
-  }, [state, config]);
-
   const invalidConfig = useMemo(() => {
     if (!state?.isSupported) return false;
     return Object.entries(state.validity)
-      .filter(([k]) => !config?.vrcMutedWarnings.includes(k))
+      .filter(([k]) => !state.muted.includes(k))
       .some(([, v]) => !v);
-  }, [state, config]);
+  }, [state]);
 
   return {
     state,
     invalidConfig,
-    mutedSettings,
     toggleMutedSettings: async (key: keyof VRCConfigStateSupported['validity']) => {
-      if (!config) return;
-      const index = config.vrcMutedWarnings.findIndex((v) => v === key);
-      if (index === -1) config.vrcMutedWarnings.push(key);
-      else config?.vrcMutedWarnings.splice(index, 1);
-      await setConfig(config);
-      console.log(config.vrcMutedWarnings);
+      const req = new VRCConfigSettingToggleMuteT();
+      req.key = key;
+      sendRPCPacket(RpcMessage.VRCConfigSettingToggleMute, req);
     },
   };
 }

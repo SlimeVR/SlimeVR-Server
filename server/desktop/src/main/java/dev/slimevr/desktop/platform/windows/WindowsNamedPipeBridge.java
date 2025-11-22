@@ -14,6 +14,7 @@ import dev.slimevr.desktop.platform.SteamVRBridge;
 import dev.slimevr.tracking.trackers.Tracker;
 import io.eiren.util.ann.ThreadSafe;
 import io.eiren.util.logging.LogManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,6 +38,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	private static final Advapi32 adv32 = Advapi32.INSTANCE;
 
 	protected final String pipeName;
+	protected final String bridgeSettingsKey;
 	private final byte[] buffArray = new byte[2048];
 	protected WindowsPipe pipe;
 	protected WinNT.HANDLE openEvent = k32.CreateEvent(null, false, false, null);
@@ -63,6 +65,7 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	) {
 		super(server, "Named pipe thread", bridgeName, bridgeSettingsKey, shareableTrackers);
 		this.pipeName = pipeName;
+		this.bridgeSettingsKey = bridgeSettingsKey;
 		overlappedWait.hEvent = rxEvent;
 	}
 
@@ -320,5 +323,11 @@ public class WindowsNamedPipeBridge extends SteamVRBridge {
 	@Override
 	public boolean isConnected() {
 		return pipe != null && pipe.state == PipeState.OPEN;
+	}
+
+	@NotNull
+	@Override
+	public String getBridgeConfigKey() {
+		return this.bridgeSettingsKey;
 	}
 }

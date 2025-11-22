@@ -9,20 +9,25 @@ import {
 import { Navbar } from './Navbar';
 import { TopBar } from './TopBar';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { WidgetsComponent } from './WidgetsComponent';
 import './MainLayout.scss';
+import { Toolbar } from './Toolbar';
+import { Sidebar } from './Sidebar';
+import { TrackingChecklistMobile } from './tracking-checklist/TrackingChecklist';
+import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 
 export function MainLayout({
   children,
   background = true,
-  widgets = true,
+  full = false,
   isMobile = undefined,
 }: {
   children: ReactNode;
   background?: boolean;
   isMobile?: boolean;
-  widgets?: boolean;
+  showToolbarSettings?: boolean;
+  full?: boolean;
 }) {
+  const { completion } = useTrackingChecklist();
   const { sendRPCPacket } = useWebsocketAPI();
   const [ProportionsLastPageOpen, setProportionsLastPageOpen] = useState(true);
 
@@ -58,33 +63,42 @@ export function MainLayout({
   });
 
   return (
-    <div className="">
-      <div className="main-layout w-full h-screen">
-        <div style={{ gridArea: 't' }}>
-          <TopBar />
-        </div>
-        <div style={{ gridArea: 's' }} className="overflow-y-auto">
-          <Navbar />
-        </div>
-        <div
-          style={{ gridArea: 'c' }}
-          className={classNames(
-            'overflow-y-auto mr-2 my-2 mobile:m-0',
-            'flex flex-col rounded-xl',
-            background && 'bg-background-70'
-          )}
-        >
-          {children}
-        </div>
-        {!isMobile && widgets && (
-          <div
-            style={{ gridArea: 'w' }}
-            className="overflow-y-auto mr-2 my-2 rounded-xl bg-background-70 flex flex-col gap-2 p-2 widgets"
-          >
-            <WidgetsComponent />
-          </div>
-        )}
+    <div
+      className={classNames('main-layout w-full h-screen', full && 'full', {
+        'checklist-ok': completion === 'complete',
+      })}
+    >
+      <div style={{ gridArea: 't' }}>
+        <TopBar />
       </div>
+      <div style={{ gridArea: 'n' }} className="overflow-y-auto">
+        <Navbar />
+      </div>
+
+      <div
+        style={{ gridArea: 'c' }}
+        className={classNames(
+          'overflow-y-auto mr-2 my-2 mobile:m-0',
+          'flex flex-col rounded-md',
+          background && 'bg-background-70',
+          { 'rounded-t-none': !isMobile && full }
+        )}
+      >
+        {children}
+      </div>
+      {full && isMobile && completion !== 'complete' && (
+        <TrackingChecklistMobile />
+      )}
+      {full && (
+        <div style={{ gridArea: 'b' }}>
+          <Toolbar />
+        </div>
+      )}
+      {!isMobile && full && (
+        <div style={{ gridArea: 's' }} className="mr-2">
+          <Sidebar />
+        </div>
+      )}
     </div>
   );
 }

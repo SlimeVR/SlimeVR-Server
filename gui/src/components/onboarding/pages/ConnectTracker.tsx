@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import {
   RpcMessage,
   StartWifiProvisioningRequestT,
-  StatusData,
   StopWifiProvisioningRequestT,
+  TrackingChecklistPublicNetworksT,
+  TrackingChecklistStepId,
   WifiProvisioningStatus,
   WifiProvisioningStatusResponseT,
 } from 'solarxr-protocol';
@@ -24,9 +25,9 @@ import './ConnectTracker.scss';
 import { useAtomValue } from 'jotai';
 import { connectedIMUTrackersAtom } from '@/store/app-store';
 import { BaseModal } from '@/components/commons/BaseModal';
-import { parseStatusToLocale, useStatusContext } from '@/hooks/status-system';
 import { A } from '@/components/commons/A';
 import { CONNECT_TRACKER } from '@/utils/tauri';
+import { useTrackingChecklist } from '@/hooks/tracking-checklist';
 
 const statusLabelMap = {
   [WifiProvisioningStatus.NONE]:
@@ -74,9 +75,34 @@ const statusProgressMap = {
   [WifiProvisioningStatus.COULD_NOT_FIND_SERVER]: 0.8,
 };
 
+export function InvalidNetworkProfileWarning({
+  extraData,
+}: {
+  extraData: TrackingChecklistPublicNetworksT;
+}) {
+  return (
+    <div className="pt-4">
+      <Localized
+        id="tracking_checklist-NETWORK_PROFILE_PUBLIC-desc"
+        elems={{
+          PublicFixLink: (
+            <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public" />
+          ),
+        }}
+        vars={{
+          count: extraData.adapters.length,
+          adapters: extraData.adapters.join(', '),
+        }}
+      >
+        <WarningBox whitespace={false}>WARNING</WarningBox>
+      </Localized>
+    </div>
+  );
+}
+
 export function ConnectTrackersPage() {
   const { l10n } = useLocalization();
-  const { statuses } = useStatusContext();
+  const { visibleSteps } = useTrackingChecklist();
 
   const connectedIMUTrackers = useAtomValue(connectedIMUTrackersAtom);
   const { applyProgress, state } = useOnboarding();
@@ -165,11 +191,13 @@ export function ConnectTrackersPage() {
     [connectedIMUTrackers.length]
   );
 
-  const filteredStatuses = useMemo(() => {
-    return Object.entries(statuses).filter(
-      ([, value]) => value.dataType == StatusData.StatusPublicNetwork
+  const invalidNetworkProfile = useMemo(() => {
+    return visibleSteps.find(
+      (step) =>
+        step.id === TrackingChecklistStepId.NETWORK_PROFILE_PUBLIC &&
+        !step.valid
     );
-  }, [statuses]);
+  }, [visibleSteps]);
 
   return (
     <>
@@ -243,24 +271,13 @@ export function ConnectTrackersPage() {
           >
             <TipBox>Conditional tip</TipBox>
           </Localized>
-          {filteredStatuses.map(([, status]) => (
-            <div className="pt-4">
-              <Localized
-                key={status.id}
-                id={`status_system-${StatusData[status.dataType]}`}
-                vars={parseStatusToLocale(status, connectedIMUTrackers, l10n)}
-                elems={{
-                  PublicFixLink: (
-                    <A href="https://docs.slimevr.dev/common-issues.html#network-profile-is-currently-set-to-public" />
-                  ),
-                }}
-              >
-                <WarningBox whitespace={false}>
-                  {`Warning, you should fix ${StatusData[status.dataType]}`}
-                </WarningBox>
-              </Localized>
-            </div>
-          ))}
+          {invalidNetworkProfile && (
+            <InvalidNetworkProfileWarning
+              extraData={
+                invalidNetworkProfile.extraData as TrackingChecklistPublicNetworksT
+              }
+            />
+          )}
           <div
             className={classNames(
               'rounded-xl h-24 flex gap-2 p-3 lg:w-full mt-4 relative',

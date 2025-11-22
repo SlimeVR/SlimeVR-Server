@@ -275,7 +275,7 @@ class VRCOSCHandler(
 					hasPosition = true,
 					userEditable = true,
 					isComputed = true,
-					needsReset = trackerPosition != TrackerPosition.HEAD,
+					allowReset = trackerPosition != TrackerPosition.HEAD,
 					usesTimeout = true,
 				)
 				vrsystemTrackersDevice!!.trackers[trackerPosition.ordinal] = tracker
@@ -368,7 +368,7 @@ class VRCOSCHandler(
 						hasPosition = true,
 						userEditable = true,
 						isComputed = true,
-						needsReset = true,
+						allowReset = true,
 						usesTimeout = true,
 					)
 					oscTrackersDevice!!.trackers[trackerId] = tracker
