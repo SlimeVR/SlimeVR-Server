@@ -1,44 +1,63 @@
 import { Button } from '@/components/commons/Button';
 import { Typography } from '@/components/commons/Typography';
+import { ResetType } from 'solarxr-protocol';
+import { ResetButton } from '@/components/home/ResetButton';
+import { useLocalization } from '@fluent/react';
+import { useBreakpoint } from '@/hooks/breakpoint';
 import { VerticalStepComponentProps } from '@/components/commons/VerticalStepper';
-import { Localized } from '@fluent/react';
 
 export function VerifyMountingStep({
   nextStep,
   prevStep,
 }: VerticalStepComponentProps) {
+  const { isMobile } = useBreakpoint('mobile');
+  const { l10n } = useLocalization();
   return (
-    <div className="flex flex-grow flex-col gap-4 py-2">
-      <div className="flex flex-col gap-2">
-        <Localized id="onboarding-stay_aligned-verify_mounting-step-0">
-          <Typography />
-        </Localized>
-        <Localized id="onboarding-stay_aligned-verify_mounting-step-1">
-          <Typography />
-        </Localized>
-        <Localized id="onboarding-stay_aligned-verify_mounting-step-2">
-          <Typography />
-        </Localized>
-        <Localized id="onboarding-stay_aligned-verify_mounting-step-3">
-          <Typography />
-        </Localized>
-      </div>
-      <div className="flex gap-3 justify-between">
-        <Localized id="onboarding-stay_aligned-previous_step">
-          <Button variant="secondary" onClick={prevStep} />
-        </Localized>
+    <div className="flex flex-col flex-grow justify-between py-2 gap-2">
+      <div className="flex flex-col flex-grow">
+        <div className="flex flex-grow flex-col gap-4 max-w-sm">
+          <div className="flex flex-col gap-2">
+            <Typography>
+              {l10n.getString(
+                'onboarding-automatic_mounting-mounting_reset-step-0'
+              )}
+            </Typography>
+            <Typography>
+              {l10n.getString(
+                'onboarding-automatic_mounting-mounting_reset-step-1'
+              )}
+            </Typography>
+          </div>
+        </div>
 
-        <div className="flex gap-2">
-          <Localized id="onboarding-stay_aligned-verify_mounting-redo_mounting">
-            <Button
-              variant={'secondary'}
-              to="/onboarding/mounting/choose"
-              state={{ alonePage: true }}
+        {isMobile && (
+          <div className="flex flex-col items-center fill-background-50 justify-center">
+            <img
+              src="/images/mounting-reset-pose.webp"
+              width={450}
+              alt="mounting reset ski pose"
             />
-          </Localized>
-          <Localized id="onboarding-stay_aligned-next_step">
-            <Button variant="primary" onClick={nextStep} />
-          </Localized>
+          </div>
+        )}
+
+        {!isMobile && (
+          <div className="flex flex-col pt-1 items-center fill-background-50 justify-center">
+            <img
+              src="/images/mounting-reset-pose.webp"
+              width={600}
+              alt="mounting reset ski pose"
+            />
+          </div>
+        )}
+        <div className="flex gap-3 justify-between">
+          <Button variant={'secondary'} onClick={prevStep}>
+            {l10n.getString('onboarding-automatic_mounting-prev_step')}
+          </Button>
+          <ResetButton
+            size="small"
+            type={ResetType.Mounting}
+            onReseted={nextStep}
+          />
         </div>
       </div>
     </div>
