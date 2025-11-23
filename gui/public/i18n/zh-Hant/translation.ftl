@@ -758,7 +758,7 @@ settings-serial-factory_reset = 恢復出廠設定
 settings-serial-factory_reset-warning =
     <b>警告：</b>本選項會將該追蹤器恢復出廠設定，
     亦即其 Wi-Fi 與追蹤器校正的設定<b>將會全部刪除</b>。
-settings-serial-factory_reset-warning-ok = 我確實要執行出廠設定
+settings-serial-factory_reset-warning-ok = 我已瞭解以上風險
 settings-serial-factory_reset-warning-cancel = 取消
 settings-serial-serial_select = 選擇串列埠
 settings-serial-auto_dropdown_item = 自動
@@ -767,6 +767,9 @@ settings-serial-file_type = 純文字格式
 settings-serial-save_logs = 儲存到檔案
 settings-serial-send_command = 傳送
 settings-serial-send_command-placeholder = 輸入指令…
+settings-serial-send_command-warning = <b>警告：</b>執行序列埠指令可能會導致資料遺失或追蹤器變磚。
+settings-serial-send_command-warning-ok = 我已瞭解以上風險
+settings-serial-send_command-warning-cancel = 取消
 
 ## OSC router settings
 
@@ -863,6 +866,8 @@ settings-osc-vmc-mirror_tracking-label = 鏡像追蹤
 
 ## Common OSC settings
 
+settings-osc-common-network-ports_match_error = OSC 路由的輸入埠與輸出埠不能相同！
+settings-osc-common-network-port_banned_error = 無法使用 { $port } 連接埠！
 
 ## Advanced settings
 
@@ -1374,8 +1379,32 @@ firmware_tool = DIY 韌體工具
 firmware_tool-description = 本工具可以配置與燒錄 DIY 追蹤器
 firmware_tool-not_available = 唉呀，現在韌體工具無法使用。請稍後再來！
 firmware_tool-not_compatible = 韌體工具與這個版本的伺服器不相容。請更新伺服器！
+firmware_tool-select_source = 選擇要燒錄的韌體
+firmware_tool-select_source-description = 選擇要在電路板上燒錄的韌體
+firmware_tool-select_source-error = 無法載入韌體來源
+firmware_tool-select_source-board_type = 電路板類型
+firmware_tool-select_source-firmware = 韌體來源
+firmware_tool-select_source-version = 韌體版本
+firmware_tool-select_source-official = 正式版
+firmware_tool-select_source-dev = 開發版
+firmware_tool-board_defaults = 設定電路板
+firmware_tool-board_defaults-description = 設定與硬體相關的腳位或配置
+firmware_tool-board_defaults-add = 新增
+firmware_tool-board_defaults-reset = 恢復預設值
+firmware_tool-board_defaults-error-required = 必填欄位
+firmware_tool-board_defaults-error-format = 格式無效
+firmware_tool-board_defaults-error-format-number = 不是數字
 firmware_tool-flash_method_step = 燒錄方法
 firmware_tool-flash_method_step-description = 選擇要使用的燒錄方法
+firmware_tool-flash_method_step-ota-v2 =
+    .label = Wi-Fi
+    .description = 使用 OTA 線上更新。你的追蹤器會透過 Wi-Fi 來更新韌體，只支援已經設定好的追蹤器。
+firmware_tool-flash_method_step-ota-info =
+    即將使用你的 Wi-Fi 憑證來燒錄韌體，並確保一切正常。
+    <b>我們不會儲存你的 Wi-Fi 憑證！</b>
+firmware_tool-flash_method_step-serial-v2 =
+    .label = USB
+    .description = 使用 USB 來更新追蹤器。
 firmware_tool-flashbtn_step = 進入燒錄模式
 firmware_tool-flashbtn_step-description = 在進入下一步前，請先進行以下操作
 firmware_tool-flashbtn_step-board_SLIMEVR = 關閉追蹤器電源，移除外殼（若有的話），並用 USB 線連接到這台電腦上，然後根據你持有的 SlimeVR 追蹤器主板的版本，進行下述操作：
@@ -1387,8 +1416,10 @@ firmware_tool-flashbtn_step-board_OTHER =
     多數狀況下，在燒錄開始前按下 BOOT 按鈕即可開始燒錄。
     如果燒錄進度開始時就已逾時，表示追蹤器未能進入 Bootloader 模式，
     請參考追蹤器主板燒錄韌體的說明文件，以得知進入 Bootloader 模式的方法。
+firmware_tool-flash_method_ota-title = 透過 Wi-Fi 燒錄
 firmware_tool-flash_method_ota-devices = 偵測到的 OTA 裝置：
 firmware_tool-flash_method_ota-no_devices = 找不到可以使用 OTA 更新的主板，請確認所選擇的主板類型
+firmware_tool-flash_method_serial-title = 透過 USB 燒錄
 firmware_tool-flash_method_serial-wifi = Wi-Fi 認證資訊：
 firmware_tool-flash_method_serial-devices-label = 偵測到的串列埠裝置：
 firmware_tool-flash_method_serial-devices-placeholder = 選擇一個串列埠裝置
@@ -1403,7 +1434,10 @@ firmware_tool-flashing_step-exit = 離開
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = 正在等待建置…
 firmware_tool-build-CREATING_BUILD_FOLDER = 正在建立建置資料夾
+firmware_tool-build-DOWNLOADING_SOURCE = 正在下載原始碼
+firmware_tool-build-EXTRACTING_SOURCE = 正在解壓縮原始碼
 firmware_tool-build-BUILDING = 正在建置韌體
 firmware_tool-build-SAVING = 正在儲存建置
 firmware_tool-build-DONE = 建置完成
