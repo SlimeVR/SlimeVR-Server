@@ -181,6 +181,8 @@ fn find_server_jar(cli: &Cli) -> Option<PathBuf> {
 				f
 			})
 			.ok(),
+		// For development
+		#[cfg(debug_assertions)]
 		Some(PathBuf::from(env!("CARGO_MANIFEST_DIR"))),
 		// For flatpak container
 		Some(PathBuf::from("/app/share/slimevr/")),
