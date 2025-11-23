@@ -95,6 +95,8 @@ board_type-WEMOSD1MINI = Wemos D1 Mini
 board_type-TTGO_TBASE = TTGO T-Base
 board_type-ESP01 = ESP-01
 board_type-SLIMEVR = SlimeVR
+board_type-SLIMEVR_DEV = SlimeVR 開發板
+board_type-SLIMEVR_V1_2 = SlimeVR v1.2
 board_type-LOLIN_C3_MINI = Lolin C3 Mini
 board_type-BEETLE32C3 = Beetle ESP32-C3
 board_type-ESP32C3DEVKITM1 = Espressif ESP32-C3 DevKitM-1
@@ -401,6 +403,8 @@ tracker-settings-name_section-label = 追蹤器名稱
 tracker-settings-forget = 忘記追蹤器
 tracker-settings-forget-description = 從 SlimeVR 伺服器程式中移除該追蹤器，且直到重新啟動伺服器前不會再次連接。該追蹤器的設定不會遺失。
 tracker-settings-forget-label = 忘記追蹤器
+tracker-settings-update-unavailable-v2 = 未找到可用版本
+tracker-settings-update-incompatible = 電路板不相容，無法更新。
 tracker-settings-update-low-battery = 無法更新，電池電量低於 50%
 tracker-settings-update-up_to_date = 已為最新版本
 tracker-settings-update-blocked = 無法更新，沒有其他可用版本。
@@ -614,6 +618,9 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = 約
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = 避免關節旋轉超出極限
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = 以約束修正關節旋轉
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = 若關節旋轉角度超出極限時，修正旋轉角度
+settings-general-fk_settings-ik = 定位資料
+settings-general-fk_settings-ik-use_position = 使用定位資料
+settings-general-fk_settings-ik-use_position-description = 若追蹤器支援定位，使用來自追蹤器的定位資料。啟用後請再次進行完整重置並在遊戲中重新校正追蹤器。
 settings-general-fk_settings-arm_fk = 手臂追蹤
 settings-general-fk_settings-arm_fk-description = 強制透過頭戴顯示器來追蹤手臂，即使有手部的定位資料。
 settings-general-fk_settings-arm_fk-force_arms = 強制從頭戴顯示器進行手臂追蹤
@@ -758,6 +765,8 @@ settings-serial-auto_dropdown_item = 自動
 settings-serial-get_wifi_scan = 取得 Wi-Fi 掃描
 settings-serial-file_type = 純文字格式
 settings-serial-save_logs = 儲存到檔案
+settings-serial-send_command = 傳送
+settings-serial-send_command-placeholder = 輸入指令…
 
 ## OSC router settings
 
