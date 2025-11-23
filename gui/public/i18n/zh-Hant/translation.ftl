@@ -247,11 +247,11 @@ reset-yaw = 左右偏擺重置
 
 ## Serial detection stuff
 
-serial_detection-new_device-p0 = 偵測到了新的串列埠裝置！
+serial_detection-new_device-p0 = 偵測到了新的序列埠裝置！
 serial_detection-new_device-p1 = 輸入你的 Wi-Fi 認證資訊！
 serial_detection-new_device-p2 = 請選擇你想對它做什麼
 serial_detection-open_wifi = 連線到 Wi-Fi
-serial_detection-open_serial = 開啟串列埠終端
+serial_detection-open_serial = 開啟序列埠終端
 serial_detection-submit = 送出！
 serial_detection-close = 關閉
 
@@ -484,7 +484,7 @@ settings-sidebar-interface = 使用者介面
 settings-sidebar-osc_router = OSC 路由
 settings-sidebar-osc_trackers = VRChat OSC 追蹤器
 settings-sidebar-utils = 工具
-settings-sidebar-serial = 串列埠終端
+settings-sidebar-serial = 序列埠終端
 settings-sidebar-appearance = 外觀
 settings-sidebar-notifications = 通知
 settings-sidebar-behavior = 行為
@@ -708,9 +708,9 @@ settings-interface-appearance-decorations-label = 使用原生的視窗邊框
 ## Notification settings
 
 settings-interface-notifications = 通知
-settings-general-interface-serial_detection = 串列埠裝置檢測
-settings-general-interface-serial_detection-description = 每次插入新串列埠的裝置（可能是追蹤器）時，此選項會顯示一個彈出視窗。這有助於改進追蹤器的設定流程。
-settings-general-interface-serial_detection-label = 串列埠裝置檢測
+settings-general-interface-serial_detection = 序列埠裝置檢測
+settings-general-interface-serial_detection-description = 每次插入新序列埠的裝置（可能是追蹤器）時，此選項會顯示一個彈出視窗。這有助於改進追蹤器的設定流程。
+settings-general-interface-serial_detection-label = 序列埠裝置檢測
 settings-general-interface-feedback_sound = 聲音回饋
 settings-general-interface-feedback_sound-description = 啟用本選項後，觸發重置時會發出提示音。
 settings-general-interface-feedback_sound-label = 聲音回饋
@@ -747,10 +747,10 @@ settings-interface-behavior-bvh_directory-label = 存放 BVH 紀錄的目錄
 
 ## Serial settings
 
-settings-serial = 串列埠終端
+settings-serial = 序列埠終端
 # This cares about multilines
-settings-serial-description = 這裡用於顯示串列埠的即時資訊，可能有助於瞭解韌體是否發生問題。
-settings-serial-connection_lost = 串列埠連線中斷，正在重新連線……
+settings-serial-description = 這裡用於顯示序列埠的即時資訊，可能有助於瞭解韌體是否發生問題。
+settings-serial-connection_lost = 序列埠連線中斷，正在重新連線……
 settings-serial-reboot = 重新啟動
 settings-serial-factory_reset = 恢復出廠設定
 # This cares about multilines
@@ -760,7 +760,7 @@ settings-serial-factory_reset-warning =
     亦即其 Wi-Fi 與追蹤器校正的設定<b>將會全部刪除</b>。
 settings-serial-factory_reset-warning-ok = 我已瞭解以上風險
 settings-serial-factory_reset-warning-cancel = 取消
-settings-serial-serial_select = 選擇串列埠
+settings-serial-serial_select = 選擇序列埠
 settings-serial-auto_dropdown_item = 自動
 settings-serial-get_wifi_scan = 取得 Wi-Fi 掃描
 settings-serial-file_type = 純文字格式
@@ -984,7 +984,7 @@ onboarding-connect_tracker-description-p1-v1 = 透過 USB 埠，一次連接一�
 onboarding-connect_tracker-issue-serial = 我在連接時碰到問題了！
 onboarding-connect_tracker-usb = USB 追蹤器
 onboarding-connect_tracker-connection_status-none = 正在尋找追蹤器
-onboarding-connect_tracker-connection_status-serial_init = 正在連線到串列埠裝置
+onboarding-connect_tracker-connection_status-serial_init = 正在連線到序列埠裝置
 onboarding-connect_tracker-connection_status-obtaining_mac_address = 正在取得追蹤器的 MAC 位址
 onboarding-connect_tracker-connection_status-provisioning = 正在傳送 Wi-Fi 認證資訊
 onboarding-connect_tracker-connection_status-connecting = 正在傳送 Wi-Fi 資訊
@@ -1421,9 +1421,9 @@ firmware_tool-flash_method_ota-devices = 偵測到的 OTA 裝置：
 firmware_tool-flash_method_ota-no_devices = 找不到可以使用 OTA 更新的主板，請確認所選擇的主板類型
 firmware_tool-flash_method_serial-title = 透過 USB 燒錄
 firmware_tool-flash_method_serial-wifi = Wi-Fi 認證資訊：
-firmware_tool-flash_method_serial-devices-label = 偵測到的串列埠裝置：
-firmware_tool-flash_method_serial-devices-placeholder = 選擇一個串列埠裝置
-firmware_tool-flash_method_serial-no_devices = 偵測不到相容的串列埠裝置，請確認追蹤器已連接
+firmware_tool-flash_method_serial-devices-label = 偵測到的序列埠裝置：
+firmware_tool-flash_method_serial-devices-placeholder = 選擇一個序列埠裝置
+firmware_tool-flash_method_serial-no_devices = 偵測不到相容的序列埠裝置，請確認追蹤器已連接
 firmware_tool-build_step = 建置中
 firmware_tool-build_step-description = 韌體正在建置中，請稍後
 firmware_tool-flashing_step = 燒錄中
