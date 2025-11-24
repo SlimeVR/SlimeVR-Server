@@ -15,7 +15,8 @@ class RelaxedPose(
 	val digitorumBrevis: Angle,
 	val abductorDigitiMinimi: Angle,
 ) {
-	override fun toString(): String = "upperLeg=$upperLeg lowerLeg=$lowerLeg foot=$foot"
+	override fun toString(): String =
+		"upperLeg=$upperLeg lowerLeg=$lowerLeg foot=$foot"
 
 	companion object {
 
@@ -64,7 +65,7 @@ class RelaxedPose(
 
 				PlayerPose.SITTING_ON_GROUND,
 				PlayerPose.LYING_ON_BACK,
-				-> {
+					-> {
 					val poseConfig = config.flatRelaxedPose
 					if (poseConfig.enabled) {
 						RelaxedPose(
@@ -85,43 +86,7 @@ class RelaxedPose(
 
 				else ->
 					null
-				}
 			}
-
-			PlayerPose.SITTING_IN_CHAIR -> {
-				val poseConfig = config.sittingRelaxedPose
-				if (poseConfig.enabled) {
-					RelaxedPose(
-						Angle.ofDeg(poseConfig.upperLegAngleInDeg),
-						Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
-						Angle.ofDeg(poseConfig.footAngleInDeg),
-					)
-				} else {
-					null
-				}
-			}
-
-			PlayerPose.SITTING_ON_GROUND,
-			PlayerPose.LYING_ON_BACK,
-			-> {
-				val poseConfig = config.flatRelaxedPose
-				if (poseConfig.enabled) {
-					RelaxedPose(
-						Angle.ofDeg(poseConfig.upperLegAngleInDeg),
-						Angle.ofDeg(poseConfig.lowerLegAngleInDeg),
-						Angle.ofDeg(poseConfig.footAngleInDeg),
-					)
-				} else {
-					null
-				}
-			}
-
-			PlayerPose.KNEELING ->
-				StayAlignedDefaults.RELAXED_POSE_KNEELING
-
-			else ->
-				null
-		}
 
 		/**
 		 * Gets the relaxed angles from the trackers.
