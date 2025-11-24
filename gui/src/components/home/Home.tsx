@@ -81,7 +81,6 @@ export function Home() {
                 device={device}
                 onClick={() => sendToSettings(tracker)}
                 smol
-                showUpdates
                 interactable
                 warning={
                   !!highlightedTrackers?.trackers.find(
@@ -123,7 +122,6 @@ export function Home() {
                     device={device}
                     onClick={() => sendToSettings(tracker)}
                     smol
-                    showUpdates
                     interactable
                     warning={
                       !!highlightedTrackers?.trackers.find(

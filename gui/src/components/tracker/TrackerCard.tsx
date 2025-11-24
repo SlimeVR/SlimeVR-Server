@@ -202,7 +202,6 @@ export function TrackerCard({
   bg = 'bg-background-60',
   shakeHighlight = true,
   warning = false,
-  showUpdates = false,
 }: {
   tracker: TrackerDataT;
   device?: DeviceDataT;
@@ -213,14 +212,12 @@ export function TrackerCard({
   shakeHighlight?: boolean;
   onClick?: MouseEventHandler<HTMLDivElement>;
   warning?: TrackingChecklistStepT | boolean;
-  showUpdates?: boolean;
 }) {
   const { currentFirmwareRelease } = useAppContext();
   const { useVelocity } = useTracker(tracker);
   const velocity = useVelocity();
 
   const showUpdate =
-    showUpdates &&
     tracker.status !== TrackerStatusEnum.DISCONNECTED &&
     currentFirmwareRelease &&
     device &&
@@ -261,14 +258,32 @@ export function TrackerCard({
               )
             }
           >
-            <TrackerSmol tracker={tracker} device={device} warning={warning} />
+            <div>
+              {showUpdate &&
+                showUpdate !== 'unavailable' &&
+                showUpdate !== 'updated' && (
+                  <UpdateIcon showUpdate={showUpdate} />
+                )}
+              <TrackerSmol
+                tracker={tracker}
+                device={device}
+                warning={warning}
+              />
+            </div>
           </Tooltip>
         )}
-        {!smol && <TrackerBig tracker={tracker} device={device} />}
+        {!smol && (
+          <div>
+            {showUpdate &&
+              showUpdate !== 'unavailable' &&
+              showUpdate !== 'updated' && (
+                <UpdateIcon showUpdate={showUpdate} />
+              )}
+
+            <TrackerBig tracker={tracker} device={device} />
+          </div>
+        )}
       </div>
-      {showUpdate &&
-        showUpdate !== 'unavailable' &&
-        showUpdate !== 'updated' && <UpdateIcon showUpdate={showUpdate} />}
     </div>
   );
 }
