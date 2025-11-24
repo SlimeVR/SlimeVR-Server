@@ -1300,6 +1300,23 @@ onboarding-scaled_proportions-reset_proportion-description = To set your body pr
 onboarding-scaled_proportions-done-title = Body proportions set
 onboarding-scaled_proportions-done-description = Your body proportions should now be configured based on your height.
 
+## User height calibration
+onboarding-user_height-title = What is your Height?
+onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR Calculate it or input your height manually
+onboarding-user_height-need_head_tracker = An HMD (or Head tracker) is required to perform the calibration
+onboarding-user_height-calculate = Calculate my Height
+onboarding-user_height-next_step = Continue and save
+onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with a Controller
+onboarding-user_height-calibration-WAITING_FOR_RISE = Stand back up
+onboarding-user_height-calibration-WAITING_FOR_RISE-no_floor = Stand up
+onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Look forward
+onboarding-user_height-calibration-RECORDING_HEIGHT = Stand still!
+onboarding-user_height-calibration-ERROR_TIMEOUT = Calibration timmed out. Try again
+onboarding-user_height-calibration-ERROR_TOO_HIGH = The detected user height is too high. Try again
+onboarding-user_height-calibration-ERROR_TOO_SMALL = The detected user height is too small. Try again
+onboarding-user_height-calibration-error = Calibration Failed
+
+
 ## Stay Aligned setup
 onboarding-stay_aligned-title = Stay Aligned
 onboarding-stay_aligned-description = Configure Stay Aligned to keep your trackers aligned.

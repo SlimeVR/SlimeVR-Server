@@ -5,7 +5,6 @@ import dev.slimevr.tracking.processor.HumanPoseManager
 import dev.slimevr.tracking.trackers.Tracker
 import dev.slimevr.tracking.trackers.TrackerPosition
 import dev.slimevr.tracking.trackers.TrackerStatus
-import io.github.axisangles.ktmath.Quaternion
 import io.github.axisangles.ktmath.Vector3
 import org.apache.commons.collections4.queue.CircularFifoQueue
 import solarxr_protocol.rpc.UserHeightCalibrationStatus
@@ -17,9 +16,6 @@ import kotlin.math.max
 import kotlin.math.sqrt
 
 /**
- * Calculates the position standard deviation (root mean square distance from the mean)
- * for a given list of Vector3 samples.
- *
  * @param positionSamples The list of Vector3 samples.
  * @return The standard deviation as a Float. Returns Float.MAX_VALUE if the list is empty.
  */
@@ -54,14 +50,6 @@ fun calculatePositionStdDev(positionSamples: Collection<Vector3>): Float {
 	return sqrt(variance)
 }
 
-// Helper function to rotate a vector by a quaternion
-fun applyRotation(q: Quaternion, v: Vector3): Vector3 {
-	val vQuat = Quaternion(0f, v.x, v.y, v.z)
-	val qConj = q.conj()
-	val rotatedQuat = q * vQuat * qConj
-	return Vector3(rotatedQuat.x, rotatedQuat.y, rotatedQuat.z)
-}
-
 /**
  * Checks if the HMD is level (pitch and roll are within threshold) by comparing
  * its world-space UP vector with the World UP vector (0, 1, 0).
@@ -69,11 +57,8 @@ fun applyRotation(q: Quaternion, v: Vector3): Vector3 {
 fun isHmdLevel(hmd: Tracker): Boolean {
 	val q = hmd.getRotation()
 
-	val localUp = Vector3(0f, 1f, 0f)
-	val worldHmdUp = applyRotation(q, localUp)
-	val worldUp = Vector3(0f, 1f, 0f)
-
-	val dotProduct = worldHmdUp.dot(worldUp)
+	val worldHmdUp = q.sandwich(Vector3.POS_Y)
+	val dotProduct = worldHmdUp.dot(Vector3.POS_Y)
 	return dotProduct >= UserHeightCalibration.HEAD_ANGLE_THRESHOLD
 }
 
@@ -104,6 +89,11 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 
 	fun start() {
 		clear()
+		checkTrackers()
+
+//		if (!server.serverGuards.canDoUserHeightCalibration) {
+//			return
+//		}
 
 		startTime = System.nanoTime().toFloat()
 
@@ -111,7 +101,7 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 			status = UserHeightCalibrationStatus.RECORDING_FLOOR
 			currentFloorLevel = Float.MAX_VALUE
 		} else {
-			status = UserHeightCalibrationStatus.RECORDING_HEIGHT
+			status = UserHeightCalibrationStatus.WAITING_FOR_RISE
 			currentFloorLevel = 0f
 		}
 
@@ -168,7 +158,6 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		if (active && currentTime - startTime > TIMEOUT_TIME) {
 			status = UserHeightCalibrationStatus.ERROR_TIMEOUT
 			sendStatusUpdate()
-
 			return
 		}
 
@@ -182,7 +171,7 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 			}
 
 			UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK -> {
-				checkLevelingGate(currentTime)
+				checkLevelingGate()
 			}
 
 			UserHeightCalibrationStatus.RECORDING_HEIGHT -> {
@@ -290,7 +279,7 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 	 * Called when status is WAITING_FOR_FW_LOOK.
 	 * Only checks if the HMD has become level to transition back to RECORDING_HEIGHT.
 	 */
-	private fun checkLevelingGate(currentTime: Float) {
+	private fun checkLevelingGate() {
 		val localHmd = hmd ?: return
 
 		hmdPositionSamples.add(localHmd.position)

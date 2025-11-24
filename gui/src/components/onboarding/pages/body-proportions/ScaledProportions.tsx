@@ -1,17 +1,75 @@
 import { useOnboarding } from '@/hooks/onboarding';
 import { Typography } from '@/components/commons/Typography';
-import {
-  HeightContextC,
-  useProvideHeightContext,
-} from '@/hooks/height';
+import { HeightContextC, useProvideHeightContext } from '@/hooks/height';
 import { Button } from '@/components/commons/Button';
 import { Localized, useLocalization } from '@fluent/react';
-import { WarningBox } from '@/components/commons/TipBox';
+import { TipBox, WarningBox } from '@/components/commons/TipBox';
 import { useAtomValue } from 'jotai';
 import { serverGuardsAtom } from '@/store/app-store';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { useState } from 'react';
-import { RpcMessage, StartUserHeightCalibationT, UserHeightCalibrationStatus, UserHeightRecordingStatusResponseT } from 'solarxr-protocol';
+import { ReactNode, useEffect, useState } from 'react';
+import {
+  CancelUserHeightCalibrationT,
+  ResetType,
+  RpcMessage,
+  StartUserHeightCalibationT,
+  UserHeightCalibrationStatus,
+  UserHeightRecordingStatusResponseT,
+} from 'solarxr-protocol';
+import { HeightSelectionInput } from './HeightInput';
+import { Tooltip } from '@/components/commons/Tooltip';
+import classNames from 'classnames';
+import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
+import { ResetButton } from '@/components/home/ResetButton';
+import { Vector3 } from 'three';
+import { CheckIcon } from '@/components/commons/icon/CheckIcon';
+
+function UserHeightStep({
+  done = false,
+  text,
+}: {
+  disabled?: boolean;
+  done?: boolean;
+  text: string;
+}) {
+  return (
+    <div className="flex flex-col pr-2 ml-6 last:pb-0 pb-3 border-l-[2px] border-background-50">
+      <div className="flex w-full gap-2">
+        <div
+          className={classNames(
+            'p-1 rounded-full fill-background-10 flex items-center justify-center z-10 h-[25px] w-[25px] -ml-[13px]',
+            { 'bg-background-50': !done, 'bg-accent-background-20': done }
+          )}
+        >
+          {done && <CheckIcon size={10} />}
+          {!done && (
+            <div
+              className={classNames('h-[12px] w-[12px] rounded-full', {
+                'bg-accent-background-10 animate-pulse brightness-75': true,
+              })}
+            />
+          )}
+        </div>
+        <Typography variant="section-title">{text}</Typography>
+      </div>
+    </div>
+  );
+}
+
+const statusSteps = [
+  UserHeightCalibrationStatus.NONE,
+  UserHeightCalibrationStatus.RECORDING_FLOOR,
+  UserHeightCalibrationStatus.WAITING_FOR_RISE,
+  UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK,
+  UserHeightCalibrationStatus.RECORDING_HEIGHT,
+  UserHeightCalibrationStatus.DONE,
+];
+
+const errorSteps = [
+  UserHeightCalibrationStatus.ERROR_TIMEOUT,
+  UserHeightCalibrationStatus.ERROR_TOO_HIGH,
+  UserHeightCalibrationStatus.ERROR_TOO_SMALL,
+];
 
 export function ScaledProportionsPage() {
   const { l10n } = useLocalization();
@@ -23,92 +81,222 @@ export function ScaledProportionsPage() {
   const [status, setState] = useState<UserHeightRecordingStatusResponseT>();
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
-
   applyProgress(0.9);
 
-
-  useRPCPacket(RpcMessage.UserHeightRecordingStatusResponse, (res: UserHeightRecordingStatusResponseT) => {
-    setState(res);
-  })
+  useRPCPacket(
+    RpcMessage.UserHeightRecordingStatusResponse,
+    (res: UserHeightRecordingStatusResponseT) => {
+      setState(res);
+    }
+  );
 
   const start = () => {
-    sendRPCPacket(RpcMessage.StartUserHeightCalibation, new StartUserHeightCalibationT());
-  }
+    sendRPCPacket(
+      RpcMessage.StartUserHeightCalibation,
+      new StartUserHeightCalibationT()
+    );
+  };
+
+  const cancel = () => {
+    sendRPCPacket(
+      RpcMessage.CancelUserHeightCalibration,
+      new CancelUserHeightCalibrationT()
+    );
+  };
+
+  useEffect(() => {
+    return () => {
+      cancel();
+    };
+  }, []);
+
+  const auto = status && status.status !== UserHeightCalibrationStatus.NONE;
+
+  console.log(status);
 
   return (
     <HeightContextC.Provider value={heightContext}>
-      <div className="flex flex-col gap-5 h-full items-center w-full xs:justify-center overflow-y-auto overflow-x-hidden relative px-4 pb-4">
-        <div className="flex flex-col w-full xs:h-full xs:justify-center max-w-3xl gap-5">
-          <div className="flex flex-col max-w-lg gap-3">
-            <Typography variant="main-title">
-              {l10n.getString('onboarding-scaled_proportions-title')}
-            </Typography>
-            <div>
-              <Typography>
-                {l10n.getString('onboarding-scaled_proportions-description')}
-              </Typography>
-            </div>
-          </div>
-
-          {!serverGuards?.canDoUserHeightCalibration && (
-            <WarningBox>
-              <Localized
-                id="onboarding-scaled_proportions-manual_height-warning"
-                elems={{ b: <b /> }}
+      <div
+        className={classNames('flex bg-background-80 gap-2 w-full h-full', {
+          'p-4': !state.alonePage,
+        })}
+      >
+        <div
+          className={classNames('flex rounded-lg p-4 flex-grow', {
+            'bg-background-70': state.alonePage,
+          })}
+        >
+          <div className="justify-center items-center flex flex-grow flex-col">
+            <div className="flex flex-col gap-3 max-w-xl flex-grow justify-center">
+              <Typography
+                variant="main-title"
+                id="onboarding-user_height-title"
+              />
+              <div>
+                <Typography id="onboarding-user_height-description" />
+              </div>
+              <HeightSelectionInput
+                hmdHeight={1.6}
+                setHmdHeight={() => console.log('change')}
+              />
+              <Tooltip
+                disabled={serverGuards?.canDoUserHeightCalibration}
+                preferedDirection="bottom"
+                content={
+                  <Typography id="onboarding-user_height-need_head_tracker" />
+                }
               >
-                <Typography
-                  whitespace="whitespace-pre-line"
-                  color="text-background-60"
-                />
-              </Localized>
-              <ul className="list-disc ml-8">
-                <Localized id="onboarding-scaled_proportions-manual_height-warning-no_hmd">
-                  <li />
-                </Localized>
-              </ul>
-            </WarningBox>
-          )}
-          <div className="flex min-h-0">
-            <Button onClick={start} variant='primary'>Start</Button>
-            {status && <pre className='whitespace-pre'>
-              {JSON.stringify(status)}
-
-              Height: {status.userHeight / 0.936}
-              Status: {UserHeightCalibrationStatus[status.status]}
-            </pre>}
-            {/* <StepperSlider
-              variant={state.alonePage ? 'alone' : 'onboarding'}
-              steps={
-                !canDoAuto
-                  ? [
-                      { type: 'numbered', component: ManualHeightStep },
-                      { type: 'numbered', component: ResetProportionsStep },
-                      { type: 'fullsize', component: DoneStep },
-                    ]
-                  : [
-                      { type: 'numbered', component: CheckHeightStep },
-                      { type: 'numbered', component: CheckFloorHeightStep },
-                      { type: 'numbered', component: ResetProportionsStep },
-                      { type: 'fullsize', component: DoneStep },
-                    ]
-              }
-              back={() => navigate('/onboarding/reset-tutorial', { state })}
-            /> */}
-
-
-
-          </div>
-          {state.alonePage && (
-            <div className="flex justify-end">
-              <Localized id="onboarding-manual_proportions-title">
                 <Button
-                  to="/onboarding/body-proportions/manual"
-                  variant="secondary"
-                  state={{ alonePage: state.alonePage }}
+                  variant="primary"
+                  disabled={!serverGuards?.canDoUserHeightCalibration}
+                  onClick={start}
+                  id="onboarding-user_height-calculate"
                 />
+              </Tooltip>
+            </div>
+            <div className="flex w-full gap-2 justify-between">
+              <div>
+                {state.alonePage && (
+                  <Button
+                    variant="secondary"
+                    id="onboarding-user_height-manual-proportions"
+                  />
+                )}
+              </div>
+              {state.alonePage && (
+                <Button variant="primary" id="onboarding-user_height-next_step">
+                  Continue
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="flex w-1/3 bg-background-70 rounded-lg relative flex-col h-full">
+          <div
+            className={classNames(
+              'absolute h-full w-full transition-opacity duration-300 p-4',
+              { 'opacity-100': auto, 'opacity-0': !auto }
+            )}
+          >
+            {status && (
+              <div className="flex flex-col h-full">
+                <div className="flex flex-col rounded-lg py-4 bg-background-60">
+                  {!errorSteps.includes(status.status) ? (
+                    <>
+                      {status.canDoFloorHeight ? (
+                        <>
+                          <UserHeightStep
+                            done={
+                              status.status >
+                              statusSteps.indexOf(
+                                UserHeightCalibrationStatus.RECORDING_FLOOR
+                              )
+                            }
+                            text="onboarding-user_height-calibration-RECORDING_FLOOR"
+                          />
+                          <UserHeightStep
+                            done={
+                              status.status >
+                              statusSteps.indexOf(
+                                UserHeightCalibrationStatus.WAITING_FOR_RISE
+                              )
+                            }
+                            text="onboarding-user_height-calibration-WAITING_FOR_RISE"
+                          />
+                        </>
+                      ) : (
+                        <UserHeightStep
+                          done={
+                            status.status >
+                            statusSteps.indexOf(
+                              UserHeightCalibrationStatus.WAITING_FOR_RISE
+                            )
+                          }
+                          text="onboarding-user_height-calibration-WAITING_FOR_RISE-no_floor"
+                        />
+                      )}
+                      <UserHeightStep
+                        done={
+                          status.status >
+                          statusSteps.indexOf(
+                            UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK
+                          )
+                        }
+                        text="onboarding-user_height-calibration-WAITING_FOR_FW_LOOK"
+                      />
+                      <UserHeightStep
+                        done={
+                          status.status >
+                          statusSteps.indexOf(
+                            UserHeightCalibrationStatus.RECORDING_HEIGHT
+                          )
+                        }
+                        text="onboarding-user_height-calibration-RECORDING_HEIGHT"
+                      />
+                    </>
+                  ) : (
+                    <div className="p-4">
+                      <Typography
+                        variant="section-title"
+                        id="onboarding-user_height-calibration-error"
+                      />
+                      <Typography
+                        id={`onboarding-user_height-calibration-${UserHeightCalibrationStatus[status.status]}`}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-grow justify-center min-h-0">
+                  <img
+                    className="object-contain h-full"
+                    src={
+                      errorSteps.includes(status.status)
+                        ? '/images/nighty-height-error.webp'
+                        : '/images/nighty-height-question.webp'
+                    }
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+          <div
+            className={classNames(
+              'w-full flex flex-grow transition-opacity duration-300',
+              {
+                'opacity-100': !auto,
+                'opacity-0': auto,
+              }
+            )}
+          >
+            <SkeletonVisualizerWidget
+              onInit={(context) => {
+                context.addView({
+                  left: 0,
+                  bottom: 0,
+                  width: 1,
+                  height: 1,
+                  position: new Vector3(3, 2.5, -3),
+                  onHeightChange(v, newHeight) {
+                    v.controls.target.set(0, newHeight / 2, 0);
+                    const scale = Math.max(1, newHeight) / 1.2;
+                    v.camera.zoom = 1 / scale;
+                  },
+                });
+              }}
+            />
+            <div className="absolute w-full p-4 flex">
+              <ResetButton
+                type={ResetType.Full}
+                className="w-full h-full bg-background-50 hover:bg-background-40 text-background-10"
+              />
+            </div>
+            <div className="absolute bottom-0 p-4">
+              <Localized id="onboarding-user_height-manual-tip">
+                <TipBox>PRO TIP`</TipBox>
               </Localized>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </HeightContextC.Provider>

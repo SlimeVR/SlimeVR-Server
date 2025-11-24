@@ -23,6 +23,17 @@ class RPCUserHeightCalibration(var rpcHandler: RPCHandler, var api: ProtocolAPI)
 			RpcMessage.StartUserHeightCalibation,
 			::onStartUserHeightCalibration,
 		)
+		rpcHandler.registerPacketListener(
+			RpcMessage.CancelUserHeightCalibration,
+			::onCancelUserHeightCalibration,
+		)
+	}
+
+	fun onCancelUserHeightCalibration(
+		conn: GenericConnection,
+		messageHeader: RpcMessageHeader,
+	) {
+		userHeightCal?.clear()
 	}
 
 	fun onStartUserHeightCalibration(

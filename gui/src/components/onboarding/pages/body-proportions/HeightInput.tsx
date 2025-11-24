@@ -1,22 +1,12 @@
 import { Typography } from '@/components/commons/Typography';
 import { useBreakpoint } from '@/hooks/breakpoint';
 import {
-  DEFAULT_FULL_HEIGHT,
   EYE_HEIGHT_TO_HEIGHT_RATIO,
-  useHeightContext,
 } from '@/hooks/height';
-import { useWebsocketAPI } from '@/hooks/websocket-api';
 import { useLocaleConfig } from '@/i18n/config';
 import classNames from 'classnames';
 import convert from 'convert';
 import { useMemo, useState } from 'react';
-import {
-  ChangeSettingsRequestT,
-  ModelSettingsT,
-  RpcMessage,
-  SkeletonHeightT,
-  SkeletonResetAllRequestT,
-} from 'solarxr-protocol';
 
 function IncrementButton({
   value,
@@ -107,16 +97,17 @@ function formatHeightWithIntl(meters: number, locale: string[]) {
 
 const roundHeight = (value: number): number => Math.round(value * 1000) / 1000;
 
-export function HeightSelectionInput({ auto }: { auto: boolean }) {
-  const { sendRPCPacket } = useWebsocketAPI();
+export function HeightSelectionInput({ disabled = false, hmdHeight, setHmdHeight }: { disabled?: boolean, hmdHeight: number, setHmdHeight: (height: number) => void }) {
+  if (!hmdHeight) disabled = true;
+
   const [unit, setUnit] = useState<'meter' | 'foot'>('meter');
   const { currentLocales } = useLocaleConfig();
-  const { currentHeight, setHmdHeight } = useHeightContext();
 
   const formatedHeight = useMemo(() => {
+    if (!hmdHeight) return '--'
+
     const fullHeight = roundHeight(
-      (currentHeight && currentHeight / EYE_HEIGHT_TO_HEIGHT_RATIO) ||
-        DEFAULT_FULL_HEIGHT
+      (hmdHeight && hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO)
     );
     if (unit === 'meter')
       return new Intl.NumberFormat(currentLocales, {
@@ -126,33 +117,20 @@ export function HeightSelectionInput({ auto }: { auto: boolean }) {
         minimumFractionDigits: 2,
       }).format(fullHeight);
     else return formatHeightWithIntl(fullHeight, currentLocales);
-  }, [currentHeight, unit]);
+  }, [hmdHeight, unit]);
 
   const increment = (unit: 'inch' | 'cm', value: number) => {
     const headsetHeight = roundHeight(
-      ((currentHeight && currentHeight / EYE_HEIGHT_TO_HEIGHT_RATIO) ||
-        DEFAULT_FULL_HEIGHT) * EYE_HEIGHT_TO_HEIGHT_RATIO
+      (hmdHeight && hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO) * EYE_HEIGHT_TO_HEIGHT_RATIO
     );
 
     const newValue = headsetHeight + convert(value, unit).to('cm') / 100;
     setHmdHeight(newValue);
-    const settingsRequest = new ChangeSettingsRequestT();
-    settingsRequest.modelSettings = new ModelSettingsT(
-      null,
-      null,
-      null,
-      new SkeletonHeightT(newValue, 0)
-    );
-    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsRequest);
-
-    sendRPCPacket(
-      RpcMessage.SkeletonResetAllRequest,
-      new SkeletonResetAllRequestT()
-    );
   };
 
-  const minimalHeight = (currentHeight ?? 0) <= 0.81;
-  const minimalHeight10cm = (currentHeight ?? 0) <= 0.91;
+
+  const minimalHeight = hmdHeight <= 0.81;
+  const minimalHeight10cm = hmdHeight <= 0.91;
 
   return (
     <div className="flex gap-2 md:h-[75px] w-full flex-col md:flex-row items-center">
@@ -164,7 +142,7 @@ export function HeightSelectionInput({ auto }: { auto: boolean }) {
               value={-1}
               unit={'inch'}
               onClick={() => increment('inch', -1)}
-              disabled={auto || minimalHeight}
+              disabled={disabled || minimalHeight}
             />
           </>
         )}
@@ -174,13 +152,13 @@ export function HeightSelectionInput({ auto }: { auto: boolean }) {
               value={-10}
               unit={'cm'}
               onClick={() => increment('cm', -10)}
-              disabled={auto || minimalHeight10cm}
+              disabled={disabled || minimalHeight10cm}
             />
             <IncrementButton
               value={-1}
               unit={'cm'}
               onClick={() => increment('cm', -1)}
-              disabled={auto || minimalHeight}
+              disabled={disabled || minimalHeight}
             />
           </>
         )}
@@ -209,7 +187,7 @@ export function HeightSelectionInput({ auto }: { auto: boolean }) {
               value={1}
               unit={'inch'}
               onClick={() => increment('inch', 1)}
-              disabled={auto}
+              disabled={disabled}
             />
             <div className="aspect-square bg-background-80 opacity-50 rounded-md items-center justify-center flex-col hidden md:flex" />
           </>
@@ -220,13 +198,13 @@ export function HeightSelectionInput({ auto }: { auto: boolean }) {
               value={1}
               unit={'cm'}
               onClick={() => increment('cm', 1)}
-              disabled={auto}
+              disabled={disabled}
             />
             <IncrementButton
               value={10}
               unit={'cm'}
               onClick={() => increment('cm', 10)}
-              disabled={auto}
+              disabled={disabled}
             />
           </>
         )}
