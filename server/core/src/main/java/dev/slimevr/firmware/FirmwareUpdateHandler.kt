@@ -26,6 +26,8 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.concurrent.scheduleAtFixedRate
 
+private val FirmwarePartT.digest: String
+
 data class DownloadedFirmwarePart(
 	val firmware: ByteArray,
 	val offset: Long?,
