@@ -158,8 +158,9 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 	}
 
 	fun tick() {
-		val currentTime = System.nanoTime().toFloat()
+		if (startTime == 0f) return
 
+		val currentTime = System.nanoTime().toFloat()
 		if (active && currentTime - startTime > TIMEOUT_TIME) {
 			status = UserHeightCalibrationStatus.ERROR_TIMEOUT
 			sendStatusUpdate()
