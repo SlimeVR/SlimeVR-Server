@@ -1,6 +1,11 @@
 import { useOnboarding } from '@/hooks/onboarding';
 import { Typography } from '@/components/commons/Typography';
-import { HeightContextC, useProvideHeightContext } from '@/hooks/height';
+import {
+  DEFAULT_FULL_HEIGHT,
+  EYE_HEIGHT_TO_HEIGHT_RATIO,
+  HeightContextC,
+  useProvideHeightContext,
+} from '@/hooks/height';
 import { Button } from '@/components/commons/Button';
 import { Localized } from '@fluent/react';
 import { TipBox } from '@/components/commons/TipBox';
@@ -29,6 +34,8 @@ import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualize
 import { ResetButton } from '@/components/home/ResetButton';
 import { Vector3 } from 'three';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
+import { useDebouncedEffect } from '@/hooks/timeout';
+import { playTapSetupSound } from '@/sounds/sounds';
 
 function UserHeightStep({
   done = false,
@@ -85,6 +92,7 @@ export function ScaledProportionsPage() {
   const serverGuards = useAtomValue(serverGuardsAtom);
 
   const [status, setState] = useState<UserHeightRecordingStatusResponseT>();
+  const [auto, setAuto] = useState(false);
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   applyProgress(0.9);
@@ -102,6 +110,21 @@ export function ScaledProportionsPage() {
       new CancelUserHeightCalibrationT()
     );
   };
+
+  // Makes it so you dont get spammed by sounds if multiple status complete at once
+  useDebouncedEffect(
+    () => {
+      if (
+        !status ||
+        errorSteps.includes(status.status) ||
+        status.status == UserHeightCalibrationStatus.NONE
+      )
+        return;
+      playTapSetupSound();
+    },
+    [status?.status],
+    200
+  );
 
   const applyHeight = (newHeight: number) => {
     setHmdHeight(newHeight);
@@ -122,10 +145,18 @@ export function ScaledProportionsPage() {
   useRPCPacket(
     RpcMessage.UserHeightRecordingStatusResponse,
     (res: UserHeightRecordingStatusResponseT) => {
+      if (res.status !== UserHeightCalibrationStatus.NONE) {
+        setAuto(true);
+      }
+
       setState(res);
       setHmdHeight(res.hmdHeight);
       if (res.status === UserHeightCalibrationStatus.DONE) {
         applyHeight(res.hmdHeight);
+      }
+
+      if (errorSteps.includes(res.status) && res.hmdHeight == 0) {
+        applyHeight(DEFAULT_FULL_HEIGHT);
       }
     }
   );
@@ -147,7 +178,23 @@ export function ScaledProportionsPage() {
     };
   }, []);
 
-  const auto = status && status.status !== UserHeightCalibrationStatus.NONE;
+  useEffect(() => {
+    const checkNotAuto = (status: UserHeightCalibrationStatus) =>
+      status === UserHeightCalibrationStatus.DONE ||
+      errorSteps.includes(status);
+
+    if (status && checkNotAuto(status.status)) {
+      const id = setTimeout(
+        () => {
+          if (status && checkNotAuto(status.status)) setAuto(false);
+        },
+        status.status === UserHeightCalibrationStatus.DONE ? 5000 : 10_000
+      );
+      return () => {
+        clearTimeout(id);
+      };
+    }
+  }, [status]);
 
   return (
     <HeightContextC.Provider value={heightContext}>
@@ -172,7 +219,10 @@ export function ScaledProportionsPage() {
               </div>
               <HeightSelectionInput
                 hmdHeight={hmdHeight}
-                setHmdHeight={applyHeight}
+                setHmdHeight={(height) => {
+                  applyHeight(height)
+                  setAuto(false)
+                }}
               />
               <Tooltip
                 disabled={serverGuards?.canDoUserHeightCalibration}

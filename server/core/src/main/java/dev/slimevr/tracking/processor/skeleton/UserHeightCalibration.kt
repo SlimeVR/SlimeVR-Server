@@ -264,7 +264,7 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 
 				val stableDuration = currentTime - heightStableStartTime!!
 				if (stableDuration >= HEAD_STABILITY_DURATION) {
-					status = if (currentHeight < 1.5f) {
+					status = if (currentHeight < 1.2f) {
 						UserHeightCalibrationStatus.ERROR_TOO_SMALL
 					} else if (currentHeight > 1.936f) {
 						UserHeightCalibrationStatus.ERROR_TOO_HIGH
