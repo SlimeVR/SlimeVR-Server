@@ -331,7 +331,7 @@ export function ScaledProportionsPage() {
             </div>
             <div className="absolute bottom-0 p-4 w-full">
               <Localized id="onboarding-user_height-manual-tip">
-                <TipBox className='p-4'>PRO TIP</TipBox>
+                <TipBox className="p-4">PRO TIP</TipBox>
               </Localized>
             </div>
           </div>

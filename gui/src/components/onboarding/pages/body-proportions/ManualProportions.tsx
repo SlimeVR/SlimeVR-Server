@@ -455,7 +455,7 @@ export function ManualProportionsPage() {
               Back to Body Proportions
             </ArrowLink>
           </div>
-          <ButtonsControl control={control}/>
+          <ButtonsControl control={control} />
           <div className="bg-background-60 h-20 rounded-md flex-grow overflow-y-auto">
             <BodyProportions
               precise={precise ?? defaultValues.precise}

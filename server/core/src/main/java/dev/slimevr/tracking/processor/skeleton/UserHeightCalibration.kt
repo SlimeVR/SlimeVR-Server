@@ -50,10 +50,6 @@ fun calculatePositionStdDev(positionSamples: Collection<Vector3>): Float {
 	return sqrt(variance)
 }
 
-/**
- * Checks if the HMD is level (pitch and roll are within threshold) by comparing
- * its world-space UP vector with the World UP vector (0, 1, 0).
- */
 fun isHmdLevel(hmd: Tracker): Boolean {
 	val q = hmd.getRotation()
 
@@ -251,7 +247,7 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 
 		if (!isHmdLevel(localHmd)) {
 			status = UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK
-			heightStableStartTime = null // Reset stability time
+			heightStableStartTime = null
 			sendStatusUpdate()
 			return
 		}
@@ -288,10 +284,6 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		}
 	}
 
-	/**
-	 * Called when status is WAITING_FOR_FW_LOOK.
-	 * Only checks if the HMD has become level to transition back to RECORDING_HEIGHT.
-	 */
 	private fun checkLevelingGate() {
 		val localHmd = hmd ?: return
 

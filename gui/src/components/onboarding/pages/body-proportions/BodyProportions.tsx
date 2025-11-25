@@ -61,9 +61,9 @@ function OpenGroupButton({
       onClick={toggleOpen}
     >
       {open ? (
-        <ArrowUpIcon size={isXs ? 50 : 30}/>
+        <ArrowUpIcon size={isXs ? 50 : 30} />
       ) : (
-        <ArrowDownIcon size={isXs ? 50 : 30}/>
+        <ArrowDownIcon size={isXs ? 50 : 30} />
       )}
     </div>
   );
@@ -259,11 +259,7 @@ function ProportionItem({
         </div>
         <div className="hidden xs:flex">
           {type === 'ratio' && part.type !== 'group-part' && (
-            <OpenGroupButton
-              open={open}
-              toggleOpen={toggleOpen}
-              part={part}
-            />
+            <OpenGroupButton open={open} toggleOpen={toggleOpen} part={part} />
           )}
         </div>
       </div>
