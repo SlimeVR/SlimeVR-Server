@@ -22,4 +22,18 @@ class StayAlignedRelaxedPoseConfig {
 	 * Angle between the foot and the center yaw.
 	 */
 	var footAngleInDeg = 0.0f
+
+	/**
+	 * Angle between the abductorHallucis and the center yaw.
+	 */
+	var abductorHallucisAngleInDeg = 0.0f
+	/**
+	 * Angle between the digitorumBrevis and the center yaw.
+	 */
+	var digitorumBrevisAngleInDeg = 0.0f
+
+	/**
+	 * Angle between the abductorDigitiMinimi and the center yaw.
+	 */
+	var abductorDigitiMinimiAngleInDeg = 0.0f
 }
