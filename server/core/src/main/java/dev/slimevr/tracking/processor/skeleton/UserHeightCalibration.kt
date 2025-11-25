@@ -91,9 +91,9 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		clear()
 		checkTrackers()
 
-//		if (!server.serverGuards.canDoUserHeightCalibration) {
-//			return
-//		}
+		if (!server.serverGuards.canDoUserHeightCalibration) {
+			return
+		}
 
 		startTime = System.nanoTime().toFloat()
 
@@ -150,6 +150,15 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 
 		currentHeight = 0f
 		currentFloorLevel = 0f
+	}
+
+	fun applyCalibration() {
+		server.configManager.vrConfig.skeleton.hmdHeight = currentHeight
+		server.configManager.vrConfig.skeleton.floorHeight = 0f
+
+		server.humanPoseManager.resetOffsets()
+		server.humanPoseManager.saveConfig()
+		server.configManager.saveConfig()
 	}
 
 	fun tick() {
@@ -267,6 +276,10 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 						UserHeightCalibrationStatus.DONE
 					}
 
+					if (status == UserHeightCalibrationStatus.DONE) {
+						applyCalibration()
+					}
+
 					sendStatusUpdate()
 				}
 			} else {
@@ -302,9 +315,8 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		val res = UserHeightRecordingStatusResponseT().apply {
 			this.canDoFloorHeight = this@UserHeightCalibration.canDoFloorHeight
 			this.status = this@UserHeightCalibration.status
-			this.userHeight = this@UserHeightCalibration.currentHeight
+			this.hmdHeight = this@UserHeightCalibration.currentHeight
 		}
-		println("$status | $canDoFloorHeight (${handTrackers.size}) | $currentHeight | $currentFloorLevel")
 		listeners.forEach { it.onStatusChange(res) }
 	}
 

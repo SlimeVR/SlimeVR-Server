@@ -2,16 +2,22 @@ import { useOnboarding } from '@/hooks/onboarding';
 import { Typography } from '@/components/commons/Typography';
 import { HeightContextC, useProvideHeightContext } from '@/hooks/height';
 import { Button } from '@/components/commons/Button';
-import { Localized, useLocalization } from '@fluent/react';
-import { TipBox, WarningBox } from '@/components/commons/TipBox';
+import { Localized } from '@fluent/react';
+import { TipBox } from '@/components/commons/TipBox';
 import { useAtomValue } from 'jotai';
 import { serverGuardsAtom } from '@/store/app-store';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   CancelUserHeightCalibrationT,
+  ChangeSettingsRequestT,
+  ModelSettingsT,
   ResetType,
   RpcMessage,
+  SkeletonConfigRequestT,
+  SkeletonConfigResponseT,
+  SkeletonHeightT,
+  SkeletonResetAllRequestT,
   StartUserHeightCalibationT,
   UserHeightCalibrationStatus,
   UserHeightRecordingStatusResponseT,
@@ -50,7 +56,7 @@ function UserHeightStep({
             />
           )}
         </div>
-        <Typography variant="section-title">{text}</Typography>
+        <Typography variant="section-title" id={text} />
       </div>
     </div>
   );
@@ -72,7 +78,7 @@ const errorSteps = [
 ];
 
 export function ScaledProportionsPage() {
-  const { l10n } = useLocalization();
+  const [hmdHeight, setHmdHeight] = useState(0);
   const { applyProgress, state } = useOnboarding();
   const heightContext = useProvideHeightContext();
 
@@ -82,13 +88,6 @@ export function ScaledProportionsPage() {
   const { sendRPCPacket, useRPCPacket } = useWebsocketAPI();
 
   applyProgress(0.9);
-
-  useRPCPacket(
-    RpcMessage.UserHeightRecordingStatusResponse,
-    (res: UserHeightRecordingStatusResponseT) => {
-      setState(res);
-    }
-  );
 
   const start = () => {
     sendRPCPacket(
@@ -104,15 +103,51 @@ export function ScaledProportionsPage() {
     );
   };
 
+  const applyHeight = (newHeight: number) => {
+    setHmdHeight(newHeight);
+    const settingsRequest = new ChangeSettingsRequestT();
+    settingsRequest.modelSettings = new ModelSettingsT(
+      null,
+      null,
+      null,
+      new SkeletonHeightT(newHeight, 0)
+    );
+    sendRPCPacket(RpcMessage.ChangeSettingsRequest, settingsRequest);
+    sendRPCPacket(
+      RpcMessage.SkeletonResetAllRequest,
+      new SkeletonResetAllRequestT()
+    );
+  };
+
+  useRPCPacket(
+    RpcMessage.UserHeightRecordingStatusResponse,
+    (res: UserHeightRecordingStatusResponseT) => {
+      setState(res);
+      setHmdHeight(res.hmdHeight);
+      if (res.status === UserHeightCalibrationStatus.DONE) {
+        applyHeight(res.hmdHeight);
+      }
+    }
+  );
+
+  useRPCPacket(
+    RpcMessage.SkeletonConfigResponse,
+    (res: SkeletonConfigResponseT) => {
+      setHmdHeight(res.userHeight);
+    }
+  );
+
   useEffect(() => {
+    sendRPCPacket(
+      RpcMessage.SkeletonConfigRequest,
+      new SkeletonConfigRequestT()
+    );
     return () => {
       cancel();
     };
   }, []);
 
   const auto = status && status.status !== UserHeightCalibrationStatus.NONE;
-
-  console.log(status);
 
   return (
     <HeightContextC.Provider value={heightContext}>
@@ -136,8 +171,8 @@ export function ScaledProportionsPage() {
                 <Typography id="onboarding-user_height-description" />
               </div>
               <HeightSelectionInput
-                hmdHeight={1.6}
-                setHmdHeight={() => console.log('change')}
+                hmdHeight={hmdHeight}
+                setHmdHeight={applyHeight}
               />
               <Tooltip
                 disabled={serverGuards?.canDoUserHeightCalibration}
@@ -160,13 +195,16 @@ export function ScaledProportionsPage() {
                   <Button
                     variant="secondary"
                     id="onboarding-user_height-manual-proportions"
+                    to="/onboarding/body-proportions/manual"
+                    state={{ alonePage: state.alonePage }}
                   />
                 )}
               </div>
-              {state.alonePage && (
-                <Button variant="primary" id="onboarding-user_height-next_step">
-                  Continue
-                </Button>
+              {!state.alonePage && (
+                <Button
+                  variant="primary"
+                  id="onboarding-user_height-next_step"
+                />
               )}
             </div>
           </div>
@@ -180,9 +218,9 @@ export function ScaledProportionsPage() {
           >
             {status && (
               <div className="flex flex-col h-full">
-                <div className="flex flex-col rounded-lg py-4 bg-background-60">
+                <div className="flex flex-col">
                   {!errorSteps.includes(status.status) ? (
-                    <>
+                    <div className="rounded-lg py-4 bg-background-60">
                       {status.canDoFloorHeight ? (
                         <>
                           <UserHeightStep
@@ -233,9 +271,9 @@ export function ScaledProportionsPage() {
                         }
                         text="onboarding-user_height-calibration-RECORDING_HEIGHT"
                       />
-                    </>
+                    </div>
                   ) : (
-                    <div className="p-4">
+                    <div className="rounded-lg bg-background-60 p-4 outline outline-status-critical">
                       <Typography
                         variant="section-title"
                         id="onboarding-user_height-calibration-error"
@@ -262,7 +300,7 @@ export function ScaledProportionsPage() {
           </div>
           <div
             className={classNames(
-              'w-full flex flex-grow transition-opacity duration-300',
+              'w-full flex flex-grow transition-opacity duration-300 overflow-clip',
               {
                 'opacity-100': !auto,
                 'opacity-0': auto,
@@ -285,15 +323,15 @@ export function ScaledProportionsPage() {
                 });
               }}
             />
-            <div className="absolute w-full p-4 flex">
+            <div className="absolute w-full p-4 flex h-20">
               <ResetButton
                 type={ResetType.Full}
                 className="w-full h-full bg-background-50 hover:bg-background-40 text-background-10"
               />
             </div>
-            <div className="absolute bottom-0 p-4">
+            <div className="absolute bottom-0 p-4 w-full">
               <Localized id="onboarding-user_height-manual-tip">
-                <TipBox>PRO TIP`</TipBox>
+                <TipBox className='p-4'>PRO TIP</TipBox>
               </Localized>
             </div>
           </div>

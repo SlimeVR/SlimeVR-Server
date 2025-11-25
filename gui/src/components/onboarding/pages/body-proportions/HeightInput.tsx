@@ -1,8 +1,6 @@
 import { Typography } from '@/components/commons/Typography';
 import { useBreakpoint } from '@/hooks/breakpoint';
-import {
-  EYE_HEIGHT_TO_HEIGHT_RATIO,
-} from '@/hooks/height';
+import { EYE_HEIGHT_TO_HEIGHT_RATIO } from '@/hooks/height';
 import { useLocaleConfig } from '@/i18n/config';
 import classNames from 'classnames';
 import convert from 'convert';
@@ -16,15 +14,27 @@ function IncrementButton({
 }: {
   value: number;
   disabled?: boolean;
-  unit: 'ft' | 'inch' | 'cm';
+  unit: 'foot' | 'inch' | 'cm';
   onClick: () => void;
 }) {
   const { isMd } = useBreakpoint('md');
+  const { currentLocales } = useLocaleConfig();
+
+  const format = useMemo(() => {
+    if (unit == 'cm') return `${value > 0 ? '+' : ''}${value}`;
+    const feetFormatter = new Intl.NumberFormat(currentLocales, {
+      style: 'unit',
+      unit: unit,
+      unitDisplay: 'narrow',
+      maximumFractionDigits: 0,
+    });
+    return `${value > 0 ? '+' : ''}${feetFormatter.format(value)}`;
+  }, [currentLocales, value]);
 
   return (
     <div
       className={classNames(
-        'flex md:aspect-square rounded-md items-center justify-center flex-row md:flex-col  w-fit gap-1 p-3 md:p-2 md:w-auto',
+        'flex md:aspect-square rounded-md items-center justify-center flex-row md:flex-col w-full gap-1 p-3 md:p-2 md:w-[75px]',
         {
           'cursor-not-allowed bg-background-80 opacity-50': disabled,
           'bg-background-60 hover:bg-background-50 cursor-pointer': !disabled,
@@ -36,7 +46,7 @@ function IncrementButton({
         variant={isMd ? 'main-title' : 'section-title'}
         color={disabled ? 'text-background-40' : 'primary'}
       >
-        {value > 0 ? `+${value}` : value}
+        {format}
       </Typography>
       <Typography
         id={`unit-${unit}`}
@@ -73,10 +83,10 @@ function UnitSelector({
   );
 }
 
-function formatHeightWithIntl(meters: number, locale: string[]) {
-  const totalInches = convert(meters, 'meter').to('inch');
-  const feet = Math.trunc(totalInches / 12);
-  const inches = Math.round(totalInches % 12);
+function formatInFoot(meters: number, locale: string[]) {
+  const totalInches = Math.round(convert(meters, 'meter').to('inch'));
+  const feet = Math.floor(totalInches / 12);
+  const inches = totalInches % 12;
 
   const feetFormatter = new Intl.NumberFormat(locale, {
     style: 'unit',
@@ -95,49 +105,66 @@ function formatHeightWithIntl(meters: number, locale: string[]) {
   return `${feetFormatter.format(feet)} ${inchFormatter.format(inches)}`;
 }
 
-const roundHeight = (value: number): number => Math.round(value * 1000) / 1000;
+const round4Digit = (value: number) => Math.round(value * 10000) / 10000;
 
-export function HeightSelectionInput({ disabled = false, hmdHeight, setHmdHeight }: { disabled?: boolean, hmdHeight: number, setHmdHeight: (height: number) => void }) {
+export function HeightSelectionInput({
+  disabled = false,
+  hmdHeight,
+  setHmdHeight,
+}: {
+  disabled?: boolean;
+  hmdHeight: number;
+  setHmdHeight: (height: number) => void;
+}) {
   if (!hmdHeight) disabled = true;
 
   const [unit, setUnit] = useState<'meter' | 'foot'>('meter');
   const { currentLocales } = useLocaleConfig();
 
-  const formatedHeight = useMemo(() => {
-    if (!hmdHeight) return '--'
+  const formattedHeight = useMemo(() => {
+    if (!hmdHeight) return '--';
 
-    const fullHeight = roundHeight(
-      (hmdHeight && hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO)
-    );
-    if (unit === 'meter')
+    const fullHeight = hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
+    const displayHeight = round4Digit(fullHeight);
+
+    if (unit === 'meter') {
       return new Intl.NumberFormat(currentLocales, {
         style: 'unit',
         unit: 'meter',
         maximumFractionDigits: 2,
         minimumFractionDigits: 2,
-      }).format(fullHeight);
-    else return formatHeightWithIntl(fullHeight, currentLocales);
+      }).format(displayHeight);
+    }
+
+    return formatInFoot(displayHeight, currentLocales);
   }, [hmdHeight, unit]);
 
-  const increment = (unit: 'inch' | 'cm', value: number) => {
-    const headsetHeight = roundHeight(
-      (hmdHeight && hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO) * EYE_HEIGHT_TO_HEIGHT_RATIO
-    );
+  const fullHeight = hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
+  const minimalHeight = fullHeight - 0.01 < 0.9;
+  const minimalHeight10cm = fullHeight - 0.1 < 0.9;
+  const maximumHeight = fullHeight + 0.01 > 2.4;
+  const maximumHeight10cm = fullHeight + 0.1 > 2.4;
 
-    const newValue = headsetHeight + convert(value, unit).to('cm') / 100;
-    setHmdHeight(newValue);
+  const increment = (unit: 'inch' | 'cm' | 'foot', value: number) => {
+    const incrementInMeters = convert(value, unit).to('meter');
+    const oldFull = hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
+    const newFull = oldFull + incrementInMeters;
+    const newEye = newFull * EYE_HEIGHT_TO_HEIGHT_RATIO;
+
+    setHmdHeight(round4Digit(newEye));
   };
-
-
-  const minimalHeight = hmdHeight <= 0.81;
-  const minimalHeight10cm = hmdHeight <= 0.91;
 
   return (
     <div className="flex gap-2 md:h-[75px] w-full flex-col md:flex-row items-center">
-      <div className="flex gap-2 h-full">
+      <div className="grid grid-cols-2 gap-2 h-full">
         {unit === 'foot' && (
           <>
-            <div className="aspect-square bg-background-80 opacity-50 rounded-md items-center justify-center flex-col hidden md:flex" />
+            <IncrementButton
+              value={-1}
+              unit={'foot'}
+              onClick={() => increment('foot', -1)}
+              disabled={disabled || minimalHeight}
+            />
             <IncrementButton
               value={-1}
               unit={'inch'}
@@ -165,7 +192,7 @@ export function HeightSelectionInput({ disabled = false, hmdHeight, setHmdHeight
       </div>
       <div className="flex w-full md:w-auto md:flex-grow bg-background-60 rounded-md px-2 py-2 h-full">
         <div className="h-full flex items-center flex-grow justify-center min-w-24">
-          <Typography variant="main-title">{formatedHeight}</Typography>
+          <Typography variant="main-title">{formattedHeight}</Typography>
         </div>
         <div className="w-28 md:w-20 h-full gap-2 grid grid-rows-1 grid-cols-2 md:grid-rows-2 md:grid-cols-1 p-1">
           <UnitSelector
@@ -180,7 +207,7 @@ export function HeightSelectionInput({ disabled = false, hmdHeight, setHmdHeight
           />
         </div>
       </div>
-      <div className="flex gap-2 h-full">
+      <div className="grid grid-cols-2 gap-2 h-full">
         {unit === 'foot' && (
           <>
             <IncrementButton
@@ -189,7 +216,13 @@ export function HeightSelectionInput({ disabled = false, hmdHeight, setHmdHeight
               onClick={() => increment('inch', 1)}
               disabled={disabled}
             />
-            <div className="aspect-square bg-background-80 opacity-50 rounded-md items-center justify-center flex-col hidden md:flex" />
+            <IncrementButton
+              value={1}
+              unit={'foot'}
+              onClick={() => increment('foot', 1)}
+              disabled={disabled}
+            />
+            {/* <div className="aspect-square bg-background-80 opacity-50 rounded-md items-center justify-center flex-col hidden md:flex" /> */}
           </>
         )}
         {unit === 'meter' && (
@@ -198,13 +231,13 @@ export function HeightSelectionInput({ disabled = false, hmdHeight, setHmdHeight
               value={1}
               unit={'cm'}
               onClick={() => increment('cm', 1)}
-              disabled={disabled}
+              disabled={disabled || maximumHeight}
             />
             <IncrementButton
               value={10}
               unit={'cm'}
               onClick={() => increment('cm', 10)}
-              disabled={disabled}
+              disabled={disabled || maximumHeight10cm}
             />
           </>
         )}

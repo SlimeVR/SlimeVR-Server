@@ -9,10 +9,8 @@ import { PutTrackersOnStep } from './autobone-steps/PutTrackersOn';
 import { Recording } from './autobone-steps/Recording';
 import { StartRecording } from './autobone-steps/StartRecording';
 import { VerifyResultsStep } from './autobone-steps/VerifyResults';
-import { CheckHeightStep } from './autobone-steps/CheckHeight';
 import { PreparationStep } from './autobone-steps/Preparation';
 import { HeightContextC, useProvideHeightContext } from '@/hooks/height';
-import { CheckFloorHeightStep } from './autobone-steps/CheckFloorHeight';
 
 export function AutomaticProportionsPage() {
   const { l10n } = useLocalization();
@@ -45,8 +43,6 @@ export function AutomaticProportionsPage() {
                 steps={[
                   { type: 'numbered', component: PutTrackersOnStep },
                   { type: 'numbered', component: RequirementsStep },
-                  { type: 'numbered', component: CheckHeightStep },
-                  { type: 'numbered', component: CheckFloorHeightStep },
                   { type: 'numbered', component: PreparationStep },
                   { type: 'numbered', component: StartRecording },
                   { type: 'fullsize', component: Recording },

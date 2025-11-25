@@ -29,7 +29,7 @@ tips-failed_webgl = Failed to initialize WebGL.
 
 ## Units
 unit-meter = Meter
-unit-foot = Feet
+unit-foot = Foot
 unit-inch = Inch
 unit-cm = cm
 
@@ -1304,8 +1304,9 @@ onboarding-scaled_proportions-done-description = Your body proportions should no
 onboarding-user_height-title = What is your Height?
 onboarding-user_height-description = We need your height to calculate your body proportions and accurately represent your movements. You can either let SlimeVR Calculate it or input your height manually
 onboarding-user_height-need_head_tracker = An HMD (or Head tracker) is required to perform the calibration
-onboarding-user_height-calculate = Calculate my Height
+onboarding-user_height-calculate = Calculate my height Automatically
 onboarding-user_height-next_step = Continue and save
+onboarding-user_height-manual-proportions = Manual Proportions
 onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with a Controller
 onboarding-user_height-calibration-WAITING_FOR_RISE = Stand back up
 onboarding-user_height-calibration-WAITING_FOR_RISE-no_floor = Stand up
@@ -1315,7 +1316,7 @@ onboarding-user_height-calibration-ERROR_TIMEOUT = Calibration timmed out. Try a
 onboarding-user_height-calibration-ERROR_TOO_HIGH = The detected user height is too high. Try again
 onboarding-user_height-calibration-ERROR_TOO_SMALL = The detected user height is too small. Try again
 onboarding-user_height-calibration-error = Calibration Failed
-
+onboarding-user_height-manual-tip = While adjusting your height, move your body around. Try to sit and see how the sekeleton match your body
 
 ## Stay Aligned setup
 onboarding-stay_aligned-title = Stay Aligned
