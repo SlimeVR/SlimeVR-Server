@@ -255,7 +255,6 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 
 		if (hmdPositionSamples.isAtFullCapacity) {
 			val std = calculatePositionStdDev(hmdPositionSamples)
-			println("STD $std")
 			val isStable = std <= POSITION_STD_DEV_THRESHOLD
 
 			if (isStable) {
