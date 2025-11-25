@@ -1137,22 +1137,27 @@ onboarding-assign_trackers-warning-WAIST = Waist is assigned but you need { $una
 } to also be assigned!
 onboarding-assign_trackers-warning-LEFT_TOES_ABDUCTOR_HALLUCIS = Left Big Toe is assigned but you need { $unassigned ->
     [0] the left foot
-    *[unknown] Unknown unassigned body part} to also be assigned!
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
 onboarding-assign_trackers-warning-LEFT_TOES_DIGITORUM_BREVIS = Left Middle Toes are assigned but you need { $unassigned ->
     [0] the left foot
-     *[unknown] Unknown unassigned body part} to also be assigned!
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
 onboarding-assign_trackers-warning-LEFT_TOES_ABDUCTOR_DIGITI_MINIMI = Left  Pinky Toe is assigned but you need { $unassigned ->
     [0] the left foot
     *[unknown] Unknown unassigned body part} to also be assigned!
 onboarding-assign_trackers-warning-RIGHT_TOES_ABDUCTOR_HALLUCIS = Right Big Toe is assigned but you need { $unassigned ->
     [0] the right foot
-    *[unknown] Unknown unassigned body part} to also be assigned!
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
 onboarding-assign_trackers-warning-RIGHT_TOES_DIGITORUM_BREVIS = Right Middle Toes are assigned but you need { $unassigned ->
     [0] the right foot
-    *[unknown] Unknown unassigned body part} to also be assigned!
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
 onboarding-assign_trackers-warning-RIGHT_TOES_ABDUCTOR_DIGITI_MINIMI = Right Pinky Toe is assigned but you need { $unassigned ->
     [0] the right foot
-    *[unknown] Unknown unassigned body part} to also be assigned!
+    *[unknown] Unknown unassigned body part
+} to also be assigned!
 ## Tracker mounting method choose
 onboarding-choose_mounting = What mounting calibration method to use?
 # Multiline text
