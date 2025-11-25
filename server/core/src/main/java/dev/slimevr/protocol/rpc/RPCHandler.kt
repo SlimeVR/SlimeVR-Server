@@ -198,16 +198,18 @@ class RPCHandler(private val api: ProtocolAPI) : ProtocolHandler<RpcMessageHeade
 			return
 		}
 
-		api.server.humanPoseManager.resetOffsets()
-		api.server.humanPoseManager.saveConfig()
-		api.server.configManager.saveConfig()
+		api.server.queueTask {
+			api.server.humanPoseManager.resetOffsets()
+			api.server.humanPoseManager.saveConfig()
+			api.server.configManager.saveConfig()
 
-		// might not be a good idea maybe let the client ask again
-		val fbb = FlatBufferBuilder(300)
-		val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
-		val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config, messageHeader)
-		fbb.finish(outbound)
-		conn.send(fbb.dataBuffer())
+			// might not be a good idea maybe let the client ask again
+			val fbb = FlatBufferBuilder(300)
+			val config = createSkeletonConfig(fbb, api.server.humanPoseManager)
+			val outbound = this.createRPCMessage(fbb, RpcMessage.SkeletonConfigResponse, config, messageHeader)
+			fbb.finish(outbound)
+			conn.send(fbb.dataBuffer())
+		}
 	}
 
 	fun onSkeletonConfigRequest(conn: GenericConnection, messageHeader: RpcMessageHeader) {

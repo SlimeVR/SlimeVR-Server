@@ -18,7 +18,7 @@ import {
   SkeletonConfigResponseT,
   SkeletonHeightT,
   SkeletonResetAllRequestT,
-  StartUserHeightCalibationT,
+  StartUserHeightCalibrationT,
   UserHeightCalibrationStatus,
   UserHeightRecordingStatusResponseT,
 } from 'solarxr-protocol';
@@ -91,8 +91,8 @@ export function ScaledProportionsPage() {
 
   const start = () => {
     sendRPCPacket(
-      RpcMessage.StartUserHeightCalibation,
-      new StartUserHeightCalibationT()
+      RpcMessage.StartUserHeightCalibration,
+      new StartUserHeightCalibrationT()
     );
   };
 
