@@ -20,7 +20,7 @@ class RPCUserHeightCalibration(var rpcHandler: RPCHandler, var api: ProtocolAPI)
 		)
 
 		rpcHandler.registerPacketListener(
-			RpcMessage.StartUserHeightCalibation,
+			RpcMessage.StartUserHeightCalibration,
 			::onStartUserHeightCalibration,
 		)
 		rpcHandler.registerPacketListener(
