@@ -1309,7 +1309,6 @@ onboarding-user_height-next_step = Continue and save
 onboarding-user_height-manual-proportions = Manual Proportions
 onboarding-user_height-calibration-RECORDING_FLOOR = Touch the floor with the tip of your controller
 onboarding-user_height-calibration-WAITING_FOR_RISE = Stand back up
-onboarding-user_height-calibration-WAITING_FOR_RISE-no_floor = Stand up
 onboarding-user_height-calibration-WAITING_FOR_FW_LOOK = Look forward
 onboarding-user_height-calibration-RECORDING_HEIGHT = Stand still!
 onboarding-user_height-calibration-ERROR_TIMEOUT = Calibration timmed out. Try again

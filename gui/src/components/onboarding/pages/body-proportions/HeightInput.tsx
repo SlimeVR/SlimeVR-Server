@@ -34,7 +34,7 @@ function IncrementButton({
   return (
     <div
       className={classNames(
-        'flex xs:aspect-square rounded-md items-center justify-center flex-row xs:flex-col w-full gap-1 p-3 xs:p-2 xs:w-[75px]',
+        'flex rounded-md items-center justify-center flex-row xs:flex-col w-full gap-1 p-3 xs:p-2 xs:w-[75px] xs:h-[75px]',
         {
           'cursor-not-allowed bg-background-80 opacity-50': disabled,
           'bg-background-50 hover:bg-background-40 cursor-pointer': !disabled,
@@ -65,8 +65,6 @@ function UnitSelector({
   active: boolean;
   onClick: () => void;
 }) {
-  const { isSm } = useBreakpoint('sm');
-
   return (
     <div
       className={classNames(

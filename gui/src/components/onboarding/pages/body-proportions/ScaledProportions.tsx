@@ -68,6 +68,7 @@ function UserHeightStep({
 const statusSteps = [
   UserHeightCalibrationStatus.NONE,
   UserHeightCalibrationStatus.RECORDING_FLOOR,
+  UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH,
   UserHeightCalibrationStatus.WAITING_FOR_RISE,
   UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK,
   UserHeightCalibrationStatus.RECORDING_HEIGHT,
@@ -87,6 +88,7 @@ const statusToImage: Record<UserHeightCalibrationStatus, string | null> = {
     '/images/user-height/touch-floor.webp',
   [UserHeightCalibrationStatus.WAITING_FOR_RISE]:
     '/images/user-height/stand-still.webp',
+  [UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH]: null,
   [UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK]: null,
   [UserHeightCalibrationStatus.RECORDING_HEIGHT]:
     '/images/user-height/stand-still.webp',
@@ -112,38 +114,33 @@ function UserHeightStatus({
         <div className="flex flex-col">
           {!errorSteps.includes(status.status) ? (
             <div className="py-2">
-              {status.canDoFloorHeight ? (
-                <>
-                  <UserHeightStep
-                    done={
-                      status.status >
-                      statusSteps.indexOf(
-                        UserHeightCalibrationStatus.RECORDING_FLOOR
-                      )
-                    }
-                    text="onboarding-user_height-calibration-RECORDING_FLOOR"
-                  />
-                  <UserHeightStep
-                    done={
-                      status.status >
-                      statusSteps.indexOf(
-                        UserHeightCalibrationStatus.WAITING_FOR_RISE
-                      )
-                    }
-                    text="onboarding-user_height-calibration-WAITING_FOR_RISE"
-                  />
-                </>
-              ) : (
-                <UserHeightStep
-                  done={
-                    status.status >
-                    statusSteps.indexOf(
-                      UserHeightCalibrationStatus.WAITING_FOR_RISE
-                    )
-                  }
-                  text="onboarding-user_height-calibration-WAITING_FOR_RISE-no_floor"
-                />
-              )}
+              <UserHeightStep
+                done={
+                  status.status >
+                  statusSteps.indexOf(
+                    UserHeightCalibrationStatus.RECORDING_FLOOR
+                  )
+                }
+                text="onboarding-user_height-calibration-RECORDING_FLOOR"
+              />
+              <UserHeightStep
+                done={
+                  status.status >
+                  statusSteps.indexOf(
+                    UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH
+                  )
+                }
+                text="onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH"
+              />
+              <UserHeightStep
+                done={
+                  status.status >
+                  statusSteps.indexOf(
+                    UserHeightCalibrationStatus.WAITING_FOR_RISE
+                  )
+                }
+                text="onboarding-user_height-calibration-WAITING_FOR_RISE"
+              />
               <UserHeightStep
                 done={
                   status.status >
@@ -164,7 +161,7 @@ function UserHeightStatus({
               />
             </div>
           ) : (
-            <div className="p-4 outline outline-status-critical rounded-lg">
+            <div className="m-4 p-2 outline outline-status-critical rounded-lg">
               <Typography
                 variant="section-title"
                 id="onboarding-user_height-calibration-error"
@@ -177,7 +174,7 @@ function UserHeightStatus({
         </div>
       </div>
 
-      <div className="flex flex-grow justify-center items-center min-h-0">
+      <div className="flex flex-grow justify-center h-full min-h-0 items-center">
         {statusToImage[status.status] && (
           <div className="h-full w-full flex justify-center">
             <img
@@ -187,9 +184,9 @@ function UserHeightStatus({
           </div>
         )}
         {status.status === UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK && (
-          <div className="h-full w-full">
+          <div className="h-full w-full flex p-2">
             <div className="grid xs:grid-rows-3 h-full w-full gap-3">
-              <div className="bg-background-60 rounded-md flex gap-4 justify-between items-center px-4 relative">
+              <div className="bg-background-70 rounded-md flex gap-4 justify-between items-center px-4 relative">
                 <CheckIcon className="md:w-12 sm:w-8 w-6 h-auto absolute top-2 left-4 fill-status-success" />
                 <img
                   className="object-cover h-full aspect-square"
@@ -199,7 +196,7 @@ function UserHeightStatus({
                   Make sure your head is leveled
                 </Typography>
               </div>
-              <div className="bg-background-60 rounded-md flex gap-4 justify-between items-center px-4 relative">
+              <div className="bg-background-70 rounded-md flex gap-4 justify-between items-center px-4 relative">
                 <CrossIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 left-2 fill-status-critical" />
 
                 <img
@@ -210,7 +207,7 @@ function UserHeightStatus({
                   Do not look at the floor
                 </Typography>
               </div>
-              <div className="bg-background-60 rounded-md flex gap-4 justify-between items-center px-4 relative">
+              <div className="bg-background-70 rounded-md flex gap-4 justify-between items-center px-4 relative">
                 <CrossIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 left-2 fill-status-critical" />
                 <img
                   className="object-cover h-full aspect-square"
@@ -260,13 +257,15 @@ export function ScaledProportionsPage() {
       if (
         !status ||
         errorSteps.includes(status.status) ||
-        status.status == UserHeightCalibrationStatus.NONE
+        status.status == UserHeightCalibrationStatus.NONE ||
+        status.status == UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK ||
+        status.status == UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH
       )
         return;
       playTapSetupSound();
     },
     [status?.status],
-    200
+    300
   );
 
   const applyHeight = (newHeight: number) => {
@@ -365,7 +364,7 @@ export function ScaledProportionsPage() {
         )}
         <div
           className={classNames(
-            'flex-grow transition-opacity duration-200 overflow-clip',
+            'flex-grow transition-opacity duration-200 overflow-hidden',
             { 'opacity-0': !auto, 'opacity-100 pointer-events-auto': auto }
           )}
         >
