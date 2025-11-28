@@ -1,14 +1,7 @@
 import { useOnboarding } from '@/hooks/onboarding';
 import { Typography } from '@/components/commons/Typography';
-import {
-  DEFAULT_FULL_HEIGHT,
-  EYE_HEIGHT_TO_HEIGHT_RATIO,
-  HeightContextC,
-  useProvideHeightContext,
-} from '@/hooks/height';
+import { DEFAULT_FULL_HEIGHT } from '@/hooks/height';
 import { Button } from '@/components/commons/Button';
-import { Localized } from '@fluent/react';
-import { TipBox } from '@/components/commons/TipBox';
 import { useAtomValue } from 'jotai';
 import { serverGuardsAtom } from '@/store/app-store';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
@@ -31,11 +24,14 @@ import { HeightSelectionInput } from './HeightInput';
 import { Tooltip } from '@/components/commons/Tooltip';
 import classNames from 'classnames';
 import { SkeletonVisualizerWidget } from '@/components/widgets/SkeletonVisualizerWidget';
-import { ResetButton } from '@/components/home/ResetButton';
 import { Vector3 } from 'three';
 import { CheckIcon } from '@/components/commons/icon/CheckIcon';
 import { useDebouncedEffect } from '@/hooks/timeout';
 import { playTapSetupSound } from '@/sounds/sounds';
+import { CrossIcon } from '@/components/commons/icon/CrossIcon';
+import { TipBox } from '@/components/commons/TipBox';
+import { Localized } from '@fluent/react';
+import { ResetButton } from '@/components/home/ResetButton';
 
 function UserHeightStep({
   done = false,
@@ -84,10 +80,157 @@ const errorSteps = [
   UserHeightCalibrationStatus.ERROR_TOO_SMALL,
 ];
 
+const statusToImage: Record<UserHeightCalibrationStatus, string | null> = {
+  [UserHeightCalibrationStatus.NONE]: null,
+  [UserHeightCalibrationStatus.DONE]: '/images/user-height/done.webp',
+  [UserHeightCalibrationStatus.RECORDING_FLOOR]:
+    '/images/user-height/touch-floor.webp',
+  [UserHeightCalibrationStatus.WAITING_FOR_RISE]:
+    '/images/user-height/stand-still.webp',
+  [UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK]: null,
+  [UserHeightCalibrationStatus.RECORDING_HEIGHT]:
+    '/images/user-height/stand-still.webp',
+  [UserHeightCalibrationStatus.ERROR_TIMEOUT]:
+    '/images/user-height/timeout.webp',
+  [UserHeightCalibrationStatus.ERROR_TOO_HIGH]:
+    '/images/user-height/wrong-height.webp',
+  [UserHeightCalibrationStatus.ERROR_TOO_SMALL]:
+    '/images/user-height/wrong-height.webp',
+};
+
+function UserHeightStatus({
+  status,
+}: {
+  status: UserHeightRecordingStatusResponseT;
+}) {
+  return (
+    <div className="flex flex-col h-full rounded-t-lg xs:rounded-b-lg bg-background-60 xs:py-2 px-2 pt-4 relative">
+      <div className="flex flex-col bg-background-60 rounded-lg">
+        <div className="px-4">
+          <Typography variant="mobile-title">Calibration progress</Typography>
+        </div>
+        <div className="flex flex-col">
+          {!errorSteps.includes(status.status) ? (
+            <div className="py-2">
+              {status.canDoFloorHeight ? (
+                <>
+                  <UserHeightStep
+                    done={
+                      status.status >
+                      statusSteps.indexOf(
+                        UserHeightCalibrationStatus.RECORDING_FLOOR
+                      )
+                    }
+                    text="onboarding-user_height-calibration-RECORDING_FLOOR"
+                  />
+                  <UserHeightStep
+                    done={
+                      status.status >
+                      statusSteps.indexOf(
+                        UserHeightCalibrationStatus.WAITING_FOR_RISE
+                      )
+                    }
+                    text="onboarding-user_height-calibration-WAITING_FOR_RISE"
+                  />
+                </>
+              ) : (
+                <UserHeightStep
+                  done={
+                    status.status >
+                    statusSteps.indexOf(
+                      UserHeightCalibrationStatus.WAITING_FOR_RISE
+                    )
+                  }
+                  text="onboarding-user_height-calibration-WAITING_FOR_RISE-no_floor"
+                />
+              )}
+              <UserHeightStep
+                done={
+                  status.status >
+                  statusSteps.indexOf(
+                    UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK
+                  )
+                }
+                text="onboarding-user_height-calibration-WAITING_FOR_FW_LOOK"
+              />
+              <UserHeightStep
+                done={
+                  status.status >
+                  statusSteps.indexOf(
+                    UserHeightCalibrationStatus.RECORDING_HEIGHT
+                  )
+                }
+                text="onboarding-user_height-calibration-RECORDING_HEIGHT"
+              />
+            </div>
+          ) : (
+            <div className="p-4 outline outline-status-critical rounded-lg">
+              <Typography
+                variant="section-title"
+                id="onboarding-user_height-calibration-error"
+              />
+              <Typography
+                id={`onboarding-user_height-calibration-${UserHeightCalibrationStatus[status.status]}`}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="flex flex-grow justify-center items-center min-h-0">
+        {statusToImage[status.status] && (
+          <div className="h-full w-full flex justify-center">
+            <img
+              className="object-contain h-full"
+              src={statusToImage[status.status]!}
+            />
+          </div>
+        )}
+        {status.status === UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK && (
+          <div className="h-full w-full">
+            <div className="grid xs:grid-rows-3 h-full w-full gap-3">
+              <div className="bg-background-60 rounded-md flex gap-4 justify-between items-center px-4 relative">
+                <CheckIcon className="md:w-12 sm:w-8 w-6 h-auto absolute top-2 left-4 fill-status-success" />
+                <img
+                  className="object-cover h-full aspect-square"
+                  src={'/images/user-height/look-forward-ok.webp'}
+                />
+                <Typography variant="main-title">
+                  Make sure your head is leveled
+                </Typography>
+              </div>
+              <div className="bg-background-60 rounded-md flex gap-4 justify-between items-center px-4 relative">
+                <CrossIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 left-2 fill-status-critical" />
+
+                <img
+                  className="object-cover h-full aspect-square"
+                  src={'/images/user-height/look-forward-low.webp'}
+                />
+                <Typography variant="main-title">
+                  Do not look at the floor
+                </Typography>
+              </div>
+              <div className="bg-background-60 rounded-md flex gap-4 justify-between items-center px-4 relative">
+                <CrossIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 left-2 fill-status-critical" />
+                <img
+                  className="object-cover h-full aspect-square"
+                  src={'/images/user-height/look-forward-high.webp'}
+                />
+                <Typography variant="main-title">
+                  Do not look too high up
+                </Typography>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function ScaledProportionsPage() {
   const [hmdHeight, setHmdHeight] = useState(0);
   const { applyProgress, state } = useOnboarding();
-  const heightContext = useProvideHeightContext();
 
   const serverGuards = useAtomValue(serverGuardsAtom);
 
@@ -186,7 +329,13 @@ export function ScaledProportionsPage() {
     if (status && checkNotAuto(status.status)) {
       const id = setTimeout(
         () => {
-          if (status && checkNotAuto(status.status)) setAuto(false);
+          if (status && checkNotAuto(status.status)) {
+            setAuto(false);
+            sendRPCPacket(
+              RpcMessage.SkeletonConfigRequest,
+              new SkeletonConfigRequestT()
+            ); // Re ask the user height so it resets back to the correct value
+          }
         },
         status.status === UserHeightCalibrationStatus.DONE ? 5000 : 10_000
       );
@@ -197,196 +346,106 @@ export function ScaledProportionsPage() {
   }, [status]);
 
   return (
-    <HeightContextC.Provider value={heightContext}>
-      <div
-        className={classNames('flex bg-background-80 gap-2 w-full h-full', {
+    <div
+      className={classNames(
+        'flex gap-2 w-full h-full relative justify-center z-10',
+        {
           'p-4': !state.alonePage,
-        })}
-      >
+          'bg-background-70': state.alonePage,
+        }
+      )}
+    >
+      <div className="h-full max-w-2xl w-full flex flex-col justify-end xs:py-2 z-10 xs:gap-2 pointer-events-none">
+        {!auto && (
+          <div className="p-0 xs:p-2">
+            <Localized id="onboarding-user_height-manual-tip">
+              <TipBox className="p-2 xs:p-4">PRO TIP</TipBox>
+            </Localized>
+          </div>
+        )}
         <div
-          className={classNames('flex rounded-lg p-4 flex-grow', {
-            'bg-background-70': state.alonePage,
-          })}
+          className={classNames(
+            'flex-grow transition-opacity duration-200 overflow-clip',
+            { 'opacity-0': !auto, 'opacity-100 pointer-events-auto': auto }
+          )}
         >
-          <div className="justify-center items-center flex flex-grow flex-col">
-            <div className="flex flex-col gap-3 max-w-xl flex-grow justify-center">
-              <Typography
-                variant="main-title"
-                id="onboarding-user_height-title"
-              />
-              <div>
-                <Typography id="onboarding-user_height-description" />
-              </div>
-              <HeightSelectionInput
-                hmdHeight={hmdHeight}
-                setHmdHeight={(height) => {
-                  applyHeight(height)
-                  setAuto(false)
-                }}
-              />
-              <Tooltip
-                disabled={serverGuards?.canDoUserHeightCalibration}
-                preferedDirection="bottom"
-                content={
-                  <Typography id="onboarding-user_height-need_head_tracker" />
-                }
-              >
-                <Button
-                  variant="primary"
-                  disabled={!serverGuards?.canDoUserHeightCalibration}
-                  onClick={start}
-                  id="onboarding-user_height-calculate"
-                />
-              </Tooltip>
-            </div>
-            <div className="flex w-full gap-2 justify-between">
-              <div>
-                {state.alonePage && (
-                  <Button
-                    variant="secondary"
-                    id="onboarding-user_height-manual-proportions"
-                    to="/onboarding/body-proportions/manual"
-                    state={{ alonePage: state.alonePage }}
-                  />
-                )}
-              </div>
-              {!state.alonePage && (
-                <Button
-                  variant="primary"
-                  id="onboarding-user_height-next_step"
-                />
-              )}
-            </div>
-          </div>
+          {status && <UserHeightStatus status={status} />}
         </div>
-        <div className="flex w-1/3 bg-background-70 rounded-lg relative flex-col h-full">
-          <div
-            className={classNames(
-              'absolute h-full w-full transition-opacity duration-300 p-4',
-              { 'opacity-100': auto, 'opacity-0': !auto }
-            )}
-          >
-            {status && (
-              <div className="flex flex-col h-full">
-                <div className="flex flex-col">
-                  {!errorSteps.includes(status.status) ? (
-                    <div className="rounded-lg py-4 bg-background-60">
-                      {status.canDoFloorHeight ? (
-                        <>
-                          <UserHeightStep
-                            done={
-                              status.status >
-                              statusSteps.indexOf(
-                                UserHeightCalibrationStatus.RECORDING_FLOOR
-                              )
-                            }
-                            text="onboarding-user_height-calibration-RECORDING_FLOOR"
-                          />
-                          <UserHeightStep
-                            done={
-                              status.status >
-                              statusSteps.indexOf(
-                                UserHeightCalibrationStatus.WAITING_FOR_RISE
-                              )
-                            }
-                            text="onboarding-user_height-calibration-WAITING_FOR_RISE"
-                          />
-                        </>
-                      ) : (
-                        <UserHeightStep
-                          done={
-                            status.status >
-                            statusSteps.indexOf(
-                              UserHeightCalibrationStatus.WAITING_FOR_RISE
-                            )
-                          }
-                          text="onboarding-user_height-calibration-WAITING_FOR_RISE-no_floor"
-                        />
-                      )}
-                      <UserHeightStep
-                        done={
-                          status.status >
-                          statusSteps.indexOf(
-                            UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK
-                          )
-                        }
-                        text="onboarding-user_height-calibration-WAITING_FOR_FW_LOOK"
-                      />
-                      <UserHeightStep
-                        done={
-                          status.status >
-                          statusSteps.indexOf(
-                            UserHeightCalibrationStatus.RECORDING_HEIGHT
-                          )
-                        }
-                        text="onboarding-user_height-calibration-RECORDING_HEIGHT"
-                      />
-                    </div>
-                  ) : (
-                    <div className="rounded-lg bg-background-60 p-4 outline outline-status-critical">
-                      <Typography
-                        variant="section-title"
-                        id="onboarding-user_height-calibration-error"
-                      />
-                      <Typography
-                        id={`onboarding-user_height-calibration-${UserHeightCalibrationStatus[status.status]}`}
-                      />
-                    </div>
-                  )}
-                </div>
 
-                <div className="flex flex-grow justify-center min-h-0">
-                  <img
-                    className="object-contain h-full"
-                    src={
-                      errorSteps.includes(status.status)
-                        ? '/images/nighty-height-error.webp'
-                        : '/images/nighty-height-question.webp'
-                    }
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-          <div
-            className={classNames(
-              'w-full flex flex-grow transition-opacity duration-300 overflow-clip',
-              {
-                'opacity-100': !auto,
-                'opacity-0': auto,
-              }
-            )}
+        <div
+          className={classNames(
+            'flex flex-col gap-3 p-4 bg-background-60 rounded-b-lg xs:rounded-t-lg pointer-events-auto',
+            { 'rounded-t-lg': !auto }
+          )}
+        >
+          <Typography
+            variant="mobile-title"
+            id="onboarding-user_height-title"
+          />
+          <HeightSelectionInput
+            hmdHeight={hmdHeight}
+            setHmdHeight={(height) => {
+              applyHeight(height);
+              setAuto(false);
+            }}
+          />
+          <Tooltip
+            disabled={serverGuards?.canDoUserHeightCalibration}
+            preferedDirection="top"
+            content={
+              <Typography id="onboarding-user_height-need_head_tracker" />
+            }
           >
-            <SkeletonVisualizerWidget
-              onInit={(context) => {
-                context.addView({
-                  left: 0,
-                  bottom: 0,
-                  width: 1,
-                  height: 1,
-                  position: new Vector3(3, 2.5, -3),
-                  onHeightChange(v, newHeight) {
-                    v.controls.target.set(0, newHeight / 2, 0);
-                    const scale = Math.max(1, newHeight) / 1.2;
-                    v.camera.zoom = 1 / scale;
-                  },
-                });
-              }}
+            <Button
+              variant="primary"
+              disabled={!serverGuards?.canDoUserHeightCalibration}
+              onClick={start}
+              id="onboarding-user_height-calculate"
             />
-            <div className="absolute w-full p-4 flex h-20">
-              <ResetButton
-                type={ResetType.Full}
-                className="w-full h-full bg-background-50 hover:bg-background-40 text-background-10"
+          </Tooltip>
+          <div className="w-full flex justify-between">
+            {state.alonePage && (
+              <>
+                <Button
+                  variant="tertiary"
+                  id="onboarding-user_height-manual-proportions"
+                  to="/onboarding/body-proportions/manual"
+                  state={{ alonePage: state.alonePage }}
+                />
+                <ResetButton
+                  type={ResetType.Full}
+                  className="bg-background-50 hover:bg-background-40 text-background-10"
+                />
+              </>
+            )}
+            {!state.alonePage && (
+              <Button
+                variant="primary"
+                id="onboarding-user_height-next_step"
+                to="/"
               />
-            </div>
-            <div className="absolute bottom-0 p-4 w-full">
-              <Localized id="onboarding-user_height-manual-tip">
-                <TipBox className="p-4">PRO TIP</TipBox>
-              </Localized>
-            </div>
+            )}
           </div>
         </div>
       </div>
-    </HeightContextC.Provider>
+      <div className="absolute top-0 left-0 w-full h-full">
+        <SkeletonVisualizerWidget
+          onInit={(context) => {
+            context.addView({
+              left: 0,
+              bottom: 0,
+              width: 1,
+              height: 1,
+              position: new Vector3(3, 2.5, -3),
+              onHeightChange(v, newHeight) {
+                v.controls.target.set(0, newHeight / 2.9, 0);
+                const scale = Math.max(1, newHeight) / 1;
+                v.camera.zoom = 1 / scale;
+              },
+            });
+          }}
+        />
+      </div>
+    </div>
   );
 }

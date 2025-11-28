@@ -17,7 +17,7 @@ function IncrementButton({
   unit: 'foot' | 'inch' | 'cm';
   onClick: () => void;
 }) {
-  const { isMd } = useBreakpoint('md');
+  const { isXs } = useBreakpoint('xs');
   const { currentLocales } = useLocaleConfig();
 
   const format = useMemo(() => {
@@ -34,24 +34,24 @@ function IncrementButton({
   return (
     <div
       className={classNames(
-        'flex md:aspect-square rounded-md items-center justify-center flex-row md:flex-col w-full gap-1 p-3 md:p-2 md:w-[75px]',
+        'flex xs:aspect-square rounded-md items-center justify-center flex-row xs:flex-col w-full gap-1 p-3 xs:p-2 xs:w-[75px]',
         {
           'cursor-not-allowed bg-background-80 opacity-50': disabled,
-          'bg-background-60 hover:bg-background-50 cursor-pointer': !disabled,
+          'bg-background-50 hover:bg-background-40 cursor-pointer': !disabled,
         }
       )}
       onClick={() => !disabled && onClick()}
     >
       <Typography
-        variant={isMd ? 'main-title' : 'section-title'}
+        variant={isXs ? 'mobile-title' : 'section-title'}
         color={disabled ? 'text-background-40' : 'primary'}
       >
         {format}
       </Typography>
-      <Typography
+      {unit == 'cm' && isXs && <Typography
         id={`unit-${unit}`}
         color={disabled ? 'text-background-40' : 'primary'}
-      />
+      />}
     </div>
   );
 }
@@ -72,13 +72,13 @@ function UnitSelector({
       className={classNames(
         {
           'bg-accent-background-30': active,
-          'hover:bg-background-40 bg-background-50': !active,
+          'hover:bg-background-40 bg-background-40': !active,
         },
         'flex items-center justify-center rounded-md outline-background-10 cursor-pointer'
       )}
       onClick={onClick}
     >
-      <Typography variant={isSm ? 'standard' : 'section-title'} id={name} />
+      <Typography id={name} />
     </div>
   );
 }
@@ -155,8 +155,8 @@ export function HeightSelectionInput({
   };
 
   return (
-    <div className="flex gap-2 md:h-[75px] w-full flex-col md:flex-row items-center">
-      <div className="grid grid-cols-2 gap-2 h-full">
+    <div className="flex gap-2 xs:h-[75px] w-full items-center">
+      <div className="grid grid-rows-2 xs:grid-cols-2 gap-2 h-full">
         {unit === 'foot' && (
           <>
             <IncrementButton
@@ -190,11 +190,11 @@ export function HeightSelectionInput({
           </>
         )}
       </div>
-      <div className="flex w-full md:w-auto md:flex-grow bg-background-60 rounded-md px-2 py-2 h-full">
+      <div className="flex w-full xs:w-auto xs:flex-grow bg-background-50 rounded-md px-2 py-2 h-full">
         <div className="h-full flex items-center flex-grow justify-center min-w-24">
           <Typography variant="main-title">{formattedHeight}</Typography>
         </div>
-        <div className="w-28 md:w-20 h-full gap-2 grid grid-rows-1 grid-cols-2 md:grid-rows-2 md:grid-cols-1 p-1">
+        <div className="w-[60px] xs:w-20 h-full gap-2 grid p-1">
           <UnitSelector
             active={unit === 'meter'}
             name="unit-meter"
@@ -207,7 +207,7 @@ export function HeightSelectionInput({
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-2 h-full">
+      <div className="xs:grid grid-rows-2 grid-cols-2 gap-2 h-full flex flex-col-reverse">
         {unit === 'foot' && (
           <>
             <IncrementButton
@@ -222,7 +222,6 @@ export function HeightSelectionInput({
               onClick={() => increment('foot', 1)}
               disabled={disabled}
             />
-            {/* <div className="aspect-square bg-background-80 opacity-50 rounded-md items-center justify-center flex-col hidden md:flex" /> */}
           </>
         )}
         {unit === 'meter' && (
