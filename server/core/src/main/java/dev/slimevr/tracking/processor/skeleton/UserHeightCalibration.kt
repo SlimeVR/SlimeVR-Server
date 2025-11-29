@@ -60,18 +60,13 @@ fun isHmdLeveled(hmd: Tracker, threshold: Double): Boolean {
 
 fun isControllerPointingDown(controller: Tracker, threshold: Double): Boolean {
 	val q = controller.getRotation()
-	// CORRECTED: Use Vector3.POS_Z to get the controller's forward direction
 	val controllerForwardWorld = q.sandwich(Vector3.POS_Z)
-
 	val worldDown = Vector3.NEG_Y
-
-	// Check if the controller's forward vector (POS_Z) aligns with World Down (NEG_Y)
 	val dotProduct = controllerForwardWorld.dot(worldDown)
 
-	// threshold = cos(30 degrees) ≈ 0.866.
-	// If dotProduct is 1.0, it's perfectly pointing down.
 	return dotProduct >= threshold
 }
+
 interface UserHeightCalibrationListener {
 	fun onStatusChange(status: UserHeightRecordingStatusResponseT)
 }
@@ -81,7 +76,6 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 
 	var currentHeight = 0f
 	var currentFloorLevel = 0f
-	var lastHeightChange = 0f
 
 	var startTime = 0f
 
@@ -120,7 +114,6 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 		heightStableStartTime = null
 		floorStableStartTime = null
 		currentHeight = 0f
-		lastHeightChange = 0f
 		startTime = 0f
 	}
 
@@ -193,13 +186,13 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 			return
 		}
 
-		if (!isControllerPointingDown(lowestTracker, CONTROLLER_ANGLE_THRESHOLD)) {
-			status = UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH
-			floorStableStartTime = null
-			floorPositionSamples.clear()
-			sendStatusUpdate()
-			return
-		}
+//		if (!isControllerPointingDown(lowestTracker, CONTROLLER_ANGLE_THRESHOLD)) {
+//			status = UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH
+//			floorStableStartTime = null
+//			floorPositionSamples.clear()
+//			sendStatusUpdate()
+//			return
+//		}
 
 		floorPositionSamples.add(currentLowestPos)
 		currentFloorLevel = minOf(currentFloorLevel, currentLowestPos.y)
@@ -237,12 +230,10 @@ class UserHeightCalibration(val server: VRServer, val humanPoseManager: HumanPos
 			return
 		}
 
-		val newHeight = max(currentHeight, relativeY)
-		if (newHeight != currentHeight) {
-			currentHeight = newHeight
+		if (currentHeight != relativeY) {
+			currentHeight = relativeY
 			sendStatusUpdate()
 		}
-
 
 		if (!isHmdLeveled(localHmd, HEAD_ANGLE_THRESHOLD)) {
 			status = UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK
