@@ -1413,6 +1413,8 @@ firmware_tool = Herramienta de firmware DIY
 firmware_tool-description = Le permite configurar y actualizar sus sensores construidos por usted
 firmware_tool-not_available = Vaya, la herramienta de firmware no está disponible en este momento. ¡Vuelva más tarde!
 firmware_tool-not_compatible = La herramienta de firmware no es compatible con esta versión del servidor. ¡Por favor, actualice la app!
+firmware_tool-select_source = Selecciona el firmware para flashear
+firmware_tool-select_source-description = Selecciona el firmware que quieres flashear en tu placa
 firmware_tool-select_source-error = Incapaz de cargar fuentes
 firmware_tool-select_source-board_type = Tipo de placa
 firmware_tool-select_source-firmware = Fuente del Firmware
@@ -1420,6 +1422,7 @@ firmware_tool-select_source-version = Versión del Firmware
 firmware_tool-select_source-official = Oficial
 firmware_tool-select_source-dev = Desarrollo
 firmware_tool-board_defaults = Configura tu placa
+firmware_tool-board_defaults-description = Establece los pines o ajustes relativos a tu hardware
 firmware_tool-board_defaults-add = Añadir
 firmware_tool-board_defaults-reset = Reestablecer a predeterminado
 firmware_tool-board_defaults-error-required = Campo requerido
@@ -1430,6 +1433,9 @@ firmware_tool-flash_method_step-description = Por favor seleccione el método de
 firmware_tool-flash_method_step-ota-v2 =
     .label = Wi-Fi
     .description = Utilizar el método sobre-el-aire. Tu tracker utilizará Wi-Fi para actualizar su firmware. Solo funciona en trackers que han sido configurados.
+firmware_tool-flash_method_step-ota-info =
+    Utilizamos tus credenciales de wifi para flashear el tracker y confirmar que todo funcionó correctamente.
+    <b>¡Nosotros no guardamos tus credenciales wifi!</b>
 firmware_tool-flash_method_step-serial-v2 =
     .label = USB
     .description = Utilizar un cable USB para actualizar tu tracker.
@@ -1443,8 +1449,10 @@ firmware_tool-flashbtn_step-board_OTHER =
     Antes de flashear, probablemente tendrá que poner el sensor en modo bootloader.
     La mayoría de las veces, esto significa presionar el botón de boot en la placa antes de que comience el proceso de flasheo. Si el proceso de flasheo se agota al comienzo, probablemente significa que el sensor no estaba en modo bootloader. 
     Por favor, consulte las instrucciones de flasheo de su placa para saber cómo activar el modo bootloader.
+firmware_tool-flash_method_ota-title = Flashear por Wi-Fi
 firmware_tool-flash_method_ota-devices = Dispositivos OTA detectados:
 firmware_tool-flash_method_ota-no_devices = No hay placas que se puedan actualizar mediante OTA, asegúrese de seleccionar el tipo de placa correcto
+firmware_tool-flash_method_serial-title = Flashear por USB
 firmware_tool-flash_method_serial-wifi = Credenciales del Wi-Fi:
 firmware_tool-flash_method_serial-devices-label = Dispositivos serial detectados:
 firmware_tool-flash_method_serial-devices-placeholder = Seleccione un dispositivo serial
@@ -1459,6 +1467,7 @@ firmware_tool-flashing_step-exit = Salir
 
 ## firmware tool build status
 
+firmware_tool-build-QUEUED = Esperando a construir....
 firmware_tool-build-CREATING_BUILD_FOLDER = Creando la carpeta de compilación
 firmware_tool-build-DOWNLOADING_SOURCE = Descargando el código fuente
 firmware_tool-build-EXTRACTING_SOURCE = Extrayendo el código fuente
