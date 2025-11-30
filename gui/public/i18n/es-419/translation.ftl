@@ -183,7 +183,7 @@ skeleton_bone-FOOT_SHIFT = Desplazamiento de pies
 skeleton_bone-FOOT_SHIFT-desc =
     Este valor es la distancia horizontal entre tu rodilla hacia tu tobillo.
     Toma en cuenta las piernas bajas yendo hacia atrás cuando te paras recto.
-    Para ajustarlo, pon el largo de los pies en 0, inicia un reinicia completo y modifícalo hasta que tus pies
+    Para ajustarlo, pon el largo de los pies en 0, inicia un reinicio completo y modifícalo hasta que tus pies
     virtuales se alineen con el medio de tus tobillos.
 skeleton_bone-SKELETON_OFFSET = Desplazamiento del esqueleto
 skeleton_bone-SKELETON_OFFSET-desc =
@@ -623,6 +623,9 @@ settings-general-fk_settings-enforce_joint_constraints-enforce_constraints = Imp
 settings-general-fk_settings-enforce_joint_constraints-enforce_constraints-description = Evita que las articulaciones giren más allá de su límite
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints = Corregir con las limitaciones
 settings-general-fk_settings-enforce_joint_constraints-correct_constraints-description = Corregir las rotaciones de las articulaciones cuando superan su límite
+settings-general-fk_settings-ik = Datos de posición
+settings-general-fk_settings-ik-use_position = Usar datos de posición
+settings-general-fk_settings-ik-use_position-description = Permite el uso de los datos de posición de los trackers que lo proveen. Cuando actives esto asegúrate de hacer un reinicio completo y recalibrar en el juego.
 settings-general-fk_settings-arm_fk = Trackeo de brazos
 settings-general-fk_settings-arm_fk-description = Cambia cómo el movimiento de los brazos es detectado.
 settings-general-fk_settings-arm_fk-force_arms = Forzar brazos desde el HMD
@@ -776,7 +779,9 @@ settings-serial-auto_dropdown_item = Auto
 settings-serial-get_wifi_scan = Obtener escaneo WiFi
 settings-serial-file_type = Texto sin formato
 settings-serial-save_logs = Guardar en archivo
+settings-serial-send_command = Enviar
 settings-serial-send_command-placeholder = Comando...
+settings-serial-send_command-warning = <b>Peligro:</b> Ejecutar comandos seriales puede causar perdida de datos o romper los trackers.
 settings-serial-send_command-warning-ok = Sé lo que estoy haciendo
 settings-serial-send_command-warning-cancel = Cancelar
 
@@ -1416,6 +1421,8 @@ firmware_tool-select_source-official = Oficial
 firmware_tool-select_source-dev = Desarrollo
 firmware_tool-board_defaults = Configura tu placa
 firmware_tool-board_defaults-add = Añadir
+firmware_tool-board_defaults-reset = Reestablecer a predeterminado
+firmware_tool-board_defaults-error-required = Campo requerido
 firmware_tool-board_defaults-error-format = Formato inválido
 firmware_tool-board_defaults-error-format-number = No es un número
 firmware_tool-flash_method_step = Método de flasheo
