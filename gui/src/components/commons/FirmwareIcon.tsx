@@ -90,6 +90,3 @@ export function FirmwareIcon({
     </div>
   );
 }
-//{showUpdate &&
-// showUpdate !== 'unavailable' &&
-//  showUpdate !== 'updated' && (
