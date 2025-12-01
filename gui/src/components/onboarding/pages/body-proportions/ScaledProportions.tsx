@@ -147,7 +147,7 @@ function UserHeightStatus({
 
       <div className="flex flex-grow justify-center h-full min-h-0 items-center">
         {statusToImage[status.status] && (
-          <div className="h-full w-full flex justify-center">
+          <div className="h-full w-full flex justify-center max-h-[950px]">
             <img
               className="object-contain h-full"
               src={statusToImage[status.status]!}
@@ -156,9 +156,9 @@ function UserHeightStatus({
         )}
         {status.status === UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK && (
           <div className="h-full w-full flex p-2">
-            <div className="grid grid-rows-3 h-full w-full gap-1 xs:gap-3">
+            <div className="grid grid-rows-3 h-full w-full gap-1 xs:gap-3 max-h-[950px]">
               <div className="bg-background-70 rounded-md flex gap-4 items-center px-4 relative">
-                <CheckIcon className="sm:w-8 w-5 h-auto absolute xs:top-2 xs:left-2 -top-1 -left-2 fill-status-success" />
+                <CheckIcon className="sm:w-8 w-5 h-auto absolute xs:top-2 xs:left-2 -top-1 tall:w-8 tall:left-2 tall:top-2 -left-2 fill-status-success" />
                 <img
                   className="object-cover h-full aspect-square"
                   src={'/images/user-height/look-forward-ok.webp'}
@@ -170,7 +170,7 @@ function UserHeightStatus({
                 />
               </div>
               <div className="bg-background-70 rounded-md flex gap-4 items-center px-4 relative">
-                <CrossIcon className="sm:w-8 w-6 h-auto absolute xs:top-2 xs:left-2 -top-1 -left-2 fill-status-critical" />
+                <CrossIcon className="sm:w-8 w-6 h-auto absolute xs:top-2 xs:left-2 -top-1 -left-2 tall:w-9 tall:left-1 tall:top-2 fill-status-critical" />
 
                 <img
                   className="object-cover h-full aspect-square"
@@ -183,7 +183,7 @@ function UserHeightStatus({
                 />
               </div>
               <div className="bg-background-70 rounded-md flex gap-4 items-center px-4 relative">
-                <CrossIcon className="sm:w-8 w-6 h-auto absolute xs:top-2 xs:left-2 -top-1 -left-2 fill-status-critical" />
+                <CrossIcon className="sm:w-8 w-6 h-auto absolute xs:top-2 xs:left-2 -top-1 -left-2 tall:w-9 tall:left-1 tall:top-2 fill-status-critical" />
                 <img
                   className="object-cover h-full aspect-square"
                   src={'/images/user-height/look-forward-high.webp'}
@@ -199,7 +199,7 @@ function UserHeightStatus({
         )}
         {status.status ===
           UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH && (
-          <div className="h-full w-full flex p-2">
+          <div className="h-full w-full flex p-2 max-h-[950px]">
             <div className="flex tall:grid grid-cols-2 h-full w-full gap-3">
               <div className="bg-background-70 rounded-md flex gap-4 justify-between items-end px-4 relative  overflow-clip">
                 <CheckIcon className="sm:w-9 w-5 h-auto absolute top-2 left-2 justify-center fill-status-success" />
@@ -321,6 +321,9 @@ export function ScaledProportionsPage() {
       RpcMessage.SkeletonConfigRequest,
       new SkeletonConfigRequestT()
     );
+
+    setAuto(true)
+    setState(Object.assign(new UserHeightRecordingStatusResponseT(), { status: UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH, hmdHeight: 1 }))
     return () => {
       cancel();
     };

@@ -138,20 +138,24 @@ export function HeightSelectionInput({
     return formatInFoot(displayHeight, currentLocales);
   }, [hmdHeight, unit]);
 
-  const fullHeight = hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
-  const minimalHeight = fullHeight - 0.01 < 0.9;
-  const minimalHeight10cm = fullHeight - 0.1 < 0.9;
-  const maximumHeight = fullHeight + 0.01 > 2.4;
-  const maximumHeight10cm = fullHeight + 0.1 > 2.4;
-
-  const increment = (unit: 'inch' | 'cm' | 'foot', value: number) => {
+  const incrementMath = (unit: 'inch' | 'cm' | 'foot', value: number) => {
     const incrementInMeters = convert(value, unit).to('meter');
     const oldFull = hmdHeight / EYE_HEIGHT_TO_HEIGHT_RATIO;
     const newFull = oldFull + incrementInMeters;
     const newEye = newFull * EYE_HEIGHT_TO_HEIGHT_RATIO;
 
+    return newEye
+  }
+
+  const increment = (unit: 'inch' | 'cm' | 'foot', value: number) => {
+    const newEye = incrementMath(unit, value);
     setHmdHeight(round4Digit(newEye));
   };
+
+  const canIcrement = (unit: 'inch' | 'cm' | 'foot', value: number, max: number) => {
+    const newEye = incrementMath(unit, value);
+    return value < 0 ? newEye >= max : newEye < max;
+  }
 
   return (
     <div className="flex gap-2 xs:h-[75px] w-full items-center">
@@ -162,13 +166,13 @@ export function HeightSelectionInput({
               value={-1}
               unit={'foot'}
               onClick={() => increment('foot', -1)}
-              disabled={disabled || minimalHeight}
+              disabled={disabled || !canIcrement('foot', -1, 0.9)}
             />
             <IncrementButton
               value={-1}
               unit={'inch'}
               onClick={() => increment('inch', -1)}
-              disabled={disabled || minimalHeight}
+              disabled={disabled || !canIcrement('inch', -1, 0.9)}
             />
           </>
         )}
@@ -178,13 +182,13 @@ export function HeightSelectionInput({
               value={-10}
               unit={'cm'}
               onClick={() => increment('cm', -10)}
-              disabled={disabled || minimalHeight10cm}
+              disabled={disabled || !canIcrement('cm', -10, 0.9)}
             />
             <IncrementButton
               value={-1}
               unit={'cm'}
               onClick={() => increment('cm', -1)}
-              disabled={disabled || minimalHeight}
+              disabled={disabled || !canIcrement('cm', -1, 0.9)}
             />
           </>
         )}
@@ -213,13 +217,13 @@ export function HeightSelectionInput({
               value={1}
               unit={'inch'}
               onClick={() => increment('inch', 1)}
-              disabled={disabled}
+              disabled={disabled || !canIcrement('inch', 1, 2.4)}
             />
             <IncrementButton
               value={1}
               unit={'foot'}
               onClick={() => increment('foot', 1)}
-              disabled={disabled}
+              disabled={disabled || !canIcrement('foot', 1, 2.4)}
             />
           </>
         )}
@@ -229,13 +233,13 @@ export function HeightSelectionInput({
               value={1}
               unit={'cm'}
               onClick={() => increment('cm', 1)}
-              disabled={disabled || maximumHeight}
+              disabled={disabled || !canIcrement('cm', 1, 2.4)}
             />
             <IncrementButton
               value={10}
               unit={'cm'}
               onClick={() => increment('cm', 10)}
-              disabled={disabled || maximumHeight10cm}
+              disabled={disabled || !canIcrement('cm', 10, 2.4)}
             />
           </>
         )}
