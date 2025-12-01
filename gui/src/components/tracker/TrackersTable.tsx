@@ -124,9 +124,7 @@ function Header({
       })}
     >
       <div className={className}>
-        <div className="relative">
-          <Typography id={name} whitespace="whitespace-nowrap" />
-        </div>
+        <Typography id={name} whitespace="whitespace-nowrap" />
       </div>
     </th>
   );
