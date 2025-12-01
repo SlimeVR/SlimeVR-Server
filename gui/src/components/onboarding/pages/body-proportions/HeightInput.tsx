@@ -116,6 +116,7 @@ export function HeightSelectionInput({
 }) {
   if (!hmdHeight) disabled = true;
 
+  const { isXs } = useBreakpoint('xs');
   const [unit, setUnit] = useState<'meter' | 'foot'>('meter');
   const { currentLocales } = useLocaleConfig();
 
@@ -195,7 +196,7 @@ export function HeightSelectionInput({
         <div className="w-[60px] xs:w-20 h-full gap-2 grid p-1">
           <UnitSelector
             active={unit === 'meter'}
-            name="unit-meter"
+            name={isXs ? 'unit-meter' : 'unit-cm'}
             onClick={() => setUnit('meter')}
           />
           <UnitSelector

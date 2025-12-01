@@ -177,7 +177,7 @@ const config = {
       'md-max': { raw: 'not (min-width: 1100px)' },
       lg: '1300px',
       xl: '1600px',
-      tall: { raw: '(min-height: 800px)' },
+      tall: { raw: '(min-height: 860px)' },
     },
     extend: {
       colors: {

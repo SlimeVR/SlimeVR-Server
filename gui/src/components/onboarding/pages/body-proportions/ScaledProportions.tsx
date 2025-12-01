@@ -5,7 +5,7 @@ import { Button } from '@/components/commons/Button';
 import { useAtomValue } from 'jotai';
 import { serverGuardsAtom } from '@/store/app-store';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   CancelUserHeightCalibrationT,
   ChangeSettingsRequestT,
@@ -32,40 +32,11 @@ import { CrossIcon } from '@/components/commons/icon/CrossIcon';
 import { TipBox } from '@/components/commons/TipBox';
 import { Localized } from '@fluent/react';
 import { ResetButton } from '@/components/home/ResetButton';
-
-function UserHeightStep({
-  done = false,
-  text,
-}: {
-  disabled?: boolean;
-  done?: boolean;
-  text: string;
-}) {
-  return (
-    <div className="flex flex-col pr-2 ml-6 last:pb-0 pb-3 border-l-[2px] border-background-50">
-      <div className="flex w-full gap-2">
-        <div
-          className={classNames(
-            'p-1 rounded-full fill-background-10 flex items-center justify-center z-10 h-[25px] w-[25px] -ml-[13px]',
-            { 'bg-background-50': !done, 'bg-accent-background-20': done }
-          )}
-        >
-          {done && <CheckIcon size={10} />}
-          {!done && (
-            <div
-              className={classNames('h-[12px] w-[12px] rounded-full', {
-                'bg-accent-background-10 animate-pulse brightness-75': true,
-              })}
-            />
-          )}
-        </div>
-        <Typography variant="section-title" id={text} />
-      </div>
-    </div>
-  );
-}
+import { ProgressBar } from '@/components/commons/ProgressBar';
+import { useBreakpoint } from '@/hooks/breakpoint';
 
 const statusSteps = [
+  // Order matters be carefull
   UserHeightCalibrationStatus.NONE,
   UserHeightCalibrationStatus.RECORDING_FLOOR,
   UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH,
@@ -74,6 +45,10 @@ const statusSteps = [
   UserHeightCalibrationStatus.RECORDING_HEIGHT,
   UserHeightCalibrationStatus.DONE,
 ];
+
+const progressSteps: UserHeightCalibrationStatus[] = statusSteps.filter(
+  (s) => s !== UserHeightCalibrationStatus.NONE
+);
 
 const errorSteps = [
   UserHeightCalibrationStatus.ERROR_TIMEOUT,
@@ -100,77 +75,73 @@ const statusToImage: Record<UserHeightCalibrationStatus, string | null> = {
     '/images/user-height/wrong-height.webp',
 };
 
+function Stepper({ status }: { status: UserHeightRecordingStatusResponseT }) {
+  const stepIndex = progressSteps.indexOf(status.status);
+  const isError = errorSteps.includes(status.status);
+  const progress = isError ? 1 : (stepIndex + 1) / progressSteps.length;
+
+  const { isXs } = useBreakpoint('xs');
+
+  return (
+    <div className="flex flex-col gap-2 px-2">
+      <div className="flex gap-2 items-center">
+        <div
+          className={classNames(
+            'w-8 aspect-square rounded-full fill-background-10 flex items-center justify-center',
+            {
+              'bg-background-70':
+                status.status !== UserHeightCalibrationStatus.DONE && !isError,
+              'bg-accent-background-10':
+                status.status === UserHeightCalibrationStatus.DONE,
+              'bg-status-critical': isError,
+            }
+          )}
+        >
+          {status.status !== UserHeightCalibrationStatus.DONE && !isError && (
+            <Typography variant={isXs ? 'section-title' : 'standard'}>
+              {stepIndex + 1}
+            </Typography>
+          )}
+          {status.status === UserHeightCalibrationStatus.DONE && (
+            <CheckIcon size={12} />
+          )}
+          {isError && <CrossIcon />}
+        </div>
+        <Typography
+          id={`onboarding-user_height-calibration-${UserHeightCalibrationStatus[status.status]}`}
+          variant={isXs ? 'section-title' : 'standard'}
+        />
+      </div>
+      <ProgressBar
+        progress={progress}
+        animated
+        colorClass={
+          status.status === UserHeightCalibrationStatus.DONE
+            ? 'bg-status-success'
+            : isError
+              ? 'bg-status-critical'
+              : undefined
+        }
+      />
+    </div>
+  );
+}
+
 function UserHeightStatus({
   status,
 }: {
   status: UserHeightRecordingStatusResponseT;
 }) {
+  const { isXs } = useBreakpoint('xs');
+
   return (
     <div className="flex flex-col h-full rounded-t-lg xs:rounded-b-lg bg-background-60 xs:py-2 px-2 pt-4 relative">
       <div className="flex flex-col bg-background-60 rounded-lg">
-        <div className="px-4">
-          <Typography variant="mobile-title">Calibration progress</Typography>
+        <div className="px-4 hidden xs:block">
+          <Typography variant="mobile-title" id="onboarding-user_height-calibration-title"/>
         </div>
-        <div className="flex flex-col">
-          {!errorSteps.includes(status.status) ? (
-            <div className="py-2">
-              <UserHeightStep
-                done={
-                  status.status >
-                  statusSteps.indexOf(
-                    UserHeightCalibrationStatus.RECORDING_FLOOR
-                  )
-                }
-                text="onboarding-user_height-calibration-RECORDING_FLOOR"
-              />
-              <UserHeightStep
-                done={
-                  status.status >
-                  statusSteps.indexOf(
-                    UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH
-                  )
-                }
-                text="onboarding-user_height-calibration-WAITING_FOR_CONTROLLER_PITCH"
-              />
-              <UserHeightStep
-                done={
-                  status.status >
-                  statusSteps.indexOf(
-                    UserHeightCalibrationStatus.WAITING_FOR_RISE
-                  )
-                }
-                text="onboarding-user_height-calibration-WAITING_FOR_RISE"
-              />
-              <UserHeightStep
-                done={
-                  status.status >
-                  statusSteps.indexOf(
-                    UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK
-                  )
-                }
-                text="onboarding-user_height-calibration-WAITING_FOR_FW_LOOK"
-              />
-              <UserHeightStep
-                done={
-                  status.status >
-                  statusSteps.indexOf(
-                    UserHeightCalibrationStatus.RECORDING_HEIGHT
-                  )
-                }
-                text="onboarding-user_height-calibration-RECORDING_HEIGHT"
-              />
-            </div>
-          ) : (
-            <div className="m-4 p-2 outline outline-status-critical rounded-lg">
-              <Typography
-                variant="section-title"
-                id="onboarding-user_height-calibration-error"
-              />
-              <Typography
-                id={`onboarding-user_height-calibration-${UserHeightCalibrationStatus[status.status]}`}
-              />
-            </div>
-          )}
+        <div className="flex flex-col py-2">
+          <Stepper status={status} />
         </div>
       </div>
 
@@ -185,37 +156,71 @@ function UserHeightStatus({
         )}
         {status.status === UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK && (
           <div className="h-full w-full flex p-2">
-            <div className="grid xs:grid-rows-3 h-full w-full gap-3">
-              <div className="bg-background-70 rounded-md flex gap-4 justify-between items-center px-4 relative">
-                <CheckIcon className="md:w-12 sm:w-8 w-6 h-auto absolute top-2 left-4 fill-status-success" />
+            <div className="grid grid-rows-3 h-full w-full gap-1 xs:gap-3">
+              <div className="bg-background-70 rounded-md flex gap-4 items-center px-4 relative">
+                <CheckIcon className="sm:w-8 w-5 h-auto absolute xs:top-2 xs:left-2 -top-1 -left-2 fill-status-success" />
                 <img
                   className="object-cover h-full aspect-square"
                   src={'/images/user-height/look-forward-ok.webp'}
                 />
-                <Typography variant="main-title">
-                  Make sure your head is leveled
-                </Typography>
+                <Typography
+                  variant={isXs ? 'section-title' : 'standard'}
+                  whitespace="whitespace-pre-wrap"
+                  id="onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-ok"
+                />
               </div>
-              <div className="bg-background-70 rounded-md flex gap-4 justify-between items-center px-4 relative">
-                <CrossIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 left-2 fill-status-critical" />
+              <div className="bg-background-70 rounded-md flex gap-4 items-center px-4 relative">
+                <CrossIcon className="sm:w-8 w-6 h-auto absolute xs:top-2 xs:left-2 -top-1 -left-2 fill-status-critical" />
 
                 <img
                   className="object-cover h-full aspect-square"
                   src={'/images/user-height/look-forward-low.webp'}
                 />
-                <Typography variant="main-title">
-                  Do not look at the floor
-                </Typography>
+                <Typography
+                  variant={isXs ? 'section-title' : 'standard'}
+                  whitespace="whitespace-pre-wrap"
+                  id="onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-low"
+                />
               </div>
-              <div className="bg-background-70 rounded-md flex gap-4 justify-between items-center px-4 relative">
-                <CrossIcon className="md:w-14 sm:w-8 w-6 h-auto absolute top-2 left-2 fill-status-critical" />
+              <div className="bg-background-70 rounded-md flex gap-4 items-center px-4 relative">
+                <CrossIcon className="sm:w-8 w-6 h-auto absolute xs:top-2 xs:left-2 -top-1 -left-2 fill-status-critical" />
                 <img
                   className="object-cover h-full aspect-square"
                   src={'/images/user-height/look-forward-high.webp'}
                 />
-                <Typography variant="main-title">
-                  Do not look too high up
-                </Typography>
+                <Typography
+                  variant={isXs ? 'section-title' : 'standard'}
+                  whitespace="whitespace-pre-wrap"
+                  id="onboarding-user_height-calibration-WAITING_FOR_FW_LOOK-high"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+        {status.status ===
+          UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH && (
+          <div className="h-full w-full flex p-2">
+            <div className="flex tall:grid grid-cols-2 h-full w-full gap-3">
+              <div className="bg-background-70 rounded-md flex gap-4 justify-between items-end px-4 relative  overflow-clip">
+                <CheckIcon className="sm:w-9 w-5 h-auto absolute top-2 left-2 justify-center fill-status-success" />
+                <img
+                  className="object-bottom object-cover w-full"
+                  src={'/images/user-height/controller-ok.webp'}
+                />
+              </div>
+              <div className="bg-background-70 rounded-md flex gap-4 justify-between items-end px-4 relative  overflow-clip">
+                <CrossIcon className="sm:w-10 w-6 h-auto absolute top-2 left-2 fill-status-critical" />
+                <img
+                  className="object-bottom object-cover w-full"
+                  src={'/images/user-height/controller-wrong-1.webp'}
+                />
+              </div>
+              <div className="bg-background-70 rounded-md flex gap-4 justify-between items-end px-4 relative  overflow-clip">
+                <CrossIcon className="sm:w-10 w-6 h-auto absolute top-2 left-2 fill-status-critical" />
+                <img
+                  className="object-bottom object-cover w-full"
+                  src={'/images/user-height/controller-wrong-2.webp'}
+                />
               </div>
             </div>
           </div>
@@ -259,7 +264,8 @@ export function ScaledProportionsPage() {
         errorSteps.includes(status.status) ||
         status.status == UserHeightCalibrationStatus.NONE ||
         status.status == UserHeightCalibrationStatus.WAITING_FOR_FW_LOOK ||
-        status.status == UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH
+        status.status ==
+          UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH
       )
         return;
       playTapSetupSound();
@@ -336,7 +342,7 @@ export function ScaledProportionsPage() {
             ); // Re ask the user height so it resets back to the correct value
           }
         },
-        status.status === UserHeightCalibrationStatus.DONE ? 5000 : 10_000
+        status.status === UserHeightCalibrationStatus.DONE ? 2000 : 10_000
       );
       return () => {
         clearTimeout(id);
@@ -402,7 +408,7 @@ export function ScaledProportionsPage() {
               id="onboarding-user_height-calculate"
             />
           </Tooltip>
-          <div className="w-full flex justify-between">
+          <div className="w-full flex gap-2 justify-between">
             {state.alonePage && (
               <>
                 <Button
