@@ -5,7 +5,7 @@ import { Button } from '@/components/commons/Button';
 import { useAtomValue } from 'jotai';
 import { serverGuardsAtom } from '@/store/app-store';
 import { useWebsocketAPI } from '@/hooks/websocket-api';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   CancelUserHeightCalibrationT,
   ChangeSettingsRequestT,
@@ -322,8 +322,6 @@ export function ScaledProportionsPage() {
       new SkeletonConfigRequestT()
     );
 
-    setAuto(true)
-    setState(Object.assign(new UserHeightRecordingStatusResponseT(), { status: UserHeightCalibrationStatus.WAITING_FOR_CONTROLLER_PITCH, hmdHeight: 1 }))
     return () => {
       cancel();
     };
