@@ -1,12 +1,6 @@
 import classNames from 'classnames';
 import { IPv4 } from 'ip-num/IPNumber';
 import { createContext, ReactNode, useContext, useMemo } from 'react';
-import {
-  BodyPart,
-  TrackerDataT,
-  TrackerStatus as TrackerStatusEnum,
-  TrackingChecklistStepT,
-} from 'solarxr-protocol';
 import { useConfig } from '@/hooks/config';
 import { useTracker } from '@/hooks/tracker';
 import { BodyPartIcon } from '@/components/commons/BodyPartIcon';
@@ -17,13 +11,20 @@ import { TrackerStatus } from './TrackerStatus';
 import { TrackerWifi } from './TrackerWifi';
 import { FlatDeviceTracker } from '@/store/app-store';
 import { StayAlignedInfo } from '@/components/stay-aligned/StayAlignedInfo';
+import { Tooltip } from '@/components/commons/Tooltip';
+import { WarningIcon } from '@/components/commons/icon/WarningIcon';
+import { FirmwareIcon } from '@/components/commons/FirmwareIcon';
+import {
+  BodyPart,
+  TrackerDataT,
+  TrackerStatus as TrackerStatusEnum,
+  TrackingChecklistStepT,
+} from 'solarxr-protocol';
 import {
   highlightedTrackers,
   trackingchecklistIdtoLabel,
   useTrackingChecklist,
 } from '@/hooks/tracking-checklist';
-import { Tooltip } from '@/components/commons/Tooltip';
-import { WarningIcon } from '@/components/commons/icon/WarningIcon';
 
 const isHMD = ({ tracker }: FlatDeviceTracker) =>
   tracker.info?.isHmd || tracker.info?.bodyPart === BodyPart.HEAD;
@@ -204,83 +205,90 @@ function Row({
         tag="tr"
         spacing={-5}
       >
-        <tr className="group" onClick={() => clickedTracker(tracker)}>
-          <Cell first>
-            <TrackerNameCell tracker={tracker} warning={warning} />
-          </Cell>
-          <Cell>
-            <Typography color={fontColor}>
-              {device?.hardwareInfo?.manufacturer || '--'}
-            </Typography>
-          </Cell>
-          <Cell>
-            {device?.hardwareStatus?.batteryPctEstimate != null && (
-              <TrackerBattery
-                value={device.hardwareStatus.batteryPctEstimate / 100}
-                voltage={device.hardwareStatus.batteryVoltage}
-                disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-                textColor={fontColor}
+        <>
+          <div className="relative">
+            <div className="absolute top-1.5 left-5">
+              <FirmwareIcon tracker={tracker} size={6} />
+            </div>
+          </div>
+          <tr className="group" onClick={() => clickedTracker(tracker)}>
+            <Cell first>
+              <TrackerNameCell tracker={tracker} warning={warning} />
+            </Cell>
+            <Cell>
+              <Typography color={fontColor}>
+                {device?.hardwareInfo?.manufacturer || '--'}
+              </Typography>
+            </Cell>
+            <Cell>
+              {device?.hardwareStatus?.batteryPctEstimate != null && (
+                <TrackerBattery
+                  value={device.hardwareStatus.batteryPctEstimate / 100}
+                  voltage={device.hardwareStatus.batteryVoltage}
+                  disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
+                  textColor={fontColor}
+                />
+              )}
+            </Cell>
+            <Cell>
+              {(device?.hardwareStatus?.rssi != null ||
+                device?.hardwareStatus?.ping != null) && (
+                <TrackerWifi
+                  rssi={device?.hardwareStatus?.rssi}
+                  rssiShowNumeric
+                  ping={device?.hardwareStatus?.ping}
+                  disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
+                  textColor={fontColor}
+                />
+              )}
+            </Cell>
+            <Cell>
+              {tracker.tps && (
+                <Typography color={fontColor}>{tracker.tps}</Typography>
+              )}
+            </Cell>
+            <Cell>
+              <TrackerRotCell
+                tracker={tracker}
+                precise={config?.devSettings?.preciseRotation}
+                referenceAdjusted={!config?.devSettings?.rawSlimeRotation}
+                color={fontColor}
               />
-            )}
-          </Cell>
-          <Cell>
-            {(device?.hardwareStatus?.rssi != null ||
-              device?.hardwareStatus?.ping != null) && (
-              <TrackerWifi
-                rssi={device?.hardwareStatus?.rssi}
-                rssiShowNumeric
-                ping={device?.hardwareStatus?.ping}
-                disabled={tracker.status === TrackerStatusEnum.DISCONNECTED}
-                textColor={fontColor}
-              />
-            )}
-          </Cell>
-          <Cell>
-            {tracker.tps && (
-              <Typography color={fontColor}>{tracker.tps}</Typography>
-            )}
-          </Cell>
-          <Cell>
-            <TrackerRotCell
-              tracker={tracker}
-              precise={config?.devSettings?.preciseRotation}
-              referenceAdjusted={!config?.devSettings?.rawSlimeRotation}
-              color={fontColor}
-            />
-          </Cell>
-          <Cell last={!moreInfo}>
-            {tracker?.temp && tracker?.temp?.temp != 0 && (
+            </Cell>
+            <Cell last={!moreInfo}>
+              {tracker?.temp && tracker?.temp?.temp != 0 && (
+                <Typography color={fontColor} whitespace="whitespace-nowrap">
+                  {tracker.temp.temp.toFixed(2)}
+                </Typography>
+              )}
+            </Cell>
+            <Cell show={moreInfo}>
+              {tracker.linearAcceleration && (
+                <Typography color={fontColor} whitespace="whitespace-nowrap">
+                  {formatVector3(tracker.linearAcceleration, 1)}
+                </Typography>
+              )}
+            </Cell>
+            <Cell show={moreInfo}>
+              {tracker.position && (
+                <Typography color={fontColor} whitespace="whitespace-nowrap">
+                  {formatVector3(tracker.position, 2)}
+                </Typography>
+              )}
+            </Cell>
+            <Cell show={moreInfo}>
+              <StayAlignedInfo color={fontColor} tracker={tracker} />
+            </Cell>
+            <Cell last={moreInfo} show={moreInfo}>
               <Typography color={fontColor} whitespace="whitespace-nowrap">
-                {tracker.temp.temp.toFixed(2)}
+                udp://
+                {IPv4.fromNumber(
+                  device?.hardwareInfo?.ipAddress?.addr || 0
+                ).toString()}
               </Typography>
-            )}
-          </Cell>
-          <Cell show={moreInfo}>
-            {tracker.linearAcceleration && (
-              <Typography color={fontColor} whitespace="whitespace-nowrap">
-                {formatVector3(tracker.linearAcceleration, 1)}
-              </Typography>
-            )}
-          </Cell>
-          <Cell show={moreInfo}>
-            {tracker.position && (
-              <Typography color={fontColor} whitespace="whitespace-nowrap">
-                {formatVector3(tracker.position, 2)}
-              </Typography>
-            )}
-          </Cell>
-          <Cell show={moreInfo}>
-            <StayAlignedInfo color={fontColor} tracker={tracker} />
-          </Cell>
-          <Cell last={moreInfo} show={moreInfo}>
-            <Typography color={fontColor} whitespace="whitespace-nowrap">
-              udp://
-              {IPv4.fromNumber(
-                device?.hardwareInfo?.ipAddress?.addr || 0
-              ).toString()}
-            </Typography>
-          </Cell>
-        </tr>
+            </Cell>
+          </tr>
+        </>
       </Tooltip>
     </TrackerRowProvider.Provider>
   );
