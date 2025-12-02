@@ -48,10 +48,12 @@ function IncrementButton({
       >
         {format}
       </Typography>
-      {unit == 'cm' && isXs && <Typography
-        id={`unit-${unit}`}
-        color={disabled ? 'text-background-40' : 'primary'}
-      />}
+      {unit == 'cm' && isXs && (
+        <Typography
+          id={`unit-${unit}`}
+          color={disabled ? 'text-background-40' : 'primary'}
+        />
+      )}
     </div>
   );
 }
@@ -144,18 +146,22 @@ export function HeightSelectionInput({
     const newFull = oldFull + incrementInMeters;
     const newEye = newFull * EYE_HEIGHT_TO_HEIGHT_RATIO;
 
-    return newEye
-  }
+    return newEye;
+  };
 
   const increment = (unit: 'inch' | 'cm' | 'foot', value: number) => {
     const newEye = incrementMath(unit, value);
     setHmdHeight(round4Digit(newEye));
   };
 
-  const canIcrement = (unit: 'inch' | 'cm' | 'foot', value: number, max: number) => {
+  const canIcrement = (
+    unit: 'inch' | 'cm' | 'foot',
+    value: number,
+    max: number
+  ) => {
     const newEye = incrementMath(unit, value);
     return value < 0 ? newEye >= max : newEye < max;
-  }
+  };
 
   return (
     <div className="flex gap-2 xs:h-[75px] w-full items-center">
