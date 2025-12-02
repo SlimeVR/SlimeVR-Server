@@ -1582,7 +1582,7 @@ tracking_checklist-NETWORK_PROFILE_PUBLIC-desc = {$count ->
 }
 tracking_checklist-NETWORK_PROFILE_PUBLIC-open = Open Control Panel
 tracking_checklist-STAY_ALIGNED_CONFIGURED = Configure Stay Aligned
-tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the stay aligned poses for an improved imu drift
+tracking_checklist-STAY_ALIGNED_CONFIGURED-desc = Record the Stay Aligned poses for an improved imu drift
 tracking_checklist-STAY_ALIGNED_CONFIGURED-open = Open Stay Aligned Wizard
 
 tracking_checklist-ignore = Ignore
